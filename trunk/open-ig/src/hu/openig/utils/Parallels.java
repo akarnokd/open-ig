@@ -134,6 +134,9 @@ public final class Parallels {
 					try {
 						while (!Thread.currentThread().isInterrupted()) {
 							int read = in.read(buffer);
+							if (read > 0) {
+								System.out.write(buffer, 0, read);
+							}
 							if (read < 0) {
 								break;
 							}

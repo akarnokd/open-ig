@@ -8,410 +8,766 @@
 
 package hu.openig.launcher;
 
+import hu.openig.ui.IGButton;
 import hu.openig.utils.IOUtils;
+import hu.openig.utils.Parallels;
+import hu.openig.utils.XElement;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Desktop;
-import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.jar.JarFile;
 
-import javax.swing.BoxLayout;
+import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.xml.stream.XMLStreamException;
 
 /**
- * The application manager or launcher program.
- * @author akarnokd, 2010.10.31.
+ * The improved launcher.
+ * @author akarnokd, 2012.01.16.
  */
 public class Launcher extends JFrame {
 	/** */
-	private static final long serialVersionUID = -5640883678496406236L;
+	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	static final String VERSION = "0.13";
-	/** The list of stuff. */
-	JPanel listPanel;
-	/** The exit buttom. */
-	private JButton exit;
-	/** The language label. */
-	private JLabel lang;
-	/** The language combobox. */
-	private JComboBox<String> langList;
-	/** The update object. */
-	LUpdate update;
-	/** The current language. */
-	public String currentLanguage = "en";
-	/** Refresh button. */
-	private JButton refresh;
-	/** The installed versions of the stuff. */
-	final Map<String, String> installedVersions = new HashMap<String, String>();
-	/** Construct the launcher window. */
+	public static final String VERSION = "0.20";
+	/**
+	 * The update XML to download.
+	 */
+	public static final String UPDATE_XML = "http://open-ig.googlecode.com/svn/trunk/open-ig/update.xml";
+	/** The Game module ID. */
+	static final String GAME = "Game";
+	/** The Launcher module ID. */
+	static final String LAUNCHER = "Launcher";
+	/** Background color. */
+	private static final Color BG = new Color(0x05032B);
+	/** The download buffer size. */
+	static final int DOWNLOAD_BUFFER_SIZE = 128 * 1024;
+	/** Install the entire game. */
+	IGButton install;
+	/** Cancel the install/update. */
+	IGButton cancel;
+	/** Update the game to a new version. */
+	IGButton update;
+	/** Run the game. */
+	IGButton run;
+	/** Run the map editor. */
+	IGButton mapEditor;
+	/** Run the video player. */
+	IGButton videoPlayer;
+	/** Change startup parameters. */
+	IGButton other;
+	/** Update launcher. */
+	IGButton launcher;
+	/** The panel background. */
+	BufferedImage background;
+	/** The main panel. */
+	JPanel mainPanel;
+	/** The other settings menu. */
+	JPopupMenu otherMenu;
+	/** The download progress panel. */
+	JPanel progressPanel;
+	/** The new version's changes. */
+	JLabel changes;
+	/** The new version label. */
+	JLabel newVersionLabel;
+	/** The new version's. */
+	JLabel newVersion;
+	/** The current version. */
+	JLabel currentVersion;
+	/** The current version label. */
+	JLabel currentVersionLabel;
+	/** Menu item. */
+	private JMenuItem runSettings;
+	/** Menu item. */
+	private JMenuItem verify;
+	/** Menu item. */
+	private JMenuItem uninstall;
+	/** Menu item. */
+	private JMenuItem releaseNotes;
+	/** Menu item. */
+	private JMenuItem projectPage;
+	/** The large font. */
+	private Font fontLarge;
+	/** The medium font. */
+	private Font fontMedium;
+	/** Progress panel item. */
+	private JLabel currentActionLabel;
+	/** Progress panel item. */
+	private JLabel currentFileLabel;
+	/** Progress panel item. */
+	private JLabel currentFileProgressLabel;
+	/** Progress panel item. */
+	private JLabel totalFileProgressLabel;
+	/** Progress panel item. */
+	private JLabel currentAction;
+	/** Progress panel item. */
+	private JLabel currentFile;
+	/** Progress panel item. */
+	private JLabel currentFileProgress;
+	/** Progress panel item. */
+	private JLabel totalFileProgress;
+	/** Progress panel item. */
+	private JProgressBar fileProgress;
+	/** Progress panel item. */
+	private JProgressBar totalProgress;
+	/** The old config file. */
+	final File configOld = new File("launcher-config.xml");
+	/** The new config file. */
+	final File config = new File("open-ig-launcher-config.xml");
+	/** Current language. */
+	String language = "en";
+	/** The language flag. */
+	JButton flag;
+	/** The english flag. */
+	BufferedImage enFlag;
+	/** The hungarian flag. */
+	BufferedImage huFlag;
+	/** The current upgrades. */
+	private LUpdate updates;
+	/** Not installed constant. */
+	static final String NOT_INSTALLED = "0.00.000";
+	/** The installed version. */
+	String detectedVersion;
+	/** The current worker. */
+	SwingWorker<?, ?> worker;
+	/** The cancel action. */
+	ActionListener cancelAction;
+	/** The installation directory. */
+	File installDir = new File(".");
+	/** The installation directory. */
+	File currentDir = new File(".");
+	/** The JVM override. */
+	String jvm;
+	/** The memory override. */
+	Integer memory;
+	/** Creates the GUI. */
 	public Launcher() {
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		super("Open Imperium Galactica Launcher v" + VERSION);
 		
-		installedVersions.put("Launcher", VERSION);
-		
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				saveInstalledVersions();
+				doClose();
 			}
 		});
-		
-		setTitle("Launcher " + VERSION);
-		
-		listPanel = new JPanel();
-		listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.PAGE_AXIS));
 		
 		Container c = getContentPane();
-		c.setLayout(new BorderLayout());
+		GroupLayout gl = new GroupLayout(c);
+		c.setLayout(gl);
 		
-		exit = new JButton("Exit");
-		exit.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				doExit();
+		try {
+			URL u = getClass().getResource("/hu/openig/gfx/launcher_background.png");
+			if (u != null) {
+				background = ImageIO.read(u);
 			}
-		});
-		
-		JScrollPane sp = new JScrollPane(listPanel);
-		sp.getVerticalScrollBar().setBlockIncrement(3 * 12);
-		sp.getVerticalScrollBar().setUnitIncrement(12);
-		
-		c.add(sp, BorderLayout.CENTER);
-		
-		JPanel top = new JPanel(new FlowLayout());
-		
-		lang = new JLabel("Language:");
-		langList = new JComboBox<String>(new String[] { "English - Angol", "Hungarian - Magyar" });
-		langList.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				doChangeLanguage();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		try {
+			URL u = getClass().getResource("/hu/openig/gfx/english.png");
+			if (u != null) {
+				enFlag = ImageIO.read(u);
 			}
-		});
-		
-		refresh = new JButton("Refresh");
-		refresh.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				downloadUpdateXML();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		try {
+			URL u = getClass().getResource("/hu/openig/gfx/hungarian.png");
+			if (u != null) {
+				huFlag = ImageIO.read(u);
 			}
-		});
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		mainPanel = new JPanel() {
+			/** */
+			private static final long serialVersionUID = -8242002641839189095L;
+
+			@Override
+			protected void paintComponent(Graphics g) {
+				super.paintComponent(g);
+				Graphics2D g2 = (Graphics2D)g;
+				if (background != null) {
+					Composite save0 = g2.getComposite();
+					g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
+					g.drawImage(background, 0, 0, null);
+					g2.setComposite(save0);
+				}
+			}
+		};
+		mainPanel.setOpaque(true);
+		mainPanel.setBackground(BG);
 		
-		top.add(lang);
-		top.add(langList);
-		top.add(new JLabel("   "));
-		top.add(refresh);
-		top.add(new JLabel(" "));
-		top.add(exit);
+		gl.setHorizontalGroup(
+			gl.createSequentialGroup()
+			.addComponent(mainPanel, 640, 640, 640)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addComponent(mainPanel, 480, 480, 480)
+		);
 		
-		c.add(top, BorderLayout.NORTH);
-		
+		createPanel();
 		setResizable(false);
-		setSize(640, 400);
+		pack();
 		setLocationRelativeTo(null);
+		init();
+	}
+	/**
+	 * Returns the label.
+	 * @param s the label
+	 * @return the translated text
+	 */
+	String label(String s) {
+		if (!"en".equals(language)) {
+			System.out.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
+			return s;
+		}
+		return s;
+	}
+	/**
+	 * Format a label.
+	 * @param s the label id
+	 * @param params the label params
+	 * @return the translated text
+	 */
+	String format(String s, Object... params) {
+		return String.format(label(s), params);
+	}
+	/**
+	 * Create the main panel.
+	 */
+	void createPanel() {
+		GroupLayout gl = new GroupLayout(mainPanel);
+		mainPanel.setLayout(gl);
+		fontLarge = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+		fontMedium = new Font(Font.SANS_SERIF, Font.BOLD, 16);
 		
-		SwingUtilities.invokeLater(new Runnable() {
+		install = new IGButton();
+		launcher = new IGButton();
+		update = new IGButton();
+		run = new IGButton();
+		mapEditor = new IGButton();
+		videoPlayer = new IGButton();
+		other = new IGButton();
+		cancel = new IGButton();
+		otherMenu = new JPopupMenu();
+		changes = new JLabel();
+		newVersion = new JLabel();
+		currentVersion = new JLabel();
+		newVersionLabel = new JLabel();
+		currentVersionLabel = new JLabel();
+		progressPanel = new JPanel();
+
+		flag = new JButton();
+		flag.setBorderPainted(false);
+		flag.setBorder(null);
+		flag.addActionListener(new ActionListener() {
 			@Override
-			public void run() {
-				loadInstalledVersions();
-				downloadUpdateXML();
+			public void actionPerformed(ActionEvent e) {
+				if ("en".equals(language)) {
+					language = "hu";
+					flag.setIcon(new ImageIcon(huFlag));
+				} else {
+					language = "en";
+					flag.setIcon(new ImageIcon(enFlag));
+				}
+				doActOnUpdates();
+				setLabels();
 			}
 		});
+
+		JPanel flagPanel = new JPanel();
+		flagPanel.setLayout(new BorderLayout());
+		flagPanel.add(flag, BorderLayout.WEST);
+		flagPanel.setOpaque(false);
+		
+		install.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doInstall(true);
+			}
+		});
+		cancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (cancelAction != null) {
+					cancelAction.actionPerformed(e);
+					cancelAction = null;
+				}
+			}
+		});
+		launcher.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doUpdateSelf();
+			}
+		});
+		
+		run.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				runModule(GAME);
+			}
+		});
+		mapEditor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				runModule("MapEditor");
+			}
+		});
+		videoPlayer.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				runModule("VideoPlayer");
+			}
+		});
+		
+		install.setFont(fontMedium);
+		update.setFont(fontMedium);
+		run.setFont(fontLarge);
+		mapEditor.setFont(fontMedium);
+		videoPlayer.setFont(fontMedium);
+		other.setFont(fontMedium);
+		cancel.setFont(fontMedium);
+		otherMenu.setFont(fontLarge);
+		changes.setFont(fontMedium);
+		currentVersion.setFont(fontLarge);
+		newVersion.setFont(fontLarge);
+		currentVersionLabel.setFont(fontLarge);
+		newVersionLabel.setFont(fontLarge);
+		launcher.setFont(fontLarge);
+		
+		install.setVisible(false);
+		update.setVisible(false);
+		run.setVisible(false);
+		mapEditor.setVisible(false);
+		videoPlayer.setVisible(false);
+		other.setVisible(false);
+		cancel.setVisible(false);
+		otherMenu.setVisible(false);
+		changes.setVisible(false);
+		currentVersion.setVisible(false);
+		newVersion.setVisible(false);
+		currentVersionLabel.setVisible(false);
+		newVersionLabel.setVisible(false);
+		launcher.setVisible(false);
+		progressPanel.setVisible(false);
+		flag.setVisible(false);
+
+		Color c = new Color(0xD0D0D0);
+		install.setForeground(c);
+		update.setForeground(c);
+		run.setForeground(c);
+		mapEditor.setForeground(c);
+		videoPlayer.setForeground(c);
+		cancel.setForeground(c);
+		other.setForeground(c);
+
+		progressPanel.setOpaque(false);
+		progressPanel.setBackground(BG);
+		
+		createProgressPanel();
+
+		changes.setForeground(Color.YELLOW);
+		currentVersion.setForeground(Color.WHITE);
+		newVersion.setForeground(Color.ORANGE);
+		currentVersionLabel.setForeground(Color.WHITE);
+		newVersionLabel.setForeground(Color.ORANGE);
+		launcher.setForeground(Color.PINK);
+
+		runSettings = new JMenuItem();
+		verify = new JMenuItem();
+		uninstall = new JMenuItem();
+		releaseNotes = new JMenuItem();
+		projectPage = new JMenuItem();
+		
+		verify.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doInstall(false);
+			}
+		});
+		projectPage.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (updates != null) {
+					LModule um = updates.getModule(GAME);
+					if (um != null) {
+						doNavigate(um.general.url);
+					}
+				}
+			}
+		});
+		releaseNotes.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (updates != null) {
+					LModule um = updates.getModule(GAME);
+					if (um != null) {
+						doNavigate(um.releaseNotes.url);
+					}
+				}
+			}
+		});
+		uninstall.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doUninstall();
+			}
+		});
+		
+		otherMenu.add(projectPage);
+		otherMenu.add(releaseNotes);
+		otherMenu.addSeparator();
+		otherMenu.add(runSettings);
+		otherMenu.add(verify);
+		otherMenu.addSeparator();
+		otherMenu.add(uninstall);
+		
+		projectPage.setFont(fontLarge);
+		releaseNotes.setFont(fontLarge);
+		runSettings.setFont(fontLarge);
+		verify.setFont(fontLarge);
+		uninstall.setFont(fontLarge);
+		flag.setIcon(new ImageIcon(huFlag));
+		flag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		
+		other.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				otherMenu.show(other, 0, other.getHeight());
+			}
+		});
+		
+		gl.setHorizontalGroup(
+			gl.createSequentialGroup()
+			.addGap(30)
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(flagPanel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(currentVersionLabel)
+					.addGap(5)
+					.addComponent(currentVersion)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(newVersionLabel)
+					.addGap(5)
+					.addComponent(newVersion)
+				)
+				.addComponent(changes)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(launcher)
+					.addComponent(install)
+					.addComponent(update)
+					.addComponent(cancel)
+				)
+				.addComponent(run)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(mapEditor)
+					.addGap(25)
+					.addComponent(videoPlayer)
+					.addGap(25)
+					.addComponent(other)
+				)
+				.addComponent(progressPanel)
+			)
+			.addGap(30)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGap(10)
+			.addComponent(flagPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			.addGap(5)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(newVersionLabel)
+				.addComponent(newVersion)
+			)
+			.addComponent(changes)
+			.addGap(25)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(launcher)
+				.addComponent(install)
+				.addComponent(update)
+				.addComponent(cancel)
+			)
+			.addGap(10)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(currentVersionLabel)
+				.addComponent(currentVersion)
+			)
+			.addGap(10)
+			.addComponent(run)
+			.addGap(25)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(mapEditor)
+				.addGap(30)
+				.addComponent(videoPlayer)
+				.addGap(30)
+				.addComponent(other)
+			)
+			.addGap(50)
+			.addComponent(progressPanel)
+			.addGap(25)
+		);
+		
+		gl.setHonorsVisibility(progressPanel, false);
+		
+		setLabels();
 	}
-	/** The download progress panel. */
-	class DownloadPanel extends JPanel {
-		/** */
-		private static final long serialVersionUID = -7515872931469391835L;
-		/** The statistics label. */
-		public JLabel statistics;
-		/** The progress bar. */
-		public JProgressBar bar;
-		/** The cancel button. */
-		public JButton cancel;
-		/** Constructors. */
-		public DownloadPanel() {
-			bar = new JProgressBar();
-			statistics = new JLabel("...");
-			cancel = new JButton("Cancel");
-			
-			GroupLayout gl = new GroupLayout(this);
-			gl.setAutoCreateContainerGaps(true);
-			gl.setAutoCreateGaps(true);
-			setLayout(gl);
-			
-			gl.setHorizontalGroup(
+	/** Create the progress panel. */
+	void createProgressPanel() {
+		GroupLayout gl = new GroupLayout(progressPanel);
+		progressPanel.setLayout(gl);
+		
+		currentActionLabel = new JLabel();
+		currentFileLabel = new JLabel();
+		currentFileProgressLabel = new JLabel();
+		totalFileProgressLabel = new JLabel();
+
+		currentAction = new JLabel();
+		currentFile = new JLabel();
+		currentFileProgress = new JLabel();
+		totalFileProgress = new JLabel();
+
+		fileProgress = new JProgressBar();
+		fileProgress.setFont(fontMedium);
+		fileProgress.setStringPainted(true);
+		totalProgress = new JProgressBar();
+		totalProgress.setFont(fontMedium);
+		totalProgress.setStringPainted(true);
+		
+		currentActionLabel.setFont(fontLarge);
+		currentActionLabel.setForeground(Color.LIGHT_GRAY);
+		currentFileLabel.setFont(fontMedium);
+		currentFileLabel.setForeground(Color.LIGHT_GRAY);
+		currentFileProgressLabel.setFont(fontMedium);
+		currentFileProgressLabel.setForeground(Color.LIGHT_GRAY);
+		totalFileProgressLabel.setFont(fontMedium);
+		totalFileProgressLabel.setForeground(Color.LIGHT_GRAY);
+		
+		currentAction.setFont(fontLarge);
+		currentFile.setFont(fontMedium);
+		currentFileProgress.setFont(fontMedium);
+		totalFileProgress.setFont(fontMedium);
+		currentAction.setForeground(Color.WHITE);
+		currentFile.setForeground(Color.WHITE);
+		currentFileProgress.setForeground(Color.WHITE);
+		totalFileProgress.setForeground(Color.WHITE);
+		fileProgress.setForeground(BG);
+		totalProgress.setForeground(BG);
+		
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup()
+			.addGroup(
 				gl.createSequentialGroup()
 				.addGroup(
 					gl.createParallelGroup()
-					.addComponent(bar)
-					.addComponent(statistics)
+					.addComponent(currentActionLabel)
+					.addComponent(currentFileLabel)
+					.addComponent(currentFileProgressLabel)
+					.addComponent(totalFileProgressLabel)
 				)
-				.addComponent(cancel)
-			);
-			gl.setVerticalGroup(
-				gl.createParallelGroup(Alignment.CENTER)
+				.addGap(20)
 				.addGroup(
-					gl.createSequentialGroup()
-					.addComponent(bar)
-					.addComponent(statistics)
+					gl.createParallelGroup()
+					.addComponent(currentAction)
+					.addComponent(currentFile)
+					.addComponent(currentFileProgress)
+					.addComponent(totalFileProgress)
 				)
-				.addComponent(cancel)
-			);
-		}
+			)
+			.addComponent(fileProgress)
+			.addComponent(totalProgress)
+		);
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(currentActionLabel)
+				.addComponent(currentAction)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(currentFileLabel)
+				.addComponent(currentFile)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(currentFileProgressLabel)
+				.addComponent(currentFileProgress)
+			)
+			.addGap(5)
+			.addComponent(fileProgress)
+			.addGap(5)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(totalFileProgressLabel)
+				.addComponent(totalFileProgress)
+			)
+			.addGap(5)
+			.addComponent(totalProgress)
+		);
 	}
-	/** Download the update.xml . */
-	void downloadUpdateXML() {
-		listPanel.removeAll();
-		final DownloadPanel dlp = new DownloadPanel();
-		listPanel.add(dlp);
-		final String fn = "update-" + System.currentTimeMillis() + ".xml"; 
-		final Downloader dl = new Downloader("http://open-ig.googlecode.com/svn/trunk/open-ig/update.xml",
-				fn, new DownloadCallback() {
-			@Override
-			public void failed(Throwable exception) {
-				dlp.statistics.setText(exception.toString());
-			}
-			@Override
-			public void progress(DownloadProgress progress) {
-				if (progress.bytesTotal < 0) {
-					dlp.bar.setIndeterminate(true);
-				} else {
-					dlp.bar.setValue((int)(progress.bytesReceived * 100 / progress.bytesTotal));
-				}
-			}
-			@Override
-			public void success(DownloadProgress progress, byte[] sha1) {
-				if (progress.bytesTotal < 0 || (progress.bytesReceived == progress.bytesTotal)) {
-					doUpdateXMLCompleted(fn);
-					File f0 = new File(fn);
-					if (!f0.delete()) {
-						System.err.println("Warning: Could not delete file " + f0);
-					}
-					listPanel.remove(dlp);
-					listPanel.revalidate();
-					listPanel.repaint();
-				}
-			}
-			@Override
-			public void cancelled() {
-				listPanel.remove(dlp);
-				listPanel.revalidate();
-				listPanel.repaint();
-				File f0 = new File(fn);
-				if (!f0.delete()) {
-					System.err.println("Warning: Could not delete file " + f0);
-				}
-			}
-		});
-		dlp.cancel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dl.cancel(true);
-			}
-		});
-		dl.execute();
-	}
-	/**
-	 * Do something with the received update XML.
-	 * @param fileName the local filename
-	 */
-	void doUpdateXMLCompleted(String fileName) {
-		update = new LUpdate();
-		byte[] data = IOUtils.load(fileName);
-		try {
-			update.parse(data);
-			doDisplayModules();
-		} catch (IOException ex) {
+	/** Set the labels for Hungarian. */
+	void setLabels() {
+		if ("en".equals(language)) {
+			install.setText("Install");
+			update.setText("Update");
+			cancel.setText("Cancel");
+			run.setText("Run Game");
+			mapEditor.setText("Map Editor");
+			videoPlayer.setText("Video Player");
+			other.setText("Other options");
+			launcher.setText("Update launcher");
 			
-		}
-	}
-	/** Display the modules. */
-	void doDisplayModules() {
-		final LModule launcherModule = update.getModule("Launcher");
-		if (launcherModule != null && launcherModule.compareVersion(VERSION) > 0) {
-			final ModulePanel mp = new ModulePanel();
-			mp.title.setText("Launcher " + VERSION);
-			mp.title.setToolTipText(launcherModule.general.getDescription(currentLanguage).replaceAll("\\s+", " "));
-			mp.updateAvailable.setText("Version " + launcherModule.version + ": " + launcherModule.releaseNotes.getDescription(currentLanguage));
-			mp.generalInfo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			mp.generalInfo.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					doNavigate(launcherModule.general.url);
-				}
-			});
-			mp.releaseNotes.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					doNavigate(launcherModule.releaseNotes.url);
-				}
-			});
+			projectPage.setText("Project webpage...");
+			releaseNotes.setText("Release notes...");
+			runSettings.setText("Run settings...");
+			verify.setText("Verify installation");
+			uninstall.setText("Uninstall");
+	
+			currentActionLabel.setText("Action:");
+			currentFileLabel.setText("File:");
+			currentFileProgressLabel.setText("Progress:");
+			totalFileProgressLabel.setText("Total:");
 			
-			mp.generalInfo.setToolTipText(launcherModule.general.url);
-			mp.releaseNotes.setToolTipText(launcherModule.releaseNotes.url);
-
-			mp.start.setVisible(false);
-			mp.update.setVisible(true);
-			mp.update.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					updateModule(mp, launcherModule);
-				}
-			});
-			
-			
-//			mp.verify.setVisible(false);
-			mp.install.setVisible(false);
-			mp.install.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					updateModule(mp, launcherModule);
-				}
-			});
-			mp.remove.setVisible(false);
-			mp.updateAvailable.setVisible(true);
-			listPanel.add(mp);
-		}
-		for (final LModule m : update.modules) {
-			if (m.id.equals("Launcher")) {
-				continue;
-			}
-			final ModulePanel mp = new ModulePanel();
-			mp.title.setText(m.id);
-			mp.title.setToolTipText(m.general.getDescription(currentLanguage).replaceAll("\\s+", " "));
-			mp.generalInfo.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					doNavigate(m.general.url);
-				}
-			});
-			mp.releaseNotes.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			mp.releaseNotes.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					doNavigate(m.releaseNotes.url);
-				}
-			});
-			
-			mp.generalInfo.setToolTipText(m.general.url);
-			mp.releaseNotes.setToolTipText(m.releaseNotes.url);
-			
-			mp.updateAvailable.setText("Version " + m.version + ": " + m.releaseNotes.getDescription(currentLanguage));
-			
-			setVisibleModuleButtons(m, mp);
-			mp.install.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					updateModule(mp, m);
-				}
-			});
-			mp.update.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					updateModule(mp, m);
-				}
-			});
-			mp.start.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					startModule(mp, m);
-				}
-			});
-			mp.remove.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					removeModule(mp, m);
-				}
-			});
-			
-			listPanel.add(mp);
-		}
-		listPanel.revalidate();
-		listPanel.repaint();
-	}
-	/**
-	 * Remove the specified module.
-	 * @param mp the module panel
-	 * @param m the module definition
-	 */
-	protected void removeModule(ModulePanel mp, LModule m) {
-		for (LFile f : m.files) {
-			int idx = f.url.lastIndexOf("/");
-			File f0 = new File(f.url.substring(idx + 1));
-			if (!f0.delete()) {
-				System.err.println("Warning: Could not delete file " + f0);
-			}
-		}
-		installedVersions.remove(m.id);
-		setVisibleModuleButtons(m, mp);
-	}
-	/**
-	 * Set the module button visibility based on the current state.
-	 * @param m the module definition
-	 * @param mp module panel
-	 */
-	void setVisibleModuleButtons(final LModule m, final ModulePanel mp) {
-		mp.progress.setVisible(false);
-		mp.statistics.setVisible(false);
-		String iv = installedVersions.get(m.id);
-		if (iv == null) {
-			mp.title.setText(m.id);
-			mp.install.setVisible(true);
-			mp.start.setVisible(false);
-//			mp.verify.setVisible(false);
-			mp.update.setVisible(false);
-			mp.remove.setVisible(false);
-			mp.updateAvailable.setVisible(true);
+			currentVersionLabel.setText("Version:");
+			newVersionLabel.setText("New version available:");
 		} else {
-			mp.title.setText(m.id + " " + iv);
-			mp.install.setVisible(false);
-			mp.start.setVisible(true);
-			mp.remove.setVisible(true);
-			int c = m.compareVersion(iv); 
-			if (c > 0) {
-				mp.update.setVisible(true);
-				mp.updateAvailable.setVisible(m.compareVersion(iv) > 0);
-			} else {
-//				mp.verify.setVisible(c == 0);
-				mp.update.setVisible(false);
-				mp.updateAvailable.setVisible(false);
+			install.setText("Telepítés");
+			update.setText("Frissítés");
+			cancel.setText("Mégsem");
+			run.setText("Játék futtatása");
+			mapEditor.setText("Térképszerkesztő");
+			videoPlayer.setText("Videolejátszó");
+			other.setText("Egyéb lehetőségek");
+			launcher.setText("Indító frissítése");
+			
+			projectPage.setText("Projekt honlapja...");
+			releaseNotes.setText("Release notes...");
+			runSettings.setText("Run settings...");
+			verify.setText("Verify installation");
+			uninstall.setText("Uninstall");
+	
+			currentActionLabel.setText("Action:");
+			currentFileLabel.setText("File:");
+			currentFileProgressLabel.setText("Progress:");
+			totalFileProgressLabel.setText("Total:");
+
+			currentVersionLabel.setText("Verzió:");
+			newVersionLabel.setText("Új verzió érhető el:");
+		}
+	}
+	/**
+	 * Close the launcher.
+	 */
+	void doClose() {
+		dispose();
+		if (worker != null) {
+			worker.cancel(true);
+			worker = null;
+		}
+	}
+	/**
+	 * Main program.
+	 * <p>Arguments</p>
+	 * <p><b>-selfupdate temporary_file_name</b> 
+	 * delete the {@code open-ig-launcher.jar} and 
+	 * save the {@codwe temporary_file_name} as
+	 * the new {@code open-ig-launcher.jar}.</p> 
+	 * <p><b>-selfdelete temporary_file_name</b> 
+	 * delete the {@codwe temporary_file_name}.</p> 
+	 * @param args see above
+	 */
+	public static void main(String[] args) {
+		System.setProperty("swing.aatext", "true");
+		if (args.length >= 2) {
+			if ("-selfupdate".equals(args[0])) {
+				doSelfUpdate(args);
+				return;
+			} else
+			if ("-selfdelete".equals(args[0])) {
+				doSelfDelete(args);
 			}
 		}
-		mp.cancel.setVisible(false);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				Launcher ln = new Launcher();
+				ln.setVisible(true);
+			}
+		});
+	}
+	/**
+	 * Delete the given temp file.
+	 * @param args the program arguments
+	 */
+	static void doSelfDelete(String[] args) {
+		File tempName = new File(args[1]);
+		try {
+			while (tempName.exists() && !tempName.delete()) {
+				Thread.sleep(1000);	
+			}
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
 	}
 	/**
 	 * Navigate to the given URL in the default browser.
@@ -427,519 +783,848 @@ public class Launcher extends JFrame {
 			}
 		}
 	}
-	/** The module panel. */
-	class ModulePanel extends JPanel {
-		/** */
-		private static final long serialVersionUID = 129442212074771400L;
-		/** The title line. */
-		public JLabel title;
-		/** If a new update is available, this label will list its version and short text. */
-		public JLabel updateAvailable;
-		/** The link that opens the general info page. */
-		public JLabel generalInfo;
-		/** The link that opens the release notes page. */
-		public JLabel releaseNotes;
-		/** Start the program. */
-		public JButton start;
-		/** Update the program. */
-		public JButton update;
-//		/** Verify the program files. */
-//		public JButton verify;
-		/** Install the program. */
-		public JButton install;
-		/** Remove the program. */
-		public JButton remove;
-		/** The progressbar. */
-		public JProgressBar progress;
-		/** The statistics part. */
-		public JLabel statistics;
-		/** Cancel the installation progress. */
-		public JButton cancel;
-		/** Constructor. */
-		public ModulePanel() {
-			setOpaque(true);
-			title = new JLabel();
-			title.setOpaque(true);
-			title.setForeground(Color.WHITE);
-			title.setHorizontalAlignment(SwingConstants.CENTER);
-			title.setBackground(Color.DARK_GRAY);
-			updateAvailable = new JLabel();
-			updateAvailable.setOpaque(true);
-			updateAvailable.setBackground(Color.BLUE);
-			updateAvailable.setForeground(Color.WHITE);
-			generalInfo = new JLabel("<html><font color='blue'><u>General information");
-			generalInfo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			releaseNotes = new JLabel("<html><font color='blue'><u>Release notes");
-			releaseNotes.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			
-			start = new JButton("Start");
-			update = new JButton("Update");
-//			verify = new JButton("Verify");
-			install = new JButton("Install");
-			remove = new JButton("Remove");
-			cancel = new JButton("Cancel");
-			cancel.setVisible(false);
-			
-			progress = new JProgressBar();
-			progress.setVisible(false);
-			statistics = new JLabel();
-			statistics.setVisible(false);
-			
-			GroupLayout gl = new GroupLayout(this);
-			this.setLayout(gl);
-			
-			updateAvailable.setVisible(false);
-
-			JLabel space = new JLabel("    ");
-			
-			gl.setHorizontalGroup(
-				gl.createSequentialGroup()
-				.addContainerGap()
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(title, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-					.addComponent(updateAvailable, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-					.addGroup(
-						gl.createSequentialGroup()
-						.addGroup(
-							gl.createParallelGroup()
-							.addComponent(generalInfo, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(releaseNotes, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-						)
-						.addComponent(space)
-						.addComponent(start)
-						.addComponent(update)
-//						.addComponent(verify)
-						.addComponent(install)
-						.addComponent(remove)
-						.addComponent(cancel)
-					)
-					.addComponent(progress)
-					.addComponent(statistics)
-				)
-				.addContainerGap()
-			);
-			gl.setVerticalGroup(
-				gl.createSequentialGroup()
-				.addContainerGap()
-				.addComponent(title)
-				.addComponent(updateAvailable)
-				.addGroup(
-					gl.createParallelGroup(Alignment.CENTER)
-					.addComponent(space)
-					.addComponent(start)
-					.addComponent(update)
-//					.addComponent(verify)
-					.addComponent(install)
-					.addComponent(remove)
-					.addComponent(cancel)
-					.addGroup(
-						gl.createSequentialGroup()
-						.addComponent(generalInfo)
-						.addComponent(releaseNotes)
-					)
-				)
-				.addComponent(progress)
-				.addComponent(statistics)
-			);
+	/**
+	 * Execute the self update action.
+	 * @param args the program arguments.
+	 */
+	static void doSelfUpdate(String[] args) {
+		// make a copy of self and restart
+		File tempName = new File(args[1]);
+		File old = new File("open-ig-launcher.jar");
+		try {
+			while (old.exists() && !old.delete()) {
+				Thread.sleep(1000);	
+			}
+			IOUtils.save(old, IOUtils.load(tempName));
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command(System.getProperty("java.home") + "/bin/java", 
+					"-jar", "open-ig-launcher.jar", "-selfdelete", args[1]);
+			Process p = pb.start();
+			Parallels.consume(p.getInputStream());
+			Parallels.consume(p.getErrorStream());
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
 	}
-	/** Perform the exit. */
-	void doExit() {
-		saveInstalledVersions();
-		dispose();
+	/**
+	 * Initialize from the configuration.
+	 */
+	void init() {
+		doInitialize();
 	}
-	/** Changle language. */
-	void doChangeLanguage() {
-		switch (langList.getSelectedIndex()) {
-		case 1:
-			currentLanguage = "hu";
-			break;
-		default:
-			currentLanguage = "en";
+	/** Initialize the launcher. */
+	void doInitialize() {
+		progressPanel.setVisible(true);
+		currentAction.setText("Loading configuration...");
+		currentFile.setText(format("open-ig-launcher-config.xml"));
+		currentFileProgress.setText("0%");
+		totalFileProgress.setText("0%");
+		totalFileProgress.setVisible(false);
+		fileProgress.setValue(0);
+		totalProgress.setValue(0);
+		totalProgress.setVisible(false);
+		SwingWorker<Void, Void> w = new SwingWorker<Void, Void>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				// remove old config
+				if (configOld.exists()) {
+					if (!configOld.delete()) {
+						configOld.deleteOnExit();
+					}
+				}
+				loadConfig();
+				detectVersion();
+				return null;
+			}
+			@Override
+			protected void done() {
+				doActOnUpdates();
+				setLabels();
+				
+				doUpgrades();
+			}
+		};
+		w.execute();
+	}
+	/** Check for upgrades. */
+	void doUpgrades() {
+		currentAction.setText("Checking for upgrades...");
+		currentFile.setText(format("http://open-ig.googlecode.com/.../update.xml"));
+		currentFileProgress.setText("0%");
+		totalFileProgress.setText("0%");
+		fileProgress.setValue(0);
+		totalProgress.setValue(0);
+		final long ts = System.currentTimeMillis();
+		final File updateFile = new File(currentDir, "update.xml." + ts);
+		SwingWorker<XElement, Void> w = new SwingWorker<XElement, Void>() {
+			@Override
+			protected XElement doInBackground() throws Exception {
+				LFile lf = new LFile();
+				lf.url = UPDATE_XML;
+				downloadFiles(Collections.singletonList(lf), ts);
+				return XElement.parseXML(updateFile.getAbsolutePath());
+			}
+			@Override
+			protected void done() {
+				progressPanel.setVisible(false);
+				try {
+					doProcessUpdate(get(), updateFile);
+				} catch (ExecutionException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error during data download: %s", ex.toString()));
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error during data download: %s", ex.toString()));
+				}
+			}
+		};
+		w.execute();
+	}
+	/**
+	 * Display an error message.
+	 * @param text the message text
+	 */
+	void errorMessage(String text) {
+		JOptionPane.showMessageDialog(this, text, label("Error"), JOptionPane.ERROR_MESSAGE);
+	}
+	/**
+	 * Process the update.xml file.
+	 * @param xml the XML
+	 * @param file the file we are processing
+	 */
+	void doProcessUpdate(XElement xml, File file) {
+		currentAction.setText(label("Processing update.xml"));
+		currentFile.setText(file.getName());
+		currentFileProgress.setText("0%");
+		totalFileProgress.setText("0%");
+		fileProgress.setValue(0);
+		totalProgress.setValue(0);
+		
+		try {
+			updates = new LUpdate();
+			updates.process(xml);
+			
+			doActOnUpdates();
+			
+			currentFileProgress.setText("100%");
+			totalFileProgress.setText("100%");
+			fileProgress.setValue(100);
+			totalProgress.setValue(100);
+			if (!file.delete()) {
+				errorMessage(format("Could not delete file %s", file));
+			}
+		} catch (Throwable t) {
+			errorMessage(format("Error while processing file %s: %s", file, t));
+		} finally {
+			progressPanel.setVisible(false);
+		}
+	}
+	/**
+	 * Set the local file progress.
+	 * @param position the current position.
+	 * @param size the total size
+	 * @param speed the download speed
+	 */
+	void setFileProgress(final long position, final long size, final double speed) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (size < 0) {
+					fileProgress.setIndeterminate(true);
+					currentFileProgress.setText(String.format("?%%, %d KB , %.1f KB / s", position / 1024, speed));
+				} else {
+					fileProgress.setIndeterminate(false);
+					fileProgress.setValue((int)(position * 100 / size));
+					currentFileProgress.setText(String.format("%d%%, %d KB / %d KB, %.1f KB / s", position * 100 / size, position / 1024, size / 1024, speed));	
+				}
+				
+			}
+		});
+	}
+	/**
+	 * Set the local file progress.
+	 * @param progress the pain progress number
+	 * @param position the current position.
+	 * @param size the total size
+	 * @param speed the download speed
+	 */
+	void setTotalProgress(final int progress, final long position, final long size, final double speed) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (size < 0) {
+					totalProgress.setIndeterminate(true);
+					totalFileProgress.setText(String.format("%d%%, %d KB, %.1f KB / s", progress, position / 1024, speed));	
+				} else {
+					totalProgress.setIndeterminate(false);
+					totalProgress.setValue(progress);
+					totalFileProgress.setText(String.format("%d%%, %d KB / %d KB , %.1f KB / s", (position * 100 / size), position / 1024, size / 1024, speed));
+				}
+				
+			}
+		});
+	}
+	/**
+	 * Load the configuration.
+	 */
+	void loadConfig() {
+		if (config.canRead()) {
+			try {
+				XElement cfg = XElement.parseXML(config.getAbsolutePath());
+				language = cfg.get("language");
+			} catch (XMLStreamException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	/**
+	 * Detecting installed version.
+	 */
+	void detectVersion() {
+		detectedVersion = NOT_INSTALLED;
+		File[] files = currentDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				if (name.startsWith("open-ig-") && name.endsWith(".jar")) {
+					int idx = name.indexOf(".jar");
+					String v = name.substring(9, idx);
+					for (int i = 0; i < v.length(); i++) {
+						char c = v.charAt(i);
+						if (!Character.isDigit(c) && c != '.') {
+							return false;
+						}
+					}
+					return true;
+				}
+				return false;
+			}
+		});
+		if (files == null || files.length == 0) {
+			return;
+		}
+		Arrays.sort(files, new Comparator<File>() {
+			@Override
+			public int compare(File o1, File o2) {
+				return o2.getName().compareTo(o1.getName());
+			}
+		});
+		File top = files[0];
+		
+		String name = top.getName();
+		
+		int idx = name.indexOf(".jar");
+		detectedVersion = name.substring(8, idx);
+		
+		for (int i = 1; i < files.length; i++) {
+			if (!files[i].delete()) {
+				System.err.printf("Could not delete previous file: %s%n", files[i]);
+			}
+		}
+	}
+	/**
+	 * Act on the downloaded upgrades.
+	 */
+	void doActOnUpdates() {
+		flag.setVisible(true);
+		LModule m = updates != null ? updates.getModule(LAUNCHER) : null;
+		if (m != null && m.compareVersion(VERSION) > 0) {
+			launcher.setVisible(true);
+			changes.setText(m.releaseNotes.getDescription(language));
+			newVersion.setText(m.version);
+			
+			changes.setVisible(true);
+			newVersion.setVisible(true);
+			newVersionLabel.setVisible(true);
+		}
+		LModule g = updates != null ? updates.getModule(GAME) : null;
+		if (NOT_INSTALLED.equals(detectedVersion)) {
+			if (g != null) {
+				install.setVisible(true);
+				changes.setText(g.releaseNotes.getDescription(language));
+				newVersion.setText(g.version);
+	
+				changes.setVisible(true);
+				newVersion.setVisible(true);
+				newVersionLabel.setVisible(true);
+			}
+		} else {
+			run.setVisible(true);
+			mapEditor.setVisible(true);
+			videoPlayer.setVisible(true);
+			other.setVisible(true);
+			
+			currentVersion.setText(detectedVersion);
+			currentVersion.setVisible(true);
+			currentVersionLabel.setVisible(true);
+			if (g != null) {
+				if (g.compareVersion(detectedVersion) > 0) {
+					changes.setText(g.releaseNotes.getDescription(language));
+					newVersion.setText(format("New version available: %s", g.version));
+	
+					newVersion.setVisible(true);
+					changes.setVisible(true);
+					update.setVisible(true);
+				}
+			}
+		}
+	}
+	/**
+	 * Install the game.
+	 * @param askDir ask for the installation directory?
+	 */
+	void doInstall(boolean askDir) {
+		
+		if (askDir) {
+			JFileChooser fc = new JFileChooser(installDir);
+			fc.setMultiSelectionEnabled(false);
+			fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			if (fc.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+				return;
+			}
+			installDir = fc.getSelectedFile();
+		} else {
+			installDir = currentDir;
+		}
+		
+		final LModule g = updates.getModule(GAME);
+		progressPanel.setVisible(true);
+		currentAction.setText(label("Checking existing game files"));
+		currentFileProgress.setText("0%");
+		totalFileProgress.setText("0%");
+		fileProgress.setValue(0);
+		totalProgress.setValue(0);
+		install.setVisible(false);
+		cancel.setVisible(true);
+		totalProgress.setVisible(true);
+		totalFileProgress.setVisible(true);
+		totalFileProgressLabel.setVisible(true);
+		
+		cancelAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (worker != null) {
+					worker.cancel(true);
+					worker = null;
+				}
+				install.setVisible(true);
+				progressPanel.setVisible(false);
+				cancel.setVisible(false);
+			}
+		};
+		worker = new SwingWorker<List<LFile>, Void>() {
+			@Override
+			protected List<LFile> doInBackground() throws Exception {
+				return collectDownloads(g);
+			}
+			@Override
+			protected void done() {
+				progressPanel.setVisible(false);
+				worker = null;
+				cancel.setVisible(false);
+				try {
+					doDownload(get());
+				} catch (CancellationException ex) {
+					install.setVisible(true);
+				} catch (ExecutionException ex) {
+					install.setVisible(true);
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
+				} catch (InterruptedException ex) {
+					install.setVisible(true);
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
+				}
+			}
+		};
+		worker.execute();
+	}
+	/**
+	 * Set the current filename.
+	 * @param filename the filename
+	 */
+	void setCurrentFile(final String filename) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				currentFile.setText(filename);
+			}
+		});
+	}
+	/**
+	 * Collect the files that are not properly downloaded.
+	 * @param g the game module settings.
+	 * @return the list of URLs to download
+	 * @throws IOException on error
+	 */
+	List<LFile> collectDownloads(LModule g) throws IOException {
+		if (!installDir.exists() && !installDir.mkdirs()) {
+			throw new IOException(format("Could not access directory %s", installDir));
+		}
+		for (LRemoveFile rf : g.removeFiles) {
+			File f = new File(rf.file);
+			f = new File(installDir, f.getName());
+			if (f.canWrite() && !f.delete()) {
+				System.out.printf("Could not delete old file: %s%n", f);
+			}
+		}
+		
+		List<LFile> toDownload = new ArrayList<LFile>();
+
+		long start = System.currentTimeMillis();
+		long position = 0;
+		long totalSize = 0;
+		for (LFile lf : g.files) {
+			File localFile = new File(installDir, lf.name());
+			if (localFile.canRead()) {
+				totalSize += localFile.length();
+			}
+		}
+		for (int i = 0; i < g.files.size(); i++) {
+			if (Thread.currentThread().isInterrupted()) {
+				return toDownload;
+			}
+			
+			double speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+			setTotalProgress((int)(position * 100 / totalSize), position, totalSize, speed);
+			setFileProgress(0, -1, 0);
+			
+			LFile lf = g.files.get(i);
+			String fn = lf.name();
+			setCurrentFile(fn);
+			
+			File localFile = new File(installDir, fn);
+			if (localFile.canRead()) {
+				long filePos = 0;
+				byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
+				/** The SHA1 hash computer. */
+				try {
+					long start1 = System.currentTimeMillis();
+					MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+					FileInputStream fin = new FileInputStream(localFile);
+					try {
+						while (!Thread.currentThread().isInterrupted()) {
+							int read = fin.read(buffer);
+							if (read > 0) {
+								filePos += read;
+								position += read;
+								sha1.update(buffer, 0, read);
+								// update local progress
+								double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
+								setFileProgress(filePos, localFile.length(), speed1);
+								// update global progress
+								speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+								setTotalProgress((int)(position * 100 / totalSize), position, totalSize, speed);
+							} else
+							if (read < 0) {
+								break;
+							}
+						}
+						// update local progress
+						double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
+						setFileProgress(filePos, localFile.length(), speed1);
+						// update global progress
+						speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+						setTotalProgress((int)(position * 100 / totalSize), position, totalSize, speed);
+						
+						byte[] sha1h = sha1.digest();
+						byte[] sha1hupdate = LFile.toByteArray(lf.sha1);
+						if (!Arrays.equals(sha1h, sha1hupdate)) {
+							toDownload.add(lf);
+						}
+					} finally {
+						fin.close();
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+					toDownload.add(lf);
+				} catch (NoSuchAlgorithmException ex) {
+					ex.printStackTrace();
+					toDownload.add(lf);
+				}
+			} else {
+				toDownload.add(lf);
+			}
+		}
+		
+		return toDownload;
+	}
+	/**
+	 * The downloader.
+	 * @param files the list of files to download
+	 */
+	void doDownload(final List<LFile> files) {
+		progressPanel.setVisible(true);
+		currentAction.setText(label("Downloading game files..."));
+		currentFileProgress.setText("0%");
+		totalFileProgress.setText("0%");
+		fileProgress.setValue(0);
+		totalProgress.setValue(0);
+		install.setVisible(false);
+		cancel.setVisible(true);
+		totalProgress.setVisible(true);
+		totalFileProgress.setVisible(true);
+		totalFileProgressLabel.setVisible(true);
+		
+		cancelAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (worker != null) {
+					worker.cancel(true);
+					worker = null;
+				}
+				progressPanel.setVisible(false);
+				cancel.setVisible(false);
+				doActOnUpdates();
+			}
+		};
+		worker = new SwingWorker<Boolean, Void>() {
+			/** Move self to the install directory? */
+			boolean moveSelf;
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				boolean result = downloadFiles(files, -1);
+				if (!currentDir.getAbsolutePath().equals(installDir.getAbsolutePath())) {
+					moveSelf = true;
+				}
+				return result;
+			}
+			@Override
+			protected void done() {
+				progressPanel.setVisible(false);
+				worker = null;
+				cancel.setVisible(false);
+				try {
+					if (get() == Boolean.FALSE) {
+						errorMessage(label("Some files were not correctly downloaded. Please try again a bit later."));
+					} else {
+						if (moveSelf) {
+							doMoveSelfAndRun();
+						}
+					}
+				} catch (CancellationException ex) {
+					// ignore
+				} catch (ExecutionException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
+				}
+				if (!moveSelf) {
+					doActOnUpdates();
+				}
+			}
+		};
+		worker.execute();
+	}
+	/**
+	 * Move self to the install directory.
+	 */
+	void doMoveSelfAndRun() {
+		File local = new File("open-ig-launcher.jar");
+		File localcfg = new File("open-ig-launcher-config.xml");
+		if (local.canRead()) {
+			File target = new File(installDir, "open-ig-launcher.jar");
+			File targetcfg = new File(installDir, "open-ig-launcher-config.xml");
+			
+			IOUtils.save(target, IOUtils.load(local));
+
+			Desktop d = Desktop.getDesktop();
+			if (d != null) {
+				try {
+					d.browse(target.toURI());
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+
+			
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command(System.getProperty("java.home") + "/bin/java", 
+					"-jar", target.getAbsolutePath(), 
+					"-selfdelete", local.getAbsolutePath());
+			try {
+				pb.start();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+			
+			doClose();
+			if (localcfg.canRead()) {
+				IOUtils.save(targetcfg, IOUtils.load(localcfg));
+				if (!localcfg.delete()) {
+					System.err.printf("Could not delete " + localcfg);
+				}
+			}
+		} else {
+			System.out.printf("Warning, " + local + " not found");
+		}
+	}
+	/**
+	 * Download all files from the list of URLs.
+	 * @param files the list of files
+	 * @param timestamp the custom timestamp to use for temporary filenames, -1 if not
+	 * @return true if all downloaded file checked out okay
+	 * @throws IOException on error
+	 */
+	boolean downloadFiles(List<LFile> files, long timestamp) throws IOException {
+		boolean allOk = true;
+		long start = System.currentTimeMillis();
+		long position = 0;
+		for (int i = 0; i < files.size(); i++) {
+			if (Thread.currentThread().isInterrupted()) {
+				return false;
+			}
+			
+			double speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+			setTotalProgress((i + 1) * 100 / files.size(), position, -1, speed);
+			setFileProgress(0, -1, 0);
+			
+			LFile lf = files.get(i);
+			URL u = new URL(lf.url);
+			String fn = u.getFile();
+			int idx = fn.lastIndexOf("/");
+			if (idx >= 0) {
+				fn = fn.substring(idx + 1);
+			}
+			if (timestamp >= 0) {
+				fn += "." + timestamp;
+			}
+			setCurrentFile(fn);
+			
+			File localFile = new File(installDir, fn);
+			
+			HttpURLConnection conn = (HttpURLConnection)u.openConnection();
+			conn.connect();
+			try {
+				InputStream in = conn.getInputStream();
+				long length = conn.getContentLengthLong();
+				try {
+					long filePos = 0;
+					byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
+					/** The SHA1 hash computer. */
+					try {
+						MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+						long start1 = System.currentTimeMillis();
+						
+						FileOutputStream fout = new FileOutputStream(localFile);
+						try {
+							while (!Thread.currentThread().isInterrupted()) {
+								int read = in.read(buffer);
+								if (read > 0) {
+									filePos += read;
+									position += read;
+									sha1.update(buffer, 0, read);
+									fout.write(buffer, 0, read);
+									// update local progress
+									double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
+									setFileProgress(filePos, length, speed1);
+									// update global progress
+									speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+									setTotalProgress((i + 1) * 100 / files.size(), position, -1, speed);
+								} else
+								if (read < 0) {
+									break;
+								}
+							}
+							// update local progress
+							double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
+							setFileProgress(filePos, length, speed1);
+							// update global progress
+							speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+							setTotalProgress((i + 2) * 100 / files.size(), position, -1, speed);
+							
+							if (timestamp < 0) {
+								byte[] sha1h = sha1.digest();
+								byte[] sha1hupdate = LFile.toByteArray(lf.sha1);
+								if (!Arrays.equals(sha1h, sha1hupdate)) {
+									allOk = false;
+								}
+							}
+						} finally {
+							fout.close();
+						}
+					} catch (IOException ex) {
+						ex.printStackTrace();
+						allOk = false;
+					} catch (NoSuchAlgorithmException ex) {
+						ex.printStackTrace();
+						allOk = false;
+					}					
+				} finally {
+					in.close();
+				}
+			} finally {
+				conn.disconnect();
+			}
+		}
+		return allOk;
+	}
+	/**
+	 * Run the module.
+	 * @param moduleId the module id to run
+	 */
+	void runModule(String moduleId) {
+		LModule m = updates != null ? updates.getModule(moduleId) : null;
+		if (m != null && m.clazz != null) {
+			String jar = String.format("%s/open-ig-%s.jar", currentDir.getAbsolutePath(), detectedVersion);
+			// extract splash
+			File hack = new File(currentDir, "open-ig-splash.png");
+			if (!hack.exists()) {
+				try {
+					JarFile jf = new JarFile(jar);
+					try {
+						InputStream in = jf.getInputStream(jf.getJarEntry("hu/openig/gfx/OpenIG_Splash.png"));
+						try {
+							IOUtils.save(hack, IOUtils.load(in));
+						} finally {
+							in.close();
+						}
+					} finally {
+						jf.close();
+					}
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+			String runJVM = jvm;
+			if (runJVM == null) {
+				runJVM = System.getProperty("java.home");
+			}
+			int mem = m.memory;
+			if (memory != null) {
+				mem = memory;
+			}
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command(
+					runJVM + "/bin/java",
+					"-Xmx" + mem + "M",
+					String.format("-splash:%s/open-ig-splash.png", currentDir.getAbsolutePath()),
+					"-cp", 
+					jar,
+					m.clazz,
+					"-memonce", "-" + language);
+			try {
+				Process p = pb.start();
+				Parallels.consume(p.getInputStream());
+				Parallels.consume(p.getErrorStream());
+				
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				errorMessage(format("Error running module: %s", ex));
+			}
+		}
+	}
+	/**
+	 * Uninstall the game.
+	 */
+	void doUninstall() {
+		if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, 
+				label("Do you want to uninstall the game (removes all game files except save)? "),
+				label("Uninstall"), JOptionPane.YES_NO_OPTION)) {
+			File[] files = currentDir.listFiles(new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.startsWith("open-ig-");
+				}
+			});
+			if (files != null) {
+				for (File f : files) {
+					if (!f.delete()) {
+						System.err.printf("Could not delete file: %s%n", f);
+					}
+				}
+			}
 		}
 	}
 	/**
 	 * Update the launcher itself.
 	 */
-	void doUpdateItself() {
+	void doUpdateSelf() {
+		final LModule m = updates != null ? updates.getModule(LAUNCHER) : null;
+		if (m == null) {
+			return;
+		}
+		progressPanel.setVisible(true);
+		currentAction.setText("Updating the Launcher...");
+		currentFile.setText("open-ig-launcher.jar");
+		currentFileProgress.setText("0%");
+		fileProgress.setValue(0);
+		totalFileProgress.setVisible(false);
+		totalProgress.setVisible(false);
+		launcher.setVisible(false);
+		cancel.setVisible(true);
 		
-	}
-	/**
-	 * Load the installed versions.
-	 */
-	void loadInstalledVersions() {
-		installedVersions.clear();
-		Properties props = new Properties();
-		try {
-			File f = new File("launcher-config.xml");
-			if (f.canRead()) {
-				FileInputStream fin = new FileInputStream(f);
-				try {
-					props.loadFromXML(fin);
-					for (Map.Entry<Object, Object> e : props.entrySet()) {
-						installedVersions.put(e.getKey().toString(), e.getValue().toString());
-					}
-				} finally {
-					fin.close();
-				}
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-	/**
-	 * Save the installed versions configuration.
-	 */
-	void saveInstalledVersions() {
-		File f = new File("launcher-config.xml");
-		try {
-			FileOutputStream fout = new FileOutputStream(f);
-			try {
-				Properties props = new Properties();
-				props.putAll(installedVersions);
-				props.storeToXML(fout, "Open Imperium Galactica Launcher Configuration");
-			} finally {
-				fout.close();
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-	}
-	/** The file entry. */
-	class FileEntry {
-		/**
-		 * @param localName the local name
-		 * @param remoteFile the remote file
-		 */
-		public FileEntry(String localName, LFile remoteFile) {
-			this.localName = localName;
-			this.remoteFile = remoteFile;
-		}
-		/** The local name. */
-		public String localName;
-		/** The remote file name. */
-		public LFile remoteFile;
-	}
-	/**
-	 * Start the installation of the given module.
-	 * @param mp the module panel
-	 * @param m the module definition
-	 */
-	protected void updateModule(final ModulePanel mp, final LModule m) {
-		mp.install.setVisible(false);
-		mp.update.setVisible(false);
-		mp.cancel.setVisible(true);
-
-		mp.progress.setVisible(true);
-		mp.statistics.setVisible(true);
-		
-		SwingWorker<Void, Void> pretest = new SwingWorker<Void, Void>() {
-			final List<FileEntry> localFiles = new ArrayList<FileEntry>();
+		cancelAction = new ActionListener() {
 			@Override
-			protected Void doInBackground() throws Exception {
-				long t = System.currentTimeMillis();
-				int index = 0;
-				for (LFile f : m.files) {
-					int idx = f.url.lastIndexOf("/");
-					final String lf = f.url.substring(idx + 1);
-
-					File lff = new File(lf);
-
-					try {
-						MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-						if (lff.canRead()) {
-							
-							byte[] buffer = new byte[64 * 1024];
-							long bytesReceived = 0;
-							long bytesTotal = lff.length();
-							try {
-								
-								FileInputStream fin = new FileInputStream(lff);
-								try {
-									do {
-										int read = fin.read(buffer);
-										if (read > 0) {
-											bytesReceived += read;
-											final int findex = index;
-											final int fsize = m.files.size();
-											final long fbytesReceived = bytesReceived;
-											final long fbytesTotal = bytesTotal;
-											SwingUtilities.invokeLater(new Runnable() {
-												@Override 
-												public void run() {
-													mp.statistics.setText("[" + (findex + 1) + " / " + fsize + "] "
-															+ lf + " (" + String.format("%.2f", fbytesReceived / 1024.0 / 1024.0) + " MB)"  
-													);
-													mp.progress.setValue((int)(100 * fbytesReceived / fbytesTotal));
-												};
-											});
-											sha1.update(buffer, 0, read);
-										} else
-										if (read < 0) {
-											break;
-										}
-									} while (true);
-								} finally {
-									fin.close();
-								}
-								byte[] sha1h = sha1.digest();
-								byte[] sha1hupdate = LFile.toByteArray(f.sha1);
-								if (!Arrays.equals(sha1h, sha1hupdate)) {
-									localFiles.add(new FileEntry(lf + "." + t, f));
-								}
-							} catch (IOException ex) {
-								ex.printStackTrace();
-							}
-						} else {			
-							localFiles.add(new FileEntry(lf + "." + t, f));
-						}
-						index++;
-					} catch (NoSuchAlgorithmException ex) {
-						ex.printStackTrace();
-					}
+			public void actionPerformed(ActionEvent e) {
+				if (worker != null) {
+					worker.cancel(true);
+					worker = null;
 				}
-				return null;
+				progressPanel.setVisible(false);
+				cancel.setVisible(false);
+				doActOnUpdates();
+			}
+		};
+		final long ts = System.currentTimeMillis();
+		worker = new SwingWorker<Boolean, Void>() {
+			/** Move self to the install directory? */
+			boolean moveSelf;
+			@Override
+			protected Boolean doInBackground() throws Exception {
+				boolean result = downloadFiles(m.files, ts);
+				if (!currentDir.getAbsolutePath().equals(installDir.getAbsolutePath())) {
+					moveSelf = true;
+				}
+				return result;
 			}
 			@Override
 			protected void done() {
-				if (localFiles.size() == 0) {
-					installedVersions.put(m.id, m.version);
-					if (m.id.equals("Launcher")) {
-						listPanel.remove(mp);
-						listPanel.revalidate();
-						listPanel.repaint();
+				progressPanel.setVisible(false);
+				worker = null;
+				cancel.setVisible(false);
+				try {
+					if (get() == Boolean.FALSE) {
+						errorMessage(label("The Launcher was not correctly downloaded. Please try again a bit later."));
 					} else {
-						setVisibleModuleButtons(m, mp);
+						if (moveSelf) {
+							doMoveSelfAndRun();
+						} else {
+							doSwapSelf(ts);
+						}
 					}
-					return;
+				} catch (CancellationException ex) {
+					// ignore
+				} catch (ExecutionException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
 				}
-				
-				final Downloader[] currentDownloader = new Downloader[1];
-				
-				downloadLoop(localFiles, mp, m, 0, currentDownloader);
-				
-				mp.cancel.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						currentDownloader[0].cancel(true);
-						mp.cancel.setVisible(false);
-						setVisibleModuleButtons(m, mp);
-					}
-				});
 			}
 		};
-		pretest.execute();
-		
+		worker.execute();
 	}
 	/**
-	 * The download loop for each files.
-	 * @param localFiles the local files
-	 * @param mp the module panel
-	 * @param m the module definition
-	 * @param index the index to continue
-	 * @param currentDownloader the active downloader
+	 * Swap itself with the new version of the launcher.
+	 * @param ts the downloaded timestamp
 	 */
-	private void downloadLoop(final List<FileEntry> localFiles, final ModulePanel mp, final LModule m, final int index,
-			final Downloader[] currentDownloader) {
-		if (index >= localFiles.size()) {
-			// last
-			downloadCompleted(mp, m, localFiles);
-			return;
-		}
-		mp.progress.setVisible(true);
-		mp.statistics.setVisible(true);
-		FileEntry fe = localFiles.get(index);;
-		LFile f = fe.remoteFile;
-		final String lf = fe.localName;
-		currentDownloader[0] = new Downloader(f.url, lf, new DownloadCallback() {
-			@Override
-			public void success(DownloadProgress progress, byte[] sha1) {
-				mp.statistics.setText("[" + (index + 1) + " / " + localFiles.size() + "] "
-						+ lf + " (" + String.format("%.2f", progress.bytesReceived / 1024.0 / 1024.0) + " MB, " + String.format("%.2f KB/s)", progress.getSpeed() / 1.024)  
-				);
-				downloadLoop(localFiles, mp, m, index + 1, currentDownloader);
-			}
-			@Override
-			public void progress(DownloadProgress progress) {
-				if (progress.bytesTotal < 0) {
-					mp.progress.setIndeterminate(true);
-				} else {
-					mp.progress.setValue((int)(100 * progress.bytesReceived / progress.bytesTotal));
-				}
-				mp.statistics.setText("[" + (index + 1) + " / " + localFiles.size() + "] "
-					+ lf + " (" + String.format("%.2f", progress.bytesReceived / 1024.0 / 1024.0) + " MB, " + String.format("%.2f KB/s)", progress.getSpeed() / 1.024)  
-				);
-			}
-			
-			@Override
-			public void failed(Throwable exception) {
-				exception.printStackTrace();
-				mp.cancel.setVisible(false);
-				setVisibleModuleButtons(m, mp);
-			}
-			@Override
-			public void cancelled() {
-				mp.cancel.setVisible(false);
-				// delete temporary files
-				for (FileEntry f : localFiles) {
-					File f0 = new File(f.localName);
-					if (!f0.delete()) {
-						System.err.println("Warning: Could not delete file " + f0);
-					}
-				}
-				setVisibleModuleButtons(m, mp);
-			}
-		});
-		currentDownloader[0].execute();
-	}
-	/**
-	 * If the download completed successfully, rename. 
-	 * @param mp the module panel.
-	 * @param m the module
-	 * @param localFiles the list of the local file names
-	 */
-	private void downloadCompleted(ModulePanel mp, LModule m, List<FileEntry> localFiles) {
-		installedVersions.put(m.id, m.version);
-		if (!m.id.equals("Launcher")) {
-			for (int i = 0; i < localFiles.size(); i++) {
-				FileEntry fe = localFiles.get(i);
-				String s = fe.localName;
-				File f = new File(s);
-				int idx = s.lastIndexOf(".");
-				String s1 = s.substring(0, idx);
-				File f2 = new File(s1);
-				if (f2.exists()) {
-					if (f2.delete()) {
-						System.err.println("Warning: Could not delete file " + f2);
-					}
-				}
-				if (!f.renameTo(f2)) {
-					System.err.printf("Could not rename %s to %s%n", s, s1);
-				}
-			}
-			for (LRemoveFile rf : m.removeFiles) {
-				File f = new File(rf.file);
-				if (!f.delete()) {
-					System.err.println("Warning: Could not delete file " + f);
-				}
-			}
-			mp.progress.setVisible(false);
-			mp.statistics.setVisible(false);
-			setVisibleModuleButtons(m, mp);
-		} else {
-			String ff = "";
-			for (FileEntry s : localFiles) {
-				if (s.localName.startsWith("open-ig-launcher.jar")) {
-					ff = s.localName;
-					break;
-				}
-			}
-			ProcessBuilder pb = new ProcessBuilder();
-			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", ff, "-selfupdate", ff);
-			try {
-				Process p = pb.start();
-				consume(p.getErrorStream());
-				consume(p.getInputStream());
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-			dispose();
-		}
-	}
-	/**
-	 * Start the module.
-	 * @param mp the module panel.
-	 * @param m the module
-	 */
-	protected void startModule(ModulePanel mp, LModule m) {
+	void doSwapSelf(long ts) {
+		String self = String.format("%s/open-ig-launcher.jar.%s", installDir.getAbsolutePath(), ts);
 		ProcessBuilder pb = new ProcessBuilder();
-		if (m.memory > 0) {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + m.memory + "M", "-jar", String.format(m.executeFile, installedVersions.get(m.id)), "-memonce");
-		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-jar", String.format(m.executeFile, installedVersions.get(m.id)), "-memonce");
-		}
+		pb.command(System.getProperty("java.home") + "/bin/java", 
+				"-jar", self, 
+				"-selfupdate", self);
 		try {
-			Process p = pb.start();
-			consume(p.getErrorStream());
-			consume(p.getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
+			pb.start();
+		} catch (IOException ex) {
+			ex.printStackTrace();
 		}
-	}
-	/**
-	 * Consume the input stream in the background.
-	 * @param in the input stream
-	 * @return the thread
-	 */
-	public static Thread consume(final InputStream in) {
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				byte[] buffer = new byte[8192];
-				try {
-					try {
-						while (!Thread.currentThread().isInterrupted()) {
-							int read = in.read(buffer);
-							if (read < 0) {
-								break;
-							}
-						}
-					} finally {
-						in.close();
-					}
-				} catch (IOException ex) {
-					// ignore
-				}
-			}
-		});
-		t.setDaemon(true);
-		t.start();
-		return t;
-	}
-	/**
-	 * @param args the arguments
-	 */
-	public static void main(String[] args) {
-		if (args.length >= 2) {
-			if ("-selfupdate".equals(args[0])) {
-				// make a copy of self and restart
-				File f0 = new File(args[1]);
-				File old = new File("open-ig-launcher.jar");
-				try {
-					while (old.exists() && !old.delete()) {
-						Thread.sleep(1000);	
-					}
-					IOUtils.save(old, IOUtils.load(f0));
-					ProcessBuilder pb = new ProcessBuilder();
-					pb.command(System.getProperty("java.home") + "/bin/java", "-jar", "open-ig-launcher.jar", "-selfdelete", args[1]);
-					Process p = pb.start();
-					consume(p.getInputStream());
-					consume(p.getErrorStream());
-					return;
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			} else
-			if ("-selfdelete".equals(args[0])) {
-				File f0 = new File(args[1]);
-				try {
-					while (f0.exists() && !f0.delete()) {
-						Thread.sleep(1000);	
-					}
-				} catch (InterruptedException ex) {
-					ex.printStackTrace();
-				}
-			}
-		}
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				Launcher ln = new Launcher();
-				ln.setVisible(true);
-			}
-		});
+		
+		doClose();
 	}
 }
