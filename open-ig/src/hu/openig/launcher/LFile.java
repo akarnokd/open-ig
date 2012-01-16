@@ -17,6 +17,8 @@ public class LFile extends LBaseItem {
 	public String url;
 	/** The SHA1 hash of the target file. */
 	public String sha1;
+	/** The file size in bytes. */
+	public long size;
 	/**
 	 * Convert the hex string into a byte array.
 	 * @param hex the hex string

@@ -8,6 +8,8 @@
 
 package hu.openig.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -118,4 +120,35 @@ public final class Parallels {
 			}
 		}
 	}
+	/**
+	 * Consume the input stream in the background.
+	 * @param in the input stream
+	 * @return the thread
+	 */
+	public static Thread consume(final InputStream in) {
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				byte[] buffer = new byte[8192];
+				try {
+					try {
+						while (!Thread.currentThread().isInterrupted()) {
+							int read = in.read(buffer);
+							if (read < 0) {
+								break;
+							}
+						}
+					} finally {
+						in.close();
+					}
+				} catch (IOException ex) {
+					// ignore
+				}
+			}
+		});
+		t.setDaemon(true);
+		t.start();
+		return t;
+	}
+
 }

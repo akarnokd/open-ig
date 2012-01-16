@@ -127,7 +127,22 @@ public final class PackageStuff {
 					@Override
 					public boolean accept(File dir, String name) {
 						String d = dir.toString().replace('\\', '/');
-						return d.endsWith("hu/openig/launcher") || d.endsWith("hu/openig/utils");
+						if (!d.endsWith("/")) {
+							d += "/";
+						}
+						d += name;
+						return d.contains("hu/openig/launcher") 
+								|| d.contains("hu/openig/utils/XElement")
+								|| d.contains("hu/openig/utils/IOUtils")
+								|| d.contains("hu/openig/utils/Parallels")
+								|| d.contains("hu/openig/gfx/launcher_background.png")
+								|| d.contains("hu/openig/gfx/hungarian.png")
+								|| d.contains("hu/openig/gfx/english.png")
+								|| d.contains("hu/openig/gfx/loading.gif")
+								|| d.contains("hu/openig/ui/IGButton")
+								|| d.contains("hu/openig/render/RenderTools")
+								|| d.contains("hu/openig/render/GenericMediumButton")
+								|| d.contains("hu/openig/render/GenericButtonRenderer");
 					}
 				});
 				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.launcher", zout);

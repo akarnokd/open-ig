@@ -32,6 +32,8 @@ public class LModule {
 	public int memory;
 	/** The file to execute. */
 	public String executeFile;
+	/** The optional class name to execute. */
+	public String clazz;
 	/**
 	 * Compare the versions with another.
 	 * For example:
