@@ -9,6 +9,7 @@
 package hu.openig.launcher;
 
 import hu.openig.ui.IGButton;
+import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.XElement;
@@ -54,7 +55,9 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -62,8 +65,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.text.NumberFormatter;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -84,7 +90,7 @@ public class Launcher extends JFrame {
 	/** The Launcher module ID. */
 	static final String LAUNCHER = "Launcher";
 	/** Background color. */
-	private static final Color BG = new Color(0x05032B);
+	final Color backgroundColoring = new Color(0x05034B);
 	/** The download buffer size. */
 	static final int DOWNLOAD_BUFFER_SIZE = 128 * 1024;
 	/** Install the entire game. */
@@ -175,8 +181,6 @@ public class Launcher extends JFrame {
 	String detectedVersion;
 	/** The current worker. */
 	SwingWorker<?, ?> worker;
-	/** The cancel action. */
-	ActionListener cancelAction;
 	/** The installation directory. */
 	File installDir = new File(".");
 	/** The installation directory. */
@@ -185,6 +189,12 @@ public class Launcher extends JFrame {
 	String jvm;
 	/** The memory override. */
 	Integer memory;
+	/** The console watcher. */
+	ConsoleWatcher cw;
+	/** The foreground color. */
+	private Color foreground;
+	/** Verzió újraellenőrzése. */
+	private JMenuItem recheck;
 	/** Creates the GUI. */
 	public Launcher() {
 		super("Open Imperium Galactica Launcher v" + VERSION);
@@ -194,6 +204,7 @@ public class Launcher extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				doClose();
+				cw.dispose();
 			}
 		});
 		
@@ -235,27 +246,27 @@ public class Launcher extends JFrame {
 				Graphics2D g2 = (Graphics2D)g;
 				if (background != null) {
 					Composite save0 = g2.getComposite();
-					g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
+					g2.setComposite(AlphaComposite.SrcOver.derive(0.30f));
 					g.drawImage(background, 0, 0, null);
 					g2.setComposite(save0);
 				}
 			}
 		};
 		mainPanel.setOpaque(true);
-		mainPanel.setBackground(BG);
+		mainPanel.setBackground(backgroundColoring);
 		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
-			.addComponent(mainPanel, 640, 640, 640)
+			.addComponent(mainPanel, 0, GroupLayout.PREFERRED_SIZE, 640)
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
-			.addComponent(mainPanel, 480, 480, 480)
+			.addComponent(mainPanel, 0, GroupLayout.PREFERRED_SIZE, 480)
 		);
 		
 		createPanel();
 		setResizable(false);
-		pack();
+		setSize(640, 480);
 		setLocationRelativeTo(null);
 		init();
 	}
@@ -266,7 +277,30 @@ public class Launcher extends JFrame {
 	 */
 	String label(String s) {
 		if (!"en".equals(language)) {
-			System.out.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
+			if ("Processing %s".equals(s)) { return "%s feldolgozása"; }
+			if ("Run settings".equals(s)) { return "Futtatás beállítások"; }
+			if ("Browse...".equals(s)) { return "Tallózás..."; }
+			if ("Java runtime home:".equals(s)) { return "Java futásidejű környezet:"; }
+			if ("Default: %s".equals(s)) { return "Alapértelmezett: %s"; }
+			if ("MB".equals(s)) { return "MB"; }
+			if ("Memory:".equals(s)) { return "Memória:"; }
+			if ("OK".equals(s)) { return "Rendben"; }
+			if ("Cancel".equals(s)) { return "Mégsem"; }
+			if ("Error".equals(s)) { return "Hiba"; }
+			if ("Default: %s MB".equals(s)) { return "Alapértelmezett: %s MB"; }
+			if ("Checking existing game files...".equals(s)) { return "Létező játék állományok ellenőrzése..."; }
+			if ("Downloading game files...".equals(s)) { return "Játék állományok letöltése..."; }
+			if ("Some files were not correctly downloaded. Please try again a bit later.".equals(s)) { return "Néhány állomány nem töltődött le rendesen. Kérem, próbálja meg egy kicsit később."; }
+			if ("Do you want to uninstall the game (removes all game files except save)?".equals(s)) { return "Biztosan törölni akarja a játék állományait (a mentések kivételével)?"; }
+			if ("Uninstall".equals(s)) { return "Eltávolítás"; }
+			if ("The Launcher was not correctly downloaded. Please try again a bit later.".equals(s)) { return "A Launcher nem töltődött le rendesen. Kérem, próbálja meg egy kicsit később."; }
+			if ("Error during data download: %s".equals(s)) { return "Hiba történt az adatok letöltése közben: %s"; }
+			if ("Could not delete file %s".equals(s)) { return "A(z) %s állomány nem törölhető"; }
+			if ("Error while processing file %s: %s".equals(s)) { return "A(z) %s állomány feldolgozása közben hiba történt: %s"; }
+			if ("New version available: %s".equals(s)) { return "Új verzió érhető el: %s"; }
+			if ("Error while checking files: %s".equals(s)) { return "A(z) állományok ellenörzése közben hiba történt: %s"; }
+			if ("Could not access directory %s".equals(s)) { return "A(z) %s könyvtár nem elérhető"; }
+			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		}
 		return s;
@@ -313,10 +347,10 @@ public class Launcher extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if ("en".equals(language)) {
 					language = "hu";
-					flag.setIcon(new ImageIcon(huFlag));
+					flag.setIcon(new ImageIcon(enFlag));
 				} else {
 					language = "en";
-					flag.setIcon(new ImageIcon(enFlag));
+					flag.setIcon(new ImageIcon(huFlag));
 				}
 				doActOnUpdates();
 				setLabels();
@@ -334,13 +368,23 @@ public class Launcher extends JFrame {
 				doInstall(true);
 			}
 		});
+		update.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doInstall(false);
+			}
+		});
 		cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (cancelAction != null) {
-					cancelAction.actionPerformed(e);
-					cancelAction = null;
+				if (worker != null) {
+					worker.cancel(true);
+					worker = null;
 				}
+				progressPanel.setVisible(false);
+				cancel.setVisible(false);
+				detectVersion();
+				doActOnUpdates();
 			}
 		});
 		launcher.addActionListener(new ActionListener() {
@@ -401,17 +445,17 @@ public class Launcher extends JFrame {
 		progressPanel.setVisible(false);
 		flag.setVisible(false);
 
-		Color c = new Color(0xD0D0D0);
-		install.setForeground(c);
-		update.setForeground(c);
-		run.setForeground(c);
-		mapEditor.setForeground(c);
-		videoPlayer.setForeground(c);
-		cancel.setForeground(c);
-		other.setForeground(c);
+		foreground = new Color(0xD0D0D0);
+		install.setForeground(foreground);
+		update.setForeground(foreground);
+		run.setForeground(foreground);
+		mapEditor.setForeground(foreground);
+		videoPlayer.setForeground(foreground);
+		cancel.setForeground(foreground);
+		other.setForeground(foreground);
 
 		progressPanel.setOpaque(false);
-		progressPanel.setBackground(BG);
+		progressPanel.setBackground(backgroundColoring);
 		
 		createProgressPanel();
 
@@ -427,10 +471,13 @@ public class Launcher extends JFrame {
 		uninstall = new JMenuItem();
 		releaseNotes = new JMenuItem();
 		projectPage = new JMenuItem();
+		recheck = new JMenuItem();
 		
 		verify.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				detectVersion();
+				doActOnUpdates();
 				doInstall(false);
 			}
 		});
@@ -462,7 +509,23 @@ public class Launcher extends JFrame {
 				doUninstall();
 			}
 		});
+		runSettings.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doSettings();
+			}
+		});
+		recheck.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				detectVersion();
+				doUpgrades();
+			}
+		});
 		
+		otherMenu.add(recheck);
+		otherMenu.addSeparator();
 		otherMenu.add(projectPage);
 		otherMenu.add(releaseNotes);
 		otherMenu.addSeparator();
@@ -476,6 +539,8 @@ public class Launcher extends JFrame {
 		runSettings.setFont(fontLarge);
 		verify.setFont(fontLarge);
 		uninstall.setFont(fontLarge);
+		recheck.setFont(fontLarge);
+		
 		flag.setIcon(new ImageIcon(huFlag));
 		flag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
@@ -494,25 +559,29 @@ public class Launcher extends JFrame {
 				.addComponent(flagPanel, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 				.addGroup(
 					gl.createSequentialGroup()
+					.addGroup(
+						gl.createParallelGroup()
+						.addGroup(
+							gl.createSequentialGroup()
+							.addComponent(newVersionLabel)
+							.addGap(5)
+							.addComponent(newVersion)
+						)
+						.addComponent(changes)
+					)
+					.addGap(20)
+					.addComponent(launcher)
+					.addComponent(install)
+					.addComponent(update)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(run)
+					.addGap(15)
 					.addComponent(currentVersionLabel)
 					.addGap(5)
 					.addComponent(currentVersion)
 				)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addComponent(newVersionLabel)
-					.addGap(5)
-					.addComponent(newVersion)
-				)
-				.addComponent(changes)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addComponent(launcher)
-					.addComponent(install)
-					.addComponent(update)
-					.addComponent(cancel)
-				)
-				.addComponent(run)
 				.addGroup(
 					gl.createSequentialGroup()
 					.addComponent(mapEditor)
@@ -531,27 +600,27 @@ public class Launcher extends JFrame {
 			.addComponent(flagPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			.addGap(5)
 			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(newVersionLabel)
-				.addComponent(newVersion)
-			)
-			.addComponent(changes)
-			.addGap(25)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
+				gl.createParallelGroup(Alignment.CENTER)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addGroup(
+						gl.createParallelGroup(Alignment.BASELINE)
+						.addComponent(newVersionLabel)
+						.addComponent(newVersion)
+					)
+					.addComponent(changes)
+				)
 				.addComponent(launcher)
 				.addComponent(install)
 				.addComponent(update)
-				.addComponent(cancel)
 			)
-			.addGap(10)
+			.addGap(25)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(run)
 				.addComponent(currentVersionLabel)
 				.addComponent(currentVersion)
 			)
-			.addGap(10)
-			.addComponent(run)
 			.addGap(25)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -605,12 +674,12 @@ public class Launcher extends JFrame {
 		currentFile.setFont(fontMedium);
 		currentFileProgress.setFont(fontMedium);
 		totalFileProgress.setFont(fontMedium);
-		currentAction.setForeground(Color.WHITE);
+		currentAction.setForeground(Color.ORANGE);
 		currentFile.setForeground(Color.WHITE);
 		currentFileProgress.setForeground(Color.WHITE);
 		totalFileProgress.setForeground(Color.WHITE);
-		fileProgress.setForeground(BG);
-		totalProgress.setForeground(BG);
+		fileProgress.setForeground(backgroundColoring);
+		totalProgress.setForeground(backgroundColoring);
 		
 		
 		gl.setHorizontalGroup(
@@ -627,7 +696,11 @@ public class Launcher extends JFrame {
 				.addGap(20)
 				.addGroup(
 					gl.createParallelGroup()
-					.addComponent(currentAction)
+					.addGroup(
+						gl.createSequentialGroup()
+						.addComponent(currentAction, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+						.addComponent(cancel)
+					)
 					.addComponent(currentFile)
 					.addComponent(currentFileProgress)
 					.addComponent(totalFileProgress)
@@ -642,6 +715,7 @@ public class Launcher extends JFrame {
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(currentActionLabel)
 				.addComponent(currentAction)
+				.addComponent(cancel)
 			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -682,6 +756,7 @@ public class Launcher extends JFrame {
 			runSettings.setText("Run settings...");
 			verify.setText("Verify installation");
 			uninstall.setText("Uninstall");
+			recheck.setText("Check for new version");
 	
 			currentActionLabel.setText("Action:");
 			currentFileLabel.setText("File:");
@@ -701,15 +776,16 @@ public class Launcher extends JFrame {
 			launcher.setText("Indító frissítése");
 			
 			projectPage.setText("Projekt honlapja...");
-			releaseNotes.setText("Release notes...");
-			runSettings.setText("Run settings...");
-			verify.setText("Verify installation");
-			uninstall.setText("Uninstall");
+			releaseNotes.setText("Verzió jegyzetek...");
+			runSettings.setText("Futtatási beállítások...");
+			verify.setText("Telepítés ellenőrzése");
+			uninstall.setText("Eltávolítás");
+			recheck.setText("Új verzió keresése");
 	
-			currentActionLabel.setText("Action:");
-			currentFileLabel.setText("File:");
-			currentFileProgressLabel.setText("Progress:");
-			totalFileProgressLabel.setText("Total:");
+			currentActionLabel.setText("Művelet:");
+			currentFileLabel.setText("Állomány:");
+			currentFileProgressLabel.setText("Folyamat:");
+			totalFileProgressLabel.setText("Összesen:");
 
 			currentVersionLabel.setText("Verzió:");
 			newVersionLabel.setText("Új verzió érhető el:");
@@ -719,6 +795,7 @@ public class Launcher extends JFrame {
 	 * Close the launcher.
 	 */
 	void doClose() {
+		saveConfig();
 		dispose();
 		if (worker != null) {
 			worker.cancel(true);
@@ -736,7 +813,7 @@ public class Launcher extends JFrame {
 	 * delete the {@codwe temporary_file_name}.</p> 
 	 * @param args see above
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		System.setProperty("swing.aatext", "true");
 		if (args.length >= 2) {
 			if ("-selfupdate".equals(args[0])) {
@@ -751,6 +828,7 @@ public class Launcher extends JFrame {
 			@Override
 			public void run() {
 				Launcher ln = new Launcher();
+				ln.cw = new ConsoleWatcher(args, VERSION, ln.language);
 				ln.setVisible(true);
 			}
 		});
@@ -818,7 +896,7 @@ public class Launcher extends JFrame {
 	void doInitialize() {
 		progressPanel.setVisible(true);
 		currentAction.setText("Loading configuration...");
-		currentFile.setText(format("open-ig-launcher-config.xml"));
+		currentFile.setText("open-ig-launcher-config.xml");
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
 		totalFileProgress.setVisible(false);
@@ -850,12 +928,16 @@ public class Launcher extends JFrame {
 	}
 	/** Check for upgrades. */
 	void doUpgrades() {
+		progressPanel.setVisible(true);
 		currentAction.setText("Checking for upgrades...");
-		currentFile.setText(format("http://open-ig.googlecode.com/.../update.xml"));
+		currentFile.setText(UPDATE_XML);
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
 		fileProgress.setValue(0);
-		totalProgress.setValue(0);
+		totalProgress.setVisible(false);
+		totalFileProgress.setVisible(false);
+		totalFileProgressLabel.setVisible(false);
+		
 		final long ts = System.currentTimeMillis();
 		final File updateFile = new File(currentDir, "update.xml." + ts);
 		SwingWorker<XElement, Void> w = new SwingWorker<XElement, Void>() {
@@ -895,7 +977,7 @@ public class Launcher extends JFrame {
 	 * @param file the file we are processing
 	 */
 	void doProcessUpdate(XElement xml, File file) {
-		currentAction.setText(label("Processing update.xml"));
+		currentAction.setText(format("Processing %s", "update.xml"));
 		currentFile.setText(file.getName());
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
@@ -945,22 +1027,29 @@ public class Launcher extends JFrame {
 	}
 	/**
 	 * Set the local file progress.
+	 * @param count the file count
+	 * @param max the max files
 	 * @param progress the pain progress number
 	 * @param position the current position.
 	 * @param size the total size
 	 * @param speed the download speed
 	 */
-	void setTotalProgress(final int progress, final long position, final long size, final double speed) {
+	void setTotalProgress(
+			final int count,
+			final int max,
+			final int progress, 
+			final long position, 
+			final long size, 
+			final double speed) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				totalProgress.setValue(progress);
+				totalProgress.setIndeterminate(false);
 				if (size < 0) {
-					totalProgress.setIndeterminate(true);
-					totalFileProgress.setText(String.format("%d%%, %d KB, %.1f KB / s", progress, position / 1024, speed));	
+					totalFileProgress.setText(String.format("%d / %d, %d KB, %.1f KB / s", count, max, position / 1024, speed));	
 				} else {
-					totalProgress.setIndeterminate(false);
-					totalProgress.setValue(progress);
-					totalFileProgress.setText(String.format("%d%%, %d KB / %d KB , %.1f KB / s", (position * 100 / size), position / 1024, size / 1024, speed));
+					totalFileProgress.setText(String.format("%d / %d, %d KB / %d KB , %.1f KB / s", count, max, position / 1024, size / 1024, speed));
 				}
 				
 			}
@@ -974,6 +1063,19 @@ public class Launcher extends JFrame {
 			try {
 				XElement cfg = XElement.parseXML(config.getAbsolutePath());
 				language = cfg.get("language");
+				jvm = cfg.get("jvm", null);
+				String m = cfg.get("memory", null);
+				if (m != null) {
+					memory = Integer.parseInt(m);
+				} else {
+					memory = null;
+				}
+				if ("en".equals(language)) {
+					flag.setIcon(new ImageIcon(huFlag));
+				} else {
+					flag.setIcon(new ImageIcon(enFlag));
+				}
+
 			} catch (XMLStreamException ex) {
 				ex.printStackTrace();
 			}
@@ -1034,12 +1136,21 @@ public class Launcher extends JFrame {
 			changes.setText(m.releaseNotes.getDescription(language));
 			newVersion.setText(m.version);
 			
+			install.setVisible(false);
+			update.setVisible(false);
 			changes.setVisible(true);
 			newVersion.setVisible(true);
 			newVersionLabel.setVisible(true);
+			return;
 		}
 		LModule g = updates != null ? updates.getModule(GAME) : null;
 		if (NOT_INSTALLED.equals(detectedVersion)) {
+			currentVersion.setVisible(false);
+			currentVersionLabel.setVisible(false);
+			run.setVisible(false);
+			mapEditor.setVisible(false);
+			videoPlayer.setVisible(false);
+			other.setVisible(false);
 			if (g != null) {
 				install.setVisible(true);
 				changes.setText(g.releaseNotes.getDescription(language));
@@ -1055,17 +1166,24 @@ public class Launcher extends JFrame {
 			videoPlayer.setVisible(true);
 			other.setVisible(true);
 			
+			install.setVisible(false);
 			currentVersion.setText(detectedVersion);
 			currentVersion.setVisible(true);
 			currentVersionLabel.setVisible(true);
 			if (g != null) {
 				if (g.compareVersion(detectedVersion) > 0) {
 					changes.setText(g.releaseNotes.getDescription(language));
-					newVersion.setText(format("New version available: %s", g.version));
+					newVersion.setText(g.version);
 	
 					newVersion.setVisible(true);
+					newVersionLabel.setVisible(true);
 					changes.setVisible(true);
 					update.setVisible(true);
+				} else {
+					newVersionLabel.setVisible(false);
+					newVersion.setVisible(false);
+					changes.setVisible(false);
+					update.setVisible(false);
 				}
 			}
 		}
@@ -1090,29 +1208,18 @@ public class Launcher extends JFrame {
 		
 		final LModule g = updates.getModule(GAME);
 		progressPanel.setVisible(true);
-		currentAction.setText(label("Checking existing game files"));
+		currentAction.setText(label("Checking existing game files..."));
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
 		fileProgress.setValue(0);
 		totalProgress.setValue(0);
 		install.setVisible(false);
+		update.setVisible(false);
 		cancel.setVisible(true);
 		totalProgress.setVisible(true);
 		totalFileProgress.setVisible(true);
 		totalFileProgressLabel.setVisible(true);
 		
-		cancelAction = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (worker != null) {
-					worker.cancel(true);
-					worker = null;
-				}
-				install.setVisible(true);
-				progressPanel.setVisible(false);
-				cancel.setVisible(false);
-			}
-		};
 		worker = new SwingWorker<List<LFile>, Void>() {
 			@Override
 			protected List<LFile> doInBackground() throws Exception {
@@ -1126,13 +1233,10 @@ public class Launcher extends JFrame {
 				try {
 					doDownload(get());
 				} catch (CancellationException ex) {
-					install.setVisible(true);
 				} catch (ExecutionException ex) {
-					install.setVisible(true);
 					ex.printStackTrace();
 					errorMessage(format("Error while checking files: %s", ex));
 				} catch (InterruptedException ex) {
-					install.setVisible(true);
 					ex.printStackTrace();
 					errorMessage(format("Error while checking files: %s", ex));
 				}
@@ -1187,7 +1291,7 @@ public class Launcher extends JFrame {
 			}
 			
 			double speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-			setTotalProgress((int)(position * 100 / totalSize), position, totalSize, speed);
+			setTotalProgress(i + 1, g.files.size(), (int)(position * 100 / totalSize), position, totalSize, speed);
 			setFileProgress(0, -1, 0);
 			
 			LFile lf = g.files.get(i);
@@ -1215,7 +1319,7 @@ public class Launcher extends JFrame {
 								setFileProgress(filePos, localFile.length(), speed1);
 								// update global progress
 								speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-								setTotalProgress((int)(position * 100 / totalSize), position, totalSize, speed);
+								setTotalProgress(i + 1, g.files.size(), (int)(position * 100 / totalSize), position, totalSize, speed);
 							} else
 							if (read < 0) {
 								break;
@@ -1226,7 +1330,7 @@ public class Launcher extends JFrame {
 						setFileProgress(filePos, localFile.length(), speed1);
 						// update global progress
 						speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-						setTotalProgress((int)(position * 100 / totalSize), position, totalSize, speed);
+						setTotalProgress(i + 1, g.files.size(), (int)(position * 100 / totalSize), position, totalSize, speed);
 						
 						byte[] sha1h = sha1.digest();
 						byte[] sha1hupdate = LFile.toByteArray(lf.sha1);
@@ -1267,25 +1371,15 @@ public class Launcher extends JFrame {
 		totalFileProgress.setVisible(true);
 		totalFileProgressLabel.setVisible(true);
 		
-		cancelAction = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (worker != null) {
-					worker.cancel(true);
-					worker = null;
-				}
-				progressPanel.setVisible(false);
-				cancel.setVisible(false);
-				doActOnUpdates();
-			}
-		};
 		worker = new SwingWorker<Boolean, Void>() {
 			/** Move self to the install directory? */
 			boolean moveSelf;
 			@Override
 			protected Boolean doInBackground() throws Exception {
 				boolean result = downloadFiles(files, -1);
-				if (!currentDir.getAbsolutePath().equals(installDir.getAbsolutePath())) {
+				String ca = currentDir.getCanonicalPath();
+				String ia = installDir.getCanonicalPath();
+				if (!ca.equals(ia)) {
 					moveSelf = true;
 				}
 				return result;
@@ -1313,6 +1407,7 @@ public class Launcher extends JFrame {
 					errorMessage(format("Error while checking files: %s", ex));
 				}
 				if (!moveSelf) {
+					detectVersion();
 					doActOnUpdates();
 				}
 			}
@@ -1334,7 +1429,7 @@ public class Launcher extends JFrame {
 			Desktop d = Desktop.getDesktop();
 			if (d != null) {
 				try {
-					d.browse(target.toURI());
+					d.open(target.getParentFile());
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}
@@ -1342,6 +1437,7 @@ public class Launcher extends JFrame {
 
 			
 			ProcessBuilder pb = new ProcessBuilder();
+			pb.directory(target.getParentFile());
 			pb.command(System.getProperty("java.home") + "/bin/java", 
 					"-jar", target.getAbsolutePath(), 
 					"-selfdelete", local.getAbsolutePath());
@@ -1379,7 +1475,7 @@ public class Launcher extends JFrame {
 			}
 			
 			double speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-			setTotalProgress((i + 1) * 100 / files.size(), position, -1, speed);
+			setTotalProgress(i + 1, files.size(), (i + 1) * 100 / files.size(), position, -1, speed);
 			setFileProgress(0, -1, 0);
 			
 			LFile lf = files.get(i);
@@ -1423,7 +1519,13 @@ public class Launcher extends JFrame {
 									setFileProgress(filePos, length, speed1);
 									// update global progress
 									speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-									setTotalProgress((i + 1) * 100 / files.size(), position, -1, speed);
+									
+									int pos = (i + 1) * 100 / files.size();
+									long fileProgress = filePos * 100 / length;
+									if (fileProgress >= 0) {
+										pos += fileProgress / files.size();
+									}
+									setTotalProgress(i + 1, files.size(), pos, position, -1, speed);
 								} else
 								if (read < 0) {
 									break;
@@ -1434,7 +1536,7 @@ public class Launcher extends JFrame {
 							setFileProgress(filePos, length, speed1);
 							// update global progress
 							speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-							setTotalProgress((i + 2) * 100 / files.size(), position, -1, speed);
+							setTotalProgress(i + 1, files.size(), (i + 2) * 100 / files.size(), position, -1, speed);
 							
 							if (timestamp < 0) {
 								byte[] sha1h = sha1.digest();
@@ -1522,7 +1624,7 @@ public class Launcher extends JFrame {
 	 */
 	void doUninstall() {
 		if (JOptionPane.OK_OPTION == JOptionPane.showConfirmDialog(this, 
-				label("Do you want to uninstall the game (removes all game files except save)? "),
+				label("Do you want to uninstall the game (removes all game files except save)?"),
 				label("Uninstall"), JOptionPane.YES_NO_OPTION)) {
 			File[] files = currentDir.listFiles(new FilenameFilter() {
 				@Override
@@ -1557,18 +1659,6 @@ public class Launcher extends JFrame {
 		launcher.setVisible(false);
 		cancel.setVisible(true);
 		
-		cancelAction = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (worker != null) {
-					worker.cancel(true);
-					worker = null;
-				}
-				progressPanel.setVisible(false);
-				cancel.setVisible(false);
-				doActOnUpdates();
-			}
-		};
 		final long ts = System.currentTimeMillis();
 		worker = new SwingWorker<Boolean, Void>() {
 			/** Move self to the install directory? */
@@ -1626,5 +1716,207 @@ public class Launcher extends JFrame {
 		}
 		
 		doClose();
+	}
+	/**
+	 * Save the configuration.
+	 */
+	void saveConfig() {
+		XElement cfg = new XElement("open-ig-launcher-config");
+		cfg.set("version", VERSION);
+		cfg.set("language", language);
+		cfg.set("jvm", jvm);
+		cfg.set("memory", memory);
+		try {
+			cfg.save(config);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Display the run settings dialog.
+	 */
+	void doSettings() {
+		final LModule m = updates != null ? updates.getModule(GAME) : null;
+		if (m == null) {
+			return;
+		}
+		
+		
+		
+		final JDialog dialog = new JDialog(this, label("Run settings"));
+		
+		Container c = dialog.getContentPane();
+		
+		JPanel p = new JPanel();
+		p.setBackground(backgroundColoring);
+		
+		c.add(p);
+		
+		GroupLayout gl = new GroupLayout(p);
+		p.setLayout(gl);
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(true);
+		
+		final JTextField jvmField = new JTextField(30);
+		if (jvm != null) {
+			jvmField.setText(jvm);
+		}
+		IGButton browse = new IGButton(label("Browse..."));
+		browse.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String path = System.getProperty("java.home");
+				if (!jvmField.getText().isEmpty()) {
+					path = jvmField.getText();
+				}
+				JFileChooser fc = new JFileChooser(path);
+				fc.setMultiSelectionEnabled(false);
+				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				if (fc.showOpenDialog(dialog) == JFileChooser.APPROVE_OPTION) {
+					jvmField.setText(fc.getSelectedFile().getAbsolutePath());
+				}
+				
+			}
+		});
+		final JFormattedTextField memField = new JFormattedTextField(new NumberFormatter());
+		if (memory != null) {
+			memField.setValue(memory);
+		}
+		memField.setColumns(5);
+		
+		JLabel jvmLabel = new JLabel(label("Java runtime home:"));
+		JLabel jvmLabelNow = new JLabel(format("Default: %s", System.getProperty("java.home")));
+		
+		JLabel memMb = new JLabel(label("MB"));
+
+		JLabel memLabel = new JLabel(label("Memory:"));
+		JLabel memLabelNow = new JLabel(format("Default: %s MB", m.memory));
+
+		IGButton ok = new IGButton(label("OK"));
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (memField.getText().isEmpty()) {
+					memory = null;
+				} else {
+					int mi = Integer.parseInt(memField.getText());
+					if (mi <= 0) {
+						memory = null;
+					} else {
+						memory = mi;
+					}
+				}
+				if (jvmField.getText().isEmpty()) {
+					jvm = null;
+				} else {
+					jvm = jvmField.getText();
+				}
+				dialog.dispose();
+			}
+		});
+		IGButton cancel = new IGButton(label("Cancel"));
+		cancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+
+		jvmLabel.setFont(fontMedium);
+		jvmLabelNow.setFont(fontMedium);
+		jvmField.setFont(fontMedium);
+		
+		memLabelNow.setFont(fontMedium);
+		memLabel.setFont(fontMedium);
+		memField.setFont(fontMedium);
+		memMb.setFont(fontMedium);
+		
+		jvmLabel.setForeground(foreground);
+		jvmLabelNow.setForeground(foreground);
+		jvmField.setForeground(foreground);
+		
+		memLabelNow.setForeground(foreground);
+		memLabel.setForeground(foreground);
+		memField.setForeground(foreground);
+		memMb.setForeground(foreground);
+		
+		ok.setFont(fontMedium);
+		cancel.setFont(fontMedium);
+		browse.setFont(fontMedium);
+		ok.setForeground(foreground);
+		cancel.setForeground(foreground);
+		browse.setForeground(foreground);
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup(Alignment.CENTER)
+			.addGroup(
+				gl.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addGroup(
+						gl.createParallelGroup()
+						.addComponent(jvmLabel)
+						.addComponent(memLabel)
+					)
+					.addGroup(
+						gl.createParallelGroup()
+						.addComponent(jvmField)
+						.addGroup(
+							gl.createSequentialGroup()
+							.addComponent(memField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(memMb)
+						)
+					)
+					.addComponent(browse)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addGap(30)
+					.addComponent(jvmLabelNow)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addGap(30)
+					.addComponent(memLabelNow)
+				)
+			)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(ok)
+				.addComponent(cancel)
+			)
+		);
+		
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(jvmLabel)
+				.addComponent(jvmField)
+				.addComponent(browse)
+			)
+			.addComponent(jvmLabelNow)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(memLabel)
+				.addComponent(memField)
+				.addComponent(memMb)
+			)
+			.addComponent(memLabelNow)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(ok)
+				.addComponent(cancel)
+			)
+		);
+		
+		gl.linkSize(SwingConstants.HORIZONTAL, ok, cancel);
+		
+		dialog.setResizable(false);
+		dialog.pack();
+		dialog.setLocationRelativeTo(this);
+		dialog.setModal(true);
+		dialog.setVisible(true);
+		
 	}
 }

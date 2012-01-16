@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
-	<module id='Launcher' version='0.13'>
+	<module id='Launcher' version='0.20'>
 		<!-- General module description -->
 		<general url='http://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
@@ -15,13 +15,13 @@
 		</general>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-			<desc lang='hu'>Modul indítás javítások.</desc>
-			<desc lang='en'>Module launch fixes.</desc>
+			<desc lang='hu'>Fejlesztett indító.</desc>
+			<desc lang='en'>Improved launcher.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  http://open-ig.googlecode.com/files/ -->
-		<file url='http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='dd0ae3078451467fc5c88a7caaa4316b7a49b9a2'>
+		<file url='http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='da89397a49e2f78fa0f975c73ed115b2389acb84'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
