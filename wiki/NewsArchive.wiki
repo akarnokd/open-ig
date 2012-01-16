@@ -5,6 +5,12 @@
 = Recent =
 == January, 2012 ==
 
+*January 16, 2012*
+
+Már egy ideje terveztem új videó készítését. Íme:
+
+<wiki:video url="http://www.youtube.com/watch?v=Gc1s5wNfCAE"/>
+
 *January 15, 2012*
 
 Thanks to the great work of Joe, we can finally announce the version 0.94, where the AI and some missions are in place. Enjoy.
