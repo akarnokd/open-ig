@@ -42,6 +42,14 @@ public class IGButton extends JButton {
 		disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
 		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
 	}
+	/**
+	 * Constructor. Sets the text.
+	 * @param text the text
+	 */
+	public IGButton(String text) {
+		this();
+		setText(text);
+	}
 	@Override
 	public Dimension getPreferredSize() {
 		return largeButton.getPreferredSize(getFontMetrics(getFont()), getText());
