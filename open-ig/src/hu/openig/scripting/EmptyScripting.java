@@ -20,6 +20,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.util.Collections;
@@ -33,14 +34,12 @@ public class EmptyScripting implements GameScripting {
 
 	@Override
 	public List<VideoMessage> getSendMessages() {
-		// TODO Auto-generated method stub
-		return null;
+		return U.newArrayList();
 	}
 
 	@Override
 	public List<VideoMessage> getReceiveMessages() {
-		// TODO Auto-generated method stub
-		return null;
+		return U.newArrayList();
 	}
 
 	@Override
