@@ -9,10 +9,12 @@
 package hu.openig.ui;
 
 import hu.openig.render.GenericMediumButton;
+import hu.openig.render.RenderTools;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 
@@ -27,6 +29,8 @@ public class IGButton extends JButton {
 	private GenericMediumButton largeButton;
 	/** The large button pressed. */
 	private GenericMediumButton largeButtonPressed;
+	/** The disabled pattern. */
+	private BufferedImage disabledPattern;
 
 	/** Constructor. Initializes the button graphics. */
 	public IGButton() {
@@ -34,6 +38,9 @@ public class IGButton extends JButton {
 		setOpaque(false);
 		largeButton = new GenericMediumButton("/hu/openig/gfx/button_medium.png");
 		largeButtonPressed = new GenericMediumButton("/hu/openig/gfx/button_medium_pressed.png");
+		int[] disabled = { 0xFF000000, 0xFF000000, 0, 0, 0xFF000000, 0, 0, 0, 0 };
+		disabledPattern = new BufferedImage(3, 3, BufferedImage.TYPE_INT_ARGB);
+		disabledPattern.setRGB(0, 0, 3, 3, disabled, 0, 3);
 	}
 	@Override
 	public Dimension getPreferredSize() {
@@ -48,6 +55,9 @@ public class IGButton extends JButton {
 			largeButtonPressed.paintTo(g2, 0, 0, getWidth(), getHeight(), true, getText());
 		} else {
 			largeButton.paintTo(g2, 0, 0, getWidth(), getHeight(), false, getText());
+		}
+		if (!isEnabled()) {
+			RenderTools.fill(g2, 0, 0, getWidth(), getHeight(), disabledPattern);
 		}
 	}
 }

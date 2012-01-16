@@ -40,7 +40,7 @@ public class LUpdate {
 	 * Process the contents of the XML.
 	 * @param root the root node
 	 */
-	void process(XElement root) {
+	public void process(XElement root) {
 		for (XElement module : root.childrenWithName("module")) {
 			LModule mdl = new LModule();
 			modules.add(mdl);
@@ -57,8 +57,11 @@ public class LUpdate {
 			mdl.releaseNotes.parse(not);
 			
 			XElement exec = module.childElement("execute");
-			if (exec.get("memory") != null) {
+			if (exec.has("memory")) {
 				mdl.memory = Integer.parseInt(exec.get("memory"));
+			}
+			if (exec.has("class")) {
+				mdl.clazz = exec.get("class");
 			}
 			mdl.executeFile = exec.get("file");
 			
@@ -66,6 +69,7 @@ public class LUpdate {
 				LFile f = new LFile();
 				f.url = eFile.get("url");
 				f.sha1 = eFile.get("sha1");
+				f.size = eFile.getLong("size", -1);
 				f.parse(eFile);
 				mdl.files.add(f);
 			}
@@ -82,7 +86,7 @@ public class LUpdate {
 	 * @param id the module id
 	 * @return the module or null if not found
 	 */
-	LModule getModule(String id) {
+	public LModule getModule(String id) {
 		for (LModule m : modules) {
 			if (m.id.equals(id)) {
 				return m;
