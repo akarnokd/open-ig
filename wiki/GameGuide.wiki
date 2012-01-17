@@ -3,7 +3,7 @@
 
 <wiki:toc max_depth="3" />
 
-= Gameplay Tips =
+= Gameplay tips =
 
   * Planetary accounting and statistics gathering are performed at midnight. Morale affecting factors such as shortages are considered exactly at this moment. Therefore, plan your building upgdares and reconstruction accordingly, i.e., do not start upgrading your Arcologies at 23:50, because you may get a massive morale loss due the temporary living space shortage.
   * If you have the money but not enough planets, you should start as many research as possible. They may not run to completion but you get a headstart.
