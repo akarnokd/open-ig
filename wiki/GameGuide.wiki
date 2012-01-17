@@ -10,6 +10,26 @@
   * If you want to place multiple buildings of the same type, hold SHIFT while placing a building.
   * Most listing offers the ability to scroll them via the mouse wheel. For example, you may scroll the building panel on the colony screen instead of clicking on the up or down button.
 
+== Mission tips ==
+
+=== Mission 1: Rebuild Achilles ===
+
+  * Try not to sell any radar or the damaged buildings.
+  * Repair the Fire Brigade, Nuclear Plant, Church and Prefab Housing first
+  * Reduce tax until the morale grows back to 50%
+  * Repair the military spaceport as it will repair your damaged fleets
+
+=== Mission 2: Protect the traders ===
+
+  * Easy except the third task.
+  * Complete Mission 3 to receive a shield and use it against the last attackers.
+  * In the last task, if the Pirate destroyer targets your Fighter, move the fighter around it in a circle so the laser doesn't hit it. Use the remaining ships to destroy the pirates.
+  * Regenerate your fleet over a planet with military spaceport (e.g., Achilles if you kept the building)
+
+=== Mission 3: Escort cargo ===
+
+  * Easy.
+
 = Mouse and keyboard =
 == Keyboard shortcuts ==
 
