@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -339,5 +340,114 @@ public final class U {
 			dest.add(t);
 		}
 		return dest;
+	}
+	
+	/**
+	 * Create a new {@code ArrayList} from the supplied sequence.
+	 * @param <T> the element type
+	 * @param src the source sequence
+	 * @return the created and filled-in ArrayList
+	 */
+	public static <T> ArrayList<T> newArrayList(Iterable<? extends T> src) {
+		if (src instanceof Collection) {
+			return new ArrayList<T>((Collection<? extends T>)src);
+		}
+		ArrayList<T> result = newArrayList();
+		for (T t : src) {
+			result.add(t);
+		}
+		return result;
+	}
+	/**
+	 * Create a new {@code HashSet} from the supplied sequence.
+	 * @param <T> the element type
+	 * @param src the source sequence
+	 * @return the created and filled-in HashSet
+	 */
+	public static <T> HashSet<T> newHashSet(Iterable<? extends T> src) {
+		if (src instanceof Collection) {
+			return new HashSet<T>((Collection<? extends T>)src);
+		}
+		HashSet<T> result = newHashSet();
+		for (T t : src) {
+			result.add(t);
+		}
+		return result;
+	}
+	/**
+	 * Create a new {@code HashSet} from the supplied array.
+	 * @param <T> the element type
+	 * @param src the source array
+	 * @return the created and filled-in HashSet
+	 */
+	public static <T> HashSet<T> newHashSet(T... src) {
+		HashSet<T> result = newHashSet();
+		for (T t : src) {
+			result.add(t);
+		}
+		return result;
+	}
+	/**
+	 * Create a new {@code HashMap} from the supplied other map.
+	 * @param <K> the key type
+	 * @param <V> the value type
+	 * @param src the source map
+	 * @return the created and filled-in HashMap
+	 */
+	public static <K, V> HashMap<K, V> newHashMap(Map<? extends K, ? extends V> src) {
+		return new HashMap<K, V>(src);
+	}
+	/**
+	 * Create a new {@code HashMap} from the supplied sequence of map entries.
+	 * @param <K> the key type
+	 * @param <V> the value type
+	 * @param src the source map
+	 * @return the created and filled-in HashMap
+	 */
+	public static <K, V> HashMap<K, V> newHashMap(Iterable<? extends Map.Entry<? extends K, ? extends V>> src) {
+		HashMap<K, V> result = newHashMap();
+		for (Map.Entry<? extends K, ? extends V> e : src) {
+			result.put(e.getKey(), e.getValue());
+		}
+		return result;
+	}
+	/**
+	 * Create a new {@code HashMap} from the supplied other map.
+	 * @param <K> the key type
+	 * @param <V> the value type
+	 * @param src the source map
+	 * @return the created and filled-in HashMap
+	 */
+	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(Map<? extends K, ? extends V> src) {
+		return new LinkedHashMap<K, V>(src);
+	}
+	/**
+	 * Create a new {@code HashMap} from the supplied sequence of map entries.
+	 * @param <K> the key type
+	 * @param <V> the value type
+	 * @param src the source map
+	 * @return the created and filled-in HashMap
+	 */
+	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(
+			Iterable<? extends Map.Entry<? extends K, ? extends V>> src) {
+		LinkedHashMap<K, V> result = newLinkedHashMap();
+		for (Map.Entry<? extends K, ? extends V> e : src) {
+			result.put(e.getKey(), e.getValue());
+		}
+		return result;
+	}
+	/**
+	 * Wraps the iterator into an iterable to be used with for-each.
+	 * @param <T> the element type
+	 * @param it the iterator
+	 * @return the iterable
+	 */
+	public static <T> Iterable<T> iterable(final Iterator<T> it) {
+		return new Iterable<T>() {
+			@Override
+			public Iterator<T> iterator() {
+				return it;
+			}
+		};
 	}
 }
