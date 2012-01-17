@@ -60,6 +60,9 @@
 || Shift+Right Click || Spacewar<br>Groundwar || Move to location ||
 || S || Spacewar<br>Groundwar || Stop movement/attack ||
 || Ctrl+Right Click || Spacewar<br>Groundwar || Attack target ||
+|| Right click || Starmap, Spacewar, Colony || *Classic mode*: Move to or attack enemy ||
+|| Middle button drag || Starmap, Spacewar, Colony || *Classic mode*: pan the maps ||
+|| CTRL+Middle button || Starmap, Spacewar, Colony || *Classic mode*: zoom to fit. ||
 
 = Gameplay mechanics =
 
