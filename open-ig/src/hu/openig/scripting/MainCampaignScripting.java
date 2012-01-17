@@ -790,7 +790,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		if (!o.visible) {
 			o.visible = true;
 			world.env.showObjectives(true);
-			world.env.playSound(SoundType.SUCCESS);
+			world.env.playSound(SoundType.NEW_TASK);
 			return true;
 		}
 		return false;
