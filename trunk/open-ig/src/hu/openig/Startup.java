@@ -52,6 +52,14 @@ public final class Startup {
 		Configuration config = new Configuration("open-ig-config.xml");
 		config.watcherWindow = new ConsoleWatcher(args, Configuration.VERSION, config.language);
 		config.load();
+		
+		if (argset.contains("-hu")) {
+			config.language = "hu";
+		} else
+		if (argset.contains("-en")) {
+			config.language = "en";
+		}
+		
 //		if (!config.load() || argset.contains("-config")) {
 //			doStartConfiguration(config);
 //		} else {
