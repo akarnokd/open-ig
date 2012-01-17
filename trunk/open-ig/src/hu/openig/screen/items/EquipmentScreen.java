@@ -309,7 +309,7 @@ public class EquipmentScreen extends ScreenBase {
 		endSplit.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doEndSplit();
 			}
 		};
@@ -319,7 +319,7 @@ public class EquipmentScreen extends ScreenBase {
 		endJoin.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doEndJoin();
 			}
 		};
@@ -328,7 +328,7 @@ public class EquipmentScreen extends ScreenBase {
 		prev.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doPrev();
 			}
 		};
@@ -337,7 +337,7 @@ public class EquipmentScreen extends ScreenBase {
 		next.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doNext();
 			}
 		};
@@ -449,7 +449,7 @@ public class EquipmentScreen extends ScreenBase {
 				}
 				editNew = true;
 				if (config.computerVoiceScreen) {
-					commons.sounds.play(SoundType.NEW_FLEET);
+					commons.effectSound(SoundType.NEW_FLEET);
 				}
 			}
 		};
@@ -460,7 +460,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				if (addButton.visible()) {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doAddItem();
 				}
 			}
@@ -473,7 +473,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				if (delButton.visible()) {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doRemoveItem();
 				}
 			}
@@ -485,7 +485,7 @@ public class EquipmentScreen extends ScreenBase {
 		deleteButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doDeleteFleet();
 			}
 		};
@@ -497,7 +497,7 @@ public class EquipmentScreen extends ScreenBase {
 			public void invoke() {
 				doTransfer();
 				if (config.computerVoiceScreen) {
-					commons.sounds.play(SoundType.JOIN_FLEETS);
+					effectSound(SoundType.JOIN_FLEETS);
 				}
 			}
 		};
@@ -509,7 +509,7 @@ public class EquipmentScreen extends ScreenBase {
 			public void invoke() {
 				doSplit();
 				if (config.computerVoiceScreen) {
-					commons.sounds.play(SoundType.SPLIT_FLEET);
+					effectSound(SoundType.SPLIT_FLEET);
 				}
 			}
 		};
@@ -518,7 +518,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public boolean mouse(UIMouse e) {
 				if (e.has(Type.DOWN) && e.has(Modifier.SHIFT)) {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doAddMany();
 					stop();
 					return true;
@@ -531,7 +531,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				if (addOne.visible()) {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doAddOne();
 				}
 			}
@@ -542,7 +542,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public boolean mouse(UIMouse e) {
 				if (e.has(Type.DOWN) && e.has(Modifier.SHIFT)) {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doRemoveMany();
 					stop();
 					return true;
@@ -555,7 +555,7 @@ public class EquipmentScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				if (removeOne.visible()) {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doRemoveOne();
 				}
 			}
@@ -572,7 +572,7 @@ public class EquipmentScreen extends ScreenBase {
 		left1.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 1, rightList.groupIndex(research(), 0));
 			}
 		};
@@ -581,7 +581,7 @@ public class EquipmentScreen extends ScreenBase {
 		left2.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 2, rightList.groupIndex(research(), 0));
 			}
 		};
@@ -590,7 +590,7 @@ public class EquipmentScreen extends ScreenBase {
 		left3.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doMoveItem(secondary, fleet(), research(), 3, rightList.groupIndex(research(), 0));
 			}
 		};
@@ -599,7 +599,7 @@ public class EquipmentScreen extends ScreenBase {
 		right1.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 1, leftList.groupIndex(research(), 0));
 			}
 		};
@@ -608,7 +608,7 @@ public class EquipmentScreen extends ScreenBase {
 		right2.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 2, leftList.groupIndex(research(), 0));
 			}
 		};
@@ -617,7 +617,7 @@ public class EquipmentScreen extends ScreenBase {
 		right3.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doMoveItem(fleet(), secondary, research(), 3, leftList.groupIndex(research(), 0));
 			}
 		};
@@ -626,7 +626,7 @@ public class EquipmentScreen extends ScreenBase {
 		listButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				fleetListing.visible(!fleetListing.visible());
 				if (fleetListing.visible()) {
 					if (transferMode) {
@@ -666,7 +666,7 @@ public class EquipmentScreen extends ScreenBase {
 		configure.onSelect = new Action1<InventorySlot>() {
 			@Override
 			public void invoke(InventorySlot value) {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				onSelectInventorySlot(value);
 			}
 		};
@@ -674,28 +674,28 @@ public class EquipmentScreen extends ScreenBase {
 		Action1<ResearchType> selectSlot = new Action1<ResearchType>() {
 			@Override
 			public void invoke(ResearchType value) {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				onSelectResearchSlot(value);
 			}
 		};
 		Action1<ResearchType> selectVehicle = new Action1<ResearchType>() {
 			@Override
 			public void invoke(ResearchType value) {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				onSelectVehicleSlot(value);
 			}
 		};
 		leftList.onSelect = new Action1<InventoryItem>() {
 			@Override
 			public void invoke(InventoryItem value) {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				onSelectInventoryItem(value);
 			}
 		};
 		rightList.onSelect = new Action1<InventoryItem>() {
 			@Override
 			public void invoke(InventoryItem value) {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				onSelectInventoryItem(value);
 			}
 		};
@@ -744,7 +744,7 @@ public class EquipmentScreen extends ScreenBase {
 		fleetListing.onSelect = new Action1<Fleet>() {
 			@Override
 			public void invoke(Fleet value) {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				if (!transferMode) {
 					player().currentFleet = value;
 					player().selectionMode = SelectionMode.FLEET;
@@ -767,7 +767,7 @@ public class EquipmentScreen extends ScreenBase {
 		sell.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doSell();
 			}
 		};
@@ -795,7 +795,7 @@ public class EquipmentScreen extends ScreenBase {
 		return new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				displayCategory(cat);
 				configure.selectedSlot = null;
 			}
@@ -1791,7 +1791,7 @@ public class EquipmentScreen extends ScreenBase {
 						player().changeInventoryCount(research(), -delta);
 					}
 					if (config.computerVoiceScreen) {
-						commons.sounds.play(SoundType.SHIP_DEPLOYED);
+						effectSound(SoundType.SHIP_DEPLOYED);
 					}
 				} else 
 				if (research().category == ResearchSubCategory.WEAPONS_TANKS 

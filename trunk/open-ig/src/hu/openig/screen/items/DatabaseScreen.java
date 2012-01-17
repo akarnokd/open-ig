@@ -429,7 +429,7 @@ public class DatabaseScreen extends ScreenBase {
 		recordMessage.action = new Action0() {
 			@Override
 			public void invoke() {
-				commons.sounds.play(SoundType.RECORD_MESSAGE_NO);
+				commons.effectSound(SoundType.RECORD_MESSAGE_NO);
 			}
 		};
 		

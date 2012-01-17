@@ -788,7 +788,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							buildingBox = getBoundingRect(loc);
 							doSelectBuilding(getBuildingAt(loc));
 							if (currentBuilding != null) {
-								sound(SoundType.CLICK_MEDIUM_2);
+								buttonSound(SoundType.CLICK_MEDIUM_2);
 							}
 							rep = true;
 						} else {
@@ -1821,7 +1821,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			buildingDown.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					setBuildingList(1);
 				}
 			};
@@ -1829,7 +1829,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			buildingUp.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					setBuildingList(-1);
 				}
 			};
@@ -1849,7 +1849,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				public void invoke() {
 					placementMode = !placementMode;
 					if (placementMode) {
-						sound(SoundType.CLICK_HIGH_2);
+						buttonSound(SoundType.CLICK_HIGH_2);
 						build.down = true;
 						currentBuilding = null;
 						buildingBox = null;
@@ -2254,7 +2254,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		doAllocation();
 		buildingBox = null;
 		doSelectBuilding(null);
-		commons.sounds.play(SoundType.DEMOLISH_BUILDING);
+		effectSound(SoundType.DEMOLISH_BUILDING);
 	}
 	/** Action for the Active button. */
 	void doActive() {
@@ -2652,9 +2652,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				world().statistics.moneySpent += delta;
 
 				currentBuilding.setLevel(j);
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 			} else {
-				sound(SoundType.NOT_AVAILABLE);
+				buttonSound(SoundType.NOT_AVAILABLE);
 				commons.control().displayError(get("message.not_enough_money"));
 			}
 		}
@@ -2712,14 +2712,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		sidebarNavigation.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
+				buttonSound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 				showSidebarButtons = !showSidebarButtons;
 			}
 		};
 		sidebarRadar.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
+				buttonSound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 				radar.visible(!radar.visible());
 				radarPanel.visible(!radarPanel.visible());
 			}
@@ -2728,7 +2728,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			@Override
 			public void invoke() {
 				if (planet().owner == player()) {
-					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
+					buttonSound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showBuildingInfo = !showBuildingInfo;
 					upgradePanel.visible(currentBuilding != null 
 							&& currentBuilding.type.upgrades.size() > 0 
@@ -2740,7 +2740,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			@Override
 			public void invoke() {
 				if (planet().owner == player()) {
-					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
+					buttonSound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showBuildingList = !showBuildingList;
 				}
 			}
@@ -2788,28 +2788,28 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		buildingInfoPanel.stateActive.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
 		buildingInfoPanel.stateNoEnergy.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
 		buildingInfoPanel.stateDamaged.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
 		buildingInfoPanel.stateInactive.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doActive();
 			}
 		};
@@ -2817,21 +2817,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		buildingInfoPanel.stateOffline.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doOffline();
 			}
 		};
 		buildingInfoPanel.repairing.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doToggleRepair();
 			}
 		};
 		buildingInfoPanel.damaged.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doToggleRepair();
 			}
 		};
@@ -2840,7 +2840,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			@Override
 			public void invoke() {
 				if (knowledge(planet(), PlanetKnowledge.VISIBLE) > 0) {
-					sound(SoundType.GROUNDWAR_TOGGLE_PANEL);
+					buttonSound(SoundType.GROUNDWAR_TOGGLE_PANEL);
 					showInfo = !showInfo;
 				}
 			}
@@ -2852,7 +2852,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		prev.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				player().movePrevPlanet();
 			}
 		};
@@ -2861,7 +2861,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		next.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				player().moveNextPlanet();
 			}
 		};
@@ -3009,15 +3009,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				world().statistics.moneyBuilding += player().currentBuilding.cost;
 				world().statistics.moneySpent += player().currentBuilding.cost;
 				
-				commons.sounds.play(SoundType.DEPLOY_BUILDING);
+				effectSound(SoundType.DEPLOY_BUILDING);
 		} else {
 			if (player().money < player().currentBuilding.cost) {
-				sound(SoundType.NOT_AVAILABLE);
+				buttonSound(SoundType.NOT_AVAILABLE);
 				
 				commons.control().displayError(get("message.not_enough_money"));
 			} else
 			if (!surface().placement.canPlaceBuilding(placementRectangle)) {
-				sound(SoundType.NOT_AVAILABLE);
+				buttonSound(SoundType.NOT_AVAILABLE);
 				
 				commons.control().displayError(get("message.cant_build_there"));
 			}
@@ -3616,7 +3616,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 		if (moved) {
-			sound(SoundType.ACKNOWLEDGE_2);
+			effectSound(SoundType.ACKNOWLEDGE_2);
 		}
 	}
 	/**
@@ -3855,7 +3855,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				}
 				battle.defenderFortificationLosses++;
 				surface().removeBuilding(b);
-				sound(SoundType.EXPLOSION_LONG);
+				effectSound(SoundType.EXPLOSION_LONG);
 			}
 		}
 	}
@@ -3914,7 +3914,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							if (!u.attackUnit.isDestroyed()) {
 								u.attackUnit.damage(u.model.damage);
 								if (u.attackUnit.isDestroyed()) {
-									sound(u.attackUnit.model.destroy);
+									effectSound(u.attackUnit.model.destroy);
 									createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
 									// if the unit destroyed was a paralizer, deparalize everyone
 									if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
@@ -3963,7 +3963,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						if (u.cooldown <= 0) {
 							u.phase++;
 							if (u.model.fire != null) {
-								sound(u.model.fire);
+								effectSound(u.model.fire);
 							}
 							if (u.model.type == GroundwarUnitType.PARALIZER) {
 								if (u.attackUnit.paralized == null) {
@@ -4018,7 +4018,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						if (u.cooldown <= 0) {
 							u.phase++;
 							if (u.model.fire != null) {
-								sound(u.model.fire);
+								effectSound(u.model.fire);
 							}
 							
 							if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
@@ -4073,7 +4073,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				Location loc = Location.of((int)u.x, (int)u.y);
 				Mine m = mines.get(loc);
 				if (m != null && m.owner != u.owner) {
-					sound(SoundType.EXPLOSION_MEDIUM);
+					effectSound(SoundType.EXPLOSION_MEDIUM);
 					Point pt = centerOf(loc);
 					createExplosion(pt.x, pt.y, ExplosionType.GROUND_RED);
 					damageArea(u.x, u.y, m.damage, 1, m.owner);
@@ -4125,7 +4125,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					if (!g.attack.isDestroyed()) {
 						g.attack.damage(g.model.damage);
 						if (g.attack.isDestroyed()) {
-							sound(g.attack.model.destroy);
+							effectSound(g.attack.model.destroy);
 							createExplosion(g.attack, ExplosionType.GROUND_RED);
 							g.attack = null;
 						}
@@ -4142,7 +4142,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (rotateStep(g, centerOf(g.attack))) {
 					if (g.cooldown <= 0) {
 						g.phase++;
-						sound(g.model.fire);
+						effectSound(g.model.fire);
 					} else {
 						g.cooldown -= SIMULATION_DELAY;
 					}
@@ -4565,7 +4565,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 		if (stopped) {
-			sound(SoundType.NOT_AVAILABLE);
+			effectSound(SoundType.NOT_AVAILABLE);
 		}
 	}
 	/**
@@ -4636,7 +4636,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 		if (attacked) {
-			sound(SoundType.ACKNOWLEDGE_1);
+			effectSound(SoundType.ACKNOWLEDGE_1);
 		}
 	}
 	/**

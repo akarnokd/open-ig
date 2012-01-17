@@ -845,7 +845,7 @@ public class BridgeScreen extends ScreenBase {
 		} catch (ExecutionException ex) {
 			ex.printStackTrace();
 		}
-		sound(SoundType.ACKNOWLEDGE_2);
+		buttonSound(SoundType.ACKNOWLEDGE_2);
 		videoAppearAnim.start();
 	}
 	/**
@@ -894,7 +894,7 @@ public class BridgeScreen extends ScreenBase {
 					videoAppear = videoFront;
 					videoFront = null;
 					videoAppearAnim.start();
-					sound(SoundType.ACKNOWLEDGE_2);
+					buttonSound(SoundType.ACKNOWLEDGE_2);
 					videoSubtitle = null;
 				}
 			};

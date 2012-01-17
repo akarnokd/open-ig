@@ -848,8 +848,26 @@ public class CommonResources implements GameEnvironment {
 		}, name);
 	}
 	@Override
-	public void playSound(SoundType type) {
-		sounds.play(type);
+	public void computerSound(SoundType type) {
+		if (config.computerVoiceNotify) {
+			sounds.playSound(type);
+		}
+	}
+	@Override
+	public void buttonSound(SoundType type) {
+		if (config.buttonSounds) {
+			sounds.playSound(type);
+		}
+	}
+	@Override
+	public void effectSound(SoundType type) {
+		sounds.playSound(type);
+	}
+	@Override
+	public void screenSound(SoundType type) {
+		if (config.computerVoiceScreen) {
+			sounds.playSound(type);
+		}
 	}
 	@Override
 	public void playVideo(final String name, final Action0 action) {

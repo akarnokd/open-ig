@@ -223,7 +223,7 @@ public class LoadSaveScreen extends ScreenBase {
 		loadSavePage.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				setRandomBackground();
 				displayPage(SettingsPage.LOAD_SAVE);
 			}
@@ -233,7 +233,7 @@ public class LoadSaveScreen extends ScreenBase {
 		audioPage.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPage(SettingsPage.AUDIO);
 			}
 		};
@@ -243,7 +243,7 @@ public class LoadSaveScreen extends ScreenBase {
 		gameplayPage.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPage(SettingsPage.GAMEPLAY);
 			}
 		};
@@ -253,7 +253,7 @@ public class LoadSaveScreen extends ScreenBase {
 		back.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doBack();
 			}
 		};
@@ -265,7 +265,7 @@ public class LoadSaveScreen extends ScreenBase {
 		save.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doSave();
 			}
 		};
@@ -275,7 +275,7 @@ public class LoadSaveScreen extends ScreenBase {
 		load.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doLoad();
 			}
 		};
@@ -285,7 +285,7 @@ public class LoadSaveScreen extends ScreenBase {
 		mainmenu.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doMainMenu();
 			}
 		};
@@ -295,7 +295,7 @@ public class LoadSaveScreen extends ScreenBase {
 		otherSettings.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doOtherSettings();
 			}
 		};
@@ -306,7 +306,7 @@ public class LoadSaveScreen extends ScreenBase {
 		delete.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doDelete();
 			}
 		};
@@ -326,7 +326,7 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				config.effectVolume = Math.max(0, config.effectVolume - 1);
-				commons.sounds.play(SoundType.BAR);
+				commons.sounds.playSound(SoundType.BAR);
 				askRepaint(base);
 			}
 		};
@@ -334,7 +334,7 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				config.effectVolume = Math.min(100, config.effectVolume + 1);
-				commons.sounds.play(SoundType.BAR);
+				commons.sounds.playSound(SoundType.BAR);
 				askRepaint(base);
 			}
 		};
@@ -349,7 +349,7 @@ public class LoadSaveScreen extends ScreenBase {
 					return true;
 				} else
 				if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.effectVolume == 100))) {
-					commons.sounds.play(SoundType.BAR);
+					commons.sounds.playSound(SoundType.BAR);
 					return true;
 				}
 				return super.mouse(e);
@@ -387,7 +387,7 @@ public class LoadSaveScreen extends ScreenBase {
 				if (!commons.music.isRunning()) {
 					int e = config.effectVolume;
 					config.effectVolume = config.musicVolume;
-					commons.sounds.play(SoundType.BAR);
+					commons.sounds.playSound(SoundType.BAR);
 					config.effectVolume = e;
 				}
 				askRepaint(base);
@@ -401,7 +401,7 @@ public class LoadSaveScreen extends ScreenBase {
 				if (!commons.music.isRunning()) {
 					int e = config.effectVolume;
 					config.effectVolume = config.musicVolume;
-					commons.sounds.play(SoundType.BAR);
+					commons.sounds.playSound(SoundType.BAR);
 					config.effectVolume = e;
 				}
 				askRepaint(base);
@@ -421,7 +421,7 @@ public class LoadSaveScreen extends ScreenBase {
 					if (!commons.music.isRunning()) {
 						int ev = config.effectVolume;
 						config.effectVolume = config.musicVolume;
-						commons.sounds.play(SoundType.BAR);
+						commons.sounds.playSound(SoundType.BAR);
 						config.effectVolume = ev;
 					}
 					commons.music.setVolume(config.musicVolume);
@@ -457,7 +457,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 				int e = config.effectVolume;
 				config.effectVolume = config.videoVolume;
-				commons.sounds.play(SoundType.BAR);
+				commons.sounds.playSound(SoundType.BAR);
 				config.effectVolume = e;
 				
 				askRepaint(base);
@@ -473,7 +473,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 				int e = config.effectVolume;
 				config.effectVolume = config.videoVolume;
-				commons.sounds.play(SoundType.BAR);
+				commons.sounds.playSound(SoundType.BAR);
 				config.effectVolume = e;
 
 				askRepaint(base);
@@ -493,7 +493,7 @@ public class LoadSaveScreen extends ScreenBase {
 							|| config.videoVolume == 100)) {
 					int ev = config.effectVolume;
 					config.effectVolume = config.videoVolume;
-					commons.sounds.play(SoundType.BAR);
+					commons.sounds.playSound(SoundType.BAR);
 					config.effectVolume = ev;
 					return true;
 				}
@@ -521,7 +521,7 @@ public class LoadSaveScreen extends ScreenBase {
 		reequipTanks.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.reequipTanks = reequipTanks.selected();
 			}
 		};
@@ -529,7 +529,7 @@ public class LoadSaveScreen extends ScreenBase {
 		reequipBombs.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.reequipBombs = reequipBombs.selected();
 			}
 		};
@@ -537,7 +537,7 @@ public class LoadSaveScreen extends ScreenBase {
 		computerVoiceScreen.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.computerVoiceScreen = computerVoiceScreen.selected();
 			}
 		};
@@ -545,7 +545,7 @@ public class LoadSaveScreen extends ScreenBase {
 		computerVoiceNotify.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.computerVoiceNotify = computerVoiceNotify.selected();
 			}
 		};
@@ -560,7 +560,7 @@ public class LoadSaveScreen extends ScreenBase {
 		aprev.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_LOW_1);
+				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 5000);
 				askRepaint(base);
 			}
@@ -568,7 +568,7 @@ public class LoadSaveScreen extends ScreenBase {
 		anext.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_LOW_1);
+				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 5000);
 				askRepaint(base);
 			}
@@ -587,7 +587,7 @@ public class LoadSaveScreen extends ScreenBase {
 		autoRepair.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.autoRepair = autoRepair.selected();
 			}
 		};
@@ -596,7 +596,7 @@ public class LoadSaveScreen extends ScreenBase {
 		buttonSounds.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.buttonSounds = buttonSounds.selected();
 			}
 		};
@@ -605,7 +605,7 @@ public class LoadSaveScreen extends ScreenBase {
 		satelliteDeploy.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.satelliteDeploy = satelliteDeploy.selected();
 			}
 		};
@@ -621,7 +621,7 @@ public class LoadSaveScreen extends ScreenBase {
 		rmprev.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.max(125, config.researchMoneyPercent - 125);
 				askRepaint(base);
 			}
@@ -629,7 +629,7 @@ public class LoadSaveScreen extends ScreenBase {
 		rmnext.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.min(2000, config.researchMoneyPercent + 125);
 				askRepaint(base);
 			}
@@ -652,7 +652,7 @@ public class LoadSaveScreen extends ScreenBase {
 		automaticBattle.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.automaticBattle = automaticBattle.selected();
 			}
 		};
@@ -661,7 +661,7 @@ public class LoadSaveScreen extends ScreenBase {
 		radarUnion.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.radarUnion = radarUnion.selected();
 			}
 		};
@@ -678,7 +678,7 @@ public class LoadSaveScreen extends ScreenBase {
 		arprev.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_LOW_1);
+				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoRepairLimit = Math.max(0, config.autoRepairLimit - 5000);
 				askRepaint(base);
 			}
@@ -686,7 +686,7 @@ public class LoadSaveScreen extends ScreenBase {
 		arnext.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_LOW_1);
+				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoRepairLimit = Math.min(Integer.MAX_VALUE, config.autoRepairLimit + 5000);
 				askRepaint(base);
 			}
@@ -712,7 +712,7 @@ public class LoadSaveScreen extends ScreenBase {
 		classicControls.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.classicControls = classicControls.selected();
 			}
 		};
@@ -1069,7 +1069,7 @@ public class LoadSaveScreen extends ScreenBase {
 				int idx = top + e.y / rowHeight;
 				if (idx >= 0 && idx < items.size()) {
 					selected = items.get(idx);
-					sound(SoundType.CLICK_MEDIUM_2);
+					buttonSound(SoundType.CLICK_MEDIUM_2);
 					return true;
 				}
 			} else
@@ -1077,7 +1077,7 @@ public class LoadSaveScreen extends ScreenBase {
 				int idx = top + e.y / rowHeight;
 				if (idx >= 0 && idx < items.size()) {
 					selected = items.get(idx);
-					sound(SoundType.CLICK_MEDIUM_2);
+					buttonSound(SoundType.CLICK_MEDIUM_2);
 					doLoad();
 					return true;
 				}

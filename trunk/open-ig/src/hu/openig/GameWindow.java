@@ -660,7 +660,7 @@ public class GameWindow extends JFrame implements GameControls {
 					primary.onLeave();
 				}
 				if (sound != null && config.computerVoiceScreen && !commons.battleMode) {
-					commons.sounds.play(sound);
+					commons.effectSound(sound);
 				}
 				primary = sb;
 				if (primary != null) {
@@ -672,7 +672,7 @@ public class GameWindow extends JFrame implements GameControls {
 			} else
 			if (playSec) {
 				if (sound != null && config.computerVoiceScreen) {
-					commons.sounds.play(sound);
+					commons.effectSound(sound);
 				}
 			}
 			
@@ -682,7 +682,7 @@ public class GameWindow extends JFrame implements GameControls {
 					secondary.onLeave();
 				}
 				if (sound != null && config.computerVoiceScreen) {
-					commons.sounds.play(sound);
+					commons.effectSound(sound);
 				}
 				secondary = sb;
 				if (secondary != null) {
@@ -835,7 +835,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.NORMAL);
-						commons.sounds.play(SoundType.CLICK_LOW_1);
+						commons.buttonSound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -851,7 +851,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.FAST);
-						commons.sounds.play(SoundType.CLICK_LOW_1);
+						commons.buttonSound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -867,7 +867,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
-						commons.sounds.play(SoundType.CLICK_LOW_1);
+						commons.buttonSound(SoundType.CLICK_LOW_1);
 						repaintInner();
 					}
 					e.consume();
@@ -875,10 +875,10 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_SPACE:
 					if (commons.simulation.paused()) {
 						commons.simulation.resume();
-						commons.sounds.play(SoundType.UI_ACKNOWLEDGE_1);
+						commons.buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 					} else {
 						commons.simulation.pause();
-						commons.sounds.play(SoundType.PAUSE);
+						commons.buttonSound(SoundType.PAUSE);
 					}
 					repaintInner();
 					e.consume();
@@ -1898,7 +1898,7 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 					if (!ableToGroundBattle) {
 						displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
-						commons.sounds.play(SoundType.NOT_AVAILABLE);
+						commons.buttonSound(SoundType.NOT_AVAILABLE);
 						bi.attacker.stop();
 						continue;
 					}
@@ -2193,7 +2193,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public void forceMessage(String messageId, Action0 onSeen) {
 		if (world() != null && !commons.worldLoading) {
 			displayPrimary(Screens.BRIDGE);
-			commons.playSound(SoundType.MESSAGE);
+			commons.computerSound(SoundType.MESSAGE);
 			allScreens.bridge.forceMessage(messageId, onSeen);
 		}
 	}

@@ -235,7 +235,7 @@ public class Sounds {
 	 * Play the given sound effect.
 	 * @param effect the sound to play
 	 */
-	public void play(final SoundType effect) {
+	public void playSound(final SoundType effect) {
 		if (effect == null) {
 			new IllegalArgumentException("Null effect").printStackTrace();
 			return;
@@ -306,7 +306,7 @@ public class Sounds {
 		});
 		Random rnd = new Random();
 		for (int i = 0; i < 1000; i++) {
-			s.play(rnd.nextBoolean() ? SoundType.FIRE_1 : SoundType.GROUND_FIRE_1);
+			s.playSound(rnd.nextBoolean() ? SoundType.FIRE_1 : SoundType.GROUND_FIRE_1);
 			Thread.sleep(100);
 		}
 		Thread.sleep(1000);

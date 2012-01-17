@@ -133,7 +133,7 @@ public class MainScreen extends ScreenBase {
 	}
 	/** Perform the exit. */
 	void doExit() {
-		commons.sounds.play(SoundType.GOOD_BYE);
+		commons.sounds.playSound(SoundType.GOOD_BYE);
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException ex) {
@@ -288,7 +288,7 @@ public class MainScreen extends ScreenBase {
 		single.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPrimary(Screens.SINGLEPLAYER);
 			}
 		};
@@ -298,7 +298,7 @@ public class MainScreen extends ScreenBase {
 		continueLabel.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doContinue();
 			}
 		};
@@ -308,7 +308,7 @@ public class MainScreen extends ScreenBase {
 		load.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
 				scr.displayPage(SettingsPage.LOAD_SAVE);
 				scr.maySave(false);
@@ -323,7 +323,7 @@ public class MainScreen extends ScreenBase {
 		settings.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doSettings();
 			}
 		};
@@ -332,7 +332,7 @@ public class MainScreen extends ScreenBase {
 		videosLabel.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				displaySecondary(Screens.VIDEOS);
 			}
 		};
@@ -359,7 +359,7 @@ public class MainScreen extends ScreenBase {
 		creditsLabel.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doPlayCredits();
 			}
 		};
@@ -380,7 +380,7 @@ public class MainScreen extends ScreenBase {
 		toEng.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = true;
 				toHu.disabled = false;
 				commons.control().switchLanguage("en");
@@ -393,7 +393,7 @@ public class MainScreen extends ScreenBase {
 		toHu.action = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = false;
 				toHu.disabled = true;
 				commons.control().switchLanguage("hu");

@@ -695,10 +695,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			o.state = newState;
 			world.env.showObjectives(true);
 			if (newState == ObjectiveState.SUCCESS) {
-				world.env.playSound(SoundType.SUCCESS);
+				world.env.effectSound(SoundType.SUCCESS);
 			} else 
 			if (newState == ObjectiveState.FAILURE) {
-				world.env.playSound(SoundType.FAIL);
+				world.env.effectSound(SoundType.FAIL);
 			}
 			return true;
 		}
@@ -790,7 +790,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		if (!o.visible) {
 			o.visible = true;
 			world.env.showObjectives(true);
-			world.env.playSound(SoundType.NEW_TASK);
+			world.env.effectSound(SoundType.NEW_TASK);
 			return true;
 		}
 		return false;
