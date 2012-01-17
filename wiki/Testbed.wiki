@@ -1,4 +1,5 @@
 #summary The helper application for screen developments
+#labels Deprecated
 
 See the [Testbed_Notes release notes] about the changes in each version.
 
