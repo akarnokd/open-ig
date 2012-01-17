@@ -287,7 +287,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 			commons.control().moveMouse();
 			// simple sound hack for cabin
 			if (position != null && position.id.equals("cabin")) {
-				commons.sounds.play(SoundType.CABIN);
+				screenSound(SoundType.CABIN);
 			}
 		}
 	}

@@ -166,9 +166,7 @@ public class EquipmentMinimap extends UIComponent {
 			int w = f.owner.fleetIcon.getWidth();
 			int h = f.owner.fleetIcon.getHeight();
 			if (cx - w / 2 - 1 <= x && x <= cx + w / 2 + 1 && cy - h / 2 - 1 <= y && y <= cy + h / 2 + 1) {
-				if (commons.config.buttonSounds) {
-					commons.sounds.play(SoundType.CLICK_HIGH_2);
-				}
+				commons.buttonSound(SoundType.CLICK_HIGH_2);
 				commons.world().player.currentFleet = f;
 				commons.world().player.selectionMode = SelectionMode.FLEET;
 				return;
@@ -179,9 +177,7 @@ public class EquipmentMinimap extends UIComponent {
 				int cx = (int)(p.x * zoom) - mapRect.x;
 				int cy = (int)(p.y * zoom) - mapRect.y;
 				if (cx - 2 <= x && x <= cx + 2 && cy - 2 <= y && y <= cy + 2) {
-					if (commons.config.buttonSounds) {
-						commons.sounds.play(SoundType.CLICK_HIGH_2);
-					}
+					commons.buttonSound(SoundType.CLICK_HIGH_2);
 					commons.world().player.currentPlanet = p;
 					commons.world().player.selectionMode = SelectionMode.PLANET;
 					return;

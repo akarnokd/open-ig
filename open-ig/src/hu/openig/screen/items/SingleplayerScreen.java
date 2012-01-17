@@ -139,7 +139,7 @@ public class SingleplayerScreen extends ScreenBase {
 		playLabel.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doStartGame();
 			}
 		};
@@ -154,7 +154,7 @@ public class SingleplayerScreen extends ScreenBase {
 		customLabel.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doCustomGame();
 			}
 		};
@@ -168,14 +168,14 @@ public class SingleplayerScreen extends ScreenBase {
 		backLabel.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_2);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPrimary(Screens.MAIN);
 			}
 		};
 		
 		difficultyLeft = new UIImageButton(commons.common().moveLeft);
 		difficultyLeft.onClick = new Action0() { @Override public void invoke() { 
-			sound(SoundType.CLICK_HIGH_2);
+			buttonSound(SoundType.CLICK_HIGH_2);
 			doDifficultyLess(); 
 			adjustDifficultyButtons(); 
 		} };
@@ -183,7 +183,7 @@ public class SingleplayerScreen extends ScreenBase {
 		
 		difficultyRight = new UIImageButton(commons.common().moveRight);
 		difficultyRight.onClick = new Action0() { @Override public void invoke() { 
-			sound(SoundType.CLICK_HIGH_2);
+			buttonSound(SoundType.CLICK_HIGH_2);
 			doDifficultyMore(); 
 			adjustDifficultyButtons(); 
 		} };

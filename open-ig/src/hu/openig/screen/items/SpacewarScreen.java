@@ -2948,7 +2948,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		if (moved) {
-			sound(SoundType.ACKNOWLEDGE_2);
+			effectSound(SoundType.ACKNOWLEDGE_2);
 		}
 	}
 	/**
@@ -3072,7 +3072,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		structures.add(proj);
 		
-		sound(r.port.projectile.sound);
+		effectSound(r.port.projectile.sound);
 	}
 	/**
 	 * Set to attack the specified target.
@@ -3095,7 +3095,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		if (attack) {
-			sound(SoundType.ACKNOWLEDGE_1);
+			effectSound(SoundType.ACKNOWLEDGE_1);
 		}
 	}
 	/**
@@ -3129,7 +3129,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		// TODO stop command for other structures
 		if (stop) {
-			sound(SoundType.NOT_AVAILABLE);
+			effectSound(SoundType.NOT_AVAILABLE);
 		}
 	}
 	/**
@@ -3536,7 +3536,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		world().scripting.onSpacewarStep(this);
 		
 		for (SoundType st : soundsToPlay) {
-			sound(st);
+			effectSound(st);
 		}
 		Player winner = act == SpacewarAction.SURRENDER ? player() : checkWinner();
 		
@@ -3820,7 +3820,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		sp.damage = p.projectile.damage * p.count;
 		
 		projectiles.add(sp);
-		sound(p.projectile.sound);
+		effectSound(p.projectile.sound);
 	}
 	/**
 	 * Apply loss results back to the initial fleets and planets.

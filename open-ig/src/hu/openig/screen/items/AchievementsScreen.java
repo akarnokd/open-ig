@@ -178,7 +178,7 @@ public class AchievementsScreen extends ScreenBase {
 		scrollUpButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doScrollUp();
 			}
 		};
@@ -188,7 +188,7 @@ public class AchievementsScreen extends ScreenBase {
 		scrollDownButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doScrollDown();
 			}
 		};
@@ -268,7 +268,7 @@ public class AchievementsScreen extends ScreenBase {
 		achievementLabel.onPressed = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				mode = Screens.ACHIEVEMENTS;
 				adjustLabels();
 				adjustScrollButtons();
@@ -279,7 +279,7 @@ public class AchievementsScreen extends ScreenBase {
 		statisticsLabel.onPressed = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				mode = Screens.STATISTICS;
 				adjustLabels();
 				adjustScrollButtons();

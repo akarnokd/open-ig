@@ -160,10 +160,10 @@ public class StatusbarScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				if (!commons.simulation.paused()) {
-					sound(SoundType.PAUSE);
+					buttonSound(SoundType.PAUSE);
 					commons.simulation.pause();
 				} else {
-					sound(SoundType.UI_ACKNOWLEDGE_1);
+					buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 					commons.simulation.resume();
 				}
 			}
@@ -172,7 +172,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed1.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_LOW_1);
+				buttonSound(SoundType.CLICK_LOW_1);
 				commons.simulation.speed(SimulationSpeed.NORMAL);
 			}
 		};
@@ -180,7 +180,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed2.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_LOW_1);
+				buttonSound(SoundType.CLICK_LOW_1);
 				commons.simulation.speed(SimulationSpeed.FAST);
 			}
 		};
@@ -188,7 +188,7 @@ public class StatusbarScreen extends ScreenBase {
 		speed4.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_LOW_1);
+				buttonSound(SoundType.CLICK_LOW_1);
 				commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
 			}
 		};
@@ -542,7 +542,7 @@ public class StatusbarScreen extends ScreenBase {
 				}
 			} else
 			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				notificationHistory.visible(!notificationHistory.visible());
 				return true;
 			}
@@ -582,8 +582,8 @@ public class StatusbarScreen extends ScreenBase {
 					Message msg = player().messageQueue.peek();
 					if (msg != null) {
 						notification.currentMessage = msg;
-						if (msg.sound != null && config.computerVoiceNotify) {
-							commons.sounds.play(msg.sound);
+						if (msg.sound != null) {
+							computerSound(msg.sound);
 						}
 						askRepaint();
 					}
@@ -613,7 +613,7 @@ public class StatusbarScreen extends ScreenBase {
 		}
 		if (e.within(379, 3, 26, 14) && e.has(Type.DOWN)) {
 			objectives.visible(!objectives.visible());
-			sound(SoundType.CLICK_MEDIUM_2);
+			buttonSound(SoundType.CLICK_MEDIUM_2);
 			return true;
 		} else
 		if (e.within(0, 0, width, 20) 
@@ -622,7 +622,7 @@ public class StatusbarScreen extends ScreenBase {
 			|| (notificationHistory.visible() && e.within(notificationHistory.x, notificationHistory.y, notificationHistory.width, notificationHistory.height))
 		) { 
 			if (e.has(Type.DOWN) && e.within(width - screenMenu.width, 0, screenMenu.width, 20)) {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				screenMenu.highlight = -1;
 				screenMenu.visible(true);
 				return true;
@@ -794,7 +794,7 @@ public class StatusbarScreen extends ScreenBase {
 			scrollUp.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_MEDIUM_2);
+					buttonSound(SoundType.CLICK_MEDIUM_2);
 					doScrollUp();
 				}
 			};
@@ -803,7 +803,7 @@ public class StatusbarScreen extends ScreenBase {
 			scrollDown.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_MEDIUM_2);
+					buttonSound(SoundType.CLICK_MEDIUM_2);
 					doScrollDown();
 				}
 			};
@@ -820,7 +820,7 @@ public class StatusbarScreen extends ScreenBase {
 			clear.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_MEDIUM_2);
+					buttonSound(SoundType.CLICK_MEDIUM_2);
 					doClearHistory();
 				}
 			};

@@ -480,6 +480,6 @@ public abstract class Mission implements GameScriptingEvents {
 		helper.receive(messageId).seen = false;
 		
 		SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, SoundType.NEW_MESSAGE_1, SoundType.NEW_MESSAGE_2, SoundType.NEW_MESSAGE_3));
-		world.env.playSound(snd);
+		world.env.computerSound(snd);
 	}
 }

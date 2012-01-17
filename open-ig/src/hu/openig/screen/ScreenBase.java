@@ -280,10 +280,29 @@ public abstract class ScreenBase extends UIContainer {
 	 * Play a given sound for buttons if the effect is enabled in options.
 	 * @param type the sound type
 	 */
-	public void sound(SoundType type) {
-		if (config.buttonSounds) {
-			commons.sounds.play(type);
-		}
+	public void buttonSound(SoundType type) {
+		commons.buttonSound(type);
+	}
+	/**
+	 * Play a given sound if the computer notification voice is enabled.
+	 * @param type the sound type
+	 */
+	public void computerSound(SoundType type) {
+		commons.computerSound(type);
+	}
+	/**
+	 * Play sound effects (space and ground wars).
+	 * @param type the osund type
+	 */
+	public void effectSound(SoundType type) {
+		commons.effectSound(type);
+	}
+	/**
+	 * Play a screen-switching related sound.
+	 * @param type the sound type
+	 */
+	public void screenSound(SoundType type) {
+		commons.screenSound(type);
 	}
 	/**
 	 * Check if the mouse event is a panning event.

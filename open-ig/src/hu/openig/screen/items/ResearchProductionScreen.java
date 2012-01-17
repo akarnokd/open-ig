@@ -109,7 +109,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			lessPriority.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doLessPriority();
 				}
 			};
@@ -118,7 +118,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			lessBuild.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doChangeCount(-1);
 				}
 			};
@@ -127,7 +127,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			morePriority.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doMorePriority();
 				}
 			};
@@ -136,7 +136,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			moreBuild.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					sound(SoundType.CLICK_HIGH_2);
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doChangeCount(1);
 				}
 			};
@@ -186,7 +186,7 @@ public class ResearchProductionScreen extends ScreenBase {
 						&& !lessBuild.within(e)
 						&& !moreBuild.within(e)
 				) {
-					sound(SoundType.CLICK_MEDIUM_2);
+					buttonSound(SoundType.CLICK_MEDIUM_2);
 				}
 				rep = true;
 			}
@@ -470,7 +470,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		b.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_1);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectSubCategory(cat);
 			}
 		};
@@ -522,9 +522,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		prod.count = 0;
 		prod.priority = 50;
 		productions.put(prod.type, prod);
-		if (config.computerVoiceScreen) {
-			commons.sounds.play(SoundType.ADD_PRODUCTION);
-		}
+		screenSound(SoundType.ADD_PRODUCTION);
 	}
 
 	/**
@@ -590,9 +588,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** Remove the selected production. */
 	void doRemoveProduction() {
 		DefaultAIControls.actionRemoveProduction(player(), research());
-		if (config.computerVoiceScreen) {
-			commons.sounds.play(SoundType.DEL_PRODUCTION);
-		}
+		screenSound(SoundType.DEL_PRODUCTION);
 	}
 	/**
 	 * Select a specific production line.
@@ -658,9 +654,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			rs.assignedMoney = (int)(rt.researchCost * (long)config.researchMoneyPercent / 2000);
 		}
 		rs.state = ResearchState.RUNNING;
-		if (config.computerVoiceScreen) {
-			commons.sounds.play(SoundType.START_RESEARCH);
-		}
+		screenSound(SoundType.START_RESEARCH);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -816,7 +810,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		viewActive.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_1);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				doSelectTechnology(player().runningResearch());
 			}
 		};
@@ -832,7 +826,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		spaceshipsLabel.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_1);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.SPACESHIPS);
 			}
 		};
@@ -840,7 +834,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		equipmentsLabel.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_1);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.EQUIPMENT);
 			}
 		};
@@ -848,7 +842,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		weaponsLabel.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_1);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.WEAPONS);
 			}
 		};
@@ -856,7 +850,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		buildingsLabel.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.UI_ACKNOWLEDGE_1);
+				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.BUILDINS);
 			}
 		};
@@ -891,18 +885,14 @@ public class ResearchProductionScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				setMode(Screens.RESEARCH);
-				if (config.computerVoiceScreen) {
-					commons.sounds.play(SoundType.RESEARCH);
-				}
+				screenSound(SoundType.RESEARCH);
 			}
 		};
 		productionButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
 				setMode(Screens.PRODUCTION);
-				if (config.computerVoiceScreen) {
-					commons.sounds.play(SoundType.PRODUCTION);
-				}
+				screenSound(SoundType.PRODUCTION);
 			}
 		};
 		equipmentButton.onClick = new Action0() {
@@ -1014,7 +1004,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		moneyButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_3);
+				buttonSound(SoundType.CLICK_HIGH_3);
 				doAdjustMoney(2.0f * (moneyMouseLast.x) / moneyButton.width - 1);
 			}
 		};
@@ -1038,7 +1028,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		removeTen.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doChangeCount(-10);
 			}
 		};
@@ -1047,7 +1037,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		removeOne.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doChangeCount(-1);
 			}
 		};
@@ -1056,7 +1046,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		addOne.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doChangeCount(1);
 			}
 		};
@@ -1065,7 +1055,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		addTen.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doChangeCount(10);
 			}
 		};
@@ -1074,7 +1064,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		sell.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				sound(SoundType.CLICK_HIGH_2);
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doSell();
 			}
 		};
@@ -1095,7 +1085,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		Action1<ResearchType> selectSlot = new Action1<ResearchType>() {
 			@Override
 			public void invoke(ResearchType value) {
-				sound(SoundType.CLICK_MEDIUM_2);
+				buttonSound(SoundType.CLICK_MEDIUM_2);
 				doSelectTechnology(value);
 			}
 		};
@@ -1817,8 +1807,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			player().research.get(player().runningResearch()).state = ResearchState.STOPPED;
 		}
 		player().runningResearch(null);
-		if (config.computerVoiceScreen) {
-			commons.sounds.play(SoundType.STOP_RESEARCH);
-		}
+		screenSound(SoundType.STOP_RESEARCH);
 	}
 }
