@@ -8,6 +8,9 @@
   * [ProjectPlan2012 Project plans]
   * [NewsArchive News archive]
   * [GameGuide Game guide]
+    * [GameGuide#Gameplay_tips Tips]
+    * [GameGuide#Mouse_and_keyboard Controls]
+    * [GameGuide#Gameplay_mechanics Mechanics]
   * Other utilities
     * [AnimPlay AnimPlay]
     * [Testbed The development testbed]
