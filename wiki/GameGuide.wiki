@@ -10,7 +10,8 @@
   * If you want to place multiple buildings of the same type, hold SHIFT while placing a building.
   * Most listing offers the ability to scroll them via the mouse wheel. For example, you may scroll the building panel on the colony screen instead of clicking on the up or down button.
 
-= Keyboard shortcuts =
+= Mouse and keyboard =
+== Keyboard shortcuts ==
 
 || *Key* || *Screen* || *Description* ||
 || ESC || Movie || Skip current movie ||
@@ -44,7 +45,7 @@
 || F12 || Any || Achievements screen ||
 || Plus/Minus || Any || Move to next/previous player colony ||
 
-= Mouse gestures =
+== Mouse gestures ==
 
 || *Gesture* || *Screen* || *Description* ||
 || Click || Any overlay screen || Click outside the overlay screen (e.g., the grayed area) to hide the overlay screen ||
