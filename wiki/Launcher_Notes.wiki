@@ -4,6 +4,13 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.20 - Improvements =
+
+  * More details on the download progress
+  * More IG-like look
+  * Downloads a single game Jar file, as all other tools are already included
+  * Ability to install the game anywhere, the launcher then will move itself to the new location as well.
+
 = Version 0.13 - Bugfix release =
   
   * Fixed issue causing the game to hang when run from the Launcher.
