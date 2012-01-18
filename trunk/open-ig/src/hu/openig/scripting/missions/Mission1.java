@@ -8,8 +8,6 @@
 
 package hu.openig.scripting.missions;
 
-import java.util.Set;
-
 import hu.openig.core.Pair;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -19,6 +17,8 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.utils.U;
+
+import java.util.Set;
 
 
 /**
@@ -235,6 +235,13 @@ public class Mission1 extends Mission {
 				helper.gameover();
 				loseGameMovie("loose/destroyed_level_1");
 			}
+		}
+	}
+	@Override
+	public void onLevelChanged() {
+		// start over
+		if (world.level == 1) {
+			removeMissions(1, 5);
 		}
 	}
 }

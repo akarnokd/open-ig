@@ -9,6 +9,7 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
@@ -18,6 +19,7 @@ import hu.openig.model.FleetMode;
 import hu.openig.model.GameScriptingEvents;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
@@ -505,5 +507,68 @@ public abstract class Mission implements GameScriptingEvents {
 	@Override
 	public void onTalkCompleted() {
 		
+	}
+	/**
+	 * Set the slot contents.
+	 * @param ii the inventory item
+	 * @param slotId the slot
+	 * @param technology the technology
+	 * @param count the item count
+	 */
+	protected void setSlot(InventoryItem ii, String slotId, String technology, int count) {
+		for (InventorySlot is : ii.slots) {
+			if (is.slot.id.equals(slotId) && !is.slot.fixed) {
+				is.type = research(technology);
+				is.hp = world.getHitpoints(is.type);
+				is.count = Math.min(is.slot.max, count);
+			}
+		}		
+	}
+	/**
+	 * Remove the mission related variables between the given range.
+	 * @param idxs the array of mission indexes
+	 */
+	protected void removeMissions(final int... idxs) {
+		Func1<String, Boolean> filter = new Func1<String, Boolean>() {
+			@Override
+			public Boolean invoke(String value) {
+				for (int i = 0; i < idxs.length; i++) {
+					if (value.equals("Mission-" + idxs[i])) {
+						return true;
+					}
+					if (value.startsWith("Mission-" + idxs[i] + "-")) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+		helper.clearMissionTimes(filter);
+		helper.clearTimeouts(filter);
+		helper.clearObjectives(filter);
+	}
+	/**
+	 * Remove all mission related variables between the given range.
+	 * @param start the start index inclusive
+	 * @param end the end index inclusive
+	 */
+	protected void removeMissions(final int start, final int end) {
+		Func1<String, Boolean> filter = new Func1<String, Boolean>() {
+			@Override
+			public Boolean invoke(String value) {
+				for (int i = start; i <= end; i++) {
+					if (value.equals("Mission-" + i)) {
+						return true;
+					}
+					if (value.startsWith("Mission-" + i + "-")) {
+						return true;
+					}
+				}
+				return false;
+			}
+		};
+		helper.clearMissionTimes(filter);
+		helper.clearTimeouts(filter);
+		helper.clearObjectives(filter);
 	}
 }
