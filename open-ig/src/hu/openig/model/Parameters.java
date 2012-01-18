@@ -53,4 +53,11 @@ public class Parameters {
 	public int costToHitpoints() {
 		return 10; // DEFAULT: 25
 	}
+	/**
+	 * What is considered a planet-nearby.
+	 * @return the distance
+	 */
+	public int nearbyDistance() {
+		return 10;
+	}
 }
