@@ -38,7 +38,6 @@ public class Mission3 extends Mission {
 			Objective m2t1 = helper.objective("Mission-2-Task-1");
 			Objective m3 = helper.objective("Mission-3");
 			if (!m3.visible && m3.state == ObjectiveState.ACTIVE
-					&& m2t1.visible 
 					&& m2t1.state != ObjectiveState.ACTIVE
 					&& !helper.hasMissionTime("Mission-3")) {
 				helper.setMissionTime("Mission-3", helper.now() + 48);
@@ -64,13 +63,7 @@ public class Mission3 extends Mission {
 				
 				helper.receive("Douglas-Carrier").visible = false;
 				
-				Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Pirates", player("Pirates"));
-				world.removeFleet(fi.first);
-				helper.scriptedFleets().remove(fi.first.id);
-
-				fi = findTaggedFleet("Mission-3-Carrier", player);
-				world.removeFleet(fi.first);
-				helper.scriptedFleets().remove(fi.first.id);
+				removeFleets();
 			}
 			if (helper.isTimeout("Mission-3-Timeout")) {
 				loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
@@ -89,15 +82,27 @@ public class Mission3 extends Mission {
 				helper.clearMissionTime("Mission-3-Success");
 				player.changeInventoryCount(world.researches.get("Shield1"), 1);
 				helper.setTimeout("Mission-3-Done", 13000);
-				Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Carrier", player);
-				world.removeFleet(fi.first);
-				helper.scriptedFleets().remove(fi.first.id);
+				removeFleets();
 			}
 			if (helper.isTimeout("Mission-3-Done")) {
 				helper.objective("Mission-3").visible = false;
 				helper.clearTimeout("Mission-3-Done");
 			}
 		}
+	}
+	/** Remove the scripted fleets. */
+	void removeFleets() {
+		Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Pirates", player("Pirates"));
+		if (fi != null) {
+			world.removeFleet(fi.first);
+			helper.scriptedFleets().remove(fi.first.id);
+		}
+		fi = findTaggedFleet("Mission-3-Carrier", player);
+		if (fi != null) {
+			world.removeFleet(fi.first);
+			helper.scriptedFleets().remove(fi.first.id);
+		}
+		cleanupScriptedFleets();
 	}
 	/**
 	 * Create a carrier moving across the screen.

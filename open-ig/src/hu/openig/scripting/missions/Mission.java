@@ -84,15 +84,16 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param toPlayer who should see the fleets
 	 * @param shouldSee should the player see the ship?
 	 * @param owner the owner of the fleets
+	 * @param ds the distance from limits
 	 * @return the list of fleets found
 	 */
-	protected List<Fleet> findVisibleFleets(Player toPlayer, boolean shouldSee, Player owner) {
+	protected List<Fleet> findVisibleFleets(Player toPlayer, boolean shouldSee, Player owner, int ds) {
 		List<Fleet> result = U.newArrayList();
 		
 		for (Fleet f : owner.fleets.keySet()) {
 			if (f.owner == owner 
 					&& (toPlayer.fleets.containsKey(f) || !shouldSee)
-					&& toPlayer.withinLimits(f.x, f.y)) {
+					&& toPlayer.withinLimits(f.x, f.y, ds)) {
 				result.add(f);
 			}
 		}
@@ -481,5 +482,16 @@ public abstract class Mission implements GameScriptingEvents {
 		
 		SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, SoundType.NEW_MESSAGE_1, SoundType.NEW_MESSAGE_2, SoundType.NEW_MESSAGE_3));
 		world.env.computerSound(snd);
+	}
+	/**
+	 * Remove any non-existent scripted fleets.
+	 */
+	void cleanupScriptedFleets() {
+		// cleanup scripted fleets
+		for (int i : U.newArrayList(helper.scriptedFleets())) {
+			if (fleet(i) == null) {
+				helper.scriptedFleets().remove(i);
+			}
+		}
 	}
 }

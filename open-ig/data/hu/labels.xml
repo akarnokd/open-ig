@@ -2204,6 +2204,13 @@
 	<entry key='mission-3.escort_carrier.desc'>A szállítóhajó nem semmisülhet meg.</entry>
 	<entry key='mission-3.escort_carrier.name'>Szállító</entry>
 	<entry key='mission-3.reward'>Egy Pajzs v1.0 elérhető a felszerelések között.</entry>
+	<entry key='mission-4.pirate_battle'>Rendezd a Naxos melletti kalózcsatát</entry>
+	<entry key='mission-4.pirate_battle.desc'>Tárgyalj velük, vagy csak lődd ki őket, te döntesz.</entry>
+	<entry key='mission-5.escort_thorin'>A Thorin zászlóshajó kísérete</entry>
+	<entry key='mission-5.escort_thorin.desc'>Támogasd Benson admirális stratégiai visszavonulását.</entry>
+	<entry key='mission-5.meet_benson'>Találkozz Benson admirálissal</entry>
+	<entry key='mission-5.defend_thorin'>Védd meg a Thorin zászlóshajót</entry>
+	<entry key='mission-5.defend_thorin.desc'>Egyesítsd erőidet a Thorin flottájával. A zászlóshajónak túl kell élnie.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -19,6 +19,7 @@ import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -27,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import javax.swing.Timer;
 
@@ -240,10 +242,16 @@ public class BattlefinishScreen extends ScreenBase {
 				}
 			}
 
+			if (battle.messageText != null) {
+				y += 10;
+				textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 10, battle.messageText);
+				y += 7;
+			}
+
 			if (battle.rewardText != null) {
-				y += 20;
-				textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, battle.rewardText);
-				y += 20;
+				y += 10;
+				textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 14, battle.rewardText);
+				y += 7;
 			}
 			
 			
@@ -335,6 +343,28 @@ public class BattlefinishScreen extends ScreenBase {
 			tw = commons.text().getTextWidth(size, text);
 		} while (tw > width);
 		commons.text().paintTo(g2, x + (width - tw) / 2, y, size, color, text);
+	}
+	/**
+	 * Center the text between x and x + width.
+	 * @param g2 the graphics context
+	 * @param x the left
+	 * @param y the top
+	 * @param width the width
+	 * @param color the color
+	 * @param size the text size
+	 * @param text the actual text
+	 * @return the delta Y due wrapping
+	 */
+	int textCenterWrap(Graphics2D g2, int x, int y, int width, int color, int size, String text) {
+		List<String> lines = U.newArrayList();
+		commons.text().wrapText(text, width, size, lines);
+		int dy = 0;
+		for (String line : lines) {
+			int tw = commons.text().getTextWidth(size, line);
+			commons.text().paintTo(g2, x + (width - tw) / 2, y + dy, size, color, line);
+			dy += size + 3;
+		}
+	    return dy;
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

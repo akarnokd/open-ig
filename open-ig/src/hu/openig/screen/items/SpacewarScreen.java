@@ -3141,10 +3141,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
 		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
-			if (s.owner != ship.owner
-					&& !(ship.owner == battle.attacker.owner 
-					&& battle.attackerAllies.contains(s.owner))
-					) {
+			if (!areAllies(s, ship)) {
 				if (ship.inRange(s).size() > 0) {
 					result.add(s);
 				}
@@ -3770,19 +3767,38 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/**
 	 * Returns a list of structures which are the enemies of {@code s}.
-	 * @param s the structure
+	 * @param ship the structure
 	 * @return the list of enemies
 	 */
 	@Override
-	public List<SpacewarStructure> enemiesOf(SpacewarStructure s) {
+	public List<SpacewarStructure> enemiesOf(SpacewarStructure ship) {
 		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure f : structures) {
-			if (f.owner != s.owner
-					&& !(s.owner == battle.attacker.owner && battle.attackerAllies.contains(f.owner))) {
-				result.add(f);
+			if (f.owner != ship.owner) {
+				if (!areAllies(f, ship)) {
+					result.add(f);
+				}
 			}
 		}
 		return result;
+	}
+	/**
+	 * Check if two structures are allies.
+	 * @param s1 the first structure
+	 * @param s2 the second structure
+	 * @return true if allies
+	 */
+	boolean areAllies(SpacewarStructure s1, SpacewarStructure s2) {
+		if (s1.owner == s2.owner) {
+			return true;
+		} else
+		if (s1.owner == battle.attacker.owner && battle.attackerAllies.contains(s2.owner)) {
+			return true;
+		} else
+		if (s2.owner == battle.attacker.owner && battle.attackerAllies.contains(s1.owner)) {
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * Fire at the target of the given ship with the available weapons.
@@ -3993,12 +4009,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public void flee(SpacewarStructure s) {
-		if (s.owner == battle.attacker.owner && !attackerOnRight) {
-			// flee to the left side
-			s.moveTo = new Point2D.Double(-1000, s.y);
+		if (s.owner == battle.attacker.owner) {
+			if (attackerOnRight) {
+				s.moveTo = new Point2D.Double(space.width + 1000, s.y);
+			} else {
+				// flee to the left side
+				s.moveTo = new Point2D.Double(-1000, s.y);
+			}
 		} else {
+			if (attackerOnRight) {
+				s.moveTo = new Point2D.Double(-1000, s.y);
+			} else {
+				s.moveTo = new Point2D.Double(space.width + 1000, s.y);
+			}
 			// flee to the right side
-			s.moveTo = new Point2D.Double(space.width + 1000, s.y);
 		}
 		s.attack = null;
 		s.guard = false;

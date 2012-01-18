@@ -753,11 +753,12 @@ public final class Simulator {
 	 * @param f the fleet
 	 */
 	static void regenerateFleet(Map<Planet, PlanetStatistics> planetStats, Fleet f) {
+		Planet np = f.nearbyPlanet();
+		boolean spaceport = np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport;
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
-			int hpMax = ii.owner.world.getHitpoints(ii.type);
-			if (ii.hp < hpMax) {
-				Planet np = f.nearbyPlanet();
-				if (np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport) {
+			if (spaceport) {
+				int hpMax = ii.owner.world.getHitpoints(ii.type);
+				if (ii.hp < hpMax) {
 					ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
 					// regenerate slots
 					for (InventorySlot is : ii.slots) {

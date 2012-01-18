@@ -474,14 +474,23 @@ public class Player {
 	 * Check if the given coordinates fall into the allowed exploration regions (if exist).
 	 * @param x the X coordinate
 	 * @param y the Y coordinate
+	 * @param ds the minimum distance from the border
 	 * @return true if within limits
 	 */
-	public boolean withinLimits(double x, double y) {
+	public boolean withinLimits(double x, double y, int ds) {
 		if (explorationInnerLimit != null && explorationInnerLimit.contains(x, y)) {
-			return false;
+			Rectangle r = new Rectangle(explorationInnerLimit);
+			r.grow(2 * ds, 2 * ds);
+			if (r.contains(x, y)) {
+				return false;
+			}
 		} else
 		if (explorationOuterLimit != null && !explorationOuterLimit.contains(x, y)) {
-			return false;
+			Rectangle r = new Rectangle(explorationOuterLimit);
+			r.grow(-2 * ds, -2 * ds);
+			if (!r.contains(x, y)) {
+				return false;
+			}
 		}
 		return true;
 	}

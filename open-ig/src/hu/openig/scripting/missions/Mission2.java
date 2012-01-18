@@ -62,7 +62,7 @@ public class Mission2 extends Mission {
 					scheduleNextTask(i);
 				}
 				if (helper.canStart(m2ti)) {
-					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"));
+					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"), 4);
 					fs = filterByRange(fs, world.params().groundRadarUnitSize(), 
 							"Naxos", "San Sterling", "Achilles");
 					if (!fs.isEmpty()) {
@@ -246,6 +246,7 @@ public class Mission2 extends Mission {
 			helper.setTimeout("Mission-2-Task-" + task + "-Success", 3000);
 			helper.clearMissionTime("Mission-2-Task-" + task + "-Timeout");
 		}
+		cleanupScriptedFleets();
 		for (int i : new ArrayList<Integer>(helper.scriptedFleets())) {
 			Fleet f = fleet(i);
 			if (f != null) {
@@ -255,15 +256,13 @@ public class Mission2 extends Mission {
 					for (InventoryItem ii : f.inventory) {
 						ii.owner = f.owner;
 					}
-					helper.scriptedFleets().remove(i);
 					f.targetPlanet(world.random(Arrays.asList(planet("Achilles"), planet("Naxos"), planet("San Sterling"))));
+					helper.scriptedFleets().remove(f.id);
 				} else
 				if (f.owner == pirates) {
 					world.removeFleet(f);
-					helper.scriptedFleets().remove(i);
+					helper.scriptedFleets().remove(f.id);
 				}
-			} else {
-				helper.scriptedFleets().remove(i);
 			}
 		}
 		// hide message
