@@ -9,6 +9,7 @@
 		<mission class='hu.openig.scripting.missions.Mission5'/>
 		<mission class='hu.openig.scripting.missions.Mission6'/>
 		<mission class='hu.openig.scripting.missions.Mission8'/>
+		<mission class='hu.openig.scripting.missions.Mission15'/>
 	</missions>
 	<!--  The view limit for the empire player levels 1-3. Levels 4-5 are unlimited. -->
 	<limit-views>
@@ -49,49 +50,59 @@
 	</limit-views>
 	<objectives>
 		<objective id='Mission-1' title='mission-1.rebuild_achilles' 
-			description='mission-1.rebuild_achilles.desc' visible='false'>
+			description='mission-1.rebuild_achilles.desc'>
 			<objective id='Mission-1-Task-1' title='mission-1.build_colonyhub'
-			description='mission-1.build_colonyhub.desc' visible='false'/>
+			description='mission-1.build_colonyhub.desc'/>
 			<objective id='Mission-1-Task-2' title='mission-1.fix_buildings'
-			description='mission-1.fix_buildings.desc' visible='false'/>
+			description='mission-1.fix_buildings.desc'/>
 		</objective> 
 		<objective id='Mission-1-Task-4' title='mission-1.manage_achilles'
-		description='mission-1.manage_achilles.desc' visible='false'/>
+		description='mission-1.manage_achilles.desc'/>
 		<objective id='Mission-1-Task-3' title='mission-1.manage_colonies'
 			description='mission-1.manage_colonies.desc' visible= 'false'
 		/>
 
 		<objective id='Mission-2' title='mission-2.protect_traders' 
-			description='mission-2.protect_traders.desc' visible='false'>
+			description='mission-2.protect_traders.desc'>
 			<objective id='Mission-2-Task-1' title='mission-2.save_trader'
-			description='mission-2.save_trader.desc' visible='false'/>
+			description='mission-2.save_trader.desc'/>
 			<objective id='Mission-2-Task-2' title='mission-2.save_trader'
-			description='mission-2.save_trader.desc' visible='false'/>
+			description='mission-2.save_trader.desc'/>
 			<objective id='Mission-2-Task-3' title='mission-2.save_trader'
-			description='mission-2.save_trader.desc' visible='false'/>
+			description='mission-2.save_trader.desc'/>
 		</objective>		
 		<objective id='Mission-3' title='mission-3.escort_carrier' 
-			description='mission-3.escort_carrier.desc' visible='false'/>
+			description='mission-3.escort_carrier.desc'/>
 
 		<objective id='Mission-4' title='mission-4.pirate_battle' 
-			description='mission-4.pirate_battle.desc' visible='false'/>
+			description='mission-4.pirate_battle.desc'/>
 
 		<objective id='Mission-5' title='mission-5.escort_thorin' 
-			description='mission-5.escort_thorin.desc' visible='false'>
-			<objective id='Mission-5-Task-1' title='mission-5.meet_tullen' visible='false'/>
+			description='mission-5.escort_thorin.desc'>
+			<objective id='Mission-5-Task-1' title='mission-5.meet_tullen'/>
 			<objective id='Mission-5-Task-2' title='mission-5.defend_thorin' 
-				description='mission-5.defend_thorin.desc' visible='false'/>
+				description='mission-5.defend_thorin.desc'/>
 		</objective>
 		<objective id='Mission-8' title='mission-8.test' 
-			description='mission-8.test.desc' visible='false'>
-			
-		<objective id='Mission-8-Task-1' title='mission-8.go_to_bar'
+			description='mission-8.test.desc'>
+		</objective>
+				<objective id='Mission-8-Task-1' title='mission-8.go_to_bar'
 			visible='false'
 		/>
-		<objective id='Mission-15' title='mission-15.kelly'
+		<objective id='Mission-15' title='mission-15.spy'
 			visible='false'
-		/>
-	</objective>		
+		>
+			<objective id='Mission-15-Task-1' title='mission-15.kelly'
+				visible='false'
+			/>
+			<objective id='Mission-15-Task-2' title='mission-15.record_message'
+				description='mission-15.record_message.desc'
+			/>
+			<objective id='Mission-15-Task-3' title='mission-15.report_intruder'
+				description='mission-15.report_intruder.desc'
+			/>
+		</objective>
+				
 	</objectives>	
 	
 </scripting>

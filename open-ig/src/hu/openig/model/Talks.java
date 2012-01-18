@@ -45,6 +45,7 @@ public class Talks {
 				tp.states.put(ts.id, ts);
 				for (XElement tr : state.childrenWithName("transition")) {
 					TalkSpeech tsp = new TalkSpeech();
+					tsp.id = tr.get("id");
 					tsp.media = tr.get("media");
 					tsp.text = tr.get("text");
 					tsp.to = tr.get("to");

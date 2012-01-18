@@ -2221,6 +2221,16 @@
 	<entry key='chat.global.identify_yourself'>Azonosítsa magát!</entry>
 	<entry key='chat.global.proceed_your_destination'>Folytassa útját a célja felé!</entry>
 	<entry key='chat.global.thank_you'>Köszönöm, Uram.</entry>
+	<entry key='bar.start_talking'>Kattints, hogy beszélgethess %s.</entry>
+	<entry key='phsychologist'>Dr. Reinharttal</entry>
+	<entry key='kelly'>Kellyvel</entry>
+	<entry key='brian'>Briannal</entry>
+	<entry key='doctor'>a Doktorral</entry>
+	<entry key='mission-15.record_message'>Vedd fel a kémet a termináloddal</entry>
+	<entry key='mission-15.record_message.desc'>Menj a szobádba, és a terminálodat állítsd felvételre az adatbázis képernyőn.</entry>
+	<entry key='mission-15.report_intruder'>Jelentsd a kémet</entry>
+	<entry key='mission-15.report_intruder.desc'>Beszélj a parancsnokkal Dr. Reinhart viselkedéséről.</entry>
+	<entry key='mission-15.spy'>A kém</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -133,7 +133,6 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		if (d != null) {
 			o.description = label(d);
 		}
-		o.visible = xo.getBoolean("visible");
 		return o;
 	}
 	@Override
@@ -285,6 +284,11 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 					vm.visible = xmsg.getBoolean("visible");
 				}
 			}
+		}
+		// reset objectives
+		for (Objective o : allObjectives.values()) {
+			o.visible = false;
+			o.state = ObjectiveState.ACTIVE;
 		}
 		for (XElement xos : in.childrenWithName("objectives")) {
 			for (XElement xo : xos.childrenWithName("objective")) {

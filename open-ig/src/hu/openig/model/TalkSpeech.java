@@ -13,6 +13,8 @@ package hu.openig.model;
  * @author akarnokd, 2009.10.10.
  */
 public class TalkSpeech {
+	/** The speech ID. */
+	public String id;
 	/** The speech was already taken. */
 	public boolean spoken;
 	/** The speech media. */

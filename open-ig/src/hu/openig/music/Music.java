@@ -15,16 +15,16 @@ import hu.openig.core.ResourceType;
 import hu.openig.sound.AudioThread;
 import hu.openig.utils.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioFormat.Encoding;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -42,8 +42,6 @@ public class Music {
 	private volatile Thread playbackThread;
 	/** The resource manager. */
 	private final ResourceLocator rl;
-	/** The clip for sound playback. */
-	private volatile Clip soundClip;
 	/** Use soundClip for playback. */
 	private final boolean useClip = false;
 	/** OGG music player. */
@@ -58,19 +56,6 @@ public class Music {
 	public Music(ResourceLocator rl) {
 		this.rl = rl;
 	}
-	/** Initialize wave playback format. */
-	private void initWave() {
-		AudioFormat af = new AudioFormat(22050, 16, 1, true, false);
-		DataLine.Info dli = new DataLine.Info(SourceDataLine.class, af);
-		if (!AudioSystem.isLineSupported(dli)) {
-			return;
-		}
-		try {
-			sdl = (SourceDataLine) AudioSystem.getLine(dli);
-			sdl.open(af);
-		} catch (LineUnavailableException ex) {
-		}
-	}
 
 	/**
 	 * Start/continue the music playback.
@@ -78,9 +63,6 @@ public class Music {
 	public void play() {
 		if (sdl != null) {
 			sdl.start();
-		} else 
-		if (soundClip != null) {
-			soundClip.start();
 		} else 
 		if (oggMusic != null) {
 			oggMusic.outputLine.start();
@@ -95,9 +77,6 @@ public class Music {
 		}
 		if (sdl != null) {
 			sdl.close();
-		} else 
-		if (soundClip != null) {
-			soundClip.close();
 		} else 
 		if (oggMusic != null) {
 			oggMusic.outputLine.close();
@@ -116,10 +95,6 @@ public class Music {
 		if (sdl != null) {
 			sdl.close();
 			sdl = null;
-		}
-		if (soundClip != null) {
-			soundClip.close();
-			soundClip = null;
 		}
 		if (oggMusic != null) {
 			oggMusic.close();
@@ -206,9 +181,7 @@ public class Music {
 				} else {
 					try {
 						if (fileName.toUpperCase().endsWith(".WAV")) {
-							if (!playbackWav(rp, volume)) {
-								fails++;
-							}
+							playBackClip(rp, volume);
 						} else 
 						if (fileName.toUpperCase().endsWith(".OGG")) {
 							if (!playbackOgg(rp, volume)) {
@@ -263,60 +236,41 @@ public class Music {
 		}
 	}
 	/**
-	 * Plays back the given filename as a WAV file.
-	 * @param rp the resource place
-	 * @param volume the initial playback volume
-	 * @return true if the file is accessible
-	 * @throws IOException if there is problem with the IO
-	 */
-	private boolean playbackWav(ResourcePlace rp, int volume) throws IOException {
-		InputStream raf = rp.openNew();
-		// skip chunks
-		try {
-			long startOffset = findData(raf);
-			raf.close();
-			byte[] buffer = new byte[16384];
-			// compensate for signed
-			// playback loop
-			initWave();
-			sdl.start();
-			while (checkStop()) {
-				raf = rp.openNew();
-				// skip wav header
-				IOUtils.skipFully(raf, startOffset);
-				int read = 0;
-				do {
-					read = raf.read(buffer);
-					if (read > 0) {
-						// signifySound(buffer, read);
-						sdl.write(buffer, 0, read);
-					}
-				} while (checkStop() && read >= 0);
-			}
-		} finally {
-			raf.close();
-		}
-		return true;
-	}
-	/**
 	 * Play back music using the Clip object.
 	 * @param rp the resource to play back
 	 * @param volume the initial playback volume
 	 */
 	private void playBackClip(ResourcePlace rp, int volume) {
 		try {
-			AudioInputStream soundStream = AudioSystem.getAudioInputStream(rp.openNew());
-			
-			AudioFormat streamFormat = soundStream.getFormat();
-			DataLine.Info clipInfo = new DataLine.Info(Clip.class,
-					streamFormat);
-
-			Clip clip = (Clip) AudioSystem.getLine(clipInfo);
-			soundClip = clip;
-			clip.open(soundStream);
-			clip.setLoopPoints(0, -1);
-			setVolume(volume);
-			clip.start();
+			AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rp.get()));
+			try {
+				AudioFormat af = ain.getFormat();
+				byte[] snd = IOUtils.load(ain);
+				// upscale an 8 bit sample to 16 bit
+				if (af.getSampleSizeInBits() == 8) {
+					// signify if unsigned, because the upscaling works on signed data
+					if (af.getEncoding() == Encoding.PCM_UNSIGNED) {
+						for (int i = 0; i < snd.length; i++) {
+							snd[i] = (byte)((snd[i] & 0xFF) - 128);
+						}
+					}
+					snd = AudioThread.convert8To16(snd);
+					af = new AudioFormat(af.getSampleRate(), 16, af.getChannels(), true, af.isBigEndian());
+				}
+				sdl = AudioSystem.getSourceDataLine(af);
+				sdl.open(af);
+				try {
+					setVolume(volume);
+					sdl.start();
+					sdl.write(snd, 0, snd.length);
+					sdl.drain();
+				} finally {
+					sdl.close();
+					sdl = null;
+				}
+			} finally {
+				ain.close();
+			}
 		} catch (UnsupportedAudioFileException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -384,15 +338,13 @@ public class Music {
 		if (sdl != null) {
 			AudioThread.setVolume(sdl, volume);
 		} else 
-		if (soundClip != null) {
-			AudioThread.setVolume(soundClip, volume);
-		} else 
 		if (oggMusic != null && oggMusic.outputLine != null) {
 			AudioThread.setVolume(oggMusic.outputLine, volume);
 		}
 	}
 	/** @return is a music playing? */
 	public boolean isRunning() {
-		return (sdl != null && sdl.isActive()) || (soundClip != null && soundClip.isActive()) || (oggMusic != null && oggMusic.outputLine != null && oggMusic.outputLine.isActive());
+		return (sdl != null && sdl.isActive()) 
+				|| (oggMusic != null && oggMusic.outputLine != null && oggMusic.outputLine.isActive());
 	}
 }

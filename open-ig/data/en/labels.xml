@@ -2962,11 +2962,24 @@
 	<entry key='mission-8.test'>Complete the test</entry>
 	<entry key='mission-8.test.desc'>Go to the bridge and complete Dr. Catherine Reinhart's phsychology test.</entry>
 	<entry key='mission-8.go_to_bar'>Go to the bar and talk to Dr. Reinhart about your vision</entry>
-	<entry key='mission-15.kelly'>Go to the bar and talk to Kelly about the spy</entry>
 	<entry key='Empire.main_fleet'>Main fleet</entry>
+	<entry key='bar.start_talking'>Click to start conversation with %s.</entry>
+	<entry key='phsychologist'>Dr. Reinhart</entry>
+	<entry key='kelly'>Kelly</entry>
+	<entry key='brian'>Brian</entry>
+	<entry key='doctor'>Doctor</entry>
+	<entry key='mission-15.kelly'>Go to the bar and talk to Kelly about the spy</entry>
+	<entry key='mission-15.record_message'>Record the spy with your terminal</entry>
+	<entry key='mission-15.record_message.desc'>Go to your cabin and turn on recording on your terminal's database screen.</entry>
+	<entry key='mission-15.report_intruder'>Report the spy</entry>
+	<entry key='mission-15.report_intruder.desc'>Talk to the colonel about Dr. Reinhart's behavior.</entry>
+	<entry key='mission-15.spy'>The spy</entry>
 	<entry key='chat.global.identify_yourself'>Ship, identify yourself!</entry>
 	<entry key='chat.global.proceed_your_destination'>Proceed to your destination!</entry>
 	<entry key='chat.global.thank_you'>Thank you, Sir.</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>

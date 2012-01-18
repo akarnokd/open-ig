@@ -33,6 +33,7 @@ public class Mission8 extends Mission {
 		}
 		Objective m8 = helper.objective("Mission-8");
 		if (helper.canStart("Mission-8")) {
+			helper.clearMissionTime("Mission-8");
 			helper.showObjective(m8);
 			world.testNeeded = true;
 			world.testCompleted = false;
@@ -59,14 +60,16 @@ public class Mission8 extends Mission {
 			helper.clearMissionTime("Mission-8-Visions");
 			
 			helper.setMissionTime("Mission-15", helper.now() + 15 * 24);
+			world.env.stopMusic();
 			world.env.playVideo("interlude/dream_1", new Action0() {
 				@Override
 				public void invoke() {
 					world.currentTalk = "phsychologist";
 					helper.showObjective("Mission-8-Task-1");
 					helper.setMissionTime("Mission-8-Task-1-Timeout", helper.now() + 2 * 24);
+					world.env.playMusic();
 				}
-			}); // TODO start mission of kelly
+			});
 		}
 		if (helper.isMissionTime("Mission-8-Task-1-Timeout")) {
 			helper.clearMissionTime("Mission-8-Task-1-Timeout");
@@ -76,6 +79,15 @@ public class Mission8 extends Mission {
 		if (helper.isTimeout("Mission-8-Task-1-Hide")) {
 			helper.clearTimeout("Mission-8-Task-1-Hide");
 			helper.objective("Mission-8-Task-1").visible = false;
+			world.currentTalk = null;
+		}
+	}
+	@Override
+	public void onTalkCompleted() {
+		if ("phsychologist".equals(world.currentTalk)) {
+			helper.clearMissionTime("Mission-8-Task-1-Timeout");
+			helper.setObjectiveState("Mission-8-Task-1", ObjectiveState.SUCCESS);
+			helper.setTimeout("Mission-8-Task-1-Hide", 13000);
 		}
 	}
 }
