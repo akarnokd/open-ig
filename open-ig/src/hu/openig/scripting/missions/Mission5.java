@@ -32,7 +32,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 /**
- * Mission 4: Resolve pirate battle.
+ * Mission 5: Defend the Thorin.
  * @author akarnokd, 2012.01.18.
  */
 public class Mission5 extends Mission {
