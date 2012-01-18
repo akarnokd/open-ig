@@ -227,6 +227,7 @@ public class Music {
 						@Override
 						public void run() {
 							onComplete.invoke(name);
+							onComplete = null;
 						}
 					});
 				}

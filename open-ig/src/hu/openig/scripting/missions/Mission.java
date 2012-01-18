@@ -502,4 +502,8 @@ public abstract class Mission implements GameScriptingEvents {
 	ResearchType research(String id) {
 		return world.researches.get(id);
 	}
+	@Override
+	public void onTalkCompleted() {
+		
+	}
 }

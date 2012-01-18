@@ -2959,10 +2959,10 @@
 	<entry key='mission-4.message-2'>Thank you for saving us! We won't forget your deeds.</entry>
 	<entry key='mission-5.tullens_fleet'>Tullen's fleet</entry>
 	<entry key='mission-5.garthog_fleet'>Garthog</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-8.test'>Complete the test</entry>
+	<entry key='mission-8.test.desc'>Go to the bridge and complete Dr. Catherine Reinhart's phsychology test.</entry>
+	<entry key='mission-8.go_to_bar'>Go to the bar and talk to Dr. Reinhart about your vision</entry>
+	<entry key='mission-15.kelly'>Go to the bar and talk to Kelly about the spy</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

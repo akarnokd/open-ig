@@ -229,4 +229,8 @@ public interface GameScriptingEvents {
 	 * @param battle the battle settings
 	 */
 	void onAutobattleFinish(BattleInfo battle);
+	/**
+	 * Notification about a talk completed.
+	 */
+	void onTalkCompleted();
 }

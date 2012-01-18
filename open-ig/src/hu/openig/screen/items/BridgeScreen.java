@@ -581,11 +581,26 @@ public class BridgeScreen extends ScreenBase {
 		
 		onResize();
 		
-		playMessageAppear();
+		if (gotoTest()) {
+			commons.playVideo("test/phsychologist_test", new Action0() {
+				@Override
+				public void invoke() {
+					displaySecondary(Screens.TEST);
+				}
+			});
+		} else {
+			playMessageAppear();
+		}
 		
 		lastLevel = world().level;
 	}
-
+	/**
+	 * Test if we need to go to the test screen instead.
+	 * @return true if go to the test
+	 */
+	boolean gotoTest() {
+		return world().testNeeded && !world().testCompleted && commons.control().secondary() != Screens.TEST;
+	}
 	@Override
 	public void onLeave() {
 		if (messageAnim != null) {
@@ -617,6 +632,12 @@ public class BridgeScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		if (lastLevel != world().level) {
+			onLeave();
+			onEnter(null);
+			askRepaint();
+			return;
+		}
+		if (gotoTest()) {
 			onLeave();
 			onEnter(null);
 			askRepaint();
