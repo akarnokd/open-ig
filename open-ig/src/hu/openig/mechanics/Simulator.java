@@ -754,7 +754,7 @@ public final class Simulator {
 	 */
 	static void regenerateFleet(Map<Planet, PlanetStatistics> planetStats, Fleet f) {
 		Planet np = f.nearbyPlanet();
-		boolean spaceport = np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport;
+		boolean spaceport = f.task != FleetTask.SCRIPT && np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport;
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
 			if (spaceport) {
 				int hpMax = ii.owner.world.getHitpoints(ii.type);
