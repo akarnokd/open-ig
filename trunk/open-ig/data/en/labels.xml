@@ -2977,8 +2977,8 @@
 	<entry key='chat.global.identify_yourself'>Ship, identify yourself!</entry>
 	<entry key='chat.global.proceed_your_destination'>Proceed to your destination!</entry>
 	<entry key='chat.global.thank_you'>Thank you, Sir.</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-6.defend_achilles'>Defend Achilles</entry>
+	<entry key='mission-6.defend_achilles.desc'>Prepare for ground assault. Achilles must not fall!</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

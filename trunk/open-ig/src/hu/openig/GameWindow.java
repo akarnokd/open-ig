@@ -1897,8 +1897,10 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 					}
 					if (!ableToGroundBattle) {
-						displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
-						commons.buttonSound(SoundType.NOT_AVAILABLE);
+						if (bi.attacker.owner == world().player) {
+							displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
+							commons.buttonSound(SoundType.NOT_AVAILABLE);
+						}
 						bi.attacker.stop();
 						continue;
 					}

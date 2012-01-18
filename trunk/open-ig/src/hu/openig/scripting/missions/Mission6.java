@@ -9,9 +9,18 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Pair;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetMode;
+import hu.openig.model.FleetTask;
+import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.Objective;
+import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
+import hu.openig.model.SpacewarWorld;
+
+import java.awt.geom.Point2D;
 
 /**
  * Mission 6: Defend Achilles.
@@ -28,6 +37,8 @@ public class Mission6 extends Mission {
 			// ensure the initial fleet conditions are met
 			player.setAvailable(research("Fighter2"));
 			createMainShip();
+			
+			helper.setMissionTime("Mission-6", helper.now() + 12);
 		}
 	}
 	/**
@@ -63,6 +74,99 @@ public class Mission6 extends Mission {
 			return;
 		}
 		checkMainShip();
+		if (helper.canStart("Mission-6")) {
+			helper.showObjective("Mission-6");
+			helper.setTimeout("Mission-6", 13000);
+		}
+		if (helper.isTimeout("Mission-6")) {
+			helper.clearTimeout("Mission-6");
+			createAttackers();
+		}
+		Objective m6 = helper.objective("Mission-6");
+		if (m6.visible && m6.state == ObjectiveState.ACTIVE) {
+			checkDistance();
+		}
+		if (helper.isTimeout("Mission-6-Done")) {
+			helper.clearTimeout("Mission-6-Done");
+			if (m6.state == ObjectiveState.FAILURE) {
+				helper.gameover();
+				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_2");
+			}
+			m6.visible = false;
+		}
+	}
+	/**
+	 * Check distance to Achilles.
+	 */
+	void checkDistance() {
+		Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+		if (garthog != null) {
+			if (garthog.first.mode != FleetMode.ATTACK) {
+				Planet ach = planet("Achilles");
+				double d = Math.hypot(ach.x - garthog.first.x, ach.y - garthog.first.y);
+				if (d <= 1) {
+					garthog.first.targetPlanet(ach);
+					garthog.first.mode = FleetMode.ATTACK;
+					garthog.first.task = FleetTask.SCRIPT;
+				}
+			}
+		}
+	}
+	@Override
+	public void onSpacewarFinish(SpacewarWorld war) {
+		if (helper.isActive("Mission-6")) {
+			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+			if (garthog == null) {
+				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
+			}
+		}		
+	}
+	@Override
+	public void onGroundwarFinish(GroundwarWorld war) {
+		if (helper.isActive("Mission-6")) {
+			Planet ach = planet("Achilles");
+			if (ach.owner != player) {
+				helper.setObjectiveState("Mission-6", ObjectiveState.FAILURE);
+			} else {
+				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
+			}
+			helper.setTimeout("Mission-6-Done", 13000);
+		}
+	}
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		if (helper.isActive("Mission-6")) {
+			Planet ach = planet("Achilles");
+			if (ach.owner != player) {
+				helper.setObjectiveState("Mission-6", ObjectiveState.FAILURE);
+			} else {
+				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
+			}
+			helper.setTimeout("Mission-6-Done", 13000);
+		}
+	}
+	/**
+	 * Create the attacking garthog fleet.
+	 */
+	void createAttackers() {
+		Planet from = planet("Garthog 1");
+		Fleet f = createFleet("Garthog.fleet", player("Garthog"), from.x, from.y);
+		// --------------------------------------------------
+		f.addInventory(research("GarthogFighter"), 10);
+		f.addInventory(research("GarthogDestroyer"), 3);
+		f.addInventory(research("GarthogBattleship"), 2);
+		f.addInventory(research("LightTank"), 6);
+		f.addInventory(research("RadarCar"), 1);
+		f.addInventory(research("GarthogRadarJammer"), 1);
+		// ---------------------------------------------------
+		
+		for (InventoryItem ii : f.inventory) {
+			ii.tag = "Mission-6-Garthog";
+		}
+		Planet ach = planet("Achilles");
+		f.waypoints.add(new Point2D.Double(ach.x, ach.y));
+		f.mode = FleetMode.MOVE;
+		f.task = FleetTask.SCRIPT;
 	}
 	/**
 	 * Check if the main ship still exists.

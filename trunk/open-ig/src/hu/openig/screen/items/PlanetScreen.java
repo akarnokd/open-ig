@@ -4051,7 +4051,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 				}
 			} else {
-				stop(u);
+				if (u.attackBuilding != null && u.attackBuilding.isDestroyed()) {
+					stop(u);
+				} else
+				if (u.attackUnit != null && u.attackUnit.isDestroyed()) {
+					stop(u);
+				}
 				if (u.path.isEmpty() && directAttackUnits.contains(u.model.type)) {
 					// find a new target in range
 					List<GroundwarUnit> targets = unitsInRange(u);

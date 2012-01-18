@@ -22,7 +22,7 @@ public class Mission8 extends Mission {
 		if (world.level == 2) {
 			Objective m8 = helper.objective("Mission-8");
 			if (!m8.visible && m8.state == ObjectiveState.ACTIVE) {
-				helper.setMissionTime("Mission-8", helper.now() + 1 * 24);
+				helper.setMissionTime("Mission-8", helper.now() + 3 * 24);
 			}
 		}
 	}
