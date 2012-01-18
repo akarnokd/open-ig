@@ -459,7 +459,9 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @return true if it is the related spacewar
 	 */
 	protected boolean isMissionSpacewar(BattleInfo battle, String mission) {
-		if (helper.isActive(mission) && battle.attacker.owner == player && battle.targetFleet != null) {
+		if (helper.isActive(mission) 
+				&& battle.attacker.owner == player 
+				&& battle.targetFleet != null) {
 			return helper.scriptedFleets().contains(battle.targetFleet.id);
 		}
 		return false;

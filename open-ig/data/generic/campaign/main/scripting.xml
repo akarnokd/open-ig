@@ -83,6 +83,9 @@
 			<objective id='Mission-5-Task-2' title='mission-5.defend_thorin' 
 				description='mission-5.defend_thorin.desc'/>
 		</objective>
+		<objective id='Mission-6' title='mission-6.defend_achilles' 
+			description='mission-6.defend_achilles.desc'>
+		</objective>
 		<objective id='Mission-8' title='mission-8.test' 
 			description='mission-8.test.desc'>
 		</objective>
