@@ -24,6 +24,7 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,22 +38,8 @@ import java.util.List;
 public class BarScreen extends ScreenBase {
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle();
-	/** Display the talk image instead of the empty bar? */
-	public boolean enableTalk = true;
 	/** We are in talk mode. */
 	boolean talkMode;
-	/** The talk screen for level 4 doctor. */
-	BufferedImage talkDoctor;
-	/** The talk screen for level 2 kelly. */
-	BufferedImage talkKelly;
-	/** The talk screen for level 3 brian. */
-	BufferedImage talkBrian;
-	/** The talk screen for level 2 psychologist. */
-	BufferedImage talkPhsychologist;
-	/** The level 2 bar. */
-	BufferedImage bar2;
-	/** The level 3 bar. */
-	BufferedImage bar3;
 	/** The current talk person. */
 	TalkPerson person;
 	/** The current talk state. */
@@ -67,6 +54,8 @@ public class BarScreen extends ScreenBase {
 	final List<Choice> choices = new ArrayList<Choice>();
 	/** The state picture. */
 	BufferedImage picture;
+	/** The bar images. */
+	BarImages images;
 	/** A talk choice. */
 	class Choice {
 		/** The target rendering rectangle. */
@@ -133,28 +122,86 @@ public class BarScreen extends ScreenBase {
 			world().scripting.onTalkCompleted();
 		}
 	}
+	/**
+	 * The bar images.
+	 * @author akarnokd, Jan 18, 2012
+	 */
+	class BarImages {
+		/** The talk screen for level 4 doctor. */
+		BufferedImage talkDoctor;
+		/** The talk screen for level 2 kelly. */
+		BufferedImage talkKelly;
+		/** The talk screen for level 3 brian. */
+		BufferedImage talkBrian;
+		/** The talk screen for level 2 psychologist. */
+		BufferedImage talkPhsychologist;
+		/** The level 2 bar. */
+		BufferedImage bar2;
+		/** The level 3 bar. */
+		BufferedImage bar3;
+		/** @return image of a person. */
+		BufferedImage doctor() {
+			if (talkDoctor == null) {
+				talkDoctor = rl.getImage("bar/bar_doctor");
+			}
+			return talkDoctor;
+		}
+		/** @return image of a person. */
+		BufferedImage kelly() {
+			if (talkKelly == null) {
+				talkKelly = rl.getImage("bar/bar_kelly");
+			}
+			return talkKelly;
+		}
+		/** @return image of a person. */
+		BufferedImage brian() {
+			if (talkBrian == null) {
+				talkBrian = rl.getImage("bar/bar_brian");
+			}
+			return talkBrian;
+			
+		}
+		/** @return image of a person. */
+		BufferedImage phsychologist() {
+			if (talkPhsychologist == null) { 
+				talkPhsychologist = rl.getImage("bar/bar_phsychologist");
+			}
+			return talkPhsychologist;
+			
+		}
+		/** @return image of a person. */
+		BufferedImage bar2() {
+			if (bar2 == null) {
+				bar2 = rl.getImage("flagship/bar_level_2");
+			}
+			return bar2;
+		}
+		/** @return image of a person. */
+		BufferedImage bar3() {
+			if (bar3 == null) {
+				bar3 = rl.getImage("flagship/bar_level_3");
+			}
+			return bar3;
+		}
+	}
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
 				640, 480 - 38);
 
-		talkDoctor = rl.getImage("bar/bar_doctor");
-		talkPhsychologist = rl.getImage("bar/bar_phsychologist");
-		talkBrian = rl.getImage("bar/bar_brian");
-		talkKelly = rl.getImage("bar/bar_kelly");
-		bar2 = rl.getImage("flagship/bar_level_2");
-		bar3 = rl.getImage("flagship/bar_level_3");
 	}
 
 	@Override
 	public void onEnter(Screens mode) {
 		talkMode = false;
 		choices.clear();
+		images = new BarImages();
 	}
 
 	@Override
 	public void onLeave() {
 		talkMode = false;
+		images = null;
 	}
 
 	@Override
@@ -184,13 +231,22 @@ public class BarScreen extends ScreenBase {
 				idx++;
 			}
 		} else {
-			if (enableTalk) {
+			if (world().currentTalk != null) {
 				g2.drawImage(getTalk(), base.x, base.y, null);
+				
+				String clicktext = format("bar.start_talking", get(world().currentTalk));
+				int tw = commons.text().getTextWidth(14, clicktext);
+				
+				int dh = base.y + (base.height - 14) / 2;
+				int dw = base.x + (base.width - tw) / 2;
+				
+				commons.text().paintTo(g2, dw, dh, 14, TextRenderer.WHITE, clicktext);
+				
 			} else {
 				if (world().level == 2) {
-					g2.drawImage(bar2, base.x, base.y, null);
+					g2.drawImage(images.bar2(), base.x, base.y, null);
 				} else {
-					g2.drawImage(bar3, base.x, base.y, null);
+					g2.drawImage(images.bar3(), base.x, base.y, null);
 				}
 			}
 		}
@@ -202,21 +258,30 @@ public class BarScreen extends ScreenBase {
 		
 		super.draw(g2);
 	}
+	@Override
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE && talkMode) {
+			talkMode = false;
+			e.consume();
+			return true;
+		}
+		return false;
+	};
 	/** @return Retrieve the talk image. */
 	BufferedImage getTalk() {
 		if ("phsychologist".equals(world().currentTalk)) {
-			return talkPhsychologist;
+			return images.phsychologist();
 		} else
 			if ("kelly".equals(world().currentTalk)) {
-			return talkKelly;
+			return images.kelly();
 		} else
 			if ("brian".equals(world().currentTalk)) {
-			return talkBrian;
+			return images.brian();
 		} else
 		if ("doctor".equals(world().currentTalk)) {
-			return talkDoctor;
+			return images.doctor();
 		}
-		return bar3;
+		return null;
 	}
 	/** @return the current talk person. */
 	TalkPerson getPerson() {
@@ -249,8 +314,7 @@ public class BarScreen extends ScreenBase {
 				}
 				askRepaint();
 			} else {
-				if (enableTalk && e.within(base.x, base.y, base.width, 400)) {
-					// FIXME talkmode
+				if (world().currentTalk != null && e.within(base.x, base.y, base.width, 400)) {
 					TalkPerson tp = getPerson();
 					if (tp != null) {
 						talkMode = true;
@@ -312,12 +376,6 @@ public class BarScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		talkDoctor = null;
-		talkKelly = null;
-		talkBrian = null;
-		talkPhsychologist = null;
-		bar2 = null;
-		bar3 = null;
 		person = null;
 		state = null;
 		next = null;

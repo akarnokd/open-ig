@@ -901,7 +901,21 @@ public class World {
 		world.set("record-watched", recordWatched);
 		
 		statistics.save(world.add("statistics"));
-		
+
+		// save talk states
+		XElement xtalk = world.add("talks");
+		for (TalkPerson tp : talks.persons.values()) {
+			for (TalkState ts : tp.states.values()) {
+				for (TalkSpeech tsp : ts.speeches) {
+					XElement xsp = xtalk.add("speech");
+					xsp.set("person", tp.id);
+					xsp.set("state", ts.id);
+					xsp.set("id", tsp.id);
+					xsp.set("value", tsp.spoken);
+				}
+			}
+		}
+
 		XElement test = world.add("test");
 		for (TestQuestion tq : this.test.values()) {
 			for (TestAnswer ta : tq.answers) {
@@ -1193,6 +1207,31 @@ public class World {
 			for (XElement qa : test.childrenWithName("q-a")) {
 				TestQuestion tq = this.test.get(qa.get("question"));
 				tq.choose(qa.get("answer"));
+			}
+		}
+		
+		// reset talks
+		for (TalkPerson tp : talks.persons.values()) {
+			for (TalkState ts : tp.states.values()) {
+				for (TalkSpeech tsp : ts.speeches) {
+					tsp.spoken = false;
+				}
+			}
+		}
+		// save talk states
+		XElement xtalk = xworld.childElement("talks");
+		if (xtalk != null) {
+			for (XElement xsp : xtalk.childrenWithName("speech")) {
+				String person = xsp.get("person");
+				String state = xsp.get("state");
+				String id = xsp.get("id");
+				boolean spoken = xsp.getBoolean("value");
+				TalkState ts = talks.persons.get(person).states.get(state);
+				for (TalkSpeech tsp : ts.speeches) {
+					if (tsp.id.equals(id)) {
+						tsp.spoken = spoken;
+					}
+				}
 			}
 		}
 		
