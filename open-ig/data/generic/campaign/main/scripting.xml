@@ -76,7 +76,7 @@
 
 		<objective id='Mission-5' title='mission-5.escort_thorin' 
 			description='mission-5.escort_thorin.desc' visible='false'>
-			<objective id='Mission-5-Task-1' title='mission-5.meet_benson' visible='false'/>
+			<objective id='Mission-5-Task-1' title='mission-5.meet_tullen' visible='false'/>
 			<objective id='Mission-5-Task-2' title='mission-5.defend_thorin' 
 				description='mission-5.defend_thorin.desc' visible='false'/>
 		</objective>

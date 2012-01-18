@@ -1082,7 +1082,7 @@ public class StatusbarScreen extends ScreenBase {
 			dy += 3;
 			dy += drawText(g2, x + 25, y + dy, w - 25, 14, player().color, o.title);
 			dy += 3;
-			if (!o.description.isEmpty()) {
+			if (o.description != null && !o.description.isEmpty()) {
 				dy += drawText(g2, x + 25, y + dy, w - 25, 10, 0xFFC0C0FF, o.description);
 			}
 			
@@ -1143,7 +1143,7 @@ public class StatusbarScreen extends ScreenBase {
 		 */
 		public int objectiveWidth(Objective o, int limit) {
 			int titleWidth = commons.text().getTextWidth(14, o.title);
-			int descriptionWidth = commons.text().getTextWidth(10, o.description);
+			int descriptionWidth = o.description != null ? commons.text().getTextWidth(10, o.description) : 0;
 			int progressGauge = (o.progress != null ? 100 : 0) + (o.progressValue != null ? commons.text().getTextWidth(7, o.progressValue.invoke()) : 0);
 			
 			int w = max(titleWidth, descriptionWidth, progressGauge);
@@ -1166,7 +1166,7 @@ public class StatusbarScreen extends ScreenBase {
 		public int objectiveHeight(Objective o, int limit) {
 			int w = objectiveWidth(o, limit);
 			int titleWidth = commons.text().getTextWidth(14, o.title);
-			int descriptionWidth = commons.text().getTextWidth(10, o.description);
+			int descriptionWidth = o.description != null ? commons.text().getTextWidth(10, o.description) : 0;
 			int progressGauge = (o.progress != null ? 100 : 0) + (o.progressValue != null ? commons.text().getTextWidth(7, o.progressValue.invoke()) : 0);
 			
 			int h = 0;

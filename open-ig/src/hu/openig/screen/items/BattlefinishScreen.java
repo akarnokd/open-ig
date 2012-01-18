@@ -244,13 +244,13 @@ public class BattlefinishScreen extends ScreenBase {
 
 			if (battle.messageText != null) {
 				y += 10;
-				textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 10, battle.messageText);
+				y += textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 10, battle.messageText);
 				y += 7;
 			}
 
 			if (battle.rewardText != null) {
 				y += 10;
-				textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 14, battle.rewardText);
+				y += textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 14, battle.rewardText);
 				y += 7;
 			}
 			

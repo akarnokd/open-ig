@@ -871,6 +871,8 @@ public class CommonResources implements GameEnvironment {
 	}
 	@Override
 	public void playVideo(final String name, final Action0 action) {
+		final boolean running = simulation.paused();
+		simulation.pause();
 		control.playVideos(new Action0() {
 			@Override
 			public void invoke() {
@@ -879,6 +881,9 @@ public class CommonResources implements GameEnvironment {
 				}
 				if (world != null) {
 					world.scripting.onVideoComplete(name);
+				}
+				if (!running) {
+					simulation.resume();
 				}
 			}
 		}, name);
@@ -928,5 +933,9 @@ public class CommonResources implements GameEnvironment {
 		if (!simulation.paused()) {
 			simulation.speed(SimulationSpeed.NORMAL);
 		}
+	}
+	@Override
+	public void playMusic() {
+		playRegularMusic();
 	}
 }

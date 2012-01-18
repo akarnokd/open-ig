@@ -148,6 +148,8 @@ public class BridgeScreen extends ScreenBase {
 	Action0 onVideoComplete;
 	/** Action to invoke when a force-view was issued. */
 	public Action0 onSeen;
+	/** The last display level. */
+	int lastLevel;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -580,6 +582,8 @@ public class BridgeScreen extends ScreenBase {
 		onResize();
 		
 		playMessageAppear();
+		
+		lastLevel = world().level;
 	}
 
 	@Override
@@ -612,6 +616,12 @@ public class BridgeScreen extends ScreenBase {
 	
 	@Override
 	public void draw(Graphics2D g2) {
+		if (lastLevel != world().level) {
+			onLeave();
+			onEnter(null);
+			askRepaint();
+			return;
+		}
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		
@@ -908,7 +918,12 @@ public class BridgeScreen extends ScreenBase {
 				onVideoComplete.invoke();
 				onVideoComplete = null;
 			}
-			world().scripting.onMessageSeen(fVideo);
+			
+			for (VideoMessageEntry vm : videos) {
+				if (vm.videoMessage.media.equals(fVideo)) {
+					world().scripting.onMessageSeen(vm.videoMessage.id);
+				}
+			}
 			if (onSeen != null) {
 				onSeen.invoke();
 				onSeen = null;

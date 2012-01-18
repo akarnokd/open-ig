@@ -49,30 +49,36 @@ public class Mission4 extends Mission {
 				helper.setTimeout("Mission-4-Message", 3000);
 				helper.clearMissionTime("Mission-4");
 				helper.setMissionTime("Mission-4-Timeout", helper.now() + 24);
+				helper.send("Naxos-Not-Under-Attack").visible = false;
 				incomingMessage("Naxos-Unknown-Ships");
-				createPirateTask();
 			}
 			if (helper.isTimeout("Mission-4-Message")) {
 				helper.clearTimeout("Mission-4-Message");
 				helper.showObjective("Mission-4");
+				createPirateTask();
 			}
 			
 			if (helper.isMissionTime("Mission-4-Timeout")) {
 				helper.clearMissionTime("Mission-4-Timeout");
 
+				helper.send("Naxos-Not-Under-Attack").visible = true;
 				helper.receive("Naxos-Unknown-Ships").visible = false;
+				
 				helper.setObjectiveState("Mission-4", ObjectiveState.FAILURE);
 				removeFleets();
 				helper.setTimeout("Mission-4-Fire", 13000);
 			}
 			if (helper.isTimeout("Mission-4-Fire")) {
 				helper.clearTimeout("Mission-4-Fire");
+				helper.gameover();
 				loseGameMessageAndMovie("Douglas-Fire-No-Order", "loose/fired_level_1");
 			}
 			if (helper.isTimeout("Mission-4-Success")) {
 				helper.clearTimeout("Mission-4-Success");
 
+				helper.send("Naxos-Not-Under-Attack").visible = true;
 				helper.receive("Naxos-Unknown-Ships").visible = false;
+				
 				helper.setObjectiveState("Mission-4", ObjectiveState.SUCCESS);
 				helper.setTimeout("Mission-4-Done", 13000);
 			}
