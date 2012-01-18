@@ -41,8 +41,9 @@ public interface GameEnvironment {
 	/**
 	 * Play an audio resource.
 	 * @param name the audio name
+	 * @param action the completion action
 	 */
-	void playAudio(String name);
+	void playAudio(String name, Action0 action);
 	/**
 	 * Play an sound type if the computer notification sound is enabled.
 	 * @param type the sound type

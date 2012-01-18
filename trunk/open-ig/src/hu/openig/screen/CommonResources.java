@@ -830,13 +830,16 @@ public class CommonResources implements GameEnvironment {
 		control.startBattle();
 	}
 	@Override
-	public void playAudio(String name) {
+	public void playAudio(String name, final Action0 action) {
 		Music m = new Music(rl);
 		m.onComplete = new Action1<String>() {
 			@Override
 			public void invoke(String value) {
 				if (world != null) {
 					world.scripting.onSoundComplete(value);
+				}
+				if (action != null) {
+					action.invoke();
 				}
 			}
 		};
@@ -876,14 +879,14 @@ public class CommonResources implements GameEnvironment {
 		control.playVideos(new Action0() {
 			@Override
 			public void invoke() {
-				if (action != null) {
-					action.invoke();
-				}
 				if (world != null) {
 					world.scripting.onVideoComplete(name);
 				}
 				if (!running) {
 					simulation.resume();
+				}
+				if (action != null) {
+					action.invoke();
 				}
 			}
 		}, name);

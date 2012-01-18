@@ -78,6 +78,12 @@ public class World {
 	public final Researches researches = new Researches();
 	/** The available crew-talks. */
 	public Talks talks;
+	/** The current talk to display, null if none. */
+	public String currentTalk;
+	/** Indicate that the database screen should allow recording. */
+	public boolean allowRecordMessage;
+	/** Indicate if the record-watched is done. */
+	public boolean recordWatched;
 	/** The ship-walk definitions. */
 	public Walks walks;
 	/** The game definition. */
@@ -120,6 +126,10 @@ public class World {
 	public int fleetIdSequence;
 	/** The test questions. */
 	public Map<String, TestQuestion> test;
+	/** The test is needed. */
+	public boolean testNeeded;
+	/** The test has been completed. */
+	public boolean testCompleted;
 	/** The diplomacy definition. */
 	public Map<String, Diplomacy> diplomacy;
 	/** The battle object. */
@@ -884,6 +894,11 @@ public class World {
 		world.set("player", player.id);
 		world.set("difficulty", difficulty);
 		world.set("time", DATE_FORMAT.get().format(time.getTime()));
+		world.set("test-needed", testNeeded);
+		world.set("test-completed", testCompleted);
+		world.set("allow-record-message", allowRecordMessage);
+		world.set("current-talk", currentTalk);
+		world.set("record-watched", recordWatched);
 		
 		statistics.save(world.add("statistics"));
 		
@@ -1151,6 +1166,11 @@ public class World {
 		difficulty = Difficulty.valueOf(xworld.get("difficulty"));
 		level = xworld.getInt("level");
 		fleetIdSequence = 0;
+		testNeeded = xworld.getBoolean("test-needed", false);
+		testCompleted = xworld.getBoolean("test-completed", false);
+		allowRecordMessage = xworld.getBoolean("allow-record-message", false);
+		currentTalk = xworld.get("current-talk", null);
+		recordWatched = xworld.getBoolean("record-watched", false);
 		
 		try {
 			time.setTime(DATE_FORMAT.get().parse(xworld.get("time")));

@@ -43,6 +43,8 @@ public class TestScreen extends ScreenBase {
 	UIImageButton scrollDown;
 	/** Done. */
 	UIGenericButton done;
+	/** Was the game paused? */
+	boolean paused;
 	@Override
 	public void onInitialize() {
 		base.setSize(commons.background().test.getWidth(), commons.background().test.getHeight());
@@ -83,11 +85,21 @@ public class TestScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		questionScroll.prepare();
+		paused = commons.simulation.paused();
+		commons.pause();
 		
 	}
 	/** Complete the test. */
 	void doDone() {
-		hideSecondary();
+		commons.playVideo("test/phsychologist_test_completed", new Action0() {
+			@Override
+			public void invoke() {
+				world().testNeeded = false;
+				world().testCompleted = true;
+				hideSecondary();
+			}
+		});
+		
 	}
 	/** @return is all questions answered? */
 	boolean isFilled() {
@@ -105,6 +117,9 @@ public class TestScreen extends ScreenBase {
 	@Override
 	public void onLeave() {
 		questionScroll.clear();
+		if (!paused) {
+			commons.simulation.resume();
+		}
 	}
 
 	@Override

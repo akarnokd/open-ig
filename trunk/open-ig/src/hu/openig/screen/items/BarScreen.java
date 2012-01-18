@@ -39,8 +39,6 @@ public class BarScreen extends ScreenBase {
 	final Rectangle base = new Rectangle();
 	/** Display the talk image instead of the empty bar? */
 	public boolean enableTalk = true;
-	/** Indicator if the level 2 talk should be the doctor. */
-	public boolean doctorFirst = true;
 	/** We are in talk mode. */
 	boolean talkMode;
 	/** The talk screen for level 4 doctor. */
@@ -132,6 +130,7 @@ public class BarScreen extends ScreenBase {
 		} else {
 			talkMode = false;
 			picture = null;
+			world().scripting.onTalkCompleted();
 		}
 	}
 	@Override
@@ -205,33 +204,24 @@ public class BarScreen extends ScreenBase {
 	}
 	/** @return Retrieve the talk image. */
 	BufferedImage getTalk() {
-		if (doctorFirst && world().level == 2) {
+		if ("phsychologist".equals(world().currentTalk)) {
 			return talkPhsychologist;
 		} else
-		if (!doctorFirst && world().level == 2) {
+			if ("kelly".equals(world().currentTalk)) {
 			return talkKelly;
 		} else
-		if (world().level == 3) {
+			if ("brian".equals(world().currentTalk)) {
 			return talkBrian;
 		} else
-		if (world().level == 4) {
+		if ("doctor".equals(world().currentTalk)) {
 			return talkDoctor;
 		}
 		return bar3;
 	}
 	/** @return the current talk person. */
 	TalkPerson getPerson() {
-		if (doctorFirst && world().level == 2) {
-			return world().talks.persons.get("phsychologist");
-		} else
-		if (!doctorFirst && world().level == 2) {
-			return world().talks.persons.get("kelly");
-		} else
-		if (world().level == 3) {
-			return world().talks.persons.get("brian");
-		} else
-		if (world().level == 4) {
-			return world().talks.persons.get("doctor");
+		if (world().currentTalk != null) {
+			return world().talks.persons.get(world().currentTalk);
 		}
 		return null;
 	}

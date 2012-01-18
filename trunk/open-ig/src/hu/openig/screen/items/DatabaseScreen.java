@@ -429,7 +429,22 @@ public class DatabaseScreen extends ScreenBase {
 		recordMessage.action = new Action0() {
 			@Override
 			public void invoke() {
-				commons.effectSound(SoundType.RECORD_MESSAGE_NO);
+				if (world().allowRecordMessage) {
+					commons.effectSound(SoundType.RECORD_MESSAGE_NO);
+				} else {
+					commons.playAudio(SoundType.RECORD_MESSAGE_YES.resource, new Action0() {
+						@Override
+						public void invoke() {
+							commons.playVideo("interlude/watch_recording", new Action0() {
+								@Override
+								public void invoke() {
+									world().recordWatched = true;
+									world().allowRecordMessage = false;
+								}
+							});
+						}
+					});
+				}
 			}
 		};
 		

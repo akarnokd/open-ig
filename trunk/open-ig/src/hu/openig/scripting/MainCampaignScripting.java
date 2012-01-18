@@ -868,4 +868,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			m.onAutobattleStart(battle);
 		}
 	}
+	@Override
+	public void onTalkCompleted() {
+		for (Mission m : missions) {
+			m.onTalkCompleted();
+		}		
+	}
 }
