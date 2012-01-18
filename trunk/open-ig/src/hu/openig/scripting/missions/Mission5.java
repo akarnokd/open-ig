@@ -147,8 +147,7 @@ public class Mission5 extends Mission {
 				world.env.playVideo("interlude/level_2_intro", new Action0() {
 					@Override
 					public void invoke() {
-						world.level = 2;
-						world.env.playMusic();
+						promote();
 					}
 				});
 			}
@@ -167,8 +166,7 @@ public class Mission5 extends Mission {
 			world.env.playVideo("interlude/level_2_intro", new Action0() {
 				@Override
 				public void invoke() {
-					world.level = 2;
-					world.env.playMusic();
+					promote();
 				}
 			});
 		} else
@@ -181,6 +179,29 @@ public class Mission5 extends Mission {
 				}
 			}
 		}
+	}
+	/**
+	 * Perform the promotion action.
+	 */
+	void promote() {
+		player.setAvailable(research("Fighter2"));
+		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip1", player);
+		if (own != null) {
+			own.first.addInventory(research("Fighter2"), 2);
+			own.first.addInventory(research("Cruiser1"), 1);
+			for (InventoryItem ii : own.first.inventory) {
+				if (ii.type.id.equals("Cruiser1")) {
+					ii.tag = "CampaignMainShip2";
+					setSlot(ii, "laser", "Laser1", 6);
+					setSlot(ii, "shield", "Shield1", 1);
+					setSlot(ii, "cannon", "IonCannon", 1);
+					setSlot(ii, "hyperdrive", "HyperDrive1", 1);
+				}
+			}
+		}
+		
+		world.level = 2;
+		world.env.playMusic();
 	}
 	/**
 	 * Check if Tullen successfully left the area.
@@ -322,27 +343,6 @@ public class Mission5 extends Mission {
 		}
 
 	}
-	/**
-	 * Create helper ship inventory.
-	 * @param parent the parent fleet
-	 * @return the list of added items
-	 */
-	List<InventoryItem> createHelperShips(Fleet parent) {
-		List<InventoryItem> result = U.newArrayList();
-		for (int i = 0; i < 2; i++) {
-			InventoryItem pii = new InventoryItem(parent);
-			pii.type = research("PirateFighter2");
-			pii.owner = player("Pirates");
-			pii.count = 1;
-			pii.hp = world.getHitpoints(pii.type);
-			pii.tag = "Mission-5-Help";
-			pii.createSlots();
-			pii.shield = Math.max(0, pii.shieldMax());
-			result.add(pii);
-		}
-		
-		return result;
-	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
 		if (isMissionSpacewar(war.battle(), "Mission-5")) {
@@ -469,5 +469,31 @@ public class Mission5 extends Mission {
 			ii.tag = "Mission-5-Garthog";
 		}
 		helper.scriptedFleets().add(f.id);
+	}
+	/**
+	 * Create helper ship inventory.
+	 * @param parent the parent fleet
+	 * @return the list of added items
+	 */
+	List<InventoryItem> createHelperShips(Fleet parent) {
+		List<InventoryItem> result = U.newArrayList();
+		// -------------------------------------------------------
+		// Set help strength here
+		int helpingPirates = 2;
+		String pirateTech = "PirateFighter2";
+		// -------------------------------------------------------
+		for (int i = 0; i < helpingPirates; i++) {
+			InventoryItem pii = new InventoryItem(parent);
+			pii.type = research(pirateTech);
+			pii.owner = player("Pirates");
+			pii.count = 1;
+			pii.hp = world.getHitpoints(pii.type);
+			pii.tag = "Mission-5-Help";
+			pii.createSlots();
+			pii.shield = Math.max(0, pii.shieldMax());
+			result.add(pii);
+		}
+		
+		return result;
 	}
 }

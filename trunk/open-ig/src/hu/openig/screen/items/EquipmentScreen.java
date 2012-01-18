@@ -1716,11 +1716,28 @@ public class EquipmentScreen extends ScreenBase {
 			ts.visible(false);
 		}
 		for (ResearchType rt : world().researches.values()) {
-			if (world().canDisplayResearch(rt) && rt.category == cat) {
+			if ((world().canDisplayResearch(rt) /* || fleetHasResearch(rt) */)
+					&& rt.category == cat) {
 				updateSlot(rt);
 			}
 		}
 		doSelectCategoryButtons(cat);
+	}
+	/**
+	 * Check if the fleet has the given research.
+	 * @param rt the technology
+	 * @return true if research is in the fleet
+	 */
+	boolean fleetHasResearch(ResearchType rt) {
+		Fleet f = fleet();
+		if (f != null && f.owner == player()) {
+			for (InventoryItem ii : f.inventory) {
+				if (ii.type == rt) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	/**
 	 * Select the category buttons based on the category.
