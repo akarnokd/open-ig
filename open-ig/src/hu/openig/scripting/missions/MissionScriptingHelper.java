@@ -8,6 +8,7 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.core.Func1;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.VideoMessage;
@@ -141,5 +142,25 @@ public interface MissionScriptingHelper {
 	 * @param id the message id
 	 * @return the video message or null if not available
 	 */
-	VideoMessage receive(String id);	
+	VideoMessage receive(String id);
+	/**
+	 * Clear the timeouts specified by the filter function.
+	 * @param filter the filter function
+	 */
+	void clearTimeouts(Func1<String, Boolean> filter);
+	/**
+	 * Clear the mission times specified by the filter function.
+	 * @param filter the filter function
+	 */
+	void clearMissionTimes(Func1<String, Boolean> filter);
+	/**
+	 * Hide and reset any objectives specified by the filter function.
+	 * @param filter the filter
+	 */
+	void clearObjectives(Func1<String, Boolean> filter);
+	/**
+	 * Hide and reset any messages specified by the filter.
+	 * @param filter the filter
+	 */
+	void clearMessages(Func1<String, Boolean> filter);
 }

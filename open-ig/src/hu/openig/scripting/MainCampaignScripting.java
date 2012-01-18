@@ -8,6 +8,7 @@
 
 package hu.openig.scripting;
 
+import hu.openig.core.Func1;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -479,6 +480,48 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			m.onLevelChanged();
 		}
 	}
+	@Override
+	public void clearMissionTimes(Func1<String, Boolean> filter) {
+		for (String s : U.newArrayList(missiontimer.keySet())) {
+			if (filter.invoke(s)) {
+				missiontimer.remove(s);
+			}
+		}
+	}
+	@Override
+	public void clearTimeouts(Func1<String, Boolean> filter) {
+		for (String s : U.newArrayList(countdowns.keySet())) {
+			if (filter.invoke(s)) {
+				countdowns.remove(s);
+			}
+		}
+	}
+	@Override
+	public void clearObjectives(Func1<String, Boolean> filter) {
+		for (Map.Entry<String, Objective> e : allObjectives.entrySet()) {
+			if (filter.invoke(e.getKey())) {
+				e.getValue().visible = false;
+				e.getValue().state = ObjectiveState.ACTIVE;
+			}
+		}
+	}
+
+	@Override
+	public void clearMessages(Func1<String, Boolean> filter) {
+		for (Map.Entry<String, VideoMessage> e : world.bridge.sendMessages.entrySet()) {
+			if (filter.invoke(e.getKey())) {
+				e.getValue().visible = false;
+				e.getValue().seen = false;
+			}
+		}
+		for (Map.Entry<String, VideoMessage> e : world.bridge.receiveMessages.entrySet()) {
+			if (filter.invoke(e.getKey())) {
+				e.getValue().visible = false;
+				e.getValue().seen = false;
+			}
+		}
+	}
+
 
 	@Override
 	public void onLost(Fleet fleet) {
@@ -588,11 +631,11 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			}
 		}
 		// update view limits if level changes
-		if (lastLevel != world.level) {
-			onLevelChanged();
-		}
 		updateCounters();
 		for (Mission m : missions) {
+			if (lastLevel != world.level) {
+				onLevelChanged();
+			}
 			m.onTime();
 		}
 	}

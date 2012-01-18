@@ -15,7 +15,6 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
-import hu.openig.model.InventorySlot;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -184,22 +183,6 @@ public class Mission5 extends Mission {
 	 * Perform the promotion action.
 	 */
 	void promote() {
-		player.setAvailable(research("Fighter2"));
-		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip1", player);
-		if (own != null) {
-			own.first.addInventory(research("Fighter2"), 2);
-			own.first.addInventory(research("Cruiser1"), 1);
-			for (InventoryItem ii : own.first.inventory) {
-				if (ii.type.id.equals("Cruiser1")) {
-					ii.tag = "CampaignMainShip2";
-					setSlot(ii, "laser", "Laser1", 6);
-					setSlot(ii, "shield", "Shield1", 1);
-					setSlot(ii, "cannon", "IonCannon", 1);
-					setSlot(ii, "hyperdrive", "HyperDrive1", 1);
-				}
-			}
-		}
-		
 		world.level = 2;
 		world.env.playMusic();
 	}
@@ -412,22 +395,6 @@ public class Mission5 extends Mission {
 				completeMission(tullenSurvived);
 			}
 		}
-	}
-	/**
-	 * Set the slot contents.
-	 * @param ii the inventory item
-	 * @param slotId the slot
-	 * @param technology the technology
-	 * @param count the item count
-	 */
-	void setSlot(InventoryItem ii, String slotId, String technology, int count) {
-		for (InventorySlot is : ii.slots) {
-			if (is.slot.id.equals(slotId) && !is.slot.fixed) {
-				is.type = research(technology);
-				is.hp = world.getHitpoints(is.type);
-				is.count = Math.min(is.slot.max, count);
-			}
-		}		
 	}
 	/**
 	 * Create Tullen's fleet.
