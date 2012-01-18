@@ -20,6 +20,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.U;
@@ -176,6 +177,7 @@ public class Mission5 extends Mission {
 				if (own != null) {
 					own.first.addInventory(research("Fighter1"), 3);
 				}
+				world.env.computerSound(SoundType.REINFORCEMENT_ARRIVED_1);
 			}
 		}
 	}
@@ -354,7 +356,8 @@ public class Mission5 extends Mission {
 		if (garthog != null) {
 			world.removeFleet(garthog.first);
 		}
-		if (survive) {
+		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignShip1", player);
+		if (survive && own != null) {
 			helper.setTimeout("Mission-5-Success", 3000);
 			moveTullen();
 		} else {
