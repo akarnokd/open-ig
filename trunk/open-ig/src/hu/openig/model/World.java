@@ -1252,8 +1252,6 @@ public class World {
 					Player pl = players.get(xwith.get("player"));
 					if (pl != null) {
 						p.setStance(pl, xwith.getInt("value"));
-					} else {
-						throw new AssertionError("Missing player for stance " + p.name + " vs. " + xwith.get("player"));
 					}
 				}
 			}
@@ -1438,7 +1436,7 @@ public class World {
 				for (XElement xstance : xplayer.childrenWithName("stance")) {
 					for (XElement xwith : xstance.childrenWithName("with")) {
 						Player q = players.get(xwith.get("player"));
-						if (q != p) {
+						if (q != p && q != null) {
 							int v = xwith.getInt("value");
 							p.knownPlayers.put(q, v);
 						}

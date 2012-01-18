@@ -422,8 +422,12 @@
 		<layout id='Original12' map='spacewar/layout_12'/>
 	</layouts>
 	<properties>
+		<property id='Rocket1' hp='1000'/>
+		<property id='Rocket2' player='Empire' hp='2000'/>
+		<property id='MultiheadedRocket' player='Empire' hp='2000'/>
 		<property id='Bomb1' ground-radius='6' damage-percent='5' hp='1000'/>
 		<property id='Bomb2' player='Empire' ground-radius='10' damage-percent='10' hp='2000'/>
+		<property id='VirusBomb2' player='Empire' ground-radius='6' damage-percent='5' hp='2000'/>
 		<property id='MorgathKamikazeTank' player='Morgath' self-destruct-multiplier='50'/>
 	</properties>
 </battle>

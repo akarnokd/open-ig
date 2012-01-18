@@ -63,7 +63,7 @@ public class Mission2 extends Mission {
 				}
 				if (helper.canStart(m2ti)) {
 					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"), 4);
-					fs = filterByRange(fs, world.params().groundRadarUnitSize(), 
+					fs = filterByRange(fs, world.params().groundRadarUnitSize() - 2, 
 							"Naxos", "San Sterling", "Achilles");
 					if (!fs.isEmpty()) {
 						int traderMessage = world.random().nextInt(7) + 1;

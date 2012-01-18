@@ -2908,7 +2908,7 @@
 	<entry key='battlefinish.mission-7_task2.merchant8'>Message from Trader 8: It was about time someone taught those Garthogs a lesson. I will report this to your commanding officer.</entry>
 	<entry key='battlefinish.mission-7_task2.merchant8_bonus'>BONUS: You have received a MEDAL OF COURAGE from the Free Traders Alliance. Your reputation has grown among the merchants!</entry>
 	<entry key='battlefinish.mission-5.garthog'>Before his death, the Garthog fighter sent a message: You have won the battle, Commander, but not the war! We shall not be defeated, we shall hunt you down and destroy you! The Garthogs will rule the Galaxy!</entry>
-	<entry key='battlefinish.mission-5.garthog'>BONUS: Promotion to Captain</entry>
+	<entry key='battlefinish.mission-5.garthog_bonus'>BONUS: Promotion to Captain</entry>
 	<entry key='battlefinish.mission-4.10'>Message from the Governor of Planet Naxos: Our people express their gratitude. Thank you for your help, Captain.</entry>
 	<!-- If save the pirate, than this bonus -->
 	<entry key='battlefinish.mission-4.10_bonus'>Message from Pirate: You saved my life! Honour dictates I must return the favour, so my gang is ready to help you if required. Farewell, brave Lieutenant.</entry>
@@ -2952,13 +2952,13 @@
 	<entry key='mission-4.pirate_battle.desc'>Negotiate with them or just kill them, its your call.</entry>
 	<entry key='mission-5.escort_thorin'>Escort the flagship Thorin</entry>
 	<entry key='mission-5.escort_thorin.desc'>Support Admiral Benson's strategic retreat.</entry>
-	<entry key='mission-5.meet_benson'>Meet with Admiral Benson</entry>
+	<entry key='mission-5.meet_tullen'>Meet with Admiral Benson</entry>
 	<entry key='mission-5.defend_thorin'>Defend the flagship Thorin</entry>
 	<entry key='mission-5.defend_thorin.desc'>Join forces with Admiral Benson. The flagship Thorin must survive.</entry>
 	<entry key='mission-4.message-1'>Message from rebel Pirate:</entry>
 	<entry key='mission-4.message-2'>Thank you for saving us! We won't forget your deeds.</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-5.tullens_fleet'>Tullen's fleet</entry>
+	<entry key='mission-5.garthog_fleet'>Garthog</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

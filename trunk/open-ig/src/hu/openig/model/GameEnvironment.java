@@ -65,6 +65,8 @@ public interface GameEnvironment {
 	void screenSound(SoundType type);
 	/** Stops the music playback. */
 	void stopMusic();
+	/** Stops the music playback. */
+	void playMusic();
 	/**
 	 * The various game parameters.
 	 * @return the game parameters

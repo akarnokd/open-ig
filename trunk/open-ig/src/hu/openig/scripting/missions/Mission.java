@@ -494,4 +494,12 @@ public abstract class Mission implements GameScriptingEvents {
 			}
 		}
 	}
+	/**
+	 * Returns the research of the given id.
+	 * @param id the research id
+	 * @return the research type
+	 */
+	ResearchType research(String id) {
+		return world.researches.get(id);
+	}
 }

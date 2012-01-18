@@ -2161,10 +2161,10 @@
 	<entry key='battlefinish.mission-2.merchant6_bonus'>JUTALOM: 1500 credit.</entry>
 	<entry key='battlefinish.mission-7.merchant7'>Üzenet a Kereskedô 7-tôl: Köszönjük a segítségét, Parancsnok. Mellesleg, elmondaná, hol szerezhetnénk be mi is egy pár lézerágyút?</entry>
 	<entry key='battlefinish.mission-7.merchant7_bonus'>JUTALOM: 5000 kredit</entry>
-	<entry key='battlefinish.mission-7_task2.merchant8'>Üzenet a Kereskedô 8-tól: Épp itt volt az ideje, hogy megleckéztesse a Garthogokat. Köszönöm, Parancsnok! Jelenteni fogom az esetet a feletteseinek.</entry>
+	<entry key='battlefinish.mission-7_task2.merchant8'>Üzenet a Kereskedő 8-tól: Épp itt volt az ideje, hogy megleckéztesse a Garthogokat. Köszönöm, Parancsnok! Jelenteni fogom az esetet a feletteseinek.</entry>
 	<entry key='battlefinish.mission-7_task2.merchant8_bonus'>JUTALOM: A Szabad Kereskedôk Szövetsége kitüntetett a Bátorság Medállal. A neved ismert és elismert lett a kereskedôk körében!</entry>
-	<entry key='battlefinish.mission-5.garthog'>A felrobbanása elôtt, egy Garthog vadász egy üzenetet küldött: Lehet, hogy megnyert egy csatát, parancsnok, de nem a háborút! Elôbb vagy utóbb elkapj...</entry>
-	<entry key='battlefinish.mission-5.garthog'>JUTALOM: Elôléptetés kapitánnyá.</entry>
+	<entry key='battlefinish.mission-5.garthog'>A felrobbanása előtt, egy Garthog vadász egy üzenetet küldött: Lehet, hogy megnyert egy csatát, parancsnok, de nem a háborút! Elôbb vagy utóbb elkapj...</entry>
+	<entry key='battlefinish.mission-5.garthog_bonus'>JUTALOM: Előléptetés kapitánnyá.</entry>
 	<entry key='battlefinish.mission-4.10'>Üzenet a Naxos bolygó kormányzójától: A kolónia lakosságának nevében szeretnék köszönetet mondani Önnek, Kapitány. Jó munkát végzett!</entry>
 	<!-- If save the pirate, than this bonus -->
 	<entry key='battlefinish.mission-4.10_bonus'>Üzenet a kalózhajóról: Megmentette az életemet! Ezt nem felejtem el Magának! A társaimmal segítségére leszek, ha bajba kerülne. Viszontlátásra, Kapitány!</entry>
@@ -2207,11 +2207,12 @@
 	<entry key='mission-4.pirate_battle'>Rendezd a Naxos melletti kalózcsatát</entry>
 	<entry key='mission-4.pirate_battle.desc'>Tárgyalj velük, vagy csak lődd ki őket, te döntesz.</entry>
 	<entry key='mission-5.escort_thorin'>A Thorin zászlóshajó kísérete</entry>
-	<entry key='mission-5.escort_thorin.desc'>Támogasd Benson admirális stratégiai visszavonulását.</entry>
-	<entry key='mission-5.meet_benson'>Találkozz Benson admirálissal</entry>
+	<entry key='mission-5.escort_thorin.desc'>Támogasd Tullen admirális stratégiai visszavonulását.</entry>
+	<entry key='mission-5.meet_tullen'>Találkozz Tullen admirálissal</entry>
 	<entry key='mission-5.defend_thorin'>Védd meg a Thorin zászlóshajót</entry>
 	<entry key='mission-5.defend_thorin.desc'>Egyesítsd erőidet a Thorin flottájával. A zászlóshajónak túl kell élnie.</entry>
-	<entry key=''></entry>
+	<entry key='mission-5.tullens_fleet'>Tullen flottája</entry>
+	<entry key='mission-5.garthog_fleet'>Garthog</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
