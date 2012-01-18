@@ -2964,6 +2964,9 @@
 	<entry key='mission-8.go_to_bar'>Go to the bar and talk to Dr. Reinhart about your vision</entry>
 	<entry key='mission-15.kelly'>Go to the bar and talk to Kelly about the spy</entry>
 	<entry key='Empire.main_fleet'>Main fleet</entry>
+	<entry key='chat.global.identify_yourself'>Ship, identify yourself!</entry>
+	<entry key='chat.global.proceed_your_destination'>Proceed to your destination!</entry>
+	<entry key='chat.global.thank_you'>Thank you, Sir.</entry>
 	<entry key=''></entry>
 	
 </labels>
