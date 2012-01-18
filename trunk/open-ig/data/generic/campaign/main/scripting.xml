@@ -5,6 +5,8 @@
 		<mission class='hu.openig.scripting.missions.Mission1'/>
 		<mission class='hu.openig.scripting.missions.Mission2'/>
 		<mission class='hu.openig.scripting.missions.Mission3'/>
+		<mission class='hu.openig.scripting.missions.Mission4'/>
+		<mission class='hu.openig.scripting.missions.Mission5'/>
 	</missions>
 	<!--  The view limit for the empire player levels 1-3. Levels 4-5 are unlimited. -->
 	<limit-views>
@@ -68,6 +70,16 @@
 		</objective>		
 		<objective id='Mission-3' title='mission-3.escort_carrier' 
 			description='mission-3.escort_carrier.desc' visible='false'/>
+
+		<objective id='Mission-4' title='mission-4.pirate_battle' 
+			description='mission-4.pirate_battle.desc' visible='false'/>
+
+		<objective id='Mission-5' title='mission-5.escort_thorin' 
+			description='mission-5.escort_thorin.desc' visible='false'>
+			<objective id='Mission-5-Task-1' title='mission-5.meet_benson' visible='false'/>
+			<objective id='Mission-5-Task-2' title='mission-5.defend_thorin' 
+				description='mission-5.defend_thorin.desc' visible='false'/>
+		</objective>
 		
 	</objectives>	
 	

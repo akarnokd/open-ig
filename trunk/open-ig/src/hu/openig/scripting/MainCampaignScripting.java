@@ -128,7 +128,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		Objective o = new Objective();
 		o.id = xo.get("id");
 		o.title = label(xo.get("title"));
-		o.description = label(xo.get("description"));
+		String d = xo.get("description", null);
+		if (d != null) {
+			o.description = label(d);
+		}
 		o.visible = xo.getBoolean("visible");
 		return o;
 	}

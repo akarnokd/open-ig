@@ -898,6 +898,13 @@
 		index='0'>
 		<slot-fixed id='Laser' count='1' item='Laser1' />
 	</item>
+	<item id='PirateFighter2' name='tech.piratefighter.name' long-name='tech.piratefighter.longname'
+		description='tech.piratefighter.description' category='SPACESHIPS_FIGHTERS'
+		image='inventions/spaceships/fighters/pirate_fighter' factory='spaceship'
+		research-cost='3000' production-cost='2000' level='0' race='pirates'
+		index='0'>
+		<slot-fixed id='Laser' count='1' item='Laser1' />
+	</item>
 	<item id='SullepFighter1' name='tech.sullepfighter1.name'
 		long-name='tech.sullepfighter1.longname' description='tech.sullepfighter1.description'
 		category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/sullep_fighter_1'

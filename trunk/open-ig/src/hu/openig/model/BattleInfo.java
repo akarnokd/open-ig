@@ -64,6 +64,8 @@ public class BattleInfo {
 	public String rewardImage;
 	/** The optional reward display text. */
 	public String rewardText;
+	/** The optional message display text. */
+	public String messageText;
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

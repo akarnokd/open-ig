@@ -166,6 +166,10 @@
 		<tech id='PirateFighter' normal='inventions/spaceships/fighters/pirate_fighter_rotate'
 			image='inventions/spaceships/fighters/pirate_fighter_huge' width='64'
 			sound='EXPLOSION_LONG' movement-speed='25' rotation-time='200' hp='180'/>
+		<!-- Mission 4 custom fighter. -->
+		<tech id='PirateFighter2' normal='inventions/spaceships/fighters/pirate_fighter_rotate'
+			image='inventions/spaceships/fighters/pirate_fighter_huge' width='64'
+			sound='EXPLOSION_LONG' movement-speed='25' rotation-time='200' hp='350'/>
 		<tech id='SullepFighter1' normal='inventions/spaceships/fighters/sullep_fighter_1_rotate'
 			image='inventions/spaceships/fighters/sullep_fighter_1_huge' width='64'
 			sound='EXPLOSION_LONG' movement-speed='25' rotation-time='200' hp='7000'/>

@@ -323,6 +323,7 @@ public class SingleplayerScreen extends ScreenBase {
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			displayPrimary(Screens.MAIN);
+			return true;
 		}
 		return false;
 	}
