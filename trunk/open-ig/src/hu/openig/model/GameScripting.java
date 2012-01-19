@@ -64,4 +64,6 @@ public interface GameScripting extends GameScriptingEvents {
 	 * @return true if can auto saved
 	 */
 	boolean mayAutoSave();
+	/** Activate debugging behavior. */
+	void debug();
 }
