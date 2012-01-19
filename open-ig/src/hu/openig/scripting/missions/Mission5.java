@@ -440,8 +440,8 @@ public class Mission5 extends Mission {
 		Fleet f = createFleet(label("mission-5.garthog_fleet"), player("Garthog"), p.x + 40, p.y - 20);
 		// -------------------------------------------------------
 		// Set strengths here
-		f.addInventory(research("GarthogFighter"), 8);
-		f.addInventory(research("GarthogDestroyer"), 2);
+		f.addInventory(research("GarthogFighter"), 12);
+		f.addInventory(research("GarthogDestroyer"), 1);
 		// -------------------------------------------------------
 		f.task = FleetTask.SCRIPT;
 		for (InventoryItem ii : f.inventory) {
