@@ -5,6 +5,8 @@
 = Level 1: Lieutenant =
 == Mission 1 ==
 
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
+
 Objective: Rebuild Achilles
 
 Success condition: *original: N/A*
@@ -12,6 +14,8 @@ Success condition: *original: N/A*
 Failure condition: Achilles gets destroyed. *Fired!*
 
 == Mission 2==
+
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Protect the random trader ships from pirates
 
@@ -37,6 +41,8 @@ Remark: interleaved with Mission 3 and 4
 
 == Mission 3 ==
 
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
+
 Objective: Escort a cargo ship "Transport"
 
 Success condition: *ship not destroyed*, reward: Shield1
@@ -49,6 +55,8 @@ Remark: Pirate attack near San Sterling
 
 == Mission 4 ==
 
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
+
 Objective: Resolve pirate battle near Naxos
 
 Success condition: *single pirate ship survived*
@@ -60,6 +68,8 @@ Video: Naxos unknown ships?
 Remark: the single "Rebel" pirate ship will be your ally in the battle.
 
 == Mission 5 ==
+
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Cover the Thorin's retreat from Garthog forces
 
@@ -83,6 +93,8 @@ Remark: if you saved the pirate in Mission 4, you get single-time help in the de
 
 == Mission 6 ==
 
+Status http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+
 Sequence: 1
 
 Objective: Defend Achilles from Garthog surprise attack
@@ -97,6 +109,8 @@ Success condition: Garthogs defeated (either in orbit or on ground)
 Failure condition: Achilles taken by Garthog. *Fired!*
 
 == Mission 7 ==
+
+Status: -
 
 === Task 1 ===
 
@@ -119,6 +133,8 @@ Reward: Good relations with FreeTraders later on in the game
 
 == Mission 8 ==
 
+Status: Status http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+
 Sequence: 3
 
 Objective: Complete the test
@@ -128,6 +144,8 @@ Notes:
   * Flashbacks starts after this by 2 months
 
 == Mission 9 ==
+
+Status: -
 
 Sequence 4:
 
@@ -144,6 +162,8 @@ Video: san_sterling_smuggler, san_sterling_smuggler_killed
 
 == Mission 10 ==
 
+Status: -
+
 Sequence: 5
 
 Objective: Escort governor of Centronom
@@ -159,6 +179,8 @@ Notes:
 
 == Mission 11 ==
 
+Status: -
+
 Sequence: 6
 
 Objective: Defend the planet from Garthog attack
@@ -172,6 +194,8 @@ Notes:
   * Display send messages according to the chosen planet
 
 == Mission 12 ==
+
+Status: -
 
 Sequence: 7
 
@@ -205,6 +229,8 @@ Subsequent virus infection, unless reported to colonel
 
 == Mission 13 ==
 
+Status: -
+
 Sequence: 9
 
 Objective: Escort admiral Benson to New Caroline
@@ -220,6 +246,8 @@ Notes:
 
 == Mission 14 ==
 
+Status: -
+
 Sequence: 10
 
 Objective: Destroy the virus carriers
@@ -233,11 +261,15 @@ Notes:
 
 == Mission 15 ==
 
+Status: Status http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+
 Notes:
   * See spy movie
   * Talk to Kelly in the bar
 
 == Mission 16 ==
+
+Status: -
 
 Objective: Escort money carrier
 
@@ -247,6 +279,8 @@ Notes:
   * Attacked by few Garthog fighters and destroyers
 
 == Mission 17 ==
+
+Status: -
 
 Objective: Stop the stolen prototype
 
@@ -265,6 +299,8 @@ Notes:
 
 == Mission 18 ==
 
+Status: -
+
 Objective: Defeat the Garthogs
 
 === Task 1..5 ===
@@ -272,6 +308,8 @@ Objective: Defeat the Garthogs
 Objective: Capture Garthog N
 
 == Mission 19 ==
+
+Status: -
 
 Objective: Blockade of Zeuson
 
@@ -283,7 +321,11 @@ Notes:
 
   * After 4-5 days, a FreeTraders "Unknown" will leave Zeuson, should flee
 
+Status: -
+
 == Mission 20 ==
+
+Status: -
 
 Objective: Talk to Brian
 
@@ -291,6 +333,8 @@ Notes:
   * Flashback after zeuson blockade
 
 == Mission 21 ==
+
+Status: -
 
 Objective: Escort prototype
 
@@ -308,6 +352,8 @@ Notes:
 
 == Mission 22 ==
 
+Status: -
+
 Objective: build, research, colonize
 
 Success condition: Own 7 more planets (either colonization or capture)
@@ -315,6 +361,8 @@ Success condition: Own 7 more planets (either colonization or capture)
 Reward: Promotion to Grand admiral
 
 == Mission 23 ==
+
+Status: -
 
 === Task 1 ===
 Objective: Talk to the doctor in the Bar
@@ -328,6 +376,8 @@ Notes:
 
 == Mission 24 ==
 
+Status: -
+
 Objective: Make first contact with the Dargslan
 
 Reward: Promotion to Grand admiral
@@ -338,6 +388,8 @@ Notes:
 = Level 5: Grand Admiral =
 
 == Mission 25 ==
+
+Status: -
 
 Objective: Defeat the Dargslan
 
