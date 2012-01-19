@@ -11,6 +11,7 @@
     * [GameGuide#Gameplay_tips Tips]
     * [GameGuide#Mouse_and_keyboard Controls]
     * [GameGuide#Gameplay_mechanics Mechanics]
+    * [Missions Missions]
   * Other utilities
     * [AnimPlay AnimPlay]
     * [Testbed The development testbed]
