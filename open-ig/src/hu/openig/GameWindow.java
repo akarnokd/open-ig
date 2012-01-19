@@ -1216,6 +1216,13 @@ public class GameWindow extends JFrame implements GameControls {
 						repaintInner();
 					}
 					break;
+				case KeyEvent.VK_H:
+					if (e.isControlDown()) {
+						world().scripting.debug();
+						e.consume();
+						repaintInner();
+					}
+					break;
 				case KeyEvent.VK_ESCAPE:
 					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
 					scr.maySave(true);

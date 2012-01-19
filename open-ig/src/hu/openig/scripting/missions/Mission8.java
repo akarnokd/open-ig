@@ -24,6 +24,8 @@ public class Mission8 extends Mission {
 			Objective m8 = helper.objective("Mission-8");
 			if (!m8.visible && m8.state == ObjectiveState.ACTIVE) {
 				helper.setMissionTime("Mission-8", helper.now() + 3 * 24);
+				world.testNeeded = false;
+				world.testCompleted = false;
 			}
 		}
 	}
@@ -35,13 +37,14 @@ public class Mission8 extends Mission {
 		Objective m8 = helper.objective("Mission-8");
 		if (helper.canStart("Mission-8")) {
 			helper.clearMissionTime("Mission-8");
-			helper.setTimeout("Mission-8-Announce", 6000);
+			helper.setTimeout("Mission-8-Announce", 5000);
 			world.env.computerSound(SoundType.PHSYCHOLOGIST_WAITING);
-			world.testNeeded = true;
-			world.testCompleted = false;
 		}
 		if (helper.isTimeout("Mission-8-Announce")) {
+			helper.clearTimeout("Mission-8-Announce");
 			helper.showObjective(m8);
+			world.testNeeded = true;
+			world.testCompleted = false;
 		}
 		if (world.testCompleted && m8.state == ObjectiveState.ACTIVE) {
 			helper.setObjectiveState(m8, ObjectiveState.SUCCESS);

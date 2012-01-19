@@ -30,7 +30,13 @@ import hu.openig.scripting.missions.MissionScriptingHelper;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -40,6 +46,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTextArea;
 
 /**
  * The scripting for the original game's campaign.
@@ -133,6 +146,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		if (d != null) {
 			o.description = label(d);
 		}
+		o.visible = false;
 		return o;
 	}
 	@Override
@@ -920,5 +934,135 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		for (Mission m : missions) {
 			m.onTalkCompleted();
 		}		
+	}
+	@Override
+	public void debug() {
+		final JFrame frame = new JFrame("Debug mission triggers");
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		JPanel panel = new JPanel();
+		JScrollPane sp = new JScrollPane(panel);
+		
+		Container c = frame.getContentPane();
+		c.setLayout(new BorderLayout());
+		
+		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		
+		c.add(split, BorderLayout.CENTER);
+		split.setTopComponent(sp);
+		
+		panel.setLayout(new GridBagLayout());
+		
+		GridBagConstraints gc = new GridBagConstraints();
+		for (int i = 1; i < 26; i++) {
+			final int j = i;
+			JButton btnStart = new JButton("Start M" + i + " now");
+			btnStart.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					setMissionTime("Mission-" + j, 0);
+				}
+			});
+			
+			JButton btnReset = new JButton("Reset M" + i);
+			btnReset.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Func1<String, Boolean> func = new Func1<String, Boolean>() {
+						@Override
+						public Boolean invoke(String value) {
+							if (value.equals("Mission-" + j)) {
+								return true;
+							}
+							if (value.startsWith("Mission-" + j + "-")) {
+								return true;
+							}
+							return false;
+						}
+					};
+					clearMessages(func);
+					clearMissionTimes(func);
+					clearTimeouts(func);
+					clearObjectives(func);
+				}
+			});
+			if (i == 8) {
+				btnReset.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						world.testNeeded = false;
+						world.testCompleted = false;
+					}
+				});
+			}
+			if (i == 15) {
+				btnReset.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						world.currentTalk = null;
+						world.allowRecordMessage = false;
+					}
+				});
+			}
+			gc.gridx = 0;
+			gc.gridy = i;
+			panel.add(btnStart, gc);
+			gc.gridx = 1;
+			panel.add(btnReset, gc);
+		}
+		
+		JPanel dump = new JPanel();
+		split.setBottomComponent(dump);
+		
+		dump.setLayout(new BorderLayout());
+		
+		final JTextArea out = new JTextArea(30, 10);
+		out.setEditable(false);
+		JButton dumpNow = new JButton("Dump timers");
+		dumpNow.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				out.setText("");
+				out.append("-------------------\r\n");
+				out.append("Realtime countdowns\r\n");
+				out.append("-------------------\r\n");
+				for (Map.Entry<String, Integer> es : countdowns.entrySet()) {
+					out.append(es.getKey() + " : " + es.getValue() + "\r\n");
+				}
+				out.append("--------------\r\n");
+				out.append("Mission timers\r\n");
+				out.append("--------------\r\n");
+				for (Map.Entry<String, Integer> es : missiontimer.entrySet()) {
+					long t = world.initialDate.getTime() + 60L * 60L * 1000 * es.getValue();
+					out.append(es.getKey() + " : " + es.getValue() + " (" + XElement.formatDateTime(new Date(t)) + ")\r\n");
+					Objective o = objective(es.getKey());
+					if (o != null) {
+						out.append(" ~ " + o.title + "\r\n");
+						if (o.description != null && !o.description.isEmpty()) {
+							out.append(" ~ " + o.description + "\r\n");
+						}
+					}
+				}
+				out.append("----------\r\n");
+				out.append("Objectives\r\n");
+				out.append("----------\r\n");
+				for (Map.Entry<String, Objective> es : allObjectives.entrySet()) {
+					Objective o = es.getValue();
+					out.append(es.getKey() + " : " + o.state + (o.visible ? " [visible]" : "") + "\r\n");
+					out.append(" ~ " + o.title + "\r\n");
+					if (o.description != null && !o.description.isEmpty()) {
+						out.append(" ~ " + o.description + "\r\n");
+					}
+				}
+				out.setCaretPosition(0);
+			}
+		});
+		JScrollPane sp2 = new JScrollPane(out);
+		dump.add(dumpNow, BorderLayout.NORTH);
+		dump.add(sp2, BorderLayout.CENTER);
+		
+		frame.setSize(800, 600);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 	}
 }
