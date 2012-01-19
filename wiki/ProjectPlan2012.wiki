@@ -8,7 +8,7 @@ See [http://code.google.com/p/open-ig/issues/list Issue list] for enhancements.
 [ProjectFacts2011 Facts for 2011].
 
 || *Task* || *Expected completion time* || *Status* || *Remarks* ||
-|| Missions || 2012-01-29 || - || Implement all original missions. ||
+|| Missions || 2012-01-29 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Implement all original missions. ||
 || Screen: Diplomacy || 2012-02-05 || - || I need to run the original game to figure out the available talk options. ||
 || Beta release || 2012-02-12 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
 || Multiplayer || 2012-03-18 || - || Multiplayer will be like a remote control: receive status changes and submit commands to the host. Human vs. Human with some technology tree simplifications (e.g., build colony ship from start). ||
