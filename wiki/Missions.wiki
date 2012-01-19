@@ -133,7 +133,7 @@ Reward: Good relations with FreeTraders later on in the game
 
 == Mission 8 ==
 
-Status: Status http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
 
 Sequence: 3
 
@@ -261,7 +261,7 @@ Notes:
 
 == Mission 15 ==
 
-Status: Status http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
 
 Notes:
   * See spy movie
