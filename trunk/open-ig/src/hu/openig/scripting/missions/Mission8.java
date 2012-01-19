@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Action0;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
+import hu.openig.model.SoundType;
 
 /**
  * Mission 6: Defend Achilles.
@@ -34,9 +35,13 @@ public class Mission8 extends Mission {
 		Objective m8 = helper.objective("Mission-8");
 		if (helper.canStart("Mission-8")) {
 			helper.clearMissionTime("Mission-8");
-			helper.showObjective(m8);
+			helper.setTimeout("Mission-8-Announce", 6000);
+			world.env.computerSound(SoundType.PHSYCHOLOGIST_WAITING);
 			world.testNeeded = true;
 			world.testCompleted = false;
+		}
+		if (helper.isTimeout("Mission-8-Announce")) {
+			helper.showObjective(m8);
 		}
 		if (world.testCompleted && m8.state == ObjectiveState.ACTIVE) {
 			helper.setObjectiveState(m8, ObjectiveState.SUCCESS);

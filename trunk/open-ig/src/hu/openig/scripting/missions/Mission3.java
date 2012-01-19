@@ -19,6 +19,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 
@@ -44,7 +45,7 @@ public class Mission3 extends Mission {
 			}
 			if (helper.canStart("Mission-3")) {
 				world.env.speed1();
-				helper.setTimeout("Mission-3-Message", 2000);
+				helper.setTimeout("Mission-3-Message", 3000);
 				incomingMessage("Douglas-Carrier");
 				helper.clearMissionTime("Mission-3");
 			}
@@ -145,7 +146,9 @@ public class Mission3 extends Mission {
 			
 			if (d < 15) {
 				world.env.speed1();
+				world.env.computerSound(SoundType.CARRIER_UNDER_ATTACK);
 				helper.setMissionTime("Mission-3-Timeout", helper.now() + 24);
+				
 				Fleet pf = createFleet(label("pirates.fleet_name"), 
 						player("Pirates"), fi.first.x + 1, fi.first.y + 1);
 				
