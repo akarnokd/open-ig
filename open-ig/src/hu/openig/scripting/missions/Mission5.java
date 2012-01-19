@@ -412,8 +412,8 @@ public class Mission5 extends Mission {
 			if (ii.type.id.equals("Flagship")) {
 				// -------------------------------------------------------
 				// Set flagship strength and equipment here
-				ii.hp = 2000;
-				setSlot(ii, "laser", "Laser1", 16);
+				ii.hp = 800;
+				setSlot(ii, "laser", "Laser1", 6);
 				setSlot(ii, "rocket", "Rocket1", 4);
 				// -------------------------------------------------------
 			}
@@ -431,8 +431,8 @@ public class Mission5 extends Mission {
 		Fleet f = createFleet(label("mission-5.garthog_fleet"), player("Garthog"), p.x + 40, p.y - 20);
 		// -------------------------------------------------------
 		// Set strengths here
-		f.addInventory(research("GarthogFighter"), 6);
-		f.addInventory(research("GarthogDestroyer"), 1);
+		f.addInventory(research("GarthogFighter"), 8);
+		f.addInventory(research("GarthogDestroyer"), 2);
 		// -------------------------------------------------------
 		f.task = FleetTask.SCRIPT;
 		for (InventoryItem ii : f.inventory) {
@@ -449,7 +449,7 @@ public class Mission5 extends Mission {
 		List<InventoryItem> result = U.newArrayList();
 		// -------------------------------------------------------
 		// Set help strength here
-		int helpingPirates = 2;
+		int helpingPirates = 3;
 		String pirateTech = "PirateFighter2";
 		// -------------------------------------------------------
 		for (int i = 0; i < helpingPirates; i++) {
