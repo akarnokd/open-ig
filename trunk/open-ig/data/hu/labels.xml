@@ -2233,6 +2233,15 @@
 	<entry key='mission-15.spy'>A kém</entry>
 	<entry key='mission-6.defend_achilles'>Védd meg az Achillest</entry>
 	<entry key='mission-6.defend_achilles.desc'>Készülj földharcra. A bolygó nem veszhet el!</entry>
+	<entry key='mission-7.protect_traders'>Kereskedők védelme</entry>
+	<entry key='mission-7.protect_traders.desc'>Garthog kalózok lődörögnek a kereskedők közelében. Állj készen!</entry>
+	<entry key='mission-7.save_trader'>Mentsd meg a kereskedőt</entry>
+	<entry key='mission-7.save_trader.desc'>A kereskedőnek túl kell élnie.</entry>
+	<entry key='mission-7.save_trader.reward'>Jutalom: %s kredit</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

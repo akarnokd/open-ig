@@ -573,4 +573,29 @@ public abstract class Mission implements GameScriptingEvents {
 		helper.clearTimeouts(filter);
 		helper.clearObjectives(filter);
 	}
+	/**
+	 * Checks if the given mission + "-Timeout" timer is due, clears it and returns true.
+	 * @param missionId the mission id
+	 * @return trie of timeout
+	 */
+	boolean checkTimeout(String missionId) {
+		if (helper.isTimeout(missionId)) {
+			helper.clearTimeout(missionId);
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Checks if the given mission is due, clears it and returns true.
+	 * @param missionId the mission id
+	 * @return trie of timeout
+	 */
+	boolean checkMission(String missionId) {
+		String id = missionId;
+		if (helper.isMissionTime(id)) {
+			helper.clearMissionTime(id);
+			return true;
+		}
+		return false;
+	}
 }
