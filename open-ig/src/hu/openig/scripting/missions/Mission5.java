@@ -107,13 +107,18 @@ public class Mission5 extends Mission {
 				removeFleets();
 				helper.setTimeout("Mission-5-Failed", 13000);
 			}
-			if (helper.isTimeout("Mission-5-Failed")) {
+			if (checkTimeout("Mission-5-Failed")) {
 				helper.receive("Douglas-Thorin").visible = false;
 				helper.send("Douglas-Thorin-Reinforcements").visible = false;
-				helper.clearTimeout("Mission-5-Failed");
 				helper.gameover();
 				loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
 			}
+//			if (checkTimeout("Mission-5-Destoyed")) {
+//				helper.receive("Douglas-Thorin").visible = false;
+//				helper.send("Douglas-Thorin-Reinforcements").visible = false;
+//				helper.gameover();
+//				loseGameMovie("loose/destroyed_level_1");
+//			}
 			if (helper.isTimeout("Mission-5-Success")) {
 				helper.clearTimeout("Mission-5-Success");
 				
@@ -356,12 +361,16 @@ public class Mission5 extends Mission {
 		if (garthog != null) {
 			world.removeFleet(garthog.first);
 		}
-		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignShip1", player);
+		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip1", player);
 		if (survive && own != null) {
 			helper.setTimeout("Mission-5-Success", 3000);
 			moveTullen();
 		} else {
-			helper.setTimeout("Mission-5-Failed", 3000);
+			if (own != null) {
+				helper.setTimeout("Mission-5-Failed", 3000);
+			} else {
+				helper.setTimeout("Mission-5-Destroyed", 3000);
+			}
 		}
 	}
 	@Override
