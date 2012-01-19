@@ -2979,6 +2979,18 @@
 	<entry key='chat.global.thank_you'>Thank you, Sir.</entry>
 	<entry key='mission-6.defend_achilles'>Defend Achilles</entry>
 	<entry key='mission-6.defend_achilles.desc'>Prepare for ground assault. Achilles must not fall!</entry>
+	<entry key='mission-7.protect_traders'>Defend traders</entry>
+	<entry key='mission-7.protect_traders.desc'>Garthog pirates are lurking around the traders. Be prepared.</entry>
+	<entry key='mission-7.save_trader'>Save the trader</entry>
+	<entry key='mission-7.save_trader.desc'>The trader must survive.</entry>
+	<entry key='mission-7.save_trader.reward'>Reward: %s credits</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	
