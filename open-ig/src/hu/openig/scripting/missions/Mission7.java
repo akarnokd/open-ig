@@ -116,7 +116,7 @@ public class Mission7 extends Mission {
 			}
 			
 			// create simple pirate fleet
-			Fleet pf = createFleet(label("Garthog.fleet_name"), player("Garthog"), f.x + 1, f.y + 1);
+			Fleet pf = createFleet(label("Garthog.pirates"), player("Garthog"), f.x + 1, f.y + 1);
 			
 			// ----------------------------------------------------------------
 			// adjust fleet strenth here
