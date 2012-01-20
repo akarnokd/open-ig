@@ -80,7 +80,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.22";
+	public static final String VERSION = "0.23";
 	/**
 	 * The update XML to download.
 	 */
@@ -1013,7 +1013,7 @@ public class Launcher extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				if (size < 0) {
+				if (size <= 0) {
 					fileProgress.setIndeterminate(true);
 					currentFileProgress.setText(String.format("?%%, %d KB , %.1f KB / s", position / 1024, speed));
 				} else {
@@ -1046,7 +1046,7 @@ public class Launcher extends JFrame {
 			public void run() {
 				totalProgress.setValue(progress);
 				totalProgress.setIndeterminate(false);
-				if (size < 0) {
+				if (size <= 0) {
 					totalFileProgress.setText(String.format("%d / %d, %d KB, %.1f KB / s", count, max, position / 1024, speed));	
 				} else {
 					totalFileProgress.setText(String.format("%d / %d, %d KB / %d KB , %.1f KB / s", count, max, position / 1024, size / 1024, speed));
@@ -1296,7 +1296,8 @@ public class Launcher extends JFrame {
 			}
 			
 			double speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-			setTotalProgress(i + 1, g.files.size(), (int)(position * 100 / totalSize), position, totalSize, speed);
+			int progressValue = totalSize > 0 ? (int)(position * 100 / totalSize) : 0;
+			setTotalProgress(i + 1, g.files.size(), progressValue, position, totalSize, speed);
 			setFileProgress(0, -1, 0);
 			
 			LFile lf = g.files.get(i);
@@ -1324,7 +1325,8 @@ public class Launcher extends JFrame {
 								setFileProgress(filePos, localFile.length(), speed1);
 								// update global progress
 								speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-								setTotalProgress(i + 1, g.files.size(), (int)(position * 100 / totalSize), position, totalSize, speed);
+								progressValue = totalSize > 0 ? (int)(position * 100 / totalSize) : 0;
+								setTotalProgress(i + 1, g.files.size(), progressValue, position, totalSize, speed);
 							} else
 							if (read < 0) {
 								break;
@@ -1335,7 +1337,8 @@ public class Launcher extends JFrame {
 						setFileProgress(filePos, localFile.length(), speed1);
 						// update global progress
 						speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-						setTotalProgress(i + 1, g.files.size(), (int)(position * 100 / totalSize), position, totalSize, speed);
+						progressValue = totalSize > 0 ? (int)(position * 100 / totalSize) : 0;
+						setTotalProgress(i + 1, g.files.size(), progressValue, position, totalSize, speed);
 						
 						byte[] sha1h = sha1.digest();
 						byte[] sha1hupdate = LFile.toByteArray(lf.sha1);
@@ -1526,7 +1529,7 @@ public class Launcher extends JFrame {
 									speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
 									
 									int pos = (i + 1) * 100 / files.size();
-									long fileProgress = filePos * 100 / length;
+									long fileProgress = length > 0 ? filePos * 100 / length : 0;
 									if (fileProgress >= 0) {
 										pos += fileProgress / files.size();
 									}
