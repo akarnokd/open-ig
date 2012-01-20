@@ -113,7 +113,19 @@
 				description='mission-15.report_intruder.desc'
 			/>
 		</objective>
-				
+		<objective id='Mission-12' title='mission-12.virus'
+			visible='false'>
+			<objective id='Mission-12-Task-1' title='mission-12.handle_virus'
+				visible='false'/>
+			<objective id='Mission-12-Task-2' title='mission-12.handle_virus'
+				visible='false'/>
+			<objective id='Mission-12-Task-3' title='mission-12.handle_virus'
+				visible='false'/>
+			<objective id='Mission-12-Task-4' title='mission-12.handle_virus'
+				visible='false'/>
+			<objective id='Mission-12-Task-5' title='mission-12.handle_virus'
+				visible='false'/>
+		</objective>				
 	</objectives>	
 	
 </scripting>
