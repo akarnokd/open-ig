@@ -80,7 +80,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.21";
+	public static final String VERSION = "0.22";
 	/**
 	 * The update XML to download.
 	 */
@@ -1109,7 +1109,12 @@ public class Launcher extends JFrame {
 		Arrays.sort(files, new Comparator<File>() {
 			@Override
 			public int compare(File o1, File o2) {
-				return o2.getName().compareTo(o1.getName());
+				int idx1 = o1.getName().indexOf(".jar");
+				String v1 = o1.getName().substring(8, idx1);
+				int idx2 = o1.getName().indexOf(".jar");
+				String v2 = o1.getName().substring(8, idx2);
+				
+				return LModule.compareVersion(v1, v2);
 			}
 		});
 		File top = files[0];
