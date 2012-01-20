@@ -42,6 +42,17 @@ public class LModule {
 	 * @return -1 if this is smaller, 1 if this is larger, 0 if they are equal
 	 */
 	public int compareVersion(String otherVersion) {
+		return compareVersion(version, otherVersion);
+	}
+	/**
+	 * Compare the versions with another.
+	 * For example:
+	 * 0.8 &lt; 0.81 &lt 0.81.125 &lt; 0.9
+	 * @param version current version
+	 * @param otherVersion the other version number
+	 * @return -1 if this is smaller, 1 if this is larger, 0 if they are equal
+	 */
+	public static int compareVersion(String version, String otherVersion) {
 		String[] versionParts = version.split("\\.");
 		String[] thatversionParts = otherVersion.split("\\.");
 		int max = Math.max(versionParts.length, thatversionParts.length);
@@ -65,7 +76,7 @@ public class LModule {
 	 * @param versionParts the version number part strings
 	 * @param v1 the version number integers
 	 */
-	private void versionToInt(String[] versionParts, int[] v1) {
+	private static void versionToInt(String[] versionParts, int[] v1) {
 		if (versionParts.length > 0) {
 			v1[0] = Integer.parseInt(versionParts[0]);
 		}
