@@ -4,6 +4,11 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.22 - Improvements =
+
+  * Fixed Launcher JDK 6 incompatibility [[http://code.google.com/p/open-ig/issues/detail?id=228 Issue #228])
+  * Fixed detection of installed game version ([http://code.google.com/p/open-ig/issues/detail?id=236 Issue #236])
+
 = Version 0.20 - Improvements =
 
   * More details on the download progress
