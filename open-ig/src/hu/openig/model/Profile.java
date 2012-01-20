@@ -50,8 +50,12 @@ public class Profile {
 		}
 		XElement xprofile = new XElement("profile");
 		try {
+			File dir = new File("save/" + name);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
 			save(xprofile);
-			xprofile.save(new File("save/" + name + "/profile.xml"));
+			xprofile.save(new File(dir, "profile.xml"));
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

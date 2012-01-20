@@ -119,7 +119,7 @@ public class BridgeScreen extends ScreenBase {
 	/** The video appearance increment. */
 	public int videoAppearIncrement = 10;
 	/** The video to play back. */
-	public String video;
+	public VideoMessage video;
 	/** The action to invoke when the projector reached its end of animation. */
 	Action0 onProjectorComplete;
 	/** The action to invoke when the projector reached its end of animation. */
@@ -463,9 +463,8 @@ public class BridgeScreen extends ScreenBase {
 					int idx = (e.y - messageListRect.y) / rowHeight + listOffset;
 					if (idx >= 0 && idx < videos.size()) {
 						VideoMessageEntry selectedVideo = videos.get(idx);
-						selectedVideo.videoMessage.seen = true;
 						selectedVideoId = selectedVideo.videoMessage.id;
-						playVideo(selectedVideo.videoMessage.media);
+						playVideo(selectedVideo.videoMessage);
 					} else {
 						selectedVideoId = null;
 					}
@@ -603,19 +602,23 @@ public class BridgeScreen extends ScreenBase {
 	}
 	@Override
 	public void onLeave() {
+		onAppearComplete = null;
 		if (messageAnim != null) {
+			onMessageComplete = null;
 			messageAnim.stop();
 			messageAnim = null;
 			messageFront = null;
 			messageBack = null;
 		}
 		if (projectorAnim != null) {
+			onProjectorComplete = null;
 			projectorAnim.stop();
 			projectorAnim = null;
 			projectorFront = null;
 			projectorBack = null;
 		}
 		if (videoAnim != null) {
+//			onVideoComplete = null;
 			videoAnim.stop();
 			videoAnim = null;
 			videoFront = null;
@@ -829,24 +832,25 @@ public class BridgeScreen extends ScreenBase {
 	}
 	/**
 	 * Play the specific video.
-	 * @param video the video
+	 * @param vm the video
 	 */
-	public void playVideo(final String video) {
+	public void playVideo(final VideoMessage vm) {
 		final boolean paused = commons.simulation.paused();
 		commons.simulation.pause();
 		onVideoComplete = new Action0() {
 			@Override
 			public void invoke() {
+				vm.seen = true;
 				if (!paused) {
 					commons.simulation.resume();
 				}
 			}
 		};
-		this.video = video;
+		this.video = vm;
 		final SwingWorker<BufferedImage, Void> sw = new SwingWorker<BufferedImage, Void>() {
 			@Override
 			protected BufferedImage doInBackground() throws Exception {
-				ResourcePlace rp = rl.get(video, ResourceType.VIDEO);
+				ResourcePlace rp = rl.get(video.media, ResourceType.VIDEO);
 				return VideoRenderer.firstFrame(rp);
 			}
 		};
@@ -883,11 +887,11 @@ public class BridgeScreen extends ScreenBase {
 	 * Animate the the appearance of the video.
 	 */
 	void doVideoAppear() {
-		final String fVideo = video;
+		final VideoMessage fVideo = video;
 		videoAppearPercent += videoAppearIncrement;
 		if (videoAppearPercent == 100) {
 			videoAppearAnim.stop();
-			videoAnim = new MediaPlayer(commons, video, new SwappableRenderer() {
+			videoAnim = new MediaPlayer(commons, fVideo.media, new SwappableRenderer() {
 				@Override
 				public BufferedImage getBackbuffer() {
 					return videoBack;
@@ -1018,7 +1022,7 @@ public class BridgeScreen extends ScreenBase {
 		onProjectorComplete = new Action0() {
 			@Override
 			public void invoke() {
-				playVideo(vm.media);
+				playVideo(vm);
 			}
 		};
 		if (!messageOpen) {
@@ -1048,6 +1052,9 @@ public class BridgeScreen extends ScreenBase {
 	 * Display the message panel and switch to receive.
 	 */
 	public void displayReceive() {
+		if (commons.control().primary() != Screens.BRIDGE) {
+			return;
+		}
 		if (openCloseAnimating) {
 			Parallels.runDelayedInEDT(1000, new Runnable() {
 				@Override
@@ -1073,8 +1080,7 @@ public class BridgeScreen extends ScreenBase {
 			for (VideoMessage vm : vms) {
 				if (!vm.seen) {
 					selectedVideoId = vm.id;
-					vm.seen = true;
-					playVideo(vm.media);
+					playVideo(vm);
 					break;
 				}
 			}

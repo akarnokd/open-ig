@@ -1218,7 +1218,7 @@ public class World {
 				}
 			}
 		}
-		// save talk states
+		// load talk states
 		XElement xtalk = xworld.childElement("talks");
 		if (xtalk != null) {
 			for (XElement xsp : xtalk.childrenWithName("speech")) {

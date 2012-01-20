@@ -287,6 +287,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				VideoMessage vm = receive(id);
 				if (vm != null) {
 					vm.visible = xmsg.getBoolean("visible");
+					vm.seen = xmsg.getBoolean("seen", false);
 				}
 			}
 		}
@@ -296,6 +297,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				VideoMessage vm = send(id);
 				if (vm != null) {
 					vm.visible = xmsg.getBoolean("visible");
+					vm.seen = xmsg.getBoolean("seen", false);
 				}
 			}
 		}
@@ -689,12 +691,14 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			XElement xmsg = xmsgs.add("receive");
 			xmsg.set("id", vm.id);
 			xmsg.set("visible", vm.visible);
+			xmsg.set("seen", vm.seen);
 		}
 		xmsgs = out.add("sends");
 		for (VideoMessage vm : world.bridge.sendMessages.values()) {
 			XElement xmsg = xmsgs.add("send");
 			xmsg.set("id", vm.id);
 			xmsg.set("visible", vm.visible);
+			xmsg.set("seen", vm.seen);
 		}
 		XElement xos = out.add("objectives");
 		for (Objective o : allObjectives.values()) {
