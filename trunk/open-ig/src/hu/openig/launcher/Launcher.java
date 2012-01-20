@@ -80,7 +80,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.20";
+	public static final String VERSION = "0.21";
 	/**
 	 * The update XML to download.
 	 */
@@ -1496,7 +1496,7 @@ public class Launcher extends JFrame {
 			conn.connect();
 			try {
 				InputStream in = conn.getInputStream();
-				long length = conn.getContentLengthLong();
+				long length = conn.getContentLength();
 				try {
 					long filePos = 0;
 					byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
