@@ -220,7 +220,12 @@ public class Mission7 extends Mission {
 			completeTaskN(traderSurvived, task);
 			if (traderSurvived) {
 				if (task == 1) {
+					war.battle().messageText = label("battlefinish.mission-7.merchant7");
 					war.battle().rewardText = format("mission-7.save_trader.reward", 5000);
+					war.battle().rewardImage = "battlefinish/mission_1_8d.png";
+				} else {
+					war.battle().messageText = label("battlefinish.mission-7_task2.merchant8");
+					war.battle().rewardText = label("battlefinish.mission-7_task2.merchant8_bonus");
 				}
 			}
 		}
