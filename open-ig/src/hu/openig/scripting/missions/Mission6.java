@@ -118,6 +118,8 @@ public class Mission6 extends Mission {
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
 			if (garthog == null) {
 				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
+				war.battle().rewardText = label("battlefinish.mission-6.14_bonus");
+				war.battle().messageText = label("battlefinish.mission-6.14");
 			}
 		}		
 	}

@@ -285,6 +285,7 @@ public class Mission3 extends Mission {
 			completeMission(traderSurvived);
 			if (traderSurvived) {
 				war.battle().rewardText = label("mission-3.reward");
+				war.battle().messageText = label("battlefinish.mission-3.11");
 			}
 //			war.battle().rewardImage = imageReward[task];
 		}
