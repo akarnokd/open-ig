@@ -237,6 +237,8 @@ Objective: Escort admiral Benson to New Caroline
 
 Failure condition: Not met with Benson
 
+Video: douglas_escort_admiral_benson ; douglas_escort_admiral_benson_failed ; colony_ship_arrival_2 
+
 Reward: 5 Laser ?
 
 Notes:
