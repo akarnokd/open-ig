@@ -49,7 +49,7 @@ Success condition: *ship not destroyed*, reward: Shield1
 
 Failure condition: *ship destroyed*
 
-Video: Escort cargo
+Video: Escort cargo ; Merchant attacked ; Merchant destroyed
 
 Remark: Pirate attack near San Sterling
 
@@ -172,7 +172,7 @@ Success condition: *original: always*, ensure safe arrival
 
 Failure condition: governor's fleet destroyed
 
-Video: douglas_escort_centronom_governor
+Video: douglas_escort_centronom_governor ; colony_ship_arrival
 
 Notes:
   * Appears at San Sterling, heading to Naxos
