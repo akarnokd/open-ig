@@ -325,6 +325,8 @@ Notes:
 
   * After 4-5 days, a FreeTraders "Unknown" will leave Zeuson, should flee
 
+Video: take_prisoner
+
 Status: -
 
 == Mission 20 ==
