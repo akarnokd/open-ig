@@ -280,6 +280,8 @@ Notes:
   * New Caroline -> San Sterling
   * Attacked by few Garthog fighters and destroyers
 
+video: flagship_arrival
+
 == Mission 17 ==
 
 Status: -
