@@ -64,7 +64,7 @@
 	</graphics>
 	<messages>
 		<send>
-			<message id='Achilles-Check' media='messages/achilles_not_under_attack' title='messages.Achilles' description='messages.check'/>
+			<message id='Achilles-Check' media='messages/achilles_check' title='messages.Achilles' description='messages.check'/>
 			<message id='Achilles-Come-Quickly' media='messages/achilles_come_quickly' title='messages.Achilles' description='messages.check'/>
 			<message id='Achilles-Not-Under-Attack' media='messages/achilles_not_under_attack' title='messages.Achilles' description='messages.check'/>
 			
