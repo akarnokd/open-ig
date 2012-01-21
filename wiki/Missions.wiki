@@ -55,7 +55,7 @@ Remark: Pirate attack near San Sterling
 
 == Mission 4 ==
 
-Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Resolve pirate battle near Naxos
 
@@ -69,7 +69,7 @@ Remark: the single "Rebel" pirate ship will be your ally in the battle.
 
 == Mission 5 ==
 
-Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Cover the Thorin's retreat from Garthog forces
 
@@ -93,7 +93,7 @@ Remark: if you saved the pirate in Mission 4, you get single-time help in the de
 
 == Mission 6 ==
 
-Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Sequence: 1
 
@@ -110,7 +110,7 @@ Failure condition: Achilles taken by Garthog. *Fired!*
 
 == Mission 7 ==
 
-Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 === Task 1 ===
 
@@ -133,7 +133,7 @@ Reward: Good relations with FreeTraders later on in the game
 
 == Mission 8 ==
 
-Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Sequence: 3
 
@@ -263,7 +263,7 @@ Notes:
 
 == Mission 15 ==
 
-Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Available in SVN
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Notes:
   * See spy movie
