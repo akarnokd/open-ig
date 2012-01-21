@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chats>
+<!-- Script will issue a transition to this if the trader received 50% damage. Trader AI is set to turn around automatically anyway. -->
+<chat id="chat.under.50percent.hp" start="0">
+ <node id="0" owner="Lowhp" message="Ne lôjön! Ne lôjön! Azonnal visszafordulunk!">
+<!-- messages when attack merchant and not related to any mission. -->
+<chat id="chat.nomission.attack.merchant1" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message="Ez a MOB451 hajó, kereskedelmi úton.">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="Igen, ilyen nevû hajót foglaltak el kalózok!" message="Biztos vagyok benne, hogy kalóz vagy. Készülj fel a halálra!">
+   	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Ne lôjön! Csak ártatlan kereskedô vagyok!"/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="Pusztulj!" message="Biztos vagyok benne, hogy kalóz vagy. Készülj fel a halálra!"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Naa, rendben. Folytasd az utadat!" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Ne lôjön! Ne lôjön! Azonnal visszafordulok!"/>
+ 	<action id="retreat"/> 
+</chat>
+<chat id="chat.nomission.attack.merchant2" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message=">Ez az MX43-as hajó, kereskedelmi úton.">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="" message="Azt hiszem, célzógyakorlatot fogok tartani.">
+   	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Ne lôjön! Csak ártatlan kereskedô vagyok!"/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="" message="Halál vár rád!"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Na, rendben, most az egyszer elmehetsz." message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Aargh! Ne! Neeeee! Már fordulok is!"/>
+ 	<action id="retreat"/> 
+</chat>
+<chat id="chat.nomission.attack.merchant3" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message="Ez az ECHO hajó, kereskedelmi úton.">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="Fel kellene melegítenem a fegyvereimet..." message="Kicsit fel kellene melegítenem a fegyvereimet. Remélem segítesz?">
+   	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Ne lôjj! Årtatlan kereskedô vagyok."/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="" message="Szóval nem segítesz. Halál rád!"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Na, rendben. Átjuthatsz." message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Aargh! Ne lôjön! Ne lôjön! Megfordulok."/>
+ 	<action id="retreat"/> 
+</chat>
+<chat id="chat.nomission.attack.merchant4" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message="Ez a Bravox kereskedelmi hajó. Itt George beszél, a hajó kapitánya.">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="Szóval mennyi védelmi díjat fizetsz?" message="Mennyi védelmi díjat fizetsz? Vagy inkább tartsunk itt egy hadgyakorlatot?">
+   	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Ne tüzeljen, kapitány! Biztos vagyok benne, hogy a fônöke nem örülne a jelentésemnek..."/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="" message="Szóval nem fizetsz? Vess magadra!"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Rendben, átmehetsz." message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Ne lôjenek! Ne lôjenek!"/>
+ 	<action id="retreat"/> 
+</chat>
+<chat id="chat.nomission.attack.merchant5" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message="Itt a Max4-es hajó kapitánya beszél. Kereskedelmi úton vagyunk, átnézheti a hajó okmányait, ha akarja.">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="Azt hiszed át tudsz verni?" message="Azt hiszed át tudsz verni? Te nem vagy kereskedô, sose voltál az!">
+   	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Ismétlem itt McAllison beszél, a Max4-es hajó parancsnoka. Remélem, nem kalózkodásból szeretné kiegészíteni a fizetését, kapitány?"/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="" message="Fizess vagy tüzet nyitunk!"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Na jó, elmehetsz." message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Ne lôjj! Ez biztos csak egy rossz vicc! Engedj el. Megígérem, hogy nem jelentem az esetet a parancsnokának."/>
+ 	<transition id="t9" to="9"/>
+ 	<transition id="t10" to="10"/>
+ <node id="9" owner="Empire" option="" message="Rendben, ahogy akarod. Búcsúzz el a családodtól!"/>
+ 	<transition id="t11" to="11"/>
+ <node id="10" owner="Empire" option="" message="Csak vicceltem. Folytassa az útját, McAllison!"/> 
+ 	<transition id="t12" to="12"/>
+ <node id="11" owner="Traders" message="Ne lôjön! Inkább elhagyom a körzetet!"/>
+ 	<action id="retreat"/> 
+ <node id="12" owner="Traders" message="Majdnem becsapott, kapitány. Már itt sem vagyunk."/>
+ 	<action id="retreat"/> 
+</chat>
+<chat id="chat.nomission.attack.merchant6" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message="Ez a Horse hajó, kereskedelmi úton..">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="Mit repked Maga itt össze-vissza?" message="Mit repked Maga itt össze-vissza? Ez engem rendkívül fel tud idegesíteni!">
+   	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Én csak egy szegény kereskedô vagyok, kérem engedjen az utamra."/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="" message="Halál rád, madár!"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Na rendben, elmehetsz." message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Ne lôjön! Inkább visszafordulok!"/>
+ 	<action id="retreat"/> 
+</chat>
+<chat id="chat.nomission.attack.merchant7" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message="Itt az MX1O9 hajó kapitánya beszél. Kereskedelmi úton vagyunk, fémet szállítunk.">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="" message="Szóval ki a jobb lövô, én vagy te?">
+	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Ez egy fegyvertelen kereskedelmi hajó. Engedjen az utunkra, különben jelentem ezt az incidenst a felettesének!"/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="Szóval el akarsz menekülni?" message="Szóval el akarsz meneküni harc nélkül? Mi van, csirke vagy, McFly?"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Rendben, átengedlek." message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Én nem McFly vagyok, hanem az MX109-es kereskedelmi hajó - öt másodperce van, hogy átengedjen, vagy jelentem az esetet a felettesének."/>
+ 	<transition id="t9" to="9"/>
+ 	<transition id="t10" to="10"/>
+ <node id="9" owner="Empire" option="" message="O.K. csirke, halál rád!"/>
+ 	<transition id="t11" to="11"/>
+ <node id="10" owner="Empire" option="Na rendben, átmehetsz." message="chat.global.proceed_your_destination"/>
+ 	<transition id="t4" to="4"/>
+ <node id="11" owner="Traders" message="Ne lôjön! Ne lôjön! Elmegyek!"/> 
+ 	<action id="retreat"/> 
+</chat>
+<chat id="chat.nomission.attack.merchant8" start="0">
+ <node id="0" owner="Empire" message="chat.global.identify_yourself">
+   <transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" message="Ez a Krondox hajó, kereskedelmi úton.">
+   <transition id="t2" to="2"/>
+   <transition id="t3" to="3"/>
+ </node>
+ <node id="2" owner="Empire" option="" message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+</node>
+ <node id="3" owner="Empire" option="" message="Szóval ki a jobb lövô, én vagy te?">
+   	<transition id="t5" to="5"/>
+ </node>
+ <node id="4" owner="Traders" message="chat.global.thank_you"/>
+ 	<action id="retreat"/>
+ <node id="5" owner="Traders" message="Ez egy fegyvertelen kereskedelmi hajó. Engedjen az utunkra, különben jelentem ezt az incidenst a felettesének!"/>	
+ 	<transition id="t6" to="6"/>
+    <transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="Szóval el akarsz menekülni?" message="Szóval el akarsz meneküni harc nélkül? Mi van, csirke vagy, McFly?"/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="Rendben, átengedlek." message="chat.global.proceed_your_destination">
+ 	<transition id="t4" to="4"/>
+ </node>
+ <node id="8" owner="Traders" message="Ismétlem, ez a Krondox kereskedelmi hajó. Engedjen át, vagy jelentem az esetet a felettesének!"/>
+ 	<transition id="t9" to="9"/>
+ 	<transition id="t10" to="10"/>
+ <node id="9" owner="Empire" option="" message="O.K. csirke, halál rád!"/>
+ 	<transition id="t11" to="11"/>
+ <node id="10" owner="Empire" option="Na rendben, átmehetsz." message="chat.global.proceed_your_destination"/>
+ 	<transition id="t4" to="4"/>
+ <node id="11" owner="Traders" message="Ne lôjön! Ne lôjön! Elmegyek!"/> 
+ 	<action id="retreat"/> 
+</chat>
+<!-- Main mission chats. -->
+<chat id="chat.mission-2.defend.merchant1" start="0">
+ <node id="0" owner="Empire" option="Itt a Bolygóközi Rendôrség beszél." message="Itt a Bolygóközi Rendôrség beszél. Szüntessék be a tüzelést. Azonnal!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Igazán? Azt hiszem, van itt valami a számodra..."/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-2.defend.merchant2" start="0">
+ <node id="0" owner="Empire" option="Itt a Birodalmi Rendôrség beszél." message="Itt a Birodalmi Rendôrség beszél. Szüntessék be a tüzelést. Azonnal!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Inkább forduljatok vissza, amíg tudtok!"/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Szüntessék be a harcot!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Pirates" option="" message="O.K. Te akartad..."/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-2.defend.merchant3" start="0">
+ <node id="0" owner="Empire" option="Azonnal távolodjanak el a kereskedô hajótól!" message="Szüntessék be a tüzelést! Azonnal távolodjanak el a kereskedô hajótól!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Hé, egy újabb ugri-bugri. Fiúk, kapjuk el!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-2.defend.merchant4" start="0">
+ <node id="0" owner="Empire" option="Ållj! Itt a Bolygóközi Rendôrség beszél." message="Ållj! Itt a Bolygóközi Rendôrség beszél. Szüntessék be a harcot! Azonnal!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Azt hiszem, itt az idô olajra lépni..."/>
+    <action id="retreat.Pirates"/>
+</chat>
+<chat id="chat.mission-2.defend.merchant5" start="0">
+ <node id="0" owner="Empire" option="Itt a Birodalmi Rendôrség beszél!" message="Ållj! Itt a Birodalmi Rendôrség beszél. Azonnal szüntessék be a tüzelést!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Úgy tûnik, lesz kit móresre tanítani..."/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-2.defend.merchant6" start="0">
+ <node id="0" owner="Empire" option="Itt a Bolygóközi Rendôrség beszél." message="Itt a Bolygóközi Rendôrség beszél. Azonnal szüntessék be a tüzelést!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Jobb lesz, ha eltakarodtok, míg nem késô!"/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Azonnal szüntessék be a tüzelést!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Pirates" option="" message="O.K. Nagyfiú, Te akartad!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-7.defend.merchant7" start="0">
+ <node id="0" owner="Empire" option="Azonnal hagyják békén a kereskedôhajót!" message="Azonnal hagyják békén a kereskedôhajót! Szüntessék be a tüzelést!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Hé, egy másik emberfajzat! Pont rá vártunk. Fiúk, ropi érkezett - könyörgöm, süssük meg!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-7_task2.defend.merchant8" start="0">
+ <node id="0" owner="Empire" option="Ållj! Itt a Bolygóközi Rendôrség beszél." message="Ållj! Itt a Bolygóközi Rendôrség beszél. Azonnal szüntessék be a tüzelést!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Új célpont érkezett! Ne sajnáld!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-5.garthog.without.allied.pirates" start="0">
+  <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk korcs életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-5.garthog.with.allied.pirates" start="0">
+  <node id="0" owner="Pirates" option="" message="Kalóz1: Emlékszik rám, Hadnagy? Megmentette az életemet. Most elhoztam a haverjaimat egy kis mókára.">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!"/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk korcs életedet."/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t4" to="4"/>
+ <node id="4" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+<!-- I think not used because not completed in the source
+<chat id="chat.unknown10" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk szánalmas életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="Inkább megtanítalak titeket kesztyûbe dudálni!" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!"/>
+    <action id="attack.Empire"/>
+</chat>-->
+<chat id="chat.mission-3.escort.cargo" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. kalózok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates" option="" message="Nekünk csak az áru kell, Neked viszont nem kegyelmezünk, ha nem mész el rögtön."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Ehhez nekem is lesz egy-két szavam!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Pirates" option="" message="Majd meglátjuk..."/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-4.piratesfight.at.Naxos" start="0">
+ <node id="0" owner="Empire" option="Azonnal szüntessék be a tüzet!" message="Azonnal szüntessék be a tüzet és azonosítsák magukat! Kísérô: - Hé, kapitány, két kalózbanda éppen egymást lövi. Hagyjuk ôket! Csak nekünk könnyítik meg a dolgunkat. Hadd gyilkolják egymást!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Pirates1" option="" message="kalóz1: - Nem bírom sokáig! Kérem segítsenek! Megölnek!"/>
+ 	<transition id="t2" to="2"/>
+ 	<transition id="t3" to="3"/>
+ <node id="2" owner="Empire" option="" message="A Birodalom nevében, álljanak meg azonnal!"/>
+ 	<transition id="t4" to="4"/>	
+ <node id="4" owner="Pirates" option="" message="Rendben, Rendôr bácsi, új célpontot keresünk, mielôtt végeznénk ezzel az árulóval!"/>
+    <action id="Pirates1.allied.with.Empire"/>
+ <node id="3" owner="Empire" option="" message="Rendben, hagyjuk ôket háborúzni egymással."/>
+ 	<action id="Pirates1.and.Pirates.fighting"/>
+</chat>
+<chat id="chat.mission-6.defend.Achilles" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk szánalmas életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-10.escort.governor.Centronom" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk szánalmas életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-13.escort.Benson" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk szánalmas életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-9.smugler" start="0">
+ <node id="0" owner="Empire" option="" message="Azonnal forduljon vissza!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Traders" option="" message="Khhz Hrrrz. . r.dio nem mûk.d."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="Ez a bolygó blokád alatt van!" message="Ez a bolygó blokád alatt van! Azonnal forduljon vissza!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Traders" option="" message="kkkhhhz. Krr.rrrr"/>
+    <action id="go.through"/><!-- Must damage to under 50% hp to turn back. -->
+</chat>
+<!-- SCR18 and SCR19 skipped. posibble virkib alternatives-->
+<chat id="chat.mission-16.escort.Moneycarrier" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk szánalmas életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+<chat id="chat.mission-17.stolen.destroyer2.prototype" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk szánalmas életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+<!-- SCR22 skipped -->
+<chat id="chat.mission-14.destroy.viruscarrier" start="0">
+ <node id="0" owner="Empire" option="" message="Vírusszállító egységek, itt a Terminátor!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Bip... bip... bip-bip.."/>
+    <action id="standstill.Garthog"/>
+</chat>
+<!-- SCR30 skipped -->
+<chat id="chat.mission-19.rebel.Zeuson.governor" start="0">
+ <node id="0" owner="Empire" option="Azonnal forduljon vissza!" message="Itt a Bolygóközi Rendôrség beszél. Azonnal forduljon vissza! Ismétlem, forduljon! Vissza! Ez a bolygó blokád alatt van.">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Rebel" option="" message="Itt a Zeuson bolygó kormányzója beszél. Tévesen elítéltek olyan koholt vádak alapján, amely azt bizonyítja, hogy a Birodalom ellen dolgoztam. Tudom, hogy az Admiralitás börtönben szeretne engem látni, de szembe akarok nézni a vádakkal! Engedj utamra, hogy a bíróságon megvédhessem becsületemet!"/>
+ 	<transition id="t2" to="2"/>
+ 	<transition id="t3" to="3"/>
+ <node id="2" owner="Empire" option="" message="Értem, átmehet."/>
+ 	<transition id="t4" to="4"/>
+ <node id="3" owner="Empire" option="" message="Vissza kell fordulnia!"/>
+ 	<transition id="t5" to="5"/>
+ <node id="4" owner="Rebel" option="" message="ùgy látom, Ön bátor ember. Tudja, mi sokban hasonlítunk egymásra. Köszönöm, Parancsnok!"/>
+    <action id="passthrough.Rebel"/>
+ <node id="5" owner="Rebel" option="" message="Figyelmeztetem, Parancsnok, hogy ha tovább erôsködik, kénytelen leszek parancsot adni a hajóimnak, hogy nyissanak tüzet. És ez ártatlan életekbe kerülne. ...Jól gondolja meg ... Biztos vagyok benne, hogy nem küldené a flottáját a halálba. Engedjen át!"/>
+	<transition id="t6" to="6"/>
+ 	<transition id="t7" to="7"/>
+ <node id="6" owner="Empire" option="Ha szavát adja, hogy a bíróságra megy..." message="Ha szavát adja, hogy a bíróságra megy, átengedem."/>
+ 	<transition id="t8" to="8"/>
+ <node id="7" owner="Empire" option="" message="Ne fenyegessen engem! Vissza kell fordulnia!"/>
+ 	<transition id="t9" to="9"/>
+ <node id="8" owner="Rebel" option="" message="Ne aggódjon, fiam, egyenesen odamegyek!"/>
+ 	<action id="passthrough.Rebel"/>
+ <node id="9" owner="Rebel" option="" message="Rendben. Ön akarta!"/>
+ 	<action id="attack.Empire"/>
+ 	<!-- Must be damaged to 50% hp to retreat&complate quest -->
+</chat>
+<chat id="chat.mission-21.escort.Prototype" start="0">
+ <node id="0" owner="Empire" option="" message="O.K. Garthogok, vonuljatok vissza, amíg lehet!">
+ 	<transition id="t1" to="1"/>
+ </node>
+ <node id="1" owner="Garthog" option="" message="Engedj minket tovább, Földi, és meghagyjuk szánalmas életedet."/>
+ 	<transition id="t2" to="2"/>
+ <node id="2" owner="Empire" option="" message="Inkább megtanítalak titeket kesztyûbe dudálni!"/>
+ 	<transition id="t3" to="3"/>
+ <node id="3" owner="Garthog" option="" message="Készüljetek a halálra!"/>
+    <action id="attack.Empire"/>
+</chat>
+</chats>
