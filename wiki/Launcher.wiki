@@ -12,7 +12,7 @@ The manual upgrade process of the Open Imperium Galactica can become tedious, th
 
 Users need only to download and use the latest *open-ig-launcher.jar* file. It will take care of upgrading itself, the main game, the map editor and video player automatically - with your approval of course.
 
-http://open-ig.googlecode.com/svn/trunk/open-ig/doc/launcher-0.11-pic-01.png
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/launcher-0.24-pic-1.png
 
 = Details =
 
