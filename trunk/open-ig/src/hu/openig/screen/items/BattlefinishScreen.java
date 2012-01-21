@@ -284,7 +284,10 @@ public class BattlefinishScreen extends ScreenBase {
 	int lossCount(boolean own, String kind) {
 		int result = 0;
 		for (SpacewarStructure s : battle.spaceLosses) {
-			if (s.building != null && (own == (s.owner == player()) 
+			boolean players = s.item.owner == player();
+			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.item.owner))
+					|| battle.attacker.owner != player() && !battle.attackerAllies.contains(s.item.owner);
+			if (s.building != null && (own == (players || ally) 
 					&& s.building.type.kind.equals(kind))) {
 				result += s.loss;
 			}
@@ -300,7 +303,10 @@ public class BattlefinishScreen extends ScreenBase {
 	int lossCount(boolean own, ResearchSubCategory category) {
 		int result = 0;
 		for (SpacewarStructure s : battle.spaceLosses) {
-			if (s.item != null && (own == (s.item.owner == player()) && s.item.type.category == category)) {
+			boolean players = s.item.owner == player();
+			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.item.owner))
+					|| battle.attacker.owner != player() && !battle.attackerAllies.contains(s.item.owner);
+			if (s.item != null && (own == (players || ally) && s.item.type.category == category)) {
 				result += s.loss;
 			}
 		}
