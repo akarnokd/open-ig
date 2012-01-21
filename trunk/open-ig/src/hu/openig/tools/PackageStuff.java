@@ -53,6 +53,9 @@ public final class PackageStuff {
 								;
 					}
 				});
+				addFile("generic/messages/achilles_check.gz.ani", "video/generic/messages/achilles_check.gz.ani", zout);
+				addFile("hu/messages/achilles_check.wav", "video/hu/messages/achilles_check.wav", zout);
+				addFile("en/messages/achilles_check.wav", "video/en/messages/achilles_check.wav", zout);
 			} finally {
 				zout.close();
 			}
@@ -260,7 +263,7 @@ public final class PackageStuff {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20120115a");
+				buildPatch("20120122a");
 			}
 		});
 
