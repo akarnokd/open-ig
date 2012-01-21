@@ -30,7 +30,7 @@ public class Mission15 extends Mission {
 					world.currentTalk = "kelly";
 					helper.showObjective("Mission-15");
 					helper.showObjective("Mission-15-Task-1");
-					helper.setMissionTime("Mission-15-Task-1-Timeout", helper.now() + 24);
+					helper.setMissionTime("Mission-15-Task-1-Timeout", helper.now() + 7 * 24);
 					world.env.playMusic();
 				}
 			});
@@ -43,7 +43,7 @@ public class Mission15 extends Mission {
 			helper.send("Douglas-Report-Spy").visible = true;
 
 			helper.showObjective("Mission-15-Task-3");
-			helper.setMissionTime("Mission-15-Task-3-Timeout", helper.now() + 24);
+			helper.setMissionTime("Mission-15-Task-3-Timeout", helper.now() + 7 * 24);
 			
 		}
 		// TIMEOUTS ---------------------------------------------------------------
@@ -52,6 +52,7 @@ public class Mission15 extends Mission {
 			helper.clearMissionTime("Mission-15-Task-1-Timeout");
 			helper.setObjectiveState("Mission-15-Task-1", ObjectiveState.FAILURE);
 			helper.setObjectiveState("Mission-15", ObjectiveState.FAILURE);
+			world.currentTalk = null;
 		}
 		if (helper.isMissionTime("Mission-15-Task-2-Timeout")) {
 			// record not taken in time
@@ -97,7 +98,7 @@ public class Mission15 extends Mission {
 				helper.showObjective("Mission-15-Task-2");
 				helper.clearMissionTime("Mission-15-Task-1-Timeout");
 				// record message timeout
-				helper.setMissionTime("Mission-15-Task-2-Timeout", helper.now() + 48);
+				helper.setMissionTime("Mission-15-Task-2-Timeout", helper.now() + 7 * 24);
 			}
 		}
 	}
