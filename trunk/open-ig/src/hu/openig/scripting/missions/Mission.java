@@ -598,4 +598,39 @@ public abstract class Mission implements GameScriptingEvents {
 		}
 		return false;
 	}
+	/**
+	 * Update the send and receive messages based on the planet statuses.
+	 * @param planets the list of planet ids
+	 */
+	protected void setPlanetMessages(String... planets) {
+		boolean anyAttack = false;
+		for (String p : planets) {
+			Planet planet = planet(p);
+			if (planet.quarantine) {
+				helper.send(p + "-Check").visible = false;
+				helper.send(p + "-Come-Quickly").visible = false;
+				helper.receive(p + "-Virus").visible = true;
+			} else {
+				helper.receive(p + "-Virus").visible = false;
+				anyAttack |= isUnderAttack(planet);
+			}
+		}
+		for (String p : planets) {
+			Planet planet = planet(p);
+			if (!planet.quarantine) {
+				boolean thisTarget = isUnderAttack(planet);
+				if (thisTarget) {
+					helper.send(p + "-Come-Quickly").visible = true;
+					helper.send(p + "-Not-Under-Attack").visible = false;
+				} else
+				if (anyAttack) {
+					helper.send(p + "-Come-Quickly").visible = false;
+					helper.send(p + "-Not-Under-Attack").visible = true;
+				} else {
+					helper.send(p + "-Check").visible = true;
+				}
+			}
+		}
+
+	}
 }

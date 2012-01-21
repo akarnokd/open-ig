@@ -64,6 +64,7 @@
 	</graphics>
 	<messages>
 		<send>
+			<message id='Achilles-Check' media='messages/achilles_not_under_attack' title='messages.Achilles' description='messages.check'/>
 			<message id='Achilles-Come-Quickly' media='messages/achilles_come_quickly' title='messages.Achilles' description='messages.check'/>
 			<message id='Achilles-Not-Under-Attack' media='messages/achilles_not_under_attack' title='messages.Achilles' description='messages.check'/>
 			
@@ -71,8 +72,8 @@
 			<message id='Centronom-Come-Quickly' media='messages/centronom_come_quickly' title='messages.Centronom' description='messages.check'/>
 			<message id='Centronom-Not-Under-Attack' media='messages/centronom_not_under_attack' title='messages.Centronom' description='messages.check'/>
 			
-			<message id='Naxos-Come-Quickly' media='messages/naxos_come_quickly' title='messages.Naxos' description='messages.check'/>
 			<message id='Naxos-Check' media='messages/naxos_no_problem' title='messages.Naxos' description='messages.check'/>
+			<message id='Naxos-Come-Quickly' media='messages/naxos_come_quickly' title='messages.Naxos' description='messages.check'/>
 			<message id='Naxos-Not-Under-Attack' media='messages/naxos_not_under_attack' title='messages.Naxos' description='messages.check'/>
 			
 			<message id='New Caroline-Check' media='messages/new_caroline_check' title='messages.New Caroline' description='messages.check'/>

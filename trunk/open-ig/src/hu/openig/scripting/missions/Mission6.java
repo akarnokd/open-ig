@@ -20,8 +20,6 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.SpacewarWorld;
 
-import java.awt.geom.Point2D;
-
 /**
  * Mission 6: Defend Achilles.
  * @author akarnokd, 2012.01.18.
@@ -30,9 +28,7 @@ public class Mission6 extends Mission {
 	@Override
 	public void onLevelChanged() {
 		if (world.level == 2) {
-			removeMissions(6, 17);
-			helper.send("Centronom-Check").visible = true;
-			helper.send("New Caroline-Check").visible = true;
+			removeMissions(1, 25);
 
 			// ensure the initial fleet conditions are met
 			player.setAvailable(research("Fighter2"));
@@ -78,6 +74,7 @@ public class Mission6 extends Mission {
 		if (world.level != 2) {
 			return;
 		}
+		checkPlanetStateMessages();
 		checkMainShip();
 		if (helper.canStart("Mission-6")) {
 			helper.showObjective("Mission-6");
@@ -85,19 +82,34 @@ public class Mission6 extends Mission {
 		}
 		if (helper.isTimeout("Mission-6")) {
 			helper.clearTimeout("Mission-6");
+			incomingMessage("Achilles-Is-Under-Attack");
 			createAttackers();
 		}
 		Objective m6 = helper.objective("Mission-6");
-		if (m6.visible && m6.state == ObjectiveState.ACTIVE) {
-			checkDistance();
-		}
+//		if (m6.visible && m6.state == ObjectiveState.ACTIVE) {
+//			checkDistance();
+//		}
 		if (helper.isTimeout("Mission-6-Done")) {
 			helper.clearTimeout("Mission-6-Done");
+			helper.send("Achilles-Is-Under-Attack").visible = false;
 			if (m6.state == ObjectiveState.FAILURE) {
 				helper.gameover();
 				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_2");
 			}
 			m6.visible = false;
+		}
+	}
+	/**
+	 * Display planet send messages based on current situation.
+	 */
+	void checkPlanetStateMessages() {
+		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom" };
+		
+		setPlanetMessages(planets);
+		if (helper.isActive("Mission-6")) {
+			helper.send("Achilles-Check").visible = false;
+			helper.send("Achilles-Come-Quickly").visible = true;
+			helper.send("Achilles-Not-Under-Attack").visible = false;
 		}
 	}
 	/**
@@ -171,8 +183,9 @@ public class Mission6 extends Mission {
 			ii.tag = "Mission-6-Garthog";
 		}
 		Planet ach = planet("Achilles");
-		f.waypoints.add(new Point2D.Double(ach.x, ach.y));
-		f.mode = FleetMode.MOVE;
+//		f.waypoints.add(new Point2D.Double(ach.x, ach.y));
+		f.targetPlanet(ach);
+		f.mode = FleetMode.ATTACK;
 		f.task = FleetTask.SCRIPT;
 	}
 	/**

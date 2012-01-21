@@ -79,7 +79,7 @@ public interface MissionScriptingHelper {
 	 */
 	boolean isMissionTime(String id);
 	/**
-	 * Test if the given objective is visible and active.
+	 * Test if the given objective is visible and in active state.
 	 * @param oId the objective id
 	 * @return true if active
 	 */
