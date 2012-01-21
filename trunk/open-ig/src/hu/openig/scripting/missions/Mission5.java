@@ -40,11 +40,14 @@ public class Mission5 extends Mission {
 	public void onTime() {
 		if (world.level == 1) {
 			Objective m2t1 = helper.objective("Mission-2-Task-3");
+			Objective m1 = helper.objective("Mission-1");
 			Objective m5 = helper.objective("Mission-5");
 			Objective m5t1 = helper.objective("Mission-5-Task-1");
 			Objective m5t2 = helper.objective("Mission-5-Task-2");
-			if (!m5.visible && m5.state == ObjectiveState.ACTIVE
+			if (!m5.visible 
+					&& m5.state == ObjectiveState.ACTIVE
 					&& m2t1.state != ObjectiveState.ACTIVE
+					&& m1.state != ObjectiveState.ACTIVE
 					&& !helper.hasMissionTime("Mission-5")) {
 				helper.setMissionTime("Mission-5", helper.now() + 72);
 			}
