@@ -213,6 +213,8 @@
 	<entry key="achievement.grand_admiral.desc">You have been promoted to grand admiral</entry>
 	<entry key="achievement.influenza">Influenza no more</entry>
 	<entry key="achievement.influenza.desc">You successfully eliminated the source of the virus infection</entry>
+	<entry key="achievement.captain">Captain on the deck</entry>
+	<entry key="achievement.captain.desc">You have been promoted to captain</entry>
 	<entry key='achievements'>Achievements</entry>
 	<entry key='statistics'>Statistics</entry>
 	<entry key='statistics.total_gametime'>Real time spent</entry>

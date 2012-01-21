@@ -39,6 +39,11 @@ public class Mission6 extends Mission {
 			createMainShip();
 			
 			helper.setMissionTime("Mission-6", helper.now() + 12);
+			String a = "achievement.captain";
+			if (!world.env.profile().hasAchievement(a)) {
+				world.env.achievementQueue().add(a);
+				world.env.profile().grantAchievement(a);
+			}
 		}
 	}
 	/**

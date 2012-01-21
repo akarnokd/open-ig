@@ -368,6 +368,14 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
+	protected static final Pred2<World, Player> CAPTAIN = new Pred2<World, Player>() {
+		@Override
+		public Boolean invoke(World t, Player u) {
+			return false; /* t.level >= 2; */
+		}
+	};
+	/** Test for achievement. */
+	@ID
 	protected static final Pred2<World, Player> ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {

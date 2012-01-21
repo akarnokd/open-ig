@@ -203,6 +203,8 @@
 	<entry key="achievement.grand_admiral.desc">Főadmirálissá léptettek elő</entry>
 	<entry key="achievement.influenza">Soha többé influenza</entry>
 	<entry key="achievement.influenza.desc">Sikeresen megszüntetted a vírusfertőzés forrását</entry>
+	<entry key="achievement.captain">Kapitány a hídon</entry>
+	<entry key="achievement.captain.desc">Előléptettek kapitánnyá</entry>
 	<entry key='achievements'>Teljesítmények</entry>
 	<entry key='statistics'>Statisztikák</entry>
 	<entry key='statistics.total_gametime'>Játékkal eltöltött idő</entry>
