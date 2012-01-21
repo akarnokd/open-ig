@@ -81,7 +81,6 @@ public class Mission3 extends Mission {
 				helper.receive("Douglas-Carrier").visible = false;
 				helper.setObjectiveState("Mission-3", ObjectiveState.SUCCESS);
 				helper.clearMissionTime("Mission-3-Success");
-				player.changeInventoryCount(world.researches.get("Shield1"), 1);
 				helper.setTimeout("Mission-3-Done", 13000);
 				removeFleets();
 			}
@@ -204,6 +203,9 @@ public class Mission3 extends Mission {
 					}
 				}
 				completeMission(traderSurvived);
+				if (traderSurvived) {
+					player.changeInventoryCount(world.researches.get("Shield1"), 1);
+				}
 			}
 		}
 	}
@@ -286,6 +288,7 @@ public class Mission3 extends Mission {
 			if (traderSurvived) {
 				war.battle().rewardText = label("mission-3.reward");
 				war.battle().messageText = label("battlefinish.mission-3.11");
+				player.changeInventoryCount(world.researches.get("Shield1"), 1);
 			}
 //			war.battle().rewardImage = imageReward[task];
 		}
