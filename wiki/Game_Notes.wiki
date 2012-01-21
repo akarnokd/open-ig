@@ -2,6 +2,23 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.100 - More missions =
+  * Released: 2012-01-21 22:00 CET
+  * *You may need to start a new game!*. The remaining two missions from level 1 should start correctly, but if you ran ahead, you might get both of them at once.
+  * Level 1 missions implemented ([http://code.google.com/p/open-ig/issues/detail?id=212 Issue #212])
+  * Mission 1, 2 and 3 corrections and missing videos ([http://code.google.com/p/open-ig/issues/detail?id=209 Issue #209])
+  * Missing "message from X" on the battle finish screen ([http://code.google.com/p/open-ig/issues/detail?id=217 Issue #217])
+  * Mission 4 implemented ([http://code.google.com/p/open-ig/issues/detail?id=223 #Issue #223])
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=229 Issue #229]: ground units did not move correctly
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=230 Issue #230]: playing messages and quitting from bridge did not stop the message correctly
+  * Fixed issues with full screen videos not stopping music. ([http://code.google.com/p/open-ig/issues/detail?id=232 Issue #232])
+  * Mission 5 ([http://code.google.com/p/open-ig/issues/detail?id=224 Issue #224])
+  * Mission 6 ([http://code.google.com/p/open-ig/issues/detail?id=227 Issue #227])
+  * Mission 7 ([http://code.google.com/p/open-ig/issues/detail?id=233 Issue #233], [http://code.google.com/p/open-ig/issues/detail?id=235 Issue #235])
+  * Mission 8 ([http://code.google.com/p/open-ig/issues/detail?id=225 Issue #225])
+  * Mission 15 ([http://code.google.com/p/open-ig/issues/detail?id=226 Issue #226])
+  * Fixed sound playback inconsistencies ([http://code.google.com/p/open-ig/issues/detail?id=218 Issue #218])
+
 = Version 0.94 - Missions =
   * Released: 2012-01-15 13:00 CET
   * *Acknowledgement: Joe did a great job for this release!*
