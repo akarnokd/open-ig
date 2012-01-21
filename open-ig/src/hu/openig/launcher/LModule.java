@@ -88,11 +88,13 @@ public class LModule {
 		}
 		if (versionParts.length > 2) {
 			v1[2] = Integer.parseInt(versionParts[2]);
-			if (v1[2] < 10) {
-				v1[2] *= 100;
-			} else
-			if (v1[2] < 100) {
-				v1[2] *= 10;
+			if (versionParts[2].length() < 3) {
+				if (v1[2] < 10) {
+					v1[2] *= 100;
+				} else
+				if (v1[2] < 100) {
+					v1[2] *= 10;
+				}
 			}
 		}
 	}
