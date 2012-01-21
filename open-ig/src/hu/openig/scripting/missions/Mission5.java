@@ -260,7 +260,7 @@ public class Mission5 extends Mission {
 		f.waypoints.clear();
 		f.mode = FleetMode.MOVE;
 		f.task = FleetTask.SCRIPT;
-		f.waypoints.add(new Point2D.Double(target.x - 40, target.y - 80));
+		f.waypoints.add(new Point2D.Double(target.x - 60, target.y - 40));
 	}
 	/**
 	 * Issue move order to tullen.

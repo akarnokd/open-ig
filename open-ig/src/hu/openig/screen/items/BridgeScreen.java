@@ -945,7 +945,7 @@ public class BridgeScreen extends ScreenBase {
 			}
 			
 			for (VideoMessageEntry vm : videos) {
-				if (vm.videoMessage.media.equals(fVideo)) {
+				if (vm.videoMessage.id.equals(fVideo.id)) {
 					world().scripting.onMessageSeen(vm.videoMessage.id);
 				}
 			}
