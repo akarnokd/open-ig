@@ -11,17 +11,28 @@ package hu.openig.tools;
 import hu.openig.core.Configuration;
 import hu.openig.utils.IOUtils;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 /**
  * Utility program to package the executable JAR file and upgrade packs for image+data.
@@ -254,36 +265,78 @@ public final class PackageStuff {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		
-		exec.execute(new Runnable() {
+		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+		JFrame f = new JFrame("Build");
+		
+		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		JPanel p = new JPanel();
+		p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
+		f.getContentPane().add(p);
+		
+		final JCheckBox cb1 = new JCheckBox("Build game", true);
+		final JCheckBox cb2 = new JCheckBox("Build launcher", false);
+		final JCheckBox cb3 = new JCheckBox("Build patch", false);
+		
+		final JButton run = new JButton("Run");
+		
+		run.addActionListener(new ActionListener() {
+			
 			@Override
-			public void run() {
-				buildGame(Configuration.VERSION);
-			}
-		});
-		exec.execute(new Runnable() {
-			@Override
-			public void run() {
-				buildLauncher();
-			}
-		});
-		/*
-		exec.execute(new Runnable() {
-			@Override
-			public void run() {
-				buildMapEditor(MapEditor.VERSION);
-			}
-		});
-		*/
-		exec.execute(new Runnable() {
-			@Override
-			public void run() {
-				buildPatch("20120121a");
-			}
-		});
+			public void actionPerformed(ActionEvent e) {
+				run.setEnabled(false);
+				final boolean v1 = cb1.isSelected();
+				final boolean v2 = cb2.isSelected();
+				final boolean v3 = cb3.isSelected();
+				SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
+					@Override
+					protected Void doInBackground() throws Exception {
+						if (v1) {
+							exec.execute(new Runnable() {
+								@Override
+								public void run() {
+									buildGame(Configuration.VERSION);
+								}
+							});
+						}
+						if (v2) {
+							exec.execute(new Runnable() {
+								@Override
+								public void run() {
+									buildLauncher();
+								}
+							});
+						}
+						if (v3) {
+							exec.execute(new Runnable() {
+								@Override
+								public void run() {
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+									buildPatch(sdf.format(new Date()) + "a");
+								}
+							});
+						} 
 
-		exec.shutdown();
-		exec.awaitTermination(1, TimeUnit.DAYS);
+						exec.shutdown();
+						exec.awaitTermination(1, TimeUnit.DAYS);
+						return null;
+					}
+					@Override
+					protected void done() {
+						run.setEnabled(true);
+					}
+				};
+				sw.execute();
+			}
+		});
+		p.add(cb1);
+		p.add(cb2);
+		p.add(cb3);
+		p.add(run);
+		f.pack();
+		f.setResizable(false);
+		f.setLocationRelativeTo(null);
+		f.setVisible(true);
 	}
 }
