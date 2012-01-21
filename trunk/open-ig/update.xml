@@ -26,7 +26,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.001'>
+	<module id='Game' version='0.94.100'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -38,21 +38,29 @@
 		<execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Szabad játék javítás.</desc>
-			<desc lang='en'>Freeplay fix.</desc>
+			<desc lang='hu'>6 újabb küldetés.</desc>
+			<desc lang='en'>6 more missions.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.001.jar' sha1='a28363a84f7da4bcbd15da3b62f7ab9285f75e91'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.100.jar' sha1='0cb02276d1bc36e504165240914c9ab3d8688141'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120115a1.zip' sha1='bd933625f66f9152171724283b6c4ea0ca4ae50d'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120121a2.zip' sha1='93f737690d72ffccfc8c7b6b11a8b4eb4c105eff'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Január 21 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 21th January, 2012 / A</desc>
+		</file>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120121a1.zip' sha1='3718f82b3aa76293c9d752afc6a2e3558bf872e5'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Kép és hang]: 2012 Január 21 / A</desc>
+			<desc lang='en'>The upgraded resource file [Image and sound]. 21th January, 2012 / A</desc>
+		</file>
+		<remove file='open-ig-upgrade-20120115a1.zip' sha1='bd933625f66f9152171724283b6c4ea0ca4ae50d'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Január 15 / A</desc>
 			<desc lang='en'>The upgraded resource file [Data]. 15th January, 2012 / A</desc>
-		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120115a2.zip' sha1='cf1c856df461aa29177a061cbc507e2213436277'>
+		</remove>
+		<remove file='open-ig-upgrade-20120115a2.zip' sha1='cf1c856df461aa29177a061cbc507e2213436277'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Kép és hang]: 2012 Január 15 / A</desc>
 			<desc lang='en'>The upgraded resource file [Image and sound]. 15th January, 2012 / A</desc>
-		</file>
+		</remove>
 		<remove file='open-ig-upgrade-20120111a.zip' sha1='f7ad22bdfe3cc919ab7feec7cc569dcc3c5a5d62'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2012 Január 11 / A</desc>
 			<desc lang='en'>The upgraded resource file. 11th January, 2012 / A</desc>
