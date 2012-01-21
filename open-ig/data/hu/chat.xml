@@ -2,7 +2,8 @@
 <chats>
 <!-- Script will issue a transition to this if the trader received 50% damage. Trader AI is set to turn around automatically anyway. -->
 <chat id="chat.under.50percent.hp" start="0">
- <node id="0" owner="Lowhp" message="Ne lôjön! Ne lôjön! Azonnal visszafordulunk!">
+ <node id="0" owner="Lowhp" message="Ne lôjön! Ne lôjön! Azonnal visszafordulunk!"/>
+</chat>
 <!-- messages when attack merchant and not related to any mission. -->
 <chat id="chat.nomission.attack.merchant1" start="0">
  <node id="0" owner="Empire" message="chat.global.identify_yourself">
