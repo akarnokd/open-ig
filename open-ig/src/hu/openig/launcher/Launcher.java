@@ -78,7 +78,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.25";
+	public static final String VERSION = "0.26";
 	/**
 	 * The update XML to download.
 	 */
@@ -1109,10 +1109,10 @@ public class Launcher extends JFrame {
 			public int compare(File o1, File o2) {
 				int idx1 = o1.getName().indexOf(".jar");
 				String v1 = o1.getName().substring(8, idx1);
-				int idx2 = o1.getName().indexOf(".jar");
-				String v2 = o1.getName().substring(8, idx2);
+				int idx2 = o2.getName().indexOf(".jar");
+				String v2 = o2.getName().substring(8, idx2);
 				
-				return LModule.compareVersion(v1, v2);
+				return LModule.compareVersion(v2, v1);
 			}
 		});
 		File top = files[0];
