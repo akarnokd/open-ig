@@ -4,6 +4,10 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.24 - Bug fixes =
+  * Fixed crash when existing files had zero size
+  * Fixed issue [http://code.google.com/p/open-ig/issues/detail?id=240 #240]: memory field number formatting error
+
 = Version 0.22 - Bug fixes =
 
   * Fixed Launcher JDK 6 incompatibility ([http://code.google.com/p/open-ig/issues/detail?id=228 Issue #228])
