@@ -48,13 +48,15 @@ public final class PackageStuff {
 					@Override
 					public boolean accept(File dir, String name) {
 						String d = dir.toString().replace('\\', '/');
-						return d.contains("/ui") || d.contains("/groundwar")
+						return d.contains("/ui") 
+								|| d.contains("/groundwar")
 								|| d.contains("/spacewar") || d.contains("generic")
 								;
 					}
 				});
 				addFile("generic/messages/achilles_check.gz.ani", "video/generic/messages/achilles_check.gz.ani", zout);
 				addFile("hu/messages/achilles_check.wav", "video/hu/messages/achilles_check.wav", zout);
+				addFile("hu/messages/centronom_check.wav", "video/hu/messages/centronom_check.wav", zout);
 				addFile("en/messages/achilles_check.wav", "video/en/messages/achilles_check.wav", zout);
 			} finally {
 				zout.close();

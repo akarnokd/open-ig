@@ -57,7 +57,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -69,7 +68,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import javax.swing.text.NumberFormatter;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -80,7 +78,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.23";
+	public static final String VERSION = "0.24";
 	/**
 	 * The update XML to download.
 	 */
@@ -1786,11 +1784,10 @@ public class Launcher extends JFrame {
 				
 			}
 		});
-		final JFormattedTextField memField = new JFormattedTextField(new NumberFormatter());
+		final JTextField memField = new JTextField(5);
 		if (memory != null) {
-			memField.setValue(memory);
+			memField.setText(memory.toString());
 		}
-		memField.setColumns(5);
 		
 		JLabel jvmLabel = new JLabel(label("Java runtime home:"));
 		JLabel jvmLabelNow = new JLabel(format("Default: %s", System.getProperty("java.home")));
@@ -1807,11 +1804,20 @@ public class Launcher extends JFrame {
 				if (memField.getText().isEmpty()) {
 					memory = null;
 				} else {
-					int mi = Integer.parseInt(memField.getText());
-					if (mi <= 0) {
-						memory = null;
+					String o = memField.getText();
+					if (!o.isEmpty()) {
+						try {
+							int mi = Integer.parseInt(o);
+							if (mi <= 0) {
+								memory = null;
+							} else {
+								memory = mi;
+							}
+						} catch (NumberFormatException ex) {
+							
+						}
 					} else {
-						memory = mi;
+						memory = null;
 					}
 				}
 				if (jvmField.getText().isEmpty()) {
@@ -1841,11 +1847,11 @@ public class Launcher extends JFrame {
 		
 		jvmLabel.setForeground(foreground);
 		jvmLabelNow.setForeground(foreground);
-		jvmField.setForeground(foreground);
+		jvmField.setForeground(Color.BLACK);
 		
 		memLabelNow.setForeground(foreground);
 		memLabel.setForeground(foreground);
-		memField.setForeground(foreground);
+		memField.setForeground(Color.BLACK);
 		memMb.setForeground(foreground);
 		
 		ok.setFont(fontMedium);
