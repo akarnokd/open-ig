@@ -91,7 +91,7 @@ public class Mission6 extends Mission {
 //		}
 		if (helper.isTimeout("Mission-6-Done")) {
 			helper.clearTimeout("Mission-6-Done");
-			helper.send("Achilles-Is-Under-Attack").visible = false;
+			helper.receive("Achilles-Is-Under-Attack").visible = false;
 			if (m6.state == ObjectiveState.FAILURE) {
 				helper.gameover();
 				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_2");
