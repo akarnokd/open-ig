@@ -202,6 +202,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				result.add(msg);
 			}
 		}
+		
 		Collections.sort(result, new Comparator<VideoMessage>() {
 			@Override
 			public int compare(VideoMessage o1, VideoMessage o2) {

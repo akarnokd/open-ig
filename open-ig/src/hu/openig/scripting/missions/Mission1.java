@@ -176,6 +176,8 @@ public class Mission1 extends Mission {
 			o1.visible = false;
 			o2.visible = false;
 			helper.showObjective("Mission-1-Task-4");
+			helper.send("San Sterling-Check").visible = true;
+			helper.send("Achilles-Check").visible = true;
 			
 			helper.clearTimeout("Mission-1-Success");
 		} else
@@ -238,7 +240,7 @@ public class Mission1 extends Mission {
 	public void onLevelChanged() {
 		// start over
 		if (world.level == 1) {
-			removeMissions(1, 5);
+			removeMissions(1, 25);
 		}
 	}
 }
