@@ -121,10 +121,10 @@ public class Mission7 extends Mission {
 			// ----------------------------------------------------------------
 			// adjust fleet strenth here
 			if (task == 1) {
-				pf.addInventory(world.researches.get("GarthogFigher"), 8);
+				pf.addInventory(world.researches.get("GarthogFighter"), 8);
 				pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
 			} else {
-				pf.addInventory(world.researches.get("GarthogFigher"), 15);
+				pf.addInventory(world.researches.get("GarthogFighter"), 15);
 				pf.addInventory(world.researches.get("GarthogDestroyer"), 7);
 			}
 			for (InventoryItem ii : pf.inventory) {
