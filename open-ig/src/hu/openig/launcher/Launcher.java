@@ -1485,8 +1485,8 @@ public class Launcher extends JFrame {
 			setFileProgress(0, -1, 0);
 			
 			LFile lf = files.get(i);
-			URL u = new URL(lf.url);
-			String fn = u.getFile();
+			URL u = new URL(lf.url + "?x=" + System.currentTimeMillis());
+			String fn = u.getPath();
 			int idx = fn.lastIndexOf("/");
 			if (idx >= 0) {
 				fn = fn.substring(idx + 1);

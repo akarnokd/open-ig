@@ -109,7 +109,21 @@ public final class PackageStuff {
 							new FileOutputStream("open-ig-" + version + ".jar"), 1024 * 1024));
 			try {
 				zout.setLevel(9);
-				processDirectory(".\\bin\\", ".\\bin", zout, null);
+				processDirectory(".\\bin\\", ".\\bin", zout, new FilenameFilter() {
+					
+					@Override
+					public boolean accept(File dir, String name) {
+						name = name.toLowerCase();
+						String d = dir.toString().replace('\\', '/');
+						if (!d.endsWith("/")) {
+							d += "/";
+						}
+						d += name;
+						return !name.contains("splash_medium")
+								&& !name.contains("launcher_background")
+								&& !d.contains("/launcher");
+					}
+				});
 				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF", zout);
 			} finally {
 				zout.close();
@@ -265,7 +279,7 @@ public final class PackageStuff {
 		exec.execute(new Runnable() {
 			@Override
 			public void run() {
-				buildPatch("20120122a");
+				buildPatch("20120121a");
 			}
 		});
 
