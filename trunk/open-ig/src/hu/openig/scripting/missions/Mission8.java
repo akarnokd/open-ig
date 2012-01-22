@@ -55,17 +55,14 @@ public class Mission8 extends Mission {
 				helper.setMissionTime("Mission-8-Visions", helper.now() + 30 * 24);
 			}
 		}
-		if (helper.isTimeout("Mission-8-Hide")) {
+		if (checkTimeout("Mission-8-Hide")) {
 			m8.visible = false;
-			helper.clearTimeout("Mission-8-Hide");
 		}
-		if (helper.isMissionTime("Mission-8-Fire")) {
-			helper.clearMissionTime("Mission-8-Fire");
+		if (checkMission("Mission-8-Fire")) {
 			helper.gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Test", "loose/fired_level_2");
 		}
-		if (helper.isMissionTime("Mission-8-Visions")) {
-			helper.clearMissionTime("Mission-8-Visions");
+		if (checkMission("Mission-8-Visions")) {
 			
 			helper.setMissionTime("Mission-15", helper.now() + 15 * 24);
 			world.env.stopMusic();
@@ -79,13 +76,12 @@ public class Mission8 extends Mission {
 				}
 			});
 		}
-		if (helper.isMissionTime("Mission-8-Task-1-Timeout")) {
-			helper.clearMissionTime("Mission-8-Task-1-Timeout");
+		if (checkMission("Mission-8-Task-1-Timeout")) {
 			helper.setObjectiveState("Mission-8-Task-1", ObjectiveState.FAILURE);
 			helper.setTimeout("Mission-8-Task-1-Hide", 13000);
+			world.currentTalk = null;
 		}
-		if (helper.isTimeout("Mission-8-Task-1-Hide")) {
-			helper.clearTimeout("Mission-8-Task-1-Hide");
+		if (checkTimeout("Mission-8-Task-1-Hide")) {
 			helper.objective("Mission-8-Task-1").visible = false;
 			world.currentTalk = null;
 		}
