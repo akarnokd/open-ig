@@ -5,6 +5,12 @@
 = Recent =
 == January, 2012 ==
 
+*January 22, 2012*
+
+I've hidden some bugs in the game, can you find them? :)
+
+A few recent bug reports required to release a new version a bit early. Here, mission 9, 10 and 11 are available, although not well tested.
+
 *January 21, 2012*
 
 I guess you were eager to grab onto more missions. Now here they are:
