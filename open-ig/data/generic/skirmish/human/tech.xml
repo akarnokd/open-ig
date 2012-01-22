@@ -1132,6 +1132,13 @@
 		category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/traders_freight_2'
 		factory='spaceship' research-cost='10000' production-cost='5000'
 		level='0' race='traders' index='1'></item>
+	<item id='PirateFighter2' name='tech.piratefighter.name' long-name='tech.piratefighter.longname'
+		description='tech.piratefighter.description' category='SPACESHIPS_FIGHTERS'
+		image='inventions/spaceships/fighters/pirate_fighter' factory='spaceship'
+		research-cost='3000' production-cost='2000' level='0' race='pirates'
+		index='0'>
+		<slot-fixed id='Laser' count='1' item='Laser1' />
+	</item>
 
 </tech>
 

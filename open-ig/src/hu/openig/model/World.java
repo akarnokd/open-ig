@@ -1841,11 +1841,14 @@ public class World {
 			se.hp = xspace.getInt("hp");
 			
 			ResearchType rt = researches.get(id);
-			// if no equipment image, use the first frame of the rotation
-			if (rt.equipmentImage == null) {
-				rt.equipmentImage = se.normal[0];
+			if (rt != null) {
+				// if no equipment image, use the first frame of the rotation
+				if (rt.equipmentImage == null) {
+					rt.equipmentImage = se.normal[0];
+				}
+			} else {
+				new AssertionError("Missing technology reference in battle.xml: " + id).printStackTrace();
 			}
-			
 			battle.spaceEntities.put(id, se);
 		}
 		for (XElement xdefense : xbattle.childElement("ground-projectors").childrenWithName("tech")) {
