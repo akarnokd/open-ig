@@ -12,6 +12,7 @@
 		<mission class='hu.openig.scripting.missions.Mission8'/>
 		<mission class='hu.openig.scripting.missions.Mission9'/>
 		<mission class='hu.openig.scripting.missions.Mission10'/>
+		<mission class='hu.openig.scripting.missions.Mission11'/>
 		<mission class='hu.openig.scripting.missions.Mission15'/>
 	</missions>
 	<!--  The view limit for the empire player levels 1-3. Levels 4-5 are unlimited. -->
@@ -108,18 +109,8 @@
 		<objective id='Mission-10' title='mission-10.governor_escort' 
 			description='mission-10.governor_escort.desc'>
 		</objective>
-		<objective id='Mission-15' title='mission-15.spy'
-			visible='false'
-		>
-			<objective id='Mission-15-Task-1' title='mission-15.kelly'
-				visible='false'
-			/>
-			<objective id='Mission-15-Task-2' title='mission-15.record_message'
-				description='mission-15.record_message.desc'
-			/>
-			<objective id='Mission-15-Task-3' title='mission-15.report_intruder'
-				description='mission-15.report_intruder.desc'
-			/>
+		<objective id='Mission-11' title='mission-11.attack' 
+			description='mission-11.attack.desc'>
 		</objective>
 		<objective id='Mission-12' title='mission-12.virus'
 			visible='false'>
@@ -134,6 +125,19 @@
 			<objective id='Mission-12-Task-5' title='mission-12.handle_virus'
 				visible='false'/>
 		</objective>				
+		<objective id='Mission-15' title='mission-15.spy'
+			visible='false'
+		>
+			<objective id='Mission-15-Task-1' title='mission-15.kelly'
+				visible='false'
+			/>
+			<objective id='Mission-15-Task-2' title='mission-15.record_message'
+				description='mission-15.record_message.desc'
+			/>
+			<objective id='Mission-15-Task-3' title='mission-15.report_intruder'
+				description='mission-15.report_intruder.desc'
+			/>
+		</objective>
 	</objectives>	
 	
 </scripting>

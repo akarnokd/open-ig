@@ -622,8 +622,10 @@ public abstract class Mission implements GameScriptingEvents {
 				if (thisTarget) {
 					helper.send(p + "-Come-Quickly").visible = true;
 					helper.send(p + "-Not-Under-Attack").visible = false;
+					helper.send(p + "-Check").visible = false;
 				} else
 				if (anyAttack) {
+					helper.send(p + "-Check").visible = false;
 					helper.send(p + "-Come-Quickly").visible = false;
 					helper.send(p + "-Not-Under-Attack").visible = true;
 				} else {

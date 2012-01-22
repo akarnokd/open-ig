@@ -453,6 +453,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		focused = render;
 		
 		if (battle == null) {
+			startBattle.visible(false);
 			simulator = commons.register(SIMULATION_DELAY, new Action0() {
 				@Override
 				public void invoke() {

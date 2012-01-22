@@ -3392,11 +3392,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			commons.restoreMainSimulationSpeedFunction();
 			commons.battleMode = false;
 			commons.playRegularMusic();
-			battle.attacker.stop();
-			Fleet f2 = battle.getFleet();
-			if (f2 != null) {
-				f2.stop();
-			}
 			displayPrimary(Screens.STARMAP);
 			return true;
 		}
@@ -3911,7 +3906,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		// cleanup fleets
 		for (Fleet f : fleets) {
 			f.cleanup();
-			f.stop();
 			int gu = f.adjustVehicleCounts();
 			if (f.owner == battle.attacker.owner) {
 				battle.attackerGroundLosses += gu;
@@ -3951,6 +3945,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			}
 		}
+		
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
 	}

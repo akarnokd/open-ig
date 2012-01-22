@@ -186,6 +186,7 @@ public class Fleet implements Named, Owned, HasInventory {
 						result.vehicleMax += slot.type.getInt("vehicles"); 
 					}
 					if (checkHyperdrive && slot.type.has("speed")) {
+						speedFound = true;
 						result.speed = Math.min(slot.type.getInt("speed"), result.speed);
 					}
 					if (checkFirepower && slot.type.has("projectile")) {
