@@ -151,6 +151,7 @@ public class DefaultAIControls implements AIControls {
 			ii.owner = player;
 			ii.count = 1;
 			ii.hp = player.world.getHitpoints(satellite);
+			ii.createSlots();
 			planet.inventory.add(ii);
 			int ttl = player.world.getSatelliteTTL(satellite);
 			if (ttl > 0) {
