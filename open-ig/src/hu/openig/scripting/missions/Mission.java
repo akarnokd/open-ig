@@ -633,4 +633,18 @@ public abstract class Mission implements GameScriptingEvents {
 		}
 
 	}
+	/**
+	 * Check if the fleet has a concrete tag.
+	 * @param f the fleet
+	 * @param tag the expected tag
+	 * @return true if fleet has tag
+	 */
+	protected boolean hasTag(Fleet f, String tag) {
+		for (InventoryItem ii : f.inventory) {
+			if (tag.equals(ii.tag)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
