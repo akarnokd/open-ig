@@ -153,13 +153,15 @@ public class AI implements AIManager {
 		}
 		List<SpacewarStructure> esl = new ArrayList<SpacewarStructure>(ess);
 		Collections.shuffle(esl);
-		int i = 0;
-		for (SpacewarStructure ship : idles) {
-			if (ship.attack == null && ship.type == StructureType.SHIP) {
-				ship.attack = esl.get(i);
-				i++;
-				if (i >= esl.size()) {
-					i = 0;
+		if (!esl.isEmpty()) {
+			int i = 0;
+			for (SpacewarStructure ship : idles) {
+				if (ship.attack == null && ship.type == StructureType.SHIP) {
+					ship.attack = esl.get(i);
+					i++;
+					if (i >= esl.size()) {
+						i = 0;
+					}
 				}
 			}
 		}
