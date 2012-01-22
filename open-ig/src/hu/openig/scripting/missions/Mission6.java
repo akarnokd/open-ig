@@ -9,6 +9,7 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Pair;
+import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
@@ -18,6 +19,9 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.Player;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 
 /**
@@ -137,20 +141,15 @@ public class Mission6 extends Mission {
 				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 				war.battle().rewardText = label("battlefinish.mission-6.14_bonus");
 				war.battle().messageText = label("battlefinish.mission-6.14");
+			} else {
+				helper.scriptedFleets().remove(garthog.first.id);
+				cleanupScriptedFleets();
 			}
 		}		
 	}
 	@Override
 	public void onGroundwarFinish(GroundwarWorld war) {
-		if (helper.isActive("Mission-6")) {
-			Planet ach = planet("Achilles");
-			if (ach.owner != player) {
-				helper.setObjectiveState("Mission-6", ObjectiveState.FAILURE);
-			} else {
-				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
-			}
-			helper.setTimeout("Mission-6-Done", 13000);
-		}
+		onAutobattleFinish(war.battle());
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
@@ -162,6 +161,11 @@ public class Mission6 extends Mission {
 				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 			}
 			helper.setTimeout("Mission-6-Done", 13000);
+			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+			if (garthog != null) {
+				helper.scriptedFleets().remove(garthog.first.id);
+			}
+			cleanupScriptedFleets();
 		}
 	}
 	/**
@@ -169,7 +173,8 @@ public class Mission6 extends Mission {
 	 */
 	void createAttackers() {
 		Planet from = planet("Garthog 1");
-		Fleet f = createFleet("Garthog.fleet", player("Garthog"), from.x, from.y);
+		Player garthog = player("Garthog");
+		Fleet f = createFleet("Garthog.fleet", garthog, from.x, from.y);
 		// --------------------------------------------------
 		f.addInventory(research("GarthogFighter"), 10);
 		f.addInventory(research("GarthogDestroyer"), 3);
@@ -183,10 +188,21 @@ public class Mission6 extends Mission {
 			ii.tag = "Mission-6-Garthog";
 		}
 		Planet ach = planet("Achilles");
-//		f.waypoints.add(new Point2D.Double(ach.x, ach.y));
 		f.targetPlanet(ach);
 		f.mode = FleetMode.ATTACK;
 		f.task = FleetTask.SCRIPT;
+		garthog.changeInventoryCount(research("SpySatellite1"), 1);
+		DefaultAIControls.actionDeploySatellite(garthog, ach, research("SpySatellite1"));
+		garthog.planets.put(ach, PlanetKnowledge.BUILDING);
+	}
+	@Override
+	public void onDiscovered(Player player, Fleet fleet) {
+		if (helper.isActive("Mission-6")) {
+			if (player == this.player && hasTag(fleet, "Mission-6-Garthog")) {
+				world.env.speed1();
+				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+			}
+		}
 	}
 	/**
 	 * Check if the main ship still exists.

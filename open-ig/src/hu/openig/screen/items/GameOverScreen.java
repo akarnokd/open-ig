@@ -78,6 +78,7 @@ public class GameOverScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		commons.force = true;
 		imageAlpha = 0.0f;
+		phase = 0;
 		showImage = false;
 		anim.start();
 	}

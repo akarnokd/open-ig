@@ -2995,8 +2995,8 @@
 	<entry key='mission-10.governor_escort'>Escort the governor of Centronom</entry>
 	<entry key='mission-10.governor_escort.desc'>Escort the governor's fleet as it travels from San Sterling to Naxos.</entry>
 	<entry key='mission-10.governor_name'>Governor's fleet</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-11.attack'>Imminent Garthog attack</entry>
+	<entry key='mission-11.attack.desc'>Defend the colonies from a Garthog attack!</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

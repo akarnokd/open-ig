@@ -17,11 +17,13 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.World;
+import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The algorithm that adjusts the knowledge level of planets and fleets for all players.
@@ -48,12 +50,14 @@ public final class Radar {
 					}
 				}
 			}
-			// cleanup fleets
+			// change back to visible only
+			Set<Fleet> visibleEnemySet = U.newHashSet();
 			Iterator<Map.Entry<Fleet, FleetKnowledge>> itf = player.fleets.entrySet().iterator();
 			while (itf.hasNext()) {
 				Map.Entry<Fleet, FleetKnowledge> f = itf.next();
 				if (f.getKey().owner != player) {
-					itf.remove();
+					f.setValue(FleetKnowledge.VISIBLE);
+					visibleEnemySet.add(f.getKey());
 				} else {
 					f.setValue(FleetKnowledge.FULL);
 				}
@@ -86,6 +90,7 @@ public final class Radar {
 							}
 						}
 						for (Fleet f1 : findFleetsInRange(world, f.x, f.y, radar * rrf)) {
+							visibleEnemySet.remove(f1);
 							if (radar < 1f) {
 								updateKnowledge(world, player, f1, FleetKnowledge.VISIBLE);
 							} else
@@ -102,13 +107,60 @@ public final class Radar {
 					}
 				}
 			}
-		}
-		// traverse each planet
-		for (Planet p : world.planets.values()) {
-			if (p.owner != null) {
+			
+			for (Planet p : player.ownPlanets()) {
 				updateKnowledge(world, p.owner, p, PlanetKnowledge.BUILDING);
+				int radar = 0;
+				for (InventoryItem pii : p.inventory) {
+					int detectorType = pii.type.getInt("detector", 0);
+					if (detectorType == 1) {
+						updateKnowledge(world, pii.owner, p, PlanetKnowledge.OWNER);
+					}
+					if (detectorType == 2) {
+						updateKnowledge(world, pii.owner, p, PlanetKnowledge.STATIONS);
+					}
+					if (detectorType == 3) {
+						updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
+					}
+					if (pii.type.getInt("radar", 0) == 4) {
+						radar = 4;
+						for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * rrg)) {
+							updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
+						}
+						for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * rrg)) {
+							visibleEnemySet.remove(f);
+							updateKnowledge(world, pii.owner, f, FleetKnowledge.COMPOSITION);
+						}
+					}
+				}
+				if (radar == 0) {
+					for (Building b : p.surface.buildings) {
+						if (b.isOperational()) {
+							if (b.hasResource("radar")) {
+								radar = Math.max(radar, (int)b.getResource("radar"));
+							}
+						}
+					}
+					if (radar > 0) {
+						for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
+							updateKnowledge(world, p.owner, q, PlanetKnowledge.NAME);
+						}
+						for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * rrg)) {
+							visibleEnemySet.remove(f1);
+							updateKnowledge(world, p.owner, f1, FleetKnowledge.COMPOSITION);
+						}
+					}
+				}
 			}
-			int radar = 0;
+			
+			for (Fleet f0 : visibleEnemySet) {
+				player.ai.onLostSight(f0);
+				world.scripting.onLostSight(player, f0);
+			}
+			player.fleets.keySet().removeAll(visibleEnemySet);
+		}
+		// spy satellites
+		for (Planet p : world.planets.values()) {
 			for (InventoryItem pii : p.inventory) {
 				int detectorType = pii.type.getInt("detector", 0);
 				if (detectorType == 1) {
@@ -120,33 +172,7 @@ public final class Radar {
 				if (detectorType == 3) {
 					updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
 				}
-				if (pii.type.getInt("radar", 0) == 4) {
-					radar = 4;
-					for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * rrg)) {
-						updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
-					}
-					for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * rrg)) {
-						updateKnowledge(world, pii.owner, f, FleetKnowledge.COMPOSITION);
-					}
-				}
-			}
-			if (radar == 0) {
-				for (Building b : p.surface.buildings) {
-					if (b.isOperational()) {
-						if (b.hasResource("radar")) {
-							radar = Math.max(radar, (int)b.getResource("radar"));
-						}
-					}
-				}
-				if (radar > 0) {
-					for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
-						updateKnowledge(world, p.owner, q, PlanetKnowledge.NAME);
-					}
-					for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * rrg)) {
-						updateKnowledge(world, p.owner, f1, FleetKnowledge.COMPOSITION);
-					}
-				}
-			}
+			}			
 		}
 		// notify players about the radar sweep completed
 		for (Player p : world.players.values()) {
@@ -190,6 +216,8 @@ public final class Radar {
 		FleetKnowledge k0 = player.fleets.get(fleet);
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.fleets.put(fleet, k);
+		}
+		if (k0 == null) {
 			player.ai.onDiscoverFleet(fleet);
 			world.scripting.onDiscovered(player, fleet);
 		}

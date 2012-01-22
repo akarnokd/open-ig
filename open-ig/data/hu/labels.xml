@@ -2251,6 +2251,8 @@
 	<entry key='mission-10.governor_escort'>Centronom kormányzójának kísérete</entry>
 	<entry key='mission-10.governor_escort.desc'>Kísérd a kormányzó flottáját, amint az a San Sterlingről a Naxosra tart.</entry>
 	<entry key='mission-10.governor_name'>Kormányzó flottája</entry>
+	<entry key='mission-11.attack'>Garthog támadás várható</entry>
+	<entry key='mission-11.attack.desc'>Védd meg a kolóniákat a Garthog támadástól!</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

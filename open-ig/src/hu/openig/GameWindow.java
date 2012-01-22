@@ -1813,14 +1813,14 @@ public class GameWindow extends JFrame implements GameControls {
 			if (bi == null) {
 				break;
 			}
-			// check if the source fleet still exists
+			bi.attacker.stop();
+			// check if the source fleet does still exist
 			if (!bi.attacker.owner.fleets.containsKey(bi.attacker)) {
-				bi.attacker.stop();
 				continue;
 			}
-			// check if the target fleet is still exists
-			if (bi.targetFleet != null && !bi.targetFleet.owner.fleets.containsKey(bi.targetFleet)) {
-				bi.attacker.stop();
+			// check if the target fleet does still exist
+			if (bi.targetFleet != null 
+					&& !bi.targetFleet.owner.fleets.containsKey(bi.targetFleet)) {
 				continue;
 			}
 			// check if the target planet already belongs to the attacker
@@ -1828,7 +1828,6 @@ public class GameWindow extends JFrame implements GameControls {
 					&& (bi.targetPlanet.owner == bi.attacker.owner 
 					|| bi.targetPlanet.owner == null
 					|| bi.attacker.owner.knowledge(bi.targetPlanet, PlanetKnowledge.OWNER) < 0)) {
-				bi.attacker.stop();
 				continue;
 			}
 			if (bi.targetPlanet != null) {
@@ -1838,11 +1837,6 @@ public class GameWindow extends JFrame implements GameControls {
 			if (config.automaticBattle 
 					|| (bi.attacker.owner != world().player && targetPlayer != world().player)) {
 				new BattleSimulator(world(), bi).autoBattle();
-				bi.attacker.stop();
-				Fleet f2 = bi.getFleet();
-				if (f2 != null) {
-					f2.stop();
-				}
 				continue;
 			}
 			bi.originalSpeed = commons.simulation.speed();
@@ -1908,7 +1902,6 @@ public class GameWindow extends JFrame implements GameControls {
 							displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
 							commons.buttonSound(SoundType.NOT_AVAILABLE);
 						}
-						bi.attacker.stop();
 						continue;
 					}
 					if (groundBattle) {
@@ -1928,7 +1921,7 @@ public class GameWindow extends JFrame implements GameControls {
 						// just take ownership
 						bi.targetPlanet.takeover(bi.attacker.owner);
 						BattleSimulator.applyPlanetConquered(bi.targetPlanet, 500);
-						bi.attacker.stop();
+						world().scripting.onAutobattleFinish(bi);
 						continue;
 					}
 				}

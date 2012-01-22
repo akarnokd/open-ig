@@ -31,11 +31,13 @@ public class Mission10 extends Mission {
 		Objective m10 = helper.objective("Mission-10");
 		if (m9.state != ObjectiveState.ACTIVE
 				&& m10.state == ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-10-Timeout")
 				&& !helper.hasMissionTime("Mission-10")) {
 			helper.setMissionTime("Mission-10", helper.now() + 3 * 24);
 		}
 		if (checkMission("Mission-10")) {
 			incomingMessage("Douglas-Centronom-Governor");
+			helper.setMissionTime("Mission-10-Timeout", helper.now() + 24);
 		}
 		if (checkTimeout("Mission-10-Hide")) {
 			helper.objective("Mission-10").visible = false;
@@ -47,6 +49,8 @@ public class Mission10 extends Mission {
 				public void invoke() {
 					world.env.playMusic();
 					helper.showObjective("Mission-10");
+					helper.clearMissionTime("Mission-10-Timeout");
+					world.env.speed1();
 					createGovernor();
 				}
 			});

@@ -40,7 +40,9 @@ public class Mission7 extends Mission {
 		}
 		// a week after the initial garthog attack
 		Objective m6 = helper.objective("Mission-6");
+		Objective m7 = helper.objective("Mission-6");
 		if (m6.state != ObjectiveState.ACTIVE
+				&& !m7.visible && m7.state == ObjectiveState.ACTIVE
 				&& !helper.hasMissionTime("Mission-7")) {
 			helper.setMissionTime("Mission-7", helper.now() + 7 * 24);
 		}
@@ -51,9 +53,8 @@ public class Mission7 extends Mission {
 			helper.setMissionTime("Mission-7-Task-2", helper.now() + 7 * 24);
 		}
 		
-		if (helper.canStart("Mission-7")) {
+		if (checkMission("Mission-7")) {
 			helper.showObjective("Mission-7");
-			helper.clearMissionTime("Mission-7");
 			helper.setMissionTime("Mission-7-Task-1", helper.now() + 24);
 		}
 		if (helper.canStart("Mission-7-Task-1")) {
