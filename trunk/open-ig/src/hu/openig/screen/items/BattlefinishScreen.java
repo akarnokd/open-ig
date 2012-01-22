@@ -348,8 +348,8 @@ public class BattlefinishScreen extends ScreenBase {
 		int result = 0;
 		for (SpacewarStructure s : battle.spaceLosses) {
 			boolean players = s.owner == player();
-			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.item.owner))
-					|| (battle.attacker.owner != player() && !battle.attackerAllies.contains(s.item.owner));
+			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
+					|| (battle.attacker.owner != player() && !battle.attackerAllies.contains(s.owner));
 			if (s.item != null && (own == (players || ally) 
 					&& s.item.type.category == category)) {
 				result += s.loss;
