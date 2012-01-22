@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SpacewarStructure;
@@ -49,6 +50,15 @@ public class BattlefinishScreen extends ScreenBase {
 	Timer textDelay;
 	/** Display text? */
 	boolean showText;
+	/** Enemy survival status after battle. */
+	enum EnemyStatus {
+		/** Enemy retreated, e.g., hp < hpMax / 2 or so. */
+		RETREATED,
+		/** Enemy slipped. */
+		SLIPPED,
+		/** Enemy destroyed. */
+		DESTROYED
+	}
 	@Override
 	public void onInitialize() {
 		textDelay = new Timer(1000, new ActionListener() {
@@ -154,7 +164,7 @@ public class BattlefinishScreen extends ScreenBase {
 			} else {
 				if (battle.spacewarWinner != null) {
 					if (battle.spacewarWinner == player()) {
-						textCenter(g2, x1, base.y + 40, w1, TextRenderer.GREEN, 14, get("battlefinish.spacewar_won"));
+						textCenter(g2, x1, base.y + 40, w1, TextRenderer.GREEN, 14, get("battlefinish.spacewar_won"));						
 					} else {
 						textCenter(g2, x1, base.y + 40, w1, TextRenderer.RED, 14, get("battlefinish.spacewar_lost"));
 					}
@@ -228,6 +238,25 @@ public class BattlefinishScreen extends ScreenBase {
 					y += 20;
 				}
 			}
+			
+			if (battle.spacewarWinner == player()) {
+				Fleet enemy = null;
+				if (battle.attacker.owner == player()) {
+					enemy = battle.getFleet();
+				} else {
+					enemy = battle.attacker;
+				}
+				EnemyStatus st = enemyStatus(enemy);
+				if (st == EnemyStatus.RETREATED) {
+					textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, format("battlefinish.spacewar_enemy_fled", enemy.name));
+					y += 20;
+				} else
+				if (st == EnemyStatus.SLIPPED) {
+					textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.spacewar_enemy_slipped", enemy.name));
+					y += 20;
+				}
+			}
+			
 			for (Fleet flt : new Fleet[] { battle.getFleet(), battle.attacker }) {
 				if (flt != null && flt.inventory.size() == 0) {
 					if (flt.owner == player()) {
@@ -274,6 +303,21 @@ public class BattlefinishScreen extends ScreenBase {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Check if any enemy is beyond the screen.
+	 * @param enemy the enemy fleet
+	 * @return the status of the enemy fleet.
+	 */
+	EnemyStatus enemyStatus(Fleet enemy) {
+		for (InventoryItem ii : enemy.inventory) {
+			if (ii.hp * 2 < world().getHitpoints(ii.type)) {
+				return EnemyStatus.RETREATED;
+			} else {
+				return EnemyStatus.SLIPPED;
+			}
+		}
+		return EnemyStatus.DESTROYED;
 	}
 	/**
 	 * Count the destroyer losses or cruiser losses.
