@@ -969,26 +969,23 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				}
 			});
 			
+			JButton btnSucceed = new JButton("Complete M" + i);
+			btnSucceed.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Objective o = objective("Mission-" + j);
+					if (o != null) {
+						resetMission(j);
+						o.state = ObjectiveState.SUCCESS;
+						o.visible = false;
+					}
+				}
+			});
 			JButton btnReset = new JButton("Reset M" + i);
 			btnReset.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Func1<String, Boolean> func = new Func1<String, Boolean>() {
-						@Override
-						public Boolean invoke(String value) {
-							if (value.equals("Mission-" + j)) {
-								return true;
-							}
-							if (value.startsWith("Mission-" + j + "-")) {
-								return true;
-							}
-							return false;
-						}
-					};
-					clearMessages(func);
-					clearMissionTimes(func);
-					clearTimeouts(func);
-					clearObjectives(func);
+					resetMission(j);
 				}
 			});
 			if (i == 8) {
@@ -1014,6 +1011,8 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			panel.add(btnStart, gc);
 			gc.gridx = 1;
 			panel.add(btnReset, gc);
+			gc.gridx = 2;
+			panel.add(btnSucceed, gc);
 		}
 		
 		JPanel dump = new JPanel();
@@ -1069,5 +1068,27 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		frame.setSize(800, 600);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+	}
+	/**
+	 * Resets the mission.
+	 * @param j the mission index
+	 */
+	void resetMission(final int j) {
+		Func1<String, Boolean> func = new Func1<String, Boolean>() {
+			@Override
+			public Boolean invoke(String value) {
+				if (value.equals("Mission-" + j)) {
+					return true;
+				}
+				if (value.startsWith("Mission-" + j + "-")) {
+					return true;
+				}
+				return false;
+			}
+		};
+		clearMessages(func);
+		clearMissionTimes(func);
+		clearTimeouts(func);
+		clearObjectives(func);
 	}
 }

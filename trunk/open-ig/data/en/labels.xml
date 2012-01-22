@@ -2987,11 +2987,11 @@
 	<entry key='mission-12.virus'>Virus infection on New Caroline</entry>
 	<entry key='mission-12.handle_virus'>Deal with the virus: quarantine the planet and build more hospitals.</entry>
 	<entry key='Garthog.pirates'>Garthog pirates</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-9.smuggler'>San Sterling smuggler</entry>
+	<entry key='mission-9.smuggler.desc'>Prevent the smuggler from reaching the planet San Sterling!</entry>
+	<entry key='mission-9.trader_name'>Trader?</entry>
+	<entry key='battlefinish.spacewar_enemy_fled'>The enemy fleet %s fled.</entry>
+	<entry key='battlefinish.spacewar_enemy_slipped'>The enemy fleet %s slipped through.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	

@@ -176,6 +176,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			if (fii.type.has("damage")) {
 				result.firepower += fii.type.getInt("damage");
 			}
+			boolean speedFound = false;
 			for (InventorySlot slot : fii.slots) {
 				if (slot.type != null) {
 					if (checkRadar && slot.type.has("radar")) {
@@ -195,7 +196,9 @@ public class Fleet implements Named, Owned, HasInventory {
 					}
 				}
 			}
-			;
+			if (checkHyperdrive && !speedFound) {
+				result.speed = 6;
+			}
 		}
 		
 		if (result.speed == Integer.MAX_VALUE) {
@@ -222,14 +225,19 @@ public class Fleet implements Named, Owned, HasInventory {
 		for (InventoryItem fii : inventory) {
 			boolean checkHyperdrive = fii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
 					|| fii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS;
-			for (InventorySlot slot : fii.slots) {
-				if (slot.type != null) {
-					if (checkHyperdrive && slot.type.has("speed")) {
-						speed = Math.min(slot.type.getInt("speed"), speed);
+			if (checkHyperdrive) {
+				boolean found = false;
+				for (InventorySlot is : fii.slots) {
+					if (is.type != null && is.type.has("speed")) {
+						found = true;
+						speed = Math.min(speed, is.type.getInt("speed"));
 					}
 				}
+				if (!found) {
+					speed = 6;
+				}
 			}
-		}		
+		}
 		if (speed == Integer.MAX_VALUE) {
 			speed = 6;
 		}
