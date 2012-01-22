@@ -251,8 +251,8 @@ public class Fleet implements Named, Owned, HasInventory {
 		double dmin = Integer.MAX_VALUE; 
 		Planet pmin = null;
 		for (Planet p : owner.planets.keySet()) {
-			double d = (p.x - x) * (p.x - x) + (p.y - y) * (p.y - y);
-			if (d < dmin && d < owner.world.params().nearbyDistance()) {
+			double d = Math.hypot(p.x - x, p.y - y);
+			if (d < dmin && d <= owner.world.params().nearbyDistance()) {
 				dmin = d;
 				pmin = p;
 			}
