@@ -26,7 +26,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.150'>
+	<module id='Game' version='0.94.151'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -38,10 +38,10 @@
 		<execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Javítások. Új küldetések: 9, 10, 11.</desc>
-			<desc lang='en'>Bugfixes. New missions: 9, 10, 11</desc>
+			<desc lang='hu'>7. küldetés javítás.</desc>
+			<desc lang='en'>Mission 7 bug fix.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.150.jar' sha1='b54f9aab90c6d6f0e08fec500ad9a986fd4d34de'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.151.jar' sha1='7c1d2ad8dde3f8f691b67c14e057db1c0db8b4b9'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
