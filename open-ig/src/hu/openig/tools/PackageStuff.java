@@ -266,7 +266,6 @@ public final class PackageStuff {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		JFrame f = new JFrame("Build");
 		
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -292,6 +291,7 @@ public final class PackageStuff {
 				SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
 					@Override
 					protected Void doInBackground() throws Exception {
+						final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 						if (v1) {
 							exec.execute(new Runnable() {
 								@Override
