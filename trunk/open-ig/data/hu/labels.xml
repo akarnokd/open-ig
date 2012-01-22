@@ -2245,7 +2245,7 @@
 	<entry key='Garthog.pirates'>Garthog kalózok</entry>
 	<entry key='mission-9.smuggler'>San Sterling csempész</entry>
 	<entry key='mission-9.smuggler.desc'>Akadályozd meg, hogy a csempész elérje a San Sterling bolygót!</entry>
-	<entry key='mission-9.trader_name'>Kereskedő?</entry>
+	<entry key='mission-9.trader_name'>Ismeretlen</entry>
 	<entry key='battlefinish.spacewar_enemy_fled'>Az ellenfél %s flottája menekülőre fogta.</entry>
 	<entry key='battlefinish.spacewar_enemy_slipped'>Az ellenfél %s flottája átcsúszott a blokádon.</entry>
 	<entry key='mission-10.governor_escort'>Centronom kormányzójának kísérete</entry>
