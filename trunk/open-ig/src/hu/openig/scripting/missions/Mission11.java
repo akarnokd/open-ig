@@ -37,8 +37,9 @@ public class Mission11 extends Mission {
 	@Override
 	public void onTime() {
 		Objective m10 = helper.objective("Mission-10");
+		Objective m11 = helper.objective("Mission-11");
 		if (m10.state != ObjectiveState.ACTIVE
-				&& !helper.isActive("Mission-11")
+				&& !m11.visible && m11.state == ObjectiveState.ACTIVE
 				&& !helper.hasMissionTime("Mission-11")) {
 			helper.setMissionTime("Mission-11", helper.now() + 7 * 24);
 		}
@@ -46,7 +47,6 @@ public class Mission11 extends Mission {
 			helper.showObjective("Mission-11");
 			createGarthog();
 		}
-		Objective m11 = helper.objective("Mission-11");
 		if (checkTimeout("Mission-11-Done")) {
 			if (m11.state == ObjectiveState.FAILURE) {
 				helper.gameover();
