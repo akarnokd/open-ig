@@ -1155,7 +1155,7 @@ public class EquipmentScreen extends ScreenBase {
 		f.owner = player();
 		f.name = get("newfleet.name");
 		
-		int r = rnd.nextInt(14) + 5;
+		int r = Math.max(0, rnd.nextInt(world().params().nearbyDistance()) - 1);
 		double k = rnd.nextDouble() * 2 * Math.PI;
 		f.x = (whereX + Math.cos(k) * r);
 		f.y = (whereY + Math.sin(k) * r);
