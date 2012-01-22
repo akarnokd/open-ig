@@ -35,7 +35,9 @@ public class Mission9 extends Mission {
 			return;
 		}
 		Objective m7t1 = helper.objective("Mission-7-Task-1");
+		Objective m9 = helper.objective("Mission-9");
 		if (m7t1.state != ObjectiveState.ACTIVE
+				&& m9.state == ObjectiveState.ACTIVE
 				&& !helper.hasMissionTime("Mission-9")) {
 			helper.setMissionTime("Mission-9", helper.now() + 3 * 24);
 		}
@@ -101,6 +103,7 @@ public class Mission9 extends Mission {
 				player("Traders"), sst.x + 80, sst.y + 80);
 		pf.task = FleetTask.SCRIPT;
 		int n = world.random().nextInt(2) + 1;
+		// ----------------------------------------------------------------
 		pf.addInventory(research("TradersFreight" + n), 1);
 		// ----------------------------------------------------------------
 		for (InventoryItem ii : pf.inventory) {
@@ -217,19 +220,5 @@ public class Mission9 extends Mission {
 				}
 			}
 		}
-	}
-	/**
-	 * Check if the fleet has a concrete tag.
-	 * @param f the fleet
-	 * @param tag the expected tag
-	 * @return true if fleet has tag
-	 */
-	boolean hasTag(Fleet f, String tag) {
-		for (InventoryItem ii : f.inventory) {
-			if (tag.equals(ii.tag)) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

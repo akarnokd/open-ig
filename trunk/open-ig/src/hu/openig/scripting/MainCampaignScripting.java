@@ -965,6 +965,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			btnStart.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					Objective o = helper.objective("Mission-" + j);
+					if (o != null) {
+						o.state = ObjectiveState.ACTIVE;
+					}
 					setMissionTime("Mission-" + j, 0);
 				}
 			});
