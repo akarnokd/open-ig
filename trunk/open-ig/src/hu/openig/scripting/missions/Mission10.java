@@ -30,10 +30,10 @@ public class Mission10 extends Mission {
 		Objective m9 = helper.objective("Mission-9");
 		Objective m10 = helper.objective("Mission-10");
 		if (m9.state != ObjectiveState.ACTIVE
-				&& m10.state == ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-10-Timeout")
-				&& !helper.hasMissionTime("Mission-10")) {
+				&& !m10.visible && m10.state == ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-10-Once")) {
 			helper.setMissionTime("Mission-10", helper.now() + 3 * 24);
+			helper.setMissionTime("Mission-10-Once", helper.now() + 1);
 		}
 		if (checkMission("Mission-10")) {
 			incomingMessage("Douglas-Centronom-Governor");
@@ -50,6 +50,7 @@ public class Mission10 extends Mission {
 					world.env.playMusic();
 					helper.showObjective("Mission-10");
 					helper.clearMissionTime("Mission-10-Timeout");
+					helper.clearMissionTime("Mission-10-Once");
 					world.env.speed1();
 					createGovernor();
 				}
