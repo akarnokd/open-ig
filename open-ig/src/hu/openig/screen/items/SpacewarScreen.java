@@ -3901,9 +3901,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			// reduce population according to the battle statistics
 			if (battle.targetPlanet != null) {
 				if (winner == battle.targetPlanet.owner) {
-					BattleSimulator.applyPlanetDefended(battle.targetPlanet, 1000);
+					BattleSimulator.applyPlanetDefended(battle.targetPlanet, 500);
 				} else {
-					BattleSimulator.applyPlanetConquered(battle.targetPlanet, 1500);
+					BattleSimulator.applyPlanetConquered(battle.targetPlanet, 750);
 				}
 			} else
 			if (battle.helperPlanet != null) {
