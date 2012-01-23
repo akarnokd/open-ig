@@ -12,6 +12,7 @@ import hu.openig.core.Pair;
 import hu.openig.model.AIMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
@@ -258,6 +259,7 @@ public class Mission4 extends Mission {
 					Player pirates = player("Pirates");
 					// restore owner
 					s.fleet.owner = pirates;
+					pirates.fleets.put(s.fleet, FleetKnowledge.FULL);
 					pirateSurvived = true;
 					break;
 				}
