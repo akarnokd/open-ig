@@ -129,7 +129,7 @@ public class AITrader implements AIManager {
 		planets.clear();
 		// get fleets
 		for (Fleet f : player.fleets.keySet()) {
-			if (f.owner == player) {
+			if (f.owner == player && f.task != FleetTask.SCRIPT) {
 				TraderFleet tf = new TraderFleet();
 				tf.fleet = f;
 				tf.target = f.targetPlanet();
