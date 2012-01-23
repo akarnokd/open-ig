@@ -3496,6 +3496,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 							|| (ship.guard && ship.inRange(ship.attack).isEmpty())
 							|| (!ship.attack.intersects(0, 0, space.width, space.height))) {
 						ship.attack = null;
+						if (ship.selected && ship.owner == player()) {
+							enableSelectedFleetControls();
+						}
 					} else {
 						if (ship.type == StructureType.STATION 
 								|| rotateStep(ship, ship.attack.x, ship.attack.y)) {
@@ -4026,6 +4029,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		s.attack = null;
 		s.guard = false;
+		if (s.selected && s.owner == player()) {
+			enableSelectedFleetControls();
+		}
 	}
 	@Override
 	public List<SpacewarStructure> structures(Player owner) {
@@ -4391,6 +4397,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				if (r.fired == s) {
 					fireRocketAt(target, r);
 				}
+				if (s.selected && s.owner == player()) {
+					enableSelectedFleetControls();
+				}
 			}
 		}
 	}
@@ -4399,18 +4408,26 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		s.attack = null;
 		s.guard = false;
 		s.moveTo = new Point2D.Double(x, y);
+		if (s.selected && s.owner == player()) {
+			enableSelectedFleetControls();
+		}
 	}
 	@Override
 	public void guard(SpacewarStructure s) {
 		s.attack = null;
 		s.guard = true;
 		s.moveTo = null;
+		if (s.selected && s.owner == player()) {
+			enableSelectedFleetControls();
+		}
 	}
 	@Override
 	public void stop(SpacewarStructure s) {
-		s.attack = null;
 		s.moveTo = null;
 		s.attack = null;
+		if (s.selected && s.owner == player()) {
+			enableSelectedFleetControls();
+		}
 	}
 	@Override
 	public Dimension space() {
