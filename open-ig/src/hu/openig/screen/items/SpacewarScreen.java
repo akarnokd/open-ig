@@ -3867,6 +3867,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (s.building != null) {
 				s.planet.surface.removeBuilding(s.building);
 				planets.add(s.planet);
+				groundLosses = true;
 			}
 			if (s.item != null) {
 				s.item.count = 0;
