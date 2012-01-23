@@ -38,11 +38,9 @@ public class Mission9 extends Mission {
 		Objective m9 = helper.objective("Mission-9");
 		if (m7t1.state != ObjectiveState.ACTIVE
 				&& !m9.visible && m9.state == ObjectiveState.ACTIVE
-				&& !helper.hasTimeout("Mission-9-Message")
-				&& !helper.hasMissionTime("Mission-9-Interlude")
-				&& !helper.hasTimeout("Mission-9-Objective")
-				&& !helper.hasMissionTime("Mission-9")) {
+				&& !helper.hasMissionTime("Mission-9-Once")) {
 			helper.setMissionTime("Mission-9", helper.now() + 3 * 24);
+			helper.setMissionTime("Mission-9-Once", helper.now() + 1);
 		}
 		if (checkMission("Mission-9")) {
 			helper.setMissionTime("Mission-9-Interlude", helper.now() + 1);
@@ -62,6 +60,7 @@ public class Mission9 extends Mission {
 		}
 		if (checkTimeout("Mission-9-Objective")) {
 			helper.showObjective("Mission-9");
+			helper.clearMissionTime("Mission-9-Once");
 			createSmuggler();
 		}
 		if (checkTimeout("Mission-9-Slipped")) {
