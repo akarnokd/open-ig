@@ -183,6 +183,7 @@ public class Mission9 extends Mission {
 			if (diverted) {
 				helper.setTimeout("Mission-9-Success", 3000);
 				war.battle().messageText = label("battlefinish.mission-9.17");
+				smg.first.targetPlanet(null);
 				smg.first.waypoints.clear();
 				smg.first.waypoints.add(new Point2D.Double(sst.x + 80, sst.y + 80));
 				smg.first.task = FleetTask.SCRIPT;
