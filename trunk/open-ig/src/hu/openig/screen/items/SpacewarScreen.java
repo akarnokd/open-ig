@@ -2904,7 +2904,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					rocketButton.enabled = false;
 					for (SpacewarStructure sws : selection) {
 						if (sws.type == StructureType.SHIP) {
-							kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) && sws.kamikaze == 0;
+							kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) && sws.kamikaze == 0 && sws.attack != null;
 							for (SpacewarWeaponPort port : sws.ports) {
 								rocketButton.enabled |= port.projectile.mode != Mode.BEAM && port.count > 0; 
 							}
@@ -2949,6 +2949,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		if (moved) {
 			effectSound(SoundType.ACKNOWLEDGE_2);
+			enableSelectedFleetControls();
 		}
 	}
 	/**
@@ -3029,6 +3030,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		if (r.fired != null) {
 			fireRocketAt(target, r);
+			enableSelectedFleetControls();
 		}
 	}
 	/**
@@ -3096,6 +3098,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		if (attack) {
 			effectSound(SoundType.ACKNOWLEDGE_1);
+			enableSelectedFleetControls();
 		}
 	}
 	/**
@@ -3103,7 +3106,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void doKamikaze() {
 		for (SpacewarStructure ship : structures) {
-			if (ship.selected && canControl(ship) 
+			if (ship.selected && canControl(ship)
+					&& ship.attack != null
 					&& ship.kamikaze == 0 && ship.type == StructureType.SHIP 
 					&& ship.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
@@ -3130,6 +3134,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		// TODO stop command for other structures
 		if (stop) {
 			effectSound(SoundType.NOT_AVAILABLE);
+			enableSelectedFleetControls();
 		}
 	}
 	/**
