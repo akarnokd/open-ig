@@ -441,9 +441,11 @@ public final class BattleSimulator {
 					double planetPercent = planetStrength.defense / attacker.defense;
 					
 					applyDamage(battle.attacker, attackerTime * defender.attack * (1 - planetPercent), ships);
-					applyDamage(planet, attackerTime * defender.attack * planetPercent);
-
-					applyPlanetDefended(planet, 250);
+					double planetDamage = attackerTime * defender.attack * planetPercent;
+					applyDamage(planet, planetDamage);
+					if (planetDamage > 0) {
+						applyPlanetDefended(planet, 250);
+					}
 				}
 			} else {
 				applyDamage(battle.attacker, attackerTime * defender.attack, ships);
@@ -465,13 +467,15 @@ public final class BattleSimulator {
 			if (planet != null) {
 				if (planet.owner != battle.attacker.owner) {
 					double planetPercent = planetStrength.defense / defender.defense;
-					applyDamage(planet, defenderTime * attacker.attack * planetPercent);
+					double planetDamage = defenderTime * attacker.attack * planetPercent;
+					applyDamage(planet, planetDamage);
 
 					if (fleet != null) {
 						applyDamage(fleet, defenderTime * attacker.attack * (1 - planetPercent), ships);
 					}
-					
-					applyPlanetDefended(planet, 250);
+					if (planetDamage > 0) {
+						applyPlanetDefended(planet, 250);
+					}
 				} else {
 					demolishDefenses(planet);
 					applyPlanetDefended(planet, 750);
