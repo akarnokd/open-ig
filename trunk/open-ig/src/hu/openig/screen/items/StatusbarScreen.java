@@ -606,7 +606,10 @@ public class StatusbarScreen extends ScreenBase {
 			screenMenu.visible(false);
 			return true;
 		}
-		if (e.has(Type.DOWN) && incomingMessage.contains(e.x, e.y) && hasUnseenMessage()) {
+		if (e.has(Type.DOWN) 
+				&& incomingMessage.contains(e.x, e.y) 
+				&& hasUnseenMessage()
+				&& !commons.battleMode) {
 			BridgeScreen bs = (BridgeScreen)displayPrimary(Screens.BRIDGE);
 			bs.displayReceive();
 			return true;

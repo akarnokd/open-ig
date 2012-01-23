@@ -69,8 +69,7 @@ public class Mission15 extends Mission {
 
 		}
 		// hide tasks ---------------------------------------------------------------
-		if (helper.isTimeout("Mission-15-Hide")) {
-			helper.clearTimeout("Mission-15-Hide");
+		if (checkTimeout("Mission-15-Hide")) {
 			helper.objective("Mission-15").visible = false;
 			helper.send("Douglas-Report-Spy").visible = false;
 			world.currentTalk = null;
@@ -83,7 +82,6 @@ public class Mission15 extends Mission {
 			if ("Douglas-Report-Spy".equals(id)) {
 				if (helper.setObjectiveState("Mission-15-Task-3", ObjectiveState.SUCCESS)) {
 					helper.setObjectiveState("Mission-15", ObjectiveState.SUCCESS);
-					helper.setTimeout("Mission-15-Task-3-Hide", 13000);
 					helper.clearMissionTime("Mission-15-Task-3-Timeout");
 					helper.setTimeout("Mission-15-Hide", 13000);
 				}

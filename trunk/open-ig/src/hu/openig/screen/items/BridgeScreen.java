@@ -851,6 +851,9 @@ public class BridgeScreen extends ScreenBase {
 			@Override
 			protected BufferedImage doInBackground() throws Exception {
 				ResourcePlace rp = rl.get(video.media, ResourceType.VIDEO);
+				if (rp == null) {
+					new AssertionError("Missing resource: " + video.media).printStackTrace();
+				}
 				return VideoRenderer.firstFrame(rp);
 			}
 		};

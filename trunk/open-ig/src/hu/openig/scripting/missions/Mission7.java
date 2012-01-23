@@ -41,8 +41,10 @@ public class Mission7 extends Mission {
 		// a week after the initial garthog attack
 		Objective m6 = helper.objective("Mission-6");
 		Objective m7 = helper.objective("Mission-7");
+		Objective m7t1 = helper.objective("Mission-7-Task-1");
 		if (m6.state != ObjectiveState.ACTIVE
 				&& !m7.visible && m7.state == ObjectiveState.ACTIVE
+				&& !m7t1.visible && m7t1.state == ObjectiveState.ACTIVE
 				&& !helper.hasMissionTime("Mission-7")) {
 			helper.setMissionTime("Mission-7", helper.now() + 7 * 24);
 		}
@@ -223,7 +225,7 @@ public class Mission7 extends Mission {
 				if (task == 1) {
 					war.battle().messageText = label("battlefinish.mission-7.merchant7");
 					war.battle().rewardText = format("mission-7.save_trader.reward", 5000);
-					war.battle().rewardImage = "battlefinish/mission_1_8d.png";
+					war.battle().rewardImage = "battlefinish/mission_1_8d";
 				} else {
 					war.battle().messageText = label("battlefinish.mission-7_task2.merchant8");
 					war.battle().rewardText = label("battlefinish.mission-7_task2.merchant8_bonus");
