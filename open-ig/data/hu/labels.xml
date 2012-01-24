@@ -2246,8 +2246,8 @@
 	<entry key='mission-9.smuggler'>San Sterling csempész</entry>
 	<entry key='mission-9.smuggler.desc'>Akadályozd meg, hogy a csempész elérje a San Sterling bolygót!</entry>
 	<entry key='mission-9.trader_name'>Ismeretlen</entry>
-	<entry key='battlefinish.spacewar_enemy_fled'>Az ellenfél %s flottája menekülőre fogta.</entry>
-	<entry key='battlefinish.spacewar_enemy_slipped'>Az ellenfél %s flottája átcsúszott a blokádon.</entry>
+	<entry key='battlefinish.spacewar_enemy_fled'>Az ellenfél %s hajója menekülőre fogta.</entry>
+	<entry key='battlefinish.spacewar_enemy_slipped'>Az ellenfél %s hajója átcsúszott a blokádon.</entry>
 	<entry key='mission-10.governor_escort'>Centronom kormányzójának kísérete</entry>
 	<entry key='mission-10.governor_escort.desc'>Kísérd a kormányzó flottáját, amint az a San Sterlingről a Naxosra tart.</entry>
 	<entry key='mission-10.governor_name'>Kormányzó flottája</entry>
