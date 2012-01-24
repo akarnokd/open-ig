@@ -288,23 +288,6 @@ public class BattlefinishScreen extends ScreenBase {
 		}
 	}
 	/**
-	 * Count the destroyer losses or cruiser losses.
-	 * @param own the owner should be the player?
-	 * @param destroyer count destroyers (true) or cruisers (false)
-	 * @return the loss count
-	 */
-	int lossCount(boolean own, boolean destroyer) {
-		int result = 0;
-		for (SpacewarStructure s : battle.spaceLosses) {
-			if (s.item != null && (own == (s.item.owner == player()) 
-					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS)
-					&& s.item.type.id.toLowerCase().contains("destroyer") == destroyer) {
-				result += s.loss;
-			}
-		}
-		return result;
-	}
-	/**
 	 * Check if any enemy is beyond the screen.
 	 * @param enemy the enemy fleet
 	 * @return the status of the enemy fleet.
@@ -322,6 +305,26 @@ public class BattlefinishScreen extends ScreenBase {
 	/**
 	 * Count the destroyer losses or cruiser losses.
 	 * @param own the owner should be the player?
+	 * @param destroyer count destroyers (true) or cruisers (false)
+	 * @return the loss count
+	 */
+	int lossCount(boolean own, boolean destroyer) {
+		int result = 0;
+		for (SpacewarStructure s : battle.spaceLosses) {
+			boolean players = s.owner == player();
+			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
+					|| (battle.attacker.owner != player() && !battle.attackerAllies.contains(s.owner));
+			if (s.item != null && (own == (players || ally)) 
+					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+					&& s.item.type.id.toLowerCase().contains("destroyer") == destroyer) {
+				result += s.loss;
+			}
+		}
+		return result;
+	}
+	/**
+	 * Count the destroyer losses or cruiser losses.
+	 * @param own the owner should be the player?
 	 * @param kind the structure kind
 	 * @return the loss count
 	 */
@@ -331,8 +334,8 @@ public class BattlefinishScreen extends ScreenBase {
 			boolean players = s.item.owner == player();
 			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.item.owner))
 					|| battle.attacker.owner != player() && !battle.attackerAllies.contains(s.item.owner);
-			if (s.building != null && (own == (players || ally) 
-					&& s.building.type.kind.equals(kind))) {
+			if (s.building != null && (own == (players || ally)) 
+					&& s.building.type.kind.equals(kind)) {
 				result += s.loss;
 			}
 		}
@@ -350,8 +353,9 @@ public class BattlefinishScreen extends ScreenBase {
 			boolean players = s.owner == player();
 			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
 					|| (battle.attacker.owner != player() && !battle.attackerAllies.contains(s.owner));
-			if (s.item != null && (own == (players || ally) 
-					&& s.item.type.category == category)) {
+			if (s.item != null 
+					&& (own == (players || ally))
+					&& s.item.type.category == category) {
 				result += s.loss;
 			}
 		}
