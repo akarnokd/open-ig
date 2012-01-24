@@ -35,7 +35,8 @@ public class Mission15 extends Mission {
 				}
 			});
 		}
-		if (world.recordWatched && helper.objective("Mission-15-Task-2").state == ObjectiveState.ACTIVE) {
+		if (world.recordWatched 
+				&& helper.objective("Mission-15-Task-2").state == ObjectiveState.ACTIVE) {
 			// record watched in time
 			helper.setObjectiveState("Mission-15-Task-2", ObjectiveState.SUCCESS);
 			helper.clearMissionTime("Mission-15-Task-2-Timeout");

@@ -1007,6 +1007,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 					public void actionPerformed(ActionEvent e) {
 						world.currentTalk = null;
 						world.allowRecordMessage = false;
+						world.recordWatched = false;
 					}
 				});
 			}
