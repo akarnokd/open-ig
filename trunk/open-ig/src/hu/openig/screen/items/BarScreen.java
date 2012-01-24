@@ -56,6 +56,8 @@ public class BarScreen extends ScreenBase {
 	BufferedImage picture;
 	/** The bar images. */
 	BarImages images;
+	/** Was the simulation running before entering into talk? */
+	boolean simulationRunning;
 	/** A talk choice. */
 	class Choice {
 		/** The target rendering rectangle. */
@@ -119,6 +121,9 @@ public class BarScreen extends ScreenBase {
 		} else {
 			talkMode = false;
 			picture = null;
+			if (simulationRunning) {
+				commons.simulation.resume();
+			}
 			world().scripting.onTalkCompleted();
 		}
 	}
@@ -196,6 +201,7 @@ public class BarScreen extends ScreenBase {
 		talkMode = false;
 		choices.clear();
 		images = new BarImages();
+		simulationRunning = !commons.simulation.paused();
 	}
 
 	@Override
@@ -262,6 +268,9 @@ public class BarScreen extends ScreenBase {
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE && talkMode) {
 			talkMode = false;
+			if (simulationRunning) {
+				commons.simulation.resume();
+			}
 			e.consume();
 			return true;
 		}
@@ -321,6 +330,8 @@ public class BarScreen extends ScreenBase {
 						person = tp;
 						setState(tp.states.get(TalkState.START));
 						askRepaint();
+						simulationRunning = !commons.simulation.paused();
+						commons.simulation.pause();
 					}
 				} else
 				if (!base.contains(e.x, e.y)) {
