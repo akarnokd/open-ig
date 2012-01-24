@@ -77,6 +77,9 @@ public class OffensePlanner extends Planner {
 //		if (checkSellOldTech()) {
 //			return;
 //		}
+		if (world.level < 2) {
+			return;
+		}
 		
 		if (upgradeFleets()) {
 			return;
@@ -87,10 +90,10 @@ public class OffensePlanner extends Planner {
 		}
 		// have a fleet for every N planets + 1
 		int divider = 5;
-		if (w.difficulty == Difficulty.NORMAL) {
+		if (world.difficulty == Difficulty.NORMAL) {
 			divider = 4;
 		} else
-		if (w.difficulty == Difficulty.HARD) {
+		if (world.difficulty == Difficulty.HARD) {
 			divider = 3;
 		}
 		// construct fleets

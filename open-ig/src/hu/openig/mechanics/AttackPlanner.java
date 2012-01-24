@@ -109,10 +109,10 @@ public class AttackPlanner extends Planner {
 		if (world.nextAttack == null) {
 			if (world.mayConquer) {
 				int base = 3;
-				if (w.difficulty == Difficulty.NORMAL) {
+				if (world.difficulty == Difficulty.NORMAL) {
 					base = 5;
 				} else
-				if (w.difficulty == Difficulty.EASY) {
+				if (world.difficulty == Difficulty.EASY) {
 					base = 7;
 				}
 				long next = 1L * (w.random().nextInt(3) + base) * (8 + 2 * w.random().nextInt(6)) * 60 * 60 * 1000;
