@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 
 import java.awt.Rectangle;
@@ -77,12 +78,20 @@ public class AIWorld {
 	public Date nextAttack;
 	/** The current date. */
 	public Date now;
+	/** The current difficulty. */
+	public Difficulty difficulty;
+	/** The current level. */
+	public int level;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
 	 */
 	public void assign(Player player) {
 		this.player = player;
+		
+		difficulty = player.world.difficulty;
+		level = player.world.level;
+		
 		explorationInnerLimit = player.explorationInnerLimit;
 		explorationOuterLimit = player.explorationOuterLimit;
 		money = player.money;
@@ -130,9 +139,11 @@ public class AIWorld {
 		
 		for (Fleet f : player.fleets.keySet()) {
 			if (f.owner == player) {
-				AIFleet aif = new AIFleet();
-				aif.assign(f, this);
-				ownFleets.add(aif);
+				if (f.task != FleetTask.SCRIPT) {
+					AIFleet aif = new AIFleet();
+					aif.assign(f, this);
+					ownFleets.add(aif);
+				}
 			} else
 			if (player.world.aiAccept(f.owner)) {
 				AIFleet aif = new AIFleet();

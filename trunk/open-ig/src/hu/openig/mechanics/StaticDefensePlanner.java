@@ -85,10 +85,10 @@ public class StaticDefensePlanner extends Planner {
 		List<Pred0> actions = new ArrayList<Pred0>();
 		
 		int defenseLimit = 3;
-		if (w.difficulty == Difficulty.NORMAL) {
+		if (world.difficulty == Difficulty.NORMAL) {
 			defenseLimit = 4;
 		} else
-		if (w.difficulty == Difficulty.HARD) {
+		if (world.difficulty == Difficulty.HARD) {
 			defenseLimit = 5;
 		}
 		final int fdefenseLimit = defenseLimit;
@@ -132,16 +132,18 @@ public class StaticDefensePlanner extends Planner {
 				return false;
 			}
 		});
-		actions.add(new Pred0() {
-			@Override
-			public Boolean invoke() {
-				// find the space stations
-				if (checkStations(planet)) {
-					return true;
+		if (world.level > 1) {
+			actions.add(new Pred0() {
+				@Override
+				public Boolean invoke() {
+					// find the space stations
+					if (checkStations(planet)) {
+						return true;
+					}
+					return false;
 				}
-				return false;
-			}
-		});
+			});
+		}
 		actions.add(new Pred0() {
 			@Override
 			public Boolean invoke() {
@@ -152,17 +154,18 @@ public class StaticDefensePlanner extends Planner {
 				return false;
 			}
 		});
-		actions.add(new Pred0() {
-			@Override
-			public Boolean invoke() {
-				// check for military spaceport
-				if (checkTanks(planet)) {
-					return true;
+		if (world.level > 1) {
+			actions.add(new Pred0() {
+				@Override
+				public Boolean invoke() {
+					// check for military spaceport
+					if (checkTanks(planet)) {
+						return true;
+					}
+					return false;
 				}
-				return false;
-			}
-		});
-		
+			});
+		}
 		
 		Collections.shuffle(actions);
 		
