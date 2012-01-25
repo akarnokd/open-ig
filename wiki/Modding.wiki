@@ -21,6 +21,14 @@ data/skirmish/human/tech.xml
 
   * rename skirmish/human to something else (e.g., human2)
 
+{{{
+data/skirmish/human2/definition.xml
+data/skirmish/human2/planets.xml
+data/skirmish/human2/players.xml
+data/skirmish/human2/scripting.xml
+data/skirmish/human2/tech.xml
+}}}
+
 = Setup other races =
 
   * open players.xml and create a copy of the "FreeNations" player. 
