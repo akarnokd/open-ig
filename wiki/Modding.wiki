@@ -20,7 +20,6 @@ data/skirmish/human/tech.xml
 }}}
 
   * rename skirmish/human to something else (e.g., human2)
-
 {{{
 data/skirmish/human2/definition.xml
 data/skirmish/human2/planets.xml
