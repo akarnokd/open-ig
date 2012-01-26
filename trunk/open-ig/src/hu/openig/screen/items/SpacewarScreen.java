@@ -938,15 +938,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		if (own) {
 			for (SpacewarStructure s : candidates) {
-				if (canControl(s)) {
-					s.selected = true;
-				} else {
-					s.selected = false;
-				}
+				s.selected = canControl(s) && s.kamikaze == 0;
 			}
 		} else {
 			for (SpacewarStructure s : candidates) {
-				s.selected = true;
+				s.selected = s.kamikaze == 0;
 			}
 		}
 		enableSelectedFleetControls();
@@ -2940,7 +2936,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		Point2D.Double p = new Point2D.Double(x, y);
 		boolean moved = false;
 		for (SpacewarStructure ship : structures) {
-			if (ship.type == StructureType.SHIP && ship.selected && canControl(ship)) {
+			if (ship.type == StructureType.SHIP 
+					&& ship.selected && canControl(ship)) {
 				ship.moveTo = p;
 				ship.attack = null;
 				ship.guard = false;
@@ -3123,7 +3120,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void doStopSelectedShips() {
 		boolean stop = false;
 		for (SpacewarStructure ship : structures) {
-			if (ship.selected && canControl(ship) && ship.kamikaze == 0) {
+			if (ship.selected && canControl(ship) 
+					&& ship.kamikaze == 0) {
 				ship.moveTo = null;
 				ship.attack = null;
 				ship.guard = false;
@@ -3290,7 +3288,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double dx = ds * Math.cos(obj.angle);
 		double dy = ds * Math.sin(obj.angle);
 		
-		if (!obj.attack.isDestroyed()) {
+		if (obj.attack != null && !obj.attack.isDestroyed()) {
 			BufferedImage img = obj.attack.get();
 			double w = img.getWidth();
 			double h = img.getHeight();
@@ -3421,7 +3419,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** Switch selected ships to guard mode. */
 	void doSelectionGuard() {
 		for (SpacewarStructure ship : structures) {
-			if (ship.selected && canControl(ship)) {
+			if (ship.selected 
+					&& canControl(ship) && ship.kamikaze == 0) {
 				ship.moveTo = null;
 				ship.attack = null;
 				ship.guard = true;
@@ -3567,7 +3566,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param ship the ship
 	 */
 	void handleKamikaze(SpacewarStructure ship) {
-		if (!ship.attack.isDestroyed()) {
+		if (ship.attack != null && !ship.attack.isDestroyed()) {
 			rotateStep(ship, ship.attack.x, ship.attack.y);
 
 			double d = Math.hypot(ship.x - ship.attack.x, ship.y - ship.attack.y);
@@ -3599,7 +3598,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				ship.attack.planet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
 			}
 		} else
-		if (ship.attack.isDestroyed() && !ship.intersects(0, 0, space.width, space.height)) {
+		if (ship.attack != null && ship.attack.isDestroyed() && !ship.intersects(0, 0, space.width, space.height)) {
 			createLoss(ship);
 			structures.remove(ship);
 		}
