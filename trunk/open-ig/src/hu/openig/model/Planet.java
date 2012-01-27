@@ -51,8 +51,6 @@ public class Planet implements Named, Owned, HasInventory {
 	public int radar;
 	/** The diameter in pixels up to 30 for the maximum zoom. */
 	public int diameter;
-	/** The planet is under quarantine: display red frame. */
-	public boolean quarantine;
 	/** How long the quarantine should stay in 10s ingame minutes? */
 	public int quarantineTTL;
 	/** The default quarnatine TTL. */
@@ -255,7 +253,7 @@ public class Planet implements Named, Owned, HasInventory {
 			}
 		}
 		
-		if (quarantine) {
+		if (quarantineTTL > 0) {
 			result.hospitalAvailable /= 4;
 		}
 		
@@ -309,7 +307,7 @@ public class Planet implements Named, Owned, HasInventory {
 			result.addProblem(PlanetProblems.STADIUM);
 		}
 		
-		if (quarantine) {
+		if (quarantineTTL > 0) {
 			result.addProblem(PlanetProblems.VIRUS);
 		}
 		if (damage) {
@@ -457,7 +455,6 @@ public class Planet implements Named, Owned, HasInventory {
 		}
 		owner = null;
 		race = null;
-		quarantine = false;
 		quarantineTTL = 0;
 		allocation = ResourceAllocationStrategy.DEFAULT;
 		tax = TaxLevel.MODERATE;

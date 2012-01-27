@@ -3591,8 +3591,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			createExplosion(ship, true);
 			if (ship.type == StructureType.VIRUS_BOMB 
 					&& (ship.attack.type == StructureType.PROJECTOR || ship.attack.type == StructureType.SHIELD)) {
-				ship.attack.planet.quarantine = true;
-				ship.attack.planet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+				battle.infectPlanet = ship.attack.planet;
 			}
 		} else
 		if (ship.attack != null && ship.attack.isDestroyed() && !ship.intersects(0, 0, space.width, space.height)) {
@@ -3928,6 +3927,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		player().ai.spaceBattleDone(this);
 		nonPlayer().ai.spaceBattleDone(this);
 		world().scripting.onSpacewarFinish(this);
+		
+		if (battle.infectPlanet != null) {
+			int ttl0 = battle.infectPlanet.quarantineTTL; 
+			battle.infectPlanet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+			if (ttl0 == 0) {
+				world().scripting.onPlanetInfected(battle.infectPlanet);
+			}
+		}
 		
 		// attacker wins
 		final BattleInfo bi = battle;

@@ -1216,6 +1216,21 @@ public class GameWindow extends JFrame implements GameControls {
 						repaintInner();
 					}
 					break;
+				case KeyEvent.VK_Z:
+					Planet cp = world().player.currentPlanet;
+					if (e.isControlDown() && cp != null) {
+						if (cp.quarantineTTL > 0) {
+							cp.quarantineTTL = 0;
+							world().cureFleets(cp);
+							world().scripting.onPlanetCured(cp);
+						} else {
+							cp.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+							world().scripting.onPlanetInfected(cp);
+						}
+						e.consume();
+						repaintInner();
+					}
+					break;
 				case KeyEvent.VK_H:
 					if (e.isControlDown()) {
 						world().scripting.debug();

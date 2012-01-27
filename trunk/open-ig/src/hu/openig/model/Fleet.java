@@ -588,7 +588,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * Stop the fleet.
 	 */
 	public void stop() {
-		waypoints.clear();
+		clearWaypoints();
 		targetFleet = null;
 		targetPlanet = null;
 		mode = null;
@@ -646,5 +646,133 @@ public class Fleet implements Named, Owned, HasInventory {
 	@Override
 	public String toString() {
 		return String.format("Fleet { Name = %s (%d) , Inventory = %d: %s }", name, id, inventory.size(), inventory);
+	}
+	/**
+	 * Issue a move order to the target location.
+	 * @param x the target X
+	 * @param y the target Y
+	 */
+	public void moveTo(double x, double y) {
+		stop();
+		addWaypoint(x, y);
+		mode = FleetMode.MOVE;
+		task = FleetTask.MOVE;
+	}
+	/**
+	 * Issue a move order to the target location.
+	 * @param p the target point
+	 */
+	public void moveTo(Point2D.Double p) {
+		stop();
+		addWaypoint(p.x, p.y);
+		mode = FleetMode.MOVE;
+		task = FleetTask.MOVE;
+	}
+	/**
+	 * Remove all waypoints.
+	 */
+	public void clearWaypoints() {
+		waypoints.clear();
+	}
+	/**
+	 * Add a new waypoint.
+	 * @param x the waypoint X
+	 * @param y the waypoint Y
+	 */
+	public void addWaypoint(double x, double y) {
+		waypoints.add(new Point2D.Double(x, y));
+	}
+	/**
+	 * Switch to move mode and either move to
+	 * the target point or add a new waypoint.
+	 * @param x the new point
+	 * @param y the new point
+	 */
+	public void moveNext(double x, double y) {
+		if (mode != FleetMode.MOVE || targetFleet != null || targetPlanet != null) {
+			// if a planet is currently targeted, make it a waypoint
+			if (targetPlanet != null) {
+				double px = targetPlanet.x;
+				double py = targetPlanet.y;
+				moveTo(px, py);
+				addWaypoint(x, y);
+			} else {
+				moveTo(x, y);
+			}
+		} else {
+			addWaypoint(x, y);
+		}
+	}
+	/**
+	 * Switch to move mode and either move to
+	 * the target point or add a new waypoint
+	 * if already moving.
+	 * @param p the point
+	 */
+	public void moveNext(Point2D.Double p) {
+		moveNext(p.x, p.y);
+	}
+	/**
+	 * Add a new waypoint.
+	 * @param p the point
+	 */
+	public void addWaypoint(Point2D.Double p) {
+		addWaypoint(p.x, p.y);
+	}
+	/**
+	 * Start following the other fleet.
+	 * @param otherFleet the fleet to follow
+	 */
+	public void follow(Fleet otherFleet) {
+		if (this == otherFleet) {
+			new AssertionError("Can't follow self!").printStackTrace();
+			return;
+		}
+		stop();
+		targetFleet = otherFleet;
+		mode = FleetMode.MOVE;
+		task = FleetTask.MOVE;
+	}
+	/**
+	 * Attack the other fleet.
+	 * @param otherFleet the other fleet
+	 */
+	public void attack(Fleet otherFleet) {
+		if (this == otherFleet || this.owner == otherFleet.owner) {
+			new AssertionError("Can't attack friendly!").printStackTrace();
+			return;
+		}
+		stop();
+		targetFleet = otherFleet;
+		mode = FleetMode.ATTACK;
+		task = FleetTask.ATTACK;
+	}
+	/**
+	 * Attack the target planet.
+	 * @param planet the planet to attack
+	 */
+	public void attack(Planet planet) {
+		if (owner == planet.owner) {
+			new AssertionError("Can't attack friendly planet!").printStackTrace();
+			return;
+		}
+		if (planet.owner == null) {
+			new AssertionError("Can't attack empty planet!").printStackTrace();
+			return;
+		}
+		stop();
+		targetPlanet = planet;
+		mode = FleetMode.ATTACK;
+		task = FleetTask.ATTACK;
+	}
+	/**
+	 * Attack the target planet.
+	 * @param planet the planet to attack
+	 */
+	public void moveTo(Planet planet) {
+		stop();
+		targetPlanet = planet;
+		mode = FleetMode.MOVE;
+		task = FleetTask.MOVE;
 	}
 }

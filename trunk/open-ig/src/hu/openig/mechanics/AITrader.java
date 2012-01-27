@@ -169,7 +169,25 @@ public class AITrader implements AIManager {
 				lf.target = tf.arrivedAt;
 				lf.ttl = fleetTurnedBack.contains(lf.fleet) ? TURN_BACK_TTL : LANDING_TTL;
 				landed.add(lf);
+				
+				// infect planet
+				if (world.infectedFleets.containsKey(lf.fleet.id)) {
+					if (lf.target != null) {
+						String source = world.infectedFleets.get(lf.fleet.id);
+						// do not reinfect source
+						if (!source.equals(lf.target.id)) {
+							// reset quarantine ttl
+							int ttl0 = lf.target.quarantineTTL;
+							lf.target.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+							if (ttl0 == 0) {
+								world.scripting.onPlanetInfected(lf.target);
+							}
+						}
+					}
+				}
+				// hide
 				world.removeFleet(lf.fleet);
+
 				lastVisitedPlanet.remove(lf.fleet);
 			}
 			activeCount++;
@@ -210,11 +228,9 @@ public class AITrader implements AIManager {
 			LandedFleet lf = it.next();
 			// if time out, put back the fleet
 			if (--lf.ttl <= 0) {
-				// if there is a
+				// if there are many targets
 				if (planets.size() > 1) {
 					// select a random trader planet
-					
-
 					while (!Thread.currentThread().isInterrupted()) {
 						int nt = world.random().nextInt(planets.size());
 						Planet np = planets.get(nt);
@@ -223,6 +239,7 @@ public class AITrader implements AIManager {
 							break;
 						}
 					}
+					// reintroduce fleet
 					lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
 					lf.fleet.mode = FleetMode.MOVE;
 					// restore hp
@@ -232,8 +249,15 @@ public class AITrader implements AIManager {
 					
 					lastVisitedPlanet.put(lf.fleet, lf.target);
 					
+					// mark fleet as infected if it goes to another planet of the same owner
+					if (lf.target.quarantineTTL > 0 
+							&& lf.fleet.targetPlanet().owner == lf.target.owner) {
+						world.infectedFleets.put(lf.fleet.id, lf.target.id);
+					}
+					
 				} else
 				if (planets.size() == 1 && planets.get(0) != lf.target) {
+					// reintroduce fleet
 					lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
 					lf.fleet.mode = FleetMode.MOVE;
 					lf.fleet.targetPlanet(planets.get(0));
@@ -243,6 +267,12 @@ public class AITrader implements AIManager {
 					}
 					
 					lastVisitedPlanet.put(lf.fleet, lf.target);
+
+					// mark fleet as infected if it goes to another planet of the same owner
+					if (lf.target.quarantineTTL > 0 
+							&& lf.fleet.targetPlanet().owner == lf.target.owner) {
+						world.infectedFleets.put(lf.fleet.id, lf.target.id);
+					}
 				}
 				
 				it.remove();
