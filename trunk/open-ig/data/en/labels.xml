@@ -2997,7 +2997,7 @@
 	<entry key='mission-10.governor_name'>Governor's fleet</entry>
 	<entry key='mission-11.attack'>Imminent Garthog attack</entry>
 	<entry key='mission-11.attack.desc'>Defend the colonies from a Garthog attack!</entry>
-	<entry key=''></entry>
+	<entry key='message.cant_attack_that_planet'>You can't attack %s: knowledge about the planet is insufficient.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -1991,14 +1991,19 @@ public class StarmapScreen extends ScreenBase {
 						} else
 						if (p != null) {
 							fleetMode = null;
-							if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
-								if (p.owner == fleet().owner) {
-									fleet().moveTo(p);
+							if (p.owner == fleet().owner) { 
+								fleet().moveTo(p);
+							} else {
+								if (knowledge(p, PlanetKnowledge.OWNER) < 0) {
+									if (forceAttack) {
+										effectSound(SoundType.NOT_AVAILABLE);
+										commons.control().displayError(format("message.cant_attack_that_planet", p.name));
+									} else {
+										fleet().moveTo(p);
+									}
 								} else {
 									fleet().attack(p);
 								}
-							} else {
-								fleet().moveTo(toMapCoordinates(p.x, p.y));
 							}
 						} else {
 							fleet().moveTo(toMapCoordinates(e.x, e.y));
@@ -2018,19 +2023,16 @@ public class StarmapScreen extends ScreenBase {
 					Planet p = getPlanetAt(fleet().owner, e.x, e.y, true);
 					if (f != null) {
 						fleetMode = null;
-						fleet().targetPlanet(null);
-						fleet().targetFleet = f;
-						fleet().mode = FleetMode.ATTACK;
-						fleet().task = FleetTask.ATTACK;
+						fleet().attack(f);
 					} else
-					if (p != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
-						fleetMode = null;
-						fleet().targetPlanet(p);
-						fleet().targetFleet = null;
-						fleet().mode = FleetMode.ATTACK;
-						fleet().task = FleetTask.ATTACK;
-					} else {
-						effectSound(SoundType.NOT_AVAILABLE);
+					if (p != null) {
+						if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+							fleetMode = null;
+							fleet().attack(p);
+						} else {
+							effectSound(SoundType.NOT_AVAILABLE);
+							commons.control().displayError(format("message.cant_attack_that_planet", p.name));
+						}
 					}
 				} else
 				if (fleetMode == FleetMode.MOVE && world().scripting.mayControlFleet(fleet())) {
