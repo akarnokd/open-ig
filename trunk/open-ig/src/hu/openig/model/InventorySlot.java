@@ -37,4 +37,16 @@ public class InventorySlot {
 		is.hp = hp;
 		return is;
 	}
+	/**
+	 * @return returns the equipment category of this inventory slot
+	 */
+	public ResearchSubCategory getCategory() {
+		if (type != null) {
+			return type.category;
+		}
+		for (ResearchType es : slot.items) {
+			return es.category;
+		}
+		return null;
+	}
 }
