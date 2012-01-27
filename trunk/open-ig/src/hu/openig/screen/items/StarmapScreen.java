@@ -2004,11 +2004,16 @@ public class StarmapScreen extends ScreenBase {
 							}
 						} else {
 							fleet().targetPlanet(null);
-							fleet().targetFleet = null;
+							
+							Fleet f2 = getFleetAt(player(), e.x, e.y, false, fleet());
+							
+							fleet().targetFleet = f2;
 							fleet().mode = FleetMode.MOVE;
 							fleet().task = FleetTask.MOVE;
 							fleet().waypoints.clear();
-							fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+							if (f2 == null) {
+								fleet().waypoints.add(toMapCoordinates(e.x, e.y));
+							}
 						}
 						panning = false;
 					}
