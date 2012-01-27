@@ -116,4 +116,6 @@ public interface GameEnvironment {
 	void pause();
 	/** Set speed back to 1. */
 	void speed1();
+	/** @return Are we in battle mode? */
+	boolean isBattle();
 }
