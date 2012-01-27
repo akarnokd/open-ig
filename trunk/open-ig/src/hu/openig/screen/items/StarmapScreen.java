@@ -1973,9 +1973,9 @@ public class StarmapScreen extends ScreenBase {
 
 						fleetMode = null;
 						panning = false;
-					} else {
-						boolean autoAction = config.classicControls;
-						boolean forceAttack = e.has(Modifier.CTRL) || !autoAction;
+					} else 
+					if (config.classicControls || e.has(Modifier.CTRL)) {
+						boolean forceAttack = e.has(Modifier.CTRL) || !config.classicControls;
 
 						// what was the target?
 						Planet p = getPlanetAt(player(), e.x, e.y, true);
