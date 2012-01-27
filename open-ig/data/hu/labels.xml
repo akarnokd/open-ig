@@ -2253,6 +2253,7 @@
 	<entry key='mission-10.governor_name'>Kormányzó flottája</entry>
 	<entry key='mission-11.attack'>Garthog támadás várható</entry>
 	<entry key='mission-11.attack.desc'>Védd meg a kolóniákat a Garthog támadástól!</entry>
+	<entry key='message.cant_attack_that_planet'>Nem támadhatod meg a(z) %s bolygót: nem tudsz eleget róla.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
