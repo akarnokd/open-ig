@@ -722,13 +722,17 @@ public final class Simulator {
 						f.waypoints.remove(0);
 					}
 					if (f.waypoints.size() == 0) {
+						boolean clearPlanet = false;
+						boolean clearFleet = false;
 						if (f.targetPlanet() != null) {
 							f.owner.ai.onFleetArrivedAtPlanet(f, f.targetPlanet());
 							world.scripting.onFleetAt(f, f.targetPlanet());
+							clearPlanet = true;
 						} else
 						if (f.targetFleet != null) {
 							f.owner.ai.onFleetArrivedAtFleet(f, f.targetFleet);
 							world.scripting.onFleetAt(f, f.targetFleet);
+							clearFleet = f.mode == FleetMode.ATTACK;
 						} else {
 							f.owner.ai.onFleetArrivedAtPoint(f, f.x, f.y);
 							world.scripting.onFleetAt(f, f.x, f.y);
@@ -739,11 +743,16 @@ public final class Simulator {
 							bi.targetFleet = f.targetFleet;
 							bi.targetPlanet = f.targetPlanet();
 							f.task = FleetTask.IDLE;
+
 							world.pendingBattles.add(bi);
 						}
 						f.mode = null;
-						f.targetFleet = null;
-						f.targetPlanet(null);
+						if (clearFleet) {
+							f.targetFleet = null;
+						}
+						if (clearPlanet) {
+							f.targetPlanet(null);
+						}
 					}
 				} else {
 					double angle = Math.atan2(target.y - f.y, target.x - f.x);
