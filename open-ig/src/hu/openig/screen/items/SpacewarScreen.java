@@ -2901,18 +2901,19 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					for (SpacewarStructure sws : selection) {
 						if (sws.type == StructureType.SHIP) {
 							kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) && sws.kamikaze == 0 && sws.attack != null;
-							for (SpacewarWeaponPort port : sws.ports) {
-								rocketButton.enabled |= port.projectile.mode != Mode.BEAM && port.count > 0; 
-							}
 							moveButton.enabled = sws.kamikaze == 0;
 							stopButton.enabled |= sws.kamikaze == 0;
-							attackButton.enabled |= sws.kamikaze == 0;
+							attackButton.enabled |= sws.kamikaze == 0 && sws.canDirectFire();
 							guardButton.enabled |= sws.kamikaze == 0;
 						} else
 						if (sws.type == StructureType.STATION 
 						|| sws.type == StructureType.PROJECTOR) {
 							stopButton.enabled = true;
 							attackButton.enabled = true;
+						}
+						for (SpacewarWeaponPort port : sws.ports) {
+							rocketButton.enabled |= port.projectile.mode != Mode.BEAM 
+									&& port.count > 0; 
 						}
 						guardButton.selected &= sws.guard; // keep guard only of all of the selection is in guard mode
 					}
@@ -2985,7 +2986,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		void findRocket(SpacewarStructure target, boolean targetTyped) {
 			// try to find rockets for ships or bombs for buildings
 			for (SpacewarStructure ship : structures) {
-				if (ship.type == StructureType.SHIP && ship.selected 
+				if ((ship.type == StructureType.SHIP 
+						|| ship.type == StructureType.STATION) 
+						&& ship.selected 
 						&& ship.owner != target.owner) {
 					findRocketPort(target, targetTyped, ship);
 				}
@@ -3080,13 +3083,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void doAttackWithShips(SpacewarStructure target) {
 		boolean attack = false;
 		for (SpacewarStructure ship : structures) {
-			if ((ship.type == StructureType.PROJECTOR
-					|| ship.type == StructureType.SHIP
-					|| ship.type == StructureType.STATION
-					) 
-					&& ship.selected
-					&& canControl(ship)
-					&& !ship.ports.isEmpty()) {
+			if (canControl(ship) && ship.canDirectFire()) {
 				ship.moveTo = null;
 				ship.attack = target;
 				ship.guard = false;

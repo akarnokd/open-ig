@@ -38,6 +38,9 @@ public final class Radar {
 	 * @param world the world
 	 */
 	public static void compute(World world) {
+		if (world.env.isBattle()) {
+			return;
+		}
 		final int rrg = world.env.params().groundRadarUnitSize();
 		final int rrf = world.env.params().fleetRadarUnitSize();
 		// clear knowledge

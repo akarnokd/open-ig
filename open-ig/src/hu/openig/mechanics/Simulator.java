@@ -358,6 +358,17 @@ public final class Simulator {
 			AutoBuilder.performAutoBuild(world, planet, ps);
 		}
 		
+		// reequip station bombs and rockets
+		if (planet.owner == world.player && world.env.config().reequipBombs) {
+			for (InventoryItem ii : planet.inventory) {
+				if (ii.owner == planet.owner && ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					for (InventorySlot is : ii.slots) {
+						refillSlot(planet.owner, is);
+					}
+				}
+			}
+		}
+		
 		if (dayChange) {
 
 			planet.lastMorale = planet.morale;
@@ -754,7 +765,8 @@ public final class Simulator {
 	 */
 	static void regenerateFleet(Map<Planet, PlanetStatistics> planetStats, Fleet f) {
 		Planet np = f.nearbyPlanet();
-		boolean spaceport = f.task != FleetTask.SCRIPT && np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport;
+		boolean spaceport = f.task != FleetTask.SCRIPT 
+				&& np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport;
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
 			if (spaceport) {
 				int hpMax = ii.owner.world.getHitpoints(ii.type);
@@ -767,8 +779,6 @@ public final class Simulator {
 							is.hp = Math.min(m, (is.hp * 100 + m) / 100);
 						}
 					}
-					
-					checkRefill(f, ii);
 				}
 			}
 			int sm = ii.shieldMax();
@@ -776,22 +786,20 @@ public final class Simulator {
 				ii.shield = Math.min(sm, (ii.shield * 100 + sm) / 100);
 			}
 		}
+		if (spaceport) {
+			checkRefill(f);
+		}
 	}
 	/**
 	 * Check if the auto-refill of tanks and equipment is on.
 	 * @param f the target fleet
-	 * @param ii the target inventory
 	 */
-	static void checkRefill(Fleet f, InventoryItem ii) {
+	static void checkRefill(Fleet f) {
 		if (f.owner == f.owner.world.player) {
-			if (f.owner.world.env.config().reequipBombs) {
-				for (InventorySlot is : ii.slots) {
-					if (is.type != null && is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
-						int demand = is.slot.max - is.count;
-						int inv = f.owner.inventoryCount(is.type);
-						int add = Math.min(inv, demand);
-						is.count += add;
-						f.owner.changeInventoryCount(is.type, -add);
+			for (InventoryItem ii : f.inventory) {
+				if (f.owner.world.env.config().reequipBombs) {
+					for (InventorySlot is : ii.slots) {
+						refillSlot(f.owner, is);
 					}
 				}
 			}
@@ -800,6 +808,36 @@ public final class Simulator {
 				if (fs.vehicleCount < fs.vehicleMax) {
 					f.stripVehicles();
 					f.upgradeVehicles(fs.vehicleMax);
+				}
+			}
+		}
+	}
+	/**
+	 * Refill a particular inventory slot.
+	 * @param owner the owner
+	 * @param is the slot
+	 */
+	static void refillSlot(Player owner, InventorySlot is) {
+		if (is.type != null 
+				&& is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
+			int demand = is.slot.max - is.count;
+			int inv = owner.inventoryCount(is.type);
+			int add = Math.min(inv, demand);
+			is.count += add;
+			owner.changeInventoryCount(is.type, -add);
+		} else {
+			for (int i = is.slot.items.size() - 1; i >= 0; i--) {
+				ResearchType rt = is.slot.items.get(i);
+				if (owner.isAvailable(rt)) {
+					int demand = is.slot.max;
+					int inv = owner.inventoryCount(rt);
+					int add = Math.min(inv, demand);
+					if (add > 0) {
+						is.type = rt;
+						is.count = add;
+						owner.changeInventoryCount(rt, -add);
+						break;
+					}
 				}
 			}
 		}

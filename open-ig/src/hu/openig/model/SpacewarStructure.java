@@ -241,4 +241,17 @@ public class SpacewarStructure extends SpacewarObject {
 		return String.format("Type = %s, Count = %s, Owner = %s, HP = %s, Shield = %s, Parent = %s"
 				, type, count, owner.id, hp, shield, (fleet != null ? fleet.name : (planet != null ? planet.id : "")));
 	}
+	/**
+	 * @return checks if this structure has direct fire capability with a beam weapon.
+	 */
+	public boolean canDirectFire() {
+		if (type == StructureType.SHIP || type == StructureType.PROJECTOR || type == StructureType.STATION) {
+			for (SpacewarWeaponPort wp : ports) {
+				if (wp.projectile.mode == Mode.BEAM && wp.count > 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

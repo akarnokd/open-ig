@@ -941,4 +941,8 @@ public class CommonResources implements GameEnvironment {
 	public void playMusic() {
 		playRegularMusic();
 	}
+	@Override
+	public boolean isBattle() {
+		return battleMode;
+	}
 }

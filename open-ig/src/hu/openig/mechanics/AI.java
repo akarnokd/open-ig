@@ -124,7 +124,9 @@ public class AI implements AIManager {
 			boolean c = health < switchToCostAttack || defensiveTask.contains(idles.get(0).fleet);
 			if (c) {
 				for (SpacewarStructure ship : idles) {
-					costAttackBehavior(world, ship);
+					if (ship.canDirectFire()) {
+						costAttackBehavior(world, ship);
+					}
 				}
 			} else {
 				defaultAttackBehavior(world, idles);				
@@ -156,7 +158,9 @@ public class AI implements AIManager {
 		if (!esl.isEmpty()) {
 			int i = 0;
 			for (SpacewarStructure ship : idles) {
-				if (ship.attack == null && ship.type == StructureType.SHIP) {
+				if (ship.attack == null 
+						&& ship.type == StructureType.SHIP
+						&& ship.canDirectFire()) {
 					ship.attack = esl.get(i);
 					i++;
 					if (i >= esl.size()) {
