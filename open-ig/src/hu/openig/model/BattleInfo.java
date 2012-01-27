@@ -66,6 +66,8 @@ public class BattleInfo {
 	public String rewardText;
 	/** The optional message display text. */
 	public String messageText;
+	/** Infect the target planet at the conclusion if non-null. */
+	public Planet infectPlanet;
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

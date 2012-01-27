@@ -215,18 +215,14 @@ public final class Simulator {
 				planet.earthQuakeTTL--;
 			}
 		}
-		
-		if (planet.quarantine) {
-			if (planet.quarantineTTL == Planet.DEFAULT_QUARANTINE_TTL) {
-				world.scripting.onPlanetInfected(planet);
-			}
-			// progress quarantine if any
-			if (planet.quarantineTTL > 0) {
-				planet.quarantineTTL--;
-			}
+
+		// progress quarantine if any
+		if (planet.quarantineTTL > 0) {
+			planet.quarantineTTL--;
 			if (planet.quarantineTTL <= 0) {
-				planet.quarantine = false;
 				planet.quarantineTTL = 0;
+
+				world.cureFleets(planet);
 				world.scripting.onPlanetCured(planet);
 			}
 		}

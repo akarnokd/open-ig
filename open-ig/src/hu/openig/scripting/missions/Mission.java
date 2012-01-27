@@ -606,7 +606,7 @@ public abstract class Mission implements GameScriptingEvents {
 		boolean anyAttack = false;
 		for (String p : planets) {
 			Planet planet = planet(p);
-			if (planet.quarantine) {
+			if (planet.quarantineTTL > 0) {
 				helper.send(p + "-Check").visible = false;
 				helper.send(p + "-Come-Quickly").visible = false;
 				helper.receive(p + "-Virus").visible = true;
@@ -617,7 +617,7 @@ public abstract class Mission implements GameScriptingEvents {
 		}
 		for (String p : planets) {
 			Planet planet = planet(p);
-			if (!planet.quarantine) {
+			if (planet.quarantineTTL == 0) {
 				boolean thisTarget = isUnderAttack(planet);
 				if (thisTarget) {
 					helper.send(p + "-Come-Quickly").visible = true;

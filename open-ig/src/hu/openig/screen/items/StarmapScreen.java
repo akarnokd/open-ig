@@ -1236,7 +1236,7 @@ public class StarmapScreen extends ScreenBase {
 				g2.drawLine(x0 - 1, y0 + di - 2, x0 - 1, y0 + di + 1);
 				g2.drawLine(x0 + di + 1, y0 + di - 2, x0 + di + 1, y0 + di + 1);
 			}
-			if (p.quarantine && minimapPlanetBlink) {
+			if (p.quarantineTTL > 0 && minimapPlanetBlink) {
 				g2.setColor(Color.RED);
 				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
 			}
@@ -1385,6 +1385,11 @@ public class StarmapScreen extends ScreenBase {
 						g2.setColor(Color.GRAY);
 					}
 					g2.drawRect(x0 - 1, y0 - 1, f.owner.fleetIcon.getWidth() + 2, f.owner.fleetIcon.getHeight() + 2);
+				}
+				// indicate infection
+				if (world().infectedFleets.containsKey(f.id)) {
+					g2.setColor(Color.RED);
+					g2.drawRect(x0 - 2, y0 - 2, f.owner.fleetIcon.getWidth() + 4, f.owner.fleetIcon.getHeight() + 4);
 				}
 			}
 		}
@@ -1962,58 +1967,41 @@ public class StarmapScreen extends ScreenBase {
 					if (checkExplorationLimits(e.x, e.y)) {
 						return false;
 					}
+					
 					if (e.has(Modifier.SHIFT)) {
-						if (fleet().targetFleet != null || fleet().targetPlanet() != null) {
-							fleet().waypoints.clear();
-						}
-						fleet().targetPlanet(null);
-						fleet().targetFleet = null;
-						fleet().mode = FleetMode.MOVE;
-						fleet().waypoints.add(toMapCoordinates(e.x, e.y));
-						fleet().task = FleetTask.MOVE;
+						fleet().moveNext(toMapCoordinates(e.x, e.y));
+
 						fleetMode = null;
 						panning = false;
-					} else
-					if (!config.classicControls == e.has(Modifier.CTRL)) {
+					} else {
+						boolean autoAction = config.classicControls;
+						boolean forceAttack = e.has(Modifier.CTRL) || !autoAction;
+
+						// what was the target?
 						Planet p = getPlanetAt(player(), e.x, e.y, true);
 						Fleet f = getFleetAt(player(), e.x, e.y, true, fleet());
 						if (f != null) {
-							fleetMode = null;
-							fleet().targetPlanet(null);
-							fleet().targetFleet = f;
-							fleet().waypoints.clear();
-							if (f.owner == player()) {
-								fleet().task = FleetTask.MOVE;
-								fleet().mode = FleetMode.MOVE;
+							if (f.owner == fleet().owner
+									|| (!forceAttack && shouldOnlyFollow(f))) {
+								fleet().follow(f);
 							} else {
-								fleet().task = FleetTask.ATTACK;
-								fleet().mode = FleetMode.ATTACK;
+								fleet().attack(f);
 							}
-						} else
-						if (p != null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 							fleetMode = null;
-							fleet().targetPlanet(p);
-							fleet().targetFleet = null;
-							fleet().waypoints.clear();
-							if (p.owner == player()) {
-								fleet().task = FleetTask.MOVE;
-								fleet().mode = FleetMode.MOVE;
+						} else
+						if (p != null) {
+							fleetMode = null;
+							if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+								if (p.owner == fleet().owner) {
+									fleet().moveTo(p);
+								} else {
+									fleet().attack(p);
+								}
 							} else {
-								fleet().task = FleetTask.ATTACK;
-								fleet().mode = FleetMode.ATTACK;
+								fleet().moveTo(toMapCoordinates(p.x, p.y));
 							}
 						} else {
-							fleet().targetPlanet(null);
-							
-							Fleet f2 = getFleetAt(player(), e.x, e.y, false, fleet());
-							
-							fleet().targetFleet = f2;
-							fleet().mode = FleetMode.MOVE;
-							fleet().task = FleetTask.MOVE;
-							fleet().waypoints.clear();
-							if (f2 == null) {
-								fleet().waypoints.add(toMapCoordinates(e.x, e.y));
-							}
+							fleet().moveTo(toMapCoordinates(e.x, e.y));
 						}
 						panning = false;
 					}
@@ -2139,6 +2127,24 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 		return rep;
+	}
+	/**
+	 * Decide if the right click should do a follow on the fleet or
+	 * attack?
+	 * @param f the target fleet
+	 * @return true if should follow
+	 */
+	boolean shouldOnlyFollow(Fleet f) {
+		// follow same owner
+		if (f.owner == player()) {
+			return true;
+		}
+		// follow non-infected traders
+		if (f.owner.id.equals("Traders") 
+				&& !world().infectedFleets.containsKey(f.id)) {
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * Select a planet or fleet at the specified location.

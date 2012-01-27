@@ -33,10 +33,12 @@ import java.util.Deque;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
@@ -140,6 +142,8 @@ public class World {
 	public final GameEnvironment env;
 	/** The campaign scripting. */
 	public GameScripting scripting;
+	/** The IDs for infected fleets and their source of infection. */
+	public final Map<Integer, String> infectedFleets = new HashMap<Integer, String>();
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -887,23 +891,23 @@ public class World {
 	 * @return the world state as XElement tree.
 	 */
 	public XElement saveState() {
-		XElement world = new XElement("world");
+		XElement xworld = new XElement("world");
 
-		world.set("level", level);
-		world.set("game", name);
-		world.set("player", player.id);
-		world.set("difficulty", difficulty);
-		world.set("time", DATE_FORMAT.get().format(time.getTime()));
-		world.set("test-needed", testNeeded);
-		world.set("test-completed", testCompleted);
-		world.set("allow-record-message", allowRecordMessage);
-		world.set("current-talk", currentTalk);
-		world.set("record-watched", recordWatched);
+		xworld.set("level", level);
+		xworld.set("game", name);
+		xworld.set("player", player.id);
+		xworld.set("difficulty", difficulty);
+		xworld.set("time", DATE_FORMAT.get().format(time.getTime()));
+		xworld.set("test-needed", testNeeded);
+		xworld.set("test-completed", testCompleted);
+		xworld.set("allow-record-message", allowRecordMessage);
+		xworld.set("current-talk", currentTalk);
+		xworld.set("record-watched", recordWatched);
 		
-		statistics.save(world.add("statistics"));
+		statistics.save(xworld.add("statistics"));
 
 		// save talk states
-		XElement xtalk = world.add("talks");
+		XElement xtalk = xworld.add("talks");
 		for (TalkPerson tp : talks.persons.values()) {
 			for (TalkState ts : tp.states.values()) {
 				for (TalkSpeech tsp : ts.speeches) {
@@ -916,7 +920,7 @@ public class World {
 			}
 		}
 
-		XElement test = world.add("test");
+		XElement test = xworld.add("test");
 		for (TestQuestion tq : this.test.values()) {
 			for (TestAnswer ta : tq.answers) {
 				if (ta.selected) {
@@ -927,8 +931,16 @@ public class World {
 			}
 		}
 		
+		// save infection sources
+		XElement infected = xworld.add("infected");
+		for (Map.Entry<Integer, String> e : this.infectedFleets.entrySet()) {
+			XElement xi = infected.add("fleet");
+			xi.set("id", e.getKey());
+			xi.set("source", e.getValue());
+		}
+		
 		for (Player p : players.values()) {
-			XElement xp = world.add("player");
+			XElement xp = xworld.add("player");
 			xp.set("id", p.id);
 			xp.set("money", p.money);
 			xp.set("planet", p.currentPlanet != null ? p.currentPlanet.id : null);
@@ -1069,7 +1081,7 @@ public class World {
 		}
 		
 		for (Planet p : planets.values()) {
-			XElement xp = world.add("planet");
+			XElement xp = xworld.add("planet");
 			xp.set("id", p.id);
 			for (InventoryItem pii : p.inventory) {
 				XElement xpii = xp.add("item");
@@ -1087,7 +1099,6 @@ public class World {
 			if (p.owner != null) {
 				xp.set("owner", p.owner.id);
 				xp.set("race", p.race);
-				xp.set("quarantine", p.quarantine);
 				xp.set("quarantine-ttl", p.quarantineTTL);
 				xp.set("allocation", p.allocation);
 				xp.set("tax", p.tax);
@@ -1116,11 +1127,11 @@ public class World {
 			}
 		}
 		
-		XElement xscript = world.add("scripting");
+		XElement xscript = xworld.add("scripting");
 		xscript.set("class", scripting.getClass().getName());
 		scripting.save(xscript);
 		
-		return world;
+		return xworld;
 	}
 	/**
 	 * Save the fleet into XML.
@@ -1232,6 +1243,17 @@ public class World {
 						tsp.spoken = spoken;
 					}
 				}
+			}
+		}
+		
+		// restore known infected fleets
+		infectedFleets.clear();
+		XElement infected = xworld.childElement("infected");
+		if (infected != null) {
+			for (XElement xi : infected.childrenWithName("fleet")) {
+				int id = xi.getInt("id");
+				String source = xi.get("source");
+				infectedFleets.put(id, source);
 			}
 		}
 		
@@ -1431,8 +1453,7 @@ public class World {
 			if (sowner != null) {
 				p.owner = players.get(sowner);
 				p.race = xplanet.get("race");
-				p.quarantine = "true".equals(xplanet.get("quarantine"));
-				p.quarantineTTL = xplanet.getInt("quarantine-ttl", p.quarantine ? Planet.DEFAULT_QUARANTINE_TTL : 0);
+				p.quarantineTTL = xplanet.getInt("quarantine-ttl", 0);
 				p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
 				p.tax = TaxLevel.valueOf(xplanet.get("tax"));
 				p.morale = xplanet.getInt("morale");
@@ -2099,6 +2120,7 @@ public class World {
 	 * @param fleet the fleet
 	 */
 	public void removeFleet(Fleet fleet) {
+		infectedFleets.remove(fleet.id);
 		for (Player p : players.values()) {
 			p.fleets.remove(fleet);
 			if (p.currentFleet == fleet) {
@@ -2223,5 +2245,18 @@ public class World {
 	 */
 	public Random random() {
 		return RANDOM.get();
+	}
+	/**
+	 * Cure fleets which were infected by the given planet.
+	 * @param planet the planet
+	 */
+	public void cureFleets(Planet planet) {
+		Iterator<Map.Entry<Integer, String>> it = infectedFleets.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<Integer, String> e = it.next();
+			if (planet.id.equals(e.getKey())) {
+				it.remove();
+			}
+		}
 	}
 }
