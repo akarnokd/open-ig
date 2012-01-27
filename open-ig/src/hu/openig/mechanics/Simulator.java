@@ -804,7 +804,10 @@ public final class Simulator {
 			for (InventoryItem ii : f.inventory) {
 				if (f.owner.world.env.config().reequipBombs) {
 					for (InventorySlot is : ii.slots) {
-						refillSlot(f.owner, is);
+						if (is.getCategory() == ResearchSubCategory.WEAPONS_PROJECTILES 
+								&& !is.isFilled()) {
+							refillSlot(f.owner, is);
+						}
 					}
 				}
 			}
@@ -823,8 +826,7 @@ public final class Simulator {
 	 * @param is the slot
 	 */
 	static void refillSlot(Player owner, InventorySlot is) {
-		if (is.type != null 
-				&& is.type.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
+		if (is.type != null) {
 			int demand = is.slot.max - is.count;
 			int inv = owner.inventoryCount(is.type);
 			int add = Math.min(inv, demand);
