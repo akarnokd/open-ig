@@ -1948,7 +1948,8 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void displayError(String text) {
 		allScreens.statusbar.errorText = text;
-		allScreens.statusbar.errorTTL = StatusbarScreen.DEFALT_ERROR_TTL;
+		int ttl = text.length() * StatusbarScreen.DEFALT_ERROR_TTL / 10;
+		allScreens.statusbar.errorTTL = Math.max(ttl, StatusbarScreen.DEFALT_ERROR_TTL);
 	}
 	/**
 	 * Create race specific, fully filled fleets.
