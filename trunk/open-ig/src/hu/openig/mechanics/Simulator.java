@@ -684,13 +684,12 @@ public final class Simulator {
 				target = new Point2D.Double(f.targetFleet.x, f.targetFleet.y);
 				f.waypoints.clear();
 				// if not in radar range any more just move to its last position and stop
-				if (!f.owner.fleets.containsKey(f.targetFleet)) {
+				if (!f.owner.fleets.containsKey(f.targetFleet)
+						|| !f.owner.withinLimits(f.targetFleet.x, f.targetFleet.y, 1)) {
 					
 					f.owner.ai.onLostTarget(f, f.targetFleet);
 					
-					f.targetFleet = null;
-					f.mode = FleetMode.MOVE;
-					f.task = FleetTask.IDLE;
+					f.stop();
 				} else {
 					targetSpeed = getSpeed(f.targetFleet);
 				}
