@@ -3560,7 +3560,7 @@ public class InfoScreen extends ScreenBase {
 			fleetFirepower.visible(false);
 			int fcnt = fs.battleshipCount + fs.cruiserCount;
 			fleetBattleships.visible(false);
-			fleetCruisers.text(format("fleetinformation.spaceships", ((fcnt / 10) * 10) + ".." + ((fcnt  / 10 + 1) * 10)), true).visible(true);
+			fleetCruisers.text(format("fleetinformation.spaceships", fcnt), true).visible(true);
 			fleetFighters.text(format("fleetinformation.fighters", ((fs.fighterCount / 10) * 10) + ".." + ((fs.fighterCount  / 10 + 1) * 10)), true).visible(true);
 //			fleetVehicles.text(format("fleetinformation.vehicles", ((fs.vehicleCount / 10) * 10) + ".." + ((fs.vehicleCount  / 10 + 1) * 10)), true).visible(true);
 			fleetVehicles.visible(false);
