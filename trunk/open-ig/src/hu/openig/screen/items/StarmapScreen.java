@@ -897,7 +897,7 @@ public class StarmapScreen extends ScreenBase {
 			fleetPlanet.text(format("fleetstatus.nearby", "----"), true);
 		}
 		if ((f.targetFleet == null && f.targetPlanet() == null) || f.owner != player()) {
-			if (f.waypoints.size() > 0) {
+			if (f.waypoints.size() > 0 || f.targetFleet != null || f.targetPlanet() != null) {
 				fleetStatus.text(format("fleetstatus.moving"), true);
 			} else {
 				fleetStatus.text(format("fleetstatus.stopped"), true);
