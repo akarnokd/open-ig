@@ -228,51 +228,41 @@ public class AITrader implements AIManager {
 			LandedFleet lf = it.next();
 			// if time out, put back the fleet
 			if (--lf.ttl <= 0) {
-				// if there are many targets
-				if (planets.size() > 1) {
-					// select a random trader planet
-					while (!Thread.currentThread().isInterrupted()) {
-						int nt = world.random().nextInt(planets.size());
-						Planet np = planets.get(nt);
-						if (np != lf.target) {
-							lf.fleet.targetPlanet(np);
-							break;
+				boolean infected = lf.target.quarantineTTL > 0;
+
+				List<Planet> candidates = U.newArrayList();
+				for (Planet p : world.planets.values()) {
+					if (p.owner != null && p != lf.target) {
+						if (!infected || p.owner == lf.target.owner) {
+							// if the target is infected
+							if (!infected && lf.target.quarantineTTL > 0) {
+								// and not too many fleets are waiting
+								if (landedCount(p) + targetCount(p) < 5) {
+									candidates.add(p);
+								}
+							} else {
+								candidates.add(p);
+							}
 						}
 					}
-					// reintroduce fleet
-					lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
-					lf.fleet.mode = FleetMode.MOVE;
-					// restore hp
+				}
+
+				if (!candidates.isEmpty()) {
+					Planet nt = world.random(candidates);
+					lf.fleet.moveTo(nt);
+
 					for (InventoryItem ii : lf.fleet.inventory) {
 						ii.hp = world.getHitpoints(ii.type);
 					}
-					
-					lastVisitedPlanet.put(lf.fleet, lf.target);
-					
-					// mark fleet as infected if it goes to another planet of the same owner
-					if (lf.target.quarantineTTL > 0 
-							&& lf.fleet.targetPlanet().owner == lf.target.owner) {
-						world.infectedFleets.put(lf.fleet.id, lf.target.id);
-					}
-					
-				} else
-				if (planets.size() == 1 && planets.get(0) != lf.target) {
-					// reintroduce fleet
+
 					lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
-					lf.fleet.mode = FleetMode.MOVE;
-					lf.fleet.targetPlanet(planets.get(0));
-					// restore hp
-					for (InventoryItem ii : lf.fleet.inventory) {
-						ii.hp = world.getHitpoints(ii.type);
-					}
-					
 					lastVisitedPlanet.put(lf.fleet, lf.target);
 
-					// mark fleet as infected if it goes to another planet of the same owner
-					if (lf.target.quarantineTTL > 0 
-							&& lf.fleet.targetPlanet().owner == lf.target.owner) {
+					if (infected) {
 						world.infectedFleets.put(lf.fleet.id, lf.target.id);
 					}
+				} else {
+					lastVisitedPlanet.remove(lf.fleet);
 				}
 				
 				it.remove();
@@ -281,6 +271,34 @@ public class AITrader implements AIManager {
 				}
 			}
 		}
+	}
+	/**
+	 * Count how many fleets are landed on the target planet.
+	 * @param p the target planet
+	 * @return the count
+	 */
+	int landedCount(Planet p) {
+		int count = 0;
+		for (LandedFleet lf : landed) {
+			if (lf.target == p) {
+				count++;
+			}
+		}
+		return count;
+	}
+	/**
+	 * Count how many fleets target the planet.
+	 * @param p the target planet
+	 * @return the count
+	 */
+	int targetCount(Planet p) {
+		int count = 0;
+		for (Fleet f : this.player.fleets.keySet()) {
+			if (f.targetPlanet() == p && f.owner == this.player) {
+				count++;
+			}
+		}
+		return count;
 	}
 	/**
 	 * @return create a new random fleet
