@@ -2,6 +2,17 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.160 - More missions =
+  * Released: 2012-01-29 17:00 CET
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=190 Issue #190] auto-refill of bombs and rockets settings did not work correctly.
+  * Implemented virus infection and propagation ([http://code.google.com/p/open-ig/issues/detail?id=125 Issue #125])
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=191 Issue #191]: audiovisual feedback if a planet can't be attacked
+  * Fixed Mission 1 and consequences: Mission 5 will start only if you completed Mission 1. ([http://code.google.com/p/open-ig/issues/detail?id=197 Issue #197])
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=109 Issue #109] ships without firepower won't respond to attack command (own and AI side inclusive)
+  * Follow fleet working again.
+  * Fixed Mission 3 ([http://code.google.com/p/open-ig/issues/detail?id=209 Issue 209]), if you follow the fleet with one of your own and the attack happens, your fleet will automatically attack the pirates. If you managed to do a close escort, this will surely result in a space battle within a few seconds. 
+  * Fixed issues related to Mission 8. ([http://code.google.com/p/open-ig/issues/detail?id=242 Issue #242], [http://code.google.com/p/open-ig/issues/detail?id=225 Issue #225])
+
 = Version 0.94.100 - More missions =
   * Released: 2012-01-21 22:00 CET
   * *You may need to start a new game!*. The remaining two missions from level 1 should start correctly, but if you ran ahead, you might get both of them at once.
