@@ -4,14 +4,28 @@
 
 = Version 0.94.160 - More missions =
   * Released: 2012-01-29 17:00 CET
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=190 Issue #190] auto-refill of bombs and rockets settings did not work correctly.
+  * Fixed ([http://code.google.com/p/open-ig/issues/detail?id=190 Issue #190], [http://code.google.com/p/open-ig/issues/detail?id=267 Issue #267]), auto-refill of bombs and rockets settings did not work correctly.
   * Implemented virus infection and propagation ([http://code.google.com/p/open-ig/issues/detail?id=125 Issue #125])
   * Fixed [http://code.google.com/p/open-ig/issues/detail?id=191 Issue #191]: audiovisual feedback if a planet can't be attacked
   * Fixed Mission 1 and consequences: Mission 5 will start only if you completed Mission 1. ([http://code.google.com/p/open-ig/issues/detail?id=197 Issue #197])
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=109 Issue #109] ships without firepower won't respond to attack command (own and AI side inclusive)
-  * Follow fleet working again.
-  * Fixed Mission 3 ([http://code.google.com/p/open-ig/issues/detail?id=209 Issue 209]), if you follow the fleet with one of your own and the attack happens, your fleet will automatically attack the pirates. If you managed to do a close escort, this will surely result in a space battle within a few seconds. 
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=109 Issue #109], ships without firepower won't respond to attack command (own and AI side inclusive)
+  * Follow fleet working again and "attacks the attacker". ([http://code.google.com/p/open-ig/issues/detail?id=265 Issue 265])
+  * Fixed Mission 3 ([http://code.google.com/p/open-ig/issues/detail?id=209 Issue #209]), if you follow the fleet with one of your own and the attack happens, your fleet will automatically attack the pirates. If you managed to do a close escort, this will surely result in a space battle within a few seconds. 
   * Fixed issues related to Mission 8. ([http://code.google.com/p/open-ig/issues/detail?id=242 Issue #242], [http://code.google.com/p/open-ig/issues/detail?id=225 Issue #225])
+  * Fixed issues with Mission 9. ([http://code.google.com/p/open-ig/issues/detail?id=244 Issue #244])
+  * Fixed issues with some missions restarting once completed ([http://code.google.com/p/open-ig/issues/detail?id=247 #247])
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=246 Issue #246], unable to create and equip new fleets.
+  * Fixed ([http://code.google.com/p/open-ig/issues/detail?id=248 Issue #246], [http://code.google.com/p/open-ig/issues/detail?id=255 Issue #255]), Mission 7 trader protection problems
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=260 Issue #260], fire rockets from starbases, auto-refill of starbases too
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=250 Issue #250], battle finish screen ally losses.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=251 Issue #251], AI deployed starbases had no weapons.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=252 Issue #252], kamikaze management and crash
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=264 Issue #264], rockets were selectable and stoppable in spacewar.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=257 Issue #257], AI managed planets should not produce stations and vehicles in Level 1.
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=268 Issue #268], error messages on the statusbar stay longer visible.
+  * Added the game option to switch the mouse left-right button interpretation
+  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=270 Issue #270], attack command in spacewar affected all ships, not just the selected ones.
+
 
 = Version 0.94.100 - More missions =
   * Released: 2012-01-21 22:00 CET
