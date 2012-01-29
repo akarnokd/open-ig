@@ -3083,7 +3083,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void doAttackWithShips(SpacewarStructure target) {
 		boolean attack = false;
 		for (SpacewarStructure ship : structures) {
-			if (canControl(ship) && ship.canDirectFire()) {
+			if (ship.selected && canControl(ship) && ship.canDirectFire()) {
 				ship.moveTo = null;
 				ship.attack = target;
 				ship.guard = false;
