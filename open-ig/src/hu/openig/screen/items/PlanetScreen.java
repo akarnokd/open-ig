@@ -1788,12 +1788,30 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		UIImageTabButton build;
 		/** The building name. */
 		UILabel buildingName;
+		/** Indicate a larger jump. */
+		boolean buildingDown10;
+		/** Indicate a larger jum. */
+		boolean buildingUp10;
 		/** Construct and place the UI. */
 		public BuildingsPanel() {
 			preview = new BuildingPreview();
 			
-			buildingUp = new UIImageButton(commons.colony().upwards);
-			buildingDown = new UIImageButton(commons.colony().downwards);
+			buildingUp = new UIImageButton(commons.colony().upwards) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					buildingUp10 = e.has(Button.RIGHT);
+					return super.mouse(e);
+				}
+			};
+			buildingDown = new UIImageButton(commons.colony().downwards) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					buildingDown10 = e.has(Button.RIGHT);
+					return super.mouse(e);
+				}
+			};
+			
+			
 			buildingUpEmpty = new UIImage(commons.colony().empty);
 			buildingUpEmpty.visible(false);
 			buildingDownEmpty = new UIImage(commons.colony().empty);
@@ -1823,15 +1841,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				@Override
 				public void invoke() {
 					buttonSound(SoundType.CLICK_HIGH_2);
-					setBuildingList(1);
+					setBuildingList(buildingDown10 ? 10 : 1);
 				}
 			};
+			
 			buildingDown.setHoldDelay(150);
 			buildingUp.onClick = new Action0() {
 				@Override
 				public void invoke() {
 					buttonSound(SoundType.CLICK_HIGH_2);
-					setBuildingList(-1);
+					setBuildingList(buildingUp10 ? -10 : -1);
 				}
 			};
 			buildingUp.setHoldDelay(150);

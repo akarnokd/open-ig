@@ -13,7 +13,7 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 import javax.swing.SwingUtilities;
@@ -33,9 +33,9 @@ public class UIMouse {
 	/** The event type. */
 	public Type type;
 	/** The affected buttons. */
-	public final Set<Button> buttons = new HashSet<Button>();
+	public final Set<Button> buttons = EnumSet.noneOf(Button.class);
 	/** The affected modifiers. */
-	public final Set<Modifier> modifiers = new HashSet<Modifier>();
+	public final Set<Modifier> modifiers = EnumSet.noneOf(Modifier.class);
 	/** The mouse button enumeration. */
 	public enum Button {
 		/** The left button, i.e., the primary button. */

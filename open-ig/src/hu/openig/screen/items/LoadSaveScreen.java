@@ -199,6 +199,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Classic RTS controls? */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox classicControls;
+	/** Swap left-right mouse? */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox swapLeftRight;
 	/** The timer for the blinking cursor. */
 	Timer blink;
 	/** The currently editing save text. */
@@ -717,6 +720,14 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 
+		swapLeftRight = new UICheckBox(get("settings.swap_mouse_buttons"), 14, commons.common().checkmark, commons.text());
+		swapLeftRight.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.swapMouseButtons = swapLeftRight.selected();
+			}
+		};
 		
 		addThis();
 	}
@@ -765,6 +776,7 @@ public class LoadSaveScreen extends ScreenBase {
 		automaticBattle.selected(config.automaticBattle);
 		radarUnion.selected(config.radarUnion);
 		classicControls.selected(config.classicControls);
+		swapLeftRight.selected(config.swapMouseButtons);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -869,6 +881,7 @@ public class LoadSaveScreen extends ScreenBase {
 		automaticBattle.location(base.x + 30, base.y + 250 + 8);
 		radarUnion.location(base.x + 30, base.y + 280 + 8);
 		classicControls.location(base.x + 30, base.y + 310 + 8);
+		swapLeftRight.location(base.x + 30, base.y + 340 + 8);
 
 	}
 	@Override
