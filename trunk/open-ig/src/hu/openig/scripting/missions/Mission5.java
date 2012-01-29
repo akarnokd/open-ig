@@ -98,10 +98,7 @@ public class Mission5 extends Mission {
 			}
 			if (m5t2.visible && m5t2.state == ObjectiveState.ACTIVE
 					&& !helper.hasMissionTime("Mission-5-Task-2-Timeout")) {
-				if (checkTullenReached()) {
-					stopFleets();
-					helper.setMissionTime("Mission-5-Task-2-Timeout", helper.now() + 24);
-				}
+				checkTullenReached();
 			}
 			if (helper.isMissionTime("Mission-5-Task-2-Timeout")) {
 				helper.clearMissionTime("Mission-5-Task-2-Timeout");
@@ -236,9 +233,8 @@ public class Mission5 extends Mission {
 	}
 	/**
 	 * Check if the Garthog fleet reached Tullen.
-	 * @return true if reached within 1.5 pixels
 	 */
-	boolean checkTullenReached() {
+	void checkTullenReached() {
 		Pair<Fleet, InventoryItem> tullen = findTaggedFleet("Mission-5", player);
 		Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-5-Garthog", player("Garthog"));
 		if (garthog != null) {
@@ -246,10 +242,16 @@ public class Mission5 extends Mission {
 			garthog.first.waypoints.add(new Point2D.Double(tullen.first.x, tullen.first.y));
 			double d = Math.hypot(tullen.first.x - garthog.first.x, tullen.first.y - garthog.first.y);
 			if (d <= 1.5) {
-				return true;
+				stopFleets();
+				helper.setMissionTime("Mission-5-Task-2-Timeout", helper.now() + 24);
+				
+				// follower automatically attacks
+				Fleet ff = getFollower(tullen.first, player);
+				if (ff != null) {
+					ff.attack(garthog.first);
+				}
 			}
 		}
-		return false;
 	}
 	/**
 	 * Set the target for the carrier fleet.
