@@ -8,6 +8,7 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -57,25 +58,33 @@ public class Mission3 extends Mission {
 			if (m3.visible && m3.state == ObjectiveState.ACTIVE) {
 				checkCarrierLocation();
 			}
-			if (helper.isMissionTime("Mission-3-Timeout")) {
-				helper.clearMissionTime("Mission-3-Timeout");
-				helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
-				helper.setTimeout("Mission-3-Timeout", 13000);
-				
-				helper.receive("Douglas-Carrier").visible = false;
-				
-				removeFleets();
+			if (checkMission("Mission-3-Timeout")) {
+				world.env.playVideo("interlude/merchant_destroyed", new Action0() {
+					@Override
+					public void invoke() {
+						helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
+						helper.setTimeout("Mission-3-Timeout", 13000);
+						
+						helper.receive("Douglas-Carrier").visible = false;
+						
+						removeFleets();
+					}
+				});
 			}
 			if (helper.isTimeout("Mission-3-Timeout")) {
 				loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
 				helper.clearTimeout("Mission-3-Timeout");
 			}
-			if (helper.isTimeout("Mission-3-Failed")) {
-				helper.receive("Douglas-Carrier").visible = false;
-				helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
-				helper.clearTimeout("Mission-3-Failed");
-				incomingMessage("Douglas-Carrier-Lost");
-				helper.setTimeout("Mission-3-Done", 13000);
+			if (checkTimeout("Mission-3-Failed")) {
+				world.env.playVideo("interlude/merchant_destroyed", new Action0() {
+					@Override
+					public void invoke() {
+						helper.receive("Douglas-Carrier").visible = false;
+						helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
+						incomingMessage("Douglas-Carrier-Lost");
+						helper.setTimeout("Mission-3-Done", 13000);
+					}
+				});
 			}
 			if (helper.isMissionTime("Mission-3-Success")) {
 				helper.receive("Douglas-Carrier").visible = false;
@@ -138,28 +147,42 @@ public class Mission3 extends Mission {
 				&& !helper.hasMissionTime("Mission-3-Timeout")
 				&& !helper.hasMissionTime("Mission-3-Success")
 				&& !helper.hasTimeout("Mission-3-Failed")) {
-			Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Carrier", player);
+			final Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Carrier", player);
 			Planet sansterling = planet("San Sterling");
 			
 			double d = Math.hypot(fi.first.x - sansterling.x, fi.first.y - sansterling.y);
 			
 			if (d < 15) {
 				world.env.speed1();
-				world.env.computerSound(SoundType.CARRIER_UNDER_ATTACK);
-				helper.setMissionTime("Mission-3-Timeout", helper.now() + 24);
 				
-				Fleet pf = createFleet(label("pirates.fleet_name"), 
-						player("Pirates"), fi.first.x + 1, fi.first.y + 1);
+				world.env.playVideo("interlude/merchant_attacked", new Action0() {
+					@Override
+					public void invoke() {
+						
+						helper.setMissionTime("Mission-3-Timeout", helper.now() + 24);
+						
+						Fleet pf = createFleet(label("pirates.fleet_name"), 
+								player("Pirates"), fi.first.x + 1, fi.first.y + 1);
+						
+						pf.addInventory(research("PirateFighter"), 3);
+						for (InventoryItem ii : pf.inventory) {
+							ii.tag = "Mission-3-Pirates";
+						}
+						
+						helper.scriptedFleets().add(fi.first.id);
+						helper.scriptedFleets().add(pf.id);
+						fi.first.waypoints.clear();
+						
+						Fleet ff = getFollower(fi.first, player);
+						if (ff == null) {
+							world.env.computerSound(SoundType.CARRIER_UNDER_ATTACK);
+						} else {
+							ff.attack(pf);
+						}
+
+					}
+				});
 				
-				pf.addInventory(world.researches.get("PirateFighter"), 3);
-				for (InventoryItem ii : pf.inventory) {
-					ii.tag = "Mission-3-Pirates";
-				}
-//				pf.addInventory(world.researches.get("PirateDestroyer"), 1);
-				
-				helper.scriptedFleets().add(fi.first.id);
-				helper.scriptedFleets().add(pf.id);
-				fi.first.waypoints.clear();
 			}
 		}
 	}

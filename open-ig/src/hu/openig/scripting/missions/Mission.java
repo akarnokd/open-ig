@@ -649,4 +649,18 @@ public abstract class Mission implements GameScriptingEvents {
 		}
 		return false;
 	}
+	/**
+	 * Check if any of the fleets of {@code p} is following the given fleet.
+	 * @param target the target fleet
+	 * @param p the player
+	 * @return the first fleet that is following the target
+	 */
+	Fleet getFollower(Fleet target, Player p) {
+		for (Fleet f2 : p.fleets.keySet()) {
+			if (f2.owner == p && f2.targetFleet == target) {
+				return f2;
+			}
+		}
+		return null;
+	}
 }
