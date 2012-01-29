@@ -68,6 +68,7 @@ import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.VideoScreen;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.XElement;
 
@@ -1336,25 +1337,48 @@ public class GameWindow extends JFrame implements GameControls {
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
 			boolean rep = false;
+			UIMouse me = UIMouse.from(e);
+			
+			invertIf(me);
+			
 			if (movieVisible) {
-				rep = movie.mouse(UIMouse.from(e));
+				rep = movie.mouse(me);
 				repaintInner();
 				return;
 			} else
 			if (statusbarVisible) {
-				if (statusbar.mouse(UIMouse.from(e))) {
+				if (statusbar.mouse(me)) {
 					repaintInner();
 					return;
 				}
 			}
 			if (sec != null) {
-				rep = sec.mouse(UIMouse.from(e));
+				rep = sec.mouse(me);
 			} else
 			if (pri != null) {
-				rep = pri.mouse(UIMouse.from(e));
+				rep = pri.mouse(me);
 			}
 			if (rep) {
 				repaintInner();
+			}
+		}
+		/**
+		 * Invert buttons if the settings tells so.
+		 * @param m the mouse event
+		 */
+		void invertIf(UIMouse m) {
+			if (config.swapMouseButtons) {
+				boolean left = m.has(Button.LEFT);
+				boolean right = m.has(Button.RIGHT);
+				if (left != right) {
+					m.buttons.remove(Button.LEFT);
+					m.buttons.remove(Button.RIGHT);
+					if (left) {
+						m.buttons.add(Button.RIGHT);
+					} else {
+						m.buttons.add(Button.LEFT);
+					}
+				}
 			}
 		}
 		@Override

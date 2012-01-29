@@ -2254,6 +2254,7 @@
 	<entry key='mission-11.attack'>Garthog támadás várható</entry>
 	<entry key='mission-11.attack.desc'>Védd meg a kolóniákat a Garthog támadástól!</entry>
 	<entry key='message.cant_attack_that_planet'>Minimum műholdas felderítés szükséges, hogy megtámadhasd a(z) %s bolygót!</entry>
+	<entry key='settings.swap_mouse_buttons'>Egérgombok felcserélése (J kiválaszt, B akció)</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

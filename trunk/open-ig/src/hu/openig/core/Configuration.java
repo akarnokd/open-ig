@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.94.156";
+	public static final String VERSION = "0.94.160";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -176,6 +176,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean classicControls;
+	/** Invert the left-right mouse button events. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean swapMouseButtons;
 	/** 
 	 * Limit on base tile size for tile caching.
 	 * <p>Positive value means tiles larger than the given value.
