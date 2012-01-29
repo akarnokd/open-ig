@@ -5,6 +5,20 @@
 = Recent =
 == January, 2012 ==
 
+*January 29, 2012*
+
+New release with fixes mostly. Unfortunately, the game experiences some issues under Linux and Mac lately, typically related to sound. 
+
+These are almost always problems with the installed Java Runtime. If you experience JVM crashes or hangs in space battle (where most of the sound FX happens at once), you can do any of the following:
+
+  * Set the effect volume to zero while in space battle.
+  * If running a 64 bit JVM, try switching to 32 bit JVM
+  * Upgrade your JVM to the latest Java 6/7 version if available on your platform.
+  * Make sure only a single vendor JVM is installed at once (either Oracle or OpenJDK)
+  * Switch to Oracle JDK or switch to OpenJDK. Oracle JDK seems to work better on Linux at the moment.
+
+In case of a JVM crash, you may attempt to report a bug in the respective JDK issue tracker.
+
 *January 22, 2012*
 
 I've hidden some bugs in the game, can you find them? :)
