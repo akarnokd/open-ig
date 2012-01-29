@@ -2006,7 +2006,19 @@ public class StarmapScreen extends ScreenBase {
 								}
 							}
 						} else {
-							fleet().moveTo(toMapCoordinates(e.x, e.y));
+							// try any fleet
+							f = getFleetAt(player(), e.x, e.y, false, fleet());
+							if (f != null) {
+								if (f.owner == fleet().owner
+										|| (!forceAttack && shouldOnlyFollow(f))) {
+									fleet().follow(f);
+								} else {
+									fleet().attack(f);
+								}
+							} else {
+								fleet().moveTo(toMapCoordinates(e.x, e.y));
+							}
+							fleetMode = null;
 						}
 						panning = false;
 					}
