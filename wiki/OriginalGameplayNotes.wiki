@@ -30,5 +30,9 @@
     * Starts immediately
     * Garthog fleet is just above Achilles
     * Ground attack within seconds
+    * 4 light tank, 1 medium tank?
     * Garthog units will attack most damaged buildings first, then the cheapest
     * Garthog units change target from buildings to units when fired upon
+  * Mission 7 Task 1
+    * ~8 hours after M6
+  * Wife video #4 right after M6?
