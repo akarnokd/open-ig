@@ -19,4 +19,14 @@
     * ~24/Aug
     * Garthog fleet moves very slowly ~6
     * It seems you need to stop the fleet, and not guard Tullen
-    * Contains 5 garthog fighters
+    * Contains 7 garthog fighters
+  * Spacewar laser fire seems to be 2-3x faster
+  * There is some evaluation, not sure how is it computed
+
+= Level 2 =
+  * Two nearest garthog planets are shown (satellite?)
+  * Your fleet is moved across San Sterling from Achilles
+  * Mission 6
+    * Starts immediately
+    * Garthog fleet is just above Achilles
+    * Ground attack within seconds
