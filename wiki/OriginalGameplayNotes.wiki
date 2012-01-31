@@ -6,3 +6,7 @@
   * Mission 3 starts ~16th August
     * Carrier travels from Centronom to Naxos
     * Carrier icon seems to be a greenish Empire fleet.
+    * Reward image: mission_8c.png
+  * Mission 4 starts ~19th August
+    * Reward image: mission_12.png
+  * Wife video #1 after Mission 4?
