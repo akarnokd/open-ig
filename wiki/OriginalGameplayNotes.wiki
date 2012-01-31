@@ -2,11 +2,21 @@
 
 = Level 1 =
 
-  * Mission 2 Task 1 came very early: 8 hours after start
-  * Mission 3 starts ~16th August
+  * Mission 2 Task 1 
+    * Came very early: 8 hours after start
+  * Mission 3 
+    * Starts ~16th August
     * Carrier travels from Centronom to Naxos
     * Carrier icon seems to be a greenish Empire fleet.
     * Reward image: mission_8c.png
   * Mission 4 starts ~19th August
     * Reward image: mission_12.png
   * Wife video #1 after Mission 4?
+  * Mission 2 Task 2 ~22/Aug
+    * Reward image: mission_8b
+  * The information-minimap is scaled and positioned according to the exploration limit.
+  * Mission 5
+    * ~24/Aug
+    * Garthog fleet moves very slowly ~6
+    * It seems you need to stop the fleet, and not guard Tullen
+    * Contains 5 garthog fighters
