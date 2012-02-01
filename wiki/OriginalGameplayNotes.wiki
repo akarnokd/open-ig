@@ -54,3 +54,23 @@
     * ~ Sep 4
     * The fleet moves from halfway San Sterling/Naxos outside the radar range   on that line to the left and goes to Naxos
   * Not enough living space notification.
+  * Mission 11 Task 1 (random Garthog attacks)
+    * ~ Sep 11
+    * ~8 light tank, 1 medium tank?
+    * Fleet moves with speed 28
+  * Destroyed buildings show destroyed construction tileset, mixed layout
+  * Won't reproduce: money is preconsumed for production orders and won't let  you build unless enough money for the batch
+  * Mission 12 Task 1 (virus)
+    * 8 hours after M11T1 (sep 11, 18h)
+    * Bug? Call colonel immediately, but the text refers to two infections?
+  * Mission 12 Task 2
+    * ~8 later, the hubble_deploy is played, and Achilles/Naxos receives hubble2
+    * Virus carrier fleet becomes visible after 2 seconds
+    * 3 virus carriers
+    * Reward image: mission_23.png
+    * Message text: battlefinish.mission-14.23
+  * Mission 12 Finish
+    * ~ 2.5 days long
+    * incoming message: "New Caroline-Garthog-Virus-Resolved"
+  * Gameplay options: taxation info on the statusbar, will be addressed in the message management screen
+  * If the traders agree to turn back, there is no battle finish screen
