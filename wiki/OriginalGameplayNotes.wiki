@@ -108,4 +108,5 @@
     * 2 battleship, 2 destroyer, 3 fighter, 1 Human Destroyer 2
     * Reward image: mission_21.png
     * Message text: battlefinish.mission-17.21
-    
+    * Battle is won instantly when the prototype is destroyed;
+    * Attacker gets removed
