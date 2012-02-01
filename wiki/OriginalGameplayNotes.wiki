@@ -61,10 +61,10 @@
   * Destroyed buildings show destroyed construction tileset, mixed layout
   * Won't reproduce: money is preconsumed for production orders and won't let  you build unless enough money for the batch
   * Mission 12 Task 1 (virus)
-    * 8 hours after M11T1 (sep 11, 18h)
+    * 8 hours after !M11T1 (sep 11, 18h)
     * Bug? Call colonel immediately, but the text refers to two infections?
-  * Mission 12 Task 2
-    * ~8 later, the hubble_deploy is played, and Achilles/Naxos receives hubble2
+  * Mission 14
+    * ~8h after report, the hubble_deploy is played, and Achilles/Naxos receives hubble2
     * Virus carrier fleet becomes visible after 2 seconds
     * 3 virus carriers
     * Reward image: mission_23.png
@@ -72,5 +72,20 @@
   * Mission 12 Finish
     * ~ 2.5 days long
     * incoming message: "New Caroline-Garthog-Virus-Resolved"
+    * send: "Douglas-Virus-Carriers-Destroyed"
   * Gameplay options: taxation info on the statusbar, will be addressed in the message management screen
   * If the traders agree to turn back, there is no battle finish screen
+  * Mission 11 Task 2 (random Garthog attacks)
+    * ~ Sep 16
+    * 2 Garthog destroyer, 1 Garthog fighter
+    * Reward image: mission_1_8d.png
+  * Mission 13 (Benson)
+    * ~ Sep 21
+    * interlude/colony_ship_arrival_2
+    * Starts from Achilles, goes to New Caroline
+  * Wife video #3
+    * ~ Sep 22 17h
+    * 3 Fighter, 2 Destroyer, 1 Battleship
+    * Benson's ship is a moslty equipped and shielded Battleship-1
+    * Reward image: mission_16.png
+    * Message text: battlefinish.mission-13.16
