@@ -22,6 +22,9 @@
     * Contains 7 garthog fighters
   * Spacewar laser fire seems to be 2-3x faster
   * There is some evaluation, not sure how is it computed
+  * No sign of Mission 2 Task 3
+  * Earlier mission messages are not removed.
+  * Script-attacked ships get flashing red box
 
 = Level 2 =
   * Two nearest garthog planets are shown (satellite?)
@@ -36,3 +39,18 @@
   * Mission 7 Task 1
     * ~8 hours after M6
   * Wife video #4 right after M6?
+  * Mission 2 Task 3
+    * ~ Aug 27
+    * Attack by 1 pirate destroyer
+    * Reward image: mission_1_8c.png
+  * Mission 8 
+    * ~ Aug 28 test
+    * ~ Sep 1 Vision #1
+  * Mission 9 (smuggler)
+    * ~ Aug 29
+    * Traders heading towards San Sterling have flashing red box
+    * When successful, message from colonel "Douglas-Success"
+  * Mission 10 (centronom gov)
+    * ~ Sep 4
+    * The fleet moves from halfway San Sterling/Naxos outside the radar range   on that line to the left and goes to Naxos
+  * Not enough living space notification.
