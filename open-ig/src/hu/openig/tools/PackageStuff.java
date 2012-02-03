@@ -65,7 +65,7 @@ public final class PackageStuff {
 								;
 					}
 				});
-				addFile("generic/messages/achilles_check.gz.ani", "video/generic/messages/achilles_check.ani.gz", zout);
+				addFile("generic/messages/achilles_check.ani.gz", "video/generic/messages/achilles_check.ani.gz", zout);
 				addFile("hu/messages/achilles_check.wav", "audio/hu/messages/achilles_check.wav", zout);
 				addFile("hu/messages/centronom_check.wav", "audio/hu/messages/centronom_check.wav", zout);
 				addFile("en/messages/achilles_check.wav", "audio/en/messages/achilles_check.wav", zout);
