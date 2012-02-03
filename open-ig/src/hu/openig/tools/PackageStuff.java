@@ -65,10 +65,10 @@ public final class PackageStuff {
 								;
 					}
 				});
-				addFile("generic/messages/achilles_check.gz.ani", "video/generic/messages/achilles_check.gz.ani", zout);
-				addFile("hu/messages/achilles_check.wav", "video/hu/messages/achilles_check.wav", zout);
-				addFile("hu/messages/centronom_check.wav", "video/hu/messages/centronom_check.wav", zout);
-				addFile("en/messages/achilles_check.wav", "video/en/messages/achilles_check.wav", zout);
+				addFile("generic/messages/achilles_check.gz.ani", "video/generic/messages/achilles_check.ani.gz", zout);
+				addFile("hu/messages/achilles_check.wav", "audio/hu/messages/achilles_check.wav", zout);
+				addFile("hu/messages/centronom_check.wav", "audio/hu/messages/centronom_check.wav", zout);
+				addFile("en/messages/achilles_check.wav", "audio/en/messages/achilles_check.wav", zout);
 			} finally {
 				zout.close();
 			}
@@ -218,10 +218,14 @@ public final class PackageStuff {
 	throws IOException {
 		ZipEntry mf = new ZipEntry(entryName);
 		File mfm = new File(fileName);
-		mf.setSize(mfm.length());
-		mf.setTime(mfm.lastModified());
-		zout.putNextEntry(mf);
-		zout.write(IOUtils.load(mfm));
+		if (mfm.canRead()) {
+			mf.setSize(mfm.length());
+			mf.setTime(mfm.lastModified());
+			zout.putNextEntry(mf);
+			zout.write(IOUtils.load(mfm));
+		} else {
+			System.err.println("File not found: " + mfm.toString());
+		}
 	}
 	/**
 	 * Process the contents of the given directory.

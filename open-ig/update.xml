@@ -45,14 +45,18 @@
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120121a1.zip' sha1='93f737690d72ffccfc8c7b6b11a8b4eb4c105eff'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Kép és hang]: 2012 Január 21 / A</desc>
-			<desc lang='en'>The upgraded resource file [Image and sound]. 21th January, 2012 / A</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120203a1.zip' sha1='f5987e7530c3550167781f476f55eed741ed9d00'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Kép és hang]: 2012 Február 3 / A</desc>
+			<desc lang='en'>The upgraded resource file [Image and sound]. 3rd February, 2012 / A</desc>
 		</file>
 		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120129a2.zip' sha1='29f3f6e9b3631840f7502b56003484c08e72e916'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Január 29 / A</desc>
 			<desc lang='en'>The upgraded resource file [Data]. 29th January, 2012 / A</desc>
 		</file>
+		<remove file='open-ig-upgrade-20120121a1.zip' sha1='93f737690d72ffccfc8c7b6b11a8b4eb4c105eff'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Kép és hang]: 2012 Január 21 / A</desc>
+			<desc lang='en'>The upgraded resource file [Image and sound]. 21th January, 2012 / A</desc>
+		</remove>
 		<remove file='open-ig-upgrade-20120122a2.zip' sha1='cfb2ebb17d95ef290fab608f493d184ca87d7bd8'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Január 22 / A</desc>
 			<desc lang='en'>The upgraded resource file [Data]. 22th January, 2012 / A</desc>
