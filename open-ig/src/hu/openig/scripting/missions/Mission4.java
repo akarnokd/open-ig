@@ -36,57 +36,59 @@ import java.util.List;
  */
 public class Mission4 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 1;
+	}
+	@Override
 	public void onTime() {
-		if (world.level == 1) {
-			Objective m2t1 = helper.objective("Mission-2-Task-2");
-			Objective m4 = helper.objective("Mission-4");
-			if (!m4.visible && m4.state == ObjectiveState.ACTIVE
-					&& m2t1.state != ObjectiveState.ACTIVE
-					&& !helper.hasMissionTime("Mission-4")) {
-				helper.setMissionTime("Mission-4", helper.now() + 48);
-			}
-			if (helper.canStart("Mission-4")) {
-				world.env.speed1();
-				helper.setTimeout("Mission-4-Message", 3000);
-				helper.clearMissionTime("Mission-4");
-				helper.setMissionTime("Mission-4-Timeout", helper.now() + 24);
-				helper.send("Naxos-Not-Under-Attack").visible = false;
-				incomingMessage("Naxos-Unknown-Ships");
-			}
-			if (helper.isTimeout("Mission-4-Message")) {
-				helper.clearTimeout("Mission-4-Message");
-				helper.showObjective("Mission-4");
-				createPirateTask();
-			}
+		Objective m2t1 = helper.objective("Mission-2-Task-2");
+		Objective m4 = helper.objective("Mission-4");
+		if (!m4.visible && m4.state == ObjectiveState.ACTIVE
+				&& m2t1.state != ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-4")) {
+			helper.setMissionTime("Mission-4", helper.now() + 48);
+		}
+		if (helper.canStart("Mission-4")) {
+			world.env.speed1();
+			helper.setTimeout("Mission-4-Message", 3000);
+			helper.clearMissionTime("Mission-4");
+			helper.setMissionTime("Mission-4-Timeout", helper.now() + 24);
+			helper.send("Naxos-Not-Under-Attack").visible = false;
+			incomingMessage("Naxos-Unknown-Ships");
+		}
+		if (helper.isTimeout("Mission-4-Message")) {
+			helper.clearTimeout("Mission-4-Message");
+			helper.showObjective("Mission-4");
+			createPirateTask();
+		}
+		
+		if (helper.isMissionTime("Mission-4-Timeout")) {
+			helper.clearMissionTime("Mission-4-Timeout");
+
+			helper.send("Naxos-Not-Under-Attack").visible = true;
+			helper.receive("Naxos-Unknown-Ships").visible = false;
 			
-			if (helper.isMissionTime("Mission-4-Timeout")) {
-				helper.clearMissionTime("Mission-4-Timeout");
+			helper.setObjectiveState("Mission-4", ObjectiveState.FAILURE);
+			removeFleets();
+			helper.setTimeout("Mission-4-Fire", 13000);
+		}
+		if (helper.isTimeout("Mission-4-Fire")) {
+			helper.clearTimeout("Mission-4-Fire");
+			helper.gameover();
+			loseGameMessageAndMovie("Douglas-Fire-No-Order", "loose/fired_level_1");
+		}
+		if (helper.isTimeout("Mission-4-Success")) {
+			helper.clearTimeout("Mission-4-Success");
 
-				helper.send("Naxos-Not-Under-Attack").visible = true;
-				helper.receive("Naxos-Unknown-Ships").visible = false;
-				
-				helper.setObjectiveState("Mission-4", ObjectiveState.FAILURE);
-				removeFleets();
-				helper.setTimeout("Mission-4-Fire", 13000);
-			}
-			if (helper.isTimeout("Mission-4-Fire")) {
-				helper.clearTimeout("Mission-4-Fire");
-				helper.gameover();
-				loseGameMessageAndMovie("Douglas-Fire-No-Order", "loose/fired_level_1");
-			}
-			if (helper.isTimeout("Mission-4-Success")) {
-				helper.clearTimeout("Mission-4-Success");
-
-				helper.send("Naxos-Not-Under-Attack").visible = true;
-				helper.receive("Naxos-Unknown-Ships").visible = false;
-				
-				helper.setObjectiveState("Mission-4", ObjectiveState.SUCCESS);
-				helper.setTimeout("Mission-4-Done", 13000);
-			}
-			if (helper.isTimeout("Mission-4-Done")) {
-				helper.objective("Mission-4").visible = false;
-				helper.clearTimeout("Mission-4-Done");
-			}
+			helper.send("Naxos-Not-Under-Attack").visible = true;
+			helper.receive("Naxos-Unknown-Ships").visible = false;
+			
+			helper.setObjectiveState("Mission-4", ObjectiveState.SUCCESS);
+			helper.setTimeout("Mission-4-Done", 13000);
+		}
+		if (helper.isTimeout("Mission-4-Done")) {
+			helper.objective("Mission-4").visible = false;
+			helper.clearTimeout("Mission-4-Done");
 		}
 	}
 	/**
@@ -157,33 +159,29 @@ public class Mission4 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (world.level == 1) {
-			if (isMissionSpacewar(battle, "Mission-4")) {
-				boolean pirateSurvived = false;
-				for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
-					if ("Mission-4-Pirates-1".equals(ii.tag)) {
-						pirateSurvived = true;
-						battle.attacker.inventory.remove(ii);
-					}
+		if (isMissionSpacewar(battle, "Mission-4")) {
+			boolean pirateSurvived = false;
+			for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+				if ("Mission-4-Pirates-1".equals(ii.tag)) {
+					pirateSurvived = true;
+					battle.attacker.inventory.remove(ii);
 				}
-				completeMission(pirateSurvived);
 			}
+			completeMission(pirateSurvived);
 		}
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
-		if (world.level == 1) {
-			if (isMissionSpacewar(battle, "Mission-4")) {
-				Player pirates = player("Pirates");
-				Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-4-Pirates-1", pirates);
-				Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-4-Pirates-2", pirates);
-				if (battle.targetFleet == f1.first) {
-					battle.targetFleet = f2.first;
-				}
-				// move into player
-				f1.second.owner = player;
-				battle.attacker.inventory.addAll(f1.first.inventory);
+		if (isMissionSpacewar(battle, "Mission-4")) {
+			Player pirates = player("Pirates");
+			Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-4-Pirates-1", pirates);
+			Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-4-Pirates-2", pirates);
+			if (battle.targetFleet == f1.first) {
+				battle.targetFleet = f2.first;
 			}
+			// move into player
+			f1.second.owner = player;
+			battle.attacker.inventory.addAll(f1.first.inventory);
 		}
 	}
 	@Override

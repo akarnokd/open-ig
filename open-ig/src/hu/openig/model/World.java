@@ -1868,7 +1868,7 @@ public class World {
 					rt.equipmentImage = se.normal[0];
 				}
 			} else {
-				new AssertionError("Missing technology reference in battle.xml: " + id).printStackTrace();
+				new AssertionError("Warning: Missing technology referenced by battle.xml: " + id).printStackTrace();
 			}
 			battle.spaceEntities.put(id, se);
 		}

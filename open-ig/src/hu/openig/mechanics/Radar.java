@@ -86,7 +86,7 @@ public final class Radar {
 								updateKnowledge(world, player, q, PlanetKnowledge.NAME);
 							} else
 							if (radar < 2.1f) {
-								updateKnowledge(world, player, q, PlanetKnowledge.NAME);
+								updateKnowledge(world, player, q, PlanetKnowledge.OWNER);
 							} else
 							if (radar < 3.1f) {
 								updateKnowledge(world, player, q, PlanetKnowledge.OWNER);
@@ -115,22 +115,12 @@ public final class Radar {
 				updateKnowledge(world, p.owner, p, PlanetKnowledge.BUILDING);
 				int radar = 0;
 				for (InventoryItem pii : p.inventory) {
-					int detectorType = pii.type.getInt("detector", 0);
-					if (detectorType == 1) {
-						updateKnowledge(world, pii.owner, p, PlanetKnowledge.OWNER);
-					}
-					if (detectorType == 2) {
-						updateKnowledge(world, pii.owner, p, PlanetKnowledge.STATIONS);
-					}
-					if (detectorType == 3) {
-						updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
-					}
-					if (pii.type.getInt("radar", 0) == 4) {
-						radar = 4;
-						for (Planet q : findPlanetsInRange(world, p.x, p.y, 4 * rrg)) {
-							updateKnowledge(world, pii.owner, q, PlanetKnowledge.NAME);
+					radar = pii.type.getInt("radar", 0);
+					if (radar > 0) {
+						for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
+							updateKnowledge(world, pii.owner, q, PlanetKnowledge.OWNER);
 						}
-						for (Fleet f : findFleetsInRange(world, p.x, p.y, 4 * rrg)) {
+						for (Fleet f : findFleetsInRange(world, p.x, p.y, radar * rrg)) {
 							visibleEnemySet.remove(f);
 							updateKnowledge(world, pii.owner, f, FleetKnowledge.COMPOSITION);
 						}
@@ -146,7 +136,7 @@ public final class Radar {
 					}
 					if (radar > 0) {
 						for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
-							updateKnowledge(world, p.owner, q, PlanetKnowledge.NAME);
+							updateKnowledge(world, p.owner, q, radar == 1 ? PlanetKnowledge.NAME : PlanetKnowledge.OWNER);
 						}
 						for (Fleet f1 : findFleetsInRange(world, p.x, p.y, radar * rrg)) {
 							visibleEnemySet.remove(f1);

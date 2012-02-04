@@ -37,126 +37,128 @@ import java.util.List;
  */
 public class Mission5 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 1;
+	}
+	@Override
 	public void onTime() {
-		if (world.level == 1) {
-			Objective m2t1 = helper.objective("Mission-2-Task-3");
-			Objective m1 = helper.objective("Mission-1");
-			Objective m5 = helper.objective("Mission-5");
-			Objective m5t1 = helper.objective("Mission-5-Task-1");
-			Objective m5t2 = helper.objective("Mission-5-Task-2");
-			if (!m5.visible 
-					&& m5.state == ObjectiveState.ACTIVE
-					&& m2t1.state != ObjectiveState.ACTIVE
-					&& m1.state != ObjectiveState.ACTIVE
-					&& !helper.hasMissionTime("Mission-5")) {
-				helper.setMissionTime("Mission-5", helper.now() + 72);
-			}
-			if (helper.canStart("Mission-5")) {
-				world.env.speed1();
-				helper.setTimeout("Mission-5-Message", 3000);
-				helper.clearMissionTime("Mission-5");
-				incomingMessage("Douglas-Thorin");
-			}
-			if (helper.isTimeout("Mission-5-Message")) {
-				helper.clearTimeout("Mission-5-Message");
-				helper.showObjective("Mission-5");
-				createTullen();
-				helper.setMissionTime("Mission-5-Timeout-1", helper.now() + 24);
-				helper.setTimeout("Mission-5-Task-1", 2000);
-			}
-			if (helper.isTimeout("Mission-5-Task-1")) {
-				helper.showObjective("Mission-5-Task-1");
-				helper.clearTimeout("Mission-5-Task-1");
-			}
-			if (helper.isMissionTime("Mission-5-Timeout-1")) {
-				helper.setObjectiveState("Mission-5", ObjectiveState.FAILURE);
-				helper.setObjectiveState("Mission-5-Task-1", ObjectiveState.FAILURE);
+		Objective m2t1 = helper.objective("Mission-2-Task-3");
+		Objective m1 = helper.objective("Mission-1");
+		Objective m5 = helper.objective("Mission-5");
+		Objective m5t1 = helper.objective("Mission-5-Task-1");
+		Objective m5t2 = helper.objective("Mission-5-Task-2");
+		if (!m5.visible 
+				&& m5.state == ObjectiveState.ACTIVE
+				&& m2t1.state != ObjectiveState.ACTIVE
+				&& m1.state != ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-5")) {
+			helper.setMissionTime("Mission-5", helper.now() + 72);
+		}
+		if (helper.canStart("Mission-5")) {
+			world.env.speed1();
+			helper.setTimeout("Mission-5-Message", 3000);
+			helper.clearMissionTime("Mission-5");
+			incomingMessage("Douglas-Thorin");
+		}
+		if (helper.isTimeout("Mission-5-Message")) {
+			helper.clearTimeout("Mission-5-Message");
+			helper.showObjective("Mission-5");
+			createTullen();
+			helper.setMissionTime("Mission-5-Timeout-1", helper.now() + 24);
+			helper.setTimeout("Mission-5-Task-1", 2000);
+		}
+		if (helper.isTimeout("Mission-5-Task-1")) {
+			helper.showObjective("Mission-5-Task-1");
+			helper.clearTimeout("Mission-5-Task-1");
+		}
+		if (helper.isMissionTime("Mission-5-Timeout-1")) {
+			helper.setObjectiveState("Mission-5", ObjectiveState.FAILURE);
+			helper.setObjectiveState("Mission-5-Task-1", ObjectiveState.FAILURE);
+			helper.clearMissionTime("Mission-5-Timeout-1");
+			helper.receive("Douglas-Thorin").visible = false;
+			helper.gameover();
+			loseGameMessageAndMovie("Douglas-Fire-Mistakes", "loose/fired_level_1");
+		}
+		if (m5t1.visible && m5t1.state == ObjectiveState.ACTIVE) {
+			if (checkFleetInRange()) {
 				helper.clearMissionTime("Mission-5-Timeout-1");
-				helper.receive("Douglas-Thorin").visible = false;
-				helper.gameover();
-				loseGameMessageAndMovie("Douglas-Fire-Mistakes", "loose/fired_level_1");
+				world.env.playVideo("interlude/thorin_escort", new Action0() {
+					@Override
+					public void invoke() {
+						helper.setObjectiveState("Mission-5-Task-1", ObjectiveState.SUCCESS);
+						helper.setMissionTime("Mission-5-Task-2", helper.now() + 8);
+						moveTullen();
+						helper.send("Douglas-Thorin-Reinforcements").visible = true;
+						helper.send("Douglas-Reinforcements-Denied").visible = false;
+					}
+				});
 			}
-			if (m5t1.visible && m5t1.state == ObjectiveState.ACTIVE) {
-				if (checkFleetInRange()) {
-					helper.clearMissionTime("Mission-5-Timeout-1");
-					world.env.playVideo("interlude/thorin_escort", new Action0() {
-						@Override
-						public void invoke() {
-							helper.setObjectiveState("Mission-5-Task-1", ObjectiveState.SUCCESS);
-							helper.setMissionTime("Mission-5-Task-2", helper.now() + 8);
-							moveTullen();
-							helper.send("Douglas-Thorin-Reinforcements").visible = true;
-							helper.send("Douglas-Reinforcements-Denied").visible = false;
-						}
-					});
-				}
-			}
-			if (helper.isMissionTime("Mission-5-Task-2")) {
-				helper.clearMissionTime("Mission-5-Task-2");
-				helper.showObjective("Mission-5-Task-2");
-				createGarthog();
-			}
-			if (m5t2.visible && m5t2.state == ObjectiveState.ACTIVE
-					&& !helper.hasMissionTime("Mission-5-Task-2-Timeout")) {
-				checkTullenReached();
-			}
-			if (helper.isMissionTime("Mission-5-Task-2-Timeout")) {
-				helper.clearMissionTime("Mission-5-Task-2-Timeout");
-				helper.setObjectiveState("Mission-5-Task-2", ObjectiveState.FAILURE);
-				helper.setObjectiveState("Mission-5", ObjectiveState.FAILURE);
-				removeFleets();
-				helper.setTimeout("Mission-5-Failed", 13000);
-			}
-			if (checkTimeout("Mission-5-Failed")) {
-				helper.receive("Douglas-Thorin").visible = false;
-				helper.send("Douglas-Thorin-Reinforcements").visible = false;
-				helper.gameover();
-				loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
-			}
+		}
+		if (helper.isMissionTime("Mission-5-Task-2")) {
+			helper.clearMissionTime("Mission-5-Task-2");
+			helper.showObjective("Mission-5-Task-2");
+			createGarthog();
+		}
+		if (m5t2.visible && m5t2.state == ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-5-Task-2-Timeout")) {
+			checkTullenReached();
+		}
+		if (helper.isMissionTime("Mission-5-Task-2-Timeout")) {
+			helper.clearMissionTime("Mission-5-Task-2-Timeout");
+			helper.setObjectiveState("Mission-5-Task-2", ObjectiveState.FAILURE);
+			helper.setObjectiveState("Mission-5", ObjectiveState.FAILURE);
+			removeFleets();
+			helper.setTimeout("Mission-5-Failed", 13000);
+		}
+		if (checkTimeout("Mission-5-Failed")) {
+			helper.receive("Douglas-Thorin").visible = false;
+			helper.send("Douglas-Thorin-Reinforcements").visible = false;
+			helper.gameover();
+			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
+		}
 //			if (checkTimeout("Mission-5-Destoyed")) {
 //				helper.receive("Douglas-Thorin").visible = false;
 //				helper.send("Douglas-Thorin-Reinforcements").visible = false;
 //				helper.gameover();
 //				loseGameMovie("loose/destroyed_level_1");
 //			}
-			if (helper.isTimeout("Mission-5-Success")) {
-				helper.clearTimeout("Mission-5-Success");
-				
-				helper.receive("Douglas-Thorin").visible = false;
-				helper.send("Douglas-Thorin-Reinforcements").visible = false;
-				
-				helper.setObjectiveState("Mission-5-Task-2", ObjectiveState.SUCCESS);
-				helper.setObjectiveState("Mission-5", ObjectiveState.SUCCESS);
-				removeFleets();
-				
-				helper.setTimeout("Mission-5-Promote", 13000);
-			}
-			if (helper.isTimeout("Mission-5-Promote")) {
-				helper.objective("Mission-5").visible = false;
-				helper.clearTimeout("Mission-5-Promote");
-				incomingMessage("Douglas-Promotion-2");
-				
-				helper.setTimeout("Mission-5-Promote-2", 16000);
-				helper.setTimeout("Level-1-Success", 4000);
-			}
-			if (helper.isTimeout("Level-1-Success")) {
-				helper.clearTimeout("Level-1-Success");
-				helper.setObjectiveState("Mission-1-Task-3", ObjectiveState.SUCCESS);
-				helper.setObjectiveState("Mission-1-Task-4", ObjectiveState.SUCCESS);
-			}
-			if (helper.isTimeout("Mission-5-Promote-2")) {
-				helper.clearTimeout("Mission-5-Promote-2");
-				helper.objective("Mission-1-Task-3").visible = false;
-				helper.objective("Mission-1-Task-4").visible = false;
-				helper.receive("Douglas-Promotion-2").visible = false;
-				world.env.stopMusic();
-				world.env.playVideo("interlude/level_2_intro", new Action0() {
-					@Override
-					public void invoke() {
-						promote();
-					}
-				});
-			}
+		if (helper.isTimeout("Mission-5-Success")) {
+			helper.clearTimeout("Mission-5-Success");
+			
+			helper.receive("Douglas-Thorin").visible = false;
+			helper.send("Douglas-Thorin-Reinforcements").visible = false;
+			
+			helper.setObjectiveState("Mission-5-Task-2", ObjectiveState.SUCCESS);
+			helper.setObjectiveState("Mission-5", ObjectiveState.SUCCESS);
+			removeFleets();
+			
+			helper.setTimeout("Mission-5-Promote", 13000);
+		}
+		if (helper.isTimeout("Mission-5-Promote")) {
+			helper.objective("Mission-5").visible = false;
+			helper.clearTimeout("Mission-5-Promote");
+			incomingMessage("Douglas-Promotion-2");
+			
+			helper.setTimeout("Mission-5-Promote-2", 16000);
+			helper.setTimeout("Level-1-Success", 4000);
+		}
+		if (helper.isTimeout("Level-1-Success")) {
+			helper.clearTimeout("Level-1-Success");
+			helper.setObjectiveState("Mission-1-Task-3", ObjectiveState.SUCCESS);
+			helper.setObjectiveState("Mission-1-Task-4", ObjectiveState.SUCCESS);
+		}
+		if (helper.isTimeout("Mission-5-Promote-2")) {
+			helper.clearTimeout("Mission-5-Promote-2");
+			helper.objective("Mission-1-Task-3").visible = false;
+			helper.objective("Mission-1-Task-4").visible = false;
+			helper.receive("Douglas-Promotion-2").visible = false;
+			world.env.stopMusic();
+			world.env.playVideo("interlude/level_2_intro", new Action0() {
+				@Override
+				public void invoke() {
+					promote();
+				}
+			});
 		}
 	}
 	@Override
@@ -289,7 +291,7 @@ public class Mission5 extends Mission {
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (world.level == 1 && isMissionSpacewar(war.battle(), "Mission-5")) {
+		if (isMissionSpacewar(war.battle(), "Mission-5")) {
 			BattleInfo battle = war.battle();
 			Player garthog = player("Garthog");
 			Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-5", player);
@@ -381,37 +383,33 @@ public class Mission5 extends Mission {
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
-		if (world.level == 1) {
-			if (isMissionSpacewar(battle, "Mission-5")) {
-				Player pirates = player("Pirates");
-				Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-5", pirates);
-				Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-5-Garthog", pirates);
-				if (battle.targetFleet == f1.first) {
-					battle.targetFleet = f2.first;
-				}
-				battle.attacker.inventory.addAll(f1.first.inventory);
-				if (helper.isMissionTime("Mission-4-Helped")) {
-					battle.attacker.inventory.addAll(createHelperShips(f1.first));
-				}
+		if (isMissionSpacewar(battle, "Mission-5")) {
+			Player pirates = player("Pirates");
+			Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-5", pirates);
+			Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-5-Garthog", pirates);
+			if (battle.targetFleet == f1.first) {
+				battle.targetFleet = f2.first;
+			}
+			battle.attacker.inventory.addAll(f1.first.inventory);
+			if (helper.isMissionTime("Mission-4-Helped")) {
+				battle.attacker.inventory.addAll(createHelperShips(f1.first));
 			}
 		}
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (world.level == 1) {
-			if (isMissionSpacewar(battle, "Mission-5")) {
-				boolean tullenSurvived = false;
-				for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
-					if ("Mission-5".equals(ii.tag)) {
-						tullenSurvived = true;
-						battle.attacker.inventory.remove(ii);
-					}
-					if ("Mission-5-Help".equals(ii.tag)) {
-						battle.attacker.inventory.remove(ii);
-					}
+		if (isMissionSpacewar(battle, "Mission-5")) {
+			boolean tullenSurvived = false;
+			for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+				if ("Mission-5".equals(ii.tag)) {
+					tullenSurvived = true;
+					battle.attacker.inventory.remove(ii);
 				}
-				completeMission(tullenSurvived);
+				if ("Mission-5-Help".equals(ii.tag)) {
+					battle.attacker.inventory.remove(ii);
+				}
 			}
+			completeMission(tullenSurvived);
 		}
 	}
 	/**

@@ -30,10 +30,14 @@ import hu.openig.model.SpacewarWorld;
  */
 public class Mission6 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 2;
+	}
+	@Override
 	public void onLevelChanged() {
-		if (world.level == 2) {
-			removeMissions(1, 25);
+		removeMissions(1, 25);
 
+		if (world.level == 2) {
 			// ensure the initial fleet conditions are met
 			player.setAvailable(research("Fighter2"));
 			createMainShip();
@@ -75,9 +79,6 @@ public class Mission6 extends Mission {
 	}
 	@Override
 	public void onTime() {
-		if (world.level != 2) {
-			return;
-		}
 		checkPlanetStateMessages();
 		checkMainShip();
 		if (helper.canStart("Mission-6")) {

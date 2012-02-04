@@ -24,9 +24,6 @@ import hu.openig.model.Planet;
 public class Mission10 extends Mission {
 	@Override
 	public void onTime() {
-		if (world.level != 2) {
-			return;
-		}
 		Objective m9 = helper.objective("Mission-9");
 		Objective m10 = helper.objective("Mission-10");
 		if (m9.state != ObjectiveState.ACTIVE
@@ -82,9 +79,6 @@ public class Mission10 extends Mission {
 	}
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
-		if (world.level != 2) {
-			return;
-		}
 		if (helper.isActive("Mission-10")) {
 			if (planet.id.equals("Naxos") 
 					&& hasTag(fleet, "Mission-10-Governor")) {
@@ -98,13 +92,14 @@ public class Mission10 extends Mission {
 	}
 	@Override
 	public void onMessageSeen(String id) {
-		if (world.level != 2) {
-			return;
-		}
 		if ("Douglas-Centronom-Governor".equals(id)) {
 			if (findTaggedFleet("Mission-10-Governor", player) == null) {
 				helper.setTimeout("Mission-10-Objective", 1000);
 			}
 		}
+	}
+	@Override
+	public boolean applicable() {
+		return world.level == 2;
 	}
 }

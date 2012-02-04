@@ -19,6 +19,10 @@ import hu.openig.model.SoundType;
  */
 public class Mission8 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 2;
+	}
+	@Override
 	public void onLevelChanged() {
 		if (world.level == 2) {
 			Objective m8 = helper.objective("Mission-8");
@@ -31,9 +35,6 @@ public class Mission8 extends Mission {
 	}
 	@Override
 	public void onTime() {
-		if (world.level != 2) {
-			return;
-		}
 		Objective m8 = helper.objective("Mission-8");
 		if (helper.canStart("Mission-8")) {
 			helper.clearMissionTime("Mission-8");

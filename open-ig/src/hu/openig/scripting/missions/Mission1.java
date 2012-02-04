@@ -28,21 +28,17 @@ import java.util.Set;
 public class Mission1 extends Mission {
 	@Override
 	public void onTime() {
-		if (world.level == 1) {
-			helper.send("Naxos-Check").visible = true;
-			helper.send("San Sterling-Check").visible = true;
-			checkMission1Start();
-			checkMission1Task2();
-			checkMission1Complete();
-			checkMainShip();
-		}
+		helper.send("Naxos-Check").visible = true;
+		helper.send("San Sterling-Check").visible = true;
+		checkMission1Start();
+		checkMission1Task2();
+		checkMission1Complete();
+		checkMainShip();
 	}
 	
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
-		if (world.level == 1) {
-			checkMission1Task1(planet, building);
-		}
+		checkMission1Task1(planet, building);
 	}
 	/**
 	 * Check if the colony hub was built on Achilles.
@@ -203,7 +199,7 @@ public class Mission1 extends Mission {
 	}
 	@Override
 	public void onConquered(Planet planet, Player previousOwner) {
-		if (world.level == 1 && previousOwner == player) {
+		if (previousOwner == player) {
 			checkMission1Failure(planet);
 			checkMission1Task3Failure(planet);
 			checkMission1Task4Failure(planet);
@@ -211,11 +207,9 @@ public class Mission1 extends Mission {
 	}
 	@Override
 	public void onLost(Planet planet) {
-		if (world.level == 1) {
-			checkMission1Failure(planet);
-			checkMission1Task3Failure(planet);
-			checkMission1Task4Failure(planet);
-		}
+		checkMission1Failure(planet);
+		checkMission1Task3Failure(planet);
+		checkMission1Task4Failure(planet);
 	}
 	@Override
 	public void onNewGame() {
@@ -242,5 +236,9 @@ public class Mission1 extends Mission {
 		if (world.level == 1) {
 			removeMissions(1, 25);
 		}
+	}
+	@Override
+	public boolean applicable() {
+		return world.level == 1;
 	}
 }

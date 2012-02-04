@@ -35,68 +35,70 @@ import java.util.EnumSet;
  */
 public class Mission3 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 1;
+	}
+	@Override
 	public void onTime() {
-		if (world.level == 1) {
-			Objective m2t1 = helper.objective("Mission-2-Task-1");
-			Objective m3 = helper.objective("Mission-3");
-			if (!m3.visible && m3.state == ObjectiveState.ACTIVE
-					&& m2t1.state != ObjectiveState.ACTIVE
-					&& !helper.hasMissionTime("Mission-3")) {
-				helper.setMissionTime("Mission-3", helper.now() + 48);
-			}
-			if (helper.canStart("Mission-3")) {
-				world.env.speed1();
-				helper.setTimeout("Mission-3-Message", 3000);
-				incomingMessage("Douglas-Carrier");
-				helper.clearMissionTime("Mission-3");
-			}
-			if (helper.isTimeout("Mission-3-Message")) {
-				helper.clearTimeout("Mission-3-Message");
-				helper.showObjective("Mission-3");
-				createCarrierTask();
-			}
-			if (m3.visible && m3.state == ObjectiveState.ACTIVE) {
-				checkCarrierLocation();
-			}
-			if (checkMission("Mission-3-Timeout")) {
-				world.env.playVideo("interlude/merchant_destroyed", new Action0() {
-					@Override
-					public void invoke() {
-						helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
-						helper.setTimeout("Mission-3-Timeout", 13000);
-						
-						helper.receive("Douglas-Carrier").visible = false;
-						
-						removeFleets();
-					}
-				});
-			}
-			if (helper.isTimeout("Mission-3-Timeout")) {
-				loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
-				helper.clearTimeout("Mission-3-Timeout");
-			}
-			if (checkTimeout("Mission-3-Failed")) {
-				world.env.playVideo("interlude/merchant_destroyed", new Action0() {
-					@Override
-					public void invoke() {
-						helper.receive("Douglas-Carrier").visible = false;
-						helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
-						incomingMessage("Douglas-Carrier-Lost");
-						helper.setTimeout("Mission-3-Done", 13000);
-					}
-				});
-			}
-			if (helper.isMissionTime("Mission-3-Success")) {
-				helper.receive("Douglas-Carrier").visible = false;
-				helper.setObjectiveState("Mission-3", ObjectiveState.SUCCESS);
-				helper.clearMissionTime("Mission-3-Success");
-				helper.setTimeout("Mission-3-Done", 13000);
-				removeFleets();
-			}
-			if (helper.isTimeout("Mission-3-Done")) {
-				helper.objective("Mission-3").visible = false;
-				helper.clearTimeout("Mission-3-Done");
-			}
+		Objective m2t1 = helper.objective("Mission-2-Task-1");
+		Objective m3 = helper.objective("Mission-3");
+		if (!m3.visible && m3.state == ObjectiveState.ACTIVE
+				&& m2t1.state != ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-3")) {
+			helper.setMissionTime("Mission-3", helper.now() + 48);
+		}
+		if (helper.canStart("Mission-3")) {
+			world.env.speed1();
+			helper.setTimeout("Mission-3-Message", 3000);
+			incomingMessage("Douglas-Carrier");
+			helper.clearMissionTime("Mission-3");
+		}
+		if (helper.isTimeout("Mission-3-Message")) {
+			helper.clearTimeout("Mission-3-Message");
+			helper.showObjective("Mission-3");
+			createCarrierTask();
+		}
+		if (m3.visible && m3.state == ObjectiveState.ACTIVE) {
+			checkCarrierLocation();
+		}
+		if (checkMission("Mission-3-Timeout")) {
+			world.env.playVideo("interlude/merchant_destroyed", new Action0() {
+				@Override
+				public void invoke() {
+					helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
+					helper.setTimeout("Mission-3-Timeout", 13000);
+					
+					helper.receive("Douglas-Carrier").visible = false;
+					
+					removeFleets();
+				}
+			});
+		}
+		if (helper.isTimeout("Mission-3-Timeout")) {
+			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
+			helper.clearTimeout("Mission-3-Timeout");
+		}
+		if (checkTimeout("Mission-3-Failed")) {
+			world.env.playVideo("interlude/merchant_destroyed", new Action0() {
+				@Override
+				public void invoke() {
+					helper.receive("Douglas-Carrier").visible = false;
+					helper.setObjectiveState("Mission-3", ObjectiveState.FAILURE);
+					incomingMessage("Douglas-Carrier-Lost");
+					helper.setTimeout("Mission-3-Done", 13000);
+				}
+			});
+		}
+		if (helper.isMissionTime("Mission-3-Success")) {
+			helper.receive("Douglas-Carrier").visible = false;
+			helper.setObjectiveState("Mission-3", ObjectiveState.SUCCESS);
+			helper.clearMissionTime("Mission-3-Success");
+			helper.setTimeout("Mission-3-Done", 13000);
+			removeFleets();
+		}
+		if (helper.isTimeout("Mission-3-Done")) {
+			helper.objective("Mission-3").visible = false;
+			helper.clearTimeout("Mission-3-Done");
 		}
 	}
 	/** Remove the scripted fleets. */
@@ -216,43 +218,39 @@ public class Mission3 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (world.level == 1) {
-			if (isMissionSpacewar(battle, "Mission-3")) {
-				boolean traderSurvived = false;
-				for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
-					if ("Mission-3-Carrier".equals(ii.tag)) {
-						traderSurvived = true;
-						battle.attacker.inventory.remove(ii);
-					}
+		if (isMissionSpacewar(battle, "Mission-3")) {
+			boolean traderSurvived = false;
+			for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+				if ("Mission-3-Carrier".equals(ii.tag)) {
+					traderSurvived = true;
+					battle.attacker.inventory.remove(ii);
 				}
-				completeMission(traderSurvived);
-				if (traderSurvived) {
-					player.changeInventoryCount(world.researches.get("Shield1"), 1);
-				}
+			}
+			completeMission(traderSurvived);
+			if (traderSurvived) {
+				player.changeInventoryCount(world.researches.get("Shield1"), 1);
 			}
 		}
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
-		if (world.level == 1) {
-			if (isMissionSpacewar(battle, "Mission-3")) {
-				Player pirates = player("Pirates");
-				Fleet tf = null;
-				Fleet pf = null;
-				for (int i : helper.scriptedFleets()) {
-					Fleet f = fleet(i);
-					if (f.owner == player) {
-						tf = f;
-					} else
-					if (f.owner == pirates) {
-						pf = f;
-					}
+		if (isMissionSpacewar(battle, "Mission-3")) {
+			Player pirates = player("Pirates");
+			Fleet tf = null;
+			Fleet pf = null;
+			for (int i : helper.scriptedFleets()) {
+				Fleet f = fleet(i);
+				if (f.owner == player) {
+					tf = f;
+				} else
+				if (f.owner == pirates) {
+					pf = f;
 				}
-				if (battle.targetFleet == tf) {
-					battle.targetFleet = pf;
-				}
-				battle.attacker.inventory.addAll(tf.inventory);
 			}
+			if (battle.targetFleet == tf) {
+				battle.targetFleet = pf;
+			}
+			battle.attacker.inventory.addAll(tf.inventory);
 		}
 	}
 	@Override

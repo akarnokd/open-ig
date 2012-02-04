@@ -35,6 +35,10 @@ import java.util.List;
  */
 public class Mission11 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 2;
+	}
+	@Override
 	public void onTime() {
 		Objective m10 = helper.objective("Mission-10");
 		Objective m11 = helper.objective("Mission-11");

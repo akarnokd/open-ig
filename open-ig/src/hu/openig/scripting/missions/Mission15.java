@@ -17,10 +17,11 @@ import hu.openig.model.ObjectiveState;
  */
 public class Mission15 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 2;
+	}
+	@Override
 	public void onTime() {
-		if (world.level != 2) {
-			return;
-		}
 		if (helper.canStart("Mission-15")) {
 			helper.clearMissionTime("Mission-15");
 			world.env.stopMusic();
@@ -36,16 +37,29 @@ public class Mission15 extends Mission {
 			});
 		}
 		if (world.recordWatched 
-				&& helper.objective("Mission-15-Task-2").state == ObjectiveState.ACTIVE) {
-			// record watched in time
+				&& helper.objective("Mission-15-Task-2").state == ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-15-Morning")) {
+
+			int now = ((helper.now() / 24) * 24) + 23;
+			helper.setMissionTime("Mission-15-Morning", now);
 			helper.setObjectiveState("Mission-15-Task-2", ObjectiveState.SUCCESS);
 			helper.clearMissionTime("Mission-15-Task-2-Timeout");
-			
-			helper.send("Douglas-Report-Spy").visible = true;
+		}
+		if (checkMission("Mission-15-Morning")) {
+			world.env.stopMusic();
+			world.env.playVideo("interlude/watch_recording", new Action0() {
+				@Override
+				public void invoke() {
+					world.allowRecordMessage = false;
+					// record watched in time
+					
+					helper.send("Douglas-Report-Spy").visible = true;
 
-			helper.showObjective("Mission-15-Task-3");
-			helper.setMissionTime("Mission-15-Task-3-Timeout", helper.now() + 7 * 24);
-			
+					helper.showObjective("Mission-15-Task-3");
+					helper.setMissionTime("Mission-15-Task-3-Timeout", helper.now() + 7 * 24);
+					world.env.playMusic();
+				}
+			});
 		}
 		// TIMEOUTS ---------------------------------------------------------------
 		if (helper.isMissionTime("Mission-15-Task-1-Timeout")) {
@@ -79,19 +93,17 @@ public class Mission15 extends Mission {
 	
 	@Override
 	public void onMessageSeen(String id) {
-		if (world.level == 2) {
-			if ("Douglas-Report-Spy".equals(id)) {
-				if (helper.setObjectiveState("Mission-15-Task-3", ObjectiveState.SUCCESS)) {
-					helper.setObjectiveState("Mission-15", ObjectiveState.SUCCESS);
-					helper.clearMissionTime("Mission-15-Task-3-Timeout");
-					helper.setTimeout("Mission-15-Hide", 13000);
-				}
+		if ("Douglas-Report-Spy".equals(id)) {
+			if (helper.setObjectiveState("Mission-15-Task-3", ObjectiveState.SUCCESS)) {
+				helper.setObjectiveState("Mission-15", ObjectiveState.SUCCESS);
+				helper.clearMissionTime("Mission-15-Task-3-Timeout");
+				helper.setTimeout("Mission-15-Hide", 13000);
 			}
 		}
 	}
 	@Override
 	public void onTalkCompleted() {
-		if (world.level == 2 && "kelly".equals(world.currentTalk)) {
+		if ("kelly".equals(world.currentTalk)) {
 			if (helper.setObjectiveState("Mission-15-Task-1", ObjectiveState.SUCCESS)) {
 				world.allowRecordMessage = true;
 				helper.showObjective("Mission-15-Task-2");

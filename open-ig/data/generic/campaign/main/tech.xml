@@ -1141,5 +1141,21 @@
 		factory='spaceship' research-cost='10000' production-cost='5000'
 		level='0' race='traders' index='1'></item>
 
+	<item id='GarthogVirusBomb' name='tech.garthogvirusbomb.name'
+		long-name='tech.garthogvirusbomb.longname' 
+		description='tech.garthogvirusbomb.description'
+		category='SPACESHIPS_FIGHTERS' factory='spaceship' level='6'
+		research-cost='15000' production-cost='8000' race='garthog'
+		image='inventions/spaceships/fighters/garthog_virus_bomb' index='0'>
+	</item>
+	<item id='Hubble1' name='tech.hubble1.name' long-name='tech.hubble1.longname'
+		description='tech.hubble1.description' category='SPACESHIPS_SATELLITES'
+		image='inventions/spaceships/satellites/hubble' factory='spaceship'
+		research-cost='10000' production-cost='2100' level='6' race='human'
+		requires='SpySatellite1, Radar2' mech='5' comp='5' ai='6' mil='4'
+		index='3' video='technology/spaceships/satellites/hubble'>
+		<property name='radar' value='2' />
+	</item>
+
 </tech>
 
