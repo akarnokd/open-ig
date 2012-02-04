@@ -389,6 +389,7 @@ public class StatusbarScreen extends ScreenBase {
 				achievementDescent = achievementSize;
 				achievementTTL = 10 * 10; // 10 seconds
 				achievementAnimator.start();
+				effectSound(SoundType.ACHIEVEMENT);
 			}
 		}
 	}

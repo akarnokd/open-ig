@@ -188,7 +188,9 @@ public enum SoundType {
 	/** Objective fail. */
 	FAIL("ui/fail"),
 	/** New task. */
-	NEW_TASK("ui/new_task")
+	NEW_TASK("ui/new_task"),
+	/** New task. */
+	ACHIEVEMENT("ui/achievement")
 	;
 	/** The associated resource location. */
 	public final String resource;
