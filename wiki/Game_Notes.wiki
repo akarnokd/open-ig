@@ -2,6 +2,13 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.180 - Few enhancements =
+  * Released: 2012-02-04 20:00 CET
+  * Added Missions 12 and 14
+  * Added triggers for Wife videos
+  * Groundwar AI units now attack ([http://code.google.com/p/open-ig/issues/detail?id=277 Issue #277])
+  * Corrected missing Achilles-Check video and sound ([http://code.google.com/p/open-ig/issues/detail?id=275 Issue #275])
+
 = Version 0.94.160 - Fixes =
   * Released: 2012-01-29 17:00 CET
   * Fixed ([http://code.google.com/p/open-ig/issues/detail?id=190 Issue #190], [http://code.google.com/p/open-ig/issues/detail?id=267 Issue #267]), auto-refill of bombs and rockets settings did not work correctly.
