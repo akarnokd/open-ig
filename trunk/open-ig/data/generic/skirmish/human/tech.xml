@@ -1139,6 +1139,13 @@
 		index='0'>
 		<slot-fixed id='Laser' count='1' item='Laser1' />
 	</item>
+	<item id='GarthogVirusBomb' name='tech.garthogvirusbomb.name'
+		long-name='tech.garthogvirusbomb.longname' 
+		description='tech.garthogvirusbomb.description'
+		category='SPACESHIPS_FIGHTERS' factory='spaceship' level='6'
+		research-cost='15000' production-cost='8000' race='garthog'
+		image='inventions/spaceships/fighters/garthog_virus_bomb' index='0'>
+	</item>
 
 </tech>
 
