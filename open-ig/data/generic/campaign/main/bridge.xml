@@ -104,7 +104,8 @@
 				media='messages/douglas_reinforcements_again_denied' title='messages.douglas' description='messages.reinforcements'/> 
 
 			<message id='Android' media='messages/android' title='messages.android' description='messages.android_truth'/>
-
+			<message id='Douglas-Virus-Carriers-Destroyed' 
+				media='messages/douglas_virus_carriers_destroyed' title='messages.douglas' description='messages.virus_carriers_destroyed'/> 
 		</send>
 		<receive>
 			<message id='Achilles-Is-Under-Attack' media='messages/achilles_is_under_attack' title='messages.Achilles' description='messages.is_attack'/>
@@ -213,8 +214,6 @@
 				media='messages/douglas_rebel_governor' title='messages.douglas' description='messages.rebel'/> 
 			<message id='Douglas-Success' 
 				media='messages/douglas_success' title='messages.douglas' description='messages.success'/> 
-			<message id='Douglas-Virus-Carriers-Destroyed' 
-				media='messages/douglas_virus_carriers_destroyed' title='messages.douglas' description='messages.virus_carriers_destroyed'/> 
 		</receive>
 	</messages>
 </bridge>

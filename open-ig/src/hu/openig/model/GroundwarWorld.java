@@ -73,4 +73,11 @@ public interface GroundwarWorld {
 	 * @param u the unit
 	 */
 	void special(GroundwarUnit u);
+	/**
+	 * Check if the given location already has mines.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return true
+	 */
+	boolean hasMine(int x, int y);
 }

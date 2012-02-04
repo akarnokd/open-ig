@@ -3680,6 +3680,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return;
 		}
 		
+		Player np = nonPlayer();
+		if (np != null) {
+			np.ai.groundBattle(this);
+		}
+		player().ai.groundBattle(this);
+		
 		// execute path plannings
 		doPathPlannings();
 		
@@ -5080,6 +5086,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the player
 	 */
 	Player nonPlayer() {
+		if (battle == null) {
+			if (planet().owner != world().player) {
+				return planet().owner;
+			}
+			for (GroundwarUnit u : units) {
+				if (u.owner != world().player) {
+					return u.owner;
+				}
+			}
+		} else
 		if (battle.attacker.owner != player()) {
 			return battle.attacker.owner;
 		} else
@@ -5235,6 +5251,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	@Override
 	public List<GroundwarUnit> units() {
 		return units;
+	}
+	@Override
+	public boolean hasMine(int x, int y) {
+		return mines.containsKey(Location.of(x, y));
 	}
 }
 

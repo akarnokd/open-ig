@@ -247,4 +247,12 @@ public class Building {
 		
 		return type.id + " (hp = " + hitpoints + ")";
 	}
+	/** @return the instance width */
+	public int width() {
+		return tileset.normal.width;
+	}
+	/** @return the instance height. */
+	public int height() {
+		return tileset.normal.height;
+	}
 }
