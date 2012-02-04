@@ -450,4 +450,31 @@ public final class U {
 			}
 		};
 	}
+	/**
+	 * Compare two doubles.
+	 * @param v1 the first value
+	 * @param v2 the second value
+	 * @return -1 if v1 &lt; v2, 1 if v1 > v2, 0 otherwise
+	 */
+	public static int compare(double v1, double v2) {
+		return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+	}
+	/**
+	 * Compare two integers.
+	 * @param v1 the first value
+	 * @param v2 the second value
+	 * @return -1 if v1 &lt; v2, 1 if v1 > v2, 0 otherwise
+	 */
+	public static int compare(int v1, int v2) {
+		return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+	}
+	/**
+	 * Compare two longs.
+	 * @param v1 the first value
+	 * @param v2 the second value
+	 * @return -1 if v1 &lt; v2, 1 if v1 > v2, 0 otherwise
+	 */
+	public static int compare(long v1, long v2) {
+		return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+	}
 }

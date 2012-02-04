@@ -10,11 +10,14 @@ package hu.openig.model;
 
 import hu.openig.core.Location;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
+
 /**
  * A building instance.
  * @author akarnokd, 2010.01.07.
  */
-public class Building {
+public class Building implements HasLocation {
 	/** The building type definition. */
 	public final BuildingType type;
 	/** The technology ID for selecting a Tileset from the building type. */
@@ -254,5 +257,13 @@ public class Building {
 	/** @return the instance height. */
 	public int height() {
 		return tileset.normal.height;
+	}
+	@Override
+	public Double exactLocation() {
+		return new Point2D.Double(location.x + width() / 2d, location.y - height() / 2d);
+	}
+	@Override
+	public Location location() {
+		return location;
 	}
 }

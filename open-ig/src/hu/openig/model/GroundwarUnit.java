@@ -11,6 +11,8 @@ package hu.openig.model;
 import hu.openig.core.Location;
 import hu.openig.utils.U;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * The ground war unit.
  * @author akarnokd, 2011.09.02.
  */
-public class GroundwarUnit extends GroundwarObject {
+public class GroundwarUnit extends GroundwarObject implements HasLocation {
 	/** The model entity. */
 	public BattleGroundVehicle model;
 	/** The position with fractional precision in surface coordinates. */
@@ -72,12 +74,13 @@ public class GroundwarUnit extends GroundwarObject {
 		super(matrix);
 		// TODO Auto-generated constructor stub
 	}
-	/**
-	 * Returns the integer location of this unit.
-	 * @return the location
-	 */
+	@Override
 	public Location location() {
 		return Location.of((int)x, (int)y);
+	}
+	@Override
+	public Double exactLocation() {
+		return new Point2D.Double(x, y);
 	}
 	@Override
 	public String toString() {
@@ -103,8 +106,9 @@ public class GroundwarUnit extends GroundwarObject {
 	 * @param u2 the other unit
 	 * @return the distance
 	 */
-	public double distance(GroundwarUnit u2) {
-		return Math.hypot(x - u2.x, y - u2.y);
+	public double distance(HasLocation u2) {
+		Point2D.Double p2 = u2.exactLocation();
+		return Math.hypot(x - p2.x, y - p2.y);
 	}
 	/**
 	 * Returns the distance from the map location.

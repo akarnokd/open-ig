@@ -20,7 +20,6 @@ import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
-import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
@@ -32,19 +31,15 @@ import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
-import hu.openig.model.SurfaceEntity;
-import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.World;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
-import java.awt.geom.Point2D;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -253,219 +248,11 @@ public class AI implements AIManager {
 		});
 	}
 	@Override
-	public void groundBattle(GroundwarWorld war) {
-		List<Object> targets = new ArrayList<Object>();
-		if (war.planet().owner != p) {
-			for (Building b : war.planet().surface.buildings) {
-				if (b.type.kind.equals("Defensive")) {
-					targets.add(b);
-				}
-			}
-		}
-		
-		// the various attack categories
-		List<GroundwarUnit> tanks = new ArrayList<GroundwarUnit>();
-		List<GroundwarUnit> ranged = new ArrayList<GroundwarUnit>();
-		List<GroundwarUnit> rocketJammers = new ArrayList<GroundwarUnit>();
-		List<GroundwarUnit> minelayers = new ArrayList<GroundwarUnit>();
-		List<GroundwarUnit> paralizers = new ArrayList<GroundwarUnit>();
-		
-		for (GroundwarUnit u : war.units()) {
-			if (u.owner != p) {
-				targets.add(u);
-			} else {
-				switch (u.model.type) {
-				case TANK:
-				case KAMIKAZE:
-				case SELF_REPAIR_TANK:
-				case ROCKET_JAMMER:
-					tanks.add(u);
-					break;
-				case ROCKET_SLED:
-				case ARTILLERY:
-					tanks.add(u);
-					ranged.add(u);
-					break;
-				case MINELAYER:
-					minelayers.add(u);
-					break;
-				case PARALIZER:
-					paralizers.add(u);
-					break;
-				default:
-				}
-			}
-		}
-		// center of mass
-		double massx = 0d;
-		double massy = 0d;
-		for (GroundwarUnit u : tanks) {
-			massx += u.x;
-			massy += u.y;
-		}
-		massx /= tanks.size();
-		massy /= tanks.size();
-		
-		final double fmassx = massx;
-		final double fmassy = massy;
-		
-		if (!targets.isEmpty()) {
-			// attack nearest target to the mass
-			Object o = Collections.min(targets, new Comparator<Object>() {
-				@Override
-				public int compare(Object o1, Object o2) {
-					Point2D.Double p1 = position(o1);
-					Point2D.Double p2 = position(o2);
-					
-					double d1 = p1.distance(fmassx, fmassy);
-					double d2 = p2.distance(fmassx, fmassy);
-					
-					return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-				}
-			});
-			
-			
-			// regular units, attack nearest value
-			for (GroundwarUnit u : tanks) {
-				if (!u.hasValidTarget()) {
-					if (o instanceof Building) {
-						war.attack(u, (Building)o);
-					} else {
-						war.attack(u, (GroundwarUnit)o);
-					}
-				}
-			}
-			// paralizers attack only if the rest attacks a unit
-			for (GroundwarUnit u : paralizers) {
-				if (!u.hasValidTarget() && (o instanceof GroundwarUnit)) {
-					war.attack(u, (GroundwarUnit)o);
-				}
-			}
-		}
-		// rocket jammer, keep up with rocket sleds or artillery
-		Set<GroundwarUnit> defended = new HashSet<GroundwarUnit>();
-		// collect already protected units
-		for (GroundwarUnit u : rocketJammers) {
-			if (u.hasValidTarget()) {
-				defended.add(u.attackUnit);
-			}
-		}
-		for (GroundwarUnit u : rocketJammers) {
-			if (!u.hasValidTarget()) {
-				GroundwarUnit u2 = nearest(u, ranged, defended);
-				// protect ranged
-				if (u2 != null) {
-					defended.add(u2);
-					u.attackUnit = u2; // e.g. follow
-				} else {
-					// protect any tank
-					u2 = nearest(u, tanks, defended);
-					if (u2 != null) {
-						defended.add(u2);
-						u.attackUnit = u2; // e.g. follow
-					}
-				}
-			}
-		}
-		// minelayers start placing mines onto the roads
-		Set<Location> um = unmined(war);
-		for (GroundwarUnit u : minelayers) {
-			um.remove(u.target());
-		}
-		for (GroundwarUnit u : minelayers) {
-			if (!u.isMoving() && u.phase == 0) {
-				Location l = u.location();
-				SurfaceEntity e = war.planet().surface.buildingmap.get(l);
-				if (e != null && e.type == SurfaceEntityType.ROAD
-						&& !war.hasMine(l.x, l.y)) {
-					war.special(u);
-					um.remove(u.location());
-				} else {
-					Location loc2 = nearest(u, um);
-					if (loc2 != null) {
-						war.move(u, loc2.x, loc2.y);
-					}
-				}
-			}
-		}
+	public void groundBattle(final GroundwarWorld war) {
+		AIGroundwar aig = new AIGroundwar(p, war);
+		aig.run();
+		aig.apply();
 	}
-	/**
-	 * Return the nearest location.
-	 * @param u the unit
-	 * @param locs the locations
-	 * @return the location or null if locs is empty
-	 */
-	Location nearest(final GroundwarUnit u, Set<Location> locs) {
-		if (locs.isEmpty()) {
-			return null;
-		}
-		return Collections.min(locs, new Comparator<Location>() {
-			@Override
-			public int compare(Location o1, Location o2) {
-				double d1 = u.distance(o1);
-				double d2 = u.distance(o2);
-				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-			}
-		});
-	}
-	/**
-	 * Return the nearest unit from the given set.
-	 * @param u the base unit
-	 * @param units the other units
-	 * @param except the exception list
-	 * @return the nearest
-	 */
-	GroundwarUnit nearest(final GroundwarUnit u, 
-			List<GroundwarUnit> units, Set<GroundwarUnit> except) {
-		List<GroundwarUnit> candidates = new ArrayList<GroundwarUnit>();
-		for (GroundwarUnit u2 : units) {
-			if (!except.contains(u2)) {
-				candidates.add(u2);
-			}
-		}
-		if (candidates.isEmpty()) {
-			return null;
-		}
-		return Collections.min(candidates, new Comparator<GroundwarUnit>() {
-			@Override
-			public int compare(GroundwarUnit o1, GroundwarUnit o2) {
-				double d1 = u.distance(o1);
-				double d2 = u.distance(o2);
-				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-			}
-		});
-	}
-	/**
-	 * Generates the set of roads where no mine has been laid.
-	 * @param war the war context
-	 * @return the set of unminded roads
-	 */
-	Set<Location> unmined(GroundwarWorld war) {
-		Set<Location> result = U.newHashSet();
-		for (Map.Entry<Location, SurfaceEntity> e : war.planet().surface.buildingmap.entrySet()) {
-			if (e.getValue().type == SurfaceEntityType.ROAD) {
-				Location key = e.getKey();
-				if (!war.hasMine(key.x, key.y)) {
-					result.add(key);
-				}
-			}
-		}
-		return result;
-	}
-	/**
-	 * Compute the map position of the object.
-	 * @param o the object
-	 * @return the position
-	 */
-	Point2D.Double position(Object o) {
-		if (o instanceof Building) {
-			Building b = (Building)o;
-			return new Point2D.Double(b.location.x + b.width() / 2d, b.location.y - b.health() / 2d);
-		}
-		GroundwarUnit u = (GroundwarUnit)o;
-		return new Point2D.Double(u.x, u.y);
-	}
-	
 	
 	@Override
 	public void groundBattleDone(GroundwarWorld war) {

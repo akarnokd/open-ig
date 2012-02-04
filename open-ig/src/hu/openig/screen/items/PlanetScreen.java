@@ -3307,6 +3307,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			
 			g2.drawImage(img, p.x + tx, p.y + ty, null);
 			
+			if (u.paralizedTTL > 0) {
+				// draw green paralization effect
+				BufferedImage[] expl = commons.colony().explosions.get(ExplosionType.GROUND_GREEN);
+				int idx = (PARALIZED_TTL - u.paralizedTTL) % expl.length;
+
+				BufferedImage icon = expl[idx];
+				int dx = p.x + tx + (img.getWidth() - icon.getWidth()) / 2;
+				int dy = p.y + ty + (img.getHeight() - icon.getHeight()) / 2;
+				g2.drawImage(icon, dx, dy, null);
+			}
+			// paint health bar
 			g2.setColor(Color.BLACK);
 			g2.fillRect(p.x + 4, p.y + 3, u.model.width - 7, 5);
 			if (u.owner == player()) {
@@ -3315,23 +3326,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				g2.setColor(new Color(0xAE6951));
 			}
 			g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (u.model.width - 9) / u.model.hp), 3);
-			
-			if (u.paralizedTTL > 0) {
-//				if (blink) {
-//					BufferedImage icon = commons.common().errorIcon;
-//					int dx = p.x + (img.getWidth() - icon.getWidth()) / 2;
-//					int dy = p.y + (img.getHeight() - icon.getHeight()) / 2;
-//					g2.drawImage(icon, dx, dy, null);
-//				}
-				// draw green paralization effect
-				BufferedImage[] expl = commons.colony().explosions.get(ExplosionType.GROUND_GREEN);
-				int idx = (PARALIZED_TTL - u.paralizedTTL) % expl.length;
-
-				BufferedImage icon = expl[idx];
-				int dx = p.x + (img.getWidth() - icon.getWidth()) / 2;
-				int dy = p.y + (img.getHeight() - icon.getHeight()) / 2;
-				g2.drawImage(icon, dx, dy, null);
-			}
 		}
 	}
 	/**
@@ -3614,9 +3608,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		 */
 		public void apply() {
 			unit.path.addAll(path);
-			if (unit.path.size() > 0) {
-				unit.path.remove(0); // remove current position
-			}
 			unit.inMotionPlanning = false;
 			unit.yieldTTL = 0;
 		}
@@ -3647,15 +3638,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		pathfinding.isPassable = new Func1<Location, Boolean>() {
 			@Override
 			public Boolean invoke(Location value) {
-				if (surface().placement.canPlaceBuilding(value.x, value.y)) {
-					for (GroundwarUnit u : units) {
-						if (((int)(u.x) == value.x && (int)(u.y) == value.y)) {
-							return (!u.path.isEmpty() && u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
-						}
-					}
-					return true;
-				}
-				return false;
+				return isPassable(value.x, value.y);
 			}
 		};
 		pathfinding.estimation = new Func2<Location, Location, Integer>() {
@@ -3671,6 +3654,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					return 1000;
 				}
 				return 1414;
+			}
+		};
+		pathfinding.trueDistance = new Func2<Location, Location, Integer>() {
+			@Override
+			public Integer invoke(Location t, Location u) {
+				return (int)(1000 * Math.hypot(t.x - u.x, t.y - u.y));
 			}
 		};
 	}
@@ -3895,7 +3884,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (u.paralizedTTL == 0) {
 				u.paralized = null;
 			}
-			return;
 		}
 		if (u.isDestroyed()) {
 			return;
@@ -3926,156 +3914,20 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			u.phase++;
 			if (u.phase >= u.maxPhase()) {
 				if (u.attackUnit != null) {
-					// damage on impact no matter who is there
-					if (u.model.type == GroundwarUnitType.ARTILLERY) {
-						damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area, u.owner);
-					} else
-					if (u.model.type == GroundwarUnitType.KAMIKAZE && u.hp * 10 < u.model.hp) {
-						special(u);
-					} else
-					if (unitWithinRange(u, u.attackUnit)) {
-						if (u.model.type == GroundwarUnitType.SELF_REPAIR_TANK
-								|| u.model.type == GroundwarUnitType.TANK
-								) {
-							if (!u.attackUnit.isDestroyed()) {
-								u.attackUnit.damage(u.model.damage);
-								if (u.attackUnit.isDestroyed()) {
-									effectSound(u.attackUnit.model.destroy);
-									createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
-									// if the unit destroyed was a paralizer, deparalize everyone
-									if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
-										for (GroundwarUnit u2 : units) {
-											if (u2.paralized == u.attackUnit) {
-												u2.paralized = null;
-												u2.paralizedTTL = 0;
-											}
-										}
-									}
-									
-									u.attackUnit = null;
-								}
-							} else {
-								u.attackUnit = null;
-							}
-						}
-					}
-					u.cooldown = u.model.delay;
+					attackUnitEndPhase(u);
 				} else
 				if (u.attackBuilding != null) {
-					// for rocket sleds, damage is inflicted by the rocket impact
-					if (u.model.type != GroundwarUnitType.ROCKET_SLED) {
-						damageBuilding(u.attackBuilding, u.model.damage);
-					} else
-					if (u.model.type == GroundwarUnitType.KAMIKAZE && u.hp * 10 < u.model.hp) {
-						special(u);
-					} else
-					if (u.attackBuilding.isDestroyed()) {
-						// TODO demolish animation
-						u.attackBuilding = null;
-					}
+					attackBuildingEndPhase(u);
 				}
 				u.phase = 0;
 			}
 		} else 
 		if (u.paralizedTTL == 0) {
 			if (u.attackUnit != null && !u.attackUnit.isDestroyed()) {
-				// if within range
-				if (unitWithinRange(u, u.attackUnit)) {
-					if (u.nextMove != null) {
-						u.path.clear();
-						u.path.add(u.nextMove);
-					} else
-					if (rotateStep(u, Location.of((int)u.attackUnit.x, (int)u.attackUnit.y))) {
-						if (u.cooldown <= 0) {
-							u.phase++;
-							if (u.model.fire != null) {
-								effectSound(u.model.fire);
-							}
-							if (u.model.type == GroundwarUnitType.PARALIZER) {
-								if (u.attackUnit.paralized == null) {
-									u.attackUnit.paralized = u;
-									u.attackUnit.paralizedTTL = PARALIZED_TTL; // FIXME paralize time duration
-									// deparalize target of a paralizer
-									if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
-										for (GroundwarUnit u2 : units) {
-											if (u2.paralized == u.attackUnit) {
-												u2.paralized = null;
-												u2.paralizedTTL = 0;
-											}
-										}
-									}
-								} else {
-									// if target already paralized, look for another
-									u.attackUnit = null;
-								}
-							}
-							if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
-								createRocket(u, u.attackUnit.x, u.attackUnit.y);
-							}
-						} else {
-							u.cooldown -= SIMULATION_DELAY;
-						}
-					}
-				} else {
-					if (u.path.isEmpty()) {
-						// plot path
-						u.inMotionPlanning = true;
-						pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
-					} else {
-						Location ep = u.path.get(u.path.size() - 1);
-						// if the target unit moved since last
-						double dx = ep.x - u.attackUnit.x;
-						double dy = ep.y - u.attackUnit.y;
-						if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
-							u.path.clear();
-							u.inMotionPlanning = true;
-							pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
-						}
-					}
-				}
+				approachTargetUnit(u);
 			} else 
 			if (u.attackBuilding != null && !u.attackBuilding.isDestroyed()) {
-				if (unitWithinRange(u, u.attackBuilding)) {
-					if (u.nextMove != null) {
-						u.path.clear();
-						u.path.add(u.nextMove);
-					} else
-					if (rotateStep(u, centerCellOf(u.attackBuilding))) {
-						if (u.cooldown <= 0) {
-							u.phase++;
-							if (u.model.fire != null) {
-								effectSound(u.model.fire);
-							}
-							
-							if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
-								Location loc = centerCellOf(u.attackBuilding);
-								createRocket(u, loc.x, loc.y);
-							}
-							u.cooldown = u.model.delay;
-						} else {
-							u.cooldown -= SIMULATION_DELAY;
-						}
-					}
-				} else {
-					if (u.path.isEmpty()) {
-						if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
-							// plot path to the building
-							u.inMotionPlanning = true;
-							pathsToPlan.add(new PathPlanning(u.location(), centerCellOf(u.attackBuilding), u));
-						} else {
-							// plot path outside the minimum range
-							Location c = centerCellOf(u.attackBuilding);
-							double angle = world().random().nextDouble() * 2 * Math.PI;
-							Location c1 = Location.of(
-									(int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
-									(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
-							);
-							
-							u.inMotionPlanning = true;
-							pathsToPlan.add(new PathPlanning(u.location(), c1, u));
-						}
-					}
-				}
+				approachTargetBuilding(u);
 			} else {
 				if (u.attackBuilding != null && u.attackBuilding.isDestroyed()) {
 					stop(u);
@@ -4096,20 +3948,189 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 				}
 			}
-			
-		}
-		if (!u.path.isEmpty()) {
-			moveUnit(u);
-			if (u.nextMove == null) {
-				Location loc = Location.of((int)u.x, (int)u.y);
-				Mine m = mines.get(loc);
-				if (m != null && m.owner != u.owner) {
-					effectSound(SoundType.EXPLOSION_MEDIUM);
-					Point pt = centerOf(loc);
-					createExplosion(pt.x, pt.y, ExplosionType.GROUND_RED);
-					damageArea(u.x, u.y, m.damage, 1, m.owner);
-					mines.remove(loc);
+			if (!u.path.isEmpty()) {
+				moveUnit(u);
+				if (u.nextMove == null) {
+					Location loc = Location.of((int)u.x, (int)u.y);
+					Mine m = mines.get(loc);
+					if (m != null && m.owner != u.owner) {
+						effectSound(SoundType.EXPLOSION_MEDIUM);
+						Point pt = centerOf(loc);
+						createExplosion(pt.x, pt.y, ExplosionType.GROUND_RED);
+						damageArea(u.x, u.y, m.damage, 1, m.owner);
+						mines.remove(loc);
+					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * Approach the target building.
+	 * @param u the unit who is attacking
+	 */
+	void approachTargetBuilding(GroundwarUnit u) {
+		if (unitWithinRange(u, u.attackBuilding)) {
+			if (u.nextMove != null) {
+				u.path.clear();
+				u.path.add(u.nextMove);
+			} else
+			if (rotateStep(u, centerCellOf(u.attackBuilding))) {
+				if (u.cooldown <= 0) {
+					u.phase++;
+					if (u.model.fire != null) {
+						effectSound(u.model.fire);
+					}
+					
+					if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+						Location loc = centerCellOf(u.attackBuilding);
+						createRocket(u, loc.x, loc.y);
+					}
+					u.cooldown = u.model.delay;
+				} else {
+					u.cooldown -= SIMULATION_DELAY;
+				}
+			}
+		} else {
+			if (u.path.isEmpty()) {
+				if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
+					// plot path to the building
+					u.inMotionPlanning = true;
+					pathsToPlan.add(new PathPlanning(u.location(), centerCellOf(u.attackBuilding), u));
+				} else {
+					// plot path outside the minimum range
+					Location c = centerCellOf(u.attackBuilding);
+					double angle = world().random().nextDouble() * 2 * Math.PI;
+					Location c1 = Location.of(
+							(int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
+							(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
+					);
+					
+					u.inMotionPlanning = true;
+					pathsToPlan.add(new PathPlanning(u.location(), c1, u));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Approach the target unit.
+	 * @param u the unit who is attacking
+	 */
+	void approachTargetUnit(GroundwarUnit u) {
+		// if within range
+		if (unitWithinRange(u, u.attackUnit)) {
+			if (u.nextMove != null) {
+				u.path.clear();
+				u.path.add(u.nextMove);
+			} else
+			if (rotateStep(u, Location.of((int)u.attackUnit.x, (int)u.attackUnit.y))) {
+				if (u.cooldown <= 0) {
+					u.phase++;
+					if (u.model.fire != null) {
+						effectSound(u.model.fire);
+					}
+					if (u.model.type == GroundwarUnitType.PARALIZER) {
+						if (u.attackUnit.paralized == null) {
+							u.attackUnit.paralized = u;
+							u.attackUnit.paralizedTTL = PARALIZED_TTL; // FIXME paralize time duration
+							// deparalize target of a paralizer
+							if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
+								for (GroundwarUnit u2 : units) {
+									if (u2.paralized == u.attackUnit) {
+										u2.paralized = null;
+										u2.paralizedTTL = 0;
+									}
+								}
+							}
+						} else {
+							// if target already paralized, look for another
+							u.attackUnit = null;
+						}
+					}
+					if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+						createRocket(u, u.attackUnit.x, u.attackUnit.y);
+					}
+				} else {
+					u.cooldown -= SIMULATION_DELAY;
+				}
+			}
+		} else {
+			if (u.path.isEmpty()) {
+				// plot path
+				u.inMotionPlanning = true;
+				pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
+			} else {
+				Location ep = u.path.get(u.path.size() - 1);
+				// if the target unit moved since last
+				double dx = ep.x - u.attackUnit.x;
+				double dy = ep.y - u.attackUnit.y;
+				if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
+					u.path.clear();
+					u.inMotionPlanning = true;
+					pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Attack the target building.
+	 * @param u the unit who is attacking
+	 */
+	void attackBuildingEndPhase(GroundwarUnit u) {
+		u.cooldown = u.model.delay;
+		// for rocket sleds, damage is inflicted by the rocket impact
+		if (u.model.type == GroundwarUnitType.KAMIKAZE 
+		&& u.hp * 10 < u.model.hp) {
+			special(u);
+		} else
+		if (u.model.type != GroundwarUnitType.ROCKET_SLED) {
+			damageBuilding(u.attackBuilding, u.model.damage);
+		}
+		
+		if (u.attackBuilding.isDestroyed()) {
+			// TODO demolish animation
+			u.attackBuilding = null;
+		}
+	}
+
+	/**
+	 * Attack the target unit.
+	 * @param u the unit who is attacking
+	 */
+	void attackUnitEndPhase(GroundwarUnit u) {
+		u.cooldown = u.model.delay;
+		if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+			return;
+		}
+		if (u.model.type == GroundwarUnitType.ARTILLERY) {
+			damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area, u.owner);
+		} else
+		if (u.model.type == GroundwarUnitType.KAMIKAZE 
+			&& u.hp * 10 < u.model.hp) {
+			special(u);
+		} else
+		if (unitWithinRange(u, u.attackUnit)) {
+			if (!u.attackUnit.isDestroyed()) {
+				u.attackUnit.damage(u.model.damage);
+				if (u.attackUnit.isDestroyed()) {
+					effectSound(u.attackUnit.model.destroy);
+					createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
+					// if the unit destroyed was a paralizer, deparalize everyone
+					if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
+						for (GroundwarUnit u2 : units) {
+							if (u2.paralized == u.attackUnit) {
+								u2.paralized = null;
+								u2.paralizedTTL = 0;
+							}
+						}
+					}
+					
+					u.attackUnit = null;
+				}
+			} else {
+				u.attackUnit = null;
 			}
 		}
 	}
@@ -4493,9 +4514,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (u.path.size() > 0) {
 			final Location current = Location.of((int)u.x, (int)u.y);
 			final Location goal = u.path.get(u.path.size() - 1);
+			u.path.clear();
 			u.nextMove = null;
 			u.nextRotate = null;
-			u.path.clear();
 			u.inMotionPlanning = true;
 			pathsToPlan.add(new PathPlanning(current, goal, u));
 		}
@@ -4637,12 +4658,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				Building b = getBuildingAt(lm);
 				if (b != null && planet().owner != u.owner 
 						&& u.model.type != GroundwarUnitType.PARALIZER) {
+					stop(u);
 					u.attackBuilding = b;
 					u.attackUnit = null;
 				} else {
 					for (GroundwarUnit u1 : units) {
 						if (u1 != u && u1.owner != u.owner
 								&& (int)u1.x == lm.x && (int)u1.y == lm.y) {
+							stop(u);
 							attacked = true;
 							u.attackUnit = u1;
 							u.attackBuilding = null;
@@ -5188,7 +5211,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	@Override
 	public void attack(GroundwarUnit u, GroundwarUnit target) {
-		if (directAttackUnits.contains(u.model.type) && u.owner != target.owner) {
+		if (directAttackUnits.contains(u.model.type) 
+				&& u.owner != target.owner
+				&& u.attackUnit != target) {
+			stop(u);
 			u.attackBuilding = null;
 			u.attackUnit = target;
 		}
@@ -5209,8 +5235,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	@Override
 	public void attack(GroundwarUnit u, Building target) {
-		if (directAttackUnits.contains(u.model.type) && u.owner != planet().owner 
-				&& u.model.type != GroundwarUnitType.PARALIZER) {
+		if (directAttackUnits.contains(u.model.type) 
+				&& u.owner != planet().owner && u.attackBuilding != target) {
+			stop(u);
 			u.attackBuilding = target;
 			u.attackUnit = null;
 		}
@@ -5221,17 +5248,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	@Override
 	public void move(GroundwarUnit u, int x, int y) {
-		u.path.clear();
-		u.attackBuilding = null;
-		u.attackUnit = null;
-		u.inMotionPlanning = true;
-
-		// the next immediate movement should be kept
-		if (u.nextMove != null) {
-			u.path.add(u.nextMove);
-		}
+		stop(u);
 		Location lu = Location.of((int)u.x, (int)u.y);
 		Location lm = Location.of(x, y);
+		u.inMotionPlanning = true;
 		pathsToPlan.add(new PathPlanning(lu, lm, u));
 	}
 	@Override
@@ -5255,6 +5275,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	@Override
 	public boolean hasMine(int x, int y) {
 		return mines.containsKey(Location.of(x, y));
+	}
+	@Override
+	public boolean isPassable(int x, int y) {
+		if (surface().placement.canPlaceBuilding(x, y)) {
+			for (GroundwarUnit u : units) {
+				if (((int)(u.x) == x && (int)(u.y) == y)) {
+					return (!u.path.isEmpty() 
+							&& u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 }
 

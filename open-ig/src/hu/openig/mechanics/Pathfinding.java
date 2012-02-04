@@ -12,9 +12,6 @@ import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.utils.U;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -42,32 +39,7 @@ public class Pathfinding extends AStarSearch<Location> {
 	 * @return the path, empty if the target is completely unreachable
 	 */
 	public List<Location> searchApproximate(final Location initial, final Location destination) {
-		List<Location> result = search(initial, destination);
-		if (result.size() == 0) {
-			// try locating a passable target nearby
-			int maxradius = Math.max(Math.abs(destination.x - initial.x), Math.abs(destination.y - initial.y));
-			int r = 1;
-			while (r < maxradius) {
-				List<Location> locations = new ArrayList<Location>(squareAround(destination, r));
-				Collections.sort(locations, new Comparator<Location>() {
-					@Override
-					public int compare(Location o1, Location o2) {
-						int d1 = distance2(initial, destination, o1);
-						int d2 = distance2(initial, destination, o2);
-						return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
-					}
-				});
-				for (Location found : locations) {
-					List<Location> result2 = search(initial, found);
-					if (result2.size() > 0) {
-						return result2;
-					}
-				}
-				r++;
-			}
-			return Collections.emptyList();
-		}
-		return result;
+		return search(initial, destination).second;
 	}
 	/**
 	 * Computes the sum of the distance squares between (target and source1) and (target and source2).
