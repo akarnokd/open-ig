@@ -370,6 +370,22 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				scriptedFleets.add(xsf.getInt("id"));
 			}
 		}
+		
+		Map<String, Mission> mss = U.newHashMap();
+		for (Mission m : missions) {
+			mss.put(m.getClass().getName(), m);
+		}
+		for (XElement xmss : in.childrenWithName("mission-states")) {
+			for (XElement xms : xmss.childrenWithName("mission")) {
+				String clazz = xms.get("class");
+				Mission m = mss.get(clazz);
+				if (m == null) {
+					System.err.printf("Warning: Mission %s instance not found.%n", clazz);
+				} else {
+					m.load(xms);
+				}
+			}
+		}
 	}
 
 	/**
@@ -400,6 +416,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onAllyAgainst(Player first, Player second, Player commonEnemy) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onAllyAgainst(first, second, commonEnemy);
 		}
 	}
@@ -407,6 +426,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onBattleComplete(Player player, BattleInfo battle) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onBattleComplete(player, battle);
 		}		
 	}
@@ -414,6 +436,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onBuildingComplete(planet, building);
 		}
 	}
@@ -421,6 +446,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onColonized(Planet planet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onColonized(planet);
 		}
 	}
@@ -428,6 +456,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onConquered(Planet planet, Player previousOwner) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onConquered(planet, previousOwner);
 		}
 	}
@@ -435,6 +466,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onDestroyed(Fleet winner, Fleet loser) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onDestroyed(winner, loser);
 		}
 	}
@@ -442,18 +476,27 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onDiscovered(Player player, Fleet fleet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onDiscovered(player, fleet);
 		}
 	}
 	@Override
 	public void onDiscovered(Player player, Planet planet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onDiscovered(player, planet);
 		}
 	}
 	@Override
 	public void onDiscovered(Player player, Player other) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onDiscovered(player, other);
 		}
 	}
@@ -461,12 +504,18 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onFleetAt(Fleet fleet, double x, double y) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onFleetAt(fleet, x, y);
 		}
 	}
 	@Override
 	public void onFleetAt(Fleet fleet, Fleet other) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onFleetAt(fleet, other);
 		}
 	}
@@ -474,6 +523,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onFleetAt(fleet, planet);
 		}
 	}
@@ -481,6 +533,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onInventoryAdd(Planet planet, InventoryItem item) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onInventoryAdd(planet, item);
 		}
 	}
@@ -488,6 +543,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onInventoryRemove(Planet planet, InventoryItem item) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onInventoryRemove(planet, item);
 		}
 	}
@@ -547,6 +605,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onLost(Fleet fleet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onLost(fleet);
 		}
 	}
@@ -554,6 +615,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onLost(Planet planet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onLost(planet);
 		}
 
@@ -561,12 +625,18 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onLostSight(Player player, Fleet fleet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onLostSight(player, fleet);
 		}		
 	}
 	@Override
 	public void onMessageSeen(String id) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onMessageSeen(id);
 		}
 	}
@@ -584,6 +654,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onPlanetCured(Planet planet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onPlanetCured(planet);
 		}
 	}
@@ -591,6 +664,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onPlanetInfected(Planet planet) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onPlanetInfected(planet);
 		}
 	}
@@ -598,6 +674,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onPlayerBeaten(Player player) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onPlayerBeaten(player);
 		}
 	}
@@ -605,30 +684,45 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onProduced(Player player, ResearchType rt) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onProduced(player, rt);
 		}		
 	}
 	@Override
 	public void onRepairComplete(Planet planet, Building building) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onRepairComplete(planet, building);
 		}		
 	}
 	@Override
 	public void onResearched(Player player, ResearchType rt) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onResearched(player, rt);
 		}		
 	}
 	@Override
 	public void onSoundComplete(String audio) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onSoundComplete(audio);
 		}		
 	}
 	@Override
 	public void onStance(Player first, Player second) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onStance(first, second);
 		}
 	}
@@ -656,6 +750,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		for (Mission m : missions) {
 			if (lastLevel != world.level) {
 				onLevelChanged();
+			}
+			if (!m.applicable()) {
+				continue;
 			}
 			m.onTime();
 		}
@@ -749,6 +846,12 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				xsf.set("name", f.name);
 			}
 		}
+		XElement xmss = out.add("mission-states");
+		for (Mission m : missions) {
+			XElement xms = xmss.add("mission");
+			xms.set("class", m.getClass().getName());
+			m.save(xms);
+		}
 	}
 	@Override
 	public VideoMessage send(String id) {
@@ -813,36 +916,54 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onSpacewarFinish(war);
 		}
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onSpacewarStart(war);
 		}
 	}
 	@Override
 	public void onSpacewarStep(SpacewarWorld war) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onSpacewarStep(war);
 		}		
 	}
 	@Override
 	public void onGroundwarFinish(GroundwarWorld war) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onGroundwarFinish(war);
 		}
 	}
 	@Override
 	public void onGroundwarStart(GroundwarWorld war) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onGroundwarStart(war);
 		}		
 	}
 	@Override
 	public void onGroundwarStep(GroundwarWorld war) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onGroundwarStep(war);
 		}
 	}
@@ -925,18 +1046,27 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onAutobattleFinish(battle);
 		}
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onAutobattleStart(battle);
 		}
 	}
 	@Override
 	public void onTalkCompleted() {
 		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
 			m.onTalkCompleted();
 		}		
 	}
@@ -1095,5 +1225,14 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		clearMissionTimes(func);
 		clearTimeouts(func);
 		clearObjectives(func);
+		for (Mission m : missions) {
+			if (m.getClass().getName().endsWith("n" + j)) {
+				m.reset();
+			}
+		}
+	}
+	@Override
+	public boolean applicable() {
+		return true;
 	}
 }

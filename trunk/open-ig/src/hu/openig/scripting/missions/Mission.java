@@ -663,4 +663,24 @@ public abstract class Mission implements GameScriptingEvents {
 		}
 		return null;
 	}
+	/**
+	 * Load the state.
+	 * @param xmission the mission XML
+	 */
+	public void load(XElement xmission) {
+		
+	}
+	/**
+	 * Save the state.
+	 * @param xmission the mission XML
+	 */
+	public void save(XElement xmission) {
+		
+	}
+	/** @return Check if this mission is still applicable (e.g., level check). */
+	public abstract boolean applicable();
+	/** Reset state to default. */
+	public void reset() {
+		
+	}
 }

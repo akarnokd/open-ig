@@ -199,18 +199,14 @@ public class Mission2 extends Mission {
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
-		if (world.level == 1) {
-			for (int i = 1; i <= 3; i++) {
-				spacewarFinishTraderVsPirate(war, i);
-			}
+		for (int i = 1; i <= 3; i++) {
+			spacewarFinishTraderVsPirate(war, i);
 		}
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (world.level == 1) {
-			for (int i = 1; i <= 3; i++) {
-				spacewarStartTraderVsPirate(war, i);
-			}
+		for (int i = 1; i <= 3; i++) {
+			spacewarStartTraderVsPirate(war, i);
 		}
 	}
 	/**
@@ -331,46 +327,46 @@ public class Mission2 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (world.level == 1) {
-			for (int task = 1; task <= 3; task++) {
-				if (isMissionSpacewar(battle, "Mission-2-Task-" + task)) {
-					Player trader = player("Traders");
-					boolean traderSurvived = false;
-					for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
-						if (ii.owner == trader) {
-							traderSurvived = true;
-							battle.attacker.inventory.remove(ii);
-						}
+		for (int task = 1; task <= 3; task++) {
+			if (isMissionSpacewar(battle, "Mission-2-Task-" + task)) {
+				Player trader = player("Traders");
+				boolean traderSurvived = false;
+				for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+					if (ii.owner == trader) {
+						traderSurvived = true;
+						battle.attacker.inventory.remove(ii);
 					}
-					completeTaskN(traderSurvived, task);
 				}
+				completeTaskN(traderSurvived, task);
 			}
 		}
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
-		if (world.level == 1) {
-			for (int task = 1; task <= 3; task++) {
-				if (isMissionSpacewar(battle, "Mission-2-Task-" + task)) {
-					Player traders = player("Traders");
-					Player pirates = player("Pirates");
-					Fleet tf = null;
-					Fleet pf = null;
-					for (int i : helper.scriptedFleets()) {
-						Fleet f = fleet(i);
-						if (f.owner == traders) {
-							tf = f;
-						} else
-						if (f.owner == pirates) {
-							pf = f;
-						}
+		for (int task = 1; task <= 3; task++) {
+			if (isMissionSpacewar(battle, "Mission-2-Task-" + task)) {
+				Player traders = player("Traders");
+				Player pirates = player("Pirates");
+				Fleet tf = null;
+				Fleet pf = null;
+				for (int i : helper.scriptedFleets()) {
+					Fleet f = fleet(i);
+					if (f.owner == traders) {
+						tf = f;
+					} else
+					if (f.owner == pirates) {
+						pf = f;
 					}
-					if (battle.targetFleet == tf) {
-						battle.targetFleet = pf;
-					}
-					battle.attacker.inventory.addAll(tf.inventory);
 				}
+				if (battle.targetFleet == tf) {
+					battle.targetFleet = pf;
+				}
+				battle.attacker.inventory.addAll(tf.inventory);
 			}
 		}
+	}
+	@Override
+	public boolean applicable() {
+		return world.level == 1;
 	}
 }

@@ -34,10 +34,11 @@ import java.util.List;
  */
 public class Mission7 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 2;
+	}
+	@Override
 	public void onTime() {
-		if (world.level != 2) {
-			return;
-		}
 		// a week after the initial garthog attack
 		Objective m6 = helper.objective("Mission-6");
 		Objective m7 = helper.objective("Mission-7");
@@ -274,27 +275,18 @@ public class Mission7 extends Mission {
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
-		if (world.level != 2) {
-			return;
-		}
 		for (int i = 1; i <= 2; i++) {
 			spacewarFinishTraderVsPirate(war, i);
 		}
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (world.level != 2) {
-			return;
-		}
 		for (int i = 1; i <= 2; i++) {
 			spacewarStartTraderVsPirate(war, i);
 		}
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (world.level != 2) {
-			return;
-		}
 		for (int task = 1; task <= 2; task++) {
 			if (isMissionSpacewar(battle, "Mission-7-Task-" + task)) {
 				Player trader = player("Traders");
@@ -311,9 +303,6 @@ public class Mission7 extends Mission {
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
-		if (world.level != 2) {
-			return;
-		}
 		for (int task = 1; task <= 2; task++) {
 			if (isMissionSpacewar(battle, "Mission-7-Task-" + task)) {
 				Player traders = player("Traders");

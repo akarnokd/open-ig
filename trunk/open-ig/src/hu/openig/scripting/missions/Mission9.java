@@ -30,10 +30,11 @@ import java.awt.geom.Point2D;
  */
 public class Mission9 extends Mission {
 	@Override
+	public boolean applicable() {
+		return world.level == 2;
+	}
+	@Override
 	public void onTime() {
-		if (world.level != 2) {
-			return;
-		}
 		Objective m7t1 = helper.objective("Mission-7-Task-1");
 		Objective m9 = helper.objective("Mission-9");
 		if (m7t1.state != ObjectiveState.ACTIVE
@@ -121,9 +122,6 @@ public class Mission9 extends Mission {
 	}
 	@Override
 	public void onMessageSeen(String id) {
-		if (world.level != 2) {
-			return;
-		}
 		if ("San Sterling-Smuggler".equals(id)) {
 			if (findTaggedFleet("Mission-9-Smuggler", player("Traders")) == null) {
 				helper.setTimeout("Mission-9-Objective", 1000);
@@ -140,9 +138,6 @@ public class Mission9 extends Mission {
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
-		if (world.level != 2) {
-			return;
-		}
 		if (helper.isActive("Mission-9") 
 				&& war.battle().attacker.owner == player 
 				&& war.battle().targetFleet != null) {
@@ -196,9 +191,6 @@ public class Mission9 extends Mission {
 	}
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
-		if (world.level != 2) {
-			return;
-		}
 		if (helper.isActive("Mission-9")) {
 			if (planet.id.equals("San Sterling") 
 					&& hasTag(fleet, "Mission-9-Smuggler")) {
@@ -211,9 +203,6 @@ public class Mission9 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (world.level != 2) {
-			return;
-		}
 		if (isMissionSpacewar(battle, "Mission-9")) {
 			Player traders = player("Traders");
 			if (battle.targetFleet != null && battle.targetFleet.owner == traders) {
