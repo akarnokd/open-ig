@@ -80,4 +80,11 @@ public interface GroundwarWorld {
 	 * @return true
 	 */
 	boolean hasMine(int x, int y);
+	/**
+	 * Check if the given map coordinate is passable.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return true if passable
+	 */
+	boolean isPassable(int x, int y);
 }

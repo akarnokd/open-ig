@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Func1;
 import hu.openig.core.Func2;
+import hu.openig.core.Pair;
 import hu.openig.utils.U;
 
 import java.util.Collections;
@@ -33,13 +34,16 @@ public class AStarSearch<T> {
 	public Func2<T, T, Integer> distance;
 	/** The neighbor function. */
 	public Func1<T, List<T>> neighbors;
+	/** The distance function between arbitrary locations. */
+	public Func2<T, T, Integer> trueDistance;
 	/** 
 	 * Search for a path.
 	 * @param initial the initial location
 	 * @param destination the destination location
-	 * @return the sortest path or an empty list if no such path exists. 
+	 * @return pair of true and list of locations if exact route found,
+	 * false and list with a path that brings close to the target. 
 	 */
-	public List<T> search(final T initial, final T destination) {
+	public Pair<Boolean, List<T>> search(final T initial, final T destination) {
 		Set<T> closedSet = U.newHashSet();
 		Map<T, T> cameFrom = U.newHashMap();
 		final Map<T, Integer> gScore = U.newHashMap();
@@ -68,7 +72,7 @@ public class AStarSearch<T> {
 			T current = openSet.get(0);
 			
 			if (current.equals(destination)) {
-				return reconstructPath(cameFrom, destination);
+				return Pair.of(true, reconstructPath(cameFrom, destination));
 			}
 			
 			openSet.remove(0);
@@ -101,7 +105,28 @@ public class AStarSearch<T> {
 				}
 			}
 		}
-		return Collections.emptyList();
+		
+		// if we get here, there was no direct path available
+		// find a target location which minimizes initial-L-destination
+		
+		if (closedSet.isEmpty()) {
+			return Pair.of(false, Collections.<T>emptyList());
+		}
+		T nearest = Collections.min(closedSet, new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				int d1 = trueDistance.invoke(destination, o1);
+				int d2 = trueDistance.invoke(destination, o2);
+				int c = U.compare(d1, d2);
+				if (c == 0) {
+					d1 = trueDistance.invoke(initial, o1);
+					d2 = trueDistance.invoke(initial, o2);
+					c = U.compare(d1, d2);
+				}
+				return c;
+			}
+		});
+		return Pair.of(true, reconstructPath(cameFrom, nearest));
 	}
 	/**
 	 * Reconstructs the path from the traceback map.
