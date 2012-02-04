@@ -83,4 +83,48 @@ public class GroundwarUnit extends GroundwarObject {
 	public String toString() {
 		return item.type.id + " [hp = " + hp + "]";
 	}
+	/**
+	 * @return true if the unit has a target which is still operational
+	 */
+	public boolean hasValidTarget() {
+		if (attackBuilding == null && attackUnit == null) {
+			return false;
+		}
+		if (attackBuilding != null && attackBuilding.isDestroyed()) {
+			return false;
+		}
+		if (attackUnit != null && attackUnit.isDestroyed()) {
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * Returns the distance from the other unit.
+	 * @param u2 the other unit
+	 * @return the distance
+	 */
+	public double distance(GroundwarUnit u2) {
+		return Math.hypot(x - u2.x, y - u2.y);
+	}
+	/**
+	 * Returns the distance from the map location.
+	 * @param loc the other unit
+	 * @return the distance
+	 */
+	public double distance(Location loc) {
+		return Math.hypot(x - loc.x, y - loc.y);
+	}
+	/** @return true if the unit is moving. */
+	public boolean isMoving() {
+		return nextMove != null || !path.isEmpty();
+	}
+	/**
+	 * @return the target cell of movement or null if not moving
+	 */
+	public Location target() {
+		if (path.isEmpty()) {
+			return nextMove;
+		}
+		return path.get(path.size() - 1);
+	}
 }
