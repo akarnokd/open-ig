@@ -3,6 +3,18 @@
 <wiki:toc max_depth="2" />
 
 = Recent =
+
+== February, 2012 ==
+
+*February 4, 2012*
+
+A new release with a few enhancements:
+
+  * Mission 12
+  * Mission 14
+  * Groundwar AI
+  * Wife
+
 == January, 2012 ==
 
 *January 29, 2012*
