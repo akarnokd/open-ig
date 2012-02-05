@@ -512,7 +512,7 @@
 	<entry key='colonyinfo.hospital'  >Hospital     : %d / %d men</entry>
 	<entry key='colonyinfo.food'      >Food         : %d / %d men</entry>
 	<entry key='colonyinfo.energy'    >Energy       : %d / %d kWh</entry>
-	<entry key='colonyinfo.police'    >Police       : %d / %d lakos</entry>
+	<entry key='colonyinfo.police'    >Police       : %d / %d men</entry>
 	<entry key='colonyinfo.tax-trade' >Tax : %d cr    Trade : %d cr</entry>
 	<entry key='colonyinfo.tax'       >Tax income   : %d cr</entry>
 	<entry key='colonyinfo.trade'     >Trade income : %d cr</entry>
