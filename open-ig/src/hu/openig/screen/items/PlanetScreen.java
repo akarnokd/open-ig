@@ -3776,7 +3776,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (bi.attacker.owner == winner) {
 			planet().takeover(winner);
 
-			BattleSimulator.applyPlanetConquered(planet(), 1500);
+			BattleSimulator.applyPlanetConquered(planet(), 1000);
 			
 		} else {
 			BattleSimulator.applyPlanetDefended(planet(), 750);
