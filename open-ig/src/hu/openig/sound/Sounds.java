@@ -11,6 +11,7 @@ package hu.openig.sound;
 import hu.openig.core.Configuration;
 import hu.openig.core.Func0;
 import hu.openig.core.ResourceLocator;
+import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.model.SoundType;
 import hu.openig.utils.IOUtils;
@@ -92,7 +93,11 @@ public class Sounds {
 	public Sounds(ResourceLocator rl) {
 		for (SoundType st : SoundType.values()) {
 			try {
-				AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rl.get(st.resource, ResourceType.AUDIO).get()));
+				ResourcePlace rp = rl.get(st.resource, ResourceType.AUDIO);
+				if (rp == null) {
+					throw new AssertionError("Missing resource: " + rl.language + " " + st.resource);
+				}
+				AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rp.get()));
 				try {
 					AudioFormat af = ain.getFormat();
 					byte[] snd = IOUtils.load(ain);
