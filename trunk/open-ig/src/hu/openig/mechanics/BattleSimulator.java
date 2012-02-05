@@ -916,7 +916,7 @@ public final class BattleSimulator {
 		} else {
 			planet.morale = Math.max(0, planet.morale - 10);
 		}
-		int populationLoss = Math.max(minLosses, Math.min(minLosses * 2, planet.population * 2 / 5));
+		int populationLoss = minLosses; // Math.max(minLosses, Math.min(minLosses * 2, planet.population * 2 / 5));
 		if (hasBunker(planet)) {
 			populationLoss /= 2;
 		}
@@ -936,7 +936,7 @@ public final class BattleSimulator {
 		} else {
 			planet.morale = Math.max(planet.morale - 10, 0);
 		}
-		int populationLoss = Math.max(minLosses, Math.min(minLosses * 2, planet.population * 3 / 10));
+		int populationLoss = minLosses; // Math.max(minLosses, Math.min(minLosses * 2, planet.population * 3 / 10));
 		if (hasBunker(planet)) {
 			populationLoss /= 2;
 		}
