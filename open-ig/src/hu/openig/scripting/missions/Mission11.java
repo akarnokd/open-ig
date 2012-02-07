@@ -23,7 +23,6 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
-import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 
 import java.util.Collections;
@@ -143,8 +142,8 @@ public class Mission11 extends Mission {
 	public void onDiscovered(Player player, Fleet fleet) {
 		if (helper.isActive("Mission-11")) {
 			if (player == this.player && hasTag(fleet, "Mission-11-Garthog")) {
-				world.env.speed1();
-				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+//				world.env.speed1();
+//				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
 				helper.setTimeout("Mission-11-Planet", 2000);
 			}
 		}

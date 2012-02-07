@@ -3800,7 +3800,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return null;
 		}
 		int attackerCount = 0;
-		int defenderCount = guns.size();
+		int defenderCount = 0;
+		for (GroundwarGun g : guns) {
+			if (g.building.enabled) {
+				defenderCount++;
+			}
+		}
 		for (GroundwarUnit u : units) {
 			if (u.owner == planet().owner) {
 				defenderCount++;
@@ -4170,6 +4175,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param g the target gun
 	 */
 	void updateGun(GroundwarGun g) {
+		if (!g.building.enabled) {
+			return;
+		}
 		if (g.phase > 0) {
 			g.phase++;
 			if (g.phase >= g.maxPhase()) {

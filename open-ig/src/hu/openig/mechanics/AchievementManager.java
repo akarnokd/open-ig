@@ -317,14 +317,14 @@ public final class AchievementManager {
 					int shieldCount = 0;
 					int gunCount = 0;
 					for (Building b : p.surface.buildings) {
-						if (b.type.kind.equals("Gun")) {
+						if (b.isOperational() && b.type.kind.equals("Gun")) {
 							gunCount++;
 						} else
-						if (b.type.kind.equals("Shield")) {
+						if (b.isOperational() && b.type.kind.equals("Shield")) {
 							shieldCount++;
 						}
 					}
-					if (shieldCount < 1 && gunCount < 3) {
+					if (shieldCount < 1 || gunCount < 3) {
 						return false;
 					}
 				}

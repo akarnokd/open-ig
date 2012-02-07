@@ -132,9 +132,9 @@ public class MapEditor extends JFrame {
 	/** */
 	private static final long serialVersionUID = -5949479655359917254L;
 	/** The minimum memory required to run Open-IG. */
-	private static final long MINIMUM_MEMORY = 384L;
+	private static final long MINIMUM_MEMORY = 512L;
 	/** The map editor's JAR file version. */
-	public static final String VERSION = "0.51";
+	public static final String VERSION = "0.60";
 	/** The title text. */
 	public static final String TITLE = "Open-IG MapEditor v" + VERSION;
 	/** The main resource locator. */
@@ -441,6 +441,8 @@ public class MapEditor extends JFrame {
 			private Set<String> races = U.newHashSet();
 			/** The loaded text renderer. */
 			TextRenderer txt;
+			/** The loaded labels. */
+			private Labels lbl2;
 			@Override
 			protected Void doInBackground() throws Exception {
 				try {
@@ -453,6 +455,8 @@ public class MapEditor extends JFrame {
 							setLabels(deferredLanguage);							
 						}
 					});
+					lbl2 = new Labels();
+					lbl2.load(rl, "campaign/main");
 					final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 					final WipPort wip = new WipPort(3);
 					try {
@@ -473,7 +477,7 @@ public class MapEditor extends JFrame {
 								try {
 									buildingMap = new BuildingModel(config);
 									buildingMap.processBuildings(rl, "campaign/main/buildings", 
-											new HashMap<String, ResearchType>(), labels, exec, wip);
+											new HashMap<String, ResearchType>(), lbl2, exec, wip);
 								} finally {
 									wip.dec();
 								}
@@ -489,7 +493,6 @@ public class MapEditor extends JFrame {
 					colonyGraphics = new ColonyGFX().load(rl);
 					
 					txt = new TextRenderer(rl);
-					labels.load(rl, "campaign/main");
 					
 					prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
 				} catch (Throwable t) {
@@ -503,6 +506,8 @@ public class MapEditor extends JFrame {
 				MapEditor.this.galaxyModel = galaxyMap;
 				MapEditor.this.buildingModel = buildingMap;
 				renderer.colonyGFX = colonyGraphics;
+				MapEditor.this.labels = lbl2;
+				
 				
 				renderer.selection = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFFFFFF00), null);
 				renderer.areaAccept = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFF00FFFF), null);
