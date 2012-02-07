@@ -149,8 +149,14 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onDiscoverFleet(Fleet fleet) {
-		// TODO Auto-generated method stub
-
+		if ((fleet.targetFleet != null 
+				&& fleet.targetFleet.owner == p)
+				|| (fleet.targetPlanet() != null && fleet.targetPlanet().owner == p)) {
+			if (w.env.config().slowOnEnemyAttack) {
+				w.env.speed1();
+			}
+			w.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+		}
 	}
 
 	@Override

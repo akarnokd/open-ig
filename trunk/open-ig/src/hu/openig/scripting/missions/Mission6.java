@@ -21,7 +21,6 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
-import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 
 /**
@@ -196,15 +195,15 @@ public class Mission6 extends Mission {
 		DefaultAIControls.actionDeploySatellite(garthog, ach, research("SpySatellite1"));
 		garthog.planets.put(ach, PlanetKnowledge.BUILDING);
 	}
-	@Override
-	public void onDiscovered(Player player, Fleet fleet) {
-		if (helper.isActive("Mission-6")) {
-			if (player == this.player && hasTag(fleet, "Mission-6-Garthog")) {
-				world.env.speed1();
-				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
-			}
-		}
-	}
+//	@Override
+//	public void onDiscovered(Player player, Fleet fleet) {
+//		if (helper.isActive("Mission-6")) {
+//			if (player == this.player && hasTag(fleet, "Mission-6-Garthog")) {
+//				world.env.speed1();
+//				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+//			}
+//		}
+//	}
 	/**
 	 * Check if the main ship still exists.
 	 */
