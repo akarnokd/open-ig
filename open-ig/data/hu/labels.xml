@@ -2267,6 +2267,7 @@
 	<entry key='mission-12.report_virus'>Jelentsd a többszörös vírusfertőzést.</entry>
 	<entry key='mission-12.report_virus.desc'>Lépj kapcsolatba az ezredessel a hídon lévő üzenet terminálon keresztül és jelentsd a helyzetet.</entry>
 	<entry key='message.enemy_fleet_detected'>Ellenséges támadó flottát észleltek a radarok.</entry>
+	<entry key='message.enemy_fleet_detected_at'>Ellenséges támadó flottát észleltek a radarok a(z) %s közelében.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
