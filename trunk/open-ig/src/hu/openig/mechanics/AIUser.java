@@ -150,17 +150,24 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onDiscoverFleet(Fleet fleet) {
-		if (fleet.mode == FleetMode.ATTACK && (fleet.targetFleet != null 
-				&& fleet.targetFleet.owner == p)
-				|| (fleet.targetPlanet() != null && fleet.targetPlanet().owner == p)) {
+		if (fleet.mode == FleetMode.ATTACK 
+				&& ((fleet.targetFleet != null && fleet.targetFleet.owner == p)
+				|| (fleet.targetPlanet() != null && fleet.targetPlanet().owner == p))) {
 			if (w.env.config().slowOnEnemyAttack) {
 				w.env.speed1();
 			}
-			Message msg = w.newMessage("message.enemy_fleet_detected");
-			msg.priority = 100;
-			msg.targetFleet = fleet;
-			msg.sound = SoundType.ENEMY_FLEET_DETECTED;
-			p.messageQueue.add(msg);
+			if (fleet.targetFleet != null) {
+				Message msg = w.newMessage("message.enemy_fleet_detected");
+				msg.priority = 100;
+				msg.sound = SoundType.ENEMY_FLEET_DETECTED;
+				p.messageQueue.add(msg);
+			} else {
+				Message msg = w.newMessage("message.enemy_fleet_detected_at");
+				msg.priority = 100;
+				msg.sound = SoundType.ENEMY_FLEET_DETECTED;
+				msg.targetPlanet = fleet.targetPlanet();
+				p.messageQueue.add(msg);
+			}
 		}
 	}
 
