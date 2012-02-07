@@ -400,7 +400,7 @@
 		<hitpoints id='Fortress' space='20000' ground='2000'/>
 		<hitpoints id='Stronghold' space='30000' ground='2500'/>
 		<!-- Individual Fortress HP's for Non Human races -->
-		<hitpoints id='Fortress' player='Garthog' space='2000' ground='1000'/>
+		<hitpoints id='Fortress' player='Garthog' space='20000' ground='1000'/>
 		<hitpoints id='Fortress' player='Morgath' space='20000' ground='2000'/>
 		<hitpoints id='Fortress' player='Sullep' space='20000' ground='2000'/>
 		<hitpoints id='Fortress' player='Ychom' space='20000' ground='2000'/>
