@@ -3010,6 +3010,7 @@
 	<entry key='mission-12.handle_virus_again'>Again: ensure quarantine and hospital availability.</entry>
 	<entry key='mission-12.report_virus'>Report the multiple virus infections.</entry>
 	<entry key='mission-12.report_virus.desc'>Contact the Colonel via the messages terminal on the bridge and report the situation.</entry>
+	<entry key='message.enemy_fleet_detected'>Radars detected enemy attacking fleet.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
