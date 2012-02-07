@@ -3777,6 +3777,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			planet().takeover(winner);
 
 			BattleSimulator.applyPlanetConquered(planet(), 1000);
+
+			// remove unfinished buildings
+			for (Building b : U.newArrayList(planet().surface.buildings)) {
+				if (!b.isComplete()) {
+					planet().surface.removeBuilding(b);
+				}
+			}
+			planet().surface.placeRoads(planet().race, world().buildingModel);
 			
 		} else {
 			BattleSimulator.applyPlanetDefended(planet(), 750);

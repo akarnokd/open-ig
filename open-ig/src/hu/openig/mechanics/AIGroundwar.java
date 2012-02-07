@@ -168,7 +168,7 @@ public class AIGroundwar {
 	private void categorizeObjects() {
 		if (war.planet().owner != p) {
 			for (Building b : war.planet().surface.buildings) {
-				if (b.type.kind.equals("Defensive")) {
+				if (b.enabled && b.type.kind.equals("Defensive")) {
 					targets.add(b);
 				}
 			}

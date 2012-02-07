@@ -12,6 +12,7 @@ import hu.openig.model.AIManager;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetMode;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
@@ -149,13 +150,17 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onDiscoverFleet(Fleet fleet) {
-		if ((fleet.targetFleet != null 
+		if (fleet.mode == FleetMode.ATTACK && (fleet.targetFleet != null 
 				&& fleet.targetFleet.owner == p)
 				|| (fleet.targetPlanet() != null && fleet.targetPlanet().owner == p)) {
 			if (w.env.config().slowOnEnemyAttack) {
 				w.env.speed1();
 			}
-			w.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+			Message msg = w.newMessage("message.enemy_fleet_detected");
+			msg.priority = 100;
+			msg.targetFleet = fleet;
+			msg.sound = SoundType.ENEMY_FLEET_DETECTED;
+			p.messageQueue.add(msg);
 		}
 	}
 
