@@ -41,7 +41,7 @@ public class Mission6 extends Mission {
 			player.setAvailable(research("Fighter2"));
 			createMainShip();
 			
-			helper.setMissionTime("Mission-6", helper.now() + 12);
+			helper.setMissionTime("Mission-6", helper.now());
 			String a = "achievement.captain";
 			if (!world.env.profile().hasAchievement(a)) {
 				world.env.achievementQueue().add(a);
@@ -53,6 +53,7 @@ public class Mission6 extends Mission {
 	 * Creates the main ship for level 2.
 	 */
 	void createMainShip() {
+		Planet ach = planet("Achilles");
 		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip2", player);
 		if (own == null) {
 			own = findTaggedFleet("CampaignMainShip1", player);
@@ -60,7 +61,6 @@ public class Mission6 extends Mission {
 			if (own != null) {
 				f = own.first;
 			} else {
-				Planet ach = planet("Achilles");
 				f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
 			}
 			f.addInventory(research("Fighter2"), 2);
@@ -74,6 +74,9 @@ public class Mission6 extends Mission {
 					setSlot(ii, "hyperdrive", "HyperDrive1", 1);
 				}
 			}
+			// move further away
+			f.x = ach.x - 50;
+			f.y = ach.y - 50;
 		}
 	}
 	@Override
@@ -82,17 +85,10 @@ public class Mission6 extends Mission {
 		checkMainShip();
 		if (helper.canStart("Mission-6")) {
 			helper.showObjective("Mission-6");
-			helper.setTimeout("Mission-6", 13000);
-		}
-		if (helper.isTimeout("Mission-6")) {
-			helper.clearTimeout("Mission-6");
-			incomingMessage("Achilles-Is-Under-Attack");
+//			incomingMessage("Achilles-Is-Under-Attack");
 			createAttackers();
 		}
 		Objective m6 = helper.objective("Mission-6");
-//		if (m6.visible && m6.state == ObjectiveState.ACTIVE) {
-//			checkDistance();
-//		}
 		if (helper.isTimeout("Mission-6-Done")) {
 			helper.clearTimeout("Mission-6-Done");
 			helper.receive("Achilles-Is-Under-Attack").visible = false;
@@ -172,9 +168,9 @@ public class Mission6 extends Mission {
 	 * Create the attacking garthog fleet.
 	 */
 	void createAttackers() {
-		Planet from = planet("Garthog 1");
+		Planet from = planet("Achilles");
 		Player garthog = player("Garthog");
-		Fleet f = createFleet("Garthog.fleet", garthog, from.x, from.y);
+		Fleet f = createFleet(label("Garthog.fleet"), garthog, from.x + 20, from.y + 10);
 		// --------------------------------------------------
 		f.addInventory(research("GarthogFighter"), 10);
 		f.addInventory(research("GarthogDestroyer"), 3);

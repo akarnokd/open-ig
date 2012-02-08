@@ -186,7 +186,7 @@ public final class BattleSimulator {
 				applyPlanetConquered(battle.targetPlanet, 1000);
 			}
 			battle.groundwarWinner = battle.targetPlanet.owner;
-			battle.targetPlanet.surface.placeRoads(battle.targetPlanet.race, world.buildingModel);
+			battle.targetPlanet.rebuildRoads();
 		}
 	}
 	/**
@@ -253,7 +253,7 @@ public final class BattleSimulator {
 				p.surface.removeBuilding(b);
 			}
 		}
-		p.surface.placeRoads(p.race, world.buildingModel);
+		p.rebuildRoads();
 		
 	}
 	/**
@@ -662,7 +662,7 @@ public final class BattleSimulator {
 				}
 			}
 		}
-		p.surface.placeRoads(p.race, world.buildingModel);
+		p.rebuildRoads();
 	}
 	/**
 	 * Demolish space defenses of the planet.
@@ -684,7 +684,7 @@ public final class BattleSimulator {
 				p.inventory.remove(ii);
 			}
 		}
-		p.surface.placeRoads(p.race, world.buildingModel);
+		p.rebuildRoads();
 	}
 	/**
 	 * Compute the planet strength.

@@ -3007,7 +3007,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				
 				planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
 	
-				planet().surface.placeRoads(race(), commons.world().buildingModel);
+				planet().rebuildRoads();
 				
 				placementMode = more && planet().canBuild(building());
 				buildingsPanel.build.down = placementMode;
@@ -3784,13 +3784,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					planet().surface.removeBuilding(b);
 				}
 			}
-			planet().surface.placeRoads(planet().race, world().buildingModel);
+			planet().rebuildRoads();
 			
 		} else {
 			BattleSimulator.applyPlanetDefended(planet(), 750);
 		}
 		
-		planet().surface.placeRoads(planet().race, world().buildingModel);
+		planet().rebuildRoads();
 
 		player().ai.groundBattleDone(this);
 		np.ai.groundBattleDone(this);
@@ -3818,7 +3818,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (u.owner == planet().owner) {
 				defenderCount++;
 			} else {
-				attackerCount++;
+				if (directAttackUnits.contains(u.model.type)) {
+					attackerCount++;
+				}
 			}
 		}
 		// if attacker looses all of its units, the winner is always the defender

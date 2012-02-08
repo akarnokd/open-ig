@@ -761,7 +761,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	void updateCounters() {
 		for (Map.Entry<String, Integer> e : countdowns.entrySet()) {
 			Integer i = e.getValue();
-			e.setValue(Math.max(0, i - world.env.simulationSpeed()));
+			e.setValue(Math.max(0, i - world.env.simulationSpeed() * world.params().simulationRatio()));
 		}
 	}
 	@Override

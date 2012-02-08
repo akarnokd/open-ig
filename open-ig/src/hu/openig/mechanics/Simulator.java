@@ -33,11 +33,11 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.World;
+import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,9 +68,8 @@ public final class Simulator {
 		prepareGlobalStatistics(world);
 		
 		// -------------------------
-		boolean invokeRadar = false;
+		Map<Planet, PlanetStatistics> planetStats = U.newHashMap();
 		
-		Map<Planet, PlanetStatistics> planetStats = new HashMap<Planet, PlanetStatistics>();
 		for (Player player : world.players.values()) {
 			PlanetStatistics all = player.getPlanetStatistics(planetStats);
 			
@@ -90,7 +89,6 @@ public final class Simulator {
 			progressResearch(world, player, all);
 			// result |= player == world.player
 			progressProduction(world, player, all);
-			invokeRadar |= moveFleets(player.ownFleets(), world, planetStats);
 		}
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null && !p.owner.id.equals("Traders")) {
@@ -98,9 +96,6 @@ public final class Simulator {
 			}
 		}
 		
-		if (invokeRadar) {
-			Radar.compute(world);
-		}
 		
 		if (day0 != day1) {
 			
@@ -324,7 +319,7 @@ public final class Simulator {
 			}
 		}
 		if (rebuildroads) {
-			planet.surface.placeRoads(planet.race, world.buildingModel);
+			planet.rebuildRoads();
 		}
 		// search for radar capable inventory
 		for (InventoryItem pii : planet.inventory) {
@@ -662,19 +657,33 @@ public final class Simulator {
 		
 	}
 	/**
+	 * Move all fleets.
+	 * @param world the world
+	 * @return true if repaint will be needed
+	 */
+	public static boolean moveFleets(World world) {
+		boolean radar = false;
+		for (Player p : world.players.values()) {
+			radar |= moveFleets(p.ownFleets(), world);
+		}
+		if (radar) {
+			Radar.compute(world);
+		}
+		return radar;
+	}
+	/**
 	 * Move fleets.
 	 * @param playerFleets the list of fleets
 	 * @param world the world object to indicate battle scenarios
-	 * @param planetStats the planet statistics
 	 * @return true if a fleet was moved and the radar needs to be recalculated
 	 */
-	static boolean moveFleets(List<Fleet> playerFleets, World world, 
-			Map<Planet, PlanetStatistics> planetStats) {
+	static boolean moveFleets(List<Fleet> playerFleets, World world) {
 		boolean invokeRadar = false;
+		double stepMultiplier = 0.25;
 		
 		for (Fleet f : playerFleets) {
 			// regenerate shields
-			regenerateFleet(planetStats, f);
+			regenerateFleet(f);
 			
 			// move fleet
 			Point2D.Double target = null;
@@ -691,7 +700,7 @@ public final class Simulator {
 					
 					f.stop();
 				} else {
-					targetSpeed = getSpeed(f.targetFleet);
+					targetSpeed = getSpeed(f.targetFleet) * stepMultiplier;
 				}
 			} else
 			if (f.targetPlanet() != null) {
@@ -704,7 +713,7 @@ public final class Simulator {
 			}
 			if (target != null) {
 				double dist = Math.sqrt((f.x - target.x) * (f.x - target.x) + (f.y - target.y) * (f.y - target.y));
-				double dx = getSpeed(f);
+				double dx = getSpeed(f) * stepMultiplier;
 				// if the target has roughly the same speed as our fleet, give a small boost
 				if (Math.abs(dx - targetSpeed) < 0.5) {
 					dx += 0.5;
@@ -764,13 +773,12 @@ public final class Simulator {
 	}
 	/**
 	 * Regenerate the shields and/or health.
-	 * @param planetStats the planet statistics
 	 * @param f the fleet
 	 */
-	static void regenerateFleet(Map<Planet, PlanetStatistics> planetStats, Fleet f) {
+	static void regenerateFleet(Fleet f) {
 		Planet np = f.nearbyPlanet();
 		boolean spaceport = f.task != FleetTask.SCRIPT 
-				&& np != null && np.owner == f.owner && planetStats.get(np).hasMilitarySpaceport;
+				&& np != null && np.owner == f.owner && np.hasMilitarySpaceport();
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
 			if (spaceport) {
 				int hpMax = ii.owner.world.getHitpoints(ii.type);

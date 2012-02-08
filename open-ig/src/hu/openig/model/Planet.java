@@ -672,4 +672,21 @@ public class Planet implements Named, Owned, HasInventory {
 	public String toString() {
 		return String.format("Id = %s, Owner = %s, Race = %s", id, owner != null ? owner.id : null, race);
 	}
+	/** @return true if this planet has a military spaceport. */
+	public boolean hasMilitarySpaceport() {
+		for (Building b : surface.buildings) {
+			if ("MilitarySpaceport".equals(b.type.id) && b.isOperational()) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/**
+	 * Rebuild all roads of the planet.
+	 */
+	public void rebuildRoads() {
+		if (race != null && owner != null) {
+			surface.placeRoads(race, owner.world.buildingModel);
+		}
+	}
 }
