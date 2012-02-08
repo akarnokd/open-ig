@@ -80,6 +80,9 @@ public class Mission12 extends Mission {
 		if (checkTimeout("Mission-12-Task-6-Hide")) {
 			helper.objective("Mission-12-Task-6").visible = false;
 		}
+		if (checkMission("Mission-12-TaskSuccess")) {
+			completeActiveTask();
+		}
 		if (stage == M12Stages.FIRST_MESSAGE
 				|| stage == M12Stages.SUBSEQUENT_MESSAGE
 				|| stage == M12Stages.FIRST_RUNDOWN
@@ -112,24 +115,33 @@ public class Mission12 extends Mission {
 		}
 		if ("New Caroline-Garthog-Virus-Resolved".equals(id)
 				|| "New Caroline-Garthog-Virus-Again-Deaths".equals(id)) {
-			for (int i = 5; i >= 1; i--) {
-				Objective o = helper.objective("Mission-12-Task-" + i);
-				if (o.visible && o.state == ObjectiveState.ACTIVE) {
-					helper.setObjectiveState("Mission-12-Task-" + i, ObjectiveState.SUCCESS);
-					if (i == 2) {
-						helper.send("Douglas-Report-Viruses").visible = true;
-					} else
-					if (i == 5) {
-						helper.showObjective("Mission-12-Task-6");
-					}
-					break;
-				}
-			}				
+			completeActiveTask();				
 		}
 		if ("Douglas-Report-Viruses".equals(id)) {
 			helper.setMissionTime("Mission-14", helper.now() + 8);
 			helper.setObjectiveState("Mission-12-Task-6", ObjectiveState.SUCCESS);
 			helper.setTimeout("Mission-12-Task-6-Hide", 13000);
+		}
+	}
+	/**
+	 * Complete the active task.
+	 */
+	void completeActiveTask() {
+		for (int i = 5; i >= 1; i--) {
+			Objective o = helper.objective("Mission-12-Task-" + i);
+			if (o.visible && o.state == ObjectiveState.ACTIVE) {
+				helper.setObjectiveState("Mission-12-Task-" + i, ObjectiveState.SUCCESS);
+				if (helper.hasMissionTime("Mission-12-TaskSuccess")) {
+					helper.clearMissionTime("Mission-12-TaskSuccess");
+				}
+				if (i >= 2) {
+					helper.send("Douglas-Report-Viruses").visible = true;
+				}
+				if (i == 5) {
+					helper.showObjective("Mission-12-Task-6");
+				}
+				break;
+			}
 		}
 	}
 	@Override
@@ -151,6 +163,7 @@ public class Mission12 extends Mission {
 				helper.receive("New Caroline-Garthog-Virus").visible = false;
 				incomingMessage("New Caroline-Garthog-Virus-Resolved");
 				helper.setMissionTime("Mission-12-Subsequent", helper.now() + 24);
+				helper.setMissionTime("Mission-12-TaskSuccess", helper.now() + 2);
 				stage = M12Stages.SUBSEQUENT_DELAY;
 				helper.setMissionTime("Mission-12-Hide", helper.now() + 3);
 			}
@@ -172,6 +185,7 @@ public class Mission12 extends Mission {
 						} else {
 							stage = M12Stages.DONE;
 						}
+						helper.setMissionTime("Mission-12-TaskSuccess", helper.now() + 2);
 						break;
 					}
 				}				
