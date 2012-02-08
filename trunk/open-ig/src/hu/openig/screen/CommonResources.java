@@ -161,6 +161,8 @@ public class CommonResources implements GameEnvironment {
 	public final WipPort saving = new WipPort();
 	/** Disable controls and force watching the video. */
 	public boolean force;
+	/** Counts the current simulation step and invokes the simulator on every 4th. */
+	protected long simulationStep;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -501,9 +503,9 @@ public class CommonResources implements GameEnvironment {
 					@Override
 					public Integer invoke(SimulationSpeed value) {
 						switch (value) {
-						case NORMAL: return 1000;
-						case FAST: return 500;
-						case ULTRA_FAST: return 50;
+						case NORMAL: return 250;
+						case FAST: return 125;
+						case ULTRA_FAST: return 25;
 						default:
 							throw new AssertionError("" + value);
 						}
@@ -568,26 +570,33 @@ public class CommonResources implements GameEnvironment {
 	 * Execute a step of simulation.
 	 */
 	public void simulation() {
-		if (Simulator.compute(world)) {
-			if (world.scripting.mayAutoSave()) {
-				control.save(null, SaveMode.AUTO);
+		boolean repaint = false;
+		if (simulationStep++ % world.params().simulationRatio() == 0) {
+			if (Simulator.compute(world)) {
+				if (world.scripting.mayAutoSave()) {
+					control.save(null, SaveMode.AUTO);
+				}
 			}
+			// run AI routines in background
+			final WipPort wip = new WipPort(1);
+			for (final Player p : world.players.values()) {
+				if (p.ai != null) {
+					invokeAI(p, wip);
+				}
+			}
+			wip.dec();
+			try {
+				wip.await();
+			} catch (InterruptedException ex) {
+				// ignored
+			}
+			repaint = true;
 		}
+		repaint |= Simulator.moveFleets(world);
 		
-		// run AI routines in background
-		final WipPort wip = new WipPort(1);
-		for (final Player p : world.players.values()) {
-			if (p.ai != null) {
-				invokeAI(p, wip);
-			}
+		if (repaint) {
+			control.repaintInner();
 		}
-		wip.dec();
-		try {
-			wip.await();
-		} catch (InterruptedException ex) {
-			// ignored
-		}
-		control.repaintInner();
 	}
 	/**
 	 * Replace the current simulation controls with a new

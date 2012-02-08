@@ -60,4 +60,10 @@ public class Parameters {
 	public int nearbyDistance() {
 		return 10;
 	}
+	/**
+	 * @return the ratio between the fleet movement timer and 10 minute simulation time.
+	 */
+	public int simulationRatio() {
+		return 4;
+	}
 }

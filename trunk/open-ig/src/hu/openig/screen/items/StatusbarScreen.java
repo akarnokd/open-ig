@@ -10,9 +10,12 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetMode;
 import hu.openig.model.Message;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
+import hu.openig.model.Planet;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
@@ -121,6 +124,12 @@ public class StatusbarScreen extends ScreenBase {
 	public Color overlay;
 	/** Incoming message rectangle. */
 	final Rectangle incomingMessage = new Rectangle();
+	/** The blink flag. */
+	protected boolean blink;
+	/** The blink counter. */
+	protected int blinkCounter;
+	/** The index to show an attack target. */
+	protected int attackListIndex;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -406,6 +415,13 @@ public class StatusbarScreen extends ScreenBase {
 		public void draw(Graphics2D g2) {
 			Shape save0 = g2.getClip();
 			g2.clipRect(0, 0, width, height);
+			List<Planet> attacks = playerUnderAttack();
+			if (!attacks.isEmpty()) {
+				Planet p = attacks.get(attackListIndex);
+				String txt = format("message.enemy_fleet_detected_at", p.name);
+				int w = commons.text().getTextWidth(10, txt);
+				commons.text().paintTo(g2, (width - w) / 2, 1, 10, blink ? TextRenderer.RED : TextRenderer.ORANGE, txt);
+			} else
 			if (errorText != null) {
 				int w = commons.text().getTextWidth(10, errorText);
 				commons.text().paintTo(g2, (width - w) / 2, 1, 10, TextRenderer.RED, errorText);
@@ -555,7 +571,8 @@ public class StatusbarScreen extends ScreenBase {
 	 */
 	void doAnimation() {
 		if (!commons.nongame) {
-			if (errorText == null) {
+			List<Planet> pa = playerUnderAttack();
+			if (errorText == null && pa.isEmpty()) {
 				if (notification.currentMessage != null) {
 					if (animationStep >= accelerationStep * 2 + stayStep) {
 						player().messageQueue.remove(notification.currentMessage);
@@ -596,7 +613,33 @@ public class StatusbarScreen extends ScreenBase {
 					errorText = null;
 				}
 			}
+			blinkCounter++;
+			if (blinkCounter % 6 == 0) {
+				blink = !blink;
+			}
+			if (blinkCounter % 24 == 0) {
+				attackListIndex++;
+				if (attackListIndex >= pa.size()) {
+					attackListIndex = 0;
+				}
+			}
 		}
+	}
+	/**
+	 * Collect the current player's attack targets.
+	 * @return the list of planet ids under attack
+	 */
+	List<Planet> playerUnderAttack() {
+		List<Planet> result = U.newArrayList();
+		for (Fleet f : player().fleets.keySet()) {
+			if (f.owner != player() 
+					&& f.targetPlanet() != null
+					&& f.targetPlanet().owner == player()
+					&& f.mode == FleetMode.ATTACK) {
+				result.add(f.targetPlanet());
+			}
+		}
+		return result;
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

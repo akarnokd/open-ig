@@ -242,7 +242,7 @@ public class DefaultAIControls implements AIControls {
 	 */
 	public static void demolishBuilding(World world, Planet planet, Building building) {
 		planet.surface.removeBuilding(building);
-		planet.surface.placeRoads(planet.race, world.buildingModel);
+		planet.rebuildRoads();
 		
 		int moneyBack = building.type.cost * (1 + building.upgradeLevel) / 2;
 		
@@ -363,7 +363,7 @@ public class DefaultAIControls implements AIControls {
 						b.location = Location.of(pt.x + 1, pt.y - 1);
 						
 						p.surface.placeBuilding(ts.normal, b.location.x, b.location.y, b);
-						p.surface.placeRoads(p.owner.race, w.buildingModel);
+						p.rebuildRoads();
 						
 						p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 						p.owner.currentPlanet = p;

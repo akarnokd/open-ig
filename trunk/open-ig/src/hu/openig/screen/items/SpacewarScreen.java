@@ -3889,7 +3889,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		// rebuild roads.
 		for (Planet p : planets) {
-			p.surface.placeRoads(p.race, world().buildingModel);
+			p.rebuildRoads();
 			p.cleanup();
 		}
 		// if the planet was fired upon

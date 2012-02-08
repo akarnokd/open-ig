@@ -446,7 +446,7 @@ public final class AutoBuilder {
 		b.location = Location.of(pt.x + 1, pt.y - 1);
 
 		planet.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
-		planet.surface.placeRoads(planet.race, world.buildingModel);
+		planet.rebuildRoads();
 
 		planet.owner.money -= bt.cost;
 		planet.owner.today.buildCost += bt.cost;

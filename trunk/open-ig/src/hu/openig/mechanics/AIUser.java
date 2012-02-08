@@ -27,9 +27,12 @@ import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An AI node representing the human player.
@@ -43,6 +46,8 @@ public class AIUser implements AIManager {
 	World w;
 	/** The player. */
 	Player p;
+	/** The detected attacks. */
+	final Set<Integer> detectedAttack = U.newHashSet();
 	@Override
 	public void init(Player p) {
 		this.p = p;
@@ -89,8 +94,7 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void groundBattleDone(GroundwarWorld battle) {
-		// TODO Auto-generated method stub
-		
+		detectedAttack.remove(battle.battle().attacker.id);
 	}
 	@Override
 	public void groundBattleInit(GroundwarWorld battle) {
@@ -99,8 +103,7 @@ public class AIUser implements AIManager {
 	}
 	@Override
 	public void spaceBattleDone(SpacewarWorld world) {
-		// TODO Auto-generated method stub
-		
+		detectedAttack.remove(world.battle().attacker.id);
 	}
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
@@ -150,25 +153,6 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onDiscoverFleet(Fleet fleet) {
-		if (fleet.mode == FleetMode.ATTACK 
-				&& ((fleet.targetFleet != null && fleet.targetFleet.owner == p)
-				|| (fleet.targetPlanet() != null && fleet.targetPlanet().owner == p))) {
-			if (w.env.config().slowOnEnemyAttack) {
-				w.env.speed1();
-			}
-			if (fleet.targetFleet != null) {
-				Message msg = w.newMessage("message.enemy_fleet_detected");
-				msg.priority = 100;
-				msg.sound = SoundType.ENEMY_FLEET_DETECTED;
-				p.messageQueue.add(msg);
-			} else {
-				Message msg = w.newMessage("message.enemy_fleet_detected_at");
-				msg.priority = 100;
-				msg.sound = SoundType.ENEMY_FLEET_DETECTED;
-				msg.targetPlanet = fleet.targetPlanet();
-				p.messageQueue.add(msg);
-			}
-		}
 	}
 
 	@Override
@@ -276,7 +260,42 @@ public class AIUser implements AIManager {
 	}
 	@Override
 	public void onRadar() {
-		// TODO Auto-generated method stub
-		
+		for (Fleet fleet : p.fleets.keySet()) {
+			if (fleet.owner != p) {
+				if (!detectedAttack.contains(fleet.id)) {
+					if (fleet.mode == FleetMode.ATTACK 
+							&& ((fleet.targetFleet != null && fleet.targetFleet.owner == p)
+							|| (fleet.targetPlanet() != null && fleet.targetPlanet().owner == p))) {
+						if (w.env.config().slowOnEnemyAttack) {
+							w.env.speed1();
+						}
+						w.env.effectSound(SoundType.ENEMY_FLEET_DETECTED);
+						if (fleet.targetFleet != null) {
+							Message msg = w.newMessage("message.enemy_fleet_detected");
+							msg.priority = 100;
+							p.messageQueue.add(msg);
+						} else {
+							Message msg = w.newMessage("message.enemy_fleet_detected_at");
+							msg.priority = 100;
+							msg.targetPlanet = fleet.targetPlanet();
+							p.messageQueue.add(msg);
+						}
+						detectedAttack.add(fleet.id);
+					}
+				}
+			}
+		}
+		// cleanup detection
+		Iterator<Integer> it = detectedAttack.iterator();
+		while (it.hasNext()) {
+			int i = it.next();
+			Fleet f = w.findFleet(i);
+			if (f == null) {
+				it.remove();
+			} else
+			if (!p.fleets.containsKey(f)) {
+				it.remove();
+			}
+		}
 	}
 }
