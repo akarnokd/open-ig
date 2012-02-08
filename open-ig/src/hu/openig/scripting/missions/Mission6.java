@@ -55,9 +55,9 @@ public class Mission6 extends Mission {
 	void createMainShip() {
 		Planet ach = planet("Achilles");
 		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip2", player);
+		Fleet f = null;
 		if (own == null) {
 			own = findTaggedFleet("CampaignMainShip1", player);
-			Fleet f = null;
 			if (own != null) {
 				f = own.first;
 			} else {
@@ -75,9 +75,11 @@ public class Mission6 extends Mission {
 				}
 			}
 			// move further away
-			f.x = ach.x - 50;
-			f.y = ach.y - 50;
+		} else {
+			f = own.first;
 		}
+		f.x = ach.x - 50;
+		f.y = ach.y - 50;
 	}
 	@Override
 	public void onTime() {
