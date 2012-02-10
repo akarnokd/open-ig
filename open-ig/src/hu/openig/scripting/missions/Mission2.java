@@ -34,7 +34,7 @@ public class Mission2 extends Mission {
 	/** The money reward per task. */
 	final int[] moneyReward = { 0, 1000, 2500, 5000 };
 	/** The custom battle finish image. */
-	final String[] imageReward = { null, null, null, null };
+	final String[] imageReward = { null, "battlefinish/mission_8b", "battlefinish/mission_8b", "battlefinish/mission_8b" };
 	/**
 	 * Check the starting conditions of Mission 2 and make it available.
 	 */
@@ -234,7 +234,7 @@ public class Mission2 extends Mission {
 			boolean traderSurvived = !sts.isEmpty();
 			completeTaskN(traderSurvived, task);
 			if (traderSurvived) {
-				war.battle().messageText = label("battlefinish.mission-2.merchant" + (textIndex + 1));
+				war.battle().messageText = format("battlefinish.mission-2.merchant" + (textIndex + 1), moneyReward[task]);
 				war.battle().rewardText = format("mission-2.save_trader.reward", moneyReward[task]);
 				war.battle().rewardImage = imageReward[task];
 			}

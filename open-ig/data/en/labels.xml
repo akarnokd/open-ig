@@ -2897,13 +2897,13 @@
 	<entry key='battlefinish.mission-2.merchant1_bonus'></entry>
 	<entry key='battlefinish.mission-2.merchant2'>Message from Trader 2: It's good to see a sheriff back in town! Thank's for your help.</entry>
 	<entry key='battlefinish.mission-2.merchant2_bonus'></entry>
-	<entry key='battlefinish.mission-2.merchant3'>Message from Trader 3: Don't let those pirates escape! Thank you for your quick response. I'll transfer 5000cr as gratitude.</entry>
+	<entry key='battlefinish.mission-2.merchant3'>Message from Trader 3: Don't let those pirates escape! Thank you for your quick response. I'll transfer %scr as gratitude.</entry>
 	<entry key='battlefinish.mission-2.merchant3_bonus'>Bonus: 5000 credits.</entry>
-	<entry key='battlefinish.mission-2.merchant4'>Message from Trader 4: Excellent! The sight of those pirates running away had made my day! Thanks for the show! Please accept 1000 credits, as payment for all the fun!</entry>
+	<entry key='battlefinish.mission-2.merchant4'>Message from Trader 4: Excellent! The sight of those pirates running away had made my day! Thanks for the show! Please accept %s credits, as payment for all the fun!</entry>
 	<entry key='battlefinish.mission-2.merchant4_bonus'>BONUS: 1000 credits.</entry>
 	<entry key='battlefinish.mission-2.merchant5'>Message from Trader 5: Great shooting, man! Respect due!</entry>
 	<entry key='battlefinish.mission-2.merchant5_bonus'></entry>
-	<entry key='battlefinish.mission-2.merchant6'>Message from Trader 6: Thank you, Commander. I give you 1500 credits, as payment for your services.</entry>
+	<entry key='battlefinish.mission-2.merchant6'>Message from Trader 6: Thank you, Commander. I give you %s credits, as payment for your services.</entry>
 	<entry key='battlefinish.mission-2.merchant6_bonus'>BONUS: 1500 credits.</entry>
 	<entry key='battlefinish.mission-7.merchant7'>Message from Trader 7: Thanks for your help, Commander. By the way, could you tell me where I could purchase some weapons?</entry>
 	<entry key='battlefinish.mission-7.merchant7_bonus'>BONUS: 5000 credits</entry>

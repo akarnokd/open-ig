@@ -2153,13 +2153,13 @@
 	<entry key='battlefinish.mission-2.merchant1_bonus'></entry>
 	<entry key='battlefinish.mission-2.merchant2'>Üzenet a Kereskedő 2-től: Jó látni, hogy új seriff érkezett a városba. Köszönjük a segítséget!</entry>
 	<entry key='battlefinish.mission-2.merchant2_bonus'></entry>
-	<entry key='battlefinish.mission-2.merchant3'>Üzenet a Kereskedő 3-astól: Örülök a gyors beavatkozásnak, kapitány. Látom, a kalózok az Ön szívébe sem lopták be magukat! 5000 creditet átutalok - hálám jeléül.</entry>
+	<entry key='battlefinish.mission-2.merchant3'>Üzenet a Kereskedő 3-astól: Örülök a gyors beavatkozásnak, kapitány. Látom, a kalózok az Ön szívébe sem lopták be magukat! %s creditet átutalok - hálám jeléül.</entry>
 	<entry key='battlefinish.mission-2.merchant3_bonus'>Bonus: 5000 credit.</entry>
-	<entry key='battlefinish.mission-2.merchant4'>Üzenet a Kereskedő 4-től: Számomra mindig emlékezetes esemény marad a látvány, ahogy ezek a kalózok elhúzták a csíkot. Köszönetképpen, fogadja el ezt az 1000 creditet.</entry>
+	<entry key='battlefinish.mission-2.merchant4'>Üzenet a Kereskedő 4-től: Számomra mindig emlékezetes esemény marad a látvány, ahogy ezek a kalózok elhúzták a csíkot. Köszönetképpen, fogadja el ezt az %s creditet.</entry>
 	<entry key='battlefinish.mission-2.merchant4_bonus'>JUTALOM: 1000 credit.</entry>
 	<entry key='battlefinish.mission-2.merchant5'>Üzenet Kereskedő 5-től: Jó kis lövöldözés volt, ember! Kösz a segítséget!</entry>
 	<entry key='battlefinish.mission-2.merchant5_bonus'></entry>
-	<entry key='battlefinish.mission-2.merchant6'>Üzenet a Kereskedő 6-tól: Szép munka, Parancsok. Átküldök 1500 creditet az Ön számlájára. Nálunk így mondják, hogy: köszönöm.</entry>
+	<entry key='battlefinish.mission-2.merchant6'>Üzenet a Kereskedő 6-tól: Szép munka, Parancsok. Átküldök %s creditet az Ön számlájára. Nálunk így mondják, hogy: köszönöm.</entry>
 	<entry key='battlefinish.mission-2.merchant6_bonus'>JUTALOM: 1500 credit.</entry>
 	<entry key='battlefinish.mission-7.merchant7'>Üzenet a Kereskedő 7-től: Köszönjük a segítségét, Parancsnok. Mellesleg, elmondaná, hol szerezhetnénk be mi is egy pár lézerágyút?</entry>
 	<entry key='battlefinish.mission-7.merchant7_bonus'>JUTALOM: 5000 kredit</entry>
