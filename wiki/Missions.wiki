@@ -145,7 +145,7 @@ Notes:
 
 == Mission 9 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Sequence 4:
 
@@ -162,7 +162,7 @@ Video: san_sterling_smuggler, san_sterling_smuggler_killed, merchant_in
 
 == Mission 10 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Sequence: 5
 
@@ -179,7 +179,7 @@ Notes:
 
 == Mission 11 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Sequence: 6
 
@@ -195,7 +195,7 @@ Notes:
 
 == Mission 12 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Sequence: 7
 
@@ -229,7 +229,7 @@ Subsequent virus infection, unless reported to colonel
 
 == Mission 13 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Sequence: 9
 
@@ -271,7 +271,7 @@ Notes:
 
 == Mission 16 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Escort money carrier
 
