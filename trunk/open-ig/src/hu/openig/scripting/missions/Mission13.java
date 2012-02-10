@@ -19,6 +19,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
@@ -70,7 +71,7 @@ public class Mission13 extends Mission {
 			stage = M13.RUN;
 			incomingMessage("Douglas-Admiral-Benson");
 			createBenson();
-			helper.setMissionTime("Mission-13-Attack", helper.now() + 2);
+			helper.setMissionTime("Mission-13-Attack", helper.now() + 1);
 		}
 		if (checkMission("Mission-13-Attack")) {
 			createGarthog();
@@ -85,6 +86,7 @@ public class Mission13 extends Mission {
 		if (checkTimeout("Mission-13-Hide")) {
 			stage = M13.DONE;
 			m13.visible = false;
+			helper.receive("Douglas-Admiral-Benson").visible = false;
 		}
 		if (checkTimeout("Mission-13-Fire")) {
 			helper.gameover();
@@ -142,7 +144,7 @@ public class Mission13 extends Mission {
 	void createGarthog() {
 		Planet g1 = planet("Garthog 1");
 		Player g = garthog();
-		Fleet f = createFleet(label("Garthog.fleet_name"), g, g1.x, g1.y);
+		Fleet f = createFleet(label("Garthog.fleet"), g, g1.x, g1.y);
 
 		//---------------------------------
 		
@@ -166,23 +168,22 @@ public class Mission13 extends Mission {
 		Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-13-Garthog", g);
 		
 		if (benson != null && garthog != null) {
-			garthog.first.moveTo(benson.first.x, benson.first.y);
-			garthog.first.task = FleetTask.SCRIPT;
-			
 			double d = Math.hypot(benson.first.x - garthog.first.x, benson.first.y - garthog.first.y);
-			if (d <= 1.5) {
+			if (d <= 5) {
 				helper.setMissionTime("Mission-13-Timeout", helper.now() + 12);
 				
 				benson.first.stop();
 				benson.first.task = FleetTask.SCRIPT;
 				garthog.first.stop();
-				benson.first.task = FleetTask.SCRIPT;
+				garthog.first.task = FleetTask.SCRIPT;
 				
 				Fleet ff = getFollower(benson.first, player);
 				if (ff != null) {
 					ff.attack(garthog.first);
 				}
-
+			} else {
+				garthog.first.moveTo(benson.first.x, benson.first.y);
+				garthog.first.task = FleetTask.SCRIPT;
 			}
 		}
 	}
@@ -215,6 +216,17 @@ public class Mission13 extends Mission {
 		return result;
 	}
 	@Override
+	public void onDiscovered(Player player, Fleet fleet) {
+		if (stage == M13.RUN && player == this.player) {
+			if (hasTag(fleet, "Mission-13-Garthog")) {
+				if (world.env.config().slowOnEnemyAttack) {
+					world.env.speed1();
+				}
+				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+			}
+		}
+	}
+	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
 		if (planet.id.equals("New Caroline") && hasTag(fleet, "Mission-13-Benson")) {
 			helper.setObjectiveState("Mission-13", ObjectiveState.SUCCESS);
@@ -240,8 +252,10 @@ public class Mission13 extends Mission {
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		Player g = garthog();
-		startJointSpaceBattle(war, "Mission-13-Benson", player, "Mission-13-Garthog", g);
+		if (isMissionSpacewar(war.battle(), "Mission-13")) {
+			Player g = garthog();
+			startJointSpaceBattle(war, "Mission-13-Benson", player, "Mission-13-Garthog", g);
+		}
 	}
 	/** @return the garthog player. */
 	Player garthog() {
@@ -249,8 +263,10 @@ public class Mission13 extends Mission {
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
-		Player g = garthog();
-		startJointAutoSpaceBattle(battle, "Mission-13-Benson", player, "Mission-13-Garthog", g);
+		if (isMissionSpacewar(battle, "Mission-13")) {
+			Player g = garthog();
+			startJointAutoSpaceBattle(battle, "Mission-13-Benson", player, "Mission-13-Garthog", g);
+		}
 	}
 	@Override
 	public void reset() {

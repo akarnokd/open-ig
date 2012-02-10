@@ -21,6 +21,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 
 /**
@@ -79,7 +80,16 @@ public class Mission6 extends Mission {
 			f = own.first;
 		}
 		f.x = ach.x - 50;
-		f.y = ach.y - 50;
+		f.y = ach.y + 50;
+	}
+	@Override
+	public void onDiscovered(Player player, Fleet fleet) {
+		if (hasTag(fleet, "Mission-5-Garthog")) {
+			if (world.env.config().slowOnEnemyAttack) {
+				world.env.speed1();
+			}
+			world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+		}
 	}
 	@Override
 	public void onTime() {
