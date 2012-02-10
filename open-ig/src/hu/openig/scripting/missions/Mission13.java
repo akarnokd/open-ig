@@ -257,7 +257,7 @@ public class Mission13 extends Mission {
 	}
 	/** Create mission reward. */
 	void createReward() {
-		player.changeInventoryCount(research("Laser1"), 20);
+		player.changeInventoryCount(research("Laser1"), 16);
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
