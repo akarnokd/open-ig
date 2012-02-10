@@ -269,7 +269,7 @@ public class AIUser implements AIManager {
 						if (w.env.config().slowOnEnemyAttack) {
 							w.env.speed1();
 						}
-						w.env.effectSound(SoundType.ENEMY_FLEET_DETECTED);
+						w.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
 						if (fleet.targetFleet != null) {
 							Message msg = w.newMessage("message.enemy_fleet_detected");
 							msg.priority = 100;

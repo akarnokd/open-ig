@@ -3014,7 +3014,7 @@
 	<entry key='message.enemy_fleet_detected_at'>Radars detected enemy attacking fleet heading towards %s.</entry>
 	<entry key='mission-13.benson'>Escort Admiral Benson</entry>
 	<entry key='mission-13.benson.desc'>Ensure the Admiral's safe arrival at New Caroline.</entry>
-	<entry key=''></entry>
+	<entry key='mission-13.benson_fleet'>Benson's fleet</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
