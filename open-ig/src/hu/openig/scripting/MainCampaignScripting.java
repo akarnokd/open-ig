@@ -22,6 +22,7 @@ import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SoundType;
+import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
@@ -84,6 +85,8 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	final Set<Integer> scriptedFleets = U.newHashSet();
 	/** The list of missions. */
 	final List<Mission> missions = U.newArrayList();
+	/** The debugging frame. */
+	private JFrame debugFrame;
 	/**
 	 * Annotate fields of simple types to save their values into the game's state.
 	 * @author akarnokd, 2012.01.14.
@@ -172,6 +175,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		countdowns.clear();
 		missiontimer.clear();
 		scriptedFleets.clear();
+		if (debugFrame != null) {
+			debugFrame.dispose();
+			debugFrame = null;
+		}
 	}
 
 	@Override
@@ -932,13 +939,17 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}
 	}
 	@Override
-	public void onSpacewarStep(SpacewarWorld war) {
+	public SpacewarScriptResult onSpacewarStep(SpacewarWorld war) {
 		for (Mission m : missions) {
 			if (!m.applicable()) {
 				continue;
 			}
-			m.onSpacewarStep(war);
-		}		
+			SpacewarScriptResult r = m.onSpacewarStep(war);
+			if (r != null) {
+				return r;
+			}
+		}	
+		return null;
 	}
 	@Override
 	public void onGroundwarFinish(GroundwarWorld war) {
@@ -1072,13 +1083,17 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 	@Override
 	public void debug() {
-		final JFrame frame = new JFrame("Debug mission triggers");
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		if (debugFrame != null) {
+			debugFrame.dispose();
+			debugFrame = null;
+		}
+		debugFrame = new JFrame("Debug mission triggers");
+		debugFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
 		JScrollPane sp = new JScrollPane(panel);
 		
-		Container c = frame.getContentPane();
+		Container c = debugFrame.getContentPane();
 		c.setLayout(new BorderLayout());
 		
 		JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -1200,9 +1215,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		dump.add(dumpNow, BorderLayout.NORTH);
 		dump.add(sp2, BorderLayout.CENTER);
 		
-		frame.setSize(800, 600);
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		debugFrame.setSize(800, 600);
+		debugFrame.setLocationRelativeTo(null);
+		debugFrame.setVisible(true);
 	}
 	/**
 	 * Resets the mission.

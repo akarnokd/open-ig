@@ -21,6 +21,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
@@ -76,13 +77,14 @@ public class Mission14 extends Mission {
 		}
 	}
 	@Override
-	public void onSpacewarStep(SpacewarWorld war) {
+	public SpacewarScriptResult onSpacewarStep(SpacewarWorld war) {
 		if (isMissionSpacewar(war.battle(), "Mission-14")) {
 			Player garthog = player("Garthog");
 			for (SpacewarStructure s : war.structures(garthog)) {
 				war.move(s, Math.cos(s.angle) * 1000, s.y);
 			}
 		}
+		return SpacewarScriptResult.CONTINUE;
 	}
 	/**
 	 * Deploy satellites, create garthog carriers.

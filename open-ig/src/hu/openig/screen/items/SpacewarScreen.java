@@ -37,6 +37,7 @@ import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarExplosion;
 import hu.openig.model.SpacewarObject;
 import hu.openig.model.SpacewarProjectile;
+import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWeaponPort;
@@ -3529,13 +3530,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		act = player().ai.spaceBattle(this, playerIdles);
 		act = nonPlayer().ai.spaceBattle(this, enemyIdles);
 		
-		world().scripting.onSpacewarStep(this);
+		SpacewarScriptResult r = world().scripting.onSpacewarStep(this);
 		
 		for (SoundType st : soundsToPlay) {
 			effectSound(st);
 		}
 		Player winner = act == SpacewarAction.SURRENDER ? player() : checkWinner();
-		
+		if (r == SpacewarScriptResult.PLAYER_WIN) {
+			winner = player();
+		} else
+		if (r == SpacewarScriptResult.PLAYER_LOSE) {
+			winner = nonPlayer();
+		}
 		if (winner != null && explosions.size() == 0 && projectiles.size() == 0) {
 			commons.simulation.pause();
 			concludeBattle(winner);

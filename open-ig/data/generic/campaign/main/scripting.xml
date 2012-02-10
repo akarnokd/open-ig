@@ -17,6 +17,7 @@
 		<mission class='hu.openig.scripting.missions.Mission13'/>
 		<mission class='hu.openig.scripting.missions.Mission14'/>
 		<mission class='hu.openig.scripting.missions.Mission15'/>
+		<mission class='hu.openig.scripting.missions.Mission16'/>
 		<mission class='hu.openig.scripting.missions.Mission26'/>
 	</missions>
 	<!--  The view limit for the empire player levels 1-3. Levels 4-5 are unlimited. -->
@@ -137,6 +138,9 @@
 			<objective id='Mission-15-Task-3' title='mission-15.report_intruder'
 				description='mission-15.report_intruder.desc'
 			/>
+		</objective>
+		<objective id='Mission-16' title='mission-16.money' 
+			description='mission-16.money.desc'>
 		</objective>
 	</objectives>	
 	
