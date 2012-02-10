@@ -6,6 +6,14 @@
 
 == February, 2012 ==
 
+*February 10, 2012*
+
+"New DLC available for Open-IG!" - some publishers would advertise :)
+
+Missions 13 and 16 are playable, should start 4 days after finishing the virus carrier mission 14.
+
+I'll try to implement mission 17 and the jump into Level 3.
+
 *February 4, 2012*
 
 A new release with a few enhancements:
