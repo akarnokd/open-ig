@@ -2,6 +2,20 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.190 - More missions =
+  * Released: 2012-02-10 14:00 CET
+  * Added missions 13 and 16
+  * Reduced population loss due space and ground battles (Issues [http://code.google.com/p/open-ig/issues/detail?id=254 #254], [http://code.google.com/p/open-ig/issues/detail?id=279 #279]) 
+  * Added subtitles to Achilles-Check message ([http://code.google.com/p/open-ig/issues/detail?id=276 Issue #276])
+  * Fixed label for police station unit of measure ([http://code.google.com/p/open-ig/issues/detail?id=280 Issue #280])
+  * Fleets on the starmap now move smoother ([http://code.google.com/p/open-ig/issues/detail?id=273 Issue #273])
+  * Attack notification improvements ([http://code.google.com/p/open-ig/issues/detail?id=281 Issue #281])
+  * Barracks had incorrect space health ([http://code.google.com/p/open-ig/issues/detail?id=283 Issue #283])
+  * Fixed achievement "Defense contract" ([http://code.google.com/p/open-ig/issues/detail?id=285 Issue #285])
+  * Fixed Map Editor initialization crash ([http://code.google.com/p/open-ig/issues/detail?id=286 Issue #286])
+  * Fixed mission 12 stages and completion not triggering if the user didn't watch the briefing/debriefing messages. ([http://code.google.com/p/open-ig/issues/detail?id=287 Issue #287])
+  * Mission 6 starts immediately after promotion and your fleet is moved far away, just like in the original.
+
 = Version 0.94.180 - Few enhancements =
   * Released: 2012-02-04 20:00 CET
   * Added Missions 12 and 14
