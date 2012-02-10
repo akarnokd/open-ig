@@ -213,6 +213,7 @@ public class Mission13 extends Mission {
 			world.removeFleet(garthog.first);
 		}
 		cleanupScriptedFleets();
+		
 		return result;
 	}
 	@Override
@@ -240,6 +241,8 @@ public class Mission13 extends Mission {
 			if (concludeBattle(battle)) {
 				battle.rewardImage = "battlefinish/mission_16.png";
 				battle.messageText = label("battlefinish.mission-13.16");
+				battle.rewardText = label("battlefinish.mission-13.16_bonus");
+				createReward();
 			}
 		}
 	}
@@ -247,8 +250,14 @@ public class Mission13 extends Mission {
 	public void onAutobattleFinish(BattleInfo battle) {
 		if (isMissionSpacewar(battle, "Mission-13")) {
 			finishJointAutoSpaceBattle(battle, "Mission-13-Benson");
-			concludeBattle(battle);
+			if (concludeBattle(battle)) {
+				createReward();
+			}
 		}
+	}
+	/** Create mission reward. */
+	void createReward() {
+		player.changeInventoryCount(research("Laser1"), 20);
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
