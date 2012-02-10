@@ -219,17 +219,21 @@ public class Mission2 extends Mission {
 			// find the status of the trader ship
 			Player traders = player("Traders");
 			List<SpacewarStructure> sts = war.structures(traders);
+
+			// which trader message to show
+			int textIndex = 0;
+			for (int i = 1; i <= 7; i++) {
+				if (helper.receive("Merchant-Under-Attack-" + i).visible) {
+					textIndex = i - 1;
+					break;
+				}
+			}
+			textIndex %= 6;
+
+			
 			boolean traderSurvived = !sts.isEmpty();
 			completeTaskN(traderSurvived, task);
 			if (traderSurvived) {
-				int textIndex = 0;
-				for (int i = 1; i <= 7; i++) {
-					if (helper.receive("Merchant-Under-Attack-" + i).visible) {
-						textIndex = i - 1;
-						break;
-					}
-				}
-				textIndex %= 6;
 				war.battle().messageText = label("battlefinish.mission-2.merchant" + (textIndex + 1));
 				war.battle().rewardText = format("mission-2.save_trader.reward", moneyReward[task]);
 				war.battle().rewardImage = imageReward[task];
