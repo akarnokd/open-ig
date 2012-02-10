@@ -45,7 +45,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.jar.JarFile;
@@ -78,7 +80,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.26";
+	public static final String VERSION = "0.27";
 	/**
 	 * The update XML to download.
 	 */
@@ -1568,7 +1570,44 @@ public class Launcher extends JFrame {
 				conn.disconnect();
 			}
 		}
+		if (allOk) {
+			removeOldUpgrades();
+		}
 		return allOk;
+	}
+	/**
+	 * Remove any upgrade packs which are not listed in the module def.
+	 */
+	void removeOldUpgrades() {
+		LModule m = updates != null ? updates.getModule(GAME) : null;
+		if (m == null) {
+			return;
+		}
+		final Set<String> curr = new HashSet<String>();
+		for  (LFile lf : m.files) {
+			int idx = lf.url.indexOf("open-ig-upgrade-");
+			if (idx >= 0) {
+				int jdx = lf.url.indexOf(".zip", idx);
+				if (jdx >= 0) {
+					curr.add(lf.url.substring(idx, jdx + 4));
+				}
+			}
+		}
+		File[] ugs = currentDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.startsWith("open-ig-upgrade-") && name.endsWith(".zip")
+						&& !curr.contains(name);
+			}
+		});
+		if (ugs == null) {
+			return;
+		}
+		for (File f : ugs) {
+			if (!f.delete()) {
+				System.err.println("Could not delete old upgrade: " + f);
+			}
+		}
 	}
 	/**
 	 * Run the module.
