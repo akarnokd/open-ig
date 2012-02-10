@@ -83,12 +83,12 @@
     * ~ Sep 21
     * Bug: interlude/colony_ship_arrival_2, Correct: flagship_arrival
     * Starts from Achilles, goes to New Caroline
-  * Wife video #3
-    * ~ Sep 22 17h
     * 3 Fighter, 2 Destroyer, 1 Battleship
     * Benson's ship is a moslty equipped and shielded Battleship-1
     * Reward image: mission_16.png
     * Message text: battlefinish.mission-13.16
+  * Wife video #3
+    * ~ Sep 22 17h
   * Mission 16 (money carrier)
     * ~ Sep 28 6h
     * Reinforcements approved
