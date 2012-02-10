@@ -14,6 +14,7 @@
 		<mission class='hu.openig.scripting.missions.Mission10'/>
 		<mission class='hu.openig.scripting.missions.Mission11'/>
 		<mission class='hu.openig.scripting.missions.Mission12'/>
+		<mission class='hu.openig.scripting.missions.Mission13'/>
 		<mission class='hu.openig.scripting.missions.Mission14'/>
 		<mission class='hu.openig.scripting.missions.Mission15'/>
 		<mission class='hu.openig.scripting.missions.Mission26'/>
@@ -122,6 +123,9 @@
 		</objective>				
 		<objective id='Mission-12-Task-6' title='mission-12.report_virus'
 			description='mission-12.report_virus.desc'/>
+		<objective id='Mission-13' title='mission-13.benson' 
+			description='mission-13.benson.desc'>
+		</objective>
 		<objective id='Mission-14' title='mission-14.virus_carriers'
 			>
 		</objective>

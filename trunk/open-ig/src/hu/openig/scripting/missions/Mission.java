@@ -22,14 +22,19 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SoundType;
+import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -454,6 +459,12 @@ public abstract class Mission implements GameScriptingEvents {
 	}
 	/**
 	 * Check if the given spacewar is a mission-related spacewar.
+	 * <ul>
+	 * <li>The given mission is active (visible and state == ACTIVE)</li>
+	 * <li>The attacker is the player</li>
+	 * <li>The target is a fleet</li>
+	 * <li>The target appears in the scripted fleet set</li>
+	 * </ul>
 	 * @param battle the battle settings
 	 * @param mission the mission
 	 * @return true if it is the related spacewar
@@ -682,5 +693,81 @@ public abstract class Mission implements GameScriptingEvents {
 	/** Reset state to default. */
 	public void reset() {
 		
+	}
+	/**
+	 * Tag all items of the given fleet.
+	 * @param f the fleet
+	 * @param tag the new tag, null to untag
+	 */
+	public void tagFleet(Fleet f, String tag) {
+		for (InventoryItem ii : f.inventory) {
+			ii.tag = tag;
+		}
+	}
+	/**
+	 * Start a joint space battle with the given ally and enemy.
+	 * @param war the war context
+	 * @param allyTag the ally fleet's tag
+	 * @param allyPlayer the ally fleets owner
+	 * @param enemyTag the enemy fleets tag
+	 * @param enemyPlayer the enemy fleets owner
+	 */
+	void startJointSpaceBattle(SpacewarWorld war, String allyTag, Player allyPlayer, String enemyTag, Player enemyPlayer) {
+		BattleInfo battle = war.battle();
+		Pair<Fleet, InventoryItem> f1 = findTaggedFleet(allyTag, allyPlayer);
+		Pair<Fleet, InventoryItem> f2 = findTaggedFleet(enemyTag, enemyPlayer);
+
+		if (battle.targetFleet == f1.first) {
+			// thorin attacked?
+			war.includeFleet(f2.first, f2.first.owner);
+			battle.targetFleet = f2.first;
+		} else {
+			// garthog attacked
+			war.addStructures(f1.first.inventory, EnumSet.of(
+					ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
+					ResearchSubCategory.SPACESHIPS_CRUISERS,
+					ResearchSubCategory.SPACESHIPS_FIGHTERS));
+		}
+		// center pirate
+		Dimension d = war.space();
+		List<SpacewarStructure> structures = war.structures();
+		for (SpacewarStructure s : structures) {
+			if (s.item != null && allyTag.equals(s.item.tag)) {
+				s.x = d.width / 2;
+				s.y = d.height / 2;
+				s.angle = 0.0;
+				s.owner = f1.first.owner;
+				s.guard = true;
+			}
+		}
+		battle.allowRetreat = false;
+	}
+	/**
+	 * Start a joint autobattle with an ally and enemy fleet.
+	 * @param battle the battle info
+	 * @param allyTag the ally fleet's tag
+	 * @param allyPlayer the ally fleets owner
+	 * @param enemyTag the enemy fleets tag
+	 * @param enemyPlayer the enemy fleets owner
+	 */
+	void startJointAutoSpaceBattle(BattleInfo battle, String allyTag, Player allyPlayer, String enemyTag, Player enemyPlayer) {
+		Pair<Fleet, InventoryItem> f1 = findTaggedFleet(allyTag, allyPlayer);
+		Pair<Fleet, InventoryItem> f2 = findTaggedFleet(enemyTag, enemyPlayer);
+		if (battle.targetFleet == f1.first) {
+			battle.targetFleet = f2.first;
+		}
+		battle.attacker.inventory.addAll(f1.first.inventory);
+	}
+	/**
+	 * Remove the ally from the attacker's inventory.
+	 * @param battle the battle info
+	 * @param allyTag the ally tag
+	 */
+	void finishJointAutoSpaceBattle(BattleInfo battle, String allyTag) {
+		for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+			if (allyTag.equals(ii.tag)) {
+				battle.attacker.inventory.remove(ii);
+			}
+		}
 	}
 }

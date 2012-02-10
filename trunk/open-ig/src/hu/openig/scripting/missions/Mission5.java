@@ -384,9 +384,9 @@ public class Mission5 extends Mission {
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
 		if (isMissionSpacewar(battle, "Mission-5")) {
-			Player pirates = player("Pirates");
-			Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-5", pirates);
-			Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-5-Garthog", pirates);
+			Player g = player("Garthog");
+			Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-5", player);
+			Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-5-Garthog", g);
 			if (battle.targetFleet == f1.first) {
 				battle.targetFleet = f2.first;
 			}
