@@ -197,8 +197,9 @@ public interface GameScriptingEvents {
 	/**
 	 * Called after each step in the spacewar.
 	 * @param war the battle context
+	 * @return the indication what to do
 	 */
-	void onSpacewarStep(SpacewarWorld war);
+	SpacewarScriptResult onSpacewarStep(SpacewarWorld war);
 	/**
 	 * Called once the battle is concluded but before going to the next phase.
 	 * @param war the battle context

@@ -257,16 +257,16 @@ public class Mission13 extends Mission {
 			startJointSpaceBattle(war, "Mission-13-Benson", player, "Mission-13-Garthog", g);
 		}
 	}
-	/** @return the garthog player. */
-	Player garthog() {
-		return player("Garthog");
-	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
 		if (isMissionSpacewar(battle, "Mission-13")) {
 			Player g = garthog();
 			startJointAutoSpaceBattle(battle, "Mission-13-Benson", player, "Mission-13-Garthog", g);
 		}
+	}
+	/** @return the garthog player. */
+	Player garthog() {
+		return player("Garthog");
 	}
 	@Override
 	public void reset() {

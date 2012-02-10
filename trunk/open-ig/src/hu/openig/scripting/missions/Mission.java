@@ -25,6 +25,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SoundType;
+import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
@@ -431,9 +432,9 @@ public abstract class Mission implements GameScriptingEvents {
 	}
 
 	@Override
-	public void onSpacewarStep(SpacewarWorld war) {
+	public SpacewarScriptResult onSpacewarStep(SpacewarWorld war) {
 		// default implementation does not react to this event
-		
+		return null;
 	}
 
 	@Override
@@ -769,5 +770,42 @@ public abstract class Mission implements GameScriptingEvents {
 				battle.attacker.inventory.remove(ii);
 			}
 		}
+	}
+	/**
+	 * Convenience method to add a timeout value.
+	 * @param name the timeout value
+	 * @param value the value in milliseconds
+	 */
+	void addTimeout(String name, int value) {
+		helper.setTimeout(name, value);
+	}
+	/**
+	 * Convenience method to add a mission time relative to now.
+	 * @param name the mission name
+	 * @param hoursRelative the hours relative to now
+	 */
+	void addMission(String name, int hoursRelative) {
+		helper.setMissionTime(name, helper.now() + hoursRelative);
+	}
+	/**
+	 * Add the given fleet as a scripted fleet.
+	 * @param f the fleet
+	 */
+	void addScripted(Fleet f) {
+		helper.scriptedFleets().add(f.id);
+	}
+	/**
+	 * Remove the given scripted fleet.
+	 * @param f the fleet
+	 */
+	void removeScripted(Fleet f) {
+		helper.scriptedFleets().remove(f.id);
+	}
+	/**
+	 * Remove the given scripted fleet.
+	 * @param f the fleet
+	 */
+	void removeScripted(Pair<Fleet, ?> f) {
+		removeScripted(f.first);
 	}
 }

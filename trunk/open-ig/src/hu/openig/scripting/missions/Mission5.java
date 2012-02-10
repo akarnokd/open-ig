@@ -255,6 +255,15 @@ public class Mission5 extends Mission {
 			}
 		}
 	}
+	@Override
+	public void onDiscovered(Player player, Fleet fleet) {
+		if (hasTag(fleet, "Mission-5-Garthog")) {
+			if (world.env.config().slowOnEnemyAttack) {
+				world.env.speed1();
+			}
+			world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+		}
+	}
 	/**
 	 * Set the target for the carrier fleet.
 	 * @param f the fleet

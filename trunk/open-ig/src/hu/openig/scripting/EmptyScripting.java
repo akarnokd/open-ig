@@ -18,6 +18,7 @@ import hu.openig.model.Objective;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.utils.U;
@@ -261,9 +262,8 @@ public class EmptyScripting implements GameScripting {
 		
 	}
 	@Override
-	public void onSpacewarStep(SpacewarWorld war) {
-		// TODO Auto-generated method stub
-		
+	public SpacewarScriptResult onSpacewarStep(SpacewarWorld war) {
+		return null;
 	}
 	@Override
 	public void onGroundwarFinish(GroundwarWorld war) {
@@ -305,6 +305,5 @@ public class EmptyScripting implements GameScripting {
 	@Override
 	public void debug() {
 		// TODO Auto-generated method stub
-		
 	}
 }

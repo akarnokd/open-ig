@@ -420,6 +420,12 @@ public class StarmapScreen extends ScreenBase {
 	public boolean newGameStarted;
 	/** Debug: show all planets and fleets. */
 	boolean showAll;
+	/** The extra fleet icon 1. */
+	BufferedImage extraFleet1;
+	/** The extra fleet icon 2. */
+	BufferedImage extraFleet2;
+	/** The extra fleet icon 2. */
+	BufferedImage extraFleet3;
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
 		starmapWindow.x = 0;
@@ -1364,9 +1370,16 @@ public class StarmapScreen extends ScreenBase {
 						}
 					}
 				}
-				int x0 = (int)(starmapRect.x + f.x * zoom - f.owner.fleetIcon.getWidth() / 2);
-				int y0 = (int)(starmapRect.y + f.y * zoom - f.owner.fleetIcon.getHeight() / 2);
-				g2.drawImage(f.owner.fleetIcon, x0, y0, null);
+				BufferedImage icon = f.owner.fleetIcon;
+				
+				if (f.owner == player() && !world().scripting.mayControlFleet(f)) {
+					icon = extraFleet2;
+				}
+				
+				int x0 = (int)(starmapRect.x + f.x * zoom - icon.getWidth() / 2);
+				int y0 = (int)(starmapRect.y + f.y * zoom - icon.getHeight() / 2);
+				
+				g2.drawImage(icon, x0, y0, null);
 				
 				String fleetName = f.name;
 				if (knowledge(f, FleetKnowledge.VISIBLE) == 0) {
@@ -2505,6 +2518,10 @@ public class StarmapScreen extends ScreenBase {
 			}
 		};
 
+		extraFleet1 = rl.getImage("starmap/fleets/extra_1_fleet");
+		extraFleet2 = rl.getImage("starmap/fleets/extra_2_fleet");
+		extraFleet3 = rl.getImage("starmap/fleets/extra_3_fleet");
+		
 		addThis();
 	}
 	/**
