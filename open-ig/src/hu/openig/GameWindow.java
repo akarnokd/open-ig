@@ -443,6 +443,9 @@ public class GameWindow extends JFrame implements GameControls {
 		uninitScreens();
 		commons.stop();
 		commons.sounds.close();
+		if (commons.world() != null) {
+			commons.world().scripting.done();
+		}
 		
 		config.fullScreen = isUndecorated();
 		if (!config.fullScreen) {

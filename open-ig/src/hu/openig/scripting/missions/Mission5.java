@@ -86,7 +86,7 @@ public class Mission5 extends Mission {
 					@Override
 					public void invoke() {
 						helper.setObjectiveState("Mission-5-Task-1", ObjectiveState.SUCCESS);
-						helper.setMissionTime("Mission-5-Task-2", helper.now() + 8);
+						helper.setMissionTime("Mission-5-Task-2", helper.now() + 2);
 						moveTullen();
 						helper.send("Douglas-Thorin-Reinforcements").visible = true;
 						helper.send("Douglas-Reinforcements-Denied").visible = false;
@@ -257,7 +257,7 @@ public class Mission5 extends Mission {
 	}
 	@Override
 	public void onDiscovered(Player player, Fleet fleet) {
-		if (hasTag(fleet, "Mission-5-Garthog")) {
+		if (player == this.player && hasTag(fleet, "Mission-5-Garthog")) {
 			if (world.env.config().slowOnEnemyAttack) {
 				world.env.speed1();
 			}
