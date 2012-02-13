@@ -2276,6 +2276,14 @@
 	<entry key='mission-16.fleet'>Pénzszállító</entry>
 	<entry key='mission-17.prototype'>Ellopott prototípus</entry>
 	<entry key='mission-17.prototype.desc'>A Garthog ellopott egy hajó prototípust. Mindenáron meg kell állítani őket!</entry>
+	<entry key='mission-18.garthog'></entry>
+	<entry key='mission-18.garthog.desc'></entry>
+	<entry key='mission-18.garthog1'></entry>
+	<entry key='mission-18.garthog2'></entry>
+	<entry key='mission-18.garthog3'></entry>
+	<entry key='mission-18.garthog4'></entry>
+	<entry key='mission-18.garthog5'></entry>
+	<entry key='mission-18.retake'></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
