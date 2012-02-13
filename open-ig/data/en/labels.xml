@@ -3020,6 +3020,16 @@
 	<entry key='mission-16.fleet'>Money carrier</entry>
 	<entry key='mission-17.prototype'>Stolen prototype</entry>
 	<entry key='mission-17.prototype.desc'>Garthogs have stolen a prototype ship. Stop them at all costs!</entry>
+	<entry key='mission-18.garthog'>Defeat the Garthog Empire</entry>
+	<entry key='mission-18.garthog.desc'>What's enough is enough. Capture their planets (in any order)!</entry>
+	<entry key='mission-18.garthog1'>Capture Garthog 1</entry>
+	<entry key='mission-18.garthog2'>Capture Garthog 2</entry>
+	<entry key='mission-18.garthog3'>Capture Garthog 3</entry>
+	<entry key='mission-18.garthog4'>Capture Garthog 4</entry>
+	<entry key='mission-18.garthog5'>Capture Garthog 5</entry>
+	<entry key='mission-18.retake'>Recapture any planets you lost</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

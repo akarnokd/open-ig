@@ -63,6 +63,7 @@ public class Mission17 extends Mission {
 					incomingMessage("Douglas-Prototype");
 					addTimeout("Mission-17-Objective", 3000);
 					world.env.playMusic();
+					stage = M17.RUN;
 				}
 			});
 		}
@@ -70,10 +71,14 @@ public class Mission17 extends Mission {
 			helper.showObjective("Mission-17");
 		}
 		if (checkTimeout("Mission-17-Failed")) {
+			stage = M17.DONE;
 			helper.gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Prototype-Lost", "loose/fired_level_2");
 		}
 		if (checkTimeout("Mission-17-Success")) {
+			helper.receive("Douglas-Prototype").visible = false;
+			helper.objective("Mission-17").visible = false;
+			stage = M17.DONE;
 			incomingMessage("Douglas-Prototype-Success"); // TODO
 		}
 	}
@@ -85,6 +90,7 @@ public class Mission17 extends Mission {
 				@Override
 				public void invoke() {
 					promote();
+					helper.receive("Douglas-Prototype-Success").visible = false;
 				}
 			});
 		}
@@ -130,6 +136,9 @@ public class Mission17 extends Mission {
 		if (planet.id.equals(target) && hasTag(fleet, "Mission-17-Prototype")) {
 			helper.setObjectiveState("Mission-17", ObjectiveState.FAILURE);
 			addTimeout("Mission-17-Failed", 13000);
+			
+			world.removeFleet(fleet);
+			removeScripted(fleet);
 		}
 	}
 	
@@ -186,5 +195,9 @@ public class Mission17 extends Mission {
 	@Override
 	public void load(XElement xmission) {
 		stage = M17.valueOf(xmission.get("stage"));
+	}
+	@Override
+	public void reset() {
+		stage = M17.NONE;
 	}
 }
