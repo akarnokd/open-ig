@@ -26,7 +26,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.191'>
+	<module id='Game' version='0.94.200'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -38,10 +38,10 @@
 		<execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>5. küldetés javítás</desc>
-			<desc lang='en'>Mission 5 fixed.</desc>
+			<desc lang='hu'>3. szint elérhető</desc>
+			<desc lang='en'>Level 3 available</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.191.jar' sha1='2f70fdb26a9fa952071d27c9e7814a5d424a0bd5'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.200.jar' sha1='fbc4fa9e704cf6244f76a0b017d648c203e5018c'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
@@ -49,9 +49,9 @@
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Kép és hang]: 2012 Február 10 / A</desc>
 			<desc lang='en'>The upgraded resource file [Image and sound]. 10th February, 2012 / A</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120211a2.zip' sha1='f5c20ca9a26b1959a57857373f27c386c75a02ab'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Február 11 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 11th February, 2012 / A</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120213a2.zip' sha1='e74b06a1c60ea0cb9edd10a58da011c960d26af6'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Február 13 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 13th February, 2012 / A</desc>
 		</file>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-0.8.zip' sha1='72c37794f47945a4a0651d7a676b78e4b9196b7b'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-0.8.zip' sha1='eb43f19c85d4763259bcf2b08a7291a17693f9da'/>
