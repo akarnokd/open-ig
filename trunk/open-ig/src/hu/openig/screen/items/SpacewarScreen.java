@@ -3542,7 +3542,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (r == SpacewarScriptResult.PLAYER_LOSE) {
 			winner = nonPlayer();
 		}
-		if (winner != null && explosions.size() == 0 && projectiles.size() == 0) {
+		if (winner != null 
+				&& ((explosions.size() == 0 && projectiles.size() == 0)
+						/* || r != SpacewarScriptResult.CONTINUE */)) {
 			commons.simulation.pause();
 			concludeBattle(winner);
 		}

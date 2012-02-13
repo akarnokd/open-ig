@@ -73,6 +73,7 @@ public class Mission17 extends Mission {
 		if (checkTimeout("Mission-17-Failed")) {
 			stage = M17.DONE;
 			helper.gameover();
+			helper.receive("Douglas-Prototype").visible = false;
 			loseGameMessageAndMovie("Douglas-Fire-Prototype-Lost", "loose/fired_level_2");
 		}
 		if (checkTimeout("Mission-17-Success")) {
@@ -115,7 +116,7 @@ public class Mission17 extends Mission {
 		f.addInventory(research("GarthogFighter"), 3);
 		f.addInventory(research("Destroyer2"), 1);
 
-		InventoryItem ii = f.getInventoryItem(research("Destroyer"));
+		InventoryItem ii = f.getInventoryItem(research("Destroyer2"));
 		
 		setSlot(ii, "laser1", "Laser1", 6);
 		setSlot(ii, "laser2", "Laser1", 6);
@@ -147,11 +148,17 @@ public class Mission17 extends Mission {
 		if (!isMissionSpacewar(war.battle(), "Mission-17")) {
 			return null;
 		}
-		for (SpacewarStructure s : war.structures()) {
+		Player g = player("Garthog");
+		for (SpacewarStructure s : war.structures(g)) {
 			if (s.item != null && "Mission-17-Prototype".equals(s.item.tag)) {
 				return SpacewarScriptResult.CONTINUE;
 			}
 		}
+		for (SpacewarStructure s : war.structures(g)) {
+			war.stop(s);
+			war.move(s, war.space().width - 10, s.y);
+		}
+		
 		return SpacewarScriptResult.PLAYER_WIN;
 	}
 	
@@ -168,12 +175,13 @@ public class Mission17 extends Mission {
 		Pair<Fleet, InventoryItem> proto = findTaggedFleet("Mission-17-Prototype", garthog);
 		if (proto == null) {
 			
-			battle.rewardImage = label("battlefinish/mission-21");
-			battle.messageText = label("battlefinish/mission-17.21");
+			battle.rewardImage = "battlefinish/mission_21";
+			battle.messageText = label("battlefinish.mission-17.21");
 			battle.rewardText = label("battlefinish.mission-17.21_bonus");
 			
 			Pair<Fleet, InventoryItem> gf = findTaggedFleet("Mission-17-Garthog", garthog);
 			if (gf != null) {
+				gf.first.inventory.clear();
 				removeScripted(gf.first);
 				world.removeFleet(gf.first);
 			}

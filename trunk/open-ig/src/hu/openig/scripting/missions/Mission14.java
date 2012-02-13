@@ -83,8 +83,9 @@ public class Mission14 extends Mission {
 			for (SpacewarStructure s : war.structures(garthog)) {
 				war.move(s, Math.cos(s.angle) * 1000, s.y);
 			}
+			return SpacewarScriptResult.CONTINUE;
 		}
-		return SpacewarScriptResult.CONTINUE;
+		return null;
 	}
 	/**
 	 * Deploy satellites, create garthog carriers.
