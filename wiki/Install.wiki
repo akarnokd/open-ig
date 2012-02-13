@@ -12,7 +12,7 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 [http://open-ig.googlecode.com/files/open-ig-upgrade-20120210a1.zip Upgrade 2012-02-10-a-1]
 
-[http://open-ig.googlecode.com/files/open-ig-upgrade-20120211a2.zip Upgrade 2012-02-13-a-2]
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20120213a2.zip Upgrade 2012-02-13-a-2]
 
 [http://open-ig.googlecode.com/files/open-ig-0.94.200.jar open-ig-0.94.200.jar]
 
