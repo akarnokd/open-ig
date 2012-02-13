@@ -2,6 +2,15 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.200 - More missions =
+  * Released: 2012-02-13 21:10 CET
+  * Mission 17 added, level 2 complete ([http://code.google.com/p/open-ig/issues/detail?id=213 Issue #213])
+  * Mission 18 added
+  * Achievement sound ([http://code.google.com/p/open-ig/issues/detail?id=238 Issue #238])
+  * Mission 2 reward text fixes ([http://code.google.com/p/open-ig/issues/detail?id=256 Issue #256])
+  * Added mission 13 reward ([http://code.google.com/p/open-ig/issues/detail?id=289 Issue #289])
+  * Fixed mission 5 unreachable garthog fleet ([http://code.google.com/p/open-ig/issues/detail?id=291 #291])
+
 = Version 0.94.190 - More missions =
   * Released: 2012-02-10 14:00 CET
   * Added missions 13 and 16
