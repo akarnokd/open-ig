@@ -93,6 +93,10 @@ public class Mission18 extends Mission {
 		if (checkTimeout("Mission-18-Hide")) {
 			helper.objective("Mission-18").visible = false;
 		}
+		
+		// planet messages
+		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom", "Zeuson" };
+		setPlanetMessages(planets);
 	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {
