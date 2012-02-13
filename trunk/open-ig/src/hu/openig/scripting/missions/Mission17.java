@@ -77,6 +77,10 @@ public class Mission17 extends Mission {
 			loseGameMessageAndMovie("Douglas-Fire-Prototype-Lost", "loose/fired_level_2");
 		}
 		if (checkTimeout("Mission-17-Success")) {
+			helper.setObjectiveState("Mission-17", ObjectiveState.SUCCESS);
+			addTimeout("Mission-17-Done", 13000);
+		}
+		if (checkTimeout("Mission-17-Done")) {
 			helper.receive("Douglas-Prototype").visible = false;
 			helper.objective("Mission-17").visible = false;
 			stage = M17.DONE;
@@ -185,9 +189,9 @@ public class Mission17 extends Mission {
 				removeScripted(gf.first);
 				world.removeFleet(gf.first);
 			}
+
+			addTimeout("Mission-17-Success", 1000);
 			
-			helper.setObjectiveState("Mission-17", ObjectiveState.SUCCESS);
-			addTimeout("Mission-17-Success", 13000);
 			cleanupScriptedFleets();
 		}
 	}
