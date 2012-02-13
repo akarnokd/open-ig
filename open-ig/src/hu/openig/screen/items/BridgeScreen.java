@@ -671,7 +671,7 @@ public class BridgeScreen extends ScreenBase {
 		}
 
 		if (videoAppear != null) {
-			if (videoAppearPercent != 200) {
+			if (videoAppearPercent < 200) {
 				int p = videoAppearPercent;
 				if (videoAppearPercent > 100) {
 					p = (200 - videoAppearPercent);
@@ -939,7 +939,7 @@ public class BridgeScreen extends ScreenBase {
 			videoRunning = true;
 			videoAnim.start();
 		} else
-		if (videoAppearPercent == 200) {
+		if (videoAppearPercent > 200) {
 			videoAppearAnim.stop();
 			videoAppear = null;
 			if (onVideoComplete != null) {

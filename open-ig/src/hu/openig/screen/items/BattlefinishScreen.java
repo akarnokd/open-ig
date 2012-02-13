@@ -293,8 +293,14 @@ public class BattlefinishScreen extends ScreenBase {
 	 * @return the status of the enemy fleet.
 	 */
 	EnemyStatus enemyStatus(Fleet enemy) {
-		for (InventoryItem ii : enemy.inventory) {
-			if (ii.hp * 2 < world().getHitpoints(ii.type)) {
+		long hpa = 0;
+		long hpm = 0;
+		if (enemy.inventory.size() > 0) {
+			for (InventoryItem ii : enemy.inventory) {
+				hpa += ii.hp;
+				hpm += world().getHitpoints(ii.type);
+			}
+			if (hpa * 2 < hpm) {
 				return EnemyStatus.RETREATED;
 			} else {
 				return EnemyStatus.SLIPPED;
