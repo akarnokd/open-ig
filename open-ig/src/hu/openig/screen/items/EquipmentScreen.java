@@ -2213,11 +2213,11 @@ public class EquipmentScreen extends ScreenBase {
 				ii = planet().getInventoryItem(research(), player());
 			}
 			if (ii != null) {
-				int worth = world().getHitpoints(ii.type);
+				int worth = ii.type.productionCost; //world().getHitpoints(ii.type);
 				
 				for (InventorySlot is : ii.slots) {
 					if (is.type != null && !is.slot.fixed) {
-						worth += world().getHitpoints(is.type) * is.count;
+						worth += is.type.productionCost * is.count;
 					}
 				}
 				
