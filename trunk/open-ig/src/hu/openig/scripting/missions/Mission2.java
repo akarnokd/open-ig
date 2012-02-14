@@ -34,7 +34,7 @@ public class Mission2 extends Mission {
 	/** The money reward per task. */
 	final int[] moneyReward = { 0, 1000, 2500, 5000 };
 	/** The custom battle finish image. */
-	final String[] imageReward = { null, "battlefinish/mission_8b", "battlefinish/mission_8b", "battlefinish/mission_8b" };
+	final String[] imageReward = { null, "battlefinish/mission_1_8b", "battlefinish/mission_1_8b", "battlefinish/mission_1_8b" };
 	/**
 	 * Check the starting conditions of Mission 2 and make it available.
 	 */
