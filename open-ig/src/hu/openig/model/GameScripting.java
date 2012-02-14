@@ -66,4 +66,10 @@ public interface GameScripting extends GameScriptingEvents {
 	boolean mayAutoSave();
 	/** Activate debugging behavior. */
 	void debug();
+	/**
+	 * Does the scripting allow the attacks of the given player?
+	 * @param player the player to test
+	 * @return true if attack is allowed
+	 */
+	boolean mayPlayerAttack(Player player);
 }
