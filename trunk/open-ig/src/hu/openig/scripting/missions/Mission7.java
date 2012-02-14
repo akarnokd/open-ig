@@ -160,15 +160,15 @@ public class Mission7 extends Mission {
 			} else {
 				if (world.difficulty == Difficulty.HARD) {
 					pf.addInventory(world.researches.get("GarthogFighter"), 15);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 7);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 3);
 				} else
 				if (world.difficulty == Difficulty.NORMAL) {
 					pf.addInventory(world.researches.get("GarthogFighter"), 12);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 5);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
 
 				} else {
-					pf.addInventory(world.researches.get("GarthogFighter"), 10);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 3);
+					pf.addInventory(world.researches.get("GarthogFighter"), 8);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
 				}
 			}
 			for (InventoryItem ii : pf.inventory) {
