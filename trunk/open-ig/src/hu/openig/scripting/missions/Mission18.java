@@ -45,6 +45,7 @@ public class Mission18 extends Mission {
 			world.env.achievementQueue().add(a);
 			world.env.profile().grantAchievement(a);
 		}
+		addMission("Mission-18", 1);
 	}
 	/**
 	 * Creates the main ship for level 2.
@@ -93,7 +94,12 @@ public class Mission18 extends Mission {
 		if (checkTimeout("Mission-18-Hide")) {
 			helper.objective("Mission-18").visible = false;
 		}
-		
+		if (checkMission("Mission-18")) {
+			helper.objective("Mission-18").visible = true;
+			for (int i = 1; i < 6; i++) {
+				helper.objective("Mission-18-Task-" + i).visible = true;
+			}
+		}
 		// planet messages
 		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom", "Zeuson" };
 		setPlanetMessages(planets);
