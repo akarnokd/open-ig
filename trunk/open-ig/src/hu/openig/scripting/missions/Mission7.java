@@ -74,11 +74,12 @@ public class Mission7 extends Mission {
 				helper.setObjectiveState("Mission-7-Task-" + i, ObjectiveState.SUCCESS);
 				if (i == 2) {
 					helper.setObjectiveState("Mission-7", ObjectiveState.SUCCESS);
+					player.knownPlayers.put(player("FreeTraders"), 75);
+				} else {
+					int reward = 5000;
+					player.money += reward;
+					player.statistics.moneyIncome += reward;
 				}
-				int reward = 5000;
-				player.money += reward;
-				player.statistics.moneyIncome += reward;
-				
 				helper.setTimeout("Mission-7-Hide", 13000);
 			}
 			if (checkTimeout("Mission-7-Task-" + i + "-Failed")) {
@@ -130,6 +131,7 @@ public class Mission7 extends Mission {
 		String m7tio = "Mission-7-Task-" + task + "-Timeout";
 		if (!fs.isEmpty()) {
 			incomingMessage("Merchant-Under-Attack-Garthog");
+			helper.objective("Mission-7").visible = true;
 			helper.showObjective(m7ti);
 			helper.clearMissionTime(m7ti);
 			world.env.speed1();
