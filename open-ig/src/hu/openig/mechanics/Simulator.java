@@ -780,7 +780,7 @@ public final class Simulator {
 		boolean spaceport = f.task != FleetTask.SCRIPT 
 				&& np != null && np.owner == f.owner && np.hasMilitarySpaceport();
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
-			if (spaceport) {
+			if (spaceport || ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				int hpMax = ii.owner.world.getHitpoints(ii.type);
 				if (ii.hp < hpMax) {
 					ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
