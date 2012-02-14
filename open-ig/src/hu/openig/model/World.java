@@ -1595,8 +1595,9 @@ public class World {
 			if (f.id < 0) {
 				f.id = fleetIdSequence++;
 				noTargetFleet = true; // ignore target fleet in this case
+			} else {
+				fleetIdSequence = Math.max(fleetIdSequence, f.id) + 1;
 			}
-			fleetIdSequence = Math.max(fleetIdSequence, f.id);
 			
 			f.x = xfleet.getFloat("x");
 			f.y = xfleet.getFloat("y");

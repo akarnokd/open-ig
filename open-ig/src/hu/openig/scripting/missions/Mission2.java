@@ -62,7 +62,7 @@ public class Mission2 extends Mission {
 					scheduleNextTask(i);
 				}
 				if (helper.canStart(m2ti)) {
-					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"), 4);
+					List<Fleet> fs = findVisibleFleets(player, false, player("Traders"), 8);
 					fs = filterByRange(fs, world.params().groundRadarUnitSize() - 2, 
 							"Naxos", "San Sterling", "Achilles");
 					if (!fs.isEmpty()) {
