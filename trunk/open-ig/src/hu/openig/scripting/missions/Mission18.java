@@ -87,10 +87,11 @@ public class Mission18 extends Mission {
 	public void onTime() {
 		checkMainShip();
 		checkSuccess();
-		if (checkTimeout("Mission-18-Failed")) {
-			helper.gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_3");
-		}
+// FIXME reenable
+//		if (checkTimeout("Mission-18-Failed")) {
+//			helper.gameover();
+//			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_3");
+//		}
 		if (checkTimeout("Mission-18-Hide")) {
 			helper.objective("Mission-18").visible = false;
 		}
