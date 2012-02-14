@@ -1250,4 +1250,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	public boolean applicable() {
 		return true;
 	}
+	@Override
+	public boolean mayPlayerAttack(Player player) {
+		// allow garthogs to attack
+		return world.level == 3 && player.id.equals("Garthog");
+	}
 }

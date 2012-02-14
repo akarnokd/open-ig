@@ -99,7 +99,8 @@ public class AIWorld {
 		this.colonizationLimit = player.colonizationLimit;
 		
 		if (player != player.world.player) {
-			mayConquer = player.world.player.statistics.planetsColonized > 0;
+			mayConquer = player.world.player.statistics.planetsColonized > 0
+					|| player.world.scripting.mayPlayerAttack(player);
 		} else {
 			mayConquer = true;
 		}

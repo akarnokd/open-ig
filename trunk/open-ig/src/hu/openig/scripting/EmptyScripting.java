@@ -306,4 +306,8 @@ public class EmptyScripting implements GameScripting {
 	public void debug() {
 		// TODO Auto-generated method stub
 	}
+	@Override
+	public boolean mayPlayerAttack(Player player) {
+		return false;
+	}
 }
