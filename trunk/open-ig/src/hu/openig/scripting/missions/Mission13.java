@@ -239,7 +239,7 @@ public class Mission13 extends Mission {
 		BattleInfo battle = war.battle();
 		if (isMissionSpacewar(battle, "Mission-13")) {
 			if (concludeBattle(battle)) {
-				battle.rewardImage = "battlefinish/mission_16.png";
+				battle.rewardImage = "battlefinish/mission_16";
 				battle.messageText = label("battlefinish.mission-13.16");
 				battle.rewardText = label("battlefinish.mission-13.16_bonus");
 				createReward();
