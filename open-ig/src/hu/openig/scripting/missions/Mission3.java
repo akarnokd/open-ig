@@ -22,6 +22,7 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -32,6 +33,19 @@ import java.util.EnumSet;
  * @author akarnokd, 2012.01.14.
  */
 public class Mission3 extends Mission {
+	/** The stages. */
+	enum M3 {
+		/** Not yet started. */
+		NONE,
+		/** The mission is running. */
+		RUNNING,
+		/** Attacking. */
+		ATTACK,
+		/** Done. */
+		DONE
+	}
+	/** The current mission stage. */
+	protected M3 stage = M3.NONE;
 	@Override
 	public boolean applicable() {
 		return world.level == 1;
@@ -50,6 +64,7 @@ public class Mission3 extends Mission {
 			helper.setTimeout("Mission-3-Message", 3000);
 			incomingMessage("Douglas-Carrier");
 			helper.clearMissionTime("Mission-3");
+			stage = M3.RUNNING;
 		}
 		if (helper.isTimeout("Mission-3-Message")) {
 			helper.clearTimeout("Mission-3-Message");
@@ -139,11 +154,7 @@ public class Mission3 extends Mission {
 	 * Check the carrier's location and attack it with pirate.
 	 */
 	void checkCarrierLocation() {
-		Objective m3 = helper.objective("Mission-3");
-		if (m3.state == ObjectiveState.ACTIVE 
-				&& !helper.hasMissionTime("Mission-3-Timeout")
-				&& !helper.hasMissionTime("Mission-3-Success")
-				&& !helper.hasTimeout("Mission-3-Failed")) {
+		if (stage == M3.RUNNING) {
 			final Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Carrier", player);
 			Planet sansterling = planet("San Sterling");
 			
@@ -176,7 +187,7 @@ public class Mission3 extends Mission {
 						} else {
 							ff.attack(pf);
 						}
-
+						stage = M3.ATTACK;
 					}
 				});
 				
@@ -215,6 +226,7 @@ public class Mission3 extends Mission {
 				helper.scriptedFleets().remove(i);
 			}
 		}
+		stage = M3.DONE;
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
@@ -313,5 +325,17 @@ public class Mission3 extends Mission {
 			}
 //			war.battle().rewardImage = imageReward[task];
 		}
+	}
+	@Override
+	public void reset() {
+		stage = M3.NONE;
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("stage", stage);
+	}
+	@Override
+	public void load(XElement xmission) {
+		stage = M3.valueOf(xmission.get("stage", M3.NONE.toString()));
 	}
 }
