@@ -261,8 +261,14 @@ public class OffensePlanner extends Planner {
 		if (checkDeploy(cruisers, battleships)) {
 			return true;
 		}
-		if (world.money < 100000) {
+		if (world.money < 10000) {
 			return false;
+		}
+		if (world.money < 35000) {
+			cruisers.clear();
+		}
+		if (world.money < 70000) {
+			battleships.clear();
 		}
 		if (checkCounts(fighters, cruisers, battleships)) {
 			return true;
