@@ -715,7 +715,7 @@ public final class Simulator {
 				double dist = Math.sqrt((f.x - target.x) * (f.x - target.x) + (f.y - target.y) * (f.y - target.y));
 				double dx = getSpeed(f) * stepMultiplier;
 				// if the target has roughly the same speed as our fleet, give a small boost
-				if (Math.abs(dx - targetSpeed) < 0.5) {
+				if (targetSpeed > 0 && Math.abs(dx - targetSpeed) < 0.5) {
 					dx += 0.5;
 				}
 				
@@ -862,6 +862,6 @@ public final class Simulator {
 	 * @return the speed
 	 */
 	static double getSpeed(Fleet f) {
-		return f.getSpeed() / 4;
+		return f.getSpeed() / 4d;
 	}
 }
