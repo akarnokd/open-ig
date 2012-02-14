@@ -65,7 +65,7 @@ public class Mission8 extends Mission {
 		}
 		if (checkMission("Mission-8-Visions")) {
 			
-			helper.setMissionTime("Mission-15", helper.now() + 15 * 24);
+			helper.setMissionTime("Mission-15", helper.now() + 6 * 24);
 			world.env.stopMusic();
 			world.env.playVideo("interlude/dream_1", new Action0() {
 				@Override

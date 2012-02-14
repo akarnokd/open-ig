@@ -71,7 +71,7 @@ public class Mission13 extends Mission {
 			stage = M13.RUN;
 			incomingMessage("Douglas-Admiral-Benson");
 			createBenson();
-			helper.setMissionTime("Mission-13-Attack", helper.now() + 1);
+			helper.setMissionTime("Mission-13-Attack", helper.now() + 3);
 		}
 		if (checkMission("Mission-13-Attack")) {
 			createGarthog();
@@ -231,6 +231,7 @@ public class Mission13 extends Mission {
 	public void onFleetAt(Fleet fleet, Planet planet) {
 		if (planet.id.equals("New Caroline") && hasTag(fleet, "Mission-13-Benson")) {
 			helper.setObjectiveState("Mission-13", ObjectiveState.SUCCESS);
+			removeFleets();
 			helper.setMissionTime("Mission-13-Hide", 13000);
 		}
 	}
