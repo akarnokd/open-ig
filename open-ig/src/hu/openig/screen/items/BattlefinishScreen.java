@@ -177,13 +177,24 @@ public class BattlefinishScreen extends ScreenBase {
 					}
 				}
 			}
+
+			int y = base.y + 85;
+
+			if (battle.messageText != null) {
+				y += 5;
+				y += textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 10, battle.messageText);
+				y += 12;
+			}
 			
-			textCenter(g2, x2, base.y + 100, w2, TextRenderer.GREEN, 14, get("battlefinish.own_losses_1"));
-			textCenter(g2, x3, base.y + 100, w3, TextRenderer.GREEN, 14, get("battlefinish.enemy_losses_1"));
-			textCenter(g2, x2, base.y + 120, w2, TextRenderer.GREEN, 14, get("battlefinish.own_losses_2"));
-			textCenter(g2, x3, base.y + 120, w3, TextRenderer.GREEN, 14, get("battlefinish.own_losses_2"));
+			textCenter(g2, x2, y, w2, TextRenderer.GREEN, 14, get("battlefinish.own_losses_1"));
+			textCenter(g2, x3, y, w3, TextRenderer.GREEN, 14, get("battlefinish.enemy_losses_1"));
 			
-			y = base.y + 160;
+			y += 20;
+			
+			textCenter(g2, x2, y, w2, TextRenderer.GREEN, 14, get("battlefinish.own_losses_2"));
+			textCenter(g2, x3, y, w3, TextRenderer.GREEN, 14, get("battlefinish.own_losses_2"));
+			
+			y += 20;
 			
 			if (battle.spacewarWinner != null) {
 				y = printStatistics(g2, y, "battlefinish.fighters", 
@@ -269,12 +280,6 @@ public class BattlefinishScreen extends ScreenBase {
 						y += 20;
 					}
 				}
-			}
-
-			if (battle.messageText != null) {
-				y += 10;
-				y += textCenterWrap(g2, x1, y, w1, TextRenderer.YELLOW, 10, battle.messageText);
-				y += 7;
 			}
 
 			if (battle.rewardText != null) {
