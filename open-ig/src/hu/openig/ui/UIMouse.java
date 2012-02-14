@@ -11,6 +11,7 @@ package hu.openig.ui;
 import java.awt.Component;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.PointerInfo;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.EnumSet;
@@ -189,15 +190,18 @@ public class UIMouse {
 	public static UIMouse createCurrent(Component c) {
 		UIMouse m = new UIMouse();
 		m.type = UIMouse.Type.MOVE;
-		Point pm = MouseInfo.getPointerInfo().getLocation();
-		Point pc = new Point(0, 0);
-		try {
-			pc = c.getLocationOnScreen();
-		} catch (IllegalStateException ex) {
-			// ignored
+		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+		if (pointerInfo != null) {
+			Point pm = pointerInfo.getLocation();
+			Point pc = new Point(0, 0);
+			try {
+				pc = c.getLocationOnScreen();
+			} catch (IllegalStateException ex) {
+				// ignored
+			}
+			m.x = pm.x - pc.x;
+			m.y = pm.y - pc.y;
 		}
-		m.x = pm.x - pc.x;
-		m.y = pm.y - pc.y;
 		return m;
 	}
 	/**
