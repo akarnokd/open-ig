@@ -8,6 +8,7 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -43,6 +44,7 @@ public class Mission7 extends Mission {
 		Objective m6 = helper.objective("Mission-6");
 		Objective m7 = helper.objective("Mission-7");
 		Objective m7t1 = helper.objective("Mission-7-Task-1");
+		Objective m7t2 = helper.objective("Mission-7-Task-2");
 		if (m6.state != ObjectiveState.ACTIVE
 				&& !m7.visible && m7.state == ObjectiveState.ACTIVE
 				&& !m7t1.visible && m7t1.state == ObjectiveState.ACTIVE
@@ -52,6 +54,7 @@ public class Mission7 extends Mission {
 		// a week after the first virus attack
 		Objective m12t1 = helper.objective("Mission-12-Task-1");
 		if (m12t1.state != ObjectiveState.ACTIVE
+				&& !m7t2.visible
 				&& !helper.hasMissionTime("Mission-7-Task-2")) {
 			helper.setMissionTime("Mission-7-Task-2", helper.now() + 7 * 24);
 		}
@@ -72,6 +75,10 @@ public class Mission7 extends Mission {
 				if (i == 2) {
 					helper.setObjectiveState("Mission-7", ObjectiveState.SUCCESS);
 				}
+				int reward = 5000;
+				player.money += reward;
+				player.statistics.moneyIncome += reward;
+				
 				helper.setTimeout("Mission-7-Hide", 13000);
 			}
 			if (checkTimeout("Mission-7-Task-" + i + "-Failed")) {
@@ -79,12 +86,14 @@ public class Mission7 extends Mission {
 				helper.setObjectiveState("Mission-7", ObjectiveState.FAILURE);
 				helper.setTimeout("Mission-7-Hide", 13000);
 				helper.setTimeout("Mission-7-Fire", 16000);
+				removeFleets();
 			}
 			if (checkMission("Mission-7-Task-" + i + "-Timeout")) {
 				helper.setObjectiveState("Mission-7-Task-" + i, ObjectiveState.FAILURE);
 				helper.setObjectiveState("Mission-7", ObjectiveState.FAILURE);
 				helper.setTimeout("Mission-7-Hide", 13000);
 				helper.setTimeout("Mission-7-Fire", 16000);
+				removeFleets();
 			}
 		}
 		if (checkTimeout("Mission-7-Hide")) {
@@ -95,7 +104,19 @@ public class Mission7 extends Mission {
 			loseGameMessageAndMovie("Douglas-Fire-Lost-Merchants", "loose/fired_level_2");
 		}
 	}
-	
+	/** Remove the attacker fleets. */
+	void removeFleets() {
+		Pair<Fleet, InventoryItem> merchant = findTaggedFleet("Mission-7-Trader", player("Traders"));
+		if (merchant != null) {
+			removeScripted(merchant.first);
+			world.removeFleet(merchant.first);
+		}
+		Pair<Fleet, InventoryItem> g = findTaggedFleet("Mission-7-Garthog", player("Garthog"));
+		if (g != null) {
+			removeScripted(g.first);
+			world.removeFleet(g.first);
+		}
+	}
 	/**
 	 * Check if the traders are in position to start the task. 
 	 * @param task the task index
@@ -125,11 +146,30 @@ public class Mission7 extends Mission {
 			// ----------------------------------------------------------------
 			// adjust fleet strenth here
 			if (task == 1) {
-				pf.addInventory(world.researches.get("GarthogFighter"), 8);
-				pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
+				if (world.difficulty == Difficulty.HARD) {
+					pf.addInventory(world.researches.get("GarthogFighter"), 8);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
+				} else
+				if (world.difficulty == Difficulty.NORMAL) {
+					pf.addInventory(world.researches.get("GarthogFighter"), 10);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 1);
+				} else {
+					pf.addInventory(world.researches.get("GarthogFighter"), 5);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 1);
+				}
 			} else {
-				pf.addInventory(world.researches.get("GarthogFighter"), 15);
-				pf.addInventory(world.researches.get("GarthogDestroyer"), 7);
+				if (world.difficulty == Difficulty.HARD) {
+					pf.addInventory(world.researches.get("GarthogFighter"), 15);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 7);
+				} else
+				if (world.difficulty == Difficulty.NORMAL) {
+					pf.addInventory(world.researches.get("GarthogFighter"), 12);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 5);
+
+				} else {
+					pf.addInventory(world.researches.get("GarthogFighter"), 10);
+					pf.addInventory(world.researches.get("GarthogDestroyer"), 3);
+				}
 			}
 			for (InventoryItem ii : pf.inventory) {
 				ii.tag = "Mission-7-Garthog";
