@@ -109,7 +109,16 @@ public class Mission18 extends Mission {
 		// help the garthog economy
 		// FIXME 
 		Player garthog = player("Garthog");
-		int mi = 75;
+		int mi = 50;
+		switch (world.difficulty) {
+		case NORMAL:
+			mi = 100;
+			break;
+		case HARD:
+			mi = 200;
+			break;
+		default:
+		}
 		garthog.money += mi;
 		garthog.statistics.moneyIncome += mi;
 		// -------------------------------------------------------
