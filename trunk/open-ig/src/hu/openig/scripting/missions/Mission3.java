@@ -102,16 +102,14 @@ public class Mission3 extends Mission {
 				}
 			});
 		}
-		if (helper.isMissionTime("Mission-3-Success")) {
+		if (checkMission("Mission-3-Success")) {
 			helper.receive("Douglas-Carrier").visible = false;
 			helper.setObjectiveState("Mission-3", ObjectiveState.SUCCESS);
-			helper.clearMissionTime("Mission-3-Success");
 			helper.setTimeout("Mission-3-Done", 13000);
 			removeFleets();
 		}
-		if (helper.isTimeout("Mission-3-Done")) {
+		if (checkTimeout("Mission-3-Done")) {
 			helper.objective("Mission-3").visible = false;
-			helper.clearTimeout("Mission-3-Done");
 		}
 	}
 	/** Remove the scripted fleets. */
@@ -192,12 +190,14 @@ public class Mission3 extends Mission {
 				});
 				
 			}
-		}
-	}
-	@Override
-	public void onFleetAt(Fleet fleet, Planet planet) {
-		if (fleet.owner == player && hasTag(fleet, "Mission-3-Carrier")) {
-			addMission("Mission-3-Success", 0);
+		} else
+		if (stage == M3.DONE) {
+			final Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-3-Carrier", player);
+			if (fi != null) {
+				if (!player.explorationOuterLimit.contains(fi.first.x, fi.first.y)) {
+					addMission("Mission-3-Success", 0);
+				}
+			}
 		}
 	}
 	/**
