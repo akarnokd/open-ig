@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Difficulty;
 import hu.openig.utils.U;
 
 import java.util.Collections;
@@ -32,8 +33,10 @@ public class VehiclePlan {
 	 * @param available the available technology
 	 * @param battle the battle model
 	 * @param max the maximum amount of units
+	 * @param diff the difficulty settings to determine the mixture
 	 */
-	public void calculate(Iterable<ResearchType> available, BattleModel battle, int max) {
+	public void calculate(Iterable<ResearchType> available, 
+			BattleModel battle, int max, Difficulty diff) {
 
 		// fill in fighters
 		for (ResearchType rt : available) {
@@ -63,7 +66,21 @@ public class VehiclePlan {
 			sledCount = 0;
 		}
 		if (tanks.size() > 0 && tankCount > 0) {
-			demand.put(tanks.get(0), tankCount);
+			// depending on the difficulty, use less sophisticated tech as well
+			if (diff == Difficulty.HARD || tanks.size() == 1) {
+				demand.put(tanks.get(0), tankCount);
+			} else
+			if (diff == Difficulty.NORMAL) {
+				int tc1 = tankCount / 2;
+				int tc2 = tankCount - tc1;
+				demand.put(tanks.get(0), tc1);
+				demand.put(tanks.get(1), tc2);
+			} else {
+				int tc1 = tankCount / 3;
+				int tc2 = tankCount - tc1;
+				demand.put(tanks.get(0), tc1);
+				demand.put(tanks.get(1), tc2);
+			}
 			max -= tankCount;
 		}
 		if (sleds.size() > 0 && sledCount > 0) {

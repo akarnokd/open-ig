@@ -183,10 +183,8 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkTanks(final AIPlanet planet) {
-		// TODO implement
-
 		final VehiclePlan plan = new VehiclePlan();
-		plan.calculate(world.availableResearch, w.battle, planet.statistics.vehicleMax);
+		plan.calculate(world.availableResearch, w.battle, planet.statistics.vehicleMax, world.difficulty);
 		
 		// issue production order for the difference
 		for (Map.Entry<ResearchType, Integer> prod : plan.demand.entrySet()) {
