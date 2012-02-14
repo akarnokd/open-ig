@@ -284,7 +284,7 @@ video: flagship_arrival (maybe swap with Benson's video, as this is not a flagsh
 
 == Mission 17 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Stop the stolen prototype
 
@@ -303,7 +303,7 @@ Notes:
 
 == Mission 18 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif
 
 Objective: Defeat the Garthogs
 
