@@ -1124,7 +1124,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				public void actionPerformed(ActionEvent e) {
 					Objective o = objective("Mission-" + j);
 					if (o != null) {
-						resetMission(j);
+						removeMission(j, false);
 						o.state = ObjectiveState.SUCCESS;
 						o.visible = false;
 					}
@@ -1134,7 +1134,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			btnReset.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					resetMission(j);
+					removeMission(j, true);
 				}
 			});
 			if (i == 8) {
@@ -1222,8 +1222,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	/**
 	 * Resets the mission.
 	 * @param j the mission index
+	 * @param reset reset the internal state?
 	 */
-	void resetMission(final int j) {
+	void removeMission(final int j, boolean reset) {
 		Func1<String, Boolean> func = new Func1<String, Boolean>() {
 			@Override
 			public Boolean invoke(String value) {
@@ -1240,9 +1241,11 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		clearMissionTimes(func);
 		clearTimeouts(func);
 		clearObjectives(func);
-		for (Mission m : missions) {
-			if (m.getClass().getName().endsWith("n" + j)) {
-				m.reset();
+		if (reset) {
+			for (Mission m : missions) {
+				if (m.getClass().getName().endsWith("n" + j)) {
+					m.reset();
+				}
 			}
 		}
 	}
