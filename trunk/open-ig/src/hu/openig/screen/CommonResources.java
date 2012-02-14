@@ -59,6 +59,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -133,7 +134,7 @@ public class CommonResources implements GameEnvironment {
 	/** The timer tick. */
 	long tick;
 	/** The registration map. */
-	final Map<Closeable, TimerAction> timerHandlers = new HashMap<Closeable, TimerAction>();
+	final Map<Closeable, TimerAction> timerHandlers = new ConcurrentHashMap<Closeable, TimerAction>();
 	/** The timer action. */
 	static class TimerAction {
 		/** The operation frequency. */

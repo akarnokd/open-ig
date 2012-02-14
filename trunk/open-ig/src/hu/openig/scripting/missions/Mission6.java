@@ -91,14 +91,18 @@ public class Mission6 extends Mission {
 			createAttackers();
 		}
 		Objective m6 = helper.objective("Mission-6");
-		if (helper.isTimeout("Mission-6-Done")) {
-			helper.clearTimeout("Mission-6-Done");
+		if (checkTimeout("Mission-6-Done")) {
 			helper.receive("Achilles-Is-Under-Attack").visible = false;
 			if (m6.state == ObjectiveState.FAILURE) {
 				helper.gameover();
 				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_2");
 			}
 			m6.visible = false;
+			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+			if (garthog != null) {
+				removeScripted(garthog.first);
+				world.removeFleet(garthog.first);
+			}
 		}
 	}
 	/**
