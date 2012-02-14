@@ -1602,6 +1602,8 @@ public class EquipmentScreen extends ScreenBase {
 			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				if (tanks.size() > rt.index + 4) {
 					vc = tanks.get(rt.index + 4);
+				} else {
+					vc = tanks.get(rt.index);
 				}
 			}
 

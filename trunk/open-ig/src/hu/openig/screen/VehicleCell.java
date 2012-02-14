@@ -18,6 +18,7 @@ import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 /**
  * The renderer for a concrete vehicle. 
@@ -46,13 +47,29 @@ public class VehicleCell extends UIComponent {
 	@Override
 	public void draw(Graphics2D g2) {
 		if (type != null) {
+			int textHeight = 7;
+			int mh = height;
+			BufferedImage img = type.equipmentImage;
+			if (width < img.getWidth() || height < img.getHeight()) {
+				double sx = 1d * width / img.getWidth();
+				double sy = 1d * mh / img.getHeight();
+				double s = Math.min(sx, sy);
+				int iw = (int)(s * width);
+				int ih = (int)(s * mh);
+				if (topCenter) {
+					g2.drawImage(img, (width - iw) / 2, 0, iw, ih, null);
+				} else {
+					g2.drawImage(img, (width - iw) / 2, (height - ih) / 2, iw, ih, null);
+				}
+			} else
 			if (topCenter) {
-				g2.drawImage(type.equipmentImage, (width - type.equipmentImage.getWidth()) / 2, 2, null);
+				g2.drawImage(img, (width - img.getWidth()) / 2, 2, null);
 			} else {
-				g2.drawImage(type.equipmentImage, width - type.equipmentImage.getWidth() - 2, (height - type.equipmentImage.getHeight()) / 2, null);
+				g2.drawImage(img, 
+						width - img.getWidth() - 2, 
+						(height - img.getHeight()) / 2, null);
 			}
 			
-			int textHeight = 7;
 			
 			String n = Integer.toString(count);
 			commons.text().paintTo(g2, 2, height - 2 - textHeight, textHeight, TextRenderer.GREEN, n);

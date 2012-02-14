@@ -118,4 +118,58 @@ public final class ImageUtils {
 		}
 		return new BufferedImage[0][];
 	}
+	/**
+	 * Remove transparent border around an image.
+	 * @param src the source image
+	 * @return the cut new image
+	 */
+	public static BufferedImage cutTransparentBorder(BufferedImage src) {
+		int top = 0;
+		int left = 0;
+		int bottom = 0;
+		int right = 0;
+		
+		topcheck:
+		for (int y = 0; y < src.getHeight(); y++) {
+			for (int x = 0; x < src.getWidth(); x++) {
+				int c = src.getRGB(x, y);
+				if ((c & 0xFF000000) != 0) {
+					break topcheck;
+				}
+			}
+			top++;
+		}
+		leftcheck:
+		for (int x = 0; x < src.getWidth(); x++) {
+			for (int y = 0; y < src.getHeight(); y++) {
+				int c = src.getRGB(x, y);
+				if ((c & 0xFF000000) != 0) {
+					break leftcheck;
+				}
+			}
+			left++;
+		}
+		bottomcheck:
+		for (int y = src.getHeight() - 1; y >= top; y--) {
+			for (int x = 0; x < src.getWidth(); x++) {
+				int c = src.getRGB(x, y);
+				if ((c & 0xFF000000) != 0) {
+					break bottomcheck;
+				}
+			}
+			bottom++;
+		}
+		rightcheck:
+		for (int x = src.getWidth() - 1; x >= left; x--) {
+			for (int y = 0; y < src.getHeight(); y++) {
+				int c = src.getRGB(x, y);
+				if ((c & 0xFF000000) != 0) {
+					break rightcheck;
+				}
+			}
+			right++;
+		}
+		
+		return subimage(src, left, top, src.getWidth() - right - left, src.getHeight() - bottom - top);
+	}
 }

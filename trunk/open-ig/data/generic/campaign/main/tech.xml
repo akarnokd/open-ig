@@ -785,7 +785,7 @@
 		long-name='tech.dargslanselfrepairtank.longname' description='tech.dargslanselfrepairtank.description'
 		category='WEAPONS_TANKS' factory='weapon' level='0' research-cost='32000'
 		production-cost='20000' race='dargslan'
-		image='inventions/weapons/vehicles/dargslan_self_repair_tank' index='4'>
+		image='inventions/weapons/vehicles/dargslan_self_repair_tank' index='3'>
 		<property name='range' value='5' />
 		<property name='speed' value='3' />
 		<property name='armor' value='7' />
@@ -826,7 +826,7 @@
 		long-name='tech.morgathkamikazetank.longname' description='tech.morgathkamikazetank.description'
 		category='WEAPONS_TANKS' factory='weapon' level='0' research-cost='24000'
 		production-cost='12000' race='morgath'
-		image='inventions/weapons/vehicles/morgath_kamikaze_tank' index='4'>
+		image='inventions/weapons/vehicles/morgath_kamikaze_tank' index='3'>
 		<property name='speed' value='4' />
 		<property name='armor' value='8' />
 		<property name='damage' value='8' />

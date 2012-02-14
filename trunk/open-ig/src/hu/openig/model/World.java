@@ -1865,7 +1865,7 @@ public class World {
 			if (rt != null) {
 				// if no equipment image, use the first frame of the rotation
 				if (rt.equipmentImage == null) {
-					rt.equipmentImage = se.normal[0];
+					rt.equipmentImage = ImageUtils.cutTransparentBorder(se.normal[0]);
 				}
 			} else {
 				new AssertionError("Warning: Missing technology referenced by battle.xml: " + id).printStackTrace();
