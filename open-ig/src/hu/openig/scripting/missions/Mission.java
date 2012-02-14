@@ -632,9 +632,9 @@ public abstract class Mission implements GameScriptingEvents {
 			if (planet.quarantineTTL == 0) {
 				boolean thisTarget = isUnderAttack(planet);
 				if (thisTarget) {
+					helper.send(p + "-Check").visible = false;
 					helper.send(p + "-Come-Quickly").visible = true;
 					helper.send(p + "-Not-Under-Attack").visible = false;
-					helper.send(p + "-Check").visible = false;
 				} else
 				if (anyAttack) {
 					helper.send(p + "-Check").visible = false;
@@ -642,6 +642,8 @@ public abstract class Mission implements GameScriptingEvents {
 					helper.send(p + "-Not-Under-Attack").visible = true;
 				} else {
 					helper.send(p + "-Check").visible = true;
+					helper.send(p + "-Come-Quickly").visible = false;
+					helper.send(p + "-Not-Under-Attack").visible = false;
 				}
 			}
 		}
