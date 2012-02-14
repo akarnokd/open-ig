@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Mission 11: Random planet attacked by garthog.
  * @author akarnokd, Jan 22, 2012
  *
  */
@@ -56,6 +57,11 @@ public class Mission11 extends Mission {
 				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
 			}
 			m11.visible = false;
+			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
+			if (garthog != null) {
+				removeScripted(garthog.first);
+				world.removeFleet(garthog.first);
+			}
 		}
 		if (checkTimeout("Mission-11-Planet")) {
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
