@@ -12,7 +12,6 @@ import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
-import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
@@ -25,7 +24,6 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 
 import java.awt.Dimension;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
@@ -134,11 +132,8 @@ public class Mission3 extends Mission {
 	 * @param f the fleet
 	 */
 	void moveToDestination(Fleet f) {
-		Planet sansterling = planet("San Sterling");
-		f.waypoints.clear();
-		f.mode = FleetMode.MOVE;
+		f.moveTo(planet("Centronom"));
 		f.task = FleetTask.SCRIPT;
-		f.waypoints.add(new Point2D.Double(sansterling.x - 20, sansterling.y - 40));
 	}
 	/**
 	 * Check the carrier's location and attack it with pirate.
@@ -173,7 +168,7 @@ public class Mission3 extends Mission {
 						
 						helper.scriptedFleets().add(fi.first.id);
 						helper.scriptedFleets().add(pf.id);
-						fi.first.waypoints.clear();
+						fi.first.stop();
 						
 						Fleet ff = getFollower(fi.first, player);
 						if (ff == null) {
@@ -188,6 +183,12 @@ public class Mission3 extends Mission {
 			}
 		}
 	}
+	@Override
+	public void onFleetAt(Fleet fleet, Planet planet) {
+		if (fleet.owner == player && hasTag(fleet, "Mission-3-Carrier")) {
+			addMission("Mission-3-Success", 0);
+		}
+	}
 	/**
 	 * Issue the specific mission changes once task is completed.
 	 * @param traderSurvived did the trader survive?
@@ -198,7 +199,6 @@ public class Mission3 extends Mission {
 			helper.setTimeout("Mission-3-Failed", 3000);
 			helper.clearMissionTime("Mission-3-Timeout");
 		} else {
-			helper.setMissionTime("Mission-3-Success", helper.now() + 9);
 			helper.clearMissionTime("Mission-3-Timeout");
 		}
 		for (int i : new ArrayList<Integer>(helper.scriptedFleets())) {
