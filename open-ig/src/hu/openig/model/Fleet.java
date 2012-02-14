@@ -168,6 +168,12 @@ public class Fleet implements Named, Owned, HasInventory {
 					|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
 			) {
 				result.vehicleCount += fii.count;
+				
+				BattleGroundVehicle v = owner.world.battle.groundEntities.get(fii.type.id);
+				if (v != null) {
+					result.groundFirepower += v.damage;
+				}
+				
 			}
 			
 			if (fii.type.has("vehicles")) {
