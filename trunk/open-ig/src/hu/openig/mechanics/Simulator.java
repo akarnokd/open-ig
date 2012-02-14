@@ -716,7 +716,7 @@ public final class Simulator {
 				double dx = getSpeed(f) * stepMultiplier;
 				// if the target has roughly the same speed as our fleet, give a small boost
 				if (targetSpeed > 0 && Math.abs(dx - targetSpeed) < 0.5) {
-					dx += 0.5;
+					dx += 0.5 / 4 * stepMultiplier;
 				}
 				
 				if (dx >= dist) {
