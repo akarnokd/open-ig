@@ -4667,28 +4667,31 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param mx the mouse X
 	 * @param my the mouse Y
 	 */
-	void doAttackWithSelectedUnits(int mx, int my) {
+	void doAttackWithSelectedUnits(final int mx, final int my) {
 		boolean attacked = false;
+		Location lm = render.getLocationAt(mx, my);
+		Building b = getBuildingAt(lm);
+		GroundwarUnit gu = null;
+		boolean guFound = false;
 		for (GroundwarUnit u : units) {
 			if (u.selected && directAttackUnits.contains(u.model.type)
 					/* && u.owner == player() */) { // FIXME player only
-				Location lm = render.getLocationAt(mx, my);
-				Building b = getBuildingAt(lm);
 				if (b != null && planet().owner != u.owner 
 						&& u.model.type != GroundwarUnitType.PARALIZER) {
 					stop(u);
 					u.attackBuilding = b;
 					u.attackUnit = null;
 				} else {
-					for (GroundwarUnit u1 : units) {
-						if (u1 != u && u1.owner != u.owner
-								&& (int)u1.x == lm.x && (int)u1.y == lm.y) {
-							stop(u);
-							attacked = true;
-							u.attackUnit = u1;
-							u.attackBuilding = null;
-							break;
-						}
+					
+					if (!guFound) {
+						gu = findNearest(mx, my, u.owner);
+						guFound = true;
+					}
+					if (gu != null) {
+						stop(u);
+						attacked = true;
+						u.attackUnit = gu;
+						u.attackBuilding = null;
 					}
 				}
 				
@@ -4696,20 +4699,58 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		for (GroundwarGun g : guns) {
 			if (g.selected /* && g.owner == player() */) { // FIXME player only
-				Location lm = render.getLocationAt(mx, my);
-				for (GroundwarUnit u1 : units) {
-					if (u1.owner != g.owner
-							&& (int)u1.x == lm.x && (int)u1.y == lm.y) {
-						g.attack = u1;
-						attacked = true;
-						break;
-					}
+				if (!guFound) {
+					gu = findNearest(mx, my, g.owner);
+					guFound = true;
+				}
+				if (gu != null) {
+					g.attack = gu;
+					attacked = true;
 				}
 			}
 		}
 		if (attacked) {
 			effectSound(SoundType.ACKNOWLEDGE_1);
 		}
+	}
+	/**
+	 * Find the nearest enemy of the given mouse coordinates.
+	 * @param mx the mouse coordinates
+	 * @param my the mouse coordinates
+	 * @param enemyOf the player whose enemies needs to be found
+	 * @return the nearest or null if no units nearby
+	 */
+	GroundwarUnit findNearest(final int mx, final int my, Player enemyOf) {
+		List<GroundwarUnit> us = new ArrayList<GroundwarUnit>();
+		for (GroundwarUnit u1 : units) {
+			if (u1.owner != enemyOf) {
+				Rectangle r = unitRectangle(u1);
+				scaleToScreen(r);
+				if (r.contains(mx, my)) {
+					us.add(u1);
+				}
+			}
+		}
+		if (!us.isEmpty()) {
+			return Collections.min(us, new Comparator<GroundwarUnit>() {
+				@Override
+				public int compare(GroundwarUnit o1,
+						GroundwarUnit o2) {
+					Rectangle r1 = unitRectangle(o1);
+					scaleToScreen(r1);
+
+					double d1 = Math.hypot(mx - r1.x - r1.width / 2d, my - r1.y - r1.height / 2);
+
+					Rectangle r2 = unitRectangle(o1);
+					scaleToScreen(r2);
+
+					double d2 = Math.hypot(mx - r2.x - r2.width / 2d, my - r2.y - r2.height / 2);
+					
+					return U.compare(d1, d2);
+				}
+			});
+		}
+		return null;
 	}
 	/**
 	 * Create a rocket.

@@ -24,6 +24,7 @@ import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Modifier;
 
 import java.awt.FontMetrics;
 import java.awt.Point;
@@ -310,7 +311,7 @@ public abstract class ScreenBase extends UIContainer {
 	 * @return true if panning event
 	 */
 	public boolean isPanningEvent(UIMouse e) {
-		return (e.has(Button.RIGHT) && !config.classicControls)
+		return (e.has(Button.RIGHT) && !config.classicControls && !e.has(Modifier.CTRL))
 				|| (e.has(Button.MIDDLE) && config.classicControls);
 	}
 }

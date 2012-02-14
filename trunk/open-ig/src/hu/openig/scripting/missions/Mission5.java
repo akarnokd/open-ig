@@ -52,7 +52,7 @@ public class Mission5 extends Mission {
 				&& m2t1.state != ObjectiveState.ACTIVE
 				&& m1.state != ObjectiveState.ACTIVE
 				&& !helper.hasMissionTime("Mission-5")) {
-			helper.setMissionTime("Mission-5", helper.now() + 72);
+			helper.setMissionTime("Mission-5", helper.now() + 24);
 		}
 		if (helper.canStart("Mission-5")) {
 			world.env.speed1();
