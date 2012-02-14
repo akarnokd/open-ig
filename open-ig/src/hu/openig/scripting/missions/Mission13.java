@@ -80,8 +80,8 @@ public class Mission13 extends Mission {
 			removeFleets();
 			helper.setObjectiveState(m13, ObjectiveState.FAILURE);
 			
-			helper.setTimeout("Mission-13-Fire", 13000);
-			helper.setTimeout("Mission-13-Hide", 13000);
+			addTimeout("Mission-13-Fire", 13000);
+			addTimeout("Mission-13-Hide", 13000);
 		}
 		if (checkTimeout("Mission-13-Hide")) {
 			stage = M13.DONE;
@@ -232,7 +232,7 @@ public class Mission13 extends Mission {
 		if (planet.id.equals("New Caroline") && hasTag(fleet, "Mission-13-Benson")) {
 			helper.setObjectiveState("Mission-13", ObjectiveState.SUCCESS);
 			removeFleets();
-			helper.setMissionTime("Mission-13-Hide", 13000);
+			addTimeout("Mission-13-Hide", 13000);
 		}
 	}
 	@Override
