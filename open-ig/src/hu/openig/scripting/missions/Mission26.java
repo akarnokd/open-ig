@@ -38,7 +38,7 @@ public class Mission26 extends Mission {
 	@Override
 	public void onLevelChanged() {
 		if (world.level == 1) {
-			helper.setMissionTime("Mission-26-Wife-1", helper.now() + 8 * 24);
+			helper.setMissionTime("Mission-26-Wife-1", helper.now() + 5 * 24);
 		}
 		if (world.level == 2) {
 			helper.setMissionTime("Mission-26-Wife-2", helper.now() + 24);
