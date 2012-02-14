@@ -104,6 +104,15 @@ public class Mission18 extends Mission {
 		// planet messages
 		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom", "Zeuson" };
 		setPlanetMessages(planets);
+		
+		// -------------------------------------------------------
+		// help the garthog economy
+		// FIXME 
+		Player garthog = player("Garthog");
+		int mi = 75;
+		garthog.money += mi;
+		garthog.statistics.moneyIncome += mi;
+		// -------------------------------------------------------
 	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {

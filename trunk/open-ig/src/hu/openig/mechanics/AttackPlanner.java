@@ -74,7 +74,7 @@ public class AttackPlanner extends Planner {
 				});
 				AIFleet targetFleet = null;
 				AIPlanet targetPlanet = null;
-				if (world.mayConquer) {
+				if (world.mayConquer && ownFleet.statistics.groundFirepower > 0) {
 					if (w.random().nextBoolean()) {
 						targetFleet = selectTargetFleet();
 						if (targetFleet == null && w.random().nextBoolean()) {

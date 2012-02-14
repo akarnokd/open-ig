@@ -645,6 +645,9 @@ public class Planet implements Named, Owned, HasInventory {
 
 		removeOwnerSatellites();
 
+		autoBuild = AutoBuild.OFF;
+		allocation = ResourceAllocationStrategy.DEFAULT;
+		
 		// notify about ownership change
 		lastOwner.ai.onPlanetLost(this);
 		newOwner.ai.onPlanetConquered(this, lastOwner);
