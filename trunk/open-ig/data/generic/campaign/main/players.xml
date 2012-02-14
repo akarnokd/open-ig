@@ -42,6 +42,8 @@
 		<available>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
+			<type id='OrbitalFactory' list=''/>
+			<type id='SpySatellite1' list=''/>
 		</available>
 		<!-- 
 		<fleet id='1' x='366' y='442' name='Garthog flotta'>
