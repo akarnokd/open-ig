@@ -286,20 +286,24 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, double x, double y) {
-		fleet.targetFleet = null;
-		fleet.targetPlanet(null);
-		fleet.waypoints.clear();
-		fleet.waypoints.add(new Point2D.Double(x, y));
-		fleet.mode = FleetMode.MOVE;
+		if (fleet.task != FleetTask.SCRIPT) {
+			fleet.targetFleet = null;
+			fleet.targetPlanet(null);
+			fleet.waypoints.clear();
+			fleet.waypoints.add(new Point2D.Double(x, y));
+			fleet.mode = FleetMode.MOVE;
 //		log("MoveFleet, Fleet = %s, Location = %s;%s", fleet.name, x, y);
+		}
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, Planet planet) {
-		fleet.targetFleet = null;
-		fleet.waypoints.clear();
-		fleet.targetPlanet(planet);
-		fleet.mode = FleetMode.MOVE;
-		log("MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name, fleet.id, planet.id);
+		if (fleet.task != FleetTask.SCRIPT) {
+			fleet.targetFleet = null;
+			fleet.waypoints.clear();
+			fleet.targetPlanet(planet);
+			fleet.mode = FleetMode.MOVE;
+			log("MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name, fleet.id, planet.id);
+		}
 	}
 	
 	@Override

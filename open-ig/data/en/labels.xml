@@ -2953,10 +2953,10 @@
 	<entry key='mission-4.pirate_battle'>Resolve the Pirate battle near Naxos</entry>
 	<entry key='mission-4.pirate_battle.desc'>Negotiate with them or just kill them, its your call.</entry>
 	<entry key='mission-5.escort_thorin'>Escort the flagship Thorin</entry>
-	<entry key='mission-5.escort_thorin.desc'>Support Admiral Benson's strategic retreat.</entry>
-	<entry key='mission-5.meet_tullen'>Meet with Admiral Benson</entry>
+	<entry key='mission-5.escort_thorin.desc'>Support Admiral Tullen's strategic retreat.</entry>
+	<entry key='mission-5.meet_tullen'>Meet with Admiral Tullen</entry>
 	<entry key='mission-5.defend_thorin'>Defend the flagship Thorin</entry>
-	<entry key='mission-5.defend_thorin.desc'>Join forces with Admiral Benson. The flagship Thorin must survive.</entry>
+	<entry key='mission-5.defend_thorin.desc'>Join forces with Admiral Tullen. The flagship Thorin must survive.</entry>
 	<entry key='mission-5.tullens_fleet'>Tullen's fleet</entry>
 	<entry key='mission-5.garthog_fleet'>Garthog</entry>
 	<entry key='mission-8.test'>Complete the test</entry>

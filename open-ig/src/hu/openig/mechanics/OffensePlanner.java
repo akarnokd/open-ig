@@ -303,6 +303,9 @@ public class OffensePlanner extends Planner {
 		add(new Action0() {
 			@Override
 			public void invoke() {
+				if (fleet.task == FleetTask.SCRIPT) {
+					return;
+				}
 				fleet.upgradeAll();
 				if (!cruisers.isEmpty()) {
 					fleet.replaceWithShip(cruisers.get(0), 25);
@@ -462,8 +465,10 @@ public class OffensePlanner extends Planner {
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					fleet.fleet.task = FleetTask.UPGRADE;
-					controls.actionMoveFleet(fleet.fleet, spaceport.planet);
+					if (fleet.fleet.task != FleetTask.SCRIPT) {
+						fleet.fleet.task = FleetTask.UPGRADE;
+						controls.actionMoveFleet(fleet.fleet, spaceport.planet);
+					}
 				}
 			});
 		}
