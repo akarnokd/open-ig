@@ -506,19 +506,22 @@ public class World {
 				}
 			}
 			for (ResearchType rt : p.inventory.keySet()) {
-				if (!p.isAvailable(rt)) {
-					p.setAvailable(rt);
-				}
+				p.add(rt);
 			}
 			setTechAvailability(xplayer, p);
 			
 			loadFleets(deferredFleets, xplayer, p);
 			
 			this.players.put(p.id, p);
+			
 			for (ResearchType rt : researches.researches.values()) {
 				if (rt.race.contains(p.race) && rt.level == 0) {
-					p.setAvailable(rt);
+					p.add(rt);
 				}
+			}
+			
+			for (ResearchType rt : p.available().keySet()) {
+				p.setRelated(rt);
 			}
 			
 			String xpInnerLimit = xplayer.get("exploration-inner-limit", "");

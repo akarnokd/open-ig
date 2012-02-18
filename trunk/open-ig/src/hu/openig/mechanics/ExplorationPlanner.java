@@ -236,8 +236,10 @@ public class ExplorationPlanner extends Planner {
 		add(new Action0() {
 			@Override
 			public void invoke() {
-				bf.fleet.task = FleetTask.PATROL;
-				controls.actionMoveFleet(bf.fleet, x, y);
+				if (bf.fleet.task != FleetTask.SCRIPT) {
+					bf.fleet.task = FleetTask.PATROL;
+					controls.actionMoveFleet(bf.fleet, x, y);
+				}
 			}
 		});
 	}
@@ -306,8 +308,10 @@ public class ExplorationPlanner extends Planner {
 		add(new Action0() {
 			@Override
 			public void invoke() {
-				bf.fleet.task = FleetTask.EXPLORE;
-				controls.actionMoveFleet(bf.fleet, (floc.x + fbias) * ec, (floc.y + fbias) * ec);
+				if (bf.fleet.task != FleetTask.SCRIPT) {
+					bf.fleet.task = FleetTask.EXPLORE;
+					controls.actionMoveFleet(bf.fleet, (floc.x + fbias) * ec, (floc.y + fbias) * ec);
+				}
 			}
 		});
 	}

@@ -366,28 +366,33 @@ public class Player {
 	 */
 	public boolean setAvailable(ResearchType rt) {
 		if (!availableResearch.containsKey(rt)) {
-			
-			List<ResearchType> avail = new ArrayList<ResearchType>();
-			
-			for (EquipmentSlot slot : rt.slots.values()) {
-				ResearchType et0 = null;
-				for (ResearchType et : slot.items) {
-					if (isAvailable(et)) {
-						et0 = et;
-					} else {
-						break;
-					}
-				}
-				if (et0 != null) {
-					avail.add(et0);
-				}
-			}
-			
-			availableResearch.put(rt, avail);
-			
+			setRelated(rt);
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * Set the availability of slot technology based on current settings.
+	 * @param rt the research type to set base technologies
+	 */
+	public void setRelated(ResearchType rt) {
+		List<ResearchType> avail = new ArrayList<ResearchType>();
+		
+		for (EquipmentSlot slot : rt.slots.values()) {
+			ResearchType et0 = null;
+			for (ResearchType et : slot.items) {
+				if (isAvailable(et)) {
+					et0 = et;
+				} else {
+					break;
+				}
+			}
+			if (et0 != null) {
+				avail.add(et0);
+			}
+		}
+		
+		availableResearch.put(rt, avail);
 	}
 	/** @return map set of of the available research. */
 	public Map<ResearchType, List<ResearchType>> available() {
