@@ -108,6 +108,9 @@ public class VehicleList extends UIContainer {
 					map.put(pii.type, list);
 				}
 				maxWidth = Math.max(maxWidth, pii.type.equipmentImage.getWidth());
+				if (pii == selectedItem) {
+					list.index = list.items.size();
+				}
 				list.add(pii);
 			}			
 			for (ResearchType rt : map.keySet()) {

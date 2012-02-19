@@ -2195,6 +2195,7 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	/** Sell one of the currently selected ship or vehicle. */
 	void doSell() {
+		Fleet f = fleet();
 		switch (research().category) {
 		case SPACESHIPS_BATTLESHIPS:
 		case SPACESHIPS_CRUISERS:
@@ -2208,7 +2209,7 @@ public class EquipmentScreen extends ScreenBase {
 				ii = leftList.selectedItem;
 			} else
 			if (player().selectionMode == SelectionMode.FLEET) {
-				ii = fleet().getInventoryItem(research());
+				ii = f.getInventoryItem(research());
 			} else {
 				ii = planet().getInventoryItem(research(), player());
 			}
@@ -2233,13 +2234,16 @@ public class EquipmentScreen extends ScreenBase {
 							configure.item = leftList.selectedItem;
 						} else {
 							configure.item = null;
+							leftList.selectedItem = null;							
 						}
 						
-						fleet().inventory.remove(ii);
+						if (!f.inventory.remove(ii)) {
+							System.err.println("AssertionError: inventory item not found.");
+						}
 					} else {
-						fleet().changeInventory(research(), -1);
+						f.changeInventory(research(), -1);
 					}
-					updateInventory(null, fleet(), leftList);
+					updateInventory(null, f, leftList);
 				} else {
 					if (leftList.selectedItem != null) {
 						planet().inventory.remove(ii);
