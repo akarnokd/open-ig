@@ -303,7 +303,7 @@ Notes:
 
 == Mission 18 ==
 
-Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Defeat the Garthogs
 
@@ -313,7 +313,7 @@ Objective: Capture Garthog N
 
 == Mission 19 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Blockade of Zeuson
 
@@ -327,11 +327,9 @@ Notes:
 
 Video: take_prisoner
 
-Status: -
-
 == Mission 20 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Talk to Brian
 
@@ -340,7 +338,7 @@ Notes:
 
 == Mission 21 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Escort prototype
 
