@@ -13,6 +13,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.ObjectiveState;
@@ -114,10 +115,10 @@ public class Mission21 extends Mission {
 			incomingMessage("Douglas-Prototype-2-Failed");
 		}
 		if (checkMission("Mission-21-Failure")) {
-			helper.send("Douglas-Prototype-Failed").visible = false;
+			helper.send("Douglas-Prototype-2-Failed").visible = false;
 		}
 		if (checkTimeout("Mission-21-Hide")) {
-			helper.send("Douglas-Prototype").visible = false;
+			helper.receive("Douglas-Prototype-2").visible = false;
 			helper.objective("Mission-21").visible = false;
 		}
 	}
@@ -188,6 +189,7 @@ public class Mission21 extends Mission {
 		if (ff != null) {
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet(ENEMY, g);
 			ff.attack(garthog.first);
+			player.fleets.put(garthog.first, FleetKnowledge.VISIBLE);
 		}
 
 	}
@@ -251,7 +253,8 @@ public class Mission21 extends Mission {
 			if (concludeBattle(battle)) {
 				battle.rewardImage = "battlefinish/mission_32";
 				battle.messageText = label("battlefinish.mission-21.32");
-				battle.rewardText = label("battlefinish.mission-21.32.bonus");
+				battle.rewardText = label("battlefinish.mission-21.32_bonus");
+				player.setAvailable(research("Destroyer2"));
 			}
 		}
 	}
@@ -291,7 +294,8 @@ public class Mission21 extends Mission {
 	}
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
-		if (stage == M21.ATTACK && planet.id.equals("Centronom") && fleet.owner == player && hasTag(fleet, ALLY)) {
+		if (planet.id.equals("Centronom") 
+				&& fleet.owner == player && hasTag(fleet, ALLY)) {
 			world.removeFleet(fleet);
 			removeScripted(fleet);
 		}
