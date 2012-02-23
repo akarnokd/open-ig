@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Pair;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIWorld;
@@ -43,6 +44,8 @@ public class AIPirate implements AIManager {
 	AIControls controls;
 	/** The list of actions to apply. */
 	final List<Action0> applyActions = new ArrayList<Action0>();
+	/** The spacewar hitpoints. */
+	double battleHP;
 	@Override
 	public void init(Player p) {
 		this.p = p;
@@ -88,13 +91,14 @@ public class AIPirate implements AIManager {
 	public SpacewarAction spaceBattle(SpacewarWorld world,
 			List<SpacewarStructure> idles) {
 		List<SpacewarStructure> sts = world.structures(p);
-		double h = AI.fleetHealth(sts);
-		if (h >= 0.25) {
+		Pair<Double, Double> fh = AI.fleetHealth(sts);
+		if (fh.first * 4 >= battleHP) {
 			AI.defaultAttackBehavior(world, idles);
 		} else {
 			for (SpacewarStructure s : sts) {
 				world.flee(s);
 			}
+			world.battle().enemyFlee = true;
 		}
 		return SpacewarAction.CONTINUE;
 	}
@@ -121,8 +125,9 @@ public class AIPirate implements AIManager {
 	}
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
-		// TODO Auto-generated method stub
-		
+		battleHP = 0;		
+		List<SpacewarStructure> sts = world.structures(p);
+		battleHP = AI.fleetHealth(sts).second;
 	}
 	
 	@Override

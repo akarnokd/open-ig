@@ -53,7 +53,7 @@ public class Mission8 extends Mission {
 			if (world.testScore() * 2 < world.testMax()) {
 				helper.setMissionTime("Mission-8-Fire", helper.now() + 48);
 			} else {
-				helper.setMissionTime("Mission-8-Visions", helper.now() + 30 * 24);
+				helper.setMissionTime("Mission-8-Visions", helper.now() + 10 * 24);
 			}
 		}
 		if (checkTimeout("Mission-8-Hide")) {
@@ -64,10 +64,17 @@ public class Mission8 extends Mission {
 			loseGameMessageAndMovie("Douglas-Fire-Test", "loose/fired_level_2");
 		}
 		if (checkMission("Mission-8-Visions")) {
-			
-			helper.setMissionTime("Mission-15", helper.now() + 6 * 24);
-			world.env.stopMusic();
 			world.env.playVideo("interlude/dream_1", new Action0() {
+				@Override
+				public void invoke() {
+					addMission("Mission-8-Visions-2", 5 * 24);
+				}
+			});
+		}
+		if (checkMission("Mission-8-Visions-2")) {
+			helper.setMissionTime("Mission-15", helper.now() + 4 * 24);
+			world.env.stopMusic();
+			world.env.playVideo("interlude/dream_3", new Action0() {
 				@Override
 				public void invoke() {
 					world.currentTalk = "phsychologist";

@@ -18,6 +18,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
@@ -105,10 +106,10 @@ public class Mission19 extends Mission {
 			checkGovernorPosition();
 		}
 		if (checkTimeout("Mission-19-Hide")) {
-			stage = M19.DONE;
 			helper.objective("Mission-19").visible = false;
 		}
 		if (checkTimeout("Mission-19-Failure")) {
+			stage = M19.DONE;
 			helper.gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Battle", "loose/fired_level_3");
 		}
@@ -139,9 +140,12 @@ public class Mission19 extends Mission {
 		// -----------------
 		tagFleet(f, "Mission-19-Governor");
 		
-		f.moveTo(z.x + 150, z.y);
+		f.moveTo(z.x + 300, z.y);
 		f.task = FleetTask.SCRIPT;
 		addScripted(f);
+		
+		world.env.speed1();
+		world.env.effectSound(SoundType.UNKNOWN_SHIP);
 	}
 	/** @return the free trader player. */
 	private Player freeTraders() {
@@ -175,7 +179,11 @@ public class Mission19 extends Mission {
 				for (SpacewarStructure s : war.structures(freeTraders())) {
 					war.flee(s);
 				}			
-				war.battle().defenderFlee = true;
+				war.battle().enemyFlee = true;
+			} else {
+				for (SpacewarStructure s : war.structures(freeTraders())) {
+					war.move(s, Math.cos(s.angle) * 1000, s.y);
+				}
 			}
 			return SpacewarScriptResult.CONTINUE;
 		}
@@ -198,7 +206,7 @@ public class Mission19 extends Mission {
 		if (f != null) {
 			ResearchType gr = research(governorShipType);
 			InventoryItem ii = f.first.getInventoryItem(gr);
-			if (ii != null && battle.defenderFlee) {
+			if (ii != null && battle.enemyFlee) {
 				// governor survived
 				f.first.moveTo(planet("Zeuson"));
 				f.first.task = FleetTask.SCRIPT;
@@ -206,6 +214,10 @@ public class Mission19 extends Mission {
 				helper.setObjectiveState("Mission-19", ObjectiveState.SUCCESS);
 				helper.receive("Douglas-Rebel-Governor").visible = false;
 				addTimeout("Mission-19-Hide", 13000);
+				
+				battle.messageText = label("battlefinish.mission-19.31");
+				battle.rewardImage = "battlefinish/mission_31";
+				
 				return;
 			} else
 			if (ii == null) {
@@ -228,6 +240,7 @@ public class Mission19 extends Mission {
 	 * @param f the governor's fleet
 	 */
 	void failMission(Pair<Fleet, InventoryItem> f) {
+		stage = M19.DONE;
 		if (f != null) {
 			world.removeFleet(f.first);
 			removeScripted(f);

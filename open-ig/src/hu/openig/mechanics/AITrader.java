@@ -8,6 +8,7 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.core.Pair;
 import hu.openig.model.AIManager;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
@@ -62,6 +63,8 @@ public class AITrader implements AIManager {
 	String traderLabel;
 	/** How many new ships should emerge? */
 	int actionCount;
+	/** The initial battle HP. */
+	double battleHP;
 	/**
 	 * A trader fleet status.
 	 * @author akarnokd, Dec 8, 2011
@@ -363,13 +366,8 @@ public class AITrader implements AIManager {
 	@Override
 	public SpacewarAction spaceBattle(SpacewarWorld world, 
 			List<SpacewarStructure> idles) {
-		double hpMax = 0;
-		double hp = 0;
-		for (SpacewarStructure s : idles) {
-			hpMax += s.hpMax;
-			hp += s.hp;
-		}
-		if (hp * 2 < hpMax) {
+		Pair<Double, Double> fh = AI.fleetHealth(world.structures(player));
+		if (fh.first * 2 < battleHP) {
 			for (SpacewarStructure s : idles) {
 				world.flee(s);
 				fleetTurnedBack.add(s.fleet);
@@ -381,6 +379,7 @@ public class AITrader implements AIManager {
 				}
 				s.fleet.mode = FleetMode.MOVE;
 			}
+			world.battle().enemyFlee = true;
 			return SpacewarAction.FLEE;
 		} else {
 			// move a bit forward
@@ -437,8 +436,7 @@ public class AITrader implements AIManager {
 	}
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
-		// TODO Auto-generated method stub
-		
+		battleHP = AI.fleetHealth(world.structures(player)).first;
 	}
 	
 	@Override

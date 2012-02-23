@@ -2287,6 +2287,11 @@
 	<entry key='mission-19.blockade'>A Zeuson blokádja</entry>
 	<entry key='mission-19.blockade.desc'>Akadályozd meg, hogy a lázadó kormányzó elhagyja a szektorunkat.</entry>
 	<entry key='mission-19.unknown'>Ismeretlen</entry>
+	<entry key='mission-20.brian'>Még több látomás, beszélj Brian-nel</entry>
+	<entry key='mission-20.brian.desc'>Menj a bárba és beszélj Brian-nel a robotikáról.</entry>
+	<entry key='mission-21.prototype2'>Új prototípus kísérete</entry>
+	<entry key='mission-21.prototype2.desc'>Találkozz a flottával és biztosítsd, hogy a prototípus épségben megérkezzen a céljához.</entry>
+	<entry key='mission-21.prototype2.name'>Prototípus</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

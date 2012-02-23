@@ -11,6 +11,7 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Location;
+import hu.openig.core.Pair;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIManager;
@@ -116,7 +117,8 @@ public class AI implements AIManager {
 		}
 		// FIXME make more sophisticated
 		
-		double health = fleetHealth(world.structures(p));
+		Pair<Double, Double> fh = fleetHealth(world.structures(p));
+		double health = fh.first / fh.second;
 		double switchToCostAttack = p.aiDefensiveRatio / (p.aiOffensiveRatio + p.aiDefensiveRatio);
 		double switchToFlee = p.aiSocialRatio() * switchToCostAttack;
 		
@@ -175,14 +177,14 @@ public class AI implements AIManager {
 	 * @param structures the structures
 	 * @return the health between 0..1
 	 */
-	public static double fleetHealth(List<SpacewarStructure> structures) {
+	public static Pair<Double, Double> fleetHealth(List<SpacewarStructure> structures) {
 		double hpTotal = 0.0;
 		double hpActual = 0.0;
 		for (SpacewarStructure s : structures) {
 			hpTotal += s.hpMax + s.shieldMax;
 			hpActual += s.hp + s.shield;
 		}
-		return hpActual / hpTotal;
+		return Pair.of(hpActual, hpTotal);
 	}
 	/**
 	 * Orders the given structure to attack a random enemy.
