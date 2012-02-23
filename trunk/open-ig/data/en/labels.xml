@@ -3028,9 +3028,9 @@
 	<entry key='mission-18.garthog4'>Capture Garthog 4</entry>
 	<entry key='mission-18.garthog5'>Capture Garthog 5</entry>
 	<entry key='mission-18.retake'>Recapture any planets you lost</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='mission-19.blockade'>Blockade of Zeuson</entry>
+	<entry key='mission-19.blockade.desc'>Prevent the rebel governor from leaving our territory.</entry>
+	<entry key='mission-19.unknown'>Unknown</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

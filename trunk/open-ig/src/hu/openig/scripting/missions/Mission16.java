@@ -160,7 +160,7 @@ public class Mission16 extends Mission {
 	 * Add reinforcements to your fleet.
 	 */
 	void addReinforcements() {
-		Pair<Fleet, InventoryItem> f = findTaggedFleet("CampaignMainFleet2", player);
+		Pair<Fleet, InventoryItem> f = findTaggedFleet("CampaignMainShip2", player);
 		if (f != null) {
 			// --------------------------------------------
 			
