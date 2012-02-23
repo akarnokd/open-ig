@@ -171,9 +171,9 @@
 				media='messages/douglas_escort_centronom_governor' title='messages.escort' description='messages.centronom_governor'/> 
 			<message id='Douglas-Money' 
 				media='messages/douglas_escort_money' title='messages.escort' description='messages.money'/> 
-			<message id='Douglas-Prototype' 
+			<message id='Douglas-Prototype-2' 
 				media='messages/douglas_escort_prototype' title='messages.escort' description='messages.prototype'/> 
-			<message id='Douglas-Prototype-Failed' 
+			<message id='Douglas-Prototype-2-Failed' 
 				media='messages/douglas_escort_prototype_failed' title='messages.escort_failed' description='messages.prototype'/> 
 			<message id='Douglas-Thorin' 
 				media='messages/douglas_escort_thorin' title='messages.escort' description='messages.thorin'/> 

@@ -37,6 +37,7 @@ public class Mission18 extends Mission {
 		removeMissions(1, 25);
 		
 		player.setAvailable(research("Battleship1"));
+		player.setAvailable(research("Cruiser1"));
 		createMainShip();
 
 		// achievement

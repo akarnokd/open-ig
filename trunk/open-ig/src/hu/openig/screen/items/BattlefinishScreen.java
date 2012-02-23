@@ -11,7 +11,6 @@ package hu.openig.screen.items;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SpacewarStructure;
@@ -257,7 +256,7 @@ public class BattlefinishScreen extends ScreenBase {
 				} else {
 					enemy = battle.attacker;
 				}
-				EnemyStatus st = enemyStatus(enemy);
+				EnemyStatus st = enemyStatus(enemy, battle);
 				if (st == EnemyStatus.RETREATED) {
 					textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, format("battlefinish.spacewar_enemy_fled", enemy.name));
 					y += 20;
@@ -295,17 +294,12 @@ public class BattlefinishScreen extends ScreenBase {
 	/**
 	 * Check if any enemy is beyond the screen.
 	 * @param enemy the enemy fleet
+	 * @param battle the battle info
 	 * @return the status of the enemy fleet.
 	 */
-	EnemyStatus enemyStatus(Fleet enemy) {
-		long hpa = 0;
-		long hpm = 0;
+	EnemyStatus enemyStatus(Fleet enemy, BattleInfo battle) {
 		if (enemy.inventory.size() > 0) {
-			for (InventoryItem ii : enemy.inventory) {
-				hpa += ii.hp;
-				hpm += world().getHitpoints(ii.type);
-			}
-			if (hpa * 2 < hpm) {
+			if (battle.enemyFlee) {
 				return EnemyStatus.RETREATED;
 			} else {
 				return EnemyStatus.SLIPPED;

@@ -3031,7 +3031,11 @@
 	<entry key='mission-19.blockade'>Blockade of Zeuson</entry>
 	<entry key='mission-19.blockade.desc'>Prevent the rebel governor from leaving our territory.</entry>
 	<entry key='mission-19.unknown'>Unknown</entry>
-	<entry key=''></entry>
+	<entry key='mission-20.brian'>More dreams, talk to Brian</entry>
+	<entry key='mission-20.brian.desc'>Go to the bar and speak with Brian about robotics.</entry>
+	<entry key='mission-21.prototype2'>Escort new prototype</entry>
+	<entry key='mission-21.prototype2.desc'>Meet with the fleet and ensure the prototype ship arrives safely at the destination.</entry>
+	<entry key='mission-21.prototype2.name'>Prototype</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
