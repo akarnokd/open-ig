@@ -734,13 +734,21 @@ public abstract class Mission implements GameScriptingEvents {
 		// center pirate
 		Dimension d = war.space();
 		List<SpacewarStructure> structures = war.structures();
+		int maxH = 0;
+		for (SpacewarStructure s : structures) {
+			if (s.item != null && allyTag.equals(s.item.tag)) {
+				maxH += s.get().getHeight();
+			}
+		}
+		int dy = (d.height - maxH) / 2;
 		for (SpacewarStructure s : structures) {
 			if (s.item != null && allyTag.equals(s.item.tag)) {
 				s.x = d.width / 2;
-				s.y = d.height / 2;
+				s.y = dy;
 				s.angle = 0.0;
 				s.owner = f1.first.owner;
 				s.guard = true;
+				dy += s.get().getHeight();
 			}
 		}
 		battle.allowRetreat = false;
