@@ -8,6 +8,7 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.Fleet;
@@ -49,7 +50,7 @@ public class Mission18 extends Mission {
 		addMission("Mission-18", 1);
 	}
 	/**
-	 * Creates the main ship for level 2.
+	 * Creates the main ship for level 3.
 	 */
 	void createMainShip() {
 		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip3", player);
@@ -80,19 +81,18 @@ public class Mission18 extends Mission {
 		setSlot(ii, "rocket", "Rocket1", 4);
 		setSlot(ii, "radar", "Radar1", 1);
 		setSlot(ii, "cannon", "IonCannon", 6);
-		setSlot(ii, "shield", "Shield1", 14);
-		setSlot(ii, "hyperdrive", "HyperDrive1", 14);
+		setSlot(ii, "shield", "Shield1", 1);
+		setSlot(ii, "hyperdrive", "HyperDrive1", 1);
 
 	}
 	@Override
 	public void onTime() {
 		checkMainShip();
 		checkSuccess();
-// FIXME reenable
-//		if (checkTimeout("Mission-18-Failed")) {
-//			helper.gameover();
-//			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_3");
-//		}
+		if (checkTimeout("Mission-18-Failed")) {
+			helper.gameover();
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_3");
+		}
 		if (checkTimeout("Mission-18-Hide")) {
 			helper.objective("Mission-18").visible = false;
 		}
@@ -105,6 +105,17 @@ public class Mission18 extends Mission {
 		// planet messages
 		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom", "Zeuson" };
 		setPlanetMessages(planets);
+		
+		if (checkMission("Mission-18-Promote")) {
+			world.env.stopMusic();
+			world.env.playVideo("interlude/level_4_intro", new Action0() {
+				@Override
+				public void invoke() {
+					promote();
+				}
+			});
+		}
+		
 		
 		// -------------------------------------------------------
 		// help the garthog economy
@@ -137,13 +148,21 @@ public class Mission18 extends Mission {
 			}
 		}
 	}
+	/**
+	 * Promotion action.
+	 */
+	void promote() {
+		world.level = 4;
+		world.env.playMusic();
+	}
 	/** Check if we own all the necessary planets. */
 	void checkSuccess() {
 		Player g = player("Garthog");
-		if (g.statistics.planetsOwned == 0) {
+		if (g.statistics.planetsOwned == 0 && !helper.hasMissionTime("Mission-18-Promote")) {
 			helper.setObjectiveState("Mission-18", ObjectiveState.SUCCESS);
 			addTimeout("Mission-18-Hide", 13000);
 			// TODO next level
+			addMission("Mission-18-Promote", 3);
 		}
 	}
 	@Override
