@@ -48,6 +48,8 @@ public class BattleInfo {
 	public Player groundwarWinner;
 	/** The loser retreated. */
 	public boolean retreated;
+	/** Indicate if the defender fleed. */
+	public boolean defenderFlee;
 	/** Allow retreat from this battle? */
 	public boolean allowRetreat = true;
 	/** The number of fortifications destroyed. */

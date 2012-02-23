@@ -2284,7 +2284,9 @@
 	<entry key='mission-18.garthog4'>Foglald el a Garthog 4-et</entry>
 	<entry key='mission-18.garthog5'>Foglald el a Garthog 5-öt</entry>
 	<entry key='mission-18.retake'>Foglalj el újra bármilyen elvesztett bolygót!</entry>
-	<entry key=''></entry>
+	<entry key='mission-19.blockade'>A Zeuson blokádja</entry>
+	<entry key='mission-19.blockade.desc'>Akadályozd meg, hogy a lázadó kormányzó elhagyja a szektorunkat.</entry>
+	<entry key='mission-19.unknown'>Ismeretlen</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

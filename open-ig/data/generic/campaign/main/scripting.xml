@@ -20,6 +20,7 @@
 		<mission class='hu.openig.scripting.missions.Mission16'/>
 		<mission class='hu.openig.scripting.missions.Mission17'/>
 		<mission class='hu.openig.scripting.missions.Mission18'/>
+		<mission class='hu.openig.scripting.missions.Mission19'/>
 		<mission class='hu.openig.scripting.missions.Mission26'/>
 	</missions>
 	<!--  The view limit for the empire player levels 1-3. Levels 4-5 are unlimited. -->
@@ -155,6 +156,9 @@
 			<objective id='Mission-18-Task-4' title='mission-18.garthog4'/>
 			<objective id='Mission-18-Task-5' title='mission-18.garthog5'/>
 			<objective id='Mission-18-Task-6' title='mission-18.retake'/>
+		</objective>
+		<objective id='Mission-19' title='mission-19.blockade' 
+			description='mission-19.blockade.desc'>
 		</objective>
 	</objectives>	
 	
