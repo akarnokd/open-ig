@@ -2,6 +2,20 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.300 - More missions =
+  * Released: 2012-02-23 16:00 CET
+  * Missions 18, 19, 20 and 21 added ([http://code.google.com/p/open-ig/issues/detail?id=214 Issue #214])
+  * Fixed Mission 16 crash ([http://code.google.com/p/open-ig/issues/detail?id=292 Issue 292])
+  * Fixed issues due non-unique fleet ids ([http://code.google.com/p/open-ig/issues/detail?id=293 Issue #293])
+  * When playing as non-human, alien special units are displayed in the equipment screen ([http://code.google.com/p/open-ig/issues/detail?id=293 Issue #293])
+  * Fixed mission overlappings ([http://code.google.com/p/open-ig/issues/detail?id=293 Issue #293])
+  * Mission 8 talk to the phsychologist now happens after two visions as intended.
+  * Fixed Mission 5 mentioning Admiral Benson instead of Admiral Tullen ([http://code.google.com/p/open-ig/issues/detail?id=294 Issue #294])
+  * Fixed issues with newly deployed Destroyer 1s not properly equipped, however, you need to start a new game. ([http://code.google.com/p/open-ig/issues/detail?id=294 Issue #294])
+  * Fixed infinite money glitch due selling equipment ([http://code.google.com/p/open-ig/issues/detail?id=294 Issue #294]).
+  * Fixed Mission 16 reinforcements not arriving ([http://code.google.com/p/open-ig/issues/detail?id=294 Issue #294]).
+  
+
 = Version 0.94.200 - More missions =
   * Released: 2012-02-13 21:10 CET
   * Mission 17 added, level 2 complete ([http://code.google.com/p/open-ig/issues/detail?id=213 Issue #213])
