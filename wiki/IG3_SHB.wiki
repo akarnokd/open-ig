@@ -24,7 +24,8 @@ This page summarizes some of my thoughts and requirements of the game.
   * Primary resource is credits
   * Asteroid & Planet mining
     * Metal: for ship construction
-    * Gold: for electronic equipment
+    * Precious metals: for electronic equipment
+    * Light elements: for fusion/anti material?
 
 = Model, mechanics =
 
@@ -45,7 +46,17 @@ This page summarizes some of my thoughts and requirements of the game.
   * New: university -> improve research performance
   * New: outpost -> smaller defense building
   * New: Ability to manually set the energy and worker level per building 
+  * New: Mining
+  * New: some underwater buildings for full-water planets, mostly mining/research planets?!
 
 = Warfare =
+
+  * Space battle
+  * Ground battle
+    * Orbital strikes, damages area!
+      * COD AC 130 style FPS mode???
+    * Air units (e.g., fighters)
+    * Anti air units
+  * Underwater battle?
 
 = Other =
