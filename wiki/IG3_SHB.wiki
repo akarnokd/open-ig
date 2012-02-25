@@ -1,6 +1,6 @@
-#summary What Imperium Galactica 3 should have been.
+#summary How the next Imperium Galactica should look like.
 
-I always wanted to make my own (IP) 4X game similar to Imperium Galactica. Unfortunately, I'm a software developer, and a game of such magnitude requires graphic designers, sound designers and story designers besides the general UI and mechanics.
+I always wanted to make my own (IP) 4X game similar to Imperium Galactica. Unfortunately, I'm a software developer, and a game of such magnitude requires graphic designers, sound designers and story designers besides the general UI and mechanics. Of course, it can't be called IG3 or similar because of the name rights.
 
 This page summarizes some of my thoughts and requirements of the game.
 
