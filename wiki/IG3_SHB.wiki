@@ -15,6 +15,7 @@ This page summarizes some of my thoughts and requirements of the game.
   * Scalable UI (don't want to read 5 pixel labels)
   * modding and customization
   * DLC-like system for complete new campaigns
+  * Campaign editor, map editor
 
 = Story, races =
 
@@ -41,18 +42,24 @@ This page summarizes some of my thoughts and requirements of the game.
 
   * Money:
     * Taxation of colonists
+      * Non-working population provides only consumption tax
+      * Workers provide more tax
     * Taxation of traders (e.g., if they land, not on a daily basis)
+    * Finer grained tax percentages.
     * Income is computed on the integral of morale (e.g., not just the last second demand stances, if you have temporary energy shortage, you get a bad evaluation in IG)
   * Population
     * More realism: only certain percent of the population is available for work
-  * Own trading fleets
+  * Own trading fleets???
     * transfer of resources and population
   * Ships and fleets require personnel
   * Orbital factories (capacity) for large ship construction
+  * Realism: Solar plants work only in daylight, see building shifts
 
 = Planets =
 
   * Usual: Earth, Rocky, Desert, Mars-like, Icy
+  * New: volcanic
+    * rich in resources
   * New: Gas giants
     * mining light elements
   * New: Water planets
@@ -61,6 +68,11 @@ This page summarizes some of my thoughts and requirements of the game.
     * Mining
   * Individual planet sizes with different gravity, affects population
   * Proper solar system with planets, asteroid belts and moons
+    * Planets may be discovered similarly while moving within the star system
+  * Planets may become unstable, see colony transfer ships
+  * Explicitly abandon planets
+  * Abandoned/Died planets retain their buildings for some time
+    * new colonizers may get technology and resources
 
 = Buildings =
 
@@ -73,7 +85,9 @@ This page summarizes some of my thoughts and requirements of the game.
   * New: some underwater buildings for full-water planets, mostly mining/research planets?!
     * guns, military and traders spaceport have surface ports
   * New: Windfarm
-  * New: orbital solar station and ground station?
+  * New: orbital solar power station and ground station?
+  * Operational shifts: set when the building should be operational???
+    * production may be 24/7, but research is not
 
 = Ships =
 
@@ -85,8 +99,16 @@ This page summarizes some of my thoughts and requirements of the game.
     * may consume energy, increases mass -> combat speed
   * Personnel, personnel loss on damage
     * transfer personnel?
+    * Ship may be inoperational if low on personnel
   * Fleet leaders with bonuses (IG2 style)
   * Main fleet as you
+  * Salvage fleets for resources and technology?
+  * Special ship types:
+    * Colony ship (medium, large)
+    * Colony transfer ships: move large population from one planet to other
+      * In case a planet becomes unlivable
+    * Planet explorer
+      * detect solar systems, planets 
 
 = Warfare =
 
