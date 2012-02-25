@@ -66,7 +66,11 @@ This page summarizes some of my thoughts and requirements of the game.
     * no buildable surface, restricted buildings
   * Moons, asteroids
     * Mining
+    * Space defenses only
   * Individual planet sizes with different gravity, affects population
+    * Individual day/night cycles
+      * Galactic standard time and local time
+      * Effect: infra view for night attacks?
   * Proper solar system with planets, asteroid belts and moons
     * Planets may be discovered similarly while moving within the star system
   * Planets may become unstable, see colony transfer ships
