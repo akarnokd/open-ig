@@ -12,6 +12,8 @@
     * [GameGuide#Mouse_and_keyboard Controls]
     * [GameGuide#Gameplay_mechanics Mechanics]
     * [Missions Missions]
+  * [DLC Downloadable content]
+    * [DLC_IG_2 Imperium Galactica 2]
   * Other utilities
     * [AnimPlay AnimPlay]
     * [Testbed The development testbed]
