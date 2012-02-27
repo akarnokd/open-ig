@@ -1,5 +1,7 @@
 #summary DLC: Imperium Galactica 2 Campaigns
 
+= Differences from IG1 model =
+
 = Races =
 
 == Solarian ==
