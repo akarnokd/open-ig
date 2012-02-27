@@ -6,6 +6,33 @@
 
 == February, 2012 ==
 
+
+*February 27, 2012*
+
+This weekend, I tried to run Imperium Galactica 2: Alliances to see how it works, looks and behaves compared to IG1. OMG it's so different; ugly, slow and doesn't always work. But the story is still attractive.
+
+Let's make a mod/DLC from IG2 for Open Imperium Galactica. Of course, there are a few significant changes:
+
+  * simplified production/research
+  * ship design for fixed equipment configurations, lack of separate equipment management
+  * spying
+  * market
+  * proprietary BIK videos
+  * no bar
+
+The spying (without the 3D effects) and market screens are relatively simple to implement, the rest is just technology tree and numbers. 
+
+The biggest roadblock is the BIK videos: they are much larger than IG1's, probably can't be republished and there is no embeddable Java player. One solution is to call an external multi-platform video player (e.g., VLC) for each cutscene and convert the smaller message portraits to the embedded format.
+
+*To create this DLC, I need volunteers for the following tasks:*
+
+  * For each race:
+    * compose technology information, costs, strengths, etc.
+  * The campaign races (Solarian, Kra'hen, Shinari)
+    * list missions, conditions, rewards
+
+Some of these information can be located in walkthroughs, but those are unfortunately written from the player's perspective, and not from a developer's perspective.
+
 *February 23, 2012*
 
 Level 3 is now complete and you'll be promoted to Admiral. Beyond that, nothing else now.
