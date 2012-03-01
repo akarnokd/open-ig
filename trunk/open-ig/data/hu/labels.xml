@@ -494,6 +494,7 @@
 	<entry key='colonyinfo.owner'     >Tulajdonos : %s</entry>
 	<entry key='colonyinfo.race'      >Faj        : %s</entry>
 	<entry key='colonyinfo.surface'   >Felszín    : %s</entry>
+	<entry key='colonyinfo.surface2'   >Felszín    : %s (%d%% nép.növ.)</entry>
 	<entry key='colonyinfo.population'>Népesség   : %d %s (%s)</entry>
 	<entry key='colonyinfo.population.alien'>Népesség   : %d idegen</entry>
 	<entry key='colonyinfo.housing'   >Lakótér    : %d / %d lakos</entry>

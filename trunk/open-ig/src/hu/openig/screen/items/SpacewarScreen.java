@@ -3142,7 +3142,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
 		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
-			if (!areAllies(s, ship)) {
+			if (!areAllies(s, ship) && !s.isDestroyed()) {
 				if (ship.inRange(s).size() > 0) {
 					result.add(s);
 				}
@@ -3521,7 +3521,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				if (!canControl(ship)) {
 					enemyIdles.add(ship);
 				} else {
-					playerIdles.add(ship);
+					if (!handleAutofire(ship)) {
+						playerIdles.add(ship);
+					}
 				}
 			}
 		}
@@ -3549,6 +3551,30 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			concludeBattle(winner);
 		}
 		askRepaint();
+	}
+	/**
+	 * Handle the automatic fire for ships and stations.
+	 * @param ship the ship under evaluation
+	 * @return true if action taken
+	 */
+	boolean handleAutofire(SpacewarStructure ship) {
+		if (ship.type == StructureType.STATION || ship.type == StructureType.PROJECTOR) {
+			List<SpacewarStructure> es = enemiesInRange(ship);
+			if (es.size() > 0) {
+				ship.attack = random(es);
+				return true;
+			}
+		} else
+		if (ship.type == StructureType.SHIP && ship.kamikaze == 0) {
+			for (SpacewarStructure es : enemiesInRange(ship)) {
+				if (es.kamikaze > 0) {
+					ship.attack = es;
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	/**
 	 * Choose a new target for the ship.
