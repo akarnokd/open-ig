@@ -1,0 +1,3 @@
+#summary Population growth table
+
+|| Race \ Surface || Earth || Cratered || Rocky || Desert || Liquid || Icy || Neptoplasm ||
