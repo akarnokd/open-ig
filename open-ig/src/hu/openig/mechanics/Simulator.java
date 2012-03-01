@@ -181,6 +181,7 @@ public final class Simulator {
 		int radar = 0;
 		long eqPlaytime = 6L * 60 * 60 * 1000;
 		double populationGrowthModifier = 1.0;
+		double planetTypeModifier = world.galaxyModel.getGrowth(planet.type.type, planet.race);
 		
 		final int repairCost = world.params().repairCost();
 		final int repairAmount = world.params().repairSpeed();
@@ -415,7 +416,7 @@ public final class Simulator {
 				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
 			} else {
 				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
-				nextPopulation += ((nextPopulation - planet.population) * populationGrowthModifier);
+				nextPopulation += ((nextPopulation - planet.population) * populationGrowthModifier * planetTypeModifier);
 			}
 			
 			planet.population = (int)nextPopulation;

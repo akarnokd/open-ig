@@ -8,6 +8,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Configuration;
+import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.Tile;
@@ -36,6 +37,8 @@ public class GalaxyModel {
 	public final Map<String, PlanetType> planetTypes = new HashMap<String, PlanetType>();
 	/** The configuration. */
 	protected final Configuration config;
+	/** The population growth map. */
+	protected final Map<Pair<String, String>, Double> populationGrowth = U.newHashMap();
 	/**
 	 * Constructor. Set the configuration.
 	 * @param config the configuration
@@ -113,6 +116,11 @@ public class GalaxyModel {
 					}
 				}));
 			}
+			XElement xgr = galaxy.childElement("population-growths");
+			for (XElement xg : xgr.childrenWithName("growth")) {
+				Pair<String, String> key = Pair.of(xg.get("type"), xg.get("race"));
+				populationGrowth.put(key, xg.getDouble("value"));
+			}
 		} finally {
 			wip.dec();
 		}
@@ -140,5 +148,19 @@ public class GalaxyModel {
 			}
 		}
 		return new Tile(width, height, image, lightMap);
+	}
+	/**
+	 * Returns the population growth modifier for the given surface type and race type.
+	 * @param surfaceType the surface type from galaxy.xml
+	 * @param raceType the race type from players.xml
+	 * @return the growth
+	 */
+	public double getGrowth(String surfaceType, String raceType) {
+		Pair<String, String> key = Pair.of(surfaceType, raceType);
+		Double g = populationGrowth.get(key);
+		if (g != null) {
+			return g;
+		}
+		return 1.0;
 	}
 }

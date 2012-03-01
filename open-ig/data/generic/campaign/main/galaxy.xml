@@ -116,4 +116,37 @@
 			<map pattern='campaign/main/surfaces/rocky_%d' start='1' end='8'/>
 		</planet>
 	</planets>
+	<population-growths>
+		<growth type='earth' race='human' value='2.0'/>
+		<growth type='rocky' race='human' value='1.5'/>
+		<growth type='cratered' race='human' value='1.25'/>
+		<growth type='frozen' race='human' value='0.75'/>
+		<growth type='liquid' race='human' value='0.75'/>
+		<growth type='neptoplasm' race='human' value='0.5'/>
+		<growth type='desert' race='human' value='0.5'/>
+		
+		<growth type='liquid' race='dargslan' value='2'/>
+		<growth type='earth' race='dargslan' value='0.5'/>
+		
+		<growth type='frozen' race='garthog' value='2'/>
+		<growth type='liquid' race='garthog' value='0.5'/>
+		
+		<growth type='desert' race='morgath' value='2'/>
+		
+		<growth type='liquid' race='sullep' value='1.25'/>
+		<growth type='earth' race='sullep' value='0.75'/>
+		<growth type='rocky' race='sullep' value='1.5'/>
+		<growth type='desert' race='sullep' value='1.25'/>
+
+		<growth type='neptoplasm' race='ecalep' value='2'/>
+		<growth type='desert' race='ecalep' value='0.5'/>
+		<growth type='frozen' race='ecalep' value='0.75'/>
+		
+		<growth type='rocky' race='ychom' value='2'/>
+		<growth type='cratered' race='ychom' value='1.5'/>
+		
+		<growth type='rocky' race='dribs' value='2'/>
+		<growth type='liquid' race='dribs' value='0.5'/>
+		
+	</population-growths>
 </galaxy>
