@@ -1,3 +1,15 @@
 #summary Population growth table
 
-|| Race \ Surface || Earth || Cratered || Rocky || Desert || Liquid || Icy || Neptoplasm ||
+= IG1 =
+
+|| Race \ Surface || Earth || Cratered || Rocky || Desert || Liquid || Frozen || Neptoplasm ||
+|| human ||
+|| garthog ||
+|| morgath ||
+|| sullep ||
+|| ecalep ||
+|| dribs ||
+|| ychom ||
+|| dargslan ||
+
+= IG2 =
