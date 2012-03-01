@@ -505,6 +505,7 @@
 	<entry key='colonyinfo.owner'     >Owner        : %s</entry>
 	<entry key='colonyinfo.race'      >Race         : %s</entry>
 	<entry key='colonyinfo.surface'   >Surface      : %s</entry>
+	<entry key='colonyinfo.surface2'   >Surface      : %s (%d%% pop.growth)</entry>
 	<entry key='colonyinfo.population'>Population   : %d %s (%s)</entry>
 	<entry key='colonyinfo.population.alien'>Population   : %d alien</entry>
 	<entry key='colonyinfo.housing'   >Living space : %d / %d men</entry>

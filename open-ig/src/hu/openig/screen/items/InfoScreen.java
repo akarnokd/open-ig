@@ -1481,7 +1481,13 @@ public class InfoScreen extends ScreenBase {
 				race.visible(false);
 				planet.color(TextRenderer.GRAY);
 			}
-			surface.text(format("colonyinfo.surface", firstUpper(get(p.type.label))), true);
+			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
+			if (p.owner == player()) {
+				double g = world().galaxyModel.getGrowth(p.type.type, p.race);
+				surfaceText = format("colonyinfo.surface2", 
+						firstUpper(get(p.type.label)), (int)(g * 100));
+			}
+			surface.text(surfaceText, true);
 
 			population.visible(false);
 			housing.visible(false);
