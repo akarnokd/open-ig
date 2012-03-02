@@ -10,6 +10,7 @@ See [http://code.google.com/p/open-ig/issues/list Issue list] for enhancements.
 || *Task* || *Expected completion time* || *Status* || *Remarks* ||
 || Missions || 2012-03-18 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Implement all original missions. ||
 || Screen: Diplomacy || 2012-03-18 || - || I need to run the original game to figure out the available talk options. ||
+|| Other missing features || 2012-03-31 || - || Space chat, fire and smoke on buildings, few more buttons. ||
 || Beta release || 2012-03-31 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup. ||
 || Multiplayer || 2012-04-29 || - || Multiplayer will be like a remote control: receive status changes and submit commands to the host. Human vs. Human with some technology tree simplifications (e.g., build colony ship from start). ||
 || Android version || 2012-08-26 || - || Create a port for the single player part to Android 2.2+ devices. The interface, however, will be redesigned and restructured for those devices with smaller screen and touch based input. ||
