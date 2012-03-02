@@ -32,5 +32,7 @@ public enum PlanetProblems {
 	/** Colony hub missing. */
 	COLONY_HUB,
 	/** Not enough police. */
-	POLICE
+	POLICE,
+	/** Fire brigade needed. */
+	FIRE_BRIGADE
 }

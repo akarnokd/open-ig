@@ -322,6 +322,17 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_ALIENS
 	})
 	UIImage problemsPolice;
+	/** Problem indicator icon. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_PLANETS,
+			Screens.INFORMATION_COLONY,
+			Screens.INFORMATION_MILITARY,
+			Screens.INFORMATION_FINANCIAL,
+			Screens.INFORMATION_BUILDINGS,
+			Screens.INFORMATION_ALIENS
+	})
+	UIImage problemsFireBrigade;
 	/** The current planet's owner. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_MILITARY,
@@ -774,6 +785,7 @@ public class InfoScreen extends ScreenBase {
 		problemsRepair = new UIImage(commons.common().repairIcon);
 		problemsColonyHub = new UIImage(commons.common().colonyHubIcon);
 		problemsPolice = new UIImage(commons.common().policeIcon);
+		problemsFireBrigade = new UIImage(commons.common().fireBrigadeIcon);
 
 		colonyOwner = new UILabel("", 10, commons.text());
 		colonyRace = new UILabel("", 10, commons.text());
@@ -963,6 +975,7 @@ public class InfoScreen extends ScreenBase {
 		problemsRepair.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
 		problemsColonyHub.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
 		problemsPolice.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsFireBrigade.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
 
 		planetTitle.bounds(buildingTitle.bounds());
 		
@@ -2466,6 +2479,7 @@ public class InfoScreen extends ScreenBase {
 		problemsRepair.visible(false);
 		problemsColonyHub.visible(false);
 		problemsPolice.visible(false);
+		problemsFireBrigade.visible(false);
 		if (p.owner == player()) {
 			PlanetStatistics ps = p.getStatistics();
 			if (ps.hasProblem(PlanetProblems.HOUSING)) {
@@ -2535,6 +2549,9 @@ public class InfoScreen extends ScreenBase {
 			} else
 			if (ps.hasWarning(PlanetProblems.POLICE)) {
 				problemsPolice.image(commons.common().policeIconDark).visible(true);
+			}
+			if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE)) {
+				problemsFireBrigade.image(commons.common().fireBrigadeIcon).visible(true);
 			}
 		}
 	}
@@ -3298,6 +3315,10 @@ public class InfoScreen extends ScreenBase {
 						} else
 						if (ps.hasWarning(PlanetProblems.POLICE)) {
 							g2.drawImage(commons.common().policeIconDark, probLeft + j * 11, y + 2, null);
+							j++;
+						}
+						if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE)) {
+							g2.drawImage(commons.common().fireBrigadeIcon, probLeft + j * 11, y + 2, null);
 							j++;
 						}
 					}

@@ -196,6 +196,27 @@ public final class AutoBuilder {
 					planet.autoBuild = ab;
 				}
 			}
+			buildCount++;
+			if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE) || ps.hasWarning(PlanetProblems.FIRE_BRIGADE)) {
+				findOptions(world, planet, 
+					new Func1<Building, Boolean>() {
+						@Override
+						public Boolean invoke(Building b) {
+							return b.type.id.equals("FireBrigade");
+						}
+					},
+					new Func1<BuildingType, Boolean>() {
+						@Override
+						public Boolean invoke(BuildingType value) {
+							return value.id.equals("FireBrigade");
+						}
+					}
+				);
+				if (planet.autoBuild == AutoBuild.OFF) {
+					offRequest++;
+					planet.autoBuild = ab;
+				}
+			}
 			if (offRequest == buildCount) {
 				planet.autoBuild = AutoBuild.OFF;
 			}
