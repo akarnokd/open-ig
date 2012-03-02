@@ -686,7 +686,7 @@ public class BridgeScreen extends ScreenBase {
 		try {
 			if (videoFront != null) {
 				g2.drawImage(videoFront, videoRect.x, videoRect.y, videoRect.width, videoRect.height, null);
-				if (videoSubtitle != null) {
+				if (videoSubtitle != null && config.subtitles) {
 					paintLabel(g2, base.x, videoRect.y + videoRect.height, base.width);
 				}
 			}

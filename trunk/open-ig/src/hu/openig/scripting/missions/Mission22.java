@@ -34,10 +34,7 @@ public class Mission22 extends Mission {
 		createMainShip();
 		// achievement
 		String a = "achievement.admiral";
-		if (!world.env.profile().hasAchievement(a)) {
-			world.env.achievementQueue().add(a);
-			world.env.profile().grantAchievement(a);
-		}
+		achievement(a);
 	}
 	
 	/**

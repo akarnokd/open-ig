@@ -818,4 +818,14 @@ public abstract class Mission implements GameScriptingEvents {
 	void removeScripted(Pair<Fleet, ?> f) {
 		removeScripted(f.first);
 	}
+	/**
+	 * Grant an achievement with the given ID if not already awarded.
+	 * @param a the achievement id, e.g., "achievement.i_robot"
+	 */
+	protected void achievement(String a) {
+		if (!world.env.profile().hasAchievement(a)) {
+			world.env.achievementQueue().add(a);
+			world.env.profile().grantAchievement(a);
+		}
+	}
 }

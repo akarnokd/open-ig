@@ -162,7 +162,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 				RenderTools.setInterpolation(g2, true);
 				g2.drawImage(frontBuffer, movieRect.x, movieRect.y, 
 						movieRect.width, movieRect.height, null);
-				if (label != null) {
+				if (label != null && config.subtitles) {
 					paintLabel(g2, movieRect.x, movieRect.y, movieRect.width, movieRect.height);
 				}
 				RenderTools.setInterpolation(g2, false);
