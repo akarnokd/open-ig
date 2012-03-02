@@ -216,6 +216,9 @@ public class LoadSaveScreen extends ScreenBase {
 	boolean blinking;
 	/** The other settings popup. */
 	UIGenericButton otherSettings;
+	/** Slow down time on detected attack. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox slowOnAttack;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -752,6 +755,15 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		
+		slowOnAttack = new UICheckBox(get("settings.slow_on_attack"), 14, commons.common().checkmark, commons.text());
+		slowOnAttack.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.slowOnEnemyAttack = slowOnAttack.selected();
+			}
+		};
+		
 		addThis();
 	}
 	/**
@@ -802,6 +814,7 @@ public class LoadSaveScreen extends ScreenBase {
 		swapLeftRight.selected(config.swapMouseButtons);
 		subtitles.selected(config.subtitles);
 		animateTech.selected(config.animateInventory);
+		slowOnAttack.selected(config.slowOnEnemyAttack);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -887,30 +900,48 @@ public class LoadSaveScreen extends ScreenBase {
 
 		subtitles.location(base.x + 30, base.y + 280 + 8);
 
+		
+		// --------------------------------------------------------------------------------------
 		// gameplay
+
+		int dy = 60;
 		
-		reequipTanks.location(base.x + 30, base.y + 70 + 8);
-		reequipBombs.location(base.x + 30, base.y + 100 + 8);
+		reequipTanks.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		reequipBombs.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
 		
-		autoRepair.location(base.x + 30, base.y + 130 + 8);
-		autoRepairLabel.location(base.x + 30, base.y + 160 + 8);
+		autoRepair.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+
+		autoRepairLabel.location(base.x + 30, base.y + dy + 8);
 		autoRepairLimit.width = 200;
-		autoRepairLimit.location(base.x + base.width - autoRepairLimit.width - 30, base.y + 160);
+		autoRepairLimit.location(base.x + base.width - autoRepairLimit.width - 30, base.y + dy);
+		dy += 30;
 		
-		autoBuildLabel.location(base.x + 30, base.y + 190 + 8);
+		autoBuildLabel.location(base.x + 30, base.y + dy + 8);
 		autoBuildLimit.width = 200;
-		autoBuildLimit.location(base.x + base.width - autoBuildLimit.width - 30, base.y + 190);
-		
-		researchMoneyLabel.location(base.x + 30, base.y + 220 + 8);
+		autoBuildLimit.location(base.x + base.width - autoBuildLimit.width - 30, base.y + dy);
+		dy += 30;
+
+		researchMoneyLabel.location(base.x + 30, base.y + dy + 8);
 		researchMoneyPercent.width = 200;
-		researchMoneyPercent.location(base.x + base.width - researchMoneyPercent.width - 30, base.y + 220);
+		researchMoneyPercent.location(base.x + base.width - researchMoneyPercent.width - 30, base.y + dy);
+		dy += 30;
 
-		automaticBattle.location(base.x + 30, base.y + 250 + 8);
-		radarUnion.location(base.x + 30, base.y + 280 + 8);
-		classicControls.location(base.x + 30, base.y + 310 + 8);
-		swapLeftRight.location(base.x + 30, base.y + 340 + 8);
-
-		animateTech.location(base.x + 30, base.y + 370 + 8);
+		automaticBattle.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		radarUnion.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		classicControls.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		swapLeftRight.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		
+		animateTech.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		slowOnAttack.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
 	}
 	@Override
 	public Screens screen() {
@@ -928,7 +959,7 @@ public class LoadSaveScreen extends ScreenBase {
 		if (settingsMode != SettingsPage.LOAD_SAVE) {
 			g2.drawImage(commons.background().setup, base.x, base.y, null);
 			g2.setColor(new Color(0, 0, 0, 192));
-			g2.fillRect(base.x + 20, base.y + 60, base.width - 40, base.height - 80);
+			g2.fillRect(base.x + 10, base.y + 50, base.width - 20, base.height - 60);
 
 			soundVolume.prev.enabled(config.effectVolume > 0);
 			soundVolume.next.enabled(config.effectVolume < 100);
@@ -1094,7 +1125,7 @@ public class LoadSaveScreen extends ScreenBase {
 						int dh = (rowHeight - textHeight) / 2;
 						
 						commons.text().paintTo(g2, 5, y + dh, textHeight, c, fi.saveName);
-						commons.text().paintTo(g2, 5 + 250, y + dh, textHeight, c, get(fi.difficulty.label));
+						commons.text().paintTo(g2, 5 + 250, y + dh, textHeight, c, get(fi.difficulty.label) + "-" + fi.level);
 //						commons.text().paintTo(g2, 5 + 300, y + dh, textHeight, c, "" + fi.level);
 						commons.text().paintTo(g2, 5 + 330, y + dh, textHeight, c, dateFormat2.format(fi.gameDate));
 						String m = fi.money + " cr";

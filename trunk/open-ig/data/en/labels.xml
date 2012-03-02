@@ -3051,7 +3051,7 @@
 	<entry key='achievement.i_robot.desc'>Find out your true origin!</entry>
 	<entry key='settings.subtitles'>Subtitles</entry>
 	<entry key='settings.animatetech'>Animate technology</entry>
-	<entry key=''></entry>
+	<entry key='settings.slow_on_attack'>Slow down time on enemy attack</entry>
 	<entry key=''></entry>
 	
 </labels>
