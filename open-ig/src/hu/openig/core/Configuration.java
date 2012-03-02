@@ -198,11 +198,16 @@ public class Configuration {
 	public int tileCacheBuildingLimit = 10;
 	/** Enable the animation of inventory? */
 	@LoadSave
+	@LoadSaveGame
 	public boolean animateInventory = true;
 	/** Slow down the game in case of enemy attack? */
 	@LoadSave
 	@LoadSaveGame
 	public boolean slowOnEnemyAttack = true;
+	/** Display subtitles. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean subtitles = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

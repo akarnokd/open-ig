@@ -145,6 +145,12 @@ public class LoadSaveScreen extends ScreenBase {
 	/** The video volume. */
 	@Settings(page = SettingsPage.AUDIO)
 	UILabel videoLabel;
+	/** Subtitles? */
+	@Settings(page = SettingsPage.AUDIO)
+	UICheckBox subtitles;
+	/** Animate technology? */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox animateTech;
 	/** Re-equip tanks? */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox reequipTanks;
@@ -520,6 +526,23 @@ public class LoadSaveScreen extends ScreenBase {
 		};
 		videoLabel = new UILabel(get("settings.video_volume"), 14, commons.text());
 		
+		subtitles = new UICheckBox(get("settings.subtitles"), 14, commons.common().checkmark, commons.text());
+		subtitles.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.subtitles = subtitles.selected();
+			}
+		};
+		animateTech = new UICheckBox(get("settings.animatetech"), 14, commons.common().checkmark, commons.text());
+		animateTech.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.animateInventory = animateTech.selected();
+			}
+		};
+		
 		reequipTanks = new UICheckBox(get("settings.reequip_tanks"), 14, commons.common().checkmark, commons.text());
 		reequipTanks.onChange = new Action0() {
 			@Override
@@ -777,6 +800,8 @@ public class LoadSaveScreen extends ScreenBase {
 		radarUnion.selected(config.radarUnion);
 		classicControls.selected(config.classicControls);
 		swapLeftRight.selected(config.swapMouseButtons);
+		subtitles.selected(config.subtitles);
+		animateTech.selected(config.animateInventory);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -860,6 +885,8 @@ public class LoadSaveScreen extends ScreenBase {
 		buttonSounds.location(base.x + 30, base.y + 220 + 8);
 		satelliteDeploy.location(base.x + 30, base.y + 250 + 8);
 
+		subtitles.location(base.x + 30, base.y + 280 + 8);
+
 		// gameplay
 		
 		reequipTanks.location(base.x + 30, base.y + 70 + 8);
@@ -883,6 +910,7 @@ public class LoadSaveScreen extends ScreenBase {
 		classicControls.location(base.x + 30, base.y + 310 + 8);
 		swapLeftRight.location(base.x + 30, base.y + 340 + 8);
 
+		animateTech.location(base.x + 30, base.y + 370 + 8);
 	}
 	@Override
 	public Screens screen() {

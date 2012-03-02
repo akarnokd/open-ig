@@ -42,11 +42,8 @@ public class Mission18 extends Mission {
 		createMainShip();
 
 		// achievement
-		String a = "achievement.commander";
-		if (!world.env.profile().hasAchievement(a)) {
-			world.env.achievementQueue().add(a);
-			world.env.profile().grantAchievement(a);
-		}
+		achievement("achievement.commander");
+		
 		addMission("Mission-18", 1);
 	}
 	/**
