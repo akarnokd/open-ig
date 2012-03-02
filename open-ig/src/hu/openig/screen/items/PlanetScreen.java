@@ -567,13 +567,25 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		if (se.building.isConstructing()) {
 			Tile tile = null;
+			List<Tile> scaffolding = null;
 			if (se.building.isSeverlyDamaged()) {
-				int constructIndex = se.building.buildProgress * se.building.scaffolding.damaged.size() / se.building.type.hitpoints;
-				tile =  se.building.scaffolding.damaged.get(constructIndex);
+				scaffolding = se.building.scaffolding.damaged;
 			} else {
-				int constructIndex = se.building.buildProgress * se.building.scaffolding.normal.size() / se.building.type.hitpoints;
-				tile =  se.building.scaffolding.normal.get(constructIndex);
+				scaffolding = se.building.scaffolding.normal;
 			}
+			
+			int index0 = (int)(se.building.hitpoints * 1L * scaffolding.size() / se.building.type.hitpoints);
+			int area = se.building.width() * se.building.height();
+			
+			int index1 = (se.building.width() * se.virtualRow + se.virtualColumn) * scaffolding.size() / area;
+			
+			if (se.building.hitpoints * 100 < se.building.type.hitpoints) {
+				index0 = 0;
+				index1 = 0;
+			}
+			
+			tile = scaffolding.get((index0 + index1) % scaffolding.size());
+			
 			cell.yCompensation = 27 - tile.imageHeight;
 			tile.alpha = alpha;
 			cell.image = tile.getStrip(0);
@@ -1467,6 +1479,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					case POLICE:
 						icon = commons.common().policeIcon;
 						iconDark = commons.common().policeIconDark;
+						break;
+					case FIRE_BRIGADE:
+						icon = commons.common().fireBrigadeIcon;
+						iconDark = commons.common().fireBrigadeIcon;
 						break;
 					default:
 					}

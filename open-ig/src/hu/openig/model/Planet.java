@@ -132,6 +132,7 @@ public class Planet implements Named, Owned, HasInventory {
 		boolean damage = false;
 		boolean colonyHub = false;
 		boolean colonyHubOperable = false;
+		int fireBrigadeCount = 0;
 		
 		result.vehicleMax = 8; // default per planet
 		
@@ -182,6 +183,9 @@ public class Planet implements Named, Owned, HasInventory {
 				}
 				if (b.type.id.equals("Stadium")) {
 					stadiumCount++;
+				}
+				if (b.type.id.equals("FireBrigade")) {
+					fireBrigadeCount++;
 				}
 				if (b.hasResource("repair")) {
 					result.freeRepair = Math.max(b.getResource("repair"), result.freeRepair);
@@ -302,9 +306,14 @@ public class Planet implements Named, Owned, HasInventory {
 			result.addWarning(PlanetProblems.POLICE);
 		}
 		
-		// FIXME stadium count
-		if (population > 50000 && 0 == stadiumCount && ("human".equals(race))) {
-			result.addProblem(PlanetProblems.STADIUM);
+		if (owner != null) {
+			if (population > 50000 && 0 == stadiumCount && canBuild("Stadium")) {
+				result.addProblem(PlanetProblems.STADIUM);
+			}
+			
+			if (population > 30000 && 0 == fireBrigadeCount && canBuild("FireBrigade")) {
+				result.addProblem(PlanetProblems.FIRE_BRIGADE);
+			}
 		}
 		
 		if (quarantineTTL > 0) {
@@ -365,6 +374,20 @@ public class Planet implements Named, Owned, HasInventory {
 	public boolean canBuild(BuildingType bt) {
 		return canBuild(this, surface.buildings, 
 				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), bt);
+	}
+	/**
+	 * Check if the given building type can be built on this planet.
+	 * @param buildingType the building type identifier
+	 * @return true if it can be built here
+	 */
+	public boolean canBuild(String buildingType) {
+		if (owner != null) {
+			BuildingType bt = owner.world.buildingModel.buildings.get(buildingType);
+			if (bt != null) {
+				return canBuild(bt);
+			}
+		}
+		return false;
 	}
 	/**
 	 * Test if another instance of the building type can be built on this planet.

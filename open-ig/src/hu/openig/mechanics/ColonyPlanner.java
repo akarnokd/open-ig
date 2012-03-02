@@ -320,7 +320,7 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("repair") && count(planet, value) < 1;
 			}
 		};
-		if (planet.population >= 25000 && planet.population > planet.statistics.workerDemand * 1.1) {
+		if (planet.population >= 30000 && planet.population > planet.statistics.workerDemand * 1.1) {
 			return manageBuildings(planet, fire, costOrder, true);
 		}
 		return false;

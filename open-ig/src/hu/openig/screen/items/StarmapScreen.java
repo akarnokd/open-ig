@@ -356,6 +356,8 @@ public class StarmapScreen extends ScreenBase {
 	UIImage problemsColonyHub;
 	/** Problem indicator icon. */
 	UIImage problemsPolice;
+	/** Problem indicator icon. */
+	UIImage problemsFireBrigade;
 	/** Deploy satellite button. */
 	UIImageButton surveySatellite;
 	/** Deploy spy satellite 1 button. */
@@ -589,18 +591,11 @@ public class StarmapScreen extends ScreenBase {
 		fleetsList.width = fleetsListPanel.width;
 		fleetsList.height = equipment.y - fleetsList.y;
 
-		
-		
-		// TODO fleet and planet listings
 		// ..............................................................
 		minimapRect.x = width - commons.starmap().minimap.getWidth();
 		minimapRect.y = height - commons.starmap().minimap.getHeight() - 17;
 		minimapRect.width = commons.starmap().minimap.getWidth();
 		minimapRect.height = commons.starmap().minimap.getHeight();
-//		if ((!rightPanelVisible || ! bottomPanelVisible)) {
-//			minimapRect.x = starmapWindow.x + starmapWindow.width - gfx.minimap.getWidth();
-//			minimapRect.y = starmapWindow.y + starmapWindow.height - gfx.minimap.getHeight();
-//		}
 		
 		minimapInnerRect.setBounds(minimapRect);
 		minimapInnerRect.x += 2;
@@ -615,7 +610,7 @@ public class StarmapScreen extends ScreenBase {
 		colonyPopulationTax.location(bottomPanel.x + 10, bottomPanel.y + 54);
 		colonyOther.location(bottomPanel.x + 10, bottomPanel.y + 70);
 
-		int probcnt = 9;
+		int probcnt = 11;
 		problemsHouse.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsEnergy.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsWorker.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
@@ -626,6 +621,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsRepair.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsColonyHub.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsPolice.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsFireBrigade.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 
 		surveySatellite.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 4);
 		spySatellite1.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 24);
@@ -740,6 +736,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsRepair.visible(false);
 		problemsColonyHub.visible(false);
 		problemsPolice.visible(false);
+		problemsFireBrigade.visible(false);
 		if (p.owner == player()) {
 			PlanetStatistics ps = p.getStatistics();
 			if (ps.hasProblem(PlanetProblems.HOUSING)) {
@@ -810,6 +807,10 @@ public class StarmapScreen extends ScreenBase {
 			} else
 			if (ps.hasWarning(PlanetProblems.POLICE)) {
 				problemsPolice.image(commons.common().policeIconDark).visible(true);
+			}
+			
+			if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE)) {
+				problemsFireBrigade.image(commons.common().fireBrigadeIcon).visible(true);
 			}
 		}
 	}
@@ -956,6 +957,7 @@ public class StarmapScreen extends ScreenBase {
 			problemsRepair.visible(false);
 			problemsColonyHub.visible(false);
 			problemsPolice.visible(false);
+			problemsFireBrigade.visible(false);
 			
 			surveySatellite.visible(false);
 			spySatellite1.visible(false);
@@ -1303,6 +1305,10 @@ public class StarmapScreen extends ScreenBase {
 						case POLICE:
 							icon = commons.common().policeIcon;
 							iconDark = commons.common().policeIconDark;
+							break;
+						case FIRE_BRIGADE:
+							icon = commons.common().fireBrigadeIcon;
+							iconDark = commons.common().fireBrigadeIcon;
 							break;
 						default:
 						}
@@ -2355,6 +2361,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsRepair = new UIImage(commons.common().repairIcon);
 		problemsColonyHub = new UIImage(commons.common().colonyHubIcon);
 		problemsPolice = new UIImage(commons.common().policeIcon);
+		problemsFireBrigade = new UIImage(commons.common().fireBrigadeIcon);
 
 		surveySatellite = new UIImageButton(commons.starmap().deploySatellite);
 		surveySatellite.onClick = new Action0() {
