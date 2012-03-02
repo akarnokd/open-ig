@@ -149,6 +149,13 @@ public class Mission14 extends Mission {
 				helper.send("Douglas-Virus-Carriers-Destroyed").visible = true;
 				battle.rewardImage = "battlefinish/mission_23";
 				battle.messageText = label("battlefinish.mission-14.23");
+				
+				String a = "achievement.influenza";
+				if (!world.env.profile().hasAchievement(a)) {
+					world.env.achievementQueue().add(a);
+					world.env.profile().grantAchievement(a);
+				}
+
 			}
 		}
 	}

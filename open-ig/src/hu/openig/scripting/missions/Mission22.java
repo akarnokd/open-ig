@@ -15,8 +15,8 @@ import hu.openig.model.Planet;
 import hu.openig.model.ResearchType;
 
 /**
+ * Mission 22: enter level 4. Colonize or capture 7 more planets.
  * @author akarnokd, 2012.02.23.
- *
  */
 public class Mission22 extends Mission {
 
@@ -26,7 +26,7 @@ public class Mission22 extends Mission {
 	}
 	@Override
 	public void onLevelChanged() {
-		if (world.level != 4) {
+		if (world.level < 4) {
 			return;
 		}
 		removeMissions(1, 25);
