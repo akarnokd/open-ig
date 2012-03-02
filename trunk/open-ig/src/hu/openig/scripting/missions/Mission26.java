@@ -8,8 +8,11 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.model.BattleInfo;
+import hu.openig.model.SpacewarWorld;
+
 /**
- * This mission manages the wife videos.
+ * This mission manages the wife videos and various generic achievements.
  * @author akarnokd, Feb 4, 2012
  */
 public class Mission26 extends Mission {
@@ -60,5 +63,21 @@ public class Mission26 extends Mission {
 	public boolean applicable() {
 		return true;
 	}
-
+	@Override
+	public void onSpacewarFinish(SpacewarWorld war) {
+		onAutobattleFinish(war.battle());
+	}
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		if (battle.attacker.owner == player
+				&& battle.targetFleet != null 
+				&& battle.targetFleet.owner == player("Traders") 
+				&& battle.targetFleet.inventory.isEmpty()) {
+			String a = "achievement.embargo";
+			if (!world.env.profile().hasAchievement(a)) {
+				world.env.achievementQueue().add(a);
+				world.env.profile().grantAchievement(a);
+			}
+		}
+	}
 }

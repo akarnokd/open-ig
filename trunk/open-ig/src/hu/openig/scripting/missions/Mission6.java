@@ -143,6 +143,12 @@ public class Mission6 extends Mission {
 				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 				war.battle().rewardText = label("battlefinish.mission-6.14_bonus");
 				war.battle().messageText = label("battlefinish.mission-6.14");
+				
+				String a = "achievement.defender";
+				if (!world.env.profile().hasAchievement(a)) {
+					world.env.achievementQueue().add(a);
+					world.env.profile().grantAchievement(a);
+				}
 			} else {
 				helper.scriptedFleets().remove(garthog.first.id);
 				cleanupScriptedFleets();
@@ -161,6 +167,13 @@ public class Mission6 extends Mission {
 				helper.setObjectiveState("Mission-6", ObjectiveState.FAILURE);
 			} else {
 				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
+				
+				String a = "achievement.defender";
+				if (!world.env.profile().hasAchievement(a)) {
+					world.env.achievementQueue().add(a);
+					world.env.profile().grantAchievement(a);
+				}
+
 			}
 			helper.setTimeout("Mission-6-Done", 13000);
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));

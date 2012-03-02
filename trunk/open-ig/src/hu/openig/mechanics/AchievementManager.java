@@ -192,7 +192,6 @@ public final class AchievementManager {
 		}
 	};
 	/** Test for achievement. */
-	/*
 	@ID
 	protected static final Pred2<World, Player> DEFENDER = new Pred2<World, Player>() {
 		@Override
@@ -200,9 +199,7 @@ public final class AchievementManager {
 			return false;
 		}
 	};
-	*/
 	/** Test for achievement. */
-	/*
 	@ID
 	protected static final Pred2<World, Player> EMBARGO = new Pred2<World, Player>() {
 		@Override
@@ -210,7 +207,6 @@ public final class AchievementManager {
 			return false;
 		}
 	};
-	*/
 	/** Test for achievement. */
 	@ID
 	protected static final Pred2<World, Player> COLUMBUS = new Pred2<World, Player>() {
@@ -237,15 +233,13 @@ public final class AchievementManager {
 		}
 	};
 	/** Test for achievement. */
-	/*
 	@ID
 	protected static final Pred2<World, Player> SALVAGE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // TODO count!!!
 		}
 	};
-	*/
 	/** Test for achievement. */
 	@ID
 	protected static final Pred2<World, Player> LIVING_SPACE = new Pred2<World, Player>() {
@@ -387,7 +381,23 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> GRAND_ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false; /** t.level >= 5; */
+			return false;
+		}
+	};
+	/** Test for achievement. */
+	@ID
+	protected static final Pred2<World, Player> INFLUENZA = new Pred2<World, Player>() {
+		@Override
+		public Boolean invoke(World t, Player u) {
+			return false;
+		}
+	};
+	/** Test for achievement. */
+	@ID
+	protected static final Pred2<World, Player> I_ROBOT = new Pred2<World, Player>() {
+		@Override
+		public Boolean invoke(World t, Player u) {
+			return false;
 		}
 	};
 	// -------------------------------------------------------------------------------	

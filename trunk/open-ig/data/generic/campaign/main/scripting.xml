@@ -24,6 +24,9 @@
 		<mission class='hu.openig.scripting.missions.Mission20'/>
 		<mission class='hu.openig.scripting.missions.Mission21'/>
 		<mission class='hu.openig.scripting.missions.Mission22'/>
+		<mission class='hu.openig.scripting.missions.Mission23'/>
+		<mission class='hu.openig.scripting.missions.Mission24'/>
+		<mission class='hu.openig.scripting.missions.Mission25'/>
 		<mission class='hu.openig.scripting.missions.Mission26'/>
 	</missions>
 	<!--  The view limit for the empire player levels 1-3. Levels 4-5 are unlimited. -->
@@ -168,6 +171,21 @@
 		</objective>
 		<objective id='Mission-21' title='mission-21.prototype2' 
 			description='mission-21.prototype2.desc'>
+		</objective>
+		<objective id='Mission-22' title='mission-22.expansion' 
+			description='mission-22.expansion.desc'>
+		</objective>
+		<objective id='Mission-23' title='mission-23.doctor' 
+			description='mission-23.doctor.desc'>
+		</objective>
+		<objective id='Mission-23-Task-1' title='mission-23.dream' 
+			description='mission-23.dream.desc'>
+		</objective>
+		<objective id='Mission-24' title='mission-24.first_contact' 
+			description='mission-24.first_contact.desc'>
+		</objective>
+		<objective id='Mission-25' title='mission-25.dargslan' 
+			description='mission-25.dargslan.desc'>
 		</objective>
 	</objectives>	
 	
