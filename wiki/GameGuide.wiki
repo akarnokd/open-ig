@@ -109,7 +109,8 @@ In order to help manage the colonies and their needs, status icons have been int
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/repair-icon-dark.png || Construction in progress ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/repair-icon.png || Damaged buildings ||
 || http://open-ig.googlecode.com/svn/trunk/open-ig/doc/virus-icon.png || Virus infection ||
-|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/stadium-icon.png || Stadium required ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/stadium-icon.png || Stadium required on human planets with {{{population >= 50000}}} ||
+|| http://open-ig.googlecode.com/svn/trunk/open-ig/doc/fire-icon.png || Fire department required on human planets with {{{population >= 30000}}} ||
 
 == Building Upgrade System ==
 
