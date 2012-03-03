@@ -305,7 +305,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	final Map<Location, Mine> mines = U.newHashMap();
 	/** Set of minelayers currently placing a mine. */
 	final Set<GroundwarUnit> minelayers = U.newHashSet();
-	/** Collision avoidance yield set. */
+	/** Indicate the deploy spray mode. */
+	boolean deploySpray;
+	/** Indicate the undeploy spray mode. */
+	boolean undeploySpray;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -741,6 +744,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					selectionEnd = new Point(e.x, e.y);
 					rep = true;
 				}
+				if (deploySpray) {
+					placeUnitAt(e.x, e.y);
+					rep = true;
+				} else
+				if (undeploySpray) {
+					removeUnitAt(e.x, e.y);
+					rep = true;
+				}
 				break;
 			case DOWN:
 //				if (battle != null) { FIXME only if battle
@@ -808,11 +819,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							doSelectBuilding(null);
 						}
 //						if (battle != null && !startBattle.visible()) { FIXME only if battle
-							selectionMode = true;
-							selectionStart = new Point(e.x, e.y);
-							selectionEnd = selectionStart;
-							rep = true;
-							doDragMode(true);
+							if (!deploySpray && !undeploySpray) {
+								selectionMode = true;
+								selectionStart = new Point(e.x, e.y);
+								selectionEnd = selectionStart;
+								rep = true;
+								doDragMode(true);
+							}
 //						} FIXME only if battle
 					}
 				}
@@ -834,6 +847,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 					selectUnits(mode);
 					doDragMode(false);
+				}
+				if (e.has(Button.LEFT)) {
+					deploySpray = false;
+					undeploySpray = false;
 				}
 				rep = true;
 				break;
@@ -5163,25 +5180,58 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void toggleUnitPlacementAt(int mx, int my) {
 		if (startBattle.visible()) {
-			Location lm = render.getLocationAt(mx, my);
-			if (battlePlacements.contains(lm)) {
-				if (!unitsToPlace.isEmpty()) {
-					GroundwarUnit u = unitsToPlace.removeFirst();
-					units.add(u);
-					u.x = lm.x;
-					u.y = lm.y;
-					addUnitLocation(u);
-					battlePlacements.remove(lm);
-				}
+			deploySpray = false;
+			undeploySpray = false;
+			if (canPlaceUnitAt(mx, my)) {
+				placeUnitAt(mx, my);
+				deploySpray = true;
 			} else {
-				for (GroundwarUnit u : new ArrayList<GroundwarUnit>(units)) {
-					if ((int)Math.floor(u.x) == lm.x && (int)Math.floor(u.y) == lm.y) {
-						battlePlacements.add(lm);
-						units.remove(u);
-						unitsToPlace.addFirst(u);
-						removeUnitLocation(u);
-					}
-				}
+				removeUnitAt(mx, my);
+				undeploySpray = true;
+			}
+		}
+	}
+	/**
+	 * Test if the given cell pointed by the mouse coordinate contains a placed unit.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 * @return true if unit can be placed
+	 */
+	boolean canPlaceUnitAt(int mx, int my) {
+		Location lm = render.getLocationAt(mx, my);
+		return battlePlacements.contains(lm);
+	}
+	/**
+	 * Place an unit at the designated cell.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 */
+	void placeUnitAt(int mx, int my) {
+		Location lm = render.getLocationAt(mx, my);
+		if (battlePlacements.contains(lm)) {
+			if (!unitsToPlace.isEmpty()) {
+				GroundwarUnit u = unitsToPlace.removeFirst();
+				units.add(u);
+				u.x = lm.x;
+				u.y = lm.y;
+				addUnitLocation(u);
+				battlePlacements.remove(lm);
+			}
+		}
+	}
+	/**
+	 * Remove an unit from the designated cell.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 */
+	void removeUnitAt(int mx, int my) {
+		Location lm = render.getLocationAt(mx, my);
+		for (GroundwarUnit u : new ArrayList<GroundwarUnit>(units)) {
+			if ((int)Math.floor(u.x) == lm.x && (int)Math.floor(u.y) == lm.y) {
+				battlePlacements.add(lm);
+				units.remove(u);
+				unitsToPlace.addFirst(u);
+				removeUnitLocation(u);
 			}
 		}
 	}
