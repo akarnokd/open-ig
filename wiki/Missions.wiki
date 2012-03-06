@@ -356,7 +356,7 @@ Notes:
 
 == Mission 22 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: build, research, colonize
 
@@ -366,7 +366,7 @@ Reward: Promotion to Grand admiral
 
 == Mission 23 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 === Task 1 ===
 Objective: Talk to the doctor in the Bar
@@ -380,7 +380,7 @@ Notes:
 
 == Mission 24 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Make first contact with the Dargslan
 
@@ -393,7 +393,7 @@ Notes:
 
 == Mission 25 ==
 
-Status: -
+Status: http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png
 
 Objective: Defeat the Dargslan
 
