@@ -34,6 +34,8 @@ import java.util.List;
 public class EmptyScripting implements GameScripting {
 	/** The main player. */
 	protected Player player;
+	/** Resume after win? */
+	boolean resumeAfterWin;
 	@Override
 	public List<VideoMessage> getSendMessages() {
 		return U.newArrayList();
@@ -56,14 +58,12 @@ public class EmptyScripting implements GameScripting {
 
 	@Override
 	public void load(XElement in) {
-		// TODO Auto-generated method stub
-
+		resumeAfterWin = in.getBoolean("resumeAfterWin", false);
 	}
 
 	@Override
 	public void save(XElement out) {
-		// TODO Auto-generated method stub
-
+		out.set("resumeAfterWin", resumeAfterWin);
 	}
 	@Override
 	public void done() {
@@ -168,16 +168,18 @@ public class EmptyScripting implements GameScripting {
 
 	@Override
 	public void onTime() {
-		// TODO Auto-generated method stub
-		int remaining = 0;
-		for (Player p : player.world.players.values()) {
-			if (p != player) {
-				remaining += p.statistics.planetsOwned;
+		if (!resumeAfterWin) {
+			int remaining = 0;
+			for (Player p : player.world.players.values()) {
+				if (p != player) {
+					remaining += p.statistics.planetsOwned;
+				}
 			}
-		}
-		if (remaining == 0) {
-			player.world.env.pause();
-			player.world.env.winGame();
+			if (remaining == 0) {
+				resumeAfterWin = true;
+				player.world.env.pause();
+				player.world.env.winGame();
+			}
 		}
 	}
 
