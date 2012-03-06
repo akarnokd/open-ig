@@ -8,8 +8,13 @@
 
 package hu.openig.screen.items;
 
+import hu.openig.core.Action0;
 import hu.openig.model.Screens;
+import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.HorizontalAlignment;
+import hu.openig.ui.UIGenericButton;
+import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
@@ -41,6 +46,14 @@ public class GameOverScreen extends ScreenBase {
 	final int animationSpeed = 50;
 	/** The maximum phase. */
 	final int maxPhase = 40;
+	/** The player won! */
+	public boolean win;
+	/** Continue the gameplay. */
+	UIGenericButton continueButton;
+	/** Return to main menu. */
+	UIGenericButton mainMenuButton;
+	/** The win label. */
+	UILabel winLabel;
 	@Override
 	public void onInitialize() {
 		anim = new Timer(animationSpeed, new ActionListener() {
@@ -49,6 +62,25 @@ public class GameOverScreen extends ScreenBase {
 				doAnimation();
 			}
 		});
+		continueButton = new UIGenericButton(get("win.continue_game"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		continueButton.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				hideSecondary();
+				commons.control().displayStatusbar();
+				commons.nongame = false;
+			}
+		};
+		mainMenuButton = new UIGenericButton(get("win.main_menu"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		mainMenuButton.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				commons.control().endGame();
+				displayPrimary(Screens.MAIN);
+			}
+		};
+		winLabel = new UILabel(get("win.win"), 20, commons.text());
+		addThis();
 	}
 	
 	/** Perform an animation step. */
@@ -89,8 +121,10 @@ public class GameOverScreen extends ScreenBase {
 			e.consume();
 			return true;
 		}
-		commons.control().endGame();
-		displayPrimary(Screens.MAIN);
+		if (!win) {
+			commons.control().endGame();
+			displayPrimary(Screens.MAIN);
+		}
 		e.consume();
 		return true;
 	}
@@ -99,17 +133,18 @@ public class GameOverScreen extends ScreenBase {
 		if (phase < maxPhase) {
 			return false;
 		}
-		if (e.has(Type.DOWN)) {
+		if (e.has(Type.DOWN) && !win) {
 			commons.control().endGame();
 			displayPrimary(Screens.MAIN);
 			return true;
 		}
-		return false;
+		return super.mouse(e);
 	}
 	
 	@Override
 	public void onLeave() {
 		anim.stop();
+		win = false;
 	}
 
 	@Override
@@ -127,7 +162,11 @@ public class GameOverScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		
+		continueButton.visible(false);
+		mainMenuButton.visible(false);
+		winLabel.visible(false);
 		if (showImage) {
+			imageAlpha = 0.15f;
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0, 0, width, height);
 			BufferedImage gameover = commons.background().gameover;
@@ -136,10 +175,32 @@ public class GameOverScreen extends ScreenBase {
 				g2.setComposite(AlphaComposite.SrcOver.derive(imageAlpha));
 			}
 		
-			int dx = (width - gameover.getWidth()) / 2;
-			int dy = (height - gameover.getHeight()) / 2;
+			int bw = gameover.getWidth();
+			int bh = gameover.getHeight();
+			int dx = (width - bw) / 2;
+			int dy = (height - bh) / 2;
 			
 			g2.drawImage(gameover, dx, dy, null);
+			
+			if (win) {
+				continueButton.visible(true);
+				mainMenuButton.visible(true);
+				winLabel.visible(true);
+				
+				winLabel.location(dx, dy + 40);
+				winLabel.size(bw, 30);
+				winLabel.horizontally(HorizontalAlignment.CENTER);
+				winLabel.color(TextRenderer.YELLOW);
+				
+				int w = continueButton.width + mainMenuButton.width;
+				
+				int dx2 = (bw - w) / 3;
+				
+				continueButton.location(dx + dx2, dy + bh - 50);
+				mainMenuButton.location(dx + 2 * dx2 + continueButton.width, dy + bh - 50);
+				
+				super.draw(g2);
+			}
 			
 			g2.setComposite(save0);
 		}

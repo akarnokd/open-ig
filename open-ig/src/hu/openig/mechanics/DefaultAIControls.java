@@ -158,6 +158,9 @@ public class DefaultAIControls implements AIControls {
 				planet.timeToLive.put(ii, ttl);
 			}
 			player.changeInventoryCount(satellite, -1);
+			
+			player.world.scripting.onDeploySatellite(planet, player, satellite);
+			
 			return true;
 		}
 		return false;

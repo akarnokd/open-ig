@@ -244,6 +244,7 @@ public class SingleplayerScreen extends ScreenBase {
 							commons.labels().replaceWith(labels);
 							commons.world(world);
 							commons.worldLoading = false;
+							commons.nongame = false;
 							barrier.release();
 						}
 					});

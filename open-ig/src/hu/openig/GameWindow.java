@@ -1734,6 +1734,7 @@ public class GameWindow extends JFrame implements GameControls {
 		commons.labels().replaceWith(fworld.labels);
 		commons.world(fworld);
 		commons.worldLoading = false;
+		commons.nongame = false;
 		
 		if (pri == Screens.MAIN 
 				|| pri == Screens.LOAD_SAVE 
@@ -2248,8 +2249,9 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void winGame() {
-		// TODO Auto-generated method stub
-		
+		GameOverScreen gos = allScreens.gameOver;
+		gos.win = true;
+		displaySecondary(Screens.GAME_OVER);		
 	}
 	@Override
 	public void showObjectives(boolean state) {

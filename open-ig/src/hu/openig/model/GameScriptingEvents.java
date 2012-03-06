@@ -234,4 +234,11 @@ public interface GameScriptingEvents {
 	 * Notification about a talk completed.
 	 */
 	void onTalkCompleted();
+	/**
+	 * Notification about a satellite being deployed.
+	 * @param target the target planet
+	 * @param player the player who is deploying
+	 * @param satellite the satellite type
+	 */
+	void onDeploySatellite(Planet target, Player player, ResearchType satellite);
 }

@@ -2308,6 +2308,10 @@
 	<entry key='settings.subtitles'>Feliratok</entry>
 	<entry key='settings.animatetech'>Technológia animálása</entry>
 	<entry key='settings.slow_on_attack'>Idő lassítása ellenséges támadáskor</entry>
+	<entry key='win.continue_game'>Játék folytatása</entry>
+	<entry key='win.main_menu'>Vissza a főmenübe</entry>
+	<entry key='win.win'>Győztél!</entry>
+	<entry key='settings.audio_video'>Hang/Video</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
