@@ -4,6 +4,16 @@
 
 = Recent =
 
+== March, 2012 ==
+
+*March 6, 2012*
+
+For those who have to wait until ME3 unlocks on friday, I'm glad to announce the mission-complete version of Open-IG. All missions on the 5 ranks have been implemented. What's remaining:
+
+  - Diplomacy screen, AI diplomacy routines
+  - Space chat
+  - Minor grahpical and behavior fixes.
+
 == February, 2012 ==
 
 
