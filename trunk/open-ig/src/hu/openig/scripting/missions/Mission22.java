@@ -11,15 +11,31 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Pair;
 import hu.openig.model.Fleet;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchType;
+import hu.openig.utils.XElement;
 
 /**
  * Mission 22: enter level 4. Colonize or capture 7 more planets.
  * @author akarnokd, 2012.02.23.
  */
 public class Mission22 extends Mission {
-
+	/** Mission stages. */
+	enum M22 {
+		/** Not started. */
+		NONE,
+		/** Wait for objective. */
+		WAIT,
+		/** Running. */
+		RUN,
+		/** Done. */
+		DONE
+	}
+	/** The current stage. */
+	M22 stage = M22.NONE;
+	/** The number of planets owned at the beginning of the mission. */
+	long planetsOwned;
 	@Override
 	public boolean applicable() {
 		return world.level == 4;
@@ -81,7 +97,59 @@ public class Mission22 extends Mission {
 		setSlot(ii, "cannon2", "IonCannon", 12);
 		setSlot(ii, "shield", "Shield1", 14);
 		setSlot(ii, "hyperdrive", "HyperDrive1", 1);
-
+	}
+	@Override
+	public void onTime() {
+		if (stage == M22.NONE) {
+			stage = M22.WAIT;
+			addTimeout("Mission-22-Objective", 4000);
+			planetsOwned = player.statistics.planetsOwned;
+		}
+		if (checkTimeout("Mission-22-Objective")) {
+			helper.showObjective("Mission-22");
+			stage = M22.RUN;
+		}
+		if (stage == M22.RUN) {
+			if (player.statistics.planetsOwned >= planetsOwned + 7) {
+				helper.setObjectiveState("Mission-22", ObjectiveState.SUCCESS);
+				stage = M22.DONE;
+				addTimeout("Mission-22-Hide", 13000);
+				addMission("Mission-24", 1);
+			}
+		}
+		if (checkTimeout("Mission-22-Hide")) {
+			helper.objective("Mission-22").visible = false;
+		}
+		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom", "Zeuson" };
+		setPlanetMessages(planets);
+		checkMainShip();
+	}
+	/** Check if the main ship is still operational. */
+	void checkMainShip() {
+		Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip4", player);
+		if (ft == null) {
+			if (!helper.hasTimeout("MainShip-Lost")) {
+				helper.setTimeout("MainShip-Lost", 3000);
+			}
+			if (helper.isTimeout("MainShip-Lost")) {
+				helper.gameover();
+				loseGameMovie("loose/destroyed_level_3");
+			}
+		}
 	}
 
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("stage", stage);
+		xmission.set("planets-owned", planetsOwned);
+	}
+	@Override
+	public void load(XElement xmission) {
+		stage = M22.valueOf(xmission.get("stage", M22.NONE.toString()));
+		planetsOwned = xmission.getLong("planets-owned");
+	}
+	@Override
+	public void reset() {
+		stage = M22.NONE;
+	}
 }

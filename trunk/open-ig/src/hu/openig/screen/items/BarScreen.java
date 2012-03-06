@@ -201,7 +201,7 @@ public class BarScreen extends ScreenBase {
 		talkMode = false;
 		choices.clear();
 		images = new BarImages();
-		simulationRunning = !commons.simulation.paused();
+		simulationRunning = commons.simulation != null && !commons.simulation.paused();
 	}
 
 	@Override

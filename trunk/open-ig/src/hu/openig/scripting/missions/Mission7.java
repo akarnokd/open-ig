@@ -74,7 +74,7 @@ public class Mission7 extends Mission {
 				helper.setObjectiveState("Mission-7-Task-" + i, ObjectiveState.SUCCESS);
 				if (i == 2) {
 					helper.setObjectiveState("Mission-7", ObjectiveState.SUCCESS);
-					player.knownPlayers.put(player("FreeTraders"), 75);
+					player("FreeTraders").knownPlayers.put(player, 75);
 				} else {
 					int reward = 5000;
 					player.money += reward;

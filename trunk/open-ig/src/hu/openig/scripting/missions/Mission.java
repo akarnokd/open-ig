@@ -828,4 +828,9 @@ public abstract class Mission implements GameScriptingEvents {
 			world.env.profile().grantAchievement(a);
 		}
 	}
+	@Override
+	public void onDeploySatellite(Planet target, Player player,
+			ResearchType satellite) {
+		// default implementation does not react to this event
+	}
 }

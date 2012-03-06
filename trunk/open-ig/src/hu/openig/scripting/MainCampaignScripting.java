@@ -1258,4 +1258,14 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		// allow garthogs to attack
 		return world.level == 3 && player.id.equals("Garthog");
 	}
+	@Override
+	public void onDeploySatellite(Planet target, Player player,
+			ResearchType satellite) {
+		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
+			m.onDeploySatellite(target, player, satellite);
+		}
+	}
 }

@@ -3052,6 +3052,18 @@
 	<entry key='settings.subtitles'>Subtitles</entry>
 	<entry key='settings.animatetech'>Animate technology</entry>
 	<entry key='settings.slow_on_attack'>Slow down time on enemy attack</entry>
+	<entry key='win.continue_game'>Continue game</entry>
+	<entry key='win.main_menu'>Back to main menu</entry>
+	<entry key='win.win'>You won!</entry>
+	<entry key='settings.audio_video'>Audio/Video</entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
+	<entry key=''></entry>
 	<entry key=''></entry>
 	
 </labels>

@@ -32,7 +32,8 @@ import java.util.List;
  * @author akarnokd, 2012.01.12.
  */
 public class EmptyScripting implements GameScripting {
-
+	/** The main player. */
+	protected Player player;
 	@Override
 	public List<VideoMessage> getSendMessages() {
 		return U.newArrayList();
@@ -50,8 +51,7 @@ public class EmptyScripting implements GameScripting {
 	
 	@Override
 	public void init(Player player, XElement in) {
-		// TODO Auto-generated method stub
-
+		this.player = player;
 	}
 
 	@Override
@@ -169,7 +169,16 @@ public class EmptyScripting implements GameScripting {
 	@Override
 	public void onTime() {
 		// TODO Auto-generated method stub
-		
+		int remaining = 0;
+		for (Player p : player.world.players.values()) {
+			if (p != player) {
+				remaining += p.statistics.planetsOwned;
+			}
+		}
+		if (remaining == 0) {
+			player.world.env.pause();
+			player.world.env.winGame();
+		}
 	}
 
 	@Override
@@ -309,5 +318,11 @@ public class EmptyScripting implements GameScripting {
 	@Override
 	public boolean mayPlayerAttack(Player player) {
 		return false;
+	}
+	@Override
+	public void onDeploySatellite(Planet target, Player player,
+			ResearchType satellite) {
+		// TODO Auto-generated method stub
+		
 	}
 }
