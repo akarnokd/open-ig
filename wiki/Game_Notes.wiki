@@ -2,6 +2,21 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.300 - Campaign finished =
+  * Released: 2012-03-06 15:30 CET
+  * Added planet dependant population growth and display of the rate in the information panels ([http://code.google.com/p/open-ig/issues/detail?id=69 Issue #69])
+  * Added demand for fire brigade, look for the small fire icons ([http://code.google.com/p/open-ig/issues/detail?id=71 Issue #71])
+  * Missions of level 4 and 5 implemented ([http://code.google.com/p/open-ig/issues/detail?id=216 Issue #216])
+  * Reduced the effects of battle on the planet population ([http://code.google.com/p/open-ig/issues/detail?id=186 Issue #186])
+  * All game videos have been accounted for (Issues [http://code.google.com/p/open-ig/issues/detail?id=194 #194], [http://code.google.com/p/open-ig/issues/detail?id=193 #193])
+  * Added ability to deploy ground units continuously by holding the left mouse button ([http://code.google.com/p/open-ig/issues/detail?id=261 Issue 261])
+  * Idle ships will fire at rockets and bombs ([http://code.google.com/p/open-ig/issues/detail?id=298 Issue #298])
+  * Player's stations and guns now fire automatically on closest enemy target ([http://code.google.com/p/open-ig/issues/detail?id=299 Issue 299])
+  * Building under construction now uses mixed scaffolding ([http://code.google.com/p/open-ig/issues/detail?id=272 Issue #272])
+  * The main campaign and single player campaign features the Game over screen with option to resume the current gameplay ([http://code.google.com/p/open-ig/issues/detail?id=301 Issue #301]).
+  * Disable subtitles in options ([http://code.google.com/p/open-ig/issues/detail?id=302 Issue #302])
+  * Settings to slow down the game in case of an incoming attack ([http://code.google.com/p/open-ig/issues/detail?id=282 Issue 282])
+
 = Version 0.94.300 - More missions =
   * Released: 2012-02-23 16:00 CET
   * Missions 18, 19, 20 and 21 added ([http://code.google.com/p/open-ig/issues/detail?id=214 Issue #214])
