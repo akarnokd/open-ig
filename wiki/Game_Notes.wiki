@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="1" />
 
-= Version 0.94.300 - Campaign finished =
+= Version 0.94.320 - Campaign finished =
   * Released: 2012-03-06 15:30 CET
   * Added planet dependant population growth and display of the rate in the information panels ([http://code.google.com/p/open-ig/issues/detail?id=69 Issue #69])
   * Added demand for fire brigade, look for the small fire icons ([http://code.google.com/p/open-ig/issues/detail?id=71 Issue #71])
