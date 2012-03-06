@@ -166,7 +166,6 @@ public class GameOverScreen extends ScreenBase {
 		mainMenuButton.visible(false);
 		winLabel.visible(false);
 		if (showImage) {
-			imageAlpha = 0.15f;
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0, 0, width, height);
 			BufferedImage gameover = commons.background().gameover;
@@ -198,14 +197,12 @@ public class GameOverScreen extends ScreenBase {
 				
 				continueButton.location(dx + dx2, dy + bh - 50);
 				mainMenuButton.location(dx + 2 * dx2 + continueButton.width, dy + bh - 50);
-				
+
 				super.draw(g2);
 			}
 			
 			g2.setComposite(save0);
 		}
-		
-		super.draw(g2);
 	}
 	
 	@Override
