@@ -2975,9 +2975,6 @@
 	<entry key='mission-15.report_intruder'>Report the spy</entry>
 	<entry key='mission-15.report_intruder.desc'>Talk to the colonel about Dr. Reinhart's behavior.</entry>
 	<entry key='mission-15.spy'>The spy</entry>
-	<entry key='chat.global.identify_yourself'>Ship, identify yourself!</entry>
-	<entry key='chat.global.proceed_your_destination'>Proceed to your destination!</entry>
-	<entry key='chat.global.thank_you'>Thank you, Sir.</entry>
 	<entry key='mission-6.defend_achilles'>Defend Achilles</entry>
 	<entry key='mission-6.defend_achilles.desc'>Prepare for ground assault. Achilles must not fall!</entry>
 	<entry key='mission-7.protect_traders'>Defend traders</entry>
@@ -3056,7 +3053,10 @@
 	<entry key='win.main_menu'>Back to main menu</entry>
 	<entry key='win.win'>You won!</entry>
 	<entry key='settings.audio_video'>Audio/Video</entry>
-	<entry key=''></entry>
+	<entry key='chat.global.identify_yourself'>Ship, identify yourself!</entry>
+	<entry key='chat.global.proceed_your_destination'>Proceed to your destination!</entry>
+	<entry key='chat.global.thank_you'>Thank you, Sir.</entry>
+	<entry key='chat.global.dont_shoot'>Don't shoot! Don't shoot! We'll turn around!</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

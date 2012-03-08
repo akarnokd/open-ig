@@ -2221,9 +2221,6 @@
 	<entry key='mission-8.go_to_bar'>Menj a bárba és beszélj Dr. Reinharttal a látomásodról.</entry>
 	<entry key='mission-15.kelly'>Menj a bárba és beszélj Kellyvel a kémről</entry>
 	<entry key='Empire.main_fleet'>Főflotta</entry>
-	<entry key='chat.global.identify_yourself'>Azonosítsa magát!</entry>
-	<entry key='chat.global.proceed_your_destination'>Folytassa útját a célja felé!</entry>
-	<entry key='chat.global.thank_you'>Köszönöm, Uram.</entry>
 	<entry key='bar.start_talking'>Kattints, hogy beszélgethess %s.</entry>
 	<entry key='phsychologist'>Dr. Reinharttal</entry>
 	<entry key='kelly'>Kellyvel</entry>
@@ -2312,7 +2309,10 @@
 	<entry key='win.main_menu'>Vissza a főmenübe</entry>
 	<entry key='win.win'>Győztél!</entry>
 	<entry key='settings.audio_video'>Hang/Video</entry>
-	<entry key=''></entry>
+	<entry key='chat.global.identify_yourself'>Azonosítsa magát!</entry>
+	<entry key='chat.global.proceed_your_destination'>Folytassa útját a célja felé!</entry>
+	<entry key='chat.global.thank_you'>Köszönöm, Uram.</entry>
+	<entry key='chat.global.dont_shoot'>Ne lőjön! Ne lőjön! Azonnal visszafordulunk!</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
