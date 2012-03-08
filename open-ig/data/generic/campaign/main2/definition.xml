@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<definition>
+<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/definition.xsd">
 	<texts language='hu'>
 		<title>Főkampány (szabad)</title>
 		<description>Az eredeti Imperium Galactica főkampánya. Szabad játékmenet.</description>
@@ -23,4 +23,5 @@
 	<test>campaign/main/test</test>
 	<walks>campaign/main/walks</walks>
 	<scripting>skirmish/human/scripting</scripting>
+	<chats>campaign/main/chat</chats>
 </definition>
