@@ -228,14 +228,15 @@ public class PlanetSurface {
 					int y = Integer.parseInt(tile.get("y"));
 					PlanetType pt = gm.planetTypes.get(type);
 					if (pt == null) {
-						System.err.println("Missing planet type: " + type);
+						new AssertionError("Missing planet type: " + type).printStackTrace();
+					} else {
+						Tile t = pt.tiles.get(id);
+						if (t == null) {
+							new AssertionError("Missing tile: " + id + " on planet type " + type).printStackTrace();
+						} else {
+							placeBase(t, x, y, id, type);
+						}
 					}
-					Tile t = pt.tiles.get(id);
-					if (t == null) {
-						System.err.println("Missing tile: " + id + " on planet type " + type);
-					}
-					
-					placeBase(t, x, y, id, type);
 				}
 			}
 		}

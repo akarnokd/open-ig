@@ -234,10 +234,10 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				messageOpen = false;
 				openCloseAnimating = false;
-				if (onAppearComplete != null) {
-					onAppearComplete.invoke();
-					onAppearComplete = null;
-				}
+//				if (onAppearComplete != null) {
+//					onAppearComplete.invoke();
+//					onAppearComplete = null;
+//				}
 				askRepaint();
 			}
 		};

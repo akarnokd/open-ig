@@ -2258,7 +2258,7 @@ public class World {
 		Iterator<Map.Entry<Integer, String>> it = infectedFleets.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<Integer, String> e = it.next();
-			if (planet.id.equals(e.getKey())) {
+			if (planet.id.equals(e.getValue())) {
 				it.remove();
 			}
 		}

@@ -988,22 +988,24 @@ public class DatabaseScreen extends ScreenBase {
 							break;
 						}
 					}
-					w1 = m.getWidth();
-					h1 = m.getHeight();
-					
-					x2 = x1 + w1 * (alienPhaseCount - alienPhaseIndex) / alienPhaseCount / 2; 
-					y2 = y1 + h1 * (alienPhaseCount - alienPhaseIndex) / alienPhaseCount / 2; 
-					
-					w2 = w1 * alienPhaseIndex / alienPhaseCount;
-					h2 = h1 * alienPhaseIndex / alienPhaseCount;
-					
-					g2.drawImage(m, x2, y2, w2, h2, null);
-					
-					if (selectedAliens >= 0) {
-						int x = x0 + 20;
-						int y = y0 + 2 + 8 + 202;
-						commons.text().paintTo(g2, x, y, 14, selectedAlien.color, get("database.race." + selectedAlien.id.toLowerCase()));
-						commons.text().paintTo(g2, x, y + 20, 14, selectedAlien.color, selectedAlien.name);
+					if (m != null) {
+						w1 = m.getWidth();
+						h1 = m.getHeight();
+						
+						x2 = x1 + w1 * (alienPhaseCount - alienPhaseIndex) / alienPhaseCount / 2; 
+						y2 = y1 + h1 * (alienPhaseCount - alienPhaseIndex) / alienPhaseCount / 2; 
+						
+						w2 = w1 * alienPhaseIndex / alienPhaseCount;
+						h2 = h1 * alienPhaseIndex / alienPhaseCount;
+						
+						g2.drawImage(m, x2, y2, w2, h2, null);
+						
+						if (selectedAliens >= 0) {
+							int x = x0 + 20;
+							int y = y0 + 2 + 8 + 202;
+							commons.text().paintTo(g2, x, y, 14, selectedAlien.color, get("database.race." + selectedAlien.id.toLowerCase()));
+							commons.text().paintTo(g2, x, y + 20, 14, selectedAlien.color, selectedAlien.name);
+						}
 					}
 				} else {
 					int x = x0 + 20;

@@ -123,7 +123,7 @@ public class AI implements AIManager {
 		double switchToFlee = p.aiSocialRatio() * switchToCostAttack;
 		
 		if (health >= switchToFlee) {
-			boolean c = health < switchToCostAttack || defensiveTask.contains(idles.get(0).fleet);
+			boolean c = health < switchToCostAttack || defensiveTask.contains(idles.get(0).fleet.id);
 			if (c) {
 				for (SpacewarStructure ship : idles) {
 					if (ship.canDirectFire()) {
