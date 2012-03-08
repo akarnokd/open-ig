@@ -1,10 +1,10 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<definition>
-	<texts language='hu'>
+<?xml version="1.0" encoding="UTF-8"?>
+<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/definition.xsd">
+	<texts language="hu">
 		<title>Főkampány</title>
 		<description>Az eredeti Imperium Galactica főkampánya</description>
 	</texts>
-	<texts language='en'>
+	<texts language="en">
 		<title>Main Campaign</title>
 		<description>The main campaign of the original Imperium Galactica</description>
 	</texts>
@@ -23,4 +23,5 @@
 	<test>campaign/main/test</test>
 	<walks>campaign/main/walks</walks>
 	<scripting>campaign/main/scripting</scripting>
+	<chats>campaign/main/chat</chats>
 </definition>
