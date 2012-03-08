@@ -909,7 +909,7 @@ public class StatusbarScreen extends ScreenBase {
 				if (msg.targetFleet != null) {
 					int dx = (20 - msg.targetFleet.owner.fleetIcon.getWidth()) / 2;
 					int dy = (20 - msg.targetFleet.owner.fleetIcon.getHeight()) / 2;
-					g2.drawImage(msg.targetPlanet.type.body[0], dx, y + dy, null);
+					g2.drawImage(msg.targetFleet.owner.fleetIcon, dx, y + dy, null);
 				}
 				
 				String msgText = get(msg.text);

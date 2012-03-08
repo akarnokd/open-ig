@@ -598,12 +598,9 @@ public final class BattleSimulator {
 		
 		if (hitpoints >= hp) {
 			p.surface.removeBuilding(b);
-			hitpoints -= hp;
 		} else {
 			hp -= hitpoints;
 			b.hitpoints = (int)(hp * b.type.hitpoints / hpMax);
-			
-			hitpoints = 0;
 		}
 	}
 	/**

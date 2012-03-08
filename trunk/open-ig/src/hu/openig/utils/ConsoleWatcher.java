@@ -27,8 +27,6 @@ import javax.swing.SwingUtilities;
 public class ConsoleWatcher extends JFrame implements Closeable {
 	/** */
 	private static final long serialVersionUID = 8563889445922855434L;
-	/** The error watcher thread. */
-	Thread errWatcher;
 	/** The text area for data. */
 	JTextArea area;
 	/** Original error. */
@@ -92,9 +90,6 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	}
 	@Override
 	public void close() throws IOException {
-		if (errWatcher != null) {
-			errWatcher.interrupt();
-		}
 		System.setErr(originalErr);
 		dispose();
 	}

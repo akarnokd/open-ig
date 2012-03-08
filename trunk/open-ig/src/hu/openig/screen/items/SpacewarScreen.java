@@ -189,10 +189,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		boolean pressed;
 		/** The phases. */
 		BufferedImage[] phases;
-		/** The action to perform on the press. */
-		Action0 onPress;
-		/** The action to perform on release. */
-		Action0 onRelease;
 		/** Is this button visible. */
 		boolean visible;
 		/** Is the button enabled? */
@@ -233,20 +229,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		 */
 		public boolean test(int mx, int my) {
 			return enabled && visible && mx >= x && my >= y && mx < x + phases[0].getWidth() && my < y + phases[0].getHeight();
-		}
-		/**
-		 * Invoke the onPress action.
-		 */
-		public void pressed() {
-			if (onPress != null) {
-				onPress.invoke();
-			}
-		}
-		/** Invoke the onRelease action. */
-		public void released() {
-			if (onRelease != null) {
-				onRelease.invoke();
-			}
 		}
 	}
 	/** Animated toggle button. */
@@ -1746,7 +1728,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (categories.contains(ii.type.category)) {
 				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
 				if (bse == null) {
-					System.err.println("Missing space entity: " + ii.type.id);
+					new AssertionError("Missing space entity: " + ii.type.id).printStackTrace();
+					continue;
 				}
 				
 				SpacewarStructure st = new SpacewarStructure();

@@ -841,7 +841,11 @@ public class EquipmentScreen extends ScreenBase {
 				}
 			}
 		}
-		displayCategory(rt.category);
+		ResearchSubCategory cat = ResearchSubCategory.SPACESHIPS_FIGHTERS;
+		if (rt != null) {
+			cat = rt.category;
+		}
+		displayCategory(cat);
 		update();
 		doSelectVehicle(rt);
 		doSelectListVehicle(rt);

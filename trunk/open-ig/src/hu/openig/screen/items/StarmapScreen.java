@@ -252,8 +252,6 @@ public class StarmapScreen extends ScreenBase {
 	final Rectangle minimapInnerRect = new Rectangle();
 	/** The current minimap viewport rectangle. */
 	final Rectangle minimapViewportRect = new Rectangle();
-	/** The minimap small image. */
-	private BufferedImage minimapBackground;
 	/** The current radar dot. */
 	private BufferedImage radarDot;
 	/** The rotation animation timer. */
@@ -1466,7 +1464,6 @@ public class StarmapScreen extends ScreenBase {
 		
 		if (minimapVisible) {
 			g2.drawImage(commons.starmap().minimap, minimapRect.x, minimapRect.y, null);
-			g2.drawImage(minimapBackground, minimapInnerRect.x, minimapInnerRect.y, null);
 			g2.setColor(Color.WHITE);
 			g2.drawImage(world().galaxyModel.map, minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height, null);
 			g2.drawRect(minimapViewportRect.x, minimapViewportRect.y, minimapViewportRect.width - 1, minimapViewportRect.height - 1);

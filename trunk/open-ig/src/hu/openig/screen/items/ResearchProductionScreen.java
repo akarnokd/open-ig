@@ -1365,8 +1365,14 @@ public class ResearchProductionScreen extends ScreenBase {
 				world().selectResearch(rt);
 			}
 		}
-		selectMainCategory(rt.category.main);
-		selectSubCategory(rt.category);
+		ResearchMainCategory cat2 = ResearchMainCategory.SPACESHIPS;
+		ResearchSubCategory cat = ResearchSubCategory.SPACESHIPS_FIGHTERS;
+		if (rt != null) {
+			cat2 = rt.category.main;
+			cat = rt.category;
+		}
+		selectMainCategory(cat2);
+		selectSubCategory(cat);
 		return rt;
 	}
 	/**

@@ -271,7 +271,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 						m.init(player, this, xms);
 						missions.add(m);
 					} else {
-						new AssertionError(String.format("Mission class %s is incompatible", clazz));
+						new AssertionError(String.format("Mission class %s is incompatible", clazz)).printStackTrace();
 					}
 				} catch (InstantiationException ex) {
 					ex.printStackTrace();

@@ -109,7 +109,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
 	 * the width points to +X and height points to -Y direction
 	 */
-	Rectangle selectedRectangle;
+//	Rectangle selectedRectangle;
 	/** The selection tile. */
 	Tile selection;
 	/** The placement tile for allowed area. */
@@ -1003,17 +1003,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						g2.drawImage(areaDeploy.getStrip(0), x, y, null);
 					}
 				}
-				if (!placementMode) {
-					if (selectedRectangle != null) {
-						for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
-							for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
-								int x = x0 + Tile.toScreenX(i, j);
-								int y = y0 + Tile.toScreenY(i, j);
-								g2.drawImage(selection.getStrip(0), x, y, null);
-							}
-						}
-					}
-				}
+//				if (!placementMode) {
+//					if (selectedRectangle != null) {
+//						for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
+//							for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
+//								int x = x0 + Tile.toScreenX(i, j);
+//								int y = y0 + Tile.toScreenY(i, j);
+//								g2.drawImage(selection.getStrip(0), x, y, null);
+//							}
+//						}
+//					}
+//				}
 				if (placementMode) {
 					if (placementRectangle.width > 0) {
 						for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
@@ -3013,7 +3013,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			buildingsPanel.preview.cost = bt.cost;
 			buildingsPanel.preview.count = planet().countBuilding(bt);
 			buildingsPanel.preview.enabled(planet().canBuild(bt) && planet().owner == player());
-			placementMode &= planet().canBuild(bt);
+			placementMode = placementMode && planet().canBuild(bt);
 			buildingsPanel.build.down = buildingsPanel.build.down && planet().canBuild(bt);
 			buildingsPanel.buildingName.text(bt.name);
 			buildingsPanel.build.enabled(buildingsPanel.preview.enabled());
