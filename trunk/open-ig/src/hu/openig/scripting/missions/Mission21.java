@@ -121,6 +121,13 @@ public class Mission21 extends Mission {
 			helper.receive("Douglas-Prototype-2").visible = false;
 			helper.objective("Mission-21").visible = false;
 		}
+		if (checkTimeout("Mission-21-Thanks")) {
+			incomingMessage("Prototype-Thanks");
+			addMission("Mission-21-Thanks-Hide", 24); 
+		}
+		if (checkMission("Mission-21-Thanks-Hide")) {
+			helper.receive("Prototype-Thanks").visible = false;
+		}
 	}
 	/**
 	 * Remove the mission fleets.
@@ -278,6 +285,7 @@ public class Mission21 extends Mission {
 		if (carrier != null) {
 			helper.setObjectiveState("Mission-21", ObjectiveState.SUCCESS);
 			addTimeout("Mission-21-Hide", 13000);
+			addTimeout("Mission-21-Thanks", 5000);
 			result = true;
 			movePrototype();
 		} else {

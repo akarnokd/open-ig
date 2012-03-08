@@ -876,7 +876,7 @@
       <response mode='YES' change='260'>diplomacy.FreeTraders.ALLY.YES.54</response>
       <response mode='NO' change='-80'>diplomacy.FreeTraders.ALLY.NO.55</response>
       <response mode='NO' change='-100'>diplomacy.FreeTraders.ALLY.NO.56</response>
-      <response mode='NO' change='-12'>diplomacy.FreeTraders.ALLY.NO.57</response>
+      <response mode='NO' change='-120'>diplomacy.FreeTraders.ALLY.NO.57</response>
     </negotiate>
     <negotiate type='DARGSLAN'>
       <approach>diplomacy.FreeTraders.DARGSLAN.58</approach>

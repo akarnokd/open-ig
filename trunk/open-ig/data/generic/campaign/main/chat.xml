@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chats xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/chat.xsd">
+	<!-- messages when attack merchant and not related to any mission. -->
+	<chat id="chat.nomission.attack.merchant1">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+		<node id="0" owner="player" message="chat.global.identify_yourself">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is ship MOB451 on a trading route.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" message="I'm sure you're pirates. Prepare to die!">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="chat.global.thank_you" action='retreat'/>
+		<node id="5" owner="enemy" message="Don't shoot! We are innocent merchants!">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" option="Die!" message="I'm sure you are pirates. Prepare to die!">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" option="All right. Proceed to your destination!" message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="Don't shoot! Don't shoot! We'll turn around!" action="retreat"/>
+	</chat>
+	<chat id="chat.nomission.attack.merchant2">
+		<node id="0" owner="player" message="chat.global.identify_yourself">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message=">This is ship MX43 on a trading route.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="Please carry on!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" message="Yeah? Whose leg are you trying to pull?">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="chat.global.thank_you" action="retreat"/>
+		<node id="5" owner="enemy" message="What?! We are just harmless traders!">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" message="Unfortunately, I don't believe you. Die!">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" message="OK. I'll let you pass.">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="Hey! Don't fire! We're going, you trigger happy maniac!" action="retreat"/>
+	</chat>
+	<chat id="chat.nomission.attack.merchant3">
+		<node id="0" owner="player" message="Ship, please state name and destination!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is ECHO, following a trading course.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="Thank's, ECHO. Continue on present course.">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" option="Hey! I could use a bit of target practice!" message="Are you interested in explosions?">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="Thank you very much!" action="retreat"/>
+		<node id="5" owner="enemy" message="You must be crazy!">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" message="Not intersted? That's a real shame...">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" message="Go on, you've caught me on a good day.">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="I've got a bad feeling about this... I'm outta here!" action="retreat"/>
+	</chat>
+	<chat id="chat.nomission.attack.merchant4">
+		<node id="0" owner="player" message="chat.global.identify_yourself">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is the trading ship Bravox.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="Bravox, proceed to your destination!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" option="How much will you pay?" message="How much will you pay, for not being turned into space debris?">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="chat.global.thank_you" action="retreat"/>
+		<node id="5" owner="enemy" message="Hey! I'm sure your commander will be unhappy to hear of this behaviour!">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" message="No cash? Prepare to be destroyed!">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" option="Only joking, Bravox, you may proceed!" message="Bravox, proceed to your destination!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="This is outrageous! I think we had better leave..." action="retreat"/>
+	</chat>
+	<chat id="chat.nomission.attack.merchant5">
+		<node id="0" owner="player" message="Ship, please identify.">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is the trade ship Max4.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="Continue on present course, Max4!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" option="Trade ship? You look like Bandits to me!" message="Trade ship? You look like Bandits to me! If you pay me, I might let you go...">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="Good! I was just about to call my Lawyer." action="retreat"/>
+		<node id="5" owner="enemy" message="I spent all my money on this ship! But if you let me go I will pay you later.">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" message="I don't believe you, pay or pray!">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" message="Get lost, before I change my mind!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="Please don't shoot me! I didn't do anything! Your lawyer will hear about this!">
+			<transition id="t9" to="9"/>
+			<transition id="t10" to="10"/>
+		</node>
+		<node id="9" owner="player" message="You leave me no choice! You must die!">
+			<transition id="t11" to="11"/>
+		</node>
+		<node id="10" owner="player" message="Miserable wretch! Get out of my sight!">
+			<transition id="t12" to="12"/>
+		</node>
+		<node id="11" owner="enemy" message="I'm going! I can see that you are an unreasonable man..." action="retreat"/>
+		<node id="12" owner="enemy" message="Ok, but don't expect me to forget this!" action="retreat"/>
+	</chat>
+	<chat id="chat.nomission.attack.merchant6">
+		<node id="0" owner="player" message="chat.global.identify_yourself">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is spaceship Horse on a trading route.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="Continue to your destination!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" option="Why are you flying around?" message="Why are you flying around? It makes me mad!">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="Cheers, buddy!" action="retreat"/>
+		<node id="5" owner="enemy" message="Sorry bud. Just a bit nervous...">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" message="Die!">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" option="All right. I'll let you go." message="Continue to your destination!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="Don't shoot! Don't shoot! I'll leave!" action="retreat"/>
+	</chat>
+	<chat id="chat.nomission.attack.merchant7">
+		<node id="0" owner="player" message="chat.global.identify_yourself">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is ship MX1O9 on a trading route.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" message="So who is a better target, me or you?">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="chat.global.thank_you" action="retreat"/>
+		<node id="5" owner="enemy" message="This is an unarmed merchant ship. Let us pass, or we'll report this incident!">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" option="So you want to get away?" message="So you want to get away without fighting? What are you, chicken or McFly?">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" option="All right. I'll let you go." message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="As I said, this is a merchant ship. You have 5 seconds to let us on our way, or I will complain to your headquarters.">
+			<transition id="t9" to="9"/>
+			<transition id="t10" to="10"/>
+		</node>
+		<node id="9" owner="player" message="So, chicken, die!">
+			<transition id="t11" to="11"/>
+		</node>
+		<node id="10" owner="player" option="All right, I'll let you go." message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="11" owner="enemy" message="Don't shoot! Don't shoot! I'll leave!" action="retreat"/>
+	</chat>
+	<chat id="chat.nomission.attack.merchant8">
+		<node id="0" owner="player" message="chat.global.identify_yourself">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is ship Krondox on a trading route.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" message="So who is a better target, me or you?">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="chat.global.thank_you" action="retreat"/>
+		<node id="5" owner="enemy" message="This is an unarmed merchant ship. Let us pass, or we'll report this incident!">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" option="So you want to get away?" message="So you want to get away without fighting? What are you, chicken or McFly?">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" option="All right. I'll let you go." message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="8" owner="enemy" message="As I said, this is a merchant ship. You have 5 seconds to let us on our way, or I will report you to headquarters.">
+			<transition id="t9" to="9"/>
+			<transition id="t10" to="10"/>
+		</node>
+		<node id="9" owner="player" message="So, chicken, die!">
+			<transition id="t11" to="11"/>
+		</node>
+		<node id="10" owner="player" option="All right, I'll let you go." message="chat.global.proceed_your_destination">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="11" owner="enemy" message="Don't shoot! Don't shoot! I'll leave!" action="retreat"/>
+	</chat>
+	<!-- Main mission chats. -->
+	<chat id="chat.mission-2.defend.merchant1">
+		<node id="0" owner="player" option="This is the Empire Armed Forces." message="This is the Empire Armed Forces. Cease fire!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Really? I think we've got something for you..."/>
+	</chat>
+	<chat id="chat.mission-2.defend.merchant2">
+		<node id="0" owner="player" option="This is the Empire Armed Forces." message="This is the Empire Armed Forces. Cease fire!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Leave while you can!">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="Stop fighting at once!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="O.K. You asked for it."/>
+	</chat>
+	<chat id="chat.mission-2.defend.merchant3">
+		<node id="0" owner="player" option="Leave the merchant ship alone!" message="Cease fire! Leave the merchant ship alone!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Hey, a big fish! Let's get 'em boys."/>
+	</chat>
+	<chat id="chat.mission-2.defend.merchant4">
+		<node id="0" owner="player" option="Halt! This is the Empire Armed Forces." message="Halt! This is the Empire Armed Forces. Cease fire!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="I think it's time to leave, boys." action="retreat"/>
+	</chat>
+	<chat id="chat.mission-2.defend.merchant5">
+		<node id="0" owner="player" option="Halt! This is the Empire Armed Forces." message="Halt! This is the Empire Armed Forces. Cease fire!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Really? I think we've got something for you..."/>
+	</chat>
+	<chat id="chat.mission-2.defend.merchant6">
+		<node id="0" owner="player" option="This is the Empire Armed Forces." message="This is the Empire Armed Forces. Cease fire!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Leave while you can!">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="Stop fighting at once!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="O.K. You asked for it."/>
+	</chat>
+	<chat id="chat.mission-7.defend.merchant7">
+		<node id="0" owner="player" option="Leave the merchant ship alone." message="Leave the merchant ship alone. Cease fire!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Hey, another human! Let's skin him!"/>
+	</chat>
+	<chat id="chat.mission-7_task2.defend.merchant8">
+		<node id="0" owner="player" option="Halt! This is the Empire Armed Forces. Cease fire!" message="Halt! This is the Empire Armed Forces. Cease fire! Leave that ship in peace!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Kill them!"/>
+	</chat>
+	<chat id="chat.mission-5.garthog.without.allied.pirates">
+		<node id="0" owner="player" option="O.K. Garthogs, retreat while you can!" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Let us pass, Earthling, and you may live.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="Yeah? Big shots, huh?">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="Prepare to die!"/>
+	</chat>
+	<chat id="chat.mission-5.garthog.with.allied.pirates">
+		<node id="0" owner="enemy" message="Pirate1: Remember me, Lieutenant? You saved my life. Now, I've brought my friends along to have some fun.">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="player" option="O.K. Garthogs, retreat while you can!" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="enemy" message="Let us pass, earthling, and you may live.">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="player" message="I'd rather teach you to dance!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="4" owner="enemy" message="Prepare to die!"/>
+	</chat>
+	<!-- I think not used because not completed in the source <chat id="chat.unknown10" 
+		start="0"> <node id="0" owner="player" message="O.K. Garthogok, 
+		vonuljatok vissza, amíg lehet!"> <transition id="t1" to="1"/> </node> <node 
+		id="1" owner="Garthog" message="Engedj minket tovább, Földi, és 
+		meghagyjuk szánalmas életedet."/> <transition id="t2" to="2"/> <node id="2" 
+		owner="player" option="Inkább megtanítalak titeket kesztyûbe dudálni!" message="O.K. 
+		Garthogok, vonuljatok vissza, amíg lehet!"/> <action id="attack.Empire"/> 
+		</chat> -->
+	<chat id="chat.mission-3.escort.cargo">
+		<node id="0" owner="player" message="O.K. pirates, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="We will show no mercy. You may survive. But we just want the cargo.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="You'll die!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="We shall see..."/>
+	</chat>
+	<chat id="chat.mission-4.piratesfight.at.Naxos">
+		<node id="0" owner="player" option="Ships, identify yourselves!" message="Ships, identify yourselves! Cease fire! -wingman1- Hey, Captain there are two pirate groups battling it out. Let's leave them! It makes our lives easier. Let them kill each other!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="-pirate1- I can't hold them off much longer! Please help! I'll be killed!">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="Stop in the name of the Empire!">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="4" owner="enemy" message="All right, we'll look for another target. We'll meet this traitor again."/>
+		<node id="3" owner="player" message="All right, we'll leave them alone."/>
+	</chat>
+	<chat id="chat.mission-6.defend.Achilles">
+		<node id="0" owner="player" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Let us pass, earthling, and you may live.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="I'd rather teach you to dance!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="Prepare to die!"/>
+	</chat>
+	<chat id="chat.mission-10.escort.governor.Centronom">
+		<node id="0" owner="player" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Let us pass, earthling, and you may live.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="I'd rather teach you to dance!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="Prepare to die!"/>
+	</chat>
+	<chat id="chat.mission-13.escort.Benson">
+		<node id="0" owner="player" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Let us pass, earthling, and you may live.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="I'd rather teach you to dance!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="Prepare to die!"/>
+	</chat>
+	<chat id="chat.mission-9.smuggler">
+		<node id="0" owner="player" message="Turn around at once!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Khhz Hrrrz. .he .ad.o is n.t wo.ki...">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" option="This planet is under blockade!" message="This planet is under blockade! You must return at once!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="kkkhhhz. Krr.rrrr"/>
+	</chat>
+	<!-- SCR18 and SCR19 skipped. posibble virkib alternatives -->
+	<chat id="chat.mission-16.escort.money.carrier">
+		<node id="0" owner="player" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Let us pass, earthling, and you may live.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="I'd rather teach you to dance!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="Prepare to die!"/>
+	</chat>
+	<chat id="chat.mission-17.stolen.destroyer2.prototype">
+		<node id="0" owner="player" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Let us pass, earthling, and you may live.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="I'd rather teach you to dance!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="Prepare to die!"/>
+	</chat>
+	<!-- SCR22 skipped -->
+	<chat id="chat.mission-14.destroy.viruscarrier">
+		<node id="0" owner="player" message="Virus carriers prepare to die!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Bip... bip... bip-bip.."/>
+	</chat>
+	<!-- SCR30 skipped -->
+	<chat id="chat.mission-19.rebel.Zeuson.governor">
+		<node id="0" owner="player" option="Turn around at once!" message="This is the Interplanetary Police calling. Turn around at once! I repeat, turn around! This planet is under blockade.">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="This is the Governor of Planet Zeuson. I have been falsely accused for crimes committed against the Empire. I know, the admiralty wishes to see me in prison, but I wish to face their charges myself. Let me pass to attend the court, so I can defend my honor.">
+			<transition id="t2" to="2"/>
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="2" owner="player" message="I understand. You may pass.">
+			<transition id="t4" to="4"/>
+		</node>
+		<node id="3" owner="player" message="You must return!">
+			<transition id="t5" to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="I see you are a man of integrity. We are of the same type, you know. Thank you, Commander."/>
+		<node id="5" owner="enemy" message="I warn you, Commander, that if you resist, I must command my ships to open fire. And that could lead to the loss of innocent lives. ...Think about it... I'm sure you do not wish to send your crew to their deaths. Let me pass!">
+			<transition id="t6" to="6"/>
+			<transition id="t7" to="7"/>
+		</node>
+		<node id="6" owner="player" option="Give me your word you will go direct to court..." message="You MUST go and attend the hearing.">
+			<transition id="t8" to="8"/>
+		</node>
+		<node id="7" owner="player" message="Do not threaten me. You must return!">
+			<transition id="t9" to="9"/>
+		</node>
+		<node id="8" owner="enemy" message="Don't worry, my young captain. I will."/>
+		<node id="9" owner="enemy" message="All right. You asked for it."/>
+	</chat>
+	<chat id="chat.mission-21.escort.Prototype">
+		<node id="0" owner="player" message="O.K. Garthogs, retreat while you still can!">
+			<transition id="t1" to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="Let us pass, earthling, and you may live.">
+			<transition id="t2" to="2"/>
+		</node>
+		<node id="2" owner="player" message="I'd rather teach you to dance!">
+			<transition id="t3" to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="Prepare to die!"/>
+	</chat>
+</chats>
