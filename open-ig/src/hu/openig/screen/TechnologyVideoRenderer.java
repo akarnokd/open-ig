@@ -134,7 +134,7 @@ public class TechnologyVideoRenderer {
 								currentImage[i] = c0;
 							}
 						}
-						final BufferedImage fimg = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+						final BufferedImage fimg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 						fimg.setRGB(0, 0, w, h, currentImage, 0, w);
 						fimg.setAccelerationPriority(1.0f);
 

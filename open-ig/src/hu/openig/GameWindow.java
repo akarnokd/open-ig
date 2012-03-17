@@ -155,6 +155,9 @@ public class GameWindow extends JFrame implements GameControls {
 					if (secondary != null) {
 						secondary.resize();
 					}
+					if (options != null) {
+						options.resize();
+					}
 					if (movie != null) {
 						movie.resize();
 					}
@@ -171,7 +174,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (movieVisible) {
 					movie.draw(g2);
 				} else {
-					if (r1 && !r0) {
+					if (r1 && !r0 && !optionsVisible) {
 						if (secondary != null) {
 							secondary.draw(g2);
 						}
@@ -184,6 +187,9 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						if (secondary != null) {
 							secondary.draw(g2);
+						}
+						if (optionsVisible) {
+							options.draw(g2);
 						}
 						if (statusbarVisible) {
 							statusbar.draw(g2);
@@ -262,10 +268,14 @@ public class GameWindow extends JFrame implements GameControls {
 	ScreenBase statusbar;
 	/** The top overlay for playing 'full screen' movies. */
 	MovieScreen movie;
+	/** The options screen. */
+	LoadSaveScreen options;
 	/** Is the status bar visible? */
 	boolean statusbarVisible;
 	/** Is the movie visible. */
 	boolean movieVisible;
+	/** Options visible. */
+	boolean optionsVisible;
 	/** The configuration object. */
 	Configuration config;
 	/** The common resource locator. */
@@ -499,6 +509,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		movie = allScreens.movie;
 		statusbar = allScreens.statusbar;
+		options = allScreens.loadSave;
 		
 		commons.profile.load();
 		
@@ -730,6 +741,30 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 	}
 	/**
+	 * Display the movie window.
+	 */
+	@Override
+	public void displayOptions() {
+		if (!movieVisible) {
+			optionsVisible = true;
+			options.onEnter(null);
+			moveMouse();
+			repaintInner();
+		}
+	}
+	/**
+	 * Hide the movie windows.
+	 */
+	@Override
+	public void hideOptions() {
+		if (optionsVisible) {
+			optionsVisible = false;
+			options.onLeave();
+			moveMouse();
+			repaintInner();
+		}
+	}
+	/**
 	 * Display the status bar.
 	 */
 	@Override 
@@ -798,6 +833,9 @@ public class GameWindow extends JFrame implements GameControls {
 			ScreenBase sec = secondary;
 			if (movieVisible) {
 				rep |= movie.keyboard(e);
+			} else
+			if (optionsVisible) {
+				rep |= options.keyboard(e);
 			} else
 			if (sec != null) {
 				rep |= sec.keyboard(e);
@@ -889,9 +927,9 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_ESCAPE:
 					if (commons.battleMode) {
-						LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
-						scr.maySave(false);
-						scr.displayPage(SettingsPage.AUDIO);
+						displayOptions();
+						options.maySave(false);
+						options.displayPage(SettingsPage.AUDIO);
 						e.consume();
 					}
 					break;
@@ -1128,9 +1166,9 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						e.consume();
 					} else {
-						LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
-						scr.displayPage(SettingsPage.AUDIO);
-						scr.maySave(true);
+						displayOptions();
+						options.displayPage(SettingsPage.AUDIO);
+						options.maySave(true);
 					}
 					break;
 				case KeyEvent.VK_M:
@@ -1245,9 +1283,9 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 					break;
 				case KeyEvent.VK_ESCAPE:
-					LoadSaveScreen scr = (LoadSaveScreen)display(Screens.LOAD_SAVE, false, secondary != null ? secondary.screen() : null);
-					scr.maySave(true);
-					scr.displayPage(SettingsPage.LOAD_SAVE);
+					displayOptions();
+					options.maySave(true);
+					options.displayPage(SettingsPage.LOAD_SAVE);
 					e.consume();
 					break;
 				default:
@@ -1348,9 +1386,18 @@ public class GameWindow extends JFrame implements GameControls {
 			
 			if (movieVisible) {
 				rep = movie.mouse(me);
-				repaintInner();
+				if (rep) {
+					repaintInner();
+				}
 				return;
 			} else
+			if (optionsVisible) {
+				rep = options.mouse(me);
+				if (rep) {
+					repaintInner();
+				}
+				return;
+			}
 			if (statusbarVisible) {
 				if (statusbar.mouse(me)) {
 					repaintInner();

@@ -43,6 +43,8 @@ public class Player {
 	public BufferedImage picture;
 	/** The race of the player. Determines the technology tree to be used. */
 	public String race;
+	/** The optional resource to play when contacting this race. */
+	public String diplomacyHead;
 	/** The in-progress production list. */
 	public final Map<ResearchMainCategory, Map<ResearchType, Production>> production = new HashMap<ResearchMainCategory, Map<ResearchType, Production>>();
 	{
