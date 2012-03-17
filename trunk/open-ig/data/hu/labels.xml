@@ -2318,6 +2318,7 @@
 	<entry key='message.new_player_discovered'>Új galatikus szereplőt fedeztél fel: %s.</entry>
 	<entry key='diplomacy.click_to_exit'>Kattints a visszalépéshez</entry>
 	<entry key='diplomacy.show_panel'>Kapcsolatfelvétel más fajokkal és frakciókkal.</entry>
+	<entry key='diplomacy.close_panel'>Panel bezárása</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

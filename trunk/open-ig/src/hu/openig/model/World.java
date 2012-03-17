@@ -479,6 +479,8 @@ public class World {
 				p.noDatabase = true;
 			}
 			
+			p.diplomacyHead = xplayer.get("diplomacy-head", null);
+			
 			String aim = xplayer.get("ai", AIMode.DEFAULT.toString());
 			if (aim.length() > 0) {
 				p.aiMode = AIMode.valueOf(aim);

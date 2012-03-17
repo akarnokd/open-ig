@@ -1180,6 +1180,7 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	/** Go back to main menu. */
 	void doMainMenu() {
+		commons.control().hideOptions();
 		displayPrimary(Screens.MAIN);
 		if (commons.world() != null) {
 			commons.control().endGame();
@@ -1225,11 +1226,7 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	/** Return to the previous screen. */
 	void doBack() {
-		if (restore != null) {
-			displaySecondary(restore);
-		} else {
-			hideSecondary();
-		}
+		commons.control().hideOptions();
 		if (resume) {
 			commons.simulation.resume();
 		}

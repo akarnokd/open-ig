@@ -808,12 +808,14 @@ public class StatusbarScreen extends ScreenBase {
 				displaySecondary(Screens.ACHIEVEMENTS);
 				break;
 			case 12:
-				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+				commons.control().displayOptions();
+				LoadSaveScreen scr = commons.control().getScreen(Screens.LOAD_SAVE);
 				scr.maySave(!commons.battleMode);
 				scr.displayPage(SettingsPage.LOAD_SAVE);
 				break;
 			case 13:
-				scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+				commons.control().displayOptions();
+				scr = commons.control().getScreen(Screens.LOAD_SAVE);
 				scr.maySave(!commons.battleMode);
 				scr.displayPage(SettingsPage.AUDIO);
 				break;

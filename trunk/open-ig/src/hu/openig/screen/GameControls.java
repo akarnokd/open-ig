@@ -46,6 +46,10 @@ public interface GameControls {
 	ScreenBase displaySecondary(Screens screen);
 	/** Hide the secondary screen. */
 	void hideSecondary();
+	/** Display the options screen. */
+	void displayOptions();
+	/** Hide the options screen. */
+	void hideOptions();
 	/**
 	 * Play the given set of videos.
 	 * @param videos the list of videos to play

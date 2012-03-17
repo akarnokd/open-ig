@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.core.ResourceType;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
@@ -30,11 +31,18 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.Closeable;
+import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.zip.GZIPInputStream;
+
+import javax.swing.SwingUtilities;
 
 
 
@@ -77,6 +85,22 @@ public class DiplomacyScreen extends ScreenBase {
 	StanceMatrix stanceMatrix;
 	/** Show the panel label? */
 	boolean showPanelLabel;
+	/** Show the close label? */
+	boolean showCloseLabel;
+	/** The head animation. */
+	HeadAnimation headAnimation;
+	/** To close the animation. */
+	Closeable headAnimationClose;
+	/** The current darkening index. */
+	int darkeningIndex;
+	/** The darkening steps. */
+	int darkeningMax = 10;
+	/** The target alpha value. */
+	float darkeningAlpha = 0.5f;
+	/** The (un)darkening animation. */
+	Closeable darkening;
+	/** The other player. */
+	Player other;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -136,7 +160,12 @@ public class DiplomacyScreen extends ScreenBase {
 
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
+		openCloseAnimating = false;
+		projectorOpen = false;
+		projectorClosing = false;
+		showCloseLabel = false;
+		showPanelLabel = false;
+		
 		if (projectorAnim != null) {
 			projectorAnim.stop();
 			projectorAnim = null;
@@ -145,9 +174,17 @@ public class DiplomacyScreen extends ScreenBase {
 			onProjectorComplete = null;
 		}
 		if (raceUpdater != null) {
-			U.close(raceUpdater);
+			close0(raceUpdater);
 			raceUpdater = null;
 		}
+		if (headAnimationClose != null) {
+			close0(headAnimationClose);
+			headAnimation = null;
+		}
+		if (darkening != null) {
+			close0(darkening);
+		}
+		other = null;
 	}
 
 	@Override
@@ -188,7 +225,7 @@ public class DiplomacyScreen extends ScreenBase {
 						}
 					}
 					boolean spl = showPanelLabel;
-					showPanelLabel = e.within(base.x, base.y, base.width, 300)
+					showPanelLabel = e.within(base.x, base.y, base.width, 350)
 							&& pointerTransition == null;
 
 					if (prev != pointerTransition || spl != showPanelLabel) {
@@ -197,6 +234,16 @@ public class DiplomacyScreen extends ScreenBase {
 				} else {
 					showPanelLabel = false;
 					pointerTransition = null;
+				}
+				// show close label
+				boolean b0 = showCloseLabel;
+				
+				showCloseLabel = projectorOpen && !projectorClosing 
+						&& !openCloseAnimating 
+						&& !isInsidePanel(e)
+						&& e.within(base.x, base.y, base.width, base.height);
+				if (b0 != showCloseLabel) {
+					askRepaint();
 				}
 				
 				return super.mouse(e);
@@ -210,12 +257,15 @@ public class DiplomacyScreen extends ScreenBase {
 							return false;
 						}
 					}
-					if (e.within(base.x, base.y, base.width, 300)) {
+					if (e.within(base.x, base.y, base.width, 350)) {
+						showPanelLabel = false;
 						showProjector();
 						return true;
 					}
 				} else
-				if (projectorOpen && !projectorClosing && !openCloseAnimating && !e.within(base.x + stanceMatrix.x, base.y + stanceMatrix.y, stanceMatrix.width, stanceMatrix.height)) {
+				if (projectorOpen && !projectorClosing && !openCloseAnimating 
+						&& !isInsidePanel(e)) {
+					showCloseLabel = false;
 					hideProjector();
 					return true;
 				}
@@ -225,6 +275,14 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 			return super.mouse(e);
 		}
+	}
+	/**
+	 * Check if the mouse is inside the panel body.
+	 * @param e the mouse
+	 * @return true if inside
+	 */
+	private boolean isInsidePanel(UIMouse e) {
+		return e.within(stanceMatrix.x, stanceMatrix.y, stanceMatrix.width, stanceMatrix.height);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
@@ -241,6 +299,16 @@ public class DiplomacyScreen extends ScreenBase {
 			projectorLock.unlock();
 		}
 
+		if (darkeningIndex > 0) {
+			float alpha = darkeningAlpha * darkeningIndex / darkeningMax;
+			g2.setColor(new Color(0f, 0f, 0f, alpha));
+			g2.fill(base);
+		}
+		
+		if (headAnimation != null && headAnimation.images.size() > 0 && headAnimation.active) {
+			g2.drawImage(headAnimation.get(), base.x, base.y, null);
+		}
+
 		
 		if (pointerTransition != null) {
 			ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
@@ -249,17 +317,38 @@ public class DiplomacyScreen extends ScreenBase {
 			String s = get("diplomacy.show_panel");
 			int tw = commons.text().getTextWidth(14, s);
 			
-			g2.setColor(new Color(0, 0, 0, 255 * 85 / 100));
-
-			int ax = base.x + (base.width - tw) / 2;
-			int ay = base.y + 150;
+			int dy = 150;
 			
-			g2.fillRect(ax - 5, ay - 5, tw + 10, 14 + 10);
+			centerLabel(g2, s, tw, dy);
+		}
+		if (showCloseLabel) {
+			String s = get("diplomacy.close_panel");
+			int tw = commons.text().getTextWidth(14, s);
 			
-			commons.text().paintTo(g2, ax, ay, 14, TextRenderer.YELLOW, s);
+			int dy = 300;
+			
+			centerLabel(g2, s, tw, dy);
 		}
 
 		super.draw(g2);
+	}
+
+	/**
+	 * Center a label on the screen.
+	 * @param g2 the graphics context
+	 * @param s the string to display
+	 * @param tw the text width
+	 * @param dy the y offset 
+	 */
+	void centerLabel(Graphics2D g2, String s, int tw, int dy) {
+		g2.setColor(new Color(0, 0, 0, 255 * 85 / 100));
+
+		int ax = base.x + (base.width - tw) / 2;
+		int ay = base.y + dy;
+		
+		g2.fillRect(ax - 5, ay - 5, tw + 10, 14 + 10);
+		
+		commons.text().paintTo(g2, ax, ay, 14, TextRenderer.YELLOW, s);
 	}
 	@Override
 	public Screens screen() {
@@ -530,11 +619,47 @@ public class DiplomacyScreen extends ScreenBase {
 	 * @param index the index
 	 */
 	void onSelectRace(int index) {
+		headAnimation = null;
 		races.visible(false);
 		stances.visible(false);
 		if (index < races.items.size() - 1) {
+			
+			final Player p2 = (Player)races.items.get(index).userObject;
 			stanceMatrix.visible(false);
+
+			final AtomicInteger wip = new AtomicInteger(2);
+			onProjectorComplete = new Action0() {
+				@Override
+				public void invoke() {
+					if (wip.decrementAndGet() == 0) {
+						doDarken();
+					}
+				}
+			};
+			
 			playProjectorClose();
+
+			commons.pool.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						// load head
+						final HeadAnimation ha = loadHeadAnimation(p2.diplomacyHead);
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								headAnimation = ha;
+								if (wip.decrementAndGet() == 0) {
+									doDarken();
+								}
+							}
+						});
+					} catch (Throwable t) {
+						t.printStackTrace();
+					}
+				}
+			});
+			
 		} else {
 			stanceMatrix.visible(true);
 		}
@@ -547,6 +672,7 @@ public class DiplomacyScreen extends ScreenBase {
 		stanceMatrix.visible(false);
 		playProjectorClose();
 	}
+	
 	/**
 	 * Show the projector.
 	 */
@@ -695,5 +821,203 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 			return false;
 		}
+	}
+	/**
+	 * A head animation record. 
+	 * @author akarnokd, 2012.03.17.
+	 */
+	public static class HeadAnimation {
+		/** The list of image frames. */
+		public List<byte[]> images = U.newArrayList();
+		/** The palettes. */
+		public List<int[]> palettes = U.newArrayList();
+		/** The animation frames per second. */
+		public double fps;
+		/** The total number of frames. */
+		public int frames;
+		/** The current frame. */
+		int index;
+		/** The image width. */
+		int w;
+		/** The image height. */
+		int h;
+		/** The current image memory. */
+		int[] currentImage;
+		/** The current image at the start of the looping. */
+		int[] keyframeLoopStart;
+		/** The cached image. */
+		BufferedImage cache;
+		/** The current cached index. */
+		int cacheIndex;
+		/** The start loop index. */
+		public int startLoop;
+		/** The end loop index. */
+		public int endLoop;
+		/** Are we in loop mode? */
+		public boolean loop;
+		/** Animation is active? */
+		public boolean active;
+		/**
+		 * @return the current image for the current frame.
+		 */
+		public BufferedImage get() {
+			if (cache != null && cacheIndex == index) {
+				return cache;
+			}
+			if (currentImage == null) {
+				currentImage = new int[w * h];
+			}
+			byte[] data = images.get(index);
+			int[] palette = palettes.get(index);
+			for (int i = 0; i < data.length; i++) {
+				int c0 = palette[data[i] & 0xFF];
+				if (c0 != 0) {
+					currentImage[i] = c0;
+				}
+			}
+			if (index == startLoop && keyframeLoopStart == null) {
+				keyframeLoopStart = currentImage.clone();
+			}
+			cache = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			cache.setRGB(0, 0, w, h, currentImage, 0, w);
+			cacheIndex = index;
+			return cache;
+			
+		}
+		/**
+		 * Move to the next frame.
+		 * @return true if wrapped over
+		 */
+		public boolean moveNext() {
+			index++;
+			if (loop) {
+				if (index >= endLoop) {
+					index = startLoop;
+					System.arraycopy(keyframeLoopStart, 0, currentImage, 0, keyframeLoopStart.length);
+					return true;
+				}
+			} else
+			if (index >= images.size()) {
+				index = 0;
+				return true;
+			}
+			return false;
+		}
+	}
+	/**
+	 * Load a video resource into list of images.
+	 * @param resource the resource name
+	 * @return the animation record with the frames
+	 */
+	HeadAnimation loadHeadAnimation(String resource) {
+		HeadAnimation ha = new HeadAnimation();
+		if (resource == null) {
+			return ha;
+		}
+		try {
+			DataInputStream in = new DataInputStream(
+					new BufferedInputStream(
+							new GZIPInputStream(rl.get(resource, ResourceType.VIDEO).open(), 1024 * 1024), 1024 * 1024));
+			try {
+				ha.w = Integer.reverseBytes(in.readInt());
+				ha.h = Integer.reverseBytes(in.readInt());
+				ha.frames = Integer.reverseBytes(in.readInt());
+				ha.fps = Integer.reverseBytes(in.readInt()) / 1000.0;
+				int[] palette = new int[256];
+				int frameCount = 0;
+				while (frameCount < ha.frames) {
+					int c = in.read();
+					if (c < 0 || c == 'X') {
+						break;
+					} else
+					if (c == 'P') {
+						int len = in.read();
+						for (int j = 0; j < len; j++) {
+							int r = in.read() & 0xFF;
+							int g = in.read() & 0xFF;
+							int b = in.read() & 0xFF;
+							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
+						}
+					} else
+					if (c == 'I') {
+						byte[] bytebuffer = new byte[ha.w * ha.h];
+						in.readFully(bytebuffer);
+						
+						ha.images.add(bytebuffer);
+						ha.palettes.add(palette.clone());
+						
+						
+		       			frameCount++;
+					}
+				}
+			} finally {
+				try { in.close(); } catch (IOException ex) {  }
+			}
+		} catch (Throwable ex) {
+			ex.printStackTrace();
+		}
+		return ha;
+	}
+	/**
+	 * Start the head animation.
+	 */
+	void doStartHead() {
+		if (headAnimation.frames > 0) {
+			
+			headAnimation.active = true;
+			headAnimation.loop = true;
+			headAnimation.startLoop = 35;
+			headAnimation.endLoop = headAnimation.frames - 35;
+			
+			int delay = (((int)(1000 / headAnimation.fps)) / 25) * 25; // round frames down
+			headAnimationClose = commons.register(delay, new Action0() {
+				@Override
+				public void invoke() {
+					boolean wr = headAnimation.moveNext();
+					if (wr && !headAnimation.loop) {
+						headAnimation.active = false;
+						close0(headAnimationClose);
+						doUndarken();
+					}
+					askRepaint();
+				}
+			});
+		}
+	}
+	/**
+	 * Animate the darkening then start the animation.
+	 */
+	void doDarken() {
+		int delay = (((int)(1000 / headAnimation.fps)) / 25) * 25; // round frames down
+		darkeningIndex = 0;
+		darkening = commons.register(delay, new Action0() {
+			@Override
+			public void invoke() {
+				darkeningIndex++;
+				if (darkeningIndex > darkeningMax) {
+					doStartHead();
+					darkeningIndex = 0;
+					close0(darkening);
+				}
+				askRepaint();
+			}
+		});
+	}
+	/**
+	 * Animate undarkening.
+	 */
+	void doUndarken() {
+		int delay = (((int)(1000 / headAnimation.fps)) / 25) * 25; // round frames down
+		darkeningIndex = darkeningMax;
+		darkening = commons.register(delay, new Action0() {
+			@Override
+			public void invoke() {
+				darkeningIndex++;
+				if (darkeningIndex == 0) {
+					close0(darkening);
+				}
+				askRepaint();
+			}
+		});
 	}
 }
