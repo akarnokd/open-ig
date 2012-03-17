@@ -20,11 +20,13 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.U;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -71,6 +73,10 @@ public class DiplomacyScreen extends ScreenBase {
 	OptionList options;
 	/** Update the race listing periodically. */
 	Closeable raceUpdater;
+	/** The stance matrix. */
+	StanceMatrix stanceMatrix;
+	/** Show the panel label? */
+	boolean showPanelLabel;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -78,9 +84,9 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		races = new OptionList();
 		stances = new OptionList();
-		stances.before = 3;
-		stances.after = 4 + 3;
-		stances.textsize = 7;
+		stances.before = 2;
+		stances.after = 2 + 3;
+		stances.textsize = 10;
 		options = new OptionList();
 		options.visible(false);
 		
@@ -102,15 +108,20 @@ public class DiplomacyScreen extends ScreenBase {
 				onRaceHighlight(value, stances.items.get(value).hover);
 			}
 		};
+		stances.onSelect = new Action1<Integer>() {
+			@Override
+			public void invoke(Integer value) {
+				onSelectRace(value);
+			}
+		};
+		
+		stanceMatrix = new StanceMatrix();
 		
 		addThis();
 	}
 
 	@Override
 	public void onEnter(Screens mode) {
-		// TODO Auto-generated method stub
-		showProjector();
-		
 		raceUpdater = commons.register(1000, new Action0() {
 			@Override
 			public void invoke() {
@@ -118,6 +129,9 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 		});
 		updateRaces();
+		races.visible(false);
+		stances.visible(false);
+		stanceMatrix.visible(false);
 	}
 
 	@Override
@@ -150,8 +164,10 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 10, base.y, 524, 258);
 		
-		races.location(base.x + 155, base.y + 14);
-		stances.location(base.x + 450, base.y + 20);
+		races.location(base.x + 155, base.y + 10);
+		stances.location(base.x + 445, base.y + 10);
+		
+		stanceMatrix.bounds(base.x + 157, base.y + 10, 320, 239);
 	}
 	
 	@Override
@@ -161,28 +177,50 @@ public class DiplomacyScreen extends ScreenBase {
 			return true;
 		} else {
 			if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
-				WalkTransition prev = pointerTransition;
-				pointerTransition = null;
-				WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
-				for (WalkTransition wt : position.transitions) {
-					if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-						pointerTransition = wt;
-						break;
+				if (!projectorOpen && !projectorClosing && !openCloseAnimating) {
+					WalkTransition prev = pointerTransition;
+					pointerTransition = null;
+					WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
+					for (WalkTransition wt : position.transitions) {
+						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+							pointerTransition = wt;
+							break;
+						}
 					}
+					boolean spl = showPanelLabel;
+					showPanelLabel = e.within(base.x, base.y, base.width, 300)
+							&& pointerTransition == null;
+
+					if (prev != pointerTransition || spl != showPanelLabel) {
+						askRepaint();
+					}
+				} else {
+					showPanelLabel = false;
+					pointerTransition = null;
 				}
-				if (prev != pointerTransition) {
-					askRepaint();
-				}
+				
 				return super.mouse(e);
 			} else
 			if (e.has(Type.DOWN)) {
-				WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
-				for (WalkTransition wt : position.transitions) {
-					if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-						ScreenUtils.doTransition(position, wt, commons);
-						return false;
+				if (!projectorOpen && !projectorClosing && !openCloseAnimating) {
+					WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
+					for (WalkTransition wt : position.transitions) {
+						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+							ScreenUtils.doTransition(position, wt, commons);
+							return false;
+						}
 					}
+					if (e.within(base.x, base.y, base.width, 300)) {
+						showProjector();
+						return true;
+					}
+				} else
+				if (projectorOpen && !projectorClosing && !openCloseAnimating && !e.within(base.x + stanceMatrix.x, base.y + stanceMatrix.y, stanceMatrix.width, stanceMatrix.height)) {
+					hideProjector();
+					return true;
 				}
+
+				
 				return super.mouse(e);
 			}
 			return super.mouse(e);
@@ -206,6 +244,19 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		if (pointerTransition != null) {
 			ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
+		}
+		if (showPanelLabel) {
+			String s = get("diplomacy.show_panel");
+			int tw = commons.text().getTextWidth(14, s);
+			
+			g2.setColor(new Color(0, 0, 0, 255 * 85 / 100));
+
+			int ax = base.x + (base.width - tw) / 2;
+			int ay = base.y + 150;
+			
+			g2.fillRect(ax - 5, ay - 5, tw + 10, 14 + 10);
+			
+			commons.text().paintTo(g2, ax, ay, 14, TextRenderer.YELLOW, s);
 		}
 
 		super.draw(g2);
@@ -261,6 +312,8 @@ public class DiplomacyScreen extends ScreenBase {
 		public Action1<Integer> onSelect;
 		/** Called when the given item is highlight changes. */
 		public Action1<Integer> onHighlight;
+		/** If mouse pressed. */
+		boolean mouseDown;
 		/** Fit the control's width to accomodate all labels. */
 		public void fit() {
 			int w = 0;
@@ -278,7 +331,7 @@ public class DiplomacyScreen extends ScreenBase {
 			int dy = 5;
 			for (OptionItem oi : items) {
 				dy += before;
-				int color = TextRenderer.YELLOW;
+				int color = TextRenderer.GREEN;
 				if (!oi.enabled) {
 					color = TextRenderer.GRAY;
 				} else
@@ -298,14 +351,16 @@ public class DiplomacyScreen extends ScreenBase {
 		public boolean mouse(UIMouse e) {
 			int idx = (e.y - 5) / (textsize + before + after);
 			if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
-				hover(idx, e.has(Type.DRAG));
+				hover(idx, e.has(Type.DRAG) || mouseDown);
 				return true;
 			} else
 			if (e.has(Type.DOWN)) {
 				hover(idx, true);
+				mouseDown = true;
 				return true;
 			} else
 			if (e.has(Type.UP)) {
+				mouseDown = false;
 				if (idx >= 0 && idx < items.size()) {
 					OptionItem oi = items.get(idx);
 					if (oi.enabled && oi.selected && onSelect != null) {
@@ -316,6 +371,7 @@ public class DiplomacyScreen extends ScreenBase {
 			} else
 			if (e.has(Type.LEAVE)) {
 				hover(-1, false);
+				mouseDown = false;
 			}
 			
 			return super.mouse(e);
@@ -447,7 +503,7 @@ public class DiplomacyScreen extends ScreenBase {
 			int rel = pi.getValue();
 			if (!p2.noDiplomacy) {
 				OptionItem oi1 = new OptionItem();
-				oi1.label = p2.shortName;
+				oi1.label = " " + p2.shortName;
 				oi1.userObject = p2;
 				races.items.add(oi1);
 				
@@ -464,8 +520,10 @@ public class DiplomacyScreen extends ScreenBase {
 		races.fit();
 		stances.fit();
 		
-		commons.control().moveMouse();
-		askRepaint();
+		if (races.visible()) {
+			commons.control().moveMouse();
+			askRepaint();
+		}
 	}
 	/**
 	 * Action when a race is selected.
@@ -474,9 +532,20 @@ public class DiplomacyScreen extends ScreenBase {
 	void onSelectRace(int index) {
 		races.visible(false);
 		stances.visible(false);
-		playProjectorClose();
-
+		if (index < races.items.size() - 1) {
+			stanceMatrix.visible(false);
+			playProjectorClose();
+		} else {
+			stanceMatrix.visible(true);
+		}
 		// TODO implement rest
+	}
+	/** Hide the projector. */
+	void hideProjector() {
+		races.visible(false);
+		stances.visible(false);
+		stanceMatrix.visible(false);
+		playProjectorClose();
 	}
 	/**
 	 * Show the projector.
@@ -484,6 +553,7 @@ public class DiplomacyScreen extends ScreenBase {
 	void showProjector() {
 		races.visible(false);
 		stances.visible(false);
+		stanceMatrix.visible(false);
 		onProjectorComplete = new Action0() {
 			@Override
 			public void invoke() {
@@ -493,6 +563,13 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 		};
 		playProjectorOpen();
+		commons.control().moveMouse();
+	}
+	/** Hide the stance matrix. */
+	void hideStanceMatrix() {
+		races.visible(true);
+		stances.visible(true);
+		stanceMatrix.visible(false);
 	}
 	/**
 	 * Event to highlight a row.
@@ -505,6 +582,118 @@ public class DiplomacyScreen extends ScreenBase {
 		}
 		if (stances.items.size() > idx) {
 			stances.items.get(idx).hover = value;
+		}
+	}
+	/**
+	 * Displays the matrix of relations. 
+	 * @author akarnokd, 2012.03.17.
+	 */
+	class StanceMatrix extends UIComponent {
+		/** If mouse pressed. */
+		boolean mouseDown;
+		@Override
+		public void draw(Graphics2D g2) {
+			
+//			g2.setColor(Color.GRAY);
+//			g2.fillRect(0, 0, width, height);
+			
+			int textSize = 7;
+			int cellSize = 18;
+			
+			// filter diplomatic races
+			List<Player> players = U.newArrayList();
+			players.add(player());
+			for (Player p : player().knownPlayers.keySet()) {
+				if (!p.noDiplomacy) {
+					players.add(p);
+				}
+			}
+			
+			// paint stance matrix participants
+			int ox = 0;
+			int oy = 0;
+			int dw = players.size() * cellSize;
+			int dh = players.size() * cellSize;
+			for (int i = 1; i <= players.size(); i++) {
+				String n = Integer.toString(i);
+				int tw = commons.text().getTextWidth(textSize, n);
+				
+				int dx = ox + (i - 1) * cellSize + (cellSize - tw) / 2;
+				
+				Player p = players.get(i - 1);
+				
+				commons.text().paintTo(g2, dx, oy, textSize, p.color, n);
+				
+				
+				int ty = oy + (i - 1) * cellSize + (cellSize - textSize) / 2 + textSize + 3;
+				
+				commons.text().paintTo(g2, ox + dw + 5, ty, textSize, p.color, n + " - " + p.shortName);
+			}
+			g2.setColor(new Color(0xFF087B73));
+			
+			for (int i = 0; i <= players.size(); i++) {
+				g2.drawLine(ox, oy + i * cellSize + textSize + 3, ox + dw, oy + i * cellSize + textSize + 3);
+				g2.drawLine(ox + i * cellSize, oy + textSize + 3, ox + i * cellSize, oy + dh + textSize + 3);
+			}
+			
+			// draw stance valus
+			
+			int stanceHeight = 7;
+			for (int i = 0; i < players.size(); i++) {
+				Player row = players.get(i);
+				for (int j = 0; j < players.size(); j++) {
+					Player col = players.get(j);
+					
+					String stance = "-";
+					int st = -1;
+					if (i != j && row.knows(col)) {
+						st = row.getStance(col);
+						stance = Integer.toString(st);
+					}
+					int stanceColor = TextRenderer.GREEN;
+					if (st >= 0) {
+						if (st < 30) {
+							stanceColor = TextRenderer.RED;
+						} else
+						if (st < 40) {
+							stanceColor = TextRenderer.YELLOW;
+						} else
+						if (st > 80) {
+							stanceColor = TextRenderer.LIGHT_BLUE;
+						} else
+						if (st > 60) {
+							stanceColor = TextRenderer.LIGHT_GREEN;
+						}
+					}
+					
+					int sw = commons.text().getTextWidth(stanceHeight, stance);
+					commons.text().paintTo(g2, 
+							ox + j * cellSize + (cellSize - sw) / 2,
+							oy + i * cellSize + (cellSize - stanceHeight) / 2 + textSize + 3,
+							stanceHeight,
+							stanceColor,
+							stance
+					);
+				}				
+			}
+
+			commons.text().paintTo(g2, ox + 5, height - 11, 7, TextRenderer.YELLOW, get("diplomacy.click_to_exit"));
+			
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				mouseDown = true;
+			} else
+			if (e.has(Type.UP) && mouseDown) {
+				mouseDown = false;
+				hideStanceMatrix();
+				return true;
+			} else
+			if (e.has(Type.LEAVE)) {
+				mouseDown = false;
+			}
+			return false;
 		}
 	}
 }

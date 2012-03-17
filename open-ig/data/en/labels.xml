@@ -3060,8 +3060,8 @@
 	<entry key='diplomacy.relations'>Show relations</entry>
 	<entry key='diplomacy.cancel'>Cancel</entry>
 	<entry key='message.new_player_discovered'>You discovered the %s.</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='diplomacy.click_to_exit'>Click to return</entry>
+	<entry key='diplomacy.show_panel'>Contact other races and factions.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
