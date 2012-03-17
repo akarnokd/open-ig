@@ -190,12 +190,13 @@ public final class Radar {
 		if (k0 == null || k0.ordinal() < k.ordinal()) {
 			player.planets.put(planet, k);
 		}
-		if (planet.owner != null && planet.owner != player && !player.knows(planet.owner)) {
+		if (planet.owner != null 
+				&& planet.owner != player 
+				&& !player.knows(planet.owner) 
+				&& k.ordinal() >= PlanetKnowledge.OWNER.ordinal()) {
 			player.setStance(planet.owner, player.initialStance);
-			if (!world.player.race.equals(planet.owner.race)) {
-				player.ai.onDiscoverPlayer(planet.owner);
-				world.scripting.onDiscovered(player, planet.owner);
-			}
+			player.ai.onDiscoverPlayer(planet.owner);
+			world.scripting.onDiscovered(player, planet.owner);
 		}
 	}
 	/**
