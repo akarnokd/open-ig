@@ -158,9 +158,15 @@ public class AIUser implements AIManager {
 	@Override
 	public void onDiscoverPlayer(Player player) {
 		if (!player.noDiplomacy) {
-			Message msg = w.newMessage("message.new_race_discovered");
+			if (!player.race.equals(this.p.race)) {
+				Message msg = w.newMessage("message.new_race_discovered");
+				msg.priority = 20;
+				msg.label = player.getRaceLabel();
+				p.messageQueue.add(msg);
+			}
+			Message msg = w.newMessage("message.new_player_discovered");
 			msg.priority = 20;
-			msg.label = player.getRaceLabel();
+			msg.value = player.name;
 			p.messageQueue.add(msg);
 		}
 	}

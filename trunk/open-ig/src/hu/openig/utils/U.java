@@ -8,6 +8,8 @@
 
 package hu.openig.utils;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -476,5 +478,18 @@ public final class U {
 	 */
 	public static int compare(long v1, long v2) {
 		return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+	}
+	/**
+	 * Close the parameter silently.
+	 * @param c the closeable
+	 */
+	public static void close(Closeable c) {
+		if (c != null) {
+			try {
+				c.close();
+			} catch (IOException ex) {
+				// ignored
+			}
+		}
 	}
 }

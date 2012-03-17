@@ -416,22 +416,18 @@ public class AITrader implements AIManager {
 	}
 	@Override
 	public void groundBattle(GroundwarWorld battle) {
-		// NO ground battle involvement
 	}
 
 	@Override
 	public void groundBattleDone(GroundwarWorld battle) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void groundBattleInit(GroundwarWorld battle) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void spaceBattleDone(SpacewarWorld world) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
@@ -507,92 +503,74 @@ public class AITrader implements AIManager {
 	}
 	@Override
 	public void onResearchStateChange(ResearchType rt, ResearchState state) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProductionComplete(ResearchType rt) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onDiscoverPlanet(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onDiscoverFleet(Fleet fleet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onDiscoverPlayer(Player player) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onFleetArrivedAtPoint(Fleet fleet, double x, double y) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onFleetArrivedAtPlanet(Fleet fleet, Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onFleetArrivedAtFleet(Fleet fleet, Fleet other) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onLostSight(Fleet fleet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onLostTarget(Fleet fleet, Fleet target) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onNewDay() {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetDied(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetConquered(Planet planet, Player lastOwner) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetLost(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onRadar() {
-		// TODO Auto-generated method stub
 		
 	}
 }

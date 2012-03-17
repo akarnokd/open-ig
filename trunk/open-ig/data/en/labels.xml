@@ -3057,9 +3057,9 @@
 	<entry key='chat.global.proceed_your_destination'>Proceed to your destination!</entry>
 	<entry key='chat.global.thank_you'>Thank you, Sir.</entry>
 	<entry key='chat.global.dont_shoot'>Don't shoot! Don't shoot! We'll turn around!</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='diplomacy.relations'>Show relations</entry>
+	<entry key='diplomacy.cancel'>Cancel</entry>
+	<entry key='message.new_player_discovered'>You discovered the %s.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -2313,6 +2313,9 @@
 	<entry key='chat.global.proceed_your_destination'>Folytassa útját a célja felé!</entry>
 	<entry key='chat.global.thank_you'>Köszönöm, Uram.</entry>
 	<entry key='chat.global.dont_shoot'>Ne lőjön! Ne lőjön! Azonnal visszafordulunk!</entry>
+	<entry key='diplomacy.relations'>Viszonyok ellenőrzése</entry>
+	<entry key='diplomacy.cancel'>Mégsem</entry>
+	<entry key='message.new_player_discovered'>Új galatikus szereplőt fedeztél fel: %s.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
