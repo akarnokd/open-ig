@@ -747,9 +747,10 @@ public class GameWindow extends JFrame implements GameControls {
 	public void displayOptions() {
 		if (!movieVisible) {
 			optionsVisible = true;
+			options.resize();
 			options.onEnter(null);
-			moveMouse();
 			repaintInner();
+			moveMouse();
 		}
 	}
 	/**

@@ -195,8 +195,11 @@ public class Mission12 extends Mission {
 	}
 	@Override
 	public void onPlanetInfected(Planet planet) {
-		if (stage == M12Stages.FIRST_RUNDOWN 
-				|| stage == M12Stages.SUBSEQUENT_RUNDOWN) {
+		if ((stage == M12Stages.FIRST_RUNDOWN 
+				|| stage == M12Stages.FIRST_MESSAGE
+				|| stage == M12Stages.SUBSEQUENT_MESSAGE
+				|| stage == M12Stages.SUBSEQUENT_RUNDOWN
+				) && planet.owner == player) {
 			if (!planet.id.equals("New Caroline")) {
 				helper.gameover();
 				loseGameMessageAndMovie("New Caroline-Garthog-Virus-Breached", "loose/fired_level_2");
