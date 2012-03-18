@@ -157,7 +157,8 @@ public class MainScreen extends ScreenBase {
 	void doSettings() {
 		// reload global configuration
 		config.load();
-		LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+		commons.control().displayOptions();
+		LoadSaveScreen scr = commons.control().getScreen(Screens.LOAD_SAVE);
 		scr.maySave(false);
 		scr.displayPage(SettingsPage.AUDIO);
 	}
@@ -309,7 +310,8 @@ public class MainScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
-				LoadSaveScreen scr = (LoadSaveScreen)displaySecondary(Screens.LOAD_SAVE);
+				commons.control().displayOptions();
+				LoadSaveScreen scr = (LoadSaveScreen)commons.control().getScreen(Screens.LOAD_SAVE);
 				scr.displayPage(SettingsPage.LOAD_SAVE);
 				scr.maySave(false);
 			}

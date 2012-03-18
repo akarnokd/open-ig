@@ -82,6 +82,7 @@ public class Mission6 extends Mission {
 		checkPlanetStateMessages();
 		checkMainShip();
 		if (helper.canStart("Mission-6")) {
+			helper.clearMissionTime("Mission-6");
 			helper.showObjective("Mission-6");
 //			incomingMessage("Achilles-Is-Under-Attack");
 			createAttackers();
