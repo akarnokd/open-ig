@@ -594,10 +594,14 @@ public class DiplomacyScreen extends ScreenBase {
 				OptionItem oi1 = new OptionItem();
 				oi1.label = " " + p2.shortName;
 				oi1.userObject = p2;
+				
+				oi1.enabled = p2.knows(player());
+				
 				races.items.add(oi1);
 				
 				OptionItem oi2 = new OptionItem();
 				oi2.label = Integer.toString(rel);
+				oi2.enabled = p2.knows(player());
 				stances.items.add(oi2);
 			}
 		}
