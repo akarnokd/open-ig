@@ -1248,8 +1248,11 @@ public class GameWindow extends JFrame implements GameControls {
 					// set current player
 					if (e.isControlDown()) {
 						Player p = world().player;
+						Planet pl = p.currentPlanet;
 						if (p.currentPlanet != null && p.currentPlanet.owner != null) {
 							world().player = p.currentPlanet.owner;
+							world().player.currentPlanet = pl;
+							world().player.selectionMode = SelectionMode.PLANET;
 						}
 						e.consume();
 					}

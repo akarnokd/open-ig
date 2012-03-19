@@ -12,6 +12,8 @@ import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.Diplomacy;
+import hu.openig.model.Diplomacy.Negotiate;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
@@ -102,6 +104,8 @@ public class DiplomacyScreen extends ScreenBase {
 	Closeable darkening;
 	/** The other player. */
 	Player other;
+	/** Are we in call mode? */
+	boolean inCall;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -142,6 +146,13 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		stanceMatrix = new StanceMatrix();
 		
+		options.onSelect = new Action1<Integer>() {
+			@Override
+			public void invoke(Integer value) {
+				doOption(value);
+			}
+		};
+		
 		addThis();
 	}
 
@@ -157,10 +168,20 @@ public class DiplomacyScreen extends ScreenBase {
 		races.visible(false);
 		stances.visible(false);
 		stanceMatrix.visible(false);
+		options.visible(false);
+		darkeningIndex = 0;
+		inCall = false;
 	}
 
 	@Override
 	public void onLeave() {
+		cleanup();
+	}
+
+	/**
+	 * Cleanup allocated resources.
+	 */
+	void cleanup() {
 		openCloseAnimating = false;
 		projectorOpen = false;
 		projectorClosing = false;
@@ -186,6 +207,9 @@ public class DiplomacyScreen extends ScreenBase {
 			close0(darkening);
 		}
 		other = null;
+		options.items.clear();
+		races.items.clear();
+		stances.items.clear();
 	}
 
 	@Override
@@ -206,6 +230,9 @@ public class DiplomacyScreen extends ScreenBase {
 		stances.location(base.x + 445, base.y + 10);
 		
 		stanceMatrix.bounds(base.x + 157, base.y + 10, 320, 239);
+		
+		options.location(base.x + 10, base.y + 10);
+		options.fit();
 	}
 	
 	@Override
@@ -213,7 +240,8 @@ public class DiplomacyScreen extends ScreenBase {
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
 			hideSecondary();
 			return true;
-		} else {
+		} else 
+		if (!inCall) {
 			if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
 				if (!projectorOpen && !projectorClosing && !openCloseAnimating) {
 					WalkTransition prev = pointerTransition;
@@ -247,7 +275,6 @@ public class DiplomacyScreen extends ScreenBase {
 					askRepaint();
 				}
 				
-				return super.mouse(e);
 			} else
 			if (e.has(Type.DOWN)) {
 				if (!projectorOpen && !projectorClosing && !openCloseAnimating) {
@@ -270,12 +297,9 @@ public class DiplomacyScreen extends ScreenBase {
 					hideProjector();
 					return true;
 				}
-
-				
-				return super.mouse(e);
 			}
-			return super.mouse(e);
 		}
+		return super.mouse(e);
 	}
 	/**
 	 * Check if the mouse is inside the panel body.
@@ -310,27 +334,35 @@ public class DiplomacyScreen extends ScreenBase {
 			g2.drawImage(headAnimation.get(), base.x, base.y, null);
 		}
 
-		
-		if (pointerTransition != null) {
-			ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
+		if (!openCloseAnimating && !inCall) {
+			if (pointerTransition != null) {
+				ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
+			}
+			if (showPanelLabel) {
+				String s = get("diplomacy.show_panel");
+				int tw = commons.text().getTextWidth(14, s);
+				
+				int dy = 150;
+				
+				centerLabel(g2, s, tw, dy);
+			}
+			if (showCloseLabel) {
+				String s = get("diplomacy.close_panel");
+				int tw = commons.text().getTextWidth(14, s);
+				
+				int dy = 300;
+				
+				centerLabel(g2, s, tw, dy);
+			}
 		}
-		if (showPanelLabel) {
-			String s = get("diplomacy.show_panel");
-			int tw = commons.text().getTextWidth(14, s);
+		if (inCall && !openCloseAnimating) {
+			commons.text().paintTo(g2, base.x + 5, base.y + 5, 14, other.color, other.name);
 			
-			int dy = 150;
-			
-			centerLabel(g2, s, tw, dy);
+			if (options.visible()) {
+				g2.setColor(new Color(0, 0, 0, 160));
+				g2.fillRect(options.x - 5, options.y - 5, options.width + 10, options.height + 10);
+			}
 		}
-		if (showCloseLabel) {
-			String s = get("diplomacy.close_panel");
-			int tw = commons.text().getTextWidth(14, s);
-			
-			int dy = 300;
-			
-			centerLabel(g2, s, tw, dy);
-		}
-
 		super.draw(g2);
 	}
 
@@ -357,8 +389,7 @@ public class DiplomacyScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
-		
+		cleanup();
 	}
 	/** An option item to display. */
 	class OptionItem {
@@ -455,6 +486,7 @@ public class DiplomacyScreen extends ScreenBase {
 					OptionItem oi = items.get(idx);
 					if (oi.enabled && oi.selected && onSelect != null) {
 						onSelect.invoke(idx);
+						oi.selected = false;
 						return true;
 					}
 				}
@@ -587,22 +619,28 @@ public class DiplomacyScreen extends ScreenBase {
 	void updateRaces() {
 		races.items.clear();
 		stances.items.clear();
+
+		long now = world().time.getTimeInMillis();
 		
 		for (Map.Entry<Player, DiplomaticRelation> pi : player().knownPlayers().entrySet()) {
 			Player p2 = pi.getKey();
 			DiplomaticRelation rel = pi.getValue();
+
+			long last = rel.lastContact != null ? rel.lastContact.getTime() : 0;
+			long limit = rel.wontTalk ? 24L * 60 * 60 * 1000 : 7L * 24 * 60 * 60 * 1000; 
+			
 			if (!p2.noDiplomacy) {
 				OptionItem oi1 = new OptionItem();
 				oi1.label = " " + p2.shortName;
 				oi1.userObject = p2;
 				
-				oi1.enabled = p2.knows(player());
+				oi1.enabled = rel.full && last < now - limit;
 				
 				races.items.add(oi1);
 				
 				OptionItem oi2 = new OptionItem();
 				oi2.label = Integer.toString((int)rel.value);
-				oi2.enabled = p2.knows(player());
+				oi2.enabled = oi1.enabled;
 				stances.items.add(oi2);
 			}
 		}
@@ -624,12 +662,13 @@ public class DiplomacyScreen extends ScreenBase {
 	 * @param index the index
 	 */
 	void onSelectRace(int index) {
+		world().env.pause();
 		headAnimation = null;
 		races.visible(false);
 		stances.visible(false);
 		if (index < races.items.size() - 1) {
-			
-			final Player p2 = (Player)races.items.get(index).userObject;
+			inCall = true;
+			other = (Player)races.items.get(index).userObject;
 			stanceMatrix.visible(false);
 
 			final AtomicInteger wip = new AtomicInteger(2);
@@ -649,7 +688,7 @@ public class DiplomacyScreen extends ScreenBase {
 				public void run() {
 					try {
 						// load head
-						final HeadAnimation ha = loadHeadAnimation(p2.diplomacyHead);
+						final HeadAnimation ha = loadHeadAnimation(other.diplomacyHead);
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override
 							public void run() {
@@ -967,6 +1006,10 @@ public class DiplomacyScreen extends ScreenBase {
 	 * Start the head animation.
 	 */
 	void doStartHead() {
+		DiplomaticRelation dr = world().getRelation(player(), other);
+		dr.lastContact = world().time.getTime();
+		options.visible(true);
+		updateOptions();
 		if (headAnimation.frames > 0) {
 			
 			headAnimation.active = true;
@@ -1003,6 +1046,7 @@ public class DiplomacyScreen extends ScreenBase {
 					doStartHead();
 					darkeningIndex = 0;
 					close0(darkening);
+					commons.control().moveMouse();
 				}
 				askRepaint();
 			}
@@ -1017,12 +1061,45 @@ public class DiplomacyScreen extends ScreenBase {
 		darkening = commons.register(delay, new Action0() {
 			@Override
 			public void invoke() {
-				darkeningIndex++;
+				darkeningIndex--;
 				if (darkeningIndex == 0) {
 					close0(darkening);
+					inCall = false;
+					commons.control().moveMouse();
 				}
 				askRepaint();
 			}
 		});
+	}
+	/**
+	 * Update the list of options based on the current talking partner.
+	 */
+	void updateOptions() {
+		Diplomacy de = world().diplomacy.get(other.id);
+		options.items.clear();
+		if (de != null) {
+			for (Negotiate neg : de.negotiations) {
+				OptionItem opt = new OptionItem();
+				opt.label = get("diplomacy.type." + neg.type.toString());
+				opt.userObject = neg;
+				options.items.add(opt);
+			}
+		}
+		OptionItem opt = new OptionItem();
+		opt.label = get("diplomacy.done");
+		options.items.add(opt);
+		
+		options.fit();
+		options.y = base.y + base.height - options.height - 10;
+	}
+	/**
+	 * Activate talk option.
+	 * @param index the index
+	 */
+	void doOption(int index) {
+		if (index == options.items.size() - 1) {
+			options.visible(false);
+			headAnimation.loop = false;
+		}
 	}
 }

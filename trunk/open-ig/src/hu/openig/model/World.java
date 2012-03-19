@@ -1330,16 +1330,6 @@ public class World {
 				p.statistics.load(pstats);
 			}
 			
-			XElement xstance = xplayer.childElement("stance");
-			if (xstance != null) {
-				for (XElement xwith : xstance.childrenWithName("with")) {
-					Player pl = players.get(xwith.get("player"));
-					if (pl != null) {
-						p.setStance(pl, xwith.getInt("value"));
-					}
-				}
-			}
-
 			for (XElement xprod : xplayer.childrenWithName("production")) {
 				for (XElement xline : xprod.childrenWithName("line")) {
 					ResearchType rt = researches.get(xline.get("id"));
@@ -2308,7 +2298,9 @@ public class World {
 			xrel.set("second", dr.second.id);
 			xrel.set("full", dr.full);
 			xrel.set("wont-talk", dr.wontTalk);
-			xrel.set("last-contact", dr.lastContact);
+			if (dr.lastContact != null) {
+				xrel.set("last-contact", XElement.formatDateTime(dr.lastContact));
+			}
 			xrel.set("value", dr.value);
 			
 			StringBuilder sb = new StringBuilder();
