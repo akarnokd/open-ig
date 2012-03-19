@@ -3381,7 +3381,7 @@ public class InfoScreen extends ScreenBase {
 			List<Player> war = new ArrayList<Player>();
 			List<Player> ally = new ArrayList<Player>();
 			pl.add(player());
-			for (Player p : player().knownPlayers.keySet()) {
+			for (Player p : player().knownPlayers().keySet()) {
 				if (p == player() || p.noDiplomacy) {
 					continue;
 				}

@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Pred2;
 import hu.openig.model.Building;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -285,8 +286,11 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> ET = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			for (Player p : u.knownPlayers.keySet()) {
-				if (!p.race.equals(u.race) && !p.race.equals("traders") && !p.race.equals("pirates")) {
+			for (DiplomaticRelation dr : t.relations) {
+				Player p = dr.second;
+				if (dr.first == u && !p.race.equals(u.race) 
+						&& !p.race.equals("traders") 
+						&& !p.race.equals("pirates")) {
 					return true;
 				}
 			}

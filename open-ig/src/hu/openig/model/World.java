@@ -144,6 +144,8 @@ public class World {
 	public GameScripting scripting;
 	/** The IDs for infected fleets and their source of infection. */
 	public final Map<Integer, String> infectedFleets = new HashMap<Integer, String>();
+	/** The map of all diplomatic relations. */
+	public final List<DiplomaticRelation> relations = U.newArrayList();
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -944,6 +946,8 @@ public class World {
 			xi.set("source", e.getValue());
 		}
 		
+		saveDiplomaticRelations(xworld);
+		
 		for (Player p : players.values()) {
 			XElement xp = xworld.add("player");
 			xp.set("id", p.id);
@@ -975,14 +979,6 @@ public class World {
 			
 			p.statistics.save(xp.add("statistics"));
 
-			if (p.knownPlayers.size() > 0) {
-				XElement stances = xp.add("stance");
-				for (Map.Entry<Player, Integer> se : p.knownPlayers.entrySet()) {
-					XElement st1 = stances.add("with");
-					st1.set("player", se.getKey().id);
-					st1.set("value", se.getValue());
-				}
-			}
 			if (p.messageQueue.size() > 0) {
 				XElement xqueue = xp.add("message-queue");
 				for (Message msg : p.messageQueue) {
@@ -1262,6 +1258,8 @@ public class World {
 			}
 		}
 		
+		loadDiplomaticRelations(xworld);
+		
 		Map<Player, XElement[]> deferredMessages = new HashMap<Player, XElement[]>();
 		/** The deferred fleet-to-fleet targeting. */
 		Map<Fleet, Integer> deferredTargets = new HashMap<Fleet, Integer>();
@@ -1516,17 +1514,6 @@ public class World {
 				p.ai.init(p);
 				p.ai.load(xai);
 				
-				p.knownPlayers.clear();
-				
-				for (XElement xstance : xplayer.childrenWithName("stance")) {
-					for (XElement xwith : xstance.childrenWithName("with")) {
-						Player q = players.get(xwith.get("player"));
-						if (q != p && q != null) {
-							int v = xwith.getInt("value");
-							p.knownPlayers.put(q, v);
-						}
-					}
-				}
 			}
 		}
 		XElement xscript = xworld.childElement("scripting");
@@ -2262,6 +2249,131 @@ public class World {
 			Entry<Integer, String> e = it.next();
 			if (planet.id.equals(e.getValue())) {
 				it.remove();
+			}
+		}
+	}
+	/**
+	 * Retrieve a diplomatic relation record between two parties.
+	 * @param first the first party
+	 * @param second the second party
+	 * @return the relation or null if no two-sided relation exists
+	 */
+	public DiplomaticRelation getRelation(Player first, Player second) {
+		for (DiplomaticRelation dr : relations) {
+			if ((dr.first == first && dr.second == second) || (dr.first == second && dr.second == first)) {
+				return dr;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Establish or fill a relation between two parties.
+	 * @param first the first player
+	 * @param second the second player
+	 * @return the existing or newly created relation
+	 */
+	public DiplomaticRelation establishRelation(Player first, Player second) {
+		DiplomaticRelation dr = getRelation(first, second);
+		if (dr != null) {
+			// establish full relation
+			dr.full |= dr.second == first;
+		}  else {
+			dr = createDiplomaticRelation(first, second);
+		}
+		return dr;
+	}
+	/**
+	 * Create a new diplomatic relation entry.
+	 * @param first the first party
+	 * @param second the second party
+	 * @return the new relation
+	 */
+	DiplomaticRelation createDiplomaticRelation(Player first, Player second) {
+		DiplomaticRelation dr = new DiplomaticRelation();
+		dr.first = first;
+		dr.second = second;
+		dr.value = (first.initialStance + second.initialStance) / 2;
+		relations.add(dr);
+		return dr;
+	}
+	/**
+	 * Save the diplomatic relations.
+	 * @param xworld the output XML
+	 */
+	void saveDiplomaticRelations(XElement xworld) {
+		XElement xrels = xworld.add("relations");
+		for (DiplomaticRelation dr : relations) {
+			XElement xrel = xrels.add("relation");
+			xrel.set("first", dr.first.id);
+			xrel.set("second", dr.second.id);
+			xrel.set("full", dr.full);
+			xrel.set("wont-talk", dr.wontTalk);
+			xrel.set("last-contact", dr.lastContact);
+			xrel.set("value", dr.value);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			for (Player p2 : dr.alliancesAgainst) {
+				if (sb.length() > 0) {
+					sb.append(",");
+				}
+				sb.append(p2.id);
+			}
+			
+			xrel.set("ally-against", sb.toString());
+		}
+	}
+	/**
+	 * Loads the diplomatic relations from the world.
+	 * @param xworld the world XML
+	 */
+	void loadDiplomaticRelations(XElement xworld) {
+		relations.clear();
+		// load diplomatic relations
+		for (XElement xrels : xworld.childrenWithName("relations")) {
+			for (XElement xrel : xrels.childrenWithName("relation")) {
+				String first = xrel.get("first");
+				String second = xrel.get("second");
+				
+				Player pfirst = players.get(first);
+				if (pfirst == null) {
+					throw new AssertionError("DiplomaticRelation.first unknown: " + xrel);
+				}
+				Player psecond = players.get(second);
+				if (psecond == null) {
+					throw new AssertionError("DiplomaticRelation.second unknown: " + xrel);
+				}
+				
+				if (pfirst == psecond) {
+					throw new AssertionError("DiplomaticRelation.party equals: " + xrel);
+				}
+				
+				DiplomaticRelation dr = establishRelation(pfirst, psecond);
+				
+				dr.full = xrel.getBoolean("full");
+				dr.value = xrel.getDouble("value");
+				dr.wontTalk = xrel.getBoolean("wont-talk");
+				String lc = xrel.get("last-contact", null);
+				if (lc != null) {
+					try {
+						dr.lastContact = XElement.parseDateTime(lc);
+					} catch (ParseException ex) {
+						ex.printStackTrace();
+					}
+				}
+				String ally = xrel.get("ally-against", "");
+				for (String aa : ally.split("\\s*,\\s*")) {
+					if (!aa.isEmpty()) {
+						Player p2 = players.get(aa);
+						if (p2 == null) {
+							throw new AssertionError("DiplomaticRelation.allyAgainst unknown: " + xrel);
+						}
+						if (p2 == pfirst || p2 == psecond) {
+							throw new AssertionError("DiplomaticRelation.allyAgainstSelf: " + xrel);
+						}
+						dr.alliancesAgainst.add(p2);
+					}
+				}
 			}
 		}
 	}
