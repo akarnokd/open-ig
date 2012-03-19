@@ -34,7 +34,8 @@ import java.util.Map;
  * @author akarnokd, 2012.01.04.
  */
 public class StaticDefensePlanner extends Planner {
-	
+	/** The new construction money limit. */
+	protected static final int MONEY_LIMIT = 150000;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
@@ -75,12 +76,6 @@ public class StaticDefensePlanner extends Planner {
 		if (planet.statistics.constructing) {
 			return false;
 		}
-		if (world.money < 150000) {
-			return false;
-		}
-		if (planet.population < planet.statistics.workerDemand * 1.1) {
-			return false;
-		}
 		
 		List<Pred0> actions = new ArrayList<Pred0>();
 		
@@ -92,68 +87,72 @@ public class StaticDefensePlanner extends Planner {
 			defenseLimit = 5;
 		}
 		final int fdefenseLimit = defenseLimit;
+
 		
-		actions.add(new Pred0() {
-			@Override
-			public Boolean invoke() {
-				if (checkBuildingKind(planet, "Gun", fdefenseLimit)) {
-					return true;
-				}
-				return false;
-			}
-		});
-		actions.add(new Pred0() {
-			@Override
-			public Boolean invoke() {
-				// find the best available shield technology
-				if (checkBuildingKind(planet, "Shield", Integer.MAX_VALUE)) {
-					return true;
-				}
-				return false;
-			}
-		});
-		actions.add(new Pred0() {
-			@Override
-			public Boolean invoke() {
-				// find bunker
-				if (checkBuildingKind(planet, "Bunker", Integer.MAX_VALUE)) {
-					return true;
-				}
-				return false;
-			}
-		});
-		actions.add(new Pred0() {
-			@Override
-			public Boolean invoke() {
-				// find barracks..strongholds
-				if (checkBuildingKind(planet, "Defensive", fdefenseLimit)) {
-					return true;
-				}
-				return false;
-			}
-		});
-		if (world.level > 1) {
+		if (world.money >= 150000 && planet.population >= planet.statistics.workerDemand * 1.1) {
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
-					// find the space stations
-					if (checkStations(planet)) {
+					if (checkBuildingKind(planet, "Gun", fdefenseLimit)) {
 						return true;
 					}
 					return false;
 				}
 			});
-		}
-		actions.add(new Pred0() {
-			@Override
-			public Boolean invoke() {
-				// check for military spaceport
-				if (checkMilitarySpaceport(planet)) {
-					return true;
+			actions.add(new Pred0() {
+				@Override
+				public Boolean invoke() {
+					// find the best available shield technology
+					if (checkBuildingKind(planet, "Shield", Integer.MAX_VALUE)) {
+						return true;
+					}
+					return false;
 				}
-				return false;
+			});
+			actions.add(new Pred0() {
+				@Override
+				public Boolean invoke() {
+					// find bunker
+					if (checkBuildingKind(planet, "Bunker", Integer.MAX_VALUE)) {
+						return true;
+					}
+					return false;
+				}
+			});
+			actions.add(new Pred0() {
+				@Override
+				public Boolean invoke() {
+					// find barracks..strongholds
+					if (checkBuildingKind(planet, "Defensive", fdefenseLimit)) {
+						return true;
+					}
+					return false;
+				}
+			});
+			actions.add(new Pred0() {
+				@Override
+				public Boolean invoke() {
+					// check for military spaceport
+					if (checkMilitarySpaceport(planet)) {
+						return true;
+					}
+					return false;
+				}
+			});
+			if (world.level > 1) {
+				actions.add(new Pred0() {
+					@Override
+					public Boolean invoke() {
+						// find the space stations
+						if (checkStations(planet)) {
+							return true;
+						}
+						return false;
+					}
+				});
 			}
-		});
+		}
+
 		if (world.level > 1) {
 			actions.add(new Pred0() {
 				@Override
@@ -186,38 +185,40 @@ public class StaticDefensePlanner extends Planner {
 		final VehiclePlan plan = new VehiclePlan();
 		plan.calculate(world.availableResearch, w.battle, planet.statistics.vehicleMax, world.difficulty);
 		
-		// issue production order for the difference
-		for (Map.Entry<ResearchType, Integer> prod : plan.demand.entrySet()) {
-			ResearchType rt = prod.getKey();
-			int count = prod.getValue();
-			int inventoryGlobal = world.inventoryCount(rt);
-			int inventoryLocal = planet.inventoryCount(rt);
-			
-			int localDemand = count - inventoryLocal;
-			if (localDemand > 0 && localDemand > inventoryGlobal) {
-				// if in production wait
-				if (world.productionCount(rt) > 0) {
-					return false;
-				}
-				placeProductionOrder(rt, localDemand - inventoryGlobal);
-				return true;
-			}
-		}
-		
-		// undeploy old technology
-		for (final AIInventoryItem ii : planet.inventory) {
-			if (!plan.demand.containsKey(ii.type) 
-					&& (plan.tanks.contains(ii.type) || plan.sleds.contains(ii.type))) {
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						int cnt = planet.planet.inventoryCount(ii.type, ii.owner);
-						planet.planet.changeInventory(ii.type, planet.owner, -cnt);
-						planet.owner.changeInventoryCount(ii.type, cnt);
-						log("Undeploy, Planet = %s, Type = %s, Count = %s", planet.planet.id, ii.type, cnt);
+		if (planet.owner.money >= MONEY_LIMIT) {
+			// issue production order for the difference
+			for (Map.Entry<ResearchType, Integer> prod : plan.demand.entrySet()) {
+				ResearchType rt = prod.getKey();
+				int count = prod.getValue();
+				int inventoryGlobal = world.inventoryCount(rt);
+				int inventoryLocal = planet.inventoryCount(rt);
+				
+				int localDemand = count - inventoryLocal;
+				if (localDemand > 0 && localDemand > inventoryGlobal) {
+					// if in production wait
+					if (world.productionCount(rt) > 0) {
+						return false;
 					}
-				});
-				return true;
+					placeProductionOrder(rt, localDemand - inventoryGlobal);
+					return true;
+				}
+			}
+		
+			// undeploy old technology
+			for (final AIInventoryItem ii : planet.inventory) {
+				if (!plan.demand.containsKey(ii.type) 
+						&& (plan.tanks.contains(ii.type) || plan.sleds.contains(ii.type))) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							int cnt = planet.planet.inventoryCount(ii.type, ii.owner);
+							planet.planet.changeInventory(ii.type, planet.owner, -cnt);
+							planet.owner.changeInventoryCount(ii.type, cnt);
+							log("Undeploy, Planet = %s, Type = %s, Count = %s", planet.planet.id, ii.type, cnt);
+						}
+					});
+					return true;
+				}
 			}
 		}
 		// deploy new equipment
