@@ -23,8 +23,6 @@ public class Diplomacy {
 	public static class Negotiate {
 		/** The negotiation's type. */
 		public NegotiateType type;
-		/** The label to use. */
-		public String label;
 		/** The available approaches. */
 		public final List<Approach> approaches = new ArrayList<Approach>();
 		/** The available responses. */
@@ -79,7 +77,6 @@ public class Diplomacy {
 			for (XElement xnegotiate : xplayer.childrenWithName("negotiate")) {
 				Negotiate n = new Negotiate();
 				d.negotiations.add(n);
-				n.label = xnegotiate.content;
 				n.type = NegotiateType.valueOf(xnegotiate.get("type"));
 				for (XElement xapproach : xnegotiate.childrenWithName("approach")) {
 					Approach a = new Approach();

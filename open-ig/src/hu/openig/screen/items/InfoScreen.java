@@ -3386,7 +3386,6 @@ public class InfoScreen extends ScreenBase {
 					continue;
 				}
 				maxw = Math.max(maxw, commons.text().getTextWidth(textSize, p.shortName));
-//				maxh = Math.max(maxh, p.shortName.length() * 9);
 				pl.add(p);
 				if (player().knows(p)) {
 					int s = player().getStance(p);
