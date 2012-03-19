@@ -327,7 +327,7 @@ public class DatabaseScreen extends ScreenBase {
 	 */
 	private Iterable<Player> getKnownOtherPlayers() {
 		List<Player> p = new LinkedList<Player>();
-		for (Player q : player().knownPlayers.keySet()) {
+		for (Player q : player().knownPlayers().keySet()) {
 			if (!q.noDatabase) {
 				p.add(q);
 			}

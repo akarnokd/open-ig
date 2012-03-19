@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.model.VideoAudio;
@@ -587,9 +588,9 @@ public class DiplomacyScreen extends ScreenBase {
 		races.items.clear();
 		stances.items.clear();
 		
-		for (Map.Entry<Player, Integer> pi : player().knownPlayers.entrySet()) {
+		for (Map.Entry<Player, DiplomaticRelation> pi : player().knownPlayers().entrySet()) {
 			Player p2 = pi.getKey();
-			int rel = pi.getValue();
+			DiplomaticRelation rel = pi.getValue();
 			if (!p2.noDiplomacy) {
 				OptionItem oi1 = new OptionItem();
 				oi1.label = " " + p2.shortName;
@@ -600,7 +601,7 @@ public class DiplomacyScreen extends ScreenBase {
 				races.items.add(oi1);
 				
 				OptionItem oi2 = new OptionItem();
-				oi2.label = Integer.toString(rel);
+				oi2.label = Integer.toString((int)rel.value);
 				oi2.enabled = p2.knows(player());
 				stances.items.add(oi2);
 			}
@@ -733,7 +734,7 @@ public class DiplomacyScreen extends ScreenBase {
 			// filter diplomatic races
 			List<Player> players = U.newArrayList();
 			players.add(player());
-			for (Player p : player().knownPlayers.keySet()) {
+			for (Player p : player().knownPlayers().keySet()) {
 				if (!p.noDiplomacy) {
 					players.add(p);
 				}

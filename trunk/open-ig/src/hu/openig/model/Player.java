@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
+
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -78,8 +80,6 @@ public class Player {
 	public long money;
 	/** The player level statistics. */
 	public final PlayerStatistics statistics = new PlayerStatistics();
-	/** The other players that are known. */
-	public final Map<Player, Integer> knownPlayers = new LinkedHashMap<Player, Integer>();
 	/** The global financial information yesterday. */
 	public final PlayerFinances yesterday = new PlayerFinances();
 	/** The global finalcial information today. */
@@ -284,8 +284,8 @@ public class Player {
 	 * @return the stance level 0..100
 	 */
 	public int getStance(Player p) {
-		Integer i = knownPlayers.get(p);
-		return i != null ? i.intValue() : 0;
+		DiplomaticRelation dr = world.getRelation(this, p);
+		return dr != null ? (int)dr.value : 0;
 	}
 	/**
 	 * Set the stance with the given other player.
@@ -293,14 +293,31 @@ public class Player {
 	 * @param value the value 0..100
 	 */
 	public void setStance(Player p, int value) {
-		knownPlayers.put(p, value);
+		DiplomaticRelation dr = world.establishRelation(this, p);
+		dr.value = value;
 	}
 	/** 
 	 * Does this player know the other player?
 	 * @param p the other player
 	 * @return does this player know the other player? */
 	public boolean knows(Player p) {
-		return knownPlayers.containsKey(p);
+		DiplomaticRelation dr = world.getRelation(this, p);
+		return dr != null && (dr.second == p || (dr.first == p && dr.full));
+	}
+	/**
+	 * @return the set ow known players
+	 */
+	public Map<Player, DiplomaticRelation> knownPlayers() {
+		Map<Player, DiplomaticRelation> result = U.newLinkedHashMap();
+		for (DiplomaticRelation dr : world.relations) {
+			if (dr.first == this) {
+				result.put(dr.second, dr);
+			}
+			if (dr.second == this && dr.full) {
+				result.put(dr.first, dr);
+			}
+		}
+		return result;
 	}
 	/**
 	 * @return The collection of all visible fleets. 

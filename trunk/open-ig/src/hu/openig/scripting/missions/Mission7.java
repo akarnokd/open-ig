@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
@@ -74,7 +75,8 @@ public class Mission7 extends Mission {
 				helper.setObjectiveState("Mission-7-Task-" + i, ObjectiveState.SUCCESS);
 				if (i == 2) {
 					helper.setObjectiveState("Mission-7", ObjectiveState.SUCCESS);
-					player("FreeTraders").knownPlayers.put(player, 75);
+					DiplomaticRelation dr = world.establishRelation(player, player("FreeTraders"));
+					dr.value = 75;
 				} else {
 					int reward = 5000;
 					player.money += reward;
