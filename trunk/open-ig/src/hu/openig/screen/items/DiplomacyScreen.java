@@ -10,7 +10,6 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
-import hu.openig.core.ResourceType;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Diplomacy;
 import hu.openig.model.Diplomacy.Negotiate;
@@ -23,9 +22,11 @@ import hu.openig.model.WalkTransition;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
+import hu.openig.screen.OptionList;
+import hu.openig.screen.OptionList.OptionItem;
+import hu.openig.screen.RawAnimation;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIComponent;
-import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.U;
@@ -34,16 +35,12 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.Closeable;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.zip.GZIPInputStream;
 
 import javax.swing.SwingUtilities;
 
@@ -91,7 +88,7 @@ public class DiplomacyScreen extends ScreenBase {
 	/** Show the close label? */
 	boolean showCloseLabel;
 	/** The head animation. */
-	HeadAnimation headAnimation;
+	RawAnimation headAnimation;
 	/** To close the animation. */
 	Closeable headAnimationClose;
 	/** The current darkening index. */
@@ -111,12 +108,12 @@ public class DiplomacyScreen extends ScreenBase {
 		base.setBounds(0, 0, 
 				commons.diplomacy().base.getWidth(), commons.diplomacy().base.getHeight());
 		
-		races = new OptionList();
-		stances = new OptionList();
+		races = new OptionList(commons.text());
+		stances = new OptionList(commons.text());
 		stances.before = 2;
 		stances.after = 2 + 3;
 		stances.textsize = 10;
-		options = new OptionList();
+		options = new OptionList(commons.text());
 		options.visible(false);
 		
 		races.onSelect = new Action1<Integer>() {
@@ -391,135 +388,6 @@ public class DiplomacyScreen extends ScreenBase {
 	public void onEndGame() {
 		cleanup();
 	}
-	/** An option item to display. */
-	class OptionItem {
-		/** The display label. */
-		public String label;
-		/** Is enabled? */
-		public boolean enabled = true;
-		/** Mouse over? */
-		public boolean hover;
-		/** Selected? */
-		public boolean selected;
-		/** The associated user object. */
-		public Object userObject;
-		/**
-		 * Create a copy of this object.
-		 * @return the copy
-		 */
-		public OptionItem copy() {
-			OptionItem result = new OptionItem();
-			result.label = label;
-			result.hover = hover;
-			result.enabled = enabled;
-			result.selected = selected;
-			return result;
-		}
-	}
-	/**
-	 * Generic list for options. 
-	 * @author akarnokd, 2012.03.17.
-	 */
-	public class OptionList extends UIContainer {
-		/** The text size. */
-		public int textsize = 14;
-		/** The distance after the text. */
-		public int after = 3;
-		/** The distance before the text. */
-		public int before = 0;
-		/** The list of items. */
-		public final List<OptionItem> items = U.newArrayList();
-		/** The action to invoke when a menu item is selected. */
-		public Action1<Integer> onSelect;
-		/** Called when the given item is highlight changes. */
-		public Action1<Integer> onHighlight;
-		/** If mouse pressed. */
-		boolean mouseDown;
-		/** Fit the control's width to accomodate all labels. */
-		public void fit() {
-			int w = 0;
-			for (OptionItem oi : items) {
-				w = Math.max(w, commons.text().getTextWidth(textsize, oi.label));
-			}
-			this.width = w + 10;
-			this.height = 10 + items.size() * (textsize + before + after);
-			if (!items.isEmpty()) {
-				this.height -= after;
-			}
-		}
-		@Override
-		public void draw(Graphics2D g2) {
-			int dy = 5;
-			for (OptionItem oi : items) {
-				dy += before;
-				int color = TextRenderer.GREEN;
-				if (!oi.enabled) {
-					color = TextRenderer.GRAY;
-				} else
-				if (oi.selected) {
-					color = TextRenderer.ORANGE;
-				} else
-				if (oi.hover) {
-					color = TextRenderer.WHITE;
-				}
-				
-				commons.text().paintTo(g2, 5, dy, textsize, color, oi.label);
-				
-				dy += after + textsize;
-			}
-		}
-		@Override
-		public boolean mouse(UIMouse e) {
-			int idx = (e.y - 5) / (textsize + before + after);
-			if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
-				hover(idx, e.has(Type.DRAG) || mouseDown);
-				return true;
-			} else
-			if (e.has(Type.DOWN)) {
-				hover(idx, true);
-				mouseDown = true;
-				return true;
-			} else
-			if (e.has(Type.UP)) {
-				mouseDown = false;
-				if (idx >= 0 && idx < items.size()) {
-					OptionItem oi = items.get(idx);
-					if (oi.enabled && oi.selected && onSelect != null) {
-						onSelect.invoke(idx);
-						oi.selected = false;
-						return true;
-					}
-				}
-			} else
-			if (e.has(Type.LEAVE)) {
-				hover(-1, false);
-				mouseDown = false;
-			}
-			
-			return super.mouse(e);
-		}
-		/**
-		 * Hover or select a given indexth item.
-		 * @param idx the index
-		 * @param select should the item be selected
-		 */
-		public void hover(int idx, boolean select) {
-			int i = 0;
-			for (OptionItem oi : items) {
-				
-				boolean oldHover = oi.hover;
-				
-				oi.hover = oi.enabled & i == idx;
-				oi.selected = oi.hover & select;
-				
-				if (oldHover != oi.hover && onHighlight != null) {
-					onHighlight.invoke(i);
-				}
-				
-				i++;
-			}
-		}
-	}
 	/** Play message panel closing. */
 	void playProjectorOpen() {
 		openCloseAnimating = true;
@@ -688,7 +556,7 @@ public class DiplomacyScreen extends ScreenBase {
 				public void run() {
 					try {
 						// load head
-						final HeadAnimation ha = loadHeadAnimation(other.diplomacyHead);
+						final RawAnimation ha = RawAnimation.load(commons.rl, other.diplomacyHead);
 						SwingUtilities.invokeLater(new Runnable() {
 							@Override
 							public void run() {
@@ -865,142 +733,6 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 			return false;
 		}
-	}
-	/**
-	 * A head animation record. 
-	 * @author akarnokd, 2012.03.17.
-	 */
-	public static class HeadAnimation {
-		/** The list of image frames. */
-		public List<byte[]> images = U.newArrayList();
-		/** The palettes. */
-		public List<int[]> palettes = U.newArrayList();
-		/** The animation frames per second. */
-		public double fps;
-		/** The total number of frames. */
-		public int frames;
-		/** The current frame. */
-		int index;
-		/** The image width. */
-		int w;
-		/** The image height. */
-		int h;
-		/** The current image memory. */
-		int[] currentImage;
-		/** The current image at the start of the looping. */
-		int[] keyframeLoopStart;
-		/** The cached image. */
-		BufferedImage cache;
-		/** The current cached index. */
-		int cacheIndex;
-		/** The start loop index. */
-		public int startLoop;
-		/** The end loop index. */
-		public int endLoop;
-		/** Are we in loop mode? */
-		public boolean loop;
-		/** Animation is active? */
-		public boolean active;
-		/**
-		 * @return the current image for the current frame.
-		 */
-		public BufferedImage get() {
-			if (cache != null && cacheIndex == index) {
-				return cache;
-			}
-			if (currentImage == null) {
-				currentImage = new int[w * h];
-			}
-			byte[] data = images.get(index);
-			int[] palette = palettes.get(index);
-			for (int i = 0; i < data.length; i++) {
-				int c0 = palette[data[i] & 0xFF];
-				if (c0 != 0) {
-					currentImage[i] = c0;
-				}
-			}
-			if (index == startLoop && keyframeLoopStart == null) {
-				keyframeLoopStart = currentImage.clone();
-			}
-			cache = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-			cache.setRGB(0, 0, w, h, currentImage, 0, w);
-			cacheIndex = index;
-			return cache;
-			
-		}
-		/**
-		 * Move to the next frame.
-		 * @return true if wrapped over
-		 */
-		public boolean moveNext() {
-			index++;
-			if (loop) {
-				if (index >= endLoop) {
-					index = startLoop;
-					System.arraycopy(keyframeLoopStart, 0, currentImage, 0, keyframeLoopStart.length);
-					return true;
-				}
-			} else
-			if (index >= images.size()) {
-				index = 0;
-				return true;
-			}
-			return false;
-		}
-	}
-	/**
-	 * Load a video resource into list of images.
-	 * @param resource the resource name
-	 * @return the animation record with the frames
-	 */
-	HeadAnimation loadHeadAnimation(String resource) {
-		HeadAnimation ha = new HeadAnimation();
-		if (resource == null) {
-			return ha;
-		}
-		try {
-			DataInputStream in = new DataInputStream(
-					new BufferedInputStream(
-							new GZIPInputStream(rl.get(resource, ResourceType.VIDEO).open(), 1024 * 1024), 1024 * 1024));
-			try {
-				ha.w = Integer.reverseBytes(in.readInt());
-				ha.h = Integer.reverseBytes(in.readInt());
-				ha.frames = Integer.reverseBytes(in.readInt());
-				ha.fps = Integer.reverseBytes(in.readInt()) / 1000.0;
-				int[] palette = new int[256];
-				int frameCount = 0;
-				while (frameCount < ha.frames) {
-					int c = in.read();
-					if (c < 0 || c == 'X') {
-						break;
-					} else
-					if (c == 'P') {
-						int len = in.read();
-						for (int j = 0; j < len; j++) {
-							int r = in.read() & 0xFF;
-							int g = in.read() & 0xFF;
-							int b = in.read() & 0xFF;
-							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
-						}
-					} else
-					if (c == 'I') {
-						byte[] bytebuffer = new byte[ha.w * ha.h];
-						in.readFully(bytebuffer);
-						
-						ha.images.add(bytebuffer);
-						ha.palettes.add(palette.clone());
-						
-						
-		       			frameCount++;
-					}
-				}
-			} finally {
-				try { in.close(); } catch (IOException ex) {  }
-			}
-		} catch (Throwable ex) {
-			ex.printStackTrace();
-		}
-		return ha;
 	}
 	/**
 	 * Start the head animation.
