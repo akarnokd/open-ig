@@ -1172,20 +1172,6 @@ public class GameWindow extends JFrame implements GameControls {
 						options.maySave(true);
 					}
 					break;
-				case KeyEvent.VK_M:
-					if (e.isControlDown()) {
-						doPlaceTestFleets(e.isShiftDown());
-						repaintInner();
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_N:
-					if (e.isControlDown() && e.isShiftDown()) {
-						doPlaceRaceFleets();
-						e.consume();
-						repaintInner();
-					}
-					break;
 				case KeyEvent.VK_I:
 					// CHEAT: add more money
 					if (e.isControlDown()) {
@@ -1255,13 +1241,6 @@ public class GameWindow extends JFrame implements GameControls {
 							world().player.selectionMode = SelectionMode.PLANET;
 						}
 						e.consume();
-					}
-					break;
-				case KeyEvent.VK_K:
-					if (e.isControlDown()) {
-						fullConquestTest();
-						e.consume();
-						repaintInner();
 					}
 					break;
 				case KeyEvent.VK_Z:
