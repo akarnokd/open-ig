@@ -3063,7 +3063,13 @@
 	<entry key='diplomacy.click_to_exit'>Click to return</entry>
 	<entry key='diplomacy.show_panel'>Contact other races and factions.</entry>
 	<entry key='diplomacy.close_panel'>Close panel</entry>
-	<entry key=''></entry>
+	<entry key='diplomacy.done'>End conversation</entry>
+	<entry key='diplomacy.type.DIPLOMATIC_RELATIONS'>Improve diplomatic relations</entry>
+	<entry key='diplomacy.type.MONEY'>Offer money</entry>
+	<entry key='diplomacy.type.TRADE'>Improve trading relations</entry>
+	<entry key='diplomacy.type.ALLY'>Offer alliance</entry>
+	<entry key='diplomacy.type.DARGSLAN'>Alliance against the Dargslan</entry>
+	<entry key='diplomacy.type.SURRENDER'>Ask surrender</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
