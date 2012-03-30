@@ -3643,12 +3643,58 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (moveStep(p)) {
 				projectiles.remove(p);
 				
-				damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
+				if (p.model.mode == Mode.MULTI_ROCKET) {
+					damageArea(p.target, 
+							p.damage,
+							world().battle.getDoubleProperty(p.model.id, p.owner.id, "area"),
+							p.impactSound, 
+							p.model.id, 
+							p.owner.id);
+				} else {
+					damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
+				}
 			} else
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
 			}
 		}
+	}
+	/**
+	 * Damage the space around the specified target.
+	 * If the nearby structures represents fighters, they get uniform damage each.
+	 * @param target the target
+	 * @param damage the damage
+	 * @param area the affected area
+	 * @param impactSound the impact sound
+	 * @param techId the technology that inflicted the damage
+	 * @param owner the owner of the technology
+	 */
+	void damageArea(
+			SpacewarStructure target, 
+			int damage,
+			double area,
+			SoundType impactSound,
+			String techId,
+			String owner) {
+		for (SpacewarStructure s : U.newArrayList(structures)) {
+			if (!isAlly(s, world().players.get(owner))) {
+				double d = Math.hypot(s.x - target.x, s.y - target.y);
+				if (d <= area) {
+					damageTarget(s, 
+							(int)(s.count * damage * (area - d) / area), impactSound, techId, owner);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Test if the given spacewar structure belongs to the player of one of its allies.
+	 * @param s the structure
+	 * @param p the player
+	 * @return true if ally
+	 */
+	boolean isAlly(SpacewarStructure s, Player p) {
+		return (s.owner == p || ((battle.attacker.owner == p) == battle.attackerAllies.contains(s.owner)));
 	}
 	/**
 	 * Damage the target structure.
