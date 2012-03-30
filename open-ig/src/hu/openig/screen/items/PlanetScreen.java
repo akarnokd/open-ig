@@ -13,6 +13,7 @@ import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Func2;
 import hu.openig.core.Location;
+import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.core.Tile;
 import hu.openig.mechanics.Allocator;
@@ -359,6 +360,23 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			} else {
 				doMineLayerDeploy();
 				rep = true;
+			}
+			break;
+		case KeyEvent.VK_X:
+			if (currentBuilding != null) {
+				if (e.isControlDown()) {
+					currentBuilding.hitpoints -= currentBuilding.type.hitpoints / 10;
+					currentBuilding.hitpoints = Math.max(0, currentBuilding.hitpoints);
+					if (currentBuilding.hitpoints == 0) {
+						doDemolish();
+					}
+				} else 
+				if (e.isShiftDown()) {
+					currentBuilding.hitpoints += currentBuilding.type.hitpoints / 10;
+					currentBuilding.hitpoints = Math.min(currentBuilding.hitpoints, currentBuilding.type.hitpoints);
+				}
+				rep = true;
+				
 			}
 			break;
 		case KeyEvent.VK_B:
@@ -1361,13 +1379,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			g2.setColor(Color.YELLOW);
 			g2.drawRect(br.x, br.y, br.width, br.height);
 			
-//			BufferedImage empty = areaEmpty.getStrip(0);
 			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
 			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
 				Location loc = surface.renderingOrigins.get(i);
 				for (int j = 0; j < surface.renderingLength.get(i) + 2; j++) {
 					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
-//					int y = y0 + Tile.toScreenY(loc.x - j, loc.y);
 					Location loc1 = Location.of(loc.x - j, loc.y);
 					SurfaceEntity se = surface.buildingmap.get(loc1);
 					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
@@ -1381,17 +1397,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 								g2.drawImage(cell.image, x, yref, null);
 							}
 						}
+						// add smoke
+						if (se.building != null) {
+							drawBuildingSmokeFire(g2, x0, y0, loc1, se);
+						}
 						// place guns on buildings or roads
 						if ((se.building != null 
 								&& "Defensive".equals(se.building.type.kind))
 								|| se.type == SurfaceEntityType.ROAD) {
 							drawGuns(g2, loc.x - j, loc.y);
 						}
-						// place units after
-//					} else {
-//						if (renderingWindow.intersects(x * scale + offsetX, y * scale + offsetY, 57 * scale, 27 * scale)) {
-//							g2.drawImage(empty, x, y, null);
-//						}
 					}
 //					if (battle != null) { FIXME during battle only
 						drawMine(g2, loc.x - j, loc.y);
@@ -1399,6 +1414,45 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						drawExplosions(g2, loc.x - j, loc.y);
 						drawRockets(g2, loc.x - j, loc.y);
 //					} FIXME during battle only
+				}
+			}
+		}
+		/**
+		 * Draws the smoke and fire on damaged buildings.
+		 * @param g2 the graphics context
+		 * @param x0 the render origin
+		 * @param y0 the render origin
+		 * @param loc1 the cell location
+		 * @param se the surface entity
+		 */
+		void drawBuildingSmokeFire(Graphics2D g2, int x0, int y0,
+				Location loc1, SurfaceEntity se) {
+			int dr = se.building.hitpoints * 100 / se.building.type.hitpoints;
+			if (dr < 100) {
+				if (se.virtualColumn == 0 && se.virtualRow + 1 == se.building.height()) {
+					BufferedImage smokeFire = null;
+					int len = se.building.width() * se.building.height();
+					int nsmoke = 0;
+					if (dr < 50) {
+						smokeFire = commons.colony().buildingFire[animation % commons.colony().buildingFire.length];										
+						nsmoke = (50 - dr) / 5;
+					} else {
+						smokeFire = commons.colony().buildingSmoke[animation % commons.colony().buildingSmoke.length];
+						nsmoke = (100 - dr) / 10;
+					}
+					
+					double sep = 1.0 * len  / (nsmoke + 1);
+					for (double sj = sep; sj < len; sj += sep) {
+						int si = (int)Math.round(sj);
+						if (si < len) {
+							Point zz = deZigZag(si, se.building.width(), se.building.height());
+
+							int smx = x0 + Tile.toScreenX(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
+							int smy = y0 + Tile.toScreenY(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
+							int dx = 27 - smokeFire.getWidth() / 2;
+							g2.drawImage(smokeFire, smx + dx, smy - 14, null);
+						}
+					}
 				}
 			}
 		}
@@ -1516,6 +1570,72 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		
 	}
+	/** The cached zigzag map. */
+	static final Map<Pair<Integer, Integer>, Pair<int[], int[]>> ZIGZAGS = U.newHashMap();
+	/**
+	 * Compute the X, Y coordinates of the linear address in the zig-zagged coordinate system
+	 * enclosed by a rectangle of width and height.
+	 * @param linear the linear address, &lt; width * height;
+	 * @param width the width of the enclosing rectangle
+	 * @param height the height of the rectangle
+	 * @return the point
+	 */
+	static Point deZigZag(int linear, int width, int height) {
+		
+		Pair<Integer, Integer> key = Pair.of(width, height);
+		
+		int[] xs = null;
+		int[] ys = null;
+		
+		Pair<int[], int[]> value = ZIGZAGS.get(key);
+		if (value == null) {
+			int wh = width * height;
+			
+			xs = new int[wh];
+			ys = new int[wh];
+			
+			int base = width <= height ? width : height;
+			int s = 0;
+			for (int i = 0; i < base; i++) {
+				int s2 = s + i + 1;
+				for (int j = s; j < s2; j++) {
+					xs[j] = i - j + s;
+					ys[j] = j - s;
+					
+					xs[wh - 1 - j] = (width - 1) - xs[j];
+					ys[wh - 1 - j] = (height - 1) - ys[j];
+				}
+				s = s2;
+			}
+			if (width <= height) {
+				for (int i = 0; i < height - width - 1; i++) {
+					for (int j = 0; j < width; j++) {
+						xs[s] = width - 1 - j;
+						ys[s] = i + 1 + j;
+						s++;
+					}
+				}
+			} else {
+				for (int i = 0; i < width - height - 1; i++) {
+					for (int j = 0; j < height; j++) {
+						xs[s] = height + i - j;
+						ys[s] = j;
+						s++;
+					}
+				}
+			}
+			ZIGZAGS.put(key, Pair.of(xs, ys));
+		} else {
+			xs = value.first;
+			ys = value.second;
+		}
+		return new Point(xs[linear], ys[linear]);
+	}
+	
+//	public static void main(String[] args) {
+//		System.out.println(deZigZag(5, 5, 2));
+//	}
+	
 	/**
 	 * Prepare the surface tiles in parallel.
 	 * @param surface the target planet surface
@@ -3365,6 +3485,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				g2.setColor(new Color(0xAE6951));
 			}
 			g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (u.model.width - 9) / u.model.hp), 3);
+			
+			BufferedImage smokeFire = null;
+			if (u.hp * 3 <= u.model.hp) {
+				smokeFire = commons.colony().buildingFire[animation % commons.colony().buildingFire.length];
+			} else
+			if (u.hp * 3 <= u.model.hp * 2) {
+				smokeFire = commons.colony().buildingSmoke[animation % commons.colony().buildingSmoke.length];
+			}
+			if (smokeFire != null) {
+				int dx = p.x + tx + (img.getWidth() - smokeFire.getWidth()) / 2;
+				int dy = p.y + ty + (img.getHeight() / 2 - smokeFire.getHeight());
+				g2.drawImage(smokeFire, dx, dy, null);
+			}
 		}
 	}
 	/**
@@ -3922,7 +4055,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						guns.remove(i);
 					}
 				}
-				battle.defenderFortificationLosses++;
+				if (battle != null) {
+					battle.defenderFortificationLosses++;
+				}
 				surface().removeBuilding(b);
 				effectSound(SoundType.EXPLOSION_LONG);
 			}
