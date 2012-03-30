@@ -1100,40 +1100,50 @@ public class InfoScreen extends ScreenBase {
 		button.onPress = new Action0() {
 			@Override
 			public void invoke() {
-				InfoScreen.this.mode = mode;
-				if (config.computerVoiceScreen) {
-					switch (mode) {
-					case INFORMATION_PLANETS:
-						effectSound(SoundType.INFORMATION_PLANETS);
-						break;
-					case INFORMATION_COLONY:
-						effectSound(SoundType.INFORMATION_COLONY);
-						break;
-					case INFORMATION_MILITARY:
-						effectSound(SoundType.INFORMATION_MILITARY);
-						break;
-					case INFORMATION_FINANCIAL:
-						effectSound(SoundType.INFORMATION_FINANCIAL);
-						break;
-					case INFORMATION_FLEETS:
-						effectSound(SoundType.INFORMATION_FLEETS);
-						break;
-					case INFORMATION_BUILDINGS:
-						effectSound(SoundType.INFORMATION_BUILDINGS);
-						break;
-					case INFORMATION_INVENTIONS:
-						effectSound(SoundType.INFORMATION_INVENTIONS);
-						break;
-					case INFORMATION_ALIENS:
-						effectSound(SoundType.INFORMATION_ALIENS);
-						break;
-					default:
-				}
-				}
-				applyMode();
+				switchToTab(mode);
 			}
+
 		};
 		return button;
+	}
+	/**
+	 * Switch to the given tab.
+	 * @param mode the mode
+	 */
+	void switchToTab(final Screens mode) {
+		if (mode != this.mode) {
+			this.mode = mode;
+			if (config.computerVoiceScreen) {
+				switch (mode) {
+				case INFORMATION_PLANETS:
+					effectSound(SoundType.INFORMATION_PLANETS);
+					break;
+				case INFORMATION_COLONY:
+					effectSound(SoundType.INFORMATION_COLONY);
+					break;
+				case INFORMATION_MILITARY:
+					effectSound(SoundType.INFORMATION_MILITARY);
+					break;
+				case INFORMATION_FINANCIAL:
+					effectSound(SoundType.INFORMATION_FINANCIAL);
+					break;
+				case INFORMATION_FLEETS:
+					effectSound(SoundType.INFORMATION_FLEETS);
+					break;
+				case INFORMATION_BUILDINGS:
+					effectSound(SoundType.INFORMATION_BUILDINGS);
+					break;
+				case INFORMATION_INVENTIONS:
+					effectSound(SoundType.INFORMATION_INVENTIONS);
+					break;
+				case INFORMATION_ALIENS:
+					effectSound(SoundType.INFORMATION_ALIENS);
+					break;
+				default:
+				}
+			}
+			applyMode();
+		}
 	}
 	@Override
 	public void onEnter(Screens mode) {
@@ -2200,28 +2210,22 @@ public class InfoScreen extends ScreenBase {
 			}
 			break;
 		case INFORMATION_PLANETS:
-			boolean rep = false;
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
 				colonies.select(-1);
-				rep = true;
-				break;
+				return true;
 			case KeyEvent.VK_DOWN:
 				colonies.select(1);
-				rep = true;
-				break;
+				return true;
 			case KeyEvent.VK_LEFT:
 				colonies.select(-27);
-				rep = true;
-				break;
+				return true;
 			case KeyEvent.VK_RIGHT:
 				colonies.select(27);
-				rep = true;
-				break;
+				return true;
 			case KeyEvent.VK_ENTER:
 				colonies.onDoubleClick.invoke(planet());
-				rep = true;
-				break;
+				return true;
 			case KeyEvent.VK_PLUS:
 			case KeyEvent.VK_MINUS:
 				adjustPlanetListView();
@@ -2231,8 +2235,39 @@ public class InfoScreen extends ScreenBase {
 			if (showPlanetListDetails) {
 				adjustPlanetListView();
 			}
-			return rep;
 		default:
+		}
+		if (e.getKeyCode() == KeyEvent.VK_Q) {
+			switchToTab(Screens.INFORMATION_PLANETS);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_W) {
+			switchToTab(Screens.INFORMATION_COLONY);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_E) {
+			switchToTab(Screens.INFORMATION_MILITARY);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_R) {
+			switchToTab(Screens.INFORMATION_FINANCIAL);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_A) {
+			switchToTab(Screens.INFORMATION_FLEETS);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_S) {
+			switchToTab(Screens.INFORMATION_BUILDINGS);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_D) {
+			switchToTab(Screens.INFORMATION_INVENTIONS);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_F && world().level >= 4) {
+			switchToTab(Screens.INFORMATION_ALIENS);
+			return true;
 		}
 		return super.keyboard(e);
 	}
