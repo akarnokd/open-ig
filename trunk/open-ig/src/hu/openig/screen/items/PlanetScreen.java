@@ -1428,30 +1428,43 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		void drawBuildingSmokeFire(Graphics2D g2, int x0, int y0,
 				Location loc1, SurfaceEntity se) {
 			int dr = se.building.hitpoints * 100 / se.building.type.hitpoints;
-			if (dr < 100) {
+			if (dr < 100 && se.building.isComplete()) {
 				if (se.virtualColumn == 0 && se.virtualRow + 1 == se.building.height()) {
-					BufferedImage smokeFire = null;
 					int len = se.building.width() * se.building.height();
 					int nsmoke = 0;
 					if (dr < 50) {
-						smokeFire = commons.colony().buildingFire[animation % commons.colony().buildingFire.length];										
-						nsmoke = (50 - dr) / 5;
+						nsmoke = (50 - dr) / 5 + 1;
 					} else {
-						smokeFire = commons.colony().buildingSmoke[animation % commons.colony().buildingSmoke.length];
-						nsmoke = (100 - dr) / 10;
+						nsmoke = (100 - dr) / 10 + 1;
 					}
 					
 					double sep = 1.0 * len  / (nsmoke + 1);
+					int cnt = 0;
 					for (double sj = sep; sj < len; sj += sep) {
 						int si = (int)Math.round(sj);
 						if (si < len) {
 							Point zz = deZigZag(si, se.building.width(), se.building.height());
 
+							int mix = Math.abs(loc1.x + zz.x) + Math.abs(loc1.y + zz.y) + animation;
+							BufferedImage[] animFrames = null;
+							if (dr < 50) {
+								if ((cnt % 3) == (mix / 320 % 3)) {
+									animFrames = commons.colony().buildingSmoke;
+								} else {
+									animFrames = commons.colony().buildingFire;
+								}
+							} else {
+								animFrames = commons.colony().buildingSmoke;
+							}
+							
+							BufferedImage smokeFire = animFrames[mix % animFrames.length];
+							
 							int smx = x0 + Tile.toScreenX(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
 							int smy = y0 + Tile.toScreenY(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
 							int dx = 27 - smokeFire.getWidth() / 2;
 							g2.drawImage(smokeFire, smx + dx, smy - 14, null);
 						}
+						cnt++;
 					}
 				}
 			}

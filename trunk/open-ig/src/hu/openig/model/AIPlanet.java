@@ -51,6 +51,8 @@ public class AIPlanet {
 	public int lastMorale;
 	/** The tax level. */
 	public TaxLevel tax;
+	/** The auto build state. */
+	public AutoBuild autoBuild;
 	/**
 	 * Assign the necessary properties from a planet.
 	 * @param planet the target fleet
@@ -67,6 +69,7 @@ public class AIPlanet {
 		this.morale = planet.morale;
 		this.lastMorale = planet.lastMorale;
 		this.tax = planet.tax;
+		this.autoBuild = planet.autoBuild;
 		
 		for (InventoryItem ii : planet.inventory) {
 			inventory.add(new AIInventoryItem(ii));

@@ -8,16 +8,9 @@
 
 package hu.openig.mechanics;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
-import hu.openig.model.AIWorld;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
@@ -27,6 +20,12 @@ import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Resource;
 import hu.openig.model.World;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * The automatic colony builder.
@@ -325,30 +324,6 @@ public final class AutoBuilder {
 				}
 			);
 			sendIfAutoBuildOffMessage(world, planet);
-		} else
-		if (planet.autoBuild == AutoBuild.AI) {
-			AIWorld w = new AIWorld();
-			w.assign(planet.owner);
-			
-			DefaultAIControls controls = new DefaultAIControls(planet.owner);
-			ColonyPlanner p = new ColonyPlanner(w, controls);
-			p.managePlanet(planet);
-			
-			if (applyAI(p.actions())) {
-				return;
-			}
-			
-			EconomyPlanner e = new EconomyPlanner(w, controls);
-			e.managePlanet(planet);
-			if (applyAI(e.actions())) {
-				return;
-			}
-			
-			StaticDefensePlanner d = new StaticDefensePlanner(w, controls);
-			d.managePlanet(planet);
-			if (applyAI(d.actions())) {
-				return;
-			}
 		}
 	}
 	/**
