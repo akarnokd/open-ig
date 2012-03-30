@@ -1258,7 +1258,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -1824,8 +1823,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param g2 the graphics context.
 	 */
 	void drawBattle(Graphics2D g2) {
-		// TODO space battle surface
-		
 		Shape save0 = g2.getClip();
 		AffineTransform af = g2.getTransform();
 		
@@ -2897,7 +2894,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						}
 						for (SpacewarWeaponPort port : sws.ports) {
 							rocketButton.enabled |= port.projectile.mode != Mode.BEAM 
-									&& port.count > 0; 
+									&& port.count > 0 && port.cooldown == 0; 
 						}
 						guardButton.selected &= sws.guard; // keep guard only of all of the selection is in guard mode
 					}
@@ -3027,6 +3024,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (r.port.is != null) {
 			r.port.is.count--;
 		}
+		r.port.cooldown = r.port.projectile.delay;
 
 		SpacewarStructure proj = new SpacewarStructure();
 		proj.techId = r.port.projectile.id;
@@ -3110,7 +3108,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				stop = true;
 			}
 		}
-		// TODO stop command for other structures
 		if (stop) {
 			effectSound(SoundType.NOT_AVAILABLE);
 			enableSelectedFleetControls();
@@ -3889,7 +3886,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		sp.owner = source.owner; 
 		sp.target = target;
 		sp.movementSpeed = p.projectile.movementSpeed;
-		sp.impactSound = SoundType.HIT; // FIXME
+		sp.impactSound = SoundType.HIT;
 		sp.x = source.x;
 		sp.y = source.y;
 		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
