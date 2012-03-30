@@ -3020,6 +3020,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param r the rocket selected
 	 */
 	void fireRocketAt(SpacewarStructure target, RocketSelected r) {
+		if (r.port.cooldown > 0) {
+			return;
+		}
 		r.port.count--;
 		if (r.port.is != null) {
 			r.port.is.count--;
