@@ -8,7 +8,12 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.core.Action0;
+import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
+import hu.openig.model.AIPlanet;
+import hu.openig.model.AIWorld;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
@@ -30,6 +35,7 @@ import hu.openig.model.World;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +52,12 @@ public class AIUser implements AIManager {
 	World w;
 	/** The player. */
 	Player p;
+	/** The copy of world state. */
+	AIWorld world;
+	/** The controls. */
+	AIControls controls;
+	/** The list of actions to apply. */
+	final List<Action0> applyActions = new ArrayList<Action0>();
 	/** The detected attacks. */
 	final Set<Integer> detectedAttack = U.newHashSet();
 	@Override
@@ -53,24 +65,53 @@ public class AIUser implements AIManager {
 		this.p = p;
 		this.w = p.world;
 		this.env = w.env;
+		controls = new DefaultAIControls(p);
 	}
 
 	@Override
 	public void prepare() {
-		// TODO Auto-generated method stub
-
+		world = new AIWorld();
+		world.assign(p);
 	}
 
 	@Override
 	public void manage() {
-		// TODO Auto-generated method stub
+		List<Action0> acts = null;
+
+		// manage only AI autobuild planets
+		Iterator<AIPlanet> it = world.ownPlanets.iterator();
+		while (it.hasNext()) {
+			AIPlanet p = it.next();
+			if (p.autoBuild != AutoBuild.AI) {
+				it.remove();
+			}
+		}
+		
+		acts = new ColonyPlanner(world, controls).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
+		acts = new EconomyPlanner(world, controls).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
+		acts = new StaticDefensePlanner(world, controls).run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			return;
+		}
 
 	}
 
 	@Override
 	public void apply() {
-		// TODO Auto-generated method stub
-
+		for (Action0 a : applyActions) {
+			a.invoke();
+		}
+		applyActions.clear();
+		world = null;
 	}
 
 	@Override
