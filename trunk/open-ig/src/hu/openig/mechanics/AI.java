@@ -17,6 +17,7 @@ import hu.openig.model.AIFleet;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.ExplorationMap;
@@ -31,6 +32,7 @@ import hu.openig.model.ResponseMode;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
+import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
 import hu.openig.utils.U;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -131,7 +134,7 @@ public class AI implements AIManager {
 					}
 				}
 			} else {
-				defaultAttackBehavior(world, idles);				
+				defaultAttackBehavior(world, idles, p);				
 			}
 			return SpacewarAction.CONTINUE;
 		}
@@ -142,9 +145,10 @@ public class AI implements AIManager {
 	 * distributes attacks among all enemies.
 	 * @param world the world object
 	 * @param idles the list of units to handle
+	 * @param p the player
 	 */
 	public static void defaultAttackBehavior(SpacewarWorld world,
-			List<SpacewarStructure> idles) {
+			List<SpacewarStructure> idles, Player p) {
 		Set<SpacewarStructure> ess = U.newHashSet();
 		for (SpacewarStructure ship : idles) {
 			defaultAttackBehavior(world, ship);
@@ -171,6 +175,48 @@ public class AI implements AIManager {
 				}
 			}
 		}
+		for (SpacewarStructure s : esl) {
+			// do not fire rocket at tagged objects unless it is the last enemy
+			if (esl.size() == 1 || (s.item == null && s.item.tag == null)) {
+				int found = 0;
+				if (s.type == StructureType.SHIP || s.type == StructureType.STATION) {
+					Pair<SpacewarStructure, SpacewarWeaponPort> w = 
+							findReadyPort(world.structures(p), EnumSet.of(Mode.ROCKET, Mode.MULTI_ROCKET));
+					if (w != null) {
+						world.attack(s, w.first, w.second.projectile.mode);
+						found++;
+					}
+				}
+				if (s.type == StructureType.SHIELD || s.type == StructureType.PROJECTOR) {
+					Pair<SpacewarStructure, SpacewarWeaponPort> w = 
+							findReadyPort(world.structures(p), EnumSet.of(Mode.BOMB, Mode.VIRUS));
+					if (w != null) {
+						world.attack(s, w.first, w.second.projectile.mode);
+						found++;
+					}
+				}
+				if (found == 0) {
+					// don't bother with other targets, out of ammo
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * Find a port ready to fire among the fleet.
+	 * @param own the own fleet
+	 * @param mode the weapon mode
+	 * @return the pair of structure and port
+	 */
+	static Pair<SpacewarStructure, SpacewarWeaponPort> findReadyPort(List<SpacewarStructure> own, EnumSet<Mode> mode) {
+		for (SpacewarStructure s : own) {
+			for (SpacewarWeaponPort wp : s.ports) {
+				if (wp.count > 0 && wp.cooldown == 0 && mode.contains(wp.projectile.mode)) {
+					return Pair.of(s, wp);
+				}
+			}
+		}
+		return null;
 	}
 	/**
 	 * Calculate the percentage of the structure healths.

@@ -93,7 +93,7 @@ public class AIPirate implements AIManager {
 		List<SpacewarStructure> sts = world.structures(p);
 		Pair<Double, Double> fh = AI.fleetHealth(sts);
 		if (fh.first * 4 >= battleHP) {
-			AI.defaultAttackBehavior(world, idles);
+			AI.defaultAttackBehavior(world, idles, p);
 		} else {
 			for (SpacewarStructure s : sts) {
 				world.flee(s);
