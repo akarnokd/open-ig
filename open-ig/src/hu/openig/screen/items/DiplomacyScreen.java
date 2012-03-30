@@ -10,10 +10,14 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.core.Pair;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.ApproachType;
 import hu.openig.model.Diplomacy;
+import hu.openig.model.Diplomacy.Approach;
 import hu.openig.model.Diplomacy.Negotiate;
 import hu.openig.model.DiplomaticRelation;
+import hu.openig.model.NegotiateType;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.model.VideoAudio;
@@ -27,6 +31,7 @@ import hu.openig.screen.OptionList.OptionItem;
 import hu.openig.screen.RawAnimation;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.U;
@@ -36,8 +41,10 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -81,6 +88,12 @@ public class DiplomacyScreen extends ScreenBase {
 	OptionList options;
 	/** Update the race listing periodically. */
 	Closeable raceUpdater;
+	/** The listing of approaches. */
+	OptionList approachList;
+	/** The money list. */
+	OptionList moneyList;
+	/** List of enemies. */
+	OptionList enemies;
 	/** The stance matrix. */
 	StanceMatrix stanceMatrix;
 	/** Show the panel label? */
@@ -103,6 +116,8 @@ public class DiplomacyScreen extends ScreenBase {
 	Player other;
 	/** Are we in call mode? */
 	boolean inCall;
+	/** The label that displays the selected negotiation for the approach. */
+	UILabel negotiationTitle;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -150,6 +165,34 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 		};
 		
+		moneyList = new OptionList(commons.text());
+		moneyList.onSelect = new Action1<Integer>() {
+			@Override
+			public void invoke(Integer value) {
+				doMoney(value);
+			}
+		};
+		
+		
+		approachList = new OptionList(commons.text());
+		approachList.onSelect = new Action1<Integer>() {
+			@Override
+			public void invoke(Integer value) {
+				doApproach(value);
+			}
+		};
+		
+		negotiationTitle = new UILabel("", 14, commons.text());
+		negotiationTitle.color(TextRenderer.YELLOW);
+		
+		enemies = new OptionList(commons.text());
+		enemies.onSelect = new Action1<Integer>() {
+			@Override
+			public void invoke(Integer value) {
+				doEnemies(value);
+			}
+		};
+		
 		addThis();
 	}
 
@@ -166,6 +209,8 @@ public class DiplomacyScreen extends ScreenBase {
 		stances.visible(false);
 		stanceMatrix.visible(false);
 		options.visible(false);
+		moneyList.visible(false);
+		approachList.visible(false);
 		darkeningIndex = 0;
 		inCall = false;
 	}
@@ -228,8 +273,21 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		stanceMatrix.bounds(base.x + 157, base.y + 10, 320, 239);
 		
-		options.location(base.x + 10, base.y + 10);
-		options.fit();
+		options.location(base.x + 10, base.y + base.height - options.height - 10);
+		
+		approachList.location(base.x + 10, base.y + base.height - approachList.height - 10);
+		moneyList.location(base.x + 10, base.y + base.height - moneyList.height - 10);
+		enemies.location(base.x + 10, base.y + base.height - enemies.height - 10);
+		
+		if (approachList.visible()) {
+			negotiationTitle.location(base.x + 10, approachList.y - 20);
+		} else
+		if (moneyList.visible()) {
+			negotiationTitle.location(base.x + 10, moneyList.y - 20);
+		} else
+		if (enemies.visible()) {
+			negotiationTitle.location(base.x + 10, enemies.y - 20);
+		}
 	}
 	
 	@Override
@@ -354,15 +412,24 @@ public class DiplomacyScreen extends ScreenBase {
 		}
 		if (inCall && !openCloseAnimating) {
 			commons.text().paintTo(g2, base.x + 5, base.y + 5, 14, other.color, other.name);
-			
-			if (options.visible()) {
-				g2.setColor(new Color(0, 0, 0, 160));
-				g2.fillRect(options.x - 5, options.y - 5, options.width + 10, options.height + 10);
-			}
+
+			darkenUnder(g2, options);
+			darkenUnder(g2, moneyList);
+			darkenUnder(g2, approachList);
 		}
 		super.draw(g2);
 	}
-
+	/**
+	 * Darken the area under the given component if it is visible.
+	 * @param g2 the graphics context.
+	 * @param c the component
+	 */
+	void darkenUnder(Graphics2D g2, UIComponent c) {
+		if (c.visible()) {
+			g2.setColor(new Color(0, 0, 0, 160));
+			g2.fillRect(c.x - 5, c.y - 5, c.width + 10, c.height + 10);
+		}
+	}
 	/**
 	 * Center a label on the screen.
 	 * @param g2 the graphics context
@@ -823,15 +890,126 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		options.fit();
 		options.y = base.y + base.height - options.height - 10;
+		
+		// update approaches
 	}
 	/**
 	 * Activate talk option.
 	 * @param index the index
 	 */
 	void doOption(int index) {
+		options.visible(false);
 		if (index == options.items.size() - 1) {
-			options.visible(false);
 			headAnimation.loop = false;
+		} else {
+			OptionItem cancel = new OptionItem();
+			cancel.label = get("diplomacy.cancel");
+
+			approachList.items.clear();
+			moneyList.items.clear();
+			Negotiate neg = (Negotiate)options.items.get(index).userObject;
+			if (neg.type == NegotiateType.MONEY) {
+				int[] money = { 10000, 20000, 30000, 40000, 50000, 100000, 250000, 500000 };
+				for (int m : money) {
+					OptionItem item = new OptionItem();
+					item.label = String.format("%,8d", m);
+					item.userObject = m;
+					item.enabled = m <= player().money;
+					moneyList.items.add(item);
+				}
+				moneyList.items.add(cancel);
+				
+				moneyList.fit();
+				moneyList.visible(true);
+				negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
+				onResize();
+			} else 
+			if (neg.type == NegotiateType.ALLY) {
+				negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
+				enemies.items.add(cancel);
+
+				Set<Player> others = new LinkedHashSet<Player>(player().knownPlayers().keySet());
+				others.remove(other);
+				others.retainAll(other.knownPlayers().keySet());
+
+				for (Player p : others) {
+					OptionItem item = new OptionItem();
+					item.label = " " + p.name + " (" + player().getStance(p) + ", " + other.getStance(p) + ")";
+					item.userObject = p;
+					approachList.items.add(item);
+					
+				}
+				
+				enemies.fit();
+				enemies.visible(true);
+				negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
+				onResize();
+			} else {
+				if (neg.approaches.size() > 1) {
+					
+					Set<ApproachType> at = U.newHashSet();
+					for (Approach a : neg.approaches) {
+						at.add(a.type);
+					}
+					for (ApproachType a : at) {
+						OptionItem item = new OptionItem();
+						item.label = " " + get("diplomacy." + a);
+						item.userObject = Pair.of(neg, a);
+						approachList.items.add(item);
+					}
+					approachList.items.add(cancel);
+
+					approachList.fit();
+					approachList.visible(true);
+					negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
+					onResize();
+				} else {
+					// no options
+				}
+			}
+		}
+	}
+	/**
+	 * Action when a money amount is selected.
+	 * @param index the index
+	 */
+	void doMoney(int index) {
+		if (index == moneyList.items.size() - 1) {
+			options.visible(true);
+			moneyList.visible(false);
+			negotiationTitle.visible(false);
+		} else {
+			int m = (Integer)moneyList.items.get(index).userObject;
+			moneyList.visible(false);
+		}
+	}
+	/**
+	 * The action when an approach is selected.
+	 * @param index the index
+	 */
+	void doApproach(int index) {
+		if (index == approachList.items.size() - 1) {
+			options.visible(true);
+			approachList.visible(false);
+			negotiationTitle.visible(false);
+		} else {
+			@SuppressWarnings("unchecked")
+			Pair<Negotiate, ApproachType> a = (Pair<Negotiate, ApproachType>)moneyList.items.get(index).userObject;
+			approachList.visible(false);
+		}
+	}
+	/**
+	 * The action when an approach is selected.
+	 * @param index the index
+	 */
+	void doEnemies(int index) {
+		if (index == enemies.items.size() - 1) {
+			options.visible(true);
+			enemies.visible(false);
+			negotiationTitle.visible(false);
+		} else {
+			Player p = (Player)enemies.items.get(index).userObject;
+			approachList.visible(false);
 		}
 	}
 }
