@@ -284,3 +284,42 @@ _Depending on playtester's response, the mechanics might change. Having earthqua
 You can attack alien planets and fleets on the starmap. You should select a fleet and click on the ATTACK button, hit the A key and left-click on the target or CTRL + Right Click on the target.
 
 The original game had a small inconvenience: if fleets and planets overlapped on screen, you could not attack and got a nice warning most of the time. In current Open-IG, you click will select an alien fleet/planet under the mouse pointer, or do nothing. (_Later on, I plan to show a small menu listing all the fleets and planets at the spot and you may choose one of them more easily._)
+
+== Taxation ==
+
+Total tax income is the sum of planet tax incomes. The planet tax calculation depends on several factors:
+
+  * population count,
+  * taxation level (0..100),
+  * morale (0..100),
+  * owner's total number of planets and
+  * game difficulty (0, 1, 2).
+
+There are 10 levels of taxation ranging from 0% to 100%, each with about 11% increase to the previous. For example, MODERATE level is 33%, VERY_HIGH is 66%.
+
+The planetary tax is calculated via the following formulas:
+{{{
+base tax = population * taxation % * morale %
+
+(player) planet compensation = Max(planet count, 3) + difficulty - 2
+
+(ai) planet compensation = Math(planet count, 3) - difficulty
+
+tax compensation = 3 / Sqrt(planet compensation)
+
+tax = base tax * tax compensation
+}}}
+
+The following table lists a few compensation values for the player:
+
+|| *Planet count* || *EASY* || *NORMAL* || *HARD* ||
+|| <= 3 || 3 || 2.12 || 1.73 ||
+|| 4 || 2.12 || 1.73 || 1.5 ||
+|| 5 || 1.73 || 1.5 || 1.34 ||
+|| 6 || 1.5 || 1.34 || 1.22 ||
+|| 10 || 1.1 || 1 || 0.95 ||
+|| 20 || 0.7|| 0.68 || 0.67 ||
+|| 50 ||  0.43 || 0.42 || 0.42 ||
+|| 100 || 0.3 || 0.3 || 0.3 ||
+
+This compensation feature should ensure a good money-bootstrap at the beginning and reduce the practically unusable money-boost at the end of the game.
