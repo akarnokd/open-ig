@@ -3073,8 +3073,8 @@
 	<entry key='diplomacy.AGGRESSIVE'>Aggressive approach</entry>
 	<entry key='diplomacy.NEUTRAL'>Neutral approach</entry>
 	<entry key='diplomacy.HUMBLE'>Humble approach</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='settings.base_speed'>Game speed</entry>
+	<entry key='settings.base_speed_value'>%d min/step</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

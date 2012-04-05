@@ -58,7 +58,7 @@ public final class Simulator {
 	 */
 	public static boolean compute(World world) {
 		int day0 = world.time.get(GregorianCalendar.DATE);
-		world.time.add(GregorianCalendar.MINUTE, 10);
+		world.time.add(GregorianCalendar.MINUTE, world.params().speed());
 		int day1 = world.time.get(GregorianCalendar.DATE);
 
 		boolean result = false;
@@ -680,7 +680,7 @@ public final class Simulator {
 	 */
 	static boolean moveFleets(List<Fleet> playerFleets, World world) {
 		boolean invokeRadar = false;
-		double stepMultiplier = 0.25;
+		double stepMultiplier = 0.025 * world.params().speed();
 		
 		for (Fleet f : playerFleets) {
 			// regenerate shields

@@ -155,7 +155,7 @@ public class CommonResources implements GameEnvironment {
 	/** The current simulation controls. */
 	public SimulationTimer simulation;
 	/** The game simulation's parameters. */
-	private Parameters params = new Parameters();
+	private Parameters params;
 	/** Map of currently running AIs. */
 	public final Map<Player, Future<?>> runningAI = new HashMap<Player, Future<?>>();
 	/** Indicate if an asynchronous save is in operation. */
@@ -173,6 +173,13 @@ public class CommonResources implements GameEnvironment {
 		this.config = config;
 		this.control = control;
 
+		params = new Parameters(new Func0<Integer>() {
+			@Override
+			public Integer invoke() {
+				return CommonResources.this.config.timestep;
+			}
+		});
+		
 		ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
 		scheduler.setKeepAliveTime(1500, TimeUnit.MILLISECONDS);
 		scheduler.allowCoreThreadTimeOut(true);
