@@ -2329,6 +2329,8 @@
 	<entry key='diplomacy.AGGRESSIVE'>Aggresszív megközelítés</entry>
 	<entry key='diplomacy.NEUTRAL'>Semleges megközelítés</entry>
 	<entry key='diplomacy.HUMBLE'>Alázatos megközelítés</entry>
+	<entry key='settings.base_speed'>Játék sebesség</entry>
+	<entry key='settings.base_speed_value'>%d perc/lépés</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

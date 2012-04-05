@@ -8,11 +8,26 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Func0;
+
 /**
  * Contains game simulation related parameters.
  * @author akarnokd, 2011.12.20.
  */
 public class Parameters {
+	/** The speed factor callback. */
+	protected final Func0<Integer> speed;
+	/**
+	 * Constructor. Initializes the speed factor callback field.
+	 * @param speed the speed callback
+	 */
+	public Parameters(Func0<Integer> speed) {
+		this.speed = speed;
+	}
+	/** @return the speed multiplier. */
+	public int speed() {
+		return speed.invoke();
+	}
 	/**
 	 * @return the multiplier for radar-range in pixels for ground radars
 	 */
@@ -27,27 +42,27 @@ public class Parameters {
 	}
 	/** @return the research speed in terms of money / simulation step. */
 	public int researchSpeed() {
-		return 80; // DEFAULT: 40
+		return 8 * speed(); // DEFAULT: 40
 	}
 	/** @return the production unit per simulation step. The lower the faster the production is. */
 	public int productionUnit() {
-		return 25; // DEFAULT: 50
+		return 250 / speed(); // DEFAULT: 50
 	}
 	/** @return the construction points per simulation step. */
 	public int constructionSpeed() {
-		return 200; // DEFAULT: 200
+		return 20 * speed(); // DEFAULT: 200
 	}
 	/** @return the construction cost per simulation step. Not used now. */
 	public int constructionCost() {
-		return 200; // DEFAULT: 200
+		return 20 * speed(); // DEFAULT: 200
 	}
 	/** @return the hitpoints improved per simulation step. */
 	public int repairSpeed() {
-		return 100; // DEFAULT: 50
+		return 10 * speed(); // DEFAULT: 50
 	}
 	/** @return the repair cost per simulation step. */
 	public int repairCost() {
-		return 20; // DEFAULT: 20
+		return 2 * speed(); // DEFAULT: 20
 	}
 	/** @return the denominator to compute hitpoints from costs in battles. */
 	public int costToHitpoints() {
@@ -61,7 +76,7 @@ public class Parameters {
 		return 10;
 	}
 	/**
-	 * @return the ratio between the fleet movement timer and 10 minute simulation time.
+	 * @return the ratio between the fleet movement timer and speed() minute simulation time.
 	 */
 	public int simulationRatio() {
 		return 4;

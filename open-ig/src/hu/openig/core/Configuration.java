@@ -208,6 +208,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean subtitles = true;
+	/** The time step in minutes for the simulation. */
+	@LoadSave
+	@LoadSaveGame
+	public int timestep = 10;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

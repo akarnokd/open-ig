@@ -149,7 +149,7 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox subtitles;
 	/** Animate technology? */
-	@Settings(page = SettingsPage.GAMEPLAY)
+	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox animateTech;
 	/** Re-equip tanks? */
 	@Settings(page = SettingsPage.GAMEPLAY)
@@ -203,10 +203,10 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.LOAD_SAVE)
 	UILabel saveNameText;
 	/** Classic RTS controls? */
-	@Settings(page = SettingsPage.GAMEPLAY)
+	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox classicControls;
 	/** Swap left-right mouse? */
-	@Settings(page = SettingsPage.GAMEPLAY)
+	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox swapLeftRight;
 	/** The timer for the blinking cursor. */
 	Timer blink;
@@ -219,6 +219,12 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Slow down time on detected attack. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox slowOnAttack;
+	/** The time step for the simulation. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UILabel timestepLabel;
+	/** The time step for the simulation. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UISpinner timestepValue;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -764,6 +770,68 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		
+		// ------------------------------------------
+		
+		final UIImageButton tsprev = new UIImageButton(commons.common().moveLeft);
+		tsprev.setDisabledPattern(commons.common().disabledPattern);
+		tsprev.setHoldDelay(250);
+		final UIImageButton tsnext = new UIImageButton(commons.common().moveRight);
+		tsnext.setDisabledPattern(commons.common().disabledPattern);
+		tsnext.setHoldDelay(250);
+		
+		tsprev.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_LOW_1);
+				config.timestep = Math.max(1, config.timestep - 1);
+				askRepaint(base);
+			}
+		};
+		tsnext.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_LOW_1);
+				config.timestep = Math.min(60, config.timestep + 1);
+				askRepaint(base);
+			}
+		};
+		
+		timestepValue = new UISpinner(14, tsprev, tsnext, commons.text()) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+					int dw = next.x - prev.x - prev.width - 2;
+					int x0 = e.x - prev.x - prev.width;
+					config.timestep = Math.max(1, Math.min(100, 1 + x0 * 59 / dw));
+					return true;
+				} else
+				if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.timestep == 60))) {
+					return true;
+				}
+				return super.mouse(e);
+			}
+			@Override
+			public void draw(Graphics2D g2) {
+				int dw = width - next.width - prev.width - 2;
+				int ox = prev.x + prev.width + 1;
+				int dx = (config.timestep - 1) * dw / 59;
+				g2.setColor(Color.WHITE);
+				g2.fillRect(ox + dx, 1, 2, height - 2);
+				super.draw(g2);
+			}
+		};
+		timestepValue.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return format("settings.base_speed_value", config.timestep);
+			}
+		};
+		timestepLabel = new UILabel(get("settings.base_speed"), 14, commons.text());
+
+		
+		
+		// ------------------------------------------
+		
 		addThis();
 	}
 	/**
@@ -899,12 +967,20 @@ public class LoadSaveScreen extends ScreenBase {
 		satelliteDeploy.location(base.x + 30, base.y + 250 + 8);
 
 		subtitles.location(base.x + 30, base.y + 280 + 8);
+		
+		int dy = 280 + 30;
+		classicControls.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		swapLeftRight.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		
+		animateTech.location(base.x + 30, base.y + dy + 8);
 
 		
 		// --------------------------------------------------------------------------------------
 		// gameplay
 
-		int dy = 60;
+		dy = 60;
 		
 		reequipTanks.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
@@ -933,14 +1009,12 @@ public class LoadSaveScreen extends ScreenBase {
 		dy += 30;
 		radarUnion.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
-		classicControls.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
-		swapLeftRight.location(base.x + 30, base.y + dy + 8);
+		slowOnAttack.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		
-		animateTech.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
-		slowOnAttack.location(base.x + 30, base.y + dy + 8);
+		timestepLabel.location(base.x + 30, base.y + dy + 8);
+		timestepValue.width = 250;
+		timestepValue.location(base.x + base.width - timestepValue.width - 30, base.y + dy);
 		dy += 30;
 	}
 	@Override
@@ -977,6 +1051,9 @@ public class LoadSaveScreen extends ScreenBase {
 			researchMoneyPercent.next.enabled(config.researchMoneyPercent < 2000);
 
 			autoRepairLimit.prev.enabled(config.autoRepairLimit > 0);
+			
+			timestepValue.prev.enabled(config.timestep > 1);
+			timestepValue.next.enabled(config.timestep < 60);
 			
 		} else {
 
