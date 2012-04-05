@@ -871,8 +871,16 @@ public final class Simulator {
 	static void taxCompensation(Player p) {
 		long n = p.statistics.planetsOwned;
 		if (n > 0) {
+			if (n < 3) {
+				n = 3;
+			}
 			long diff = 0;
-			double k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
+			double k = 0;
+			if (p == p.world.player) {
+				k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
+			} else {
+				k = 3 / Math.sqrt(n - p.world.difficulty.ordinal());
+			}
 			for (Planet pl : p.planets.keySet()) {
 				if (pl.owner == p) {
 					int ti = pl.taxIncome;
