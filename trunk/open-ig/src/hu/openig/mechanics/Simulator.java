@@ -100,18 +100,17 @@ public final class Simulator {
 		if (day0 != day1) {
 			
 			for (Player p : world.players.values()) {
+				taxCompensation(p);
 				p.ai.onNewDay();
 			}
-//			System.out.println("----");
 			
 			result = true;
 		}
 		
-		testAchievements(world, day0 != day1);
+		checkAchievements(world, day0 != day1);
 		
 		if (!world.pendingBattles.isEmpty()) {
 			world.env.startBattle();
-//			result = true;
 		}
 		world.scripting.onTime();
 		return result;
@@ -644,7 +643,7 @@ public final class Simulator {
 	 * @param world the world to test for achievements
 	 * @param dayChange was there a day change?
 	 */
-	static void testAchievements(World world, boolean dayChange) {
+	static void checkAchievements(World world, boolean dayChange) {
 		Profile p = world.env.profile();
 
 		for (String a : AchievementManager.achievements()) {
@@ -864,5 +863,28 @@ public final class Simulator {
 	 */
 	static double getSpeed(Fleet f) {
 		return f.getSpeed() / 4d;
+	}
+	/**
+	 * Calculate a compensated tax based on the current number of planets.
+	 * @param p the player
+	 */
+	static void taxCompensation(Player p) {
+		long n = p.statistics.planetsOwned;
+		if (n > 0) {
+			long diff = 0;
+			double k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
+			for (Planet pl : p.planets.keySet()) {
+				if (pl.owner == p) {
+					int ti = pl.taxIncome;
+					pl.taxIncome = (int)(pl.taxIncome * k);
+					diff += pl.taxIncome - ti;
+				}
+			}
+			p.yesterday.taxIncome += diff;
+			p.statistics.moneyIncome += diff;
+			p.statistics.moneyTaxIncome += diff;
+			p.world.statistics.moneyIncome += diff;
+			p.world.statistics.moneyTaxIncome += diff;
+		}
 	}
 }
