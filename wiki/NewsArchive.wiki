@@ -4,6 +4,19 @@
 
 = Recent =
 
+== April, 2012 ==
+
+*April 7, 2012*
+
+I managed to reserve some time for development and did several improvements to the game. Most notably the inclusion of global speed settings. But the main task is with the diplomacy. 
+
+I've implemented the screen for outgoing negotiations and the only missing part is the way AI should react to diplomatic negotiations. Unfortunately, I couldn't find information about how to do it; most suggestions were to implement heuristics about how I would react to such scenarios. 
+
+If you have any idea about or experience with such diplomatic systems, or just want to help, please add your comment to [http://code.google.com/p/open-ig/issues/detail?id=319 this issue]. The questions to answer are like:
+
+{{{If the player offered me X credits, when would I say Yes/No?}}}
+
+
 == March, 2012 ==
 
 *March 11, 2012*
