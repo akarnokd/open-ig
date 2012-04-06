@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Difficulty;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.utils.U;
 
@@ -482,7 +483,10 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void upgradeVehicles(int vehicleMax) {
 		VehiclePlan plan = new VehiclePlan();
-		plan.calculate(owner.available().keySet(), owner.world.battle, vehicleMax, owner.world.difficulty);
+		plan.calculate(owner.available().keySet(), 
+				owner.world.battle, 
+				vehicleMax, 
+				owner == owner.world.player ? Difficulty.HARD : owner.world.difficulty);
 		// fill in best
 		for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
 			int demand = e.getValue();
