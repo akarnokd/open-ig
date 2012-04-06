@@ -17,13 +17,16 @@ import hu.openig.model.AIFleet;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.ApproachType;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.Building;
-import hu.openig.model.DiplomaticInteraction;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
+import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
@@ -66,7 +69,9 @@ public class AI implements AIManager {
 	/** Set of fleets which will behave as defenders in the space battle. */
 	final Set<Integer> defensiveTask = U.newHashSet();
 	/** The estimations about how strong the other player's fleets are. */
-	final Map<String, PlayerFleetStrength> strengths = U.newHashMap();
+	final Map<String, PlayerStrength> strengths = U.newHashMap();
+	/** Exponential smoothing of strength changes. */
+	static final double STRENGTH_DISCOUNT = 0.2;
 	/** The list of actions to apply. */
 	final List<Action0> applyActions = new ArrayList<Action0>();
 	/** The next attack date. */
@@ -75,13 +80,25 @@ public class AI implements AIManager {
 	 * Knowledge about a player's typical fleet strength based on encounters.
 	 * @author akarnokd, 2011.12.20.
 	 */
-	public static class PlayerFleetStrength {
+	public static class PlayerStrength {
 		/** The player ID. */
 		public String playerID;
-		/** The attack value. */
-		public double attack;
-		/** The defense value. */
-		public double defense;
+		/** The attack value. -1 means no conflict yet. */
+		public double spaceAttack = -1;
+		/** The defense value. -1 means no conflict yet. */
+		public double spaceDefense = -1;
+		/** The ground attack potential. -1 means no conflict yet. */
+		public double groundAttack = -1;
+		/** The ground defense potential. -1 means no conflict yet. */
+		public double groundDefense = -1;
+		/** Times the spacewar won. */
+		public int spaceWon;
+		/** Times the spacewar lost. */
+		public int spaceLost;
+		/** Times the groundwar won. */
+		public int groundWon;
+		/** Times the groundwar lost. */
+		public int groundLost;
 	}
 	@Override
 	public void init(Player p) {
@@ -108,18 +125,10 @@ public class AI implements AIManager {
 	}
 	
 	@Override
-	public ResponseMode diplomacy(Player other,
-			DiplomaticInteraction offer) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
 	public SpacewarAction spaceBattle(SpacewarWorld world, List<SpacewarStructure> idles) {
 		if (idles.size() == 0) {
 			return SpacewarAction.CONTINUE;
 		}
-		// FIXME make more sophisticated
-		
 		Pair<Double, Double> fh = fleetHealth(world.structures(p));
 		double health = fh.first / fh.second;
 		double switchToCostAttack = p.aiDefensiveRatio / (p.aiOffensiveRatio + p.aiDefensiveRatio);
@@ -304,23 +313,104 @@ public class AI implements AIManager {
 	
 	@Override
 	public void groundBattleDone(GroundwarWorld war) {
-		// TODO Auto-generated method stub
-		
+		PlayerStrength ps = getStrength(war.battle().enemy(p));
+		if (war.battle().groundwarWinner == p) {
+			ps.groundWon++;
+		} else {
+			ps.groundLost++;
+		}
 	}
 	@Override
 	public void groundBattleInit(GroundwarWorld war) {
-		// TODO Auto-generated method stub
+		double dps = 0;
+		double hp = 0;
+		for (GroundwarUnit u : war.units()) {
+			if (u.owner != p) {
+				hp += u.hp;
+				dps += u.model.damage * 1.0 / u.model.delay;
+			}
+		}
 		
+		Player e = war.battle().enemy(p);
+
+		PlayerStrength ps = getStrength(e);
+		if (ps.groundAttack < 0) {
+			ps.groundAttack = dps;
+		} else {
+			ps.groundAttack = (1 - STRENGTH_DISCOUNT) * ps.groundAttack + STRENGTH_DISCOUNT * dps;
+		}
+		if (ps.groundDefense < 0) {
+			ps.groundDefense = hp;
+		} else {
+			ps.groundDefense = (1 - STRENGTH_DISCOUNT) * ps.groundDefense + STRENGTH_DISCOUNT * hp;
+		}
+		
+		enterWar(e);
 	}
 	@Override
 	public void spaceBattleDone(SpacewarWorld world) {
-		// TODO Auto-generated method stub
-		
+		PlayerStrength ps = getStrength(world.battle().enemy(p));
+		if (world.battle().spacewarWinner == p) {
+			ps.spaceWon++;
+		} else {
+			ps.spaceLost++;
+		}
 	}
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
-		// TODO Auto-generated method stub
+		// buildup statistics
+		double dps = 0;
+		double hp = 0;
+		for (SpacewarStructure s : world.structures()) {
+			if (s.owner != p) {
+				hp += s.hp + s.shield;
+				for (SpacewarWeaponPort wp : s.ports) {
+					dps += wp.count * wp.projectile.damage * 1.0 / wp.projectile.delay;
+				}
+			}
+		}
 		
+		Player e = world.battle().enemy(p);
+		
+		PlayerStrength ps = getStrength(e);
+		if (ps.spaceAttack < 0) {
+			ps.spaceAttack = dps;
+		} else {
+			ps.spaceAttack = (1 - STRENGTH_DISCOUNT) * ps.spaceAttack + STRENGTH_DISCOUNT * dps;
+		}
+		if (ps.spaceDefense < 0) {
+			ps.spaceDefense = hp;
+		} else {
+			ps.spaceDefense = (1 - STRENGTH_DISCOUNT) * ps.spaceDefense + STRENGTH_DISCOUNT * hp;
+		}
+		
+		enterWar(e);
+	}
+	/**
+	 * Enter a war in diplomacy with the enemy.
+	 * @param e the enemy
+	 */
+	void enterWar(Player e) {
+		// update diplomatic relations
+		DiplomaticRelation dr = w.establishRelation(e, p);
+		dr.full = true;
+		dr.value = 5;
+		dr.wontTalk = true;
+		dr.lastContact = w.time.getTime();
+		dr.alliancesAgainst.clear();
+	}
+	/**
+	 * Returns or creates the strength estimate record for the given enemy.
+	 * @param p the enemy player
+	 * @return the strength
+	 */
+	PlayerStrength getStrength(Player p) {
+		PlayerStrength ps = strengths.get(p.id);
+		if (ps == null) {
+			ps = new PlayerStrength();
+			ps.playerID = p.id;
+		}
+		return ps;
 	}
 	
 	@Override
@@ -353,6 +443,25 @@ public class AI implements AIManager {
 				}
 			}
 		}
+		strengths.clear();
+		for (XElement xstrengths : in.childrenWithName("strengths")) {
+			for (XElement xstr : xstrengths.childrenWithName("strength")) {
+				PlayerStrength ps = new PlayerStrength();
+				
+				ps.playerID = xstr.get("player");
+				ps.spaceAttack = xstr.getDouble("space-attack");
+				ps.spaceDefense = xstr.getDouble("space-defense");
+				ps.groundAttack = xstr.getDouble("ground-attack");
+				ps.groundDefense = xstr.getDouble("ground-defense");
+				
+				ps.spaceWon = xstr.getInt("space-wins");
+				ps.spaceLost = xstr.getInt("space-loses");
+				ps.groundWon = xstr.getInt("ground-wins");
+				ps.groundLost = xstr.getInt("ground-loses");
+				
+				strengths.put(ps.playerID, ps);
+			}
+		}
 	}
 	@Override
 	public void save(XElement out) {
@@ -375,89 +484,89 @@ public class AI implements AIManager {
 		if (nextAttack != null) {
 			xa.set("next-attack", XElement.formatDateTime(nextAttack));
 		}
+		
+		XElement xstrs = out.add("strengths");
+		for (PlayerStrength ps : strengths.values()) {
+			XElement xstr = xstrs.add("strength");
+			
+			xstr.set("player", ps.playerID);
+			xstr.set("space-attack", ps.spaceAttack);
+			xstr.set("space-defense", ps.spaceDefense);
+			xstr.set("ground-attack", ps.groundAttack);
+			xstr.set("ground-defense", ps.groundDefense);
+			
+			xstr.set("space-wins", ps.spaceWon);
+			xstr.set("space-loses", ps.spaceLost);
+			xstr.set("ground-wins", ps.groundWon);
+			xstr.set("ground-loses", ps.groundLost);
+		}
 	}
 	@Override
 	public void onResearchStateChange(ResearchType rt, ResearchState state) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onProductionComplete(ResearchType rt) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onDiscoverPlanet(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onDiscoverFleet(Fleet fleet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onDiscoverPlayer(Player player) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onFleetArrivedAtPoint(Fleet fleet, double x, double y) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onFleetArrivedAtPlanet(Fleet fleet, Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onFleetArrivedAtFleet(Fleet fleet, Fleet other) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onBuildingComplete(Planet planet, Building building) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onLostSight(Fleet fleet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onLostTarget(Fleet fleet, Fleet target) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onNewDay() {
-		// TODO
+
 	}
 	@Override
 	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetDied(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetConquered(Planet planet, Player lastOwner) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void onPlanetLost(Planet planet) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
@@ -539,4 +648,21 @@ public class AI implements AIManager {
 		}
 	}
 	
+	@Override
+	public ResponseMode diplomacy(Player other, NegotiateType about,
+			ApproachType approach, Object argument) {
+		// TODO Auto-generated method stub
+		DiplomaticRelation r = w.getRelation(p, other);
+		if (r == null || r.full) {
+			return ResponseMode.NO;
+		}
+		
+		switch (about) {
+		case DIPLOMATIC_RELATIONS:
+			
+			break;
+		default:
+		}
+		return ResponseMode.NO;
+	}
 }

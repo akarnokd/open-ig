@@ -972,10 +972,8 @@ public class World {
 			if (p.ai != null) {
 				p.ai.save(xp.add("ai"));
 			}
-			XElement xdipl = xp.add("diplomacy");
-			for (DiplomaticInteraction di : p.diplomacy) {
-				di.save(xdipl.add("message"));
-			}
+//			XElement xdipl = xp.add("diplomacy");
+			// FIXME save pending diplomatic offers
 			
 			p.statistics.save(xp.add("statistics"));
 
@@ -1310,16 +1308,9 @@ public class World {
 				p.aiMode = AIMode.valueOf(aim);
 			}
 
-			p.diplomacy.clear();
-			XElement xdipl = xplayer.childElement("diplomacy");
-			if (xdipl != null) {
-				for (XElement xdi : xdipl.childrenWithName("message")) {
-					DiplomaticInteraction di = new DiplomaticInteraction();
-					di.load(xdi);
-					p.diplomacy.add(di);
-				}
-			}
-
+			
+//			XElement xdipl = xplayer.childElement("diplomacy");
+			// FIXME load pending diplomatic offers
 			
 			for (Map<ResearchType, Production> prod : p.production.values()) {
 				prod.clear();

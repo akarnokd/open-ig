@@ -14,7 +14,6 @@ import hu.openig.model.AIControls;
 import hu.openig.model.AIResult;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -388,10 +387,6 @@ public class DefaultAIControls implements AIControls {
 			}
 		}
 		return false;
-	}
-	@Override
-	public void actionDiplomaticInteraction(Player other, DiplomaticInteraction offer) {
-		// TODO implement
 	}
 	
 	@Override

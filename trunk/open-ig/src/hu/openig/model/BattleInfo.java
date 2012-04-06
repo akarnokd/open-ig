@@ -92,4 +92,18 @@ public class BattleInfo {
 	public boolean isGroundwarComplete() {
 		return groundwarWinner != null;
 	}
+	/**
+	 * Returns the enemy of the given player in this battle.
+	 * @param p the player
+	 * @return the enemy of the player
+	 */
+	public Player enemy(Player p) {
+		if (p == attacker.owner) {
+			if (targetPlanet != null) {
+				return targetPlanet.owner;
+			}
+			return targetFleet.owner;
+		}
+		return attacker.owner;
+	}
 }

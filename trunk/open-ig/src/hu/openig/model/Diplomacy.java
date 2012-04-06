@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
@@ -27,6 +28,35 @@ public class Diplomacy {
 		public final List<Approach> approaches = new ArrayList<Approach>();
 		/** The available responses. */
 		public final List<Response> responses = new ArrayList<Response>();
+		/**
+		 * Find the approaches for the specified type.
+		 * @param type the approach type
+		 * @return the list of available approach definitions
+		 */
+		public List<Approach> approachFor(ApproachType type) {
+			List<Approach> result = U.newArrayList();
+			for (Approach a : approaches) {
+				if (a.type == type) {
+					result.add(a);
+				}
+			}
+			return result;
+		}
+		/**
+		 * Find the available responses for the given approach type and mode.
+		 * @param type the approach type
+		 * @param mode the general response
+		 * @return the list of concrete responses
+		 */
+		public List<Response> responseFor(ApproachType type, ResponseMode mode) {
+			List<Response> result = U.newArrayList();
+			for (Response r : responses) {
+				if (r.type == type && r.mode == mode) {
+					result.add(r);
+				}
+			}
+			return result;
+		}
 	}
 	/** An approach entry for a negotiation or call. */
 	public static class Approach {

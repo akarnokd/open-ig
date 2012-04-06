@@ -13,15 +13,16 @@ import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.ApproachType;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
-import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Message;
+import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
@@ -115,12 +116,11 @@ public class AIUser implements AIManager {
 	}
 
 	@Override
-	public ResponseMode diplomacy(Player other,
-			DiplomaticInteraction offer) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseMode diplomacy(Player other, NegotiateType about,
+			ApproachType approach, Object argument) {
+		return ResponseMode.NO;
 	}
-
+	
 	@Override
 	public SpacewarAction spaceBattle(SpacewarWorld world, 
 			List<SpacewarStructure> idles) {

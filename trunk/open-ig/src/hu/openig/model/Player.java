@@ -15,10 +15,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -112,10 +110,6 @@ public class Player {
 	public Rectangle explorationOuterLimit;
 	/** The colonization limit, -1 means unlimited. */
 	public int colonizationLimit;
-	/**
-	 * The queue for pending diplomatic interactions.
-	 */
-	public final Deque<DiplomaticInteraction> diplomacy = new LinkedList<DiplomaticInteraction>();
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

@@ -9,11 +9,12 @@
 package hu.openig.mechanics;
 
 import hu.openig.model.AIManager;
+import hu.openig.model.ApproachType;
 import hu.openig.model.Building;
-import hu.openig.model.DiplomaticInteraction;
 import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
@@ -71,14 +72,16 @@ public class AIMixed implements AIManager {
 		second.apply();
 	}
 
+	
 	@Override
-	public ResponseMode diplomacy(Player other,
-			DiplomaticInteraction offer) {
-		ResponseMode mode1 = first.diplomacy(other, offer);
-		ResponseMode mode2 = second.diplomacy(other, offer);
-		return Collections.min(Arrays.asList(mode1, mode2));
+	public ResponseMode diplomacy(Player other, NegotiateType about,
+			ApproachType approach, Object argument) {
+		ResponseMode mode1 = first.diplomacy(other, about, approach, argument);
+		ResponseMode mode2 = second.diplomacy(other, about, approach, argument);
+		int o = (mode1.ordinal() + mode2.ordinal()) / 2;
+		return ResponseMode.values()[o];
 	}
-
+	
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
 		first.spaceBattleInit(world);

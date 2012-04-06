@@ -113,12 +113,6 @@ public interface AIControls {
 			double powerFactor, 
 			Iterable<ResearchType> items);
 	/**
-	 * Send a diplomatic request/statement to the other player. 
-	 * @param other the other player
-	 * @param offer the offer
-	 */
-	void actionDiplomaticInteraction(Player other, DiplomaticInteraction offer);
-	/**
 	 * Deploy one unit of the satellite to the target planet.
 	 * @param planet the planet
 	 * @param satellite the satellite type
