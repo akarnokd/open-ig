@@ -37,10 +37,12 @@ public interface AIManager {
 	/**
 	 * Calculates the diplomatic response to an offer coming from another player.
 	 * @param other the other player
-	 * @param offer the kind of offer/request
+	 * @param about the topic about to negotiate
+	 * @param approach the style of the offer
+	 * @param argument the custom object associated with the negotiation (i.e., money amount, the common enemy, etc.)
 	 * @return the response
 	 */
-	ResponseMode diplomacy(Player other, DiplomaticInteraction offer);
+	ResponseMode diplomacy(Player other, NegotiateType about, ApproachType approach, Object argument);
 	/**
 	 * Initialize the space battle.
 	 * <p>Called before the first battle simulation step.</p>
