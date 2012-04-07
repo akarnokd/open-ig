@@ -87,7 +87,11 @@
 	<xs:complexType name="call-approach">
 		<xs:annotation><xs:documentation>The call approach definition.</xs:documentation></xs:annotation>
 		<xs:simpleContent>
-			<xs:extension base="xs:string"/>
+			<xs:extension base="xs:string">
+				<xs:attribute name="type" type="xs:string" use="required">
+					<xs:annotation><xs:documentation>The response strength. See hu.openig.model.ApproachType enumeration.</xs:documentation></xs:annotation>
+				</xs:attribute>
+			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
 </xs:schema>
