@@ -653,9 +653,11 @@ public class AI implements AIManager {
 			ApproachType approach, Object argument) {
 		// TODO Auto-generated method stub
 		DiplomaticRelation r = w.getRelation(p, other);
-		if (r == null || r.full) {
+		if (r == null || !r.full) {
 			return ResponseMode.NO;
 		}
+		
+		PlayerStrength ps = getStrength(other);
 		
 		switch (about) {
 		case DIPLOMATIC_RELATIONS:
