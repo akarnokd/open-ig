@@ -1722,6 +1722,15 @@ public class ResearchProductionScreen extends ScreenBase {
 				totalCapacityValue.text("");
 			}
 		} else {
+			if (cat == ResearchMainCategory.SPACESHIPS) {
+				capacity = ps.spaceshipActive;
+			} else
+			if (cat == ResearchMainCategory.WEAPONS) {
+				capacity = ps.weaponsActive;
+			} else
+			if (cat == ResearchMainCategory.EQUIPMENT) {
+				capacity = ps.equipmentActive;
+			}
 			availableCapacityValue.text("");
 			totalCapacityValue.text("");
 		}

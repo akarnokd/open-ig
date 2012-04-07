@@ -45,8 +45,8 @@ public class Parameters {
 		return 8 * speed(); // DEFAULT: 40
 	}
 	/** @return the production unit per simulation step. The lower the faster the production is. */
-	public int productionUnit() {
-		return 250 / speed(); // DEFAULT: 50
+	public double productionUnit() {
+		return 250d / speed(); // DEFAULT: 50
 	}
 	/** @return the construction points per simulation step. */
 	public int constructionSpeed() {

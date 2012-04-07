@@ -589,7 +589,7 @@ public final class Simulator {
 			}
 			if (prioritySum > 0) {
 				for (Production pr : new ArrayList<Production>(prs.getValue().values())) {
-					int targetCap = (capacity * pr.priority / prioritySum) / world.params().productionUnit();
+					int targetCap = (int)(capacity * pr.priority / world.params().productionUnit() / prioritySum);
 					if (pr.count == 0) {
 						targetCap = 0;
 					}
