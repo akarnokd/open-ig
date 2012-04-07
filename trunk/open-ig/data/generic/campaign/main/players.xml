@@ -134,6 +134,9 @@
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
+			<type id='Bomb2' list=''/>
+			<type id='Rocket2' list=''/>
+			<type id='MultiheadedRocket' list=''/>
 		</available>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
@@ -147,6 +150,7 @@
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
+			<type id='MultiheadedRocket' list=''/>
 			<type id='ColonyShip' list=''/>
 		</available>
 	</player>

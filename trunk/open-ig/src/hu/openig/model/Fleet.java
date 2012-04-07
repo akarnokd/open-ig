@@ -291,35 +291,7 @@ public class Fleet implements Named, Owned, HasInventory {
 				ii.type = type;
 				ii.owner = owner;
 				ii.hp = owner.world.getHitpoints(type);
-				
-				for (EquipmentSlot es : type.slots.values()) {
-					InventorySlot is = new InventorySlot();
-					is.slot = es;
-					if (es.fixed) {
-						is.type = es.items.get(0);
-						is.count = es.max;
-						is.hp = owner.world.getHitpoints(is.type);
-					} else {
-						List<ResearchType> availList = owner.availableLevel(type);
-						
-						for (ResearchType rt1 : es.items) {
-							if (availList.contains(rt1)) {
-								is.type = rt1;
-								// always assign a hyperdrive
-								if (rt1.category == ResearchSubCategory.EQUIPMENT_HYPERDRIVES) {
-									is.count = 1;
-								} else {
-									is.count = es.max / 2;
-								}
-								is.hp = owner.world.getHitpoints(rt1);
-							}
-						}
-						if (is.count == 0) {
-							is.type = null;
-						}
-					}
-					ii.slots.add(is);
-				}
+				ii.createSlots();
 				
 				inventory.add(ii);
 				result.add(ii);
@@ -447,22 +419,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		for (InventoryItem ii : inventory) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-				for (InventorySlot is : ii.slots) {
-					if (!is.slot.fixed) {
-						for (int i = is.slot.items.size() - 1; i >= 0; i--) {
-							ResearchType rt = is.slot.items.get(i);
-							int cnt = owner.inventoryCount(rt);
-							if (cnt > 0) {
-								int toAdd = Math.min(cnt, is.slot.max);
-								is.type = rt;
-								is.count = toAdd;
-								is.hp = owner.world.getHitpoints(rt);
-								owner.changeInventoryCount(rt, -toAdd);
-								break;
-							}
-						}
-					}
-				}
+				ii.upgradeSlots();
 			}
 			ii.shield = Math.max(0, ii.shieldMax());
 		}
@@ -539,22 +496,8 @@ public class Fleet implements Named, Owned, HasInventory {
 		for (InventoryItem ii : inventory) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-				for (InventorySlot is : ii.slots) {
-					if (!is.slot.fixed) {
-						// check if next better type is available
-						int index = is.slot.items.indexOf(is.type) + 1;
-						for (int i = index; i < is.slot.items.size(); i++) {
-							if (owner.inventoryCount(is.slot.items.get(i)) > 0) {
-								return true;
-							}
-						}
-						// check if current type can be more filled in
-						index = Math.max(0, index - 1);
-						if (is.slot.max > is.count 
-								&& is.slot.max - is.count <= owner.inventoryCount(is.slot.items.get(index))) {
-							return true;
-						}
-					}
+				if (ii.checkSlots()) { 
+					return true;
 				}
 			} else
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {

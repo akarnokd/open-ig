@@ -321,7 +321,7 @@
 		video='technology/spaceships/stations/space_station_1'>
 		<slot-fixed id='Laser' item='Laser2' count='11' />
 		<slot-fixed id='Cannon' item='IonCannon' count='10' />
-		<slot-fixed id='Rocket' item='Rocket1' count='1' />
+		<slot id='rocket' x='145' y='50' width='30' height='20' max='2' items='Rocket1' />
 		<slot-fixed id='ECM' item='ECM1' count='1' />
 	</item>
 	<item id='OrbitalFactory' name='tech.orbitalfactory.name'
@@ -342,7 +342,7 @@
 		<slot-fixed id='Laser' item='Laser2' count='16' />
 		<slot-fixed id='Cannon' item='IonCannon' count='17' />
 		<slot-fixed id='Shield' item='Shield2' count='1' />
-		<slot-fixed id='Rocket' item='Rocket1' count='2' />
+		<slot id='rocket' x='145' y='50' width='30' height='20' max='3' items='Rocket1,Rocket2' />
 		<slot-fixed id='ECM' item='ECM1' count='1' />
 	</item>
 	<item id='SpaceStation3' name='tech.spacestation3.name' long-name='tech.spacestation3.longname'
@@ -356,7 +356,7 @@
 		<slot-fixed id='Cannon1' item='ParticleCannon' count='7' />
 		<slot-fixed id='Cannon2' item='PlasmaCannon' count='9' />
 		<slot-fixed id='Shield' item='Shield3' count='1' />
-		<slot-fixed id='Rocket' item='Rocket1' count='6' />
+		<slot id='rocket' x='145' y='50' width='30' height='20' max='6' items='Rocket1,Rocket2,MultiheadedRocket' />
 		<slot-fixed id='ECM' item='ECM2' count='1' />
 	</item>
 	<item id='HyperDrive1' name='tech.hyperdrive1.name' long-name='tech.hyperdrive1.longname'
@@ -559,7 +559,7 @@
 	<item id='Bomb1' name='tech.bomb1.name' long-name='tech.bomb1.longname'
 		description='tech.bomb1.description' category='WEAPONS_PROJECTILES'
 		image='inventions/weapons/projectiles/bomb_1' factory='weapon'
-		research-cost='5000' production-cost='1400' level='0' race='human'
+		research-cost='5000' production-cost='1400' level='0' race='human,dribs,ecalep,garthog,morgath,sullep,ychom'
 		mech='1' comp='1' mil='1' index='0'
 		video='technology/weapons/projectiles/bomb_1'>
 		<property name='projectile' value='Bomb1' />
@@ -567,7 +567,7 @@
 	<item id='Bomb2' name='tech.bomb2.name' long-name='tech.bomb2.longname'
 		description='tech.bomb2.description' category='WEAPONS_PROJECTILES'
 		image='inventions/weapons/projectiles/bomb_2' factory='weapon'
-		research-cost='10000' production-cost='1950' level='4' race='human'
+		research-cost='10000' production-cost='1950' level='4' race='human,dargslan'
 		requires='Bomb1' civil='1' mech='1' comp='4' ai='3' mil='2' index='1'
 		video='technology/weapons/projectiles/bomb_2'>
 		<property name='projectile' value='Bomb2' />
@@ -585,7 +585,7 @@
 	<item id='Rocket1' name='tech.rocket1.name' long-name='tech.rocket1.longname'
 		description='tech.rocket1.description' category='WEAPONS_PROJECTILES'
 		image='inventions/weapons/projectiles/rocket_1' factory='weapon'
-		research-cost='6000' production-cost='900' level='0' race='human'
+		research-cost='6000' production-cost='900' level='0' race='human,dribs,ecalep,garthog,morgath,sullep,ychom'
 		mech='1' comp='1' ai='1' mil='1' index='3'
 		video='technology/weapons/projectiles/rocket_1'>
 		<property name='projectile' value='Rocket1' />
@@ -603,7 +603,7 @@
 		long-name='tech.multiheadedrocket.longname' description='tech.multiheadedrocket.description'
 		category='WEAPONS_PROJECTILES' image='inventions/weapons/projectiles/multi_headed_rocket'
 		factory='weapon' research-cost='18000' production-cost='6200' level='4'
-		race='human' requires='Rocket2, Bomb2' mech='3' comp='5' ai='3' mil='6'
+		race='human,dargslan,ecalep' requires='Rocket2, Bomb2' mech='3' comp='5' ai='3' mil='6'
 		index='5' video='technology/weapons/projectiles/multi_headed_rocket'>
 		<property name='projectile' value='MultiheadedRocket' />
 		<property name='anti-ecm' value='2' />
