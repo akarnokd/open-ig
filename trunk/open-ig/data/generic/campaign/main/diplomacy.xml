@@ -29,15 +29,15 @@
 			<response type="NEUTRAL" mode="NO" change="-100">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" change="-120">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" change="-150">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="80">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="60">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="80">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="60">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.FreeNations.MONEY.37</approach>
@@ -86,34 +86,34 @@
 		</negotiate>
 		<terminate>diplomacy.FreeNations.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.FreeNations.SURRENDER.73</approach>
-			<approach>diplomacy.FreeNations.SURRENDER.74</approach>
-			<approach>diplomacy.FreeNations.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeNations.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.FreeNations.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.FreeNations.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.FreeNations.ALLIANCE.76</approach>
-			<approach>diplomacy.FreeNations.ALLIANCE.77</approach>
-			<approach>diplomacy.FreeNations.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeNations.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.FreeNations.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.FreeNations.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.FreeNations.PEACE.79</approach>
-			<approach>diplomacy.FreeNations.PEACE.80</approach>
-			<approach>diplomacy.FreeNations.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeNations.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.FreeNations.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.FreeNations.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.FreeNations.MONEY.82</approach>
-			<approach>diplomacy.FreeNations.MONEY.83</approach>
-			<approach>diplomacy.FreeNations.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeNations.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.FreeNations.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.FreeNations.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.FreeNations.WAR.85</approach>
-			<approach>diplomacy.FreeNations.WAR.86</approach>
-			<approach>diplomacy.FreeNations.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeNations.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.FreeNations.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.FreeNations.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.FreeNations.RESIGN.88</approach>
-			<approach>diplomacy.FreeNations.RESIGN.89</approach>
-			<approach>diplomacy.FreeNations.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeNations.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.FreeNations.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.FreeNations.RESIGN.90</approach>
 		</call>
 	</player>
 	<player id="Morgath">
@@ -145,15 +145,15 @@
 			<response type="NEUTRAL" mode="NO" change="-170">diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" change="-200">diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" change="-250">diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="70">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="20">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-10">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-20">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-100">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-130">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="70">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="20">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-10">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-20">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-100">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-130">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.Morgath.MONEY.37</approach>
@@ -202,34 +202,34 @@
 		</negotiate>
 		<terminate>diplomacy.Morgath.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.Morgath.SURRENDER.73</approach>
-			<approach>diplomacy.Morgath.SURRENDER.74</approach>
-			<approach>diplomacy.Morgath.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Morgath.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.Morgath.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.Morgath.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.Morgath.ALLIANCE.76</approach>
-			<approach>diplomacy.Morgath.ALLIANCE.77</approach>
-			<approach>diplomacy.Morgath.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Morgath.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.Morgath.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.Morgath.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.Morgath.PEACE.79</approach>
-			<approach>diplomacy.Morgath.PEACE.80</approach>
-			<approach>diplomacy.Morgath.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Morgath.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.Morgath.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.Morgath.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.Morgath.MONEY.82</approach>
-			<approach>diplomacy.Morgath.MONEY.83</approach>
-			<approach>diplomacy.Morgath.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Morgath.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.Morgath.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.Morgath.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.Morgath.WAR.85</approach>
-			<approach>diplomacy.Morgath.WAR.86</approach>
-			<approach>diplomacy.Morgath.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Morgath.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.Morgath.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.Morgath.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.Morgath.RESIGN.88</approach>
-			<approach>diplomacy.Morgath.RESIGN.89</approach>
-			<approach>diplomacy.Morgath.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Morgath.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.Morgath.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.Morgath.RESIGN.90</approach>
 		</call>
 	</player>
 	<player id="Ychom">
@@ -261,15 +261,15 @@
 			<response type="NEUTRAL" mode="NO" change="-100">diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" change="-140">diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" change="-190">diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="150">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="100">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="60">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-20">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-70">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-80">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-90">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-120">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="150">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="100">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="60">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-20">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-70">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-80">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-90">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-120">diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.Ychom.MONEY.37</approach>
@@ -318,34 +318,34 @@
 		</negotiate>
 		<terminate>diplomacy.Ychom.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.Ychom.SURRENDER.73</approach>
-			<approach>diplomacy.Ychom.SURRENDER.74</approach>
-			<approach>diplomacy.Ychom.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ychom.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.Ychom.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.Ychom.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.Ychom.ALLIANCE.76</approach>
-			<approach>diplomacy.Ychom.ALLIANCE.77</approach>
-			<approach>diplomacy.Ychom.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ychom.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.Ychom.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.Ychom.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.Ychom.PEACE.79</approach>
-			<approach>diplomacy.Ychom.PEACE.80</approach>
-			<approach>diplomacy.Ychom.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ychom.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.Ychom.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.Ychom.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.Ychom.MONEY.82</approach>
-			<approach>diplomacy.Ychom.MONEY.83</approach>
-			<approach>diplomacy.Ychom.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ychom.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.Ychom.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.Ychom.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.Ychom.WAR.85</approach>
-			<approach>diplomacy.Ychom.WAR.86</approach>
-			<approach>diplomacy.Ychom.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ychom.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.Ychom.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.Ychom.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.Ychom.RESIGN.88</approach>
-			<approach>diplomacy.Ychom.RESIGN.89</approach>
-			<approach>diplomacy.Ychom.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ychom.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.Ychom.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.Ychom.RESIGN.90</approach>
 		</call>
 	</player>
 	<player id="Dribs">
@@ -377,15 +377,15 @@
 			<response type="NEUTRAL" mode="NO" change="-100">diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" change="-160">diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" change="-210">diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="230">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="200">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="170">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" change="0">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" change="0">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" change="0">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-100">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-130">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-170">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="230">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="200">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="170">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" change="0">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" change="0">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" change="0">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-100">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-130">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-170">diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.Dribs.MONEY.37</approach>
@@ -434,34 +434,34 @@
 		</negotiate>
 		<terminate>diplomacy.Dribs.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.Dribs.SURRENDER.73</approach>
-			<approach>diplomacy.Dribs.SURRENDER.74</approach>
-			<approach>diplomacy.Dribs.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dribs.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.Dribs.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.Dribs.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.Dribs.ALLIANCE.76</approach>
-			<approach>diplomacy.Dribs.ALLIANCE.77</approach>
-			<approach>diplomacy.Dribs.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dribs.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.Dribs.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.Dribs.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.Dribs.PEACE.79</approach>
-			<approach>diplomacy.Dribs.PEACE.80</approach>
-			<approach>diplomacy.Dribs.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dribs.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.Dribs.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.Dribs.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.Dribs.MONEY.82</approach>
-			<approach>diplomacy.Dribs.MONEY.83</approach>
-			<approach>diplomacy.Dribs.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dribs.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.Dribs.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.Dribs.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.Dribs.WAR.85</approach>
-			<approach>diplomacy.Dribs.WAR.86</approach>
-			<approach>diplomacy.Dribs.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dribs.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.Dribs.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.Dribs.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.Dribs.RESIGN.88</approach>
-			<approach>diplomacy.Dribs.RESIGN.89</approach>
-			<approach>diplomacy.Dribs.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dribs.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.Dribs.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.Dribs.RESIGN.90</approach>
 		</call>
 	</player>
 	<player id="Sullep">
@@ -493,15 +493,15 @@
 			<response type="NEUTRAL" mode="NO" change="-180">diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" notalk="true" change="-200">diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" notalk="true" change="-250">diplomacy.Sullep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="90">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="70">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-80">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-90">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-130">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-190">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-220">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="90">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="70">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-80">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-90">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-130">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-190">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-220">diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.Sullep.MONEY.37</approach>
@@ -550,34 +550,34 @@
 		</negotiate>
 		<terminate>diplomacy.Sullep.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.Sullep.SURRENDER.73</approach>
-			<approach>diplomacy.Sullep.SURRENDER.74</approach>
-			<approach>diplomacy.Sullep.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Sullep.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.Sullep.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.Sullep.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.Sullep.ALLIANCE.76</approach>
-			<approach>diplomacy.Sullep.ALLIANCE.77</approach>
-			<approach>diplomacy.Sullep.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Sullep.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.Sullep.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.Sullep.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.Sullep.PEACE.79</approach>
-			<approach>diplomacy.Sullep.PEACE.80</approach>
-			<approach>diplomacy.Sullep.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Sullep.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.Sullep.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.Sullep.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.Sullep.MONEY.82</approach>
-			<approach>diplomacy.Sullep.MONEY.83</approach>
-			<approach>diplomacy.Sullep.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Sullep.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.Sullep.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.Sullep.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.Sullep.WAR.85</approach>
-			<approach>diplomacy.Sullep.WAR.86</approach>
-			<approach>diplomacy.Sullep.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Sullep.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.Sullep.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.Sullep.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.Sullep.RESIGN.88</approach>
-			<approach>diplomacy.Sullep.RESIGN.89</approach>
-			<approach>diplomacy.Sullep.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Sullep.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.Sullep.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.Sullep.RESIGN.90</approach>
 		</call>
 	</player>
 	<player id="Dargslan">
@@ -609,15 +609,15 @@
 			<response type="NEUTRAL" mode="NO" change="-250">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" change="-250">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" change="-250">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.Dargslan.MONEY.37</approach>
@@ -666,34 +666,34 @@
 		</negotiate>
 		<terminate>diplomacy.Dargslan.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.Dargslan.SURRENDER.73</approach>
-			<approach>diplomacy.Dargslan.SURRENDER.74</approach>
-			<approach>diplomacy.Dargslan.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dargslan.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.Dargslan.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.Dargslan.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.Dargslan.ALLIANCE.76</approach>
-			<approach>diplomacy.Dargslan.ALLIANCE.77</approach>
-			<approach>diplomacy.Dargslan.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dargslan.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.Dargslan.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.Dargslan.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.Dargslan.PEACE.79</approach>
-			<approach>diplomacy.Dargslan.PEACE.80</approach>
-			<approach>diplomacy.Dargslan.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dargslan.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.Dargslan.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.Dargslan.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.Dargslan.MONEY.82</approach>
-			<approach>diplomacy.Dargslan.MONEY.83</approach>
-			<approach>diplomacy.Dargslan.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dargslan.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.Dargslan.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.Dargslan.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.Dargslan.WAR.85</approach>
-			<approach>diplomacy.Dargslan.WAR.86</approach>
-			<approach>diplomacy.Dargslan.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dargslan.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.Dargslan.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.Dargslan.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.Dargslan.RESIGN.88</approach>
-			<approach>diplomacy.Dargslan.RESIGN.89</approach>
-			<approach>diplomacy.Dargslan.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Dargslan.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.Dargslan.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.Dargslan.RESIGN.90</approach>
 		</call>
 	</player>
 	<player id="Ecalep">
@@ -725,15 +725,15 @@
 			<response type="NEUTRAL" mode="NO" change="-120">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" change="-170">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" change="-220">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="100">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="70">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-20">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-70">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-100">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-120">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-160">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="100">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="70">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-20">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-70">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-100">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-120">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-160">diplomacy.Ecalep.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.Ecalep.MONEY.37</approach>
@@ -782,34 +782,34 @@
 		</negotiate>
 		<terminate>diplomacy.Ecalep.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.Ecalep.SURRENDER.73</approach>
-			<approach>diplomacy.Ecalep.SURRENDER.74</approach>
-			<approach>diplomacy.Ecalep.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ecalep.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.Ecalep.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.Ecalep.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.Ecalep.ALLIANCE.76</approach>
-			<approach>diplomacy.Ecalep.ALLIANCE.77</approach>
-			<approach>diplomacy.Ecalep.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ecalep.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.Ecalep.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.Ecalep.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.Ecalep.PEACE.79</approach>
-			<approach>diplomacy.Ecalep.PEACE.80</approach>
-			<approach>diplomacy.Ecalep.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ecalep.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.Ecalep.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.Ecalep.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.Ecalep.MONEY.82</approach>
-			<approach>diplomacy.Ecalep.MONEY.83</approach>
-			<approach>diplomacy.Ecalep.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ecalep.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.Ecalep.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.Ecalep.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.Ecalep.WAR.85</approach>
-			<approach>diplomacy.Ecalep.WAR.86</approach>
-			<approach>diplomacy.Ecalep.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ecalep.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.Ecalep.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.Ecalep.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.Ecalep.RESIGN.88</approach>
-			<approach>diplomacy.Ecalep.RESIGN.89</approach>
-			<approach>diplomacy.Ecalep.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.Ecalep.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.Ecalep.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.Ecalep.RESIGN.90</approach>
 		</call>
 	</player>
 	<player id="FreeTraders">
@@ -841,15 +841,15 @@
 			<response type="NEUTRAL" mode="NO" change="-100">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25</response>
 			<response type="NEUTRAL" mode="NO" change="-100">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26</response>
 			<response type="NEUTRAL" mode="NO" change="-100">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
-			<response type="AGGRESSIVE" mode="YES" change="50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
-			<response type="AGGRESSIVE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
-			<response type="AGGRESSIVE" mode="NO" notalk="true" change="-200">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29</response>
+			<response type="HUMBLE" mode="YES" change="50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32</response>
+			<response type="HUMBLE" mode="MAYBE" notalk="true" change="-50">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35</response>
+			<response type="HUMBLE" mode="NO" notalk="true" change="-200">diplomacy.FreeTraders.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36</response>
 		</negotiate>
 		<negotiate type="MONEY">
 			<approach type="NEUTRAL">diplomacy.FreeTraders.MONEY.37</approach>
@@ -898,34 +898,34 @@
 		</negotiate>
 		<terminate>diplomacy.FreeTraders.terminate.72</terminate>
 		<call type="SURRENDER">
-			<approach>diplomacy.FreeTraders.SURRENDER.73</approach>
-			<approach>diplomacy.FreeTraders.SURRENDER.74</approach>
-			<approach>diplomacy.FreeTraders.SURRENDER.75</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeTraders.SURRENDER.73</approach>
+			<approach type="NEUTRAL">diplomacy.FreeTraders.SURRENDER.74</approach>
+			<approach type="HUMBLE">diplomacy.FreeTraders.SURRENDER.75</approach>
 		</call>
 		<call type="ALLIANCE">
-			<approach>diplomacy.FreeTraders.ALLIANCE.76</approach>
-			<approach>diplomacy.FreeTraders.ALLIANCE.77</approach>
-			<approach>diplomacy.FreeTraders.ALLIANCE.78</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeTraders.ALLIANCE.76</approach>
+			<approach type="NEUTRAL">diplomacy.FreeTraders.ALLIANCE.77</approach>
+			<approach type="HUMBLE">diplomacy.FreeTraders.ALLIANCE.78</approach>
 		</call>
 		<call type="PEACE">
-			<approach>diplomacy.FreeTraders.PEACE.79</approach>
-			<approach>diplomacy.FreeTraders.PEACE.80</approach>
-			<approach>diplomacy.FreeTraders.PEACE.81</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeTraders.PEACE.79</approach>
+			<approach type="NEUTRAL">diplomacy.FreeTraders.PEACE.80</approach>
+			<approach type="HUMBLE">diplomacy.FreeTraders.PEACE.81</approach>
 		</call>
 		<call type="MONEY">
-			<approach>diplomacy.FreeTraders.MONEY.82</approach>
-			<approach>diplomacy.FreeTraders.MONEY.83</approach>
-			<approach>diplomacy.FreeTraders.MONEY.84</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeTraders.MONEY.82</approach>
+			<approach type="NEUTRAL">diplomacy.FreeTraders.MONEY.83</approach>
+			<approach type="HUMBLE">diplomacy.FreeTraders.MONEY.84</approach>
 		</call>
 		<call type="WAR">
-			<approach>diplomacy.FreeTraders.WAR.85</approach>
-			<approach>diplomacy.FreeTraders.WAR.86</approach>
-			<approach>diplomacy.FreeTraders.WAR.87</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeTraders.WAR.85</approach>
+			<approach type="NEUTRAL">diplomacy.FreeTraders.WAR.86</approach>
+			<approach type="HUMBLE">diplomacy.FreeTraders.WAR.87</approach>
 		</call>
 		<call type="RESIGN">
-			<approach>diplomacy.FreeTraders.RESIGN.88</approach>
-			<approach>diplomacy.FreeTraders.RESIGN.89</approach>
-			<approach>diplomacy.FreeTraders.RESIGN.90</approach>
+			<approach type='AGGRESSIVE'>diplomacy.FreeTraders.RESIGN.88</approach>
+			<approach type="NEUTRAL">diplomacy.FreeTraders.RESIGN.89</approach>
+			<approach type="HUMBLE">diplomacy.FreeTraders.RESIGN.90</approach>
 		</call>
 	</player>
 </diplomacy>

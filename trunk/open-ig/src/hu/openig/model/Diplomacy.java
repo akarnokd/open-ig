@@ -119,7 +119,7 @@ public class Diplomacy {
 					Response r = new Response();
 					n.responses.add(r);
 					String rt = xresponse.get("type", null);
-					r.type = rt != null ? ApproachType.valueOf(rt) : null;
+					r.type = rt != null ? ApproachType.valueOf(rt) : ApproachType.NEUTRAL;
 					r.label = xresponse.content;
 					r.mode = ResponseMode.valueOf(xresponse.get("mode"));
 					r.change = xresponse.getInt("change");
@@ -134,6 +134,8 @@ public class Diplomacy {
 				for (XElement xapproach : xcall.childrenWithName("approach")) {
 					Approach a = new Approach();
 					c.approaches.add(a);
+					String rt = xapproach.get("type", null);
+					a.type = rt != null ? ApproachType.valueOf(rt) : ApproachType.NEUTRAL;
 					a.label = xapproach.content;
 				}
 				
