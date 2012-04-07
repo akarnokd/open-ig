@@ -17,7 +17,11 @@ import hu.openig.model.Diplomacy;
 import hu.openig.model.Diplomacy.Approach;
 import hu.openig.model.Diplomacy.Negotiate;
 import hu.openig.model.DiplomaticRelation;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.NegotiateType;
+import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.Screens;
@@ -1032,31 +1036,6 @@ public class DiplomacyScreen extends ScreenBase {
 	}
 
 	/**
-	 * Action when a money amount is selected.
-	 * @param index the index
-	 */
-	void doMoney(int index) {
-		if (index == moneyList.items.size() - 1) {
-			options.visible(true);
-			moneyList.visible(false);
-			negotiationTitle.visible(false);
-		} else {
-			@SuppressWarnings("unchecked")
-			Pair<Negotiate, Integer> a = (Pair<Negotiate, Integer>)moneyList.items.get(index).userObject;
-			moneyList.visible(false);
-			
-			ApproachType at = ApproachType.NEUTRAL;
-			
-			ResponseMode m = other.ai.diplomacy(player(), 
-					a.first.type, 
-					at, 
-					a.second);
-			
-			displayResults(a.first, a.second, at, m);
-		}
-	}
-
-	/**
 	 * Display the negotiation text results and update the relation table.
 	 * @param n the negotiation instance.
 	 * @param parameter the negotiation parameter
@@ -1109,6 +1088,42 @@ public class DiplomacyScreen extends ScreenBase {
 		}
 	}
 	/**
+	 * Action when a money amount is selected.
+	 * @param index the index
+	 */
+	void doMoney(int index) {
+		if (index == moneyList.items.size() - 1) {
+			options.visible(true);
+			moneyList.visible(false);
+			negotiationTitle.visible(false);
+		} else {
+			@SuppressWarnings("unchecked")
+			Pair<Negotiate, Integer> a = (Pair<Negotiate, Integer>)moneyList.items.get(index).userObject;
+			moneyList.visible(false);
+			
+			ApproachType at = ApproachType.NEUTRAL;
+			
+			ResponseMode m = other.ai.diplomacy(player(), 
+					a.first.type, 
+					at, 
+					a.second);
+			
+
+			if (m == ResponseMode.YES && a.second >= player().money) {
+				player().money -= a.second;
+				player().statistics.moneySpent += a.second;
+				
+				other.money += a.second;
+				other.statistics.moneyIncome += a.second;
+			} else {
+				m = ResponseMode.NO;
+			}
+
+			displayResults(a.first, a.second, at, m);
+			
+		}
+	}
+	/**
 	 * The action when an approach is selected.
 	 * @param index the index
 	 */
@@ -1130,7 +1145,25 @@ public class DiplomacyScreen extends ScreenBase {
 					a.second);
 			
 			displayResults(a.first, a.second, at, m);
+			
+			if (m == ResponseMode.YES) {
+				setAlliance(a.second);
+			}
 		}
+	}
+	/**
+	 * Setup alliance against the given common enemy.
+	 * @param enemy the common enemy player
+	 */
+	protected void setAlliance(Player enemy) {
+		DiplomaticRelation dr = world().getRelation(player(), other);
+		dr.alliancesAgainst.add(enemy);
+		
+		dr = world().getRelation(player(), enemy);
+		dr.alliancesAgainst.remove(other);
+		
+		dr = world().getRelation(other, enemy);
+		dr.alliancesAgainst.remove(player());
 	}
 	/**
 	 * Perform generic topic negotiation.
@@ -1144,6 +1177,26 @@ public class DiplomacyScreen extends ScreenBase {
 				at, 
 				null);
 		
+		if (m == ResponseMode.YES) {
+			if (neg.type == NegotiateType.SURRENDER) {
+				// take over planets
+				for (Planet p : other.ownPlanets()) {
+					p.takeover(player());
+				}
+				// FIXME keep their fleets as own?
+				for (Fleet f : other.ownFleets()) {
+					f.owner = player();
+					for (InventoryItem ii : f.inventory) {
+						ii.owner = player();
+					}
+					player().fleets.put(f, FleetKnowledge.FULL);
+				}
+				other.fleets.clear();
+			} else
+			if (neg.type == NegotiateType.DARGSLAN) {
+				setAlliance(world().players.get("Dargslan"));
+			}
+		}		
 		displayResults(neg, "", at, m);
 	}
 	/**
