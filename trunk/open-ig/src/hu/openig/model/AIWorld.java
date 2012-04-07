@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
+import hu.openig.utils.U;
 
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -82,6 +83,8 @@ public class AIWorld {
 	public Difficulty difficulty;
 	/** The current level. */
 	public int level;
+	/** The relations with other players. */
+	public final Map<Player, DiplomaticRelation> relations = U.newHashMap();
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -168,6 +171,15 @@ public class AIWorld {
 			}
 		}
 		now = player.world.time.getTime();
+		
+		for (DiplomaticRelation dr : player.world.relations) {
+			if (dr.first == player) {
+				relations.put(dr.second, dr);
+			} else
+			if (dr.second == player) {
+				relations.put(dr.first, dr);
+			}
+		}
 	}
 	/**
 	 * Returns or calculates the planet statistics.

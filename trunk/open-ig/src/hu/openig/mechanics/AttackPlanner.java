@@ -18,11 +18,14 @@ import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetTask;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -30,12 +33,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The starmap exploration and satellite planner.
  * @author akarnokd, 2011.12.27.
  */
 public class AttackPlanner extends Planner {
+	/** The war limit. */
+	private static final int WAR_LIMIT = 25;
 	/** The exploration map. */
 	final ExplorationMap exploration;
 	/** Sets the new attack date. */
@@ -129,7 +135,14 @@ public class AttackPlanner extends Planner {
 		List<AIFleet> candidates = new ArrayList<AIFleet>();
 		for (AIFleet f : world.enemyFleets) {
 			if (!(f.fleet.owner.ai instanceof AITrader) && !(f.fleet.owner.ai instanceof AIPirate)) {
-				candidates.add(f);
+				
+				DiplomaticRelation dr = world.relations.get(f.fleet.owner);
+				
+				if (dr != null && dr.full) {
+					if (dr.value < 35 && dr.alliancesAgainst.isEmpty()) {
+						candidates.add(f);
+					}
+				}
 			}
 		}
 		if (!candidates.isEmpty()) {
@@ -165,7 +178,8 @@ public class AttackPlanner extends Planner {
 	 * @return the planet or null if none found
 	 */
 	AIPlanet selectTargetPlanet() {
-		List<AIPlanet> candidates = new ArrayList<AIPlanet>();
+		List<AIPlanet> candidates = U.newArrayList();
+		Set<Player> ps = U.newHashSet();
 		for (AIPlanet p : world.enemyPlanets) {
 			if (p.owner != null) {
 				if (world.explorationInnerLimit != null && world.explorationInnerLimit.contains(p.planet.x, p.planet.y)) {
@@ -174,10 +188,33 @@ public class AttackPlanner extends Planner {
 				if (world.explorationOuterLimit != null && !world.explorationOuterLimit.contains(p.planet.x, p.planet.y)) {
 					continue;
 				}
-				candidates.add(p);
+				DiplomaticRelation dr = world.relations.get(p.owner);
+				if (dr != null && dr.full) {
+					if (dr.value < WAR_LIMIT) {
+						candidates.add(p);
+						ps.add(p.owner);
+					}
+				}
 			}
 		}
 		if (!candidates.isEmpty()) {
+			
+			Player p = Collections.min(ps, new Comparator<Player>() {
+				@Override
+				public int compare(Player o1, Player o2) {
+					DiplomaticRelation dr1 = world.relations.get(o1);
+					DiplomaticRelation dr2 = world.relations.get(o2);
+					
+					return U.compare(dr1.value, dr2.value);
+				}
+			});
+			
+			for (int i = candidates.size() - 1; i >= 0; i--) {
+				if (candidates.get(i).owner != p) {
+					candidates.remove(i);
+				}
+			}
+			
 			final Point2D.Double center = world.center();
 			return Collections.min(candidates, new Comparator<AIPlanet>() {
 				@Override

@@ -18,6 +18,8 @@ import hu.openig.model.AIManager;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
+import hu.openig.model.AttackDefense;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticRelation;
@@ -32,6 +34,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
@@ -313,12 +316,7 @@ public class AI implements AIManager {
 	
 	@Override
 	public void groundBattleDone(GroundwarWorld war) {
-		PlayerStrength ps = getStrength(war.battle().enemy(p));
-		if (war.battle().groundwarWinner == p) {
-			ps.groundWon++;
-		} else {
-			ps.groundLost++;
-		}
+		onAutobattleFinish(war.battle());
 	}
 	@Override
 	public void groundBattleInit(GroundwarWorld war) {
@@ -349,12 +347,7 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void spaceBattleDone(SpacewarWorld world) {
-		PlayerStrength ps = getStrength(world.battle().enemy(p));
-		if (world.battle().spacewarWinner == p) {
-			ps.spaceWon++;
-		} else {
-			ps.spaceLost++;
-		}
+		onAutobattleFinish(world.battle());
 	}
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
@@ -370,7 +363,16 @@ public class AI implements AIManager {
 			}
 		}
 		
-		Player e = world.battle().enemy(p);
+		updateSpaceStrength(world.battle(), dps, hp);
+	}
+	/**
+	 * Update the space strength based on the given parameters.
+	 * @param battle the battle record
+	 * @param dps the damage per second
+	 * @param hp the shielded hitpoints
+	 */
+	protected void updateSpaceStrength(BattleInfo battle, double dps, double hp) {
+		Player e = battle.enemy(p);
 		
 		PlayerStrength ps = getStrength(e);
 		if (ps.spaceAttack < 0) {
@@ -649,6 +651,54 @@ public class AI implements AIManager {
 	}
 	
 	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		PlayerStrength ps = getStrength(battle.enemy(p));
+		if (battle.spacewarWinner == p) {
+			ps.spaceWon++;
+		} else {
+			if (battle.spacewarWinner != null) {
+				ps.spaceLost++;
+			}
+		}
+		if (battle.groundwarWinner == p) {
+			ps.groundWon++;
+		} else {
+			if (battle.groundwarWinner != null) {
+				ps.groundLost++;
+			}
+		}
+		
+	}
+	@Override
+	public void onAutoGroundwarStart(BattleInfo battle, AttackDefense attacker,
+			AttackDefense defender) {
+		double dps = 0;
+		double hp = 0;
+		if (battle.attacker.owner == p) {
+			dps = attacker.attack;
+			hp = attacker.defense;
+		} else {
+			dps = defender.attack;
+			hp = defender.defense;
+		}
+		updateSpaceStrength(battle, dps, hp);
+	}
+	
+	@Override
+	public void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str) {
+		double dps = 0;
+		double hp = 0;
+		if (battle.attacker.owner == p) {
+			dps = str.attacker.attack;
+			hp = str.attacker.defense;
+		} else {
+			dps = str.defender.attack;
+			hp = str.defender.defense;
+		}
+		updateSpaceStrength(battle, dps, hp);
+	}
+	
+	@Override
 	public ResponseMode diplomacy(Player other, NegotiateType about,
 			ApproachType approach, Object argument) {
 		// TODO Auto-generated method stub
@@ -662,6 +712,16 @@ public class AI implements AIManager {
 		switch (about) {
 		case DIPLOMATIC_RELATIONS:
 			
+			break;
+		case ALLY:
+			break;
+		case DARGSLAN:
+			break;
+		case MONEY:
+			break;
+		case SURRENDER:
+			break;
+		case TRADE:
 			break;
 		default:
 		}

@@ -14,6 +14,8 @@ import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
+import hu.openig.model.AttackDefense;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarWorld;
@@ -24,6 +26,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
@@ -237,6 +240,22 @@ public class AIPirate implements AIManager {
 	}
 	@Override
 	public void onRadar() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onAutoGroundwarStart(BattleInfo battle, AttackDefense attacker,
+			AttackDefense defender) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str) {
 		// TODO Auto-generated method stub
 		
 	}

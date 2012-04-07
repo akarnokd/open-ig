@@ -10,6 +10,8 @@ package hu.openig.mechanics;
 
 import hu.openig.model.AIManager;
 import hu.openig.model.ApproachType;
+import hu.openig.model.AttackDefense;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarWorld;
@@ -20,6 +22,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
@@ -245,5 +248,20 @@ public class AIMixed implements AIManager {
 		first.onRadar();
 		second.onRadar();
 	}
-
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		first.onAutobattleFinish(battle);
+		second.onAutobattleFinish(battle);
+	}
+	@Override
+	public void onAutoGroundwarStart(BattleInfo battle, AttackDefense attacker,
+			AttackDefense defender) {
+		first.onAutoGroundwarStart(battle, attacker, defender);
+		second.onAutoGroundwarStart(battle, attacker, defender);
+	}
+	@Override
+	public void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str) {
+		first.onAutoSpacewarStart(battle, str);
+		second.onAutoSpacewarStart(battle, str);
+	}
 }
