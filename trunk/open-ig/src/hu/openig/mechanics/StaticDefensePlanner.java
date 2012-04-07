@@ -183,7 +183,9 @@ public class StaticDefensePlanner extends Planner {
 	 */
 	boolean checkTanks(final AIPlanet planet) {
 		final VehiclePlan plan = new VehiclePlan();
-		plan.calculate(world.availableResearch, w.battle, planet.statistics.vehicleMax, world.difficulty);
+		plan.calculate(world.availableResearch, w.battle, 
+				planet.statistics.vehicleMax, 
+				p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
 		
 		if (planet.owner.money >= MONEY_LIMIT) {
 			// issue production order for the difference
