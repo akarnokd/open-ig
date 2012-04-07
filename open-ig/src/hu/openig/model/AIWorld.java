@@ -85,12 +85,16 @@ public class AIWorld {
 	public int level;
 	/** The relations with other players. */
 	public final Map<Player, DiplomaticRelation> relations = U.newHashMap();
+	/** The main player of the game. */
+	public Player mainPlayer;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
 	 */
 	public void assign(Player player) {
 		this.player = player;
+		this.mainPlayer = player.world.player;
+		
 		
 		difficulty = player.world.difficulty;
 		level = player.world.level;

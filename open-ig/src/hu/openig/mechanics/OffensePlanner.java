@@ -358,7 +358,9 @@ public class OffensePlanner extends Planner {
 		
 		// plan for vehicles
 		VehiclePlan plan = new VehiclePlan();
-		plan.calculate(world.availableResearch, w.battle, fleet.statistics.vehicleMax, world.difficulty);
+		plan.calculate(world.availableResearch, w.battle, 
+				fleet.statistics.vehicleMax, 
+				p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
 		
 		demands.putAll(plan.demand);
 		

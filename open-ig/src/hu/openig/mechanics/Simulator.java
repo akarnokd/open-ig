@@ -352,10 +352,12 @@ public final class Simulator {
 		// reequip station bombs and rockets
 		if (planet.owner == world.player && world.env.config().reequipBombs) {
 			for (InventoryItem ii : planet.inventory) {
-				if (ii.owner == planet.owner && ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				if (ii.owner == planet.owner 
+						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					for (InventorySlot is : ii.slots) {
 						refillSlot(planet.owner, is);
 					}
+					regenerateInventory(true, ii);
 				}
 			}
 		}
@@ -780,26 +782,39 @@ public final class Simulator {
 		boolean spaceport = f.task != FleetTask.SCRIPT 
 				&& np != null && np.owner == f.owner && np.hasMilitarySpaceport();
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
-			if (spaceport || ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-				int hpMax = ii.owner.world.getHitpoints(ii.type);
-				if (ii.hp < hpMax) {
-					ii.hp = Math.min(hpMax, (ii.hp * 100 + hpMax) / 100);
-					// regenerate slots
-					for (InventorySlot is : ii.slots) {
-						if (is.type != null) {
-							int m = ii.owner.world.getHitpoints(is.type);
-							is.hp = Math.min(m, (is.hp * 100 + m) / 100);
-						}
-					}
-				}
-			}
-			int sm = ii.shieldMax();
-			if (sm > 0 && ii.shield < sm) {
-				ii.shield = Math.min(sm, (ii.shield * 100 + sm) / 100);
-			}
+			regenerateInventory(spaceport, ii);
 		}
 		if (spaceport) {
 			checkRefill(f);
+		}
+	}
+	/**
+	 * Regenerate inventory health.
+	 * @param spaceport has spaceport
+	 * @param ii the inventory item
+	 */
+	protected static void regenerateInventory(boolean spaceport,
+			InventoryItem ii) {
+		double spd = 3000 / ii.owner.world.params().productionUnit();
+		int hpMax = ii.owner.world.getHitpoints(ii.type);
+		if (spaceport || ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+			if (ii.hp < hpMax) {
+				double delta0 = spd * ii.type.productionCost / hpMax;
+				ii.hp = (int)Math.min(hpMax, ii.hp + delta0);
+				// regenerate slots
+				for (InventorySlot is : ii.slots) {
+					if (is.type != null) {
+						int m = ii.owner.world.getHitpoints(is.type);
+						double delta = spd * is.type.productionCost / m;
+						is.hp = (int)Math.min(m, is.hp + delta);
+					}
+				}
+			}
+		}
+		int sm = ii.shieldMax();
+		if (sm > 0 && ii.shield < sm) {
+			double delta = spd * sm / hpMax;
+			ii.shield = (int)Math.min(sm, ii.shield + delta);
 		}
 	}
 	/**
