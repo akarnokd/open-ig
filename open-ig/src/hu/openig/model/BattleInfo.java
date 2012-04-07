@@ -106,4 +106,75 @@ public class BattleInfo {
 		}
 		return attacker.owner;
 	}
+	
+	/**
+	 * Check if space battle will happen.
+	 * @return true if space battle will happen
+	 */
+	public boolean spaceBattleNeeded() {
+		if (targetFleet != null || helperFleet != null) {
+			return true;
+		}
+		Planet p = targetPlanet;
+		if (p == null) {
+			p = helperPlanet;
+		}
+		if (p != null) {
+			for (InventoryItem ii : p.inventory) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					return true;
+				}
+			}
+			for (Building b : p.surface.buildings) {
+				if (b.isOperational()) {
+					if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Find helper fleet or planet for the battle.
+	 */
+	public void findHelpers() {
+		final int minDistance = 20;
+		World world = attacker.owner.world;
+		if (targetFleet != null) {
+			// locate the nearest planet
+			double dmin = Double.MAX_VALUE;
+			Planet pmin = null;
+			for (Planet p : world.planets.values()) {
+				if (p.owner == attacker.owner || p.owner == targetFleet.owner) {
+					double d = World.dist(targetFleet.x, targetFleet.y, p.x, p.y);
+					if (d < dmin && d <= minDistance) {
+						dmin = d;
+						pmin = p;
+					}
+				}
+				
+			}
+			helperPlanet = pmin;
+		} else 
+		if (targetPlanet != null && targetPlanet.owner != null) {
+			// locate the nearest fleet with the same owner
+			double dmin = Double.MAX_VALUE;
+			Fleet fmin = null;
+			for (Fleet f : targetPlanet.owner.fleets.keySet()) {
+				if (f.owner == targetPlanet.owner) {
+					double d = World.dist(f.x, f.y, targetPlanet.x, targetPlanet.y);
+					if (d < dmin && d <= minDistance) {
+						dmin = d;
+						fmin = f;
+					}
+				}
+			}
+			helperFleet = fmin;
+		} else {
+			throw new AssertionError("No target in battle settings.");
+		}
+	}
+
 }

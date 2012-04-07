@@ -1277,7 +1277,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		scrambled.clear();
 		
 		this.battle = battle;
-		BattleSimulator.findHelpers(battle, world());
+		battle.findHelpers();
 		
 		maxRightPlacement = space.width;
 

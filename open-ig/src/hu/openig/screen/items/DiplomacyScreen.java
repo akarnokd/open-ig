@@ -1164,6 +1164,8 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		dr = world().getRelation(other, enemy);
 		dr.alliancesAgainst.remove(player());
+		
+		dr.value = Math.min(dr.value, 30);
 	}
 	/**
 	 * Perform generic topic negotiation.

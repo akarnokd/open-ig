@@ -17,6 +17,7 @@ import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
 import hu.openig.model.BattleProjectile.Mode;
+import hu.openig.model.AttackDefense;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarUnit;
@@ -25,6 +26,7 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.World;
 import hu.openig.utils.U;
@@ -87,9 +89,13 @@ public final class BattleSimulator {
 		if (f0 != null) {
 			System.out.printf("Fleet: %s (%s)%n", f0.name, f0.owner.id);
 		}
-		findHelpers(battle, world);
+		battle.findHelpers();
+		
+		// notify scripts and AI
 		world.scripting.onAutobattleStart(battle);
-		if (spaceBattleNeeded()) {
+		
+		// execute battle
+		if (battle.spaceBattleNeeded()) {
 			runSpaceBattle();
 		}
 		if (attackerCanAttackGround()) {
@@ -108,8 +114,10 @@ public final class BattleSimulator {
 		List<GroundwarUnit> defenderUnits = vehicles(battle.targetPlanet.inventory);
 		
 		AttackDefense attackerTVBattle = vehicleStrength(attackerUnits);
-
 		AttackDefense defenderTVBattle = vehicleStrength(defenderUnits);
+		
+		battle.attacker.owner.ai.onAutoGroundwarStart(battle, attackerTVBattle, defenderTVBattle);
+		battle.targetPlanet.owner.ai.onAutoGroundwarStart(battle, attackerTVBattle, defenderTVBattle);
 		
 		// tank+vehicle battle
 		double attackerTime = defenderTVBattle.defense / attackerTVBattle.attack;
@@ -388,27 +396,46 @@ public final class BattleSimulator {
 		result.defense += 1.0 * b.hitpoints * hpMax / b.type.hitpoints;
 	}
 	/**
+	 * Compute the space strengths of the participating sides.
+	 * @param battle the battle configuration
+	 * @return the strength values
+	 */
+	public static SpaceStrengths getSpaceStrengths(BattleInfo battle) {
+		
+		SpaceStrengths str = new SpaceStrengths();
+		
+		str.attacker = fleetStrength(battle.attacker);
+		
+		str.defender = new AttackDefense();
+		str.fleet = battle.getFleet();
+		if (str.fleet != null) {
+			str.defender.add(fleetStrength(str.fleet));
+		}
+		str.planet = battle.getPlanet();
+		str.planetStrength = new AttackDefense();
+		if (str.planet != null) {
+			AttackDefense ps = planetStrength(str.planet);
+			str.planetStrength.add(ps);
+			if (str.planet.owner == battle.attacker.owner) {
+				str.attacker.add(ps);
+			} else {
+				str.defender.add(ps);
+			}
+		}
+		return str;
+	}
+	/**
 	 * Run the space battle.
 	 */
 	void runSpaceBattle() {
-		AttackDefense attacker = fleetStrength(battle.attacker);
 		
-		AttackDefense defender = new AttackDefense();
-		Fleet fleet = battle.getFleet();
-		if (fleet != null) {
-			defender.add(fleetStrength(fleet));
-		}
-		Planet planet = battle.getPlanet();
-		AttackDefense planetStrength = new AttackDefense();
-		if (planet != null) {
-			AttackDefense ps = planetStrength(planet);
-			planetStrength.add(ps);
-			if (planet.owner == battle.attacker.owner) {
-				attacker.add(ps);
-			} else {
-				defender.add(ps);
-			}
-		}
+		SpaceStrengths str = getSpaceStrengths(battle);
+		
+		battle.attacker.owner.ai.onAutoSpacewarStart(battle, str);
+		battle.enemy(battle.attacker.owner).ai.onAutoSpacewarStart(battle, str);
+		
+		AttackDefense attacker = str.attacker;
+		AttackDefense defender = str.defender;
 		
 		System.out.printf("Attacker.Attack = %s%n", attacker.attack);
 		System.out.printf("Attacker.Defense = %s%n", attacker.defense);
@@ -426,25 +453,25 @@ public final class BattleSimulator {
 			battle.spacewarWinner = battle.attacker.owner;
 			System.out.printf("Attacker wins. Inflicted damage upon: %s%n", attackerTime * defender.attack);
 			// attacker wins
-			if (fleet != null) {
-				world.removeFleet(fleet);
-				world.scripting.onLost(fleet);
-				fleet.inventory.clear();
+			if (str.fleet != null) {
+				world.removeFleet(str.fleet);
+				world.scripting.onLost(str.fleet);
+				str.fleet.inventory.clear();
 			}
-			if (planet != null) {
-				if (planet.owner != battle.attacker.owner) {
-					demolishDefenses(planet);
+			if (str.planet != null) {
+				if (str.planet.owner != battle.attacker.owner) {
+					demolishDefenses(str.planet);
 					applyDamage(battle.attacker, attackerTime * defender.attack, ships);
 
-					applyPlanetDefended(planet, 750);
+					applyPlanetDefended(str.planet, 750);
 				} else {
-					double planetPercent = planetStrength.defense / attacker.defense;
+					double planetPercent = str.planetStrength.defense / attacker.defense;
 					
 					applyDamage(battle.attacker, attackerTime * defender.attack * (1 - planetPercent), ships);
 					double planetDamage = attackerTime * defender.attack * planetPercent;
-					applyDamage(planet, planetDamage);
+					applyDamage(str.planet, planetDamage);
 					if (planetDamage > 0) {
-						applyPlanetDefended(planet, 250);
+						applyPlanetDefended(str.planet, 250);
 					}
 				}
 			} else {
@@ -464,28 +491,28 @@ public final class BattleSimulator {
 			battle.attacker.inventory.clear();
 			world.scripting.onLost(battle.attacker);
 			
-			if (planet != null) {
-				if (planet.owner != battle.attacker.owner) {
-					double planetPercent = planetStrength.defense / defender.defense;
+			if (str.planet != null) {
+				if (str.planet.owner != battle.attacker.owner) {
+					double planetPercent = str.planetStrength.defense / defender.defense;
 					double planetDamage = defenderTime * attacker.attack * planetPercent;
-					applyDamage(planet, planetDamage);
+					applyDamage(str.planet, planetDamage);
 
-					if (fleet != null) {
-						applyDamage(fleet, defenderTime * attacker.attack * (1 - planetPercent), ships);
+					if (str.fleet != null) {
+						applyDamage(str.fleet, defenderTime * attacker.attack * (1 - planetPercent), ships);
 					}
 					if (planetDamage > 0) {
-						applyPlanetDefended(planet, 250);
+						applyPlanetDefended(str.planet, 250);
 					}
 				} else {
-					demolishDefenses(planet);
-					applyPlanetDefended(planet, 750);
-					if (fleet != null) {
-						applyDamage(fleet, defenderTime * attacker.attack, ships);
+					demolishDefenses(str.planet);
+					applyPlanetDefended(str.planet, 750);
+					if (str.fleet != null) {
+						applyDamage(str.fleet, defenderTime * attacker.attack, ships);
 					}
 				}
 			} else {
-				if (fleet != null) {
-					applyDamage(fleet, defenderTime * attacker.attack, ships);
+				if (str.fleet != null) {
+					applyDamage(str.fleet, defenderTime * attacker.attack, ships);
 				}
 			}
 		} else {
@@ -494,13 +521,13 @@ public final class BattleSimulator {
 			world.removeFleet(battle.attacker);
 			world.scripting.onLost(battle.attacker);
 
-			if (fleet != null) {
-				world.removeFleet(fleet);
-				world.scripting.onLost(fleet);
+			if (str.fleet != null) {
+				world.removeFleet(str.fleet);
+				world.scripting.onLost(str.fleet);
 			}
-			if (planet != null) {
-				demolishDefenses(planet);
-				applyPlanetDefended(planet, 750);
+			if (str.planet != null) {
+				demolishDefenses(str.planet);
+				applyPlanetDefended(str.planet, 750);
 			}
 		}
 	}
@@ -572,14 +599,14 @@ public final class BattleSimulator {
 	 * @param p the planet
 	 * @return the shield percentage
 	 */
-	double shieldValue(Planet p) {
+	static double shieldValue(Planet p) {
 		double shieldValue = 0;
 		// add shields
 		for (Building b : p.surface.buildings) {
 			float eff = b.getEfficiency();
 			if (Building.isOperational(eff)) {
 				if (b.type.kind.equals("Shield")) {
-					BattleGroundShield bge = world.battle.groundShields.get(b.type.id);
+					BattleGroundShield bge = p.owner.world.battle.groundShields.get(b.type.id);
 					shieldValue = Math.max(shieldValue, eff * bge.shields);
 				}
 			}
@@ -688,18 +715,18 @@ public final class BattleSimulator {
 	 * @param p the planet
 	 * @return the strength
 	 */
-	AttackDefense planetStrength(Planet p) {
+	static AttackDefense planetStrength(Planet p) {
 		double offense = 0;
 		double defense = 0;
 		for (InventoryItem ii : p.inventory) {
 			if (ii.owner == p.owner) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					defense += world.getHitpoints(ii.type) * ii.count;
+					defense += p.owner.world.getHitpoints(ii.type) * ii.count;
 					defense += ii.shield * ii.count;
 					for (InventorySlot is : ii.slots) {
 						if (is.type != null) {
-							BattleProjectile bp = world.battle.projectiles.get(is.type.id);
+							BattleProjectile bp = p.owner.world.battle.projectiles.get(is.type.id);
 							if (bp != null) {
 								if (bp.mode == Mode.BEAM) {
 									offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
@@ -718,14 +745,14 @@ public final class BattleSimulator {
 			if (Building.isOperational(eff)) {
 				if (b.type.kind.equals("Shield")
 						|| b.type.kind.equals("Gun")) {
-					int hpMax = world.getHitpoints(b.type, p.owner, true);
+					int hpMax = p.owner.world.getHitpoints(b.type, p.owner, true);
 					int hp = (int)(1L * b.hitpoints * hpMax / b.type.hitpoints);
 					defense += hp;
 					defense += hp * shieldValue / 100;
 					
-					BattleGroundProjector bge = world.battle.groundProjectors.get(b.type.id);
+					BattleGroundProjector bge = p.owner.world.battle.groundProjectors.get(b.type.id);
 					if (bge != null && bge.projectile != null) {
-						BattleProjectile pr = world.battle.projectiles.get(bge.projectile);
+						BattleProjectile pr = p.owner.world.battle.projectiles.get(bge.projectile);
 						offense += bge.damage * 1.0 / pr.delay;
 					}
 					
@@ -743,7 +770,7 @@ public final class BattleSimulator {
 	 * @param f the fleet
 	 * @return the strength
 	 */
-	AttackDefense fleetStrength(Fleet f) {
+	static AttackDefense fleetStrength(Fleet f) {
 		double offense = 0;
 		double defense = 0;
 		for (InventoryItem ii : f.inventory) {
@@ -752,7 +779,7 @@ public final class BattleSimulator {
 			
 			for (InventorySlot is : ii.slots) {
 				if (is.type != null) {
-					BattleProjectile bp = world.battle.projectiles.get(is.type.id);
+					BattleProjectile bp = f.owner.world.battle.projectiles.get(is.type.id);
 					if (bp != null) {
 						if (bp.mode == Mode.BEAM) {
 							offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
@@ -767,50 +794,6 @@ public final class BattleSimulator {
 		d.attack = offense;
 		d.defense = defense;
 		return d;
-	}
-	/** The attack/defense record. */
-	static class AttackDefense {
-		/** Attack value. */
-		public double attack;
-		/** Defense value. */
-		public double defense;
-		/**
-		 * Add another record.
-		 * @param d the other defense
-		 */
-		public void add(AttackDefense d) {
-			this.attack += d.attack;
-			this.defense += d.defense;
-		}
-	}
-	/**
-	 * Check if space battle will happen.
-	 * @return true if space battle will happen
-	 */
-	boolean spaceBattleNeeded() {
-		if (battle.targetFleet != null || battle.helperFleet != null) {
-			return true;
-		}
-		Planet p = battle.targetPlanet;
-		if (p == null) {
-			p = battle.helperPlanet;
-		}
-		if (p != null) {
-			for (InventoryItem ii : p.inventory) {
-				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
-						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					return true;
-				}
-			}
-			for (Building b : p.surface.buildings) {
-				if (b.isOperational()) {
-					if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
 	}
 	/**
 	 * Check if the inventory holds vehicles for a ground assault.
@@ -830,47 +813,6 @@ public final class BattleSimulator {
 	/** Simulate the ground battle. */
 	void autoGroundBattle() {
 		System.err.println("Automatic ground battle not implemented!");
-	}
-	/**
-	 * Find helper fleet or planet for the battle.
-	 * @param battle the battle configuration
-	 * @param world the world object
-	 */
-	public static void findHelpers(BattleInfo battle, World world) {
-		final int minDistance = 20;
-		if (battle.targetFleet != null) {
-			// locate the nearest planet
-			double dmin = Double.MAX_VALUE;
-			Planet pmin = null;
-			for (Planet p : world.planets.values()) {
-				if (p.owner == battle.attacker.owner || p.owner == battle.targetFleet.owner) {
-					double d = World.dist(battle.targetFleet.x, battle.targetFleet.y, p.x, p.y);
-					if (d < dmin && d <= minDistance) {
-						dmin = d;
-						pmin = p;
-					}
-				}
-				
-			}
-			battle.helperPlanet = pmin;
-		} else 
-		if (battle.targetPlanet != null && battle.targetPlanet.owner != null) {
-			// locate the nearest fleet with the same owner
-			double dmin = Double.MAX_VALUE;
-			Fleet fmin = null;
-			for (Fleet f : battle.targetPlanet.owner.fleets.keySet()) {
-				if (f.owner == battle.targetPlanet.owner) {
-					double d = World.dist(f.x, f.y, battle.targetPlanet.x, battle.targetPlanet.y);
-					if (d < dmin && d <= minDistance) {
-						dmin = d;
-						fmin = f;
-					}
-				}
-			}
-			battle.helperFleet = fmin;
-		} else {
-			throw new AssertionError("No target in battle settings.");
-		}
 	}
 	/**
 	 * @param planet the target planet 

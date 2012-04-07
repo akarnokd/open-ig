@@ -14,7 +14,9 @@ import hu.openig.model.AIManager;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
+import hu.openig.model.AttackDefense;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
@@ -29,6 +31,7 @@ import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.SoundType;
+import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
@@ -344,5 +347,18 @@ public class AIUser implements AIManager {
 				it.remove();
 			}
 		}
+	}
+	@Override
+	public void onAutobattleFinish(BattleInfo battle) {
+		
+	}
+	@Override
+	public void onAutoGroundwarStart(BattleInfo battle, AttackDefense attacker,
+			AttackDefense defender) {
+		
+	}
+	@Override
+	public void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str) {
+		
 	}
 }

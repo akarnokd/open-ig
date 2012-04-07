@@ -183,4 +183,22 @@ public interface AIManager {
 	 * Notification about the radar sweep completion.
 	 */
 	void onRadar();
+	/** 
+	 * Notification about the auto-battle start.
+	 * @param battle the battle configuration 
+	 * @param str the strength
+	 */
+	void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str);
+	/** 
+	 * Notification about the auto-battle start.
+	 * @param battle the battle configuration 
+	 * @param attacker the attacker's strength
+	 * @param defender the defender's strength
+	 */
+	void onAutoGroundwarStart(BattleInfo battle, AttackDefense attacker, AttackDefense defender);
+	/** 
+	 * Notification about the auto-battle finish. Called after losses are applied. 
+	 * @param battle the battle configuration 
+	 */
+	void onAutobattleFinish(BattleInfo battle);
 }

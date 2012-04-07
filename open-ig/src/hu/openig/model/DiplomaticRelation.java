@@ -35,4 +35,16 @@ public class DiplomaticRelation {
 	 * The set of common enemies.
 	 */
 	public final Set<Player> alliancesAgainst = U.newHashSet();
+	/** @return a copy of this record. */
+	public DiplomaticRelation copy() {
+		DiplomaticRelation dr = new DiplomaticRelation();
+		dr.first = first;
+		dr.second = second;
+		dr.full = full;
+		dr.value = value;
+		dr.lastContact = lastContact;
+		dr.wontTalk = wontTalk;
+		dr.alliancesAgainst.addAll(alliancesAgainst);
+		return dr;
+	}
 }
