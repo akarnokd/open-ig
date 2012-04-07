@@ -521,8 +521,8 @@ public abstract class Planner {
 		if (rt.category.main == ResearchMainCategory.WEAPONS) {
 			capacity = world.global.weaponsActive;
 		}
-		final int count0 = Math.max(count, 
-				capacity / rt.productionCost / world.player.world.params().productionUnit());
+		final int count0 = Math.max(count, (int)(
+				capacity / rt.productionCost / world.player.world.params().productionUnit()));
 		add(new Action0() {
 			@Override
 			public void invoke() {

@@ -1293,7 +1293,16 @@ public class EquipmentScreen extends ScreenBase {
 			splitButton.visible(false);
 			transferButton.visible(false);
 			noSpaceport.visible(false);
-			
+
+			if (configure.selectedSlot != null) {
+				addOne.visible(
+						player().inventoryCount(rt) > 0
+						&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
+				);
+				removeOne.visible(
+						configure.selectedSlot.type != null && configure.selectedSlot.count > 0
+				);
+			}
 			
 		} else {
 			if (fleetShown != f || lastSelection != player().selectionMode) {
@@ -1474,7 +1483,8 @@ public class EquipmentScreen extends ScreenBase {
 			noPlanetNearby.visible(secondary == null && ps == null);
 			noSpaceStation.visible(false);
 
-			if (ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport && secondary == null) {
+			if (ps != null && fs.planet.owner == f.owner 
+					&& ps.hasMilitarySpaceport && secondary == null) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
 							&& f.inventoryCount(rt) < 30);
@@ -1511,6 +1521,16 @@ public class EquipmentScreen extends ScreenBase {
 						
 				);
 
+				if (configure.selectedSlot != null) {
+					addOne.visible(
+							player().inventoryCount(rt) > 0
+							&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
+					);
+					removeOne.visible(
+							configure.selectedSlot.type != null && configure.selectedSlot.count > 0
+					);
+				}
+				
 				if (!control) {
 					addButton.visible(false);
 					delButton.visible(false);
@@ -1541,14 +1561,6 @@ public class EquipmentScreen extends ScreenBase {
 				innerEquipmentSeparator.text("----", true).visible(true);
 			}
 			innerEquipmentValue.text(format("equipment.innercount", configure.selectedSlot.count, configure.selectedSlot.slot.max), true).visible(true);
-
-			addOne.visible(
-					player().inventoryCount(rt) > 0
-					&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
-			);
-			removeOne.visible(
-					configure.selectedSlot.type != null && configure.selectedSlot.count > 0
-			);
 		} else {
 			addOne.visible(false);
 			removeOne.visible(false);
