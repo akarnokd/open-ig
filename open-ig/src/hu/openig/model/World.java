@@ -106,6 +106,8 @@ public class World {
 	public Configuration config;
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
+	/** The chat settings. */
+	public Chats chats;
 	/** The date formatter. */
 	public static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
 		@Override
@@ -176,7 +178,7 @@ public class World {
 				}
 			});
 		exec.allowCoreThreadTimeOut(true);
-		final WipPort wip = new WipPort(7);
+		final WipPort wip = new WipPort(8);
 		try {
 			level = definition.startingLevel;
 			
@@ -193,7 +195,23 @@ public class World {
 			galaxyModel = new GalaxyModel(env.config());
 			test = U.newLinkedHashMap();
 			diplomacy = U.newLinkedHashMap();
-			
+			chats = new Chats();
+
+			exec.submit(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						if (definition.chats != null) {
+							chats.load(rl.getXML(definition.chats));
+						}
+					} catch (Throwable t) {
+						t.printStackTrace();
+					} finally {
+						wip.dec();
+					}
+				}
+			});
+
 			exec.submit(new Runnable() {
 				@Override
 				public void run() {

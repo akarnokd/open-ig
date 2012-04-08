@@ -252,6 +252,8 @@ public class Mission7 extends Mission {
 			}
 			battle.attackerAllies.add(traders);
 			battle.allowRetreat = false;
+			
+			battle.chat = "chat.mission-7.defend.merchant" + task;
 		}
 	}
 	/**
