@@ -388,6 +388,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** The right ship information panel. */
 	@Show(mode = PanelMode.SHIP_INFORMATION, left = false)
 	ShipInformationPanel rightShipInfoPanel;
+	/** The left ship information panel. */
+	@Show(mode = PanelMode.COMMUNICATOR, left = true)
+	ChatPanel leftChatPanel;
+	/** The right ship information panel. */
+	@Show(mode = PanelMode.COMMUNICATOR, left = false)
+	ChatPanel rightChatPanel;
 	/** The initial layout panel. */
 	@Show(mode = PanelMode.LAYOUT, left = false)
 	LayoutPanel layoutPanel;
@@ -527,6 +533,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		layoutPanel.visible(false);
 		
 		selectionPanel = new SelectionPanel();
+		
+		leftChatPanel = new ChatPanel();
+		leftChatPanel.visible(false);
+		rightChatPanel = new ChatPanel();
+		rightChatPanel.visible(false);
 		
 		addThis();
 	}
@@ -4535,6 +4546,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			} else {
 				placeFleet(0, false, common);
 			}
+		}
+	}
+	/** The chat information panel. */
+	class ChatPanel extends UIComponent {
+		/** Initialize. */
+		public ChatPanel() {
+			width = 286;
+			height = 195;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			
 		}
 	}
 }

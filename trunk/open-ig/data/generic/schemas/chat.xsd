@@ -58,9 +58,6 @@
 	</xs:simpleType>
 	<xs:complexType name="transition">
 		<xs:annotation><xs:documentation>Transition from one chat node to another.</xs:documentation></xs:annotation>
-		<xs:attribute name="id" type="xs:string" use="required">
-			<xs:annotation><xs:documentation>The transition unique identifier.</xs:documentation></xs:annotation>
-		</xs:attribute>
 		<xs:attribute name="to" type="xs:string" use="required">
 			<xs:annotation><xs:documentation>The next node's identifier.</xs:documentation></xs:annotation>
 		</xs:attribute>
