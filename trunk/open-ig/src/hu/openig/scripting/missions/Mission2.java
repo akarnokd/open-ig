@@ -66,7 +66,11 @@ public class Mission2 extends Mission {
 					fs = filterByRange(fs, world.params().groundRadarUnitSize() - 2, 
 							"Naxos", "San Sterling", "Achilles");
 					if (!fs.isEmpty()) {
-						int traderMessage = world.random().nextInt(7) + 1;
+						Fleet f = world.random(fs);
+
+						int fidx = f.owner.ownFleets().indexOf(f);
+						
+						int traderMessage = 1 + fidx % 7;
 						
 						helper.receive("Douglas-Pirates").visible = false;
 						incomingMessage("Merchant-Under-Attack-" + traderMessage);
@@ -74,7 +78,6 @@ public class Mission2 extends Mission {
 						helper.showObjective(m2ti);
 						helper.clearMissionTime(m2ti);
 						world.env.speed1();
-						Fleet f = world.random(fs);
 						f.stop();
 						f.task = FleetTask.SCRIPT;
 						
@@ -322,6 +325,9 @@ public class Mission2 extends Mission {
 			}
 			battle.attackerAllies.add(traders);
 			battle.allowRetreat = false;
+			
+			int tidx = tf.owner.ownFleets().indexOf(tf);
+			battle.chat = "hat.mission-2.defend.merchant" + (1 + tidx % 6);
 		}
 	}
 	@Override

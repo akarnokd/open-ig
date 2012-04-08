@@ -436,6 +436,29 @@ public class AITrader implements AIManager {
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
 		battleHP = AI.fleetHealth(world.structures(player)).first;
+		
+		Fleet our = world.battle().getFleet();
+		
+		if (our != null) {
+			int idx = player.ownFleets().indexOf(our);
+			
+			String filter = "chat.merchant";
+			
+			if (player.world.infectedFleets.containsKey(our.id)) {
+				filter = "chat.virus";
+			}
+			
+			List<String> chats = U.newArrayList();
+			for (String c : player.world.chats.keys()) {
+				if (c.startsWith(filter)) {
+					chats.add(c);
+				}
+			}
+			
+			int comm = idx % chats.size();
+			
+			world.battle().chat = chats.get(comm);
+		}
 	}
 	
 	@Override

@@ -22,6 +22,7 @@ import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.BattleSpaceEntity;
 import hu.openig.model.BattleSpaceLayout;
 import hu.openig.model.Building;
+import hu.openig.model.Chats.Chat;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.InventoryItem;
@@ -1367,9 +1368,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		player().ai.spaceBattleInit(this);
 		nonPlayer().ai.spaceBattleInit(this);
+		world().scripting.onSpacewarStart(this);
+		
+		if (battle.chat != null) {
+			leftChatPanel.chat = world().chats.get(battle.chat);
+			rightChatPanel.chat = leftChatPanel.chat;
+		} else {
+			leftChatPanel.chat = null;
+			rightChatPanel.chat = null;
+		}
 		
 		displayPanel(PanelMode.SHIP_STATUS, true);
-		world().scripting.onSpacewarStart(this);
 		if (battle.attacker.owner == player() 
 				&& (nearbyPlanet == null || nearbyPlanet.owner != player())) {
 			displayPanel(PanelMode.LAYOUT, false);
@@ -4549,15 +4558,32 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 	}
 	/** The chat information panel. */
-	class ChatPanel extends UIComponent {
+	class ChatPanel extends UIContainer {
+		/** The chat. */
+		Chat chat;
+		/** The nochat label. */
+		UILabel nochat;
 		/** Initialize. */
 		public ChatPanel() {
 			width = 286;
 			height = 195;
+			
+			nochat = new UILabel(get("chat.unavailable"), 14, commons.text());
+			nochat.width = 286;
+			nochat.y = 20;
+			nochat.wrap(true);
+			nochat.horizontally(HorizontalAlignment.CENTER);
+			
+			addThis();
 		}
 		@Override
 		public void draw(Graphics2D g2) {
-			
+			if (chat == null) {
+				nochat.visible(true);
+			} else {
+				nochat.visible(false);
+			}
+			super.draw(g2);
 		}
 	}
 }

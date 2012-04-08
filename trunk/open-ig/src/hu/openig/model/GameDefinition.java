@@ -74,6 +74,9 @@ public class GameDefinition {
 	/** The scripting definition. */
 	@LoadField
 	public String scripting;
+	/** The optional chat definition. */
+	@LoadField
+	public String chats;
 	/**
 	 * Parse the game definition from.
 	 * @param rl the resource locator

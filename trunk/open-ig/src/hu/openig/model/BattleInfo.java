@@ -70,6 +70,8 @@ public class BattleInfo {
 	public String messageText;
 	/** Infect the target planet at the conclusion if non-null. */
 	public Planet infectPlanet;
+	/** The chat option set by scripts. */
+	public String chat;
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;
