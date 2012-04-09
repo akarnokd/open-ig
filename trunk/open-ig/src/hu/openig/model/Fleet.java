@@ -421,7 +421,7 @@ public class Fleet implements Named, Owned, HasInventory {
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 				ii.upgradeSlots();
 			}
-			ii.shield = Math.max(0, ii.shieldMax());
+//			ii.shield = Math.max(0, ii.shieldMax());
 		}
 		
 		for (ResearchType rt : owner.available().keySet()) {
