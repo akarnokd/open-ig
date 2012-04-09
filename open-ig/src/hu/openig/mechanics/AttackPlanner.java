@@ -41,7 +41,7 @@ import java.util.Set;
  */
 public class AttackPlanner extends Planner {
 	/** The war limit. */
-	private static final int WAR_LIMIT = 25;
+	protected static final int WAR_LIMIT = 75;
 	/** The exploration map. */
 	final ExplorationMap exploration;
 	/** Sets the new attack date. */
@@ -139,7 +139,7 @@ public class AttackPlanner extends Planner {
 				DiplomaticRelation dr = world.relations.get(f.fleet.owner);
 				
 				if (dr != null && dr.full) {
-					if (dr.value < 35 && dr.alliancesAgainst.isEmpty()) {
+					if (dr.value < WAR_LIMIT && dr.alliancesAgainst.isEmpty()) {
 						candidates.add(f);
 					}
 				}
@@ -247,7 +247,7 @@ public class AttackPlanner extends Planner {
 	 * @param f the target fleet
 	 * @return the value
 	 */
-	double fleetValue(AIFleet f) {
+	public static double fleetValue(AIFleet f) {
 		if (f.knowledge == FleetKnowledge.VISIBLE) {
 			return 0;
 		}
@@ -272,7 +272,7 @@ public class AttackPlanner extends Planner {
 	 * @param p the planet
 	 * @return the value
 	 */
-	double planetValue(AIPlanet p) {
+	public static double planetValue(AIPlanet p) {
 		if (p.knowledge == PlanetKnowledge.OWNER) {
 			return 0;
 		}
