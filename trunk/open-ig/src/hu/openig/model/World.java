@@ -1593,6 +1593,9 @@ public class World {
 			f.x = xfleet.getFloat("x");
 			f.y = xfleet.getFloat("y");
 			f.name = xfleet.get("name");
+			if (f.name.startsWith("@")) {
+				f.name = labels.get(f.name);
+			}
 			
 			String s0 = xfleet.get("target-fleet", null);
 			if (s0 != null && !noTargetFleet) {

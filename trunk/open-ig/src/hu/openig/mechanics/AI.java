@@ -30,6 +30,8 @@ import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
@@ -707,24 +709,75 @@ public class AI implements AIManager {
 			return ResponseMode.NO;
 		}
 		
-		PlayerStrength ps = getStrength(other);
+		PlayerStrength senderStrength = getStrength(other);
+		
+		PlanetStatistics ownStats = p.getPlanetStatistics(null);
+
+		PlanetStatistics senderStas = computeVisibleStats(other);
+		
+		double rnd = p.world.random().nextDouble();
 		
 		switch (about) {
 		case DIPLOMATIC_RELATIONS:
-			
+			if (rnd < 0.33) {
+				return ResponseMode.YES;
+			} else
+			if (rnd < 0.66) {
+				return ResponseMode.MAYBE;
+			}
 			break;
 		case ALLY:
+			if (rnd < 0.5) {
+				return ResponseMode.YES;
+			}
 			break;
 		case DARGSLAN:
+			if (rnd < 0.1 && !p.id.equals("Dargslan")) {
+				return ResponseMode.YES;
+			}
 			break;
 		case MONEY:
+			if (rnd < 0.5) {
+				return ResponseMode.YES;
+			}
 			break;
 		case SURRENDER:
+			if (rnd < 0.1 && ownStats.planetCount < 2) {
+				return ResponseMode.YES;
+			}
 			break;
 		case TRADE:
+			if (rnd < 0.5) {
+				return ResponseMode.YES;
+			}
 			break;
 		default:
 		}
 		return ResponseMode.NO;
+	}
+	/**
+	 * Compute the statistics of the given player based
+	 * on the current visibility settings.
+	 * @param other the other player
+	 * @return the statistics
+	 */
+	PlanetStatistics computeVisibleStats(Player other) {
+		PlanetStatistics ps = new PlanetStatistics();
+		
+		for (Map.Entry<Planet, PlanetKnowledge> pl : p.planets.entrySet()) {
+			int k = pl.getValue().ordinal();
+			if (pl.getKey().owner == other && k >= PlanetKnowledge.OWNER.ordinal()) {
+				ps.planetCount++;
+				
+				if (k >= PlanetKnowledge.STATIONS.ordinal()) {
+					
+				}
+				if (k >= PlanetKnowledge.BUILDING.ordinal()) {
+					
+				}
+			}
+		}
+		
+		return ps;
 	}
 }

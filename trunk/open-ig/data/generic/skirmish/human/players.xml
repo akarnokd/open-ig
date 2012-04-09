@@ -6,9 +6,10 @@
 		picture='database/freenations'
 		user='true'
 		money='250000'
-		initial-stance='50'
+		initial-stance='10'
 		ai='NONE'
 		colonization-limit='-1'
+		diplomacy-head='diplomacy/dipfej7'
 	>
 	</player>
 	<player id='FreeNations' race='human' name='players.free_nations'
@@ -16,8 +17,9 @@
 		color='FF94A4FC'
 		picture='database/freenations'
 		money='250000'
-		initial-stance='50'
+		initial-stance='10'
 		colonization-limit='-1'
+		diplomacy-head='diplomacy/dipfej8'
 	>
 	</player>
 	<player id='Traders' race='traders' name='players.free_traders'
