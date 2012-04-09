@@ -6,6 +6,14 @@
 
 == April, 2012 ==
 
+*April 9, 2012*
+
+I have released the improvements of the last months developments. Among these you'll find:
+
+  * basic diplomacy: you can contact aliens, but their responses are randomized.
+  * global speed control: speed up the simulation to 60 min/seconds, a day in super fast would last about 2 seconds
+  * various visual improvements and bugfixes
+
 *April 7, 2012*
 
 I managed to reserve some time for development and did several improvements to the game. Most notably the inclusion of global speed settings. But the main task is with the diplomacy. 
