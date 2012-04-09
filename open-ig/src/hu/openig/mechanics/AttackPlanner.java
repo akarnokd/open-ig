@@ -139,7 +139,7 @@ public class AttackPlanner extends Planner {
 				DiplomaticRelation dr = world.relations.get(f.fleet.owner);
 				
 				if (dr != null && dr.full) {
-					if (dr.value < WAR_LIMIT && dr.alliancesAgainst.isEmpty()) {
+					if (dr.value < WAR_LIMIT && hasActiveAlliance(dr.alliancesAgainst)) {
 						candidates.add(f);
 					}
 				}
@@ -190,7 +190,7 @@ public class AttackPlanner extends Planner {
 				}
 				DiplomaticRelation dr = world.relations.get(p.owner);
 				if (dr != null && dr.full) {
-					if (dr.value < WAR_LIMIT) {
+					if (dr.value < WAR_LIMIT && hasActiveAlliance(dr.alliancesAgainst)) {
 						candidates.add(p);
 						ps.add(p.owner);
 					}
@@ -199,6 +199,7 @@ public class AttackPlanner extends Planner {
 		}
 		if (!candidates.isEmpty()) {
 			
+			/*
 			Player p = Collections.min(ps, new Comparator<Player>() {
 				@Override
 				public int compare(Player o1, Player o2) {
@@ -214,6 +215,7 @@ public class AttackPlanner extends Planner {
 					candidates.remove(i);
 				}
 			}
+			*/
 			
 			final Point2D.Double center = world.center();
 			return Collections.min(candidates, new Comparator<AIPlanet>() {
@@ -241,6 +243,19 @@ public class AttackPlanner extends Planner {
 			});
 		}
 		return null;
+	}
+	/**
+	 * Check if the sequence of common enemies has still active elements.
+	 * @param against the sequence of other players
+	 * @return true if any of those players still has planets
+	 */
+	boolean hasActiveAlliance(Iterable<? extends Player> against) {
+		for (Player p0 : against) {
+			if (!p0.ownPlanets().isEmpty()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Estimate fleet value.
