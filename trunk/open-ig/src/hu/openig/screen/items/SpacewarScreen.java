@@ -3166,7 +3166,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		double diff = targetAngle - currentAngle;
 		if (diff < -Math.PI) {
-			diff = 2 * Math.PI - diff;
+			diff += 2 * Math.PI;
 		} else
 		if (diff > Math.PI) {
 			diff -= 2 * Math.PI; 
