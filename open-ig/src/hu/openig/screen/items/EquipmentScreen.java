@@ -1799,7 +1799,7 @@ public class EquipmentScreen extends ScreenBase {
 						
 						pii.createSlots();
 						
-						pii.shield = Math.max(0, pii.shieldMax());
+//						pii.shield = Math.max(0, pii.shieldMax());
 						
 						planet().inventory.add(pii);
 						leftList.items.add(pii);
@@ -1985,9 +1985,9 @@ public class EquipmentScreen extends ScreenBase {
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
 			configure.selectedSlot.hp = world().getHitpoints(research());
-			if (research().has("shield")) {
-				configure.item.shield = Math.max(0, configure.item.shieldMax());
-			}
+//			if (research().has("shield")) {
+//				configure.item.shield = Math.max(0, configure.item.shieldMax());
+//			}
 		}
 		int remaining = configure.selectedSlot.slot.max - configure.selectedSlot.count;
 		int available = player().inventoryCount(configure.selectedSlot.type);
@@ -2006,9 +2006,9 @@ public class EquipmentScreen extends ScreenBase {
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
 			configure.selectedSlot.hp = world().getHitpoints(research());
-			if (research().has("shield")) {
-				configure.item.shield = Math.max(0, configure.item.shieldMax());
-			}
+//			if (research().has("shield")) {
+//				configure.item.shield = Math.max(0, configure.item.shieldMax());
+//			}
 		}
 		if (!configure.selectedSlot.isFilled()) {
 			configure.selectedSlot.count++;
@@ -2468,7 +2468,7 @@ public class EquipmentScreen extends ScreenBase {
 		ii.count = 1;
 		ii.hp = world().getHitpoints(ii.type);
 		ii.createSlots();
-		ii.shield = Math.max(0, ii.shieldMax());
+//		ii.shield = Math.max(0, ii.shieldMax());
 		planet().inventory.add(ii);
 		leftList.items.add(ii);
 		leftList.compute();
