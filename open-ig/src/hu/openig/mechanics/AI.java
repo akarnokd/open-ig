@@ -191,7 +191,7 @@ public class AI implements AIManager {
 		}
 		for (SpacewarStructure s : esl) {
 			// do not fire rocket at tagged objects unless it is the last enemy
-			if (esl.size() == 1 || (s.item == null && s.item.tag == null)) {
+			if (esl.size() == 1 || (s.item == null || s.item.tag == null)) {
 				int found = 0;
 				if (s.type == StructureType.SHIP || s.type == StructureType.STATION) {
 					Pair<SpacewarStructure, SpacewarWeaponPort> w = 
