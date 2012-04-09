@@ -4686,7 +4686,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		result.diff = result.targetAngle - result.currentAngle;
 		if (result.diff < -Math.PI) {
-			result.diff = 2 * Math.PI - result.diff;
+			result.diff += 2 * Math.PI;
 		} else
 		if (result.diff > Math.PI) {
 			result.diff -= 2 * Math.PI; 
