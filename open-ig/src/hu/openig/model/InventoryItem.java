@@ -183,8 +183,9 @@ public class InventoryItem {
 				}
 				// check if current type can be more filled in
 				index = Math.max(0, index - 1);
-				if (is.slot.max > is.count 
-						&& is.slot.max - is.count <= owner.inventoryCount(is.slot.items.get(index))) {
+				ResearchType t0 = is.slot.items.get(index);
+				int diff = is.slot.max - is.count;
+				if (diff > 0 && owner.inventoryCount(t0) > 0) {
 					return true;
 				}
 			}
