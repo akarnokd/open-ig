@@ -4568,7 +4568,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			width = 286;
 			height = 195;
 			
-			nochat = new UILabel(get("chat.unavailable"), 14, commons.text());
+			nochat = new UILabel("", 14, commons.text());
 			nochat.width = 286;
 			nochat.y = 20;
 			nochat.wrap(true);
@@ -4580,9 +4580,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		public void draw(Graphics2D g2) {
 			if (chat == null) {
 				nochat.visible(true);
+				nochat.text(get("chat.unavailable"));
+				nochat.height = nochat.getWrappedHeight();
+				nochat.color(TextRenderer.YELLOW);
 			} else {
 				nochat.visible(false);
 			}
+			g2.setColor(Color.BLACK);
+			g2.fillRect(0, 0, width, height);
 			super.draw(g2);
 		}
 	}

@@ -327,7 +327,7 @@ public class Mission2 extends Mission {
 			battle.allowRetreat = false;
 			
 			int tidx = tf.owner.ownFleets().indexOf(tf);
-			battle.chat = "hat.mission-2.defend.merchant" + (1 + tidx % 6);
+			battle.chat = "chat.mission-2.defend.merchant" + (1 + tidx % 6);
 		}
 	}
 	@Override

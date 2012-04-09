@@ -795,25 +795,27 @@ public final class Simulator {
 	 */
 	protected static void regenerateInventory(boolean spaceport,
 			InventoryItem ii) {
-		double spd = 3000 / ii.owner.world.params().productionUnit();
+		double spd = ii.owner.world.params().speed();
+		if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+			spd *= 5;
+		}
 		int hpMax = ii.owner.world.getHitpoints(ii.type);
 		if (spaceport || ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 			if (ii.hp < hpMax) {
-				double delta0 = spd * ii.type.productionCost / hpMax;
+				double delta0 = spd;
 				ii.hp = (int)Math.min(hpMax, ii.hp + delta0);
 				// regenerate slots
 				for (InventorySlot is : ii.slots) {
 					if (is.type != null) {
 						int m = ii.owner.world.getHitpoints(is.type);
-						double delta = spd * is.type.productionCost / m;
-						is.hp = (int)Math.min(m, is.hp + delta);
+						is.hp = (int)Math.min(m, is.hp + delta0);
 					}
 				}
 			}
 		}
 		int sm = ii.shieldMax();
 		if (sm > 0 && ii.shield < sm) {
-			double delta = spd * sm / hpMax;
+			double delta = spd;
 			ii.shield = (int)Math.min(sm, ii.shield + delta);
 		}
 	}
@@ -903,6 +905,7 @@ public final class Simulator {
 					diff += pl.taxIncome - ti;
 				}
 			}
+			p.money += diff;
 			p.yesterday.taxIncome += diff;
 			p.statistics.moneyIncome += diff;
 			p.statistics.moneyTaxIncome += diff;
