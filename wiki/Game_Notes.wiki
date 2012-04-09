@@ -2,6 +2,28 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.350 - Basic diplomacy =
+  * Released: 2012-04-09 10:30 CET
+  * *I recommend starting a new game as some gameplay mechanic changes and fixes might not take effect under existing saves*. 
+  * Added smoke and fire to buildings ([http://code.google.com/p/open-ig/issues/detail?id=73 Issue #73])
+  * Added ability to set the game base speed ([http://code.google.com/p/open-ig/issues/detail?id=153 Issue #153])
+  * Few settings has been moved from Gameplay to Sound page in Options.
+  * Multi headed rocket have an area effect ([http://code.google.com/p/open-ig/issues/detail?id=180 Issue #180])
+  * Rockets and bombs have cooldown now as well ([http://code.google.com/p/open-ig/issues/detail?id=192 Issue #192])
+  * Groundwar damaged units now emit smoke and fire ([http://code.google.com/p/open-ig/issues/detail?id=274 Issue #274])
+  * AI now uses its rockets, but won't target campaign related ships ([http://code.google.com/p/open-ig/issues/detail?id=300 Issue #300])
+  * Space stations have now specific equipment slot for rockets, which must be manually refilled or let the auto-refill take care of it.
+  * Information screen tabs can be accessed via QWERASDF keys ([http://code.google.com/p/open-ig/issues/detail?id=309  Issue #309])
+  * Debug functionality CTRL+M has been removed ([http://code.google.com/p/open-ig/issues/detail?id=312 Issue #312])
+  * Skirmish games may now be resumed after the win condition ([http://code.google.com/p/open-ig/issues/detail?id=305 Issue #305])
+  * Added extra video message to Mission 21 ([http://code.google.com/p/open-ig/issues/detail?id=306 Issue #306])
+  * Changed "AI managed" auto-build settings to consider all such planets instead of individually manage them (similarly to regular AI players) ([http://code.google.com/p/open-ig/issues/detail?id=316 Issue #316])
+  * Ability auto-upgrade planet defenses, similar to fleets ([http://code.google.com/p/open-ig/issues/detail?id=318 Issue #318])
+  * The player's main fleet is now named according to the current language when a new game is started.
+  * Fixed production screen showing wrong capacity in case no orbital factory was deployed yet.
+  * Changed tax mechanics to boost taxes when the player has few planets and reduce taxes when the player has 10+ planets.
+
+
 = Version 0.94.320 - Campaign finished =
   * Released: 2012-03-06 15:30 CET
   * Added planet dependant population growth and display of the rate in the information panels ([http://code.google.com/p/open-ig/issues/detail?id=69 Issue #69])
