@@ -3553,6 +3553,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			commons.simulation.pause();
 			concludeBattle(winner);
 		}
+		enableSelectedFleetControls();
 		askRepaint();
 	}
 	/**

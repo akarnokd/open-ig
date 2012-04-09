@@ -142,8 +142,8 @@ public class BattleInfo {
 	 * Find helper fleet or planet for the battle.
 	 */
 	public void findHelpers() {
-		final int minDistance = 20;
 		World world = attacker.owner.world;
+		final int minDistance = world.params().nearbyDistance();
 		if (targetFleet != null) {
 			// locate the nearest planet
 			double dmin = Double.MAX_VALUE;
@@ -151,7 +151,7 @@ public class BattleInfo {
 			for (Planet p : world.planets.values()) {
 				if (p.owner == attacker.owner || p.owner == targetFleet.owner) {
 					double d = World.dist(targetFleet.x, targetFleet.y, p.x, p.y);
-					if (d < dmin && d <= minDistance) {
+					if (d < dmin && d <= minDistance * minDistance) {
 						dmin = d;
 						pmin = p;
 					}
