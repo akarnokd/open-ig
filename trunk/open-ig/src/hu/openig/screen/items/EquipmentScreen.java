@@ -1303,7 +1303,15 @@ public class EquipmentScreen extends ScreenBase {
 						configure.selectedSlot.type != null && configure.selectedSlot.count > 0
 				);
 			}
+
+			left1.visible(false);
+			left2.visible(false);
+			left3.visible(false);
 			
+			right1.visible(false);
+			right2.visible(false);
+			right3.visible(false);
+
 		} else {
 			if (fleetShown != f || lastSelection != player().selectionMode) {
 				fleetShown = f;
