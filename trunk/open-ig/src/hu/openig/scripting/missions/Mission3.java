@@ -75,6 +75,7 @@ public class Mission3 extends Mission {
 			checkCarrierLocation();
 		}
 		if (checkMission("Mission-3-Timeout")) {
+			world.env.stopMusic();
 			world.env.playVideo("interlude/merchant_destroyed", new Action0() {
 				@Override
 				public void invoke() {
@@ -84,6 +85,7 @@ public class Mission3 extends Mission {
 					helper.receive("Douglas-Carrier").visible = false;
 					
 					removeFleets();
+					world.env.playMusic();
 				}
 			});
 		}
@@ -160,7 +162,7 @@ public class Mission3 extends Mission {
 			
 			if (d < 15) {
 				world.env.speed1();
-				
+				world.env.stopMusic();
 				world.env.playVideo("interlude/merchant_attacked", new Action0() {
 					@Override
 					public void invoke() {
@@ -186,6 +188,7 @@ public class Mission3 extends Mission {
 							ff.attack(pf);
 						}
 						stage = M3.ATTACK;
+						world.env.playMusic();
 					}
 				});
 				
