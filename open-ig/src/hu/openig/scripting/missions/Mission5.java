@@ -82,6 +82,7 @@ public class Mission5 extends Mission {
 		if (m5t1.visible && m5t1.state == ObjectiveState.ACTIVE) {
 			if (checkFleetInRange()) {
 				helper.clearMissionTime("Mission-5-Timeout-1");
+				world.env.stopMusic();
 				world.env.playVideo("interlude/thorin_escort", new Action0() {
 					@Override
 					public void invoke() {
@@ -90,6 +91,7 @@ public class Mission5 extends Mission {
 						moveTullen();
 						helper.send("Douglas-Thorin-Reinforcements").visible = true;
 						helper.send("Douglas-Reinforcements-Denied").visible = false;
+						world.env.playMusic();
 					}
 				});
 			}

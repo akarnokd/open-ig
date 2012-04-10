@@ -224,7 +224,7 @@ public final class PackageStuff {
 			zout.putNextEntry(mf);
 			zout.write(IOUtils.load(mfm));
 		} else {
-			System.err.println("File not found: " + mfm.toString());
+			throw new RuntimeException("File not found: " + mfm.toString());
 		}
 	}
 	/**
