@@ -154,11 +154,20 @@ public class Mission5 extends Mission {
 			helper.objective("Mission-1-Task-3").visible = false;
 			helper.objective("Mission-1-Task-4").visible = false;
 			helper.receive("Douglas-Promotion-2").visible = false;
+
 			world.env.stopMusic();
-			world.env.playVideo("interlude/level_2_intro", new Action0() {
+			world.env.pause();
+
+			world.env.forceMessage("Douglas-Promotion-2", new Action0() {
 				@Override
 				public void invoke() {
-					promote();
+					world.env.playVideo("interlude/level_2_intro", new Action0() {
+						@Override
+						public void invoke() {
+							promote();
+							world.env.speed1();
+						}
+					});
 				}
 			});
 		}
