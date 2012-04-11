@@ -1068,7 +1068,7 @@
 	<entry key='message.planet_died'>Planet %s has been abandoned.</entry>
 	<entry key='message.planet_revolt'>People revolt on planet %s.</entry>
 	<entry key='message.yesterday_tax_income'>Yesterday's tax income was %s credits.</entry>
-	<entry key='message.yesterday_tax_income'>Yesterday's trade income was %s credits.</entry>
+	<entry key='message.yesterday_trade_income'>Yesterday's trade income was %s credits.</entry>
 	<entry key='message.new_planet_discovered'>You discovered the planet %s.</entry>
 	<entry key='message.new_race_discovered'>You discovered the race %s.</entry>
 	<entry key='screens.bridge'>F1 - Bridge</entry>
@@ -2762,7 +2762,6 @@
 	<entry key='settings.radarunion'>Display perimeter radar only</entry>
 	<entry key='traders.fleetname'>Trader</entry>
 	<entry key='battlefinish.click_to_exit'>Click to exit</entry>
-	<entry key='message.yesterday_trade_income'>Yesterday's trade income was %s credits.</entry>
 	<entry key='flagship.moveto.database'>Database screen</entry>
 	<entry key='spacewar.ship_status_none'>Nothing selected.</entry>
 	<entry key='spacewar.ship_status_many'>Too many things selected.</entry>
