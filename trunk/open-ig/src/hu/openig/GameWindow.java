@@ -413,6 +413,7 @@ public class GameWindow extends JFrame implements GameControls {
 		setIconImage(that.getIconImage());
 		this.primary = that.primary;
 		this.secondary = that.secondary;
+		this.options = that.options;
 		this.movie = that.movie;
 		this.movieVisible = that.movieVisible;
 		this.statusbar = that.statusbar;
@@ -518,13 +519,14 @@ public class GameWindow extends JFrame implements GameControls {
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
 		for (ScreenBase sb : screens) {
-			if (primary == sb || secondary == sb) {
+			if (primary == sb || secondary == sb || options == sb) {
 				sb.onLeave();
 			}
 			sb.onFinish();
 		}
 		primary = null;
 		secondary = null;
+		options = null;
 	}
 	/**
 	 * Returns a screen instance for the given screen enum.
