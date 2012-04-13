@@ -212,6 +212,9 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public int timestep = 10;
+	/** The user interface scaling factor. */
+	@LoadSave
+	public int uiScale = 150;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

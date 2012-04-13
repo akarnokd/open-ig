@@ -565,6 +565,8 @@ public class CommonResources implements GameEnvironment {
 						if (!battleMode) {
 							p.ai.apply();
 						}
+					} catch (Throwable t) {
+						t.printStackTrace();
 					} finally {
 						runningAI.remove(p);
 					}

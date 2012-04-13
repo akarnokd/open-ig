@@ -85,6 +85,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -128,6 +129,8 @@ public class GameWindow extends JFrame implements GameControls {
 		int lastW = -1;
 		/** The last height. */
 		int lastH = -1;
+		/** The last scaling. */
+		int lastScale = -1;
 		/**
 		 * Set opacity. 
 		 */
@@ -141,11 +144,13 @@ public class GameWindow extends JFrame implements GameControls {
 			boolean r1 = repaintRequestPartial;
 			repaintRequest = false;
 			repaintRequestPartial = false;
+			int uis = config.uiScale;
 			
-			if (getWidth() != lastW || getHeight() != lastH) {
+			if (getWidth() != lastW || getHeight() != lastH || uis != lastScale) {
 				r0 = true;
 				lastW = getWidth();
 				lastH = getHeight();
+				lastScale = config.uiScale;
 				try {
 					if (primary != null) {
 						primary.resize();
@@ -168,7 +173,11 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			
 			Graphics2D g2 = (Graphics2D)g;
+			AffineTransform at0 = g2.getTransform();
 			try {
+				if (uis != 100) {
+					g2.scale(uis / 100d, uis / 100d);
+				}
 				if (movieVisible) {
 					movie.draw(g2);
 				} else {
@@ -196,6 +205,8 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			} catch (Throwable t) {
 				t.printStackTrace();
+			} finally {
+				g2.setTransform(at0);
 			}
 		}
 	}
@@ -802,11 +813,22 @@ public class GameWindow extends JFrame implements GameControls {
 			repaintInner();
 		}
 	}
+	/** 
+	 * Scale the mouse event coordinates according to the UI scale.
+	 * @param m the mouse event 
+	 */
+	void scaleMouse(UIMouse m) {
+		if (config.uiScale != 100) {
+			m.x = (int)(m.x * 100d / config.uiScale);
+			m.y = (int)(m.y * 100d / config.uiScale);
+		}
+	}
 	@Override
 	public void moveMouse() {
 		boolean result = false;
 		ScreenBase sb = statusbar;
 		UIMouse m = UIMouse.createCurrent(surface);
+		scaleMouse(m);
 		if (statusbarVisible) {
 			result |= sb.mouse(m);
 		}
@@ -1366,6 +1388,7 @@ public class GameWindow extends JFrame implements GameControls {
 			UIMouse me = UIMouse.from(e);
 			
 			invertIf(me);
+			scaleMouse(me);
 			
 			if (movieVisible) {
 				rep = movie.mouse(me);
@@ -1474,11 +1497,19 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public int getInnerHeight() {
-		return surface.getHeight();
+		int h = surface.getHeight();
+		if (config.uiScale != 100) {
+			h = (int)(h * 100d / config.uiScale);
+		}
+		return Math.max(h, 480);
 	}
 	@Override
 	public int getInnerWidth() {
-		return surface.getWidth();
+		int w = surface.getWidth();
+		if (config.uiScale != 100) {
+			w = (int)(w * 100d / config.uiScale);
+		}
+		return Math.max(w, 640);
 	}
 	@Override
 	public void repaintInner() {

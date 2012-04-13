@@ -234,7 +234,7 @@ public class AITrader implements AIManager {
 		while (it.hasNext()) {
 			LandedFleet lf = it.next();
 			// if time out, put back the fleet
-			if (--lf.ttl <= 0) {
+			if (--lf.ttl <= 0 && lf.target != null) {
 				boolean infected = lf.target.quarantineTTL > 0;
 
 				List<Planet> candidates = U.newArrayList();
