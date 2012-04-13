@@ -80,6 +80,10 @@ public class LoadSaveScreen extends ScreenBase {
 		LOAD_SAVE,
 		/** Audio options. */
 		AUDIO,
+		/** The control options. */
+		CONTROL,
+		/** The visual options. */
+		VISUAL,
 		/** Gameplay options. */
 		GAMEPLAY
 	}
@@ -107,6 +111,10 @@ public class LoadSaveScreen extends ScreenBase {
 	UIGenericButton loadSavePage;
 	/** The save button. */
 	UIGenericButton audioPage;
+	/** The save button. */
+	UIGenericButton controlPage;
+	/** The save button. */
+	UIGenericButton visualPage;
 	/** The save button. */
 	UIGenericButton gameplayPage;
 	/** The save button. */
@@ -149,7 +157,7 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox subtitles;
 	/** Animate technology? */
-	@Settings(page = SettingsPage.AUDIO)
+	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox animateTech;
 	/** Re-equip tanks? */
 	@Settings(page = SettingsPage.GAMEPLAY)
@@ -176,7 +184,7 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox buttonSounds;
 	/** Play satellite deploy animation? */
-	@Settings(page = SettingsPage.AUDIO)
+	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox satelliteDeploy;
 	/** Auto-build credit limit. */
 	@Settings(page = SettingsPage.GAMEPLAY)
@@ -203,10 +211,10 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.LOAD_SAVE)
 	UILabel saveNameText;
 	/** Classic RTS controls? */
-	@Settings(page = SettingsPage.AUDIO)
+	@Settings(page = SettingsPage.CONTROL)
 	UICheckBox classicControls;
 	/** Swap left-right mouse? */
-	@Settings(page = SettingsPage.AUDIO)
+	@Settings(page = SettingsPage.CONTROL)
 	UICheckBox swapLeftRight;
 	/** The timer for the blinking cursor. */
 	Timer blink;
@@ -226,10 +234,10 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UISpinner timestepValue;
 	/** The time step for the simulation. */
-	@Settings(page = SettingsPage.AUDIO)
+	@Settings(page = SettingsPage.VISUAL)
 	UILabel uiScaleLabel;
 	/** The time step for the simulation. */
-	@Settings(page = SettingsPage.AUDIO)
+	@Settings(page = SettingsPage.VISUAL)
 	UISpinner uiScaleValue;
 	@Override
 	public void onInitialize() {
@@ -252,7 +260,7 @@ public class LoadSaveScreen extends ScreenBase {
 				displayPage(SettingsPage.LOAD_SAVE);
 			}
 		};
-		audioPage = new UIGenericButton(get("settings.audio"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		audioPage = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		audioPage.disabledPattern(commons.common().disabledPattern);
 		audioPage.onClick = new Action0() {
 			@Override
@@ -261,6 +269,28 @@ public class LoadSaveScreen extends ScreenBase {
 				displayPage(SettingsPage.AUDIO);
 			}
 		};
+		audioPage.icon(rl.getImage("settings_audio"));
+		
+		controlPage = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		controlPage.disabledPattern(commons.common().disabledPattern);
+		controlPage.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				displayPage(SettingsPage.CONTROL);
+			}
+		};
+		controlPage.icon(rl.getImage("settings_control"));
+		visualPage = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		visualPage.disabledPattern(commons.common().disabledPattern);
+		visualPage.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				displayPage(SettingsPage.VISUAL);
+			}
+		};
+		visualPage.icon(rl.getImage("settings_visual"));
 
 		gameplayPage = new UIGenericButton(get("settings.gameplay"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		gameplayPage.disabledPattern(commons.common().disabledPattern);
@@ -969,7 +999,9 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		loadSavePage.location(base.x + 10, base.y + 10);
 		audioPage.location(loadSavePage.x + 10 + loadSavePage.width, base.y + 10);
-		gameplayPage.location(audioPage.x + 10 + audioPage.width , base.y + 10);
+		controlPage.location(audioPage.x + 10 + audioPage.width, base.y + 10);
+		visualPage.location(controlPage.x + 10 + controlPage.width, base.y + 10);
+		gameplayPage.location(visualPage.x + 10 + visualPage.width , base.y + 10);
 		if (world() != null) {
 			back.location(gameplayPage.x + 10 + gameplayPage.width, base.y + 10);
 			mainmenu.location(base.x + base.width - 10 - back.width, base.y + 10);
@@ -1010,24 +1042,26 @@ public class LoadSaveScreen extends ScreenBase {
 		computerVoiceNotify.location(base.x + 30, base.y + 190 + 8);
 
 		buttonSounds.location(base.x + 30, base.y + 220 + 8);
+		subtitles.location(base.x + 30, base.y + 250 + 8);
 
-		int dy = 250;
+		// ----------------------------------------------------------
+		// visual
+		int dy = 70;
 		uiScaleLabel.location(base.x + 30, base.y + dy + 8);
 		uiScaleValue.location(base.x + 30 + uiScaleLabel.width + 30, base.y + dy);
 		uiScaleValue.width = 160;
-
 		dy += 30;
 		satelliteDeploy.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		animateTech.location(base.x + 30, base.y + dy + 8);
 
-		dy += 30;
-		subtitles.location(base.x + 30, base.y + dy + 8);
 		
-		dy += 30;
+		// -----------------------------
+		// controls
+		dy = 70;
 		classicControls.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		swapLeftRight.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
-		animateTech.location(base.x + 30, base.y + dy + 8);
 
 		// --------------------------------------------------------------------------------------
 		// gameplay
