@@ -3261,7 +3261,7 @@
 	<entry key='@MainFleet'>Main fleet</entry>
 	<entry key="achievement.do_you_chat">Chat first, fight later?</entry>
 	<entry key="achievement.do_you_chat.desc">Complete the chat for all mission related space battles.</entry>
-	<entry key=''></entry>
+	<entry key='settings.ui_scale'>UI scale (X - reset)</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

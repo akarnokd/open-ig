@@ -225,6 +225,12 @@ public class LoadSaveScreen extends ScreenBase {
 	/** The time step for the simulation. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UISpinner timestepValue;
+	/** The time step for the simulation. */
+	@Settings(page = SettingsPage.AUDIO)
+	UILabel uiScaleLabel;
+	/** The time step for the simulation. */
+	@Settings(page = SettingsPage.AUDIO)
+	UISpinner uiScaleValue;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -828,11 +834,51 @@ public class LoadSaveScreen extends ScreenBase {
 		};
 		timestepLabel = new UILabel(get("settings.base_speed"), 14, commons.text());
 
+		// ------------------------------------------
 		
+		prepareUIScale();
 		
 		// ------------------------------------------
 		
 		addThis();
+	}
+	/**
+	 * Prepare the UI scale controls.
+	 */
+	void prepareUIScale() {
+		final UIImageButton scprev = new UIImageButton(commons.common().moveLeft);
+		scprev.setDisabledPattern(commons.common().disabledPattern);
+		scprev.setHoldDelay(250);
+		final UIImageButton scnext = new UIImageButton(commons.common().moveRight);
+		scnext.setDisabledPattern(commons.common().disabledPattern);
+		scnext.setHoldDelay(250);
+		
+		scprev.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_LOW_1);
+				config.uiScale = Math.max(100, config.uiScale - 25);
+				askRepaint();
+			}
+		};
+		scnext.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_LOW_1);
+				config.uiScale = Math.min(400, config.uiScale + 25);
+				askRepaint();
+			}
+		};
+		
+		uiScaleValue = new UISpinner(14, scprev, scnext, commons.text());
+		uiScaleValue.getValue = new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return config.uiScale + "%";
+			}
+		};
+		uiScaleLabel = new UILabel(get("settings.ui_scale"), 14, commons.text());
+
 	}
 	/**
 	 * Show the controls of the given page and hide the rest.
@@ -964,19 +1010,25 @@ public class LoadSaveScreen extends ScreenBase {
 		computerVoiceNotify.location(base.x + 30, base.y + 190 + 8);
 
 		buttonSounds.location(base.x + 30, base.y + 220 + 8);
-		satelliteDeploy.location(base.x + 30, base.y + 250 + 8);
 
-		subtitles.location(base.x + 30, base.y + 280 + 8);
+		int dy = 250;
+		uiScaleLabel.location(base.x + 30, base.y + dy + 8);
+		uiScaleValue.location(base.x + 30 + uiScaleLabel.width + 30, base.y + dy);
+		uiScaleValue.width = 160;
+
+		dy += 30;
+		satelliteDeploy.location(base.x + 30, base.y + dy + 8);
+
+		dy += 30;
+		subtitles.location(base.x + 30, base.y + dy + 8);
 		
-		int dy = 280 + 30;
+		dy += 30;
 		classicControls.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		swapLeftRight.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
-		
 		animateTech.location(base.x + 30, base.y + dy + 8);
 
-		
 		// --------------------------------------------------------------------------------------
 		// gameplay
 
@@ -1098,6 +1150,11 @@ public class LoadSaveScreen extends ScreenBase {
 			doBack();
 			e.consume();
 		} else {
+			if (chr == 'x' || chr == 'X') {
+				config.uiScale = 100;
+				e.consume();
+				askRepaint();
+			} else
 			if (maySave && settingsMode == SettingsPage.LOAD_SAVE) {
 				if (code == KeyEvent.VK_ENTER) {
 					doSave();
