@@ -3259,6 +3259,8 @@
 	<entry key='chat.m21.n3'>Prepare to die!</entry>
 	<entry key='chat.unavailable'>The enemy actively blocks communication.</entry>
 	<entry key='@MainFleet'>Main fleet</entry>
+	<entry key="achievement.do_you_chat">Chat first, fight later?</entry>
+	<entry key="achievement.do_you_chat.desc">Complete the chat for all mission related space battles.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

@@ -404,6 +404,14 @@ public final class AchievementManager {
 			return false;
 		}
 	};
+	/** Test for achievement. */
+	@ID
+	protected static final Pred2<World, Player> DO_YOU_TALK = new Pred2<World, Player>() {
+		@Override
+		public Boolean invoke(World t, Player u) {
+			return false;
+		}
+	};
 	// -------------------------------------------------------------------------------	
 	/** Utility class. */
 	private AchievementManager() {
