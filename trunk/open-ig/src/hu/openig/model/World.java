@@ -1601,7 +1601,12 @@ public class World {
 				f = new Fleet(p);
 				noTargetFleet = true; // ignore target fleet in this case
 			} else {
-				f = new Fleet(id, p);
+				if (!checkDuplicate(id)) {
+					f = new Fleet(id, p);
+				} else {
+					f = new Fleet(p);
+					noTargetFleet = true; // ignore target fleet in this case
+				}
 			}
 
 			fleetIdSequence = Math.max(fleetIdSequence, f.id) + 1;
@@ -1696,6 +1701,14 @@ public class World {
 				p.fleets.put(f, FleetKnowledge.FULL);
 			}
 		}
+	}
+	/**
+	 * Check if the fleet identifier is already present.
+	 * @param id the identifier
+	 * @return true if present
+	 */
+	boolean checkDuplicate(int id) {
+		return findFleet(id) != null;
 	}
 	/**
 	 * Set the available technologies for the given player.
