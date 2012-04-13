@@ -1519,6 +1519,20 @@ public class World {
 		if (xworld != null) {
 			scripting.load(xscript);
 		}
+		
+		checkUniqueFleets();
+	}
+	/** Check for unique fleet IDs. */
+	void checkUniqueFleets() {
+		Set<Integer> ids = U.newHashSet();
+		
+		for (Player p : players.values()) {
+			for (Fleet f : p.ownFleets()) {
+				if (!ids.add(f.id)) {
+					System.err.printf("Fleet conflict ID = %d, Name = %s, Owner = %s %n", f.id, f.name, f.owner.id);
+				}
+			}
+		}
 	}
 	/**
 	 * Retrieve the satellite TTL value.
@@ -1578,17 +1592,19 @@ public class World {
 			XElement xplayer, Player p) {
 		p.fleets.clear();
 		for (XElement xfleet : xplayer.childrenWithName("fleet")) {
-			Fleet f = new Fleet();
-			f.owner = p;
-			f.id = xfleet.getInt("id", -1);
+			int id = xfleet.getInt("id", -1);
+			
+			Fleet f = null;;
 			// if no id automatically assign a new sequence
 			boolean noTargetFleet = false;
-			if (f.id < 0) {
-				f.id = fleetIdSequence++;
+			if (id < 0) {
+				f = new Fleet(p);
 				noTargetFleet = true; // ignore target fleet in this case
 			} else {
-				fleetIdSequence = Math.max(fleetIdSequence, f.id) + 1;
+				f = new Fleet(id, p);
 			}
+
+			fleetIdSequence = Math.max(fleetIdSequence, f.id) + 1;
 			
 			f.x = xfleet.getFloat("x");
 			f.y = xfleet.getFloat("y");

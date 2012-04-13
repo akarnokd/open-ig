@@ -78,9 +78,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @return the fleet object
 	 */
 	protected Fleet createFleet(String name, Player owner, double x, double y) {
-		Fleet f = new Fleet();
-		f.id = world.fleetIdSequence++;
-		f.owner = owner;
+		Fleet f = new Fleet(owner);
 		f.name = name;
 		f.x = x;
 		f.y = y;

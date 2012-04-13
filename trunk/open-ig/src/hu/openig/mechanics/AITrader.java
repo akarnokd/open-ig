@@ -311,9 +311,7 @@ public class AITrader implements AIManager {
 	 * @return create a new random fleet
 	 */
 	public Fleet createFleet() {
-		Fleet nf = new Fleet();
-		nf.id = world.fleetIdSequence++;
-		nf.owner = player;
+		Fleet nf = new Fleet(player);
 		nf.name = traderLabel;
 		List<ResearchType> rts = U.newArrayList();
 		for (ResearchType rt : world.researches.values()) {
@@ -345,8 +343,7 @@ public class AITrader implements AIManager {
 			}
 		}
 		if (type != null) {
-			Fleet nf = new Fleet();
-			nf.owner = player;
+			Fleet nf = new Fleet(player);
 			nf.name = traderLabel;
 			InventoryItem ii = new InventoryItem(nf);
 			ii.owner = player;

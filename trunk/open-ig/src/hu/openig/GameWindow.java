@@ -26,7 +26,6 @@ import hu.openig.model.AIMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
-import hu.openig.model.FleetKnowledge;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
@@ -99,7 +98,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -2013,132 +2011,7 @@ public class GameWindow extends JFrame implements GameControls {
 		int ttl = text.length() * StatusbarScreen.DEFALT_ERROR_TTL / 10;
 		allScreens.statusbar.errorTTL = Math.max(ttl, StatusbarScreen.DEFALT_ERROR_TTL);
 	}
-	/**
-	 * Create race specific, fully filled fleets.
-	 */
-	void doPlaceRaceFleets() {
-		int j = 0;
-		for (Player p : world().players.values()) {
-			Fleet f = new Fleet();
-			f.id = world().fleetIdSequence++;
-			f.name = "Test " + p.name;
-			f.owner = p;
-			f.x = world().planets.get("Achilles").x + 10;
-			f.y = world().planets.get("Achilles").y + j * 10;
-			f.owner.fleets.put(f, FleetKnowledge.FULL);
-			
-			boolean firstCruiser = true;
-			
-			for (ResearchType rt : world().researches.values()) {
-				if (rt.race.contains(p.race)) {
-					if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-						for (int i = 0; i < (p == commons.world().player ? 1 : 3); i++) {
-							addToFleet(f, rt, 1);
-						}
-					} else
-					if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-						int n = p == commons.world().player ? 4 : 24;
-						if (firstCruiser) {
-							firstCruiser = false;
-							n++;
-						}
-						for (int i = 0; i < n; i++) {
-							addToFleet(f, rt, 1);
-						}
-					} else
-					if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-						addToFleet(f, rt, 30);
-					}
-						
-				}
-			}
-			j++;
-		}
-	}
-	/**
-	 * Place test fleets at certain positions to test space battle.
-	 * @param individual create individual fleets instead of one big
-	 */
-	void doPlaceTestFleets(boolean individual) {
-		Fleet playerFleet = new Fleet();
-		playerFleet.id = world().fleetIdSequence++;
-		playerFleet.name = "Test";
-		playerFleet.owner = world().player;
-		playerFleet.x = world().planets.get("Centronom").x + 10;
-		playerFleet.y = world().planets.get("Centronom").y;
-		playerFleet.owner.fleets.put(playerFleet, FleetKnowledge.FULL);
-
-		if (individual) {
-			EnumSet<ResearchSubCategory> types = EnumSet.of(
-					ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
-					ResearchSubCategory.SPACESHIPS_CRUISERS,
-					ResearchSubCategory.SPACESHIPS_FIGHTERS);
-			int i = -10;
-			for (ResearchType rt : world().researches.values()) {
-				if (types.contains(rt.category)) {
-
-					Player alienOwner = null;
-					for (Player pl : world().players.values()) {
-						if (pl != world().player && rt.race.contains(pl.race)) {
-							alienOwner = pl;
-							break;
-						}
-					}
-					if (alienOwner != null) {
-						Fleet alienFleet = new Fleet();
-						alienFleet.id = world().fleetIdSequence++;
-						alienFleet.name = "Test " + alienOwner.name;
-						alienFleet.owner = alienOwner;
-						alienFleet.x = world().planets.get("Centronom").x + (i % 5) * 20;
-						alienFleet.y = world().planets.get("Centronom").y + (i / 5) * 20 + 10;
-						i++;
-						alienFleet.owner.fleets.put(alienFleet, FleetKnowledge.FULL);
-						addToFleet(alienFleet, rt, 1);
-					} else {
-						System.out.printf("Could not find owner for %s (%s)%n", rt.name, rt.race);
-					}
-				}
-			}
-			types = EnumSet.of(
-					ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
-					ResearchSubCategory.SPACESHIPS_CRUISERS,
-					ResearchSubCategory.SPACESHIPS_FIGHTERS,
-					ResearchSubCategory.WEAPONS_TANKS,
-					ResearchSubCategory.WEAPONS_VEHICLES
-			);
-			for (ResearchType rt : world().researches.values()) {
-				if (types.contains(rt.category)) {
-					if (rt.race.contains(world().player.race)) {
-						addToFleet(playerFleet, rt, 1);
-					}
-				}
-			}
-		} else {
-			Fleet alienFleet = new Fleet();
-			alienFleet.id = world().fleetIdSequence++;
-			alienFleet.name = "Test";
-			alienFleet.owner = world().players.get("Garthog");
-			alienFleet.x = world().planets.get("Centronom").x;
-			alienFleet.y = world().planets.get("Centronom").y + 10;
-			alienFleet.owner.fleets.put(alienFleet, FleetKnowledge.FULL);
-			
-			EnumSet<ResearchSubCategory> types = EnumSet.of(
-					ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
-					ResearchSubCategory.SPACESHIPS_CRUISERS,
-					ResearchSubCategory.SPACESHIPS_FIGHTERS,
-					ResearchSubCategory.WEAPONS_TANKS,
-					ResearchSubCategory.WEAPONS_VEHICLES
-			);
-			for (ResearchType rt : world().researches.values()) {
-				if (types.contains(rt.category)) {
-					if (rt.race.contains(world().player.race)) {
-						addToFleet(playerFleet, rt, 1);
-					}
-					addToFleet(alienFleet, rt, 1);
-				}
-			}
-		}
-	}
+	
 	/**
 	 * Adds a new inventory item with the specified type to the target fleet.
 	 * @param target the target fleet
