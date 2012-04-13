@@ -113,6 +113,8 @@ public class PlayerStatistics {
 	public long totalAvailableHospital;
 	/** Total available police. */
 	public long totalAvailablePolice;
+	/** The number of mission chats used. */
+	public int chats;
 	/** @return creates a copy of this object */
 	public PlayerStatistics copy() {
 		PlayerStatistics result = new PlayerStatistics();
@@ -164,6 +166,7 @@ public class PlayerStatistics {
 		result.totalAvailableFood = totalAvailableFood;
 		result.totalAvailableHospital = totalAvailableHospital;
 		result.totalAvailablePolice = totalAvailablePolice;
+		result.chats = chats;
 		return result;
 	}
 	/**
