@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class Fleet implements Named, Owned, HasInventory {
 	/** The unique fleet identifier. */
-	public int id;
+	public final int id;
 	/** The owner of the fleet. */
 	public Player owner;
 	/** The X coordinate. */
@@ -49,6 +49,23 @@ public class Fleet implements Named, Owned, HasInventory {
 	public FleetMode mode;
 	/** The current task. */
 	public FleetTask task = FleetTask.IDLE;
+	/**
+	 * Create a fleet with a specific ID and owner.
+	 * @param id the identifier
+	 * @param owner the owner
+	 */
+	public Fleet(int id, Player owner) {
+		this.id = id;
+		this.owner = owner;
+		this.owner.fleets.put(this, FleetKnowledge.FULL);
+	}
+	/**
+	 * Create a fleet for the specific player and automatic ID.
+	 * @param owner the owner
+	 */
+	public Fleet(Player owner) {
+		this(owner.world.fleetIdSequence++, owner);
+	}
 	/**
 	 * Set the new target planet and save the current target into {@code arrivedAt}.
 	 * @param p the new target planet

@@ -1160,9 +1160,7 @@ public class EquipmentScreen extends ScreenBase {
 	 * @return the new fleet
 	 */
 	Fleet doCreateFleet(boolean select, double whereX, double whereY) {
-		Fleet f = new Fleet();
-		f.id = world().fleetIdSequence++;
-		f.owner = player();
+		Fleet f = new Fleet(player());
 		f.name = get("newfleet.name");
 		
 		int r = Math.max(0, rnd.nextInt(world().params().nearbyDistance()) - 1);

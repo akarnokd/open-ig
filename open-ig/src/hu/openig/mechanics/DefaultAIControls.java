@@ -85,9 +85,7 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public Fleet actionCreateFleet(String name, Planet location) {
-		Fleet fleet = new Fleet();
-		fleet.owner = p;
-		fleet.id = w.fleetIdSequence++;
+		Fleet fleet = new Fleet(p);
 		if (name == null) {
 			fleet.name = w.env.labels().get(p.race + ".new_fleet_name");
 		} else {
