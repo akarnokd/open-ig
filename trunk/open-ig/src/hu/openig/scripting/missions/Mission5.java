@@ -158,7 +158,7 @@ public class Mission5 extends Mission {
 			world.env.stopMusic();
 			world.env.pause();
 
-			world.env.forceMessage("Douglas-Promotion-2", new Action0() {
+			world.env.forceMessage("Douglas-Promotion-2", null /*new Action0() {
 				@Override
 				public void invoke() {
 					world.env.playVideo("interlude/level_2_intro", new Action0() {
@@ -169,7 +169,7 @@ public class Mission5 extends Mission {
 						}
 					});
 				}
-			});
+			}*/);
 		}
 	}
 	@Override
