@@ -57,6 +57,8 @@ public class UIGenericButton extends UIComponent {
 	protected final GenericButtonRenderer pressed;
 	/** The font size. */
 	protected int size;
+	/** The icon to display. */
+	protected BufferedImage icon;
 	/**
 	 * Constructor with the default images.
 	 * @param text the text label
@@ -131,6 +133,11 @@ public class UIGenericButton extends UIComponent {
 		} else {
 			normal.paintTo(g2, 0, 0, width, height, false, text);
 		}
+		if (icon != null) {
+			int iw = icon.getWidth();
+			int ih = icon.getHeight();
+			g2.drawImage(icon, (width - iw) / 2, (height - ih) / 2, null);
+		}
 		g2.setFont(f1);
 	}
 	@Override
@@ -188,8 +195,19 @@ public class UIGenericButton extends UIComponent {
 	/**
 	 * Sets the text color.
 	 * @param color the color ARGB
+	 * @return this
 	 */
-	public void color(int color) {
+	public UIGenericButton color(int color) {
 		this.color = color;
+		return this;
+	}
+	/**
+	 * Sets the icon to display.
+	 * @param icon the icon
+	 * @return this
+	 */
+	public UIGenericButton icon(BufferedImage icon) {
+		this.icon = icon;
+		return this;
 	}
 }

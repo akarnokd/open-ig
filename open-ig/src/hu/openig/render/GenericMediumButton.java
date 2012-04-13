@@ -45,7 +45,7 @@ public class GenericMediumButton implements GenericButtonRenderer {
 	public BufferedImage bottomRight;
 	/**
 	 * Load and split the given base button image.
-	 * The origina is expected to be 103x28 image.
+	 * The original is expected to be 103x28 image.
 	 * @param name the resource name
 	 */
 	public GenericMediumButton(String name) {
@@ -54,10 +54,10 @@ public class GenericMediumButton implements GenericButtonRenderer {
 			try {
 				BufferedImage img = ImageIO.read(in);
 
-				topLeft = ImageUtils.newSubimage(img, 0, 0, 40, 6);
-				bottomLeft = ImageUtils.newSubimage(img, 0, 22, 40, 6);
-				topRight = ImageUtils.newSubimage(img, 63, 0, 40, 6);
-				bottomRight = ImageUtils.newSubimage(img, 63, 22, 40, 6);
+				topLeft = ImageUtils.newSubimage(img, 0, 0, 10, 6);
+				bottomLeft = ImageUtils.newSubimage(img, 0, 22, 10, 6);
+				topRight = ImageUtils.newSubimage(img, 63 + 30, 0, 10, 6);
+				bottomRight = ImageUtils.newSubimage(img, 63 + 30, 22, 10, 6);
 				topCenter = ImageUtils.newSubimage(img, 39, 0, 1, 6);
 				bottomCenter = ImageUtils.newSubimage(img, 40, 22, 1, 6);
 				leftMiddle = ImageUtils.newSubimage(img, 0, 7, 4, 1);
@@ -128,7 +128,7 @@ public class GenericMediumButton implements GenericButtonRenderer {
 	public Dimension getPreferredSize(FontMetrics fm, String text) {
 		int tw = fm.stringWidth(text);
 		int th = fm.getHeight();
-		int width = Math.max(103, tw + 12);
+		int width = Math.max(103 - 60, tw + 12);
 		int height = Math.max(28, th + 12);
 		return new Dimension(width, height);
 	}
