@@ -378,13 +378,30 @@ public class MainScreen extends ScreenBase {
 		toEng.disabled = commons.config.language.equals("en");
 		final ClickLabel toHu = new ClickLabel(550, 380, 20, 14, "HU");
 		toHu.disabled = commons.config.language.equals("hu");
+		final ClickLabel toDe = new ClickLabel(550, 360, 20, 14, "DE");
+		toDe.disabled = commons.config.language.equals("de");
 		
+		toDe.action = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				toEng.disabled = false;
+				toDe.disabled = true;
+				toHu.disabled = false;
+				commons.control().switchLanguage("de");
+				selectRandomBackground();
+				checkExistingSave();
+
+				askRepaint();
+			}
+		};
 		toEng.action = new Action0() {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = true;
 				toHu.disabled = false;
+				toDe.disabled = false;
 				commons.control().switchLanguage("en");
 				selectRandomBackground();
 				checkExistingSave();
@@ -398,6 +415,7 @@ public class MainScreen extends ScreenBase {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				toEng.disabled = false;
 				toHu.disabled = true;
+				toDe.disabled = false;
 				commons.control().switchLanguage("hu");
 				selectRandomBackground();
 				checkExistingSave();
@@ -407,6 +425,7 @@ public class MainScreen extends ScreenBase {
 		
 		clicklabels.add(toEng);
 		clicklabels.add(toHu);
+		clicklabels.add(toDe);
 	}
 
 	@Override

@@ -133,6 +133,9 @@
 	<entry key='mainmenu.exit'>Kilépés</entry>
 	<entry key='EN'>EN</entry>
 	<entry key='HU'>HU</entry>
+	<entry key='DE'>DE</entry>
+	<entry key='FR'>FR</entry>
+	<entry key='ES'>ES</entry>
 	<entry key="achievement.conqueror">Hódító</entry>
 	<entry key="achievement.conqueror.desc">Meghódítottad az első bolygót</entry>
 	<entry key="achievement.millionaire">Milliomos</entry>
