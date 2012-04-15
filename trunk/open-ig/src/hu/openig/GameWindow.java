@@ -177,6 +177,7 @@ public class GameWindow extends JFrame implements GameControls {
 			try {
 				if (uis != 100) {
 					g2.scale(uis / 100d, uis / 100d);
+//					RenderTools.setInterpolation(g2, true);
 				}
 				if (movieVisible) {
 					movie.draw(g2);
@@ -210,8 +211,6 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 	}
-	/** The record of screens. */
-	public final AllScreens allScreens = new AllScreens();
 	/** The record of screens. */
 	public final class AllScreens {
 		/** Private constructor. */
@@ -265,6 +264,8 @@ public class GameWindow extends JFrame implements GameControls {
 		/** The game over screen. */
 		public GameOverScreen gameOver;
 	}
+	/** The record of screens. */
+	public final AllScreens allScreens = new AllScreens();
 	/** A pending repaint request. */
 	boolean repaintRequest;
 	/** A partial repaint request. */
@@ -427,6 +428,8 @@ public class GameWindow extends JFrame implements GameControls {
 		this.movieVisible = that.movieVisible;
 		this.statusbar = that.statusbar;
 		this.statusbarVisible = that.statusbarVisible;
+
+		assign(this.allScreens, that.allScreens);
 		
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
@@ -457,6 +460,24 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
 		addKeyListener(new KeyEvents());
+	}
+	/**
+	 * Assign public fields of the same object.
+	 * @param <T> the object type
+	 * @param o1 the first object
+	 * @param o2 the second object
+	 */
+	<T> void assign(T o1, T o2) {
+		try {
+			for (Field f : o1.getClass().getFields()) {
+				Field f2 = o2.getClass().getField(f.getName());
+				f.set(o1, f2.get(o2));
+			}
+		} catch (IllegalAccessException ex) {
+			ex.printStackTrace();
+		} catch (NoSuchFieldException ex) {
+			ex.printStackTrace();
+		}
 	}
 	@Override
 	public void exit() {
@@ -1522,6 +1543,14 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {
 		repaintRequestPartial = true;
+//		surface.repaint();
+//		repaintRequest = true;
+		if (config.uiScale != 100) {
+			x = (int)(x * config.uiScale * 1d / 100);
+			y = (int)(y * config.uiScale * 1d / 100);
+			w = (int)(w * config.uiScale * 1d / 100);
+			h = (int)(h * config.uiScale * 1d / 100);
+		}
 		surface.repaint(x, y, w, h);
 	}
 	@Override

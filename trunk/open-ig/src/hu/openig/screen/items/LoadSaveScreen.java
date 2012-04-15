@@ -1004,7 +1004,7 @@ public class LoadSaveScreen extends ScreenBase {
 		gameplayPage.location(visualPage.x + 10 + visualPage.width , base.y + 10);
 		if (world() != null) {
 			back.location(gameplayPage.x + 10 + gameplayPage.width, base.y + 10);
-			mainmenu.location(base.x + base.width - 10 - back.width, base.y + 10);
+			mainmenu.location(base.x + base.width - 10 - mainmenu.width, base.y + 10);
 		} else {
 			otherSettings.location(gameplayPage.x + 10 + gameplayPage.width, base.y + 10);
 			back.location(base.x + base.width - 10 - back.width, base.y + 10);
