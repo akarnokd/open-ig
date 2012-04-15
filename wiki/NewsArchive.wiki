@@ -5,6 +5,18 @@
 = Recent =
 
 == April, 2012 ==
+*April 15, 2012*
+
+This must be truly the end of times since I'm ill for the seventh time this year :(
+
+Anyway, I'm looking for gamers who have the original game in German, [http://www.gametronik.com/site/fiche/abandonware_strategie/Imperium%2520Galactica/ French] or Spanish. If so, you could help me extend Open-IG with these languages by sending me the following files:
+
+  * TEXT.PAC
+  * `*`.PCX except from the folder STATPICS
+
+This should be about 20MB of data.
+
+Thanks.
 
 *April 9, 2012*
 
