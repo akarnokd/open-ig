@@ -461,8 +461,8 @@ public class AITrader implements AIManager {
 	@Override
 	public void load(XElement in) {
 		for (XElement xlf : in.childrenWithName("landed")) {
-			String fid = xlf.get("fleet");
-			String pid = xlf.get("planet");
+			String fid = xlf.get("fleet", null);
+			String pid = xlf.get("planet", null);
 			if (fid != null && pid != null) {
 				Planet p = world.planets.get(pid);
 				int ttl = xlf.getInt("ttl");
