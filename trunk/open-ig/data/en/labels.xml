@@ -143,6 +143,9 @@
 	<entry key='mainmenu.exit'>Exit</entry>
 	<entry key='EN'>EN</entry>
 	<entry key='HU'>HU</entry>
+	<entry key='DE'>DE</entry>
+	<entry key='FR'>FR</entry>
+	<entry key='ES'>ES</entry>
 	<entry key="achievement.conqueror">Conqueror</entry>
 	<entry key="achievement.conqueror.desc">Conquered the first enemy planet</entry>
 	<entry key="achievement.millionaire">Millionaire</entry>
