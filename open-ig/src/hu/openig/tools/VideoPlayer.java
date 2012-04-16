@@ -799,7 +799,7 @@ public class VideoPlayer extends JFrame {
 						clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
 						clip.open();
 						setVolume(initialVolume);
-						audioLen = buffer.length;
+						audioLen = buffer.length / 2;
 						try {
 							barrier.await();
 						} catch (InterruptedException ex) {
