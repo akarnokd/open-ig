@@ -12,7 +12,9 @@ import hu.openig.sound.AudioThread;
 import hu.openig.utils.IOUtils;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -34,34 +36,44 @@ public final class PlaySMP {
 	 */
 	public static void main(String[] args) throws Exception {
 		//enumerateSounds();
-		byte[] sample = IOUtils.load("c:/Games/IGHU/MUSIC/sample.smp");
-		int dataLen = sample.length + (sample.length % 2 == 0 ? 0 : 1);
-
-		DataOutputStream dout = new DataOutputStream(new FileOutputStream("audio/hu/ui/welcome.wav"));
-		try {
-			// HEADER
-			dout.write("RIFF".getBytes("ISO-8859-1"));
-			dout.writeInt(Integer.reverseBytes(36 + dataLen)); // chunk size
-			dout.write("WAVE".getBytes("ISO-8859-1"));
-			
-			// FORMAT
-			dout.write("fmt ".getBytes("ISO-8859-1"));
-			dout.writeInt(Integer.reverseBytes(16)); // chunk size
-			dout.writeShort(Short.reverseBytes((short)1)); // Format: PCM = 1
-			dout.writeShort(Short.reverseBytes((short)1)); // Channels = 1
-			dout.writeInt(Integer.reverseBytes(22050)); // Sample Rate = 22050
-			dout.writeInt(Integer.reverseBytes(22050)); // Byte Rate = 22050
-			dout.writeShort(Short.reverseBytes((short)1)); // Block alignment = 1
-			dout.writeShort(Short.reverseBytes((short)8)); // Bytes per sample = 8
-	
-			// DATA
-			dout.write("data".getBytes("ISO-8859-1"));
-			dout.writeInt(Integer.reverseBytes(dataLen));
-			for (byte b : sample) {
-				dout.write(128 + b);
+		String fn = "c:/Games/IGHU/Sound";
+		FilenameFilter ff = new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.toLowerCase().endsWith(".smp");
 			}
-		} finally {		
-			dout.close();
+		};
+		for (File f : new File(fn).listFiles(ff)) {
+			byte[] sample = IOUtils.load(f);
+			int dataLen = sample.length + (sample.length % 2 == 0 ? 0 : 1);
+	
+			DataOutputStream dout = new DataOutputStream(
+					new FileOutputStream(fn + "/" + f.getName() + ".wav"));
+			try {
+				// HEADER
+				dout.write("RIFF".getBytes("ISO-8859-1"));
+				dout.writeInt(Integer.reverseBytes(36 + dataLen)); // chunk size
+				dout.write("WAVE".getBytes("ISO-8859-1"));
+				
+				// FORMAT
+				dout.write("fmt ".getBytes("ISO-8859-1"));
+				dout.writeInt(Integer.reverseBytes(16)); // chunk size
+				dout.writeShort(Short.reverseBytes((short)1)); // Format: PCM = 1
+				dout.writeShort(Short.reverseBytes((short)1)); // Channels = 1
+				dout.writeInt(Integer.reverseBytes(22050)); // Sample Rate = 22050
+				dout.writeInt(Integer.reverseBytes(22050)); // Byte Rate = 22050
+				dout.writeShort(Short.reverseBytes((short)1)); // Block alignment = 1
+				dout.writeShort(Short.reverseBytes((short)8)); // Bytes per sample = 8
+		
+				// DATA
+				dout.write("data".getBytes("ISO-8859-1"));
+				dout.writeInt(Integer.reverseBytes(dataLen));
+				for (byte b : sample) {
+					dout.write(128 + b);
+				}
+			} finally {		
+				dout.close();
+			}
 		}
 	}
 	/**
