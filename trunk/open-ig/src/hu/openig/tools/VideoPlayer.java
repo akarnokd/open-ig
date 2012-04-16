@@ -691,12 +691,12 @@ public class VideoPlayer extends JFrame {
 	 * @param subtitle the subtitle language
 	 */
 	public void playVideo(String language, String path, String name, String audio, String subtitle) {
-		final ResourcePlace video = rl.get(path + "/" + name, ResourceType.VIDEO);
+		final ResourcePlace video = rl.getExactly(language, path + "/" + name, ResourceType.VIDEO);
 		if (video == null) {
 			return;
 		}
 		if (subtitle != null && !subtitle.isEmpty()) {
-			final ResourcePlace sub = rl.get(path + "/" + name, ResourceType.SUBTITLE);
+			final ResourcePlace sub = rl.getExactly(subtitle, path + "/" + name, ResourceType.SUBTITLE);
 			subs = new SubtitleManager(sub.open());
 		} else {
 			subs = null;
