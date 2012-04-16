@@ -41,6 +41,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.SwingUtilities;
+
 /**
  * Collection of algorithms which update the world
  * state as time progresses: progress on buildings, repair
@@ -56,7 +58,7 @@ public final class Simulator {
 	 * @param world the world to compute
 	 * @return true if the a quicksave is needed 
 	 */
-	public static boolean compute(World world) {
+	public static boolean compute(final World world) {
 		int day0 = world.time.get(GregorianCalendar.DATE);
 		world.time.add(GregorianCalendar.MINUTE, world.params().speed());
 		int day1 = world.time.get(GregorianCalendar.DATE);
@@ -109,10 +111,16 @@ public final class Simulator {
 		
 		checkAchievements(world, day0 != day1);
 		
-		if (!world.pendingBattles.isEmpty()) {
-			world.env.startBattle();
-		}
 		world.scripting.onTime();
+		// defer space battles
+		if (!world.pendingBattles.isEmpty()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					world.env.startBattle();
+				}
+			});
+		}
 		return result;
 	}
 	/**

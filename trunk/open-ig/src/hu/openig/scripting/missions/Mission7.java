@@ -227,7 +227,12 @@ public class Mission7 extends Mission {
 			
 			Pair<Fleet, InventoryItem> trader = findTaggedFleet("Mission-7-Trader", traders);
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-7-Garthog", pirates);
-			
+			if (trader == null) {
+				new AssertionError("Mission-7-Trader not found").printStackTrace();
+			}
+			if (garthog == null) {
+				new AssertionError("Mission-7-Garthog not found").printStackTrace();
+			}
 			// attack on the trader
 			// trader attacked
 			if (battle.targetFleet == trader.first) {
