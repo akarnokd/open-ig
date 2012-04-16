@@ -23,7 +23,7 @@ public final class AddSilence {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		RandomAccessFile raf = new RandomAccessFile("audio/de/messages/naxos_unknown_ships_nearby.wav", "rw");
+		RandomAccessFile raf = new RandomAccessFile("audio/de/messages/douglas_rebel_governor.wav", "rw");
 		int len = 2205 * 20;
 		raf.seek(4);
 		int clen = Integer.reverseBytes(raf.readInt());
