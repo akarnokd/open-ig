@@ -146,6 +146,7 @@ public class Mission7 extends Mission {
 			
 			// create simple pirate fleet
 			Fleet pf = createFleet(label("Garthog.pirates"), player("Garthog"), f.x + 1, f.y + 1);
+			pf.task = FleetTask.SCRIPT;
 			
 			// ----------------------------------------------------------------
 			// adjust fleet strenth here
