@@ -455,7 +455,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 	@Override
 	public void onEnter(Screens mode) {
-		animationTimer = commons.register(500, new Action0() {
+		animationTimer = commons.register(125, new Action0() {
 			@Override
 			public void invoke() {
 				doAnimation();
@@ -2407,7 +2407,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			animation = -1;
 		}
 		animation++;
-		blink = animation % 2 == 0;
+		blink = animation / 4 % 2 == 0;
 
 		askRepaint();
 	}

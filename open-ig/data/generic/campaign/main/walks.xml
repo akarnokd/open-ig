@@ -5,6 +5,8 @@
 			<transition media='flagship/bridge_to_cabin_level_1' label='flagship.moveto.cabin' area='0,340 640,340 640,442 0,442' to='cabin'/>
 			<transition media="" label="flagship.moveto.colony" area="237,221 431,221 431,300 237,300" to="*colony"/>
 			<transition media="" label="flagship.moveto.starmap" area="45,155 199,161 227,134 393,134 420,160 573,155 577,241 432,240 432,220 236,220 236,240 41,240" to="*starmap"/>
+			<transition media="" label="flagship.moveto.equipment2" area="214,64 400,64 400,112 214,112" to="*equipment"/>
+			<transition media="" label="flagship.moveto.information" area="551,59 639,59 639,147 551,147" to="*information"/>
 		</position>
 		<position id='cabin' picture='flagship/cabin_level_1'>
 			<transition media='flagship/cabin_to_bridge_level_1' label="flagship.moveto.bridge" area="0,0 441,441 0,441" to="*bridge"/>
