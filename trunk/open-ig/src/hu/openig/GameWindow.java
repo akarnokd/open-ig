@@ -1843,7 +1843,12 @@ public class GameWindow extends JFrame implements GameControls {
 			displayPrimary(pri);
 		}
 		if (sec != null) {
-			displaySecondary(sec);
+			if ((sec != Screens.PRODUCTION || world().level >= 2)
+					&& (sec != Screens.RESEARCH || world().level >= 3)
+					&& (sec != Screens.DIPLOMACY || world().level >= 4)
+					&& (sec != Screens.BAR || world().level >= 2)) {
+				displaySecondary(sec);
+			}
 		}
 		if (status) {
 			displayStatusbar();

@@ -1148,6 +1148,9 @@ public class InfoScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		this.mode = mode != null ? mode : Screens.INFORMATION_PLANETS;
+		if (mode == Screens.INFORMATION_ALIENS && world().level < 4) {
+			mode = Screens.INFORMATION_PLANETS;
+		}
 		applyMode();
 		animation = commons.register(500, new Action0() {
 			@Override
@@ -2714,9 +2717,13 @@ public class InfoScreen extends ScreenBase {
 					ResearchType rt = res.get(row);
 					world().selectResearch(rt);
 					if (player().isAvailable(rt)) {
-						displaySecondary(Screens.PRODUCTION);
+						if (world().level >= 2) {
+							displaySecondary(Screens.PRODUCTION);
+						}
 					} else {
-						displaySecondary(Screens.RESEARCH);
+						if (world().level >= 3) {
+							displaySecondary(Screens.RESEARCH);
+						}
 					}
 					return true;
 				}
