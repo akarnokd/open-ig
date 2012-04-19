@@ -87,12 +87,21 @@ public class GameDefinition {
 		GameDefinition result = new GameDefinition();
 		result.name = name;
 		XElement root = rl.getXML(name + "/definition");
+		String titleEn = null;
+		String descEn = null;
 		for (XElement texts : root.childrenWithName("texts")) {
 			if (rl.language.equals(texts.get("language"))) {
 				result.title = texts.childValue("title");
 				result.description = texts.childValue("description");
-				break;
 			}
+			if ("en".equals(texts.get("language"))) {
+				titleEn = texts.childValue("title");
+				descEn = texts.childValue("desciption");
+			}
+		}
+		if (result.title == null) {
+			result.title = titleEn;
+			result.description = descEn;
 		}
 		result.intro = root.childValue("intro");
 		String image = root.childValue("image");

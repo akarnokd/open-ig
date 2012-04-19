@@ -425,7 +425,7 @@ public class MainScreen extends ScreenBase {
 		
 		clicklabels.add(toEng);
 		clicklabels.add(toHu);
-//		clicklabels.add(toDe);
+		clicklabels.add(toDe);
 	}
 
 	@Override
