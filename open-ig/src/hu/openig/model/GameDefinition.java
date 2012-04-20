@@ -96,7 +96,7 @@ public class GameDefinition {
 			}
 			if ("en".equals(texts.get("language"))) {
 				titleEn = texts.childValue("title");
-				descEn = texts.childValue("desciption");
+				descEn = texts.childValue("description");
 			}
 		}
 		if (result.title == null) {

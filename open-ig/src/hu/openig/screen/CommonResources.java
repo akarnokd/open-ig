@@ -14,6 +14,7 @@ import hu.openig.core.Configuration;
 import hu.openig.core.Func0;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
+import hu.openig.core.Pair;
 import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
@@ -67,6 +68,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -164,6 +166,8 @@ public class CommonResources implements GameEnvironment {
 	public boolean force;
 	/** Counts the current simulation step and invokes the simulator on every 4th. */
 	protected long simulationStep;
+	/** Periodically reload the current labels. */
+	protected Thread labelReloader;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -322,7 +326,17 @@ public class CommonResources implements GameEnvironment {
 			
 			music = new Music(rl);
 			music.setVolume(config.musicVolume);
+
+			// FIXME during translation
 			
+			labelReloader = new Thread() {
+				@Override
+				public void run() {
+					watchLabels();
+				}
+			};
+			labelReloader.setDaemon(true);
+			labelReloader.start();
 		} finally {
 			exec.shutdown();
 		}
@@ -335,6 +349,10 @@ public class CommonResources implements GameEnvironment {
 		config.language = newLanguage;
 		config.save();
 		sounds.close();
+		if (labelReloader != null) {
+			labelReloader.interrupt();
+			labelReloader = null;
+		}
 		init();
 	}
 	/**
@@ -482,7 +500,7 @@ public class CommonResources implements GameEnvironment {
 		allocatorHandler = null;
 		radarHandler = null;
 		simulation = null;
-
+		
 		stopMusic();
 	}
 	/**
@@ -963,5 +981,68 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public boolean isBattle() {
 		return battleMode;
+	}
+	/**
+	 * Watch the current labels.
+	 */
+	void watchLabels() {
+		try {
+			while (!Thread.currentThread().isInterrupted()) {
+				Thread.sleep(1000);
+				Pair<ResourceLocator, String> rl = callEDT(new Func0<Pair<ResourceLocator, String>>() {
+					@Override
+					public Pair<ResourceLocator, String> invoke() {
+						String game = null;
+						if (world != null) {
+							game = world.name;
+						}
+						return Pair.of(CommonResources.this.rl, game);
+					}
+				});
+				final Labels labels = new Labels().load(rl.first, rl.second);
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						CommonResources.this.labels = labels;
+						control.repaintInner();
+					}
+				});
+			}
+		} catch (InterruptedException ex) {
+			// ignored, just quit
+		} catch (InvocationTargetException ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Execute a function on the EDT and return its value.
+	 * @param <T> the value type
+	 * @param func the function to call
+	 * @return the value returned
+	 * @throws InterruptedException on interrupt
+	 * @throws InvocationTargetException on error
+	 */
+	public static <T> T callEDT(final Func0<? extends T> func) 
+			throws InterruptedException, InvocationTargetException {
+		if (SwingUtilities.isEventDispatchThread()) {
+			return func.invoke();
+		}
+		final AtomicReference<T> result = new AtomicReference<T>();
+		SwingUtilities.invokeAndWait(new Runnable() {
+			@Override
+			public void run() {
+				result.set(func.invoke());
+			}
+		});
+		return result.get();
+	}
+	/**
+	 * Cleanup all resources.
+	 */
+	public void done() {
+		if (labelReloader != null) {
+			labelReloader.interrupt();
+			labelReloader = null;
+		}
 	}
 }

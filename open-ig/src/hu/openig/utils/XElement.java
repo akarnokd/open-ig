@@ -712,4 +712,10 @@ public class XElement implements Iterable<XElement> {
 		}
 		return defaultValue;
 	}
+	/**
+	 * @return The child elements.
+	 */
+	public List<XElement> children() {
+		return children;
+	}
 }

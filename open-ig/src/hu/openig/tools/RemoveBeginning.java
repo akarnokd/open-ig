@@ -1,14 +1,29 @@
+/*
+ * Copyright 2008-2012, David Karnok 
+ * The file is part of the Open Imperium Galactica project.
+ * 
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
+
 package hu.openig.tools;
 
 import java.io.RandomAccessFile;
 
-public class RemoveBeginning {
-
+/**
+ * Remove the few frames of an audio file.
+ * @author akarnokd, 2012.04.20.
+ *
+ */
+public final class RemoveBeginning {
+	/** Utility class. */
+	private RemoveBeginning() { }
 	/**
-	 * @param args
+	 * @param args no arguments
+	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		RandomAccessFile raf = new RandomAccessFile("../open-ig/audio/en/messages/new_caroline_virus.wav", "rw");
+		RandomAccessFile raf = new RandomAccessFile("audio/en/messages/new_caroline_virus.wav", "rw");
 		int len = (2205) * 1;
 		if (len % 2 == 1) {
 			len++;
