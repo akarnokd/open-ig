@@ -34,6 +34,8 @@ public class Tile {
 	protected final float lightThreshold = 0.65f;
 	/** The cached alpha level. */
 	protected float cachedAlpha = -1;
+	/** The minimum alpha value ever. */
+	public static final float MIN_ALPHA = 0.35f;
 	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
 	private static final ThreadLocal<int[][]> WORK = new ThreadLocal<int[][]>() {
 		@Override
