@@ -43,10 +43,11 @@ public final class ConvertDiplomacy {
 		Map<String, String> map = new LinkedHashMap<String, String>();
 
 		XElement dipl = new XElement("diplomacy");
-		Map<String, PACEntry> mapByName = PACFile.mapByName(PACFile.parseFully(new File("g:\\Games\\IGHU\\DATA\\TEXT.PAC ")));
+		Map<String, PACEntry> mapByName = PACFile.mapByName(PACFile.parseFully(new File("c:/games/IGHU/data/TEXT.PAC ")));
 		for (String s : mapByName.keySet()) {
 			String st = fixChars(mapByName.get(s).data);
-			if (st.contains("This is a template text fot Jason")) {
+			if (st.contains("This is a template text fot Jason")
+					|| st.contains("This is a template text for Jason")) {
 				dipl.add(parse(s, st, map));
 			}
 		}
@@ -64,6 +65,8 @@ public final class ConvertDiplomacy {
 		out.println("</labels>");
 		out.close();
 		
+		/*
+		// -----------------------------------------------------
 		
 		map.clear();
 		dipl = new XElement("diplomacy");
@@ -87,7 +90,7 @@ public final class ConvertDiplomacy {
 		}
 		out.println("</labels>");
 		out.close();
-
+	*/
 	}
 	/**
 	 * Parse the plain diplomacy content.
@@ -501,7 +504,7 @@ public final class ConvertDiplomacy {
 	static List<String> split(String content) {
 		List<String> result = new ArrayList<String>();
 		
-		content = content.replaceAll("#.*?\r\n", "");
+		content = content.replaceAll("#.*?\r\n", "").trim();
 		
 		int start = 0;
 		do {
