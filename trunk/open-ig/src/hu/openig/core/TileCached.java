@@ -52,7 +52,8 @@ public class TileCached extends Tile {
 	@Override
 	public BufferedImage getStrip(int stripIndex) {
 		if (hasAlphaChanged()) {
-			int key = (int)(alpha * 16);
+			float a = (Math.min(Math.max(MIN_ALPHA, alpha), 1f) - MIN_ALPHA) / (1f - MIN_ALPHA);
+			int key = (int)(a * maxCount + 0.5);
 			Reference<BufferedImage[]> r = cache.get(key);
 			BufferedImage[] strips = r != null ? r.get() : null;
 			if (r == null || strips == null) {

@@ -974,10 +974,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			+ world().time.get(GregorianCalendar.MINUTE) / 10;
 			
 			if (time < 6 * 4 || time >= 6 * 22) {
-				alpha = (0.35f);
+				alpha = Tile.MIN_ALPHA;
 			} else
 			if (time >= 6 * 4 && time < 6 * 10) {
-				alpha = (0.35f + 0.65f * (time - 6 * 4) / 36);
+				alpha = (Tile.MIN_ALPHA + 0.65f * (time - 6 * 4) / 36);
 			} else
 			if (time >= 6 * 10 && time < 6 * 16) {
 				alpha = (1.0f);

@@ -38,8 +38,8 @@ public final class LabelVerifier {
 		XElement xhu = XElement.parseXML("data/de/labels.xml");
 		XElement xen = XElement.parseXML("data/en/labels.xml");
 		
-		Map<String, String> labelsHu = U.newHashMap();
-		Map<String, String> labelsEn = U.newHashMap();
+		Map<String, String> labelsHu = U.newLinkedHashMap();
+		Map<String, String> labelsEn = U.newLinkedHashMap();
 		
 		load(xhu, labelsHu);
 		load(xen, labelsEn);
