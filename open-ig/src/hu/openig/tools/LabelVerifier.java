@@ -35,7 +35,7 @@ public final class LabelVerifier {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		XElement xhu = XElement.parseXML("data/hu/labels.xml");
+		XElement xhu = XElement.parseXML("data/de/labels.xml");
 		XElement xen = XElement.parseXML("data/en/labels.xml");
 		
 		Map<String, String> labelsHu = U.newHashMap();

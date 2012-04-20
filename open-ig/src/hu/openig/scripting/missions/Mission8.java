@@ -64,10 +64,12 @@ public class Mission8 extends Mission {
 			loseGameMessageAndMovie("Douglas-Fire-Test", "loose/fired_level_2");
 		}
 		if (checkMission("Mission-8-Visions")) {
+			world.env.stopMusic();
 			world.env.playVideo("interlude/dream_1", new Action0() {
 				@Override
 				public void invoke() {
 					addMission("Mission-8-Visions-2", 5 * 24);
+					world.env.playMusic();
 				}
 			});
 		}
