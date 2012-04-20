@@ -5,6 +5,13 @@
 = Recent =
 
 == April, 2012 ==
+
+*April 20, 2012*
+
+German translation will take some time. I've already extracted voice and image data, but the labels with about 3000 entries is extremely tedious.
+
+But you could help me in transcribing the videos (~140 of them).
+
 *April 15, 2012*
 
 This must be truly the end of times since I'm ill for the seventh time this year :(
