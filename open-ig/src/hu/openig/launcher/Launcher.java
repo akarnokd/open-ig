@@ -17,9 +17,9 @@ import hu.openig.utils.XElement;
 import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Container;
-import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -46,21 +46,25 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.jar.JarFile;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -80,7 +84,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.27";
+	public static final String VERSION = "0.28";
 	/**
 	 * The update XML to download.
 	 */
@@ -168,11 +172,9 @@ public class Launcher extends JFrame {
 	/** Current language. */
 	String language = "en";
 	/** The language flag. */
-	JButton flag;
-	/** The english flag. */
-	BufferedImage enFlag;
-	/** The hungarian flag. */
-	BufferedImage huFlag;
+	JComboBox<String> flag;
+	/** The available maps. */
+	final Map<String, BufferedImage> flags = new LinkedHashMap<String, BufferedImage>();
 	/** The current upgrades. */
 	private LUpdate updates;
 	/** Not installed constant. */
@@ -223,7 +225,7 @@ public class Launcher extends JFrame {
 		try {
 			URL u = getClass().getResource("/hu/openig/gfx/english.png");
 			if (u != null) {
-				enFlag = ImageIO.read(u);
+				flags.put("en", ImageIO.read(u));
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -231,7 +233,15 @@ public class Launcher extends JFrame {
 		try {
 			URL u = getClass().getResource("/hu/openig/gfx/hungarian.png");
 			if (u != null) {
-				huFlag = ImageIO.read(u);
+				flags.put("hu", ImageIO.read(u));
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		try {
+			URL u = getClass().getResource("/hu/openig/gfx/german.png");
+			if (u != null) {
+				flags.put("de", ImageIO.read(u));
 			}
 		} catch (IOException ex) {
 			ex.printStackTrace();
@@ -276,7 +286,7 @@ public class Launcher extends JFrame {
 	 * @return the translated text
 	 */
 	String label(String s) {
-		if (!"en".equals(language)) {
+		if ("hu".equals(language)) {
 			if ("Processing %s".equals(s)) { return "%s feldolgozása"; }
 			if ("Run settings".equals(s)) { return "Futtatás beállítások"; }
 			if ("Browse...".equals(s)) { return "Tallózás..."; }
@@ -300,6 +310,33 @@ public class Launcher extends JFrame {
 			if ("New version available: %s".equals(s)) { return "Új verzió érhető el: %s"; }
 			if ("Error while checking files: %s".equals(s)) { return "A(z) állományok ellenörzése közben hiba történt: %s"; }
 			if ("Could not access directory %s".equals(s)) { return "A(z) %s könyvtár nem elérhető"; }
+			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
+			return s;
+		} else
+		if ("de".equals(language)) {
+			if ("Processing %s".equals(s)) { return "Verarbeitung von %s"; }
+			if ("Run settings".equals(s)) { return "Lauf Einstellungen"; }
+			if ("Browse...".equals(s)) { return "Browse..."; }
+			if ("Java runtime home:".equals(s)) { return "Java Laufzeit Umgebung:"; }
+			if ("Default: %s".equals(s)) { return "Voreinstellung: %s"; }
+			if ("MB".equals(s)) { return "MB"; }
+			if ("Memory:".equals(s)) { return "Speicher:"; }
+			if ("OK".equals(s)) { return "Gut"; }
+			if ("Cancel".equals(s)) { return "Lieber nicht"; }
+			if ("Error".equals(s)) { return "Fehler"; }
+			if ("Default: %s MB".equals(s)) { return "Voreinstellung: %s MB"; }
+			if ("Checking existing game files...".equals(s)) { return "Gegenvärtige Spiel Datei Überprüfung..."; }
+			if ("Downloading game files...".equals(s)) { return "Spiel Datei Herunterladung..."; }
+			if ("Some files were not correctly downloaded. Please try again a bit later.".equals(s)) { return "Einige Daten waren nicht vollständig heruntergeladen. Bitte, versuchen Sie nochmal ein bischen später."; }
+			if ("Do you want to uninstall the game (removes all game files except save)?".equals(s)) { return "Sind Sie sicher um der Spiel zu löschen (auser die Spielstande)?"; }
+			if ("Uninstall".equals(s)) { return "Deinstallieren"; }
+			if ("The Launcher was not correctly downloaded. Please try again a bit later.".equals(s)) { return "Launcher war nicht vollständig heruntergeladen. Bitte, versuchen Sie nochmal ein bischen später."; }
+			if ("Error during data download: %s".equals(s)) { return "Problem whärend herunterladung: %s"; }
+			if ("Could not delete file %s".equals(s)) { return "Datei %s kan nicht gelöscht werden"; }
+			if ("Error while processing file %s: %s".equals(s)) { return "Problem whärend processierung von Datei %s: %s"; }
+			if ("New version available: %s".equals(s)) { return "Neue Version verfügbar: %s"; }
+			if ("Error while checking files: %s".equals(s)) { return "Problem whärend Überprüfung from Daten: %s"; }
+			if ("Could not access directory %s".equals(s)) { return "Mappe %s nicht verfügbar."; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		}
@@ -339,19 +376,31 @@ public class Launcher extends JFrame {
 		currentVersionLabel = new JLabel();
 		progressPanel = new JPanel();
 
-		flag = new JButton();
-		flag.setBorderPainted(false);
-		flag.setBorder(null);
+		flag = new JComboBox<String>(new String[] { "en", "hu", "de" });
+		flag.setRenderer(new DefaultListCellRenderer() {
+			/** */
+			private static final long serialVersionUID = 5312297135529455789L;
+
+			@Override
+			public Component getListCellRendererComponent(JList<?> list,
+					Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				// TODO Auto-generated method stub
+				JLabel lbl = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected,
+						cellHasFocus);
+				
+				lbl.setIcon(new ImageIcon(flags.get(lbl.getText())));
+				lbl.setHorizontalAlignment(JLabel.CENTER);
+				lbl.setVerticalAlignment(JLabel.CENTER);
+				lbl.setText("");
+				
+				return lbl;
+			}
+		});
 		flag.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if ("en".equals(language)) {
-					language = "hu";
-					flag.setIcon(new ImageIcon(enFlag));
-				} else {
-					language = "en";
-					flag.setIcon(new ImageIcon(huFlag));
-				}
+				language = (String)flag.getSelectedItem();
 				doActOnUpdates();
 				setLabels();
 			}
@@ -540,9 +589,6 @@ public class Launcher extends JFrame {
 		verify.setFont(fontLarge);
 		uninstall.setFont(fontLarge);
 		recheck.setFont(fontLarge);
-		
-		flag.setIcon(new ImageIcon(huFlag));
-		flag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		
 		other.addActionListener(new ActionListener() {
 			@Override
@@ -765,7 +811,8 @@ public class Launcher extends JFrame {
 			
 			currentVersionLabel.setText("Version:");
 			newVersionLabel.setText("New version available:");
-		} else {
+		} else
+		if ("hu".equals(language)) {
 			install.setText("Telepítés");
 			update.setText("Frissítés");
 			cancel.setText("Mégsem");
@@ -789,6 +836,31 @@ public class Launcher extends JFrame {
 
 			currentVersionLabel.setText("Verzió:");
 			newVersionLabel.setText("Új verzió érhető el:");
+		} else
+		if ("de".equals(language)) {
+			install.setText("Installieren");
+			update.setText("Aktualisieren");
+			cancel.setText("Lieber nicht");
+			run.setText("Spiel starten");
+			mapEditor.setText("Karte Editor");
+			videoPlayer.setText("Videospieler");
+			other.setText("Andere möglichkeiten");
+			launcher.setText("Launcher aktualisieren");
+			
+			projectPage.setText("Projekt webseite...");
+			releaseNotes.setText("Version Noten...");
+			runSettings.setText("Lauf Einstellungen...");
+			verify.setText("Istallation überprüfen");
+			uninstall.setText("Deinstallieren");
+			recheck.setText("Neue Version suchen");
+	
+			currentActionLabel.setText("Operation:");
+			currentFileLabel.setText("Datei:");
+			currentFileProgressLabel.setText("Fortstritt:");
+			totalFileProgressLabel.setText("Gesamt:");
+
+			currentVersionLabel.setText("Version:");
+			newVersionLabel.setText("Neue Version verfügbar:");
 		}
 	}
 	/**
@@ -1070,11 +1142,7 @@ public class Launcher extends JFrame {
 				} else {
 					memory = null;
 				}
-				if ("en".equals(language)) {
-					flag.setIcon(new ImageIcon(huFlag));
-				} else {
-					flag.setIcon(new ImageIcon(enFlag));
-				}
+				flag.setSelectedItem(language);
 
 			} catch (XMLStreamException ex) {
 				ex.printStackTrace();
