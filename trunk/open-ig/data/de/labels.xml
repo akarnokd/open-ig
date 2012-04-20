@@ -321,14 +321,14 @@
   <entry key='bar.brian.323'>Warum verließen Sie die Entwicklungsabteilung?</entry>
   <entry key='bar.brian.331'>Danke für die Information. Schönen Tag noch.</entry>
   
-  <entry key='bar.doctor.401'>Greetings doctor. What&#39;s the situation?</entry>
-  <entry key='bar.doctor.402'>Relaxing, doc?</entry>
-  <entry key='bar.doctor.411'>As I know You understand robots?</entry>
-  <entry key='bar.doctor.412'>As I know You worked on robotics earlier, aren&#39;t you?</entry>
-  <entry key='bar.doctor.421'>I&#39;m interested in the research going on Earth.</entry>
-  <entry key='bar.doctor.431'>I think I need to speak with him. Can you help me?</entry>
-  <entry key='bar.doctor.441'>I must speak with the professor. It&#39;s very important..</entry>
-  <entry key='bar.doctor.451'>Thank you doc. You helped me a lot.</entry>
+  <entry key='bar.doctor.401'>Na, Doc. Wie geht's?</entry>
+  <entry key='bar.doctor.402'>Kleines Päuschen?</entry>
+  <entry key='bar.doctor.411'>Ich habe gehört, Sie verstehen was von Robotern?</entry>
+  <entry key='bar.doctor.412'>Ich habe gehört, Sie haben auch Interesse an Mechanik und Robotik?</entry>
+  <entry key='bar.doctor.421'>Es gibt Gerüchte, daß in den letzten Jahren viele Roboter gebaut wurden.</entry>
+  <entry key='bar.doctor.431'>Klingt, als sollte ich wirklich mal mit ihm reden.</entry>
+  <entry key='bar.doctor.441'>Aber ich muß mit Reinhardt reden. Geben Sie mir den alten Code.</entry>
+  <entry key='bar.doctor.451'>Danke, Doc.</entry>
   
   <entry key='bar.kelly.001'>Na, Kelly, was liegt an?</entry>
   <entry key='bar.kelly.011'>Sie haben keine große Lust zu kämpfen, was?</entry>
@@ -343,5 +343,653 @@
   <entry key='bar.phsychologist.121'>Danke für Ihre Geduld. Ich muß jetzt los.</entry>
   
   <entry key='bar.start_talking'>Klicke um das Gespräch mit %s zu starten.</entry>
+
+  <entry key='allocation.DAMAGE_AWARE'>Entw. uniform</entry>
+  <entry key='allocation.DEFAULT'>Uniform</entry>
+  <entry key='allocation.ZERO'>Kein</entry>
+  <entry key='autobuild.AI'>K.I. steuert</entry>
+  <entry key='autobuild.CIVIL'>Zivil Gebäude</entry>
+  <entry key='autobuild.ECONOMIC'>Handelsgebäude</entry>
+  <entry key='autobuild.FACTORY'>Fabriksgebäude</entry>
+  <entry key='autobuild.OFF'>Aus</entry>
+  <entry key='autobuild.SOCIAL'>Socialen Gebäude</entry>
+  <entry key='autobuild.UPGRADE'>Gebäude verbessern</entry>
+  <entry key='autobuild.no_more_building_space'>Nicht genug Gebäudeplatz auf dem Planet %s für Automatische Bau.</entry>
+
+  <entry key='battlefinish.own_fleet_destroyed'>Deine %s Flotte war zerstört.</entry>
+  <entry key='battlefinish.own_losses_1'>Eigene</entry>
+  <entry key='battlefinish.own_losses_2'>Verluste</entry>
+  <entry key='battlefinish.planet_destroyed'>Der Kampf hat dem Planet %s zerstört.</entry>
+  <entry key='battlefinish.planet_lost'>Du hast den Planet %s verloren.</entry>
+  <entry key='battlefinish.planet_won'>Due hast den Planet %s erobert.</entry>
+  <entry key='battlefinish.shields'>Schilde</entry>
+  <entry key='battlefinish.spacewar_enemy_fled'>Gägner %s hat geflüchtet.</entry>
+  <entry key='battlefinish.spacewar_enemy_slipped'>Gägner %s hat durchgerutscht.</entry>
+  <entry key='battlefinish.spacewar_lost'>Du hast den Weltall-Kampf verloren!</entry>
+  <entry key='battlefinish.spacewar_retreat'>Du hast geflüchtet!</entry>
+  <entry key='battlefinish.spacewar_won'>Du hast den Weltall-Kampf gewonnen!</entry>
+  <entry key='battlefinish.stations'>Raumstationen</entry>
+  <entry key='battlefinish.statistics'>Kampf Statistik</entry>
+
+  <entry key='chat.unavailable'>Der Gägner macht der Kommunikation absichtlicht nichm möglich.</entry>
+  <entry key='colonyinfo.allocation'>Verteilung   : %s</entry>
+  <entry key='colonyinfo.autobuild' >Auto-Bau     : %s</entry>
+  <entry key='colonyinfo.energy'    >Energie      : %d / %d kWh</entry>
+  <entry key='colonyinfo.food'      >Lebensmittel : %d / %d men</entry>
+  <entry key='colonyinfo.hospital'  >Krankenhaus  : %d / %d men</entry>
+  <entry key='colonyinfo.housing'   >Wohnraum     : %d / %d men</entry>
+  <entry key='colonyinfo.other'     >Andere       : %s</entry>
+  <entry key='colonyinfo.owner'     >Besitzer     : %s</entry>
+  <entry key='colonyinfo.planet'    >Planet : %s</entry>
+  <entry key='colonyinfo.police'    >Polizei      : %d / %d men</entry>
+  <entry key='colonyinfo.population'>Bevölkerung  : %d %s (%s)</entry>
+  <entry key='colonyinfo.population.alien'>Bevölkerung  : %d alien</entry>
+  <entry key='colonyinfo.population.own'>%d %s %s</entry>
+  <entry key='colonyinfo.population.short.alien'>%d alien</entry>
+  <entry key='colonyinfo.race'      >Rasse        : %s</entry>
+  <entry key='colonyinfo.surface'   >Oberfläche   : %s</entry>
+  <entry key='colonyinfo.surface2'  >Obeffläche   : %s (%d%% völk.wachs)</entry>
+  <entry key='colonyinfo.tax'       >Steuer einkommen : %d cr</entry>
+  <entry key='colonyinfo.tax-info'  >Steuer ebene: %s    Steuer morale: %d%% (%s)</entry>
+  <entry key='colonyinfo.tax-level' >Steuer einkommen : %s</entry>
+  <entry key='colonyinfo.tax-morale'>Steuer morale: %d%% (%s)</entry>
+  <entry key='colonyinfo.tax-trade' >Steuer : %d cr    Handel : %d cr</entry>
+  <entry key='colonyinfo.tax_short' >Steuer: %s</entry>
+  <entry key='colonyinfo.trade'     >Handel einkommen : %d cr</entry>
+  <entry key='colonyinfo.worker'    >Arbeiter     : %d / %d men</entry>
+  <entry key='credits'>Credits</entry>
+
+  <entry key='database.map.1'>
+	
+	1. Brücke
+	2. Kabine des Lieutenants
+	3. Mannschaftsunterkünfte</entry>
+  <entry key='database.map.1.title'>Karte von dem Zerstörer</entry>
+  <entry key='database.map.2'>
+	1. Brücke
+	2. Kabine des Kommanders
+	3. Mannschaftsunterkünfte
+	4. Bar</entry>
+  <entry key='database.map.2.title'>Karte von dem Kreuzer</entry>
+  <entry key='database.map.3'>
+	
+	1. Brücke
+	2. Forschung-produktion Terminale
+	3. Ausrüstung Terminale
+	4. Kabine des Kapitäns 
+	5. Bar
+	6. Mannschaftsunterkünfte 
+	</entry>
+  <entry key='database.map.3.title'>Karte von dem Flaggschiff Thorin</entry>
+  <entry key='database.map.4'>
+	
+	1. Brücke
+	2. Forschung-produktion Terminale
+	3. Ausrüstung Terminale
+	4. Kabine des Kapitäns 
+	5. Bar
+	6. Mannschaftsunterkünfte 
+	7. Diplomatisches Beziehungsraum</entry>
+  <entry key='database.map.4.title'>Karte von dem Flaggschiff Thorin</entry>
+  <entry key='database.map.5'>
+	
+	1. Brücke
+	2. Forschung-produktion Terminale
+	3. Ausrüstung Terminale
+	4. Kabine des Kapitäns 
+	5. Bar
+	6. Mannschaftsunterkünfte 
+	7. Diplomatisches Beziehungsraum</entry>
+  <entry key='database.map.5.title'>Karte von dem Flaggschiff Thorin</entry>
+  <entry key='inventoryslot.bomb'>Bombe</entry>
+  <entry key='inventoryslot.cannon'>Kannonen</entry>
+  <entry key='inventoryslot.cannon1'>Kannonen</entry>
+  <entry key='inventoryslot.cannon2'>Kannonen</entry>
+  <entry key='inventoryslot.ecm'>ECM</entry>
+  <entry key='inventoryslot.hyperdrive'>Hüperantrieb/entry>
+  <entry key='inventoryslot.laser'>Lasers</entry>
+  <entry key='inventoryslot.laser1'>Lasers</entry>
+  <entry key='inventoryslot.laser2'>Lasers</entry>
+  <entry key='inventoryslot.radar'>Radar</entry>
+  <entry key='inventoryslot.rocket'>Racketen</entry>
+  <entry key='inventoryslot.rocket1'>Racketen</entry>
+  <entry key='inventoryslot.rocket2'>Racketen</entry>
+  <entry key='inventoryslot.shield'>Schilde</entry>
+  <entry key='inventoryslot.storage'>Gespeicher</entry>
+  <entry key='message.cant_attack_that_planet'>Satellitenübesicht gebrauch über dem Planet %s zum angriff!</entry>
+  <entry key='message.cant_build_there'>Du kannst hier nicht Bauen!</entry>
+  <entry key='message.colony_hub_completed'>Koloniezentrum wurde auf dem Planet %s fertiggestelt.</entry>
+  <entry key='message.earthquake'>Erdbeben auf dem Planet %s.</entry>
+  <entry key='message.enemy_fleet_detected'>Radar hat Alien Angriffsflotte endeckt.</entry>
+  <entry key='message.enemy_fleet_detected_at'>Radar hat Alien Angriffsflotte zum Planet %s endeckt.</entry>
+  <entry key='message.new_planet_discovered'>Planet %s wurde endeckt.</entry>
+  <entry key='message.new_player_discovered'>%s wurde endeckt.</entry>
+  <entry key='message.new_race_discovered'>Rasse %s wurde endeckt.</entry>
+  <entry key='message.no_vehicles_for_assault'>Deine Flotte hat keine Fahrzeuge um dem Planet %s zu erobern.</entry>
+  <entry key='message.not_enough_money'>Nicht genug Geld!</entry>
+  <entry key='message.planet_conquered'>Planet %s wurde erobert.</entry>
+  <entry key='message.planet_died'>Planet %s wurde verlassen.</entry>
+  <entry key='message.planet_lost'>Planet %s wurde verloren.</entry>
+  <entry key='message.planet_revolt'>Rebellion auf dem Planet %s.</entry>
+  <entry key='message.production_completed'>Production von %s beendet.</entry>
+  <entry key='message.research_completed'>Forschung von %s beendet.</entry>
+  <entry key='message.satellite_destroyed'>Satellit den Planet %s umkreiste wurde zerstört.</entry>
+  <entry key='message.yesterday_tax_income'>Steuer einkommen von Gestern war %s credits.</entry>
+  <entry key='message.yesterday_trade_income'>Handlen einkomment von Gertern war %s credits.</entry>
+	
+  <entry key='pirates.fleet_name'>Piraten</entry>
+  <entry key='planet.colonizable'>Leel - Kolonizierbar</entry>
+  <entry key='planet.install_satellite_1'>Setze jeder Satellit ein</entry>
+  <entry key='planet.install_satellite_2'>um die Oberfläche zu sehen.</entry>
+  <entry key='planet.type.cratered'>verkratert</entry>
+  <entry key='planet.type.desert'>wüstlich</entry>
+  <entry key='planet.type.earth'>Erde-ähnlich</entry>
+  <entry key='planet.type.frozen'>gefroren</entry>
+  <entry key='planet.type.liquid'>flüssig</entry>
+  <entry key='planet.type.neptoplasm'>neptoplasmish</entry>
+  <entry key='planet.type.rocky'>steinlish</entry>
+  <entry key='planets.earth'>Erde</entry>
+  <entry key='players.dargslan'>Dargslan Königreich</entry>
+  <entry key='players.dargslan.short'>Dargslan</entry>
+  <entry key='players.dribs'>Dribs Reich</entry>
+  <entry key='players.dribs.short'>Dribs</entry>
+  <entry key='players.ecalep'>Ecalep Republik</entry>
+  <entry key='players.ecalep.short'>Ecalep</entry>
+  <entry key='players.empire'>Galactic Reich</entry>
+  <entry key='players.empire.short'>Reich</entry>
+  <entry key='players.free_nations'>Freie Nationen</entry>
+  <entry key='players.free_nations.short'>Freie Nationen</entry>
+  <entry key='players.free_traders'>Handel Allianz</entry>
+  <entry key='players.free_traders.short'>Freie Handeln</entry>
+  <entry key='players.garthog'>Garthog Republik</entry>
+  <entry key='players.garthog.short'>Garthog</entry>
+  <entry key='players.morgath'>Morgath Reich</entry>
+  <entry key='players.morgath.short'>Morgath</entry>
+  <entry key='players.pirates'>Piraten</entry>
+  <entry key='players.pirates.short'>Piraten</entry>
+  <entry key='players.sullep'>Sullep Reich</entry>
+  <entry key='players.sullep.short'>Sullep</entry>
+  <entry key='players.ychom'>Ychom Reich</entry>
+  <entry key='players.ychom.short'>Ychom</entry>
+
+  <entry key='race.dargslan'>Dargslan</entry>
+  <entry key='race.dribs'>Dribs</entry>
+  <entry key='race.ecalep'>Ecalep</entry>
+  <entry key='race.garthog'>Garthog</entry>
+  <entry key='race.human'>Mensch</entry>
+  <entry key='race.morgath'>Morgath</entry>
+  <entry key='race.sullep'>Sullep</entry>
+  <entry key='race.ychom'>Ychom</entry>
+  <entry key='relations.allies'>Alliirten:</entry>
+  <entry key='relations.enemies'>Feinde:</entry>
+	
+  <entry key='researchinfo.progress.can'>Forschbar</entry>
+  <entry key='researchinfo.progress.cant'>Nicht forschbar</entry>
+  <entry key='researchinfo.progress.cost'>Preis     : %d cr</entry>
+  <entry key='researchinfo.progress.done'>Fertig</entry>
+  <entry key='researchinfo.progress.inventory'>Inventar  : %d</entry>
+  <entry key='researchinfo.progress.lab'>Kap. Mangel: %d%%</entry>
+  <entry key='researchinfo.progress.money'>Geld Mangel: %d%%</entry>
+  <entry key='researchinfo.progress.paused'>Pausiert: %d%%</entry>
+  <entry key='researchinfo.progress.pre'>Benötigung:</entry>
+  <entry key='researchinfo.progress.price'>Preis     : %d cr</entry>
+  <entry key='researchinfo.progress.running'>Laufend: %d%%</entry>
+  <entry key='researchinfo.required_labs'>Gebraucht / Verfügbar:</entry>
+
+  <entry key='screens.achievements'>F12 - Leistungen</entry>
+  <entry key='screens.bar'>F9 - Bar</entry>
+  <entry key='screens.bridge'>F1 - Brücke</entry>
+  <entry key='screens.colony'>F3 - Kolonie</entry>
+  <entry key='screens.database'>F8 - Datenbank</entry>
+  <entry key='screens.diplomacy'>F10 - Diplomatie</entry>
+  <entry key='screens.equipment'>F4 - Ausrüstung</entry>
+  <entry key='screens.information'>F7 - Information</entry>
+  <entry key='screens.loadsave'>ESC - Laden/Speichern</entry>
+  <entry key='screens.options'>O - Einstellungen</entry>
+  <entry key='screens.production'>F5 - Production</entry>
+  <entry key='screens.research'>F6 - Forschung</entry>
+  <entry key='screens.starmap'>F2 - Karte</entry>
+  <entry key='screens.statistics'>F11 - Statistik</entry>
+
+  <entry key='spacewar.projector_information'>Kanone Information</entry>
+  <entry key='spacewar.selection.bombs_rockets'>B/R    : %s / %s</entry>
+  <entry key='spacewar.selection.firepower_dps'>DPS    : %s / %s</entry>
+  <entry key='spacewar.selection.name'>Name   : %s</entry>
+  <entry key='spacewar.selection.name_count'>Name   : %s x %s</entry>
+  <entry key='spacewar.selection.owner'>Besitzer : %s</entry>
+  <entry key='spacewar.selection.parent'>Eltern : %s</entry>
+  <entry key='spacewar.shield_information'>Schild Information</entry>
+  <entry key='spacewar.ship_information'>Schiff Information</entry>
+  <entry key='spacewar.ship_information_crew'>Besatzung</entry>
+  <entry key='spacewar.ship_information_damage'>Schaden</entry>
+  <entry key='spacewar.ship_information_equipment'>Ausrüstungsliste :</entry>
+  <entry key='spacewar.ship_information_firepower'>Feuerkraft</entry>
+  <entry key='spacewar.ship_information_name'>Einheit name</entry>
+  <entry key='spacewar.ship_information_type'>Einheit typ</entry>
+  <entry key='spacewar.ship_information_wins'>Siege</entry>
+  <entry key='spacewar.ship_name' >Einheit name: %s</entry>
+  <entry key='spacewar.ship_owner'>Besitzer : %s</entry>
+  <entry key='spacewar.ship_status'>Schiff Status</entry>
+  <entry key='spacewar.ship_status_many'>Zu viele Dinge ausgewählt.</entry>
+  <entry key='spacewar.ship_status_none'>Nichts ausgewählt.</entry>
+  <entry key='spacewar.ship_type'>Typ      : %s</entry>
+  <entry key='spacewar.ship_weapon_count'>Mänge : %d</entry>
+  <entry key='spacewar.ship_weapon_damage'>Schaden: %d%%</entry>
+  <entry key='spacewar.ship_weapon_empty'>Leer</entry>
+  <entry key='spacewar.ship_weapon_type'>Typ   : %s</entry>
+  <entry key='spacewar.station_information'>Station Information</entry>
+  <entry key='spacewar.statistics'>Statistik</entry>
+  <entry key='spacewar.statistics_enemy_units'>Feindliche Einhei.: %6d</entry>
+  <entry key='spacewar.statistics_firepower'  >Feuerkraft        : %6d</entry>
+  <entry key='spacewar.statistics_ground'     >Boden Einheiten   : %6d</entry>
+  <entry key='spacewar.statistics_guns'       >Boden Kanonen     : %6d</entry>
+  <entry key='spacewar.statistics_losses'     >Verluste          : %6d</entry>
+  <entry key='spacewar.statistics_own_units'  >Eigene Einheiten  : %6d</entry>
+  <entry key='spacewar.statistics_rockets'    >Racketen/Bombe    : %6d / %2d</entry>
+  <entry key='spacewar.statistics_stations'   >Raumstationen     : %6d</entry>
+
+  <entry key='taxlevel.ABOVE_MODERATE'>Über mäßig</entry>
+  <entry key='taxlevel.EXPLOITER'>Ausnutzer</entry>
+  <entry key='taxlevel.HIGH'>Hoch</entry>
+  <entry key='taxlevel.LOW'>Niedrich</entry>
+  <entry key='taxlevel.MODERATE'>Mäßig</entry>
+  <entry key='taxlevel.NONE'>Kein</entry>
+  <entry key='taxlevel.OPPRESSIVE'>Erdrückend</entry>
+  <entry key='taxlevel.SLAVERY'>Sklavisch</entry>
+  <entry key='taxlevel.VERY_HIGH'>Sehr hoch</entry>
+  <entry key='taxlevel.VERY_LOW'>Sehr niedrich</entry>
+	
+  <entry key='tech.battleship1.description'>Starke Schilde, schwere Bewaffnung und die Fähigkeit, Bodensturmtruppen zu transportieren. Müssen im Weltraum in einer Orbitalfabrik hergestellt werden.</entry>
+  <entry key='tech.battleship1.longname'>Flaggschiff der Mammut-Klasse</entry>
+  <entry key='tech.battleship1.name'>Flaggschiff v1</entry>
+  <entry key='tech.battleship2.description'>Etwas langsamer als ein Mammut, aber mit überlegener Feuerkraft. Die Python kann größere Truppen transportieren, und ihre Schilde sind noch besser.</entry>
+  <entry key='tech.battleship2.longname'>Flaggschiff der Python-Klasse</entry>
+  <entry key='tech.battleship2.name'>Flaggschiff v2</entry>
+  <entry key='tech.battleship3.description'>Mit ihren mächtigen Schilden, riesiger Feuerkraft und dem Potential, eine ganze Armee samt Ausrüstung zu befördern, das Juwel der imperialen Flotte.</entry>
+  <entry key='tech.battleship3.longname'>Flaggschiff der Kraken-Klasse</entry>
+  <entry key='tech.battleship3.name'>Flaggschiff v3</entry>
+  
+  <entry key='tech.behemoth.description'>Der Behemoth erhält durch ein Gewebe von Spinntitanplatten eine unerreichte Panzerung. Feuerreichweite: 5. Geschwindigkeit: 3. Panzerung: 7.</entry>
+  <entry key='tech.behemoth.longname'>Behemoth</entry>
+  <entry key='tech.behemoth.name'>Behemoth</entry>
+  <entry key='tech.bomb1.description'>Destruktor-Bomben werden bei Angriffen aus dem Weltraum auf Bodenziele eingesetzt. Sie dienen der Zerstörung von Bodenverteidigungssystemen.</entry>
+  <entry key='tech.bomb1.longname'>Bombe v1.0 "Destruktor"</entry>
+  <entry key='tech.bomb1.name'>Bombe v1</entry>
+  <entry key='tech.bomb2.description'>Diese verbesserte Version des Destruktors hat einen großen Explosionsradius und kann Hunderte von Gebäuden zerstören.</entry>
+  <entry key='tech.bomb2.longname'>Bombe v2.0 "Schwerer Destruktor"</entry>
+  <entry key='tech.bomb2.name'>Bombe v2</entry>
+  <entry key='tech.bunker.description'>Bunker sind stark befestigte Gebäude, die Ihren Kolonisten bei Angriffen durch gegnerische Truppen einen Unterschlupf bieten und die Verluste niedrig halten.</entry>
+  <entry key='tech.bunker.longname'>Bunker</entry>
+  <entry key='tech.bunker.name'>Bunker</entry>
+  <entry key='tech.colonyship.description'>Koloniearchen werden zur Gründung von Kolonien eingesetzt. Die Schiffe transportieren Siedler und alles, was man zum Neubeginn auf einem neuen Planeten braucht.</entry>
+  <entry key='tech.colonyship.longname'>Koloniearche</entry>
+  <entry key='tech.colonyship.name'>Koloniearche</entry>
+  
+  <entry key='tech.cruiser1.description'>Ein weiteres Relikt des Alten Reichs - altmodisch, doch billig und überall reichlich verfügbar.</entry>
+  <entry key='tech.cruiser1.longname'>Kreuzer der Donnerkeil-Klasse</entry>
+  <entry key='tech.cruiser1.name'>Kreuzer v1</entry>
+  <entry key='tech.cruiser2.description'>Bei der Aktualisierung der Donnerkeile konzentrierte man sich auf die Schild- Generatoren, doch das größere Gewicht ohne stärkere Motoren macht sie schwerfällig.</entry>
+  <entry key='tech.cruiser2.longname'>Kreuzer der Donnerkeil-II-Klasse</entry>
+  <entry key='tech.cruiser2.name'>Kreuzer v2</entry>
+  <entry key='tech.cruiser3.description'>Moderne Antriebssysteme, stärkere Panzerung und Ziel- und Feuersysteme der neuesten Generation machen sie zu den gefürchtetsten Kreuzern des Reichs.</entry>
+  <entry key='tech.cruiser3.longname'>Kreuzer der Cahudhri-Klasse</entry>
+  <entry key='tech.cruiser3.name'>Kreuzer v3</entry>
+  
+  <entry key='tech.dargslanbattleship.description'>Relativ starke Flaggschiff.</entry>
+  <entry key='tech.dargslanbattleship.longname'>Dargslan Flaggschiff</entry>
+  <entry key='tech.dargslanbattleship.name'>Dargslan Flaggschiff</entry>
+  <entry key='tech.dargslandestroyer.description'>Relativ starke Zerstörer.</entry>
+  <entry key='tech.dargslandestroyer.longname'>Dargslan Zerstörer</entry>
+  <entry key='tech.dargslandestroyer.name'>Dargslan Zerstörer</entry>
+  <entry key='tech.dargslanfighter.description'>Relativ starke Jäger.</entry>
+  <entry key='tech.dargslanfighter.longname'>Dargslan Jäger</entry>
+  <entry key='tech.dargslanfighter.name'>Dagslan Jäger</entry>
+  <entry key='tech.dargslanselfrepairtank.description'>Specialeinheit der Dargslan. Es kann sich selbst reparieren.</entry>
+  <entry key='tech.dargslanselfrepairtank.longname'>Dargslan Selbst-reparatur Panzer</entry>
+  <entry key='tech.dargslanselfrepairtank.name'>Selbst-reparatur Panzer</entry>
+  
+  <entry key='tech.destroyer1.description'>Der verbreitetste leichte Zerstörer. Ein Überbleibsel aus dem Alten Reich. Seine größten Vorteile: Er kostet wenig und ist in großen Stückzahlen verfügbar.</entry>
+  <entry key='tech.destroyer1.longname'>Zerstörer der Wachtturm-Klasse</entry>
+  <entry key='tech.destroyer1.name'>Zerstörer v1</entry>
+  <entry key='tech.destroyer2.description'>Die Zerstörer der Krieger-Klasse sind neu ausgestattete Wachtturm-Zerstörer mit moderner Bewaffnung, aber aufgrund ihres schwachen Schildgenerators verwundbar.</entry>
+  <entry key='tech.destroyer2.longname'>Zerstörer der Krieger-Klasse</entry>
+  <entry key='tech.destroyer2.name'>Zerstörer v2</entry>
+  <entry key='tech.destroyer3.description'>Die Jabberwockys sind der Gipfel der Zerstörerentwicklung: gute Schilde, große Feuerkraft und Dualmagnetdruckpumpen-Antriebssystem für extreme Geschwindigkeit.</entry>
+  <entry key='tech.destroyer3.longname'>Zerstörer der Jabberwocky-Klasse</entry>
+  <entry key='tech.destroyer3.name'>Zerstörer v3</entry>
+  
+  <entry key='tech.dribsbattleship.description'>Mittel starke Flaggschiff</entry>
+  <entry key='tech.dribsbattleship.longname'>Dribs Flaggschiff</entry>
+  <entry key='tech.dribsbattleship.name'>Dribs Flaggschiff</entry>
+  <entry key='tech.dribsdestroyer.description'>Mittel starke Zerstörer</entry>
+  <entry key='tech.dribsdestroyer.longname'>Dribs Zerstörer</entry>
+  <entry key='tech.dribsdestroyer.name'>Dribs Zerstörer</entry>
+  <entry key='tech.dribsfighter.description'>Mittel starke Jäger</entry>
+  <entry key='tech.dribsfighter.longname'>Dribs Jäger</entry>
+  <entry key='tech.dribsfighter.name'>Dibs Jäger</entry>
+  <entry key='tech.dribsparalizer.description'>Specialeinheit der Dribs. Paralysiert andere Fahrzeuge die kann nicht feuern oder bevegen.</entry>
+  <entry key='tech.dribsparalizer.longname'>Dribs Paralizer</entry>
+  <entry key='tech.dribsparalizer.name'>Paralizer</entry>
+
+  <entry key='tech.ecalepbattleship.description'>Mittel starke Flaggschiff</entry>
+  <entry key='tech.ecalepbattleship.longname'>Ecalep Flaggschiff</entry>
+  <entry key='tech.ecalepbattleship.name'>Ecalep Flaggschiff</entry>
+  <entry key='tech.ecalepdestroyer.description'>Mittel starke Zerstörer</entry>
+  <entry key='tech.ecalepdestroyer.longname'>Ecalep Zerstörer</entry>
+  <entry key='tech.ecalepdestroyer.name'>Ecalep Zerstörer</entry>
+  <entry key='tech.ecalepfighter.description'>Mittel starke Jäger</entry>
+  <entry key='tech.ecalepfighter.longname'>Ecalep Jäger</entry>
+  <entry key='tech.ecalepfighter.name'>Ecalep Jäger</entry>
+  <entry key='tech.ecaleprocketjammer.description'>Specialeinheit der Ecalep. Stört die Raketen in seinem nähe.</entry>
+  <entry key='tech.ecaleprocketjammer.longname'>Ecalep Raketenstörer</entry>
+  <entry key='tech.ecaleprocketjammer.name'>Raketenstörer</entry>
+ 
+  <entry key='tech.ecm1.description'>Dieses System elektronischer Gegenmaßnahmen ortet und lenkt näherkommende Raketen ab. Je mehr Zeit ELOGM dazu hat, desto zuverlässiger ist es.</entry>
+  <entry key='tech.ecm1.longname'>Fuzzbox-ELOGM</entry>
+  <entry key='tech.ecm1.name'>ECM v1</entry>
+  <entry key='tech.ecm2.description'>Shocker-ELOGM ist ein aktives System von Gegenmaßnahmen, das mit Lasern, Funkleit- strahlen, Schwerkraft-Impulsfeldern und Neutrinostrahlern Raketenangriffe ablenkt.</entry>
+  <entry key='tech.ecm2.longname'>Shocker-ELOGM</entry>
+  <entry key='tech.ecm2.name'>ECM v2</entry>
+  
+  <entry key='tech.fieldtelescope.description'>Das Feldteleskop ist ein starker, fokussierter Funkwellendetektor, der zum Orten von Gegnerflotten in größeren Entfernungen als beim Radarteleskop eingesetzt wird.</entry>
+  <entry key='tech.fieldtelescope.longname'>Feldteleskop</entry>
+  <entry key='tech.fieldtelescope.name'>Feldteleskop</entry>
+
+  <entry key='tech.fighter1.description'>Der Raptor ist ein einfacher, unkomplizierter Jäger. Er ist mit Doppellaser-Kanonen bewaffnet und durch einen Niedrigenergie-Magnetablenkungschild geschützt.</entry>
+  <entry key='tech.fighter1.longname'>Jäger 1 Raptor</entry>
+  <entry key='tech.fighter1.name'>Jäger v1</entry>
+  <entry key='tech.fighter2.description'>Die Walküre ist dem Raptor in jeder Hinsicht überlegen: durch Feuerkraft aus Quad- Laserbatterien, einen stärkeren Magnetablenkungsschild und besseren Maschinen.</entry>
+  <entry key='tech.fighter2.longname'>Jäger 2 Walküre</entry>
+  <entry key='tech.fighter2.name'>Jäger v2</entry>
+  <entry key='tech.fighter3.description'>Mit seinen beiden Doppellaserwaffen und dem neuartigen Schildsystem mit Hoch- leistungsfeldinduktoren ist der Hammerhai eine Verbesserung gegenüber der Walküre.</entry>
+  <entry key='tech.fighter3.longname'>Jäger 3 Hammerhai</entry>
+  <entry key='tech.fighter3.name'>Jäger v3</entry>
+  <entry key='tech.fighter4.description'>Die Gischt ist ein schnelles und zerstörerisches Flugzeug. Sie hat 4 Doppellaser und die modernste Antriebstechnik. Ihr Design macht sie zum gefährlichen Gegner.</entry>
+  <entry key='tech.fighter4.longname'>Jäger 4 'Gischt'</entry>
+  <entry key='tech.fighter4.name'>Jäger v4</entry>
+  <entry key='tech.fighter5.description'>Der Geisterjäger verfügt über fortschrittliche Stealth-Technologie und ein neues Phasenkupplungs-Dipolmagnet-Ablenkungsschildsystem - ein fast unschlagbarer Jäger.</entry>
+  <entry key='tech.fighter5.longname'>Jäger 5 Geisterjäger</entry>
+  <entry key='tech.fighter5.name'>Jäger v5</entry>
+  <entry key='tech.fighter6.description'>Der Amboß ist ein schwerer Bomber zum Abwerfen ungelenkter Hochleistungsbomben auf schwere Fahrzeuge. Schlagkräftig, braucht aber eine Jägereskorte.</entry>
+  <entry key='tech.fighter6.longname'>Jäger 6 Amboßbomber</entry>
+  <entry key='tech.fighter6.name'>Jäger v6</entry>
+
+  <entry key='tech.flagship.description'>Die Thorin ist das einzige verbleibende Flaggschiff der Leviathan-Klasse. Sie ist wesentlich mächtiger als ein Flaggschiff der Kraken-Klasse.</entry>
+  <entry key='tech.flagship.longname'>Flaggschiff der Leviathan-Klasse</entry>
+  <entry key='tech.flagship.name'>Thorin</entry>
+
+  <entry key='tech.fortress.description'>Die Festung feuert auf gegnerische Fahrzeuge in der Nähe, bietet außerdem Hangardocks und Verstärkungsausrüstung für Ihre planetaren Garnisonen.</entry>
+  <entry key='tech.fortress.longname'>Festung</entry>
+  <entry key='tech.fortress.name'>Festung</entry>
+  
+  <entry key='tech.garthogbattleship.description'>Mittel starke Flaggschiff</entry>
+  <entry key='tech.garthogbattleship.longname'>Garthog Flaggschiff</entry>
+  <entry key='tech.garthogbattleship.name'>Garthog Flaggschiff</entry>
+  <entry key='tech.garthogdestroyer.description'>Mittel starke Zerstörer</entry>
+  <entry key='tech.garthogdestroyer.longname'>Garthog Zerstörer</entry>
+  <entry key='tech.garthogdestroyer.name'>Garthog Zerstörer</entry>
+  <entry key='tech.garthogfighter.description'>Mittel starke Jäger</entry>
+  <entry key='tech.garthogfighter.longname'>Garthog Jäger</entry>
+  <entry key='tech.garthogfighter.name'>Garthog Jäger</entry>
+  <entry key='tech.garthogradarjammer.description'>Specialeinheit der Garthog. Es stört andere Radarwagen oder Satellitbedeckung um die Zahlen zu verstecken.</entry>
+  <entry key='tech.garthogradarjammer.longname'>Garthog Radarstörer</entry>
+  <entry key='tech.garthogradarjammer.name'>Radarstörer</entry>
+  <entry key='tech.garthogvirusbomb.description'>Garthogs verwendete diese Bombe gegen das Galaktik Reich.</entry>
+  <entry key='tech.garthogvirusbomb.longname'>Garthog Virusbombe</entry>
+  <entry key='tech.garthogvirusbomb.name'>Garthog Virusbombe</entry>
+
+  <entry key='tech.heavytank.description'>Rhinos bilden den Kern der Bodentruppen des Imperiums. Feuerreichweite: 4. Geschwindigkeit: 4. Panzerung: 6.</entry>
+  <entry key='tech.heavytank.longname'>Schwerer Panzer "Rhino"</entry>
+  <entry key='tech.heavytank.name'>Schwerer Panzer</entry>
+
+  <entry key='tech.hubble1.description'>Experimentelles Weltraumteleskop, erkannt eben die kleinste Flotten aber nur in mittel Entfernungen.</entry>
+  <entry key='tech.hubble1.longname'>Weltraumteleskop</entry>
+  <entry key='tech.hubble1.name'>Weltraumteleskop</entry>
+  <entry key='tech.hubble2.description'>Starker Radarteleskop-Satellit, benannt nach dem berühmten Forschungssatelliten der Alten Erde. Hubble 2 kann gegnerische Flotten in großer Entfernungen ausmachen.</entry>
+  <entry key='tech.hubble2.longname'>Hubble 2</entry>
+  <entry key='tech.hubble2.name'>Hubble 2</entry>
+
+  <entry key='tech.hyperdrive1.description'>Damit können Sie einige Raumschiffe aktualisieren. Die Schiffe werden durch dieses Antriebssystem um 15% schneller.</entry>
+  <entry key='tech.hyperdrive1.longname'>Hyperdrive v1.0</entry>
+  <entry key='tech.hyperdrive1.name'>Hyperdrive v1</entry>
+  <entry key='tech.hyperdrive2.description'>Dieses Modul ist eine weitere Aufrüstung. Raumschiffe können dadurch 20% schneller werden und verbrauchen 15% weniger Treibstoff.</entry>
+  <entry key='tech.hyperdrive2.longname'>Hyperdrive v2.0</entry>
+  <entry key='tech.hyperdrive2.name'>Hyperdrive v2</entry>
+  <entry key='tech.hyperdrive3.description'>Dies ist eine Verbesserung Ihrer Flaggschiffe. Zwei zusätzliche Booster erhöhen die Geschwindigkeit der Schiffe um 22%.</entry>
+  <entry key='tech.hyperdrive3.longname'>Hyperdrive v3.0</entry>
+  <entry key='tech.hyperdrive3.name'>Hyperdrive v3</entry>
+  <entry key='tech.hyperdrive4.description'>Damit ausgerüstete Schiffe sind in der Lage, um 30% schneller zu fliegen.</entry>
+  <entry key='tech.hyperdrive4.longname'>Hyperdrive v4.0</entry>
+  <entry key='tech.hyperdrive4.name'>Hyperdrive v4</entry>
+  <entry key='tech.hyperdrive5.description'>Der einzige Nachteil dieses Schubtriebwerks ist der hohe Treibstoffverbrauch. Die Geschwindigkeit erhöht sich damit um 35% und die Manövrierfähigkeit um 20%.</entry>
+  <entry key='tech.hyperdrive5.longname'>Hyperdrive v5.0</entry>
+  <entry key='tech.hyperdrive5.name'>Hyperdrive v5</entry>
+  
+  <entry key='tech.hypershield.description'>Der Warp-Effekt von Millionen Mikro-Singularitäten im Hyperschild absorbiert Waffenfeuer und schützt Ihre Kolonien so vor Destruktoren und Virusbomben.</entry>
+  <entry key='tech.hypershield.longname'>Hyperschild</entry>
+  <entry key='tech.hypershield.name'>Hyperschild</entry>
+  <entry key='tech.inversionshield.description'>Der Inversionsschild besteht aus sorgfältig ausbalancierten Gravitonfeldern mit Umkehrimpuls und schützt Ihre Kolonie vor Destruktor-Feuer aus dem All.</entry>
+  <entry key='tech.inversionshield.longname'>Inversionsschild</entry>
+  <entry key='tech.inversionshield.name'>Inversionsschild</entry>
+
+  <entry key='tech.ioncannon.description'>Dieses Geschütz feuert Ströme positiv und negativ geladener Ionen. Die beiden Ströme bleiben kohärent, bis es beim Aufprall zu einer riesigen Explosion kommt.</entry>
+  <entry key='tech.ioncannon.longname'>Ionengeschütz</entry>
+  <entry key='tech.ioncannon.name'>Ionengeschütz</entry>
+
+  <entry key='tech.laser1.description'>Der Laser ist seit dem frühen 21. Jahrhundert die gebräuchlichste Waffe. Laser sind präzise und wirksam, richten aber nur wenig Schaden an.</entry>
+  <entry key='tech.laser1.longname'>Laser</entry>
+  <entry key='tech.laser1.name'>Laser</entry>
+  <entry key='tech.laser2.description'>Der Impulslaser ist eine einfache Aufrüstmöglichkeit mit erhöhter Feuerrate und bringt somit mehr Energie gegen das anvisierte Schiff zum Einsatz.</entry>
+  <entry key='tech.laser2.longname'>Impulselaser</entry>
+  <entry key='tech.laser2.name'>Impluselaser</entry>
+  <entry key='tech.laser3.description'>Fortschritte beim Fokussieren von hohen Wellenlängen ermöglichen es dem UV-Laser, wesentlich mehr Energie auszusenden und darum weitaus höheren Schaden anzurichten.</entry>
+  <entry key='tech.laser3.longname'>UV-Laser</entry>
+  <entry key='tech.laser3.name'>UV-Laser</entry>
+  <entry key='tech.laser4.description'>Nach der Perfektion der einfachen Variante war es nur ein kleiner Schritt zum Impulslasers mit fokussiertem System. Dies ist der stärkste erhältliche Laser.</entry>
+  <entry key='tech.laser4.longname'>UV-Impulselaser</entry>
+  <entry key='tech.laser4.name'>UV-Impulselaser</entry>
+
+  <entry key='tech.lighttank.description'>Der Jaguar wird wegen seiner Geschwindigkeit und Panzerung häufig als Aufklärungs- fahrzeug eingesetzt. Feuerreichweite: 2.  Geschwindigkeit: 5.  Panzerung: 3.</entry>
+  <entry key='tech.lighttank.longname'>Leichter Panzer "Jaguar"</entry>
+  <entry key='tech.lighttank.name'>Leichter Panzer</entry>
+  <entry key='tech.mediumtank.description'>Beim Tiger wurde mehr Wert auf Panzerung und Reichweite als auf Tempo gelegt - ein Fels in der Brandung. Feuerreichweite: 4. Geschwindigkeit: 4. Panzerung: 4.</entry>
+  <entry key='tech.mediumtank.longname'>Mittlerer Panzer "Tiger"</entry>
+  <entry key='tech.mediumtank.name'>Mittlerer Panzer</entry>
+
+  <entry key='tech.mesoncannon.description'>Das Mesonengeschütz ist die ultimative Waffe. Es sprüht kurzlebige Mikro- Singularitäten und macht damit ganze Raumschiff-Flotten rasch manövrierunfähig.</entry>
+  <entry key='tech.mesoncannon.longname'>Mesonengeschütz</entry>
+  <entry key='tech.mesoncannon.name'>Mesonengeschütz</entry>
+  <entry key='tech.mesonprojector.description'>Mesonenprojektoren feuern einen Strom subatomarer Partikel ab, die in hochexplosive Materie zerfallen, und legen ungeschützte Raumschiffe problemlos lahm.</entry>
+  <entry key='tech.mesonprojector.longname'>Mesonenprojektoren</entry>
+  <entry key='tech.mesonprojector.name'>Mesonenprojektoren</entry>
+
+  <entry key='tech.morgathbattleship.description'>Mittel starke Flaggschiff</entry>
+  <entry key='tech.morgathbattleship.longname'>Morgath Flaggschiff</entry>
+  <entry key='tech.morgathbattleship.name'>Morgath Flaggschiff</entry>
+  <entry key='tech.morgathdestroyer.description'>Mittel starke Zerstörer</entry>
+  <entry key='tech.morgathdestroyer.longname'>Morgat Zerstörer</entry>
+  <entry key='tech.morgathdestroyer.name'>Morgath Zerstörer</entry>
+  <entry key='tech.morgathfighter.description'>Mittel starke Jäger</entry>
+  <entry key='tech.morgathfighter.longname'>Morgath Jäger</entry>
+  <entry key='tech.morgathfighter.name'>Morgath Jäger</entry>
+  <entry key='tech.morgathkamikazetank.description'>Specialeinheit der Morgath. Unter schwere beschädigung oder Kommander-befehl zerstört es sich selbs und verursacht schaden in der Nähe.</entry>
+  <entry key='tech.morgathkamikazetank.longname'>Morgath Kamikaze Panzer</entry>
+  <entry key='tech.morgathkamikazetank.name'>Kamikaze Panzer</entry>
+
+  <entry key='tech.multiheadedrocket.description'>This missile when explodes will burst into small multi-head explosives, which clear a large area of fighter aircrafts.</entry>
+  <entry key='tech.multiheadedrocket.longname'>Multi-head missile</entry>
+  <entry key='tech.multiheadedrocket.name'>Mul-head missile</entry>
+  <entry key='tech.orbitalfactory.description'>Orbital Factories provide the zero-g construction facilities needed to build your gigantic flagships.</entry>
+  <entry key='tech.orbitalfactory.longname'>Orbital Factory</entry>
+  <entry key='tech.orbitalfactory.name'>Orbital Factory</entry>
+
+  <entry key='tech.particlecannon.description'>Das Neutronengeschütz, eine Verbesserung des Ionengeschützes, feuert elektrisch neutrale Neutronen und besitzt eine höhere Strahlenkohäsion und Feuerrate.</entry>
+  <entry key='tech.particlecannon.longname'>Neutronengeschütz</entry>
+  <entry key='tech.particlecannon.name'>Neutronengeschütz</entry>
+  <entry key='tech.particleprojector.description'>Fusionsprojektoren feuern magnetische Flaschen mit Wasserstoff ab und können Schiffen, die sich in ihre Reichweite verirren, schwere Schäden zufügen.</entry>
+  <entry key='tech.particleprojector.longname'>Fusionsprojektoren</entry>
+  <entry key='tech.particleprojector.name'>Fusionsprojektoren</entry>
+  
+  <entry key='tech.phasedtelescope.description'>The Phased Telescope is the ultimate in long range sensing equipment, accurately locating enemy fleets at extreme ranges.</entry>
+  <entry key='tech.phasedtelescope.longname'>Phased Telescope</entry>
+  <entry key='tech.phasedtelescope.name'>Phased Telescope</entry>
+  <entry key='tech.phoodfactory.description'>With a few key breakthroughs in nanotechnology, genetic engineering, and marketing to sell the repulsive slop, the Phood(TM) Factory is an effective food source.</entry>
+  <entry key='tech.phoodfactory.longname'>Phood(TM) Factory</entry>
+  <entry key='tech.phoodfactory.name'>Phood(TM)Factory</entry>
+  <entry key='tech.piratedestroyer.description'>Relatively weak Zerstörer</entry>
+  <entry key='tech.piratedestroyer.longname'>Pirate Zerstörer</entry>
+  <entry key='tech.piratedestroyer.name'>Pirate Zerstörer</entry>
+  <entry key='tech.piratefighter.description'>Relatively weak Jäger</entry>
+  <entry key='tech.piratefighter.longname'>Pirate Jäger</entry>
+  <entry key='tech.piratefighter.name'>Pirage Jäger</entry>
+  <entry key='tech.plasmacannon.description'>The Plasma Gun fires a burst of superheated matter. A direct hit shatters hull plates with heat and shorts out electrical systems, crippling the target.</entry>
+  <entry key='tech.plasmacannon.longname'>Plasma Gun</entry>
+  <entry key='tech.plasmacannon.name'>Plasma Gun</entry>
+  <entry key='tech.plasmaprojector.description'>Plasma Projector fires bolts of superheated matter that can inflict heavy damage on enemy starships.</entry>
+  <entry key='tech.plasmaprojector.longname'>Plasma Projector</entry>
+  <entry key='tech.plasmaprojector.name'>Plasma Projector</entry>
+  <entry key='tech.radar1.description'>The Radar Array can be equipped onto any of your spaceships. It detects any ships within 2 parsecs.</entry>
+  <entry key='tech.radar1.longname'>Radar Array</entry>
+  <entry key='tech.radar1.name'>Radar Array</entry>
+  <entry key='tech.radar2.description'>The Focused Field Radar Array can be equipped onto any of your spaceships. It detects any ships within 5 parsecs.</entry>
+  <entry key='tech.radar2.longname'>Field Array</entry>
+  <entry key='tech.radar2.name'>Field Array</entry>
+  <entry key='tech.radar3.description'>The Phased Field Array is a series of tuned Radar Arrays which can be carried by a flagship, their combined power detects and identifies spaceships and planets as well.</entry>
+  <entry key='tech.radar3.longname'>Phased Array</entry>
+  <entry key='tech.radar3.name'>Phased Array</entry>
+  <entry key='tech.radarcar.description'>The Radar Car is a specialized recon vehicle with powerful side-looking radar, lidar, and magnetic detectors.</entry>
+  <entry key='tech.radarcar.longname'>Radar Car</entry>
+  <entry key='tech.radarcar.name'>Radar Car</entry>
+  <entry key='tech.radartelescope.description'>The Radar Telescope detects nearby enemy fleets in space, helping to give warning before enemy attacks.</entry>
+  <entry key='tech.radartelescope.longname'>Radar Telescope</entry>
+  <entry key='tech.radartelescope.name'>Radar Telescope</entry>
+  <entry key='tech.rocket1.description'>The STK-1 is a simple missile, carrying a high explosive load and using an uncomplicated turn and track targeting system. Maneuverability: 6  Speed: 500</entry>
+  <entry key='tech.rocket1.longname'>STK-1 Missile v1.0</entry>
+  <entry key='tech.rocket1.name'>Missile v1</entry>
+  <entry key='tech.rocket2.description'>This new version of the STK-1 is more manuverable and faster. Manuverability: 8  Speed: 850</entry>
+  <entry key='tech.rocket2.longname'>STK-1F Missile v2.0</entry>
+  <entry key='tech.rocket2.name'>Missile v2</entry>
+  <entry key='tech.rocketlauncher1.description'>Vulnerable, but fast and agile, the Rocket Sled is a hit and run raider. Fire range: 7, Speed: 6.5, Armor: 2</entry>
+  <entry key='tech.rocketlauncher1.longname'>Rocket Sled</entry>
+  <entry key='tech.rocketlauncher1.name'>Rocket Sled</entry>
+  <entry key='tech.rocketlauncher2.description'>The Heavy Rocket Sled sacrifices armor for speed and more powerful rockets. Fire range: 8, Speed: 7, Armor: 1</entry>
+  <entry key='tech.rocketlauncher2.longname'>Heavy Rocket Sled</entry>
+  <entry key='tech.rocketlauncher2.name'>Hvy Rocket Sled</entry>
+  <entry key='tech.satellite.description'>The Survey Satellite is used to gather information on unexplored and unknown planets.</entry>
+  <entry key='tech.satellite.longname'>Survey Satellite</entry>
+  <entry key='tech.satellite.name'>Survey Satellite</entry>
+  <entry key='tech.shield1.description'>Using higher gauss mag-def fields than standard shields, this upgrade increases the shield strength of the ships by 10%.</entry>
+  <entry key='tech.shield1.longname'>Light Shield</entry>
+  <entry key='tech.shield1.name'>Light Shield</entry>
+  <entry key='tech.shield2.description'>Also utilizing higher gauss mag-def fields this upgrade increases the shield power of ships by 15%.</entry>
+  <entry key='tech.shield2.longname'>Medium Shield</entry>
+  <entry key='tech.shield2.name'>Medium Shield</entry>
+  <entry key='tech.shield3.description'>This unit upgrades the shield power by 20%. It uses a pulsed field technology.</entry>
+  <entry key='tech.shield3.longname'>Heavy Shield</entry>
+  <entry key='tech.shield3.name'>Heavy Shield</entry>
+  <entry key='tech.shield4.description'>Like the Medium Shield, this is a redesign of the core mag-def technology. Pulsed EM fields upgrade the shield power of flagships by 25%.</entry>
+  <entry key='tech.shield4.longname'>Super Heavy Shield</entry>
+  <entry key='tech.shield4.name'>SuperHvy Shield</entry>
+  <entry key='tech.solarplant.description'>Advances in key technologies such as magnetohydrodynamics, optics, photovoltaics, and superconductors, are needed for the construction of this advanced power source.</entry>
+  <entry key='tech.solarplant.longname'>Solar Plant</entry>
+  <entry key='tech.solarplant.name'>Solar Plant</entry>
+  <entry key='tech.spacestation1.description'>Space Stations are used to protect your planets from attack. They have heavy firepower and strong hull. They are the key to an effective defense.</entry>
+  <entry key='tech.spacestation1.longname'>Space Station 1: &quot;Defender&quot;</entry>
+  <entry key='tech.spacestation1.name'>Space Station 1</entry>
+  <entry key='tech.spacestation2.description'>The Giant has massive firepower, and is capable of putting up a stiff resistance to enemy fleets that attempt to assault the planets it guards.</entry>
+  <entry key='tech.spacestation2.longname'>Space Station 2: &quot;Giant&quot;</entry>
+  <entry key='tech.spacestation2.name'>Space Station 2</entry>
+  <entry key='tech.spacestation3.description'>The Colossus is the largest of all defensive stations. It can be a formidable foe for even the largest of starships.</entry>
+  <entry key='tech.spacestation3.longname'>Space Station 3: &quot;Colossus&quot;</entry>
+  <entry key='tech.spacestation3.name'>Space Station 3</entry>
+  <entry key='tech.spysatellite1.description'>Spy Satellites are used to detect and monitor alien communications, activities and fleet movements.</entry>
+  <entry key='tech.spysatellite1.longname'>Spy Satellite</entry>
+  <entry key='tech.spysatellite1.name'>Spy Satellite</entry>
+  <entry key='tech.spysatellite2.description'>This upgraded Spy Satellite has significant stealth enhancements and better sensors to detect and report on the ships and space bases around enemy planets.</entry>
+  <entry key='tech.spysatellite2.longname'>Advanced Spy Satellite</entry>
+  <entry key='tech.spysatellite2.name'>Adv. Spy Sat.</entry>
+  <entry key='tech.storage1.description'>This allows flagships to carry 3 additional ground vehicles.</entry>
+  <entry key='tech.storage1.longname'>Cargo Pod</entry>
+  <entry key='tech.storage1.name'>Cargo Pod</entry>
+  <entry key='tech.storage2.description'>The Heavy Cargo Pod gives the flagship to which it is retrofitted room for an additional 5 ground vehicles.</entry>
+  <entry key='tech.storage2.longname'>Heavy Cargo Pod</entry>
+  <entry key='tech.storage2.name'>Heavy Cargo Pod</entry>
+  <entry key='tech.stronghold.description'>The Stronghold is the heaviest fortification available for defending your colonies from ground based assaults.</entry>
+  <entry key='tech.stronghold.longname'>Stronghold</entry>
+  <entry key='tech.stronghold.name'>Stronghold</entry>
+  <entry key='tech.sullepartillery.description'>The special unit of the Sullep. It has a longer fire range than most vehicles and its shells do area damage.</entry>
+  <entry key='tech.sullepartillery.longname'>Sullep Artillery</entry>
+  <entry key='tech.sullepartillery.name'>Artillery</entry>
+  <entry key='tech.sullepbattleship.description'>Mittel starke Flaggschiff</entry>
+  <entry key='tech.sullepbattleship.longname'>Sullep Flaggschiff</entry>
+  <entry key='tech.sullepbattleship.name'>Sullep Flaggschiff</entry>
+  <entry key='tech.sullepdestroyer.description'>Mittel starke Zerstörer</entry>
+  <entry key='tech.sullepdestroyer.longname'>Sullep Zerstörer</entry>
+  <entry key='tech.sullepdestroyer.name'>Sullep Zerstörer</entry>
+  <entry key='tech.sullepfighter1.description'>Mittel starke Jäger</entry>
+  <entry key='tech.sullepfighter1.longname'>Sullep Jäger v1.0</entry>
+  <entry key='tech.sullepfighter1.name'>Sullep Jäger v1</entry>
+  <entry key='tech.sullepfighter2.description'>Mittel starke Jäger</entry>
+  <entry key='tech.sullepfighter2.longname'>Sullep Jäger v2.0</entry>
+  <entry key='tech.sullepfighter2.name'>Sullep Jäger v2</entry>
+  <entry key='tech.tradecenter.description'>The Trade center is a useful installation for increasing commerce, prosperity, and tax income on your colonies.</entry>
+  <entry key='tech.tradecenter.longname'>Trade center</entry>
+  <entry key='tech.tradecenter.name'>Trade center</entry>
+  <entry key='tech.tradersfreight1.description'>Fairly basic ship capable of transporting 100 metric tons of equipment or material and 50 passengers.</entry>
+  <entry key='tech.tradersfreight1.longname'>Traders Freight v1.0</entry>
+  <entry key='tech.tradersfreight1.name'>Traders Freight v1</entry>
+  <entry key='tech.tradersfreight2.description'>Advanced ship capable of transporting 250 metric tons of equipment or material and 150 passengers.</entry>
+  <entry key='tech.tradersfreight2.longname'>Traders Freight v2.0</entry>
+  <entry key='tech.tradersfreight2.name'>Traders Freight v2</entry>
+  <entry key='tech.virusbomb.description'>The Virus bomb carries a payload of particularly virulent prions which are capable of killing all known lifeforms. After the planet is &#39;cleansed&#39; the virus dies out.</entry>
+  <entry key='tech.virusbomb.longname'>Virus bomb</entry>
+  <entry key='tech.virusbomb.name'>Virus bomb</entry>
+  <entry key='tech.ychombattleship.description'>Mittel starke Flaggschiff</entry>
+  <entry key='tech.ychombattleship.longname'>Ychom Flaggschiff</entry>
+  <entry key='tech.ychombattleship.name'>Ychom Flaggschiff</entry>
+  <entry key='tech.ychomdestroyer.description'>Mittel starke Zerstörer</entry>
+  <entry key='tech.ychomdestroyer.longname'>Ychom Zerstörer</entry>
+  <entry key='tech.ychomdestroyer.name'>Ychom Zerstörer</entry>
+  <entry key='tech.ychomfighter.description'>Mittel starke Jäger</entry>
+  <entry key='tech.ychomfighter.longname'>Ychom Jäger</entry>
+  <entry key='tech.ychomfighter.name'>Ychom Jäger</entry>
+  <entry key='tech.ychomminelayer.description'>The special unit of the Ychom. Unarmed vehicle, but it places high-explosive mines which can destroy most vehicles.</entry>
+  <entry key='tech.ychomminelayer.longname'>Ychom Minelayer</entry>
+  <entry key='tech.ychomminelayer.name'>Minelayer</entry>
+	
+	<entry key='test.done'>Fertig</entry>
+  <entry key='test.q1'>Mir fehlt es an Selbstvertrauen, wenn es um Beziehungen geht! Entspricht diese Aussage Ihren Emotionen?</entry>
+  <entry key='test.q1.a1'>Ja. Mir fehlt es an Selbstvertrauen.</entry>
+  <entry key='test.q1.a2'>Mir fehlt es manchmal an Selbstvertrauen.</entry>
+  <entry key='test.q1.a3'>In Beziehungen bin ich immer selbstsicher.</entry>
+  <entry key='test.q2'>Wenn es darum geht, Ad-hoc-Entscheidungen zu treffen, beruht meine Reaktion häufig auf:</entry>
+  <entry key='test.q2.a1'>klarer Logik.</entry>
+  <entry key='test.q2.a2'>einer schnellen Entscheidung wegen des Drucks.</entry>
+  <entry key='test.q2.a3'>unlogischen Vermutungen.</entry>
+  <entry key='test.q3'>Wenn ich mit einem Problem zu kämpfen habe, bin ich dennoch immer noch optimistisch.</entry>
+  <entry key='test.q3.a1'>Ja.</entry>
+  <entry key='test.q3.a2'>Manchmal.</entry>
+  <entry key='test.q3.a3'>Nie.</entry>
+  <entry key='test.q4'>Ich lasse mich mitunter von meinen Emotionen unterkriegen.</entry>
+  <entry key='test.q4.a1'>Ja.</entry>
+  <entry key='test.q4.a2'>Manchmal.</entry>
+  <entry key='test.q4.a3'>Nie.</entry>
+  <entry key='test.q5'>Ein inspirierendes Gedicht ist mächtiger als die stärkste Waffe.</entry>
+  <entry key='test.q5.a1'>Nichts ist mit guter Poesie vergleichbar.</entry>
+  <entry key='test.q5.a2'>Das hängt ganz von meiner Laune ab.</entry>
+  <entry key='test.q5.a3'>Nichts ist erregender als Massenzerstörung.</entry>
+  <entry key='test.q6'>Ich kann meinen Ängsten ins Auge schauen.</entry>
+  <entry key='test.q6.a1'>Immer.</entry>
+  <entry key='test.q6.a2'>Manchmal.</entry>
+  <entry key='test.q6.a3'>Nie.</entry>
+  <entry key='test.q7'>Wenn man mir die Schuld für etwas gibt, für das ich nicht verantwortlich bin, fühle ich mich:</entry>
+  <entry key='test.q7.a1'>unbeteiligt.</entry>
+  <entry key='test.q7.a2'>betroffen.</entry>
+  <entry key='test.q7.a3'>verantwortlich.</entry>
+  <entry key='test.q8'>Da Vernunft nicht immer die gewünschte Wirkung hat, kann es sein, daß Sie mitunter zu extremen Maßnahmen greifen müssen!</entry>
+  <entry key='test.q8.a1'>Kein Problem</entry>
+  <entry key='test.q8.a2'>Nur im äußersten Notfall.</entry>
+  <entry key='test.q8.a3'>Ein Kompromiß hat immer Erfolg.</entry>
+  <entry key='traders.fleetname'>Händler</entry>
 	
 </labels>

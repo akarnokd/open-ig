@@ -2718,7 +2718,7 @@
   <entry key='spacewar.ship_type'>Type     : %s</entry>
   <entry key='spacewar.ship_weapon_count'>Count : %d</entry>
   <entry key='spacewar.ship_weapon_damage'>Damage: %d%%</entry>
-  <entry key='spacewar.ship_weapon_empty'>Üres</entry>
+  <entry key='spacewar.ship_weapon_empty'>Empty</entry>
   <entry key='spacewar.ship_weapon_type'>Type  : %s</entry>
   <entry key='spacewar.station_information'>Station information</entry>
   <entry key='spacewar.statistics'>Statistics</entry>
@@ -2976,7 +2976,7 @@
   <entry key='tech.inversionshield.description'>The Inversion Shield consists of carefully balanced fields of gravitons with reversed spin, protecting your colony from Destructor fire from orbiting ships.</entry>
   <entry key='tech.inversionshield.longname'>Inversion Shield</entry>
   <entry key='tech.inversionshield.name'>Inversion Shield</entry>
-  <entry key='tech.ioncannon.description'>the Ion Gun fires streams of positive and negatively charged ions. The two streams maintain cohesion until impact where the streams collapse in a huge blast.</entry>
+  <entry key='tech.ioncannon.description'>The Ion Gun fires streams of positive and negatively charged ions. The two streams maintain cohesion until impact where the streams collapse in a huge blast.</entry>
   <entry key='tech.ioncannon.longname'>Ion Gun</entry>
   <entry key='tech.ioncannon.name'>Ion Gun</entry>
   <entry key='tech.laser1.description'>The Laser has been a common weapon since the early 21st century. Accurate and efficient its main drawback is its lack of damage dealing capability.</entry>
