@@ -182,12 +182,9 @@
   <entry key='battlefinish.mission-2.merchant1'>Message from Trader 1: Thank you for your help, Lieutenant. If you&#39;d arrived any later, I&#39;d be dead for sure!</entry>
   <entry key='battlefinish.mission-2.merchant2'>Message from Trader 2: It&#39;s good to see a sheriff back in town! Thank&#39;s for your help.</entry>
   <entry key='battlefinish.mission-2.merchant3'>Message from Trader 3: Don&#39;t let those pirates escape! Thank you for your quick response. I&#39;ll transfer %scr as gratitude.</entry>
-  <entry key='battlefinish.mission-2.merchant3_bonus'>Bonus: 5000 credits.</entry>
   <entry key='battlefinish.mission-2.merchant4'>Message from Trader 4: Excellent! The sight of those pirates running away had made my day! Thanks for the show! Please accept %s credits, as payment for all the fun!</entry>
-  <entry key='battlefinish.mission-2.merchant4_bonus'>BONUS: 1000 credits.</entry>
   <entry key='battlefinish.mission-2.merchant5'>Message from Trader 5: Great shooting, man! Respect due!</entry>
   <entry key='battlefinish.mission-2.merchant6'>Message from Trader 6: Thank you, Commander. I give you %s credits, as payment for your services.</entry>
-  <entry key='battlefinish.mission-2.merchant6_bonus'>BONUS: 1500 credits.</entry>
   <entry key='battlefinish.mission-21.32'>Message from Command HQ: The prototype proved to be successful. It is now ready to be used in full service.</entry>
   <entry key='battlefinish.mission-21.32_bonus'>BONUS: Destroyer v2.0 prototype.</entry>
   <entry key='battlefinish.mission-3.11'>Message from Cargo ship: It warms my heart to see a competent Commander at last! Good work! Please accept this Shield v1.0 as a token of my gratitude.</entry>

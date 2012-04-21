@@ -48,33 +48,33 @@ public final class PackageStuff {
 	 * @param version the version number in the file
 	 */
 	static void buildPatch(String version) {
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
-					new BufferedOutputStream(
-							new FileOutputStream("open-ig-upgrade-" + version + "1.zip"), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory(".\\images\\", ".\\images", zout, null);
-				processDirectory(".\\audio\\", ".\\audio", zout, new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						String d = dir.toString().replace('\\', '/');
-						return d.contains("/ui") 
-								|| d.contains("/groundwar")
-								|| d.contains("/spacewar") || d.contains("generic")
-								;
-					}
-				});
-				addFile("generic/messages/achilles_check.ani.gz", "video/generic/messages/achilles_check.ani.gz", zout);
-				addFile("hu/messages/achilles_check.wav", "audio/hu/messages/achilles_check.wav", zout);
-				addFile("hu/messages/centronom_check.wav", "audio/hu/messages/centronom_check.wav", zout);
-				addFile("en/messages/achilles_check.wav", "audio/en/messages/achilles_check.wav", zout);
-			} finally {
-				zout.close();
-			}
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
+//		try {
+//			ZipOutputStream zout = new ZipOutputStream(
+//					new BufferedOutputStream(
+//							new FileOutputStream("open-ig-upgrade-" + version + "1.zip"), 1024 * 1024));
+//			try {
+//				zout.setLevel(9);
+//				processDirectory(".\\images\\", ".\\images", zout, null);
+//				processDirectory(".\\audio\\", ".\\audio", zout, new FilenameFilter() {
+//					@Override
+//					public boolean accept(File dir, String name) {
+//						String d = dir.toString().replace('\\', '/');
+//						return d.contains("/ui") 
+//								|| d.contains("/groundwar")
+//								|| d.contains("/spacewar") || d.contains("generic")
+//								;
+//					}
+//				});
+//				addFile("generic/messages/achilles_check.ani.gz", "video/generic/messages/achilles_check.ani.gz", zout);
+//				addFile("hu/messages/achilles_check.wav", "audio/hu/messages/achilles_check.wav", zout);
+//				addFile("hu/messages/centronom_check.wav", "audio/hu/messages/centronom_check.wav", zout);
+//				addFile("en/messages/achilles_check.wav", "audio/en/messages/achilles_check.wav", zout);
+//			} finally {
+//				zout.close();
+//			}
+//		} catch (IOException ex) {
+//			ex.printStackTrace();
+//		}
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
@@ -172,6 +172,7 @@ public final class PackageStuff {
 								|| d.contains("hu/openig/gfx/launcher_background.png")
 								|| d.contains("hu/openig/gfx/hungarian.png")
 								|| d.contains("hu/openig/gfx/english.png")
+								|| d.contains("hu/openig/gfx/german.png")
 								|| d.contains("hu/openig/gfx/loading.gif")
 								|| d.contains("hu/openig/ui/IGButton")
 								|| d.contains("hu/openig/render/RenderTools")

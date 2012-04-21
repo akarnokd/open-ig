@@ -138,11 +138,11 @@ public class GalaxyModel {
 		if (config.tileCacheSize > 0 && config.tileCacheBaseLimit != 0) {
 			int limit = Math.abs(config.tileCacheBaseLimit);
 			if (config.tileCacheBaseLimit > 0) {
-				if (width > limit && height > limit) {
+				if (width >= limit && height >= limit) {
 					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
 				}
 			} else {
-				if (width < limit && height < limit) {
+				if (width <= limit && height <= limit) {
 					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
 				}
 			}

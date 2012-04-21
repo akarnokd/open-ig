@@ -329,11 +329,11 @@ public class BuildingModel {
 		if (config.tileCacheSize > 0 && config.tileCacheBuildingLimit != 0) {
 			int limit = Math.abs(config.tileCacheBuildingLimit);
 			if (config.tileCacheBuildingLimit > 0) {
-				if (width > limit && height > limit) {
+				if (width >= limit && height >= limit) {
 					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
 				}
 			} else {
-				if (width < limit && height < limit) {
+				if (width <= limit && height <= limit) {
 					return new TileCached(width, height, image, lightMap, config.tileCacheSize);
 				}
 			}
