@@ -8,6 +8,7 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
@@ -40,9 +41,17 @@ public class Mission2 extends Mission {
 	 */
 	void checkMission2Start() {
 		if (helper.canStart("Mission-2")) {
-			helper.showObjective("Mission-2");
 			helper.clearMissionTime("Mission-2");
-			helper.setMissionTime("Mission-2-Task-1", helper.now() + 24);
+			world.env.stopMusic();
+			world.env.playVideo("interlude/merchant_in", new Action0() {
+				@Override
+				public void invoke() {
+					world.env.playMusic();
+					helper.showObjective("Mission-2");
+					helper.setMissionTime("Mission-2-Task-1", helper.now() + 24);
+				}
+			});
+
 		}
 	}
 	/**

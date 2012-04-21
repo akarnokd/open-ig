@@ -418,6 +418,15 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** The completion. */
 	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage productComplete;
+	/** Priority. */
+	@ModeUI(mode = Screens.PRODUCTION)
+	UIImage productPriority;
+	/** Pieces. */
+	@ModeUI(mode = Screens.PRODUCTION)
+	UIImage productPieces;
+	/** Price. */
+	@ModeUI(mode = Screens.PRODUCTION)
+	UIImage productPrice;
 	/** Remove ten units. */
 	@ModeUI(mode = Screens.PRODUCTION)
 	UIImageButton removeTen;
@@ -751,7 +760,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		});
 		statistics = null;
 		
-		researchButton.visible(world().level >= 3);
+		researchButton.visible(world().level >= 3 && mode == Screens.PRODUCTION);
 		noResearch.visible(world().level < 3);
 	}
 	@Override
@@ -1022,6 +1031,9 @@ public class ResearchProductionScreen extends ScreenBase {
 		capacity = new UIImage(commons.research().cap);
 		capacityPercent = new UIImage(commons.research().capPercent);
 		productComplete = new UIImage(commons.research().completed);
+		productPriority = new UIImage(commons.research().importance);
+		productPieces = new UIImage(commons.research().pieces);
+		productPrice = new UIImage(commons.research().price);
 		
 		removeTen = new UIImageButton(commons.research().minusTen);
 		removeTen.setDisabledPattern(commons.common().disabledPattern);
@@ -1266,10 +1278,16 @@ public class ResearchProductionScreen extends ScreenBase {
 		activeMilLabValue.location(activeAILabValue.x + 41, activeAILabValue.y);
 		activeMilLabValue.size(11, 14);
 		
-		productName.location(productionBase.x + 5 + (168 - productName.width) / 2, productionBase.y + 3);
-		capacity.location(productionBase.x + 236 + (56 - capacity.width) / 2, productionBase.y + 4);
-		capacityPercent.location(productionBase.x + 236 + 57 + (56 - capacityPercent.width) / 2, productionBase.y + 4);
-		productComplete.location(productionBase.x + 404, productionBase.y + 4);
+		int th = 18;
+		productName.location(productionBase.x + 5 + (168 - productName.width) / 2, productionBase.y + th - productName.height);
+		capacity.location(productionBase.x + 236 + (56 - capacity.width) / 2, productionBase.y + th - capacity.height);
+		capacityPercent.location(productionBase.x + 236 + 57 + (56 - capacityPercent.width) / 2, productionBase.y + th - capacityPercent.height);
+		productComplete.location(productionBase.x + 404, productionBase.y + th - productComplete.height);
+
+		productPriority.location(productionBase.x + 212 - productPriority.width / 2, productionBase.y + th - productPriority.height);
+		productPieces.location(productionBase.x + 372 - productPieces.width / 2, productionBase.y + th - productPieces.height);
+		productPrice.location(productionBase.x + 515 - productPrice.width, productionBase.y + th - productPrice.height);
+
 		
 		int py = productionBase.y + 19;
 		for (ProductionLine pl : productionLines) {
@@ -1416,6 +1434,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			slot.displayResearchCost = mode == Screens.RESEARCH;
 			slot.displayProductionCost = mode == Screens.PRODUCTION;
 		}
+		noResearch.visible(world().level < 3);
 	}
 	/**
 	 * Set the visibility of UI components based on their annotation.
