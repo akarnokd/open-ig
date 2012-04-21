@@ -35,7 +35,7 @@
 			<transition media='flagship/corridor_to_cabin_3_level_2' label='flagship.moveto.cabin' area='159,393 639,393 639,441 159,441' to='cabin'/>
 		</position>
 		<position id='corridor_bar' picture='flagship/corridor_from_bar_level_2'>
-			<transition media='flagship/corridor_to_bridge_3_level_2' label='flagship.moveto.bridge' area='0,0 72,0 72,398 0,398' to='*bridge'/>
+			<transition media='flagship/corridor_to_bridge_2_level_2' label='flagship.moveto.bridge' area='0,0 72,0 72,398 0,398' to='*bridge'/>
 			<transition media='flagship/corridor_to_cabin_2_level_2' label='flagship.moveto.cabin' area='526,0 639,0 639,408 526,408' to='cabin'/>
 			<transition media='flagship/corridor_to_bar_3_level_2' label='flagship.moveto.bar' area='60,400 551,400 551,441 60,441' to='*bar'/>
 		</position>
