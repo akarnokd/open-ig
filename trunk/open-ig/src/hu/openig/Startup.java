@@ -59,6 +59,9 @@ public final class Startup {
 		if (argset.contains("-en")) {
 			config.language = "en";
 		}
+		if (argset.contains("-de")) {
+			config.language = "de";
+		}
 		
 //		if (!config.load() || argset.contains("-config")) {
 //			doStartConfiguration(config);
