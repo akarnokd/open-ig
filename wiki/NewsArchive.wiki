@@ -6,6 +6,12 @@
 
 == April, 2012 ==
 
+*April 21, 2012*
+
+I've tried my best to translate Open-IG into German. Still, I'm sure many grammar errors remained in the text. Please, do not flood the issue list with individual error reporting, instead, use [http://code.google.com/p/open-ig/issues/detail?id=356 this issue] as gathering place. And yes, the subtitles aren't translated.
+
+I can't say much about the French translation yet. I don't speak french at all, therefore, only things based on position (i.e. image coordinates, file name) can I successufully integrate.
+
 *April 20, 2012*
 
 German translation will take some time. I've already extracted voice and image data, but the labels with about 3000 entries is extremely tedious.
