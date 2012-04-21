@@ -11,7 +11,6 @@ package hu.openig.core;
 import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
-import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ import java.util.Map;
  */
 public class TileCached extends Tile {
 	/** The cached image strips. The key is maxCount times the alpha value. */
-	protected final Map<Integer, Reference<BufferedImage[]>> cache = U.newHashMap();
+	protected final Map<Integer, Ref<BufferedImage[]>> cache = U.newHashMap();
 	/** The maximum alpha cache count. */
 	protected final int maxCount;
 	/**
@@ -54,7 +53,7 @@ public class TileCached extends Tile {
 		if (hasAlphaChanged()) {
 			float a = (Math.min(Math.max(MIN_ALPHA, alpha), 1f) - MIN_ALPHA) / (1f - MIN_ALPHA);
 			int key = (int)(a * maxCount + 0.5);
-			Reference<BufferedImage[]> r = cache.get(key);
+			Ref<BufferedImage[]> r = cache.get(key);
 			BufferedImage[] strips = r != null ? r.get() : null;
 			if (r == null || strips == null) {
 				renew();
@@ -88,7 +87,58 @@ public class TileCached extends Tile {
 	 * @param value the value
 	 * @return the reference
 	 */
-	protected <T> Reference<T> createReference(T value) {
-		return new SoftReference<T>(value);
+	protected <T> Ref<T> createReference(T value) {
+		//return new SoftReference<T>(value);
+		return new StrongRef<T>(value);
+	}
+	/** 
+	 * Reference class to store soft, weak or strong references.
+	 * @param <T> the element type 
+	 */
+	protected abstract static class Ref<T> {
+		/**
+		 * @return the referred value or null if it has been garbage collected
+		 */
+		public abstract T get();
+	}
+	/**
+	 * A soft reference container.
+	 * @author akarnokd, 2012.04.21.
+	 * @param <T> the value type
+	 */
+	protected static class SoftRef<T> extends Ref<T> {
+		/** The internal store. */
+		protected final SoftReference<T> value;
+		/**
+		 * Constructor to initialize the value.
+		 * @param value the value
+		 */
+		public SoftRef(T value) {
+			this.value = new SoftReference<T>(value);
+		}
+		@Override
+		public T get() {
+			return value.get();
+		}
+	}
+	/**
+	 * A strong reference container.
+	 * @author akarnokd, 2012.04.21.
+	 * @param <T> the value type
+	 */
+	protected static class StrongRef<T> extends Ref<T> {
+		/** The internal store. */
+		protected final T value;
+		/**
+		 * Constructor to initialize the value.
+		 * @param value the value
+		 */
+		public StrongRef(T value) {
+			this.value = value;
+		}
+		@Override
+		public T get() {
+			return value;
+		}
 	}
 }
