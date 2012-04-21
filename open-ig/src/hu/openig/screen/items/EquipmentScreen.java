@@ -278,7 +278,14 @@ public class EquipmentScreen extends ScreenBase {
 		infoButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				displaySecondary(Screens.INFORMATION_INVENTIONS);
+				ResearchType rt = research();
+				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+						|| rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+						|| rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					displaySecondary(Screens.INFORMATION_FLEETS);
+				} else {
+					displaySecondary(Screens.INFORMATION_INVENTIONS);
+				}
 			}
 		};
 		
