@@ -379,4 +379,11 @@ public class Mission2 extends Mission {
 	public boolean applicable() {
 		return world.level == 1;
 	}
+	@Override
+	public boolean fleetBlink(Fleet f) {
+		if (f.task == FleetTask.SCRIPT && f.owner == player("Traders")) {
+			return true;
+		}
+		return false;
+	}
 }
