@@ -147,13 +147,9 @@ public class AITrader implements AIManager {
 		}
 		for (Planet pl : world.planets.values()) {
 			if (pl.owner != null) {
-				planets.add(pl);
-//				for (Building b : pl.surface.buildings) {
-//					if ("TradersSpaceport".equals(b.type.id) && b.isOperational()) {
-//						planets.add(pl);
-//						break;
-//					}
-//				}
+				if (pl.owner == world.player || (pl.owner != null && pl.owner == player) /* || world.random().nextDouble() < 0.4 */) {
+					planets.add(pl);
+				}
 			}
 		}
 	}
@@ -163,7 +159,7 @@ public class AITrader implements AIManager {
 	}
 	/** @return the maximum number of active fleets. */
 	public int maxFleets() {
-		return planets.size() / 2;
+		return Math.max(8, planets.size() / 2);
 	}
 	@Override
 	public void apply() {
@@ -207,7 +203,10 @@ public class AITrader implements AIManager {
 			
 			LandedFleet lf = new LandedFleet();
 			lf.fleet = nf;
+			
 			lf.target = world.random(planets);
+			lf.ttl = LANDING_TTL;
+			
 			nf.x = lf.target.x;
 			nf.y = lf.target.y;
 			
@@ -234,7 +233,10 @@ public class AITrader implements AIManager {
 		while (it.hasNext()) {
 			LandedFleet lf = it.next();
 			// if time out, put back the fleet
-			if (--lf.ttl <= 0 && lf.target != null) {
+			if (--lf.ttl <= 0) {
+				if (lf.target == null) {
+					lf.target = world.random(planets);
+				}
 				boolean infected = lf.target.quarantineTTL > 0;
 
 				List<Planet> candidates = U.newArrayList();
@@ -254,8 +256,8 @@ public class AITrader implements AIManager {
 					}
 				}
 
-				if (!candidates.isEmpty()) {
-					Planet nt = world.random(candidates);
+				if (!planets.isEmpty()) {
+					Planet nt = world.random(planets);
 					lf.fleet.moveTo(nt);
 
 					for (InventoryItem ii : lf.fleet.inventory) {

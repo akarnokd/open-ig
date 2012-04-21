@@ -377,4 +377,11 @@ public class Mission7 extends Mission {
 			}
 		}
 	}
+	@Override
+	public boolean fleetBlink(Fleet f) {
+		if (f.task == FleetTask.SCRIPT && f.owner == player("Traders")) {
+			return true;
+		}
+		return false;
+	}
 }

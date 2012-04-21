@@ -1408,6 +1408,13 @@ public class StarmapScreen extends ScreenBase {
 					g2.setColor(Color.RED);
 					g2.drawRect(x0 - 2, y0 - 2, f.owner.fleetIcon.getWidth() + 4, f.owner.fleetIcon.getHeight() + 4);
 				}
+				if (minimapPlanetBlink) {
+					Boolean frame = world().scripting.fleetBlink(f);
+					if (frame == Boolean.TRUE) {
+						g2.setColor(Color.RED);
+						g2.drawRect(x0 - 3, y0 - 3, f.owner.fleetIcon.getWidth() + 6, f.owner.fleetIcon.getHeight() + 6);
+					}
+				}
 			}
 		}
 		

@@ -327,4 +327,8 @@ public class EmptyScripting implements GameScripting {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean fleetBlink(Fleet f) {
+		return false;
+	}
 }

@@ -1268,4 +1268,17 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			m.onDeploySatellite(target, player, satellite);
 		}
 	}
+	@Override
+	public boolean fleetBlink(Fleet f) {
+		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+			}
+			Boolean b = m.fleetBlink(f);
+			if (b) {
+				return b;
+			}
+		}
+		return false;
+	}
 }

@@ -241,4 +241,10 @@ public interface GameScriptingEvents {
 	 * @param satellite the satellite type
 	 */
 	void onDeploySatellite(Planet target, Player player, ResearchType satellite);
+	/**
+	 * Returns true if the given fleet should be drawn as blinking on the starmap screen.
+	 * @param f the fleet
+	 * @return true if blinking required
+	 */
+	boolean fleetBlink(Fleet f);
 }

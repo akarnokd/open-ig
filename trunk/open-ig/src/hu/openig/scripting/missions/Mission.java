@@ -831,4 +831,8 @@ public abstract class Mission implements GameScriptingEvents {
 			ResearchType satellite) {
 		// default implementation does not react to this event
 	}
+	@Override
+	public boolean fleetBlink(Fleet f) {
+		return false;
+	}
 }

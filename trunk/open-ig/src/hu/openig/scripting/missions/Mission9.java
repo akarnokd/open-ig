@@ -86,6 +86,11 @@ public class Mission9 extends Mission {
 			helper.setObjectiveState("Mission-9", ObjectiveState.SUCCESS);
 			helper.setTimeout("Mission-9-Hide", 13000);
 			helper.setMissionTime("Mission-9-Hide-Fleet", helper.now() + 12);
+			incomingMessage("Douglas-Success");
+			addMission("Mission-9-Success-Message", 24);
+		}
+		if (checkMission("Mission-9-Success-Message")) {
+			helper.receive("Douglas-Success").visible = false;
 		}
 		if (checkTimeout("Mission-9-Hide")) {
 			helper.objective("Mission-9").visible = false;
@@ -215,5 +220,13 @@ public class Mission9 extends Mission {
 				}
 			}
 		}
+	}
+	@Override
+	public boolean fleetBlink(Fleet f) {
+		if (f.owner == player("Traders") 
+				&& (hasTag(f, "Mission-9-Smuggler") || f.targetPlanet() == planet("San Sterling"))) {
+			return true;
+		}
+		return false;
 	}
 }
