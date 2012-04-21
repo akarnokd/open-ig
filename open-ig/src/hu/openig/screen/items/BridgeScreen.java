@@ -568,10 +568,10 @@ public class BridgeScreen extends ScreenBase {
 		messageOpen = false;
 		messageClosing = false;
 		projectorClosing = false;
-		messageFront = null;
-		messageBack = null;
-		projectorFront = null;
-		projectorBack = null;
+
+		clearMessageSurface();
+		clearVideoSurface();
+		clearProjectorSurface();
 		
 		send.selected = true;
 		receive.selected = false;
@@ -607,22 +607,19 @@ public class BridgeScreen extends ScreenBase {
 			onMessageComplete = null;
 			messageAnim.stop();
 			messageAnim = null;
-			messageFront = null;
-			messageBack = null;
+			clearMessageSurface();
 		}
 		if (projectorAnim != null) {
 			onProjectorComplete = null;
 			projectorAnim.stop();
 			projectorAnim = null;
-			projectorFront = null;
-			projectorBack = null;
+			clearProjectorSurface();
 		}
 		if (videoAnim != null) {
 //			onVideoComplete = null;
 			videoAnim.stop();
 			videoAnim = null;
-			videoFront = null;
-			videoBack = null;
+			clearVideoSurface();
 		}
 		
 		commons.force = false;
@@ -630,6 +627,42 @@ public class BridgeScreen extends ScreenBase {
 		
 		videoAppearAnim.stop();
 		videos.clear();
+	}
+	/**
+	 * Clear the video surface.
+	 */
+	protected void clearVideoSurface() {
+		videoLock.lock();
+		try {
+			videoFront = null;
+			videoBack = null;
+		} finally {
+			videoLock.unlock();
+		}
+	}
+	/**
+	 * Clear the projector surface.
+	 */
+	protected void clearProjectorSurface() {
+		projectorLock.lock();
+		try {
+			projectorFront = null;
+			projectorBack = null;
+		} finally {
+			projectorLock.unlock();
+		}
+	}
+	/**
+	 * Clear the message surface.
+	 */
+	protected void clearMessageSurface() {
+		messageLock.lock();
+		try {
+			messageFront = null;
+			messageBack = null;
+		} finally {
+			messageLock.unlock();
+		}
 	}
 	
 	@Override

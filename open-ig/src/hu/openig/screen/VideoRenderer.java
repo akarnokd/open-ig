@@ -176,7 +176,10 @@ public class VideoRenderer extends Thread {
 								frames2 = (int)Math.ceil(audioLength * fps / 22050.0);
 								starttime = System.nanoTime();
 							}
-							surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
+							BufferedImage bb = surface.getBackbuffer();
+							if (bb != null) {
+								bb.setRGB(0, 0, w, h, currentImage, 0, w);
+							}
 							surface.swap();
 							onFrame(fps, frameCount);
 							// wait the frame/sec

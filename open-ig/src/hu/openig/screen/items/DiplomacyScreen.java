@@ -264,8 +264,7 @@ public class DiplomacyScreen extends ScreenBase {
 		if (projectorAnim != null) {
 			projectorAnim.stop();
 			projectorAnim = null;
-			projectorFront = null;
-			projectorBack = null;
+			clearProjectorSurface();
 			onProjectorComplete = null;
 		}
 		if (raceUpdater != null) {
@@ -284,7 +283,16 @@ public class DiplomacyScreen extends ScreenBase {
 		races.items.clear();
 		stances.items.clear();
 	}
-
+	/** Clear the projector surface. */
+	void clearProjectorSurface() {
+		projectorLock.lock();
+		try {
+			projectorFront = null;
+			projectorBack = null;
+		} finally {
+			projectorLock.lock();
+		}
+	}
 	@Override
 	public void onFinish() {
 		if (projectorAnim != null) {

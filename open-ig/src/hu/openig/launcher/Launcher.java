@@ -842,9 +842,9 @@ public class Launcher extends JFrame {
 			update.setText("Aktualisieren");
 			cancel.setText("Lieber nicht");
 			run.setText("Spiel starten");
-			mapEditor.setText("Karte Editor");
+			mapEditor.setText("Karteneditor");
 			videoPlayer.setText("Videospieler");
-			other.setText("Andere möglichkeiten");
+			other.setText("Weitere Optionen");
 			launcher.setText("Launcher aktualisieren");
 			
 			projectPage.setText("Projekt webseite...");
