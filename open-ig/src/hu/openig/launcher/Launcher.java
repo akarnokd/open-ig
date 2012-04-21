@@ -847,10 +847,10 @@ public class Launcher extends JFrame {
 			other.setText("Weitere Optionen");
 			launcher.setText("Launcher aktualisieren");
 			
-			projectPage.setText("Projekt webseite...");
-			releaseNotes.setText("Version Noten...");
+			projectPage.setText("Projekt Webseite...");
+			releaseNotes.setText("Versionshinweise...");
 			runSettings.setText("Lauf Einstellungen...");
-			verify.setText("Istallation überprüfen");
+			verify.setText("Installation überprüfen");
 			uninstall.setText("Deinstallieren");
 			recheck.setText("Neue Version suchen");
 	
