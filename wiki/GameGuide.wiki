@@ -29,6 +29,7 @@
 === Mission 3: Escort cargo ===
 
   * Easy.
+  * Don't forget to equip the bonus shield.
 
 === Mission 4: Pirate battle ===
 
