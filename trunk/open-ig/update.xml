@@ -27,7 +27,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.361'>
+	<module id='Game' version='0.94.362'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -41,15 +41,15 @@
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
 			<desc lang='hu'>Német nyelv támogatása, kisebb javítások.</desc>
 			<desc lang='en'>German language support, smaller bugfixes.</desc>
-			<desc lang='de'>Deutsche sprache Unterstützung, kleine Fehlerbehebungen</desc>
+			<desc lang='de'>Deutsche sprache Unterstützung, Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.361.jar' sha1='79dd1792ddac5ccb3a2c56811a7a401b26d95f2e'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.362.jar' sha1='f6925ae5ce9e89f3fdacebda0d85aa2d1936039d'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120421a2.zip' sha1='d22a233f5dc74df21fab682a067609f3582a4071'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Április 21 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 21th April, 2012 / A</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120421b2.zip' sha1='ea23bb5c1a605a587b1a224161bd5ae216aedcb9'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Április 21 / B</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 21th April, 2012 / B</desc>
 		</file>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' sha1='7368ca1890ae9ee3a0609a83b03654afa09492eb'/>
@@ -68,12 +68,13 @@
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-20120420A.zip' sha1='b8dcfbaf3f697da068544c1ab4d678369b93f32d'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120420A.zip' sha1='0f6cc1119368f911c56e941417d7d589dbfdaca0'/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120421A.zip' sha1='bb7525b4744111e31bb5f62de02d0a720068611c'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-generic-20120420A.zip' sha1='64b8cae53a4ca475a0ba99e16927a7481fae49df'/>
 		
 		<remove file='open-ig-video-en-0.8.zip'/>
 		<remove file='open-ig-audio-en-0.8.zip'/>
 		<remove file='open-ig-audio-hu-0.8.zip'/>
+		<remove file='open-ig-images-20120420A.zip'/>
 	</module>
 	<module id='MapEditor' version='0.60'>
 		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
