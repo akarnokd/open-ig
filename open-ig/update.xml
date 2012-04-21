@@ -47,9 +47,9 @@
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120414a2.zip' sha1='d22a233f5dc74df21fab682a067609f3582a4071'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Április 14 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 14th April, 2012 / A</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120421a2.zip' sha1='d22a233f5dc74df21fab682a067609f3582a4071'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Április 21 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 21th April, 2012 / A</desc>
 		</file>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' sha1='7368ca1890ae9ee3a0609a83b03654afa09492eb'/>
