@@ -32,6 +32,9 @@ Note that the *essential* upgrade pack contains the ever changing game model and
 [http://open-ig.googlecode.com/files/open-ig-video-08-0.8.zip Video 8], 
 [http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip Video 9], <br>
 [http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip Video 10],[http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip Video 11],  [http://open-ig.googlecode.com/files/open-ig-video-en-20120420A.zip Video 12]
+<br>
+[http://open-ig.googlecode.com/files/open-ig-video-de-20120420A.zip Video 13]
+
 
 3) Place all these files into the same directory
 
