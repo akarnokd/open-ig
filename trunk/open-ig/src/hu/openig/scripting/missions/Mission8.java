@@ -99,9 +99,10 @@ public class Mission8 extends Mission {
 	@Override
 	public void onTalkCompleted() {
 		if ("phsychologist".equals(world.currentTalk)) {
-			helper.clearMissionTime("Mission-8-Task-1-Timeout");
-			helper.setObjectiveState("Mission-8-Task-1", ObjectiveState.SUCCESS);
-			helper.setTimeout("Mission-8-Task-1-Hide", 13000);
+			if (helper.setObjectiveState("Mission-8-Task-1", ObjectiveState.SUCCESS)) {
+				helper.clearMissionTime("Mission-8-Task-1-Timeout");
+				helper.setTimeout("Mission-8-Task-1-Hide", 13000);
+			}
 		}
 	}
 }
