@@ -68,7 +68,7 @@
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-20120420A.zip' sha1='b8dcfbaf3f697da068544c1ab4d678369b93f32d'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120421A.zip' sha1='bb7525b4744111e31bb5f62de02d0a720068611c'/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120421a.zip' sha1='bb7525b4744111e31bb5f62de02d0a720068611c'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-generic-20120420A.zip' sha1='64b8cae53a4ca475a0ba99e16927a7481fae49df'/>
 		
 		<remove file='open-ig-video-en-0.8.zip'/>
