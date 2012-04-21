@@ -30,7 +30,6 @@ import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
-import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
@@ -709,11 +708,11 @@ public class AI implements AIManager {
 			return ResponseMode.NO;
 		}
 		
-		PlayerStrength senderStrength = getStrength(other);
+//		PlayerStrength senderStrength = getStrength(other);
 		
 		PlanetStatistics ownStats = p.getPlanetStatistics(null);
 
-		PlanetStatistics senderStas = computeVisibleStats(other);
+//		PlanetStatistics senderStas = computeVisibleStats(other);
 		
 		double rnd = p.world.random().nextDouble();
 		
@@ -755,29 +754,29 @@ public class AI implements AIManager {
 		}
 		return ResponseMode.NO;
 	}
-	/**
-	 * Compute the statistics of the given player based
-	 * on the current visibility settings.
-	 * @param other the other player
-	 * @return the statistics
-	 */
-	PlanetStatistics computeVisibleStats(Player other) {
-		PlanetStatistics ps = new PlanetStatistics();
-		
-		for (Map.Entry<Planet, PlanetKnowledge> pl : p.planets.entrySet()) {
-			int k = pl.getValue().ordinal();
-			if (pl.getKey().owner == other && k >= PlanetKnowledge.OWNER.ordinal()) {
-				ps.planetCount++;
-				
-				if (k >= PlanetKnowledge.STATIONS.ordinal()) {
-					
-				}
-				if (k >= PlanetKnowledge.BUILDING.ordinal()) {
-					
-				}
-			}
-		}
-		
-		return ps;
-	}
+//	/**
+//	 * Compute the statistics of the given player based
+//	 * on the current visibility settings.
+//	 * @param other the other player
+//	 * @return the statistics
+//	 */
+//	PlanetStatistics computeVisibleStats(Player other) {
+//		PlanetStatistics ps = new PlanetStatistics();
+//		
+//		for (Map.Entry<Planet, PlanetKnowledge> pl : p.planets.entrySet()) {
+//			int k = pl.getValue().ordinal();
+//			if (pl.getKey().owner == other && k >= PlanetKnowledge.OWNER.ordinal()) {
+//				ps.planetCount++;
+//				
+//				if (k >= PlanetKnowledge.STATIONS.ordinal()) {
+//					
+//				}
+//				if (k >= PlanetKnowledge.BUILDING.ordinal()) {
+//					
+//				}
+//			}
+//		}
+//		
+//		return ps;
+//	}
 }

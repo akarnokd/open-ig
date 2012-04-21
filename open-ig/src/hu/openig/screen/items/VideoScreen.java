@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The video listing screen.
@@ -227,7 +228,15 @@ public class VideoScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		videos.clear();
 		for (String lang : Arrays.asList("generic", commons.config.language)) {
-			for (ResourcePlace rp : rl.resourceMap.get(ResourceType.VIDEO).get(lang).values()) {
+			Map<String, Map<String, ResourcePlace>> map1 = rl.resourceMap.get(ResourceType.VIDEO);
+			if (map1 == null) {
+				continue;
+			}
+			Map<String, ResourcePlace> map2 = map1.get(lang);
+			if (map2 == null) {
+				continue;
+			}
+			for (ResourcePlace rp : map2.values()) {
 				VideoEntry ve = new VideoEntry();
 				ve.fullName = rp.getName();
 				int idx = rp.getName().lastIndexOf('/');

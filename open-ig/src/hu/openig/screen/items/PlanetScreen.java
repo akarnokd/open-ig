@@ -970,21 +970,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			buildingInfoPanel.update();
 			PlanetStatistics ps = infoPanel.update();
 			
-			int time = world().time.get(GregorianCalendar.HOUR_OF_DAY) * 6
-			+ world().time.get(GregorianCalendar.MINUTE) / 10;
-			
-			if (time < 6 * 4 || time >= 6 * 22) {
-				alpha = Tile.MIN_ALPHA;
-			} else
-			if (time >= 6 * 4 && time < 6 * 10) {
-				alpha = (Tile.MIN_ALPHA + 0.65f * (time - 6 * 4) / 36);
-			} else
-			if (time >= 6 * 10 && time < 6 * 16) {
-				alpha = (1.0f);
-			} else 
-			if (time >= 6 * 16 && time < 6 * 22) {
-				alpha = (1f - 0.65f * (time - 6 * 16) / 36);
-			}
+			computeAlpha();
 			
 			RenderTools.setInterpolation(g2, true);
 			
@@ -5567,6 +5553,32 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * Compute the alpha level for the current time of day.
+	 */
+	protected void computeAlpha() {
+		int time = world().time.get(GregorianCalendar.HOUR_OF_DAY) * 6
+		+ world().time.get(GregorianCalendar.MINUTE) / 10;
+		
+		if (time < 6 * 4 || time >= 6 * 22) {
+			alpha = Tile.MIN_ALPHA;
+		} else
+		if (time >= 6 * 4 && time < 6 * 10) {
+			alpha = (Tile.MIN_ALPHA + (1f - Tile.MIN_ALPHA) * (time - 6 * 4) / 36);
+		} else
+		if (time >= 6 * 10 && time < 6 * 16) {
+			alpha = (1.0f);
+		} else 
+		if (time >= 6 * 16 && time < 6 * 22) {
+			alpha = (1f - (1f - Tile.MIN_ALPHA) * (time - 6 * 16) / 36);
+		}
+		if (config.tileCacheSize > 0 && (alpha > Tile.MIN_ALPHA && alpha < 1f)) {
+			float step = (1f - Tile.MIN_ALPHA) / config.tileCacheSize;
+			float a2 = (alpha - Tile.MIN_ALPHA);
+			int n = (int)(a2 / step);
+			alpha = step * n + Tile.MIN_ALPHA;
+		}
 	}
 }
 
