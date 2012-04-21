@@ -137,62 +137,6 @@
   * Added: Use TAB key to display objectives (Issues [http://code.google.com/p/open-ig/issues/detail?id=110 #110], [http://code.google.com/p/open-ig/issues/detail?id=198 #198], [http://code.google.com/p/open-ig/issues/detail?id=206 #206]) 
   * Balance updates (Issue [http://code.google.com/p/open-ig/issues/detail?id=204 #204])
 
-= Version 0.93.540 - Improvements =
-  * Released: 2012-01-11 21:10 CET
-  * Several AI improvements and fixes
-  * Ability to switch to right-click-action controls (starmap, spacewar, groundwar). If enabled, simple right click moves or attacks. Panning is done with the middle mouse button. Zoom to fit is CTRL+Middle button in this mode.
-  * Grouping units in space and ground battles. Use CTRL+0 .. CTRL+9 to assign, SHIFT+0 .. SHIFT+9 to recall a group. (Issues [http://code.google.com/p/open-ig/issues/detail?id=105 #105], [http://code.google.com/p/open-ig/issues/detail?id=106 #106])
-  * Display selected unit information in the bottom-middle section of the spacewar screen. ([http://code.google.com/p/open-ig/issues/detail?id=107 Issue #107])
-  * Balance related code and model improvements (Issues [http://code.google.com/p/open-ig/issues/detail?id=155 #155], [http://code.google.com/p/open-ig/issues/detail?id=170 #170])
-  * General bug fixes (Issues [http://code.google.com/p/open-ig/issues/detail?id=156 #156], [http://code.google.com/p/open-ig/issues/detail?id=161 #161], [http://code.google.com/p/open-ig/issues/detail?id=163 #163], [http://code.google.com/p/open-ig/issues/detail?id=165 #165], [http://code.google.com/p/open-ig/issues/detail?id=166 #166], [http://code.google.com/p/open-ig/issues/detail?id=167 #167], [http://code.google.com/p/open-ig/issues/detail?id=168 #168], [http://code.google.com/p/open-ig/issues/detail?id=169 #169], [http://code.google.com/p/open-ig/issues/detail?id=172 #172], [http://code.google.com/p/open-ig/issues/detail?id=174 #174], [http://code.google.com/p/open-ig/issues/detail?id=175 #175])
-  * Improved rocket and bomb behavior. (Issues [http://code.google.com/p/open-ig/issues/detail?id=176 #176], [http://code.google.com/p/open-ig/issues/detail?id=178 #178], [http://code.google.com/p/open-ig/issues/detail?id=179 #179])
-  * Rockets and bombs can be targeted. (Issues [http://code.google.com/p/open-ig/issues/detail?id=177 #177], [http://code.google.com/p/open-ig/issues/detail?id=182 #182])
-  * Bombs fired at ground structures damages other nearby structures. ([http://code.google.com/p/open-ig/issues/detail?id=183 Issue #183])
-  * Fixed issues [http://code.google.com/p/open-ig/issues/detail?id=171 #171] and [http://code.google.com/p/open-ig/issues/detail?id=173 #173]: adding production to wrong category.
-  * Changed disable order for buildings in case of worker shortage ([http://code.google.com/p/open-ig/issues/detail?id=164 Issue #164])
-  * Water vaporator now boosts the growth instead of providing housing. ([http://code.google.com/p/open-ig/issues/detail?id=148 Issue #148])
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=181 issue #181]:  add more vehicles to fleets/planets than the max allowed.
-
-= Version 0.93.530 - More AI =
-  * Released: 2012-01-06 19:20 CET
-  * Spacewar rockets implemented ([http://code.google.com/p/open-ig/issues/detail?id=131 Issue #131])
-  * Groundwar minelayer controllable. Press D to deploy a mine. ([http://code.google.com/p/open-ig/issues/detail?id=132 Issue #132])
-  * Several AI fixes
-  * AI now builds defensive structures, guns, shields and stations
-  * AI now constructs fleets based on best available technology
-  * Autobattle now working (Issues: [http://code.google.com/p/open-ig/issues/detail?id=113 #113], [http://code.google.com/p/open-ig/issues/detail?id=154 #154])
-  * Added new skirmish map: Human vs. AI. Two players, both with human technology.
-  * Label fixes (Issues [http://code.google.com/p/open-ig/issues/detail?id=157 #157], [http://code.google.com/p/open-ig/issues/detail?id=158 #158], [http://code.google.com/p/open-ig/issues/detail?id=159 #159])
-
-= Version 0.93.510 - Fixes =
-  * Released: 2012-01-01 01:40 CET
-  * Improved AI
-  * Enabled AI for all races
-  * Technology fixes
-  * Ability to switch players. CTRL+V shows all planets and fleets. Select an alien planet, then press CTRL+P. You can issue orders, build, research, etc.
-  * Added achievements: checking, display, save into profile
-  * Fixed several bugs
-
-= Version 0.93.500 - Fixes =
-  * Released: 2011-12-30 18:30 CET
-  * Added peaceful AI. Use CTRL+J to toggle it on the current user
-  * Added some performance and trouble shooting settings UI.
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=18 Issue #18], Autosave and Quicksave slots are limited to 5 each
-  * Ability to save via custom name (unlimited)
-  * Officially fixed [http://code.google.com/p/open-ig/issues/detail?id=111 Issue #111]
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=129 Issue #129]
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=130 Issue #130]
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=143 Issue #143]: Roads after ground war
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=144 Issue #144]: AI retry blocked research
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=145 Issue #145]
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=146 Issue #146]: Save exploration map
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=150 Issue #150]: Wrong battle conclusions
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=151 Issue #151]: AI autobuild to many buildings
-  * Fixed [http://code.google.com/p/open-ig/issues/detail?id=152 Issue 152]: Assertion error when concluding battle
-  * Fixed various other bugs
-  * Fixed information screen to display "Colonizable" in the right subpanels.
-  * Reduced upgrade level to 2 for Bank, Traders Spaceport, Trade Center
-
 = Earlier =
 
 See ReleaseNotesPre093.
