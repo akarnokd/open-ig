@@ -2,6 +2,24 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.360 - Basic diplomacy =
+  * Released: 2012-04-21 11:00 CET
+  * German language support
+  * Promotion to Commander message and videos now always play ([http://code.google.com/p/open-ig/issues/detail?id=331 Issue #331])
+  * Phsychologist name fix ([http://code.google.com/p/open-ig/issues/detail?id=313 Issue #313])
+  * Options screen is restructured ([http://code.google.com/p/open-ig/issues/detail?id=303 Issue #303])
+  * Crash when switching to fullscreen or back ([http://code.google.com/p/open-ig/issues/detail?id=330 Issue #330])
+  * Missing Achilles video added ([http://code.google.com/p/open-ig/issues/detail?id=328 #328])
+  * Fleet control issues, *Note: Level 1-3 players should consider starting a completely new game.* ([http://code.google.com/p/open-ig/issues/detail?id=336 Issue #336])
+  * Tax calculation fixed ([http://code.google.com/p/open-ig/issues/detail?id=320 Issue #320])
+  * Load game problem fixed ([http://code.google.com/p/open-ig/issues/detail?id=338 Issue #338])
+  * Colony fire animation FPS increased ([http://code.google.com/p/open-ig/issues/detail?id=346 Issue #346])
+  * The production screen was incorrectly accessible from Level 1 ([http://code.google.com/p/open-ig/issues/detail?id=349 Issue #349])
+  * Garthog pirates sometimes fly away ([http://code.google.com/p/open-ig/issues/detail?id=351 Issue #351])
+  * Added screen-regions to the Level 1 bridge ([http://code.google.com/p/open-ig/issues/detail?id=350 Issue #350])
+  * Music stop under dream cutscene ([http://code.google.com/p/open-ig/issues/detail?id=354 Issue #354])
+  * Tile caching caused uneven lighting for certain objects ([http://code.google.com/p/open-ig/issues/detail?id=353 Issue #353])
+
 = Version 0.94.350 - Basic diplomacy =
   * Released: 2012-04-09 10:30 CET
   * *I recommend starting a new game as some gameplay mechanic changes and fixes might not take effect under existing saves*. 
