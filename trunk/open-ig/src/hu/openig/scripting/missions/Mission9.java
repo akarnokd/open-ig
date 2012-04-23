@@ -223,8 +223,10 @@ public class Mission9 extends Mission {
 	}
 	@Override
 	public boolean fleetBlink(Fleet f) {
-		if (f.owner == player("Traders") 
-				&& (hasTag(f, "Mission-9-Smuggler") || f.targetPlanet() == planet("San Sterling"))) {
+		if (helper.objective("Mission-9").state == ObjectiveState.ACTIVE
+				&& f.owner == player("Traders") 
+				&& (hasTag(f, "Mission-9-Smuggler") 
+						|| f.targetPlanet() == planet("San Sterling"))) {
 			return true;
 		}
 		return false;

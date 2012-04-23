@@ -4364,7 +4364,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (g.phase > 0) {
 			g.phase++;
 			if (g.phase >= g.maxPhase()) {
-				if (unitInRange(g, g.attack, g.model.maxRange)) {
+				if (g.attack != null && !g.attack.isDestroyed() 
+						&& unitInRange(g, g.attack, g.model.maxRange)) {
 					if (!g.attack.isDestroyed()) {
 						g.attack.damage(g.model.damage);
 						if (g.attack.isDestroyed()) {
