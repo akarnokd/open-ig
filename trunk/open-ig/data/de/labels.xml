@@ -78,10 +78,10 @@
 	<entry key='win.continue_game'>Weiter spielen</entry>
 	<entry key='win.main_menu'>Hauptmenü</entry>
 	<entry key='win.win'>Du hast gewonnen!</entry>
-	<entry key='mainmenu.singleplayer'>Einzelspiler</entry>
+	<entry key='mainmenu.singleplayer'>Einzelspieler</entry>
 	<entry key='mainmenu.continue'>Weiter</entry>
 	<entry key='mainmenu.load'>Laden</entry>
-	<entry key='mainmenu.multiplayer'>Mehrspiler</entry>
+	<entry key='mainmenu.multiplayer'>Mehrspieler</entry>
 	<entry key='mainmenu.settings'>Einstellungen</entry>
 	<entry key='mainmenu.videos'>Filmarchiv</entry>
 	<entry key='mainmenu.videos.intro'>Einleitung</entry>
