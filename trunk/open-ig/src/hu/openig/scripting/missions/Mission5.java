@@ -24,6 +24,7 @@ import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.U;
+import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
@@ -36,6 +37,8 @@ import java.util.List;
  * @author akarnokd, 2012.01.18.
  */
 public class Mission5 extends Mission {
+	/** Reinforcements once. */
+	protected boolean reinforcements;
 	@Override
 	public boolean applicable() {
 		return world.level == 1;
@@ -149,8 +152,7 @@ public class Mission5 extends Mission {
 			helper.setObjectiveState("Mission-1-Task-3", ObjectiveState.SUCCESS);
 			helper.setObjectiveState("Mission-1-Task-4", ObjectiveState.SUCCESS);
 		}
-		if (helper.isTimeout("Mission-5-Promote-2")) {
-			helper.clearTimeout("Mission-5-Promote-2");
+		if (checkTimeout("Mission-5-Promote-2")) {
 			helper.objective("Mission-1-Task-3").visible = false;
 			helper.objective("Mission-1-Task-4").visible = false;
 			helper.receive("Douglas-Promotion-2").visible = false;
@@ -176,7 +178,9 @@ public class Mission5 extends Mission {
 	public void onMessageSeen(String id) {
 		if ("Douglas-Promotion-2".equals(id)) {
 			helper.receive("Douglas-Promotion-2").visible = false;
-			helper.clearTimeout("Mission-5-Promote-2");
+			if (helper.hasTimeout("Mission-5-Promote-2")) {
+				helper.clearTimeout("Mission-5-Promote-2");
+			}
 			
 			helper.objective("Mission-1-Task-3").visible = false;
 			helper.objective("Mission-1-Task-4").visible = false;
@@ -190,8 +194,8 @@ public class Mission5 extends Mission {
 			});
 		} else
 		if ("Douglas-Thorin-Reinforcements".equals(id)) {
-			if (!helper.hasMissionTime("Douglas-Thorin-Reinforcements")) {
-				helper.setMissionTime("Douglas-Thorin-Reinforcements", helper.now() + 1);
+			if (!reinforcements) {
+				reinforcements = true;
 				Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip1", player);
 				if (own != null) {
 					own.first.addInventory(research("Fighter1"), 3);
@@ -498,5 +502,13 @@ public class Mission5 extends Mission {
 		}
 		
 		return result;
+	}
+	@Override
+	public void load(XElement xmission) {
+		reinforcements = xmission.getBoolean("reinforcements", false);
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("reinforcements", reinforcements);
 	}
 }
