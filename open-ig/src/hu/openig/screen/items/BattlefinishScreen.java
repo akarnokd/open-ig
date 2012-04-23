@@ -317,8 +317,8 @@ public class BattlefinishScreen extends ScreenBase {
 		int result = 0;
 		for (SpacewarStructure s : battle.spaceLosses) {
 			boolean players = s.owner == player();
-			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
-					|| (battle.attacker.owner != player() && !battle.attackerAllies.contains(s.owner));
+			boolean ally = s.owner != player() && (battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
+					|| (battle.attacker.owner != s.owner && !battle.attackerAllies.contains(s.owner));
 			if (s.item != null && (own == (players || ally)) 
 					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 					&& s.item.type.id.toLowerCase().contains("destroyer") == destroyer) {
@@ -337,8 +337,8 @@ public class BattlefinishScreen extends ScreenBase {
 		int result = 0;
 		for (SpacewarStructure s : battle.spaceLosses) {
 			boolean players = s.owner == player();
-			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.item.owner))
-					|| battle.attacker.owner != player() && !battle.attackerAllies.contains(s.item.owner);
+			boolean ally = s.owner != player() && ((battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
+					|| battle.attacker.owner != s.owner && !battle.attackerAllies.contains(s.owner));
 			if (s.building != null && (own == (players || ally)) 
 					&& s.building.type.kind.equals(kind)) {
 				result += s.loss;
@@ -356,8 +356,9 @@ public class BattlefinishScreen extends ScreenBase {
 		int result = 0;
 		for (SpacewarStructure s : battle.spaceLosses) {
 			boolean players = s.owner == player();
-			boolean ally = (battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
-					|| (battle.attacker.owner != player() && !battle.attackerAllies.contains(s.owner));
+			boolean ally = s.owner != player() 
+					&& ((battle.attacker.owner == player() && battle.attackerAllies.contains(s.owner))
+					|| (battle.attacker.owner != s.owner && !battle.attackerAllies.contains(s.owner)));
 			if (s.item != null 
 					&& (own == (players || ally))
 					&& s.item.type.category == category) {

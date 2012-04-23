@@ -1829,6 +1829,12 @@ public class GameWindow extends JFrame implements GameControls {
 		commons.worldLoading = false;
 		commons.nongame = false;
 		
+		restoreSettings(xworld);
+		commons.start(true);
+		if (!frunning) {
+			commons.simulation.pause();
+		}
+
 		if (pri == Screens.MAIN 
 				|| pri == Screens.LOAD_SAVE 
 				|| pri == Screens.SINGLEPLAYER
@@ -1853,11 +1859,6 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		if (status) {
 			displayStatusbar();
-		}
-		restoreSettings(xworld);
-		commons.start(true);
-		if (!frunning) {
-			commons.simulation.pause();
 		}
 	}
 	/**
