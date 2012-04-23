@@ -204,7 +204,7 @@ public class AI implements AIManager {
 					Pair<SpacewarStructure, SpacewarWeaponPort> w = 
 							findReadyPort(world.structures(p), EnumSet.of(Mode.BOMB, Mode.VIRUS));
 					if (w != null) {
-						world.attack(s, w.first, w.second.projectile.mode);
+						world.attack(w.first, s, w.second.projectile.mode);
 						found++;
 					}
 				}
