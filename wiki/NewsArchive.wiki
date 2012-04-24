@@ -6,6 +6,10 @@
 
 == April, 2012 ==
 
+*April 23, 2012*
+
+If you run into a crash while contacting Achilles, please exit the game and select *Other options > Verify install* from the Launcher.
+
 *April 21, 2012*
 
 I've tried my best to translate Open-IG into German. Still, I'm sure many grammar errors remained in the text. Please, do not flood the issue list with individual error reporting, instead, use [http://code.google.com/p/open-ig/issues/detail?id=356 this issue] as gathering place. And yes, the subtitles aren't translated.
