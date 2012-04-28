@@ -26,7 +26,9 @@ public class BattleProjectile {
 		/** Virus bomb, may change direction. */
 		VIRUS,
 		/** Multi rocket, may change direction. */
-		MULTI_ROCKET
+		MULTI_ROCKET,
+		/** Attack with kamikaze mode. */
+		KAMIKAZE
 	}
 	/** The projectile id. */
 	public String id;
