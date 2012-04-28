@@ -1497,6 +1497,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.type = StructureType.STATION;
 				st.techId = ii.type.id;
 				st.item = ii;
+				st.angle = Math.PI;
 				st.owner = nearbyPlanet.owner;
 				st.destruction = bse.destruction;
 				st.angles = new BufferedImage[] { alien ? bse.alternative[0] : bse.normal[0] };
@@ -4475,6 +4476,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			s.moveTo = null;
 			if (mode == Mode.BEAM) {
 				s.attack = target;
+			} else 
+			if (mode == Mode.KAMIKAZE) {
+				SpacebattleStatistics sbs = new SpacebattleStatistics();
+				setPortStatistics(sbs, s.ports);
+				s.kamikaze = sbs.firepower * s.count * 5;
+				s.selected = false;
 			} else {
 				s.attack = null;
 				RocketSelected r = new RocketSelected();

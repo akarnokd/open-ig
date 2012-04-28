@@ -33,6 +33,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.SpaceStrengths;
@@ -139,16 +140,16 @@ public class AI implements AIManager {
 		double switchToFlee = p.aiSocialRatio() * switchToCostAttack;
 		
 		if (health >= switchToFlee) {
-			boolean c = health < switchToCostAttack || defensiveTask.contains(idles.get(0).fleet.id);
-			if (c) {
-				for (SpacewarStructure ship : idles) {
-					if (ship.canDirectFire()) {
-						costAttackBehavior(world, ship);
-					}
-				}
-			} else {
-				defaultAttackBehavior(world, idles, p);				
-			}
+			defaultAttackBehavior(world, idles, p);				
+//			boolean c = health < switchToCostAttack /* || defensiveTask.contains(idles.get(0).fleet.id ) */;
+//			if (c) {
+//				for (SpacewarStructure ship : idles) {
+//					if (ship.canDirectFire()) {
+//						costAttackBehavior(world, ship);
+//					}
+//				}
+//			} else {
+//			}
 			return SpacewarAction.CONTINUE;
 		}
 		return SpacewarAction.FLEE;
@@ -196,7 +197,7 @@ public class AI implements AIManager {
 					Pair<SpacewarStructure, SpacewarWeaponPort> w = 
 							findReadyPort(world.structures(p), EnumSet.of(Mode.ROCKET, Mode.MULTI_ROCKET));
 					if (w != null) {
-						world.attack(s, w.first, w.second.projectile.mode);
+						world.attack(w.first, s, w.second.projectile.mode);
 						found++;
 					}
 				}
@@ -213,6 +214,17 @@ public class AI implements AIManager {
 					break;
 				}
 			}
+		}
+		for (SpacewarStructure s : world.structures(p)) {
+			if (s.type == StructureType.SHIP 
+					&& s.item != null 
+					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+					&& s.attack != null && !s.attack.isDestroyed()) {
+				if (s.hp * 10 < s.hpMax) {
+					world.attack(s, s.attack, Mode.KAMIKAZE);
+				}
+			}
+			
 		}
 	}
 	/**
