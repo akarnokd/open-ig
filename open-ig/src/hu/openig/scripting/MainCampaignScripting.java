@@ -1281,4 +1281,14 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}
 		return false;
 	}
+	@Override
+	public void onFleetsMoved() {
+		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+
+			}
+			m.onFleetsMoved();
+		}
+	}
 }

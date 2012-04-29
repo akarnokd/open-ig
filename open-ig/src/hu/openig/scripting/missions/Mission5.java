@@ -49,7 +49,6 @@ public class Mission5 extends Mission {
 		Objective m1 = helper.objective("Mission-1");
 		Objective m5 = helper.objective("Mission-5");
 		Objective m5t1 = helper.objective("Mission-5-Task-1");
-		Objective m5t2 = helper.objective("Mission-5-Task-2");
 		if (!m5.visible 
 				&& m5.state == ObjectiveState.ACTIVE
 				&& m2t1.state != ObjectiveState.ACTIVE
@@ -103,10 +102,6 @@ public class Mission5 extends Mission {
 			helper.clearMissionTime("Mission-5-Task-2");
 			helper.showObjective("Mission-5-Task-2");
 			createGarthog();
-		}
-		if (m5t2.visible && m5t2.state == ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-5-Task-2-Timeout")) {
-			checkTullenReached();
 		}
 		if (helper.isMissionTime("Mission-5-Task-2-Timeout")) {
 			helper.clearMissionTime("Mission-5-Task-2-Timeout");
@@ -248,6 +243,14 @@ public class Mission5 extends Mission {
 		garthog.first.task = FleetTask.SCRIPT;
 		
 	}
+	@Override
+	public void onFleetsMoved() {
+		Objective m5t2 = helper.objective("Mission-5-Task-2");
+		if (m5t2.visible && m5t2.state == ObjectiveState.ACTIVE
+				&& !helper.hasMissionTime("Mission-5-Task-2-Timeout")) {
+			checkTullenReached();
+		}
+	};
 	/**
 	 * Check if the Garthog fleet reached Tullen.
 	 */
