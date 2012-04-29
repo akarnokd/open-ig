@@ -8,9 +8,9 @@ See [http://code.google.com/p/open-ig/issues/list Issue list] for enhancements.
 [ProjectFacts2011 Facts for 2011].
 
 || *Task* || *Expected completion time* || *Status* || *Remarks* ||
-|| Screen: Diplomacy || 2012-04-15 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || I need to run the original game to figure out the available talk options. ||
-|| Other missing features || 2012-04-30 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Space chat, fire and smoke on buildings, few more buttons. ||
-|| Beta release || 2012-04-30 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup.<br>*Aim*: The single player should be fully playable on all difficulties. All IG1 features implemented. ||
+|| Screen: Diplomacy || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Incoming diplomacy calls. ||
+|| Other missing features || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif || Space chat. ||
+|| Beta release || 2012-05-06 || - || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup.<br>*Aim*: The single player should be fully playable on all difficulties. All IG1 features implemented. ||
 || Single player customization || 2012-05-31 || - || In-game way of defining the galaxy, races, initial planets, money, technology. ||
 || Campaign and other editors || 2012-05-31 || - || To create a full campaign like the main. ||
 || Multiplayer || 2012-06-30 || - || Multiplayer will be like a remote control: receive status changes and submit commands to the host. Human vs. Human with some technology tree simplifications (e.g., build colony ship from start). ||
