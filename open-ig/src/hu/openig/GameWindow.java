@@ -903,9 +903,13 @@ public class GameWindow extends JFrame implements GameControls {
 			if (e.isAltDown()) {
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
 					exit();
+					e.consume();
+					return;
 				}
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					switchFullscreen();
+					e.consume();
+					return;
 				}
 				e.consume();
 			}
@@ -1025,7 +1029,8 @@ public class GameWindow extends JFrame implements GameControls {
 						} else {
 							displaySecondary(Screens.EQUIPMENT);
 						}
-					} else {
+					} else 
+					if (primary != null) {
 						switch (primary.screen()) {
 						case COLONY:
 							commons.world().player.selectionMode = SelectionMode.PLANET;
