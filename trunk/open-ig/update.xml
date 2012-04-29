@@ -43,11 +43,11 @@
 			<desc lang='en'>German language support, smaller bugfixes.</desc>
 			<desc lang='de'>Deutsche sprache Unterstützung, Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.365.jar' sha1='f95192cecd8bd92a81667fd6abf380c9584efdde'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.366.jar' sha1='13b4757831092b0c86f3c91b43042354a36ad7fd'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120423a2.zip' sha1='d7299a532826388a2fba3407430f16a8d43f6756'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120429a2.zip' sha1='a9c7707833e73aaec539ce1e53d821fe884883b6'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Április 23 / A</desc>
 			<desc lang='en'>The upgraded resource file [Data]. 23th April, 2012 / A</desc>
 		</file>
@@ -65,16 +65,18 @@
 		
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-20120420A.zip' sha1='b8dcfbaf3f697da068544c1ab4d678369b93f32d'/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-20120429A.zip' sha1='4e7b7b88ba6d579e649f4f8c2399d6ad9124935e'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120421a.zip' sha1='bb7525b4744111e31bb5f62de02d0a720068611c'/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120429a.zip' sha1='d0ccebb5709bdb89356a08c142be0b7d3335063d'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-generic-20120420A.zip' sha1='64b8cae53a4ca475a0ba99e16927a7481fae49df'/>
 		
 		<remove file='open-ig-video-en-0.8.zip'/>
 		<remove file='open-ig-audio-en-0.8.zip'/>
 		<remove file='open-ig-audio-hu-0.8.zip'/>
 		<remove file='open-ig-images-20120420A.zip'/>
+		<remove file='open-ig-images-20120421a.zip'/>
+		<remove file='open-ig-audio-en-20120420A.zip'/>
 	</module>
 	<module id='MapEditor' version='0.60'>
 		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
