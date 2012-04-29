@@ -17,6 +17,7 @@ import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -108,6 +109,11 @@ public class Mission11 extends Mission {
 		for (InventoryItem ii : f.inventory) {
 			ii.tag = "Mission-11-Garthog";
 		}
+		InventoryItem iib = f.getInventoryItem(research("GarthogBattleship"));
+		InventorySlot is = iib.getSlot("hyperdrive");
+		is.type = null;
+		is.count = 0;
+		
 		Planet target = null;
 		double strength = Double.MAX_VALUE;
 		// No Cheat: doesn't check garrison count, only things that can be seen by spysat2
