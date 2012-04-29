@@ -57,6 +57,9 @@ public class Mission11 extends Mission {
 				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
 			}
 			m11.visible = false;
+			garthogGoHome();
+		}
+		if (checkMission("Mission-11-Hide")) {
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
 			if (garthog != null) {
 				removeScripted(garthog.first);
@@ -74,6 +77,15 @@ public class Mission11 extends Mission {
 					incomingMessage(tp.id + "-Is-Under-Attack");
 				}
 			}
+		}
+	}
+	/** Move the Garthog fleet home. */
+	void garthogGoHome() {
+		Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
+		if (garthog != null) {
+			garthog.first.moveTo(planet("Garthog 1"));
+			garthog.first.task = FleetTask.SCRIPT;
+			addMission("Mission-11-Hide", 6);
 		}
 	}
 	/**

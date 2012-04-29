@@ -287,7 +287,9 @@ public class AITrader implements AIManager {
 		}
 		// label fix
 		for (Fleet f : player.ownFleets()) {
-			f.name = traderLabel;
+			if (f.task != FleetTask.SCRIPT) {
+				f.name = traderLabel;
+			}
 		}
 	}
 	/**
