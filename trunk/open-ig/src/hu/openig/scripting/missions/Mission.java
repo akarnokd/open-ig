@@ -835,4 +835,8 @@ public abstract class Mission implements GameScriptingEvents {
 	public boolean fleetBlink(Fleet f) {
 		return false;
 	}
+	@Override
+	public void onFleetsMoved() {
+		
+	}
 }

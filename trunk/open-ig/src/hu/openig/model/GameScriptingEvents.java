@@ -247,4 +247,6 @@ public interface GameScriptingEvents {
 	 * @return true if blinking required
 	 */
 	boolean fleetBlink(Fleet f);
+	/** Called when fleets moved. */
+	void onFleetsMoved();
 }

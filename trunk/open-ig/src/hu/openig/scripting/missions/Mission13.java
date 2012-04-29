@@ -59,11 +59,13 @@ public class Mission13 extends Mission {
 		}
 		if (checkMission("Mission-13")) {
 			stage = M13.INTRO;
+			world.env.stopMusic();
 			world.env.playVideo("interlude/flagship_arrival", new Action0() {
 				@Override
 				public void invoke() {
 					helper.showObjective(m13);
 					helper.setTimeout("Mission-13-Message", 3000);
+					world.env.playMusic();
 				}
 			});
 		}
@@ -92,6 +94,9 @@ public class Mission13 extends Mission {
 			helper.gameover();
 			loseGameMessageAndMovie("Douglas-Admiral-Benson-Failed", "loose/fired_level_2");
 		}
+	}
+	@Override
+	public void onFleetsMoved() {
 		if (stage == M13.RUN) {
 			checkFollowBenson();
 		}
@@ -167,8 +172,9 @@ public class Mission13 extends Mission {
 		Pair<Fleet, InventoryItem> benson = findTaggedFleet("Mission-13-Benson", player);
 		Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-13-Garthog", g);
 		
-		if (benson != null && garthog != null) {
-			double d = Math.hypot(benson.first.x - garthog.first.x, benson.first.y - garthog.first.y);
+		if (benson != null && garthog != null && benson.first.targetPlanet() != null) {
+			double d = Math.hypot(benson.first.x - garthog.first.x, 
+					benson.first.y - garthog.first.y);
 			if (d <= 5) {
 				helper.setMissionTime("Mission-13-Timeout", helper.now() + 12);
 				
@@ -176,6 +182,9 @@ public class Mission13 extends Mission {
 				benson.first.task = FleetTask.SCRIPT;
 				garthog.first.stop();
 				garthog.first.task = FleetTask.SCRIPT;
+				
+				garthog.first.x = benson.first.x + 4;
+				garthog.first.y = benson.first.y + 1;
 				
 				Fleet ff = getFollower(benson.first, player);
 				if (ff != null) {

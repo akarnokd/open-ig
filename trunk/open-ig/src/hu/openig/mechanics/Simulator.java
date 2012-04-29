@@ -37,11 +37,10 @@ import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.SwingUtilities;
 
 /**
  * Collection of algorithms which update the world
@@ -114,12 +113,7 @@ public final class Simulator {
 		world.scripting.onTime();
 		// defer space battles
 		if (!world.pendingBattles.isEmpty()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					world.env.startBattle();
-				}
-			});
+			world.env.startBattle();
 		}
 		return result;
 	}
@@ -673,11 +667,14 @@ public final class Simulator {
 	 */
 	public static boolean moveFleets(World world) {
 		boolean radar = false;
-		for (Player p : world.players.values()) {
+		List<Player> ps = U.newArrayList(world.players.values());
+		Collections.shuffle(ps, world.random());
+		for (Player p : ps) {
 			radar |= moveFleets(p.ownFleets(), world);
 		}
 		if (radar) {
 			Radar.compute(world);
+			world.scripting.onFleetsMoved();
 		}
 		return radar;
 	}

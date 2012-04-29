@@ -310,12 +310,10 @@ public class EmptyScripting implements GameScripting {
 	}
 	@Override
 	public void onTalkCompleted() {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void debug() {
-		// TODO Auto-generated method stub
 	}
 	@Override
 	public boolean mayPlayerAttack(Player player) {
@@ -324,11 +322,14 @@ public class EmptyScripting implements GameScripting {
 	@Override
 	public void onDeploySatellite(Planet target, Player player,
 			ResearchType satellite) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public boolean fleetBlink(Fleet f) {
 		return false;
+	}
+	@Override
+	public void onFleetsMoved() {
+		
 	}
 }
