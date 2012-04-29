@@ -239,25 +239,33 @@ public class AITrader implements AIManager {
 				}
 				boolean infected = lf.target.quarantineTTL > 0;
 
-				List<Planet> candidates = U.newArrayList();
-				for (Planet p : world.planets.values()) {
-					if (p.owner != null && p != lf.target) {
-						if (!infected || p.owner == lf.target.owner) {
-							// if the target is infected
-							if (!infected && lf.target.quarantineTTL > 0) {
-								// and not too many fleets are waiting
-								if (landedCount(p) + targetCount(p) < 5) {
-									candidates.add(p);
-								}
-							} else {
-								candidates.add(p);
-							}
-						}
-					}
-				}
+//				List<Planet> candidates = U.newArrayList();
+//				for (Planet p : world.planets.values()) {
+//					if (p.owner != null && p != lf.target) {
+//						if (!infected || p.owner == lf.target.owner) {
+//							// if the target is infected
+//							if (!infected && lf.target.quarantineTTL > 0) {
+//								// and not too many fleets are waiting
+//								if (landedCount(p) + targetCount(p) < 5) {
+//									candidates.add(p);
+//								}
+//							} else {
+//								candidates.add(p);
+//							}
+//						}
+//					}
+//				}
 
 				if (!planets.isEmpty()) {
 					Planet nt = world.random(planets);
+					if (infected) {
+						world.infectedFleets.put(lf.fleet.id, lf.target.id);
+						if (nt.owner != lf.target.owner) {
+							List<Planet> cand2 = lf.target.owner.ownPlanets();
+							cand2.remove(lf.target);
+							nt = world.random(cand2);
+						}
+					}
 					lf.fleet.moveTo(nt);
 
 					for (InventoryItem ii : lf.fleet.inventory) {
@@ -267,9 +275,6 @@ public class AITrader implements AIManager {
 					lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
 					lastVisitedPlanet.put(lf.fleet, lf.target);
 
-					if (infected) {
-						world.infectedFleets.put(lf.fleet.id, lf.target.id);
-					}
 				} else {
 					lastVisitedPlanet.remove(lf.fleet);
 				}
