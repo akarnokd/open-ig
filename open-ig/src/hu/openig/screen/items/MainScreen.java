@@ -102,8 +102,13 @@ public class MainScreen extends ScreenBase {
 
 			Composite save0 = g2.getComposite();
 			g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-			
-			g2.fillRoundRect(c0 - 10, c1 - 5, textWidth + 20, size + 10, 10, 10);
+			if (selected) {
+				g2.setColor(new Color(224, 0, 0));
+				g2.fillRoundRect(c0 - 10, c1 - 5, textWidth + 20, size + 10, 10, 10);
+			} else {
+				g2.setColor(Color.BLACK);
+				g2.fillRoundRect(c0 - 10, c1 - 5, textWidth + 20, size + 10, 10, 10);
+			}
 			g2.setComposite(save0);
 
 			commons.text().paintTo(g2, 2 + c0, 2 + c1, size, 0xFF000000, get(label));

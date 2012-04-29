@@ -11,6 +11,7 @@ package hu.openig.ui;
 import hu.openig.core.Func1;
 import hu.openig.render.TextRenderer;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 /**
@@ -47,6 +48,8 @@ public class UISpinner extends UIContainer {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		g2.setColor(new Color(0, 0, 0, 192));
+		g2.fillRect(0, 0, width, height);
 		prev.location(0, 0);
 		next.location(width - next.width, 0);
 		

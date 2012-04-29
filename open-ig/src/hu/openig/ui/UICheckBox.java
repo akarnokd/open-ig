@@ -69,6 +69,10 @@ public class UICheckBox extends UIComponent {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+
+		g2.setColor(new Color(0, 0, 0, 192));
+		g2.fillRect(-5, -5, width + 10, height + 10);
+
 		g2.setColor(Color.WHITE);
 		g2.drawRect(0, 0, size - 1, size - 1);
 		g2.drawRect(1, 1, size - 3, size - 3);

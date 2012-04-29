@@ -1132,8 +1132,8 @@ public class LoadSaveScreen extends ScreenBase {
 
 		if (settingsMode != SettingsPage.LOAD_SAVE) {
 			g2.drawImage(commons.background().setup, base.x, base.y, null);
-			g2.setColor(new Color(0, 0, 0, 192));
-			g2.fillRect(base.x + 10, base.y + 50, base.width - 20, base.height - 60);
+//			g2.setColor(new Color(0, 0, 0, 192));
+//			g2.fillRect(base.x + 10, base.y + 50, base.width - 20, base.height - 60);
 
 			soundVolume.prev.enabled(config.effectVolume > 0);
 			soundVolume.next.enabled(config.effectVolume < 100);
@@ -1182,6 +1182,18 @@ public class LoadSaveScreen extends ScreenBase {
 		otherSettings.visible(world() == null);
 		
 		super.draw(g2);
+	}
+	@Override
+	public void drawComponent(Graphics2D g2, UIComponent c) {
+		if (c instanceof UILabel) {
+			g2.setColor(new Color(0, 0, 0, 192));
+			int px = c.x;
+			int py = c.y;
+			g2.translate(px, py);
+			g2.fillRect(-5, -5, c.width + 10, c.height + 10);
+			g2.translate(-px, -py);
+		}
+		super.drawComponent(g2, c);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -1282,11 +1294,12 @@ public class LoadSaveScreen extends ScreenBase {
 			if (listWorker != null && !listWorker.isDone()) {
 				commons.text().paintTo(g2, 0, 0, 14, TextRenderer.GRAY, get("loading") + "...");
 			} else {
-				Composite save0 = g2.getComposite();
-				g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
-				g2.setColor(Color.BLACK);
-				g2.fillRect(0, 0, width, height);
-				g2.setComposite(save0);
+//				Composite save0 = g2.getComposite();
+
+//				g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
+//				g2.setColor(Color.BLACK);
+//				g2.fillRect(0, 0, width, height);
+//				g2.setComposite(save0);
 
 				int rows = height / rowHeight;
 				if (top < 0 || items.size() == 0) {
@@ -1306,17 +1319,38 @@ public class LoadSaveScreen extends ScreenBase {
 						
 						int dh = (rowHeight - textHeight) / 2;
 						
-						commons.text().paintTo(g2, 5, y + dh, textHeight, c, fi.saveName);
-						commons.text().paintTo(g2, 5 + 250, y + dh, textHeight, c, get(fi.difficulty.label) + "-" + fi.level);
+						
+						paintText(g2, 5, y + dh, c, fi.saveName);
+						paintText(g2, 5 + 250, y + dh, c, get(fi.difficulty.label) + "-" + fi.level);
 //						commons.text().paintTo(g2, 5 + 300, y + dh, textHeight, c, "" + fi.level);
-						commons.text().paintTo(g2, 5 + 330, y + dh, textHeight, c, dateFormat2.format(fi.gameDate));
+						paintText(g2, 5 + 330, y + dh, c, dateFormat2.format(fi.gameDate));
 						String m = fi.money + " cr";
-						commons.text().paintTo(g2, width - 5 - commons.text().getTextWidth(10, m), y + dh, textHeight, c, m);
+						paintText(g2, width - 5 - commons.text().getTextWidth(10, m), y + dh, c, m);
 						y += rowHeight;
 					}
 				}
 			}
 		}
+		/**
+		 * Paint the text with the given color.
+		 * @param g2 the graphics context
+		 * @param x the X coordinate
+		 * @param y the Y coordinate
+		 * @param c the color
+		 * @param s the text
+		 */
+		void paintText(Graphics2D g2, int x, int y, int c, String s) {
+			int tw = commons.text().getTextWidth(textHeight, s);
+
+			Composite save0 = g2.getComposite();
+			g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
+			g2.setColor(Color.BLACK);
+			g2.fillRect(x - 2, y - 2, tw + 4, textHeight + 4);
+			g2.setComposite(save0);
+
+			commons.text().paintTo(g2, x, y, textHeight, c, s);
+		}
+		
 		@Override
 		public boolean mouse(UIMouse e) {
 			if (e.has(Type.DOWN)) {
