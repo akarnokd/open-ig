@@ -25,6 +25,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -160,11 +161,29 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			swapLock.lock();
 			try {
 				RenderTools.setInterpolation(g2, true);
-				g2.drawImage(frontBuffer, movieRect.x, movieRect.y, 
-						movieRect.width, movieRect.height, null);
-				if (label != null && config.subtitles) {
-					paintLabel(g2, movieRect.x, movieRect.y, movieRect.width, movieRect.height);
-				}
+				if (config.movieScale) {
+					double sx = (double)getInnerWidth() / frontBuffer.getWidth();
+					double sy = (double)getInnerHeight() / frontBuffer.getHeight();
+					double scalex = Math.min(sx, sy);
+					double scaley = scalex;
+					// center the image
+					AffineTransform save0 = g2.getTransform();
+					g2.translate((getInnerWidth() - (frontBuffer.getWidth() * scalex)) / 2,
+							(getInnerHeight() - (frontBuffer.getHeight() * scaley)) / 2);
+					g2.scale(scalex, scaley);
+					
+					g2.drawImage(frontBuffer, 0, 0, null);
+					g2.setTransform(save0);
+					if (label != null && config.subtitles) {
+						paintLabel(g2, 0, 0, getInnerWidth(), getInnerHeight());
+					}
+				} else {
+					g2.drawImage(frontBuffer, movieRect.x, movieRect.y, 
+							movieRect.width, movieRect.height, null);
+					if (label != null && config.subtitles) {
+						paintLabel(g2, movieRect.x, movieRect.y, movieRect.width, movieRect.height);
+					}
+							}
 				RenderTools.setInterpolation(g2, false);
 			} finally {
 				swapLock.unlock();

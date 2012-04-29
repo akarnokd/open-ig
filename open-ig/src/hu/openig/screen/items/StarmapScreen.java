@@ -1701,7 +1701,7 @@ public class StarmapScreen extends ScreenBase {
 				if (player().selectionMode == SelectionMode.FLEET 
 						&& fleet() != null
 						&& world().scripting.mayControlFleet(fleet())
-						/* && fleet().owner == player() */) {
+						&& fleet().owner == player()) {
 					fleetMove.down = true;
 					fleetMove.onPress.invoke();
 					rep = true;
@@ -1712,7 +1712,7 @@ public class StarmapScreen extends ScreenBase {
 				if (player().selectionMode == SelectionMode.FLEET 
 						&& fleet() != null 
 						&& world().scripting.mayControlFleet(fleet())
-						/* && fleet().owner == player() */) {
+						&& fleet().owner == player()) {
 					fleetAttack.down = true;
 					fleetAttack.onPress.invoke();
 					rep = true;
@@ -1723,7 +1723,7 @@ public class StarmapScreen extends ScreenBase {
 				if (player().selectionMode == SelectionMode.FLEET
 						&& fleet() != null
 						&& world().scripting.mayControlFleet(fleet())
-						/* && fleet().owner == player() */) {
+						&& fleet().owner == player()) {
 					fleetStop.down = true;
 					fleetStop.onPress.invoke();
 					rep = true;

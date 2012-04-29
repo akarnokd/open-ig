@@ -239,6 +239,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** The time step for the simulation. */
 	@Settings(page = SettingsPage.VISUAL)
 	UISpinner uiScaleValue;
+	/** Scale cutscenes. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox movieScale;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -867,7 +870,16 @@ public class LoadSaveScreen extends ScreenBase {
 		// ------------------------------------------
 		
 		prepareUIScale();
-		
+
+		movieScale = new UICheckBox(get("settings.movie_scale"), 14, commons.common().checkmark, commons.text());
+		movieScale.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.movieScale = movieScale.selected();
+			}
+		};
+
 		// ------------------------------------------
 		
 		addThis();
@@ -959,6 +971,7 @@ public class LoadSaveScreen extends ScreenBase {
 		subtitles.selected(config.subtitles);
 		animateTech.selected(config.animateInventory);
 		slowOnAttack.selected(config.slowOnEnemyAttack);
+		movieScale.selected(config.movieScale);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -1054,7 +1067,8 @@ public class LoadSaveScreen extends ScreenBase {
 		satelliteDeploy.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		animateTech.location(base.x + 30, base.y + dy + 8);
-
+		dy += 30;
+		movieScale.location(base.x + 30, base.y + dy + 8);
 		
 		// -----------------------------
 		// controls

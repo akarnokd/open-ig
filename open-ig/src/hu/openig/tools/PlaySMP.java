@@ -36,7 +36,7 @@ public final class PlaySMP {
 	 */
 	public static void main(String[] args) throws Exception {
 		//enumerateSounds();
-		String fn = "c:/Games/IGHU/Sound";
+		String fn = "g:/Games/IG/Sound";
 		FilenameFilter ff = new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -44,8 +44,12 @@ public final class PlaySMP {
 			}
 		};
 		for (File f : new File(fn).listFiles(ff)) {
+			if (!f.getName().startsWith("K0_32")) {
+				continue;
+			}
 			byte[] sample = IOUtils.load(f);
 			int dataLen = sample.length + (sample.length % 2 == 0 ? 0 : 1);
+			dataLen -= 21000;
 	
 			DataOutputStream dout = new DataOutputStream(
 					new FileOutputStream(fn + "/" + f.getName() + ".wav"));
@@ -68,8 +72,8 @@ public final class PlaySMP {
 				// DATA
 				dout.write("data".getBytes("ISO-8859-1"));
 				dout.writeInt(Integer.reverseBytes(dataLen));
-				for (byte b : sample) {
-					dout.write(128 + b);
+				for (int i = 0; i < dataLen; i++) {
+					dout.write(128 + sample[i]);
 				}
 			} finally {		
 				dout.close();

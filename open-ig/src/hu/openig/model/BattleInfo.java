@@ -178,5 +178,22 @@ public class BattleInfo {
 			throw new AssertionError("No target in battle settings.");
 		}
 	}
-
+	/**
+	 * Check if the given structure is the ally of the player.
+	 * @param s the structure to test
+	 * @param p the player to test
+	 * @return true if ally
+	 */
+	public boolean isAlly(SpacewarStructure s, Player p) {
+		if (s.owner == p) {
+			return true;
+		}
+		if (attacker.owner == p) {
+			return attackerAllies.contains(s.owner);
+		}
+		if (s.owner == attacker.owner) {
+			return false;
+		}
+		return !attackerAllies.contains(s.owner);
+	}
 }
