@@ -96,7 +96,19 @@ public class MainScreen extends ScreenBase {
 				color = 0xFFFFFFFF;
 			}
 			int textWidth = commons.text().getTextWidth(size, get(label));
-			commons.text().paintTo(g2, x0 + x + (width - textWidth) / 2, y0 + y, size, color, get(label));
+
+			int c0 = x0 + x + (width - textWidth) / 2;
+			int c1 = y0 + y;
+
+			Composite save0 = g2.getComposite();
+			g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+			
+			g2.fillRoundRect(c0 - 10, c1 - 5, textWidth + 20, size + 10, 10, 10);
+			g2.setComposite(save0);
+
+			commons.text().paintTo(g2, 2 + c0, 2 + c1, size, 0xFF000000, get(label));
+			commons.text().paintTo(g2, 1 + c0, 1 + c1, size, 0xFF000000, get(label));
+			commons.text().paintTo(g2, c0, c1, size, color, get(label));
 		}
 		/**
 		 * Test if the mouse is within the label.
@@ -175,11 +187,11 @@ public class MainScreen extends ScreenBase {
 		commons.text().paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
 		commons.text().paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
 		
-		Composite c0 = g2.getComposite();
-		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-		
-		g2.fillRoundRect(xOrigin + 60, yOrigin + 100, 640 - 120, 442 - 100 - 20, 40, 40);
-		g2.setComposite(c0);
+//		Composite c0 = g2.getComposite();
+//		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
+//		
+//		g2.fillRoundRect(xOrigin + 60, yOrigin + 100, 640 - 120, 442 - 100 - 20, 40, 40);
+//		g2.setComposite(c0);
 	
 		for (ClickLabel cl : clicklabels) {
 			cl.paintTo(g2, xOrigin, yOrigin);
