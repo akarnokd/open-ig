@@ -162,17 +162,18 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			try {
 				RenderTools.setInterpolation(g2, true);
 				if (config.movieScale) {
-					double sx = (double)getInnerWidth() / frontBuffer.getWidth();
-					double sy = (double)getInnerHeight() / frontBuffer.getHeight();
+					double sx = getInnerWidth() / 640.0;
+					double sy = getInnerHeight() / 480.0;
 					double scalex = Math.min(sx, sy);
 					double scaley = scalex;
 					// center the image
 					AffineTransform save0 = g2.getTransform();
-					g2.translate((getInnerWidth() - (frontBuffer.getWidth() * scalex)) / 2,
-							(getInnerHeight() - (frontBuffer.getHeight() * scaley)) / 2);
-					g2.scale(scalex, scaley);
+					double dx = getInnerWidth() - (640 * scalex);
+					double dy = getInnerHeight() - (480 * scaley); 
+					g2.translate(dx / 2,
+							dy / 2);
 					
-					g2.drawImage(frontBuffer, 0, 0, null);
+					g2.drawImage(frontBuffer, 0, 0, (int)(640 * scalex), (int)(480 * scaley), null);
 					g2.setTransform(save0);
 					if (label != null && config.subtitles) {
 						paintLabel(g2, 0, 0, getInnerWidth(), getInnerHeight());
