@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.94.365";
+	public static final String VERSION = "0.94.366";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -215,6 +215,9 @@ public class Configuration {
 	/** The user interface scaling factor. */
 	@LoadSave
 	public int uiScale = 150;
+	/** Should the movie be scaled to full screen? */
+	@LoadSave
+	public boolean movieScale;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

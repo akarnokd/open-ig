@@ -2958,14 +2958,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return true if can be controlled
 	 */
 	boolean canControl(SpacewarStructure s) {
-		if (s.owner == player()) {
-			return true;
-		}
-		if (battle.attacker.owner == player() 
-				&& battle.attackerAllies.contains(s.owner)) {
-			return true;
-		}
-		return false;
+		return battle.isAlly(s, player());
 	}
 	/**
 	 * Function to locate the most appropriate rocket type.
@@ -3716,7 +3709,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return true if ally
 	 */
 	boolean isAlly(SpacewarStructure s, Player p) {
-		return (s.owner == p || ((battle.attacker.owner == p) == battle.attackerAllies.contains(s.owner)));
+		return battle.isAlly(s, p);
 	}
 	/**
 	 * Damage the target structure.

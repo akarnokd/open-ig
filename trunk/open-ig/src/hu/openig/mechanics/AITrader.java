@@ -280,6 +280,10 @@ public class AITrader implements AIManager {
 				}
 			}
 		}
+		// label fix
+		for (Fleet f : player.ownFleets()) {
+			f.name = traderLabel;
+		}
 	}
 	/**
 	 * Count how many fleets are landed on the target planet.

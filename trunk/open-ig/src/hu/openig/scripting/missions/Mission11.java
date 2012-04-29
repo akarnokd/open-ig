@@ -66,7 +66,13 @@ public class Mission11 extends Mission {
 		if (checkTimeout("Mission-11-Planet")) {
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
 			if (garthog != null) {
-				incomingMessage(garthog.first.targetPlanet().id + "-Is-Under-Attack");
+				Planet tp = garthog.first.targetPlanet();
+				if (tp == null) {
+					tp = garthog.first.arrivedAt;
+				}
+				if (tp != null) {
+					incomingMessage(tp.id + "-Is-Under-Attack");
+				}
 			}
 		}
 	}

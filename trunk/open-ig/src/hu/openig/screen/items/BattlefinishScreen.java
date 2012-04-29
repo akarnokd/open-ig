@@ -369,16 +369,7 @@ public class BattlefinishScreen extends ScreenBase {
 	 * @return true if ally
 	 */
 	boolean isAlly(SpacewarStructure s) {
-		if (s.owner == player()) {
-			return false;
-		}
-		if (battle.attacker.owner == player()) {
-			return battle.attackerAllies.contains(s.owner);
-		}
-		if (s.owner == battle.attacker.owner) {
-			return false;
-		}
-		return !battle.attackerAllies.contains(s.owner);
+		return battle.isAlly(s, player());
 	}
 	/**
 	 * Draw a statistics witht the given label and values.
