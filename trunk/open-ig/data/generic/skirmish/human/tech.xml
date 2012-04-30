@@ -201,7 +201,7 @@
 		<slot id='bomb' x='211' y='74' width='20' height='13' max='12'
 			items='Bomb1, Bomb2' />
 		<slot id='hyperdrive' x='237' y='66' width='25' height='15' max='1'
-			items='HyperDrive5' />
+			items='HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5' />
 		<property name='vehicles' value='8' />
 		<property name='needsOrbitalFactory' value='true' />
 	</item>
