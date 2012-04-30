@@ -161,7 +161,7 @@ public class BattlefinishScreen extends ScreenBase {
 			if (battle.retreated) {
 				textCenter(g2, x1, base.y + 40, w1, TextRenderer.YELLOW, 14, get("battlefinish.spacewar_retreat"));
 			} else {
-				if (battle.spacewarWinner != null) {
+				if (battle.spacewarWinner != null && !battle.enemyFlee) {
 					if (battle.spacewarWinner == player()) {
 						textCenter(g2, x1, base.y + 40, w1, TextRenderer.GREEN, 14, get("battlefinish.spacewar_won"));						
 					} else {

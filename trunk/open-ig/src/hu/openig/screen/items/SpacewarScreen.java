@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
+import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.core.Tile;
 import hu.openig.mechanics.BattleSimulator;
@@ -23,6 +24,7 @@ import hu.openig.model.BattleSpaceEntity;
 import hu.openig.model.BattleSpaceLayout;
 import hu.openig.model.Building;
 import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.InventoryItem;
@@ -279,6 +281,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** The animation timer. */
 	Closeable buttonTimer;
+	/** The chat typing timer. */
+	Closeable chatTimer;
 	/** The group for the main buttons. */
 	List<ThreePhaseButton> mainCommands;
 	/** The view toggle buttons. */
@@ -437,6 +441,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	};
 	/** The maximum right placement of units. */
 	int maxRightPlacement;
+	/** The current chat. */
+	Chat chat;
+	/** The current chat node. */
+	Node node;
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -1011,12 +1019,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				doButtonAnimations();
 			}
 		});
+		chatTimer = commons.register(50, new Action0() {
+			@Override
+			public void invoke() {
+				doChatStep();
+			}
+		});
 		selectButton(leftShipStatus, true);
 		selectButton(rightShipStatus, false);
 		selectionBox = false;
 		retreat.visible = true;
 		confirmRetreat.visible = false;
 		stopRetreat.visible = false;
+		layoutPanel.okHover = false;
+		layoutPanel.okDown = false;
 		displaySelectedShipInfo();
 	}
 
@@ -1024,6 +1040,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public void onLeave() {
 		close0(buttonTimer);
 		buttonTimer = null;
+		
+		close0(chatTimer);
+		chatTimer = null;
+		
+		node = null;
+		chat = null;
 		
 		// cleanup
 		
@@ -1156,7 +1178,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		// finish layout selection
 		if (layoutSelectionMode && !commons.simulation.paused()) {
 			setLayoutSelectionMode(false);
-			displayPanel(PanelMode.SHIP_STATUS, false);
+			displayPanel(PanelMode.COMMUNICATOR, false);
 			enableFleetControls(true);
 			retreat.enabled = battle.allowRetreat;
 		}
@@ -1370,12 +1392,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		nonPlayer().ai.spaceBattleInit(this);
 		world().scripting.onSpacewarStart(this);
 		
+		leftChatPanel.clear();
+		rightChatPanel.clear();
+		
 		if (battle.chat != null) {
-			leftChatPanel.chat = world().chats.get(battle.chat);
-			rightChatPanel.chat = leftChatPanel.chat;
+			chat = world().chats.get(battle.chat);
 		} else {
-			leftChatPanel.chat = null;
-			rightChatPanel.chat = null;
+			chat = null;
 		}
 		
 		displayPanel(PanelMode.SHIP_STATUS, true);
@@ -1391,6 +1414,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		retreat.enabled = false;
 		
+		if (chat != null) {
+			node = chat.getStart();
+			leftChatPanel.options.add(node);
+			rightChatPanel.options.add(node);
+		}
 	}
 	/**
 	 * Returns the non-human player of the current battle.
@@ -2827,7 +2855,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (e.has(Type.UP)) {
 				if (okDown && withinOk(e)) {
 					okDown = false;
-					displayPanel(PanelMode.SHIP_STATUS, false);
+					displayPanel(PanelMode.COMMUNICATOR, false);
 					setLayoutSelectionMode(false);
 					enableFleetControls(true);
 					retreat.enabled = battle.allowRetreat;
@@ -3525,6 +3553,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		
+		boolean isEnemyFleeing = battle.enemyFlee;
 		SpacewarAction act = SpacewarAction.CONTINUE;
 		act = player().ai.spaceBattle(this, playerIdles);
 		act = nonPlayer().ai.spaceBattle(this, enemyIdles);
@@ -3547,8 +3576,30 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			commons.simulation.pause();
 			concludeBattle(winner);
 		}
+		
+		// chat switch to flee
+		if (isEnemyFleeing != battle.enemyFlee) {
+			chatFlee();
+		}
+		
+		
 		enableSelectedFleetControls();
 		askRepaint();
+	}
+	/** Toggle to chat flee. */
+	void chatFlee() {
+		if (chat != null && battle.enemyFlee) {
+			Node fn = chat.getFlee();
+			if (fn != null && node != fn) {
+				node = fn;
+				
+				leftChatPanel.options.clear();
+				rightChatPanel.options.clear();
+				
+				leftChatPanel.addLine(TextRenderer.YELLOW, get(fn.message));
+				rightChatPanel.addLine(TextRenderer.YELLOW, get(fn.message));
+			}
+		}
 	}
 	/**
 	 * Handle the automatic fire for ships and stations.
@@ -4558,12 +4609,70 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 	}
+	/**
+	 * Print the next character.
+	 */
+	void doChatStep() {
+		if (leftChatPanel.visible() || rightChatPanel.visible()) {
+			boolean b1 = leftChatPanel.nextChar();
+			boolean b2 = rightChatPanel.nextChar();
+			
+			if (b1 || b2) {
+				if (!node.enemy) {
+					if (node.transitions.size() == 1) {
+						Node n2 = chat.get(node.transitions.get(0));
+						leftChatPanel.addLine(n2.enemy ? TextRenderer.YELLOW : TextRenderer.GREEN, get(n2.message));
+						rightChatPanel.addLine(n2.enemy ? TextRenderer.YELLOW : TextRenderer.GREEN, get(n2.message));
+						node = n2;
+					}
+				} else {
+					leftChatPanel.options.clear();
+					rightChatPanel.options.clear();
+					for (String n2t : node.transitions) {
+						Node n2 = chat.get(n2t);
+						
+						leftChatPanel.options.add(n2);
+						rightChatPanel.options.add(n2);
+					}
+					if (node.retreat) {
+						battle.enemyFlee = true;
+						for (SpacewarStructure sws : structures(nonPlayer())) {
+							flee(sws);
+						}
+					}
+				}
+			}
+		}
+	}
+	/** 
+	 * Action to select an option.
+	 * @param n the node 
+	 */
+	void doSelectOption(Node n) {
+		leftChatPanel.options.clear();
+		rightChatPanel.options.clear();
+		
+		leftChatPanel.addLine(n.enemy ? TextRenderer.YELLOW : TextRenderer.GREEN, get(n.message));
+		rightChatPanel.addLine(n.enemy ? TextRenderer.YELLOW : TextRenderer.GREEN, get(n.message));
+		
+		node = n;
+	}
 	/** The chat information panel. */
 	class ChatPanel extends UIContainer {
-		/** The chat. */
-		Chat chat;
+		/** Indication that chat is available. */
+		boolean hasChat;
 		/** The nochat label. */
 		UILabel nochat;
+		/** The color+line that printed. */
+		final List<Pair<Integer, String>> lines = U.newArrayList();
+		/** The current text or -1 if show all. */
+		int currentIndex = 0;
+		/** The available options. */
+		final List<Node> options = U.newArrayList();
+		/** Highlight option. */
+		int highlight = -1;
+		/** Row height. */
+		final int rowHeight = 16;
 		/** Initialize. */
 		public ChatPanel() {
 			width = 286;
@@ -4574,14 +4683,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			nochat.y = 20;
 			nochat.wrap(true);
 			nochat.horizontally(HorizontalAlignment.CENTER);
+			nochat.text(get("chat.unavailable"));
 			
 			addThis();
 		}
 		@Override
 		public void draw(Graphics2D g2) {
-			if (chat == null) {
+			Shape save0 = g2.getClip();
+			g2.clipRect(0, 0, width, height);
+			if (hasChat) {
 				nochat.visible(true);
-				nochat.text(get("chat.unavailable"));
 				nochat.height = nochat.getWrappedHeight();
 				nochat.color(TextRenderer.YELLOW);
 			} else {
@@ -4589,7 +4700,153 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			g2.setColor(Color.BLACK);
 			g2.fillRect(0, 0, width, height);
+			
+			int y = height - 1;
+			for (int i = lines.size() - 1; i >= 0; i--) {
+				Pair<Integer, String> ln = lines.get(i);
+				String lns = ln.second;
+				if (i == lines.size() - 1 && currentIndex >= 0) {
+					lns = lns.substring(0, currentIndex);
+				}
+				List<String> lout = U.newArrayList();
+				commons.text().wrapText(lns, width - 4, 7, lout);
+				
+				y -= 9;
+				for (int j = lout.size() - 1; j >= 0; j--) {
+					String s0 = lout.get(j);
+					commons.text().paintTo(g2, 2, y, 7, ln.first, s0);
+					
+					int s0w = commons.text().getTextWidth(7, s0);
+					
+					if (s0w + 7 < width 
+							&& i == lines.size() - 1 
+							&& j == lout.size() - 1) {
+						g2.setColor(new Color(ln.first));
+						g2.fillRect(s0w + 1, y + 0, 7, 7);
+					}
+					
+					y -= 9;
+				}
+			}
+
+			if (options.size() > 0) {
+				// compute option height
+				int oh = 0;
+				List<List<String>> ols = U.newArrayList();
+				for (Node nso : options) {
+					String so = get(nso.getOption());
+					List<String> lout = U.newArrayList();
+					commons.text().wrapText(so, width - 4, 7, lout);
+					oh += lout.size() * rowHeight;
+					ols.add(lout);
+				}
+				
+				// black out existing text
+				g2.setColor(Color.BLACK);
+				g2.fillRect(0, 0, width, oh + 3);
+				g2.setColor(new Color(0x4F6FB7));
+				g2.drawLine(0, oh, width, oh);
+				g2.drawLine(0, oh + 1, width, oh + 1);
+
+				int oy = 1;
+				int oi = 0;
+				for (List<String> s : ols) {
+					int c0 = highlight == oi ? TextRenderer.YELLOW : TextRenderer.GREEN;
+					for (String s1 : s) {
+						commons.text().paintTo(g2, 2, oy + (rowHeight - 7) / 2, 7, c0, s1);
+						oy += rowHeight;
+					}
+					oi++;
+				}
+			}
+			
 			super.draw(g2);
+			g2.setClip(save0);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			switch (e.type) {
+			case LEAVE:
+				highlight = -1;
+				return true;
+			case ENTER:
+			case MOVE:
+			case DRAG:
+				highlight = getSelectedIndex(e.y);
+				return true;
+			case DOWN:
+				highlight = getSelectedIndex(e.y);
+				if (highlight >= 0) {
+					doSelectOption(options.get(highlight));
+					return true;
+				}
+				// skip lines
+				if (lines.size() > 0) {
+					int ci = lines.get(lines.size() - 1).second.length() - 1;
+					if (currentIndex < ci) {
+						currentIndex = ci;
+					}
+				}
+				break;
+			default:
+			}
+			return super.mouse(e);
+		}
+		/**
+		 * Compute the selected text row.
+		 * @param y the mouse Y
+		 * @return the index or -1 if none
+		 */
+		public int getSelectedIndex(int y) {
+			int oh = 0;
+			int i = 0;
+			for (Node nso : options) {
+				String so = get(nso.getOption());
+				List<String> lout = U.newArrayList();
+				commons.text().wrapText(so, width - 4, 7, lout);
+				int oh0 = oh;
+				oh += lout.size() * rowHeight;
+				if (y >= oh0 && y < oh) {
+					return i;
+				}
+				i++;
+			}
+			return -1;
+		}
+		/**
+		 * Render the next character.
+		 * @return true if no more characters in the current line.
+		 */
+		public boolean nextChar() {
+			if (lines.size() > 0) {
+				Pair<Integer, String> ln = lines.get(lines.size() - 1);
+				int ci1 = currentIndex + 1;
+				int ci2 = Math.min(ln.second.length(), ci1);
+				if (ci2 != currentIndex) {
+					currentIndex = ci2;
+					this.askRepaint();
+				}
+				if (ci1 == ln.second.length()) {
+					return true;
+				}
+			}
+			return false;
+		}
+		/** Clear the contents. */
+		public void clear() {
+			hasChat = false;
+			currentIndex = 0;
+			lines.clear();
+			options.clear();
+		}
+		/**
+		 * Add a new line and start printing it.
+		 * @param color the color
+		 * @param text the text
+		 */
+		public void addLine(int color, String text) {
+			lines.add(Pair.of(color, text));
+			currentIndex = 0;
 		}
 	}
 }

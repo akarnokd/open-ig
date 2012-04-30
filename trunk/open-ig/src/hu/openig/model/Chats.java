@@ -57,6 +57,10 @@ public class Chats {
 				n.message = xnode.get("message");
 				n.retreat = "retreat".equals(xnode.get("action", null));
 				
+				for (XElement xtr : xnode.childrenWithName("transition")) {
+					n.transitions.add(xtr.get("to"));
+				}
+				
 				c.nodes.put(xnode.get("id"), n);
 			}
 			
@@ -127,6 +131,10 @@ public class Chats {
 		@Override
 		public String toString() {
 			return "enemy = " + enemy + ", option = " + option + ", message = " + message + ", retreat = " + retreat;
+		}
+		/** @return the option. */
+		public String getOption() {
+			return option != null ? option : message;
 		}
 	}
 	
