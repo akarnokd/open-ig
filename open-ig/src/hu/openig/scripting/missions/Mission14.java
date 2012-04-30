@@ -129,6 +129,13 @@ public class Mission14 extends Mission {
 		}
 	}
 	@Override
+	public void onSpacewarStart(SpacewarWorld war) {
+		if (isMissionSpacewar(war.battle(), "Mission-14")) {
+			war.battle().chat = "chat.mission-14.destroy.viruscarrier";
+		}
+	}
+	
+	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
 		onAutobattleFinish(war.battle());
 	}

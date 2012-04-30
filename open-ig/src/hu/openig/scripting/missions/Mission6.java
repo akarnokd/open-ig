@@ -133,6 +133,17 @@ public class Mission6 extends Mission {
 		}
 	}
 	@Override
+	public void onSpacewarStart(SpacewarWorld war) {
+		if (helper.isActive("Mission-6")) {
+			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+			if (garthog != null 
+					&& (war.battle().attacker == garthog.first
+					|| war.battle().targetFleet == garthog.first)) {
+				war.battle().chat = "chat.mission-6.defend.Achilles";
+			}
+		}
+	}
+	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
 		if (helper.isActive("Mission-6")) {
 			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));

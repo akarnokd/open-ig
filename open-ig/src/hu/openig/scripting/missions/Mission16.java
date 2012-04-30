@@ -223,6 +223,7 @@ public class Mission16 extends Mission {
 		if (isMissionSpacewar(war.battle(), "Mission-16")) {
 			Player g = garthog();
 			startJointSpaceBattle(war, ALLY, player, ENEMY, g);
+			war.battle().chat = "chat.mission-16.escort.money.carrier";
 		}
 	}
 	@Override

@@ -224,6 +224,7 @@ public class Mission4 extends Mission {
 				s.attack = a;
 			}
 			battle.allowRetreat = false;
+			battle.chat = "chat.mission-4.piratesfight.at.Naxos";
 		}
 	}
 	/**

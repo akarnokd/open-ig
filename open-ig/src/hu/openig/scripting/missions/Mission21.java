@@ -313,6 +313,7 @@ public class Mission21 extends Mission {
 		if (stage == M21.ATTACK && isMissionSpacewar(war.battle(), "Mission-21")) {
 			Player g = garthog();
 			startJointSpaceBattle(war, ALLY, player, ENEMY, g);
+			war.battle().chat = "chat.mission-21.escort.Prototype";
 		}
 	}
 	@Override

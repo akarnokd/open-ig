@@ -342,6 +342,10 @@ public class Mission5 extends Mission {
 				helpers = iis.size();
 				war.addStructures(iis, EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS));
 				battle.attackerAllies.add(player("Pirates"));
+				
+				battle.chat = "chat.mission-5.garthog.with.allied.pirates";
+			} else {
+				battle.chat = "chat.mission-5.garthog.without.allied.pirates";
 			}
 			
 			// center pirate

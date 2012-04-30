@@ -142,6 +142,14 @@ public class Mission9 extends Mission {
 		}		
 	}
 	@Override
+	public void onSpacewarStart(SpacewarWorld war) {
+		if (helper.isActive("Mission-9") 
+				&& war.battle().attacker.owner == player 
+				&& war.battle().targetFleet != null) {
+			war.battle().chat = "chat.mission-9.smuggler";
+		}
+	}
+	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
 		if (helper.isActive("Mission-9") 
 				&& war.battle().attacker.owner == player 
