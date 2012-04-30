@@ -43,7 +43,7 @@
 			<desc lang='en'>Space chat, smaller bugfixes.</desc>
 			<desc lang='de'>Raum-Unterhaltung, Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.370.jar' sha1='a9278ce8a834d30e4cb76a4bc49b4d0a1d1442cc'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.370.jar' sha1='be2a705746fd6a928d88c388a672700540d5b9b2'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
