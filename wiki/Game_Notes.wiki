@@ -27,6 +27,7 @@
   * Enemy fleets shouldn't be moveable via keyboard commands ([http://code.google.com/p/open-ig/issues/detail?id=381 Issue #381])
   * Fixed missions where enemies had to catch up might not progress as intended ([http://code.google.com/p/open-ig/issues/detail?id=383 Issue #383])
   * Traders are now limited to the player's empire and travel to visible planets when infected ([http://code.google.com/p/open-ig/issues/detail?id=384  Issue #385])
+  * Battleship 2 did not support hyperdrives v1-v4 ([http://code.google.com/p/open-ig/issues/detail?id=397 Issue #397])
   
 
 = Version 0.94.360 - German language support =
