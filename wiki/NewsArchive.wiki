@@ -6,6 +6,11 @@
 
 == April, 2012 ==
 
+
+*April 30, 2012*
+
+Space chat has arrived.
+
 *April 23, 2012*
 
 If you run into a crash while contacting Achilles, please exit the game and select *Other options > Verify install* from the Launcher.
