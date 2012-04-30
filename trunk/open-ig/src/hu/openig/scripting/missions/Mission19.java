@@ -166,6 +166,7 @@ public class Mission19 extends Mission {
 			for (SpacewarStructure s : war.structures(freeTraders())) {
 				initialHP += s.hp;
 			}
+			war.battle().chat = "chat.mission-19.rebel.Zeuson.governor";
 		}
 	}
 	@Override

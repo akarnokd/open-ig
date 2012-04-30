@@ -307,6 +307,7 @@ public class Mission3 extends Mission {
 				}
 			}
 			battle.allowRetreat = false;
+			battle.chat = "chat.mission-3.escort.cargo";
 		}
 	}
 	@Override

@@ -274,6 +274,7 @@ public class Mission13 extends Mission {
 		if (isMissionSpacewar(war.battle(), "Mission-13")) {
 			Player g = garthog();
 			startJointSpaceBattle(war, "Mission-13-Benson", player, "Mission-13-Garthog", g);
+			war.battle().chat = "chat.mission-13.escort.Benson";
 		}
 	}
 	@Override

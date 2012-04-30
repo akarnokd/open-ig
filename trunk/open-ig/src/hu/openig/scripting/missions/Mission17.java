@@ -171,6 +171,13 @@ public class Mission17 extends Mission {
 		onAutobattleFinish(war.battle());
 	}
 	@Override
+	public void onSpacewarStart(SpacewarWorld war) {
+		if (!isMissionSpacewar(war.battle(), "Mission-17")) {
+			return;
+		}
+		war.battle().chat = "chat.mission-17.stolen.destroyer2.prototype";
+	}
+	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
 		if (!isMissionSpacewar(battle, "Mission-17")) {
 			return;
