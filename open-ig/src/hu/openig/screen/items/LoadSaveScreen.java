@@ -30,9 +30,7 @@ import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UISpinner;
 import hu.openig.utils.XElement;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -779,7 +777,7 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		saveNameText = new UILabel("", 14, commons.text());
 		saveNameText.color(TextRenderer.YELLOW);
-		saveNameText.backgroundColor(0xC0000000);
+//		saveNameText.backgroundColor(0xC0000000);
 
 		
 		classicControls = new UICheckBox(get("settings.classic_controls"), 14, commons.common().checkmark, commons.text());
@@ -1035,7 +1033,7 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		saveName.location(base.x + 10, load.y + load.height + 8);
 		saveNameText.location(saveName.x + saveName.width + 10, saveName.y);
-		saveNameText.size(base.width - saveName.width - 30, 20);
+		saveNameText.size(base.width - saveName.width - 30, 14);
 		// audio
 		
 		soundLabel.location(base.x + 30, base.y + 70 + 8);
@@ -1132,6 +1130,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 		if (settingsMode != SettingsPage.LOAD_SAVE) {
 			g2.drawImage(commons.background().setup, base.x, base.y, null);
+
 //			g2.setColor(new Color(0, 0, 0, 192));
 //			g2.fillRect(base.x + 10, base.y + 50, base.width - 20, base.height - 60);
 
@@ -1156,8 +1155,10 @@ public class LoadSaveScreen extends ScreenBase {
 			timestepValue.next.enabled(config.timestep < 60);
 			
 		} else {
-
 			g2.drawImage(background, base.x, base.y, null);
+
+			g2.setColor(new Color(0, 0, 0, 192));
+			g2.fillRect(base.x + 10, base.y + 115, base.width - 20, base.height - 60);
 
 			save.enabled(maySave);
 			load.enabled(list.selected != null);
@@ -1340,13 +1341,13 @@ public class LoadSaveScreen extends ScreenBase {
 		 * @param s the text
 		 */
 		void paintText(Graphics2D g2, int x, int y, int c, String s) {
-			int tw = commons.text().getTextWidth(textHeight, s);
+//			int tw = commons.text().getTextWidth(textHeight, s);
 
-			Composite save0 = g2.getComposite();
-			g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
-			g2.setColor(Color.BLACK);
-			g2.fillRect(x - 2, y - 2, tw + 4, textHeight + 4);
-			g2.setComposite(save0);
+//			Composite save0 = g2.getComposite();
+//			g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
+//			g2.setColor(Color.BLACK);
+//			g2.fillRect(x - 2, y - 2, tw + 4, textHeight + 4);
+//			g2.setComposite(save0);
 
 			commons.text().paintTo(g2, x, y, textHeight, c, s);
 		}

@@ -1280,6 +1280,10 @@ public class World {
 		/** The deferred fleet-to-fleet targeting. */
 		Map<Fleet, Integer> deferredTargets = new HashMap<Fleet, Integer>();
 		
+		for (Player p : players.values()) {
+			p.fleets.clear(); 
+		}
+		
 		for (XElement xplayer : xworld.childrenWithName("player")) {
 			Player p = players.get(xplayer.get("id"));
 			// clear player variables
@@ -1590,9 +1594,10 @@ public class World {
 	 */
 	private void loadFleets(Map<Fleet, Integer> deferredTargets,
 			XElement xplayer, Player p) {
-		p.fleets.clear();
 		for (XElement xfleet : xplayer.childrenWithName("fleet")) {
 			int id = xfleet.getInt("id", -1);
+			
+			boolean duplicate = checkDuplicate(id);
 			
 			Fleet f = null;;
 			// if no id automatically assign a new sequence
@@ -1601,7 +1606,7 @@ public class World {
 				f = new Fleet(p);
 				noTargetFleet = true; // ignore target fleet in this case
 			} else {
-				if (!checkDuplicate(id)) {
+				if (!duplicate) {
 					f = new Fleet(id, p);
 				} else {
 					f = new Fleet(p);
