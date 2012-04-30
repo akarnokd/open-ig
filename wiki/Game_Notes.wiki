@@ -2,7 +2,34 @@
 
 <wiki:toc max_depth="1" />
 
-= Version 0.94.360 - Basic diplomacy =
+= Version 0.94.370 - Space chat =
+  * Released: 2012-04-30 20:30 CET
+  * Menu background screens cleared by *Norbert "Silver83" Pellny* ([http://code.google.com/p/open-ig/issues/detail?id=367 Issue #367])
+  * Space chat implemented (Issues [http://code.google.com/p/open-ig/issues/detail?id=215 #215], [http://code.google.com/p/open-ig/issues/detail?id=396 #396], [http://code.google.com/p/open-ig/issues/detail?id=322 #322])
+  * Diplomacy language specific fixes ([http://code.google.com/p/open-ig/issues/detail?id=135 Issue #135])
+  * Mission 5 internal cleanup ([http://code.google.com/p/open-ig/issues/detail?id=327 Issue #327])
+  * Added user interface scaling and full screen cutscene options ([http://code.google.com/p/open-ig/issues/detail?id=329 Issue #329])
+  * Launcher's german language integration was incomplete ([http://code.google.com/p/open-ig/issues/detail?id=357 Issue #357])
+  * Missing animations fixed (Issues [http://code.google.com/p/open-ig/issues/detail?id=358 #358], [http://code.google.com/p/open-ig/issues/detail?id=360 #360])
+  * Level 2 shipwalk animation fixed ([http://code.google.com/p/open-ig/issues/detail?id=363 Issue #363])
+  * Mission 8 timeout management fixed ([http://code.google.com/p/open-ig/issues/detail?id=364 Issue #364])
+  * Double clicking on fleets opens wrong screen ([http://code.google.com/p/open-ig/issues/detail?id=365 Issue #365])
+  * Production screen had missing labels ([http://code.google.com/p/open-ig/issues/detail?id=366 Issue #366])
+  * Mission 5 timeout management fixed ([http://code.google.com/p/open-ig/issues/detail?id=369 Issue #369])
+  * Battle finish statistics assigns wrong counts to the player and enemy (Issues [http://code.google.com/p/open-ig/issues/detail?id=370 #370], [http://code.google.com/p/open-ig/issues/detail?id=374 #374])
+  * Loading a save sometimes failed ([http://code.google.com/p/open-ig/issues/detail?id=371 Issue #371])
+  * Fixed case where loading a save in game would clear attack orders.
+  * Missing Achilles video ([http://code.google.com/p/open-ig/issues/detail?id=373 Issue #373])
+  * Highlighting of traders in level 2 is working now ([http://code.google.com/p/open-ig/issues/detail?id=375 Issue #375]).
+  * AI sometimes could not fire its rockets ([http://code.google.com/p/open-ig/issues/detail?id=376 Issue #376])
+  * AI fighters, when low on health, will kamikaze into its target ([http://code.google.com/p/open-ig/issues/detail?id=376 Issue #376])
+  * Mission 11 crash fixed ([http://code.google.com/p/open-ig/issues/detail?id=380 Issue #380])
+  * Enemy fleets shouldn't be moveable via keyboard commands ([http://code.google.com/p/open-ig/issues/detail?id=381 Issue #381])
+  * Fixed missions where enemies had to catch up might not progress as intended ([http://code.google.com/p/open-ig/issues/detail?id=383 Issue #383])
+  * Traders are now limited to the player's empire and travel to visible planets when infected ([http://code.google.com/p/open-ig/issues/detail?id=384  Issue #385])
+  
+
+= Version 0.94.360 - German language support =
   * Released: 2012-04-21 11:00 CET
   * German language support
   * Promotion to Commander message and videos now always play ([http://code.google.com/p/open-ig/issues/detail?id=331 Issue #331])
