@@ -2444,7 +2444,7 @@
 
 	<entry key='@MainFleet'>Főflotta</entry>
 	<entry key="achievement.do_you_chat">Előbb csevej, aztán harc?</entry>
-	<entry key="achievement.do_you_chat.desc">Vidd végig a csevegést minden küldetéshez kapcsolódó űrharcban.</entry>
+	<entry key="achievement.do_you_chat.desc">Győzdd meg az ellenfelet a visszavonulásról az űrcsevejben.</entry>
 	<entry key='settings.ui_scale'>Felület nagyítás (X - normál)</entry>
 	<entry key='flagship.moveto.equipment2'>Felszerelés</entry>
 	<entry key='settings.movie_scale'>Teljesképernyős átvezetővideók</entry>

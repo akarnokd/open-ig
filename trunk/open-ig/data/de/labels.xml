@@ -59,7 +59,7 @@
 	<entry key='settings.swap_mouse_buttons'>Maus Knöpfe tauschen</entry>
 	<entry key='settings.slow_on_attack'>Langsam spiel wenn unter Beschuss</entry>
 	<entry key='settings.base_speed'>Spiel Geschwindigkeit</entry>
-	<entry key='settings.ui_scale'>Benutzeroberfläche Zoom (X - wiederherstellen)</entry>
+	<entry key='settings.ui_scale'>Benutzeroberfläche Zoom (X - zurück)</entry>
 	<entry key='screens.bridge'>Brücke</entry>
 	<entry key='screens.starmap'>Karte</entry>
 	<entry key='screens.colony'>Colonie</entry>
@@ -1762,7 +1762,7 @@
 	<entry key='achievement.defense_contract'>Verteidigung Vertrag</entry>
 	<entry key='achievement.defense_contract.desc'>Alle Ihre Planeten sind mit mindestens 3 Projektoren und ein Schild ausgerüstet.</entry>
 	<entry key='achievement.do_you_chat'>Erst Unterhaltung, dann Kampf</entry>
-	<entry key='achievement.do_you_chat.desc'>Füllen Sie alle Mission verwandten Unterhaltung im Weltraumschlachten.</entry>
+	<entry key='achievement.do_you_chat.desc'>Überzeuge dein Feind beim Raum-Unterhaltung zurückzuziehen.</entry>
 	<entry key='achievement.embargo'>Embargo</entry>
 	<entry key='achievement.embargo.desc'>Sie haben Ihr erster Handlerschiff zerstört</entry>
 	<entry key='achievement.energizer'>Energizer</entry>
