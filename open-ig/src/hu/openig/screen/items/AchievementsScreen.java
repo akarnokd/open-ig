@@ -455,53 +455,11 @@ public class AchievementsScreen extends ScreenBase {
 		g2.setClip(save0);
 		
 	}
-	/**
-	 * Add the given achievement if there is a support function for that.
-	 * @param id the achievement id
-	 */
-	void addAchievement(String id) {
-		if (AchievementManager.achievements().contains(id)) {
-			achievements.add(new AchievementEntry(id, id + ".desc"));
-		}
-	}
 	/** Create the test achievements. */
 	void createTestEntries() {
-		addAchievement("achievement.conqueror");
-		addAchievement("achievement.millionaire");
-		addAchievement("achievement.student_of_bokros");
-		addAchievement("achievement.pirate_bay");
-		addAchievement("achievement.dargslayer");
-		addAchievement("achievement.energizer");
-		addAchievement("achievement.death_star");
-		addAchievement("achievement.research_assistant");
-		addAchievement("achievement.scientist");
-		addAchievement("achievement.nobel_prize");
-		addAchievement("achievement.popular");
-		addAchievement("achievement.apeh");
-		addAchievement("achievement.ultimate_leader");
-		addAchievement("achievement.revolutioner");
-		addAchievement("achievement.mass_effect");
-		addAchievement("achievement.defender");
-		addAchievement("achievement.embargo");
-		addAchievement("achievement.columbus");
-		addAchievement("achievement.quarter");
-		addAchievement("achievement.manufacturer");
-		addAchievement("achievement.salvage");
-		addAchievement("achievement.living_space");
-		addAchievement("achievement.food");
-		addAchievement("achievement.decade");
-		addAchievement("achievement.oldest_man");
-		addAchievement("achievement.all_your_base");
-		addAchievement("achievement.et");
-		addAchievement("achievement.defense_contract");
-		addAchievement("achievement.coffee_break");
-		addAchievement("achievement.all_seeing_eye");
-		addAchievement("achievement.newbie");
-		addAchievement("achievement.commander");
-		addAchievement("achievement.admiral");
-		addAchievement("achievement.grand_admiral");
-		addAchievement("achievement.influenza");
-		
+		for (String ac : AchievementManager.achievements()) {
+			achievements.add(new AchievementEntry(ac, ac + ".desc"));
+		}
 		statistics.add(new StatisticsEntry("statistics.total_gametime",
 		new Func1<Void, String>() {
 			@Override

@@ -4635,13 +4635,25 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						rightChatPanel.options.add(n2);
 					}
 					if (node.retreat) {
+						achievement("achievement.do_you_chat");
 						battle.enemyFlee = true;
 						for (SpacewarStructure sws : structures(nonPlayer())) {
 							flee(sws);
 						}
 					}
 				}
+				commons.control().moveMouse();
 			}
+		}
+	}
+	/**
+	 * Grant an achievement with the given ID if not already awarded.
+	 * @param a the achievement id, e.g., "achievement.i_robot"
+	 */
+	protected void achievement(String a) {
+		if (!world().env.profile().hasAchievement(a)) {
+			world().env.achievementQueue().add(a);
+			world().env.profile().grantAchievement(a);
 		}
 	}
 	/** 

@@ -27,7 +27,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.367'>
+	<module id='Game' version='0.94.370'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -39,17 +39,17 @@
 		<execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Német nyelv támogatása, kisebb javítások.</desc>
-			<desc lang='en'>German language support, smaller bugfixes.</desc>
-			<desc lang='de'>Deutsche sprache Unterstützung, Fehlerbehebungen</desc>
+			<desc lang='hu'>Űrduma, hibajavítások.</desc>
+			<desc lang='en'>Space chat, smaller bugfixes.</desc>
+			<desc lang='de'>Raum-Unterhaltung, Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.367.jar' sha1='8d736e8048bd9609bc2c79ed06d447a86ada48c1'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.370.jar' sha1='a9278ce8a834d30e4cb76a4bc49b4d0a1d1442cc'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120429a2.zip' sha1='a9c7707833e73aaec539ce1e53d821fe884883b6'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Április 23 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 23th April, 2012 / A</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120430a2.zip' sha1='3155798dceff8d7215909b83009fad142fed5f89'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Április 30 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 30th April, 2012 / A</desc>
 		</file>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' sha1='7368ca1890ae9ee3a0609a83b03654afa09492eb'/>
