@@ -188,7 +188,7 @@ public class AttackPlanner extends Planner {
 				}
 				DiplomaticRelation dr = world.relations.get(p.owner);
 				if (dr != null && dr.full) {
-					if (dr.value < WAR_LIMIT && hasActiveAlliance(dr.alliancesAgainst)) {
+					if (dr.value < WAR_LIMIT && !hasActiveAlliance(dr.alliancesAgainst)) {
 						candidates.add(p);
 						ps.add(p.owner);
 					}
