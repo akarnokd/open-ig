@@ -199,8 +199,10 @@ public class Mission18 extends Mission {
 				tagFleet(f, "Mission-18-Colonizer");
 				addScripted(f);
 			} else {
-				helper.setObjectiveState("Mission-18", ObjectiveState.FAILURE);
-				gameover();
+				if (player.ownPlanets().size() < 4) {
+					helper.setObjectiveState("Mission-18", ObjectiveState.FAILURE);
+					gameover();
+				}
 			}
 		}		
 	}
