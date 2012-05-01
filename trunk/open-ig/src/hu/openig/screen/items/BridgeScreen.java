@@ -602,6 +602,9 @@ public class BridgeScreen extends ScreenBase {
 	}
 	@Override
 	public void onLeave() {
+		videoAppearAnim.stop();
+		videoAppear = null;
+		videoAppearPercent = 0;
 		onAppearComplete = null;
 		if (messageAnim != null) {
 			onMessageComplete = null;
@@ -625,7 +628,6 @@ public class BridgeScreen extends ScreenBase {
 		commons.force = false;
 		onSeen = null;
 		
-		videoAppearAnim.stop();
 		videos.clear();
 	}
 	/**
