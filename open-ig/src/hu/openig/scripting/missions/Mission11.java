@@ -46,7 +46,7 @@ public class Mission11 extends Mission {
 		if (m10.state != ObjectiveState.ACTIVE
 				&& !m11.visible && m11.state == ObjectiveState.ACTIVE
 				&& !helper.hasMissionTime("Mission-11")) {
-			helper.setMissionTime("Mission-11", helper.now() + 7 * 24);
+			helper.setMissionTime("Mission-11", helper.now() + 6 * 24);
 		}
 		if (checkMission("Mission-11")) {
 			helper.showObjective("Mission-11");
