@@ -1211,7 +1211,7 @@ public class LoadSaveScreen extends ScreenBase {
 			doBack();
 			e.consume();
 		} else {
-			if (chr == 'x' || chr == 'X') {
+			if ((chr == 'x' || chr == 'X') && settingsMode == SettingsPage.VISUAL) {
 				config.uiScale = 100;
 				e.consume();
 				askRepaint();

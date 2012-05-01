@@ -3237,16 +3237,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** 
 	 * Generate the set of deployment locations.
 	 * @param atBuildings should the placement locations around buildings?
+	 * @param skipEdge skip the most outer location
 	 * @return the set of locations 
 	 */
-	Set<Location> getDeploymentLocations(boolean atBuildings) {
+	Set<Location> getDeploymentLocations(boolean atBuildings, boolean skipEdge) {
 		Set<Location> result = U.newHashSet();;
 		if (atBuildings) {
 			for (Building b : planet().surface.buildings) {
 				result.addAll(placeAround(b));
 			}
 		} else {
-			for (int i = 0; i < 3; i++) {
+			for (int i = skipEdge ? 1 : 0; i < 3; i++) {
 				result.addAll(placeEdge(i));
 			}
 		}
@@ -4376,8 +4377,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					} else {
 						g.attack = null;
 					}
-					g.cooldown = g.model.delay;
 				}
+				g.cooldown = g.model.delay;
 				g.phase = 0;
 			}
 		} else {
@@ -5096,7 +5097,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		nonPlayer().ai.groundBattleInit(this);
 		
 		battlePlacements.clear();
-		battlePlacements.addAll(getDeploymentLocations(planet().owner == player()));
+		battlePlacements.addAll(getDeploymentLocations(planet().owner == player(), false));
 
 		unitsToPlace.clear();
 		boolean atBuildings = planet().owner == player();
@@ -5177,7 +5178,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param gus the list of units
 	 */
 	void placeGroundUnits(boolean atBuildings, LinkedList<GroundwarUnit> gus) {
-		Set<Location> locations = getDeploymentLocations(atBuildings);
+		Set<Location> locations = getDeploymentLocations(atBuildings, true);
 		CenterAndRadius car = computePlacementCircle(locations);
 		if (atBuildings) {
 			placeAroundInCircle(gus, locations, car.icx, car.icy, car.rmax);
@@ -5467,7 +5468,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	@Override
 	public Set<Location> placementOptions(Player player) {
-		return getDeploymentLocations(player == planet().owner);
+		return getDeploymentLocations(player == planet().owner, true);
 	}
 	@Override
 	public void attack(GroundwarGun g, GroundwarUnit target) {
