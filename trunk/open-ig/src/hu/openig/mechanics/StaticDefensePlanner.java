@@ -228,11 +228,11 @@ public class StaticDefensePlanner extends Planner {
 			final ResearchType rt = e.getKey();
 			final int count = e.getValue();
 			final int inventoryLocal = planet.inventoryCount(rt);
-			if (inventoryLocal < count) {
+			final int cnt = count - inventoryLocal;
+			if (inventoryLocal < count && p.inventoryCount(rt) >= cnt) {
 				add(new Action0() {
 					@Override
 					public void invoke() {
-						int cnt = count - inventoryLocal;
 						if (p.inventoryCount(rt) >= cnt) {
 							planet.planet.changeInventory(rt, planet.owner, cnt);
 							p.changeInventoryCount(rt, -cnt);

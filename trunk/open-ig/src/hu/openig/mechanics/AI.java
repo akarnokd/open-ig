@@ -614,6 +614,10 @@ public class AI implements AIManager {
 //		}
 		updateExplorationMap();
 		
+//		if (p.id.equals("Garthog")) {
+//			System.out.println("GAI");
+//		}
+		
 		List<Action0> acts = null;
 
 		acts = new ColonyPlanner(world, controls).run();

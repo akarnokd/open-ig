@@ -83,10 +83,8 @@ public class AttackPlanner extends Planner {
 				if (world.mayConquer && ownFleet.statistics.groundFirepower > 0) {
 					if (w.random().nextBoolean()) {
 						targetFleet = selectTargetFleet();
-						if (targetFleet == null && w.random().nextBoolean()) {
-							targetPlanet = selectTargetPlanet();
-						}
-					} else {
+					}
+					if (targetFleet == null) {
 						targetPlanet = selectTargetPlanet();
 					}
 				} else {
