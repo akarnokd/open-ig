@@ -2426,11 +2426,11 @@
 	<entry key='chat.m6.n2'>I'd rather teach you to dance!</entry>
 	<entry key='chat.m6.n3'>Prepare to die!</entry>
 	<entry key='chat.m7.merchant1.n0.o'>Leave the merchant ship alone.</entry>
+	<entry key='chat.m7.merchant1.n0'>Leave the merchant ship alone. Cease fire!</entry>
 	<entry key='chat.m7.merchant1.n1'>Hey, another human! Let's skin him!</entry>
 	<entry key='chat.m7.merchant2.n0'>Halt! This is the Empire Armed Forces. Cease fire! Leave that ship in peace!</entry>
 	<entry key='chat.m7.merchant2.n0.o'>Halt! This is the Empire Armed Forces. Cease fire!</entry>
 	<entry key='chat.m7.merchant2.n1'>Kill them!</entry>
-	<entry key='chat.m7.merchnat1.n0'>Leave the merchant ship alone. Cease fire!</entry>
 	<entry key='chat.m9.n0'>Turn around at once!</entry>
 	<entry key='chat.m9.n1'>Khhz Hrrrz. .he .ad.o is n.t wo.ki...</entry>
 	<entry key='chat.m9.n2'>This planet is under blockade! You must return at once!</entry>

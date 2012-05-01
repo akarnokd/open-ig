@@ -153,6 +153,7 @@ public class Mission6 extends Mission {
 				war.battle().messageText = label("battlefinish.mission-6.14");
 				
 				achievement("achievement.defender");
+				helper.setTimeout("Mission-6-Done", 13000);
 			} else {
 				helper.scriptedFleets().remove(garthog.first.id);
 				cleanupScriptedFleets();

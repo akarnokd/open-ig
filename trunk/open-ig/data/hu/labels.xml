@@ -2359,9 +2359,11 @@
 	<entry key='chat.m2.merchant6.n1'>Jobb lesz, ha eltakarodtok, míg nem késő!</entry>
 	<entry key='chat.m2.merchant6.n2'>Azonnal szüntessék be a tüzelést!</entry>
 	<entry key='chat.m2.merchant6.n3'>O.K. Nagyfiú, Te akartad!</entry>
+	
 	<entry key='chat.m7.merchant1.n0.o'>Azonnal hagyják békén a kereskedőhajót!</entry>
-	<entry key='chat.m7.merchnat1.n0'>Azonnal hagyják békén a kereskedőhajót! Szüntessék be a tüzelést!</entry>
+	<entry key='chat.m7.merchant1.n0'>Azonnal hagyják békén a kereskedőhajót! Szüntessék be a tüzelést!</entry>
 	<entry key='chat.m7.merchant1.n1'>Hé, egy másik emberfajzat! Pont rá vártunk. Fiúk, ropi érkezett - könyörgöm, süssük meg!</entry>
+	
 	<entry key='chat.m7.merchant2.n0.o'>Állj! Itt a Bolygóközi Rendőrség beszél.</entry>
 	<entry key='chat.m7.merchant2.n0'>Állj! Itt a Bolygóközi Rendőrség beszél. Azonnal szüntessék be a tüzelést!</entry>
 	<entry key='chat.m7.merchant2.n1'>Új célpont érkezett! Ne sajnáld!</entry>
