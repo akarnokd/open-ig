@@ -3278,6 +3278,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			double y1 = y0 + h;
 			if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx, 
 					obj.y + dy, x0, y0, x1, y1)) {
+				// FIXME for now
+				return true;
+				/*
 				// walk along the angle up to ds units and see if there is a pixel of the target there?
 				int tx0 = (int)(obj.target.x - w / 2);
 				int ty0 = (int)(obj.target.y - h / 2);
@@ -3295,6 +3298,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						}
 					}
 				}
+				*/
 			}
 		}
 		obj.x += dx;

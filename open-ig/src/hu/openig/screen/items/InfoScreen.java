@@ -857,9 +857,10 @@ public class InfoScreen extends ScreenBase {
 				buttonSound(SoundType.CLICK_HIGH_2);
 				showPlanetListDetails = !showPlanetListDetails;
 				if (showPlanetListDetails) {
-					togglePlanetListDetails.text(get("info.hide_details"));
+					togglePlanetListDetails.text(get("info.hide_details"), true);
+					
 				} else {
-					togglePlanetListDetails.text(get("info.list_details"));
+					togglePlanetListDetails.text(get("info.list_details"), true);
 				}
 				colonies.visible(!showPlanetListDetails);
 				planetListDetais.visible(showPlanetListDetails);
@@ -2240,37 +2241,39 @@ public class InfoScreen extends ScreenBase {
 			}
 		default:
 		}
-		if (e.getKeyCode() == KeyEvent.VK_Q) {
-			switchToTab(Screens.INFORMATION_PLANETS);
-			return true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_W) {
-			switchToTab(Screens.INFORMATION_COLONY);
-			return true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_E) {
-			switchToTab(Screens.INFORMATION_MILITARY);
-			return true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_R) {
-			switchToTab(Screens.INFORMATION_FINANCIAL);
-			return true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_A) {
-			switchToTab(Screens.INFORMATION_FLEETS);
-			return true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_S) {
-			switchToTab(Screens.INFORMATION_BUILDINGS);
-			return true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_D) {
-			switchToTab(Screens.INFORMATION_INVENTIONS);
-			return true;
-		}
-		if (e.getKeyCode() == KeyEvent.VK_F && world().level >= 4) {
-			switchToTab(Screens.INFORMATION_ALIENS);
-			return true;
+		if (!e.isControlDown()) {
+			if (e.getKeyCode() == KeyEvent.VK_Q) {
+				switchToTab(Screens.INFORMATION_PLANETS);
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_W) {
+				switchToTab(Screens.INFORMATION_COLONY);
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_E) {
+				switchToTab(Screens.INFORMATION_MILITARY);
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_R) {
+				switchToTab(Screens.INFORMATION_FINANCIAL);
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_A) {
+				switchToTab(Screens.INFORMATION_FLEETS);
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_S) {
+				switchToTab(Screens.INFORMATION_BUILDINGS);
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_D) {
+				switchToTab(Screens.INFORMATION_INVENTIONS);
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_F && world().level >= 4) {
+				switchToTab(Screens.INFORMATION_ALIENS);
+				return true;
+			}
 		}
 		return super.keyboard(e);
 	}

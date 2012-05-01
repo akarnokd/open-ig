@@ -59,6 +59,8 @@ public class UIGenericButton extends UIComponent {
 	protected int size;
 	/** The icon to display. */
 	protected BufferedImage icon;
+	/** The font metrics. */
+	final FontMetrics fm;
 	/**
 	 * Constructor with the default images.
 	 * @param text the text label
@@ -69,6 +71,7 @@ public class UIGenericButton extends UIComponent {
 	public UIGenericButton(String text, FontMetrics fm, 
 			GenericButtonRenderer normal, GenericButtonRenderer pressed) {
 		this.text = text;
+		this.fm = fm;
 		this.normal = normal;
 		this.pressed = pressed;
 		Dimension d = normal.getPreferredSize(fm, text);
@@ -185,7 +188,22 @@ public class UIGenericButton extends UIComponent {
 	 * @return this
 	 */
 	public UIGenericButton text(String text) {
+		return text(text, false);
+	}
+	/**
+	 * Change the text of the button.
+	 * @param text the new text
+	 * @param resize adjust button size?
+	 * @return this
+	 */
+	public UIGenericButton text(String text, boolean resize) {
 		this.text = text;
+		if (resize) {
+			Dimension d = normal.getPreferredSize(fm, text);
+			size = fm.getFont().getSize();
+			this.width = d.width;
+			this.height = d.height;
+		}
 		return this;
 	}
 	/** @return the text color ARGB. */

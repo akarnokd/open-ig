@@ -268,7 +268,7 @@
 	</chat>
 	<!-- Main mission chats. -->
 	<chat id="chat.mission-2.defend.merchant1">
-		<node id="0" owner="player" option="chat.m2.merchant1.n0.o" message="chat.m2.n0">
+		<node id="0" owner="player" option="chat.m2.merchant1.n0.o" message="chat.m2.merchant1.n0">
 		<!-- This is the Empire Armed Forces. This is the Empire Armed Forces. Cease fire! -->
 			<transition to="1"/>
 		</node>
