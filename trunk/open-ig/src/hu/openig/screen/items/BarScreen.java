@@ -323,7 +323,8 @@ public class BarScreen extends ScreenBase {
 				}
 				askRepaint();
 			} else {
-				if (world().currentTalk != null && e.within(base.x, base.y, base.width, 400)) {
+				if (world().currentTalk != null 
+						&& e.within(base.x, base.y, base.width, 350)) {
 					TalkPerson tp = getPerson();
 					if (tp != null) {
 						talkMode = true;

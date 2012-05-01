@@ -1816,7 +1816,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		if (selected != null) {
 			addOne.enabled(true);
 			addTen.enabled(true);
-			removeTen.enabled(selected.count > 0);
+			removeTen.enabled(selected.count >= 1);
 			removeOne.enabled(selected.count > 0);
 		} else {
 			addOne.enabled(false);

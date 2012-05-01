@@ -273,6 +273,13 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 				}
 			}
 		};
+		swapLock.lock();
+		try {
+			backBuffer = null;
+			frontBuffer = null;
+		} finally {
+			swapLock.unlock();
+		}
 		this.video.start();
 	}
 	/**
