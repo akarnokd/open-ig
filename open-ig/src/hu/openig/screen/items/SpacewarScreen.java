@@ -1403,11 +1403,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		displayPanel(PanelMode.SHIP_STATUS, true);
 		if (battle.attacker.owner == player() 
-				&& (nearbyPlanet == null || nearbyPlanet.owner != player())) {
+				&& (nearbyPlanet == null 
+				|| nearbyPlanet.owner != player())) {
 			displayPanel(PanelMode.LAYOUT, false);
 			setLayoutSelectionMode(true);
 			enableFleetControls(false);
 		} else {
+			displayPanel(PanelMode.COMMUNICATOR, false);
 			setLayoutSelectionMode(false);
 			commons.simulation.resume();
 			enableFleetControls(true);
