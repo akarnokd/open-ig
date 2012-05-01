@@ -26,9 +26,9 @@ public final class Unpack {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		List<PACFile.PACEntry> pf = PACFile.parseFully("c:/downloads/PCX_GER/text.pac");
+		List<PACFile.PACEntry> pf = PACFile.parseFully("g:/games/ighu/data/text.pac");
 		for (PACEntry pe : pf) {
-			FileOutputStream out = new FileOutputStream("c:/downloads/PCX_GER/" + pe.filename);
+			FileOutputStream out = new FileOutputStream("g:/games/ighu/data/" + pe.filename);
 			out.write(pe.data);
 			out.close();
 		}

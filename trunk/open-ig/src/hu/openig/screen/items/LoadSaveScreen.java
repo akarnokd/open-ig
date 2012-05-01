@@ -411,12 +411,12 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 			@Override
 			public void draw(Graphics2D g2) {
+				super.draw(g2);
 				int dw = width - next.width - prev.width - 2;
 				int ox = prev.x + prev.width + 1;
 				int dx = config.effectVolume * dw / 100;
 				g2.setColor(Color.WHITE);
 				g2.fillRect(ox + dx, 1, 2, height - 2);
-				super.draw(g2);
 			}
 		};
 		soundVolume.getValue = new Func1<Void, String>() {
@@ -486,12 +486,12 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 			@Override
 			public void draw(Graphics2D g2) {
+				super.draw(g2);
 				int dw = width - next.width - prev.width - 2;
 				int ox = prev.x + prev.width + 1;
 				int dx = config.musicVolume * dw / 100;
 				g2.setColor(Color.WHITE);
 				g2.fillRect(ox + dx, 1, 2, height - 2);
-				super.draw(g2);
 			}
 		};
 		musicVolume.getValue = new Func1<Void, String>() {
@@ -556,12 +556,12 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 			@Override
 			public void draw(Graphics2D g2) {
+				super.draw(g2);
 				int dw = width - next.width - prev.width - 2;
 				int ox = prev.x + prev.width + 1;
 				int dx = config.videoVolume * dw / 100;
 				g2.setColor(Color.WHITE);
 				g2.fillRect(ox + dx, 1, 2, height - 2);
-				super.draw(g2);
 			}
 		};
 		videoVolume.getValue = new Func1<Void, String>() {
@@ -849,12 +849,12 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 			@Override
 			public void draw(Graphics2D g2) {
+				super.draw(g2);
 				int dw = width - next.width - prev.width - 2;
 				int ox = prev.x + prev.width + 1;
 				int dx = (config.timestep - 1) * dw / 59;
 				g2.setColor(Color.WHITE);
 				g2.fillRect(ox + dx, 1, 2, height - 2);
-				super.draw(g2);
 			}
 		};
 		timestepValue.getValue = new Func1<Void, String>() {

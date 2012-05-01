@@ -579,7 +579,9 @@ public class StatusbarScreen extends ScreenBase {
 						player().messageHistory.add(notification.currentMessage);
 						notification.currentMessage = null;
 						animationStep = 0;
-						askRepaint();
+//						askRepaint();
+						doAnimation();
+						return;
 					} else {
 						animationStep++;
 						if (animationStep < accelerationStep) {
