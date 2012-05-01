@@ -4425,7 +4425,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				for (SpacewarWeaponPort p : s.ports) {
 					if (p.projectile.mode == Mode.BEAM) {
-						c.firepower += p.projectile.damage;
+						c.firepower += p.count * p.projectile.damage;
 						c.dps += p.count * p.projectile.damage * 1000.0 / p.projectile.delay;
 					} else
 					if (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET) {

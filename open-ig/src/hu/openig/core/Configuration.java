@@ -348,18 +348,6 @@ public class Configuration {
 	 */
 	public List<String> getContainersAutomatically() {
 		List<String> result = new ArrayList<String>();
-		if (new File("audio").exists()) {
-			result.add("audio");
-		}
-		if (new File("data").exists()) {
-			result.add("data");
-		}
-		if (new File("images").exists()) {
-			result.add("images");
-		}
-		if (new File("video").exists()) {
-			result.add("video");
-		}
 		File[] files = new File(".").listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -384,6 +372,18 @@ public class Configuration {
 		}
 		for (String s : upgrades) {
 			result.add(0, s);
+		}
+		if (new File("audio").exists()) {
+			result.add("audio");
+		}
+		if (new File("data").exists()) {
+			result.add("data");
+		}
+		if (new File("images").exists()) {
+			result.add("images");
+		}
+		if (new File("video").exists()) {
+			result.add("video");
 		}
 		
 		return result;
