@@ -165,17 +165,17 @@ public class Mission12 extends Mission {
 	}
 	@Override
 	public void onPlanetCured(Planet planet) {
-		if (stage == M12Stages.FIRST_RUNDOWN) {
+		if (stage == M12Stages.FIRST_RUNDOWN || stage == M12Stages.FIRST_MESSAGE) {
 			if (planet.id.equals("New Caroline")) {
 				helper.receive("New Caroline-Garthog-Virus").visible = false;
 				incomingMessage("New Caroline-Garthog-Virus-Resolved");
 				helper.setMissionTime("Mission-12-Subsequent", helper.now() + 24);
 				helper.setMissionTime("Mission-12-TaskSuccess", helper.now() + 2);
 				stage = M12Stages.SUBSEQUENT_DELAY;
-				helper.setMissionTime("Mission-12-Hide", helper.now() + 3);
+				helper.setMissionTime("Mission-12-Hide", helper.now() + 5);
 			}
 		}
-		if (stage == M12Stages.SUBSEQUENT_RUNDOWN) {
+		if (stage == M12Stages.SUBSEQUENT_RUNDOWN || stage == M12Stages.SUBSEQUENT_MESSAGE) {
 			if (planet.id.equals("New Caroline")) {
 				helper.receive("New Caroline-Garthog-Virus-Again").visible = false;
 				if (tradersLost) {
@@ -196,7 +196,7 @@ public class Mission12 extends Mission {
 						break;
 					}
 				}				
-				helper.setMissionTime("Mission-12-Hide", helper.now() + 3);
+				helper.setMissionTime("Mission-12-Hide", helper.now() + 5);
 			}			
 		}
 	}
@@ -207,7 +207,13 @@ public class Mission12 extends Mission {
 				|| stage == M12Stages.SUBSEQUENT_MESSAGE
 				|| stage == M12Stages.SUBSEQUENT_RUNDOWN
 				) && planet.owner == player) {
-			if (!planet.id.equals("New Caroline")) {
+			int cnt = 0;
+			for (Planet p : player.ownPlanets()) {
+				if (p.quarantineTTL > 0) {
+					cnt++;
+				}
+			}
+			if (cnt > 2) {
 				helper.gameover();
 				loseGameMessageAndMovie("New Caroline-Garthog-Virus-Breached", "loose/fired_level_2");
 			}
