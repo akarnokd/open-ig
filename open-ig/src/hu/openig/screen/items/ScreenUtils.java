@@ -38,7 +38,8 @@ public final class ScreenUtils {
 	 * @param tr the transition to perform
 	 * @param commons the common resources
 	 */
-	public static void doTransition(final WalkPosition position, final WalkTransition tr, final CommonResources commons) {
+	public static void doTransition(final WalkPosition position, 
+			final WalkTransition tr, final CommonResources commons) {
 		final String to = tr.to; 
 		if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
 			// move to the screen directly.

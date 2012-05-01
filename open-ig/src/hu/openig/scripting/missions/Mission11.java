@@ -110,7 +110,7 @@ public class Mission11 extends Mission {
 			ii.tag = "Mission-11-Garthog";
 		}
 		InventoryItem iib = f.getInventoryItem(research("GarthogBattleship"));
-		InventorySlot is = iib.getSlot("hyperdrive");
+		InventorySlot is = iib.getSlot("Hyperdrive");
 		is.type = null;
 		is.count = 0;
 		
