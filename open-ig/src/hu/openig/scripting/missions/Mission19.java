@@ -54,6 +54,8 @@ public class Mission19 extends Mission {
 	protected M19 stage = M19.NONE;
 	/** Initial hp of the governor fleet. */
 	protected int initialHP;
+	/** The original relation with the free traders. */
+	protected double originalRelation;
 	@Override
 	public boolean applicable() {
 		return world.level == 3;
@@ -61,10 +63,12 @@ public class Mission19 extends Mission {
 	@Override
 	public void save(XElement xmission) {
 		xmission.set("stage", stage);
+		xmission.set("original-relation", originalRelation);
 	}
 	@Override
 	public void load(XElement xmission) {
 		stage = M19.valueOf(xmission.get("stage"));
+		originalRelation = xmission.getDouble("original-relation", 50);
 	}
 	@Override
 	public void reset() {
@@ -146,6 +150,8 @@ public class Mission19 extends Mission {
 		
 		world.env.speed1();
 		world.env.effectSound(SoundType.UNKNOWN_SHIP);
+		
+		originalRelation = world.establishRelation(player, ft).value;
 	}
 	/** @return the free trader player. */
 	private Player freeTraders() {
@@ -218,6 +224,8 @@ public class Mission19 extends Mission {
 				
 				battle.messageText = label("battlefinish.mission-19.31");
 				battle.rewardImage = "battlefinish/mission_31";
+				
+				world.establishRelation(player, ii.owner).value = originalRelation;
 				
 				return;
 			} else

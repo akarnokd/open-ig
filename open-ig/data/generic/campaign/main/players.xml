@@ -39,6 +39,7 @@
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='0'
+		war-threshold='100'
 	>
 		<available>
 			<type id='MediumTank' list=''/>
@@ -131,6 +132,7 @@
 		exploration-outer-limit=''
 		colonization-limit='0'
 		diplomacy-head='diplomacy/dipfej5'
+		war-threshold='90'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>

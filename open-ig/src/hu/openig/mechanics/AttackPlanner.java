@@ -28,6 +28,7 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,6 +41,42 @@ import java.util.Set;
  * @author akarnokd, 2011.12.27.
  */
 public class AttackPlanner extends Planner {
+	/**
+	 * @author akarnokd, 2012.05.02.
+	 *
+	 */
+	private final class PlanetTargetValueComparator implements
+			Comparator<AIPlanet> {
+		/**
+		 * The center of our empire.
+		 */
+		private final Double center;
+
+		/**
+		 * Constructor.
+		 * @param center the center of our empire.
+		 */
+		private PlanetTargetValueComparator(Double center) {
+			this.center = center;
+		}
+
+		@Override
+		public int compare(AIPlanet o1, AIPlanet o2) {
+			double v1 = planetValue(o1);
+			double v2 = planetValue(o2);
+			
+			double d1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.y);
+			double d2 = Math.hypot(o2.planet.x - center.x, o2.planet.y - center.y);
+			
+			double r1 = getDiplomaticMultiplier(o1.owner);
+			double r2 = getDiplomaticMultiplier(o2.owner);
+
+			double n1 = v1 * r1 / d1;
+			double n2 = v2 * r2 / d2;
+			
+			return U.compare(n1, n2);
+		}
+	}
 	/** The war limit. */
 	protected static final int WAR_LIMIT = 75;
 	/** The exploration map. */
@@ -110,6 +147,12 @@ public class AttackPlanner extends Planner {
 				}
 			}
 		}
+		computeNextAttack();
+	}
+	/**
+	 * Compute the time when the next attack will happen.
+	 */
+	void computeNextAttack() {
 		if (world.nextAttack == null) {
 			if (world.mayConquer) {
 				int base = 3;
@@ -188,7 +231,7 @@ public class AttackPlanner extends Planner {
 				}
 				DiplomaticRelation dr = world.relations.get(p.owner);
 				if (dr != null && dr.full) {
-					if (dr.value < WAR_LIMIT && !hasActiveAlliance(dr.alliancesAgainst)) {
+					if (dr.value < this.p.warThreshold && !hasActiveAlliance(dr.alliancesAgainst)) {
 						candidates.add(p);
 						ps.add(p.owner);
 					}
@@ -196,51 +239,35 @@ public class AttackPlanner extends Planner {
 			}
 		}
 		if (!candidates.isEmpty()) {
-			
-			/*
-			Player p = Collections.min(ps, new Comparator<Player>() {
-				@Override
-				public int compare(Player o1, Player o2) {
-					DiplomaticRelation dr1 = world.relations.get(o1);
-					DiplomaticRelation dr2 = world.relations.get(o2);
-					
-					return U.compare(dr1.value, dr2.value);
-				}
-			});
-			
-			for (int i = candidates.size() - 1; i >= 0; i--) {
-				if (candidates.get(i).owner != p) {
-					candidates.remove(i);
-				}
-			}
-			*/
-			
 			final Point2D.Double center = world.center();
-			return Collections.min(candidates, new Comparator<AIPlanet>() {
-				@Override
-				public int compare(AIPlanet o1, AIPlanet o2) {
-					double v1 = planetValue(o1);
-					double v2 = planetValue(o2);
-					
-					double d1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.y);
-					double d2 = Math.hypot(o2.planet.x - center.x, o2.planet.y - center.y);
-					if (v1 < v2) {
-						return -1;
-					} else
-					if (v1 > v2) {
-						return 1;
-					} else
-					if (d1 < d2) {
-						return -1;
-					} else
-					if (d1 > d2) {
-						return 1;
-					}
-					return 0;
-				}
-			});
+			
+			Collections.sort(candidates, new PlanetTargetValueComparator(center));
+			
+			double prob = w.random().nextDouble();
+			if (prob >= 0.35 || candidates.size() == 1) {
+				return candidates.get(0);
+			} else
+			if (prob >= 0.15) {
+				return candidates.get(1);
+			} else
+			if (prob > 0.05) {
+				return w.random(candidates);
+			}
 		}
 		return null;
+	}
+	/**
+	 * Returns the diplomatic value multiplier, e.g., 100 - relation,
+	 * which is considered when selecting valuable targets.
+	 * @param owner the other player
+	 * @return the value
+	 */
+	double getDiplomaticMultiplier(Player owner) {
+		DiplomaticRelation dr = world.relations.get(owner);
+		if (dr != null) {
+			return dr.value;
+		}
+		return 50;
 	}
 	/**
 	 * Check if the sequence of common enemies has still active elements.

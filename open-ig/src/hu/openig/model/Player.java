@@ -110,6 +110,8 @@ public class Player {
 	public Rectangle explorationOuterLimit;
 	/** The colonization limit, -1 means unlimited. */
 	public int colonizationLimit;
+	/** The limit where the AI considers attacking the other party. */
+	public int warThreshold = 45;
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

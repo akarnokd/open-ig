@@ -556,6 +556,7 @@ public class World {
 			}
 			
 			p.colonizationLimit = xplayer.getInt("colonization-limit", -1);
+			p.warThreshold = xplayer.getInt("war-threshold", 45);
 		}
 		linkDeferredFleetTargets(deferredFleets);
 	}
