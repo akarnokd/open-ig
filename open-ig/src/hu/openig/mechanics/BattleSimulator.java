@@ -44,6 +44,10 @@ import java.util.List;
  *
  */
 public final class BattleSimulator {
+	/** The base amount for planet defended. */
+	public static final int PLANET_DEFENSE_LOSS = 100;
+	/** The base amount for planet conquered. */
+	public static final int PLANET_CONQUER_LOSS = 200;
 	/** The world object. */
 	protected final World world;
 	/** The battle configuration. */
@@ -103,7 +107,7 @@ public final class BattleSimulator {
 				runGroundBattle();
 			} else {
 				battle.targetPlanet.takeover(battle.attacker.owner);
-				applyPlanetConquered(battle.targetPlanet, 500);
+				applyPlanetConquered(battle.targetPlanet, PLANET_CONQUER_LOSS);
 			}
 		}
 		world.scripting.onAutobattleFinish(battle);
@@ -127,7 +131,7 @@ public final class BattleSimulator {
 			removeVehicles(battle.attacker);
 			applyDamage(defenderUnits, defenderTime * attackerTVBattle.attack);
 			
-			applyPlanetDefended(battle.targetPlanet, 750);
+			applyPlanetDefended(battle.targetPlanet, PLANET_DEFENSE_LOSS);
 		} else {
 			removeVehicles(battle.targetPlanet);
 			applyDamage(attackerUnits, attackerTime * defenderTVBattle.attack);
@@ -188,10 +192,10 @@ public final class BattleSimulator {
 			cleanupInventory(battle.targetPlanet);
 			cleanupInventory(battle.attacker);
 			if (attackerUnits.isEmpty()) {
-				applyPlanetDefended(battle.targetPlanet, 750);
+				applyPlanetDefended(battle.targetPlanet, PLANET_DEFENSE_LOSS);
 			} else {
 				battle.targetPlanet.takeover(battle.attacker.owner);
-				applyPlanetConquered(battle.targetPlanet, 1000);
+				applyPlanetConquered(battle.targetPlanet, PLANET_CONQUER_LOSS);
 			}
 			battle.groundwarWinner = battle.targetPlanet.owner;
 			battle.targetPlanet.rebuildRoads();
@@ -463,7 +467,7 @@ public final class BattleSimulator {
 					demolishDefenses(str.planet);
 					applyDamage(battle.attacker, attackerTime * defender.attack, ships);
 
-					applyPlanetDefended(str.planet, 750);
+					applyPlanetDefended(str.planet, PLANET_DEFENSE_LOSS);
 				} else {
 					double planetPercent = str.planetStrength.defense / attacker.defense;
 					
@@ -471,7 +475,7 @@ public final class BattleSimulator {
 					double planetDamage = attackerTime * defender.attack * planetPercent;
 					applyDamage(str.planet, planetDamage);
 					if (planetDamage > 0) {
-						applyPlanetDefended(str.planet, 250);
+						applyPlanetDefended(str.planet, PLANET_DEFENSE_LOSS / 2);
 					}
 				}
 			} else {
@@ -501,11 +505,11 @@ public final class BattleSimulator {
 						applyDamage(str.fleet, defenderTime * attacker.attack * (1 - planetPercent), ships);
 					}
 					if (planetDamage > 0) {
-						applyPlanetDefended(str.planet, 250);
+						applyPlanetDefended(str.planet, PLANET_DEFENSE_LOSS / 2);
 					}
 				} else {
 					demolishDefenses(str.planet);
-					applyPlanetDefended(str.planet, 750);
+					applyPlanetDefended(str.planet, PLANET_DEFENSE_LOSS / 2);
 					if (str.fleet != null) {
 						applyDamage(str.fleet, defenderTime * attacker.attack, ships);
 					}
@@ -527,7 +531,7 @@ public final class BattleSimulator {
 			}
 			if (str.planet != null) {
 				demolishDefenses(str.planet);
-				applyPlanetDefended(str.planet, 750);
+				applyPlanetDefended(str.planet, PLANET_DEFENSE_LOSS);
 			}
 		}
 	}

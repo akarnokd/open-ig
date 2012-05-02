@@ -3948,7 +3948,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (bi.attacker.owner == winner) {
 			planet().takeover(winner);
 
-			BattleSimulator.applyPlanetConquered(planet(), 1000);
+			BattleSimulator.applyPlanetConquered(planet(), BattleSimulator.PLANET_CONQUER_LOSS);
 
 			// remove unfinished buildings
 			for (Building b : U.newArrayList(planet().surface.buildings)) {
@@ -3959,7 +3959,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			planet().rebuildRoads();
 			
 		} else {
-			BattleSimulator.applyPlanetDefended(planet(), 750);
+			BattleSimulator.applyPlanetDefended(planet(), BattleSimulator.PLANET_DEFENSE_LOSS);
 		}
 		
 		planet().rebuildRoads();
@@ -5082,7 +5082,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
 			battle.targetPlanet.takeover(battle.attacker.owner);
-			BattleSimulator.applyPlanetConquered(battle.targetPlanet, 500);
+			BattleSimulator.applyPlanetConquered(battle.targetPlanet, BattleSimulator.PLANET_CONQUER_LOSS);
 			battle.groundwarWinner = battle.attacker.owner;
 			BattleInfo bi = battle;
 			battle = null;
