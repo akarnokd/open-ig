@@ -2112,6 +2112,7 @@ public class EquipmentScreen extends ScreenBase {
 		if (f.inventory.size() == 0) {
 			world().removeFleet(f);
 			player().currentFleet = secondary;
+			player().selectionMode = SelectionMode.FLEET;
 		}
 		if (secondary.inventory.size() == 0) {
 			world().removeFleet(secondary);
