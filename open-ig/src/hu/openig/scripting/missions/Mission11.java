@@ -74,7 +74,7 @@ public class Mission11 extends Mission {
 				if (tp == null) {
 					tp = garthog.first.arrivedAt;
 				}
-				if (tp != null) {
+				if (tp != null && tp.owner == player) {
 					incomingMessage(tp.id + "-Is-Under-Attack");
 				}
 			}
