@@ -13,16 +13,18 @@ It's almost time to yell *BETA* at Open Imperium Galactica! We are almost there,
 *May 13*: Implement everything marked in the issue list up to *Milestone-0.95* and release it as the *beta*. The aim of the *beta* is to have an end-to-end playable main campaign. For those who were afraid to play the game, this will be the right time to start playing.
 
 The aim of the *beta* is to discover:
-- problems with the missions (timing, outcome, failure conditions),
-- issues with the interface,
-- difficulty problems (too many or to few AI attacks),
-- planet mechanics problems,
-- space and ground battle speed and balance issues,
-- etc.
+
+  * problems with the missions (timing, outcome, failure conditions),
+  * issues with the interface,
+  * difficulty problems (too many or to few AI attacks),
+  * planet mechanics problems,
+  * space and ground battle speed and balance issues,
+  * etc.
 
 Things that are deferred till *beta 2*:
-- resolving the mission differences between Open-IG and the original game
-- ingame skirmish match creator
+
+  * resolving the mission differences between Open-IG and the original game
+  * ingame skirmish match creator
 
 
 == April, 2012 ==
