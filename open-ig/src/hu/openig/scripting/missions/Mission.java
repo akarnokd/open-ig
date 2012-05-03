@@ -28,6 +28,7 @@ import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -491,7 +492,11 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param messageId the message id
 	 */
 	void incomingMessage(String messageId) {
-		helper.receive(messageId).visible = true;
+		VideoMessage msg = helper.receive(messageId);
+		if (msg == null) {
+			new AssertionError("Missing video: " + messageId).printStackTrace();
+		}
+		msg.visible = true;
 		helper.receive(messageId).seen = false;
 		
 		SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, SoundType.NEW_MESSAGE_1, SoundType.NEW_MESSAGE_2, SoundType.NEW_MESSAGE_3));
