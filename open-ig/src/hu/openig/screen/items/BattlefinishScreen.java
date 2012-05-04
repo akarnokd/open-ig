@@ -256,14 +256,16 @@ public class BattlefinishScreen extends ScreenBase {
 				} else {
 					enemy = battle.attacker;
 				}
-				EnemyStatus st = enemyStatus(enemy, battle);
-				if (st == EnemyStatus.RETREATED) {
-					textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, format("battlefinish.spacewar_enemy_fled", enemy.name));
-					y += 20;
-				} else
-				if (st == EnemyStatus.SLIPPED) {
-					textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.spacewar_enemy_slipped", enemy.name));
-					y += 20;
+				if (enemy != null) {
+					EnemyStatus st = enemyStatus(enemy, battle);
+					if (st == EnemyStatus.RETREATED) {
+						textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, format("battlefinish.spacewar_enemy_fled", enemy.name));
+						y += 20;
+					} else
+					if (st == EnemyStatus.SLIPPED) {
+						textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.spacewar_enemy_slipped", enemy.name));
+						y += 20;
+					}
 				}
 			}
 			
