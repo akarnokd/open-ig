@@ -2418,6 +2418,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		if (battle != null && fortif) {
 			battle.defenderFortificationLosses++;
+			for (GroundwarUnit gu : units) {
+				if (gu.attackBuilding == currentBuilding) {
+					gu.attackBuilding = null;
+				}
+			}
 		}
 		
 		DefaultAIControls.demolishBuilding(world(), planet(), currentBuilding);
