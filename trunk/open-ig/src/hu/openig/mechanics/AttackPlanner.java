@@ -62,17 +62,17 @@ public class AttackPlanner extends Planner {
 
 		@Override
 		public int compare(AIPlanet o1, AIPlanet o2) {
-			double v1 = planetValue(o1);
-			double v2 = planetValue(o2);
+			double value1 = planetValue(o1);
+			double value2 = planetValue(o2);
 			
-			double d1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.y);
-			double d2 = Math.hypot(o2.planet.x - center.x, o2.planet.y - center.y);
+			double distance1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.y);
+			double distance2 = Math.hypot(o2.planet.x - center.x, o2.planet.y - center.y);
 			
-			double r1 = getDiplomaticMultiplier(o1.owner);
-			double r2 = getDiplomaticMultiplier(o2.owner);
+			double relation1 = getDiplomaticMultiplier(o1.owner);
+			double relation2 = getDiplomaticMultiplier(o2.owner);
 
-			double n1 = v1 * r1 / d1;
-			double n2 = v2 * r2 / d2;
+			double n1 = relation1 * distance1 / value1;
+			double n2 = relation2 * distance2 / value2;
 			
 			return U.compare(n1, n2);
 		}
@@ -329,10 +329,12 @@ public class AttackPlanner extends Planner {
 				if (b.type.kind.equals("Defensive") 
 						|| b.type.kind.equals("Gun")
 						|| b.type.kind.equals("Shield")) {
+					v += b.type.cost * 10;
+				} else {
 					v += b.type.cost;
 				}
 			}
-			v += p.statistics.vehicleMax * 5000;
+			v += p.statistics.vehicleMax * 50;
 		}
 		return v;
 	}
