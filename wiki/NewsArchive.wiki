@@ -6,6 +6,10 @@
 
 == May, 2012 ==
 
+*May 4, 2012*
+
+Due to the limited space here on Google Code, please compress any game save attachment and use external image hosting when reporting a new issue.
+
 *May 3, 2012*
 
 It's almost time to yell *BETA* at Open Imperium Galactica! We are almost there, just a few smaller features are missing. So here is the plan:
