@@ -31,35 +31,28 @@ public class Mission1 extends Mission {
 		helper.send("Naxos-Check").visible = true;
 		helper.send("San Sterling-Check").visible = true;
 		checkMission1Start();
+		checkMission1Task1();
 		checkMission1Task2();
 		checkMission1Complete();
 		checkMainShip();
 	}
-	
-	@Override
-	public void onBuildingComplete(Planet planet, Building building) {
-		checkMission1Task1(planet, building);
-	}
-	/**
-	 * Check if the colony hub was built on Achilles.
-	 * @param planet the event planet
-	 * @param building the event building
-	 */
-	void checkMission1Task1(Planet planet, Building building) {
-		// Mission 1, Task 1: Build a Colony Hub
-		if (planet.id.equals("Achilles") && building.type.kind.equals("MainBuilding")) {
-			Objective o = helper.objective("Mission-1-Task-1");
-			if (o.visible) {
-				helper.setObjectiveState(o, ObjectiveState.SUCCESS);
+	/** Check if the colony hub was completed. */
+	void checkMission1Task1() {
+		Objective o = helper.objective("Mission-1-Task-1");
+		if (o.visible && o.state == ObjectiveState.ACTIVE) {
+			for (Building b : planet("Achilles").surface.buildings) {
+				if (b.isComplete() && b.type.kind.equals("MainBuilding")) {
+					helper.setObjectiveState(o, ObjectiveState.SUCCESS);
+				}
 			}
-		}
+		}		
 	}
 	/**
 	 * Check if Achilles contains the required types of undamaged, operational buildings for Mission 1 Task 2.
 	 */
 	void checkMission1Task2() {
 		Objective m1t2 = helper.objective("Mission-1-Task-2");
-		if (!m1t2.visible) {
+		if (m1t2.state != ObjectiveState.ACTIVE) {
 			return;
 		}
 		Planet p = planet("Achilles");
@@ -94,6 +87,7 @@ public class Mission1 extends Mission {
 				}
 			}
 			if (okay) {
+				m1t2.visible = true;
 				helper.setObjectiveState(m1t2, ObjectiveState.SUCCESS);
 			}
 		}
