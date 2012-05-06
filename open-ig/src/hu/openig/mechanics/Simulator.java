@@ -243,7 +243,7 @@ public final class Simulator {
 				b.hitpoints += buildAmount;
 				b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 				
-				if (b.hitpoints == b.type.hitpoints) {
+				if (b.buildProgress >= b.type.hitpoints) {
 					planet.owner.ai.onBuildingComplete(planet, b);
 					world.scripting.onBuildingComplete(planet, b);
 				}
