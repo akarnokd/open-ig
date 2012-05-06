@@ -23,6 +23,7 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
@@ -239,42 +240,30 @@ public class AITrader implements AIManager {
 				}
 				boolean infected = lf.target.quarantineTTL > 0;
 
-//				List<Planet> candidates = U.newArrayList();
-//				for (Planet p : world.planets.values()) {
-//					if (p.owner != null && p != lf.target) {
-//						if (!infected || p.owner == lf.target.owner) {
-//							// if the target is infected
-//							if (!infected && lf.target.quarantineTTL > 0) {
-//								// and not too many fleets are waiting
-//								if (landedCount(p) + targetCount(p) < 5) {
-//									candidates.add(p);
-//								}
-//							} else {
-//								candidates.add(p);
-//							}
-//						}
-//					}
-//				}
-
 				if (!planets.isEmpty()) {
-					Planet nt = world.random(planets);
-					if (infected) {
-						world.infectedFleets.put(lf.fleet.id, lf.target.id);
-						if (nt.owner != lf.target.owner) {
-							List<Planet> cand2 = lf.target.owner.ownPlanets();
-							cand2.remove(lf.target);
-							nt = world.random(cand2);
+					List<Planet> planets2 = U.newArrayList(planets);
+					planets2.remove(lf.target);
+					if (!planets2.isEmpty()) {
+						Planet nt = world.random(planets2);
+						if (infected) {
+							world.infectedFleets.put(lf.fleet.id, lf.target.id);
+							if (nt.owner != lf.target.owner) {
+								List<Planet> cand2 = lf.target.owner.ownPlanets();
+								cand2.remove(lf.target);
+								nt = world.random(cand2);
+							}
 						}
+						lf.fleet.moveTo(nt);
+	
+						for (InventoryItem ii : lf.fleet.inventory) {
+							ii.hp = world.getHitpoints(ii.type);
+						}
+	
+						lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
+						lastVisitedPlanet.put(lf.fleet, lf.target);
+					} else {
+						lastVisitedPlanet.remove(lf.fleet);
 					}
-					lf.fleet.moveTo(nt);
-
-					for (InventoryItem ii : lf.fleet.inventory) {
-						ii.hp = world.getHitpoints(ii.type);
-					}
-
-					lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
-					lastVisitedPlanet.put(lf.fleet, lf.target);
-
 				} else {
 					lastVisitedPlanet.remove(lf.fleet);
 				}
@@ -328,7 +317,7 @@ public class AITrader implements AIManager {
 		nf.name = traderLabel;
 		List<ResearchType> rts = U.newArrayList();
 		for (ResearchType rt : world.researches.values()) {
-			if (rt.race.contains(player.race)) {
+			if (rt.race.contains(player.race) && rt.category.main == ResearchMainCategory.SPACESHIPS) {
 				rts.add(rt);
 			}
 		}
@@ -337,6 +326,7 @@ public class AITrader implements AIManager {
 		ii.count = 1;
 		ii.type = world.random(rts);
 		ii.hp = world.getHitpoints(ii.type);
+		ii.createSlots();
 		
 		nf.inventory.add(ii);
 		return nf;
@@ -363,6 +353,7 @@ public class AITrader implements AIManager {
 			ii.count = 1;
 			ii.type = type;
 			ii.hp = world.getHitpoints(ii.type);
+			ii.createSlots();
 			
 			nf.inventory.add(ii);
 			return nf;
