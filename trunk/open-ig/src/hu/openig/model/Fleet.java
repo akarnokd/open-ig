@@ -49,6 +49,8 @@ public class Fleet implements Named, Owned, HasInventory {
 	public FleetMode mode;
 	/** The current task. */
 	public FleetTask task = FleetTask.IDLE;
+	/** The base speed of fleets without hyperdrives. */
+	public static final int FLEET_BASE_SPEED = 14;
 	/**
 	 * Create a fleet with a specific ID and owner.
 	 * @param id the identifier
@@ -222,12 +224,12 @@ public class Fleet implements Named, Owned, HasInventory {
 				}
 			}
 			if (checkHyperdrive && !speedFound) {
-				result.speed = 6;
+				result.speed = FLEET_BASE_SPEED;
 			}
 		}
 		
 		if (result.speed == Integer.MAX_VALUE) {
-			result.speed = 6;
+			result.speed = FLEET_BASE_SPEED;
 		}
 		
 		result.planet = nearbyPlanet();
@@ -259,12 +261,12 @@ public class Fleet implements Named, Owned, HasInventory {
 					}
 				}
 				if (!found) {
-					speed = 6;
+					speed = FLEET_BASE_SPEED;
 				}
 			}
 		}
 		if (speed == Integer.MAX_VALUE) {
-			speed = 6;
+			speed = FLEET_BASE_SPEED;
 		}
 		return speed;
 	}

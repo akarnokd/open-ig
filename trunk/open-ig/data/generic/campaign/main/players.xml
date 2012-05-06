@@ -25,6 +25,7 @@
 		<fleet id='0' x='330' y='440' name='@MainFleet'>
 			<item id='Destroyer1' count='1' tag='CampaignMainShip1'>
 				<slot id='laser' type='Laser1' count='3'/>
+				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
 			</item>
 			<item id='Fighter1' count='3' />
 		</fleet>
