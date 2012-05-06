@@ -258,7 +258,7 @@
   <entry key='buildings.factory.upgrade_4'>Increases the capacity to 200%, the energy- and worker-demand to 250%.</entry>
   <entry key='buildings.field_telescope'>Field Telescope</entry>
   <entry key='buildings.field_telescope.desc'>The Field Telescope is a high powered and focused radio wave detector that can be used to find enemy fleets at a greater range than the Radar Telescope.</entry>
-  <entry key='buildings.fire_brigade'>File Brigade</entry>
+  <entry key='buildings.fire_brigade'>Fire Brigade</entry>
   <entry key='buildings.fire_brigade.desc'>Fire brigades automatically repair damaged colony structures up to 50%- free of charge. They are very useful when a colony is being bombarded from orbit or assaulted by ground forces.</entry>
   <entry key='buildings.fire_brigade.upgrade_1'>Increase the repair to 55%, the energy- and worker-demand to 150%.</entry>
   <entry key='buildings.fire_brigade.upgrade_2'>Increase the repair to 61%, the energy- and worker-demand to 175%.</entry>
