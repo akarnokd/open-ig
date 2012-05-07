@@ -2401,5 +2401,11 @@
   <entry key='win.continue_game'>Continue game</entry>
   <entry key='win.main_menu'>Back to main menu</entry>
   <entry key='win.win'>You won!</entry>
-<entry key='settings.movie_scale'>Full screen cutscenes</entry>
+  <entry key='settings.movie_scale'>Full screen cutscenes</entry>
+  <entry key='mission-5.reinforcements'>Contact the Colonel for reinforcements</entry>
+  <entry key='mission-5.reinforcements.desc'>Optional. Go to the bridge and ask for reinforcements.</entry>
+  <entry key='mission-6.handle_colonies'>Handle the needs of the colonies. Start fortifying colonies.</entry>
+  <entry key='mission-6.build_fleets'>Produce fighters, destroyers and any equipment they need.</entry>
+  <entry key='mission-6.handle_colonies.desc'>Try to build at least one Barracks.</entry>
+  <entry key='mission-6.build_fleets.desc'>Build factories and try constructing ships and equipment.</entry>
 </labels>

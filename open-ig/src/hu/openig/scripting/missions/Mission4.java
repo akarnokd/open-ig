@@ -8,7 +8,6 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Pair;
 import hu.openig.model.AIMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -23,6 +22,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
@@ -35,60 +35,62 @@ import java.util.List;
  * @author akarnokd, 2012.01.18.
  */
 public class Mission4 extends Mission {
+	/** The mission stages. */
+	enum M4 {
+		/** Not started. */
+		NONE,
+		/** Wait for start. */
+		WAIT,
+		/** Running. */
+		RUN,
+		/** Finished. */
+		DONE
+	}
+	/** The current stage. */
+	M4 stage = M4.NONE;
 	@Override
 	public boolean applicable() {
 		return world.level == 1;
 	}
 	@Override
 	public void onTime() {
-		Objective m2t1 = helper.objective("Mission-2-Task-2");
-		Objective m4 = helper.objective("Mission-4");
-		if (!m4.visible && m4.state == ObjectiveState.ACTIVE
-				&& m2t1.state != ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-4")) {
-			helper.setMissionTime("Mission-4", helper.now() + 48);
+		Objective m2t1 = objective("Mission-2-Task-2");
+		Objective m4 = objective("Mission-4");
+		if (!m4.isCompleted() && m2t1.isCompleted() && stage == M4.NONE) {
+			addMission("Mission-4", 48);
+			stage = M4.WAIT;
 		}
-		if (helper.canStart("Mission-4")) {
+		if (stage == M4.WAIT && checkMission("Mission-4")) {
 			world.env.speed1();
-			helper.setTimeout("Mission-4-Message", 3000);
-			helper.clearMissionTime("Mission-4");
-			helper.setMissionTime("Mission-4-Timeout", helper.now() + 24);
-			helper.send("Naxos-Not-Under-Attack").visible = false;
-			incomingMessage("Naxos-Unknown-Ships");
-		}
-		if (helper.isTimeout("Mission-4-Message")) {
-			helper.clearTimeout("Mission-4-Message");
-			helper.showObjective("Mission-4");
+			send("Naxos-Not-Under-Attack").visible = false;
+			incomingMessage("Naxos-Unknown-Ships", "Mission-4");
+			addMission("Mission-4-Timeout", 24);
 			createPirateTask();
 		}
 		
-		if (helper.isMissionTime("Mission-4-Timeout")) {
-			helper.clearMissionTime("Mission-4-Timeout");
+		if (checkMission("Mission-4-Timeout")) {
 
-			helper.send("Naxos-Not-Under-Attack").visible = true;
-			helper.receive("Naxos-Unknown-Ships").visible = false;
+			send("Naxos-Not-Under-Attack").visible = true;
+			receive("Naxos-Unknown-Ships").visible = false;
 			
-			helper.setObjectiveState("Mission-4", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-4", ObjectiveState.FAILURE);
+			addTimeout("Mission-4-Fire", 13000);
+			
 			removeFleets();
-			helper.setTimeout("Mission-4-Fire", 13000);
 		}
-		if (helper.isTimeout("Mission-4-Fire")) {
-			helper.clearTimeout("Mission-4-Fire");
-			helper.gameover();
+		if (checkTimeout("Mission-4-Fire")) {
+			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-No-Order", "loose/fired_level_1");
 		}
-		if (helper.isTimeout("Mission-4-Success")) {
-			helper.clearTimeout("Mission-4-Success");
-
-			helper.send("Naxos-Not-Under-Attack").visible = true;
-			helper.receive("Naxos-Unknown-Ships").visible = false;
+		if (checkTimeout("Mission-4-Success")) {
+			send("Naxos-Not-Under-Attack").visible = true;
+			receive("Naxos-Unknown-Ships").visible = false;
 			
-			helper.setObjectiveState("Mission-4", ObjectiveState.SUCCESS);
-			helper.setTimeout("Mission-4-Done", 13000);
+			setObjectiveState("Mission-4", ObjectiveState.SUCCESS);
+			addTimeout("Mission-4-Done", 13000);
 		}
-		if (helper.isTimeout("Mission-4-Done")) {
-			helper.objective("Mission-4").visible = false;
-			helper.clearTimeout("Mission-4-Done");
+		if (checkTimeout("Mission-4-Done")) {
+			objective("Mission-4").visible = false;
 		}
 	}
 	/**
@@ -96,16 +98,16 @@ public class Mission4 extends Mission {
 	 */
 	void removeFleets() {
 		Player pirates = player("Pirates");
-		Pair<Fleet, InventoryItem> fi = findTaggedFleet("Mission-4-Pirates-1", pirates);
+		Fleet fi = findTaggedFleet("Mission-4-Pirates-1", pirates);
 		if (fi != null) {
-			world.removeFleet(fi.first);
-			helper.scriptedFleets().remove(fi.first.id);
+			world.removeFleet(fi);
+			removeScripted(fi);
 		}
 
 		fi = findTaggedFleet("Mission-4-Pirates-2", pirates);
 		if (fi != null) {
-			world.removeFleet(fi.first);
-			helper.scriptedFleets().remove(fi.first.id);
+			world.removeFleet(fi);
+			removeScripted(fi);
 		}
 		cleanupScriptedFleets();
 	}
@@ -121,7 +123,7 @@ public class Mission4 extends Mission {
 			ii.tag = "Mission-4-Pirates-1";
 		}
 		f.task = FleetTask.SCRIPT;
-		helper.scriptedFleets().add(f.id);
+		addScripted(f);
 		
 		f = createFleet(label("pirates.fleet_name"), pirate, naxos.x + 17, naxos.y - 3);
 		f.addInventory(world.researches.get("PirateFighter"), 2);
@@ -129,7 +131,7 @@ public class Mission4 extends Mission {
 			ii.tag = "Mission-4-Pirates-2";
 		}
 		f.task = FleetTask.SCRIPT;
-		helper.scriptedFleets().add(f.id);
+		addScripted(f);
 
 	}
 	/**
@@ -148,11 +150,11 @@ public class Mission4 extends Mission {
 	 * @param pirateSurvived did the pirate survive?
 	 */
 	void completeMission(boolean pirateSurvived) {
-		helper.setTimeout("Mission-4-Success", 3000);
-		helper.clearMissionTime("Mission-4-Timeout");
+		addTimeout("Mission-4-Success", 3000);
+		clearMission("Mission-4-Timeout");
 		if (pirateSurvived) {
 			// indicate that we helped the pirate
-			helper.setMissionTime("Mission-4-Helped", helper.now() + 1);
+			addMission("Mission-4-Helped", 1);
 		}
 		removeFleets();
 
@@ -174,14 +176,7 @@ public class Mission4 extends Mission {
 	public void onAutobattleStart(BattleInfo battle) {
 		if (isMissionSpacewar(battle, "Mission-4")) {
 			Player pirates = player("Pirates");
-			Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-4-Pirates-1", pirates);
-			Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-4-Pirates-2", pirates);
-			if (battle.targetFleet == f1.first) {
-				battle.targetFleet = f2.first;
-			}
-			// move into player
-			f1.second.owner = player;
-			battle.attacker.inventory.addAll(f1.first.inventory);
+			startJointAutoSpaceBattle(battle, "Mission-4-Pirates-1", pirates, "Mission-4-Pirates-2", pirates);
 		}
 	}
 	@Override
@@ -189,42 +184,44 @@ public class Mission4 extends Mission {
 		if (isMissionSpacewar(war.battle(), "Mission-4")) {
 			BattleInfo battle = war.battle();
 			Player pirates = player("Pirates");
-			Pair<Fleet, InventoryItem> f1 = findTaggedFleet("Mission-4-Pirates-1", pirates);
-			Pair<Fleet, InventoryItem> f2 = findTaggedFleet("Mission-4-Pirates-2", pirates);
+			Fleet f1 = findTaggedFleet("Mission-4-Pirates-1", pirates);
+			Fleet f2 = findTaggedFleet("Mission-4-Pirates-2", pirates);
 
-			// pirate 1 attacked
-			if (battle.targetFleet == f1.first) {
-				war.includeFleet(f2.first, f2.first.owner);
-				battle.targetFleet = f2.first;
-			} else {
-				// pirate 2 attacked
-				war.addStructures(f1.first.inventory, EnumSet.of(
-						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
-						ResearchSubCategory.SPACESHIPS_CRUISERS,
-						ResearchSubCategory.SPACESHIPS_FIGHTERS));
-			}
-			
-			patchPlayer(f1.first);
-			battle.attackerAllies.add(f1.first.owner);
-			// center pirate
-			Dimension d = war.space();
-			List<SpacewarStructure> structures = war.structures();
-			SpacewarStructure a = null;
-			for (SpacewarStructure s : structures) {
-				if (s.item != null && "Mission-4-Pirates-1".equals(s.item.tag)) {
-					s.x = d.width / 2;
-					s.y = d.height / 2;
-					s.angle = 0.0;
-					s.owner = f1.first.owner;
-					a = s;
-					s.guard = true;
+			if (battle.targetFleet != null && (battle.targetFleet == f1 || battle.targetFleet == f2)) {
+				// pirate 1 attacked
+				if (battle.targetFleet == f1) {
+					war.includeFleet(f2, f2.owner);
+					battle.targetFleet = f2;
+				} else {
+					// pirate 2 attacked
+					war.addStructures(f1.inventory, EnumSet.of(
+							ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
+							ResearchSubCategory.SPACESHIPS_CRUISERS,
+							ResearchSubCategory.SPACESHIPS_FIGHTERS));
 				}
+				
+				patchPlayer(f1);
+				battle.attackerAllies.add(f1.owner);
+				// center pirate
+				Dimension d = war.space();
+				List<SpacewarStructure> structures = war.structures();
+				SpacewarStructure a = null;
+				for (SpacewarStructure s : structures) {
+					if (s.item != null && "Mission-4-Pirates-1".equals(s.item.tag)) {
+						s.x = d.width / 2;
+						s.y = d.height / 2;
+						s.angle = 0.0;
+						s.owner = f1.owner;
+						a = s;
+						s.guard = true;
+					}
+				}
+				for (SpacewarStructure s : war.structures(pirates)) {
+					s.attack = a;
+				}
+				battle.allowRetreat = false;
+				battle.chat = "chat.mission-4.piratesfight.at.Naxos";
 			}
-			for (SpacewarStructure s : war.structures(pirates)) {
-				s.attack = a;
-			}
-			battle.allowRetreat = false;
-			battle.chat = "chat.mission-4.piratesfight.at.Naxos";
 		}
 	}
 	/**
@@ -270,5 +267,17 @@ public class Mission4 extends Mission {
 				war.battle().messageText = label("battlefinish.mission-4.10");
 			}
 		}
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("stage", stage);
+	}
+	@Override
+	public void load(XElement xmission) {
+		stage = M4.valueOf(xmission.get("stage", M4.NONE.toString()));
+	}
+	@Override
+	public void reset() {
+		stage = M4.NONE;
 	}
 }

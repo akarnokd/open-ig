@@ -21,10 +21,12 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
+import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
 import hu.openig.scripting.missions.Mission;
 import hu.openig.scripting.missions.MissionScriptingHelper;
@@ -35,7 +37,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.annotation.Retention;
@@ -60,13 +61,6 @@ import javax.swing.JTextArea;
  * @author akarnokd, 2012.01.12.
  */
 public class MainCampaignScripting extends Mission implements GameScripting, MissionScriptingHelper {
-	/** The view limit records. */
-	static class ViewLimit {
-		/** The inner limit if non-null. */
-		Rectangle inner;
-		/** The outer limit if non-null. */
-		Rectangle outer;
-	}
 	/** The view limits. */
 	final Map<String, ViewLimit> viewLimits = U.newHashMap();
 	/** The map of root objectives. */
@@ -126,7 +120,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	 */
 	void applyViewLimits() {
 		for (Player p : world.players.values()) {
-			ViewLimit vl = viewLimits.get(p.id + ".Level." + world.level);
+			ViewLimit vl = getViewLimit(p, world.level);
 			if (vl != null) {
 				p.explorationInnerLimit = vl.inner;
 				p.explorationOuterLimit = vl.outer;
@@ -874,10 +868,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			o.state = newState;
 			world.env.showObjectives(true);
 			if (newState == ObjectiveState.SUCCESS) {
-				world.env.effectSound(SoundType.SUCCESS);
+				world.env.playSound(SoundTarget.EFFECT, SoundType.SUCCESS, null);
 			} else 
 			if (newState == ObjectiveState.FAILURE) {
-				world.env.effectSound(SoundType.FAIL);
+				world.env.playSound(SoundTarget.EFFECT, SoundType.FAIL, null);
 			}
 			return true;
 		}
@@ -991,7 +985,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		if (!o.visible) {
 			o.visible = true;
 			world.env.showObjectives(true);
-			world.env.effectSound(SoundType.NEW_TASK);
+			world.env.playSound(SoundTarget.EFFECT, SoundType.NEW_TASK, null);
 			return true;
 		}
 		return false;
@@ -1024,14 +1018,6 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			return i.intValue() <= now();
 		}
 		return false;
-	}
-	@Override
-	public boolean isActive(String oId) {
-		return isActive(objective(oId));
-	}
-	@Override
-	public boolean isActive(Objective o) {
-		return o.visible && o.state == ObjectiveState.ACTIVE;
 	}
 	@Override
 	public boolean canStart(String oId) {
@@ -1290,5 +1276,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			}
 			m.onFleetsMoved();
 		}
+	}
+	@Override
+	public ViewLimit getViewLimit(Player player, int level) {
+		return viewLimits.get(player.id + ".Level." + level);
 	}
 }

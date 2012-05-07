@@ -613,4 +613,12 @@ public class AITrader implements AIManager {
 	public void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str) {
 		
 	}
+	/**
+	 * Set the last visited planet.
+	 * @param f the fleet
+	 * @param p the planet
+	 */
+	public void setLastVisited(Fleet f, Planet p) {
+		lastVisitedPlanet.put(f, p);
+	}
 }

@@ -42,15 +42,15 @@ public class Mission24 extends Mission {
 	@Override
 	public void onTime() {
 		if (stage == M24.NONE && checkMission("Mission-24")) {
-			Objective m24 = helper.objective("Mission-24");
+			Objective m24 = objective("Mission-24");
 			if (m24.state == ObjectiveState.ACTIVE) {
-				helper.showObjective(m24);
+				showObjective(m24);
 				stage = M24.RUN;
 			}
 		}
 		if (checkTimeout("Mission-24-Promote")) {
-			helper.objective("Mission-24").visible = false;
-			helper.objective("Mission-22").visible = false;
+			objective("Mission-24").visible = false;
+			objective("Mission-22").visible = false;
 			world.env.stopMusic();
 			world.env.playVideo("interlude/level_5_intro", new Action0() {
 				@Override
@@ -98,9 +98,9 @@ public class Mission24 extends Mission {
 	 * Mission success actions.
 	 */
 	void missionSuccess() {
-		Objective o = helper.objective("Mission-24");
+		Objective o = objective("Mission-24");
 		o.visible = true;
-		helper.setObjectiveState("Mission-24", ObjectiveState.SUCCESS);
+		setObjectiveState("Mission-24", ObjectiveState.SUCCESS);
 		addTimeout("Mission-24-Promote", 13000);
 		
 		stage = M24.DONE;

@@ -381,7 +381,7 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				config.effectVolume = Math.max(0, config.effectVolume - 1);
-				commons.sounds.playSound(SoundType.BAR);
+				effectSound(SoundType.BAR);
 				askRepaint(base);
 			}
 		};
@@ -389,7 +389,7 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				config.effectVolume = Math.min(100, config.effectVolume + 1);
-				commons.sounds.playSound(SoundType.BAR);
+				effectSound(SoundType.BAR);
 				askRepaint(base);
 			}
 		};
@@ -404,7 +404,7 @@ public class LoadSaveScreen extends ScreenBase {
 					return true;
 				} else
 				if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.effectVolume == 100))) {
-					commons.sounds.playSound(SoundType.BAR);
+					effectSound(SoundType.BAR);
 					return true;
 				}
 				return super.mouse(e);
@@ -442,7 +442,7 @@ public class LoadSaveScreen extends ScreenBase {
 				if (!commons.music.isRunning()) {
 					int e = config.effectVolume;
 					config.effectVolume = config.musicVolume;
-					commons.sounds.playSound(SoundType.BAR);
+					effectSound(SoundType.BAR);
 					config.effectVolume = e;
 				}
 				askRepaint(base);
@@ -456,7 +456,7 @@ public class LoadSaveScreen extends ScreenBase {
 				if (!commons.music.isRunning()) {
 					int e = config.effectVolume;
 					config.effectVolume = config.musicVolume;
-					commons.sounds.playSound(SoundType.BAR);
+					effectSound(SoundType.BAR);
 					config.effectVolume = e;
 				}
 				askRepaint(base);
@@ -476,7 +476,7 @@ public class LoadSaveScreen extends ScreenBase {
 					if (!commons.music.isRunning()) {
 						int ev = config.effectVolume;
 						config.effectVolume = config.musicVolume;
-						commons.sounds.playSound(SoundType.BAR);
+						effectSound(SoundType.BAR);
 						config.effectVolume = ev;
 					}
 					commons.music.setVolume(config.musicVolume);
@@ -512,7 +512,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 				int e = config.effectVolume;
 				config.effectVolume = config.videoVolume;
-				commons.sounds.playSound(SoundType.BAR);
+				effectSound(SoundType.BAR);
 				config.effectVolume = e;
 				
 				askRepaint(base);
@@ -528,7 +528,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 				int e = config.effectVolume;
 				config.effectVolume = config.videoVolume;
-				commons.sounds.playSound(SoundType.BAR);
+				effectSound(SoundType.BAR);
 				config.effectVolume = e;
 
 				askRepaint(base);
@@ -548,7 +548,7 @@ public class LoadSaveScreen extends ScreenBase {
 							|| config.videoVolume == 100)) {
 					int ev = config.effectVolume;
 					config.effectVolume = config.videoVolume;
-					commons.sounds.playSound(SoundType.BAR);
+					effectSound(SoundType.BAR);
 					config.effectVolume = ev;
 					return true;
 				}

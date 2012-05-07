@@ -34,7 +34,7 @@ public class Mission20 extends Mission {
 	M20 stage = M20.NONE;
 	@Override
 	public void onTime() {
-		if (stage == M20.NONE && helper.objective("Mission-19").state != ObjectiveState.ACTIVE) {
+		if (stage == M20.NONE && objective("Mission-19").state != ObjectiveState.ACTIVE) {
 			stage = M20.WAIT;
 			addMission("Mission-20", 7 * 12);
 		}
@@ -46,7 +46,7 @@ public class Mission20 extends Mission {
 				public void invoke() {
 					stage = M20.TALK;
 					world.currentTalk = "brian";
-					helper.showObjective("Mission-20");
+					showObjective("Mission-20");
 					addMission("Mission-20-Timeout", 2 * 24);
 					world.env.playMusic();
 
@@ -55,12 +55,12 @@ public class Mission20 extends Mission {
 		}
 		if (checkMission("Mission-20-Timeout")) {
 			stage = M20.DONE;
-			helper.setObjectiveState("Mission-20", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-20", ObjectiveState.FAILURE);
 			addTimeout("Mission-20-Hide", 13000);
 			world.currentTalk = null;
 		}
 		if (checkTimeout("Mission-20-Hide")) {
-			helper.objective("Mission-20").visible = false;
+			objective("Mission-20").visible = false;
 		}
 		if (checkMission("Mission-20-EndTalk")) {
 			world.currentTalk = null;
@@ -69,8 +69,8 @@ public class Mission20 extends Mission {
 	@Override
 	public void onTalkCompleted() {
 		if ("brian".equals(world.currentTalk) && stage == M20.TALK) {
-			helper.setObjectiveState("Mission-20", ObjectiveState.SUCCESS);
-			helper.clearMissionTime("Mission-20-Timeout");
+			setObjectiveState("Mission-20", ObjectiveState.SUCCESS);
+			clearMission("Mission-20-Timeout");
 			stage = M20.DONE;
 			addTimeout("Mission-20-Hide", 13000);
 			addMission("Mission-20-EndTalk", 1 * 24);

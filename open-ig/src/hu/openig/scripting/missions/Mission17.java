@@ -9,8 +9,8 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
+import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
@@ -48,9 +48,36 @@ public class Mission17 extends Mission {
 	protected final String target = "Garthog 2";
 	@Override
 	public void onTime() {
-		if (stage == M17.NONE && helper.objective("Mission-16").state != ObjectiveState.ACTIVE) {
+		if (stage == M17.NONE && objective("Mission-16").state != ObjectiveState.ACTIVE) {
 			stage = M17.WAIT;
 			addMission("Mission-17", 7 * 24);
+			addMission("Mission-6-Close", 6 * 24);
+		}
+		if (checkMission("Mission-6-Close")) {
+			// check defenses
+			boolean t1 = false;
+			outer:
+			for (Planet p : player.ownPlanets()) {
+				for (Building b : p.surface.buildings) {
+					if (b.type.kind.equals("Defensive")) {
+						setObjectiveState("Mission-6-Task-1", ObjectiveState.SUCCESS);
+						t1 = true;
+						break outer;
+					}
+				}
+			}
+			if (!t1) {
+				setObjectiveState("Mission-6-Task-1", ObjectiveState.FAILURE);
+			}
+			addTimeout("Mission-6-Close-2", 4000);
+		}
+		if (checkTimeout("Mission-6-Close-2")) {
+			// check production count
+			if (player.statistics.productionCount > 0) {
+				setObjectiveState("Mission-6-Task-2", ObjectiveState.SUCCESS);
+			} else {
+				setObjectiveState("Mission-6-Task-2", ObjectiveState.FAILURE);
+			}
 		}
 		if (checkMission("Mission-17")) {
 			stage = M17.INTRO;
@@ -60,29 +87,25 @@ public class Mission17 extends Mission {
 				public void invoke() {
 					world.env.speed1();
 					createGarthog();
-					incomingMessage("Douglas-Prototype");
-					addTimeout("Mission-17-Objective", 3000);
+					incomingMessage("Douglas-Prototype", "Mission-17");
 					world.env.playMusic();
 					stage = M17.RUN;
 				}
 			});
 		}
-		if (checkTimeout("Mission-17-Objective")) {
-			helper.showObjective("Mission-17");
-		}
 		if (checkTimeout("Mission-17-Failed")) {
 			stage = M17.DONE;
-			helper.gameover();
-			helper.receive("Douglas-Prototype").visible = false;
+			gameover();
+			receive("Douglas-Prototype").visible = false;
 			loseGameMessageAndMovie("Douglas-Fire-Prototype-Lost", "loose/fired_level_2");
 		}
 		if (checkTimeout("Mission-17-Success")) {
-			helper.setObjectiveState("Mission-17", ObjectiveState.SUCCESS);
+			setObjectiveState("Mission-17", ObjectiveState.SUCCESS);
 			addTimeout("Mission-17-Done", 13000);
 		}
 		if (checkTimeout("Mission-17-Done")) {
-			helper.receive("Douglas-Prototype").visible = false;
-			helper.objective("Mission-17").visible = false;
+			receive("Douglas-Prototype").visible = false;
+			objective("Mission-17").visible = false;
 			stage = M17.DONE;
 			incomingMessage("Douglas-Prototype-Success"); // TODO
 		}
@@ -95,7 +118,7 @@ public class Mission17 extends Mission {
 				@Override
 				public void invoke() {
 					promote();
-					helper.receive("Douglas-Prototype-Success").visible = false;
+					receive("Douglas-Prototype-Success").visible = false;
 				}
 			});
 		}
@@ -139,7 +162,7 @@ public class Mission17 extends Mission {
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
 		if (planet.id.equals(target) && hasTag(fleet, "Mission-17-Prototype")) {
-			helper.setObjectiveState("Mission-17", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-17", ObjectiveState.FAILURE);
 			addTimeout("Mission-17-Failed", 13000);
 			
 			world.removeFleet(fleet);
@@ -183,18 +206,18 @@ public class Mission17 extends Mission {
 			return;
 		}
 		Player garthog = player("Garthog");
-		Pair<Fleet, InventoryItem> proto = findTaggedFleet("Mission-17-Prototype", garthog);
+		Fleet proto = findTaggedFleet("Mission-17-Prototype", garthog);
 		if (proto == null) {
 			
 			battle.rewardImage = "battlefinish/mission_21";
 			battle.messageText = label("battlefinish.mission-17.21");
 			battle.rewardText = label("battlefinish.mission-17.21_bonus");
 			
-			Pair<Fleet, InventoryItem> gf = findTaggedFleet("Mission-17-Garthog", garthog);
+			Fleet gf = findTaggedFleet("Mission-17-Garthog", garthog);
 			if (gf != null) {
-				gf.first.inventory.clear();
-				removeScripted(gf.first);
-				world.removeFleet(gf.first);
+				gf.inventory.clear();
+				removeScripted(gf);
+				world.removeFleet(gf);
 			}
 
 			addTimeout("Mission-17-Success", 1000);

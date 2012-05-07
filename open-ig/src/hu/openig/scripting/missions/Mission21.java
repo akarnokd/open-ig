@@ -10,7 +10,6 @@ package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -69,19 +68,13 @@ public class Mission21 extends Mission {
 	}
 	@Override
 	public void onTime() {
-		if (stage == M21.NONE && helper.objective("Mission-19").state != ObjectiveState.ACTIVE) {
+		if (stage == M21.NONE && objective("Mission-19").state != ObjectiveState.ACTIVE) {
 			stage = M21.WAIT;
 			addMission("Mission-21", 14 * 24);
 		}
 		if (checkMission("Mission-21")) {
-			incomingMessage("Douglas-Prototype-2");
-			addTimeout("Mission-21-Objectives", 3000);
-			stage = M21.MESSAGE;
-		}
-		if (checkTimeout("Mission-21-Objectives")) {
-			helper.showObjective("Mission-21");
+			incomingMessage("Douglas-Prototype-2", "Mission-21");
 			stage = M21.MEET;
-			createPrototype();
 		}
 		if (stage == M21.MEET) {
 			if (checkNearStart()) {
@@ -105,7 +98,7 @@ public class Mission21 extends Mission {
 		}
 		if (checkMission("Mission-21-Timeout")) {
 			removeFleets();
-			helper.setObjectiveState("Mission-21", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-21", ObjectiveState.FAILURE);
 			
 			addTimeout("Mission-21-Hide", 13000);
 			addTimeout("Mission-21-FailureMessage", 3000);
@@ -115,27 +108,27 @@ public class Mission21 extends Mission {
 			incomingMessage("Douglas-Prototype-2-Failed");
 		}
 		if (checkMission("Mission-21-Failure")) {
-			helper.send("Douglas-Prototype-2-Failed").visible = false;
+			send("Douglas-Prototype-2-Failed").visible = false;
 		}
 		if (checkTimeout("Mission-21-Hide")) {
-			helper.receive("Douglas-Prototype-2").visible = false;
-			helper.objective("Mission-21").visible = false;
+			receive("Douglas-Prototype-2").visible = false;
+			objective("Mission-21").visible = false;
 		}
 		if (checkTimeout("Mission-21-Thanks")) {
 			incomingMessage("Prototype-Thanks");
 			addMission("Mission-21-Thanks-Hide", 24); 
 		}
 		if (checkMission("Mission-21-Thanks-Hide")) {
-			helper.receive("Prototype-Thanks").visible = false;
+			receive("Prototype-Thanks").visible = false;
 		}
 	}
 	/**
 	 * Remove the mission fleets.
 	 */
 	void removeFleets() {
-		Pair<Fleet, InventoryItem> benson = findTaggedFleet(ALLY, player);
+		Fleet benson = findTaggedFleet(ALLY, player);
 		if (benson != null) {
-			world.removeFleet(benson.first);
+			world.removeFleet(benson);
 			removeScripted(benson);
 		}
 		removeGarthog();
@@ -145,17 +138,17 @@ public class Mission21 extends Mission {
 	 */
 	void removeGarthog() {
 		Player g = garthog();
-		Pair<Fleet, InventoryItem> garthog = findTaggedFleet(ENEMY, g);
+		Fleet garthog = findTaggedFleet(ENEMY, g);
 		if (garthog != null) {
-			world.removeFleet(garthog.first);
+			world.removeFleet(garthog);
 			removeScripted(garthog);
 		}
 	}
 	/** @return Check if the fleet is close to centronom. */
 	boolean checkNearCentronom() {
 		Planet cent = planet("Centronom");
-		Pair<Fleet, InventoryItem> f = findTaggedFleet("Mission-21-Prototype", player);
-		if (f != null && Math.hypot(cent.x - f.first.x, cent.y - f.first.y) < 20) {
+		Fleet f = findTaggedFleet("Mission-21-Prototype", player);
+		if (f != null && Math.hypot(cent.x - f.x, cent.y - f.y) < 20) {
 			return true;
 		}
 		return false;
@@ -164,13 +157,13 @@ public class Mission21 extends Mission {
 	 * Create the garthog attacker fleet.
 	 */
 	void createGarthog() {
-		Pair<Fleet, InventoryItem> f = findTaggedFleet(ALLY, player);
-		f.first.stop();
-		f.first.task = FleetTask.SCRIPT;
+		Fleet f = findTaggedFleet(ALLY, player);
+		f.stop();
+		f.task = FleetTask.SCRIPT;
 		
 		Player g = player("Garthog");
 		
-		Fleet gf = createFleet(label("Garthog.fleet"), g, f.first.x + 3, f.first.y + 3);
+		Fleet gf = createFleet(label("Garthog.fleet"), g, f.x + 3, f.y + 3);
 		
 		// ----------------------------
 
@@ -191,14 +184,12 @@ public class Mission21 extends Mission {
 		gf.task = FleetTask.SCRIPT;
 		addScripted(gf);
 		
-		Pair<Fleet, InventoryItem> carrier = findTaggedFleet(ALLY, player);
-		Fleet ff = getFollower(carrier.first, player);
+		Fleet carrier = findTaggedFleet(ALLY, player);
+		Fleet ff = getFollower(carrier, player);
 		if (ff != null) {
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet(ENEMY, g);
-			ff.attack(garthog.first);
-			player.fleets.put(garthog.first, FleetKnowledge.VISIBLE);
+			player.fleets.put(gf, FleetKnowledge.VISIBLE);
+			ff.attack(gf);
 		}
-
 	}
 	
 	/**
@@ -206,10 +197,10 @@ public class Mission21 extends Mission {
 	 * @return true if a fleet is nearby
 	 */
 	boolean checkNearStart() {
-		Pair<Fleet, InventoryItem> f = findTaggedFleet(ALLY, player);
+		Fleet f = findTaggedFleet(ALLY, player);
 		if (f != null) {
 			for (Fleet f0 : player.ownFleets()) {
-				if (f0 != f.first && Math.hypot(f0.x - f.first.x, f0.y - f.first.y) < 5) {
+				if (f0 != f && Math.hypot(f0.x - f.x, f0.y - f.y) < 5) {
 					return true;
 				}
 			}
@@ -248,9 +239,9 @@ public class Mission21 extends Mission {
 	 */
 	void movePrototype() {
 		Planet cent = planet("Centronom");
-		Pair<Fleet, InventoryItem> f = findTaggedFleet(ALLY, player);
+		Fleet f = findTaggedFleet(ALLY, player);
 		if (f != null) {
-			f.first.moveTo(cent);
+			f.moveTo(cent);
 		}
 	}
 	@Override
@@ -279,17 +270,17 @@ public class Mission21 extends Mission {
 	 */
 	boolean concludeBattle(BattleInfo battle) {
 		boolean result = false;
-		helper.clearMissionTime("Mission-21-Timeout");
-		Pair<Fleet, InventoryItem> carrier = findTaggedFleet(ALLY, player);
+		clearMission("Mission-21-Timeout");
+		Fleet carrier = findTaggedFleet(ALLY, player);
 
 		if (carrier != null) {
-			helper.setObjectiveState("Mission-21", ObjectiveState.SUCCESS);
+			setObjectiveState("Mission-21", ObjectiveState.SUCCESS);
 			addTimeout("Mission-21-Hide", 13000);
 			addTimeout("Mission-21-Thanks", 5000);
 			result = true;
 			movePrototype();
 		} else {
-			helper.setObjectiveState("Mission-21", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-21", ObjectiveState.FAILURE);
 			
 			addTimeout("Mission-21-Hide", 13000);
 			addTimeout("Mission-21-FailureMessage", 3000);

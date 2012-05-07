@@ -150,7 +150,7 @@ public class MainScreen extends ScreenBase {
 	}
 	/** Perform the exit. */
 	void doExit() {
-		commons.sounds.playSound(SoundType.GOOD_BYE);
+		effectSound(SoundType.GOOD_BYE);
 		try {
 			Thread.sleep(1500);
 		} catch (InterruptedException ex) {

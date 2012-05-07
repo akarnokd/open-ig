@@ -16,42 +16,52 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
+import hu.openig.utils.XElement;
 
 /**
  * Mission 10: Escort centronom governor.
  * @author akarnokd, Jan 22, 2012
  */
 public class Mission10 extends Mission {
+	/** The stages. */
+	enum M10Stages {
+		/** Not started yet. */
+		NONE,
+		/** Wait for intro. */
+		WAIT,
+		/** Main operation running. */
+		RUN,
+		/** Mission done. */
+		DONE
+	}
+	/** The current mission stage. */
+	M10Stages stage = M10Stages.NONE;
 	@Override
 	public void onTime() {
-		Objective m9 = helper.objective("Mission-9");
-		Objective m10 = helper.objective("Mission-10");
-		if (m9.state != ObjectiveState.ACTIVE
-				&& !m10.visible && m10.state == ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-10-Once")) {
-			helper.setMissionTime("Mission-10", helper.now() + 3 * 24);
-			helper.setMissionTime("Mission-10-Once", helper.now() + 1);
+		Objective m9 = objective("Mission-9");
+		if (stage == M10Stages.NONE && m9.isCompleted() && !objective("Mission-10").isCompleted()) {
+			addMission("Mission-10", 3 * 24);
+			stage = M10Stages.WAIT;
 		}
-		if (checkMission("Mission-10")) {
-			incomingMessage("Douglas-Centronom-Governor");
-			helper.setMissionTime("Mission-10-Timeout", helper.now() + 24);
-		}
-		if (checkTimeout("Mission-10-Hide")) {
-			helper.objective("Mission-10").visible = false;
-		}
-		if (checkTimeout("Mission-10-Objective")) {
+		if (stage == M10Stages.WAIT && checkMission("Mission-10")) {
 			world.env.stopMusic();
 			world.env.playVideo("interlude/colony_ship_arrival", new Action0() {
 				@Override
 				public void invoke() {
 					world.env.playMusic();
-					helper.showObjective("Mission-10");
-					helper.clearMissionTime("Mission-10-Timeout");
-					helper.clearMissionTime("Mission-10-Once");
+					incomingMessage("Douglas-Centronom-Governor", "Mission-10");
 					world.env.speed1();
 					createGovernor();
+					stage = M10Stages.RUN;
 				}
 			});
+			
+		}
+		if (checkTimeout("Mission-10-Objective")) {
+			showObjective("Mission-10");
+		}
+		if (checkTimeout("Mission-10-Hide")) {
+			objective("Mission-10").visible = false;
 		}
 	}
 	/**
@@ -74,32 +84,39 @@ public class Mission10 extends Mission {
 		pf.mode = FleetMode.MOVE;
 		pf.targetPlanet(nax);
 
-		helper.scriptedFleets().add(pf.id);
+		addScripted(pf);
 
 	}
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
-		if (helper.isActive("Mission-10")) {
+		Objective m10 = objective("Mission-10");
+		if (m10.isActive()) {
 			if (planet.id.equals("Naxos") 
 					&& hasTag(fleet, "Mission-10-Governor")) {
 				world.removeFleet(fleet);
-				helper.scriptedFleets().remove(fleet.id);
-				helper.setObjectiveState("Mission-10", ObjectiveState.SUCCESS);
-				helper.setTimeout("Mission-10-Hide", 13000);
-				helper.receive("Douglas-Centronom-Governor").visible = false;
-			}
-		}
-	}
-	@Override
-	public void onMessageSeen(String id) {
-		if ("Douglas-Centronom-Governor".equals(id)) {
-			if (findTaggedFleet("Mission-10-Governor", player) == null) {
-				helper.setTimeout("Mission-10-Objective", 1000);
+				removeScripted(fleet);
+				if (setObjectiveState("Mission-10", ObjectiveState.SUCCESS)) {
+					addTimeout("Mission-10-Hide", 13000);
+					receive("Douglas-Centronom-Governor").visible = false;
+					stage = M10Stages.DONE;
+				}
 			}
 		}
 	}
 	@Override
 	public boolean applicable() {
 		return world.level == 2;
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("stage", stage);
+	}
+	@Override
+	public void load(XElement xmission) {
+		stage = M10Stages.valueOf(xmission.get("stage", M10Stages.NONE.toString()));
+	}
+	@Override
+	public void reset() {
+		stage = M10Stages.NONE;
 	}
 }

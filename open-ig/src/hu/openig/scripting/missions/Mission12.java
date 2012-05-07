@@ -45,57 +45,53 @@ public class Mission12 extends Mission {
 	protected boolean tradersLost;
 	@Override
 	public void onTime() {
-		Objective m11t1 = helper.objective("Mission-11");
-		if (m11t1.state != ObjectiveState.ACTIVE) {
-			if (stage == M12Stages.NONE) {
-				helper.setMissionTime("Mission-12", helper.now() + 12);
-				stage = M12Stages.INITIAL_DELAY;
-			}
+		Objective m11t1 = objective("Mission-11");
+		if (m11t1.isCompleted() && stage == M12Stages.NONE) {
+			addMission("Mission-12", 12);
+			stage = M12Stages.INITIAL_DELAY;
 		}
 		if (checkMission("Mission-12")) {
 			world.env.speed1();
-			incomingMessage("New Caroline-Garthog-Virus");
+			incomingMessage("New Caroline-Garthog-Virus", "Mission-12", "Mission-12-Task-1");
 			stage = M12Stages.FIRST_MESSAGE;
 			planet("New Caroline").quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
-			addTimeout("Mission-12-O1", 3000);
 		}
-		if (checkTimeout("Mission-12-O1")) {
-			helper.showObjective("Mission-12");
-			helper.showObjective("Mission-12-Task-1");
-		}
-		Objective m12 = helper.objective("Mission-12");
+		Objective m12 = objective("Mission-12");
 		if (checkMission("Mission-12-Subsequent") 
 				&& m12.state == ObjectiveState.ACTIVE) {
-			Objective m14 = helper.objective("Mission-14");
-			if (!helper.hasMissionTime("Mission-14")
+			Objective m14 = objective("Mission-14");
+			if (!hasMission("Mission-14")
 					&& (!m14.visible && m14.state == ObjectiveState.ACTIVE)) {
 				world.env.speed1();
-				incomingMessage("New Caroline-Garthog-Virus-Again");
+
+				String m12tx = "";
+				for (int i = 2; i < 6; i++) {
+					Objective o = objective("Mission-12-Task-" + i);
+					if (!o.visible && o.state == ObjectiveState.ACTIVE) {
+						m12tx = "Mission-12-Task-" + i;
+						break;
+					}
+				}				
+
+				
+				incomingMessage("New Caroline-Garthog-Virus-Again", "Mission-12", m12tx);
+				
+				
 				stage = M12Stages.SUBSEQUENT_MESSAGE;
 				planet("New Caroline").quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
 				
 				addTimeout("Mission-12-O2", 3000);
 			}
 		}
-		if (checkTimeout("Mission-12-O2")) {
-			helper.showObjective("Mission-12");
-			for (int i = 2; i < 6; i++) {
-				Objective o = helper.objective("Mission-12-Task-" + i);
-				if (!o.visible && o.state == ObjectiveState.ACTIVE) {
-					helper.showObjective("Mission-12-Task-" + i);
-					break;
-				}
-			}				
-		}
 		if (checkMission("Mission-12-Hide")) {
-			helper.objective("Mission-12").visible = false;
-			helper.receive("New Caroline-Garthog-Virus").visible = false;
-			helper.receive("New Caroline-Garthog-Virus-Again").visible = false;
-			helper.receive("New Caroline-Garthog-Virus-Resolved").visible = false;
-			helper.receive("New Caroline-Garthog-Virus-Again-Deaths").visible = false;
+			objective("Mission-12").visible = false;
+			receive("New Caroline-Garthog-Virus").visible = false;
+			receive("New Caroline-Garthog-Virus-Again").visible = false;
+			receive("New Caroline-Garthog-Virus-Resolved").visible = false;
+			receive("New Caroline-Garthog-Virus-Again-Deaths").visible = false;
 		}
 		if (checkTimeout("Mission-12-Task-6-Hide")) {
-			helper.objective("Mission-12-Task-6").visible = false;
+			objective("Mission-12-Task-6").visible = false;
 		}
 		if (checkMission("Mission-12-TaskSuccess")) {
 			completeActiveTask();
@@ -105,7 +101,7 @@ public class Mission12 extends Mission {
 				|| stage == M12Stages.FIRST_RUNDOWN
 				|| stage == M12Stages.SUBSEQUENT_RUNDOWN
 		) {
-			helper.receive("New Caroline-Virus").visible = false;
+			receive("New Caroline-Virus").visible = false;
 		}
 	}
 	@Override
@@ -125,9 +121,9 @@ public class Mission12 extends Mission {
 			completeActiveTask();				
 		}
 		if ("Douglas-Report-Viruses".equals(id)) {
-			helper.setMissionTime("Mission-14", helper.now() + 8);
-			helper.setObjectiveState("Mission-12-Task-6", ObjectiveState.SUCCESS);
-			helper.setTimeout("Mission-12-Task-6-Hide", 13000);
+			addMission("Mission-14", 8);
+			setObjectiveState("Mission-12-Task-6", ObjectiveState.SUCCESS);
+			addTimeout("Mission-12-Task-6-Hide", 13000);
 		}
 	}
 	/**
@@ -135,17 +131,17 @@ public class Mission12 extends Mission {
 	 */
 	void completeActiveTask() {
 		for (int i = 5; i >= 1; i--) {
-			Objective o = helper.objective("Mission-12-Task-" + i);
+			Objective o = objective("Mission-12-Task-" + i);
 			if (o.visible && o.state == ObjectiveState.ACTIVE) {
-				helper.setObjectiveState("Mission-12-Task-" + i, ObjectiveState.SUCCESS);
-				if (helper.hasMissionTime("Mission-12-TaskSuccess")) {
-					helper.clearMissionTime("Mission-12-TaskSuccess");
+				setObjectiveState("Mission-12-Task-" + i, ObjectiveState.SUCCESS);
+				if (hasMission("Mission-12-TaskSuccess")) {
+					clearMission("Mission-12-TaskSuccess");
 				}
 				if (i >= 2) {
-					helper.send("Douglas-Report-Viruses").visible = true;
+					send("Douglas-Report-Viruses").visible = true;
 				}
 				if (i == 5) {
-					helper.showObjective("Mission-12-Task-6");
+					showObjective("Mission-12-Task-6");
 				}
 				break;
 			}
@@ -154,49 +150,49 @@ public class Mission12 extends Mission {
 	@Override
 	public void onLost(Planet planet) {
 		for (int i = 1; i < 6; i++) {
-			Objective o = helper.objective("Mission-12-Task-" + i);
-			if (o.visible && o.state == ObjectiveState.ACTIVE) {
-				helper.setObjectiveState(o, ObjectiveState.FAILURE);
+			Objective o = objective("Mission-12-Task-" + i);
+			if (o.isActive()) {
+				setObjectiveState(o, ObjectiveState.FAILURE);
 			}
-			helper.setObjectiveState("Mission-12", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-12", ObjectiveState.FAILURE);
 		}
-		helper.gameover();
+		gameover();
 		loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
 	}
 	@Override
 	public void onPlanetCured(Planet planet) {
 		if (stage == M12Stages.FIRST_RUNDOWN || stage == M12Stages.FIRST_MESSAGE) {
 			if (planet.id.equals("New Caroline")) {
-				helper.receive("New Caroline-Garthog-Virus").visible = false;
+				receive("New Caroline-Garthog-Virus").visible = false;
 				incomingMessage("New Caroline-Garthog-Virus-Resolved");
-				helper.setMissionTime("Mission-12-Subsequent", helper.now() + 24);
-				helper.setMissionTime("Mission-12-TaskSuccess", helper.now() + 2);
+				addMission("Mission-12-Subsequent", 24);
+				addMission("Mission-12-TaskSuccess", 2);
 				stage = M12Stages.SUBSEQUENT_DELAY;
-				helper.setMissionTime("Mission-12-Hide", helper.now() + 5);
+				addMission("Mission-12-Hide", 5);
 			}
 		}
 		if (stage == M12Stages.SUBSEQUENT_RUNDOWN || stage == M12Stages.SUBSEQUENT_MESSAGE) {
 			if (planet.id.equals("New Caroline")) {
-				helper.receive("New Caroline-Garthog-Virus-Again").visible = false;
+				receive("New Caroline-Garthog-Virus-Again").visible = false;
 				if (tradersLost) {
 					incomingMessage("New Caroline-Garthog-Virus-Again-Deaths");
 				} else {
 					incomingMessage("New Caroline-Garthog-Virus-Resolved");
 				}
 				for (int i = 5; i >= 2; i--) {
-					Objective o = helper.objective("Mission-12-Task-" + i);
+					Objective o = objective("Mission-12-Task-" + i);
 					if (o.visible && o.state == ObjectiveState.ACTIVE) {
 						if (i < 5) {
-							helper.setMissionTime("Mission-12-Subsequent", helper.now() + 24);
+							addMission("Mission-12-Subsequent", 24);
 							stage = M12Stages.SUBSEQUENT_DELAY;
 						} else {
 							stage = M12Stages.DONE;
 						}
-						helper.setMissionTime("Mission-12-TaskSuccess", helper.now() + 2);
+						addMission("Mission-12-TaskSuccess", 2);
 						break;
 					}
 				}				
-				helper.setMissionTime("Mission-12-Hide", helper.now() + 5);
+				addMission("Mission-12-Hide", 5);
 			}			
 		}
 	}
@@ -214,7 +210,7 @@ public class Mission12 extends Mission {
 				}
 			}
 			if (cnt > 2) {
-				helper.gameover();
+				gameover();
 				loseGameMessageAndMovie("New Caroline-Garthog-Virus-Breached", "loose/fired_level_2");
 			}
 		}

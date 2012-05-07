@@ -22,28 +22,27 @@ public class Mission15 extends Mission {
 	}
 	@Override
 	public void onTime() {
-		if (helper.canStart("Mission-15")) {
-			helper.clearMissionTime("Mission-15");
+		if (checkMission("Mission-15")) {
 			world.env.stopMusic();
 			world.env.playVideo("interlude/spy_on_johnson", new Action0() {
 				@Override
 				public void invoke() {
 					world.currentTalk = "kelly";
-					helper.showObjective("Mission-15");
-					helper.showObjective("Mission-15-Task-1");
-					helper.setMissionTime("Mission-15-Task-1-Timeout", helper.now() + 7 * 24);
+					showObjective("Mission-15");
+					showObjective("Mission-15-Task-1");
+					addMission("Mission-15-Task-1-Timeout", 7 * 24);
 					world.env.playMusic();
 				}
 			});
 		}
 		if (world.recordWatched 
-				&& helper.objective("Mission-15-Task-2").state == ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-15-Morning")) {
+				&& objective("Mission-15-Task-2").state == ObjectiveState.ACTIVE
+				&& !hasMission("Mission-15-Morning")) {
 
-			int now = ((helper.now() / 24) * 24) + 23;
-			helper.setMissionTime("Mission-15-Morning", now);
-			helper.setObjectiveState("Mission-15-Task-2", ObjectiveState.SUCCESS);
-			helper.clearMissionTime("Mission-15-Task-2-Timeout");
+			int t = ((now() / 24) * 24) + 23 - now();
+			addMission("Mission-15-Morning", t);
+			setObjectiveState("Mission-15-Task-2", ObjectiveState.SUCCESS);
+			clearMission("Mission-15-Task-2-Timeout");
 		}
 		if (checkMission("Mission-15-Morning")) {
 			world.env.stopMusic();
@@ -53,40 +52,37 @@ public class Mission15 extends Mission {
 					world.allowRecordMessage = false;
 					// record watched in time
 					
-					helper.send("Douglas-Report-Spy").visible = true;
+					send("Douglas-Report-Spy").visible = true;
 
-					helper.showObjective("Mission-15-Task-3");
-					helper.setMissionTime("Mission-15-Task-3-Timeout", helper.now() + 7 * 24);
+					showObjective("Mission-15-Task-3");
+					addMission("Mission-15-Task-3-Timeout", 7 * 24);
 					world.env.playMusic();
 				}
 			});
 		}
 		// TIMEOUTS ---------------------------------------------------------------
-		if (helper.isMissionTime("Mission-15-Task-1-Timeout")) {
+		if (checkMission("Mission-15-Task-1-Timeout")) {
 			// record not taken in time
-			helper.clearMissionTime("Mission-15-Task-1-Timeout");
-			helper.setObjectiveState("Mission-15-Task-1", ObjectiveState.FAILURE);
-			helper.setObjectiveState("Mission-15", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-15-Task-1", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-15", ObjectiveState.FAILURE);
 			world.currentTalk = null;
 		}
-		if (helper.isMissionTime("Mission-15-Task-2-Timeout")) {
+		if (checkMission("Mission-15-Task-2-Timeout")) {
 			// record not taken in time
-			helper.clearMissionTime("Mission-15-Task-2-Timeout");
-			helper.setObjectiveState("Mission-15-Task-2", ObjectiveState.FAILURE);
-			helper.setObjectiveState("Mission-15", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-15-Task-2", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-15", ObjectiveState.FAILURE);
 		}
-		if (helper.isMissionTime("Mission-15-Task-3-Timeout")) {
+		if (checkMission("Mission-15-Task-3-Timeout")) {
 			// not reported in time
-			helper.clearMissionTime("Mission-15-Task-3-Timeout");
-			helper.setObjectiveState("Mission-15-Task-3", ObjectiveState.FAILURE);
-			helper.setObjectiveState("Mission-15", ObjectiveState.FAILURE);
-			helper.setTimeout("Mission-15-Hide", 13000);
+			setObjectiveState("Mission-15-Task-3", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-15", ObjectiveState.FAILURE);
+			addTimeout("Mission-15-Hide", 13000);
 
 		}
 		// hide tasks ---------------------------------------------------------------
 		if (checkTimeout("Mission-15-Hide")) {
-			helper.objective("Mission-15").visible = false;
-			helper.send("Douglas-Report-Spy").visible = false;
+			objective("Mission-15").visible = false;
+			send("Douglas-Report-Spy").visible = false;
 			world.currentTalk = null;
 		}
 	}
@@ -94,22 +90,22 @@ public class Mission15 extends Mission {
 	@Override
 	public void onMessageSeen(String id) {
 		if ("Douglas-Report-Spy".equals(id)) {
-			if (helper.setObjectiveState("Mission-15-Task-3", ObjectiveState.SUCCESS)) {
-				helper.setObjectiveState("Mission-15", ObjectiveState.SUCCESS);
-				helper.clearMissionTime("Mission-15-Task-3-Timeout");
-				helper.setTimeout("Mission-15-Hide", 13000);
+			if (setObjectiveState("Mission-15-Task-3", ObjectiveState.SUCCESS)) {
+				setObjectiveState("Mission-15", ObjectiveState.SUCCESS);
+				clearMission("Mission-15-Task-3-Timeout");
+				addTimeout("Mission-15-Hide", 13000);
 			}
 		}
 	}
 	@Override
 	public void onTalkCompleted() {
 		if ("kelly".equals(world.currentTalk)) {
-			if (helper.setObjectiveState("Mission-15-Task-1", ObjectiveState.SUCCESS)) {
+			if (setObjectiveState("Mission-15-Task-1", ObjectiveState.SUCCESS)) {
 				world.allowRecordMessage = true;
-				helper.showObjective("Mission-15-Task-2");
-				helper.clearMissionTime("Mission-15-Task-1-Timeout");
+				showObjective("Mission-15-Task-2");
+				clearMission("Mission-15-Task-1-Timeout");
 				// record message timeout
-				helper.setMissionTime("Mission-15-Task-2-Timeout", helper.now() + 7 * 24);
+				addMission("Mission-15-Task-2-Timeout", 7 * 24);
 			}
 		}
 	}

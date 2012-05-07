@@ -8,12 +8,14 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Pair;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
+import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.ViewLimit;
 import hu.openig.utils.XElement;
 
 /**
@@ -51,13 +53,21 @@ public class Mission22 extends Mission {
 		// achievement
 		String a = "achievement.admiral";
 		achievement(a);
+		
+		Player dsl = player("Dargslan");
+		
+		ViewLimit vl = getViewLimit(dsl, 3);
+		if (vl != null) {
+			dsl.explorationInnerLimit = vl.inner;
+			dsl.explorationOuterLimit = vl.outer;
+		}
 	}
 	
 	/**
 	 * Creates the main ship for level 4.
 	 */
 	void createMainShip() {
-		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip4", player);
+		Fleet own = findTaggedFleet("CampaignMainShip4", player);
 		if (own != null) {
 			return;
 		}
@@ -70,10 +80,10 @@ public class Mission22 extends Mission {
 		}
 		Fleet f = null;
 		if (own != null 
-				&& own.first.getStatistics().battleshipCount < 3 
-				&& own.first.getStatistics().cruiserCount < 25
-				&& own.first.inventoryCount(research("Fighter2")) < 30 - 6) {
-			f = own.first;
+				&& own.getStatistics().battleshipCount < 3 
+				&& own.getStatistics().cruiserCount < 25
+				&& own.inventoryCount(research("Fighter2")) < 30 - 6) {
+			f = own;
 		} else {
 			Planet ach = planet("Achilles");
 			f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
@@ -97,6 +107,13 @@ public class Mission22 extends Mission {
 		setSlot(ii, "cannon2", "IonCannon", 12);
 		setSlot(ii, "shield", "Shield1", 14);
 		setSlot(ii, "hyperdrive", "HyperDrive1", 1);
+		
+		for (Fleet fa : player.ownFleets()) {
+			if (fa.task == FleetTask.SCRIPT) {
+				fa.task = FleetTask.IDLE;
+				removeScripted(fa);
+			}
+		}
 	}
 	@Override
 	public void onTime() {
@@ -104,21 +121,35 @@ public class Mission22 extends Mission {
 			stage = M22.WAIT;
 			addTimeout("Mission-22-Objective", 4000);
 			planetsOwned = player.statistics.planetsOwned;
+			addMission("Mission-22-Delay", 28 * 24);
+		}
+		// delay any dargslan activity
+		if (checkMission("Mission-22-Delay")) {
+			Player dsl = player("Dargslan");
+			ViewLimit vl = getViewLimit(dsl, 4);
+			if (vl != null) {
+				dsl.explorationInnerLimit = vl.inner;
+				dsl.explorationOuterLimit = vl.outer;
+			} else {
+				dsl.explorationInnerLimit = null;
+				dsl.explorationOuterLimit = null;
+			}
+
 		}
 		if (checkTimeout("Mission-22-Objective")) {
-			helper.showObjective("Mission-22");
+			showObjective("Mission-22");
 			stage = M22.RUN;
 		}
 		if (stage == M22.RUN) {
 			if (player.statistics.planetsOwned >= planetsOwned + 7) {
-				helper.setObjectiveState("Mission-22", ObjectiveState.SUCCESS);
+				setObjectiveState("Mission-22", ObjectiveState.SUCCESS);
 				stage = M22.DONE;
 				addTimeout("Mission-22-Hide", 13000);
 				addMission("Mission-24", 1);
 			}
 		}
 		if (checkTimeout("Mission-22-Hide")) {
-			helper.objective("Mission-22").visible = false;
+			objective("Mission-22").visible = false;
 		}
 		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom", "Zeuson" };
 		setPlanetMessages(planets);
@@ -126,13 +157,13 @@ public class Mission22 extends Mission {
 	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {
-		Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip4", player);
+		Fleet ft = findTaggedFleet("CampaignMainShip4", player);
 		if (ft == null) {
-			if (!helper.hasTimeout("MainShip-Lost")) {
-				helper.setTimeout("MainShip-Lost", 3000);
+			if (!hasTimeout("MainShip-Lost")) {
+				addTimeout("MainShip-Lost", 3000);
 			}
-			if (helper.isTimeout("MainShip-Lost")) {
-				helper.gameover();
+			if (checkTimeout("MainShip-Lost")) {
+				gameover();
 				loseGameMovie("loose/destroyed_level_3");
 			}
 		}

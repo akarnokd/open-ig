@@ -54,7 +54,7 @@ public class Mission23 extends Mission {
 				public void invoke() {
 					stage = M23.TALK;
 					world.currentTalk = "doctor";
-					helper.showObjective("Mission-23");
+					showObjective("Mission-23");
 					addMission("Mission-23-Timeout", 2 * 24);
 					world.env.playMusic();
 
@@ -63,26 +63,26 @@ public class Mission23 extends Mission {
 		}
 		if (checkMission("Mission-23-Timeout")) {
 			stage = M23.DONE;
-			helper.setObjectiveState("Mission-23", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-23", ObjectiveState.FAILURE);
 			addTimeout("Mission-23-Hide", 13000);
 			world.currentTalk = null;
 		}
 		if (checkTimeout("Mission-23-Hide")) {
-			helper.objective("Mission-23").visible = false;
+			objective("Mission-23").visible = false;
 		}
 		if (checkMission("Mission-23-EndTalk")) {
 			world.currentTalk = null;
-			helper.send("Android").visible = true;
-			helper.showObjective("Mission-23-Task-1");
+			send("Android").visible = true;
+			showObjective("Mission-23-Task-1");
 			addMission("Mission-23-Android-Timeout", 2 * 24);
 		}
 		if (checkMission("Mission-23-Android-Timeout")) {
-			helper.send("Android").visible = false;
-			helper.setObjectiveState("Mission-23-Task-1", ObjectiveState.FAILURE);
+			send("Android").visible = false;
+			setObjectiveState("Mission-23-Task-1", ObjectiveState.FAILURE);
 			addTimeout("Mission-23-Task-1-Hide", 13000);
 		}
 		if (checkTimeout("Mission-23-Task-1-Hide")) {
-			helper.objective("Mission-23-Task-1").visible = false;
+			objective("Mission-23-Task-1").visible = false;
 		}
 		if (checkTimeout("Mission-23-Achievement")) {
 			achievement("achievement.i_robot");
@@ -92,7 +92,7 @@ public class Mission23 extends Mission {
 	public void onMessageSeen(String id) {
 		if ("Android".equals(id) && stage == M23.ANDROID) {
 			stage = M23.DONE;
-			helper.setObjectiveState("Mission-23-Task-1", ObjectiveState.SUCCESS);
+			setObjectiveState("Mission-23-Task-1", ObjectiveState.SUCCESS);
 			addTimeout("Mission-23-Task-1-Hide", 13000);
 			addTimeout("Mission-23-Achievement", 5000);
 		}
@@ -100,8 +100,8 @@ public class Mission23 extends Mission {
 	@Override
 	public void onTalkCompleted() {
 		if ("doctor".equals(world.currentTalk) && stage == M23.TALK) {
-			helper.setObjectiveState("Mission-23", ObjectiveState.SUCCESS);
-			helper.clearMissionTime("Mission-23-Timeout");
+			setObjectiveState("Mission-23", ObjectiveState.SUCCESS);
+			clearMission("Mission-23-Timeout");
 			stage = M23.ANDROID;
 			addTimeout("Mission-23-Hide", 13000);
 			addMission("Mission-23-EndTalk", 1);

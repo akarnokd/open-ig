@@ -8,7 +8,6 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Pair;
 import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
@@ -25,6 +24,7 @@ import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.utils.XElement;
 
 import java.util.Collections;
 import java.util.List;
@@ -35,44 +35,57 @@ import java.util.List;
  *
  */
 public class Mission11 extends Mission {
+	/** The mission stages. */
+	enum M11Stages {
+		/** Not started. */
+		NONE,
+		/** Wait for start. */
+		WAIT,
+		/** Running. */
+		RUN,
+		/** Done. */
+		DONE
+	}
+	/** The current stage. */
+	M11Stages stage = M11Stages.NONE;
 	@Override
 	public boolean applicable() {
 		return world.level == 2;
 	}
 	@Override
 	public void onTime() {
-		Objective m10 = helper.objective("Mission-10");
-		Objective m11 = helper.objective("Mission-11");
-		if (m10.state != ObjectiveState.ACTIVE
-				&& !m11.visible && m11.state == ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-11")) {
-			helper.setMissionTime("Mission-11", helper.now() + 6 * 24);
+		Objective m10 = objective("Mission-10");
+		Objective m11 = objective("Mission-11");
+		if (m10.isCompleted() && stage == M11Stages.NONE && !objective("Mission-11").isCompleted()) {
+			addMission("Mission-11", 6 * 24);
+			stage = M11Stages.WAIT;
 		}
-		if (checkMission("Mission-11")) {
-			helper.showObjective("Mission-11");
+		if (stage == M11Stages.WAIT && checkMission("Mission-11")) {
+			showObjective("Mission-11");
 			createGarthog();
+			stage = M11Stages.RUN;
 		}
 		if (checkTimeout("Mission-11-Done")) {
 			if (m11.state == ObjectiveState.FAILURE) {
-				helper.gameover();
+				gameover();
 				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
 			}
 			m11.visible = false;
 			garthogGoHome();
 		}
 		if (checkMission("Mission-11-Hide")) {
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
+			Fleet garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
 			if (garthog != null) {
-				removeScripted(garthog.first);
-				world.removeFleet(garthog.first);
+				removeScripted(garthog);
+				world.removeFleet(garthog);
 			}
 		}
 		if (checkTimeout("Mission-11-Planet")) {
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
+			Fleet garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
 			if (garthog != null) {
-				Planet tp = garthog.first.targetPlanet();
+				Planet tp = garthog.targetPlanet();
 				if (tp == null) {
-					tp = garthog.first.arrivedAt;
+					tp = garthog.arrivedAt;
 				}
 				if (tp != null && tp.owner == player) {
 					incomingMessage(tp.id + "-Is-Under-Attack");
@@ -82,10 +95,10 @@ public class Mission11 extends Mission {
 	}
 	/** Move the Garthog fleet home. */
 	void garthogGoHome() {
-		Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
+		Fleet garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
 		if (garthog != null) {
-			garthog.first.moveTo(planet("Garthog 1"));
-			garthog.first.task = FleetTask.SCRIPT;
+			garthog.moveTo(planet("Garthog 1"));
+			garthog.task = FleetTask.SCRIPT;
 			addMission("Mission-11-Hide", 6);
 		}
 	}
@@ -157,24 +170,29 @@ public class Mission11 extends Mission {
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
-		if (helper.isActive("Mission-11")) {
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
+		if (isM11Active()) {
+			Fleet garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
 			if (garthog == null) {
-				helper.setObjectiveState("Mission-11", ObjectiveState.SUCCESS);
+				setObjectiveState("Mission-11", ObjectiveState.SUCCESS);
 				war.battle().messageText = label("battlefinish.mission-5.garthog");
-				helper.setTimeout("Mission-11-Done", 13000);
+				addTimeout("Mission-11-Done", 13000);
 				clearMessages();
 				cleanupScriptedFleets();
+				stage = M11Stages.DONE;
 			}
 		}		
 	}
+	/**
+	 * @return check if mission 11 is active
+	 */
+	private boolean isM11Active() {
+		return objective("Mission-11").isActive();
+	}
 	@Override
 	public void onDiscovered(Player player, Fleet fleet) {
-		if (helper.isActive("Mission-11")) {
+		if (isM11Active()) {
 			if (player == this.player && hasTag(fleet, "Mission-11-Garthog")) {
-//				world.env.speed1();
-//				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
-				helper.setTimeout("Mission-11-Planet", 2000);
+				addTimeout("Mission-11-Planet", 2000);
 			}
 		}
 	}
@@ -184,28 +202,43 @@ public class Mission11 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (helper.isActive("Mission-11") 
+		if (isM11Active() 
 				&& battle.targetPlanet != null
 				&& battle.attacker.owner.id.equals("Garthog")) {
 			if (battle.targetPlanet.owner != player) {
-				helper.setObjectiveState("Mission-11", ObjectiveState.FAILURE);
+				setObjectiveState("Mission-11", ObjectiveState.FAILURE);
 			} else {
-				helper.setObjectiveState("Mission-11", ObjectiveState.SUCCESS);
+				setObjectiveState("Mission-11", ObjectiveState.SUCCESS);
 			}
-			helper.setTimeout("Mission-11-Done", 13000);
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
+			addTimeout("Mission-11-Done", 13000);
+			Fleet garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
 			if (garthog != null) {
-				helper.scriptedFleets().remove(garthog.first.id);
+				removeScripted(garthog);
 			}
 			cleanupScriptedFleets();
 			clearMessages();
+			
+			stage = M11Stages.DONE;
+
 		}
 	}
 	/** Hide receive attack messages. */
 	void clearMessages() {
 		String[] planets = { "Achilles", "Naxos", "San Sterling", "Centronom", "New Caroline" };
 		for (String s : planets) {
-			helper.receive(s + "-Is-Under-Attack").visible = false;
+			receive(s + "-Is-Under-Attack").visible = false;
 		}
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("stage", stage);
+	}
+	@Override
+	public void load(XElement xmission) {
+		stage = M11Stages.valueOf(xmission.get("stage", M11Stages.NONE.toString()));
+	}
+	@Override
+	public void reset() {
+		stage = M11Stages.NONE;
 	}
 }

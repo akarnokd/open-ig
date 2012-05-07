@@ -2450,6 +2450,12 @@
 	<entry key='settings.ui_scale'>Felület nagyítás (X - normál)</entry>
 	<entry key='flagship.moveto.equipment2'>Felszerelés</entry>
 	<entry key='settings.movie_scale'>Teljesképernyős átvezetővideók</entry>
+  <entry key='mission-5.reinforcements'>Beszélj az ezredessel az erősítésről</entry>
+  <entry key='mission-5.reinforcements.desc'>Opcionális, menj a hídra és kérj erősítést.</entry>
+  <entry key='mission-6.handle_colonies'>Kezeld a kolóniák igényeit. Építs erődítményeket.</entry>
+  <entry key='mission-6.build_fleets'>Gyárts vadászokat, rombolókat és a szükséges felszereléseket.</entry>
+  <entry key='mission-6.handle_colonies.desc'>Próbálj legalább egy Barakkot építeni.</entry>
+  <entry key='mission-6.build_fleets.desc'>Építs gyárakat, próbálj hajókat és felszerelést gyártani.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

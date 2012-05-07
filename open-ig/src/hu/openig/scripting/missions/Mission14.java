@@ -9,7 +9,6 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pair;
 import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -59,21 +58,21 @@ public class Mission14 extends Mission {
 			});
 		}
 		if (checkTimeout("Mission-14-Hide")) {
-			helper.objective("Mission-14").visible = false;
-			helper.objective("Mission-12").visible = false;
+			objective("Mission-14").visible = false;
+			objective("Mission-12").visible = false;
 		}
 		if (checkTimeout("Mission-14-Report-Hide")) {
-			helper.send("Douglas-Virus-Carriers-Destroyed").visible = false;
+			send("Douglas-Virus-Carriers-Destroyed").visible = false;
 		}
 		if (checkTimeout("Mission-14-Failed")) {
-			helper.gameover();
+			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Mistakes", "loose/fired_level_2");
 		}
 		if (checkTimeout("Mission-14-Success")) {
-			helper.setObjectiveState("Mission-14", ObjectiveState.SUCCESS);
-			helper.setTimeout("Mission-14-Hide", 13000);
-			helper.objective("Mission-12").visible = true;
-			helper.setObjectiveState("Mission-12", ObjectiveState.SUCCESS);
+			setObjectiveState("Mission-14", ObjectiveState.SUCCESS);
+			addTimeout("Mission-14-Hide", 13000);
+			objective("Mission-12").visible = true;
+			setObjectiveState("Mission-12", ObjectiveState.SUCCESS);
 		}
 	}
 	@Override
@@ -116,16 +115,16 @@ public class Mission14 extends Mission {
 		DefaultAIControls.actionDeploySatellite(garthog, nc, research("SpySatellite1"));
 		garthog.planets.put(nc, PlanetKnowledge.BUILDING);
 		
-		helper.scriptedFleets().add(f.id);
+		addScripted(f);
 		
 		stage = M14.DESTROY;
 		
-		helper.send("Douglas-Report-Viruses").visible = false;
+		send("Douglas-Report-Viruses").visible = false;
 		
-		helper.showObjective("Mission-14");
+		showObjective("Mission-14");
 		
-		if (helper.hasMissionTime("Mission-12-Subsequent")) {
-			helper.clearMissionTime("Mission-12-Subsequent");
+		if (hasMission("Mission-12-Subsequent")) {
+			clearMission("Mission-12-Subsequent");
 		}
 	}
 	@Override
@@ -143,17 +142,16 @@ public class Mission14 extends Mission {
 	public void onAutobattleFinish(BattleInfo battle) {
 		if (isMissionSpacewar(battle, "Mission-14")) {
 			Player garthog = player("Garthog");
-			Pair<Fleet, InventoryItem> tf = findTaggedFleet("Mission-14-Garthog", garthog);
+			Fleet tf = findTaggedFleet("Mission-14-Garthog", garthog);
 			if (tf != null) {
-				Fleet f = tf.first;
 				Planet nc = planet("New Caroline");
-				f.targetPlanet(nc);
-				f.mode = FleetMode.MOVE;
-				f.task = FleetTask.SCRIPT;
+				tf.targetPlanet(nc);
+				tf.mode = FleetMode.MOVE;
+				tf.task = FleetTask.SCRIPT;
 			} else {
-				helper.setTimeout("Mission-14-Success", 1000);
+				addTimeout("Mission-14-Success", 1000);
 				stage = M14.DONE;
-				helper.send("Douglas-Virus-Carriers-Destroyed").visible = true;
+				send("Douglas-Virus-Carriers-Destroyed").visible = true;
 				battle.rewardImage = "battlefinish/mission_23";
 				battle.messageText = label("battlefinish.mission-14.23");
 				
@@ -164,19 +162,19 @@ public class Mission14 extends Mission {
 	@Override
 	public void onMessageSeen(String id) {
 		if ("Douglas-Virus-Carriers-Destroyed".equals(id)) {
-			helper.setTimeout("Mission-14-Report-Hide", 10000);
+			addTimeout("Mission-14-Report-Hide", 10000);
 		}
 	}
 	
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
 		if (hasTag(fleet, "Mission-14-Garthog") && planet.id.equals("New Caroline")) {
-			helper.setObjectiveState("Mission-14", ObjectiveState.FAILURE);
-			helper.setTimeout("Mission-14-Failed", 13000);
+			setObjectiveState("Mission-14", ObjectiveState.FAILURE);
+			addTimeout("Mission-14-Failed", 13000);
 			world.removeFleet(fleet);
 			planet.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
 			world.scripting.onPlanetInfected(planet);
-			helper.scriptedFleets().remove(fleet.id);
+			removeScripted(fleet);
 			stage = M14.DONE;
 		}
 	}

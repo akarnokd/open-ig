@@ -40,6 +40,7 @@ import hu.openig.model.Parameters;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.music.Music;
@@ -888,25 +889,27 @@ public class CommonResources implements GameEnvironment {
 		}, name);
 	}
 	@Override
-	public void computerSound(SoundType type) {
-		if (config.computerVoiceNotify) {
-			sounds.playSound(type);
-		}
-	}
-	@Override
-	public void buttonSound(SoundType type) {
-		if (config.buttonSounds) {
-			sounds.playSound(type);
-		}
-	}
-	@Override
-	public void effectSound(SoundType type) {
-		sounds.playSound(type);
-	}
-	@Override
-	public void screenSound(SoundType type) {
-		if (config.computerVoiceScreen) {
-			sounds.playSound(type);
+	public void playSound(SoundTarget target, SoundType type, Action0 action) {
+		switch (target) {
+		case COMPUTER:
+			if (config.computerVoiceNotify) {
+				sounds.playSound(type, action);
+			}
+			break;
+		case BUTTON:
+			if (config.buttonSounds) {
+				sounds.playSound(type, action);
+			}
+			break;
+		case EFFECT:
+			sounds.playSound(type, action);
+			break;
+		case SCREEN:
+			if (config.computerVoiceScreen) {
+				sounds.playSound(type, action);
+			}
+			break;
+		default:
 		}
 	}
 	@Override

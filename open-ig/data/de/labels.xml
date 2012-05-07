@@ -2516,5 +2516,11 @@
 	<entry key='chat.merchant8.nA.o'>All right, I'll let you go.</entry>
 	<entry key='chat.merchant8.nB'>Don't shoot! Don't shoot! I'll leave!</entry>
 	<entry key='settings.movie_scale'>Vollbild Zwischensequenzen</entry>
+  <entry key='mission-5.reinforcements'>Kontaktiere den Oberst für Verstärkung</entry>
+  <entry key='mission-5.reinforcements.desc'>Fakultativ. Gehe auf die Brücke und frage nach Verstärkung.</entry>
+  <entry key='mission-6.handle_colonies'>Behandle den Bedürfnisse der Kolonien. Baue Befestigungen.</entry>
+  <entry key='mission-6.build_fleets'>Produziere Jäger, Zerstörer und alle benötigte Ausrüstung.</entry>
+  <entry key='mission-6.handle_colonies.desc'>Versuche ein Befestigung zu bauen.</entry>
+  <entry key='mission-6.build_fleets.desc'>Baue Fabriken und versuche Schiffe und Ausrüstungen zu bauen.</entry>
 		
 </labels>

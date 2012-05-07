@@ -8,7 +8,6 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Pair;
 import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -41,7 +40,7 @@ public class Mission6 extends Mission {
 			player.setAvailable(research("Fighter2"));
 			createMainShip();
 			
-			helper.setMissionTime("Mission-6", helper.now());
+			addMission("Mission-6", 1);
 			achievement("achievement.captain");
 		}
 	}
@@ -50,12 +49,12 @@ public class Mission6 extends Mission {
 	 */
 	void createMainShip() {
 		Planet ach = planet("Achilles");
-		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip2", player);
+		Fleet own = findTaggedFleet("CampaignMainShip2", player);
 		Fleet f = null;
 		if (own == null) {
 			own = findTaggedFleet("CampaignMainShip1", player);
 			if (own != null) {
-				f = own.first;
+				f = own;
 			} else {
 				f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
 			}
@@ -72,7 +71,7 @@ public class Mission6 extends Mission {
 			}
 			// move further away
 		} else {
-			f = own.first;
+			f = own;
 		}
 		f.x = ach.x - 50;
 		f.y = ach.y + 50;
@@ -81,25 +80,31 @@ public class Mission6 extends Mission {
 	public void onTime() {
 		checkPlanetStateMessages();
 		checkMainShip();
-		if (helper.canStart("Mission-6")) {
-			helper.clearMissionTime("Mission-6");
-			helper.showObjective("Mission-6");
-//			incomingMessage("Achilles-Is-Under-Attack");
+		if (checkMission("Mission-6")) {
+			showObjective("Mission-6");
 			createAttackers();
 		}
-		Objective m6 = helper.objective("Mission-6");
+		Objective m6 = objective("Mission-6");
 		if (checkTimeout("Mission-6-Done")) {
-			helper.receive("Achilles-Is-Under-Attack").visible = false;
+			receive("Achilles-Is-Under-Attack").visible = false;
 			if (m6.state == ObjectiveState.FAILURE) {
-				helper.gameover();
+				gameover();
 				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_2");
 			}
 			m6.visible = false;
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
 			if (garthog != null) {
-				removeScripted(garthog.first);
-				world.removeFleet(garthog.first);
+				removeScripted(garthog);
+				world.removeFleet(garthog);
 			}
+			addTimeout("Mission-6-Task-1", 4000);
+			addTimeout("Mission-6-Task-2", 8000);
+		}
+		if (checkTimeout("Mission-6-Task-1")) {
+			showObjective("Mission-6-Task-1");
+		}
+		if (checkTimeout("Mission-6-Task-2")) {
+			showObjective("Mission-6-Task-2");
 		}
 	}
 	/**
@@ -109,53 +114,53 @@ public class Mission6 extends Mission {
 		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom" };
 		
 		setPlanetMessages(planets);
-		if (helper.isActive("Mission-6")) {
-			helper.send("Achilles-Check").visible = false;
-			helper.send("Achilles-Come-Quickly").visible = true;
-			helper.send("Achilles-Not-Under-Attack").visible = false;
+		if (objective("Mission-6").isActive()) {
+			send("Achilles-Check").visible = false;
+			send("Achilles-Come-Quickly").visible = true;
+			send("Achilles-Not-Under-Attack").visible = false;
 		}
 	}
 	/**
 	 * Check distance to Achilles.
 	 */
 	void checkDistance() {
-		Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+		Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
 		if (garthog != null) {
-			if (garthog.first.mode != FleetMode.ATTACK) {
+			if (garthog.mode != FleetMode.ATTACK) {
 				Planet ach = planet("Achilles");
-				double d = Math.hypot(ach.x - garthog.first.x, ach.y - garthog.first.y);
+				double d = Math.hypot(ach.x - garthog.x, ach.y - garthog.y);
 				if (d <= 1) {
-					garthog.first.targetPlanet(ach);
-					garthog.first.mode = FleetMode.ATTACK;
-					garthog.first.task = FleetTask.SCRIPT;
+					garthog.targetPlanet(ach);
+					garthog.mode = FleetMode.ATTACK;
+					garthog.task = FleetTask.SCRIPT;
 				}
 			}
 		}
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (helper.isActive("Mission-6")) {
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+		if (objective("Mission-6").isActive()) {
+			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
 			if (garthog != null 
-					&& (war.battle().attacker == garthog.first
-					|| war.battle().targetFleet == garthog.first)) {
+					&& (war.battle().attacker == garthog
+					|| war.battle().targetFleet == garthog)) {
 				war.battle().chat = "chat.mission-6.defend.Achilles";
 			}
 		}
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
-		if (helper.isActive("Mission-6")) {
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+		if (objective("Mission-6").isActive()) {
+			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
 			if (garthog == null) {
-				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
+				setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 				war.battle().rewardText = label("battlefinish.mission-6.14_bonus");
 				war.battle().messageText = label("battlefinish.mission-6.14");
 				
 				achievement("achievement.defender");
-				helper.setTimeout("Mission-6-Done", 13000);
+				addTimeout("Mission-6-Done", 13000);
 			} else {
-				helper.scriptedFleets().remove(garthog.first.id);
+				removeScripted(garthog);
 				cleanupScriptedFleets();
 			}
 		}		
@@ -166,19 +171,19 @@ public class Mission6 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (helper.isActive("Mission-6")) {
+		if (objective("Mission-6").isActive()) {
 			Planet ach = planet("Achilles");
 			if (ach.owner != player) {
-				helper.setObjectiveState("Mission-6", ObjectiveState.FAILURE);
+				setObjectiveState("Mission-6", ObjectiveState.FAILURE);
 			} else {
-				helper.setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
+				setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 				
 				achievement("achievement.defender");
 			}
-			helper.setTimeout("Mission-6-Done", 13000);
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
+			addTimeout("Mission-6-Done", 13000);
+			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
 			if (garthog != null) {
-				helper.scriptedFleets().remove(garthog.first.id);
+				removeScripted(garthog);
 			}
 			cleanupScriptedFleets();
 		}
@@ -210,26 +215,17 @@ public class Mission6 extends Mission {
 		DefaultAIControls.actionDeploySatellite(garthog, ach, research("SpySatellite1"));
 		garthog.planets.put(ach, PlanetKnowledge.BUILDING);
 	}
-//	@Override
-//	public void onDiscovered(Player player, Fleet fleet) {
-//		if (helper.isActive("Mission-6")) {
-//			if (player == this.player && hasTag(fleet, "Mission-6-Garthog")) {
-//				world.env.speed1();
-//				world.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
-//			}
-//		}
-//	}
 	/**
 	 * Check if the main ship still exists.
 	 */
 	void checkMainShip() {
-		Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip2", player);
+		Fleet ft = findTaggedFleet("CampaignMainShip2", player);
 		if (ft == null) {
-			if (!helper.hasTimeout("MainShip-Lost")) {
-				helper.setTimeout("MainShip-Lost", 3000);
+			if (!hasTimeout("MainShip-Lost")) {
+				addTimeout("MainShip-Lost", 3000);
 			}
-			if (helper.isTimeout("MainShip-Lost")) {
-				helper.gameover();
+			if (checkTimeout("MainShip-Lost")) {
+				gameover();
 				loseGameMovie("loose/destroyed_level_2");
 			}
 		}

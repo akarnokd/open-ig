@@ -9,15 +9,14 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
@@ -69,8 +68,8 @@ public class Mission16 extends Mission {
 	protected static final String ENEMY = "Mission-16-Garthog";
 	@Override
 	public void onTime() {
-		Objective m13 = helper.objective("Mission-13");
-		final Objective m16 = helper.objective("Mission-16");
+		Objective m13 = objective("Mission-13");
+		final Objective m16 = objective("Mission-16");
 		if (m13.state == ObjectiveState.SUCCESS
 				&& stage == M16.NONE) {
 			stage = M16.WAIT;
@@ -81,22 +80,18 @@ public class Mission16 extends Mission {
 			world.env.playVideo("interlude/colony_ship_arrival_2", new Action0() {
 				@Override
 				public void invoke() {
-					helper.showObjective(m16);
-					addTimeout("Mission-16-Message", 3000);
+					incomingMessage("Douglas-Money", "Mission-16");
+					createCarrier();
+					stage = M16.RUN;
+					send("Douglas-Reinforcements-Approved").visible = true;
+					send("Douglas-Reinforcements-Denied").visible = false;
+					send("Douglas-Reinforcements-Denied-2").visible = false;
 				}
 			});
 		}
-		if (checkTimeout("Mission-16-Message")) {
-			stage = M16.RUN;
-			incomingMessage("Douglas-Money");
-			createCarrier();
-			helper.send("Douglas-Reinforcements-Approved").visible = true;
-			helper.send("Douglas-Reinforcements-Denied").visible = false;
-			helper.send("Douglas-Reinforcements-Denied-2").visible = false;
-		}
 		if (checkMission("Mission-16-Timeout")) {
 			removeFleets();
-			helper.setObjectiveState(m16, ObjectiveState.FAILURE);
+			setObjectiveState(m16, ObjectiveState.FAILURE);
 			
 			addTimeout("Mission-16-Fire", 13000);
 			addTimeout("Mission-16-Hide", 13000);
@@ -105,13 +100,13 @@ public class Mission16 extends Mission {
 			stage = M16.DONE;
 			m16.visible = false;
 			
-			helper.send("Douglas-Reinforcements-Approved").visible = false;
-			helper.send("Douglas-Reinforcements-Denied").visible = true;
-			helper.send("Douglas-Reinforcements-Denied-2").visible = false;
-			helper.receive("Douglas-Money").visible = false;
+			send("Douglas-Reinforcements-Approved").visible = false;
+			send("Douglas-Reinforcements-Denied").visible = true;
+			send("Douglas-Reinforcements-Denied-2").visible = false;
+			receive("Douglas-Money").visible = false;
 		}
 		if (checkTimeout("Mission-16-Fire")) {
-			helper.gameover();
+			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_2");
 		}
 	}
@@ -123,15 +118,15 @@ public class Mission16 extends Mission {
 	 * Remove the mission fleets.
 	 */
 	void removeFleets() {
-		Pair<Fleet, InventoryItem> benson = findTaggedFleet(ALLY, player);
+		Fleet benson = findTaggedFleet(ALLY, player);
 		Player g = garthog();
-		Pair<Fleet, InventoryItem> garthog = findTaggedFleet(ENEMY, g);
+		Fleet garthog = findTaggedFleet(ENEMY, g);
 		if (benson != null) {
-			world.removeFleet(benson.first);
+			world.removeFleet(benson);
 			removeScripted(benson);
 		}
 		if (garthog != null) {
-			world.removeFleet(garthog.first);
+			world.removeFleet(garthog);
 			removeScripted(garthog);
 		}
 	}
@@ -160,16 +155,16 @@ public class Mission16 extends Mission {
 	 * Add reinforcements to your fleet.
 	 */
 	void addReinforcements() {
-		Pair<Fleet, InventoryItem> f = findTaggedFleet("CampaignMainShip2", player);
+		Fleet f = findTaggedFleet("CampaignMainShip2", player);
 		if (f != null) {
 			// --------------------------------------------
 			
-			f.first.addInventory(research("Fighter1"), 8);
-			f.first.addInventory(research("Fighter2"), 4);
+			f.addInventory(research("Fighter1"), 8);
+			f.addInventory(research("Fighter2"), 4);
 			
 			// --------------------------------------------
 			
-			world.env.computerSound(SoundType.REINFORCEMENT_ARRIVED_2);
+			world.env.playSound(SoundTarget.COMPUTER, SoundType.REINFORCEMENT_ARRIVED_2, null);
 		}
 	}
 	@Override
@@ -203,15 +198,15 @@ public class Mission16 extends Mission {
 	 */
 	boolean concludeBattle(BattleInfo battle) {
 		boolean result = false;
-		helper.clearMissionTime("Mission-16-Timeout");
-		Pair<Fleet, InventoryItem> carrier = findTaggedFleet(ALLY, player);
+		clearMission("Mission-16-Timeout");
+		Fleet carrier = findTaggedFleet(ALLY, player);
 
 		if (carrier != null) {
-			helper.setObjectiveState("Mission-16", ObjectiveState.SUCCESS);
+			setObjectiveState("Mission-16", ObjectiveState.SUCCESS);
 			addTimeout("Mission-16-Hide", 13000);
 			result = true;
 		} else {
-			helper.setObjectiveState("Mission-16", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-16", ObjectiveState.FAILURE);
 			addTimeout("Mission-16-Fire", 13000);
 		}
 		removeFleets();
@@ -251,22 +246,22 @@ public class Mission16 extends Mission {
 		tagFleet(f, ENEMY);
 		
 		f.task = FleetTask.SCRIPT;
-		helper.scriptedFleets().add(f.id);
+		addScripted(f);
 	}
 	/** Create the garthog attack. */
 	void garthogAttack() {
 		createGarthog();
-		world.env.computerSound(SoundType.CARRIER_UNDER_ATTACK);
+		world.env.playSound(SoundTarget.COMPUTER, SoundType.CARRIER_UNDER_ATTACK, null);
 		
 		world.env.speed1();
 		
 		addMission("Mission-16-Timeout", 12);
 
-		Pair<Fleet, InventoryItem> carrier = findTaggedFleet(ALLY, player);
-		Fleet ff = getFollower(carrier.first, player);
+		Fleet carrier = findTaggedFleet(ALLY, player);
+		Fleet ff = getFollower(carrier, player);
 		if (ff != null) {
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet(ENEMY, garthog());
-			ff.attack(garthog.first);
+			Fleet garthog = findTaggedFleet(ENEMY, garthog());
+			ff.attack(garthog);
 		}
 
 	}
