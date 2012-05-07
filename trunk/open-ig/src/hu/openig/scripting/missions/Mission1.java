@@ -8,10 +8,8 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Pair;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -28,8 +26,8 @@ import java.util.Set;
 public class Mission1 extends Mission {
 	@Override
 	public void onTime() {
-		helper.send("Naxos-Check").visible = true;
-		helper.send("San Sterling-Check").visible = true;
+		send("Naxos-Check").visible = true;
+		send("San Sterling-Check").visible = true;
 		checkMission1Start();
 		checkMission1Task1();
 		checkMission1Task2();
@@ -38,11 +36,11 @@ public class Mission1 extends Mission {
 	}
 	/** Check if the colony hub was completed. */
 	void checkMission1Task1() {
-		Objective o = helper.objective("Mission-1-Task-1");
-		if (o.visible && o.state == ObjectiveState.ACTIVE) {
+		Objective o = objective("Mission-1-Task-1");
+		if (o.isActive()) {
 			for (Building b : planet("Achilles").surface.buildings) {
 				if (b.isComplete() && b.type.kind.equals("MainBuilding")) {
-					helper.setObjectiveState(o, ObjectiveState.SUCCESS);
+					setObjectiveState(o, ObjectiveState.SUCCESS);
 				}
 			}
 		}		
@@ -51,7 +49,7 @@ public class Mission1 extends Mission {
 	 * Check if Achilles contains the required types of undamaged, operational buildings for Mission 1 Task 2.
 	 */
 	void checkMission1Task2() {
-		Objective m1t2 = helper.objective("Mission-1-Task-2");
+		Objective m1t2 = objective("Mission-1-Task-2");
 		if (m1t2.state != ObjectiveState.ACTIVE) {
 			return;
 		}
@@ -88,7 +86,7 @@ public class Mission1 extends Mission {
 			}
 			if (okay) {
 				m1t2.visible = true;
-				helper.setObjectiveState(m1t2, ObjectiveState.SUCCESS);
+				setObjectiveState(m1t2, ObjectiveState.SUCCESS);
 			}
 		}
 	}
@@ -99,11 +97,11 @@ public class Mission1 extends Mission {
 	 */
 	void checkMission1Task3Failure(Planet planet) {
 		if (planet.id.equals("Naxos") || planet.id.equals("San Sterling")) {
-			Objective o = helper.objective("Mission-1-Task-3");
+			Objective o = objective("Mission-1-Task-3");
 			if (o.visible) {
-				if (helper.setObjectiveState(o, ObjectiveState.FAILURE)) {
-					helper.gameover();
-					helper.setTimeout("Mission-1-Failure", 5000);
+				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
+					gameover();
+					addTimeout("Mission-1-Failure", 5000);
 				}
 			}
 		}
@@ -114,11 +112,11 @@ public class Mission1 extends Mission {
 	 */
 	void checkMission1Task4Failure(Planet planet) {
 		if (planet.id.equals("Achilles")) {
-			Objective o = helper.objective("Mission-1-Task-4");
+			Objective o = objective("Mission-1-Task-4");
 			if (o.visible) {
-				if (helper.setObjectiveState(o, ObjectiveState.FAILURE)) {
-					helper.gameover();
-					helper.setTimeout("Mission-1-Failure", 5000);
+				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
+					gameover();
+					addTimeout("Mission-1-Failure", 5000);
 				}
 			}
 		}
@@ -127,53 +125,46 @@ public class Mission1 extends Mission {
 	 * Check Mission 1 start condition and start the mission.
 	 */
 	void checkMission1Start() {
-		Objective o0 = helper.objective("Mission-1");
-		if (!o0.visible 
-				&& o0.state == ObjectiveState.ACTIVE 
-				&& helper.isTimeout("Mission-1-Init")) {
-			helper.objective("Mission-1-Task-1").visible = true;
-			helper.objective("Mission-1-Task-2").visible = true;
-			helper.showObjective("Mission-1");
-			helper.clearTimeout("Mission-1-Init");
+		if (checkTimeout("Mission-1-Init")) {
+			objective("Mission-1-Task-1").visible = true;
+			objective("Mission-1-Task-2").visible = true;
+			showObjective("Mission-1");
 
-			helper.setMissionTime("Mission-1-Task-3", helper.now() + 72);
+			addMission("Mission-1-Task-3", 72);
 			
 			int mission2Time = 24 * (world.random().nextInt(2) + 7);
-			helper.setMissionTime("Mission-2", mission2Time);
+			addMission("Mission-2", mission2Time);
 		}
-		if (helper.canStart("Mission-1-Task-3")) {
-			helper.showObjective("Mission-1-Task-3");
-			helper.clearMissionTime("Mission-1-Task-3");
+		if (checkMission("Mission-1-Task-3")) {
+			showObjective("Mission-1-Task-3");
 		}
 	}
 	/**
 	 * Check if mission 1 was completed.
 	 */
 	void checkMission1Complete() {
-		final Objective o0 = helper.objective("Mission-1");
-		final Objective o1 = helper.objective("Mission-1-Task-1");
-		final Objective o2 = helper.objective("Mission-1-Task-2");
+		final Objective o0 = objective("Mission-1");
+		final Objective o1 = objective("Mission-1-Task-1");
+		final Objective o2 = objective("Mission-1-Task-2");
 		
 		if (o0.visible && o1.state == ObjectiveState.SUCCESS && o2.state == ObjectiveState.SUCCESS) {
 			if (o0.state == ObjectiveState.ACTIVE) {
-				helper.setObjectiveState(o0, ObjectiveState.SUCCESS);
-				helper.setTimeout("Mission-1-Success", 13000);
+				setObjectiveState(o0, ObjectiveState.SUCCESS);
+				addTimeout("Mission-1-Success", 13000);
 			}
 			
 		}
-		if (o0.state == ObjectiveState.SUCCESS && helper.isTimeout("Mission-1-Success")) {
+		if (checkTimeout("Mission-1-Success")) {
 			o0.visible = false;
 			o1.visible = false;
 			o2.visible = false;
-			helper.showObjective("Mission-1-Task-4");
-			helper.send("San Sterling-Check").visible = true;
-			helper.send("Achilles-Check").visible = true;
+			showObjective("Mission-1-Task-4");
+			send("San Sterling-Check").visible = true;
+			send("Achilles-Check").visible = true;
 			
-			helper.clearTimeout("Mission-1-Success");
 		} else
-		if (o0.state == ObjectiveState.FAILURE && helper.isTimeout("Mission-1-Failure")) {
+		if (checkTimeout("Mission-1-Failure")) {
 			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_1");
-			helper.clearTimeout("Mission-1-Failure");
 		}
 	}
 	/**
@@ -182,11 +173,11 @@ public class Mission1 extends Mission {
 	 */
 	void checkMission1Failure(Planet planet) {
 		if (planet.id.equals("Achilles")) {
-			Objective o = helper.objective("Mission-1");
+			Objective o = objective("Mission-1");
 			if (o.visible) {
-				if (helper.setObjectiveState(o, ObjectiveState.FAILURE)) {
-					helper.gameover();
-					helper.setTimeout("Mission-1-Failure", 5000);
+				if (setObjectiveState(o, ObjectiveState.FAILURE)) {
+					gameover();
+					addTimeout("Mission-1-Failure", 5000);
 				}
 			}
 		}
@@ -207,19 +198,19 @@ public class Mission1 extends Mission {
 	}
 	@Override
 	public void onNewGame() {
-		helper.setTimeout("Mission-1-Init", 8000);
+		addTimeout("Mission-1-Init", 8000);
 	}
 	/**
 	 * Check if the main ship still exists.
 	 */
 	void checkMainShip() {
-		Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip1", player);
+		Fleet ft = findTaggedFleet("CampaignMainShip1", player);
 		if (ft == null) {
-			if (!helper.hasTimeout("MainShip-Lost")) {
-				helper.setTimeout("MainShip-Lost", 3000);
+			if (!hasTimeout("MainShip-Lost")) {
+				addTimeout("MainShip-Lost", 3000);
 			}
-			if (helper.isTimeout("MainShip-Lost")) {
-				helper.gameover();
+			if (checkTimeout("MainShip-Lost")) {
+				gameover();
 				loseGameMovie("loose/destroyed_level_1");
 			}
 		}

@@ -9,7 +9,7 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pair;
+import hu.openig.mechanics.AITrader;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
@@ -19,92 +19,144 @@ import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchMainCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.utils.U;
+import hu.openig.utils.XElement;
 
-import java.awt.geom.Point2D;
+import java.util.List;
 
 /**
  * Mission 9: deal with the with the San Sterling smuggler.
  * @author akarnokd, Jan 22, 2012
  */
 public class Mission9 extends Mission {
+	/** The stages. */
+	enum M9Stages {
+		/** None. */
+		NONE,
+		/** Wait for intro. */
+		WAIT,
+		/** Running. */
+		RUN,
+		/** Done. */
+		DONE
+	}
+	/** The current stage. */
+	M9Stages stage = M9Stages.NONE;
+	/** Flag to indicate the battle started by attacking the smuggler. */
+	boolean smugglerAttacked;
 	@Override
 	public boolean applicable() {
 		return world.level == 2;
 	}
 	@Override
 	public void onTime() {
-		Objective m7t1 = helper.objective("Mission-7-Task-1");
-		Objective m9 = helper.objective("Mission-9");
-		if (m7t1.state != ObjectiveState.ACTIVE
-				&& !m9.visible && m9.state == ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-9-Once")) {
-			helper.setMissionTime("Mission-9", helper.now() + 3 * 24);
-			helper.setMissionTime("Mission-9-Once", helper.now() + 1);
+		Objective m7t1 = objective("Mission-7-Task-1");
+		if (m7t1.isCompleted() && stage == M9Stages.NONE) {
+			addMission("Mission-9", 3 * 24);
+			stage = M9Stages.WAIT;
 		}
-		if (checkMission("Mission-9")) {
-			helper.setMissionTime("Mission-9-Interlude", helper.now() + 1);
+		if (stage == M9Stages.WAIT && checkMission("Mission-9")) {
 			world.env.stopMusic();
 			world.env.playVideo("interlude/merchant_in", new Action0() {
 				@Override
 				public void invoke() {
 					world.env.playMusic();
-					helper.setTimeout("Mission-9-Message", 1000);
-					helper.clearMissionTime("Mission-9-Interlude");
 					world.env.speed1();
+					
+					incomingMessage("San Sterling-Smuggler", "Mission-9");
+					stage = M9Stages.RUN;
+
+					addMission("Mission-9-Trader-1", 3);
 				}
 			});
 		}
-		if (checkTimeout("Mission-9-Message")) {
-			incomingMessage("San Sterling-Smuggler");
+		
+		if (checkMission("Mission-9-Trader-1")) {
+			createTrader("Centronom");
+			addMission("Mission-9-Trader-2", 3);
 		}
-		if (checkTimeout("Mission-9-Objective")) {
-			helper.showObjective("Mission-9");
-			helper.clearMissionTime("Mission-9-Once");
+		if (checkMission("Mission-9-Trader-2")) {
+			createTrader("Achilles");
+			addMission("Mission-9-Trader-3", 3);
+		}
+		if (checkMission("Mission-9-Trader-3")) {
+			createTrader("Naxos");
 			createSmuggler();
 		}
+		
+		
 		if (checkTimeout("Mission-9-Slipped")) {
-			helper.receive("San Sterling-Smuggler").visible = false;
-			helper.setObjectiveState("Mission-9", ObjectiveState.FAILURE);
+			receive("San Sterling-Smuggler").visible = false;
+			setObjectiveState("Mission-9", ObjectiveState.FAILURE);
 			incomingMessage("San Sterling-Smuggler-Escaped");
-			helper.setTimeout("Mission-9-Hide", 30000);
+			addTimeout("Mission-9-Hide", 30000);
 		}
 		if (checkTimeout("Mission-9-Innocent")) {
-			helper.receive("San Sterling-Smuggler").visible = false;
-			helper.setObjectiveState("Mission-9", ObjectiveState.FAILURE);
-			helper.gameover();
+			receive("San Sterling-Smuggler").visible = false;
+			setObjectiveState("Mission-9", ObjectiveState.FAILURE);
+			gameover();
 			loseGameMessageAndMovie("San Sterling-Smuggler-Killed-Innocent", "loose/fired_level_2");
 		}
 		if (checkTimeout("Mission-9-Killed")) {
-			helper.receive("San Sterling-Smuggler").visible = false;
-			helper.setObjectiveState("Mission-9", ObjectiveState.SUCCESS);
+			receive("San Sterling-Smuggler").visible = false;
+			setObjectiveState("Mission-9", ObjectiveState.SUCCESS);
 			incomingMessage("San Sterling-Smuggler-Killed");
+			addTimeout("Mission-9-Hide", 30000);
 		}
 		if (checkTimeout("Mission-9-Success")) {
-			helper.receive("San Sterling-Smuggler").visible = false;
-			helper.setObjectiveState("Mission-9", ObjectiveState.SUCCESS);
-			helper.setTimeout("Mission-9-Hide", 13000);
-			helper.setMissionTime("Mission-9-Hide-Fleet", helper.now() + 12);
+			receive("San Sterling-Smuggler").visible = false;
+			setObjectiveState("Mission-9", ObjectiveState.SUCCESS);
+			addTimeout("Mission-9-Hide", 13000);
+			addMission("Mission-9-Hide-Fleet", 12);
 			incomingMessage("Douglas-Success");
 			addMission("Mission-9-Success-Message", 24);
 		}
 		if (checkMission("Mission-9-Success-Message")) {
-			helper.receive("Douglas-Success").visible = false;
+			receive("Douglas-Success").visible = false;
 		}
 		if (checkTimeout("Mission-9-Hide")) {
-			helper.objective("Mission-9").visible = false;
-			helper.receive("San Sterling-Smuggler-Escaped").visible = false;
-			helper.receive("San Sterling-Smuggler-Killed-Innocent").visible = false;
-			helper.receive("San Sterling-Smuggler-Killed").visible = false;
+			objective("Mission-9").visible = false;
+			receive("San Sterling-Smuggler-Escaped").visible = false;
+			receive("San Sterling-Smuggler-Killed-Innocent").visible = false;
+			receive("San Sterling-Smuggler-Killed").visible = false;
 		}
 		if (checkMission("Mission-9-Hide-Fleet")) {
-			Pair<Fleet, InventoryItem> smg = findTaggedFleet("Mission-9-Smuggler", player("Traders"));
+			Fleet smg = findTaggedFleet("Mission-9-Smuggler", player("Traders"));
 			if (smg != null) {
-				world.removeFleet(smg.first);
-				helper.scriptedFleets().remove(smg.first.id);
+				world.removeFleet(smg);
+				removeScripted(smg);
 			}
 		}
+	}
+	/**
+	 * Create a trader at the given planet.
+	 * @param planet the planet
+	 */
+	void createTrader(String planet) {
+		Player tr = player("Traders");
+		Planet pl = planet(planet);
+		
+		Fleet f0 = new Fleet(tr);
+		f0.x = pl.x;
+		f0.y = pl.y;
+		
+		List<ResearchType> shipTypes = U.newArrayList();
+		for (ResearchType rt : world.researches.values()) {
+			if (rt.race.contains("traders") && rt.category.main == ResearchMainCategory.SPACESHIPS) {
+				shipTypes.add(rt);
+			}
+		}
+		
+		ResearchType rt0 = world.random(shipTypes);
+		f0.addInventory(rt0, 1);
+		
+		f0.moveTo(planet("San Sterling"));
+		
+		((AITrader)tr.ai).setLastVisited(f0, pl);
 	}
 	/** Create the smuggler's ship. */
 	void createSmuggler() {
@@ -123,37 +175,33 @@ public class Mission9 extends Mission {
 		pf.mode = FleetMode.MOVE;
 		pf.targetPlanet(sst);
 
-		helper.scriptedFleets().add(pf.id);
-	}
-	@Override
-	public void onMessageSeen(String id) {
-		if ("San Sterling-Smuggler".equals(id)) {
-			if (findTaggedFleet("Mission-9-Smuggler", player("Traders")) == null) {
-				helper.setTimeout("Mission-9-Objective", 1000);
-			}
-		}
-		if (helper.objective("Mission-9").visible) {
-			if ("San Sterling-Smuggler-Escaped".equals(id)) {
-				helper.setTimeout("Mission-9-Hide", 3000);
-			} else
-			if ("San Sterling-Smuggler-Killed".equals(id)) {
-				helper.setTimeout("Mission-9-Hide", 3000);
-			}
-		}		
+		addScripted(pf);
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (helper.isActive("Mission-9") 
+		if (stage == M9Stages.RUN
 				&& war.battle().attacker.owner == player 
-				&& war.battle().targetFleet != null) {
+				&& war.battle().targetFleet != null
+				&& hasTag(war.battle().targetFleet, "Mission-9-Smuggler")) {
 			war.battle().chat = "chat.mission-9.smuggler";
+			smugglerAttacked = true;
+		}
+	}
+	@Override
+	public void onAutobattleStart(BattleInfo battle) {
+		if (stage == M9Stages.RUN
+				&& battle.attacker.owner == player 
+				&& battle.targetFleet != null
+				&& hasTag(battle.targetFleet, "Mission-9-Smuggler")) {
+			smugglerAttacked = true;
 		}
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
-		if (helper.isActive("Mission-9") 
+		if (stage == M9Stages.RUN 
 				&& war.battle().attacker.owner == player 
 				&& war.battle().targetFleet != null) {
+			
 			Player traders = player("Traders");
 			// check for losses
 			boolean smugglerKilled = false;
@@ -163,16 +211,16 @@ public class Mission9 extends Mission {
 			
 			for (SpacewarStructure s : war.battle().spaceLosses) {
 				if (s.item != null && "Mission-9-Smuggler".equals(s.item.tag)) {
-					smugglerKilled = true;
+					smugglerKilled = smugglerAttacked;
 				} else
 				if (s.owner == traders) {
 					innocentKilled = true;
 				}
 			}
 			
-			Pair<Fleet, InventoryItem> smg = findTaggedFleet("Mission-9-Smuggler", traders);
+			Fleet smg = findTaggedFleet("Mission-9-Smuggler", traders);
 			if (smg != null) {
-				InventoryItem ii = smg.second;
+				InventoryItem ii = smg.inventory.get(0);
 				if (ii.hp * 2 < world.getHitpoints(ii.type)) {
 					diverted = true;
 				} else {
@@ -180,64 +228,80 @@ public class Mission9 extends Mission {
 				}
 			}
 			
-			Planet sst = planet("San Sterling");
-			if (smugglerKilled) {
-				helper.setTimeout("Mission-9-Killed", 3000);
-			} else
-			if (innocentKilled) {
-				helper.setTimeout("Mission-9-Innocent", 3000);
-			} else
-			if (diverted) {
-				helper.setTimeout("Mission-9-Success", 3000);
-				war.battle().messageText = label("battlefinish.mission-9.17");
-				smg.first.targetPlanet(null);
-				smg.first.waypoints.clear();
-				smg.first.waypoints.add(new Point2D.Double(sst.x + 80, sst.y + 80));
-				smg.first.task = FleetTask.SCRIPT;
-			} else
-			if (slipped) {
-				// resume flight
-				smg.first.targetPlanet(sst);
-				smg.first.task = FleetTask.SCRIPT;
+			if (smugglerAttacked) {
+				Planet sst = planet("San Sterling");
+				if (smugglerKilled) {
+					addTimeout("Mission-9-Killed", 3000);
+					stage = M9Stages.DONE;
+				} else
+				if (innocentKilled) {
+					addTimeout("Mission-9-Innocent", 3000);
+					stage = M9Stages.DONE;
+				} else
+				if (diverted) {
+					addTimeout("Mission-9-Success", 3000);
+					war.battle().messageText = label("battlefinish.mission-9.17");
+					
+					smg.moveTo(sst.x + 80, sst.y + 80);
+					smg.task = FleetTask.SCRIPT;
+					stage = M9Stages.DONE;
+				} else
+				if (slipped) {
+					// resume flight
+					smg.targetPlanet(sst);
+					smg.task = FleetTask.SCRIPT;
+				}
 			}
 		}
 	}
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
-		if (helper.isActive("Mission-9")) {
+		if (stage == M9Stages.RUN) {
 			if (planet.id.equals("San Sterling") 
 					&& hasTag(fleet, "Mission-9-Smuggler")) {
 				world.removeFleet(fleet);
-				helper.scriptedFleets().remove(fleet.id);
-				helper.setObjectiveState("Mission-9", ObjectiveState.FAILURE);
-				helper.setTimeout("Mission-9-Slipped", 13000);
+				removeScripted(fleet);
+				setObjectiveState("Mission-9", ObjectiveState.FAILURE);
+				addTimeout("Mission-9-Slipped", 13000);
+				stage = M9Stages.DONE;
 			}
 		}
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (isMissionSpacewar(battle, "Mission-9")) {
+		if (stage == M9Stages.RUN && isMissionSpacewar(battle, "Mission-9")) {
 			Player traders = player("Traders");
-			if (battle.targetFleet != null && battle.targetFleet.owner == traders) {
-				Pair<Fleet, InventoryItem> smg = findTaggedFleet("Mission-9-Smuggler", 
+			if (battle.targetFleet != null 
+					&& battle.targetFleet.owner == traders) {
+				Fleet smg = findTaggedFleet("Mission-9-Smuggler", 
 						traders);
-				if (smg == null) {
-					helper.setTimeout("Mission-9-Killed", 3000);
-				} else {
-					helper.setTimeout("Mission-9-Innocent", 3000);
+				if (smg == null && smugglerAttacked) {
+					addTimeout("Mission-9-Killed", 3000);
+					stage = M9Stages.DONE;
+				} else 
+				if (battle.targetFleet.inventory.isEmpty()) {
+					addTimeout("Mission-9-Innocent", 3000);
+					stage = M9Stages.DONE;
 				}
 			}
 		}
 	}
 	@Override
 	public boolean fleetBlink(Fleet f) {
-		if (helper.objective("Mission-9").state == ObjectiveState.ACTIVE
-				&& helper.objective("Mission-9").visible
+		if (objective("Mission-9").isActive()
 				&& f.owner == player("Traders") 
 				&& (hasTag(f, "Mission-9-Smuggler") 
 						|| f.targetPlanet() == planet("San Sterling"))) {
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("stage", stage);
+	}
+	@Override
+	public void load(XElement xmission) {
+		stage = M9Stages.valueOf(xmission.get("stage", M9Stages.NONE.toString()));
 	}
 }

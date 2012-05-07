@@ -457,9 +457,7 @@ public class EquipmentScreen extends ScreenBase {
 					}
 				}
 				editNew = true;
-				if (config.computerVoiceScreen) {
-					commons.effectSound(SoundType.NEW_FLEET);
-				}
+				screenSound(SoundType.NEW_FLEET);
 			}
 		};
 		

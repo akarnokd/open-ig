@@ -9,7 +9,6 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
@@ -18,6 +17,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
@@ -35,12 +35,6 @@ public class Mission19 extends Mission {
 		NONE,
 		/** Waiting for message. */
 		INIT_WAIT,
-		/** Message. */
-		INTRO,
-		/** Message. */
-		MESSAGE,
-		/** Wait for objective. */
-		OBJECTIVE_WAIT,
 		/** Fleet appear wait. */
 		APPEAR_WAIT,
 		/** Chase. */
@@ -82,25 +76,18 @@ public class Mission19 extends Mission {
 		}
 		
 		if (checkMission("Mission-19")) {
-			stage = M19.INTRO;
 			world.env.stopMusic();
 			world.env.playVideo("interlude/take_prisoner", new Action0() {
 				@Override
 				public void invoke() {
-					stage = M19.MESSAGE;
 					world.env.playMusic();
+
+					incomingMessage("Douglas-Rebel-Governor", "Mission-19");
+
+					stage = M19.APPEAR_WAIT;
+					addMission("Mission-19-Appear", 3 * 24);
 				}
 			});
-		}
-		if (stage == M19.MESSAGE) {
-			incomingMessage("Douglas-Rebel-Governor");
-			addTimeout("Mission-19-Objectives", 3000);
-			stage = M19.OBJECTIVE_WAIT;
-		}
-		if (checkTimeout("Mission-19-Objectives")) {
-			helper.showObjective("Mission-19");
-			stage = M19.APPEAR_WAIT;
-			addMission("Mission-19-Appear", 3 * 24);
 		}
 		if (checkMission("Mission-19-Appear")) {
 			stage = M19.RUN;
@@ -110,11 +97,11 @@ public class Mission19 extends Mission {
 			checkGovernorPosition();
 		}
 		if (checkTimeout("Mission-19-Hide")) {
-			helper.objective("Mission-19").visible = false;
+			objective("Mission-19").visible = false;
 		}
 		if (checkTimeout("Mission-19-Failure")) {
 			stage = M19.DONE;
-			helper.gameover();
+			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Battle", "loose/fired_level_3");
 		}
 	}
@@ -122,9 +109,9 @@ public class Mission19 extends Mission {
 	 * Check if the governor left the sector.
 	 */
 	void checkGovernorPosition() {
-		Pair<Fleet, InventoryItem> f = findTaggedFleet("Mission-19-Governor", freeTraders());
+		Fleet f = findTaggedFleet("Mission-19-Governor", freeTraders());
 		if (f != null) {
-			if (!player.explorationOuterLimit.contains(f.first.x, f.first.y)) {
+			if (!player.explorationOuterLimit.contains(f.x, f.y)) {
 				failMission(f);
 			}
 		}		
@@ -149,7 +136,7 @@ public class Mission19 extends Mission {
 		addScripted(f);
 		
 		world.env.speed1();
-		world.env.effectSound(SoundType.UNKNOWN_SHIP);
+		world.env.playSound(SoundTarget.COMPUTER, SoundType.UNKNOWN_SHIP, null);
 		
 		originalRelation = world.establishRelation(player, ft).value;
 	}
@@ -209,17 +196,17 @@ public class Mission19 extends Mission {
 	 * @param battle the battle
 	 */
 	void battleFinish(BattleInfo battle) {
-		Pair<Fleet, InventoryItem> f = findTaggedFleet("Mission-19-Governor", freeTraders());
+		Fleet f = findTaggedFleet("Mission-19-Governor", freeTraders());
 		if (f != null) {
 			ResearchType gr = research(governorShipType);
-			InventoryItem ii = f.first.getInventoryItem(gr);
+			InventoryItem ii = f.getInventoryItem(gr);
 			if (ii != null && battle.enemyFlee) {
 				// governor survived
-				f.first.moveTo(planet("Zeuson"));
-				f.first.task = FleetTask.SCRIPT;
+				f.moveTo(planet("Zeuson"));
+				f.task = FleetTask.SCRIPT;
 				
-				helper.setObjectiveState("Mission-19", ObjectiveState.SUCCESS);
-				helper.receive("Douglas-Rebel-Governor").visible = false;
+				setObjectiveState("Mission-19", ObjectiveState.SUCCESS);
+				receive("Douglas-Rebel-Governor").visible = false;
 				addTimeout("Mission-19-Hide", 13000);
 				
 				battle.messageText = label("battlefinish.mission-19.31");
@@ -248,14 +235,14 @@ public class Mission19 extends Mission {
 	 * Fail the mission.
 	 * @param f the governor's fleet
 	 */
-	void failMission(Pair<Fleet, InventoryItem> f) {
+	void failMission(Fleet f) {
 		stage = M19.DONE;
 		if (f != null) {
-			world.removeFleet(f.first);
+			world.removeFleet(f);
 			removeScripted(f);
 		}
-		helper.setObjectiveState("Mission-19", ObjectiveState.FAILURE);
-		helper.receive("Douglas-Rebel-Governor").visible = false;
+		setObjectiveState("Mission-19", ObjectiveState.FAILURE);
+		receive("Douglas-Rebel-Governor").visible = false;
 		addTimeout("Mission-19-Failure", 13000);
 	}
 }

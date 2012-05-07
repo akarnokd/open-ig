@@ -30,6 +30,7 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarAction;
@@ -319,7 +320,7 @@ public class AIUser implements AIManager {
 						if (w.env.config().slowOnEnemyAttack) {
 							w.env.speed1();
 						}
-						w.env.computerSound(SoundType.ENEMY_FLEET_DETECTED);
+						w.env.playSound(SoundTarget.COMPUTER, SoundType.ENEMY_FLEET_DETECTED, null);
 						if (fleet.targetFleet != null) {
 							Message msg = w.newMessage("message.enemy_fleet_detected");
 							msg.priority = 100;

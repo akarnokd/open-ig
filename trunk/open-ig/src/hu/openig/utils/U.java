@@ -8,6 +8,8 @@
 
 package hu.openig.utils;
 
+import hu.openig.core.Action0;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import javax.swing.SwingUtilities;
 
 /**
  * Utility class for missing java functionalities.
@@ -490,6 +494,20 @@ public final class U {
 			} catch (IOException ex) {
 				// ignored
 			}
+		}
+	}
+	/**
+	 * Execute an action on the edt.
+	 * @param action the action
+	 */
+	public static void edt(final Action0 action) {
+		if (action != null) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					action.invoke();
+				}
+			});
 		}
 	}
 }

@@ -10,25 +10,27 @@ package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
-import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.GameScriptingEvents;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.Objective;
+import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
+import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -49,7 +51,7 @@ public abstract class Mission implements GameScriptingEvents {
 	/** The player object. */
 	protected Player player;
 	/** The scripting helper. */
-	protected MissionScriptingHelper helper;
+	private MissionScriptingHelper helper;
 	/**
 	 * Initializes the mission object.
 	 * @param player the main player
@@ -83,7 +85,7 @@ public abstract class Mission implements GameScriptingEvents {
 		f.name = name;
 		f.x = x;
 		f.y = y;
-		owner.fleets.put(f, FleetKnowledge.FULL);
+//		owner.fleets.put(f, FleetKnowledge.FULL);
 		return f;
 	}
 	/**
@@ -129,12 +131,12 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param owner the owner of the fleet
 	 * @return the fleet and inventory item pair
 	 */
-	protected Pair<Fleet, InventoryItem> findTaggedFleet(String tag, Player owner) {
+	protected Fleet findTaggedFleet(String tag, Player owner) {
 		for (Fleet f : owner.fleets.keySet()) {
 			if (f.owner == owner) {
 				for (InventoryItem ii : f.inventory) {
 					if (tag.equals(ii.tag)) {
-						return Pair.of(f, ii);
+						return f;
 					}
 				}
 			}
@@ -470,7 +472,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @return true if it is the related spacewar
 	 */
 	protected boolean isMissionSpacewar(BattleInfo battle, String mission) {
-		if (helper.isActive(mission) 
+		if (objective(mission).isActive() 
 				&& battle.attacker.owner == player 
 				&& battle.targetFleet != null) {
 			return helper.scriptedFleets().contains(battle.targetFleet.id);
@@ -488,10 +490,30 @@ public abstract class Mission implements GameScriptingEvents {
 		
 	}
 	/**
-	 * Notify the user about the incoming message.
-	 * @param messageId the message id
+	 * Show a message and then an objective.
+	 * @param messageId the message identifier
+	 * @param objective the objectives to display
 	 */
-	void incomingMessage(String messageId) {
+	public void incomingMessage(String messageId, final String... objective) {
+		if (objective.length == 0) {
+			incomingMessage(messageId, (Action0)null);
+		} else {
+			incomingMessage(messageId, new Action0() {
+				@Override
+				public void invoke() {
+					for (String o : objective) {
+						showObjective(o);
+					}
+				}
+			});
+		}
+	}
+	/**
+	 * Show a message and then an objective.
+	 * @param messageId the message identifier
+	 * @param action the action to invoke
+	 */
+	public void incomingMessage(String messageId, final Action0 action) {
 		VideoMessage msg = helper.receive(messageId);
 		if (msg == null) {
 			new AssertionError("Missing video: " + messageId).printStackTrace();
@@ -499,8 +521,11 @@ public abstract class Mission implements GameScriptingEvents {
 		msg.visible = true;
 		helper.receive(messageId).seen = false;
 		
-		SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, SoundType.NEW_MESSAGE_1, SoundType.NEW_MESSAGE_2, SoundType.NEW_MESSAGE_3));
-		world.env.computerSound(snd);
+		SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, 
+				SoundType.NEW_MESSAGE_1, 
+				SoundType.NEW_MESSAGE_2, 
+				SoundType.NEW_MESSAGE_3));
+		world.env.playSound(SoundTarget.COMPUTER, snd, action);
 	}
 	/**
 	 * Remove any non-existent scripted fleets.
@@ -717,44 +742,47 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param allyPlayer the ally fleets owner
 	 * @param enemyTag the enemy fleets tag
 	 * @param enemyPlayer the enemy fleets owner
+	 * @return true if the player attacked one of the given tagged fleets
 	 */
-	void startJointSpaceBattle(SpacewarWorld war, String allyTag, Player allyPlayer, String enemyTag, Player enemyPlayer) {
+	boolean startJointSpaceBattle(SpacewarWorld war, String allyTag, Player allyPlayer, String enemyTag, Player enemyPlayer) {
 		BattleInfo battle = war.battle();
-		Pair<Fleet, InventoryItem> f1 = findTaggedFleet(allyTag, allyPlayer);
-		Pair<Fleet, InventoryItem> f2 = findTaggedFleet(enemyTag, enemyPlayer);
+		Fleet f1 = findTaggedFleet(allyTag, allyPlayer);
+		Fleet f2 = findTaggedFleet(enemyTag, enemyPlayer);
 
-		if (battle.targetFleet == f1.first) {
-			// thorin attacked?
-			war.includeFleet(f2.first, f2.first.owner);
-			battle.targetFleet = f2.first;
-		} else {
-			// garthog attacked
-			war.addStructures(f1.first.inventory, EnumSet.of(
-					ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
-					ResearchSubCategory.SPACESHIPS_CRUISERS,
-					ResearchSubCategory.SPACESHIPS_FIGHTERS));
-		}
-		// center pirate
-		Dimension d = war.space();
-		List<SpacewarStructure> structures = war.structures();
-		int maxH = 0;
-		for (SpacewarStructure s : structures) {
-			if (s.item != null && allyTag.equals(s.item.tag)) {
-				maxH += s.get().getHeight();
+		if (battle.targetFleet != null && (battle.targetFleet == f1 || battle.targetFleet == f2)) {
+		
+			if (battle.targetFleet == f1) {
+				war.includeFleet(f2, f2.owner);
+				battle.targetFleet = f2;
+			} else {
+				war.addStructures(f1.inventory, EnumSet.of(
+						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
+						ResearchSubCategory.SPACESHIPS_CRUISERS,
+						ResearchSubCategory.SPACESHIPS_FIGHTERS));
 			}
-		}
-		int dy = (d.height - maxH) / 2;
-		for (SpacewarStructure s : structures) {
-			if (s.item != null && allyTag.equals(s.item.tag)) {
-				s.x = d.width / 2;
-				s.y = dy;
-				s.angle = 0.0;
-				s.owner = f1.first.owner;
-				s.guard = true;
-				dy += s.get().getHeight();
+			Dimension d = war.space();
+			List<SpacewarStructure> structures = war.structures();
+			int maxH = 0;
+			for (SpacewarStructure s : structures) {
+				if (s.item != null && allyTag.equals(s.item.tag)) {
+					maxH += s.get().getHeight();
+				}
 			}
+			int dy = (d.height - maxH) / 2;
+			for (SpacewarStructure s : structures) {
+				if (s.item != null && allyTag.equals(s.item.tag)) {
+					s.x = d.width / 2;
+					s.y = dy;
+					s.angle = 0.0;
+					s.owner = f1.owner;
+					s.guard = true;
+					dy += s.get().getHeight();
+				}
+			}
+			battle.allowRetreat = false;
+			return true;
 		}
-		battle.allowRetreat = false;
+		return false;
 	}
 	/**
 	 * Start a joint autobattle with an ally and enemy fleet.
@@ -763,26 +791,35 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param allyPlayer the ally fleets owner
 	 * @param enemyTag the enemy fleets tag
 	 * @param enemyPlayer the enemy fleets owner
+	 * @return true if the player attacked one of the given tagged fleets
 	 */
-	void startJointAutoSpaceBattle(BattleInfo battle, String allyTag, Player allyPlayer, String enemyTag, Player enemyPlayer) {
-		Pair<Fleet, InventoryItem> f1 = findTaggedFleet(allyTag, allyPlayer);
-		Pair<Fleet, InventoryItem> f2 = findTaggedFleet(enemyTag, enemyPlayer);
-		if (battle.targetFleet == f1.first) {
-			battle.targetFleet = f2.first;
+	boolean startJointAutoSpaceBattle(BattleInfo battle, String allyTag, Player allyPlayer, String enemyTag, Player enemyPlayer) {
+		Fleet f1 = findTaggedFleet(allyTag, allyPlayer);
+		Fleet f2 = findTaggedFleet(enemyTag, enemyPlayer);
+		if (battle.targetFleet != null && (battle.targetFleet == f1 || battle.targetFleet == f2)) {
+			if (battle.targetFleet == f1) {
+				battle.targetFleet = f2;
+			}
+			battle.attacker.inventory.addAll(f1.inventory);
+			return true;
 		}
-		battle.attacker.inventory.addAll(f1.first.inventory);
+		return false;
 	}
 	/**
 	 * Remove the ally from the attacker's inventory.
 	 * @param battle the battle info
 	 * @param allyTag the ally tag
+	 * @return true if the given ally still exists
 	 */
-	void finishJointAutoSpaceBattle(BattleInfo battle, String allyTag) {
+	boolean finishJointAutoSpaceBattle(BattleInfo battle, String allyTag) {
+		boolean result = false;
 		for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
 			if (allyTag.equals(ii.tag)) {
 				battle.attacker.inventory.remove(ii);
+				result = true;
 			}
 		}
+		return result;
 	}
 	/**
 	 * Convenience method to add a timeout value.
@@ -815,13 +852,6 @@ public abstract class Mission implements GameScriptingEvents {
 		helper.scriptedFleets().remove(f.id);
 	}
 	/**
-	 * Remove the given scripted fleet.
-	 * @param f the fleet
-	 */
-	void removeScripted(Pair<Fleet, ?> f) {
-		removeScripted(f.first);
-	}
-	/**
 	 * Grant an achievement with the given ID if not already awarded.
 	 * @param a the achievement id, e.g., "achievement.i_robot"
 	 */
@@ -843,5 +873,126 @@ public abstract class Mission implements GameScriptingEvents {
 	@Override
 	public void onFleetsMoved() {
 		
+	}
+	/**
+	 * Returns a send-out message with the given id.
+	 * @param messageId the message id
+	 * @return the message
+	 */
+	public VideoMessage send(String messageId) {
+		VideoMessage msg = helper.send(messageId);
+		if (msg == null) {
+			new AssertionError("Missing send message: " + messageId).printStackTrace();
+		}
+		return msg;
+	}
+	/**
+	 * Returns an objective.
+	 * @param id the objective id.
+	 * @return the objective
+	 */
+	public Objective objective(String id) {
+		Objective o = helper.objective(id);
+		if (o == null) {
+			new AssertionError("Missing objective: " + id).printStackTrace();
+		}
+		return o;
+	}
+	/**
+	 * Sets the objective state.
+	 * @param id the identifier
+	 * @param state the new state
+	 * @return true if the state actually changed
+	 */
+	public boolean setObjectiveState(String id, ObjectiveState state) {
+		return helper.setObjectiveState(id, state);
+	}
+	/**
+	 * Sets the objective state.
+	 * @param o the objective
+	 * @param state the new state
+	 * @return true if the state actually changed
+	 */
+	public boolean setObjectiveState(Objective o, ObjectiveState state) {
+		return helper.setObjectiveState(o, state);
+	}
+	/**
+	 * Enter into game over state.
+	 */
+	public void gameover() {
+		helper.gameover();
+	}
+	/**
+	 * Display the given objective if not visible.
+	 * @param id the identifier
+	 * @return true if the objective was not visible
+	 */
+	public boolean showObjective(String id) {
+		return helper.showObjective(id);
+	}
+	/**
+	 * Display the given objective if not visible.
+	 * @param o the objective
+	 * @return true if the objective was not visible
+	 */
+	public boolean showObjective(Objective o) {
+		return helper.showObjective(o);
+	}
+	/**
+	 * Check if a timeout has been set.
+	 * @param id the timeout id 
+	 * @return true if set
+	 */
+	public boolean hasTimeout(String id) {
+		return helper.hasTimeout(id);
+	}
+	/**
+	 * Check if a mission timer is already set.
+	 * @param id the timer id
+	 * @return true if set
+	 */
+	public boolean hasMission(String id) {
+		return helper.hasMissionTime(id);
+	}
+	/**
+	 * Remove a mission timer if exists.
+	 * @param id the identifier
+	 */
+	public void clearMission(String id) {
+		helper.clearMissionTime(id);
+	}
+	/**
+	 * Remove a real timeout if exists.
+	 * @param id the identifier
+	 */
+	public void clearTimeout(String id) {
+		helper.clearTimeout(id);
+	}
+	/**
+	 * Returns a receivable message.
+	 * @param id the identifier
+	 * @return the video message
+	 */
+	public VideoMessage receive(String id) {
+		VideoMessage msg = helper.receive(id);
+		if (msg == null) {
+			new AssertionError("Missing receive message: " + id).printStackTrace();
+		}
+		return msg;
+	}
+	/**
+	 * @return the hours passed since the game base date
+	 */
+	public int now() {
+		return helper.now();
+	}
+	/**
+	 * Returns the view limit of the target player at the level.
+	 * @param player the player
+	 * @param level the level
+	 * @return the limits or null if not present
+	 */
+	public ViewLimit getViewLimit(Player player, int level) {
+		return helper.getViewLimit(player, level);
 	}
 }

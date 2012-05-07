@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Action0;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 
 /**
@@ -25,42 +26,38 @@ public class Mission8 extends Mission {
 	@Override
 	public void onLevelChanged() {
 		if (world.level == 2) {
-			Objective m8 = helper.objective("Mission-8");
-			if (!m8.visible && m8.state == ObjectiveState.ACTIVE) {
-				helper.setMissionTime("Mission-8", helper.now() + 3 * 24);
-				world.testNeeded = false;
-				world.testCompleted = false;
-			}
+			addMission("Mission-8", 3 * 24);
+			world.testNeeded = false;
+			world.testCompleted = false;
 		}
 	}
 	@Override
 	public void onTime() {
-		Objective m8 = helper.objective("Mission-8");
-		if (helper.canStart("Mission-8")) {
-			helper.clearMissionTime("Mission-8");
-			helper.setTimeout("Mission-8-Announce", 5000);
-			world.env.computerSound(SoundType.PHSYCHOLOGIST_WAITING);
-		}
-		if (helper.isTimeout("Mission-8-Announce")) {
-			helper.clearTimeout("Mission-8-Announce");
-			helper.showObjective(m8);
-			world.testNeeded = true;
-			world.testCompleted = false;
+		final Objective m8 = objective("Mission-8");
+		if (checkMission("Mission-8")) {
+			world.env.playSound(SoundTarget.COMPUTER, SoundType.PHSYCHOLOGIST_WAITING, new Action0() {
+				@Override
+				public void invoke() {
+					showObjective(m8);
+					world.testNeeded = true;
+					world.testCompleted = false;
+				}
+			});
 		}
 		if (world.testCompleted && m8.state == ObjectiveState.ACTIVE) {
-			helper.setObjectiveState(m8, ObjectiveState.SUCCESS);
-			helper.setTimeout("Mission-8-Hide", 13000);
+			setObjectiveState(m8, ObjectiveState.SUCCESS);
+			addTimeout("Mission-8-Hide", 13000);
 			if (world.testScore() * 2 < world.testMax()) {
-				helper.setMissionTime("Mission-8-Fire", helper.now() + 48);
+				addMission("Mission-8-Fire", 48);
 			} else {
-				helper.setMissionTime("Mission-8-Visions", helper.now() + 10 * 24);
+				addMission("Mission-8-Visions", 10 * 24);
 			}
 		}
 		if (checkTimeout("Mission-8-Hide")) {
 			m8.visible = false;
 		}
 		if (checkMission("Mission-8-Fire")) {
-			helper.gameover();
+			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Test", "loose/fired_level_2");
 		}
 		if (checkMission("Mission-8-Visions")) {
@@ -74,34 +71,34 @@ public class Mission8 extends Mission {
 			});
 		}
 		if (checkMission("Mission-8-Visions-2")) {
-			helper.setMissionTime("Mission-15", helper.now() + 4 * 24);
+			addMission("Mission-15", 4 * 24);
 			world.env.stopMusic();
 			world.env.playVideo("interlude/dream_3", new Action0() {
 				@Override
 				public void invoke() {
 					world.currentTalk = "phsychologist";
-					helper.showObjective("Mission-8-Task-1");
-					helper.setMissionTime("Mission-8-Task-1-Timeout", helper.now() + 2 * 24);
+					showObjective("Mission-8-Task-1");
+					addMission("Mission-8-Task-1", 2 * 24);
 					world.env.playMusic();
 				}
 			});
 		}
 		if (checkMission("Mission-8-Task-1-Timeout")) {
-			helper.setObjectiveState("Mission-8-Task-1", ObjectiveState.FAILURE);
-			helper.setTimeout("Mission-8-Task-1-Hide", 13000);
+			setObjectiveState("Mission-8-Task-1", ObjectiveState.FAILURE);
+			addTimeout("Mission-8-Task-1-Hide", 13000);
 			world.currentTalk = null;
 		}
 		if (checkTimeout("Mission-8-Task-1-Hide")) {
-			helper.objective("Mission-8-Task-1").visible = false;
+			objective("Mission-8-Task-1").visible = false;
 			world.currentTalk = null;
 		}
 	}
 	@Override
 	public void onTalkCompleted() {
 		if ("phsychologist".equals(world.currentTalk)) {
-			if (helper.setObjectiveState("Mission-8-Task-1", ObjectiveState.SUCCESS)) {
-				helper.clearMissionTime("Mission-8-Task-1-Timeout");
-				helper.setTimeout("Mission-8-Task-1-Hide", 13000);
+			if (setObjectiveState("Mission-8-Task-1", ObjectiveState.SUCCESS)) {
+				clearMission("Mission-8-Task-1-Timeout");
+				addTimeout("Mission-8-Task-1-Hide", 13000);
 			}
 		}
 	}

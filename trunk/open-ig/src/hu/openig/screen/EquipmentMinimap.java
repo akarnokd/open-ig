@@ -13,6 +13,7 @@ import hu.openig.model.FleetKnowledge;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.SelectionMode;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.ui.UIComponent;
@@ -166,7 +167,7 @@ public class EquipmentMinimap extends UIComponent {
 			int w = f.owner.fleetIcon.getWidth();
 			int h = f.owner.fleetIcon.getHeight();
 			if (cx - w / 2 - 1 <= x && x <= cx + w / 2 + 1 && cy - h / 2 - 1 <= y && y <= cy + h / 2 + 1) {
-				commons.buttonSound(SoundType.CLICK_HIGH_2);
+				commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_HIGH_2, null);
 				commons.world().player.currentFleet = f;
 				commons.world().player.selectionMode = SelectionMode.FLEET;
 				return;
@@ -177,7 +178,7 @@ public class EquipmentMinimap extends UIComponent {
 				int cx = (int)(p.x * zoom) - mapRect.x;
 				int cy = (int)(p.y * zoom) - mapRect.y;
 				if (cx - 2 <= x && x <= cx + 2 && cy - 2 <= y && y <= cy + 2) {
-					commons.buttonSound(SoundType.CLICK_HIGH_2);
+					commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_HIGH_2, null);
 					commons.world().player.currentPlanet = p;
 					commons.world().player.selectionMode = SelectionMode.PLANET;
 					return;

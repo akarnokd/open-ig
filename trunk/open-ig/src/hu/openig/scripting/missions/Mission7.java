@@ -9,7 +9,6 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Difficulty;
-import hu.openig.core.Pair;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
@@ -19,14 +18,12 @@ import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
-import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.utils.XElement;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -35,6 +32,25 @@ import java.util.List;
  *
  */
 public class Mission7 extends Mission {
+	/** Stages. */
+	enum M7 {
+		/** Not started. */
+		NONE,
+		/** Wait. */
+		WAIT_1,
+		/** Running. */
+		RUN_1,
+		/** Done. */
+		DONE_1,
+		/** Wait. */
+		WAIT_2,
+		/** Running. */
+		RUN_2,
+		/** Done. */
+		DONE_2
+	}
+	/** The current stage. */
+	M7 stage = M7.NONE;
 	@Override
 	public boolean applicable() {
 		return world.level == 2;
@@ -42,39 +58,38 @@ public class Mission7 extends Mission {
 	@Override
 	public void onTime() {
 		// a week after the initial garthog attack
-		Objective m6 = helper.objective("Mission-6");
-		Objective m7 = helper.objective("Mission-7");
-		Objective m7t1 = helper.objective("Mission-7-Task-1");
-		Objective m7t2 = helper.objective("Mission-7-Task-2");
-		if (m6.state != ObjectiveState.ACTIVE
-				&& !m7.visible && m7.state == ObjectiveState.ACTIVE
-				&& !m7t1.visible && m7t1.state == ObjectiveState.ACTIVE
-				&& !helper.hasMissionTime("Mission-7")) {
-			helper.setMissionTime("Mission-7", helper.now() + 7 * 24);
+		Objective m6 = objective("Mission-6");
+		Objective m7 = objective("Mission-7");
+		Objective m7t1 = objective("Mission-7-Task-1");
+		Objective m7t2 = objective("Mission-7-Task-2");
+		if (m6.isCompleted() && !m7.isCompleted() && !m7t1.isCompleted() && stage == M7.NONE) {
+			addMission("Mission-7", 7 * 24);
+			stage = M7.WAIT_1;
 		}
 		// a week after the first virus attack
-		Objective m12t1 = helper.objective("Mission-12-Task-1");
-		if (m12t1.state != ObjectiveState.ACTIVE
-				&& !m7t2.visible
-				&& !helper.hasMissionTime("Mission-7-Task-2")) {
-			helper.setMissionTime("Mission-7-Task-2", helper.now() + 7 * 24);
+		Objective m12t1 = objective("Mission-12-Task-1");
+		if (m12t1.isCompleted() && !m7t2.isCompleted() && stage == M7.DONE_2) {
+			stage = M7.WAIT_2;
+			addMission("Mission-7-Task-2", 7 * 24);
 		}
 		
 		if (checkMission("Mission-7")) {
-			helper.showObjective("Mission-7");
-			helper.setMissionTime("Mission-7-Task-1", helper.now() + 24);
+			showObjective("Mission-7");
+			addMission("Mission-7-Task-1", 24);
 		}
-		if (helper.canStart("Mission-7-Task-1")) {
+		if (checkMission("Mission-7-Task-1")) {
+			stage = M7.RUN_1;
 			checkStartTask(1);
 		}
-		if (helper.canStart("Mission-7-Task-2")) {
+		if (checkMission("Mission-7-Task-2")) {
+			stage = M7.RUN_2;
 			checkStartTask(2);
 		}
 		for (int i = 1; i <= 2; i++) {
 			if (checkTimeout("Mission-7-Task-" + i + "-Success")) {
-				helper.setObjectiveState("Mission-7-Task-" + i, ObjectiveState.SUCCESS);
+				setObjectiveState("Mission-7-Task-" + i, ObjectiveState.SUCCESS);
 				if (i == 2) {
-					helper.setObjectiveState("Mission-7", ObjectiveState.SUCCESS);
+					setObjectiveState("Mission-7", ObjectiveState.SUCCESS);
 					DiplomaticRelation dr = world.establishRelation(player, player("FreeTraders"));
 					dr.value = 75;
 				} else {
@@ -82,42 +97,45 @@ public class Mission7 extends Mission {
 					player.money += reward;
 					player.statistics.moneyIncome += reward;
 				}
-				helper.setTimeout("Mission-7-Hide", 13000);
+				addTimeout("Mission-7-Hide", 13000);
+				stage = i == 1 ? M7.DONE_1 : M7.DONE_2;
 			}
 			if (checkTimeout("Mission-7-Task-" + i + "-Failed")) {
-				helper.setObjectiveState("Mission-7-Task-" + i, ObjectiveState.FAILURE);
-				helper.setObjectiveState("Mission-7", ObjectiveState.FAILURE);
-				helper.setTimeout("Mission-7-Hide", 13000);
-				helper.setTimeout("Mission-7-Fire", 16000);
+				setObjectiveState("Mission-7-Task-" + i, ObjectiveState.FAILURE);
+				setObjectiveState("Mission-7", ObjectiveState.FAILURE);
+				addTimeout("Mission-7-Hide", 13000);
+				addTimeout("Mission-7-Fire", 16000);
 				removeFleets();
+				stage = i == 1 ? M7.DONE_1 : M7.DONE_2;
 			}
 			if (checkMission("Mission-7-Task-" + i + "-Timeout")) {
-				helper.setObjectiveState("Mission-7-Task-" + i, ObjectiveState.FAILURE);
-				helper.setObjectiveState("Mission-7", ObjectiveState.FAILURE);
-				helper.setTimeout("Mission-7-Hide", 13000);
-				helper.setTimeout("Mission-7-Fire", 16000);
+				setObjectiveState("Mission-7-Task-" + i, ObjectiveState.FAILURE);
+				setObjectiveState("Mission-7", ObjectiveState.FAILURE);
+				addTimeout("Mission-7-Hide", 13000);
+				addTimeout("Mission-7-Fire", 16000);
 				removeFleets();
+				stage = i == 1 ? M7.DONE_1 : M7.DONE_2;
 			}
 		}
 		if (checkTimeout("Mission-7-Hide")) {
-			helper.objective("Mission-7").visible = false;
+			objective("Mission-7").visible = false;
 		}
 		if (checkTimeout("Mission-7-Fire")) {
-			helper.gameover();
+			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Lost-Merchants", "loose/fired_level_2");
 		}
 	}
 	/** Remove the attacker fleets. */
 	void removeFleets() {
-		Pair<Fleet, InventoryItem> merchant = findTaggedFleet("Mission-7-Trader", player("Traders"));
+		Fleet merchant = findTaggedFleet("Mission-7-Trader", player("Traders"));
 		if (merchant != null) {
-			removeScripted(merchant.first);
-			world.removeFleet(merchant.first);
+			removeScripted(merchant);
+			world.removeFleet(merchant);
 		}
-		Pair<Fleet, InventoryItem> g = findTaggedFleet("Mission-7-Garthog", player("Garthog"));
+		Fleet g = findTaggedFleet("Mission-7-Garthog", player("Garthog"));
 		if (g != null) {
-			removeScripted(g.first);
-			world.removeFleet(g.first);
+			removeScripted(g);
+			world.removeFleet(g);
 		}
 	}
 	/**
@@ -132,10 +150,9 @@ public class Mission7 extends Mission {
 		String m7ti = "Mission-7-Task-" + task;
 		String m7tio = "Mission-7-Task-" + task + "-Timeout";
 		if (!fs.isEmpty()) {
-			incomingMessage("Merchant-Under-Attack-Garthog");
-			helper.objective("Mission-7").visible = true;
-			helper.showObjective(m7ti);
-			helper.clearMissionTime(m7ti);
+			incomingMessage("Merchant-Under-Attack-Garthog", m7ti);
+			objective("Mission-7").visible = true;
+			clearMission(m7ti);
 			world.env.speed1();
 			Fleet f = world.random(fs);
 			f.stop();
@@ -182,11 +199,11 @@ public class Mission7 extends Mission {
 
 			// ----------------------------------------------------------------
 
-			helper.scriptedFleets().add(f.id);
-			helper.scriptedFleets().add(pf.id);
+			addScripted(f);
+			addScripted(pf);
 			
 			// set failure timeout
-			helper.setMissionTime(m7tio, helper.now() + 24);
+			addMission(m7tio, 24);
 			return true;
 		}
 		return false;
@@ -226,40 +243,9 @@ public class Mission7 extends Mission {
 			Player traders = player("Traders");
 			Player pirates = player("Garthog");
 			
-			Pair<Fleet, InventoryItem> trader = findTaggedFleet("Mission-7-Trader", traders);
-			Pair<Fleet, InventoryItem> garthog = findTaggedFleet("Mission-7-Garthog", pirates);
-			if (trader == null) {
-				new AssertionError("Mission-7-Trader not found").printStackTrace();
+			if (startJointSpaceBattle(war, "Mission-7-Trader", traders, "Mission-7-Garthog", pirates)) {
+				battle.chat = "chat.mission-7.defend.merchant" + task;
 			}
-			if (garthog == null) {
-				new AssertionError("Mission-7-Garthog not found").printStackTrace();
-			}
-			// attack on the trader
-			// trader attacked
-			if (battle.targetFleet == trader.first) {
-				war.includeFleet(garthog.first, garthog.first.owner);
-				// fix target fleet
-				battle.targetFleet = garthog.first;
-			} else {
-				// pirate attacked
-				war.addStructures(trader.first.inventory, EnumSet.of(
-						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
-						ResearchSubCategory.SPACESHIPS_CRUISERS,
-						ResearchSubCategory.SPACESHIPS_FIGHTERS));
-			}
-			// center trader
-			Dimension d = war.space();
-			for (SpacewarStructure s : war.structures()) {
-				if (s.item != null && "Mission-7-Trader".equals(s.item.tag)) {
-					s.x = d.width / 2;
-					s.y = d.height / 2;
-					s.angle = 0.0;
-				}
-			}
-			battle.attackerAllies.add(traders);
-			battle.allowRetreat = false;
-			
-			battle.chat = "chat.mission-7.defend.merchant" + task;
 		}
 	}
 	/**
@@ -295,35 +281,34 @@ public class Mission7 extends Mission {
 		Player traders = player("Traders");
 		Player pirates = player("Garthog");
 		if (!traderSurvived) {
-			helper.setTimeout("Mission-7-Task-" + task + "-Failed", 3000);
-			helper.clearMissionTime("Mission-7-Task-" + task + "-Timeout");
+			addTimeout("Mission-7-Task-" + task + "-Failed", 3000);
+			clearMission("Mission-7-Task-" + task + "-Timeout");
 		} else {
-			helper.setTimeout("Mission-7-Task-" + task + "-Success", 3000);
-			helper.clearMissionTime("Mission-7-Task-" + task + "-Timeout");
+			addTimeout("Mission-7-Task-" + task + "-Success", 3000);
+			clearMission("Mission-7-Task-" + task + "-Timeout");
 		}
 		cleanupScriptedFleets();
-		for (int i : new ArrayList<Integer>(helper.scriptedFleets())) {
-			Fleet f = fleet(i);
-			if (f != null) {
-				if (f.owner == traders) {
-					f.task = FleetTask.IDLE;
-					// fix owner
-					for (InventoryItem ii : f.inventory) {
-						ii.owner = f.owner;
-						ii.tag = null;
-					}
-					f.targetPlanet(world.random(Arrays.asList(
-							planet("Achilles"), planet("Naxos"), planet("San Sterling"),
-							planet("Centronom"), planet("New Caroline"))));
-					helper.scriptedFleets().remove(f.id);
-				} else
-				if (f.owner == pirates) {
-					world.removeFleet(f);
-					helper.scriptedFleets().remove(f.id);
-				}
+
+		Fleet merchant = findTaggedFleet("Mission-7-Trader", traders);
+		if (merchant != null) {
+			removeScripted(merchant);
+			
+			// fix owner
+			for (InventoryItem ii : merchant.inventory) {
+				ii.owner = merchant.owner;
+				ii.tag = null;
 			}
+			merchant.targetPlanet(world.random(Arrays.asList(
+					planet("Achilles"), planet("Naxos"), planet("San Sterling"),
+					planet("Centronom"), planet("New Caroline"))));
+
 		}
-		helper.receive("Merchant-Under-Attack-Garthog").visible = false;
+		Fleet g = findTaggedFleet("Mission-7-Garthog", pirates);
+		if (g != null) {
+			removeScripted(g);
+			world.removeFleet(g);
+		}
+		receive("Merchant-Under-Attack-Garthog").visible = false;
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
@@ -359,21 +344,7 @@ public class Mission7 extends Mission {
 			if (isMissionSpacewar(battle, "Mission-7-Task-" + task)) {
 				Player traders = player("Traders");
 				Player pirates = player("Garthog");
-				Fleet tf = null;
-				Fleet pf = null;
-				for (int i : helper.scriptedFleets()) {
-					Fleet f = fleet(i);
-					if (f.owner == traders) {
-						tf = f;
-					} else
-					if (f.owner == pirates) {
-						pf = f;
-					}
-				}
-				if (battle.targetFleet == tf) {
-					battle.targetFleet = pf;
-				}
-				battle.attacker.inventory.addAll(tf.inventory);
+				startJointAutoSpaceBattle(battle, "Mission-7-Trader", traders, "Mission-7-Garthog", pirates);
 			}
 		}
 	}
@@ -383,5 +354,17 @@ public class Mission7 extends Mission {
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public void load(XElement xmission) {
+		stage = M7.valueOf(xmission.get("stage", M7.NONE.toString()));
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("stage", stage);
+	}
+	@Override
+	public void reset() {
+		stage = M7.NONE;
 	}
 }

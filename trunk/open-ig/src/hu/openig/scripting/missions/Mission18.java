@@ -9,7 +9,6 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pair;
 import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
@@ -50,7 +49,7 @@ public class Mission18 extends Mission {
 	 * Creates the main ship for level 3.
 	 */
 	void createMainShip() {
-		Pair<Fleet, InventoryItem> own = findTaggedFleet("CampaignMainShip3", player);
+		Fleet own = findTaggedFleet("CampaignMainShip3", player);
 		if (own != null) {
 			return;
 		}
@@ -60,7 +59,7 @@ public class Mission18 extends Mission {
 		}
 		Fleet f = null;
 		if (own != null) {
-			f = own.first;
+			f = own;
 		} else {
 			Planet ach = planet("Achilles");
 			f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
@@ -87,17 +86,17 @@ public class Mission18 extends Mission {
 		checkMainShip();
 		checkSuccess();
 		if (checkTimeout("Mission-18-Failed")) {
-			helper.gameover();
+			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_3");
 		}
 		if (checkTimeout("Mission-18-Hide")) {
-			helper.objective("Mission-18").visible = false;
+			objective("Mission-18").visible = false;
 		}
 		if (checkMission("Mission-18")) {
-			helper.objective("Mission-18").visible = true;
 			for (int i = 1; i < 6; i++) {
-				helper.objective("Mission-18-Task-" + i).visible = true;
+				objective("Mission-18-Task-" + i).visible = true;
 			}
+			showObjective("Mission-18");
 		}
 		// planet messages
 		String[] planets = { "Achilles", "Naxos", "San Sterling", "New Caroline", "Centronom", "Zeuson" };
@@ -115,13 +114,13 @@ public class Mission18 extends Mission {
 	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {
-		Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip3", player);
+		Fleet ft = findTaggedFleet("CampaignMainShip3", player);
 		if (ft == null) {
-			if (!helper.hasTimeout("MainShip-Lost")) {
-				helper.setTimeout("MainShip-Lost", 3000);
+			if (!hasTimeout("MainShip-Lost")) {
+				addTimeout("MainShip-Lost", 3000);
 			}
-			if (helper.isTimeout("MainShip-Lost")) {
-				helper.gameover();
+			if (checkTimeout("MainShip-Lost")) {
+				gameover();
 				loseGameMovie("loose/destroyed_level_3");
 			}
 		}
@@ -136,10 +135,9 @@ public class Mission18 extends Mission {
 	/** Check if we own all the necessary planets. */
 	void checkSuccess() {
 		Player g = player("Garthog");
-		if (g.statistics.planetsOwned == 0 && !helper.hasMissionTime("Mission-18-Promote")) {
-			helper.setObjectiveState("Mission-18", ObjectiveState.SUCCESS);
+		if (g.statistics.planetsOwned == 0 && !hasMission("Mission-18-Promote")) {
+			setObjectiveState("Mission-18", ObjectiveState.SUCCESS);
 			addTimeout("Mission-18-Hide", 13000);
-			// TODO next level
 			addMission("Mission-18-Promote", 3);
 		}
 	}
@@ -148,22 +146,22 @@ public class Mission18 extends Mission {
 		if (planet.owner == player || previousOwner == player) {
 			boolean win = previousOwner.id.equals("Garthog");
 			if (planet.id.equals("Garthog 1")) {
-				helper.setObjectiveState("Mission-18-Task-1", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+				setObjectiveState("Mission-18-Task-1", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
 			} else
 			if (planet.id.equals("Garthog 2")) {
-				helper.setObjectiveState("Mission-18-Task-2", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+				setObjectiveState("Mission-18-Task-2", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
 			} else
 			if (planet.id.equals("Garthog 3")) {
-				helper.setObjectiveState("Mission-18-Task-3", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+				setObjectiveState("Mission-18-Task-3", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
 			} else
 			if (planet.id.equals("Garthog 4")) {
-				helper.setObjectiveState("Mission-18-Task-4", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+				setObjectiveState("Mission-18-Task-4", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
 			} else
 			if (planet.id.equals("Garthog 5")) {
-				helper.setObjectiveState("Mission-18-Task-5", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+				setObjectiveState("Mission-18-Task-5", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
 			} else {
-				helper.setObjectiveState("Mission-18", ObjectiveState.FAILURE);
-				gameover();
+				setObjectiveState("Mission-18", ObjectiveState.FAILURE);
+				addTimeout("Mission-18-Failed", 13000);
 			}
 		}
 	}
@@ -181,8 +179,8 @@ public class Mission18 extends Mission {
 				addScripted(f);
 			} else {
 				if (player.ownPlanets().size() < 4) {
-					helper.setObjectiveState("Mission-18", ObjectiveState.FAILURE);
-					gameover();
+					setObjectiveState("Mission-18", ObjectiveState.FAILURE);
+					addTimeout("Mission-18-Failed", 13000);
 				}
 			}
 		}		
@@ -194,9 +192,5 @@ public class Mission18 extends Mission {
 			removeScripted(fleet);
 			DefaultAIControls.colonizeWithFleet(fleet, planet);
 		}
-	}
-	/** Issue game over. */
-	void gameover() {
-		addTimeout("Mission-18-Failed", 13000);
 	}
 }

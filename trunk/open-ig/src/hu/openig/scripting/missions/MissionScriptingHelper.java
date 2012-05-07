@@ -11,7 +11,9 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Func1;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
+import hu.openig.model.Player;
 import hu.openig.model.VideoMessage;
+import hu.openig.model.ViewLimit;
 
 import java.util.Set;
 
@@ -78,18 +80,6 @@ public interface MissionScriptingHelper {
 	 * @return true if the current hours since start is greater than the predefined time
 	 */
 	boolean isMissionTime(String id);
-	/**
-	 * Test if the given objective is visible and in active state.
-	 * @param oId the objective id
-	 * @return true if active
-	 */
-	boolean isActive(String oId);
-	/**
-	 * Test if the given mission is visible and active.
-	 * @param o the objective
-	 * @return true if active
-	 */
-	boolean isActive(Objective o);
 	/**
 	 * Check if the objective/mission can be started.
 	 * <ul>
@@ -163,4 +153,11 @@ public interface MissionScriptingHelper {
 	 * @param filter the filter
 	 */
 	void clearMessages(Func1<String, Boolean> filter);
+	/**
+	 * Returns the view limits for the given player at the level.
+	 * @param player the player
+	 * @param level the level
+	 * @return the limit or null if no limit
+	 */
+	ViewLimit getViewLimit(Player player, int level);
 }

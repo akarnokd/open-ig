@@ -45,25 +45,12 @@ public interface GameEnvironment {
 	 */
 	void playAudio(String name, Action0 action);
 	/**
-	 * Play an sound type if the computer notification sound is enabled.
+	 * Play a sound as a given target and invoke an action once it has been played.
+	 * @param target the sound target
 	 * @param type the sound type
+	 * @param action the optional completion action
 	 */
-	void computerSound(SoundType type);
-	/**
-	 * Play a regular sound effect (e.g., spacewar).
-	 * @param type the sound type
-	 */
-	void buttonSound(SoundType type);
-	/**
-	 * Play a regular sound effect (e.g., spacewar).
-	 * @param type the sound type
-	 */
-	void effectSound(SoundType type);
-	/**
-	 * Play a screen-switching sound (e.g., spacewar).
-	 * @param type the sound type
-	 */
-	void screenSound(SoundType type);
+	void playSound(SoundTarget target, SoundType type, Action0 action);
 	/** Stops the music playback. */
 	void stopMusic();
 	/** Stops the music playback. */

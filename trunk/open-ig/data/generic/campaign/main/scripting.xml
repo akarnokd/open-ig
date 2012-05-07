@@ -98,12 +98,20 @@
 		<objective id='Mission-5' title='mission-5.escort_thorin' 
 			description='mission-5.escort_thorin.desc'>
 			<objective id='Mission-5-Task-1' title='mission-5.meet_tullen'/>
+			<objective id='Mission-5-Task-3' title='mission-5.reinforcements'
+			description='mission-5.reinforcements.desc'/>
 			<objective id='Mission-5-Task-2' title='mission-5.defend_thorin' 
 				description='mission-5.defend_thorin.desc'/>
 		</objective>
 		<objective id='Mission-6' title='mission-6.defend_achilles' 
 			description='mission-6.defend_achilles.desc'>
 		</objective>
+		
+		<objective id='Mission-6-Task-1' title='mission-6.handle_colonies'
+		description='mission-6.handle_colonies.desc'/>
+		<objective id='Mission-6-Task-2' title='mission-6.build_fleets'
+		description='mission-6.build_fleets.desc'/>
+		
 		<objective id='Mission-7' title='mission-7.protect_traders' 
 			description='mission-7.protect_traders.desc'>
 			<objective id='Mission-7-Task-1' title='mission-7.save_trader'

@@ -18,6 +18,7 @@ import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.ui.UIComponent;
@@ -282,28 +283,28 @@ public abstract class ScreenBase extends UIContainer {
 	 * @param type the sound type
 	 */
 	public void buttonSound(SoundType type) {
-		commons.buttonSound(type);
+		commons.playSound(SoundTarget.BUTTON, type, null);
 	}
 	/**
 	 * Play a given sound if the computer notification voice is enabled.
 	 * @param type the sound type
 	 */
 	public void computerSound(SoundType type) {
-		commons.computerSound(type);
+		commons.playSound(SoundTarget.COMPUTER, type, null);
 	}
 	/**
 	 * Play sound effects (space and ground wars).
 	 * @param type the osund type
 	 */
 	public void effectSound(SoundType type) {
-		commons.effectSound(type);
+		commons.playSound(SoundTarget.EFFECT, type, null);
 	}
 	/**
 	 * Play a screen-switching related sound.
 	 * @param type the sound type
 	 */
 	public void screenSound(SoundType type) {
-		commons.screenSound(type);
+		commons.playSound(SoundTarget.SCREEN, type, null);
 	}
 	/**
 	 * Check if the mouse event is a panning event.

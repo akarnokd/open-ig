@@ -9,9 +9,7 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pair;
 import hu.openig.model.Fleet;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.ObjectiveState;
 import hu.openig.utils.XElement;
 
@@ -38,18 +36,18 @@ public class Mission25 extends Mission {
 	@Override
 	public void onTime() {
 		if (stage == M25.NONE) {
-			helper.showObjective("Mission-25");
+			showObjective("Mission-25");
 			stage = M25.RUNNING;
 		}
 		if (stage == M25.RUNNING) {
 			if (player("Dargslan").statistics.planetsOwned == 0) {
 				stage = M25.DONE;
-				helper.setObjectiveState("Mission-25", ObjectiveState.SUCCESS);
+				setObjectiveState("Mission-25", ObjectiveState.SUCCESS);
 				addTimeout("Win", 6000);
 			}
 		}
 		if (checkTimeout("Win")) {
-			helper.objective("Mission-25").visible = false;
+			objective("Mission-25").visible = false;
 			world.env.stopMusic();
 			world.env.pause();
 			world.env.playVideo("win/win", new Action0() {
@@ -63,13 +61,13 @@ public class Mission25 extends Mission {
 	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {
-		Pair<Fleet, InventoryItem> ft = findTaggedFleet("CampaignMainShip4", player);
+		Fleet ft = findTaggedFleet("CampaignMainShip4", player);
 		if (ft == null) {
-			if (!helper.hasTimeout("MainShip-Lost")) {
-				helper.setTimeout("MainShip-Lost", 3000);
+			if (!hasTimeout("MainShip-Lost")) {
+				addTimeout("MainShip-Lost", 3000);
 			}
-			if (helper.isTimeout("MainShip-Lost")) {
-				helper.gameover();
+			if (checkTimeout("MainShip-Lost")) {
+				gameover();
 				loseGameMovie("loose/destroyed_level_3");
 			}
 		}

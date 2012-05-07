@@ -34,4 +34,12 @@ public class Objective {
 	public Func0<String> progressValue;
 	/** The sub objectives. */
 	public final List<Objective> subObjectives = U.newArrayList();
+	/** @return is the objective active (visible and ACTIVE state). */
+	public boolean isActive() {
+		return visible && state == ObjectiveState.ACTIVE;
+	}
+	/** @return is the objective completed in any way? */
+	public boolean isCompleted() {
+		return state != ObjectiveState.ACTIVE;
+	}
 }

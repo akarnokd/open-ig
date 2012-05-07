@@ -36,6 +36,7 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
+import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.screen.CommonResources;
@@ -707,8 +708,8 @@ public class GameWindow extends JFrame implements GameControls {
 				if (primary != null) {
 					primary.onLeave();
 				}
-				if (sound != null && config.computerVoiceScreen && !commons.battleMode) {
-					commons.effectSound(sound);
+				if (sound != null && !commons.battleMode) {
+					commons.playSound(SoundTarget.SCREEN, sound, null);
 				}
 				primary = sb;
 				if (primary != null) {
@@ -719,8 +720,8 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			} else
 			if (playSec) {
-				if (sound != null && config.computerVoiceScreen) {
-					commons.effectSound(sound);
+				if (sound != null) {
+					commons.playSound(SoundTarget.SCREEN, sound, null);
 				}
 			}
 			
@@ -729,8 +730,8 @@ public class GameWindow extends JFrame implements GameControls {
 				if (secondary != null) {
 					secondary.onLeave();
 				}
-				if (sound != null && config.computerVoiceScreen) {
-					commons.effectSound(sound);
+				if (sound != null) {
+					commons.playSound(SoundTarget.SCREEN, sound, null);
 				}
 				secondary = sb;
 				if (secondary != null) {
@@ -926,7 +927,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.NORMAL);
-						commons.buttonSound(SoundType.CLICK_LOW_1);
+						commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_LOW_1, null);
 						repaintInner();
 					}
 					e.consume();
@@ -942,7 +943,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.FAST);
-						commons.buttonSound(SoundType.CLICK_LOW_1);
+						commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_LOW_1, null);
 						repaintInner();
 					}
 					e.consume();
@@ -958,7 +959,7 @@ public class GameWindow extends JFrame implements GameControls {
 						displayPrimary(Screens.BRIDGE);
 					} else {
 						commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
-						commons.buttonSound(SoundType.CLICK_LOW_1);
+						commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_LOW_1, null);
 						repaintInner();
 					}
 					e.consume();
@@ -966,10 +967,10 @@ public class GameWindow extends JFrame implements GameControls {
 				case KeyEvent.VK_SPACE:
 					if (commons.simulation.paused()) {
 						commons.simulation.resume();
-						commons.buttonSound(SoundType.UI_ACKNOWLEDGE_1);
+						commons.playSound(SoundTarget.BUTTON, SoundType.UI_ACKNOWLEDGE_1, null);
 					} else {
 						commons.simulation.pause();
-						commons.buttonSound(SoundType.PAUSE);
+						commons.playSound(SoundTarget.BUTTON, SoundType.PAUSE, null);
 					}
 					repaintInner();
 					e.consume();
@@ -2047,7 +2048,7 @@ public class GameWindow extends JFrame implements GameControls {
 					if (!ableToGroundBattle) {
 						if (bi.attacker.owner == world().player) {
 							displayError(commons.labels().format("message.no_vehicles_for_assault", bi.targetPlanet.name));
-							commons.buttonSound(SoundType.NOT_AVAILABLE);
+							commons.playSound(SoundTarget.BUTTON, SoundType.NOT_AVAILABLE, null);
 						}
 						continue;
 					}
@@ -2218,7 +2219,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public void forceMessage(String messageId, Action0 onSeen) {
 		if (world() != null && !commons.worldLoading) {
 			displayPrimary(Screens.BRIDGE);
-			commons.computerSound(SoundType.MESSAGE);
+			commons.playSound(SoundTarget.COMPUTER, SoundType.MESSAGE, null);
 			allScreens.bridge.forceMessage(messageId, onSeen);
 		}
 	}
