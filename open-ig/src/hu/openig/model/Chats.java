@@ -50,7 +50,7 @@ public class Chats {
 			Chat c = new Chat(xchat.get("id"));
 			
 			for (XElement xnode : xchat.childrenWithName("node")) {
-				Node n = new Node();
+				Node n = new Node(xnode.get("id"));
 				
 				n.enemy = "enemy".equals(xnode.get("owner"));
 				n.option = xnode.get("option", null);
@@ -74,7 +74,7 @@ public class Chats {
 	 */
 	public static class Chat {
 		/** The identifier. */
-		protected final String id;
+		public final String id;
 		/** The node map. */
 		protected Map<String, Node> nodes = U.newLinkedHashMap();
 		/**
@@ -118,6 +118,8 @@ public class Chats {
 	 * @author akarnokd, 2012.04.08.
 	 */
 	public static class Node {
+		/** The node identifier. */
+		public final String id;
 		/** Is this a line of the enemy? */
 		public boolean enemy;
 		/** The choice to present. */
@@ -128,6 +130,13 @@ public class Chats {
 		public boolean retreat;
 		/** The available transitions. */
 		public final List<String> transitions = U.newArrayList();
+		/**
+		 * Constructor with node id.
+		 * @param id the identifier
+		 */
+		public Node(String id) {
+			this.id = id;
+		}
 		@Override
 		public String toString() {
 			return "enemy = " + enemy + ", option = " + option + ", message = " + message + ", retreat = " + retreat;

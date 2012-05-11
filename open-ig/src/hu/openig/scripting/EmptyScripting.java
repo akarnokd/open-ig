@@ -21,6 +21,8 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -330,6 +332,10 @@ public class EmptyScripting implements GameScripting {
 	}
 	@Override
 	public void onFleetsMoved() {
+		
+	}
+	@Override
+	public void onSpaceChat(SpacewarWorld world, Chat chat, Node node) {
 		
 	}
 }

@@ -16,12 +16,16 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.model.BattleProjectile.Mode;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.utils.XElement;
 
 /**
@@ -29,6 +33,9 @@ import hu.openig.utils.XElement;
  * @author akarnokd, 2012.02.23.
  */
 public class Mission19 extends Mission {
+	/** The governor fleet tag. */
+	private static final String MISSION_19_GOVERNOR = "Mission-19-Governor";
+
 	/** Mission stages. */
 	enum M19 {
 		/** Not started yet. */
@@ -109,7 +116,7 @@ public class Mission19 extends Mission {
 	 * Check if the governor left the sector.
 	 */
 	void checkGovernorPosition() {
-		Fleet f = findTaggedFleet("Mission-19-Governor", freeTraders());
+		Fleet f = findTaggedFleet(MISSION_19_GOVERNOR, freeTraders());
 		if (f != null) {
 			if (!player.explorationOuterLimit.contains(f.x, f.y)) {
 				failMission(f);
@@ -129,7 +136,7 @@ public class Mission19 extends Mission {
 		f.addInventory(research("Fighter1"), 2);
 		
 		// -----------------
-		tagFleet(f, "Mission-19-Governor");
+		tagFleet(f, MISSION_19_GOVERNOR);
 		
 		f.moveTo(z.x + 300, z.y);
 		f.task = FleetTask.SCRIPT;
@@ -147,7 +154,7 @@ public class Mission19 extends Mission {
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
 		if (planet.id.equals("Zeuson") && fleet.owner.id.equals("FreeTraders") 
-				&& hasTag(fleet, "Mission-19-Governor")) {
+				&& hasTag(fleet, MISSION_19_GOVERNOR)) {
 			world.removeFleet(fleet);
 			removeScripted(fleet);
 		}
@@ -196,7 +203,7 @@ public class Mission19 extends Mission {
 	 * @param battle the battle
 	 */
 	void battleFinish(BattleInfo battle) {
-		Fleet f = findTaggedFleet("Mission-19-Governor", freeTraders());
+		Fleet f = findTaggedFleet(MISSION_19_GOVERNOR, freeTraders());
 		if (f != null) {
 			ResearchType gr = research(governorShipType);
 			InventoryItem ii = f.getInventoryItem(gr);
@@ -244,5 +251,21 @@ public class Mission19 extends Mission {
 		setObjectiveState("Mission-19", ObjectiveState.FAILURE);
 		receive("Douglas-Rebel-Governor").visible = false;
 		addTimeout("Mission-19-Failure", 13000);
+	}
+	@Override
+	public void onSpaceChat(SpacewarWorld world, Chat chat, Node node) {
+		if (stage == M19.RUN 
+				&& "chat.mission-19.rebel.Zeuson.governor".equals(chat.id) 
+				&& node != null 
+				&& "7".equals(node.id)) {
+			Player pirates = freeTraders();
+			for (SpacewarStructure s : world.structures(pirates)) {
+				if (s.item != null && MISSION_19_GOVERNOR.equals(s.item.tag)
+						&& s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					world.attack(s, this.world.random(world.structures(player)), Mode.BEAM);
+				}
+			}
+			
+		}
 	}
 }

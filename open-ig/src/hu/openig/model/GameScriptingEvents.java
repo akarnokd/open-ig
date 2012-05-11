@@ -8,6 +8,9 @@
 
 package hu.openig.model;
 
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
+
 
 /**
  * Interface for the common game scripting events.
@@ -249,4 +252,11 @@ public interface GameScriptingEvents {
 	boolean fleetBlink(Fleet f);
 	/** Called when fleets moved. */
 	void onFleetsMoved();
+	/**
+	 * Called when the user selects a particular chat node.
+	 * @param world the spacewar world
+	 * @param chat the current chat
+	 * @param node the selected node
+	 */
+	void onSpaceChat(SpacewarWorld world, Chat chat, Node node);
 }
