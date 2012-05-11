@@ -1,11 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <labels>
-  <entry key=''/>
-  <entry key=''/>
-  <entry key=''/>
-  <entry key=''/>
-  <entry key=''/>
-  <entry key=''/>
   <entry key='@MainFleet'>Main fleet</entry>
   <entry key='DE'>DE</entry>
   <entry key='Dargslan.colonizer_fleet'>Dargslan colonizer</entry>
@@ -2408,4 +2402,10 @@
   <entry key='mission-6.build_fleets'>Produce fighters, destroyers and any equipment they need.</entry>
   <entry key='mission-6.handle_colonies.desc'>Try to build at least one Barracks.</entry>
   <entry key='mission-6.build_fleets.desc'>Build factories and try constructing ships and equipment.</entry>
+  <entry key='message.research_lab'>Research of %s stopped due missing labs.</entry>
+  <entry key='message.research_money'>Research of %s stopped due lack of money.</entry>
+  <entry key=''/>
+  <entry key=''/>
+  <entry key=''/>
+  <entry key=''/>
 </labels>

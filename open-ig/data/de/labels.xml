@@ -2522,5 +2522,7 @@
   <entry key='mission-6.build_fleets'>Produziere Jäger, Zerstörer und alle benötigte Ausrüstung.</entry>
   <entry key='mission-6.handle_colonies.desc'>Versuche ein Befestigung zu bauen.</entry>
   <entry key='mission-6.build_fleets.desc'>Baue Fabriken und versuche Schiffe und Ausrüstungen zu bauen.</entry>
+  <entry key='message.research_lab'>Vorschung von %s haltete wegen fählende Laboratorien.</entry>
+  <entry key='message.research_money'>Vorschung von %s haltete wegen nich genug Geld.</entry>
 		
 </labels>
