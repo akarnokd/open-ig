@@ -2176,9 +2176,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			stateOffline.setDisabledPattern(commons.common().disabledPattern);
 
 			centerYellow(buildingInfoName, energyPercent, energy, 
-					workerPercent, worker, operationPercent, production,
+					workerPercent, worker, operationPercent, 
 					progressUpper, progressLower);
 
+			production.color(TextRenderer.YELLOW);
+			
 			width = commons.colony().buildingInfoPanel.getWidth();
 			height = commons.colony().buildingInfoPanel.getHeight();
 			
@@ -2303,7 +2305,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						}
 						buildingInfoPanel.operationPercent.text(Integer.toString((int)(b.getEfficiency() * 100)));
 						if (b.type.primary != null) {
-							buildingInfoPanel.production.text(((int)b.getPrimary()) + getUnit(b.type.primary));
+							float f = b.getPrimary();
+							String s = "";
+							if (f - Math.floor(f) > 0) {
+								s = String.format("%.1f", f);
+							} else {
+								s = String.format("%.0f", f);
+							}
+							buildingInfoPanel.production.text(s + getUnit(b.type.primary));
 						} else {
 							buildingInfoPanel.production.text("");
 						}
