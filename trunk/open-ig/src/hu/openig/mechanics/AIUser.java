@@ -176,6 +176,20 @@ public class AIUser implements AIManager {
 			msg.sound = SoundType.RESEARCH_COMPLETE;
 			msg.targetResearch = rt;
 			p.messageQueue.add(msg);
+		} else
+		if (state == ResearchState.LAB) {
+			Message msg = w.newMessage("message.research_lab");
+			msg.priority = 80;
+			msg.sound = SoundType.STOP_RESEARCH;
+			msg.targetResearch = rt;
+			p.messageQueue.add(msg);
+		} else
+		if (state == ResearchState.MONEY) {
+			Message msg = w.newMessage("message.research_money");
+			msg.priority = 80;
+			msg.sound = SoundType.STOP_RESEARCH;
+			msg.targetResearch = rt;
+			p.messageQueue.add(msg);
 		}
 	}
 
