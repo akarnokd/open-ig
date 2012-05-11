@@ -28,6 +28,8 @@ import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.scripting.missions.Mission;
 import hu.openig.scripting.missions.MissionScriptingHelper;
 import hu.openig.utils.U;
@@ -1280,5 +1282,15 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public ViewLimit getViewLimit(Player player, int level) {
 		return viewLimits.get(player.id + ".Level." + level);
+	}
+	@Override
+	public void onSpaceChat(SpacewarWorld world, Chat chat, Node node) {
+		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+
+			}
+			m.onSpaceChat(world, chat, node);
+		}
 	}
 }

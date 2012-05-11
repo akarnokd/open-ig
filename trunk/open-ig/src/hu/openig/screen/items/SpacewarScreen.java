@@ -4674,6 +4674,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		rightChatPanel.addLine(n.enemy ? TextRenderer.YELLOW : TextRenderer.GREEN, get(n.message));
 		
 		node = n;
+		
+		world().scripting.onSpaceChat(this, chat, n);
 	}
 	/** The chat information panel. */
 	class ChatPanel extends UIContainer {

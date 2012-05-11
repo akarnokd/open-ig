@@ -32,6 +32,8 @@ import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -994,5 +996,9 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	public ViewLimit getViewLimit(Player player, int level) {
 		return helper.getViewLimit(player, level);
+	}
+	@Override
+	public void onSpaceChat(SpacewarWorld world, Chat chat, Node node) {
+		
 	}
 }
