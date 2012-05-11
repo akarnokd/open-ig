@@ -80,18 +80,6 @@ public class Mission11 extends Mission {
 				world.removeFleet(garthog);
 			}
 		}
-		if (checkTimeout("Mission-11-Planet")) {
-			Fleet garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
-			if (garthog != null) {
-				Planet tp = garthog.targetPlanet();
-				if (tp == null) {
-					tp = garthog.arrivedAt;
-				}
-				if (tp != null && tp.owner == player) {
-					incomingMessage(tp.id + "-Is-Under-Attack");
-				}
-			}
-		}
 	}
 	/** Move the Garthog fleet home. */
 	void garthogGoHome() {
@@ -127,6 +115,25 @@ public class Mission11 extends Mission {
 		is.type = null;
 		is.count = 0;
 		
+		Planet target = selectTarget();
+		
+		f.targetPlanet(target);
+
+		garthog.changeInventoryCount(research("SpySatellite1"), 1);
+		DefaultAIControls.actionDeploySatellite(garthog, target, research("SpySatellite1"));
+		garthog.planets.put(target, PlanetKnowledge.BUILDING);
+		
+		f.mode = FleetMode.ATTACK;
+		f.task = FleetTask.SCRIPT;
+		
+		incomingMessage(target.id + "-Is-Under-Attack");
+
+	}
+	/**
+	 * Select a planet to attack.
+	 * @return the selected planet
+	 */
+	protected Planet selectTarget() {
 		Planet target = null;
 		double strength = Double.MAX_VALUE;
 		// No Cheat: doesn't check garrison count, only things that can be seen by spysat2
@@ -158,15 +165,7 @@ public class Mission11 extends Mission {
 				target = p;
 			}
 		}
-		
-		f.targetPlanet(target);
-
-		garthog.changeInventoryCount(research("SpySatellite1"), 1);
-		DefaultAIControls.actionDeploySatellite(garthog, target, research("SpySatellite1"));
-		garthog.planets.put(target, PlanetKnowledge.BUILDING);
-		
-		f.mode = FleetMode.ATTACK;
-		f.task = FleetTask.SCRIPT;
+		return target;
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
@@ -187,14 +186,6 @@ public class Mission11 extends Mission {
 	 */
 	private boolean isM11Active() {
 		return objective("Mission-11").isActive();
-	}
-	@Override
-	public void onDiscovered(Player player, Fleet fleet) {
-		if (isM11Active()) {
-			if (player == this.player && hasTag(fleet, "Mission-11-Garthog")) {
-				addTimeout("Mission-11-Planet", 2000);
-			}
-		}
 	}
 	@Override
 	public void onGroundwarFinish(GroundwarWorld war) {
