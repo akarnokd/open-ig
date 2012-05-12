@@ -1897,7 +1897,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (planetVisible) {
 			g2.drawImage(commons.spacewar().planet, space.width - commons.spacewar().planet.getWidth(), 0, null);
 		}
-		
+
+		if (viewGrid.selected) {
+			g2.setColor(new Color(0, 128, 0, 128));
+			int bw = commons.spacewar().background.getWidth() * 2;
+			int bh = commons.spacewar().background.getHeight() * 2;
+			
+			int step = 20;
+			for (int i = 1; i < bw / step; i++) {
+				g2.drawLine(i * step, 0, i * step, bh);
+			}
+			for (int i = 1; i < bh / step; i++) {
+				g2.drawLine(0, i * step, bw, i * step);
+			}
+		}
+
 		drawRanges(g2, structures);
 		drawCommands(g2, structures);
 		
