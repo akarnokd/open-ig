@@ -2458,6 +2458,8 @@
   <entry key='mission-6.build_fleets.desc'>Építs gyárakat, próbálj hajókat és felszerelést gyártani.</entry>
   <entry key='message.research_lab'>A(z) %s kutatása leállt laborhiány miatt.</entry>
   <entry key='message.research_money'>A(z) %s kutatása leállt pénzhiány miatt.</entry>
+	<entry key='settings.movie_click_skip'>Átvezető átlépése kattintással</entry>
+	<entry key='settings.fullscreen'>Teljes képernyő</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

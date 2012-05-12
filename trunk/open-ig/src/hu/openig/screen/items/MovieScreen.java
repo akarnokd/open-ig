@@ -134,7 +134,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		if (e.has(Type.LEAVE)) {
 			down = false;
 		} else
-		if (e.has(Type.UP) && down) {
+		if (e.has(Type.UP) && down && config.movieClickSkip) {
 			down = false;
 			stopPlayback();
 		}

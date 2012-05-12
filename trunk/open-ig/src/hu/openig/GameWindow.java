@@ -1390,6 +1390,7 @@ public class GameWindow extends JFrame implements GameControls {
 					gw.setBounds(saveX, saveY, saveWidth, saveHeight);
 					gw.setVisible(true);
 				}
+				gw.requestFocus();
 				gw.moveMouse();
 				break;
 			}
@@ -2246,6 +2247,16 @@ public class GameWindow extends JFrame implements GameControls {
 					allScreens.statusbar.objectives.visible(false);
 				}
 			});
+		}
+	}
+	@Override
+	public boolean isFullscreen() {
+		return isUndecorated();
+	}
+	@Override
+	public void setFullscreen(boolean value) {
+		if (isFullscreen() != value) {
+			switchFullscreen();
 		}
 	}
 }

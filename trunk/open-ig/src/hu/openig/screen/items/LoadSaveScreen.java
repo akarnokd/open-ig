@@ -240,6 +240,12 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Scale cutscenes. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox movieScale;
+	/** Allow skipping the movies via mouse click. */
+	@Settings(page = SettingsPage.CONTROL)
+	UICheckBox movieSkipClick;
+	/** Toggle fullscreen. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox fullScreen;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -880,6 +886,25 @@ public class LoadSaveScreen extends ScreenBase {
 
 		// ------------------------------------------
 		
+		movieSkipClick = new UICheckBox(get("settings.movie_click_skip"), 14, commons.common().checkmark, commons.text());
+		movieSkipClick.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.movieClickSkip = movieSkipClick.selected();
+			}
+		};
+		
+		// ------------------------------------------
+		fullScreen = new UICheckBox(get("settings.fullscreen"), 14, commons.common().checkmark, commons.text());
+		fullScreen.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				commons.control().setFullscreen(fullScreen.selected());
+			}
+		};
+		
 		addThis();
 	}
 	/**
@@ -970,6 +995,8 @@ public class LoadSaveScreen extends ScreenBase {
 		animateTech.selected(config.animateInventory);
 		slowOnAttack.selected(config.slowOnEnemyAttack);
 		movieScale.selected(config.movieScale);
+		movieSkipClick.selected(config.movieClickSkip);
+		fullScreen.selected(commons.control().isFullscreen());
 	}
 	/**
 	 * Choose a random background for the options.
@@ -1062,11 +1089,13 @@ public class LoadSaveScreen extends ScreenBase {
 		uiScaleValue.location(base.x + 30 + uiScaleLabel.width + 30, base.y + dy);
 		uiScaleValue.width = 160;
 		dy += 30;
+		movieScale.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
 		satelliteDeploy.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		animateTech.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
-		movieScale.location(base.x + 30, base.y + dy + 8);
+		fullScreen.location(base.x + 30, base.y + dy + 8);
 		
 		// -----------------------------
 		// controls
@@ -1074,6 +1103,8 @@ public class LoadSaveScreen extends ScreenBase {
 		classicControls.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		swapLeftRight.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		movieSkipClick.location(base.x + 30, base.y + dy + 8);
 
 		// --------------------------------------------------------------------------------------
 		// gameplay
