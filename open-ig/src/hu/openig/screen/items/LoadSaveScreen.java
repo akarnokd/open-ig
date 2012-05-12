@@ -1158,7 +1158,7 @@ public class LoadSaveScreen extends ScreenBase {
 			g2.drawImage(background, base.x, base.y, null);
 
 			g2.setColor(new Color(0, 0, 0, 192));
-			g2.fillRect(base.x + 10, base.y + 115, base.width - 20, base.height - 60);
+			g2.fillRect(base.x + 10, base.y + 115, base.width - 20, base.height - 115 - 10);
 
 			save.enabled(maySave);
 			load.enabled(list.selected != null);

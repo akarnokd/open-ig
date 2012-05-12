@@ -429,6 +429,7 @@ public class GameWindow extends JFrame implements GameControls {
 		this.movieVisible = that.movieVisible;
 		this.statusbar = that.statusbar;
 		this.statusbarVisible = that.statusbarVisible;
+		this.optionsVisible = that.optionsVisible;
 
 		assign(this.allScreens, that.allScreens);
 		
