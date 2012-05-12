@@ -218,6 +218,9 @@ public class Configuration {
 	/** Should the movie be scaled to full screen? */
 	@LoadSave
 	public boolean movieScale;
+	/** Allow skipping cutscenes by mouse click? */
+	@LoadSave
+	public boolean movieClickSkip;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

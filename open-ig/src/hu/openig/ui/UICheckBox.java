@@ -35,8 +35,6 @@ public class UICheckBox extends UIComponent {
 	protected int disabledColor = TextRenderer.GRAY;
 	/** The selection state. */
 	protected boolean selected;
-	/** The press indicator. */
-	protected boolean down;
 	/** The change handler. */
 	public Action0 onChange;
 	/**
@@ -86,24 +84,11 @@ public class UICheckBox extends UIComponent {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (e.has(Type.DOWN)) {
-			if (!selected) {
-				selected = true;
-				if (onChange != null) {
-					onChange.invoke();
-				}
-				down = true;
-				return true;
+			selected = !selected;
+			if (onChange != null) {
+				onChange.invoke();
 			}
-		} else
-		if (e.has(Type.UP)) {
-			if (selected && !down) {
-				selected = false;
-				if (onChange != null) {
-					onChange.invoke();
-				}
-				return true;
-			}
-			down = false;
+			return true;
 		}
 		return super.mouse(e);
 	}

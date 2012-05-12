@@ -162,4 +162,11 @@ public interface GameControls {
 	 * @param state the state
 	 */
 	void showObjectives(boolean state);
+	/** @return is the game in full screen mode? */
+	boolean isFullscreen();
+	/**
+	 * Set the full screen mode.
+	 * @param value the full screen status
+	 */
+	void setFullscreen(boolean value);
 }

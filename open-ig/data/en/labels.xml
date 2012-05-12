@@ -2404,6 +2404,8 @@
   <entry key='mission-6.build_fleets.desc'>Build factories and try constructing ships and equipment.</entry>
   <entry key='message.research_lab'>Research of %s stopped due missing labs.</entry>
   <entry key='message.research_money'>Research of %s stopped due lack of money.</entry>
+	<entry key='settings.movie_click_skip'>Skip cutscenes by clicking</entry>
+	<entry key='settings.fullscreen'>Fullscreen</entry>
   <entry key=''/>
   <entry key=''/>
   <entry key=''/>
