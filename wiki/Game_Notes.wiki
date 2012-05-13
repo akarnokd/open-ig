@@ -2,6 +2,38 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.400 - Bug fixes =
+  * Released: 2012-05-13 18:00 CET
+  * This is *NOT* the Beta yet.
+  * Notification if a research stops due lack of money or lab ([http://code.google.com/p/open-ig/issues/detail?id=295 Issue #295])
+  * AI now sends diplomatic messages ([http://code.google.com/p/open-ig/issues/detail?id=321 Issue #321])
+  * Spacewar Grid rendering ([http://code.google.com/p/open-ig/issues/detail?id=323 Issue #323])
+  * Mission 7 related crashes fixed ([http://code.google.com/p/open-ig/issues/detail?id=340 Issue #340])
+  * Added missing cutscene for Mission 2 ([http://code.google.com/p/open-ig/issues/detail?id=343 Issue #343])
+  * Potential interesting fleets now receive red blinking box in missions ([http://code.google.com/p/open-ig/issues/detail?id=347 Issue #347])
+  * Bridge on Level 2 now has equipment and information areas ([http://code.google.com/p/open-ig/issues/detail?id=352 Issue #352])
+  * Mission 9 (smuggler) adjusted ([http://code.google.com/p/open-ig/issues/detail?id=362 Issue #362])
+  * Pending battles are now saved and loaded (e.g., AI vs. AI or multiple attacks happening at the same time) ([http://code.google.com/p/open-ig/issues/detail?id=372 Issue #372])
+  * Trader ship names now change with the game language settings ([http://code.google.com/p/open-ig/issues/detail?id=377 Issue #377])
+  * Fixed bad original audio for the conversation with Kelly ([http://code.google.com/p/open-ig/issues/detail?id=378 Issue #378])
+  * Mission 11 attack incoming message now happens earlier ([http://code.google.com/p/open-ig/issues/detail?id=382 Issue #382])
+  * Garthog fleet now flies away in Mission 11 instead of just disappearing. ([http://code.google.com/p/open-ig/issues/detail?id=385 Issue #385])
+  * Fixed cases when a game save may be corrupted and cause error reports ([http://code.google.com/p/open-ig/issues/detail?id=388 Issue #388])
+  * Mission 11 now allows two planets to be infected before you get fired ([http://code.google.com/p/open-ig/issues/detail?id=398 Issue #398])
+  * Added more space chat cases for traders leaving and arriving at an infected planet ([http://code.google.com/p/open-ig/issues/detail?id=399 Issue #399]) 
+  * Launcher is now able to start the game without Internet connection ([http://code.google.com/p/open-ig/issues/detail?id=400 Issue #400])
+  * Bar link back to the corridor is not anymore overlapping with the conversation link ([http://code.google.com/p/open-ig/issues/detail?id=401 Issue #401])
+  * Subsequent statusbar messages now show up without interruption ([http://code.google.com/p/open-ig/issues/detail?id=402 Issue #402])
+  * Building fractional production display corrected ([http://code.google.com/p/open-ig/issues/detail?id=406 Issue #406])
+  * Label typo fixes ([http://code.google.com/p/open-ig/issues/detail?id=412 Issue #412])
+  * Mission 2 pirate attacks now timeout properly ([http://code.google.com/p/open-ig/issues/detail?id=416 Issue #416])
+  * The X key resets the UI scaling only when the visual page is shown on the options screen ([http://code.google.com/p/open-ig/issues/detail?id=418 Issue #418])
+  * Mission 4 and Mission 19 chat now affects the attackers by switching targets ([http://code.google.com/p/open-ig/issues/detail?id=419 Issue #419])
+  * Audio warning added to Mission 3 ([http://code.google.com/p/open-ig/issues/detail?id=421 Issue #421])
+  * Crash when joining fleets ([http://code.google.com/p/open-ig/issues/detail?id=422 Issue #422])
+  * Toggle fullscreen mode checkbox added to options screen ([http://code.google.com/p/open-ig/issues/detail?id=424 Issue #424])
+
+
 = Version 0.94.370 - Space chat =
   * Released: 2012-04-30 20:30 CET
   * Menu background screens cleared by *Norbert "Silver83" Pellny* ([http://code.google.com/p/open-ig/issues/detail?id=367 Issue #367])
