@@ -2406,6 +2406,120 @@
   <entry key='message.research_money'>Research of %s stopped due lack of money.</entry>
 	<entry key='settings.movie_click_skip'>Skip cutscenes by clicking</entry>
 	<entry key='settings.fullscreen'>Fullscreen</entry>
+
+	<entry key='chat.vi.1.n1'>This is ship MH4 on a trading route.</entry>
+	<entry key='chat.vi.1.n2.o'>The planet is infected by a virus.</entry>
+	<entry key='chat.vi.1.n2'>This planet is infected by a virus. You must leave at once!</entry>
+	<entry key='chat.vi.1.n3'>Thank you, Sir.</entry>
+	
+	<entry key='chat.vi.2.n1'>This is trading ship GH13S.</entry>
+	
+	<entry key='chat.vi.3.n1'>This is ship Eyola4.</entry>
+	<entry key='chat.vi.3.n2'>This planet is infected by a virus. You must return at once!</entry>
+	<entry key='chat.vi.3.n3'>I have clearance from Governor McAllison, let me pass.</entry>
+	<entry key='chat.vi.3.n4.o'>All right, you may land.</entry>
+	<entry key='chat.vi.3.n4'>All right.</entry>
+	<entry key='chat.vi.3.n5.o'>I am sorry. I cannot let you land!</entry>
+	<entry key='chat.vi.3.n5'>I am sorry. I cannot let you land!</entry>
+	<entry key='chat.vi.3.n7'>The Governor will NOT be happy. I have important information for him. I must land.</entry>
+	<entry key='chat.vi.3.n8.o'>You have no clearance to land.</entry>
+	<entry key='chat.vi.3.n8'>I MUST have clearance orders to let you pass. Turn back at once, or I'll open fire.</entry>
+	<entry key='chat.vi.3.n9'>Don't shoot! We're on our way!</entry>
+	
+	<entry key='chat.vi.4.n0.o'>Turn back!</entry>
+	<entry key='chat.vi.4.n0'>Turn back! This planet is infected by a virus.</entry>
+	<entry key='chat.vi.4.n1'>This is ship BH13. I am carrying an antidote to the planet. I request clearance to land.</entry>
+	<entry key='chat.vi.4.n2.o'>Turn around!</entry>
+	<entry key='chat.vi.4.n2'>You are not a medical ship. I order you to stop.</entry>
+	<entry key='chat.vi.4.n3.o'>All right.</entry>
+	<entry key='chat.vi.4.n3'>All right, proceed.</entry>
+	<entry key='chat.vi.4.n4'>I repeat, I am carrying a new antidote to the planet. You must let me land, or else thousand of lives will be placed in danger.</entry>
+	<entry key='chat.vi.4.n5.o'>Turn around!</entry>
+	<entry key='chat.vi.4.n5'>I have no clearance orders for you. You must leave.</entry>
+	<entry key='chat.vi.4.n6.o'>All right, proceed.</entry>
+	<entry key='chat.vi.4.n6'>All right, proceed.</entry>
+	<entry key='chat.vi.4.n8'>All right, but I hold you responsible for the consequences.</entry>
+	
+	<entry key='chat.vi.5.n0.o'>Ship, identify yourself!</entry>
+	<entry key='chat.vi.5.n0'>Ship, identify yourself!</entry>
+	<entry key='chat.vi.5.n1'>This is ship Max4 on a trading route.</entry>
+	<entry key='chat.vi.5.n2.o'>Turn around! This planet is infected.</entry>
+	<entry key='chat.vi.5.n2'>This planet is infected by a virus. It is under blockade. Turn around!</entry>
+	<entry key='chat.vi.5.n3'>But I must pass, it is a matter of great importance.</entry>
+	<entry key='chat.vi.5.n4.o'>No, you must turn back!</entry>
+	<entry key='chat.vi.5.n4'>"You must turn back!</entry>
+	<entry key='chat.vi.5.n5.o'>All right, you may pass.</entry>
+	<entry key='chat.vi.5.n5'>All right. Don't tell anyone I let you through.</entry>
+	<entry key='chat.vi.5.n6'>"I'll return.</entry>
+	
+	<entry key='chat.vi.6.n1'>This is ship BRAD6 on a trading route.</entry>
+	<entry key='chat.vi.7.n1'>This is ship Lisa2 on a trading route.</entry>
+	<entry key='chat.vi.8.n1'>This is ship Leila on a trading route.</entry>
+	
+	<entry key='chat.vo.1.n0'>Ship, identify yourself!</entry>
+	<entry key='chat.vo.1.n1'>This is ship MH4 on a trading route.</entry>
+	<entry key='chat.vo.1.n2.o'>You must return to where you came from.</entry>
+	<entry key='chat.vo.1.n2'>The planet you just left has been infected by a virus. You must return at once!</entry>
+	<entry key='chat.vo.1.n3'>All right.</entry>
+	
+	<entry key='chat.vo.2.n1'>This is ship GH13S on a trading route.</entry>
+	<entry key='chat.vo.2.n2.o'>The planet you just left has been infected.</entry>
+	<entry key='chat.vo.2.n2'>The planet you have just left has been infected by a virus. You must return at once!</entry>
+	<entry key='chat.vo.2.n3'>But we are not infected!</entry>
+	<entry key='chat.vo.2.n4.o'>All right, you may pass.</entry>
+	<entry key='chat.vo.2.n4'>All right, you may pass.</entry>
+	<entry key='chat.vo.2.n5.o'>Please, return to the planet!</entry>
+	<entry key='chat.vo.2.n5'>You don't understand. You have just left an infected planet, and might be carrying viruses onboard. You must return and wait at the planet under quarantine until the the infection is over.</entry>
+	<entry key='chat.vo.2.n6'>Thank you, Sir.</entry>
+	<entry key='chat.vo.2.n7'>I'm NOT going back to that planet. I might become infected. No way!</entry>
+	
+	<entry key='chat.vo.3.n1'>This is ship Eyola4.</entry>
+	<entry key='chat.vo.3.n2.o'>The planet you left has been infected.</entry>
+	<entry key='chat.vo.3.n2'>The planet you left is infected by a virus. You must return at once!</entry>
+	<entry key='chat.vo.3.n3'>I have clearance from Governor McAllison, let me pass.</entry>
+	<entry key='chat.vo.3.n4.o'>All right, leave</entry>
+	<entry key='chat.vo.3.n4'>All right, leave</entry>
+	<entry key='chat.vo.3.n6'>Thank you, sir!</entry>
+	<entry key='chat.vo.3.n5.o'>I don't care. You must NOT leave!</entry>
+	<entry key='chat.vo.3.n5'>I don't care. You must NOT leave!</entry>
+	<entry key='chat.vo.3.n7'>The Governor will NOT be happy. I am taking urgent news to another planet. I must leave.</entry>
+	<entry key='chat.vo.3.n8.o'>I didn't get clearance to let you pass.</entry>
+	<entry key='chat.vo.3.n8'>I have no clearance from the Governor Turn back at once, or I'll open fire.</entry>
+	<entry key='chat.vo.3.n9'>Don't shoot! We're on our way!</entry>
+	
+	<entry key='chat.vo.4.n0.o'>Turn back!</entry>
+	<entry key='chat.vo.4.n0'>Turn back. The planet you are leaving has been infected by a virus.</entry>
+	<entry key='chat.vo.4.n1'>This is ship BH13. I am carrying sick people to another planet where they will not be infected. I request clearance to land.</entry>
+	<entry key='chat.vo.4.n2.o'>Turn around!</entry>
+	<entry key='chat.vo.4.n2'>I must warn you to stop, and return. You are not a medical ship.</entry>
+	<entry key='chat.vo.4.n3.o'>All right, go on.</entry>
+	<entry key='chat.vo.4.n3'>All right, go on.</entry>
+	<entry key='chat.vo.4.n5'>Thank you, Sir.</entry>
+	<entry key='chat.vo.4.n4'>I repeat, I am carrying uninfected patients to the planet. They must receive medical care.</entry>
+	<entry key='chat.vo.4.n6.o'>All right, proceed.</entry>
+	<entry key='chat.vo.4.n6'>All right, proceed.</entry>
+	<entry key='chat.vo.4.n7.o'>Turn around.</entry>
+	<entry key='chat.vo.4.n7'>I have no clearance for a trade ship carrying sick people. You must return.</entry>
+	<entry key='chat.vo.4.n8'>All right, but you are responsible for the consequences.</entry>
+
+	<entry key='chat.vo.5.n0.o'>Ship, identify yourself!</entry>
+	<entry key='chat.vo.5.n0'>Ship, identify yourself!</entry>
+	<entry key='chat.vo.5.n1'>This is ship Max4 on a trading route.</entry>
+	<entry key='chat.vo.5.n2.o'>Turn around! Your ship is infected.</entry>
+	<entry key='chat.vo.5.n2'>The planet you left is infected by a virus. You are probably infected too. You must not leave!</entry>
+	<entry key='chat.vo.5.n3'>I MUST leave, I need to seek medical help.</entry>
+	<entry key='chat.vo.5.n4.o'>No, turn back.</entry>
+	<entry key='chat.vo.5.n4'>No, turn back.</entry>
+	<entry key='chat.vo.5.n5.o'>All right, you may pass.</entry>
+	<entry key='chat.vo.5.n5'>You may pass. Don't inform anyone I let you through. Get your health checked at the medical center as soon as you land.</entry>
+	<entry key='chat.vo.5.n6'>All right. I'll return.</entry>
+	<entry key='chat.vo.5.n7'>Thank you, Sir. I won't forget this.</entry>
+	<entry key='chat.vo.5.n-1'>Hold your fire.</entry>
+	
+	<entry key='chat.vo.6.n1'>This is ship BRAD6 on a trading route.</entry>
+	<entry key='chat.vo.7.n1'>This is ship Lisa2 on a trading route.</entry>
+	<entry key='chat.vo.8.n1'>This is ship Leila on a trading route.</entry>
+
   <entry key=''/>
   <entry key=''/>
   <entry key=''/>

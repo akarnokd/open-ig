@@ -1418,8 +1418,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		if (chat != null) {
 			node = chat.getStart();
-			leftChatPanel.options.add(node);
-			rightChatPanel.options.add(node);
+			
+			if (node.enemy) {
+				leftChatPanel.addLine(TextRenderer.YELLOW, get(node.message));
+				rightChatPanel.addLine(TextRenderer.YELLOW, get(node.message));
+			} else {
+				leftChatPanel.options.add(node);
+				rightChatPanel.options.add(node);
+			}
 		}
 	}
 	/**
