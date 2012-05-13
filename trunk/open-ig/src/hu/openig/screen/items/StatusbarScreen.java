@@ -361,7 +361,11 @@ public class StatusbarScreen extends ScreenBase {
 				return true;
 			}
 		}
-		return false;
+		return isDiplomaticCall();
+	}
+	/** @return Is this a diplomatic call. */
+	boolean isDiplomaticCall() {
+		return !player().offers.isEmpty();
 	}
 	/** Update the state displays. */
 	public void update() {
@@ -656,8 +660,13 @@ public class StatusbarScreen extends ScreenBase {
 				&& incomingMessage.contains(e.x, e.y) 
 				&& hasUnseenMessage()
 				&& !commons.battleMode) {
-			BridgeScreen bs = (BridgeScreen)displayPrimary(Screens.BRIDGE);
-			bs.displayReceive();
+			if (isDiplomaticCall()) {
+				DiplomacyScreen bs = (DiplomacyScreen)displayPrimary(Screens.DIPLOMACY);
+				bs.receive();
+			} else {
+				BridgeScreen bs = (BridgeScreen)displayPrimary(Screens.BRIDGE);
+				bs.displayReceive();
+			}
 			return true;
 		}
 		if (e.within(379, 3, 26, 14) && e.has(Type.DOWN)) {

@@ -155,4 +155,10 @@ public class RawAnimation {
 		}
 		return ha;
 	}
+	/**
+	 * @return the current frame index.
+	 */
+	public int index() {
+		return index;
+	}
 }

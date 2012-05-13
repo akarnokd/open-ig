@@ -82,8 +82,6 @@ public class Diplomacy {
 	public static class Call {
 		/** The call type. */
 		public CallType type;
-		/** The label to use. */
-		public String label;
 		/** The list of approaches. */
 		public final List<Approach> approaches = new ArrayList<Approach>();
 	}

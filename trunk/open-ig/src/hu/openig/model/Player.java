@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Pair;
 import hu.openig.utils.U;
 
 import java.awt.Rectangle;
@@ -112,6 +113,8 @@ public class Player {
 	public int colonizationLimit;
 	/** The limit where the AI considers attacking the other party. */
 	public int warThreshold = 45;
+	/** The negotiation offers from players. */
+	public final Map<String, Pair<CallType, ApproachType>> offers = U.newLinkedHashMap();
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world
