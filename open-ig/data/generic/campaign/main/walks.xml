@@ -15,8 +15,10 @@
 	</ship>
 	<ship id='2'>
 		<position id='*bridge' picture='flagship/bridge_level_2'>
-			<transition media='flagship/bridge_to_colony_level_2' label='flagship.moveto.colony' area='453,126 639,126 639,212 453,212' to='*colony'/>
-			<transition media='flagship/bridge_to_production_level_2' label='flagship.moveto.productionscreen' area='10,128 190,128 190,213 10,213' to='*production'/>
+			<transition label='flagship.moveto.information' area='453,126 533,126 533,212 453,212' to='*information'/>
+			<transition media='flagship/bridge_to_colony_level_2' label='flagship.moveto.colony' area='534,126 639,126 639,212 534,212' to='*colony'/>
+			<transition label='flagship.moveto.equipment2' area='10,128 90,128 90,213 10,213' to='*equipment'/>
+			<transition media='flagship/bridge_to_production_level_2' label='flagship.moveto.productionscreen' area='91,128 190,128 190,213 91,213' to='*production'/>
 			<transition media='flagship/bridge_to_starmap_level_2' label='flagship.moveto.starmap' area='223,80 423,80 423,255 223,255' to='*starmap'/>
 			<transition media='flagship/bridge_to_corridor_level_2' label='flagship.moveto.corridor' area='0,346 639,346 639,441 0,441' to='corridor_bridge'/>
 		</position>
