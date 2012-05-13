@@ -84,7 +84,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.28";
+	public static final String VERSION = "0.29";
 	/**
 	 * The update XML to download.
 	 */
@@ -169,13 +169,15 @@ public class Launcher extends JFrame {
 	final File configOld = new File("launcher-config.xml");
 	/** The new config file. */
 	final File config = new File("open-ig-launcher-config.xml");
+	/** The local update file. */
+	final File localUpdate = new File("open-ig-update.xml");
 	/** Current language. */
 	String language = "en";
 	/** The language flag. */
 	JComboBox<String> flag;
 	/** The available maps. */
 	final Map<String, BufferedImage> flags = new LinkedHashMap<String, BufferedImage>();
-	/** The current upgrades. */
+	/** The online module information. */
 	private LUpdate updates;
 	/** Not installed constant. */
 	static final String NOT_INSTALLED = "0.00.000";
@@ -310,6 +312,7 @@ public class Launcher extends JFrame {
 			if ("New version available: %s".equals(s)) { return "Új verzió érhető el: %s"; }
 			if ("Error while checking files: %s".equals(s)) { return "A(z) állományok ellenörzése közben hiba történt: %s"; }
 			if ("Could not access directory %s".equals(s)) { return "A(z) %s könyvtár nem elérhető"; }
+			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Néhány fájl hiányzik vagy megsérült. Kijavítsam a telepítést?"; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		} else
@@ -337,6 +340,7 @@ public class Launcher extends JFrame {
 			if ("New version available: %s".equals(s)) { return "Neue Version verfügbar: %s"; }
 			if ("Error while checking files: %s".equals(s)) { return "Problem whärend Überprüfung from Daten: %s"; }
 			if ("Could not access directory %s".equals(s)) { return "Mappe %s nicht verfügbar."; }
+			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Daten nicht verfügbar oder fählerhaft. Install reparieren?"; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		}
@@ -385,7 +389,6 @@ public class Launcher extends JFrame {
 			public Component getListCellRendererComponent(JList<?> list,
 					Object value, int index, boolean isSelected,
 					boolean cellHasFocus) {
-				// TODO Auto-generated method stub
 				JLabel lbl = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected,
 						cellHasFocus);
 				
@@ -527,7 +530,7 @@ public class Launcher extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				detectVersion();
 				doActOnUpdates();
-				doInstall(false);
+				doVerify();
 			}
 		});
 		projectPage.addActionListener(new ActionListener() {
@@ -1023,10 +1026,18 @@ public class Launcher extends JFrame {
 			@Override
 			protected void done() {
 				progressPanel.setVisible(false);
+				XElement xe = null;
+				File uf = updateFile;
 				try {
-					doProcessUpdate(get(), updateFile);
+					xe = get();
+					updateFile.renameTo(localUpdate);
+					doProcessUpdate(xe, uf);
 				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+					if (!(ex.getCause() instanceof IOException)) {
+						ex.printStackTrace();
+					} else {
+						processLocal();
+					}
 					errorMessage(format("Error during data download: %s", ex.toString()));
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
@@ -1035,6 +1046,16 @@ public class Launcher extends JFrame {
 			}
 		};
 		w.execute();
+	}
+	/**
+	 * Process a local update xml.
+	 */
+	void processLocal() {
+		try {
+			doProcessUpdate(XElement.parseXML(localUpdate.getAbsolutePath()), null);
+		} catch (XMLStreamException ex) {
+			
+		}
 	}
 	/**
 	 * Display an error message.
@@ -1050,7 +1071,11 @@ public class Launcher extends JFrame {
 	 */
 	void doProcessUpdate(XElement xml, File file) {
 		currentAction.setText(format("Processing %s", "update.xml"));
-		currentFile.setText(file.getName());
+		if (file != null) {
+			currentFile.setText(file.getName());
+		} else {
+			currentFile.setText("");
+		}
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
 		fileProgress.setValue(0);
@@ -1066,8 +1091,10 @@ public class Launcher extends JFrame {
 			totalFileProgress.setText("100%");
 			fileProgress.setValue(100);
 			totalProgress.setValue(100);
-			if (!file.delete()) {
-				errorMessage(format("Could not delete file %s", file));
+			if (file != null) {
+				if (!file.delete()) {
+					errorMessage(format("Could not delete file %s", file));
+				}
 			}
 		} catch (Throwable t) {
 			errorMessage(format("Error while processing file %s: %s", file, t));
@@ -1143,7 +1170,9 @@ public class Launcher extends JFrame {
 					memory = null;
 				}
 				flag.setSelectedItem(language);
-
+				
+				
+				
 			} catch (XMLStreamException ex) {
 				ex.printStackTrace();
 			}
@@ -1305,6 +1334,59 @@ public class Launcher extends JFrame {
 				cancel.setVisible(false);
 				try {
 					doDownload(get());
+				} catch (CancellationException ex) {
+				} catch (ExecutionException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
+				} catch (InterruptedException ex) {
+					ex.printStackTrace();
+					errorMessage(format("Error while checking files: %s", ex));
+				}
+			}
+		};
+		worker.execute();
+	}
+	/**
+	 * Verify the game.
+	 */
+	void doVerify() {
+		installDir = currentDir;
+		
+		final LModule g = updates.getModule(GAME);
+		progressPanel.setVisible(true);
+		currentAction.setText(label("Checking existing game files..."));
+		currentFileProgress.setText("0%");
+		totalFileProgress.setText("0%");
+		fileProgress.setValue(0);
+		totalProgress.setValue(0);
+		install.setVisible(false);
+		update.setVisible(false);
+		cancel.setVisible(true);
+		totalProgress.setVisible(true);
+		totalFileProgress.setVisible(true);
+		totalFileProgressLabel.setVisible(true);
+		
+		worker = new SwingWorker<List<LFile>, Void>() {
+			@Override
+			protected List<LFile> doInBackground() throws Exception {
+				return collectDownloads(g);
+			}
+			@Override
+			protected void done() {
+				progressPanel.setVisible(false);
+				worker = null;
+				cancel.setVisible(false);
+				try {
+					List<LFile> files = get();
+					
+					if (!files.isEmpty()) {
+						if (JOptionPane.showConfirmDialog(
+								Launcher.this, 
+								format("Some files are missing or damaged. Do you wish to repair the install?"),
+								label("Error"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+							doDownload(files);
+						}
+					}
 				} catch (CancellationException ex) {
 				} catch (ExecutionException ex) {
 					ex.printStackTrace();
