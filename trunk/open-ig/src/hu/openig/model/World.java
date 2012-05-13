@@ -1149,6 +1149,19 @@ public class World {
 		xscript.set("class", scripting.getClass().getName());
 		scripting.save(xscript);
 		
+		// save pending battles
+		XElement xbattles = xworld.add("pending-battles");
+		for (BattleInfo bi : pendingBattles) {
+			XElement xbattle = xbattles.add("battle");
+			xbattle.set("attacker", bi.attacker.id);
+			if (bi.targetFleet != null) {
+				xbattle.set("target-fleet", bi.targetFleet.id);
+			}
+			if (bi.targetPlanet != null) {
+				xbattle.set("target-planet", bi.targetPlanet.id);
+			}
+		}
+		
 		return xworld;
 	}
 	/**
@@ -1526,6 +1539,34 @@ public class World {
 		}
 		
 		checkUniqueFleets();
+		
+		// restore pending battles
+		pendingBattles.clear();
+		XElement xbattles = xworld.childElement("pending-battles");
+		if (xbattles != null) {
+			for (XElement xbattle : xbattles.childrenWithName("battle")) {
+				BattleInfo bi = new BattleInfo();
+				bi.attacker = findFleet(xbattle.getInt("attacker"));
+				
+				int tf = xbattle.getInt("target-fleet", -1);
+				if (tf >= 0) {
+					bi.targetFleet = findFleet(tf);
+					if (bi.targetFleet == null) {
+						new AssertionError("Pending battle missing target fleet: " + tf).printStackTrace();
+						continue;
+					}
+				}
+				String tp = xbattle.get("target-planet", null);
+				if (tp != null) {
+					bi.targetPlanet = planets.get(tp); 
+					if (bi.targetPlanet == null) {
+						new AssertionError("Pending battle missing target planet: " + tp).printStackTrace();
+						continue;
+					}
+				}
+				pendingBattles.add(bi);
+			}
+		}
 	}
 	/** Check for unique fleet IDs. */
 	void checkUniqueFleets() {
