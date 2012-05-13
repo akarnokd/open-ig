@@ -613,7 +613,7 @@
 		<node id="1" owner="enemy" message="chat.vi.3.n1"> <!-- This is Eyola4 -->
 			<transition to="2"/>
 		</node>
-		<node id="2" owner="player" option="chat.vi.3.n2.o" message="chat.vi.1.n2"> <!-- Planet is infected. -->
+		<node id="2" owner="player" option="chat.vi.1.n2.o" message="chat.vi.3.n2"> <!-- Planet is infected. -->
 			<transition to="3"/>
 		</node>
 		<node id="3" owner="enemy" message="chat.vi.3.n3"> <!-- We have permit -->
