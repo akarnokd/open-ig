@@ -193,6 +193,7 @@ public class AITrader implements AIManager {
 				world.removeFleet(lf.fleet);
 
 				lastVisitedPlanet.remove(lf.fleet);
+				fleetTurnedBack.remove(lf.fleet);
 			}
 			activeCount++;
 		}
@@ -260,6 +261,7 @@ public class AITrader implements AIManager {
 						}
 	
 						lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
+						
 						lastVisitedPlanet.put(lf.fleet, lf.target);
 					} else {
 						lastVisitedPlanet.remove(lf.fleet);
@@ -379,6 +381,7 @@ public class AITrader implements AIManager {
 				if (pl != null) {
 					s.fleet.targetPlanet(pl);
 				} else {
+					new AssertionError("Fleet " + s.fleet.id + " has no previous planet to return to!").printStackTrace();
 					s.fleet.targetPlanet(nearest(player.world.planets.values(), s.fleet));
 				}
 				s.fleet.mode = FleetMode.MOVE;
@@ -489,6 +492,8 @@ public class AITrader implements AIManager {
 				Fleet f = player.fleet(fid);
 				if (f != null) {
 					fleetTurnedBack.add(f);
+				} else {
+					new AssertionError("Turn back fleet " + fid + " not found by the player " + player.id).printStackTrace();
 				}
 			}
 		}
@@ -503,6 +508,8 @@ public class AITrader implements AIManager {
 					if (p != null) {
 						lastVisitedPlanet.put(f, p);
 					}
+				} else {
+					new AssertionError("Last visit fleet " + fid + " not found by the player " + player.id).printStackTrace();
 				}
 			}
 		}
