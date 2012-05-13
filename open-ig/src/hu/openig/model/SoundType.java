@@ -190,7 +190,11 @@ public enum SoundType {
 	/** New task. */
 	NEW_TASK("ui/new_task"),
 	/** New task. */
-	ACHIEVEMENT("ui/achievement")
+	ACHIEVEMENT("ui/achievement"),
+	/** Hologram turn on. */
+	HOLOGRAM_ON("ui/hologram_on"),
+	/** Hologram turn off. */
+	HOLOGRAM_OFF("ui/hologram_off")
 	;
 	/** The associated resource location. */
 	public final String resource;

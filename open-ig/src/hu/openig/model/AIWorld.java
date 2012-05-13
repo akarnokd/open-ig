@@ -85,6 +85,8 @@ public class AIWorld {
 	public int level;
 	/** The relations with other players. */
 	public final Map<Player, DiplomaticRelation> relations = U.newHashMap();
+	/** Players with active offers. */
+	public final Set<Player> activeOffer = U.newHashSet();
 	/** The main player of the game. */
 	public Player mainPlayer;
 	/**
@@ -182,6 +184,11 @@ public class AIWorld {
 			} else
 			if (dr.second == player) {
 				relations.put(dr.first, dr);
+			}
+		}
+		for (Player p : player.world.players.values()) {
+			if (p.offers.containsKey(player)) {
+				activeOffer.add(p);
 			}
 		}
 	}

@@ -13,8 +13,10 @@ import hu.openig.core.Action1;
 import hu.openig.core.Pair;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.ApproachType;
+import hu.openig.model.CallType;
 import hu.openig.model.Diplomacy;
 import hu.openig.model.Diplomacy.Approach;
+import hu.openig.model.Diplomacy.Call;
 import hu.openig.model.Diplomacy.Negotiate;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
@@ -25,6 +27,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.Screens;
+import hu.openig.model.SoundType;
 import hu.openig.model.VideoAudio;
 import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
@@ -39,6 +42,7 @@ import hu.openig.ui.UIComponent;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 
 import java.awt.Color;
@@ -635,7 +639,12 @@ public class DiplomacyScreen extends ScreenBase {
 			
 			if (!p2.noDiplomacy) {
 				OptionItem oi1 = new OptionItem();
-				oi1.label = " " + p2.shortName;
+				
+				if (player().offers.containsKey(p2.id)) {
+					oi1.label = "!" + p2.shortName;
+				} else {
+					oi1.label = " " + p2.shortName;
+				}
 				oi1.userObject = p2;
 				
 				oi1.enabled = rel.full && last < now - limit;
@@ -670,51 +679,65 @@ public class DiplomacyScreen extends ScreenBase {
 		headAnimation = null;
 		races.visible(false);
 		stances.visible(false);
+		
 		if (index < races.items.size() - 1) {
-			inCall = true;
 			other = (Player)races.items.get(index).userObject;
 			
-			mentioned.clear();
-			
-			stanceMatrix.visible(false);
-
-			final AtomicInteger wip = new AtomicInteger(2);
-			onProjectorComplete = new Action0() {
-				@Override
-				public void invoke() {
-					if (wip.decrementAndGet() == 0) {
-						doDarken();
-					}
-				}
-			};
-			
-			playProjectorClose();
-
-			commons.pool.execute(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						// load head
-						final RawAnimation ha = RawAnimation.load(commons.rl, other.diplomacyHead);
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								headAnimation = ha;
-								if (wip.decrementAndGet() == 0) {
-									doDarken();
-								}
-							}
-						});
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
-				}
-			});
+			contactRaceAnim();
 			
 		} else {
 			stanceMatrix.visible(true);
 		}
-		// TODO implement rest
+	}
+
+	/**
+	 * Close the projector and display the race head. 
+	 */
+	protected void contactRaceAnim() {
+		inCall = true;
+		mentioned.clear();
+		stanceMatrix.visible(false);
+
+		final AtomicInteger wip = new AtomicInteger(2);
+		onProjectorComplete = new Action0() {
+			@Override
+			public void invoke() {
+				if (wip.decrementAndGet() == 0) {
+					doDarken();
+				}
+			}
+		};
+		
+		playProjectorClose();
+
+		loadHeadAnimAsync(wip);
+	}
+
+	/**
+	 * Load the head animation asynchronously.
+	 * @param wip the wip port
+	 */
+	protected void loadHeadAnimAsync(final AtomicInteger wip) {
+		commons.pool.execute(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					// load head
+					final RawAnimation ha = RawAnimation.load(commons.rl, other.diplomacyHead);
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							headAnimation = ha;
+							if (wip.decrementAndGet() == 0) {
+								doDarken();
+							}
+						}
+					});
+				} catch (Throwable t) {
+					t.printStackTrace();
+				}
+			}
+		});
 	}
 	/** Hide the projector. */
 	void hideProjector() {
@@ -879,7 +902,13 @@ public class DiplomacyScreen extends ScreenBase {
 	void doStartHead() {
 		DiplomaticRelation dr = world().getRelation(player(), other);
 		dr.lastContact = world().time.getTime();
-		options.visible(true);
+		
+		Pair<CallType, ApproachType> na = player().offers.get(other.id);
+		if (na != null) {
+			doIncomingMessage(na);
+		} else {
+			options.visible(true);
+		}
 		updateOptions();
 		if (headAnimation.frames > 0) {
 			
@@ -888,11 +917,16 @@ public class DiplomacyScreen extends ScreenBase {
 			headAnimation.startLoop = 35;
 			headAnimation.endLoop = headAnimation.frames - 35;
 			
+			effectSound(SoundType.HOLOGRAM_ON);
+			
 			int delay = (((int)(1000 / headAnimation.fps)) / 25) * 25; // round frames down
 			headAnimationClose = commons.register(delay, new Action0() {
 				@Override
 				public void invoke() {
 					boolean wr = headAnimation.moveNext();
+					if (headAnimation.index() == headAnimation.endLoop + 1) {
+						effectSound(SoundType.HOLOGRAM_OFF);
+					}
 					if (wr && !headAnimation.loop) {
 						headAnimation.active = false;
 						close0(headAnimationClose);
@@ -937,6 +971,7 @@ public class DiplomacyScreen extends ScreenBase {
 					close0(darkening);
 					inCall = false;
 					commons.control().moveMouse();
+					other = null;
 				}
 				askRepaint();
 			}
@@ -1189,25 +1224,32 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		if (m == ResponseMode.YES) {
 			if (neg.type == NegotiateType.SURRENDER) {
-				// take over planets
-				for (Planet p : other.ownPlanets()) {
-					p.takeover(player());
-				}
-				// FIXME keep their fleets as own?
-				for (Fleet f : other.ownFleets()) {
-					f.owner = player();
-					for (InventoryItem ii : f.inventory) {
-						ii.owner = player();
-					}
-					player().fleets.put(f, FleetKnowledge.FULL);
-				}
-				other.fleets.clear();
+				alienSurrender();
 			} else
 			if (neg.type == NegotiateType.DARGSLAN) {
 				setAlliance(world().players.get("Dargslan"));
 			}
 		}		
 		displayResults(neg, "", at, m);
+	}
+
+	/**
+	 * Aliens surrender.
+	 */
+	protected void alienSurrender() {
+		// take over planets
+		for (Planet p : other.ownPlanets()) {
+			p.takeover(player());
+		}
+		// FIXME keep their fleets as own?
+		for (Fleet f : other.ownFleets()) {
+			f.owner = player();
+			for (InventoryItem ii : f.inventory) {
+				ii.owner = player();
+			}
+			player().fleets.put(f, FleetKnowledge.FULL);
+		}
+		other.fleets.clear();
 	}
 	/**
 	 * Setup the text labels.
@@ -1222,5 +1264,84 @@ public class DiplomacyScreen extends ScreenBase {
 		responseText.text(response);
 		
 		onResize();
+	}
+	/**
+	 * Display the incoming message.
+	 * @param na the negotiation and approach type.
+	 */
+	void doIncomingMessage(Pair<CallType, ApproachType> na) {
+
+		responseText.width = base.width - 20;
+
+		String label = null;
+		outer:
+		for (Call c : world().diplomacy.get(other.id).calls) {
+			if (c.type == na.first) {
+				for (Approach a : c.approaches) {
+					if (a.type == na.second) {
+						label = a.label;
+						break outer;
+					}
+				}
+			}
+		}
+		
+		responseText.text(get(label));
+		
+		responseText.visible(true);
+		continueLabel.visible(true);
+		messagePhase = 2;
+		
+		player().offers.remove(other.id);
+		
+		if (na.first == CallType.SURRENDER) {
+			alienSurrender();
+		}
+	}
+	/**
+	 * Automatically receive a diplomatic call.
+	 */
+	public void receive() {
+		for (Map.Entry<String, Pair<CallType, ApproachType>> de : player().offers.entrySet()) {
+			if (openCloseAnimating) {
+				receiveAgain();
+			} else			
+			if (other != null) {
+				offerText.visible(false);
+				responseText.visible(false);
+				continueLabel.visible(false);
+				options.visible(false);
+				approachList.visible(false);
+				moneyList.visible(false);
+				enemies.visible(false);
+				negotiationTitle.visible(false);
+				
+				if (!other.id.equals(de.getKey())) {
+					headAnimation.loop = false;
+					receiveAgain();
+				} else {
+					doIncomingMessage(de.getValue());
+				}
+			} else
+			if (other == null) {
+				if (projectorOpen) {
+					other = world().players.get(de.getKey());
+					contactRaceAnim();
+				} else {
+					AtomicInteger wip = new AtomicInteger(1);
+					loadHeadAnimAsync(wip);
+				}
+			}
+			break;
+		}
+	}
+	/** Receive again later. */
+	void receiveAgain() {
+		Parallels.runDelayedInEDT(250, new Runnable() {
+			@Override
+			public void run() {
+				receive();
+			}
+		});
 	}
 }

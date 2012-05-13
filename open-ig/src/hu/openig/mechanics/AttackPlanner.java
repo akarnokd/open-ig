@@ -11,6 +11,7 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
+import hu.openig.core.Pair;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
@@ -18,6 +19,8 @@ import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.ApproachType;
+import hu.openig.model.CallType;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.FleetKnowledge;
@@ -30,10 +33,12 @@ import hu.openig.utils.U;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -146,6 +151,7 @@ public class AttackPlanner extends Planner {
 					});
 				}
 			}
+			manageDiplomacy();
 		}
 		computeNextAttack();
 	}
@@ -337,5 +343,92 @@ public class AttackPlanner extends Planner {
 			v += p.statistics.vehicleMax * 50;
 		}
 		return v;
+	}
+	/**
+	 * Make contact with other races and send offers.
+	 */
+	void manageDiplomacy() {
+		for (Map.Entry<Player, DiplomaticRelation> dr0 : world.relations.entrySet()) {
+			final Player other = dr0.getKey();
+			double rnd = w.random().nextDouble();
+			DiplomaticRelation dr = dr0.getValue();
+			boolean mayContact = dr.lastContact == null 
+					|| (world.now.getTime() - dr.lastContact.getTime() >= (dr.wontTalk ? 7L : 1L) * 24 * 60 * 60 * 1000);
+			
+			if (dr.full && !world.activeOffer.contains(other) && mayContact) {
+
+				final ApproachType at = w.random(Arrays.asList(ApproachType.values()));
+				
+				if (rnd < 0.1 && world.ownPlanets.size() < 2 && dr.value < p.warThreshold) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							other.offers.put(p.id, Pair.of(CallType.SURRENDER, at));
+						}
+					});
+					break;
+				} else
+				if (rnd < 0.25 && dr.value >= p.warThreshold + 25) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							other.offers.put(p.id, Pair.of(CallType.ALLIANCE, at));
+						}
+					});
+					break;
+				} else
+				if (rnd < 0.5 && dr.value < p.warThreshold && countPlanets(world.enemyPlanets, other) < 3) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							other.offers.put(p.id, Pair.of(CallType.RESIGN, at));
+						}
+					});
+					break;
+				} else
+				if (rnd < 0.25 && world.money < 50000 && dr.value >= p.warThreshold + 5) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							other.offers.put(p.id, Pair.of(CallType.MONEY, at));
+						}
+					});
+					break;
+				} else
+				if (rnd < 0.5 && dr.value < p.warThreshold - 10) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							other.offers.put(p.id, Pair.of(CallType.WAR, at));
+						}
+					});
+					break;
+				} else
+				if (rnd < 0.1 && dr.value >= p.warThreshold - 10 && dr.value < p.warThreshold) {
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							other.offers.put(p.id, Pair.of(CallType.PEACE, at));
+						}
+					});
+					break;
+				}
+			}
+		}
+	}
+	/**
+	 * Count the number of planets of the owner.
+	 * @param planets the known planet list
+	 * @param owner the owner
+	 * @return the count
+	 */
+	int countPlanets(List<AIPlanet> planets, Player owner) {
+		int result = 0;
+		for (AIPlanet aip : planets) {
+			if (aip.owner == owner) {
+				result++;
+			}
+		}
+		return result;
 	}
 }

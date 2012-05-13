@@ -57,7 +57,7 @@
 		</node>
 		<node id="8" owner="enemy" message="chat.merchant2.n8" action="retreat"/> <!-- Hey! Don't fire! We're going, you trigger happy maniac! -->
 	</chat>
-	<chat id="chat.nomission.attack.merchant3">
+	<chat id="chat.merchant3">
 		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
 		<node id="0" owner="player" message="chat.merchant3.n0"> <!-- Ship, please state name and destination! -->
 			<transition to="1"/>
@@ -452,7 +452,7 @@
 		<node id="3" owner="enemy" message="chat.m9.n3"/> <!-- kkkhhhz. Krr.rrrr -->
 		<node id="-1" owner="enemy" message="chat.m9.n4"/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
-	<chat id='chat.virus1'>
+	<chat id='chat.virus.m12.1'>
 		<node id='0' owner='player' message='chat.m12.n0'> <!-- Ship, identify yourself! -->
 			<transition to='1'/>
 		</node>
@@ -477,7 +477,7 @@
 		<node id='7' owner='enemy' message="chat.m12.n7"/> <!-- I am NOT going back to that planet. I am NOT going to be infected by the command of the Empire. No way! -->
 		<node id='-1' owner='enemy' message="chat.m12.r0" action='retreat'/> <!-- Don't shoot! Don't shoot! I will return, but may perish! -->
 	</chat>
-	<chat id='chat.virus2'>
+	<chat id='chat.virus.m12.2'>
 		<node id='0' owner='player' message='chat.m12.n0'> <!-- Ship, identify yourself! -->
 			<transition to='1'/>
 		</node>
@@ -578,5 +578,39 @@
 			<transition to="3"/>
 		</node>
 		<node id="3" owner="enemy" message="chat.m21.n3"/> <!-- Prepare to die! -->
+	</chat>
+	<chat id="chat.virus.incoming.1">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+		<node id="0" owner="player" message="chat.global.identify_yourself"> <!-- Ship, identify yourself! -->
+			<transition to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="chat.vi.1.n1"> <!-- This is MH4 trading ship -->
+			<transition to="2"/>
+		</node>
+		<node id="2" owner="player" option="chat.vi.1.n2.o" message="chat.vi1.n2"> <!-- Planet is infected. -->
+			<transition to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="chat.vi.1.n3" action="retreat"/>
+	</chat>
+	<chat id="chat.virus.incoming.2">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+		<node id="0" owner="player" message="chat.global.identify_yourself"> <!-- Ship, identify yourself! -->
+			<transition to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="chat.vi.2.n1"> <!-- This is GH13S trading ship -->
+			<transition to="2"/>
+		</node>
+		<node id="2" owner="player" option="chat.vi.1.n2.o" message="chat.vi1.n2"> <!-- Planet is infected. -->
+			<transition to="3"/>
+		</node>
+		<node id="3" owner="enemy" message="chat.vi.1.n3" action="retreat"/>
+	</chat>
+	<chat id="chat.virus.incoming.2">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+		<node id="0" owner="player" message="chat.global.identify_yourself"> <!-- Ship, identify yourself! -->
+			<transition to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="chat.vi.3.n1"> <!-- This is Eyola4 -->
+		</node>
 	</chat>
 </chats>

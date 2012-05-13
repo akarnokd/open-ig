@@ -1096,6 +1096,16 @@ public class World {
 				xinv.set("id", inv.getKey().id);
 				xinv.set("count", inv.getValue());
 			}
+			
+			// pending diplomatic offers
+			
+			XElement xdipls = xp.add("diplomatic-offers");
+			for (Map.Entry<String, Pair<CallType, ApproachType>> e : p.offers.entrySet()) {
+				XElement xdipl = xdipls.add("offer");
+				xdipl.set("from", e.getKey());
+				xdipl.set("call", e.getValue().first);
+				xdipl.set("approach", e.getValue().second);
+			}
 		}
 		
 		for (Planet p : planets.values()) {
@@ -1436,6 +1446,19 @@ public class World {
 			XElement xqueue = xplayer.childElement("message-queue");
 			XElement xhistory = xplayer.childElement("message-history");
 			deferredMessages.put(p, new XElement[] { xqueue, xhistory });
+			
+			// diplomatic offers
+			p.offers.clear();
+			XElement xdipls = xplayer.childElement("diplomatic-offers");
+			if (xdipls != null) {
+				for (XElement xdipl : xdipls.childrenWithName("offer")) {
+					String from = xdipl.get("from");
+					CallType nt = CallType.valueOf(xdipl.get("call"));
+					ApproachType at = ApproachType.valueOf(xdipl.get("approach"));
+					
+					p.offers.put(from, Pair.of(nt, at));
+				}
+			}
 		}
 		Set<String> allPlanets = new HashSet<String>(planets.keySet());
 		for (XElement xplanet : xworld.childrenWithName("planet")) {

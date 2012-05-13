@@ -2460,12 +2460,11 @@
   <entry key='message.research_money'>A(z) %s kutatása leállt pénzhiány miatt.</entry>
 	<entry key='settings.movie_click_skip'>Átvezető átlépése kattintással</entry>
 	<entry key='settings.fullscreen'>Teljes képernyő</entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=''></entry>
+	<entry key='chat.vi.1.n1'>Ez az MH4-es hajó kereskedelmi úton.</entry>
+	<entry key='chat.vi.1.n2.o'>A bolygón vírusfertőzés van!</entry>
+	<entry key='chat.vi.1.n2'>A bolygón vírusfertőzés van! Azonnal vissza kell fordulnia!</entry>
+	<entry key='chat.vi.1.n3'>Köszönöm, Uram.</entry>
+	<entry key='chat.vi.2.n1'>Ez a GH13S hajó kereskedelmi úton.</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

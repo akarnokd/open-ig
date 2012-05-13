@@ -446,7 +446,10 @@ public class AITrader implements AIManager {
 			String filter = "chat.merchant";
 			
 			if (player.world.infectedFleets.containsKey(our.id)) {
-				filter = "chat.virus";
+				filter = "chat.virus.leaving";
+			} else
+			if (our.targetPlanet().quarantineTTL > 0) {
+				filter = "chat.virus.incoming";
 			}
 			
 			List<String> chats = U.newArrayList();
