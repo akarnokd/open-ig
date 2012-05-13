@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
-	<module id='Launcher' version='0.28'>
+	<module id='Launcher' version='0.29'>
 		<!-- General module description -->
 		<general url='http://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
@@ -15,19 +15,19 @@
 		</general>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-			<desc lang='hu'>Német nyelv támogatása.</desc>
-			<desc lang='en'>German language support.</desc>
-			<desc lang='de'>Deutsche sprache Unterstützung</desc>
+			<desc lang='hu'>Internetfüggés javítva.</desc>
+			<desc lang='en'>Dependence on working internet fixed.</desc>
+			<desc lang='de'>Funkzioniert ohne Internet.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  http://open-ig.googlecode.com/files/ -->
-		<file url='http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='c90176284b4f0886ce12403bda40643f4ba430cf'>
+		<file url='http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='789f15b21511d11b341c402bb8d94ed99b5eb66d'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.374'>
+	<module id='Game' version='0.94.400'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -39,17 +39,17 @@
 		<execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
-			<desc lang='hu'>Űrduma, hibajavítások.</desc>
-			<desc lang='en'>Space chat, smaller bugfixes.</desc>
-			<desc lang='de'>Raum-Unterhaltung, Fehlerbehebungen</desc>
+			<desc lang='hu'>Hibajavítások.</desc>
+			<desc lang='en'>Bugfixes.</desc>
+			<desc lang='de'>Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.374.jar' sha1='2767966abce19b691bad479e6c30ac526f2c0e6b'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.400.jar' sha1='28b0c6a8a3dfc3242ae7396b585457769c9f742f'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120501a2.zip' sha1='816540ce2f781a600afca726f3634c0ad7c16aae'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Május 1 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 1st May, 2012 / A</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120513a2.zip' sha1='3fbc25aaaf3878c0530224df4e246ba44217b680'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Május 13 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 13th May, 2012 / A</desc>
 		</file>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' sha1='7368ca1890ae9ee3a0609a83b03654afa09492eb'/>
