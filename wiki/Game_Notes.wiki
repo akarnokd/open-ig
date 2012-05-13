@@ -5,6 +5,7 @@
 = Version 0.94.400 - Bug fixes =
   * Released: 2012-05-13 18:00 CET
   * This is *NOT* the Beta yet.
+  * Higher quality music by Robert "Silver83" Pellny ([http://code.google.com/p/open-ig/issues/detail?id=428 Issue #428])
   * Notification if a research stops due lack of money or lab ([http://code.google.com/p/open-ig/issues/detail?id=295 Issue #295])
   * AI now sends diplomatic messages ([http://code.google.com/p/open-ig/issues/detail?id=321 Issue #321])
   * Spacewar Grid rendering ([http://code.google.com/p/open-ig/issues/detail?id=323 Issue #323])
@@ -32,7 +33,11 @@
   * Audio warning added to Mission 3 ([http://code.google.com/p/open-ig/issues/detail?id=421 Issue #421])
   * Crash when joining fleets ([http://code.google.com/p/open-ig/issues/detail?id=422 Issue #422])
   * Toggle fullscreen mode checkbox added to options screen ([http://code.google.com/p/open-ig/issues/detail?id=424 Issue #424])
-
+  * Fixed AI attacking a demolished building indefinitely ([http://code.google.com/p/open-ig/issues/detail?id=425 Issue #425])
+  * Fixed crash in battle statistics after ground battle ([http://code.google.com/p/open-ig/issues/detail?id=429 Issue #429])
+  * Traders now have more speed, fleets without hyperdrive travel now faster ([http://code.google.com/p/open-ig/issues/detail?id=432 Issue #432])
+  * Added option to allow skipping cutscenes with the mouse click (default off) ([http://code.google.com/p/open-ig/issues/detail?id=434 Issue #434])
+  * Toggle fullscreen from options caused menu and control problems ([http://code.google.com/p/open-ig/issues/detail?id=435 Issue #435])
 
 = Version 0.94.370 - Space chat =
   * Released: 2012-04-30 20:30 CET
