@@ -16,7 +16,6 @@ import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.model.SoundType;
 import hu.openig.utils.IOUtils;
-import hu.openig.utils.U;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -42,6 +41,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.SwingUtilities;
 
 /**
  * @author akarnokd, Apr 18, 2011
@@ -256,13 +256,27 @@ public class Sounds {
 						@Override
 						public void run() {
 							playSoundAsync(effect, vol);
-							U.edt(action);
+							edt(action);
 						}
 					});
 				} catch (RejectedExecutionException ex) {
 					effectSemaphore.release();
 				}
 			}
+		}
+	}
+	/**
+	 * Execute an action on the edt.
+	 * @param action the action
+	 */
+	public static void edt(final Action0 action) {
+		if (action != null) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					action.invoke();
+				}
+			});
 		}
 	}
 	
