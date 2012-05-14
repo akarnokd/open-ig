@@ -143,7 +143,17 @@ public class AIPlanet {
 	 * @return can be built here?
 	 */
 	public boolean canBuild(BuildingType bt) {
-		return Planet.canBuild(planet, buildings, world.availableResearch, bt);
+		return Planet.canBuild(planet, buildings, world.availableResearch, bt, true);
+	}
+	/**
+	 * Test if another instance of the building type can be built on this planet
+	 * as replacement.
+	 * It checks for the building limits and surface type.
+	 * @param bt the building type to test
+	 * @return can be built here?
+	 */
+	public boolean canBuildReplacement(BuildingType bt) {
+		return Planet.canBuild(planet, buildings, world.availableResearch, bt, false);
 	}
 	/**
 	 * Returns the inventory count of the specified technology.

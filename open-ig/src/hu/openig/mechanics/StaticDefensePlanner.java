@@ -95,6 +95,9 @@ public class StaticDefensePlanner extends Planner {
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
+					if (planet.planet.id.equals("Naxos")) {
+						System.out.println();
+					}
 					if (checkBuildingKind(planet, "Gun", fdefenseLimit)) {
 						return true;
 					}
@@ -170,13 +173,18 @@ public class StaticDefensePlanner extends Planner {
 		
 		Collections.shuffle(actions);
 		
+		boolean result = false;
 		for (Pred0 p : actions) {
 			if (p.invoke()) {
-				return true;
+				if (world.mainPlayer != this.p || world.money < 500000) {
+					return true;
+				} else {
+					result = true;
+				}
 			}
 		}
 		
-		return false;
+		return result;
 	}
 	/**
 	 * Check the tanks.
@@ -360,7 +368,7 @@ public class StaticDefensePlanner extends Planner {
 		// find the best available gun technology
 		BuildingType bt = null;
 		for (BuildingType bt0 : p.world.buildingModel.buildings.values()) {
-			if (planet.canBuild(bt0) && bt0.kind.equals(kind)) {
+			if (planet.canBuildReplacement(bt0) && bt0.kind.equals(kind)) {
 				if (bt == null || bt.cost < bt0.cost) {
 					bt = bt0;
 				}

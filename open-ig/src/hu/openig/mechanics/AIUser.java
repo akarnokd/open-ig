@@ -95,17 +95,23 @@ public class AIUser implements AIManager {
 		acts = new ColonyPlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-			return;
+//			if (world.money < 500000) {
+				return;
+//			}
 		}
 		acts = new EconomyPlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-			return;
+			if (world.money < 500000) {
+				return;
+			}
 		}
 		acts = new StaticDefensePlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-			return;
+			if (world.money < 500000) {
+				return;
+			}
 		}
 
 	}
