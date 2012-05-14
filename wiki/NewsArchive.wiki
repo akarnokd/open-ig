@@ -8,7 +8,7 @@
 
 *May 14, 2012*
 
-I underestimated the work amount for the 0.95 issues. It may take some more time. Until then, here is a little teaser from our latest contributor, Robert "Silver83" Pellny:
+I underestimated the work amount for the 0.95 issues. It may take some more time. Until then, here is a little teaser from our latest contributor, Norbert "Silver83" Pellny:
 
 <wiki:video url="http://www.youtube.com/watch?v=FnlIEwW2OkM"/>
 
