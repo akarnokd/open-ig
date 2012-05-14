@@ -1017,6 +1017,7 @@ public class BridgeScreen extends ScreenBase {
 			e.videoMessage = msg;
 			videos.add(e);
 		}
+		scrollList(0);
 	}
 	/**
 	 * Force the playback of the given message.
