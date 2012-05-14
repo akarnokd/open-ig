@@ -373,7 +373,20 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public boolean canBuild(BuildingType bt) {
 		return canBuild(this, surface.buildings, 
-				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), bt);
+				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), 
+						bt, true);
+	}
+	/**
+	 * Test if another instance of the building type can be built on this planet
+	 * as replacement.
+	 * It checks for the building limits and surface type.
+	 * @param bt the building type to test
+	 * @return can be built here?
+	 */
+	public boolean canBuildReplacement(BuildingType bt) {
+		return canBuild(this, surface.buildings, 
+				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), 
+						bt, false);
 	}
 	/**
 	 * Check if the given building type can be built on this planet.
@@ -396,12 +409,14 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @param buildings the list of existing buildings
 	 * @param researches the set of available researches
 	 * @param bt the building type to test
+	 * @param checkLimit check if the build count limit has been reached?
 	 * @return can be built here?
 	 */
 	public static boolean canBuild(Planet planet, 
 			Collection<? extends Building> buildings,
 			Collection<? extends ResearchType> researches,
-			BuildingType bt) {
+			BuildingType bt,
+			boolean checkLimit) {
 		// check if this planet type is on the exception list
 		if (bt.except.contains(planet.type.type)) {
 			return false;
@@ -420,10 +435,12 @@ public class Planet implements Named, Owned, HasInventory {
 			if ("MainBuilding".equals(b.type.kind) && b.isComplete()) {
 				hubFound = true;
 			}
-			if ((bt.limit < 0 && b.type.kind.equals(bt.kind))
-					|| (bt.limit > 0 && b.type == bt)
-			) {
-					count++;
+			if (checkLimit) {
+				if ((bt.limit < 0 && b.type.kind.equals(bt.kind))
+						|| (bt.limit > 0 && b.type == bt)
+				) {
+						count++;
+				}
 			}
 		}
 		return (hubFound != "MainBuilding".equals(bt.kind)) && count < Math.abs(bt.limit);

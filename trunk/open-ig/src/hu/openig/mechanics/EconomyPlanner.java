@@ -50,7 +50,9 @@ public class EconomyPlanner extends Planner {
 		
 		for (AIPlanet p : planets) {
 			if (managePlanet(p)) {
-				return;
+				if (world.mainPlayer != this.p || world.money < 500000) {
+					return;
+				}
 			}
 		}
 	}

@@ -224,6 +224,7 @@ public final class Simulator {
 			}
 		}
 		boolean rebuildroads = false;
+		boolean runAllocator = false;
 		
 		for (Building b : new ArrayList<Building>(planet.surface.buildings)) {
 			
@@ -246,6 +247,8 @@ public final class Simulator {
 				if (b.buildProgress >= b.type.hitpoints) {
 					planet.owner.ai.onBuildingComplete(planet, b);
 					world.scripting.onBuildingComplete(planet, b);
+					
+					runAllocator = true;
 				}
 				
 				result = true;
@@ -322,6 +325,9 @@ public final class Simulator {
 		}
 		if (rebuildroads) {
 			planet.rebuildRoads();
+		}
+		if (runAllocator) {
+			Allocator.computeNow(planet);
 		}
 		// search for radar capable inventory
 		for (InventoryItem pii : planet.inventory) {
