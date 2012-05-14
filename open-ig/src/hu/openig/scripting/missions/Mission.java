@@ -782,6 +782,7 @@ public abstract class Mission implements GameScriptingEvents {
 				}
 			}
 			battle.allowRetreat = false;
+			battle.attackerAllies.add(allyPlayer);
 			return true;
 		}
 		return false;

@@ -140,9 +140,8 @@ public class Mission9 extends Mission {
 		Player tr = player("Traders");
 		Planet pl = planet(planet);
 		
-		Fleet f0 = new Fleet(tr);
-		f0.x = pl.x;
-		f0.y = pl.y;
+		Fleet f0 = createFleet(label("traders.fleetname"), 
+				tr, pl.x, pl.y);
 		
 		List<ResearchType> shipTypes = U.newArrayList();
 		for (ResearchType rt : world.researches.values()) {

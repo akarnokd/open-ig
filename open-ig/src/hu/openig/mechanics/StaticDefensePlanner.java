@@ -51,7 +51,9 @@ public class StaticDefensePlanner extends Planner {
 		Collections.sort(planets, BEST_PLANET);
 		for (AIPlanet planet : planets) {
 			if (managePlanet(planet)) {
-				return;
+				if (world.mainPlayer != p || world.money < 500000) {
+					return;
+				}
 			}
 		}
 	}

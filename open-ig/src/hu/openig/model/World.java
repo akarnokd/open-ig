@@ -2408,7 +2408,7 @@ public class World {
 			xrel.set("first", dr.first.id);
 			xrel.set("second", dr.second.id);
 			xrel.set("full", dr.full);
-			xrel.set("wont-talk", dr.wontTalk);
+			xrel.set("wont-talk", dr.wontTalk());
 			if (dr.lastContact != null) {
 				xrel.set("last-contact", XElement.formatDateTime(dr.lastContact));
 			}
@@ -2455,7 +2455,7 @@ public class World {
 				
 				dr.full = xrel.getBoolean("full");
 				dr.value = xrel.getDouble("value");
-				dr.wontTalk = xrel.getBoolean("wont-talk");
+				dr.wontTalk(xrel.getBoolean("wont-talk"));
 				String lc = xrel.get("last-contact", null);
 				if (lc != null) {
 					try {

@@ -3942,16 +3942,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return true if allies
 	 */
 	boolean areAllies(SpacewarStructure s1, SpacewarStructure s2) {
-		if (s1.owner == s2.owner) {
-			return true;
-		} else
-		if (s1.owner == battle.attacker.owner && battle.attackerAllies.contains(s2.owner)) {
-			return true;
-		} else
-		if (s2.owner == battle.attacker.owner && battle.attackerAllies.contains(s1.owner)) {
-			return true;
-		}
-		return false;
+		return battle.isAlly(s1, s2.owner) || battle.isAlly(s2, s1.owner);
 	}
 	/**
 	 * Fire at the target of the given ship with the available weapons.

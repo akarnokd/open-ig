@@ -151,7 +151,9 @@ public class AttackPlanner extends Planner {
 					});
 				}
 			}
-			manageDiplomacy();
+			if (world.level >= 4) {
+				manageDiplomacy();
+			}
 		}
 		computeNextAttack();
 	}
@@ -353,10 +355,10 @@ public class AttackPlanner extends Planner {
 			double rnd = w.random().nextDouble();
 			DiplomaticRelation dr = dr0.getValue();
 			boolean mayContact = dr.lastContact == null 
-					|| (world.now.getTime() - dr.lastContact.getTime() >= (dr.wontTalk ? 7L : 1L) * 24 * 60 * 60 * 1000);
+					|| (world.now.getTime() - dr.lastContact.getTime() >= (dr.wontTalk() ? 7L : 1L) * 24 * 60 * 60 * 1000);
 			
 			if (dr.full && !world.activeOffer.contains(other) && mayContact) {
-
+				
 				final ApproachType at = w.random(Arrays.asList(ApproachType.values()));
 				
 				if (rnd < 0.1 && world.ownPlanets.size() < 2 && dr.value < p.warThreshold) {
