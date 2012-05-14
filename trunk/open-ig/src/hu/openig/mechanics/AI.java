@@ -410,7 +410,7 @@ public class AI implements AIManager {
 		DiplomaticRelation dr = w.establishRelation(e, p);
 		dr.full = true;
 		dr.value = 5;
-		dr.wontTalk = true;
+		dr.wontTalk(true);
 		dr.lastContact = w.time.getTime();
 		dr.alliancesAgainst.clear();
 	}

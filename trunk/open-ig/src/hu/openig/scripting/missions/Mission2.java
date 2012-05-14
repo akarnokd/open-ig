@@ -29,6 +29,10 @@ import java.util.List;
  * @author akarnokd, 2012.01.14.
  */
 public class Mission2 extends Mission {
+	/** The pirate tag. */
+	private static final String MISSION_2_PIRATE = "Mission-2-Pirate";
+	/** The trader tag. */
+	private static final String MISSION_2_TRADER = "Mission-2-Trader";
 	/** The money reward per task. */
 	final int[] moneyReward = { 0, 1000, 2500, 5000 };
 	/** The custom battle finish image. */
@@ -101,8 +105,8 @@ public class Mission2 extends Mission {
 							pf.addInventory(world.researches.get("PirateDestroyer"), 1);
 						}
 						
-						tagFleet(pf, "Mission-2-Pirate");
-						tagFleet(f, "Mission-2-Trader");
+						tagFleet(pf, MISSION_2_PIRATE);
+						tagFleet(f, MISSION_2_TRADER);
 						
 						addScripted(f);
 						addScripted(pf);
@@ -177,12 +181,12 @@ public class Mission2 extends Mission {
 	 * Remove the trader and the pirate fleet.
 	 */
 	void cleanupShips() {
-		Fleet tf = findTaggedFleet("Mission-2-Trader", player("Traders"));
+		Fleet tf = findTaggedFleet(MISSION_2_TRADER, player("Traders"));
 		if (tf != null) {
 			removeScripted(tf);
 			world.removeFleet(tf);
 		}
-		Fleet pf = findTaggedFleet("Mission-2-Pirate", player("Pirates")); 
+		Fleet pf = findTaggedFleet(MISSION_2_PIRATE, player("Pirates")); 
 		if (pf != null) {
 			removeScripted(pf);
 			world.removeFleet(pf);
@@ -279,15 +283,16 @@ public class Mission2 extends Mission {
 			clearMission("Mission-2-Task-" + task + "-Timeout");
 		}
 
-		Fleet tf = findTaggedFleet("Mission-2-Trader", player);
+		Fleet tf = findTaggedFleet(MISSION_2_TRADER, player("Traders"));
 		if (tf != null) {
 			for (InventoryItem ii : tf.inventory) {
 				ii.owner = tf.owner;
+				ii.tag = null;
 			}
 			tf.task = FleetTask.IDLE;
 			tf.moveTo(world.random(Arrays.asList(planet("Achilles"), planet("Naxos"), planet("San Sterling"))));
 		}
-		Fleet pf = findTaggedFleet("Mission-2-Pirate", player("Pirates")); 
+		Fleet pf = findTaggedFleet(MISSION_2_PIRATE, player("Pirates")); 
 		if (pf != null) {
 			removeScripted(pf);
 			world.removeFleet(pf);
@@ -308,9 +313,9 @@ public class Mission2 extends Mission {
 	 */
 	void spacewarStartTraderVsPirate(SpacewarWorld war, int task) {
 		if (isMissionSpacewar(war.battle(), "Mission-2-Task-" + task)) {
-			if (startJointSpaceBattle(war, "Mission-2-Trader", player("Traders"), "Mission-2-Pirate", player("Pirates"))) {
+			if (startJointSpaceBattle(war, MISSION_2_TRADER, player("Traders"), MISSION_2_PIRATE, player("Pirates"))) {
 				Player tr = player("Traders");
-				int tidx = tr.ownFleets().indexOf(findTaggedFleet("Mission-2-Trader", tr));
+				int tidx = tr.ownFleets().indexOf(findTaggedFleet(MISSION_2_TRADER, tr));
 				war.battle().chat = "chat.mission-2.defend.merchant" + (1 + tidx % 6);
 				
 				missionAttack = true;
@@ -344,7 +349,7 @@ public class Mission2 extends Mission {
 			if (isMissionSpacewar(battle, "Mission-2-Task-" + task)) {
 
 				if (startJointAutoSpaceBattle(battle, 
-						"Mission-2-Trader", player("Traders"), "Mission-2-Pirate", player("Pirates"))) {
+						MISSION_2_TRADER, player("Traders"), MISSION_2_PIRATE, player("Pirates"))) {
 					missionAttack = true;
 				}
 			}

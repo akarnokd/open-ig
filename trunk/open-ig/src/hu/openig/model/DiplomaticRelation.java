@@ -30,7 +30,7 @@ public class DiplomaticRelation {
 	/** When was the last contact. */
 	public Date lastContact;
 	/** Indicator that the parties won't talk for longer periods of time. */
-	public boolean wontTalk;
+	private boolean wontTalk;
 	/**
 	 * The set of common enemies.
 	 */
@@ -46,5 +46,18 @@ public class DiplomaticRelation {
 		dr.wontTalk = wontTalk;
 		dr.alliancesAgainst.addAll(alliancesAgainst);
 		return dr;
+	}
+	/**
+	 * Set the new won't talk value.
+	 * @param value the value
+	 */
+	public void wontTalk(boolean value) {
+		this.wontTalk = value;
+	}
+	/**
+	 * @return the current won't talk status
+	 */
+	public boolean wontTalk() {
+		return wontTalk;
 	}
 }

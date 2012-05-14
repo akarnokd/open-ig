@@ -294,7 +294,7 @@ public class DiplomacyScreen extends ScreenBase {
 			projectorFront = null;
 			projectorBack = null;
 		} finally {
-			projectorLock.lock();
+			projectorLock.unlock();
 		}
 	}
 	@Override
@@ -402,29 +402,36 @@ public class DiplomacyScreen extends ScreenBase {
 				}
 			}
 		} else
-		if (messagePhase == 1) {
+		if (e.has(Type.DOWN) && messagePhase == 1) {
 			offerText.visible(false);
 			responseText.visible(true);
 			messagePhase = 2;
 			return true;
 		} else
-		if (messagePhase == 2) {
-			responseText.visible(false);
-			continueLabel.visible(false);
-
-			DiplomaticRelation dr = world().getRelation(player(), other);
-			if (dr.wontTalk) {
-				headAnimation.loop = false;
-			} else {
-				options.visible(true);
-				updateOptions();
-			}
-			
-			messagePhase = 0;
+		if (e.has(Type.DOWN) && messagePhase == 2) {
+			returnToOptions();
 
 			return true;
 		}
 		return super.mouse(e);
+	}
+
+	/**
+	 * Return to options panel.
+	 */
+	void returnToOptions() {
+		responseText.visible(false);
+		continueLabel.visible(false);
+
+		DiplomaticRelation dr = world().getRelation(player(), other);
+		if (dr.wontTalk()) {
+			headAnimation.loop = false;
+		} else {
+			options.visible(true);
+			updateOptions();
+		}
+		
+		messagePhase = 0;
 	}
 	/**
 	 * Check if the mouse is inside the panel body.
@@ -635,7 +642,7 @@ public class DiplomacyScreen extends ScreenBase {
 			DiplomaticRelation rel = pi.getValue();
 
 			long last = rel.lastContact != null ? rel.lastContact.getTime() : 0;
-			long limit = rel.wontTalk ? 24L * 60 * 60 * 1000 : 7L * 24 * 60 * 60 * 1000; 
+			long limit = rel.wontTalk() ? 24L * 60 * 60 * 1000 : 7L * 24 * 60 * 60 * 1000; 
 			
 			if (!p2.noDiplomacy) {
 				OptionItem oi1 = new OptionItem();
@@ -648,6 +655,10 @@ public class DiplomacyScreen extends ScreenBase {
 				oi1.userObject = p2;
 				
 				oi1.enabled = rel.full && last < now - limit;
+
+				if (oi1.enabled && rel.wontTalk()) {
+					rel.wontTalk(false);
+				}
 				
 				races.items.add(oi1);
 				
@@ -1095,7 +1106,7 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		DiplomaticRelation dr = world().getRelation(player(), other);
 		
-		dr.wontTalk = r0.notalk;
+		dr.wontTalk(r0.notalk);
 		dr.value += r0.change / 10d; // FIXME scaling?!
 		
 		String sOffer = format(world().random(n.approachFor(at)).label, parameter);
@@ -1259,9 +1270,11 @@ public class DiplomacyScreen extends ScreenBase {
 	void setupTexts(String offer, String response) {
 		offerText.width = base.width - 20;
 		offerText.text(offer);
+		offerText.height = offerText.getWrappedHeight();
 		
 		responseText.width = base.width - 20;
 		responseText.text(response);
+		responseText.height = responseText.getWrappedHeight();
 		
 		onResize();
 	}
@@ -1274,25 +1287,36 @@ public class DiplomacyScreen extends ScreenBase {
 		responseText.width = base.width - 20;
 
 		String label = null;
-		outer:
-		for (Call c : world().diplomacy.get(other.id).calls) {
-			if (c.type == na.first) {
-				for (Approach a : c.approaches) {
-					if (a.type == na.second) {
-						label = a.label;
-						break outer;
+		Diplomacy diplomacy = world().diplomacy.get(other.id);
+		if (diplomacy != null) {
+			outer:
+			for (Call c : diplomacy.calls) {
+				if (c.type == na.first) {
+					for (Approach a : c.approaches) {
+						if (a.type == na.second) {
+							label = a.label;
+							break outer;
+						}
 					}
 				}
 			}
+			
+			responseText.text(get(label));
+			responseText.height = responseText.getWrappedHeight();
+			
+			responseText.visible(true);
+			continueLabel.visible(true);
+			messagePhase = 2;
+			
+			onResize();
+		} else {
+			returnToOptions();
+			inCall = false;
 		}
-		
-		responseText.text(get(label));
-		
-		responseText.visible(true);
-		continueLabel.visible(true);
-		messagePhase = 2;
-		
 		player().offers.remove(other.id);
+
+		DiplomaticRelation dr = world().getRelation(player(), other);
+		dr.wontTalk(false);
 		
 		if (na.first == CallType.SURRENDER) {
 			alienSurrender();
@@ -1324,11 +1348,14 @@ public class DiplomacyScreen extends ScreenBase {
 				}
 			} else
 			if (other == null) {
+				other = world().players.get(de.getKey());
 				if (projectorOpen) {
-					other = world().players.get(de.getKey());
 					contactRaceAnim();
 				} else {
 					AtomicInteger wip = new AtomicInteger(1);
+					inCall = true;
+					mentioned.clear();
+					stanceMatrix.visible(false);
 					loadHeadAnimAsync(wip);
 				}
 			}

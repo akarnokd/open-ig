@@ -109,6 +109,7 @@ public class RawAnimation {
 	public static RawAnimation load(ResourceLocator rl, String resource) {
 		RawAnimation ha = new RawAnimation();
 		if (resource == null) {
+			ha.fps = 17.89;
 			return ha;
 		}
 		try {
