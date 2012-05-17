@@ -523,6 +523,7 @@ public final class Simulator {
 	static boolean progressResearch(World world, Player player, PlanetStatistics all) {
 		if (player.runningResearch() != null) {
 			Research rs = player.research.get(player.runningResearch());
+			ResearchState last = rs.state;
 			int maxpc = rs.getResearchMaxPercent(all);
 			// test for money
 			// test for max percentage
@@ -542,18 +543,21 @@ public final class Simulator {
 						world.statistics.moneyResearch += dmoney;
 						world.statistics.moneySpent += dmoney;
 
-						ResearchState last = rs.state;
 						rs.state = ResearchState.RUNNING;
 						if (last != rs.state) {
 							player.ai.onResearchStateChange(rs.type, rs.state);
 						}
 					} else {
 						rs.state = ResearchState.MONEY;
-						player.ai.onResearchStateChange(rs.type, rs.state);
+						if (last != rs.state) {
+							player.ai.onResearchStateChange(rs.type, rs.state);
+						}
 					}
 				} else {
 					rs.state = ResearchState.LAB;
-					player.ai.onResearchStateChange(rs.type, rs.state);
+					if (last != rs.state) {
+						player.ai.onResearchStateChange(rs.type, rs.state);
+					}
 				}
 			}
 			// test for completedness

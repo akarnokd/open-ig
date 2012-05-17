@@ -1025,6 +1025,9 @@ public class BridgeScreen extends ScreenBase {
 	 * @param onSeen the action to perform when the message ended
 	 */
 	public void forceMessage(final String messageId, final Action0 onSeen) {
+		if (commons.simulation == null) {
+			return;
+		}
 		commons.simulation.pause();
 		if (videoRunning) {
 			videoAnim.stop();
