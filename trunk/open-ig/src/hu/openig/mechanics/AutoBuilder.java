@@ -425,7 +425,7 @@ public final class AutoBuilder {
 			msg.priority = 50;
 			msg.targetPlanet = planet;
 			
-			planet.owner.messageQueue.add(msg);
+			planet.owner.addMessage(msg);
 		}
 	}
 	/**

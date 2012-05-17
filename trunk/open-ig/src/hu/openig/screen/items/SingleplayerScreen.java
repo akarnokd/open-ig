@@ -313,7 +313,7 @@ public class SingleplayerScreen extends ScreenBase {
 						msg.sound = SoundType.WELCOME;
 						msg.text = "welcome";
 						
-						player().messageQueue.add(msg);
+						player().addMessage(msg);
 					}
 				});
 				return null;
