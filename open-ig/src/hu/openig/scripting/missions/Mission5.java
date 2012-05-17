@@ -245,6 +245,10 @@ public class Mission5 extends Mission {
 			garthog.waypoints.clear();
 			garthog.waypoints.add(new Point2D.Double(tullen.x, tullen.y));
 			double d = Math.hypot(tullen.x - garthog.x, tullen.y - garthog.y);
+			if (d <= 10) {
+				tullen.stop();
+				tullen.task = FleetTask.SCRIPT;
+			}
 			if (d <= 5) {
 				stopFleets();
 				addMission("Mission-5-Task-2-Timeout", 24);
