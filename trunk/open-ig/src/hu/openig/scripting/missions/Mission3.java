@@ -51,6 +51,7 @@ public class Mission3 extends Mission {
 		Objective m3 = objective("Mission-3");
 		if (stage == M3.NONE && !m3.isCompleted() && m2t1.isCompleted()) {
 			addMission("Mission-3", 48);
+			stage = M3.WAIT;
 		}
 		if (checkMission("Mission-3")) {
 			world.env.speed1();

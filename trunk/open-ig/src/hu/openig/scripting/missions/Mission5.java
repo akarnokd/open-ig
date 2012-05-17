@@ -96,7 +96,7 @@ public class Mission5 extends Mission {
 						setObjectiveState("Mission-5-Task-1", ObjectiveState.SUCCESS);
 						showObjective("Mission-5-Task-3");
 						
-						addMission("Mission-5-Task-2", 2);
+						addMission("Mission-5-Task-2", 1); // FIXME garthog delay
 						moveTullen();
 						send("Douglas-Thorin-Reinforcements").visible = true;
 						send("Douglas-Reinforcements-Denied").visible = false;
@@ -278,7 +278,7 @@ public class Mission5 extends Mission {
 		Planet target = planet("San Sterling");
 		f.waypoints.clear();
 		f.mode = FleetMode.MOVE;
-		f.moveTo(target.x - 60, target.y - 40);
+		f.moveTo(target.x - 60, target.y - 60);
 		f.task = FleetTask.SCRIPT;
 	}
 	/**
@@ -470,7 +470,13 @@ public class Mission5 extends Mission {
 	 */
 	void createGarthog() {
 		Planet p = planet("Naxos");
-		Fleet f = createFleet(label("mission-5.garthog_fleet"), player("Garthog"), p.x + 40, p.y - 20);
+		
+//		Fleet t = findTaggedFleet("Mission-5", player);
+//		t.stop();
+//		t.task = FleetTask.SCRIPT;
+		
+		Fleet f = createFleet(label("mission-5.garthog_fleet"), 
+				player("Garthog"), p.x + 30, p.y - 20);
 		// -------------------------------------------------------
 		// Set strengths here
 		f.addInventory(research("GarthogFighter"), 12);
