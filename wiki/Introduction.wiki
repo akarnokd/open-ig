@@ -2,7 +2,7 @@
 #labels Featured
 
 == System requirements ==
- * Java JRE/JDK 1.6.X or 1.7.X, *Java 7 recommended*
+ * Java JRE/JDK 1.7.X, (Java 6 not recommended)
  * Any operating system with graphical user interface
  * A mouse with scroll wheel.
  * 768 MB RAM
