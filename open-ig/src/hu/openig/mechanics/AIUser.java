@@ -181,21 +181,21 @@ public class AIUser implements AIManager {
 			msg.priority = 40;
 			msg.sound = SoundType.RESEARCH_COMPLETE;
 			msg.targetResearch = rt;
-			p.messageQueue.add(msg);
+			p.addMessage(msg);
 		} else
 		if (state == ResearchState.LAB) {
 			Message msg = w.newMessage("message.research_lab");
 			msg.priority = 80;
 			msg.sound = SoundType.STOP_RESEARCH;
 			msg.targetResearch = rt;
-			p.messageQueue.add(msg);
+			p.addMessage(msg);
 		} else
 		if (state == ResearchState.MONEY) {
 			Message msg = w.newMessage("message.research_money");
 			msg.priority = 80;
 			msg.sound = SoundType.STOP_RESEARCH;
 			msg.targetResearch = rt;
-			p.messageQueue.add(msg);
+			p.addMessage(msg);
 		}
 	}
 
@@ -205,7 +205,7 @@ public class AIUser implements AIManager {
 		msg.priority = 40;
 		msg.sound = SoundType.PRODUCTION_COMPLETE;
 		msg.targetProduct = rt;
-		p.messageQueue.add(msg);
+		p.addMessage(msg);
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class AIUser implements AIManager {
 		Message msg = w.newMessage("message.new_planet_discovered");
 		msg.targetPlanet = planet;
 		msg.priority = 20;
-		p.messageQueue.add(msg);
+		p.addMessage(msg);
 	}
 
 	@Override
@@ -227,12 +227,12 @@ public class AIUser implements AIManager {
 				Message msg = w.newMessage("message.new_race_discovered");
 				msg.priority = 20;
 				msg.label = player.getRaceLabel();
-				p.messageQueue.add(msg);
+				p.addMessage(msg);
 			}
 			Message msg = w.newMessage("message.new_player_discovered");
 			msg.priority = 20;
 			msg.value = player.name;
-			p.messageQueue.add(msg);
+			p.addMessage(msg);
 		}
 	}
 
@@ -261,7 +261,7 @@ public class AIUser implements AIManager {
 			msg.priority = 60;
 			msg.targetPlanet = planet;
 			
-			p.messageQueue.add(msg);
+			p.addMessage(msg);
 		}
 
 	}
@@ -282,12 +282,12 @@ public class AIUser implements AIManager {
 		Message msg = w.newMessage("message.yesterday_tax_income");
 		msg.priority = 20;
 		msg.value = "" + w.player.yesterday.taxIncome;
-		p.messageQueue.add(msg);
+		p.addMessage(msg);
 
 		msg = w.newMessage("message.yesterday_trade_income");
 		msg.priority = 20;
 		msg.value = "" + w.player.yesterday.tradeIncome;
-		p.messageQueue.add(msg);
+		p.addMessage(msg);
 	}
 	@Override
 	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {
@@ -295,14 +295,14 @@ public class AIUser implements AIManager {
 		msg.priority = 50;
 		msg.sound = SoundType.SATELLITE_DESTROYED;
 		msg.targetPlanet = planet;
-		p.messageQueue.add(msg);
+		p.addMessage(msg);
 	}
 	@Override
 	public void onPlanetDied(Planet planet) {
 		Message msg = w.newMessage("message.planet_died");
 		msg.priority = 80;
 		msg.targetPlanet = planet;
-		p.messageQueue.add(msg);
+		p.addMessage(msg);
 	}
 	@Override
 	public void onPlanetRevolt(Planet planet) {
@@ -312,7 +312,7 @@ public class AIUser implements AIManager {
 			msg.priority = 100;
 			msg.sound = SoundType.REVOLT;
 			msg.targetPlanet = planet;
-			p.messageQueue.add(msg);
+			p.addMessage(msg);
 		}
 	}
 	@Override
@@ -320,14 +320,14 @@ public class AIUser implements AIManager {
 		Message msgConq = w.newMessage("message.planet_conquered");
 		msgConq.priority = 100;
 		msgConq.targetPlanet = planet;
-		p.messageQueue.add(msgConq);
+		p.addMessage(msgConq);
 	}
 	@Override
 	public void onPlanetLost(Planet planet) {
 		Message msgLost = w.newMessage("message.planet_lost");
 		msgLost.priority = 100;
 		msgLost.targetPlanet = planet;
-		p.messageQueue.add(msgLost);
+		p.addMessage(msgLost);
 	}
 	@Override
 	public void onRadar() {
@@ -344,12 +344,12 @@ public class AIUser implements AIManager {
 						if (fleet.targetFleet != null) {
 							Message msg = w.newMessage("message.enemy_fleet_detected");
 							msg.priority = 100;
-							p.messageQueue.add(msg);
+							p.addMessage(msg);
 						} else {
 							Message msg = w.newMessage("message.enemy_fleet_detected_at");
 							msg.priority = 100;
 							msg.targetPlanet = fleet.targetPlanet();
-							p.messageQueue.add(msg);
+							p.addMessage(msg);
 						}
 						detectedAttack.add(fleet.id);
 					}

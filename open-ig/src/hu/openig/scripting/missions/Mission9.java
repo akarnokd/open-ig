@@ -21,6 +21,8 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SoundTarget;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.U;
@@ -184,6 +186,12 @@ public class Mission9 extends Mission {
 				&& hasTag(war.battle().targetFleet, "Mission-9-Smuggler")) {
 			war.battle().chat = "chat.mission-9.smuggler";
 			smugglerAttacked = true;
+		}
+	}
+	@Override
+	public void onDiscovered(Player player, Fleet fleet) {
+		if (stage == M9Stages.RUN && player == this.player && hasTag(fleet, "Mission-9-Smuggler")) {
+			world.env.playSound(SoundTarget.COMPUTER, SoundType.UNKNOWN_SHIP, null);
 		}
 	}
 	@Override

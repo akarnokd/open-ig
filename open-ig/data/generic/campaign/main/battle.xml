@@ -68,6 +68,7 @@
 		<tech id="YchomBattleship" normal="inventions/spaceships/battleships/ychom_battleship_rotate" image="inventions/spaceships/battleships/ychom_battleship_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="5500"/>
 		<tech id="TradersFreight1" normal="inventions/spaceships/cruisers/traders_freight_1_rotate" image="inventions/spaceships/cruisers/traders_freight_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="650"/>
 		<tech id="TradersFreight2" normal="inventions/spaceships/cruisers/traders_freight_2_rotate" image="inventions/spaceships/cruisers/traders_freight_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="950"/>
+		<tech id="TradersFreight3" normal="inventions/spaceships/cruisers/traders_freight_2_rotate" image="inventions/spaceships/cruisers/traders_freight_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="1100"/>
 		<tech id="GarthogVirusBomb" normal="inventions/spaceships/fighters/garthog_virus_bomb_rotate" image="inventions/spaceships/fighters/garthog_virus_bomb_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="25" hp="400"/>
 	</space-entities>
 	<ground-shields>

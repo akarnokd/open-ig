@@ -86,7 +86,7 @@ public class Player {
 	/** Initial stance for the newly discovered races. */
 	public int initialStance;
 	/** The priority queue for the messages. */
-	public final PriorityQueue<Message> messageQueue = new PriorityQueue<Message>();
+	protected final PriorityQueue<Message> messageQueue = new PriorityQueue<Message>();
 	/** The message history of the already displayes messages. */
 	public final List<Message> messageHistory = new ArrayList<Message>();
 	/** The AI behavior mode. */
@@ -516,5 +516,39 @@ public class Player {
 			}
 		}
 		return true;
+	}
+	/**
+	 * Enqueue a message.
+	 * @param msg the message.
+	 */
+	public void addMessage(Message msg) {
+		Message msg2 = messageQueue.peek();
+		if (msg2 == null || msg2.priority <= msg2.priority) {
+			messageQueue.add(msg);
+		} else {
+			messageHistory.add(msg);
+		}
+		if (msg.sound != null) {
+			world.env.playSound(SoundTarget.COMPUTER, msg.sound, null);
+		}
+	}
+	/**
+	 * @return peek the next message if any
+	 */
+	public Message peekMessage() {
+		return messageQueue.peek();
+	}
+	/**
+	 * Remove the specific message from the queue.
+	 * @param msg the message to remove
+	 */
+	public void removeMessage(Message msg) {
+		messageQueue.remove(msg);
+	}
+	/**
+	 * Clear all entries from the messages.
+	 */
+	public void clearMessages() {
+		messageQueue.clear();
 	}
 }

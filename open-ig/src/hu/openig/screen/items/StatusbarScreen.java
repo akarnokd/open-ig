@@ -579,7 +579,7 @@ public class StatusbarScreen extends ScreenBase {
 			if (errorText == null && pa.isEmpty()) {
 				if (notification.currentMessage != null) {
 					if (animationStep >= accelerationStep * 2 + stayStep) {
-						player().messageQueue.remove(notification.currentMessage);
+						player().removeMessage(notification.currentMessage);
 						player().messageHistory.add(notification.currentMessage);
 						notification.currentMessage = null;
 						animationStep = 0;
@@ -603,12 +603,12 @@ public class StatusbarScreen extends ScreenBase {
 					}
 				} else
 				if (animationStep == 0) {
-					Message msg = player().messageQueue.peek();
+					Message msg = player().peekMessage();
 					if (msg != null) {
 						notification.currentMessage = msg;
-						if (msg.sound != null) {
-							computerSound(msg.sound);
-						}
+//						if (msg.sound != null) {
+//							computerSound(msg.sound);
+//						}
 						askRepaint();
 					}
 				}

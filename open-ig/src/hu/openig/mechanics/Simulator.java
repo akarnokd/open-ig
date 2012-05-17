@@ -205,7 +205,8 @@ public final class Simulator {
 					Message msg = world.newMessage("message.earthquake");
 					msg.priority = 25;
 					msg.targetPlanet = planet;
-					planet.owner.messageQueue.add(msg);
+					
+					planet.owner.addMessage(msg);
 					
 				}
 			} else {
