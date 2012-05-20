@@ -49,4 +49,12 @@ public class PlayerFinances {
 		tradeIncome = 0;
 		taxMoraleCount = 0;
 	}
+	/** The total income */
+	public int getTotalIncome(){
+		return taxIncome + tradeIncome;
+	}
+	/** The total cost */
+	public int getTotalCost(){
+		return productionCost + researchCost + buildCost + repairCost;
+	}
 }
