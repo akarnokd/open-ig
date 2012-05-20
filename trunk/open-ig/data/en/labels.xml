@@ -553,6 +553,7 @@
   <entry key='colonyinfo.tax_short'>Tax: %s</entry>
   <entry key='colonyinfo.trade'>Trade income : %d cr</entry>
   <entry key='colonyinfo.worker'>Worker       : %d / %d men</entry>
+  <entry key='colonyinfo.total'     >Total: %d cr</entry>
   <entry key='credits'>Credits</entry>
   <entry key='database.battleship_production'>Producing battleships</entry>
   <entry key='database.battleship_production.details'>In order to produce larger ships, you need to build an orbital space factory as larger ships must be assembled in space. First, you need to develop the orbital space factory. When it has been developed, start production. Once a factory is produced, go to the equipment screen and click on a planet (in the small starmap). Once you have selected the planet, click on the space stations icon (bottom left hand corner). Click on the Orbital Space Factory, and click on the Add icon to equip the planet with the station.</entry>
