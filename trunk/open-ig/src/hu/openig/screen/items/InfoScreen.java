@@ -2303,6 +2303,8 @@ public class InfoScreen extends ScreenBase {
 		/** Global yesterday value. */
 		UILabel yesterdayTradeIncome;
 		/** Global yesterday value. */
+		UILabel yesterdayTotalIncome;
+		/** Global yesterday value. */
 		UILabel yesterdayTaxMorale;
 		/** Global yesterday value. */
 		UILabel yesterdayProductionCost;
@@ -2312,6 +2314,8 @@ public class InfoScreen extends ScreenBase {
 		UILabel yesterdayRepairCost;
 		/** Global yesterday value. */
 		UILabel yesterdayBuildCost;
+		/** Global yesterday value. */
+		UILabel yesterdayTotalCost;
 		/** Static field. */
 		UILabel today;
 		/** Global today value. */
@@ -2322,12 +2326,16 @@ public class InfoScreen extends ScreenBase {
 		UILabel todayRepairCost;
 		/** Global today value. */
 		UILabel todayBuildCost;
+		/** Global today value. */
+		UILabel todayTotalCost;
 		/** Static field. */
 		UILabel planetCurrent;
 		/** Selected own planet value. */
 		UILabel planetTaxIncome;
 		/** Selected own planet value. */
 		UILabel planetTradeIncome;
+		/** Selected own planet value. */
+		UILabel planetTotalIncome;
 		/** Selected own planet value. */
 		UILabel planetTaxMorale;
 		
@@ -2342,41 +2350,49 @@ public class InfoScreen extends ScreenBase {
 			
 			yesterdayTaxIncome = new UILabel("", 10, commons.text());
 			yesterdayTradeIncome = new UILabel("", 10, commons.text());
+			yesterdayTotalIncome = new UILabel("", 10, commons.text());
 			yesterdayTaxMorale = new UILabel("", 10, commons.text());
 
 			yesterdayProductionCost = new UILabel("", 10, commons.text());
 			yesterdayResearchCost = new UILabel("", 10, commons.text());
 			yesterdayRepairCost = new UILabel("", 10, commons.text());
 			yesterdayBuildCost = new UILabel("", 10, commons.text());
+			yesterdayTotalCost = new UILabel("", 10, commons.text());
 			
 			todayProductionCost = new UILabel("", 10, commons.text());
 			todayResearchCost = new UILabel("", 10, commons.text());
 			todayRepairCost = new UILabel("", 10, commons.text());
 			todayBuildCost = new UILabel("", 10, commons.text());
+			todayTotalCost = new UILabel("", 10, commons.text());
 			
 			planetTaxIncome = new UILabel("", 10, commons.text());
 			planetTradeIncome = new UILabel("", 10, commons.text());
+			planetTotalIncome = new UILabel("", 10, commons.text());
 			planetTaxMorale = new UILabel("", 10, commons.text());
 			
 			yesterday.location(0, 0);
 			yesterdayTaxIncome.location(10, 25);
 			yesterdayTradeIncome.location(10, 25 + 18);
+			yesterdayTotalIncome.location(250, 25 + 18);
 			yesterdayTaxMorale.location(10, 25 + 18 * 2);
 			
 			yesterdayProductionCost.location(10, 25 + 18 * 3);
 			yesterdayResearchCost.location(10, 25 + 18 * 4);
 			yesterdayRepairCost.location(10, 25 + 18 * 5);
 			yesterdayBuildCost.location(10, 25 + 18 * 6);
+			yesterdayTotalCost.location(250, 25 + 18 * 6);
 			
 			today.location(0, 50 + 18 * 6);
 			todayProductionCost.location(10, today.y + 25);
 			todayResearchCost.location(10, today.y + 25 + 18);
 			todayRepairCost.location(10, today.y + 25 + 18 * 2);
 			todayBuildCost.location(10, today.y + 25 + 18 * 3);
+			todayTotalCost.location(250, today.y + 25 + 18 * 3);
 			
 			planetCurrent.location(0, today.y + 50 + 18 * 3);
 			planetTaxIncome.location(10, planetCurrent.y + 25);
 			planetTradeIncome.location(10, planetCurrent.y + 25 + 18);
+			planetTotalIncome.location(250, planetCurrent.y + 25 + 18);
 			planetTaxMorale.location(10, planetCurrent.y + 25 + 18 * 2);
 			
 			size(400, planetTaxMorale.y + 12);
@@ -2391,6 +2407,7 @@ public class InfoScreen extends ScreenBase {
 			
 			yesterdayTaxIncome.text(format("colonyinfo.tax", player().yesterday.taxIncome), true);
 			yesterdayTradeIncome.text(format("colonyinfo.trade", player().yesterday.tradeIncome), true);
+			yesterdayTotalIncome.text(format("colonyinfo.total", player().yesterday.getTotalIncome()), true);
 			if (player().yesterday.taxMoraleCount > 0) {
 				yesterdayTaxMorale.text(format("colonyinfo.tax-morale", 
 						player().yesterday.taxMorale / player().yesterday.taxMoraleCount, 
@@ -2405,17 +2422,20 @@ public class InfoScreen extends ScreenBase {
 			yesterdayResearchCost.text(format("financialinfo.research_cost", player().yesterday.researchCost), true);
 			yesterdayRepairCost.text(format("financialinfo.repair_cost", player().yesterday.repairCost), true);
 			yesterdayBuildCost.text(format("financialinfo.build_cost", player().yesterday.buildCost), true);
+			yesterdayTotalCost.text(format("colonyinfo.total", player().yesterday.getTotalCost()), true);
 			
 			todayProductionCost.text(format("financialinfo.production_cost", player().today.productionCost), true);
 			todayResearchCost.text(format("financialinfo.research_cost", player().today.researchCost), true);
 			todayRepairCost.text(format("financialinfo.repair_cost", player().today.repairCost), true);
 			todayBuildCost.text(format("financialinfo.build_cost", player().today.buildCost), true);
+			todayTotalCost.text(format("colonyinfo.total", player().today.getTotalCost()), true);
 			
 			if (p.owner == player()) {
 				planetCurrent.text(p.name, true);
 				
 				planetTaxIncome.text(format("colonyinfo.tax", p.taxIncome), true);
 				planetTradeIncome.text(format("colonyinfo.trade", p.tradeIncome), true);
+				planetTotalIncome.text(format("colonyinfo.total", p.getTotalIncome()), true);
 				planetTaxMorale.text(format("colonyinfo.tax-morale", p.morale, get(p.getMoraleLabel())), true);
 				
 				planetCurrent.visible(true);
