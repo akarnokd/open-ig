@@ -398,7 +398,7 @@
   <entry key='colonyinfo.trade'     >Handel einkommen : %d cr</entry>
   <entry key='colonyinfo.worker'    >Arbeiter     : %d / %d men</entry>
   <entry key='credits'>Credits</entry>
-
+  <entry key='colonyinfo.total'     >Gesamt: %d cr</entry>
   <entry key='database.map.1'>
 	
 	1. Brücke
