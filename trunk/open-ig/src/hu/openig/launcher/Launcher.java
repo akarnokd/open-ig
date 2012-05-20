@@ -84,7 +84,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.29";
+	public static final String VERSION = "0.30";
 	/**
 	 * The update XML to download.
 	 */
@@ -1027,11 +1027,11 @@ public class Launcher extends JFrame {
 			protected void done() {
 				progressPanel.setVisible(false);
 				XElement xe = null;
-				File uf = updateFile;
+//				File uf = updateFile;
 				try {
 					xe = get();
 					updateFile.renameTo(localUpdate);
-					doProcessUpdate(xe, uf);
+					doProcessUpdate(xe, null);
 				} catch (ExecutionException ex) {
 					if (!(ex.getCause() instanceof IOException)) {
 						ex.printStackTrace();

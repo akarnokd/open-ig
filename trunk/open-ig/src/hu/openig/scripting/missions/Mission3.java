@@ -215,7 +215,7 @@ public class Mission3 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (isMissionSpacewar(battle, "Mission-3")) {
+		if (stage == M3.RUNNING && isMissionSpacewar(battle, "Mission-3")) {
 			boolean traderSurvived = finishJointAutoSpaceBattle(battle, "Mission-3-Carrier");
 			completeMission(traderSurvived);
 			if (traderSurvived) {
@@ -225,13 +225,13 @@ public class Mission3 extends Mission {
 	}
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
-		if (isMissionSpacewar(battle, "Mission-3")) {
+		if (stage == M3.RUNNING && isMissionSpacewar(battle, "Mission-3")) {
 			startJointAutoSpaceBattle(battle, "Mission-3-Carrier", player, "Mission-3-Pirates", player("Pirates"));
 		}
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (isMissionSpacewar(war.battle(), "Mission-3")) {
+		if (stage == M3.RUNNING && isMissionSpacewar(war.battle(), "Mission-3")) {
 			if (startJointSpaceBattle(war, "Mission-3-Carrier", player, "Mission-3-Pirates", player("Pirates"))) {
 				war.battle().chat = "chat.mission-3.escort.cargo";
 			}
@@ -239,7 +239,7 @@ public class Mission3 extends Mission {
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
-		if (isMissionSpacewar(war.battle(), "Mission-3")) {
+		if (stage == M3.RUNNING && isMissionSpacewar(war.battle(), "Mission-3")) {
 			// find the status of the trader ship
 			boolean traderSurvived = findTaggedFleet("Mission-3-Carrier", player) != null;
 			completeMission(traderSurvived);

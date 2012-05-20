@@ -77,8 +77,8 @@ public class Planet implements Named, Owned, HasInventory {
 	public final Map<InventoryItem, Integer> timeToLive = new HashMap<InventoryItem, Integer>();
 	/** The countdown for an earthquake lasting 10s of ingame minutes. */
 	public int earthQuakeTTL;
-	/** The total income */
-	public int getTotalIncome(){
+	/** @return The total income. */
+	public int getTotalIncome() {
 		return taxIncome + tradeIncome;
 	}
 	/** @return the morale label for the current morale level. */
