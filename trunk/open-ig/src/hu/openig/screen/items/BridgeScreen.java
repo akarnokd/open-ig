@@ -150,6 +150,8 @@ public class BridgeScreen extends ScreenBase {
 	public Action0 onSeen;
 	/** The last display level. */
 	int lastLevel;
+	/** The last frame of the projector appear. */
+	BufferedImage messageAppearLast;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -234,6 +236,7 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				messageOpen = false;
 				openCloseAnimating = false;
+				messageAppearLast = messageFront;
 //				if (onAppearComplete != null) {
 //					onAppearComplete.invoke();
 //					onAppearComplete = null;
@@ -327,6 +330,8 @@ public class BridgeScreen extends ScreenBase {
 					onMessageComplete.invoke();
 					onMessageComplete = null;
 				}
+				messageFront = messageAppearLast;
+				
 				askRepaint();
 			}
 		};
@@ -606,6 +611,7 @@ public class BridgeScreen extends ScreenBase {
 		videoAppear = null;
 		videoAppearPercent = 0;
 		onAppearComplete = null;
+		messageAppearLast = null;
 		if (messageAnim != null) {
 			onMessageComplete = null;
 			messageAnim.stop();
