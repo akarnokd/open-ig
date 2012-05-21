@@ -37,6 +37,16 @@ public class Labels {
 		return this;
 	}
 	/**
+	 * Load the labels from an XML element.
+	 * @param root the root node
+	 * @return this
+	 */
+	public Labels load(XElement root) {
+		map.clear();
+		process(root);
+		return this;
+	}
+	/**
 	 * Process the document.
 	 * @param root the root element
 	 */
@@ -87,5 +97,9 @@ public class Labels {
 	public void replaceWith(Labels newLabels) {
 		map.clear();
 		map.putAll(newLabels.map);
+	}
+	/** @return the backing map. */
+	public Map<String, String> map() {
+		return map;
 	}
 }

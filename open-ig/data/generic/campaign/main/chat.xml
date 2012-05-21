@@ -69,7 +69,7 @@
 		<node id="2" owner="player" message="chat.merchant3.n2"> <!-- Thank's, ECHO. Continue on present course. -->
 			<transition to="4"/>
 		</node>
-		<node id="3" owner="player" option="chat.merchant3.n3.o" message="chat.merchant.n3"> 
+		<node id="3" owner="player" option="chat.merchant3.n3.o" message="chat.merchant3.n3"> 
 		<!-- Hey! I could use a bit of target practice! Are you interested in explosions? -->
 			<transition to="5"/>
 		</node>
@@ -587,7 +587,7 @@
 		<node id="1" owner="enemy" message="chat.vi.1.n1"> <!-- This is MH4 trading ship -->
 			<transition to="2"/>
 		</node>
-		<node id="2" owner="player" option="chat.vi.1.n2.o" message="chat.vi1.n2"> <!-- Planet is infected. -->
+		<node id="2" owner="player" option="chat.vi.1.n2.o" message="chat.vi.1.n2"> <!-- Planet is infected. -->
 			<transition to="3"/>
 		</node>
 		<node id="3" owner="enemy" message="chat.vi.1.n3" action="retreat"/>
@@ -755,14 +755,14 @@
 			<transition to="4"/>
 			<transition to="5"/>
 		</node>
-		<node id="4" owner="player" option="chat.v0.2.n4.o" message="chat.v0.2.n4"> <!-- You may pass. -->
+		<node id="4" owner="player" option="chat.vo.2.n4.o" message="chat.vo.2.n4"> <!-- You may pass. -->
 			<transition to="6"/>
 		</node>
-		<node id="5" owner="player" option="chat.v0.2.n5.o" message="chat.v0.2.n5"> <!-- Turn back -->
+		<node id="5" owner="player" option="chat.vo.2.n5.o" message="chat.vo.2.n5"> <!-- Turn back -->
 			<transition to="7"/>
 		</node>
-		<node id="6" owner="enemy" message="chat.v0.2.n6"/> <!-- Thank you -->
-		<node id="7" owner="player" message="chat.v0.2.n7"/> <!-- We won't turn back -->
+		<node id="6" owner="enemy" message="chat.vo.2.n6"/> <!-- Thank you -->
+		<node id="7" owner="player" message="chat.vo.2.n7"/> <!-- We won't turn back -->
 	</chat>
 	<chat id="chat.virus.outgoing.3">
 		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
@@ -818,7 +818,7 @@
 		<node id="6" owner="player" option="chat.vo.4.n6.o" message="chat.vo.4.n6"> <!-- Continue -->
 			<transition to="5"/>
 		</node>
-		<node id="7" owner="player" option="chat.vo.4.n7.o" message="chat.v0.4.n7"> <!-- Turn back -->
+		<node id="7" owner="player" option="chat.vo.4.n7.o" message="chat.vo.4.n7"> <!-- Turn back -->
 			<transition to="8"/>
 		</node>
 		<node id="8" owner="enemy" message="chat.vo.4.n8" action="retreat"/> <!-- I retreat. -->
