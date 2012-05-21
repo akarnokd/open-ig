@@ -372,21 +372,15 @@ public class AITrader implements AIManager {
 	@Override
 	public SpacewarAction spaceBattle(SpacewarWorld world, 
 			List<SpacewarStructure> idles) {
-		Pair<Double, Double> fh = AI.fleetHealth(world.structures(player));
-		if (fh.first * 2 < battleHP) {
-			for (SpacewarStructure s : idles) {
-				world.flee(s);
-				fleetTurnedBack.add(s.fleet);
-				Planet pl = lastVisitedPlanet.get(s.fleet);
-				if (pl != null) {
-					s.fleet.targetPlanet(pl);
-				} else {
-					new AssertionError("Fleet " + s.fleet.id + " has no previous planet to return to!").printStackTrace();
-					s.fleet.targetPlanet(nearest(player.world.planets.values(), s.fleet));
+		List<SpacewarStructure> sts = world.structures(player);
+		Pair<Double, Double> fh = AI.fleetHealth(sts);
+		if (fh.first * 4 < battleHP * 3) {
+			if (!world.battle().enemyFlee) {
+				for (SpacewarStructure s : sts) {
+					world.flee(s);
 				}
-				s.fleet.mode = FleetMode.MOVE;
+				world.battle().enemyFlee = true;
 			}
-			world.battle().enemyFlee = true;
 			return SpacewarAction.FLEE;
 		} else {
 			// move a bit forward
@@ -396,6 +390,28 @@ public class AITrader implements AIManager {
 		}
 		return SpacewarAction.CONTINUE;
 	}
+	@Override
+	public void spaceBattleDone(SpacewarWorld world) {
+		Fleet f = world.battle().targetFleet;
+		if (f != null && world.battle().enemyFlee) {
+			returnToPreviousPlanet(f);
+		}
+	}
+	/**
+	 * Force the fleet to return to its previous planet.
+	 * @param f the fleet
+	 */
+	public void returnToPreviousPlanet(Fleet f) {
+		fleetTurnedBack.add(f);
+		Planet pl = lastVisitedPlanet.get(f);
+		if (pl != null) {
+			f.targetPlanet(pl);
+		} else {
+			new AssertionError("Fleet " + f.id + " has no previous planet to return to!").printStackTrace();
+			f.targetPlanet(nearest(player.world.planets.values(), f));
+		}
+		f.mode = FleetMode.MOVE;
+	}
 	/**
 	 * Returns the nearest owned planet planet.
 	 * @param planets the collection of planets
@@ -403,7 +419,9 @@ public class AITrader implements AIManager {
 	 * @return the planet
 	 */
 	Planet nearest(Collection<Planet> planets, final Fleet fleet) {
-		return Collections.min(planets, new Comparator<Planet>() {
+		List<Planet> ps = U.newArrayList(planets);
+		ps.remove(fleet.targetPlanet());
+		return Collections.min(ps, new Comparator<Planet>() {
 			@Override
 			public int compare(Planet o1, Planet o2) {
 				if (o1.owner != null && o2.owner == null) {
@@ -434,10 +452,6 @@ public class AITrader implements AIManager {
 		
 	}
 	@Override
-	public void spaceBattleDone(SpacewarWorld world) {
-		
-	}
-	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
 		battleHP = AI.fleetHealth(world.structures(player)).first;
 		
@@ -449,7 +463,7 @@ public class AITrader implements AIManager {
 			String filter = "chat.merchant";
 			
 			if (player.world.infectedFleets.containsKey(our.id)) {
-				filter = "chat.virus.leaving";
+				filter = "chat.virus.outgoing";
 			} else
 			if (our.targetPlanet().quarantineTTL > 0) {
 				filter = "chat.virus.incoming";
@@ -470,6 +484,7 @@ public class AITrader implements AIManager {
 	
 	@Override
 	public void load(XElement in) {
+		landed.clear();
 		for (XElement xlf : in.childrenWithName("landed")) {
 			String fid = xlf.get("fleet", null);
 			String pid = xlf.get("planet", null);
@@ -486,6 +501,7 @@ public class AITrader implements AIManager {
 				}
 			}
 		}
+		fleetTurnedBack.clear();
 		for (XElement xtb : in.childrenWithName("turned-back")) {
 			int fid = xtb.getInt("fleet", -1);
 			if (fid >= 0) {
@@ -497,19 +513,21 @@ public class AITrader implements AIManager {
 				}
 			}
 		}
+		lastVisitedPlanet.clear();
 		for (XElement xlast : in.childrenWithName("last-visit")) {
 			int fid = xlast.getInt("fleet", -1);
+			String pid = xlast.get("planet");
 			if (fid >= 0) {
 				Fleet f = player.fleet(fid);
 				if (f != null) {
-					String pid = xlast.get("planet");
 					Planet p = world.planets.get(pid);
-					
 					if (p != null) {
 						lastVisitedPlanet.put(f, p);
+					} else {
+						new AssertionError(String.format("Player last-visit fleet %s refers to an unknown planet %s", fid, pid)).printStackTrace();
 					}
 				} else {
-					new AssertionError("Last visit fleet " + fid + " not found by the player " + player.id).printStackTrace();
+					new AssertionError(String.format("Player last-visit refers to unknown fleet %s", fid)).printStackTrace();
 				}
 			}
 		}
