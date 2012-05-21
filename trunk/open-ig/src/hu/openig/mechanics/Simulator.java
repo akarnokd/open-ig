@@ -69,9 +69,10 @@ public final class Simulator {
 		prepareGlobalStatistics(world);
 		
 		// -------------------------
-		Map<Planet, PlanetStatistics> planetStats = U.newHashMap();
 		
 		for (Player player : world.players.values()) {
+			Map<Planet, PlanetStatistics> planetStats = U.newHashMap();
+			
 			PlanetStatistics all = player.getPlanetStatistics(planetStats);
 			
 			// -------------------------
@@ -90,10 +91,15 @@ public final class Simulator {
 			progressResearch(world, player, all);
 			// result |= player == world.player
 			progressProduction(world, player, all);
-		}
-		for (Planet p : world.planets.values()) {
-			if (p.owner != null && !p.owner.id.equals("Traders")) {
-				progressPlanet(world, p, day0 != day1, planetStats.get(p));
+
+			
+			if (!player.id.equals("Traders")) {
+				// progress player's planets
+				for (Map.Entry<Planet, PlanetStatistics> pps : planetStats.entrySet()) {
+					Planet p = pps.getKey();
+					PlanetStatistics ps = pps.getValue();
+					progressPlanet(world, p, day0 != day1, ps);
+				}
 			}
 		}
 		
@@ -111,7 +117,6 @@ public final class Simulator {
 		checkAchievements(world, day0 != day1);
 		
 		world.scripting.onTime();
-		// defer space battles
 		if (!world.pendingBattles.isEmpty()) {
 			world.env.startBattle();
 		}
