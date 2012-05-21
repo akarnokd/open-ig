@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
-	<module id='Launcher' version='0.29'>
+	<module id='Launcher' version='0.30'>
 		<!-- General module description -->
 		<general url='http://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
@@ -22,12 +22,12 @@
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  http://open-ig.googlecode.com/files/ -->
-		<file url='http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='789f15b21511d11b341c402bb8d94ed99b5eb66d'>
+		<file url='http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='4a64d9c578492164ca4eab667393e86478585048'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.404'>
+	<module id='Game' version='0.94.405'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,11 +43,11 @@
 			<desc lang='en'>Bugfixes.</desc>
 			<desc lang='de'>Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.404.jar' sha1='ec4d6daf4085a05b56b085d022b5952d0ff43325'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.405.jar' sha1='1a9f975ae7add5daef31421f2543471b71a7b1b7'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120517a2.zip' sha1='e746f84126b1c82873451ed53f951f80b221d74e'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120521a2.zip' sha1='5cf7a0d2df5b693f08da17abaaaf0c32cdc31b17'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Május 17 / A</desc>
 			<desc lang='en'>The upgraded resource file [Data]. 17th May, 2012 / A</desc>
 		</file>

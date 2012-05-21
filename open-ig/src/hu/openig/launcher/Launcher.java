@@ -1030,8 +1030,8 @@ public class Launcher extends JFrame {
 //				File uf = updateFile;
 				try {
 					xe = get();
-					updateFile.renameTo(localUpdate);
-					doProcessUpdate(xe, null);
+					move(updateFile, localUpdate);
+					doProcessUpdate(xe, updateFile);
 				} catch (ExecutionException ex) {
 					if (!(ex.getCause() instanceof IOException)) {
 						ex.printStackTrace();
@@ -1042,10 +1042,21 @@ public class Launcher extends JFrame {
 				} catch (InterruptedException ex) {
 					ex.printStackTrace();
 					errorMessage(format("Error during data download: %s", ex.toString()));
+				} catch (IOException ex) {
+					errorMessage(format("Could not rename update file: %s", ex.toString()));
 				}
 			}
 		};
 		w.execute();
+	}
+	/**
+	 * Overwrite the destination file with the source file.
+	 * @param src the source file
+	 * @param dst the destinationf file
+	 * @throws IOException on error
+	 */
+	void move(File src, File dst) throws IOException {
+		IOUtils.save(dst, IOUtils.load(src));
 	}
 	/**
 	 * Process a local update xml.
