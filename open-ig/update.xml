@@ -27,7 +27,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.405'>
+	<module id='Game' version='0.94.406'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,7 +43,7 @@
 			<desc lang='en'>Bugfixes.</desc>
 			<desc lang='de'>Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.405.jar' sha1='1a9f975ae7add5daef31421f2543471b71a7b1b7'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.406.jar' sha1='d569a858682dcd01bd16a7d2979132ba1a350374'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
