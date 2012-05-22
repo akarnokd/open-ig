@@ -2484,6 +2484,6 @@ public class EquipmentScreen extends ScreenBase {
 		planet().inventory.add(ii);
 		leftList.items.add(ii);
 		leftList.compute();
-		player().changeInventoryCount(research(), -1);
+		player().changeInventoryCount(bestStation, -1);
 	}
 }

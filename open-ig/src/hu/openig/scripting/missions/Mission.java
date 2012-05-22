@@ -1002,4 +1002,8 @@ public abstract class Mission implements GameScriptingEvents {
 	public void onSpaceChat(SpacewarWorld world, Chat chat, Node node) {
 		
 	}
+	@Override
+	public void onRecordWatched() {
+		
+	}
 }
