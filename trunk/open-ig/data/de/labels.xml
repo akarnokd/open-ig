@@ -2639,5 +2639,6 @@
 	<entry key='chat.vo.6.n1'>Hier Raumschiff BRAD6 auf Handelsmission.</entry>
 	<entry key='chat.vo.7.n1'>Hier Raumschiff Lisa2 auf Handelsmission.</entry>
 	<entry key='chat.vo.8.n1'>Hier Raumschiff Leila auf Handelsmission.</entry>
+  <entry key='message.cant_build_more'>Du kannst nicht mehr von diesem Gebäude bauen.</entry>
 		
 </labels>

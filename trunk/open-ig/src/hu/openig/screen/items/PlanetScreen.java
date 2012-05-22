@@ -3212,6 +3212,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				buttonSound(SoundType.NOT_AVAILABLE);
 				
 				commons.control().displayError(get("message.cant_build_there"));
+			} else
+			if (!planet().canBuild(player().currentBuilding)) {
+				buttonSound(SoundType.NOT_AVAILABLE);
+				commons.control().displayError(get("message.cant_build_more"));
 			}
 		}
 	}

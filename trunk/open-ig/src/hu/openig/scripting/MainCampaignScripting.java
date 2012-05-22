@@ -1140,7 +1140,6 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 					public void actionPerformed(ActionEvent e) {
 						world.currentTalk = null;
 						world.allowRecordMessage = false;
-						world.recordWatched = false;
 					}
 				});
 			}
@@ -1293,4 +1292,14 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			m.onSpaceChat(world, chat, node);
 		}
 	}
+	@Override
+	public void onRecordWatched() {
+		for (Mission m : missions) {
+			if (!m.applicable()) {
+				continue;
+
+			}
+			m.onRecordWatched();
+		}
+	};
 }

@@ -49,6 +49,8 @@ import java.util.Set;
  * @author akarnokd, 2011.12.08.
  */
 public class AITrader implements AIManager {
+	/** The incoming chat. */
+	private static final String CHAT_VIRUS_INCOMING = "chat.virus.incoming";
 	/** List of the trader's fleets. */
 	final List<TraderFleet> fleets = U.newArrayList();
 	/** List of the planets with trader's spaceport. */ 
@@ -166,37 +168,7 @@ public class AITrader implements AIManager {
 	public void apply() {
 		// check if fleet arrived at target
 		int activeCount = landed.size();
-		for (TraderFleet tf : fleets) {
-			if (tf.target == null && tf.task != FleetTask.SCRIPT) {
-				LandedFleet lf = new LandedFleet();
-				lf.fleet = tf.fleet;
-				lf.target = tf.arrivedAt;
-				lf.ttl = fleetTurnedBack.contains(lf.fleet) ? TURN_BACK_TTL : LANDING_TTL;
-				landed.add(lf);
-				
-				// infect planet
-				if (world.infectedFleets.containsKey(lf.fleet.id)) {
-					if (lf.target != null) {
-						String source = world.infectedFleets.get(lf.fleet.id);
-						// do not reinfect source
-						if (!source.equals(lf.target.id)) {
-							// reset quarantine ttl
-							int ttl0 = lf.target.quarantineTTL;
-							lf.target.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
-							if (ttl0 == 0) {
-								world.scripting.onPlanetInfected(lf.target);
-							}
-						}
-					}
-				}
-				// hide
-				world.removeFleet(lf.fleet);
-
-				lastVisitedPlanet.remove(lf.fleet);
-				fleetTurnedBack.remove(lf.fleet);
-			}
-			activeCount++;
-		}
+		activeCount = landFleets(activeCount);
 		int actions = 0;
 		// if more planets available than fleets
 		while (activeCount < maxFleets()) {
@@ -230,6 +202,19 @@ public class AITrader implements AIManager {
 				fleetTurnedBack.remove(lf.fleet);
 			}
 		}
+		emergeFleets(actions);
+		// label fix
+		for (Fleet f : player.ownFleets()) {
+			if (f.task != FleetTask.SCRIPT) {
+				f.name = traderLabel;
+			}
+		}
+	}
+	/**
+	 * Emerge fleets based on remaining action count.
+	 * @param actions the actions.
+	 */
+	public void emergeFleets(int actions) {
 		// progress landed TTL and let them emerge
 		Iterator<LandedFleet> it = landed.iterator();
 		while (it.hasNext()) {
@@ -276,12 +261,57 @@ public class AITrader implements AIManager {
 				}
 			}
 		}
-		// label fix
-		for (Fleet f : player.ownFleets()) {
-			if (f.task != FleetTask.SCRIPT) {
-				f.name = traderLabel;
+	}
+	/**
+	 * Land the fleets that arrived at their target.
+	 * @param activeCount the active fleet count
+	 * @return the remaining active fleet count
+	 */
+	public int landFleets(int activeCount) {
+		for (TraderFleet tf : fleets) {
+			if (tf.target == null && tf.task != FleetTask.SCRIPT) {
+				LandedFleet lf = new LandedFleet();
+				lf.fleet = tf.fleet;
+				lf.target = tf.arrivedAt;
+				lf.ttl = fleetTurnedBack.contains(lf.fleet) ? TURN_BACK_TTL : LANDING_TTL;
+				landed.add(lf);
+				
+				// infect planet
+				if (world.infectedFleets.containsKey(lf.fleet.id)) {
+					if (lf.target != null) {
+						String source = world.infectedFleets.get(lf.fleet.id);
+						// do not reinfect source
+						if (!source.equals(lf.target.id)) {
+							// reset quarantine ttl
+							int ttl0 = lf.target.quarantineTTL;
+							lf.target.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+							if (ttl0 == 0) {
+								world.scripting.onPlanetInfected(lf.target);
+							}
+						}
+					}
+				} else {
+					// special case if trader #4 reaches an infected planet
+					if (lf.target.quarantineTTL > 0) {
+						int idx = player.ownFleets().indexOf(tf.fleet);
+						
+						int n = idx % filterChats(CHAT_VIRUS_INCOMING).size();
+						
+						if (n == 4) {
+							lf.target.quarantineTTL = 1;
+						}
+					}
+				}
+				
+				// hide
+				world.removeFleet(lf.fleet);
+
+				lastVisitedPlanet.remove(lf.fleet);
+				fleetTurnedBack.remove(lf.fleet);
 			}
+			activeCount++;
 		}
+		return activeCount;
 	}
 	/**
 	 * Count how many fleets are landed on the target planet.
@@ -464,22 +494,36 @@ public class AITrader implements AIManager {
 			
 			if (player.world.infectedFleets.containsKey(our.id)) {
 				filter = "chat.virus.outgoing";
-			} else
-			if (our.targetPlanet().quarantineTTL > 0) {
-				filter = "chat.virus.incoming";
-			}
-			
-			List<String> chats = U.newArrayList();
-			for (String c : player.world.chats.keys()) {
-				if (c.startsWith(filter)) {
-					chats.add(c);
+			} else {
+				Planet p = our.targetPlanet();
+				if (p == null) {
+					p = our.arrivedAt;
+				}
+				if (p != null && p.quarantineTTL > 0) {
+					filter = CHAT_VIRUS_INCOMING;
 				}
 			}
+			
+			List<String> chats = filterChats(filter);
 			
 			int comm = idx % chats.size();
 			
 			world.battle().chat = chats.get(comm);
 		}
+	}
+	/**
+	 * Filter the chat settings.
+	 * @param filter the prefix
+	 * @return the list of chats with the prefix
+	 */
+	public List<String> filterChats(String filter) {
+		List<String> chats = U.newArrayList();
+		for (String c : player.world.chats.keys()) {
+			if (c.startsWith(filter)) {
+				chats.add(c);
+			}
+		}
+		return chats;
 	}
 	
 	@Override

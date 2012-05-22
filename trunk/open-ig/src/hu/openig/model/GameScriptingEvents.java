@@ -259,4 +259,6 @@ public interface GameScriptingEvents {
 	 * @param node the selected node
 	 */
 	void onSpaceChat(SpacewarWorld world, Chat chat, Node node);
+	/** Called when the user clicks on the record watched button. */
+	void onRecordWatched();
 }

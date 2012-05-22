@@ -2521,7 +2521,7 @@
 	<entry key='chat.vo.7.n1'>This is ship Lisa2 on a trading route.</entry>
 	<entry key='chat.vo.8.n1'>This is ship Leila on a trading route.</entry>
 
-  <entry key=''/>
+  <entry key='message.cant_build_more'>You can't build more of this building on this planet.</entry>
   <entry key=''/>
   <entry key=''/>
   <entry key=''/>

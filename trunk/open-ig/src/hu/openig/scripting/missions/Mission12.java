@@ -9,7 +9,6 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.model.BattleInfo;
-import hu.openig.model.Fleet;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -205,6 +204,9 @@ public class Mission12 extends Mission {
 				}			
 			}
 		}
+		if (!planet.id.equals("San Sterling")) {
+			receive(planet.id + "-Virus").visible = false;
+		}
 	}
 	@Override
 	public void onPlanetInfected(Planet planet) {
@@ -222,6 +224,10 @@ public class Mission12 extends Mission {
 			if (cnt > 2) {
 				gameover();
 				loseGameMessageAndMovie("New Caroline-Garthog-Virus-Breached", "loose/fired_level_2");
+			} else {
+				if (!planet.id.equals("San Sterling")) {
+					incomingMessage(planet.id + "-Virus");
+				}
 			}
 		}
 	}
@@ -259,19 +265,5 @@ public class Mission12 extends Mission {
 		tradersLost = false;
 		stage = M12Stages.NONE;
 		super.reset();
-	}
-	@Override
-	public void onSpacewarStart(SpacewarWorld war) {
-		if (stage != M12Stages.NONE && stage != M12Stages.DONE) {
-			Fleet tf = war.battle().targetFleet; 
-			if (tf != null && tf.owner.id.equals("Traders") 
-					&& world.infectedFleets.containsKey(tf.id)) {
-				int idx = player("Traders").ownFleets().indexOf(tf);
-				
-				int n = 2;
-				
-				war.battle().chat = "chat.virus.m12." + ((idx % n) + 1);
-			}
-		}
 	}
 }

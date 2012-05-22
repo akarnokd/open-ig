@@ -338,4 +338,9 @@ public class EmptyScripting implements GameScripting {
 	public void onSpaceChat(SpacewarWorld world, Chat chat, Node node) {
 		
 	}
+	@Override
+	public void onRecordWatched() {
+		// TODO Auto-generated method stub
+		
+	}
 }
