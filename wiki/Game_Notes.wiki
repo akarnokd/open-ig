@@ -22,8 +22,12 @@
   * Fixed cases where planet progress simulation crashed the game ([http://code.google.com/p/open-ig/issues/detail?id=457 Issue #457/2])
   * Fixed the crash due invalid chat references during virus mission 12 ([http://code.google.com/p/open-ig/issues/detail?id=458 Issue #458])
   * Trader #4 now cures an infected planet when allowed to land ([http://code.google.com/p/open-ig/issues/detail?id=460 Issue #460]). Use the chat to figure out which one is it :)
-  * Fixed missing chat labels ([http://code.google.com/p/open-ig/issues/detail?id=461 Issue #461])
-  * 
+  * Fixed missing or wrong chat labels (Issues [http://code.google.com/p/open-ig/issues/detail?id=461 #461], [http://code.google.com/p/open-ig/issues/detail?id=469 #469])
+  * Added error notification for the case when the build limit is reached ([http://code.google.com/p/open-ig/issues/detail?id=464 Issue #464])
+  * Additional planet infections in mission 12 now send a message as well ([http://code.google.com/p/open-ig/issues/detail?id=467 Issue #467])
+  * Fixed carrier mission 3 not working properly ([http://code.google.com/p/open-ig/issues/detail?id=471 Issue #471])
+  * Fixed issue when auto-equipping planets and the space stations were not properly deduced from inventory ([http://code.google.com/p/open-ig/issues/detail?id=472 Issue #472])
+
 
 = Version 0.94.400 - Bug fixes =
   * Released: 2012-05-13 18:00 CET
