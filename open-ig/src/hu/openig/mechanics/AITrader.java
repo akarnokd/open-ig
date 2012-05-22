@@ -292,7 +292,7 @@ public class AITrader implements AIManager {
 					}
 				} else {
 					// special case if trader #4 reaches an infected planet
-					if (lf.target.quarantineTTL > 0) {
+					if (lf.target != null && lf.target.quarantineTTL > 0) {
 						int idx = player.ownFleets().indexOf(tf.fleet);
 						
 						int n = idx % filterChats(CHAT_VIRUS_INCOMING).size();
