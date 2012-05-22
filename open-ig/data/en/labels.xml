@@ -2448,10 +2448,10 @@
 	<entry key='chat.vi.5.n2'>This planet is infected by a virus. It is under blockade. Turn around!</entry>
 	<entry key='chat.vi.5.n3'>But I must pass, it is a matter of great importance.</entry>
 	<entry key='chat.vi.5.n4.o'>No, you must turn back!</entry>
-	<entry key='chat.vi.5.n4'>"You must turn back!</entry>
+	<entry key='chat.vi.5.n4'>You must turn back!</entry>
 	<entry key='chat.vi.5.n5.o'>All right, you may pass.</entry>
 	<entry key='chat.vi.5.n5'>All right. Don't tell anyone I let you through.</entry>
-	<entry key='chat.vi.5.n6'>"I'll return.</entry>
+	<entry key='chat.vi.5.n6'>I'll return.</entry>
 	
 	<entry key='chat.vi.6.n1'>This is ship BRAD6 on a trading route.</entry>
 	<entry key='chat.vi.7.n1'>This is ship Lisa2 on a trading route.</entry>
