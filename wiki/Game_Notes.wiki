@@ -2,6 +2,29 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.410 - More bugfixes =
+  * Released: 2012-05-22 16:30 CET
+  * Welcome *Sigee15* in the project as committer.
+  * Diplomacy screen is now fully functional ([http://code.google.com/p/open-ig/issues/detail?id=210 Issue #210])
+  * AI players now nag you with diplomatic messages ([http://code.google.com/p/open-ig/issues/detail?id=211 Issue #211])
+  * Added generic objectives for level 2 to set the main course ([http://code.google.com/p/open-ig/issues/detail?id=325 Issue #325])
+  * Financial information sums added ([http://code.google.com/p/open-ig/issues/detail?id=407 Issue #407])
+  * Fixed scrolling of messages in the bridge message panel ([http://code.google.com/p/open-ig/issues/detail?id=437 Issue #437])
+  * Fixed notification about research being stopped due lack of something ([http://code.google.com/p/open-ig/issues/detail?id=438 Issue #438])
+  * Fixed AI managed player planets not replacing and slowly adding buildings ([http://code.google.com/p/open-ig/issues/detail?id=439 Issue #439])
+  * Fixed missing traders in protect mission 2 ([http://code.google.com/p/open-ig/issues/detail?id=440 Issue #440])
+  * Fixed crash in smuggler mission 9 ([http://code.google.com/p/open-ig/issues/detail?id=441 Issue #441])
+  * Fixed cases where the Thorin mission 5 would leave the controllable area before the garthogs catch up, leaving the player unable to attack ([http://code.google.com/p/open-ig/issues/detail?id=443 Issue #443])
+  * Fixed issue where trader fleets forgot where they came from ([http://code.google.com/p/open-ig/issues/detail?id=444 Issue #444])
+  * Fixed bridge animation not properly showing the message panel after closing it ([http://code.google.com/p/open-ig/issues/detail?id=450 Issue #450])
+  * Clicking on record message during mission 15 (spy) now instantly completes the mission instead of the need to resume the game ([http://code.google.com/p/open-ig/issues/detail?id=451 Issue #451])
+  * Fixed the Launcher reporting file access errors in certain cases ([http://code.google.com/p/open-ig/issues/detail?id=457 Issue #457/1])
+  * Fixed cases where planet progress simulation crashed the game ([http://code.google.com/p/open-ig/issues/detail?id=457 Issue #457/2])
+  * Fixed the crash due invalid chat references during virus mission 12 ([http://code.google.com/p/open-ig/issues/detail?id=458 Issue #458])
+  * Trader #4 now cures an infected planet when allowed to land ([http://code.google.com/p/open-ig/issues/detail?id=460 Issue #460]). Use the chat to figure out which one is it :)
+  * Fixed missing chat labels ([http://code.google.com/p/open-ig/issues/detail?id=461 Issue #461])
+  * 
+
 = Version 0.94.400 - Bug fixes =
   * Released: 2012-05-13 18:00 CET
   * This is *NOT* the Beta yet.
