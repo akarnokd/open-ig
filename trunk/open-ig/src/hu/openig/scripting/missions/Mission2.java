@@ -9,6 +9,7 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
+import hu.openig.mechanics.AITrader;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
@@ -80,7 +81,7 @@ public class Mission2 extends Mission {
 					if (!fs.isEmpty()) {
 						Fleet f = world.random(fs);
 
-						int fidx = f.owner.ownFleets().indexOf(f);
+						int fidx = ((AITrader)f.owner.ai).fleetIndex(f);
 						
 						int traderMessage = 1 + fidx % 7;
 						
@@ -315,7 +316,7 @@ public class Mission2 extends Mission {
 		if (isMissionSpacewar(war.battle(), "Mission-2-Task-" + task)) {
 			if (startJointSpaceBattle(war, MISSION_2_TRADER, player("Traders"), MISSION_2_PIRATE, player("Pirates"))) {
 				Player tr = player("Traders");
-				int tidx = tr.ownFleets().indexOf(findTaggedFleet(MISSION_2_TRADER, tr));
+				int tidx = ((AITrader)tr.ai).fleetIndex(findTaggedFleet(MISSION_2_TRADER, tr));
 				war.battle().chat = "chat.mission-2.defend.merchant" + (1 + tidx % 6);
 				
 				missionAttack = true;

@@ -563,6 +563,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		clearWaypoints();
 		targetFleet = null;
 		targetPlanet = null;
+		arrivedAt = null;
 		mode = null;
 		task = FleetTask.IDLE;
 	}
@@ -744,6 +745,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	public void moveTo(Planet planet) {
 		stop();
 		targetPlanet = planet;
+		arrivedAt = null;
 		mode = FleetMode.MOVE;
 		task = FleetTask.MOVE;
 	}

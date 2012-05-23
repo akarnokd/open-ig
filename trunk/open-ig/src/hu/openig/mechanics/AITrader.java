@@ -63,6 +63,8 @@ public class AITrader implements AIManager {
 	final Set<Fleet> fleetTurnedBack = U.newHashSet();
 	/** The last visited planet of the fleet. */
 	final Map<Fleet, Planet> lastVisitedPlanet = U.newHashMap();
+	/** The list of existing fleet indexes ever created. */
+	final List<Integer> createdFleets = U.newArrayList();
 	// -----------------------------------------------------------------
 	/** The world. */
 	World world;
@@ -87,7 +89,7 @@ public class AITrader implements AIManager {
 		FleetTask task;
 		@Override
 		public String toString() {
-			return String.format("LandedFleet { Fleet = %s, Target = %s, Arrived = %s, Task = %s }", fleet, target, arrivedAt, task);
+			return String.format("TraderFleet { Fleet = %s, Target = %s, Arrived = %s, Task = %s }", fleet, target, arrivedAt, task);
 		}
 	}
 	/**
@@ -136,7 +138,6 @@ public class AITrader implements AIManager {
 		}
 		
 		fleets.clear();
-		planets.clear();
 		// get fleets
 		for (Fleet f : player.fleets.keySet()) {
 			if (f.owner == player && f.task != FleetTask.SCRIPT) {
@@ -148,6 +149,7 @@ public class AITrader implements AIManager {
 				fleets.add(tf);
 			}
 		}
+		planets.clear();
 		for (Planet pl : world.planets.values()) {
 			if (pl.owner != null) {
 				if (pl.owner == world.player || (pl.owner != null && pl.owner == player) /* || world.random().nextDouble() < 0.4 */) {
@@ -185,6 +187,9 @@ public class AITrader implements AIManager {
 			nf.y = lf.target.y;
 			
 			landed.add(lf);
+			
+			world.removeFleet(lf.fleet);
+			
 			activeCount++;
 			if (++actions >= actionCount) {
 				break;
@@ -206,7 +211,7 @@ public class AITrader implements AIManager {
 		// label fix
 		for (Fleet f : player.ownFleets()) {
 			if (f.task != FleetTask.SCRIPT) {
-				f.name = traderLabel;
+				f.name = traderLabel + " " + (fleetIndex(f) + 1);
 			}
 		}
 	}
@@ -240,6 +245,9 @@ public class AITrader implements AIManager {
 							}
 						}
 						lf.fleet.moveTo(nt);
+						if (nt == lf.target) {
+							System.err.println("Going back already? " + nt.id);
+						}
 	
 						for (InventoryItem ii : lf.fleet.inventory) {
 							ii.hp = world.getHitpoints(ii.type);
@@ -293,25 +301,32 @@ public class AITrader implements AIManager {
 				} else {
 					// special case if trader #4 reaches an infected planet
 					if (lf.target != null && lf.target.quarantineTTL > 0) {
-						int idx = player.ownFleets().indexOf(tf.fleet);
+						int idx = fleetIndex(tf.fleet);
 						
 						int n = idx % filterChats(CHAT_VIRUS_INCOMING).size();
 						
-						if (n == 4) {
+						if (n == 3) {
 							lf.target.quarantineTTL = 1;
 						}
 					}
 				}
 				
 				// hide
-				world.removeFleet(lf.fleet);
-
-				lastVisitedPlanet.remove(lf.fleet);
-				fleetTurnedBack.remove(lf.fleet);
+				hideFleet(lf.fleet);
 			}
 			activeCount++;
 		}
 		return activeCount;
+	}
+	/**
+	 * Hide a fleet.
+	 * @param lf the fleet to hide
+	 */
+	public void hideFleet(Fleet lf) {
+		world.removeFleet(lf);
+
+		lastVisitedPlanet.remove(lf);
+		fleetTurnedBack.remove(lf);
 	}
 	/**
 	 * Count how many fleets are landed on the target planet.
@@ -361,24 +376,28 @@ public class AITrader implements AIManager {
 		ii.createSlots();
 		
 		nf.inventory.add(ii);
+		
+		createdFleets.add(nf.id);
+		
 		return nf;
 	}
 	/**
 	 * Creates a fleet with the given ship tech id as its single inventory.
-	 * @param id the tech id of the ship
+	 * @param id the ship identifier
+	 * @param tech the technology identifier
 	 * @return create a new fleet
 	 */
-	public Fleet createFleet(String id) {
+	public Fleet createFleet(int id, String tech) {
 		// locate research
 		ResearchType type = null;
 		for (ResearchType rt : world.researches.values()) {
-			if (rt.race.contains(player.race) && rt.id.equals(id)) {
+			if (rt.race.contains(player.race) && rt.id.equals(tech)) {
 				type = rt;
 				break;
 			}
 		}
 		if (type != null) {
-			Fleet nf = new Fleet(player);
+			Fleet nf = id < 0 ? new Fleet(player) : new Fleet(id, player);
 			nf.name = traderLabel;
 			InventoryItem ii = new InventoryItem(nf);
 			ii.owner = player;
@@ -388,6 +407,11 @@ public class AITrader implements AIManager {
 			ii.createSlots();
 			
 			nf.inventory.add(ii);
+			
+			if (id < 0) {
+				createdFleets.add(nf.id);
+			}
+
 			return nf;
 		} 
 		throw new AssertionError("Traders missing technology " + id);
@@ -488,7 +512,7 @@ public class AITrader implements AIManager {
 		Fleet our = world.battle().getFleet();
 		
 		if (our != null) {
-			int idx = player.ownFleets().indexOf(our);
+			int idx = fleetIndex(our);
 			
 			String filter = "chat.merchant";
 			
@@ -512,6 +536,14 @@ public class AITrader implements AIManager {
 		}
 	}
 	/**
+	 * Returns the index of the given fleet.
+	 * @param our the fleet to test
+	 * @return the index
+	 */
+	public int fleetIndex(Fleet our) {
+		return createdFleets.indexOf(our.id);
+	}
+	/**
 	 * Filter the chat settings.
 	 * @param filter the prefix
 	 * @return the list of chats with the prefix
@@ -528,19 +560,30 @@ public class AITrader implements AIManager {
 	
 	@Override
 	public void load(XElement in) {
+		// restore fleet registry
+		createdFleets.clear();
+		for (XElement ef : in.childrenWithName("created-fleet")) {
+			createdFleets.add(ef.getInt("id"));
+		}
+		
+		// restore landed fleets
 		landed.clear();
 		for (XElement xlf : in.childrenWithName("landed")) {
 			String fid = xlf.get("fleet", null);
 			String pid = xlf.get("planet", null);
+			int oid = xlf.getInt("id", -1);
 			if (fid != null && pid != null) {
 				Planet p = world.planets.get(pid);
 				int ttl = xlf.getInt("ttl");
-				Fleet f = createFleet(fid);
+				Fleet f = createFleet(oid, fid);
 				if (p != null) {
 					LandedFleet lf = new LandedFleet();
 					lf.fleet = f;
 					lf.target = p;
 					lf.ttl = ttl;
+					
+					hideFleet(lf.fleet);
+
 					landed.add(lf);
 				}
 			}
@@ -598,6 +641,9 @@ public class AITrader implements AIManager {
 				xlast.set("fleet", last.getKey().id);
 				xlast.set("planet", last.getValue().id);
 			}
+		}
+		for (Integer i : createdFleets) {
+			out.add("created-fleet").set("id", i);
 		}
 	}
 	@Override

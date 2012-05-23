@@ -58,7 +58,7 @@ public class Player {
 	/** The completed research. */
 	private final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<ResearchType, List<ResearchType>>();
 	/** The fleets owned. */
-	public final Map<Fleet, FleetKnowledge> fleets = new HashMap<Fleet, FleetKnowledge>();
+	public final Map<Fleet, FleetKnowledge> fleets = new LinkedHashMap<Fleet, FleetKnowledge>();
 	/** The planets owned. */
 	public final Map<Planet, PlanetKnowledge> planets = new HashMap<Planet, PlanetKnowledge>();
 	/** The inventory counts. */
