@@ -78,6 +78,11 @@ public class Mission17 extends Mission {
 			} else {
 				setObjectiveState("Mission-6-Task-2", ObjectiveState.FAILURE);
 			}
+			addTimeout("Mission-6-Hide-3", 13000);
+		}
+		if (checkTimeout("Mission-6-Hide-3")) {
+			objective("Mission-6-Task-1").visible = false;
+			objective("Mission-6-Task-2").visible = false;
 		}
 		if (checkMission("Mission-17")) {
 			stage = M17.INTRO;
