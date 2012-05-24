@@ -762,7 +762,7 @@
 			<transition to="7"/>
 		</node>
 		<node id="6" owner="enemy" message="chat.vo.2.n6"/> <!-- Thank you -->
-		<node id="7" owner="player" message="chat.vo.2.n7"/> <!-- We won't turn back -->
+		<node id="7" owner="enemy" message="chat.vo.2.n7"/> <!-- We won't turn back -->
 	</chat>
 	<chat id="chat.virus.outgoing.3">
 		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>

@@ -152,7 +152,7 @@ public class Mission7 extends Mission {
 		if (!fs.isEmpty()) {
 			incomingMessage("Merchant-Under-Attack-Garthog", m7ti);
 			objective("Mission-7").visible = true;
-			clearMission(m7ti);
+						
 			world.env.speed1();
 			Fleet f = world.random(fs);
 			f.stop();
@@ -205,6 +205,9 @@ public class Mission7 extends Mission {
 			// set failure timeout
 			addMission(m7tio, 24);
 			return true;
+		} else {
+			// schedule again
+			addMission(m7ti, 0);
 		}
 		return false;
 	}
