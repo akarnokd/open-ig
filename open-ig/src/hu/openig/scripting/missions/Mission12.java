@@ -170,38 +170,34 @@ public class Mission12 extends Mission {
 		}
 		if (cnt == 0) {
 			if (stage == M12Stages.FIRST_RUNDOWN || stage == M12Stages.FIRST_MESSAGE) {
-				if (planet.id.equals("New Caroline")) {
-					receive("New Caroline-Garthog-Virus").visible = false;
-					incomingMessage("New Caroline-Garthog-Virus-Resolved");
-					addMission("Mission-12-Subsequent", 24);
-					addMission("Mission-12-TaskSuccess", 2);
-					stage = M12Stages.SUBSEQUENT_DELAY;
-					addMission("Mission-12-Hide", 5);
-				}
+				receive("New Caroline-Garthog-Virus").visible = false;
+				incomingMessage("New Caroline-Garthog-Virus-Resolved");
+				addMission("Mission-12-Subsequent", 24);
+				addMission("Mission-12-TaskSuccess", 2);
+				stage = M12Stages.SUBSEQUENT_DELAY;
+				addMission("Mission-12-Hide", 5);
 			}
 			if (stage == M12Stages.SUBSEQUENT_RUNDOWN || stage == M12Stages.SUBSEQUENT_MESSAGE) {
-				if (planet.id.equals("New Caroline")) {
-					receive("New Caroline-Garthog-Virus-Again").visible = false;
-					if (tradersLost) {
-						incomingMessage("New Caroline-Garthog-Virus-Again-Deaths");
-					} else {
-						incomingMessage("New Caroline-Garthog-Virus-Resolved");
-					}
-					for (int i = 5; i >= 2; i--) {
-						Objective o = objective("Mission-12-Task-" + i);
-						if (o.visible && o.state == ObjectiveState.ACTIVE) {
-							if (i < 5) {
-								addMission("Mission-12-Subsequent", 24);
-								stage = M12Stages.SUBSEQUENT_DELAY;
-							} else {
-								stage = M12Stages.DONE;
-							}
-							addMission("Mission-12-TaskSuccess", 2);
-							break;
+				receive("New Caroline-Garthog-Virus-Again").visible = false;
+				if (tradersLost) {
+					incomingMessage("New Caroline-Garthog-Virus-Again-Deaths");
+				} else {
+					incomingMessage("New Caroline-Garthog-Virus-Resolved");
+				}
+				for (int i = 5; i >= 2; i--) {
+					Objective o = objective("Mission-12-Task-" + i);
+					if (o.visible && o.state == ObjectiveState.ACTIVE) {
+						if (i < 5) {
+							addMission("Mission-12-Subsequent", 24);
+							stage = M12Stages.SUBSEQUENT_DELAY;
+						} else {
+							stage = M12Stages.DONE;
 						}
-					}				
-					addMission("Mission-12-Hide", 5);
-				}			
+						addMission("Mission-12-TaskSuccess", 2);
+						break;
+					}
+				}				
+				addMission("Mission-12-Hide", 5);
 			}
 		}
 		if (!planet.id.equals("San Sterling")) {

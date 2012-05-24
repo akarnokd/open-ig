@@ -78,7 +78,7 @@ public class Mission8 extends Mission {
 				public void invoke() {
 					world.currentTalk = "phsychologist";
 					showObjective("Mission-8-Task-1");
-					addMission("Mission-8-Task-1", 2 * 24);
+					addMission("Mission-8-Task-1-Timeout", 2 * 24);
 					world.env.playMusic();
 				}
 			});
