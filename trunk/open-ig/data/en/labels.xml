@@ -1897,6 +1897,7 @@
   <entry key='spacewar.projector_information'>Gun information</entry>
   <entry key='spacewar.selection.bombs_rockets'>B/R    : %s / %s</entry>
   <entry key='spacewar.selection.firepower_dps'>DPS    : %s / %s</entry>
+  <entry key='spacewar.selection.defense_values'>Defense: </entry>
   <entry key='spacewar.selection.name'>Name   : %s</entry>
   <entry key='spacewar.selection.name_count'>Name   : %s x %s</entry>
   <entry key='spacewar.selection.owner'>Owner  : %s</entry>

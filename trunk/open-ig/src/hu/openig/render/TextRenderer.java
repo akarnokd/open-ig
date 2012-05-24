@@ -143,21 +143,21 @@ public class TextRenderer {
 			/* Size: 7 */
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
 			"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
-			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=",
 			/* Size: 10 */
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
 			"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
-			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=",
 			/* Size: 14 */
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 			"abcdefghijklmnopqrstuvwxyz",
 			"?!()'\"+-:;.,1234567890%& /",
 			"\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
-			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA",
+			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=",
 			/* Size: 5 */
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
 			"?!()'\"+-:;.,1234567890%& /\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
-			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA"
+			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA="
 	};
 	/** Character heights in various lines. */
 	static final int[] HEIGHTS = {
@@ -311,11 +311,11 @@ public class TextRenderer {
 		AffineTransform tf = g.getTransform();
 		g.translate(x, y);
 		SizedCharImages charToImage = charMap.get(size);
+		
 		if (charToImage == null) {
 			g.scale(size * 1.0 / maxSize, size * 1.0 / maxSize);
 			charToImage = charMap.get(maxSize);
 			size = maxSize;
-			
 		}
 		int spc = charsetSpaces.get(size);
 		int x1 = 0;
@@ -419,5 +419,39 @@ public class TextRenderer {
 			return true;
 		}
 		return coloredCharImages.values().iterator().next().values().iterator().next().chars.containsKey(c);		
+	}
+	/**
+	 * A text segment with custom coloring.
+	 * @author akarnokd, 2012.05.24.
+	 */
+	public static class TextSegment {
+		/** The text segment. */
+		public final String text;
+		/** The color. */
+		public final int color;
+		/** 
+		 * Constructor with initial parameters.
+		 * @param text the text
+		 * @param color the color
+		 */
+		public TextSegment(String text, int color) {
+			this.text = text;
+			this.color = color;
+		}
+	}
+	/**
+	 * Paint a sequence of colored text segments.
+	 * @param g2 the graphics context
+	 * @param x the render origin
+	 * @param y the render origin
+	 * @param size the common text size
+	 * @param segments the segments
+	 */
+	public void paintTo(Graphics2D g2, int x, int y, int size, Iterable<TextSegment> segments) {
+		int dx = 0;
+		for (TextSegment ts : segments) {
+			paintTo(g2, x + dx, y, size, ts.color, ts.text);
+			dx += getTextWidth(size, ts.text);
+		}
 	}
 }

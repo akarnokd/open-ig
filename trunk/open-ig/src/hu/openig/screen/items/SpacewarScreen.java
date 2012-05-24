@@ -47,6 +47,7 @@ import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
+import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.screen.EquipmentConfigure;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.HorizontalAlignment;
@@ -4272,6 +4273,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		int count;
 		/** The maximum image size. */
 		final int maxImage = 50;
+		/** Hitpoints. */
+		int hp;
+		/** Shield points. */
+		int sp;
 		/**
 		 * Returns the rendering width.
 		 * @return the rendering width
@@ -4289,6 +4294,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (rockets > 0 || bombs > 0) {
 				w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.bombs_rockets", bombs, rockets)));
 			}
+			// defense values
+			int dv = commons.text().getTextWidth(7, get("spacewar.selection.defense_values"));
+			dv += commons.text().getTextWidth(7, Integer.toString(hp));
+			if (sp >= 0) {
+				dv += commons.text().getTextWidth(7, " + ");
+				dv += commons.text().getTextWidth(7, Integer.toString(sp));
+				dv += commons.text().getTextWidth(7, " = ");
+				dv += commons.text().getTextWidth(7, Integer.toString(sp + hp));
+			}
+			w = Math.max(w, dv);
+			
 			return w + Math.min(maxImage, image.getWidth()) + 15;
 		}
 		/**
@@ -4296,7 +4312,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		 * @return the total text height
 		 */
 		int textHeight() {
-			int rows = 4;
+			int rows = 5;
 			if (rockets > 0 || bombs > 0) {
 				rows++;
 			}
@@ -4369,9 +4385,22 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			commons.text().paintTo(g2, dx, dy + 9, 7, color, format("spacewar.selection.owner", owner));
 			commons.text().paintTo(g2, dx, dy + 18, 7, color, format("spacewar.selection.parent", parent));
 			commons.text().paintTo(g2, dx, dy + 27, 7, color, format("spacewar.selection.firepower_dps", firepower, dps));
+			int y2 = dy + 36;
 			if (rockets > 0 || bombs > 0) {
-				commons.text().paintTo(g2, dx, dy + 36, 7, color, format("spacewar.selection.bombs_rockets", bombs, rockets));
+				commons.text().paintTo(g2, dx, y2, 7, color, format("spacewar.selection.bombs_rockets", bombs, rockets));
+				y2 += 9;
 			}
+			
+			List<TextSegment> tss = U.newArrayList();
+			tss.add(new TextSegment(get("spacewar.selection.defense_values"), color));
+			tss.add(new TextSegment(Integer.toString(hp), Color.GREEN.getRGB()));
+			if (sp >= 0) {
+				tss.add(new TextSegment(" + ", color));
+				tss.add(new TextSegment(Integer.toString(sp), Color.ORANGE.getRGB()));
+				tss.add(new TextSegment(" = ", color));
+				tss.add(new TextSegment(Integer.toString(hp + sp), TextRenderer.YELLOW));
+			}
+			commons.text().paintTo(g2, dx, y2, 7, tss);
 			
 			g2.translate(-x0, -y0);
 		}
@@ -4428,11 +4457,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					c.parent = s.planet.name;
 				}
 				
+				c.hp = s.hp;
+				
 				c.hpRatio = 1.0 * s.hp / s.hpMax;
 				if (s.shieldMax > 0) {
 					c.shieldRatio = 1.0 * s.shield / s.shieldMax;
+					c.sp = s.shield; 
 				} else {
 					c.shieldRatio = -1;
+					c.sp = -1;
 				}
 				c.count = s.count;
 				
