@@ -1403,12 +1403,12 @@ public class StarmapScreen extends ScreenBase {
 					}
 					g2.drawRect(x0 - 1, y0 - 1, f.owner.fleetIcon.getWidth() + 2, f.owner.fleetIcon.getHeight() + 2);
 				}
-				// indicate infection
-				if (world().infectedFleets.containsKey(f.id)) {
-					g2.setColor(Color.RED);
-					g2.drawRect(x0 - 2, y0 - 2, f.owner.fleetIcon.getWidth() + 4, f.owner.fleetIcon.getHeight() + 4);
-				}
+				// indicate interesting fleets
 				if (minimapPlanetBlink) {
+					if (world().infectedFleets.containsKey(f.id)) {
+						g2.setColor(Color.RED);
+						g2.drawRect(x0 - 2, y0 - 2, f.owner.fleetIcon.getWidth() + 4, f.owner.fleetIcon.getHeight() + 4);
+					}
 					Boolean frame = world().scripting.fleetBlink(f);
 					if (frame == Boolean.TRUE) {
 						g2.setColor(Color.RED);

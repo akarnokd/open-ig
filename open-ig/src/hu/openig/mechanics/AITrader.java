@@ -618,6 +618,13 @@ public class AITrader implements AIManager {
 				}
 			}
 		}
+		
+		// add existing but unregistered fleets
+		for (Fleet f : player.ownFleets()) {
+			if (!createdFleets.contains(f.id)) {
+				createdFleets.add(f.id);
+			}
+		}
 	}
 	@Override
 	public void save(XElement out) {
