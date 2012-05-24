@@ -2028,6 +2028,7 @@
 	<entry key='spacewar.selection.parent'       >Hely  : %s</entry>
 	<entry key='spacewar.selection.firepower_dps'>DPS   : %s / %s</entry>
 	<entry key='spacewar.selection.bombs_rockets'>B/R   : %s / %s</entry>
+  <entry key='spacewar.selection.defense_values'>Védelem: </entry>
 	<entry key='messages.quickly'>Gyorsan</entry>
 	<entry key='messages.check'>Helyzet</entry>
 	<entry key='messages.attack'>Támadás</entry>

@@ -554,6 +554,7 @@
   <entry key='spacewar.projector_information'>Kanone Information</entry>
   <entry key='spacewar.selection.bombs_rockets'>B/R    : %s / %s</entry>
   <entry key='spacewar.selection.firepower_dps'>DPS    : %s / %s</entry>
+  <entry key='spacewar.selection.defense_values'>Verteid: </entry>
   <entry key='spacewar.selection.name'>Name   : %s</entry>
   <entry key='spacewar.selection.name_count'>Name   : %s x %s</entry>
   <entry key='spacewar.selection.owner'>Besitzer : %s</entry>
