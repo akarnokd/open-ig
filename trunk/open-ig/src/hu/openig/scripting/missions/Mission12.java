@@ -200,7 +200,7 @@ public class Mission12 extends Mission {
 				addMission("Mission-12-Hide", 5);
 			}
 		}
-		if (!planet.id.equals("San Sterling")) {
+		if (!planet.id.equals("New Caroline")) {
 			receive(planet.id + "-Virus").visible = false;
 		}
 	}
@@ -221,7 +221,7 @@ public class Mission12 extends Mission {
 				gameover();
 				loseGameMessageAndMovie("New Caroline-Garthog-Virus-Breached", "loose/fired_level_2");
 			} else {
-				if (!planet.id.equals("San Sterling")) {
+				if (!planet.id.equals("New Caroline")) {
 					incomingMessage(planet.id + "-Virus");
 				}
 			}
