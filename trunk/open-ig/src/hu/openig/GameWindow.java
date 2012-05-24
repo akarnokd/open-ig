@@ -1200,6 +1200,7 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				// FIXME CHEAT
 				case KeyEvent.VK_O:
 					if (e.isControlDown()) {
 						Planet p = commons.world().player.currentPlanet; 
@@ -1223,6 +1224,7 @@ public class GameWindow extends JFrame implements GameControls {
 						options.maySave(true);
 					}
 					break;
+				// FIXME CHEAT
 				case KeyEvent.VK_I:
 					// CHEAT: add more money
 					if (e.isControlDown()) {
@@ -1254,6 +1256,7 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				// FIXME CHEAT
 				case KeyEvent.VK_G:
 					// CHEAT: add more money
 					if (e.isControlDown()) {
@@ -1262,6 +1265,7 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				// FIXME CHEAT
 				case KeyEvent.VK_J:
 					// TOGGLE test AI on player
 					if (e.isControlDown()) {
@@ -1281,6 +1285,7 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				// FIXME CHEAT
 				case KeyEvent.VK_P:
 					// set current player
 					if (e.isControlDown()) {
@@ -1294,6 +1299,7 @@ public class GameWindow extends JFrame implements GameControls {
 						e.consume();
 					}
 					break;
+				// FIXME CHEAT
 				case KeyEvent.VK_Z:
 					Planet cp = world().player.currentPlanet;
 					if (e.isControlDown() && cp != null) {
