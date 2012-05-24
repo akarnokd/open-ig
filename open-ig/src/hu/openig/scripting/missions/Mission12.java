@@ -43,6 +43,8 @@ public class Mission12 extends Mission {
 	protected M12Stages stage = M12Stages.NONE;
 	/** If traders were killed. */
 	protected boolean tradersLost;
+	/** Was there multiple planets infected? */
+	protected boolean multipleInfections;
 	@Override
 	public void onTime() {
 		Objective m11t1 = objective("Mission-11");
@@ -89,6 +91,7 @@ public class Mission12 extends Mission {
 			receive("New Caroline-Garthog-Virus-Again").visible = false;
 			receive("New Caroline-Garthog-Virus-Resolved").visible = false;
 			receive("New Caroline-Garthog-Virus-Again-Deaths").visible = false;
+			receive("New Caroline-Garthog-Virus-Breached").visible = false;
 		}
 		if (checkTimeout("Mission-12-Task-6-Hide")) {
 			objective("Mission-12-Task-6").visible = false;
@@ -171,7 +174,11 @@ public class Mission12 extends Mission {
 		if (cnt == 0) {
 			if (stage == M12Stages.FIRST_RUNDOWN || stage == M12Stages.FIRST_MESSAGE) {
 				receive("New Caroline-Garthog-Virus").visible = false;
-				incomingMessage("New Caroline-Garthog-Virus-Resolved");
+				if (multipleInfections) {
+					incomingMessage("New Caroline-Garthog-Virus-Breached");
+				} else {
+					incomingMessage("New Caroline-Garthog-Virus-Resolved");
+				}
 				addMission("Mission-12-Subsequent", 24);
 				addMission("Mission-12-TaskSuccess", 2);
 				stage = M12Stages.SUBSEQUENT_DELAY;
@@ -181,6 +188,9 @@ public class Mission12 extends Mission {
 				receive("New Caroline-Garthog-Virus-Again").visible = false;
 				if (tradersLost) {
 					incomingMessage("New Caroline-Garthog-Virus-Again-Deaths");
+				} else 
+				if (multipleInfections) {
+					incomingMessage("New Caroline-Garthog-Virus-Breached");
 				} else {
 					incomingMessage("New Caroline-Garthog-Virus-Resolved");
 				}
@@ -217,9 +227,12 @@ public class Mission12 extends Mission {
 					cnt++;
 				}
 			}
+			if (!planet.id.equals("New Caroline")) {
+				multipleInfections = true;
+			}
 			if (cnt > 2) {
 				gameover();
-				loseGameMessageAndMovie("New Caroline-Garthog-Virus-Breached", "loose/fired_level_2");
+				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
 			} else {
 				if (!planet.id.equals("New Caroline")) {
 					incomingMessage(planet.id + "-Virus");
@@ -250,15 +263,18 @@ public class Mission12 extends Mission {
 	public void load(XElement xmission) {
 		stage = M12Stages.valueOf(xmission.get("stage"));
 		tradersLost = xmission.getBoolean("traders-lost");
+		multipleInfections = xmission.getBoolean("multiple-infections", false);
 	}
 	@Override
 	public void save(XElement xmission) {
 		xmission.set("stage", stage);
 		xmission.set("traders-lost", tradersLost);
+		xmission.set("multiple-infections", multipleInfections);
 	}
 	@Override
 	public void reset() {
 		tradersLost = false;
+		multipleInfections = false;
 		stage = M12Stages.NONE;
 		super.reset();
 	}
