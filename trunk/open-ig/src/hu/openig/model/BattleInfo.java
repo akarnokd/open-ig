@@ -50,6 +50,8 @@ public class BattleInfo {
 	public boolean retreated;
 	/** Indicate if the enemy (non main player) fled. */
 	public boolean enemyFlee;
+	/** Invert the layout. */
+	public boolean invert;
 	/** Allow retreat from this battle? */
 	public boolean allowRetreat = true;
 	/** The number of fortifications destroyed. */

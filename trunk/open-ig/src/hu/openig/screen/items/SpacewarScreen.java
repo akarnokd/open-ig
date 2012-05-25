@@ -4193,21 +4193,24 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public void flee(SpacewarStructure s) {
+		boolean fleeLeft = false;
 		if (s.owner == battle.attacker.owner) {
-			if (attackerOnRight) {
-				s.moveTo = new Point2D.Double(space.width + 1000, s.y);
-			} else {
-				// flee to the left side
-				s.moveTo = new Point2D.Double(-1000, s.y);
+			if (!attackerOnRight) {
+				fleeLeft = true;
 			}
 		} else {
 			if (attackerOnRight) {
-				s.moveTo = new Point2D.Double(-1000, s.y);
-			} else {
-				s.moveTo = new Point2D.Double(space.width + 1000, s.y);
+				fleeLeft = true;
 			}
 			// flee to the right side
 		}
+		fleeLeft = fleeLeft ^ battle.invert;
+		if (fleeLeft) {
+			s.moveTo = new Point2D.Double(-1000, s.y);
+		} else {
+			s.moveTo = new Point2D.Double(space.width + 1000, s.y);
+		}
+		
 		s.attack = null;
 		s.guard = false;
 		if (s.selected && s.owner == player()) {
