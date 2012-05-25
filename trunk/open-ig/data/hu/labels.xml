@@ -2565,6 +2565,7 @@
 	<entry key='chat.vo.7.n1'>Ez a Lisa2 kereskedőhajó.</entry>
 	<entry key='chat.vo.8.n1'>Ez a Leila kereskedőhajó.</entry>
   <entry key='message.cant_build_more'>Nem építhetsz többet ebből az épületből ezen a bolygón.</entry>
+	<entry key="save.level">%s. szint kezdés</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

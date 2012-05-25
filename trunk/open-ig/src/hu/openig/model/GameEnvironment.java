@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
 import hu.openig.core.Labels;
+import hu.openig.core.SaveMode;
 
 import java.util.Deque;
 
@@ -105,4 +106,9 @@ public interface GameEnvironment {
 	void speed1();
 	/** @return Are we in battle mode? */
 	boolean isBattle();
+	/**
+	 * Create a save point.
+	 * @param mode the save mode
+	 */
+	void save(SaveMode mode);
 }

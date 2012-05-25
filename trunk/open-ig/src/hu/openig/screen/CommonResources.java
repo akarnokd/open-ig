@@ -1051,4 +1051,8 @@ public class CommonResources implements GameEnvironment {
 			labelReloader = null;
 		}
 	}
+	@Override
+	public void save(SaveMode mode) {
+		control.save(null, mode);
+	}
 }

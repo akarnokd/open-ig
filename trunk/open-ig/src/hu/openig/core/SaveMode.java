@@ -18,5 +18,7 @@ public enum SaveMode {
 	/** Automatic save once a day. */
 	AUTO,
 	/** User quick save. */
-	QUICK
+	QUICK,
+	/** Similar to manual save but fixed name. */
+	LEVEL
 }
