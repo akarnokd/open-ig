@@ -40,6 +40,16 @@ Earned after the defenth Thorin mission (M5) in level 1 after the promotion cuts
 
 Earned in level 2 after destroying the virus carriers (M14).
 
+== Admiral ==
+
+*You have been promoted to admiral*
+
+After defeating the Garthogs, you'll get promoted to admiral and you receive this achievement after the cutscene.
+
+== Newbie ==
+
+*Started a new game*
+
 = Count-based =
 
 == Oldest man ==
@@ -213,3 +223,19 @@ After promotion to captain, you'll get attacked by Garthogs on planet Achilles. 
 You can attack any trader to turn them back, or some random pirate attackers might turn back as well.
 
 == E.T. exists ==
+
+*You discovered a non-human civilization*
+
+Usually earned by making first contact with the Garthogs in level 2.
+
+== Scientist ==
+
+*You researched 30 technologies*
+
+Keep researching technologies. You probably earn this achievement in level 4 or 5.
+
+== All your base are belong to us ==
+
+*Your enemies captured one of your planets*
+
+You may get this achievement in level 2 if you lose any planets (and the game as well).
