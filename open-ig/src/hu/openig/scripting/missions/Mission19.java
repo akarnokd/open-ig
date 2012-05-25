@@ -221,6 +221,8 @@ public class Mission19 extends Mission {
 				
 				world.establishRelation(player, ii.owner).value = originalRelation;
 				
+				stage = M19.DONE;
+				
 				return;
 			} else
 			if (ii == null) {

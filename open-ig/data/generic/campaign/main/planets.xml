@@ -844,7 +844,7 @@
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Exterior 21' name='Exterior 21' x='332' y='532' size='18' race='' rotate='RL' population='0' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+  <planet id='Exterior 21' name='Exterior 21' x='333' y='536' size='18' race='' rotate='RL' population='0' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='liquid' id='4'/>
     <inventory/>
     <buildings/>

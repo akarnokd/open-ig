@@ -75,6 +75,7 @@ public class Mission21 extends Mission {
 		if (checkMission("Mission-21")) {
 			incomingMessage("Douglas-Prototype-2", "Mission-21");
 			stage = M21.MEET;
+			createPrototype();
 		}
 		if (stage == M21.MEET) {
 			if (checkNearStart()) {
