@@ -117,9 +117,6 @@ public final class Simulator {
 		checkAchievements(world, day0 != day1);
 		
 		world.scripting.onTime();
-		if (!world.pendingBattles.isEmpty()) {
-			world.env.startBattle();
-		}
 		return result;
 	}
 	/**
