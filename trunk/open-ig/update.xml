@@ -27,7 +27,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.411'>
+	<module id='Game' version='0.94.420'>
 		<general url='http://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,13 +43,13 @@
 			<desc lang='en'>Bugfixes.</desc>
 			<desc lang='de'>Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.411.jar' sha1='4fc9789bc076d8a5b2e6dc086b4bbde3a0cc0888'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.420.jar' sha1='da0d9586b2eb01fcb5aa36a4f83cbc3dcd1f2381'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120524a2.zip' sha1='2cb2fc848480318741eaaafd0e0a22d2a1c8713e'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Május 24 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 24th May, 2012 / A</desc>
+		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120525a2.zip' sha1='da8a77689a4c5755019ee31e42b129eaa5798f1f'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Május 25 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 25th May, 2012 / A</desc>
 		</file>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' sha1='7368ca1890ae9ee3a0609a83b03654afa09492eb'/>
@@ -68,7 +68,7 @@
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-20120429A.zip' sha1='4e7b7b88ba6d579e649f4f8c2399d6ad9124935e'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120517a.zip' sha1='43ce18b5578e8066a8a53465a699430281ad20e2'/>
+		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120525a.zip' sha1='d580cded18ddec67bd03a0c2995ab19b7f3fcfa0'/>
 		<file url='http://open-ig.googlecode.com/files/open-ig-audio-generic-20120505A.zip' sha1='5156239974601fa350181d118a15190476923468'/>
 		
 		<remove file='open-ig-video-en-0.8.zip'/>
@@ -77,6 +77,7 @@
 		<remove file='open-ig-images-20120420A.zip'/>
 		<remove file='open-ig-images-20120421a.zip'/>
 		<remove file='open-ig-images-20120429a.zip'/>
+		<remove file='open-ig-images-20120517a.zip'/>
 		<remove file='open-ig-audio-en-20120420A.zip'/>
 		<remove file='open-ig-audio-generic-20120420A.zip'/>
 	</module>
