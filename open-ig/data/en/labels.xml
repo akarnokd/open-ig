@@ -2524,6 +2524,7 @@
 
   <entry key='message.cant_build_more'>You can't build more of this building on this planet.</entry>
 	<entry key="save.level">Level %s start</entry>
+	<entry key="settings.building_name">Show building names and statuses</entry>
   <entry key=''/>
   <entry key=''/>
   <entry key=''/>

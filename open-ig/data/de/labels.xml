@@ -2642,4 +2642,5 @@
 	<entry key='chat.vo.8.n1'>Hier Raumschiff Leila auf Handelsmission.</entry>
   <entry key='message.cant_build_more'>Du kannst nicht mehr von diesem Gebäude bauen.</entry>
 	<entry key="save.level">Ebene %s start</entry>
+	<entry key="settings.building_name">Zeige Gebäudenamen und Status</entry>
 </labels>
