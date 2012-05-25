@@ -399,6 +399,9 @@ public final class Simulator {
 			if (ps.foodAvailable < planet.population) {
 				newMorale += (ps.foodAvailable - planet.population) * 75f / planet.population;
 			}
+			if (planet.quarantineTTL > 0) {
+				newMorale = Math.max(0, newMorale - 5);
+			}
 			if (ps.policeAvailable < planet.population) {
 				newMorale += (ps.policeAvailable - planet.population) * 50f / planet.population;
 			} else {
@@ -699,7 +702,7 @@ public final class Simulator {
 	 */
 	static boolean moveFleets(List<Fleet> playerFleets, World world) {
 		boolean invokeRadar = false;
-		double stepMultiplier = 0.025 * world.params().speed();
+		double stepMultiplier = world.params().fleetSpeed();
 		
 		for (Fleet f : playerFleets) {
 			// regenerate shields

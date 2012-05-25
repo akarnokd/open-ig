@@ -81,4 +81,10 @@ public class Parameters {
 	public int simulationRatio() {
 		return 4;
 	}
+	/**
+	 * @return The fleet speed in pixels per game minute per hyperdrive level.
+	 */
+	public double fleetSpeed() {
+		return 0.016 * speed(); 
+	}
 }

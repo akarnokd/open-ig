@@ -246,6 +246,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Toggle fullscreen. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox fullScreen;
+	/** Show building names. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox buildingName;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -905,6 +908,16 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		
+		// ------------------------------------------
+		buildingName = new UICheckBox(get("settings.building_name"), 14, commons.common().checkmark, commons.text());
+		buildingName.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.showBuildingName = buildingName.selected();
+			}
+		};
+		
 		addThis();
 	}
 	/**
@@ -997,6 +1010,7 @@ public class LoadSaveScreen extends ScreenBase {
 		movieScale.selected(config.movieScale);
 		movieSkipClick.selected(config.movieClickSkip);
 		fullScreen.selected(commons.control().isFullscreen());
+		buildingName.selected(config.showBuildingName);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -1096,6 +1110,8 @@ public class LoadSaveScreen extends ScreenBase {
 		animateTech.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		fullScreen.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		buildingName.location(base.x + 30, base.y + dy + 8);
 		
 		// -----------------------------
 		// controls
