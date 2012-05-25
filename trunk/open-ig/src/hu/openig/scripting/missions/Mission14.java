@@ -93,7 +93,7 @@ public class Mission14 extends Mission {
 		
 		ResearchType h1 = research("Hubble1");
 		player.changeInventoryCount(h1, 2);
-		DefaultAIControls.actionDeploySatellite(player, planet("Achilles"), h1);
+		DefaultAIControls.actionDeploySatellite(player, planet("San Sterling"), h1);
 		DefaultAIControls.actionDeploySatellite(player, planet("Naxos"), h1);
 
 		Player garthog = player("Garthog");
