@@ -54,6 +54,7 @@ public interface SpacewarWorld {
 	 */
 	void flee(SpacewarStructure s);
 	/**
+	 * The player's facing in the battle.
 	 * @return -1 if a forward move would decrease the X coordinate, +1 if a forward move would
 	 * increase the X coordinate
 	 */

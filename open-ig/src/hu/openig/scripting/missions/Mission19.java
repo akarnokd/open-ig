@@ -10,6 +10,9 @@ package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
+import hu.openig.model.BattleProjectile.Mode;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
@@ -22,11 +25,11 @@ import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
+import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
-import hu.openig.model.BattleProjectile.Mode;
-import hu.openig.model.Chats.Chat;
-import hu.openig.model.Chats.Node;
 import hu.openig.utils.XElement;
+
+import java.awt.Dimension;
 
 /**
  * Mission 19: blockade of Zeuson.
@@ -161,12 +164,31 @@ public class Mission19 extends Mission {
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (stage == M19.RUN && isMissionSpacewar(war.battle(), "Mission-19")) {
+		BattleInfo battle = war.battle();
+		if (stage == M19.RUN && isMissionSpacewar(battle, "Mission-19")) {
 			initialHP = 0;
 			for (SpacewarStructure s : war.structures(freeTraders())) {
 				initialHP += s.hp;
 			}
-			war.battle().chat = "chat.mission-19.rebel.Zeuson.governor";
+			battle.chat = "chat.mission-19.rebel.Zeuson.governor";
+			
+			// leaving planet check
+			
+			if (battle.helperPlanet != null && battle.helperPlanet.owner == battle.attacker.owner) {
+				if (battle.helperPlanet.id.equals("Zeuson")) {
+					
+					Dimension d = war.space();
+					for (SpacewarStructure s : war.structures()) {
+						if (s.type == StructureType.SHIP) {
+							s.x = d.width - s.x - 100;
+							s.angle -= Math.PI;
+						}
+					}
+
+					battle.invert = true;
+				}
+			}
+
 		}
 	}
 	@Override

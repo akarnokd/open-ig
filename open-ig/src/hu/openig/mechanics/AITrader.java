@@ -32,9 +32,11 @@ import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
+import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Collections;
@@ -429,18 +431,25 @@ public class AITrader implements AIManager {
 			List<SpacewarStructure> idles) {
 		List<SpacewarStructure> sts = world.structures(player);
 		Pair<Double, Double> fh = AI.fleetHealth(sts);
+		BattleInfo battle = world.battle();
 		if (fh.first * 4 < battleHP * 3) {
-			if (!world.battle().enemyFlee) {
+			if (!battle.enemyFlee) {
 				for (SpacewarStructure s : sts) {
 					world.flee(s);
 				}
-				world.battle().enemyFlee = true;
+				battle.enemyFlee = true;
 			}
 			return SpacewarAction.FLEE;
 		} else {
 			// move a bit forward
+			int facing = world.facing();
+			
+			if (battle.invert) {
+				facing = -facing;
+			}
+			
 			for (SpacewarStructure s : idles) {
-				s.moveTo = new Point2D.Double(s.x + world.facing() * s.movementSpeed, s.y);
+				s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
 			}			
 		}
 		return SpacewarAction.CONTINUE;
@@ -510,7 +519,8 @@ public class AITrader implements AIManager {
 	public void spaceBattleInit(SpacewarWorld world) {
 		battleHP = AI.fleetHealth(world.structures(player)).first;
 		
-		Fleet our = world.battle().getFleet();
+		BattleInfo battle = world.battle();
+		Fleet our = battle.getFleet();
 		
 		if (our != null) {
 			int idx = fleetIndex(our);
@@ -533,7 +543,25 @@ public class AITrader implements AIManager {
 			
 			int comm = idx % chats.size();
 			
-			world.battle().chat = chats.get(comm);
+			battle.chat = chats.get(comm);
+			
+			if (battle.helperPlanet != null && battle.helperPlanet.owner == battle.attacker.owner) {
+				if (lastVisitedPlanet.get(our) == battle.helperPlanet) {
+					
+					// flip positions
+					
+					Dimension d = world.space();
+					for (SpacewarStructure s : world.structures()) {
+						if (s.type == StructureType.SHIP) {
+							s.x = d.width - s.x - 100;
+							s.angle -= Math.PI;
+						}
+					}
+					
+					battle.invert = true;
+				}
+			}
+			
 		}
 	}
 	/**
