@@ -1491,7 +1491,7 @@ public class EquipmentScreen extends ScreenBase {
 			newButton.visible(own && secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
 			noSpaceport.visible(secondary == null && ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
 			notYourPlanet.visible(false);
-			noPlanetNearby.visible(secondary == null && ps == null);
+			noPlanetNearby.visible(own && secondary == null && ps == null);
 			noSpaceStation.visible(false);
 
 			if (ps != null && fs.planet.owner == f.owner 

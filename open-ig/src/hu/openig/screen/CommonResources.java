@@ -623,6 +623,9 @@ public class CommonResources implements GameEnvironment {
 		}
 		repaint |= Simulator.moveFleets(world);
 		
+		if (!world.pendingBattles.isEmpty()) {
+			world.env.startBattle();
+		}
 		if (repaint) {
 			control.repaintInner();
 		}

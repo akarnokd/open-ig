@@ -547,10 +547,14 @@ public class World {
 			String xpInnerLimit = xplayer.get("exploration-inner-limit", "");
 			if (!xpInnerLimit.isEmpty()) {
 				p.explorationInnerLimit = rectangleOf(xpInnerLimit);
+			} else {
+				p.explorationInnerLimit = null;
 			}
 			String xpOuterLimit = xplayer.get("exploration-outer-limit", "");
 			if (!xpOuterLimit.isEmpty()) {
 				p.explorationOuterLimit = rectangleOf(xpOuterLimit);
+			} else {
+				p.explorationOuterLimit = null;
 			}
 			
 			p.colonizationLimit = xplayer.getInt("colonization-limit", -1);
