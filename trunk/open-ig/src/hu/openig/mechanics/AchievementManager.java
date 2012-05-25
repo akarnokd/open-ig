@@ -238,7 +238,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> SALVAGE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false; // TODO count!!!
+			return u.statistics.shipsDestroyed >= 1000;
 		}
 	};
 	/** Test for achievement. */

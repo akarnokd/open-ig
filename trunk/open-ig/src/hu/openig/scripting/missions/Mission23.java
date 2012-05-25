@@ -85,7 +85,7 @@ public class Mission23 extends Mission {
 			objective("Mission-23-Task-1").visible = false;
 		}
 		if (checkTimeout("Mission-23-Achievement")) {
-			achievement("achievement.i_robot");
+			world.achievement("achievement.i_robot");
 		}
 	}
 	@Override

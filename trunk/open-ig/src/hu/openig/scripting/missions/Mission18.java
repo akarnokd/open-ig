@@ -41,7 +41,7 @@ public class Mission18 extends Mission {
 		createMainShip();
 
 		// achievement
-		achievement("achievement.commander");
+		world.achievement("achievement.commander");
 		
 		addMission("Mission-18", 1);
 	}

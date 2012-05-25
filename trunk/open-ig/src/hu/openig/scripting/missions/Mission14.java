@@ -155,7 +155,7 @@ public class Mission14 extends Mission {
 				battle.rewardImage = "battlefinish/mission_23";
 				battle.messageText = label("battlefinish.mission-14.23");
 				
-				achievement("achievement.influenza");
+				world.achievement("achievement.influenza");
 			}
 		}
 	}

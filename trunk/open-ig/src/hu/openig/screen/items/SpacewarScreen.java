@@ -3812,11 +3812,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (target.type == StructureType.SHIELD) {
 				dropGroundShields();
 			}
-			if (target.owner == battle.attacker.owner) {
-				battle.attackerLosses += target.loss - loss0;
+			int d = target.loss - loss0;
+			if (isAlly(target, battle.attacker.owner)) {
+				battle.attackerLosses += d;
 			} else {
-				battle.defenderLosses += target.loss - loss0;
+				battle.defenderLosses += d;
 			}
+			
+			target.owner.statistics.shipsLost += d;
+			world().players.get(owner).statistics.shipsDestroyed += d;
 		} else {
 			soundsToPlay.add(impactSound);
 		}
