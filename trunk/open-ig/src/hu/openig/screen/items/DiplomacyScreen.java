@@ -33,6 +33,7 @@ import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
+import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.screen.MediaPlayer;
 import hu.openig.screen.OptionList;
 import hu.openig.screen.OptionList.OptionItem;
@@ -49,6 +50,7 @@ import hu.openig.utils.U;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.LinkedHashSet;
@@ -138,6 +140,10 @@ public class DiplomacyScreen extends ScreenBase {
 	int messagePhase;
 	/** The negotiation memory. */
 	final Set<Negotiate> mentioned = U.newHashSet();
+	/** The relation when the conversation started. */
+	double initialRelation;
+	/** Quit talking. */
+	boolean quitTalking;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -239,10 +245,12 @@ public class DiplomacyScreen extends ScreenBase {
 		stanceMatrix.visible(false);
 		options.visible(false);
 		moneyList.visible(false);
+		enemies.visible(false);
 		approachList.visible(false);
 		offerText.visible(false);
 		responseText.visible(false);
 		continueLabel.visible(false);
+		negotiationTitle.visible(false);
 		mentioned.clear();
 		
 		messagePhase = 0;
@@ -322,7 +330,12 @@ public class DiplomacyScreen extends ScreenBase {
 		approachList.location(base.x + 10, base.y + base.height - approachList.height - 10);
 		moneyList.location(base.x + 10, base.y + base.height - moneyList.height - 10);
 		enemies.location(base.x + 10, base.y + base.height - enemies.height - 10);
+
+		continueLabel.location(base.x + 10, base.y + base.height - 30);
 		
+		offerText.location(base.x + 10, continueLabel.y - 20 - offerText.height);
+		responseText.location(base.x + 10, continueLabel.y - 20 - responseText.height);
+
 		if (approachList.visible()) {
 			negotiationTitle.location(base.x + 10, approachList.y - 20);
 		} else
@@ -331,12 +344,14 @@ public class DiplomacyScreen extends ScreenBase {
 		} else
 		if (enemies.visible()) {
 			negotiationTitle.location(base.x + 10, enemies.y - 20);
+		} else
+		if (offerText.visible()) {
+			negotiationTitle.location(base.x + 10, offerText.y - 20);
+		} else
+		if (responseText.visible()) {
+			negotiationTitle.location(base.x + 10, responseText.y - 20);
 		}
 		
-		continueLabel.location(base.x + 10, base.y + base.height - 30);
-		
-		offerText.location(base.x + 10, continueLabel.y - 20 - offerText.height);
-		responseText.location(base.x + 10, continueLabel.y - 20 - responseText.height);
 	}
 	
 	@Override
@@ -403,29 +418,34 @@ public class DiplomacyScreen extends ScreenBase {
 				}
 			}
 		} else
-		if (e.has(Type.DOWN) && messagePhase == 1) {
-			offerText.visible(false);
-			responseText.visible(true);
-			messagePhase = 2;
-			return true;
-		} else
-		if (e.has(Type.DOWN) && messagePhase == 2) {
-			returnToOptions();
-
+		if (e.has(Type.DOWN) && messagePhase > 0) {
+			handleMessagePhases();
 			return true;
 		}
 		return super.mouse(e);
 	}
-
+	/** Handle the message phase-related displays. */
+	void handleMessagePhases() {
+		if (messagePhase == 1) {
+			offerText.visible(false);
+			responseText.visible(true);
+			onResize();
+			messagePhase = 2;
+		} else
+		if (messagePhase == 2) {
+			returnToOptions();
+		}		
+	}
 	/**
 	 * Return to options panel.
 	 */
 	void returnToOptions() {
 		responseText.visible(false);
 		continueLabel.visible(false);
+		negotiationTitle.visible(false);
 
 		DiplomaticRelation dr = world().getRelation(player(), other);
-		if (dr.wontTalk()) {
+		if (dr.wontTalk() || quitTalking) {
 			headAnimation.loop = false;
 		} else {
 			options.visible(true);
@@ -490,6 +510,39 @@ public class DiplomacyScreen extends ScreenBase {
 		}
 		if (inCall && !openCloseAnimating) {
 			commons.text().paintTo(g2, base.x + 5, base.y + 5, 14, other.color, other.name);
+			double r = world().getRelation(player(), other).value;
+			double delta = r - initialRelation;
+			int c = TextRenderer.WHITE;
+			String fill = " ";
+			if (delta < 0) {
+				c = TextRenderer.RED;
+				fill = "";
+			} else {
+				c = TextRenderer.GREEN;
+				fill = "+";
+			}
+			int stanceColor = TextRenderer.GREEN;
+			if (r >= 0) {
+				if (r < 30) {
+					stanceColor = TextRenderer.RED;
+				} else
+				if (r < 40) {
+					stanceColor = TextRenderer.YELLOW;
+				} else
+				if (r > 80) {
+					stanceColor = TextRenderer.LIGHT_BLUE;
+				} else
+				if (r > 60) {
+					stanceColor = TextRenderer.LIGHT_GREEN;
+				}
+			}
+			List<TextSegment> tss = U.newArrayList();
+			tss.add(new TextSegment(String.format("%.1f", r), stanceColor));
+			tss.add(new TextSegment(" (", TextRenderer.GREEN));
+			tss.add(new TextSegment(fill, c));
+			tss.add(new TextSegment(String.format("%.1f", delta), c));
+			tss.add(new TextSegment(")", TextRenderer.GREEN));
+			commons.text().paintTo(g2, base.x + 5, base.y + 24, 10, tss);
 
 			darkenUnder(g2, options);
 			darkenUnder(g2, moneyList);
@@ -695,6 +748,8 @@ public class DiplomacyScreen extends ScreenBase {
 		if (index < races.items.size() - 1) {
 			other = (Player)races.items.get(index).userObject;
 			
+			initialRelation = world().getRelation(player(), other).value;
+			quitTalking = false;
 			contactRaceAnim();
 			
 		} else {
@@ -1020,14 +1075,32 @@ public class DiplomacyScreen extends ScreenBase {
 	void doOption(int index) {
 		options.visible(false);
 		if (index == options.items.size() - 1) {
-			headAnimation.loop = false;
+			
+			// quit talking
+			Diplomacy de = world().diplomacy.get(other.id);
+			
+			responseText.width = base.width - 20;
+			responseText.text(get(de.terminateLabel));
+			responseText.height = responseText.getWrappedHeight();
+			
+			responseText.visible(true);
+			continueLabel.visible(true);
+			messagePhase = 2;
+			
+			quitTalking = true;
+			
+			onResize();
+			
 		} else {
 			OptionItem cancel = new OptionItem();
 			cancel.label = get("diplomacy.cancel");
 
+			Negotiate neg = (Negotiate)options.items.get(index).userObject;
+
+			negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
+
 			approachList.items.clear();
 			moneyList.items.clear();
-			Negotiate neg = (Negotiate)options.items.get(index).userObject;
 			if (neg.type == NegotiateType.MONEY) {
 				int[] money = { 10000, 20000, 30000, 40000, 50000, 100000, 250000, 500000 };
 				for (int m : money) {
@@ -1041,7 +1114,6 @@ public class DiplomacyScreen extends ScreenBase {
 				
 				moneyList.fit();
 				moneyList.visible(true);
-				negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
 				onResize();
 			} else 
 			if (neg.type == NegotiateType.ALLY) {
@@ -1062,7 +1134,6 @@ public class DiplomacyScreen extends ScreenBase {
 				
 				enemies.fit();
 				enemies.visible(true);
-				negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
 				onResize();
 			} else {
 				if (neg.approaches.size() > 1) {
@@ -1081,7 +1152,6 @@ public class DiplomacyScreen extends ScreenBase {
 
 					approachList.fit();
 					approachList.visible(true);
-					negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
 					onResize();
 				} else {
 					doGeneric(neg);
@@ -1089,7 +1159,15 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 		}
 	}
-
+	@Override
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyChar() == ' ' && messagePhase > 0) {
+			handleMessagePhases();
+			e.consume();
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * Display the negotiation text results and update the relation table.
 	 * @param n the negotiation instance.
@@ -1117,6 +1195,7 @@ public class DiplomacyScreen extends ScreenBase {
 		offerText.visible(true);
 		continueLabel.visible(true);
 		messagePhase = 1;
+		onResize();
 	}
 	/**
 	 * The action when an approach is selected.
@@ -1285,7 +1364,6 @@ public class DiplomacyScreen extends ScreenBase {
 	 */
 	void doIncomingMessage(Pair<CallType, ApproachType> na) {
 
-		responseText.width = base.width - 20;
 
 		String label = null;
 		Diplomacy diplomacy = world().diplomacy.get(other.id);
@@ -1302,6 +1380,7 @@ public class DiplomacyScreen extends ScreenBase {
 				}
 			}
 			
+			responseText.width = base.width - 20;
 			responseText.text(get(label));
 			responseText.height = responseText.getWrappedHeight();
 			
