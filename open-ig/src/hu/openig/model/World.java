@@ -2476,4 +2476,14 @@ public class World {
 			}
 		}
 	}
+	/**
+	 * Grant an achievement with the given ID if not already awarded.
+	 * @param a the achievement id, e.g., "achievement.i_robot"
+	 */
+	public void achievement(String a) {
+		if (!env.profile().hasAchievement(a)) {
+			env.achievementQueue().add(a);
+			env.profile().grantAchievement(a);
+		}
+	}
 }

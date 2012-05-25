@@ -73,7 +73,7 @@ public class Mission26 extends Mission {
 				&& battle.targetFleet != null 
 				&& battle.targetFleet.owner == player("Traders") 
 				&& battle.targetFleet.inventory.isEmpty()) {
-			achievement("achievement.embargo");
+			world.achievement("achievement.embargo");
 		}
 	}
 }

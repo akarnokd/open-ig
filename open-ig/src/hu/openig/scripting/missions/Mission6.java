@@ -41,7 +41,7 @@ public class Mission6 extends Mission {
 			createMainShip();
 			
 			addMission("Mission-6", 1);
-			achievement("achievement.captain");
+			world.achievement("achievement.captain");
 		}
 	}
 	/**
@@ -157,7 +157,7 @@ public class Mission6 extends Mission {
 				war.battle().rewardText = label("battlefinish.mission-6.14_bonus");
 				war.battle().messageText = label("battlefinish.mission-6.14");
 				
-				achievement("achievement.defender");
+				world.achievement("achievement.defender");
 				addTimeout("Mission-6-Done", 13000);
 			} else {
 				removeScripted(garthog);
@@ -178,7 +178,7 @@ public class Mission6 extends Mission {
 			} else {
 				setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 				
-				achievement("achievement.defender");
+				world.achievement("achievement.defender");
 			}
 			addTimeout("Mission-6-Done", 13000);
 			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
