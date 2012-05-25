@@ -173,7 +173,8 @@ public class AITrader implements AIManager {
 		activeCount = landFleets(activeCount);
 		int actions = 0;
 		// if more planets available than fleets
-		while (activeCount < maxFleets()) {
+		int maxFleets = maxFleets();
+		while (activeCount < maxFleets) {
 			// create new fleets as landed
 			Fleet nf = createFleet();
 			
@@ -196,7 +197,7 @@ public class AITrader implements AIManager {
 			}
 		}
 		
-		if (activeCount > maxFleets()) {
+		if (activeCount > maxFleets) {
 			// remove landed fleets
 			Iterator<LandedFleet> it = landed.iterator();
 			while (landed.size() > 0 && activeCount > planets.size()) {
