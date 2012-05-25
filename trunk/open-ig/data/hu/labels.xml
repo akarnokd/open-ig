@@ -2567,6 +2567,9 @@
   <entry key='message.cant_build_more'>Nem építhetsz többet ebből az épületből ezen a bolygón.</entry>
 	<entry key="save.level">%s. szint kezdés</entry>
 	<entry key="settings.building_name">Épületnév és állapot kijelzése</entry>
+	<entry key="production.missing_weapons_factory">Figyelem, nincs fegyvergyárad!</entry>
+	<entry key="production.missing_spaceship_factory">Figyelem, nincs űrhajógyárad!</entry>
+	<entry key="production.missing_equipment_factory">Figyelem, nincs felszerelésgyárad!</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=''></entry>

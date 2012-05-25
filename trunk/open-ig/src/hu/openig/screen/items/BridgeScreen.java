@@ -27,6 +27,7 @@ import hu.openig.screen.VideoRenderer;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageToggleButton;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
@@ -497,7 +498,7 @@ public class BridgeScreen extends ScreenBase {
 						WalkPosition position = ScreenUtils.getWalk("*bridge", world());
 						for (WalkTransition wt : position.transitions) {
 							if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-								ScreenUtils.doTransition(position, wt, commons);
+								ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
 								break;
 							}
 						}

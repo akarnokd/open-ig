@@ -2643,4 +2643,12 @@
   <entry key='message.cant_build_more'>Du kannst nicht mehr von diesem Gebäude bauen.</entry>
 	<entry key="save.level">Ebene %s start</entry>
 	<entry key="settings.building_name">Zeige Gebäudenamen und Status</entry>
+	<entry key="production.missing_weapons_factory">Warnung: du hast keine Waffenfabrik!</entry>
+	<entry key="production.missing_spaceship_factory">Warnung: du hast keine Raumschiff-Fabrik!</entry>
+	<entry key="production.missing_equipment_factory">Warnung: du hast keine Ausrüstungsfabrik!</entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
 </labels>
