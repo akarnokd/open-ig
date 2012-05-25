@@ -9,6 +9,7 @@
 package hu.openig.scripting;
 
 import hu.openig.core.Func1;
+import hu.openig.core.SaveMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
@@ -557,10 +558,12 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	public void onLevelChanged() {
 		applyViewLimits();
 		applyPlanetOwners();
-		lastLevel = world.level;
 		for (Mission m : missions) {
 			m.onLevelChanged();
 		}
+		lastLevel = world.level;
+
+		world.env.save(SaveMode.LEVEL);
 	}
 	@Override
 	public void clearMissionTimes(Func1<String, Boolean> filter) {
@@ -646,7 +649,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 
 	@Override
 	public void onNewGame() {
-		lastLevel = world.level;
+		lastLevel = 0;
 		onLevelChanged();
 
 		for (Mission m : missions) {

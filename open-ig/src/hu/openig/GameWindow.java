@@ -1597,7 +1597,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param pn the profil name
 	 * @param xworld the world
 	 */
-	synchronized void save(final String name, final SaveMode mode, final String pn,
+	synchronized void save(String name, SaveMode mode, final String pn,
 			final XElement xworld) {
 		try {
 			File dir = new File("save/" + pn);
@@ -1607,6 +1607,10 @@ public class GameWindow extends JFrame implements GameControls {
 				File fout = new File(dir, "save-" + sdate + ".xml");
 				File foutx = new File(dir, "info-" + sdate + ".xml");
 				try {
+					if (name == null && mode == SaveMode.LEVEL) {
+						name = commons.labels().format("save.level", xworld.get("level"));
+					}
+					
 					xworld.set("save-name", name);
 					xworld.set("save-mode", mode);
 					
@@ -1634,7 +1638,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param mode the mode
 	 */
 	void limitSaves(File dir, SaveMode mode) {
-		if (mode == SaveMode.MANUAL) {
+		if (mode == SaveMode.MANUAL || mode == SaveMode.LEVEL) {
 			return;
 		}
 		// locate saves
