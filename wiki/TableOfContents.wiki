@@ -12,6 +12,7 @@
     * [GameGuide#Mouse_and_keyboard Controls]
     * [GameGuide#Gameplay_mechanics Mechanics]
     * [Missions Missions]
+    * [Achievements Achievements]
   * Downloadable content
     * [DLC_IG_2 Imperium Galactica 2]
   * Other utilities
