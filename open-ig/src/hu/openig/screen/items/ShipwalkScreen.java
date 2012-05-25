@@ -117,25 +117,23 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 			}
 			break;
 		case DOWN:
-			if (e.has(Button.LEFT)) {
-				if (videoMode) {
-					video.stop();
-					setNextPosition();
-					rep = true;
-				} else {
-					if (position != null) {
-						for (WalkTransition wt : position.transitions) {
-							if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
-								next = position.ship.positions.get(wt.to);
-								nextId = wt.to;
-								if (wt.media != null && !wt.media.isEmpty()) {
-									startTransition(wt.media);
-								} else {
-									setNextPosition();
-									rep = true;
-								}
-								break;
+			if (videoMode) {
+				video.stop();
+				setNextPosition();
+				rep = true;
+			} else {
+				if (position != null) {
+					for (WalkTransition wt : position.transitions) {
+						if (wt.area.contains(e.x - origin.x, e.y - origin.y)) {
+							next = position.ship.positions.get(wt.to);
+							nextId = wt.to;
+							if (wt.media != null && !wt.media.isEmpty() && !e.has(Button.RIGHT)) {
+								startTransition(wt.media);
+							} else {
+								setNextPosition();
+								rep = true;
 							}
+							break;
 						}
 					}
 				}

@@ -19,6 +19,7 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Graphics2D;
@@ -342,7 +343,7 @@ public class BarScreen extends ScreenBase {
 					WalkPosition position = ScreenUtils.getWalk("*bar", world());
 					for (WalkTransition wt : position.transitions) {
 						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-							ScreenUtils.doTransition(position, wt, commons);
+							ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
 							return true;
 						}
 					}

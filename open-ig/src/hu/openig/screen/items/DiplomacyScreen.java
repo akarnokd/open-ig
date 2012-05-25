@@ -41,6 +41,7 @@ import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
@@ -384,7 +385,7 @@ public class DiplomacyScreen extends ScreenBase {
 					WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
 					for (WalkTransition wt : position.transitions) {
 						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-							ScreenUtils.doTransition(position, wt, commons);
+							ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
 							return false;
 						}
 					}

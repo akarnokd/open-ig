@@ -37,11 +37,12 @@ public final class ScreenUtils {
 	 * @param position the position to start from
 	 * @param tr the transition to perform
 	 * @param commons the common resources
+	 * @param skipVideo perform the transition without by skipping the video
 	 */
 	public static void doTransition(final WalkPosition position, 
-			final WalkTransition tr, final CommonResources commons) {
+			final WalkTransition tr, final CommonResources commons, boolean skipVideo) {
 		final String to = tr.to; 
-		if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty())) {
+		if (to.startsWith("*") && (tr.media == null || tr.media.isEmpty() || skipVideo)) {
 			// move to the screen directly.
 			commons.switchScreen(to);
 		} else {
@@ -60,7 +61,11 @@ public final class ScreenUtils {
 					sws.onCompleted = null;
 				}
 			};
-			sws.startTransition(media);
+			if (skipVideo) {
+				sws.setNextPosition();
+			} else {
+				sws.startTransition(media);
+			}
 		}
 	}
 	/**

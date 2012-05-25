@@ -2525,6 +2525,9 @@
   <entry key='message.cant_build_more'>You can't build more of this building on this planet.</entry>
 	<entry key="save.level">Level %s start</entry>
 	<entry key="settings.building_name">Show building names and statuses</entry>
+	<entry key="production.missing_weapons_factory">Warning, you don't have weapons factory!</entry>
+	<entry key="production.missing_spaceship_factory">Warning, you don't have spaceship factory!</entry>
+	<entry key="production.missing_equipment_factory">Warning, you don't have equipment factory!</entry>
   <entry key=''/>
   <entry key=''/>
   <entry key=''/>

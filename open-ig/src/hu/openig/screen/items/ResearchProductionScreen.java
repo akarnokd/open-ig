@@ -525,13 +525,31 @@ public class ResearchProductionScreen extends ScreenBase {
 	/** Add a new production. */
 	void doAddProduction() {
 		ResearchMainCategory cat = getCurrentMainCategory();
+		
+		
 		Map<ResearchType, Production> productions = player().production.get(cat);
 		Production prod = new Production();
 		prod.type = research();
 		prod.count = 0;
 		prod.priority = 50;
 		productions.put(prod.type, prod);
-		screenSound(SoundType.ADD_PRODUCTION);
+		
+		if (statistics.weapons == 0 && cat == ResearchMainCategory.WEAPONS) {
+			buttonSound(SoundType.NOT_AVAILABLE);
+			commons.control().displayError(get("production.missing_weapons_factory"));
+		} else
+		if (statistics.equipment == 0 && cat == ResearchMainCategory.EQUIPMENT) {
+			buttonSound(SoundType.NOT_AVAILABLE);
+			commons.control().displayError(get("production.missing_equipment_factory"));
+		} else
+		if (statistics.spaceship == 0 && cat == ResearchMainCategory.SPACESHIPS) {
+			buttonSound(SoundType.NOT_AVAILABLE);
+			commons.control().displayError(get("production.missing_spaceship_factory"));
+		} else {
+			screenSound(SoundType.ADD_PRODUCTION);
+		}
+		
+		
 	}
 
 	/**
