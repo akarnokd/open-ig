@@ -3602,6 +3602,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						/* || r != SpacewarScriptResult.CONTINUE */)) {
 			commons.simulation.pause();
 			concludeBattle(winner);
+			askRepaint();
+			return;
 		}
 		
 		// chat switch to flee
@@ -4109,8 +4111,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		
-		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
-		bfs.displayBattleSummary(bi);
+		if (!(bi.targetFleet != null && bi.targetFleet.owner.id.equals("Traders") 
+				&& bi.enemyFlee)) {
+			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
+			bfs.displayBattleSummary(bi);
+		} else {
+			commons.restoreMainSimulationSpeedFunction();
+			commons.battleMode = false;
+			commons.playRegularMusic();
+			commons.simulation.speed(battle.originalSpeed);
+			displayPrimary(Screens.STARMAP);
+		}
 	}
 	/**
 	 * Check if the planet has bunker.
