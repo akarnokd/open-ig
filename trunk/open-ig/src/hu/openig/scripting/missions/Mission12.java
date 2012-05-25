@@ -9,9 +9,12 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.model.BattleInfo;
+import hu.openig.model.Fleet;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
+import hu.openig.model.SoundTarget;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
@@ -45,6 +48,8 @@ public class Mission12 extends Mission {
 	protected boolean tradersLost;
 	/** Was there multiple planets infected? */
 	protected boolean multipleInfections;
+	/** Reinforcements called once. */
+	protected boolean reinforcements;
 	@Override
 	public void onTime() {
 		Objective m11t1 = objective("Mission-11");
@@ -57,6 +62,12 @@ public class Mission12 extends Mission {
 			incomingMessage("New Caroline-Garthog-Virus", "Mission-12", "Mission-12-Task-1");
 			stage = M12Stages.FIRST_MESSAGE;
 			planet("New Caroline").quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+
+			// allow reinforcements
+			send("Douglas-Reinforcements-Approved").visible = true;
+			send("Douglas-Reinforcements-Denied").visible = false;
+			send("Douglas-Reinforcements-Denied-2").visible = false;
+			send("Douglas-Reinforcements-Approved").visible = true;
 		}
 		Objective m12 = objective("Mission-12");
 		if (checkMission("Mission-12-Subsequent") 
@@ -128,6 +139,37 @@ public class Mission12 extends Mission {
 			setObjectiveState("Mission-12-Task-6", ObjectiveState.SUCCESS);
 			addTimeout("Mission-12-Task-6-Hide", 13000);
 		}
+		if ("Douglas-Reinforcements-Approved".equals(id)) {
+			if (!reinforcements) {
+				send("Douglas-Reinforcements-Denied-2").visible = true;
+				send("Douglas-Reinforcements-Denied-2").seen = true;
+				send("Douglas-Reinforcements-Approved").visible = false;
+				
+				reinforcements = true;
+				
+				addReinforcements();
+			}
+		}
+	}
+	/**
+	 * Add reinforcements to the main fleet or a new fleet.
+	 */
+	private void addReinforcements() {
+		Fleet f = findTaggedFleet("CampaignMainShip2", player);
+
+		int f1 = 4;
+		int f2 = 2;
+		
+		if (f.inventoryCount(research("Fighter1")) > 30 - f1
+				|| f.inventoryCount(research("Fighter2")) > 30 - f2) {
+			
+			f = createFleet(label("Empire.main_fleet"), player, f.x + 5, f.y + 5);
+		}
+
+		f.addInventory(research("Fighter1"), f1);
+		f.addInventory(research("Fighter2"), f2);
+
+		world.env.playSound(SoundTarget.COMPUTER, SoundType.REINFORCEMENT_ARRIVED_2, null);
 	}
 	/**
 	 * Complete the active task.
@@ -264,17 +306,20 @@ public class Mission12 extends Mission {
 		stage = M12Stages.valueOf(xmission.get("stage"));
 		tradersLost = xmission.getBoolean("traders-lost");
 		multipleInfections = xmission.getBoolean("multiple-infections", false);
+		reinforcements = xmission.getBoolean("reinforcements", false);
 	}
 	@Override
 	public void save(XElement xmission) {
 		xmission.set("stage", stage);
 		xmission.set("traders-lost", tradersLost);
 		xmission.set("multiple-infections", multipleInfections);
+		xmission.set("reinforcements", reinforcements);
 	}
 	@Override
 	public void reset() {
 		tradersLost = false;
 		multipleInfections = false;
+		reinforcements = false;
 		stage = M12Stages.NONE;
 		super.reset();
 	}

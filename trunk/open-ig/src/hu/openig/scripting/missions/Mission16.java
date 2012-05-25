@@ -159,8 +159,17 @@ public class Mission16 extends Mission {
 		if (f != null) {
 			// --------------------------------------------
 			
-			f.addInventory(research("Fighter1"), 8);
-			f.addInventory(research("Fighter2"), 4);
+			int f1 = 8;
+			int f2 = 4;
+			
+			if (f.inventoryCount(research("Fighter1")) > 30 - f1
+					|| f.inventoryCount(research("Fighter2")) > 30 - f2) {
+				
+				f = createFleet(label("Empire.main_fleet"), player, f.x + 5, f.y + 5);
+			}
+
+			f.addInventory(research("Fighter1"), f1);
+			f.addInventory(research("Fighter2"), f2);
 			
 			// --------------------------------------------
 			
