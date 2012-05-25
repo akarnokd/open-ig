@@ -1,0 +1,104 @@
+#summary List of achievements and how to earn them
+
+Some achievements can be earned in skirmish/freeplay mode as well.
+
+<wiki:toc max_depth="1" />
+
+= Progress/Mission related =
+
+== Dargslayer ==
+
+*You eliminated all Dargslan from the galaxy*
+
+Automatically awarded when you conquer all of their planets or they surrender.
+
+== Commander ==
+
+*You have been promoted to commander*
+
+Completing mission about the stolen prototype (M17) will grant you this, once you get to your new ship.
+
+== Grand Admiral ==
+
+*You have been promoted to grand admiral*
+
+The first battle with the Dargslans will trigger this achievement after the promotion cutscene.
+
+= Count-based =
+
+== Oldest man ==
+
+*You played 100 game years*
+
+In super fast mode (e.g., 60 min/step, 10 step / second) this might take about 25 hours.
+
+== Defense contract ==
+
+*All your planets are equipped with at least 3 planetary guns and one shield*
+
+You can mix gun and shield versions. You need to have at least 3 planets.
+
+== Quarter of the pie ==
+
+*You own 25 planets*
+
+By either conquest or colonization, you need to own 25 planets, which is quite possible in levels 4 and 5.
+
+== All seeing eye ==
+
+*At least 80% of the galaxy is covered by radar*
+
+Earnable possibly during level 5 where all of your planets are equipped with Hubble 2 orbital radar for maximum coverage.
+ 
+== Research assistant ==
+
+*You researched 5 technologies*
+
+Earnable from level 3 onwards.
+
+== Food for thought ==
+
+*Your food production is above 1.000.000*
+
+You'll need dozens of planets with high population.
+
+== Salvage ==
+
+*You destroyed 1.000 enemy ships*
+
+Aliens usually have fleets with 58 ships in it. Destroy approximately 17 fleets.
+
+_This achievement is not yet tracked_
+
+= Other =
+
+== Embargo ==
+
+*You destroyed your first Trader ship*
+
+Shoot at them until they get destroyed. Preferably outside of Trader-related missions.
+
+== Conqueror ==
+
+*Conquered the first enemy planet*
+
+You may get this when you conquer one of the Garthog planets in level 3.
+
+== Revolutioner ==
+
+*One of your colony has revolted*
+
+Easily attainable in Level 1 if you let Achilles unattended.
+
+== Columbus ==
+
+*You colonized your first planet*
+
+Once colony ship becomes available in level 4, you may colonize Center 16, one of the nearest and possibly already revealed planet.
+
+
+== Pirate Bay ==
+
+*You lost a planet to the pirates*
+
+Easily attainable in level 1 if Achilles is left alone.
