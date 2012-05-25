@@ -44,6 +44,8 @@ public class Mission18 extends Mission {
 		world.achievement("achievement.commander");
 		
 		addMission("Mission-18", 1);
+		
+		send("Douglas-Reinforcements-Denied").visible = false;
 	}
 	/**
 	 * Creates the main ship for level 3.

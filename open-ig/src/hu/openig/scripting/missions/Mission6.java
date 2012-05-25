@@ -42,6 +42,8 @@ public class Mission6 extends Mission {
 			
 			addMission("Mission-6", 1);
 			world.achievement("achievement.captain");
+			
+			send("Douglas-Reinforcements-Denied").visible = true;
 		}
 	}
 	/**
