@@ -3681,13 +3681,28 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			double d = Math.hypot(ship.x - ship.attack.x, ship.y - ship.attack.y);
 			if (d < 80 && ship.type != StructureType.SHIP && ship.attack.ecmLevel > 0) {
 				if (scrambled.add(ship)) {
-					if (ship.ecmLevel < ship.attack.ecmLevel) {
+					double p = world().random().nextDouble();
+					
+					int anti = ship.ecmLevel;
+					int ecm = ship.attack.ecmLevel;
+
+					boolean newTarget = false;
+					
+					// same level gives 50% chance
+					if (ecm == anti && anti > 0 && p < 0.5d) {
+						newTarget = true;
+					}
+					// if ecm is one level better, the scrambling chance is 85%
+					if (ecm - anti == 1 && p < 0.85d) {
+						newTarget = true;
+					}
+					// if anti ecm is one level better, the scrambling chance is 15%
+					if (anti - ecm == 1 && p < 0.15d) {
+						newTarget = true;
+					}
+					
+					if (newTarget) {
 						chooseNewTarget(ship);
-					} else
-					if (ship.ecmLevel == ship.attack.ecmLevel) {
-						if (world().random().nextBoolean()) {
-							chooseNewTarget(ship);
-						}
 					}
 				}
 			}
