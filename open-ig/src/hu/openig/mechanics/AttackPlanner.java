@@ -11,7 +11,6 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
-import hu.openig.core.Pair;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
@@ -21,6 +20,7 @@ import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
 import hu.openig.model.CallType;
+import hu.openig.model.DiplomaticOffer;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.FleetKnowledge;
@@ -103,6 +103,9 @@ public class AttackPlanner extends Planner {
 	}
 	@Override
 	public void plan() {
+		if (world.ownPlanets.isEmpty()) {
+			return;
+		}
 		// don't bother when exploring
 		for (AIFleet f : world.ownFleets) {
 			if (f.task.ordinal() <= FleetTask.EXPLORE.ordinal()) {
@@ -365,7 +368,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, Pair.of(CallType.SURRENDER, at));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.SURRENDER, at));
 						}
 					});
 					break;
@@ -374,7 +377,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, Pair.of(CallType.ALLIANCE, at));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.ALLIANCE, at));
 						}
 					});
 					break;
@@ -383,7 +386,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, Pair.of(CallType.RESIGN, at));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.RESIGN, at));
 						}
 					});
 					break;
@@ -392,7 +395,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, Pair.of(CallType.MONEY, at));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at, 10000 * (w.random().nextInt(10) + 1)));
 						}
 					});
 					break;
@@ -401,7 +404,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, Pair.of(CallType.WAR, at));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.WAR, at));
 						}
 					});
 					break;
@@ -410,7 +413,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, Pair.of(CallType.PEACE, at));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.PEACE, at));
 						}
 					});
 					break;

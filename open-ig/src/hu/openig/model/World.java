@@ -1101,11 +1101,13 @@ public class World {
 			// pending diplomatic offers
 			
 			XElement xdipls = xp.add("diplomatic-offers");
-			for (Map.Entry<String, Pair<CallType, ApproachType>> e : p.offers.entrySet()) {
+			for (Map.Entry<String, DiplomaticOffer> e : p.offers.entrySet()) {
 				XElement xdipl = xdipls.add("offer");
 				xdipl.set("from", e.getKey());
-				xdipl.set("call", e.getValue().first);
-				xdipl.set("approach", e.getValue().second);
+				DiplomaticOffer dio = e.getValue();
+				xdipl.set("call", dio.callType);
+				xdipl.set("approach", dio.approach);
+				xdipl.set("value", dio.value);
 			}
 		}
 		
@@ -1460,8 +1462,9 @@ public class World {
 					String from = xdipl.get("from");
 					CallType nt = CallType.valueOf(xdipl.get("call"));
 					ApproachType at = ApproachType.valueOf(xdipl.get("approach"));
+					String value = xdipl.get("value", "10000");
 					
-					p.offers.put(from, Pair.of(nt, at));
+					p.offers.put(from, new DiplomaticOffer(nt, at, value));
 				}
 			}
 		}

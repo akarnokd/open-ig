@@ -365,7 +365,12 @@ public class StatusbarScreen extends ScreenBase {
 	}
 	/** @return Is this a diplomatic call. */
 	boolean isDiplomaticCall() {
-		return !player().offers.isEmpty();
+		for (String p2 : player().offers.keySet()) {
+			if (!world().players.get(p2).ownPlanets().isEmpty()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/** Update the state displays. */
 	public void update() {
