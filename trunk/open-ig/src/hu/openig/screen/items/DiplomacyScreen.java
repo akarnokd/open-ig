@@ -1289,7 +1289,7 @@ public class DiplomacyScreen extends ScreenBase {
 					at, 
 					a.second);
 			
-			displayResults(a.first, a.second, at, m);
+			displayResults(a.first, a.second.name, at, m);
 			
 			if (m == ResponseMode.YES) {
 				setAlliance(a.second);
