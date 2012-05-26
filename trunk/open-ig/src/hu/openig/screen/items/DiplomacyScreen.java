@@ -1280,7 +1280,7 @@ public class DiplomacyScreen extends ScreenBase {
 		} else {
 			@SuppressWarnings("unchecked")
 			Pair<Negotiate, Player> a = (Pair<Negotiate, Player>)enemies.items.get(index).userObject;
-			approachList.visible(false);
+			enemies.visible(false);
 			
 			ApproachType at = ApproachType.NEUTRAL;
 			
