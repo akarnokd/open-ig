@@ -145,6 +145,8 @@ public class DiplomacyScreen extends ScreenBase {
 	double initialRelation;
 	/** Quit talking. */
 	boolean quitTalking;
+	/** The change to introduce after clicking the first message phase. */
+	double change;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -255,6 +257,7 @@ public class DiplomacyScreen extends ScreenBase {
 		mentioned.clear();
 		
 		messagePhase = 0;
+		change = 0;
 		
 		darkeningIndex = 0;
 		inCall = false;
@@ -432,6 +435,9 @@ public class DiplomacyScreen extends ScreenBase {
 			responseText.visible(true);
 			onResize();
 			messagePhase = 2;
+			
+			DiplomaticRelation dr = world().getRelation(player(), other);
+			dr.value = Math.max(0, Math.min(100, dr.value + change));
 		} else
 		if (messagePhase == 2) {
 			returnToOptions();
@@ -710,7 +716,7 @@ public class DiplomacyScreen extends ScreenBase {
 				oi1.userObject = p2;
 				
 				oi1.enabled = rel.full && last < now - limit 
-						&& !active;
+						&& active;
 
 				if (oi1.enabled && rel.wontTalk()) {
 					rel.wontTalk(false);
@@ -1088,6 +1094,7 @@ public class DiplomacyScreen extends ScreenBase {
 			responseText.visible(true);
 			continueLabel.visible(true);
 			messagePhase = 2;
+			change = 0;
 			
 			quitTalking = true;
 			
@@ -1103,6 +1110,8 @@ public class DiplomacyScreen extends ScreenBase {
 
 			approachList.items.clear();
 			moneyList.items.clear();
+			enemies.items.clear();
+			
 			if (neg.type == NegotiateType.MONEY) {
 				int[] money = { 10000, 20000, 30000, 40000, 50000, 100000, 250000, 500000 };
 				for (int m : money) {
@@ -1120,7 +1129,6 @@ public class DiplomacyScreen extends ScreenBase {
 			} else 
 			if (neg.type == NegotiateType.ALLY) {
 				negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
-				enemies.items.add(cancel);
 
 				Set<Player> others = new LinkedHashSet<Player>(player().knownPlayers().keySet());
 				others.remove(other);
@@ -1130,9 +1138,10 @@ public class DiplomacyScreen extends ScreenBase {
 					OptionItem item = new OptionItem();
 					item.label = " " + p.name + " (" + player().getStance(p) + ", " + other.getStance(p) + ")";
 					item.userObject = Pair.of(neg, p);
-					approachList.items.add(item);
+					enemies.items.add(item);
 					
 				}
+				enemies.items.add(cancel);
 				
 				enemies.fit();
 				enemies.visible(true);
@@ -1188,7 +1197,7 @@ public class DiplomacyScreen extends ScreenBase {
 		DiplomaticRelation dr = world().getRelation(player(), other);
 		
 		dr.wontTalk(r0.notalk);
-		dr.value += r0.change / 10d; // FIXME scaling?!
+		change = r0.change / 10d;
 		
 		String sOffer = format(world().random(n.approachFor(at)).label, parameter);
 		String sResponse = format(r0.label, parameter);
@@ -1210,7 +1219,7 @@ public class DiplomacyScreen extends ScreenBase {
 			negotiationTitle.visible(false);
 		} else {
 			@SuppressWarnings("unchecked")
-			Pair<Negotiate, ApproachType> a = (Pair<Negotiate, ApproachType>)moneyList.items.get(index).userObject;
+			Pair<Negotiate, ApproachType> a = (Pair<Negotiate, ApproachType>)approachList.items.get(index).userObject;
 			
 			approachList.visible(false);
 			
@@ -1393,6 +1402,7 @@ public class DiplomacyScreen extends ScreenBase {
 			responseText.visible(true);
 			continueLabel.visible(true);
 			messagePhase = 2;
+			change = 0;
 			
 			onResize();
 		} else {

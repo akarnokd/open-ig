@@ -1556,13 +1556,15 @@
 	<entry key='diplomacy.Dargslan.ALLY.NO.55'>Egyelőre nem találjuk a %s erőit komoly fenyegetésnek a Dargslanok népére.</entry>
 	<entry key='diplomacy.Dargslan.ALLY.NO.56'>Birodalmunknak nem érdeke egy azonnali támadás a %s ellen, Admirális.</entry>
 	<entry key='diplomacy.Dargslan.ALLY.NO.57'>Nem támadunk az %s bolygóira - még erre sem érdemesek.</entry>
-	<entry key='diplomacy.Dargslan.DARGSLAN.58'></entry>
-	<entry key='diplomacy.Dargslan.DARGSLAN.YES.59'></entry>
-	<entry key='diplomacy.Dargslan.DARGSLAN.YES.60'></entry>
-	<entry key='diplomacy.Dargslan.DARGSLAN.YES.61'></entry>
-	<entry key='diplomacy.Dargslan.DARGSLAN.NO.62'></entry>
-	<entry key='diplomacy.Dargslan.DARGSLAN.NO.63'></entry>
-	<entry key='diplomacy.Dargslan.DARGSLAN.NO.64'></entry>
+
+	<entry key='diplomacy.Dargslan.DARGSLAN.58'>A Dargslan Birodalom mindenkire nagy veszélyt jelent. Egyesíteni fogjuk az erőinket Önök ellen!</entry>
+	<entry key='diplomacy.Dargslan.DARGSLAN.YES.59'>Hogy merészelsz harcolni ellenünk? Ezért el kell pusztulnod!</entry>
+	<entry key='diplomacy.Dargslan.DARGSLAN.YES.60'>Hogy merészelsz harcolni ellenünk? Ezért el kell pusztulnod!</entry>
+	<entry key='diplomacy.Dargslan.DARGSLAN.YES.61'>Hogy merészelsz harcolni ellenünk? Ezért el kell pusztulnod!</entry>
+	<entry key='diplomacy.Dargslan.DARGSLAN.NO.62'>Hogy merészelsz harcolni ellenünk? Gyere csak, hogy eltapossunk, mint a férget amilyen vagy!</entry>
+	<entry key='diplomacy.Dargslan.DARGSLAN.NO.63'>Hogy merészelsz harcolni ellenünk? Ezért el kell pusztulnod!</entry>
+	<entry key='diplomacy.Dargslan.DARGSLAN.NO.64'>Hogy merészelsz harcolni ellenünk? Meg fogunk semmisíteni!</entry>
+
 	<entry key='diplomacy.Dargslan.SURRENDER.65'>Legyőztünk benneteket az űrben és a földön is. Nincs értelme a további ellenállásnak!</entry>
 	<entry key='diplomacy.Dargslan.SURRENDER.YES.66'>Valóban... Egy alacsonyabbrendű fajnak sikerült fölénkkerekednie... Megadjuk magunkat!</entry>
 	<entry key='diplomacy.Dargslan.SURRENDER.YES.67'>A harci kedvünk töretlen, de anyagilag nem tudjuk tovább finanszírozni a háborút. Elismerjük a földiek győzelmét.</entry>

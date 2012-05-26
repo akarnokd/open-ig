@@ -2462,7 +2462,7 @@ public class World {
 				DiplomaticRelation dr = establishRelation(pfirst, psecond);
 				
 				dr.full = xrel.getBoolean("full");
-				dr.value = xrel.getDouble("value");
+				dr.value = Math.max(0, Math.min(100, xrel.getDouble("value")));
 				dr.wontTalk(xrel.getBoolean("wont-talk"));
 				String lc = xrel.get("last-contact", null);
 				if (lc != null) {
