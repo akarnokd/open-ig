@@ -18,6 +18,7 @@ import hu.openig.model.Diplomacy;
 import hu.openig.model.Diplomacy.Approach;
 import hu.openig.model.Diplomacy.Call;
 import hu.openig.model.Diplomacy.Negotiate;
+import hu.openig.model.DiplomaticOffer;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -700,15 +701,16 @@ public class DiplomacyScreen extends ScreenBase {
 			
 			if (!p2.noDiplomacy) {
 				OptionItem oi1 = new OptionItem();
-				
-				if (player().offers.containsKey(p2.id)) {
+				boolean active = !p2.ownPlanets().isEmpty();
+				if (player().offers.containsKey(p2.id) && active) {
 					oi1.label = "!" + p2.shortName;
 				} else {
 					oi1.label = " " + p2.shortName;
 				}
 				oi1.userObject = p2;
 				
-				oi1.enabled = rel.full && last < now - limit;
+				oi1.enabled = rel.full && last < now - limit 
+						&& !active;
 
 				if (oi1.enabled && rel.wontTalk()) {
 					rel.wontTalk(false);
@@ -970,7 +972,7 @@ public class DiplomacyScreen extends ScreenBase {
 		DiplomaticRelation dr = world().getRelation(player(), other);
 		dr.lastContact = world().time.getTime();
 		
-		Pair<CallType, ApproachType> na = player().offers.get(other.id);
+		DiplomaticOffer na = player().offers.get(other.id);
 		if (na != null) {
 			doIncomingMessage(na);
 		} else {
@@ -1329,7 +1331,7 @@ public class DiplomacyScreen extends ScreenBase {
 	 */
 	protected void alienSurrender() {
 		// take over planets
-		for (Planet p : other.ownPlanets()) {
+		for (Planet p : U.newArrayList(other.ownPlanets())) {
 			p.takeover(player());
 		}
 		// FIXME keep their fleets as own?
@@ -1362,7 +1364,7 @@ public class DiplomacyScreen extends ScreenBase {
 	 * Display the incoming message.
 	 * @param na the negotiation and approach type.
 	 */
-	void doIncomingMessage(Pair<CallType, ApproachType> na) {
+	void doIncomingMessage(DiplomaticOffer na) {
 
 
 		String label = null;
@@ -1370,9 +1372,9 @@ public class DiplomacyScreen extends ScreenBase {
 		if (diplomacy != null) {
 			outer:
 			for (Call c : diplomacy.calls) {
-				if (c.type == na.first) {
+				if (c.type == na.callType) {
 					for (Approach a : c.approaches) {
-						if (a.type == na.second) {
+						if (a.type == na.approach) {
 							label = a.label;
 							break outer;
 						}
@@ -1381,7 +1383,11 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 			
 			responseText.width = base.width - 20;
-			responseText.text(get(label));
+			if (na.callType == CallType.MONEY) {
+				responseText.text(format(label, na.value));
+			} else {
+				responseText.text(get(label));
+			}
 			responseText.height = responseText.getWrappedHeight();
 			
 			responseText.visible(true);
@@ -1396,17 +1402,19 @@ public class DiplomacyScreen extends ScreenBase {
 		player().offers.remove(other.id);
 
 		DiplomaticRelation dr = world().getRelation(player(), other);
-		dr.wontTalk(false);
 		
-		if (na.first == CallType.SURRENDER) {
+		if (na.callType == CallType.SURRENDER) {
 			alienSurrender();
+			dr.wontTalk(true);
+		} else {
+			dr.wontTalk(false);
 		}
 	}
 	/**
 	 * Automatically receive a diplomatic call.
 	 */
 	public void receive() {
-		for (Map.Entry<String, Pair<CallType, ApproachType>> de : player().offers.entrySet()) {
+		for (Map.Entry<String, DiplomaticOffer> de : player().offers.entrySet()) {
 			if (openCloseAnimating) {
 				receiveAgain();
 			} else			
