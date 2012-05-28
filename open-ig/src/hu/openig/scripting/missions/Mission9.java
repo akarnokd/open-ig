@@ -161,10 +161,11 @@ public class Mission9 extends Mission {
 	}
 	/** Create the smuggler's ship. */
 	void createSmuggler() {
+		Player tr = player("Traders");
 		Planet sst = planet("San Sterling");
 		// create simple pirate fleet
 		Fleet pf = createFleet(label("mission-9.trader_name"), 
-				player("Traders"), sst.x + 80, sst.y + 80);
+				tr, sst.x + 80, sst.y + 80);
 		pf.task = FleetTask.SCRIPT;
 		int n = world.random().nextInt(2) + 1;
 		// ----------------------------------------------------------------
@@ -177,6 +178,8 @@ public class Mission9 extends Mission {
 		pf.targetPlanet(sst);
 
 		addScripted(pf);
+		
+		((AITrader)tr.ai).setLastVisited(pf, planet("Exterior 21"));
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
@@ -227,8 +230,7 @@ public class Mission9 extends Mission {
 			
 			Fleet smg = findTaggedFleet("Mission-9-Smuggler", traders);
 			if (smg != null) {
-				InventoryItem ii = smg.inventory.get(0);
-				if (ii.hp * 2 < world.getHitpoints(ii.type)) {
+				if (war.battle().enemyFlee) {
 					diverted = true;
 				} else {
 					slipped = true;

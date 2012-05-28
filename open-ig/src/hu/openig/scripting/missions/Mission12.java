@@ -18,6 +18,8 @@ import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
+import java.util.List;
+
 /**
  * Mission 12: New Caroline virus infection.
  * @author akarnokd, Feb 4, 2012
@@ -53,7 +55,7 @@ public class Mission12 extends Mission {
 	@Override
 	public void onTime() {
 		Objective m11t1 = objective("Mission-11");
-		if (m11t1.isCompleted() && stage == M12Stages.NONE) {
+		if (m11t1.isCompleted() && stage == M12Stages.NONE && !objective("Mission-12").isCompleted()) {
 			addMission("Mission-12", 12);
 			stage = M12Stages.INITIAL_DELAY;
 		}
@@ -78,10 +80,12 @@ public class Mission12 extends Mission {
 				world.env.speed1();
 
 				String m12tx = "";
+				int infectionCount = 0;
 				for (int i = 2; i < 6; i++) {
 					Objective o = objective("Mission-12-Task-" + i);
 					if (!o.visible && o.state == ObjectiveState.ACTIVE) {
 						m12tx = "Mission-12-Task-" + i;
+						infectionCount = i;
 						break;
 					}
 				}				
@@ -91,9 +95,14 @@ public class Mission12 extends Mission {
 				
 				
 				stage = M12Stages.SUBSEQUENT_MESSAGE;
-				planet("New Caroline").quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+				Planet nc = planet("New Caroline");
+				nc.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
 				
-				addTimeout("Mission-12-O2", 3000);
+				if (infectionCount > 2) {
+					List<Planet> ps = player.ownPlanets();
+					ps.remove(nc);
+					world.random(ps).quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+				}
 			}
 		}
 		if (checkMission("Mission-12-Hide")) {
