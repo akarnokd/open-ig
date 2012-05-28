@@ -211,6 +211,14 @@ public class AITrader implements AIManager {
 			}
 		}
 		emergeFleets(actions);
+		// notice script-created fleets
+		for (Fleet f : player.ownFleets()) {
+			if (f.task != FleetTask.SCRIPT) {
+				if (fleetIndex(f) < 0) {
+					createdFleets.add(f.id);
+				}
+			}
+		}
 		// label fix
 		for (Fleet f : player.ownFleets()) {
 			if (f.task != FleetTask.SCRIPT) {
@@ -524,6 +532,9 @@ public class AITrader implements AIManager {
 		
 		if (our != null) {
 			int idx = fleetIndex(our);
+			if (idx < 0) {
+				idx = our.id;
+			}
 			
 			String filter = "chat.merchant";
 			

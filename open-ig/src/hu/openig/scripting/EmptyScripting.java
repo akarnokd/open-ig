@@ -339,7 +339,7 @@ public class EmptyScripting implements GameScripting {
 		
 	}
 	@Override
-	public void onRecordWatched() {
+	public void onRecordMessage() {
 		// TODO Auto-generated method stub
 		
 	}

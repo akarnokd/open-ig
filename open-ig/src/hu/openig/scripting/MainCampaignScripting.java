@@ -1296,13 +1296,13 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}
 	}
 	@Override
-	public void onRecordWatched() {
+	public void onRecordMessage() {
 		for (Mission m : missions) {
 			if (!m.applicable()) {
 				continue;
 
 			}
-			m.onRecordWatched();
+			m.onRecordMessage();
 		}
 	};
 }

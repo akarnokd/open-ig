@@ -43,7 +43,7 @@ public class Mission10 extends Mission {
 			addMission("Mission-10", 3 * 24);
 			stage = M10Stages.WAIT;
 		}
-		if (stage == M10Stages.WAIT && checkMission("Mission-10")) {
+		if (checkMission("Mission-10")) {
 			world.env.stopMusic();
 			world.env.playVideo("interlude/colony_ship_arrival", new Action0() {
 				@Override
