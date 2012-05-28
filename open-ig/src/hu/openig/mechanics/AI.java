@@ -608,62 +608,36 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void manage() {
-		// if the player is the current player
-//		if (p != w.player) {
-//			return;
-//		}
 		updateExplorationMap();
 		
-//		if (p.id.equals("Garthog")) {
-//			System.out.println("GAI");
-//		}
-		
-		List<Action0> acts = null;
+		List<Planner> planners = U.newArrayList();
 
-		acts = new ColonyPlanner(world, controls).run();
-		if (!acts.isEmpty()) {
-			applyActions.addAll(acts);
-			return;
-		}
+		planners.add(new ColonyPlanner(world, controls));
 
-		acts = new ResearchPlanner(world, controls, exploration).run();
-		if (!acts.isEmpty()) {
-			applyActions.addAll(acts);
-			return;
-		}
-		acts = new ExplorationPlanner(world, controls, exploration).run();
-		if (!acts.isEmpty()) {
-			applyActions.addAll(acts);
-			return;
-		}
-
-		acts = new EconomyPlanner(world, controls).run();
-		if (!acts.isEmpty()) {
-			applyActions.addAll(acts);
-			return;
-		}
+		planners.add(new ResearchPlanner(world, controls, exploration));
+		planners.add(new ExplorationPlanner(world, controls, exploration));
 		
-		acts = new OffensePlanner(world, controls).run();
-		if (!acts.isEmpty()) {
-			applyActions.addAll(acts);
-			return;
-		}
+		int mix1 = planners.size();
+		planners.add(new EconomyPlanner(world, controls));
+		planners.add(new OffensePlanner(world, controls));
+		planners.add(new StaticDefensePlanner(world, controls));
+		int mix2 = planners.size();
 		
-		acts = new StaticDefensePlanner(world, controls).run();
-		if (!acts.isEmpty()) {
-			applyActions.addAll(acts);
-			return;
-		}
-		
-		acts = new AttackPlanner(world, controls, exploration, new Action1<Date>() {
+		planners.add(new AttackPlanner(world, controls, exploration, new Action1<Date>() {
 			@Override
 			public void invoke(Date value) {
 				nextAttack = value;
 			}
-		}).run();
-		if (!acts.isEmpty()) {
-			applyActions.addAll(acts);
-			return;
+		}));
+
+		Collections.shuffle(planners.subList(mix1, mix2), w.random());
+
+		for (Planner p : planners) {
+			List<Action0> acts = p.run();
+			if (!acts.isEmpty()) {
+				applyActions.addAll(acts);
+				return;
+			}
 		}
 	}
 	
