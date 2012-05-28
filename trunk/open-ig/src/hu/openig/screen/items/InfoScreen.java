@@ -1213,8 +1213,17 @@ public class InfoScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (e.has(Type.DOWN)) {
-			if (showPlanetListDetails) {
-				if (e.within(planetListDetais.x + 10, planetListDetais.y - 13, 90, 12)) {
+			if (showPlanetListDetails) { // FIXME
+				String s1 = get("info.planet_name");
+				int w1 = commons.text().getTextWidth(10, s1);
+				String s2 = get("info.population_details");
+				int w2 = commons.text().getTextWidth(10, s2);
+				String s3 = get("info.morale_details");
+				int w3 = commons.text().getTextWidth(10, s3);
+				String s4 = get("info.problem_details");
+				int w4 = commons.text().getTextWidth(10, s4);
+				
+				if (e.within(planetListDetais.x + 10, planetListDetais.y - 13, w1 + 12, 12)) {
 					if (planetListDetais.sortBy != 0 || !planetListDetais.ascending) {
 						planetListDetais.ascending = true;
 						planetListDetais.sortBy = 0;
@@ -1222,7 +1231,7 @@ public class InfoScreen extends ScreenBase {
 						planetListDetais.ascending = false;
 					}
 				} else
-				if (e.within(planetListDetais.x + 105, planetListDetais.y - 13, 130, 12)) {
+				if (e.within(planetListDetais.x + 105, planetListDetais.y - 13, w2 + 12, 12)) {
 					if (planetListDetais.sortBy != 1 || !planetListDetais.ascending) {
 						planetListDetais.ascending = true;
 						planetListDetais.sortBy = 1;
@@ -1230,7 +1239,7 @@ public class InfoScreen extends ScreenBase {
 						planetListDetais.ascending = false;
 					}
 				} else
-				if (e.within(planetListDetais.x + 240, planetListDetais.y - 13, 85, 12)) {
+				if (e.within(planetListDetais.x + 240, planetListDetais.y - 13, w3 + 12, 12)) {
 					if (planetListDetais.sortBy != 2 || !planetListDetais.ascending) {
 						planetListDetais.ascending = true;
 						planetListDetais.sortBy = 2;
@@ -1238,7 +1247,7 @@ public class InfoScreen extends ScreenBase {
 						planetListDetais.ascending = false;
 					}
 				} else
-				if (e.within(planetListDetais.x + 310, planetListDetais.y - 13, 80, 12)) {
+				if (e.within(planetListDetais.x + 310, planetListDetais.y - 13, w4 + 12, 12)) {
 					if (planetListDetais.sortBy != 3 || !planetListDetais.ascending) {
 						planetListDetais.ascending = true;
 						planetListDetais.sortBy = 3;
@@ -3213,10 +3222,41 @@ public class InfoScreen extends ScreenBase {
 
 			int probLeft = 310;
 			
-			commons.text().paintTo(g2, 10, -13, 10, TextRenderer.YELLOW, get("info.planet_name"));
-			commons.text().paintTo(g2, 105, -13, 10, TextRenderer.YELLOW, get("info.population_details"));
-			commons.text().paintTo(g2, 240, -13, 10, TextRenderer.YELLOW, get("info.morale_details"));
-			commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, get("info.problem_details"));
+			String s1 = get("info.planet_name");
+			int w1 = commons.text().getTextWidth(10, s1);
+			String s2 = get("info.population_details");
+			int w2 = commons.text().getTextWidth(10, s2);
+			String s3 = get("info.morale_details");
+			int w3 = commons.text().getTextWidth(10, s3);
+			String s4 = get("info.problem_details");
+			int w4 = commons.text().getTextWidth(10, s4);
+			
+			commons.text().paintTo(g2, 10, -13, 10, TextRenderer.YELLOW, s1);
+			if (sortBy == 0) {
+				g2.setColor(Color.YELLOW);
+				drawTriangle(g2, 12 + w1, -13, 10, ascending);
+			}
+			
+			commons.text().paintTo(g2, 105, -13, 10, TextRenderer.YELLOW, s2);
+			if (sortBy == 1) {
+				g2.setColor(Color.YELLOW);
+				drawTriangle(g2, 107 + w2, -13, 10, ascending);
+			}
+			
+			commons.text().paintTo(g2, 240, -13, 10, TextRenderer.YELLOW, s3);
+			if (sortBy == 2) {
+				g2.setColor(Color.YELLOW);
+				drawTriangle(g2, 242 + w3, -13, 10, ascending);
+			}
+
+			commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, s4);
+			if (sortBy == 3) {
+				g2.setColor(Color.YELLOW);
+				drawTriangle(g2, probLeft + w4 + 2, -13, 10, ascending);
+			}
+
+			
+			
 			if (top < 0) {
 				top = 0;
 			}
@@ -3430,6 +3470,24 @@ public class InfoScreen extends ScreenBase {
 			
 				
 			return false;
+		}
+		/**
+		 * Draw a triangle.
+		 * @param g2 the graphics context
+		 * @param x the top left of the enclosing rectangle
+		 * @param y the top left of the enclosing rectangle
+		 * @param size the side size
+		 * @param up points upwards or downwards
+		 */
+		void drawTriangle(Graphics2D g2, int x, int y, int size, boolean up) {
+			int[] xs = {x, x + size, x + size / 2};
+			if (up) {
+				int[] ys = {y + size * 866 / 1000, y + size * 866 / 1000, y};
+				g2.fillPolygon(xs, ys, 3);
+			} else {
+				int[] ys = {y, y, y + size * 866 / 1000};
+				g2.fillPolygon(xs, ys, 3);
+			}
 		}
 	}
 	@Override
