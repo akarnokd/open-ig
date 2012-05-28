@@ -13,10 +13,12 @@ import hu.openig.core.Func1;
 import hu.openig.mechanics.AchievementManager;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
+import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ClickLabel;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
@@ -26,6 +28,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -120,6 +123,8 @@ public class AchievementsScreen extends ScreenBase {
 	ClickLabel achievementLabel;
 	/** The current display mode. */
 	public Screens mode = Screens.STATISTICS;
+	/** Achievements label. */
+	UIGenericButton backLabel;
 	@Override
 	public void onResize() {
 		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
@@ -153,13 +158,21 @@ public class AchievementsScreen extends ScreenBase {
 
 		statisticsLabel.x = base.x + (base.width / 2 - achievementLabel.width) / 2;
 		statisticsLabel.y = base.y - achievementLabel.height / 2;
-		
-		achievementLabel.x = base.x + base.width / 2 + (base.width / 2 - statisticsLabel.width) / 2;
-		achievementLabel.y = base.y - statisticsLabel.height / 2;
+
+		if (world() != null) {
+			achievementLabel.x = base.x + base.width / 2 + (base.width / 2 - achievementLabel.width) / 2;
+		} else {
+			achievementLabel.x = base.x + (base.width - achievementLabel.width) / 2;
+		}
+		achievementLabel.y = base.y - achievementLabel.height / 2;
 
 		noProduction.location(production.location());
 		noResearch.location(research.location());
 		noDiplomacy.location(diplomacy.location());
+		
+		backLabel.x = base.x + (base.width - backLabel.width) / 2;
+		backLabel.y = base.y + base.height - backLabel.height - 5;
+
 	}
 
 	@Override
@@ -285,7 +298,21 @@ public class AchievementsScreen extends ScreenBase {
 				adjustScrollButtons();
 			}
 		};
-		
+
+		backLabel = new UIGenericButton(
+			get("singleplayer.back"),
+			fontMetrics(16),
+			commons.common().mediumButton,
+			commons.common().mediumButtonPressed
+		);
+		backLabel.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				hideSecondary();
+			}
+		};
+
 
 		addThis();
 		// FIXME find other ways to populate the achievement list
@@ -375,17 +402,26 @@ public class AchievementsScreen extends ScreenBase {
 		adjustScrollButtons();
 		adjustLabels();
 		
-		production.visible(world().level > 1);
-		research.visible(world().level > 2);
+		World w = world();
 		
-		noProduction.visible(!production.visible());
-		noResearch.visible(!research.visible());
+		production.visible(w != null && w.level > 1);
+		research.visible(w != null && w.level > 2);
+		
+		noProduction.visible(w != null && !production.visible());
+		noResearch.visible(w != null && !research.visible());
 		/*
 		diplomacy.visible(world().level > 3);
 		noDiplomacy.visible(!diplomacy.visible());
 		*/
 		diplomacy.visible(false);
 		noDiplomacy.visible(false);
+		
+		starmap.visible(w != null);
+		colony.visible(w != null);
+		equimpent.visible(w != null);
+		info.visible(w != null);
+		statisticsLabel.visible(w != null);
+		backLabel.visible(w == null);
 	}
 	/** Adjust label selection. */
 	void adjustLabels() {
@@ -1009,5 +1045,14 @@ public class AchievementsScreen extends ScreenBase {
 	@Override
 	public void onEndGame() {
 		// TODO Auto-generated method stub
+	}
+	@Override
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE && world() == null) {
+			hideSecondary();
+			e.consume();
+			return true;
+		}
+		return false;
 	}
 }

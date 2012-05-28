@@ -14,6 +14,7 @@ import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
+import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
@@ -23,6 +24,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -68,7 +70,11 @@ public class MainScreen extends ScreenBase {
 		public ClickLabel(int x, int y, int width, int size, String label) {
 			this.x = x;
 			this.y = y;
-			this.width = width;
+			if (width < 0) {
+				this.width = commons.text().getTextWidth(size, get(label)) + 20;
+			} else {
+				this.width = width;
+			}
 			this.size = size;
 			this.label = label;
 		}
@@ -126,7 +132,7 @@ public class MainScreen extends ScreenBase {
 		public boolean test(int mx, int my, int x0, int y0) {
 			int w = width;
 			return !disabled && (x0 + x) <= mx && (x0 + x + w) > mx
-			&& (y0 + y) <= my && (y0 + y + size) > my;
+			&& (y0 + y) <= my && (y0 + y + size + 5) > my;
 		}
 	}
 	/** The screen X origin. */
@@ -141,6 +147,26 @@ public class MainScreen extends ScreenBase {
 	Random rnd = new Random();
 	/** The continue labe. */
 	private ClickLabel continueLabel;
+	/** The achievements screen. */
+	UIImageButton achievements;
+	/** The single player click label. */
+	private ClickLabel single;
+	/** Label button. */
+	private ClickLabel load;
+	/** Label button. */
+	private ClickLabel multiplayer;
+	/** Label button. */
+	private ClickLabel settings;
+	/** Label button. */
+	private ClickLabel videosLabel;
+	/** Label button. */
+	private ClickLabel introLabel;
+	/** Label button. */
+	private ClickLabel titleLabel;
+	/** Label button. */
+	private ClickLabel exit;
+	/** Label button. */
+	private ClickLabel creditsLabel;
 	/** Resume the last gameplay. */
 	void doContinue() {
 		continueLabel.disabled = !isSaveAvailable();
@@ -187,8 +213,16 @@ public class MainScreen extends ScreenBase {
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		g2.drawImage(background, xOrigin, yOrigin, null);
 	
+		int w0 = commons.text().getTextWidth(14, "Open");
+		g2.setColor(new Color(0, 0, 0, 128));
+		g2.fillRect(xOrigin + 118, yOrigin + 18, w0 + 4, 20);
 		commons.text().paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
 		commons.text().paintTo(g2, xOrigin + 120, yOrigin + 20, 14, 0xFFFFFF00, "Open");
+		
+		
+		int w1 = commons.text().getTextWidth(14, Configuration.VERSION);
+		g2.setColor(new Color(0, 0, 0, 128));
+		g2.fillRect(xOrigin + 498, yOrigin + 61, w1 + 4, 20);
 		commons.text().paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
 		commons.text().paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
 		
@@ -201,6 +235,7 @@ public class MainScreen extends ScreenBase {
 		for (ClickLabel cl : clicklabels) {
 			cl.paintTo(g2, xOrigin, yOrigin);
 		}
+		super.draw(g2);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -241,6 +276,9 @@ public class MainScreen extends ScreenBase {
 			}
 			break;
 		default:
+		}
+		if (!needRepaint) {
+			return super.mouse(e);
 		}
 		return needRepaint;
 	}
@@ -302,7 +340,7 @@ public class MainScreen extends ScreenBase {
 	public void onInitialize() {
 		clicklabels = new LinkedList<ClickLabel>();
 		
-		ClickLabel single = new ClickLabel(120, 120, 400, 20, "mainmenu.singleplayer");
+		single = new ClickLabel(120, 120, -400, 20, "mainmenu.singleplayer");
 		single.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -312,7 +350,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(single);
 
-		continueLabel = new ClickLabel(120, 155, 400, 14, "mainmenu.continue");
+		continueLabel = new ClickLabel(120, 155, -400, 14, "mainmenu.continue");
 		continueLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -322,7 +360,7 @@ public class MainScreen extends ScreenBase {
 		};
 		continueLabel.disabled = true;
 		clicklabels.add(continueLabel);
-		ClickLabel load = new ClickLabel(120, 180, 400, 14, "mainmenu.load");
+		load = new ClickLabel(120, 180, -400, 14, "mainmenu.load");
 		load.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -335,10 +373,10 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(load);
 		
-		ClickLabel multiplayer = new ClickLabel(120, 215, 400, 20 , "mainmenu.multiplayer");
+		multiplayer = new ClickLabel(120, 215, -400, 20 , "mainmenu.multiplayer");
 		multiplayer.disabled = true;
 		clicklabels.add(multiplayer);
-		ClickLabel settings = new ClickLabel(120, 250, 400, 20, "mainmenu.settings");
+		settings = new ClickLabel(120, 250, -400, 20, "mainmenu.settings");
 		settings.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -347,7 +385,7 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		clicklabels.add(settings);
-		ClickLabel videosLabel = new ClickLabel(120, 285, 400, 20, "mainmenu.videos");
+		videosLabel = new ClickLabel(120, 285, -400, 20, "mainmenu.videos");
 		videosLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -357,7 +395,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(videosLabel);
 		
-		ClickLabel introLabel = new ClickLabel(120, 320, 180, 14, "mainmenu.videos.intro");
+		introLabel = new ClickLabel(120, 320, -180, 14, "mainmenu.videos.intro");
 		introLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -365,7 +403,7 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		clicklabels.add(introLabel);
-		ClickLabel titleLabel = new ClickLabel(340, 320, 180, 14, "mainmenu.videos.title");
+		titleLabel = new ClickLabel(340, 320, -180, 14, "mainmenu.videos.title");
 		titleLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -374,7 +412,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(titleLabel);
 		
-		ClickLabel creditsLabel = new ClickLabel(120, 345, 400, 14, "credits");
+		creditsLabel = new ClickLabel(120, 345, -400, 14, "credits");
 		creditsLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -384,7 +422,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(creditsLabel);
 		
-		ClickLabel exit = new ClickLabel(120, 380, 400, 20, "mainmenu.exit");
+		exit = new ClickLabel(120, 380, -400, 20, "mainmenu.exit");
 		exit.action = new Action0() { @Override public void invoke() { 
 			doExit(); 
 		} };
@@ -443,6 +481,16 @@ public class MainScreen extends ScreenBase {
 		clicklabels.add(toEng);
 		clicklabels.add(toHu);
 		clicklabels.add(toDe);
+		
+		achievements = new UIImageButton(commons.starmap().achievements);
+		achievements.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				displaySecondary(Screens.ACHIEVEMENTS);
+			}
+		};
+		
+		addThis();
 	}
 
 	@Override
@@ -455,9 +503,21 @@ public class MainScreen extends ScreenBase {
 		if (background == null) {
 			selectRandomBackground();
 		}
+		
 		// relocate objects if necessary
-		xOrigin = (getInnerWidth() - background.getWidth()) / 2;
+		int w = background.getWidth();
+		xOrigin = (getInnerWidth() - w) / 2;
 		yOrigin = (getInnerHeight() - background.getHeight()) / 2;
+		
+		achievements.location(xOrigin + w - 20 - achievements.width, yOrigin + single.y);
+
+		for (ClickLabel cl : Arrays.asList(single, continueLabel, load, 
+				multiplayer, settings, videosLabel, exit, creditsLabel)) {
+			cl.x = w / 2 - cl.width / 2;
+		}
+		introLabel.x = w / 3 - introLabel.width / 2;
+		titleLabel.x = w * 2 / 3 - titleLabel.width / 2;
+		
 	}
 	@Override
 	public Screens screen() {
