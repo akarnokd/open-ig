@@ -16,6 +16,10 @@ import hu.openig.model.Message;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
+import hu.openig.model.Production;
+import hu.openig.model.Research;
+import hu.openig.model.ResearchState;
+import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
@@ -47,6 +51,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.swing.Timer;
@@ -58,6 +63,8 @@ import javax.swing.Timer;
  * @author akarnokd, 2010.01.11.
  */
 public class StatusbarScreen extends ScreenBase {
+	/** Menu icon widths. */
+	private static final int MENU_ICON_WIDTH = 30;
 	/** The top bar. */
 	UIImageFill top;
 	/** The bottom bar. */
@@ -308,6 +315,7 @@ public class StatusbarScreen extends ScreenBase {
 		screenMenu.location(width - screenMenu.width, 20);
 		notificationHistory.bounds(12, bottom.y - 140, width - 190, 140);
 		notificationHistory.visible(notificationHistory.visible() && !commons.nongame);
+		
 		super.draw(g2);
 		if (commons.nongame) {
 			objectives.visible(objshowing);
@@ -316,6 +324,43 @@ public class StatusbarScreen extends ScreenBase {
 			int w = commons.text().getTextWidth(10, s);
 			commons.text().paintTo(g2, notification.x + (notification.width - w) / 2, notification.y + 1, 10, TextRenderer.YELLOW, s);
 		} else {
+			if (world().level > 1) {
+				int prodCount = computeTotalProduction();
+				String pps2 = String.format("00000000");
+				String ps = "-";
+				int ppsw2 = commons.text().getTextWidth(10, pps2);
+				if (prodCount > 0) {
+					ps = String.format("%d", prodCount);
+				}
+				int ppsw = commons.text().getTextWidth(10, ps);
+				int ppsx = width - MENU_ICON_WIDTH - ppsw2 + (ppsw2 - ppsw) / 2;
+				commons.text().paintTo(g2, ppsx, top.y + 4, 10, TextRenderer.YELLOW, ps);
+				g2.setColor(Color.GREEN);
+				g2.fillRect(width - MENU_ICON_WIDTH * 2 - ppsw2, 0, MENU_ICON_WIDTH, 19);
+				// research
+				if (world().level > 2) {
+					int rpsx0 = width - MENU_ICON_WIDTH * 2 - ppsw2 * 2;
+					String rs = "-";
+					ResearchType rt = player().runningResearch();
+					boolean mayBlink = false;
+					if (rt != null) {
+						Research r = player().research.get(rt);
+						if (r != null) {
+							rs = String.format("%.1f%%", r.getPercent());
+							mayBlink = r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;
+						}
+					}
+					int rsw = commons.text().getTextWidth(10, rs);
+					int rsx = rpsx0 + (ppsw2 - rsw) / 2;
+
+					if (blink || !mayBlink) {
+						commons.text().paintTo(g2, rsx, top.y + 4, 10, TextRenderer.YELLOW, rs);
+					}
+					g2.setColor(Color.PINK);
+					g2.fillRect(width - MENU_ICON_WIDTH * 3 - ppsw2 * 2, 0, MENU_ICON_WIDTH, 19);
+				}
+			}
+			
 			if (hasUnseenMessage()) {
 				String s = get("incoming_message");
 				int w = commons.text().getTextWidth(10, s);
@@ -350,6 +395,18 @@ public class StatusbarScreen extends ScreenBase {
 			g2.setColor(overlay);
 			g2.fillRect(0, 0, width, height);
 		}
+	}
+	/**
+	 * @return computes the total production progress in 0..100% or -1 if no production
+	 */
+	int computeTotalProduction() {
+		int remainingCost = 0;
+		for (Map<ResearchType, Production> prods : player().production.values()) {
+			for (Production prod : prods.values()) {
+				remainingCost += prod.count;
+			}
+		}
+		return remainingCost;
 	}
 	/**
 	 * Check if there is unseen message.
@@ -627,12 +684,14 @@ public class StatusbarScreen extends ScreenBase {
 			blinkCounter++;
 			if (blinkCounter % 6 == 0) {
 				blink = !blink;
+				askRepaint();
 			}
 			if (blinkCounter % 24 == 0) {
 				attackListIndex++;
 				if (attackListIndex >= pa.size()) {
 					attackListIndex = 0;
 				}
+				askRepaint();
 			}
 		}
 	}
@@ -657,7 +716,8 @@ public class StatusbarScreen extends ScreenBase {
 		if (commons.force) {
 			return false;
 		}
-		if (e.has(Type.UP) && screenMenu.visible() && !e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height)) {
+		if (e.has(Type.UP) && screenMenu.visible() 
+				&& !e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height)) {
 			screenMenu.visible(false);
 			return true;
 		}
@@ -684,7 +744,7 @@ public class StatusbarScreen extends ScreenBase {
 			|| (screenMenu.visible() && e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height))
 			|| (notificationHistory.visible() && e.within(notificationHistory.x, notificationHistory.y, notificationHistory.width, notificationHistory.height))
 		) { 
-			if (e.has(Type.DOWN) && e.within(width - screenMenu.width, 0, screenMenu.width, 20)) {
+			if (e.has(Type.DOWN) && e.within(width - MENU_ICON_WIDTH, 0, screenMenu.width, 20)) {
 				buttonSound(SoundType.CLICK_MEDIUM_2);
 				screenMenu.highlight = -1;
 				screenMenu.visible(true);
