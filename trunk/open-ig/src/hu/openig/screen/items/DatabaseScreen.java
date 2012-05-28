@@ -27,6 +27,7 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -107,6 +108,10 @@ public class DatabaseScreen extends ScreenBase {
 	protected String mapTitle;
 	/** The race description. */
 	protected String raceDesc;
+	/** The blink timer. */
+	protected Closeable blinkTimer;
+	/** The counter used to toggle blink phases. */
+	protected long blinkCounter;
 	/**
 	 * The database button.
 	 * @author akarnokd, 2009.10.25.
@@ -435,7 +440,7 @@ public class DatabaseScreen extends ScreenBase {
 					commons.playAudio(SoundType.RECORD_MESSAGE_YES.resource, new Action0() {
 						@Override
 						public void invoke() {
-							world().scripting.onRecordWatched();
+							world().scripting.onRecordMessage();
 						}
 					});
 				}
@@ -864,12 +869,21 @@ public class DatabaseScreen extends ScreenBase {
 			btn.phase = 0;
 			btn.selected = false;
 		}
+		
+		blinkTimer = commons.register(500, new Action0() {
+			@Override
+			public void invoke() {
+				blinkCounter++;
+			}
+		});
 	}
 
 	@Override
 	public void onLeave() {
 		highlightTimer.stop();
 		expandCollapse.stop();
+		close0(blinkTimer);
+		blinkTimer = null;
 	}
 
 	@Override
@@ -911,6 +925,11 @@ public class DatabaseScreen extends ScreenBase {
 
 		int x0 = base.x;
 		int y0 = base.y;
+		
+		if (blinkCounter % 2 == 0 && world().allowRecordMessage && world().messageRecording) {
+			g2.setColor(Color.RED);
+			g2.fillOval(x0 + recordMessage.x + recordMessage.width + 15, y0 + recordMessage.y, recordMessage.height, recordMessage.height);
+		}
 		
 		recordMessage.paintTo(g2, x0, y0);
 		aliens.paintTo(g2, x0, y0);
@@ -1067,8 +1086,8 @@ public class DatabaseScreen extends ScreenBase {
 						moveDown.paintTo(g2, x0, y0);
 					}
 					Shape sp = g2.getClip();
-					g2.setClip(new Rectangle(x0 + 18, y0 + 299, 430, 120));
-					int y = y0 + 299;
+					g2.setClip(new Rectangle(x0 + 18, y0 + 302, 430, 120));
+					int y = y0 + 302;
 					for (int i = textOffset; i < rows.size(); i++) {
 						commons.text().paintTo(g2, x0 + 9 + 9, y, 10, 0xFFFFFF00, rows.get(i));
 						y += 12;

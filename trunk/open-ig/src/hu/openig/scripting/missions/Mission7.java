@@ -301,10 +301,10 @@ public class Mission7 extends Mission {
 				ii.owner = merchant.owner;
 				ii.tag = null;
 			}
-			merchant.targetPlanet(world.random(Arrays.asList(
+			merchant.moveTo(world.random(Arrays.asList(
 					planet("Achilles"), planet("Naxos"), planet("San Sterling"),
 					planet("Centronom"), planet("New Caroline"))));
-
+			merchant.task = FleetTask.MOVE;
 		}
 		Fleet g = findTaggedFleet("Mission-7-Garthog", pirates);
 		if (g != null) {

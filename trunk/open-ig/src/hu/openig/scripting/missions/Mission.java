@@ -993,7 +993,7 @@ public abstract class Mission implements GameScriptingEvents {
 		
 	}
 	@Override
-	public void onRecordWatched() {
+	public void onRecordMessage() {
 		
 	}
 }

@@ -36,6 +36,7 @@ public class Mission15 extends Mission {
 			});
 		}
 		if (checkMission("Mission-15-Morning")) {
+			world.messageRecording = false;
 			world.env.stopMusic();
 			world.env.playVideo("interlude/watch_recording", new Action0() {
 				@Override
@@ -101,14 +102,19 @@ public class Mission15 extends Mission {
 		}
 	}
 	@Override
-	public void onRecordWatched() {
+	public void onRecordMessage() {
 		if (objective("Mission-15-Task-2").state == ObjectiveState.ACTIVE
 				&& !hasMission("Mission-15-Morning")) {
-
+			world.messageRecording = true;
 			int t = ((now() / 24) * 24) + 23 - now();
 			addMission("Mission-15-Morning", t);
 			setObjectiveState("Mission-15-Task-2", ObjectiveState.SUCCESS);
 			clearMission("Mission-15-Task-2-Timeout");
 		}
+	}
+	@Override
+	public void reset() {
+		world.allowRecordMessage = false;
+		world.messageRecording = false;
 	}
 }

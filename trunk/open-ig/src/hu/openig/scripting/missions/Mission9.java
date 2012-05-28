@@ -61,7 +61,7 @@ public class Mission9 extends Mission {
 			addMission("Mission-9", 3 * 24);
 			stage = M9Stages.WAIT;
 		}
-		if (stage == M9Stages.WAIT && checkMission("Mission-9")) {
+		if (checkMission("Mission-9")) {
 			world.env.stopMusic();
 			world.env.playVideo("interlude/merchant_in", new Action0() {
 				@Override

@@ -315,6 +315,7 @@ public class BarScreen extends ScreenBase {
 							@Override
 							public void invoke() {
 								setState(next);
+								commons.control().moveMouse();
 								askRepaint();
 							}
 						}, ts.media);

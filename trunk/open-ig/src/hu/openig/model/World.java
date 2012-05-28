@@ -84,6 +84,8 @@ public class World {
 	public String currentTalk;
 	/** Indicate that the database screen should allow recording. */
 	public boolean allowRecordMessage;
+	/** The message record is in progress. */
+	public boolean messageRecording;
 	/** The ship-walk definitions. */
 	public Walks walks;
 	/** The game definition. */
@@ -929,6 +931,7 @@ public class World {
 		xworld.set("test-needed", testNeeded);
 		xworld.set("test-completed", testCompleted);
 		xworld.set("allow-record-message", allowRecordMessage);
+		xworld.set("message-recording", messageRecording);
 		xworld.set("current-talk", currentTalk);
 		
 		statistics.save(xworld.add("statistics"));
@@ -1238,6 +1241,7 @@ public class World {
 		testNeeded = xworld.getBoolean("test-needed", false);
 		testCompleted = xworld.getBoolean("test-completed", false);
 		allowRecordMessage = xworld.getBoolean("allow-record-message", false);
+		this.messageRecording = xworld.getBoolean("message-recording", false);
 		currentTalk = xworld.get("current-talk", null);
 		
 		try {
