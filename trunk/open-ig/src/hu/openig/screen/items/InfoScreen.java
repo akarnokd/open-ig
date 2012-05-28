@@ -3698,7 +3698,7 @@ public class InfoScreen extends ScreenBase {
 					}
 					commons.text().paintTo(g2, tx, ty, textSize, war0.color, war0.name);
 					tx += w;
-					if (i < ally.size() - 1) {
+					if (i < war.size() - 1) {
 						commons.text().paintTo(g2, tx, ty, textSize, TextRenderer.GREEN, ",");
 						tx += sep;
 					}

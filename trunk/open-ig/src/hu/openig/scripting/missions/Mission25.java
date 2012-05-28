@@ -59,6 +59,11 @@ public class Mission25 extends Mission {
 		}
 		checkMainShip();
 	}
+	@Override
+	public void onLevelChanged() {
+		String a = "achievement.grand_admiral";
+		world.achievement(a);
+	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {
 		Fleet ft = findTaggedFleet("CampaignMainShip4", player);

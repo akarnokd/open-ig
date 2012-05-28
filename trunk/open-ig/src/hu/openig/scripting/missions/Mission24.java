@@ -99,11 +99,18 @@ public class Mission24 extends Mission {
 	 */
 	void missionSuccess() {
 		Objective o = objective("Mission-24");
-		o.visible = true;
-		setObjectiveState("Mission-24", ObjectiveState.SUCCESS);
-		addTimeout("Mission-24-Promote", 13000);
-		
-		stage = M24.DONE;
+		if (setObjectiveState("Mission-24", ObjectiveState.SUCCESS)) {
+			o.visible = true;
+			addTimeout("Mission-24-Promote", 13000);
+			
+			stage = M24.DONE;
+		}
+	}
+	@Override
+	public void onConquered(Planet planet, Player previousOwner) {
+		if (planet.owner == player && previousOwner == player("Dargslan")) {
+			missionSuccess();
+		}
 	}
 	@Override
 	public void onDeploySatellite(Planet target, Player player,
