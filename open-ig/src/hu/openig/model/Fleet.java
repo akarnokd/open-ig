@@ -14,6 +14,7 @@ import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -434,8 +435,15 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void upgradeAll() {
 		strip();
+		List<InventoryItem> iis = U.newArrayList(inventory);
+		Collections.sort(iis, new Comparator<InventoryItem>() {
+			@Override
+			public int compare(InventoryItem o1, InventoryItem o2) {
+				return U.compare(o2.type.productionCost, o1.type.productionCost);
+			}
+		});
 		// walk
-		for (InventoryItem ii : inventory) {
+		for (InventoryItem ii : iis) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 				ii.upgradeSlots();
