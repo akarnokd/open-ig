@@ -97,7 +97,7 @@
 	<item id='Cruiser1' name='tech.cruiser1.name' long-name='tech.cruiser1.longname'
 		description='tech.cruiser1.description' category='SPACESHIPS_CRUISERS'
 		image='inventions/spaceships/cruisers/cruiser_1' factory='spaceship'
-		research-cost='24000' production-cost='15000' level='3' race='human'
+		research-cost='24000' production-cost='15000' level='2' race='human'
 		requires='Shield1' mech='2' comp='1' ai='1' mil='1' index='3'
 		video='technology/spaceships/cruisers/cruiser_1'>
 		<slot id='shield' x='60' y='62' width='36' height='13' max='1'
@@ -315,7 +315,7 @@
 	<item id='SpaceStation1' name='tech.spacestation1.name' long-name='tech.spacestation1.longname'
 		description='tech.spacestation1.description' category='SPACESHIPS_STATIONS'
 		image='inventions/spaceships/stations/space_station_1' factory='spaceship'
-		research-cost='20000' production-cost='65000' level='0'
+		research-cost='20000' production-cost='65000' level='3'
 		race='human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep' civil='2'
 		mech='2' comp='2' ai='1' mil='3' index='0'
 		video='technology/spaceships/stations/space_station_1'>

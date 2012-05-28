@@ -47,6 +47,7 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.ui.UITextButton;
 import hu.openig.ui.VerticalAlignment;
 
 import java.awt.Color;
@@ -1380,6 +1381,14 @@ public class InfoScreen extends ScreenBase {
 		UIImageButton taxLess;
 		/** Tax less for all? */
 		boolean taxLessAll;
+		/** Set the tax level on all of the player's planet to the current. */
+		UITextButton taxAll;
+		/** Change to the previous auto-build settings. */
+		UITextButton autoPrev;
+		/** Change to the next autobuild settings. */
+		UITextButton autoNext;
+		/** Change the autobuild for all planets to the current. */
+		UITextButton autoAll;
 		/** Construct the label elements. */
 		public InfoPanel() {
 			int textSize = 10;
@@ -1456,7 +1465,66 @@ public class InfoScreen extends ScreenBase {
 			taxMore.setDisabledPattern(commons.common().disabledPattern);
 			taxLess.setDisabledPattern(commons.common().disabledPattern);
 
+			taxAll = new UITextButton(get("infoscreen.all"), 10, commons.text());
+			taxAll.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					doSetTaxAll();
+				}
+			};
+			autoPrev = new UITextButton("-", 10, commons.text());
+			autoPrev.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					doAutoPrev();
+				}
+			};
+			autoNext = new UITextButton("+", 10, commons.text());
+			autoNext.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					doAutoNext();
+				}
+			};
+			autoAll = new UITextButton(get("infoscreen.all"), 10, commons.text());
+			autoAll.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					doSetAutoAll();
+				}
+			};
+			
 			addThis();
+		}
+		/** Set tax level on all planets to the same. */
+		void doSetTaxAll() {
+			Planet p = planet();
+			for (Planet q : player().ownPlanets()) {
+				q.tax = p.tax;
+			}
+		}
+		/** Set autobuild level on all planets to the same. */
+		void doSetAutoAll() {
+			Planet p = planet();
+			for (Planet q : player().ownPlanets()) {
+				q.autoBuild = p.autoBuild;
+			}
+		}
+		/** Select previous auto-build settings or wrap around. */
+		void doAutoPrev() {
+			int a = planet().autoBuild.ordinal() - 1;
+			if (a < 0) {
+				a = AutoBuild.values().length - 1;
+			}
+			planet().autoBuild = AutoBuild.values()[a];
+		}
+		/** Select next autobuild settings or wrap around. */
+		void doAutoNext() {
+			int a = planet().autoBuild.ordinal() + 1;
+			if (a >= AutoBuild.values().length) {
+				a = 0;
+			}
+			planet().autoBuild = AutoBuild.values()[a];
 		}
 		/** Compute the panel size based on its visible component sizes. */
 		public void computeSize() {
@@ -1484,6 +1552,11 @@ public class InfoScreen extends ScreenBase {
 			
 			width = w + 10;
 			height = h + 5;
+			
+			taxAll.location(taxMore.x + taxMore.width - taxAll.width, taxLevel.y - 5);
+			autoAll.location(taxAll.x, autobuild.y - 5);
+			autoPrev.location(autoAll.x - 3 - autoPrev.width, autoAll.y);
+			autoNext.location(autoPrev.x - 3 - autoNext.width, autoAll.y);
 		}
 		/**
 		 * Update the display values based on the current planet's settings.

@@ -2572,7 +2572,7 @@
 	<entry key="production.missing_weapons_factory">Figyelem, nincs fegyvergyárad!</entry>
 	<entry key="production.missing_spaceship_factory">Figyelem, nincs űrhajógyárad!</entry>
 	<entry key="production.missing_equipment_factory">Figyelem, nincs felszerelésgyárad!</entry>
-	<entry key=''></entry>
+	<entry key='infoscreen.all'>Mind</entry>
 	<entry key=''></entry>
 	<entry key=''></entry>
 	
