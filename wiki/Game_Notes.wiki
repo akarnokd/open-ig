@@ -17,7 +17,7 @@
   * Building names and statuses can be hidded via the options screen. ([http://code.google.com/p/open-ig/issues/detail?id=410 Issue #410])
   * Changed rocket and ECM behavior to give higher chance of hitting the target ([http://code.google.com/p/open-ig/issues/detail?id=430 Issue #430])
   * Most non-full screens can now be scaled to fit the window independently of the global scaling, enabled via an options setting ([http://code.google.com/p/open-ig/issues/detail?id=442 Issue #442])
-  * Display of current and delta relation during diplomatic conversation with the aliens, several fixes ([http://code.google.com/p/open-ig/issues/detail?id=455 Issue #455])
+  * Display of current and delta relation during diplomatic conversation with the aliens ([http://code.google.com/p/open-ig/issues/detail?id=455 Issue #455])
   * Reaching an attack target in space now starts the battle much sooner ([http://code.google.com/p/open-ig/issues/detail?id=462 Issue #462])
   * Trader fleet behavior changes and fixes ([http://code.google.com/p/open-ig/issues/detail?id=473 Issue #473])
   * The game now creates a named save on each level start ([http://code.google.com/p/open-ig/issues/detail?id=474 Issue #474])
@@ -29,7 +29,11 @@
   * Fixed some scripting issues ([http://code.google.com/p/open-ig/issues/detail?id=482 Issue #482])
   * Fixed virus mission finish not detected when multiple planets were infected ([http://code.google.com/p/open-ig/issues/detail?id=483 Issue #483])
   * Fixed prototype fleet not appearing in level 2 ([http://code.google.com/p/open-ig/issues/detail?id=484 Issue #484])
-  * 
+  * Traders should now properly remember where they came from (but clean new game might be required) ([http://code.google.com/p/open-ig/issues/detail?id=485 Issue #485])
+  * Fixed many diplomatic option display and selection issues ([http://code.google.com/p/open-ig/issues/detail?id=486 Issue #486])
+  * Level 2 now lists an unresearched Cruiser 1 and Starbase 1 is not buildable any more (new game required) ([http://code.google.com/p/open-ig/issues/detail?id=490 Issue #490])
+  * Record message on the database screen now features a red blinking circle indicating the ongoing record ([http://code.google.com/p/open-ig/issues/detail?id=491 Issue #491])
+  * Fixed termination issues with the smuggler mission ([http://code.google.com/p/open-ig/issues/detail?id=492 Issue #492])
  
 
 = Version 0.94.410 - More bugfixes =
