@@ -148,6 +148,8 @@ public class DiplomacyScreen extends ScreenBase {
 	boolean quitTalking;
 	/** The change to introduce after clicking the first message phase. */
 	double change;
+	/** The last projector image. */
+	BufferedImage projectorLast;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -305,6 +307,7 @@ public class DiplomacyScreen extends ScreenBase {
 	void clearProjectorSurface() {
 		projectorLock.lock();
 		try {
+			projectorLast = null;
 			projectorFront = null;
 			projectorBack = null;
 		} finally {
@@ -482,6 +485,9 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		projectorLock.lock();
 		try {
+			if (projectorLast != null) {
+				g2.drawImage(projectorLast, projectorRect.x, projectorRect.y, null);
+			} else
 			if (projectorFront != null) {
 				g2.drawImage(projectorFront, projectorRect.x, projectorRect.y, null);
 			}
@@ -616,15 +622,22 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 			@Override
 			public void init(int width, int height) {
-				projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorFront.setAccelerationPriority(0);
-				projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorBack.setAccelerationPriority(0);
+				projectorLock.lock();
+				try {
+					projectorLast = projectorFront;
+					projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorFront.setAccelerationPriority(0);
+					projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorBack.setAccelerationPriority(0);
+				} finally {
+					projectorLock.unlock();
+				}
 			}
 			@Override
 			public void swap() {
 				projectorLock.lock();
 				try {
+					projectorLast = null;
 					BufferedImage temp = projectorFront;
 					projectorFront = projectorBack;
 					projectorBack = temp;
@@ -662,15 +675,22 @@ public class DiplomacyScreen extends ScreenBase {
 			}
 			@Override
 			public void init(int width, int height) {
-				projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorFront.setAccelerationPriority(0);
-				projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorBack.setAccelerationPriority(0);
+				projectorLock.lock();
+				try {
+					projectorLast = projectorFront;
+					projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorFront.setAccelerationPriority(0);
+					projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorBack.setAccelerationPriority(0);
+				} finally {
+					projectorLock.unlock();
+				}
 			}
 			@Override
 			public void swap() {
 				projectorLock.lock();
 				try {
+					projectorLast = null;
 					BufferedImage temp = projectorFront;
 					projectorFront = projectorBack;
 					projectorBack = temp;

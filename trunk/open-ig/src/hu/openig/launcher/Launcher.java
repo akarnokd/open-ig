@@ -84,7 +84,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.30";
+	public static final String VERSION = "0.31";
 	/**
 	 * The update XML to download.
 	 */
@@ -1595,15 +1595,18 @@ public class Launcher extends JFrame {
 			
 			IOUtils.save(target, IOUtils.load(local));
 
-			Desktop d = Desktop.getDesktop();
-			if (d != null) {
-				try {
-					d.open(target.getParentFile());
-				} catch (IOException ex) {
-					ex.printStackTrace();
+			try {
+				Desktop d = Desktop.getDesktop();
+				if (d != null) {
+					try {
+						d.open(target.getParentFile());
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
 				}
+			} catch (UnsupportedOperationException ex) {
+				// not supported
 			}
-
 			
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.directory(target.getParentFile());
