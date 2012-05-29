@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.ArrayList;
@@ -894,11 +895,11 @@ public class DatabaseScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, width, height, true);
-		
+		scaleResize(base);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base);
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			hideSecondary();
 			return true;
@@ -920,6 +921,7 @@ public class DatabaseScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		AffineTransform savea = scaleDraw(g2, base);
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.database().background, base.x, base.y, null);
 
@@ -1114,6 +1116,8 @@ public class DatabaseScreen extends ScreenBase {
 
 		
 		super.draw(g2);
+		
+		g2.setTransform(savea);
 	}
 	@Override
 	public Screens screen() {

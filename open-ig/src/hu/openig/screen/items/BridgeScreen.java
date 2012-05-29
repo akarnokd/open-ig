@@ -42,6 +42,7 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import javax.swing.Timer;
  */
 public class BridgeScreen extends ScreenBase {
 	/** The screen origins. */
-	final Rectangle base = new Rectangle();
+	final Rectangle base = new Rectangle(0, 0, 640, 442);
 	/** The message panel open rectangle. */
 	final Rectangle messageOpenRect = new Rectangle();
 	/** The message list rectangle. */
@@ -441,6 +442,7 @@ public class BridgeScreen extends ScreenBase {
 	
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base);
 		if (commons.force) {
 			if (e.type == UIMouse.Type.DOWN && videoRunning) {
 				videoAnim.stop();
@@ -691,6 +693,9 @@ public class BridgeScreen extends ScreenBase {
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		
+		
+		AffineTransform save1 = scaleDraw(g2, base);
+
 		g2.drawImage(background, base.x, base.y, null);
 		
 		
@@ -778,6 +783,7 @@ public class BridgeScreen extends ScreenBase {
 		if (!projectorOpen && !messageOpen && pointerTransition != null && !openCloseAnimating) {
 			ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
 		}
+		g2.setTransform(save1);
 	}
 	/**
 	 * Scroll the list by the given amount.
@@ -792,7 +798,7 @@ public class BridgeScreen extends ScreenBase {
 	}
 	@Override
 	public void onResize() {
-		base.setBounds((getInnerWidth() - 640) / 2, 20 + (getInnerHeight() - 38 - 442) / 2, 640, 442);
+		scaleResize(base);
 		messageOpenRect.setBounds(base.x + 572, base.y + 292, 68, 170);
 		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 4, base.y, 524, 258);
 		videoRect.setBounds(projectorRect.x + 103, projectorRect.y + 9, 320, 240);

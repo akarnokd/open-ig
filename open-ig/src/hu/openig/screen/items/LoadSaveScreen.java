@@ -37,6 +37,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -249,9 +250,24 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Show building names. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox buildingName;
-	/** Display the radar union? */
+	/** Display quick production and research. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox quickRNP;
+	/** Scale all screens? */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox scaleAllScreens;
+	/** Icon. */
+	BufferedImage audioDarkIcon;
+	/** Icon. */
+	BufferedImage audioIcon;
+	/** Icon. */
+	BufferedImage controlDarkIcon;
+	/** Icon. */
+	BufferedImage controlIcon;
+	/** Icon. */
+	BufferedImage visualDarkIcon;
+	/** Icon. */
+	BufferedImage visualIcon;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -262,6 +278,13 @@ public class LoadSaveScreen extends ScreenBase {
 				askRepaint();
 			}
 		});
+		
+		audioDarkIcon = rl.getImage("settings_audio_dark");
+		audioIcon = rl.getImage("settings_audio");
+		controlDarkIcon = rl.getImage("settings_control_dark");
+		controlIcon = rl.getImage("settings_control");
+		visualDarkIcon = rl.getImage("settings_visual_dark");
+		visualIcon = rl.getImage("settings_visual");
 		
 		loadSavePage = new UIGenericButton(get("settings.load_save"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		loadSavePage.disabledPattern(commons.common().disabledPattern);
@@ -282,7 +305,7 @@ public class LoadSaveScreen extends ScreenBase {
 				displayPage(SettingsPage.AUDIO);
 			}
 		};
-		audioPage.icon(rl.getImage("settings_audio"));
+		audioPage.icon(audioDarkIcon);
 		
 		controlPage = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		controlPage.disabledPattern(commons.common().disabledPattern);
@@ -293,7 +316,8 @@ public class LoadSaveScreen extends ScreenBase {
 				displayPage(SettingsPage.CONTROL);
 			}
 		};
-		controlPage.icon(rl.getImage("settings_control"));
+		controlPage.icon(controlDarkIcon);
+		
 		visualPage = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		visualPage.disabledPattern(commons.common().disabledPattern);
 		visualPage.onClick = new Action0() {
@@ -303,7 +327,7 @@ public class LoadSaveScreen extends ScreenBase {
 				displayPage(SettingsPage.VISUAL);
 			}
 		};
-		visualPage.icon(rl.getImage("settings_visual"));
+		visualPage.icon(visualDarkIcon);
 
 		gameplayPage = new UIGenericButton(get("settings.gameplay"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		gameplayPage.disabledPattern(commons.common().disabledPattern);
@@ -928,6 +952,17 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		
+		scaleAllScreens = new UICheckBox(get("settings.scale_all_screens"), 14, commons.common().checkmark, commons.text());
+		scaleAllScreens.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.scaleAllScreens = scaleAllScreens.selected();
+				commons.control().runResize();
+				askRepaint();
+			}
+		};
+		
 		addThis();
 	}
 	/**
@@ -984,6 +1019,22 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		}
 		settingsMode = page;
+		if (page == SettingsPage.AUDIO) {
+			audioPage.icon(audioIcon);
+		} else {
+			audioPage.icon(audioDarkIcon);
+		}
+		if (page == SettingsPage.CONTROL) {
+			controlPage.icon(controlIcon);
+		} else {
+			controlPage.icon(controlDarkIcon);
+		}
+		if (page == SettingsPage.VISUAL) {
+			visualPage.icon(visualIcon);
+		} else {
+			visualPage.icon(visualDarkIcon);
+		}
+		
 	}
 	@Override
 	public void onEnter(Screens mode) {
@@ -1022,6 +1073,7 @@ public class LoadSaveScreen extends ScreenBase {
 		fullScreen.selected(commons.control().isFullscreen());
 		buildingName.selected(config.showBuildingName);
 		quickRNP.selected(config.quickRNP);
+		scaleAllScreens.selected(config.scaleAllScreens);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -1050,14 +1102,13 @@ public class LoadSaveScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
-
+		// XXX
+		scaleResize(base);
 		// tabs
 		
 		loadSavePage.location(base.x + 10, base.y + 10);
@@ -1127,6 +1178,8 @@ public class LoadSaveScreen extends ScreenBase {
 		radarUnion.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		quickRNP.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		scaleAllScreens.location(base.x + 30, base.y + dy + 8);
 		
 		// -----------------------------
 		// controls
@@ -1181,18 +1234,17 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-
+		// XXX
+		AffineTransform save0 = scaleDraw(g2, base);
+		
 		if (settingsMode != SettingsPage.LOAD_SAVE) {
 			g2.drawImage(commons.background().setup, base.x, base.y, null);
 
-//			g2.setColor(new Color(0, 0, 0, 192));
-//			g2.fillRect(base.x + 10, base.y + 50, base.width - 20, base.height - 60);
 
 			soundVolume.prev.enabled(config.effectVolume > 0);
 			soundVolume.next.enabled(config.effectVolume < 100);
@@ -1243,6 +1295,8 @@ public class LoadSaveScreen extends ScreenBase {
 		otherSettings.visible(world() == null);
 		
 		super.draw(g2);
+		
+		g2.setTransform(save0);
 	}
 	@Override
 	public void drawComponent(Graphics2D g2, UIComponent c) {
@@ -1258,6 +1312,8 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		// XXX
+		scaleMouse(e, base);
 		if (e.has(Type.DOWN) && !e.within(base.x, base.y, base.width, base.height)) {
 			doBack();
 		}

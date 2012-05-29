@@ -2269,4 +2269,9 @@ public class GameWindow extends JFrame implements GameControls {
 			switchFullscreen();
 		}
 	}
+	@Override
+	public void runResize() {
+		surface.lastW = -1;
+		surface.lastH = -1;
+	}
 }

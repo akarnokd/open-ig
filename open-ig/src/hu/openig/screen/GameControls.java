@@ -169,4 +169,6 @@ public interface GameControls {
 	 * @param value the full screen status
 	 */
 	void setFullscreen(boolean value);
+	/** Rerun the screen resize calculations. */
+	void runResize();
 }

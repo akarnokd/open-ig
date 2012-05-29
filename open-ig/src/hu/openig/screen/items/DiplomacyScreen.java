@@ -52,6 +52,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.LinkedHashSet;
@@ -320,7 +321,7 @@ public class DiplomacyScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, width, height, true);
+		scaleResize(base);
 		
 		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 10, base.y, 524, 258);
 		
@@ -360,6 +361,7 @@ public class DiplomacyScreen extends ScreenBase {
 	
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base);
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
 			hideSecondary();
 			return true;
@@ -471,6 +473,9 @@ public class DiplomacyScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		
+		AffineTransform savea = scaleDraw(g2, base);
+		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.diplomacy().base, base.x, base.y, null);
 
@@ -559,6 +564,8 @@ public class DiplomacyScreen extends ScreenBase {
 			darkenUnder(g2, continueLabel);
 		}
 		super.draw(g2);
+		
+		g2.setTransform(savea);
 	}
 	/**
 	 * Darken the area under the given component if it is visible.

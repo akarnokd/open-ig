@@ -29,6 +29,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -88,7 +89,7 @@ public class AchievementsScreen extends ScreenBase {
 	/** The saved achievements count. */
 	int achievementCount;
 	/** The screen origin. */
-	final Rectangle base = new Rectangle();
+	final Rectangle base = new Rectangle(0, 0, 640, 442);
 	/** The listing rectangle. */
 	final Rectangle listRect = new Rectangle();
 	/** Scroll up button. */
@@ -127,7 +128,7 @@ public class AchievementsScreen extends ScreenBase {
 	UIGenericButton backLabel;
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
+		scaleResize(base, 11);
 
 		listRect.setBounds(base.x + 10, base.y + 20, base.width - 50, 350);
 		achievementCount = listRect.height / 50;
@@ -321,6 +322,7 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base, 11);
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			if (!e.within(statisticsLabel.x, statisticsLabel.y, statisticsLabel.width, statisticsLabel.height)
 					&& !e.within(achievementLabel.x, achievementLabel.y, achievementLabel.width, achievementLabel.height)) {
@@ -430,12 +432,12 @@ public class AchievementsScreen extends ScreenBase {
 	}
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void draw(Graphics2D g2) {
+		AffineTransform savea = scaleDraw(g2, base, 11);
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		
 		g2.drawImage(commons.common().infoEmpty, base.x, base.y, null);
@@ -489,7 +491,7 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		}
 		g2.setClip(save0);
-		
+		g2.setTransform(savea);
 	}
 	/** Create the test achievements. */
 	void createTestEntries() {

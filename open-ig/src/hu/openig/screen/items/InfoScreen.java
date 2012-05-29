@@ -55,6 +55,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.io.Closeable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -917,7 +918,10 @@ public class InfoScreen extends ScreenBase {
 	}
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, width, height, true);
+		base.setBounds(0, 0, 
+				commons.info().base.getWidth(), 
+				commons.info().base.getHeight());
+		scaleResize(base, 11);
 		
 		planetsTab.location(base.x, base.y + base.height - planetsTab.height - fleetsTab.height);
 		fleetsTab.location(base.x, base.y + base.height - fleetsTab.height);
@@ -1033,6 +1037,8 @@ public class InfoScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		AffineTransform savea = scaleDraw(g2, base, 11);
+		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.info().base, base.x, base.y, null);
 
@@ -1068,6 +1074,8 @@ public class InfoScreen extends ScreenBase {
 		}
 		
 		super.draw(g2);
+		
+		g2.setTransform(savea);
 	}
 	/** 
 	 * First letter to uppercase.
@@ -1213,6 +1221,7 @@ public class InfoScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base, 11);
 		if (e.has(Type.DOWN)) {
 			if (showPlanetListDetails) { // FIXME
 				String s1 = get("info.planet_name");
