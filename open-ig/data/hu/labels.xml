@@ -2491,8 +2491,8 @@
 	<entry key='chat.vi.4.n4'>Ismétlem, új vakcinát szállítok a bolygóra. Át kell engednie, hiszen ezer és ezer ember élete forog kockán!</entry>
 	<entry key='chat.vi.4.n5.o'>Forduljon meg!</entry>
 	<entry key='chat.vi.4.n5'>Nincs utasításom arra vonatkozólag, hogy átengedjem. Azonnal forduljon vissza.</entry>
-	<entry key='chat.vi.4.n6.o'>Rendben, folytassa az útját.</entry>
-	<entry key='chat.vi.4.n6'>Rendben, folytassa az útját.</entry>
+	<entry key='chat.vi.4.n6.o'>Forduljon meg!</entry>
+	<entry key='chat.vi.4.n6'>Nincs utasításom arra vonatkozólag, hogy átengedjem. Azonnal forduljon vissza.</entry>
 	<entry key='chat.vi.4.n8'>Rendben, de a következményekért Ön a felelős! Visszafordulok.</entry>
 	<entry key='chat.vi.5.n0.o'>Azonosítsa magát!</entry>
 	<entry key='chat.vi.5.n0'>Azonosítsa magát!</entry>
