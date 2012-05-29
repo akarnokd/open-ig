@@ -1798,10 +1798,12 @@ public class EquipmentScreen extends ScreenBase {
 	 */
 	void addRemoveItem(int delta) {
 		if (delta < 0 || player().inventoryCount(research()) >= delta) {
+			ResearchSubCategory category = research().category;
 			if (player().selectionMode == SelectionMode.PLANET) {
-				if (research().category == ResearchSubCategory.SPACESHIPS_STATIONS
+				if (category == ResearchSubCategory.SPACESHIPS_STATIONS
 				) {
-					if (delta > 0) {
+					if (delta > 0 
+							&& planet().inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, player()) + delta <= 3) {
 						InventoryItem pii = new InventoryItem(planet());
 						pii.owner = player();
 						pii.type = research();
@@ -1825,33 +1827,44 @@ public class EquipmentScreen extends ScreenBase {
 					}
 				}
 			} else {
-				if (research().category == ResearchSubCategory.SPACESHIPS_CRUISERS
-						|| research().category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+				if (category == ResearchSubCategory.SPACESHIPS_CRUISERS
+						|| category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 				) {
 					if (delta > 0) {
-						int cnt = fleet().inventoryCount(research());
-						List<InventoryItem> iss = fleet().addInventory(research(), delta);
 						
-						leftList.items.clear();
-						leftList.items.addAll(fleet().getSingleItems());
-						leftList.compute();
-						configure.item = iss.get(0);
-						
-						leftList.map.get(research()).index = cnt;
-						player().changeInventoryCount(research(), -delta);
-					}
-					if (config.computerVoiceScreen) {
-						effectSound(SoundType.SHIP_DEPLOYED);
+						int existing = fleet().inventoryCount(category);
+						int limit = 0;
+						if (category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+							limit = 25;
+						} else {
+							limit = 3;
+						}
+						if (delta + existing <= limit) {
+							int cnt = fleet().inventoryCount(research());
+							List<InventoryItem> iss = fleet().addInventory(research(), delta);
+							
+							leftList.items.clear();
+							leftList.items.addAll(fleet().getSingleItems());
+							leftList.compute();
+							configure.item = iss.get(0);
+							
+							leftList.map.get(research()).index = cnt;
+							player().changeInventoryCount(research(), -delta);
+							if (config.computerVoiceScreen) {
+								effectSound(SoundType.SHIP_DEPLOYED);
+							}
+						}
 					}
 				} else 
-				if (research().category == ResearchSubCategory.WEAPONS_TANKS 
-				|| research().category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				if (category == ResearchSubCategory.WEAPONS_TANKS 
+				|| category == ResearchSubCategory.WEAPONS_VEHICLES) {
 					FleetStatistics fs = fleet().getStatistics();
 					if (fs.vehicleCount + delta <= fs.vehicleMax) {
 						fleet().changeInventory(research(), delta);
 						player().changeInventoryCount(research(), -delta);
 					}
-				} else {
+				} else 
+				if (category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					if (fleet().inventoryCount(research()) + delta <= 30) {
 						fleet().changeInventory(research(), delta);
 						player().changeInventoryCount(research(), -delta);
