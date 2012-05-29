@@ -418,7 +418,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				config.effectVolume = Math.max(0, config.effectVolume - 1);
 				effectSound(SoundType.BAR);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		snext.onClick = new Action0() {
@@ -426,7 +426,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				config.effectVolume = Math.min(100, config.effectVolume + 1);
 				effectSound(SoundType.BAR);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		
@@ -481,7 +481,7 @@ public class LoadSaveScreen extends ScreenBase {
 					effectSound(SoundType.BAR);
 					config.effectVolume = e;
 				}
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		mnext.onClick = new Action0() {
@@ -495,7 +495,7 @@ public class LoadSaveScreen extends ScreenBase {
 					effectSound(SoundType.BAR);
 					config.effectVolume = e;
 				}
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 
@@ -551,7 +551,7 @@ public class LoadSaveScreen extends ScreenBase {
 				effectSound(SoundType.BAR);
 				config.effectVolume = e;
 				
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		final UIImageButton vnext = new UIImageButton(commons.common().moveRight);
@@ -567,7 +567,7 @@ public class LoadSaveScreen extends ScreenBase {
 				effectSound(SoundType.BAR);
 				config.effectVolume = e;
 
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 
@@ -670,7 +670,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 5000);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		anext.onClick = new Action0() {
@@ -678,7 +678,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 5000);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		
@@ -731,7 +731,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.max(125, config.researchMoneyPercent - 125);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		rmnext.onClick = new Action0() {
@@ -739,7 +739,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.researchMoneyPercent = Math.min(2000, config.researchMoneyPercent + 125);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		
@@ -779,7 +779,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoRepairLimit = Math.max(0, config.autoRepairLimit - 5000);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		arnext.onClick = new Action0() {
@@ -787,7 +787,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.autoRepairLimit = Math.min(Integer.MAX_VALUE, config.autoRepairLimit + 5000);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		
@@ -848,7 +848,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.timestep = Math.max(1, config.timestep - 1);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		tsnext.onClick = new Action0() {
@@ -856,7 +856,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.timestep = Math.min(60, config.timestep + 1);
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		
@@ -1002,6 +1002,10 @@ public class LoadSaveScreen extends ScreenBase {
 		};
 		uiScaleLabel = new UILabel(get("settings.ui_scale"), 14, commons.text());
 
+	}
+	/** Perform a partial repaint. */
+	void doRepaint() {
+		scaleRepaint(base, base);
 	}
 	/**
 	 * Show the controls of the given page and hide the rest.
