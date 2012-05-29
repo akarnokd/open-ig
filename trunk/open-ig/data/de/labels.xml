@@ -2647,6 +2647,7 @@
 	<entry key="production.missing_spaceship_factory">Warnung: du hast keine Raumschiff-Fabrik!</entry>
 	<entry key="production.missing_equipment_factory">Warnung: du hast keine Ausrüstungsfabrik!</entry>
 	<entry key='infoscreen.all'>Alle</entry>
+	<entry key='settings.quick_rnp'>Zeige schnell-entwiklung/produktion</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

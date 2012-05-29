@@ -200,7 +200,7 @@ public class LoadSaveScreen extends ScreenBase {
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UISpinner autoRepairLimit;
 	/** Display the radar union? */
-	@Settings(page = SettingsPage.GAMEPLAY)
+	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox radarUnion;
 	/** The save name. */
 	@Settings(page = SettingsPage.LOAD_SAVE)
@@ -249,6 +249,9 @@ public class LoadSaveScreen extends ScreenBase {
 	/** Show building names. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox buildingName;
+	/** Display the radar union? */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox quickRNP;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -738,15 +741,6 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		
-		radarUnion = new UICheckBox(get("settings.radarunion"), 14, commons.common().checkmark, commons.text());
-		radarUnion.onChange = new Action0() {
-			@Override
-			public void invoke() {
-				buttonSound(SoundType.CLICK_MEDIUM_2);
-				config.radarUnion = radarUnion.selected();
-			}
-		};
-
 		// ------------------------------------------------------------------
 		
 		final UIImageButton arprev = new UIImageButton(commons.common().moveLeft);
@@ -917,6 +911,22 @@ public class LoadSaveScreen extends ScreenBase {
 				config.showBuildingName = buildingName.selected();
 			}
 		};
+		radarUnion = new UICheckBox(get("settings.radarunion"), 14, commons.common().checkmark, commons.text());
+		radarUnion.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.radarUnion = radarUnion.selected();
+			}
+		};
+		quickRNP = new UICheckBox(get("settings.quick_rnp"), 14, commons.common().checkmark, commons.text());
+		quickRNP.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.quickRNP = quickRNP.selected();
+			}
+		};
 		
 		addThis();
 	}
@@ -1011,6 +1021,7 @@ public class LoadSaveScreen extends ScreenBase {
 		movieSkipClick.selected(config.movieClickSkip);
 		fullScreen.selected(commons.control().isFullscreen());
 		buildingName.selected(config.showBuildingName);
+		quickRNP.selected(config.quickRNP);
 	}
 	/**
 	 * Choose a random background for the options.
@@ -1112,6 +1123,10 @@ public class LoadSaveScreen extends ScreenBase {
 		fullScreen.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		buildingName.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		radarUnion.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		quickRNP.location(base.x + 30, base.y + dy + 8);
 		
 		// -----------------------------
 		// controls
@@ -1151,8 +1166,6 @@ public class LoadSaveScreen extends ScreenBase {
 		dy += 30;
 
 		automaticBattle.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
-		radarUnion.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		slowOnAttack.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
