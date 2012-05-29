@@ -1557,6 +1557,7 @@ public class InfoScreen extends ScreenBase {
 			autoAll.location(taxAll.x, autobuild.y - 5);
 			autoPrev.location(autoAll.x - 3 - autoPrev.width, autoAll.y);
 			autoNext.location(autoPrev.x - 3 - autoNext.width, autoAll.y);
+			other.y += 2;
 		}
 		/**
 		 * Update the display values based on the current planet's settings.

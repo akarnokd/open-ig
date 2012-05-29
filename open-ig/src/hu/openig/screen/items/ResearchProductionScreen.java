@@ -155,7 +155,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			lessPriority.location(190, 5);
 			priority.bounds(198, 4, 24, 14);
 			morePriority.location(223, 5);
-			capacity.bounds(234, 2, 56, 18);
+			capacity.bounds(236, 2, 56, 18);
 			capacityPercent.bounds(234 + 57, 2, 56, 18);
 			lessBuild.location(350, 5);
 			count.bounds(358, 4, 24, 14);
@@ -1055,6 +1055,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		removeTen = new UIImageButton(commons.research().minusTen);
 		removeTen.setDisabledPattern(commons.common().disabledPattern);
+		removeTen.setHoldDelay(200);
 		removeTen.onClick = new Action0() {
 			@Override
 			public void invoke() {
@@ -1064,6 +1065,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		};
 		removeOne = new UIImageButton(commons.research().minusOne);
 		removeOne.setDisabledPattern(commons.common().disabledPattern);
+		removeOne.setHoldDelay(200);
 		removeOne.onClick = new Action0() {
 			@Override
 			public void invoke() {
@@ -1073,6 +1075,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		};
 		addOne = new UIImageButton(commons.research().plusOne);
 		addOne.setDisabledPattern(commons.common().disabledPattern);
+		addOne.setHoldDelay(200);
 		addOne.onClick = new Action0() {
 			@Override
 			public void invoke() {
@@ -1081,6 +1084,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			}
 		};
 		addTen = new UIImageButton(commons.research().plusTen);
+		addTen.setHoldDelay(200);
 		addTen.setDisabledPattern(commons.common().disabledPattern);
 		addTen.onClick = new Action0() {
 			@Override
@@ -1091,6 +1095,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		};
 		sell = new UIImageButton(commons.research().sell);
 		sell.setDisabledPattern(commons.common().disabledPattern);
+		sell.setHoldDelay(200);
 		sell.onClick = new Action0() {
 			@Override
 			public void invoke() {
@@ -1806,7 +1811,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				pl.capacityPercent.text("0%");
 			}
 			pl.count.text("" + pr.count);
-			pl.completion.text(String.format(" %3s%%   %s", (pr.progress * 100 / pr.type.productionCost), pr.count * pr.type.productionCost));
+			pl.completion.text(String.format(" %3s%%  %s", (pr.progress * 100 / pr.type.productionCost), pr.count * pr.type.productionCost));
 			row++;
 		}
 		for (int i = row; i < 5; i++) {

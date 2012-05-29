@@ -221,6 +221,10 @@ public class Configuration {
 	/** Allow skipping cutscenes by mouse click? */
 	@LoadSave
 	public boolean movieClickSkip;
+	/** Show quick research and production buttons? */ 
+	@LoadSave
+	@LoadSaveGame
+	public boolean quickRNP = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
