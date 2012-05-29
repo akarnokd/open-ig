@@ -43,7 +43,7 @@
 			<desc lang='en'>Bugfixes.</desc>
 			<desc lang='de'>Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.425.jar' sha1='c1ee27ce9a0fceb09c2ee64e1940eefdc97fed63'>
+		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.425.jar' sha1='6bf2f4c719027012c4f8affb9f48d2d93c9fa1b2'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>

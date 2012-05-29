@@ -61,8 +61,10 @@ public class Mission25 extends Mission {
 	}
 	@Override
 	public void onLevelChanged() {
-		String a = "achievement.grand_admiral";
-		world.achievement(a);
+		if (world.level == 5) {
+			String a = "achievement.grand_admiral";
+			world.achievement(a);
+		}
 	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {
