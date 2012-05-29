@@ -326,18 +326,25 @@ public class StatusbarScreen extends ScreenBase {
 		} else {
 			if (world().level > 1) {
 				int prodCount = computeTotalProduction();
+				
 				String pps2 = String.format("00000000");
-				String ps = "-";
 				int ppsw2 = commons.text().getTextWidth(10, pps2);
+				
+				String ps = "-";
 				if (prodCount > 0) {
 					ps = String.format("%d", prodCount);
 				}
 				int ppsw = commons.text().getTextWidth(10, ps);
 				int ppsx = width - MENU_ICON_WIDTH - ppsw2 + (ppsw2 - ppsw) / 2;
 				commons.text().paintTo(g2, ppsx, top.y + 4, 10, TextRenderer.YELLOW, ps);
-				g2.setColor(Color.GREEN);
-				g2.fillRect(width - MENU_ICON_WIDTH * 2 - ppsw2, 0, MENU_ICON_WIDTH, 19);
-				// research
+//				g2.setColor(Color.GREEN);
+				
+				g2.drawImage(commons.statusbar().iconBack, width - MENU_ICON_WIDTH * 2 - ppsw2, top.y, null);
+				if (prodCount > 0) {
+					g2.drawImage(commons.statusbar().gearLight, width - MENU_ICON_WIDTH * 2 - ppsw2 + 7, top.y + 3, null);
+				} else {
+					g2.drawImage(commons.statusbar().gearNormal, width - MENU_ICON_WIDTH * 2 - ppsw2 + 7, top.y + 3, null);
+				}
 				if (world().level > 2) {
 					int rpsx0 = width - MENU_ICON_WIDTH * 2 - ppsw2 * 2;
 					String rs = "-";
@@ -356,8 +363,12 @@ public class StatusbarScreen extends ScreenBase {
 					if (blink || !mayBlink) {
 						commons.text().paintTo(g2, rsx, top.y + 4, 10, TextRenderer.YELLOW, rs);
 					}
-					g2.setColor(Color.PINK);
-					g2.fillRect(width - MENU_ICON_WIDTH * 3 - ppsw2 * 2, 0, MENU_ICON_WIDTH, 19);
+					g2.drawImage(commons.statusbar().iconBack, width - MENU_ICON_WIDTH * 3 - ppsw2 * 2, top.y, null);
+					if (rt != null || isResearchAvailable()) {
+						g2.drawImage(commons.statusbar().researchLight, width - MENU_ICON_WIDTH * 3 - ppsw2 * 2 + 7, top.y + 3, null);
+					} else {
+						g2.drawImage(commons.statusbar().researchNormal, width - MENU_ICON_WIDTH * 3 - ppsw2 * 2 + 7, top.y + 3, null);
+					}
 				}
 			}
 			
@@ -395,6 +406,15 @@ public class StatusbarScreen extends ScreenBase {
 			g2.setColor(overlay);
 			g2.fillRect(0, 0, width, height);
 		}
+	}
+	/** @return Check if any of the technologies are available for research. */
+	boolean isResearchAvailable() {
+		for (ResearchType rt : world().researches.values()) {
+			if (rt.race.contains(player().race) && world().canResearch(rt)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * @return computes the total production progress in 0..100% or -1 if no production
@@ -734,6 +754,22 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			return true;
 		}
+		// FIXME
+		
+		String pps2 = String.format("00000000");
+		int ppsw2 = commons.text().getTextWidth(10, pps2);
+		int px = width - MENU_ICON_WIDTH * 2 - ppsw2;
+		int px2 = width - MENU_ICON_WIDTH * 3 - ppsw2 * 2;
+		if (world().level > 1 && e.y < 20 && e.x >= px && e.x < px + ppsw2 && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+//			buttonSound(SoundType.CLICK_MEDIUM_2);
+			displaySecondary(Screens.PRODUCTION);
+			return true;
+		} else
+		if (world().level > 2 && e.y < 20 && e.x >= px2 && e.x < px2 + ppsw2 && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+//				buttonSound(SoundType.CLICK_MEDIUM_2);
+			displaySecondary(Screens.RESEARCH);
+			return true;
+		} else
 		if (e.within(379, 3, 26, 14) && e.has(Type.DOWN)) {
 			objectives.visible(!objectives.visible());
 			buttonSound(SoundType.CLICK_MEDIUM_2);
