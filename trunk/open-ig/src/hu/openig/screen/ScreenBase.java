@@ -9,6 +9,7 @@
 package hu.openig.screen;
 
 import hu.openig.core.Configuration;
+import hu.openig.core.Pair;
 import hu.openig.core.ResourceLocator;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
@@ -21,6 +22,7 @@ import hu.openig.model.Screens;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
+import hu.openig.render.RenderTools;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
@@ -28,8 +30,10 @@ import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 
 import java.awt.FontMetrics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -314,5 +318,84 @@ public abstract class ScreenBase extends UIContainer {
 	public boolean isPanningEvent(UIMouse e) {
 		return (e.has(Button.RIGHT) && !config.classicControls && !e.has(Modifier.CTRL))
 				|| (e.has(Button.MIDDLE) && config.classicControls);
+	}
+	/**
+	 * Scale the mouse coordinates according to the current screen scaling policy or do nothing.
+	 * @param e the mouse event
+	 * @param base the screen's base rectangle
+	 */
+	public void scaleMouse(UIMouse e, Rectangle base) {
+		scaleMouse(e, base, 0);
+	}
+	/**
+	 * Scale the drawing to the current window if applicable.
+	 * @param g2 the graphics context
+	 * @param base the screen's base rectangle
+	 * @return the saved transform before the scaling
+	 */
+	public AffineTransform scaleDraw(Graphics2D g2, Rectangle base) {
+		return scaleDraw(g2, base, 0);
+	}
+	/**
+	 * Scale the base screen coordinates based on the current policy or just center.
+	 * @param base the base rectangle
+	 */
+	public void scaleResize(Rectangle base) {
+		scaleResize(base, 0);
+	}
+	/**
+	 * Scale the mouse coordinates according to the current screen scaling policy or do nothing.
+	 * @param e the mouse event
+	 * @param base the screen's base rectangle
+	 * @param margin the optional top/bottom margin size
+	 */
+	public void scaleMouse(UIMouse e, Rectangle base, int margin) {
+		if (config.scaleAllScreens) {
+			Pair<Point, Double> pd = RenderTools.fitWindow(
+					getInnerWidth(), getInnerHeight()
+					- RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM - 2 * margin, 
+					base.width, base.height);
+			double dx = base.x * (1 - pd.second);
+			double dy = base.y * (1 - pd.second);
+			e.x = (int)(((e.x - dx) / pd.second));
+			e.y = (int)(((e.y - dy) / pd.second));
+		}
+	}
+	/**
+	 * Scale the drawing to the current window if applicable.
+	 * @param g2 the graphics context
+	 * @param base the screen's base rectangle
+	 * @return the saved transform before the scaling
+	 * @param margin the optional top/bottom margin size
+	 */
+	public AffineTransform scaleDraw(Graphics2D g2, Rectangle base, int margin) {
+		AffineTransform save0 = g2.getTransform();
+		if (config.scaleAllScreens) {
+			Pair<Point, Double> pd = RenderTools.fitWindow(
+					getInnerWidth(), 
+					getInnerHeight() - RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM - 2 * margin, 
+					base.width, base.height);
+			g2.translate(base.x, base.y);
+			g2.scale(pd.second, pd.second);
+			g2.translate(-base.x, -base.y);
+		}
+		return save0;
+	}
+	/**
+	 * Scale the base screen coordinates based on the current policy or just center.
+	 * @param base the base rectangle
+	 * @param margin the optional top/bottom margin size
+	 */
+	public void scaleResize(Rectangle base, int margin) {
+		if (config.scaleAllScreens) {
+			Pair<Point, Double> pd = RenderTools.fitWindow(
+					getInnerWidth(), 
+					getInnerHeight() - RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM - 2 * margin, 
+					base.width, base.height);
+			base.x = pd.first.x;
+			base.y = pd.first.y + RenderTools.STATUS_BAR_TOP + margin;
+		} else {
+			RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
+		}
 	}
 }

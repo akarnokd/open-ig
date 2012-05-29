@@ -26,6 +26,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -219,11 +220,11 @@ public class BarScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
-		
+		scaleResize(base);
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		AffineTransform savea = scaleDraw(g2, base);
 		RenderTools.darkenAround(base, getInnerWidth(), getInnerHeight(), g2, 0.5f, true);
 
 		if (talkMode && state != null && picture != null) {
@@ -264,6 +265,7 @@ public class BarScreen extends ScreenBase {
 		}
 		
 		super.draw(g2);
+		g2.setTransform(savea);
 	}
 	@Override
 	public boolean keyboard(KeyEvent e) {
@@ -302,6 +304,7 @@ public class BarScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base);
 		if (e.has(Type.DOWN)) {
 			if (talkMode) {
 				int idx = 0;

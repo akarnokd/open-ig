@@ -2530,6 +2530,7 @@
 	<entry key="production.missing_equipment_factory">Warning, you don't have equipment factory!</entry>
 	<entry key='infoscreen.all'>All</entry>
   <entry key='settings.quick_rnp'>Show quick research/production</entry>
-  <entry key=''/>
+  <entry key='settings.scale_all_screens'>Scale fixed size screens to window</entry>
+	<entry key=''/>
   <entry key=''/>
 </labels>

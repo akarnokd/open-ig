@@ -10,8 +10,10 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
+import hu.openig.core.Pair;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
+import hu.openig.render.RenderTools;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
 import hu.openig.ui.UIImageButton;
@@ -21,6 +23,8 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -87,10 +91,8 @@ public class MainScreen extends ScreenBase {
 		/**
 		 * Paint the label.
 		 * @param g2 the graphics context
-		 * @param x0 the origin
-		 * @param y0 the origin
 		 */
-		public void paintTo(Graphics2D g2, int x0, int y0) {
+		public void paintTo(Graphics2D g2) {
 			int color = 0xFFFFCC00;
 			if (disabled) {
 				color = 0xFFC0C0C0;
@@ -103,8 +105,8 @@ public class MainScreen extends ScreenBase {
 			}
 			int textWidth = commons.text().getTextWidth(size, get(label));
 
-			int c0 = x0 + x + (width - textWidth) / 2;
-			int c1 = y0 + y;
+			int c0 = x + (width - textWidth) / 2;
+			int c1 = y;
 
 			Composite save0 = g2.getComposite();
 			g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
@@ -125,14 +127,12 @@ public class MainScreen extends ScreenBase {
 		 * Test if the mouse is within the label.
 		 * @param mx the mouse X coordinate
 		 * @param my the mouse Y coordinate
-		 * @param x0 the screen rendering origin
-		 * @param y0 the screen rendering origin
 		 * @return true if mouse in the label
 		 */
-		public boolean test(int mx, int my, int x0, int y0) {
+		public boolean test(int mx, int my) {
 			int w = width;
-			return !disabled && (x0 + x) <= mx && (x0 + x + w) > mx
-			&& (y0 + y) <= my && (y0 + y + size + 5) > my;
+			return !disabled && (x) <= mx && (x + w) > mx
+			&& (y - 5) <= my && (y + size + 5) > my;
 		}
 	}
 	/** The screen X origin. */
@@ -209,36 +209,62 @@ public class MainScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		onResize(); // repaint might come before an onResize
+
+
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
-		g2.drawImage(background, xOrigin, yOrigin, null);
+
+		AffineTransform save0 = g2.getTransform();
+		
+		if (config.scaleAllScreens) {
+			int w = background.getWidth();
+			int h = background.getHeight();
+			Pair<Point, Double> pd = RenderTools.fitWindow(getInnerWidth(), getInnerHeight() - RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM, w, h);
+			xOrigin = pd.first.x;
+			yOrigin = pd.first.y + RenderTools.STATUS_BAR_TOP;
+			g2.translate(xOrigin, yOrigin);
+			g2.scale(pd.second, pd.second);
+		} else {
+			g2.translate(xOrigin, yOrigin);
+		}
+
+		g2.drawImage(background, 0, 0, null);
 	
 		int w0 = commons.text().getTextWidth(14, "Open");
 		g2.setColor(new Color(0, 0, 0, 128));
-		g2.fillRect(xOrigin + 118, yOrigin + 18, w0 + 4, 20);
-		commons.text().paintTo(g2, xOrigin + 121, yOrigin + 21, 14, 0xFF000000, "Open");
-		commons.text().paintTo(g2, xOrigin + 120, yOrigin + 20, 14, 0xFFFFFF00, "Open");
+		g2.fillRect(118, 18, w0 + 4, 20);
+		commons.text().paintTo(g2, 121, 21, 14, 0xFF000000, "Open");
+		commons.text().paintTo(g2, 120, 20, 14, 0xFFFFFF00, "Open");
 		
 		
 		int w1 = commons.text().getTextWidth(14, Configuration.VERSION);
 		g2.setColor(new Color(0, 0, 0, 128));
-		g2.fillRect(xOrigin + 498, yOrigin + 61, w1 + 4, 20);
-		commons.text().paintTo(g2, xOrigin + 501, yOrigin + 65, 14, 0xFF000000, Configuration.VERSION);
-		commons.text().paintTo(g2, xOrigin + 500, yOrigin + 64, 14, 0xFFFF0000, Configuration.VERSION);
+		g2.fillRect(498, 61, w1 + 4, 20);
+		commons.text().paintTo(g2, 501, 65, 14, 0xFF000000, Configuration.VERSION);
+		commons.text().paintTo(g2, 500, 64, 14, 0xFFFF0000, Configuration.VERSION);
 		
-//		Composite c0 = g2.getComposite();
-//		g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
-//		
-//		g2.fillRoundRect(xOrigin + 60, yOrigin + 100, 640 - 120, 442 - 100 - 20, 40, 40);
-//		g2.setComposite(c0);
-	
 		for (ClickLabel cl : clicklabels) {
-			cl.paintTo(g2, xOrigin, yOrigin);
+			cl.paintTo(g2);
 		}
+		
 		super.draw(g2);
+		
+		g2.setTransform(save0);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		// scale mouse activity
+		int w = background.getWidth();
+		int h = background.getHeight();
+		if (config.scaleAllScreens) {
+			Pair<Point, Double> pd = RenderTools.fitWindow(getInnerWidth(), getInnerHeight() - RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM, w, h);
+			e.x = (int)((e.x - pd.first.x) / pd.second);
+			e.y = (int)((e.y - pd.first.y - RenderTools.STATUS_BAR_TOP) / pd.second);
+		} else {
+			e.x -= xOrigin;
+			e.y -= yOrigin;
+		}
+		// test mouse activity
 		boolean needRepaint = false;
 		switch (e.type) {
 		case MOVE:
@@ -246,7 +272,7 @@ public class MainScreen extends ScreenBase {
 		case ENTER:
 		case LEAVE:
 			for (ClickLabel cl : clicklabels) {
-				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
+				if (cl.test(e.x, e.y)) {
 					needRepaint |= !cl.selected;
 					cl.selected = true;
 				} else {
@@ -257,7 +283,7 @@ public class MainScreen extends ScreenBase {
 			break;
 		case DOWN:
 			for (ClickLabel cl : clicklabels) {
-				if (cl.test(e.x, e.y, xOrigin, yOrigin)) {
+				if (cl.test(e.x, e.y)) {
 					needRepaint |= !cl.pressed;
 					cl.pressed = true;
 				} else {
@@ -268,7 +294,7 @@ public class MainScreen extends ScreenBase {
 			break;
 		case UP:
 			for (ClickLabel cl : clicklabels) {
-				if (cl.test(e.x, e.y, xOrigin, yOrigin) && cl.pressed) {
+				if (cl.test(e.x, e.y) && cl.pressed) {
 					cl.invoke();
 				}
 				needRepaint |= cl.pressed;
@@ -506,10 +532,17 @@ public class MainScreen extends ScreenBase {
 		
 		// relocate objects if necessary
 		int w = background.getWidth();
-		xOrigin = (getInnerWidth() - w) / 2;
-		yOrigin = (getInnerHeight() - background.getHeight()) / 2;
+		int h = background.getHeight();
+		if (config.scaleAllScreens) {
+			Pair<Point, Double> pd = RenderTools.fitWindow(getInnerWidth(), getInnerHeight(), w, h);
+			xOrigin = pd.first.x;
+			yOrigin = pd.first.y;
+		} else {
+			xOrigin = (getInnerWidth() - w) / 2;
+			yOrigin = (getInnerHeight() - h) / 2;
+		}
 		
-		achievements.location(xOrigin + w - 20 - achievements.width, yOrigin + single.y);
+		achievements.location(w - 20 - achievements.width, single.y);
 
 		for (ClickLabel cl : Arrays.asList(single, continueLabel, load, 
 				multiplayer, settings, videosLabel, exit, creditsLabel)) {

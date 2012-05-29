@@ -8,11 +8,14 @@
 
 package hu.openig.render;
 
+import hu.openig.core.Pair;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -495,5 +498,24 @@ public final class RenderTools {
 		}
 		return false;
 	}
-	  
+	/**
+	 * Compute the scaling factor and the top-left point where the rendering should scale from
+	 * in order to keep the content fit the enclosing window. 
+	 * @param windowWidth the window width
+	 * @param windowHeight the window height
+	 * @param contentWidth the content width
+	 * @param contentHeight the content height
+	 * @return the origin and scale
+	 */
+	public static Pair<Point, Double> fitWindow(int windowWidth, int windowHeight, int contentWidth, int contentHeight) {
+		double sx = windowWidth * 1.0 / contentWidth;
+		double sy = windowHeight * 1.0 / contentHeight;
+		double scalex = Math.min(sx, sy);
+		double scaley = scalex;
+		
+		return Pair.of(new Point(
+				(int)(windowWidth - contentWidth * scalex) / 2, 
+				(int)(windowHeight - contentHeight * scaley) / 2
+				), scalex);
+	}
 }

@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.94.424";
+	public static final String VERSION = "0.94.425";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -225,6 +225,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean quickRNP = true;
+	/** Scale the secondary, fixed size screens. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean scaleAllScreens = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
