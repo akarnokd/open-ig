@@ -16,7 +16,6 @@ import hu.openig.model.Message;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
-import hu.openig.render.RenderTools;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImageButton;
@@ -28,6 +27,7 @@ import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,7 +82,7 @@ public class SingleplayerScreen extends ScreenBase {
 	int difficulty;
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(origin, getInnerWidth(), getInnerHeight(), true);
+		scaleResize(origin);
 
 		int w = origin.width / 2;
 
@@ -331,6 +331,7 @@ public class SingleplayerScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, origin);
 		boolean rep = false;
 		switch (e.type) {
 		case DOWN:
@@ -400,6 +401,8 @@ public class SingleplayerScreen extends ScreenBase {
 
 	@Override
 	public void draw(Graphics2D g2) {
+		AffineTransform savea = scaleDraw(g2, origin);
+		
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		g2.drawImage(background, origin.x, origin.y, null);
@@ -454,6 +457,8 @@ public class SingleplayerScreen extends ScreenBase {
 				difficultyRect.y + (difficultyLeft.height - difficultyRect.height) / 2, 14, 0xFF00FFFF, diff);
 
 		super.draw(g2);
+		
+		g2.setTransform(savea);
 	}
 	@Override
 	public Screens screen() {
@@ -468,3 +473,4 @@ public class SingleplayerScreen extends ScreenBase {
 		// TODO implemetn
 	}
 }
+

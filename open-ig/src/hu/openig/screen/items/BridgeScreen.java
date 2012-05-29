@@ -154,6 +154,8 @@ public class BridgeScreen extends ScreenBase {
 	int lastLevel;
 	/** The last frame of the projector appear. */
 	BufferedImage messageAppearLast;
+	/** The last image of the projector. */
+	BufferedImage projectorLast;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -215,10 +217,15 @@ public class BridgeScreen extends ScreenBase {
 			}
 			@Override
 			public void init(int width, int height) {
-				messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				messageFront.setAccelerationPriority(0);
-				messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				messageBack.setAccelerationPriority(0);
+				messageLock.lock();
+				try {
+					messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					messageFront.setAccelerationPriority(0);
+					messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					messageBack.setAccelerationPriority(0);
+				} finally {
+					messageLock.unlock();
+				}
 			}
 			@Override
 			public void swap() {
@@ -260,10 +267,15 @@ public class BridgeScreen extends ScreenBase {
 			}
 			@Override
 			public void init(int width, int height) {
-				messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				messageFront.setAccelerationPriority(0);
-				messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				messageBack.setAccelerationPriority(0);
+				messageLock.lock();
+				try {
+					messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					messageFront.setAccelerationPriority(0);
+					messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					messageBack.setAccelerationPriority(0);
+				} finally {
+					messageLock.unlock();
+				}
 			}
 			@Override
 			public void swap() {
@@ -304,10 +316,15 @@ public class BridgeScreen extends ScreenBase {
 			}
 			@Override
 			public void init(int width, int height) {
-				messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				messageFront.setAccelerationPriority(0);
-				messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				messageBack.setAccelerationPriority(0);
+				messageLock.lock();
+				try {
+					messageFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					messageFront.setAccelerationPriority(0);
+					messageBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					messageBack.setAccelerationPriority(0);
+				} finally {
+					messageLock.unlock();
+				}
 			}
 			@Override
 			public void swap() {
@@ -349,15 +366,22 @@ public class BridgeScreen extends ScreenBase {
 			}
 			@Override
 			public void init(int width, int height) {
-				projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorFront.setAccelerationPriority(0);
-				projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorBack.setAccelerationPriority(0);
+				projectorLock.lock();
+				try {
+					projectorLast = projectorFront;
+					projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorFront.setAccelerationPriority(0);
+					projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorBack.setAccelerationPriority(0);
+				} finally {
+					projectorLock.unlock();
+				}
 			}
 			@Override
 			public void swap() {
 				projectorLock.lock();
 				try {
+					projectorLast = null;
 					BufferedImage temp = projectorFront;
 					projectorFront = projectorBack;
 					projectorBack = temp;
@@ -392,15 +416,22 @@ public class BridgeScreen extends ScreenBase {
 			}
 			@Override
 			public void init(int width, int height) {
-				projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorFront.setAccelerationPriority(0);
-				projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				projectorBack.setAccelerationPriority(0);
+				projectorLock.lock();
+				try {
+					projectorLast = projectorFront;
+					projectorFront = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorFront.setAccelerationPriority(0);
+					projectorBack = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+					projectorBack.setAccelerationPriority(0);
+				} finally {
+					projectorLock.unlock();
+				}
 			}
 			@Override
 			public void swap() {
 				projectorLock.lock();
 				try {
+					projectorLast = null;
 					BufferedImage temp = projectorFront;
 					projectorFront = projectorBack;
 					projectorBack = temp;
@@ -615,6 +646,7 @@ public class BridgeScreen extends ScreenBase {
 		videoAppearPercent = 0;
 		onAppearComplete = null;
 		messageAppearLast = null;
+		projectorLast = null;
 		if (messageAnim != null) {
 			onMessageComplete = null;
 			messageAnim.stop();
@@ -710,6 +742,9 @@ public class BridgeScreen extends ScreenBase {
 		
 		projectorLock.lock();
 		try {
+			if (projectorLast != null) {
+				g2.drawImage(projectorLast, projectorRect.x, projectorRect.y, null);
+			} else
 			if (projectorFront != null) {
 				g2.drawImage(projectorFront, projectorRect.x, projectorRect.y, null);
 			}
