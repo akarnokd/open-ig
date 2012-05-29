@@ -2,6 +2,36 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.94.425 - Fixes =
+  * Released: 2012-05-29 14:10 CET
+  * Added sort indicator to Info/Planets/Details view .([http://code.google.com/p/open-ig/issues/detail?id=138 Issue #138])
+  * Added buttons to change the auto-build settings (+/-), added "All" button to set the same settings on all your planets.([http://code.google.com/p/open-ig/issues/detail?id=142 Issue #142])
+  * Added "All" button to set the same taxation level on all your planets.
+  * Achievements viewable from main menu, temporarily through an ugly button. ([http://code.google.com/p/open-ig/issues/detail?id=221 Issue #221])
+  * Slowed down fleets by 33% (Issues [http://code.google.com/p/open-ig/issues/detail?id=258 #258], [http://code.google.com/p/open-ig/issues/detail?id=436 #436])
+  * Infected planets now suffer -5 morale penalty. ([http://code.google.com/p/open-ig/issues/detail?id=326 Issue #326])
+  * In shipwalk, bridge, bar, cabin and diplomacy screens you can right click on a destination to go there instantly without the animation. ([http://code.google.com/p/open-ig/issues/detail?id=335 Issue #335])
+  * Error message and sound is played when the player has zero capacity and adds a production order (the order placement always succeeds). ([http://code.google.com/p/open-ig/issues/detail?id=386 Issue #386])
+  * Traders now flee when they get to 75% health. Turning them back now skips the battle statistics screen ([http://code.google.com/p/open-ig/issues/detail?id=392 Issue #392])
+  * The spacewar ship listing now contains the HP + SP = Defense values of the ships ([http://code.google.com/p/open-ig/issues/detail?id=408 Issue #408])
+  * Building names and statuses can be hidded via the options screen. ([http://code.google.com/p/open-ig/issues/detail?id=410 Issue #410])
+  * Changed rocket and ECM behavior to give higher chance of hitting the target ([http://code.google.com/p/open-ig/issues/detail?id=430 Issue #430])
+  * Most non-full screens can now be scaled to fit the window independently of the global scaling, enabled via an options setting ([http://code.google.com/p/open-ig/issues/detail?id=442 Issue #442])
+  * Display of current and delta relation during diplomatic conversation with the aliens, several fixes ([http://code.google.com/p/open-ig/issues/detail?id=455 Issue #455])
+  * Reaching an attack target in space now starts the battle much sooner ([http://code.google.com/p/open-ig/issues/detail?id=462 Issue #462])
+  * Trader fleet behavior changes and fixes ([http://code.google.com/p/open-ig/issues/detail?id=473 Issue #473])
+  * The game now creates a named save on each level start ([http://code.google.com/p/open-ig/issues/detail?id=474 Issue #474])
+  * Fixed some space-chat related problems ([http://code.google.com/p/open-ig/issues/detail?id=476 Issue #476])
+  * Level 2 now allows calling the Colonel for reinforcements anytime (but might not grant them) ([http://code.google.com/p/open-ig/issues/detail?id=477 Issue #477])
+  * Fixed video messages  in case the virus missions fail ([http://code.google.com/p/open-ig/issues/detail?id=478 Issue #478])
+  * One of the traders can now instantly heal any infected colonies ([http://code.google.com/p/open-ig/issues/detail?id=479 Issue #479])
+  * Fixed missing red blinking boxes around certain fleets ([http://code.google.com/p/open-ig/issues/detail?id=481 Issue #481])
+  * Fixed some scripting issues ([http://code.google.com/p/open-ig/issues/detail?id=482 Issue #482])
+  * Fixed virus mission finish not detected when multiple planets were infected ([http://code.google.com/p/open-ig/issues/detail?id=483 Issue #483])
+  * Fixed prototype fleet not appearing in level 2 ([http://code.google.com/p/open-ig/issues/detail?id=484 Issue #484])
+  * 
+ 
+
 = Version 0.94.410 - More bugfixes =
   * Released: 2012-05-22 16:30 CET
   * Welcome *Sigee15* in the project as committer.
