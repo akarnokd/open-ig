@@ -79,21 +79,21 @@ public abstract class ScreenBase extends UIContainer {
 	}
 	/** Called if the component size changed since the last call. */
 	public abstract void onResize();
-	/**
-	 * Ask for the repaint of the given  component area only.
-	 * @param c the target component
-	 */
-	public void askRepaint(UIComponent c) {
-		Point p = c.absLocation();
-		commons.control().repaintInner(p.x, p.y, c.width, c.height);
-	}
-	/**
-	 * Ask for the repaint of the given partial region.
-	 * @param rect the region to repaint
-	 */
-	public void askRepaint(Rectangle rect) {
-		commons.control().repaintInner(rect.x, rect.y, rect.width, rect.height);
-	}
+//	/**
+//	 * Ask for the repaint of the given  component area only.
+//	 * @param c the target component
+//	 */
+//	public void askRepaint(UIComponent c) {
+//		Point p = c.absLocation();
+//		commons.control().repaintInner(p.x, p.y, c.width, c.height);
+//	}
+//	/**
+//	 * Ask for the repaint of the given partial region.
+//	 * @param rect the region to repaint
+//	 */
+//	public void askRepaint(Rectangle rect) {
+//		commons.control().repaintInner(rect.x, rect.y, rect.width, rect.height);
+//	}
 	/**
 	 * Ask for the repaint of the given partial region.
 	 * @param x left coordinate
@@ -396,6 +396,44 @@ public abstract class ScreenBase extends UIContainer {
 			base.y = pd.first.y + RenderTools.STATUS_BAR_TOP + margin;
 		} else {
 			RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
+		}
+	}
+	/**
+	 * Ask for the repaint of the given partial region.
+	 * @param base the base for the scaling
+	 * @param object the object to repaint
+	 * 
+	 */
+	public void scaleRepaint(Rectangle base, Rectangle object) {
+		scaleRepaint(base, object, 0);
+	}
+	/**
+	 * Ask for the repaint of the given  component area only.
+	 * @param base the base of scaling
+	 * @param c the target component
+	 */
+	public void scaleRepaint(Rectangle base, UIComponent c) {
+		Point p = c.absLocation();
+		scaleRepaint(base, new Rectangle(p.x, p.y, c.width, c.height));
+	}
+	/**
+	 * Ask for the repaint of the given partial region.
+	 * @param base the region to repaint
+	 * @param object the object to repaint
+	 * @param margin the optional margin
+	 */
+	public void scaleRepaint(Rectangle base, Rectangle object, int margin) {
+		if (config.scaleAllScreens) {
+			Pair<Point, Double> pd = RenderTools.fitWindow(
+					getInnerWidth(), 
+					getInnerHeight() - RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM
+					- 2 * margin, 
+					base.width, base.height);
+			int sw = (int)(object.width * pd.second);
+			int sh = (int)(object.height * pd.second);
+			commons.control().repaintInner(object.x, object.y, sw, sh);
+		} else {
+			commons.control().repaintInner(object.x, object.y, object.width, object.height);
 		}
 	}
 }

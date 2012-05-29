@@ -256,7 +256,7 @@ public class DatabaseScreen extends ScreenBase {
 		if (highlight.size() == 0 && unlight.size() == 0) {
 			highlightTimer.stop();
 		}
-		askRepaint(base);
+		doRepaint();
 	}
 	/**
 	 * Do actions on mouse wheel movement.
@@ -306,7 +306,7 @@ public class DatabaseScreen extends ScreenBase {
 				}
 			}
 			if (lastHighlight != highlightHelp) {
-				askRepaint(base);
+				doRepaint();
 			}
 		}
 		if (aliensVisible && !alienDetails) {
@@ -324,7 +324,7 @@ public class DatabaseScreen extends ScreenBase {
 				i++;
 			}
 			if (lastHighlight != highlightAliens) {
-				askRepaint(base);
+				doRepaint();
 			}
 		}
 	}
@@ -367,7 +367,7 @@ public class DatabaseScreen extends ScreenBase {
 					selectedHelp = i;
 				}
 			}
-			askRepaint(base);
+			doRepaint();
 		}
 		if (aliensVisible && !alienDetails) {
 			int i = 0;
@@ -384,7 +384,7 @@ public class DatabaseScreen extends ScreenBase {
 				}
 				i++;
 			}
-			askRepaint(base);
+			doRepaint();
 		}
 	}
 	/**
@@ -554,7 +554,7 @@ public class DatabaseScreen extends ScreenBase {
 				public void actionPerformed(ActionEvent e) {
 					if (pictureInIndex < picturePhaseCount) {
 						pictureInIndex++;
-						askRepaint(base);
+						doRepaint();
 					} else {
 						pictureEdgeVisible = true;
 						helpVisible = true;
@@ -568,7 +568,7 @@ public class DatabaseScreen extends ScreenBase {
 							public void actionPerformed(ActionEvent e) {
 								if (mapPhaseIndex < mapPhaseCount) {
 									mapPhaseIndex++;
-									askRepaint(base);
+									doRepaint();
 								} else {
 									expandCollapse.stop();
 									pictureEdgeVisible = true;
@@ -580,12 +580,12 @@ public class DatabaseScreen extends ScreenBase {
 										public void actionPerformed(ActionEvent e) {
 											if (textPhaseIndex < textPhaseCount) {
 												textPhaseIndex++;
-												askRepaint(base);
+												doRepaint();
 											} else {
 												expandCollapse.stop();
 												splitRows(get("database.map." + world().level));
 												mapTitle = get("database.map." + world().level + ".title");
-												askRepaint(base);
+												doRepaint();
 											}
 										}
 									});
@@ -627,7 +627,7 @@ public class DatabaseScreen extends ScreenBase {
 				public void actionPerformed(ActionEvent e) {
 					if (textOutIndex < textPhaseCount) {
 						textOutIndex++;
-						askRepaint(base);
+						doRepaint();
 					} else {
 						textpanelVisible = false;
 						textOutIndex = 0;
@@ -649,7 +649,7 @@ public class DatabaseScreen extends ScreenBase {
 				public void actionPerformed(ActionEvent e) {
 					if (pictureOutIndex < picturePhaseCount) {
 						pictureOutIndex++;
-						askRepaint(base);
+						doRepaint();
 					} else {
 						pictureFrameVisible = false;
 						alienDetails = false;
@@ -682,12 +682,12 @@ public class DatabaseScreen extends ScreenBase {
 				public void actionPerformed(ActionEvent e) {
 					if (pictureInIndex < picturePhaseCount) {
 						pictureInIndex++;
-						askRepaint(base);
+						doRepaint();
 					} else {
 						pictureEdgeVisible = true;
 						helpVisible = true;
 						expandCollapse.stop();
-						askRepaint(base);
+						doRepaint();
 					}
 				}
 			});
@@ -714,17 +714,21 @@ public class DatabaseScreen extends ScreenBase {
 				public void actionPerformed(ActionEvent e) {
 					if (pictureInIndex < picturePhaseCount) {
 						pictureInIndex++;
-						askRepaint(base);
+						doRepaint();
 					} else {
 						pictureEdgeVisible = true;
 						aliensVisible = true;
 						expandCollapse.stop();
-						askRepaint(base);
+						doRepaint();
 					}
 				}
 			});
 			expandCollapse.start();
 		}
+	}
+	/** Perform a partial repain. */
+	void doRepaint() {
+		scaleRepaint(base, base);
 	}
 	/** 
 	 * Show the text panel.
@@ -739,7 +743,7 @@ public class DatabaseScreen extends ScreenBase {
 				public void actionPerformed(ActionEvent e) {
 					if (textOutIndex < textPhaseCount) {
 						textOutIndex++;
-						askRepaint(base);
+						doRepaint();
 					} else {
 						textpanelVisible = false;
 						textOutIndex = 0;
@@ -760,11 +764,11 @@ public class DatabaseScreen extends ScreenBase {
 			public void actionPerformed(ActionEvent e) {
 				if (textPhaseIndex < textPhaseCount) {
 					textPhaseIndex++;
-					askRepaint(base);
+					doRepaint();
 				} else {
 					expandCollapse.stop();
 					splitRows(newText);
-					askRepaint(base);
+					doRepaint();
 				}
 			}
 		});
@@ -780,7 +784,7 @@ public class DatabaseScreen extends ScreenBase {
 				public void actionPerformed(ActionEvent e) {
 					if (textOutIndex < textPhaseCount) {
 						textOutIndex++;
-						askRepaint(base);
+						doRepaint();
 					} else {
 						textpanelVisible = false;
 						textOutIndex = 0;
@@ -809,7 +813,7 @@ public class DatabaseScreen extends ScreenBase {
 						&& alienPhaseIndex >= alienPhaseCount) {
 					expandCollapse.stop();
 				}
-				askRepaint(base);
+				doRepaint();
 			}
 		});
 		expandCollapse.start();
@@ -829,7 +833,7 @@ public class DatabaseScreen extends ScreenBase {
 			if (textOffset > 0) {
 				textOffset--;
 			}
-			askRepaint(base);
+			doRepaint();
 		}
 	}
 	/** Move text down. */
@@ -838,7 +842,7 @@ public class DatabaseScreen extends ScreenBase {
 			if (textOffset + 10 < rows.size()) {
 				textOffset++;
 			}
-			askRepaint(base);
+			doRepaint();
 		}
 	}
 

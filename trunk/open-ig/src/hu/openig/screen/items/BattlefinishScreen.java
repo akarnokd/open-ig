@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class BattlefinishScreen extends ScreenBase {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showText = true;
-				askRepaint(base);
+				scaleRepaint(base, base);
 				textDelay.stop();
 			}
 		});
@@ -126,8 +127,7 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
-		
+		scaleResize(base);
 	}
 	@Override
 	public Screens screen() {
@@ -139,6 +139,8 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		AffineTransform savea = scaleDraw(g2, base);
+		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(background, base.x, base.y, null);
 		
@@ -292,6 +294,7 @@ public class BattlefinishScreen extends ScreenBase {
 			
 			textCenter(g2, base.x, base.y + base.height - 20, base.width, TextRenderer.GREEN, 14, get("battlefinish.click_to_exit"));
 		}
+		g2.setTransform(savea);
 	}
 	/**
 	 * Check if any enemy is beyond the screen.
@@ -435,6 +438,7 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base);
 		if (e.has(Type.UP) /* && !e.within(base.x, base.y, base.width, base.height) */) {
 			if (!showText) {
 				showText = true;

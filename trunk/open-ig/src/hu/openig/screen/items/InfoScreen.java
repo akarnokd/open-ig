@@ -1166,7 +1166,7 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				animationBlink = !animationBlink;
-				askRepaint(base);
+				scaleRepaint(base, base, 11);
 			}
 		});
 		adjustPlanetListView();

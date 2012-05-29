@@ -575,7 +575,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		for (TechnologySlot sl : slots) {
 			sl.animationStep = animationStep;
 		}
-		askRepaint(base);
+		scaleRepaint(base, base);
 	}
 
 	/**
@@ -1384,7 +1384,7 @@ public class ResearchProductionScreen extends ScreenBase {
 					public void invoke(BufferedImage value) {
 						if (first || config.animateInventory) {
 							video.image(value);
-							askRepaint(video);
+							scaleRepaint(base, video);
 						}
 						first = false;
 					}

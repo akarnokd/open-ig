@@ -2197,6 +2197,7 @@ public class StarmapScreen extends ScreenBase {
 			player().selectionMode = SelectionMode.FLEET;
 		} else
 		if (p != null) {
+			buttonSound(SoundType.CLICK_HIGH_2);
 			player().currentPlanet = p;
 			player().selectionMode = SelectionMode.PLANET;
 		}

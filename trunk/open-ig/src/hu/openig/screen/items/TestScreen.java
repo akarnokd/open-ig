@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.geom.AffineTransform;
 
 /**
  * The screen displaying the Phsychologist test.
@@ -56,7 +57,7 @@ public class TestScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				questionScroll.doScrollUp();
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		scrollUp.setHoldDelay(150);
@@ -66,7 +67,7 @@ public class TestScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				questionScroll.doScrollDown();
-				askRepaint(base);
+				doRepaint();
 			}
 		};
 		scrollDown.setHoldDelay(150);
@@ -81,7 +82,10 @@ public class TestScreen extends ScreenBase {
 		done.disabledPattern(commons.common().disabledPattern);
 		addThis();
 	}
-
+	/** Perform the partial repaint. */
+	void doRepaint() {
+		scaleRepaint(base, base);
+	}
 	@Override
 	public void onEnter(Screens mode) {
 		questionScroll.prepare();
@@ -130,7 +134,8 @@ public class TestScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		RenderTools.centerScreen(base, getInnerWidth(), getInnerHeight(), true);
+		scaleResize(base);
+		
 		scrollUp.location(base.x + base.width - 30, base.y + 5);
 		done.location(base.x + base.width / 2 + (base.width / 2 - done.width) / 2, base.y + base.height - 5 - done.height);
 		questionScroll.bounds(base.x + base.width / 2 + 10, base.y + 10, base.width / 2 - 45, done.y - base.y - 20);
@@ -149,6 +154,8 @@ public class TestScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		AffineTransform savea = scaleDraw(g2, base);
+		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.background().test, base.x, base.y, null);
 		
@@ -157,6 +164,8 @@ public class TestScreen extends ScreenBase {
 		scrollDown.visible(questionScroll.mayScrollDown());
 		
 		super.draw(g2);
+		
+		g2.setTransform(savea);
 	}
 	/** A test choice. */
 	class TestChoice extends UIComponent {
@@ -287,5 +296,10 @@ public class TestScreen extends ScreenBase {
 		public void clear() {
 			components.clear();
 		}
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		scaleMouse(e, base);
+		return super.mouse(e);
 	}
 }

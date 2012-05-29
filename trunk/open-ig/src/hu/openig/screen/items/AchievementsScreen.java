@@ -158,14 +158,14 @@ public class AchievementsScreen extends ScreenBase {
 		diplomacy.y = production.y;
 
 		statisticsLabel.x = base.x + (base.width / 2 - achievementLabel.width) / 2;
-		statisticsLabel.y = base.y - achievementLabel.height / 2;
+		statisticsLabel.y = base.y - achievementLabel.height / 2 + 1;
 
 		if (world() != null) {
 			achievementLabel.x = base.x + base.width / 2 + (base.width / 2 - achievementLabel.width) / 2;
 		} else {
 			achievementLabel.x = base.x + (base.width - achievementLabel.width) / 2;
 		}
-		achievementLabel.y = base.y - achievementLabel.height / 2;
+		achievementLabel.y = base.y - achievementLabel.height / 2 + 1;
 
 		noProduction.location(production.location());
 		noResearch.location(research.location());

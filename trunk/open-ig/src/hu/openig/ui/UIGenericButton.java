@@ -180,6 +180,7 @@ public class UIGenericButton extends UIComponent {
 			return true;
 		case LEAVE:
 			down = false;
+			lookCache = null;
 			holdTimer.stop();
 			return true;
 		default:
@@ -244,5 +245,12 @@ public class UIGenericButton extends UIComponent {
 		lookCache = null;
 		this.icon = icon;
 		return this;
+	}
+	@Override
+	public UIComponent enabled(boolean state) {
+		if (enabled() != state) {
+			lookCache = null;
+		}
+		return super.enabled(state);
 	}
 }
