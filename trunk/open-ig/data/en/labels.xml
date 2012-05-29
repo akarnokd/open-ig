@@ -2438,8 +2438,8 @@
 	<entry key='chat.vi.4.n4'>I repeat, I am carrying a new antidote to the planet. You must let me land, or else thousand of lives will be placed in danger.</entry>
 	<entry key='chat.vi.4.n5.o'>Turn around!</entry>
 	<entry key='chat.vi.4.n5'>I have no clearance orders for you. You must leave.</entry>
-	<entry key='chat.vi.4.n6.o'>All right, proceed.</entry>
-	<entry key='chat.vi.4.n6'>All right, proceed.</entry>
+	<entry key='chat.vi.4.n6.o'>Turn around!</entry>
+	<entry key='chat.vi.4.n6'>I have no clearance orders for you. You must leave.</entry>
 	<entry key='chat.vi.4.n8'>All right, but I hold you responsible for the consequences.</entry>
 	
 	<entry key='chat.vi.5.n0.o'>Ship, identify yourself!</entry>

@@ -2557,8 +2557,8 @@
 	<entry key='chat.vi.4.n4'>Ich wiederhole, wir haben ein neues Gegenmittel an Bord. Sie MÜSSEN mich landen lassen, oder weitere Menschen müssen Ihretwegen sterben.</entry>
 	<entry key='chat.vi.4.n5.o'>Kehren Sie um!</entry>
 	<entry key='chat.vi.4.n5'>Ich habe keine Landeerlaubnis für Sie. Kehren Sie um.</entry>
-	<entry key='chat.vi.4.n6.o'>Einverstanden, passieren Sie.</entry>
-	<entry key='chat.vi.4.n6'>Einverstanden, passieren Sie.</entry>
+	<entry key='chat.vi.4.n6.o'>Kehren Sie um!</entry>
+	<entry key='chat.vi.4.n6'>Ich habe keine Landeerlaubnis für Sie. Kehren Sie um.</entry>
 	<entry key='chat.vi.4.n8'>Einverstanden, doch ich mache Sie für die Folgen verantwortlich.</entry>
 	
 	<entry key='chat.vi.5.n0.o'>Raumschiff, identifizieren Sie sich!</entry>
