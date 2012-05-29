@@ -73,6 +73,21 @@ public class StatusbarGFX {
 	/** Money notification icon. */
 	@Img(name = "money_notify")
 	public BufferedImage moneyNotification;
+	/** Normal gear icon. */
+	@Img(name = "gear_normal")
+	public BufferedImage gearNormal;
+	/** Light gear icon. */
+	@Img(name = "gear_light")
+	public BufferedImage gearLight;
+	/** The statusbar icon background. */
+	@Img(name = "statusbar_icon_back")
+	public BufferedImage iconBack;
+	/** Normal research icon. */
+	@Img(name = "research_normal")
+	public BufferedImage researchNormal;
+	/** Light research icon. */
+	@Img(name = "research_light")
+	public BufferedImage researchLight;
 	/**
 	 * Load the resources.
 	 * @param rl the resource locator
