@@ -65,7 +65,7 @@ public class Mission4 extends Mission {
 			addMission("Mission-4", 48);
 			stage = M4.WAIT;
 		}
-		if (stage == M4.WAIT && checkMission("Mission-4")) {
+		if (checkMission("Mission-4")) {
 			world.env.speed1();
 			send("Naxos-Not-Under-Attack").visible = false;
 			incomingMessage("Naxos-Unknown-Ships", "Mission-4");
