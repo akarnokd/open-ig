@@ -144,9 +144,12 @@ public class EquipmentGFX {
 	/** Sell button. */
 	@Btn2(name = "equipment/button_sell")
 	public BufferedImage[] sell;
-	/** Sell button. */
+	/** Upgrade everything button. */
 	@Btn2(name = "equipment/button_upgrade_all")
 	public BufferedImage[] upgradeAll;
+	/** No flagship. */
+	@Img(name = "equipment/label_no_flagship")
+	public BufferedImage noFlagship;
 	/**
 	 * Load the resources.
 	 * @param rl the resource locator
