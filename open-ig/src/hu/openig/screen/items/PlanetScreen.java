@@ -2599,6 +2599,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			
 			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
+			if (p.owner == null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+				double g = world().galaxyModel.getGrowth(p.type.type, player().race);
+				surfaceText = format("colonyinfo.surface2", 
+						firstUpper(get(p.type.label)), (int)(g * 100));
+			} else
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race);
 				surfaceText = format("colonyinfo.surface2", 
