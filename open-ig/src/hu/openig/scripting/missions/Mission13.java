@@ -172,6 +172,10 @@ public class Mission13 extends Mission {
 		if (benson != null && garthog != null && benson.targetPlanet() != null) {
 			double d = Math.hypot(benson.x - garthog.x, 
 					benson.y - garthog.y);
+			if (d <= 10) {
+				benson.stop();
+				benson.task = FleetTask.SCRIPT;
+			}
 			if (d <= 5) {
 				addMission("Mission-13-Timeout", 12);
 				
