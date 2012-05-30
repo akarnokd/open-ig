@@ -2548,10 +2548,14 @@ public class StarmapScreen extends ScreenBase {
 			commons.simulation.pause();
 		}
 		if (config.satelliteDeploy) {
+			
+			final int volume = config.musicVolume;
+			commons.music.setVolume(0);
 			commons.control().playVideos(new Action0() {
 				@Override
 				public void invoke() {
 					placeSatellite(typeId, p, isPaused);
+					commons.music.setVolume(volume);
 				}
 			}, media);
 		} else {

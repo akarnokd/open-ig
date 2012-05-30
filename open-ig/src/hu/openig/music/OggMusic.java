@@ -358,6 +358,7 @@ public class OggMusic {
 											iptr += 2 * (vi.channels);
 										}
 									}
+									// FIXME sound emission here
 									outputLine.write(convbuffer, 0, 2
 											* vi.channels * bout);
 									vd.synthesisRead(bout);
