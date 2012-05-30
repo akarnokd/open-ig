@@ -153,6 +153,8 @@ public class EquipmentScreen extends ScreenBase {
 	UIImage noSpaceStation;
 	/** Not your planet. */
 	UIImage notYourPlanet;
+	/** No flagship. */
+	UIImage noFlagship;
 	/** New fleet button. */
 	UIImageButton newButton;
 	/** Add ship to fleet. */
@@ -440,6 +442,9 @@ public class EquipmentScreen extends ScreenBase {
 		
 		notYourPlanet = new UIImage(commons.equipment().notYourplanet);
 		notYourPlanet.visible(false);
+
+		noFlagship = new UIImage(commons.equipment().noFlagship);
+		noFlagship.visible(false);
 		
 		newButton = new UIImageButton(commons.equipment().newFleet);
 		newButton.visible(false);
@@ -985,6 +990,7 @@ public class EquipmentScreen extends ScreenBase {
 		noSpaceport.location(noPlanetNearby.location());
 		notYourPlanet.location(noSpaceport.location());
 		noSpaceStation.location(noSpaceport.location());
+		noFlagship.location(noSpaceport.location());
 		
 		transferButton.location(base.x + 401, base.y + base.height - 248 - 20);
 //		joinButton.location(transferButton.location());
@@ -1315,7 +1321,11 @@ public class EquipmentScreen extends ScreenBase {
 			right2.visible(false);
 			right3.visible(false);
 
+			noFlagship.visible(false);
 		} else {
+// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+// Fleet related controls
+// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 			if (fleetShown != f || lastSelection != player().selectionMode) {
 				fleetShown = f;
 				lastSelection = player().selectionMode;
@@ -1493,6 +1503,9 @@ public class EquipmentScreen extends ScreenBase {
 			notYourPlanet.visible(false);
 			noPlanetNearby.visible(own && secondary == null && ps == null);
 			noSpaceStation.visible(false);
+			noFlagship.visible(own && fs.battleshipCount == 0 
+					&& (research().category == ResearchSubCategory.WEAPONS_TANKS
+					|| research().category == ResearchSubCategory.WEAPONS_VEHICLES));
 
 			if (ps != null && fs.planet.owner == f.owner 
 					&& ps.hasMilitarySpaceport && secondary == null) {
