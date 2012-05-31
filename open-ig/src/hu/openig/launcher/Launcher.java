@@ -85,7 +85,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.31";
+	public static final String VERSION = "0.32";
 	/**
 	 * The update XML to download.
 	 */
