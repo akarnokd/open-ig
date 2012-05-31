@@ -352,6 +352,7 @@ public class ExplorationPlanner extends Planner {
 		}
 		if (what != null) {
 			final ResearchType fwhat = what;
+			world.addInventoryCount(fwhat, -1);
 			add(new Action0() {
 				@Override
 				public void invoke() {

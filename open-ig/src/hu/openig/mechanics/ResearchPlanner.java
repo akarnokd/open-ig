@@ -280,6 +280,7 @@ public class ResearchPlanner extends Planner {
 		// check if we have colony ships in the inventory
 		final Pair<Integer, ResearchType> csi = world.inventoryCount("ColonyShip");
 		if (csi.first > 0) {
+			world.addInventoryCount(csi.second, -1);
 			add(new Action0() {
 				@Override
 				public void invoke() {

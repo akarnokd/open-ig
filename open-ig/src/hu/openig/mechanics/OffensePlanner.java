@@ -150,6 +150,16 @@ public class OffensePlanner extends Planner {
 		
 		final Planet spaceport = findBestMilitarySpaceport().planet;
 		
+		if (!fighters.isEmpty()) {
+			world.addInventoryCount(fighters.get(0), -1);
+		}		
+		if (!cruisers.isEmpty()) {
+			world.addInventoryCount(cruisers.get(0), -1);
+		}		
+		if (!battleships.isEmpty()) {
+			world.addInventoryCount(battleships.get(0), -1);
+		}		
+		
 		add(new Action0() {
 			@Override
 			public void invoke() {

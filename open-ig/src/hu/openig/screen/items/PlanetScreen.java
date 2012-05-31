@@ -2422,6 +2422,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		for (GroundwarGun g : new ArrayList<GroundwarGun>(guns)) {
 			if (g.building == currentBuilding) {
 				guns.remove(g);
+				g.selected = false;
 				fortif = true;
 			}
 		}
@@ -3880,8 +3881,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		for (GroundwarRocket rocket : new ArrayList<GroundwarRocket>(rockets)) {
 			updateRocket(rocket);
 		}
-		for (GroundwarGun g : guns) {
-			updateGun(g);
+		Iterator<GroundwarGun> itg = guns.iterator();
+		while (itg.hasNext()) {
+			GroundwarGun g = itg.next();
+			if (g.building == null || g.building.hitpoints <= 0) {
+				g.selected = false;
+				itg.remove();
+			} else {
+				updateGun(g);
+			}
 		}
 
 		for (GroundwarUnit u : units) {
@@ -4070,20 +4078,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					i--;
 				}
 			}
-			// if building got destroyed
-			if (hpBefore > 0 && b.hitpoints <= 0) {
-				for (int i = guns.size() - 1; i >= 0; i--) {
-					if (guns.get(i).building == b) {
-						// remove guns
-						guns.remove(i);
-					}
+		}
+		// if building got destroyed
+		if (hpBefore > 0 && b.hitpoints <= 0) {
+			for (int i = guns.size() - 1; i >= 0; i--) {
+				if (guns.get(i).building == b) {
+					// remove guns
+					guns.get(i).selected = false;
+					guns.remove(i);
 				}
-				if (battle != null) {
-					battle.defenderFortificationLosses++;
-				}
-				surface().removeBuilding(b);
-				effectSound(SoundType.EXPLOSION_LONG);
 			}
+			if (battle != null && "Defensive".equals(b.type.kind)) {
+				battle.defenderFortificationLosses++;
+			}
+			surface().removeBuilding(b);
+			effectSound(SoundType.EXPLOSION_LONG);
 		}
 	}
 	/**
@@ -4385,6 +4394,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (!g.building.enabled) {
 			return;
 		}
+		
 		if (g.phase > 0) {
 			g.phase++;
 			if (g.phase >= g.maxPhase()) {

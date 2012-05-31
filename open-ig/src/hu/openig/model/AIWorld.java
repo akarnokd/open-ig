@@ -89,6 +89,8 @@ public class AIWorld {
 	public final Set<Player> activeOffer = U.newHashSet();
 	/** The main player of the game. */
 	public Player mainPlayer;
+	/** The current auto-build limit. */
+	public long autoBuildLimit;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -191,6 +193,10 @@ public class AIWorld {
 				activeOffer.add(p);
 			}
 		}
+		
+		if (player == mainPlayer) {
+			autoBuildLimit = player.world.env.config().autoBuildLimit;
+		}
 	}
 	/**
 	 * Returns or calculates the planet statistics.
@@ -242,6 +248,21 @@ public class AIWorld {
 	public int inventoryCount(ResearchType rt) {
 		Integer i = inventory.get(rt);
 		return i != null ? i.intValue() : 0;
+	}
+	/**
+	 * Add a specific amount to the current inventory level.
+	 * @param type the type
+	 * @param count the count change
+	 */
+	public void addInventoryCount(ResearchType type, int count) {
+		Integer c = inventory.get(type);
+		int ci = c != null ? c.intValue() : 0;
+		int ci2 = ci + count;
+		if (ci2 <= 0) {
+			inventory.remove(type);
+		} else {
+			inventory.put(type, ci2);
+		}
 	}
 	/**
 	 * The inventory count of the given research type.

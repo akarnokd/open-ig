@@ -15,6 +15,7 @@ import hu.openig.utils.U;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -168,5 +169,48 @@ public class AIPlanet {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Returns the inventory count of the specified technology.
+	 * @param rt the technology
+	 * @param owner the owner
+	 * @return the count
+	 */
+	public int inventoryCount(ResearchType rt, Player owner) {
+		int result = 0;
+		for (AIInventoryItem ii : inventory) {
+			if (ii.type == rt && owner == ii.owner) {
+				result += ii.count;
+			}
+		}
+		return result;
+	}
+	/**
+	 * Add a specific amount to the current inventory level.
+	 * @param type the type
+	 * @param owner the owner
+	 * @param count the count change
+	 */
+	public void addInventoryCount(ResearchType type, Player owner, int count) {
+		Iterator<AIInventoryItem> it = inventory.iterator();
+		while (it.hasNext()) {
+			AIInventoryItem ii = it.next();
+			if (ii.type == type && ii.owner == owner) {
+				int cnt1 = ii.count + count;
+				if (cnt1 <= 0) {
+					it.remove();
+				} else {
+					ii.count = cnt1;
+				}
+				break;
+			}
+		}
+		if (count > 0) {
+			AIInventoryItem ii = new AIInventoryItem(null);
+			ii.count = count;
+			ii.owner = owner;
+			ii.type = type;
+			inventory.add(ii);
+		}
 	}
 }

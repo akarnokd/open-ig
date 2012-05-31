@@ -51,7 +51,7 @@ public class StaticDefensePlanner extends Planner {
 		Collections.sort(planets, BEST_PLANET);
 		for (AIPlanet planet : planets) {
 			if (managePlanet(planet)) {
-				if (world.mainPlayer != p || world.money < 500000) {
+				if (world.mainPlayer != p || world.money < world.autoBuildLimit) {
 					return;
 				}
 			}
@@ -220,6 +220,9 @@ public class StaticDefensePlanner extends Planner {
 			for (final AIInventoryItem ii : planet.inventory) {
 				if (!plan.demand.containsKey(ii.type) 
 						&& (plan.tanks.contains(ii.type) || plan.sleds.contains(ii.type))) {
+					int cnt1 = planet.inventoryCount(ii.type, p);
+					world.addInventoryCount(ii.type, cnt1);
+					planet.addInventoryCount(ii.type, p, -cnt1);
 					add(new Action0() {
 						@Override
 						public void invoke() {
@@ -239,7 +242,8 @@ public class StaticDefensePlanner extends Planner {
 			final int count = e.getValue();
 			final int inventoryLocal = planet.inventoryCount(rt);
 			final int cnt = count - inventoryLocal;
-			if (inventoryLocal < count && p.inventoryCount(rt) >= cnt) {
+			if (inventoryLocal < count && world.inventoryCount(rt) >= cnt) {
+				world.addInventoryCount(rt, -cnt);
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -263,12 +267,13 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkMilitarySpaceport(final AIPlanet planet) {
-		if (world.money > 100000) {
+		if (world.money > 100000 && world.money >= world.autoBuildLimit) {
 			if (planet.statistics.militarySpaceportCount == 0 
 					&& world.global.planetCount / 2 + 1 > world.global.militarySpaceportCount) {
 				final BuildingType bt = findBuilding("MilitarySpaceport");
 				Point pt = planet.findLocation(bt);
 				if (pt != null) {
+					world.money -= bt.cost;
 					add(new Action0() {
 						@Override
 						public void invoke() {
@@ -387,6 +392,7 @@ public class StaticDefensePlanner extends Planner {
 			if (gunCount < Math.abs(bt.limit) && gunCount < limit) {
 				if (hasRoom) {
 					final BuildingType fbt = bt;
+					world.money -= fbt.cost;
 					add(new Action0() {
 						@Override
 						public void invoke() {

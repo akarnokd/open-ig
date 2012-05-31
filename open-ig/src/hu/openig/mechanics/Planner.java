@@ -372,6 +372,7 @@ public abstract class Planner {
 		}
 		if (upgrade != null) {
 			final Building fupgrade = upgrade.building;
+			world.money -= fupgrade.type.cost;
 			add(new Action0() {
 				@Override
 				public void invoke() {
@@ -412,6 +413,7 @@ public abstract class Planner {
 		}
 		if (create != null) {
 			final BuildingType fcreate = create;
+			world.money -= fcreate.cost;
 			add(new Action0() {
 				@Override
 				public void invoke() {
@@ -657,6 +659,7 @@ public abstract class Planner {
 			// try building one somewhere randomly
 			for (final AIPlanet planet : planets) {
 				if (planet.findLocation(ms) != null) {
+					world.money -= ms.cost;
 					add(new Action0() {
 						@Override
 						public void invoke() {

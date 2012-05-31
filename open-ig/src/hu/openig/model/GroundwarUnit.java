@@ -131,4 +131,13 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation {
 		}
 		return path.get(path.size() - 1);
 	}
+	/**
+	 * Check if the target is in range.
+	 * @param u2 the other unit
+	 * @return true if in range
+	 */
+	public boolean inRange(HasLocation u2) {
+		double dist = distance(u2);
+		return model.minRange <= dist && dist <= model.maxRange;
+	}
 }
