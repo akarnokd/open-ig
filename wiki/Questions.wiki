@@ -38,42 +38,41 @@ very simple 2D game with well predictable data modell, it wouldn't be hard in my
 
 == What version of the game does Open-IG support? ==
 
-The targeted original game version is 1.3, which as I think, corrected some gameplay and DOS execution problems on fast machines. Unfortunately, the patch file is an MS-DOS executable, therefore, If you wan't a patched game on Linux for example, you have to extract the contents on a Windows box. Currently, I'm not sure if the project would be allowed to carry a zip repacked version of the patched files. ~~(Note: the game's EXE files are not needed for the Open-IG to run.)~~ 
-
-The Open-IG should run just fine with the English and Hungarian versions of the game ~~(although I have only the English version)~~.
+Once upon a time, the aim was to create an engine to run with the original game resources. But as time progressed, inconsistencies, bugs and other issues were encountered, which forced to project to permanently fix half of the original content. The game is standalone now with all resources included in the downloads.
 
 == Isn't the game copyrighted? ==
-Yes, the original game's copyright belongs to GT Interactive or Digital Reality. Because this project does not include any file from the original distribution, my take is that this shouldn't be a problem. You need to legally own the original game to be able to use Open-IG.
+
+The copyright belongs to Atari when I last checked. Recently, Digital Reality has released IG2 for iPad, which might mean they have some rights retained all these years.
+
+The game doesn't depend on the original distribution. You can feel safer if you own the original but you can't purchase it first hand today to my best knowledge.
+
+The original game is now abandonware and my actions are all fair-use.
 
 == Why Java? ==
 I'm a Java developer so it was a simple decision. As a side effect, the Open-IG will be playable on any platform which supports the recent versions of Java.
 
 == When will we see the source? ==
-~~Soon. Unfortunately, the current source code is used to do some proof-of-concept rendering and game resource analysis. It has hand coded filenames and undocumented functions. They don't suit the format of a proper open source project yet.~~
 Source code of the latest stable build is available as download. The most recent changes can be checked out from the SVN. There are no plans for nightly builds.
 
 == What kind of resources does the game use? ==
-The original Imperium Galactica had several standard and non-standard files:
-
-  * Images of the UI, ships, buildings etc. are stored in 8 bit [http://en.wikipedia.org/wiki/PCX PCX] files.
-  * Some plain text files with labels, scripts, possibly using the ISO-8859-2 charset.
-  * Some custom binary files for planet description, tech tree, etc.
-  * Most of the previous files are stored in a PAC file, which is basically contains a directory of file names and sizes followed by the uncompressed file data
-  * Sound files are in SND files which contain a raw 22050Hz 8 bit 1 channel signed PCM audio
-  * Music files are stored in XMF files, whose structure I could not decipher yet. All I know it contains samples in the previous audio format at the end of the file.
-  * The animations are stored in a custom binary file in a block structure containing Palette, Sound and Image data. The image data doubly packed first by an [http://code.google.com/p/open-ig/wiki/Custom_RLE custom RLE] compression and then by a [http://code.google.com/p/open-ig/wiki/Custom_LZSS custom LZSS] algorithm. See the links for the sample decompression algorithms.
-
-==How did you find these out? ==
-The text and image formats were trivial case. The deciphering of the ANI files took one week of visual analysis (e.g. I stared at the data bytes).
+We are using PNG files for images, WAV and OGG files for sound effects and music, XML for data files and [http://code.google.com/p/open-ig/wiki/ANI_2009_Format custom video] format.
 
 == Can I comment/join? ==
-~~I disabled the commenting of this project until I produce enough resources (wiki pages and source files) to be meaningful.~~
-You can comment on the wiki pages. Joining the project still is a bit in the future. 
+You need to register with Google to be able to comment or report an issue (not my policy).
 
-Joining to this project will be enabled when there is at least something to actually run. I'm still figuring out the proper coding style and structure of this project.
+Joining the project is possible. I'm always looking for talents in the following topics:
+
+  * Graphical works
+  * Audio works
+  * Translation, subtitling
+  * Balance testing and adjustments
+  * Java programmer for upcoming contents (e.g., Campaing editor, IG2 DLC, Spying screen, etc.)
+  * Android programmer for porting
+  * Java programmer for the multiplayer
+  * Gameplay testers, who play the game end-to-end, over and over again.
 
 == What about donations? ==
-Never. Spend your money for something useful.
+*Never.* Spend your money for something useful.
 
 == Why does Open-IG take up so much resources? ==
 The original game ran on a 486 with 16 MB of memory in DOS. But these hardware requirements made the developers have some compromises:
@@ -93,16 +92,17 @@ But these properties on todays computers are not bad at all. Here is why:
 == Why is the development slow? ==
 It has some aspects:
   * I develop it alone, I test it alone and I spend my spare time to develop it.
-  * Each screen has enormous amount of small pieces: buttons, text, clickable obects etc. These have to be placed, wired together manually to resemble to the original screen and behavior. Most screens are not even buildable/testable until a real data modell is under it (this is the case with the recently enhanced information screen). This needs lots of testing and comparison with the original game.
+  * Each screen has enormous amount of small pieces: buttons, text, clickable obects etc. These have to be placed, wired together manually to resemble to the original screen and behavior. Most screens are not even buildable/testable until a real data model is under it (this is the case with the recently enhanced information screen). This needs lots of testing and comparison with the original game.
+  * Some issues require small developments but require lots of explaining.
 
 == What languages are supported ==
-The current version has English and Hungarian labels. These labels are not extracted from the original game files (they reside in the MAIN.EXE file but the location varies between languages and game wersions) due the aim of the Open-IG project: extensibility. There is an XML file /hu/openig/res/labels.xml which contains the labels.
+
+English, German and Hungarian are supported at the moment. These include fixed graphics text (on buttons) and dynamic text on other labels.
+
+I've obtained a French version of the original game but apart from graphics and few texts, I'm not able to translate the rest on my own.
 
 == Can I change the language? ==
-It might be possible to change the language on textual labels at runtime, but currently no UI is provided for that. However, the game images (buttons, etc.) have fixed language (hungarian or english). Unless you have the original english or hungarian Imperium Galactica files, you cannot do much about it.
-
-== Why is there no music? ==
-I wasn't able to decode the music files yet, and it seems I won't ever. However, music playback is not outcast from Open-IG. We have an integrated JOrbis OGG player along with native WAV support to play back external music files. I already have created the .ogg files from the original game music (I let the game itself play it back and recorded it using DOSBox), but I am pretty certain I am not allowed to make them available bundled in the jar file. However, I will enhance the Open-IG to play user supplied music and you can use your .ogg/.wav file for game music.
+Yes. The Launcher lets you choose a language and the game itself lets you do that on the main menu. If you are in game, you need to exit to the main menu.
 
 == What differences exist between the varius language versions of the original game? ==
 Apart from having different language labels, there is a really subtle difference in the game's animation files. Strangely, in the english version these animations are in lower resolution, about 2/3 of the hungarian version. The reason is unknown. Certainly, the size gain is neglectible as the english version is still occupying 2 CDs with total size of 1.1GB.
@@ -112,3 +112,11 @@ Yes it will/does already. For non-hungarian players to understand, "á la Bokros
 
 == How can I use the checked-out source code? ==
 I advise to use an IDE and import the source code as a Java project. You can also directly check out code from the SVN repository in most IDEs (you might need third party SVN plugins).
+
+In addition, the I use the following tools and plugins with [http://eclipse.org/ Eclipse] to ensure the quality of the code:
+
+  * [http://eclipse-cs.sourceforge.net/downloads.html Eclipse-CS]
+  * [http://findbugs.sourceforge.net/ FindBugs]
+  * [http://andrei.gmxhome.de/jdepend4eclipse/index.html JDepend4Eclipse]
+  * [http://www.eclipse.org/mat/ Memory Analizer]
+  * [http://visualvm.java.net/ VisualVM]
