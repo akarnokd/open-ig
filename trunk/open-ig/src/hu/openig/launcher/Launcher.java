@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Container;
 import java.awt.Desktop;
+import java.awt.Dialog.ModalityType;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -313,6 +314,8 @@ public class Launcher extends JFrame {
 			if ("Error while checking files: %s".equals(s)) { return "A(z) állományok ellenörzése közben hiba történt: %s"; }
 			if ("Could not access directory %s".equals(s)) { return "A(z) %s könyvtár nem elérhető"; }
 			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Néhány fájl hiányzik vagy megsérült. Kijavítsam a telepítést?"; }
+			if ("Copy".equals(s)) { return "Másolás"; }
+			if ("Manual navigation".equals(s)) { return "Kézi navigálás"; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		} else
@@ -341,6 +344,8 @@ public class Launcher extends JFrame {
 			if ("Error while checking files: %s".equals(s)) { return "Problem whärend Überprüfung from Daten: %s"; }
 			if ("Could not access directory %s".equals(s)) { return "Mappe %s nicht verfügbar."; }
 			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Daten nicht verfügbar oder fählerhaft. Install reparieren?"; }
+			if ("Copy".equals(s)) { return "Kopieren"; }
+			if ("Manual navigation".equals(s)) { return "Manuelle Navigation"; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		}
@@ -927,13 +932,78 @@ public class Launcher extends JFrame {
 	 * @param url the URL
 	 */
 	void doNavigate(String url) {
-		Desktop d = Desktop.getDesktop();
-		if (d != null) {
-			try {
-				d.browse(new URI(url));
-			} catch (IOException e) {
-			} catch (URISyntaxException e) {
+		try {
+			Desktop d = Desktop.getDesktop();
+			if (d != null) {
+				try {
+					d.browse(new URI(url));
+				} catch (IOException e) {
+				} catch (URISyntaxException e) {
+				}
 			}
+		} catch (UnsupportedOperationException ex) {
+			final JDialog d1 = new JDialog(this, ModalityType.APPLICATION_MODAL);
+			d1.setTitle(label("Manual navigation"));
+			
+			JPanel d = new JPanel();
+			d1.getContentPane().add(d);
+			
+			d.setBackground(backgroundColoring);
+			final JTextField tf = new JTextField(url, 50);
+			tf.setSelectionStart(0);
+			tf.setSelectionEnd(url.length());
+			tf.setEditable(false);
+			tf.setFont(this.fontMedium);
+			tf.setForeground(Color.BLACK);
+			IGButton btnOk = new IGButton(label("OK"));
+			btnOk.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					d1.setVisible(false);
+				}
+			});
+			IGButton btnCopy = new IGButton(label("Copy"));
+			btnCopy.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					tf.selectAll();
+					tf.copy();
+				}
+			});
+			btnOk.setForeground(foreground);
+			btnOk.setFont(fontMedium);
+			btnCopy.setForeground(foreground);
+			btnCopy.setFont(fontMedium);
+			
+			
+			GroupLayout gl = new GroupLayout(d);
+			d.setLayout(gl);
+			gl.setAutoCreateContainerGaps(true);
+			gl.setAutoCreateGaps(true);
+			
+			gl.setHorizontalGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(tf)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(btnCopy)
+					.addComponent(btnOk)
+				)
+			);
+			gl.setVerticalGroup(
+				gl.createSequentialGroup()
+				.addComponent(tf)
+				.addGroup(
+					gl.createParallelGroup(Alignment.BASELINE)
+					.addComponent(btnOk)
+					.addComponent(btnCopy)
+				)
+			);
+			gl.linkSize(SwingConstants.HORIZONTAL, btnCopy, btnOk);
+			
+			d1.pack();
+			d1.setLocationRelativeTo(this);
+			d1.setVisible(true);
 		}
 	}
 	/**

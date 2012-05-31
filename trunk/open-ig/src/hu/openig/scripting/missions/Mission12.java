@@ -151,7 +151,7 @@ public class Mission12 extends Mission {
 		if ("Douglas-Reinforcements-Approved".equals(id)) {
 			if (!reinforcements) {
 				send("Douglas-Reinforcements-Denied-2").visible = true;
-				send("Douglas-Reinforcements-Denied-2").seen = true;
+				send("Douglas-Reinforcements-Denied-2").seen = false;
 				send("Douglas-Reinforcements-Approved").visible = false;
 				
 				reinforcements = true;
