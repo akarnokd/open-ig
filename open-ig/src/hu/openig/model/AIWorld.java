@@ -91,6 +91,14 @@ public class AIWorld {
 	public Player mainPlayer;
 	/** The current auto-build limit. */
 	public long autoBuildLimit;
+	/** Build economy first. */
+	public boolean autobuildEconomyFirst;
+	/** The limit of fighters. */
+	public int fighterLimit;
+	/** The limit of cruisers. */
+	public int cruiserLimit;
+	/** The limit of battleships. */
+	public int battleshipLimit;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -195,7 +203,30 @@ public class AIWorld {
 		}
 		
 		if (player == mainPlayer) {
-			autoBuildLimit = player.world.env.config().autoBuildLimit;
+			autoBuildLimit = player.world.config.autoBuildLimit;
+			autobuildEconomyFirst = player.world.config.autoBuildEconomyFirst;
+		}
+		if (level == 3 && player != mainPlayer) {
+			switch (difficulty) {
+			case EASY:
+				fighterLimit = 20;
+				cruiserLimit = 15;
+				battleshipLimit = 1;
+				break;
+			case NORMAL:
+				fighterLimit = 25;
+				cruiserLimit = 20;
+				battleshipLimit = 2;
+				break;
+			default:
+				fighterLimit = 30;
+				cruiserLimit = 25;
+				battleshipLimit = 3;
+			}
+		} else {
+			fighterLimit = 30;
+			cruiserLimit = 25;
+			battleshipLimit = 3;
 		}
 	}
 	/**

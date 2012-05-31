@@ -237,6 +237,10 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean aiGroundAttackMixed = true;
+	/** Force the AI autobuild to ignore static defenses until the economic buildings have been built. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean autoBuildEconomyFirst = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
