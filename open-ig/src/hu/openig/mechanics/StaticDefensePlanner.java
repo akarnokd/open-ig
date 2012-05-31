@@ -82,6 +82,9 @@ public class StaticDefensePlanner extends Planner {
 		if (planet.statistics.constructing) {
 			return false;
 		}
+		if (planet.planet.id.equals("Centronom")) {
+			System.out.println();
+		}
 		
 		if (world.autobuildEconomyFirst && p == world.mainPlayer && !isEconomyBuilt(planet)) {
 			return false;
@@ -149,6 +152,8 @@ public class StaticDefensePlanner extends Planner {
 					return false;
 				}
 			});
+		}
+		if (world.money >= 150000) {
 			if (world.level > 1) {
 				actions.add(new Pred0() {
 					@Override
@@ -183,19 +188,19 @@ public class StaticDefensePlanner extends Planner {
 					}
 				});
 			}
-		}
-
-		if (world.level > 1) {
-			actions.add(new Pred0() {
-				@Override
-				public Boolean invoke() {
-					// check for military spaceport
-					if (checkTanks(planet)) {
-						return true;
+	
+			if (world.level > 1) {
+				actions.add(new Pred0() {
+					@Override
+					public Boolean invoke() {
+						// check for military spaceport
+						if (checkTanks(planet)) {
+							return true;
+						}
+						return false;
 					}
-					return false;
-				}
-			});
+				});
+			}
 		}
 		
 		Collections.shuffle(actions);
@@ -203,7 +208,7 @@ public class StaticDefensePlanner extends Planner {
 		boolean result = false;
 		for (Pred0 p : actions) {
 			if (p.invoke()) {
-				if (world.mainPlayer != this.p || world.money < 500000) {
+				if (world.mainPlayer != this.p || world.money < world.autoBuildLimit) {
 					return true;
 				} else {
 					result = true;
