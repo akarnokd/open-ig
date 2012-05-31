@@ -89,7 +89,7 @@ public class Launcher extends JFrame {
 	/**
 	 * The update XML to download.
 	 */
-	public static final String UPDATE_XML = "http://open-ig.googlecode.com/svn/trunk/open-ig/update.xml";
+	public static final String UPDATE_XML = "https://open-ig.googlecode.com/svn/trunk/open-ig/update.xml";
 	/** The Game module ID. */
 	static final String GAME = "Game";
 	/** The Launcher module ID. */

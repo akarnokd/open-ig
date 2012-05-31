@@ -3,7 +3,7 @@
 	<!-- Update definitions for the Open Imperium Galactica components -->
 	<module id='Launcher' version='0.31'>
 		<!-- General module description -->
-		<general url='http://code.google.com/p/open-ig/wiki/Launcher'>
+		<general url='https://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica indító programja, amely automatikusan letölti
 				a különféle modulok fájljait telepítés, frissítés vagy javítás céljából.
@@ -14,21 +14,21 @@
 			</desc>
 		</general>
 		<!-- Release notes -->
-		<notes url='http://code.google.com/p/open-ig/wiki/Launcher_Notes'>
+		<notes url='https://code.google.com/p/open-ig/wiki/Launcher_Notes'>
 			<desc lang='hu'>Platform specifikus javítások.</desc>
 			<desc lang='en'>Platform specific fixes.</desc>
 			<desc lang='de'>Plattform-spezifische Fehlerbehebungen.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
-		<!--  http://open-ig.googlecode.com/files/ -->
-		<file url='http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='567ad343d7867235a0070ab7df236684eb54671d'>
+		<!--  https://open-ig.googlecode.com/files/ -->
+		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='567ad343d7867235a0070ab7df236684eb54671d'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
 	<module id='Game' version='0.94.428'>
-		<general url='http://code.google.com/p/open-ig/'>
+		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
 			</desc>
@@ -38,39 +38,39 @@
 		</general>
 		<execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
 		<!-- Release notes -->
-		<notes url='http://code.google.com/p/open-ig/wiki/Game_Notes'>
+		<notes url='https://code.google.com/p/open-ig/wiki/Game_Notes'>
 			<desc lang='hu'>Hibajavítások.</desc>
 			<desc lang='en'>Bugfixes.</desc>
 			<desc lang='de'>Fehlerbehebungen</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-0.94.428.jar' sha1='69fa6545fee6603b95af56613d1979a90a466095'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.94.428.jar' sha1='69fa6545fee6603b95af56613d1979a90a466095'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20120531a2.zip' sha1='0228d7d868930795cbcbbcecf7b8c4162394fc98'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120531a2.zip' sha1='0228d7d868930795cbcbbcecf7b8c4162394fc98'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Május 31 / A</desc>
 			<desc lang='en'>The upgraded resource file [Data]. 31th May, 2012 / A</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-images-20120531a.zip' sha1='21857e61b9abfbcc85b89e9d2b98a133da32e128'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120531a.zip' sha1='21857e61b9abfbcc85b89e9d2b98a133da32e128'/>
 
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' sha1='7368ca1890ae9ee3a0609a83b03654afa09492eb'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-03-0.8.zip' sha1='e7f033232d93673f2459411258e2238617efca2b'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-04-0.8.zip' sha1='339cb2ee77d5358502f2cb6a35e3386eddf89403'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-05-0.8.zip' sha1='001802695355cf583d1ffc8efdad1fb457500c6a'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-06-0.8.zip' sha1='6f70f5be4c87ea7a6d2156671ae60d9db3473c2b'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-07-0.8.zip' sha1='ec20d9ad5384a875227da256b5144297ba9a5345'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-08-0.8.zip' sha1='8e677013194ba8820fbc56f7d758e7bd87ffcd4f'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip' sha1='8dec04b14317439796d262a1eb4de66857f0cb6d'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip' sha1='e975091284b44e2158ca27ad9347145c7b048385'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-01-0.8.zip' sha1='11f432bd74803da8ab159bc46350d7bb1025a856'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-02-0.8.zip' sha1='7368ca1890ae9ee3a0609a83b03654afa09492eb'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-03-0.8.zip' sha1='e7f033232d93673f2459411258e2238617efca2b'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-04-0.8.zip' sha1='339cb2ee77d5358502f2cb6a35e3386eddf89403'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-05-0.8.zip' sha1='001802695355cf583d1ffc8efdad1fb457500c6a'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-06-0.8.zip' sha1='6f70f5be4c87ea7a6d2156671ae60d9db3473c2b'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-07-0.8.zip' sha1='ec20d9ad5384a875227da256b5144297ba9a5345'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-08-0.8.zip' sha1='8e677013194ba8820fbc56f7d758e7bd87ffcd4f'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-09-0.8.zip' sha1='8dec04b14317439796d262a1eb4de66857f0cb6d'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-10-0.8.zip' sha1='e975091284b44e2158ca27ad9347145c7b048385'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe'/>
 		
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-audio-en-20120429A.zip' sha1='4e7b7b88ba6d579e649f4f8c2399d6ad9124935e'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77'/>
-		<file url='http://open-ig.googlecode.com/files/open-ig-audio-generic-20120505A.zip' sha1='5156239974601fa350181d118a15190476923468'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-audio-en-20120429A.zip' sha1='4e7b7b88ba6d579e649f4f8c2399d6ad9124935e'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-audio-generic-20120505A.zip' sha1='5156239974601fa350181d118a15190476923468'/>
 		
 		<remove file='open-ig-video-en-0.8.zip'/>
 		<remove file='open-ig-audio-en-0.8.zip'/>
@@ -85,7 +85,7 @@
 		<remove file='open-ig-audio-generic-20120420A.zip'/>
 	</module>
 	<module id='MapEditor' version='0.60'>
-		<general url='http://code.google.com/p/open-ig/wiki/MapEditor'>
+		<general url='https://code.google.com/p/open-ig/wiki/MapEditor'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.
 			</desc>
@@ -95,15 +95,15 @@
 		</general>
 		<execute file='open-ig-mapeditor-%s.jar' memory='512' class='hu.openig.editors.MapEditor'/>
 		<!-- Release notes -->
-		<notes url='http://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
+		<notes url='https://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
 			<desc lang='hu'>Kép erőforrások átszervezése.</desc>
 			<desc lang='en'>Image resource refactoring.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-mapeditor-0.51.jar' sha1='6b7754b1089eb42cf1dcc8b40bf68cb741c5d2b4'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-mapeditor-0.51.jar' sha1='6b7754b1089eb42cf1dcc8b40bf68cb741c5d2b4'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110421a.zip' sha1='a23ee616e19881bae51f0210ae64812a11c45bda'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20110421a.zip' sha1='a23ee616e19881bae51f0210ae64812a11c45bda'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 április 21 / A</desc>
 			<desc lang='en'>The upgraded resource file. 21th April, 2011 / A</desc>
 		</file>
@@ -137,23 +137,23 @@
 		</remove>
 	</module>
 	<module id='VideoPlayer' version='0.92'>
-		<general url='http://code.google.com/p/open-ig/wiki/VideoPlayer'>
+		<general url='https://code.google.com/p/open-ig/wiki/VideoPlayer'>
 			<desc lang='hu'>A játék videóit játsza le és exportálja.</desc>
 			<desc lang='en'>Plays and exports the videos of the game.</desc>
 		</general>
 		<execute file='videoplayer-%s.jar' memory='512' class='hu.openig.tools.VideoPlayer'/>
 		<!-- Release notes -->
-		<notes url='http://code.google.com/p/open-ig/wiki/VideoPlayer_Notes'>
+		<notes url='https://code.google.com/p/open-ig/wiki/VideoPlayer_Notes'>
 			<desc lang='hu'>Export javítás.</desc>
 			<desc lang='en'>Export.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/videoplayer-0.92.jar' sha1='e2d4aaa2065eccc8a05fcfbdebe2833738d5513c'>
+		<file url='https://open-ig.googlecode.com/files/videoplayer-0.92.jar' sha1='e2d4aaa2065eccc8a05fcfbdebe2833738d5513c'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
 	</module>
 	<module id='Testbed' version='0.40'>
-		<general url='http://code.google.com/p/open-ig/wiki/Testbed'>
+		<general url='https://code.google.com/p/open-ig/wiki/Testbed'>
 			<desc lang='hu'>
 				Teszt alkalmazás, amivel megtekinthető és kipróbálható a képernyők nagyrésze anélkül, hogy a szokványos
 				menüben navigálgatással hoznánk elő őket az alapjátékban.
@@ -165,15 +165,15 @@
 		</general>
 		<execute file='open-ig-testbed-%s.jar' memory='512'/>
 		<!-- Release notes -->
-		<notes url='http://code.google.com/p/open-ig/wiki/Testbed_Notes'>
+		<notes url='https://code.google.com/p/open-ig/wiki/Testbed_Notes'>
 			<desc lang='hu'>Készítők és pszichológus teszt.</desc>
 			<desc lang='en'>Credits and pshychologist test.</desc>
 		</notes>
-		<file url='http://open-ig.googlecode.com/files/open-ig-testbed-0.40.jar' sha1='1d27cfcdd36dc6930d69bf1727c4d7576202b0e3'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-testbed-0.40.jar' sha1='1d27cfcdd36dc6930d69bf1727c4d7576202b0e3'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='http://open-ig.googlecode.com/files/open-ig-upgrade-20110421a.zip' sha1='a23ee616e19881bae51f0210ae64812a11c45bda'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20110421a.zip' sha1='a23ee616e19881bae51f0210ae64812a11c45bda'>
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója: 2011 április 21 / A</desc>
 			<desc lang='en'>The upgraded resource file. 21th April, 2011 / A</desc>
 		</file>
