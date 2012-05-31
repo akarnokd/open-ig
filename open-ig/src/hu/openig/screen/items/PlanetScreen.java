@@ -310,6 +310,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	boolean deploySpray;
 	/** Indicate the undeploy spray mode. */
 	boolean undeploySpray;
+	/** Display the commands given to units. */
+	boolean showCommand;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -359,6 +361,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				}
 			} else {
 				doMineLayerDeploy();
+				rep = true;
+			}
+			break;
+		case KeyEvent.VK_C:
+			if (e.isControlDown()) {
+				showCommand = !showCommand;
 				rep = true;
 			}
 			break;
@@ -1316,30 +1324,32 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			// unit selection boxes}
 			BufferedImage selBox = commons.colony().selectionBoxLight;
 			for (GroundwarUnit u : units) {
-				g2.setColor(Color.WHITE);
-				for (int i = 0; i < u.path.size() - 1; i++) {
-					Location l0 = u.path.get(i);
-					Location l1 = u.path.get(i + 1);
-					
-					int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
-					int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
-					int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
-					int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
-					
-					g2.drawLine(xa, ya, xb, yb);
-				}
-				if (u.attackBuilding != null) {
-					Point gp = centerOf(u.attackBuilding);
-					Point up = centerOf(u);
-					g2.setColor(Color.RED);
-					g2.drawLine(gp.x, gp.y, up.x, up.y);
-					
-				} else
-				if (u.attackUnit != null) {
-					Point gp = centerOf(u.attackUnit);
-					Point up = centerOf(u);
-					g2.setColor(Color.RED);
-					g2.drawLine(gp.x, gp.y, up.x, up.y);
+				if (showCommand) {
+					g2.setColor(Color.WHITE);
+					for (int i = 0; i < u.path.size() - 1; i++) {
+						Location l0 = u.path.get(i);
+						Location l1 = u.path.get(i + 1);
+						
+						int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
+						int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
+						int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
+						int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
+						
+						g2.drawLine(xa, ya, xb, yb);
+					}
+					if (u.attackBuilding != null) {
+						Point gp = centerOf(u.attackBuilding);
+						Point up = centerOf(u);
+						g2.setColor(Color.RED);
+						g2.drawLine(gp.x, gp.y, up.x, up.y);
+						
+					} else
+					if (u.attackUnit != null) {
+						Point gp = centerOf(u.attackUnit);
+						Point up = centerOf(u);
+						g2.setColor(Color.RED);
+						g2.drawLine(gp.x, gp.y, up.x, up.y);
+					}
 				}
 				if (u.selected) {
 					Point p = unitPosition(u);
@@ -5216,25 +5226,25 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (atBuildings) {
 			placeAroundInCircle(gus, locations, car.icx, car.icy, car.rmax);
 		} else {
-			// locate geometric center
-			double cx = 0;
-			double cy = 0;
-			for (Building b : surface().buildings) {
-				cx += b.location.x + b.tileset.normal.width / 2.0;
-				cy += b.location.y - b.tileset.normal.height / 2.0;
-			}
-			cx /= surface().buildings.size();
-			cy /= surface().buildings.size();
+			Location furthest = world().random(U.newArrayList(locations));
+//			// locate geometric center
+//			double cx = 0;
+//			double cy = 0;
+//			for (Building b : surface().buildings) {
+//				cx += b.location.x + b.tileset.normal.width / 2.0;
+//				cy += b.location.y - b.tileset.normal.height / 2.0;
+//			}
+//			cx /= surface().buildings.size();
+//			cy /= surface().buildings.size();
 			
-			Location furthest = null;
-			double dist = 0;
-			for (Location loc : locations) {
-				double dist2 = (loc.x - cx) * (loc.x - cx) + (loc.y - cy) * (loc.y * cy);
-				if (dist2 > dist) {
-					furthest = loc;
-					dist = dist2;
-				}
-			}
+//			double dist = 0;
+//			for (Location loc : locations) {
+//				double dist2 = (loc.x - cx) * (loc.x - cx) + (loc.y - cy) * (loc.y * cy);
+//				if (dist2 > dist) {
+//					furthest = loc;
+//					dist = dist2;
+//				}
+//			}
 			placeAroundInCircle(gus, locations, furthest.x, furthest.y, car.rmax);
 		}
 	}
