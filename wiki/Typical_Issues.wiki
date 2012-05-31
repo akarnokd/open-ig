@@ -4,6 +4,14 @@
 
 = Linux =
 
+== Missing resources ==
+
+Even if you installed the game via the Launcher, sometimes the game doesn't recognize its files. The reasons for that are unknown at the moment, but you might check the following things:
+
+  * The game has read access to all of its files
+  * The game can create files and directories under its directory
+  * You run the game from its directory (i.e., the working directory)
+
 == Audio and/or game hangs ==
 
 Several bugs exist in OpenJDK (6, 7) audio subsystem: !PulseAudio.
@@ -14,3 +22,17 @@ Possible resolutions:
   * Switch to JDK 7 if not already done
   * Uninstall OpenJDK and Oracle JDK completely. Then reinstall just one
   * Use Oracle JDK
+
+= Mac =
+
+== Audio and/or game hangs ==
+
+Either the Java or the operating system has some issues with its audio subsystem and even the standard tutorial and example programs coming with the Java distribution might hang as well.
+
+Possible resolutions:
+
+  * Use Oracle Java 7 (only 64 bit is available)
+
+= Windows =
+
+The Windows Java is suprisingly well written. No version specific issues have been detected so far.
