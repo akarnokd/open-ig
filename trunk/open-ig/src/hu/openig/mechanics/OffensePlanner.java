@@ -63,6 +63,12 @@ public class OffensePlanner extends Planner {
 			return v2 - v1;
 		}
 	};
+	/** The limit of fighters. */
+	int fighterLimit;
+	/** The limit of cruisers. */
+	int cruiserLimit;
+	/** The limit of battleships. */
+	int battleshipLimit;
 	/**
 	 * Initializes the planner.
 	 * @param world the current world
@@ -79,6 +85,29 @@ public class OffensePlanner extends Planner {
 //		}
 		if (world.level < 2) {
 			return;
+		}
+		
+		if (world.level == 3) {
+			switch (world.difficulty) {
+			case EASY:
+				fighterLimit = 20;
+				cruiserLimit = 15;
+				battleshipLimit = 1;
+				break;
+			case NORMAL:
+				fighterLimit = 25;
+				cruiserLimit = 20;
+				battleshipLimit = 2;
+				break;
+			default:
+				fighterLimit = 30;
+				cruiserLimit = 25;
+				battleshipLimit = 3;
+			}
+		} else {
+			fighterLimit = 30;
+			cruiserLimit = 25;
+			battleshipLimit = 3;
 		}
 		
 		if (upgradeFleets()) {
@@ -310,6 +339,9 @@ public class OffensePlanner extends Planner {
 		
 		final Fleet fleet = Collections.min(upgradeTasks, firepowerAsc).fleet;
 		
+		final int cl = cruiserLimit;
+		final int bl = battleshipLimit;
+		
 		add(new Action0() {
 			@Override
 			public void invoke() {
@@ -318,10 +350,10 @@ public class OffensePlanner extends Planner {
 				}
 				fleet.upgradeAll();
 				if (!cruisers.isEmpty()) {
-					fleet.replaceWithShip(cruisers.get(0), 25);
+					fleet.replaceWithShip(cruisers.get(0), cl);
 				}
 				if (!battleships.isEmpty()) {
-					fleet.replaceWithShip(battleships.get(0), 3);
+					fleet.replaceWithShip(battleships.get(0), bl);
 				}
 				fleet.task = FleetTask.IDLE;
 				log("UpgradeFleet, Fleet = %s (%d)", fleet.name, fleet.id);
@@ -349,17 +381,17 @@ public class OffensePlanner extends Planner {
 		Map<ResearchType, Integer> demands = U.newHashMap();
 
 		for (ResearchType rt : fighters) {
-			demands.put(rt, 30);
+			demands.put(rt, fighterLimit);
 		}
 		if (!cruisers.isEmpty()) {
 			ResearchType rt = cruisers.get(0);
-			demands.put(rt, 25);
+			demands.put(rt, cruiserLimit);
 //			int available = fleet.inventoryCount(rt);
 //			equipmentDemands(rt, demands, 25 - available);
 		}
 		if (!battleships.isEmpty()) {
 			ResearchType rt = battleships.get(0);
-			demands.put(rt, 3);
+			demands.put(rt, battleshipLimit);
 //			int available = fleet.inventoryCount(rt);
 //			equipmentDemands(rt, demands, 3 - available);
 		}
