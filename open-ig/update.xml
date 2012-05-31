@@ -15,9 +15,9 @@
 		</general>
 		<!-- Release notes -->
 		<notes url='http://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-			<desc lang='hu'>Internetfüggés javítva.</desc>
-			<desc lang='en'>Dependence on working internet fixed.</desc>
-			<desc lang='de'>Funkzioniert ohne Internet.</desc>
+			<desc lang='hu'>Platform specifikus javítások.</desc>
+			<desc lang='en'>Platform specific fixes.</desc>
+			<desc lang='de'>Plattform-spezifische Fehlerbehebungen.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
