@@ -1503,7 +1503,9 @@ public class EquipmentScreen extends ScreenBase {
 			notYourPlanet.visible(false);
 			noPlanetNearby.visible(own && secondary == null && ps == null);
 			noSpaceStation.visible(false);
-			noFlagship.visible(own && fs.battleshipCount == 0 
+			noFlagship.visible(!noPlanetNearby.visible()
+					&& !noSpaceport.visible()
+					&& own && fs.battleshipCount == 0 
 					&& (research().category == ResearchSubCategory.WEAPONS_TANKS
 					|| research().category == ResearchSubCategory.WEAPONS_VEHICLES));
 
