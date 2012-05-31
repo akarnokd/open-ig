@@ -31,11 +31,13 @@ import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.World;
+import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -459,15 +461,16 @@ public abstract class Planner {
 	 * if not enough slots available, the cheapest and/or finished production will be replaced.
 	 * @param rt the research type
 	 * @param count the minimum production amount when starting a new production
+	 * @return true if new production order was placed
 	 */
-	public void placeProductionOrder(final ResearchType rt, final int count) {
+	public boolean placeProductionOrder(final ResearchType rt, final int count) {
 		Production prod = world.productions.get(rt);
 		if (prod != null && prod.count > 0) {
-			return;
+			return false;
 		} else
 		if (prod != null) {
 			issueProductionOrder(rt, count);
-			return;
+			return true;
 		}
 		int prodCnt = 0;
 		ResearchType cheapestRunning = null;
@@ -488,7 +491,7 @@ public abstract class Planner {
 		}
 		if (prodCnt < 5) {
 			issueProductionOrder(rt, count);
-			return;
+			return true;
 		}
 		if (cheapestFinished != null) {
 			final ResearchType cp = cheapestFinished;
@@ -498,6 +501,7 @@ public abstract class Planner {
 					controls.actionRemoveProduction(cp);
 				}
 			});
+			return true;
 		} else
 		if (cheapestRunning != null && cheapestRunning.productionCost < rt.productionCost) {
 			final ResearchType cp = cheapestRunning;
@@ -507,8 +511,9 @@ public abstract class Planner {
 					controls.actionRemoveProduction(cp);
 				}
 			});
+			return true;
 		}
-		return;
+		return false;
 	}
 	/**
 	 * Issue a production action for the given technology.
@@ -915,5 +920,19 @@ public abstract class Planner {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Returns the list of available technologies matching the given set of categories.
+	 * @param categories the category set
+	 * @return the list of available research
+	 */
+	public List<ResearchType> availableResearchOf(EnumSet<ResearchSubCategory> categories) {
+		List<ResearchType> result = U.newArrayList();
+		for (ResearchType rt : world.availableResearch) {
+			if (categories.contains(rt.category)) {
+				result.add(rt);
+			}
+		}
+		return result;
 	}
 }

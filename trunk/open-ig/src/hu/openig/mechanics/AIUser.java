@@ -110,6 +110,7 @@ public class AIUser implements AIManager {
 				return;
 			}
 		}
+		
 		acts = new StaticDefensePlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);

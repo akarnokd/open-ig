@@ -162,6 +162,47 @@ public class DefaultAIControls implements AIControls {
 		}
 		return false;
 	}
+	/**
+	 * Deploy a satellite of the given player to the target planet.
+	 * <p>Removes one item from inventory.</p>
+	 * @param player the player
+	 * @param planet the planet
+	 * @param fighter the satellite type
+	 * @param count the number of fighters.
+	 * @return true if successful
+	 */
+	public static boolean actionDeployFighters(Player player, Planet planet, ResearchType fighter, int count) {
+		// decomission any previous satellites:
+		if (player.inventoryCount(fighter) >= count) {
+			
+			InventoryItem ii = planet.getInventoryItem(fighter, player);
+			if (ii == null) {
+				ii = new InventoryItem(planet);
+				ii.type = fighter;
+				ii.owner = player;
+				ii.count = count;
+				ii.hp = player.world.getHitpoints(fighter);
+				ii.createSlots();
+				planet.inventory.add(ii);
+				int ttl = player.world.getSatelliteTTL(fighter);
+				if (ttl > 0) {
+					planet.timeToLive.put(ii, ttl);
+				}
+				player.changeInventoryCount(fighter, -count);
+				
+				player.world.scripting.onDeploySatellite(planet, player, fighter);
+			} else {
+				if (ii.count + count <= 30) {
+					ii.count += count;
+				} else {
+					return false;
+				}
+			}
+			
+			return true;
+		}
+		return false;
+	}
 	@Override
 	public void actionSellSatellite(Planet planet, ResearchType satellite,
 			int count) {

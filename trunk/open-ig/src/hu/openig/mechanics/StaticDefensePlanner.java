@@ -18,14 +18,18 @@ import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BuildingType;
+import hu.openig.model.EquipmentSlot;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.VehiclePlan;
+import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
@@ -79,13 +83,17 @@ public class StaticDefensePlanner extends Planner {
 			return false;
 		}
 		
+		if (world.autobuildEconomyFirst && p == world.mainPlayer && !isEconomyBuilt(planet)) {
+			return false;
+		}
+		
 		List<Pred0> actions = new ArrayList<Pred0>();
 		
 		int defenseLimit = 3;
 		if (world.difficulty == Difficulty.NORMAL) {
 			defenseLimit = 4;
-		} else
-		if (world.difficulty == Difficulty.HARD) {
+		}
+		if (world.difficulty == Difficulty.HARD || p == world.mainPlayer) {
 			defenseLimit = 5;
 		}
 		final int fdefenseLimit = defenseLimit;
@@ -95,9 +103,6 @@ public class StaticDefensePlanner extends Planner {
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
-					if (planet.planet.id.equals("Naxos")) {
-						System.out.println();
-					}
 					if (checkBuildingKind(planet, "Gun", fdefenseLimit)) {
 						return true;
 					}
@@ -155,6 +160,28 @@ public class StaticDefensePlanner extends Planner {
 						return false;
 					}
 				});
+				actions.add(new Pred0() {
+					@Override
+					public Boolean invoke() {
+						// find the space stations
+						if (checkRockets(planet)) {
+							return true;
+						}
+						return false;
+					}
+				});
+			}
+			if (world.level > 2) {
+				actions.add(new Pred0() {
+					@Override
+					public Boolean invoke() {
+						// find the space stations
+						if (checkFighters(planet)) {
+							return true;
+						}
+						return false;
+					}
+				});
 			}
 		}
 
@@ -185,6 +212,42 @@ public class StaticDefensePlanner extends Planner {
 		}
 		
 		return result;
+	}
+	/**
+	 * Check if all economic buildings have been built.
+	 * @param planet the target planet
+	 * @return true if all economic buildings built
+	 */
+	boolean isEconomyBuilt(AIPlanet planet) {
+		boolean hasMultiply = false;
+		boolean hasCredit = false;
+		boolean hasTrade = world.isAvailable("TradeCenter") == null;
+		boolean hasRadar = false;
+		boolean hasSocial = false;
+		boolean hasPolice = planet.population < 5000;
+		boolean hasHospital = planet.population < 5000;
+		
+		for (AIBuilding b : planet.buildings) {
+			if (b.isComplete()) {
+				hasMultiply |= b.hasResource("multiply");
+				hasCredit |= b.hasResource("credit");
+				hasRadar |= b.hasResource("radar");
+				hasSocial |= b.hasResource("morale");
+				hasPolice |= b.hasResource("police");
+				hasHospital |= b.hasResource("hospital");
+				hasTrade |= b.type.id.equals("TradeCenter");
+			}
+		}
+		return hasMultiply && hasCredit
+				&& planet.statistics.hasTradersSpaceport
+				&& planet.statistics.weaponsActive > 0
+				&& planet.statistics.equipmentActive > 0
+				&& planet.statistics.spaceshipActive > 0
+				&& hasRadar
+				&& hasSocial
+				&& hasPolice
+				&& hasHospital
+				&& hasTrade;
 	}
 	/**
 	 * Check the tanks.
@@ -433,4 +496,105 @@ public class StaticDefensePlanner extends Planner {
 	public List<Action0> actions() {
 		return applyActions;
 	}
+	/**
+	 * Check if space station rockets are equipped.
+	 * @param planet the target planet
+	 * @return true if action performed
+	 */
+	boolean checkRockets(AIPlanet planet) {
+		Map<ResearchType, Integer> demand = U.newHashMap();
+		boolean result = false;
+		// collect rocket demands
+		for (final AIInventoryItem ii : planet.inventory) {
+			if (ii.owner == p && ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				for (InventorySlot is : ii.slots) {
+					// find best available technology
+					ResearchType rt1 = null;
+					for (ResearchType rt0 : is.slot.items) {
+						if (world.isAvailable(rt0)) {
+							rt1 = rt0;
+						}
+					}
+					if (rt1 != null && rt1.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
+						int d = is.slot.max;
+						if (is.type == rt1) {
+							d = is.slot.max - is.count;
+						}
+						
+						// check if inventory is available
+						if (d <= world.inventoryCount(rt1)) {
+							world.addInventoryCount(rt1, -d);
+							final int fd = d;
+							final ResearchType frt1 = rt1;
+							final EquipmentSlot fes = is.slot;
+							// deploy into slot
+							add(new Action0() {
+								@Override
+								public void invoke() {
+									if (p.inventoryCount(frt1) >= fd) {
+										p.changeInventoryCount(frt1, -fd);
+										
+										for (InventorySlot is : ii.parent.slots) {
+											if (is.slot == fes) {
+												is.count += fd;
+												break;
+											}
+										}
+									}
+								}
+							});
+							result = true;
+						} else {
+							Integer id = demand.get(rt1);
+							demand.put(rt1, id != null ? id + d : d);
+						}
+					}
+				}
+			}
+		}
+		// place production order for the difference
+		for (Map.Entry<ResearchType, Integer> de : demand.entrySet()) {
+			int di = de.getValue();
+			int ic = world.inventoryCount(de.getKey());
+			if (di > ic) {
+				if (placeProductionOrder(de.getKey(), di - ic)) {
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
+	/**
+	 * Check if enough fighters are placed into orbit.
+	 * @param planet the planet
+	 * @return true if action performed
+	 */
+	boolean checkFighters(final AIPlanet planet) {
+		final List<ResearchType> fighters = U.sort2(availableResearchOf(EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS)), ResearchType.EXPENSIVE_FIRST);
+		boolean result = false;
+		for (final ResearchType rt : fighters) {
+			int ic = planet.inventoryCount(rt, planet.owner);
+			if (ic < world.fighterLimit) {
+				int gic = world.inventoryCount(rt);
+				final int needed = world.fighterLimit - ic;
+				if (gic >= needed) {
+					world.addInventoryCount(rt, -needed);
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							DefaultAIControls.actionDeployFighters(planet.owner, planet.planet, rt, needed);
+						}
+					});
+					result = true;
+				} else {
+					if (placeProductionOrder(rt, Math.max(10, needed - gic))) {
+						result = true;
+					}
+				}
+			}
+		}
+		
+		return result;
+	}
+	
 }

@@ -102,7 +102,7 @@ public class World {
 	public Labels labels;
 	/** The resource locator. */
 	public ResourceLocator rl;
-	/** Retrieve the auto build limit. */
+	/** The game configuration. */
 	public Configuration config;
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();

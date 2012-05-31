@@ -63,12 +63,6 @@ public class OffensePlanner extends Planner {
 			return v2 - v1;
 		}
 	};
-	/** The limit of fighters. */
-	int fighterLimit;
-	/** The limit of cruisers. */
-	int cruiserLimit;
-	/** The limit of battleships. */
-	int battleshipLimit;
 	/**
 	 * Initializes the planner.
 	 * @param world the current world
@@ -85,29 +79,6 @@ public class OffensePlanner extends Planner {
 //		}
 		if (world.level < 2) {
 			return;
-		}
-		
-		if (world.level == 3) {
-			switch (world.difficulty) {
-			case EASY:
-				fighterLimit = 20;
-				cruiserLimit = 15;
-				battleshipLimit = 1;
-				break;
-			case NORMAL:
-				fighterLimit = 25;
-				cruiserLimit = 20;
-				battleshipLimit = 2;
-				break;
-			default:
-				fighterLimit = 30;
-				cruiserLimit = 25;
-				battleshipLimit = 3;
-			}
-		} else {
-			fighterLimit = 30;
-			cruiserLimit = 25;
-			battleshipLimit = 3;
 		}
 		
 		if (upgradeFleets()) {
@@ -339,8 +310,8 @@ public class OffensePlanner extends Planner {
 		
 		final Fleet fleet = Collections.min(upgradeTasks, firepowerAsc).fleet;
 		
-		final int cl = cruiserLimit;
-		final int bl = battleshipLimit;
+		final int cl = world.cruiserLimit;
+		final int bl = world.battleshipLimit;
 		
 		add(new Action0() {
 			@Override
@@ -381,17 +352,17 @@ public class OffensePlanner extends Planner {
 		Map<ResearchType, Integer> demands = U.newHashMap();
 
 		for (ResearchType rt : fighters) {
-			demands.put(rt, fighterLimit);
+			demands.put(rt, world.fighterLimit);
 		}
 		if (!cruisers.isEmpty()) {
 			ResearchType rt = cruisers.get(0);
-			demands.put(rt, cruiserLimit);
+			demands.put(rt, world.cruiserLimit);
 //			int available = fleet.inventoryCount(rt);
 //			equipmentDemands(rt, demands, 25 - available);
 		}
 		if (!battleships.isEmpty()) {
 			ResearchType rt = battleships.get(0);
-			demands.put(rt, battleshipLimit);
+			demands.put(rt, world.battleshipLimit);
 //			int available = fleet.inventoryCount(rt);
 //			equipmentDemands(rt, demands, 3 - available);
 		}
@@ -550,20 +521,6 @@ public class OffensePlanner extends Planner {
 	 */
 	int nvl(Integer value) {
 		return value != null ? value : 0;
-	}
-	/**
-	 * Returns the list of available technologies matching the given set of categories.
-	 * @param categories the category set
-	 * @return the list of available research
-	 */
-	List<ResearchType> availableResearchOf(EnumSet<ResearchSubCategory> categories) {
-		List<ResearchType> result = U.newArrayList();
-		for (ResearchType rt : world.availableResearch) {
-			if (categories.contains(rt.category)) {
-				result.add(rt);
-			}
-		}
-		return result;
 	}
 	/**
 	 * Sell old technologies from inventory.
