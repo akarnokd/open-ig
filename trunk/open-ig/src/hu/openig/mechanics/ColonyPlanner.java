@@ -88,7 +88,7 @@ public class ColonyPlanner extends Planner {
 		Collections.sort(planets, WORST_PLANET);
 		for (AIPlanet planet : planets) {
 			if (managePlanet(planet)) {
-				if (world.mainPlayer != this.p || world.money < 500000) {
+				if (world.mainPlayer != this.p || world.money < world.autoBuildLimit) {
 					return;
 				}
 			}

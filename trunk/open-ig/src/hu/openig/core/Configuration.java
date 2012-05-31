@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.94.428";
+	public static final String VERSION = "0.94.429";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -214,7 +214,7 @@ public class Configuration {
 	public int timestep = 10;
 	/** The user interface scaling factor. */
 	@LoadSave
-	public int uiScale = 150;
+	public int uiScale = 100;
 	/** Should the movie be scaled to full screen? */
 	@LoadSave
 	public boolean movieScale;
@@ -228,7 +228,15 @@ public class Configuration {
 	/** Scale the secondary, fixed size screens. */
 	@LoadSave
 	@LoadSaveGame
-	public boolean scaleAllScreens = true;
+	public boolean scaleAllScreens = false;
+	/** AI should attack every building, not just the defensive ones. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean aiGroundAttackEverything = true;
+	/** AI should attack a mixed set of targets. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean aiGroundAttackMixed = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

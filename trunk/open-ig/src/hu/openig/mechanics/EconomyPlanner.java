@@ -50,7 +50,7 @@ public class EconomyPlanner extends Planner {
 		
 		for (AIPlanet p : planets) {
 			if (managePlanet(p)) {
-				if (world.mainPlayer != this.p || world.money < 500000) {
+				if (world.mainPlayer != this.p || world.money < world.autoBuildLimit) {
 					return;
 				}
 			}
@@ -216,6 +216,7 @@ public class EconomyPlanner extends Planner {
 				}
 				// construct the best radar
 				final BuildingType fbestRadar = bestRadar;
+				world.money -= fbestRadar.cost;
 				add(new Action0() {
 					@Override
 					public void invoke() {

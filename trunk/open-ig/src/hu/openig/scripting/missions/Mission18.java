@@ -163,8 +163,10 @@ public class Mission18 extends Mission {
 			if (planet.id.equals("Garthog 5")) {
 				setObjectiveState("Mission-18-Task-5", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
 			} else {
-				setObjectiveState("Mission-18", ObjectiveState.FAILURE);
-				addTimeout("Mission-18-Failed", 13000);
+				if (player.ownPlanets().isEmpty() && player.ownFleets().isEmpty()) {
+					setObjectiveState("Mission-18", ObjectiveState.FAILURE);
+					addTimeout("Mission-18-Failed", 13000);
+				}
 			}
 		}
 	}
@@ -181,7 +183,7 @@ public class Mission18 extends Mission {
 				tagFleet(f, "Mission-18-Colonizer");
 				addScripted(f);
 			} else {
-				if (player.ownPlanets().size() < 4) {
+				if (player.ownPlanets().isEmpty() && player.ownFleets().isEmpty()) {
 					setObjectiveState("Mission-18", ObjectiveState.FAILURE);
 					addTimeout("Mission-18-Failed", 13000);
 				}

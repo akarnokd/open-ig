@@ -106,14 +106,44 @@ public class AIGroundwar {
 			}
 		}
 	}
-	
+	/**
+	 * List all units and structures who are currently attacking this unit.
+	 * @param u the unit
+	 * @return the list of attackers
+	 */
+	private List<HasLocation> attackersOf(GroundwarUnit u) {
+		List<HasLocation> result = U.newArrayList();
+		for (GroundwarUnit gu : war.units()) {
+			if (gu.attackUnit == u && (u.inRange(gu) || gu.inRange(u))) {
+				result.add(gu);
+			}
+		}
+		return result;
+	}
 	/**
 	 * Handle regular attack units.
 	 */
 	private void attackRegular() {
 		// regular units, attack nearest value
 		for (final GroundwarUnit u : tanks) {
-			final HasLocation o = nearest(u, targets);
+			HasLocation n = nearest(u, attackersOf(u));
+			if (n == null) {
+				if (p.world.env.config().aiGroundAttackMixed && !u.hasValidTarget()) {
+					orderByDistance(u, targets);
+					if (targets.size() == 1) {
+						n = targets.get(0);
+					} else
+					if (targets.size() == 2) {
+						n = p.world.random(targets.subList(0, 2));
+					} else
+					if (targets.size() > 2) {
+						n = p.world.random(targets.subList(0, 3));
+					}
+				} else {
+					n = nearest(u, targets);
+				}
+			}
+			final HasLocation o = n;
 			if (!u.hasValidTarget() || targetOf(u) != o) {
 				if (o instanceof Building) {
 					actions.add(new Action0() {
@@ -168,7 +198,8 @@ public class AIGroundwar {
 	private void categorizeObjects() {
 		if (war.planet().owner != p) {
 			for (Building b : war.planet().surface.buildings) {
-				if (b.enabled && b.type.kind.equals("Defensive")) {
+				if (p.world.env.config().aiGroundAttackEverything 
+						|| (b.enabled && b.type.kind.equals("Defensive"))) {
 					targets.add(b);
 				}
 			}
@@ -214,6 +245,21 @@ public class AIGroundwar {
 			return null;
 		}
 		return Collections.min(targets, new Comparator<HasLocation>() { 
+			@Override
+			public int compare(HasLocation o1, HasLocation o2) {
+				double d1 = u.distance(o1);
+				double d2 = u.distance(o2);
+				return U.compare(d1, d2);
+			}
+		});
+	}
+	/**
+	 * Sort the targets by distance from the given unit.
+	 * @param u the unti
+	 * @param targets the list of targets
+	 */
+	private void orderByDistance(final GroundwarUnit u, List<HasLocation> targets) {
+		Collections.sort(targets, new Comparator<HasLocation>() { 
 			@Override
 			public int compare(HasLocation o1, HasLocation o2) {
 				double d1 = u.distance(o1);

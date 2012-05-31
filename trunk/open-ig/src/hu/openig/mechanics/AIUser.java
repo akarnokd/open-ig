@@ -83,6 +83,10 @@ public class AIUser implements AIManager {
 	public void manage() {
 		List<Action0> acts = null;
 
+		if (world.money < world.autoBuildLimit) {
+			return;
+		}
+		
 		// manage only AI autobuild planets
 		Iterator<AIPlanet> it = world.ownPlanets.iterator();
 		while (it.hasNext()) {
@@ -95,21 +99,21 @@ public class AIUser implements AIManager {
 		acts = new ColonyPlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-//			if (world.money < 500000) {
+			if (world.money < world.autoBuildLimit) {
 				return;
-//			}
+			}
 		}
 		acts = new EconomyPlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-			if (world.money < 500000) {
+			if (world.money < world.autoBuildLimit) {
 				return;
 			}
 		}
 		acts = new StaticDefensePlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-			if (world.money < 500000) {
+			if (world.money < world.autoBuildLimit) {
 				return;
 			}
 		}
