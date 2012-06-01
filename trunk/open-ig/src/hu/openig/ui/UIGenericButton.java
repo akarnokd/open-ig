@@ -61,8 +61,6 @@ public class UIGenericButton extends UIComponent {
 	protected BufferedImage icon;
 	/** The font metrics. */
 	final FontMetrics fm;
-	/** The cached look. */
-	protected BufferedImage lookCache;
 	/**
 	 * Constructor with the default images.
 	 * @param text the text label
@@ -125,41 +123,31 @@ public class UIGenericButton extends UIComponent {
 		}
 	}
 	@Override
-	public void draw(Graphics2D g1) {
-		if (lookCache == null) {
-			lookCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g2 = lookCache.createGraphics();
-			try {
-				Font f1 = g2.getFont();
-				g2.setFont(f1.deriveFont(Font.BOLD).deriveFont((float)size));
-				g2.setColor(new Color(color));
-				if (!enabled && disabledPattern != null) {
-					normal.paintTo(g2, 0, 0, width, height, false, text);
-					RenderTools.fill(g2, 0, 0, width, height, disabledPattern);
-				} else
-				if (down) {
-					pressed.paintTo(g2, 0, 0, width, height, true, text);
-				} else {
-					normal.paintTo(g2, 0, 0, width, height, false, text);
-				}
-				if (icon != null) {
-					int iw = icon.getWidth();
-					int ih = icon.getHeight();
-					g2.drawImage(icon, (width - iw) / 2, (height - ih) / 2, null);
-				}
-				g2.setFont(f1);
-			} finally {
-				g2.dispose();
-			}
+	public void draw(Graphics2D g2) {
+		Font f1 = g2.getFont();
+		g2.setFont(f1.deriveFont(Font.BOLD).deriveFont((float)size));
+		g2.setColor(new Color(color));
+		if (!enabled && disabledPattern != null) {
+			normal.paintTo(g2, 0, 0, width, height, false, text);
+			RenderTools.fill(g2, 0, 0, width, height, disabledPattern);
+		} else
+		if (down) {
+			pressed.paintTo(g2, 0, 0, width, height, true, text);
+		} else {
+			normal.paintTo(g2, 0, 0, width, height, false, text);
 		}
-		g1.drawImage(lookCache, 0, 0, null);
+		if (icon != null) {
+			int iw = icon.getWidth();
+			int ih = icon.getHeight();
+			g2.drawImage(icon, (width - iw) / 2, (height - ih) / 2, null);
+		}
+		g2.setFont(f1);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
 		switch (e.type) {
 		case DOWN:
 			down = true;
-			lookCache = null;
 			if (holdDelay >= 0) {
 				holdTimer.start();
 				doClick();
@@ -170,7 +158,6 @@ public class UIGenericButton extends UIComponent {
 			return true;
 		case UP:
 			if (down) {
-				lookCache = null;
 				down = false;
 				holdTimer.stop();
 				if (holdDelay < 0) {
@@ -180,7 +167,6 @@ public class UIGenericButton extends UIComponent {
 			return true;
 		case LEAVE:
 			down = false;
-			lookCache = null;
 			holdTimer.stop();
 			return true;
 		default:
@@ -193,7 +179,6 @@ public class UIGenericButton extends UIComponent {
 	 * @return this
 	 */
 	public UIGenericButton disabledPattern(BufferedImage pattern) {
-		lookCache = null;
 		this.disabledPattern = pattern;
 		return this;
 	}
@@ -212,7 +197,6 @@ public class UIGenericButton extends UIComponent {
 	 * @return this
 	 */
 	public UIGenericButton text(String text, boolean resize) {
-		lookCache = null;
 		this.text = text;
 		if (resize) {
 			Dimension d = normal.getPreferredSize(fm, text);
@@ -232,7 +216,6 @@ public class UIGenericButton extends UIComponent {
 	 * @return this
 	 */
 	public UIGenericButton color(int color) {
-		lookCache = null;
 		this.color = color;
 		return this;
 	}
@@ -242,15 +225,7 @@ public class UIGenericButton extends UIComponent {
 	 * @return this
 	 */
 	public UIGenericButton icon(BufferedImage icon) {
-		lookCache = null;
 		this.icon = icon;
 		return this;
-	}
-	@Override
-	public UIComponent enabled(boolean state) {
-		if (enabled() != state) {
-			lookCache = null;
-		}
-		return super.enabled(state);
 	}
 }

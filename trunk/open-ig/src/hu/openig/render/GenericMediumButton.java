@@ -71,9 +71,12 @@ public class GenericMediumButton implements GenericButtonRenderer {
 		}
 	}
 	@Override
-	public void paintTo(Graphics2D g2, int x, int y, 
+	public void paintTo(Graphics2D g1, int x, int y, 
 			int width, int height, boolean down, String text) {
-		Color textColor = g2.getColor();
+		
+		BufferedImage lookCache = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = lookCache.createGraphics();
+		
 		g2.drawImage(topLeft, x, y, null);
 		g2.drawImage(topRight, x + width - topRight.getWidth(), y, null);
 		g2.drawImage(bottomLeft, x, y + height - bottomLeft.getHeight(), null);
@@ -105,23 +108,26 @@ public class GenericMediumButton implements GenericButtonRenderer {
 		g2.setPaint(grad);
 		g2.fillRect(x + leftMiddle.getWidth() + dx, y + topLeft.getHeight() + dx, width - leftMiddle.getWidth() - rightMiddle.getWidth() - 2 * dx, height - topCenter.getHeight() - bottomCenter.getHeight() - dx);
 		g2.setPaint(save);
-
-		FontMetrics fm = g2.getFontMetrics();
+		g2.dispose();
+		g1.drawImage(lookCache, x, y, null);
+			
+		FontMetrics fm = g1.getFontMetrics();
 		int tw = fm.stringWidth(text);
 		int th = fm.getHeight();
 
 		int tx = x + (width - tw) / 2 + dx;
 		int ty = y + (height - th) / 2 + dx;
 
-		g2.setColor(new Color(0x509090));
-		g2.drawString(text, tx + 1, ty + 1 + fm.getAscent());
-		g2.setColor(textColor);
-		g2.drawString(text, tx, ty + fm.getAscent());
+		Color textColor = g1.getColor();
+		g1.setColor(new Color(0x509090));
+		g1.drawString(text, tx + 1, ty + 1 + fm.getAscent());
+		g1.setColor(textColor);
+		g1.drawString(text, tx, ty + fm.getAscent());
 
 		if (down) {
-			g2.setColor(new Color(0, 0, 0, 92));
-			g2.fillRect(x + 3, y + 3, width - 5, 4);
-			g2.fillRect(x + 3, y + 7, 4, height - 9);
+			g1.setColor(new Color(0, 0, 0, 92));
+			g1.fillRect(x + 3, y + 3, width - 5, 4);
+			g1.fillRect(x + 3, y + 7, 4, height - 9);
 		}
 	}
 	@Override
