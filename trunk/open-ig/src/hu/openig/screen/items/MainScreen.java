@@ -22,7 +22,9 @@ import hu.openig.ui.UIMouse;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.GradientPaint;
 import java.awt.Graphics2D;
+import java.awt.Paint;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -239,11 +241,15 @@ public class MainScreen extends ScreenBase {
 		commons.text().paintTo(g2, 120, 20, 14, 0xFFFFFF00, "Open");
 		
 		
-		int w1 = commons.text().getTextWidth(14, Configuration.VERSION);
+		int vx = 10;
+		int vy = 428;
+		int vs = 10;
+		String vstr = "v" + Configuration.VERSION;
+		int w1 = commons.text().getTextWidth(vs, vstr);
 		g2.setColor(new Color(0, 0, 0, 128));
-		g2.fillRect(498, 61, w1 + 4, 20);
-		commons.text().paintTo(g2, 501, 65, 14, 0xFF000000, Configuration.VERSION);
-		commons.text().paintTo(g2, 500, 64, 14, 0xFFFF0000, Configuration.VERSION);
+		g2.fillRect(vx - 3, vy - 3, w1 + 6, vs + 6);
+		commons.text().paintTo(g2, vx + 1, vy + 1, vs, 0xFF000000, vstr);
+		commons.text().paintTo(g2, vx, vy, vs, 0xFFFF0000, vstr);
 		
 		// draw profile
 		String pn = commons.profile.name;
@@ -261,6 +267,21 @@ public class MainScreen extends ScreenBase {
 		g2.fillRect(dx + profileLabel.width + 15, profileLabel.y - 3, pnw + 10, 20);
 		commons.text().paintTo(g2, dx + profileLabel.width + 20, profileLabel.y + 0, 14, TextRenderer.GREEN, pn);
 		
+		Paint savep = g2.getPaint();
+		
+		int gx1 = dx;
+		int gx2 = w / 2;
+		int gx3 = achievements.x + achievements.width;
+		int gy = profileLabel.y + profileLabel.size + 8;
+		
+		g2.setPaint(new GradientPaint(gx1, gy, new Color(255, 255, 255, 192), gx2, gy, new Color(255, 255, 0, 255)));
+		g2.fillRect(gx1, gy, gx2 - gx1, 2);
+		g2.setPaint(new GradientPaint(gx3, gy, new Color(255, 255, 255, 192), gx2, gy, new Color(255, 255, 0, 255)));
+		g2.fillRect(gx2, gy, gx3 - gx2, 2);
+//		g2.setColor(Color.YELLOW);
+//		g2.drawLine(gx1, gy, gx3, gy);
+		
+		g2.setPaint(savep);
 		// draw other labels
 		for (ClickLabel cl : clicklabels) {
 			cl.paintTo(g2);
@@ -385,7 +406,7 @@ public class MainScreen extends ScreenBase {
 	public void onInitialize() {
 		clicklabels = new LinkedList<ClickLabel>();
 		
-		single = new ClickLabel(120, 100, -400, 20, "mainmenu.singleplayer");
+		single = new ClickLabel(120, 135, -400, 20, "mainmenu.singleplayer");
 		single.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -395,7 +416,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(single);
 
-		continueLabel = new ClickLabel(120, 135, -400, 14, "mainmenu.continue");
+		continueLabel = new ClickLabel(120, 168, -400, 14, "mainmenu.continue");
 		continueLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -405,7 +426,7 @@ public class MainScreen extends ScreenBase {
 		};
 		continueLabel.disabled = true;
 		clicklabels.add(continueLabel);
-		load = new ClickLabel(120, 162, -400, 14, "mainmenu.load");
+		load = new ClickLabel(120, 195, -400, 14, "mainmenu.load");
 		load.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -418,10 +439,11 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(load);
 		
-		multiplayer = new ClickLabel(120, 220, -400, 20 , "mainmenu.multiplayer");
+		multiplayer = new ClickLabel(120, 225, -400, 20 , "mainmenu.multiplayer");
 		multiplayer.disabled = true;
 		clicklabels.add(multiplayer);
-		settings = new ClickLabel(120, 253, -400, 20, "mainmenu.settings");
+		
+		settings = new ClickLabel(120, 258, -400, 20, "mainmenu.settings");
 		settings.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -430,7 +452,7 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		clicklabels.add(settings);
-		videosLabel = new ClickLabel(120, 288, -400, 20, "mainmenu.videos");
+		videosLabel = new ClickLabel(120, 293, -400, 20, "mainmenu.videos");
 		videosLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -440,7 +462,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(videosLabel);
 		
-		introLabel = new ClickLabel(120, 320, -180, 14, "mainmenu.videos.intro");
+		introLabel = new ClickLabel(120, 325, -180, 14, "mainmenu.videos.intro");
 		introLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -448,7 +470,7 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		clicklabels.add(introLabel);
-		titleLabel = new ClickLabel(340, 320, -180, 14, "mainmenu.videos.title");
+		titleLabel = new ClickLabel(340, 325, -180, 14, "mainmenu.videos.title");
 		titleLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -457,7 +479,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(titleLabel);
 		
-		creditsLabel = new ClickLabel(120, 345, -400, 14, "credits");
+		creditsLabel = new ClickLabel(120, 350, -400, 14, "credits");
 		creditsLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -467,7 +489,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(creditsLabel);
 		
-		exit = new ClickLabel(120, 380, -400, 20, "mainmenu.exit");
+		exit = new ClickLabel(120, 385, -400, 20, "mainmenu.exit");
 		exit.action = new Action0() { @Override public void invoke() { 
 			doExit(); 
 		} };
@@ -527,7 +549,7 @@ public class MainScreen extends ScreenBase {
 		clicklabels.add(toHu);
 		clicklabels.add(toDe);
 		
-		achievements = new ClickLabel(120, 190, -400, 14, "achievements");
+		achievements = new ClickLabel(120, 100, -400, 14, "achievements");
 		achievements.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -536,7 +558,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(achievements);
 		
-		profileLabel = new ClickLabel(20, 190, -400, 14, "profile");
+		profileLabel = new ClickLabel(20, 100, -400, 14, "profile");
 		profileLabel.action = new Action0() {
 			@Override
 			public void invoke() {
