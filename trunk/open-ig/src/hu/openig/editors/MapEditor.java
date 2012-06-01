@@ -492,7 +492,7 @@ public class MapEditor extends JFrame {
 
 					colonyGraphics = new ColonyGFX().load(rl);
 					
-					txt = new TextRenderer(rl);
+					txt = new TextRenderer(rl, config.useStandardFonts);
 					
 					prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
 				} catch (Throwable t) {
@@ -1072,7 +1072,7 @@ public class MapEditor extends JFrame {
 		ui.viewBrighter.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD7, InputEvent.CTRL_DOWN_MASK));
 		ui.viewDarker.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD1, InputEvent.CTRL_DOWN_MASK));
 		
-		ui.viewStandardFonts = new JCheckBoxMenuItem("Use standard fonts", TextRenderer.USE_STANDARD_FONTS);
+		ui.viewStandardFonts = new JCheckBoxMenuItem("Use standard fonts", false);
 		
 		ui.viewStandardFonts.addActionListener(new ActionListener() {
 			@Override

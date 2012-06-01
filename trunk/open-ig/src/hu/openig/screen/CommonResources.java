@@ -288,7 +288,7 @@ public class CommonResources implements GameEnvironment {
 			final Future<TextRenderer> textFuture = exec.submit(new Callable<TextRenderer>() {
 				@Override
 				public TextRenderer call() throws Exception {
-					return new TextRenderer(rl);
+					return new TextRenderer(rl, config.useStandardFonts);
 				}
 			});
 			final Future<DiplomacyGFX> diplomacyFuture = exec.submit(new Callable<DiplomacyGFX>() {
@@ -330,14 +330,14 @@ public class CommonResources implements GameEnvironment {
 
 			// FIXME during translation
 			
-			labelReloader = new Thread() {
-				@Override
-				public void run() {
-					watchLabels();
-				}
-			};
-			labelReloader.setDaemon(true);
-			labelReloader.start();
+//			labelReloader = new Thread() {
+//				@Override
+//				public void run() {
+//					watchLabels();
+//				}
+//			};
+//			labelReloader.setDaemon(true);
+//			labelReloader.start();
 		} finally {
 			exec.shutdown();
 		}

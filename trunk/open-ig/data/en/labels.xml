@@ -2531,6 +2531,7 @@
 	<entry key='infoscreen.all'>All</entry>
   <entry key='settings.quick_rnp'>Show quick research/production</entry>
   <entry key='settings.scale_all_screens'>Scale fixed size screens to window</entry>
+	<entry key="profile">Profile:</entry>
 	<entry key=''/>
   <entry key=''/>
 </labels>
