@@ -88,7 +88,9 @@ public class UILabel extends UIComponent {
 	@Override
 	public void draw(Graphics2D g2) {
 		Shape save0 = g2.getClip();
-		g2.clipRect(0, 0, width, height);
+		if (!tr.isUseStandardFonts()) {
+			g2.clipRect(0, 0, width, height);
+		}
 		if (backgroundColor != 0) {
 			g2.setColor(new Color(backgroundColor, true));
 			g2.fillRect(0, 0, width, height);

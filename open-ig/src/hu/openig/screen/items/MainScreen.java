@@ -14,9 +14,9 @@ import hu.openig.core.Pair;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
-import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
 
 import java.awt.AlphaComposite;
@@ -148,7 +148,7 @@ public class MainScreen extends ScreenBase {
 	/** The continue labe. */
 	private ClickLabel continueLabel;
 	/** The achievements screen. */
-	UIImageButton achievements;
+	ClickLabel achievements;
 	/** The single player click label. */
 	private ClickLabel single;
 	/** Label button. */
@@ -167,6 +167,8 @@ public class MainScreen extends ScreenBase {
 	private ClickLabel exit;
 	/** Label button. */
 	private ClickLabel creditsLabel;
+	/** Label button. */
+	private ClickLabel profileLabel;
 	/** Resume the last gameplay. */
 	void doContinue() {
 		continueLabel.disabled = !isSaveAvailable();
@@ -211,14 +213,14 @@ public class MainScreen extends ScreenBase {
 		onResize(); // repaint might come before an onResize
 
 
+		int w = background.getWidth();
+		int h = background.getHeight();
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 
 		AffineTransform save0 = g2.getTransform();
 		
 		if (config.scaleAllScreens) {
-			int w = background.getWidth();
-			int h = background.getHeight();
 			Pair<Point, Double> pd = RenderTools.fitWindow(getInnerWidth(), getInnerHeight() - RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM, w, h);
 			xOrigin = pd.first.x;
 			yOrigin = pd.first.y + RenderTools.STATUS_BAR_TOP;
@@ -243,6 +245,23 @@ public class MainScreen extends ScreenBase {
 		commons.text().paintTo(g2, 501, 65, 14, 0xFF000000, Configuration.VERSION);
 		commons.text().paintTo(g2, 500, 64, 14, 0xFFFF0000, Configuration.VERSION);
 		
+		// draw profile
+		String pn = commons.profile.name;
+		int pnw = commons.text().getTextWidth(14, pn);
+		
+		int profw = pnw + profileLabel.width + 40 + achievements.width;
+		
+		int dx = (w - profw) / 2;
+		profileLabel.x = dx;
+		profileLabel.disabled = false;
+		
+		achievements.x = dx + 40 + pnw + profileLabel.width;
+		
+		g2.setColor(new Color(0, 0, 0, 128));
+		g2.fillRect(dx + profileLabel.width + 15, profileLabel.y - 3, pnw + 10, 20);
+		commons.text().paintTo(g2, dx + profileLabel.width + 20, profileLabel.y + 0, 14, TextRenderer.GREEN, pn);
+		
+		// draw other labels
 		for (ClickLabel cl : clicklabels) {
 			cl.paintTo(g2);
 		}
@@ -366,7 +385,7 @@ public class MainScreen extends ScreenBase {
 	public void onInitialize() {
 		clicklabels = new LinkedList<ClickLabel>();
 		
-		single = new ClickLabel(120, 120, -400, 20, "mainmenu.singleplayer");
+		single = new ClickLabel(120, 100, -400, 20, "mainmenu.singleplayer");
 		single.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -376,7 +395,7 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(single);
 
-		continueLabel = new ClickLabel(120, 155, -400, 14, "mainmenu.continue");
+		continueLabel = new ClickLabel(120, 135, -400, 14, "mainmenu.continue");
 		continueLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -386,7 +405,7 @@ public class MainScreen extends ScreenBase {
 		};
 		continueLabel.disabled = true;
 		clicklabels.add(continueLabel);
-		load = new ClickLabel(120, 180, -400, 14, "mainmenu.load");
+		load = new ClickLabel(120, 162, -400, 14, "mainmenu.load");
 		load.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -399,10 +418,10 @@ public class MainScreen extends ScreenBase {
 		};
 		clicklabels.add(load);
 		
-		multiplayer = new ClickLabel(120, 215, -400, 20 , "mainmenu.multiplayer");
+		multiplayer = new ClickLabel(120, 220, -400, 20 , "mainmenu.multiplayer");
 		multiplayer.disabled = true;
 		clicklabels.add(multiplayer);
-		settings = new ClickLabel(120, 250, -400, 20, "mainmenu.settings");
+		settings = new ClickLabel(120, 253, -400, 20, "mainmenu.settings");
 		settings.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -411,7 +430,7 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		clicklabels.add(settings);
-		videosLabel = new ClickLabel(120, 285, -400, 20, "mainmenu.videos");
+		videosLabel = new ClickLabel(120, 288, -400, 20, "mainmenu.videos");
 		videosLabel.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -508,13 +527,23 @@ public class MainScreen extends ScreenBase {
 		clicklabels.add(toHu);
 		clicklabels.add(toDe);
 		
-		achievements = new UIImageButton(commons.starmap().achievements);
-		achievements.onClick = new Action0() {
+		achievements = new ClickLabel(120, 190, -400, 14, "achievements");
+		achievements.action = new Action0() {
 			@Override
 			public void invoke() {
 				displaySecondary(Screens.ACHIEVEMENTS);
 			}
 		};
+		clicklabels.add(achievements);
+		
+		profileLabel = new ClickLabel(20, 190, -400, 14, "profile");
+		profileLabel.action = new Action0() {
+			@Override
+			public void invoke() {
+				//displaySecondary(Screens.PROFILE);
+			}
+		};
+		clicklabels.add(profileLabel);
 		
 		addThis();
 	}
@@ -542,7 +571,7 @@ public class MainScreen extends ScreenBase {
 			yOrigin = (getInnerHeight() - h) / 2;
 		}
 		
-		achievements.location(w - 20 - achievements.width, single.y);
+//		achievements.location(w - 20 - achievements.width, single.y);
 
 		for (ClickLabel cl : Arrays.asList(single, continueLabel, load, 
 				multiplayer, settings, videosLabel, exit, creditsLabel)) {

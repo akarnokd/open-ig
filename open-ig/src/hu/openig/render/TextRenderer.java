@@ -12,6 +12,7 @@ import hu.openig.utils.LRUHashMap;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
@@ -119,18 +120,18 @@ public class TextRenderer {
 	private Map<Integer, Integer> charsetWidths = new HashMap<Integer, Integer>();
 	/** The character space for a particular character size. */
 	private Map<Integer, Integer> charsetSpaces = new HashMap<Integer, Integer>();
-	/** By default, use the standard fonts? */
-	public static final boolean USE_STANDARD_FONTS = false;
 	/** Use standard Java fonts instead of the original bitmap fonts. */
-	private boolean useStandardFonts = USE_STANDARD_FONTS;
+	private boolean useStandardFonts;
 	/** The default font rendering context. */
 	private final FontRenderContext frc;
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param rl the resource locator
+	 * @param useStandardFonts instead of the fixed size?
 	 */
-	public TextRenderer(ResourceLocator rl) {
+	public TextRenderer(ResourceLocator rl, boolean useStandardFonts) {
 		frc = new FontRenderContext(null, false, false);
+		this.useStandardFonts = useStandardFonts; 
 		charImage = rl.getImage("charset");
 		// map some colors
 		split(YELLOW);
@@ -270,7 +271,7 @@ public class TextRenderer {
 	public int getTextWidth(int size, String text) {
 		if (text.length() > 0) {
 			if (useStandardFonts) {
-				Font font = new Font(Font.MONOSPACED, Font.PLAIN, size + 4);
+				Font font = new Font(Font.MONOSPACED, Font.PLAIN, size /* + 4 */);
 				return (int)font.getStringBounds(text, frc).getWidth();
 			}
 			Integer widths = charsetWidths.get(size);
@@ -297,9 +298,13 @@ public class TextRenderer {
 		if (useStandardFonts) {
 			Font f = g.getFont();
 			Color c = g.getColor();
-			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, size + 4));
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, size /* + 4 */));
 			g.setColor(new Color(color));
-			g.drawString(text, x, y + g.getFontMetrics().getAscent() - 4);
+			FontMetrics fm = g.getFontMetrics();
+			g.drawString(text, x, y + fm.getAscent() - fm.getDescent() / 2 /* - 4 */);
+//			g.drawLine(x, y, x + 5, y);
+//			g.drawLine(x, y + size - 1, x + 5, y + size - 1);
+//			g.drawLine(x, y + fm.getAscent() + fm.getDescent() - 1, x + 5, y + fm.getAscent() + fm.getDescent() - 1);
 			g.setColor(c);
 			g.setFont(f);
 			return;
