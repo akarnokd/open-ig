@@ -886,84 +886,150 @@
 		</node>
 		<node id="3" owner="enemy" message="chat.vo.1.n3" action="retreat"/> <!-- Okay -->
 	</chat>
-	<chat id="chat.blockade.incoming.1">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-		<node id="0" owner="player" option="chat.bi.1.n0.o" message="chat.bi.1.n0"> <!-- Turn around. -->
-			<transition to="1"/>
+
+	<chat id='chat.blockade.incoming.1'>
+		<node id='0' owner='player' option='chat.bi.1.n0.o' message='chat.bi.1.n0'> <!-- Turn around at once! -->
+			<transition to='1'/>
 		</node>
-		<node id="1" owner="enemy" message="chat.bi.1.n1" action="retreat"/> <!-- This is BX12. -->
-	</chat>
-	<chat id="chat.blockade.incoming.2">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-		<node id="0" owner="player" option="chat.bi.2.n0.o" message="chat.bi.2.n0"> <!-- Turn around. -->
-			<transition to="1"/>
-		</node>
-		<node id="1" owner="enemy" message="chat.bi.2.n1" > <!-- cargo spoil. -->
-			<transition to="2"/>
-			<transition to="3"/>
-		</node>
-		<node id="2" owner="player" option="chat.bi.2.n2.o" message="chat.bi.2.n2"> <!-- No landing -->
-			<transition to="4"/>
-		</node>
-		<node id="3" owner="player" option="chat.bi.2.n3.o" message="chat.bi.2.n3">	<!-- What are you carrying? -->
-			<transition to="5"/>
-		</node>
-		<node id="4" owner="enemy" message="chat.bi.2.n4" action="retreat"/> <!-- I'll turn around. -->
-		<node id="5" owner="enemy" message="chat.bi.2.n5"> <!-- Milk. -->
-			<transition to="6"/>
-			<transition to="7"/>
-		</node>
-		<node id="6" owner="player" option="chat.bi.2.n6.o" message="chat.bi.2.n6"> <!-- Check cargo -->
-			<transition to="8"/>
-		</node>
-		<node id="7" owner="player" option="chat.bi.2.n7.o" message="chat.bi.2.n7"> <!-- There is a blockade -->
-			<transition to="6"/>
-			<transition to="9"/>		
-		</node>
-		<node id="8" owner="enemy" message="chat.bi.2.n8"/> <!-- Thank you -->
-		<node id="9" owner="enemy" message="chat.bi.2.n9" action="retreat"/> <!-- Retreat -->
-	</chat>
-	<chat id="chat.blockade.incoming.3">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-	</chat>
-	<chat id="chat.blockade.incoming.4">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-	</chat>
-	<chat id="chat.blockade.incoming.5">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-	</chat>
-	<chat id="chat.blockade.incoming.6">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-	</chat>
-	<chat id="chat.blockade.incoming.7">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-	</chat>
-	<chat id="chat.blockade.incoming.8">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+		<node id='1' owner='enemy' message='chat.bi.1.n1' action='retreat'/> <!-- All right. Ship BX12 is leaving the planet. -->
 	</chat>
 	
-	<chat id="chat.blockade.outgoing.1">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	<chat id='chat.blockade.incoming.2'>
+		<node id='0' owner='player' option='chat.bi.2.n0.o' message='chat.bi.2.n0'> <!-- Turn around at once! -->
+			<transition to='1'/>
+		</node>
+		<node id='1' owner='enemy' message='chat.bi.2.n1'> <!-- But Sir, I MUST deliver my cargo. My cargo will spoil if it is not put into refrigiration soon! -->
+			<transition to='2'/>
+			<transition to='4'/>
+		</node>
+		<node id='2' owner='player' option='chat.bi.2.n2.o' message='chat.bi.2.n2'> <!-- I'm sorry, but no-one may land. -->
+			<transition to='3'/>
+		</node>
+		<node id='3' owner='enemy' message='chat.bi.2.n3' action='retreat'/> <!-- All right, I'll turn around. -->
+		<node id='4' owner='player' option='chat.bi.2.n4.o' message='chat.bi.2.n4'> <!-- What are you carrying? -->
+			<transition to='5'/>
+		</node>
+		<node id='5' owner='enemy' message='chat.bi.2.n5'> <!-- I am carrying milk to the Mydon chain of stores. Please let me pass, or my cargo will be wasted. I have no insurance and will lose a lot of money! -->
+			<transition to='8'/>
+			<transition to='6'/>
+		</node>
+		<node id='6' owner='player' option='chat.bi.2.n6.o' message='chat.bi.2.n6'> <!-- message0 "You cannot pass. There is a blockade. -->
+			<transition to='7'/>
+		</node>
+		<node id='7' owner='enemy' message='chat.bi.2.n7'> <!-- But Sir! You can check my cargo. I am not carrying anything illegal. -->
+			<transition to='8'/>
+			<transition to='10'/>
+		</node>
+		<node id='8' owner='player' option='chat.bi.2.n8.o' message='chat.bi.2.n8'> <!-- We'll check your cargo. -->
+			<transition to='9'/>
+		</node>
+		<node id='9' owner='enemy' message='chat.bi.2.n9'/> <!-- Thank you, Captain. -->
+		<node id='10' owner='player' option='chat.bi.2.n10.o' message='chat.bi.2.n10'> <!-- Turn around at once! -->
+			<transition to='11'/>
+		</node>
+		<node id='11' owner='enemy' message='chat.bi.2.n11' action='retreat'/> <!-- Damn! I understand. I'm leaving. -->
 	</chat>
-	<chat id="chat.blockade.outgoing.2">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	
+	<chat id='chat.blockade.incoming.3'>
+		<node id='0' owner='player' option='chat.bi.3.n0.o' message='chat.bi.3.n0'> <!-- Ship, identify yourself! -->
+			<transition to='1'/>
+		</node>
+		<node id='1' owner='enemy' message='chat.bi.3.n1'> <!-- This is ship Eyola4 on a trading route. -->
+			<transition to='2'/>
+		</node>
+		<node id='2' owner='player' option='chat.bi.3.n2.o' message='chat.bi.3.n2'> <!-- This planet is under blockade! -->
+			<transition to='3'/>
+		</node>
+		<node id='3' owner='enemy' message='chat.bi.3.n3' action='retreat'/> <!-- Thank you, Sir. -->
 	</chat>
-	<chat id="chat.blockade.outgoing.3">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	
+	<chat id='chat.blockade.incoming.4'>
+		<node id='0' owner='player' option='chat.bi.4.n0.o' message='chat.bi.4.n0'> <!-- Turn around at once! -->
+			<transition to='1'/>
+		</node>
+		<node id='1' owner='enemy' message='chat.bi.4.n1'> <!-- I'm out of fuel. I MUST land. Please let me pass! -->
+			<transition to='2'/>
+			<transition to='4'/>
+		</node>
+		<node id='2' owner='player' option='chat.bi.4.n2.o' message='chat.bi.4.n2'> <!-- You must stop at once! -->
+			<transition to='3'/>
+		</node>
+		<node id='3' owner='enemy' message='chat.bi.4.n3'> <!-- I cannot obey your orders. -->
+			<transition to='6'/>
+			<transition to='4'/>
+		</node>
+		<node id='4' owner='player' option='chat.bi.4.n4.o' message='chat.bi.4.n4'> <!-- All right, you may land. -->
+			<transition to='5'/>
+		</node>
+		<node id='5' owner='enemy' message='chat.bi.4.n5'/> <!-- Thank you, Captain! -->
+		<node id='6' owner='player' option='chat.bi.4.n6.o' message='chat.bi.4.n6'> <!-- Stop, or else I'll open fire! -->
+			<transition to='7'/>
+		</node>
+		<node id='7' owner='enemy' message='chat.bi.4.n7' action='retreat'/> <!-- Don't shoot! Don't shoot! I'll try and make it to another planet -->
 	</chat>
-	<chat id="chat.blockade.outgoing.4">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	
+	<chat id='chat.blockade.incoming.5'>
+		<node id='0' owner='player' option='chat.bi.5.n0.o' message='chat.bi.5.n0'> <!-- Turn around at once! -->
+			<transition to='1'/>
+		</node>
+		<node id='1' owner='enemy' message='chat.bi.5.n1'> <!-- I'm out of fuel. I MUST land. Please let me pass. -->
+			<transition to='2'/>
+			<transition to='4'/>
+		</node>
+		<node id='2' owner='player' option='chat.bi.5.n2.o' message='chat.bi.5.n2'> <!-- You must stop at once! -->
+			<transition to='3'/>
+		</node>
+		<node id='3' owner='enemy' message='chat.bi.5.n3'> <!-- I cannot obey your orders. -->
+			<transition to='6'/>
+			<transition to='4'/>
+		</node>
+		<node id='4' owner='player' option='chat.bi.5.n4.o' message='chat.bi.5.n4'> <!-- All right, you may land. -->
+			<transition to='5'/>
+		</node>
+		<node id='5' owner='enemy' message='chat.bi.5.n5'/> <!-- Thank you, Captain! -->
+		<node id='6' owner='player' option='chat.bi.5.n6.o' message='chat.bi.5.n6'> <!-- Stop, or else I'll open fire! -->
+			<transition to='7'/>
+		</node>
+		<node id='7' owner='enemy' message='chat.bi.5.n7' action='retreat'/> <!-- Don't shoot! Don't shoot! I'll try to make it to another planet! -->
 	</chat>
-	<chat id="chat.blockade.outgoing.5">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	
+	<chat id='chat.blockade.incoming.6'>
+		<node id='0' owner='player' option='chat.bi.6.n0.o' message='chat.bi.6.n0'> <!-- Turn around at once! -->
+			<transition to='1'/>
+		</node>
+		<node id='1' owner='enemy' message='chat.bi.6.n1'> <!-- Khhz Hrrrz. .he .ad.o is not worki... -->
+			<transition to='2'/>
+		</node>
+		<node id='2' owner='player' option='chat.bi.6.n2.o' message='chat.bi.6.n2'> <!-- This planet is under blockade! -->
+			<transition to='3'/>
+		</node>
+		<node id='3' owner='enemy' message='chat.bi.6.n3'/> <!-- kkkhhhz. Krr.rrrr -->
 	</chat>
-	<chat id="chat.blockade.outgoing.6">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	
+	<chat id='chat.blockade.incoming.7'>
+		<node id='0' owner='player' option='chat.bi.7.n0.o' message='chat.bi.7.n0'> <!-- Ship, identify yourself! -->
+			<transition to='1'/>
+		</node>
+		<node id='1' owner='enemy' message='chat.bi.7.n1'> <!-- This is ship Eyola4 on a trading route. -->
+			<transition to='2'/>
+		</node>
+		<node id='2' owner='player' option='chat.bi.7.n2.o' message='chat.bi.7.n2'> <!-- This planet is under blockade! -->
+			<transition to='3'/>
+		</node>
+		<node id='3' owner='enemy' message='chat.bi.7.n3' action='retreat'/> <!-- Thank you, Sir. -->
 	</chat>
-	<chat id="chat.blockade.outgoing.7">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	
+	<chat id='chat.blockade.incoming.8'>
+		<node id='0' owner='player' option='chat.bi.8.n0.o' message='chat.bi.8.n0'> <!-- Ship identify yourself! -->
+			<transition to='1'/>
+		</node>
+		<node id='1' owner='enemy' message='chat.bi.8.n1'> <!-- This is ship Eyola4 on a trading route. -->
+			<transition to='2'/>
+		</node>
+		<node id='2' owner='player' option='chat.bi.8.n2.o' message='chat.bi.8.n2'> <!-- This planet is under blockade! -->
+			<transition to='3'/>
+		</node>
+		<node id='3' owner='enemy' message='chat.bi.8.n3' action='retreat'/> <!-- Thank you, Sir. -->
 	</chat>
-	<chat id="chat.blockade.outgoing.8">
-		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
-	</chat>
+	
 </chats>
