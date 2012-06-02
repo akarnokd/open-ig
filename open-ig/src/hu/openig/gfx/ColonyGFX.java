@@ -200,6 +200,9 @@ public class ColonyGFX {
 	public BufferedImage[][] rocket;
 	/** The laid mine. */
 	public BufferedImage[][] mine;
+	/** The tank info panel. */
+	@Img(name = "colony/tank_panel")
+	public BufferedImage tankPanel;
 	/** The explosion images. */
 	public final Map<ExplosionType, BufferedImage[]> explosions = U.newHashMap();
 	/**

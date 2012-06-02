@@ -129,7 +129,7 @@ public class UIImageTabButton2 extends UIComponent {
 	 * @param pattern the pattern to fill with the area of the button when it is disabled
 	 * @return this
 	 */
-	public UIImageTabButton2 setDisabledPattern(BufferedImage pattern) {
+	public UIImageTabButton2 disabledPattern(BufferedImage pattern) {
 		this.disabledPattern = pattern;
 		return this;
 	}
