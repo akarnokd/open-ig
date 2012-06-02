@@ -2569,9 +2569,6 @@
 	<entry key='chat.bi.4.n4.o'>All right, you may land.</entry>
 	<entry key='chat.bi.4.n4'>All right, you may land.</entry>
 	<entry key='chat.bi.4.n5'>Thank you, Captain!</entry>
-	<entry key='chat.bi.4.n6.o'>Stop, or else I'll open fire!</entry>
-	<entry key='chat.bi.4.n6'>Stop, or else I'll open fire!</entry>
-	<entry key='chat.bi.4.n7'>Don't shoot! Don't shoot! I'll try and make it to another planet</entry>
 	<entry key='chat.bi.5.n0.o'>Turn around at once!</entry>
 	<entry key='chat.bi.5.n0'>This is the Police! Turn around at once! I repeat, turn around! This planet is under blockade!</entry>
 	<entry key='chat.bi.5.n1'>I'm out of fuel. I MUST land. Please let me pass.</entry>
@@ -2581,9 +2578,6 @@
 	<entry key='chat.bi.5.n4.o'>All right, you may land.</entry>
 	<entry key='chat.bi.5.n4'>All right, you may land.</entry>
 	<entry key='chat.bi.5.n5'>Thank you, Captain!</entry>
-	<entry key='chat.bi.5.n6.o'>Stop, or else I'll open fire!</entry>
-	<entry key='chat.bi.5.n6'>Stop, or else I'll open fire!</entry>
-	<entry key='chat.bi.5.n7'>Don't shoot! Don't shoot! I'll try to make it to another planet!</entry>
 	<entry key='chat.bi.6.n0.o'>Turn around at once!</entry>
 	<entry key='chat.bi.6.n0'>Turn around at once!</entry>
 	<entry key='chat.bi.6.n1'>Khhz Hrrrz. .he .ad.o is not worki...</entry>
@@ -2602,6 +2596,31 @@
 	<entry key='chat.bi.8.n2.o'>This planet is under blockade!</entry>
 	<entry key='chat.bi.8.n2'>You must leave at once!</entry>
 	<entry key='chat.bi.8.n3'>Thank you, Sir.</entry>
+
+	<entry key='chat.bo.1.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.1.n0'>This is the Interplanetary Police calling. Turn around at once! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key='chat.bo.1.n1'>All right. Ship BX12 is leaving the planet.</entry>
+	<entry key='chat.bo.2.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.2.n0'>This is the Interplanetary Police. Turn around at once! This planet is under blockade.</entry>
+	<entry key='chat.bo.2.n1'>All right. Ship GH38 is leaving the planet.</entry>
+	<entry key='chat.bo.3.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.3.n0'>This is the Police calling. Turn around! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key='chat.bo.3.n1'>All right. Ship ECHO is leaving the planet.</entry>
+	<entry key='chat.bo.4.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.4.n0'>This is the Interplanetary Police calling. Turn around! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key='chat.bo.4.n1'>All right. Ship BX12 is leaving the planet.</entry>
+	<entry key='chat.bo.5.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.5.n0'>This is the Interplanetary Police calling. Turn around at once! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key='chat.bo.5.n1'>All right. Ship Max4 is leaving the planet.</entry>
+	<entry key='chat.bo.6.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.6.n0'>This is the Police calling. Turn around at once! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key='chat.bo.6.n1'>All right. Ship Fox is leaving the planet.</entry>
+	<entry key='chat.bo.7.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.7.n0'>This is the Interplanetary Police calling. Turn around at once! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key='chat.bo.7.n1'>All right. Ship MX109 is leaving the planet.</entry>
+	<entry key='chat.bo.8.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bo.8.n0'>This is the Police. Turn around at once! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key='chat.bo.8.n1'>All right. Ship Eyola4 is leaving the planet.</entry>
 
 	<entry key=''/>
   	<entry key=''/>

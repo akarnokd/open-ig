@@ -90,10 +90,10 @@ public final class ChatConverter {
 		Map<String, String> labels = U.newLinkedHashMap();
 
 		for (int i = 1; i <= 8; i++) {
-			IGScript scr = parseScript("c:/games/igde/data/text/kok" + i + ".scr");
+			IGScript scr = parseScript("c:/games/ighu/data/text/kor" + i + ".scr", "Cp850"); //hu: Cp850, de: Cp1250
 	
-			String chatPattern = "chat.blockade.incoming.%d";
-			String labelPattern = "chat.bi.%d.%s";
+			String chatPattern = "chat.blockade.outgoing.%d";
+			String labelPattern = "chat.bo.%d.%s";
 			
 			
 			List<Node> nodes = U.newArrayList();
@@ -228,12 +228,13 @@ public final class ChatConverter {
 	/**
 	 * Parse an IG script file.
 	 * @param fileName the filename
+	 * @param charset the charset
 	 * @return the parsed script
 	 * @throws IOException on error
 	 */
-	static IGScript parseScript(String fileName) throws IOException {
+	static IGScript parseScript(String fileName, String charset) throws IOException {
 		IGScript result = new IGScript();
-		String txt = new String(IOUtils.load(fileName), "Cp1250");
+		String txt = new String(IOUtils.load(fileName), charset);
 		int pi = 0;
 		// parse procedures
 		while (pi >= 0) {
@@ -244,7 +245,7 @@ public final class ChatConverter {
 				
 				proc.name = txt.substring(pi2 + 10, pi3).trim();
 				
-				int pi2e = txt.indexOf("end", pi3);
+				int pi2e = txt.indexOf("end\r", pi3);
 				proc.body = txt.substring(pi3 + 1, pi2e).trim();
 				
 				result.procedures.put(proc.name, proc);
@@ -275,7 +276,8 @@ public final class ChatConverter {
 					
 					Choice c = new Choice();
 					
-					c.text = noquot(choiceEntryStr.substring(0, sep));
+					int qidx = choiceEntryStr.indexOf('"');
+					c.text = noquot(choiceEntryStr.substring(qidx, sep));
 					
 					c.proc = choiceEntryStr.substring(sep + 1);
 					
