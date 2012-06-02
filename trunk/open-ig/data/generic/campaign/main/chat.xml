@@ -886,4 +886,84 @@
 		</node>
 		<node id="3" owner="enemy" message="chat.vo.1.n3" action="retreat"/> <!-- Okay -->
 	</chat>
+	<chat id="chat.blockade.incoming.1">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+		<node id="0" owner="player" option="chat.bi.1.n0.o" message="chat.bi.1.n0"> <!-- Turn around. -->
+			<transition to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="chat.bi.1.n1" action="retreat"/> <!-- This is BX12. -->
+	</chat>
+	<chat id="chat.blockade.incoming.2">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+		<node id="0" owner="player" option="chat.bi.2.n0.o" message="chat.bi.2.n0"> <!-- Turn around. -->
+			<transition to="1"/>
+		</node>
+		<node id="1" owner="enemy" message="chat.bi.2.n1" > <!-- cargo spoil. -->
+			<transition to="2"/>
+			<transition to="3"/>
+		</node>
+		<node id="2" owner="player" option="chat.bi.2.n2.o" message="chat.bi.2.n2"> <!-- No landing -->
+			<transition to="4"/>
+		</node>
+		<node id="3" owner="player" option="chat.bi.2.n3.o" message="chat.bi.2.n3">	<!-- What are you carrying? -->
+			<transition to="5"/>
+		</node>
+		<node id="4" owner="enemy" message="chat.bi.2.n4" action="retreat"/> <!-- I'll turn around. -->
+		<node id="5" owner="enemy" message="chat.bi.2.n5"> <!-- Milk. -->
+			<transition to="6"/>
+			<transition to="7"/>
+		</node>
+		<node id="6" owner="player" option="chat.bi.2.n6.o" message="chat.bi.2.n6"> <!-- Check cargo -->
+			<transition to="8"/>
+		</node>
+		<node id="7" owner="player" option="chat.bi.2.n7.o" message="chat.bi.2.n7"> <!-- There is a blockade -->
+			<transition to="6"/>
+			<transition to="9"/>		
+		</node>
+		<node id="8" owner="enemy" message="chat.bi.2.n8"/> <!-- Thank you -->
+		<node id="9" owner="enemy" message="chat.bi.2.n9" action="retreat"/> <!-- Retreat -->
+	</chat>
+	<chat id="chat.blockade.incoming.3">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.incoming.4">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.incoming.5">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.incoming.6">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.incoming.7">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.incoming.8">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	
+	<chat id="chat.blockade.outgoing.1">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.outgoing.2">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.outgoing.3">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.outgoing.4">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.outgoing.5">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.outgoing.6">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.outgoing.7">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
+	<chat id="chat.blockade.outgoing.8">
+		<node owner="enemy" message="chat.global.dont_shoot" id="-1" action="retreat"/>
+	</chat>
 </chats>
