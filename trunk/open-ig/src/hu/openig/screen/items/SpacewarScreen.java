@@ -50,6 +50,8 @@ import hu.openig.render.TextRenderer;
 import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.screen.EquipmentConfigure;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.ThreePhaseButton;
+import hu.openig.screen.TwoPhaseButton;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -114,126 +116,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		MOVIE,
 		/** The layout. */
 		LAYOUT
-	}
-	/** A three phase button. */
-	class ThreePhaseButton {
-		/** The X coordinate. */
-		int x;
-		/** The Y coordinate. */
-		int y;
-		/** The three phases: normal, selected, selected and pressed. */
-		BufferedImage[] phases;
-		/** Selected state. */
-		boolean selected;
-		/** Pressed state. */
-		boolean pressed;
-		/** The action to perform on the press. */
-		Action0 action;
-		/** Is the button disabled? */
-		boolean enabled = true;
-		/**
-		 * Constructor.
-		 * @param phases the phases
-		 */
-		public ThreePhaseButton(BufferedImage[] phases) {
-			this.phases = phases;
-		}
-		/**
-		 * Constructor.
-		 * @param x the x coordinate
-		 * @param y the y coordinat
-		 * @param phases the phases
-		 */
-		public ThreePhaseButton(int x, int y, BufferedImage[] phases) {
-			this.x = x;
-			this.y = y;
-			this.phases = phases;
-		}
-		/** 
-		 * Render the button.
-		 * @param g2 the graphics object
-		 */
-		public void paintTo(Graphics2D g2) {
-			if (!enabled) {
-				g2.drawImage(phases[0], x, y, null);
-				RenderTools.fill(g2, x, y, phases[0].getWidth(), phases[0].getHeight(), commons.common().disabledPattern);
-			} else
-			if (pressed) {
-				g2.drawImage(phases[1], x, y, null);
-			} else
-			if (selected) {
-				g2.drawImage(phases[2], x, y, null);
-			} else {
-				g2.drawImage(phases[0], x, y, null);
-			}
-		}
-		/**
-		 * Test if the mouse is within this button.
-		 * @param mx the mouse X coordinate
-		 * @param my the mouse Y coordinate
-		 * @return true if within the button
-		 */
-		public boolean test(int mx, int my) {
-			return enabled && visible && mx >= x && my >= y && mx < x + phases[0].getWidth() && my < y + phases[0].getHeight();
-		}
-		/** Invoke the associated action if present. */
-		public void invoke() {
-			if (action != null) {
-				action.invoke();
-			}
-		}
-	}
-	/** A two phase toggle button. */
-	class TwoPhaseButton {
-		/** The X coordinate. */
-		int x;
-		/** The Y coordinate. */
-		int y;
-		/** The pressed state. */
-		boolean pressed;
-		/** The phases. */
-		BufferedImage[] phases;
-		/** Is this button visible. */
-		boolean visible;
-		/** Is the button enabled? */
-		boolean enabled = true;
-		/**
-		 * Constructor.
-		 * @param x the X coordinate
-		 * @param y the Y coordinate
-		 * @param phases the two phases
-		 */
-		public TwoPhaseButton(int x, int y, BufferedImage[] phases) {
-			this.x = x;
-			this.y = y;
-			this.phases = phases;
-		}
-		/**
-		 * Paint the button.
-		 * @param g2 the graphics
-		 */
-		public void paintTo(Graphics2D g2) {
-			if (visible) {
-				if (!enabled) {
-					g2.drawImage(phases[0], x, y, null);
-					RenderTools.fill(g2, x, y, phases[0].getWidth(), phases[0].getHeight(), commons.common().disabledPattern);
-				} else
-				if (pressed) {
-					g2.drawImage(phases[1], x, y, null);
-				} else {
-					g2.drawImage(phases[0], x, y, null);
-				}
-			}
-		}
-		/**
-		 * Test if the mouse is within this button.
-		 * @param mx the mouse X coordinate
-		 * @param my the mouse Y coordinate
-		 * @return true if within the button
-		 */
-		public boolean test(int mx, int my) {
-			return enabled && visible && mx >= x && my >= y && mx < x + phases[0].getWidth() && my < y + phases[0].getHeight();
-		}
 	}
 	/** Animated toggle button. */
 	class AnimatedRadioButton extends UIComponent {
@@ -450,7 +332,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
 		
-		stopButton = new ThreePhaseButton(33, 24, commons.spacewar().stop);
+		stopButton = new ThreePhaseButton(33, 24, commons.spacewar().stop, commons.common().disabledPattern);
 		stopButton.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -458,8 +340,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				stopButton.selected = false;
 			}
 		};
-		moveButton = new ThreePhaseButton(33 + 72, 24, commons.spacewar().move);
-		kamikazeButton = new ThreePhaseButton(33, 24 + 35, commons.spacewar().kamikaze);
+		moveButton = new ThreePhaseButton(33 + 72, 24, commons.spacewar().move, commons.common().disabledPattern);
+
+		kamikazeButton = new ThreePhaseButton(33, 24 + 35, commons.spacewar().kamikaze, commons.common().disabledPattern);
 		kamikazeButton.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -468,8 +351,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				enableSelectedFleetControls();
 			}
 		};
-		attackButton = new ThreePhaseButton(33 + 72, 24 + 35, commons.spacewar().attack);
-		guardButton = new ThreePhaseButton(33, 24 + 35 * 2, commons.spacewar().guard);
+		attackButton = new ThreePhaseButton(33 + 72, 24 + 35, commons.spacewar().attack, commons.common().disabledPattern);
+		guardButton = new ThreePhaseButton(33, 24 + 35 * 2, commons.spacewar().guard, commons.common().disabledPattern);
 		guardButton.action = new Action0() {
 			@Override
 			public void invoke() {
@@ -477,7 +360,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		};
 		
-		rocketButton = new ThreePhaseButton(33 + 72, 24 + 35 * 2, commons.spacewar().rocket);
+		rocketButton = new ThreePhaseButton(33 + 72, 24 + 35 * 2, commons.spacewar().rocket, commons.common().disabledPattern);
 		
 		mainCommands.add(stopButton);
 		mainCommands.add(moveButton);
@@ -488,10 +371,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		viewCommands = new ArrayList<ThreePhaseButton>();
 		
-		viewCommand = new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar().command);
-		viewDamage = new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar().damage);
-		viewRange = new ThreePhaseButton(33, 24 + 35 * 3 + 30, commons.spacewar().fireRange);
-		viewGrid = new ThreePhaseButton(33 + 72, 24 + 35 * 3 + 30, commons.spacewar().grid);
+		viewCommand = new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar().command, commons.common().disabledPattern);
+		viewDamage = new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar().damage, commons.common().disabledPattern);
+		viewRange = new ThreePhaseButton(33, 24 + 35 * 3 + 30, commons.spacewar().fireRange, commons.common().disabledPattern);
+		viewGrid = new ThreePhaseButton(33 + 72, 24 + 35 * 3 + 30, commons.spacewar().grid, commons.common().disabledPattern);
 		viewDamage.selected = true;
 		
 		viewCommands.add(viewCommand);
@@ -499,14 +382,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		viewCommands.add(viewRange);
 		viewCommands.add(viewGrid);
 		
-		zoom = new TwoPhaseButton(3, 24, commons.spacewar().zoom);
+		zoom = new TwoPhaseButton(3, 24, commons.spacewar().zoom, commons.common().disabledPattern);
 		zoom.visible = true;
-		pause = new TwoPhaseButton(4, 19 + 170, commons.spacewar().pause);
+		pause = new TwoPhaseButton(4, 19 + 170, commons.spacewar().pause, commons.common().disabledPattern);
 		pause.visible = true;
-		retreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().retreat);
+		retreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().retreat, commons.common().disabledPattern);
 		retreat.visible = true;
-		confirmRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().sure);
-		stopRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().stopTall);
+		confirmRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().sure, commons.common().disabledPattern);
+		stopRetreat = new TwoPhaseButton(33, 19 + 170, commons.spacewar().stopTall, commons.common().disabledPattern);
 		
 		
 		leftShipStatus = createButton(commons.spacewar().ships, true, PanelMode.SHIP_STATUS);

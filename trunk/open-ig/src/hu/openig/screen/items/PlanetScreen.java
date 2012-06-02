@@ -58,6 +58,7 @@ import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageFill;
 import hu.openig.ui.UIImageTabButton;
+import hu.openig.ui.UIImageTabButton2;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -69,12 +70,14 @@ import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -312,6 +315,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	boolean undeploySpray;
 	/** Display the commands given to units. */
 	boolean showCommand;
+	/** Stop the selected units. */
+	UIImageTabButton2 stopUnit;
+	/** Move the selected units. */
+	UIImageTabButton2 moveUnit;
+	/** Attack with the selected units. */
+	UIImageTabButton2 attackUnit;
+	/** The tank panel. */
+	TankPanel tankPanel;
+	/** Indicate the left click will select an attack target. */
+	boolean attackSelect;
+	/** Indicate the left click will select a move target. */
+	boolean moveSelect;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -399,6 +414,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				e.consume();
 				rep = true;
 			}
+			break;
+		case KeyEvent.VK_A:
+			selectCommand(attackUnit);
+			e.consume();
+			rep = true;
+			break;
+		case KeyEvent.VK_M:
+			selectCommand(moveUnit);
+			e.consume();
+			rep = true;
 			break;
 		default:
 		}
@@ -490,6 +515,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				}
 			});
 		}
+		moveSelect = false;
+		attackSelect = false;
 	}
 
 	@Override
@@ -779,10 +806,27 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					rep = true;
 				}
 				break;
+			case DOUBLE_CLICK:
+				if (e.has(Button.LEFT)) {
+					doSelectUnitType(e.x, e.y);
+					rep = true;
+				}
+				break;
 			case DOWN:
 //				if (battle != null) { FIXME only if battle
 					if (e.has(Button.LEFT)) {
-						toggleUnitPlacementAt(e.x, e.y);
+						if (moveSelect) {
+							doMoveSelectedUnits(e.x, e.y);
+							rep = true;
+							break;
+						} else
+						if (attackSelect) {
+							doAttackWithSelectedUnits(e.x, e.y);
+							rep = true;
+							break;
+						} else {
+							toggleUnitPlacementAt(e.x, e.y);
+						}
 					} else
 					if (e.has(Button.RIGHT)) {
 						if (config.classicControls) {
@@ -962,9 +1006,27 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				}
 			}
 			
-			buildingsPanel.visible(planet().owner == player() && showBuildingList && battle == null);
+			buildingsPanel.visible(planet().owner == player() 
+					&& showBuildingList && battle == null);
 			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
 			infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
+			
+			boolean showTankPanel = (!units.isEmpty() || !guns.isEmpty()) && !startBattle.visible();
+			tankPanel.visible(showTankPanel);
+			moveUnit.visible(showTankPanel);
+			attackUnit.visible(showTankPanel);
+			stopUnit.visible(showTankPanel);
+			if (buildingsPanel.visible()) {
+				tankPanel.location(buildingsPanel.x + buildingsPanel.width, base.y + 2);
+				moveUnit.location(tankPanel.x + tankPanel.width + 2, tankPanel.y);
+				attackUnit.location(moveUnit.x, moveUnit.y + moveUnit.height);
+				stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
+			} else {
+				tankPanel.location(prev.x - 2, base.y + 2);
+				moveUnit.location(tankPanel.x + tankPanel.width + 2, tankPanel.y);
+				attackUnit.location(moveUnit.x, moveUnit.y + moveUnit.height);
+				stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
+			}
 			
 			starmap.visible(showSidebarButtons && battle == null);
 			colonyInfo.visible(showSidebarButtons && battle == null);
@@ -1079,7 +1141,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (ps != null && planet().owner == player()) {
 					renderProblems(g2, ps);
 				}
-				drawSelectedUnitName(g2);
 			} else {
 				g2.setTransform(at);
 				
@@ -1115,6 +1176,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (battle != null && startBattle.visible()) {
 				drawNextVehicleToDeploy(g2);
 			}
+			
+			
 		}
 		/**
 		 * Draw the next vehicle's image to deploy.
@@ -1480,25 +1543,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				int py = (y0 + Tile.toScreenY(cx, cy));
 				BufferedImage bimg = commons.colony().mine[0][0];
 				g2.drawImage(bimg, px + 21, py + 12, null);
-			}
-		}
-		/**
-		 * Draws the name of the first selected unit to the top of the screen, below the colony name and status icons.
-		 * @param g2 the graphics context.
-		 */
-		void drawSelectedUnitName(Graphics2D g2) {
-			GroundwarUnit u = null;
-			for (GroundwarUnit u2 : units) {
-				if (u2.selected) {
-					u = u2;
-					break;
-				}
-			}
-			if (u != null) {
-				String n = world().researches.get(u.model.id).name;
-				int w = commons.text().getTextWidth(10, n);
-				commons.text().paintTo(g2, (width - w) / 2 + 1, 40 + 1, 10, TextRenderer.RED, n);
-				commons.text().paintTo(g2, (width - w) / 2, 40, 10, TextRenderer.YELLOW, n);
 			}
 		}
 		/**
@@ -3082,6 +3126,38 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		};
 		
 		
+		stopUnit = new UIImageTabButton2(commons.spacewar().stop);
+		stopUnit.disabledPattern(commons.common().disabledPattern);
+//		stopUnit.visible(false);
+		stopUnit.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				doStopSelectedUnits();
+			}
+		};
+		
+		moveUnit = new UIImageTabButton2(commons.spacewar().move);
+		moveUnit.disabledPattern(commons.common().disabledPattern);
+		moveUnit.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				selectCommand(moveUnit);
+			}
+		};
+//		moveUnit.visible(false);
+
+		attackUnit = new UIImageTabButton2(commons.spacewar().attack);
+		attackUnit.disabledPattern(commons.common().disabledPattern);
+//		attackUnit.visible(false);
+		attackUnit.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				selectCommand(attackUnit);
+			}
+		};
+
+		tankPanel = new TankPanel();
+		
 		initPathfinding();
 		
 		addThis();
@@ -3122,7 +3198,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		
 		prev.location(sidebarRadar.x + sidebarRadar.width + 2, sidebarRadar.y - prev.height - 2);
 		next.location(prev.x + prev.width + 2, prev.y);
-		
 	}
 	/**
 	 * @return the current planet surface or selects one from the player's list.
@@ -3693,6 +3768,37 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		return new Rectangle(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
 	}
 	/**
+	 * Select units of the same type.
+	 * @param mx the mouse coordinate
+	 * @param my the mouse coordinate
+	 */
+	void doSelectUnitType(int mx, int my) {
+		for (GroundwarUnit u : units) {
+			Rectangle r = unitRectangle(u);
+			
+			scaleToScreen(r);
+
+			if (r.contains(mx, my)) {
+				for (GroundwarUnit u2 : units) {
+					u2.selected = u2.owner == u.owner && u2.model.id.equals(u.model.id);
+				}
+				return;
+			}
+		}
+		// select guns of the same building
+		for (GroundwarGun g : guns) {
+			Rectangle r = gunRectangle(g);
+			scaleToScreen(r);
+			
+			if (r.contains(mx, my)) {
+				for (GroundwarGun g2 : guns) {
+					g2.selected = g2.building == g.building;
+				}
+				return;
+			}
+		}		
+	}
+	/**
 	 * Select units within the selection rectangle.
 	 * @param mode the selection mode
 	 */
@@ -3752,6 +3858,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				u.selected = u.selected && u.owner == player();
 			}			
 		}
+		boolean allowCommands = own || enemy; // FIXME only own!
+		moveUnit.enabled(allowCommands);
+		attackUnit.enabled(allowCommands);
+		stopUnit.enabled(allowCommands);
 	}
 	/**
 	 * Sacle and position the given rectangle according to the current offset and scale.
@@ -3834,6 +3944,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		if (moved) {
 			effectSound(SoundType.ACKNOWLEDGE_2);
+			selectCommand(null);
 		}
 	}
 	/**
@@ -4854,6 +4965,33 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		if (stopped) {
 			effectSound(SoundType.NOT_AVAILABLE);
+			selectCommand(stopUnit);
+		}
+		
+	}
+	/**
+	 * Select a command button and prepare modes.
+	 * @param component the component to select
+	 */
+	void selectCommand(UIComponent component) {
+		stopUnit.selected = false; //component == stopUnit;
+		if (stopUnit.selected) {
+			attackSelect = false;
+			moveSelect = false;
+		}
+		moveUnit.selected = component == moveUnit;
+		if (moveUnit.selected) {
+			attackSelect = false;
+			moveSelect = true;
+		}
+		attackUnit.selected = component == attackUnit;
+		if (attackUnit.selected) {
+			attackSelect = true;
+			moveSelect = false;
+		}
+		if (component == null) {
+			attackSelect = false;
+			moveSelect = false;
 		}
 	}
 	/**
@@ -4930,6 +5068,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (attacked) {
 			effectSound(SoundType.ACKNOWLEDGE_1);
 		}
+		selectCommand(null);
 	}
 	/**
 	 * Find the nearest enemy of the given mouse coordinates.
@@ -5623,6 +5762,78 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			float a2 = (alpha - Tile.MIN_ALPHA);
 			int n = (int)(a2 / step);
 			alpha = step * n + Tile.MIN_ALPHA;
+		}
+	}
+	/**
+	 * A panel showing the current selected unit(s). 
+	 * @author akarnokd, 2012.06.02.
+	 */
+	class TankPanel extends UIComponent {
+		/** Background image. */
+		BufferedImage background;
+		/** Construct the tank panel. */
+		public TankPanel() {
+			background = commons.colony().tankPanel;
+			width = background.getWidth();
+			height = background.getHeight();
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.setColor(Color.BLACK);
+			Stroke saves = g2.getStroke();
+			g2.setStroke(new BasicStroke(2));
+			g2.drawRect(-1, -1, width + 2, height + 2);
+			g2.drawRect(-1, -1, width + moveUnit.width + 4, height + 2);
+			g2.setStroke(saves);
+			
+			g2.drawImage(background, 0, 0, null);
+			GroundwarUnit u = null;
+			int count = 0;
+			double sumHp = 0;
+			for (GroundwarUnit u2 : units) {
+				if (u2.selected) {
+					if (u == null) {
+						u = u2;
+						count++;
+						sumHp = u2.hp;
+					} else 
+					if (u.model.id.equals(u2.model.id)) {
+						count++;
+						sumHp += u2.hp;
+					}
+				}
+			}
+			String n = "";
+			if (u != null) {
+				n = world().researches.get(u.model.id).name;
+				if (count > 1) {
+					n += " x " + count;
+				}
+				BufferedImage img = u.model.normal[0][0];
+				int iw = (width - img.getWidth()) / 2;
+				g2.drawImage(img, iw, 25, null);
+				
+				commons.text().paintTo(g2, 10, height - 25, 7, u.owner.color, 
+						format("spacewar.selection.firepower_dps", u.model.damage * count, 
+						String.format("%.1f", u.model.damage * count * 1000d / u.model.delay)));
+				commons.text().paintTo(g2, 10, height - 15, 7, u.owner.color, get("spacewar.selection.defense_values") + ((int)sumHp));
+				
+			} else {
+				n = get("spacewar.ship_status_none");
+			}
+			int w = commons.text().getTextWidth(10, n);
+			int tsize = 10;
+			if (w >= width - 10) {
+				w = commons.text().getTextWidth(7, n);
+				tsize = 7;
+			}
+			commons.text().paintTo(g2, (width - w) / 2 + 1, 10, tsize, TextRenderer.RED, n);
+			commons.text().paintTo(g2, (width - w) / 2, 10, tsize, TextRenderer.YELLOW, n);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			// TODO Auto-generated method stub
+			return super.mouse(e);
 		}
 	}
 }
