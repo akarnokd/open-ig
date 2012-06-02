@@ -10,6 +10,7 @@ package hu.openig.gfx;
 
 import hu.openig.core.Anim;
 import hu.openig.core.Btn2;
+import hu.openig.core.Cat;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
 import hu.openig.core.ResourceLocator;
@@ -203,6 +204,9 @@ public class ColonyGFX {
 	/** The tank info panel. */
 	@Img(name = "colony/tank_panel")
 	public BufferedImage tankPanel;
+	/** The zoom button (horizontal). */
+	@Cat(name = "colony/button_zoom")
+	public BufferedImage[] zoom;
 	/** The explosion images. */
 	public final Map<ExplosionType, BufferedImage[]> explosions = U.newHashMap();
 	/**

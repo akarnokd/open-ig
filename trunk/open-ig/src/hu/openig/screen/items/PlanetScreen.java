@@ -327,6 +327,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	boolean attackSelect;
 	/** Indicate the left click will select a move target. */
 	boolean moveSelect;
+	/** The zoom button. */
+	@DragSensitive
+	UIImageButton zoom;
+	/** The zoom direction. */
+	boolean zoomDirection;
+	/** Zoom to normal. */
+	boolean zoomNormal;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -468,21 +475,43 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * Zoom to 100%.
 	 */
 	protected void doZoomNormal() {
-		render.scale = 1.0;
+		doZoom(1.0 - render.scale);
 		askRepaint();
 	}
 	/**
 	 * Zoom out by decreasing the scale by 0.1.
 	 */
 	protected void doZoomOut() {
-		render.scale = Math.max(0.1, render.scale - 0.1);
+		doZoom(-0.1);
 		askRepaint();
+	}
+	/**
+	 * Perform a central zoom with a zoom delta.
+	 * @param scaleDelta the delta
+	 */
+	protected void doZoom(double scaleDelta) {
+		double pre = render.scale;
+		
+		int ex = render.width / 2;
+		int ey = render.height / 2;
+		
+		double mx = (ex - render.offsetX) * pre;
+		double my = (ey - render.offsetY) * pre;
+		
+		render.scale = Math.max(0.1, Math.min(2, render.scale + scaleDelta));
+		
+		double mx0 = (ex - render.offsetX) * render.scale;
+		double my0 = (ey - render.offsetY) * render.scale;
+		double dx = (mx - mx0) / pre;
+		double dy = (my - my0) / pre;
+		render.offsetX += (int)(dx);
+		render.offsetY += (int)(dy);
 	}
 	/**
 	 * Zoom in by increasing the scale by 0.1.
 	 */
 	protected void doZoomIn() {
-		render.scale = Math.min(2.0, render.scale + 0.1);
+		doZoom(0.1);
 		askRepaint();
 	}
 
@@ -1171,7 +1200,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			
 			if (prev.visible() && next.visible()) {
 				g2.setColor(Color.BLACK);
-				g2.fillRect(prev.x - this.x - 1, prev.y - this.y - 1, prev.width + next.width + 4, prev.height + 2);
+				g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2, 
+						prev.width + next.width + 6, prev.height + zoom.height + 8);
+			} else 
+			if (zoom.visible()) {
+				g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2, 
+						zoom.width + 4, zoom.height + 2);
 			}
 			if (battle != null && startBattle.visible()) {
 				drawNextVehicleToDeploy(g2);
@@ -1839,26 +1873,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			case WHEEL:
 				if (e.has(Modifier.CTRL)) {
 					if (moveViewPort(e)) {
-						double pre = render.scale;
-						
-						int ex = render.width / 2;
-						int ey = render.height / 2;
-						
-						double mx = (ex - render.offsetX) * pre;
-						double my = (ey - render.offsetY) * pre;
 						if (e.z < 0) {
 							doZoomIn();
 						} else {
 							doZoomOut();
 						}
-						double mx0 = (ex - render.offsetX) * render.scale;
-						double my0 = (ey - render.offsetY) * render.scale;
-						double dx = (mx - mx0) / pre;
-						double dy = (my - my0) / pre;
-						render.offsetX += (int)(dx);
-						render.offsetY += (int)(dy);
 					
-					return true;
+						return true;
 					}
 				}
 				return false;
@@ -3158,6 +3179,30 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		tankPanel = new TankPanel();
 		
+		zoom = new UIImageButton(commons.colony().zoom) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				zoomDirection = (e.has(Button.LEFT));
+				zoomNormal = e.has(Button.MIDDLE);
+				return super.mouse(e);
+			};
+		};
+		zoom.setHoldDelay(100);
+		zoom.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				if (zoomNormal) {
+					doZoomNormal();
+				} else
+				if (zoomDirection) {
+					doZoomIn();
+				} else {
+					doZoomOut();
+				}
+			}
+		};
+
+		
 		initPathfinding();
 		
 		addThis();
@@ -3196,8 +3241,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		
 		upgradePanel.location(buildingInfoPanel.x, buildingInfoPanel.y + buildingInfoPanel.height);
 		
-		prev.location(sidebarRadar.x + sidebarRadar.width + 2, sidebarRadar.y - prev.height - 2);
+		prev.location(sidebarRadar.x + sidebarRadar.width + 1, sidebarRadar.y - prev.height - 3);
 		next.location(prev.x + prev.width + 2, prev.y);
+		zoom.location(prev.x, prev.y - 4 - zoom.height);
 	}
 	/**
 	 * @return the current planet surface or selects one from the player's list.
