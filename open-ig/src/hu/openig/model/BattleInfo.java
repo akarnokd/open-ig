@@ -190,12 +190,13 @@ public class BattleInfo {
 		if (s.owner == p) {
 			return true;
 		}
-		if (attacker.owner == p) {
+		if (p == attacker.owner) {
 			return attackerAllies.contains(s.owner);
 		}
+		// P is the defender
 		if (s.owner == attacker.owner) {
-			return false;
+			return attackerAllies.contains(p);
 		}
-		return !attackerAllies.contains(s.owner);
+		return false;
 	}
 }

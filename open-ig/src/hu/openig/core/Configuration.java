@@ -231,18 +231,19 @@ public class Configuration {
 	public boolean scaleAllScreens = false;
 	/** AI should attack every building, not just the defensive ones. */
 	@LoadSave
-	@LoadSaveGame
+//	@LoadSaveGame
 	public boolean aiGroundAttackEverything = true;
 	/** AI should attack a mixed set of targets. */
 	@LoadSave
-	@LoadSaveGame
+//	@LoadSaveGame
 	public boolean aiGroundAttackMixed = true;
 	/** Force the AI autobuild to ignore static defenses until the economic buildings have been built. */
 	@LoadSave
-	@LoadSaveGame
+//	@LoadSaveGame
 	public boolean autoBuildEconomyFirst = true;
 	/** Use standard Java fonts instead of the original bitmap fonts. */
-	@LoadSaveGame
+	@LoadSave
+//	@LoadSaveGame
 	public boolean useStandardFonts = false;
 	/**
 	 * Initialize configuration.
