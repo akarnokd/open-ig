@@ -2532,6 +2532,51 @@
   <entry key='settings.quick_rnp'>Show quick research/production</entry>
   <entry key='settings.scale_all_screens'>Scale fixed size screens to window</entry>
 	<entry key="profile">Profile:</entry>
+
+	<entry key="chat.bi.1.n0.o">Turn around at once!</entry>
+	<entry key="chat.bi.1.n0">This is the Interplanetary Police! Turn around at once! I repeat, turn around! This planet is under blockade.</entry>
+	<entry key="chat.bi.1.n1">All right. Ship BX12 is leaving the planet.</entry>
+	
+	<entry key='chat.bi.2.n0'>This is the Interplanetary Police! Turn around at once! I repeat, turn around at once! This planet is under blockade.</entry>
+	<entry key='chat.bi.2.n0.o'>Turn around at once!</entry>
+	<entry key='chat.bi.2.n1'>But Sir, I MUST deliver my cargo. My cargo will spoil if it is not put into refrigiration soon!</entry>
+	<entry key='chat.bi.2.n2'>I'm sorry, but no-one may land. All right, I'll turn around.</entry>
+	<entry key='chat.bi.2.n2.o'>I'm sorry, but no-one may land.</entry>
+	<entry key='chat.bi.2.n3'>What are you carrying?</entry>
+	<entry key='chat.bi.2.n3.o'>What are you carrying?</entry>
+	<entry key='chat.bi.2.n4'>All right, I'll turn around.</entry>
+	<entry key='chat.bi.2.n5'>I am carrying milk to the Mydon chain of stores. Please let me pass, or my cargo will be wasted. I have no insurance and will lose a lot of money!</entry>
+	<entry key='chat.bi.2.n6'>Once we've checked your cargo, if you are clean, you may pass.</entry>
+	<entry key='chat.bi.2.n6.o'>We'll check your cargo.</entry>
+	<entry key='chat.bi.2.n7'>Turn around at once.</entry>
+	<entry key='chat.bi.2.n7.o'>Turn around at once.</entry>
+	<entry key='chat.bi.2.n8'>Thank you, Captain.</entry>
+	<entry key='chat.bi.2.n9'>Damn! I understand. I'm leaving.</entry>
+	
 	<entry key=''/>
-  <entry key=''/>
+  	<entry key=''/>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
 </labels>

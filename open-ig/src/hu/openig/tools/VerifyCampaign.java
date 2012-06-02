@@ -15,6 +15,7 @@ import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.render.TextRenderer;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -86,6 +87,9 @@ public class VerifyCampaign {
 	}
 	/** Cross-check labels. */
 	void verifyLabels() {
+		
+		TextRenderer tr = new TextRenderer(rl, false);
+		
 		for (String lang1 : languages) {
 			Labels l1 = new Labels();
 			l1.load(getXML(lang1, "labels"));
@@ -94,6 +98,17 @@ public class VerifyCampaign {
 
 			labels.put(lang1, l1);
 			
+			for (Map.Entry<String, String> v : l1.map().entrySet()) {
+				if (v.getValue() != null) {
+					for (char c : v.getValue().toCharArray()) {
+						if (!tr.isSupported(c)) {
+							System.err.println("Character " + c + " not supported in " + lang1 + " | " + v);
+							break;
+						}
+					}
+				}
+			}
+			
 			for (String lang2 : languages) {
 				if (lang1 != lang2) {
 					Labels l2 = new Labels();
@@ -101,6 +116,7 @@ public class VerifyCampaign {
 					l2.load(getXML(lang2, "labels"));
 					
 					crossCheckLabels(lang1, lang2, l1, l2);
+					
 
 					Labels l4 = new Labels();
 					XElement x2 = getXML(lang2, game + "/labels");
@@ -133,6 +149,7 @@ public class VerifyCampaign {
 		}
 		if (langs.length() > 0) {
 			System.err.printf("%s %s in languages%s%n", where, key, langs);
+			System.err.printf("\t<entry key='%s'></entry>%n", key);
 		}
 	}
 	/**
@@ -176,15 +193,17 @@ public class VerifyCampaign {
 			String cid = xchat.get("id");
 			for (XElement xnode : xchat.childrenWithName("node")) {
 				String nid = xnode.get("id");
-				String msg = xnode.get("message");
-				
-				checkLabel(msg, String.format("Missing label: chat '%s' node '%s' message", cid, nid));
 				
 				String opt = xnode.get("option", null);
 				
 				if (opt != null) {
 					checkLabel(opt, String.format("Missing label: chat '%s' node '%s' option", cid, nid));
 				}
+
+				String msg = xnode.get("message");
+				
+				checkLabel(msg, String.format("Missing label: chat '%s' node '%s' message", cid, nid));
+				
 			}
 		}
 	}

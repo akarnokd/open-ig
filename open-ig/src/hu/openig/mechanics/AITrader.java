@@ -547,6 +547,14 @@ public class AITrader implements AIManager {
 				}
 				if (p != null && p.quarantineTTL > 0) {
 					filter = CHAT_VIRUS_INCOMING;
+				} else
+				if (battle.helperPlanet != null) {
+					if (p == battle.helperPlanet) {
+						filter = "chat.blockade.incoming";
+					} else
+					if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
+						filter = "chat.blockade.outgoing";
+					}
 				}
 			}
 			
