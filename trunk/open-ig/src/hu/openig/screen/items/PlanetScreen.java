@@ -1376,6 +1376,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							w += commons.colony().repair[0].getWidth();
 						}
 						int ex = r.x + (r.width - w) / 2;
+						
 						// paint power shortage
 						if (b.isEnergyShortage()) {
 							g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
@@ -1407,6 +1408,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						
 						commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
 						commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+						
+						if (b.repairing) {
+							g2.drawImage(commons.colony().repair[(animation % 3)], ex + w + 3, ey, null);
+						}
+						
 					}
 				}
 			}

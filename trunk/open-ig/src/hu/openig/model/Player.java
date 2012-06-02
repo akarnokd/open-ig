@@ -550,4 +550,8 @@ public class Player {
 	public void clearMessages() {
 		messageQueue.clear();
 	}
+	@Override
+	public String toString() {
+		return id;
+	}
 }

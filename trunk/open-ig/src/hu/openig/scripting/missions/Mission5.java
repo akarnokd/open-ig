@@ -393,6 +393,7 @@ public class Mission5 extends Mission {
 		if (garthog != null) {
 			world.removeFleet(garthog);
 		}
+		cleanupScriptedFleets();
 		Fleet own = findTaggedFleet("CampaignMainShip1", player);
 		if (survive && own != null) {
 			addTimeout("Mission-5-Success", 3000);
