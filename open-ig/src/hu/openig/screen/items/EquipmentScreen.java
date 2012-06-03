@@ -1721,7 +1721,12 @@ public class EquipmentScreen extends ScreenBase {
 		}
 		if (configure.selectedSlot != null) {
 			innerEquipmentVisible = true;
-			innerEquipmentName.text(get("inventoryslot." + configure.selectedSlot.slot.id), true).visible(true);
+			String sn = get("inventoryslot." + configure.selectedSlot.slot.id);
+			int ihp = configure.selectedSlot.hpMax(configure.item.owner);
+			if (configure.selectedSlot.hp < ihp) {
+				sn += "  (" + (int)((ihp - configure.selectedSlot.hp) * 100 / ihp) + "%)";
+			}
+			innerEquipmentName.text(sn, true).visible(true);
 			if (configure.selectedSlot.type != null) {
 				innerEquipmentSeparator.text(configure.selectedSlot.type.name, true).visible(true);
 			} else {
@@ -2164,7 +2169,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
-			configure.selectedSlot.hp = world().getHitpoints(research());
+//			configure.selectedSlot.hp = world().getHitpoints(research());
 //			if (research().has("shield")) {
 //				configure.item.shield = Math.max(0, configure.item.shieldMax());
 //			}
@@ -2185,7 +2190,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			configure.selectedSlot.type = research();
 			configure.selectedSlot.count = 0;
-			configure.selectedSlot.hp = world().getHitpoints(research());
+//			configure.selectedSlot.hp = world().getHitpoints(research());
 //			if (research().has("shield")) {
 //				configure.item.shield = Math.max(0, configure.item.shieldMax());
 //			}

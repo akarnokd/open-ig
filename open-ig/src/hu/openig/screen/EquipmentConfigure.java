@@ -81,9 +81,10 @@ public class EquipmentConfigure extends UIComponent {
 				if (is.type != null) {
 					g2.setColor(is == selected ? green : Color.BLACK);
 					g2.drawRect(is.slot.x, is.slot.y, is.slot.width - 1, is.slot.height - 1);
-					if (is != selected && is.hp < world.getHitpoints(is.type)) {
+					int ihp = is.hpMax(item.owner);
+					if (is != selected && is.hp < ihp) {
 						g2.setColor(interpolate(
-								is.hp * 1.0f / world.getHitpoints(is.type), 
+								is.hp * 1.0f / ihp, 
 								Color.RED, Color.ORANGE, Color.YELLOW));
 					} else {
 						g2.setColor(green);
@@ -128,7 +129,7 @@ public class EquipmentConfigure extends UIComponent {
 	 * @param colors the available color points
 	 * @return the new color
 	 */
-	static Color interpolate(float amount, Color... colors) {
+	static Color interpolate(double amount, Color... colors) {
 		int idx = (int)(amount * (colors.length - 1));
 		if (idx == colors.length - 1) {
 			return colors[colors.length - 1];

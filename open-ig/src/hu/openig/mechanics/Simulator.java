@@ -825,13 +825,11 @@ public final class Simulator {
 			if (ii.hp < hpMax) {
 				double delta0 = spd;
 				ii.hp = (int)Math.min(hpMax, ii.hp + delta0);
-				// regenerate slots
-				for (InventorySlot is : ii.slots) {
-					if (is.type != null) {
-						int m = ii.owner.world.getHitpoints(is.type);
-						is.hp = (int)Math.min(m, is.hp + delta0);
-					}
-				}
+			}
+			// regenerate slots
+			for (InventorySlot is : ii.slots) {
+				int m = is.hpMax(ii.owner);
+				is.hp = Math.min(m, is.hp + spd / 10);
 			}
 		}
 		int sm = ii.shieldMax();

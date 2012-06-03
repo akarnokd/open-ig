@@ -2115,7 +2115,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (!is.slot.fixed) {
 				is.type = is.slot.items.get(is.slot.items.size() - 1);
 				is.count = is.slot.max;
-				is.hp = commons.world().getHitpoints(is.type);
+				is.hp = is.hpMax(target.owner);
 			}
 		}
 		ii.shield = Math.max(0, ii.shieldMax());

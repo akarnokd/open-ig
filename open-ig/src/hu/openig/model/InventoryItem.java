@@ -83,7 +83,6 @@ public class InventoryItem {
 			if (es.fixed) {
 				is.type = es.items.get(0);
 				is.count = es.max;
-				is.hp = owner.world.getHitpoints(is.type);
 			} else {
 				List<ResearchType> availList = owner.availableLevel(type);
 				
@@ -96,13 +95,14 @@ public class InventoryItem {
 						} else {
 							is.count = es.max / 2;
 						}
-						is.hp = owner.world.getHitpoints(rt1);
 					}
 				}
 				if (is.count == 0) {
 					is.type = null;
 				}
 			}
+			is.hp = is.hpMax(owner);
+			
 			slots.add(is);
 		}
 	}
@@ -143,7 +143,6 @@ public class InventoryItem {
 				owner.changeInventoryCount(is.type, is.count);
 				is.type = null;
 				is.count = 0;
-				is.hp = 0;
 			}
 		}
 	}
@@ -164,7 +163,6 @@ public class InventoryItem {
 						int toAdd = Math.min(cnt, is.slot.max);
 						is.type = rt;
 						is.count = toAdd;
-						is.hp = owner.world.getHitpoints(rt);
 						owner.changeInventoryCount(rt, -toAdd);
 						break;
 					}
