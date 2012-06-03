@@ -2578,12 +2578,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		UILabel taxTradeIncome;
 		/** Label field. */
 		UILabel taxInfo;
-		/** Label field. */
-		UILabel allocation;
+//		/** Label field. */
+//		UILabel allocation;
 		/** Label field. */
 		UILabel autobuild;
 		/** Label field. */
 		UILabel other;
+		/** Label field. */
+		UILabel needed;
 		/** The labels. */
 		List<UILabel> lines;
 		/** Construct the label elements. */
@@ -2603,14 +2605,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			police = new UILabel("-", textSize, commons.text());
 			taxTradeIncome = new UILabel("-", textSize, commons.text());
 			taxInfo = new UILabel("-", textSize, commons.text());
-			allocation = new UILabel("-", textSize, commons.text());
+//			allocation = new UILabel("-", textSize, commons.text());
 			autobuild = new UILabel("-", textSize, commons.text());
 			other = new UILabel("-", 7, commons.text());
 			other.wrap(true);
+			needed = new UILabel("-", 7, commons.text());
+			needed.wrap(true);
+			needed.color(TextRenderer.RED);
 			
 			lines = Arrays.asList(
 					owner, race, surface, population, housing, worker, hospital, food, energy, police,
-					taxTradeIncome, taxInfo, allocation, autobuild
+					taxTradeIncome, taxInfo, autobuild
 			);
 			
 			enabled(false);
@@ -2647,6 +2652,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			other.bounds(10, 25 + (textSize + 3) * i, w, 0);
 			other.size(w, other.getWrappedHeight());
 			h = Math.max(h, other.y + other.height);
+
+			needed.bounds(10, 25 + (textSize + 3) * i, w, 0);
+			needed.size(w, needed.getWrappedHeight());
+			h = Math.max(h, needed.y + needed.height);
+
+			
 			width = w + 10;
 			height = h + 5;
 		}
@@ -2702,7 +2713,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			police.visible(false);
 			taxTradeIncome.visible(false);
 			taxInfo.visible(false);
-			allocation.visible(false);
 			autobuild.visible(false);
 			
 			PlanetStatistics ps = null;
@@ -2731,10 +2741,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							get(p.getTaxLabel()), p.morale, withSign(p.morale - p.lastMorale)
 					), true).visible(true);
 					
-					allocation.text(format("colonyinfo.allocation",
-							get(p.getAllocationLabel())
-					), true).visible(true);
-					
 					autobuild.text(format("colonyinfo.autobuild",
 							get(p.getAutoBuildLabel())
 					), true).visible(true);
@@ -2751,7 +2757,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 				}
 			}
-			other.text(format("colonyinfo.other", world().getOtherItems()), true);
+			String oi = world().getOtherItems();
+			other.visible(true);
+			other.text(format("colonyinfo.other", oi.isEmpty() ? "-" : oi), true);
+			
+			if (p.owner == player()) {
+				String nd = world().getNeeded(ps);
+				needed.visible(!nd.isEmpty());
+				needed.text(format("colonyinfo.needed", nd), true);
+			}
 
 			computeSize();
 			location(sidebarColonyInfo.x - width - 2, sidebarColonyInfo.y + sidebarColonyInfo.height - height - 2);

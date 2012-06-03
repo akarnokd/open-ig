@@ -535,6 +535,7 @@
   <entry key='colonyinfo.hospital'>Hospital     : %d / %d men</entry>
   <entry key='colonyinfo.housing'>Living space : %d / %d men</entry>
   <entry key='colonyinfo.other'>Other        : %s</entry>
+  <entry key='colonyinfo.needed'>Needed       : %s</entry>
   <entry key='colonyinfo.owner'>Owner        : %s</entry>
   <entry key='colonyinfo.planet'>Planet : %s</entry>
   <entry key='colonyinfo.police'>Police       : %d / %d men</entry>
@@ -2656,6 +2657,7 @@
 	<entry key="equipment.defense2">Def: </entry>
 	<entry key="equipment.dps2"    >DPS: </entry>
 
+	<entry key="virus_infection">Virus!!!</entry>
 	<entry key=''/>
   	<entry key=''/>
 	<entry key=""></entry>

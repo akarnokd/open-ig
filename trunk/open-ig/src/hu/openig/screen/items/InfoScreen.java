@@ -1380,6 +1380,8 @@ public class InfoScreen extends ScreenBase {
 		UILabel autobuild;
 		/** Label field. */
 		UILabel other;
+		/** Label field. */
+		UILabel needed;
 		/** The labels. */
 		List<UILabel> lines;
 		/** More tax. */
@@ -1433,9 +1435,15 @@ public class InfoScreen extends ScreenBase {
 			other.vertically(VerticalAlignment.TOP);
 			other.size(397, (textSize + 2) * 3);
 			
+			needed = new UILabel("-", textSize, commons.text());
+			needed.wrap(true);
+			needed.vertically(VerticalAlignment.TOP);
+			needed.size(397, (textSize + 2) * 3);
+			needed.color(TextRenderer.RED);
+			
 			lines = Arrays.asList(
 					owner, race, surface, population, housing, worker, hospital, food, energy, police,
-					taxIncome, tradeIncome, taxMorale, taxLevel, allocation, autobuild, other
+					taxIncome, tradeIncome, taxMorale, taxLevel, allocation, autobuild, other, needed
 			);
 
 			taxMore = new UIImageButton(commons.info().taxMore) {
@@ -1567,6 +1575,7 @@ public class InfoScreen extends ScreenBase {
 			autoPrev.location(autoAll.x - 3 - autoPrev.width, autoAll.y);
 			autoNext.location(autoPrev.x - 3 - autoNext.width, autoAll.y);
 			other.y += 2;
+			needed.y += 2;
 		}
 		/**
 		 * Update the display values based on the current planet's settings.
@@ -1626,6 +1635,7 @@ public class InfoScreen extends ScreenBase {
 			taxLevel.visible(false);
 			allocation.visible(false);
 			autobuild.visible(false);
+			needed.visible(false);
 
 			if (p.isPopulated()) {
 				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
@@ -1679,6 +1689,14 @@ public class InfoScreen extends ScreenBase {
 					doAdjustTaxButtons();
 					taxLess.visible(true);
 					taxMore.visible(true);
+					
+					String nd = world().getNeeded(ps);
+					if (!nd.isEmpty()) {
+						needed.text(format("colonyinfo.needed",
+								nd
+						)).visible(true);
+					}
+
 				} else {
 					taxLess.visible(false);
 					taxMore.visible(false);
@@ -1687,8 +1705,10 @@ public class InfoScreen extends ScreenBase {
 				taxLess.visible(false);
 				taxMore.visible(false);
 			}
+			
+			String oi = world().getOtherItems();
 			other.text(format("colonyinfo.other",
-					world().getOtherItems()
+					oi.isEmpty() ? "-" : oi
 			));
 
 			computeSize();
