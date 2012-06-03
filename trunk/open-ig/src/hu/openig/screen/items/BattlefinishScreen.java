@@ -164,11 +164,24 @@ public class BattlefinishScreen extends ScreenBase {
 				textCenter(g2, x1, base.y + 40, w1, TextRenderer.YELLOW, 14, get("battlefinish.spacewar_retreat"));
 			} else {
 				if (battle.spacewarWinner != null) {
+
 					if (battle.spacewarWinner == player()) {
-						textCenter(g2, x1, base.y + 40, w1, TextRenderer.GREEN, 14, get("battlefinish.spacewar_won"));						
+						Fleet enemy = null;
+						if (battle.attacker.owner == player()) {
+							enemy = battle.getFleet();
+						} else {
+							enemy = battle.attacker;
+						}
+						if (enemy != null) {
+							EnemyStatus st = enemyStatus(enemy, battle);
+							if (st != EnemyStatus.SLIPPED) {
+								textCenter(g2, x1, base.y + 40, w1, TextRenderer.GREEN, 14, get("battlefinish.spacewar_won"));
+							}
+						}
 					} else {
 						textCenter(g2, x1, base.y + 40, w1, TextRenderer.RED, 14, get("battlefinish.spacewar_lost"));
 					}
+					
 				}
 				if (battle.groundwarWinner != null) {
 					if (battle.groundwarWinner == player()) {

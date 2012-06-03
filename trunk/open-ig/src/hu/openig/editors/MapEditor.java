@@ -563,7 +563,7 @@ public class MapEditor extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				config.watcherWindow = new ConsoleWatcher(args, VERSION, config.language);
+				config.watcherWindow = new ConsoleWatcher(args, VERSION, config.language, null);
 				MapEditor editor = new MapEditor(config);
 				editor.setLocationRelativeTo(null);
 				editor.setVisible(true);

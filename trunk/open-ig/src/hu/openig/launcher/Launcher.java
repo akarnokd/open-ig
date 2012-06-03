@@ -908,7 +908,7 @@ public class Launcher extends JFrame {
 			@Override
 			public void run() {
 				Launcher ln = new Launcher();
-				ln.cw = new ConsoleWatcher(args, VERSION, ln.language);
+				ln.cw = new ConsoleWatcher(args, VERSION, ln.language, null);
 				ln.setVisible(true);
 			}
 		});
