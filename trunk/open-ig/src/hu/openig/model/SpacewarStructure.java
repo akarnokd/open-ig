@@ -223,9 +223,15 @@ public class SpacewarStructure extends SpacewarObject {
 		double ratio = 1.0 * (hp0 - hp) / hpMax;
 		
 		// subsystem damage
-		if (item != null && !item.slots.isEmpty() && ratio > 0) {
-			InventorySlot is = owner.world.random(item.slots);
-			if (is.type != null && !is.slot.fixed) {
+		if (item != null && ratio > 0) {
+			List<InventorySlot> iss = U.newArrayList();
+			for (InventorySlot is0 : item.slots) {
+				if (!is0.slot.fixed && is0.type != null && is0.count > 0) {
+					iss.add(is0);
+				}
+			}
+			if (!iss.isEmpty()) {
+				InventorySlot is = owner.world.random(iss);
 				int ihp = owner.world.getHitpoints(is.type);
 				is.hp = Math.max((int)(is.hp - ihp * ratio), 0);
 				
