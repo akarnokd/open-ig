@@ -203,7 +203,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			}
 			boolean speedFound = false;
 			for (InventorySlot slot : fii.slots) {
-				if (slot.type != null) {
+				if (slot.type != null && slot.count > 0) {
 					if (checkRadar && slot.type.has("radar")) {
 						radar = Math.max(radar, slot.type.getInt("radar")); 
 					}
