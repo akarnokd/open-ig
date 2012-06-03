@@ -1347,6 +1347,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		video.image(null);
 		animationResearch = rt;
+		String vid = null;
 		if (rt != null) {
 			animationResearch = rt;
 			animationResearchReady = false;
@@ -1358,7 +1359,6 @@ public class ResearchProductionScreen extends ScreenBase {
 				video.image(rt.infoImageWired);
 			}
 			video.center(true);
-			String vid = null;
 			if (rt.video != null) {
 				if (player().isAvailable(rt)) {
 					vid = rt.video;
@@ -1375,23 +1375,25 @@ public class ResearchProductionScreen extends ScreenBase {
 					vid = "technology/unknown_invention";
 				}
 			}
-			if (vid != null) {
-				videoRenderer = new TechnologyVideoRenderer(commons, commons.video(vid), 
-				new Action1<BufferedImage>() {
-					/** First frame. */
-					boolean first = true;
-					@Override
-					public void invoke(BufferedImage value) {
-						if (first || config.animateInventory) {
-							video.image(value);
-							scaleRepaint(base, video);
-						}
-						first = false;
+		} else {
+			vid = "technology/unknown_invention";
+		}
+		if (vid != null) {
+			videoRenderer = new TechnologyVideoRenderer(commons, commons.video(vid), 
+			new Action1<BufferedImage>() {
+				/** First frame. */
+				boolean first = true;
+				@Override
+				public void invoke(BufferedImage value) {
+					if (first || config.animateInventory) {
+						video.image(value);
+						scaleRepaint(base, video);
 					}
+					first = false;
 				}
-				);
-				videoRenderer.start(commons.pool);
 			}
+			);
+			videoRenderer.start(commons.pool);
 		}
 	}
 	@Override
@@ -1431,11 +1433,12 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		int i = 0;
 		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
-			boolean sub = e.getKey().main == cat;
+			ResearchSubCategory sc = e.getKey();
+			boolean sub = sc.main == cat;
 			e.getValue().visible(sub);
 			if (sub) {
 				if (i++ == 0) {
-					selectSubCategory(e.getKey());
+					selectSubCategory(sc);
 				}
 			}
 		}
@@ -1450,6 +1453,20 @@ public class ResearchProductionScreen extends ScreenBase {
 			e.getValue().down = (e.getKey() == cat);
 		}
 		displayTechnologies(cat);
+		
+		ResearchType rt0 = null;
+		for (final ResearchType rt : world().researches.values()) {
+			if (world().canDisplayResearch(rt) && rt.category == cat) {
+				if (rt0 == null || rt0.index > rt.index) {
+					rt0 = rt;
+				}
+			}
+		}
+		if (rt0 != null) {
+			research(rt0);
+		}
+		playAnim(rt0);
+
 	}
 	/**
 	 * Change and set the visibility of components based on the mode.
