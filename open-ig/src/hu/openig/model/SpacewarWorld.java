@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -102,4 +103,6 @@ public interface SpacewarWorld {
 	 */
 	void addStructures(Iterable<InventoryItem> inventory,
 			EnumSet<ResearchSubCategory> categories);
+	/** @return the landing lace location on the battlemap or null if no such place. */
+	Point landingPlace();
 }

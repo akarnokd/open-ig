@@ -30,13 +30,14 @@ import hu.openig.model.ResponseMode;
 import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
+import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
-import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Collections;
@@ -447,6 +448,15 @@ public class AITrader implements AIManager {
 				}
 				battle.enemyFlee = true;
 			}
+			if (battle.showLanding) {
+				Point lp = world.landingPlace();
+				for (SpacewarStructure s : sts) {
+					double d1 = lp.distance(s.x, s.y);
+					if (d1 <= 5 || s.x >= lp.x) {
+						return SpacewarAction.SURRENDER;
+					}
+				}
+			}
 			return SpacewarAction.FLEE;
 		} else {
 			// move a bit forward
@@ -460,6 +470,17 @@ public class AITrader implements AIManager {
 				s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
 			}			
 		}
+		
+		if (battle.showLanding) {
+			Point lp = world.landingPlace();
+			for (SpacewarStructure s : sts) {
+				double d1 = lp.distance(s.x, s.y);
+				if (d1 <= 5 || s.x >= lp.x) {
+					return SpacewarAction.SURRENDER;
+				}
+			}
+		}
+		
 		return SpacewarAction.CONTINUE;
 	}
 	@Override
@@ -540,6 +561,11 @@ public class AITrader implements AIManager {
 			
 			if (player.world.infectedFleets.containsKey(our.id)) {
 				filter = "chat.virus.outgoing";
+				if (battle.helperPlanet != null) {
+					if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
+						battle.showLanding = true;
+					}					
+				}
 			} else {
 				Planet p = our.targetPlanet();
 				if (p == null) {
@@ -547,13 +573,16 @@ public class AITrader implements AIManager {
 				}
 				if (p != null && p.quarantineTTL > 0) {
 					filter = CHAT_VIRUS_INCOMING;
+					battle.showLanding = true;
 				} else
 				if (battle.helperPlanet != null) {
 					if (p == battle.helperPlanet) {
 						filter = "chat.blockade.incoming";
+						battle.showLanding = true;
 					} else
 					if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
 						filter = "chat.blockade.outgoing";
+						battle.showLanding = true;
 					}
 				}
 			}
@@ -573,6 +602,9 @@ public class AITrader implements AIManager {
 					for (SpacewarStructure s : world.structures()) {
 						if (s.type == StructureType.SHIP) {
 							s.x = d.width - s.x - 100;
+							if (battle.showLanding && s.owner == player) {
+								s.x -= 100;
+							}
 							s.angle -= Math.PI;
 						}
 					}

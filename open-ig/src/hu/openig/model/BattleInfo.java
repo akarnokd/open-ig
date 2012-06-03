@@ -74,6 +74,8 @@ public class BattleInfo {
 	public Planet infectPlanet;
 	/** The chat option set by scripts. */
 	public String chat;
+	/** Show the landing marker? */
+	public boolean showLanding;
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

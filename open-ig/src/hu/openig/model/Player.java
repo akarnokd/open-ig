@@ -522,7 +522,7 @@ public class Player {
 	 */
 	public void addMessage(Message msg) {
 		Message msg2 = messageQueue.peek();
-		if (msg2 == null || msg2.priority < msg2.priority) {
+		if (msg2 == null || msg2.priority < msg.priority) {
 			messageQueue.add(msg);
 		} else {
 			messageHistory.add(msg);
