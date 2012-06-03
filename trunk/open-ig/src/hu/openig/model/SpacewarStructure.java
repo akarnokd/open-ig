@@ -197,18 +197,8 @@ public class SpacewarStructure extends SpacewarObject {
 	 * @return is at least an unit destroyed
 	 */
 	public boolean damage(int points) {
-		/*
-		if (shield > 0) {
-			if (shield > points / 2) {
-				shield -= points / 2;
-				points = points / 2;
-			} else {
-				points -= shield * 2;
-				shield = 0;
-			}
-		}
-		hp -= points;
-		*/
+		int hp0 = hp;
+		
 		if (shield > 0) {
 			if (shield > points) {
 				shield -= points;
@@ -228,6 +218,24 @@ public class SpacewarStructure extends SpacewarObject {
 		}
 		if (count == 0) {
 			hp = 0;
+		}
+		
+		double ratio = 1.0 * (hp0 - hp) / hpMax;
+		
+		// subsystem damage
+		if (item != null && !item.slots.isEmpty() && ratio > 0) {
+			InventorySlot is = owner.world.random(item.slots);
+			if (is.type != null && !is.slot.fixed) {
+				int ihp = owner.world.getHitpoints(is.type);
+				is.hp = Math.max((int)(is.hp - ihp * ratio), 0);
+				
+				is.count = Math.min(is.count, Math.round(is.slot.max * is.hp / ihp));
+				for (SpacewarWeaponPort wp : ports) {
+					if (wp.is == is) {
+						wp.count = is.count;
+					}
+				}
+			}
 		}
 		
 		return result;
