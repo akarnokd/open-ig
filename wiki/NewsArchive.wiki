@@ -4,6 +4,13 @@
 
 = Recent =
 
+== June, 2012 ==
+
+*June 3, 2012*
+
+Hi folks! We have reached the doorstep of the *Beta* release. If the following day's incubation period doesn't hatch any small issues, we will officially release the *Beta*. Stay tuned and keep testing!
+
+
 == May, 2012 ==
 
 *May 14, 2012*
