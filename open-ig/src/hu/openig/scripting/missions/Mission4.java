@@ -163,6 +163,7 @@ public class Mission4 extends Mission {
 		if (pirateSurvived) {
 			// indicate that we helped the pirate
 			addMission("Mission-4-Helped", 1);
+			world.achievement("achievements.a_pirate_in_need");
 		}
 		removeFleets();
 

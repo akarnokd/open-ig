@@ -58,7 +58,9 @@ public final class Startup {
 			public void run() {
 				for (Frame f : JFrame.getFrames()) {
 					if (f instanceof GameWindow) {
-						((GameWindow)f).save("Crash", SaveMode.MANUAL);
+						if (((GameWindow)f).commons.world() != null) {
+							((GameWindow)f).save("Crash", SaveMode.MANUAL);
+						}
 					}
 				}
 			}

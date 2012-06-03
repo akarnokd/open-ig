@@ -2688,6 +2688,11 @@
 	<entry key='statistics.vehicles_lost'>Elvesztett járművek</entry>
 	<entry key='statistics.vehicles_lost_cost'>Elvesztett járművek ára</entry>
 
+	<entry key='achievement.bela_the_4th'>IV. Béla</entry>
+	<entry key='achievement.bela_the_4th.desc'>Újjáépítetted az Achillest</entry>
+	<entry key='achievement.a_pirate_in_need'>Kalóz bajban</entry>
+	<entry key='achievement.a_pirate_in_need.desc'>Úgy döntöttél, megmented a megtámadott kalózt</entry>
+
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=""></entry>
