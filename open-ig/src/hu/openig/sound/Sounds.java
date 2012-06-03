@@ -255,14 +255,19 @@ public class Sounds {
 					exec.execute(new Runnable() {
 						@Override
 						public void run() {
-							playSoundAsync(effect, vol);
-							edt(action);
+							try {
+								playSoundAsync(effect, vol);
+							} finally {
+								edt(action);
+							}
 						}
 					});
 				} catch (RejectedExecutionException ex) {
 					effectSemaphore.release();
 				}
 			}
+		} else {
+			edt(action);
 		}
 	}
 	/**
