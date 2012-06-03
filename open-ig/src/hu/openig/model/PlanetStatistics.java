@@ -180,4 +180,12 @@ public class PlanetStatistics {
 	public boolean canBuildAnything() {
 		return !hasProblem(PlanetProblems.COLONY_HUB) && !hasWarning(PlanetProblems.COLONY_HUB);
 	}
+	/**
+	 * Check if any level of the problem exists.
+	 * @param prob the problem to check
+	 * @return true if problem present
+	 */
+	public boolean hasAnyProblem(PlanetProblems prob) {
+		return hasProblem(prob) || hasWarning(prob);
+	}
 }

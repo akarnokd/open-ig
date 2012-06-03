@@ -379,6 +379,7 @@
   <entry key='colonyinfo.hospital'  >Krankenhaus  : %d / %d men</entry>
   <entry key='colonyinfo.housing'   >Wohnraum     : %d / %d men</entry>
   <entry key='colonyinfo.other'     >Andere       : %s</entry>
+  <entry key='colonyinfo.needed'    >Gebraucht    : %s</entry>
   <entry key='colonyinfo.owner'     >Besitzer     : %s</entry>
   <entry key='colonyinfo.planet'    >Planet : %s</entry>
   <entry key='colonyinfo.police'    >Polizei      : %d / %d men</entry>
@@ -2774,6 +2775,7 @@
 	<entry key="equipment.defense2">Vtd: </entry>
 	<entry key="equipment.dps2"    >DPS: </entry>
 
+	<entry key="virus_infection">Virus!!!</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

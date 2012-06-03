@@ -1840,6 +1840,31 @@ public class World {
 		}
 		return os.toString();
 	}
+	/** 
+	 * @param ps the planet statistics
+	 * @return the list of needed items. 
+	 */
+	public String getNeeded(PlanetStatistics ps) {
+		StringBuilder os = new StringBuilder();
+		
+		if (ps.hasAnyProblem(PlanetProblems.FIRE_BRIGADE)) {
+			os.append(", ").append(env.labels().get("buildings.fire_brigade"));
+		}
+		if (ps.hasAnyProblem(PlanetProblems.COLONY_HUB)) {
+			os.append(", ").append(env.labels().get("buildings.colony_hub"));
+		}
+		if (ps.hasAnyProblem(PlanetProblems.STADIUM)) {
+			os.append(", ").append(env.labels().get("buildings.stadium"));
+		}
+		if (ps.hasAnyProblem(PlanetProblems.VIRUS)) {
+			os.append(", ").append(env.labels().get("virus_infection"));
+		}
+		
+		if (os.length() > 0) {
+			os.replace(0, 2, "");
+		}
+		return os.toString();
+	}
 	/**
 	 * Locate a fleet with the given ID.
 	 * @param id the fleet unique id

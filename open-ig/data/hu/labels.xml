@@ -516,6 +516,7 @@
 	<entry key='colonyinfo.autobuild' >Auto-építés  : %s</entry>
 	<entry key='colonyinfo.other'     >Egyéb      : %s</entry>
 	<entry key='colonyinfo.total'     >Összes: %d cr</entry>
+	<entry key='colonyinfo.needed'    >Igény      : %s</entry>
 	
 	<entry key='race.human'>Ember</entry>
 	<entry key='race.garthog'>Garthog</entry>
@@ -2700,7 +2701,7 @@
 	<entry key="equipment.defense2">Véd: </entry>
 	<entry key="equipment.dps2"    >DPS: </entry>
 	
-	<entry key=""></entry>
+	<entry key="virus_infection">Vírus!!!</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
