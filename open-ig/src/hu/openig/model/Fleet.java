@@ -201,9 +201,6 @@ public class Fleet implements Named, Owned, HasInventory {
 			if (fii.type.has("vehicles")) {
 				result.vehicleMax += fii.type.getInt("vehicles"); 
 			}
-			if (fii.type.has("damage")) {
-				result.firepower += fii.type.getInt("damage");
-			}
 			boolean speedFound = false;
 			for (InventorySlot slot : fii.slots) {
 				if (slot.type != null) {

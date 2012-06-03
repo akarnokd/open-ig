@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +55,10 @@ public class InventoryItem {
 				result = Math.max(result, sl.type.getInt("shield"));
 			}
 		}
-		return result * owner.world.getHitpoints(type) / 100;
+		if (result >= 0) {
+			return result * owner.world.getHitpoints(type) / 100;
+		}
+		return -1;
 	}
 	/**
 	 * Return the inventory slot with the given identifier.
@@ -191,5 +196,32 @@ public class InventoryItem {
 			}
 		}
 		return false;
+	}
+	/** @return the Max hitpoits. */
+	public int hpMax() {
+		return owner.world.getHitpoints(type);
+	}
+	/**
+	 * Compute the damage/dps of regular weapons.
+	 * @return the pair of damage and dps
+	 */
+	public Pair<Integer, Double> maxDamageDPS() {
+		int damage = 0;
+		double dps = 0;
+		for (InventorySlot is : slots) {
+			if (is.type != null && (is.type.category == ResearchSubCategory.WEAPONS_CANNONS
+					|| is.type.category == ResearchSubCategory.WEAPONS_LASERS)) {
+				BattleProjectile bp = owner.world.battle.projectiles.get(is.type.get("projectile"));
+				damage += bp.damage * is.count * count;
+				dps += bp.damage * is.count * 1000d / bp.delay * count;
+			}
+		}
+		if (type.category == ResearchSubCategory.WEAPONS_TANKS 
+				|| type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+			BattleGroundVehicle bgw = owner.world.battle.groundEntities.get(type.id);
+			damage += bgw.damage * count;
+			dps += bgw.damage * 1000d * count / bgw.delay;
+		}
+		return Pair.of(damage, dps);
 	}
 }

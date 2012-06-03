@@ -2693,11 +2693,13 @@
 	<entry key='achievement.a_pirate_in_need'>Kalóz bajban</entry>
 	<entry key='achievement.a_pirate_in_need.desc'>Úgy döntöttél, megmented a megtámadott kalózt</entry>
 
-	<entry key=''></entry>
-	<entry key=''></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key='equipment.hp' >HP : %s / %s</entry>
+	<entry key='equipment.sp' >SP : %s / %s</entry>
+	<entry key="equipment.defense">Véd: %s / %s</entry>
+	<entry key="equipment.dps"    >DPS: %s / %s</entry>
+	<entry key="equipment.defense2">Véd: </entry>
+	<entry key="equipment.dps2"    >DPS: </entry>
+	
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

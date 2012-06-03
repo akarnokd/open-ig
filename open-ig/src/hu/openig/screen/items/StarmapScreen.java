@@ -1028,7 +1028,7 @@ public class StarmapScreen extends ScreenBase {
 			colonyPopulationTax.text(
 					format("colonyinfo.population.own", 
 							p.population, get(p.getRaceLabel()), get(p.getMoraleLabel())
-					) + "  "
+					) + " (" + withSign(p.population - p.lastPopulation) + ")  "
 					+ format("colonyinfo.tax_short", get(p.getTaxLabel()))
 			, true).visible(true);
 		} else {
@@ -1047,6 +1047,20 @@ public class StarmapScreen extends ScreenBase {
 		colonyOther.text(world().getOtherItems(), true).visible(true);
 		
 		displayColonyProblems(p);
+	}
+	/**
+	 * Add the +/- sign for the given integer value.
+	 * @param i the value
+	 * @return the string
+	 */
+	String withSign(int i) {
+		if (i < 0) {
+			return Integer.toString(i);
+		} else
+		if (i > 0) {
+			return "+" + i;
+		}
+		return "0";
 	}
 	/**
 	 * Zoom in and keep try to keep the given pixel under the mouse.
