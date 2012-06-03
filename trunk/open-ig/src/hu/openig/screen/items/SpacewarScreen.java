@@ -2247,9 +2247,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			this.selectedSlot = is;
 			if (is != null) {
 				if (is.type != null) {
+					int ihp = is.hpMax(item.owner);
 					damage.text(format("spacewar.ship_weapon_damage", 
-							100 * (world().getHitpoints(is.type) - is.hp) 
-							/ world().getHitpoints(is.type)), true);
+							(int)(100 * (ihp - is.hp) 
+							/ ihp)), true);
 					count.text(format("spacewar.ship_weapon_count", is.count), true);
 					type.text(format("spacewar.ship_weapon_type", is.type.name), true);
 				} else {

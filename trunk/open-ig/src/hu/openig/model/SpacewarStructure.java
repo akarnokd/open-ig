@@ -232,10 +232,10 @@ public class SpacewarStructure extends SpacewarObject {
 			}
 			if (!iss.isEmpty()) {
 				InventorySlot is = owner.world.random(iss);
-				int ihp = owner.world.getHitpoints(is.type);
-				is.hp = Math.max((int)(is.hp - ihp * ratio), 0);
+				int ihp = is.hpMax(item.owner);
+				is.hp = Math.max(is.hp - ihp * ratio, 0);
 				
-				is.count = Math.min(is.count, Math.round(is.slot.max * is.hp / ihp));
+				is.count = Math.min(is.count, (int)Math.round(is.slot.max * is.hp / ihp));
 				for (SpacewarWeaponPort wp : ports) {
 					if (wp.is == is) {
 						wp.count = is.count;

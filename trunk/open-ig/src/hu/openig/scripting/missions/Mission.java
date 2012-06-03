@@ -563,7 +563,7 @@ public abstract class Mission implements GameScriptingEvents {
 		for (InventorySlot is : ii.slots) {
 			if (is.slot.id.equals(slotId) && !is.slot.fixed) {
 				is.type = research(technology);
-				is.hp = world.getHitpoints(is.type);
+				is.hp = is.hpMax(ii.owner);
 				is.count = Math.min(is.slot.max, count);
 			}
 		}		

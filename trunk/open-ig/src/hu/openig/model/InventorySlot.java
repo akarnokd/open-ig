@@ -20,7 +20,7 @@ public class InventorySlot {
 	/** The item count. */
 	public int count;
 	/** The item's hitpoints. */
-	public int hp;
+	public double hp;
 	/** @return is the slot filled to max? */
 	public boolean isFilled() {
 		return count >= slot.max;
@@ -48,5 +48,19 @@ public class InventorySlot {
 			return es.category;
 		}
 		return null;
+	}
+	/**
+	 * Compute the max hitpoints of the slot.
+	 * @param owner the owner
+	 * @return the max hp
+	 */
+	public int hpMax(Player owner) {
+		int result = 0;
+		int cnt = 0;
+		for (ResearchType rt : slot.items) {
+			result += owner.world.getHitpoints(rt);
+			cnt++;
+		}
+		return result / cnt;
 	}
 }
