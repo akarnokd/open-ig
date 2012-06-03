@@ -20,7 +20,7 @@ import java.util.List;
  * The ground war unit.
  * @author akarnokd, 2011.09.02.
  */
-public class GroundwarUnit extends GroundwarObject implements HasLocation {
+public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned {
 	/** The model entity. */
 	public BattleGroundVehicle model;
 	/** The position with fractional precision in surface coordinates. */
@@ -139,5 +139,9 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation {
 	public boolean inRange(HasLocation u2) {
 		double dist = distance(u2);
 		return model.minRange <= dist && dist <= model.maxRange;
+	}
+	@Override
+	public Player owner() {
+		return owner;
 	}
 }

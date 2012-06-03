@@ -56,6 +56,7 @@ import hu.openig.screen.TwoPhaseButton;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
+import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -436,6 +437,19 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		rightChatPanel.visible(false);
 		
 		addThis();
+	}
+	/**
+	 * Remove units from group.
+	 * @param i the group index
+	 */
+	void removeGroup(int i) {
+		Iterator<Map.Entry<SpacewarStructure, Integer>> it = groups.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<SpacewarStructure, Integer> e = it.next();
+			if (e.getValue().intValue() == i) {
+				it.remove();
+			}
+		}
 	}
 	/**
 	 * Creates an animation button with the panel mode settings.
@@ -4401,8 +4415,66 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		final int rowHeight = 30;
 		/** The last selection. */
 		List<SpacewarStructure> lastSelection = U.newArrayList();
+		/** The group buttons. */
+		final List<UIImageButton> groupButtons = U.newArrayList();
+		/** Constructs the selection panel buttons. */
+		public SelectionPanel() {
+			int x = 5;
+			for (int i = -1; i < 10; i++) {
+				final int j = i;
+				
+				UIImageButton ib = new UIImageButton(commons.common().shield) {
+					@Override
+					public void draw(Graphics2D g2) {
+						super.draw(g2);
+						String s = Integer.toString(j);
+						if (j < 0) {
+							s = "*";
+						}
+						commons.text().paintTo(g2, 7, 3, 10, TextRenderer.WHITE, s);
+					}
+					@Override
+					public boolean mouse(UIMouse e) {
+						if (e.has(Button.RIGHT) && e.has(Type.DOWN)) {
+							if (j >= 0) {
+								removeGroup(j);
+							} else {
+								deselectAll();
+							}
+							return true;
+						}
+						return super.mouse(e);
+					}
+				};
+				ib.onClick = new Action0() {
+					@Override
+					public void invoke() {
+						if (j >= 0) {
+							recallGroup(j);
+						} else {
+							doSelectAll();
+						}
+					}
+				};
+				groupButtons.add(ib);
+				add(ib);
+				ib.x = x;
+				
+				x += 25;
+			}
+		}
 		@Override
 		public void draw(Graphics2D g2) {
+			Set<Integer> groupSet = U.newHashSet(groups.values());
+			groupSet.add(-1);
+			for (int i = 0; i < 11; i++) {
+				boolean v0 = groupButtons.get(i).visible();
+				groupButtons.get(i).visible(groupSet.contains(i - 1));
+				if (v0 != groupButtons.get(0).visible()) {
+					commons.control().moveMouse();
+				}
+			}
+			
 			List<SpacewarStructure> sel = getSelection();
 			
 			if (sel.size() != lastSelection.size() || !lastSelection.containsAll(sel)) {
@@ -4417,6 +4489,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			g2.setColor(Color.BLACK);
 			
 			g2.fillRect(0, 0, width, height);
+			
+			
 			
 			offset = Math.max(0, Math.min(offset, sel.size() - 1));
 			
@@ -4471,7 +4545,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				cells.add(c);
 			}
 			int x0 = 0;
-			int y0 = 0;
+			int y0 = 22;
 			int h = 0;
 			int row = 0;
 			for (SelectionCell c : cells) {
@@ -4514,6 +4588,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			return super.mouse(e);
 		}
 	}
+	/** Deselect everything. */
+	void deselectAll() {
+		for (SpacewarStructure s : structures) {
+			s.selected = false;
+		}
+		enableSelectedFleetControls();
+	}
 	/**
 	 * Assign the selected units to a group.
 	 * @param groupNo the group number
@@ -4547,6 +4628,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			Integer g = groups.get(s);
 			s.selected = g != null && g.intValue() == groupNo;
 		}
+		enableSelectedFleetControls();
 	}
 	@Override
 	public void attack(SpacewarStructure s, SpacewarStructure target, Mode mode) {

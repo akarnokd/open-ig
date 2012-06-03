@@ -9,6 +9,7 @@
 package hu.openig.gfx;
 
 import hu.openig.core.Btn2;
+import hu.openig.core.Btn3H;
 import hu.openig.core.Cat;
 import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
@@ -164,6 +165,9 @@ public class CommonGFX {
 	/** Small okay icon. */
 	@Img(name = "ok")
 	public BufferedImage okayIcon;
+	/** The shield icon. */
+	@Btn3H(name = "shield")
+	public BufferedImage[] shield;
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator

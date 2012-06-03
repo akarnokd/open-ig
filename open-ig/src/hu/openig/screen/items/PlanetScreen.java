@@ -34,6 +34,7 @@ import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
@@ -322,6 +323,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Attack with the selected units. */
 	UIImageTabButton2 attackUnit;
 	/** The tank panel. */
+	@DragSensitive
 	TankPanel tankPanel;
 	/** Indicate the left click will select an attack target. */
 	boolean attackSelect;
@@ -579,6 +581,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		rockets.clear();
 		unitsAtLocation.clear();
 		unitsToPlace.clear();
+		groups.clear();
 	}
 
 	/**
@@ -5700,38 +5703,30 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param groupNo the group number
 	 */
 	void assignGroup(int groupNo) {
-		List<Object> selected = U.newArrayList();
-		Player p = null;
+		List<Owned> selected = U.newArrayList();
+		boolean own = false;
+		boolean enemy = false;
 		for (GroundwarUnit u : units) {
-			if (p != null && u.owner != p) {
-				return;
-			}
-			p = u.owner;
 			if (u.selected) {
+				own |= u.owner() == player();
+				enemy |= u.owner() != player();
 				selected.add(u);
 			}
 		}
 		for (GroundwarGun g : guns) {
-			if (p != null && g.owner != p) {
-				return;
-			}
-			p = g.owner;
 			if (g.selected) {
+				own |= g.owner() == player();
+				enemy |= g.owner() != player();
 				selected.add(g);
 			}
 		}
+
+		removeGroup(groupNo);
 		
-		// remove previous grouping
-		Iterator<Map.Entry<Object, Integer>> it = groups.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<Object, Integer> e = it.next();
-			if (e.getValue().intValue() == groupNo) {
-				it.remove();
+		if (own && !enemy) {
+			for (Object o : selected) {
+				groups.put(o, groupNo);
 			}
-		}
-		
-		for (Object o : selected) {
-			groups.put(o, groupNo);
 		}
 	}
 	/**
@@ -5872,22 +5867,66 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * A panel showing the current selected unit(s). 
 	 * @author akarnokd, 2012.06.02.
 	 */
-	class TankPanel extends UIComponent {
+	class TankPanel extends UIContainer {
 		/** Background image. */
 		BufferedImage background;
+		/** The group buttons. */
+		final List<UIImageButton> groupButtons = U.newArrayList();
 		/** Construct the tank panel. */
 		public TankPanel() {
 			background = commons.colony().tankPanel;
 			width = background.getWidth();
-			height = background.getHeight();
+			height = background.getHeight() + 22;
+			
+			for (int i = -1; i < 10; i++) {
+				final int j = i;
+				
+				UIImageButton ib = new UIImageButton(commons.common().shield) {
+					@Override
+					public void draw(Graphics2D g2) {
+						super.draw(g2);
+						String s = Integer.toString(j);
+						if (j < 0) {
+							s = "*";
+						}
+						commons.text().paintTo(g2, 7, 3, 10, TextRenderer.WHITE, s);
+					}
+					@Override
+					public boolean mouse(UIMouse e) {
+						if (e.has(Button.RIGHT) && e.has(Type.DOWN)) {
+							if (j >= 0) {
+								removeGroup(j);
+							} else {
+								deselectAll();
+							}
+							return true;
+						}
+						return super.mouse(e);
+					}
+				};
+				ib.onClick = new Action0() {
+					@Override
+					public void invoke() {
+						if (j >= 0) {
+							recallGroup(j);
+						} else {
+							doSelectAll();
+						}
+					}
+				};
+				groupButtons.add(ib);
+				add(ib);
+			}
+
 		}
 		@Override
 		public void draw(Graphics2D g2) {
+			int h0 = height - 22;
 			g2.setColor(Color.BLACK);
 			Stroke saves = g2.getStroke();
 			g2.setStroke(new BasicStroke(2));
-			g2.drawRect(-1, -1, width + 2, height + 2);
-			g2.drawRect(-1, -1, width + moveUnit.width + 4, height + 2);
+			g2.drawRect(-1, -1, width + 2, h0 + 2);
+			g2.drawRect(-1, -1, width + moveUnit.width + 4, h0 + 2);
 			g2.setStroke(saves);
 			
 			g2.drawImage(background, 0, 0, null);
@@ -5917,10 +5956,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				int iw = (width - img.getWidth()) / 2;
 				g2.drawImage(img, iw, 25, null);
 				
-				commons.text().paintTo(g2, 10, height - 25, 7, u.owner.color, 
+				commons.text().paintTo(g2, 10, h0 - 25, 7, u.owner.color, 
 						format("spacewar.selection.firepower_dps", u.model.damage * count, 
 						String.format("%.1f", u.model.damage * count * 1000d / u.model.delay)));
-				commons.text().paintTo(g2, 10, height - 15, 7, u.owner.color, get("spacewar.selection.defense_values") + ((int)sumHp));
+				commons.text().paintTo(g2, 10, h0 - 15, 7, u.owner.color, get("spacewar.selection.defense_values") + ((int)sumHp));
 				
 			} else {
 				n = get("spacewar.ship_status_none");
@@ -5933,11 +5972,59 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			commons.text().paintTo(g2, (width - w) / 2 + 1, 10, tsize, TextRenderer.RED, n);
 			commons.text().paintTo(g2, (width - w) / 2, 10, tsize, TextRenderer.YELLOW, n);
+			
+			Set<Integer> selgr = U.newHashSet(groups.values());
+			selgr.add(-1);
+			int ibx = 5;
+			int ibi = 0;
+			for (UIImageButton ib : groupButtons) {
+				ib.x = ibx;
+				ib.y = tankPanel.height - 20;
+				boolean v0 = ib.visible();
+				ib.visible(tankPanel.visible() && selgr.contains(ibi - 1));
+				if (v0 != ib.visible()) {
+					commons.control().moveMouse();
+				}
+				ibx += 22;
+				ibi++;
+			}
+			super.draw(g2);
 		}
 		@Override
 		public boolean mouse(UIMouse e) {
 			// TODO Auto-generated method stub
 			return super.mouse(e);
+		}
+	}
+	/** Deselect all units. */
+	void deselectAll() {
+		for (GroundwarUnit u : units) {
+			u.selected = false;
+		}
+		for (GroundwarGun g : guns) {
+			g.selected = false;
+		}
+	}
+	/** Select all of the player's units. */
+	void doSelectAll() {
+		for (GroundwarUnit u : units) {
+			u.selected = u.owner == player();
+		}
+		for (GroundwarGun g : guns) {
+			g.selected = g.owner == player();
+		}
+	}
+	/**
+	 * Remove units from group.
+	 * @param i the group index
+	 */
+	void removeGroup(int i) {
+		Iterator<Map.Entry<Object, Integer>> it = groups.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Object, Integer> e = it.next();
+			if (e.getValue().intValue() == i) {
+				it.remove();
+			}
 		}
 	}
 }
