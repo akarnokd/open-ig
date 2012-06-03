@@ -284,15 +284,16 @@ public class AIUser implements AIManager {
 	}
 	@Override
 	public void onNewDay() {
-		Message msg = w.newMessage("message.yesterday_tax_income");
+		Message msg = w.newMessage("message.yesterday_trade_income");
 		msg.priority = 20;
+		msg.value = "" + w.player.yesterday.tradeIncome;
+		p.addMessage(msg);
+
+		msg = w.newMessage("message.yesterday_tax_income");
+		msg.priority = 21;
 		msg.value = "" + w.player.yesterday.taxIncome;
 		p.addMessage(msg);
 
-		msg = w.newMessage("message.yesterday_trade_income");
-		msg.priority = 21;
-		msg.value = "" + w.player.yesterday.tradeIncome;
-		p.addMessage(msg);
 	}
 	@Override
 	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {
