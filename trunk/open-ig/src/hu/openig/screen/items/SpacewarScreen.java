@@ -167,6 +167,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	Closeable buttonTimer;
 	/** The chat typing timer. */
 	Closeable chatTimer;
+	/** The animation timer. */
+	long animationTimer;
 	/** The group for the main buttons. */
 	List<ThreePhaseButton> mainCommands;
 	/** The view toggle buttons. */
@@ -901,6 +903,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		buttonTimer = commons.register(100, new Action0() {
 			@Override
 			public void invoke() {
+				animationTimer++;
 				doButtonAnimations();
 			}
 		});
@@ -1276,6 +1279,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		player().ai.spaceBattleInit(this);
 		nonPlayer().ai.spaceBattleInit(this);
 		world().scripting.onSpacewarStart(this);
+
+		// fix unit placements
+		if (battle.showLanding) {
+			for (SpacewarStructure s : structures) {
+				if (s.type == StructureType.SHIP || s.type == StructureType.STATION) {
+					if (Math.abs(s.angle) > 0.95 * Math.PI && Math.abs(s.angle) < 1.05 * Math.PI) {
+						s.x -= commons.spacewar().landingZone[0].getWidth();
+					}
+				}
+			}
+		}
+
 		
 		leftChatPanel.clear();
 		rightChatPanel.clear();
@@ -1789,7 +1804,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		g2.drawImage(commons.spacewar().background, 0, 0, space.width, space.height, null);
 		
 		if (planetVisible) {
-			g2.drawImage(commons.spacewar().planet, space.width - commons.spacewar().planet.getWidth(), 0, null);
+			int pw = commons.spacewar().planet.getWidth();
+			g2.drawImage(commons.spacewar().planet, space.width - pw, 0, null);
+			
+			if (battle.showLanding) {
+				int idx = (int)((animationTimer / 2) % commons.spacewar().landingZone.length);
+				BufferedImage limg = commons.spacewar().landingZone[idx];
+				int lx = space.width - pw - limg.getWidth();
+				int ly = (space.height - limg.getHeight()) / 2;
+				
+				g2.drawImage(limg, lx, ly, null);
+			}
 		}
 
 		if (viewGrid.selected) {
@@ -1850,6 +1875,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		Rectangle rect = computeMinimapViewport();
 		g2.drawRect(rect.x, rect.y, rect.width - 1, rect.height - 1);
 		g2.setClip(save0);
+	}
+	@Override
+	public Point landingPlace() {
+		if (planetVisible && battle.showLanding) {
+			int pw = commons.spacewar().planet.getWidth();
+			int idx = (int)((animationTimer / 2) % commons.spacewar().landingZone.length);
+			BufferedImage limg = commons.spacewar().landingZone[idx];
+			int lx = space.width - pw - limg.getWidth() / 2;
+			int ly = space.height / 2;
+			return new Point(lx, ly);
+		}
+		return null;
 	}
 	/** @return calculates the minimap viewport rectangle coordinates. */
 	Rectangle computeMinimapViewport() {

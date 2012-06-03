@@ -18,5 +18,5 @@ public enum SpacewarAction {
 	/** Surrender. */
 	SURRENDER,
 	/** Flee. */
-	FLEE
+	FLEE,
 }

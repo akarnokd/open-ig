@@ -290,7 +290,7 @@ public class AIUser implements AIManager {
 		p.addMessage(msg);
 
 		msg = w.newMessage("message.yesterday_trade_income");
-		msg.priority = 20;
+		msg.priority = 21;
 		msg.value = "" + w.player.yesterday.tradeIncome;
 		p.addMessage(msg);
 	}
