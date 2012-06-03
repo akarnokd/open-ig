@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
  * A ground war gun.
  * @author akarnokd, 2011.09.05.
  */
-public class GroundwarGun extends GroundwarObject {
+public class GroundwarGun extends GroundwarObject implements Owned {
 	/**
 	 * Constructor.
 	 * @param matrix the gun matrix
@@ -36,4 +36,8 @@ public class GroundwarGun extends GroundwarObject {
 	public GroundwarUnit attack;
 	/** The weapon cooldown counter. */
 	public int cooldown;
+	@Override
+	public Player owner() {
+		return owner;
+	}
 }
