@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Func1;
 import hu.openig.core.Pred1;
+import hu.openig.model.AttackDefense;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleGroundTurret;
@@ -17,7 +18,6 @@ import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile;
 import hu.openig.model.BattleProjectile.Mode;
-import hu.openig.model.AttackDefense;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarUnit;
@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Simulation algorithms for automatic space and surface battles.
@@ -114,6 +115,9 @@ public final class BattleSimulator {
 	}
 	/** Run the ground battle. */
 	void runGroundBattle() {
+		
+		battle.incrementGroundBattles();
+		
 		List<GroundwarUnit> attackerUnits = vehicles(battle.attacker.inventory);
 		List<GroundwarUnit> defenderUnits = vehicles(battle.targetPlanet.inventory);
 		
@@ -144,7 +148,7 @@ public final class BattleSimulator {
 					
 					if (attackerRange > defenderRange) { 
 						// attacker wins always, no further losses
-						battle.targetPlanet.surface.removeBuilding(b);
+						destroyBuilding(battle.targetPlanet, b);
 					} else {
 						
 						System.out.printf("*Attacking building: %s%n", b.type.id);
@@ -176,7 +180,7 @@ public final class BattleSimulator {
 							System.out.printf("Defender time (ms): %s%n", defenderTime);
 							
 							if (attackerTime < defenderTime) {
-								battle.targetPlanet.surface.removeBuilding(b);
+								destroyBuilding(battle.targetPlanet, b);
 								System.out.printf("Attacker won, damage taken: %s%n", attackerTime * defenderBuildings.attack);
 								applyDamage(attacking, attackerTime * defenderBuildings.attack);
 								break; // next building
@@ -200,6 +204,7 @@ public final class BattleSimulator {
 			battle.groundwarWinner = battle.targetPlanet.owner;
 			battle.targetPlanet.rebuildRoads();
 		}
+		battle.incrementGroundWin();
 	}
 	/**
 	 * Creates a sublist from the list or an empty list if start is beyond the size.
@@ -247,6 +252,12 @@ public final class BattleSimulator {
 				hitpoints -= u.hp;
 				units.remove(u);
 				u.item.count--;
+				
+				u.owner.statistics.vehiclesLost++;
+				u.owner.statistics.vehiclesLostCost += world.researches.get(u.model.id).productionCost;
+				
+				battle.enemy(u.owner).statistics.vehiclesDestroyed++;
+				battle.enemy(u.owner).statistics.vehiclesDestroyedCost += world.researches.get(u.model.id).productionCost;
 			} else {
 				u.hp -= hitpoints;
 				hitpoints = 0;
@@ -259,10 +270,9 @@ public final class BattleSimulator {
 	 */
 	void removeBuildings(Planet p) {
 		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
-		Collections.shuffle(bs, world.random());
 		for (Building b : bs) {
 			if (b.type.kind.equals("Defensive")) {
-				p.surface.removeBuilding(b);
+				destroyBuilding(p, b);
 			}
 		}
 		p.rebuildRoads();
@@ -279,6 +289,12 @@ public final class BattleSimulator {
 			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				inv.remove(ii);
+				
+				ii.owner.statistics.vehiclesLost++;
+				ii.owner.statistics.vehiclesLostCost += ii.type.productionCost;
+				
+				battle.enemy(ii.owner).statistics.vehiclesDestroyed++;
+				battle.enemy(ii.owner).statistics.vehiclesDestroyedCost += ii.type.productionCost;
 			}
 		}
 	}
@@ -433,7 +449,28 @@ public final class BattleSimulator {
 	 */
 	void runSpaceBattle() {
 		
+		// update statistics
+		battle.incrementSpaceBattles();
+		
 		SpaceStrengths str = getSpaceStrengths(battle);
+		
+		// mark participating fleets
+		Set<Fleet> fleets = U.newHashSet();
+		fleets.add(battle.attacker);
+		for (InventoryItem ii : battle.attacker.inventory) {
+			if (ii.parent instanceof Fleet) {
+				fleets.add((Fleet)ii.parent);
+			}
+		}
+		Fleet f2 = battle.getFleet();
+		if (f2 != null) {
+			fleets.add(f2);
+			for (InventoryItem ii : f2.inventory) {
+				if (ii.parent instanceof Fleet) {
+					fleets.add((Fleet)ii.parent);
+				}
+			}
+		}
 		
 		battle.attacker.owner.ai.onAutoSpacewarStart(battle, str);
 		battle.enemy(battle.attacker.owner).ai.onAutoSpacewarStart(battle, str);
@@ -534,6 +571,13 @@ public final class BattleSimulator {
 				applyPlanetDefended(str.planet, PLANET_DEFENSE_LOSS);
 			}
 		}
+		battle.incrementSpaceWin();
+		
+		for (Fleet f : fleets) {
+			if (f.inventory.isEmpty()) {
+				f.owner.statistics.fleetsLost++;
+			}
+		}
 	}
 	/**
 	 * Apply damage to the fleet.
@@ -571,6 +615,13 @@ public final class BattleSimulator {
 				if (hitpoints >= hp * ii.count) {
 					inv.remove(ii);
 					hitpoints -= hp * ii.count;
+					
+					ii.owner.statistics.shipsLost += ii.count;
+					ii.owner.statistics.shipsLostCost += 2 * ii.sellValue();
+					
+					battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost += 2 * ii.sellValue();
+					
 				} else {
 					SpacewarStructure str = new SpacewarStructure();
 					str.hpMax = world.getHitpoints(ii.type);
@@ -578,6 +629,7 @@ public final class BattleSimulator {
 					str.hp = ii.hp;
 					str.shield = ii.shield;
 					str.damage((int)hitpoints);
+					int diff = ii.count - str.count;
 					ii.count = str.count;
 					ii.hp = str.hp;
 					ii.shield = str.shield;
@@ -585,6 +637,12 @@ public final class BattleSimulator {
 						inv.remove(ii);
 					}
 					hitpoints = 0;
+
+					ii.owner.statistics.shipsLost += diff;
+					ii.owner.statistics.shipsLostCost += diff * ii.type.productionCost;
+
+					battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost += ii.count * ii.type.productionCost;
 				}
 			}
 		}
@@ -594,7 +652,7 @@ public final class BattleSimulator {
 				world.removeFleet(fleet);
 				world.scripting.onLost(fleet);
 			} else {
-				fleet.adjustVehicleCounts();
+				fleet.loseVehicles(battle.enemy(fleet.owner));
 			}
 		}
 	}
@@ -628,7 +686,7 @@ public final class BattleSimulator {
 		double hp = 1.0 * b.hitpoints * hpMax / b.type.hitpoints;
 		
 		if (hitpoints >= hp) {
-			p.surface.removeBuilding(b);
+			destroyBuilding(p, b);
 		} else {
 			hp -= hitpoints;
 			b.hitpoints = (int)(hp * b.type.hitpoints / hpMax);
@@ -654,13 +712,30 @@ public final class BattleSimulator {
 				if (hitpoints >= hp * ii.count) {
 					p.inventory.remove(ii);
 					hitpoints -= hp * ii.count;
+					
+					ii.owner.statistics.shipsLost += ii.count;
+					ii.owner.statistics.shipsDestroyedCost += ii.sellValue() * 2;
+					
+					battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost += ii.sellValue() * 2;
+
 				} else {
 					int dc = (int)(hitpoints / hp);
-					ii.count -= dc;
+					int c0 = ii.count;
+					long cs0 = ii.sellValue();
+					ii.count = Math.max(0, ii.count - dc);
 					hitpoints = 0;
 					if (ii.count <= 0) {
 						p.inventory.remove(ii);
 					}
+					int diff = c0 - ii.count;
+					
+					ii.owner.statistics.shipsLost += diff;
+					ii.owner.statistics.shipsDestroyedCost += 2 * (cs0 - ii.sellValue());
+					
+					battle.enemy(ii.owner).statistics.shipsDestroyed += diff;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost += 2 * (cs0 - ii.sellValue());
+
 				}
 			}
 		}
@@ -680,7 +755,7 @@ public final class BattleSimulator {
 					
 					double shieldedHP = hp + hp * shieldValue / 100;
 					if (hitpoints >= shieldedHP) {
-						p.surface.removeBuilding(b);
+						destroyBuilding(p, b);
 						hitpoints -= shieldedHP;
 					} else {
 						hp = shieldedHP - hitpoints;
@@ -701,7 +776,7 @@ public final class BattleSimulator {
 		for (Building b : new ArrayList<Building>(p.surface.buildings)) {
 			if (b.isOperational()) {
 				if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
-					p.surface.removeBuilding(b);
+					destroyBuilding(p, b);
 				}
 			}
 		}
@@ -710,9 +785,29 @@ public final class BattleSimulator {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 				p.inventory.remove(ii);
+				
+				ii.owner.statistics.shipsLost += ii.count;
+				ii.owner.statistics.shipsDestroyedCost += ii.sellValue() * 2;
+				
+				battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
+				battle.enemy(ii.owner).statistics.shipsDestroyedCost += ii.sellValue() * 2;
 			}
 		}
 		p.rebuildRoads();
+	}
+	/**
+	 * Destroy a building on the planet. 
+	 * @param p the planet
+	 * @param b the building
+	 */
+	void destroyBuilding(Planet p, Building b) {
+		p.surface.removeBuilding(b);
+		
+		p.owner.statistics.buildingsDestroyed++;
+		p.owner.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
+		
+		battle.attacker.owner.statistics.buildingsDestroyed++;
+		battle.attacker.owner.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
 	}
 	/**
 	 * Compute the planet strength.
@@ -813,10 +908,6 @@ public final class BattleSimulator {
 			}
 		}
 		return false;
-	}
-	/** Simulate the ground battle. */
-	void autoGroundBattle() {
-		System.err.println("Automatic ground battle not implemented!");
 	}
 	/**
 	 * @param planet the target planet 

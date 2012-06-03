@@ -102,7 +102,7 @@ public class BattleInfo {
 	 * @return the enemy of the player
 	 */
 	public Player enemy(Player p) {
-		if (p == attacker.owner) {
+		if (isAlly(p, attacker.owner)) {
 			if (targetPlanet != null) {
 				return targetPlanet.owner;
 			}
@@ -187,16 +187,86 @@ public class BattleInfo {
 	 * @return true if ally
 	 */
 	public boolean isAlly(SpacewarStructure s, Player p) {
-		if (s.owner == p) {
+		return isAlly(s.owner, p);
+	}
+	/**
+	 * Check if the given structure is the ally of the player.
+	 * @param s the structure to test
+	 * @param p the player to test
+	 * @return true if ally
+	 */
+	public boolean isAlly(Player s, Player p) {
+		if (s == p) {
 			return true;
 		}
 		if (p == attacker.owner) {
-			return attackerAllies.contains(s.owner);
+			return attackerAllies.contains(s);
 		}
 		// P is the defender
-		if (s.owner == attacker.owner) {
+		if (s == attacker.owner) {
 			return attackerAllies.contains(p);
 		}
 		return false;
+	}
+	/**
+	 * Add one to the space battle counters.
+	 */
+	public void incrementSpaceBattles() {
+		attacker.owner.statistics.spaceBattles++;
+		if (targetFleet != null) {
+			targetFleet.owner.statistics.spaceBattles++;
+		}
+		if (targetPlanet != null) {
+			targetPlanet.owner.statistics.spaceBattles++;
+		}
+		for (Player p0 : attackerAllies) {
+			p0.statistics.spaceBattles++;
+		}
+	}
+	/**
+	 * Add one to the ground war counters.
+	 */
+	public void incrementGroundBattles() {
+		attacker.owner.statistics.groundBattles++;
+		if (targetPlanet != null) {
+			targetPlanet.owner.statistics.groundBattles++;
+		}
+	}
+	/**
+	 * Increment the space winner statistics.
+	 */
+	public void incrementSpaceWin() {
+		spacewarWinner.statistics.spaceWins++;
+		if (attacker.owner == spacewarWinner) {
+			for (Player p0 : attackerAllies) {
+				p0.statistics.spaceWins++;
+			}
+			if (targetFleet != null) {
+				targetFleet.owner.statistics.spaceLoses++;
+			}
+			if (targetPlanet != null) {
+				targetPlanet.owner.statistics.spaceLoses++;
+			}
+		} else {
+			attacker.owner.statistics.spaceLoses++;
+			if (retreated) {
+				attacker.owner.statistics.spaceRetreats++;
+			}
+			for (Player p0 : attackerAllies) {
+				p0.statistics.spaceLoses++;
+				if (retreated) {
+					p0.statistics.spaceRetreats++;
+				}
+			}
+		}
+	}
+	/** Increment the ground war winner statistics. */
+	public void incrementGroundWin() {
+		groundwarWinner.statistics.groundWins++;
+		if (groundwarWinner == targetPlanet.owner) {
+			attacker.owner.statistics.groundLoses++;
+		} else {
+			targetPlanet.owner.statistics.groundLoses++;
+		}
 	}
 }

@@ -61,6 +61,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		this.id = id;
 		this.owner = owner;
 		this.owner.fleets.put(this, FleetKnowledge.FULL);
+		owner.statistics.fleetsCreated++;
 	}
 	/**
 	 * Create a fleet for the specific player and automatic ID.
@@ -388,11 +389,11 @@ public class Fleet implements Named, Owned, HasInventory {
 		return inventory;
 	}
 	/**
-	 * If the current vehicle count is greater than the supported vehicle count,
-	 * remove excess vehicles.
-	 * @return the number of vehicles removed
+	 * Lose vehicles due limited capacity.
+	 * @param to the other player who was responsible for the losses
+	 * @return the total number of vehicles lost
 	 */
-	public int adjustVehicleCounts() {
+	public int loseVehicles(Player to) {
 		int vehicleCount = 0;
 		int vehicleMax = 0;
 		int result = 0;
@@ -424,6 +425,12 @@ public class Fleet implements Named, Owned, HasInventory {
 					inventory.remove(fii);
 					veh.remove(fii);
 				}
+				
+				fii.owner.statistics.vehiclesLost++;
+				fii.owner.statistics.vehiclesLostCost += fii.type.productionCost;
+				
+				to.statistics.vehiclesDestroyed++;
+				to.statistics.vehiclesDestroyedCost += fii.type.productionCost;
 			}
 		}
 		return result;

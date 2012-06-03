@@ -703,6 +703,14 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		}
 		));
+		statistics.add(new StatisticsEntry("statistics.planet_lost_alien", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.planetsLostAlien);
+			}
+		}
+		));
 		statistics.add(new StatisticsEntry("statistics.planet_revolted", 
 				new Func1<Void, String>() {
 			@Override
@@ -719,6 +727,180 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		}
 		));
+
+		// ------------------------------------------------------------------
+		statistics.add(new StatisticsEntry("statistics.space_battles", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.spaceBattles);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.space_wins", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.spaceWins);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.space_loses", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.spaceLoses);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.space_retreats", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.spaceRetreats);
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.ground_battles", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.groundBattles);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.ground_wins", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.spaceWins);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.ground_loses", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.spaceLoses);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.fleets_created", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.fleetsCreated);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.fleets_lost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.fleetsLost);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.ships_destroyed", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.shipsDestroyed);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.ships_destroyed_cost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.shipsDestroyedCost) + " cr";
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.ships_lost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.shipsLost);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.ships_lost_cost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.shipsLostCost) + " cr";
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.buildings_destroyed", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.buildingsDestroyed);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.buildings_destroyed_cost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.buildingsDestroyedCost) + " cr";
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.buildings_lost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.buildingsLost);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.buildings_lost_cost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.buildingsLostCost) + " cr";
+			}
+		}
+		));
+
+		statistics.add(new StatisticsEntry("statistics.vehicles_destroyed", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.vehiclesDestroyed);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.vehicles_destroyed_cost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.vehiclesDestroyedCost) + " cr";
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.vehicles_lost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.vehiclesLost);
+			}
+		}
+		));
+		statistics.add(new StatisticsEntry("statistics.vehicles_lost_cost", 
+				new Func1<Void, String>() {
+			@Override
+			public String invoke(Void value) {
+				return df.format(player().statistics.vehiclesLostCost) + " cr";
+			}
+		}
+		));
+
+		// ------------------------------------------------------------------
 
 		
 		statistics.add(new StatisticsEntry("statistics.total_buildings", 

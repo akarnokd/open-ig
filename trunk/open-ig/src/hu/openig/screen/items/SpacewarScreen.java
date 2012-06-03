@@ -1312,6 +1312,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				rightChatPanel.options.add(node);
 			}
 		}
+		
+		// update statistics
+		battle.incrementSpaceBattles();
 	}
 	/**
 	 * Returns the non-human player of the current battle.
@@ -3720,8 +3723,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				battle.defenderLosses += d;
 			}
 			
-			target.owner.statistics.shipsLost += d;
-			world().players.get(owner).statistics.shipsDestroyed += d;
+			if (target.type == StructureType.SHIP || target.type == StructureType.STATION) {
+				long cost = target.item.sellValue() * 2;
+				target.owner.statistics.shipsLost += d;
+				target.owner.statistics.shipsLostCost += cost;
+				world().players.get(owner).statistics.shipsDestroyed += d;
+				world().players.get(owner).statistics.shipsDestroyedCost += cost;
+			}
 		} else {
 			soundsToPlay.add(impactSound);
 		}
@@ -3775,6 +3783,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			b.hitpoints = (int)Math.max(0, b.hitpoints - d * 1.0 * b.type.hitpoints / hpMax);
 			if (b.hitpoints <= 0) {
 				target.planet.surface.removeBuilding(b);
+				
+				target.planet.owner.statistics.buildingsLost++;
+				target.planet.owner.statistics.buildingsLostCost += b.type.cost * (1 + b.upgradeLevel);
+				
+				world().players.get(owner).statistics.buildingsDestroyed++;
+				world().players.get(owner).statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
 			}
 		}
 	}
@@ -3893,6 +3907,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param winner the winner of the fight
 	 */
 	void concludeBattle(Player winner) {
+		
 		boolean groundLosses = false;
 		Set<Fleet> fleets = new HashSet<Fleet>();
 		Set<Planet> planets = U.newHashSet();
@@ -3915,6 +3930,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				s.planet.surface.removeBuilding(s.building);
 				planets.add(s.planet);
 				groundLosses = true;
+				
+				s.planet.owner.statistics.buildingsLost++;
+				s.planet.owner.statistics.buildingsLostCost += s.building.type.cost * (1 + s.building.upgradeLevel);
+				
+				battle.attacker.owner.statistics.buildingsDestroyed++;
+				battle.attacker.owner.statistics.buildingsDestroyedCost += s.building.type.cost * (1 + s.building.upgradeLevel);
+
 			}
 			if (s.item != null) {
 				s.item.count = 0;
@@ -3962,19 +3984,24 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		// cleanup fleets
 		for (Fleet f : fleets) {
 			f.cleanup();
-			int gu = f.adjustVehicleCounts();
+			int gu = f.loseVehicles(battle.enemy(f.owner));
 			if (f.owner == battle.attacker.owner) {
 				battle.attackerGroundLosses += gu;
 			} else {
 				battle.defenderGroundLosses += gu;
 			}
-			if (f.inventory.size() == 0) {
+			if (f.inventory.isEmpty()) {
 				world().removeFleet(f);
 				world().scripting.onLost(f);
+				f.owner.statistics.fleetsLost++;
 			}
 		}
 		battle.spacewarWinner = winner;
 		battle.retreated = stopRetreat.visible;
+
+		// apply statistics
+		battle.incrementSpaceWin();
+
 		
 		player().ai.spaceBattleDone(this);
 		nonPlayer().ai.spaceBattleDone(this);

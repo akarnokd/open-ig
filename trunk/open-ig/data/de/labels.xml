@@ -2740,6 +2740,28 @@
 	<entry key='chat.bo.8.n0'>Hier spricht die Interplanetare Polizei. Kehren Sie um! Kehren Sie sofort um! Für diesen Planeten besteht Landeverbot.</entry>
 	<entry key='chat.bo.8.n1'>OK. Raumschiff Eyola4 verläßt den Planeten.</entry>
 
+	<entry key='statistics.planet_lost_alien'>Planeten verloren zu Ausererdische</entry>
+	<entry key='statistics.space_battles'>Weltraumschlacten</entry>
+	<entry key='statistics.space_wins'>Weltraumschlächte gewonnen</entry>
+	<entry key='statistics.space_loses'>Weltraumschlächte verloren</entry>
+	<entry key='statistics.space_retreats'>Zurückzüge</entry>
+	<entry key='statistics.ground_battles'>Bodenschlächte</entry>
+	<entry key='statistics.ground_wins'>Bodenschlächte gewonnen</entry>
+	<entry key='statistics.ground_loses'>Bodenschlächte verloren</entry>
+	<entry key='statistics.fleets_created'>Flotten erstellt</entry>
+	<entry key='statistics.fleets_lost'>Flotten verloren</entry>
+	<entry key='statistics.ships_destroyed_cost'>Zerstörte Schiffskosten</entry>
+	<entry key='statistics.ships_lost'>Schiffen verloren</entry>
+	<entry key='statistics.ships_lost_cost'>Schiffen Verlusskosten</entry>
+	<entry key='statistics.buildings_destroyed'>Gebäude zerstört</entry>
+	<entry key='statistics.buildings_destroyed_cost'>Gebäude Zerstörungskosten</entry>
+	<entry key='statistics.buildings_lost'>Gebäude verloren</entry>
+	<entry key='statistics.buildings_lost_cost'>Gebäude Verlusskosten</entry>
+	<entry key='statistics.vehicles_destroyed'>Fahrzeuge zerstört</entry>
+	<entry key='statistics.vehicles_destroyed_cost'>Fahrzeuge Zerstörungskosten</entry>
+	<entry key='statistics.vehicles_lost'>Fahrzeuge verloren</entry>
+	<entry key='statistics.vehicles_lost_cost'>Farzeuge Verlorungskosten</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

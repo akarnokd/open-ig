@@ -59,40 +59,56 @@ public class PlayerStatistics {
 	public long planetsConquered;
 	/** Number of planets colonized. */
 	public long planetsColonized;
-	/** Number of planets lost to the enemy. TODO display */
+	/** Number of planets lost to the enemy. */
 	public long planetsLost;
 	/** Planets lost to aliens (non pirates). */
 	public long planetsLostAlien;
-	/** Number of planets lost due revolts. TODO gather */
+	/** Number of planets lost due revolts. */
 	public long planetsRevolted;
-	/** Number of planets lost due it died out. TODO gather */
+	/** Number of planets lost due it died out. */
 	public long planetsDied;
-	/** Number of fought space battles. TODO gather */
+	/** Number of fought space battles. */
 	public long spaceBattles;
-	/** Number of fought ground battles. TODO gather */
+	/** Number of fought ground battles. */
 	public long groundBattles;
-	/** Number of space wins. TODO gather */
+	/** Number of space wins. */
 	public long spaceWins;
-	/** Number of ground wins. TODO gather */
+	/** Number of ground wins. */
 	public long groundWins;
-	/** Number of space loses. TODO gather */
+	/** Number of space loses. */
 	public long spaceLoses;
-	/** Number of ground loses. TODO gather */
+	/** Number of ground loses. */
 	public long groundLoses;
-	/** Number of space retreats. TODO gather */
+	/** Number of space retreats. */
 	public long spaceRetreats;
-	/** Fleets created. TODO gather */
+	/** Fleets created. */
 	public long fleetsCreated;
-	/** Fleets lost. TODO gather */
+	/** Fleets lost. */
 	public long fleetsLost;
-	/** Enemy fleets destroyed. TODO gather */
-	public long fleetsDestroyed;
 	/** Number of buildings destroyed during battle. TODO gather */
 	public long buildingsDestroyed;
-	/** Number of ships destroyed. TODO gather */
+	/** The cost of buildings destroyed. TODO gather  */
+	public long buildingsDestroyedCost;
+	/** The count of lost buildings. TODO gather  */
+	public long buildingsLost;
+	/** The cost of lost buildings. TODO gather */
+	public long buildingsLostCost;
+	/** Number of ships destroyed. */
 	public long shipsDestroyed;
-	/** Number of ships lost. TODO gather */
+	/** Const of ships destroyed. */
+	public long shipsDestroyedCost;
+	/** Number of ships lost. */
 	public long shipsLost;
+	/** Cost of ships lost. */
+	public long shipsLostCost;
+	/** Number of vehicles destroyed. TODO gather */
+	public long vehiclesDestroyed;
+	/** Cost of vehicles destroyed. *TODO gather */
+	public long vehiclesDestroyedCost;
+	/** Number of vehicles lost. *TODO gather */
+	public long vehiclesLost;
+	/** Cost of vehicles. TODO gather */
+	public long vehiclesLostCost;
 	/** Total buildings. */
 	public long totalBuilding;
 	/** Total working buildings. */
@@ -152,7 +168,6 @@ public class PlayerStatistics {
 		result.spaceRetreats = spaceRetreats;
 		result.fleetsCreated = fleetsCreated;
 		result.fleetsLost = fleetsLost;
-		result.fleetsDestroyed = fleetsDestroyed;
 		result.buildingsDestroyed = buildingsDestroyed;
 		result.shipsDestroyed = shipsDestroyed;
 		result.shipsLost = shipsLost;
@@ -167,6 +182,20 @@ public class PlayerStatistics {
 		result.totalAvailableHospital = totalAvailableHospital;
 		result.totalAvailablePolice = totalAvailablePolice;
 		result.chats = chats;
+		
+		result.buildingsDestroyed = buildingsDestroyed;
+		result.buildingsDestroyedCost = buildingsDestroyedCost;
+		result.buildingsLost = buildingsLost;
+		result.buildingsLostCost = buildingsLostCost;
+		result.shipsDestroyed = shipsDestroyed;
+		result.shipsDestroyedCost = shipsDestroyedCost;
+		result.shipsLost = shipsLost;
+		result.shipsLostCost = shipsLostCost;
+		result.vehiclesDestroyed = vehiclesDestroyed;
+		result.vehiclesDestroyedCost = vehiclesDestroyedCost;
+		result.vehiclesLost = vehiclesLost;
+		result.vehiclesLostCost = vehiclesLostCost;
+		
 		return result;
 	}
 	/**

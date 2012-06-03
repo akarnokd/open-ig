@@ -2622,6 +2622,28 @@
 	<entry key='chat.bo.8.n0'>This is the Police. Turn around at once! I repeat, turn around! This planet is under blockade.</entry>
 	<entry key='chat.bo.8.n1'>All right. Ship Eyola4 is leaving the planet.</entry>
 
+	<entry key='statistics.planet_lost_alien'>Planets lost to aliens</entry>
+	<entry key='statistics.space_battles'>Space battles</entry>
+	<entry key='statistics.space_wins'>Space battle wins</entry>
+	<entry key='statistics.space_loses'>Space battle loses</entry>
+	<entry key='statistics.space_retreats'>Retreats</entry>
+	<entry key='statistics.ground_battles'>Ground battles</entry>
+	<entry key='statistics.ground_wins'>Ground battle wins</entry>
+	<entry key='statistics.ground_loses'>Ground battle loses</entry>
+	<entry key='statistics.fleets_created'>Fleets created</entry>
+	<entry key='statistics.fleets_lost'>Fleets lost</entry>
+	<entry key='statistics.ships_destroyed_cost'>Ships destroyed cost</entry>
+	<entry key='statistics.ships_lost'>Ships lost</entry>
+	<entry key='statistics.ships_lost_cost'>Ships lost cost</entry>
+	<entry key='statistics.buildings_destroyed'>Buildings destroyed</entry>
+	<entry key='statistics.buildings_destroyed_cost'>Buildings destroyed cost</entry>
+	<entry key='statistics.buildings_lost'>Buildings lost</entry>
+	<entry key='statistics.buildings_lost_cost'>Buildings lost cost</entry>
+	<entry key='statistics.vehicles_destroyed'>Vehicles destroyed</entry>
+	<entry key='statistics.vehicles_destroyed_cost'>Vehicles destroyed cost</entry>
+	<entry key='statistics.vehicles_lost'>Vehicles lost</entry>
+	<entry key='statistics.vehicles_lost_cost'>Vehicles lost cost</entry>
+
 	<entry key=''/>
   	<entry key=''/>
 	<entry key=""></entry>
