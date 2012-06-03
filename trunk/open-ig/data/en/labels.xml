@@ -2649,6 +2649,13 @@
 	<entry key='achievement.a_pirate_in_need'>A pirate in need</entry>
 	<entry key='achievement.a_pirate_in_need.desc'>You decided to help the pirate under attack</entry>
 
+	<entry key='equipment.hp' >HP : %s / %s</entry>
+	<entry key='equipment.sp' >SP : %s / %s</entry>
+	<entry key="equipment.defense">Def: %s / %s</entry>
+	<entry key="equipment.dps"    >DPS: %s / %s</entry>
+	<entry key="equipment.defense2">Def: </entry>
+	<entry key="equipment.dps2"    >DPS: </entry>
+
 	<entry key=''/>
   	<entry key=''/>
 	<entry key=""></entry>

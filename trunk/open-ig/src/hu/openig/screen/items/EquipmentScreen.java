@@ -12,15 +12,18 @@ import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Func0;
 import hu.openig.core.Func1;
+import hu.openig.core.Pair;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetStatistics;
+import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemGroup;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
@@ -28,6 +31,8 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
+import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.screen.EquipmentConfigure;
 import hu.openig.screen.EquipmentMinimap;
 import hu.openig.screen.FleetListing;
@@ -1087,6 +1092,142 @@ public class EquipmentScreen extends ScreenBase {
 			drawAgain(g2, innerEquipmentSeparator);
 			drawAgain(g2, innerEquipmentValue);
 		}
+		if (secondary == null) {
+			if (!fleetListing.visible()) {
+				if (configure.item != null && configure.item.count > 0) {
+					drawDPS(g2, configure.item);
+				} else
+				if (configure.type != null) {
+					HasInventory hi = null;
+					Player o = null;
+					int cnt = 0;
+					if (player().selectionMode == SelectionMode.PLANET || fleet() == null) {
+						hi = planet();
+						o = planet().owner;
+						cnt = planet().inventoryCount(configure.type, o);
+					} else {
+						hi = fleet();
+						o = fleet().owner;
+						cnt = fleet().inventoryCount(configure.type);
+					}
+					if (cnt > 0) {
+						InventoryItem ii = new InventoryItem(hi);
+						ii.owner = o;
+						ii.count = cnt;
+						ii.type = configure.type;
+						ii.hp = ii.hpMax();
+						ii.createSlots();
+						drawDPS(g2, ii);
+					}
+				}
+			}
+			drawTotalDPS(g2);
+		}
+	}
+	/**
+	 * Draw the total dps for the current fleet.
+	 * @param g2 the graphics context
+	 */
+	void drawTotalDPS(Graphics2D g2) {
+		HasInventory hi = null;
+		Player o = null;
+		if (player().selectionMode == SelectionMode.PLANET || fleet() == null) {
+			hi = planet();
+			o = planet().owner;
+		} else {
+			hi = fleet();
+			o = fleet().owner;
+		}
+		
+		int damage = 0;
+		double dps = 0;
+		int hp = 0;
+		int sp = 0;
+		
+		for (InventoryItem ii : hi.inventory()) {
+			if (ii.owner == o && (ii.type.category != ResearchSubCategory.WEAPONS_TANKS
+					&& ii.type.category != ResearchSubCategory.WEAPONS_VEHICLES)) {
+				Pair<Integer, Double> dmgDps = ii.maxDamageDPS();
+				
+				damage += dmgDps.first;
+				dps += dmgDps.second;
+				hp += ii.hp;
+				sp += ii.shield;
+			}
+		}
+		
+		List<TextSegment> tss = U.newArrayList();
+		tss.add(new TextSegment(get("equipment.defense2"), TextRenderer.GREEN));
+		tss.add(new TextSegment(Integer.toString(hp), Color.GREEN.getRGB()));
+		if (sp >= 0) {
+			tss.add(new TextSegment(" + ", TextRenderer.GREEN));
+			tss.add(new TextSegment(Integer.toString(sp), Color.ORANGE.getRGB()));
+			tss.add(new TextSegment(" = ", TextRenderer.GREEN));
+			tss.add(new TextSegment(Integer.toString(hp + sp), TextRenderer.YELLOW));
+		}
+		
+		dps = Math.round(dps);
+		
+		commons.text().paintTo(g2, base.x + 5, base.y + base.height - 65, 10, tss);
+		
+		tss.clear();
+		tss.add(new TextSegment(get("equipment.dps2"), TextRenderer.GREEN));
+		tss.add(new TextSegment(Integer.toString(damage), Color.GREEN.getRGB()));
+		tss.add(new TextSegment(" / ", TextRenderer.GREEN));
+		tss.add(new TextSegment(Double.toString(dps), Color.ORANGE.getRGB()));
+		
+		commons.text().paintTo(g2, base.x + 5, base.y + base.height - 45, 10, tss);
+
+	}
+	/**
+	 * Draw the health and dps values.
+	 * @param g2 the graphics context
+	 * @param ii the inventory item
+	 */
+	void drawDPS(Graphics2D g2, InventoryItem ii) {
+		int hpm = ii.hpMax();
+		int spm = ii.shieldMax();
+		String hp = format("equipment.hp", ii.hp, hpm);
+		String sp = format("equipment.sp", ii.shield, spm);
+		Pair<Integer, Double> dmgDps = ii.maxDamageDPS();
+		
+		String def = format("equipment.defense", ii.hp + ii.shield, hpm + spm);
+		String dps = format("equipment.dps", dmgDps.first, Math.round(dmgDps.second));
+		
+		int hpw = commons.text().getTextWidth(7, hp);
+		int spw = commons.text().getTextWidth(7, sp);
+		
+		int defw = commons.text().getTextWidth(7, def);
+		int dpsw = commons.text().getTextWidth(7, dps);
+		
+		int w1 = Math.max(hpw, Math.max(spw, Math.max(defw, dpsw))) + 5;
+		
+		int x0 = base.x + base.width - w1 - 10 - listButton.width - 5;
+		
+		int h0 = 45;
+		if (spm < 0) {
+			h0 -= 20;
+		}
+
+		int y0 = innerEquipment.y + 34 - h0;
+
+		g2.setColor(new Color(0, 0, 0, 128));
+		g2.fillRect(x0, y0, w1 + 5, h0);
+		g2.setColor(new Color(0xFF4D7DB6));
+		g2.drawRect(x0, y0, w1 + 4, h0 - 1);
+
+		int y1 = y0 + 4;
+		commons.text().paintTo(g2, x0 + 5, y1, 7, TextRenderer.GREEN, hp);
+		y1 += 10;
+		if (spm >= 0) {
+			commons.text().paintTo(g2, x0 + 5, y1, 7, TextRenderer.GREEN, sp);
+			y1 += 10;
+			commons.text().paintTo(g2, x0 + 5, y1, 7, TextRenderer.GREEN, def);
+			y1 += 10;
+		}
+		commons.text().paintTo(g2, x0 + 5, y1, 7, TextRenderer.GREEN, dps);
+
+		
 	}
 	/**
 	 * Draws the specified component only.
