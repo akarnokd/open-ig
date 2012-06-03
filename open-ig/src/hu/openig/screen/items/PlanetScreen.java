@@ -4157,7 +4157,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			// remove unfinished buildings
 			for (Building b : U.newArrayList(planet().surface.buildings)) {
 				if (!b.isComplete()) {
-					planet().surface.removeBuilding(b);
+					destroyBuilding(b);
 				}
 			}
 			planet().rebuildRoads();
@@ -4264,8 +4264,24 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (battle != null && "Defensive".equals(b.type.kind)) {
 				battle.defenderFortificationLosses++;
 			}
-			surface().removeBuilding(b);
 			effectSound(SoundType.EXPLOSION_LONG);
+			destroyBuilding(b);
+		}
+	}
+	/**
+	 * Destroy the given building and apply statistics.
+	 * @param b the target building
+	 */
+	void destroyBuilding(Building b) {
+		surface().removeBuilding(b);
+		b.hitpoints = 0;
+		
+		planet().owner.statistics.buildingsLost++;
+		planet().owner.statistics.buildingsLostCost += b.type.cost * (1 + b.upgradeLevel);
+		
+		if (battle != null) {
+			battle.attacker.owner.statistics.buildingsDestroyed++;
+			battle.attacker.owner.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
 		}
 	}
 	/**
@@ -4484,7 +4500,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		
 		if (u.attackBuilding.isDestroyed()) {
-			// TODO demolish animation
+			// TODO demolish animation?
 			u.attackBuilding = null;
 		}
 	}
@@ -4521,6 +4537,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						}
 					}
 					
+					u.attackUnit.owner.statistics.vehiclesLost++;
+					u.attackUnit.owner.statistics.vehiclesLostCost += world().researches.get(u.attackUnit.model.id).productionCost;
+
+					u.owner.statistics.vehiclesDestroyed++;
+					u.owner.statistics.vehiclesDestroyedCost += world().researches.get(u.attackUnit.model.id).productionCost;
+
 					u.attackUnit = null;
 				}
 			} else {
@@ -4544,6 +4566,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
 						if (u.isDestroyed()) {
 							createExplosion(u, ExplosionType.GROUND_RED);
+							
+							u.owner.statistics.vehiclesLost++;
+							u.owner.statistics.vehiclesLostCost += world().researches.get(u.attackUnit.model.id).productionCost;
+
+							owner.statistics.vehiclesDestroyed++;
+							owner.statistics.vehiclesDestroyedCost += world().researches.get(u.attackUnit.model.id).productionCost;
+
 						}
 					}
 				}
@@ -4578,6 +4607,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						if (g.attack.isDestroyed()) {
 							effectSound(g.attack.model.destroy);
 							createExplosion(g.attack, ExplosionType.GROUND_RED);
+							
+							g.attack.owner.statistics.vehiclesLost++;
+							g.attack.owner.statistics.vehiclesLostCost += world().researches.get(g.attack.model.id).productionCost;
+
+							g.owner.statistics.vehiclesDestroyed++;
+							g.owner.statistics.vehiclesDestroyedCost += world().researches.get(g.attack.model.id).productionCost;
+							
 							g.attack = null;
 						}
 					} else {
@@ -5339,6 +5375,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		createGroundUnits(atBuildings, iis, unitsToPlace);
 		
 		startBattle.visible(true);
+		
+		battle.incrementGroundBattles();
 	}
 	/** Deploy the non-player vehicles. */
 	void deployNonPlayerVehicles() {

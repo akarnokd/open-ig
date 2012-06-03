@@ -8,6 +8,7 @@
 package hu.openig.model;
 
 
+
 /**
  * The space strength record.
  * @author akarnokd, 2012.04.07.

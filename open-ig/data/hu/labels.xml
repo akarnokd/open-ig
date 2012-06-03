@@ -2666,6 +2666,28 @@
 	<entry key='chat.bo.8.n0'>Itt a Bolygóközi Rendőrség beszél. Azonnal forduljon vissza! Ismétlem, azonnal forduljon vissza. A bolygó blokád alatt van.</entry>
 	<entry key='chat.bo.8.n1'>Rendben, a FOX13-as hajó visszafordul.</entry>
 
+	<entry key='statistics.planet_lost_alien'>Idegenek által elfoglalt bolygók</entry>
+	<entry key='statistics.space_battles'>Űrcsaták</entry>
+	<entry key='statistics.space_wins'>Győztes űrcsaták</entry>
+	<entry key='statistics.space_loses'>Vesztes űrcsaták</entry>
+	<entry key='statistics.space_retreats'>Visszavonulások</entry>
+	<entry key='statistics.ground_battles'>Felszíni csaták</entry>
+	<entry key='statistics.ground_wins'>Felszíni győzelmek</entry>
+	<entry key='statistics.ground_loses'>Felszíni vesztett csaták</entry>
+	<entry key='statistics.fleets_created'>Létrehozott flották</entry>
+	<entry key='statistics.fleets_lost'>Elvesztett flották</entry>
+	<entry key='statistics.ships_destroyed_cost'>Megsemmisített hajók ára</entry>
+	<entry key='statistics.ships_lost'>Elvesztett hajók</entry>
+	<entry key='statistics.ships_lost_cost'>Elvesztett hajók ára</entry>
+	<entry key='statistics.buildings_destroyed'>Megsemmisített épületek</entry>
+	<entry key='statistics.buildings_destroyed_cost'>Megsemmisített épületek ára</entry>
+	<entry key='statistics.buildings_lost'>Elvesztett épületek</entry>
+	<entry key='statistics.buildings_lost_cost'>Elvesztett épületek ára</entry>
+	<entry key='statistics.vehicles_destroyed'>Megsemmisített járművek</entry>
+	<entry key='statistics.vehicles_destroyed_cost'>Megsemmisített járművek ára</entry>
+	<entry key='statistics.vehicles_lost'>Elvesztett járművek</entry>
+	<entry key='statistics.vehicles_lost_cost'>Elvesztett járművek ára</entry>
+
 	<entry key=''></entry>
 	<entry key=''></entry>
 	<entry key=""></entry>
