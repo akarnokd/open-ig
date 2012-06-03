@@ -412,6 +412,22 @@ public final class AchievementManager {
 			return false;
 		}
 	};
+	/** Test for achievement. */
+	@ID
+	protected static final Pred2<World, Player> A_PIRATE_IN_NEED = new Pred2<World, Player>() {
+		@Override
+		public Boolean invoke(World t, Player u) {
+			return false;
+		}
+	};
+	/** Test for achievement. */
+	@ID
+	protected static final Pred2<World, Player> BELA_THE_4TH = new Pred2<World, Player>() {
+		@Override
+		public Boolean invoke(World t, Player u) {
+			return false;
+		}
+	};
 	// -------------------------------------------------------------------------------	
 	/** Utility class. */
 	private AchievementManager() {

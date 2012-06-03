@@ -2762,6 +2762,11 @@
 	<entry key='statistics.vehicles_lost'>Fahrzeuge verloren</entry>
 	<entry key='statistics.vehicles_lost_cost'>Farzeuge Verlorungskosten</entry>
 
+	<entry key='achievement.bela_the_4th'>IV. Béla</entry>
+	<entry key='achievement.bela_the_4th.desc'>Du hast Achilles neugebaut</entry>
+	<entry key='achievement.a_pirate_in_need'>Pirat im Not</entry>
+	<entry key='achievement.a_pirate_in_need.desc'>Du hast entschiden den Pirat zu retten</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

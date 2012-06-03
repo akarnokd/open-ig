@@ -151,6 +151,7 @@ public class Mission1 extends Mission {
 			if (o0.state == ObjectiveState.ACTIVE) {
 				setObjectiveState(o0, ObjectiveState.SUCCESS);
 				addTimeout("Mission-1-Success", 13000);
+				world.achievement("achievements.bela_the_4th");
 			}
 			
 		}

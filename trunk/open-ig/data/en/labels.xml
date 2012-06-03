@@ -2644,6 +2644,11 @@
 	<entry key='statistics.vehicles_lost'>Vehicles lost</entry>
 	<entry key='statistics.vehicles_lost_cost'>Vehicles lost cost</entry>
 
+	<entry key='achievement.bela_the_4th'>Bela the 4th</entry>
+	<entry key='achievement.bela_the_4th.desc'>You have rebuilt Achilles</entry>
+	<entry key='achievement.a_pirate_in_need'>A pirate in need</entry>
+	<entry key='achievement.a_pirate_in_need.desc'>You decided to help the pirate under attack</entry>
+
 	<entry key=''/>
   	<entry key=''/>
 	<entry key=""></entry>

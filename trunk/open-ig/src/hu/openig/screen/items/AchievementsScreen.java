@@ -33,6 +33,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -498,6 +500,13 @@ public class AchievementsScreen extends ScreenBase {
 		for (String ac : AchievementManager.achievements()) {
 			achievements.add(new AchievementEntry(ac, ac + ".desc"));
 		}
+		Collections.sort(achievements, new Comparator<AchievementEntry>() {
+			@Override
+			public int compare(AchievementEntry o1, AchievementEntry o2) {
+				return get(o1.title).compareTo(get(o2.title));
+			}
+		});
+		
 		statistics.add(new StatisticsEntry("statistics.total_gametime",
 		new Func1<Void, String>() {
 			@Override
