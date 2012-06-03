@@ -9,8 +9,10 @@
 package hu.openig;
 
 import hu.openig.core.Configuration;
+import hu.openig.core.SaveMode;
 import hu.openig.utils.ConsoleWatcher;
 
+import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -50,7 +53,16 @@ public final class Startup {
 			}
 		}
 		Configuration config = new Configuration("open-ig-config.xml");
-		config.watcherWindow = new ConsoleWatcher(args, Configuration.VERSION, config.language);
+		config.watcherWindow = new ConsoleWatcher(args, Configuration.VERSION, config.language, new Runnable() {
+			@Override
+			public void run() {
+				for (Frame f : JFrame.getFrames()) {
+					if (f instanceof GameWindow) {
+						((GameWindow)f).save("Crash", SaveMode.MANUAL);
+					}
+				}
+			}
+		});
 		config.load();
 		
 		if (argset.contains("-hu")) {

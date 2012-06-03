@@ -37,13 +37,20 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	String version;
 	/** Language. */
 	String language;
+	/** A callback to invoke when the game crashes the first time. */
+	Runnable onCrash;
 	/**
 	 * Create the gui.
 	 * @param commandLine the command line
 	 * @param version the game version
 	 * @param language the startup language
+	 * @param onCrash the action to invoke on first crash
 	 */
-	public ConsoleWatcher(String[] commandLine, String version, String language) {
+	public ConsoleWatcher(String[] commandLine, 
+			String version, 
+			String language,
+			final Runnable onCrash) {
+		this.onCrash = onCrash;
 		this.language = language;
 		setTitle("Error");
 		this.commandLine = commandLine;
@@ -80,6 +87,19 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 						}
 						if (first) {
 							first = false;
+							if (onCrash != null) {
+								try {
+									onCrash.run();
+								} catch (Throwable t) {
+									final Throwable t2 = t;
+									SwingUtilities.invokeLater(new Runnable() {
+										@Override
+										public void run() {
+											t2.printStackTrace();
+										}
+									});
+								}
+							}
 							writeDiagnosticInfo();
 						}
 						area.append(new String(b2, off, len));
@@ -108,6 +128,9 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		area.append(String.format("   Maximum memory: %s MB%n", Runtime.getRuntime().maxMemory() / 1024 / 1024));
 		area.append(String.format("   Parallelism: %s%n", Runtime.getRuntime().availableProcessors()));
 		area.append(String.format("   Startup language: %s%n", language));
+		if (onCrash != null) {
+			area.append("A crash save has been created, please attach it in the issue report (zipped).\r\n");
+		}
 		area.append("----\r\n");
 	}
 }

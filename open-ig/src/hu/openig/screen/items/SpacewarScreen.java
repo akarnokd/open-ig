@@ -27,6 +27,7 @@ import hu.openig.model.Chats.Chat;
 import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
+import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
@@ -4009,8 +4010,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		
-		if (!(bi.targetFleet != null && bi.targetFleet.owner.id.equals("Traders") 
-				&& bi.enemyFlee)) {
+		if (!(bi.targetFleet != null 
+				&& bi.targetFleet.owner.id.equals("Traders") 
+				&& (bi.enemyFlee || !bi.targetFleet.inventory.isEmpty())
+				&& bi.targetFleet.task != FleetTask.SCRIPT
+			)) {
 			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 			bfs.displayBattleSummary(bi);
 		} else {
