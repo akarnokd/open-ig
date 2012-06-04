@@ -27,7 +27,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.94.901'>
+	<module id='Game' version='0.94.902'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,13 +43,13 @@
 			<desc lang='en'>Almost Beta.</desc>
 			<desc lang='de'>Beta gleich</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.94.901.jar' sha1='78b0be94b1737c4a205e97d5296950271f61f94e'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.94.902.jar' sha1='01542f4a4f279d0606acd9d6c0712c8c37d1cc49'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120603b2.zip' sha1='16b4afc5824c2ecd251556530c3813aea390c09b'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Június 3 / B</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 3rd June, 2012 / B</desc>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120604a2.zip' sha1='2dd73dc57de7a1f9057964a664121a3ed29d49b7'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Június 4 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 4th June, 2012 / A</desc>
 		</file>
 		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120603a.zip' sha1='9a15e536b1ce32856725ac96dcebbff67b42c01f'/>
 
