@@ -173,6 +173,11 @@ public final class Startup {
 			public void run() {
 				GameWindow gw = new GameWindow(config);
 				gw.setVisible(true);
+				if (config.intro) {
+					config.intro = false;
+					config.save();
+					gw.playVideos("intro/gt_interactive_intro", "intro/intro_1", "intro/intro_2", "intro/intro_3");
+				}
 			}
 		});
 	}

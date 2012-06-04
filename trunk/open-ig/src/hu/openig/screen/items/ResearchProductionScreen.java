@@ -35,6 +35,7 @@ import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.U;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -482,6 +483,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectSubCategory(cat);
+				selectSubCategoryFirst(cat);
 			}
 		};
 		b.visible(false);
@@ -773,7 +775,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		video.image(null);
 
-		playAnim(selectCurrentOrFirst());
+		selectCurrentOrFirst();
 
 		animation = commons.register(100, new Action0() {
 			@Override
@@ -860,6 +862,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.SPACESHIPS);
+				selectSubCategoryFirst(subCategories(ResearchMainCategory.SPACESHIPS).get(0));
 			}
 		};
 		equipmentsLabel = new UIImageTabButton(commons.research().equipment);
@@ -868,6 +871,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.EQUIPMENT);
+				selectSubCategoryFirst(subCategories(ResearchMainCategory.EQUIPMENT).get(0));
 			}
 		};
 		weaponsLabel = new UIImageTabButton(commons.research().weapons);
@@ -876,6 +880,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.WEAPONS);
+				selectSubCategoryFirst(subCategories(ResearchMainCategory.WEAPONS).get(0));
 			}
 		};
 		buildingsLabel = new UIImageTabButton(commons.research().buildings);
@@ -884,6 +889,7 @@ public class ResearchProductionScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
 				selectMainCategory(ResearchMainCategory.BUILDINS);
+				selectSubCategoryFirst(subCategories(ResearchMainCategory.BUILDINS).get(0));
 			}
 		};
 		mainComponents.put(ResearchMainCategory.SPACESHIPS, spaceshipsLabel);
@@ -1402,26 +1408,17 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	/**
 	 * Select the first research if the current is null.
-	 * @return the research
 	 */
-	public ResearchType selectCurrentOrFirst() {
+	public void selectCurrentOrFirst() {
 		ResearchType rt = research();
 		if (rt == null) {
-			List<ResearchType> rts = world().getResearch();
-			if (rts.size() > 0) {
-				rt = rts.get(0);
-				world().selectResearch(rt);
-			}
+			ResearchSubCategory cat = ResearchSubCategory.SPACESHIPS_FIGHTERS;
+			selectSubCategoryFirst(cat);
+		} else {
+			selectMainCategory(rt.category.main);
+			selectSubCategory(rt.category);
+			playAnim(rt);
 		}
-		ResearchMainCategory cat2 = ResearchMainCategory.SPACESHIPS;
-		ResearchSubCategory cat = ResearchSubCategory.SPACESHIPS_FIGHTERS;
-		if (rt != null) {
-			cat2 = rt.category.main;
-			cat = rt.category;
-		}
-		selectMainCategory(cat2);
-		selectSubCategory(cat);
-		return rt;
 	}
 	/**
 	 * Select the given research category and display its subcategory labels.
@@ -1444,6 +1441,22 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 	}
 	/**
+	 * List the sub-categories of the given main category.
+	 * @param mcat the main category
+	 * @return the list of sub-categories
+	 */
+	List<ResearchSubCategory> subCategories(ResearchMainCategory mcat) {
+		List<ResearchSubCategory> result = U.newArrayList();
+		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
+			ResearchSubCategory sc = e.getKey();
+			boolean sub = sc.main == mcat;
+			if (sub) {
+				result.add(sc);
+			}
+		}
+		return result;
+	}
+	/**
 	 * Perform actions when the specified sub-category is selected,
 	 * e.g., change the technology slot contents, etc.
 	 * @param cat the sub category
@@ -1453,7 +1466,12 @@ public class ResearchProductionScreen extends ScreenBase {
 			e.getValue().down = (e.getKey() == cat);
 		}
 		displayTechnologies(cat);
-		
+	}
+	/**
+	 * Select the first from the sub category items.
+	 * @param cat the category
+	 */
+	void selectSubCategoryFirst(ResearchSubCategory cat) {
 		ResearchType rt0 = null;
 		for (final ResearchType rt : world().researches.values()) {
 			if (world().canDisplayResearch(rt) && rt.category == cat) {
@@ -1466,7 +1484,6 @@ public class ResearchProductionScreen extends ScreenBase {
 			research(rt0);
 		}
 		playAnim(rt0);
-
 	}
 	/**
 	 * Change and set the visibility of components based on the mode.
