@@ -1304,6 +1304,12 @@ public class LoadSaveScreen extends ScreenBase {
 		int cby = getInnerHeight() / 2 + 25;
 		int cbx = getInnerWidth() / 2;
 		
+		if (config.scaleAllScreens) {
+			confirmText.bounds(base.x, base.y, base.width, base.height);
+			cby = base.y + base.height / 2 + 25;
+			cbx = base.x + base.width / 2;
+		}
+		
 		confirmOk.location(cbx - 20 - confirmOk.width, cby);
 		confirmCancel.location(cbx + 20, cby);
 	}
@@ -1403,7 +1409,11 @@ public class LoadSaveScreen extends ScreenBase {
 		int code = e.getKeyCode();
 		char chr = e.getKeyChar();
 		if (code == KeyEvent.VK_ESCAPE) {
-			doBack();
+			if (confirmCancel.visible()) {
+				confirmCancel.onClick.invoke();
+			} else {
+				doBack();
+			}
 			e.consume();
 		} else {
 			if ((chr == 'x' || chr == 'X') && settingsMode == SettingsPage.VISUAL) {
@@ -1582,8 +1592,11 @@ public class LoadSaveScreen extends ScreenBase {
 				if (idx >= 0 && idx < items.size()) {
 					selected = items.get(idx);
 					buttonSound(SoundType.CLICK_MEDIUM_2);
-					doLoad();
+					if (selected.file != null) {
+						doLoad();
+					}
 					return true;
+					
 				}
 			} else
 			if (e.has(Type.WHEEL)) {
