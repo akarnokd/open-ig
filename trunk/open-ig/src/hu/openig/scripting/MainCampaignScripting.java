@@ -12,6 +12,8 @@ import hu.openig.core.Func1;
 import hu.openig.core.SaveMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameScripting;
 import hu.openig.model.GroundwarWorld;
@@ -29,8 +31,6 @@ import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
-import hu.openig.model.Chats.Chat;
-import hu.openig.model.Chats.Node;
 import hu.openig.scripting.missions.Mission;
 import hu.openig.scripting.missions.MissionScriptingHelper;
 import hu.openig.utils.U;
@@ -42,6 +42,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
@@ -76,6 +78,8 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	final Map<String, Integer> countdowns = U.newHashMap();
 	/** The mission timer. Contains mission specific start after N hours based on the current game since the start of the entire game. */
 	final Map<String, Integer> missiontimer = U.newHashMap();
+	/** The mission timer deallocation log. */
+	final Map<String, String> missiontimerlog = U.newHashMap();
 	/** Indicates a game over condition. */
 	boolean gameOver;
 	/** Set of fleet ids currently under control of scripting. */
@@ -171,6 +175,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		missions.clear();
 		countdowns.clear();
 		missiontimer.clear();
+		missiontimerlog.clear();
 		scriptedFleets.clear();
 		if (debugFrame != null) {
 			debugFrame.dispose();
@@ -570,6 +575,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		for (String s : U.newArrayList(missiontimer.keySet())) {
 			if (filter.invoke(s)) {
 				missiontimer.remove(s);
+				missiontimerlog.remove(s);
 			}
 		}
 	}
@@ -1009,11 +1015,15 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void setMissionTime(String id, int hours) {
 		missiontimer.put(id, hours);
+		missiontimerlog.remove(id);
 	}
 	@Override
 	public void clearMissionTime(String id) {
 		if (missiontimer.remove(id) == null) {
 			new AssertionError(String.format("MissionTime %s not found.", id)).printStackTrace();
+			System.err.printf("MissionTime %s last deallocation: %s%n", id, missiontimerlog.get(id));
+		} else {
+			missiontimerlog.put(id, stackTrace(new AssertionError("MissionTime " + id)));
 		}
 	}
 	@Override
@@ -1305,4 +1315,16 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			m.onRecordMessage();
 		}
 	};
+	/**
+	 * Extract the stacktrace text from the exception.
+	 * @param t the exception
+	 * @return the stacktrace string
+	 */
+	public String stackTrace(Throwable t) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		pw.flush();
+		return sw.toString();
+	}
 }
