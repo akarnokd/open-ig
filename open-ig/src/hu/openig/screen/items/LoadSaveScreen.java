@@ -19,6 +19,7 @@ import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -26,8 +27,10 @@ import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UISpinner;
+import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.XElement;
 
 import java.awt.Color;
@@ -268,6 +271,12 @@ public class LoadSaveScreen extends ScreenBase {
 	BufferedImage visualDarkIcon;
 	/** Icon. */
 	BufferedImage visualIcon;
+	/** The confirmation OK button. */
+	UIGenericButton confirmOk;
+	/** The confirmation Cancel button. */
+	UIGenericButton confirmCancel;
+	/** The confirmation message. */
+	UILabel confirmText;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -963,7 +972,60 @@ public class LoadSaveScreen extends ScreenBase {
 			}
 		};
 		
+		/////////////////
+
+		confirmOk = new UIGenericButton(get("othersettings.ok"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		confirmOk.z = 6;
+		
+		confirmCancel = new UIGenericButton(get("othersettings.cancel"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		confirmCancel.z = 6;
+		confirmCancel.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				hideConfirm();
+			}
+		};
+		
+		confirmText = new UILabel("", 20, commons.text());
+		confirmText.color(TextRenderer.YELLOW);
+		confirmText.horizontally(HorizontalAlignment.CENTER);
+		confirmText.vertically(VerticalAlignment.MIDDLE);
+		confirmText.z = 5;
+
+		hideConfirm();
+
 		addThis();
+	}
+	/** Hide the confirmation controls. */
+	void hideConfirm() {
+		confirmOk.visible(false);
+		confirmCancel.visible(false);
+		confirmText.visible(false);
+	}
+	/**
+	 * Show a confirmation message.
+	 * @param message the message to display.
+	 * @param onApprove the action to take if the user clicks okay
+	 */
+	void showConfirm(String message, final Action0 onApprove) {
+		confirmText.backgroundColor(0x40000000);
+		confirmText.text(message);
+		confirmOk.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				hideConfirm();
+				try {
+					onApprove.invoke();
+				} finally {
+					confirmOk.onClick = null;
+				}
+			}
+		};
+		confirmText.visible(true);
+		confirmOk.visible(true);
+		confirmCancel.visible(true);
 	}
 	/**
 	 * Prepare the UI scale controls.
@@ -1078,6 +1140,9 @@ public class LoadSaveScreen extends ScreenBase {
 		buildingName.selected(config.showBuildingName);
 		quickRNP.selected(config.quickRNP);
 		scaleAllScreens.selected(config.scaleAllScreens);
+		
+		hideConfirm();
+
 	}
 	/**
 	 * Choose a random background for the options.
@@ -1231,6 +1296,16 @@ public class LoadSaveScreen extends ScreenBase {
 		timestepValue.width = 250;
 		timestepValue.location(base.x + base.width - timestepValue.width - 30, base.y + dy);
 		dy += 30;
+		
+		
+		////////
+		
+		confirmText.bounds(0, 0, getInnerWidth(), getInnerHeight());
+		int cby = getInnerHeight() / 2 + 25;
+		int cbx = getInnerWidth() / 2;
+		
+		confirmOk.location(cbx - 20 - confirmOk.width, cby);
+		confirmCancel.location(cbx + 20, cby);
 	}
 	@Override
 	public Screens screen() {
@@ -1277,8 +1352,8 @@ public class LoadSaveScreen extends ScreenBase {
 			g2.fillRect(base.x + 10, base.y + 115, base.width - 20, base.height - 115 - 10);
 
 			save.enabled(maySave);
-			load.enabled(list.selected != null);
-			delete.enabled(list.selected != null);
+			load.enabled(list.selected != null && list.selected.file != null);
+			delete.enabled(list.selected != null && list.selected.file != null);
 		}
 		if (settingsMode == SettingsPage.LOAD_SAVE) {
 			loadSavePage.color(0xFFFFFFFF);
@@ -1388,6 +1463,22 @@ public class LoadSaveScreen extends ScreenBase {
 			@Override
 			protected void done() {
 				listWorker = null;
+				
+				// create first entry
+
+				if (maySave) {
+					FileItem newSave = new FileItem(null);
+					newSave.saveDate = new Date();
+					newSave.level = world().level;
+					newSave.difficulty = world().difficulty;
+					newSave.money = player().money;
+					newSave.gameDate = world().time.getTime();
+					newSave.saveName = "-- New --"; // FIXME labels
+					
+					flist.add(0, newSave);
+					list.selected = newSave;
+				}
+				
 				list.items.addAll(flist);
 				askRepaint();
 			};
@@ -1479,6 +1570,10 @@ public class LoadSaveScreen extends ScreenBase {
 				if (idx >= 0 && idx < items.size()) {
 					selected = items.get(idx);
 					buttonSound(SoundType.CLICK_MEDIUM_2);
+					if (e.has(Button.RIGHT) && selected.file != null) {
+						saveText = selected.saveName;
+						saveNameText.text(saveText);
+					}
 					return true;
 				}
 			} else
@@ -1517,11 +1612,17 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	/** Go back to main menu. */
 	void doMainMenu() {
-		commons.control().hideOptions();
-		displayPrimary(Screens.MAIN);
-		if (commons.world() != null) {
-			commons.control().endGame();
-		}
+		// FIXME labels
+		showConfirm("Do you really want to quit?", new Action0() {
+			@Override
+			public void invoke() {
+				commons.control().hideOptions();
+				displayPrimary(Screens.MAIN);
+				if (commons.world() != null) {
+					commons.control().endGame();
+				}
+			}
+		});
 	}
 	/** Delete the current selected item. */
 	void doDelete() {
@@ -1558,8 +1659,21 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	/** Create a save. */
 	void doSave() {
-		commons.control().save(saveText, SaveMode.MANUAL);
-		doBack();
+		final FileItem fi = list.selected;
+		if (fi.file == null) {
+			commons.control().save(saveText, SaveMode.MANUAL);
+			doBack();
+		} else {
+			// FIXME labels
+			showConfirm("Overwrite save?", new Action0() {
+				@Override
+				public void invoke() {
+					fi.file.delete();
+					commons.control().save(saveText, SaveMode.MANUAL);
+					doBack();
+				}
+			});
+		} 
 	}
 	/** Return to the previous screen. */
 	void doBack() {
