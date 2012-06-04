@@ -67,7 +67,7 @@
 		
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907'/>
-		<file url='https://open-ig.googlecode.com/files/open-ig-audio-en-20120429A.zip' sha1='4e7b7b88ba6d579e649f4f8c2399d6ad9124935e'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-audio-en-20120604A.zip' sha1='cdf809488127ee41e01e13a1b95b38961682834a'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-audio-generic-20120505A.zip' sha1='5156239974601fa350181d118a15190476923468'/>
@@ -84,6 +84,7 @@
 		<remove file='open-ig-images-20120531a.zip'/>
 		<remove file='open-ig-images-20120602a.zip'/>
 		<remove file='open-ig-audio-en-20120420A.zip'/>
+		<remove file='open-ig-audio-en-20120429A.zip'/>
 		<remove file='open-ig-audio-generic-20120420A.zip'/>
 	</module>
 	<module id='MapEditor' version='0.60'>
