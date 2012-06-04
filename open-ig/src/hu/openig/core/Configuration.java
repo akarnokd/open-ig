@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.94.900";
+	public static final String VERSION = "0.94.901";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -245,6 +245,9 @@ public class Configuration {
 	@LoadSave
 //	@LoadSaveGame
 	public boolean useStandardFonts = false;
+	/** Play the intro videos? */
+	@LoadSave
+	public boolean intro = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
