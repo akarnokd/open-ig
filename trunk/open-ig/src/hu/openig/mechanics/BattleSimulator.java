@@ -132,11 +132,13 @@ public final class BattleSimulator {
 		double defenderTime = attackerTVBattle.defense / defenderTVBattle.attack;
 		
 		if (defenderTime <= attackerTime) {
+			battle.groundwarWinner = battle.targetPlanet.owner;
 			removeVehicles(battle.attacker);
 			applyDamage(defenderUnits, defenderTime * attackerTVBattle.attack);
 			
 			applyPlanetDefended(battle.targetPlanet, PLANET_DEFENSE_LOSS);
 		} else {
+			battle.groundwarWinner = battle.attacker.owner;
 			removeVehicles(battle.targetPlanet);
 			applyDamage(attackerUnits, attackerTime * defenderTVBattle.attack);
 
@@ -353,6 +355,7 @@ public final class BattleSimulator {
 					u.hp = bgv.hp;
 					u.item = ii;
 					u.model = bgv;
+					u.owner = ii.owner;
 					result.add(u);
 				}
 			}

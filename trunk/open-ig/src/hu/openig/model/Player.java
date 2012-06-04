@@ -525,11 +525,32 @@ public class Player {
 		if (msg2 == null || msg2.priority < msg.priority) {
 			messageQueue.add(msg);
 		} else {
-			messageHistory.add(msg);
+			addHistory(msg);
 		}
 		if (msg.sound != null) {
 			world.env.playSound(SoundTarget.COMPUTER, msg.sound, null);
 		}
+	}
+	/**
+	 * Add an entry into the history listing.
+	 * @param msg the message to add
+	 */
+	public void addHistory(Message msg) {
+		messageHistory.add(msg);
+		sortHistory();
+	}
+	/** Sort the history according to timestamp and priority. */
+	public void sortHistory() {
+		Collections.sort(messageHistory, new Comparator<Message>() {
+			@Override
+			public int compare(Message o1, Message o2) {
+				int c = (o1.timestamp < o2.timestamp ? -1 : (o1.timestamp > o2.timestamp ? 1 : 0));
+				if (c == 0) {
+					c = o1.priority > o2.priority ? -1 : (o1.priority < o2.priority ? 1 : 0);;
+				}
+				return c;
+			}
+		});
 	}
 	/**
 	 * @return peek the next message if any

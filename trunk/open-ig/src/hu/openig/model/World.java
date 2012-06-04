@@ -1553,6 +1553,7 @@ public class World {
 					msg.load(xmessage, this);
 					e.getKey().messageHistory.add(msg);
 				}
+				e.getKey().sortHistory();
 			}
 		}
 		linkDeferredFleetTargets(deferredTargets);
