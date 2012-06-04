@@ -665,7 +665,7 @@ public class StatusbarScreen extends ScreenBase {
 				if (notification.currentMessage != null) {
 					if (animationStep >= accelerationStep * 2 + stayStep) {
 						player().removeMessage(notification.currentMessage);
-						player().messageHistory.add(notification.currentMessage);
+						player().addHistory(notification.currentMessage);
 						notification.currentMessage = null;
 						animationStep = 0;
 //						askRepaint();

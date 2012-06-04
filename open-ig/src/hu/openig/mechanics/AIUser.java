@@ -289,10 +289,11 @@ public class AIUser implements AIManager {
 		msg.value = "" + w.player.yesterday.tradeIncome;
 		p.addMessage(msg);
 
-		msg = w.newMessage("message.yesterday_tax_income");
-		msg.priority = 21;
-		msg.value = "" + w.player.yesterday.taxIncome;
-		p.addMessage(msg);
+		Message msg2 = w.newMessage("message.yesterday_tax_income");
+		msg2.timestamp = msg.timestamp;
+		msg2.priority = 21;
+		msg2.value = "" + w.player.yesterday.taxIncome;
+		p.addMessage(msg2);
 
 	}
 	@Override

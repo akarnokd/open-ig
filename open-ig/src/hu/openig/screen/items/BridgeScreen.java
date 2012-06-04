@@ -660,6 +660,9 @@ public class BridgeScreen extends ScreenBase {
 			clearProjectorSurface();
 		}
 		if (videoAnim != null) {
+			videoSubtitle = null;
+			videoRunning = false;
+			videoAnim.onComplete = null;
 //			onVideoComplete = null;
 			videoAnim.stop();
 			videoAnim = null;
