@@ -2655,8 +2655,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			other.bounds(10, 25 + (textSize + 3) * i, w, 0);
 			other.size(w, other.getWrappedHeight());
 			h = Math.max(h, other.y + other.height);
-
-			needed.bounds(10, 25 + (textSize + 3) * i, w, 0);
+			i++;
+			
+			needed.bounds(10, other.y + other.height + 3, w, 0);
 			needed.size(w, needed.getWrappedHeight());
 			h = Math.max(h, needed.y + needed.height);
 
