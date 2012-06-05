@@ -88,7 +88,6 @@ public class Mission2 extends Mission {
 						receive("Douglas-Pirates").visible = false;
 						incomingMessage("Merchant-Under-Attack-" + traderMessage, m2ti);
 						
-						send("Douglas-Reinforcements-Denied").visible = true;
 						world.env.speed1();
 						f.stop();
 						f.task = FleetTask.SCRIPT;
@@ -133,7 +132,6 @@ public class Mission2 extends Mission {
 				}
 			}
 			if (done == 3) {
-				send("Douglas-Reinforcements-Denied").visible = false;
 				if (success == 0) {
 					setObjectiveState("Mission-2", ObjectiveState.FAILURE);
 					addTimeout("Mission-2-Failed", 13000);

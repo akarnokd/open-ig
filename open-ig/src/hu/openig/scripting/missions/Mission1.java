@@ -200,6 +200,7 @@ public class Mission1 extends Mission {
 	@Override
 	public void onNewGame() {
 		addTimeout("Mission-1-Init", 8000);
+		send("Douglas-Reinforcements-Denied").visible = true;
 	}
 	/**
 	 * Check if the main ship still exists.
