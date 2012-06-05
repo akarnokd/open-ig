@@ -26,6 +26,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -496,60 +497,6 @@ public class MainScreen extends ScreenBase {
 		} };
 		clicklabels.add(exit);
 		
-		// Language switcher on the main menu, for convenience
-		final ClickLabel toEng = new ClickLabel(550, 400, 20, 14, "EN");
-		toEng.disabled = commons.config.language.equals("en");
-		final ClickLabel toHu = new ClickLabel(550, 380, 20, 14, "HU");
-		toHu.disabled = commons.config.language.equals("hu");
-		final ClickLabel toDe = new ClickLabel(550, 360, 20, 14, "DE");
-		toDe.disabled = commons.config.language.equals("de");
-		
-		toDe.action = new Action0() {
-			@Override
-			public void invoke() {
-				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
-				toEng.disabled = false;
-				toDe.disabled = true;
-				toHu.disabled = false;
-				commons.control().switchLanguage("de");
-				selectRandomBackground();
-				checkExistingSave();
-
-				askRepaint();
-			}
-		};
-		toEng.action = new Action0() {
-			@Override
-			public void invoke() {
-				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
-				toEng.disabled = true;
-				toHu.disabled = false;
-				toDe.disabled = false;
-				commons.control().switchLanguage("en");
-				selectRandomBackground();
-				checkExistingSave();
-
-				askRepaint();
-			}
-		};
-		toHu.action = new Action0() {
-			@Override
-			public void invoke() {
-				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
-				toEng.disabled = false;
-				toHu.disabled = true;
-				toDe.disabled = false;
-				commons.control().switchLanguage("hu");
-				selectRandomBackground();
-				checkExistingSave();
-				askRepaint();
-			}
-		};
-		
-		clicklabels.add(toEng);
-		clicklabels.add(toHu);
-		clicklabels.add(toDe);
-		
 		achievements = new ClickLabel(120, 100, -400, 14, "achievements");
 		achievements.action = new Action0() {
 			@Override
@@ -632,5 +579,37 @@ public class MainScreen extends ScreenBase {
 	/** Play the credits. */
 	void doPlayCredits() {
 		displayPrimary(Screens.CREDITS);
+	}
+	/** 
+	 * Switch to the given language.
+	 * @param newLang the new language
+	 */
+	void switchTo(String newLang) {
+		commons.control().switchLanguage(newLang);
+		selectRandomBackground();
+		checkExistingSave();
+
+		askRepaint();
+	}
+	@Override
+	public boolean keyboard(KeyEvent e) {
+		if (e.isControlDown()) {
+			if (e.getKeyCode() == KeyEvent.VK_1) {
+				switchTo("en");
+				e.consume();
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_2) {
+				switchTo("hu");
+				e.consume();
+				return true;
+			}
+			if (e.getKeyCode() == KeyEvent.VK_3) {
+				switchTo("de");
+				e.consume();
+				return true;
+			}
+		}
+		return super.keyboard(e);
 	}
 }
