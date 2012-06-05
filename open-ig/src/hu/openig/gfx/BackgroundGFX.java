@@ -35,6 +35,9 @@ public class BackgroundGFX {
 	/** The gameover image. */
 	@Img(name = "gameover")
 	public BufferedImage gameover;
+	/** The Open Imperium Galactica text logo. */
+	@Img(name = "open-ig-textlogo")
+	public BufferedImage openigTextLogo;
 	/**
 	 * Load resources.
 	 * @param rl the resource locator

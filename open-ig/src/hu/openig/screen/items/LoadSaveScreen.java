@@ -1176,7 +1176,6 @@ public class LoadSaveScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		// XXX
 		scaleResize(base);
 		// tabs
 		
@@ -1324,7 +1323,6 @@ public class LoadSaveScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-		// XXX
 		AffineTransform save0 = scaleDraw(g2, base);
 		
 		if (settingsMode != SettingsPage.LOAD_SAVE) {
@@ -1397,9 +1395,8 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		// XXX
 		scaleMouse(e, base);
-		if (e.has(Type.DOWN) && !e.within(base.x, base.y, base.width, base.height)) {
+		if (e.has(Type.DOWN) && !e.within(base.x, base.y, base.width, base.height) && !confirmText.visible()) {
 			doBack();
 		}
 		return super.mouse(e);
@@ -1483,7 +1480,7 @@ public class LoadSaveScreen extends ScreenBase {
 					newSave.difficulty = world().difficulty;
 					newSave.money = player().money;
 					newSave.gameDate = world().time.getTime();
-					newSave.saveName = "-- New --"; // FIXME labels
+					newSave.saveName = LoadSaveScreen.this.get("settings.new_save"); // FIXME labels
 					
 					flist.add(0, newSave);
 					list.selected = newSave;
@@ -1625,8 +1622,7 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	/** Go back to main menu. */
 	void doMainMenu() {
-		// FIXME labels
-		showConfirm("Do you really want to quit?", new Action0() {
+		showConfirm(get("settings.confirm_quit"), new Action0() {
 			@Override
 			public void invoke() {
 				commons.control().hideOptions();
@@ -1677,8 +1673,7 @@ public class LoadSaveScreen extends ScreenBase {
 			commons.control().save(saveText, SaveMode.MANUAL);
 			doBack();
 		} else {
-			// FIXME labels
-			showConfirm("Overwrite save?", new Action0() {
+			showConfirm(get("settings.confirm_overwrite"), new Action0() {
 				@Override
 				public void invoke() {
 					fi.file.delete();

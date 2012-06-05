@@ -2658,9 +2658,9 @@
 	<entry key="equipment.dps2"    >DPS: </entry>
 
 	<entry key="virus_infection">Virus!!!</entry>
-	<entry key=''/>
-  	<entry key=''/>
-	<entry key=""></entry>
+	<entry key='settings.new_save'>-- New --</entry>
+  	<entry key='settings.confirm_overwrite'>Overwrite save?</entry>
+	<entry key="settings.confirm_quit">Do you really want to quit?</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

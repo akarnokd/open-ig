@@ -233,13 +233,14 @@ public class MainScreen extends ScreenBase {
 		}
 
 		g2.drawImage(background, 0, 0, null);
-	
-		int w0 = commons.text().getTextWidth(14, "Open");
-		g2.setColor(new Color(0, 0, 0, 128));
-		g2.fillRect(118, 18, w0 + 4, 20);
-		commons.text().paintTo(g2, 121, 21, 14, 0xFF000000, "Open");
-		commons.text().paintTo(g2, 120, 20, 14, 0xFFFFFF00, "Open");
-		
+
+		RenderTools.setInterpolation(g2, true);
+		BufferedImage tli = commons.background().openigTextLogo;
+		int tliw = tli.getWidth() * 3 / 4;
+		int tlih = tli.getHeight() * 3 / 4;
+		int tlw = (w - tliw) / 2;
+		g2.drawImage(tli, tlw, 8, tliw, tlih, null);
+		RenderTools.setInterpolation(g2, false);
 		
 		int vx = 10;
 		int vy = 428;
