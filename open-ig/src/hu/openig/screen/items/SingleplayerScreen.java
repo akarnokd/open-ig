@@ -12,7 +12,6 @@ import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Labels;
 import hu.openig.model.GameDefinition;
-import hu.openig.model.Message;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
@@ -34,9 +33,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.SwingUtilities;
 
@@ -300,25 +297,6 @@ public class SingleplayerScreen extends ScreenBase {
 		
 		config.computerVoiceScreen = csw;
 		commons.control().displayStatusbar();
-		
-		commons.pool.schedule(new Callable<Void>() {
-			@Override
-			public Void call() throws Exception {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						Message msg = new Message();
-						msg.gametime = world().time.getTimeInMillis();
-						msg.timestamp = System.currentTimeMillis();
-						msg.sound = SoundType.WELCOME;
-						msg.text = "welcome";
-						
-						player().addMessage(msg);
-					}
-				});
-				return null;
-			}
-		}, 2, TimeUnit.SECONDS);
 	};
 	@Override
 	public boolean keyboard(KeyEvent e) {

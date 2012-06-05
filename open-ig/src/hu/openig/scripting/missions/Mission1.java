@@ -10,10 +10,12 @@ package hu.openig.scripting.missions;
 
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
+import hu.openig.model.Message;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.SoundType;
 import hu.openig.utils.U;
 
 import java.util.Set;
@@ -134,6 +136,17 @@ public class Mission1 extends Mission {
 			
 			int mission2Time = 24 * (world.random().nextInt(2) + 7);
 			addMission("Mission-2", mission2Time);
+			addTimeout("Welcome", 1500);
+		}
+		if (checkTimeout("Welcome")) {
+			Message msg = new Message();
+			msg.priority = 100;
+			msg.gametime = world.time.getTimeInMillis();
+			msg.timestamp = System.currentTimeMillis();
+			msg.sound = SoundType.WELCOME;
+			msg.text = "welcome";
+			
+			player.addMessage(msg);
 		}
 		if (checkMission("Mission-1-Task-3")) {
 			showObjective("Mission-1-Task-3");
@@ -199,7 +212,7 @@ public class Mission1 extends Mission {
 	}
 	@Override
 	public void onNewGame() {
-		addTimeout("Mission-1-Init", 8000);
+		addTimeout("Mission-1-Init", 1000); // 8000
 		send("Douglas-Reinforcements-Denied").visible = true;
 	}
 	/**
