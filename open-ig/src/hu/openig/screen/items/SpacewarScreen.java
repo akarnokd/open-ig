@@ -4470,7 +4470,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			for (int i = 0; i < 11; i++) {
 				boolean v0 = groupButtons.get(i).visible();
 				groupButtons.get(i).visible(groupSet.contains(i - 1));
-				if (v0 != groupButtons.get(0).visible()) {
+				if (v0 != groupButtons.get(i).visible()) {
 					commons.control().moveMouse();
 				}
 			}

@@ -79,11 +79,11 @@ public class Mission9 extends Mission {
 		
 		if (checkMission("Mission-9-Trader-1")) {
 			createTrader("Centronom");
-			addMission("Mission-9-Trader-2", 3);
+			addMission("Mission-9-Trader-2", 6);
 		}
 		if (checkMission("Mission-9-Trader-2")) {
 			createTrader("Achilles");
-			addMission("Mission-9-Trader-3", 3);
+			addMission("Mission-9-Trader-3", 12);
 		}
 		if (checkMission("Mission-9-Trader-3")) {
 			createTrader("Naxos");

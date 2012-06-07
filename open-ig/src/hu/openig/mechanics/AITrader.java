@@ -694,7 +694,7 @@ public class AITrader implements AIManager {
 						new AssertionError(String.format("Player last-visit fleet %s refers to an unknown planet %s", fid, pid)).printStackTrace();
 					}
 				} else {
-					new AssertionError(String.format("Player last-visit refers to unknown fleet %s", fid)).printStackTrace();
+					System.out.println(String.format("Player last-visit refers to unknown fleet %s", fid));
 				}
 			}
 		}
