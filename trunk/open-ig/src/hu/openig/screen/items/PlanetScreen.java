@@ -1802,8 +1802,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 			g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
 			g2.fillRect(br.x, br.y, br.width, br.height);
-//			g2.setColor(Color.YELLOW);
-//			g2.drawRect(br.x, br.y, br.width - 1, br.height - 1);
 			
 			if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
 				BufferedImage empty = areaEmpty.getStrip(0);
@@ -5990,11 +5988,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				ibi++;
 			}
 			super.draw(g2);
-		}
-		@Override
-		public boolean mouse(UIMouse e) {
-			// TODO Auto-generated method stub
-			return super.mouse(e);
 		}
 	}
 	/** Deselect all units. */
