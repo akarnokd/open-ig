@@ -14,7 +14,6 @@ import hu.openig.utils.XElement;
 
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
-import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -427,8 +426,10 @@ public class ResourceLocator {
 				.createCompatibleImage(
 					img.getWidth(),
 					img.getHeight(),
-					img.getColorModel().hasAlpha() ? Transparency.BITMASK
-						: Transparency.OPAQUE);
+					img.getColorModel().getTransparency()
+//					img.getColorModel().hasAlpha() ? Transparency.BITMASK
+//						: Transparency.OPAQUE
+						);
 			Graphics2D g = img2.createGraphics();
 			g.drawImage(img, 0, 0, null);
 			g.dispose();

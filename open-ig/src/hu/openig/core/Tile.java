@@ -8,6 +8,8 @@
 
 package hu.openig.core;
 
+import java.awt.GraphicsEnvironment;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
@@ -170,8 +172,14 @@ public class Tile {
 	 */
 	private void applyLightMap() {
 		int[] w = WORK.get()[0];
-		for (int i = 0; i < image.length; i++) {
-			w[i] = withAlpha(image[i]);
+		if (alpha < lightThreshold) {
+			for (int i = 0; i < image.length; i++) {
+				w[i] = withAlphaNight(image[i]);
+			}
+		} else {
+			for (int i = 0; i < image.length; i++) {
+				w[i] = withAlphaDay(image[i]);
+			}
 		}
 		if (lightMap != null && alpha <= lightThreshold) {
 			for (int i = 0; i < lightMap.length; i += 2) {
@@ -199,30 +207,52 @@ public class Tile {
 				w0 = 28;
 			}
 			w0 = Math.min(w0, imageWidth - x0);
-			stripCache[stripIndex] = new BufferedImage(w0, imageHeight, BufferedImage.TYPE_INT_ARGB);
+			stripCache[stripIndex] = createImage(w0, imageHeight);
 			stripCache[stripIndex].setAccelerationPriority(1.0f);
 		}
+	}
+	/**
+	 * Create a compatible, translucent image.
+	 * @param w the width
+	 * @param h the height
+	 * @return the image
+	 */
+	BufferedImage createImage(int w, int h) {
+		return GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration()
+				.createCompatibleImage(
+					w,
+					h,
+					Transparency.TRANSLUCENT);
 	}
 	/**
 	 * Apply the alpha value to the supplied color. 
 	 * @param c the input color
 	 * @return the output color
 	 */
-	protected int withAlpha(int c) {
+	protected int withAlphaDay(int c) {
 		if ((c & 0xFF000000) == 0) {
 			return c;
-		}
-		if (alpha < lightThreshold) {
-			return 0xFF000000
-			| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
-			| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
-			| (((int)((c & 0xFF) * ((alpha + lightThreshold) / 2))) & 0xFF);
 		}
 		return 0xFF000000
 		| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
 		| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
 		| (((int)((c & 0xFF) * alpha)) & 0xFF)
 	;
+	}
+	/**
+	 * Apply the alpha value to the supplied color. 
+	 * @param c the input color
+	 * @return the output color
+	 */
+	protected int withAlphaNight(int c) {
+		if ((c & 0xFF000000) == 0) {
+			return c;
+		}
+		return 0xFF000000
+		| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
+		| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
+		| (((int)((c & 0xFF) * ((alpha + lightThreshold) / 2))) & 0xFF);
 	}
 	/**
 	 * Converts the tile coordinates to pixel coordinates, X component.
