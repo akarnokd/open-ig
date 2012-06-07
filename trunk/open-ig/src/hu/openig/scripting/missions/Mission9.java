@@ -183,12 +183,28 @@ public class Mission9 extends Mission {
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
+		Fleet attacker = war.battle().attacker;
+		Fleet targetFleet = war.battle().targetFleet;
 		if (stage == M9Stages.RUN
-				&& war.battle().attacker.owner == player 
-				&& war.battle().targetFleet != null
-				&& hasTag(war.battle().targetFleet, "Mission-9-Smuggler")) {
-			war.battle().chat = "chat.mission-9.smuggler";
-			smugglerAttacked = true;
+				&& attacker.owner == player 
+				&& targetFleet != null
+				&& targetFleet.owner.id.equals("Traders")) {
+			if (hasTag(targetFleet, "Mission-9-Smuggler")) {
+				war.battle().chat = "chat.mission-9.smuggler";
+				smugglerAttacked = true;
+			} else
+			if (targetFleet.targetPlanet() == planet("San Sterling")
+			|| targetFleet.arrivedAt == planet("San Sterling")) {
+				String filter = "chat.blockade.incoming";
+
+				AITrader ai = (AITrader)player("Traders").ai;
+
+				List<String> chats = ai.filterChats(filter);
+				int idx = ai.fleetIndex(targetFleet);
+				int comm = idx % chats.size();
+				
+				war.battle().chat = chats.get(comm);
+			}
 		}
 	}
 	@Override
