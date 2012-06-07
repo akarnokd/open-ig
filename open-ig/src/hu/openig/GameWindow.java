@@ -132,6 +132,10 @@ public class GameWindow extends JFrame implements GameControls {
 		int lastH = -1;
 		/** The last scaling. */
 		int lastScale = -1;
+		/** When did the last paint happen. */
+//		long lastPaint;
+		/** The FPS value to draw to the overlay. */
+//		Double fps;
 		/**
 		 * Set opacity. 
 		 */
@@ -141,6 +145,14 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void paint(Graphics g) {
+//			lastPaint = System.nanoTime();
+//			SwingUtilities.invokeLater(new Runnable() {
+//				@Override
+//				public void run() {
+//					long t2 = System.nanoTime() - lastPaint;
+//					fps = 0.9 * fps + 0.1 * 1000000000d / t2;
+//				}
+//			});
 			boolean r0 = repaintRequest;
 			boolean r1 = repaintRequestPartial;
 			repaintRequest = false;
@@ -210,6 +222,10 @@ public class GameWindow extends JFrame implements GameControls {
 			} finally {
 				g2.setTransform(at0);
 			}
+//			if (fps != null) {
+//				g2.setColor(Color.YELLOW);
+//				g2.drawString(String.format("%.1f", fps), lastW - 40, lastH - 6);
+//			}
 		}
 	}
 	/** The record of screens. */

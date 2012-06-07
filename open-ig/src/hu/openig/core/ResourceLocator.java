@@ -12,6 +12,9 @@ import hu.openig.utils.IOUtils;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.XElement;
 
+import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -402,7 +405,7 @@ public class ResourceLocator {
 		try {
 			BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()));
 			try {
-				return ImageIO.read(bin);
+				return optimizeImage(ImageIO.read(bin));
 			} finally {
 				try { bin.close(); } catch (IOException ex) { ex.printStackTrace(); }
 			}
@@ -413,6 +416,26 @@ public class ResourceLocator {
 			try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
 		}
 	}
+	/**
+	 * Convert the image into a compatible format for local rendering.
+	 * @param img the bufferedImage
+	 * @return the converted image
+	 */
+	BufferedImage optimizeImage(BufferedImage img) {
+		BufferedImage img2 = GraphicsEnvironment.getLocalGraphicsEnvironment()
+				.getDefaultScreenDevice().getDefaultConfiguration()
+				.createCompatibleImage(
+					img.getWidth(),
+					img.getHeight(),
+					img.getColorModel().hasAlpha() ? Transparency.BITMASK
+						: Transparency.OPAQUE);
+			Graphics2D g = img2.createGraphics();
+			g.drawImage(img, 0, 0, null);
+			g.dispose();
+		 
+			return img2;
+	}
+	
 	/**
 	 * Returns the given resource as byte data.
 	 * @param resourceName the resource name.
