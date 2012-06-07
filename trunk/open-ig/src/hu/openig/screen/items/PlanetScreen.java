@@ -2655,10 +2655,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			h = Math.max(h, other.y + other.height);
 			i++;
 			
-			needed.bounds(10, other.y + other.height + 3, w, 0);
-			needed.size(w, needed.getWrappedHeight());
-			h = Math.max(h, needed.y + needed.height);
-
+			if (needed.visible()) {
+				needed.bounds(10, other.y + other.height + 3, w, 0);
+				needed.size(w, needed.getWrappedHeight());
+				h = Math.max(h, needed.y + needed.height);
+			}
 			
 			width = w + 10;
 			height = h + 5;
@@ -2767,6 +2768,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				String nd = world().getNeeded(ps);
 				needed.visible(!nd.isEmpty());
 				needed.text(format("colonyinfo.needed", nd), true);
+			} else {
+				needed.visible(false);
+				needed.text("", true);
 			}
 
 			computeSize();
