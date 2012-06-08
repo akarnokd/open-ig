@@ -50,7 +50,7 @@ public class Mission3 extends Mission {
 		Objective m2t1 = objective("Mission-2-Task-1");
 		Objective m3 = objective("Mission-3");
 		if (stage == M3.NONE && !m3.isCompleted() && m2t1.isCompleted()) {
-			addMission("Mission-3", 48);
+			addMission("Mission-3", 4); // FIXME time required
 			stage = M3.WAIT;
 		}
 		if (checkMission("Mission-3")) {

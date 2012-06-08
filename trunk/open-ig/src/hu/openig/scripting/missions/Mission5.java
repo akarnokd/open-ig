@@ -61,7 +61,7 @@ public class Mission5 extends Mission {
 	@Override
 	public void onTime() {
 		Objective m2t1 = objective("Mission-2-Task-3");
-		Objective m1 = objective("Mission-1");
+		Objective m1 = objective("Mission-1-Task-1");
 		Objective m5 = objective("Mission-5");
 		Objective m5t1 = objective("Mission-5-Task-1");
 		if (!m5.isCompleted() && m2t1.isCompleted() && m1.isCompleted() && stage == M5.NONE) {
