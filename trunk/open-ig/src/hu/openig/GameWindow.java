@@ -192,7 +192,7 @@ public class GameWindow extends JFrame implements GameControls {
 					g2.scale(uis / 100d, uis / 100d);
 //					RenderTools.setInterpolation(g2, true);
 				}
-				if (movieVisible) {
+				if (movieVisible && movie.opaque()) {
 					movie.draw(g2);
 				} else {
 					if (r1 && !r0 && !optionsVisible) {
@@ -215,6 +215,9 @@ public class GameWindow extends JFrame implements GameControls {
 						if (statusbarVisible) {
 							statusbar.draw(g2);
 						}
+						if (movieVisible) {
+							movie.draw(g2);
+						}				
 					}
 				}
 			} catch (Throwable t) {
@@ -1980,6 +1983,7 @@ public class GameWindow extends JFrame implements GameControls {
 		for (ScreenBase sb : screens) {
 			sb.onEndGame();
 		}
+		commons.timer.start();
 	}
 	@Override
 	public void startBattle() {

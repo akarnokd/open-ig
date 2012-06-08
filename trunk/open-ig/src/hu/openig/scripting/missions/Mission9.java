@@ -8,7 +8,6 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Action0;
 import hu.openig.mechanics.AITrader;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -62,19 +61,23 @@ public class Mission9 extends Mission {
 			stage = M9Stages.WAIT;
 		}
 		if (checkMission("Mission-9")) {
-			world.env.stopMusic();
-			world.env.playVideo("interlude/merchant_in", new Action0() {
-				@Override
-				public void invoke() {
-					world.env.playMusic();
-					world.env.speed1();
-					
-					incomingMessage("San Sterling-Smuggler", "Mission-9");
-					stage = M9Stages.RUN;
+			incomingMessage("San Sterling-Smuggler", "Mission-9");
+			stage = M9Stages.RUN;
 
-					addMission("Mission-9-Trader-1", 3);
-				}
-			});
+			addMission("Mission-9-Trader-1", 3);
+//			world.env.stopMusic();
+//			world.env.playVideo("interlude/merchant_in", new Action0() {
+//				@Override
+//				public void invoke() {
+//					world.env.playMusic();
+//					world.env.speed1();
+//					
+//					incomingMessage("San Sterling-Smuggler", "Mission-9");
+//					stage = M9Stages.RUN;
+//
+//					addMission("Mission-9-Trader-1", 3);
+//				}
+//			});
 		}
 		
 		if (checkMission("Mission-9-Trader-1")) {

@@ -27,6 +27,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,6 +60,14 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	private MediaPlayer player;
 	/** The mouse was pressed down. */
 	boolean down;
+	/** The fadein index. -1 if no fade is in progress */
+	int fadeIndex;
+	/** The max fade index. */
+	static final int FADE_MAX = 20;
+	/** The fade time step duration in milliseconds. */
+	static final int FADE_TIME = 25;
+	/** The fade timer. */
+	Closeable fadeTimer;
 	/**
 	 * Start playback.
 	 * @param media the media
@@ -87,12 +96,25 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		String nextMedia = mediaQueue.poll();
 		if (nextMedia != null) {
 			startPlayback(nextMedia);
-		} else 
-		if (playbackFinished != null) {
-			playbackFinished.invoke();
-			playbackFinished = null;
+		} else {
+			fadeIndex = FADE_MAX / 2;
+			close0(fadeTimer);
+			fadeTimer = commons.register(FADE_TIME, new Action0() {
+				@Override
+				public void invoke() {
+					if (fadeIndex == 0) {
+						if (playbackFinished != null) {
+							playbackFinished.invoke();
+							playbackFinished = null;
+						}
+					}
+					fadeIndex--;
+					askRepaint();
+				}
+			});
 		}
 	}
+	
 	@Override
 	public void onResize() {
 		movieRect.setBounds((getInnerWidth() - 640) / 2, (getInnerHeight() - 480) / 2, 640, 480);
@@ -112,8 +134,12 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public boolean keyboard(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE) {
-			stopPlayback();
+		if (fadeIndex < 0) {
+			if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE) {
+				stopPlayback();
+				e.consume();
+				return true;
+			}
 		}
 		return false;
 	}
@@ -128,15 +154,17 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (e.has(Type.DOWN)) {
-			down = true;
-		} else
-		if (e.has(Type.LEAVE)) {
-			down = false;
-		} else
-		if (e.has(Type.UP) && down && config.movieClickSkip) {
-			down = false;
-			stopPlayback();
+		if (fadeIndex < 0) {
+			if (e.has(Type.DOWN)) {
+				down = true;
+			} else
+			if (e.has(Type.LEAVE)) {
+				down = false;
+			} else
+			if (e.has(Type.UP) && down && config.movieClickSkip) {
+				down = false;
+				stopPlayback();
+			}
 		}
 		return false;
 	}
@@ -144,20 +172,45 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	@Override
 	public void onEnter(Screens mode) {
 		down = false;
-		playNext();
+		fadeIndex = 0;
+		fadeTimer = commons.register(FADE_TIME, new Action0() {
+			@Override
+			public void invoke() {
+				if (fadeIndex * 2 == FADE_MAX) {
+					playNext();
+					askRepaint();
+				} 
+				if (fadeIndex >= 0) {
+					fadeIndex++;
+					if (fadeIndex >= FADE_MAX) {
+						fadeIndex = -1;
+					}
+					askRepaint();
+				}
+			}
+		});
 	}
-
+	/** @return check if the screen is fully opaque. */
+	public boolean opaque() {
+		return fadeIndex < 0;
+	}
 	@Override
 	public void onLeave() {
-		
+		close0(fadeTimer);
+		fadeTimer = null;
+		fadeIndex = -1;
 	}
 
 	@Override
 	public void draw(Graphics2D g2) {
 		onResize();
-		if (frontBuffer != null) {
+		if (fadeIndex >= 0 && fadeIndex * 2 < FADE_MAX) {
+			g2.setColor(new Color(0, 0, 0, fadeIndex * 2f / FADE_MAX));
+		} else {
 			g2.setColor(Color.BLACK);
-			g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
+		}
+		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
+		if (frontBuffer != null) {
 			swapLock.lock();
 			try {
 				RenderTools.setInterpolation(g2, true);
@@ -189,7 +242,11 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			} finally {
 				swapLock.unlock();
 			}
-		}	
+		}
+		if (fadeIndex * 2 >= FADE_MAX) {
+			g2.setColor(new Color(0, 0, 0, (FADE_MAX - fadeIndex) * 2f / FADE_MAX));
+			g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
+		}
 	}
 
 	/**

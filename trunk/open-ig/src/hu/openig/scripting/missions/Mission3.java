@@ -56,9 +56,13 @@ public class Mission3 extends Mission {
 		if (checkMission("Mission-3")) {
 			world.env.speed1();
 
-			incomingMessage("Douglas-Carrier", "Mission-3");
-			stage = M3.RUNNING;
-			createCarrierTask();
+			incomingMessage("Douglas-Carrier");
+			addTimeout("Mission-3-Message", 20000);
+		}
+		if (checkTimeout("Mission-3-Message")) {
+			if (!objective("Mission-3").isCompleted()) {
+				runMission();
+			}
 		}
 		if (m3.isActive()) {
 			checkCarrierLocation();
@@ -105,6 +109,7 @@ public class Mission3 extends Mission {
 			objective("Mission-3").visible = false;
 		}
 	}
+	
 	/** Remove the scripted fleets. */
 	void removeFleets() {
 		Fleet fi = findTaggedFleet("Mission-3-Pirates", player("Pirates"));
@@ -265,5 +270,26 @@ public class Mission3 extends Mission {
 	@Override
 	public boolean fleetBlink(Fleet f) {
 		return stage == M3.ATTACK && f.owner == player && hasTag(f, "Mission-3-Carrier");
+	}
+	@Override
+	public void onMessageSeen(String id) {
+		if ("Douglas-Carrier".equals(id)) {
+			runMission();
+		}
+	}
+	/** Play the interlude video, show the objective and create the trader. */
+	void runMission() {
+		if (!objective("Mission-3").visible) {
+			world.env.stopMusic();
+			world.env.playVideo("interlude/merchant_in", new Action0() {
+				@Override
+				public void invoke() {
+					world.env.playMusic();
+					showObjective("Mission-3");
+					stage = M3.RUNNING;
+					createCarrierTask();
+				}
+			});
+		}
 	}
 }

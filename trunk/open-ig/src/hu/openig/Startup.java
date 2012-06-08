@@ -106,9 +106,9 @@ public final class Startup {
 	private static boolean doLowMemory() {
 		ProcessBuilder pb = new ProcessBuilder();
 		if (!new File("open-ig-" + Configuration.VERSION + ".jar").exists()) {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:bin/hu/openig/gfx/OpenIG_Splash.png", "hu.openig.Startup", "-memonce");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:open-ig-splash.png", "hu.openig.Startup", "-memonce");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-jar", "open-ig-" + Configuration.VERSION + ".jar", "-memonce");
+			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + Configuration.VERSION + ".jar", "-splash:open-ig-splash.png", "hu.openig.Startup", "-memonce");
 		}
 		try {
 			pb.start();
