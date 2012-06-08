@@ -59,10 +59,10 @@ public class Mission4 extends Mission {
 	}
 	@Override
 	public void onTime() {
-		Objective m2t1 = objective("Mission-2-Task-2");
+		Objective m2t2 = objective("Mission-2-Task-2");
 		Objective m4 = objective("Mission-4");
-		if (!m4.isCompleted() && m2t1.isCompleted() && stage == M4.NONE) {
-			addMission("Mission-4", 48);
+		if (!m4.isCompleted() && m2t2.isCompleted() && stage == M4.NONE) {
+			addMission("Mission-4", 4); // FIXME timing
 			stage = M4.WAIT;
 		}
 		if (checkMission("Mission-4")) {

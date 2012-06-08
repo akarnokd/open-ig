@@ -8,7 +8,6 @@
 
 package hu.openig.scripting.missions;
 
-import hu.openig.core.Action0;
 import hu.openig.mechanics.AITrader;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -20,6 +19,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,21 +40,19 @@ public class Mission2 extends Mission {
 	final String[] imageReward = { null, "battlefinish/mission_1_8b", "battlefinish/mission_1_8b", "battlefinish/mission_1_8b" };
 	/** The attack is mission-related. */
 	boolean missionAttack;
+	/** Task 1 schedule once. */
+	boolean task1Once;
+	/** Task 2 schedule once. */
+	boolean task2Once;
+	/** Task 3 schedule once. */
+	boolean task3Once;
 	/**
 	 * Check the starting conditions of Mission 2 and make it available.
 	 */
 	void checkMission2Start() {
 		if (checkMission("Mission-2")) {
-			world.env.stopMusic();
-			world.env.playVideo("interlude/merchant_in", new Action0() {
-				@Override
-				public void invoke() {
-					world.env.playMusic();
-					showObjective("Mission-2");
-					addMission("Mission-2-Task-1", 24);
-				}
-			});
-
+			showObjective("Mission-2");
+			scheduleTasks();
 		}
 	}
 	/**
@@ -66,12 +64,12 @@ public class Mission2 extends Mission {
 			return;
 		}
 		if (m2.isActive()) {
+			scheduleTasks();
 			for (int i = 1; i <= 3; i++) {
 				String m2tio = String.format("Mission-2-Task-%d-Timeout", i);
 				String m2ti = String.format("Mission-2-Task-%d", i);
 				if (checkMission(m2tio)) {
 					setObjectiveState(m2ti, ObjectiveState.FAILURE);
-					scheduleNextTask(i);
 					cleanupShips();
 				}
 				if (checkMission(m2ti)) {
@@ -101,7 +99,15 @@ public class Mission2 extends Mission {
 						if (i == 2) {
 							pf.addInventory(world.researches.get("PirateFighter"), 3);
 						} else {
-							pf.addInventory(world.researches.get("PirateFighter"), 3);
+							switch (world.difficulty) {
+							case NORMAL:
+								pf.addInventory(world.researches.get("PirateFighter"), 1);
+								break;
+							case HARD:
+								pf.addInventory(world.researches.get("PirateFighter"), 3);
+								break;
+							default:
+							}
 							pf.addInventory(world.researches.get("PirateDestroyer"), 1);
 						}
 						
@@ -148,7 +154,6 @@ public class Mission2 extends Mission {
 			for (int i = 1; i <= 3; i++) {
 				if (checkTimeout("Mission-2-Task-" + i + "-Failed")) {
 					setObjectiveState("Mission-2-Task-" + i, ObjectiveState.FAILURE);
-					scheduleNextTask(i);
 				} else
 				if (checkTimeout("Mission-2-Task-" + i + "-Success")) {
 					setObjectiveState("Mission-2-Task-" + i, ObjectiveState.SUCCESS);
@@ -158,9 +163,6 @@ public class Mission2 extends Mission {
 					player.money += m;
 					player.statistics.moneyIncome += m;
 					world.statistics.moneyIncome += m;
-					
-					scheduleNextTask(i);
-
 				}
 			}
 		}
@@ -215,14 +217,30 @@ public class Mission2 extends Mission {
 		}
 		return fs;
 	}
-	/**
-	 * Schedule the next task.
-	 * @param currentTask the current task
-	 */
-	void scheduleNextTask(int currentTask) {
-		if (currentTask < 3) {
-			addMission(String.format("Mission-2-Task-%d", currentTask + 1), 
-					(4 + world.random().nextInt(3)) * 24);
+//	/**
+//	 * Schedule the next task.
+//	 * @param currentTask the current task
+//	 */
+//	void scheduleNextTask(int currentTask) {
+//		if (currentTask < 3) {
+//			// FIXME timing
+//			addMission(String.format("Mission-2-Task-%d", currentTask + 1), 
+//					(6 + world.random().nextInt(3)) /* * 24 */);
+//		}
+//	}
+	/** Schedule the mission tasks. */
+	void scheduleTasks() {
+		if (!objective("Mission-2-Task-1").visible && !task1Once) {
+			task1Once = true;
+			addMission("Mission-2-Task-1", (2 + world.random().nextInt(3)));
+		}
+		if (objective("Mission-3").isCompleted() && !task2Once) {
+			task2Once = true;
+			addMission("Mission-2-Task-2", (5 + world.random().nextInt(3)));
+		}
+		if (objective("Mission-4").isCompleted() && !task3Once) {
+			task3Once = true;
+			addMission("Mission-2-Task-3", (5 + world.random().nextInt(3)));
 		}
 	}
 	@Override
@@ -364,5 +382,23 @@ public class Mission2 extends Mission {
 			return true;
 		}
 		return false;
+	}
+	@Override
+	public void load(XElement xmission) {
+		task1Once = xmission.getBoolean("task-1-once", objective("Mission-2-Task-1").isCompleted());
+		task2Once = xmission.getBoolean("task-2-once", objective("Mission-2-Task-2").isCompleted());
+		task3Once = xmission.getBoolean("task-3-once", objective("Mission-2-Task-3").isCompleted());
+	}
+	@Override
+	public void save(XElement xmission) {
+		xmission.set("task-1-once", task1Once);
+		xmission.set("task-2-once", task2Once);
+		xmission.set("task-3-once", task3Once);
+	}
+	@Override
+	public void reset() {
+		task1Once = false;
+		task2Once = false;
+		task3Once = false;
 	}
 }
