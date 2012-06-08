@@ -133,7 +133,7 @@ public class CommonResources implements GameEnvironment {
 	/** The common executor service. */
 	public final ScheduledExecutorService pool;
 	/** The combined timer for synchronized frequency updates. */
-	final Timer timer;
+	public final Timer timer;
 	/** The timer tick. */
 	long tick;
 	/** The registration map. */

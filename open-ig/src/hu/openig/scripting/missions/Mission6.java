@@ -33,9 +33,8 @@ public class Mission6 extends Mission {
 	}
 	@Override
 	public void onLevelChanged() {
-		removeMissions(1, 25);
-
 		if (world.level == 2) {
+			removeMissions(1, 25);
 			// ensure the initial fleet conditions are met
 			player.setAvailable(research("Fighter2"));
 			createMainShip();

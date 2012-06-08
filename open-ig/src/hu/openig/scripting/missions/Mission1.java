@@ -210,11 +210,6 @@ public class Mission1 extends Mission {
 		checkMission1Task3Failure(planet);
 		checkMission1Task4Failure(planet);
 	}
-	@Override
-	public void onNewGame() {
-		addTimeout("Mission-1-Init", 1000); // 8000
-		send("Douglas-Reinforcements-Denied").visible = true;
-	}
 	/**
 	 * Check if the main ship still exists.
 	 */
@@ -235,6 +230,8 @@ public class Mission1 extends Mission {
 		// start over
 		if (world.level == 1) {
 			removeMissions(1, 25);
+			addTimeout("Mission-1-Init", 2000); // 8000
+			send("Douglas-Reinforcements-Denied").visible = true;
 		}
 	}
 	@Override
