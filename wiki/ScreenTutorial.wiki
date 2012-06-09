@@ -1,0 +1,5 @@
+#summary Detailed description of each game screen
+
+= Introduction =
+
+TBD
