@@ -1,6 +1,9 @@
 #summary List of completed plan elements
 
 || *Task* || *Expected completion time* || *Status* || *Remarks* ||
+|| Beta release || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Code and resource cleanup, documentation creation cleanup here on Google Code, downloads section cleanup.<br>*Aim*: The single player should be fully playable on all difficulties. All IG1 features implemented. *v0.95* ||
+|| Screen: Diplomacy || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Incoming diplomacy calls. ||
+|| Other missing features || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Add missing convenience features. ||
 || Other missing features || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || Space chat. *v0.94.370* ||
 || Screen: Diplomacy || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || I need to run the original game to figure out the available talk options. *v0.94.350* ||
 || Other missing features || 2012-05-06 || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png || ~~Space chat~~, fire and smoke on buildings, few more buttons. ||
