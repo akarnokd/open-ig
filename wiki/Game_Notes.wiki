@@ -2,6 +2,25 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.95 - Beta =
+  * Released: 2012-06-09 12:30 CET
+  * *Missions from earlier saves might not work properly. I suggest you start a new game, especially if you are still on levels 1 or 2.*
+  * Added group selection buttons to spacewar and groundwar. Use CTRL+0..9 to create, SHIFT+0..9 to recall, CTRL+A to select all. Left click on the star button to select all, right click to deselect all. Once a group exists, you can dismiss the group by right clicking on the shield. (Issues [http://code.google.com/p/open-ig/issues/detail?id=108 #108], [http://code.google.com/p/open-ig/issues/detail?id=409 #409])
+  * Added spacewar subsystem damage. Slots and ship health regenerates over a planet with military spaceport.  ([http://code.google.com/p/open-ig/issues/detail?id=184 Issue #184])
+  * Added zoom button to colony screen. Left click to zoom in, right click to zoom out, middle click to reset to 100%. ([http://code.google.com/p/open-ig/issues/detail?id=219 Issue #219])
+  * Equipment screen now displays defensive and offensive values of selected items and the fleet in total ([http://code.google.com/p/open-ig/issues/detail?id=297 Issue #297])
+  * Some colony needs are now displayed textually in the colony info screen and panel. ([http://code.google.com/p/open-ig/issues/detail?id=304 Issue #304])
+  * Two more achievements for level 1 ([http://code.google.com/p/open-ig/issues/detail?id=324 Issue #324])
+  * In production/research screen, selecting a main or subcategory now jumps to the first technology or display the not-available animation if the list is empty. ([http://code.google.com/p/open-ig/issues/detail?id=389 Issue #389])
+  * Added landing marker for space battle ([http://code.google.com/p/open-ig/issues/detail?id=390 Issue #390])
+  * Improved hostility of AI players ([http://code.google.com/p/open-ig/issues/detail?id=404 Issue #404])
+  * Added missing space-chat cases with traders and planet blockades ([http://code.google.com/p/open-ig/issues/detail?id=445 Issue #445])
+  * Added statistical counters for battle performance ([http://code.google.com/p/open-ig/issues/detail?id=494 Issue #494])
+  * Fixed a few button related errors ([http://code.google.com/p/open-ig/issues/detail?id=500 Issue #500])
+  * Fixed rendering anomalies if primary and secondary UI scaling was enabled ([http://code.google.com/p/open-ig/issues/detail?id=501 Issue #501])
+  * Added missing sound effect when selecting a planet on the starmap ([http://code.google.com/p/open-ig/issues/detail?id=502 Issue #502])
+  * 
+
 = Version 0.94.425 - Fixes =
   * Released: 2012-05-29 14:10 CET
   * Added sort indicator to Info/Planets/Details view .([http://code.google.com/p/open-ig/issues/detail?id=138 Issue #138])
