@@ -135,7 +135,7 @@ public class Mission1 extends Mission {
 			addMission("Mission-1-Task-3", 72);
 			
 			// FIXME M2 delay
-			int mission2Time = /* 24 * */ (world.random().nextInt(2) + 3);
+			int mission2Time = /* 24 * */ 3 * (world.random().nextInt(2) + 3);
 			addMission("Mission-2", mission2Time);
 			addTimeout("Welcome", 1500);
 		}

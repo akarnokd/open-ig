@@ -749,9 +749,11 @@ public class StatusbarScreen extends ScreenBase {
 				&& hasUnseenMessage()
 				&& !commons.battleMode) {
 			if (isDiplomaticCall()) {
+				commons.pause();
 				DiplomacyScreen bs = (DiplomacyScreen)displayPrimary(Screens.DIPLOMACY);
 				bs.receive();
 			} else {
+				commons.pause();
 				BridgeScreen bs = (BridgeScreen)displayPrimary(Screens.BRIDGE);
 				bs.displayReceive();
 			}
