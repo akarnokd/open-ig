@@ -11,6 +11,7 @@
     * [GameGuide#Gameplay_tips Tips]
     * [GameGuide#Mouse_and_keyboard Controls]
     * [GameGuide#Gameplay_mechanics Mechanics]
+    * [ScreenTutorial Screens]
     * [Missions Missions]
     * [Achievements Achievements]
   * Downloadable content
