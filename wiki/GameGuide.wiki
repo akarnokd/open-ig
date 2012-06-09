@@ -55,6 +55,9 @@
 || CTRL+3 || Bridge || Switch to Game Level 3 ||
 || CTRL+4 || Bridge || Switch to Game Level 4 ||
 || CTRL+5 || Bridge || Switch to Game Level 5 ||
+|| CTRL+7 || Any || Set difficulty to EASY ||
+|| CTRL+8 || Any || Set difficulty to NORMAL ||
+|| CTRL+9 || Any || Set difficulty to HARD ||
 || CTRL+N || Colony || Toggle display of building names ||
 || CTRL+D || Colony || TEST: Deploy vehicles ||
 || CTRL+B || Colony || Toggle build mode ||
