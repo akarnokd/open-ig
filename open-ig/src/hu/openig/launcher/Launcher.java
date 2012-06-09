@@ -1914,7 +1914,7 @@ public class Launcher extends JFrame {
 			if (files != null) {
 				for (File f : files) {
 					if (!f.delete()) {
-						System.err.printf("Could not delete file: %s%n", f);
+						System.out.printf("Could not delete file: %s%n", f);
 					}
 				}
 			}

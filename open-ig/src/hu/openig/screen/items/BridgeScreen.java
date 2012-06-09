@@ -156,6 +156,8 @@ public class BridgeScreen extends ScreenBase {
 	BufferedImage messageAppearLast;
 	/** The last image of the projector. */
 	BufferedImage projectorLast;
+	/** Resume after the video playback? */
+	public boolean resumeAfterVideo;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -641,6 +643,7 @@ public class BridgeScreen extends ScreenBase {
 	}
 	@Override
 	public void onLeave() {
+		resumeAfterVideo = false;
 		videoAppearAnim.stop();
 		videoAppear = null;
 		videoAppearPercent = 0;
@@ -927,7 +930,8 @@ public class BridgeScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				vm.seen = true;
-				if (!paused) {
+				if (!paused || resumeAfterVideo) {
+					resumeAfterVideo = false;
 					commons.simulation.resume();
 				}
 			}

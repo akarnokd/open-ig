@@ -4881,7 +4881,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						rightChatPanel.options.add(n2);
 					}
 					if (node.retreat) {
-						achievement("achievement.do_you_chat");
+						if (node != chat.getFlee()) {
+							achievement("achievement.do_you_chat");
+						}
 						battle.enemyFlee = true;
 						for (SpacewarStructure sws : structures(nonPlayer())) {
 							flee(sws);
