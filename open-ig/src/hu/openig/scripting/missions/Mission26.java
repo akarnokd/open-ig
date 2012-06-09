@@ -40,9 +40,6 @@ public class Mission26 extends Mission {
 	}
 	@Override
 	public void onLevelChanged() {
-		if (world.level == 1) {
-			addMission("Mission-26-Wife-1", 24);
-		}
 		if (world.level == 2) {
 			addMission("Mission-26-Wife-2", 24);
 		}

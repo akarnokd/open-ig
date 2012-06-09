@@ -211,7 +211,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** The rendering scale. */
 	double scale = 1.0;
 	/** The maximum scale. */
-	final double maxScale = 1.0;
+	final double maxScale = 2;
 	/** The operational space at 1:1 zoom. */
 	final Rectangle space = new Rectangle(0, 0, 462 * 504 / 238, 504);
 	/** Panning the view. */
@@ -525,6 +525,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public boolean mouse(UIMouse e) {
 		boolean needRepaint = false;
 		switch (e.type) {
+		case DOUBLE_CLICK:
+			if (mainmap.contains(e.x, e.y)) {
+				needRepaint = doSelectType(e.x, e.y, e.z > 2);
+			}
+			break;
 		case DOWN:
 			if (e.x < commons.spacewar().commands.getWidth() 
 					&& e.y < commons.spacewar().commands.getHeight() + 20 + commons.spacewar().frameTopLeft.getHeight()) {
@@ -658,7 +663,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			}
 			if (e.has(Button.MIDDLE) && mainmap.contains(e.x, e.y)) {
-				if (config.classicControls && e.has(Modifier.CTRL)) { 
+				if (config.classicControls == e.has(Modifier.CTRL)) { 
 					zoomToFit();
 					needRepaint = true;
 				} else {
@@ -1094,7 +1099,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void doZoomIn(int x, int y) {
 		Point2D.Double p0 = mouseToSpace(x, y);
-		scale = Math.min(scale + 0.05, maxScale);
+		double newScale = ((int)(scale * 20) + 1) / 20d;
+		scale = Math.min(newScale, maxScale);
 		Point2D.Double p1 = mouseToSpace(x, y);
 		pan((int)(p0.x - p1.x), (int)(p0.y - p1.y));
 	}
@@ -1105,7 +1111,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void doZoomOut(int x, int y) {
 		Point2D.Double p0 = mouseToSpace(x, y);
-		scale = Math.max(scale - 0.05, 0.45);
+		double newScale = ((int)(scale * 20) - 1) / 20d;
+		scale = Math.max(newScale, 0.45);
 		Point2D.Double p1 = mouseToSpace(x, y);
 		pan((int)(p0.x - p1.x), (int)(p0.y - p1.y));
 	}
@@ -3779,8 +3786,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				long cost = target.item.sellValue() * 2;
 				target.owner.statistics.shipsLost += d;
 				target.owner.statistics.shipsLostCost += cost;
-				world().players.get(owner).statistics.shipsDestroyed += d;
-				world().players.get(owner).statistics.shipsDestroyedCost += cost;
+				Player p2 = world().players.get(owner);
+				if (p2 != null) {
+					p2.statistics.shipsDestroyed += d;
+					p2.statistics.shipsDestroyedCost += cost;
+				}
 			}
 		} else {
 			soundsToPlay.add(impactSound);
@@ -3839,8 +3849,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				target.planet.owner.statistics.buildingsLost++;
 				target.planet.owner.statistics.buildingsLostCost += b.type.cost * (1 + b.upgradeLevel);
 				
-				world().players.get(owner).statistics.buildingsDestroyed++;
-				world().players.get(owner).statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
+				Player p2 = world().players.get(owner);
+				if (p2 != null) {
+					p2.statistics.buildingsDestroyed++;
+					p2.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
+				}
 			}
 		}
 	}
@@ -4276,6 +4289,60 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		int hp;
 		/** Shield points. */
 		int sp;
+		/** The computed location of the cell. */
+		Rectangle bounds;
+		/** The original structure. */
+		final SpacewarStructure structure;
+		/**
+		 * Construct a cell.
+		 * @param s the original structure
+		 */
+		public SelectionCell(SpacewarStructure s) {
+			this.structure = s;
+			
+			image = s.angles[0];
+			if (s.item != null) {
+				name = s.item.type.name;
+			} else
+			if (s.building != null) {
+				name = s.building.type.name;
+			}
+			owner = s.owner.name;
+			color = s.owner.color;
+			if (s.fleet != null) {
+				parent = s.fleet.name;
+			} else
+			if (s.planet != null) {
+				parent = s.planet.name;
+			}
+			
+			hp = s.hp;
+			
+			hpRatio = 1.0 * s.hp / s.hpMax;
+			if (s.shieldMax > 0) {
+				shieldRatio = 1.0 * s.shield / s.shieldMax;
+				sp = s.shield; 
+			} else {
+				shieldRatio = -1;
+				sp = -1;
+			}
+			count = s.count;
+			
+			for (SpacewarWeaponPort p : s.ports) {
+				if (p.projectile.mode == Mode.BEAM) {
+					firepower += p.count * p.projectile.damage;
+					dps += p.count * p.projectile.damage * 1000.0 / p.projectile.delay;
+				} else
+				if (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET) {
+					rockets += p.count;
+				} else
+				if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
+					bombs += p.count;
+				}
+			}
+			dps = Math.round(dps);
+
+		}
 		/**
 		 * Returns the rendering width.
 		 * @return the rendering width
@@ -4417,6 +4484,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		List<SpacewarStructure> lastSelection = U.newArrayList();
 		/** The group buttons. */
 		final List<UIImageButton> groupButtons = U.newArrayList();
+		/** The cells currently displayable. */
+		final List<SelectionCell> cells = U.newArrayList();
 		/** Constructs the selection panel buttons. */
 		public SelectionPanel() {
 			int x = 5;
@@ -4494,54 +4563,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			offset = Math.max(0, Math.min(offset, sel.size() - 1));
 			
-			List<SelectionCell> cells = U.newArrayList();
+			cells.clear();
 			for (int i = 0; i < sel.size(); i++) {
 				SpacewarStructure s = sel.get(i);
 
-				SelectionCell c = new SelectionCell();
-				
-				c.image = s.angles[0];
-				if (s.item != null) {
-					c.name = s.item.type.name;
-				} else
-				if (s.building != null) {
-					c.name = s.building.type.name;
-				}
-				c.owner = s.owner.name;
-				c.color = s.owner.color;
-				if (s.fleet != null) {
-					c.parent = s.fleet.name;
-				} else
-				if (s.planet != null) {
-					c.parent = s.planet.name;
-				}
-				
-				c.hp = s.hp;
-				
-				c.hpRatio = 1.0 * s.hp / s.hpMax;
-				if (s.shieldMax > 0) {
-					c.shieldRatio = 1.0 * s.shield / s.shieldMax;
-					c.sp = s.shield; 
-				} else {
-					c.shieldRatio = -1;
-					c.sp = -1;
-				}
-				c.count = s.count;
-				
-				for (SpacewarWeaponPort p : s.ports) {
-					if (p.projectile.mode == Mode.BEAM) {
-						c.firepower += p.count * p.projectile.damage;
-						c.dps += p.count * p.projectile.damage * 1000.0 / p.projectile.delay;
-					} else
-					if (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET) {
-						c.rockets += p.count;
-					} else
-					if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
-						c.bombs += p.count;
-					}
-				}
-				c.dps = Math.round(c.dps);
-				
+				SelectionCell c = new SelectionCell(s);
 				cells.add(c);
 			}
 			int x0 = 0;
@@ -4559,7 +4585,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				if (row >= offset) {
 					c.draw(g2, x0, y0);
-					h = Math.max(h, c.height());
+					int ch = c.height();
+					c.bounds = new Rectangle(x0, y0, cw, ch);
+					h = Math.max(h, ch);
+				} else {
+					c.bounds = null;
 				}
 				x0 += cw;
 			}
@@ -4585,7 +4615,106 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 				return true;
 			}
+			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+				removeFromSelection(e.x, e.y);
+				return true;
+			}
+			if (e.has(Type.DOUBLE_CLICK) && e.has(Button.LEFT)) {
+				if (e.has(Modifier.SHIFT)) {
+					addTypeToSelection(e.x, e.y, e.z > 2);
+				} else
+				if (e.has(Modifier.CTRL)) {
+					removeTypeFromSelection(e.x, e.y, e.z > 2);
+				} else {
+					retainTypeFromSelection(e.x, e.y, e.z > 2);
+				}
+				return true;
+			}
 			return super.mouse(e);
+		}
+		/**
+		 * Add units with the same type (or category) to the current selection.
+		 * @param mx the mouse coordinates
+		 * @param my the mouse coordinates
+		 * @param category affect entire category?
+		 */
+		void addTypeToSelection(int mx, int my, boolean category) {
+			for (SelectionCell c : cells) {
+				if (c.bounds != null && c.bounds.contains(mx, my)) {
+					for (SpacewarStructure s : structures) {
+						if (s.owner == c.structure.owner) {
+							if (category) {
+								ResearchType rt0 = world().researches.get(c.structure.techId);
+								ResearchType rt1 = world().researches.get(s.techId);
+								s.selected = (rt0.category == rt1.category);
+							} else {
+								s.selected = s.techId.equals(c.structure.techId);
+							}
+						}
+					}
+				}
+			}
+		}
+		/**
+		 * Retain the type (or category) in the current selection.
+		 * @param mx the mouse coordinates
+		 * @param my the mouse coordinates
+		 * @param category affect entire category?
+		 */
+		void retainTypeFromSelection(int mx, int my, boolean category) {
+			for (SelectionCell c : cells) {
+				if (c.bounds != null && c.bounds.contains(mx, my)) {
+					for (SelectionCell c1 : cells) {
+						if (c1.structure.owner == c.structure.owner) {
+							if (category) {
+								ResearchType rt0 = world().researches.get(c.structure.techId);
+								ResearchType rt1 = world().researches.get(c1.structure.techId);
+								c1.structure.selected = (rt0.category == rt1.category);
+							} else {
+								c1.structure.selected = c1.structure.techId.equals(c.structure.techId);
+							}
+						}
+					}
+					break;
+				}
+			}
+			
+		}
+		/**
+		 * Remove the type (or category) from the current selection.
+		 * @param mx the mouse coordinates
+		 * @param my the mouse coordinates
+		 * @param category affect entire category?
+		 */
+		void removeTypeFromSelection(int mx, int my, boolean category) {
+			for (SelectionCell c : cells) {
+				if (c.bounds != null && c.bounds.contains(mx, my)) {
+					for (SelectionCell c1 : cells) {
+						if (c1.structure.owner == c.structure.owner) {
+							if (category) {
+								ResearchType rt0 = world().researches.get(c.structure.techId);
+								ResearchType rt1 = world().researches.get(c1.structure.techId);
+								c1.structure.selected = !(rt0.category == rt1.category);
+							} else {
+								c1.structure.selected = !c1.structure.techId.equals(c.structure.techId);
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
+		/**
+		 * Remove the cell(ship) from the selection.
+		 * @param mx the mouse X
+		 * @param my the mouse Y
+		 */
+		void removeFromSelection(int mx, int my) {
+			for (SelectionCell c : cells) {
+				if (c.bounds != null && c.bounds.contains(mx, my)) {
+					c.structure.selected = false;
+				}
+			}
 		}
 	}
 	/** Deselect everything. */
@@ -4979,5 +5108,33 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			lines.add(Pair.of(color, text));
 			currentIndex = 0;
 		}
+	}
+	/**
+	 * @param mx the mouse X
+	 * @param my the mouse Y 
+	 * @param category select ships in the same category?
+	 * @return true if ships were selected
+	 */
+	boolean doSelectType(int mx, int my, boolean category) {
+		selectionStart = new Point(mx, my);
+		selectionEnd = selectionStart;
+		
+		doSelectStructures();
+		
+		for (SpacewarStructure s : getSelection()) {
+			for (SpacewarStructure s2 : structures) {
+				if (s2.owner == s.owner) {
+					if (category) {
+						ResearchType rt0 = world().researches.get(s.techId);
+						ResearchType rt2 = world().researches.get(s2.techId);
+						s2.selected = rt0.category == rt2.category;
+					} else {
+						s2.selected = s2.techId.equals(s.techId);
+					}
+				}
+			}
+		}
+		
+		return true;
 	}
 }

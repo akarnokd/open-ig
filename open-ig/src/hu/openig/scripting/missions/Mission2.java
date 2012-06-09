@@ -232,15 +232,16 @@ public class Mission2 extends Mission {
 	void scheduleTasks() {
 		if (!objective("Mission-2-Task-1").visible && !task1Once) {
 			task1Once = true;
-			addMission("Mission-2-Task-1", (2 + world.random().nextInt(3)));
+			addMission("Mission-2-Task-1", (8 + world.random().nextInt(3)));
 		}
 		if (objective("Mission-3").isCompleted() && !task2Once) {
 			task2Once = true;
-			addMission("Mission-2-Task-2", (5 + world.random().nextInt(3)));
+			addMission("Mission-2-Task-2", (8 + world.random().nextInt(3)));
+			addMission("Mission-26-Wife-1", 2);
 		}
 		if (objective("Mission-4").isCompleted() && !task3Once) {
 			task3Once = true;
-			addMission("Mission-2-Task-3", (5 + world.random().nextInt(3)));
+			addMission("Mission-2-Task-3", (8 + world.random().nextInt(3)));
 		}
 	}
 	@Override

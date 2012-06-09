@@ -10,6 +10,7 @@ package hu.openig;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Configuration;
+import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Labels;
 import hu.openig.core.ResourceLocator;
@@ -1216,6 +1217,24 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 						primary = null;
 						displayPrimary(Screens.BRIDGE);
+						e.consume();
+					}
+					break;
+				case KeyEvent.VK_7:
+					if (e.isControlDown()) {
+						world().difficulty = Difficulty.EASY;
+						e.consume();
+					}
+					break;
+				case KeyEvent.VK_8:
+					if (e.isControlDown()) {
+						world().difficulty = Difficulty.NORMAL;
+						e.consume();
+					}
+					break;
+				case KeyEvent.VK_9:
+					if (e.isControlDown()) {
+						world().difficulty = Difficulty.HARD;
 						e.consume();
 					}
 					break;

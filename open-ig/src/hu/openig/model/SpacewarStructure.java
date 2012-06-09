@@ -152,6 +152,7 @@ public class SpacewarStructure extends SpacewarObject {
 		r.value = value;
 		r.infoImageName = infoImageName;
 		r.item = item;
+		r.techId = techId;
 		r.movementSpeed = movementSpeed;
 		for (SpacewarWeaponPort w : ports) {
 			r.ports.add(w.copy());

@@ -829,7 +829,7 @@ public final class Simulator {
 			// regenerate slots
 			for (InventorySlot is : ii.slots) {
 				int m = is.hpMax(ii.owner);
-				is.hp = Math.min(m, is.hp + spd / 10);
+				is.hp = Math.min(m, is.hp + spd / 4);
 			}
 		}
 		int sm = ii.shieldMax();
