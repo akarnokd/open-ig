@@ -1043,6 +1043,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.uiScale = Math.max(100, config.uiScale - 25);
+				commons.control().windowToScale();
 				askRepaint();
 			}
 		};
@@ -1051,6 +1052,7 @@ public class LoadSaveScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_LOW_1);
 				config.uiScale = Math.min(400, config.uiScale + 25);
+				commons.control().windowToScale();
 				askRepaint();
 			}
 		};
@@ -1588,7 +1590,7 @@ public class LoadSaveScreen extends ScreenBase {
 				int idx = top + e.y / rowHeight;
 				if (idx >= 0 && idx < items.size()) {
 					selected = items.get(idx);
-					buttonSound(SoundType.CLICK_MEDIUM_2);
+//					buttonSound(SoundType.CLICK_MEDIUM_2);
 					if (selected.file != null) {
 						doLoad();
 					}

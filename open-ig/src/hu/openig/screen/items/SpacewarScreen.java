@@ -2651,7 +2651,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		LinkedList<SpacewarStructure> fighters = U.newLinkedList();
 		LinkedList<SpacewarStructure> nonFighters = U.newLinkedList();
 		for (SpacewarStructure sws : ships) {
-			if (sws.owner == owner) {
+			if (sws.owner == owner && world().scripting.mayControlFleet(sws.fleet)) { // DO not layout ships from non-controllable fleets of the player
 				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 						|| sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 						) {

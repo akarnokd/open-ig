@@ -171,4 +171,6 @@ public interface GameControls {
 	void setFullscreen(boolean value);
 	/** Rerun the screen resize calculations. */
 	void runResize();
+	/** Resize the window to match the current scaling and minimum required window size. */
+	void windowToScale();
 }
