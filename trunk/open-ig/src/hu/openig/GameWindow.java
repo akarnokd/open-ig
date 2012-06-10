@@ -80,6 +80,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -2312,5 +2313,19 @@ public class GameWindow extends JFrame implements GameControls {
 	public void runResize() {
 		surface.lastW = -1;
 		surface.lastH = -1;
+	}
+	@Override
+	public void windowToScale() {
+		if (!isFullscreen() && getExtendedState() == JFrame.NORMAL) {
+			int dx = getWidth() - surface.getWidth();
+			int dy = getHeight() - surface.getHeight();
+			
+			int sw = Math.max(640, (int)(config.uiScale * 6.40 + 1));
+			int sh = Math.max(480, (int)(config.uiScale * 4.80 + 1));
+		
+			Rectangle mxs = getGraphicsConfiguration().getBounds();
+			
+			setSize(Math.min(mxs.width, Math.max(sw + dx, getWidth())), Math.min(mxs.height, Math.max(sh + dy, getHeight())));
+		}
 	}
 }
