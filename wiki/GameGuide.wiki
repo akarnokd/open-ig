@@ -10,6 +10,22 @@
   * If you want to place multiple buildings of the same type, hold SHIFT while placing a building.
   * Most listing offers the ability to scroll them via the mouse wheel. For example, you may scroll the building panel on the colony screen instead of clicking on the up or down button.
 
+== Cheats ==
+
+If you run into difficult situations, want to skip parts or just want to poke around, here are some keyboard shortcuts that can help you. These are called cheats because it can break the balance or natural progress of the game.
+
+|| *Shortcut* || *Description* ||
+|| CTRL+G || Add 10.000 credits ||
+|| CTRL+Z || Toggle virus infection on the current planet (own or enemy) ||
+|| CTRL+H || Display mission debug window (might not show up properly in fullscreen) ||
+|| CTRL+P || Switch to the player of the selected planet, i.e., you can play as Dargslan: build, produce, deploy, etc. ||
+|| CTRL+V || Show all planets and fleets on the starmap ||
+|| CTRL+D || Deploy all kinds of vehicles ||
+|| CTRL+J || Toggle complete AI assist for the current player on or off ||
+|| CTRL+I || Make the currently selected technology researched (if not already) and add 1 unit to the inventory ||
+|| CTRL+O || Take ownership of the selected planet ||
+
+
 == Mission tips ==
 
 === Mission 1: Rebuild Achilles ===
@@ -59,11 +75,9 @@
 || CTRL+8 || Any || Set difficulty to NORMAL ||
 || CTRL+9 || Any || Set difficulty to HARD ||
 || CTRL+N || Colony || Toggle display of building names ||
-|| CTRL+D || Colony || TEST: Deploy vehicles ||
 || CTRL+B || Colony || Toggle build mode ||
 || S || Colony, Ground war, Spacewar || Stop selected units ||
 || BACKSPACE || Ground war, Spacewar || TEST: Quit the battle instantly ||
-|| CTRL+V || Starmap || TEST: Show all planets and fleets ||
 || A || Starmap || Fleet attack mode ||
 || M || Starmap || Fleet move mode ||
 || F1 || Any || Bridge screen ||
