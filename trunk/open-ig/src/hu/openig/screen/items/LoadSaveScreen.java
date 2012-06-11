@@ -1803,7 +1803,10 @@ public class LoadSaveScreen extends ScreenBase {
 					saves.add(fi);
 				} catch (XMLStreamException ex) {
 					ex.printStackTrace();
-					info.renameTo(new File(info.getAbsolutePath() + ".bad"));
+					File f2 = new File(info.getAbsolutePath() + ".bad");
+					if (info.renameTo(f2)) {
+						System.err.println("File renamed to " + f2);
+					}
 				}
 			} else 
 			if (save.canRead()) {
@@ -1817,7 +1820,10 @@ public class LoadSaveScreen extends ScreenBase {
 					ex.printStackTrace();
 				} catch (XMLStreamException ex) {
 					ex.printStackTrace();
-					save.renameTo(new File(save.getAbsolutePath() + ".bad"));
+					File f2 = new File(save.getAbsolutePath() + ".bad");
+					if (save.renameTo(f2)) {
+						System.err.println("File renamed to " + f2);
+					}
 				}
 			}
 		}
