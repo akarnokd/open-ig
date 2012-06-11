@@ -675,8 +675,8 @@ public class AITrader implements AIManager {
 				Fleet f = player.fleet(fid);
 				if (f != null) {
 					fleetTurnedBack.add(f);
-				} else {
-					new AssertionError("Turn back fleet " + fid + " not found by the player " + player.id).printStackTrace();
+//				} else {
+//					new AssertionError("Turn back fleet " + fid + " not found by the player " + player.id).printStackTrace();
 				}
 			}
 		}
