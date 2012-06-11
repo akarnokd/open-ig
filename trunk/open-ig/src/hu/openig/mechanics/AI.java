@@ -122,11 +122,14 @@ public class AI implements AIManager {
 	
 	@Override
 	public void apply() {
-		for (Action0 a : applyActions) {
-			a.invoke();
+		try {
+			for (Action0 a : applyActions) {
+				a.invoke();
+			}
+		} finally {
+			applyActions.clear();
+			world = null;
 		}
-		applyActions.clear();
-		world = null;
 	}
 	
 	@Override

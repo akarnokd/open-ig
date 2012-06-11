@@ -443,10 +443,11 @@ public class XElement implements Iterable<XElement> {
 	 * @throws IOException on error
 	 */
 	public void save(File file) throws IOException {
+		String str = toString();
 		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
 		try {
 			out.println("<?xml version='1.0' encoding='UTF-8'?>");
-			out.print(toString());
+			out.print(str);
 		} finally {
 			out.close();
 		}
