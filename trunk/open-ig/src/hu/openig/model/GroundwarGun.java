@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -39,5 +40,24 @@ public class GroundwarGun extends GroundwarObject implements Owned {
 	@Override
 	public Player owner() {
 		return owner;
+	}
+	/**
+	 * Check if the target is in range.
+	 * @param u2 the other unit
+	 * @return true if in range
+	 */
+	public boolean inRange(HasLocation u2) {
+		double dist = distance(u2);
+		return 0 <= dist && dist <= model.maxRange;
+	}
+	/**
+	 * Returns the distance from the other unit.
+	 * @param u2 the other unit
+	 * @return the distance
+	 */
+	public double distance(HasLocation u2) {
+		Point2D.Double p2 = u2.exactLocation();
+		Point2D.Double p1 = building.exactLocation();
+		return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 	}
 }
