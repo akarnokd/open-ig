@@ -12,7 +12,7 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 [http://open-ig.googlecode.com/files/open-ig-upgrade-20120609a2.zip Upgrade 2012-06-09-a-2]
 
-[http://open-ig.googlecode.com/files/open-ig-0.95.jar open-ig-0.95.002.jar]
+[http://open-ig.googlecode.com/files/open-ig-0.95.002.jar open-ig-0.95.002.jar]
 
 Note that the *essential* upgrade pack contains the ever changing game model and image resources. Without it, the game might not work and behave properly.
 
