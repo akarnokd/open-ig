@@ -55,7 +55,7 @@ public class StaticDefensePlanner extends Planner {
 		Collections.sort(planets, BEST_PLANET);
 		for (AIPlanet planet : planets) {
 			if (managePlanet(planet)) {
-				if (world.mainPlayer != p || world.money < world.autoBuildLimit) {
+				if (world.mainPlayer == p && world.money < world.autoBuildLimit) {
 					return;
 				}
 			}

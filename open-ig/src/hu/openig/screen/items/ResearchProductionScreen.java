@@ -1764,6 +1764,9 @@ public class ResearchProductionScreen extends ScreenBase {
 
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
+		if (productions == null) {
+			productions = U.newHashMap();
+		}
 		int capacity = 0;
 		if (!needsOrbitalFactory.visible()) {
 			if (cat == ResearchMainCategory.SPACESHIPS) {

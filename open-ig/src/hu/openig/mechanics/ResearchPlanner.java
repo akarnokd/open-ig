@@ -320,17 +320,19 @@ public class ResearchPlanner extends Planner {
 			}
 			return;
 		}
-		if (deployInventoryColonyShip(spaceport.second)) {
-			return;
-		}
-		if (maySpendMoney) {
-			if (checkOrbitalFactory()) {
+		if (spaceport.second != null) {
+			if (deployInventoryColonyShip(spaceport.second)) {
 				return;
 			}
-			final ResearchType cs = world.isAvailable("ColonyShip");
-			if (cs != null) {
-				placeProductionOrder(cs, 1);
-				return;
+			if (maySpendMoney) {
+				if (checkOrbitalFactory()) {
+					return;
+				}
+				final ResearchType cs = world.isAvailable("ColonyShip");
+				if (cs != null) {
+					placeProductionOrder(cs, 1);
+					return;
+				}
 			}
 		}
 	}
