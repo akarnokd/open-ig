@@ -4629,7 +4629,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			g.phase++;
 			if (g.phase >= g.maxPhase()) {
 				if (g.attack != null && !g.attack.isDestroyed() 
-						&& unitInRange(g, g.attack, g.model.maxRange)) {
+						&& unitInRange(g, g.attack)) {
 					if (!g.attack.isDestroyed()) {
 						g.attack.damage(g.model.damage);
 						if (g.attack.isDestroyed()) {
@@ -4653,7 +4653,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		} else {
 			if (g.attack != null && !g.attack.isDestroyed() 
-					&& unitInRange(g, g.attack, g.model.maxRange)) {
+					&& unitInRange(g, g.attack)) {
 				if (rotateStep(g, centerOf(g.attack))) {
 					if (g.cooldown <= 0) {
 						g.phase++;
@@ -4777,7 +4777,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		List<GroundwarUnit> result = U.newArrayList();
 		for (GroundwarUnit u : units) {
 			if (u.owner != g.owner && !u.isDestroyed() 
-					&& unitInRange(g, u, g.model.maxRange)) {
+					&& unitInRange(g, u)) {
 				result.add(u);
 			}
 		}
@@ -4833,21 +4833,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * Check if the given unit is within the range of the gun.
 	 * @param g the gun
 	 * @param u the unit
-	 * @param range the maximum range
 	 * @return true if within range
 	 */
-	boolean unitInRange(GroundwarGun g, GroundwarUnit u, double range) {
-		Point gp = centerOf(g.building);
-		Point up = centerOf(u);
-		
-		double gpx = Tile.toTileX(gp.x, gp.y);
-		double gpy = Tile.toTileY(gp.x, gp.y);
-		double upx = Tile.toTileX(up.x, up.y);
-		double upy = Tile.toTileY(up.x, up.y);
-		
-		double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
-		
-		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range; 
+	boolean unitInRange(GroundwarGun g, GroundwarUnit u /*, double range*/) {
+//		Point gp = centerOf(g.building);
+//		Point up = centerOf(u);
+//		
+//		double gpx = Tile.toTileX(gp.x, gp.y);
+//		double gpy = Tile.toTileY(gp.x, gp.y);
+//		double upx = Tile.toTileX(up.x, up.y);
+//		double upy = Tile.toTileY(up.x, up.y);
+//		
+//		double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
+//		
+//		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range;
+		return g.inRange(u);
 	}
 	/**
 	 * Check if two cells are within the distance of range.

@@ -11,6 +11,7 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.core.Location;
 import hu.openig.model.Building;
+import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.HasLocation;
@@ -116,6 +117,11 @@ public class AIGroundwar {
 		for (GroundwarUnit gu : war.units()) {
 			if (gu.attackUnit == u && (u.inRange(gu) || gu.inRange(u))) {
 				result.add(gu);
+			}
+		}
+		for (GroundwarGun g : war.guns()) {
+			if (g.attack == u && (u.inRange(g.building) || g.inRange(u))) {
+				result.add(g.building);
 			}
 		}
 		return result;
