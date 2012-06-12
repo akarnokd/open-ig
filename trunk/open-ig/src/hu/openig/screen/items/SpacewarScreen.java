@@ -1261,6 +1261,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			createStructures(nearbyPlanet.inventory, 
 					EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
+			for (SpacewarStructure s : shipWall) {
+				s.angle = Math.PI;
+			}
 			if (!shipWall.isEmpty()) {
 				int maxw = createSingleRowBatchWall(maxRightPlacement, true, shipWall, structures);
 				maxRightPlacement -= 3 * maxw / 2;

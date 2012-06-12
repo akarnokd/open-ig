@@ -4091,9 +4091,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		
 		Player winner = checkWinner();
-		if (winner != null && explosions.size() == 0 && rockets.size() == 0) {
-			commons.simulation.pause();
-			concludeBattle(winner);
+		if (winner != null) {
+			for (GroundwarUnit u : units) {
+				stop(u);
+			}
+			if (explosions.size() == 0 && rockets.size() == 0) {
+				commons.simulation.pause();
+				concludeBattle(winner);
+			}
 		}
 		askRepaint();
 	}
@@ -4588,10 +4593,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							createExplosion(u, ExplosionType.GROUND_RED);
 							
 							u.owner.statistics.vehiclesLost++;
-							u.owner.statistics.vehiclesLostCost += world().researches.get(u.attackUnit.model.id).productionCost;
+							u.owner.statistics.vehiclesLostCost += world().researches.get(u.model.id).productionCost;
 
 							owner.statistics.vehiclesDestroyed++;
-							owner.statistics.vehiclesDestroyedCost += world().researches.get(u.attackUnit.model.id).productionCost;
+							owner.statistics.vehiclesDestroyedCost += world().researches.get(u.model.id).productionCost;
 
 						}
 					}
