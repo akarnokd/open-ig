@@ -116,6 +116,7 @@ public class AttackPlanner extends Planner {
 			world.nextAttack = null;
 			
 			List<AIFleet> fleets = findFleetsFor(FleetTask.ATTACK, null);
+			filterCandidates(fleets);
 			if (!fleets.isEmpty()) {
 				final AIFleet ownFleet = Collections.max(fleets, new Comparator<AIFleet>() {
 					@Override
@@ -159,6 +160,22 @@ public class AttackPlanner extends Planner {
 			}
 		}
 		computeNextAttack();
+	}
+	/**
+	 * Consider fleets who are at least on half strength of the full potential.
+	 * @param fleets the list of fleets
+	 */
+	void filterCandidates(List<AIFleet> fleets) {
+		for (int i = fleets.size() - 1; i >= 0; i--) {
+			AIFleet fl = fleets.get(i);
+			if (fl.statistics.fighterCount * 2 >= world.fighterLimit
+					&& fl.statistics.cruiserCount * 3 >= world.cruiserLimit
+					&& fl.statistics.battleshipCount * 3 >= world.battleshipLimit
+					&& fl.statistics.vehicleCount * 2 >= fl.statistics.vehicleMax) {
+				continue;
+			}
+			fleets.remove(i);
+		}
 	}
 	/**
 	 * Compute the time when the next attack will happen.
