@@ -13,8 +13,8 @@
 	>
 	</player>
 	<player id='FreeNations' race='human' name='players.free_nations'
-		icon='starmap/fleets/free_nations_fleet'
-		color='FF94A4FC'
+		icon='starmap/fleets/garthog_fleet'
+		color='FFFF0000'
 		picture='database/freenations'
 		money='250000'
 		initial-stance='10'
