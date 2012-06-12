@@ -768,12 +768,14 @@ public class StatusbarScreen extends ScreenBase {
 		int ppsw2 = commons.text().getTextWidth(10, pps2);
 		int px = width - MENU_ICON_WIDTH * 2 - ppsw1;
 		int px2 = width - MENU_ICON_WIDTH * 3 - ppsw2 - ppsw1;
-		if (config.quickRNP && world().level > 1 && e.y < 20 && e.x >= px && e.x < px + ppsw1 + MENU_ICON_WIDTH && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+		if (config.quickRNP && !commons.battleMode 
+				&& world().level > 1 && e.y < 20 && e.x >= px && e.x < px + ppsw1 + MENU_ICON_WIDTH && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
 			buttonSound(SoundType.CLICK_MEDIUM_2);
 			displaySecondary(Screens.PRODUCTION);
 			return true;
 		} else
-		if (config.quickRNP && world().level > 2 && e.y < 20 && e.x >= px2 && e.x < px2 + ppsw2 + MENU_ICON_WIDTH && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+		if (config.quickRNP && !commons.battleMode
+				&& world().level > 2 && e.y < 20 && e.x >= px2 && e.x < px2 + ppsw2 + MENU_ICON_WIDTH && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
 			buttonSound(SoundType.CLICK_MEDIUM_2);
 			displaySecondary(Screens.RESEARCH);
 			return true;
@@ -1107,7 +1109,7 @@ public class StatusbarScreen extends ScreenBase {
 				}
 				return true;
 			} else
-			if (e.has(Type.DOUBLE_CLICK) && e.x < width - 31) {
+			if (!commons.battleMode && e.has(Type.DOUBLE_CLICK) && e.x < width - 31) {
 				int idx = player().messageHistory.size() - 1 - bottom - ((height - e.y) / 20);
 				if (idx >= 0 && idx < player().messageHistory.size()) {
 					Message currentMessage = player().messageHistory.get(idx);

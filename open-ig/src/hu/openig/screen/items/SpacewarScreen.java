@@ -3139,7 +3139,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
 		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure s : structures) {
-			if (!areAllies(s, ship) && !s.isDestroyed()) {
+			if (!areAllies(s.owner, ship.owner) && !s.isDestroyed()) {
 				if (ship.inRange(s).size() > 0) {
 					result.add(s);
 				}
@@ -3906,31 +3906,30 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		return null;
 	}
-	/**
-	 * Returns a list of structures which are the enemies of {@code s}.
-	 * @param ship the structure
-	 * @return the list of enemies
-	 */
 	@Override
-	public List<SpacewarStructure> enemiesOf(SpacewarStructure ship) {
+	public List<SpacewarStructure> enemiesOf(Player p) {
 		List<SpacewarStructure> result = U.newArrayList();
 		for (SpacewarStructure f : structures) {
-			if (f.owner != ship.owner) {
-				if (!areAllies(f, ship)) {
+			if (f.owner != p) {
+				if (!areAllies(f.owner, p)) {
 					result.add(f);
 				}
 			}
 		}
 		return result;
 	}
+	@Override
+	public List<SpacewarStructure> enemiesOf(SpacewarStructure ship) {
+		return enemiesOf(ship.owner);
+	}
 	/**
 	 * Check if two structures are allies.
-	 * @param s1 the first structure
-	 * @param s2 the second structure
+	 * @param p1 the first player
+	 * @param p2 the second player
 	 * @return true if allies
 	 */
-	boolean areAllies(SpacewarStructure s1, SpacewarStructure s2) {
-		return battle.isAlly(s1, s2.owner) || battle.isAlly(s2, s1.owner);
+	boolean areAllies(Player p1, Player p2) {
+		return battle.isAlly(p1, p2) || battle.isAlly(p2, p1);
 	}
 	/**
 	 * Fire at the target of the given ship with the available weapons.
