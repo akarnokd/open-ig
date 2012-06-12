@@ -2363,6 +2363,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		public int losses;
 		/** The firepower. */
 		public int firepower;
+		/** The damage per second. */
+		public double dps;
+		/** The total hitpoints. */
+		public int hp;
 		/** The ground units. */
 		public int groundUnits;
 		/** The stations. */
@@ -2393,9 +2397,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			int y = 26;
 			
-			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_own_units", own.units);
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_own_units", own.units, own.hp);
 			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_losses", own.losses);
-			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_firepower", own.firepower);
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_firepower", own.firepower, own.dps);
 			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_ground", own.groundUnits);
 			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_rockets", own.rockets, own.bombs);
 			
@@ -2410,9 +2414,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			y += 16;
 
-			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_enemy_units", other.units);
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_enemy_units", other.units, other.hp);
 			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_losses", other.losses);
-			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_firepower", other.firepower);
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_firepower", other.firepower, other.dps);
 			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_ground", other.groundUnits);
 			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_rockets", other.rockets, other.bombs);
 			
@@ -2453,6 +2457,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		int vehicleMaxEnemy = 0;
 		for (SpacewarStructure e : structures) {
 			SpacebattleStatistics stat = (canControl(e)) ? own : other;
+			stat.hp += e.hp + (e.count - 1) * e.hpMax + e.shield;
 			if (e.type == StructureType.PROJECTOR) {
 				stat.guns++;
 			} else
@@ -2462,7 +2467,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (e.type == StructureType.SHIP) {
 				stat.units++;
 			}
-			setPortStatistics(stat, e.ports);
+			setPortStatistics(stat, e.ports, e.count);
 			if (e.item != null) {
 				int vm = 0;
 				if (e.item.type.has("vehicles")) {
@@ -2498,11 +2503,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * Set the weapon port statistics.
 	 * @param stat the output statistics
 	 * @param ports the port sequence
+	 * @param count the count of units
 	 */
-	void setPortStatistics(SpacebattleStatistics stat, Iterable<? extends SpacewarWeaponPort> ports) {
+	void setPortStatistics(SpacebattleStatistics stat, Iterable<? extends SpacewarWeaponPort> ports, int count) {
 		for (SpacewarWeaponPort p : ports) {
 			if (p.projectile.mode == Mode.BEAM) {
-				stat.firepower += p.count * p.projectile.damage;
+				stat.firepower += p.count * p.projectile.damage * count;
+				stat.dps += p.count * p.projectile.damage * count * 1000d / p.projectile.delay;
 			} else {
 				if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
 					stat.bombs += p.count;
@@ -3104,7 +3111,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					&& ship.kamikaze == 0 && ship.type == StructureType.SHIP 
 					&& ship.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
-				setPortStatistics(sbs, ship.ports);
+				setPortStatistics(sbs, ship.ports, ship.count);
 				ship.kamikaze = sbs.firepower * ship.count * 5;
 				ship.selected = false;
 			}
@@ -4090,7 +4097,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				FleetStatistics fs = battle.attacker.getStatistics();
 				if (fs.vehicleCount > 0) {
 					commons.stopMusic();
-					commons.control().playVideos(new Action0() {
+					
+					MovieScreen ms = commons.control().getScreen(Screens.MOVIE);
+					ms.transitionFinished = new Action0() {
+						@Override
+						public void invoke() {
+							player().currentPlanet = bi.targetPlanet;
+							displayPrimary(Screens.COLONY);
+						}
+					};
+					
+					commons.playVideo("groundwar/felall", new Action0() {
 						@Override
 						public void invoke() {
 							PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
@@ -4098,7 +4115,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 							ps.initiateBattle(bi);
 							commons.playBattleMusic();
 						}
-					}, "groundwar/felall");
+					});
 					return;
 				}
 			}
@@ -4619,16 +4636,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
 				removeFromSelection(e.x, e.y);
+				displaySelectedShipInfo();
 				return true;
 			}
 			if (e.has(Type.DOUBLE_CLICK) && e.has(Button.LEFT)) {
 				if (e.has(Modifier.SHIFT)) {
 					addTypeToSelection(e.x, e.y, e.z > 2);
+					displaySelectedShipInfo();
 				} else
 				if (e.has(Modifier.CTRL)) {
 					removeTypeFromSelection(e.x, e.y, e.z > 2);
+					displaySelectedShipInfo();
 				} else {
 					retainTypeFromSelection(e.x, e.y, e.z > 2);
+					displaySelectedShipInfo();
 				}
 				return true;
 			}
@@ -4771,7 +4792,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			} else 
 			if (mode == Mode.KAMIKAZE) {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
-				setPortStatistics(sbs, s.ports);
+				setPortStatistics(sbs, s.ports, s.count);
 				s.kamikaze = sbs.firepower * s.count * 5;
 				s.selected = false;
 			} else {

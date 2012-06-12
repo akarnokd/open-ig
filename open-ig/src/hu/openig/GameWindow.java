@@ -718,7 +718,7 @@ public class GameWindow extends JFrame implements GameControls {
 		default:
 		}
 		if (asPrimary) {
-			hideMovie();
+//			hideMovie();
 			boolean playSec = false;
 			if (secondary != null) {
 				secondary.onLeave();

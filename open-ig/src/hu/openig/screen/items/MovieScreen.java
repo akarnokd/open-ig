@@ -87,6 +87,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 			@Override
 			public void invoke(String text) {
 				label = text;
+				askRepaint();
 			}
 		};
 		player.start();

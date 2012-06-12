@@ -581,12 +581,12 @@
   <entry key='spacewar.ship_weapon_type'>Typ   : %s</entry>
   <entry key='spacewar.station_information'>Station Information</entry>
   <entry key='spacewar.statistics'>Statistik</entry>
-  <entry key='spacewar.statistics_enemy_units'>Feindliche Einhei.: %6d</entry>
-  <entry key='spacewar.statistics_firepower'  >Feuerkraft        : %6d</entry>
+  <entry key='spacewar.statistics_enemy_units'>Feindliche Einhei.: %6d / %6d</entry>
+  <entry key='spacewar.statistics_firepower'  >Feuerkraft        : %6d / %.1f</entry>
   <entry key='spacewar.statistics_ground'     >Boden Einheiten   : %6d</entry>
   <entry key='spacewar.statistics_guns'       >Boden Kanonen     : %6d</entry>
   <entry key='spacewar.statistics_losses'     >Verluste          : %6d</entry>
-  <entry key='spacewar.statistics_own_units'  >Eigene Einheiten  : %6d</entry>
+  <entry key='spacewar.statistics_own_units'  >Eigene Einheiten  : %6d / %6d</entry>
   <entry key='spacewar.statistics_rockets'    >Racketen/Bombe    : %6d / %2d</entry>
   <entry key='spacewar.statistics_stations'   >Raumstationen     : %6d</entry>
 

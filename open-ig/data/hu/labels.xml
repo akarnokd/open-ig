@@ -1923,14 +1923,14 @@
 	<entry key='spacewar.ship_status_many'>Túl sokminden van kiválasztva.</entry>
 
 	<entry key='spacewar.statistics'>Statisztika</entry>
-	<entry key='spacewar.statistics_own_units'  >SAJÁT egységek      : %6d</entry>
+	<entry key='spacewar.statistics_own_units'  >SAJÁT egységek      : %6d / %6d</entry>
 	<entry key='spacewar.statistics_losses'     >Veszteségek         : %6d</entry>
-	<entry key='spacewar.statistics_firepower'  >Tűzerő              : %6d</entry>
+	<entry key='spacewar.statistics_firepower'  >Tűzerő              : %6d / %.1f</entry>
 	<entry key='spacewar.statistics_ground'     >Földi egységek      : %6d</entry>
 	<entry key='spacewar.statistics_rockets'    >Rakéták és bombák   : %6d / %2d</entry>
 	<entry key='spacewar.statistics_stations'   >Űrbázisok           : %6d</entry>
 	<entry key='spacewar.statistics_guns'       >Felszíni ágyúk      : %6d</entry>
-	<entry key='spacewar.statistics_enemy_units'>ELLENSÉGES egységek : %6d</entry>
+	<entry key='spacewar.statistics_enemy_units'>ELLENSÉGES egységek : %6d / %6d</entry>
 
 	<entry key='spacewar.ship_information'>Űrhajó információk</entry>
 	<entry key='spacewar.station_information'>Űrállomás információk</entry>
