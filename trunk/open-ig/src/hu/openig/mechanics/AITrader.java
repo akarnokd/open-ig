@@ -656,16 +656,16 @@ public class AITrader implements AIManager {
 				Planet p = world.planets.get(pid);
 				int ttl = xlf.getInt("ttl");
 				Fleet f = createFleet(oid, fid);
-				if (p != null) {
-					LandedFleet lf = new LandedFleet();
-					lf.fleet = f;
-					lf.target = p;
-					lf.ttl = ttl;
-					
-					hideFleet(lf.fleet);
+				f.x = p.x;
+				f.y = p.y;
+				LandedFleet lf = new LandedFleet();
+				lf.fleet = f;
+				lf.target = p;
+				lf.ttl = ttl;
+				
+				hideFleet(lf.fleet);
 
-					landed.add(lf);
-				}
+				landed.add(lf);
 			}
 		}
 		fleetTurnedBack.clear();
@@ -712,6 +712,7 @@ public class AITrader implements AIManager {
 			if (lf.fleet.inventory.size() > 0) {
 				XElement xlf = out.add("landed");
 				if (lf.target != null) {
+					xlf.set("id", lf.fleet.id);
 					xlf.set("fleet", lf.fleet.inventory.get(0).type.id);
 					xlf.set("planet", lf.target.id);
 					xlf.set("ttl", lf.ttl);

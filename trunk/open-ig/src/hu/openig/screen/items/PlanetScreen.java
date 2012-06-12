@@ -3771,7 +3771,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				
 				g2.drawImage(img, ux, uy, null);
 				
-				if (u.attack != null) {
+				if (u.attack != null && showCommand) {
 					Point gp = centerOf(u.attack);
 					Point up = centerOf(u);
 					g2.setColor(Color.RED);
@@ -4935,16 +4935,22 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		Point pg = centerOf(u.x, u.y);
 		Point tg = centerOf(target);
-		result.targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
-		
-		result.currentAngle = u.normalizedAngle();
-
-		result.diff = result.targetAngle - result.currentAngle;
-		if (result.diff < -Math.PI) {
-			result.diff += 2 * Math.PI;
-		} else
-		if (result.diff > Math.PI) {
-			result.diff -= 2 * Math.PI; 
+		if (tg.y - pg.y == 0 && tg.x - pg.x == 0) {
+			result.targetAngle = u.normalizedAngle();
+			result.currentAngle = result.targetAngle;
+			result.diff = 0;
+		} else {
+			result.targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
+			
+			result.currentAngle = u.normalizedAngle();
+	
+			result.diff = result.targetAngle - result.currentAngle;
+			if (result.diff < -Math.PI) {
+				result.diff += 2 * Math.PI;
+			} else
+			if (result.diff > Math.PI) {
+				result.diff -= 2 * Math.PI; 
+			}
 		}
 
 		return result;
