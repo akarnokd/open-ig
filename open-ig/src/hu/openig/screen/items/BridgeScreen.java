@@ -643,6 +643,7 @@ public class BridgeScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				displaySecondary(Screens.TEST);
+				goingToTest = false;
 			}
 		};
 		commons.playVideo("test/phsychologist_test", new Action0() {
