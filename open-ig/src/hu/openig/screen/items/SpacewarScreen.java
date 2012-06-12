@@ -4623,6 +4623,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Clear any references. */
 		public void clear() {
 			lastSelection.clear();
+			cells.clear();
 		}
 		@Override
 		public boolean mouse(UIMouse e) {
