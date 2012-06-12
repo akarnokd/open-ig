@@ -100,13 +100,11 @@ public class ExplorationPlanner extends Planner {
 							f.fleet.task = FleetTask.IDLE;
 						}
 					});
-					return;
 				}
 				for (final AIFleet bf : findFleetsWithTask(FleetTask.PATROL, null)) {
 					if (!bf.isMoving()) {
 						if (world.ownPlanets.size() > 0) {
 							setPatrolTarget(bf);
-							return;
 						}
 					}
 				}
@@ -114,7 +112,6 @@ public class ExplorationPlanner extends Planner {
 				for (final AIFleet bf : findFleetsFor(FleetTask.PATROL, null)) {
 					if (world.ownPlanets.size() > 0) {
 						setPatrolTarget(bf);
-						return;
 					}
 				}
 				return;
