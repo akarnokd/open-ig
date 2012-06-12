@@ -95,15 +95,22 @@ public class TestScreen extends ScreenBase {
 	}
 	/** Complete the test. */
 	void doDone() {
+		world().testNeeded = false;
+		world().testCompleted = true;
+
+		MovieScreen ms = commons.control().getScreen(Screens.MOVIE);
+		ms.transitionFinished = new Action0() {
+			@Override
+			public void invoke() {
+				hideSecondary();
+			}
+		};
 		commons.playVideo("test/phsychologist_test_completed", new Action0() {
 			@Override
 			public void invoke() {
-				world().testNeeded = false;
-				world().testCompleted = true;
 				hideSecondary();
 			}
 		});
-		
 	}
 	/** @return is all questions answered? */
 	boolean isFilled() {

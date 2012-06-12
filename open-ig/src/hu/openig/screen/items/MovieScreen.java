@@ -68,6 +68,8 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	static final int FADE_TIME = 25;
 	/** The fade timer. */
 	Closeable fadeTimer;
+	/** Called once the transition has finished. */
+	public Action0 transitionFinished;
 	/**
 	 * Start playback.
 	 * @param media the media
@@ -179,6 +181,10 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 				if (fadeIndex * 2 == FADE_MAX) {
 					playNext();
 					askRepaint();
+					if (transitionFinished != null) {
+						transitionFinished.invoke();
+						transitionFinished = null;
+					}
 				} 
 				if (fadeIndex >= 0) {
 					fadeIndex++;
