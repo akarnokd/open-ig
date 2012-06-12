@@ -36,6 +36,12 @@ public interface SpacewarWorld {
 	 * @return the list of the enemies of the structure. 
 	 */
 	List<SpacewarStructure> enemiesOf(SpacewarStructure s);
+	/**
+	 * Returns the list of enemies to the player.
+	 * @param p the player 
+	 * @return the list of the enemies of the player. 
+	 */
+	List<SpacewarStructure> enemiesOf(Player p);
 	/** 
 	 * Returns the list of enemies in range of the structure.
 	 * @param s the structure

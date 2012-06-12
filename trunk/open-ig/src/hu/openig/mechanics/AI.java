@@ -144,9 +144,9 @@ public class AI implements AIManager {
 	
 	@Override
 	public SpacewarAction spaceBattle(SpacewarWorld world, List<SpacewarStructure> idles) {
-		if (idles.size() == 0) {
-			return SpacewarAction.CONTINUE;
-		}
+//		if (idles.size() == 0) {
+//			return SpacewarAction.CONTINUE;
+//		}
 		Pair<Double, Double> fh = fleetHealth(world.structures(p));
 		double health = fh.first / fh.second;
 		double switchToCostAttack = p.aiDefensiveRatio / (p.aiOffensiveRatio + p.aiDefensiveRatio);
@@ -154,15 +154,6 @@ public class AI implements AIManager {
 		
 		if (health >= switchToFlee) {
 			defaultAttackBehavior(world, idles, p);				
-//			boolean c = health < switchToCostAttack /* || defensiveTask.contains(idles.get(0).fleet.id ) */;
-//			if (c) {
-//				for (SpacewarStructure ship : idles) {
-//					if (ship.canDirectFire()) {
-//						costAttackBehavior(world, ship);
-//					}
-//				}
-//			} else {
-//			}
 			return SpacewarAction.CONTINUE;
 		}
 		return SpacewarAction.FLEE;
@@ -202,7 +193,9 @@ public class AI implements AIManager {
 				}
 			}
 		}
-		for (SpacewarStructure s : esl) {
+		List<SpacewarStructure> rocketTargets = world.enemiesOf(p);
+		Collections.shuffle(rocketTargets);
+		for (SpacewarStructure s : rocketTargets) {
 			// do not fire rocket at tagged objects unless it is the last enemy
 			if (esl.size() == 1 || (s.item == null || s.item.tag == null)) {
 				int found = 0;
@@ -233,7 +226,7 @@ public class AI implements AIManager {
 					&& s.item != null 
 					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 					&& s.attack != null && !s.attack.isDestroyed()) {
-				if (s.hp * 10 < s.hpMax) {
+				if (s.count == 1 && s.hp * 10 < s.hpMax) {
 					world.attack(s, s.attack, Mode.KAMIKAZE);
 				}
 			}
