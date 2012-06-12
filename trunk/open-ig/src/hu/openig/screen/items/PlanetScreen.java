@@ -548,6 +548,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		moveSelect = false;
 		attackSelect = false;
+		attackUnit.enabled(false);
+		moveUnit.enabled(false);
+		stopUnit.enabled(false);
 	}
 
 	@Override
