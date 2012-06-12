@@ -44,7 +44,7 @@ public class Mission22 extends Mission {
 	}
 	@Override
 	public void onLevelChanged() {
-		if (world.level < 4) {
+		if (world.level != 4) {
 			return;
 		}
 		removeMissions(1, 25);
@@ -60,6 +60,9 @@ public class Mission22 extends Mission {
 		if (vl != null) {
 			dsl.explorationInnerLimit = vl.inner;
 			dsl.explorationOuterLimit = vl.outer;
+		} else {
+			dsl.explorationInnerLimit = null;
+			dsl.explorationOuterLimit = null;
 		}
 	}
 	

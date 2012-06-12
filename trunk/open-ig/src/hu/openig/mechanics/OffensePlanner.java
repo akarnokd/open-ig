@@ -429,8 +429,9 @@ public class OffensePlanner extends Planner {
 			}
 		}
 		if (bringin) {
-			log("Upgrade set: %s", upgradeSet);
-			bringinFleet(fleet);
+			if (bringinFleet(fleet)) {
+				log("Upgrade set: %s", upgradeSet);
+			}
 			return true;
 		}
 
@@ -473,8 +474,9 @@ public class OffensePlanner extends Planner {
 	/**
 	 * Bring in the fleet to the closest spaceport for upgrades.
 	 * @param fleet the target fleet
+	 * @return true if bringin succeeded
 	 */
-	void bringinFleet(final AIFleet fleet) {
+	boolean bringinFleet(final AIFleet fleet) {
 		if (!checkMilitarySpaceport()) {
 			final AIPlanet spaceport = findClosestMilitarySpaceport(fleet.x, fleet.y);
 			add(new Action0() {
@@ -486,7 +488,9 @@ public class OffensePlanner extends Planner {
 					}
 				}
 			});
+			return true;
 		}
+		return false;
 	}
 	/**
 	 * Check the inventory and production status of the given technology.

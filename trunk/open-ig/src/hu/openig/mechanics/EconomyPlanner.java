@@ -50,7 +50,7 @@ public class EconomyPlanner extends Planner {
 		
 		for (AIPlanet p : planets) {
 			if (managePlanet(p)) {
-				if (world.mainPlayer != this.p || world.money < world.autoBuildLimit) {
+				if (world.mainPlayer == this.p && world.money < world.autoBuildLimit) {
 					return;
 				}
 			}
