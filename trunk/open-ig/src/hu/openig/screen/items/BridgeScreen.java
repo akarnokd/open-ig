@@ -158,6 +158,8 @@ public class BridgeScreen extends ScreenBase {
 	BufferedImage projectorLast;
 	/** Resume after the video playback? */
 	public boolean resumeAfterVideo;
+	/** Indicate if going to test. */
+	public boolean goingToTest;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -621,13 +623,10 @@ public class BridgeScreen extends ScreenBase {
 		
 		onResize();
 		
+		goingToTest = false;
+		
 		if (gotoTest()) {
-			commons.playVideo("test/phsychologist_test", new Action0() {
-				@Override
-				public void invoke() {
-					displaySecondary(Screens.TEST);
-				}
-			});
+			enterTestAnim();
 		} else {
 			playMessageAppear();
 		}
@@ -635,11 +634,31 @@ public class BridgeScreen extends ScreenBase {
 		lastLevel = world().level;
 	}
 	/**
+	 * Switch to test screen.
+	 */
+	public void enterTestAnim() {
+		goingToTest = true;
+		MovieScreen ms = commons.control().getScreen(Screens.MOVIE);
+		ms.transitionFinished = new Action0() {
+			@Override
+			public void invoke() {
+				displaySecondary(Screens.TEST);
+			}
+		};
+		commons.playVideo("test/phsychologist_test", new Action0() {
+			@Override
+			public void invoke() {
+				displaySecondary(Screens.TEST);
+			}
+		});
+	}
+	/**
 	 * Test if we need to go to the test screen instead.
 	 * @return true if go to the test
 	 */
 	boolean gotoTest() {
-		return world().testNeeded && !world().testCompleted && commons.control().secondary() != Screens.TEST;
+		return world().testNeeded && !world().testCompleted 
+				&& commons.control().secondary() != Screens.TEST && !goingToTest;
 	}
 	@Override
 	public void onLeave() {
