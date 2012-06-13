@@ -145,6 +145,7 @@ public class Mission12 extends Mission {
 		}
 		if ("Douglas-Report-Viruses".equals(id)) {
 			addMission("Mission-14", 8);
+			objective("Mission-12-Task-6").visible = true;
 			setObjectiveState("Mission-12-Task-6", ObjectiveState.SUCCESS);
 			addTimeout("Mission-12-Task-6-Hide", 13000);
 		}

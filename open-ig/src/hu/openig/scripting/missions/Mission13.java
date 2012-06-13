@@ -43,6 +43,8 @@ public class Mission13 extends Mission {
 	}
 	/** The mission stage. */
 	M13 stage = M13.NONE;
+	/** Indicate that Benson was reached. */
+	boolean bensonReached;
 	@Override
 	public boolean applicable() {
 		return world.level == 2;
@@ -66,7 +68,7 @@ public class Mission13 extends Mission {
 					incomingMessage("Douglas-Admiral-Benson", "Mission-13");
 					
 					createBenson();
-					addMission("Mission-13-Attack", 3);
+					addMission("Mission-13-Attack", 2);
 					
 					world.env.playMusic();
 				}
@@ -169,7 +171,7 @@ public class Mission13 extends Mission {
 		Fleet benson = findTaggedFleet("Mission-13-Benson", player);
 		Fleet garthog = findTaggedFleet("Mission-13-Garthog", g);
 		
-		if (benson != null && garthog != null && benson.targetPlanet() != null) {
+		if (benson != null && garthog != null && !bensonReached) {
 			double d = Math.hypot(benson.x - garthog.x, 
 					benson.y - garthog.y);
 			if (d <= 10) {
@@ -191,6 +193,7 @@ public class Mission13 extends Mission {
 				if (ff != null) {
 					ff.attack(garthog);
 				}
+				bensonReached = true;
 			} else {
 				garthog.moveTo(benson.x, benson.y);
 				garthog.task = FleetTask.SCRIPT;
@@ -292,13 +295,16 @@ public class Mission13 extends Mission {
 	@Override
 	public void reset() {
 		stage = M13.NONE;
+		bensonReached = false;
 	}
 	@Override
 	public void load(XElement xmission) {
 		stage = M13.valueOf(xmission.get("stage"));
+		bensonReached = xmission.getBoolean("benson-reached", false);
 	}
 	@Override
 	public void save(XElement xmission) {
 		xmission.set("stage", stage);
+		xmission.set("benson-reached", bensonReached);
 	}
 }
