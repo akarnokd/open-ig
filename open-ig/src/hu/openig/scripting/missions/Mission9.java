@@ -65,19 +65,6 @@ public class Mission9 extends Mission {
 			stage = M9Stages.RUN;
 
 			addMission("Mission-9-Trader-1", 3);
-//			world.env.stopMusic();
-//			world.env.playVideo("interlude/merchant_in", new Action0() {
-//				@Override
-//				public void invoke() {
-//					world.env.playMusic();
-//					world.env.speed1();
-//					
-//					incomingMessage("San Sterling-Smuggler", "Mission-9");
-//					stage = M9Stages.RUN;
-//
-//					addMission("Mission-9-Trader-1", 3);
-//				}
-//			});
 		}
 		
 		if (checkMission("Mission-9-Trader-1")) {
@@ -214,6 +201,7 @@ public class Mission9 extends Mission {
 	public void onDiscovered(Player player, Fleet fleet) {
 		if (stage == M9Stages.RUN && player == this.player && hasTag(fleet, "Mission-9-Smuggler")) {
 			world.env.playSound(SoundTarget.COMPUTER, SoundType.UNKNOWN_SHIP, null);
+			world.env.speed1();
 		}
 	}
 	@Override

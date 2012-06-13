@@ -399,10 +399,10 @@ public class Mission5 extends Mission {
 			addTimeout("Mission-5-Success", 3000);
 			moveTullen();
 		} else {
+			setObjectiveState("Mission-5-Task-3", ObjectiveState.FAILURE);
+			setObjectiveState("Mission-5", ObjectiveState.FAILURE);
 			if (own != null) {
 				addTimeout("Mission-5-Failed", 3000);
-			} else {
-				addTimeout("Mission-5-Destroyed", 3000);
 			}
 		}
 	}
