@@ -1205,7 +1205,7 @@ public class StarmapScreen extends ScreenBase {
 				for (Fleet f : fleets) {
 					if (f.owner == player()) {
 						f.getStatistics();
-						paintRadar(g2, (int)f.x, (int)f.y, f.radar, zoom);
+						paintRadar(g2, f.x, f.y, f.radar, zoom);
 					}
 				}
 			}
@@ -2593,7 +2593,7 @@ public class StarmapScreen extends ScreenBase {
 	 * @param radius the radius
 	 * @param zoom the zoom factor
 	 */
-	void paintRadar(Graphics2D g2, int x, int y, float radius, double zoom) {
+	void paintRadar(Graphics2D g2, double x, double y, float radius, double zoom) {
 		if (radius <= 0) {
 			radius = 0.3f * 35;
 		}
