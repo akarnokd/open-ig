@@ -77,9 +77,11 @@ public class Mission16 extends Mission {
 		}
 		if (checkMission("Mission-16")) {
 			stage = M16.INTRO;
+			world.env.stopMusic();
 			world.env.playVideo("interlude/colony_ship_arrival_2", new Action0() {
 				@Override
 				public void invoke() {
+					world.env.playMusic();
 					incomingMessage("Douglas-Money", "Mission-16");
 					createCarrier();
 					stage = M16.RUN;
