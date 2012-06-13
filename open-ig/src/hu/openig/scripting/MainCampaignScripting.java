@@ -113,14 +113,20 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				setOwner(pi, traders);
 			}
 		}
-		empire.planets.clear();
+		for (Map.Entry<Planet, PlanetKnowledge> e : U.newHashMap(empire.planets).entrySet()) {
+			if (e.getKey().owner == empire || e.getKey().owner == traders) {
+				empire.planets.remove(e.getKey());
+			}
+		}
 		for (int i = 1; i <= world.level; i++) {
 			String[] ps = planets[i - 1];
 			for (String pi : ps) {
 				setOwner(pi, empire);
 			}
 		}
-		empire.currentPlanet = planet("Achilles");
+		if (empire.currentPlanet == null || empire.currentPlanet.owner == traders) {
+			empire.currentPlanet = planet("Achilles");
+		}
 	}
 	/**
 	 * Apply view limits according to the current level.
