@@ -70,6 +70,8 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	Closeable fadeTimer;
 	/** Called once the transition has finished. */
 	public Action0 transitionFinished;
+	/** Allow transition animation? */
+	public boolean allowTransition = true;
 	/**
 	 * Start playback.
 	 * @param media the media
@@ -176,26 +178,33 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	public void onEnter(Screens mode) {
 		down = false;
 		fadeIndex = 0;
-		fadeTimer = commons.register(FADE_TIME, new Action0() {
-			@Override
-			public void invoke() {
-				if (fadeIndex * 2 == FADE_MAX) {
-					playNext();
-					askRepaint();
-					if (transitionFinished != null) {
-						transitionFinished.invoke();
-						transitionFinished = null;
+		if (allowTransition) {
+			fadeTimer = commons.register(FADE_TIME, new Action0() {
+				@Override
+				public void invoke() {
+					if (fadeIndex * 2 == FADE_MAX) {
+						playNext();
+						askRepaint();
+						if (transitionFinished != null) {
+							transitionFinished.invoke();
+							transitionFinished = null;
+						}
+					} 
+					if (fadeIndex >= 0) {
+						fadeIndex++;
+						if (fadeIndex >= FADE_MAX) {
+							fadeIndex = -1;
+						}
+						askRepaint();
 					}
-				} 
-				if (fadeIndex >= 0) {
-					fadeIndex++;
-					if (fadeIndex >= FADE_MAX) {
-						fadeIndex = -1;
-					}
-					askRepaint();
 				}
-			}
-		});
+			});
+		} else {
+			fadeIndex = -1;
+			playNext();
+			askRepaint();
+		}
+		label = null;
 	}
 	/** @return check if the screen is fully opaque. */
 	public boolean opaque() {
@@ -206,6 +215,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		close0(fadeTimer);
 		fadeTimer = null;
 		fadeIndex = -1;
+		allowTransition = true;
 	}
 
 	@Override

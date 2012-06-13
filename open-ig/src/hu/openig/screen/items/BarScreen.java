@@ -314,6 +314,7 @@ public class BarScreen extends ScreenBase {
 						TalkSpeech ts = state.speeches.get(idx);
 						next = person.states.get(ts.to);
 						ts.spoken = true;
+						((MovieScreen)commons.control().getScreen(Screens.MOVIE)).allowTransition = false;
 						commons.control().playVideos(new Action0() {
 							@Override
 							public void invoke() {
