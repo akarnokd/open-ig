@@ -527,6 +527,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		switch (e.type) {
 		case DOUBLE_CLICK:
 			if (mainmap.contains(e.x, e.y)) {
+				if (e.has(Modifier.SHIFT)) {
+					selectionMode = SelectionBoxMode.ADD;
+				} else
+				if (e.has(Modifier.CTRL)) {
+					selectionMode = SelectionBoxMode.SUBTRACT;
+				} else {
+					selectionMode = SelectionBoxMode.NEW;
+				}
 				needRepaint = doSelectType(e.x, e.y, e.z > 2);
 			}
 			break;
@@ -5147,15 +5155,19 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		doSelectStructures();
 		
-		for (SpacewarStructure s : getSelection()) {
+		List<SpacewarStructure> selection = getSelection();
+		for (SpacewarStructure s2 : structures) {
+			s2.selected = false;
+		}
+		for (SpacewarStructure s : selection) {
 			for (SpacewarStructure s2 : structures) {
 				if (s2.owner == s.owner) {
 					if (category) {
 						ResearchType rt0 = world().researches.get(s.techId);
 						ResearchType rt2 = world().researches.get(s2.techId);
-						s2.selected = rt0.category == rt2.category;
+						s2.selected |= rt0.category == rt2.category;
 					} else {
-						s2.selected = s2.techId.equals(s.techId);
+						s2.selected |= s2.techId.equals(s.techId);
 					}
 				}
 			}

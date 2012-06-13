@@ -843,7 +843,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				break;
 			case DOUBLE_CLICK:
 				if (e.has(Button.LEFT)) {
-					doSelectUnitType(e.x, e.y);
+					SelectionBoxMode mode = SelectionBoxMode.NEW;
+					if (e.has(Modifier.SHIFT)) {
+						mode = SelectionBoxMode.ADD;
+					} else
+					if (e.has(Modifier.CTRL)) {
+						mode = SelectionBoxMode.SUBTRACT;
+					}
+					doSelectUnitType(e.x, e.y, mode);
 					rep = true;
 				}
 				break;
@@ -3846,8 +3853,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * Select units of the same type.
 	 * @param mx the mouse coordinate
 	 * @param my the mouse coordinate
+	 * @param mode the selection mode
 	 */
-	void doSelectUnitType(int mx, int my) {
+	void doSelectUnitType(int mx, int my, SelectionBoxMode mode) {
 		for (GroundwarUnit u : units) {
 			Rectangle r = unitRectangle(u);
 			
