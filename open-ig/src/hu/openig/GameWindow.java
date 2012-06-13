@@ -194,7 +194,7 @@ public class GameWindow extends JFrame implements GameControls {
 					g2.scale(uis / 100d, uis / 100d);
 //					RenderTools.setInterpolation(g2, true);
 				}
-				if (movieVisible && movie.opaque()) {
+				if (movieVisible() && movie.opaque()) {
 					movie.draw(g2);
 				} else {
 					if (r1 && !r0 && !optionsVisible) {
@@ -217,7 +217,7 @@ public class GameWindow extends JFrame implements GameControls {
 						if (statusbarVisible) {
 							statusbar.draw(g2);
 						}
-						if (movieVisible) {
+						if (movieVisible()) {
 							movie.draw(g2);
 						}				
 					}
@@ -305,7 +305,7 @@ public class GameWindow extends JFrame implements GameControls {
 	/** Is the status bar visible? */
 	boolean statusbarVisible;
 	/** Is the movie visible. */
-	boolean movieVisible;
+	private boolean bMovieVisible;
 	/** Options visible. */
 	boolean optionsVisible;
 	/** The configuration object. */
@@ -447,7 +447,7 @@ public class GameWindow extends JFrame implements GameControls {
 		this.secondary = that.secondary;
 		this.options = that.options;
 		this.movie = that.movie;
-		this.movieVisible = that.movieVisible;
+		this.movieVisible(that.movieVisible());
 		this.statusbar = that.statusbar;
 		this.statusbarVisible = that.statusbarVisible;
 		this.optionsVisible = that.optionsVisible;
@@ -483,6 +483,11 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
 		addKeyListener(new KeyEvents());
+		
+		// fix movie
+		if (movie.playbackFinished instanceof MovieFinishAction) {
+			((MovieFinishAction)movie.playbackFinished).gw = this;
+		}
 	}
 	/**
 	 * Assign public fields of the same object.
@@ -778,8 +783,8 @@ public class GameWindow extends JFrame implements GameControls {
 	 * Display the movie window.
 	 */
 	public void displayMovie() {
-		if (!movieVisible) {
-			movieVisible = true;
+		if (!movieVisible()) {
+			movieVisible(true);
 			movie.onEnter(null);
 			moveMouse();
 			repaintInner();
@@ -789,8 +794,8 @@ public class GameWindow extends JFrame implements GameControls {
 	 * Hide the movie windows.
 	 */
 	public void hideMovie() {
-		if (movieVisible) {
-			movieVisible = false;
+		if (movieVisible()) {
+			movieVisible(false);
 			movie.onLeave();
 			moveMouse();
 			repaintInner();
@@ -801,7 +806,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	@Override
 	public void displayOptions() {
-		if (!movieVisible) {
+		if (!movieVisible()) {
 			optionsVisible = true;
 			options.resize();
 			options.onEnter(null);
@@ -899,7 +904,7 @@ public class GameWindow extends JFrame implements GameControls {
 			boolean rep = false;
 			ScreenBase pri = primary;
 			ScreenBase sec = secondary;
-			if (movieVisible) {
+			if (movieVisible()) {
 				rep |= movie.keyboard(e);
 			} else
 			if (optionsVisible) {
@@ -936,7 +941,7 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				e.consume();
 			}
-			if (!commons.worldLoading && commons.world() != null && !movieVisible) {
+			if (!commons.worldLoading && commons.world() != null && !movieVisible()) {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_1:
 					if (e.isControlDown() && !commons.battleMode) {
@@ -1020,7 +1025,7 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			}
 			if (!commons.worldLoading && commons.world() != null 
-					&& !movieVisible && !commons.battleMode) {
+					&& !movieVisible() && !commons.battleMode) {
 				if (e.getKeyChar() == '+') {
 					commons.world().player.moveNextPlanet();
 					repaintInner();
@@ -1465,7 +1470,7 @@ public class GameWindow extends JFrame implements GameControls {
 			invertIf(me);
 			scaleMouse(me);
 			
-			if (movieVisible) {
+			if (movieVisible()) {
 				rep = movie.mouse(me);
 				if (rep) {
 					repaintInner();
@@ -1547,20 +1552,38 @@ public class GameWindow extends JFrame implements GameControls {
 			invoke(e);
 		}
 	}
+	/**
+	 * The movie completion handler.
+	 * @author akarnokd, 2012.06.13.
+	 */
+	static class MovieFinishAction implements Action0 {
+		/** Which is the current main window? */
+		public GameWindow gw;
+		/** The extra action to invoke on compeltion. */
+		public final Action0 onComplete;
+		/**
+		 * Initializes the action.
+		 * @param gw the current game window.
+		 * @param onComplete the extra completion handler
+		 */
+		public MovieFinishAction(GameWindow gw, Action0 onComplete) {
+			this.gw = gw;
+			this.onComplete = onComplete;
+		}
+		@Override
+		public void invoke() {
+			gw.hideMovie();
+			if (onComplete != null) {
+				onComplete.invoke();
+			}
+		}
+	}
 	@Override
 	public void playVideos(final Action0 onComplete, String... videos) {
 		for (String s : videos) {
 			movie.mediaQueue.add(s);
 		}
-		movie.playbackFinished = new Action0() {
-			@Override
-			public void invoke() {
-				hideMovie();
-				if (onComplete != null) {
-					onComplete.invoke();
-				}
-			}
-		};
+		movie.playbackFinished = new MovieFinishAction(this, onComplete);
 		displayMovie();
 	}
 	/* (non-Javadoc)
@@ -2327,5 +2350,16 @@ public class GameWindow extends JFrame implements GameControls {
 			
 			setSize(Math.min(mxs.width, Math.max(sw + dx, getWidth())), Math.min(mxs.height, Math.max(sh + dy, getHeight())));
 		}
+	}
+	/** @return the current movie visibility status. */
+	public boolean movieVisible() {
+		return bMovieVisible;
+	}
+	/**
+	 * Set the movie visibility status.
+	 * @param value the new status
+	 */
+	public void movieVisible(boolean value) {
+		this.bMovieVisible = value;
 	}
 }
