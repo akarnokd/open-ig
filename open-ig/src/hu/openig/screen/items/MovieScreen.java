@@ -102,21 +102,30 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 		if (nextMedia != null) {
 			startPlayback(nextMedia);
 		} else {
-			fadeIndex = FADE_MAX / 2;
-			close0(fadeTimer);
-			fadeTimer = commons.register(FADE_TIME, new Action0() {
-				@Override
-				public void invoke() {
-					if (fadeIndex == 0) {
-						if (playbackFinished != null) {
-							playbackFinished.invoke();
-							playbackFinished = null;
+			if (allowTransition) {
+				fadeIndex = FADE_MAX / 2;
+				close0(fadeTimer);
+				fadeTimer = commons.register(FADE_TIME, new Action0() {
+					@Override
+					public void invoke() {
+						if (fadeIndex == 0) {
+							if (playbackFinished != null) {
+								playbackFinished.invoke();
+								playbackFinished = null;
+							}
 						}
+						fadeIndex--;
+						askRepaint();
 					}
-					fadeIndex--;
-					askRepaint();
+				});
+			} else {
+				fadeIndex = -1;
+				if (playbackFinished != null) {
+					playbackFinished.invoke();
+					playbackFinished = null;
 				}
-			});
+				askRepaint();
+			}
 		}
 	}
 	
