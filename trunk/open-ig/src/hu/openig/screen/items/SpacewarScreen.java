@@ -912,8 +912,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void zoomToFit() {
 		double xscale = mainmap.width * 1.0 / space.width;
 		double yscale = mainmap.height * 1.0 / space.height;
-		double s = Math.min(xscale, yscale) * 20;
-		scale = Math.min(maxScale, Math.round(s) / 20.0);
+		double s = Math.min(xscale, yscale);
+		scale = Math.min(maxScale, (int)(s * 20) / 20.0);
 		pan(0, 0);
 	}
 

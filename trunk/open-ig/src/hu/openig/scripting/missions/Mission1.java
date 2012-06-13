@@ -218,7 +218,7 @@ public class Mission1 extends Mission {
 		Fleet ft = findTaggedFleet("CampaignMainShip1", player);
 		if (ft == null) {
 			if (!hasTimeout("MainShip-Lost")) {
-				addTimeout("MainShip-Lost", 3000);
+				addTimeout("MainShip-Lost", 0);
 			}
 			if (checkTimeout("MainShip-Lost")) {
 				gameover();

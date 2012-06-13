@@ -331,6 +331,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			}
 		}
 		missiontimer.clear();
+		missiontimerlog.clear();
 		for (XElement xttls : in.childrenWithName("missiontimers")) {
 			for (XElement xttl : xttls.childrenWithName("missiontime")) {
 				missiontimer.put(xttl.get("id"), xttl.getInt("value"));
