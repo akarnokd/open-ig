@@ -149,7 +149,11 @@ public class Mission12 extends Mission {
 			addTimeout("Mission-12-Task-6-Hide", 13000);
 		}
 		if ("Douglas-Reinforcements-Approved".equals(id)) {
-			if (!reinforcements) {
+			if (!reinforcements 
+					&& (stage == M12Stages.FIRST_RUNDOWN 
+					|| stage == M12Stages.SUBSEQUENT_MESSAGE
+					|| stage == M12Stages.SUBSEQUENT_RUNDOWN
+					|| stage == M12Stages.SUBSEQUENT_MESSAGE)) {
 				send("Douglas-Reinforcements-Denied-2").visible = true;
 				send("Douglas-Reinforcements-Denied-2").seen = false;
 				send("Douglas-Reinforcements-Approved").visible = false;

@@ -132,7 +132,8 @@ public class Mission16 extends Mission {
 	}
 	@Override
 	public void onMessageSeen(String id) {
-		if ("Douglas-Reinforcements-Approved".equals(id) && !reinforcements) {
+		if ("Douglas-Reinforcements-Approved".equals(id) 
+				&& !reinforcements && stage == M16.RUN) {
 			reinforcements = true;
 			addReinforcements();
 		}
