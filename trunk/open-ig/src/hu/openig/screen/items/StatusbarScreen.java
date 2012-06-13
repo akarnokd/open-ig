@@ -752,10 +752,9 @@ public class StatusbarScreen extends ScreenBase {
 				DiplomacyScreen bs = (DiplomacyScreen)displayPrimary(Screens.DIPLOMACY);
 				bs.receive();
 			} else {
-				commons.pause();
 				BridgeScreen bs = (BridgeScreen)displayPrimary(Screens.BRIDGE);
+				bs.resumeAfterVideo = !commons.simulation.paused();
 				commons.pause();
-				bs.resumeAfterVideo = true;
 				bs.displayReceive();
 			}
 			return true;
