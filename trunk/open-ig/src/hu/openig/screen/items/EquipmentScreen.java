@@ -1145,8 +1145,11 @@ public class EquipmentScreen extends ScreenBase {
 		int sp = 0;
 		
 		for (InventoryItem ii : hi.inventory()) {
-			if (ii.owner == o && (ii.type.category != ResearchSubCategory.WEAPONS_TANKS
-					&& ii.type.category != ResearchSubCategory.WEAPONS_VEHICLES)) {
+			if (ii.owner == o 
+					&& (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+					|| ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+					)) {
 				Pair<Integer, Double> dmgDps = ii.maxDamageDPS();
 				
 				damage += dmgDps.first;
