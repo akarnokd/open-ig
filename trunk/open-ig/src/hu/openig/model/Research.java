@@ -45,8 +45,8 @@ public class Research {
 				Math.min(ps.civilLabActive, type.civilLab)
 				+ Math.min(ps.mechLabActive, type.mechLab)
 				+ Math.min(ps.compLabActive, type.compLab)
-				+ Math.min(ps.aiLab, type.aiLab)
-				+ Math.min(ps.milLab, type.milLab)
+				+ Math.min(ps.aiLabActive, type.aiLab)
+				+ Math.min(ps.milLabActive, type.milLab)
 		) 
 		/ (type.civilLab + type.mechLab + type.compLab + type.aiLab + type.milLab);
 	}
