@@ -21,6 +21,6 @@ I collect some points about space and realism problems here:
   * Research takes months
     * Always going on on many fields
     * Could be focused, but that is highly limiting
-    * [http://www.spacesector.com/blog/2009/07/dynamic-and-specialized-technology-research-in-space-strategy-games/ Discovery dinamism]
+    * [http://www.spacesector.com/blog/2009/07/dynamic-and-specialized-technology-research-in-space-strategy-games/ Discovery dynamism]
   * Instant move of inventory
   * Instant commands across several lightyears?
