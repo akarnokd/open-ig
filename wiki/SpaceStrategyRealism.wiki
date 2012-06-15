@@ -19,5 +19,8 @@ I collect some points about space and realism problems here:
     * all this times hundreds or thousands of habitable planets
   * Construction can take months or years instead of hours or days
   * Research takes months
+    * Always going on on many fields
+    * Could be focused, but that is highly limiting
+    * [http://www.spacesector.com/blog/2009/07/dynamic-and-specialized-technology-research-in-space-strategy-games/ Discovery dinamism]
   * Instant move of inventory
   * Instant commands across several lightyears?
