@@ -1,0 +1,23 @@
+#summary Collection of issues, solution and gameplay ideas on space realism.
+
+I collect some points about space and realism problems here:
+
+  * Sound effects in space battles or travel sounds.
+  * Space is too big; 
+    * up to scale would visually problematic, 
+    * travel times huge, 
+    * easy to miss meeting points.
+  * Faster Than Light; 
+    * without it, a journey within a solar system would take hours at least
+    * if we consider acceleration/deceleration, that is even worse
+    * relativity consideration, crew ages slower
+    * going FTL: exotic matter, black-hole levels of energy to warp space-time
+    * jump gates, wormholes to skip distances
+  * Planets are huge
+    * buildable area is huge, you could easily build billions of buildings
+    * billions of inhabitants
+    * all this times hundreds or thousands of habitable planets
+  * Construction can take months or years instead of hours or days
+  * Research takes months
+  * Instant move of inventory
+  * Instant commands across several lightyears?
