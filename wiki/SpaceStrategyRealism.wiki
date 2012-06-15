@@ -22,5 +22,6 @@ I collect some points about space and realism problems here:
     * Always going on on many fields
     * Could be focused -> Make fields more attractive by funding and researching something valuable has higher chance.
     * [http://www.spacesector.com/blog/2009/07/dynamic-and-specialized-technology-research-in-space-strategy-games/ Discovery dynamism]
+      * But I don't like to be excluded from technologies -> given set of ground physics and mathematics, let the player set any research target, e.g., R&D me a tank with 20 DPS and 500 HP, etc.
   * Instant move of inventory
   * Instant commands across several lightyears?
