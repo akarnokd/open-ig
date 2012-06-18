@@ -3803,13 +3803,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			
 			if (target.type == StructureType.SHIP || target.type == StructureType.STATION) {
-				long cost = target.item.sellValue() * 2;
+				long cost = target.item.unitSellValue() * 2;
 				target.owner.statistics.shipsLost += d;
-				target.owner.statistics.shipsLostCost += cost;
+				target.owner.statistics.shipsLostCost += cost * d;
 				Player p2 = world().players.get(owner);
 				if (p2 != null) {
 					p2.statistics.shipsDestroyed += d;
-					p2.statistics.shipsDestroyedCost += cost;
+					p2.statistics.shipsDestroyedCost += cost * d;
 				}
 			}
 		} else {
@@ -5073,6 +5073,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			case DOWN:
 				highlight = getSelectedIndex(e.y);
 				if (highlight >= 0) {
+					player().statistics.chats++;
 					doSelectOption(options.get(highlight));
 					return true;
 				}

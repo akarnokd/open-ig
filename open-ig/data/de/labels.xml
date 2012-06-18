@@ -2779,8 +2779,8 @@
 	<entry key='settings.new_save'>-- Neu --</entry>
   	<entry key='settings.confirm_overwrite'>Speicher überschrieben?</entry>
 	<entry key="settings.confirm_quit">Wollst du wirklich aufhören?</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="achievement.well_respected_feature">Sehr respektierte Feature</entry>
+	<entry key="achievement.well_respected_feature.desc">Unterhalte 100-mal im Weltraumschlacht</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

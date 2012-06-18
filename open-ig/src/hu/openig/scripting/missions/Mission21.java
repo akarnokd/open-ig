@@ -121,6 +121,7 @@ public class Mission21 extends Mission {
 		}
 		if (checkMission("Mission-21-Thanks-Hide")) {
 			receive("Prototype-Thanks").visible = false;
+			receive("Douglas-Prototype-2").visible = false;
 		}
 	}
 	/**
