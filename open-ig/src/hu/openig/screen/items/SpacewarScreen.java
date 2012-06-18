@@ -1164,7 +1164,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		enableSelectedFleetControls();
 		
 		for (SpacewarStructure s : structures) {
-			if (canControl(s)) {
+			if (canControl(s) && s.kamikaze == 0) {
 				flee(s);
 			}
 		}
@@ -3075,8 +3075,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		proj.hpMax = proj.hp;
 		switch (r.port.projectile.mode) {
 		case ROCKET:
-		case MULTI_ROCKET:
 			proj.type = StructureType.ROCKET;
+			break;
+		case MULTI_ROCKET:
+			proj.type = StructureType.MULTI_ROCKET;
 			break;
 		case VIRUS:
 			proj.type = StructureType.VIRUS_BOMB;
@@ -3672,12 +3674,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		if (moveStep(ship)) {
-			damageTarget(
-					ship.attack, 
-					ship.kamikaze, 
-					ship.destruction,
-					ship.techId,
-					ship.owner.id);
+			if (ship.type == StructureType.MULTI_ROCKET) {
+				damageArea(ship.attack, 
+						ship.kamikaze,
+						world().battle.getDoubleProperty(ship.techId, ship.owner.id, "area"),
+						SoundType.EXPLOSION_LONG, 
+						ship.techId, 
+						ship.owner.id);
+			} else {
+				damageTarget(
+						ship.attack, 
+						ship.kamikaze, 
+						ship.destruction,
+						ship.techId,
+						ship.owner.id);
+			}
 			createLoss(ship);
 			createExplosion(ship, true);
 			if (ship.type == StructureType.VIRUS_BOMB 
@@ -3717,16 +3728,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (moveStep(p)) {
 				projectiles.remove(p);
 				
-				if (p.model.mode == Mode.MULTI_ROCKET) {
-					damageArea(p.target, 
-							p.damage,
-							world().battle.getDoubleProperty(p.model.id, p.owner.id, "area"),
-							p.impactSound, 
-							p.model.id, 
-							p.owner.id);
-				} else {
-					damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
-				}
+				damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
 			} else
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
