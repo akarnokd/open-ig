@@ -33,6 +33,8 @@ public class SpacewarStructure extends SpacewarObject {
 		SHIELD,
 		/** Rocket mode. */
 		ROCKET,
+		/** Multi rocket mode. */
+		MULTI_ROCKET,
 		/** Bomb mode. */
 		BOMB,
 		/** Virus mode. */
