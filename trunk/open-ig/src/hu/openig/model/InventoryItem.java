@@ -111,7 +111,13 @@ public class InventoryItem {
 	 * @return the sell value
 	 */
 	public long sellValue() {
-		long result = 1L * count * type.productionCost / 2;
+		return unitSellValue() * count;
+	}
+	/**
+	 * @return the unit sell value of this inventory item.
+	 */
+	public long unitSellValue() {
+		long result = 1L * type.productionCost / 2;
 		for (InventorySlot is : slots) {
 			if (is.type != null && !is.slot.fixed) {
 				result += is.count * is.type.productionCost / 2;

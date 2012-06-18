@@ -428,6 +428,14 @@ public final class AchievementManager {
 			return false;
 		}
 	};
+	/** Test for achievement. */
+	@ID
+	protected static final Pred2<World, Player> WELL_RESPECTED_FEATURE = new Pred2<World, Player>() {
+		@Override
+		public Boolean invoke(World t, Player u) {
+			return u.statistics.chats >= 100;
+		}
+	};
 	// -------------------------------------------------------------------------------	
 	/** Utility class. */
 	private AchievementManager() {

@@ -2705,6 +2705,8 @@
 	<entry key='settings.new_save'>-- Új mentés --</entry>
   	<entry key='settings.confirm_overwrite'>Mentés felülírása?</entry>
 	<entry key="settings.confirm_quit">Biztosan ki akarsz lépni?</entry>
+	<entry key="achievement.well_respected_feature">Mélyen tisztelt funkció</entry>
+	<entry key="achievement.well_respected_feature.desc">Beszélj 100-szor az űrharc során</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

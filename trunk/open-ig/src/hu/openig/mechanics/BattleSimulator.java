@@ -641,11 +641,13 @@ public final class BattleSimulator {
 					}
 					hitpoints = 0;
 
+					long cost = ii.unitSellValue();
+					
 					ii.owner.statistics.shipsLost += diff;
-					ii.owner.statistics.shipsLostCost += diff * ii.type.productionCost;
+					ii.owner.statistics.shipsLostCost += diff * cost;
 
-					battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
-					battle.enemy(ii.owner).statistics.shipsDestroyedCost += ii.count * ii.type.productionCost;
+					battle.enemy(ii.owner).statistics.shipsDestroyed += diff;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost += diff * cost;
 				}
 			}
 		}
@@ -733,11 +735,13 @@ public final class BattleSimulator {
 					}
 					int diff = c0 - ii.count;
 					
+					long sellDelta = cs0 - ii.sellValue();
+					
 					ii.owner.statistics.shipsLost += diff;
-					ii.owner.statistics.shipsDestroyedCost += 2 * (cs0 - ii.sellValue());
+					ii.owner.statistics.shipsDestroyedCost += 2 * sellDelta;
 					
 					battle.enemy(ii.owner).statistics.shipsDestroyed += diff;
-					battle.enemy(ii.owner).statistics.shipsDestroyedCost += 2 * (cs0 - ii.sellValue());
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost += 2 * sellDelta;
 
 				}
 			}
@@ -787,13 +791,14 @@ public final class BattleSimulator {
 		for (InventoryItem ii : new ArrayList<InventoryItem>(p.inventory)) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-				p.inventory.remove(ii);
 				
 				ii.owner.statistics.shipsLost += ii.count;
 				ii.owner.statistics.shipsDestroyedCost += ii.sellValue() * 2;
 				
 				battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
 				battle.enemy(ii.owner).statistics.shipsDestroyedCost += ii.sellValue() * 2;
+
+				p.inventory.remove(ii);
 			}
 		}
 		p.rebuildRoads();

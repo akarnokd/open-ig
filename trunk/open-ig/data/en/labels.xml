@@ -2661,6 +2661,8 @@
 	<entry key='settings.new_save'>-- New --</entry>
   	<entry key='settings.confirm_overwrite'>Overwrite save?</entry>
 	<entry key="settings.confirm_quit">Do you really want to quit?</entry>
+	<entry key="achievement.well_respected_feature">Well respected feature</entry>
+	<entry key="achievement.well_respected_feature.desc">Chat 100 times in spacewar</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

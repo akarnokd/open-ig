@@ -130,7 +130,7 @@ public class PlayerStatistics {
 	/** Total available police. */
 	public long totalAvailablePolice;
 	/** The number of mission chats used. */
-	public int chats;
+	public long chats;
 	/** @return creates a copy of this object */
 	public PlayerStatistics copy() {
 		PlayerStatistics result = new PlayerStatistics();
