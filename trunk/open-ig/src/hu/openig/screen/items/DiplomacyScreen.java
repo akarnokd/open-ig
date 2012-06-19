@@ -1115,7 +1115,7 @@ public class DiplomacyScreen extends ScreenBase {
 			Diplomacy de = world().diplomacy.get(other.id);
 			
 			responseText.width = base.width - 20;
-			responseText.text(get(de.terminateLabel));
+			responseText.text(get(de != null ? de.terminateLabel : "diplomacy.generic.endtalk"));
 			responseText.height = responseText.getWrappedHeight();
 			
 			responseText.visible(true);
