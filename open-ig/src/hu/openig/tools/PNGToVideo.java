@@ -37,30 +37,32 @@ public final class PNGToVideo {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		int count = 41;
-		double fps = 17.89;
-		
-		String[] mode = { "appear", "open", "close" };
-		String[] mode2 = { "0", "", "F" };
-		
-		for (int l = 1; l < 4; l++) {
-			for (int m = 0; m < 3; m++) {
-				String filename = "c:/Games/IGDE/1/" + l + "_HID" + mode2[m] + ".ANI-%05d.PNG";
-				String output = "video/de/bridge/messages_" + mode[m] + "_level_" + l + ".ani.gz";
-				
-				convert(filename, count, fps, output);
-			}
-		}
+//		int count = 41;
+//		double fps = 17.89;
+//		
+//		String[] mode = { "appear", "open", "close" };
+//		String[] mode2 = { "0", "", "F" };
+//		
+//		for (int l = 1; l < 4; l++) {
+//			for (int m = 0; m < 3; m++) {
+//				String filename = "c:/Games/IGDE/1/" + l + "_HID" + mode2[m] + ".ANI-%05d.PNG";
+//				String output = "video/de/bridge/messages_" + mode[m] + "_level_" + l + ".ani.gz";
+//				
+//				convert(filename, count, fps, output);
+//			}
+//		}
+		convert("e:/temp/dipfej9_%03d.png", 0, 122, 17.89, "video/generic/diplomacy/dipfej9.ani.gz");
 	}
 	/**
 	 * Convert a sequence of PNG files into a video.
 	 * @param filename the filename pattern
+	 * @param start the start index
 	 * @param count the number of frames
 	 * @param fps the framerate
 	 * @param output the output file
 	 * @throws IOException on error
 	 */
-	public static void convert(String filename, int count, double fps,
+	public static void convert(String filename, int start, int count, double fps,
 			String output) throws IOException {
 		DataOutputStream bout = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(output))));
 		try {
@@ -80,7 +82,7 @@ public final class PNGToVideo {
 			bout.write(b0);
 			
 			if (count > 1) {
-				int idx = 1;
+				int idx = start;
 				do {
 					System.out.printf("Frame: %d ", idx);
 					BufferedImage i2 = get(filename, idx);
@@ -116,7 +118,7 @@ public final class PNGToVideo {
 					b0 = b2;
 					idx++;
 					System.out.printf(" done.%n");
-				} while (idx < count);
+				} while (idx < count + start);
 			}
 			
 			// end of data
