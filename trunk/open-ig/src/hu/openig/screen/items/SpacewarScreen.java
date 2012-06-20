@@ -3068,7 +3068,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		proj.x = r.fired.x;
 		proj.y = r.fired.y;
 		proj.angle = r.fired.angle;
-		proj.destruction = SoundType.HIT;
+		proj.destruction = SoundType.EXPLOSION_MEDIUM;
 		proj.ecmLevel = r.type.getInt("anti-ecm", 0);
 		proj.kamikaze = r.port.projectile.damage;
 		proj.hp = world().battle.getIntProperty(proj.techId, proj.owner.id, "hp");
@@ -3679,7 +3679,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				damageArea(ship.attack, 
 						ship.kamikaze,
 						world().battle.getDoubleProperty(ship.techId, ship.owner.id, "area"),
-						SoundType.EXPLOSION_LONG, 
+						SoundType.EXPLOSION_MEDIUM, 
 						ship.techId, 
 						ship.owner.id);
 			} else {
@@ -3753,12 +3753,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			SoundType impactSound,
 			String techId,
 			String owner) {
-		for (SpacewarStructure s : U.newArrayList(structures)) {
-			if (!isAlly(s, world().players.get(owner))) {
-				double d = Math.hypot(s.x - target.x, s.y - target.y);
-				if (d <= area) {
-					damageTarget(s, 
-							(int)(s.count * damage * (area - d) / area), impactSound, techId, owner);
+		if (area < 0) {
+			damageTarget(target, 
+					target.count * damage, impactSound, techId, owner);
+		} else {
+			for (SpacewarStructure s : U.newArrayList(structures)) {
+				if (!isAlly(s, world().players.get(owner))) {
+					double d = Math.hypot(s.x - target.x, s.y - target.y);
+					if (d <= area) {
+						damageTarget(s, 
+								(int)(s.count * damage * (area - d) / area), impactSound, techId, owner);
+					}
 				}
 			}
 		}
