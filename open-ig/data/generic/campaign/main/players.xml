@@ -160,7 +160,7 @@
 	<player id='FreeTraders' race='human' name='players.free_traders'
 		icon='starmap/fleets/free_traders_fleet'
 		color='FF3C3CFC'
-		picture='database/freenations'
+		picture='database/freetraders'
 		money='32000'
 		initial-stance='50'
 		colonization-limit='2'
