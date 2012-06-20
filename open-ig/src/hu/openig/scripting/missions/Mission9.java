@@ -91,7 +91,7 @@ public class Mission9 extends Mission {
 			receive("San Sterling-Smuggler").visible = false;
 			setObjectiveState("Mission-9", ObjectiveState.FAILURE);
 			gameover();
-			loseGameMessageAndMovie("San Sterling-Smuggler-Killed-Innocent", "loose/fired_level_2");
+			loseGameMessageAndMovie("San Sterling-Smuggler-Killed-Innocent", "lose/fired_level_2");
 		}
 		if (checkTimeout("Mission-9-Killed")) {
 			receive("San Sterling-Smuggler").visible = false;

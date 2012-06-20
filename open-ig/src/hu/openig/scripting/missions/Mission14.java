@@ -66,7 +66,7 @@ public class Mission14 extends Mission {
 		}
 		if (checkTimeout("Mission-14-Failed")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Mistakes", "loose/fired_level_2");
+			loseGameMessageAndMovie("Douglas-Fire-Mistakes", "lose/fired_level_2");
 		}
 		if (checkTimeout("Mission-14-Success")) {
 			setObjectiveState("Mission-14", ObjectiveState.SUCCESS);

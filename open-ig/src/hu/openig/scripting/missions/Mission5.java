@@ -84,7 +84,7 @@ public class Mission5 extends Mission {
 			setObjectiveState("Mission-5-Task-1", ObjectiveState.FAILURE);
 			receive("Douglas-Thorin").visible = false;
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Mistakes", "loose/fired_level_1");
+			loseGameMessageAndMovie("Douglas-Fire-Mistakes", "lose/fired_level_1");
 		}
 		if (m5t1.visible && m5t1.state == ObjectiveState.ACTIVE) {
 			if (checkFleetInRange()) {
@@ -122,7 +122,7 @@ public class Mission5 extends Mission {
 			receive("Douglas-Thorin").visible = false;
 			send("Douglas-Thorin-Reinforcements").visible = false;
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
+			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "lose/fired_level_1");
 		}
 		if (checkTimeout("Mission-5-Success")) {
 			stage = M5.DONE;

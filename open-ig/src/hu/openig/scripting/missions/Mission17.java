@@ -102,7 +102,7 @@ public class Mission17 extends Mission {
 			stage = M17.DONE;
 			gameover();
 			receive("Douglas-Prototype").visible = false;
-			loseGameMessageAndMovie("Douglas-Fire-Prototype-Lost", "loose/fired_level_2");
+			loseGameMessageAndMovie("Douglas-Fire-Prototype-Lost", "lose/fired_level_2");
 		}
 		if (checkTimeout("Mission-17-Success")) {
 			setObjectiveState("Mission-17", ObjectiveState.SUCCESS);

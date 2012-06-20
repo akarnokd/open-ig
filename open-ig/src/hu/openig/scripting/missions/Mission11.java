@@ -68,7 +68,7 @@ public class Mission11 extends Mission {
 		if (checkTimeout("Mission-11-Done")) {
 			if (m11.state == ObjectiveState.FAILURE) {
 				gameover();
-				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
+				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "lose/fired_level_2");
 			}
 			m11.visible = false;
 			garthogGoHome();

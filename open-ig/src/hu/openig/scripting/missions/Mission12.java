@@ -216,7 +216,7 @@ public class Mission12 extends Mission {
 			setObjectiveState("Mission-12", ObjectiveState.FAILURE);
 		}
 		gameover();
-		loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
+		loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "lose/fired_level_2");
 	}
 	@Override
 	public void onPlanetCured(Planet planet) {
@@ -288,7 +288,7 @@ public class Mission12 extends Mission {
 			}
 			if (cnt > 2) {
 				gameover();
-				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_2");
+				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "lose/fired_level_2");
 			} else {
 				if (!planet.id.equals("New Caroline")) {
 					incomingMessage(planet.id + "-Virus");

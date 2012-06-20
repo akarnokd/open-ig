@@ -82,7 +82,7 @@ public class Mission3 extends Mission {
 		}
 		if (checkTimeout("Mission-3-Timeout")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_1");
+			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "lose/fired_level_1");
 		}
 		if (checkTimeout("Mission-3-Failed")) {
 			world.env.playVideo("interlude/merchant_destroyed", new Action0() {

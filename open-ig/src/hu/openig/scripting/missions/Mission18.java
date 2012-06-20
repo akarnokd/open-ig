@@ -90,7 +90,7 @@ public class Mission18 extends Mission {
 		checkSuccess();
 		if (checkTimeout("Mission-18-Failed")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "loose/fired_level_3");
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet-2", "lose/fired_level_3");
 		}
 		if (checkTimeout("Mission-18-Hide")) {
 			objective("Mission-18").visible = false;
@@ -124,7 +124,7 @@ public class Mission18 extends Mission {
 			}
 			if (checkTimeout("MainShip-Lost")) {
 				gameover();
-				loseGameMovie("loose/destroyed_level_3");
+				loseGameMovie("lose/destroyed_level_3");
 			}
 		}
 	}

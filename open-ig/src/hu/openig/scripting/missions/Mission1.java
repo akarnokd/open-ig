@@ -179,7 +179,7 @@ public class Mission1 extends Mission {
 			
 		} else
 		if (checkTimeout("Mission-1-Failure")) {
-			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_1");
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "lose/fired_level_1");
 		}
 	}
 	/**
@@ -222,7 +222,7 @@ public class Mission1 extends Mission {
 			}
 			if (checkTimeout("MainShip-Lost")) {
 				gameover();
-				loseGameMovie("loose/destroyed_level_1");
+				loseGameMovie("lose/destroyed_level_1");
 			}
 		}
 	}

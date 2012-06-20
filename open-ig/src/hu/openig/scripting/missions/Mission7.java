@@ -122,7 +122,7 @@ public class Mission7 extends Mission {
 		}
 		if (checkTimeout("Mission-7-Fire")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Lost-Merchants", "loose/fired_level_2");
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Merchants", "lose/fired_level_2");
 		}
 	}
 	/** Remove the attacker fleets. */

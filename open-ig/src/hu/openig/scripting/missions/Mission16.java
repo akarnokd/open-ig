@@ -109,7 +109,7 @@ public class Mission16 extends Mission {
 		}
 		if (checkTimeout("Mission-16-Fire")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "loose/fired_level_2");
+			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "lose/fired_level_2");
 		}
 	}
 	/** @return the garthog player. */

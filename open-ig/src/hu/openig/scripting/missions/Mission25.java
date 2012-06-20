@@ -76,7 +76,7 @@ public class Mission25 extends Mission {
 			}
 			if (checkTimeout("MainShip-Lost")) {
 				gameover();
-				loseGameMovie("loose/destroyed_level_3");
+				loseGameMovie("lose/destroyed_level_3");
 			}
 		}
 	}
