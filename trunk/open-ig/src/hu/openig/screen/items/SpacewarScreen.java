@@ -3511,6 +3511,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 							|| (ship.guard && ship.inRange(ship.attack).isEmpty())
 							|| (!ship.attack.intersects(0, 0, space.width, space.height))) {
 						ship.attack = null;
+						ship.guard = true;
 						if (ship.selected && ship.owner == player()) {
 							enableSelectedFleetControls();
 						}
@@ -4844,6 +4845,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public void stop(SpacewarStructure s) {
 		s.moveTo = null;
 		s.attack = null;
+		s.guard = false;
 		if (s.selected && s.owner == player()) {
 			enableSelectedFleetControls();
 		}

@@ -50,7 +50,6 @@ import hu.openig.utils.XElement;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
@@ -185,7 +184,7 @@ public class AI implements AIManager {
 				if (ship.attack == null 
 						&& ship.type == StructureType.SHIP
 						&& ship.canDirectFire()) {
-					ship.attack = esl.get(i);
+					world.attack(ship, esl.get(i), Mode.BEAM);
 					i++;
 					if (i >= esl.size()) {
 						i = 0;
@@ -275,56 +274,15 @@ public class AI implements AIManager {
 			ship.guard = true;
 			List<SpacewarStructure> es = world.enemiesInRange(ship);
 			if (es.size() > 0) {
-				ship.attack = world.random(es);
+				world.attack(ship, world.random(es), Mode.BEAM);
 			}
 		} else
 		if (ship.type == StructureType.SHIP) {
 			List<SpacewarStructure> es = world.enemiesInRange(ship);
 			if (es.size() > 0) {
-				ship.attack = world.random(es);
+				world.attack(ship, world.random(es), Mode.BEAM);
 			}
 		}
-	}
-	/**
-	 * Orders the given structure to attack the highest cost target.
-	 * <p>May be employed by a defender AI to stop a fleet which tries to conquer a planet.</p>
-	 * @param world the world
-	 * @param ship the ship
-	 */
-	public static void costAttackBehavior(SpacewarWorld world, 
-			SpacewarStructure ship) {
-		if (ship.type == StructureType.STATION 
-				|| ship.type == StructureType.PROJECTOR) {
-			ship.guard = true;
-			ship.attack = highestCost(world.enemiesInRange(ship), ship);
-		} else
-		if (ship.type == StructureType.SHIP) {
-			ship.attack = highestCost(world.enemiesOf(ship), ship);
-		}
-	}
-	/**
-	 * Find the highest cost enemy target.
-	 * @param enemies the list of enemies
-	 * @param ship the current ship
-	 * @return the new target or null if no targets remain
-	 */
-	public static SpacewarStructure highestCost(List<SpacewarStructure> enemies, SpacewarStructure ship) {
-		if (enemies.isEmpty()) {
-			return null;
-		}
-		return Collections.max(enemies, new Comparator<SpacewarStructure>() {
-			@Override
-			public int compare(SpacewarStructure o1, SpacewarStructure o2) {
-				double d1 = o1.hp + o1.shield;
-				double d1m = o1.hpMax + o1.shieldMax;
-				double d2 = o2.hp + o2.shield;
-				double d2m = o2.hpMax + o2.shieldMax;
-				
-				double c1 = o1.value * d1m * d2;
-				double c2 = o2.value * d2m * d1;
-				return c1 < c2 ? -1 : (c1 > c2 ? 1 : 0);
-			}
-		});
 	}
 	@Override
 	public void groundBattle(final GroundwarWorld war) {

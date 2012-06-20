@@ -48,6 +48,8 @@ import hu.openig.render.TextRenderer;
 import hu.openig.sound.Sounds;
 import hu.openig.utils.WipPort;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -70,6 +72,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 
 
@@ -129,10 +132,10 @@ public class CommonResources implements GameEnvironment {
 	public boolean nongame;
 	/** The common executor service. */
 	public final ScheduledExecutorService pool;
-//	/** The combined timer for synchronized frequency updates. */
-//	public final Timer timer;
-	/** The periodic timer. */
-	public Future<?> timerFuture;
+	/** The combined timer for synchronized frequency updates. */
+	public Timer timer;
+//	/** The periodic timer. */
+//	public Future<?> timerFuture;
 	/** The timer delay in milliseconds. */
 	public static final int TIMER_DELAY = 25;
 	/** The timer tick. */
@@ -228,34 +231,21 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void startTimer() {
 		stopTimer();
-		timerFuture = pool.scheduleAtFixedRate(new Runnable() {
+		timer = new Timer(TIMER_DELAY, new ActionListener() {
 			@Override
-			public void run() {
-				try {
-					SwingUtilities.invokeAndWait(new Runnable() {
-						@Override
-						public void run() {
-							tick++;
-							doTimerTick();
-						}
-					});
-				} catch (InterruptedException ex) {
-					// ignored
-					throw new CancellationException();
-				} catch (InvocationTargetException ex) {
-					ex.printStackTrace();
-				}
+			public void actionPerformed(ActionEvent e) {
+				tick++;
+				doTimerTick();
 			}
-		}, TIMER_DELAY, TIMER_DELAY, TimeUnit.MILLISECONDS);
+		});
+		timer.start();
 	}
 	/**
 	 * Stop the timer task.
 	 */
 	public void stopTimer() {
-		Future<?> f = timerFuture;
-		if (f != null) {
-			f.cancel(true);
-			timerFuture = null;
+		if (timer != null) {
+			timer.stop();
 		}
 	}
 	/** Initialize the resources in parallel. */
