@@ -58,7 +58,7 @@ public class Mission8 extends Mission {
 		}
 		if (checkMission("Mission-8-Fire")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-Test", "loose/fired_level_2");
+			loseGameMessageAndMovie("Douglas-Fire-Test", "lose/fired_level_2");
 		}
 		if (checkMission("Mission-8-Visions")) {
 			world.env.stopMusic();

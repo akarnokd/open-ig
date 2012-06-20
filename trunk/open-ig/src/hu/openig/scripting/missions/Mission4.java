@@ -87,7 +87,7 @@ public class Mission4 extends Mission {
 		}
 		if (checkTimeout("Mission-4-Fire")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Fire-No-Order", "loose/fired_level_1");
+			loseGameMessageAndMovie("Douglas-Fire-No-Order", "lose/fired_level_1");
 		}
 		if (checkTimeout("Mission-4-Success")) {
 			send("Naxos-Not-Under-Attack").visible = true;

@@ -169,7 +169,7 @@ public class Mission2 extends Mission {
 		
 		if (checkTimeout("Mission-2-Failed")) {
 			objective("Mission-2").visible = false;
-			loseGameMessageAndMovie("Douglas-Fire-Lost-Merchants", "loose/fired_level_1");
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Merchants", "lose/fired_level_1");
 		} else
 		if (checkTimeout("Mission-2-Success")) {
 			objective("Mission-2").visible = false;

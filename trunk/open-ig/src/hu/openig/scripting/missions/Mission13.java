@@ -91,7 +91,7 @@ public class Mission13 extends Mission {
 		}
 		if (checkTimeout("Mission-13-Fire")) {
 			gameover();
-			loseGameMessageAndMovie("Douglas-Admiral-Benson-Failed", "loose/fired_level_2");
+			loseGameMessageAndMovie("Douglas-Admiral-Benson-Failed", "lose/fired_level_2");
 		}
 	}
 	@Override

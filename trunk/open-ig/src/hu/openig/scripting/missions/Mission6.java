@@ -90,7 +90,7 @@ public class Mission6 extends Mission {
 			receive("Achilles-Is-Under-Attack").visible = false;
 			if (m6.state == ObjectiveState.FAILURE) {
 				gameover();
-				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "loose/fired_level_2");
+				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "lose/fired_level_2");
 			}
 			m6.visible = false;
 			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
@@ -227,7 +227,7 @@ public class Mission6 extends Mission {
 			}
 			if (checkTimeout("MainShip-Lost")) {
 				gameover();
-				loseGameMovie("loose/destroyed_level_2");
+				loseGameMovie("lose/destroyed_level_2");
 			}
 		}
 	}
