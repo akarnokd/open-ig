@@ -2026,7 +2026,7 @@ public class GameWindow extends JFrame implements GameControls {
 		for (ScreenBase sb : screens) {
 			sb.onEndGame();
 		}
-		commons.timer.start();
+		commons.startTimer();
 	}
 	@Override
 	public void startBattle() {

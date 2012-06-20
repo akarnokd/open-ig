@@ -48,8 +48,6 @@ import hu.openig.render.TextRenderer;
 import hu.openig.sound.Sounds;
 import hu.openig.utils.WipPort;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -72,7 +70,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 
 
 
@@ -132,8 +129,12 @@ public class CommonResources implements GameEnvironment {
 	public boolean nongame;
 	/** The common executor service. */
 	public final ScheduledExecutorService pool;
-	/** The combined timer for synchronized frequency updates. */
-	public final Timer timer;
+//	/** The combined timer for synchronized frequency updates. */
+//	public final Timer timer;
+	/** The periodic timer. */
+	public Future<?> timerFuture;
+	/** The timer delay in milliseconds. */
+	public static final int TIMER_DELAY = 25;
 	/** The timer tick. */
 	long tick;
 	/** The registration map. */
@@ -209,16 +210,53 @@ public class CommonResources implements GameEnvironment {
 		}
 		pool = scheduler;
 
-		timer = new Timer(25, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				tick++;
-				doTimerTick();
-			}
-		});
-		timer.start();
+//		timer = new Timer(25, new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				tick++;
+//				doTimerTick();
+//			}
+//		});
+//		timer.start();
+		
+		startTimer();
 		
 		init();
+	}
+	/**
+	 * Initiate the timer task.
+	 */
+	public void startTimer() {
+		stopTimer();
+		timerFuture = pool.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() {
+						@Override
+						public void run() {
+							tick++;
+							doTimerTick();
+						}
+					});
+				} catch (InterruptedException ex) {
+					// ignored
+					throw new CancellationException();
+				} catch (InvocationTargetException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}, TIMER_DELAY, TIMER_DELAY, TimeUnit.MILLISECONDS);
+	}
+	/**
+	 * Stop the timer task.
+	 */
+	public void stopTimer() {
+		Future<?> f = timerFuture;
+		if (f != null) {
+			f.cancel(true);
+			timerFuture = null;
+		}
 	}
 	/** Initialize the resources in parallel. */
 	private void init() {
@@ -486,7 +524,8 @@ public class CommonResources implements GameEnvironment {
 	}
 	/** Close the resources. */
 	public void stop() {
-		timer.stop();
+//		timer.stop();
+		stopTimer();
 		
 		close0(allocatorHandler);
 		close0(radarHandler);
@@ -672,7 +711,8 @@ public class CommonResources implements GameEnvironment {
 		
 		simulation.resume();
 		
-		timer.start();
+		startTimer();
+//		timer.start();
 		if (withMusic) {
 			playRegularMusic();
 		}
@@ -713,7 +753,7 @@ public class CommonResources implements GameEnvironment {
 	void doTimerTick() {
 		for (TimerAction act : new ArrayList<TimerAction>(timerHandlers.values())) {
 			if (!act.cancelled) {
-				if ((tick * timer.getDelay()) % act.delay == 0) {
+				if ((tick * TIMER_DELAY) % act.delay == 0) {
 					try {
 						act.action.invoke();
 					} catch (CancellationException ex) {
@@ -732,8 +772,8 @@ public class CommonResources implements GameEnvironment {
 	 * @return the handler to close this instance
 	 */
 	public Closeable register(int delay, Action0 action) {
-		if (delay % timer.getDelay() != 0 || delay == 0) {
-			throw new IllegalArgumentException("The delay must be in multiples of " + timer.getDelay() + " milliseconds!");
+		if (delay % TIMER_DELAY != 0 || delay == 0) {
+			throw new IllegalArgumentException("The delay must be in multiples of " + TIMER_DELAY + " milliseconds!");
 		}
 		if (action == null) {
 			throw new IllegalArgumentException("action is null");
