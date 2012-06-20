@@ -195,7 +195,7 @@
 	<properties>
 		<property id="Rocket1" hp="1000"/>
 		<property id="Rocket2" hp="2000"/>
-		<property id="MultiheadedRocket" hp="2000" area='10'/>
+		<property id="MultiheadedRocket" hp="2000" area='-1'/> <!-- previously 10, -1 only target -->
 		<property id="Bomb1" ground-radius="6" damage-percent="5" hp="1000"/>
 		<property id="Bomb2" ground-radius="10" damage-percent="10" hp="2000"/>
 		<property id="VirusBomb2" ground-radius="6" damage-percent="5" hp="2000"/>
