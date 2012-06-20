@@ -3457,18 +3457,37 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		x.x = s.x;
 		x.y = s.y;
-		switch (s.destruction) {
+		x.phases = getExplosionFor(s.destruction);
+		explosions.add(x);
+	}
+	/**
+	 * Get the explosion animation for a given sound effect.
+	 * @param destruction the destruction sound
+	 * @return the animation phases
+	 */
+	BufferedImage[] getExplosionFor(SoundType destruction) {
+		switch (destruction) {
 		case EXPLOSION_MEDIUM:
 		case EXPLOSION_MEDIUM_2:
-			x.phases = commons.spacewar().explosionMedium;
-			break;
+			return commons.spacewar().explosionMedium;
 		case EXPLOSION_SHORT:
-			x.phases = commons.spacewar().explosionSmall;
-			break;
+			return commons.spacewar().explosionSmall;
 		default:
-			x.phases = commons.spacewar().explosionLarge;
+			return commons.spacewar().explosionLarge;
 		}
-		explosions.add(x);
+	}
+	/**
+	 * Create explosion object for the given spatial location.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param explosion the sound effect
+	 */
+	void createExplosion(double x, double y, SoundType explosion) {
+		SpacewarExplosion xp = new SpacewarExplosion();
+		xp.x = x;
+		xp.y = y;
+		xp.phases = getExplosionFor(explosion);
+		explosions.add(xp);
 	}
 	/** Perform the spacewar simulation. */
 	void doSpacewarSimulation() {
@@ -3676,12 +3695,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		if (moveStep(ship)) {
 			if (ship.type == StructureType.MULTI_ROCKET) {
-				damageArea(ship.attack, 
-						ship.kamikaze,
-						world().battle.getDoubleProperty(ship.techId, ship.owner.id, "area"),
-						SoundType.EXPLOSION_MEDIUM, 
-						ship.techId, 
-						ship.owner.id);
+				doMultiRocketExplosion(ship);
 			} else {
 				damageTarget(
 						ship.attack, 
@@ -3700,6 +3714,37 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (ship.attack != null && ship.attack.isDestroyed() && !ship.intersects(0, 0, space.width, space.height)) {
 			createLoss(ship);
 			structures.remove(ship);
+		}
+	}
+	/**
+	 * Create a multirocket explosion around the given ship's target.
+	 * @param ship the ship
+	 */
+	void doMultiRocketExplosion(SpacewarStructure ship) {
+		double area = world().battle.getDoubleProperty(ship.techId, ship.owner.id, "area");
+		int sn = world().battle.getIntProperty(ship.techId, ship.owner.id, "secondary-count");
+
+		damageArea(ship.attack, 
+				ship.kamikaze,
+				area,
+				SoundType.EXPLOSION_MEDIUM, 
+				ship.techId, 
+				ship.owner.id);
+		
+		if (sn > 0) {
+			
+			double sa = world().battle.getDoubleProperty(ship.techId, ship.owner.id, "secondary-area");
+			double sr = world().battle.getDoubleProperty(ship.techId, ship.owner.id, "secondary-radius");
+			double sm = world().battle.getDoubleProperty(ship.techId, ship.owner.id, "secondary-multiplier");
+			
+			double dalpha = Math.PI * 2 / sn;
+			for (double a = 0; a < Math.PI * 2; a += dalpha) {
+				double x2 = ship.attack.x + sr * Math.cos(a);
+				double y2 = ship.attack.y + sr * Math.sin(a);
+
+				createExplosion(x2, y2, SoundType.EXPLOSION_MEDIUM);
+				damageArea(x2, y2, (int)(ship.kamikaze * sm), sa, SoundType.EXPLOSION_MEDIUM, ship.techId, ship.owner.id);
+			}
 		}
 	}
 	/**
@@ -3759,10 +3804,43 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		} else {
 			for (SpacewarStructure s : U.newArrayList(structures)) {
 				if (!isAlly(s, world().players.get(owner))) {
-					double d = Math.hypot(s.x - target.x, s.y - target.y);
+					double d = Math.hypot(s.x - target.x, s.y - target.y) - s.get().getWidth() / 2;
 					if (d <= area) {
+						d = Math.max(0, d);
 						damageTarget(s, 
 								(int)(s.count * damage * (area - d) / area), impactSound, techId, owner);
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Damage the space around the specified coordinates.
+	 * If the nearby structures represents fighters, they get uniform damage each.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param damage the damage
+	 * @param area the affected area
+	 * @param impactSound the impact sound
+	 * @param techId the technology that inflicted the damage
+	 * @param owner the owner of the technology
+	 */
+	void damageArea(double x, double y, int damage,
+			double area,
+			SoundType impactSound,
+			String techId,
+			String owner) {
+		for (SpacewarStructure s : U.newArrayList(structures)) {
+			if (!isAlly(s, world().players.get(owner))) {
+				double d = Math.hypot(s.x - x, s.y - y) - s.get().getWidth() / 2;
+				if (d <= area) {
+					if (area > 0) {
+						d = Math.max(0, d);
+						damageTarget(s, 
+								(int)(s.count * damage * (area - d) / area), impactSound, techId, owner);
+					} else {
+						damageTarget(s, 
+								s.count * damage, impactSound, techId, owner);
 					}
 				}
 			}
