@@ -51,7 +51,7 @@
 			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Június 20 / A</desc>
 			<desc lang='en'>The upgraded resource file [Data]. 20th June, 2012 / A</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120609a.zip' sha1='75225667eb0042a03748e92f4d55c4c0a09439e1'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120620a.zip' sha1='d90c941a094fbfe0d675e4fdea92db1834f33152'/>
 
 		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
@@ -89,6 +89,7 @@
 		<remove file='open-ig-images-20120602a.zip'/>
 		<remove file='open-ig-images-20120603a.zip'/>
 		<remove file='open-ig-images-20120605a.zip'/>
+		<remove file='open-ig-images-20120609a.zip'/>
 		<remove file='open-ig-audio-en-20120420A.zip'/>
 		<remove file='open-ig-audio-en-20120429A.zip'/>
 		<remove file='open-ig-audio-generic-20120420A.zip'/>
