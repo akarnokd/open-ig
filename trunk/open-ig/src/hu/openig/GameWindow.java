@@ -81,6 +81,8 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -112,6 +114,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -292,6 +295,12 @@ public class GameWindow extends JFrame implements GameControls {
 	boolean repaintRequest;
 	/** A partial repaint request. */
 	boolean repaintRequestPartial;
+	/** Enable fixed framerate mode. */
+	boolean fixedFramerate;
+	/** The fixed framerate timer. */
+	Timer fixedFramerateTimer;
+	/** The frame rate. */
+	static final int FRAMERATE = 30;
 	/** The primary screen. */
 	ScreenBase primary;
 	/** The secondary screen drawn over the first. */
@@ -416,6 +425,7 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			});
 		}
+		init();
 	}
 	/** 
 	 * A copy constructor to save the state of a previous window without reloading
@@ -488,6 +498,24 @@ public class GameWindow extends JFrame implements GameControls {
 		if (movie.playbackFinished instanceof MovieFinishAction) {
 			((MovieFinishAction)movie.playbackFinished).gw = this;
 		}
+		init();
+	}
+	/** Initialize the frame-common components. */
+	void init() {
+		fixedFramerateTimer = new Timer(1000 / FRAMERATE, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (fixedFramerate) {
+					repaintRequest = true;
+					surface.repaint();
+				}
+			}
+		});
+		fixedFramerateTimer.start();
+	}
+	/** Finish the frame-common objects. */
+	void done() {
+		fixedFramerateTimer.stop();
 	}
 	/**
 	 * Assign public fields of the same object.
@@ -534,6 +562,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		config.save();
 		
+		done();
 		dispose();
 		try {
 			config.watcherWindow.close();
@@ -1359,6 +1388,13 @@ public class GameWindow extends JFrame implements GameControls {
 						repaintInner();
 					}
 					break;
+				case KeyEvent.VK_X:
+					if (e.isControlDown()) {
+						fixedFramerate = !fixedFramerate;
+						e.consume();
+						repaintInner();
+					}
+					break;
 				case KeyEvent.VK_H:
 					if (e.isControlDown()) {
 						world().scripting.debug();
@@ -1431,10 +1467,12 @@ public class GameWindow extends JFrame implements GameControls {
 					gw.saveY = getY();
 					gw.saveWidth = getWidth();
 					gw.saveHeight = getHeight();
+		    		done();
 		    		dispose();
 					gs.setFullScreenWindow(gw);
 					setSize(gs.getDefaultConfiguration().getBounds().getSize());
 				} else {
+		    		done();
 		    		dispose();
 					gs.setFullScreenWindow(null);
 					gw.setBounds(saveX, saveY, saveWidth, saveHeight);
@@ -1611,24 +1649,26 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void repaintInner() {
-		// issue a single repaint, e.g., coalesce the repaints
-		if (!repaintRequest) {
-			repaintRequest = true;
-			surface.repaint();
+		if (!fixedFramerate) {
+			// issue a single repaint, e.g., coalesce the repaints
+			if (!repaintRequest) {
+				repaintRequest = true;
+				surface.repaint();
+			}
 		}
 	}
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {
-		repaintRequestPartial = true;
-//		surface.repaint();
-//		repaintRequest = true;
-		if (config.uiScale != 100) {
-			x = (int)(x * config.uiScale * 1d / 100);
-			y = (int)(y * config.uiScale * 1d / 100);
-			w = (int)(w * config.uiScale * 1d / 100);
-			h = (int)(h * config.uiScale * 1d / 100);
+		if (!fixedFramerate) {
+			repaintRequestPartial = true;
+			if (config.uiScale != 100) {
+				x = (int)(x * config.uiScale * 1d / 100);
+				y = (int)(y * config.uiScale * 1d / 100);
+				w = (int)(w * config.uiScale * 1d / 100);
+				h = (int)(h * config.uiScale * 1d / 100);
+			}
+			surface.repaint(x, y, w, h);
 		}
-		surface.repaint(x, y, w, h);
 	}
 	@Override
 	public FontMetrics fontMetrics(int size) {
