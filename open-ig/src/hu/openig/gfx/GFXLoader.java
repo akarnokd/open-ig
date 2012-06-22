@@ -6,8 +6,16 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.core;
+package hu.openig.gfx;
 
+
+import hu.openig.core.Anim;
+import hu.openig.core.Btn2;
+import hu.openig.core.Btn3;
+import hu.openig.core.Btn3H;
+import hu.openig.core.Cat;
+import hu.openig.core.Img;
+import hu.openig.model.ResourceLocator;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;

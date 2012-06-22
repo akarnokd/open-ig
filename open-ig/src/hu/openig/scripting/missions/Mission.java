@@ -12,6 +12,8 @@ import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.GameScriptingEvents;
@@ -32,8 +34,6 @@ import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
-import hu.openig.model.Chats.Chat;
-import hu.openig.model.Chats.Node;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 

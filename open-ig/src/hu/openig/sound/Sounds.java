@@ -9,11 +9,11 @@
 package hu.openig.sound;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Configuration;
 import hu.openig.core.Func0;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
+import hu.openig.model.Configuration;
+import hu.openig.model.ResourceLocator;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.SoundType;
 import hu.openig.utils.IOUtils;
 

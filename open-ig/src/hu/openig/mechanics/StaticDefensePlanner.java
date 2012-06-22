@@ -11,7 +11,6 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pred0;
-import hu.openig.core.Tile;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIInventoryItem;
@@ -23,6 +22,7 @@ import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.model.Tile;
 import hu.openig.model.VehiclePlan;
 import hu.openig.utils.U;
 

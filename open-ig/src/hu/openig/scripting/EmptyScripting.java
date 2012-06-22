@@ -10,6 +10,8 @@ package hu.openig.scripting;
 
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameScripting;
 import hu.openig.model.GroundwarWorld;
@@ -21,8 +23,6 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
-import hu.openig.model.Chats.Chat;
-import hu.openig.model.Chats.Node;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 

@@ -8,6 +8,8 @@
 
 package hu.openig.utils;
 
+import hu.openig.core.Action1;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,6 +29,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -718,5 +721,28 @@ public class XElement implements Iterable<XElement> {
 	 */
 	public List<XElement> children() {
 		return children;
+	}
+	/**
+	 * Iterate through the elements of this XElement and invoke the action for each.
+	 * @param depthFirst do a depth first search?
+	 * @param action the action to invoke, non-null
+	 */
+	public void visit(boolean depthFirst, Action1<XElement> action) {
+		Deque<XElement> queue = U.newLinkedList();
+		queue.add(this);
+		while (!queue.isEmpty()) {
+			XElement x = queue.removeFirst();
+			action.invoke(x);
+			if (depthFirst) {
+				ListIterator<XElement> li = x.children.listIterator(x.children.size());
+				while (li.hasPrevious()) {
+					queue.addFirst(li.previous());
+				}
+			} else {
+				for (XElement c : x.children) {
+					queue.addLast(c);
+				}
+			}
+		}
 	}
 }

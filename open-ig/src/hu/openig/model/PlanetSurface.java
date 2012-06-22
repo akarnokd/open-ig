@@ -11,7 +11,6 @@ import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
-import hu.openig.core.Tile;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 

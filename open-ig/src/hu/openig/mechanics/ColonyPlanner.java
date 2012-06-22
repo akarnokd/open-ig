@@ -10,7 +10,6 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
-import hu.openig.core.Tile;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
@@ -19,6 +18,7 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
 import hu.openig.model.TaxLevel;
+import hu.openig.model.Tile;
 import hu.openig.utils.U;
 
 import java.awt.Point;

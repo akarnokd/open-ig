@@ -7,7 +7,6 @@
  */
 package hu.openig.model;
 
-import hu.openig.core.Tile;
 
 import java.awt.image.BufferedImage;
 

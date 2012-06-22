@@ -8,7 +8,7 @@
 
 package hu.openig.tools;
 
-import hu.openig.core.Configuration;
+import hu.openig.model.Configuration;
 import hu.openig.utils.IOUtils;
 
 import java.awt.event.ActionEvent;

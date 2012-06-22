@@ -8,7 +8,7 @@
 
 package hu.openig.tools;
 
-import hu.openig.core.Labels;
+import hu.openig.model.Labels;
 import hu.openig.utils.XElement;
 
 /**

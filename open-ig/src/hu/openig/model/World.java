@@ -8,12 +8,9 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Configuration;
 import hu.openig.core.Difficulty;
-import hu.openig.core.Labels;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
-import hu.openig.core.ResourceLocator;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;

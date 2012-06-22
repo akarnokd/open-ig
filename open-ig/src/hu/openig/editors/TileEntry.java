@@ -7,8 +7,8 @@
  */
 package hu.openig.editors;
 
-import hu.openig.core.Tile;
 import hu.openig.model.BuildingType;
+import hu.openig.model.Tile;
 
 import javax.swing.ImageIcon;
 

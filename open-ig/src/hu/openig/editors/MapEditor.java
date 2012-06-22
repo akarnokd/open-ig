@@ -8,24 +8,24 @@
 
 package hu.openig.editors;
 
-import hu.openig.core.Configuration;
-import hu.openig.core.Labels;
 import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.Tile;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingModel;
 import hu.openig.model.BuildingType;
+import hu.openig.model.Configuration;
 import hu.openig.model.GalaxyModel;
+import hu.openig.model.Labels;
 import hu.openig.model.OriginalBuilding;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
+import hu.openig.model.ResourceLocator;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.SurfaceFeature;
+import hu.openig.model.Tile;
 import hu.openig.model.TileSet;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ConsoleWatcher;

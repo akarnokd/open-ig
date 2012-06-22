@@ -7,7 +7,6 @@
  */
 package hu.openig.model;
 
-import hu.openig.core.Tile;
 
 import java.util.ArrayList;
 import java.util.List;

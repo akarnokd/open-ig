@@ -7,14 +7,9 @@
  */
 package hu.openig.model;
 
-import hu.openig.core.Configuration;
-import hu.openig.core.Labels;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.core.RoadType;
-import hu.openig.core.Tile;
-import hu.openig.core.TileCached;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
