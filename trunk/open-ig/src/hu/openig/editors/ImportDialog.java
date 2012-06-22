@@ -7,11 +7,11 @@
  */
 package hu.openig.editors;
 
-import hu.openig.core.Labels;
 import hu.openig.core.Location;
-import hu.openig.core.ResourceLocator;
+import hu.openig.model.Labels;
 import hu.openig.model.OriginalBuilding;
 import hu.openig.model.OriginalPlanet;
+import hu.openig.model.ResourceLocator;
 import hu.openig.utils.XElement;
 
 import java.awt.Container;

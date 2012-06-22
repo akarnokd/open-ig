@@ -9,9 +9,9 @@ package hu.openig.music;
 
 import hu.openig.core.Action1;
 import hu.openig.core.Func0;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
+import hu.openig.model.ResourceLocator;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.sound.AudioThread;
 import hu.openig.utils.IOUtils;
 

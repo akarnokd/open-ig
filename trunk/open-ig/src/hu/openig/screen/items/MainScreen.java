@@ -9,8 +9,8 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Configuration;
 import hu.openig.core.Pair;
+import hu.openig.model.Configuration;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;

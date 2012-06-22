@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.core;
+package hu.openig.model;
 
 import java.awt.GraphicsEnvironment;
 import java.awt.Transparency;

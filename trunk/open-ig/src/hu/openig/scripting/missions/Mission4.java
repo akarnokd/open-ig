@@ -11,6 +11,8 @@ package hu.openig.scripting.missions;
 import hu.openig.model.AIMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile.Mode;
+import hu.openig.model.Chats.Chat;
+import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -23,8 +25,6 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
-import hu.openig.model.Chats.Chat;
-import hu.openig.model.Chats.Node;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;

@@ -7,7 +7,7 @@
  */
 package hu.openig.editors;
 
-import hu.openig.core.Labels;
+import hu.openig.model.Labels;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;

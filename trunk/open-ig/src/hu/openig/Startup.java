@@ -8,8 +8,8 @@
 
 package hu.openig;
 
-import hu.openig.core.Configuration;
 import hu.openig.core.SaveMode;
+import hu.openig.model.Configuration;
 import hu.openig.utils.ConsoleWatcher;
 
 import java.awt.Frame;

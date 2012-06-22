@@ -7,7 +7,7 @@
  */
 package hu.openig.render;
 
-import hu.openig.core.ResourceLocator;
+import hu.openig.model.ResourceLocator;
 import hu.openig.utils.LRUHashMap;
 
 import java.awt.Color;

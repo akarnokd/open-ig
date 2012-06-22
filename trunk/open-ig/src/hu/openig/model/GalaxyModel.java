@@ -7,12 +7,8 @@
  */
 package hu.openig.model;
 
-import hu.openig.core.Configuration;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.Tile;
-import hu.openig.core.TileCached;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;

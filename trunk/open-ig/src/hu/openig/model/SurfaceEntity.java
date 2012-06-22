@@ -7,7 +7,6 @@
  */
 package hu.openig.model;
 
-import hu.openig.core.Tile;
 
 /**
  * The entity describing a particular Location on the planet surface. For multi-tile and building entities, this

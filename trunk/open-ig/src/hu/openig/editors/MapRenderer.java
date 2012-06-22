@@ -7,14 +7,14 @@
  */
 package hu.openig.editors;
 
-import hu.openig.core.Labels;
 import hu.openig.core.Location;
-import hu.openig.core.Tile;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.model.Building;
+import hu.openig.model.Labels;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
+import hu.openig.model.Tile;
 import hu.openig.render.TextRenderer;
 
 import java.awt.AlphaComposite;

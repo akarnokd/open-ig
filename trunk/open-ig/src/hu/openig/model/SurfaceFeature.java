@@ -8,7 +8,6 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.core.Tile;
 
 /**
  * The surface feature.

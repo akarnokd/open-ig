@@ -8,8 +8,8 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Configuration;
-import hu.openig.core.Labels;
+import hu.openig.model.Configuration;
+import hu.openig.model.Labels;
 import hu.openig.ui.IGButton;
 import hu.openig.ui.IGCheckBox;
 

@@ -8,13 +8,13 @@
 
 package hu.openig.tools;
 
-import hu.openig.core.Configuration;
-import hu.openig.core.Labels;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
+import hu.openig.model.Configuration;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.Labels;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResourceLocator;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;

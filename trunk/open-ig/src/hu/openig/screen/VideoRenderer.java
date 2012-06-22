@@ -9,8 +9,8 @@
 package hu.openig.screen;
 
 import hu.openig.core.Action1;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;

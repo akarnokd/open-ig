@@ -11,9 +11,8 @@ package hu.openig.gfx;
 import hu.openig.core.Btn2;
 import hu.openig.core.Btn3H;
 import hu.openig.core.Cat;
-import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
-import hu.openig.core.ResourceLocator;
+import hu.openig.model.ResourceLocator;
 import hu.openig.render.GenericLargeButton;
 import hu.openig.render.GenericMediumButton;
 

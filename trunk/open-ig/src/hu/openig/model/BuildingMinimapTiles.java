@@ -7,7 +7,6 @@
  */
 package hu.openig.model;
 
-import hu.openig.core.Tile;
 
 /**
  * Record for storing building state dependant filled and colored tiles. 

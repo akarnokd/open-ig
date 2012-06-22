@@ -8,16 +8,16 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Configuration;
 import hu.openig.core.Pair;
-import hu.openig.core.ResourceLocator;
 import hu.openig.model.BuildingType;
+import hu.openig.model.Configuration;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.ResourceLocator;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;

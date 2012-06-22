@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.ResourceLocator;
 import hu.openig.utils.XElement;
 
 import java.util.HashMap;

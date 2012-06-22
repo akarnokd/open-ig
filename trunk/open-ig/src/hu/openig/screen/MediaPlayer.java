@@ -10,10 +10,10 @@ package hu.openig.screen;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SubtitleManager;
 import hu.openig.core.SwappableRenderer;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.VideoAudio;
 import hu.openig.sound.AudioThread;
 

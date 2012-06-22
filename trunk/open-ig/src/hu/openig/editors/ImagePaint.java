@@ -7,7 +7,7 @@
  */
 package hu.openig.editors;
 
-import hu.openig.core.Tile;
+import hu.openig.model.Tile;
 
 import java.awt.Color;
 import java.awt.Dimension;

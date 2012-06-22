@@ -9,14 +9,14 @@
 package hu.openig.tools;
 
 import hu.openig.core.ConfigButton;
-import hu.openig.core.Configuration;
 import hu.openig.core.ImageInterpolation;
 import hu.openig.core.MovieSurface;
 import hu.openig.core.MovieSurface.ScalingMode;
-import hu.openig.core.ResourceLocator;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SubtitleManager;
+import hu.openig.model.Configuration;
+import hu.openig.model.ResourceLocator;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.sound.AudioThread;
 
 import java.awt.Container;

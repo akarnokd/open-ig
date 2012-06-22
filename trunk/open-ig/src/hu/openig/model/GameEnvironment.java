@@ -9,8 +9,6 @@
 package hu.openig.model;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Configuration;
-import hu.openig.core.Labels;
 import hu.openig.core.SaveMode;
 
 import java.util.Deque;

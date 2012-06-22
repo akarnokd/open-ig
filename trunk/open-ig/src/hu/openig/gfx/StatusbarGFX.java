@@ -8,9 +8,8 @@
 
 package hu.openig.gfx;
 
-import hu.openig.core.GFXLoader;
 import hu.openig.core.Img;
-import hu.openig.core.ResourceLocator;
+import hu.openig.model.ResourceLocator;
 import hu.openig.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;

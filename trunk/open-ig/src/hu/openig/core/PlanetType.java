@@ -9,6 +9,7 @@
 package hu.openig.core;
 
 import hu.openig.model.PlanetSurface;
+import hu.openig.model.Tile;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;

@@ -8,8 +8,8 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.ResourceLocator;
 import hu.openig.core.ResourceType;
+import hu.openig.model.ResourceLocator;
 import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;

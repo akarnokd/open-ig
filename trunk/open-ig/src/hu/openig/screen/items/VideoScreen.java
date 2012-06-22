@@ -9,8 +9,8 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
-import hu.openig.core.ResourceLocator.ResourcePlace;
 import hu.openig.core.ResourceType;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.screen.ScreenBase;
