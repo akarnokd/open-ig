@@ -3,6 +3,11 @@
 
 <wiki:toc max_depth="1" />
 
+= Version Beta (0.95.NNN) screenshots =
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-quick-research-01.png
+
+
 = Version 0.91 screenshots =
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/questionare.png
