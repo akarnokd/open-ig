@@ -3,61 +3,6 @@
 
 <wiki:toc max_depth="3" />
 
-= Gameplay tips =
-
-  * Planetary accounting and statistics gathering are performed at midnight. Morale affecting factors such as shortages are considered exactly at this moment. Therefore, plan your building upgdares and reconstruction accordingly, i.e., do not start upgrading your Arcologies at 23:50, because you may get a massive morale loss due the temporary living space shortage.
-  * If you have the money but not enough planets, you should start as many research as possible. They may not run to completion but you get a headstart.
-  * If you want to place multiple buildings of the same type, hold SHIFT while placing a building.
-  * Most listing offers the ability to scroll them via the mouse wheel. For example, you may scroll the building panel on the colony screen instead of clicking on the up or down button.
-
-== Cheats ==
-
-If you run into difficult situations, want to skip parts or just want to poke around, here are some keyboard shortcuts that can help you. These are called cheats because it can break the balance or natural progress of the game.
-
-|| *Shortcut* || *Description* ||
-|| CTRL+G || Add 10.000 credits ||
-|| CTRL+Z || Toggle virus infection on the current planet (own or enemy) ||
-|| CTRL+H || Display mission debug window (might not show up properly in fullscreen) ||
-|| CTRL+P || Switch to the player of the selected planet, i.e., you can play as Dargslan: build, produce, deploy, etc. ||
-|| CTRL+V || Show all planets and fleets on the starmap ||
-|| CTRL+D || Deploy all kinds of vehicles ||
-|| CTRL+J || Toggle complete AI assist for the current player on or off ||
-|| CTRL+I || Make the currently selected technology researched (if not already) and add 1 unit to the inventory ||
-|| CTRL+O || Take ownership of the selected planet ||
-
-
-== Mission tips ==
-
-=== Mission 1: Rebuild Achilles ===
-
-  * Try not to sell any radar or the damaged buildings.
-  * Repair the Fire Brigade, Nuclear Plant, Church and Prefab Housing first
-  * Reduce tax until the morale grows back to 50%
-  * Repair the military spaceport as it will repair your damaged fleets
-
-=== Mission 2: Protect the traders ===
-
-  * Easy except the third task.
-  * Complete Mission 3 to receive a shield and use it against the last attackers.
-  * In the last task, if the Pirate destroyer targets your Fighter, move the fighter around it in a circle so the laser doesn't hit it. Use the remaining ships to destroy the pirates.
-  * Regenerate your fleet over a planet with military spaceport (e.g., Achilles if you kept the building)
-
-=== Mission 3: Escort cargo ===
-
-  * Easy.
-  * Don't forget to equip the bonus shield.
-
-=== Mission 4: Pirate battle ===
-
-  * Make sure the center Pirate 1 survives the fight. He will help you in Mission 5, making the space battle there much easier.
-
-=== Mission 5: Protect the Thorin ===
-
-  * Pause after the cutscene and go immediately to the bridge to ask the Colonel for reinforcements.
-  * Thorin has 4 rockets, use them
-  * If you saved the pirate in Mission 4, he will bring in help.
-  * Try not to lose your fighters (you should have 6), since it could take time to replenish them in Level 2.
-
 = Mouse and keyboard =
 == Keyboard shortcuts ==
 
@@ -113,6 +58,7 @@ If you run into difficult situations, want to skip parts or just want to poke ar
 || Right click || Starmap, Spacewar, Colony || *Classic mode*: Move to or attack enemy ||
 || Middle button drag || Starmap, Spacewar, Colony || *Classic mode*: pan the maps ||
 || CTRL+Middle button || Starmap, Spacewar, Colony || *Classic mode*: zoom to fit. ||
+|| CTRL+X || Toggle between fixed 30 frame/sec rendering and unrestricted frame/sec rendering modes ||
 
 = Gameplay mechanics =
 
@@ -352,3 +298,59 @@ The following table lists a few compensation values for the player:
 || 100 || 0.3 || 0.3 || 0.3 ||
 
 This compensation feature should ensure a good money-bootstrap at the beginning and reduce the practically unusable money-boost at the end of the game.
+
+
+= Gameplay tips =
+
+  * Planetary accounting and statistics gathering are performed at midnight. Morale affecting factors such as shortages are considered exactly at this moment. Therefore, plan your building upgdares and reconstruction accordingly, i.e., do not start upgrading your Arcologies at 23:50, because you may get a massive morale loss due the temporary living space shortage.
+  * If you have the money but not enough planets, you should start as many research as possible. They may not run to completion but you get a headstart.
+  * If you want to place multiple buildings of the same type, hold SHIFT while placing a building.
+  * Most listing offers the ability to scroll them via the mouse wheel. For example, you may scroll the building panel on the colony screen instead of clicking on the up or down button.
+
+== Cheats ==
+
+If you run into difficult situations, want to skip parts or just want to poke around, here are some keyboard shortcuts that can help you. These are called cheats because it can break the balance or natural progress of the game.
+
+|| *Shortcut* || *Description* ||
+|| CTRL+G || Add 10.000 credits ||
+|| CTRL+Z || Toggle virus infection on the current planet (own or enemy) ||
+|| CTRL+H || Display mission debug window (might not show up properly in fullscreen) ||
+|| CTRL+P || Switch to the player of the selected planet, i.e., you can play as Dargslan: build, produce, deploy, etc. ||
+|| CTRL+V || Show all planets and fleets on the starmap ||
+|| CTRL+D || Deploy all kinds of vehicles ||
+|| CTRL+J || Toggle complete AI assist for the current player on or off ||
+|| CTRL+I || Make the currently selected technology researched (if not already) and add 1 unit to the inventory ||
+|| CTRL+O || Take ownership of the selected planet ||
+
+
+== Mission tips ==
+
+=== Mission 1: Rebuild Achilles ===
+
+  * Try not to sell any radar or the damaged buildings.
+  * Repair the Fire Brigade, Nuclear Plant, Church and Prefab Housing first
+  * Reduce tax until the morale grows back to 50%
+  * Repair the military spaceport as it will repair your damaged fleets
+
+=== Mission 2: Protect the traders ===
+
+  * Easy except the third task.
+  * Complete Mission 3 to receive a shield and use it against the last attackers.
+  * In the last task, if the Pirate destroyer targets your Fighter, move the fighter around it in a circle so the laser doesn't hit it. Use the remaining ships to destroy the pirates.
+  * Regenerate your fleet over a planet with military spaceport (e.g., Achilles if you kept the building)
+
+=== Mission 3: Escort cargo ===
+
+  * Easy.
+  * Don't forget to equip the bonus shield.
+
+=== Mission 4: Pirate battle ===
+
+  * Make sure the center Pirate 1 survives the fight. He will help you in Mission 5, making the space battle there much easier.
+
+=== Mission 5: Protect the Thorin ===
+
+  * Pause after the cutscene and go immediately to the bridge to ask the Colonel for reinforcements.
+  * Thorin has 4 rockets, use them
+  * If you saved the pirate in Mission 4, he will bring in help.
+  * Try not to lose your fighters (you should have 6), since it could take time to replenish them in Level 2.
