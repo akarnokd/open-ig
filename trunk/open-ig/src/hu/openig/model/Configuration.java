@@ -32,7 +32,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.008";
+	public static final String VERSION = "0.95.010";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -149,7 +149,7 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean satelliteDeploy = true;
-	/** The research money percent in 10s of percentages. */
+	/** The research money percent times 10, e.g., 100% == 1000. */
 	@LoadSave
 	@LoadSaveGame
 	public int researchMoneyPercent = 1000;

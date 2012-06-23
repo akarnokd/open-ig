@@ -529,12 +529,12 @@
   <entry key='researchinfo.progress.cost'>Preis     : %d cr</entry>
   <entry key='researchinfo.progress.done'>Fertig</entry>
   <entry key='researchinfo.progress.inventory'>Inventar  : %d</entry>
-  <entry key='researchinfo.progress.lab'>Kap. Mangel: %d%%</entry>
-  <entry key='researchinfo.progress.money'>Geld Mangel: %d%%</entry>
-  <entry key='researchinfo.progress.paused'>Pausiert: %d%%</entry>
+  <entry key='researchinfo.progress.lab'>Kap. Mangel: %s%%</entry>
+  <entry key='researchinfo.progress.money'>Geld Mangel: %s%%</entry>
+  <entry key='researchinfo.progress.paused'>Pausiert: %s%%</entry>
   <entry key='researchinfo.progress.pre'>Benötigung:</entry>
   <entry key='researchinfo.progress.price'>Preis     : %d cr</entry>
-  <entry key='researchinfo.progress.running'>Laufend: %d%%</entry>
+  <entry key='researchinfo.progress.running'>Laufend: %s%%</entry>
   <entry key='researchinfo.required_labs'>Gebraucht / Verfügbar:</entry>
 
   <entry key='screens.achievements'>F12 - Leistungen</entry>
@@ -2782,8 +2782,8 @@
 	<entry key="achievement.well_respected_feature">Sehr respektierte Feature</entry>
 	<entry key="achievement.well_respected_feature.desc">Unterhalte 100-mal im Weltraumschlacht</entry>
 	<entry key="diplomacy.generic.endtalk">Das Imperium ruft. Andere Angelegenheiten erfordern meine Anwesenheit.</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="quickresearch.stop">Stop</entry>
+	<entry key="quickresearch.no_active">Kein aktive Forshung</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

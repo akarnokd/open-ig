@@ -108,9 +108,7 @@ public class UIContainer extends UIComponent {
 		}
 		if (target != null) {
 			// Relativize to the target
-			e.x -= target.x;
-			e.y -= target.y;
-			result |= target.mouse(e);
+			result |= target.mouse(e.translate(-target.x, -target.y));
 		}
 		return result;
 	}

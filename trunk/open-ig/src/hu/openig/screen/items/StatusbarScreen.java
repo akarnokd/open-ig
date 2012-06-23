@@ -9,15 +9,20 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.mechanics.DefaultAIControls;
+import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.Message;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
@@ -37,6 +42,8 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.ui.UITextButton;
+import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.U;
 
 import java.awt.Color;
@@ -47,6 +54,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -137,6 +146,8 @@ public class StatusbarScreen extends ScreenBase {
 	protected int blinkCounter;
 	/** The index to show an attack target. */
 	protected int attackListIndex;
+	/** The quick research panel. */
+	QuickResearchPanel quickResearch;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -236,6 +247,10 @@ public class StatusbarScreen extends ScreenBase {
 		objectives.enabled(false);
 		objectives.visible(false);
 		objectives.z = -1;
+		
+		quickResearch = new QuickResearchPanel();
+		quickResearch.visible(false);
+		quickResearch.z = 2;
 		
 		addThis();
 	}
@@ -372,6 +387,9 @@ public class StatusbarScreen extends ScreenBase {
 					} else {
 						g2.drawImage(commons.statusbar().researchNormal, rpsx0 - MENU_ICON_WIDTH + 7, top.y + 3, null);
 					}
+					
+					quickResearch.location(rpsx0 - MENU_ICON_WIDTH + 7 + commons.statusbar().researchLight.getWidth() - quickResearch.width, top.y + 20);
+					quickResearch.x = Math.max(0, quickResearch.x);
 				}
 			}
 			
@@ -490,11 +508,18 @@ public class StatusbarScreen extends ScreenBase {
 				effectSound(SoundType.ACHIEVEMENT);
 			}
 		}
+		
+		if (world().level > 2) {
+			quickResearch.update();
+		} else {
+			quickResearch.visible(false);
+		}
 	}
 	@Override
 	public void onEndGame() {
 		notification.currentMessage = null;
 		animationStep = 0;
+		quickResearch.clear();
 	}
 	/** The moving status indicator. */
 	class MovingNotification extends UIComponent {
@@ -744,6 +769,14 @@ public class StatusbarScreen extends ScreenBase {
 			screenMenu.visible(false);
 			return true;
 		}
+		if (e.has(Type.DOWN) && quickResearch.visible()
+				&& !e.within(quickResearch.x, quickResearch.y, quickResearch.width, quickResearch.height)) {
+			quickResearch.visible(false);
+			boolean rep = mouse(e);
+			boolean reshown = quickResearch.visible();
+			quickResearch.visible(false);
+			return reshown || rep;
+		}
 		if (e.has(Type.DOWN) 
 				&& incomingMessage.contains(e.x, e.y) 
 				&& hasUnseenMessage()
@@ -768,36 +801,56 @@ public class StatusbarScreen extends ScreenBase {
 		int px = width - MENU_ICON_WIDTH * 2 - ppsw1;
 		int px2 = width - MENU_ICON_WIDTH * 3 - ppsw2 - ppsw1;
 		if (config.quickRNP && !commons.battleMode 
-				&& world().level > 1 && e.y < 20 && e.x >= px && e.x < px + ppsw1 + MENU_ICON_WIDTH && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
-			buttonSound(SoundType.CLICK_MEDIUM_2);
-			displaySecondary(Screens.PRODUCTION);
-			return true;
+				&& world().level > 1 && e.y < 20 && e.x >= px && e.x < px + ppsw1 + MENU_ICON_WIDTH) {
+			if (e.has(Type.DOWN)) {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				if (e.has(Button.RIGHT)) {
+					displaySecondary(Screens.PRODUCTION);
+				}
+				return true;
+			}
 		} else
 		if (config.quickRNP && !commons.battleMode
-				&& world().level > 2 && e.y < 20 && e.x >= px2 && e.x < px2 + ppsw2 + MENU_ICON_WIDTH && e.has(Type.DOWN) && e.has(Button.RIGHT)) {
-			buttonSound(SoundType.CLICK_MEDIUM_2);
-			displaySecondary(Screens.RESEARCH);
-			return true;
+				&& world().level > 2 && e.y < 20 && e.x >= px2 && e.x < px2 + ppsw2 + MENU_ICON_WIDTH) {
+			if (e.has(Type.DOWN)) {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				if (e.has(Button.RIGHT)) {
+					displaySecondary(Screens.RESEARCH);
+				} else 
+				if (e.has(Button.LEFT)) {
+					quickResearch.visible(true);
+				}
+				return true;
+			}
 		} else
 		if (e.within(379, 3, 26, 14) && e.has(Type.DOWN)) {
 			objectives.visible(!objectives.visible());
 			buttonSound(SoundType.CLICK_MEDIUM_2);
 			return true;
 		} else
-		if (e.within(0, 0, width, 20) 
-			|| e.within(0, height - 18, width, 18)
-			|| (screenMenu.visible() && e.within(screenMenu.x, screenMenu.y, screenMenu.width, screenMenu.height))
-			|| (notificationHistory.visible() && e.within(notificationHistory.x, notificationHistory.y, notificationHistory.width, notificationHistory.height))
-		) { 
+//		if (e.within(0, 0, width, 20) 
+//			|| e.within(0, height - 18, width, 18)
+//			|| inPanel(e, screenMenu)
+//			|| inPanel(e, notificationHistory)
+//			|| inPanel(e, quickResearch)
+//		) { 
 			if (e.has(Type.DOWN) && e.within(width - MENU_ICON_WIDTH, 0, screenMenu.width, 20)) {
 				buttonSound(SoundType.CLICK_MEDIUM_2);
 				screenMenu.highlight = -1;
 				screenMenu.visible(true);
 				return true;
 			}
-			return super.mouse(e);
-		}
-		return false;
+//		}
+		return super.mouse(e);
+	}
+	/**
+	 * Check if the given panel is visible and the mouse action is inside it.
+	 * @param e the mouse event
+	 * @param comp the component to test
+	 * @return true if inside the visible panel
+	 */
+	boolean inPanel(UIMouse e, UIComponent comp) {
+		return comp.visible() && e.within(comp.x, comp.y, comp.width, comp.height);
 	}
 	/**
 	 * A popup menu to switch to arbitrary screen by the mouse.
@@ -1382,5 +1435,430 @@ public class StatusbarScreen extends ScreenBase {
 			r = Math.max(r, is[i]);
 		}
 		return r;
+	}
+	/**
+	 * Check player planets for statistics regarding only research matters.
+	 * @return the planet statistics
+	 */
+	PlanetStatistics evaluatePlanetsForResearch() {
+		PlanetStatistics ps = new PlanetStatistics();
+		
+		for (Planet p : player().ownPlanets()) {
+			for (Building b : p.surface.buildings) {
+				if (Building.isOperational(b.getEfficiency())) {
+					if (b.hasResource("civil")) {
+						ps.civilLabActive += b.getResource("civil");
+					}
+					if (b.hasResource("mechanical")) {
+						ps.mechLabActive += b.getResource("mechanical");
+					}
+					if (b.hasResource("computer")) {
+						ps.compLabActive += b.getResource("computer");
+					}
+					if (b.hasResource("ai")) {
+						ps.aiLabActive += b.getResource("ai");
+					}
+					if (b.hasResource("military")) {
+						ps.milLabActive += b.getResource("military");
+					}
+				}
+			}
+			
+			ps.planetCount++;
+		}
+		
+		return ps;
+	}
+	/**
+	 * The quick research panel.
+	 * @author akarnokd, 2012.06.23.
+	 */
+	public class QuickResearchPanel extends UIContainer {
+		/** The current research status. */
+		UILabel currentResearchName;
+		/** The current research status. */
+		UILabel currentResearchStatus;
+		/** The current research money. */
+		UILabel currentResearchMoney;
+		/** Stop the current research. */
+		UITextButton currentResearchStop;
+		/** Adjust money. */
+		UIImageButton moneyButton;
+		/** The margin inside the panel. */
+		static final int MARGIN = 6;
+		/** The labels for the current available set of researches. */
+		final List<List<QuickResearchLabel>> researches = U.newArrayList();
+		/** The top divider y. */
+		int topDivider;
+		/** The middle divider. */
+		int middleDivider;
+		/** The middle divider. */
+		int bottomDivider;
+		/** The last mouse event on the funding button. */
+		UIMouse moneyMouseLast;
+		/** Description of the currently hovered research. */
+		UILabel hoverResearchDescription;
+		/** Description of the currently hovered research. */
+		UILabel hoverResearchTitle;
+		/** The current hover text title and details. */
+		Pair<String, String> currentText;
+		/** The current text owner. */
+		Object currentTextOwner;
+		/** Initialize the fields. */
+		public QuickResearchPanel() {
+			currentResearchName = new UILabel("", 14, commons.text());
+			currentResearchStatus = new UILabel("", 10, commons.text());
+			currentResearchMoney = new UILabel("", 10, commons.text());
+			currentResearchStop = new UITextButton(get("quickresearch.stop"), 14, commons.text()) {
+				boolean dragOver;
+				@Override
+				public boolean mouse(UIMouse e) {
+					if (e.has(Type.DRAG)) {
+						dragOver = true;
+					}
+					if (e.has(Type.LEAVE)) {
+						dragOver = false;
+					}
+					if (e.has(Type.UP) && dragOver) {
+						dragOver = false;
+						if (onClick != null) {
+							onClick.invoke();
+						}
+					}
+					return super.mouse(e);
+				}
+			};
+			currentResearchStop.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					if (player().runningResearch() != null) {
+						player().research.get(player().runningResearch()).state = ResearchState.STOPPED;
+					}
+					player().runningResearch(null);
+					screenSound(SoundType.STOP_RESEARCH);
+					quickResearch.visible(false);
+					askRepaint();
+				}
+			};
+			
+			moneyButton = new UIImageButton(commons.research().fund) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					moneyMouseLast = e;
+					super.mouse(e);
+					return true;
+				};
+			};
+			moneyButton.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					buttonSound(SoundType.CLICK_HIGH_3);
+					doAdjustMoney(2.0f * (moneyMouseLast.x) / moneyButton.width - 1);
+					askRepaint();
+				}
+			};
+			moneyButton.setHoldDelay(100);
+			moneyButton.setDisabledPattern(commons.common().disabledPattern);
+
+			hoverResearchDescription = new UILabel("", 10, commons.text());
+			hoverResearchDescription.wrap(true);
+			
+			hoverResearchTitle = new UILabel("", 10, commons.text());
+			hoverResearchTitle.color(TextRenderer.RED);
+			hoverResearchTitle.horizontally(HorizontalAlignment.CENTER);
+			
+			addThis();
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.setColor(new Color(0, 0, 0, 192));
+			g2.fillRect(0, 0, width, height);
+			g2.setColor(new Color(192, 192, 192));
+			g2.drawRect(0, 0, width - 1, height - 1);
+			
+			g2.drawLine(0, topDivider, width - 1, topDivider);
+			g2.drawLine(0, middleDivider, width - 1, middleDivider);
+			g2.drawLine(0, bottomDivider, width - 1, bottomDivider);
+			super.draw(g2);
+		}
+		/** Update the contents of the panel. */
+		public void update() {
+			
+			ResearchType ar = player().runningResearch();
+			if (ar != null) {
+				Research rs = player().research.get(ar);
+				
+				currentResearchName.text(ar.name, true);
+				currentResearchName.color(TextRenderer.YELLOW);
+
+				switch (rs.state) {
+				case RUNNING:
+					currentResearchStatus.text(format("researchinfo.progress.running", String.format("%.1f", rs.getPercent())), true);
+					break;
+				case STOPPED:
+					currentResearchStatus.text(format("researchinfo.progress.paused", String.format("%.1f", rs.getPercent())), true);
+					break;
+				case LAB:
+					currentResearchStatus.text(format("researchinfo.progress.lab", String.format("%.1f", rs.getPercent())), true);
+					break;
+				case MONEY:
+					currentResearchStatus.text(format("researchinfo.progress.money", String.format("%.1f", rs.getPercent())), true);
+					break;
+				default:
+					currentResearchStatus.text("");
+				}
+				currentResearchMoney.text(rs.assignedMoney + "/" + rs.remainingMoney + " cr", true);
+				
+				currentResearchStop.visible(true);
+				moneyButton.visible(true);
+			} else {
+				currentResearchName.text(get("quickresearch.no_active"), true);
+				currentResearchName.color(0xFFE0E0E0);
+				currentResearchStatus.text("", true);
+				currentResearchMoney.text("", true);
+				currentResearchStop.visible(false);
+				moneyButton.visible(false);
+			}
+
+			currentResearchStop.location(0, MARGIN);
+
+			currentResearchName.location(MARGIN, MARGIN + (currentResearchStop.height - currentResearchName.height) / 2);
+			currentResearchStatus.location(currentResearchName.x + currentResearchName.width + 3 * MARGIN, currentResearchName.y + 2);
+			moneyButton.location(currentResearchStatus.x + currentResearchStatus.width + 3 * MARGIN, MARGIN + 1);
+			currentResearchMoney.location(moneyButton.x + moneyButton.width + 3 * MARGIN, currentResearchName.y + 2);
+			currentResearchStop.location(currentResearchMoney.x + currentResearchMoney.width + 3 * MARGIN, MARGIN);
+			
+			// ---------------------------------------------------------------------
+			// collect startable researches
+			Map<ResearchMainCategory, List<Pair<ResearchType, Integer>>> columns = U.newLinkedHashMap();
+			for (ResearchMainCategory mcat : ResearchMainCategory.values()) {
+				columns.put(mcat, U.<Pair<ResearchType, Integer>>newArrayList());
+			}
+			
+			PlanetStatistics ps = evaluatePlanetsForResearch();
+			
+			for (ResearchType rt : world().researches.values()) {
+				if (rt.race.contains(player().race) && rt != ar) {
+					if (world().canResearch(rt)) {
+						columns.get(rt.category.main).add(Pair.of(rt, world().getResearchColor(rt, ps)));
+					}
+				}
+			}
+
+			boolean newLines = false;
+			boolean anyOver = false;
+			// create labels for researches
+			int i = 0;
+			for (ResearchMainCategory mcat : ResearchMainCategory.values()) {
+				List<Pair<ResearchType, Integer>> lst = columns.get(mcat);
+
+				// reorder researches
+				Collections.sort(lst, new Comparator<Pair<ResearchType, Integer>>() {
+					@Override
+					public int compare(Pair<ResearchType, Integer> o1,
+							Pair<ResearchType, Integer> o2) {
+						int c = o1.first.category.ordinal() - o2.first.category.ordinal();
+						if (c == 0) {
+							c = o1.first.index - o2.first.index;
+						}
+						
+						return c;
+					}
+				});
+				
+				
+				if (researches.size() == i) {
+					researches.add(U.<QuickResearchLabel>newArrayList());
+				}
+				List<QuickResearchLabel> catlist = researches.get(i);
+
+				for (int j = 0; j < lst.size(); j++) {
+					final Pair<ResearchType, Integer> ri = lst.get(j);
+					QuickResearchLabel cl = null;
+					if (j == catlist.size()) {
+						cl = new QuickResearchLabel("", 10, commons.text());
+						catlist.add(cl);
+						add(cl);
+						newLines = true;
+					} else {
+						cl = catlist.get(j);
+					}
+					
+					Research rs1 = player().research.get(ri.first);
+					
+					if (rs1 == null) {
+						cl.text(ri.first.name, true);
+					} else {
+						cl.text(String.format("%s - %.1f%%", ri.first.name, rs1.getPercent()), true);
+					}
+					cl.color(ri.second);
+					cl.hoverColor(TextRenderer.WHITE);
+					cl.height = cl.textSize() + MARGIN;
+					cl.vertically(VerticalAlignment.MIDDLE);
+					cl.onPress = new Action0() {
+						@Override
+						public void invoke() {
+							new DefaultAIControls(player()).actionStartResearch(ri.first, world().config.researchMoneyPercent / 1000d);
+							quickResearch.visible(false);
+							askRepaint();
+							player().currentResearch(ri.first);
+							if (commons.control().secondary() == Screens.RESEARCH
+									|| commons.control().secondary() == Screens.PRODUCTION) {
+								ResearchProductionScreen rps = commons.control().getScreen(commons.control().secondary());
+								rps.playAnim(ri.first);
+							}
+						}
+					};
+					cl.description = Pair.of(ri.first.longName + "  (" + ri.first.researchCost + " cr)", ri.first.description);
+					if (cl.over) {
+						currentText = cl.description;
+						anyOver |= cl.over;
+					}
+				}
+				// remove excess lines
+				for (int j = catlist.size() - 1; j >= lst.size() ; j--) {
+					components.remove(catlist.remove(j));
+					newLines = true;
+				}
+				
+				i++;
+			}
+
+			if (currentText == null || !anyOver) {
+				if (ar != null) {
+					currentText = Pair.of(ar.longName, ar.description);
+				} else {
+					currentText = Pair.of(get("quickresearch.no_active"), "-");
+				}
+			}
+
+			if (newLines) {
+				commons.control().moveMouse();
+			}
+			
+			int y0 = currentResearchStop.y + currentResearchStop.height + MARGIN;
+			topDivider = y0 - MARGIN / 2;
+			int x = MARGIN;
+			middleDivider = 0;
+			for (List<QuickResearchLabel> lst : researches) {
+				int y = y0;
+				int mw = 0;
+				for (UILabel l : lst) {
+					l.x = x;
+					l.y = y;
+					
+					mw = Math.max(mw, l.width);
+					y += l.height;
+				}
+				
+				x += MARGIN * 3 + mw;
+				middleDivider = Math.max(y, middleDivider);
+			}
+			middleDivider += MARGIN / 2;
+			
+			hoverResearchTitle.location(MARGIN, middleDivider + MARGIN / 2);
+			hoverResearchTitle.width = 200;
+
+			hoverResearchDescription.location(MARGIN, hoverResearchTitle.y + hoverResearchTitle.height + MARGIN / 2);
+			hoverResearchDescription.width = 200;
+			hoverResearchDescription.height = 1;
+			// adjust size ---------------------------------------------------------------
+			int mw = 0;
+			int mh = 0;
+			for (UIComponent comp : components) {
+				if (comp.visible()) {
+					mw = Math.max(mw, comp.x + comp.width);
+					mh = Math.max(mh, comp.y + comp.height);
+				}
+			}
+			
+			hoverResearchDescription.width = mw - MARGIN;
+			hoverResearchTitle.width = hoverResearchDescription.width;
+			
+			hoverResearchDescription.text(currentText.second);
+			hoverResearchTitle.text(currentText.first);
+			hoverResearchDescription.height = hoverResearchDescription.getWrappedHeight();
+			
+			bottomDivider = hoverResearchDescription.y + hoverResearchDescription.height + MARGIN / 2;
+			mh = Math.max(mh, hoverResearchDescription.y + hoverResearchDescription.height);
+			
+			
+			width = mw + MARGIN;
+			height = mh + MARGIN;
+		}
+		/** Clear contents. */
+		void clear() {
+			researches.clear();
+			currentTextOwner = null;
+		}
+		@Override
+		public UIComponent visible(boolean state) {
+			for (List<QuickResearchLabel> cs : researches) {
+				for (QuickResearchLabel c : cs) {
+					c.over &= state;
+				}
+			}
+			return super.visible(state);
+		}
+		/**
+		 * Adjust money based on the scale.
+		 * @param scale the scale factor -1.0 ... +1.0
+		 */
+		void doAdjustMoney(float scale) {
+			Research r = player().research.get(player().runningResearch());
+			if (r != null) {
+				r.assignedMoney += scale * r.type.researchCost / 20;
+				r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
+			}
+		}
+	}
+	/**
+	 * A quick research label with extra mouse behavior. 
+	 * @author akarnokd, 2012.06.23.
+	 */
+	class QuickResearchLabel extends UILabel {
+		/** The description associated with this label. */
+		public Pair<String, String> description;
+		/** Mouse pressed. */
+		boolean dragOver;
+		/**
+		 * Initialize the label.
+		 * @param text the text to display
+		 * @param size the text size
+		 * @param tr the text renderer
+		 */
+		public QuickResearchLabel(String text, int size, TextRenderer tr) {
+			super(text, size, tr);
+		}
+		/**
+		 * Initialize the label.
+		 * @param text the text to display
+		 * @param size the text size
+		 * @param width the width of the label
+		 * @param tr the text renderer
+		 */
+		public QuickResearchLabel(String text, int size, int width, TextRenderer tr) {
+			super(text, size, width, tr);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.ENTER) || e.has(Type.LEAVE)) {
+				super.mouse(e);
+				return true;
+			}
+			if (e.has(Type.DRAG)) {
+				dragOver = true;
+			}
+			if (e.has(Type.LEAVE)) {
+				dragOver = false;
+			}
+			if (e.has(Type.UP) && dragOver) {
+				dragOver = false;
+				if (onPress != null) {
+					onPress.invoke();
+				}
+			}
+			return super.mouse(e);
+		}
 	}
 }

@@ -36,6 +36,8 @@ public class UILabel extends UIComponent {
 	private int disabledColor = TextRenderer.GRAY;
 	/** The ARGB color to use when drawing the label. */
 	private int textColor = TextRenderer.GREEN;
+	/** The optional hover color if non-zero. */
+	private int hoverColor = 0;
 	/** 
 	 * The shadow ARGB color to use underneath the label text. Set it to zero
 	 * to disable shadowing.
@@ -140,6 +142,16 @@ public class UILabel extends UIComponent {
 	 * @param line a text line
 	 */
 	void drawAligned(Graphics2D g2, int py, String line) {
+		int c = 0;
+		if (enabled || disabledColor == 0) {
+			if (over && hoverColor != 0) {
+				c = hoverColor;
+			} else {
+				c = textColor;
+			}
+		} else {
+			c = disabledColor;
+		}
 		if (align != HorizontalAlignment.JUSTIFY) {
 			int px = 0;
 			switch (align) {
@@ -156,12 +168,6 @@ public class UILabel extends UIComponent {
 			if (shadowColor != 0) {
 				tr.paintTo(g2, px + 1, py + 1, size, shadowColor, line);
 			}
-			int c = 0;
-			if (enabled || disabledColor == 0) {
-				c = textColor;
-			} else {
-				c = disabledColor;
-			}
 			tr.paintTo(g2, px, py, size, c, line);
 		} else {
 			if (line.length() > 0) {
@@ -177,12 +183,6 @@ public class UILabel extends UIComponent {
 						tr.paintTo(g2, (int)px + 1, py + 1, size, shadowColor, words[i]);
 						px += tr.getTextWidth(size, words[i]) + space;
 					}
-				}
-				int c = 0;
-				if (enabled || disabledColor == 0) {
-					c = textColor;
-				} else {
-					c = disabledColor;
 				}
 				px = 0;
 				for (int i = 0; i < words.length; i++) {
@@ -324,5 +324,22 @@ public class UILabel extends UIComponent {
 	 */
 	public void backgroundColor(int newColor) {
 		this.backgroundColor = newColor;
+	}
+	/**
+	 * Sets a new hover color. Use 0 to disable hover coloring.
+	 * @param newColor the new hover color
+	 */
+	public void hoverColor(int newColor) {
+		this.hoverColor = newColor;
+	}
+	/**
+	 * @return the current hover color, 0 means no hover coloring
+	 */
+	public int hoverColor() {
+		return this.hoverColor;
+	}
+	/** @return the text size. */
+	public int textSize() {
+		return size;
 	}
 }

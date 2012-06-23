@@ -1837,12 +1837,12 @@
   <entry key='researchinfo.progress.cost'>Cost      : %d cr</entry>
   <entry key='researchinfo.progress.done'>Done</entry>
   <entry key='researchinfo.progress.inventory'>Inventory : %d</entry>
-  <entry key='researchinfo.progress.lab'>Cap. shortage: %d%%</entry>
-  <entry key='researchinfo.progress.money'>Money shortage: %d%%</entry>
-  <entry key='researchinfo.progress.paused'>Paused: %d%%</entry>
+  <entry key='researchinfo.progress.lab'>Cap. shortage: %s%%</entry>
+  <entry key='researchinfo.progress.money'>Money shortage: %s%%</entry>
+  <entry key='researchinfo.progress.paused'>Paused: %s%%</entry>
   <entry key='researchinfo.progress.pre'>Prerequisites:</entry>
   <entry key='researchinfo.progress.price'>Price     : %d cr</entry>
-  <entry key='researchinfo.progress.running'>Running: %d%%</entry>
+  <entry key='researchinfo.progress.running'>Running: %s%%</entry>
   <entry key='researchinfo.required_labs'>Required / Available:</entry>
   <entry key='save'>Save</entry>
   <entry key='screens.achievements'>F12 - Achievements</entry>
@@ -2664,8 +2664,8 @@
 	<entry key="achievement.well_respected_feature">Well respected feature</entry>
 	<entry key="achievement.well_respected_feature.desc">Chat 100 times in spacewar</entry>
 	<entry key="diplomacy.generic.endtalk">The Empire has many urgent needs. I must attend to others now.</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="quickresearch.stop">Stop</entry>
+	<entry key="quickresearch.no_active">No active research</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

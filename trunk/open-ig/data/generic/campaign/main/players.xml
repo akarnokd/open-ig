@@ -190,9 +190,9 @@
 			<type id='Fighter4' list=''/>
 			<type id='Shield2' list=''/>
 			<type id='Shield3' list=''/>
-			<type id='Hyperdrive1' list=''/>
-			<type id='Hyperdrive2' list=''/>
-			<type id='Hyperdrive3' list=''/>
+			<type id='HyperDrive1' list=''/>
+			<type id='HyperDrive2' list=''/>
+			<type id='HyperDrive3' list=''/>
 			<type id='Laser2' list=''/>
 			<type id='Laser3' list=''/>
 		</available>
@@ -217,9 +217,9 @@
 			<type id='Fighter4' list=''/>
 			<type id='Shield2' list=''/>
 			<type id='Shield3' list=''/>
-			<type id='Hyperdrive1' list=''/>
-			<type id='Hyperdrive2' list=''/>
-			<type id='Hyperdrive3' list=''/>
+			<type id='HyperDrive1' list=''/>
+			<type id='HyperDrive2' list=''/>
+			<type id='HyperDrive3' list=''/>
 			<type id='Laser2' list=''/>
 			<type id='Laser3' list=''/>
 		</available>

@@ -166,6 +166,22 @@ public class UIMouse {
 		return m;
 	}
 	/**
+	 * Create a translated copy of this mouse event.
+	 * @param dx the delta X
+	 * @param dy the delta Y
+	 * @return the new mouse event
+	 */
+	public UIMouse translate(int dx, int dy) {
+		UIMouse m = new UIMouse();
+		m.x = x + dx;
+		m.y = y + dy;
+		m.z = z;
+		m.buttons.addAll(buttons);
+		m.modifiers.addAll(modifiers);
+		m.type = type;
+		return m;
+	}
+	/**
 	 * Returns the current mouse coordinate in
 	 * respect to the given base rendering component
 	 * (the component which gives the base coordinate
