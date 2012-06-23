@@ -2,4 +2,28 @@
 
 = Introduction =
 
-TBD
+The page describes the details of the game screens.
+
+
+<wiki:toc max_depth="1" />
+
+
+= Quick research =
+
+The *Quick research* is an overlay panel accessible from level 3 (commander) by left clicking on the flask icon in the top-right part of the screen. (If you don't see the flask icon, go to the *Options > Screen* and select the *Show quick research/production* checkbox.
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-quick-research-01.png
+
+You don't need to hold the left mouse button to issue commands, but holding and releasing the mouse over a research label or the stop button will issue the command.
+
+The panel is divided into four sections.
+
+== Current research info ==
+
+The top section shows details of the currently running research. (If no current research is running, it simply displays a gray text of this fact.)
+
+The progress also indicates if any issues exist with the current research such as lack of money or lack of lab capacity.
+
+The blue button allows you to set the money allocated to the current research the same way as on the research screen. Clicking or holding the mouse button down will increase or decrease the money allocation (visible as a ratio to the left of the button). The click is location sensitive, i.e., clicking near the left or the right side will increase the adjustment speed of the money.
+
+The stop button lets cancel the current research (no progress is lost).
