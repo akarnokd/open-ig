@@ -151,6 +151,18 @@ public class ResearchType {
 				&& ps.milLabActive >= milLab;
 	}
 	/**
+	 * Check if the global planet statistics provides enough built labs to support the given research.
+	 * @param ps the global planet statistics
+	 * @return true if enough active labs
+	 */
+	public boolean hasEnoughLabsBuilt(PlanetStatistics ps) {
+		return ps.civilLab >= civilLab
+				&& ps.mechLab >= mechLab 
+				&& ps.compLab >= compLab
+				&& ps.aiLab >= aiLab
+				&& ps.milLab >= milLab;
+	}
+	/**
 	 * @return The sum of all kinds of lab counts. 
 	 */
 	public int labCount() {
