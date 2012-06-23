@@ -54,6 +54,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1462,6 +1463,21 @@ public class StatusbarScreen extends ScreenBase {
 						ps.milLabActive += b.getResource("military");
 					}
 				}
+				if (b.hasResource("civil")) {
+					ps.civilLab += b.getResource("civil");
+				}
+				if (b.hasResource("mechanical")) {
+					ps.mechLab += b.getResource("mechanical");
+				}
+				if (b.hasResource("computer")) {
+					ps.compLab += b.getResource("computer");
+				}
+				if (b.hasResource("ai")) {
+					ps.aiLab += b.getResource("ai");
+				}
+				if (b.hasResource("military")) {
+					ps.milLab += b.getResource("military");
+				}
 			}
 			
 			ps.planetCount++;
@@ -1501,9 +1517,19 @@ public class StatusbarScreen extends ScreenBase {
 		/** Description of the currently hovered research. */
 		UILabel hoverResearchTitle;
 		/** The current hover text title and details. */
-		Pair<String, String> currentText;
-		/** The current text owner. */
-		Object currentTextOwner;
+		ResearchType currentText;
+		/** The tip for the current research highlighted. */
+		UILabel tip;
+		/** The lab-active main label. */
+		UILabel labActive;
+		/** The lab-required main label. */
+		UILabel labRequired;
+		/** The lab titles. */
+		final List<UILabel> labTitles = U.newArrayList();
+		/** The active counts. */
+		final List<UILabel> labActives = U.newArrayList();
+		/** The required counts. */
+		final List<UILabel> labRequireds = U.newArrayList();
 		/** Initialize the fields. */
 		public QuickResearchPanel() {
 			currentResearchName = new UILabel("", 14, commons.text());
@@ -1566,6 +1592,31 @@ public class StatusbarScreen extends ScreenBase {
 			hoverResearchTitle = new UILabel("", 10, commons.text());
 			hoverResearchTitle.color(TextRenderer.RED);
 			hoverResearchTitle.horizontally(HorizontalAlignment.CENTER);
+			
+			labActive = new UILabel(get("quickresearch.lab_available"), 10, commons.text());
+			labRequired = new UILabel(get("quickresearch.lab_required"), 10, commons.text());
+			
+			for (String s : Arrays.asList("civ", "mech", "comp", "ai", "mil")) {
+				UILabel l1 = new UILabel(get("quickresearch." + s), 10, commons.text());
+				l1.horizontally(HorizontalAlignment.CENTER);
+				add(l1);
+				labTitles.add(l1);
+				
+				UILabel l2 = new UILabel("", 10, commons.text());
+				l2.horizontally(HorizontalAlignment.CENTER);
+				add(l2);
+				labActives.add(l2);
+
+				UILabel l3 = new UILabel("", 10, commons.text());
+				l3.horizontally(HorizontalAlignment.CENTER);
+				add(l3);
+				labRequireds.add(l3);
+
+			}
+			
+			tip = new UILabel("", 10, commons.text());
+			tip.color(0xFFE0E0E0);
+			tip.wrap(true);
 			
 			addThis();
 		}
@@ -1711,7 +1762,7 @@ public class StatusbarScreen extends ScreenBase {
 					};
 					cl.description = Pair.of(ri.first.longName + "  (" + ri.first.researchCost + " cr)", ri.first.description);
 					if (cl.over) {
-						currentText = cl.description;
+						currentText = ri.first;
 						anyOver |= cl.over;
 					}
 				}
@@ -1726,9 +1777,9 @@ public class StatusbarScreen extends ScreenBase {
 
 			if (currentText == null || !anyOver) {
 				if (ar != null) {
-					currentText = Pair.of(ar.longName, ar.description);
+					currentText = ar;
 				} else {
-					currentText = Pair.of(get("quickresearch.no_active"), "-");
+					currentText = null;
 				}
 			}
 
@@ -1760,9 +1811,38 @@ public class StatusbarScreen extends ScreenBase {
 			hoverResearchTitle.width = 200;
 
 			hoverResearchDescription.location(MARGIN, hoverResearchTitle.y + hoverResearchTitle.height + MARGIN / 2);
-			hoverResearchDescription.width = 200;
 			hoverResearchDescription.height = 1;
+			// fill in lab counts
+
+			setActives(labActives, 0, ps.civilLabActive, ps.civilLab, TextRenderer.YELLOW);
+			setActives(labActives, 1, ps.mechLabActive, ps.mechLab, TextRenderer.YELLOW);
+			setActives(labActives, 2, ps.compLabActive, ps.compLab, TextRenderer.YELLOW);
+			setActives(labActives, 3, ps.aiLabActive, ps.aiLab, TextRenderer.YELLOW);
+			setActives(labActives, 4, ps.milLabActive, ps.milLab, TextRenderer.YELLOW);
+			
+			if (currentText != null) {
+				setRequireds(labRequireds, 0, ps.civilLab, currentText.civilLab, TextRenderer.RED);
+				setRequireds(labRequireds, 1, ps.mechLab, currentText.mechLab, TextRenderer.RED);
+				setRequireds(labRequireds, 2, ps.compLab, currentText.compLab, TextRenderer.RED);
+				setRequireds(labRequireds, 3, ps.aiLab, currentText.aiLab, TextRenderer.RED);
+				setRequireds(labRequireds, 4, ps.milLab, currentText.milLab, TextRenderer.RED);
+			}
+			
 			// adjust size ---------------------------------------------------------------
+			
+			int dw0 = Math.max(labActive.width, labRequired.width) + 3 * MARGIN;
+			labActive.visible(false);
+			labRequired.visible(false);
+			tip.visible(false);
+			int dw1 = 0;
+			for (UILabel lbl : U.concat(labTitles, labActives, labRequireds)) {
+				lbl.visible(false);
+				dw1 = Math.max(dw1, lbl.width);
+			}
+
+			int dw2 = dw0 + 5 * dw1 + 8 * MARGIN;
+			hoverResearchDescription.width = Math.max(200, dw2);
+			
 			int mw = 0;
 			int mh = 0;
 			for (UIComponent comp : components) {
@@ -1774,22 +1854,127 @@ public class StatusbarScreen extends ScreenBase {
 			
 			hoverResearchDescription.width = mw - MARGIN;
 			hoverResearchTitle.width = hoverResearchDescription.width;
-			
-			hoverResearchDescription.text(currentText.second);
-			hoverResearchTitle.text(currentText.first);
-			hoverResearchDescription.height = hoverResearchDescription.getWrappedHeight();
+
+			if (currentText != null) {
+				hoverResearchDescription.text(currentText.description);
+				hoverResearchTitle.text(currentText.longName);
+				hoverResearchDescription.height = hoverResearchDescription.getWrappedHeight();
+			} else {
+				hoverResearchDescription.text("");
+				hoverResearchDescription.height = 0;
+				hoverResearchTitle.text(get("quickresearch.no_active"));
+			}
 			
 			bottomDivider = hoverResearchDescription.y + hoverResearchDescription.height + MARGIN / 2;
 			mh = Math.max(mh, hoverResearchDescription.y + hoverResearchDescription.height);
 			
+			// bottom area
+			
+			
+			labActive.location(MARGIN, mh + labActive.height + 2 * MARGIN);
+			labActive.visible(true);
+			
+			labRequired.location(MARGIN, labActive.y + labActive.height + MARGIN);
+			labRequired.visible(currentText != null);
+			
+			
+			int widthPart = (mw - MARGIN - Math.max(labActive.width, labRequired.width)) / labActives.size();
+			int ii = 0;
+			for (UILabel ul : labActives) {
+				ul.location(labActive.x 
+						+ Math.max(labActive.width, labRequired.width) + 3 * MARGIN + ii * widthPart, labActive.y);
+				ii++;
+				ul.visible(true);
+			}
+			
+			ii = 0;
+			for (UILabel ul : labRequireds) {
+				ul.location(labActive.x 
+						+ Math.max(labActive.width, labRequired.width) + 3 * MARGIN + ii * widthPart, labRequired.y);
+				ii++;
+				ul.visible(currentText != null);
+			}
+
+			ii = 0;
+			for (UILabel ul : labTitles) {
+				ul.location(labActive.x 
+						+ Math.max(labActive.width, labRequired.width) + 3 * MARGIN + ii * widthPart, mh + MARGIN);
+				ii++;
+				ul.visible(true);
+			}
+			if (currentText != null && !currentText.hasEnoughLabs(ps)) {
+				tip.location(MARGIN, labRequired.y + labRequired.height + MARGIN);
+				
+				int reqPlanet = currentText.labCount();
+				
+				if (reqPlanet > ps.planetCount) {
+					tip.text(get("quickresearch.more_planets"));
+				} else 
+				if (currentText.hasEnoughLabsBuilt(ps)) {
+					tip.text(get("quickresearch.check_labs"));
+				} else {
+					tip.text(get("quickresearch.reorg_labs"));
+				}
+				tip.width = mw - MARGIN;
+				tip.height = tip.getWrappedHeight();
+ 				
+				tip.visible(true);
+			}
+
+			// readjust bounds again
+			
+			mw = 0;
+			mh = 0;
+			for (UIComponent comp : components) {
+				if (comp.visible()) {
+					mw = Math.max(mw, comp.x + comp.width);
+					mh = Math.max(mh, comp.y + comp.height);
+				}
+			}
 			
 			width = mw + MARGIN;
 			height = mh + MARGIN;
 		}
+		/**
+		 * Set an active label based on the numerical values.
+		 * @param list the list
+		 * @param index the index
+		 * @param active the active count
+		 * @param total the total count
+		 * @param color the color to use if active < total
+		 */
+		void setActives(List<UILabel> list, int index, int active, int total, int color) {
+			UILabel l = list.get(index);
+			if (active < total) {
+				l.color(color);
+				l.text(active + "/" + total, true);
+			} else {
+				l.color(TextRenderer.GREEN);
+				l.text(Integer.toString(active), true);
+			}
+			
+		}
+		/**
+		 * Set an active label based on the numerical values.
+		 * @param list the list
+		 * @param index the index
+		 * @param active the active count
+		 * @param total the total count
+		 * @param color the color to use if active < total
+		 */
+		void setRequireds(List<UILabel> list, int index, int active, int total, int color) {
+			UILabel l = list.get(index);
+			l.text(Integer.toString(total), true);
+			if (active < total) {
+				l.color(color);
+			} else {
+				l.color(TextRenderer.GREEN);
+			}
+			
+		}
 		/** Clear contents. */
 		void clear() {
 			researches.clear();
-			currentTextOwner = null;
 		}
 		@Override
 		public UIComponent visible(boolean state) {

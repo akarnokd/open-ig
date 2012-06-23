@@ -2784,6 +2784,16 @@
 	<entry key="diplomacy.generic.endtalk">Das Imperium ruft. Andere Angelegenheiten erfordern meine Anwesenheit.</entry>
 	<entry key="quickresearch.stop">Stop</entry>
 	<entry key="quickresearch.no_active">Kein aktive Forshung</entry>
+	<entry key="quickresearch.lab_required">Labs Gebraucht:</entry>
+	<entry key="quickresearch.lab_available">Labs Verfügbar:</entry>
+	<entry key="quickresearch.more_planets">Tip: koloniziere oder erobere mehr Planeten.</entry>
+	<entry key="quickresearch.reorg_labs">Tip: labs benötigen Reorganisierung.</entry>
+	<entry key="quickresearch.check_labs">Tip: Einige labs funktionieren nicht oder sind nicht fertig.</entry>
+	<entry key="quickresearch.civ">Civ.</entry>
+	<entry key="quickresearch.mech">Mech.</entry>
+	<entry key="quickresearch.comp">Comp.</entry>
+	<entry key="quickresearch.ai">K.I.</entry>
+	<entry key="quickresearch.mil">Mil.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
