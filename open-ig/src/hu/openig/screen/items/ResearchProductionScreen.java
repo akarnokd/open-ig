@@ -1414,6 +1414,8 @@ public class ResearchProductionScreen extends ScreenBase {
 		if (rt == null) {
 			ResearchSubCategory cat = ResearchSubCategory.SPACESHIPS_FIGHTERS;
 			selectSubCategoryFirst(cat);
+			selectMainCategory(cat.main);
+			selectSubCategory(cat);
 		} else {
 			selectMainCategory(rt.category.main);
 			selectSubCategory(rt.category);
