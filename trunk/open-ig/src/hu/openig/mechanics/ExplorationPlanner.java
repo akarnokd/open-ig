@@ -28,6 +28,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -245,15 +246,14 @@ public class ExplorationPlanner extends Planner {
 	 * @param bf the fleet
 	 */
 	void setExplorationTarget(final AIFleet bf) {
-		final int ec = exploration.cellSize;
 		final Point2D.Double center = world.center();
 		final Point2D.Double fa = new Point2D.Double(bf.x, bf.y);
 		Set<Location> allowed = exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit);
 		Comparator<Location> distance = new Comparator<Location>() {
 			/** Returns the location's value. */
 			double locationValue(Location o) {
-				double dc = Math.hypot(center.x - (o.x + 0.5) * ec, center.y - (o.y + 0.5) * ec);
-				double df = Math.hypot(center.x - (fa.x + 0.5) * ec, center.y - (fa.y + 0.5) * ec);
+				double dc = center.distance(exploration.toMapCenter(o));
+				double df = center.distance(fa);
 				return -df / bf.statistics.speed / dc;
 			}
 			@Override
@@ -265,16 +265,28 @@ public class ExplorationPlanner extends Planner {
 		};
 		Location loc = null;
 		final int rl = bf.radarLevel();
+		// move to center or edge of the cell?
+		double bias = 0.5;
+		if (rl > 0 && rl % 2 == 0) {
+			bias = 0;
+			
+			// remove top segments to avoid leaving the map
+			Iterator<Location> it = allowed.iterator();
+			while (it.hasNext()) {
+				Location loc0 = it.next();
+				if (loc0.y == 0 || loc0.x == 0) {
+					it.remove();
+				}
+			}
+		}
+		final double fbias = bias;
 		if (rl > 0/* && w.random.get().nextDouble() < 0.99*/) {
 			outer:
 			for (Location loc0 : U.sort(allowed, distance)) {
 				for (AIFleet f : world.ownFleets) {
 					if (f.targetPoint != null && f.task == FleetTask.EXPLORE) {
-						double bias = 0.5;
-						if (rl > 0 && rl % 2 == 0) {
-							bias = 0;
-						}
-						double dc = Math.hypot(f.targetPoint.x - (loc0.x + bias) * ec, f.targetPoint.y - (loc0.y + bias) * ec);
+						double dc = Math.hypot(f.targetPoint.x - (loc0.x + fbias) * exploration.cellWidth, 
+								f.targetPoint.y - (loc0.y + fbias) * exploration.cellHeight);
 						if (dc < 1) {
 							continue outer;
 						}
@@ -295,19 +307,13 @@ public class ExplorationPlanner extends Planner {
 				loc = w.random(ls);
 			}
 		}
-		// move to center or edge of the cell?
-		double bias = 0.5;
-		if (rl > 0 && rl % 2 == 0) {
-			bias = 0;
-		}
-		final double fbias = bias;
 		final Location floc = loc;
 		add(new Action0() {
 			@Override
 			public void invoke() {
 				if (bf.fleet.task != FleetTask.SCRIPT) {
 					bf.fleet.task = FleetTask.EXPLORE;
-					controls.actionMoveFleet(bf.fleet, (floc.x + fbias) * ec, (floc.y + fbias) * ec);
+					controls.actionMoveFleet(bf.fleet, (floc.x + fbias) * exploration.cellWidth, (floc.y + fbias) * exploration.cellHeight);
 				}
 			}
 		});
