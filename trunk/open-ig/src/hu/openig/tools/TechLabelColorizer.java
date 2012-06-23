@@ -94,7 +94,21 @@ public final class TechLabelColorizer {
 				}
 			}
 			
-			ImageIO.write(img2, "png", f);
+			File f2 = new File(f.getAbsolutePath().replace("_selected", ""));
+
+			for (int y = 0; y < nh; y++) {
+				for (int x = 0; x < nw; x++) {
+					int c = img2.getRGB(x, y);
+					if (c == 0xFF000000) {
+						img2.setRGB(x, y, 0x00000000);
+					} else
+					if (c == 0xFFFFBE00) {
+						img2.setRGB(x, y, 0xFF000000);
+					}
+				}
+			}
+			
+			ImageIO.write(img2, "png", f2);
 		}
 	}
 	/**
