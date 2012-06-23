@@ -12,6 +12,7 @@ import hu.openig.core.Location;
 import hu.openig.utils.U;
 
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.util.Set;
 
 /**
@@ -21,8 +22,10 @@ import java.util.Set;
 public class ExplorationMap {
 	/** The set of cells undiscovered on the starmap. */
 	public final Set<Location> map = U.newHashSet();
-	/** The cell size used for the exploration map cells. */
-	public final int cellSize;
+	/** The Cell width in pixels. */
+	public final double cellWidth;
+	/** The Cell height in pixels. */
+	public final double cellHeight;
 	/** The number of rows of the exploration map. */
 	public final int rows;
 	/** The number of columns of the exploration map. */
@@ -35,9 +38,14 @@ public class ExplorationMap {
 	 */
 	public ExplorationMap(Player p) {
 		this.p = p;
-		cellSize = (int)Math.floor(Math.sqrt(2) * p.world.params().fleetRadarUnitSize()) - 4;
-		rows = (int)Math.ceil(p.world.galaxyModel.map.getHeight() * 1.0 / cellSize);
-		columns = (int)Math.ceil(p.world.galaxyModel.map.getWidth() * 1.0 / cellSize);
+		int maxCellSize = (int)Math.floor(Math.sqrt(2) * p.world.params().fleetRadarUnitSize()) - 4;
+		int w = p.world.galaxyModel.map.getWidth();
+		int h = p.world.galaxyModel.map.getHeight();
+		rows = (int)Math.ceil(h * 1.0 / maxCellSize);
+		columns = (int)Math.ceil(w * 1.0 / maxCellSize);
+		cellWidth = w / columns;
+		cellHeight = h / rows;
+		
 		initExplorationMap();
 	}
 	/**
@@ -53,8 +61,8 @@ public class ExplorationMap {
 		Set<Location> result = U.newHashSet();
 		
 		for (Location loc : map) {
-			int cx = (int)((loc.x + 0.5) * cellSize);
-			int cy = (int)((loc.y + 0.5) * cellSize);
+			int cx = (int)((loc.x + 0.5) * cellWidth);
+			int cy = (int)((loc.y + 0.5) * cellHeight);
 			if (inner != null) {
 				if (inner.contains(cx, cy)) {
 					continue;
@@ -100,10 +108,10 @@ public class ExplorationMap {
 		int ux2 = (int)Math.floor(cx + Math.sqrt(2) * r / 2);
 		int uy2 = (int)Math.floor(cy + Math.sqrt(2) * r / 2);
 		
-		int colStart = (int)Math.ceil(1.0 * ux1 / cellSize);
-		int colEnd = (int)Math.floor(1.0 * ux2 / cellSize);
-		int rowStart = (int)Math.ceil(1.0 * uy1 / cellSize);
-		int rowEnd = (int)Math.floor(1.0 * uy2 / cellSize);
+		int colStart = (int)Math.ceil(1.0 * ux1 / cellWidth);
+		int colEnd = (int)Math.floor(1.0 * ux2 / cellWidth);
+		int rowStart = (int)Math.ceil(1.0 * uy1 / cellHeight);
+		int rowEnd = (int)Math.floor(1.0 * uy2 / cellHeight);
 		// remove whole enclosed cells
 		for (int x = colStart; x < colEnd; x++) {
 			for (int y = rowStart; y < rowEnd; y++) {
@@ -114,5 +122,32 @@ public class ExplorationMap {
 			}
 		}
 	}
-
+	/**
+	 * Convert the cell coordinate to map coordinate.
+	 * @param cx the cell x
+	 * @param cy the cell y
+	 * @return the real map coordinates
+	 */
+	public Point2D.Double toMap(int cx, int cy) {
+		return new Point2D.Double(cx * cellWidth, cy * cellHeight);
+	}
+	/**
+	 * Convert the cell coordinates into map coordinates where the coordinates
+	 * should represent the center point of the cell.
+	 * @param cx the cell x
+	 * @param cy the cell y
+	 * @return the real map coordinates
+	 */
+	public Point2D.Double toMapCenter(int cx, int cy) {
+		return new Point2D.Double((cx + 0.5) * cellWidth, (cy + 0.5) * cellHeight);
+	}
+	/**
+	 * Convert the cell coordinates into map coordinates where the coordinates
+	 * should represent the center point of the cell.
+	 * @param loc the location
+	 * @return the real map coordinates
+	 */
+	public Point2D.Double toMapCenter(Location loc) {
+		return toMapCenter(loc.x, loc.y);
+	}
 }

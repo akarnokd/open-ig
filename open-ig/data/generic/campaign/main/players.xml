@@ -82,6 +82,8 @@
 		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='ColonyShip' list=''/>
+			<type id="MediumTank" list=""/>
+			<type id="RocketLauncher1" list=""/>
 		</available>
 	</player>
 	<player id='Ychom' race='ychom' name='players.ychom'
@@ -94,6 +96,8 @@
 		diplomacy-head='diplomacy/dipfej2'
 	>
 		<available>
+			<type id='MediumTank' list=''/>
+			<type id='RocketLauncher1' list=''/>
 			<type id='ColonyShip' list=''/>
 		</available>
 	</player>
@@ -109,6 +113,8 @@
 		<inventory id='ColonyShip' count='1'/>
 		<available>
 			<type id='ColonyShip' list=''/>
+			<type id='MediumTank' list=''/>
+			<type id='RocketLauncher1' list=''/>
 		</available>
 	</player>
 	<player id='Sullep' race='sullep' name='players.sullep'
@@ -141,6 +147,9 @@
 			<type id='Bomb2' list=''/>
 			<type id='Rocket2' list=''/>
 			<type id='MultiheadedRocket' list=''/>
+			<type id='MediumTank' list=''/>
+			<type id='HeavyTank' list=''/>
+			<type id='RocketLauncher2' list=''/>
 		</available>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
@@ -156,6 +165,8 @@
 		<available>
 			<type id='MultiheadedRocket' list=''/>
 			<type id='ColonyShip' list=''/>
+			<type id="HeavyTank" list=""/>
+			<type id="RocketLauncher1" list=""/>
 		</available>
 	</player>
 	<player id='FreeTraders' race='human' name='players.free_traders'
@@ -170,6 +181,20 @@
 		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='ColonyShip' list=''/>
+			<type id='MediumTank' list=''/>
+			<type id='RocketLauncher1' list=''/>
+			<type id='ECM1' list=''/>
+			<type id='Cruiser1' list=''/>
+			<type id='Fighter2' list=''/>
+			<type id='Fighter3' list=''/>
+			<type id='Fighter4' list=''/>
+			<type id='Shield2' list=''/>
+			<type id='Shield3' list=''/>
+			<type id='Hyperdrive1' list=''/>
+			<type id='Hyperdrive2' list=''/>
+			<type id='Hyperdrive3' list=''/>
+			<type id='Laser2' list=''/>
+			<type id='Laser3' list=''/>
 		</available>
 	</player>
 	<player id='FreeNations' race='human' name='players.free_nations'
@@ -183,6 +208,20 @@
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
+			<type id='MediumTank' list=''/>
+			<type id='RocketLauncher1' list=''/>
+			<type id='ECM1' list=''/>
+			<type id='Cruiser1' list=''/>
+			<type id='Fighter2' list=''/>
+			<type id='Fighter3' list=''/>
+			<type id='Fighter4' list=''/>
+			<type id='Shield2' list=''/>
+			<type id='Shield3' list=''/>
+			<type id='Hyperdrive1' list=''/>
+			<type id='Hyperdrive2' list=''/>
+			<type id='Hyperdrive3' list=''/>
+			<type id='Laser2' list=''/>
+			<type id='Laser3' list=''/>
 		</available>
 	</player>
 	<player id='Pirates' race='pirates' name='players.pirates'
