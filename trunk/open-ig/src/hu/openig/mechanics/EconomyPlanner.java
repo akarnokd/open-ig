@@ -84,9 +84,27 @@ public class EconomyPlanner extends Planner {
 		if (planet.statistics.constructing) {
 			return false;
 		}
+		// compute existing cost of building types on the planet
+		long sumEconomy = 0;
+		long sumFactory = 0;
+		int nEconomy = 0;
+		int nFactory = 0;
+		for (AIBuilding value : planet.buildings) {
+			if (value.hasResource("multiply") || value.hasResource("credit")) {
+				nEconomy++;
+				sumEconomy += value.type.cost;
+			}
+			if (hasTechnologyFor(value.type, "spaceship") 
+						|| hasTechnologyFor(value.type, "equipment") 
+						|| hasTechnologyFor(value.type, "weapon")) {
+				nFactory++;
+				sumFactory += value.type.cost;
+			}
+		}
+		
 		// don't upgrade unless we have a ton of money
-		final boolean allowUpgrades = world.money >= 75000;
-		final boolean allowUpgrades2 = world.money >= 100000;
+		final boolean allowUpgrades = world.money >= 10000 + world.ownPlanets.size() * sumEconomy / Math.max(1, nEconomy);
+		final boolean allowUpgrades2 = world.money >= 250000 + world.ownPlanets.size() * sumFactory / Math.max(1, nFactory);
 		List<Pred1<AIPlanet>> functions = U.newArrayList();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
@@ -235,7 +253,7 @@ public class EconomyPlanner extends Planner {
 	 * @return if action taken
 	 */
 	boolean checkEconomy(AIPlanet planet, final boolean allowUpgrades) {
-		BuildingSelector police = new BuildingSelector() {
+		BuildingSelector finances = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
 				return allowUpgrades && (value.hasResource("multiply") || value.hasResource("credit"));
@@ -251,7 +269,7 @@ public class EconomyPlanner extends Planner {
 				&& planet.statistics.foodAvailable > planet.population
 				&& planet.statistics.hospitalAvailable > planet.population
 				&& planet.statistics.policeAvailable > planet.population) {
-			return manageBuildings(planet, police, costOrderReverse, false);
+			return manageBuildings(planet, finances, costOrderReverse, false);
 		}
 		return false;
 	}
