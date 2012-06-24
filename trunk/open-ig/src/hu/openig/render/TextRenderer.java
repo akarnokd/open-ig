@@ -443,6 +443,10 @@ public class TextRenderer {
 			this.text = text;
 			this.color = color;
 		}
+		@Override
+		public String toString() {
+			return String.format("%08X: %s", color, text);
+		}
 	}
 	/**
 	 * Paint a sequence of colored text segments.

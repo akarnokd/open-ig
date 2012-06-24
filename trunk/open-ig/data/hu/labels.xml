@@ -2720,9 +2720,9 @@
 	<entry key="quickresearch.comp">Komp.</entry>
 	<entry key="quickresearch.ai">M.I.</entry>
 	<entry key="quickresearch.mil">Kat.</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="options.back.tooltip.mainmenu">Visszatérés a [c=FFFFFFFF]Főmenübe[/c].</entry>
+	<entry key="options.back.tooltip.ingame">Visszatérés a [c=FFFFFFFF]Játékba[/c].</entry>
+	<entry key="mainmenu.single.tooltip">Új egyjátékos kampány vagy egyedi játék kezdése.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
