@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
+import hu.openig.core.Pair;
 import hu.openig.core.SaveMode;
 import hu.openig.model.FileItem;
 import hu.openig.model.Screens;
@@ -36,6 +37,7 @@ import hu.openig.utils.XElement;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -357,6 +359,7 @@ public class LoadSaveScreen extends ScreenBase {
 				doBack();
 			}
 		};
+		back.tooltip("Return to the previous screen");
 
 		// ===================================================
 		
@@ -1069,7 +1072,7 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	/** Perform a partial repaint. */
 	void doRepaint() {
-		scaleRepaint(base, base);
+		scaleRepaint(base, base, margin());
 	}
 	/**
 	 * Show the controls of the given page and hide the rest.
@@ -1178,7 +1181,7 @@ public class LoadSaveScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 		// tabs
 		
 		loadSavePage.location(base.x + 10, base.y + 10);
@@ -1325,7 +1328,7 @@ public class LoadSaveScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-		AffineTransform save0 = scaleDraw(g2, base);
+		AffineTransform save0 = scaleDraw(g2, base, margin());
 		
 		if (settingsMode != SettingsPage.LOAD_SAVE) {
 			g2.drawImage(commons.background().setup, base.x, base.y, null);
@@ -1397,7 +1400,7 @@ public class LoadSaveScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		if (e.has(Type.DOWN) && !e.within(base.x, base.y, base.width, base.height) && !confirmText.visible()) {
 			doBack();
 		}
@@ -1846,5 +1849,18 @@ public class LoadSaveScreen extends ScreenBase {
 				(JFrame)cont, commons.labels(), commons.config, commons.background().setup);
 		f.setLocationRelativeTo(c);
 		f.setVisible(true);
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

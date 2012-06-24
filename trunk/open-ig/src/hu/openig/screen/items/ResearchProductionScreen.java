@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Func0;
+import hu.openig.core.Pair;
 import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
@@ -38,6 +39,7 @@ import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.U;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -577,7 +579,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		for (TechnologySlot sl : slots) {
 			sl.animationStep = animationStep;
 		}
-		scaleRepaint(base, base);
+		scaleRepaint(base, base, margin());
 	}
 
 	/**
@@ -688,7 +690,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.research().basePanel, base.x, base.y, null);
 		
@@ -752,7 +754,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			hideSecondary();
 			return true;
@@ -1176,7 +1178,7 @@ public class ResearchProductionScreen extends ScreenBase {
 	}
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 
 		addButton.location(base.x + 535, base.y + 303 - 20);
 		startNew.location(addButton.location());
@@ -1393,7 +1395,7 @@ public class ResearchProductionScreen extends ScreenBase {
 				public void invoke(BufferedImage value) {
 					if (first || config.animateInventory) {
 						video.image(value);
-						scaleRepaint(base, video);
+						scaleRepaint(base, video, margin());
 					}
 					first = false;
 				}
@@ -1909,5 +1911,18 @@ public class ResearchProductionScreen extends ScreenBase {
 		}
 		player().runningResearch(null);
 		screenSound(SoundType.STOP_RESEARCH);
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

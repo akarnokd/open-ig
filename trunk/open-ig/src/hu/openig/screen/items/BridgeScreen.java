@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.core.Pair;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Level;
@@ -36,6 +37,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
@@ -477,7 +479,7 @@ public class BridgeScreen extends ScreenBase {
 	
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		if (commons.force) {
 			if (e.type == UIMouse.Type.DOWN && videoRunning) {
 				videoAnim.stop();
@@ -752,7 +754,7 @@ public class BridgeScreen extends ScreenBase {
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		
 		
-		AffineTransform save1 = scaleDraw(g2, base);
+		AffineTransform save1 = scaleDraw(g2, base, margin());
 
 		g2.drawImage(background, base.x, base.y, null);
 		
@@ -859,7 +861,7 @@ public class BridgeScreen extends ScreenBase {
 	}
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 		messageOpenRect.setBounds(base.x + 572, base.y + 292, 68, 170);
 		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 4, base.y, 524, 258);
 		videoRect.setBounds(projectorRect.x + 103, projectorRect.y + 9, 320, 240);
@@ -1202,5 +1204,18 @@ public class BridgeScreen extends ScreenBase {
 				}
 			}
 		}
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

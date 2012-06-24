@@ -149,6 +149,8 @@ public class StatusbarScreen extends ScreenBase {
 	protected int attackListIndex;
 	/** The quick research panel. */
 	QuickResearchPanel quickResearch;
+	/** The show-hide objectives button. */
+	UIImageButton objectivesButton;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -253,6 +255,16 @@ public class StatusbarScreen extends ScreenBase {
 		quickResearch.visible(false);
 		quickResearch.z = 2;
 		
+		objectivesButton = new UIImageButton(commons.statusbar().objectives);
+		objectivesButton.z = 1;
+		objectivesButton.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				objectives.visible(!objectives.visible());
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+			}
+		};
+		
 		addThis();
 	}
 
@@ -321,6 +333,10 @@ public class StatusbarScreen extends ScreenBase {
 		top2.visible(commons.nongame);
 		bottom2.visible(commons.nongame);
 		
+		objectivesButton.x = 379;
+		objectivesButton.y = top.y + 3;
+		
+		objectivesButton.visible(!commons.nongame);
 		boolean objshowing = objectives.visible();
 		if (commons.nongame) {
 			screenMenu.visible(false);
@@ -824,11 +840,6 @@ public class StatusbarScreen extends ScreenBase {
 				}
 				return true;
 			}
-		} else
-		if (e.within(379, 3, 26, 14) && e.has(Type.DOWN)) {
-			objectives.visible(!objectives.visible());
-			buttonSound(SoundType.CLICK_MEDIUM_2);
-			return true;
 		} else
 //		if (e.within(0, 0, width, 20) 
 //			|| e.within(0, height - 18, width, 18)

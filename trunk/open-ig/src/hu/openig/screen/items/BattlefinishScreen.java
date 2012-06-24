@@ -8,6 +8,7 @@
 
 package hu.openig.screen.items;
 
+import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
@@ -23,6 +24,7 @@ import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,7 +67,7 @@ public class BattlefinishScreen extends ScreenBase {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showText = true;
-				scaleRepaint(base, base);
+				scaleRepaint(base, base, margin());
 				textDelay.stop();
 			}
 		});
@@ -127,7 +129,7 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 	}
 	@Override
 	public Screens screen() {
@@ -139,7 +141,7 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(background, base.x, base.y, null);
@@ -451,7 +453,7 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		if (e.has(Type.UP) /* && !e.within(base.x, base.y, base.width, base.height) */) {
 			if (!showText) {
 				showText = true;
@@ -491,5 +493,18 @@ public class BattlefinishScreen extends ScreenBase {
 		// TODO
 		setBackground();
 		setPausedSimulator();
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

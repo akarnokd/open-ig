@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Pair;
 import hu.openig.model.Screens;
 import hu.openig.model.TalkPerson;
 import hu.openig.model.TalkSpeech;
@@ -220,11 +221,11 @@ public class BarScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		RenderTools.darkenAround(base, getInnerWidth(), getInnerHeight(), g2, 0.5f, true);
 
 		if (talkMode && state != null && picture != null) {
@@ -304,7 +305,7 @@ public class BarScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		if (e.has(Type.DOWN)) {
 			if (talkMode) {
 				int idx = 0;
@@ -402,5 +403,18 @@ public class BarScreen extends ScreenBase {
 		choices.clear();
 		/** The state picture. */
 		picture = null;
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

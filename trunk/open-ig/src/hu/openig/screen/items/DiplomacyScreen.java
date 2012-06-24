@@ -50,6 +50,7 @@ import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
@@ -324,7 +325,7 @@ public class DiplomacyScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 		
 		projectorRect.setBounds(base.x + (base.width - 524) / 2 - 10, base.y, 524, 258);
 		
@@ -364,7 +365,7 @@ public class DiplomacyScreen extends ScreenBase {
 	
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
 			hideSecondary();
 			return true;
@@ -477,7 +478,7 @@ public class DiplomacyScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		
-		AffineTransform savea = scaleDraw(g2, base);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.diplomacy().base, base.x, base.y, null);
@@ -1495,5 +1496,18 @@ public class DiplomacyScreen extends ScreenBase {
 				receive();
 			}
 		});
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

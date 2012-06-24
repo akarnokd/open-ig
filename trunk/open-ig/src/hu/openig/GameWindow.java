@@ -40,6 +40,7 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
+import hu.openig.render.TextRenderer;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.GameControls;
 import hu.openig.screen.ScreenBase;
@@ -68,11 +69,14 @@ import hu.openig.screen.items.StarmapScreen.ShowNamesMode;
 import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.VideoScreen;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.utils.Parallels;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -225,6 +229,7 @@ public class GameWindow extends JFrame implements GameControls {
 						}				
 					}
 				}
+				renderTooltip(g2);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			} finally {
@@ -335,6 +340,14 @@ public class GameWindow extends JFrame implements GameControls {
 	public int saveWidth;
 	/** The location save to switch back from full-screen. */
 	public int saveHeight;
+	/** The tooltip helper rectangle. */
+	public Rectangle tooltipHelper;
+	/** The simple tooltip text. */
+	public String tooltipText;
+	/** The tooltip show timer. */
+	public Timer tooltipShowTimer;
+	/** Is the tooltip visible? */
+	boolean tooltipVisible;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -512,10 +525,19 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		});
 		fixedFramerateTimer.start();
+		tooltipShowTimer = new Timer(1000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				tooltipVisible = true;
+				repaintInner();
+				tooltipShowTimer.stop();
+			}
+		});
 	}
 	/** Finish the frame-common objects. */
 	void done() {
 		fixedFramerateTimer.stop();
+		tooltipShowTimer.stop();
 	}
 	/**
 	 * Assign public fields of the same object.
@@ -602,7 +624,12 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		commons.profile.load();
 		
-		displayPrimary(Screens.MAIN);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				displayPrimary(Screens.MAIN);
+			}
+		});
 	}
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
@@ -908,11 +935,18 @@ public class GameWindow extends JFrame implements GameControls {
 		ScreenBase sb = statusbar;
 		UIMouse m = UIMouse.createCurrent(surface);
 		scaleMouse(m);
+		
+		handleTooltip(m);
+		
 		if (statusbarVisible) {
 			result |= sb.mouse(m);
 		}
 		ScreenBase pri = primary;
 		ScreenBase sec = secondary;
+		ScreenBase opt = options;
+		if (optionsVisible && opt != null) {
+			result |= opt.mouse(m);
+		} else
 		if (sec != null) {
 			result |= sec.mouse(m);
 		} else
@@ -1511,6 +1545,8 @@ public class GameWindow extends JFrame implements GameControls {
 			
 			invertIf(me);
 			scaleMouse(me);
+
+			handleTooltip(me);
 			
 			if (movieVisible()) {
 				rep = movie.mouse(me);
@@ -2405,5 +2441,90 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	public void movieVisible(boolean value) {
 		this.bMovieVisible = value;
+	}
+	/**
+	 * Handle the tooltip for the mouse.
+	 * @param m the mouse
+	 */
+	void handleTooltip(UIMouse m) {
+		ScreenBase top = null;
+		UIComponent c = null;
+		List<ScreenBase> bases = U.newArrayList();
+		if (optionsVisible) {
+			bases.add(options);
+		} else {
+			if (statusbarVisible) {
+				bases.add(statusbar);
+			}
+			if (secondary != null) {
+				bases.add(secondary);
+			} else
+			if (primary != null) {
+				bases.add(primary);
+			}
+		}
+		for (ScreenBase b : bases) {
+			c = b.componentAt(m.x, m.y);
+			if (c != b) {
+				top = b;
+				break;
+			} else {
+				c = null;
+			}
+		}
+		
+		Rectangle r = tooltipHelper;
+		String t0 = tooltipText;
+		if (c != null) {
+			tooltipHelper = top.componentRectangle(c);
+			
+			double s = tooltipHelper.width * 1d / c.width; 
+			
+			int cx = m.x - tooltipHelper.x;
+			int cy = m.y - tooltipHelper.y;
+			
+			int rx = (int)(cx / s);
+			int ry = (int)(cy / s);
+			
+			tooltipText = c.tooltip(rx, ry);
+		} else {
+			tooltipHelper = null;
+			tooltipVisible = false;
+			tooltipShowTimer.stop();
+		}
+		if (!U.equal(r, tooltipHelper) || !U.equal(tooltipText, t0)) {
+			tooltipVisible = false;
+			tooltipShowTimer.start();
+			repaintInner();
+		}
+	}
+	/**
+	 * Render the current tooltip.
+	 * @param g2 the graphics context.
+	 */
+	protected void renderTooltip(Graphics2D g2) {
+		if (tooltipHelper != null) {
+			g2.setColor(Color.ORANGE);
+			g2.drawRect(tooltipHelper.x, tooltipHelper.y, tooltipHelper.width, tooltipHelper.height);
+			if (tooltipText != null && tooltipVisible) {
+				g2.setColor(Color.WHITE);
+				
+				int th = 10;
+				
+				int tw = commons.text().getTextWidth(th, tooltipText);
+				
+				g2.setColor(new Color(0, 0, 0, 224));
+				int x0 = tooltipHelper.x;
+				int y0 = tooltipHelper.y + tooltipHelper.height;
+				if (x0 + tw + 6 > getInnerWidth()) {
+					x0 = getInnerWidth() - tw - 6;
+				}
+				if (y0 + 20 > getInnerHeight()) {
+					y0 = tooltipHelper.y - th + 6;
+				}
+				g2.fillRect(x0 - 3, y0 - 3, tw + 6, th + 6);
+				commons.text().paintTo(g2, x0, y0, th, TextRenderer.WHITE, tooltipText);
+			}
+		}
 	}
 }

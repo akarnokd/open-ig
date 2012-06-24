@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Pair;
 import hu.openig.model.Screens;
 import hu.openig.model.TestAnswer;
 import hu.openig.model.TestQuestion;
@@ -25,6 +26,7 @@ import hu.openig.ui.VerticalAlignment;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -84,7 +86,7 @@ public class TestScreen extends ScreenBase {
 	}
 	/** Perform the partial repaint. */
 	void doRepaint() {
-		scaleRepaint(base, base);
+		scaleRepaint(base, base, margin());
 	}
 	@Override
 	public void onEnter(Screens mode) {
@@ -141,7 +143,7 @@ public class TestScreen extends ScreenBase {
 
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 		
 		scrollUp.location(base.x + base.width - 30, base.y + 5);
 		done.location(base.x + base.width / 2 + (base.width / 2 - done.width) / 2, base.y + base.height - 5 - done.height);
@@ -161,7 +163,7 @@ public class TestScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.background().test, base.x, base.y, null);
@@ -306,7 +308,20 @@ public class TestScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		return super.mouse(e);
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

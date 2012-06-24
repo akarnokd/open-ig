@@ -2399,7 +2399,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						if (b.type.primary != null) {
 							double f = b.getPrimary();
 							String s = "";
-							if (f - Math.floor(f) > 0) {
+							if (f < 10) {
 								s = String.format("%.1f", f);
 							} else {
 								s = String.format("%.0f", f);

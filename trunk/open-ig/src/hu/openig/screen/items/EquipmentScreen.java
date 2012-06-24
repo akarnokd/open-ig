@@ -1267,7 +1267,8 @@ public class EquipmentScreen extends ScreenBase {
 		for (TechnologySlot sl : slots) {
 			sl.animationStep = animationStep;
 		}
-		scaleRepaint(base, base);
+		askRepaint(base.x, base.y, base.width, base.height);
+//		scaleRepaint(base, base, margin()); // FIXME not sure
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
