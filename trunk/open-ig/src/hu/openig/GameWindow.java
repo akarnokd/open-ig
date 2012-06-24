@@ -346,6 +346,8 @@ public class GameWindow extends JFrame implements GameControls {
 	public String tooltipText;
 	/** The tooltip show timer. */
 	public Timer tooltipShowTimer;
+	/** The component providing the tooltip. */
+	public UIComponent tooltipComponent;
 	/** Is the tooltip visible? */
 	boolean tooltipVisible;
 	/** 
@@ -2496,6 +2498,7 @@ public class GameWindow extends JFrame implements GameControls {
 		Rectangle r = tooltipHelper;
 		String t0 = tooltipText;
 		if (c != null) {
+			tooltipComponent = c;
 			Rectangle tth = top.componentRectangle(c);
 			
 			double s = tth.width * 1d / c.width; 
@@ -2520,6 +2523,7 @@ public class GameWindow extends JFrame implements GameControls {
 				tooltipHelper = tth;
 			}
 		} else {
+			tooltipComponent = null;
 			tooltipHelper = null;
 			tooltipVisible = false;
 			tooltipShowTimer.stop();
@@ -2564,6 +2568,18 @@ public class GameWindow extends JFrame implements GameControls {
 				g2.translate(x0 + 3, y0 + 3);
 				lbl.draw(g2);
 				g2.translate(-x0 - 3, -y0 - 3);
+			}
+		}
+	}
+	@Override
+	public void tooltipChanged(UIComponent c) {
+		if (c == tooltipComponent) {
+			UIMouse m = UIMouse.createCurrent(surface);
+			scaleMouse(m);
+			boolean vis = tooltipVisible;
+			handleTooltip(m);
+			if (vis) {
+				tooltipVisible = true;
 			}
 		}
 	}

@@ -15,6 +15,7 @@ import hu.openig.model.AIManager;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
+import hu.openig.ui.UIComponent;
 
 import java.awt.FontMetrics;
 import java.io.Closeable;
@@ -173,4 +174,9 @@ public interface GameControls {
 	void runResize();
 	/** Resize the window to match the current scaling and minimum required window size. */
 	void windowToScale();
+	/** 
+	 * Notify the renderer that a component's tooltip has changed.
+	 * @param c the component 
+	 */
+	void tooltipChanged(UIComponent c);
 }
