@@ -42,6 +42,7 @@
 		colonization-limit='0'
 		war-threshold='100'
 		diplomacy-head='diplomacy/dipfej9'
+		police-ratio='15'
 	>
 		<available>
 			<type id='MediumTank' list=''/>
@@ -78,6 +79,7 @@
 		initial-stance='40'
 		colonization-limit='3'
 		diplomacy-head='diplomacy/dipfej1'
+		police-ratio='15'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
@@ -94,6 +96,7 @@
 		initial-stance='40'
 		colonization-limit='3'
 		diplomacy-head='diplomacy/dipfej2'
+		police-ratio='15'
 	>
 		<available>
 			<type id='MediumTank' list=''/>
@@ -109,6 +112,7 @@
 		initial-stance='40'
 		colonization-limit='2'
 		diplomacy-head='diplomacy/dipfej3'
+		police-ratio='15'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
@@ -125,6 +129,7 @@
 		initial-stance='40'
 		colonization-limit='0'
 		diplomacy-head='diplomacy/dipfej4'
+		police-ratio='15'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -141,6 +146,7 @@
 		colonization-limit='0'
 		diplomacy-head='diplomacy/dipfej5'
 		war-threshold='90'
+		police-ratio='15'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -160,6 +166,7 @@
 		initial-stance='40'
 		colonization-limit='1'
 		diplomacy-head='diplomacy/dipfej6'
+		police-ratio='15'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
@@ -233,6 +240,7 @@
 		ai='PIRATES'
 		nodiplomacy='true'
 		colonization-limit='0'
+		police-ratio='15'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>

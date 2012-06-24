@@ -179,8 +179,8 @@ public final class Simulator {
 			PlanetStatistics ps) {
 		boolean result = false;
 		int tradeIncome = 0;
-		float multiply = 1.0f;
-		float moraleBoost = 0;
+		double multiply = 1.0f;
+		double moraleBoost = 0;
 		int radar = 0;
 		long eqPlaytime = 6L * 60 * 60 * 1000;
 		double populationGrowthModifier = 1.0;
@@ -234,7 +234,7 @@ public final class Simulator {
 			planet.owner.statistics.totalBuilding++;
 			world.statistics.totalBuilding++;
 			
-			float eff = b.getEfficiency();
+			double eff = b.getEfficiency();
 			
 			if (Building.isOperational(eff)) {
 				planet.owner.statistics.totalAvailableBuilding++;
@@ -379,7 +379,7 @@ public final class Simulator {
 			planet.lastPopulation = planet.population;
 			
 			// FIXME morale computation
-			float newMorale = 50 + moraleBoost;
+			double newMorale = 50 + moraleBoost;
 			if (planet.tax == TaxLevel.NONE) {
 				newMorale += 5;
 			} else
@@ -408,16 +408,16 @@ public final class Simulator {
 				if (!planet.owner.race.equals(planet.race)) {
 					newMorale += (ps.policeAvailable - planet.population) * 25f / planet.population;
 				} else {
-					newMorale += (ps.policeAvailable - planet.population) * 5f / planet.population;
+					newMorale += (ps.policeAvailable - planet.population) * planet.owner.policeRatio / planet.population;
 				}
 			}
 			
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
-			float nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
+			double nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
 			planet.morale = (int)nextMorale;
 			
-			float nextPopulation = 0;
+			double nextPopulation = 0;
 			if (nextMorale < 20) {
 				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 100);
 			} else

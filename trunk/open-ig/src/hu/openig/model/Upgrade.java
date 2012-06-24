@@ -24,7 +24,7 @@ public class Upgrade {
 	 * @param resourceType the resource type
 	 * @return the amount
 	 */
-	public float get(String resourceType) {
+	public double get(String resourceType) {
 		return resources.get(resourceType).amount;
 	}
 	/**

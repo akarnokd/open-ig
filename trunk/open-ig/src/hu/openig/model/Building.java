@@ -86,13 +86,13 @@ public class Building implements HasLocation {
 	/**
 	 * @return the operational efficiency
 	 */
-	public float getEfficiency() {
+	public double getEfficiency() {
 		if (!enabled) {
-			return 0.0f;
+			return 0.0;
 		}
 		// if the building is incomplete or is more than 50% damaged
 		if (buildProgress < type.hitpoints || hitpoints * 2 < type.hitpoints) {
-			return 0.0f;
+			return 0.0;
 		}
 		int workerDemand = getWorkers();
 		int energyDemand = (int)getResource("energy");
@@ -104,14 +104,14 @@ public class Building implements HasLocation {
 
 		// if the building doesn't need energy
 		if (energyDemand >= 0) {
-			return Math.min(assignedWorker / (float)workerDemand, hitpoints / (float)type.hitpoints);
+			return Math.min(assignedWorker / (double)workerDemand, hitpoints / (double)type.hitpoints);
 		}
 		if (assignedEnergy * 2 > energyDemand) {
 			return 0.0f;
 		}
 		return Math.min(
-				Math.min(assignedEnergy / (float)energyDemand, assignedWorker / (float)workerDemand), 
-				hitpoints / (float)type.hitpoints);
+				Math.min(assignedEnergy / (double)energyDemand, assignedWorker / (double)workerDemand), 
+				hitpoints / (double)type.hitpoints);
 	}
 	/**
 	 * @return test if the building is operational
@@ -123,7 +123,7 @@ public class Building implements HasLocation {
 	 * @param efficiency the efficiency value 0..1 
 	 * @return tell if an efficiency value indicates an operational building. 
 	 */
-	public static boolean isOperational(float efficiency) {
+	public static boolean isOperational(double efficiency) {
 		return efficiency > 0.0;
 	}
 	/**
@@ -183,7 +183,7 @@ public class Building implements HasLocation {
 	 * @param name the resource name
 	 * @return the resource amount
 	 */
-	public float getResource(String name) {
+	public double getResource(String name) {
 		Resource res = type.resources.get(name);
 		if (currentUpgrade != null) {
 			Resource ru = currentUpgrade.getType(name);
@@ -194,8 +194,8 @@ public class Building implements HasLocation {
 		return res.amount;
 	}
 	/** @return the primary resource adjusted by the efficiency level. */
-	public float getPrimary() {
-		float res = getResource(type.primary);
+	public double getPrimary() {
+		double res = getResource(type.primary);
 		return res * getEfficiency();
 	}
 	/**

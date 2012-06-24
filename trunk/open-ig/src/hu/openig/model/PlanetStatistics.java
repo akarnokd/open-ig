@@ -67,9 +67,9 @@ public class PlanetStatistics {
 	/** The current list of warnings. */
 	public final Map<PlanetProblems, PlanetProblems> warnings = new LinkedHashMap<PlanetProblems, PlanetProblems>();
 	/** Free repair percent. */
-	public float freeRepair = 0;
+	public double freeRepair = 0;
 	/** Free repair efficiency. */
-	public float freeRepairEff = 0;
+	public double freeRepairEff = 0;
 	/** Has a functioning military spaceport. */
 	public boolean hasMilitarySpaceport;
 	/** Has a functioning trader's spaceport. */
