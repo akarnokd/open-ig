@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
+import hu.openig.core.Pair;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Labels;
 import hu.openig.model.Screens;
@@ -24,6 +25,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
@@ -60,7 +62,7 @@ public class SingleplayerScreen extends ScreenBase {
 	/** The load waiter. */
 	Thread loadWaiter;
 	/** The reference frame. */
-	final Rectangle origin = new Rectangle();
+	final Rectangle base = new Rectangle();
 	/** Play label. */
 	UIGenericButton playLabel;
 	/** Custom game. */
@@ -79,28 +81,28 @@ public class SingleplayerScreen extends ScreenBase {
 	int difficulty;
 	@Override
 	public void onResize() {
-		scaleResize(origin);
+		scaleResize(base, margin());
 
-		int w = origin.width / 2;
+		int w = base.width / 2;
 
-		playLabel.x = origin.x + w + (w - playLabel.width) / 2;
-		playLabel.y = origin.y + origin.height - playLabel.height - 5;
+		playLabel.x = base.x + w + (w - playLabel.width) / 2;
+		playLabel.y = base.y + base.height - playLabel.height - 5;
 		
 		customLabel.y = playLabel.y;
-		customLabel.x = origin.x + (origin.width - customLabel.width) / 2; 
+		customLabel.x = base.x + (base.width - customLabel.width) / 2; 
 		
-		backLabel.x = origin.x + (w - backLabel.width) / 2;
-		backLabel.y = origin.y + origin.height - backLabel.height - 5;
+		backLabel.x = base.x + (w - backLabel.width) / 2;
+		backLabel.y = base.y + base.height - backLabel.height - 5;
 	
-		campaignList.setBounds(origin.x + 10, origin.y + 30, origin.width / 2 - 30, 100);
+		campaignList.setBounds(base.x + 10, base.y + 30, base.width / 2 - 30, 100);
 		descriptionRect.setBounds(campaignList.x, campaignList.y + campaignList.height + 30, 
 				campaignList.width, 200);
-		pictureRect.setBounds(origin.x + origin.width / 2, origin.y + 30, 320, 400);
+		pictureRect.setBounds(base.x + base.width / 2, base.y + 30, 320, 400);
 		
-		difficultyLeft.x = origin.x + 10;
-		difficultyLeft.y = origin.y + descriptionRect.y - origin.y + descriptionRect.height + 30;
+		difficultyLeft.x = base.x + 10;
+		difficultyLeft.y = base.y + descriptionRect.y - base.y + descriptionRect.height + 30;
 		
-		difficultyRight.x = origin.x + 10 + campaignList.width - difficultyRight.width;
+		difficultyRight.x = base.x + 10 + campaignList.width - difficultyRight.width;
 		difficultyRight.y = difficultyLeft.y;
 		
 		difficultyRect.setBounds(
@@ -124,7 +126,7 @@ public class SingleplayerScreen extends ScreenBase {
 
 	@Override
 	public void onInitialize() {
-		origin.setSize(commons.background().difficulty[0].getWidth(), 
+		base.setSize(commons.background().difficulty[0].getWidth(), 
 				commons.background().difficulty[0].getHeight());
 		
 		playLabel = new UIGenericButton(
@@ -309,7 +311,7 @@ public class SingleplayerScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, origin);
+		scaleMouse(e, base, margin());
 		boolean rep = false;
 		switch (e.type) {
 		case DOWN:
@@ -379,11 +381,11 @@ public class SingleplayerScreen extends ScreenBase {
 
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, origin);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
-		g2.drawImage(background, origin.x, origin.y, null);
+		g2.drawImage(background, base.x, base.y, null);
 		
 		Composite cp = g2.getComposite();
 		g2.setComposite(AlphaComposite.SrcOver.derive(0.75f));
@@ -449,6 +451,19 @@ public class SingleplayerScreen extends ScreenBase {
 	/** Switch to custom game. */
 	void doCustomGame() {
 		// TODO implemetn
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }
 

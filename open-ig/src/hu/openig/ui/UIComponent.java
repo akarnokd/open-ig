@@ -37,6 +37,8 @@ public class UIComponent {
 	protected boolean enabled = true;
 	/** The mouse is over this component, managed by the container. */
 	public boolean over;
+	/** The tooltip of this component. */
+	protected String tooltip;
 	/**
 	 * Paint this UI component to the given graphics context.
 	 * @param g2 the graphics context
@@ -96,11 +98,10 @@ public class UIComponent {
 	public Point absLocation() {
 		int px = x;
 		int py = y;
-		UIComponent p = parent;
-		while (p != null) {
-			px += p.x;
-			py += p.y;
-			p = p.parent;
+		if (parent != null) {
+			Point p2 = parent.absLocation();
+			px += p2.x;
+			py += p2.y;
 		}
 		return new Point(px, py);
 	}
@@ -200,5 +201,57 @@ public class UIComponent {
 	 */
 	public boolean within(UIMouse e) {
 		return e.within(x, y, width, height);
+	}
+	/**
+	 * Check if the specified mouse coordinates of the container falls
+	 * within of this component.
+	 * @param mx the mouse X
+	 * @param my the mouse Y
+	 * @return true if within
+	 */
+	public boolean within(int mx, int my) {
+		return mx >= x && mx < x + width && my >= y && my < y + height;
+	}
+	/** @return the current tooltip. */
+	public String tooltip() {
+		return tooltip;
+	}
+	/**
+	 * Sets the tooltip.
+	 * @param newTooltip the new tooltip
+	 */
+	public void tooltip(String newTooltip) {
+		this.tooltip = newTooltip;
+	}
+	/**
+	 * Return the tooltip from the component-local coordinates.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return the tooltip
+	 */
+	public String tooltip(int x, int y) {
+		return tooltip;
+	}
+	/**
+	 * Returns the point where the tooltip should be placed.
+	 * The resulting location is given in the component-relative coordinates.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return the tooltip location
+	 */
+	public Point tooltipLocation(int x, int y) {
+		return new Point(0, height);
+	}
+	/**
+	 * Returns a sub-component or itself at the specified location.
+	 * @param x the coordinates in the parent's coordinate system
+	 * @param y the coordinates in the parent's coordinate system
+	 * @return the component or null if no component is there
+	 */
+	public UIComponent componentAt(int x, int y) {
+		if (within(x, y)) {
+			return this;
+		}
+		return null;
 	}
 }

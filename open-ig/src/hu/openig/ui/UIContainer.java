@@ -144,4 +144,17 @@ public class UIContainer extends UIComponent {
 			}
 		}
 	}
+	@Override
+	public UIComponent componentAt(int x, int y) {
+		for (int i = components.size() - 1; i >= 0; i--) {
+			UIComponent c = components.get(i);
+			if (c.visible()) {
+				UIComponent c0 = c.componentAt(x - this.x, y - this.y);
+				if (c0 != null) {
+					return c0;
+				}
+			}
+		}
+		return super.componentAt(x, y);
+	}
 }

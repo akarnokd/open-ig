@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
+import hu.openig.core.Pair;
 import hu.openig.mechanics.AchievementManager;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -26,6 +27,7 @@ import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
@@ -130,7 +132,7 @@ public class AchievementsScreen extends ScreenBase {
 	UIGenericButton backLabel;
 	@Override
 	public void onResize() {
-		scaleResize(base, 11);
+		scaleResize(base, margin());
 
 		listRect.setBounds(base.x + 10, base.y + 20, base.width - 50, 350);
 		achievementCount = listRect.height / 50;
@@ -324,7 +326,7 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base, 11);
+		scaleMouse(e, base, margin());
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			if (!e.within(statisticsLabel.x, statisticsLabel.y, statisticsLabel.width, statisticsLabel.height)
 					&& !e.within(achievementLabel.x, achievementLabel.y, achievementLabel.width, achievementLabel.height)) {
@@ -439,7 +441,7 @@ public class AchievementsScreen extends ScreenBase {
 
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base, 11);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		
 		g2.drawImage(commons.common().infoEmpty, base.x, base.y, null);
@@ -1247,5 +1249,22 @@ public class AchievementsScreen extends ScreenBase {
 			return true;
 		}
 		return false;
+	}
+	@Override
+	protected int margin() {
+		return 11;
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

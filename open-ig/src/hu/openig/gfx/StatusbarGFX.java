@@ -87,6 +87,9 @@ public class StatusbarGFX {
 	/** Light research icon. */
 	@Img(name = "research_light")
 	public BufferedImage researchLight;
+	/** The objectives icon. */
+	@Img(name = "objectives")
+	public BufferedImage objectives;
 	/**
 	 * Load the resources.
 	 * @param rl the resource locator

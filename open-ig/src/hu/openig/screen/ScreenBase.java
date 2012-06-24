@@ -323,30 +323,6 @@ public abstract class ScreenBase extends UIContainer {
 	 * Scale the mouse coordinates according to the current screen scaling policy or do nothing.
 	 * @param e the mouse event
 	 * @param base the screen's base rectangle
-	 */
-	public void scaleMouse(UIMouse e, Rectangle base) {
-		scaleMouse(e, base, 0);
-	}
-	/**
-	 * Scale the drawing to the current window if applicable.
-	 * @param g2 the graphics context
-	 * @param base the screen's base rectangle
-	 * @return the saved transform before the scaling
-	 */
-	public AffineTransform scaleDraw(Graphics2D g2, Rectangle base) {
-		return scaleDraw(g2, base, 0);
-	}
-	/**
-	 * Scale the base screen coordinates based on the current policy or just center.
-	 * @param base the base rectangle
-	 */
-	public void scaleResize(Rectangle base) {
-		scaleResize(base, 0);
-	}
-	/**
-	 * Scale the mouse coordinates according to the current screen scaling policy or do nothing.
-	 * @param e the mouse event
-	 * @param base the screen's base rectangle
 	 * @param margin the optional top/bottom margin size
 	 */
 	public void scaleMouse(UIMouse e, Rectangle base, int margin) {
@@ -360,6 +336,22 @@ public abstract class ScreenBase extends UIContainer {
 			e.x = (int)(((e.x - dx) / pd.second));
 			e.y = (int)(((e.y - dy) / pd.second));
 		}
+	}
+	/**
+	 * Returns the scaling factor of this screen.
+	 * @param base the base rectangle
+	 * @param margin the margin
+	 * @return the scaling factor
+	 */
+	public Pair<Point, Double> scale(Rectangle base, int margin) {
+		if (config.scaleAllScreens) {
+			Pair<Point, Double> pd = RenderTools.fitWindow(
+					getInnerWidth(), getInnerHeight()
+					- RenderTools.STATUS_BAR_TOP - RenderTools.STATUS_BAR_BOTTOM - 2 * margin, 
+					base.width, base.height);
+			return pd;
+		}
+		return Pair.of(new Point(0, 0), 1d);
 	}
 	/**
 	 * Scale the drawing to the current window if applicable.
@@ -399,22 +391,14 @@ public abstract class ScreenBase extends UIContainer {
 		}
 	}
 	/**
-	 * Ask for the repaint of the given partial region.
-	 * @param base the base for the scaling
-	 * @param object the object to repaint
-	 * 
-	 */
-	public void scaleRepaint(Rectangle base, Rectangle object) {
-		scaleRepaint(base, object, 0);
-	}
-	/**
 	 * Ask for the repaint of the given  component area only.
 	 * @param base the base of scaling
 	 * @param c the target component
+	 * @param margin the optional margin
 	 */
-	public void scaleRepaint(Rectangle base, UIComponent c) {
+	public void scaleRepaint(Rectangle base, UIComponent c, int margin) {
 		Point p = c.absLocation();
-		scaleRepaint(base, new Rectangle(p.x, p.y, c.width, c.height));
+		scaleRepaint(base, new Rectangle(p.x, p.y, c.width, c.height), margin);
 	}
 	/**
 	 * Ask for the repaint of the given partial region.
@@ -435,5 +419,51 @@ public abstract class ScreenBase extends UIContainer {
 		} else {
 			commons.control().repaintInner(object.x, object.y, object.width, object.height);
 		}
+	}
+	/**
+	 * Scale the mouse coordinates to the current screen.
+	 * <p>Override this method to provide per-screen based scaling override.</p>
+	 * @param mx the mouse X
+	 * @param my the mouse Y
+	 * @return the scaled coordinates
+	 */
+	protected Point scaleBase(int mx, int my) {
+		return new Point(mx, my);
+	}
+	/**
+	 * <p>Override this to provide an uniform margin for many features.</p>
+	 * @return the margin in pixels
+	 */
+	protected int margin() {
+		return 0;
+	}
+	/**
+	 * <p>Override this method to provide a per-screen based scaling.</p>
+	 * @return the screen's scaling factor.
+	 */
+	protected Pair<Point, Double> scale() {
+		return Pair.of(new Point(0, 0), 1d);
+	}
+	@Override
+	public UIComponent componentAt(int x, int y) {
+		Point p = scaleBase(x, y);
+		return super.componentAt(p.x, p.y);
+	}
+	/**
+	 * Returns the rectangle of the given component in the
+	 * current coordinate system.
+	 * @param c the component
+	 * @return the enclosing rectangle
+	 */
+	public Rectangle componentRectangle(UIComponent c) {
+		Point p = c.absLocation();
+		Pair<Point, Double> s = scale();
+		int dx = (int)(s.first.x - s.second * s.first.x);
+		int dy = (int)(s.first.y - s.second * s.first.y);
+		
+		return new Rectangle(
+				(int)(p.x * s.second + dx), 
+				(int)(p.y * s.second + dy), 
+				(int)(c.width * s.second), (int)(c.height * s.second));
 	}
 }

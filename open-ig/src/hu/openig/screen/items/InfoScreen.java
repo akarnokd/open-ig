@@ -11,6 +11,7 @@ package hu.openig.screen.items;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Func1;
+import hu.openig.core.Pair;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
@@ -52,6 +53,7 @@ import hu.openig.ui.VerticalAlignment;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.KeyEvent;
@@ -921,7 +923,7 @@ public class InfoScreen extends ScreenBase {
 		base.setBounds(0, 0, 
 				commons.info().base.getWidth(), 
 				commons.info().base.getHeight());
-		scaleResize(base, 11);
+		scaleResize(base, margin());
 		
 		planetsTab.location(base.x, base.y + base.height - planetsTab.height - fleetsTab.height);
 		fleetsTab.location(base.x, base.y + base.height - fleetsTab.height);
@@ -1037,7 +1039,7 @@ public class InfoScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base, 11);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.info().base, base.x, base.y, null);
@@ -1166,7 +1168,7 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				animationBlink = !animationBlink;
-				scaleRepaint(base, base, 11);
+				scaleRepaint(base, base, margin());
 			}
 		});
 		adjustPlanetListView();
@@ -1221,7 +1223,7 @@ public class InfoScreen extends ScreenBase {
 
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base, 11);
+		scaleMouse(e, base, margin());
 		if (e.has(Type.DOWN)) {
 			if (showPlanetListDetails) { // FIXME
 				String s1 = get("info.planet_name");
@@ -3860,5 +3862,22 @@ public class InfoScreen extends ScreenBase {
 				p.autoBuild = planet().autoBuild;
 			}
 		}
+	}
+	@Override
+	protected int margin() {
+		return 11;
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }

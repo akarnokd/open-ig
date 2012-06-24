@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Pair;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -24,6 +25,7 @@ import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
@@ -64,7 +66,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	BufferedImage picture;
 	@Override
 	public void onResize() {
-		scaleResize(base);
+		scaleResize(base, margin());
 	}
 
 	@Override
@@ -96,7 +98,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base);
+		scaleMouse(e, base, margin());
 		boolean rep = false;
 		switch (e.type) {
 		case MOVE:
@@ -158,7 +160,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base);
+		AffineTransform savea = scaleDraw(g2, base, margin());
 		g2.setColor(Color.BLACK);
 		g2.fillRect(0, 0, getInnerWidth(), getInnerHeight());
 		if (position != null) {
@@ -321,5 +323,18 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		} else {
 			picture = null;
 		}
+	}
+	@Override
+	protected Point scaleBase(int mx, int my) {
+		UIMouse m = new UIMouse();
+		m.x = mx;
+		m.y = my;
+		scaleMouse(m, base, margin()); 
+		return new Point(m.x, m.y);
+	}
+	@Override
+	protected Pair<Point, Double> scale() {
+		Pair<Point, Double> s = scale(base, margin());
+		return Pair.of(new Point(base.x, base.y), s.second);
 	}
 }
