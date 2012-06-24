@@ -1395,6 +1395,10 @@ public class GameWindow extends JFrame implements GameControls {
 						repaintInner();
 					}
 					break;
+				case KeyEvent.VK_R:
+					allScreens.statusbar.toggleQuickResearch();
+					repaintInner();
+					break;
 				case KeyEvent.VK_H:
 					if (e.isControlDown()) {
 						world().scripting.debug();

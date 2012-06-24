@@ -325,6 +325,7 @@ public class StatusbarScreen extends ScreenBase {
 		if (commons.nongame) {
 			screenMenu.visible(false);
 			objectives.visible(false);
+			quickResearch.visible(false);
 		}
 		notification.bounds(12, bottom.y + 3, width - 190, 12);
 		incomingMessage.y = bottom.y + 2;
@@ -2045,5 +2046,9 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			return super.mouse(e);
 		}
+	}
+	/** Toggle the quick research panel. */
+	public void toggleQuickResearch() {
+		quickResearch.visible(!quickResearch.visible());
 	}
 }
