@@ -890,8 +890,6 @@ public final class BattleSimulator {
 					if (bp != null) {
 						if (bp.mode == Mode.BEAM) {
 							offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
-						} else {
-							offense += ii.count * bp.damage * 1.0 / bp.delay;
 						}
 					}
 				}
