@@ -141,7 +141,7 @@ public class Planet implements Named, Owned, HasInventory {
 		result.vehicleMax = 8; // default per planet
 		
 		for (Building b : surface.buildings) {
-			float eff = b.getEfficiency();
+			double eff = b.getEfficiency();
 			if (b.isConstructing()) {
 				result.constructing = true;
 			}

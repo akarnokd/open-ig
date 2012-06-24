@@ -88,16 +88,11 @@ public class OffensePlanner extends Planner {
 		if (world.money < 100000) {
 			return;
 		}
-		// have a fleet for every N planets + 1
-		int divider = 5;
-		if (world.difficulty == Difficulty.NORMAL) {
-			divider = 4;
-		} else
-		if (world.difficulty == Difficulty.HARD) {
-			divider = 3;
-		}
+
+		int nFleets = (int)Math.round(Math.log(world.ownPlanets.size() + 2) / Math.log(2));
+		
 		// construct fleets
-		if (world.ownPlanets.size() / divider + 1 > world.ownFleets.size()) {
+		if (nFleets > world.ownFleets.size()) {
 			if (createNewFleet()) {
 				return;
 			}

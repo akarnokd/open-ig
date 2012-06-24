@@ -15,5 +15,5 @@ public class Resource {
 	/** The resource type. */
 	public String type;
 	/** The resource amount. */
-	public float amount;
+	public double amount;
 }

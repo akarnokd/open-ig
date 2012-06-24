@@ -67,7 +67,7 @@ public class BuildingType {
 	 * @param resource the resource name
 	 * @return the amount
 	 */
-	public float getResource(String resource) {
+	public double getResource(String resource) {
 		Resource r = resources.get(resource);
 		return r.amount;
 	}

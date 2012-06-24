@@ -670,7 +670,7 @@ public final class BattleSimulator {
 		double shieldValue = 0;
 		// add shields
 		for (Building b : p.surface.buildings) {
-			float eff = b.getEfficiency();
+			double eff = b.getEfficiency();
 			if (Building.isOperational(eff)) {
 				if (b.type.kind.equals("Shield")) {
 					BattleGroundShield bge = p.owner.world.battle.groundShields.get(b.type.id);
@@ -848,7 +848,7 @@ public final class BattleSimulator {
 		}
 		double shieldValue = shieldValue(p);
 		for (Building b : p.surface.buildings) {
-			float eff = b.getEfficiency();
+			double eff = b.getEfficiency();
 			if (Building.isOperational(eff)) {
 				if (b.type.kind.equals("Shield")
 						|| b.type.kind.equals("Gun")) {

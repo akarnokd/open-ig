@@ -234,7 +234,7 @@ public class AllocationPanel extends JPanel {
 			if (b.isReady()) {
 				totalWorkerDemand += b.getWorkers();
 				int e = b.getEnergy();
-				float eff = b.getEfficiency();
+				double eff = b.getEfficiency();
 				if (e < 0) {
 					totalEnergyDemand += e;
 				} else {

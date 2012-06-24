@@ -114,6 +114,8 @@ public class Player {
 	public int warThreshold = 45;
 	/** The negotiation offers from players. */
 	public final Map<String, DiplomaticOffer> offers = U.newLinkedHashMap();
+	/** The factor for police-to-morale conversion. */
+	public double policeRatio; 
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

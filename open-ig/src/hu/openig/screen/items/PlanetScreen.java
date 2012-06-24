@@ -2397,7 +2397,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						}
 						buildingInfoPanel.operationPercent.text(Integer.toString((int)(b.getEfficiency() * 100)));
 						if (b.type.primary != null) {
-							float f = b.getPrimary();
+							double f = b.getPrimary();
 							String s = "";
 							if (f - Math.floor(f) > 0) {
 								s = String.format("%.1f", f);

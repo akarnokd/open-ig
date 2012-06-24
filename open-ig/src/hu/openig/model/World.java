@@ -558,6 +558,8 @@ public class World {
 			
 			p.colonizationLimit = xplayer.getInt("colonization-limit", -1);
 			p.warThreshold = xplayer.getInt("war-threshold", 45);
+			
+			p.policeRatio = xplayer.getDouble("police-ratio", 5);
 		}
 		linkDeferredFleetTargets(deferredFleets);
 	}
