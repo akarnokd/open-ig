@@ -79,6 +79,19 @@ public class UIMouse {
 		/** A wheel event. */
 		WHEEL
 	}
+	/** Empty constructor. */
+	public UIMouse() {
+		
+	}
+	/**
+	 * Create an instance with the given coordinates.
+	 * @param x the x coordinate
+	 * @param y the y coordinate
+	 */
+	public UIMouse(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 	/**
 	 * Create an UIMouse from a Mouse Event.
 	 * @param e the mouse event

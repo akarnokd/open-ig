@@ -40,7 +40,6 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
-import hu.openig.render.TextRenderer;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.GameControls;
 import hu.openig.screen.ScreenBase;
@@ -69,6 +68,7 @@ import hu.openig.screen.items.StarmapScreen.ShowNamesMode;
 import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.VideoScreen;
+import hu.openig.ui.UIColorLabel;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -2447,6 +2447,11 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param m the mouse
 	 */
 	void handleTooltip(UIMouse m) {
+		if (movieVisible()) {
+			tooltipHelper = null;
+			tooltipText = null;
+			return;
+		}
 		ScreenBase top = null;
 		UIComponent c = null;
 		List<ScreenBase> bases = U.newArrayList();
@@ -2472,21 +2477,48 @@ public class GameWindow extends JFrame implements GameControls {
 				c = null;
 			}
 		}
+		if (!optionsVisible) {
+			// if no inner component, use the screen itself
+			if (c == null && secondary != null) {
+				c = secondary.componentAt(m.x, m.y);
+				if (c != null) {
+					top = secondary;
+				}
+			} else
+			if (c == null && primary != null) {
+				c = primary.componentAt(m.x, m.y);
+				if (c != null) {
+					top = primary;
+				}
+			}
+		}
 		
 		Rectangle r = tooltipHelper;
 		String t0 = tooltipText;
 		if (c != null) {
-			tooltipHelper = top.componentRectangle(c);
+			Rectangle tth = top.componentRectangle(c);
 			
-			double s = tooltipHelper.width * 1d / c.width; 
+			double s = tth.width * 1d / c.width; 
 			
-			int cx = m.x - tooltipHelper.x;
-			int cy = m.y - tooltipHelper.y;
+			int cx = m.x - tth.x;
+			int cy = m.y - tth.y;
 			
 			int rx = (int)(cx / s);
 			int ry = (int)(cy / s);
 			
 			tooltipText = c.tooltip(rx, ry);
+			if (tooltipText != null) {
+				Rectangle ttr = c.tooltipLocation(rx, ry);
+				
+				int rx2 = (int)(tth.x + ttr.x / s);
+				int ry2 = (int)(tth.y + ttr.y / s);
+				int rw2 = (int)((ttr.width * s));
+				int rh2 = (int)((ttr.height * s));
+				
+				tooltipHelper = new Rectangle(rx2, ry2, rw2, rh2);
+			} else {
+				tooltipHelper = tth;
+			}
 		} else {
 			tooltipHelper = null;
 			tooltipVisible = false;
@@ -2505,25 +2537,33 @@ public class GameWindow extends JFrame implements GameControls {
 	protected void renderTooltip(Graphics2D g2) {
 		if (tooltipHelper != null) {
 			g2.setColor(Color.ORANGE);
-			g2.drawRect(tooltipHelper.x, tooltipHelper.y, tooltipHelper.width, tooltipHelper.height);
+			g2.drawRect(tooltipHelper.x, tooltipHelper.y, tooltipHelper.width - 1, tooltipHelper.height - 1);
 			if (tooltipText != null && tooltipVisible) {
 				g2.setColor(Color.WHITE);
 				
 				int th = 10;
 				
-				int tw = commons.text().getTextWidth(th, tooltipText);
+				UIColorLabel lbl = new UIColorLabel(th * config.uiScale / 100, commons.text());
+				lbl.width = 600;
+				lbl.text(tooltipText);
+				lbl.width = lbl.maxWidth();
 				
 				g2.setColor(new Color(0, 0, 0, 224));
-				int x0 = tooltipHelper.x;
+				int x0 = tooltipHelper.x + (tooltipHelper.width - lbl.width) / 2;
 				int y0 = tooltipHelper.y + tooltipHelper.height;
-				if (x0 + tw + 6 > getInnerWidth()) {
-					x0 = getInnerWidth() - tw - 6;
+				if (x0 < 0) {
+					x0 = 0;
+				} else
+				if (x0 + lbl.width + 6 > getInnerWidth()) {
+					x0 = getInnerWidth() - lbl.width - 6;
 				}
 				if (y0 + 20 > getInnerHeight()) {
-					y0 = tooltipHelper.y - th + 6;
+					y0 = tooltipHelper.y - lbl.height - 3;
 				}
-				g2.fillRect(x0 - 3, y0 - 3, tw + 6, th + 6);
-				commons.text().paintTo(g2, x0, y0, th, TextRenderer.WHITE, tooltipText);
+				g2.fillRect(x0, y0, lbl.width + 6, lbl.height + 6);
+				g2.translate(x0 + 3, y0 + 3);
+				lbl.draw(g2);
+				g2.translate(-x0 - 3, -y0 - 3);
 			}
 		}
 	}

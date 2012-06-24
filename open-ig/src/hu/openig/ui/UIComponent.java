@@ -239,8 +239,8 @@ public class UIComponent {
 	 * @param y the Y coordinate
 	 * @return the tooltip location
 	 */
-	public Point tooltipLocation(int x, int y) {
-		return new Point(0, height);
+	public Rectangle tooltipLocation(int x, int y) {
+		return new Rectangle(0, 0, width, height);
 	}
 	/**
 	 * Returns a sub-component or itself at the specified location.

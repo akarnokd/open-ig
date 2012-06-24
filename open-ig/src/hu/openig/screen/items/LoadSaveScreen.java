@@ -359,7 +359,6 @@ public class LoadSaveScreen extends ScreenBase {
 				doBack();
 			}
 		};
-		back.tooltip("Return to the previous screen");
 
 		// ===================================================
 		
@@ -1148,6 +1147,11 @@ public class LoadSaveScreen extends ScreenBase {
 		
 		hideConfirm();
 
+		if (world() == null) {
+			back.tooltip(get("options.back.tooltip.mainmenu"));
+		} else {
+			back.tooltip(get("options.back.tooltip.ingame"));
+		}
 	}
 	/**
 	 * Choose a random background for the options.
