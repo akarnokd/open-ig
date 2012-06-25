@@ -27,7 +27,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.95.010'>
+	<module id='Game' version='0.95.015'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,15 +43,15 @@
 			<desc lang='en'>Beta.</desc>
 			<desc lang='de'>Beta</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.010.jar' sha1='f3311aa32e66ccc33e99bc438110c46c81257209'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.015.jar' sha1='e86a81da2f69a703649ffa7c57cb5ff16d030bf0'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120623a2.zip' sha1='364f8e0dc45ee4bd767b261da4c1b6ad585c5529'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Június 23 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 23th June, 2012 / A</desc>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120625a2.zip' sha1='8edb459b2bffdc2c65272927292dc5fd51075e5c'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Június 25 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 25th June, 2012 / A</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120620a.zip' sha1='d90c941a094fbfe0d675e4fdea92db1834f33152'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120625a.zip' sha1='48885d0b52f0134d59c3eee7db05712eeeb11767'/>
 
 		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
@@ -91,6 +91,7 @@
 		<remove file='open-ig-images-20120603a.zip'/>
 		<remove file='open-ig-images-20120605a.zip'/>
 		<remove file='open-ig-images-20120609a.zip'/>
+		<remove file='open-ig-images-20120620a.zip'/>
 		<remove file='open-ig-audio-en-20120420A.zip'/>
 		<remove file='open-ig-audio-en-20120429A.zip'/>
 		<remove file='open-ig-audio-generic-20120420A.zip'/>

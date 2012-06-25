@@ -458,9 +458,10 @@ public class TextRenderer {
 	 */
 	public void paintTo(Graphics2D g2, int x, int y, int size, Iterable<TextSegment> segments) {
 		int dx = 0;
+		Integer spaces = charsetSpaces.get(size);
 		for (TextSegment ts : segments) {
 			paintTo(g2, x + dx, y, size, ts.color, ts.text);
-			dx += getTextWidth(size, ts.text);
+			dx += getTextWidth(size, ts.text) + spaces;
 		}
 	}
 }

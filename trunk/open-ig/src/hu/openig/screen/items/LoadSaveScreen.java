@@ -1152,6 +1152,10 @@ public class LoadSaveScreen extends ScreenBase {
 		} else {
 			back.tooltip(get("options.back.tooltip.ingame"));
 		}
+		
+		setTooltip(audioPage, "options.sound.tooltip");
+		setTooltip(controlPage, "options.mouse.tooltip");
+		setTooltip(visualPage, "options.visual.tooltip");
 	}
 	/**
 	 * Choose a random background for the options.
