@@ -786,6 +786,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (secondary != null) {
 				secondary.onLeave();
 				secondary = null;
+				moveMouse();
 				repaintInner();
 				playSec = true;
 			}
@@ -2449,9 +2450,11 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param m the mouse
 	 */
 	void handleTooltip(UIMouse m) {
-		if (movieVisible()) {
+		if (movieVisible() || m.has(UIMouse.Type.DOWN) || m.has(UIMouse.Type.DRAG)) {
 			tooltipHelper = null;
 			tooltipText = null;
+			tooltipVisible = false;
+			tooltipShowTimer.stop();
 			return;
 		}
 		ScreenBase top = null;
@@ -2521,6 +2524,8 @@ public class GameWindow extends JFrame implements GameControls {
 				tooltipHelper = new Rectangle(rx2, ry2, rw2, rh2);
 			} else {
 				tooltipHelper = tth;
+				tooltipShowTimer.stop();
+				tooltipVisible = false;
 			}
 		} else {
 			tooltipComponent = null;
@@ -2530,6 +2535,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		if (!U.equal(r, tooltipHelper) || !U.equal(tooltipText, t0)) {
 			tooltipVisible = false;
+			tooltipShowTimer.stop();
 			tooltipShowTimer.start();
 			repaintInner();
 		}
@@ -2548,11 +2554,11 @@ public class GameWindow extends JFrame implements GameControls {
 				int th = 10;
 				
 				UIColorLabel lbl = new UIColorLabel(th * config.uiScale / 100, commons.text());
-				lbl.width = 600;
+				lbl.width = config.tooltipWidth;
 				lbl.text(tooltipText);
 				lbl.width = lbl.maxWidth();
 				
-				g2.setColor(new Color(0, 0, 0, 224));
+				g2.setColor(new Color(40, 40, 40, 240));
 				int x0 = tooltipHelper.x + (tooltipHelper.width - lbl.width) / 2;
 				int y0 = tooltipHelper.y + tooltipHelper.height;
 				if (x0 < 0) {
@@ -2562,9 +2568,11 @@ public class GameWindow extends JFrame implements GameControls {
 					x0 = getInnerWidth() - lbl.width - 6;
 				}
 				if (y0 + 20 > getInnerHeight()) {
-					y0 = tooltipHelper.y - lbl.height - 3;
+					y0 = tooltipHelper.y - lbl.height - 6;
 				}
 				g2.fillRect(x0, y0, lbl.width + 6, lbl.height + 6);
+				g2.setColor(Color.LIGHT_GRAY);
+				g2.drawRect(x0, y0, lbl.width + 5, lbl.height + 5);
 				g2.translate(x0 + 3, y0 + 3);
 				lbl.draw(g2);
 				g2.translate(-x0 - 3, -y0 - 3);

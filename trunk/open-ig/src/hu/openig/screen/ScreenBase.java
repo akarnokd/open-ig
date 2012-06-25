@@ -28,6 +28,7 @@ import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.utils.U;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -465,5 +466,31 @@ public abstract class ScreenBase extends UIContainer {
 				(int)(p.x * s.second + dx), 
 				(int)(p.y * s.second + dy), 
 				(int)(c.width * s.second), (int)(c.height * s.second));
+	}
+	/**
+	 * Set the tooltip from a potentially formatted label.
+	 * @param c the component
+	 * @param label the label as the tooltip
+	 * @param params the optional parameters
+	 */
+	public void setTooltip(UIComponent c, String label, Object... params) {
+		if (label != null) {
+			String t2 = format(label, params);
+			setTooltipText(c, t2);
+		} else {
+			setTooltipText(c, null);
+		}
+	}
+	/**
+	 * Set the tooltip to the given text.
+	 * @param c the component
+	 * @param text the text
+	 */
+	public void setTooltipText(UIComponent c, String text) {
+		String t1 = c.tooltip();
+		c.tooltip(text);
+		if (!U.equal(t1, text)) {
+			commons.control().tooltipChanged(c);
+		}
 	}
 }

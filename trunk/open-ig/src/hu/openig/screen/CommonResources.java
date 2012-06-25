@@ -358,14 +358,14 @@ public class CommonResources implements GameEnvironment {
 
 			// FIXME during translation
 			
-//			labelReloader = new Thread() {
-//				@Override
-//				public void run() {
-//					watchLabels();
-//				}
-//			};
-//			labelReloader.setDaemon(true);
-//			labelReloader.start();
+			labelReloader = new Thread() {
+				@Override
+				public void run() {
+					watchLabels();
+				}
+			};
+			labelReloader.setDaemon(true);
+			labelReloader.start();
 		} finally {
 			exec.shutdown();
 		}

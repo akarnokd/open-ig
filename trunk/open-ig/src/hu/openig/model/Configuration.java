@@ -248,6 +248,8 @@ public class Configuration {
 	/** Play the intro videos? */
 	@LoadSave
 	public boolean intro = true;
+	/** The tooltip's maximum width. */
+	public int tooltipWidth = 600;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

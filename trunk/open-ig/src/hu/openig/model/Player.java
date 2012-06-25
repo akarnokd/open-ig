@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Pair;
 import hu.openig.utils.U;
 
 import java.awt.Rectangle;
@@ -137,6 +138,21 @@ public class Player {
 			currentPlanet = p;
 			selectionMode = SelectionMode.PLANET;
 			return p;
+		}
+		return null;
+	}
+	/**
+	 * Determine the previous and next planet if there are more than 1 planets.
+	 * @return the previous and next planets or null if only one planet is present
+	 */
+	public Pair<Planet, Planet> prevNextPlanet() {
+		List<Planet> playerPlanets = ownPlanets();
+		if (playerPlanets.size() > 1) {
+			Collections.sort(playerPlanets, Planet.PLANET_ORDER);
+			int idx = playerPlanets.indexOf(currentPlanet);
+			Planet p1 = idx > 0 ? playerPlanets.get(idx - 1) : playerPlanets.get(playerPlanets.size() - 1);
+			Planet p2 = playerPlanets.get((idx + 1) % playerPlanets.size());
+			return Pair.of(p1, p2);
 		}
 		return null;
 	}
