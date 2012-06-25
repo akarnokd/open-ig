@@ -3850,65 +3850,132 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param mode the selection mode
 	 */
 	void selectUnits(SelectionBoxMode mode) {
+		boolean allowCommands = false; 
 		Rectangle sr = selectionRectangle();
-		boolean own = false;
-		boolean enemy = false;
-		
-		for (GroundwarUnit u : units) {
-			Rectangle r = unitRectangle(u);
-			
-			scaleToScreen(r);
-		
-			
-			boolean in = sr.intersects(r);
-			if (mode == SelectionBoxMode.NEW) {
-				u.selected = in;
-			} else
-			if (mode == SelectionBoxMode.SUBTRACT) {
-				u.selected &= !in;
-			} else
-			if (mode == SelectionBoxMode.ADD) {
-				u.selected |= in;
-			}
-			
-			if (u.selected) {
-				own |= u.owner == player();
-				enemy |= u.owner != player();
-			}
-		}
-		for (GroundwarGun g : guns) {
-			Rectangle r = gunRectangle(g);
-			scaleToScreen(r);
-			
-			boolean in = sr.intersects(r);
-			if (mode == SelectionBoxMode.NEW) {
-				g.selected = in;
-			} else
-			if (mode == SelectionBoxMode.SUBTRACT) {
-				g.selected &= !in;
-			} else
-			if (mode == SelectionBoxMode.ADD) {
-				g.selected |= in;
-			}
-
-			if (g.selected) {
-				own |= g.owner == player();
-				enemy |= g.owner != player();
-			}
-		}
-		// if mixed selection, deselect aliens
-		if (own && enemy) {
+		if (sr.width < 4 && sr.height < 4) {
+			GroundwarUnit u2 = null;
+			Rectangle u2r = null;
+			deselectAll();
 			for (GroundwarUnit u : units) {
-				u.selected = u.selected && u.owner == player();
+				u.selected = false;
+				Rectangle r = unitRectangle(u);
+				scaleToScreen(r);
+				
+				if (r.intersects(sr)) {
+					if (u2 == null || closerToCenter(sr, r, u2r)) {
+						u2 = u;
+						u2r = r;
+					}
+				}
 			}			
-			for (GroundwarGun u : guns) {
-				u.selected = u.selected && u.owner == player();
-			}			
+			GroundwarGun g2 = null;
+			for (GroundwarGun g : guns) {
+				g.selected = false;
+				Rectangle r = gunRectangle(g);
+				scaleToScreen(r);
+
+				if (r.intersects(sr)) {
+					if (g2 == null || closerToCenter(sr, r, u2r)) {
+						g2 = g;
+					}
+				}
+			}
+			if (u2 != null && g2 == null) {
+				allowCommands = u2.owner == player();
+				u2.selected = true;
+			} else
+			if (g2 != null && u2 == null) {
+				allowCommands = g2.owner == player();
+				g2.selected = true;
+			} else
+			if (g2 != null && u2 != null) {
+				Rectangle r = unitRectangle(u2);
+				scaleToScreen(r);
+				
+				Rectangle r2 = gunRectangle(g2);
+				scaleToScreen(r2);
+				
+				if (closerToCenter(sr, r, r2)) {
+					allowCommands = u2.owner == player();
+					u2.selected = true;
+				} else {
+					allowCommands = g2.owner == player();
+					g2.selected = true;
+				}
+			}
+		} else {
+			boolean own = false;
+			boolean enemy = false;
+			
+			for (GroundwarUnit u : units) {
+				Rectangle r = unitRectangle(u);
+				
+				scaleToScreen(r);
+			
+				
+				boolean in = sr.contains(r.x + r.width / 2, r.y + r.height / 2);
+				if (mode == SelectionBoxMode.NEW) {
+					u.selected = in;
+				} else
+				if (mode == SelectionBoxMode.SUBTRACT) {
+					u.selected &= !in;
+				} else
+				if (mode == SelectionBoxMode.ADD) {
+					u.selected |= in;
+				}
+				
+				if (u.selected) {
+					own |= u.owner == player();
+					enemy |= u.owner != player();
+				}
+			}
+			for (GroundwarGun g : guns) {
+				Rectangle r = gunRectangle(g);
+				scaleToScreen(r);
+				
+				boolean in = sr.contains(r.x + r.width / 2, r.y + r.height / 2);
+				if (mode == SelectionBoxMode.NEW) {
+					g.selected = in;
+				} else
+				if (mode == SelectionBoxMode.SUBTRACT) {
+					g.selected &= !in;
+				} else
+				if (mode == SelectionBoxMode.ADD) {
+					g.selected |= in;
+				}
+	
+				if (g.selected) {
+					own |= g.owner == player();
+					enemy |= g.owner != player();
+				}
+			}
+			
+			// if mixed selection, deselect aliens
+			if (own && enemy) {
+				for (GroundwarUnit u : units) {
+					u.selected = u.selected && u.owner == player();
+				}			
+				for (GroundwarGun u : guns) {
+					u.selected = u.selected && u.owner == player();
+				}			
+			}
+			allowCommands = own || enemy;
 		}
-		boolean allowCommands = own || enemy; // FIXME only own!
 		moveUnit.enabled(allowCommands);
 		attackUnit.enabled(allowCommands);
 		stopUnit.enabled(allowCommands);
+	}
+	/**
+	 * Check if r1's center is closer to r0's center than r2's center is.
+	 * @param r0 the base rectangle
+	 * @param r1 the first rectangle
+	 * @param r2 the second rectangle
+	 * @return true if r1 is closer than r2
+	 */
+	boolean closerToCenter(Rectangle r0, Rectangle r1, Rectangle r2) {
+		double d1 = Math.hypot(r0.x + r0.width / 2d - r1.x - r1.width / 2d, r0.y + r0.height / 2d - r1.y - r1.height / 2d);
+		double d2 = Math.hypot(r0.x + r0.width / 2d - r2.x - r2.width / 2d, r0.y + r0.height / 2d - r2.y - r2.height / 2d);
+		return d1 < d2;
 	}
 	/**
 	 * Sacle and position the given rectangle according to the current offset and scale.
