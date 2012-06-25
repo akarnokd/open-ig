@@ -350,6 +350,8 @@ public class GameWindow extends JFrame implements GameControls {
 	public UIComponent tooltipComponent;
 	/** Is the tooltip visible? */
 	boolean tooltipVisible;
+	/** Show or hide the helper rectangle. */
+	boolean helperRectangleVisible;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -1007,6 +1009,15 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				e.consume();
 			}
+			if (e.getKeyCode() == KeyEvent.VK_C) {
+				if (e.isControlDown()) {
+					helperRectangleVisible = !helperRectangleVisible;
+					e.consume();
+					moveMouse();
+					repaintInner();
+					return;
+				}
+			}
 			if (!commons.worldLoading && commons.world() != null && !movieVisible()) {
 				switch (e.getKeyCode()) {
 				case KeyEvent.VK_1:
@@ -1434,6 +1445,8 @@ public class GameWindow extends JFrame implements GameControls {
 					break;
 				case KeyEvent.VK_R:
 					allScreens.statusbar.toggleQuickResearch();
+					e.consume();
+					moveMouse();
 					repaintInner();
 					break;
 				case KeyEvent.VK_H:
@@ -2104,6 +2117,13 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void endGame() {
 		hideStatusbar();
+		
+		tooltipComponent = null;
+		tooltipText = null;
+		tooltipShowTimer.stop();
+		tooltipHelper = null;
+		tooltipVisible = false;
+		
 		commons.stop();
 		commons.world(null);
 		for (ScreenBase sb : screens) {
@@ -2546,8 +2566,10 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	protected void renderTooltip(Graphics2D g2) {
 		if (tooltipHelper != null) {
-			g2.setColor(Color.ORANGE);
-			g2.drawRect(tooltipHelper.x, tooltipHelper.y, tooltipHelper.width - 1, tooltipHelper.height - 1);
+			if (helperRectangleVisible) {
+				g2.setColor(Color.ORANGE);
+				g2.drawRect(tooltipHelper.x, tooltipHelper.y, tooltipHelper.width - 1, tooltipHelper.height - 1);
+			}
 			if (tooltipText != null && tooltipVisible) {
 				g2.setColor(Color.WHITE);
 				
@@ -2559,7 +2581,7 @@ public class GameWindow extends JFrame implements GameControls {
 				lbl.width = lbl.maxWidth();
 				
 				g2.setColor(new Color(40, 40, 40, 240));
-				int x0 = tooltipHelper.x + (tooltipHelper.width - lbl.width) / 2;
+				int x0 = tooltipHelper.x + (tooltipHelper.width - lbl.width - 6) / 2;
 				int y0 = tooltipHelper.y + tooltipHelper.height;
 				if (x0 < 0) {
 					x0 = 0;

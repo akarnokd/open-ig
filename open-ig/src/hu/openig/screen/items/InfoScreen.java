@@ -2676,74 +2676,95 @@ public class InfoScreen extends ScreenBase {
 			PlanetStatistics ps = p.getStatistics();
 			if (ps.hasProblem(PlanetProblems.HOUSING)) {
 				problemsHouse.image(commons.common().houseIcon).visible(true);
+				setTooltip(problemsHouse, "info.problems.house.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.HOUSING)) {
 				problemsHouse.image(commons.common().houseIconDark).visible(true);
+				setTooltip(problemsHouse, "info.warnings.house.tooltip");
 			}
 			
 			if (ps.hasProblem(PlanetProblems.ENERGY)) {
 				problemsEnergy.image(commons.common().energyIcon).visible(true);
+				setTooltip(problemsEnergy, "info.problems.energy.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.ENERGY)) {
 				problemsEnergy.image(commons.common().energyIconDark).visible(true);
+				setTooltip(problemsEnergy, "info.warnings.energy.tooltip");
 			}
 			
 			if (ps.hasProblem(PlanetProblems.WORKFORCE)) {
 				problemsWorker.image(commons.common().workerIcon).visible(true);
+				setTooltip(problemsWorker, "info.problems.worker.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.WORKFORCE)) {
 				problemsWorker.image(commons.common().workerIconDark).visible(true);
+				setTooltip(problemsWorker, "info.warnings.worker.tooltip");
 			}
 			
 			if (ps.hasProblem(PlanetProblems.FOOD)) {
 				problemsFood.image(commons.common().foodIcon).visible(true);
+				setTooltip(problemsFood, "info.problems.food.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.FOOD)) {
 				problemsFood.image(commons.common().foodIconDark).visible(true);
+				setTooltip(problemsFood, "info.warnings.food.tooltip");
 			}
 			
 			if (ps.hasProblem(PlanetProblems.HOSPITAL)) {
 				problemsHospital.image(commons.common().hospitalIcon).visible(true);
+				setTooltip(problemsHospital, "info.problems.hospital.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.HOSPITAL)) {
 				problemsHospital.image(commons.common().hospitalIconDark).visible(true);
+				setTooltip(problemsHospital, "info.warnings.hospital.tooltip");
 			}
 
 			if (ps.hasProblem(PlanetProblems.VIRUS)) {
 				problemsVirus.image(commons.common().virusIcon).visible(true);
+				setTooltip(problemsVirus, "info.problems.virus.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.VIRUS)) {
 				problemsVirus.image(commons.common().virusIconDark).visible(true);
+				setTooltip(problemsVirus, "info.warnings.virus.tooltip");
 			}
 
 			if (ps.hasProblem(PlanetProblems.STADIUM)) {
 				problemsStadium.image(commons.common().stadiumIcon).visible(true);
+				setTooltip(problemsStadium, "info.problems.stadium.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.STADIUM)) {
 				problemsStadium.image(commons.common().stadiumIconDark).visible(true);
+				setTooltip(problemsStadium, "info.warnings.stadium.tooltip");
 			}
 
 			if (ps.hasProblem(PlanetProblems.REPAIR)) {
 				problemsRepair.image(commons.common().repairIcon).visible(true);
+				setTooltip(problemsRepair, "info.problems.damage.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.REPAIR)) {
 				problemsRepair.image(commons.common().repairIconDark).visible(true);
+				setTooltip(problemsRepair, "info.warnings.damage.tooltip");
 			}
 
 			if (ps.hasProblem(PlanetProblems.COLONY_HUB)) {
 				problemsColonyHub.image(commons.common().colonyHubIcon).visible(true);
+				setTooltip(problemsColonyHub, "info.problems.hq.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.COLONY_HUB)) {
 				problemsColonyHub.image(commons.common().colonyHubIconDark).visible(true);
+				setTooltip(problemsColonyHub, "info.warnings.hq.tooltip");
 			}
 			if (ps.hasProblem(PlanetProblems.POLICE)) {
 				problemsPolice.image(commons.common().policeIcon).visible(true);
+				setTooltip(problemsPolice, "info.problems.police.tooltip");
 			} else
 			if (ps.hasWarning(PlanetProblems.POLICE)) {
 				problemsPolice.image(commons.common().policeIconDark).visible(true);
+				setTooltip(problemsPolice, "info.warnings.police.tooltip");
 			}
 			if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE)) {
 				problemsFireBrigade.image(commons.common().fireBrigadeIcon).visible(true);
+				setTooltip(problemsFireBrigade, "info.problems.fire.tooltip");
 			}
 		}
 	}

@@ -2737,7 +2737,7 @@
 	<entry key="statusbar.speed4.tooltip">Négyszeres sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]3[/c]</entry>
 	<entry key="statusbar.money.tooltip">%,d cr</entry>
 	<entry key="statusbar.objectives.tooltip">Feladatok megjelenítése vagy elrejtése[n]Gyorsbillentyű: [c=FFFFFFFF]TAB[/c]</entry>
-	<entry key="statusbar.notification.tooltip">Értesítések[n][c=FFFFFFFF]Jobb egérgomb[/c]: étresítési történet megjelenítése vagy elrejtése</entry>
+	<entry key="statusbar.notification.tooltip">Értesítések[n][c=FFFFFFFF]Jobb egérgomb[/c]: értesítési történet megjelenítése vagy elrejtése</entry>
 	<entry key="statusbar.notification.clear.tooltip">Értesítés történet törlése</entry>
 	<entry key="statusbar.menu.tooltip">Menü megjelenítése[n]Tartsd nyomva bármelyik egérgombot,[n]majd engedd fel a kívánt menüpont felett.</entry>
 	<entry key="buildings.upgrade.none">Az épület nincs fejlesztve.</entry>
@@ -2765,11 +2765,35 @@
 	<entry key="colony.damaged.tooltip">Épület javításának megkezdése</entry>
 	<entry key="colony.repairing.tooltip">Épület javításának befejezése</entry>
 	<entry key="colony.inactive.tooltip">Épület bekapcsolása</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="info.warnings.house.tooltip">Kevés a lakóhely.</entry>
+	<entry key="info.problems.house.tooltip">Nagyon kevés a lakóhely!</entry>
+	<entry key="info.warnings.energy.tooltip">Kevés az energia.</entry>
+	<entry key="info.problems.energy.tooltip">Nagyon kevés az energia!</entry>
+	<entry key="info.warnings.food.tooltip">Kevés az élelem.</entry>
+	<entry key="info.problems.food.tooltip">Nagyon kevés az élelem!</entry>
+	<entry key="info.warnings.hospital.tooltip">Kevés a kórház.</entry>
+	<entry key="info.problems.hospital.tooltip">Nagyon kevés a kórház!</entry>
+	<entry key="info.warnings.damage.tooltip">Építés folyamatban.</entry>
+	<entry key="info.problems.damage.tooltip">Sérült épületek!</entry>
+	<entry key="info.warnings.hq.tooltip">Főépület kell.</entry>
+	<entry key="info.problems.hq.tooltip">Főépület kell!</entry>
+	<entry key="info.warnings.police.tooltip">Kevés a rendőrség.</entry>
+	<entry key="info.problems.police.tooltip">Nagyon kevés a rendőrség!</entry>
+	<entry key="info.warnings.virus.tooltip">Vírusfertőzés.</entry>
+	<entry key="info.problems.virus.tooltip">Vírusfertőzés!</entry>
+	<entry key="info.warnings.fire.tooltip">Tűzoltóság kell.</entry>
+	<entry key="info.problems.fire.tooltip">Tűzoltóság kell!</entry>
+	<entry key="info.warnings.stadium.tooltip">Stadion kell.</entry>
+	<entry key="info.problems.stadium.tooltip">Stadion kell!</entry>
+	<entry key="info.warnings.worker.tooltip">Munkáshiány.</entry>
+	<entry key="info.problems.worker.tooltip">Komoly munkáshiány!</entry>
+	<entry key="options.sound.tooltip">Hang beállítások</entry>
+	<entry key="options.mouse.tooltip">Egér beállítások</entry>
+	<entry key="options.visual.tooltip">Vizuális beállítások</entry>
+	<entry key="starmap.statistics.tooltip">Statisztika megjelenítése[n]Gyorsbillentyű: [c=FFFFFFFF]F11[/c]</entry>
+	<entry key="starmap.achievements.tooltip">Teljesítmények megjelenítése[n]Gyorsbillentyű: [c=FFFFFFFF]F12[/c]</entry>
+	<entry key="starmap.zoom.tooltip">Térkép nagyítása vagy kicsinyítése[n][c=FFFFFFFF]Bal egérgomb[/c]: nagyítás[n][c=FFFFFFFF]Jobb egérgomb[/c]: kicsinyítés</entry>
+	
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

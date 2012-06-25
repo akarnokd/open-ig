@@ -2676,6 +2676,81 @@
 	<entry key="quickresearch.comp">Comp.</entry>
 	<entry key="quickresearch.ai">A.I.</entry>
 	<entry key="quickresearch.mil">Mil.</entry>
+
+	<entry key="options.back.tooltip.mainmenu">Back to [c=FFFFFFFF]Main menu[/c].</entry>
+	<entry key="options.back.tooltip.ingame">Back to [c=FFFFFFFF]Game[/c].</entry>
+	<entry key="mainmenu.single.tooltip">Start a new single player campaing or skirmish.</entry>
+	<entry key="statusbar.quickproduction">Quick production panel[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: production screen</entry>
+	<entry key="statusbar.quickresearch.none">Quick research panel[n]No active research[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
+	<entry key="statusbar.quickresearch.running">Quick research panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
+	<entry key="statusbar.quickresearch.available">Quick research panel[n]Kutatási lehetőségek vannak[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
+	<entry key="statusbar.quickresearch.problem.LAB">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]kapacitáshiány[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
+	<entry key="statusbar.quickresearch.problem.MONEY">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]pénzhiány[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
+	<entry key="statusbar.quickresearch.problem.STOPPED">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]leállítva[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
+	<entry key="statusbar.pause.tooltip">Pause[n]Shortcut: [c=FFFFFFFF]SPACE[/c]</entry>
+	<entry key="statusbar.speed1.tooltip">Normal speed[n]Shortcut: [c=FFFFFFFF]1[/c]</entry>
+	<entry key="statusbar.speed2.tooltip">Double speed[n]Shortcut: [c=FFFFFFFF]2[/c]</entry>
+	<entry key="statusbar.speed4.tooltip">Quadruple speed[n]Shortcut: [c=FFFFFFFF]3[/c]</entry>
+	<entry key="statusbar.money.tooltip">%,d cr</entry>
+	<entry key="statusbar.objectives.tooltip">Show or hide tasks[n]Shortcut: [c=FFFFFFFF]TAB[/c]</entry>
+	<entry key="statusbar.notification.tooltip">Notifications[n][c=FFFFFFFF]Right mouse button[/c]: Show or hide notification history</entry>
+	<entry key="statusbar.notification.clear.tooltip">Clear notification history</entry>
+	<entry key="statusbar.menu.tooltip">Show menu[n]Hold down the mouse button and release it over the desired entry.</entry>
+	<entry key="buildings.upgrade.none">Building has no upgrades.</entry>
+	<entry key="buildings.upgrade.has">Building has upgrades.[n][c=FFFFFF00]%s[/c]</entry>
+	<entry key="buildings.upgrade.cost">Purchase upgrade[n][c=FFFFFF00]%s[/c][n][c=%s]Upgrade cost: %,d cr[/c]</entry>
+	<entry key="buildings.upgrade.bought">Purchased upgrade[n][c=FFFFFF00]%s[/c]</entry>
+	<entry key="buildings.demolish.tooltip">Demolish building[n][c=FFFFFFFF]Money returned: %,d cr[/c]</entry>
+	<entry key="colony.zoom.tooltip">Zoom in or out of the surface[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out[n][c=FFFFFFFF]Középső egérgomb[/c]: normal zoom and center view</entry>
+	<entry key="colony.prev.tooltip">Jump to previous planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]MINUS[/c]</entry>
+	<entry key="colony.next.tooltip">Jump to next planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]PLUS[/c]</entry>
+	<entry key="colony.info.tooltip">Colony information[n]Shortcut: [c=FFFFFFFF]F7[/c]</entry>
+	<entry key="colony.planets.tooltip">Planet listing[n]Shortcut: [c=FFFFFFFF]F7, Q[/c]</entry>
+	<entry key="colony.starmap.tooltip">Starmap[n]Shortcut: [c=FFFFFFFF]F2[/c]</entry>
+	<entry key="colony.bridge.tooltip">Bridge, communication[n]Shortcut: [c=FFFFFFFF]F1[/c]</entry>
+	<entry key="colony.building.prev.tooltip">Previous building[n][c=FFFFFFFF]Mouse wheel up[/c]</entry>
+	<entry key="colony.building.next.tooltip">Next building[n][c=FFFFFFFF]Mouse wheel down[/c]</entry>
+	<entry key="colony.building.list.tooltip">Building list[n]Shortcut: [c=FFFFFFFF]F7, S[/c]</entry>
+	<entry key="colony.building.build.tooltip">Toggle build mode.[n]Hold down [c=FFFFFFFF]SHIFT[/c] to place multiple buildings.[n]Shortcut: [c=FFFFFFFF]B[/c]</entry>
+	<entry key="colony.buildings.tooltip">Show or hide the building panel.</entry>
+	<entry key="colony.buildinginfos.tooltip">Show or hide the building status panel.</entry>
+	<entry key="colony.radars.tooltip">Show or hide the radar panel.</entry>
+	<entry key="colony.infos.tooltip">Show or hide colony information.</entry>
+	<entry key="colony.buttons.tooltip">Show or hide navigation buttons.</entry>
+	<entry key="colony.active.tooltip">Switch off building</entry>
+	<entry key="colony.damaged.tooltip">Start repairing the building</entry>
+	<entry key="colony.repairing.tooltip">Stop repairing the building</entry>
+	<entry key="colony.inactive.tooltip">Switch on building</entry>
+	<entry key="info.warnings.house.tooltip">Not enough living space.</entry>
+	<entry key="info.problems.house.tooltip">Serious lack of living space!</entry>
+	<entry key="info.warnings.energy.tooltip">Not enough energy.</entry>
+	<entry key="info.problems.energy.tooltip">Serious lack of energy!</entry>
+	<entry key="info.warnings.food.tooltip">Not enough food.</entry>
+	<entry key="info.problems.food.tooltip">Serious lack of food!</entry>
+	<entry key="info.warnings.hospital.tooltip">Not enough hospitals.</entry>
+	<entry key="info.problems.hospital.tooltip">Serious lack of hospitals!</entry>
+	<entry key="info.warnings.damage.tooltip">Construction in progress.</entry>
+	<entry key="info.problems.damage.tooltip">Damaged buildings!</entry>
+	<entry key="info.warnings.hq.tooltip">Colony hub needed.</entry>
+	<entry key="info.problems.hq.tooltip">Colony hub needed!</entry>
+	<entry key="info.warnings.police.tooltip">Not enough police.</entry>
+	<entry key="info.problems.police.tooltip">Serious lack of police!</entry>
+	<entry key="info.warnings.virus.tooltip">Virus infection.</entry>
+	<entry key="info.problems.virus.tooltip">Virus infection!</entry>
+	<entry key="info.warnings.fire.tooltip">Fire brigade needed.</entry>
+	<entry key="info.problems.fire.tooltip">Fire brigade needed!</entry>
+	<entry key="info.warnings.stadium.tooltip">Stadium needed.</entry>
+	<entry key="info.problems.stadium.tooltip">Stadium needed!</entry>
+	<entry key="info.warnings.worker.tooltip">Not enough workers.</entry>
+	<entry key="info.problems.worker.tooltip">Serious lack of workers!</entry>
+	<entry key="options.sound.tooltip">Sound settings</entry>
+	<entry key="options.mouse.tooltip">Control settings</entry>
+	<entry key="options.visual.tooltip">Visual settings</entry>
+	<entry key="starmap.statistics.tooltip">Display statistics[n]Shortcut: [c=FFFFFFFF]F11[/c]</entry>
+	<entry key="starmap.achievements.tooltip">Display achievements[n]Shortcut: [c=FFFFFFFF]F12[/c]</entry>
+	<entry key="starmap.zoom.tooltip">Zoom in or out of the map[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out</entry>
+
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
