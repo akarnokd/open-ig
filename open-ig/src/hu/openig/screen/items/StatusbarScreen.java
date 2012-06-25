@@ -52,6 +52,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -151,6 +152,10 @@ public class StatusbarScreen extends ScreenBase {
 	QuickResearchPanel quickResearch;
 	/** The show-hide objectives button. */
 	UIImageButton objectivesButton;
+	/** The quick research button. */
+	QuickPanelButton quickResearchButton;
+	/** The quick production button. */
+	QuickPanelButton quickProductionButton;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -265,6 +270,37 @@ public class StatusbarScreen extends ScreenBase {
 			}
 		};
 		
+		quickResearchButton = new QuickPanelButton("00000000");
+		quickResearchButton.onLeftClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				quickResearch.visible(true);
+			}
+		};
+		quickResearchButton.onRightClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				displaySecondary(Screens.RESEARCH);
+			}
+		};
+		quickProductionButton = new QuickPanelButton("00000");
+		quickProductionButton.onLeftClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				// TODO show panel
+			}
+		};
+		quickProductionButton.onRightClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				displaySecondary(Screens.PRODUCTION);
+			}
+		};
+		
 		addThis();
 	}
 
@@ -358,59 +394,6 @@ public class StatusbarScreen extends ScreenBase {
 			int w = commons.text().getTextWidth(10, s);
 			commons.text().paintTo(g2, notification.x + (notification.width - w) / 2, notification.y + 1, 10, TextRenderer.YELLOW, s);
 		} else {
-			if (world().level > 1 && config.quickRNP) {
-				int prodCount = computeTotalProduction();
-				
-				String pps1 = String.format("00000");
-				int ppsw1 = commons.text().getTextWidth(10, pps1);
-				String pps2 = String.format("00000000");
-				int ppsw2 = commons.text().getTextWidth(10, pps2);
-				
-				String ps = "-";
-				if (prodCount > 0) {
-					ps = String.format("%d", prodCount);
-				}
-				int ppsw = commons.text().getTextWidth(10, ps);
-				int ppsx = width - MENU_ICON_WIDTH - ppsw1 + (ppsw1 - ppsw) / 2;
-				commons.text().paintTo(g2, ppsx, top.y + 4, 10, TextRenderer.YELLOW, ps);
-//				g2.setColor(Color.GREEN);
-				
-				g2.drawImage(commons.statusbar().iconBack, width - MENU_ICON_WIDTH * 2 - ppsw1, top.y, null);
-				if (prodCount > 0) {
-					g2.drawImage(commons.statusbar().gearLight, width - MENU_ICON_WIDTH * 2 - ppsw1 + 7, top.y + 3, null);
-				} else {
-					g2.drawImage(commons.statusbar().gearNormal, width - MENU_ICON_WIDTH * 2 - ppsw1 + 7, top.y + 3, null);
-				}
-				if (world().level > 2) {
-					int rpsx0 = width - MENU_ICON_WIDTH * 2 - ppsw2 - ppsw1;
-					String rs = "-";
-					ResearchType rt = player().runningResearch();
-					boolean mayBlink = false;
-					if (rt != null) {
-						Research r = player().research.get(rt);
-						if (r != null) {
-							rs = String.format("%.1f%%", r.getPercent());
-							mayBlink = r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;
-						}
-					}
-					int rsw = commons.text().getTextWidth(10, rs);
-					int rsx = rpsx0 + (ppsw2 - rsw) / 2;
-
-					if (blink || !mayBlink) {
-						commons.text().paintTo(g2, rsx, top.y + 4, 10, TextRenderer.YELLOW, rs);
-					}
-					g2.drawImage(commons.statusbar().iconBack, rpsx0 - MENU_ICON_WIDTH, top.y, null);
-					if (rt != null || isResearchAvailable()) {
-						g2.drawImage(commons.statusbar().researchLight, rpsx0 - MENU_ICON_WIDTH + 7, top.y + 3, null);
-					} else {
-						g2.drawImage(commons.statusbar().researchNormal, rpsx0 - MENU_ICON_WIDTH + 7, top.y + 3, null);
-					}
-					
-					quickResearch.location(rpsx0 - MENU_ICON_WIDTH + 7 + commons.statusbar().researchLight.getWidth() - quickResearch.width, top.y + 20);
-					quickResearch.x = Math.max(0, quickResearch.x);
-				}
-			}
-			
 			if (hasUnseenMessage()) {
 				String s = get("incoming_message");
 				int w = commons.text().getTextWidth(10, s);
@@ -526,12 +509,50 @@ public class StatusbarScreen extends ScreenBase {
 				effectSound(SoundType.ACHIEVEMENT);
 			}
 		}
-		
-		if (world().level > 2) {
-			quickResearch.update();
+		if (world().level > 1 && config.quickRNP) {
+			quickProductionButton.visible(true);
+			
+			int prodCount = computeTotalProduction();
+			if (prodCount > 0) {
+				quickProductionButton.icon = commons.statusbar().gearLight;
+				quickProductionButton.text = String.format("%d", prodCount);
+			} else {
+				quickProductionButton.icon = commons.statusbar().gearNormal;
+				quickProductionButton.text = "-";
+			}
+			if (world().level > 2) {
+				quickResearchButton.visible(true);
+
+				String rs = "-";
+				ResearchType rt = player().runningResearch();
+				boolean mayBlink = false;
+				if (rt != null) {
+					Research r = player().research.get(rt);
+					if (r != null) {
+						rs = String.format("%.1f%%", r.getPercent());
+						mayBlink = r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;
+					}
+				}
+
+				quickResearchButton.text = rs;
+				quickResearchButton.textVisible = blink || !mayBlink; 
+				if (rt != null || isResearchAvailable()) {
+					quickResearchButton.icon = commons.statusbar().researchLight;
+				} else {
+					quickResearchButton.icon = commons.statusbar().researchNormal;
+				}
+				quickResearch.update();
+				quickResearch.location(quickResearchButton.x + MENU_ICON_WIDTH - quickResearch.width, quickResearchButton.y + quickResearchButton.height);
+			} else {
+				quickResearch.visible(false);
+			}
 		} else {
+			quickProductionButton.visible(false);
+			quickResearchButton.visible(false);
 			quickResearch.visible(false);
 		}
+		quickProductionButton.location(getInnerWidth() - MENU_ICON_WIDTH - quickProductionButton.width, top.y);
+		quickResearchButton.location(quickProductionButton.x - quickResearchButton.width, top.y);
 	}
 	@Override
 	public void onEndGame() {
@@ -811,49 +832,12 @@ public class StatusbarScreen extends ScreenBase {
 			return true;
 		}
 		// FIXME
-		
-		String pps1 = String.format("00000");
-		int ppsw1 = commons.text().getTextWidth(10, pps1);
-		String pps2 = String.format("00000000");
-		int ppsw2 = commons.text().getTextWidth(10, pps2);
-		int px = width - MENU_ICON_WIDTH * 2 - ppsw1;
-		int px2 = width - MENU_ICON_WIDTH * 3 - ppsw2 - ppsw1;
-		if (config.quickRNP && !commons.battleMode 
-				&& world().level > 1 && e.y < 20 && e.x >= px && e.x < px + ppsw1 + MENU_ICON_WIDTH) {
-			if (e.has(Type.DOWN)) {
-				buttonSound(SoundType.CLICK_MEDIUM_2);
-				if (e.has(Button.RIGHT)) {
-					displaySecondary(Screens.PRODUCTION);
-				}
-				return true;
-			}
-		} else
-		if (config.quickRNP && !commons.battleMode
-				&& world().level > 2 && e.y < 20 && e.x >= px2 && e.x < px2 + ppsw2 + MENU_ICON_WIDTH) {
-			if (e.has(Type.DOWN)) {
-				buttonSound(SoundType.CLICK_MEDIUM_2);
-				if (e.has(Button.RIGHT)) {
-					displaySecondary(Screens.RESEARCH);
-				} else 
-				if (e.has(Button.LEFT)) {
-					quickResearch.visible(true);
-				}
-				return true;
-			}
-		} else
-//		if (e.within(0, 0, width, 20) 
-//			|| e.within(0, height - 18, width, 18)
-//			|| inPanel(e, screenMenu)
-//			|| inPanel(e, notificationHistory)
-//			|| inPanel(e, quickResearch)
-//		) { 
-			if (e.has(Type.DOWN) && e.within(width - MENU_ICON_WIDTH, 0, screenMenu.width, 20)) {
-				buttonSound(SoundType.CLICK_MEDIUM_2);
-				screenMenu.highlight = -1;
-				screenMenu.visible(true);
-				return true;
-			}
-//		}
+		if (e.has(Type.DOWN) && e.within(width - MENU_ICON_WIDTH, 0, screenMenu.width, 20)) {
+			buttonSound(SoundType.CLICK_MEDIUM_2);
+			screenMenu.highlight = -1;
+			screenMenu.visible(true);
+			return true;
+		}
 		return super.mouse(e);
 	}
 	/**
@@ -1752,7 +1736,7 @@ public class StatusbarScreen extends ScreenBase {
 					if (rs1 == null) {
 						cl.text(ri.first.name, true);
 					} else {
-						cl.text(String.format("%s - %.1f%%", ri.first.name, rs1.getPercent()), true);
+						cl.text(String.format("%s - %d%%", ri.first.name, (int)rs1.getPercent()), true);
 					}
 					cl.color(ri.second);
 					cl.hoverColor(TextRenderer.WHITE);
@@ -2061,5 +2045,57 @@ public class StatusbarScreen extends ScreenBase {
 	/** Toggle the quick research panel. */
 	public void toggleQuickResearch() {
 		quickResearch.visible(!quickResearch.visible());
+	}
+	/**
+	 * A quick panel's button with a numerical value displayed. 
+	 * @author akarnokd, 2012.06.25.
+	 */
+	class QuickPanelButton extends UIComponent {
+		/** The left click action. */
+		public Action0 onLeftClick;
+		/** The right click action. */
+		public Action0 onRightClick;
+		/** The text to display. */
+		public String text;
+		/** The image to display. */
+		public BufferedImage icon;
+		/** The max text width. */
+		int textMaxWidth;
+		/** Is the text visible? */
+		public boolean textVisible;
+		/**
+		 * Initialize the button.
+		 * @param pattern the pattern
+		 */
+		public QuickPanelButton(String pattern) {
+			textMaxWidth = commons.text().getTextWidth(10, pattern);
+			width = textMaxWidth + MENU_ICON_WIDTH;
+			height = 20;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			if (textVisible) {
+				int w = commons.text().getTextWidth(10, text);
+				int x0 = MENU_ICON_WIDTH + (textMaxWidth - w) / 2;
+				commons.text().paintTo(g2, x0, 0 + 4, 10, TextRenderer.YELLOW, text);
+			}
+			
+			g2.drawImage(commons.statusbar().iconBack, 0, 0, null);
+			g2.drawImage(icon, 0 + 7, 0 + 3, null);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				if (e.has(Button.LEFT) && onLeftClick != null) {
+					onLeftClick.invoke();
+					return true;
+				}
+				if (e.has(Button.RIGHT) && onRightClick != null) {
+					onRightClick.invoke();
+					return true;
+				}
+			}
+			return super.mouse(e);
+		}
 	}
 }
