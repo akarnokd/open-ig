@@ -69,6 +69,13 @@ public class UIColorLabel extends UIComponent {
 					b.append("[");
 					i += 2;
 				} else
+				if (text.charAt(i + 1) == 'n') {
+					if (b.length() > 0) {
+						addSegment(b.toString(), currentColor);
+						addNewline();
+					}
+					i += 2;
+				} else
 				if (text.charAt(i + 1) == 'c') {
 					String col = text.substring(i + 3, i + 11);
 					addSegment(b.toString(), currentColor);
@@ -88,7 +95,10 @@ public class UIColorLabel extends UIComponent {
 				continue;
 			} else
 			if (c == '\n') {
-				addNewline();
+				if (b.length() > 0) {
+					addSegment(b.toString(), currentColor);
+					addNewline();
+				}
 			} else {
 				b.append(c);
 			}
