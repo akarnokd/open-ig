@@ -2720,9 +2720,53 @@
 	<entry key="quickresearch.comp">Komp.</entry>
 	<entry key="quickresearch.ai">M.I.</entry>
 	<entry key="quickresearch.mil">Kat.</entry>
+	
 	<entry key="options.back.tooltip.mainmenu">Visszatérés a [c=FFFFFFFF]Főmenübe[/c].</entry>
 	<entry key="options.back.tooltip.ingame">Visszatérés a [c=FFFFFFFF]Játékba[/c].</entry>
 	<entry key="mainmenu.single.tooltip">Új egyjátékos kampány vagy egyedi játék kezdése.</entry>
+	<entry key="statusbar.quickproduction">Gyors gyártás panel[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Gyártás képernyő</entry>
+	<entry key="statusbar.quickresearch.none">Gyors kutatás panel[n]Nincs aktív kutatás[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
+	<entry key="statusbar.quickresearch.running">Gyors kutatás panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
+	<entry key="statusbar.quickresearch.available">Gyors kutatás panel[n]Kutatási lehetőségek vannak[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
+	<entry key="statusbar.quickresearch.problem.LAB">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]kapacitáshiány[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
+	<entry key="statusbar.quickresearch.problem.MONEY">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]pénzhiány[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
+	<entry key="statusbar.quickresearch.problem.STOPPED">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]leállítva[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
+	<entry key="statusbar.pause.tooltip">Szünet[n]Gyorsbillentyű: [c=FFFFFFFF]SZÓKÖZ[/c]</entry>
+	<entry key="statusbar.speed1.tooltip">Normál sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]1[/c]</entry>
+	<entry key="statusbar.speed2.tooltip">Dupla sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]2[/c]</entry>
+	<entry key="statusbar.speed4.tooltip">Négyszeres sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]3[/c]</entry>
+	<entry key="statusbar.money.tooltip">%,d cr</entry>
+	<entry key="statusbar.objectives.tooltip">Feladatok megjelenítése vagy elrejtése[n]Gyorsbillentyű: [c=FFFFFFFF]TAB[/c]</entry>
+	<entry key="statusbar.notification.tooltip">Értesítések[n][c=FFFFFFFF]Jobb egérgomb[/c]: étresítési történet megjelenítése vagy elrejtése</entry>
+	<entry key="statusbar.notification.clear.tooltip">Értesítés történet törlése</entry>
+	<entry key="statusbar.menu.tooltip">Menü megjelenítése[n]Tartsd nyomva bármelyik egérgombot,[n]majd engedd fel a kívánt menüpont felett.</entry>
+	<entry key="buildings.upgrade.none">Az épület nincs fejlesztve.</entry>
+	<entry key="buildings.upgrade.has">Az épület fejlesztve van.[n][c=FFFFFF00]%s[/c]</entry>
+	<entry key="buildings.upgrade.cost">Fejlesztés megvásárlása[n][c=FFFFFF00]%s[/c][n][c=%s]Fejlesztési ár: %,d cr[/c]</entry>
+	<entry key="buildings.upgrade.bought">Megvásárolt fejlesztés[n][c=FFFFFF00]%s[/c]</entry>
+	<entry key="buildings.demolish.tooltip">Épület lerombolása[n][c=FFFFFFFF]Visszakapott pénz: %,d cr[/c]</entry>
+	<entry key="colony.zoom.tooltip">Felszín nagyítása vagy kicsinyítése[n][c=FFFFFFFF]Bal egérgomb[/c]: nagyítás[n][c=FFFFFFFF]Jobb egérgomb[/c]: kicsinyítés[n][c=FFFFFFFF]Középső egérgomb[/c]: normál nagyítás és középre igazítás</entry>
+	<entry key="colony.prev.tooltip">Ugrás az előző bolygóra: [c=%08X]%s[/c][n]Gyorsbillentyű: [c=FFFFFFFF]MÍNUSZ[/c]</entry>
+	<entry key="colony.next.tooltip">Ugrás a következő bolygóra: [c=%08X]%s[/c][n]Gyorsbillentyű: [c=FFFFFFFF]PLUSZ[/c]</entry>
+	<entry key="colony.info.tooltip">Kolónia információk[n]Gyorsbillentyű: [c=FFFFFFFF]F7[/c]</entry>
+	<entry key="colony.planets.tooltip">Bolygók listája[n]Gyorsbillentyű: [c=FFFFFFFF]F7, Q[/c]</entry>
+	<entry key="colony.starmap.tooltip">Csillagtérkép[n]Gyorsbillentyű: [c=FFFFFFFF]F2[/c]</entry>
+	<entry key="colony.bridge.tooltip">Híd, kommunikáció[n]Gyorsbillentyű: [c=FFFFFFFF]F1[/c]</entry>
+	<entry key="colony.building.prev.tooltip">Előző épület[n][c=FFFFFFFF]Egér görgő felfelé[/c]</entry>
+	<entry key="colony.building.next.tooltip">Következő épület[n][c=FFFFFFFF]Egér görgő lefelé[/c]</entry>
+	<entry key="colony.building.list.tooltip">Épületek listája[n]Gyorsbillentyű: [c=FFFFFFFF]F7, S[/c]</entry>
+	<entry key="colony.building.build.tooltip">Építés bekapcsolása vagy kikapcsolása.[n]A [c=FFFFFFFF]SHIFT[/c] nyomva tartásával több épületet is le lehet tenni.[n]Gyorsbillentyű: [c=FFFFFFFF]B[/c]</entry>
+	<entry key="colony.buildings.tooltip">Épület panel megjelenítése vagy elrejtése.</entry>
+	<entry key="colony.buildinginfos.tooltip">Épület állapot megjelenítése vagy elrejtése.</entry>
+	<entry key="colony.radars.tooltip">Radar megjelenítése vagy elrejtése.</entry>
+	<entry key="colony.infos.tooltip">Kolónia információk megjelenítése vagy elrejtése.</entry>
+	<entry key="colony.buttons.tooltip">Képernyőválasztó gombok megjelenítése vagy elrejtése.</entry>
+	<entry key="colony.active.tooltip">Épület kikapcsolása</entry>
+	<entry key="colony.damaged.tooltip">Épület javításának megkezdése</entry>
+	<entry key="colony.repairing.tooltip">Épület javításának befejezése</entry>
+	<entry key="colony.inactive.tooltip">Épület bekapcsolása</entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

@@ -156,6 +156,8 @@ public class StatusbarScreen extends ScreenBase {
 	QuickPanelButton quickResearchButton;
 	/** The quick production button. */
 	QuickPanelButton quickProductionButton;
+	/** The menu image. */
+	UIImageButton menu;
 	@Override
 	public void onInitialize() {
 		top = new UIImageFill(
@@ -301,6 +303,8 @@ public class StatusbarScreen extends ScreenBase {
 			}
 		};
 		
+		menu = new UIImageButton(commons.statusbar().menu);
+		
 		addThis();
 	}
 
@@ -354,7 +358,6 @@ public class StatusbarScreen extends ScreenBase {
 	public Screens screen() {
 		return Screens.STATUSBAR;
 	}
-	// FIXME main draw
 	@Override
 	public void draw(Graphics2D g2) {
 		g2.setColor(Color.BLACK);
@@ -371,6 +374,8 @@ public class StatusbarScreen extends ScreenBase {
 		
 		objectivesButton.x = 379;
 		objectivesButton.y = top.y + 3;
+		
+		menu.location(getInnerWidth() - menu.width, top.y);
 		
 		objectivesButton.visible(!commons.nongame);
 		boolean objshowing = objectives.visible();
@@ -520,6 +525,7 @@ public class StatusbarScreen extends ScreenBase {
 				quickProductionButton.icon = commons.statusbar().gearNormal;
 				quickProductionButton.text = "-";
 			}
+			setTooltip(quickProductionButton, "statusbar.quickproduction");
 			if (world().level > 2) {
 				quickResearchButton.visible(true);
 
@@ -531,28 +537,60 @@ public class StatusbarScreen extends ScreenBase {
 					if (r != null) {
 						rs = String.format("%.1f%%", r.getPercent());
 						mayBlink = r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;
+						if (mayBlink) {
+							setTooltip(quickResearchButton, "statusbar.quickresearch.problem." + r.state, rt.longName);
+						}
 					}
 				}
-
+				
 				quickResearchButton.text = rs;
 				quickResearchButton.textVisible = blink || !mayBlink; 
 				if (rt != null || isResearchAvailable()) {
 					quickResearchButton.icon = commons.statusbar().researchLight;
+					if (!mayBlink) {
+						if (rt != null) {
+							setTooltip(quickResearchButton, "statusbar.quickresearch.running", rt.longName);
+						} else {
+							setTooltip(quickResearchButton, "statusbar.quickresearch.available");
+						}
+					}
 				} else {
 					quickResearchButton.icon = commons.statusbar().researchNormal;
+					if (!mayBlink) {
+						setTooltip(quickResearchButton, "statusbar.quickresearch.none");
+					}
 				}
 				quickResearch.update();
 				quickResearch.location(quickResearchButton.x + MENU_ICON_WIDTH - quickResearch.width, quickResearchButton.y + quickResearchButton.height);
+				
 			} else {
 				quickResearch.visible(false);
+				setTooltip(quickResearchButton, null);
 			}
 		} else {
 			quickProductionButton.visible(false);
 			quickResearchButton.visible(false);
 			quickResearch.visible(false);
+			setTooltip(quickResearchButton, null);
+			setTooltip(quickProductionButton, null);
 		}
 		quickProductionButton.location(getInnerWidth() - MENU_ICON_WIDTH - quickProductionButton.width, top.y);
 		quickResearchButton.location(quickProductionButton.x - quickResearchButton.width, top.y);
+		
+		// tooltips
+		setTooltip(pause, "statusbar.pause.tooltip");
+		setTooltip(speed1, "statusbar.speed1.tooltip");
+		setTooltip(speed2, "statusbar.speed2.tooltip");
+		setTooltip(speed4, "statusbar.speed4.tooltip");
+		setTooltip(money, "statusbar.money.tooltip", player().money);
+		setTooltip(objectivesButton, "statusbar.objectives.tooltip");
+		if (commons.battleMode) {
+			setTooltip(notification, null);
+		} else {
+			setTooltip(notification, "statusbar.notification.tooltip");
+		}
+		setTooltip(notificationHistory.clear, "statusbar.notification.clear.tooltip");
+		setTooltip(menu, "statusbar.menu.tooltip");
 	}
 	@Override
 	public void onEndGame() {
@@ -831,8 +869,7 @@ public class StatusbarScreen extends ScreenBase {
 			}
 			return true;
 		}
-		// FIXME
-		if (e.has(Type.DOWN) && e.within(width - MENU_ICON_WIDTH, 0, screenMenu.width, 20)) {
+		if (e.has(Type.DOWN) && menu.within(e)) {
 			buttonSound(SoundType.CLICK_MEDIUM_2);
 			screenMenu.highlight = -1;
 			screenMenu.visible(true);

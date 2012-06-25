@@ -541,12 +541,12 @@ public class InfoScreen extends ScreenBase {
 	private PlanetStatistics globalStatistics;
 	/** Go to next planet. */
 	@ModeUI(mode = { 
-			Screens.INFORMATION_COLONY
+			Screens.INFORMATION_COLONY, Screens.INFORMATION_MILITARY, Screens.INFORMATION_FINANCIAL
 	})
 	UIImageButton prevPlanet;
 	/** Go to previous planet. */
 	@ModeUI(mode = { 
-			Screens.INFORMATION_COLONY
+			Screens.INFORMATION_COLONY, Screens.INFORMATION_MILITARY, Screens.INFORMATION_FINANCIAL
 	})
 	UIImageButton nextPlanet;
 	@Override
@@ -1074,10 +1074,22 @@ public class InfoScreen extends ScreenBase {
 		if (mode == Screens.INFORMATION_FLEETS) {
 			displayFleetInfo();
 		}
+		update();
 		
 		super.draw(g2);
 		
 		g2.setTransform(savea);
+	}
+	/** Update some general properties. */
+	void update() {
+		Pair<Planet, Planet> pn = player().prevNextPlanet();
+		if (pn != null) {
+			setTooltip(prevPlanet, "colony.prev.tooltip", pn.first.owner.color, pn.first.name);
+			setTooltip(nextPlanet, "colony.next.tooltip", pn.second.owner.color, pn.second.name);
+		} else {
+			setTooltip(prevPlanet, null);
+			setTooltip(nextPlanet, null);
+		}
 	}
 	/** 
 	 * First letter to uppercase.

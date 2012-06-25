@@ -90,6 +90,9 @@ public class StatusbarGFX {
 	/** The objectives icon. */
 	@Img(name = "objectives")
 	public BufferedImage objectives;
+	/** The menu image. */
+	@Img(name = "menu")
+	public BufferedImage menu;
 	/**
 	 * Load the resources.
 	 * @param rl the resource locator

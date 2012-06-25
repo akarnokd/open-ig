@@ -72,21 +72,26 @@ public class UIColorLabel extends UIComponent {
 				if (text.charAt(i + 1) == 'n') {
 					if (b.length() > 0) {
 						addSegment(b.toString(), currentColor);
-						addNewline();
+						b.setLength(0);
 					}
+					addNewline();
 					i += 2;
 				} else
 				if (text.charAt(i + 1) == 'c') {
 					String col = text.substring(i + 3, i + 11);
-					addSegment(b.toString(), currentColor);
-					b.setLength(0);
+					if (b.length() > 0) {
+						addSegment(b.toString(), currentColor);
+						b.setLength(0);
+					}
 					colorstack.push(currentColor);
 					currentColor = (int)(Long.parseLong(col, 16) & 0xFFFFFFFF);
 					i += 11;
 				} else
 				if (text.charAt(i + 1) == '/' && text.charAt(i + 2) == 'c') {
-					addSegment(b.toString(), currentColor);
-					b.setLength(0);
+					if (b.length() > 0) {
+						addSegment(b.toString(), currentColor);
+						b.setLength(0);
+					}
 					currentColor = colorstack.pop();
 					i += 3;
 				}
@@ -97,16 +102,17 @@ public class UIColorLabel extends UIComponent {
 			if (c == '\n') {
 				if (b.length() > 0) {
 					addSegment(b.toString(), currentColor);
-					addNewline();
+					b.setLength(0);
 				}
+				addNewline();
 			} else {
 				b.append(c);
 			}
 		}
 		if (b.length() > 0) {
 			addSegment(b.toString(), currentColor);
-			addNewline();
 		}
+		addNewline();
 		height = Math.max(0, size * segments.size() + (segments.size() - 1) * spacing);
 	}
 	/**

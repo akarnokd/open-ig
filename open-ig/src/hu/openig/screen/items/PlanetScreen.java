@@ -65,7 +65,6 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
@@ -1028,59 +1027,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				return;
 			}
 
-			if (lastSurface != surface) {
-				buildingBox = null;
-				currentBuilding = null;
-				lastSurface = surface;
-				placementMode = false;
-				buildingsPanel.build.down = false;
-				upgradePanel.hideUpgradeSelection();
-				if (battle == null) {
-					clearGroundBattle();
-				}
-			}
-			// check if the AI has removed any building while we were looking at its planet
-			if (currentBuilding != null) {
-				if (!planet().surface.buildings.contains(currentBuilding)) {
-					buildingBox = null;
-					currentBuilding = null;
-					// FIXME more actions?
-				}
-			}
-			
-			buildingsPanel.visible(planet().owner == player() 
-					&& showBuildingList && battle == null);
-			buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
-			infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
-			
-			boolean showTankPanel = (!units.isEmpty() || !guns.isEmpty()) && !startBattle.visible();
-			tankPanel.visible(showTankPanel);
-			moveUnit.visible(showTankPanel);
-			attackUnit.visible(showTankPanel);
-			stopUnit.visible(showTankPanel);
-			if (buildingsPanel.visible()) {
-				tankPanel.location(buildingsPanel.x + buildingsPanel.width, base.y + 2);
-				moveUnit.location(tankPanel.x + tankPanel.width + 2, tankPanel.y);
-				attackUnit.location(moveUnit.x, moveUnit.y + moveUnit.height);
-				stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
-			} else {
-				tankPanel.location(prev.x - 2, base.y + 2);
-				moveUnit.location(tankPanel.x + tankPanel.width + 2, tankPanel.y);
-				attackUnit.location(moveUnit.x, moveUnit.y + moveUnit.height);
-				stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
-			}
-			
-			starmap.visible(showSidebarButtons && battle == null);
-			colonyInfo.visible(showSidebarButtons && battle == null);
-			bridge.visible(showSidebarButtons && battle == null);
-			planets.visible(showSidebarButtons && battle == null);
-			
-			next.visible(battle == null);
-			prev.visible(battle == null);
-			
-			setBuildingList(0);
-			buildingInfoPanel.update();
-			PlanetStatistics ps = infoPanel.update();
+			PlanetStatistics ps = update(surface);
 			
 			computeAlpha();
 			
@@ -2485,6 +2432,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					&& !b.isSeverlyDamaged()
 					&& planet().owner == player()
 			);
+			
+			if (demolish.enabled()) {
+				setTooltip(demolish, "buildings.demolish.tooltip", (currentBuilding.upgradeLevel + 1) * currentBuilding.type.cost / 2);
+			} else {
+				setTooltip(demolish, null);
+			}
 		}
 	}
 	/** Perform the animation. */
@@ -2838,8 +2791,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	class UpgradePanel extends UIContainer {
 		/** The upgrade static label. */
 		UIImage upgradeLabel;
-		/** The upgrade description. */
-		UILabel upgradeDescription;
 		/** The upgrade steps. */
 		final List<UIImageButton> steps = new ArrayList<UIImageButton>();
 		/** No upgrades. */
@@ -2848,12 +2799,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		public UpgradePanel() {
 			size(commons.colony().upgradePanel.getWidth(), commons.colony().upgradePanel.getHeight());
 			upgradeLabel = new UIImage(commons.colony().upgradeLabel);
-			upgradeLabel.location(8, 3);
-			upgradeDescription = new UILabel("-", 7, 178, commons.text());
-			upgradeDescription.location(10, 21);
-			upgradeDescription.height = 26;
-			upgradeDescription.vertically(VerticalAlignment.TOP);
-			upgradeDescription.color(TextRenderer.YELLOW);
+			upgradeLabel.location(8, 5);
 			
 			none = new UIImageButton(commons.colony().upgradeNone);
 			none.onClick = new Action0() {
@@ -2882,7 +2828,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		@Override
 		public void draw(Graphics2D g2) {
 			g2.drawImage(commons.colony().upgradePanel, 0, 0, null);
-			int over = -1;
 			for (int i = 0; i < steps.size(); i++) {
 				UIImageButton up = steps.get(i);
 				up.visible(i + 1 <= currentBuilding.type.upgrades.size());
@@ -2890,25 +2835,35 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					up.normal(commons.colony().upgradeDark);
 					up.hovered(commons.colony().upgradeDark);
 					up.pressed(commons.colony().upgradeDark);
+					if (up.visible()) {
+						int dl = i - currentBuilding.upgradeLevel + 1;
+						long m = currentBuilding.type.cost * dl;
+						setTooltip(up, "buildings.upgrade.cost", 
+								currentBuilding.type.upgrades.get(i).description, 
+								m <= player().money ? "FFFFFFFF" : "FFFF0000",
+								m);
+					}
 				} else {
 					up.normal(commons.colony().upgrade);
 					up.hovered(commons.colony().upgrade);
 					up.pressed(commons.colony().upgrade);
+					if (up.visible()) {
+						setTooltip(up, "buildings.upgrade.bought", 
+								currentBuilding.type.upgrades.get(i).description);
+					}
 				}
-				if (up.over && up.visible()) {
-					over = i + 1;
+				if (!up.visible()) {
+					setTooltip(up, null);
 				}
 			}
-			if (over >= 1) {
-				upgradeDescription.text(
-					currentBuilding.type.upgrades.get(over - 1).description
-				);
-			} else
-			if (over == 0) {
-				upgradeDescription.text(get("buildings.upgrade.default.description"));
+			if (currentBuilding.upgradeLevel != 0) {
+				setTooltip(this, "buildings.upgrade.has", currentBuilding.type.upgrades.get(currentBuilding.upgradeLevel - 1).description);
 			} else {
-				upgradeDescription.text("");
+				setTooltip(this, "buildings.upgrade.none");
 			}
+			setTooltipText(upgradeLabel, this.tooltip);
+			setTooltip(none, "buildings.upgrade.default.description");
+			
 			super.draw(g2);
 		}
 		@Override
@@ -2924,7 +2879,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			for (UIImageButton img : upgradePanel.steps) {
 				img.over = false;
 			}
-			upgradeDescription.text("");
 		}
 		@Override
 		public UIComponent visible(boolean state) {
@@ -3332,10 +3286,20 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			buildingsPanel.preview.building = null;
 		}
 		
+		boolean b0 = buildingsPanel.buildingDown.visible();
 		buildingsPanel.buildingDown.visible(idx < list.size() - 1);
+		boolean b1 = buildingsPanel.buildingUp.visible();
 		buildingsPanel.buildingUp.visible(idx > 0);
+		
 		buildingsPanel.buildingDownEmpty.visible(!buildingsPanel.buildingDown.visible());
 		buildingsPanel.buildingUpEmpty.visible(!buildingsPanel.buildingUp.visible());
+		
+		if (b0 != buildingsPanel.buildingDown.visible()) {
+			commons.control().tooltipChanged(buildingsPanel.buildingDown);
+		}
+		if (b1 != buildingsPanel.buildingUp.visible()) {
+			commons.control().tooltipChanged(buildingsPanel.buildingUp);
+		}
 	}
 	/**
 	 * Try placing a building to the current placementRectange.
@@ -6046,6 +6010,100 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				it.remove();
 			}
 		}
+	}
+
+	/**
+	 * Update the varios components according to the current game state.
+	 * @param surface the planet surface
+	 * @return the planet statistics
+	 */
+	public PlanetStatistics update(PlanetSurface surface) {
+		if (lastSurface != surface) {
+			buildingBox = null;
+			currentBuilding = null;
+			lastSurface = surface;
+			placementMode = false;
+			buildingsPanel.build.down = false;
+			upgradePanel.hideUpgradeSelection();
+			if (battle == null) {
+				clearGroundBattle();
+			}
+		}
+		// check if the AI has removed any building while we were looking at its planet
+		if (currentBuilding != null) {
+			if (!planet().surface.buildings.contains(currentBuilding)) {
+				buildingBox = null;
+				currentBuilding = null;
+				// FIXME more actions?
+			}
+		}
+		
+		buildingsPanel.visible(planet().owner == player() 
+				&& showBuildingList && battle == null);
+		buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
+		infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
+		
+		boolean showTankPanel = (!units.isEmpty() || !guns.isEmpty()) && !startBattle.visible();
+		tankPanel.visible(showTankPanel);
+		moveUnit.visible(showTankPanel);
+		attackUnit.visible(showTankPanel);
+		stopUnit.visible(showTankPanel);
+		if (buildingsPanel.visible()) {
+			tankPanel.location(buildingsPanel.x + buildingsPanel.width, base.y + 2);
+			moveUnit.location(tankPanel.x + tankPanel.width + 2, tankPanel.y);
+			attackUnit.location(moveUnit.x, moveUnit.y + moveUnit.height);
+			stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
+		} else {
+			tankPanel.location(prev.x - 2, base.y + 2);
+			moveUnit.location(tankPanel.x + tankPanel.width + 2, tankPanel.y);
+			attackUnit.location(moveUnit.x, moveUnit.y + moveUnit.height);
+			stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
+		}
+		
+		starmap.visible(showSidebarButtons && battle == null);
+		colonyInfo.visible(showSidebarButtons && battle == null);
+		bridge.visible(showSidebarButtons && battle == null);
+		planets.visible(showSidebarButtons && battle == null);
+		
+		next.visible(battle == null);
+		prev.visible(battle == null);
+		
+		setBuildingList(0);
+		buildingInfoPanel.update();
+		PlanetStatistics ps = infoPanel.update();
+		
+		setTooltip(zoom, "colony.zoom.tooltip");
+
+		Pair<Planet, Planet> pn = player().prevNextPlanet();
+		if (pn != null) {
+			setTooltip(prev, "colony.prev.tooltip", pn.first.owner.color, pn.first.name);
+			setTooltip(next, "colony.next.tooltip", pn.second.owner.color, pn.second.name);
+		} else {
+			setTooltip(prev, null);
+			setTooltip(next, null);
+		}
+		
+		setTooltip(colonyInfo, "colony.info.tooltip");
+		setTooltip(planets, "colony.planets.tooltip");
+		setTooltip(starmap, "colony.starmap.tooltip");
+		setTooltip(bridge, "colony.bridge.tooltip");
+		setTooltip(buildingsPanel.buildingUp, "colony.building.prev.tooltip");
+		setTooltip(buildingsPanel.buildingDown, "colony.building.next.tooltip");
+		setTooltip(buildingsPanel.buildingList, "colony.building.list.tooltip");
+		setTooltip(buildingsPanel.build, "colony.building.build.tooltip");
+		
+		setTooltip(sidebarBuildings, "colony.buildings.tooltip");
+		setTooltip(sidebarRadar, "colony.radars.tooltip");
+		setTooltip(sidebarBuildingInfo, "colony.buildinginfos.tooltip");
+		setTooltip(sidebarColonyInfo, "colony.infos.tooltip");
+		setTooltip(sidebarNavigation, "colony.buttons.tooltip");
+		
+		setTooltip(buildingInfoPanel.stateActive, "colony.active.tooltip");
+		setTooltip(buildingInfoPanel.stateOffline, "colony.inactive.tooltip");
+		setTooltip(buildingInfoPanel.damaged, "colony.damaged.tooltip");
+		setTooltip(buildingInfoPanel.repairing, "colony.repairing.tooltip");
+		
+		return ps;
 	}
 }
 
