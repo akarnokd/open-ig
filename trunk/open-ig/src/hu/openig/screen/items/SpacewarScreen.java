@@ -1650,7 +1650,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				last = sws;
 			}
 		}
-		if (alloc < sum) {
+		if (alloc < sum && last != null) {
 			last.count += sum - alloc;
 		}
 	}

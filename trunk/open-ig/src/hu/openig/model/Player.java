@@ -461,7 +461,7 @@ public class Player {
 		if (k == null && expected != null) {
 			return -1;
 		}
-		return k.ordinal() < expected.ordinal() ? -1 : 1;
+		return k == null || k.ordinal() < expected.ordinal() ? -1 : 1;
 	}
 	/**
 	 * Compare the current knowledge level of the given fleet by the expected level.
@@ -480,7 +480,7 @@ public class Player {
 		if (k == null && expected != null) {
 			return -1;
 		}
-		return k.ordinal() < expected.ordinal() ? -1 : 1;
+		return k == null || k.ordinal() < expected.ordinal() ? -1 : 1;
 	}
 	/**
 	 * Returns a fleet with the given ID.

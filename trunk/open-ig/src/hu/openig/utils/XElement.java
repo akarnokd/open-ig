@@ -251,10 +251,10 @@ public class XElement implements Iterable<XElement> {
 				}
 				break;
 			case XMLStreamConstants.END_ELEMENT:
-				if (b != null) {
-					node.content = b.toString();
-				}
 				if (node != null) {
+					if (b != null) {
+						node.content = b.toString();
+					}
 					node = node.parent;
 				}
 				b = stack.pop();
