@@ -54,14 +54,15 @@ public class ExplorationPlanner extends Planner {
 	public void plan() {
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
-		if (exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit).size() > 0) {
+		if (!exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit).isEmpty()) {
 			// check our current exploration fleets are idle
 			List<AIFleet> fs = findFleetsWithTask(FleetTask.EXPLORE, null);
 			for (AIFleet f : fs) {
 				if (!f.isMoving()) {
 					// move it
-					setExplorationTarget(f);
-					return;
+					if (setExplorationTarget(f)) {
+						return;
+					}
 				}
 			}
 			// try recruiting a radar fleet
@@ -76,13 +77,15 @@ public class ExplorationPlanner extends Planner {
 				}
 			}
 			if (bestFleet != null) {
-				setExplorationTarget(bestFleet);
-				return;
+				if (setExplorationTarget(bestFleet)) {
+					return;
+				}
 			} else {
 				// at least find a fleet and move it around
 				for (AIFleet f : findFleetsFor(FleetTask.EXPLORE, null)) {
-					setExplorationTarget(f);
-					return;
+					if (setExplorationTarget(f)) {
+						return;
+					}
 				}
 			}
 			if (checkExplorerLevel(world.ownFleets)) {
@@ -244,8 +247,9 @@ public class ExplorationPlanner extends Planner {
 	/**
 	 * Set a new exploration target and task for the given fleet.
 	 * @param bf the fleet
+	 * @return true if action taken
 	 */
-	void setExplorationTarget(final AIFleet bf) {
+	boolean setExplorationTarget(final AIFleet bf) {
 		final Point2D.Double center = world.center();
 		final Point2D.Double fa = new Point2D.Double(bf.x, bf.y);
 		Set<Location> allowed = exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit);
@@ -277,6 +281,9 @@ public class ExplorationPlanner extends Planner {
 				if (loc0.y == 0 || loc0.x == 0) {
 					it.remove();
 				}
+			}
+			if (allowed.isEmpty()) {
+				return false;
 			}
 		}
 		final double fbias = bias;
@@ -317,6 +324,7 @@ public class ExplorationPlanner extends Planner {
 				}
 			}
 		});
+		return true;
 	}
 	/**
 	 * Plan for discovery fleet creation.
