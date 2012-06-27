@@ -696,10 +696,10 @@ public final class Base64 {
 			// the finally{} block is called for cleanup.
 			throw e;
 		} finally {
-			try { oos.close();   } catch (Exception e) { }
-			try { gzos.close();  } catch (Exception e) { }
-			try { b64os.close(); } catch (Exception e) { }
-			try { baos.close();  } catch (Exception e) { }
+			U.close(oos);
+			U.close(gzos);
+			U.close(b64os);
+			U.close(baos);
 		}   // end finally
 
 		// Return value according to relevant encoding.
@@ -937,9 +937,9 @@ public final class Base64 {
 				// the finally{} block is called for cleanup.
 				throw e;
 			} finally {
-				try { gzos.close();  } catch (Exception e) { }
-				try { b64os.close(); } catch (Exception e) { }
-				try { baos.close();  } catch (Exception e) { }
+				U.close(gzos);
+				U.close(b64os);
+				U.close(baos);
 			}   // end finally
 
 			return baos.toByteArray();
@@ -1291,9 +1291,9 @@ public final class Base64 {
 					e.printStackTrace();
 					// Just return originally-decoded bytes
 				} finally {
-					try { baos.close(); } catch (Exception e) { }
-					try { gzis.close(); } catch (Exception e) { }
-					try { bais.close(); } catch (Exception e) { }
+					U.close(baos);
+					U.close(gzis);
+					U.close(bais);
 				}   // end finally
 
 			}   // end if: gzipped
@@ -1378,8 +1378,8 @@ public final class Base64 {
 		} catch (java.lang.ClassNotFoundException e) {
 			throw e;    // Catch and throw in order to execute finally{}
 		} finally {
-			try { bais.close(); } catch (Exception e) { }
-			try { ois.close();  } catch (Exception e) { }
+			U.close(bais);
+			U.close(ois);
 		}   // end finally
 
 		return obj;
@@ -1416,7 +1416,7 @@ public final class Base64 {
 		} catch (java.io.IOException e) {
 			throw e; // Catch and throw to execute finally{} block
 		} finally {
-			try { bos.close(); } catch (Exception e) { }
+			U.close(bos);
 		}   // end finally
 
 	}   // end encodeToFile
@@ -1446,7 +1446,7 @@ public final class Base64 {
 		} catch (java.io.IOException e) {
 			throw e; // Catch and throw to execute finally{} block
 		} finally {
-			try { bos.close(); } catch (Exception e) { }
+			U.close(bos);
 		}   // end finally
 
 	}   // end decodeToFile
@@ -1503,7 +1503,7 @@ public final class Base64 {
 		} catch (java.io.IOException e) {
 			throw e; // Catch and release to execute finally{ }
 		} finally {
-			try { bis.close(); } catch (Exception e) { }
+			U.close(bis);
 		}   // end finally
 
 		return decodedData;
@@ -1554,7 +1554,7 @@ public final class Base64 {
 		} catch (java.io.IOException e) {
 			throw e; // Catch and release to execute finally{ }
 		} finally {
-			try { bis.close(); } catch (Exception e) { }
+			U.close(bis);
 		}   // end finally
 
 		return encodedData;
@@ -1580,7 +1580,7 @@ public final class Base64 {
 		} catch (java.io.IOException e) {
 			throw e; // Catch and release to execute finally{ }
 		} finally {
-			try { out.close(); } catch (Exception ex) { }
+			U.close(out);
 		}   // end finally    
 	}   // end encodeFileToFile
 
@@ -1605,7 +1605,7 @@ public final class Base64 {
 		} catch (java.io.IOException e) {
 			throw e; // Catch and release to execute finally{ }
 		} finally {
-			try { out.close(); } catch (Exception ex) { }
+			U.close(out);
 		}   // end finally    
 	}   // end decodeFileToFile
 

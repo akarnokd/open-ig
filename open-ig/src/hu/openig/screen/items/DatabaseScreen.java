@@ -1015,7 +1015,7 @@ public class DatabaseScreen extends ScreenBase {
 							break;
 						}
 					}
-					if (m != null) {
+					if (m != null && selectedAlien != null) {
 						w1 = m.getWidth();
 						h1 = m.getHeight();
 						

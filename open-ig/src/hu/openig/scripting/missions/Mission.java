@@ -519,15 +519,16 @@ public abstract class Mission implements GameScriptingEvents {
 		VideoMessage msg = helper.receive(messageId);
 		if (msg == null) {
 			new AssertionError("Missing video: " + messageId).printStackTrace();
+		} else {
+			msg.visible = true;
+			helper.receive(messageId).seen = false;
+			
+			SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, 
+					SoundType.NEW_MESSAGE_1, 
+					SoundType.NEW_MESSAGE_2, 
+					SoundType.NEW_MESSAGE_3));
+			world.env.playSound(SoundTarget.COMPUTER, snd, action);
 		}
-		msg.visible = true;
-		helper.receive(messageId).seen = false;
-		
-		SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, 
-				SoundType.NEW_MESSAGE_1, 
-				SoundType.NEW_MESSAGE_2, 
-				SoundType.NEW_MESSAGE_3));
-		world.env.playSound(SoundTarget.COMPUTER, snd, action);
 	}
 	/**
 	 * Remove any non-existent scripted fleets.

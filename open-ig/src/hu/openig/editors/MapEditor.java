@@ -1311,7 +1311,7 @@ public class MapEditor extends JFrame {
 			UndoableMapEdit undo = redoable ? new UndoableMapEdit(renderer.surface) : null;
 			renderer.surface.basemap.clear();
 			renderer.surface.features.clear();
-			if (redoable) {
+			if (undo != null) {
 				undo.setAfter();
 				addUndo(undo);
 			}
@@ -1327,7 +1327,7 @@ public class MapEditor extends JFrame {
 			UndoableMapEdit undo = redoable ? new UndoableMapEdit(renderer.surface) : null;
 			renderer.surface.buildingmap.clear();
 			renderer.surface.buildings.clear();
-			if (redoable) {
+			if (undo != null) {
 				undo.setAfter();
 				addUndo(undo);
 			}

@@ -1756,10 +1756,10 @@ public class InfoScreen extends ScreenBase {
 			if (l.ordinal() < TaxLevel.values().length - 1) {
 				p.tax = TaxLevel.values()[l.ordinal() + 1];
 			}
-		}
-		if (colonyInfo.taxMoreAll) {
-			for (Planet q : player().ownPlanets()) {
-				q.tax = p.tax;
+			if (colonyInfo.taxMoreAll) {
+				for (Planet q : player().ownPlanets()) {
+					q.tax = p.tax;
+				}
 			}
 		}
 	}
@@ -1783,10 +1783,10 @@ public class InfoScreen extends ScreenBase {
 			if (l.ordinal() > 0) {
 				p.tax = TaxLevel.values()[l.ordinal() - 1];
 			}
-		}
-		if (colonyInfo.taxLessAll) {
-			for (Planet q : player().ownPlanets()) {
-				q.tax = p.tax;
+			if (colonyInfo.taxLessAll) {
+				for (Planet q : player().ownPlanets()) {
+					q.tax = p.tax;
+				}
 			}
 		}
 	}

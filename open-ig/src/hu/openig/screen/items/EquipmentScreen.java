@@ -833,11 +833,12 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		}
 		if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
-			if (rt.category != ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+			if (rt == null || (
+					rt.category != ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 					&& rt.category != ResearchSubCategory.SPACESHIPS_CRUISERS
 					&& rt.category != ResearchSubCategory.SPACESHIPS_FIGHTERS
 					&& rt.category != ResearchSubCategory.WEAPONS_TANKS
-					&& rt.category != ResearchSubCategory.WEAPONS_VEHICLES) {
+					&& rt.category != ResearchSubCategory.WEAPONS_VEHICLES)) {
 				// select first fighter
 				for (ResearchType rt0 : rts) {
 					if (rt0.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -848,11 +849,12 @@ public class EquipmentScreen extends ScreenBase {
 				}
 			}
 		} else
-		if (player().selectionMode == SelectionMode.PLANET || player().selectionMode == null) {
-			if (rt.category != ResearchSubCategory.SPACESHIPS_STATIONS
+		if (player().selectionMode == SelectionMode.PLANET 
+		|| player().selectionMode == null) {
+			if (rt == null || (rt.category != ResearchSubCategory.SPACESHIPS_STATIONS
 					&& rt.category != ResearchSubCategory.SPACESHIPS_FIGHTERS
 					&& rt.category != ResearchSubCategory.WEAPONS_TANKS
-					&& rt.category != ResearchSubCategory.WEAPONS_VEHICLES) {
+					&& rt.category != ResearchSubCategory.WEAPONS_VEHICLES)) {
 				for (ResearchType rt0 : rts) {
 					if (rt0.category == ResearchSubCategory.WEAPONS_TANKS) {
 						rt = rt0;

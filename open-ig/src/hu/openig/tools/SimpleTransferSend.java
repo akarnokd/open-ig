@@ -47,42 +47,46 @@ public final class SimpleTransferSend {
 			"open-ig-video-hu-0.8.zip",	
 		};
 		ServerSocket ss = new ServerSocket(5555);
-		byte[] buffer = new byte[8192];
-		while (!Thread.currentThread().isInterrupted()) {
-			Socket socket = ss.accept();
-			try {
-				DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream(), 8192));
+		try {
+			byte[] buffer = new byte[8192];
+			while (!Thread.currentThread().isInterrupted()) {
+				Socket socket = ss.accept();
 				try {
-					for (String f : files) {
-						String name = basePath + f;
-						System.out.printf("Sending %s.", name);
-						File fn = new File(name);
-						InputStream in = new FileInputStream(fn);
-						try {
-							out.writeLong(fn.length());
-							out.writeInt(f.length());
-							out.writeChars(f);
-							while (true) {
-								int r = in.read(buffer);
-								if (r > 0) {
-									out.write(buffer, 0, r);
-								} else
-								if (r < 0) {
-									break;
+					DataOutputStream out = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream(), 8192));
+					try {
+						for (String f : files) {
+							String name = basePath + f;
+							System.out.printf("Sending %s.", name);
+							File fn = new File(name);
+							InputStream in = new FileInputStream(fn);
+							try {
+								out.writeLong(fn.length());
+								out.writeInt(f.length());
+								out.writeChars(f);
+								while (true) {
+									int r = in.read(buffer);
+									if (r > 0) {
+										out.write(buffer, 0, r);
+									} else
+									if (r < 0) {
+										break;
+									}
 								}
+								out.flush();
+							} finally {
+								System.out.println("Done.");
+								in.close();
 							}
-							out.flush();
-						} finally {
-							System.out.println("Done.");
-							in.close();
 						}
+					} finally {
+						out.close();
 					}
 				} finally {
-					out.close();
+					socket.close();
 				}
-			} finally {
-				socket.close();
 			}
+		} finally {
+			ss.close();
 		}
 	}
 

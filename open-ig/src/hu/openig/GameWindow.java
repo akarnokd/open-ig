@@ -2520,7 +2520,7 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		Rectangle r = tooltipHelper;
 		String t0 = tooltipText;
-		if (c != null) {
+		if (c != null && top != null) {
 			tooltipComponent = c;
 			Rectangle tth = top.componentRectangle(c);
 			
