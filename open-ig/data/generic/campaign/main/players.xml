@@ -133,6 +133,8 @@
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
+			<type id='MediumTank' list=''/>
+			<type id='RocketLauncher1' list=''/>
 		</available>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
