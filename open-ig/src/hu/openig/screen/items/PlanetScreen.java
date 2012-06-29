@@ -3483,7 +3483,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	void doAddGuns() {
 		guns.clear();
 		for (Building b : planet().surface.buildings) {
-			if (b.type.kind.equals("Defensive")) {
+			if (b.type.kind.equals("Defensive") && b.isComplete()) {
 				List<BattleGroundTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
 				int i = 0;
 				for (BattleGroundTurret bt : turrets) {
