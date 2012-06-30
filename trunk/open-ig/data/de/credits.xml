@@ -3,8 +3,8 @@
 <h1>Imperium Galactica</h1>
 <h2>(C) Digital Reality, 1993-1997</h2>
 <img>DigitalRealityLogo</img>
-<h2>Entwiklung</h2>
-<h3>Programmierung</h3>
+<h2>Development</h2>
+<h3>Programming</h3>
 <p>István Árpád 'Spidy' Kiss</p>
 <p>Ferenc Szabó</p>
 
@@ -19,13 +19,13 @@
 <p>Gábor Fehér</p>
 <p>István Árpád 'Spidy' Kiss</p>
 
-<h3>Musik und ton</h3>
+<h3>Music and sound</h3>
 <p>Tamás Kreiner</p>
 
-<h3>Grafik design</h3>
+<h3>Graphics design</h3>
 <p>Károly Rózsa</p>
 
-<h3>Kolonie grafik</h3>
+<h3>Colony graphics</h3>
 <p>Tamás Fodor</p>
 
 <img>colony/buildings/human/colony_hub</img>
@@ -41,7 +41,7 @@
 <h3>Quality assurance</h3>
 <p>Andre Garcia</p>
 
-<h3>Projekt management</h3>
+<h3>Project management</h3>
 <p>Gábor Fehér</p>
 
 <h3>Lead tester and further design</h3>
@@ -120,6 +120,7 @@
 <h2>Development</h2>
 <h3>Programming</h3>
 <p>Dávid Karnok</p>
+<p>Dávid "sigee15" Szigecsán</p>
 
 <h3>Modelling</h3>
 <p>Dávid Karnok</p>
@@ -128,21 +129,27 @@
 <h3>Graphical bugfixes</h3>
 <p>Dávid Karnok</p>
 <p>József "Joe" Torma</p>
+<p>Norbert "Silver83" Pellny</p>
 
 <h3>New elements and gameplay</h3>
 <p>Dávid Karnok</p>
 
 <h3>Testers</h3>
 <p>József "Joe" Torma</p>
-
-<h2>Deutch Version</h2>
-
-<h3>Ton effekte</h3>
 <p>Norbert "Silver83" Pellny</p>
 
-<h3>Grafik</h3>
+<h2>German version</h2>
+
+<h3>Sound effects</h3>
+<p>Norbert "Silver83" Pellny</p>
+
+<h3>Graphics</h3>
 <p>Norbert "Silver83" Pellny</p>
 <p>Mister Hanky</p>
+
+<h3>Translation</h3>
+<p>Norbert "Silver83" Pellny</p>
+<p>Silvern Tiger</p>
 
 <p></p>
 <p></p>
