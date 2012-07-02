@@ -85,7 +85,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.32";
+	public static final String VERSION = "0.33";
 	/**
 	 * The update XML to download.
 	 */
@@ -97,7 +97,7 @@ public class Launcher extends JFrame {
 	/** Background color. */
 	final Color backgroundColoring = new Color(0x05034B);
 	/** The download buffer size. */
-	static final int DOWNLOAD_BUFFER_SIZE = 128 * 1024;
+	static final int DOWNLOAD_BUFFER_SIZE = 256 * 1024;
 	/** Install the entire game. */
 	IGButton install;
 	/** Cancel the install/update. */
@@ -187,9 +187,9 @@ public class Launcher extends JFrame {
 	/** The current worker. */
 	SwingWorker<?, ?> worker;
 	/** The installation directory. */
-	File installDir = new File(".");
+	File installDir;
 	/** The installation directory. */
-	File currentDir = new File(".");
+	File currentDir;
 	/** The JVM override. */
 	String jvm;
 	/** The memory override. */
@@ -212,6 +212,25 @@ public class Launcher extends JFrame {
 				cw.dispose();
 			}
 		});
+		
+		// working directory workaround
+		
+		currentDir = new File(".");
+		
+		if (!new File(currentDir, "open-ig-launcher.jar").exists()) {
+			URL u = getClass().getResource("/hu/openig/gfx/launcher_background.png");
+			String p = u.toString().replace('\\', '/');
+			int fidx = p.indexOf("file:/");
+			int lidx = p.indexOf("open-ig-launcher.jar", fidx);
+			if (lidx >= 0 && fidx >= 0) {
+				String p2 = p.substring(fidx + 6, lidx);
+				while (p2.startsWith("/")) {
+					p2 = p2.substring(1);
+				}
+				currentDir = new File(p2);
+			}
+		}
+		installDir = currentDir;
 		
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
@@ -438,7 +457,7 @@ public class Launcher extends JFrame {
 					worker.cancel(true);
 					worker = null;
 				}
-				progressPanel.setVisible(false);
+				showHideProgress(false);
 				cancel.setVisible(false);
 				detectVersion();
 				doActOnUpdates();
@@ -1039,7 +1058,7 @@ public class Launcher extends JFrame {
 	}
 	/** Initialize the launcher. */
 	void doInitialize() {
-		progressPanel.setVisible(true);
+		showHideProgress(true);
 		currentAction.setText("Loading configuration...");
 		currentFile.setText("open-ig-launcher-config.xml");
 		currentFileProgress.setText("0%");
@@ -1073,7 +1092,7 @@ public class Launcher extends JFrame {
 	}
 	/** Check for upgrades. */
 	void doUpgrades() {
-		progressPanel.setVisible(true);
+		showHideProgress(true);
 		currentAction.setText("Checking for upgrades...");
 		currentFile.setText(UPDATE_XML);
 		currentFileProgress.setText("0%");
@@ -1095,7 +1114,7 @@ public class Launcher extends JFrame {
 			}
 			@Override
 			protected void done() {
-				progressPanel.setVisible(false);
+				showHideProgress(false);
 				XElement xe = null;
 //				File uf = updateFile;
 				try {
@@ -1180,7 +1199,7 @@ public class Launcher extends JFrame {
 		} catch (Throwable t) {
 			errorMessage(format("Error while processing file %s: %s", file, t));
 		} finally {
-			progressPanel.setVisible(false);
+			showHideProgress(false);
 		}
 	}
 	/**
@@ -1390,7 +1409,8 @@ public class Launcher extends JFrame {
 		}
 		
 		final LModule g = updates.getModule(GAME);
-		progressPanel.setVisible(true);
+		showHideProgress(true);
+		
 		currentAction.setText(label("Checking existing game files..."));
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
@@ -1410,7 +1430,8 @@ public class Launcher extends JFrame {
 			}
 			@Override
 			protected void done() {
-				progressPanel.setVisible(false);
+				showHideProgress(false);
+				
 				worker = null;
 				cancel.setVisible(false);
 				try {
@@ -1434,7 +1455,7 @@ public class Launcher extends JFrame {
 		installDir = currentDir;
 		
 		final LModule g = updates.getModule(GAME);
-		progressPanel.setVisible(true);
+		showHideProgress(true);
 		currentAction.setText(label("Checking existing game files..."));
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
@@ -1454,7 +1475,7 @@ public class Launcher extends JFrame {
 			}
 			@Override
 			protected void done() {
-				progressPanel.setVisible(false);
+				showHideProgress(false);
 				worker = null;
 				cancel.setVisible(false);
 				try {
@@ -1598,7 +1619,8 @@ public class Launcher extends JFrame {
 	 * @param files the list of files to download
 	 */
 	void doDownload(final List<LFile> files) {
-		progressPanel.setVisible(true);
+		showHideProgress(true);
+		
 		currentAction.setText(label("Downloading game files..."));
 		currentFileProgress.setText("0%");
 		totalFileProgress.setText("0%");
@@ -1625,7 +1647,8 @@ public class Launcher extends JFrame {
 			}
 			@Override
 			protected void done() {
-				progressPanel.setVisible(false);
+				showHideProgress(false);
+
 				worker = null;
 				cancel.setVisible(false);
 				try {
@@ -1657,8 +1680,8 @@ public class Launcher extends JFrame {
 	 * Move self to the install directory.
 	 */
 	void doMoveSelfAndRun() {
-		File local = new File("open-ig-launcher.jar");
-		File localcfg = new File("open-ig-launcher-config.xml");
+		File local = new File(currentDir, "open-ig-launcher.jar");
+		File localcfg = new File(currentDir, "open-ig-launcher-config.xml");
 		if (local.canRead()) {
 			File target = new File(installDir, "open-ig-launcher.jar");
 			File targetcfg = new File(installDir, "open-ig-launcher-config.xml");
@@ -1697,7 +1720,7 @@ public class Launcher extends JFrame {
 				}
 			}
 		} else {
-			System.out.printf("Warning, " + local + " not found");
+			System.err.printf("Warning, " + local + " not found");
 		}
 	}
 	/**
@@ -1717,7 +1740,7 @@ public class Launcher extends JFrame {
 			}
 			
 			double speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-			setTotalProgress(i + 1, files.size(), (i + 1) * 100 / files.size(), position, -1, speed);
+			setTotalProgress(i + 1, files.size(), (i) * 100 / files.size(), position, -1, speed);
 			setFileProgress(0, -1, 0);
 			
 			LFile lf = files.get(i);
@@ -1762,7 +1785,7 @@ public class Launcher extends JFrame {
 									// update global progress
 									speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
 									
-									int pos = (i + 1) * 100 / files.size();
+									int pos = (i) * 100 / files.size();
 									long fileProgress = length > 0 ? filePos * 100 / length : 0;
 									if (fileProgress >= 0) {
 										pos += fileProgress / files.size();
@@ -1778,7 +1801,7 @@ public class Launcher extends JFrame {
 							setFileProgress(filePos, length, speed1);
 							// update global progress
 							speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-							setTotalProgress(i + 1, files.size(), (i + 2) * 100 / files.size(), position, -1, speed);
+							setTotalProgress(i + 1, files.size(), (i + 1) * 100 / files.size(), position, -1, speed);
 							
 							if (timestamp < 0) {
 								byte[] sha1h = sha1.digest();
@@ -1921,6 +1944,18 @@ public class Launcher extends JFrame {
 		}
 	}
 	/**
+	 * Show or hide the progress panel and enable/disable the other controls.
+	 * @param visible the visibility of the panel
+	 */
+	void showHideProgress(boolean visible) {
+		progressPanel.setVisible(visible);
+
+		run.setEnabled(!visible);
+		mapEditor.setEnabled(!visible);
+		videoPlayer.setEnabled(!visible);
+		other.setEnabled(!visible);
+	}
+	/**
 	 * Update the launcher itself.
 	 */
 	void doUpdateSelf() {
@@ -1928,7 +1963,9 @@ public class Launcher extends JFrame {
 		if (m == null) {
 			return;
 		}
-		progressPanel.setVisible(true);
+
+		showHideProgress(true);
+		
 		currentAction.setText("Updating the Launcher...");
 		currentFile.setText("open-ig-launcher.jar");
 		currentFileProgress.setText("0%");
@@ -1952,7 +1989,7 @@ public class Launcher extends JFrame {
 			}
 			@Override
 			protected void done() {
-				progressPanel.setVisible(false);
+				showHideProgress(false);
 				worker = null;
 				cancel.setVisible(false);
 				try {
