@@ -9,6 +9,7 @@
 package hu.openig.launcher;
 
 import hu.openig.ui.IGButton;
+import hu.openig.ui.IGCheckBox;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.Parallels;
@@ -27,6 +28,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -53,9 +56,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.jar.JarFile;
 
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -71,6 +76,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -473,19 +479,19 @@ public class Launcher extends JFrame {
 		run.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				runModule(GAME);
+				doRunGame();
 			}
 		});
 		mapEditor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				runModule("MapEditor");
+				runModule("MapEditor", Collections.<String>emptyList());
 			}
 		});
 		videoPlayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				runModule("VideoPlayer");
+				runModule("VideoPlayer", Collections.<String>emptyList());
 			}
 		});
 		
@@ -1869,8 +1875,9 @@ public class Launcher extends JFrame {
 	/**
 	 * Run the module.
 	 * @param moduleId the module id to run
+	 * @param params the additional parameters
 	 */
-	void runModule(String moduleId) {
+	void runModule(String moduleId, List<String> params) {
 		LModule m = updates != null ? updates.getModule(moduleId) : null;
 		if (m != null && m.clazz != null) {
 			String jar = String.format("%s/open-ig-%s.jar", currentDir.getAbsolutePath(), detectedVersion);
@@ -1902,14 +1909,19 @@ public class Launcher extends JFrame {
 				mem = memory;
 			}
 			ProcessBuilder pb = new ProcessBuilder();
-			pb.command(
-					runJVM + "/bin/java",
-					"-Xmx" + mem + "M",
-					String.format("-splash:%s/open-ig-splash.png", currentDir.getAbsolutePath()),
-					"-cp", 
-					jar,
-					m.clazz,
-					"-memonce", "-" + language);
+			List<String> cmdLine = new ArrayList<String>();
+
+			cmdLine.add(runJVM + "/bin/java");
+			cmdLine.add("-Xmx" + mem + "M");
+			cmdLine.add(String.format("-splash:%s/open-ig-splash.png", currentDir.getAbsolutePath()));
+			cmdLine.add("-cp");
+			cmdLine.add(jar);
+			cmdLine.add(m.clazz);
+			cmdLine.add("-memonce");
+			cmdLine.add("-" + language);
+			cmdLine.addAll(params);
+
+			pb.command(cmdLine);
 			try {
 				Process p = pb.start();
 				Parallels.consume(p.getInputStream());
@@ -2241,6 +2253,221 @@ public class Launcher extends JFrame {
 		dialog.setLocationRelativeTo(this);
 		dialog.setModal(true);
 		dialog.setVisible(true);
-		
+	}
+	/**
+	 * Run the game or pop-up the first-time configuration window.
+	 */
+	void doRunGame() {
+		File cfg = new File(installDir, "open-ig-config.xml");
+		boolean displayPreLaunch = true;
+		if (cfg.exists()) {
+			try {
+				XElement xcfg = XElement.parseXML(cfg.getAbsolutePath());
+				for (XElement e : xcfg.children()) {
+					if ("intro".equals(e.get("key", "")) && !"true".equals(e.content)) {
+						displayPreLaunch = false;
+						break;
+					}
+				}
+			} catch (XMLStreamException ex) {
+			}
+		}
+		if (displayPreLaunch) {
+			final JDialog dlg = new JDialog(this);
+			
+			dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dlg.setResizable(false);
+			
+			JLabel mainLabel = new JLabel();
+			mainLabel.setForeground(foreground);
+			mainLabel.setFont(fontMedium);
+			
+			JLabel fullScreenDesc = new JLabel();
+			fullScreenDesc.setForeground(foreground);
+			fullScreenDesc.setFont(fontMedium);
+			
+			JComboBox<String> fullScreen = new JComboBox<String>();
+			fullScreen.setFont(fontMedium);
+			
+			JLabel movieDesc = new JLabel();
+			movieDesc.setForeground(foreground);
+			movieDesc.setFont(fontMedium);
+			IGCheckBox movie = new IGCheckBox("", fontMedium);
+			movie.setForeground(foreground);
+			
+			JLabel clickDesc = new JLabel();
+			clickDesc.setForeground(foreground);
+			clickDesc.setFont(fontMedium);
+			IGCheckBox click = new IGCheckBox("", fontMedium);
+			click.setForeground(foreground);
+			
+			final AtomicBoolean approve = new AtomicBoolean();
+			
+			IGButton ok = new IGButton();
+			ok.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					approve.set(true);
+					dlg.dispose();
+				}
+			});
+			IGButton cancel = new IGButton();
+			cancel.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dlg.dispose();
+				}
+			});
+			ok.setForeground(foreground);
+			ok.setFont(fontMedium);
+			cancel.setForeground(foreground);
+			cancel.setFont(fontMedium);
+			
+			// -----------------------------------------------------------------
+			
+			if ("en".equals(language)) {
+				dlg.setTitle("First time launch");
+				ok.setText("OK");
+				cancel.setText("Cancel");
+				
+				mainLabel.setText("<html><p>Before running Open Imperium Galactica the first time,<!--br--> you might want to set some visual and behavior settings."
+						+ " These settings can improve your experience on a <!--br--> modern computer with high resolution display."
+						+ " All of these options can be later on changed from <!--br--> within the game under Settings.</p>");
+				
+				fullScreenDesc.setText("<html><p>The original game had a fixed 640 x 480 resolution. <!--br-->You have the option to run the game in this classical initial size,<!--br--> maximized or as full screen.</p>");
+				fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
+						"Default 640 x 480",
+						"Maximized",
+						"Full screen"
+				}));
+				
+				movieDesc.setText("<html><p>The original game featured 640 x 480 <!--br-->cutscenes which might look too small in modern<!--br--> screens and larger game windows.</p>");
+				movie.setText("Scale cutscenes to the screen or window size.");
+				
+				clickDesc.setText("<html><p>You may skip cutscenes by pressing ESC, SPACE or by clicking with<!--br--> any mouse button. However, sometimes you can accidentally<!--br--> skip a cutscene with such clicks.</p>");
+				click.setText("Allow skipping cutscenes via mouse clicks.");
+				
+			} else
+			if ("hu".equals(language)) {
+				dlg.setTitle("Első indítás");
+				ok.setText("Rendben");
+				cancel.setText("Mégsem");
+			} else
+			if ("de".equals(language)) {
+				dlg.setTitle("Ersten Start");
+				ok.setText("Gut");
+				cancel.setText("Lieber nicht");
+			}
+			
+			// -----------------------------------------------------------------
+			
+			JPanel p = new JPanel();
+			p.setBackground(backgroundColoring);
+			
+			GroupLayout gl = new GroupLayout(p);
+			gl.setAutoCreateContainerGaps(true);
+			gl.setAutoCreateGaps(true);
+			p.setLayout(gl);
+			
+			JSeparator sep0 = new JSeparator(JSeparator.HORIZONTAL);
+//			JSeparator sep1 = new JSeparator(JSeparator.HORIZONTAL);
+//			JSeparator sep2 = new JSeparator(JSeparator.HORIZONTAL);
+			JSeparator sep3 = new JSeparator(JSeparator.HORIZONTAL);
+			
+			gl.setHorizontalGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(mainLabel, 450, 450, 450)
+					.addComponent(sep0, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+					.addComponent(fullScreenDesc, 450, 450, 450)
+					.addGroup(
+						gl.createSequentialGroup()
+						.addGap(20)
+						.addComponent(fullScreen)
+					)
+//					.addComponent(sep1, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+					.addComponent(movieDesc, 450, 450, 450)
+					.addGroup(
+						gl.createSequentialGroup()
+						.addGap(20)
+						.addComponent(movie)
+					)
+//					.addComponent(sep2, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+					.addComponent(clickDesc, 450, 450, 450)
+					.addGroup(
+						gl.createSequentialGroup()
+						.addGap(20)
+						.addComponent(click)
+					)
+				)
+				.addComponent(sep3, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(ok)
+					.addComponent(cancel)
+				)
+			);
+			gl.setVerticalGroup(
+				gl.createSequentialGroup()
+				.addComponent(mainLabel)
+				.addComponent(sep0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(fullScreenDesc)
+				.addComponent(fullScreen)
+				.addGap(20)
+//				.addComponent(sep1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(movieDesc)
+				.addComponent(movie)
+				.addGap(20)
+//				.addComponent(sep2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(clickDesc)
+				.addComponent(click)
+				.addComponent(sep3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addGroup(
+					gl.createParallelGroup(Alignment.BASELINE)
+					.addComponent(ok)
+					.addComponent(cancel)
+				)
+			);
+			
+			
+			gl.linkSize(SwingConstants.HORIZONTAL, ok, cancel);
+			
+			dlg.getContentPane().add(p);
+			dlg.setModal(true);
+			dlg.pack();
+			dlg.setLocationRelativeTo(Launcher.this);
+			dlg.addComponentListener(new ComponentAdapter() {
+				@Override
+				public void componentShown(ComponentEvent e) {
+					dlg.pack();
+					dlg.setLocationRelativeTo(Launcher.this);
+				}
+			});
+			dlg.setVisible(true);
+			if (!approve.get()) {
+				return;
+			}
+			List<String> params = new ArrayList<String>();
+			
+			if (fullScreen.getSelectedIndex() == 1) {
+				params.add("-maximized");
+			} else
+			if (fullScreen.getSelectedIndex() == 1) {
+				params.add("-fullscreen");
+			}
+			if (movie.isSelected()) {
+				params.add("-fullscreenvideos");
+			}
+			if (click.isSelected()) {
+				params.add("-clickskip");
+			} else {
+				params.add("-noclickskip");
+			}
+			
+			runModule(GAME, params);
+		} else {
+			runModule(GAME, Collections.<String>emptyList());
+		}
 	}
 }
