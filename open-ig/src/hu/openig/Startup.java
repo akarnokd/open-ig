@@ -17,8 +17,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -42,11 +44,11 @@ public final class Startup {
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
-		Set<String> argset = new HashSet<String>(Arrays.asList(args));
+		Set<String> argset = new LinkedHashSet<String>(Arrays.asList(args));
 		long maxMem = Runtime.getRuntime().maxMemory();
 		if (maxMem < MINIMUM_MEMORY * 1024 * 1024 * 95 / 100) {
 			if (!argset.contains("-memonce")) {
-				if (!doLowMemory()) {
+				if (!doLowMemory(argset)) {
 					doWarnLowMemory(maxMem);
 				}
 				return;
@@ -73,16 +75,27 @@ public final class Startup {
 		} else
 		if (argset.contains("-en")) {
 			config.language = "en";
-		}
+		} else
 		if (argset.contains("-de")) {
 			config.language = "de";
 		}
+		if (argset.contains("-maximized")) {
+			config.maximized = true;
+		}
+		if (argset.contains("-fullscreen")) {
+			config.fullScreen = true;
+		}
+		if (argset.contains("-fullscreenvideos")) {
+			config.movieScale = true;
+		}
+		if (argset.contains("-clickskip")) {
+			config.movieClickSkip = true;
+		}
+		if (argset.contains("-noclickskip")) {
+			config.movieClickSkip = false;
+		}
 		
-//		if (!config.load() || argset.contains("-config")) {
-//			doStartConfiguration(config);
-//		} else {
-			doStartGame(config);
-//		}
+		doStartGame(config);
 	}
 	/**
 	 * Put up warning dialog for failed attempt to run the program with appropriate memory.
@@ -101,15 +114,26 @@ public final class Startup {
 	}
 	/**
 	 * Restart the program using the proper memory settings.
+	 * @param args the application arguments
 	 * @return true if the re initialization was successful
 	 */
-	private static boolean doLowMemory() {
+	private static boolean doLowMemory(Set<String> args) {
 		ProcessBuilder pb = new ProcessBuilder();
+		List<String> cmdLine = new ArrayList<String>();
+		cmdLine.add(System.getProperty("java.home") + "/bin/java");
+		cmdLine.add("-Xmx" + MINIMUM_MEMORY + "M");
+		cmdLine.add("-cp");
 		if (!new File("open-ig-" + Configuration.VERSION + ".jar").exists()) {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "./bin", "-splash:open-ig-splash.png", "hu.openig.Startup", "-memonce");
+			cmdLine.add("./bin");
 		} else {
-			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-" + Configuration.VERSION + ".jar", "-splash:open-ig-splash.png", "hu.openig.Startup", "-memonce");
+			cmdLine.add("open-ig-" + Configuration.VERSION + ".jar");
 		}
+		cmdLine.add("-splash:open-ig-splash.png");
+		cmdLine.add("hu.openig.Startup");
+		cmdLine.add("-memonce");
+		cmdLine.addAll(args);
+		
+		pb.command(cmdLine);
 		try {
 			pb.start();
 //			Process p = pb.start();

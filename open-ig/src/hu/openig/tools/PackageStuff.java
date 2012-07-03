@@ -167,6 +167,8 @@ public final class PackageStuff {
 								|| d.contains("hu/openig/utils/Parallels")
 								|| d.contains("hu/openig/utils/ImageUtils")
 								|| d.contains("hu/openig/utils/ConsoleWatcher")
+								|| d.contains("hu/openig/gfx/checkmark_grayscale.png")
+								|| d.contains("hu/openig/gfx/checkmark.png")
 								|| d.contains("hu/openig/gfx/button_medium.png")
 								|| d.contains("hu/openig/gfx/button_medium_pressed.png")
 								|| d.contains("hu/openig/gfx/launcher_background.png")
