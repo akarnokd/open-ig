@@ -2751,8 +2751,8 @@
 	<entry key="starmap.zoom.tooltip">Zoom in or out of the map[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out</entry>
 
 
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="battle.selectall.tooltip">[c=FFFFFFFF]Left mouse button, CTRL+A[/c]: Select all units[n][c=FFFFFFFF]Right mouse button[/c]: Deselect all units</entry>
+	<entry key="battle.selectgroup.tooltip">[c=FFFFFFFF]Left mouse button, SHIFT+%1$d[/c]: Select group %1$d[n][c=FFFFFFFF]Right mouse button[/c]: Dismiss group %1$d</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

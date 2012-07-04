@@ -4638,11 +4638,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						}
 					}
 				};
+				
 				groupButtons.add(ib);
 				add(ib);
 				ib.x = x;
 				
 				x += 25;
+				
+				if (i == -1) {
+					ib.tooltip(get("battle.selectall.tooltip"));
+				} else {
+					ib.tooltip(format("battle.selectgroup.tooltip", i));
+				}
 			}
 		}
 		@Override
@@ -4729,7 +4736,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 				return true;
 			}
-			if (e.has(Type.DOWN) && e.has(Button.RIGHT)) {
+			if (e.has(Type.DOWN) && e.has(Button.RIGHT) && e.y >= commons.common().shield[0].getHeight()) {
 				removeFromSelection(e.x, e.y);
 				displaySelectedShipInfo();
 				return true;
