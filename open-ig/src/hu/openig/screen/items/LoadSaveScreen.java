@@ -67,6 +67,7 @@ import java.util.TimeZone;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.xml.stream.XMLStreamException;
@@ -1853,10 +1854,31 @@ public class LoadSaveScreen extends ScreenBase {
 		while (cont != null && !(cont instanceof JFrame)) {
 			cont = cont.getParent();
 		}
-		OtherSettingsDialog f = new OtherSettingsDialog(
-				(JFrame)cont, commons.labels(), commons.config, commons.background().setup);
-		f.setLocationRelativeTo(c);
-		f.setVisible(true);
+		boolean fs = config.fullScreen;
+		if (fs) {
+			commons.control().setFullscreen(false);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					JComponent c = commons.control().renderingComponent();
+					Container cont = c.getParent();
+					while (cont != null && !(cont instanceof JFrame)) {
+						cont = cont.getParent();
+					}
+					
+					OtherSettingsDialog f = new OtherSettingsDialog(
+							(JFrame)cont, commons.labels(), commons.config, commons.background().setup);
+					f.setLocationRelativeTo(cont);
+					f.setVisible(true);
+					
+					commons.control().setFullscreen(true);
+				}
+			});
+		} else {
+			OtherSettingsDialog f = new OtherSettingsDialog(
+					(JFrame)cont, commons.labels(), commons.config, commons.background().setup);
+			f.setVisible(true);
+		}
 	}
 	@Override
 	protected Point scaleBase(int mx, int my) {
