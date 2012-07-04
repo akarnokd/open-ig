@@ -2334,15 +2334,15 @@ public class Launcher extends JFrame {
 						+ " These settings can improve your experience on a <!--br--> modern computer with high resolution display."
 						+ " All of these options can be later on changed from <!--br--> within the game under Settings.</p>");
 				
-				fullScreenDesc.setText("<html><p>The original game had a fixed 640 x 480 resolution. <!--br-->You have the option to run the game in this classical initial size,<!--br--> maximized or as full screen.</p>");
+				fullScreenDesc.setText("<html><p>The original game had a fixed 640 x 480 resolution. <!--br-->You have the option to run the game in this classical initial size,<!--br--> maximized or as full screen. Otherwise, you can resize the game window at your leisure.</p>");
 				fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
-						"Default 640 x 480",
+						"Classic 640 x 480",
 						"Maximized",
 						"Full screen"
 				}));
 				
 				movieDesc.setText("<html><p>The original game featured 640 x 480 <!--br-->cutscenes which might look too small in modern<!--br--> screens and larger game windows.</p>");
-				movie.setText("Scale cutscenes to the screen or window size.");
+				movie.setText("Scale up cutscenes to fit the game window.");
 				
 				clickDesc.setText("<html><p>You may skip cutscenes by pressing ESC, SPACE or by clicking with<!--br--> any mouse button. However, sometimes you can accidentally<!--br--> skip a cutscene with such clicks.</p>");
 				click.setText("Allow skipping cutscenes via mouse clicks.");
@@ -2352,6 +2352,25 @@ public class Launcher extends JFrame {
 				dlg.setTitle("Első indítás");
 				ok.setText("Rendben");
 				cancel.setText("Mégsem");
+
+				mainLabel.setText("<html><p>Mielőtt először elindítanád az Open Imperium Galacticát, lehetőséged van néhány látvány és viselkedésmódot beállítani."
+						+ " Ezek a beállítások feljavíthatják a játékélményt egy modern, nagyfelbontású kijelzővel rendelkező számítógépen."
+						+ " Ezeket a beállításokat később is megváltoztathatod a játékban Beállítások képernyőn.</p>");
+				
+				fullScreenDesc.setText("<html><p>Az eredeti játék rögzített 640 x 480-as felbontással rendelkezett. Lehetőséged van ekkora mérettel indítani a játékot, maximális méretben vagy teljes képernyős módon. Egyébként a játék ablaka tetszőlegesen átméretezhető.</p>");
+				fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
+						"Klasszikus 640 x 480",
+						"Maximális ablakméret",
+						"Teljes képernyős"
+				}));
+				
+				movieDesc.setText("<html><p>Az eredeti játék átvezető videói 640 x 480-ban készültek, ami kicsinek tűnhet nagyobb ablakméretek esetén.</p>");
+				movie.setText("Átvezetők felnagyítása az ablakmérethez.");
+				
+				clickDesc.setText("<html><p>Az átvezető videók az ESC, SZÓKÖZ vagy egérkattintás segítségével átugorhatók. Viszont a kattintással néha véletlenül is átugorhatsz egy átvezető videót.</p>");
+				click.setText("Átvezetők kihagyása egérkattintással.");
+
+				
 			} else
 			if ("de".equals(language)) {
 				dlg.setTitle("Ersten Start");
