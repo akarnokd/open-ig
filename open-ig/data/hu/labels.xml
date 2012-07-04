@@ -2794,6 +2794,8 @@
 	<entry key="starmap.achievements.tooltip">Teljesítmények megjelenítése[n]Gyorsbillentyű: [c=FFFFFFFF]F12[/c]</entry>
 	<entry key="starmap.zoom.tooltip">Térkép nagyítása vagy kicsinyítése[n][c=FFFFFFFF]Bal egérgomb[/c]: nagyítás[n][c=FFFFFFFF]Jobb egérgomb[/c]: kicsinyítés</entry>
 	
+	<entry key="battle.selectall.tooltip">[c=FFFFFFFF]Bal egérgomb, CTRL+A[/c]: Minden egység kiválasztása[n][c=FFFFFFFF]Jobb egérgomb[/c]: Az összes kiválasztás megszüntetése</entry>
+	<entry key="battle.selectgroup.tooltip">[c=FFFFFFFF]Jobb egérgomb, SHIFT-%1$d[/c]: %1$d. csoport kiválasztása[n][c=FFFFFFFF]Jobb egérgomb[/c]: %1$d. csoport megszüntetése</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

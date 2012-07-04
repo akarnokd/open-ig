@@ -5972,6 +5972,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				};
 				groupButtons.add(ib);
 				add(ib);
+				
+				if (i == -1) {
+					ib.tooltip(get("battle.selectall.tooltip"));
+				} else {
+					ib.tooltip(format("battle.selectgroup.tooltip", i));
+				}
 			}
 
 		}

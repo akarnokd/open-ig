@@ -1854,7 +1854,7 @@ public class LoadSaveScreen extends ScreenBase {
 		while (cont != null && !(cont instanceof JFrame)) {
 			cont = cont.getParent();
 		}
-		boolean fs = config.fullScreen;
+		boolean fs = commons.control().isFullscreen();
 		if (fs) {
 			commons.control().setFullscreen(false);
 			SwingUtilities.invokeLater(new Runnable() {
@@ -1877,6 +1877,7 @@ public class LoadSaveScreen extends ScreenBase {
 		} else {
 			OtherSettingsDialog f = new OtherSettingsDialog(
 					(JFrame)cont, commons.labels(), commons.config, commons.background().setup);
+			f.setLocationRelativeTo(cont);
 			f.setVisible(true);
 		}
 	}
