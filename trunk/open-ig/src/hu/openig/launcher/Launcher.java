@@ -2374,8 +2374,25 @@ public class Launcher extends JFrame {
 			} else
 			if ("de".equals(language)) {
 				dlg.setTitle("Ersten Start");
-				ok.setText("Gut");
-				cancel.setText("Lieber nicht");
+				ok.setText("OK");
+				cancel.setText("Abbrechen");
+				
+				mainLabel.setText("<html><p>Bevor sie Open Imperium Galactica das erste Mal starten, haben sie die Möglichkeit, einige Grafik- und Spieleinstellungen vorzunehmen."
+						+ " Diese Einstellungen können das Spielerlebnis auf modernen Computern mit hochauflösenden Displays verbessern. Diese Optionen können auch später noch"
+						+ " im Spiel unter dem Menüpunkt Einstellungen geändert werden.</p>");
+				
+				fullScreenDesc.setText("<html><p>Das ursprüngliche Spiel hatte eine feste Auflösung von 640x480. Sie haben die Möglichkeit, das Spiel in dieser klassischen Größe, maximiert oder in Vollbild zu spielen. Anderfalls können Sie die Größe des Spiel-Fensters frei einstellen.</p>");
+				fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
+						"Klassische 640 x 480",
+						"Maximiert",
+						"Vollbild"
+				}));
+				
+				movieDesc.setText("<html><p>Das originale Spiel beinhaltete Zwischensequenzen in 640x480, welche auf modernen Monitoren und größeren Fenstern zu klein aussehen können.</p>");
+				movie.setText("Skaliere Zwischensequenzen auf Fenstergröße.");
+				
+				clickDesc.setText("<html><p>Sie können die Zwischensequenzen durch Drücken von ESC, LEERTASTE oder einer beliebigen Maustaste überspringen. Letzteres führt jedoch manchmal zu einem versehentlichen Überspringen der Sequenzen.</p>");
+				click.setText("Zwischensequenzen mit Maustasten überspringen.");
 			}
 			
 			// -----------------------------------------------------------------
