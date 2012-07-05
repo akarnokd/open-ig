@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
-	<module id='Launcher' version='0.32'>
+	<module id='Launcher' version='0.33'>
 		<!-- General module description -->
 		<general url='https://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
@@ -22,12 +22,12 @@
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  https://open-ig.googlecode.com/files/ -->
-		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='d78ea7423305acc494377d0e47d98ec922869a38'>
+		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='89db906bc3317326e87c51a7787e396dafdc6974'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.95.017'>
+	<module id='Game' version='0.95.018'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,13 +43,13 @@
 			<desc lang='en'>Beta.</desc>
 			<desc lang='de'>Beta</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.017.jar' sha1='91629de3bd4c9615964617c08297c835eca75fc6'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.018.jar' sha1='46740505061cbd9e990bc039da578b4ed683bbc5'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120625a2.zip' sha1='48885d0b52f0134d59c3eee7db05712eeeb11767'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Június 25 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 25th June, 2012 / A</desc>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120705a2.zip' sha1='9a54f7e79bfd99ea450d4291b4bdb8ce2f1862f1'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Július 5 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 5th July, 2012 / A</desc>
 		</file>
 		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120625a.zip' sha1='8edb459b2bffdc2c65272927292dc5fd51075e5c'/>
 

@@ -177,6 +177,7 @@ public final class PackageStuff {
 								|| d.contains("hu/openig/gfx/german.png")
 								|| d.contains("hu/openig/gfx/loading.gif")
 								|| d.contains("hu/openig/ui/IGButton")
+								|| d.contains("hu/openig/ui/IGCheckBox")
 								|| d.contains("hu/openig/render/RenderTools")
 								|| d.contains("hu/openig/render/GenericMediumButton")
 								|| d.contains("hu/openig/render/GenericButtonRenderer");
