@@ -4,6 +4,11 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.33 - Minor improvements =
+  * Downloading and installing the game under Firefox should work properly now ([https://code.google.com/p/open-ig/issues/detail?id=597 Issue #597])
+  * Added first time start graphics options ([https://code.google.com/p/open-ig/issues/detail?id=539 Issue #539])
+  * Fixed uninstall error ([https://code.google.com/p/open-ig/issues/detail?id=538 Issue #538])
+
 = Version 0.24 - Bug fixes =
   * Fixed crash when existing files had zero size
   * Fixed issue [http://code.google.com/p/open-ig/issues/detail?id=240 #240]: memory field number formatting error
