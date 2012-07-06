@@ -50,6 +50,7 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UITextButton;
 import hu.openig.ui.VerticalAlignment;
+import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -549,6 +550,8 @@ public class InfoScreen extends ScreenBase {
 			Screens.INFORMATION_COLONY, Screens.INFORMATION_MILITARY, Screens.INFORMATION_FINANCIAL
 	})
 	UIImageButton nextPlanet;
+	/** The local planet statistics. */
+	PlanetStatistics localStatistics;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -1044,6 +1047,8 @@ public class InfoScreen extends ScreenBase {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		g2.drawImage(commons.info().base, base.x, base.y, null);
 
+		localStatistics = planet().getStatistics();
+		
 		if (mode == Screens.INFORMATION_PLANETS) {
 			displayPlanetInfo();
 		} else
@@ -1630,7 +1635,7 @@ public class InfoScreen extends ScreenBase {
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			} else
 			if (p.owner == player()) {
-				double g = world().galaxyModel.getGrowth(p.type.type, p.race);
+				double g = world().galaxyModel.getGrowth(p.type.type, p.race) * localStatistics.populationGrowthModifier;
 				surfaceText = format("colonyinfo.surface2", 
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			}
@@ -1664,8 +1669,7 @@ public class InfoScreen extends ScreenBase {
 					}
 				}
 				if (p.owner == player()) {
-					PlanetStatistics ps = p.getStatistics();
-					
+					PlanetStatistics ps = localStatistics;
 					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
 					setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
 					setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
@@ -1681,7 +1685,7 @@ public class InfoScreen extends ScreenBase {
 					), true).visible(true);
 					
 					taxMorale.text(format("colonyinfo.tax-morale",
-							p.morale, withSign(p.morale - p.lastMorale)
+							(int)p.morale, withSign((int)(p.morale - p.lastMorale))
 					), true).visible(true);
 					taxLevel.text(format("colonyinfo.tax-level",
 							get(p.getTaxLabel())
@@ -2567,7 +2571,7 @@ public class InfoScreen extends ScreenBase {
 				planetTaxIncome.text(format("colonyinfo.tax", p.taxIncome), true);
 				planetTradeIncome.text(format("colonyinfo.trade", p.tradeIncome), true);
 				planetTotalIncome.text(format("colonyinfo.total", p.getTotalIncome()), true);
-				planetTaxMorale.text(format("colonyinfo.tax-morale", p.morale, get(p.getMoraleLabel())), true);
+				planetTaxMorale.text(format("colonyinfo.tax-morale", (int)p.morale, get(p.getMoraleLabel())), true);
 				
 				planetCurrent.visible(true);
 				planetTaxIncome.visible(true);
@@ -2673,7 +2677,7 @@ public class InfoScreen extends ScreenBase {
 		problemsPolice.visible(false);
 		problemsFireBrigade.visible(false);
 		if (p.owner == player()) {
-			PlanetStatistics ps = p.getStatistics();
+			PlanetStatistics ps = localStatistics;
 			if (ps.hasProblem(PlanetProblems.HOUSING)) {
 				problemsHouse.image(commons.common().houseIcon).visible(true);
 				setTooltip(problemsHouse, "info.problems.house.tooltip");
@@ -3269,7 +3273,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return o1.morale - o2.morale;
+									return U.compare(o1.morale, o2.morale);
 								}
 							});
 						}
@@ -3281,7 +3285,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return o2.morale - o1.morale;
+									return U.compare(o2.morale, o1.morale);
 								}
 							});
 						}
@@ -3459,7 +3463,7 @@ public class InfoScreen extends ScreenBase {
 						
 						commons.text().paintTo(g2, 240, y + 1, 10, 
 								mmc, 
-										p.morale + "%");
+										((int)p.morale) + "%");
 
 						if (p.morale - p.lastMorale != 0) {
 							int mc = TextRenderer.GREEN;
@@ -3475,10 +3479,10 @@ public class InfoScreen extends ScreenBase {
 									
 							commons.text().paintTo(g2, 270, y + 1, 10,
 									mc,  
-											 withSign(p.morale - p.lastMorale));
+											 withSign((int)(p.morale - p.lastMorale)));
 						}
 						
-						PlanetStatistics ps = p.getStatistics();
+						PlanetStatistics ps = localStatistics;
 						
 						int j = 0;
 						

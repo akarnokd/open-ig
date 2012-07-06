@@ -2633,6 +2633,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		 */
 		public PlanetStatistics update() {
 			Planet p = planet();
+			PlanetStatistics ps = p.getStatistics();
 			
 			planet.text(p.name, true);
 			
@@ -2664,7 +2665,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			} else
 			if (p.owner == player()) {
-				double g = world().galaxyModel.getGrowth(p.type.type, p.race);
+				double g = world().galaxyModel.getGrowth(p.type.type, p.race) * ps.populationGrowthModifier;
 				surfaceText = format("colonyinfo.surface2", 
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			}
@@ -2681,16 +2682,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			taxInfo.visible(false);
 			autobuild.visible(false);
 			
-			PlanetStatistics ps = null;
-			
 			if (p.isPopulated()) {
 			
 				if (p.owner == player()) {
 					population.text(format("colonyinfo.population", 
 							p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
 					), true).visible(true);
-					
-					ps = p.getStatistics();
 					
 					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
 					setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
@@ -2704,7 +2701,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					), true).visible(true);
 					
 					taxInfo.text(format("colonyinfo.tax-info",
-							get(p.getTaxLabel()), p.morale, withSign(p.morale - p.lastMorale)
+							get(p.getTaxLabel()), (int)p.morale, withSign((int)(p.morale - p.lastMorale))
 					), true).visible(true);
 					
 					autobuild.text(format("colonyinfo.autobuild",
@@ -6164,6 +6161,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		setTooltip(buildingsPanel.buildingDown, "colony.building.next.tooltip");
 		setTooltip(buildingsPanel.buildingList, "colony.building.list.tooltip");
 		setTooltip(buildingsPanel.build, "colony.building.build.tooltip");
+		BuildingType bt = player().currentBuilding;
+		if (bt != null) {
+			setTooltipText(buildingsPanel.preview, bt.description);
+			setTooltipText(buildingsPanel.buildingName, bt.description);
+		} else {
+			setTooltip(buildingsPanel.preview, null);
+			setTooltip(buildingsPanel.buildingName, null); 
+		}
 		
 		setTooltip(sidebarBuildings, "colony.buildings.tooltip");
 		setTooltip(sidebarRadar, "colony.radars.tooltip");

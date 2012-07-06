@@ -347,7 +347,7 @@ public class ColonyPlanner extends Planner {
 	 */
 	boolean checkTax(final AIPlanet planet) {
 		// try changing the tax
-		int moraleNow = planet.morale;
+		double moraleNow = planet.morale;
 		TaxLevel tax = planet.tax;
 		TaxLevel newLevel = null;
 		if (moraleNow < 25 || planet.population < 4500) {
@@ -400,8 +400,8 @@ public class ColonyPlanner extends Planner {
 	 * @return action taken 
 	 */
 	boolean checkMorale(final AIPlanet planet) {
-		int moraleNow = planet.morale;
-		int moraleLast = planet.lastMorale;
+		double moraleNow = planet.morale;
+		double moraleLast = planet.lastMorale;
 		// only if there is energy available
 		if (planet.statistics.energyAvailable >= planet.statistics.energyDemand * 1.1) {
 			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {

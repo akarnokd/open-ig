@@ -2679,7 +2679,7 @@
 
 	<entry key="options.back.tooltip.mainmenu">Back to [c=FFFFFFFF]Main menu[/c].</entry>
 	<entry key="options.back.tooltip.ingame">Back to [c=FFFFFFFF]Game[/c].</entry>
-	<entry key="mainmenu.single.tooltip">Start a new single player campaing or skirmish.</entry>
+	<entry key="mainmenu.single.tooltip">Start a new single player campaign or skirmish.</entry>
 	<entry key="statusbar.quickproduction">Quick production panel[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: production screen</entry>
 	<entry key="statusbar.quickresearch.none">Quick research panel[n]No active research[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
 	<entry key="statusbar.quickresearch.running">Quick research panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
