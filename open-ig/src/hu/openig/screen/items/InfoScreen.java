@@ -1685,7 +1685,7 @@ public class InfoScreen extends ScreenBase {
 					), true).visible(true);
 					
 					taxMorale.text(format("colonyinfo.tax-morale",
-							(int)p.morale, withSign((int)(p.morale - p.lastMorale))
+							(int)p.morale, withSign((int)(p.morale) - (int)(p.lastMorale))
 					), true).visible(true);
 					taxLevel.text(format("colonyinfo.tax-level",
 							get(p.getTaxLabel())
@@ -3479,7 +3479,7 @@ public class InfoScreen extends ScreenBase {
 									
 							commons.text().paintTo(g2, 270, y + 1, 10,
 									mc,  
-											 withSign((int)(p.morale - p.lastMorale)));
+											 withSign((int)(p.morale) - (int)(p.lastMorale)));
 						}
 						
 						PlanetStatistics ps = localStatistics;

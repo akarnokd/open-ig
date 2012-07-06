@@ -411,8 +411,11 @@ public final class Simulator {
 			
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
-			double nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
-			planet.morale = /* (int) */nextMorale;
+			double nextMorale = (planet.morale * 0.8d + 0.2d * newMorale);
+			if (planet.morale >= 95 && newMorale > planet.morale) {
+				nextMorale = planet.morale + (newMorale - 95) / 10;
+			}
+			planet.morale = Math.max(0, Math.min(100, /* (int) */nextMorale));
 			
 			double nextPopulation = 0;
 			if (nextMorale < 20) {
