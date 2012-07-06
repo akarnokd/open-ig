@@ -23,7 +23,7 @@ public class PlayerFinances {
 	/** The trade income. */
 	public int tradeIncome;
 	/** The average tax morale. */
-	public int taxMorale;
+	public double taxMorale;
 	/** The tax morale count. */
 	public int taxMoraleCount;
 	/**

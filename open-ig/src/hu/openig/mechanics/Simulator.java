@@ -183,7 +183,7 @@ public final class Simulator {
 		double moraleBoost = 0;
 		int radar = 0;
 		long eqPlaytime = 6L * 60 * 60 * 1000;
-		double populationGrowthModifier = 1.0;
+		double populationGrowthModifier = ps.populationGrowthModifier;
 		double planetTypeModifier = world.galaxyModel.getGrowth(planet.type.type, planet.race);
 		
 		final int repairCost = world.params().repairCost();
@@ -305,9 +305,6 @@ public final class Simulator {
 				if (b.hasResource("radar")) {
 					radar = Math.max(radar, (int)b.getResource("radar"));
 				}
-				if (b.hasResource("population-growth")) {
-					populationGrowthModifier = 1 + b.getResource("population-growth") / 100;
-				}
 			}
 			if (planet.earthQuakeTTL > 0) {
 				if (b.type.kind.equals("Factory")) {
@@ -415,7 +412,7 @@ public final class Simulator {
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
 			double nextMorale = (planet.morale * 0.8f + 0.2f * newMorale);
-			planet.morale = (int)nextMorale;
+			planet.morale = /* (int) */nextMorale;
 			
 			double nextPopulation = 0;
 			if (nextMorale < 20) {

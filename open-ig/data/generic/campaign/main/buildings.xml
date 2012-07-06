@@ -226,7 +226,7 @@
 		</graphics>
 		<build limit="1" kind="House" cost="45000" except="earth,frozen,liquid,rocky,cratered,neptoplasm"/>
 		<operation>
-			<resource type="population-growth" display="true">10</resource>
+			<resource type="population-growth" display="true">100</resource>
 			<resource type="morale">10</resource>
 			<resource type="energy">-800</resource>
 			<resource type="worker">-210</resource>

@@ -605,7 +605,7 @@ public class World {
 			p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
 			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
 			p.rotationDirection = RotationDirection.valueOf(xplanet.get("rotate"));
-			p.morale = Integer.parseInt(xplanet.get("morale"));
+			p.morale = xplanet.getDouble("morale");
 			p.taxIncome = Integer.parseInt(xplanet.get("tax-income"));
 			p.tradeIncome = Integer.parseInt(xplanet.get("trade-income"));
 			
@@ -615,12 +615,7 @@ public class World {
 			} else {
 				p.lastPopulation = p.population;
 			}
-			String lastMorale = xplanet.get("morale-last", null);
-			if (lastMorale != null && !lastMorale.isEmpty()) {
-				p.lastMorale = Integer.parseInt(lastMorale);
-			} else {
-				p.lastMorale = p.morale;
-			}
+			p.lastMorale = xplanet.getDouble("morale-last", p.morale);
 			
 			XElement surface = xplanet.childElement("surface");
 			String si = surface.get("id");
@@ -1510,8 +1505,8 @@ public class World {
 				p.quarantineTTL = xplanet.getInt("quarantine-ttl", 0);
 				p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
 				p.tax = TaxLevel.valueOf(xplanet.get("tax"));
-				p.morale = xplanet.getInt("morale");
-				p.lastMorale = xplanet.getInt("morale-last", p.morale);
+				p.morale = xplanet.getDouble("morale", 50d);
+				p.lastMorale = xplanet.getDouble("morale-last", 50d);
 				p.population = xplanet.getInt("population");
 				p.lastPopulation = xplanet.getInt("population-last", p.population);
 				p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));

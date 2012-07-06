@@ -62,9 +62,9 @@ public class Planet implements Named, Owned, HasInventory {
 	/** The taxation level. */
 	public TaxLevel tax = TaxLevel.MODERATE;
 	/** The morale percent in hundreds. */
-	public int morale = 50;
+	public double morale = 50;
 	/** The last day's morale percent in hundreds. */
-	public int lastMorale = 50;
+	public double lastMorale = 50;
 	/** The auto build mode. */
 	public AutoBuild autoBuild = AutoBuild.OFF;
 	/** The last day's tax income. */
@@ -90,7 +90,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @param morale the morale 0..100%
 	 * @return the label
 	 */
-	public static String getMoraleLabel(int morale) {
+	public static String getMoraleLabel(double morale) {
 		if (morale < 5) {
 			return "morale.revolt";
 		}
@@ -137,6 +137,8 @@ public class Planet implements Named, Owned, HasInventory {
 		boolean colonyHub = false;
 		boolean colonyHubOperable = false;
 		int fireBrigadeCount = 0;
+		
+		result.populationGrowthModifier = 1d;
 		
 		result.vehicleMax = 8; // default per planet
 		
@@ -205,6 +207,10 @@ public class Planet implements Named, Owned, HasInventory {
 				if (b.hasResource("vehicles")) {
 					result.vehicleMax += b.getResource("vehicles");
 				}
+				if (b.hasResource("population-growth")) {
+					result.populationGrowthModifier = 1 + b.getResource("population-growth") / 100;
+				}
+
 			}
 			if ("MilitarySpaceport".equals(b.type.id)) {
 				result.militarySpaceportCount = 1;

@@ -47,9 +47,9 @@ public class AIPlanet {
 	/** The placement helper. */
 	public PlacementHelper placement;
 	/** The current morale. */
-	public int morale;
+	public double morale;
 	/** The last morale. */
-	public int lastMorale;
+	public double lastMorale;
 	/** The tax level. */
 	public TaxLevel tax;
 	/** The auto build state. */

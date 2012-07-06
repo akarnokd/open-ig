@@ -151,6 +151,18 @@ public abstract class Planner {
 			}
 			return 0;
 		}
+		/**
+		 * If available is less than the demand, return the difference, return zero otherwise
+		 * @param available the available amount
+		 * @param demand the demand amount
+		 * @return the required
+		 */
+		double required(double available, double demand) {
+			if (available < demand) {
+				return demand - available;
+			}
+			return 0;
+		}
 	};
 	/** The best planet comparator. */
 	public static final Comparator<AIPlanet> BEST_PLANET = new Comparator<AIPlanet>() {
