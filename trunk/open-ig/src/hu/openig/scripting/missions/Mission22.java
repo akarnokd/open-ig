@@ -117,6 +117,8 @@ public class Mission22 extends Mission {
 				removeScripted(fa);
 			}
 		}
+		
+		player.setAvailable(research("Flagship"));
 	}
 	@Override
 	public void onTime() {
