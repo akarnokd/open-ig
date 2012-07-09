@@ -738,6 +738,8 @@ public class World {
 		}
 		tech.index = item.getInt("index");
 		tech.video = item.get("video", null);
+		
+		tech.nobuild = item.getBoolean("nobuild", false);
 	}
 	/**
 	 * Creates a placeholder image if the given image is null.
@@ -1331,7 +1333,7 @@ public class World {
 			p.yesterday.productionCost = xyesterday.getInt("production");
 			p.yesterday.taxIncome = xyesterday.getInt("tax");
 			p.yesterday.tradeIncome = xyesterday.getInt("trade");
-			p.yesterday.taxMorale = xyesterday.getInt("morale");
+			p.yesterday.taxMorale = xyesterday.getDouble("morale");
 			p.yesterday.taxMoraleCount = xyesterday.getInt("count");
 			
 			XElement xtoday = xplayer.childElement("today");

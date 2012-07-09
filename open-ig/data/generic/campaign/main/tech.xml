@@ -254,7 +254,7 @@
 		image='inventions/spaceships/battleships/thorin' factory='spaceship'
 		research-cost='1000000' production-cost='1000000' level='6' race='human'
 		civil='5' mech='6' comp='6' ai='5' mil='7' index='4'
-		video='technology/spaceships/battleships/thorin'>
+		video='technology/spaceships/battleships/thorin' nobuild='true'>
 		<slot id='radar' x='24' y='51' width='21' height='8' max='1'
 			items='Radar1, Radar2, Radar3' />
 		<slot id='ecm' x='69' y='58' width='22' height='11' max='1'

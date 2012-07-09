@@ -63,6 +63,8 @@ public class ResearchType {
 	public int index;
 	/** The video resource name. */
 	public String video;
+	/** Do not allow producing this technology. */
+	public boolean nobuild;
 	/** The optional prerequisites. */
 	public final List<ResearchType> prerequisites = new ArrayList<ResearchType>();
 	/** The optional properties. */
