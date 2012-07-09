@@ -1544,8 +1544,8 @@ public class EquipmentScreen extends ScreenBase {
 					secondaryValue.text(secondary.name).visible(true);
 				}
 				FleetStatistics fs2 = secondary.getStatistics();
-				secondaryFighters.text(format("equipment.fighters", fs2.fighterCount)).visible(true);
-				secondaryVehicles.text(format("equipment.vehiclesandmax", fs2.vehicleCount, fs2.vehicleMax)).visible(true);
+				secondaryFighters.text(format("equipment.fighters", fs2.fighterCount), true).visible(true);
+				secondaryVehicles.text(format("equipment.vehiclesandmax", fs2.vehicleCount, fs2.vehicleMax), true).visible(true);
 				
 				boolean bleft = false;
 				boolean bright = false;
@@ -1560,7 +1560,7 @@ public class EquipmentScreen extends ScreenBase {
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 					bleft = fs.battleshipCount < 3 && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && fs.battleshipCount < 3;
+					bright = f.inventoryCount(rt) > 0 && fs2.battleshipCount < 3;
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 					bleft = fs.cruiserCount < 25 && secondary.inventoryCount(rt) > 0;
