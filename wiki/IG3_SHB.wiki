@@ -122,6 +122,14 @@ This page summarizes some of my thoughts and requirements of the game.
     * Anti air units
   * Underwater battle?
 
+= Diplomacy =
+
+  * Trade agreements over resource exchange
+  * Ask ally for help attack or defend a planet
+    * i.e., attack space defenses and nearby enemy fleets
+    * joint space battle
+    * joint ground battle
+
 = Other =
 
   * Don't overwhelm the player with economic complexity
