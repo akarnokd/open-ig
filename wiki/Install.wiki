@@ -10,9 +10,9 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 1) Download the current upgrade pack and main game JAR file from the downloads page:
 
-[http://open-ig.googlecode.com/files/open-ig-upgrade-20120705a2.zip Upgrade 2012-07-05-a-2]
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20120711a2.zip Upgrade 2012-07-11-a-2]
 
-[http://open-ig.googlecode.com/files/open-ig-0.95.018.jar open-ig-0.95.018.jar]
+[http://open-ig.googlecode.com/files/open-ig-0.95.019.jar open-ig-0.95.019.jar]
 
 Note that the *essential* upgrade pack contains the ever changing game model and image resources. Without it, the game might not work and behave properly.
 
@@ -40,15 +40,15 @@ Note that the *essential* upgrade pack contains the ever changing game model and
 
 4) Run the game:
 
- * double click on {{{open-ig-0.95.018.jar}}}, or
+ * double click on {{{open-ig-0.95.019.jar}}}, or
  * run the following command line: 
 
 {{{
-java -Xmx768M -jar open-ig-0.95.018.jar -memonce
+java -Xmx768M -jar open-ig-0.95.019.jar -memonce
 }}}
 
  * create a shell script/batch file and put in: 
 
 {{{
-javaw -Xmx768M -jar open-ig-0.95.018.jar -memonce
+javaw -Xmx768M -jar open-ig-0.95.019.jar -memonce
 }}}
