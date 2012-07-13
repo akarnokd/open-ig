@@ -2,6 +2,18 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.95.030 - Beta + bugfixes =
+  * Released: 2012-07-13 15:00 CET
+  * Fixed research/production label images to be consistent across languages ([http://code.google.com/p/open-ig/issues/detail?id=63 Issue #63])
+  * Added tooltips to many buttons and labels. ([http://code.google.com/p/open-ig/issues/detail?id=76 Issue #76])
+  * Clicking on "Other..." in the options screen now exits fullscreen mode so the dialog becomes visible. ([http://code.google.com/p/open-ig/issues/detail?id=337 Issue #337])
+  * Ability to override existing save "slots" ([http://code.google.com/p/open-ig/issues/detail?id=341 Issue #341])
+  * The game now requires confirmation on returning to the main menu to avoid accidental quits ([http://code.google.com/p/open-ig/issues/detail?id=342 Issue #342])
+  * Credits scrolls in double speed ([http://code.google.com/p/open-ig/issues/detail?id=368 Issue #368])
+  * AI now performs more actions on higher game speeds and does not limit itself on hard ([http://code.google.com/p/open-ig/issues/detail?id=452 Issue #452])
+  * Fixed alien races not having access to certain leveled technologies such as tanks and vehicles ([http://code.google.com/p/open-ig/issues/detail?id=454 Issue #454])
+  * Scaling up the UI now resizes the main window (but only when scaling is done in windowed mode) ([http://code.google.com/p/open-ig/issues/detail?id=516 Issue #516])
+
 = Version 0.95 - Beta =
   * Released: 2012-06-09 12:30 CET
   * *Missions from earlier saves might not work properly. I suggest you start a new game, especially if you are still on levels 1 or 2.*
