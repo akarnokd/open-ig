@@ -1517,7 +1517,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.building = b;
 				st.planet = nearbyPlanet;
 
-				shieldValue = Math.max(shieldValue, eff * bge.shields);
+//				shieldValue = Math.max(shieldValue, eff * bge.shields); FIXME
+				shieldValue += eff * bge.shields;
 
 				structures.add(st);
 			}
@@ -3974,11 +3975,24 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * Drop ground shields.
 	 */
 	void dropGroundShields() {
+		List<SpacewarStructure> ground = U.newArrayList();
+		int shieldCount = 0;
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.PROJECTOR) {
-				s.shield = 0;
+				ground.add(s);
+			}
+			if (s.type == StructureType.SHIELD) {
+				ground.add(s);
+				shieldCount++;
 			}
 		}
+		for (SpacewarStructure s : ground) {
+			if (shieldCount > 0) {
+				s.shield /= 2;
+			} else {
+				s.shield = 0;
+			}
+		}			
 	}
 	/** @return the player who won the battle, null if nof yet finished */
 	Player checkWinner() {
