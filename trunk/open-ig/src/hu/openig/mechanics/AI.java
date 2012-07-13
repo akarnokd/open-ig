@@ -221,6 +221,7 @@ public class AI implements AIManager {
 			}
 		}
 		for (SpacewarStructure s : world.structures(p)) {
+			s.guard |= s.type == StructureType.STATION || s.type == StructureType.PROJECTOR;
 			if (s.type == StructureType.SHIP 
 					&& s.item != null 
 					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
