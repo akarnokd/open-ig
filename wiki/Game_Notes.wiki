@@ -4,15 +4,41 @@
 
 = Version 0.95.030 - Beta + bugfixes =
   * Released: 2012-07-13 15:00 CET
+  * *Gergely Harrach* is now an official contributor, welcome!
   * Fixed research/production label images to be consistent across languages ([http://code.google.com/p/open-ig/issues/detail?id=63 Issue #63])
   * Added tooltips to many buttons and labels. ([http://code.google.com/p/open-ig/issues/detail?id=76 Issue #76])
   * Clicking on "Other..." in the options screen now exits fullscreen mode so the dialog becomes visible. ([http://code.google.com/p/open-ig/issues/detail?id=337 Issue #337])
   * Ability to override existing save "slots" ([http://code.google.com/p/open-ig/issues/detail?id=341 Issue #341])
   * The game now requires confirmation on returning to the main menu to avoid accidental quits ([http://code.google.com/p/open-ig/issues/detail?id=342 Issue #342])
   * Credits scrolls in double speed ([http://code.google.com/p/open-ig/issues/detail?id=368 Issue #368])
-  * AI now performs more actions on higher game speeds and does not limit itself on hard ([http://code.google.com/p/open-ig/issues/detail?id=452 Issue #452])
+  * AI now performs more actions on higher game speeds and does not limit itself on hard (Issues [http://code.google.com/p/open-ig/issues/detail?id=452 #452], [http://code.google.com/p/open-ig/issues/detail?id=551 #551])
   * Fixed alien races not having access to certain leveled technologies such as tanks and vehicles ([http://code.google.com/p/open-ig/issues/detail?id=454 Issue #454])
   * Scaling up the UI now resizes the main window (but only when scaling is done in windowed mode) ([http://code.google.com/p/open-ig/issues/detail?id=516 Issue #516])
+  * Fixed case where the space chat achievement was triggered through non-chat means ([http://code.google.com/p/open-ig/issues/detail?id=541 Issue #541])
+  * Trader ships are no longer affected by ship formations during defend missions ([http://code.google.com/p/open-ig/issues/detail?id=544 Issue #544])
+  * Double clicking on a game to load no longer gives 3 click-sounds ([http://code.google.com/p/open-ig/issues/detail?id=545 Issue #545])
+  * Fixed some trader fleet history tracking causing error messages ([http://code.google.com/p/open-ig/issues/detail?id=548 Issue #548])
+  * Fixed some NPE-related crashes and slowdowns ([http://code.google.com/p/open-ig/issues/detail?id=549 Issue #549])
+  * Fixed the on-bridge repeated appearance of the Doctor for the test ([http://code.google.com/p/open-ig/issues/detail?id=550 Issue #550])
+  * Fixed issue with subtitles not being displayed beyond a certain time into videos. ([http://code.google.com/p/open-ig/issues/detail?id=552 Issue #552])
+  * Fixed issue when user toggled fullscreen mode during video playback and the screen remained blacked out, allowing no interaction with the game. ([http://code.google.com/p/open-ig/issues/detail?id=552 Issue #552])
+  * Fixed crash in space battles ([http://code.google.com/p/open-ig/issues/detail?id=553 Issue #553])
+  * Fixed many translation errors and typos in the german translation. Thanks *Silverntiger*. ([http://code.google.com/p/open-ig/issues/detail?id=560 Issue #560])
+  * Changed how building upgrade information is displayed. The cost, description and state is now readable in a tooltip if hovered over the panel or the stars. ([http://code.google.com/p/open-ig/issues/detail?id=564 Issue #564])
+  * Fixed rockets and bombs retreating with the fleet ([http://code.google.com/p/open-ig/issues/detail?id=565 Issue #565])
+  * Fixed multi-rocket behavior and animation ([http://code.google.com/p/open-ig/issues/detail?id=565 Issue #565])
+  * If a ship destroys its target, it goes automatically into guard mode ([http://code.google.com/p/open-ig/issues/detail?id=565 Issue #565])
+  * Fixed cases when AI exploration fleets leave the starmap ([http://code.google.com/p/open-ig/issues/detail?id=566 Issue #566])
+  * Added diplomatic options to the Garthog race (accessible in freeplay only). Note that the options are not yet translated into german. ([http://code.google.com/p/open-ig/issues/detail?id=567 Issue #567])
+  * Picture of the Free Traders was missing from the database ([http://code.google.com/p/open-ig/issues/detail?id=569 Issue #569])
+  * Changed the behavior of the selection box in ground battles. This should allow more precise single and multiple unit selection ([http://code.google.com/p/open-ig/issues/detail?id=587 Issue #587])
+  * Fixed case where unfinished ground defense buildings received guns as well ([http://code.google.com/p/open-ig/issues/detail?id=592 Issue #592])
+  * Water waporators now provide 100% increase for population growth, e.g., when built, desert planets have 100% population growth instead of 50%. Upgrades can increase this to much higher level. ([http://code.google.com/p/open-ig/issues/detail?id=599 Issue #599])
+  * Fixed tax morale never going above 96% no matter how happy the colony was. ([http://code.google.com/p/open-ig/issues/detail?id=600 Issue #600])
+  * Fixed cases where more ships could be transferred into a fleet than allowed ([http://code.google.com/p/open-ig/issues/detail?id=601 Issue #601])
+  * Fixed issue with guns and starbases not re-targeting after their current target went out of range ([http://code.google.com/p/open-ig/issues/detail?id=602 Issue #602])
+  * Modified behavior in case multiple ground shields are participating in  a space battle. ([http://code.google.com/p/open-ig/issues/detail?id=603 Issue #603])
+  * Fixed crashes and display inconsistencies on the information screen. ([http://code.google.com/p/open-ig/issues/detail?id=604 Issue #604])
 
 = Version 0.95 - Beta =
   * Released: 2012-06-09 12:30 CET
