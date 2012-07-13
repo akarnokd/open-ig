@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -58,6 +59,8 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
@@ -91,7 +94,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.33";
+	public static final String VERSION = "0.34";
 	/**
 	 * The update XML to download.
 	 */
@@ -120,6 +123,8 @@ public class Launcher extends JFrame {
 	IGButton other;
 	/** Update launcher. */
 	IGButton launcher;
+	/** The verify button. */
+	IGButton verifyBtn;
 	/** The panel background. */
 	BufferedImage background;
 	/** The main panel. */
@@ -341,6 +346,8 @@ public class Launcher extends JFrame {
 			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Néhány fájl hiányzik vagy megsérült. Kijavítsam a telepítést?"; }
 			if ("Copy".equals(s)) { return "Másolás"; }
 			if ("Manual navigation".equals(s)) { return "Kézi navigálás"; }
+			if ("The install appears to be incomplete or damaged.".equals(s)) { return "A telepítés hiányosnak vagy sérültnek tűnik."; }
+			if ("Please click on the verify button.".equals(s)) { return "Kérlek kattints az Ellenőrzés gombra."; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		} else
@@ -371,6 +378,8 @@ public class Launcher extends JFrame {
 			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Daten nicht verfügbar oder fählerhaft. Install reparieren?"; }
 			if ("Copy".equals(s)) { return "Kopieren"; }
 			if ("Manual navigation".equals(s)) { return "Manuelle Navigation"; }
+			if ("The install appears to be incomplete or damaged.".equals(s)) { return "Daten nicht ganz installiert oder fählerhaft."; }
+			if ("Please click on the verify button.".equals(s)) { return "Bitte auf Überprüfen klicken."; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		}
@@ -397,6 +406,7 @@ public class Launcher extends JFrame {
 		install = new IGButton();
 		launcher = new IGButton();
 		update = new IGButton();
+		verifyBtn = new IGButton();
 		run = new IGButton();
 		mapEditor = new IGButton();
 		videoPlayer = new IGButton();
@@ -456,6 +466,14 @@ public class Launcher extends JFrame {
 				doInstall(false);
 			}
 		});
+		verifyBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				detectVersion();
+				doActOnUpdates();
+				doVerify();
+			}
+		});
 		cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -497,6 +515,7 @@ public class Launcher extends JFrame {
 		
 		install.setFont(fontMedium);
 		update.setFont(fontMedium);
+		verifyBtn.setFont(fontMedium);
 		run.setFont(fontLarge);
 		mapEditor.setFont(fontMedium);
 		videoPlayer.setFont(fontMedium);
@@ -512,6 +531,7 @@ public class Launcher extends JFrame {
 		
 		install.setVisible(false);
 		update.setVisible(false);
+		verifyBtn.setVisible(false);
 		run.setVisible(false);
 		mapEditor.setVisible(false);
 		videoPlayer.setVisible(false);
@@ -530,6 +550,7 @@ public class Launcher extends JFrame {
 		foreground = new Color(0xD0D0D0);
 		install.setForeground(foreground);
 		update.setForeground(foreground);
+		verifyBtn.setForeground(foreground);
 		run.setForeground(foreground);
 		mapEditor.setForeground(foreground);
 		videoPlayer.setForeground(foreground);
@@ -652,6 +673,7 @@ public class Launcher extends JFrame {
 					.addComponent(launcher)
 					.addComponent(install)
 					.addComponent(update)
+					.addComponent(verifyBtn)
 				)
 				.addGroup(
 					gl.createSequentialGroup()
@@ -692,6 +714,7 @@ public class Launcher extends JFrame {
 				.addComponent(launcher)
 				.addComponent(install)
 				.addComponent(update)
+				.addComponent(verifyBtn)
 			)
 			.addGap(25)
 			.addGroup(
@@ -823,6 +846,7 @@ public class Launcher extends JFrame {
 		if ("en".equals(language)) {
 			install.setText("Install");
 			update.setText("Update");
+			verifyBtn.setText("Verify");
 			cancel.setText("Cancel");
 			run.setText("Run Game");
 			mapEditor.setText("Map Editor");
@@ -848,6 +872,7 @@ public class Launcher extends JFrame {
 		if ("hu".equals(language)) {
 			install.setText("Telepítés");
 			update.setText("Frissítés");
+			verifyBtn.setText("Ellenőrzés");
 			cancel.setText("Mégsem");
 			run.setText("Játék futtatása");
 			mapEditor.setText("Térképszerkesztő");
@@ -873,6 +898,7 @@ public class Launcher extends JFrame {
 		if ("de".equals(language)) {
 			install.setText("Installieren");
 			update.setText("Aktualisieren");
+			verifyBtn.setText("Überprüfen");
 			cancel.setText("Lieber nicht");
 			run.setText("Spiel starten");
 			mapEditor.setText("Karteneditor");
@@ -1164,6 +1190,52 @@ public class Launcher extends JFrame {
 		}
 	}
 	/**
+	 * Check the existence of required files.
+	 * @return true if the check succeded
+	 */
+	boolean checkInstall() {
+		Set<String> testFiles = new HashSet<String>(Arrays.asList(
+			"generic/options_1.png",
+			"generic/campaign/main/definition.xml",
+			"generic/ui/achievement.wav",
+			"generic/intro/intro_1.ani.gz"
+		));
+		try {
+			LUpdate u = new LUpdate();
+			u.process(XElement.parseXML(localUpdate.getAbsolutePath()));
+			LModule m = u.getModule(GAME);
+			for (LFile f : m.files) {
+				String fn = f.url;
+				int idx = fn.lastIndexOf("/");
+				fn = fn.substring(idx);
+				
+				File f2 = new File(installDir, fn);
+				if (!f2.canRead()) {
+					return false;
+				}
+				if (fn.endsWith(".zip")) {
+					ZipFile zf = new ZipFile(f2);
+					try {
+						Enumeration<? extends ZipEntry> e = zf.entries();
+						while (e.hasMoreElements()) {
+							ZipEntry ze = e.nextElement();
+							String zn = ze.getName().replace('\\', '/');
+							testFiles.remove(zn);
+						}
+					} finally {
+						zf.close();
+					}
+				}
+			}
+			return testFiles.isEmpty();
+		} catch (IOException ex) {
+			// suppress this
+		} catch (XMLStreamException ex) {
+			ex.printStackTrace();
+		}
+		return true;
+	}
+	/**
 	 * Display an error message.
 	 * @param text the message text
 	 */
@@ -1369,12 +1441,15 @@ public class Launcher extends JFrame {
 				newVersionLabel.setVisible(true);
 			}
 		} else {
+			
 			run.setVisible(true);
 			mapEditor.setVisible(true);
 			videoPlayer.setVisible(true);
 			other.setVisible(true);
 			
 			install.setVisible(false);
+			verifyBtn.setVisible(false);
+			
 			currentVersion.setText(detectedVersion);
 			currentVersion.setVisible(true);
 			currentVersionLabel.setVisible(true);
@@ -1388,10 +1463,20 @@ public class Launcher extends JFrame {
 					changes.setVisible(true);
 					update.setVisible(true);
 				} else {
-					newVersionLabel.setVisible(false);
-					newVersion.setVisible(false);
-					changes.setVisible(false);
-					update.setVisible(false);
+					if (checkInstall()) {
+						newVersionLabel.setVisible(false);
+						newVersion.setVisible(false);
+						changes.setVisible(false);
+						update.setVisible(false);
+					} else {
+						newVersion.setText(label("The install appears to be incomplete or damaged."));
+						changes.setText(label("Please click on the verify button."));
+						
+						changes.setVisible(true);
+						newVersion.setVisible(true);
+						verifyBtn.setVisible(true);
+					}
+					
 				}
 			}
 		}
@@ -1470,6 +1555,7 @@ public class Launcher extends JFrame {
 		install.setVisible(false);
 		update.setVisible(false);
 		cancel.setVisible(true);
+		verifyBtn.setVisible(false);
 		totalProgress.setVisible(true);
 		totalFileProgress.setVisible(true);
 		totalFileProgressLabel.setVisible(true);
