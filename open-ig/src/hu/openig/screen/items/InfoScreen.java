@@ -1508,6 +1508,8 @@ public class InfoScreen extends ScreenBase {
 					doSetTaxAll();
 				}
 			};
+			taxAll.z = 1;
+			
 			autoPrev = new UITextButton("-", 10, commons.text());
 			autoPrev.onClick = new Action0() {
 				@Override
@@ -1515,6 +1517,8 @@ public class InfoScreen extends ScreenBase {
 					doAutoPrev();
 				}
 			};
+			autoPrev.z = 1;
+			
 			autoNext = new UITextButton("+", 10, commons.text());
 			autoNext.onClick = new Action0() {
 				@Override
@@ -1522,6 +1526,8 @@ public class InfoScreen extends ScreenBase {
 					doAutoNext();
 				}
 			};
+			autoNext.z = 1;
+			
 			autoAll = new UITextButton(get("infoscreen.all"), 10, commons.text());
 			autoAll.onClick = new Action0() {
 				@Override
@@ -1529,6 +1535,7 @@ public class InfoScreen extends ScreenBase {
 					doSetAutoAll();
 				}
 			};
+			autoAll.z = 1;
 			
 			addThis();
 		}
@@ -1655,6 +1662,12 @@ public class InfoScreen extends ScreenBase {
 			allocation.visible(false);
 			autobuild.visible(false);
 			needed.visible(false);
+			taxLess.visible(false);
+			taxMore.visible(false);
+			taxAll.visible(false);
+			autoAll.visible(false);
+			autoNext.visible(false);
+			autoPrev.visible(false);
 
 			if (p.isPopulated()) {
 				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
@@ -1707,6 +1720,10 @@ public class InfoScreen extends ScreenBase {
 					doAdjustTaxButtons();
 					taxLess.visible(true);
 					taxMore.visible(true);
+					taxAll.visible(true);
+					autoAll.visible(true);
+					autoNext.visible(true);
+					autoPrev.visible(true);
 					
 					String nd = world().getNeeded(ps);
 					if (!nd.isEmpty()) {
@@ -1715,13 +1732,7 @@ public class InfoScreen extends ScreenBase {
 						)).visible(true);
 					}
 
-				} else {
-					taxLess.visible(false);
-					taxMore.visible(false);
 				}
-			} else {
-				taxLess.visible(false);
-				taxMore.visible(false);
 			}
 			
 			String oi = world().getOtherItems();
@@ -2545,7 +2556,7 @@ public class InfoScreen extends ScreenBase {
 			yesterdayTotalIncome.text(format("colonyinfo.total", player().yesterday.getTotalIncome()), true);
 			if (player().yesterday.taxMoraleCount > 0) {
 				yesterdayTaxMorale.text(format("colonyinfo.tax-morale", 
-						player().yesterday.taxMorale / player().yesterday.taxMoraleCount, 
+						(int)(player().yesterday.taxMorale / player().yesterday.taxMoraleCount), 
 						get(Planet.getMoraleLabel(player().yesterday.taxMorale / player().yesterday.taxMoraleCount))), true);
 			} else {
 				yesterdayTaxMorale.text(format("colonyinfo.tax-morale", 
@@ -2565,8 +2576,8 @@ public class InfoScreen extends ScreenBase {
 			todayBuildCost.text(format("financialinfo.build_cost", player().today.buildCost), true);
 			todayTotalCost.text(format("colonyinfo.total", player().today.getTotalCost()), true);
 			
+			planetCurrent.text(p.name, true);
 			if (p.owner == player()) {
-				planetCurrent.text(p.name, true);
 				
 				planetTaxIncome.text(format("colonyinfo.tax", p.taxIncome), true);
 				planetTradeIncome.text(format("colonyinfo.trade", p.tradeIncome), true);
@@ -2577,12 +2588,13 @@ public class InfoScreen extends ScreenBase {
 				planetTaxIncome.visible(true);
 				planetTradeIncome.visible(true);
 				planetTaxMorale.visible(true);
-				
+				planetTotalIncome.visible(true);
 			} else {
 				planetCurrent.visible(false);
 				planetTaxIncome.visible(false);
 				planetTradeIncome.visible(false);
 				planetTaxMorale.visible(false);
+				planetTotalIncome.visible(false);
 			}
 			displayColonyProblems(p);
 		}
@@ -3482,7 +3494,7 @@ public class InfoScreen extends ScreenBase {
 											 withSign((int)(p.morale) - (int)(p.lastMorale)));
 						}
 						
-						PlanetStatistics ps = localStatistics;
+						PlanetStatistics ps = p.getStatistics();
 						
 						int j = 0;
 						
