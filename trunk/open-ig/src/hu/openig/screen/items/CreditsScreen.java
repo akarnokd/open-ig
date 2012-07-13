@@ -48,7 +48,7 @@ public class CreditsScreen extends ScreenBase {
 		reachedEnd = false;
 		imageCache.clear();
 		offset = 0;
-		animation = commons.register(50, new Action0() {
+		animation = commons.register(25, new Action0() {
 			@Override
 			public void invoke() {
 				doAnimation();
