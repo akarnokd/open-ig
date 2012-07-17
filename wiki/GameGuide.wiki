@@ -298,6 +298,20 @@ The following table lists a few compensation values for the player:
 
 This compensation feature should ensure a good money-bootstrap at the beginning and reduce the practically unusable money-boost at the end of the game.
 
+== Rocket vs. ECM ==
+
+You can equip your more advanced ships with ECM (Electronic Countermeasure), which has a chance to divert incoming rockets. The same ECM is available to most alien races. 
+
+Note that scrambled rockets may target your own fleet even if you fired them and may devastate your fleet instead of the enemy. In this case, avoid firing rockets at the larger ships which may contain these ECM.
+
+Each rocket type has its own Anti-ECM measure which modifies the probabilities of such diversion. The following table summarizes the relation:
+
+|| Anti-ECM \ ECM  || 0  ||  1  ||   2 ||
+|| 0 (e.g., Rocket 1)            || 100% || 15% ||  0% ||
+|| 1 (e.g., Rocket 2)             || 100% || 50% ||  15% ||
+|| 2 (e.g., Multi-headed rocket)            || 100% || 85% ||  50% ||
+
+For example, if you fire with Rocket 1 at an enemy without ECM, you have a 100% hit chance. However, if the enemy has ECM 2, your rocket will be always diverted.
 
 = Gameplay tips =
 
