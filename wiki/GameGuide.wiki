@@ -306,7 +306,7 @@ Note that scrambled rockets may target your own fleet even if you fired them and
 
 Each rocket type has its own Anti-ECM measure which modifies the probabilities of such diversion. The following table summarizes the relation:
 
-|| Anti-ECM \ ECM  || 0  ||  1  ||   2 ||
+|| *Anti-ECM \ ECM*  || *0*  ||  *1*  ||   *2* ||
 || 0 (e.g., Rocket 1)            || 100% || 15% ||  0% ||
 || 1 (e.g., Rocket 2)             || 100% || 50% ||  15% ||
 || 2 (e.g., Multi-headed rocket)            || 100% || 85% ||  50% ||
