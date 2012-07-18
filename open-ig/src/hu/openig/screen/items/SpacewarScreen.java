@@ -3987,7 +3987,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		for (SpacewarStructure s : ground) {
-			if (shieldCount > 0) {
+			if (shieldCount > 1) {
 				s.shield /= 2;
 			} else {
 				s.shield = 0;
