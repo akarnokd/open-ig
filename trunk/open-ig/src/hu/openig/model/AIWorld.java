@@ -206,27 +206,23 @@ public class AIWorld {
 			autoBuildLimit = player.world.config.autoBuildLimit;
 			autobuildEconomyFirst = player.world.config.autoBuildEconomyFirst;
 		}
+		fighterLimit = player.world.params().fighterLimit();
+		cruiserLimit = player.world.params().mediumShipLimit();
+		battleshipLimit = player.world.params().battleshipLimit();
 		if (level == 3 && player != mainPlayer) {
 			switch (difficulty) {
 			case EASY:
-				fighterLimit = 20;
-				cruiserLimit = 15;
-				battleshipLimit = 1;
+				fighterLimit = Math.max(1, fighterLimit * 2 / 3);
+				cruiserLimit = Math.max(1, cruiserLimit * 2 / 3);
+				battleshipLimit = Math.max(1, battleshipLimit * 1 / 3);
 				break;
 			case NORMAL:
-				fighterLimit = 25;
-				cruiserLimit = 20;
-				battleshipLimit = 2;
+				fighterLimit = Math.max(1, fighterLimit * 5 / 6);
+				cruiserLimit = Math.max(1, cruiserLimit * 5 / 6);
+				battleshipLimit = Math.max(1, battleshipLimit * 2 / 3);
 				break;
 			default:
-				fighterLimit = 30;
-				cruiserLimit = 25;
-				battleshipLimit = 3;
 			}
-		} else {
-			fighterLimit = 30;
-			cruiserLimit = 25;
-			battleshipLimit = 3;
 		}
 	}
 	/**

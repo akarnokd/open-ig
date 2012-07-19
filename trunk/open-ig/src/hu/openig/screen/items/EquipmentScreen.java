@@ -377,8 +377,8 @@ public class EquipmentScreen extends ScreenBase {
 		fightersLabel = new UILabel(format("equipment.fighters", 0), 10, commons.text());
 		vehiclesLabel = new UILabel(format("equipment.vehicles", 0), 10, commons.text());
 		
-		spaceshipsMaxLabel = new UILabel(format("equipment.max", 25), 10, commons.text());
-		fightersMaxLabel = new UILabel(format("equipment.maxpertype", 30), 10, commons.text());
+		spaceshipsMaxLabel = new UILabel(format("equipment.max", world().params().mediumShipLimit()), 10, commons.text());
+		fightersMaxLabel = new UILabel(format("equipment.maxpertype", world().params().fighterLimit()), 10, commons.text());
 		vehiclesMaxLabel = new UILabel(format("equipment.max", 0), 10, commons.text());
 		
 		fleetStatusLabel = new UILabel("TODO", 10, commons.text());
@@ -1378,7 +1378,7 @@ public class EquipmentScreen extends ScreenBase {
 				fightersLabel.text(format("equipment.fighters", ps.fighterCount), true);
 				vehiclesLabel.text(format("equipment.vehicles", ps.vehicleCount), true);
 				if (ps.hasSpaceStation) {
-					fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
+					fightersMaxLabel.text(format("equipment.maxpertype", world().params().fighterLimit()), true);
 				} else {
 					fightersMaxLabel.text(format("equipment.max", 0), true);
 				}
@@ -1408,7 +1408,7 @@ public class EquipmentScreen extends ScreenBase {
 			
 			if (own && rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 				addButton.visible(player().inventoryCount(rt) > 0
-						&& planet().inventoryCount(rt.category, player()) < 3);
+						&& planet().inventoryCount(rt.category, player()) < world().params().stationLimit());
 				delButton.visible(false);
 				sell.visible(planet().inventoryCount(rt, player()) > 0);
 			} else
@@ -1416,7 +1416,7 @@ public class EquipmentScreen extends ScreenBase {
 					&& rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				addButton.visible(
 						player().inventoryCount(rt) > 0
-						&& planet().inventoryCount(rt, player()) < 30);
+						&& planet().inventoryCount(rt, player()) < world().params().fighterLimit());
 				delButton.visible(
 						planet().inventoryCount(rt, player()) > 0
 				);
@@ -1516,10 +1516,10 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			if (own) {
 				spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
-				spaceshipsMaxLabel.text(format("equipment.max", 25), true).visible(true);
+				spaceshipsMaxLabel.text(format("equipment.max", world().params().mediumShipLimit()), true).visible(true);
 				fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
 				vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
-				fightersMaxLabel.text(format("equipment.maxpertype", 30), true);
+				fightersMaxLabel.text(format("equipment.maxpertype", world().params().fighterLimit()), true);
 				vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
 			} else {
 				if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
@@ -1550,8 +1550,8 @@ public class EquipmentScreen extends ScreenBase {
 				boolean bleft = false;
 				boolean bright = false;
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					bleft = f.inventoryCount(rt) < 30 && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && secondary.inventoryCount(rt) < 30;
+					bleft = f.inventoryCount(rt) < world().params().fighterLimit() && secondary.inventoryCount(rt) > 0;
+					bright = f.inventoryCount(rt) > 0 && secondary.inventoryCount(rt) < world().params().fighterLimit();
 				} else
 				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
 						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
@@ -1559,12 +1559,12 @@ public class EquipmentScreen extends ScreenBase {
 					bright = fs2.vehicleCount < fs.vehicleMax && f.inventoryCount(rt) > 0;
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-					bleft = fs.battleshipCount < 3 && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && fs2.battleshipCount < 3;
+					bleft = fs.battleshipCount < world().params().battleshipLimit() && secondary.inventoryCount(rt) > 0;
+					bright = f.inventoryCount(rt) > 0 && fs2.battleshipCount < world().params().battleshipLimit();
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-					bleft = fs.cruiserCount < 25 && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && fs2.cruiserCount < 25;
+					bleft = fs.cruiserCount < world().params().mediumShipLimit() && secondary.inventoryCount(rt) > 0;
+					bright = f.inventoryCount(rt) > 0 && fs2.cruiserCount < world().params().mediumShipLimit();
 				}
 				left1.visible(bleft);
 				left2.visible(bleft);
@@ -1660,7 +1660,7 @@ public class EquipmentScreen extends ScreenBase {
 					&& ps.hasMilitarySpaceport && secondary == null) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt) < 30);
+							&& f.inventoryCount(rt) < world().params().fighterLimit());
 					delButton.visible(f.inventoryCount(rt) > 0);
 					sell.visible(f.inventoryCount(rt) > 0);
 				} else
@@ -1675,13 +1675,13 @@ public class EquipmentScreen extends ScreenBase {
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt.category) < 3);
+							&& f.inventoryCount(rt.category) < world().params().battleshipLimit());
 					delButton.visible(false);
 					sell.visible(f.inventoryCount(rt) > 0);
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt.category) < 25);
+							&& f.inventoryCount(rt.category) < world().params().mediumShipLimit());
 					delButton.visible(false);
 					sell.visible(f.inventoryCount(rt) > 0);
 				} else {
@@ -1970,7 +1970,7 @@ public class EquipmentScreen extends ScreenBase {
 				if (category == ResearchSubCategory.SPACESHIPS_STATIONS
 				) {
 					if (delta > 0 
-							&& planet().inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, player()) + delta <= 3) {
+							&& planet().inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, player()) + delta <= world().params().stationLimit()) {
 						InventoryItem pii = new InventoryItem(planet());
 						pii.owner = player();
 						pii.type = research();
@@ -1985,6 +1985,7 @@ public class EquipmentScreen extends ScreenBase {
 						leftList.items.add(pii);
 						leftList.compute();
 						player().changeInventoryCount(research(), -delta);
+						configure.item = pii;
 					}
 				} else {
 					PlanetStatistics ps = planet().getStatistics();
@@ -2002,9 +2003,9 @@ public class EquipmentScreen extends ScreenBase {
 						int existing = fleet().inventoryCount(category);
 						int limit = 0;
 						if (category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-							limit = 25;
+							limit = world().params().mediumShipLimit();
 						} else {
-							limit = 3;
+							limit = world().params().battleshipLimit();
 						}
 						if (delta + existing <= limit) {
 							int cnt = fleet().inventoryCount(research());
@@ -2032,7 +2033,7 @@ public class EquipmentScreen extends ScreenBase {
 					}
 				} else 
 				if (category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					if (fleet().inventoryCount(research()) + delta <= 30) {
+					if (fleet().inventoryCount(research()) + delta <= world().params().fighterLimit()) {
 						fleet().changeInventory(research(), delta);
 						player().changeInventoryCount(research(), -delta);
 					}
@@ -2460,6 +2461,8 @@ public class EquipmentScreen extends ScreenBase {
 				} else {
 					if (leftList.selectedItem != null) {
 						planet().inventory.remove(ii);
+						leftList.selectedItem = planet().getInventoryItem(research(), player());
+						configure.item = leftList.selectedItem;
 					} else {
 						planet().changeInventory(research(), player(), -1);
 					}
@@ -2524,7 +2527,7 @@ public class EquipmentScreen extends ScreenBase {
 
 		for (ResearchType rt : p.owner.available().keySet()) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-				if (p.inventoryCount(rt, p.owner) < 30 && p.owner.inventoryCount(rt) > 0) {
+				if (p.inventoryCount(rt, p.owner) < p.owner.world.params().fighterLimit() && p.owner.inventoryCount(rt) > 0) {
 					newFighters = true;
 				}
 			}
@@ -2615,10 +2618,10 @@ public class EquipmentScreen extends ScreenBase {
 			for (ResearchType rt : p.owner.available().keySet()) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					int placed = p.inventoryCount(rt, p.owner);
-					if (placed < 30) {
+					if (placed < world().params().fighterLimit()) {
 						int avail = p.owner.inventoryCount(rt);
 						if (avail > 0) {
-							int n = Math.min(30 - placed, avail);
+							int n = Math.min(world().params().fighterLimit() - placed, avail);
 							p.changeInventory(rt, p.owner, n);
 							p.owner.changeInventoryCount(rt, -n);
 						}
