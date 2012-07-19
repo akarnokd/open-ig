@@ -25,6 +25,7 @@ import hu.openig.model.Player;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchState;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.TaxLevel;
@@ -143,6 +144,11 @@ public class DefaultAIControls implements AIControls {
 	public static boolean actionDeploySatellite(Player player, Planet planet, ResearchType satellite) {
 		// decomission any previous satellites:
 		if (player.inventoryCount(satellite) > 0) {
+			int current = planet.inventoryCount(satellite.category, player);
+			if (satellite.category == ResearchSubCategory.SPACESHIPS_STATIONS
+					&& current >= player.world.params().stationLimit()) {
+				return false;
+			}
 			InventoryItem ii = new InventoryItem(planet);
 			ii.type = satellite;
 			ii.owner = player;
@@ -177,6 +183,9 @@ public class DefaultAIControls implements AIControls {
 			
 			InventoryItem ii = planet.getInventoryItem(fighter, player);
 			if (ii == null) {
+				if (count > player.world.params().fighterLimit()) {
+					return false;
+				}
 				ii = new InventoryItem(planet);
 				ii.type = fighter;
 				ii.owner = player;
@@ -192,7 +201,7 @@ public class DefaultAIControls implements AIControls {
 				
 				player.world.scripting.onDeploySatellite(planet, player, fighter);
 			} else {
-				if (ii.count + count <= 30) {
+				if (ii.count + count <= player.world.params().fighterLimit()) {
 					ii.count += count;
 				} else {
 					return false;

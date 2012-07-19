@@ -87,4 +87,29 @@ public class Parameters {
 	public double fleetSpeed() {
 		return 0.016 * speed(); 
 	}
+	/**
+	 * The maximum allowed station count per planet.
+	 * @return the count
+	 */
+	public int stationLimit() {
+		return 3;
+	}
+	/**
+	 * @return the maximum battleship limit per fleet
+	 */
+	public int battleshipLimit() {
+		return 3;
+	}
+	/**
+	 * @return the maximum fighter limit per type in a fleet
+	 */
+	public int fighterLimit() {
+		return 30;
+	}
+	/**
+	 * @return the maximum number of cruisers and destroyers per fleet
+	 */
+	public int mediumShipLimit() {
+		return 25;
+	}
 }
