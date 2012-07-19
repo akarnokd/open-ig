@@ -2549,7 +2549,7 @@ public class EquipmentScreen extends ScreenBase {
 		// room for new space stations?
 		int stationCount = p.inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, p.owner);
 		
-		if (stationCount < 3 && bestStation != null) {
+		if (stationCount < p.owner.world.params().stationLimit() && bestStation != null) {
 			return true;
 		}
 		
@@ -2591,7 +2591,7 @@ public class EquipmentScreen extends ScreenBase {
 		int stations = p.inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, p.owner);
 		// deploy stations if possible
 		if (bestStation != null) {
-			while (stations < 3 && p.owner.inventoryCount(bestStation) > 0) {
+			while (stations < world().params().stationLimit() && p.owner.inventoryCount(bestStation) > 0) {
 				addStation(p, bestStation);
 				stations++;
 			}

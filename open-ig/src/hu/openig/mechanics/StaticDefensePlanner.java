@@ -92,9 +92,10 @@ public class StaticDefensePlanner extends Planner {
 		
 		List<Pred0> actions = new ArrayList<Pred0>();
 		
-		int defenseLimit = 3;
+		// FIXME how many barracks to build per difficulty
+		int defenseLimit = 1;
 		if (world.difficulty == Difficulty.NORMAL) {
-			defenseLimit = 4;
+			defenseLimit = 3;
 		}
 		if (world.difficulty == Difficulty.HARD || p == world.mainPlayer) {
 			defenseLimit = 5;
@@ -398,7 +399,7 @@ public class StaticDefensePlanner extends Planner {
 				}
 			}
 			// if not enough, place one
-			if (stationCount < 3) {
+			if (stationCount < world.stationLimit) {
 				// if not available in inventory, construct one
 				if (world.inventoryCount(station) == 0) {
 					placeProductionOrder(station, 1);
