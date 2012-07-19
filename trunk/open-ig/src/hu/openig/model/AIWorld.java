@@ -99,6 +99,8 @@ public class AIWorld {
 	public int cruiserLimit;
 	/** The limit of battleships. */
 	public int battleshipLimit;
+	/** The limit of space stations. */
+	public int stationLimit;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -209,12 +211,14 @@ public class AIWorld {
 		fighterLimit = player.world.params().fighterLimit();
 		cruiserLimit = player.world.params().mediumShipLimit();
 		battleshipLimit = player.world.params().battleshipLimit();
+		stationLimit = player.world.params().stationLimit();
 		if (level == 3 && player != mainPlayer) {
 			switch (difficulty) {
 			case EASY:
 				fighterLimit = Math.max(1, fighterLimit * 2 / 3);
 				cruiserLimit = Math.max(1, cruiserLimit * 2 / 3);
 				battleshipLimit = Math.max(1, battleshipLimit * 1 / 3);
+				stationLimit = Math.max(1, battleshipLimit * 2 / 3);
 				break;
 			case NORMAL:
 				fighterLimit = Math.max(1, fighterLimit * 5 / 6);
