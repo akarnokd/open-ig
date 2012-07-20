@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<planets>
+<planets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/planets.xsd">
   <planet id='Achilles' name='Achilles' x='308' y='408' size='30' rotate='LR' population='0' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='desert' id='2'/>
     <inventory/>
