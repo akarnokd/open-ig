@@ -2166,6 +2166,15 @@ public class World {
 				}
 			}
 		}
+		
+		for (XElement xvss : xbattle.childrenWithName("ecm-vs-matrix")) {
+			for (XElement xvs : xvss.childrenWithName("vs")) {
+				int a = xvs.getInt("anti-ecm");
+				int e = xvs.getInt("ecm");
+				double v = xvs.getDouble("value");
+				battle.ecmMatrix.put(Pair.of(a, e), v);
+			}
+		}
 	}
 	/**
 	 * Trim the image items symmetrically to free up some unnecessary memory

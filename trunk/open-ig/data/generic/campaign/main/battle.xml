@@ -201,4 +201,17 @@
 		<property id="VirusBomb2" ground-radius="6" damage-percent="5" hp="2000"/>
 		<property id="MorgathKamikazeTank" self-destruct-multiplier="50"/>
 	</properties>
+	<ecm-vs-matrix>
+		<vs anti-ecm='0' ecm='0' value='1'/>
+		<vs anti-ecm='1' ecm='0' value='1'/>
+		<vs anti-ecm='2' ecm='0' value='1'/>
+
+		<vs anti-ecm='0' ecm='1' value='0.15'/>
+		<vs anti-ecm='1' ecm='1' value='0.5'/>
+		<vs anti-ecm='2' ecm='1' value='0.85'/>
+
+		<vs anti-ecm='0' ecm='2' value='0'/>
+		<vs anti-ecm='1' ecm='2' value='0.15'/>
+		<vs anti-ecm='2' ecm='2' value='0.5'/>
+	</ecm-vs-matrix>
 </battle>

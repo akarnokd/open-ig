@@ -3673,20 +3673,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					int anti = ship.ecmLevel;
 					int ecm = ship.attack.ecmLevel;
 
-					boolean newTarget = false;
-					
-					// same level gives 50% chance
-					if (ecm == anti && anti > 0 && p < 0.5d) {
-						newTarget = true;
-					}
-					// if ecm is one level better, the scrambling chance is 85%
-					if (ecm - anti == 1 && p < 0.85d) {
-						newTarget = true;
-					}
-					// if anti ecm is one level better, the scrambling chance is 15%
-					if (anti - ecm == 1 && p < 0.15d) {
-						newTarget = true;
-					}
+					boolean newTarget = world().battle.getAntiECMProbability(anti, ecm) <= p;
 					
 					if (newTarget) {
 						chooseNewTarget(ship);
