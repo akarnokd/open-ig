@@ -39,6 +39,8 @@ public class BattleModel {
 	public final Map<Pair<String, String>, Integer> spaceHitpoints = U.newHashMap();
 	/** Additional technology properties. */
 	public final Map<Pair<String, String>, Map<String, String>> properties = U.newHashMap();
+	/** A pair of anti-ecm, ecm to hit probability. */
+	public final Map<Pair<Integer, Integer>, Double> ecmMatrix = U.newHashMap();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.
@@ -138,5 +140,20 @@ public class BattleModel {
 			properties.put(key, kv);
 		}
 		kv.put(property, value);
+	}
+	/**
+	 * Returns the probability that the given Anti-ECM leveled rocket fighting against the
+	 * given ECM leveled enemy will hit the target.
+	 * @param antiEcmLevel the anti-ecm level
+	 * @param ecmLevel the ecm level
+	 * @return the hit probability
+	 */
+	public double getAntiECMProbability(int antiEcmLevel, int ecmLevel) {
+		Double d = ecmMatrix.get(Pair.of(antiEcmLevel, ecmLevel));
+		if (d != null) {
+			return d;
+		}
+		// default
+		return antiEcmLevel > ecmLevel ? 1d : antiEcmLevel < ecmLevel ? 0 : 0.5;
 	}
 }
