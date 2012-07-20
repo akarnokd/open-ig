@@ -268,13 +268,13 @@ public class PlanetSurface {
 		
 			b.location = Location.of(x, y);
 			
-			String bp = tile.get("build");
+			String bp = tile.get("build", null);
 			if (bp == null || bp.isEmpty()) {
 				b.buildProgress = b.type.hitpoints;
 			} else {
 				b.buildProgress = Integer.parseInt(bp);
 			}
-			String hp = tile.get("hp");
+			String hp = tile.get("hp", null);
 			if (hp == null || hp.isEmpty()) {
 				b.hitpoints = b.type.hitpoints;
 			} else {
