@@ -209,7 +209,7 @@ public class AIWorld {
 			autobuildEconomyFirst = player.world.config.autoBuildEconomyFirst;
 		}
 		fighterLimit = player.world.params().fighterLimit();
-		cruiserLimit = player.world.params().mediumShipLimit();
+		cruiserLimit = player.world.params().mediumshipLimit();
 		battleshipLimit = player.world.params().battleshipLimit();
 		stationLimit = player.world.params().stationLimit();
 		if (level == 3 && player != mainPlayer) {

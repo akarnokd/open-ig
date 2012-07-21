@@ -9,6 +9,10 @@
 package hu.openig.model;
 
 import hu.openig.core.Func0;
+import hu.openig.utils.U;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * Contains game simulation related parameters.
@@ -17,12 +21,80 @@ import hu.openig.core.Func0;
 public class Parameters {
 	/** The speed factor callback. */
 	protected final Func0<Integer> speed;
+	/** The multiplier for radar-range in pixels for ground radars. */
+	@LoadField
+	protected int groundRadarUnitSize = 35;
+	/** The multiplier for radar-range in pixels for fleet radars. */
+	@LoadField
+	protected int fleetRadarUnitSize = 25;
+	/** The research speed in terms of money / simulation step. */
+	@LoadField
+	protected int researchSpeed = 8;
+	/** The production unit per simulation step. The lower the faster the production is. */
+	@LoadField
+	protected double productionUnit = 250d;
+	/** The construction points per simulation step. */
+	@LoadField
+	protected int constructionSpeed = 20;
+	/** The construction cost per simulation step. Not used now. */
+	@LoadField
+	protected int constructionCost = 20;
+	/** The hitpoints improved per simulation step. */
+	@LoadField
+	protected int repairSpeed = 10;
+	/** The repair cost per simulation step. */
+	@LoadField
+	protected int repairCost = 2;
+	/** The denominator to compute hitpoints from costs in battles. */
+	@LoadField
+	protected int costToHitpoints = 10;
+	/** What is considered a planet-nearby. */
+	@LoadField
+	protected double nearbyDistance = 10;
+	/** The ratio between the fleet movement timer and speed() minute simulation time. */
+	@LoadField
+	protected int simulationRatio = 4;
+	/** The fleet speed in pixels per game minute per hyperdrive level. */
+	@LoadField
+	protected double fleetSpeed = 0.016;
+	/** The maximum allowed station count per planet. */
+	@LoadField
+	protected int stationLimit = 3;
+	/** The maximum battleship limit per fleet. */
+	@LoadField
+	protected int battleshipLimit = 3;
+	/** The maximum fighter limit per type in a fleet. */
+	@LoadField
+	protected int fighterLimit = 30;
+	/** The maximum number of cruisers and destroyers per fleet. */
+	@LoadField
+	protected int mediumshipLimit = 25;
 	/**
 	 * Constructor. Initializes the speed factor callback field.
 	 * @param speed the speed callback
 	 */
 	public Parameters(Func0<Integer> speed) {
 		this.speed = speed;
+	}
+	/**
+	 * Load the property values from the supplied mapping.
+	 * @param parameters the map of key-value pairs.
+	 */
+	public void load(Map<String, String> parameters) {
+		for (Field f : getClass().getDeclaredFields()) {
+			if (f.isAnnotationPresent(LoadField.class)) {
+				try {
+					if (f.getType() == Integer.TYPE) {
+						f.set(this, U.getInt(parameters, f.getName(), (Integer)f.get(this)));
+					} else
+					if (f.getType() == Double.TYPE) {
+						f.set(this, U.getDouble(parameters, f.getName(), (Double)f.get(this)));
+					}
+				} catch (IllegalAccessException ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
 	}
 	/** @return the speed multiplier. */
 	public int speed() {
@@ -32,84 +104,84 @@ public class Parameters {
 	 * @return the multiplier for radar-range in pixels for ground radars
 	 */
 	public int groundRadarUnitSize() {
-		return 35; // DEFAULT: 35
+		return groundRadarUnitSize;
 	}
 	/**
 	 * @return the multiplier for radar-range in pixels for fleet radars
 	 */
 	public int fleetRadarUnitSize() {
-		return 25; // DEFAULT: 25
+		return fleetRadarUnitSize; // DEFAULT: 25
 	}
 	/** @return the research speed in terms of money / simulation step. */
 	public int researchSpeed() {
-		return 8 * speed(); // DEFAULT: 40
+		return researchSpeed * speed(); // DEFAULT: 40
 	}
 	/** @return the production unit per simulation step. The lower the faster the production is. */
 	public double productionUnit() {
-		return 250d / speed(); // DEFAULT: 50
+		return productionUnit / speed(); // DEFAULT: 50
 	}
 	/** @return the construction points per simulation step. */
 	public int constructionSpeed() {
-		return 20 * speed(); // DEFAULT: 200
+		return constructionSpeed * speed(); // DEFAULT: 200
 	}
 	/** @return the construction cost per simulation step. Not used now. */
 	public int constructionCost() {
-		return 20 * speed(); // DEFAULT: 200
+		return constructionCost * speed(); // DEFAULT: 200
 	}
 	/** @return the hitpoints improved per simulation step. */
 	public int repairSpeed() {
-		return 10 * speed(); // DEFAULT: 50
+		return repairSpeed * speed(); // DEFAULT: 50
 	}
 	/** @return the repair cost per simulation step. */
 	public int repairCost() {
-		return 2 * speed(); // DEFAULT: 20
+		return repairCost * speed(); // DEFAULT: 20
 	}
 	/** @return the denominator to compute hitpoints from costs in battles. */
 	public int costToHitpoints() {
-		return 10; // DEFAULT: 25
+		return costToHitpoints; // DEFAULT: 25
 	}
 	/**
 	 * What is considered a planet-nearby.
 	 * @return the distance
 	 */
-	public int nearbyDistance() {
-		return 10;
+	public double nearbyDistance() {
+		return nearbyDistance;
 	}
 	/**
 	 * @return the ratio between the fleet movement timer and speed() minute simulation time.
 	 */
 	public int simulationRatio() {
-		return 4;
+		return simulationRatio;
 	}
 	/**
 	 * @return The fleet speed in pixels per game minute per hyperdrive level.
 	 */
 	public double fleetSpeed() {
-		return 0.016 * speed(); 
+		return fleetSpeed * speed(); 
 	}
 	/**
 	 * The maximum allowed station count per planet.
 	 * @return the count
 	 */
 	public int stationLimit() {
-		return 3;
+		return stationLimit;
 	}
 	/**
 	 * @return the maximum battleship limit per fleet
 	 */
 	public int battleshipLimit() {
-		return 3;
+		return battleshipLimit;
 	}
 	/**
 	 * @return the maximum fighter limit per type in a fleet
 	 */
 	public int fighterLimit() {
-		return 30;
+		return fighterLimit;
 	}
 	/**
 	 * @return the maximum number of cruisers and destroyers per fleet
 	 */
-	public int mediumShipLimit() {
-		return 25;
+	public int mediumshipLimit() {
+		return mediumshipLimit;
 	}
 }

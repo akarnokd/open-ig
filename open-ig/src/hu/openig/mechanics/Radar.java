@@ -41,8 +41,8 @@ public final class Radar {
 		if (world.env.isBattle()) {
 			return;
 		}
-		final int rrg = world.env.params().groundRadarUnitSize();
-		final int rrf = world.env.params().fleetRadarUnitSize();
+		final int rrg = world.params().groundRadarUnitSize();
+		final int rrf = world.params().fleetRadarUnitSize();
 		// clear knowledge
 		for (Player player : world.players.values()) {
 			// reset known planets to discovered state

@@ -54,11 +54,6 @@ public interface GameEnvironment {
 	void stopMusic();
 	/** Stops the music playback. */
 	void playMusic();
-	/**
-	 * The various game parameters.
-	 * @return the game parameters
-	 */
-	Parameters params();
 	/** 
 	 * Returns the configuration.
 	 * @return the configuration

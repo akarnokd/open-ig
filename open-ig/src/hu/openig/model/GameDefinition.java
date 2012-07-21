@@ -11,9 +11,9 @@ package hu.openig.model;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The game definition used on the single player screen.
@@ -34,9 +34,6 @@ public class GameDefinition {
 	public String name;
 	/** The starting level of the game. */
 	public int startingLevel;
-	/** Marker annotation to load a field with the same name from the XML. */
-	@Retention(RetentionPolicy.RUNTIME)
-	public @interface LoadField { }
 	/** Resource location. */
 	@LoadField
 	public String battle;
@@ -76,6 +73,8 @@ public class GameDefinition {
 	/** The optional chat definition. */
 	@LoadField
 	public String chats;
+	/** The game parameters. */
+	public final Map<String, String> parameters = new LinkedHashMap<String, String>();
 	/**
 	 * Parse the game definition from.
 	 * @param rl the resource locator
@@ -117,6 +116,10 @@ public class GameDefinition {
 					ex.printStackTrace();
 				}
 			}
+		}
+		XElement xp = root.childElement("parameters");
+		if (xp != null) {
+			result.parameters.putAll(xp.attributes());
 		}
 		
 		return result;

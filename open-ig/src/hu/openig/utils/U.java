@@ -492,4 +492,50 @@ public final class U {
 			}
 		}
 	}
+	/**
+	 * Returns an integer parameter or the default value.
+	 * @param parameters the parameter map
+	 * @param name the parameter name
+	 * @param def the default value
+	 * @return the int value
+	 */
+	public static int getInt(Map<String, String> parameters, String name, int def) {
+		String s = parameters.get(name);
+		if (s == null) {
+			s = parameters.get(decamelcase(name));
+		}
+		return s != null ? Integer.parseInt(s) : def;
+	}
+	/**
+	 * Returns an double parameter or the default value.
+	 * @param parameters the parameter map
+	 * @param name the parameter name
+	 * @param def the default value
+	 * @return the double value
+	 */
+	public static double getDouble(Map<String, String> parameters, String name, double def) {
+		String s = parameters.get(name);
+		if (s == null) {
+			s = parameters.get(decamelcase(name));
+		}
+		return s != null ? Double.parseDouble(s) : def;
+	}
+	/**
+	 * Convert a camel-cased text into a dashed lower case.
+	 * @param s the string to convert
+	 * @return the dashed conversion.
+	 */
+	public static String decamelcase(String s) {
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (Character.isUpperCase(c)) {
+				b.append('-');
+				b.append(Character.toLowerCase(c));
+			} else {
+				b.append(c);
+			}
+		}
+		return b.toString();
+	}
 }

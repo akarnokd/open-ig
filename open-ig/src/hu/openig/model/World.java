@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Difficulty;
+import hu.openig.core.Func0;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.render.TextRenderer;
@@ -87,6 +88,8 @@ public class World {
 	public Walks walks;
 	/** The game definition. */
 	public GameDefinition definition;
+	/** The game simulation's parameters. */
+	private Parameters params;
 	/** The difficulty of the game. */
 	public Difficulty difficulty;
 	/** The bridge definition. */
@@ -100,7 +103,7 @@ public class World {
 	/** The resource locator. */
 	public ResourceLocator rl;
 	/** The game configuration. */
-	public Configuration config;
+	public final Configuration config;
 	/** The global world statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The chat settings. */
@@ -151,6 +154,13 @@ public class World {
 	 */
 	public World(GameEnvironment env) {
 		this.env = env;
+		config = env.config();
+		params = new Parameters(new Func0<Integer>() {
+			@Override
+			public Integer invoke() {
+				return config.timestep;
+			}
+		});
 	}
 	/**
 	 * Load the game world's resources.
@@ -160,6 +170,7 @@ public class World {
 	public void load(final ResourceLocator resLocator, final String game) {
 		this.name = game;
 		this.rl = resLocator;
+		this.params.load(definition.parameters);
 		final ThreadPoolExecutor exec = 
 			new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 
 					Integer.MAX_VALUE, 1, TimeUnit.SECONDS, 
@@ -2374,7 +2385,7 @@ public class World {
 	 * @return the various game parameters
 	 */
 	public Parameters params() {
-		return env.params();
+		return this.params;
 	}
 	/**
 	 * Returns the random number generator.
