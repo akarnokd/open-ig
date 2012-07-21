@@ -4,7 +4,12 @@
 
 = Version 0.95.031 - Bugfixes =
   * Released: 2012-07-21 20:00 CET
-
+  * Campaign editor: added missing XML schemas of game files. This will help verify the data files in the future. ([http://code.google.com/p/open-ig/issues/detail?id=67 Issue #67])
+  * Moved simulation constants into the definition.xml. You can change the build and repair speed, fleet ship limits, etc. ([http://code.google.com/p/open-ig/issues/detail?id=70 Issue #70])
+  * Fixed an AI exploration crash ([http://code.google.com/p/open-ig/issues/detail?id=590 Issue #590])
+  * Fixed destroyed shields not properly dropping the entire planet shielding. ([http://code.google.com/p/open-ig/issues/detail?id=609 Issue #609])
+  * Fixed case where AI and user action could result in more than 3 space stations being added to a planet. ([http://code.google.com/p/open-ig/issues/detail?id=611 Issue #611])
+  * Added the Anti-ECM vs. ECM hit probability matrix to the battle.xml. ([http://code.google.com/p/open-ig/issues/detail?id=612 Issue #612])
 
 = Version 0.95.030 - Beta + bugfixes =
   * Released: 2012-07-13 15:00 CET
