@@ -24,4 +24,22 @@
 	<walks>campaign/main/walks</walks>
 	<scripting>campaign/main/scripting</scripting>
 	<chats>campaign/main/chat</chats>
+	<parameters 
+		groundRadarUnitSize="35" 
+		fleetRadarUnitSize="25" 
+		researchSpeed="8" 
+		productionUnit="250" 
+		constructionSpeed="20" 
+		constructionCost="20" 
+		repairSpeed="10" 
+		repairCost="2" 
+		costToHitpoints="10" 
+		nearbyDistance="10" 
+		simulationRatio="4" 
+		fleetSpeed="0.016" 
+		stationLimit="3" 
+		battleshipLimit="3" 
+		fighterLimit="30" 
+		mediumshipLimit="25"
+	/>
 </definition>

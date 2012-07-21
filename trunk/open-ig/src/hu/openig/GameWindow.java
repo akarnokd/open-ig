@@ -1966,7 +1966,6 @@ public class GameWindow extends JFrame implements GameControls {
 						world.labels = new Labels();
 						world.labels.load(commons.rl, game + "/labels");
 						world.load(commons.rl, world.definition.name);
-						world.config = commons.config;
 					}
 					
 					world.loadState(xworld);

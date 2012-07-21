@@ -147,7 +147,7 @@ public class BattleInfo {
 	 */
 	public void findHelpers() {
 		World world = attacker.owner.world;
-		final int minDistance = world.params().nearbyDistance();
+		final double minDistance = world.params().nearbyDistance();
 		if (targetFleet != null) {
 			// locate the nearest planet
 			double dmin = Double.MAX_VALUE;

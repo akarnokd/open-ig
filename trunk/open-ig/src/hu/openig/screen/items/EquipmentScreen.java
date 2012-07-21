@@ -377,8 +377,8 @@ public class EquipmentScreen extends ScreenBase {
 		fightersLabel = new UILabel(format("equipment.fighters", 0), 10, commons.text());
 		vehiclesLabel = new UILabel(format("equipment.vehicles", 0), 10, commons.text());
 		
-		spaceshipsMaxLabel = new UILabel(format("equipment.max", world().params().mediumShipLimit()), 10, commons.text());
-		fightersMaxLabel = new UILabel(format("equipment.maxpertype", world().params().fighterLimit()), 10, commons.text());
+		spaceshipsMaxLabel = new UILabel(format("equipment.max", 0), 10, commons.text());
+		fightersMaxLabel = new UILabel(format("equipment.maxpertype", 0), 10, commons.text());
 		vehiclesMaxLabel = new UILabel(format("equipment.max", 0), 10, commons.text());
 		
 		fleetStatusLabel = new UILabel("TODO", 10, commons.text());
@@ -1321,7 +1321,7 @@ public class EquipmentScreen extends ScreenBase {
 		Fleet f = new Fleet(player());
 		f.name = get("newfleet.name");
 		
-		int r = Math.max(0, rnd.nextInt(world().params().nearbyDistance()) - 1);
+		double r = Math.max(0, rnd.nextDouble() * world().params().nearbyDistance() - 1);
 		double k = rnd.nextDouble() * 2 * Math.PI;
 		f.x = (whereX + Math.cos(k) * r);
 		f.y = (whereY + Math.sin(k) * r);
@@ -1516,7 +1516,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 			if (own) {
 				spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
-				spaceshipsMaxLabel.text(format("equipment.max", world().params().mediumShipLimit()), true).visible(true);
+				spaceshipsMaxLabel.text(format("equipment.max", world().params().mediumshipLimit()), true).visible(true);
 				fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
 				vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
 				fightersMaxLabel.text(format("equipment.maxpertype", world().params().fighterLimit()), true);
@@ -1563,8 +1563,8 @@ public class EquipmentScreen extends ScreenBase {
 					bright = f.inventoryCount(rt) > 0 && fs2.battleshipCount < world().params().battleshipLimit();
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-					bleft = fs.cruiserCount < world().params().mediumShipLimit() && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && fs2.cruiserCount < world().params().mediumShipLimit();
+					bleft = fs.cruiserCount < world().params().mediumshipLimit() && secondary.inventoryCount(rt) > 0;
+					bright = f.inventoryCount(rt) > 0 && fs2.cruiserCount < world().params().mediumshipLimit();
 				}
 				left1.visible(bleft);
 				left2.visible(bleft);
@@ -1681,7 +1681,7 @@ public class EquipmentScreen extends ScreenBase {
 				} else
 				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt.category) < world().params().mediumShipLimit());
+							&& f.inventoryCount(rt.category) < world().params().mediumshipLimit());
 					delButton.visible(false);
 					sell.visible(f.inventoryCount(rt) > 0);
 				} else {
@@ -2003,7 +2003,7 @@ public class EquipmentScreen extends ScreenBase {
 						int existing = fleet().inventoryCount(category);
 						int limit = 0;
 						if (category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-							limit = world().params().mediumShipLimit();
+							limit = world().params().mediumshipLimit();
 						} else {
 							limit = world().params().battleshipLimit();
 						}

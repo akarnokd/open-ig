@@ -365,7 +365,7 @@ public class Planet implements Named, Owned, HasInventory {
 		}
 		
 		if (owner != null && radar > 0) {
-			radar *= owner.world.env.params().groundRadarUnitSize();
+			radar *= owner.world.params().groundRadarUnitSize();
 		}
 		this.radar = radar;
 		
