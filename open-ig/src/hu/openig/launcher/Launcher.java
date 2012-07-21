@@ -1211,7 +1211,7 @@ public class Launcher extends JFrame {
 			for (LFile f : m.files) {
 				String fn = f.url;
 				int idx = fn.lastIndexOf("/");
-				fn = fn.substring(idx);
+				fn = fn.substring(idx + 1);
 				
 				File f2 = new File(installDir, fn);
 				if (!f2.canRead()) {
@@ -1471,11 +1471,11 @@ public class Launcher extends JFrame {
 					changes.setVisible(true);
 					update.setVisible(true);
 				} else {
+					newVersionLabel.setVisible(false);
+					update.setVisible(false);
 					if (checkInstall()) {
-						newVersionLabel.setVisible(false);
 						newVersion.setVisible(false);
 						changes.setVisible(false);
-						update.setVisible(false);
 					} else {
 						newVersion.setText(label("The install appears to be incomplete or damaged."));
 						changes.setText(label("Please click on the verify button."));
