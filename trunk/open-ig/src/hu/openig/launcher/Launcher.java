@@ -211,6 +211,8 @@ public class Launcher extends JFrame {
 	private Color foreground;
 	/** Verzió újraellenőrzése. */
 	private JMenuItem recheck;
+	/** Run the verification automatically? */
+	boolean runVerify;
 	/** Creates the GUI. */
 	public Launcher() {
 		super("Open Imperium Galactica Launcher v" + VERSION);
@@ -955,11 +957,13 @@ public class Launcher extends JFrame {
 				doSelfDelete(args);
 			}
 		}
+		final Set<String> argset = new HashSet<String>(Arrays.asList(args));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				Launcher ln = new Launcher();
 				ln.cw = new ConsoleWatcher(args, VERSION, ln.language, null);
+				ln.runVerify = argset.contains("-verify");
 				ln.setVisible(true);
 			}
 		});
@@ -1213,7 +1217,7 @@ public class Launcher extends JFrame {
 				if (!f2.canRead()) {
 					return false;
 				}
-				if (fn.endsWith(".zip")) {
+				if (fn.startsWith("open-ig") && fn.endsWith(".zip")) {
 					ZipFile zf = new ZipFile(f2);
 					try {
 						Enumeration<? extends ZipEntry> e = zf.entries();
@@ -1278,6 +1282,10 @@ public class Launcher extends JFrame {
 			errorMessage(format("Error while processing file %s: %s", file, t));
 		} finally {
 			showHideProgress(false);
+		}
+		if (runVerify) {
+			runVerify = false;
+			doVerify();
 		}
 	}
 	/**
@@ -1579,8 +1587,11 @@ public class Launcher extends JFrame {
 								format("Some files are missing or damaged. Do you wish to repair the install?"),
 								label("Error"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 							doDownload(files);
+							return;
 						}
 					}
+					detectVersion();
+					doActOnUpdates();
 				} catch (CancellationException ex) {
 				} catch (ExecutionException ex) {
 					ex.printStackTrace();

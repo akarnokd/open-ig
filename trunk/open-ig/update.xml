@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
-	<module id='Launcher' version='0.33'>
+	<module id='Launcher' version='0.34'>
 		<!-- General module description -->
 		<general url='https://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
@@ -15,19 +15,19 @@
 		</general>
 		<!-- Release notes -->
 		<notes url='https://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-			<desc lang='hu'>Platform specifikus javítások.</desc>
-			<desc lang='en'>Platform specific fixes.</desc>
-			<desc lang='de'>Plattform-spezifische Fehlerbehebungen.</desc>
+			<desc lang='hu'>Hibás telepítés ellenőrzése.</desc>
+			<desc lang='en'>Detection of bad install.</desc>
+			<desc lang='de'>Installfähler Detektierung.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  https://open-ig.googlecode.com/files/ -->
-		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='89db906bc3317326e87c51a7787e396dafdc6974'>
+		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='700312e410c64e38538b254b3910ccc4556249e2'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.95.030'>
+	<module id='Game' version='0.95.031'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,13 +43,13 @@
 			<desc lang='en'>Beta + some bugfixes.</desc>
 			<desc lang='de'>Beta + Fehlerbehebungen</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.030.jar' sha1='9d87bfc49543e423bf8ebd44caf6d1da62f453bb'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.031.jar' sha1='869b1669b86d17827917cfa8a61bac2f6a76e252'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120713a2.zip' sha1='f141f5dd8ece4ea32049d859a77b1ffd275b278f'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Július 13 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 13th July, 2012 / A</desc>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120721a2.zip' sha1='cf8179c29365cf39573904b2a24212f787650614'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Július 21 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 21th July, 2012 / A</desc>
 		</file>
 		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120625a.zip' sha1='8edb459b2bffdc2c65272927292dc5fd51075e5c'/>
 
