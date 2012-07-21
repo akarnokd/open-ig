@@ -4,6 +4,9 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.34 - Detect bad install =
+  * Added code to the Launcher and Game to detect missing resources and start the verification automatically. ([http://code.google.com/p/open-ig/issues/detail?id=606 Issue #606])
+
 = Version 0.33 - Minor improvements =
   * Downloading and installing the game under Firefox should work properly now ([https://code.google.com/p/open-ig/issues/detail?id=597 Issue #597])
   * Added first time start graphics options ([https://code.google.com/p/open-ig/issues/detail?id=539 Issue #539])
