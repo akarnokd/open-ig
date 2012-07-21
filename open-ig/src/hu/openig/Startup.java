@@ -11,17 +11,23 @@ package hu.openig;
 import hu.openig.core.SaveMode;
 import hu.openig.model.Configuration;
 import hu.openig.utils.ConsoleWatcher;
+import hu.openig.utils.U;
 
 import java.awt.Frame;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -195,14 +201,94 @@ public final class Startup {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				GameWindow gw = new GameWindow(config);
-				gw.setVisible(true);
-				if (config.intro) {
-					config.intro = false;
-					config.save();
-					gw.playVideos("intro/gt_interactive_intro", "intro/intro_1", "intro/intro_2", "intro/intro_3");
+				if (checkInstall()) {
+					GameWindow gw = new GameWindow(config);
+					gw.setVisible(true);
+					if (config.intro) {
+						config.intro = false;
+						config.save();
+						gw.playVideos("intro/gt_interactive_intro", "intro/intro_1", "intro/intro_2", "intro/intro_3");
+					}
+				} else {
+					runLauncher();
 				}
 			}
 		});
+	}
+	/**
+	 * Check if the most relevant data files are available.
+	 * @return true if the file check succeded.
+	 */
+	static boolean checkInstall() {
+		File installDir = new File(".");
+		Set<String> testFiles = new HashSet<String>(Arrays.asList(
+				"generic/options_1.png",
+				"generic/campaign/main/definition.xml",
+				"generic/ui/achievement.wav",
+				"generic/intro/intro_1.ani.gz"
+			));
+		List<String> directDirs = Arrays.asList("data", "images", "audio", "video");
+
+		File[] files = installDir.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				return name.startsWith("open-ig") && name.endsWith(".zip");
+			}
+		});
+		if (files != null) {
+			for (File f : files) {
+				try {
+					ZipFile zf = new ZipFile(f);
+					try {
+						Enumeration<? extends ZipEntry> en = zf.entries();
+						while (en.hasMoreElements()) {
+							ZipEntry ze = en.nextElement();
+							String zn = ze.getName().replace('\\', '/');
+							testFiles.remove(zn);
+						}
+					} finally {
+						zf.close();
+					}
+				} catch (IOException ex) {
+					return false;
+				}
+			}
+		}
+		for (String tf : U.newArrayList(testFiles)) {
+			for (String d : directDirs) {
+				File f2 = new File(installDir, d + File.separator + tf);
+				if (f2.canRead()) {
+					testFiles.remove(tf);
+				}
+			}
+		}
+		
+		return testFiles.isEmpty();
+	}
+	/**
+	 * Attempt to run the launcher.
+	 */
+	static void runLauncher() {
+		JOptionPane.showMessageDialog(null, "<html>Unable to locate some game resource files.<br>I'll try to run the Launcher to repair the install.");
+		File launcher = new File("open-ig-launcher.jar");
+		if (launcher.canRead()) {
+			String self = String.format("%s/open-ig-launcher.jar", new File(".").getAbsolutePath());
+			ProcessBuilder pb = new ProcessBuilder();
+			pb.command(System.getProperty("java.home") + "/bin/java", 
+					"-jar", self, "-verify");
+			try {
+				pb.start();
+				return;
+			} catch (IOException ex) {
+				
+			}
+		}
+		JOptionPane.showMessageDialog(null, "<html>"
+				+ "Unable to locate some game resource files and<br>"
+				+ "unable to locate the Open-IG Launcher.<br>"
+				+ "Please make sure you run the game from the proper working directory<br>"
+				+ "or please download the Launcher from the project site<br><br>"
+				+ "http://open-ig.googlecode.com<br><br> and perform a proper install with it."
+				+ "(The current directory is: " + new File(".").getAbsolutePath());
 	}
 }

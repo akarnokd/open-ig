@@ -606,7 +606,6 @@ public class GameWindow extends JFrame implements GameControls {
 	/** Initialize the various screen renderers. */
 	protected void initScreens() {
 		screens = new ArrayList<ScreenBase>();
-		
 		try {
 			for (Field f : allScreens.getClass().getFields()) {
 				if (ScreenBase.class.isAssignableFrom(f.getType())) {
@@ -615,25 +614,25 @@ public class GameWindow extends JFrame implements GameControls {
 					screens.add(sb);
 				}
 			}
+			for (ScreenBase sb : screens) {
+				sb.initialize(commons);
+			}
+			movie = allScreens.movie;
+			statusbar = allScreens.statusbar;
+			options = allScreens.loadSave;
+			
+			commons.profile.load();
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					displayPrimary(Screens.MAIN);
+				}
+			});
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			damagedInstall();
 		}
-		
-		for (ScreenBase sb : screens) {
-			sb.initialize(commons);
-		}
-		movie = allScreens.movie;
-		statusbar = allScreens.statusbar;
-		options = allScreens.loadSave;
-		
-		commons.profile.load();
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				displayPrimary(Screens.MAIN);
-			}
-		});
 	}
 	/** Unitialize the screens. */
 	protected void uninitScreens() {
@@ -2610,6 +2609,21 @@ public class GameWindow extends JFrame implements GameControls {
 			if (vis) {
 				tooltipVisible = true;
 			}
+		}
+	}
+	/**
+	 * Run the launcher.
+	 */
+	void damagedInstall() {
+		try {
+			Startup.runLauncher();
+		} finally {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					dispose();
+				}
+			});
 		}
 	}
 }
