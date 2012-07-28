@@ -162,7 +162,7 @@
 	<item id="HyperDrive2" name="tech.hyperdrive2.name" long-name="tech.hyperdrive2.longname" description="tech.hyperdrive2.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_2" factory="equipment" research-cost="14000" production-cost="3200" level="3" race="human" requires="HyperDrive1" mech="2" mil="1" index="1" video="technology/equipments/hyperdrives/hyperdrive_2">
 		<property name="speed" value="30"/>
 	</item>
-	<item id="HyperDrive3" name="tech.hyperdrive3.name" long-name="tech.hyperdrive3.longname" description="tech.hyperdrive3.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_3" factory="equipment" research-cost="18000" production-cost="4300" level="4" race="human" requires="HyperDrive2" civil="1" mech="3" comp="2" mil="1" index="2" video="technology/equipments/hyperdrives/hyperdrive_3">
+	<item id="HyperDrive3" name="tech.hyperdrive3.name" long-name="tech.hyperdrive3.longname" description="tech.hyperdrive3.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_3" factory="equipment" research-cost="18000" production-cost="4300" level="4" race="human,garthog" requires="HyperDrive2" civil="1" mech="3" comp="2" mil="1" index="2" video="technology/equipments/hyperdrives/hyperdrive_3">
 		<property name="speed" value="32"/>
 	</item>
 	<item id="HyperDrive4" name="tech.hyperdrive4.name" long-name="tech.hyperdrive4.longname" description="tech.hyperdrive4.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_4" factory="equipment" research-cost="20000" production-cost="6000" level="4" race="human" requires="HyperDrive3" civil="3" mech="4" comp="2" mil="2" index="3" video="technology/equipments/hyperdrives/hyperdrive_4">
@@ -186,7 +186,7 @@
 	<item id="Storage2" name="tech.storage2.name" long-name="tech.storage2.longname" description="tech.storage2.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/storage_2" factory="equipment" research-cost="14000" production-cost="10000" level="4" race="human" requires="Storage1" civil="3" mech="4" comp="2" mil="2" index="4" video="technology/equipments/modules/storage_2">
 		<property name="vehicles" value="5"/>
 	</item>
-	<item id="Radar1" name="tech.radar1.name" long-name="tech.radar1.longname" description="tech.radar1.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_1" factory="equipment" research-cost="8000" production-cost="5000" level="0" race="human" mil="1" index="0" video="technology/equipments/radars/radar_1">
+	<item id="Radar1" name="tech.radar1.name" long-name="tech.radar1.longname" description="tech.radar1.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_1" factory="equipment" research-cost="8000" production-cost="5000" level="0" race="human,garthog" mil="1" index="0" video="technology/equipments/radars/radar_1">
 		<property name="radar" value="1"/>
 	</item>
 	<item id="Radar2" name="tech.radar2.name" long-name="tech.radar2.longname" description="tech.radar2.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_2" factory="equipment" research-cost="18000" production-cost="9000" level="3" race="human" requires="Radar1" mech="2" comp="2" ai="1" mil="2" index="1" video="technology/equipments/radars/radar_2">
@@ -210,7 +210,7 @@
 	<item id="Laser1" name="tech.laser1.name" long-name="tech.laser1.longname" description="tech.laser1.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_1" factory="weapon" research-cost="3000" production-cost="620" level="0" race="human" mech="1" comp="1" mil="1" index="0" video="technology/weapons/lasers/laser_1">
 		<property name="projectile" value="Laser1"/>
 	</item>
-	<item id="Laser2" name="tech.laser2.name" long-name="tech.laser2.longname" description="tech.laser2.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_2" factory="weapon" research-cost="8000" production-cost="900" level="3" race="human" requires="Laser1" mech="2" comp="1" mil="2" index="1" video="technology/weapons/lasers/laser_2">
+	<item id="Laser2" name="tech.laser2.name" long-name="tech.laser2.longname" description="tech.laser2.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_2" factory="weapon" research-cost="8000" production-cost="900" level="3" race="human,garthog" requires="Laser1" mech="2" comp="1" mil="2" index="1" video="technology/weapons/lasers/laser_2">
 		<property name="projectile" value="Laser2"/>
 	</item>
 	<item id="Laser3" name="tech.laser3.name" long-name="tech.laser3.longname" description="tech.laser3.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_3" factory="weapon" research-cost="12000" production-cost="1400" level="4" race="human" requires="Laser2, SolarPlant" mech="2" comp="3" ai="1" mil="4" index="2" video="technology/weapons/lasers/laser_3">
@@ -219,7 +219,7 @@
 	<item id="Laser4" name="tech.laser4.name" long-name="tech.laser4.longname" description="tech.laser4.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_4" factory="weapon" research-cost="14000" production-cost="1750" level="4" race="human" requires="Laser3" mech="4" comp="4" ai="2" mil="5" index="3" video="technology/weapons/lasers/laser_4">
 		<property name="projectile" value="Laser4"/>
 	</item>
-	<item id="IonCannon" name="tech.ioncannon.name" long-name="tech.ioncannon.longname" description="tech.ioncannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/ion_cannon" factory="weapon" research-cost="8000" production-cost="1200" level="3" race="human" mech="1" comp="1" ai="1" mil="1" index="0" video="technology/weapons/cannons/ion_cannon">
+	<item id="IonCannon" name="tech.ioncannon.name" long-name="tech.ioncannon.longname" description="tech.ioncannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/ion_cannon" factory="weapon" research-cost="8000" production-cost="1200" level="3" race="human,garthog" mech="1" comp="1" ai="1" mil="1" index="0" video="technology/weapons/cannons/ion_cannon">
 		<property name="projectile" value="Ion"/>
 	</item>
 	<item id="PlasmaCannon" name="tech.plasmacannon.name" long-name="tech.plasmacannon.longname" description="tech.plasmacannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/plasma_cannon" factory="weapon" research-cost="12000" production-cost="2400" level="4" race="human" requires="IonCannon" mech="2" comp="4" ai="2" mil="4" index="1" video="technology/weapons/cannons/plasma_cannon">
@@ -422,8 +422,8 @@
 		<slot-fixed id="Cannon2" count="4" item="ParticleCannon"/>
 	</item>
 	<item id="GarthogDestroyer" name="tech.garthogdestroyer.name" long-name="tech.garthogdestroyer.longname" description="tech.garthogdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer" factory="spaceship" research-cost="32000" production-cost="17500" level="0" race="garthog" index="0">
-		<slot-fixed id="Laser" count="3" item="Laser2"/>
-		<slot-fixed id="Hyperdrive" count="1" item="HyperDrive3"/>
+		<slot id="Laser" max="3" items="Laser2" x='50' y='50' width="20" height="10"/>
+		<slot id="Hyperdrive" max="1" items="HyperDrive3" x='50' y='100' width="20" height="10"/>
 	</item>
 	<item id="MorgathDestroyer" name="tech.morgathdestroyer.name" long-name="tech.morgathdestroyer.longname" description="tech.morgathdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/morgath_destroyer" factory="spaceship" research-cost="40000" production-cost="20000" level="0" race="morgath" index="0">
 		<slot-fixed id="Radar" count="1" item="Radar2"/>
@@ -486,12 +486,12 @@
 		<property name="needsOrbitalFactory" value="true"/>
 	</item>
 	<item id="GarthogBattleship" name="tech.garthogbattleship.name" long-name="tech.garthogbattleship.longname" description="tech.garthogbattleship.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/garthog_battleship" factory="spaceship" research-cost="100000" production-cost="80000" level="0" race="garthog" index="0">
-		<slot-fixed id="Bomb" count="1" item="Bomb1"/>
-		<slot-fixed id="Rocket" count="1" item="Rocket1"/>
-		<slot-fixed id="Radar" count="1" item="Radar1"/>
-		<slot-fixed id="Hyperdrive" count="1" item="HyperDrive3"/>
-		<slot-fixed id="Laser" count="7" item="Laser2"/>
-		<slot-fixed id="Cannon" count="3" item="IonCannon"/>
+		<slot id="Bomb" max="1" items="Bomb1" x='20' y='20' width="20" height='10'/>
+		<slot id="Rocket" max="1" items="Rocket1" x='50' y='20' width="20" height='10'/>
+		<slot id="Radar" max="1" items="Radar1"  x='80' y='20' width="20" height='10'/>
+		<slot id="Hyperdrive" max="1" items="HyperDrive3"  x='20' y='40' width="20" height='10'/>
+		<slot id="Laser" max="7" items="Laser2"  x='50' y='40' width="20" height='10'/>
+		<slot id="Cannon" max="3" items="IonCannon"  x='80' y='40' width="20" height='10'/>
 		<property name="vehicles" value="5"/>
 		<property name="needsOrbitalFactory" value="true"/>
 	</item>

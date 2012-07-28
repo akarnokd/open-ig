@@ -97,6 +97,7 @@ public class Mission5 extends Mission {
 						showObjective("Mission-5-Task-3");
 						
 						addMission("Mission-5-Task-2", 1); // FIXME garthog delay
+						addMission("Mission-5-Task-2-Timeout", 28);
 						moveTullen();
 						send("Douglas-Thorin-Reinforcements").visible = true;
 						send("Douglas-Reinforcements-Denied").visible = false;
@@ -251,7 +252,6 @@ public class Mission5 extends Mission {
 			}
 			if (d <= 5) {
 				stopFleets();
-				addMission("Mission-5-Task-2-Timeout", 24);
 				
 				// follower automatically attacks
 				Fleet ff = getFollower(tullen, player);

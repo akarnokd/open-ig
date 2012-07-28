@@ -372,6 +372,7 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		};
 		fleetName.color(0xFFFF0000);
+		fleetName.tooltip(get("equipment.fleetname.tooltip"));
 		
 		spaceshipsLabel = new UILabel(format("equipment.spaceships", 0), 10, commons.text());
 		fightersLabel = new UILabel(format("equipment.fighters", 0), 10, commons.text());
@@ -393,6 +394,8 @@ public class EquipmentScreen extends ScreenBase {
 				return super.mouse(e);
 			}
 		};
+		secondaryLabel.tooltip(get("equipment.fleetname.tooltip"));
+
 		secondaryValue = new UILabel("TODO", 10, commons.text()) {
 			@Override
 			public boolean mouse(UIMouse e) {
@@ -404,6 +407,8 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		};
 		secondaryValue.color(0xFFFF0000);
+		secondaryValue.tooltip(get("equipment.fleetname.tooltip"));
+		
 		
 		secondaryFighters = new UILabel(format("equipment.fighters", 0), 10, commons.text());
 		secondaryVehicles = new UILabel(format("equipment.vehiclesandmax", 0, 8), 10, commons.text());

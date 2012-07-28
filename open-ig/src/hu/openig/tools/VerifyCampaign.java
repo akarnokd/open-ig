@@ -241,8 +241,10 @@ public class VerifyCampaign {
 	void verifyTech() {
 		XElement xtechs = rl.getXML(def.tech);
 		XElement xbattle = rl.getXML(def.battle);
-		for (XElement xtech : xtechs.childrenWithName("tech")) {
+		Map<String, XElement> techMap = U.newHashMap();
+		for (XElement xtech : xtechs.childrenWithName("item")) {
 			String id = xtech.get("id");
+			techMap.put(id, xtech);
 			String name = xtech.get("name");
 			checkLabel(name, String.format("Missing label: tech %s name ", id));
 			String longName = xtech.get("long-name");
@@ -258,7 +260,7 @@ public class VerifyCampaign {
 					|| cat == ResearchSubCategory.SPACESHIPS_CRUISERS
 					|| cat == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				boolean found = false;
-				for (XElement xse : xbattle.childElement("space-entities")) {
+				for (XElement xse : xbattle.childrenWithName("space-entities")) {
 					for (XElement xset : xse.childrenWithName("tech")) {
 						if (id.equals(xset.get("id"))) {
 							found = true;
@@ -274,7 +276,7 @@ public class VerifyCampaign {
 			if (cat == ResearchSubCategory.WEAPONS_TANKS
 					|| cat == ResearchSubCategory.WEAPONS_VEHICLES) {
 				boolean found = false;
-				for (XElement xse : xbattle.childElement("ground-vehicles")) {
+				for (XElement xse : xbattle.childrenWithName("ground-vehicles")) {
 					for (XElement xset : xse.childrenWithName("tech")) {
 						if (id.equals(xset.get("id"))) {
 							found = true;
@@ -286,6 +288,36 @@ public class VerifyCampaign {
 					System.err.printf("Missing battle settings for %s%n", id);
 				}
 			}
+		}
+		for (XElement xtech : techMap.values()) {
+			String id = xtech.get("id");
+			String[] techRaces = xtech.get("race").split("\\s*,\\s*");
+			for (XElement xslot : xtech.childrenWithName("slot")) {
+				String[] items = xslot.get("items").split("\\s*,\\s*");
+				String sid = xslot.get("id");
+				
+				for (String i : items) {
+					XElement xtech2 = techMap.get(i);
+					if (xtech2 != null) {
+						String[] techRaces2 = xtech2.get("race").split("\\s*,\\s*");
+						boolean found = false;
+						for (String r : techRaces) {
+							for (String r2 : techRaces2) {
+								if (r.equals(r2)) {
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								System.err.printf("Slot technology '%s' for tech '%s' and slot '%s' is not constructable by the race '%s'%n", i, id, sid, r);
+							}
+						}
+					} else {
+						System.err.printf("Missing slot technology '%s' for tech '%s' and slot '%s'%n", i, id, sid);
+					}
+				}
+			}
+
 		}
 	}
 	/**
