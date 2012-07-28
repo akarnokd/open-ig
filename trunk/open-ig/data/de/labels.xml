@@ -2962,6 +2962,7 @@
 	<entry key='diplomacy.Garthog.RESIGN.NEUTRAL.89'>If you do not give up the war, you are going to watch the remaining of your planets burst into flames!</entry>
 	<entry key='diplomacy.Garthog.RESIGN.HUMBLE.90'>You get a last chance to give up, Admiral. Nobody can say the Garthogs are not civilized.</entry>
 
+	<entry key="equipment.fleetname.tooltip">Flottenname. Umbenennen mit [c=FFFFFFFF]Doppelklick[/c].</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

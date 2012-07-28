@@ -68,7 +68,7 @@ public class Mission1 extends Mission {
 		boolean okay = true;
 		Set<String> buildingTypes = U.newHashSet();
 		for (Building b : p.surface.buildings) {
-			if (b.isOperational() && !b.isDamaged()) {
+			if (b.isOperational() /* && !b.isDamaged() */) {
 				buildingTypes.add(b.type.id);
 			}
 		}

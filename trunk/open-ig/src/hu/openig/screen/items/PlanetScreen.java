@@ -5909,8 +5909,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (time >= 6 * 16 && time < 6 * 22) {
 			alpha = (1f - (1f - Tile.MIN_ALPHA) * (time - 6 * 16) / 36);
 		}
-		if (config.tileCacheSize > 0 && (alpha > Tile.MIN_ALPHA && alpha < 1f)) {
-			float step = (1f - Tile.MIN_ALPHA) / config.tileCacheSize;
+		int tcs = config.tileCacheSize > 0 ? config.tileCacheSize : 16;
+		if (tcs > 0 && (alpha > Tile.MIN_ALPHA && alpha < 1f)) {
+			float step = (1f - Tile.MIN_ALPHA) / tcs;
 			float a2 = (alpha - Tile.MIN_ALPHA);
 			int n = (int)(a2 / step);
 			alpha = step * n + Tile.MIN_ALPHA;
