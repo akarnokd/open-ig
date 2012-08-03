@@ -16,6 +16,7 @@ import hu.openig.core.SwappableRenderer;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.VideoAudio;
 import hu.openig.sound.AudioThread;
+import hu.openig.utils.Exceptions;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -114,7 +115,7 @@ public class MediaPlayer {
 					try {
 						barrier.await();
 					} catch (BrokenBarrierException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					} catch (InterruptedException ex) {
 						// ignored, maybe cancel
 					}
@@ -164,20 +165,20 @@ public class MediaPlayer {
 							} catch (InterruptedException ex) {
 								
 							} catch (BrokenBarrierException ex) {
-								ex.printStackTrace();
+								Exceptions.add(ex);
 							} finally {
 								sdl.close();
 							}
 						} catch (LineUnavailableException ex) {
-							ex.printStackTrace();
+							Exceptions.add(ex);
 						}
 					} finally {
 						in.close();
 					}
 				} catch (UnsupportedAudioFileException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} finally {
 					doCompleteAudio();
 				}

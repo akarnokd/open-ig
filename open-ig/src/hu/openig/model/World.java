@@ -13,6 +13,7 @@ import hu.openig.core.Func0;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.render.TextRenderer;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
@@ -51,6 +52,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author akarnokd, 2009.10.25.
  */
 public class World {
+	/** The version when the game was created. */
+	public String createVersion;
 	/** The name of the world. */
 	public String name;
 	/** The current world level. */
@@ -153,6 +156,7 @@ public class World {
 	 * @param env the environment
 	 */
 	public World(GameEnvironment env) {
+		this.createVersion = env.version();
 		this.env = env;
 		config = env.config();
 		params = new Parameters(new Func0<Integer>() {
@@ -213,7 +217,7 @@ public class World {
 							chats.load(rl.getXML(definition.chats));
 						}
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						wip.dec();
 					}
@@ -226,7 +230,7 @@ public class World {
 					try {
 						TestQuestion.parse(rl.getXML(definition.test), test);
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						wip.dec();
 					}
@@ -239,7 +243,7 @@ public class World {
 					try {
 						Diplomacy.parse(rl.getXML(definition.diplomacy), diplomacy);
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						wip.dec();
 					}
@@ -252,7 +256,7 @@ public class World {
 					try {
 						talks.load(rl, definition.talks);
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						wip.dec();
 					}
@@ -267,7 +271,7 @@ public class World {
 						bridge = new Bridge();
 						processBridge(rl, definition.bridge);
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						wip.dec();
 					}
@@ -279,7 +283,7 @@ public class World {
 					try {
 						buildingModel.processBuildings(rl, definition.buildings, researches.map(), labels, exec, wip);
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						wip.dec();
 					}
@@ -291,7 +295,7 @@ public class World {
 					try {
 						galaxyModel.processGalaxy(rl, definition.galaxy, exec, wip);
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						wip.dec();
 					}
@@ -321,7 +325,7 @@ public class World {
 								}
 							} catch (Throwable t) {
 								System.err.println(n);
-								t.printStackTrace();
+								Exceptions.add(t);
 							} finally {
 								wip.dec();
 							}
@@ -368,11 +372,11 @@ public class World {
 				scripting.init(this.player, xscript);
 			}
 		} catch (InstantiationException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		} catch (ClassNotFoundException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -940,6 +944,7 @@ public class World {
 		xworld.set("allow-record-message", allowRecordMessage);
 		xworld.set("message-recording", messageRecording);
 		xworld.set("current-talk", currentTalk);
+		xworld.set("create-version", createVersion);
 		
 		statistics.save(xworld.add("statistics"));
 
@@ -1250,6 +1255,7 @@ public class World {
 		allowRecordMessage = xworld.getBoolean("allow-record-message", false);
 		this.messageRecording = xworld.getBoolean("message-recording", false);
 		currentTalk = xworld.get("current-talk", null);
+		createVersion = xworld.get("create-version", env.version());
 		
 		try {
 			time.setTime(DATE_FORMAT.get().parse(xworld.get("time")));
@@ -1257,7 +1263,7 @@ public class World {
 			time.set(GregorianCalendar.SECOND, 0);
 			time.set(GregorianCalendar.MILLISECOND, 0);
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		
 		player = players.get(xworld.get("player"));
@@ -1595,7 +1601,7 @@ public class World {
 				if (tf >= 0) {
 					bi.targetFleet = findFleet(tf);
 					if (bi.targetFleet == null) {
-						new AssertionError("Pending battle missing target fleet: " + tf).printStackTrace();
+						Exceptions.add(new AssertionError("Pending battle missing target fleet: " + tf));
 						continue;
 					}
 				}
@@ -1603,7 +1609,7 @@ public class World {
 				if (tp != null) {
 					bi.targetPlanet = planets.get(tp); 
 					if (bi.targetPlanet == null) {
-						new AssertionError("Pending battle missing target planet: " + tp).printStackTrace();
+						Exceptions.add(new AssertionError("Pending battle missing target planet: " + tp));
 						continue;
 					}
 				}
@@ -2007,7 +2013,7 @@ public class World {
 					rt.equipmentImage = ImageUtils.cutTransparentBorder(se.normal[0]);
 				}
 			} else {
-				new AssertionError("Warning: Missing technology referenced by battle.xml: " + id).printStackTrace();
+				Exceptions.add(new AssertionError("Warning: Missing technology referenced by battle.xml: " + id));
 			}
 			battle.spaceEntities.put(id, se);
 		}
@@ -2515,7 +2521,7 @@ public class World {
 					try {
 						dr.lastContact = XElement.parseDateTime(lc);
 					} catch (ParseException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				}
 				String ally = xrel.get("ally-against", "");

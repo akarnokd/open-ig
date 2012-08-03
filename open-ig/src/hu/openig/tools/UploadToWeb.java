@@ -9,6 +9,7 @@
 package hu.openig.tools;
 
 import hu.openig.utils.Base64;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 
 import java.io.OutputStream;
@@ -78,7 +79,7 @@ public final class UploadToWeb {
 				c.disconnect();
 			}
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 }

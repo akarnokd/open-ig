@@ -65,6 +65,7 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
@@ -1905,9 +1906,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						System.out.println(f.getName());
 					}
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					Exceptions.add(e);
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					Exceptions.add(e);
 				}
 			}
 		}
@@ -4156,9 +4157,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				try {
 					f.get();
 				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 			for (PathPlanning pp : pathsToPlan) {

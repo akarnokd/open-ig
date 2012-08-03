@@ -1288,7 +1288,7 @@ public final class Base64 {
 							bytes = baos.toByteArray();
 
 				} catch (java.io.IOException e) {
-					e.printStackTrace();
+					Exceptions.add(e);
 					// Just return originally-decoded bytes
 				} finally {
 					U.close(baos);

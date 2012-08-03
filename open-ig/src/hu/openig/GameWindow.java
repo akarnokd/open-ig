@@ -9,10 +9,8 @@
 package hu.openig;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.SaveMode;
-import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.AI;
 import hu.openig.mechanics.AIPirate;
 import hu.openig.mechanics.AITest;
@@ -20,7 +18,6 @@ import hu.openig.mechanics.AITrader;
 import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AIManager;
-import hu.openig.model.AIMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Configuration;
@@ -36,13 +33,14 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.Screens;
-import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.GameControls;
+import hu.openig.screen.GameKeyManager;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.SettingsPage;
 import hu.openig.screen.items.AchievementsScreen;
 import hu.openig.screen.items.BarScreen;
 import hu.openig.screen.items.BattlefinishScreen;
@@ -54,7 +52,6 @@ import hu.openig.screen.items.EquipmentScreen;
 import hu.openig.screen.items.GameOverScreen;
 import hu.openig.screen.items.InfoScreen;
 import hu.openig.screen.items.LoadSaveScreen;
-import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
 import hu.openig.screen.items.LoadingScreen;
 import hu.openig.screen.items.MainScreen;
 import hu.openig.screen.items.MovieScreen;
@@ -72,6 +69,7 @@ import hu.openig.ui.UIColorLabel;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -87,8 +85,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -111,6 +107,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -190,7 +190,7 @@ public class GameWindow extends JFrame implements GameControls {
 						statusbar.resize();
 					}
 				} catch (Throwable t) {
-					t.printStackTrace();
+					Exceptions.add(t);
 				}
 			}
 			
@@ -199,7 +199,6 @@ public class GameWindow extends JFrame implements GameControls {
 			try {
 				if (uis != 100) {
 					g2.scale(uis / 100d, uis / 100d);
-//					RenderTools.setInterpolation(g2, true);
 				}
 				if (movieVisible() && movie.opaque()) {
 					movie.draw(g2);
@@ -231,14 +230,10 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				renderTooltip(g2);
 			} catch (Throwable t) {
-				t.printStackTrace();
+				Exceptions.add(t);
 			} finally {
 				g2.setTransform(at0);
 			}
-//			if (fps != null) {
-//				g2.setColor(Color.YELLOW);
-//				g2.drawString(String.format("%.1f", fps), lastW - 40, lastH - 6);
-//			}
 		}
 	}
 	/** The record of screens. */
@@ -352,6 +347,8 @@ public class GameWindow extends JFrame implements GameControls {
 	boolean tooltipVisible;
 	/** Show or hide the helper rectangle. */
 	boolean helperRectangleVisible;
+	/** The main game key manager. */
+	private GameKeyManager gameKeyManager;
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
@@ -364,7 +361,7 @@ public class GameWindow extends JFrame implements GameControls {
 			try {
 				setIconImage(ImageIO.read(icon));
 			} catch (IOException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			}
 		}
 		
@@ -409,7 +406,10 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.addMouseListener(ma);
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
-		addKeyListener(new KeyEvents());
+		
+		gameKeyManager = new GameKeyManager(commons);
+		
+		addKeyListener(gameKeyManager);
 		
 		// load resources
 		initScreens();
@@ -509,7 +509,9 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.addMouseListener(ma);
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
-		addKeyListener(new KeyEvents());
+		
+		addKeyListener(that.gameKeyManager);
+		that.removeKeyListener(that.gameKeyManager);
 		
 		// fix movie
 		if (movie.playbackFinished instanceof MovieFinishAction) {
@@ -522,7 +524,8 @@ public class GameWindow extends JFrame implements GameControls {
 		fixedFramerateTimer = new Timer(1000 / FRAMERATE, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (fixedFramerate) {
+				if (fixedFramerate
+						&& (repaintRequest || repaintRequestPartial)) {
 					repaintRequest = true;
 					surface.repaint();
 				}
@@ -556,9 +559,9 @@ public class GameWindow extends JFrame implements GameControls {
 				f.set(o1, f2.get(o2));
 			}
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		} catch (NoSuchFieldException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	@Override
@@ -630,7 +633,7 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			});
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 			damagedInstall();
 		}
 	}
@@ -962,511 +965,6 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 	}
 	/**
-	 * The common key manager.
-	 * @author akarnokd, 2009.12.24.
-	 */
-	class KeyEvents extends KeyAdapter {
-		@Override
-		public void keyPressed(KeyEvent e) {
-			boolean rep = false;
-			ScreenBase pri = primary;
-			ScreenBase sec = secondary;
-			if (movieVisible()) {
-				rep |= movie.keyboard(e);
-			} else
-			if (optionsVisible) {
-				rep |= options.keyboard(e);
-			} else
-			if (sec != null) {
-				rep |= sec.keyboard(e);
-			} else
-			if (pri != null) {
-				rep |= pri.keyboard(e);
-			}
-			if (!e.isConsumed()) {
-				handleDefaultKeyboard(e);
-			}
-			if (rep) {
-				repaintInner();
-			}
-		}
-		/**
-		 * Handle the screen switch if the appropriate key is pressed.
-		 * @param e the key event
-		 */
-		void handleDefaultKeyboard(KeyEvent e) {
-			if (e.isAltDown()) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					exit();
-					e.consume();
-					return;
-				}
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					switchFullscreen();
-					e.consume();
-					return;
-				}
-				e.consume();
-			}
-			if (e.getKeyCode() == KeyEvent.VK_C) {
-				if (e.isControlDown()) {
-					helperRectangleVisible = !helperRectangleVisible;
-					e.consume();
-					moveMouse();
-					repaintInner();
-					return;
-				}
-			}
-			if (!commons.worldLoading && commons.world() != null && !movieVisible()) {
-				switch (e.getKeyCode()) {
-				case KeyEvent.VK_1:
-					if (e.isControlDown() && !commons.battleMode) {
-						commons.world().level = 1;
-						world().scripting.onLevelChanged();
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-					} else {
-						commons.simulation.speed(SimulationSpeed.NORMAL);
-						commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_LOW_1, null);
-						repaintInner();
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_2:
-					if (e.isControlDown() && !commons.battleMode) {
-						commons.world().level = 2;
-						world().scripting.onLevelChanged();
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-					} else {
-						commons.simulation.speed(SimulationSpeed.FAST);
-						commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_LOW_1, null);
-						repaintInner();
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_3:
-					if (e.isControlDown() && !commons.battleMode) {
-						commons.world().level = 3;
-						world().scripting.onLevelChanged();
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-					} else {
-						commons.simulation.speed(SimulationSpeed.ULTRA_FAST);
-						commons.playSound(SoundTarget.BUTTON, SoundType.CLICK_LOW_1, null);
-						repaintInner();
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_SPACE:
-					if (commons.simulation.paused()) {
-						commons.simulation.resume();
-						commons.playSound(SoundTarget.BUTTON, SoundType.UI_ACKNOWLEDGE_1, null);
-					} else {
-						commons.simulation.pause();
-						commons.playSound(SoundTarget.BUTTON, SoundType.PAUSE, null);
-					}
-					repaintInner();
-					e.consume();
-					break;
-				case KeyEvent.VK_ESCAPE:
-					if (commons.battleMode) {
-						displayOptions();
-						options.maySave(false);
-						options.displayPage(SettingsPage.AUDIO);
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_TAB:
-					allScreens.statusbar.objectives.visible(!allScreens.statusbar.objectives.visible());
-					repaintInner();
-					e.consume();
-					break;
-				case KeyEvent.VK_L:
-					if (e.isControlDown()) {
-						loadWorld(null);
-						e.consume();
-					}
-					break;
-				default:
-				}
-			}
-			if (!commons.worldLoading && commons.world() != null 
-					&& !movieVisible() && !commons.battleMode) {
-				if (e.getKeyChar() == '+') {
-					commons.world().player.moveNextPlanet();
-					repaintInner();
-					e.consume();
-				} else
-				if (e.getKeyChar() == '-') {
-					commons.world().player.movePrevPlanet();
-					repaintInner();
-					e.consume();
-				}
-				int keycode = e.getKeyCode();
-				switch (keycode) {
-				case KeyEvent.VK_F1:
-					displayPrimary(Screens.BRIDGE);
-					e.consume();
-					break;
-				case KeyEvent.VK_F2:
-					displayPrimary(Screens.STARMAP);
-					e.consume();
-					break;
-				case KeyEvent.VK_F3:
-					displayPrimary(Screens.COLONY);
-					e.consume();
-					break;
-				case KeyEvent.VK_F4:
-					if (secondary != null) {
-						if (secondary.screen() == Screens.EQUIPMENT) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.EQUIPMENT);
-						}
-					} else 
-					if (primary != null) {
-						switch (primary.screen()) {
-						case COLONY:
-							commons.world().player.selectionMode = SelectionMode.PLANET;
-							displaySecondary(Screens.EQUIPMENT);
-							break;
-						default:
-							displaySecondary(Screens.EQUIPMENT);
-						}
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_F5:
-					if (world().level >= 2) {
-						if (secondary != null) {
-							if (secondary.screen() == Screens.PRODUCTION) {
-								hideSecondary();
-							} else {
-								displaySecondary(Screens.PRODUCTION);
-							}
-						} else {
-							displaySecondary(Screens.PRODUCTION);
-						}
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_F6:
-					if (world().level >= 3) {
-						if (secondary != null) {
-							if (secondary.screen() == Screens.RESEARCH) {
-								hideSecondary();
-							} else {
-								displaySecondary(Screens.RESEARCH);
-							}
-						} else {
-							displaySecondary(Screens.RESEARCH);
-						}
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_F7:
-					if (secondary != null) {
-						switch (secondary.screen()) {
-						case EQUIPMENT:
-							displaySecondary(Screens.INFORMATION_INVENTIONS);
-							break;
-						case DIPLOMACY:
-							displaySecondary(Screens.INFORMATION_ALIENS);
-							break;
-						case INFORMATION_ALIENS:
-						case INFORMATION_BUILDINGS:
-						case INFORMATION_COLONY:
-						case INFORMATION_FINANCIAL:
-						case INFORMATION_FLEETS:
-						case INFORMATION_INVENTIONS:
-						case INFORMATION_MILITARY:
-						case INFORMATION_PLANETS:
-							hideSecondary();
-							break;
-						case RESEARCH:
-						case PRODUCTION:
-							displaySecondary(Screens.INFORMATION_INVENTIONS);
-							break;
-						default:
-							displaySecondary(Screens.INFORMATION_PLANETS);
-						}
-					} else {
-						switch (primary.screen()) {
-						case STARMAP:
-							displaySecondary(Screens.INFORMATION_PLANETS);
-							break;
-						case COLONY:
-							displaySecondary(Screens.INFORMATION_COLONY);
-							break;
-						default:
-							displaySecondary(Screens.INFORMATION_PLANETS);
-						} 
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_F8:
-					if (secondary != null) {
-						if (secondary.screen() == Screens.DATABASE) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.DATABASE);
-						}
-					} else {
-						displaySecondary(Screens.DATABASE);
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_F9:
-					if (commons.world().level > 1) {
-						if (secondary != null) {
-							if (secondary.screen() == Screens.BAR) {
-								hideSecondary();
-							} else {
-								displaySecondary(Screens.BAR);
-							}
-						} else {
-							displaySecondary(Screens.BAR);
-						}
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_F10:
-					if (commons.world().level > 3) {
-						if (secondary != null) {
-							if (secondary.screen() == Screens.DIPLOMACY) {
-								hideSecondary();
-							} else {
-								displaySecondary(Screens.DIPLOMACY);
-							}
-						} else {
-							displaySecondary(Screens.DIPLOMACY);
-						}
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_F11:
-					if (secondary != null) {
-						if (secondary.screen() == Screens.STATISTICS) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.STATISTICS);
-						}
-					} else {
-						displaySecondary(Screens.STATISTICS);
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_F12:
-					if (secondary != null) {
-						if (secondary.screen() == Screens.ACHIEVEMENTS) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.ACHIEVEMENTS);
-						}
-					} else {
-						displaySecondary(Screens.ACHIEVEMENTS);
-					}
-					e.consume();
-					break;
-				case KeyEvent.VK_4:
-					if (e.isControlDown()) {
-						commons.world().level = 4;
-						world().scripting.onLevelChanged();
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_5:
-					if (e.isControlDown()) {
-						commons.world().level = 5;
-						world().scripting.onLevelChanged();
-						if (primary != null) {
-							primary.onLeave();
-						}
-						primary = null;
-						displayPrimary(Screens.BRIDGE);
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_7:
-					if (e.isControlDown()) {
-						world().difficulty = Difficulty.EASY;
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_8:
-					if (e.isControlDown()) {
-						world().difficulty = Difficulty.NORMAL;
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_9:
-					if (e.isControlDown()) {
-						world().difficulty = Difficulty.HARD;
-						e.consume();
-					}
-					break;
-				// FIXME CHEAT
-				case KeyEvent.VK_O:
-					if (e.isControlDown()) {
-						Planet p = commons.world().player.currentPlanet; 
-						if (p != null) {
-							if (p.owner == null) {
-								p.owner = world().player;
-								p.population = 5000; // initial colony
-								p.race = world().player.race;
-								p.owner.statistics.planetsColonized++;
-								p.owner.planets.put(p, PlanetKnowledge.BUILDING);
-								world().scripting.onColonized(p);
-							} else {
-								p.takeover(world().player);
-							}
-							repaintInner();
-						}
-						e.consume();
-					} else {
-						displayOptions();
-						options.displayPage(SettingsPage.AUDIO);
-						options.maySave(true);
-					}
-					break;
-				// FIXME CHEAT
-				case KeyEvent.VK_I:
-					// CHEAT: add more money
-					if (e.isControlDown()) {
-						if (commons.world().player.currentResearch() != null) {
-							boolean researched = commons.world().player.setAvailable(commons.world().player.currentResearch());
-							Integer cnt = commons.world().player.inventory.get(commons.world().player.currentResearch());
-							cnt = cnt != null ? cnt + 1 : 1;
-							commons.world().player.inventory.put(commons.world().player.currentResearch(), cnt);
-							if (secondary != null && (secondary.screen() == Screens.RESEARCH
-									|| secondary.screen() == Screens.PRODUCTION)) {
-								if (researched) {
-									((ResearchProductionScreen)secondary).playAnim(commons.world().player.currentResearch());
-								}
-							}
-							repaintInner();
-						}
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_S:
-					if (e.isControlDown()) {
-						saveWorld(null, SaveMode.QUICK);
-						e.consume();
-					}
-					break;
-				case KeyEvent.VK_L:
-					if (e.isControlDown()) {
-						loadWorld(null);
-						e.consume();
-					}
-					break;
-				// FIXME CHEAT
-				case KeyEvent.VK_G:
-					// CHEAT: add more money
-					if (e.isControlDown()) {
-						world().player.money += 10000;
-						repaintInner();
-						e.consume();
-					}
-					break;
-				// FIXME CHEAT
-				case KeyEvent.VK_J:
-					// TOGGLE test AI on player
-					if (e.isControlDown()) {
-						Player p = world().player; 
-						if (p.aiMode == AIMode.NONE) {
-							p.aiMode = AIMode.TEST;
-							p.ai = new AITest();
-							p.ai.init(p);
-							System.out.println("Switching to TEST AI.");
-						} else {
-							p.aiMode = AIMode.NONE;
-							p.ai = new AIUser();
-							p.ai.init(p);
-							System.out.println("Switching to no AI.");
-						}
-						
-						e.consume();
-					}
-					break;
-				// FIXME CHEAT
-				case KeyEvent.VK_P:
-					// set current player
-					if (e.isControlDown()) {
-						Player p = world().player;
-						Planet pl = p.currentPlanet;
-						if (p.currentPlanet != null && p.currentPlanet.owner != null) {
-							world().player = p.currentPlanet.owner;
-							world().player.currentPlanet = pl;
-							world().player.selectionMode = SelectionMode.PLANET;
-						}
-						e.consume();
-					}
-					break;
-				// FIXME CHEAT
-				case KeyEvent.VK_Z:
-					Planet cp = world().player.currentPlanet;
-					if (e.isControlDown() && cp != null) {
-						if (cp.quarantineTTL > 0) {
-							cp.quarantineTTL = 0;
-							world().cureFleets(cp);
-							world().scripting.onPlanetCured(cp);
-						} else {
-							cp.quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
-							world().scripting.onPlanetInfected(cp);
-						}
-						e.consume();
-						repaintInner();
-					}
-					break;
-				case KeyEvent.VK_X:
-					if (e.isControlDown()) {
-						fixedFramerate = !fixedFramerate;
-						e.consume();
-						repaintInner();
-					}
-					break;
-				case KeyEvent.VK_R:
-					allScreens.statusbar.toggleQuickResearch();
-					e.consume();
-					moveMouse();
-					repaintInner();
-					break;
-				case KeyEvent.VK_H:
-					if (e.isControlDown()) {
-						world().scripting.debug();
-						e.consume();
-						repaintInner();
-					}
-					break;
-				case KeyEvent.VK_ESCAPE:
-					displayOptions();
-					options.maySave(true);
-					options.displayPage(SettingsPage.LOAD_SAVE);
-					e.consume();
-					break;
-				default:
-				}
-			}
-		}
-	}
-	/**
 	 * Test scenario:
 	 * Kill all player planets except Achilles.
 	 * Achilles without buildings.
@@ -1704,18 +1202,18 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void repaintInner() {
-		if (!fixedFramerate) {
-			// issue a single repaint, e.g., coalesce the repaints
-			if (!repaintRequest) {
-				repaintRequest = true;
+		// issue a single repaint, e.g., coalesce the repaints
+		if (!repaintRequest) {
+			repaintRequest = true;
+			if (!fixedFramerate) {
 				surface.repaint();
 			}
 		}
 	}
 	@Override
 	public void repaintInner(int x, int y, int w, int h) {
+		repaintRequestPartial = true;
 		if (!fixedFramerate) {
-			repaintRequestPartial = true;
 			if (config.uiScale != 100) {
 				x = (int)(x * config.uiScale * 1d / 100);
 				y = (int)(y * config.uiScale * 1d / 100);
@@ -1733,19 +1231,23 @@ public class GameWindow extends JFrame implements GameControls {
 	 * Save the world.
 	 * @param name the user entered name, if mode == MANUAL
 	 * @param mode the mode
+	 * @return the filename of the saved state
 	 */
-	public synchronized void saveWorld(final String name, final SaveMode mode) {
+	public synchronized Future<File> saveWorld(final String name, final SaveMode mode) {
 		final String pn = commons.profile.name;
 		final XElement xworld = commons.world().saveState();
 		saveSettings(xworld);
 		commons.saving.inc();
-		Thread t = new Thread(new Runnable() {
+		Callable<File> sw = new Callable<File>() {
 			@Override
-			public void run() {
-				save(name, mode, pn, xworld);
+			public File call() throws Exception {
+				return save(name, mode, pn, xworld);
 			}
-		}, "Save");
-		t.start();
+		};
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		Future<File> f = exec.submit(sw);
+		exec.shutdown();
+		return f;
 	}
 	/**
 	 * Performs the save operation.
@@ -1753,8 +1255,9 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param mode the save mode
 	 * @param pn the profil name
 	 * @param xworld the world
+	 * @return the saved file
 	 */
-	synchronized void save(String name, SaveMode mode, final String pn,
+	synchronized File save(String name, SaveMode mode, final String pn,
 			final XElement xworld) {
 		try {
 			File dir = new File("save/" + pn);
@@ -1778,16 +1281,18 @@ public class GameWindow extends JFrame implements GameControls {
 					
 					limitSaves(dir, mode);
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
+				return fout;
 			} else {
 				System.err.println("Could not create save/default.");
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
+			Exceptions.add(t);
 		} finally {
 			commons.saving.dec();
 		}
+		return null;
 	}
 	/**
 	 * Limit the number of various saves.
@@ -1849,7 +1354,7 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 					}
 				} catch (XMLStreamException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			} else 
 			if (save.canRead()) {
@@ -1866,7 +1371,7 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 					}
 				} catch (XMLStreamException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}
@@ -1896,6 +1401,9 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param name the full save name
 	 */
 	public void loadWorld(final String name) {
+		// allow the popup of related exceptions on a newly loaded game.
+		Exceptions.clear();
+		
 		final Screens pri = primary != null ? primary.screen() : null;
 		final Screens sec = secondary != null ? secondary.screen() : null;
 		final boolean status = statusbarVisible;
@@ -1979,7 +1487,7 @@ public class GameWindow extends JFrame implements GameControls {
 					});
 
 				} catch (Throwable t) {
-					t.printStackTrace();
+					Exceptions.add(t);
 					cancelLoad();
 				}
 			}
@@ -2452,7 +1960,7 @@ public class GameWindow extends JFrame implements GameControls {
 			setSize(Math.min(mxs.width, Math.max(sw + dx, getWidth())), Math.min(mxs.height, Math.max(sh + dy, getHeight())));
 		}
 	}
-	/** @return the current movie visibility status. */
+	@Override
 	public boolean movieVisible() {
 		return bMovieVisible;
 	}
@@ -2625,5 +2133,43 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			});
 		}
+	}
+	@Override
+	public boolean optionsVisible() {
+		return optionsVisible;
+	}
+	@Override
+	public boolean isUIComponentDebug() {
+		return helperRectangleVisible;
+	}
+	@Override
+	public void setUIComponentDebug(boolean value) {
+		this.helperRectangleVisible = value;
+	}
+	@Override
+	public void displayOptions(boolean save, SettingsPage page) {
+		displayOptions();
+		options.maySave(save);
+		options.displayPage(page);
+	}
+	@Override
+	public boolean isObjectivesVisible() {
+		return allScreens.statusbar.objectives.visible();
+	}
+	@Override
+	public void setObjectivesVisible(boolean value) {
+		allScreens.statusbar.objectives.visible(value);
+	}
+	@Override
+	public void toggleQuickResearch() {
+		allScreens.statusbar.toggleQuickResearch();		
+	}
+	@Override
+	public boolean isFixedFrameRate() {
+		return fixedFramerate;
+	}
+	@Override
+	public void setFixedFrameRate(boolean value) {
+		fixedFramerate = value;
 	}
 }

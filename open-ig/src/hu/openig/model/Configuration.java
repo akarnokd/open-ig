@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.io.Closeable;
@@ -288,7 +289,7 @@ public class Configuration {
 			loadProperties(props);
 			return true;
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 			return false;
 		}
 	}
@@ -318,7 +319,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -336,7 +337,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -356,7 +357,7 @@ public class Configuration {
 			isNew = false;
 			return true;
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 			return false;
 		}
 	}
@@ -449,7 +450,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -464,7 +465,7 @@ public class Configuration {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 }

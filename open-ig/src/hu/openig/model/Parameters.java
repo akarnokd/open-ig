@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.Func0;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.lang.reflect.Field;
@@ -91,7 +92,7 @@ public class Parameters {
 						f.set(this, U.getDouble(parameters, f.getName(), (Double)f.get(this)));
 					}
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}

@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.model.Screens;
 import hu.openig.render.RenderTools;
 import hu.openig.screen.ScreenBase;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.awt.Color;
@@ -60,7 +61,7 @@ public class CreditsScreen extends ScreenBase {
 	@Override
 	public void onLeave() {
 		if (animation != null) {
-			try { animation.close(); } catch (IOException ex) { ex.printStackTrace(); }
+			try { animation.close(); } catch (IOException ex) { Exceptions.add(ex); }
 			animation = null;
 		}
 		imageCache.clear();

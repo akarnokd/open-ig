@@ -8,6 +8,7 @@
 
 package hu.openig.render;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
 
 import java.awt.Color;
@@ -67,7 +68,7 @@ public class GenericMediumButton implements GenericButtonRenderer {
 				in.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	@Override

@@ -128,7 +128,7 @@ public final class IOUtils {
 					fin.close();
 				}
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}
 		} else {
 			System.err.println("File inaccessible: " + f);
@@ -165,7 +165,7 @@ public final class IOUtils {
 				fout.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -649,7 +649,7 @@ public final class IOUtils {
 				}
 			} while (true);
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		return bout.toByteArray();
 	}

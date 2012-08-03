@@ -104,4 +104,6 @@ public interface GameEnvironment {
 	 * @param mode the save mode
 	 */
 	void save(SaveMode mode);
+	/** @return The game world version. */
+	String version();
 }

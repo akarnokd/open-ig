@@ -16,6 +16,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.World;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.lang.annotation.Retention;
@@ -450,7 +451,7 @@ public final class AchievementManager {
 					@SuppressWarnings("unchecked") Pred2<World, Player> pred2 = (Pred2<World, Player>)f.get(null);
 					FUNCTIONS.put("achievement." + f.getName().toLowerCase(), pred2);
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}

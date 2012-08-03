@@ -8,9 +8,11 @@
 
 package hu.openig;
 
+import hu.openig.core.Func0;
 import hu.openig.core.SaveMode;
 import hu.openig.model.Configuration;
 import hu.openig.utils.ConsoleWatcher;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.Frame;
@@ -26,6 +28,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -60,31 +63,54 @@ public final class Startup {
 				return;
 			}
 		}
-		Configuration config = new Configuration("open-ig-config.xml");
-		config.watcherWindow = new ConsoleWatcher(args, Configuration.VERSION, config.language, new Runnable() {
+		final Configuration config = new Configuration("open-ig-config.xml");
+		Func0<String> languageFn = new Func0<String>() {
 			@Override
-			public void run() {
+			public String invoke() {
+				return config.language;
+			}
+		};
+		Func0<String> onCrash = new Func0<String>() {
+			@Override
+			public String invoke() {
 				for (Frame f : JFrame.getFrames()) {
 					if (f instanceof GameWindow) {
 						GameWindow gw = (GameWindow)f;
-						if (gw.commons != null && gw.commons.world() != null) {
-							((GameWindow)f).save("Crash", SaveMode.MANUAL);
+						if (gw.commons != null && gw.commons.world() != null && gw.isVisible()) {
+							try {
+								File file = ((GameWindow)f).saveWorld("Crash", SaveMode.MANUAL).get();
+								String wd = new File(".").getAbsolutePath();
+								String fp = file.getAbsolutePath();
+								if (fp.startsWith(wd)) {
+									return wd.substring(fp.length());
+								}
+								return fp;
+							} catch (ExecutionException ex) {
+								// ignored
+							} catch (InterruptedException ex) {
+								// ignored
+							}
 						}
 					}
 				}
+				return null;
 			}
-		});
+		};
+		config.watcherWindow = new ConsoleWatcher(args, 
+				Configuration.VERSION,
+				languageFn, 
+				onCrash);
 		config.load();
-		
+
 		if (argset.contains("-hu")) {
 			config.language = "hu";
 		} else
-		if (argset.contains("-en")) {
-			config.language = "en";
-		} else
-		if (argset.contains("-de")) {
-			config.language = "de";
-		}
+			if (argset.contains("-en")) {
+				config.language = "en";
+			} else
+				if (argset.contains("-de")) {
+					config.language = "de";
+				}
 		if (argset.contains("-maximized")) {
 			config.maximized = true;
 		}
@@ -100,7 +126,7 @@ public final class Startup {
 		if (argset.contains("-noclickskip")) {
 			config.movieClickSkip = false;
 		}
-		
+
 		doStartGame(config);
 	}
 	/**
@@ -114,7 +140,7 @@ public final class Startup {
 				JOptionPane.showMessageDialog(null, "<html><p>Unable to auto-start Open Imperium Galactica version " + Configuration.VERSION + ".<br>Please make sure you have at least " 
 						+ MINIMUM_MEMORY + "MB defined for running a Java program in either your<br>"
 						+ "operating system's configuration for Java programs,<br> or run the program from command line using the <code>-Xmx" + MINIMUM_MEMORY + "M</code> parameter.</p>"
-				);
+						);
 			}
 		});
 	}
@@ -138,24 +164,24 @@ public final class Startup {
 		cmdLine.add("hu.openig.Startup");
 		cmdLine.add("-memonce");
 		cmdLine.addAll(args);
-		
+
 		pb.command(cmdLine);
 		try {
 			pb.start();
-//			Process p = pb.start();
-//			Thread t = createBackgroundReader(p.getErrorStream(), System.err);
-//			t.start();
-//			BufferedReader bin = new BufferedReader(new InputStreamReader(p.getInputStream()));
-//			do {
-//				String line = bin.readLine();
-//				if (line == null || line.equals("OKAY")) {
-//					break;
-//				}
-//			} while (!Thread.currentThread().isInterrupted());
-//			t.interrupt();
+			//			Process p = pb.start();
+			//			Thread t = createBackgroundReader(p.getErrorStream(), System.err);
+			//			t.start();
+			//			BufferedReader bin = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			//			do {
+			//				String line = bin.readLine();
+			//				if (line == null || line.equals("OKAY")) {
+			//					break;
+			//				}
+			//			} while (!Thread.currentThread().isInterrupted());
+			//			t.interrupt();
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Exceptions.add(e);
 			return false;
 		}
 	}
@@ -198,6 +224,7 @@ public final class Startup {
 		if (config.disableOpenGL) {
 			System.setProperty("sun.java2d.opengl", "false");
 		}
+		Exceptions.add(new AssertionError(""));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -226,7 +253,7 @@ public final class Startup {
 				"generic/campaign/main/definition.xml",
 				"generic/ui/achievement.wav",
 				"generic/intro/intro_1.ani.gz"
-			));
+				));
 		List<String> directDirs = Arrays.asList("data", "images", "audio", "video");
 
 		File[] files = installDir.listFiles(new FilenameFilter() {
@@ -262,7 +289,7 @@ public final class Startup {
 				}
 			}
 		}
-		
+
 		return testFiles.isEmpty();
 	}
 	/**
@@ -280,7 +307,7 @@ public final class Startup {
 				pb.start();
 				return;
 			} catch (IOException ex) {
-				
+
 			}
 		}
 		JOptionPane.showMessageDialog(null, "<html>"

@@ -33,6 +33,7 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -500,7 +501,7 @@ public class AITrader implements AIManager {
 		if (pl != null) {
 			f.targetPlanet(pl);
 		} else {
-			new AssertionError("Fleet " + f.id + " has no previous planet to return to!").printStackTrace();
+			Exceptions.add(new AssertionError("Fleet " + f.id + " has no previous planet to return to!"));
 			f.targetPlanet(nearest(player.world.planets.values(), f));
 		}
 		f.mode = FleetMode.MOVE;
@@ -675,8 +676,6 @@ public class AITrader implements AIManager {
 				Fleet f = player.fleet(fid);
 				if (f != null) {
 					fleetTurnedBack.add(f);
-//				} else {
-//					new AssertionError("Turn back fleet " + fid + " not found by the player " + player.id).printStackTrace();
 				}
 			}
 		}
@@ -691,7 +690,7 @@ public class AITrader implements AIManager {
 					if (p != null) {
 						lastVisitedPlanet.put(f, p);
 					} else {
-						new AssertionError(String.format("Player last-visit fleet %s refers to an unknown planet %s", fid, pid)).printStackTrace();
+						Exceptions.add(new AssertionError(String.format("Player last-visit fleet %s refers to an unknown planet %s", fid, pid)));
 					}
 				} else {
 					System.out.println(String.format("Player last-visit refers to unknown fleet %s", fid));

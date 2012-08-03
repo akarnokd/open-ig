@@ -46,7 +46,7 @@ public final class Parallels {
 						TimeUnit.MILLISECONDS.sleep(delay);
 						SwingUtilities.invokeLater(task);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Exceptions.add(e);
 					}
 				}
 			}, "Delayed EDT run with" + delay).start();
@@ -69,9 +69,9 @@ public final class Parallels {
 				try {
 					f.get();
 				} catch (InterruptedException e1) {
-					e1.printStackTrace();
+					Exceptions.add(e1);
 				} catch (ExecutionException e1) {
-					e1.printStackTrace();
+					Exceptions.add(e1);
 				}
 			}
 			
@@ -94,9 +94,9 @@ public final class Parallels {
 						f.get();
 					}
 				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 				if (!Thread.currentThread().isInterrupted()) {
 					SwingUtilities.invokeLater(runInEDT);
@@ -114,9 +114,9 @@ public final class Parallels {
 			try {
 				f.get();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			}
 		}
 	}

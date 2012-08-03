@@ -33,6 +33,8 @@
 
 package com.jcraft.jorbis;
 
+import hu.openig.utils.Exceptions;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -147,7 +149,7 @@ public class VorbisFile {
 				try {
 					is.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Exceptions.add(e);
 				}
 			}
 		}

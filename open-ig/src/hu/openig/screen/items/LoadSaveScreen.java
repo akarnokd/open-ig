@@ -20,6 +20,7 @@ import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.SettingsPage;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
 import hu.openig.ui.UIComponent;
@@ -32,6 +33,7 @@ import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UISpinner;
 import hu.openig.ui.VerticalAlignment;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.awt.Color;
@@ -79,19 +81,6 @@ import javax.xml.stream.XMLStreamException;
  * @author akarnokd, 2010.01.11.
  */
 public class LoadSaveScreen extends ScreenBase {
-	/** Which settings page to display. */
-	public enum SettingsPage {
-		/** Load/save. */
-		LOAD_SAVE,
-		/** Audio options. */
-		AUDIO,
-		/** The control options. */
-		CONTROL,
-		/** The visual options. */
-		VISUAL,
-		/** Gameplay options. */
-		GAMEPLAY
-	}
 	/** The fields for the settings screen. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface Settings { 
@@ -1127,7 +1116,7 @@ public class LoadSaveScreen extends ScreenBase {
 				try {
 					UIComponent.class.cast(f.get(this)).visible(s.page() == page);
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}
@@ -1528,7 +1517,7 @@ public class LoadSaveScreen extends ScreenBase {
 				try {
 					findSaves(flist);
 				} catch (Throwable t) {
-					t.printStackTrace();
+					Exceptions.add(t);
 				}
 				return null;
 			}
@@ -1786,7 +1775,7 @@ public class LoadSaveScreen extends ScreenBase {
 		try {
 			commons.saving.await();
 		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		// check if save dir exists
 		File dir = new File("save/" + commons.profile.name);
@@ -1856,7 +1845,7 @@ public class LoadSaveScreen extends ScreenBase {
 					try {
 						fi.gameDate = sdf.parse(xml.get("time"));
 					} catch (ParseException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 						fi.gameDate = new Date();
 					}
 					fi.level = xml.getInt("level", 5);
@@ -1865,7 +1854,7 @@ public class LoadSaveScreen extends ScreenBase {
 					
 					saves.add(fi);
 				} catch (XMLStreamException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					File f2 = new File(info.getAbsolutePath() + ".bad");
 					if (info.renameTo(f2)) {
 						System.err.println("File renamed to " + f2);
@@ -1880,9 +1869,9 @@ public class LoadSaveScreen extends ScreenBase {
 					// retry
 					queue.addFirst(s);
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} catch (XMLStreamException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					File f2 = new File(save.getAbsolutePath() + ".bad");
 					if (save.renameTo(f2)) {
 						System.err.println("File renamed to " + f2);

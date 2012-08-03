@@ -16,10 +16,11 @@ import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
-import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
+import hu.openig.screen.SettingsPage;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -282,6 +283,9 @@ public class MainScreen extends ScreenBase {
 	}
 	@Override
 	public void onEnter(Screens mode) {
+		// if returned to main menu, allow new aggregation of exceptions
+		Exceptions.clear();
+
 		selectRandomBackground();
 		onResize();
 		

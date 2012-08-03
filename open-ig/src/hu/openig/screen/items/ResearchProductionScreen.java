@@ -24,6 +24,7 @@ import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
+import hu.openig.screen.ResearchProductionAnimation;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.TechnologySlot;
 import hu.openig.screen.TechnologyVideoRenderer;
@@ -36,6 +37,7 @@ import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.Graphics2D;
@@ -54,14 +56,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-
-
-
 /**
  * The combined research and production screen.
  * @author akarnokd, 2010.01.11.
  */
-public class ResearchProductionScreen extends ScreenBase {
+public class ResearchProductionScreen extends ScreenBase implements ResearchProductionAnimation {
 	/** 
 	 * The annotation to indicate which UI elements should by default
 	 * be visible on the screen. Mark only uncommon elements.
@@ -1344,10 +1343,7 @@ public class ResearchProductionScreen extends ScreenBase {
 		
 		needsOrbitalFactory.bounds(productionBase.x + 398, productionBase.y + 137, 120, 14);
 	}
-	/**
-	 * Play animation for the given research.
-	 * @param rt the target research
-	 */
+	@Override
 	public void playAnim(ResearchType rt) {
 		if (videoRenderer != null) {
 			videoRenderer.stop();
@@ -1516,7 +1512,7 @@ public class ResearchProductionScreen extends ScreenBase {
 							c.visible(mi.mode() == mode);
 						}
 					} catch (IllegalAccessException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				} else
 				if (Iterable.class.isAssignableFrom(f.getType())) {
@@ -1533,7 +1529,7 @@ public class ResearchProductionScreen extends ScreenBase {
 							}
 						}
 					} catch (IllegalAccessException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				}
 			}

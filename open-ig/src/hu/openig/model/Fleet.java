@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.model.BattleProjectile.Mode;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
@@ -710,7 +711,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void follow(Fleet otherFleet) {
 		if (this == otherFleet) {
-			new AssertionError("Can't follow self!").printStackTrace();
+			Exceptions.add(new AssertionError("Can't follow self!"));
 			return;
 		}
 		stop();
@@ -724,7 +725,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void attack(Fleet otherFleet) {
 		if (this == otherFleet || this.owner == otherFleet.owner) {
-			new AssertionError("Can't attack friendly!").printStackTrace();
+			Exceptions.add(new AssertionError("Can't attack friendly!"));
 			return;
 		}
 		stop();
@@ -738,11 +739,11 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void attack(Planet planet) {
 		if (owner == planet.owner) {
-			new AssertionError("Can't attack friendly planet!").printStackTrace();
+			Exceptions.add(new AssertionError("Can't attack friendly planet!"));
 			return;
 		}
 		if (planet.owner == null) {
-			new AssertionError("Can't attack empty planet!").printStackTrace();
+			Exceptions.add(new AssertionError("Can't attack empty planet!"));
 			return;
 		}
 		stop();

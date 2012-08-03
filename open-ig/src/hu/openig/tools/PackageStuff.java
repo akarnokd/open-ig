@@ -9,6 +9,7 @@
 package hu.openig.tools;
 
 import hu.openig.model.Configuration;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 
 import java.awt.event.ActionEvent;
@@ -73,7 +74,7 @@ public final class PackageStuff {
 				zout.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
@@ -86,7 +87,7 @@ public final class PackageStuff {
 				zout.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -106,7 +107,7 @@ public final class PackageStuff {
 				zout.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -140,7 +141,7 @@ public final class PackageStuff {
 				zout.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -162,6 +163,7 @@ public final class PackageStuff {
 						}
 						d += name;
 						return d.contains("hu/openig/launcher") 
+								|| d.contains("hu/openig/utils/Exceptions")
 								|| d.contains("hu/openig/utils/XElement")
 								|| d.contains("hu/openig/utils/IOUtils")
 								|| d.contains("hu/openig/utils/Parallels")
@@ -188,7 +190,7 @@ public final class PackageStuff {
 				zout.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -208,7 +210,7 @@ public final class PackageStuff {
 				zout.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**

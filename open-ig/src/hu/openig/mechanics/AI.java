@@ -44,6 +44,7 @@ import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -419,7 +420,7 @@ public class AI implements AIManager {
 				try {
 					nextAttack = XElement.parseDateTime(na);
 				} catch (ParseException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}

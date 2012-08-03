@@ -218,7 +218,7 @@ public final class Simulator {
 
 		// progress quarantine if any
 		if (planet.quarantineTTL > 0) {
-			planet.quarantineTTL--;
+			planet.quarantineTTL -= world.params().speed();
 			if (planet.quarantineTTL <= 0) {
 				planet.quarantineTTL = 0;
 

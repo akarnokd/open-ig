@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.core.ResourceType;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.XElement;
@@ -229,7 +230,7 @@ public class ResourceLocator {
 			}
 			zf.close();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -407,13 +408,13 @@ public class ResourceLocator {
 			try {
 				return optimizeImage(ImageIO.read(bin));
 			} finally {
-				try { bin.close(); } catch (IOException ex) { ex.printStackTrace(); }
+				try { bin.close(); } catch (IOException ex) { Exceptions.add(ex); }
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 			throw new AssertionError("Resource error" + language + " " + resourceName);
 		} finally {
-			try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
+			try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 		}
 	}
 	/**
@@ -464,10 +465,10 @@ public class ResourceLocator {
 			} while (read >= 0);
 			return bout.toByteArray();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 			throw new AssertionError("Resource error" + language + " " + resourceName);
 		} finally {
-			try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
+			try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 		}
 				
 	}
@@ -547,10 +548,10 @@ public class ResourceLocator {
 				in.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 			throw new AssertionError("Resource error" + language + " " + resourceName);
 		} catch (XMLStreamException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 			throw new AssertionError("Resource error" + language + " " + resourceName);
 		}
 	}

@@ -16,6 +16,7 @@ import hu.openig.core.Btn3H;
 import hu.openig.core.Cat;
 import hu.openig.core.Img;
 import hu.openig.model.ResourceLocator;
+import hu.openig.utils.Exceptions;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
@@ -68,7 +69,7 @@ public final class GFXLoader {
 				}
 			}
 		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**

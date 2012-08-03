@@ -12,6 +12,7 @@ import hu.openig.core.ResourceType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.sound.AudioThread;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -188,7 +189,7 @@ public class Music {
 							fails++;
 						}
 					} catch (IOException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				}
 			} finally {
@@ -270,11 +271,11 @@ public class Music {
 				ain.close();
 			}
 		} catch (UnsupportedAudioFileException e) {
-			e.printStackTrace();
+			Exceptions.add(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Exceptions.add(e);
 		} catch (LineUnavailableException e) {
-			e.printStackTrace();
+			Exceptions.add(e);
 		}
 	}
 

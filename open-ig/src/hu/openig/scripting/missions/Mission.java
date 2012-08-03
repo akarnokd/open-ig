@@ -34,6 +34,7 @@ import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -518,7 +519,7 @@ public abstract class Mission implements GameScriptingEvents {
 	public void incomingMessage(String messageId, final Action0 action) {
 		VideoMessage msg = helper.receive(messageId);
 		if (msg == null) {
-			new AssertionError("Missing video: " + messageId).printStackTrace();
+			Exceptions.add(new AssertionError("Missing video: " + messageId));
 		} else {
 			msg.visible = true;
 			helper.receive(messageId).seen = false;
@@ -876,7 +877,7 @@ public abstract class Mission implements GameScriptingEvents {
 	public VideoMessage send(String messageId) {
 		VideoMessage msg = helper.send(messageId);
 		if (msg == null) {
-			new AssertionError("Missing send message: " + messageId).printStackTrace();
+			Exceptions.add(new AssertionError("Missing send message: " + messageId));
 		}
 		return msg;
 	}
@@ -888,7 +889,7 @@ public abstract class Mission implements GameScriptingEvents {
 	public Objective objective(String id) {
 		Objective o = helper.objective(id);
 		if (o == null) {
-			new AssertionError("Missing objective: " + id).printStackTrace();
+			Exceptions.add(new AssertionError("Missing objective: " + id));
 		}
 		return o;
 	}
@@ -970,7 +971,7 @@ public abstract class Mission implements GameScriptingEvents {
 	public VideoMessage receive(String id) {
 		VideoMessage msg = helper.receive(id);
 		if (msg == null) {
-			new AssertionError("Missing receive message: " + id).printStackTrace();
+			Exceptions.add(new AssertionError("Missing receive message: " + id));
 		}
 		return msg;
 	}
