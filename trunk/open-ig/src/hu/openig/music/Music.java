@@ -8,7 +8,6 @@
 package hu.openig.music;
 
 import hu.openig.core.Action1;
-import hu.openig.core.Func0;
 import hu.openig.core.ResourceType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
@@ -48,7 +47,10 @@ public class Music {
 	private volatile OggMusic oggMusic;
 	/** The completion handler once a sound element completed. */
 	public Action1<String> onComplete;
-
+	/** Mute the music output. */
+	private volatile boolean mute;
+	/** The current volume. */
+	private volatile int volume;
 	/**
 	 * Constructor.
 	 * @param rl the resource locator instance.
@@ -106,9 +108,8 @@ public class Music {
 	 * Play the given file list in the given sequence repeatedly.
 	 * 
 	 * @param fileName the array of filenames to play
-	 * @param volume the initial playback volume
 	 */
-	public void playLooped(final Func0<Integer> volume, final String... fileName) {
+	public void playLooped(final String... fileName) {
 		stop();
 		Thread th = playbackThread;
 		if (th != null) {
@@ -118,7 +119,7 @@ public class Music {
 		th = new Thread(null, new Runnable() {
 			@Override 
 			public void run() {
-				playbackLoop(volume, fileName);
+				playbackLoop(fileName);
 			}
 		}, "MusicPlaybackL-" + Arrays.toString(fileName));
 		playbackThread = th;
@@ -128,9 +129,8 @@ public class Music {
 	 * Play the given file list in the given sequence once.
 	 * 
 	 * @param fileName the array of filenames to play
-	 * @param volume the initial playback volume
 	 */
-	public void playSequence(final Func0<Integer> volume, final String... fileName) {
+	public void playSequence(final String... fileName) {
 		stop();
 		Thread th = playbackThread;
 		if (th != null) {
@@ -140,7 +140,7 @@ public class Music {
 		th = new Thread(null, new Runnable() {
 			@Override 
 			public void run() {
-				playbackSequence(volume, fileName);
+				playbackSequence(fileName);
 			}
 		}, "MusicPlaybackS-" + Arrays.toString(fileName));
 		playbackThread = th;
@@ -152,21 +152,19 @@ public class Music {
 	 * 
 	 * @param fileNames
 	 *            the audio files to play back
-   	 * @param volume the initial playback volume
 	 */
-	private void playbackLoop(final Func0<Integer> volume, String... fileNames) {
+	private void playbackLoop(String... fileNames) {
 		int fails = 0;
 		while (checkStop() && fails < fileNames.length) {
-			fails += playbackSequence(volume, fileNames);
+			fails += playbackSequence(fileNames);
 		}
 	}
 	/**
 	 * Play the sequence of audio data and return when all completed.
-	 * @param volumeFunc the audio volume function
 	 * @param fileNames the list of resource names to get
 	 * @return the failure count
 	 */
-	int playbackSequence(final Func0<Integer> volumeFunc, String... fileNames) {
+	int playbackSequence(String... fileNames) {
 		int fails = 0;
 		for (final String name : fileNames) {
 			try {
@@ -175,16 +173,15 @@ public class Music {
 				if (!checkStop()) {
 					break;
 				}
-				int volume = volumeFunc.invoke();
 				if (useClip) {
-					playBackClip(rp, volume);
+					playBackClip(rp);
 				} else {
 					try {
 						if (fileName.toUpperCase().endsWith(".WAV")) {
-							playBackClip(rp, volume);
+							playBackClip(rp);
 						} else 
 						if (fileName.toUpperCase().endsWith(".OGG")) {
-							if (!playbackOgg(rp, volume)) {
+							if (!playbackOgg(rp)) {
 								fails++;
 							}
 						} else {
@@ -219,14 +216,15 @@ public class Music {
 	/**
 	 * Plays back the given filename as an OGG audio file.
 	 * @param res the resource place representing the music
-	 * @param volume the initial playback volume
 	 * @return true if the file was accessible
 	 * @throws IOException on IO error
 	 */
-	private boolean playbackOgg(ResourcePlace res, int volume) throws IOException {
+	private boolean playbackOgg(ResourcePlace res) throws IOException {
 		InputStream raf = res.openNew();
 		try {
-			oggMusic = new OggMusic(Thread.currentThread(), volume);
+			oggMusic = new OggMusic(Thread.currentThread());
+			oggMusic.setVolume(volume);
+			oggMusic.setMute(mute);
 			oggMusic.playOgg(raf);
 			return true;
 		} finally {
@@ -238,9 +236,8 @@ public class Music {
 	/**
 	 * Play back music using the Clip object.
 	 * @param rp the resource to play back
-	 * @param volume the initial playback volume
 	 */
-	private void playBackClip(ResourcePlace rp, int volume) {
+	private void playBackClip(ResourcePlace rp) {
 		try {
 			AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rp.get()));
 			try {
@@ -261,6 +258,7 @@ public class Music {
 				sdl.open(af);
 				try {
 					setVolume(volume);
+					setMute(mute);
 					sdl.start();
 					sdl.write(snd, 0, snd.length);
 					sdl.drain();
@@ -335,11 +333,26 @@ public class Music {
 	 * @param volume the volume 0..100, volume 0 mutes the sound
 	 */
 	public void setVolume(int volume) {
+		this.volume = volume;
 		if (sdl != null) {
 			AudioThread.setVolume(sdl, volume);
 		} else 
-		if (oggMusic != null && oggMusic.outputLine != null) {
-			AudioThread.setVolume(oggMusic.outputLine, volume);
+		if (oggMusic != null) {
+			oggMusic.setVolume(volume);
+		}
+	}
+	/**
+	 * Set the mute state on the music.
+	 * @param mute the mute state
+	 */
+	public void setMute(boolean mute) {
+		this.mute = mute;
+		int vol = mute ? 0 : volume;
+		if (sdl != null) {
+			AudioThread.setVolume(sdl, vol);
+		} else
+		if (oggMusic != null) {
+			oggMusic.setMute(mute);
 		}
 	}
 	/** @return is a music playing? */

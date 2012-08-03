@@ -280,6 +280,18 @@ public class LoadSaveScreen extends ScreenBase {
 	UIGenericButton confirmCancel;
 	/** The confirmation message. */
 	UILabel confirmText;
+	/** Mute. */
+	@Settings(page = SettingsPage.AUDIO)
+	UICheckBox muteAudio;
+	/** Mute. */
+	@Settings(page = SettingsPage.AUDIO)
+	UICheckBox muteMusic;
+	/** Mute. */
+	@Settings(page = SettingsPage.AUDIO)
+	UICheckBox muteVideo;
+	/** Show tooltips. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox showTooltips;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -998,6 +1010,36 @@ public class LoadSaveScreen extends ScreenBase {
 
 		hideConfirm();
 
+		muteAudio = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
+		muteAudio.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.muteEffect = muteAudio.selected();
+			}
+		};
+		muteMusic = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
+		muteMusic.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.muteEffect = muteMusic.selected();
+				commons.music.setMute(config.muteEffect);
+			}
+		};
+		muteVideo = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
+		muteVideo.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.muteVideo = muteVideo.selected();
+			}
+		};
+		showTooltips = new UICheckBox(get("settings.show_tooltips"), 14, commons.common().checkmark, commons.text());
+		showTooltips.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.showTooltips = showTooltips.selected();
+			}
+		};
+		
 		addThis();
 	}
 	/** Hide the confirmation controls. */
@@ -1145,6 +1187,10 @@ public class LoadSaveScreen extends ScreenBase {
 		buildingName.selected(config.showBuildingName);
 		quickRNP.selected(config.quickRNP);
 		scaleAllScreens.selected(config.scaleAllScreens);
+		muteAudio.selected(config.muteEffect);
+		muteVideo.selected(config.muteVideo);
+		muteMusic.selected(config.muteMusic);
+		showTooltips.selected(config.showTooltips);
 		
 		hideConfirm();
 
@@ -1234,6 +1280,10 @@ public class LoadSaveScreen extends ScreenBase {
 		videoVolume.location(base.x + 50 + vol, base.y + 130);
 		videoVolume.width = 160;
 
+		muteAudio.location(soundVolume.x + soundVolume.width + 30, soundVolume.y + 8);
+		muteMusic.location(musicVolume.x + musicVolume.width + 30, musicVolume.y + 8);
+		muteVideo.location(videoVolume.x + videoVolume.width + 30, videoVolume.y + 8);
+		
 		computerVoiceScreen.location(base.x + 30, base.y + 160 + 8);
 		computerVoiceNotify.location(base.x + 30, base.y + 190 + 8);
 
@@ -1262,7 +1312,8 @@ public class LoadSaveScreen extends ScreenBase {
 		quickRNP.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		scaleAllScreens.location(base.x + 30, base.y + dy + 8);
-		
+		dy += 30;
+		showTooltips.location(base.x + 30, base.y + dy + 8);
 		// -----------------------------
 		// controls
 		dy = 70;

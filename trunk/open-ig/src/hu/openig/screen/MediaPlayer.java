@@ -103,11 +103,22 @@ public class MediaPlayer {
 		}
 		stop = false;
 //		final int audioSmooth = commons.config.videoFilter;
-		final int audioVolume = commons.config.videoVolume;
+		final int audioVolume = commons.config.muteVideo ? 0 : commons.config.videoVolume;
 		audioThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				if (audio == null) {
+					return;
+				}
+				if (audioVolume <= 0) {
+					try {
+						barrier.await();
+					} catch (BrokenBarrierException ex) {
+						ex.printStackTrace();
+					} catch (InterruptedException ex) {
+						// ignored, maybe cancel
+					}
+					doCompleteAudio();
 					return;
 				}
 				try {
