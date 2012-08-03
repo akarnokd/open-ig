@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.io.File;
@@ -57,7 +58,7 @@ public class Profile {
 			save(xprofile);
 			xprofile.save(new File(dir, "profile.xml"));
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -100,7 +101,7 @@ public class Profile {
 				load(xprofile);
 			}
 		} catch (XMLStreamException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 }

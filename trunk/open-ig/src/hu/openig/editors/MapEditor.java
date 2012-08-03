@@ -8,6 +8,7 @@
 
 package hu.openig.editors;
 
+import hu.openig.core.Func0;
 import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
 import hu.openig.gfx.ColonyGFX;
@@ -29,6 +30,7 @@ import hu.openig.model.Tile;
 import hu.openig.model.TileSet;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.ConsoleWatcher;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
@@ -496,7 +498,7 @@ public class MapEditor extends JFrame {
 					
 					prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
 				} catch (Throwable t) {
-					t.printStackTrace();
+					Exceptions.add(t);
 				}
 				return null;
 			}
@@ -563,7 +565,14 @@ public class MapEditor extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				config.watcherWindow = new ConsoleWatcher(args, VERSION, config.language, null);
+				Func0<String> languageFn = new Func0<String>() {
+					@Override
+					public String invoke() {
+						return config.language;
+					}
+				};
+
+				config.watcherWindow = new ConsoleWatcher(args, VERSION, languageFn, null);
 				MapEditor editor = new MapEditor(config);
 				editor.setLocationRelativeTo(null);
 				editor.setVisible(true);
@@ -597,24 +606,11 @@ public class MapEditor extends JFrame {
 			pb.command(System.getProperty("java.home") + "/bin/java", "-Xmx" + MINIMUM_MEMORY + "M", "-cp", "open-ig-mapeditor-" + VERSION + ".jar", "-splash:hu/openig/xold/res/OpenIG_Splash.png", "hu.openig.editors.MapEditor", "-memonce");
 		}
 		try {
-			/* Process p = */pb.start();
-//			createBackgroundReader(p.getInputStream(), System.out).start();
-//			createBackgroundReader(p.getErrorStream(), System.err).start();
-//			SwingUtilities.invokeLater(new Runnable() {
-//				@Override
-//				public void run() {
-//					JFrame frame = new JFrame("Running MapEditor with correct memory settings...");
-//					frame.dispose();
-//				}
-//			});
-//			p.waitFor();
+			pb.start();
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			Exceptions.add(e);
 			return false;
-//		} catch (InterruptedException ex) {
-//			ex.printStackTrace();
-//			return false;
 		}
 	}
 	/**
@@ -2201,7 +2197,7 @@ public class MapEditor extends JFrame {
 				out.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/** Perform the save. */
@@ -2273,7 +2269,7 @@ public class MapEditor extends JFrame {
 			ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
 			renderer.repaint();
 		} catch (XMLStreamException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -2345,7 +2341,7 @@ public class MapEditor extends JFrame {
 						f.set(o, labels.get(fr.to()));
 					}
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}
@@ -2506,7 +2502,7 @@ public class MapEditor extends JFrame {
 				out.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/** Load the editor configuration. */
@@ -2624,7 +2620,7 @@ public class MapEditor extends JFrame {
 					}
 				}
 			} catch (XMLStreamException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}
 		}
 	}
@@ -2918,7 +2914,7 @@ public class MapEditor extends JFrame {
 				addUndo(undo);
 				repaint();
 			} catch (XMLStreamException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}
 		}
 	}

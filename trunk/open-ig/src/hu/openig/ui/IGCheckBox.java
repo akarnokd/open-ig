@@ -8,6 +8,8 @@
 
 package hu.openig.ui;
 
+import hu.openig.utils.Exceptions;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -46,7 +48,7 @@ public class IGCheckBox extends JCheckBox {
 			check = ImageIO.read(getClass().getResource("/hu/openig/gfx/checkmark.png"));
 			checkGs = ImageIO.read(getClass().getResource("/hu/openig/gfx/checkmark_grayscale.png"));
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	@Override

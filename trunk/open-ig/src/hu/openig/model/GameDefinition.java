@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
@@ -113,7 +114,7 @@ public class GameDefinition {
 				try {
 					f.set(result, root.childValue(f.getName()));
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}

@@ -66,7 +66,7 @@ public class Labels {
 		if (value == null) {
 			System.err.println("\t<entry key='" + key + "'></entry>");
 //			AssertionError ex = new AssertionError();
-//			ex.printStackTrace();
+//			Exceptions.add(ex);
 			map.put(key, key);
 			return key;
 		}

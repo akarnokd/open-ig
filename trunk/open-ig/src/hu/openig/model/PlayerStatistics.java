@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.lang.reflect.Field;
@@ -207,9 +208,9 @@ public class PlayerStatistics {
 			try {
 				target.set(f.getName(), f.get(this));
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			}
 		}
 	}
@@ -257,9 +258,9 @@ public class PlayerStatistics {
 					}
 				}
 			} catch (IllegalArgumentException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			}
 		}
 	}

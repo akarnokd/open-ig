@@ -186,7 +186,7 @@ public final class U {
 				try {
 					run.run();
 				} catch (RuntimeException t) {
-					t.printStackTrace();
+					Exceptions.add(t);
 					throw t;
 				}
 			}

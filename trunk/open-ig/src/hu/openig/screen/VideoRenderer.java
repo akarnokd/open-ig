@@ -11,6 +11,7 @@ package hu.openig.screen;
 import hu.openig.core.Action1;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.ResourceLocator.ResourcePlace;
+import hu.openig.utils.Exceptions;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -114,7 +115,7 @@ public class VideoRenderer extends Thread {
 				in.close();
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 	}
@@ -203,7 +204,7 @@ public class VideoRenderer extends Thread {
 			} while (repeat && !stopped);
 		} catch (IOException ex) {
 			// TODO log
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		} finally {
 			if (!terminated && onComplete != null) {
 				onComplete.invoke(null);

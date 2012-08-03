@@ -179,4 +179,39 @@ public interface GameControls {
 	 * @param c the component 
 	 */
 	void tooltipChanged(UIComponent c);
+	/** @return true if the full screen movie screen is visible. */
+	boolean movieVisible();
+	/** @return true if the options screen is visible. */
+	boolean optionsVisible();
+	/**
+	 * Enable or disable the UIComponent helper rectangles for debug purposes.
+	 * @param value the state
+	 */
+	void setUIComponentDebug(boolean value);
+	/** @return is the UIComponent helper rectangles enabled? */
+	boolean isUIComponentDebug();
+	/**
+	 * Display the options screen with the given configuration.
+	 * @param save may the user save?
+	 * @param page the page to display
+	 */
+	void displayOptions(boolean save, SettingsPage page);
+	/**
+	 * Make the objectives panel visible or hidden.
+	 * @param value the visibility status
+	 */
+	void setObjectivesVisible(boolean value);
+	/**
+	 * @return is the objectives panel visible?
+	 */
+	boolean isObjectivesVisible();
+	/** Toggle the visibility of the quick research panel. */
+	void toggleQuickResearch();
+	/** @return is the fixed frame rate enabled? */
+	boolean isFixedFrameRate();
+	/**
+	 * Enable or disable the fixed framerate display mode.
+	 * @param value enable or disable
+	 */
+	void setFixedFrameRate(boolean value);
 }

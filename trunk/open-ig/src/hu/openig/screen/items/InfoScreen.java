@@ -50,6 +50,7 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UITextButton;
 import hu.openig.ui.VerticalAlignment;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.Color;
@@ -1320,7 +1321,7 @@ public class InfoScreen extends ScreenBase {
 							c.visible(contains(mode, mi.mode()));
 						}
 					} catch (IllegalAccessException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				} else
 				if (Iterable.class.isAssignableFrom(f.getType())) {
@@ -1337,7 +1338,7 @@ public class InfoScreen extends ScreenBase {
 							}
 						}
 					} catch (IllegalAccessException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				}
 			}

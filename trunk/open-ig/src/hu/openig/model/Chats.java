@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -37,7 +38,7 @@ public class Chats {
 	public Chat get(String id) {
 		Chat c = chats.get(id);
 		if (c == null) {
-			new AssertionError("Missing chat settings: " + id).printStackTrace();
+			Exceptions.add(new AssertionError("Missing chat settings: " + id));
 		}
 		return c;
 	}
@@ -98,7 +99,7 @@ public class Chats {
 		public Node get(String id) {
 			Node n = nodes.get(id);
 			if (n == null) {
-				new AssertionError("Missing node " + id + " for chat entry " + this.id).printStackTrace();
+				Exceptions.add(new AssertionError("Missing node " + id + " for chat entry " + this.id));
 			}
 			return n;
 		}

@@ -53,8 +53,8 @@ public class Planet implements Named, Owned, HasInventory {
 	public int diameter;
 	/** How long the quarantine should stay in 10s ingame minutes? */
 	public int quarantineTTL;
-	/** The default quarnatine TTL. */
-	public static final int DEFAULT_QUARANTINE_TTL = 6 * 24 * 3;
+	/** The default quarnatine TTL in ingame minutes. */
+	public static final int DEFAULT_QUARANTINE_TTL = 5 * 24 * 60;
 	/** The contents of the planet. */
 	public PlanetSurface surface;
 	/** The resource allocation strategy. */

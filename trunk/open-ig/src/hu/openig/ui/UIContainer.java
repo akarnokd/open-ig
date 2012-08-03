@@ -9,6 +9,7 @@
 package hu.openig.ui;
 
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -137,9 +138,9 @@ public class UIContainer extends UIComponent {
 						add(c);
 					}
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
+					Exceptions.add(e);
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					Exceptions.add(e);
 				}
 			}
 		}

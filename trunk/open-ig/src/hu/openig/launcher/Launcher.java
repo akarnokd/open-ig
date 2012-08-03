@@ -8,9 +8,11 @@
 
 package hu.openig.launcher;
 
+import hu.openig.core.Func0;
 import hu.openig.ui.IGButton;
 import hu.openig.ui.IGCheckBox;
 import hu.openig.utils.ConsoleWatcher;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.XElement;
@@ -94,7 +96,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.34";
+	public static final String VERSION = "0.35";
 	/**
 	 * The update XML to download.
 	 */
@@ -255,7 +257,7 @@ public class Launcher extends JFrame {
 				background = ImageIO.read(u);
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		try {
 			URL u = getClass().getResource("/hu/openig/gfx/english.png");
@@ -263,7 +265,7 @@ public class Launcher extends JFrame {
 				flags.put("en", ImageIO.read(u));
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		try {
 			URL u = getClass().getResource("/hu/openig/gfx/hungarian.png");
@@ -271,7 +273,7 @@ public class Launcher extends JFrame {
 				flags.put("hu", ImageIO.read(u));
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		try {
 			URL u = getClass().getResource("/hu/openig/gfx/german.png");
@@ -279,7 +281,7 @@ public class Launcher extends JFrame {
 				flags.put("de", ImageIO.read(u));
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		mainPanel = new JPanel() {
 			/** */
@@ -961,8 +963,16 @@ public class Launcher extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				Launcher ln = new Launcher();
-				ln.cw = new ConsoleWatcher(args, VERSION, ln.language, null);
+				final Launcher ln = new Launcher();
+				
+				Func0<String> languageFn = new Func0<String>() {
+					@Override
+					public String invoke() {
+						return ln.language;
+					}
+				};
+				
+				ln.cw = new ConsoleWatcher(args, VERSION, languageFn, null);
 				ln.runVerify = argset.contains("-verify");
 				ln.setVisible(true);
 			}
@@ -979,7 +989,7 @@ public class Launcher extends JFrame {
 				Thread.sleep(1000);	
 			}
 		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -1081,9 +1091,9 @@ public class Launcher extends JFrame {
 			Parallels.consume(p.getInputStream());
 			Parallels.consume(p.getErrorStream());
 		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -1159,13 +1169,13 @@ public class Launcher extends JFrame {
 					doProcessUpdate(xe, updateFile);
 				} catch (ExecutionException ex) {
 					if (!(ex.getCause() instanceof IOException)) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					} else {
 						processLocal();
 					}
 					errorMessage(format("Error during data download: %s", ex.toString()));
 				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error during data download: %s", ex.toString()));
 				} catch (IOException ex) {
 					errorMessage(format("Could not rename update file: %s", ex.toString()));
@@ -1235,7 +1245,7 @@ public class Launcher extends JFrame {
 		} catch (IOException ex) {
 			// suppress this
 		} catch (XMLStreamException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		return true;
 	}
@@ -1360,7 +1370,7 @@ public class Launcher extends JFrame {
 				
 				
 			} catch (XMLStreamException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}
 		}
 	}
@@ -1537,10 +1547,10 @@ public class Launcher extends JFrame {
 					doDownload(get());
 				} catch (CancellationException ex) {
 				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}
 			}
@@ -1594,10 +1604,10 @@ public class Launcher extends JFrame {
 					doActOnUpdates();
 				} catch (CancellationException ex) {
 				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}
 			}
@@ -1704,10 +1714,10 @@ public class Launcher extends JFrame {
 						fin.close();
 					}
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					toDownload.add(lf);
 				} catch (NoSuchAlgorithmException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					toDownload.add(lf);
 				}
 			} else {
@@ -1765,10 +1775,10 @@ public class Launcher extends JFrame {
 				} catch (CancellationException ex) {
 					// ignore
 				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}
 				if (!moveSelf) {
@@ -1797,7 +1807,7 @@ public class Launcher extends JFrame {
 					try {
 						d.open(target.getParentFile());
 					} catch (IOException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				}
 			} catch (UnsupportedOperationException ex) {
@@ -1812,7 +1822,7 @@ public class Launcher extends JFrame {
 			try {
 				pb.start();
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}
 			
 			doClose();
@@ -1917,10 +1927,10 @@ public class Launcher extends JFrame {
 							fout.close();
 						}
 					} catch (IOException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 						allOk = false;
 					} catch (NoSuchAlgorithmException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 						allOk = false;
 					}					
 				} finally {
@@ -1994,7 +2004,7 @@ public class Launcher extends JFrame {
 						jf.close();
 					}
 				} catch (IOException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 			String runJVM = jvm;
@@ -2025,7 +2035,7 @@ public class Launcher extends JFrame {
 				Parallels.consume(p.getErrorStream());
 				
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 				errorMessage(format("Error running module: %s", ex));
 			}
 		}
@@ -2114,10 +2124,10 @@ public class Launcher extends JFrame {
 				} catch (CancellationException ex) {
 					// ignore
 				} catch (ExecutionException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				} catch (InterruptedException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}
 			}
@@ -2137,7 +2147,7 @@ public class Launcher extends JFrame {
 		try {
 			pb.start();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		
 		doClose();
@@ -2154,7 +2164,7 @@ public class Launcher extends JFrame {
 		try {
 			cfg.save(config);
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**

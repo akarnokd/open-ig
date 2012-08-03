@@ -18,6 +18,7 @@ import hu.openig.model.Configuration;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.sound.AudioThread;
+import hu.openig.utils.Exceptions;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -628,7 +629,7 @@ public class VideoPlayer extends JFrame {
 				playVideo(currentVideo.video, currentVideo.path, currentVideo.name, currentVideo.audio, currentVideo.subtitle);
 			}
 		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/** Stop playback. */
@@ -814,15 +815,15 @@ public class VideoPlayer extends JFrame {
 						clip.drain();
 						clip.close();
 					} catch (LineUnavailableException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				} finally {
 					in.close();
 				}
 			} catch (UnsupportedAudioFileException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}
 		}
 	}
@@ -919,11 +920,11 @@ public class VideoPlayer extends JFrame {
 				}
 			} finally {
 				try { in.close(); } catch (IOException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/** The last known export dir. */
@@ -1007,7 +1008,7 @@ public class VideoPlayer extends JFrame {
 						});
 					}
 				} catch (Throwable t) {
-					t.printStackTrace();
+					Exceptions.add(t);
 				}
 			}
 			@Override
@@ -1077,7 +1078,7 @@ public class VideoPlayer extends JFrame {
 							ain.close();
 						}
 					} catch (UnsupportedAudioFileException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				}
 				final int f = Math.max(frames, frames2);
@@ -1165,10 +1166,10 @@ public class VideoPlayer extends JFrame {
 					}
 				}
 			} finally {
-				try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
+				try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		} 
 	}
 	/**
@@ -1184,9 +1185,9 @@ public class VideoPlayer extends JFrame {
 				}
 			});
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			Exceptions.add(e);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Exceptions.add(e);
 		}
 	}
 	/**

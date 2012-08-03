@@ -8,6 +8,7 @@
 
 package hu.openig.launcher;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.io.ByteArrayInputStream;
@@ -33,7 +34,7 @@ public class LUpdate {
 		try {
 			process(XElement.parseXML(new ByteArrayInputStream(data)));
 		} catch (XMLStreamException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**

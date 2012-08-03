@@ -45,6 +45,7 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 
@@ -837,7 +838,7 @@ public class DiplomacyScreen extends ScreenBase {
 						}
 					});
 				} catch (Throwable t) {
-					t.printStackTrace();
+					Exceptions.add(t);
 				}
 			}
 		});

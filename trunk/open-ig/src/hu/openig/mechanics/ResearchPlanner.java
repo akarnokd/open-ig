@@ -24,6 +24,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchType;
+import hu.openig.utils.Exceptions;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -499,7 +500,7 @@ public class ResearchPlanner extends Planner {
 			}
 			final BuildingType bt = findBuildingType(resource);
 			if (bt == null) {
-				new AssertionError("Can't find building for resource " + resource).printStackTrace();
+				Exceptions.add(new AssertionError("Can't find building for resource " + resource));
 				return AIResult.NO_AVAIL;
 			}
 			if (bt.cost <= world.money) {
@@ -511,7 +512,7 @@ public class ResearchPlanner extends Planner {
 						public void invoke() {
 							AIResult r = controls.actionPlaceBuilding(planet0, bt);
 							if (r == AIResult.NO_AVAIL) {
-								e.printStackTrace();
+								Exceptions.add(e);
 							}
 						}
 					});

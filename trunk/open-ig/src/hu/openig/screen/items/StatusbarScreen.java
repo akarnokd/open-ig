@@ -31,7 +31,7 @@ import hu.openig.model.SoundType;
 import hu.openig.model.VideoMessage;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
-import hu.openig.screen.items.LoadSaveScreen.SettingsPage;
+import hu.openig.screen.SettingsPage;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;

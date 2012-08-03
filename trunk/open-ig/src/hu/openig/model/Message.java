@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.text.ParseException;
@@ -92,7 +93,7 @@ public class Message implements Comparable<Message> {
 			gametime = World.DATE_FORMAT.get().parse(xmessage.get("gametime")).getTime();
 			timestamp = World.DATE_FORMAT.get().parse(xmessage.get("timestamp")).getTime();
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		String s = xmessage.get("sound", null);
 		

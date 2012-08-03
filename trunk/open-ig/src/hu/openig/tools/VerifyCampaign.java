@@ -16,6 +16,7 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.render.TextRenderer;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -178,7 +179,7 @@ public class VerifyCampaign {
 			try {
 				return XElement.parseXML(new ByteArrayInputStream(rp.get()));
 			} catch (XMLStreamException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}
 		}
 		return null;

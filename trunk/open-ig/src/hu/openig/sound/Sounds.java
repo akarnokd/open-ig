@@ -15,6 +15,7 @@ import hu.openig.model.Configuration;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.SoundType;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 
 import java.io.ByteArrayInputStream;
@@ -120,9 +121,9 @@ public class Sounds {
 					ain.close();
 				}
 			} catch (UnsupportedAudioFileException e) {
-				e.printStackTrace();
+				Exceptions.add(e);
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				Exceptions.add(ex);
 			}			
 		}
 	}
@@ -179,7 +180,7 @@ public class Sounds {
 				return sdl;
 			}
 		} catch (LineUnavailableException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		return null;
 	}
@@ -245,7 +246,7 @@ public class Sounds {
 	 */
 	public void playSound(final SoundType effect, final Action0 action) {
 		if (effect == null) {
-			new IllegalArgumentException("Null effect").printStackTrace();
+			Exceptions.add(new IllegalArgumentException("Null effect"));
 			return;
 		}
 		final int vol = getVolume.invoke();
@@ -310,7 +311,7 @@ public class Sounds {
 				}
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
+			Exceptions.add(t);
 		} finally {
 			Thread.currentThread().setName(n);
 

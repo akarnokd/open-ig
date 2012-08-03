@@ -8,6 +8,7 @@
 
 package hu.openig.tools;
 
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 
@@ -191,7 +192,7 @@ public final class DiplomacyAnimation {
 						
 						ImageIO.write(out, "png", new File(String.format("e:/temp/dipfej9_%03d.png", i)));
 					} catch (IOException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					} finally {
 						wip.dec();
 					}
@@ -360,7 +361,7 @@ public final class DiplomacyAnimation {
 						try {
 							ImageIO.write(bimg, "png", new File(String.format("e:/temp/dipfej_%03d.png", fi)));
 						} catch (IOException ex) {
-							ex.printStackTrace();
+							Exceptions.add(ex);
 						}
 					} finally {
 						wip.dec();
@@ -420,7 +421,7 @@ public final class DiplomacyAnimation {
 				}
 			}
 		} finally {
-			try { in.close(); } catch (IOException ex) { ex.printStackTrace(); }
+			try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 		}
 		return result;
 	}

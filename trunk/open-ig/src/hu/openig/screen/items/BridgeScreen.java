@@ -30,6 +30,7 @@ import hu.openig.ui.UIImageToggleButton;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 
@@ -964,7 +965,7 @@ public class BridgeScreen extends ScreenBase {
 			protected BufferedImage doInBackground() throws Exception {
 				ResourcePlace rp = rl.get(video.media, ResourceType.VIDEO);
 				if (rp == null) {
-					new AssertionError("Missing resource: " + video.media).printStackTrace();
+					Exceptions.add(new AssertionError("Missing resource: " + video.media));
 				}
 				return VideoRenderer.firstFrame(rp);
 			}
@@ -991,9 +992,9 @@ public class BridgeScreen extends ScreenBase {
 		try {
 			videoAppear = sw.get();
 		} catch (InterruptedException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		} catch (ExecutionException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		buttonSound(SoundType.ACKNOWLEDGE_2);
 		videoAppearAnim.start();

@@ -33,6 +33,7 @@ import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
 import hu.openig.scripting.missions.Mission;
 import hu.openig.scripting.missions.MissionScriptingHelper;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -279,14 +280,14 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 						m.init(player, this, xms);
 						missions.add(m);
 					} else {
-						new AssertionError(String.format("Mission class %s is incompatible", clazz)).printStackTrace();
+						Exceptions.add(new AssertionError(String.format("Mission class %s is incompatible", clazz)));
 					}
 				} catch (InstantiationException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} catch (ClassNotFoundException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}
@@ -373,9 +374,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 						}
 					}
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				} catch (NoSuchFieldException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}
@@ -851,7 +852,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 					xvar.set("id", f.getName());
 					xvar.set("value", f.get(this));
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}
@@ -929,7 +930,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void clearTimeout(String id) {
 		if (countdowns.remove(id) == null) {
-			new AssertionError("ClearTimeout, missing id: " + id).printStackTrace();
+			Exceptions.add(new AssertionError("ClearTimeout, missing id: " + id));
 		}
 	}
 	@Override
@@ -1027,7 +1028,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void clearMissionTime(String id) {
 		if (missiontimer.remove(id) == null) {
-			new AssertionError(String.format("MissionTime %s not found.", id)).printStackTrace();
+			Exceptions.add(new AssertionError(String.format("MissionTime %s not found.", id)));
 			System.err.printf("MissionTime %s last deallocation: %s%n", id, missiontimerlog.get(id));
 		} else {
 			missiontimerlog.put(id, stackTrace(new AssertionError("MissionTime " + id)));

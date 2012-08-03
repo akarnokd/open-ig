@@ -45,6 +45,7 @@ import hu.openig.model.World;
 import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
 import hu.openig.sound.Sounds;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.WipPort;
 
 import java.awt.event.ActionEvent;
@@ -605,14 +606,14 @@ public class CommonResources implements GameEnvironment {
 							p.ai.apply();
 						}
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					} finally {
 						runningAI.remove(p);
 					}
 				}
 			});
 		} catch (Throwable t) {
-			t.printStackTrace();
+			Exceptions.add(t);
 		}
 	}
 	/**
@@ -740,7 +741,7 @@ public class CommonResources implements GameEnvironment {
 					} catch (CancellationException ex) {
 						act.cancelled = true;
 					} catch (Throwable t) {
-						t.printStackTrace();
+						Exceptions.add(t);
 					}
 				}
 			}
@@ -1021,7 +1022,7 @@ public class CommonResources implements GameEnvironment {
 		} catch (InterruptedException ex) {
 			// ignored, just quit
 		} catch (InvocationTargetException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -1058,5 +1059,9 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public void save(SaveMode mode) {
 		control.save(null, mode);
+	}
+	@Override
+	public String version() {
+		return Configuration.VERSION;
 	}
 }

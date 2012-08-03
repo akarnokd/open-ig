@@ -11,6 +11,7 @@ package hu.openig.screen;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.model.ResourceLocator.ResourcePlace;
+import hu.openig.utils.Exceptions;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
@@ -86,7 +87,7 @@ public class TechnologyVideoRenderer {
 		} catch (InterruptedException ex) {
 			
 		} catch (ExecutionException ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -161,7 +162,7 @@ public class TechnologyVideoRenderer {
 				try { in.close(); } catch (IOException ex) {  }
 			}
 		} catch (Throwable ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		if (images.size() > 0 && !stopped) {
 			final int frameSize = frames; 

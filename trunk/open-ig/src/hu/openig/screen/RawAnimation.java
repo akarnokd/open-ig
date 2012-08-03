@@ -10,6 +10,7 @@ package hu.openig.screen;
 
 import hu.openig.core.ResourceType;
 import hu.openig.model.ResourceLocator;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
@@ -152,7 +153,7 @@ public class RawAnimation {
 				try { in.close(); } catch (IOException ex) {  }
 			}
 		} catch (Throwable ex) {
-			ex.printStackTrace();
+			Exceptions.add(ex);
 		}
 		return ha;
 	}

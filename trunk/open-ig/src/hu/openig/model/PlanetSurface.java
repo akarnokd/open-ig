@@ -11,6 +11,7 @@ import hu.openig.core.Location;
 import hu.openig.core.PlanetType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -227,11 +228,11 @@ public class PlanetSurface {
 					int y = Integer.parseInt(tile.get("y"));
 					PlanetType pt = gm.planetTypes.get(type);
 					if (pt == null) {
-						new AssertionError("Missing planet type: " + type).printStackTrace();
+						Exceptions.add(new AssertionError("Missing planet type: " + type));
 					} else {
 						Tile t = pt.tiles.get(id);
 						if (t == null) {
-							new AssertionError("Missing tile: " + id + " on planet type " + type).printStackTrace();
+							Exceptions.add(new AssertionError("Missing tile: " + id + " on planet type " + type));
 						} else {
 							placeBase(t, x, y, id, type);
 						}

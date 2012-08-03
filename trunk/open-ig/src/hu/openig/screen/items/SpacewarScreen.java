@@ -62,6 +62,7 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.Color;
@@ -499,7 +500,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						UIComponent.class.cast(f.get(this)).visible(a.mode() == mode);
 					}
 				} catch (IllegalAccessException ex) {
-					ex.printStackTrace();
+					Exceptions.add(ex);
 				}
 			}
 		}
@@ -1014,13 +1015,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					try {
 						UIComponent.class.cast(f.get(this)).location(leftPanel.x, leftPanel.y);
 					} catch (IllegalAccessException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				} else {
 					try {
 						UIComponent.class.cast(f.get(this)).location(rightPanel.x, rightPanel.y);
 					} catch (IllegalAccessException ex) {
-						ex.printStackTrace();
+						Exceptions.add(ex);
 					}
 				}
 			}
@@ -1720,7 +1721,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (categories.contains(ii.type.category)) {
 				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
 				if (bse == null) {
-					new AssertionError("Missing space entity: " + ii.type.id).printStackTrace();
+					Exceptions.add(new AssertionError("Missing space entity: " + ii.type.id));
 					continue;
 				}
 				
