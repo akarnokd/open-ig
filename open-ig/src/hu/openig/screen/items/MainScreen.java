@@ -417,6 +417,7 @@ public class MainScreen extends ScreenBase {
 		achievements.action = new Action0() {
 			@Override
 			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				displaySecondary(Screens.ACHIEVEMENTS);
 			}
 		};
@@ -425,6 +426,7 @@ public class MainScreen extends ScreenBase {
 		profileLabel.action = new Action0() {
 			@Override
 			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				//displaySecondary(Screens.PROFILE);
 			}
 		};
