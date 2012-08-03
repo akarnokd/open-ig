@@ -250,6 +250,9 @@ public class Configuration {
 	public boolean intro = true;
 	/** The tooltip's maximum width. */
 	public int tooltipWidth = 600;
+	/** Show tooltips? */
+	@LoadSave
+	public boolean showTooltips = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

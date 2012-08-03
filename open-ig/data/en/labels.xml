@@ -2847,8 +2847,8 @@
 	<entry key='diplomacy.Garthog.RESIGN.HUMBLE.90'>You get a last chance to give up, Admiral. Nobody can say the Garthogs are not civilized.</entry>
 
 	<entry key="equipment.fleetname.tooltip">Fleet name. Rename via [c=FFFFFFFF]double click[/c].</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="settings.mute">Mute</entry>
+	<entry key="settings.show_tooltips">Show tooltips</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

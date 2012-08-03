@@ -339,12 +339,13 @@ public class CommonResources implements GameEnvironment {
 			sounds.initialize(config.audioChannels, new Func0<Integer>() {
 				@Override
 				public Integer invoke() {
-					return config.effectVolume;
+					return config.muteEffect ? 0 : config.effectVolume;
 				}
 			});
 			
 			music = new Music(rl);
 			music.setVolume(config.musicVolume);
+			music.setMute(config.muteMusic);
 
 			// FIXME during translation
 			
@@ -776,22 +777,12 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void playRegularMusic() {
 		stopMusic();
-		music.playLooped(new Func0<Integer>() {
-			@Override
-			public Integer invoke() {
-				return config.musicVolume;
-			}
-		}, "music/Music1", "music/Music2", "music/Music3");
+		music.playLooped("music/Music1", "music/Music2", "music/Music3");
 	}
 	/** Convenience method to start playing the original battle music. */
 	public void playBattleMusic() {
 		stopMusic();
-		music.playLooped(new Func0<Integer>() {
-			@Override
-			public Integer invoke() {
-				return config.musicVolume;
-			}
-		}, "music/War");
+		music.playLooped("music/War");
 	}
 	@Override
 	public void stopMusic() {
@@ -904,12 +895,9 @@ public class CommonResources implements GameEnvironment {
 				}
 			}
 		};
-		m.playSequence(new Func0<Integer>() {
-			@Override
-			public Integer invoke() {
-				return config.effectVolume;
-			}
-		}, name);
+		m.setVolume(config.effectVolume);
+		m.setMute(config.muteEffect);
+		m.playSequence(name);
 	}
 	@Override
 	public void playSound(SoundTarget target, SoundType type, Action0 action) {

@@ -64,15 +64,15 @@ public class OggMusic {
 	/** The current playback source data line. */
 	public volatile SourceDataLine outputLine = null;
 	/** Current/initial sound gain. */
-	private int initialVolume;
+	private volatile int volume;
+	/** Mute the output. */
+	private volatile boolean mute;
 	/**
 	 * Constructor.
 	 * @param me the playback thread running the run() method
-	 * @param volume the initial volume
 	 */
-	public OggMusic(Thread me, int volume) {
+	public OggMusic(Thread me) {
 		this.playbackThread = me;
-		this.initialVolume = volume;
 		
 	}
 	/** Close playback thread. */
@@ -287,7 +287,8 @@ public class OggMusic {
 			// Preset initial gain and mute
 			SourceDataLine sdl = getOutputLine(vi.channels, vi.rate);
 			
-			AudioThread.setVolume(sdl, initialVolume);
+			int vol = mute ? 0 : volume;
+			AudioThread.setVolume(sdl, vol);
 			
 			while (eos == 0) {
 				while (eos == 0) {
@@ -359,8 +360,14 @@ public class OggMusic {
 										}
 									}
 									// FIXME sound emission here
-									outputLine.write(convbuffer, 0, 2
-											* vi.channels * bout);
+									int len = 2 * vi.channels * bout;
+									if (mute) {
+										for (int m = 0; m < bout; m += 2) {
+											convbuffer[m] = 0;
+											convbuffer[m + 1] = 0;
+										}
+									}
+									outputLine.write(convbuffer, 0, len);
 									vd.synthesisRead(bout);
 									samples = vd.synthesisPcmout(lPcmf,
 											lIndex);
@@ -403,6 +410,28 @@ public class OggMusic {
 		try {
 			bitStream.close();
 		} catch (IOException e) {
+		}
+	}
+	/**
+	 * Set the music playback volume.
+	 * @param volume the volume 0..100
+	 */
+	public void setVolume(int volume) {
+		this.volume = volume;
+		if (outputLine != null) {
+			int vol = mute ? 0 : volume;
+			AudioThread.setVolume(outputLine, vol);
+		}
+	}
+	/**
+	 * Toggle the mute state.
+	 * @param mute the mute state
+	 */
+	public void setMute(boolean mute) {
+		this.mute = mute;
+		if (outputLine != null) {
+			int vol = mute ? 0 : volume;
+			AudioThread.setVolume(outputLine, vol);
 		}
 	}
 }

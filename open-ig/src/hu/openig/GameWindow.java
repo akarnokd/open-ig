@@ -2563,7 +2563,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param g2 the graphics context.
 	 */
 	protected void renderTooltip(Graphics2D g2) {
-		if (tooltipHelper != null) {
+		if (tooltipHelper != null && config.showTooltips) {
 			if (helperRectangleVisible) {
 				g2.setColor(Color.ORANGE);
 				g2.drawRect(tooltipHelper.x, tooltipHelper.y, tooltipHelper.width - 1, tooltipHelper.height - 1);
