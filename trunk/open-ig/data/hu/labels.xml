@@ -2891,6 +2891,9 @@
 	<entry key="equipment.fleetname.tooltip">Flotta neve. [c=FFFFFFFF]Dupla kattintás[/c]sal átnevezhető.</entry>
 	<entry key="settings.mute">Néma</entry>
 	<entry key="settings.show_tooltips">Gomb- és felirat-tippek</entry>
+	<entry key="achievements.counts">Helyzet: %d / %d (%.1f%%)</entry>
+	<entry key="achievements.show_earned">Elérve</entry>
+	<entry key="achievements.show_unearned">Hiányzik</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

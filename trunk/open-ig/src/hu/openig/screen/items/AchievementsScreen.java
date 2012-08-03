@@ -19,11 +19,14 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ClickLabel;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.UICheckBox;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
+import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -81,7 +84,7 @@ public class AchievementsScreen extends ScreenBase {
 		}
 	}
 	/** The list of achievements. */
-	public final List<AchievementEntry> achievements = new ArrayList<AchievementEntry>();
+	public final List<AchievementEntry> achievementList = new ArrayList<AchievementEntry>();
 	/** The list of statistics. */
 	public final List<StatisticsEntry> statistics = new ArrayList<StatisticsEntry>();
 	/** The saved statistics index. */
@@ -94,8 +97,10 @@ public class AchievementsScreen extends ScreenBase {
 	int achievementCount;
 	/** The screen origin. */
 	final Rectangle base = new Rectangle(0, 0, 640, 442);
-	/** The listing rectangle. */
-	final Rectangle listRect = new Rectangle();
+	/** The listing rectangle of the achievements. */
+	final Rectangle listRectAch = new Rectangle();
+	/** The listing rectangle of the statistics. */
+	final Rectangle listRectStat = new Rectangle();
 	/** Scroll up button. */
 	UIImageButton scrollUpButton;
 	/** Scroll down button. */
@@ -130,19 +135,27 @@ public class AchievementsScreen extends ScreenBase {
 	public Screens mode = Screens.STATISTICS;
 	/** Achievements label. */
 	UIGenericButton backLabel;
+	/** Number of achieved / total. */
+	UILabel counts;
+	/** Show earned. */
+	UICheckBox earned;
+	/** Show unearned. */
+	UICheckBox unearned;
 	@Override
 	public void onResize() {
 		scaleResize(base, margin());
 
-		listRect.setBounds(base.x + 10, base.y + 20, base.width - 50, 350);
-		achievementCount = listRect.height / 50;
-		statisticsCount = listRect.height / 20;
+		listRectAch.setBounds(base.x + 10, base.y + 45, base.width - 50, 325);
+		achievementCount = listRectAch.height / 50;
+
+		listRectStat.setBounds(base.x + 10, base.y + 20, base.width - 50, 350);
+		statisticsCount = listRectStat.height / 20;
 		
-		scrollUpButton.x = base.x + listRect.width + 12;
-		scrollUpButton.y = base.y + 10 + (listRect.height / 2 - scrollUpButton.height) / 2;
+		scrollUpButton.x = base.x + listRectStat.width + 12;
+		scrollUpButton.y = base.y + 10 + (listRectStat.height / 2 - scrollUpButton.height) / 2;
 		
 		scrollDownButton.x = scrollUpButton.x;
-		scrollDownButton.y = base.y + 10 + listRect.height / 2 + (listRect.height / 2 - scrollDownButton.height) / 2;
+		scrollDownButton.y = base.y + 10 + listRectStat.height / 2 + (listRectStat.height / 2 - scrollDownButton.height) / 2;
 
 		bridge.x = base.x + 4 - bridge.width;
 		bridge.y = base.y + base.height - 2 - bridge.height;
@@ -188,7 +201,7 @@ public class AchievementsScreen extends ScreenBase {
 	public void onInitialize() {
 		
 		base.setSize(commons.common().infoEmpty.getWidth(), commons.common().infoEmpty.getHeight());
-		achievements.clear();
+		achievementList.clear();
 		statistics.clear();
 		
 		scrollUpButton = new UIImageButton(commons.database().arrowUp);
@@ -318,6 +331,23 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		};
 
+		counts = new UILabel("", 14, commons.text());
+		earned = new UICheckBox(get("achievements.show_earned"), 14, commons.common().checkmark, commons.text());
+		earned.selected(true);
+		earned.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				adjustScrollButtons();				
+			}
+		};
+		unearned = new UICheckBox(get("achievements.show_unearned"), 14, commons.common().checkmark, commons.text());
+		unearned.selected(true);
+		unearned.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				adjustScrollButtons();				
+			}
+		};
 
 		addThis();
 		// FIXME find other ways to populate the achievement list
@@ -337,7 +367,8 @@ public class AchievementsScreen extends ScreenBase {
 		boolean result = false;
 		switch (e.type) {
 		case WHEEL:
-			if (listRect.contains(e.x, e.y)) {
+			Rectangle r = mode == Screens.ACHIEVEMENTS ? listRectAch : listRectStat;
+			if (r.contains(e.x, e.y)) {
 				if (e.z < 0) {
 					doScrollUp();
 				} else {
@@ -380,9 +411,10 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		} else
 		if (mode == Screens.ACHIEVEMENTS) {
-			if (achievements.size() > achievementCount) {
+			List<AchievementEntry> achList = achievements();
+			if (achList.size() > achievementCount) {
 				int oldIndex = achievementIndex;
-				achievementIndex = Math.min(achievementIndex + 1, achievements.size() - achievementCount);
+				achievementIndex = Math.min(achievementIndex + 1, achList.size() - achievementCount);
 				if (oldIndex != achievementIndex) {
 					adjustScrollButtons();
 				}
@@ -396,8 +428,10 @@ public class AchievementsScreen extends ScreenBase {
 			scrollDownButton.visible(statisticsIndex < statistics.size() - statisticsCount);
 		} else
 		if (mode == Screens.ACHIEVEMENTS) {
+			achievementIndex = Math.min(achievementIndex, achievements().size() - achievementCount);
 			scrollUpButton.visible(achievementIndex > 0);
-			scrollDownButton.visible(achievementIndex < achievements.size() - achievementCount);
+			List<AchievementEntry> achList = achievements();
+			scrollDownButton.visible(achievementIndex < achList.size() - achievementCount);
 		}		
 		askRepaint();
 	}
@@ -445,17 +479,37 @@ public class AchievementsScreen extends ScreenBase {
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		
 		g2.drawImage(commons.common().infoEmpty, base.x, base.y, null);
-		super.draw(g2);
 		
 		Shape save0 = g2.getClip();
-		g2.clipRect(listRect.x, listRect.y, listRect.width, listRect.height);
 		adjustLabels();
-		if (mode == Screens.ACHIEVEMENTS) {
-			int y = listRect.y;
-			for (int i = achievementIndex; i < achievements.size() && i < achievementIndex + achievementCount; i++) {
-				AchievementEntry ae = achievements.get(i);
+		boolean ach = mode == Screens.ACHIEVEMENTS;
+		Rectangle r = ach ? listRectAch : listRectStat;
+		g2.clipRect(r.x, r.y, r.width, r.height);
+
+		
+		counts.visible(ach);
+		earned.visible(ach);
+		unearned.visible(ach);
+		
+		if (ach) {
+			List<AchievementEntry> achList = achievements();
+			int total = achievementList.size();
+			int act = 0;
+			for (AchievementEntry e : achievementList) {
+				if (e.enabled()) {
+					act++;
+				}
+			}
+			counts.text(format("achievements.counts", act, total, act * 100d / total), true);
+			counts.location(r.x, r.y - 25);
+			earned.location(counts.x + counts.width + 25, counts.y);
+			unearned.location(earned.x + earned.width + 25, earned.y);
+			
+			int y = r.y;
+			for (int i = achievementIndex; i < achList.size() && i < achievementIndex + achievementCount; i++) {
+				AchievementEntry ae = achList.get(i);
 				String desc = get(ae.description);
-				int tw = listRect.width - commons.common().achievement.getWidth() - 10;
+				int tw = r.width - commons.common().achievement.getWidth() - 10;
 				List<String> lines = new ArrayList<String>();
 				commons.text().wrapText(desc, tw, 10, lines);
 				BufferedImage img = commons.common().achievement;
@@ -464,45 +518,46 @@ public class AchievementsScreen extends ScreenBase {
 					img = commons.common().achievementGrayed;
 					color = 0xFFC0C0C0;
 				}
-				g2.drawImage(img, listRect.x, y, null);
-				commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y, 14, color, get(ae.title));
+				g2.drawImage(img, r.x, y, null);
+				commons.text().paintTo(g2, r.x + commons.common().achievement.getWidth() + 10, y, 14, color, get(ae.title));
 				int y1 = y + 20;
 				
 				for (int j = 0; j < lines.size(); j++) {
-					commons.text().paintTo(g2, listRect.x + commons.common().achievement.getWidth() + 10, y1, 10, color, lines.get(j));
+					commons.text().paintTo(g2, r.x + commons.common().achievement.getWidth() + 10, y1, 10, color, lines.get(j));
 					y1 += 12;
 				}
 				y += 50;
 			}
 		} else
 		if (mode == Screens.STATISTICS) {
-			int y = listRect.y;
+			int y = r.y;
 			int h = 14;
 			for (int i = statisticsIndex; i < statistics.size() && i < statisticsIndex + statisticsCount; i++) {
 				StatisticsEntry se = statistics.get(i);
 				int w1 = commons.text().getTextWidth(h, get(se.label));
-				commons.text().paintTo(g2, listRect.x, y, h, TextRenderer.GREEN, get(se.label));
+				commons.text().paintTo(g2, r.x, y, h, TextRenderer.GREEN, get(se.label));
 				String s = se.value.invoke(null);
 				int w2 = commons.text().getTextWidth(h, s);
 				
 				g2.setColor(Color.GRAY);
 				
-				g2.drawLine(listRect.x + w1 + 5, y + 10, listRect.x + listRect.width - w2 - 10, y + 10);
+				g2.drawLine(r.x + w1 + 5, y + 10, r.x + r.width - w2 - 10, y + 10);
 				
-				commons.text().paintTo(g2, listRect.x + listRect.width - w2 - 5, y, h, TextRenderer.YELLOW, s);
+				commons.text().paintTo(g2, r.x + r.width - w2 - 5, y, h, TextRenderer.YELLOW, s);
 				
 				y += 20;
 			}
 		}
 		g2.setClip(save0);
 		g2.setTransform(savea);
+		super.draw(g2);
 	}
 	/** Create the test achievements. */
 	void createTestEntries() {
 		for (String ac : AchievementManager.achievements()) {
-			achievements.add(new AchievementEntry(ac, ac + ".desc"));
+			achievementList.add(new AchievementEntry(ac, ac + ".desc"));
 		}
-		Collections.sort(achievements, new Comparator<AchievementEntry>() {
+		Collections.sort(achievementList, new Comparator<AchievementEntry>() {
 			@Override
 			public int compare(AchievementEntry o1, AchievementEntry o2) {
 				return get(o1.title).compareTo(get(o2.title));
@@ -1266,5 +1321,18 @@ public class AchievementsScreen extends ScreenBase {
 	protected Pair<Point, Double> scale() {
 		Pair<Point, Double> s = scale(base, margin());
 		return Pair.of(new Point(base.x, base.y), s.second);
+	}
+	/**
+	 * Get a potentially filtered list of achievements.
+	 * @return the list of achievements to display
+	 */
+	protected List<AchievementEntry> achievements() {
+		List<AchievementEntry> result = U.newArrayList();
+		for (AchievementEntry e : achievementList) {
+			if ((e.enabled() && earned.selected()) || (!e.enabled() && unearned.selected())) {
+				result.add(e);
+			}
+		}
+		return result;
 	}
 }

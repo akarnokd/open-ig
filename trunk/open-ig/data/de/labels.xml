@@ -2965,8 +2965,9 @@
 	<entry key="equipment.fleetname.tooltip">Flottenname. Umbenennen mit [c=FFFFFFFF]Doppelklick[/c].</entry>
 	<entry key="settings.mute">Dämpfen</entry>
 	<entry key="settings.show_tooltips">Tooltips zeigen</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="achievements.counts">Status: %d von %d (%.1f%%)</entry>
+	<entry key="achievements.show_earned">Erreicht</entry>
+	<entry key="achievements.show_unearned">Nicht erreicht</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
