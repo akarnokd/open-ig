@@ -174,9 +174,10 @@ public class Mission3 extends Mission {
 						fi.stop();
 						
 						Fleet ff = getFollower(fi, player);
-						world.env.playSound(SoundTarget.COMPUTER, SoundType.CARRIER_UNDER_ATTACK, null);
 						if (ff != null) {
 							ff.attack(pf);
+						} else {
+							world.env.playSound(SoundTarget.COMPUTER, SoundType.CARRIER_UNDER_ATTACK, null);
 						}
 						stage = M3.ATTACK;
 						world.env.playMusic();
