@@ -52,6 +52,8 @@ public class Mission12 extends Mission {
 	protected boolean multipleInfections;
 	/** Reinforcements called once. */
 	protected boolean reinforcements;
+	/** The infection turns. */
+	protected int turns = 3;
 	@Override
 	public void onTime() {
 		Objective m11t1 = objective("Mission-11");
@@ -81,7 +83,7 @@ public class Mission12 extends Mission {
 
 				String m12tx = "";
 				int infectionCount = 0;
-				for (int i = 2; i < 6; i++) {
+				for (int i = 2; i <= turns; i++) {
 					Objective o = objective("Mission-12-Task-" + i);
 					if (!o.visible && o.state == ObjectiveState.ACTIVE) {
 						m12tx = "Mission-12-Task-" + i;
@@ -177,7 +179,7 @@ public class Mission12 extends Mission {
 	 * Complete the active task.
 	 */
 	void completeActiveTask() {
-		for (int i = 5; i >= 1; i--) {
+		for (int i = turns; i >= 1; i--) {
 			Objective o = objective("Mission-12-Task-" + i);
 			if (o.visible && o.state == ObjectiveState.ACTIVE) {
 				setObjectiveState("Mission-12-Task-" + i, ObjectiveState.SUCCESS);
@@ -187,7 +189,7 @@ public class Mission12 extends Mission {
 				if (i >= 2) {
 					send("Douglas-Report-Viruses").visible = true;
 				}
-				if (i == 5) {
+				if (i >= turns) {
 					showObjective("Mission-12-Task-6");
 				}
 				break;
@@ -196,7 +198,7 @@ public class Mission12 extends Mission {
 	}
 	@Override
 	public void onLost(Planet planet) {
-		for (int i = 1; i < 6; i++) {
+		for (int i = 1; i <= turns; i++) {
 			Objective o = objective("Mission-12-Task-" + i);
 			if (o.isActive()) {
 				setObjectiveState(o, ObjectiveState.FAILURE);
@@ -236,10 +238,10 @@ public class Mission12 extends Mission {
 				} else {
 					incomingMessage("New Caroline-Garthog-Virus-Resolved");
 				}
-				for (int i = 5; i >= 2; i--) {
+				for (int i = turns; i >= 2; i--) {
 					Objective o = objective("Mission-12-Task-" + i);
 					if (o.visible && o.state == ObjectiveState.ACTIVE) {
-						if (i < 5) {
+						if (i < turns) {
 							addMission("Mission-12-Subsequent", 24);
 							stage = M12Stages.SUBSEQUENT_DELAY;
 						} else {
