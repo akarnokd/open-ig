@@ -191,25 +191,6 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 
 	@Override
-	public List<VideoMessage> getReceiveMessages() {
-		List<VideoMessage> result = U.newArrayList();
-
-		for (VideoMessage msg : world.bridge.receiveMessages.values()) {
-			if (msg.visible) {
-				result.add(msg);
-			}
-		}
-		
-		Collections.sort(result, new Comparator<VideoMessage>() {
-			@Override
-			public int compare(VideoMessage o1, VideoMessage o2) {
-				return o1.id.compareTo(o2.id);
-			}
-		});
-		return result;
-	}
-
-	@Override
 	public List<VideoMessage> getSendMessages() {
 		List<VideoMessage> result = U.newArrayList();
 		
@@ -238,7 +219,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				msg.visible = false;
 			}
 		}
-		for (VideoMessage msg : world.bridge.receiveMessages.values()) {
+		for (VideoMessage msg : world.receivedMessages) {
 			if (msg.id.startsWith(id)) {
 				msg.visible = false;
 			}
@@ -298,16 +279,6 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void load(XElement in) {
 		lastLevel = in.getInt("lastLevel", world.level);
-		for (XElement xmsgs : in.childrenWithName("receives")) {
-			for (XElement xmsg : xmsgs.childrenWithName("receive")) {
-				String id = xmsg.get("id");
-				VideoMessage vm = receive(id);
-				if (vm != null) {
-					vm.visible = xmsg.getBoolean("visible");
-					vm.seen = xmsg.getBoolean("seen", false);
-				}
-			}
-		}
 		for (XElement xmsgs : in.childrenWithName("sends")) {
 			for (XElement xmsg : xmsgs.childrenWithName("send")) {
 				String id = xmsg.get("id");
@@ -613,10 +584,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				e.getValue().seen = false;
 			}
 		}
-		for (Map.Entry<String, VideoMessage> e : world.bridge.receiveMessages.entrySet()) {
-			if (filter.invoke(e.getKey())) {
-				e.getValue().visible = false;
-				e.getValue().seen = false;
+		for (VideoMessage e : world.receivedMessages) {
+			if (filter.invoke(e.id)) {
+				e.seen = false;
 			}
 		}
 	}
@@ -797,21 +767,10 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}		
 	}
 	@Override
-	public VideoMessage receive(String id) {
-		return world.bridge.receiveMessages.get(id);
-	}
-	@Override
 	public void save(XElement out) {
 		out.set("lastLevel", lastLevel);
 		
-		XElement xmsgs = out.add("receives");
-		for (VideoMessage vm : world.bridge.receiveMessages.values()) {
-			XElement xmsg = xmsgs.add("receive");
-			xmsg.set("id", vm.id);
-			xmsg.set("visible", vm.visible);
-			xmsg.set("seen", vm.seen);
-		}
-		xmsgs = out.add("sends");
+		XElement xmsgs = out.add("sends");
 		for (VideoMessage vm : world.bridge.sendMessages.values()) {
 			XElement xmsg = xmsgs.add("send");
 			xmsg.set("id", vm.id);

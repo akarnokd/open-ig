@@ -82,39 +82,28 @@ public class Mission9 extends Mission {
 		
 		
 		if (checkTimeout("Mission-9-Slipped")) {
-			receive("San Sterling-Smuggler").visible = false;
 			setObjectiveState("Mission-9", ObjectiveState.FAILURE);
 			incomingMessage("San Sterling-Smuggler-Escaped");
 			addTimeout("Mission-9-Hide", 30000);
 		}
 		if (checkTimeout("Mission-9-Innocent")) {
-			receive("San Sterling-Smuggler").visible = false;
 			setObjectiveState("Mission-9", ObjectiveState.FAILURE);
 			gameover();
 			loseGameMessageAndMovie("San Sterling-Smuggler-Killed-Innocent", "lose/fired_level_2");
 		}
 		if (checkTimeout("Mission-9-Killed")) {
-			receive("San Sterling-Smuggler").visible = false;
 			setObjectiveState("Mission-9", ObjectiveState.SUCCESS);
 			incomingMessage("San Sterling-Smuggler-Killed");
 			addTimeout("Mission-9-Hide", 30000);
 		}
 		if (checkTimeout("Mission-9-Success")) {
-			receive("San Sterling-Smuggler").visible = false;
 			setObjectiveState("Mission-9", ObjectiveState.SUCCESS);
 			addTimeout("Mission-9-Hide", 13000);
 			addMission("Mission-9-Hide-Fleet", 12);
 			incomingMessage("Douglas-Success");
-			addMission("Mission-9-Success-Message", 24);
-		}
-		if (checkMission("Mission-9-Success-Message")) {
-			receive("Douglas-Success").visible = false;
 		}
 		if (checkTimeout("Mission-9-Hide")) {
 			objective("Mission-9").visible = false;
-			receive("San Sterling-Smuggler-Escaped").visible = false;
-			receive("San Sterling-Smuggler-Killed-Innocent").visible = false;
-			receive("San Sterling-Smuggler-Killed").visible = false;
 		}
 		if (checkMission("Mission-9-Hide-Fleet")) {
 			Fleet smg = findTaggedFleet("Mission-9-Smuggler", player("Traders"));

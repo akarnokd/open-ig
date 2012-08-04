@@ -23,11 +23,6 @@ public interface GameScripting extends GameScriptingEvents {
 	 */
 	List<VideoMessage> getSendMessages();
 	/**
-	 * Returns the list of video messages to receive.
-	 * @return the list of video messages to receive.
-	 */
-	List<VideoMessage> getReceiveMessages();
-	/**
 	 * Returns the list of current objectives.
 	 * @return List of current objectives.
 	 */

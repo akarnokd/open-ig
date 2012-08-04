@@ -151,6 +151,8 @@ public class World {
 	public final Map<Integer, String> infectedFleets = new HashMap<Integer, String>();
 	/** The map of all diplomatic relations. */
 	public final List<DiplomaticRelation> relations = U.newArrayList();
+	/** The list of all messages received, including history and duplicates. */
+	public final List<VideoMessage> receivedMessages = U.newArrayList();
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -973,6 +975,14 @@ public class World {
 			}
 		}
 		
+		XElement xreceived = xworld.add("player-received-messages");
+		for (VideoMessage vmsg : receivedMessages) {
+			XElement xr = xreceived.add("message");
+			xr.set("id", vmsg.id);
+			xr.set("seen", vmsg.seen);
+		}
+
+		
 		// save infection sources
 		XElement infected = xworld.add("infected");
 		for (Map.Entry<Integer, String> e : this.infectedFleets.entrySet()) {
@@ -1278,6 +1288,16 @@ public class World {
 			for (XElement qa : test.childrenWithName("q-a")) {
 				TestQuestion tq = this.test.get(qa.get("question"));
 				tq.choose(qa.get("answer"));
+			}
+		}
+		
+		XElement xreceived = xworld.childElement("player-received-messages");
+		receivedMessages.clear();
+		if (xreceived != null) {
+			for (XElement xr : xreceived.childrenWithName("message")) {
+				VideoMessage vmsg = bridge.receiveMessages.get(xr.get("id")).copy();
+				vmsg.seen = xr.getBoolean("seen");
+				receivedMessages.add(vmsg);
 			}
 		}
 		

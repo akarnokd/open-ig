@@ -128,12 +128,6 @@ public interface MissionScriptingHelper {
 	 */
 	Set<Integer> scriptedFleets();
 	/**
-	 * Get a receive-message.
-	 * @param id the message id
-	 * @return the video message or null if not available
-	 */
-	VideoMessage receive(String id);
-	/**
 	 * Clear the timeouts specified by the filter function.
 	 * @param filter the filter function
 	 */

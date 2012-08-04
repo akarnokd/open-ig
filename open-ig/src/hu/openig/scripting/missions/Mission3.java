@@ -75,7 +75,6 @@ public class Mission3 extends Mission {
 					setObjectiveState("Mission-3", ObjectiveState.FAILURE);
 					addTimeout("Mission-3-Timeout", 13000);
 					
-					receive("Douglas-Carrier").visible = false;
 					removeFleets();
 				}
 			});
@@ -88,7 +87,6 @@ public class Mission3 extends Mission {
 			world.env.playVideo("interlude/merchant_destroyed", new Action0() {
 				@Override
 				public void invoke() {
-					receive("Douglas-Carrier").visible = false;
 					incomingMessage("Douglas-Carrier-Lost", new Action0() {
 						@Override
 						public void invoke() {
@@ -100,7 +98,6 @@ public class Mission3 extends Mission {
 			});
 		}
 		if (checkMission("Mission-3-Success")) {
-			receive("Douglas-Carrier").visible = false;
 			setObjectiveState("Mission-3", ObjectiveState.SUCCESS);
 			addTimeout("Mission-3-Done", 13000);
 			removeFleets();
@@ -279,7 +276,8 @@ public class Mission3 extends Mission {
 	}
 	/** Play the interlude video, show the objective and create the trader. */
 	void runMission() {
-		if (!objective("Mission-3").visible) {
+		Objective m3 = objective("Mission-3");
+		if (!m3.isCompleted() && !m3.visible) {
 			world.env.stopMusic();
 			world.env.playVideo("interlude/merchant_in", new Action0() {
 				@Override

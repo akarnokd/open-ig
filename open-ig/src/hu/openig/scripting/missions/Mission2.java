@@ -46,6 +46,8 @@ public class Mission2 extends Mission {
 	boolean task2Once;
 	/** Task 3 schedule once. */
 	boolean task3Once;
+	/** The current trader message. */
+	int traderMessage;
 	/**
 	 * Check the starting conditions of Mission 2 and make it available.
 	 */
@@ -81,9 +83,8 @@ public class Mission2 extends Mission {
 
 						int fidx = ((AITrader)f.owner.ai).fleetIndex(f);
 						
-						int traderMessage = 1 + fidx % 7;
+						traderMessage = 1 + fidx % 7;
 						
-						receive("Douglas-Pirates").visible = false;
 						incomingMessage("Merchant-Under-Attack-" + traderMessage, m2ti);
 						
 						world.env.speed1();
@@ -268,15 +269,7 @@ public class Mission2 extends Mission {
 			List<SpacewarStructure> sts = war.structures(traders);
 
 			// which trader message to show
-			int textIndex = 0;
-			for (int i = 1; i <= 7; i++) {
-				if (receive("Merchant-Under-Attack-" + i).visible) {
-					textIndex = i - 1;
-					break;
-				}
-			}
-			textIndex %= 6;
-
+			int textIndex = (traderMessage - 1) % 6;
 			
 			boolean traderSurvived = !sts.isEmpty();
 			completeTaskN(traderSurvived, task);
@@ -318,10 +311,6 @@ public class Mission2 extends Mission {
 
 		
 		cleanupScriptedFleets();
-		// hide message
-		for (int i = 1; i <= 7; i++) {
-			receive("Merchant-Under-Attack-" + i).visible = false;
-		}
 		missionAttack = false;
 	}
 	/**
@@ -389,12 +378,14 @@ public class Mission2 extends Mission {
 		task1Once = xmission.getBoolean("task-1-once", objective("Mission-2-Task-1").isCompleted());
 		task2Once = xmission.getBoolean("task-2-once", objective("Mission-2-Task-2").isCompleted());
 		task3Once = xmission.getBoolean("task-3-once", objective("Mission-2-Task-3").isCompleted());
+		traderMessage = xmission.getInt("trader-message", 1 + world.random().nextInt(7));
 	}
 	@Override
 	public void save(XElement xmission) {
 		xmission.set("task-1-once", task1Once);
 		xmission.set("task-2-once", task2Once);
 		xmission.set("task-3-once", task3Once);
+		xmission.set("trader-message", traderMessage);
 	}
 	@Override
 	public void reset() {

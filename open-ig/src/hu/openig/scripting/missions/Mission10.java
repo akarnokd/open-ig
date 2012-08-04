@@ -97,7 +97,6 @@ public class Mission10 extends Mission {
 				removeScripted(fleet);
 				if (setObjectiveState("Mission-10", ObjectiveState.SUCCESS)) {
 					addTimeout("Mission-10-Hide", 13000);
-					receive("Douglas-Centronom-Governor").visible = false;
 					stage = M10Stages.DONE;
 				}
 			}

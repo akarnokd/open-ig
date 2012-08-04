@@ -82,7 +82,6 @@ public class Mission5 extends Mission {
 		if (checkMission("Mission-5-Timeout-1")) {
 			setObjectiveState("Mission-5", ObjectiveState.FAILURE);
 			setObjectiveState("Mission-5-Task-1", ObjectiveState.FAILURE);
-			receive("Douglas-Thorin").visible = false;
 			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Mistakes", "lose/fired_level_1");
 		}
@@ -120,14 +119,12 @@ public class Mission5 extends Mission {
 			addTimeout("Mission-5-Failed", 13000);
 		}
 		if (checkTimeout("Mission-5-Failed")) {
-			receive("Douglas-Thorin").visible = false;
 			send("Douglas-Thorin-Reinforcements").visible = false;
 			gameover();
 			loseGameMessageAndMovie("Douglas-Fire-Escort-Failed", "lose/fired_level_1");
 		}
 		if (checkTimeout("Mission-5-Success")) {
 			stage = M5.DONE;
-			receive("Douglas-Thorin").visible = false;
 			send("Douglas-Thorin-Reinforcements").visible = false;
 			
 			setObjectiveState("Mission-5-Task-2", ObjectiveState.SUCCESS);
@@ -149,9 +146,6 @@ public class Mission5 extends Mission {
 			world.env.forceMessage("Douglas-Promotion-2", new Action0() {
 				@Override
 				public void invoke() {
-					// TODO Auto-generated method stub
-					receive("Douglas-Promotion-2").visible = false;
-	
 					world.env.playVideo("interlude/level_2_intro", new Action0() {
 						@Override
 						public void invoke() {

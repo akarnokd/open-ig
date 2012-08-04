@@ -237,7 +237,6 @@ public class Mission19 extends Mission {
 				f.task = FleetTask.SCRIPT;
 				
 				setObjectiveState("Mission-19", ObjectiveState.SUCCESS);
-				receive("Douglas-Rebel-Governor").visible = false;
 				addTimeout("Mission-19-Hide", 13000);
 				
 				battle.messageText = label("battlefinish.mission-19.31");
@@ -275,7 +274,6 @@ public class Mission19 extends Mission {
 			removeScripted(f);
 		}
 		setObjectiveState("Mission-19", ObjectiveState.FAILURE);
-		receive("Douglas-Rebel-Governor").visible = false;
 		addTimeout("Mission-19-Failure", 13000);
 	}
 	@Override

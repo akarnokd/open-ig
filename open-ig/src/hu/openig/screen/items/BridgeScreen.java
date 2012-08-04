@@ -1082,7 +1082,7 @@ public class BridgeScreen extends ScreenBase {
 	/** Prepare the receive list. */
 	void prepareReceiveList() {
 		// TODO implement
-		prepareList(world().scripting.getReceiveMessages());
+		prepareList(world().receivedMessages);
 	}
 	/**
 	 * Prepare the video listings.
@@ -1132,7 +1132,7 @@ public class BridgeScreen extends ScreenBase {
 				receive.selected = true;
 				selectedVideoId = messageId;
 				
-				List<VideoMessage> list = world().scripting.getReceiveMessages();
+				List<VideoMessage> list = world().receivedMessages;
 				
 				listOffset = list.indexOf(vm);
 				
@@ -1196,7 +1196,7 @@ public class BridgeScreen extends ScreenBase {
 			});
 			return;
 		} else {
-			List<VideoMessage> vms = world().scripting.getReceiveMessages();
+			List<VideoMessage> vms = world().receivedMessages;
 			for (VideoMessage vm : vms) {
 				if (!vm.seen) {
 					selectedVideoId = vm.id;

@@ -107,24 +107,12 @@ public class Mission12 extends Mission {
 		}
 		if (checkMission("Mission-12-Hide")) {
 			objective("Mission-12").visible = false;
-			receive("New Caroline-Garthog-Virus").visible = false;
-			receive("New Caroline-Garthog-Virus-Again").visible = false;
-			receive("New Caroline-Garthog-Virus-Resolved").visible = false;
-			receive("New Caroline-Garthog-Virus-Again-Deaths").visible = false;
-			receive("New Caroline-Garthog-Virus-Breached").visible = false;
 		}
 		if (checkTimeout("Mission-12-Task-6-Hide")) {
 			objective("Mission-12-Task-6").visible = false;
 		}
 		if (checkMission("Mission-12-TaskSuccess")) {
 			completeActiveTask();
-		}
-		if (stage == M12Stages.FIRST_MESSAGE
-				|| stage == M12Stages.SUBSEQUENT_MESSAGE
-				|| stage == M12Stages.FIRST_RUNDOWN
-				|| stage == M12Stages.SUBSEQUENT_RUNDOWN
-		) {
-			receive("New Caroline-Virus").visible = false;
 		}
 	}
 	@Override
@@ -229,7 +217,6 @@ public class Mission12 extends Mission {
 		}
 		if (cnt == 0) {
 			if (stage == M12Stages.FIRST_RUNDOWN || stage == M12Stages.FIRST_MESSAGE) {
-				receive("New Caroline-Garthog-Virus").visible = false;
 				if (multipleInfections) {
 					incomingMessage("New Caroline-Garthog-Virus-Breached");
 				} else {
@@ -241,7 +228,6 @@ public class Mission12 extends Mission {
 				addMission("Mission-12-Hide", 5);
 			}
 			if (stage == M12Stages.SUBSEQUENT_RUNDOWN || stage == M12Stages.SUBSEQUENT_MESSAGE) {
-				receive("New Caroline-Garthog-Virus-Again").visible = false;
 				if (tradersLost) {
 					incomingMessage("New Caroline-Garthog-Virus-Again-Deaths");
 				} else 
@@ -265,9 +251,6 @@ public class Mission12 extends Mission {
 				}				
 				addMission("Mission-12-Hide", 5);
 			}
-		}
-		if (!planet.id.equals("New Caroline")) {
-			receive(planet.id + "-Virus").visible = false;
 		}
 	}
 	@Override

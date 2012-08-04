@@ -175,7 +175,6 @@ public class Mission11 extends Mission {
 				setObjectiveState("Mission-11", ObjectiveState.SUCCESS);
 				war.battle().messageText = label("battlefinish.mission-5.garthog");
 				addTimeout("Mission-11-Done", 13000);
-				clearMessages();
 				cleanupScriptedFleets();
 				stage = M11Stages.DONE;
 			}
@@ -207,17 +206,9 @@ public class Mission11 extends Mission {
 				removeScripted(garthog);
 			}
 			cleanupScriptedFleets();
-			clearMessages();
 			
 			stage = M11Stages.DONE;
 
-		}
-	}
-	/** Hide receive attack messages. */
-	void clearMessages() {
-		String[] planets = { "Achilles", "Naxos", "San Sterling", "Centronom", "New Caroline" };
-		for (String s : planets) {
-			receive(s + "-Is-Under-Attack").visible = false;
 		}
 	}
 	@Override

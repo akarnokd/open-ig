@@ -162,7 +162,9 @@ public class Mission14 extends Mission {
 	@Override
 	public void onMessageSeen(String id) {
 		if ("Douglas-Virus-Carriers-Destroyed".equals(id)) {
-			addTimeout("Mission-14-Report-Hide", 10000);
+			if (send("Douglas-Virus-Carriers-Destroyed").visible) {
+				addTimeout("Mission-14-Report-Hide", 10000);
+			}
 		}
 	}
 	

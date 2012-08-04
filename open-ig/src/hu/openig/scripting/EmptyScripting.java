@@ -44,11 +44,6 @@ public class EmptyScripting implements GameScripting {
 	}
 
 	@Override
-	public List<VideoMessage> getReceiveMessages() {
-		return U.newArrayList();
-	}
-
-	@Override
 	public List<Objective> currentObjectives() {
 		return Collections.emptyList();
 	}

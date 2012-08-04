@@ -112,16 +112,10 @@ public class Mission21 extends Mission {
 			send("Douglas-Prototype-2-Failed").visible = false;
 		}
 		if (checkTimeout("Mission-21-Hide")) {
-			receive("Douglas-Prototype-2").visible = false;
 			objective("Mission-21").visible = false;
 		}
 		if (checkTimeout("Mission-21-Thanks")) {
 			incomingMessage("Prototype-Thanks");
-			addMission("Mission-21-Thanks-Hide", 24); 
-		}
-		if (checkMission("Mission-21-Thanks-Hide")) {
-			receive("Prototype-Thanks").visible = false;
-			receive("Douglas-Prototype-2").visible = false;
 		}
 	}
 	/**

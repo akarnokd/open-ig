@@ -77,8 +77,6 @@ public class Mission4 extends Mission {
 		if (checkMission("Mission-4-Timeout")) {
 
 			send("Naxos-Not-Under-Attack").visible = true;
-			receive("Naxos-Unknown-Ships").visible = false;
-			
 			setObjectiveState("Mission-4", ObjectiveState.FAILURE);
 			addTimeout("Mission-4-Fire", 13000);
 			
@@ -91,7 +89,6 @@ public class Mission4 extends Mission {
 		}
 		if (checkTimeout("Mission-4-Success")) {
 			send("Naxos-Not-Under-Attack").visible = true;
-			receive("Naxos-Unknown-Ships").visible = false;
 			
 			setObjectiveState("Mission-4", ObjectiveState.SUCCESS);
 			addTimeout("Mission-4-Done", 13000);
