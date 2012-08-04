@@ -13,6 +13,7 @@ import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Pair;
 import hu.openig.core.ResourceType;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Level;
 import hu.openig.model.ResourceLocator.ResourcePlace;
@@ -955,7 +956,7 @@ public class BridgeScreen extends ScreenBase {
 				vm.seen = true;
 				if (!paused || resumeAfterVideo) {
 					resumeAfterVideo = false;
-					commons.simulation.resume();
+					commons.simulation.speed(SimulationSpeed.NORMAL);
 				}
 			}
 		};
