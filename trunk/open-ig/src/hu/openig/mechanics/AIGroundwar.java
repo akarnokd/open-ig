@@ -204,8 +204,13 @@ public class AIGroundwar {
 	private void categorizeObjects() {
 		if (war.planet().owner != p) {
 			for (Building b : war.planet().surface.buildings) {
-				if (p.world.env.config().aiGroundAttackEverything 
-						|| (b.enabled && b.type.kind.equals("Defensive"))) {
+				boolean add = p.world.env.config().aiGroundAttackEverything;
+				
+				add |= b.type.kind.equals("Defensive");
+				add |= b.type.kind.equals("Power") && !b.isSeverlyDamaged();
+				add |= b.type.hasResource("repair") && !b.isSeverlyDamaged();
+				
+				if (add) {
 					targets.add(b);
 				}
 			}

@@ -9,7 +9,6 @@
 package hu.openig.model;
 
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 
 /**
  * A ground war gun.
@@ -18,13 +17,14 @@ import java.awt.image.BufferedImage;
 public class GroundwarGun extends GroundwarObject implements Owned {
 	/**
 	 * Constructor.
-	 * @param matrix the gun matrix
+	 * @param model the turret's model. 
 	 */
-	public GroundwarGun(BufferedImage[][] matrix) {
-		super(matrix);
+	public GroundwarGun(BattleGroundTurret model) {
+		super(model.matrix);
+		this.model = model;
 	}
 	/** The turret model. */
-	public BattleGroundTurret model;
+	public final BattleGroundTurret model;
 	/** The rendering cell position of the gun. */
 	public int rx;
 	/** The rendering cell position of the gun. */
@@ -37,6 +37,10 @@ public class GroundwarGun extends GroundwarObject implements Owned {
 	public GroundwarUnit attack;
 	/** The weapon cooldown counter. */
 	public int cooldown;
+	/** The index within the building's guns. */
+	public int index;
+	/** The total number of guns. */
+	public int count;
 	@Override
 	public Player owner() {
 		return owner;

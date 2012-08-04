@@ -233,7 +233,7 @@ public class Configuration {
 	/** AI should attack every building, not just the defensive ones. */
 	@LoadSave
 //	@LoadSaveGame
-	public boolean aiGroundAttackEverything = true;
+	public boolean aiGroundAttackEverything = false;
 	/** AI should attack a mixed set of targets. */
 	@LoadSave
 //	@LoadSaveGame

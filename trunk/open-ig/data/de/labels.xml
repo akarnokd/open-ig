@@ -347,6 +347,7 @@
   <entry key='allocation.DAMAGE_AWARE'>Entw. uniform</entry>
   <entry key='allocation.DEFAULT'>Uniform</entry>
   <entry key='allocation.ZERO'>Kein</entry>
+	<entry key='allocation.BATTLE'>Kampf</entry>
   <entry key='autobuild.AI'>K.I.-gesteuert</entry>
   <entry key='autobuild.CIVIL'>Zivilgebäude</entry>
   <entry key='autobuild.ECONOMIC'>Handelsgebäude</entry>
