@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Action0;
 import hu.openig.model.Fleet;
 import hu.openig.model.ObjectiveState;
+import hu.openig.model.Planet;
 import hu.openig.utils.XElement;
 
 /**
@@ -91,5 +92,14 @@ public class Mission25 extends Mission {
 	@Override
 	public void reset() {
 		stage = M25.NONE;
+	}
+	@Override
+	public void onPlanetInfected(Planet planet) {
+		if (planet.owner == player) {
+			String msgId = planet.id + "-Virus";
+			if (hasReceive(msgId)) {
+				incomingMessage(msgId, (Action0)null);
+			}
+		}
 	}
 }

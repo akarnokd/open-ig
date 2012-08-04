@@ -460,7 +460,7 @@ public class StatusbarScreen extends ScreenBase {
 	 * @return true if unseen message is available
 	 */
 	boolean hasUnseenMessage() {
-		for (VideoMessage vm : world().scripting.getReceiveMessages()) {
+		for (VideoMessage vm : world().receivedMessages) {
 			if (!vm.seen) {
 				return true;
 			}

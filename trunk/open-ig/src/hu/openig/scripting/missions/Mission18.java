@@ -115,6 +115,15 @@ public class Mission18 extends Mission {
 			});
 		}
 	}
+	@Override
+	public void onPlanetInfected(Planet planet) {
+		if (planet.owner == player) {
+			String msgId = planet.id + "-Virus";
+			if (hasReceive(msgId)) {
+				incomingMessage(msgId, (Action0)null);
+			}
+		}
+	}
 	/** Check if the main ship is still operational. */
 	void checkMainShip() {
 		Fleet ft = findTaggedFleet("CampaignMainShip3", player);

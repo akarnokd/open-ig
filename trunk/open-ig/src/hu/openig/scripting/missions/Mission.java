@@ -517,12 +517,14 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param action the action to invoke
 	 */
 	public void incomingMessage(String messageId, final Action0 action) {
-		VideoMessage msg = helper.receive(messageId);
+		VideoMessage msg = world.bridge.receiveMessages.get(messageId);
 		if (msg == null) {
 			Exceptions.add(new AssertionError("Missing video: " + messageId));
 		} else {
-			msg.visible = true;
-			helper.receive(messageId).seen = false;
+			msg = msg.copy();
+			msg.seen = false;
+			
+			world.receivedMessages.add(0, msg);
 			
 			SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, 
 					SoundType.NEW_MESSAGE_1, 
@@ -653,9 +655,7 @@ public abstract class Mission implements GameScriptingEvents {
 			if (planet.quarantineTTL > 0) {
 				helper.send(p + "-Check").visible = false;
 				helper.send(p + "-Come-Quickly").visible = false;
-				helper.receive(p + "-Virus").visible = true;
 			} else {
-				helper.receive(p + "-Virus").visible = false;
 				anyAttack |= isUnderAttack(planet);
 			}
 		}
@@ -964,18 +964,6 @@ public abstract class Mission implements GameScriptingEvents {
 		helper.clearTimeout(id);
 	}
 	/**
-	 * Returns a receivable message.
-	 * @param id the identifier
-	 * @return the video message
-	 */
-	public VideoMessage receive(String id) {
-		VideoMessage msg = helper.receive(id);
-		if (msg == null) {
-			Exceptions.add(new AssertionError("Missing receive message: " + id));
-		}
-		return msg;
-	}
-	/**
 	 * @return the hours passed since the game base date
 	 */
 	public int now() {
@@ -997,5 +985,13 @@ public abstract class Mission implements GameScriptingEvents {
 	@Override
 	public void onRecordMessage() {
 		
+	}
+	/** 
+	 * Check if the receive message exists.
+	 * @param id the message to test
+	 * @return true if exists
+	 */
+	public boolean hasReceive(String id) {
+		return world.bridge.receiveMessages.containsKey(id);
 	}
 }

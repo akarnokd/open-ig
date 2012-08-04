@@ -105,7 +105,6 @@ public class Mission16 extends Mission {
 			send("Douglas-Reinforcements-Approved").visible = false;
 			send("Douglas-Reinforcements-Denied").visible = true;
 			send("Douglas-Reinforcements-Denied-2").visible = false;
-			receive("Douglas-Money").visible = false;
 		}
 		if (checkTimeout("Mission-16-Fire")) {
 			gameover();

@@ -311,7 +311,6 @@ public class Mission7 extends Mission {
 			removeScripted(g);
 			world.removeFleet(g);
 		}
-		receive("Merchant-Under-Attack-Garthog").visible = false;
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {

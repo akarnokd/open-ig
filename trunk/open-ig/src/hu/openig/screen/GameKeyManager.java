@@ -45,7 +45,7 @@ public class GameKeyManager extends KeyAdapter {
 	 * @return the current world object or null if outside the game
 	 */
 	protected World world() {
-		return world();
+		return commons.world();
 	}
 	/**
 	 * @return Returns the primary screen.

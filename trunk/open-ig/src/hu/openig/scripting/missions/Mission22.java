@@ -8,6 +8,7 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.core.Action0;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
@@ -170,6 +171,15 @@ public class Mission22 extends Mission {
 			if (checkTimeout("MainShip-Lost")) {
 				gameover();
 				loseGameMovie("lose/destroyed_level_3");
+			}
+		}
+	}
+	@Override
+	public void onPlanetInfected(Planet planet) {
+		if (planet.owner == player) {
+			String msgId = planet.id + "-Virus";
+			if (hasReceive(msgId)) {
+				incomingMessage(msgId, (Action0)null);
 			}
 		}
 	}

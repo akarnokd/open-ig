@@ -101,7 +101,6 @@ public class Mission17 extends Mission {
 		if (checkTimeout("Mission-17-Failed")) {
 			stage = M17.DONE;
 			gameover();
-			receive("Douglas-Prototype").visible = false;
 			loseGameMessageAndMovie("Douglas-Fire-Prototype-Lost", "lose/fired_level_2");
 		}
 		if (checkTimeout("Mission-17-Success")) {
@@ -109,7 +108,6 @@ public class Mission17 extends Mission {
 			addTimeout("Mission-17-Done", 13000);
 		}
 		if (checkTimeout("Mission-17-Done")) {
-			receive("Douglas-Prototype").visible = false;
 			objective("Mission-17").visible = false;
 			stage = M17.DONE;
 			incomingMessage("Douglas-Prototype-Success"); // TODO
@@ -123,7 +121,6 @@ public class Mission17 extends Mission {
 				@Override
 				public void invoke() {
 					promote();
-					receive("Douglas-Prototype-Success").visible = false;
 				}
 			});
 		}

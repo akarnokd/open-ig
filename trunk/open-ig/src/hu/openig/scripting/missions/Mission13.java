@@ -87,7 +87,6 @@ public class Mission13 extends Mission {
 		if (checkTimeout("Mission-13-Hide")) {
 			stage = M13.DONE;
 			objective("Mission-13").visible = false;
-			receive("Douglas-Admiral-Benson").visible = false;
 		}
 		if (checkTimeout("Mission-13-Fire")) {
 			gameover();

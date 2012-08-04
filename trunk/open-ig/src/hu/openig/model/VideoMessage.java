@@ -22,4 +22,20 @@ public class VideoMessage {
 	public boolean seen;
 	/** Display in the message list? */
 	public boolean visible;
+	/**
+	 * Create a copy of this message.
+	 * @return the copy
+	 */
+	public VideoMessage copy() {
+		VideoMessage result = new VideoMessage();
+
+		result.id = id;
+		result.media = media;
+		result.title = title;
+		result.description = description;
+		result.seen = seen;
+		result.visible = visible;
+		
+		return result;
+	}
 }

@@ -224,7 +224,6 @@ public final class Startup {
 		if (config.disableOpenGL) {
 			System.setProperty("sun.java2d.opengl", "false");
 		}
-		Exceptions.add(new AssertionError(""));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

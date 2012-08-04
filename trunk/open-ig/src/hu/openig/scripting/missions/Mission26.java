@@ -31,12 +31,6 @@ public class Mission26 extends Mission {
 		if (checkMission("Mission-26-Wife-4")) {
 			incomingMessage("Wife-2");
 		}
-		if (checkTimeout("Mission-26-Wife-Hide")) {
-			receive("Wife-1").visible = false;
-			receive("Wife-2").visible = false;
-			receive("Wife-3").visible = false;
-			receive("Wife-4").visible = false;
-		}
 	}
 	@Override
 	public void onLevelChanged() {
@@ -48,12 +42,6 @@ public class Mission26 extends Mission {
 		}
 		if (world.level == 4) {
 			addMission("Mission-26-Wife-4", 10 * 24);
-		}
-	}
-	@Override
-	public void onMessageSeen(String id) {
-		if (id.startsWith("Wife-")) {
-			addTimeout("Mission-26-Wife-Hide", 30000);
 		}
 	}
 	@Override
