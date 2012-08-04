@@ -62,7 +62,7 @@ public class Mission4 extends Mission {
 		Objective m2t2 = objective("Mission-2-Task-2");
 		Objective m4 = objective("Mission-4");
 		if (!m4.isCompleted() && m2t2.isCompleted() && stage == M4.NONE) {
-			addMission("Mission-4", 4); // FIXME timing
+			addMission("Mission-4", 8); // FIXME timing
 			stage = M4.WAIT;
 		}
 		if (checkMission("Mission-4")) {
