@@ -110,11 +110,11 @@ public class Mission12 extends Mission {
 		if (checkMission("Mission-12-Hide")) {
 			objective("Mission-12").visible = false;
 		}
-		if (checkTimeout("Mission-12-Task-6-Hide")) {
-			objective("Mission-12-Task-6").visible = false;
-		}
 		if (checkMission("Mission-12-TaskSuccess")) {
 			completeActiveTask();
+		}
+		if (checkTimeout("Mission-12-Hide")) {
+			objective("Mission-12").visible = false;
 		}
 	}
 	@Override
@@ -137,7 +137,6 @@ public class Mission12 extends Mission {
 			addMission("Mission-14", 8);
 			objective("Mission-12-Task-6").visible = true;
 			setObjectiveState("Mission-12-Task-6", ObjectiveState.SUCCESS);
-			addTimeout("Mission-12-Task-6-Hide", 13000);
 		}
 		if ("Douglas-Reinforcements-Approved".equals(id)) {
 			if (!reinforcements 
@@ -179,6 +178,7 @@ public class Mission12 extends Mission {
 	 * Complete the active task.
 	 */
 	void completeActiveTask() {
+		boolean noCarriers = objective("Mission-14").state == ObjectiveState.SUCCESS;
 		for (int i = turns; i >= 1; i--) {
 			Objective o = objective("Mission-12-Task-" + i);
 			if (o.visible && o.state == ObjectiveState.ACTIVE) {
@@ -189,11 +189,15 @@ public class Mission12 extends Mission {
 				if (i >= 2) {
 					send("Douglas-Report-Viruses").visible = true;
 				}
-				if (i >= turns) {
+				if (i >= turns && !noCarriers) {
 					showObjective("Mission-12-Task-6");
 				}
 				break;
 			}
+		}
+		if (noCarriers) {
+			setObjectiveState("Mission-12", ObjectiveState.SUCCESS);
+			addTimeout("Mission-12-Hide", 13000);
 		}
 	}
 	@Override
@@ -238,10 +242,11 @@ public class Mission12 extends Mission {
 				} else {
 					incomingMessage("New Caroline-Garthog-Virus-Resolved");
 				}
+				boolean noCarriers = objective("Mission-14").state == ObjectiveState.SUCCESS;
 				for (int i = turns; i >= 2; i--) {
 					Objective o = objective("Mission-12-Task-" + i);
 					if (o.visible && o.state == ObjectiveState.ACTIVE) {
-						if (i < turns) {
+						if (i < turns && !noCarriers) {
 							addMission("Mission-12-Subsequent", 24);
 							stage = M12Stages.SUBSEQUENT_DELAY;
 						} else {
@@ -251,7 +256,6 @@ public class Mission12 extends Mission {
 						break;
 					}
 				}				
-				addMission("Mission-12-Hide", 5);
 			}
 		}
 	}

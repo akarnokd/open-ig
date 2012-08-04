@@ -59,7 +59,6 @@ public class Mission14 extends Mission {
 		}
 		if (checkTimeout("Mission-14-Hide")) {
 			objective("Mission-14").visible = false;
-			objective("Mission-12").visible = false;
 		}
 		if (checkTimeout("Mission-14-Report-Hide")) {
 			send("Douglas-Virus-Carriers-Destroyed").visible = false;
@@ -71,8 +70,6 @@ public class Mission14 extends Mission {
 		if (checkTimeout("Mission-14-Success")) {
 			setObjectiveState("Mission-14", ObjectiveState.SUCCESS);
 			addTimeout("Mission-14-Hide", 13000);
-			objective("Mission-12").visible = true;
-			setObjectiveState("Mission-12", ObjectiveState.SUCCESS);
 		}
 	}
 	@Override
@@ -122,10 +119,6 @@ public class Mission14 extends Mission {
 		send("Douglas-Report-Viruses").visible = false;
 		
 		showObjective("Mission-14");
-		
-		if (hasMission("Mission-12-Subsequent")) {
-			clearMission("Mission-12-Subsequent");
-		}
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
