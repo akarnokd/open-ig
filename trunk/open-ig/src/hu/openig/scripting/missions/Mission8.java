@@ -15,7 +15,7 @@ import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 
 /**
- * Mission 6: Defend Achilles.
+ * Mission 8: Test and visions.
  * @author akarnokd, 2012.01.18.
  */
 public class Mission8 extends Mission {
@@ -65,7 +65,7 @@ public class Mission8 extends Mission {
 			world.env.playVideo("interlude/dream_1", new Action0() {
 				@Override
 				public void invoke() {
-					addMission("Mission-8-Visions-2", 5 * 24);
+//					addMission("Mission-8-Visions-2", 5 * 24);
 					world.env.playMusic();
 				}
 			});

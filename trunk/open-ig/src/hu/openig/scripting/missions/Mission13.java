@@ -57,6 +57,7 @@ public class Mission13 extends Mission {
 				&& stage == M13.NONE) {
 			stage = M13.WAIT;
 			addMission("Mission-13", 4 * 24);
+			addMission("Mission-8-Visions-2", 2 * 24);
 		}
 		if (checkMission("Mission-13")) {
 			stage = M13.INTRO;

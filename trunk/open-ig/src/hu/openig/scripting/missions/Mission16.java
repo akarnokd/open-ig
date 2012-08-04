@@ -68,9 +68,9 @@ public class Mission16 extends Mission {
 	protected static final String ENEMY = "Mission-16-Garthog";
 	@Override
 	public void onTime() {
-		Objective m13 = objective("Mission-13");
+		Objective m15 = objective("Mission-15");
 		final Objective m16 = objective("Mission-16");
-		if (m13.state == ObjectiveState.SUCCESS
+		if (m15.state != ObjectiveState.ACTIVE
 				&& stage == M16.NONE) {
 			stage = M16.WAIT;
 			addMission("Mission-16", 4 * 24);
