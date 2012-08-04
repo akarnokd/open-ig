@@ -262,8 +262,7 @@ public class Mission16 extends Mission {
 	/** Create the garthog attack. */
 	void garthogAttack() {
 		createGarthog();
-		world.env.playSound(SoundTarget.COMPUTER, SoundType.CARRIER_UNDER_ATTACK, null);
-		
+
 		world.env.speed1();
 		
 		addMission("Mission-16-Timeout", 12);
@@ -273,6 +272,8 @@ public class Mission16 extends Mission {
 		if (ff != null) {
 			Fleet garthog = findTaggedFleet(ENEMY, garthog());
 			ff.attack(garthog);
+		} else {
+			world.env.playSound(SoundTarget.COMPUTER, SoundType.CARRIER_UNDER_ATTACK, null);
 		}
 
 	}
