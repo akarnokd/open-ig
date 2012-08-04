@@ -24,4 +24,8 @@ public enum ResourceAllocationStrategy {
 	 * the rest of the buildings.
 	 */
 	DAMAGE_AWARE,
+	/**
+	 * Battle strategy, transfer energy to defenses.
+	 */
+	BATTLE
 }

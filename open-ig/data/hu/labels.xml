@@ -538,6 +538,7 @@
 	<entry key='allocation.ZERO'>Nincs</entry>
 	<entry key='allocation.DEFAULT'>Egyenletes</entry>
 	<entry key='allocation.DAMAGE_AWARE'>Fejlettebb egyenletes</entry>
+	<entry key='allocation.BATTLE'>Harci</entry>
 	
 	<entry key='buildings.upgrade.default.description'>Alapértelmezett szint vissza- állítása (ahogy az építés után volt).</entry>
 		

@@ -22,7 +22,7 @@ public final class BuildingAllocationWorker {
 	/** Does this building produce energy instead of taking it? */
 	public boolean producesEnergy;
 	/** The upper bound for efficiency: the health ratio. */
-	public float efficiencyBound;
+	public double efficiencyBound;
 	/** The energy allocated for this building. */
 	public int energyAllocated;
 	/** The worker allocated for this building. */
@@ -49,10 +49,10 @@ public final class BuildingAllocationWorker {
 	/**
 	 * @return the efficiency level for the current allocation settings
 	 */
-	public float getEfficiency() {
+	public double getEfficiency() {
 		if (producesEnergy) {
-			return Math.min(efficiencyBound, workerAllocated / (float)workerDemand);
+			return Math.min(efficiencyBound, workerAllocated / (double)workerDemand);
 		}
-		return Math.min(efficiencyBound, Math.min(workerAllocated / (float)workerDemand, energyAllocated / (float)energyDemand));
+		return Math.min(efficiencyBound, Math.min(workerAllocated / (double)workerDemand, energyAllocated / (double)energyDemand));
 	}
 }

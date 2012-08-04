@@ -42,6 +42,7 @@ import hu.openig.model.PlanetSurface;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
+import hu.openig.model.ResourceAllocationStrategy;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionBoxMode;
 import hu.openig.model.SoundType;
@@ -381,6 +382,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (battle == null) {
 					doAddGuns();
 					doAddUnits();
+					planet().allocation = ResourceAllocationStrategy.BATTLE;
 					rep = true;
 				}
 			} else {
@@ -2491,15 +2493,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	/** Action for the Active button. */
 	void doActive() {
-		doAllocation();
 		currentBuilding.enabled = false;
 		doSelectBuilding(currentBuilding);
+		doAllocation();
 	}
 	/** Action for the Offline button. */
 	void doOffline() {
-		doAllocation();
 		currentBuilding.enabled = true;
 		doSelectBuilding(currentBuilding);
+		doAllocation();
 	}
 	/** Toggle the repair state. */
 	void doToggleRepair() {
@@ -2510,7 +2512,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	/** Perform the resource allocation now! */
 	void doAllocation() {
-		Allocator.computeNow(planet());
+		if (battle != null || !units.isEmpty()) {
+			Allocator.computeNow(planet(), ResourceAllocationStrategy.BATTLE);
+		} else {
+			Allocator.computeNow(planet());
+		}
 	}
 	/**
 	 * The information panel showing some details.
@@ -3483,22 +3489,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		for (Building b : planet().surface.buildings) {
 			if (b.type.kind.equals("Defensive") && b.isComplete()) {
 				List<BattleGroundTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
-				int i = 0;
-				for (BattleGroundTurret bt : turrets) {
-					// half damaged building receive half turrets
-					if (b.hitpoints * 2 < b.type.hitpoints && i * 2 == turrets.size()) {
-						break;
-					}
-					
-					GroundwarGun g = new GroundwarGun(bt.matrix);
+				int n = b.hitpoints * 2 < b.type.hitpoints ? turrets.size() / 2 : turrets.size();
+				for (int j = 0; j < turrets.size(); j++) {
+					BattleGroundTurret bt = turrets.get(j);
+					GroundwarGun g = new GroundwarGun(bt);
 					g.rx = b.location.x + bt.rx;
 					g.ry = b.location.y + bt.ry;
-					g.model = bt;
 					g.building = b;
 					g.owner = planet().owner;
-					
+					g.index = j;
+					g.count = n;
 					guns.add(g);
-					i++;
 				}
 			}
 		}
@@ -4251,7 +4252,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		int attackerCount = 0;
 		int defenderCount = 0;
 		for (GroundwarGun g : guns) {
-			if (g.building.enabled) {
+			if (g.building.enabled && !g.building.isEnergyShortage()) {
 				defenderCount++;
 			}
 		}
@@ -4332,6 +4333,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			effectSound(SoundType.EXPLOSION_LONG);
 			destroyBuilding(b);
 		}
+		if (!"Defensive".equals(b.type.kind)) {
+			doAllocation();
+		}
 	}
 	/**
 	 * Destroy the given building and apply statistics.
@@ -4348,6 +4352,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			battle.attacker.owner.statistics.buildingsDestroyed++;
 			battle.attacker.owner.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
 		}
+		doAllocation();
 	}
 	/**
 	 * Update the properties of the target unit.
@@ -4659,6 +4664,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void updateGun(GroundwarGun g) {
 		if (!g.building.enabled) {
+			return;
+		}
+		// underpowered guns will not fire
+		double powerRate = -1d * g.building.assignedEnergy / g.building.getEnergy();
+		double indexRate = 1d * g.index / g.count;
+		if (indexRate > powerRate) {
+			g.phase = 0;
 			return;
 		}
 		
