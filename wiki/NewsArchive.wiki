@@ -4,6 +4,21 @@
 
 = Recent =
 
+== August, 2012 ==
+
+*August 8, 2012*
+
+Sorry for the inactivity period. I was submerged into my professional job activities lately, but I have 2 weeks of free time coming up soon. The major things I planned:
+
+  * Finish the quick production panel
+  * Add weapon vs target type logic to space battle to overcome the HP and DPS issues, e.g., planetary gun is only 5% effective against fighters.
+  * Start the campaign editor with a few important panels: battle settings, technology settings, labels & translation. These will help testers in balancing the space and ground battles more easily (e.g., without me to release a new data file every 5 minutes).
+
+The upcoming *Multiplayer feature* is still in thinking phase. Primarily, I'm aiming for a 2 player competitive mode without additional AI players (nor Traders). More than 2 players or co-op against AI players seems to be technically too difficult for me now. 
+
+Any hints and tips about how to implement multiplayer network communication would be greatly appreciated.
+
+
 == June, 2012 ==
 
 *June 3, 2012*
