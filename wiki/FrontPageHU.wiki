@@ -1,21 +1,19 @@
 #summary A főlap magyarul
 
-= Current version: [https://code.google.com/p/open-ig/wiki/Game_Notes BETA (0.95.031)]  =
+= Bevezetés =
+Az *Open Imperium Galactica* (röviden Open-IG) egy nyílt forrású [http://www.oracle.com/technetwork/java/javase/downloads/index.html Java]^TM^ nyelvű újrafejlesztése a [http://www.digitalreality.hu Digital Reality]  [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica] című, 1996-ban debütált, népszerű, valós idejű és magyar fejlesztésű űrstratégiának. 
 
-= Introduction =
-*Open Imperium Galactica* (Open-IG) is an open source [http://www.oracle.com/technetwork/java/javase/downloads/index.html Java]^TM^ reimplementation of the [http://www.digitalreality.hu Digital Reality] game [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica], a popular real time space strategy game developed around 1996 in Hungary. 
+Az Open-IG megpróbálja visszaadni az eredeti játékélményt, miközben számtalan hibát, inkonzisztenciát javít, valamint új képességekkel bővíti azt. Azonban nem célja a teljes, viselkedésben és kinézetben tökéletes másolat létrehozása.
 
-Open-IG attempts to reproduce the feel of the original game while fixing many bugs, inconsistencies and extending it with new features, however, it does not aim for producing an exact, behavior perfect and pixel perfect replica. 
+A projektben a futtatáshoz szükséges minden fájl megtalálható, nincs szükség az eredeti játék fájljaira.
 
-The project contains all necessary files to run the Open Imperium Galactica standalone: there is no need for the original game's files.
+*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Az Indító letöltése. Rajta keresztül települ és indul el a játék</a>* (verzió: 0.34)
 
-*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Download the Launcher to install and run the game.</a>* (version 0.34)
+Minden *Java 7*-et támogató platformon futnia kell: pl., Windows, Linux és Mac rendszereken. (Java 6-tal is működik, de nem javasolt.) Ha másképp nem jelezzük, az Indítót elegendő egyszer letölteni. Onnantól kezdve az felel majd a saját és a játék frissen tartásáért.
 
-It should run on any platform supporting *Java 7*: e.g., Windows, Linux and Mac. (Java 6 works but not recommended.) You need to download the Launcher only once (unless noted otherwise). From then on, the Launcher will update the game or itself.
+Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg szeretnéd megosztani az ötleteidet vagy javaslataidat, kérlek vegyél fel egy új bejegyzést az [https://code.google.com/p/open-ig/issues/list Issue]-listába. A bejelentésedet megteheted *angolul*, *magyarul*, esetleg németül is.
 
-If you run into problems, crashes, translation errors, or simply want to share some of your ideas and suggestions, please create an [https://code.google.com/p/open-ig/issues/list Issue]. You may use *english*, *hungarian* or german language in your reports.
-
-= News =
+= Hírek =
 
 *August 8, 2012*
 
