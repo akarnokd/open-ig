@@ -46,6 +46,7 @@ import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
 import hu.openig.sound.Sounds;
 import hu.openig.utils.Exceptions;
+import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 
 import java.awt.event.ActionEvent;
@@ -58,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -564,8 +566,9 @@ public class CommonResources implements GameEnvironment {
 	 * Invoke the AI for the player if not already running.
 	 * @param p the player
 	 * @param wip the work in progress port
+	 * @return AI was executed?
 	 */
-	void invokeAI(final Player p, final WipPort wip) {
+	boolean prepareAI(final Player p, final WipPort wip) {
 
 		Future<?> sw = runningAI.get(p);
 		// if not present or finished, start a new
@@ -574,18 +577,33 @@ public class CommonResources implements GameEnvironment {
 			Runnable run = new Runnable() {
 				@Override
 				public void run() {
-					runAI(p, wip);
+					prepareAIAsync(p, wip);
 				}
 			};
 			runningAI.put(p, pool.submit(run));
+			return true;
 		}
+		return false;
 	}
 	/**
-	 * Run the AI body function.
+	 * Invoke the actual AI management code.
 	 * @param p the player
-	 * @param wip the wip
 	 */
-	void runAI(final Player p, final WipPort wip) {
+	void invokeAI(final Player p) {
+		Runnable run = new Runnable() {
+			@Override
+			public void run() {
+				runAIAsync(p);
+			}
+		};
+		runningAI.put(p, pool.submit(run));
+	}
+	/**
+	 * Prepare the AI state in parallel.
+	 * @param p the player
+	 * @param wip the completion port
+	 */
+	void prepareAIAsync(final Player p, final WipPort wip) {
 		try {
 			try {
 				// parallel convert world state
@@ -594,26 +612,43 @@ public class CommonResources implements GameEnvironment {
 				// wait for all to read world state
 				wip.dec();
 			}
-			// act on the world state
-			p.ai.manage();
-			// issue commands
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						if (!battleMode) {
-							p.ai.apply();
-						}
-					} catch (Throwable t) {
-						Exceptions.add(t);
-					} finally {
-						runningAI.remove(p);
-					}
-				}
-			});
 		} catch (Throwable t) {
 			Exceptions.add(t);
 		}
+	}
+	/**
+	 * Run the AI body function.
+	 * @param p the player
+	 */
+	void runAIAsync(final Player p) {
+		try {
+			// act on the world state
+			p.ai.manage();
+			// issue commands
+			copleteAIAsync(p);
+		} catch (Throwable t) {
+			Exceptions.add(t);
+		}
+	}
+	/**
+	 * Complete the AI activities on the EDT.
+	 * @param p the player
+	 */
+	void copleteAIAsync(final Player p) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					if (!battleMode) {
+						p.ai.apply();
+					}
+				} catch (Throwable t) {
+					Exceptions.add(t);
+				} finally {
+					runningAI.remove(p);
+				}
+			}
+		});
 	}
 	/**
 	 * Execute a step of simulation.
@@ -628,9 +663,13 @@ public class CommonResources implements GameEnvironment {
 			}
 			// run AI routines in background
 			final WipPort wip = new WipPort(1);
+			
+			List<Player> ais = U.newArrayList();
 			for (final Player p : world.players.values()) {
 				if (p.ai != null) {
-					invokeAI(p, wip);
+					if (prepareAI(p, wip)) {
+						ais.add(p);
+					}
 				}
 			}
 			wip.dec();
@@ -638,6 +677,9 @@ public class CommonResources implements GameEnvironment {
 				wip.await();
 			} catch (InterruptedException ex) {
 				// ignored
+			}
+			for (final Player p : ais) {
+				invokeAI(p);
 			}
 			repaint = true;
 		}
