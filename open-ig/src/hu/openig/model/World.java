@@ -1004,6 +1004,8 @@ public class World {
 			xp.set("running", p.runningResearch() != null ? p.runningResearch().id : null);
 			xp.set("mode", p.selectionMode);
 			xp.set("ai", p.aiMode);
+			xp.set("pause-research", p.pauseResearch);
+			xp.set("pause-production", p.pauseProduction);
 			
 			if (p.explorationInnerLimit != null) {
 				Rectangle r = p.explorationInnerLimit;
@@ -1378,6 +1380,9 @@ public class World {
 			p.today.repairCost = xtoday.getInt("repair");
 			p.today.researchCost = xtoday.getInt("research");
 			p.today.productionCost = xtoday.getInt("production");
+			
+			p.pauseProduction = xplayer.getBoolean("pause-production", false);
+			p.pauseResearch = xplayer.getBoolean("pause-research", false);
 
 			String xpInnerLimit = xplayer.get("exploration-inner-limit", "");
 			if (!xpInnerLimit.isEmpty()) {

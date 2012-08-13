@@ -2969,6 +2969,9 @@
 	<entry key="achievements.counts">Status: %d von %d (%.1f%%)</entry>
 	<entry key="achievements.show_earned">Erreicht</entry>
 	<entry key="achievements.show_unearned">Nicht erreicht</entry>
+	<entry key='quickproduction.ship_title'>Schiffsproduction</entry>
+	<entry key='quickproduction.weapon_title'>Waffenproduction</entry>
+	<entry key='quickproduction.equipment_title'>Ausrüstungsproduction</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

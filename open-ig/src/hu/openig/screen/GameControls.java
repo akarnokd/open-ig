@@ -208,6 +208,8 @@ public interface GameControls {
 	boolean isObjectivesVisible();
 	/** Toggle the visibility of the quick research panel. */
 	void toggleQuickResearch();
+	/** Toggle the visibility of the quick production panel. */
+	void toggleQuickProduction();
 	/** @return is the fixed frame rate enabled? */
 	boolean isFixedFrameRate();
 	/**

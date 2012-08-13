@@ -88,9 +88,13 @@ public final class Simulator {
 				player.today.clear();
 			}
 			// result |= player == world.player
-			progressResearch(world, player, all);
+			if (!player.pauseResearch) {
+				progressResearch(world, player, all);
+			}
 			// result |= player == world.player
-			progressProduction(world, player, all);
+			if (!player.pauseProduction) {
+				progressProduction(world, player, all);
+			}
 
 			
 			if (!player.id.equals("Traders")) {

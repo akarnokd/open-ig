@@ -116,7 +116,11 @@ public class Player {
 	/** The negotiation offers from players. */
 	public final Map<String, DiplomaticOffer> offers = U.newLinkedHashMap();
 	/** The factor for police-to-morale conversion. */
-	public double policeRatio; 
+	public double policeRatio;
+	/** Pause the production without changing the production line settings. */
+	public boolean pauseProduction;
+	/** Pause the research without changing the current research settings. */
+	public boolean pauseResearch;
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

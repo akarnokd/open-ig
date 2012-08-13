@@ -40,6 +40,8 @@ public class QuickPanelButton extends UIComponent {
 	int textMaxWidth;
 	/** Is the text visible? */
 	public boolean textVisible;
+	/** The text color. */
+	public int textColor = TextRenderer.YELLOW;
 	/**
 	 * Initialize the button.
 	 * @param commons the common resources
@@ -59,7 +61,7 @@ public class QuickPanelButton extends UIComponent {
 		if (textVisible) {
 			int w = commons.text().getTextWidth(10, text);
 			int x0 = menuIconWidth + (textMaxWidth - w) / 2;
-			commons.text().paintTo(g2, x0, 0 + 4, 10, TextRenderer.YELLOW, text);
+			commons.text().paintTo(g2, x0, 0 + 4, 10, textColor, text);
 		}
 		
 		g2.drawImage(commons.statusbar().iconBack, 0, 0, null);

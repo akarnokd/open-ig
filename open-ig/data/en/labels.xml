@@ -2853,6 +2853,9 @@
 	<entry key="achievements.counts">Status: %d of %d (%.1f%%)</entry>
 	<entry key="achievements.show_earned">Earned</entry>
 	<entry key="achievements.show_unearned">Unearned</entry>
+	<entry key='quickproduction.ship_title'>Spaceship production</entry>
+	<entry key='quickproduction.weapon_title'>Weapon production</entry>
+	<entry key='quickproduction.equipment_title'>Equipment production</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

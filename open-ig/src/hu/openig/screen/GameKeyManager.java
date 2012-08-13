@@ -578,10 +578,16 @@ public class GameKeyManager extends KeyAdapter {
 					control().setFixedFrameRate(!control().isFixedFrameRate());
 					e.consume();
 					repaintInner();
+				} else {
+					control().toggleQuickResearch();
+					e.consume();
+					control().moveMouse();
+					repaintInner();
+					break;
 				}
 				break;
-			case KeyEvent.VK_R:
-				control().toggleQuickResearch();
+			case KeyEvent.VK_C:
+				control().toggleQuickProduction();
 				e.consume();
 				control().moveMouse();
 				repaintInner();

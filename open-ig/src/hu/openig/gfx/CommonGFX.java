@@ -52,6 +52,9 @@ public class CommonGFX {
 	/** Move right arrow. */
 	@Btn2(name = "button_right")
 	public BufferedImage[] moveRight;
+	/** Pause all research or production. */
+	@Btn2(name = "button_pause_all")
+	public BufferedImage[] pauseAll;
 	/** Energy icon. */
 	@Img(name = "energy-icon")
 	public BufferedImage energyIcon;

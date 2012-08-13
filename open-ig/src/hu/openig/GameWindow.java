@@ -2124,7 +2124,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	void damagedInstall() {
 		try {
-			Startup.runLauncher();
+			Startup.runLauncher(config);
 		} finally {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -2163,6 +2163,10 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void toggleQuickResearch() {
 		allScreens.statusbar.toggleQuickResearch();		
+	}
+	@Override
+	public void toggleQuickProduction() {
+		allScreens.statusbar.toggleQuickProduction();		
 	}
 	@Override
 	public boolean isFixedFrameRate() {
