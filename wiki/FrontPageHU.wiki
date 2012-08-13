@@ -1,0 +1,104 @@
+#summary A főlap magyarul
+
+= Current version: [https://code.google.com/p/open-ig/wiki/Game_Notes BETA (0.95.031)]  =
+
+= Introduction =
+*Open Imperium Galactica* (Open-IG) is an open source [http://www.oracle.com/technetwork/java/javase/downloads/index.html Java]^TM^ reimplementation of the [http://www.digitalreality.hu Digital Reality] game [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica], a popular real time space strategy game developed around 1996 in Hungary. 
+
+Open-IG attempts to reproduce the feel of the original game while fixing many bugs, inconsistencies and extending it with new features, however, it does not aim for producing an exact, behavior perfect and pixel perfect replica. 
+
+The project contains all necessary files to run the Open Imperium Galactica standalone: there is no need for the original game's files.
+
+*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Download the Launcher to install and run the game.</a>* (version 0.34)
+
+It should run on any platform supporting *Java 7*: e.g., Windows, Linux and Mac. (Java 6 works but not recommended.) You need to download the Launcher only once (unless noted otherwise). From then on, the Launcher will update the game or itself.
+
+If you run into problems, crashes, translation errors, or simply want to share some of your ideas and suggestions, please create an [https://code.google.com/p/open-ig/issues/list Issue]. You may use *english*, *hungarian* or german language in your reports.
+
+= News =
+
+*August 8, 2012*
+
+Sorry for the inactivity period. I was submerged into my professional job activities lately, but I have 2 weeks of free time coming up soon. The major things I planned:
+
+  * Finish the quick production panel
+  * Add weapon vs target type logic to space battle to overcome the HP and DPS issues, e.g., planetary gun is only 5% effective against fighters.
+  * Start the campaign editor with a few important panels: battle settings, technology settings, labels & translation. These will help testers in balancing the space and ground battles more easily (e.g., without me to release a new data file every 5 minutes).
+
+The upcoming *Multiplayer feature* is still in thinking phase. Primarily, I'm aiming for a 2 player competitive mode without additional AI players (nor Traders). More than 2 players or co-op against AI players seems to be technically too difficult for me now. 
+
+Any hints and tips about how to implement multiplayer network communication would be greatly appreciated.
+
+*June 9, 2012*
+
+After 3.5 years I'm happy to announce the *Open Imperium Galactica Beta* release. Enjoy.
+
+[https://code.google.com/p/open-ig/wiki/NewsArchive News archive]
+
+= Videos =
+
+<wiki:video url="http://www.youtube.com/watch?v=FnlIEwW2OkM"/>
+<wiki:video url="http://www.youtube.com/watch?v=qHBUdUqqI-k"/>
+<wiki:video url="http://www.youtube.com/watch?v=lImUf9gHWAs"/>
+
+= Progress =
+
+<table border='1'>
+<tr>
+<td colspan='5' align='center'>Level 1</td>
+<td colspan='12' align='center'>Level 2</td>
+<td colspan='4' align='center'>Level 3</td>
+<td colspan='3' align='center'>Level 4</td>
+<td>L5</td></tr>
+<tr>
+<td title='Mission 1'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 2'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 3'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 4'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 5'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+
+<td title='Mission 6'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 7'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 8'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 9'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 10'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 11'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 12'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 13'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 14'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 15'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 16'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 17'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+
+<td title='Mission 18'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 19'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 20'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 21'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+
+<td title='Mission 22'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 23'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 24'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+
+<td title='Mission 25'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+</tr>
+</table>
+
+|| Languages: || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png English || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png Hungarian || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png German || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif French || Spanish ? || Italian ? ||
+
+= Acknowledgements =
+
+Thanks goes to *Silvern Tiger* for testing and translation.
+
+Big thanks goes to *Norbert "Silver83" Pellny*, who took the enormous job and [https://code.google.com/p/open-ig/issues/detail?id=367 cleaned the game background images], helped with the german version and tested the game tirelessly.
+
+I'd like to thank *Torma "Joe" József* for his intensive testing and help with the sound, graphics, AI, concepts and many more things.
+
+I'd like to thank *TCH* from [http://dosgames.abkant3000.hu/community/index.php DOSGames] forum for helping me discover the animation file format. He gave the idea to check for two compression steps instead of only one. 
+
+I'd like to thank my colleague *Galaxy* for creating the new Open-IG splash screen and helping me with the data model behind Open-IG.
+
+I'd like to thank *Harrach Gergely* for the Credits data, ship firepowers, subtitles and other stuff.
+
+I'd like to thank *Góz Tamás* from magyarszinkron.hu for identifying some of the voice actors.
+
+http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/OpenIG_Splash_medium.png
