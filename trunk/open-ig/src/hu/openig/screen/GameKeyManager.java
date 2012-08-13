@@ -22,6 +22,8 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
+import hu.openig.screen.api.ResearchProductionAnimation;
+import hu.openig.screen.api.SettingsPage;
 import hu.openig.utils.Exceptions;
 
 import java.awt.event.KeyAdapter;

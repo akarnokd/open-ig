@@ -15,6 +15,7 @@ import hu.openig.model.AIManager;
 import hu.openig.model.Player;
 import hu.openig.model.Screens;
 import hu.openig.model.World;
+import hu.openig.screen.api.SettingsPage;
 import hu.openig.ui.UIComponent;
 
 import java.awt.FontMetrics;

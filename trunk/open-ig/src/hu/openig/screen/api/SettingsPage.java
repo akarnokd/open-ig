@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.screen;
+package hu.openig.screen.api;
 /** Which settings page to display. */
 public enum SettingsPage {
 	/** Load/save. */

@@ -5,7 +5,7 @@
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
-package hu.openig.screen;
+package hu.openig.screen.panels;
 
 import hu.openig.render.RenderTools;
 

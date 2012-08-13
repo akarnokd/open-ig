@@ -20,7 +20,7 @@ import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
-import hu.openig.screen.SettingsPage;
+import hu.openig.screen.api.SettingsPage;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
 import hu.openig.ui.UIComponent;
