@@ -1064,4 +1064,53 @@ public class CommonResources implements GameEnvironment {
 	public String version() {
 		return Configuration.VERSION;
 	}
+	/**
+	 * Play a given sound for buttons if the effect is enabled in options.
+	 * @param type the sound type
+	 */
+	public void buttonSound(SoundType type) {
+		playSound(SoundTarget.BUTTON, type, null);
+	}
+	/**
+	 * Play a given sound if the computer notification voice is enabled.
+	 * @param type the sound type
+	 */
+	public void computerSound(SoundType type) {
+		playSound(SoundTarget.COMPUTER, type, null);
+	}
+	/**
+	 * Play sound effects (space and ground wars).
+	 * @param type the osund type
+	 */
+	public void effectSound(SoundType type) {
+		playSound(SoundTarget.EFFECT, type, null);
+	}
+	/**
+	 * Play a screen-switching related sound.
+	 * @param type the sound type
+	 */
+	public void screenSound(SoundType type) {
+		playSound(SoundTarget.SCREEN, type, null);
+	}
+	/**
+	 * Retrieve a label translation.
+	 * @param label the label
+	 * @return the translation
+	 */
+	public String get(String label) {
+		return labels().get(label);
+	}
+	/**
+	 * Format a label with parameters.
+	 * @param label the label
+	 * @param params the parameters
+	 * @return the translation
+	 */
+	public String format(String label, Object... params) {
+		return labels().format(label, params);
+	}
+	/** @return the main player */
+	public Player player() {
+		return world().player;
+	}
 }

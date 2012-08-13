@@ -16,7 +16,7 @@ import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
-import hu.openig.screen.SettingsPage;
+import hu.openig.screen.api.SettingsPage;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;

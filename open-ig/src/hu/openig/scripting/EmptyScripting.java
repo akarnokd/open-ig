@@ -29,6 +29,8 @@ import hu.openig.utils.XElement;
 import java.util.Collections;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 /**
  * An empty placeholder scripting for skirmish games.
  * @author akarnokd, 2012.01.12.
@@ -311,6 +313,7 @@ public class EmptyScripting implements GameScripting {
 	}
 	@Override
 	public void debug() {
+		JOptionPane.showMessageDialog(null, "No scripting debug available: " + getClass());
 	}
 	@Override
 	public boolean mayPlayerAttack(Player player) {

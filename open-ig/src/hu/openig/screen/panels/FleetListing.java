@@ -6,12 +6,13 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.screen;
+package hu.openig.screen.panels;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.model.Fleet;
 import hu.openig.render.TextRenderer;
+import hu.openig.screen.CommonResources;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;

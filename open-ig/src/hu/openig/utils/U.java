@@ -538,4 +538,16 @@ public final class U {
 		}
 		return b.toString();
 	}
+	/**
+	 * Returns the maximum.
+	 * @param is the array ints
+	 * @return the maximum
+	 */
+	public static int max(int... is) {
+		int r = is[0];
+		for (int i = 1; i < is.length; i++) {
+			r = Math.max(r, is[i]);
+		}
+		return r;
+	}
 }

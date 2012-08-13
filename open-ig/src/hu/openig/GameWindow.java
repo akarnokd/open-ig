@@ -40,7 +40,7 @@ import hu.openig.screen.CommonResources;
 import hu.openig.screen.GameControls;
 import hu.openig.screen.GameKeyManager;
 import hu.openig.screen.ScreenBase;
-import hu.openig.screen.SettingsPage;
+import hu.openig.screen.api.SettingsPage;
 import hu.openig.screen.items.AchievementsScreen;
 import hu.openig.screen.items.BarScreen;
 import hu.openig.screen.items.BattlefinishScreen;

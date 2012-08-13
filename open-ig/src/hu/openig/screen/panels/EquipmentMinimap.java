@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.screen;
+package hu.openig.screen.panels;
 
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -16,6 +16,7 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
+import hu.openig.screen.CommonResources;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
