@@ -15,39 +15,39 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
-*August 8, 2012*
+*2012 augusztus 8*
 
-Sorry for the inactivity period. I was submerged into my professional job activities lately, but I have 2 weeks of free time coming up soon. The major things I planned:
+Elnézést kérek az elmúlt időszakban tapasztalt tétlenségemért. Túlságosan belemerültem a hivatalos munkáimban, de hamarosan lesz 2 hét szabad időm. A következőket tervezem:
 
-  * Finish the quick production panel
-  * Add weapon vs target type logic to space battle to overcome the HP and DPS issues, e.g., planetary gun is only 5% effective against fighters.
-  * Start the campaign editor with a few important panels: battle settings, technology settings, labels & translation. These will help testers in balancing the space and ground battles more easily (e.g., without me to release a new data file every 5 minutes).
+  * A gyors-gyártás panel befejezése
+  * Fegyver hatékonyság a célpont típusa szerint állítható lesz, elkerülendő a jelenlegi sérülés-per-másodperc és az életerő arányokból fakadó problémákat. Például az űrvédelmi ágyúk 5%-os hatékonysággal dolgoznak a vadászok ellen.
+  * Elkezdem a kampányszerkesztőt, benne a legfontosabb panelekkel: harci beállítások, technológiai beállítások, feliratok és fordítás. Ez lehetőséget ad majd a harcok tesztelők általi kiegyensúlyozására anélkül, hogy nekem öt percenként új verziót kéne kiadnom.
 
-The upcoming *Multiplayer feature* is still in thinking phase. Primarily, I'm aiming for a 2 player competitive mode without additional AI players (nor Traders). More than 2 players or co-op against AI players seems to be technically too difficult for me now. 
+A jövőbeli *Többjátékos mód* még mindig csak gondolati fázisban létezik. Főleg a kétjátékos, AI mentes kompetitiv játékmódra koncentrálok. Több játékos és AI jelenleg még túl komplikált nekem.
 
-Any hints and tips about how to implement multiplayer network communication would be greatly appreciated.
+Szívesen fogadom olyanok tippjeit és ötleteit, akik már programoztak többjátékos hálózati kommunikációt.
 
-*June 9, 2012*
+*2012 július 9*
 
-After 3.5 years I'm happy to announce the *Open Imperium Galactica Beta* release. Enjoy.
+3.5 év után örömmel jelentem be az *Open Imperium Galactica Beta* kiadását. Jó szórakozást.
 
-[https://code.google.com/p/open-ig/wiki/NewsArchive News archive]
+[https://code.google.com/p/open-ig/wiki/NewsArchive Korábbi hírek]
 
-= Videos =
+= Videók =
 
 <wiki:video url="http://www.youtube.com/watch?v=FnlIEwW2OkM"/>
 <wiki:video url="http://www.youtube.com/watch?v=qHBUdUqqI-k"/>
 <wiki:video url="http://www.youtube.com/watch?v=lImUf9gHWAs"/>
 
-= Progress =
+= Előrehaladás =
 
 <table border='1'>
 <tr>
-<td colspan='5' align='center'>Level 1</td>
-<td colspan='12' align='center'>Level 2</td>
-<td colspan='4' align='center'>Level 3</td>
-<td colspan='3' align='center'>Level 4</td>
-<td>L5</td></tr>
+<td colspan='5' align='center'>1. szint</td>
+<td colspan='12' align='center'>2. szint</td>
+<td colspan='4' align='center'>3. szint</td>
+<td colspan='3' align='center'>4. szint</td>
+<td>5.</td></tr>
 <tr>
 <td title='Mission 1'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
 <td title='Mission 2'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
@@ -81,22 +81,22 @@ After 3.5 years I'm happy to announce the *Open Imperium Galactica Beta* release
 </tr>
 </table>
 
-|| Languages: || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png English || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png Hungarian || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png German || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif French || Spanish ? || Italian ? ||
+|| Nyelvek: || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png Angol || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png Magyar || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png Német || http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/loading.gif Francia || Spanyol ? || Olasz ? ||
 
-= Acknowledgements =
+= Köszönetnyilvánítás =
 
-Thanks goes to *Silvern Tiger* for testing and translation.
+Köszönöm *Silvern Tiger*-nek a tesztelést és német fordítást.
 
-Big thanks goes to *Norbert "Silver83" Pellny*, who took the enormous job and [https://code.google.com/p/open-ig/issues/detail?id=367 cleaned the game background images], helped with the german version and tested the game tirelessly.
+Nagy köszönet jár *Norbert "Silver83" Pellny*-nek, aki vállalta azt a hatalmas munkát, ami a játék [https://code.google.com/p/open-ig/issues/detail?id=367 háttérképeinek kitisztítása jelentett], segített a német verzió konverziójában, valamint fáradhatatlanul tesztelte a játékot.
 
-I'd like to thank *Torma "Joe" József* for his intensive testing and help with the sound, graphics, AI, concepts and many more things.
+Köszönöm *Torma "Joe" József*-nek az alapos tesztelő munkáját, segítségét a hangok minőségjavításában, a grafikában, a mesterséges intelligencia beállításában, a koncepciók kidolgozásában és még számtalan más dologban.
 
-I'd like to thank *TCH* from [http://dosgames.abkant3000.hu/community/index.php DOSGames] forum for helping me discover the animation file format. He gave the idea to check for two compression steps instead of only one. 
+Köszönöm *TCH*-nak a [http://dosgames.abkant3000.hu/community/index.php DOSGames] fórumból, hogy segített kideríteni az eredeti játék animációs fájl formátumát. Ő adta az ötletet, hogy két tömörítési réteg lehet.
 
-I'd like to thank my colleague *Galaxy* for creating the new Open-IG splash screen and helping me with the data model behind Open-IG.
+Köszönöm kollégámnak, *Galaxy*-nak az Open-IG nyitóképernyőjének elkészítését, valamint a rengeteg hasznos tanácsát a játék kezdeti adatmodelljének felépítése során.
 
-I'd like to thank *Harrach Gergely* for the Credits data, ship firepowers, subtitles and other stuff.
+Köszönöm *Harrach Gergely*-nek az eredeti játék készítőiről szerzett információt, a hajó tűzerőket, a videó feliratokat és más egyéb munkákat.
 
-I'd like to thank *Góz Tamás* from magyarszinkron.hu for identifying some of the voice actors.
+Köszönöm *Góz Tamás*-nak a magyarszinkron.hu weblapról, aki segített beazonosítani jónéhány szinkronhangot a videókban.
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/OpenIG_Splash_medium.png
