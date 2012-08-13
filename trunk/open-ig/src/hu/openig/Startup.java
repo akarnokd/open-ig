@@ -228,15 +228,20 @@ public final class Startup {
 			@Override
 			public void run() {
 				if (checkInstall()) {
-					GameWindow gw = new GameWindow(config);
-					gw.setVisible(true);
-					if (config.intro) {
-						config.intro = false;
-						config.save();
-						gw.playVideos("intro/gt_interactive_intro", "intro/intro_1", "intro/intro_2", "intro/intro_3");
+					try {
+						GameWindow gw = new GameWindow(config);
+						gw.setVisible(true);
+						if (config.intro) {
+							config.intro = false;
+							config.save();
+							gw.playVideos("intro/gt_interactive_intro", "intro/intro_1", "intro/intro_2", "intro/intro_3");
+						}
+					} catch (Throwable t) {
+						t.printStackTrace();
+						runLauncher(config);
 					}
 				} else {
-					runLauncher();
+					runLauncher(config);
 				}
 			}
 		});
@@ -293,9 +298,16 @@ public final class Startup {
 	}
 	/**
 	 * Attempt to run the launcher.
+	 * @param config the current configuration
 	 */
-	static void runLauncher() {
-		JOptionPane.showMessageDialog(null, "<html>Unable to locate some game resource files.<br>I'll try to run the Launcher to repair the install.");
+	static void runLauncher(Configuration config) {
+		if (JOptionPane.showConfirmDialog(null, 
+				"<html>Unable to locate some game resource files.<br>I'll try to run the Launcher to repair the install."
+				, "", JOptionPane.YES_NO_OPTION
+		) == JOptionPane.NO_OPTION) {
+			return;
+		}
+		U.close(config.watcherWindow);
 		File launcher = new File("open-ig-launcher.jar");
 		if (launcher.canRead()) {
 			String self = String.format("%s/open-ig-launcher.jar", new File(".").getAbsolutePath());

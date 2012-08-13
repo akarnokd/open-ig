@@ -125,7 +125,6 @@ public class QuickResearchPanel extends UIContainer {
 				}
 				commons.player().runningResearch(null);
 				commons.screenSound(SoundType.STOP_RESEARCH);
-//				statusbarScreen.visible(false);
 				QuickResearchPanel.this.visible(false);
 				askRepaint();
 			}

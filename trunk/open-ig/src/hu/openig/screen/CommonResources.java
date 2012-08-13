@@ -213,8 +213,6 @@ public class CommonResources implements GameEnvironment {
 //		});
 //		timer.start();
 		
-		startTimer();
-		
 		init();
 	}
 	/**
@@ -361,6 +359,7 @@ public class CommonResources implements GameEnvironment {
 		} finally {
 			exec.shutdown();
 		}
+		startTimer();
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.

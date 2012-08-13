@@ -2895,6 +2895,9 @@
 	<entry key="achievements.counts">Helyzet: %d / %d (%.1f%%)</entry>
 	<entry key="achievements.show_earned">Elérve</entry>
 	<entry key="achievements.show_unearned">Hiányzik</entry>
+	<entry key='quickproduction.ship_title'>Űrhajógyártás</entry>
+	<entry key='quickproduction.weapon_title'>Fegyvergyártás</entry>
+	<entry key='quickproduction.equipment_title'>Felszerelésgyártás</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

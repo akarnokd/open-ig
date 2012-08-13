@@ -286,7 +286,7 @@ public class StatusbarScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_MEDIUM_2);
-				// TODO show panel
+				quickProduction.visible(true);
 			}
 		};
 		quickProductionButton.onRightClick = new Action0() {
@@ -523,9 +523,20 @@ public class StatusbarScreen extends ScreenBase {
 			
 			quickProduction.update();
 			quickProduction.location(quickProductionButton.x + MENU_ICON_WIDTH - quickProduction.width, quickProductionButton.y + quickProductionButton.height);
-
+			if (quickProduction.x < 0) {
+				quickProduction.x = 0;
+			}
 			
 			setTooltip(quickProductionButton, "statusbar.quickproduction");
+			
+			if (player().pauseProduction) {
+				quickProductionButton.textVisible = blink;
+				quickProductionButton.textColor = TextRenderer.RED;
+			} else {
+				quickProductionButton.textVisible = true;
+				quickProductionButton.textColor = TextRenderer.YELLOW;
+			}
+			
 			if (world().level > 2) {
 				quickResearchButton.visible(true);
 
@@ -536,7 +547,7 @@ public class StatusbarScreen extends ScreenBase {
 					Research r = player().research.get(rt);
 					if (r != null) {
 						rs = String.format("%.1f%%", r.getPercent());
-						mayBlink = r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;
+						mayBlink |= r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;
 						if (mayBlink) {
 							setTooltip(quickResearchButton, "statusbar.quickresearch.problem." + r.state, rt.longName);
 						}
@@ -544,7 +555,13 @@ public class StatusbarScreen extends ScreenBase {
 				}
 				
 				quickResearchButton.text = rs;
-				quickResearchButton.textVisible = blink || !mayBlink; 
+				if (player().pauseResearch) {
+					quickResearchButton.textVisible = blink;
+					quickResearchButton.textColor = TextRenderer.RED;
+				} else {
+					quickResearchButton.textVisible = blink || !mayBlink;
+					quickResearchButton.textColor = TextRenderer.YELLOW;
+				}
 				if (rt != null || isResearchAvailable()) {
 					quickResearchButton.icon = commons.statusbar().researchLight;
 					if (!mayBlink) {
@@ -562,6 +579,9 @@ public class StatusbarScreen extends ScreenBase {
 				}
 				quickResearch.update();
 				quickResearch.location(quickResearchButton.x + MENU_ICON_WIDTH - quickResearch.width, quickResearchButton.y + quickResearchButton.height);
+				if (quickResearch.x < 0) {
+					quickResearch.x = 0;
+				}
 				
 			} else {
 				quickResearch.visible(false);
@@ -598,6 +618,7 @@ public class StatusbarScreen extends ScreenBase {
 		notification.currentMessage = null;
 		animationStep = 0;
 		quickResearch.clear();
+		quickProduction.clear();
 	}
 	/** The moving status indicator. */
 	class MovingNotification extends UIComponent {
@@ -855,6 +876,14 @@ public class StatusbarScreen extends ScreenBase {
 			quickResearch.visible(false);
 			return reshown || rep;
 		}
+		if (e.has(Type.DOWN) && quickProduction.visible()
+				&& !e.within(quickProduction.x, quickProduction.y, quickProduction.width, quickProduction.height)) {
+			quickProduction.visible(false);
+			boolean rep = mouse(e);
+			boolean reshown = quickProduction.visible();
+			quickProduction.visible(false);
+			return reshown || rep;
+		}
 		if (e.has(Type.DOWN) 
 				&& incomingMessage.contains(e.x, e.y) 
 				&& hasUnseenMessage()
@@ -890,5 +919,9 @@ public class StatusbarScreen extends ScreenBase {
 	/** Toggle the quick research panel. */
 	public void toggleQuickResearch() {
 		quickResearch.visible(!quickResearch.visible());
+	}
+	/** Toggle the quick research panel. */
+	public void toggleQuickProduction() {
+		quickProduction.visible(!quickProduction.visible());
 	}
 }
