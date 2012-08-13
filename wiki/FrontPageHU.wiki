@@ -1,7 +1,7 @@
 #summary A főlap magyarul
 
 = Bevezetés =
-Az *Open Imperium Galactica* (röviden Open-IG) egy nyílt forrású [http://www.oracle.com/technetwork/java/javase/downloads/index.html Java]^TM^ nyelvű újrafejlesztése a [http://www.digitalreality.hu Digital Reality]  [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica] című, 1996-ban debütált, népszerű, valós idejű és magyar fejlesztésű űrstratégiának. 
+Az *Open Imperium Galactica* (röviden Open-IG) egy nyílt forrású [http://www.oracle.com/technetwork/java/javase/downloads/index.html Java]^TM^ nyelvű újrafejlesztése a [http://www.digitalreality.hu Digital Reality]  [http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica] című, 1996-ban debütált, népszerű, 4X (eXplore, eXpand, eXploit, and eXterminate; fedezz fel, terjeszkedj, használd ki és irtsd ki) valós idejű és magyar fejlesztésű űrstratégiának. 
 
 Az Open-IG megpróbálja visszaadni az eredeti játékélményt, miközben számtalan hibát, inkonzisztenciát javít, valamint új képességekkel bővíti azt. Azonban nem célja a teljes, viselkedésben és kinézetben tökéletes másolat létrehozása.
 
