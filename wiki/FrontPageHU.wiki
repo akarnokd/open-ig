@@ -97,6 +97,6 @@ Köszönöm kollégámnak, *Galaxy*nak az Open-IG nyitóképernyőjének elkész
 
 Köszönöm *Harrach Gergely*-nek az eredeti játék készítőiről szerzett információt, a hajó tűzerőket, a videó feliratokat és más egyéb munkákat.
 
-Köszönöm *Góz Tamás*nak a magyarszinkron.hu weblapról, aki segített beazonosítani jónéhány szinkronhangot a videókban.
+Köszönöm *Góz Tamás*nak a magyarszinkron.hu weblapról, aki segített beazonosítani jó néhány szinkronhangot a videókban.
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/OpenIG_Splash_medium.png
