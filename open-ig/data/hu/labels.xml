@@ -2725,13 +2725,13 @@
 	<entry key="options.back.tooltip.mainmenu">Visszatérés a [c=FFFFFFFF]Főmenübe[/c].</entry>
 	<entry key="options.back.tooltip.ingame">Visszatérés a [c=FFFFFFFF]Játékba[/c].</entry>
 	<entry key="mainmenu.single.tooltip">Új egyjátékos kampány vagy egyedi játék kezdése.</entry>
-	<entry key="statusbar.quickproduction">Gyors gyártás panel[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Gyártás képernyő</entry>
-	<entry key="statusbar.quickresearch.none">Gyors kutatás panel[n]Nincs aktív kutatás[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
-	<entry key="statusbar.quickresearch.running">Gyors kutatás panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
-	<entry key="statusbar.quickresearch.available">Gyors kutatás panel[n]Kutatási lehetőségek vannak[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
-	<entry key="statusbar.quickresearch.problem.LAB">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]kapacitáshiány[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
-	<entry key="statusbar.quickresearch.problem.MONEY">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]pénzhiány[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
-	<entry key="statusbar.quickresearch.problem.STOPPED">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]leállítva[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő</entry>
+	<entry key="statusbar.quickproduction">Gyors gyártás panel[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Gyártás képernyő[n]Gyorsbillentyű: [c=FFFFFFFF]C[/c]</entry>
+	<entry key="statusbar.quickresearch.none">Gyors kutatás panel[n]Nincs aktív kutatás[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő[n]Panel gyorsbillentyű: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.running">Gyors kutatás panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő[n]Panel gyorsbillentyű: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.available">Gyors kutatás panel[n]Kutatási lehetőségek vannak[n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő[n]Panel gyorsbillentyű: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.problem.LAB">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]kapacitáshiány[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő[n]Panel gyorsbillentyű: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.problem.MONEY">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]pénzhiány[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő[n]Panel gyorsbillentyű: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.problem.STOPPED">Gyors kutatás panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]leállítva[/c][n][c=FFFFFFFF]Bal egérgomb[/c]: panel mutatása vagy elrejtése[n][c=FFFFFFFF]Jobb egérgomb[/c]: Kutatás képernyő[n]Panel gyorsbillentyű: [c=FFFFFFFF]X[/c]</entry>
 	<entry key="statusbar.pause.tooltip">Szünet[n]Gyorsbillentyű: [c=FFFFFFFF]SZÓKÖZ[/c]</entry>
 	<entry key="statusbar.speed1.tooltip">Normál sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]1[/c]</entry>
 	<entry key="statusbar.speed2.tooltip">Dupla sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]2[/c]</entry>
@@ -2898,6 +2898,39 @@
 	<entry key='quickproduction.ship_title'>Űrhajógyártás</entry>
 	<entry key='quickproduction.weapon_title'>Fegyvergyártás</entry>
 	<entry key='quickproduction.equipment_title'>Felszerelésgyártás</entry>
+	<entry key="research.pause">Kutatás szüneteltetése.</entry>
+	<entry key="research.resume">Kutatás folytatása.</entry>
+	<entry key="production.pause">Minden gyártás szüneteltetése.</entry>
+	<entry key="production.resume">Minden gyártás folytatása.</entry>
+	<entry key="quickproduction.no_active">Nincs technológia kiválasztva.</entry>
+	<entry key="quickproduction.cost_inventory">Költség: %,d cr    Készlet: %,d</entry>
+
+	<entry key="production.one_less.tooltip">A gyártandó mennyiség csökkentése eggyel.[n]A [c=FFFFFFFF]SHIFT[/c] nyomva tartásával tízzel csökkent.</entry>
+	<entry key="production.one_more.tooltip">A gyártandó mennyiség növelése eggyel.[n]A [c=FFFFFFFF]SHIFT[/c] nyomva tartásával tízzel növel.</entry>
+	<entry key="quickproduction.remove.tooltip">A gyártás kivétele.</entry>
+	<entry key="production.more_priority.tooltip">A gyártás fontosságának növelése 5 ponttal.[n]A minimális prioritás 0, ami szünetelteti a gyártást. A maximális prioritás 100.</entry>
+	<entry key="production.less_priority.tooltip">A gyártás fontosságának csökkentése 5 ponttal.[n]A minimális prioritás 0, ami szünetelteti a gyártást. A maximális prioritás 100.</entry>
+	<entry key="production.line.tooltip">[c=FFFF0000]%s[/c][n]%s</entry>
+
+	<entry key="equipment.upgrade_fleet.tooltip">A flotta modernizálása a készletek alapján:[n]- A vadászok teljes feltöltése[n]- A nagyobb hajók felszerelésének lecserélése modernebbre, ahol lehet[n]- Feltöltés 66%% legjobb tankkal, 33%% legjobb rakétással,[n]  valamint egy-egy speciális egységgel</entry>
+	<entry key="equipment.upgrade_planet.tooltip">A bolygó modernizálása a készletek alapján:[n]- A vadászok teljes feltöltése[n]- Űrbázisok feltöltése vagy lecserélése[n]- Feltöltés 66%% legjobb tankkal, 33%% legjobb rakétással,[n]  valamint egy-egy speciális egységgel</entry>
+	<entry key="equipment.plus_one.tooltip">Felszerelés hozzáadása</entry>
+	<entry key="equipment.minus_one.tooltip">Felszerelés elvétele</entry>
+	
+	<entry key="equipment.starbases.tooltip">Űrbázisok</entry>
+	<entry key="equipment.battleships.tooltip">Csatahajók</entry>
+	<entry key="equipment.cruisers.tooltip">Cirkálók és Rombolók</entry>
+	<entry key="equipment.fighters.tooltip">Vadászok</entry>
+	<entry key="equipment.tanks.tooltip">Tankok</entry>
+	<entry key="equipment.vehicles.tooltip">Járművek</entry>
+	
+	<entry key="settings.classic_controls.tooltip">Modern mód:[n]  Mozgás: [c=FFFFFFFF]SHIFT+Jobb egérgomb[/c][n]  Támadás: [c=FFFFFFFF]CTRL+Jobb egérgomb[/c][n]  Térkép mozgatás: [c=FFFFFFFF]Jobb egérgomb[/c][n]  Térkép alapnagyítás: [c=FFFFFFFF]Középső egérgomb[/c][n]Klasszikus mód:[n]  Mozgás: [c=FFFFFFFF]Jobb egérgomb az űrbe[/c][n]  Támadás: [c=FFFFFFFF]Jobb egérgomb az ellenségre[/c][n]  Térkép mozgatás: [c=FFFFFFFF]Középső egérgomb[/c][n]  Térkép alapnagyítás: [c=FFFFFFFF]CTRL+Középső egérgomb[/c]</entry>
+	<entry key="equipment.move_one.tooltip">Egy átmozgatása</entry>
+	<entry key="equipment.move_half.tooltip">A meglévő felének átmozgatása</entry>
+	<entry key="equipment.move_all.tooltip">Az összes átmozgatása</entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

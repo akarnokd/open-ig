@@ -9,9 +9,14 @@
 package hu.openig.screen.panels;
 
 import hu.openig.core.Action0;
+import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
+import hu.openig.model.Production;
+import hu.openig.model.ResearchMainCategory;
+import hu.openig.model.ResearchType;
+import hu.openig.model.SoundType;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.CommonResources;
 import hu.openig.ui.HorizontalAlignment;
@@ -19,9 +24,16 @@ import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The quick production panel.
@@ -56,6 +68,8 @@ public class QuickProductionPanel extends UIContainer {
 	static final int MARGIN = 6;
 	/** The column separator. */
 	static final int COLUMN_SEPARATOR = 15;
+	/** The gap between production lines. */
+	static final int LINE_GAP = 3;
 	/** The top divider y. */
 	int topDivider;
 	/** The middle divider. */
@@ -63,9 +77,23 @@ public class QuickProductionPanel extends UIContainer {
 	/** The middle divider. */
 	int bottomDivider;
 	/** Description of the currently hovered research. */
+	UILabel hoverResearchCost;
+	/** Description of the currently hovered research. */
 	UILabel hoverResearchDescription;
 	/** Description of the currently hovered research. */
 	UILabel hoverResearchTitle;
+	/** The production simple lines. */
+	final List<List<ProductionSimpleLine>> lines = U.newArrayList();
+	/** The production simple lines. */
+	final List<List<ProductionHistoryLine>> historyLines = U.newArrayList();
+	/** Column widths. */
+	private int col1Width;
+	/** Column widths. */
+	private int col2Width;
+	/** Column widths. */
+	private int col3Width;
+	/** The research type currently hovered. */
+	ResearchType hoverType;
 	/**
 	 * Constructor. Initializes the inner controls.
 	 * @param commons the commonr resources
@@ -95,6 +123,7 @@ public class QuickProductionPanel extends UIContainer {
 				commons.player().pauseProduction = false;
 			}
 		};
+		resume.tooltip(commons.get("production.resume"));
 		
 		pause = new UIImageButton(commons.common().pauseAll);
 		pause.onClick = new Action0() {
@@ -103,6 +132,7 @@ public class QuickProductionPanel extends UIContainer {
 				commons.player().pauseProduction = true;
 			}
 		};
+		pause.tooltip(commons.get("production.pause"));
 
 		hoverResearchDescription = new UILabel("", 10, commons.text());
 		hoverResearchDescription.wrap(true);
@@ -110,6 +140,9 @@ public class QuickProductionPanel extends UIContainer {
 		hoverResearchTitle = new UILabel("", 10, commons.text());
 		hoverResearchTitle.color(TextRenderer.RED);
 		hoverResearchTitle.horizontally(HorizontalAlignment.CENTER);
+
+		hoverResearchCost = new UILabel("", 10, commons.text());
+		hoverResearchCost.color(TextRenderer.YELLOW);
 
 		addThis();
 	}
@@ -123,6 +156,12 @@ public class QuickProductionPanel extends UIContainer {
 		g2.drawLine(0, topDivider, width - 1, topDivider);
 		g2.drawLine(0, middleDivider, width - 1, middleDivider);
 		g2.drawLine(0, bottomDivider, width - 1, bottomDivider);
+		
+		int cx = MARGIN + col1Width + COLUMN_SEPARATOR / 2;
+		g2.drawLine(cx, 0, cx, middleDivider);
+		cx += col2Width + COLUMN_SEPARATOR;
+		g2.drawLine(cx, 0, cx, middleDivider);
+		
 		super.draw(g2);
 	}
 	/**
@@ -147,16 +186,24 @@ public class QuickProductionPanel extends UIContainer {
 		equipmentAvailable.color(ps.equipmentActive < ps.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
 		equipmentTotal.text(" / " + ps.equipment, true);
 
-		int col1Width = Math.max(shipTitle.width, shipAvailable.width + shipTotal.width);
-		int col2Width = Math.max(equipmentTitle.width, equipmentAvailable.width + equipmentTotal.width);
-		int col3Width = Math.max(weaponTitle.width, weaponAvailable.width + weaponTotal.width);
+		col1Width = Math.max(shipTitle.width, shipAvailable.width + shipTotal.width);
+		col2Width = Math.max(equipmentTitle.width, equipmentAvailable.width + equipmentTotal.width);
+		col3Width = Math.max(weaponTitle.width, weaponAvailable.width + weaponTotal.width);
 		int titlesHeight = Math.max(shipTitle.height + shipAvailable.height, resume.height) + COLUMN_SEPARATOR;
 		
 		topDivider = MARGIN + titlesHeight - COLUMN_SEPARATOR / 2;
 
 		// listing of production lines
 		
-		// divider
+		col1Width = Math.max(col1Width, layoutCategory(ResearchMainCategory.SPACESHIPS, 0));
+		col2Width = Math.max(col2Width, layoutCategory(ResearchMainCategory.EQUIPMENT, 1));
+		col3Width = Math.max(col3Width, layoutCategory(ResearchMainCategory.WEAPONS, 2));
+
+		// history
+
+		col1Width = Math.max(col1Width, layoutHistoryCategory(ResearchMainCategory.SPACESHIPS, 0));
+		col2Width = Math.max(col2Width, layoutHistoryCategory(ResearchMainCategory.EQUIPMENT, 1));
+		col3Width = Math.max(col3Width, layoutHistoryCategory(ResearchMainCategory.WEAPONS, 2));
 		
 		// hover info
 
@@ -192,12 +239,208 @@ public class QuickProductionPanel extends UIContainer {
 		pause.visible(!commons.player().pauseProduction);
 		resume.location(pause.location());
 		resume.visible(commons.player().pauseProduction);
+
+		// layout production columns
+		int lineHeights = 0;
+		int colX = MARGIN;
+		for (List<ProductionSimpleLine> psls : lines) {
+			int lineHeightCol = -LINE_GAP;
+			int colY = topDivider + (MARGIN - MARGIN / 2);
+			for (ProductionSimpleLine psl : psls) {
+				psl.x = colX;
+				psl.y = colY;
+				psl.width = colMax;
+				psl.layout();
+				lineHeightCol += psl.height + LINE_GAP;
+				colY += psl.height + LINE_GAP;
+			}
+			lineHeights = Math.max(lineHeights, lineHeightCol);
+			colX += COLUMN_SEPARATOR + colMax;
+		}
 		
+		middleDivider = topDivider + MARGIN + lineHeights;
+
+		// layout history
+		
+		lineHeights = 0;
+		colX = MARGIN;
+		for (List<ProductionHistoryLine> psls : historyLines) {
+			int lineHeightCol = -LINE_GAP;
+			int colY = middleDivider + (MARGIN - MARGIN / 2);
+			for (ProductionHistoryLine psl : psls) {
+				psl.x = colX;
+				psl.y = colY;
+				psl.width = colMax;
+				psl.layout();
+				lineHeightCol += psl.height + LINE_GAP;
+				colY += psl.height + LINE_GAP;
+			}
+			lineHeights = Math.max(lineHeights, lineHeightCol);
+			colX += COLUMN_SEPARATOR + colMax;
+		}
+		
+		bottomDivider = middleDivider + MARGIN + lineHeights;
+
 		int innerWidth = col1Width + col2Width + col3Width + 3 * COLUMN_SEPARATOR + pause.width;
+
+		int bottomPart = 0;
+		hoverResearchTitle.location(MARGIN, bottomDivider + (MARGIN - MARGIN / 2));
+		hoverResearchTitle.width = innerWidth;
+		hoverResearchDescription.width = innerWidth;
+		hoverResearchDescription.location(hoverResearchTitle.x, hoverResearchTitle.y + hoverResearchTitle.height + 3);
+		
+		
+		if (hoverType != null) {
+			hoverResearchTitle.text(hoverType.longName);
+
+			hoverResearchDescription.text(hoverType.description);
+			hoverResearchDescription.height = hoverResearchDescription.getWrappedHeight();
+			
+			hoverResearchCost.text(commons.format("quickproduction.cost_inventory", hoverType.productionCost, commons.player().inventoryCount(hoverType)), true);
+			
+			bottomPart += hoverResearchTitle.height;
+			bottomPart += hoverResearchDescription.height;
+			bottomPart += hoverResearchCost.height;
+			bottomPart += 6;
+		} else {
+			hoverResearchTitle.text(commons.get("quickproduction.no_active"));
+			hoverResearchDescription.text("");
+			hoverResearchDescription.height = 0;
+			hoverResearchCost.text("");
+			hoverResearchCost.height = 0;
+			
+			bottomPart += hoverResearchTitle.height;
+		}
+		hoverResearchCost.location(hoverResearchDescription.x, hoverResearchDescription.y + hoverResearchDescription.height + 3);
+		hoverResearchCost.width = innerWidth;
 		
 		width = innerWidth + 2 * MARGIN;
 
-		height = titlesHeight + 2 * MARGIN;
+		height = bottomDivider + 2 * MARGIN + bottomPart;
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		ResearchType crt = hoverType;
+		ResearchType rt0 = commons.player().currentResearch();
+		for (UIComponent c : components) {
+			if (c instanceof ProductionSimpleLine) {
+				if (c.within(e)) {
+					rt0 = ((ProductionSimpleLine)c).rt.type;
+				}
+			} else
+			if (c instanceof ProductionHistoryLine) {
+				if (c.within(e)) {
+					rt0 = ((ProductionHistoryLine)c).rt;
+				}
+			}
+		}
+		hoverType = rt0;
+		return super.mouse(e) || rt0 != crt;
+	}
+	@Override
+	public UIComponent visible(boolean state) {
+		if (state && !this.visible) {
+			hoverType = commons.player().currentResearch();
+		}
+		return super.visible(state);
+	}
+	/**
+	 * Add/remove lines of process.
+	 * @param mcat the main category
+	 * @param column the column
+	 * @return the maximum width of the column based on the contents
+	 */
+	int layoutCategory(ResearchMainCategory mcat, int column) {
+		Map<ResearchType, Production> prods = commons.player().production.get(mcat);
+		if (prods == null) {
+			prods = Collections.emptyMap();
+		}
+		while (lines.size() <= column) {
+			lines.add(U.<ProductionSimpleLine>newArrayList());
+		}
+		boolean changed = false;
+		int w = 0;
+		List<ProductionSimpleLine> list = lines.get(column);
+		int i = 0;
+		for (Production prod : prods.values()) {
+			ProductionSimpleLine psl = null;
+			if (list.size() > i) {
+				psl = list.get(i);
+			} else {
+				// add necessary new lines
+				psl = new ProductionSimpleLine();
+				list.add(psl);
+				add(psl);
+				changed = true;
+			}
+			psl.rt = prod;
+			
+			w = Math.max(w, psl.update());
+			
+			i++;
+		}
+		// remove unnecessary lines
+		for (int j = list.size() - 1; j >= i; j--) {
+			ProductionSimpleLine psl = list.remove(j);
+			this.components.remove(psl);
+			changed = true;
+		}
+		if (changed) {
+			commons.control().moveMouse();
+		}
+		return w;
+	}
+	/**
+	 * Add/remove lines of process.
+	 * @param mcat the main category
+	 * @param column the column
+	 * @return the maximum width of the column based on the contents
+	 */
+	int layoutHistoryCategory(ResearchMainCategory mcat, int column) {
+		List<ResearchType> prods = commons.player().productionHistory.get(mcat);
+		Map<ResearchType, ?> currProds = commons.player().production.get(mcat);
+		if (prods == null) {
+			prods = Collections.emptyList();
+		}
+		while (historyLines.size() <= column) {
+			historyLines.add(U.<ProductionHistoryLine>newArrayList());
+		}
+		boolean changed = false;
+		int w = 0;
+		List<ProductionHistoryLine> list = historyLines.get(column);
+		int i = 0;
+		for (ResearchType prod : prods) {
+			// skip running production
+			if (currProds != null && currProds.containsKey(prod)) {
+				continue;
+			}
+			
+			ProductionHistoryLine psl = null;
+			if (list.size() > i) {
+				psl = list.get(i);
+			} else {
+				// add necessary new lines
+				psl = new ProductionHistoryLine();
+				list.add(psl);
+				add(psl);
+				changed = true;
+			}
+			psl.rt = prod;
+			
+			w = Math.max(w, psl.update());
+			
+			i++;
+		}
+		// remove unnecessary lines
+		for (int j = list.size() - 1; j >= i; j--) {
+			ProductionHistoryLine psl = list.remove(j);
+			this.components.remove(psl);
+			changed = true;
+		}
+		if (changed) {
+			commons.control().moveMouse();
+		}
+		return w;
 	}
 	/**
 	 * Center the combination of components.
@@ -251,6 +494,233 @@ public class QuickProductionPanel extends UIContainer {
 	 * Clear memorized references and values.
 	 */
 	public void clear() {
-		// TODO
+		lines.clear();
+		historyLines.clear();
+		for (int i = components.size() - 1; i >= 0; i--) {
+			UIComponent c = components.get(i);
+			if (c instanceof ProductionSimpleLine) {
+				components.remove(i);
+			}
+			if (c instanceof ProductionHistoryLine) {
+				components.remove(i);
+			}
+		}
+	}
+	/**
+	 * The running production line with a few controls. 
+	 * @author akarnokd, 2012.08.14.
+	 */
+	public class ProductionSimpleLine extends UIContainer {
+		/** The research name. */
+		UILabel name;
+		/** Remove one unit. */
+		UIImageButton oneLess;
+		/** The remaining prod count. */
+		UILabel count;
+		/** Add one unit. */
+		UIImageButton oneMore;
+		/** Current progress. */
+		UILabel progress;
+		/** Remove from production. */
+		UIImageButton remove;
+		/** The assigned research. */
+		Production rt;
+		/** Gap between components. */
+		final int gap = 10;
+		/** Is the shift. */
+		boolean countShift;
+		/**
+		 * Constructor. Initializes the fields.
+		 */
+		public ProductionSimpleLine() {
+			name = new UILabel("", 10, commons.text());
+			oneLess = new UIImageButton(commons.research().less) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					countShift = e.has(Modifier.SHIFT);
+					return super.mouse(e);
+				}
+			};
+			oneLess.setHoldDelay(200);
+			oneLess.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					int cnt = -1;
+					if (countShift) {
+						cnt *= 10;
+					}
+					DefaultAIControls.actionStartProduction(commons.player(), rt.type, cnt, rt.priority);
+				}
+			};
+			
+			count = new UILabel("", 10, commons.text());
+			count.horizontally(HorizontalAlignment.CENTER);
+			oneMore = new UIImageButton(commons.research().more) {
+				@Override
+				public boolean mouse(UIMouse e) {
+					countShift = e.has(Modifier.SHIFT);
+					return super.mouse(e);
+				}
+			};
+			oneMore.setHoldDelay(200);
+			oneMore.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					int cnt = 1;
+					if (countShift) {
+						cnt *= 10;
+					}
+					DefaultAIControls.actionStartProduction(commons.player(), rt.type, cnt, rt.priority);
+				}
+			};
+			
+			progress = new UILabel("", 10, commons.text());
+			progress.horizontally(HorizontalAlignment.CENTER);
+			remove = new UIImageButton(commons.research().removeX);
+			remove.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					DefaultAIControls.actionRemoveProduction(commons.player(), rt.type);
+					commons.control().moveMouse();
+				}
+			};
+			height = remove.height;
+			
+			oneLess.tooltip(commons.get("production.one_less.tooltip"));
+			oneMore.tooltip(commons.get("production.one_more.tooltip"));
+			remove.tooltip(commons.get("quickproduction.remove.tooltip"));
+			
+			addThis();
+		}
+		/**
+		 * Update contents.
+		 * @return the minimum width
+		 */
+		public int update() {
+			name.text(rt.type.name, true);
+			count.text(String.valueOf(rt.count));
+			progress.text((rt.progress * 100 / rt.type.productionCost) + "%");
+			count.width = commons.text().getTextWidth(count.textSize(), "0000");
+			progress.width = commons.text().getTextWidth(progress.textSize(), "0000");
+
+			int c = TextRenderer.GREEN;
+			if (over) {
+				c = TextRenderer.YELLOW;
+			} else
+			if (commons.player().currentResearch() == rt.type) {
+				c = TextRenderer.RED;
+			}
+			name.color(c);
+			count.color(c);
+			progress.color(c);
+			
+			oneLess.visible(rt.count > 0);
+			
+			return name.width + count.width + progress.width
+					+ oneLess.width
+					+ oneMore.width
+					+ remove.width + gap + 5;
+		}
+		/**
+		 * Apply the layout based on the current component width.
+		 */
+		public void layout() {
+			name.location(0, 1);
+			
+			// right align rest
+			remove.location(width - remove.width, 0);
+			progress.location(remove.x - 1 - progress.width, 1);
+			oneMore.location(progress.x - 1 - oneMore.width, 0);
+			count.location(oneMore.x - 1 - count.width, 1);
+			oneLess.location(count.x - 1 - oneLess.width, 0);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				ResearchType crt = commons.player().currentResearch();
+				if (crt != rt.type) {
+					commons.player().currentResearch(rt.type);
+					commons.selectAnim(rt.type);
+				}
+			}
+			return super.mouse(e);
+		}
+	}
+	/**
+	 * A production history line. 
+	 * @author akarnokd, 2012.08.14.
+	 */
+	public class ProductionHistoryLine extends UIContainer {
+		/** The research. */
+		public ResearchType rt;
+		/** The research name. */
+		UILabel name;
+		/** The research name. */
+		UILabel cost;
+		/** The research name. */
+		UILabel inventory;
+		/** Gap between components. */
+		final int gap = 10;
+		/**
+		 * Constructor. Prepares the sub-components.
+		 */
+		public ProductionHistoryLine() {
+			name = new UILabel("", 10, commons.text());
+			cost = new UILabel("", 10, commons.text());
+			inventory = new UILabel("", 10, commons.text());
+			
+			addThis();
+		}
+		/**
+		 * Update contents.
+		 * @return the minimum width
+		 */
+		public int update() {
+			name.text(rt.name, true);
+			cost.text(rt.productionCost + " cr", true);
+//			inventory.text(Integer.toString(commons.player().inventoryCount(rt)), true);
+			inventory.text("  ", true);
+
+			if (over) {
+				name.color(TextRenderer.YELLOW);
+				cost.color(TextRenderer.YELLOW);
+				inventory.color(TextRenderer.YELLOW);
+			} else
+			if (commons.player().currentResearch() == rt) {
+				name.color(TextRenderer.RED);
+				cost.color(TextRenderer.RED);
+				inventory.color(TextRenderer.RED);
+			} else {
+				name.color(TextRenderer.GREEN);
+				cost.color(TextRenderer.GREEN);
+				inventory.color(TextRenderer.GREEN);
+			}
+
+			height = name.height;
+			
+			int w = name.width + cost.width + inventory.width + 2 * gap;
+			return w;
+		}
+		/**
+		 * Apply the layout based on the current component width.
+		 */
+		public void layout() {
+			name.location(0, 0);
+			cost.location(width - cost.width, 0);
+			inventory.location(name.x + name.width + gap, 0);
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			if (e.has(Type.DOWN)) {
+				int cnt = 0;
+				if (e.has(Modifier.SHIFT)) {
+					cnt = 10;
+				}
+				if (!DefaultAIControls.actionStartProduction(commons.player(), rt, cnt, 50)) {
+					commons.computerSound(SoundType.NOT_AVAILABLE);
+				}
+			}
+			return false;
+		}
 	}
 }

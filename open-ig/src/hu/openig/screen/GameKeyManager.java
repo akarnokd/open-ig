@@ -17,12 +17,12 @@ import hu.openig.model.AIMode;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
-import hu.openig.screen.api.ResearchProductionAnimation;
 import hu.openig.screen.api.SettingsPage;
 import hu.openig.utils.Exceptions;
 
@@ -489,13 +489,14 @@ public class GameKeyManager extends KeyAdapter {
 			case KeyEvent.VK_I:
 				// CHEAT: add more money
 				if (e.isControlDown()) {
-					if (world().player.currentResearch() != null) {
-						boolean researched = world().player.setAvailable(world().player.currentResearch());
-						Integer cnt = world().player.inventory.get(world().player.currentResearch());
+					ResearchType crt = world().player.currentResearch();
+					if (crt != null) {
+						boolean researched = world().player.setAvailable(crt);
+						Integer cnt = world().player.inventory.get(crt);
 						cnt = cnt != null ? cnt + 1 : 1;
-						world().player.inventory.put(world().player.currentResearch(), cnt);
-						if (researched && (secondary instanceof ResearchProductionAnimation)) {
-							((ResearchProductionAnimation)secondary).playAnim(world().player.currentResearch());
+						world().player.inventory.put(crt, cnt);
+						if (researched) {
+							commons.selectAnim(crt);
 						}
 						repaintInner();
 					}

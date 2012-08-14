@@ -811,6 +811,27 @@ public class EquipmentScreen extends ScreenBase {
 		add(leftTankCells);
 		add(rightTankCells);
 		add(slots);
+		
+		
+		//----------------------------------
+		setTooltip(addOne, "equipment.plus_one.tooltip");
+		setTooltip(removeOne, "equipment.minus_one.tooltip");
+		
+		setTooltip(stations, "equipment.starbases.tooltip");
+		setTooltip(battleships, "equipment.battleships.tooltip");
+		setTooltip(cruisers, "equipment.cruisers.tooltip");
+		setTooltip(fighters, "equipment.fighters.tooltip");
+		setTooltip(tanks, "equipment.tanks.tooltip");
+		setTooltip(vehicles, "equipment.vehicles.tooltip");
+		
+		setTooltip(left1, "equipment.move_one.tooltip");
+		setTooltip(left2, "equipment.move_half.tooltip");
+		setTooltip(left3, "equipment.move_all.tooltip");
+		setTooltip(right1, "equipment.move_one.tooltip");
+		setTooltip(right2, "equipment.move_half.tooltip");
+		setTooltip(right3, "equipment.move_all.tooltip");
+		//----------------------------------
+		
 		addThis();
 	}
 	/**
@@ -1275,7 +1296,6 @@ public class EquipmentScreen extends ScreenBase {
 			sl.animationStep = animationStep;
 		}
 		askRepaint(base.x, base.y, base.width, base.height);
-//		scaleRepaint(base, base, margin()); // FIXME not sure
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -1346,389 +1366,14 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipmentName.visible(false);
 		innerEquipmentSeparator.visible(false);
 		innerEquipmentValue.visible(false);
-		ResearchType rt = research();
-		Fleet f = fleet();
 		
 		statistics = player().getPlanetStatistics(null);
+		Fleet f = fleet();
 		
 		if (player().selectionMode == SelectionMode.PLANET || f == null) {
-			
-			PlanetStatistics ps = planet().getStatistics();
-			
-			boolean own = planet().owner == player();
-			
-			newButton.visible(own && ps.hasMilitarySpaceport);
-			notYourPlanet.visible(!own);
-			noPlanetNearby.visible(false);
-			upgradeAll.visible(own && mayUpgradeAll(planet(), ps));
-			
-			if (planetShown != planet() || lastSelection != player().selectionMode) {
-				planetShown = planet();
-				lastSelection = player().selectionMode;
-				updateCurrentInventory();
-				minimap.moveTo(planet().x, planet().y);
-			}
-			
-			planetVisible = true;
-			List<Planet> planets = player().ownPlanets();
-			Collections.sort(planets, Planet.NAME_ORDER);
-			int idx = planets.indexOf(planet());
-			prev.enabled(idx > 0);
-			next.enabled(idx < planets.size() - 1);
-			fleetName.text(planet().name);
-			
-			spaceshipsLabel.visible(false);
-			spaceshipsMaxLabel.visible(false);
-			if (own) {
-				fightersLabel.text(format("equipment.fighters", ps.fighterCount), true);
-				vehiclesLabel.text(format("equipment.vehicles", ps.vehicleCount), true);
-				if (ps.hasSpaceStation) {
-					fightersMaxLabel.text(format("equipment.maxpertype", world().params().fighterLimit()), true);
-				} else {
-					fightersMaxLabel.text(format("equipment.max", 0), true);
-				}
-				vehiclesMaxLabel.text(format("equipment.max", ps.vehicleMax), true);
-			} else {
-				fightersLabel.text("");
-				vehiclesLabel.text("");
-				fightersMaxLabel.text("");
-				vehiclesMaxLabel.text("");
-			}
-			
-			fleetStatusLabel.visible(false);
-			
-			secondaryLabel.visible(false);
-			secondaryFighters.visible(false);
-			secondaryVehicles.visible(false);
-			secondaryValue.visible(false);
-			
-			prepareCells(planet(), null, leftFighterCells, leftTankCells);
-			clearCells(rightFighterCells);
-			clearCells(rightTankCells);
-			
-			battleships.visible(false);
-			cruisers.visible(false);
-			cruisersEmpty.visible(true);
-			stations.visible(true);
-			
-			if (own && rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-				addButton.visible(player().inventoryCount(rt) > 0
-						&& planet().inventoryCount(rt.category, player()) < world().params().stationLimit());
-				delButton.visible(false);
-				sell.visible(planet().inventoryCount(rt, player()) > 0);
-			} else
-			if (own && ps.hasSpaceStation 
-					&& rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-				addButton.visible(
-						player().inventoryCount(rt) > 0
-						&& planet().inventoryCount(rt, player()) < world().params().fighterLimit());
-				delButton.visible(
-						planet().inventoryCount(rt, player()) > 0
-				);
-				sell.visible(delButton.visible());
-			} else
-			if (own && rt.category == ResearchSubCategory.WEAPONS_TANKS
-					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				addButton.visible(player().inventoryCount(rt) > 0
-						&& ps.vehicleCount < ps.vehicleMax);
-				delButton.visible(
-						planet().inventoryCount(rt, player()) > 0);
-				sell.visible(delButton.visible());
-			} else {
-				addButton.visible(false);
-				delButton.visible(false);
-				sell.visible(false);
-			}
-			noSpaceStation.visible(own && !ps.hasSpaceStation 
-					&& rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS);
-
-			addOne.visible(false);
-			removeOne.visible(false);
-			editPrimary = false;
-			editSecondary = false;
-			transferMode = false;
-			secondary = null;
-//			configure.item = null;
-//			configure.selectedSlot = null;
-			deleteButton.visible(false);
-			splitButton.visible(false);
-			transferButton.visible(false);
-			noSpaceport.visible(false);
-
-			if (configure.selectedSlot != null) {
-				addOne.visible(
-						player().inventoryCount(rt) > 0
-						&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
-				);
-				removeOne.visible(
-						configure.selectedSlot.type != null && configure.selectedSlot.count > 0
-				);
-			}
-
-			left1.visible(false);
-			left2.visible(false);
-			left3.visible(false);
-			
-			right1.visible(false);
-			right2.visible(false);
-			right3.visible(false);
-
-			noFlagship.visible(false);
+			updatePlanet();
 		} else {
-// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-// Fleet related controls
-// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-			if (fleetShown != f || lastSelection != player().selectionMode) {
-				fleetShown = f;
-				lastSelection = player().selectionMode;
-				updateCurrentInventory();
-				minimap.moveTo(f.x, f.y);
-				editPrimary = editNew;
-				editNew = false;
-				editSecondary = false;
-				configure.type = research();
-				configure.item = f.getInventoryItem(research());
-				configure.selectedSlot = null;
-				transferMode = false;
-				secondary = null;
-				doSelectVehicle(research());
-				doSelectListVehicle(research());
-			}
-			
-			boolean own = f.owner == player();
-			boolean control = world().scripting.mayControlFleet(f);
-			
-			FleetStatistics fs = f.getStatistics();
-			
-			prepareCells(null, f, leftFighterCells, leftTankCells);
-
-			PlanetStatistics ps = fs.planet != null ? fs.planet.getStatistics() : null;
-			
-			List<Fleet> fleets = player().ownFleets();
-			int idx = fleets.indexOf(f);
-			prev.enabled(idx > 0);
-			next.enabled(idx < fleets.size() - 1);
-			
-			planetVisible = false;
-			if (editPrimary && (animationStep % 10) < 5) {
-				fleetName.text(f.name + "-");
-			} else {
-				if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
-					fleetName.text(f.name);
-				} else {
-					fleetName.text(get("fleetinfo.alien_fleet"));
-				}
-			}
-			if (own) {
-				spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
-				spaceshipsMaxLabel.text(format("equipment.max", world().params().mediumshipLimit()), true).visible(true);
-				fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
-				vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
-				fightersMaxLabel.text(format("equipment.maxpertype", world().params().fighterLimit()), true);
-				vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
-			} else {
-				if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
-					spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount + fs.battleshipCount), true).visible(true);
-					int fcnt = (fs.fighterCount / 10) * 10;
-					int fcnt2 = fcnt + 10;
-					fightersLabel.text(format("equipment.fighters", fcnt + ".." + fcnt2), true);
-				} else {
-					spaceshipsLabel.text("");
-					fightersLabel.text("");
-				}
-				spaceshipsMaxLabel.text("");
-				vehiclesLabel.text("");
-				fightersMaxLabel.text("");
-				vehiclesMaxLabel.text("");
-			}
-			if (secondary != null) {
-				secondaryLabel.visible(true);
-				if (editSecondary && (animationStep % 10) < 5) {
-					secondaryValue.text(secondary.name + "-").visible(true);
-				} else {
-					secondaryValue.text(secondary.name).visible(true);
-				}
-				FleetStatistics fs2 = secondary.getStatistics();
-				secondaryFighters.text(format("equipment.fighters", fs2.fighterCount), true).visible(true);
-				secondaryVehicles.text(format("equipment.vehiclesandmax", fs2.vehicleCount, fs2.vehicleMax), true).visible(true);
-				
-				boolean bleft = false;
-				boolean bright = false;
-				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					bleft = f.inventoryCount(rt) < world().params().fighterLimit() && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && secondary.inventoryCount(rt) < world().params().fighterLimit();
-				} else
-				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
-						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-					bleft = fs.vehicleCount < fs.vehicleMax && secondary.inventoryCount(rt) > 0;
-					bright = fs2.vehicleCount < fs.vehicleMax && f.inventoryCount(rt) > 0;
-				} else
-				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-					bleft = fs.battleshipCount < world().params().battleshipLimit() && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && fs2.battleshipCount < world().params().battleshipLimit();
-				} else
-				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-					bleft = fs.cruiserCount < world().params().mediumshipLimit() && secondary.inventoryCount(rt) > 0;
-					bright = f.inventoryCount(rt) > 0 && fs2.cruiserCount < world().params().mediumshipLimit();
-				}
-				left1.visible(bleft);
-				left2.visible(bleft);
-				left3.visible(bleft);
-				
-				right1.visible(bright);
-				right2.visible(bright);
-				right3.visible(bright);
-
-				listButton.visible(transferMode);
-				endSplit.visible(!transferMode);
-				endJoin.visible(transferMode);
-				
-				infoButton.visible(false);
-				configure.visible(false);
-				selectedNameAndType.visible(false);
-				rightList.visible(true);
-				prepareCells(null, secondary, rightFighterCells, rightTankCells);
-				
-				transferButton.visible(false);
-				splitButton.visible(false);
-				deleteButton.visible(false);
-			} else {
-				infoButton.visible(true);
-				endSplit.visible(false);
-				endJoin.visible(false);
-				secondaryLabel.visible(false);
-				secondaryValue.visible(false);
-				secondaryFighters.visible(false);
-				secondaryVehicles.visible(false);
-				editSecondary = false;
-				listButton.visible(true);
-				configure.visible(true);
-				clearCells(rightFighterCells);
-				clearCells(rightTankCells);
-				
-				left1.visible(false);
-				left2.visible(false);
-				left3.visible(false);
-				
-				right1.visible(false);
-				right2.visible(false);
-				right3.visible(false);
-				rightList.visible(false);
-				selectedNameAndType.visible(true);
-			}
-			
-			fleetStatusLabel.visible(true);
-			if (f.targetFleet == null && f.targetPlanet() == null) {
-				if (f.waypoints.size() > 0) {
-					fleetStatusLabel.text(format("fleetstatus.moving"), true);
-				} else {
-					if (fs.planet != null) {
-						fleetStatusLabel.text(format("fleetstatus.stopped.at", fs.planet.name), true);
-					} else {
-						fleetStatusLabel.text(format("fleetstatus.stopped"), true);
-					}
-				}
-			} else {
-				if (f.mode == FleetMode.ATTACK) {
-					if (f.targetFleet != null) {
-						fleetStatusLabel.text(format("fleetstatus.attack", f.targetFleet.name), true);
-					} else {
-						fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet().name), true);
-					}
-				} else {
-					if (f.targetFleet != null) {
-						fleetStatusLabel.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
-					} else {
-						fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet().name), true);
-					}
-				}
-			}
-			
-			battleships.visible(world().level >= 3);
-			cruisers.visible(true);
-			cruisersEmpty.visible(false);
-			stations.visible(false);
-			battleshipsAndStationsEmpty.visible(world().level < 3);
-			
-			newButton.visible(own && secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
-			noSpaceport.visible(secondary == null && ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
-			notYourPlanet.visible(false);
-			noPlanetNearby.visible(own && secondary == null && ps == null);
-			noSpaceStation.visible(false);
-			noFlagship.visible(!noPlanetNearby.visible()
-					&& !noSpaceport.visible()
-					&& own && fs.battleshipCount == 0 
-					&& (research().category == ResearchSubCategory.WEAPONS_TANKS
-					|| research().category == ResearchSubCategory.WEAPONS_VEHICLES));
-
-			if (ps != null && fs.planet.owner == f.owner 
-					&& ps.hasMilitarySpaceport && secondary == null) {
-				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt) < world().params().fighterLimit());
-					delButton.visible(f.inventoryCount(rt) > 0);
-					sell.visible(f.inventoryCount(rt) > 0);
-				} else
-				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
-						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-					addButton.visible(
-							fs.vehicleCount < fs.vehicleMax
-							&& player().inventoryCount(rt) > 0);
-					delButton.visible(
-							f.inventoryCount(rt) > 0);
-					sell.visible(f.inventoryCount(rt) > 0);
-				} else
-				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt.category) < world().params().battleshipLimit());
-					delButton.visible(false);
-					sell.visible(f.inventoryCount(rt) > 0);
-				} else
-				if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-					addButton.visible(player().inventoryCount(rt) > 0
-							&& f.inventoryCount(rt.category) < world().params().mediumshipLimit());
-					delButton.visible(false);
-					sell.visible(f.inventoryCount(rt) > 0);
-				} else {
-					addButton.visible(false);
-					delButton.visible(false);
-					sell.visible(false);
-				}
-				upgradeAll.visible(own && secondary == null && ps.hasMilitarySpaceport 
-						&& mayUpgradeAll(f)
-						
-				);
-
-				if (configure.selectedSlot != null) {
-					addOne.visible(
-							player().inventoryCount(rt) > 0
-							&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
-					);
-					removeOne.visible(
-							configure.selectedSlot.type != null && configure.selectedSlot.count > 0
-					);
-				}
-				
-				if (!control) {
-					addButton.visible(false);
-					delButton.visible(false);
-					addOne.visible(false);
-					removeOne.visible(false);
-					sell.visible(false);
-					upgradeAll.visible(false);
-				}
-			} else {
-				addButton.visible(false);
-				delButton.visible(false);
-				addOne.visible(false);
-				removeOne.visible(false);
-				sell.visible(false);
-				upgradeAll.visible(false);
-			}
-			
-			splitButton.visible(own && control && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
-			transferButton.visible(own && control && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && f.fleetsInRange(20).size() > 0);
-			deleteButton.visible(own && control && secondary == null && f.inventory.size() == 0);
+			updateFleet(f);
 		}
 		if (configure.selectedSlot != null) {
 			innerEquipmentVisible = true;
@@ -1753,6 +1398,415 @@ public class EquipmentScreen extends ScreenBase {
 		} else {
 			selectedNameAndType.text("");
 		}
+		
+		// ------------------------------------
+		
+		for (TechnologySlot ts : slots) {
+			if (ts.type != null 
+					&& (commons.world().player.isAvailable(ts.type) || commons.world().canResearch(ts.type))) {
+				setTooltip(ts, "production.line.tooltip", ts.type.longName, ts.type.description);
+			} else {
+				ts.tooltip(null);
+			}
+		}
+		
+		// ------------------------------------
+	}
+	/**
+	 * Update fleet related buttons and fields.
+	 * @param f fleet
+	 */
+	void updateFleet(Fleet f) {
+		// -----------------------------
+		setTooltip(upgradeAll, "equipment.upgrade_fleet.tooltip");
+		// -----------------------------
+
+		
+		ResearchType rt = research();
+		if (fleetShown != f || lastSelection != player().selectionMode) {
+			fleetShown = f;
+			lastSelection = player().selectionMode;
+			updateCurrentInventory();
+			minimap.moveTo(f.x, f.y);
+			editPrimary = editNew;
+			editNew = false;
+			editSecondary = false;
+			configure.type = research();
+			configure.item = f.getInventoryItem(research());
+			configure.selectedSlot = null;
+			transferMode = false;
+			secondary = null;
+			doSelectVehicle(research());
+			doSelectListVehicle(research());
+		}
+		
+		boolean own = f.owner == player();
+		boolean control = world().scripting.mayControlFleet(f);
+		
+		FleetStatistics fs = f.getStatistics();
+		
+		prepareCells(null, f, leftFighterCells, leftTankCells);
+
+		PlanetStatistics ps = fs.planet != null ? fs.planet.getStatistics() : null;
+		
+		List<Fleet> fleets = player().ownFleets();
+		int idx = fleets.indexOf(f);
+		prev.enabled(idx > 0);
+		next.enabled(idx < fleets.size() - 1);
+		
+		planetVisible = false;
+		if (editPrimary && (animationStep % 10) < 5) {
+			fleetName.text(f.name + "-");
+		} else {
+			if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
+				fleetName.text(f.name);
+			} else {
+				fleetName.text(get("fleetinfo.alien_fleet"));
+			}
+		}
+		if (own) {
+			spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount), true).visible(true);
+			spaceshipsMaxLabel.text(format("equipment.max", world().params().mediumshipLimit()), true).visible(true);
+			fightersLabel.text(format("equipment.fighters", fs.fighterCount), true);
+			vehiclesLabel.text(format("equipment.vehicles", fs.vehicleCount), true);
+			fightersMaxLabel.text(format("equipment.maxpertype", world().params().fighterLimit()), true);
+			vehiclesMaxLabel.text(format("equipment.max", fs.vehicleMax), true);
+		} else {
+			if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
+				spaceshipsLabel.text(format("equipment.spaceships", fs.cruiserCount + fs.battleshipCount), true).visible(true);
+				int fcnt = (fs.fighterCount / 10) * 10;
+				int fcnt2 = fcnt + 10;
+				fightersLabel.text(format("equipment.fighters", fcnt + ".." + fcnt2), true);
+			} else {
+				spaceshipsLabel.text("");
+				fightersLabel.text("");
+			}
+			spaceshipsMaxLabel.text("");
+			vehiclesLabel.text("");
+			fightersMaxLabel.text("");
+			vehiclesMaxLabel.text("");
+		}
+		if (secondary != null) {
+			secondaryLabel.visible(true);
+			if (editSecondary && (animationStep % 10) < 5) {
+				secondaryValue.text(secondary.name + "-").visible(true);
+			} else {
+				secondaryValue.text(secondary.name).visible(true);
+			}
+			FleetStatistics fs2 = secondary.getStatistics();
+			secondaryFighters.text(format("equipment.fighters", fs2.fighterCount), true).visible(true);
+			secondaryVehicles.text(format("equipment.vehiclesandmax", fs2.vehicleCount, fs2.vehicleMax), true).visible(true);
+			
+			boolean bleft = false;
+			boolean bright = false;
+			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				bleft = f.inventoryCount(rt) < world().params().fighterLimit() && secondary.inventoryCount(rt) > 0;
+				bright = f.inventoryCount(rt) > 0 && secondary.inventoryCount(rt) < world().params().fighterLimit();
+			} else
+			if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				bleft = fs.vehicleCount < fs.vehicleMax && secondary.inventoryCount(rt) > 0;
+				bright = fs2.vehicleCount < fs.vehicleMax && f.inventoryCount(rt) > 0;
+			} else
+			if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+				bleft = fs.battleshipCount < world().params().battleshipLimit() && secondary.inventoryCount(rt) > 0;
+				bright = f.inventoryCount(rt) > 0 && fs2.battleshipCount < world().params().battleshipLimit();
+			} else
+			if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				bleft = fs.cruiserCount < world().params().mediumshipLimit() && secondary.inventoryCount(rt) > 0;
+				bright = f.inventoryCount(rt) > 0 && fs2.cruiserCount < world().params().mediumshipLimit();
+			}
+			left1.visible(bleft);
+			left2.visible(bleft);
+			left3.visible(bleft);
+			
+			right1.visible(bright);
+			right2.visible(bright);
+			right3.visible(bright);
+
+			listButton.visible(transferMode);
+			endSplit.visible(!transferMode);
+			endJoin.visible(transferMode);
+			
+			infoButton.visible(false);
+			configure.visible(false);
+			selectedNameAndType.visible(false);
+			rightList.visible(true);
+			prepareCells(null, secondary, rightFighterCells, rightTankCells);
+			
+			transferButton.visible(false);
+			splitButton.visible(false);
+			deleteButton.visible(false);
+		} else {
+			infoButton.visible(true);
+			endSplit.visible(false);
+			endJoin.visible(false);
+			secondaryLabel.visible(false);
+			secondaryValue.visible(false);
+			secondaryFighters.visible(false);
+			secondaryVehicles.visible(false);
+			editSecondary = false;
+			listButton.visible(true);
+			configure.visible(true);
+			clearCells(rightFighterCells);
+			clearCells(rightTankCells);
+			
+			left1.visible(false);
+			left2.visible(false);
+			left3.visible(false);
+			
+			right1.visible(false);
+			right2.visible(false);
+			right3.visible(false);
+			rightList.visible(false);
+			selectedNameAndType.visible(true);
+		}
+		
+		fleetStatusLabel.visible(true);
+		if (f.targetFleet == null && f.targetPlanet() == null) {
+			if (f.waypoints.size() > 0) {
+				fleetStatusLabel.text(format("fleetstatus.moving"), true);
+			} else {
+				if (fs.planet != null) {
+					fleetStatusLabel.text(format("fleetstatus.stopped.at", fs.planet.name), true);
+				} else {
+					fleetStatusLabel.text(format("fleetstatus.stopped"), true);
+				}
+			}
+		} else {
+			if (f.mode == FleetMode.ATTACK) {
+				if (f.targetFleet != null) {
+					fleetStatusLabel.text(format("fleetstatus.attack", f.targetFleet.name), true);
+				} else {
+					fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet().name), true);
+				}
+			} else {
+				if (f.targetFleet != null) {
+					fleetStatusLabel.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
+				} else {
+					fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet().name), true);
+				}
+			}
+		}
+		
+		battleships.visible(world().level >= 3);
+		cruisers.visible(true);
+		cruisersEmpty.visible(false);
+		stations.visible(false);
+		battleshipsAndStationsEmpty.visible(world().level < 3);
+		
+		newButton.visible(own && secondary == null && ps != null && fs.planet.owner == f.owner && ps.hasMilitarySpaceport);
+		noSpaceport.visible(secondary == null && ps != null && fs.planet.owner == f.owner && !ps.hasMilitarySpaceport);
+		notYourPlanet.visible(false);
+		noPlanetNearby.visible(own && secondary == null && ps == null);
+		noSpaceStation.visible(false);
+		noFlagship.visible(!noPlanetNearby.visible()
+				&& !noSpaceport.visible()
+				&& own && fs.battleshipCount == 0 
+				&& (research().category == ResearchSubCategory.WEAPONS_TANKS
+				|| research().category == ResearchSubCategory.WEAPONS_VEHICLES));
+
+		if (ps != null && fs.planet.owner == f.owner 
+				&& ps.hasMilitarySpaceport && secondary == null) {
+			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				addButton.visible(player().inventoryCount(rt) > 0
+						&& f.inventoryCount(rt) < world().params().fighterLimit());
+				delButton.visible(f.inventoryCount(rt) > 0);
+				sell.visible(f.inventoryCount(rt) > 0);
+			} else
+			if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				addButton.visible(
+						fs.vehicleCount < fs.vehicleMax
+						&& player().inventoryCount(rt) > 0);
+				delButton.visible(
+						f.inventoryCount(rt) > 0);
+				sell.visible(f.inventoryCount(rt) > 0);
+			} else
+			if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+				addButton.visible(player().inventoryCount(rt) > 0
+						&& f.inventoryCount(rt.category) < world().params().battleshipLimit());
+				delButton.visible(false);
+				sell.visible(f.inventoryCount(rt) > 0);
+			} else
+			if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+				addButton.visible(player().inventoryCount(rt) > 0
+						&& f.inventoryCount(rt.category) < world().params().mediumshipLimit());
+				delButton.visible(false);
+				sell.visible(f.inventoryCount(rt) > 0);
+			} else {
+				addButton.visible(false);
+				delButton.visible(false);
+				sell.visible(false);
+			}
+			upgradeAll.visible(own && secondary == null && ps.hasMilitarySpaceport 
+					&& mayUpgradeAll(f)
+					
+			);
+
+			if (configure.selectedSlot != null) {
+				addOne.visible(
+						player().inventoryCount(rt) > 0
+						&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
+				);
+				removeOne.visible(
+						configure.selectedSlot.type != null && configure.selectedSlot.count > 0
+				);
+			}
+			
+			if (!control) {
+				addButton.visible(false);
+				delButton.visible(false);
+				addOne.visible(false);
+				removeOne.visible(false);
+				sell.visible(false);
+				upgradeAll.visible(false);
+			}
+		} else {
+			addButton.visible(false);
+			delButton.visible(false);
+			addOne.visible(false);
+			removeOne.visible(false);
+			sell.visible(false);
+			upgradeAll.visible(false);
+		}
+		
+		splitButton.visible(own && control && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 1);
+		transferButton.visible(own && control && secondary == null && fs.battleshipCount + fs.cruiserCount + fs.fighterCount + fs.vehicleCount > 0 && f.fleetsInRange(20).size() > 0);
+		deleteButton.visible(own && control && secondary == null && f.inventory.size() == 0);
+	}
+	/**
+	 * Update planet-related buttons and fields.
+	 */
+	void updatePlanet() {
+		ResearchType rt = research();
+
+		// -----------------------------
+		setTooltip(upgradeAll, "equipment.upgrade_planet.tooltip");
+		// -----------------------------
+
+		
+		PlanetStatistics ps = planet().getStatistics();
+		
+		boolean own = planet().owner == player();
+		
+		newButton.visible(own && ps.hasMilitarySpaceport);
+		notYourPlanet.visible(!own);
+		noPlanetNearby.visible(false);
+		upgradeAll.visible(own && mayUpgradeAll(planet(), ps));
+		
+		if (planetShown != planet() || lastSelection != player().selectionMode) {
+			planetShown = planet();
+			lastSelection = player().selectionMode;
+			updateCurrentInventory();
+			minimap.moveTo(planet().x, planet().y);
+		}
+		
+		planetVisible = true;
+		List<Planet> planets = player().ownPlanets();
+		Collections.sort(planets, Planet.NAME_ORDER);
+		int idx = planets.indexOf(planet());
+		prev.enabled(idx > 0);
+		next.enabled(idx < planets.size() - 1);
+		fleetName.text(planet().name);
+		
+		spaceshipsLabel.visible(false);
+		spaceshipsMaxLabel.visible(false);
+		if (own) {
+			fightersLabel.text(format("equipment.fighters", ps.fighterCount), true);
+			vehiclesLabel.text(format("equipment.vehicles", ps.vehicleCount), true);
+			if (ps.hasSpaceStation) {
+				fightersMaxLabel.text(format("equipment.maxpertype", world().params().fighterLimit()), true);
+			} else {
+				fightersMaxLabel.text(format("equipment.max", 0), true);
+			}
+			vehiclesMaxLabel.text(format("equipment.max", ps.vehicleMax), true);
+		} else {
+			fightersLabel.text("");
+			vehiclesLabel.text("");
+			fightersMaxLabel.text("");
+			vehiclesMaxLabel.text("");
+		}
+		
+		fleetStatusLabel.visible(false);
+		
+		secondaryLabel.visible(false);
+		secondaryFighters.visible(false);
+		secondaryVehicles.visible(false);
+		secondaryValue.visible(false);
+		
+		prepareCells(planet(), null, leftFighterCells, leftTankCells);
+		clearCells(rightFighterCells);
+		clearCells(rightTankCells);
+		
+		battleships.visible(false);
+		cruisers.visible(false);
+		cruisersEmpty.visible(true);
+		stations.visible(true);
+		
+		if (own && rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+			addButton.visible(player().inventoryCount(rt) > 0
+					&& planet().inventoryCount(rt.category, player()) < world().params().stationLimit());
+			delButton.visible(false);
+			sell.visible(planet().inventoryCount(rt, player()) > 0);
+		} else
+		if (own && ps.hasSpaceStation 
+				&& rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+			addButton.visible(
+					player().inventoryCount(rt) > 0
+					&& planet().inventoryCount(rt, player()) < world().params().fighterLimit());
+			delButton.visible(
+					planet().inventoryCount(rt, player()) > 0
+			);
+			sell.visible(delButton.visible());
+		} else
+		if (own && rt.category == ResearchSubCategory.WEAPONS_TANKS
+				|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+			addButton.visible(player().inventoryCount(rt) > 0
+					&& ps.vehicleCount < ps.vehicleMax);
+			delButton.visible(
+					planet().inventoryCount(rt, player()) > 0);
+			sell.visible(delButton.visible());
+		} else {
+			addButton.visible(false);
+			delButton.visible(false);
+			sell.visible(false);
+		}
+		noSpaceStation.visible(own && !ps.hasSpaceStation 
+				&& rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS);
+
+		addOne.visible(false);
+		removeOne.visible(false);
+		editPrimary = false;
+		editSecondary = false;
+		transferMode = false;
+		secondary = null;
+//			configure.item = null;
+//			configure.selectedSlot = null;
+		deleteButton.visible(false);
+		splitButton.visible(false);
+		transferButton.visible(false);
+		noSpaceport.visible(false);
+
+		if (configure.selectedSlot != null) {
+			addOne.visible(
+					player().inventoryCount(rt) > 0
+					&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
+			);
+			removeOne.visible(
+					configure.selectedSlot.type != null && configure.selectedSlot.count > 0
+			);
+		}
+
+		left1.visible(false);
+		left2.visible(false);
+		left3.visible(false);
+		
+		right1.visible(false);
+		right2.visible(false);
+		right3.visible(false);
+
+		noFlagship.visible(false);
 	}
 	/** 
 	 * Clear the cells. 

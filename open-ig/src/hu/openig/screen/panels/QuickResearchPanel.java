@@ -18,11 +18,9 @@ import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
-import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.CommonResources;
-import hu.openig.screen.api.ResearchProductionAnimation;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -316,11 +314,7 @@ public class QuickResearchPanel extends UIContainer {
 						QuickResearchPanel.this.visible(false);
 						askRepaint();
 						commons.player().currentResearch(ri.first);
-						if (commons.control().secondary() == Screens.RESEARCH
-								|| commons.control().secondary() == Screens.PRODUCTION) {
-							ResearchProductionAnimation rps = (ResearchProductionAnimation)commons.control().getScreen(commons.control().secondary());
-							rps.playAnim(ri.first);
-						}
+						commons.selectAnim(ri.first);
 					}
 				};
 				cl.description = Pair.of(ri.first.longName + "  (" + ri.first.researchCost + " cr)", ri.first.description);
@@ -538,6 +532,13 @@ public class QuickResearchPanel extends UIContainer {
 	/** Clear contents. */
 	public void clear() {
 		researches.clear();
+		for (int i = components.size() - 1; i >= 0; i--) {
+			UIComponent c = components.get(i);
+			if (c instanceof QuickResearchLabel) {
+				components.remove(i);
+			}
+		}
+
 	}
 	@Override
 	public UIComponent visible(boolean state) {

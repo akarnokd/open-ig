@@ -36,6 +36,7 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -100,6 +101,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		UILabel completion;
 		/** The activation event. */
 		public Action0 onPress;
+		/** Was the shift pressed? */
+		boolean shiftDown;
 		/** Initialize the inner fields. */
 		public ProductionLine() {
 			base = new UIImage(commons.research().productionLine);
@@ -122,7 +125,11 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				@Override
 				public void invoke() {
 					buttonSound(SoundType.CLICK_HIGH_2);
-					doChangeCount(-1);
+					int cnt = -1;
+					if (shiftDown) {
+						cnt *= 10;
+					}
+					doChangeCount(cnt);
 				}
 			};
 			morePriority = new UIImageButton(commons.research().more);
@@ -140,7 +147,11 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				@Override
 				public void invoke() {
 					buttonSound(SoundType.CLICK_HIGH_2);
-					doChangeCount(1);
+					int cnt = 1;
+					if (shiftDown) {
+						cnt *= 10;
+					}
+					doChangeCount(cnt);
 				}
 			};
 			
@@ -165,6 +176,11 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			moreBuild.location(383, 5);
 			completion.bounds(394, 2, 125, 18);
 			
+			moreBuild.tooltip(commons.get("production.one_less.tooltip"));
+			lessBuild.tooltip(commons.get("production.one_more.tooltip"));
+			morePriority.tooltip(commons.get("production.more_priority.tooltip"));
+			lessPriority.tooltip(commons.get("production.less_priority.tooltip"));
+			
 			addThis();
 		}
 		/** Clear the textual values of the line. */
@@ -178,6 +194,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		}
 		@Override
 		public boolean mouse(UIMouse e) {
+			shiftDown = e.has(Modifier.SHIFT);
 			boolean rep = false;
 			if (e.has(Type.DOWN)) {
 				select(true);
@@ -472,6 +489,10 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	UILabel needsOrbitalFactory;
 	/** The statistics display cache deferred by ~500ms. */
 	PlanetStatistics statistics;
+	/** Pause R/P. */
+	UIImageButton pause;
+	/** Resume R/P. */
+	UIImageButton resume;
 	/**
 	 * Create a sub category image button with the given graphics.
 	 * @param cat the target category
@@ -1162,6 +1183,30 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		needsOrbitalFactory.visible(false);
 		needsOrbitalFactory.horizontally(HorizontalAlignment.CENTER);
 		
+		pause = new UIImageButton(commons.common().pauseAll);
+		pause.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				if (mode == Screens.RESEARCH) {
+					player().pauseResearch = true;
+				} else {
+					player().pauseProduction = true;
+				}
+			}
+		};
+		resume = new UIImageButton(commons.common().moveRight);
+		resume.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				if (mode == Screens.RESEARCH) {
+					player().pauseResearch = false;
+				} else {
+					player().pauseProduction = false;
+				}
+			}
+		};
+		
+		
 		addThis();
 		add(slots);
 		add(productionLines);
@@ -1342,8 +1387,21 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		totalCapacityValue.size(59, 10);
 		
 		needsOrbitalFactory.bounds(productionBase.x + 398, productionBase.y + 137, 120, 14);
+		
+		pause.location(mainCategory.x + mainCategory.width - pause.width - 5, mainCategory.y + mainCategory.height - pause.height - 5);
+		resume.location(pause.location());
 	}
 	@Override
+	public void playAnim(ResearchType rt, boolean switchTo) {
+		playAnim(rt);
+		if (switchTo) {
+			doSelectTechnology(rt);
+		}
+	}
+	/**
+	 * Play the given animation.
+	 * @param rt the technology
+	 */
 	public void playAnim(ResearchType rt) {
 		if (videoRenderer != null) {
 			videoRenderer.stop();
@@ -1707,6 +1765,27 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		if (rt == animationResearch && player().isAvailable(rt) !=  animationResearchReady) {
 			playAnim(rt);
 		}
+		if (mode == Screens.RESEARCH) {
+			pause.visible(!player().pauseResearch);
+			setTooltip(pause, "research.pause");
+			resume.visible(player().pauseResearch);
+			setTooltip(resume, "research.resume");
+		} else {
+			pause.visible(!player().pauseProduction);
+			setTooltip(pause, "production.pause");
+			resume.visible(player().pauseProduction);
+			setTooltip(resume, "production.resume");
+		}
+		
+		for (TechnologySlot ts : slots) {
+			if (ts.type != null 
+					&& (commons.world().player.isAvailable(ts.type) || commons.world().canResearch(ts.type))) {
+				setTooltip(ts, "production.line.tooltip", ts.type.longName, ts.type.description);
+			} else {
+				ts.tooltip(null);
+			}
+		}
+
 	}
 	/** 
 	 * Update values for the active research. 
@@ -1854,11 +1933,16 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			}
 			pl.count.text("" + pr.count);
 			pl.completion.text(String.format(" %3s%%  %s", (pr.progress * 100 / pr.type.productionCost), pr.count * pr.type.productionCost));
+			
+			setTooltip(pl, "production.line.tooltip", rt.longName, rt.description);
+			setTooltip(pl.name, "production.line.tooltip", rt.longName, rt.description);
+			
 			row++;
 		}
 		for (int i = row; i < 5; i++) {
 			ProductionLine pl = productionLines.get(i);
 			pl.enabled(false);
+			pl.tooltip(null);
 			pl.clear();
 		}
 		addButton.visible(

@@ -18,7 +18,7 @@ public interface ResearchProductionAnimation {
 	/**
 	 * Play animation for the given research.
 	 * @param rt the target research
+	 * @param switchTo change the current selected categories?
 	 */
-	void playAnim(ResearchType rt);
-
+	void playAnim(ResearchType rt, boolean switchTo);
 }

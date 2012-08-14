@@ -254,6 +254,9 @@ public class Configuration {
 	/** Show tooltips? */
 	@LoadSave
 	public boolean showTooltips = true;
+	/** How many technology to remember. */
+	@LoadSave
+	public int productionHistoryLimit = 10;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

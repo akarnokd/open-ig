@@ -521,10 +521,12 @@ public class StatusbarScreen extends ScreenBase {
 				quickProductionButton.text = "-";
 			}
 			
-			quickProduction.update();
-			quickProduction.location(quickProductionButton.x + MENU_ICON_WIDTH - quickProduction.width, quickProductionButton.y + quickProductionButton.height);
-			if (quickProduction.x < 0) {
-				quickProduction.x = 0;
+			if (quickProduction.visible()) {
+				quickProduction.update();
+				quickProduction.location(quickProductionButton.x + MENU_ICON_WIDTH - quickProduction.width, quickProductionButton.y + quickProductionButton.height);
+				if (quickProduction.x < 0) {
+					quickProduction.x = 0;
+				}
 			}
 			
 			setTooltip(quickProductionButton, "statusbar.quickproduction");
@@ -577,12 +579,13 @@ public class StatusbarScreen extends ScreenBase {
 						setTooltip(quickResearchButton, "statusbar.quickresearch.none");
 					}
 				}
-				quickResearch.update();
-				quickResearch.location(quickResearchButton.x + MENU_ICON_WIDTH - quickResearch.width, quickResearchButton.y + quickResearchButton.height);
-				if (quickResearch.x < 0) {
-					quickResearch.x = 0;
+				if (quickResearch.visible()) {
+					quickResearch.update();
+					quickResearch.location(quickResearchButton.x + MENU_ICON_WIDTH - quickResearch.width, quickResearchButton.y + quickResearchButton.height);
+					if (quickResearch.x < 0) {
+						quickResearch.x = 0;
+					}
 				}
-				
 			} else {
 				quickResearch.visible(false);
 				setTooltip(quickResearchButton, null);
@@ -919,9 +922,43 @@ public class StatusbarScreen extends ScreenBase {
 	/** Toggle the quick research panel. */
 	public void toggleQuickResearch() {
 		quickResearch.visible(!quickResearch.visible());
+		if (quickResearch.visible()) {
+			quickProduction.visible(false);
+		}
 	}
 	/** Toggle the quick research panel. */
 	public void toggleQuickProduction() {
 		quickProduction.visible(!quickProduction.visible());
+		if (quickProduction.visible()) {
+			quickResearch.visible(false);
+		}
+	}
+	/**
+	 * Check if the event is over one of the quick panels?
+	 * @param e the event
+	 * @return true if over an event
+	 */
+	public boolean overPanel(UIMouse e) {
+		if (quickResearch.visible()) {
+			if (quickResearch.within(e)) {
+				return true;
+			}
+		}
+		if (quickProduction.visible()) {
+			if (quickProduction.within(e)) {
+				return true;
+			}
+		}
+		if (screenMenu.visible()) {
+			if (screenMenu.within(e)) {
+				return true;
+			}
+		}
+		if (notificationHistory.visible()) {
+			if (notificationHistory.within(e)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
