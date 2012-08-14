@@ -6,6 +6,16 @@
 
 == August, 2012 ==
 
+*August 14, 2012*
+
+We are making progress again! See the [https://code.google.com/p/open-ig/wiki/Game_Notes release notes] for details.
+
+In the mean time, you could help us by filling in the following questionare in either english or hungarian:
+
+[https://docs.google.com/spreadsheet/viewform?formkey=dE9uSTQ5RUlNUS14MTBzNmRRallOSlE6MQ#gid=0 English form]
+
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/hungarian.png' alt='Hungarian flag' width='32'/>[https://docs.google.com/spreadsheet/viewform?formkey=dHlxTFFPVHo3NmtQQlJJdW1WSkloQkE6MA#gid=0 Magyar űrlap]
+
 *August 8, 2012*
 
 Sorry for the inactivity period. I was submerged into my professional job activities lately, but I have 2 weeks of free time coming up soon. The major things I planned:
