@@ -40,7 +40,8 @@
 || Plus/Minus || Any || Move to next/previous player colony ||
 || X || Any || Show or hide quick research panel. ||
 || C || Any || Show or hide quick production panel. ||
-|| CTRL+X || Toggle between fixed 30 frame/sec rendering and unrestricted frame/sec rendering modes ||
+|| CTRL+X || Any || Toggle between fixed 30 frame/sec rendering and unrestricted frame/sec rendering modes ||
+|| CTRL+Y || Any || Toggle UI debug mode. ||
 
 == Mouse gestures ==
 
