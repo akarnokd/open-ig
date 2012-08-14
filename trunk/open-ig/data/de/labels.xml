@@ -2799,13 +2799,13 @@
 	<entry key="options.back.tooltip.mainmenu">Back to [c=FFFFFFFF]Main menu[/c].</entry>
 	<entry key="options.back.tooltip.ingame">Back to [c=FFFFFFFF]Game[/c].</entry>
 	<entry key="mainmenu.single.tooltip">Start a new single player campaing or skirmish.</entry>
-	<entry key="statusbar.quickproduction">Quick production panel[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: production screen</entry>
-	<entry key="statusbar.quickresearch.none">Quick research panel[n]No active research[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
-	<entry key="statusbar.quickresearch.running">Quick research panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
-	<entry key="statusbar.quickresearch.available">Quick research panel[n]Kutatási lehetőségek vannak[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
-	<entry key="statusbar.quickresearch.problem.LAB">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]kapacitáshiány[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
-	<entry key="statusbar.quickresearch.problem.MONEY">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]pénzhiány[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
-	<entry key="statusbar.quickresearch.problem.STOPPED">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]leállítva[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen</entry>
+	<entry key="statusbar.quickproduction">Quick production panel[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: production screen[n]Panel shortcut: [c=FFFFFFFF]C[/c]</entry>
+	<entry key="statusbar.quickresearch.none">Quick research panel[n]No active research[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.running">Quick research panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.available">Quick research panel[n]Kutatási lehetőségek vannak[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.problem.LAB">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]kapacitáshiány[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.problem.MONEY">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]pénzhiány[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
+	<entry key="statusbar.quickresearch.problem.STOPPED">Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]leállítva[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
 	<entry key="statusbar.pause.tooltip">Pause[n]Shortcut: [c=FFFFFFFF]SPACE[/c]</entry>
 	<entry key="statusbar.speed1.tooltip">Normal speed[n]Shortcut: [c=FFFFFFFF]1[/c]</entry>
 	<entry key="statusbar.speed2.tooltip">Double speed[n]Shortcut: [c=FFFFFFFF]2[/c]</entry>
@@ -2972,7 +2972,37 @@
 	<entry key='quickproduction.ship_title'>Schiffsproduction</entry>
 	<entry key='quickproduction.weapon_title'>Waffenproduction</entry>
 	<entry key='quickproduction.equipment_title'>Ausrüstungsproduction</entry>
-	<entry key=""></entry>
+	<entry key="research.pause">Pause Forschungsaktivitäten.</entry>
+	<entry key="research.resume">Forschungsaktivitäten vortfahren.</entry>
+	<entry key="production.pause">Pause all Produktionsaktivitäten.</entry>
+	<entry key="production.resume">Produktionsaktivitäten vortfahren.</entry>
+	<entry key="quickproduction.no_active">Kein Technologie ausgewählt</entry>
+	<entry key="quickproduction.cost_inventory">Kosten: %,d cr    Inventar: %,d</entry>
+	
+	<entry key="production.one_less.tooltip">Produktionszahl mit eins reduzieren.[n]Halte [c=FFFFFFFF]SHIFT[/c] um es mit 10 zu reduzieren.</entry>
+	<entry key="production.one_more.tooltip">Produktionszahl mit eins erhöhen.[n]Halte [c=FFFFFFFF]SHIFT[/c] um es mit 10 zu reduzieren.</entry>
+	<entry key="quickproduction.remove.tooltip">Producktion beenden.</entry>
+	<entry key="production.more_priority.tooltip">Produktionspriorität mit 5 erhöhen.[n]Der minimale Priorität ist 0, dabei der Produktion ist pausiert. Der maximale Priorität ist 100.</entry>
+	<entry key="production.less_priority.tooltip">Produktionspriorität mit 5 reduzieren.[n]Der minimale Priorität ist 0, dabei der Produktion ist pausiert. Der maximale Priorität ist 100.</entry>
+	<entry key="production.line.tooltip">[c=FFFF0000]%s[/c][n]%s</entry>
+	
+	<entry key="equipment.upgrade_fleet.tooltip">Modernize fleet based on inventories:[n]- Equip all kinds of fighters[n]- Upgrade and fill-in equipment of larger ships[n]- Add 66%% best tank, 33%% best rocket sled[n]  one special unit per type</entry>
+	<entry key="equipment.upgrade_planet.tooltip">Modernize planet based on inventories:[n]- Equip all kinds of fighters[n]- Replace and add starbases[n]- Add 66%% best tank, 33%% best rocket sled[n]  one special unit per type</entry>
+	
+	<entry key="equipment.plus_one.tooltip">Ausrüstung hinzufügen</entry>
+	<entry key="equipment.minus_one.tooltip">Ausrüstung entfernen</entry>
+
+	<entry key="equipment.starbases.tooltip">Raumstationen</entry>
+	<entry key="equipment.battleships.tooltip">Flagschiffe</entry>
+	<entry key="equipment.cruisers.tooltip">Kreuzern and Zerstörern</entry>
+	<entry key="equipment.fighters.tooltip">Jäger</entry>
+	<entry key="equipment.tanks.tooltip">Tanks</entry>
+	<entry key="equipment.vehicles.tooltip">Fahrzeuge</entry>
+
+	<entry key="settings.classic_controls.tooltip">Modern mode:[n]  Move: [c=FFFFFFFF]SHIFT+Right mouse click[/c][n]  Attack: [c=FFFFFFFF]CTRL+Right mouse click[/c][n]  Map pan: [c=FFFFFFFF]Right mouse button[/c][n]  Map default zoom: [c=FFFFFFFF]Middle mouse button[/c][n]Classic mode:[n]  Move: [c=FFFFFFFF]Right click into space[/c][n]  Attack: [c=FFFFFFFF]Right click on enemy[/c][n]  Pan map: [c=FFFFFFFF]Middle mouse button[/c][n]  Map default zoom: [c=FFFFFFFF]CTRL+Middle mouse button[/c]</entry>
+	<entry key="equipment.move_one.tooltip">Eins transferieren</entry>
+	<entry key="equipment.move_half.tooltip">Halbe transferieren</entry>
+	<entry key="equipment.move_all.tooltip">Alle transferieren</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

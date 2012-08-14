@@ -53,6 +53,10 @@ public class Player {
 			production.put(cat, new LinkedHashMap<ResearchType, Production>());
 		}
 	}
+	/**
+	 * The production history.
+	 */
+	public final Map<ResearchMainCategory, List<ResearchType>> productionHistory = U.newHashMap();
 	/** The in-progress research. */
 	public final Map<ResearchType, Research> research = new HashMap<ResearchType, Research>();
 	/** The completed research. */
@@ -596,5 +600,22 @@ public class Player {
 	@Override
 	public String toString() {
 		return id;
+	}
+	/**
+	 * Add an entry to the production history.
+	 * @param rt the technology
+	 * @param limit the maximum limit
+	 */
+	public void addProductionHistory(ResearchType rt, int limit) {
+		List<ResearchType> rts = productionHistory.get(rt.category.main);
+		if (rts == null) {
+			rts = U.newArrayList();
+			productionHistory.put(rt.category.main, rts);
+		}
+		rts.remove(rt);
+		rts.add(0, rt);
+		for (int j = rts.size() - 1; j >= limit; j--) {
+			rts.remove(j);
+		}
 	}
 }

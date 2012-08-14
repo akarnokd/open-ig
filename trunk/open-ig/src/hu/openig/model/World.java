@@ -1054,6 +1054,15 @@ public class World {
 			xtoday.set("repair", p.today.repairCost);
 			xtoday.set("research", p.today.researchCost);
 			xtoday.set("production", p.today.productionCost);
+
+			// save production history (backwards!)
+			XElement xprodHist = xp.add("production-history");
+			for (List<ResearchType> rts : p.productionHistory.values()) {
+				for (int j = rts.size() - 1; j >= 0; j--) {
+					XElement xtech = xprodHist.add("tech");
+					xtech.set("id", rts.get(j).id);
+				}
+			}
 			
 			for (Map.Entry<ResearchMainCategory, Map<ResearchType, Production>> prods : p.production.entrySet()) {
 				if (prods.getValue().size() > 0) {
@@ -1403,6 +1412,20 @@ public class World {
 				p.aiMode = AIMode.valueOf(aim);
 			}
 
+			p.productionHistory.clear();
+			XElement xprodHist = xplayer.childElement("production-history");
+			if (xprodHist != null) {
+				for (XElement xph : xprodHist.childrenWithName("tech")) {
+					String id = xph.get("id");
+					ResearchType rt = researches.get(id);
+					if (rt == null) {
+						System.out.println("Warning: unknown technology in production history: " + id);
+					} else {
+						p.addProductionHistory(rt, config.productionHistoryLimit);
+					}
+					
+				}
+			}
 			
 //			XElement xdipl = xplayer.childElement("diplomacy");
 			// FIXME load pending diplomatic offers

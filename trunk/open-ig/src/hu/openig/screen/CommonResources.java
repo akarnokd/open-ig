@@ -36,6 +36,7 @@ import hu.openig.model.GameEnvironment;
 import hu.openig.model.Labels;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
+import hu.openig.model.ResearchType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
@@ -44,6 +45,7 @@ import hu.openig.model.SoundType;
 import hu.openig.model.World;
 import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
+import hu.openig.screen.api.ResearchProductionAnimation;
 import hu.openig.sound.Sounds;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -1153,5 +1155,15 @@ public class CommonResources implements GameEnvironment {
 	/** @return the main player */
 	public Player player() {
 		return world().player;
+	}
+	/**
+	 * Instruct the R/P screen to play the animation of the technology.
+	 * @param rt the technology
+	 */
+	public void selectAnim(ResearchType rt) {
+		Screens sb = control().secondary();
+		if (sb == Screens.RESEARCH || sb == Screens.PRODUCTION) {
+			((ResearchProductionAnimation)control().getScreen(sb)).playAnim(rt, true);
+		}
 	}
 }

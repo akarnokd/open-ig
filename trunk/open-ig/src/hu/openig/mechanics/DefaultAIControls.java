@@ -60,7 +60,7 @@ public class DefaultAIControls implements AIControls {
 		if (p.runningResearch() != null) {
 			Research r = p.research.get(p.runningResearch());
 			r.state = ResearchState.STOPPED;
-			log("PauseResearch, Type = %s", r.type.id);
+			log(p, "PauseResearch, Type = %s", r.type.id);
 		}
 		p.runningResearch(rt);
 		Research r = p.research.get(rt);
@@ -96,13 +96,13 @@ public class DefaultAIControls implements AIControls {
 		fleet.y = location.y;
 
 		p.fleets.put(fleet, FleetKnowledge.FULL);
-		log("CreateFleet, Fleet = %s, Planet = %s", fleet.name, location.id);
+		log(p, "CreateFleet, Fleet = %s, Planet = %s", fleet.name, location.id);
 		return fleet;
 	}
 	@Override
 	public void actionDeploySatellite(Planet planet, ResearchType satellite) {
 		if (!actionDeploySatellite(p, planet, satellite)) {
-			log("DeploySatellite, Planet = %s, Type = %s, FAILED = not in inventory", planet.id, satellite.id);
+			log(p, "DeploySatellite, Planet = %s, Type = %s, FAILED = not in inventory", planet.id, satellite.id);
 //		} else {
 //			log("DeploySatellite, Planet = %s, Type = %s", planet.id, satellite.id);
 		}
@@ -130,6 +130,8 @@ public class DefaultAIControls implements AIControls {
 				player.statistics.moneySpent -= m;
 				player.world.statistics.moneyProduction -= m;
 				player.world.statistics.moneySpent -= m;
+				
+				player.addProductionHistory(rt, player.world.config.productionHistoryLimit);
 			}
 		}
 	}
@@ -233,6 +235,17 @@ public class DefaultAIControls implements AIControls {
 
 	@Override
 	public void actionStartProduction(ResearchType rt, int count, int priority) {
+		actionStartProduction(p, rt, count, priority);
+	}
+	/**
+	 * Start or change production counts of a specific technology.
+	 * @param p the player
+	 * @param rt the technology
+	 * @param count the count delta
+	 * @param priority the new priority
+	 * @return true if the action succeeded
+	 */
+	public static boolean actionStartProduction(Player p, ResearchType rt, int count, int priority) {
 		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
 		Production prod = prodLine.get(rt);
 		if (prod == null) {
@@ -241,13 +254,15 @@ public class DefaultAIControls implements AIControls {
 				prod.type = rt;
 				prodLine.put(rt, prod);
 			} else {
-				log("StartProduction, Type = %s, Count = %s, Priority = %s, Failed = production line limit", rt.id, count, priority);
-				return;
+				log(p, "StartProduction, Type = %s, Count = %s, Priority = %s, Failed = production line limit", rt.id, count, priority);
+				return false;
 			}
 		}
 		prod.priority = priority;
-		prod.count += count;
+		prod.count = Math.max(prod.count + count, 0);
+		p.addProductionHistory(rt, p.world.config.productionHistoryLimit);
 //		log("StartProduction, Type = %s, Count = %s, Priority = %s", rt.id, count, priority);
+		return true;
 	}
 	@Override
 	public void actionPauseProduction(ResearchType rt) {
@@ -256,12 +271,12 @@ public class DefaultAIControls implements AIControls {
 		if (prod != null) {
 			prod.priority = 0;
 		}
-		log("PauseProduction, Type = %s", rt.id);
+		log(p, "PauseProduction, Type = %s", rt.id);
 	}
 	@Override
 	public AIResult actionPlaceBuilding(Planet planet, BuildingType buildingType) {
 		if (!planet.canBuild(buildingType)) {
-			log("PlaceBuilding, Planet = %s, Type = %s, FAIL = not supported or no colony hub", planet.id, buildingType.id);
+			log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = not supported or no colony hub", planet.id, buildingType.id);
 			return AIResult.NO_AVAIL;
 		} else
 		if (p.money >= buildingType.cost) {
@@ -271,11 +286,11 @@ public class DefaultAIControls implements AIControls {
 //				log("PlaceBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
 				return AIResult.SUCCESS;
 			} else {
-				log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
+				log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
 				return AIResult.NO_ROOM;
 			}
 		} else {
-			log("PlaceBuilding, Planet = %s, Type = %s, FAIL = no money", planet.id, buildingType.id);
+			log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = no money", planet.id, buildingType.id);
 			return AIResult.NO_MONEY;
 		}
 	}
@@ -310,7 +325,7 @@ public class DefaultAIControls implements AIControls {
 	@Override
 	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {
 		if (!AutoBuilder.upgrade(w, planet, building, newLevel)) {
-			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s, FAILED = level limit", planet.id, building.type.id, newLevel);
+			log(p, "UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s, FAILED = level limit", planet.id, building.type.id, newLevel);
 //		} else {
 //			log("UpgradeBuilding, Planet = %s, Building = %s, NewLevel = %s", planet.id, building.type.id, newLevel);			
 		}
@@ -325,14 +340,14 @@ public class DefaultAIControls implements AIControls {
 		fleet.task = FleetTask.ATTACK;
 		fleet.targetPlanet(planet);
 		fleet.mode = FleetMode.ATTACK;
-		log("AttackPlanet, Attacker = %s, Defender = %s", fleet.name, planet.name);
+		log(p, "AttackPlanet, Attacker = %s, Defender = %s", fleet.name, planet.name);
 	}
 	@Override
 	public void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense) {
 		fleet.task = FleetTask.ATTACK;
 		fleet.targetFleet = enemy;
 		fleet.mode = FleetMode.ATTACK;
-		log("AttackFleet, Attacker = %s, Defender = %s", fleet.name, enemy.name);
+		log(p, "AttackFleet, Attacker = %s, Defender = %s", fleet.name, enemy.name);
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, double x, double y) {
@@ -352,7 +367,7 @@ public class DefaultAIControls implements AIControls {
 			fleet.waypoints.clear();
 			fleet.targetPlanet(planet);
 			fleet.mode = FleetMode.MOVE;
-			log("MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name, fleet.id, planet.id);
+			log(p, "MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name, fleet.id, planet.id);
 		}
 	}
 	
@@ -360,12 +375,12 @@ public class DefaultAIControls implements AIControls {
 	public void actionColonizePlanet(Fleet fleet, Planet planet) {
 		if (fleet.getStatistics().planet == planet) {
 			if (colonizeWithFleet(fleet, planet)) {
-				log("ColonizePlanet, Fleet = %s, Planet = %s", fleet.name, planet.id);
+				log(p, "ColonizePlanet, Fleet = %s, Planet = %s", fleet.name, planet.id);
 			} else {
-				log("ColonizePlanet, Fleet = %s, Planet = %s, FAILED = no room", fleet.name, planet.id);
+				log(p, "ColonizePlanet, Fleet = %s, Planet = %s, FAILED = no room", fleet.name, planet.id);
 			}
 		} else {
-			log("ColonizePlanet, Fleet = %s, Planet = %s, FAILED = not close enough", fleet.name, planet.id);
+			log(p, "ColonizePlanet, Fleet = %s, Planet = %s, FAILED = not close enough", fleet.name, planet.id);
 		}
 	}
 	@Override
@@ -441,13 +456,13 @@ public class DefaultAIControls implements AIControls {
 	public void actionRepairBuilding(Planet planet, Building building,
 			boolean repair) {
 		building.repairing = repair;
-		log("RepairBuilding, Planet = %s, Building = %s, Repair = %s", planet.id, building.type.id, repair);
+		log(p, "RepairBuilding, Planet = %s, Building = %s, Repair = %s", planet.id, building.type.id, repair);
 	}
 	@Override
 	public void actionEnableBuilding(Planet planet, Building building,
 			boolean enabled) {
 		building.enabled = enabled;
-		log("EnableBuilding, Planet = %s, Building = %s, Enabled = %s", planet.id, building.type.id, enabled);
+		log(p, "EnableBuilding, Planet = %s, Building = %s, Enabled = %s", planet.id, building.type.id, enabled);
 	}
 	
 	@Override
@@ -458,10 +473,11 @@ public class DefaultAIControls implements AIControls {
 	
 	/**
 	 * Display the action log.
+	 * @param p the player
 	 * @param message the message
 	 * @param values the message parameters
 	 */
-	void log(String message, Object... values) {
+	static void log(Player p, String message, Object... values) {
 		if (p == p.world.player) {
 			System.out.printf("AI:%s:", p.id);
 			System.out.printf(message, values);

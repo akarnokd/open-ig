@@ -1010,8 +1010,8 @@ public class LoadSaveScreen extends ScreenBase {
 		muteMusic.onChange = new Action0() {
 			@Override
 			public void invoke() {
-				config.muteEffect = muteMusic.selected();
-				commons.music.setMute(config.muteEffect);
+				config.muteMusic = muteMusic.selected();
+				commons.music.setMute(config.muteMusic);
 			}
 		};
 		muteVideo = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
@@ -1028,6 +1028,12 @@ public class LoadSaveScreen extends ScreenBase {
 				config.showTooltips = showTooltips.selected();
 			}
 		};
+		
+		//-----------------------------------------------
+		
+		setTooltip(classicControls, "settings.classic_controls.tooltip");
+		
+		//-----------------------------------------------
 		
 		addThis();
 	}

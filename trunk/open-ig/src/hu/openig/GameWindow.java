@@ -306,7 +306,7 @@ public class GameWindow extends JFrame implements GameControls {
 	/** The secondary screen drawn over the first. */
 	ScreenBase secondary;
 	/** The status bar to display over the primary and secondary screens. */
-	ScreenBase statusbar;
+	StatusbarScreen statusbar;
 	/** The top overlay for playing 'full screen' movies. */
 	MovieScreen movie;
 	/** The options screen. */
@@ -1078,6 +1078,9 @@ public class GameWindow extends JFrame implements GameControls {
 			if (statusbarVisible) {
 				if (statusbar.mouse(me)) {
 					repaintInner();
+					return;
+				}
+				if (statusbar.overPanel(me)) {
 					return;
 				}
 			}

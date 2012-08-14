@@ -253,6 +253,15 @@ public class ResearchGFX {
 	/** The production more button. */
 	@Btn3H(name = "research/button_more")
 	public BufferedImage[] more;
+	/** The production 10 less button. */
+	@Btn3H(name = "research/button_ten_less")
+	public BufferedImage[] tenLess;
+	/** The production 10 more button. */
+	@Btn3H(name = "research/button_ten_more")
+	public BufferedImage[] tenMore;
+	/** Remove a production line. */
+	@Btn3H(name = "research/button_remove_x")
+	public BufferedImage[] removeX;
 	/**
 	 * Load resources.
 	 * @param rl the resource locator
