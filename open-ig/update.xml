@@ -27,7 +27,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.95.031'>
+	<module id='Game' version='0.95.040'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -43,15 +43,15 @@
 			<desc lang='en'>Beta + some bugfixes.</desc>
 			<desc lang='de'>Beta + Fehlerbehebungen</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.031.jar' sha1='869b1669b86d17827917cfa8a61bac2f6a76e252'>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.040.jar' sha1='e1faf76351bbf3c38eb72c814ce9b369bd4f2fd7'>
 			<desc lang='hu'>A program fő fájlja.</desc>
 			<desc lang='en'>The program's main file.</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120721a2.zip' sha1='cf8179c29365cf39573904b2a24212f787650614'>
-			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Július 21 / A</desc>
-			<desc lang='en'>The upgraded resource file [Data]. 21th July, 2012 / A</desc>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120814a2.zip' sha1='28dbe423df7547b099ae8d8686a22df337281adf'>
+			<desc lang='hu'>Az erőforrás fájlok frissített verziója [Adat]: 2012 Augusztus 14 / A</desc>
+			<desc lang='en'>The upgraded resource file [Data]. 14th August, 2012 / A</desc>
 		</file>
-		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120625a.zip' sha1='8edb459b2bffdc2c65272927292dc5fd51075e5c'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120814a.zip' sha1='f902ed1b9a532c8022cb8566cd84471a9cfc7c17'/>
 
 		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
@@ -95,6 +95,7 @@
 		<remove file='open-ig-audio-en-20120420A.zip'/>
 		<remove file='open-ig-audio-en-20120429A.zip'/>
 		<remove file='open-ig-audio-generic-20120420A.zip'/>
+		<remove file='open-ig-images-20120625a.zip'/>
 	</module>
 	<module id='MapEditor' version='0.60'>
 		<general url='https://code.google.com/p/open-ig/wiki/MapEditor'>
