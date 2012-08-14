@@ -15,6 +15,16 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
+*2012 augusztus 14*
+
+Ismét haladunk! Lásd a [https://code.google.com/p/open-ig/wiki/Game_Notes kiadás] részleteit.
+
+Idő közben segíthetsz nekünk az alábbi kérdőív kitöltésében angolul vagy magyarul.
+
+[https://docs.google.com/spreadsheet/viewform?formkey=dE9uSTQ5RUlNUS14MTBzNmRRallOSlE6MQ#gid=0 Angol űrlap]
+
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/hungarian.png' alt='Hungarian flag' width='32'/>[https://docs.google.com/spreadsheet/viewform?formkey=dHlxTFFPVHo3NmtQQlJJdW1WSkloQkE6MA#gid=0 Magyar űrlap]
+
 *2012 augusztus 8*
 
 Elnézést kérek az elmúlt időszakban tapasztalt tétlenségemért. Túlságosan belemerültem a hivatalos munkáimban, de hamarosan lesz 2 hét szabad időm. A következőket tervezem:
