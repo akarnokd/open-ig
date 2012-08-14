@@ -2,6 +2,25 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.95.040 - Quick production =
+  * Released: 2012-08-14 21:30 CET
+  * Fixed several internal bugs.
+  * Added explicit mute options to audio settings ([https://code.google.com/p/open-ig/issues/detail?id=75 Issue #75])
+  * Added more diagnostic options. Repeating crashes won't flood the log anymore. ([https://code.google.com/p/open-ig/issues/detail?id=116 Issu #116])
+  * Added quick production panel. ([https://code.google.com/p/open-ig/issues/detail?id=311 Issue #311])
+  * Reduced the number of night-shades which should reduce stuttering of the planet surface during day-night transitions. ([https://code.google.com/p/open-ig/issues/detail?id=359 Issue #359])
+  * Incoming messages are now historized, however, you'll need to start a new game to get older messages. ([https://code.google.com/p/open-ig/issues/detail?id=394 Issue #394])
+  * Achivement screen shows the got/total number of achievements. You can hide got/missing achievements. ([https://code.google.com/p/open-ig/issues/detail?id=431 Issue #431])
+  * Fixed cases where high speed settings would prevent mission progression. ([https://code.google.com/p/open-ig/issues/detail?id=433 Issue #433])
+  * Changed the time where the second dream occurs to avoid overlapping with missions. ([https://code.google.com/p/open-ig/issues/detail?id=447 Issue #447])
+  * New Caroline virus infections reduced to 3 and related visualization bugs fixed. (Issues [https://code.google.com/p/open-ig/issues/detail?id=470 #470], [https://code.google.com/p/open-ig/issues/detail?id=475 #475])
+  * Fixed planet management AI working too slow on high speed settings ([https://code.google.com/p/open-ig/issues/detail?id=487 Issue #487])
+  * Changed level 1 mission timings ([https://code.google.com/p/open-ig/issues/detail?id=535 Issue #535])
+  * Game will resume on normal speed when a bridge-message is finished, and was not manually paused before. (Issues [https://code.google.com/p/open-ig/issues/detail?id=537 #537], [https://code.google.com/p/open-ig/issues/detail?id=557 #557])
+  * Fixed crash and timing of mission 5 (Tullen). ([https://code.google.com/p/open-ig/issues/detail?id=556 Issue #556])
+  * Changed the ground war logic to consider power levels of buildings and defensive structures. ([https://code.google.com/p/open-ig/issues/detail?id=570 Issue #570])
+  * Changed multi-missile behavior and visual effects. ([https://code.google.com/p/open-ig/issues/detail?id=577 Issue #577])
+
 = Version 0.95.031 - Bugfixes =
   * Released: 2012-07-21 20:00 CET
   * Campaign editor: added missing XML schemas of game files. This will help verify the data files in the future. ([http://code.google.com/p/open-ig/issues/detail?id=67 Issue #67])
