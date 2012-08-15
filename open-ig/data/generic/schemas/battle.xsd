@@ -149,6 +149,11 @@
 		<xs:annotation>
 			<xs:documentation>An individual technology definition.</xs:documentation>
 		</xs:annotation>
+		<xs:sequence>
+			<xs:element name='efficiency' type='tech-efficiency' minOccurs="0" maxOccurs='unbounded'>
+				<xs:annotation><xs:documentation>The efficiency override based on the enemy owner, category or tech id.</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:documentation>The technology identifier as found in tech.xml .</xs:documentation>
@@ -258,6 +263,11 @@
 		<xs:annotation>
 			<xs:documentation>The definition of a ground projector.</xs:documentation>
 		</xs:annotation>
+		<xs:sequence>
+			<xs:element name='efficiency' type='tech-efficiency' minOccurs="0" maxOccurs='unbounded'>
+				<xs:annotation><xs:documentation>The efficiency override based on the enemy owner, category or tech id.</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:documentation>The technology identifier as found in tech.xml .</xs:documentation>
@@ -650,4 +660,19 @@
 			<xs:maxInclusive value="1"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:complexType name='tech-efficiency'>
+		<xs:annotation><xs:documentation>The efficiency override based on the enemy owner, category or tech id.</xs:documentation></xs:annotation>
+		<xs:attribute name="owner" type="xs:string" use="optional">
+			<xs:annotation><xs:documentation>The optional owner (player id) where this setting should apply.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="category" type="xs:string" use="optional">
+			<xs:annotation><xs:documentation>The optional category name where the setting should apply. See ResearchSubCategory enum for valid values.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="id" type="xs:string" use="optional">
+			<xs:annotation><xs:documentation>The optional concrete technology identifier where this setting should apply.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="damage-multiplier" type="xs:decimal" use="optional">
+			<xs:annotation><xs:documentation>The damage multiplier if the given filter settings apply</xs:documentation></xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
 </xs:schema>

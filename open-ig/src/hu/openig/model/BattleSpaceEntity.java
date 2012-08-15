@@ -8,7 +8,10 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
+
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * The definition of a battle entity having a normal and alien
@@ -30,4 +33,6 @@ public class BattleSpaceEntity {
 	public int movementSpeed;
 	/** The default hitpoints. */
 	public int hp;
+	/** The battle efficiency settings of this projector. */
+	public final List<BattleEfficiencyModel> efficiencies = U.newArrayList();
 }

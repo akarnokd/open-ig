@@ -130,7 +130,9 @@ public class AIWorld {
 		
 		for (ResearchType rt : player.world.researches.values()) {
 			if (player.isAvailable(rt)) {
-				availableResearch.add(rt);
+				if (!rt.nobuild) {
+					availableResearch.add(rt);
+				}
 			} else
 			if (rt.race.contains(player.race)) {
 				if (player.world.canResearch(rt)) {

@@ -626,7 +626,7 @@ public final class BattleSimulator {
 					battle.enemy(ii.owner).statistics.shipsDestroyedCost += 2 * ii.sellValue();
 					
 				} else {
-					SpacewarStructure str = new SpacewarStructure();
+					SpacewarStructure str = new SpacewarStructure(ii.type);
 					str.hpMax = world.getHitpoints(ii.type);
 					str.count = ii.count;
 					str.hp = ii.hp;

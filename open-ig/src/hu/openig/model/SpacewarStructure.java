@@ -93,7 +93,40 @@ public class SpacewarStructure extends SpacewarObject {
 	/** The maximum hitpoints. */
 	public int hpMax;
 	/** The technology id of this ship. */
-	public String techId;
+	public final String techId;
+	/** The technology category. */
+	public final ResearchSubCategory category;
+	/** The battle efficiency settings of this projector. */
+	public List<BattleEfficiencyModel> efficiencies;
+	/**
+	 * Construct a structure from a technology.
+	 * @param rt the technology
+	 */
+	public SpacewarStructure(ResearchType rt) {
+		this.techId = rt.id;
+		this.category = rt.category;
+	}
+	/**
+	 * Construct a structure from building type.
+	 * @param bt the building type
+	 */
+	public SpacewarStructure(BuildingType bt) {
+		this.techId = bt.id;
+		ResearchSubCategory cat = ResearchSubCategory.BUILDINGS_MILITARY;
+		if (bt.kind.equals("Guns")) {
+			cat = ResearchSubCategory.BUILDINGS_GUNS;
+		}
+		this.category = cat;
+	}
+	/**
+	 * Construct a structure with the given technology parameters.
+	 * @param techId the technology id
+	 * @param category the category
+	 */
+	public SpacewarStructure(String techId, ResearchSubCategory category) {
+		this.techId = techId;
+		this.category = category;
+	}
 	/** @return the type name describing this structure. */
 	public String getType() {
 		if (type == StructureType.SHIP || type == StructureType.STATION) {
@@ -140,7 +173,7 @@ public class SpacewarStructure extends SpacewarObject {
 	 * @return Creates a new deep copy of this record.
 	 */
 	public SpacewarStructure copy() {
-		SpacewarStructure r = new SpacewarStructure();
+		SpacewarStructure r = new SpacewarStructure(techId, category);
 		r.x = x;
 		r.y = y;
 		r.owner = owner;
@@ -154,7 +187,6 @@ public class SpacewarStructure extends SpacewarObject {
 		r.value = value;
 		r.infoImageName = infoImageName;
 		r.item = item;
-		r.techId = techId;
 		r.movementSpeed = movementSpeed;
 		for (SpacewarWeaponPort w : ports) {
 			r.ports.add(w.copy());
@@ -270,5 +302,20 @@ public class SpacewarStructure extends SpacewarObject {
 			}
 		}
 		return false;
+	}
+	/**
+	 * Returns an efficiency settings for the target.
+	 * @param target the target structure
+	 * @return the model or null if no such model found
+	 */
+	public BattleEfficiencyModel getEfficiency(SpacewarStructure target) {
+		if (efficiencies != null) {
+			for (BattleEfficiencyModel m : efficiencies) {
+				if (m.matches(target)) {
+					return m;
+				}
+			}
+		}
+		return null;
 	}
 }

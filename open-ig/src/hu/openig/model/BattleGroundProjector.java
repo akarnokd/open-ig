@@ -8,7 +8,10 @@
 
 package hu.openig.model;
 
+import hu.openig.utils.U;
+
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * The space battle's ground projectors (e.g., planetary guns).
@@ -29,4 +32,6 @@ public class BattleGroundProjector {
 	public int damage;
 	/** The rotation speed. */
 	public int rotationTime;
+	/** The battle efficiency settings of this projector. */
+	public final List<BattleEfficiencyModel> efficiencies = U.newArrayList();
 }
