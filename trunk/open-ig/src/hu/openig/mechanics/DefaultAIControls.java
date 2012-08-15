@@ -246,6 +246,9 @@ public class DefaultAIControls implements AIControls {
 	 * @return true if the action succeeded
 	 */
 	public static boolean actionStartProduction(Player p, ResearchType rt, int count, int priority) {
+		if (rt.nobuild) {
+			log(p, "StartProduction, Type = %s, Failed = not buildable");
+		}
 		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
 		Production prod = prodLine.get(rt);
 		if (prod == null) {

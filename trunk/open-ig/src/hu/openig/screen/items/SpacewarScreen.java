@@ -14,6 +14,7 @@ import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.BattleSimulator;
+import hu.openig.model.BattleEfficiencyModel;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
 import hu.openig.model.BattleInfo;
@@ -1465,9 +1466,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				BattleSpaceEntity bse = world().battle.spaceEntities.get(ii.type.id);
 				
-				SpacewarStructure st = new SpacewarStructure();
+				SpacewarStructure st = new SpacewarStructure(ii.type);
 				st.type = StructureType.STATION;
-				st.techId = ii.type.id;
 				st.item = ii;
 				st.angle = Math.PI;
 				st.owner = nearbyPlanet.owner;
@@ -1482,6 +1482,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.planet = nearbyPlanet;
 				
 				st.ecmLevel = setWeaponPorts(ii, st.ports);
+				
+				st.efficiencies = bse.efficiencies;
 				
 				structures.add(st);
 			}
@@ -1505,8 +1507,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				BattleGroundShield bge = world().battle.groundShields.get(b.type.id);
 				
-				SpacewarStructure st = new SpacewarStructure();
-				st.techId = b.type.id;
+				SpacewarStructure st = new SpacewarStructure(b.type);
 				st.owner = nearbyPlanet.owner;
 				st.type = StructureType.SHIELD;
 				st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
@@ -1543,8 +1544,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				BattleGroundProjector bge = world().battle.groundProjectors.get(b.type.id);
 
-				SpacewarStructure st = new SpacewarStructure();
-				st.techId = b.type.id;
+				SpacewarStructure st = new SpacewarStructure(b.type);
 				st.owner = nearbyPlanet.owner;
 				st.type = StructureType.PROJECTOR;
 				st.angles = alien ? bge.alternative : bge.normal;
@@ -1568,6 +1568,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				wp.projectile = pr.copy();
 				wp.projectile.damage = bge.damage;
 				
+				st.efficiencies = bge.efficiencies;
 				
 				st.ports.add(wp);
 				
@@ -1725,14 +1726,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					continue;
 				}
 				
-				SpacewarStructure st = new SpacewarStructure();
+				SpacewarStructure st = new SpacewarStructure(ii.type);
 
 				if (ii.parent instanceof Planet) {
 					st.planet = (Planet)ii.parent;
 				} else {
 					st.fleet = (Fleet)ii.parent;
 				}
-				st.techId = ii.type.id;
 				st.type = StructureType.SHIP;
 				st.item = ii;
 				st.owner = ii.owner;
@@ -1750,6 +1750,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				st.ecmLevel = setWeaponPorts(ii, st.ports);
 				st.computeMinimumRange();
+				
+				st.efficiencies = bse.efficiencies;
 				
 				ships.add(st);
 			}
@@ -3060,8 +3062,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		r.port.cooldown = r.port.projectile.delay;
 
-		SpacewarStructure proj = new SpacewarStructure();
-		proj.techId = r.port.projectile.id;
+		SpacewarStructure proj = new SpacewarStructure(world().researches.get(r.port.projectile.id));
 		proj.owner = r.fired.owner;
 		proj.attack = target;
 		proj.angles = proj.owner == player() ? r.port.projectile.matrix[0] : r.port.projectile.alternative[0];
@@ -4067,7 +4068,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		sp.y = source.y;
 		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
 		sp.matrix = sp.owner == player() ? p.projectile.alternative : p.projectile.matrix;
+		
 		sp.damage = p.projectile.damage * p.count;
+
+		BattleEfficiencyModel bem = source.getEfficiency(target);
+		if (bem != null) {
+			sp.damage = (int)(sp.damage * bem.damageMultiplier);
+		}
 		
 		projectiles.add(sp);
 		effectSound(p.projectile.sound);

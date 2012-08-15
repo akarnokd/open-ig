@@ -2064,6 +2064,9 @@ public class World {
 			} else {
 				Exceptions.add(new AssertionError("Warning: Missing technology referenced by battle.xml: " + id));
 			}
+			
+			loadEfficiencyModel(se.efficiencies, xspace);
+			
 			battle.spaceEntities.put(id, se);
 		}
 		for (XElement xdefense : xbattle.childElement("ground-projectors").childrenWithName("tech")) {
@@ -2092,6 +2095,9 @@ public class World {
 			se.projectile = xdefense.get("projectile");
 			se.rotationTime = xdefense.getInt("rotation-time");
 			se.damage = xdefense.getInt("damage");
+			
+			// load efficiency model
+			loadEfficiencyModel(se.efficiencies, xdefense);
 			
 			battle.groundProjectors.put(id, se);
 		}
@@ -2240,6 +2246,26 @@ public class World {
 				double v = xvs.getDouble("value");
 				battle.ecmMatrix.put(Pair.of(a, e), v);
 			}
+		}
+	}
+	/**
+	 * Load a list of efficiency settings from the given parent XML node.
+	 * @param out the output list
+	 * @param parent the parent XML where the "efficiency" nodes are
+	 */
+	void loadEfficiencyModel(List<? super BattleEfficiencyModel> out, XElement parent) {
+		for (XElement xeff : parent.childrenWithName("efficiency")) {
+			BattleEfficiencyModel bem = new BattleEfficiencyModel();
+			
+			bem.id = xeff.get("id", null);
+			if (xeff.has("category")) {
+				bem.category = ResearchSubCategory.valueOf(xeff.get("category"));
+			}
+			bem.owner = xeff.get("owner", null);
+			
+			bem.damageMultiplier = xeff.getDouble("damage-multiplier");
+			
+			out.add(bem);
 		}
 	}
 	/**

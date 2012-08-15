@@ -297,6 +297,8 @@ public class QuickProductionPanel extends UIContainer {
 			hoverResearchDescription.height = hoverResearchDescription.getWrappedHeight();
 			
 			hoverResearchCost.text(commons.format("quickproduction.cost_inventory", hoverType.productionCost, commons.player().inventoryCount(hoverType)), true);
+			hoverResearchCost.height = hoverResearchCost.textSize();
+;
 			
 			bottomPart += hoverResearchTitle.height;
 			bottomPart += hoverResearchDescription.height;
@@ -412,6 +414,9 @@ public class QuickProductionPanel extends UIContainer {
 		for (ResearchType prod : prods) {
 			// skip running production
 			if (currProds != null && currProds.containsKey(prod)) {
+				continue;
+			}
+			if (prod.nobuild) {
 				continue;
 			}
 			
