@@ -131,7 +131,7 @@ public class DefaultAIControls implements AIControls {
 				player.world.statistics.moneyProduction -= m;
 				player.world.statistics.moneySpent -= m;
 				
-				player.addProductionHistory(rt, player.world.config.productionHistoryLimit);
+				player.addProductionHistory(rt);
 			}
 		}
 	}
@@ -260,7 +260,7 @@ public class DefaultAIControls implements AIControls {
 		}
 		prod.priority = priority;
 		prod.count = Math.max(prod.count + count, 0);
-		p.addProductionHistory(rt, p.world.config.productionHistoryLimit);
+		p.addProductionHistory(rt);
 //		log("StartProduction, Type = %s, Count = %s, Priority = %s", rt.id, count, priority);
 		return true;
 	}
