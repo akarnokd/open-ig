@@ -290,9 +290,6 @@ public class MainScreen extends ScreenBase {
 		onResize();
 		
 		checkExistingSave();
-		if (config.continueLastGame && continueLabel.enabled()) {
-			continueLabel.action.invoke();
-		}
 	}
 	/**
 	 * Search for previous saves to continue.
@@ -308,6 +305,12 @@ public class MainScreen extends ScreenBase {
 					public void run() {
 						continueLabel.enabled(found);
 						askRepaint();
+						if (found) {
+							if (config.continueLastGame) {
+								config.continueLastGame = false;
+								continueLabel.action.invoke();
+							}
+						}
 					}
 				});
 			}
