@@ -117,6 +117,8 @@ public class Launcher extends JFrame {
 	IGButton update;
 	/** Run the game. */
 	IGButton run;
+	/** Run the game. */
+	IGButton continueLast;
 	/** Run the map editor. */
 	IGButton mapEditor;
 	/** Run the video player. */
@@ -412,6 +414,7 @@ public class Launcher extends JFrame {
 		update = new IGButton();
 		verifyBtn = new IGButton();
 		run = new IGButton();
+		continueLast = new IGButton();
 		mapEditor = new IGButton();
 		videoPlayer = new IGButton();
 		other = new IGButton();
@@ -504,6 +507,12 @@ public class Launcher extends JFrame {
 				doRunGame();
 			}
 		});
+		continueLast.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doRunGame("-continue");
+			}
+		});
 		mapEditor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -521,6 +530,7 @@ public class Launcher extends JFrame {
 		update.setFont(fontMedium);
 		verifyBtn.setFont(fontMedium);
 		run.setFont(fontLarge);
+		continueLast.setFont(fontLarge);
 		mapEditor.setFont(fontMedium);
 		videoPlayer.setFont(fontMedium);
 		other.setFont(fontMedium);
@@ -537,6 +547,7 @@ public class Launcher extends JFrame {
 		update.setVisible(false);
 		verifyBtn.setVisible(false);
 		run.setVisible(false);
+		continueLast.setVisible(false);
 		mapEditor.setVisible(false);
 		videoPlayer.setVisible(false);
 		other.setVisible(false);
@@ -556,6 +567,7 @@ public class Launcher extends JFrame {
 		update.setForeground(foreground);
 		verifyBtn.setForeground(foreground);
 		run.setForeground(foreground);
+		continueLast.setForeground(foreground);
 		mapEditor.setForeground(foreground);
 		videoPlayer.setForeground(foreground);
 		cancel.setForeground(foreground);
@@ -686,6 +698,8 @@ public class Launcher extends JFrame {
 					.addComponent(currentVersionLabel)
 					.addGap(5)
 					.addComponent(currentVersion)
+					.addGap(15)
+					.addComponent(continueLast)
 				)
 				.addGroup(
 					gl.createSequentialGroup()
@@ -726,6 +740,7 @@ public class Launcher extends JFrame {
 				.addComponent(run)
 				.addComponent(currentVersionLabel)
 				.addComponent(currentVersion)
+				.addComponent(continueLast)
 			)
 			.addGap(25)
 			.addGroup(
@@ -853,6 +868,8 @@ public class Launcher extends JFrame {
 			verifyBtn.setText("Verify");
 			cancel.setText("Cancel");
 			run.setText("Run Game");
+			continueLast.setText("Continue");
+			continueLast.setToolTipText("Continue from last save.");
 			mapEditor.setText("Map Editor");
 			videoPlayer.setText("Video Player");
 			other.setText("Other options");
@@ -879,6 +896,8 @@ public class Launcher extends JFrame {
 			verifyBtn.setText("Ellenőrzés");
 			cancel.setText("Mégsem");
 			run.setText("Játék futtatása");
+			continueLast.setText("Folytatás");
+			continueLast.setToolTipText("Folytatás a legutolsó mentéstől.");
 			mapEditor.setText("Térképszerkesztő");
 			videoPlayer.setText("Videolejátszó");
 			other.setText("Egyéb lehetőségek");
@@ -905,6 +924,8 @@ public class Launcher extends JFrame {
 			verifyBtn.setText("Überprüfen");
 			cancel.setText("Lieber nicht");
 			run.setText("Spiel starten");
+			continueLast.setText("Fortsetzen");
+			continueLast.setToolTipText("Spiel fortsetzen");
 			mapEditor.setText("Karteneditor");
 			videoPlayer.setText("Videospieler");
 			other.setText("Weitere Optionen");
@@ -1446,6 +1467,7 @@ public class Launcher extends JFrame {
 			currentVersion.setVisible(false);
 			currentVersionLabel.setVisible(false);
 			run.setVisible(false);
+			continueLast.setVisible(false);
 			mapEditor.setVisible(false);
 			videoPlayer.setVisible(false);
 			other.setVisible(false);
@@ -1461,6 +1483,7 @@ public class Launcher extends JFrame {
 		} else {
 			
 			run.setVisible(true);
+			continueLast.setVisible(true);
 			mapEditor.setVisible(true);
 			videoPlayer.setVisible(true);
 			other.setVisible(true);
@@ -2070,6 +2093,7 @@ public class Launcher extends JFrame {
 		progressPanel.setVisible(visible);
 
 		run.setEnabled(!visible);
+		continueLast.setEnabled(!visible);
 		mapEditor.setEnabled(!visible);
 		videoPlayer.setEnabled(!visible);
 		other.setEnabled(!visible);
@@ -2363,8 +2387,9 @@ public class Launcher extends JFrame {
 	}
 	/**
 	 * Run the game or pop-up the first-time configuration window.
+	 * @param arguments the additional arguments
 	 */
-	void doRunGame() {
+	void doRunGame(String... arguments) {
 		File cfg = new File(installDir, "open-ig-config.xml");
 		boolean displayPreLaunch = true;
 		if (cfg.exists()) {
@@ -2608,9 +2633,11 @@ public class Launcher extends JFrame {
 				params.add("-noclickskip");
 			}
 			
+			params.addAll(Arrays.asList(arguments));
+			
 			runModule(GAME, params);
 		} else {
-			runModule(GAME, Collections.<String>emptyList());
+			runModule(GAME, Arrays.asList(arguments));
 		}
 	}
 }
