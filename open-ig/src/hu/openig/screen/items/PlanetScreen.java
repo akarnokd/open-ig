@@ -281,6 +281,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			GroundwarUnitType.PARALIZER,
 			GroundwarUnitType.ROCKET_JAMMER
 	);
+	/** Units to ignore for winner checks. */
+	final EnumSet<GroundwarUnitType> winIngoreUnits = EnumSet.of(
+			GroundwarUnitType.RADAR,
+			GroundwarUnitType.RADAR_JAMMER
+	);
 	/** The list of remaining units to place. */
 	final LinkedList<GroundwarUnit> unitsToPlace = U.newLinkedList();
 	/** Start the battle. */
@@ -4252,15 +4257,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		int attackerCount = 0;
 		int defenderCount = 0;
 		for (GroundwarGun g : guns) {
-			if (g.building.enabled && !g.building.isEnergyShortage()) {
+			if (g.building.enabled && g.building.assignedEnergy != 0) {
 				defenderCount++;
 			}
 		}
 		for (GroundwarUnit u : units) {
 			if (u.owner == planet().owner) {
-				defenderCount++;
+				if (!winIngoreUnits.contains(u.model.type)) {
+					defenderCount++;
+				}
 			} else {
-				if (directAttackUnits.contains(u.model.type)) {
+				if (!winIngoreUnits.contains(u.model.type)) {
 					attackerCount++;
 				}
 			}
@@ -4667,9 +4674,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return;
 		}
 		// underpowered guns will not fire
-		double powerRate = -1d * g.building.assignedEnergy / g.building.getEnergy();
-		double indexRate = 1d * g.index / g.count;
-		if (indexRate > powerRate) {
+		double powerRate = 1d * g.building.assignedEnergy / g.building.getEnergy();
+		double indexRate = (g.index + 0.5) / g.count;
+		if (indexRate >= powerRate) {
 			g.phase = 0;
 			return;
 		}
@@ -5208,6 +5215,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					stop(u);
 					u.attackBuilding = b;
 					u.attackUnit = null;
+					attacked = true;
 				} else {
 					
 					if (!guFound) {
