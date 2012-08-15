@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Deque;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -299,6 +298,24 @@ public class XElement implements Iterable<XElement> {
 		}
 	}
 	/**
+	 * Parse an XML from the given local file.
+	 * @param file the file object
+	 * @return az XElement object
+	 * @throws XMLStreamException on error
+	 */
+	public static XElement parseXML(File file) throws XMLStreamException {
+		try {
+			InputStream in = new FileInputStream(file);
+			try {
+				return parseXML(in);
+			} finally {
+				in.close();
+			}
+		} catch (IOException ex) {
+			throw new XMLStreamException(ex);
+		}
+	}
+	/**
 	 * Converts all sensitive characters to its HTML entity equivalent.
 	 * @param s the string to convert, can be null
 	 * @return the converted string, or an empty string
@@ -332,19 +349,36 @@ public class XElement implements Iterable<XElement> {
 		}
 		return "";
 	}
+	/**
+	 * A callback interface to append to a stream. 
+	 * @author akarnokd, 2012.08.15.
+	 */
+	interface Appender {
+		/**
+		 * Append an object. 
+		 * @param o the object
+		 * @return this
+		 */
+		Appender append(Object o);
+	}
 	@Override
 	public String toString() {
-		StringBuilder b = new StringBuilder();
-		toStringRep("", new HashMap<String, String>(), b);
+		final StringBuilder b = new StringBuilder();
+		toStringRep("", new Appender() {
+			@Override
+			public Appender append(Object o) {
+				b.append(o);
+				return this;
+			}
+		});
 		return b.toString();
 	}
 	/**
 	 * Convert the element into a pretty printed string representation.
 	 * @param indent the current line indentation
-	 * @param nss the namespace cache
 	 * @param out the output
 	 */
-	void toStringRep(String indent, Map<String, String> nss, StringBuilder out) {
+	void toStringRep(String indent, Appender out) {
 		out.append(indent).append("<");
 		out.append(name);
 		if (attributes.size() > 0) {
@@ -372,7 +406,7 @@ public class XElement implements Iterable<XElement> {
 				out.append(String.format("%n"));
 			}
 			for (XElement e : children) {
-				e.toStringRep(indent + "  ", nss, out);
+				e.toStringRep(indent + "  ", out);
 			}
 			out.append(indent).append("</");
 			out.append(name);
@@ -446,11 +480,16 @@ public class XElement implements Iterable<XElement> {
 	 * @throws IOException on error
 	 */
 	public void save(File file) throws IOException {
-		String str = toString();
-		PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
+		final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
 		try {
 			out.println("<?xml version='1.0' encoding='UTF-8'?>");
-			out.print(str);
+			toStringRep("", new Appender() {
+				@Override
+				public Appender append(Object o) {
+					out.print(o);
+					return this;
+				}
+			});
 		} finally {
 			out.close();
 		}
