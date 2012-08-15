@@ -16,5 +16,5 @@ public enum ResearchMainCategory {
 	/** The weapons. */
 	WEAPONS,
 	/** The buildings. */
-	BUILDINS
+	BUILDINGS
 }

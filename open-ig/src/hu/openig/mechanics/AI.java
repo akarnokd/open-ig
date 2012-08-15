@@ -33,6 +33,7 @@ import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -484,7 +485,12 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void onResearchStateChange(ResearchType rt, ResearchState state) {
-		
+		// if the user switched to this guy.
+		if (state == ResearchState.COMPLETE) {
+			if (rt.category.main != ResearchMainCategory.BUILDINGS) {
+				p.addProductionHistory(rt);
+			}
+		}
 	}
 	@Override
 	public void onProductionComplete(ResearchType rt) {

@@ -65,6 +65,8 @@ public class Mission22 extends Mission {
 			dsl.explorationInnerLimit = null;
 			dsl.explorationOuterLimit = null;
 		}
+		
+		player.populateProductionHistory();
 	}
 	
 	/**

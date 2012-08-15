@@ -27,6 +27,7 @@ import hu.openig.model.Message;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
@@ -187,6 +188,9 @@ public class AIUser implements AIManager {
 			msg.sound = SoundType.RESEARCH_COMPLETE;
 			msg.targetResearch = rt;
 			p.addMessage(msg);
+			if (rt.category.main != ResearchMainCategory.BUILDINGS) {
+				p.addProductionHistory(rt);
+			}
 		} else
 		if (state == ResearchState.LAB) {
 			Message msg = w.newMessage("message.research_lab");

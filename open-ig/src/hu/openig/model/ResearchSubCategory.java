@@ -41,13 +41,13 @@ public enum ResearchSubCategory {
 	WEAPONS_VEHICLES(ResearchMainCategory.WEAPONS),
 	
 	/** Buildings / Civil (1). */
-	BUILDINGS_CIVIL(ResearchMainCategory.BUILDINS),
+	BUILDINGS_CIVIL(ResearchMainCategory.BUILDINGS),
 	/** Buildings / Military (2). */
-	BUILDINGS_MILITARY(ResearchMainCategory.BUILDINS),
+	BUILDINGS_MILITARY(ResearchMainCategory.BUILDINGS),
 	/** Buildings / Radars (3). */
-	BUILDINGS_RADARS(ResearchMainCategory.BUILDINS),
+	BUILDINGS_RADARS(ResearchMainCategory.BUILDINGS),
 	/** Buildings / Guns, e.g., planetary defense cannons (4). */
-	BUILDINGS_GUNS(ResearchMainCategory.BUILDINS),
+	BUILDINGS_GUNS(ResearchMainCategory.BUILDINGS),
 	;
 	/** The main category reference. */
 	public final ResearchMainCategory main;

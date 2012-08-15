@@ -3010,7 +3010,7 @@ public class InfoScreen extends ScreenBase {
 					researchProgress.text(get("researchinfo.progress.done"), true).visible(true);
 					researchCost.text(format("researchinfo.progress.price", rt.productionCost), true).visible(true);
 					Integer cnt = player().inventory.get(rt);
-					if (rt.category.main != ResearchMainCategory.BUILDINS) {
+					if (rt.category.main != ResearchMainCategory.BUILDINGS) {
 						researchInventory.text(format("researchinfo.progress.inventory", cnt != null ? cnt : 0), true).visible(true);
 					}
 				} else {

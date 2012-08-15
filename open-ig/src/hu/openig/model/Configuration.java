@@ -45,9 +45,9 @@ public class Configuration {
 	/** The language code. */
 	@LoadSave
 	public String language = "hu";
-	/** The ordered list of containers. */
+	/** List of files or directories to be ignored by the resource locator. */
 	@LoadSave
-	public final List<String> containers = new ArrayList<String>();
+	public final List<String> ignore = new ArrayList<String>();
 	/** Disable D3D. */
 	@LoadSave
 	public boolean disableD3D;
@@ -115,9 +115,6 @@ public class Configuration {
 	/** Is the window maximized mode? */
 	@LoadSave
 	public boolean maximized;
-	/** Automatically find resource files instead of fixed set. */
-	@LoadSave
-	public boolean autoResources = true;
 	/** Reequip tanks after battles. */
 	@LoadSave
 	@LoadSaveGame
@@ -304,20 +301,29 @@ public class Configuration {
 		try {
 			for (Field f : this.getClass().getDeclaredFields()) {
 				if (f.isAnnotationPresent(LoadSave.class)) {
+					String n = f.getName();
 					if (f.getType() == Boolean.TYPE) {
-						String s = props.getProperty(f.getName());
+						String s = props.getProperty(n);
 						if (s != null) {
 							f.set(this,  Boolean.valueOf(s));
 						}
 					} else
 					if (f.getType() == Integer.TYPE || f.getType() == Integer.class) {
-						String s = props.getProperty(f.getName());
+						String s = props.getProperty(n);
 						if (s != null) {
 							f.set(this, Integer.valueOf(s));
 						}
 					} else
 					if (f.getType() == String.class) {
-						f.set(this, props.getProperty(f.getName(), (String)f.get(this)));
+						f.set(this, props.getProperty(n, (String)f.get(this)));
+					} else
+					if (List.class.isAssignableFrom(f.getType())) {
+						@SuppressWarnings("unchecked")
+						List<String> lst = (List<String>)f.get(this);
+						int cnt = Integer.parseInt(props.getProperty(n + "-count", "0"));
+						for (int i = 0; i < cnt; i++) {
+							lst.add(props.getProperty(n + "-" + i));
+						}
 					}
 				}
 			}
@@ -333,9 +339,19 @@ public class Configuration {
 		try {
 			for (Field f : this.getClass().getDeclaredFields()) {
 				if (f.isAnnotationPresent(LoadSave.class)) {
+					String n = f.getName();
 					Object o = f.get(this);
 					if (o != null) {
-						props.setProperty(f.getName(), o.toString());
+						if (List.class.isAssignableFrom(f.getType())) {
+							@SuppressWarnings("unchecked")
+							List<String> lst = (List<String>)f.get(this);
+							props.setProperty(n + "-count", Integer.toString(lst.size()));
+							for (int i = 0; i < lst.size(); i++) {
+								props.setProperty(n + "-" + i, lst.get(i));
+							}
+						} else {
+							props.setProperty(f.getName(), o.toString());
+						}
 					}
 				}
 			}
@@ -371,13 +387,8 @@ public class Configuration {
 	 */
 	public ResourceLocator newResourceLocator() {
 		ResourceLocator rl = new ResourceLocator(language);
-		List<String> cont = null;
-		if (autoResources) {
-			cont = getContainersAutomatically();
-		}
-		if (cont == null || cont.size() == 0) {
-			cont = containers;
-		}
+		List<String> cont = getContainersAutomatically();
+		cont.removeAll(ignore);
 		rl.setContainers(cont);
 		rl.scanResources();
 		return rl;
@@ -387,6 +398,19 @@ public class Configuration {
 	 */
 	public List<String> getContainersAutomatically() {
 		List<String> result = new ArrayList<String>();
+		if (new File("audio").exists()) {
+			result.add("audio");
+		}
+		if (new File("data").exists()) {
+			result.add("data");
+		}
+		if (new File("images").exists()) {
+			result.add("images");
+		}
+		if (new File("video").exists()) {
+			result.add("video");
+		}
+
 		File[] files = new File(".").listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -411,18 +435,6 @@ public class Configuration {
 		}
 		for (String s : upgrades) {
 			result.add(0, s);
-		}
-		if (new File("audio").exists()) {
-			result.add("audio");
-		}
-		if (new File("data").exists()) {
-			result.add("data");
-		}
-		if (new File("images").exists()) {
-			result.add("images");
-		}
-		if (new File("video").exists()) {
-			result.add("video");
 		}
 		
 		return result;

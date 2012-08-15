@@ -72,11 +72,11 @@ public class TechnologySlot extends UIComponent {
 		Rectangle target = new Rectangle(0, 0, width, height);
 		g2.drawImage(type.image, target.x, target.y, null);
 		if (commons.world().player.isAvailable(type)) {
-			if (type.category.main != ResearchMainCategory.BUILDINS) {
+			if (type.category.main != ResearchMainCategory.BUILDINGS) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
 						selectedTextColor, Integer.toString(commons.world().player.inventoryCount(type)));
 			}
-			if (displayProductionCost && type.category.main != ResearchMainCategory.BUILDINS) {
+			if (displayProductionCost && type.category.main != ResearchMainCategory.BUILDINGS) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
 						selectedTextColor, Integer.toString(type.productionCost));
 			}

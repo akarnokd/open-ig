@@ -910,14 +910,14 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_1);
-				selectMainCategory(ResearchMainCategory.BUILDINS);
-				selectSubCategoryFirst(subCategories(ResearchMainCategory.BUILDINS).get(0));
+				selectMainCategory(ResearchMainCategory.BUILDINGS);
+				selectSubCategoryFirst(subCategories(ResearchMainCategory.BUILDINGS).get(0));
 			}
 		};
 		mainComponents.put(ResearchMainCategory.SPACESHIPS, spaceshipsLabel);
 		mainComponents.put(ResearchMainCategory.EQUIPMENT, equipmentsLabel);
 		mainComponents.put(ResearchMainCategory.WEAPONS, weaponsLabel);
-		mainComponents.put(ResearchMainCategory.BUILDINS, buildingsLabel);
+		mainComponents.put(ResearchMainCategory.BUILDINGS, buildingsLabel);
 		
 		createSubCategory(ResearchSubCategory.SPACESHIPS_FIGHTERS, commons.research().fighters);
 		createSubCategory(ResearchSubCategory.SPACESHIPS_CRUISERS, commons.research().cruisers);
@@ -1952,7 +1952,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				&& rt.category.main == cat
 				&& !rt.nobuild
 				&& productions.size() < 5
-				&& rt.category.main != ResearchMainCategory.BUILDINS
+				&& rt.category.main != ResearchMainCategory.BUILDINGS
 				&& (!rt.has("needsOrbitalFactory") || ps.orbitalFactory > 0)
 		);
 		

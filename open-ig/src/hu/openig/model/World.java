@@ -346,6 +346,7 @@ public class World {
 		for (Player p : players.values()) {
 			p.ai = env.getAI(p);
 			p.ai.init(p);
+			p.populateProductionHistory();
 		}
 		
 		try {
@@ -897,7 +898,7 @@ public class World {
 	 */
 	public void selectResearch(ResearchType rt) {
 		player.currentResearch(rt);
-		if (rt.category.main == ResearchMainCategory.BUILDINS) {
+		if (rt.category.main == ResearchMainCategory.BUILDINGS) {
 			// select the appropriate building type
 			for (BuildingType bt : buildingModel.buildings.values()) {
 				if (bt.research == rt) {
@@ -1421,7 +1422,7 @@ public class World {
 					if (rt == null) {
 						System.out.println("Warning: unknown technology in production history: " + id);
 					} else {
-						p.addProductionHistory(rt, config.productionHistoryLimit);
+						p.addProductionHistory(rt);
 					}
 					
 				}

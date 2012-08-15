@@ -604,9 +604,8 @@ public class Player {
 	/**
 	 * Add an entry to the production history.
 	 * @param rt the technology
-	 * @param limit the maximum limit
 	 */
-	public void addProductionHistory(ResearchType rt, int limit) {
+	public void addProductionHistory(ResearchType rt) {
 		List<ResearchType> rts = productionHistory.get(rt.category.main);
 		if (rts == null) {
 			rts = U.newArrayList();
@@ -614,8 +613,23 @@ public class Player {
 		}
 		rts.remove(rt);
 		rts.add(0, rt);
-		for (int j = rts.size() - 1; j >= limit; j--) {
+		for (int j = rts.size() - 1; j >= world.config.productionHistoryLimit; j--) {
 			rts.remove(j);
+		}
+	}
+	/**
+	 * Fill-up available technologies.
+	 */
+	public void populateProductionHistory() {
+		for (ResearchType rt : available().keySet()) {
+			List<ResearchType> rts = productionHistory.get(rt.category.main);
+			if (rts == null) {
+				rts = U.newArrayList();
+				productionHistory.put(rt.category.main, rts);
+			}
+			if (rts.size() < world.config.productionHistoryLimit && !rts.contains(rt)) {
+				rts.add(rt);
+			}
 		}
 	}
 }
