@@ -290,6 +290,9 @@ public class MainScreen extends ScreenBase {
 		onResize();
 		
 		checkExistingSave();
+		if (config.continueLastGame && continueLabel.enabled()) {
+			continueLabel.action.invoke();
+		}
 	}
 	/**
 	 * Search for previous saves to continue.

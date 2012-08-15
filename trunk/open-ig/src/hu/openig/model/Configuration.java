@@ -246,6 +246,8 @@ public class Configuration {
 	/** Play the intro videos? */
 	@LoadSave
 	public boolean intro = true;
+	/** Flag from command line to continue with the last game. */
+	public boolean continueLastGame;
 	/** The tooltip's maximum width. */
 	public int tooltipWidth = 600;
 	/** Show tooltips? */

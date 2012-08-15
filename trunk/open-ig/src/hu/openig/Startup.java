@@ -126,6 +126,9 @@ public final class Startup {
 		if (argset.contains("-noclickskip")) {
 			config.movieClickSkip = false;
 		}
+		if (argset.contains("-continue")) {
+			config.continueLastGame = true;
+		}
 
 		doStartGame(config);
 	}

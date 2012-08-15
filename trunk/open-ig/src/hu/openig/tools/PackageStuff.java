@@ -182,7 +182,8 @@ public final class PackageStuff {
 								|| d.contains("hu/openig/ui/IGCheckBox")
 								|| d.contains("hu/openig/render/RenderTools")
 								|| d.contains("hu/openig/render/GenericMediumButton")
-								|| d.contains("hu/openig/render/GenericButtonRenderer");
+								|| d.contains("hu/openig/render/GenericButtonRenderer")
+								|| d.contains("hu/openig/core/Func0");
 					}
 				});
 				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.launcher", zout);
