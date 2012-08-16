@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetTask;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
@@ -272,6 +273,7 @@ public class Mission16 extends Mission {
 		if (ff != null) {
 			Fleet garthog = findTaggedFleet(ENEMY, garthog());
 			ff.attack(garthog);
+			ff.owner.fleets.put(garthog, FleetKnowledge.VISIBLE);
 		} else {
 			world.env.playSound(SoundTarget.COMPUTER, SoundType.CARRIER_UNDER_ATTACK, null);
 		}

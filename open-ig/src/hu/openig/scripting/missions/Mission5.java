@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
@@ -251,6 +252,7 @@ public class Mission5 extends Mission {
 				Fleet ff = getFollower(tullen, player);
 				if (ff != null) {
 					ff.attack(garthog);
+					ff.owner.fleets.put(garthog, FleetKnowledge.VISIBLE);
 				}
 			}
 		}

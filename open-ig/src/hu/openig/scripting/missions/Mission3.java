@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
@@ -127,7 +128,7 @@ public class Mission3 extends Mission {
 	void createCarrierTask() {
 		Planet naxos = planet("Naxos");
 		Fleet f = createFleet(label("mission-3.escort_carrier.name"), player, naxos.x + 20, naxos.y + 40);
-		f.addInventory(world.researches.get("TradersFreight1"), 1);
+		f.addInventory(world.researches.get("TradersFreight3"), 1);
 		for (InventoryItem ii : f.inventory) {
 			ii.tag = "Mission-3-Carrier";
 		}
@@ -175,6 +176,7 @@ public class Mission3 extends Mission {
 						
 						Fleet ff = getFollower(fi, player);
 						if (ff != null) {
+							ff.owner.fleets.put(pf, FleetKnowledge.VISIBLE);
 							ff.attack(pf);
 						} else {
 							world.env.playSound(SoundTarget.COMPUTER, SoundType.CARRIER_UNDER_ATTACK, null);
