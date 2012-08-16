@@ -55,7 +55,7 @@ public class SpacewarStructure extends SpacewarObject {
 	/** The value of this structure (e.g., the build cost). */
 	public int value;
 	/** The shield hitpoints. */
-	public int shield;
+	public double shield;
 	/** The maximum shield hitpoints. */
 	public int shieldMax;
 	/** The ECM level. */
@@ -89,7 +89,7 @@ public class SpacewarStructure extends SpacewarObject {
 	/** Kamikaze mode mode if greater than zero, indicates impact damage. */
 	public int kamikaze;
 	/** The available hitpoints. */
-	public int hp;
+	public double hp;
 	/** The maximum hitpoints. */
 	public int hpMax;
 	/** The technology id of this ship. */
@@ -136,7 +136,7 @@ public class SpacewarStructure extends SpacewarObject {
 	}
 	/** @return the damage in percent. */
 	public int getDamage() {
-		return 100 * (hpMax - hp) / hpMax;
+		return (int)(100 * (hpMax - hp) / hpMax);
 	}
 	/** @return the firepower of the beam weapons on board. */
 	public int getFirepower() {
@@ -231,8 +231,8 @@ public class SpacewarStructure extends SpacewarObject {
 	 * @param points the damage points to apply
 	 * @return is at least an unit destroyed
 	 */
-	public boolean damage(int points) {
-		int hp0 = hp;
+	public boolean damage(double points) {
+		double hp0 = hp;
 		
 		if (shield > 0) {
 			if (shield > points) {

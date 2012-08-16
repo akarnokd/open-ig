@@ -1177,10 +1177,10 @@ public class InfoScreen extends ScreenBase {
 	}
 	@Override
 	public void onEnter(Screens mode) {
-		this.mode = mode != null ? mode : Screens.INFORMATION_PLANETS;
 		if (mode == Screens.INFORMATION_ALIENS && world().level < 4) {
 			mode = Screens.INFORMATION_PLANETS;
 		}
+		this.mode = mode != null ? mode : Screens.INFORMATION_PLANETS;
 		applyMode();
 		animation = commons.register(500, new Action0() {
 			@Override

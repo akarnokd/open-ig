@@ -631,11 +631,11 @@ public final class BattleSimulator {
 					str.count = ii.count;
 					str.hp = ii.hp;
 					str.shield = ii.shield;
-					str.damage((int)hitpoints);
+					str.damage(hitpoints);
 					int diff = ii.count - str.count;
 					ii.count = str.count;
-					ii.hp = str.hp;
-					ii.shield = str.shield;
+					ii.hp = (int)str.hp;
+					ii.shield = (int)str.shield;
 					if (ii.count <= 0) {
 						inv.remove(ii);
 					}

@@ -29,6 +29,11 @@ public class AIInventoryItem {
 	/** The copy of the inventory slots. */
 	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
 	/**
+	 * Constructs an empty object.
+	 */
+	public AIInventoryItem() {
+	}
+	/**
 	 * Constructs the object from the inventory item.
 	 * @param ii the source
 	 */

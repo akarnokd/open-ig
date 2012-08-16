@@ -145,7 +145,7 @@ public class OptionList extends UIContainer {
 			
 			boolean oldHover = oi.hover;
 			
-			oi.hover = oi.enabled & i == idx;
+			oi.hover = oi.enabled && i == idx;
 			oi.selected = oi.hover & select;
 			
 			if (oldHover != oi.hover && onHighlight != null) {
