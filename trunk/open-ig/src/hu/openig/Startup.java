@@ -8,6 +8,7 @@
 
 package hu.openig;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Func0;
 import hu.openig.core.SaveMode;
 import hu.openig.model.Configuration;
@@ -232,12 +233,22 @@ public final class Startup {
 			public void run() {
 				if (checkInstall()) {
 					try {
-						GameWindow gw = new GameWindow(config);
+						final boolean cont = config.continueLastGame;
+						config.continueLastGame = false;
+						final GameWindow gw = new GameWindow(config);
 						gw.setVisible(true);
 						if (config.intro) {
 							config.intro = false;
 							config.save();
-							gw.playVideos("intro/gt_interactive_intro", "intro/intro_1", "intro/intro_2", "intro/intro_3");
+							gw.playVideos(new Action0() {
+								@Override
+								public void invoke() {
+									if (cont) {
+										config.continueLastGame = cont;
+										gw.continueLastGame();
+									}
+								}
+							}, "intro/gt_interactive_intro", "intro/intro_1", "intro/intro_2", "intro/intro_3");
 						}
 					} catch (Throwable t) {
 						t.printStackTrace();
