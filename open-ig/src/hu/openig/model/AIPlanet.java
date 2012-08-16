@@ -206,7 +206,7 @@ public class AIPlanet {
 			}
 		}
 		if (count > 0) {
-			AIInventoryItem ii = new AIInventoryItem(null);
+			AIInventoryItem ii = new AIInventoryItem();
 			ii.count = count;
 			ii.owner = owner;
 			ii.type = type;

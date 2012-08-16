@@ -111,7 +111,7 @@ public class VerifyCampaign {
 			}
 			
 			for (String lang2 : languages) {
-				if (lang1 != lang2) {
+				if (!lang1.equals(lang2)) {
 					Labels l2 = new Labels();
 					
 					l2.load(getXML(lang2, "labels"));
@@ -334,7 +334,7 @@ public class VerifyCampaign {
 				String id2 = xans.get("id");
 				String aid = xans.get("label");
 
-				checkLabel(aid, String.format("Missing label: test question %s answer ", id, id2));
+				checkLabel(aid, String.format("Missing label: test question %s answer %s", id, id2));
 			}
 		}
 	}

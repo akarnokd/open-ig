@@ -2006,12 +2006,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				g2.setColor(Color.BLACK);
 				g2.fillRect((int)e.x - w2 + 3, y, dw, 4);
 				g2.setColor(Color.GREEN);
-				g2.fillRect((int)e.x - w2 + 3, y, e.hp * dw / e.hpMax, 4);
+				g2.fillRect((int)e.x - w2 + 3, y, (int)(e.hp * dw / e.hpMax), 4);
 				g2.setColor(Color.RED);
 				g2.drawRect((int)e.x - w2 + 3, y, dw, 4);
 				if (e.shieldMax > 0) {
 					g2.setColor(new Color(0xFFFFCC00));
-					g2.fillRect((int)e.x - w2 + 3, y, e.shield * dw / e.shieldMax, 4);
+					g2.fillRect((int)e.x - w2 + 3, y, (int)(e.shield * dw / e.shieldMax), 4);
 				}
 			}
 			if (e.type == StructureType.SHIP && e.count > 1) {
@@ -3077,7 +3077,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		proj.ecmLevel = r.type.getInt("anti-ecm", 0);
 		proj.kamikaze = r.port.projectile.damage;
 		proj.hp = world().battle.getIntProperty(proj.techId, proj.owner.id, "hp");
-		proj.hpMax = proj.hp;
+		proj.hpMax = (int)proj.hp;
 		switch (r.port.projectile.mode) {
 		case ROCKET:
 			proj.type = StructureType.ROCKET;
@@ -3845,7 +3845,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					if (area > 0) {
 						d = Math.max(0, d);
 						damageTarget(s, 
-								(int)(s.count * damage * (area - d) / area), impactSound, techId, owner);
+								(s.count * damage * (area - d) / area), impactSound, techId, owner);
 					} else {
 						damageTarget(s, 
 								s.count * damage, impactSound, techId, owner);
@@ -3874,7 +3874,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void damageTarget(
 			SpacewarStructure target, 
-			int damage, 
+			double damage, 
 			SoundType impactSound,
 			String techId,
 			String owner) {
@@ -3919,7 +3919,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param owner the owner of the impactor
 	 * @param impactSound the impact sound
 	 */
-	void damageBuildings(SpacewarStructure target, String techId, int damage,
+	void damageBuildings(SpacewarStructure target, String techId, double damage,
 			String owner, SoundType impactSound) {
 		String sradius = world().battle.getProperty(techId, owner, "ground-radius");
 		String spercent = world().battle.getProperty(techId, owner, "damage-percent");
@@ -3930,14 +3930,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double percent = Double.parseDouble(spercent) / 100;
 		Point2D.Double center = buildingCenter(target.building);
 		
-		Map<Building, Integer> damaged = U.newHashMap();
+		Map<Building, Double> damaged = U.newHashMap();
 		
 		for (Building b : target.planet.surface.buildings) {
 			if (b != target.building) {
 				Point2D.Double loc = buildingCenter(b);
 				double d = loc.distance(center); 
 				if (d < radius) {
-					int applyDamage = (int)(damage * percent * (radius - d) / radius);
+					double applyDamage = (damage * percent * (radius - d) / radius);
 					damaged.put(b, applyDamage);
 				}
 			}
@@ -3949,8 +3949,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				damaged.remove(s.building);
 			}
 		}
-		for (Map.Entry<Building, Integer> e : damaged.entrySet()) {
-			int d = e.getValue();
+		for (Map.Entry<Building, Double> e : damaged.entrySet()) {
+			double d = e.getValue();
 			Building b = e.getKey();
 			
 			int hpMax = world().getHitpoints(b.type, target.planet.owner, true);
@@ -4091,7 +4091,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		BattleEfficiencyModel bem = source.getEfficiency(target);
 		if (bem != null) {
-			sp.damage = (int)(sp.damage * bem.damageMultiplier);
+			sp.damage = sp.damage * bem.damageMultiplier;
 		}
 		
 		projectiles.add(sp);
@@ -4147,8 +4147,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		for (SpacewarStructure s : structures) {
 			if (s.item != null) {
 				s.item.count += s.count;
-				s.item.hp = s.hp;
-				s.item.shield = s.shield;
+				s.item.hp = (int)s.hp;
+				s.item.shield = (int)s.shield;
 			} else
 			if (s.building != null) {
 				s.building.hitpoints = (int)(1L * s.hp * s.building.type.hitpoints / s.hpMax);
@@ -4456,12 +4456,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				parent = s.planet.name;
 			}
 			
-			hp = s.hp;
+			hp = (int)s.hp;
 			
 			hpRatio = 1.0 * s.hp / s.hpMax;
 			if (s.shieldMax > 0) {
 				shieldRatio = 1.0 * s.shield / s.shieldMax;
-				sp = s.shield; 
+				sp = (int)s.shield; 
 			} else {
 				shieldRatio = -1;
 				sp = -1;

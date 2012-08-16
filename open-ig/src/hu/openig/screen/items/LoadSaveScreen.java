@@ -20,6 +20,7 @@ import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.api.LoadSaveScreenAPI;
 import hu.openig.screen.api.SettingsPage;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
@@ -80,7 +81,7 @@ import javax.xml.stream.XMLStreamException;
  * A load and save game screen.
  * @author akarnokd, 2010.01.11.
  */
-public class LoadSaveScreen extends ScreenBase {
+public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** The fields for the settings screen. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface Settings { 
@@ -1111,10 +1112,7 @@ public class LoadSaveScreen extends ScreenBase {
 	void doRepaint() {
 		scaleRepaint(base, base, margin());
 	}
-	/**
-	 * Show the controls of the given page and hide the rest.
-	 * @param page the settings page controls to display
-	 */
+	@Override
 	public void displayPage(SettingsPage page) {
 		for (Field f : getClass().getDeclaredFields()) {
 			if (f.isAnnotationPresent(Settings.class) && UIComponent.class.isAssignableFrom(f.getType())) {
@@ -1750,10 +1748,7 @@ public class LoadSaveScreen extends ScreenBase {
 			commons.simulation.resume();
 		}
 	}
-	/**
-	 * Change the saveability settings.
-	 * @param value the value
-	 */
+	@Override
 	public void maySave(boolean value) {
 		this.maySave = value;
 		saveNameText.text(saveText, false);

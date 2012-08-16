@@ -29,7 +29,7 @@ public class SpacewarProjectile extends SpacewarObject {
 	/** ECM distraction limit 0..2 .*/
 	public int ecmLimit;
 	/** The damage to inflict. */
-	public int damage;
+	public double damage;
 	/** The beam angle in an X-Y screen directed coordinate system, 0..2*PI. */
 	public double angle;
 	/** The targeted structure. */

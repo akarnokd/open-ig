@@ -201,7 +201,7 @@ public class AIWorld {
 			}
 		}
 		for (Player p : player.world.players.values()) {
-			if (p.offers.containsKey(player)) {
+			if (p.offers.containsKey(player.id)) {
 				activeOffer.add(p);
 			}
 		}

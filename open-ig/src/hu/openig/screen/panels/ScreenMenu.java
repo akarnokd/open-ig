@@ -11,8 +11,8 @@ package hu.openig.screen.panels;
 import hu.openig.model.Screens;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.CommonResources;
+import hu.openig.screen.api.LoadSaveScreenAPI;
 import hu.openig.screen.api.SettingsPage;
-import hu.openig.screen.items.LoadSaveScreen;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
@@ -157,13 +157,13 @@ public class ScreenMenu extends UIContainer {
 			break;
 		case 12:
 			commons.control().displayOptions();
-			LoadSaveScreen scr = commons.control().getScreen(Screens.LOAD_SAVE);
+			LoadSaveScreenAPI scr = (LoadSaveScreenAPI)commons.control().getScreen(Screens.LOAD_SAVE);
 			scr.maySave(!commons.battleMode);
 			scr.displayPage(SettingsPage.LOAD_SAVE);
 			break;
 		case 13:
 			commons.control().displayOptions();
-			scr = commons.control().getScreen(Screens.LOAD_SAVE);
+			scr = (LoadSaveScreenAPI)commons.control().getScreen(Screens.LOAD_SAVE);
 			scr.maySave(!commons.battleMode);
 			scr.displayPage(SettingsPage.AUDIO);
 			break;
