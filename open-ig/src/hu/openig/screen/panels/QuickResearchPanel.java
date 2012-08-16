@@ -315,6 +315,7 @@ public class QuickResearchPanel extends UIContainer {
 						askRepaint();
 						commons.player().currentResearch(ri.first);
 						commons.selectAnim(ri.first);
+						commons.computerSound(SoundType.START_RESEARCH);
 					}
 				};
 				cl.description = Pair.of(ri.first.longName + "  (" + ri.first.researchCost + " cr)", ri.first.description);

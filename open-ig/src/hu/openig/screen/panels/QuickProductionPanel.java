@@ -586,6 +586,7 @@ public class QuickProductionPanel extends UIContainer {
 				@Override
 				public void invoke() {
 					DefaultAIControls.actionRemoveProduction(commons.player(), rt.type);
+					commons.computerSound(SoundType.DEL_PRODUCTION);
 					commons.control().moveMouse();
 				}
 			};
@@ -723,6 +724,8 @@ public class QuickProductionPanel extends UIContainer {
 				}
 				if (!DefaultAIControls.actionStartProduction(commons.player(), rt, cnt, 50)) {
 					commons.computerSound(SoundType.NOT_AVAILABLE);
+				} else {
+					commons.computerSound(SoundType.ADD_PRODUCTION);
 				}
 			}
 			return false;
