@@ -315,6 +315,7 @@ public class Mission5 extends Mission {
 				// thorin attacked?
 				war.includeFleet(f2, f2.owner);
 				battle.targetFleet = f2;
+				f2.owner.ai.spaceBattleInit(war);
 			} else {
 				// garthog attacked
 				war.addStructures(f1.inventory, EnumSet.of(

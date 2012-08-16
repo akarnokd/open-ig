@@ -198,6 +198,7 @@ public class Mission4 extends Mission {
 				if (battle.targetFleet == f1) {
 					war.includeFleet(f2, f2.owner);
 					battle.targetFleet = f2;
+					f2.owner.ai.spaceBattleInit(war);
 				} else {
 					// pirate 2 attacked
 					war.addStructures(f1.inventory, EnumSet.of(

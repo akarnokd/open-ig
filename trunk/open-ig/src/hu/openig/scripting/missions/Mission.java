@@ -758,6 +758,7 @@ public abstract class Mission implements GameScriptingEvents {
 			if (battle.targetFleet == f1) {
 				war.includeFleet(f2, f2.owner);
 				battle.targetFleet = f2;
+				f2.owner.ai.spaceBattleInit(war);
 			} else {
 				war.addStructures(f1.inventory, EnumSet.of(
 						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
