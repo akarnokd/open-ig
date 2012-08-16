@@ -1606,6 +1606,9 @@ public class GameWindow extends JFrame implements GameControls {
 
 		
 		config.loadProperties(xworld);
+
+		commons.music.setVolume(config.musicVolume);
+		commons.music.setMute(config.muteMusic);
 	}
 	@Override
 	public Screens primary() {
