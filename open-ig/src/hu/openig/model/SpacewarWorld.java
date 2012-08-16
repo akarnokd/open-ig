@@ -12,6 +12,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Interface to tell things about the spacewar state to AI players and the Scripting.
@@ -111,4 +112,6 @@ public interface SpacewarWorld {
 			EnumSet<ResearchSubCategory> categories);
 	/** @return the landing lace location on the battlemap or null if no such place. */
 	Point landingPlace();
+	/** @return the global random object. */
+	Random random();
 }

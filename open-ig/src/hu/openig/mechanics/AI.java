@@ -22,6 +22,7 @@ import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile.Mode;
+import hu.openig.model.BattleEfficiencyModel;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
@@ -168,32 +169,48 @@ public class AI implements AIManager {
 	 */
 	public static void defaultAttackBehavior(SpacewarWorld world,
 			List<SpacewarStructure> idles, Player p) {
-		Set<SpacewarStructure> ess = U.newHashSet();
+		// select next closest target
 		for (SpacewarStructure ship : idles) {
 			defaultAttackBehavior(world, ship);
 		}
-		if (ess.isEmpty()) {
-			for (SpacewarStructure ship : idles) {
-				ess.addAll(world.enemiesOf(ship));
-				break;
-			}
+		List<SpacewarStructure> esl = defaultAttackOutOfRange(world, idles);
+		// manage rockets
+		handleRockets(world, p, esl);
+		// manage kamikaze
+		handleKamikaze(world, p);
+	}
+	/**
+	 * Attack out-of-range ships with the remaining idles.
+	 * @param world the world object
+	 * @param idles the list of idles
+	 * @return all enemies
+	 */
+	static List<SpacewarStructure> defaultAttackOutOfRange(SpacewarWorld world,
+			List<SpacewarStructure> idles) {
+		List<SpacewarStructure> esl = new ArrayList<SpacewarStructure>();
+		for (SpacewarStructure ship : idles) {
+			esl.addAll(world.enemiesOf(ship));
+			break;
 		}
-		List<SpacewarStructure> esl = new ArrayList<SpacewarStructure>(ess);
-		Collections.shuffle(esl);
 		if (!esl.isEmpty()) {
-			int i = 0;
 			for (SpacewarStructure ship : idles) {
 				if (ship.attack == null 
 						&& ship.type == StructureType.SHIP
 						&& ship.canDirectFire()) {
-					world.attack(ship, esl.get(i), Mode.BEAM);
-					i++;
-					if (i >= esl.size()) {
-						i = 0;
-					}
+					selectNewTarget(world, ship, esl);
 				}
 			}
 		}
+		return esl;
+	}
+	/**
+	 * Handle rockets.
+	 * @param world the world object
+	 * @param p the player
+	 * @param esl all enemy vessels
+	 */
+	static void handleRockets(SpacewarWorld world, Player p,
+			List<SpacewarStructure> esl) {
 		List<SpacewarStructure> rocketTargets = world.enemiesOf(p);
 		Collections.shuffle(rocketTargets);
 		for (SpacewarStructure s : rocketTargets) {
@@ -222,6 +239,13 @@ public class AI implements AIManager {
 				}
 			}
 		}
+	}
+	/**
+	 * Handle fighter kamikaze.
+	 * @param world the world
+	 * @param p the player
+	 */
+	static void handleKamikaze(SpacewarWorld world, Player p) {
 		for (SpacewarStructure s : world.structures(p)) {
 			s.guard |= s.type == StructureType.STATION || s.type == StructureType.PROJECTOR;
 			if (s.type == StructureType.SHIP 
@@ -266,24 +290,67 @@ public class AI implements AIManager {
 		return Pair.of(hpActual, hpTotal);
 	}
 	/**
+	 * Select a target in range which the current ship can do most
+	 * damage.
+	 * @param world the world object.
+	 * @param ship the current ship
+	 */
+	static void selectNewTarget(SpacewarWorld world, final SpacewarStructure ship) {
+		List<SpacewarStructure> es = world.enemiesInRange(ship);
+		Collections.shuffle(es, world.random());
+		SpacewarStructure best = null;
+		double bestEfficiency = 0d;
+		for (SpacewarStructure s : es) {
+			BattleEfficiencyModel bem = ship.getEfficiency(s);
+			double eff = bem != null ? bem.damageMultiplier : 1d;
+			if (bem != null && eff > bestEfficiency) {
+				best = s;
+				bestEfficiency = eff;
+			}
+		}
+		if (best != null) {
+			world.attack(ship, best, Mode.BEAM);
+		}
+	}
+	/**
+	 * Select a target across the whole space which the current ship can do most
+	 * damage.
+	 * @param world the world object.
+	 * @param ship the current ship
+	 * @param es the list of enemies
+	 */
+	static void selectNewTarget(SpacewarWorld world, 
+			final SpacewarStructure ship, List<SpacewarStructure> es) {
+		Collections.shuffle(es, world.random());
+		SpacewarStructure best = null;
+		double bestEfficiency = 0d;
+		for (SpacewarStructure s : es) {
+			BattleEfficiencyModel bem = ship.getEfficiency(s);
+			double eff = bem != null ? bem.damageMultiplier : 1d;
+			if (bem != null && eff > bestEfficiency) {
+				best = s;
+				bestEfficiency = eff;
+			}
+		}
+		if (best != null) {
+			world.attack(ship, best, Mode.BEAM);
+		}
+	}
+	/**
 	 * Orders the given structure to attack a random enemy.
 	 * @param world the world
 	 * @param ship the ship
 	 */
 	public static void defaultAttackBehavior(SpacewarWorld world,
 			SpacewarStructure ship) {
-		if (ship.type == StructureType.STATION 
-				|| ship.type == StructureType.PROJECTOR) {
-			ship.guard = true;
-			List<SpacewarStructure> es = world.enemiesInRange(ship);
-			if (es.size() > 0) {
-				world.attack(ship, world.random(es), Mode.BEAM);
-			}
-		} else
-		if (ship.type == StructureType.SHIP) {
-			List<SpacewarStructure> es = world.enemiesInRange(ship);
-			if (es.size() > 0) {
-				world.attack(ship, world.random(es), Mode.BEAM);
+		if (ship.canDirectFire()) {
+			if (ship.type == StructureType.STATION 
+					|| ship.type == StructureType.PROJECTOR) {
+				ship.guard = true;
+				selectNewTarget(world, ship);
+			} else
+			if (ship.type == StructureType.SHIP) {
+				selectNewTarget(world, ship);
 			}
 		}
 	}

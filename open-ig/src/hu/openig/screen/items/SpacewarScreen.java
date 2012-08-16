@@ -84,6 +84,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -91,6 +92,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -3551,10 +3553,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				if (ship.guard) {
 					// pick a target
 					if (canControl(ship)) {
-						List<SpacewarStructure> es = enemiesInRange(ship);
-						if (es.size() > 0) {
-							ship.attack = random(es);
-						}
+						selectNewTarget(ship);
 					} else {
 						enemyIdles.add(ship);
 					}
@@ -3626,9 +3625,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	boolean handleAutofire(SpacewarStructure ship) {
 		if (ship.type == StructureType.STATION || ship.type == StructureType.PROJECTOR) {
-			List<SpacewarStructure> es = enemiesInRange(ship);
-			if (es.size() > 0) {
-				ship.attack = random(es);
+			selectNewTarget(ship);
+			if (ship.attack != null) {
 				return true;
 			}
 		} else
@@ -3642,6 +3640,26 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		
 		return false;
+	}
+	/**
+	 * Select a target in range which the current ship can do most
+	 * damage.
+	 * @param ship the current ship
+	 */
+	void selectNewTarget(final SpacewarStructure ship) {
+		List<SpacewarStructure> es = enemiesInRange(ship);
+		Collections.shuffle(es, world().random());
+		SpacewarStructure best = null;
+		double bestEfficiency = 0d;
+		for (SpacewarStructure s : es) {
+			BattleEfficiencyModel bem = ship.getEfficiency(s);
+			double eff = bem != null ? bem.damageMultiplier : 1d;
+			if (bem != null && eff > bestEfficiency) {
+				best = s;
+				bestEfficiency = eff;
+			}
+		}
+		ship.attack = best;
 	}
 	/**
 	 * Choose a new target for the ship.
@@ -5278,5 +5296,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		
 		return true;
+	}
+	@Override
+	public Random random() {
+		return world().random();
 	}
 }
