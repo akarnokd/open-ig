@@ -20,11 +20,11 @@
 		appearances. -->
 	<space-entities>
 		<tech id="Fighter1" normal="inventions/spaceships/fighters/fighter_1_rotate" alternative="inventions/spaceships/fighters/alien_fighter_1_rotate" image="inventions/spaceships/fighters/fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="200"/>
-		<tech id="Fighter2" normal="inventions/spaceships/fighters/fighter_2_rotate" alternative="inventions/spaceships/fighters/alien_fighter_2_rotate" image="inventions/spaceships/fighters/fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="350"/>
-		<tech id="Fighter3" normal="inventions/spaceships/fighters/fighter_3_rotate" alternative="inventions/spaceships/fighters/alien_fighter_3_rotate" image="inventions/spaceships/fighters/fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="500"/>
-		<tech id="Fighter4" normal="inventions/spaceships/fighters/fighter_4_rotate" alternative="inventions/spaceships/fighters/alien_fighter_4_rotate" image="inventions/spaceships/fighters/fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="650"/>
-		<tech id="Fighter5" normal="inventions/spaceships/fighters/fighter_5_rotate" alternative="inventions/spaceships/fighters/alien_fighter_5_rotate" image="inventions/spaceships/fighters/fighter_5_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="800"/>
-		<tech id="Fighter6" normal="inventions/spaceships/fighters/fighter_6_rotate" alternative="inventions/spaceships/fighters/alien_fighter_6_rotate" image="inventions/spaceships/fighters/fighter_6_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="950"/>
+		<tech id="Fighter2" normal="inventions/spaceships/fighters/fighter_2_rotate" alternative="inventions/spaceships/fighters/alien_fighter_2_rotate" image="inventions/spaceships/fighters/fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="300"/>
+		<tech id="Fighter3" normal="inventions/spaceships/fighters/fighter_3_rotate" alternative="inventions/spaceships/fighters/alien_fighter_3_rotate" image="inventions/spaceships/fighters/fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="400"/>
+		<tech id="Fighter4" normal="inventions/spaceships/fighters/fighter_4_rotate" alternative="inventions/spaceships/fighters/alien_fighter_4_rotate" image="inventions/spaceships/fighters/fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="500"/>
+		<tech id="Fighter5" normal="inventions/spaceships/fighters/fighter_5_rotate" alternative="inventions/spaceships/fighters/alien_fighter_5_rotate" image="inventions/spaceships/fighters/fighter_5_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="600"/>
+		<tech id="Fighter6" normal="inventions/spaceships/fighters/fighter_6_rotate" alternative="inventions/spaceships/fighters/alien_fighter_6_rotate" image="inventions/spaceships/fighters/fighter_6_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="700"/>
 		
 		<tech id="Cruiser1" normal="inventions/spaceships/cruisers/cruiser_1_rotate" alternative="inventions/spaceships/cruisers/alien_cruiser_1_rotate" image="inventions/spaceships/cruisers/cruiser_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="1500">
 			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.5'/>
@@ -68,17 +68,19 @@
 		</tech>
 		<tech id="OrbitalFactory" normal="inventions/spaceships/stations/orbital_factory_rotate" alternative="inventions/spaceships/stations/alien_orbital_factory_rotate" image="inventions/spaceships/stations/orbital_factory_huge" width="1" sound="EXPLOSION_LONG" hp="30000" rotation-time="1" movement-speed="1"/>
 		<tech id="ColonyShip" normal="inventions/spaceships/battleships/colonyship_rotate" alternative="inventions/spaceships/battleships/alien_colonyship_rotate" image="inventions/spaceships/battleships/colonyship_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="3000"/>
-		<tech id="DargslanFighter" normal="inventions/spaceships/fighters/dargslan_fighter_rotate" image="inventions/spaceships/fighters/dargslan_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="1000"/>
-		<tech id="DribsFighter" normal="inventions/spaceships/fighters/dribs_fighter_rotate" image="inventions/spaceships/fighters/dribs_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="500"/>
-		<tech id="EcalepFighter" normal="inventions/spaceships/fighters/ecalep_fighter_rotate" image="inventions/spaceships/fighters/ecalep_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="450"/>
-		<tech id="GarthogFighter" normal="inventions/spaceships/fighters/garthog_fighter_rotate" image="inventions/spaceships/fighters/garthog_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="200"/>
-		<tech id="MorgathFighter" normal="inventions/spaceships/fighters/morgath_fighter_rotate" image="inventions/spaceships/fighters/morgath_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="400"/>
+
 		<tech id="PirateFighter" normal="inventions/spaceships/fighters/pirate_fighter_rotate" image="inventions/spaceships/fighters/pirate_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="180"/>
-		<!-- Mission 4 custom fighter. -->
-		<tech id="PirateFighter2" normal="inventions/spaceships/fighters/pirate_fighter_rotate" image="inventions/spaceships/fighters/pirate_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="350"/>
-		<tech id="SullepFighter1" normal="inventions/spaceships/fighters/sullep_fighter_1_rotate" image="inventions/spaceships/fighters/sullep_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
+		<tech id="PirateFighter2" normal="inventions/spaceships/fighters/pirate_fighter_rotate" image="inventions/spaceships/fighters/pirate_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="350"/> <!-- Mission 4 custom fighter. -->
+
+		<tech id="GarthogFighter" normal="inventions/spaceships/fighters/garthog_fighter_rotate" image="inventions/spaceships/fighters/garthog_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="200"/>
+
+		<tech id="DargslanFighter" normal="inventions/spaceships/fighters/dargslan_fighter_rotate" image="inventions/spaceships/fighters/dargslan_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="1000"/>
+		<tech id="DribsFighter" normal="inventions/spaceships/fighters/dribs_fighter_rotate" image="inventions/spaceships/fighters/dribs_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
+		<tech id="EcalepFighter" normal="inventions/spaceships/fighters/ecalep_fighter_rotate" image="inventions/spaceships/fighters/ecalep_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="500"/>
+		<tech id="MorgathFighter" normal="inventions/spaceships/fighters/morgath_fighter_rotate" image="inventions/spaceships/fighters/morgath_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
+		<tech id="SullepFighter1" normal="inventions/spaceships/fighters/sullep_fighter_1_rotate" image="inventions/spaceships/fighters/sullep_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="600"/>
 		<tech id="SullepFighter2" normal="inventions/spaceships/fighters/sullep_fighter_2_rotate" image="inventions/spaceships/fighters/sullep_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
-		<tech id="YchomFighter" normal="inventions/spaceships/fighters/ychom_fighter_rotate" image="inventions/spaceships/fighters/ychom_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="400"/>
+		<tech id="YchomFighter" normal="inventions/spaceships/fighters/ychom_fighter_rotate" image="inventions/spaceships/fighters/ychom_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="600"/>
 
 		<tech id="DargslanDestroyer" normal="inventions/spaceships/cruisers/dargslan_destroyer_rotate" image="inventions/spaceships/cruisers/dargslan_destroyer_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5000">
 			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.2'/>

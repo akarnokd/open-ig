@@ -246,17 +246,18 @@ public class AI implements AIManager {
 	 * @param p the player
 	 */
 	static void handleKamikaze(SpacewarWorld world, Player p) {
-		for (SpacewarStructure s : world.structures(p)) {
-			s.guard |= s.type == StructureType.STATION || s.type == StructureType.PROJECTOR;
-			if (s.type == StructureType.SHIP 
-					&& s.item != null 
-					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
-					&& s.attack != null && !s.attack.isDestroyed()) {
-				if (s.count == 1 && s.hp * 10 < s.hpMax) {
-					world.attack(s, s.attack, Mode.KAMIKAZE);
+		if (!world.battle().enemyFlee) {
+			for (SpacewarStructure s : world.structures(p)) {
+				s.guard |= s.type == StructureType.STATION || s.type == StructureType.PROJECTOR;
+				if (s.type == StructureType.SHIP 
+						&& s.item != null 
+						&& s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+						&& s.attack != null && !s.attack.isDestroyed()) {
+					if (s.count == 1 && s.hp * 10 < s.hpMax) {
+						world.attack(s, s.attack, Mode.KAMIKAZE);
+					}
 				}
 			}
-			
 		}
 	}
 	/**
@@ -303,7 +304,7 @@ public class AI implements AIManager {
 		for (SpacewarStructure s : es) {
 			BattleEfficiencyModel bem = ship.getEfficiency(s);
 			double eff = bem != null ? bem.damageMultiplier : 1d;
-			if (bem != null && eff > bestEfficiency) {
+			if (eff > bestEfficiency) {
 				best = s;
 				bestEfficiency = eff;
 			}
@@ -327,7 +328,7 @@ public class AI implements AIManager {
 		for (SpacewarStructure s : es) {
 			BattleEfficiencyModel bem = ship.getEfficiency(s);
 			double eff = bem != null ? bem.damageMultiplier : 1d;
-			if (bem != null && eff > bestEfficiency) {
+			if (eff > bestEfficiency) {
 				best = s;
 				bestEfficiency = eff;
 			}

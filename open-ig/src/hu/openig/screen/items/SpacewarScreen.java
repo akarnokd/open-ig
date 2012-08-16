@@ -336,6 +336,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	Chat chat;
 	/** The current chat node. */
 	Node node;
+	/** The set of all initial players. */
+	final Set<Player> allPlayerSet = U.newHashSet();
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -986,6 +988,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		groups.clear();
 		
 		infoImages.clear();
+		
+		allPlayerSet.clear();
 	}
 	@Override
 	public void onResize() {
@@ -1312,8 +1316,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		setSpacewarTimeControls();
 
-		player().ai.spaceBattleInit(this);
-		nonPlayer().ai.spaceBattleInit(this);
+		findAllPlayers();
+		
+		for (Player p : allPlayerSet) {
+			p.ai.spaceBattleInit(this);
+		}
 		world().scripting.onSpacewarStart(this);
 
 		// fix unit placements
@@ -1366,6 +1373,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		// update statistics
 		battle.incrementSpaceBattles();
+	}
+	/**
+	 * Find all players.
+	 */
+	void findAllPlayers() {
+		allPlayerSet.clear();
+		for (SpacewarStructure s : structures) {
+			allPlayerSet.add(s.owner);
+		}
 	}
 	/**
 	 * Returns the non-human player of the current battle.
@@ -4197,7 +4213,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		// apply statistics
 		battle.incrementSpaceWin();
 
-		
+
 		player().ai.spaceBattleDone(this);
 		nonPlayer().ai.spaceBattleDone(this);
 		world().scripting.onSpacewarFinish(this);
