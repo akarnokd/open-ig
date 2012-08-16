@@ -2182,4 +2182,12 @@ public class GameWindow extends JFrame implements GameControls {
 	public void setFixedFrameRate(boolean value) {
 		fixedFramerate = value;
 	}
+	/**
+	 * Continue the last save.
+	 */
+	public void continueLastGame() {
+		if (primary == allScreens.main && secondary == null) {
+			allScreens.main.checkExistingSave();
+		}
+	}
 }

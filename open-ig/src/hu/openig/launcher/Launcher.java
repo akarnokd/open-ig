@@ -184,9 +184,9 @@ public class Launcher extends JFrame {
 	/** The old config file. */
 	final File configOld = new File("launcher-config.xml");
 	/** The new config file. */
-	final File config = new File("open-ig-launcher-config.xml");
+	final String config = "open-ig-launcher-config.xml";
 	/** The local update file. */
-	final File localUpdate = new File("open-ig-update.xml");
+	final String localUpdate = "open-ig-update.xml";
 	/** Current language. */
 	String language = "en";
 	/** The language flag. */
@@ -1186,7 +1186,7 @@ public class Launcher extends JFrame {
 //				File uf = updateFile;
 				try {
 					xe = get();
-					move(updateFile, localUpdate);
+					move(updateFile, new File(installDir, localUpdate));
 					doProcessUpdate(xe, updateFile);
 				} catch (ExecutionException ex) {
 					if (!(ex.getCause() instanceof IOException)) {
@@ -1219,7 +1219,7 @@ public class Launcher extends JFrame {
 	 */
 	void processLocal() {
 		try {
-			doProcessUpdate(XElement.parseXML(localUpdate.getAbsolutePath()), null);
+			doProcessUpdate(XElement.parseXML(new File(installDir, localUpdate)), null);
 		} catch (XMLStreamException ex) {
 			
 		}
@@ -1237,7 +1237,7 @@ public class Launcher extends JFrame {
 		));
 		try {
 			LUpdate u = new LUpdate();
-			u.process(XElement.parseXML(localUpdate.getAbsolutePath()));
+			u.process(XElement.parseXML(new File(installDir, localUpdate)));
 			LModule m = u.getModule(GAME);
 			for (LFile f : m.files) {
 				String fn = f.url;
@@ -1246,7 +1246,11 @@ public class Launcher extends JFrame {
 				
 				File f2 = new File(installDir, fn);
 				if (!f2.canRead()) {
-					return false;
+					if (!fn.endsWith(".jar") || detectedVersion == null) {
+						return false;
+					} else {
+						continue;
+					}
 				}
 				if (fn.startsWith("open-ig") && fn.endsWith(".zip")) {
 					ZipFile zf = new ZipFile(f2);
@@ -1375,9 +1379,10 @@ public class Launcher extends JFrame {
 	 * Load the configuration.
 	 */
 	void loadConfig() {
-		if (config.canRead()) {
+		File cfg0 = new File(installDir, config);
+		if (cfg0.canRead()) {
 			try {
-				XElement cfg = XElement.parseXML(config.getAbsolutePath());
+				XElement cfg = XElement.parseXML(cfg0.getAbsolutePath());
 				language = cfg.get("language");
 				jvm = cfg.get("jvm", null);
 				String m = cfg.get("memory", null);
@@ -2186,7 +2191,7 @@ public class Launcher extends JFrame {
 		cfg.set("jvm", jvm);
 		cfg.set("memory", memory);
 		try {
-			cfg.save(config);
+			cfg.save(new File(installDir, config));
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
@@ -2621,7 +2626,7 @@ public class Launcher extends JFrame {
 			if (fullScreen.getSelectedIndex() == 1) {
 				params.add("-maximized");
 			} else
-			if (fullScreen.getSelectedIndex() == 1) {
+			if (fullScreen.getSelectedIndex() == 2) {
 				params.add("-fullscreen");
 			}
 			if (movie.isSelected()) {
