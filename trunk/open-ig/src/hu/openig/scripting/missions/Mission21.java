@@ -185,6 +185,7 @@ public class Mission21 extends Mission {
 		if (ff != null) {
 			player.fleets.put(gf, FleetKnowledge.VISIBLE);
 			ff.attack(gf);
+			ff.owner.fleets.put(gf, FleetKnowledge.VISIBLE);
 		}
 	}
 	

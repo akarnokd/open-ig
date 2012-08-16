@@ -20,9 +20,9 @@ import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
+import hu.openig.model.BattleEfficiencyModel;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile.Mode;
-import hu.openig.model.BattleEfficiencyModel;
 import hu.openig.model.Building;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
@@ -193,11 +193,18 @@ public class AI implements AIManager {
 			break;
 		}
 		if (!esl.isEmpty()) {
+			List<SpacewarStructure> esl2 = U.newArrayList(esl);
 			for (SpacewarStructure ship : idles) {
 				if (ship.attack == null 
 						&& ship.type == StructureType.SHIP
 						&& ship.canDirectFire()) {
-					selectNewTarget(world, ship, esl);
+					SpacewarStructure t = selectNewTarget(world, ship, esl);
+					if (t != null) {
+						esl.remove(t);
+						if (esl.isEmpty()) {
+							esl.addAll(esl2);
+						}
+					}
 				}
 			}
 		}
@@ -319,8 +326,9 @@ public class AI implements AIManager {
 	 * @param world the world object.
 	 * @param ship the current ship
 	 * @param es the list of enemies
+	 * @return the selected target
 	 */
-	static void selectNewTarget(SpacewarWorld world, 
+	static SpacewarStructure selectNewTarget(SpacewarWorld world, 
 			final SpacewarStructure ship, List<SpacewarStructure> es) {
 		Collections.shuffle(es, world.random());
 		SpacewarStructure best = null;
@@ -336,6 +344,7 @@ public class AI implements AIManager {
 		if (best != null) {
 			world.attack(ship, best, Mode.BEAM);
 		}
+		return best;
 	}
 	/**
 	 * Orders the given structure to attack a random enemy.
