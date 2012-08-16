@@ -478,7 +478,7 @@ public class Mission5 extends Mission {
 		// -------------------------------------------------------
 		// Set strengths here
 		f.addInventory(research("GarthogFighter"), 12);
-		f.addInventory(research("GarthogDestroyer"), 1);
+		equipFully(f.addInventory(research("GarthogDestroyer"), 1));
 		// -------------------------------------------------------
 		f.task = FleetTask.SCRIPT;
 		for (InventoryItem ii : f.inventory) {

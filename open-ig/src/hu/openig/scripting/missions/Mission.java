@@ -995,4 +995,20 @@ public abstract class Mission implements GameScriptingEvents {
 	public boolean hasReceive(String id) {
 		return world.bridge.receiveMessages.containsKey(id);
 	}
+	/**
+	 * Max out the equipment counts on the given inventory items.
+	 * @param sequence the sequence
+	 */
+	public void equipFully(Iterable<? extends InventoryItem> sequence) {
+		for (InventoryItem ii : sequence) {
+			for (InventorySlot is : ii.slots) {
+				if (!is.slot.fixed) {
+					is.count = is.slot.max;
+					if (is.type == null) {
+						is.type = is.slot.items.get(0);
+					}
+				}
+			}
+		}
+	}
 }

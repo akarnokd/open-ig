@@ -461,6 +461,7 @@ public class BattlefinishScreen extends ScreenBase {
 				return true;
 			}
 			displayPrimary(Screens.STARMAP);
+			commons.speed1();
 			return false;
 		}
 		return super.mouse(e);

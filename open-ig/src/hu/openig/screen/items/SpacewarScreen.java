@@ -2487,7 +2487,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		int vehicleMaxEnemy = 0;
 		for (SpacewarStructure e : structures) {
 			SpacebattleStatistics stat = (canControl(e)) ? own : other;
-			stat.hp += e.hp + (e.count - 1) * e.hpMax + e.shield;
+			if (e.count > 0) {
+				stat.hp += e.hp + (e.count - 1) * e.hpMax + e.shield;
+			}
 			if (e.type == StructureType.PROJECTOR) {
 				stat.guns++;
 			} else
@@ -3670,7 +3672,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		for (SpacewarStructure s : es) {
 			BattleEfficiencyModel bem = ship.getEfficiency(s);
 			double eff = bem != null ? bem.damageMultiplier : 1d;
-			if (bem != null && eff > bestEfficiency) {
+			if (eff > bestEfficiency) {
 				best = s;
 				bestEfficiency = eff;
 			}
@@ -3735,7 +3737,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				battle.infectPlanet = ship.attack.planet;
 			}
 		} else
-		if (ship.attack != null && ship.attack.isDestroyed() && !ship.intersects(0, 0, space.width, space.height)) {
+		if (ship.attack != null && ship.attack.isDestroyed()) {
+			ship.attack = null;
+		}
+		if (ship.attack == null && !ship.intersects(0, 0, space.width, space.height)) {
 			createLoss(ship);
 			structures.remove(ship);
 		}

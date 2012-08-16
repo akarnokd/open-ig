@@ -164,12 +164,12 @@ public class Mission21 extends Mission {
 		// ----------------------------
 
 		if (world.difficulty == Difficulty.EASY) {
-			gf.addInventory(research("GarthogBattleship"), 1);
-			gf.addInventory(research("GarthogDestroyer"), 5);
+			equipFully(gf.addInventory(research("GarthogBattleship"), 1));
+			equipFully(gf.addInventory(research("GarthogDestroyer"), 5));
 			gf.addInventory(research("GarthogFighter"), 15);
 		} else {
-			gf.addInventory(research("GarthogBattleship"), 1);
-			gf.addInventory(research("GarthogDestroyer"), 10);
+			equipFully(gf.addInventory(research("GarthogBattleship"), 1));
+			equipFully(gf.addInventory(research("GarthogDestroyer"), 10));
 			gf.addInventory(research("GarthogFighter"), 30);
 		}
 		

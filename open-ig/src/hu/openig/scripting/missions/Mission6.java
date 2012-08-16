@@ -199,8 +199,8 @@ public class Mission6 extends Mission {
 		Fleet f = createFleet(label("Garthog.fleet"), garthog, from.x + 20, from.y + 10);
 		// --------------------------------------------------
 		f.addInventory(research("GarthogFighter"), 10);
-		f.addInventory(research("GarthogDestroyer"), 3);
-		f.addInventory(research("GarthogBattleship"), 2);
+		equipFully(f.addInventory(research("GarthogDestroyer"), 3));
+		equipFully(f.addInventory(research("GarthogBattleship"), 2));
 		f.addInventory(research("LightTank"), 6);
 		f.addInventory(research("RadarCar"), 1);
 		f.addInventory(research("GarthogRadarJammer"), 1);
