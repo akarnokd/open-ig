@@ -674,6 +674,7 @@ public class BridgeScreen extends ScreenBase {
 		onAppearComplete = null;
 		messageAppearLast = null;
 		projectorLast = null;
+		selectedVideoId = null;
 		if (messageAnim != null) {
 			onMessageComplete = null;
 			messageAnim.stop();
@@ -1122,8 +1123,6 @@ public class BridgeScreen extends ScreenBase {
 			return;
 		}
 		
-		final VideoMessage vm = world().bridge.receiveMessages.get(messageId);
-		vm.visible = true;
 		commons.force = true;
 		this.onSeen = onSeen;
 		onMessageComplete = new Action0() {
@@ -1131,11 +1130,17 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				send.selected = false;
 				receive.selected = true;
-				selectedVideoId = vm;
-				
 				List<VideoMessage> list = world().receivedMessages;
 				
-				listOffset = list.indexOf(vm);
+				listOffset = 0;
+				for (VideoMessage msg : list) {
+					if (msg.id.equals(messageId)) {
+						selectedVideoId = msg;
+						break;
+					}
+					listOffset++;
+				}
+				
 				
 				playProjectorOpen();
 			}
@@ -1143,7 +1148,7 @@ public class BridgeScreen extends ScreenBase {
 		onProjectorComplete = new Action0() {
 			@Override
 			public void invoke() {
-				playVideo(vm);
+				playVideo(selectedVideoId);
 			}
 		};
 		if (!messageOpen) {

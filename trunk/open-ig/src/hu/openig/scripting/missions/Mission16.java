@@ -251,7 +251,7 @@ public class Mission16 extends Mission {
 		//---------------------------------
 		
 		f.addInventory(research("GarthogFighter"), 4);
-		f.addInventory(research("GarthogDestroyer"), 2);
+		equipFully(f.addInventory(research("GarthogDestroyer"), 2));
 		
 		//---------------------------------
 		

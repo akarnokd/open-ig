@@ -170,27 +170,27 @@ public class Mission7 extends Mission {
 			if (task == 1) {
 				if (world.difficulty == Difficulty.HARD) {
 					pf.addInventory(world.researches.get("GarthogFighter"), 8);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
+					equipFully(pf.addInventory(world.researches.get("GarthogDestroyer"), 2));
 				} else
 				if (world.difficulty == Difficulty.NORMAL) {
 					pf.addInventory(world.researches.get("GarthogFighter"), 10);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 1);
+					equipFully(pf.addInventory(world.researches.get("GarthogDestroyer"), 1));
 				} else {
 					pf.addInventory(world.researches.get("GarthogFighter"), 5);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 1);
+					equipFully(pf.addInventory(world.researches.get("GarthogDestroyer"), 1));
 				}
 			} else {
 				if (world.difficulty == Difficulty.HARD) {
 					pf.addInventory(world.researches.get("GarthogFighter"), 15);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 3);
+					equipFully(pf.addInventory(world.researches.get("GarthogDestroyer"), 3));
 				} else
 				if (world.difficulty == Difficulty.NORMAL) {
 					pf.addInventory(world.researches.get("GarthogFighter"), 12);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
+					equipFully(pf.addInventory(world.researches.get("GarthogDestroyer"), 2));
 
 				} else {
 					pf.addInventory(world.researches.get("GarthogFighter"), 8);
-					pf.addInventory(world.researches.get("GarthogDestroyer"), 2);
+					equipFully(pf.addInventory(world.researches.get("GarthogDestroyer"), 2));
 				}
 			}
 			for (InventoryItem ii : pf.inventory) {

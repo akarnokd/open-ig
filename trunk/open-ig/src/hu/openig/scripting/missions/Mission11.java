@@ -100,8 +100,8 @@ public class Mission11 extends Mission {
 		// --------------------------------------------------
 		// Adjust attacker strength here
 		f.addInventory(research("GarthogFighter"), 20);
-		f.addInventory(research("GarthogDestroyer"), 10);
-		f.addInventory(research("GarthogBattleship"), 2);
+		equipFully(f.addInventory(research("GarthogDestroyer"), 10));
+		equipFully(f.addInventory(research("GarthogBattleship"), 2));
 		f.addInventory(research("LightTank"), 6);
 		f.addInventory(research("RadarCar"), 1);
 		f.addInventory(research("GarthogRadarJammer"), 1);
