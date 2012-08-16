@@ -147,7 +147,7 @@ public class BridgeScreen extends ScreenBase {
 	/** The list of videos. */
 	final List<VideoMessageEntry> videos = U.newArrayList();
 	/** The currently selected video. */
-	String selectedVideoId;
+	VideoMessage selectedVideoId;
 	/** The message list row height. */
 	final int rowHeight = 25;
 	/** If the video playback completed and the panel is retracted. */
@@ -510,7 +510,7 @@ public class BridgeScreen extends ScreenBase {
 					int idx = (e.y - messageListRect.y) / rowHeight + listOffset;
 					if (idx >= 0 && idx < videos.size()) {
 						VideoMessageEntry selectedVideo = videos.get(idx);
-						selectedVideoId = selectedVideo.videoMessage.id;
+						selectedVideoId = selectedVideo.videoMessage;
 						playVideo(selectedVideo.videoMessage);
 					} else {
 						selectedVideoId = null;
@@ -823,7 +823,7 @@ public class BridgeScreen extends ScreenBase {
 			for (int i = listOffset; i < videos.size(); i++) {
 				VideoMessageEntry e = videos.get(i);
 				e.draw(g2, messageListRect.x, y);
-				if (e.videoMessage.id.equals(selectedVideoId)) {
+				if (e.videoMessage == selectedVideoId) {
 					g2.setColor(Color.WHITE);
 					g2.drawRect(messageListRect.x, y, messageListRect.width - 1, rowHeight);
 				}
@@ -1131,7 +1131,7 @@ public class BridgeScreen extends ScreenBase {
 			public void invoke() {
 				send.selected = false;
 				receive.selected = true;
-				selectedVideoId = messageId;
+				selectedVideoId = vm;
 				
 				List<VideoMessage> list = world().receivedMessages;
 				
@@ -1200,7 +1200,7 @@ public class BridgeScreen extends ScreenBase {
 			List<VideoMessage> vms = world().receivedMessages;
 			for (VideoMessage vm : vms) {
 				if (!vm.seen) {
-					selectedVideoId = vm.id;
+					selectedVideoId = vm;
 					playVideo(vm);
 					break;
 				}
