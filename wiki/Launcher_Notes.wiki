@@ -4,6 +4,12 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.35 - Additional launch options =
+  * Added JVM and Game parameters to the run settings dialog ([https://code.google.com/p/open-ig/issues/detail?id=591 Issue #591])
+  * Instantly start from the last save button. ([https://code.google.com/p/open-ig/issues/detail?id=618 Issue #618])
+  * First-time launch options fixed. ([https://code.google.com/p/open-ig/issues/detail?id=636 Issue #636])
+
+
 = Version 0.34 - Detect bad install =
   * Added code to the Launcher and Game to detect missing resources and start the verification automatically. ([http://code.google.com/p/open-ig/issues/detail?id=606 Issue #606])
 
