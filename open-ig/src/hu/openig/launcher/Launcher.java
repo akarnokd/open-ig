@@ -209,6 +209,10 @@ public class Launcher extends JFrame {
 	String jvm;
 	/** The memory override. */
 	Integer memory;
+	/** JVM parameters. */
+	String jvmParams;
+	/** Application parameters. */
+	String appParams;
 	/** The console watcher. */
 	ConsoleWatcher cw;
 	/** The foreground color. */
@@ -320,6 +324,41 @@ public class Launcher extends JFrame {
 		init();
 	}
 	/**
+	 * Parse a set of command lines.
+	 * @param line the line to parse
+	 * @return the list of commands
+	 */
+	List<String> parseCommandLine(String line) {
+		List<String> result = new ArrayList<String>();
+		line = line.trim();
+		StringBuilder b = new StringBuilder();
+		boolean escapeSpace = false;
+		for (int i = 0; i < line.length(); i++) {
+			char c = line.charAt(i);
+			if (c == '"') {
+				if (escapeSpace) {
+					escapeSpace = false;
+					result.add(b.toString());
+				} else {
+					escapeSpace = true;
+					b.setLength(0);
+				}
+			} else
+			if (c != ' ' || escapeSpace) {
+				b.append(c);
+			} else
+			if (c == ' ' && !escapeSpace) {
+				result.add(b.toString());
+				b.setLength(0);
+			}
+		}
+		if (b.length() > 0) {
+			result.add(b.toString());
+		}
+		
+		return result;
+	}
+	/**
 	 * Returns the label.
 	 * @param s the label
 	 * @return the translated text
@@ -354,6 +393,8 @@ public class Launcher extends JFrame {
 			if ("Manual navigation".equals(s)) { return "Kézi navigálás"; }
 			if ("The install appears to be incomplete or damaged.".equals(s)) { return "A telepítés hiányosnak vagy sérültnek tűnik."; }
 			if ("Please click on the verify button.".equals(s)) { return "Kérlek kattints az Ellenőrzés gombra."; }
+			if ("JVM parameters:".equals(s)) { return "Java virtuális gép paraméterek:"; }
+			if ("Game parameters:".equals(s)) { return "Játék paraméterek:"; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		} else
@@ -386,6 +427,8 @@ public class Launcher extends JFrame {
 			if ("Manual navigation".equals(s)) { return "Manuelle Navigation"; }
 			if ("The install appears to be incomplete or damaged.".equals(s)) { return "Daten nicht ganz installiert oder fählerhaft."; }
 			if ("Please click on the verify button.".equals(s)) { return "Bitte auf Überprüfen klicken."; }
+			if ("JVM parameters:".equals(s)) { return "JVM Parameters:"; }
+			if ("Game parameters:".equals(s)) { return "Spiel Parameters:"; }
 			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
 			return s;
 		}
@@ -1392,8 +1435,8 @@ public class Launcher extends JFrame {
 					memory = null;
 				}
 				flag.setSelectedItem(language);
-				
-				
+				jvmParams = cfg.get("jvm-params", null);
+				appParams = cfg.get("app-params", null);
 				
 			} catch (XMLStreamException ex) {
 				Exceptions.add(ex);
@@ -2047,6 +2090,9 @@ public class Launcher extends JFrame {
 			List<String> cmdLine = new ArrayList<String>();
 
 			cmdLine.add(runJVM + "/bin/java");
+			if (jvmParams != null) {
+				cmdLine.addAll(parseCommandLine(jvmParams));
+			}
 			cmdLine.add("-Xmx" + mem + "M");
 			cmdLine.add(String.format("-splash:%s/open-ig-splash.png", currentDir.getAbsolutePath()));
 			cmdLine.add("-cp");
@@ -2055,6 +2101,9 @@ public class Launcher extends JFrame {
 			cmdLine.add("-memonce");
 			cmdLine.add("-" + language);
 			cmdLine.addAll(params);
+			if (appParams != null) {
+				cmdLine.addAll(parseCommandLine(appParams));
+			}
 
 			pb.command(cmdLine);
 			try {
@@ -2190,6 +2239,8 @@ public class Launcher extends JFrame {
 		cfg.set("language", language);
 		cfg.set("jvm", jvm);
 		cfg.set("memory", memory);
+		cfg.set("jvm-params", jvmParams);
+		cfg.set("app-params", appParams);
 		try {
 			cfg.save(new File(installDir, config));
 		} catch (IOException ex) {
@@ -2249,12 +2300,20 @@ public class Launcher extends JFrame {
 		
 		JLabel jvmLabel = new JLabel(label("Java runtime home:"));
 		JLabel jvmLabelNow = new JLabel(format("Default: %s", System.getProperty("java.home")));
+		JLabel jvmVersion = new JLabel(System.getProperty("java.version") + ", " + System.getProperty("os.name") + ", " + System.getProperty("os.arch"));
+		
 		
 		JLabel memMb = new JLabel(label("MB"));
 
 		JLabel memLabel = new JLabel(label("Memory:"));
 		JLabel memLabelNow = new JLabel(format("Default: %s MB", m.memory));
 
+		JLabel jvmParamsLabel = new JLabel(format("JVM parameters:"));
+		final JTextField jvmParams = new JTextField(this.jvmParams);
+		
+		JLabel appParamsLabel = new JLabel(format("Game parameters:"));
+		final JTextField appParams = new JTextField(this.appParams);
+		
 		IGButton ok = new IGButton(label("OK"));
 		ok.addActionListener(new ActionListener() {
 			@Override
@@ -2283,6 +2342,19 @@ public class Launcher extends JFrame {
 				} else {
 					jvm = jvmField.getText();
 				}
+				
+				if (jvmParams.getText().isEmpty()) {
+					Launcher.this.jvmParams = null;
+				} else {
+					Launcher.this.jvmParams = jvmParams.getText();
+				}
+
+				if (appParams.getText().isEmpty()) {
+					Launcher.this.appParams = null;
+				} else {
+					Launcher.this.appParams = appParams.getText();
+				}
+
 				dialog.dispose();
 			}
 		});
@@ -2311,13 +2383,28 @@ public class Launcher extends JFrame {
 		memLabel.setForeground(foreground);
 		memField.setForeground(Color.BLACK);
 		memMb.setForeground(foreground);
-		
+
+		jvmVersion.setForeground(foreground);
+		jvmVersion.setFont(fontMedium);
+
+		jvmParamsLabel.setForeground(foreground);
+		jvmParamsLabel.setFont(fontMedium);
+		jvmParams.setForeground(Color.BLACK);
+		jvmParams.setFont(fontMedium);
+
+		appParamsLabel.setForeground(foreground);
+		appParamsLabel.setFont(fontMedium);
+		appParams.setForeground(Color.BLACK);
+		appParams.setFont(fontMedium);
+
 		ok.setFont(fontMedium);
 		cancel.setFont(fontMedium);
 		browse.setFont(fontMedium);
 		ok.setForeground(foreground);
 		cancel.setForeground(foreground);
 		browse.setForeground(foreground);
+		
+		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
@@ -2329,6 +2416,8 @@ public class Launcher extends JFrame {
 						gl.createParallelGroup()
 						.addComponent(jvmLabel)
 						.addComponent(memLabel)
+						.addComponent(jvmParamsLabel)
+						.addComponent(appParamsLabel)
 					)
 					.addGroup(
 						gl.createParallelGroup()
@@ -2338,6 +2427,8 @@ public class Launcher extends JFrame {
 							.addComponent(memField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addComponent(memMb)
 						)
+						.addComponent(jvmParams)
+						.addComponent(appParams)
 					)
 					.addComponent(browse)
 				)
@@ -2349,9 +2440,15 @@ public class Launcher extends JFrame {
 				.addGroup(
 					gl.createSequentialGroup()
 					.addGap(30)
+					.addComponent(jvmVersion)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addGap(30)
 					.addComponent(memLabelNow)
 				)
 			)
+			.addComponent(sep)
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(ok)
@@ -2368,6 +2465,7 @@ public class Launcher extends JFrame {
 				.addComponent(browse)
 			)
 			.addComponent(jvmLabelNow)
+			.addComponent(jvmVersion)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(memLabel)
@@ -2375,6 +2473,17 @@ public class Launcher extends JFrame {
 				.addComponent(memMb)
 			)
 			.addComponent(memLabelNow)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(jvmParamsLabel)
+				.addComponent(jvmParams)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(appParamsLabel)
+				.addComponent(appParams)
+			)
+			.addComponent(sep, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(ok)
