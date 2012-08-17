@@ -2,6 +2,19 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.95.043 - Battle balance and bugfixes =
+  * Released: 2012-08-17 17:30 CET
+  * Reduced fighter hitpoints into the 200-1000 range. ([https://code.google.com/p/open-ig/issues/detail?id=614 Issue #614])
+  * Added weapon-efficiency battle.xml parameter, which can reduce the weapon effectivenes against a target matching a filter criterion.
+  * Added 5%-20% efficiency values to all destroyers, cruisers and battleships against fighters, except Destroyer 1 (due to level 1). Fighter vs. Fighter goes at 100%.
+  * Changed AI and auto-targeting to select nearby targets based on the against-efficiency metrics, instead of just pure randomly. I.e., larger ships are unlikely to target fighters when they can match another larger ship.
+  * Changed when the first wife video message arrives. ([https://code.google.com/p/open-ig/issues/detail?id=414 Issue #414])
+  * Fixed cases when escorting a mission fleet via the follow mode the defender fleet did not attack the offender automatically. ([https://code.google.com/p/open-ig/issues/detail?id=536 Issue #536])
+  * Quick production panel is populated with initial technologies and is updated once a research has completed. ([https://code.google.com/p/open-ig/issues/detail?id=627 Issue #627])
+  * Fixed groundwar defensive structures not firing and not properly reacting to energy shortage ([https://code.google.com/p/open-ig/issues/detail?id=630 Issue #630])
+  * AI and quick panel don't allow producing technologies marked as nobuild. ([https://code.google.com/p/open-ig/issues/detail?id=633 Issue #633])
+  * Fixed several battle and mission issues due the mechanics changes and other latent circumstances. ([https://code.google.com/p/open-ig/issues/detail?id=635 Issue #635])
+
 = Version 0.95.040 - Quick production =
   * Released: 2012-08-14 21:30 CET
   * Fixed several internal bugs.
