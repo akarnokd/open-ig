@@ -234,7 +234,7 @@ public final class Startup {
 				if (checkInstall()) {
 					try {
 						final boolean cont = config.continueLastGame;
-						config.continueLastGame = false;
+						config.continueLastGame = cont && !config.intro;
 						final GameWindow gw = new GameWindow(config);
 						gw.setVisible(true);
 						if (config.intro) {
