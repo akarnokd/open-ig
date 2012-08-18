@@ -70,11 +70,11 @@ public class Traits implements Iterable<Trait> {
 	 * @param xml the XML tree
 	 */
 	public void load(XElement xml) {
-		traits.clear();
+		clear();
 		initialPoints = xml.getInt("initial-points");
 		for (XElement xtr : xml.childrenWithName("trait")) {
 			Trait t = createTrait(xtr);
-			traits.add(t);
+			add(t);
 		}
 	}
 	/**
@@ -119,8 +119,10 @@ public class Traits implements Iterable<Trait> {
 	 * @param ts the traits
 	 */
 	public void add(Iterable<? extends Trait> ts) {
-		for (Trait t : ts) {
-			add(t);
+		if (ts != null) {
+			for (Trait t : ts) {
+				add(t);
+			}
 		}
 	}
 	/**
@@ -130,7 +132,9 @@ public class Traits implements Iterable<Trait> {
 	public void replace(Traits ts) {
 		clear();
 		add(ts);
-		this.initialPoints = ts.initialPoints;
+		if (ts != null) {
+			this.initialPoints = ts.initialPoints;
+		}
 	}
 	@Override
 	public Iterator<Trait> iterator() {
