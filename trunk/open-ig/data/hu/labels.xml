@@ -2943,7 +2943,7 @@
 	<entry key='traits.ship_mocker'>Hajóutánzók</entry>
 	<entry key='traits.ship_mocker.desc'>A civilizációd nem sajátította el kellően a hajógyártást a galaktikus kor előtt. A hajógyártás hatékonysága %.0f%%-ra csökken.</entry>
 	<entry key='traits.debug'>Hibakereső mód</entry>
-	<entry key='traits.debug.desc'>Lehetővé teszi sokkal több </entry>
+	<entry key='traits.debug.desc'>Lehetővé teszi sokkal több jellemző kiválasztását, mint amennyit az alappontszám megengedne.</entry>
 
 	<entry key='traits.equipment_builder'>Felszerelésgyártók</entry>
 	<entry key='traits.equipment_builder.desc'>A civilizációd mesterfokon űzte a felszerelésgyártást a galaktikus kor előtt. A felszerelésgyártás hatékonysága %.0f%%-ra nő.</entry>

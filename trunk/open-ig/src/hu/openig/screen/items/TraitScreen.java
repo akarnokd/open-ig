@@ -321,31 +321,52 @@ public class TraitScreen extends ScreenBase {
 		 * Perform the selection logic.
 		 */
 		public void doSelectTrait() {
-			Set<String> excludeIds = U.newHashSet();
-			Set<TraitKind> excludeKinds = U.newHashSet();
-			
-			for (TraitCheckBox tcb : traitCheckBoxes) {
-				if (tcb.selected()) {
-					excludeIds.addAll(tcb.trait.excludeIds);
-					excludeKinds.addAll(tcb.trait.excludeKinds);
+			int points = 0;
+			loop:
+			while (!Thread.currentThread().isInterrupted()) {
+				Set<String> excludeIds = U.newHashSet();
+				Set<TraitKind> excludeKinds = U.newHashSet();
+				
+				// collect exclusion settings
+				for (TraitCheckBox tcb : traitCheckBoxes) {
+					if (tcb.selected()) {
+						excludeIds.addAll(tcb.trait.excludeIds);
+						excludeKinds.addAll(tcb.trait.excludeKinds);
+					}
+				}
+				points = commons.traits().initialPoints;
+				for (TraitCheckBox tcb : traitCheckBoxes) {
+					boolean enabled = !excludeIds.contains(tcb.trait.id) && !excludeKinds.contains(tcb.trait.kind);
+					
+					tcb.selected(tcb.selected() & enabled);
+					tcb.enabled(enabled);
+					
+					if (tcb.selected()) {
+						points -= tcb.trait.cost;
+					}
+				}
+				if (points < 0) {
+					for (TraitCheckBox tcb : traitCheckBoxes) {
+						if (tcb.selected() && tcb.trait.cost > 0) {
+							tcb.selected(false);
+							continue loop;
+						}
+					}
+					throw new AssertionError("Points remained negative?!");
+				} else {
+					for (TraitCheckBox tcb : traitCheckBoxes) {
+						if (tcb.trait.cost > points && !tcb.selected()) {
+							tcb.enabled(false);
+						}
+					}
+					break;
 				}
 			}
+			
+			// color components according to their state
 			int i = 0;
-			int points = commons.traits().initialPoints;
 			for (TraitCheckBox tcb : traitCheckBoxes) {
-				UILabel cost = traitCosts.get(i);
-				UILabel desc = traitDesc.get(i);
-
-				boolean enabled = !excludeIds.contains(tcb.trait.id) && !excludeKinds.contains(tcb.trait.kind);
-				
-				tcb.enabled(enabled);
-				tcb.selected(tcb.selected() & enabled);
-				cost.enabled(enabled);
-				desc.enabled(enabled);
-				
 				if (tcb.selected()) {
-					points -= tcb.trait.cost;
-					
 					if (tcb.trait.cost < 0) {
 						tcb.color(TextRenderer.RED);
 					} else {
@@ -359,12 +380,16 @@ public class TraitScreen extends ScreenBase {
 						tcb.color(TextRenderer.GREEN);
 					}
 				}
-				
+				UILabel cost = traitCosts.get(i);
+				UILabel desc = traitDesc.get(i);
+
 				cost.color(tcb.color());
+				cost.enabled(tcb.enabled());
 				desc.color(tcb.color());
-				
+				desc.enabled(tcb.enabled());
 				i++;
 			}
+			
 			pointsValue.text(Integer.toString(points));
 		}
 		/**
