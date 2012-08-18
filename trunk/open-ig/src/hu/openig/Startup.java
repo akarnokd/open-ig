@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.core.Func0;
 import hu.openig.core.SaveMode;
 import hu.openig.model.Configuration;
+import hu.openig.screen.CommonResources;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -235,7 +236,8 @@ public final class Startup {
 					try {
 						final boolean cont = config.continueLastGame;
 						config.continueLastGame = cont && !config.intro;
-						final GameWindow gw = new GameWindow(config);
+						CommonResources commons = new CommonResources(config, null);
+						final GameWindow gw = new GameWindow(config, commons);
 						gw.setVisible(true);
 						if (config.intro) {
 							config.intro = false;

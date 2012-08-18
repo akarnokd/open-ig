@@ -9,12 +9,14 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Labels;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
+import hu.openig.model.Traits;
 import hu.openig.model.World;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIGenericButton;
@@ -143,13 +145,12 @@ public class SingleplayerScreen extends ScreenBase {
 			}
 		};
 		customLabel = new UIGenericButton(
-				get("singleplayer.custom_game"),
+				get("singleplayer.customize_race"),
 				fontMetrics(16),
 				commons.common().mediumButton,
 				commons.common().mediumButtonPressed
 				);
 		customLabel.disabledPattern(commons.common().disabledPattern);
-		customLabel.enabled(false);
 		customLabel.onClick = new Action0() {
 			@Override
 			public void invoke() {
@@ -449,7 +450,16 @@ public class SingleplayerScreen extends ScreenBase {
 	}
 	/** Switch to custom game. */
 	void doCustomGame() {
-		// TODO implemetn
+		TraitScreen ts = (TraitScreen)displaySecondary(Screens.TRAITS);
+		ts.updateTraits(selectedDefinition.traits);
+		ts.onComplete = new Action1<Traits>() {
+			@Override
+			public void invoke(Traits value) {
+				if (value != null) {
+					selectedDefinition.traits = value;
+				}
+			}
+		};
 	}
 	@Override
 	protected Point scaleBase(int mx, int my) {

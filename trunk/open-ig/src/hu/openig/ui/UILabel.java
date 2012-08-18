@@ -25,19 +25,19 @@ import java.util.List;
  */
 public class UILabel extends UIComponent {
 	/** The text renderer. */
-	private TextRenderer tr;
+	protected TextRenderer tr;
 	/** The content text. */
-	private String text;
+	protected String text;
 	/** The font size. */
-	private int size;
+	protected int size;
 	/** The row spacing. */
-	private int spacing = 2;
+	protected int spacing = 2;
 	/** The ARGB color to use when the label is disabled. */
-	private int disabledColor = TextRenderer.GRAY;
+	protected int disabledColor = TextRenderer.GRAY;
 	/** The ARGB color to use when drawing the label. */
-	private int textColor = TextRenderer.GREEN;
+	protected int textColor = TextRenderer.GREEN;
 	/** The optional hover color if non-zero. */
-	private int hoverColor = 0;
+	protected int hoverColor = 0;
 	/** 
 	 * The shadow ARGB color to use underneath the label text. Set it to zero
 	 * to disable shadowing.

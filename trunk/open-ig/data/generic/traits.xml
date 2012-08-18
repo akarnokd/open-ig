@@ -6,7 +6,8 @@
 		kind='PRE_WARP' 
 		label='traits.pre_warp' 
 		description='traits.pre_warp.desc' 
-		cost='-10'>
+		cost='-10'
+		value='6'>
 	</trait>
 	<!-- +10% speed on ship construction. -->
 	<trait 
@@ -15,7 +16,7 @@
 		label='traits.ship_builder' 
 		description='traits.ship_builder.desc' 
 		cost='1'
-		value='1.1'>
+		value='125'>
 		<exclude id='ShipMocker'/>
 	</trait>
 	<!-- -10% speed on ship construction. -->
@@ -25,7 +26,7 @@
 		label='traits.ship_mocker'
 		description='traits.ship_mocker.desc'
 		cost='-1'
-		value='0.9'>
+		value='75'>
 		<exclude id='ShipBuilder'/>
 	</trait>
 	<!-- Give the user more points. -->

@@ -76,6 +76,8 @@ public class GameDefinition {
 	public String chats;
 	/** The game parameters. */
 	public final Map<String, String> parameters = new LinkedHashMap<String, String>();
+	/** The traits to apply to the main player. */
+	public Traits traits;
 	/**
 	 * Parse the game definition from.
 	 * @param rl the resource locator

@@ -8,14 +8,30 @@
 
 package hu.openig.screen.items;
 
+import hu.openig.core.Action0;
+import hu.openig.core.Action1;
+import hu.openig.model.Screens;
+import hu.openig.model.Trait;
+import hu.openig.model.TraitKind;
+import hu.openig.model.Traits;
+import hu.openig.render.RenderTools;
+import hu.openig.render.TextRenderer;
+import hu.openig.screen.ScreenBase;
+import hu.openig.ui.HorizontalAlignment;
+import hu.openig.ui.UICheckBox;
+import hu.openig.ui.UIContainer;
+import hu.openig.ui.UIGenericButton;
+import hu.openig.ui.UIImageButton;
+import hu.openig.ui.UILabel;
+import hu.openig.ui.UIScrollBox;
+import hu.openig.utils.U;
+
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
-
-import hu.openig.model.Screens;
-import hu.openig.render.RenderTools;
-import hu.openig.screen.ScreenBase;
-import hu.openig.ui.UIMouse;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.Set;
 
 /**
  * The trait editing screen.
@@ -23,10 +39,53 @@ import hu.openig.ui.UIMouse;
  */
 public class TraitScreen extends ScreenBase {
 	/** The panel base rectangle. */
-	final Rectangle base = new Rectangle(0, 0, 640, 480);
+	final Rectangle base = new Rectangle(0, 0, 640, 640);
+	/** 
+	 * The action to invoke once the user has chosen the traits.
+	 * Called with null if the user cancelled.
+	 */
+	public Action1<Traits> onComplete;
+	/** The scroll box. */
+	UIScrollBox scroll;
+	/** The select traits label. */
+	UILabel traitsLabel;
+	/** The points label. */
+	UILabel pointsLabel;
+	/** The points value. */
+	UILabel pointsValue;
+	/** The traits list control. */
+	TraitsList traitsList;
+	/** Accept selection. */
+	UIGenericButton ok;
+	/** Accept selection. */
+	UIGenericButton reset;
+	/** Cancel selection. */
+	UIGenericButton cancel;
 	@Override
 	public void onResize() {
-		scaleResize(base, margin());
+		base.width = commons.common().infoEmpty.getWidth();
+		base.y = 10;
+		base.height = height - 20;
+
+		RenderTools.centerScreen(base, width, height, true);
+
+		traitsLabel.location(base.x + 10, base.y + 10);
+		scroll.location(base.x + 10, base.y + traitsLabel.y + traitsLabel.height + 10);
+		scroll.width = base.width - 20;
+		traitsList.location(0, 5);
+		traitsList.width = scroll.width - commons.database().arrowUp[0].getWidth() + 5;
+		pointsLabel.location(base.x + 10, base.y + base.height - 70);
+		
+		pointsValue.location(base.x + base.width - 10 - base.width / 2, pointsLabel.y);
+		pointsValue.width = base.width / 2;
+		
+		int gap = 30;
+		int w = ok.width + cancel.width + gap * 2 + reset.width;
+		ok.location(base.x + (640 - w) / 2, base.y + base.height - 40);
+		reset.location(ok.x + ok.width + gap, ok.y);
+		cancel.location(reset.x + reset.width + gap, ok.y);
+		
+		scroll.height = ok.y - scroll.y - 10;
 	}
 	@Override
 	public Screens screen() {
@@ -35,14 +94,70 @@ public class TraitScreen extends ScreenBase {
 
 	@Override
 	public void onInitialize() {
+		traitsList = new TraitsList();
+
+		UIImageButton up = new UIImageButton(commons.database().arrowUp);
+		UIImageButton down = new UIImageButton(commons.database().arrowUp);
+		
+		scroll = new UIScrollBox(traitsList, 20, up, down);
+		
+		traitsLabel = new UILabel(get("traits.select_traits"), 20, commons.text());
+		pointsLabel = new UILabel(get("traits.available_points"), 20, commons.text());
+		pointsValue = new UILabel("", 20, commons.text());
+		pointsValue.horizontally(HorizontalAlignment.RIGHT);
+		pointsValue.color(TextRenderer.YELLOW);
+
+		ok = new UIGenericButton(get("traits.ok"), commons.control().fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		ok.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				if (onComplete != null) {
+					try {
+						onComplete.invoke(traitsList.selected());
+					} finally {
+						onComplete = null;
+					}
+				}
+				hideSecondary();
+			}
+		};
+		reset = new UIGenericButton(get("traits.reset"), commons.control().fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		reset.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				traitsList.reset();
+			}
+		};
+		cancel = new UIGenericButton(get("traits.cancel"), commons.control().fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		cancel.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				if (onComplete != null) {
+					try {
+						onComplete.invoke(null);
+					} finally {
+						onComplete = null;
+					}
+				}
+				hideSecondary();
+			}
+		};
 		// TODO Auto-generated method stub
 
+		addThis();
+		components.remove(traitsList);
 	}
 
 	@Override
 	public void onEnter(Screens mode) {
-		// TODO Auto-generated method stub
-
+		traitsList.prepare(commons.traits());
+	}
+	/**
+	 * Update traits.
+	 * @param traits the traits
+	 */
+	public void updateTraits(Traits traits) {
+		traitsList.update(traits);
 	}
 
 	@Override
@@ -64,19 +179,212 @@ public class TraitScreen extends ScreenBase {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-		AffineTransform savea = scaleDraw(g2, base, margin());
-		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
+		
+		g2.setColor(Color.BLACK);
+		g2.fill(base);
+		g2.setColor(Color.GRAY);
+		g2.draw(base);
 
 		super.draw(g2);
+	}
+	/**
+	 * A trait checkbox.
+	 * @author akarnokd, 2012.08.18.
+	 */
+	public class TraitCheckBox extends UICheckBox {
+		/** The trait. */
+		public final Trait trait;
+		/**
+		 * Creates the checkbox.
+		 * @param trait the trait object
+		 */
+		public TraitCheckBox(Trait trait) {
+			super(get(trait.label), 14, commons.common().checkmark, commons.text());
+			this.trait = trait;
+		}
+	}
+	/**
+	 * The traits list container.
+	 * @author akarnokd, 2012.08.18.
+	 */
+	public class TraitsList extends UIContainer {
+		/** Negative value trait color. */
+		private static final int PINK = 0xFFFF8080;
+		/** The available traits. */
+		Traits traits;
+		/** The trait checkbox. */
+		final List<TraitCheckBox> traitCheckBoxes = U.newArrayList();
+		/** The trait cost labels. */
+		final List<UILabel> traitCosts = U.newArrayList();
+		/** The trait description labels. */
+		final List<UILabel> traitDesc = U.newArrayList();
+		/**
+		 * Prepare the trait list. 
+		 * @param base the traits
+		 */
+		public void prepare(Traits base) {
+			this.components.clear();
+			traitCheckBoxes.clear();
+			traitCosts.clear();
+			traitDesc.clear();
+			this.traits = base;
+			int y = 0;
+			int i = 0;
+			for (final Trait tr : traits) {
+				final TraitCheckBox tcb = new TraitCheckBox(tr);
+				UILabel tcl = new UILabel(format(tr.description, tr.value), 10, commons.text());
+				UILabel tcc = new UILabel((tr.cost > 0 ? "+" : "") + tr.cost, 14, commons.text());
+				
+				Action0 onTraitClick = new Action0() {
+					@Override
+					public void invoke() {
+						doSelectTrait();
+					}
+				};
+				Action0 onTraitClick2 = new Action0() {
+					@Override
+					public void invoke() {
+						tcb.selected(!tcb.selected());
+						doSelectTrait();
+					}
+				};
+				tcb.onChange = onTraitClick;
+				tcl.onPress = onTraitClick2;
+				tcc.onPress = onTraitClick2;
+				
+				tcb.height += 5;
+				tcl.width = width - 30;
+				tcl.wrap(true);
+				tcl.height = tcl.getWrappedHeight();
+				
+				tcb.z = -1;
+				
+				tcb.location(0, y);
+				tcc.location(width - tcc.width, y);
+				tcl.location(30, y + tcb.height);
+				tcb.width = tcc.x;
+				
+				y += tcb.height + tcl.height + 15;
+				
+				if (tr.cost < 0) {
+					tcb.color(PINK);
+				} else {
+					tcb.color(TextRenderer.GREEN);
+				}
+				tcl.color(tcb.color());
+				tcc.color(tcb.color());
+				
+				this.add(tcl);
+				this.add(tcb);
+				this.add(tcc);
+				
+				traitCheckBoxes.add(tcb);
+				traitCosts.add(tcl);
+				traitDesc.add(tcc);
+				
+				i++;
+			}
+			if (i > 0) {
+				height = y;
+			} else {
+				height = y - 10;
+			}
+			doSelectTrait();
+		}
 		
-		g2.setTransform(savea);
-		
+		/**
+		 * @return Returns the list of selected traits.
+		 */
+		Traits selected() {
+			Traits ts = new Traits();
+			for (TraitCheckBox tcb : traitCheckBoxes) {
+				if (tcb.selected()) {
+					ts.add(tcb.trait);
+				}
+			}
+			return ts;
+		}
+		/**
+		 * Perform the selection logic.
+		 */
+		public void doSelectTrait() {
+			Set<String> excludeIds = U.newHashSet();
+			Set<TraitKind> excludeKinds = U.newHashSet();
+			
+			for (TraitCheckBox tcb : traitCheckBoxes) {
+				if (tcb.selected()) {
+					excludeIds.addAll(tcb.trait.excludeIds);
+					excludeKinds.addAll(tcb.trait.excludeKinds);
+				}
+			}
+			int i = 0;
+			int points = commons.traits().initialPoints;
+			for (TraitCheckBox tcb : traitCheckBoxes) {
+				UILabel cost = traitCosts.get(i);
+				UILabel desc = traitDesc.get(i);
+
+				boolean enabled = !excludeIds.contains(tcb.trait.id) && !excludeKinds.contains(tcb.trait.kind);
+				
+				tcb.enabled(enabled);
+				tcb.selected(tcb.selected() & enabled);
+				cost.enabled(enabled);
+				desc.enabled(enabled);
+				
+				if (tcb.selected()) {
+					points -= tcb.trait.cost;
+					
+					if (tcb.trait.cost < 0) {
+						tcb.color(TextRenderer.RED);
+					} else {
+						tcb.color(TextRenderer.LIGHT_GREEN);
+					}
+					tcb.color(TextRenderer.WHITE);
+				} else {
+					if (tcb.trait.cost < 0) {
+						tcb.color(PINK);
+					} else {
+						tcb.color(TextRenderer.GREEN);
+					}
+				}
+				
+				cost.color(tcb.color());
+				desc.color(tcb.color());
+				
+				i++;
+			}
+			pointsValue.text(Integer.toString(points));
+		}
+		/**
+		 * Reset the selections.
+		 */
+		void reset() {
+			prepare(commons.traits());
+		}
+		/**
+		 * Check the traits based on the given set.
+		 * @param traits the traits
+		 */
+		public void update(Traits traits) {
+			Set<String> ids = U.newHashSet();
+			if (traits != null) {
+				for (Trait t : traits) {
+					ids.add(t.id);
+				}
+			}
+			for (TraitCheckBox tcb : traitCheckBoxes) {
+				tcb.selected(ids.contains(tcb.trait.id));
+			}
+			doSelectTrait();
+		}
 	}
 	@Override
-	public boolean mouse(UIMouse e) {
-		scaleMouse(e, base, margin());
-		
-		return super.mouse(e);
+	public boolean keyboard(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			e.consume();
+			cancel.onClick.invoke();
+			return true;
+		}
+		return false;
 	}
 }

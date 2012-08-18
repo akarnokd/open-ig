@@ -105,4 +105,19 @@ public class UICheckBox extends UIComponent {
 		}
 		return this;
 	}
+	/**
+	 * @return returns the current text color
+	 */
+	public int color() {
+		return this.color;
+	}
+	/**
+	 * Sets the text color.
+	 * @param newColor the new color
+	 * @return this
+	 */
+	public UICheckBox color(int newColor) {
+		this.color = newColor;
+		return this;
+	}
 }

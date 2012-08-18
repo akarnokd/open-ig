@@ -24,6 +24,9 @@
 			<xs:element name="fleet" type="fleet" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation><xs:documentation>The initial fleets.</xs:documentation></xs:annotation>
 			</xs:element>
+			<xs:element name="traits" type="traits" minOccurs="0">
+				<xs:annotation><xs:documentation>The optional traits for this player.</xs:documentation></xs:annotation>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required">
 			<xs:annotation><xs:documentation>The player's unique identifier.</xs:documentation></xs:annotation>
@@ -179,6 +182,20 @@
 		</xs:attribute>
 		<xs:attribute name="count" type="xs:positiveInteger" use="required">
 			<xs:annotation><xs:documentation>The number of items in the slot.</xs:documentation></xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="traits">
+		<xs:annotation><xs:documentation>The list of trait ids affecting this player.</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="trait" type='trait' minOccurs='0' maxOccurs='unbounded'>
+				<xs:annotation><xs:documentation>The reference to a global trait.</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="trait">
+		<xs:annotation><xs:documentation>A reference to a global trait.</xs:documentation></xs:annotation>
+		<xs:attribute name='id' type="xs:string" use="required">
+			<xs:annotation><xs:documentation>The ID of the global trait.</xs:documentation></xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
