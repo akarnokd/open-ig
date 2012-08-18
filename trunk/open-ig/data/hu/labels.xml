@@ -2939,21 +2939,21 @@
 	<entry key='traits.pre_warp'>Hiperhajtómű előtt</entry>
 	<entry key='traits.pre_warp.desc'>A civilizációd még nem találta fel a helyes hiperűr utazás módját. A flották sebessége csupán %.0f és a hiperhajtómű technológiákat is ki kell fejleszteni.</entry>
 	<entry key='traits.ship_builder'>Hajóépítők</entry>
-	<entry key='traits.ship_builder.desc'>A civilizációd mesterfokon űzte a hajógyártást a galaktikus kor előtt. A hajógyártás hatékonysága %.f%%-ra nő.</entry>
+	<entry key='traits.ship_builder.desc'>A civilizációd mesterfokon űzte a hajógyártást a galaktikus kor előtt. A hajógyártás hatékonysága %.0f%%-ra nő.</entry>
 	<entry key='traits.ship_mocker'>Hajóutánzók</entry>
-	<entry key='traits.ship_mocker.desc'>A civilizációd nem sajátította el kellően a hajógyártást a galaktikus kor előtt. A hajógyártás hatékonysága %.f%%-ra csökken.</entry>
+	<entry key='traits.ship_mocker.desc'>A civilizációd nem sajátította el kellően a hajógyártást a galaktikus kor előtt. A hajógyártás hatékonysága %.0f%%-ra csökken.</entry>
 	<entry key='traits.debug'>Hibakereső mód</entry>
 	<entry key='traits.debug.desc'>Lehetővé teszi sokkal több </entry>
 
 	<entry key='traits.equipment_builder'>Felszerelésgyártók</entry>
-	<entry key='traits.equipment_builder.desc'>A civilizációd mesterfokon űzte a felszerelésgyártást a galaktikus kor előtt. A felszerelésgyártás hatékonysága %.f%%-ra nő.</entry>
+	<entry key='traits.equipment_builder.desc'>A civilizációd mesterfokon űzte a felszerelésgyártást a galaktikus kor előtt. A felszerelésgyártás hatékonysága %.0f%%-ra nő.</entry>
 	<entry key='traits.equipment_mocker'>Feleszerelésutánzók</entry>
-	<entry key='traits.equipment_mocker.desc'>A civilizációd nem sajátította el kellően a felszerelésgyártást a galaktikus kor előtt. A felszerelésgyártás hatékonysága %.f%%-ra csökken.</entry>
+	<entry key='traits.equipment_mocker.desc'>A civilizációd nem sajátította el kellően a felszerelésgyártást a galaktikus kor előtt. A felszerelésgyártás hatékonysága %.0f%%-ra csökken.</entry>
 
 	<entry key='traits.weapon_builder'>Fegyverkészítők</entry>
-	<entry key='traits.weapon_builder.desc'>A civilizációd mesterfokon űzte a fegyverkészítést a galaktikus kor előtt. A fegyvergyártás hatékonysága %.f%%-ra nő.</entry>
+	<entry key='traits.weapon_builder.desc'>A civilizációd mesterfokon űzte a fegyverkészítést a galaktikus kor előtt. A fegyvergyártás hatékonysága %.0f%%-ra nő.</entry>
 	<entry key='traits.weapon_mocker'>Fegyverutánzók</entry>
-	<entry key='traits.weapon_mocker.desc'>A civilizációd nem sajátította el kellően a fegyverkészítést a galaktikus kor előtt. A fegyvergyártás hatékonysága %.f%%-ra csökken.</entry>
+	<entry key='traits.weapon_mocker.desc'>A civilizációd nem sajátította el kellően a fegyverkészítést a galaktikus kor előtt. A fegyvergyártás hatékonysága %.0f%%-ra csökken.</entry>
 
 	<entry key=""></entry>
 	<entry key=""></entry>
