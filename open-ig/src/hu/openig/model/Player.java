@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.utils.U;
 
@@ -125,6 +126,10 @@ public class Player {
 	public boolean pauseProduction;
 	/** Pause the research without changing the current research settings. */
 	public boolean pauseResearch;
+	/** The selected traits for this player. */
+	public final Traits traits = new Traits();
+	/** The player AI's default difficulty. */
+	public Difficulty difficulty;
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

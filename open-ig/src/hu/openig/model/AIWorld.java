@@ -110,7 +110,7 @@ public class AIWorld {
 		this.mainPlayer = player.world.player;
 		
 		
-		difficulty = player.world.difficulty;
+		difficulty = player.difficulty;
 		level = player.world.level;
 		
 		explorationInnerLimit = player.explorationInnerLimit;

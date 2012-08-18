@@ -235,7 +235,7 @@ public class SingleplayerScreen extends ScreenBase {
 					labels.load(commons.rl, selectedDefinition.name + "/labels");
 					world.labels = labels;
 					
-					world.load(commons.rl, selectedDefinition.name);
+					world.loadCampaign(commons.rl, selectedDefinition.name);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {

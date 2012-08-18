@@ -173,7 +173,7 @@ public class World {
 	 * @param resLocator the resource locator
 	 * @param game the game directory
 	 */
-	public void load(final ResourceLocator resLocator, final String game) {
+	public void loadCampaign(final ResourceLocator resLocator, final String game) {
 		this.name = game;
 		this.rl = resLocator;
 		this.params.load(definition.parameters);
@@ -578,8 +578,43 @@ public class World {
 			p.warThreshold = xplayer.getInt("war-threshold", 45);
 			
 			p.policeRatio = xplayer.getDouble("police-ratio", 5);
+			
+			
+			p.difficulty = difficulty;
+			
+			loadTraits(p, xplayer.childElement("traits"));
 		}
 		linkDeferredFleetTargets(deferredFleets);
+	}
+	/**
+	 * Load traits for the given player.
+	 * @param p the player
+	 * @param xtraits the traits
+	 */
+	protected void loadTraits(Player p, XElement xtraits) {
+		p.traits.clear();
+		if (xtraits != null) {
+			for (XElement xtr : xtraits.childrenWithName("trait")) {
+				String id = xtr.get("id");
+				Trait t = env.traits().trait(id);
+				if (t != null) {
+					p.traits.add(t);
+				} else {
+					Exceptions.add(new AssertionError("Missing trait " + id + " for player " + p.id));
+				}
+			}
+		}
+	}
+	/**
+	 * Save the traits into an XML definition.
+	 * @param p the player
+	 * @param xplayer the XML output
+	 */
+	protected void saveTraits(Player p, XElement xplayer) {
+		XElement xtraits = xplayer.add("traits");
+		for (Trait t : p.traits) {
+			xtraits.add("trait").set("id", t.id);
+		}
 	}
 	/**
 	 * Create a rectangle from the given string of comma separated x, y, width and height.
@@ -1146,6 +1181,8 @@ public class World {
 				xdipl.set("approach", dio.approach);
 				xdipl.set("value", dio.value);
 			}
+			
+			saveTraits(p, xp);
 		}
 		
 		for (Planet p : planets.values()) {
@@ -1533,6 +1570,8 @@ public class World {
 					p.offers.put(from, new DiplomaticOffer(nt, at, value));
 				}
 			}
+			
+			loadTraits(p, xplayer.childElement("traits"));
 		}
 		Set<String> allPlanets = new HashSet<String>(planets.keySet());
 		for (XElement xplanet : xworld.childrenWithName("planet")) {
