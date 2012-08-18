@@ -15,6 +15,14 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
+*2012 augusztus 18*
+
+Az egyedi játékmód (skirmish) flexibilitásának növelése érdekében bevezettem a más 4X játékokban oly gyakori jellemvonás rendszert (trait system). Ezzel beállíthatóak lesznek a különféle játékos fajok tulajdonságai anélkül, hogy használni kellene a Kampányszerkesztőt.
+
+A vicc kedvéért a jellevonás rendszert lehet használni a kampány során is (elérhető az egyjátékos mód képernyőjén lévő gombbal). Így néz ki: <a href='https://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-traits-screen.png'>képernyőfotó</a>. 
+
+Ha ötleted van új jellemvonásra, vagy a meglévő pontszámával kapcsolatban lenne észrevétel, a megjegyzéseket írhatod <a href='http://code.google.com/p/open-ig/issues/detail?id=642'>ide</a>. Amennyiben egy meglévő jellemvonás működésével kapcsolatos hibáról van szó, kérlek nyiss új bejegyzést.
+
 *2012 augusztus 14*
 
 Ismét haladunk! Lásd a [https://code.google.com/p/open-ig/wiki/Game_Notes kiadás] részleteit.
