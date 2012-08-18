@@ -533,12 +533,12 @@ public abstract class Planner {
 	 * @param count the minimum amount to produce
 	 */
 	void issueProductionOrder(final ResearchType rt, final int count) {
-		int capacity = world.global.spaceshipActive;
+		int capacity = world.global.activeProduction.spaceship;
 		if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
-			capacity = world.global.equipmentActive;
+			capacity = world.global.activeProduction.equipment;
 		} else
 		if (rt.category.main == ResearchMainCategory.WEAPONS) {
-			capacity = world.global.weaponsActive;
+			capacity = world.global.activeProduction.weapons;
 		}
 		final int count0 = Math.max(count, (int)(
 				capacity / rt.productionCost / world.player.world.params().productionUnit()));

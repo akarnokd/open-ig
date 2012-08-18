@@ -16,6 +16,60 @@ import java.util.Map;
  * @author akarnokd
  */
 public class PlanetStatistics {
+	/**
+	 * The lab statistics record.
+	 * @author akarnokd, 2012.08.18.
+	 */
+	public static class LabStatistics {
+		/** The civil engineering laboratory. */
+		public int civil;
+		/** The mechanical engineering laboratory. */
+		public int mech;
+		/** The computer laboratory. */
+		public int comp;
+		/** The AI laboratory. */
+		public int ai;
+		/** The Military laboratory active count. */
+		public int mil;
+		/**
+		 * Add values from the other lab statistics.
+		 * @param other the other lab statistics
+		 */
+		public void add(LabStatistics other) {
+			this.civil += other.civil;
+			this.mech += other.mech;
+			this.comp += other.comp;
+			this.ai += other.ai;
+			this.mil += other.mil;
+		}
+		/**
+		 * @return The total lab counts.
+		 */
+		public int count() {
+			return ai + civil + comp + mech + mil;
+		}
+	}
+	/**
+	 * Production statitistics record.
+	 * @author akarnokd, 2012.08.18.
+	 */
+	public static class ProductionStatistics {
+		/** The equipment factory capacity. */
+		public int equipment;
+		/** The weapons factory capacity. */
+		public int weapons;
+		/** The spaceship factory capacity. */
+		public int spaceship;
+		/**
+		 * Add the values from the other production statistics.
+		 * @param other the other statistics
+		 */
+		public void add(ProductionStatistics other) {
+			this.equipment += other.equipment;
+			this.weapons += other.weapons;
+			this.spaceship += other.spaceship;
+		}
+	}
 	/** The available houses. */
 	public int houseAvailable;
 	/** The worker demand. */
@@ -30,38 +84,14 @@ public class PlanetStatistics {
 	public int energyDemand;
 	/** The available energy. */
 	public int energyAvailable;
-	/** The civil engineering laboratory active count. */
-	public int civilLabActive;
-	/** The civil engineering laboratory. */
-	public int civilLab;
-	/** The mechanical engineering laboratory active count. */
-	public int mechLabActive;
-	/** The mechanical engineering laboratory. */
-	public int mechLab;
-	/** The computer laboratory active count. */
-	public int compLabActive;
-	/** The computer laboratory. */
-	public int compLab;
-	/** The AI laboratory active count. */
-	public int aiLabActive;
-	/** The AI laboratory. */
-	public int aiLab;
-	/** The Military laboratory active count. */
-	public int milLabActive;
-	/** The Military laboratory active count. */
-	public int milLab;
-	/** The equipment factory capacity active. */
-	public int equipmentActive;
-	/** The equipment factory capacity. */
-	public int equipment;
-	/** The weapons factory capacity active. */
-	public int weaponsActive;
-	/** The weapons factory capacity. */
-	public int weapons;
-	/** The spaceship factory capacity active. */
-	public int spaceshipActive;
-	/** The spaceship factory capacity. */
-	public int spaceship;
+	/** The active production values. */
+	public final ProductionStatistics activeProduction = new ProductionStatistics();
+	/** The total production values. */
+	public final ProductionStatistics production = new ProductionStatistics();
+	/** The active laboratories. */
+	public final LabStatistics activeLabs = new LabStatistics();
+	/** THe total laboratories. */
+	public final LabStatistics labs = new LabStatistics();
 	/** The current list of problems. */
 	public final Map<PlanetProblems, PlanetProblems> problems = new LinkedHashMap<PlanetProblems, PlanetProblems>();
 	/** The current list of warnings. */
@@ -107,22 +137,12 @@ public class PlanetStatistics {
 		policeAvailable += other.policeAvailable;
 		energyDemand += other.energyDemand;
 		energyAvailable += other.energyAvailable;
-		civilLabActive += other.civilLabActive;
-		civilLab += other.civilLab;
-		mechLabActive += other.mechLabActive;
-		mechLab += other.mechLab;
-		compLabActive += other.compLabActive;
-		compLab += other.compLab;
-		aiLabActive += other.aiLabActive;
-		aiLab += other.aiLab;
-		milLabActive += other.milLabActive;
-		milLab += other.milLab;
-		equipmentActive += other.equipmentActive;
-		equipment += other.equipment;
-		weaponsActive += other.weaponsActive;
-		weapons += other.weapons;
-		spaceshipActive += other.spaceshipActive;
-		spaceship += other.spaceship;
+		
+		activeLabs.add(other.activeLabs);
+		labs.add(other.labs);
+		activeProduction.add(other.activeProduction);
+		production.add(other.production);
+		
 		orbitalFactory += other.orbitalFactory;
 		problems.putAll(other.problems);
 		warnings.putAll(other.warnings);
@@ -168,13 +188,13 @@ public class PlanetStatistics {
 	 * @return the total number of built labs.
 	 */
 	public int labCount() {
-		return aiLab + civilLab + compLab + mechLab + milLab;
+		return labs.count();
 	}
 	/**
 	 * @return the total number of active labs.
 	 */
 	public int activeLabCount() {
-		return aiLabActive + civilLabActive + compLabActive + mechLabActive + milLabActive;
+		return activeLabs.count();
 	}
 	/**
 	 * Check if building is possible on this planet.

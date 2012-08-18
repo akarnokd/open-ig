@@ -9,6 +9,8 @@
 package hu.openig.model;
 
 import hu.openig.core.PlanetType;
+import hu.openig.model.PlanetStatistics.LabStatistics;
+import hu.openig.model.PlanetStatistics.ProductionStatistics;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -125,6 +127,72 @@ public class Planet implements Named, Owned, HasInventory {
 		return "allocation." + allocation;
 	}
 	/**
+	 * Add the building's statistics to the production statistics.
+	 * @param out the output statistics to add to
+	 * @param b the building
+	 * @param eff the efficiency
+	 */
+	protected void addProduction(ProductionStatistics out, Building b, double eff) {
+		if (b.hasResource("spaceship")) {
+			out.spaceship += b.getResource("spaceship") * eff;
+		}
+		if (b.hasResource("equipment")) {
+			out.equipment += b.getResource("equipment") * eff;
+		}
+		if (b.hasResource("weapon")) {
+			out.weapons += b.getResource("weapon") * eff;
+		}
+	}
+	/**
+	 * @return Compute the production statistics only.
+	 */
+	public PlanetStatistics getProductionStatistics() {
+		PlanetStatistics result = new PlanetStatistics();
+		for (Building b : surface.buildings) {
+			double eff = b.getEfficiency();
+			if (Building.isOperational(eff)) {
+				addProduction(result.activeProduction, b, eff);
+			}
+			addProduction(result.production, b, 1d);
+		}
+		return result;
+	}
+	/**
+	 * Add the lab statistics of the given buildings.
+	 * @param out the the output lab statistics
+	 * @param b the buildings
+	 */
+	protected void addLabs(LabStatistics out, Building b) {
+		if (b.hasResource("civil")) {
+			out.civil += b.getResource("civil");
+		}
+		if (b.hasResource("mechanical")) {
+			out.mech += b.getResource("mechanical");
+		}
+		if (b.hasResource("computer")) {
+			out.comp += b.getResource("computer");
+		}
+		if (b.hasResource("ai")) {
+			out.ai += b.getResource("ai");
+		}
+		if (b.hasResource("military")) {
+			out.mil += b.getResource("military");
+		}
+	}
+	/**
+	 * @return computes only the research related statistics.
+	 */
+	public PlanetStatistics getResearchStatistics() {
+		PlanetStatistics ps = new PlanetStatistics();
+		for (Building b : surface.buildings) {
+			if (Building.isOperational(b.getEfficiency())) {
+				addLabs(ps.activeLabs, b);
+			}
+			addLabs(ps.labs, b);
+		}
+		return ps;
+	}
+	/**
 	 * Compute the planetary statistics.
 	 * @return the statistics
 	 */
@@ -160,30 +228,11 @@ public class Planet implements Named, Owned, HasInventory {
 				if (b.hasResource("hospital")) {
 					result.hospitalAvailable += b.getResource("hospital") * eff;
 				}
-				if (b.hasResource("spaceship")) {
-					result.spaceshipActive += b.getResource("spaceship") * eff;
-				}
-				if (b.hasResource("equipment")) {
-					result.equipmentActive += b.getResource("equipment") * eff;
-				}
-				if (b.hasResource("weapon")) {
-					result.weaponsActive += b.getResource("weapon") * eff;
-				}
-				if (b.hasResource("civil")) {
-					result.civilLabActive += b.getResource("civil");
-				}
-				if (b.hasResource("mechanical")) {
-					result.mechLabActive += b.getResource("mechanical");
-				}
-				if (b.hasResource("computer")) {
-					result.compLabActive += b.getResource("computer");
-				}
-				if (b.hasResource("ai")) {
-					result.aiLabActive += b.getResource("ai");
-				}
-				if (b.hasResource("military")) {
-					result.milLabActive += b.getResource("military");
-				}
+				
+				addProduction(result.activeProduction, b, eff);
+				
+				addLabs(result.activeLabs, b);
+				
 				if (b.hasResource("radar")) {
 					radar = Math.max(radar, (int)b.getResource("radar"));
 				}
@@ -215,30 +264,11 @@ public class Planet implements Named, Owned, HasInventory {
 			if ("MilitarySpaceport".equals(b.type.id)) {
 				result.militarySpaceportCount = 1;
 			}
-			if (b.hasResource("spaceship")) {
-				result.spaceship += b.getResource("spaceship");
-			}
-			if (b.hasResource("equipment")) {
-				result.equipment += b.getResource("equipment");
-			}
-			if (b.hasResource("weapon")) {
-				result.weapons += b.getResource("weapon");
-			}
-			if (b.hasResource("civil")) {
-				result.civilLab += b.getResource("civil");
-			}
-			if (b.hasResource("mechanical")) {
-				result.mechLab += b.getResource("mechanical");
-			}
-			if (b.hasResource("computer")) {
-				result.compLab += b.getResource("computer");
-			}
-			if (b.hasResource("ai")) {
-				result.aiLab += b.getResource("ai");
-			}
-			if (b.hasResource("military")) {
-				result.milLab += b.getResource("military");
-			}
+			
+			addProduction(result.production, b, 1d);
+			
+			addLabs(result.labs, b);
+			
 			float health = b.hitpoints * 1.0f / b.type.hitpoints;
 			if (b.isReady()) {
 				// consider the damage level

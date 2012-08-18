@@ -392,19 +392,19 @@ public class ResearchPlanner extends Planner {
 	 * @return true if demolish added
 	 */
 	boolean demolishOneLabFor(ResearchType rt, AIPlanet planet) {
-		if (demolishOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet.planet, "ai")) {
+		if (demolishOneLabIf(rt.aiLab, world.global.labs.ai, planet.statistics.labs.ai, planet.planet, "ai")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet.planet, "civil")) {
+		if (demolishOneLabIf(rt.civilLab, world.global.labs.civil, planet.statistics.labs.civil, planet.planet, "civil")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet.planet, "computer")) {
+		if (demolishOneLabIf(rt.compLab, world.global.labs.comp, planet.statistics.labs.comp, planet.planet, "computer")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet.planet, "mechanical")) {
+		if (demolishOneLabIf(rt.mechLab, world.global.labs.mech, planet.statistics.labs.mech, planet.planet, "mechanical")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet.planet, "military")) {
+		if (demolishOneLabIf(rt.milLab, world.global.labs.mil, planet.statistics.labs.mil, planet.planet, "military")) {
 			return true;
 		}
 		return false;
@@ -443,35 +443,35 @@ public class ResearchPlanner extends Planner {
 	 */
 	AIResult buildOneLabFor(final ResearchType rt, final AIPlanet planet) {
 		int noroom = 0;
-		AIResult r = buildOneLabIf(rt.aiLab, world.global.aiLab, planet.statistics.aiLab, planet, "ai");
+		AIResult r = buildOneLabIf(rt.aiLab, world.global.labs.ai, planet.statistics.labs.ai, planet, "ai");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.civilLab, world.global.civilLab, planet.statistics.civilLab, planet, "civil");
+		r = buildOneLabIf(rt.civilLab, world.global.labs.civil, planet.statistics.labs.civil, planet, "civil");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.compLab, world.global.compLab, planet.statistics.compLab, planet, "computer");
+		r = buildOneLabIf(rt.compLab, world.global.labs.comp, planet.statistics.labs.comp, planet, "computer");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.mechLab, world.global.mechLab, planet.statistics.mechLab, planet, "mechanical");
+		r = buildOneLabIf(rt.mechLab, world.global.labs.mech, planet.statistics.labs.mech, planet, "mechanical");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
 		if (r == AIResult.NO_ROOM) {
 			noroom++;
 		}
-		r = buildOneLabIf(rt.milLab, world.global.milLab, planet.statistics.milLab, planet, "military");
+		r = buildOneLabIf(rt.milLab, world.global.labs.mil, planet.statistics.labs.mil, planet, "military");
 		if (r != AIResult.NO_ROOM && r != AIResult.CONTINUE) {
 			return r;
 		}
@@ -579,11 +579,11 @@ public class ResearchPlanner extends Planner {
 	 */
 	int rebuildCost(ResearchType rt, Map<String, Integer> labCosts) {
 		return 
-				rebuildRequiredCount(rt.aiLab, world.global.aiLab) * labCosts.get("ai")
-				+ rebuildRequiredCount(rt.civilLab, world.global.civilLab) * labCosts.get("civil")
-				+ rebuildRequiredCount(rt.compLab, world.global.compLab) * labCosts.get("computer")
-				+ rebuildRequiredCount(rt.mechLab, world.global.mechLab) * labCosts.get("mechanical")
-				+ rebuildRequiredCount(rt.milLab, world.global.milLab) * labCosts.get("military")
+				rebuildRequiredCount(rt.aiLab, world.global.labs.ai) * labCosts.get("ai")
+				+ rebuildRequiredCount(rt.civilLab, world.global.labs.civil) * labCosts.get("civil")
+				+ rebuildRequiredCount(rt.compLab, world.global.labs.comp) * labCosts.get("computer")
+				+ rebuildRequiredCount(rt.mechLab, world.global.labs.mech) * labCosts.get("mechanical")
+				+ rebuildRequiredCount(rt.milLab, world.global.labs.mil) * labCosts.get("military")
 		;
 	}
 	/**

@@ -14,6 +14,7 @@ import hu.openig.utils.XElement;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Contains a set of traits.
@@ -21,7 +22,11 @@ import java.util.List;
  */
 public class Traits implements Iterable<Trait> {
 	/** The list of traits. */
-	public final List<Trait> traits = U.newArrayList();
+	protected final List<Trait> traits = U.newArrayList();
+	/** Traits by id. */
+	protected final Map<String, Trait> traitsById = U.newHashMap();
+	/** Traits by kind. */
+	protected final Map<TraitKind, Trait> traitsByKind = U.newHashMap();
 	/** The initial points to spend. */
 	public int initialPoints;
 	/**
@@ -30,12 +35,7 @@ public class Traits implements Iterable<Trait> {
 	 * @return true if the trait exists
 	 */
 	public boolean has(TraitKind kind) {
-		for (Trait t : traits) {
-			if (t.kind == kind) {
-				return true;
-			}
-		}
-		return false;
+		return traitsByKind.containsKey(kind);
 	}
 	/**
 	 * Check the existence of a trait.
@@ -43,12 +43,7 @@ public class Traits implements Iterable<Trait> {
 	 * @return true if the trait exists
 	 */
 	public boolean has(String id) {
-		for (Trait t : traits) {
-			if (t.id.equals(id)) {
-				return true;
-			}
-		}
-		return false;
+		return traitsById.containsKey(id);
 	}
 	/**
 	 * Return a trait by its id.
@@ -56,14 +51,9 @@ public class Traits implements Iterable<Trait> {
 	 * @param id the id
 	 * @return the trait, or null if not found
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Trait> T trait(String id) {
-		for (Trait t : traits) {
-			if (t.id.equals(id)) {
-				@SuppressWarnings("unchecked") T tt = (T)t;
-				return tt;
-			}
-		}
-		return null;
+		return (T)traitsById.get(id);
 	}
 	/**
 	 * Return a trait by its kind.
@@ -71,14 +61,9 @@ public class Traits implements Iterable<Trait> {
 	 * @param kind the kind
 	 * @return the trait, or null if not found
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Trait> T trait(TraitKind kind) {
-		for (Trait t : traits) {
-			if (t.kind == kind) {
-				@SuppressWarnings("unchecked") T tt = (T)t;
-				return tt;
-			}
-		}
-		return null;
+		return (T)traitsByKind.get(kind);
 	}
 	/**
 	 * Parse a traits definition XML.
@@ -111,6 +96,9 @@ public class Traits implements Iterable<Trait> {
 	 */
 	public void clear() {
 		traits.clear();
+		traitsByKind.clear();
+		traitsById.clear();
+		
 		initialPoints = 0;
 	}
 	/**
@@ -122,7 +110,27 @@ public class Traits implements Iterable<Trait> {
 			Exceptions.add(new AssertionError("Duplicate trait IDs: " + t.id));
 		} else {
 			traits.add(t);
+			traitsById.put(t.id, t);
+			traitsByKind.put(t.kind, t);
 		}
+	}
+	/**
+	 * Add all traits from the other sequence.
+	 * @param ts the traits
+	 */
+	public void add(Iterable<? extends Trait> ts) {
+		for (Trait t : ts) {
+			add(t);
+		}
+	}
+	/**
+	 * Replace the current traits.
+	 * @param ts the new traits
+	 */
+	public void replace(Traits ts) {
+		clear();
+		add(ts);
+		this.initialPoints = ts.initialPoints;
 	}
 	@Override
 	public Iterator<Trait> iterator() {

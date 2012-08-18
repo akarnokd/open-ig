@@ -11,7 +11,6 @@ package hu.openig.screen.panels;
 import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.mechanics.DefaultAIControls;
-import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Research;
@@ -372,18 +371,18 @@ public class QuickResearchPanel extends UIContainer {
 		hoverResearchDescription.height = 1;
 		// fill in lab counts
 
-		setActives(labActives, 0, ps.civilLabActive, ps.civilLab, TextRenderer.YELLOW);
-		setActives(labActives, 1, ps.mechLabActive, ps.mechLab, TextRenderer.YELLOW);
-		setActives(labActives, 2, ps.compLabActive, ps.compLab, TextRenderer.YELLOW);
-		setActives(labActives, 3, ps.aiLabActive, ps.aiLab, TextRenderer.YELLOW);
-		setActives(labActives, 4, ps.milLabActive, ps.milLab, TextRenderer.YELLOW);
+		setActives(labActives, 0, ps.activeLabs.civil, ps.labs.civil, TextRenderer.YELLOW);
+		setActives(labActives, 1, ps.activeLabs.mech, ps.labs.mech, TextRenderer.YELLOW);
+		setActives(labActives, 2, ps.activeLabs.comp, ps.labs.comp, TextRenderer.YELLOW);
+		setActives(labActives, 3, ps.activeLabs.ai, ps.labs.ai, TextRenderer.YELLOW);
+		setActives(labActives, 4, ps.activeLabs.mil, ps.labs.mil, TextRenderer.YELLOW);
 		
 		if (currentText != null) {
-			setRequireds(labRequireds, 0, ps.civilLab, currentText.civilLab, TextRenderer.RED);
-			setRequireds(labRequireds, 1, ps.mechLab, currentText.mechLab, TextRenderer.RED);
-			setRequireds(labRequireds, 2, ps.compLab, currentText.compLab, TextRenderer.RED);
-			setRequireds(labRequireds, 3, ps.aiLab, currentText.aiLab, TextRenderer.RED);
-			setRequireds(labRequireds, 4, ps.milLab, currentText.milLab, TextRenderer.RED);
+			setRequireds(labRequireds, 0, ps.labs.civil, currentText.civilLab, TextRenderer.RED);
+			setRequireds(labRequireds, 1, ps.labs.mech, currentText.mechLab, TextRenderer.RED);
+			setRequireds(labRequireds, 2, ps.labs.comp, currentText.compLab, TextRenderer.RED);
+			setRequireds(labRequireds, 3, ps.labs.ai, currentText.aiLab, TextRenderer.RED);
+			setRequireds(labRequireds, 4, ps.labs.mil, currentText.milLab, TextRenderer.RED);
 		}
 		
 		// adjust size ---------------------------------------------------------------
@@ -569,41 +568,7 @@ public class QuickResearchPanel extends UIContainer {
 		PlanetStatistics ps = new PlanetStatistics();
 		
 		for (Planet p : commons.player().ownPlanets()) {
-			for (Building b : p.surface.buildings) {
-				if (Building.isOperational(b.getEfficiency())) {
-					if (b.hasResource("civil")) {
-						ps.civilLabActive += b.getResource("civil");
-					}
-					if (b.hasResource("mechanical")) {
-						ps.mechLabActive += b.getResource("mechanical");
-					}
-					if (b.hasResource("computer")) {
-						ps.compLabActive += b.getResource("computer");
-					}
-					if (b.hasResource("ai")) {
-						ps.aiLabActive += b.getResource("ai");
-					}
-					if (b.hasResource("military")) {
-						ps.milLabActive += b.getResource("military");
-					}
-				}
-				if (b.hasResource("civil")) {
-					ps.civilLab += b.getResource("civil");
-				}
-				if (b.hasResource("mechanical")) {
-					ps.mechLab += b.getResource("mechanical");
-				}
-				if (b.hasResource("computer")) {
-					ps.compLab += b.getResource("computer");
-				}
-				if (b.hasResource("ai")) {
-					ps.aiLab += b.getResource("ai");
-				}
-				if (b.hasResource("military")) {
-					ps.milLab += b.getResource("military");
-				}
-			}
-			
+			ps.add(p.getResearchStatistics());
 			ps.planetCount++;
 		}
 		

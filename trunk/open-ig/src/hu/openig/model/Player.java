@@ -247,34 +247,34 @@ public class Player {
 	 * @return true if there are at least the required lab
 	 */
 	public LabLevel hasEnoughLabs(ResearchType rt, PlanetStatistics ps) {
-		if (ps.civilLab < rt.civilLab) {
+		if (ps.labs.civil < rt.civilLab) {
 			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
-		if (ps.mechLab < rt.mechLab) {
+		if (ps.labs.mech < rt.mechLab) {
 			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
-		if (ps.compLab < rt.compLab) {
+		if (ps.labs.comp < rt.compLab) {
 			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
-		if (ps.aiLab < rt.aiLab) {
+		if (ps.labs.ai < rt.aiLab) {
 			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
-		if (ps.milLab < rt.milLab) {
+		if (ps.labs.mil < rt.milLab) {
 			return LabLevel.NOT_ENOUGH_TOTAL;
 		}
-		if (ps.civilLabActive < rt.civilLab) {
+		if (ps.activeLabs.civil < rt.civilLab) {
 			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
-		if (ps.mechLabActive < rt.mechLab) {
+		if (ps.activeLabs.mech < rt.mechLab) {
 			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
-		if (ps.compLabActive < rt.compLab) {
+		if (ps.activeLabs.comp < rt.compLab) {
 			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
-		if (ps.aiLabActive < rt.aiLab) {
+		if (ps.activeLabs.ai < rt.aiLab) {
 			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
-		if (ps.milLabActive < rt.milLab) {
+		if (ps.activeLabs.mil < rt.milLab) {
 			return LabLevel.NOT_ENOUGH_ACTIVE;
 		}
 		
