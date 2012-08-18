@@ -2675,6 +2675,18 @@ public class World {
 		for (Player p : players.values()) {
 			// remove warp technology
 			if (p.traits.has(TraitKind.PRE_WARP)) {
+				// remove hyperdrive as equipment
+				for (Fleet f : p.ownFleets()) {
+					for (InventoryItem ii : f.inventory) {
+						for (InventorySlot is : ii.slots) {
+							if (is.type != null && is.type.has("speed")) {
+								is.type = null;
+								is.count = 0;
+							}
+						}
+					}
+				}
+				// remove technology
 				for (Map.Entry<ResearchType, List<ResearchType>> at : U.newArrayList(p.available().entrySet())) {
 					ResearchType rt0 = at.getKey();
 					for (ResearchType rt1 : U.newArrayList(at.getValue())) {

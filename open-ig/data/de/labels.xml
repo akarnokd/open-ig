@@ -3003,6 +3003,33 @@
 	<entry key="equipment.move_one.tooltip">Eins transferieren</entry>
 	<entry key="equipment.move_half.tooltip">Halbe transferieren</entry>
 	<entry key="equipment.move_all.tooltip">Alle transferieren</entry>
+	
+		<entry key='singleplayer.customize_race'>Customize traits...</entry>
+	<entry key='traits.select_traits'>Select traits:</entry>
+	<entry key='traits.available_points'>Available points:</entry>
+	<entry key='traits.ok'>OK</entry>
+	<entry key='traits.reset'>Reset</entry>
+	<entry key='traits.cancel'>Cancel</entry>
+
+	<entry key='traits.pre_warp'>Pre-Hyperdrive</entry>
+	<entry key='traits.pre_warp.desc'>The civilization has not yet discovered proper Hyperspace travel. Fleet speed is reduced to %.0f and the Hyperdrive technology needs to be researched as well.</entry>
+	<entry key='traits.ship_builder'>Ship Builders</entry>
+	<entry key='traits.ship_builder.desc'>The civilization mastered ship construction before the galactic age. Ship production speed is increased to %.0f%%.</entry>
+	<entry key='traits.ship_mocker'>Ship mockers</entry>
+	<entry key='traits.ship_mocker.desc'>The civilization did not successfully master ship construction before the galactic age. Ship production speed is reduced to %.0f%%.</entry>
+	<entry key='traits.debug'>Debug mode</entry>
+	<entry key='traits.debug.desc'>Debug mode allows more traits to be selected than the regular points would allow.</entry>
+
+	<entry key='traits.equipment_builder'>Equipment Builders</entry>
+	<entry key='traits.equipment_builder.desc'>The civilization mastered equipment construction before the galactic age. Equipment production speed is increased to %.0f%%.</entry>
+	<entry key='traits.equipment_mocker'>Equipment mockers</entry>
+	<entry key='traits.equipment_mocker.desc'>The civilization did not successfully master equipment construction before the galactic age. Equipment production speed is reduced to %.0f%%.</entry>
+
+	<entry key='traits.weapon_builder'>Weapon Builders</entry>
+	<entry key='traits.weapon_builder.desc'>The civilization mastered weapon construction before the galactic age. Weapon production speed is increased to %.0f%%.</entry>
+	<entry key='traits.weapon_mocker'>Weapon mockers</entry>
+	<entry key='traits.weapon_mocker.desc'>The civilization did not successfully master weapon construction before the galactic age. Weapon production speed is reduced to %.0f%%.</entry>
+	
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

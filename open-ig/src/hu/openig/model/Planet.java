@@ -131,16 +131,21 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @param out the output statistics to add to
 	 * @param b the building
 	 * @param eff the efficiency
+	 * @param trs the traits
 	 */
-	protected void addProduction(ProductionStatistics out, Building b, double eff) {
+	protected void addProduction(ProductionStatistics out, Building b, 
+			double eff, Traits trs) {
 		if (b.hasResource("spaceship")) {
-			out.spaceship += b.getResource("spaceship") * eff;
+			double value = b.getResource("spaceship") * eff;
+			out.spaceship += trs.apply(TraitKind.SHIP_PRODUCTION, 0.01d, value);
 		}
 		if (b.hasResource("equipment")) {
-			out.equipment += b.getResource("equipment") * eff;
+			double value = b.getResource("equipment") * eff;
+			out.equipment += trs.apply(TraitKind.EQUIPMENT_PRODUCTION, 0.01d, value);;
 		}
 		if (b.hasResource("weapon")) {
-			out.weapons += b.getResource("weapon") * eff;
+			double value = b.getResource("weapon") * eff;
+			out.weapons += trs.apply(TraitKind.WEAPON_PRODUCTION, 0.01d, value);;
 		}
 	}
 	/**
@@ -151,9 +156,9 @@ public class Planet implements Named, Owned, HasInventory {
 		for (Building b : surface.buildings) {
 			double eff = b.getEfficiency();
 			if (Building.isOperational(eff)) {
-				addProduction(result.activeProduction, b, eff);
+				addProduction(result.activeProduction, b, eff, owner.traits);
 			}
-			addProduction(result.production, b, 1d);
+			addProduction(result.production, b, 1d, owner.traits);
 		}
 		return result;
 	}
@@ -229,7 +234,7 @@ public class Planet implements Named, Owned, HasInventory {
 					result.hospitalAvailable += b.getResource("hospital") * eff;
 				}
 				
-				addProduction(result.activeProduction, b, eff);
+				addProduction(result.activeProduction, b, eff, owner.traits);
 				
 				addLabs(result.activeLabs, b);
 				
@@ -265,7 +270,7 @@ public class Planet implements Named, Owned, HasInventory {
 				result.militarySpaceportCount = 1;
 			}
 			
-			addProduction(result.production, b, 1d);
+			addProduction(result.production, b, 1d, owner.traits);
 			
 			addLabs(result.labs, b);
 			

@@ -51,8 +51,6 @@ public class Fleet implements Named, Owned, HasInventory {
 	public FleetMode mode;
 	/** The current task. */
 	public FleetTask task = FleetTask.IDLE;
-	/** The base speed of fleets without hyperdrives. */
-	public static final int FLEET_BASE_SPEED = 14;
 	/**
 	 * Create a fleet with a specific ID and owner.
 	 * @param id the identifier
@@ -165,6 +163,12 @@ public class Fleet implements Named, Owned, HasInventory {
 	public FleetStatistics getStatistics() {
 		FleetStatistics result = new FleetStatistics();
 
+		int baseSpeed = 14;
+		Trait t = owner.traits.trait(TraitKind.PRE_WARP);
+		if (t != null) {
+			baseSpeed = (int)t.value;
+		}
+		
 		result.speed = Integer.MAX_VALUE;
 		int radar = 0;
 		for (InventoryItem fii : inventory) {
@@ -224,12 +228,12 @@ public class Fleet implements Named, Owned, HasInventory {
 				}
 			}
 			if (checkHyperdrive && !speedFound) {
-				result.speed = FLEET_BASE_SPEED;
+				result.speed = baseSpeed;
 			}
 		}
 		
 		if (result.speed == Integer.MAX_VALUE) {
-			result.speed = FLEET_BASE_SPEED;
+			result.speed = baseSpeed;
 		}
 		
 		result.planet = nearbyPlanet();
@@ -248,6 +252,11 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @return the speed
 	 */
 	public int getSpeed() {
+		int baseSpeed = 14;
+		Trait t = owner.traits.trait(TraitKind.PRE_WARP);
+		if (t != null) {
+			baseSpeed = (int)t.value;
+		}
 		int speed = Integer.MAX_VALUE;
 		for (InventoryItem fii : inventory) {
 			boolean checkHyperdrive = fii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
@@ -261,12 +270,12 @@ public class Fleet implements Named, Owned, HasInventory {
 					}
 				}
 				if (!found) {
-					speed = FLEET_BASE_SPEED;
+					speed = baseSpeed;
 				}
 			}
 		}
 		if (speed == Integer.MAX_VALUE) {
-			speed = FLEET_BASE_SPEED;
+			speed = baseSpeed;
 		}
 		return speed;
 	}

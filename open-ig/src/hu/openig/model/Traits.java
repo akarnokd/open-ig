@@ -136,4 +136,34 @@ public class Traits implements Iterable<Trait> {
 	public Iterator<Trait> iterator() {
 		return traits.iterator();
 	}
+	/**
+	 * Apply the given trait value to the given input value by multiplying it
+	 * together with the scale.
+	 * @param kind the kind
+	 * @param scale the scale
+	 * @param value the original value
+	 * @return the new value
+	 */
+	public double apply(TraitKind kind, double scale, double value) {
+		Trait t = trait(kind);
+		if (t != null) {
+			return value * t.value * scale;
+		}
+		return value;
+	}
+	/**
+	 * Apply the given trait value to the given input value by multiplying it
+	 * together with the scale.
+	 * @param id the trait identifier
+	 * @param scale the scale
+	 * @param value the original value
+	 * @return the new value
+	 */
+	public double apply(String id, double scale, double value) {
+		Trait t = trait(id);
+		if (t != null) {
+			return value * t.value * scale;
+		}
+		return value;
+	}
 }
