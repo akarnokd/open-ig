@@ -316,6 +316,12 @@ Each rocket type has its own Anti-ECM measure which modifies the probabilities o
 
 For example, if you fire with Rocket 1 at an enemy without ECM, you have a 100% hit chance. However, if the enemy has ECM 2, your rocket will be always diverted.
 
+== Trait system ==
+
+https://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-traits-screen.png
+
+The trait system is planned to provide some customization and replay values for those who do not want to customize a campaign via the Campaign Editor.
+
 = Gameplay tips =
 
   * Planetary accounting and statistics gathering are performed at midnight. Morale affecting factors such as shortages are considered exactly at this moment. Therefore, plan your building upgdares and reconstruction accordingly, i.e., do not start upgrading your Arcologies at 23:50, because you may get a massive morale loss due the temporary living space shortage.
