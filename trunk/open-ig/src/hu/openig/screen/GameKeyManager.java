@@ -448,18 +448,27 @@ public class GameKeyManager extends KeyAdapter {
 			case KeyEvent.VK_7:
 				if (e.isControlDown()) {
 					world().difficulty = Difficulty.EASY;
+					for (Player p : world().players.values()) {
+						p.difficulty = world().difficulty;
+					}
 					e.consume();
 				}
 				break;
 			case KeyEvent.VK_8:
 				if (e.isControlDown()) {
 					world().difficulty = Difficulty.NORMAL;
+					for (Player p : world().players.values()) {
+						p.difficulty = world().difficulty;
+					}
 					e.consume();
 				}
 				break;
 			case KeyEvent.VK_9:
 				if (e.isControlDown()) {
 					world().difficulty = Difficulty.HARD;
+					for (Player p : world().players.values()) {
+						p.difficulty = world().difficulty;
+					}
 					e.consume();
 				}
 				break;

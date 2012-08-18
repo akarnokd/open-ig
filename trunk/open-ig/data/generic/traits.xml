@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<traits initial-points='8'>
+	<!-- Hyperdrive 1 is not researched. -->
+	<trait 
+		id='PreWarp' 
+		kind='PRE_WARP' 
+		label='traits.pre_warp' 
+		description='traits.pre_warp.desc' 
+		cost='-10'>
+	</trait>
+	<!-- +10% speed on ship construction. -->
+	<trait 
+		id='ShipBuilder' 
+		kind='SHIP_PRODUCTION' 
+		label='traits.ship_builder' 
+		description='traits.ship_builder.desc' 
+		cost='1'
+		value='1.1'>
+		<exclude id='ShipMocker'/>
+	</trait>
+	<!-- -10% speed on ship construction. -->
+	<trait 
+		id='ShipMocker' 
+		kind='SHIP_PRODUCTION'
+		label='traits.ship_mocker'
+		description='traits.ship_mocker.desc'
+		cost='-1'
+		value='0.9'>
+		<exclude id='ShipBuilder'/>
+	</trait>
+	<!-- Give the user more points. -->
+	<trait
+		id='Debug'
+		kind='TRAIT_DEBUG'
+		label='traits.debug'
+		description='traits.debug.desc'
+		cost='-1000'>
+	</trait>
+</traits>

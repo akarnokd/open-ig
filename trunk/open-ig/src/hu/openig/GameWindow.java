@@ -59,11 +59,13 @@ import hu.openig.screen.items.PlanetScreen;
 import hu.openig.screen.items.ResearchProductionScreen;
 import hu.openig.screen.items.ShipwalkScreen;
 import hu.openig.screen.items.SingleplayerScreen;
+import hu.openig.screen.items.SkirmishScreen;
 import hu.openig.screen.items.SpacewarScreen;
 import hu.openig.screen.items.StarmapScreen;
 import hu.openig.screen.items.StarmapScreen.ShowNamesMode;
 import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
+import hu.openig.screen.items.TraitScreen;
 import hu.openig.screen.items.VideoScreen;
 import hu.openig.ui.UIColorLabel;
 import hu.openig.ui.UIComponent;
@@ -288,6 +290,10 @@ public class GameWindow extends JFrame implements GameControls {
 		public CreditsScreen credits;
 		/** The game over screen. */
 		public GameOverScreen gameOver;
+		/** The skirmish screen. */
+		public SkirmishScreen skirmish;
+		/** The traits screen. */
+		public TraitScreen traits;
 	}
 	/** The record of screens. */
 	public final AllScreens allScreens = new AllScreens();
@@ -781,6 +787,12 @@ public class GameWindow extends JFrame implements GameControls {
 			break;
 		case BATTLE_FINISH:
 			sb = allScreens.battleFinish;
+			break;
+		case SKIRMISH:
+			sb = allScreens.skirmish;
+			break;
+		case TRAITS:
+			sb = allScreens.traits;
 			break;
 		default:
 		}
@@ -1475,7 +1487,7 @@ public class GameWindow extends JFrame implements GameControls {
 						world.definition = GameDefinition.parse(commons.rl, game);
 						world.labels = new Labels();
 						world.labels.load(commons.rl, game + "/labels");
-						world.load(commons.rl, world.definition.name);
+						world.loadCampaign(commons.rl, world.definition.name);
 					}
 					
 					world.loadState(xworld);

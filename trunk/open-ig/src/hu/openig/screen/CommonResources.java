@@ -42,6 +42,7 @@ import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
+import hu.openig.model.Traits;
 import hu.openig.model.World;
 import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
@@ -175,6 +176,8 @@ public class CommonResources implements GameEnvironment {
 	protected long simulationStep;
 	/** Periodically reload the current labels. */
 	protected Thread labelReloader;
+	/** The global traits. */
+	public final Traits traits = new Traits();
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -350,6 +353,8 @@ public class CommonResources implements GameEnvironment {
 			music.setVolume(config.musicVolume);
 			music.setMute(config.muteMusic);
 
+			traits.load(rl.getXML("traits"));
+			
 			// FIXME during translation
 			
 			labelReloader = new Thread() {
@@ -1165,5 +1170,9 @@ public class CommonResources implements GameEnvironment {
 		if (sb == Screens.RESEARCH || sb == Screens.PRODUCTION) {
 			((ResearchProductionAnimation)control().getScreen(sb)).playAnim(rt, true);
 		}
+	}
+	@Override
+	public Traits traits() {
+		return traits;
 	}
 }

@@ -79,4 +79,8 @@ public enum Screens {
 	TEST,
 	/** The game over screen. */
 	GAME_OVER,
+	/** The trait screen. */
+	TRAITS,
+	/** The skirmish screen. */
+	SKIRMISH
 }

@@ -106,4 +106,6 @@ public interface GameEnvironment {
 	void save(SaveMode mode);
 	/** @return The game world version. */
 	String version();
+	/** @return the available global traits. */
+	Traits traits();
 }
