@@ -50,6 +50,7 @@ import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.SurfaceFeature;
 import hu.openig.model.Tile;
+import hu.openig.model.TraitKind;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -2353,12 +2354,24 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						buildingInfoPanel.operationPercent.text(Integer.toString((int)(b.getEfficiency() * 100)));
 						if (b.type.primary != null) {
 							double f = b.getPrimary();
+							// apply trait override
+							if (b.hasResource("spaceship")) {
+								f = planet().owner.traits.apply(TraitKind.SHIP_PRODUCTION, 0.01d, f);
+							} else
+							if (b.hasResource("weapon")) {
+								f = planet().owner.traits.apply(TraitKind.WEAPON_PRODUCTION, 0.01d, f);
+							} else
+							if (b.hasResource("equipment")) {
+								f = planet().owner.traits.apply(TraitKind.EQUIPMENT_PRODUCTION, 0.01d, f);
+							}
+							
 							String s = "";
 							if (f < 10) {
 								s = String.format("%.1f", f);
 							} else {
 								s = String.format("%.0f", f);
 							}
+							
 							buildingInfoPanel.production.text(s + getUnit(b.type.primary));
 						} else {
 							buildingInfoPanel.production.text("");

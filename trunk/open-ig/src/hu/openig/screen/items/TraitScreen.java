@@ -24,6 +24,7 @@ import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIScrollBox;
+import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.U;
 
 import java.awt.Color;
@@ -72,8 +73,7 @@ public class TraitScreen extends ScreenBase {
 		traitsLabel.location(base.x + 10, base.y + 10);
 		scroll.location(base.x + 10, base.y + traitsLabel.y + traitsLabel.height + 10);
 		scroll.width = base.width - 20;
-		traitsList.location(0, 5);
-		traitsList.width = scroll.width - commons.database().arrowUp[0].getWidth() + 5;
+		traitsList.width = scroll.width - commons.database().arrowUp[0].getWidth() - 10;
 		pointsLabel.location(base.x + 10, base.y + base.height - 70);
 		
 		pointsValue.location(base.x + base.width - 10 - base.width / 2, pointsLabel.y);
@@ -85,7 +85,10 @@ public class TraitScreen extends ScreenBase {
 		reset.location(ok.x + ok.width + gap, ok.y);
 		cancel.location(reset.x + reset.width + gap, ok.y);
 		
-		scroll.height = ok.y - scroll.y - 10;
+		scroll.height = pointsLabel.y - scroll.y - 10;
+		
+		scroll.scrollBy(0);
+		scroll.adjustButtons();
 	}
 	@Override
 	public Screens screen() {
@@ -97,7 +100,7 @@ public class TraitScreen extends ScreenBase {
 		traitsList = new TraitsList();
 
 		UIImageButton up = new UIImageButton(commons.database().arrowUp);
-		UIImageButton down = new UIImageButton(commons.database().arrowUp);
+		UIImageButton down = new UIImageButton(commons.database().arrowDown);
 		
 		scroll = new UIScrollBox(traitsList, 20, up, down);
 		
@@ -151,6 +154,9 @@ public class TraitScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		traitsList.prepare(commons.traits());
+		traitsList.x = 0;
+		scroll.scrollBy(0);
+		scroll.adjustButtons();
 	}
 	/**
 	 * Update traits.
@@ -158,6 +164,8 @@ public class TraitScreen extends ScreenBase {
 	 */
 	public void updateTraits(Traits traits) {
 		traitsList.update(traits);
+		scroll.scrollBy(0);
+		scroll.adjustButtons();
 	}
 
 	@Override
@@ -185,6 +193,9 @@ public class TraitScreen extends ScreenBase {
 		g2.fill(base);
 		g2.setColor(Color.GRAY);
 		g2.draw(base);
+		
+		g2.drawLine(base.x, scroll.y - 5, base.x + base.width - 1, scroll.y - 5);
+		g2.drawLine(base.x, scroll.y + scroll.height + 5, base.x + base.width - 1, scroll.y + scroll.height + 5);
 
 		super.draw(g2);
 	}
@@ -202,6 +213,7 @@ public class TraitScreen extends ScreenBase {
 		public TraitCheckBox(Trait trait) {
 			super(get(trait.label), 14, commons.common().checkmark, commons.text());
 			this.trait = trait;
+			vertically(VerticalAlignment.MIDDLE);
 		}
 	}
 	/**
@@ -253,7 +265,7 @@ public class TraitScreen extends ScreenBase {
 				tcl.onPress = onTraitClick2;
 				tcc.onPress = onTraitClick2;
 				
-				tcb.height += 5;
+				tcb.height += 10;
 				tcl.width = width - 30;
 				tcl.wrap(true);
 				tcl.height = tcl.getWrappedHeight();
@@ -261,11 +273,11 @@ public class TraitScreen extends ScreenBase {
 				tcb.z = -1;
 				
 				tcb.location(0, y);
-				tcc.location(width - tcc.width, y);
+				tcc.location(width - tcc.width, y + 5);
 				tcl.location(30, y + tcb.height);
 				tcb.width = tcc.x;
 				
-				y += tcb.height + tcl.height + 15;
+				y += tcb.height + tcl.height + 5;
 				
 				if (tr.cost < 0) {
 					tcb.color(PINK);
@@ -288,7 +300,7 @@ public class TraitScreen extends ScreenBase {
 			if (i > 0) {
 				height = y;
 			} else {
-				height = y - 10;
+				height = y - 5;
 			}
 			doSelectTrait();
 		}

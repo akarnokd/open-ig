@@ -53,6 +53,7 @@ public class UIScrollBox extends UIContainer {
 				askRepaint();
 			}
 		};
+		upButton.setHoldDelay(150);
 		downButton.onClick = new Action0() {
 			@Override
 			public void invoke() {
@@ -60,11 +61,12 @@ public class UIScrollBox extends UIContainer {
 				askRepaint();
 			}
 		};
+		downButton.setHoldDelay(150);
 		upButton.z = 1;
 		downButton.z = 1;
 	}
 	/** Adjust the visibility of the buttons. */
-	protected void adjustButtons() {
+	public void adjustButtons() {
 		upButton.visible = content.y < 0;
 		upButton.down &= upButton.visible;
 		upButton.over &= upButton.visible;
@@ -99,7 +101,7 @@ public class UIScrollBox extends UIContainer {
 	 * @param dy the amount to scroll.
 	 * @return need for repaint?
 	 */
-	protected boolean scrollBy(int dy) {
+	public boolean scrollBy(int dy) {
 		int y0 = content.y;
 		
 		content.y += dy;

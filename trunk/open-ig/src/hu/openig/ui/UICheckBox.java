@@ -14,6 +14,7 @@ import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 /**
@@ -35,6 +36,8 @@ public class UICheckBox extends UIComponent {
 	protected int disabledColor = TextRenderer.GRAY;
 	/** The selection state. */
 	protected boolean selected;
+	/** The vertical alignment. */
+	protected VerticalAlignment valign;
 	/** The change handler. */
 	public Action0 onChange;
 	/**
@@ -67,7 +70,14 @@ public class UICheckBox extends UIComponent {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
-
+		AffineTransform at = g2.getTransform();
+		if (valign == VerticalAlignment.BOTTOM) {
+			g2.translate(0, height - size);
+		} else
+		if (valign == VerticalAlignment.MIDDLE) {
+			g2.translate(0, (height - size) / 2);
+		}
+		
 		g2.setColor(new Color(0, 0, 0, 192));
 		g2.fillRect(-5, -5, width + 10, height + 10);
 
@@ -80,6 +90,8 @@ public class UICheckBox extends UIComponent {
 		}
 		
 		tr.paintTo(g2, size + 6, 0, size, enabled() ? color : disabledColor, text);
+		
+		g2.setTransform(at);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -118,6 +130,21 @@ public class UICheckBox extends UIComponent {
 	 */
 	public UICheckBox color(int newColor) {
 		this.color = newColor;
+		return this;
+	}
+	/**
+	 * @return the current vertical alignment
+	 */
+	public VerticalAlignment vertically() {
+		return valign;
+	}
+	/**
+	 * Set the vertical alignment.
+	 * @param valign the new alignment
+	 * @return this
+	 */
+	public UICheckBox vertically(VerticalAlignment valign) {
+		this.valign = valign;
 		return this;
 	}
 }

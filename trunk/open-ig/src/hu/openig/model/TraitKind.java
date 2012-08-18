@@ -17,6 +17,10 @@ public enum TraitKind {
 	PRE_WARP,
 	/** Change ship production ratio. */
 	SHIP_PRODUCTION,
+	/** Change equipment production ratio. */
+	EQUIPMENT_PRODUCTION,
+	/** Change weapon production ratio. */
+	WEAPON_PRODUCTION,
 	/** Debug option. */
 	TRAIT_DEBUG
 }

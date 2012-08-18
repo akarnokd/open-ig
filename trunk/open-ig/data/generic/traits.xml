@@ -29,6 +29,44 @@
 		value='75'>
 		<exclude id='ShipBuilder'/>
 	</trait>
+	<trait 
+		id='EquipmentBuilder' 
+		kind='EQUIPMENT_PRODUCTION' 
+		label='traits.equipment_builder' 
+		description='traits.equipment_builder.desc' 
+		cost='1'
+		value='125'>
+		<exclude id='EquipmentMocker'/>
+	</trait>
+	<!-- -10% speed on ship construction. -->
+	<trait 
+		id='EquipmentMocker' 
+		kind='EQUIPMENT_PRODUCTION'
+		label='traits.equipment_mocker'
+		description='traits.equipment_mocker.desc'
+		cost='-1'
+		value='75'>
+		<exclude id='EquipmentBuilder'/>
+	</trait>
+	<trait 
+		id='WeaponBuilder' 
+		kind='WEAPON_PRODUCTION' 
+		label='traits.weapon_builder' 
+		description='traits.weapon_builder.desc' 
+		cost='1'
+		value='125'>
+		<exclude id='WeaponMocker'/>
+	</trait>
+	<!-- -10% speed on ship construction. -->
+	<trait 
+		id='WeaponMocker' 
+		kind='WEAPON_PRODUCTION'
+		label='traits.weapon_mocker'
+		description='traits.weapon_mocker.desc'
+		cost='-1'
+		value='75'>
+		<exclude id='WeaponBuilder'/>
+	</trait>
 	<!-- Give the user more points. -->
 	<trait
 		id='Debug'
