@@ -1,6 +1,8 @@
 #summary Table of contents
 #labels Featured
 
+  * Magyar lapok
+    * [FrontPageHU Főlap]
   * [Introduction Introduction]
   * [Install Install instructions]
   * [Game_Notes Release notes]
