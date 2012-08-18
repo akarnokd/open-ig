@@ -3045,30 +3045,30 @@ public class InfoScreen extends ScreenBase {
 			researchLabs.get(3).text(Integer.toString(rt.aiLab));
 			researchLabs.get(4).text(Integer.toString(rt.milLab));
 
-			researchAvailable.get(0).text(Integer.toString(globalStatistics.civilLabActive));
+			researchAvailable.get(0).text(Integer.toString(globalStatistics.activeLabs.civil));
 			researchAvailable.get(0).color(
-					globalStatistics.civilLab < rt.civilLab ? TextRenderer.RED 
-						: (globalStatistics.civilLab > globalStatistics.civilLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.labs.civil < rt.civilLab ? TextRenderer.RED 
+						: (globalStatistics.labs.civil > globalStatistics.activeLabs.civil ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(1).text(Integer.toString(globalStatistics.mechLabActive));
+			researchAvailable.get(1).text(Integer.toString(globalStatistics.activeLabs.mech));
 			researchAvailable.get(1).color(
-					globalStatistics.mechLab < rt.mechLab ? TextRenderer.RED 
-						: (globalStatistics.mechLab > globalStatistics.mechLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.labs.mech < rt.mechLab ? TextRenderer.RED 
+						: (globalStatistics.labs.mech > globalStatistics.activeLabs.mech ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(2).text(Integer.toString(globalStatistics.compLabActive));
+			researchAvailable.get(2).text(Integer.toString(globalStatistics.activeLabs.comp));
 			researchAvailable.get(2).color(
-					globalStatistics.compLab < rt.compLab ? TextRenderer.RED 
-						: (globalStatistics.compLab > globalStatistics.compLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.labs.comp < rt.compLab ? TextRenderer.RED 
+						: (globalStatistics.labs.comp > globalStatistics.activeLabs.comp ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(3).text(Integer.toString(globalStatistics.aiLabActive));
+			researchAvailable.get(3).text(Integer.toString(globalStatistics.activeLabs.ai));
 			researchAvailable.get(3).color(
-					globalStatistics.aiLab < rt.aiLab ? TextRenderer.RED 
-						: (globalStatistics.aiLab > globalStatistics.aiLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.labs.ai < rt.aiLab ? TextRenderer.RED 
+						: (globalStatistics.labs.ai > globalStatistics.activeLabs.ai ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
-			researchAvailable.get(4).text(Integer.toString(globalStatistics.milLabActive));
+			researchAvailable.get(4).text(Integer.toString(globalStatistics.activeLabs.mil));
 			researchAvailable.get(4).color(
-					globalStatistics.milLab < rt.milLab ? TextRenderer.RED 
-						: (globalStatistics.milLab > globalStatistics.milLabActive ? TextRenderer.YELLOW : TextRenderer.GREEN)
+					globalStatistics.labs.mil < rt.milLab ? TextRenderer.RED 
+						: (globalStatistics.labs.mil > globalStatistics.activeLabs.mil ? TextRenderer.YELLOW : TextRenderer.GREEN)
 			);
 		}
 	}

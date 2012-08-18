@@ -559,15 +559,15 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		prod.priority = 50;
 		productions.put(prod.type, prod);
 		
-		if (statistics.weapons == 0 && cat == ResearchMainCategory.WEAPONS) {
+		if (statistics.production.weapons == 0 && cat == ResearchMainCategory.WEAPONS) {
 			buttonSound(SoundType.NOT_AVAILABLE);
 			commons.control().displayError(get("production.missing_weapons_factory"));
 		} else
-		if (statistics.equipment == 0 && cat == ResearchMainCategory.EQUIPMENT) {
+		if (statistics.production.equipment == 0 && cat == ResearchMainCategory.EQUIPMENT) {
 			buttonSound(SoundType.NOT_AVAILABLE);
 			commons.control().displayError(get("production.missing_equipment_factory"));
 		} else
-		if (statistics.spaceship == 0 && cat == ResearchMainCategory.SPACESHIPS) {
+		if (statistics.production.spaceship == 0 && cat == ResearchMainCategory.SPACESHIPS) {
 			buttonSound(SoundType.NOT_AVAILABLE);
 			commons.control().displayError(get("production.missing_spaceship_factory"));
 		} else {
@@ -1651,11 +1651,11 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			selectedAILabValue.text("" + rt.aiLab);
 			selectedMilLabValue.text("" + rt.milLab);
 			
-			selectedCivilLabValue.color(labColor(ps.civilLab, ps.civilLabActive, rt.civilLab));
-			selectedMechLabValue.color(labColor(ps.mechLab, ps.mechLabActive, rt.mechLab));
-			selectedCompLabValue.color(labColor(ps.compLab, ps.compLabActive, rt.compLab));
-			selectedAILabValue.color(labColor(ps.aiLab, ps.aiLabActive, rt.aiLab));
-			selectedMilLabValue.color(labColor(ps.milLab, ps.milLabActive, rt.milLab));
+			selectedCivilLabValue.color(labColor(ps.labs.civil, ps.activeLabs.civil, rt.civilLab));
+			selectedMechLabValue.color(labColor(ps.labs.mech, ps.activeLabs.mech, rt.mechLab));
+			selectedCompLabValue.color(labColor(ps.labs.comp, ps.activeLabs.comp, rt.compLab));
+			selectedAILabValue.color(labColor(ps.labs.ai, ps.activeLabs.ai, rt.aiLab));
+			selectedMilLabValue.color(labColor(ps.labs.mil, ps.activeLabs.mil, rt.milLab));
 
 			selectedTechNameValue.text(rt.name);
 			if (player().isAvailable(rt)) {
@@ -1794,19 +1794,19 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	void updateActive(PlanetStatistics ps) {
 		ResearchType rt = player().runningResearch();
 		
-		activeCivilLabValue.text("" + ps.civilLabActive);
-		activeMechLabValue.text("" + ps.mechLabActive);
-		activeCompLabValue.text("" + ps.compLabActive);
-		activeAILabValue.text("" + ps.aiLabActive);
-		activeMilLabValue.text("" + ps.milLabActive);
+		activeCivilLabValue.text("" + ps.activeLabs.civil);
+		activeMechLabValue.text("" + ps.activeLabs.mech);
+		activeCompLabValue.text("" + ps.activeLabs.comp);
+		activeAILabValue.text("" + ps.activeLabs.ai);
+		activeMilLabValue.text("" + ps.activeLabs.mil);
 		
 		if (rt != null && mode == Screens.RESEARCH) {
 
-			activeCivilLabValue.color(labColor(ps.civilLab, ps.civilLabActive, rt.civilLab));
-			activeMechLabValue.color(labColor(ps.mechLab, ps.mechLabActive, rt.mechLab));
-			activeCompLabValue.color(labColor(ps.compLab, ps.compLabActive, rt.compLab));
-			activeAILabValue.color(labColor(ps.aiLab, ps.aiLabActive, rt.aiLab));
-			activeMilLabValue.color(labColor(ps.milLab, ps.milLabActive, rt.milLab));
+			activeCivilLabValue.color(labColor(ps.labs.civil, ps.activeLabs.civil, rt.civilLab));
+			activeMechLabValue.color(labColor(ps.labs.mech, ps.activeLabs.mech, rt.mechLab));
+			activeCompLabValue.color(labColor(ps.labs.comp, ps.activeLabs.comp, rt.compLab));
+			activeAILabValue.color(labColor(ps.labs.ai, ps.activeLabs.ai, rt.aiLab));
+			activeMilLabValue.color(labColor(ps.labs.mil, ps.activeLabs.mil, rt.milLab));
 
 			activeTechNameValue.text(rt.name, true).visible(true);
 
@@ -1826,11 +1826,11 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			activeMoneyValue.visible(false);
 			activeMoneyPercentValue.visible(false);
 
-			activeCivilLabValue.color(labColor(ps.civilLab, ps.civilLabActive, ps.civilLab));
-			activeMechLabValue.color(labColor(ps.mechLab, ps.mechLabActive, ps.mechLab));
-			activeCompLabValue.color(labColor(ps.compLab, ps.compLabActive, ps.compLab));
-			activeAILabValue.color(labColor(ps.aiLab, ps.aiLabActive, ps.aiLab));
-			activeMilLabValue.color(labColor(ps.milLab, ps.milLabActive, ps.milLab));
+			activeCivilLabValue.color(labColor(ps.labs.civil, ps.activeLabs.civil, ps.labs.civil));
+			activeMechLabValue.color(labColor(ps.labs.mech, ps.activeLabs.mech, ps.labs.mech));
+			activeCompLabValue.color(labColor(ps.labs.comp, ps.activeLabs.comp, ps.labs.comp));
+			activeAILabValue.color(labColor(ps.labs.ai, ps.activeLabs.ai, ps.labs.ai));
+			activeMilLabValue.color(labColor(ps.labs.mil, ps.activeLabs.mil, ps.labs.mil));
 		}
 	}
 	/** 
@@ -1849,50 +1849,50 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		int capacity = 0;
 		if (!needsOrbitalFactory.visible()) {
 			if (cat == ResearchMainCategory.SPACESHIPS) {
-				capacity = ps.spaceshipActive;
-				availableCapacityValue.text("" + ps.spaceshipActive);
-				if (ps.spaceshipActive >= 100000) {
+				capacity = ps.activeProduction.spaceship;
+				availableCapacityValue.text("" + ps.activeProduction.spaceship);
+				if (ps.activeProduction.spaceship >= 100000) {
 					availableCapacityValue.size(10);
 				} else {
 					availableCapacityValue.size(14);
 				}
-				totalCapacityValue.text("" + ps.spaceship);
-				totalCapacityValue.color(ps.spaceship > ps.spaceshipActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
+				totalCapacityValue.text("" + ps.production.spaceship);
+				totalCapacityValue.color(ps.production.spaceship > ps.activeProduction.spaceship ? TextRenderer.YELLOW : TextRenderer.GREEN);
 			} else
 			if (cat == ResearchMainCategory.WEAPONS) {
-				capacity = ps.weaponsActive;
-				availableCapacityValue.text("" + ps.weaponsActive);
-				if (ps.weaponsActive >= 100000) {
+				capacity = ps.activeProduction.weapons;
+				availableCapacityValue.text("" + ps.activeProduction.weapons);
+				if (ps.activeProduction.weapons >= 100000) {
 					availableCapacityValue.size(10);
 				} else {
 					availableCapacityValue.size(14);
 				}
-				totalCapacityValue.text("" + ps.weapons);
-				totalCapacityValue.color(ps.weapons > ps.weaponsActive ? TextRenderer.YELLOW : TextRenderer.GREEN);
+				totalCapacityValue.text("" + ps.production.weapons);
+				totalCapacityValue.color(ps.production.weapons > ps.activeProduction.weapons ? TextRenderer.YELLOW : TextRenderer.GREEN);
 			} else
 			if (cat == ResearchMainCategory.EQUIPMENT) {
-				capacity = ps.equipmentActive;
-				availableCapacityValue.text("" + ps.equipmentActive);
-				if (ps.equipmentActive >= 100000) {
+				capacity = ps.activeProduction.equipment;
+				availableCapacityValue.text("" + ps.activeProduction.equipment);
+				if (ps.activeProduction.equipment >= 100000) {
 					availableCapacityValue.size(10);
 				} else {
 					availableCapacityValue.size(14);
 				}
-				totalCapacityValue.text("" + ps.equipment);
-				totalCapacityValue.color(ps.equipmentActive > ps.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
+				totalCapacityValue.text("" + ps.production.equipment);
+				totalCapacityValue.color(ps.production.equipment > ps.activeProduction.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
 			} else {
 				availableCapacityValue.text("");
 				totalCapacityValue.text("");
 			}
 		} else {
 			if (cat == ResearchMainCategory.SPACESHIPS) {
-				capacity = ps.spaceshipActive;
+				capacity = ps.activeProduction.spaceship;
 			} else
 			if (cat == ResearchMainCategory.WEAPONS) {
-				capacity = ps.weaponsActive;
+				capacity = ps.activeProduction.weapons;
 			} else
 			if (cat == ResearchMainCategory.EQUIPMENT) {
-				capacity = ps.equipmentActive;
+				capacity = ps.activeProduction.equipment;
 			}
 			availableCapacityValue.text("");
 			totalCapacityValue.text("");

@@ -146,11 +146,11 @@ public class ResearchType {
 	 * @return true if enough active labs
 	 */
 	public boolean hasEnoughLabs(PlanetStatistics ps) {
-		return ps.civilLabActive >= civilLab
-				&& ps.mechLabActive >= mechLab 
-				&& ps.compLabActive >= compLab
-				&& ps.aiLabActive >= aiLab
-				&& ps.milLabActive >= milLab;
+		return ps.activeLabs.civil >= civilLab
+				&& ps.activeLabs.mech >= mechLab 
+				&& ps.activeLabs.comp >= compLab
+				&& ps.activeLabs.ai >= aiLab
+				&& ps.activeLabs.mil >= milLab;
 	}
 	/**
 	 * Check if the global planet statistics provides enough built labs to support the given research.
@@ -158,11 +158,11 @@ public class ResearchType {
 	 * @return true if enough active labs
 	 */
 	public boolean hasEnoughLabsBuilt(PlanetStatistics ps) {
-		return ps.civilLab >= civilLab
-				&& ps.mechLab >= mechLab 
-				&& ps.compLab >= compLab
-				&& ps.aiLab >= aiLab
-				&& ps.milLab >= milLab;
+		return ps.labs.civil >= civilLab
+				&& ps.labs.mech >= mechLab 
+				&& ps.labs.comp >= compLab
+				&& ps.labs.ai >= aiLab
+				&& ps.labs.mil >= milLab;
 	}
 	/**
 	 * @return The sum of all kinds of lab counts. 

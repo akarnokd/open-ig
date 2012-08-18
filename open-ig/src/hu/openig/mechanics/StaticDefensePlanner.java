@@ -246,9 +246,9 @@ public class StaticDefensePlanner extends Planner {
 		}
 		return hasMultiply && hasCredit
 				&& planet.statistics.hasTradersSpaceport
-				&& planet.statistics.weaponsActive > 0
-				&& planet.statistics.equipmentActive > 0
-				&& planet.statistics.spaceshipActive > 0
+				&& planet.statistics.activeProduction.weapons > 0
+				&& planet.statistics.activeProduction.equipment > 0
+				&& planet.statistics.activeProduction.spaceship > 0
 				&& hasRadar
 				&& hasSocial
 				&& hasPolice

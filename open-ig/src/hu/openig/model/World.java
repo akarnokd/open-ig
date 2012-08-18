@@ -359,6 +359,8 @@ public class World {
 			}
 		}
 		
+		applyTraits();
+		
 		processScripting(rl.getXML(definition.scripting));
 		
 	}
@@ -2662,6 +2664,30 @@ public class World {
 		if (!env.profile().hasAchievement(a)) {
 			env.achievementQueue().add(a);
 			env.profile().grantAchievement(a);
+		}
+	}
+	/**
+	 * Apply traits of the players.
+	 */
+	public void applyTraits() {
+		player.traits.replace(definition.traits);
+		
+		for (Player p : players.values()) {
+			// remove warp technology
+			if (p.traits.has(TraitKind.PRE_WARP)) {
+				for (Map.Entry<ResearchType, List<ResearchType>> at : U.newArrayList(p.available().entrySet())) {
+					ResearchType rt0 = at.getKey();
+					for (ResearchType rt1 : U.newArrayList(at.getValue())) {
+						if (rt1.has("speed") && rt1.level == 0) {
+							at.getValue().remove(rt1);
+						}
+					}
+					if (rt0.has("speed")) {
+						rt0.level = Math.max(rt0.level, 1);
+						p.available().remove(rt0);
+					}
+				}
+			}
 		}
 	}
 }

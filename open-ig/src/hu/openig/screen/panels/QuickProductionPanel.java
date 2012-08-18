@@ -10,7 +10,6 @@ package hu.openig.screen.panels;
 
 import hu.openig.core.Action0;
 import hu.openig.mechanics.DefaultAIControls;
-import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
@@ -174,17 +173,17 @@ public class QuickProductionPanel extends UIContainer {
 		weaponTitle.text(commons.get("quickproduction.weapon_title"), true);
 		equipmentTitle.text(commons.get("quickproduction.equipment_title"), true);
 		
-		shipAvailable.text(String.valueOf(ps.spaceshipActive), true);
-		shipAvailable.color(ps.spaceshipActive < ps.spaceship ? TextRenderer.YELLOW : TextRenderer.GREEN);
-		shipTotal.text(" / " + ps.spaceship, true);
+		shipAvailable.text(String.valueOf(ps.activeProduction.spaceship), true);
+		shipAvailable.color(ps.activeProduction.spaceship < ps.production.spaceship ? TextRenderer.YELLOW : TextRenderer.GREEN);
+		shipTotal.text(" / " + ps.production.spaceship, true);
 
-		weaponAvailable.text(String.valueOf(ps.weaponsActive), true);
-		weaponAvailable.color(ps.weaponsActive < ps.weapons ? TextRenderer.YELLOW : TextRenderer.GREEN);
-		weaponTotal.text(" / " + ps.weapons, true);
+		weaponAvailable.text(String.valueOf(ps.activeProduction.weapons), true);
+		weaponAvailable.color(ps.activeProduction.weapons < ps.production.weapons ? TextRenderer.YELLOW : TextRenderer.GREEN);
+		weaponTotal.text(" / " + ps.production.weapons, true);
 
-		equipmentAvailable.text(String.valueOf(ps.equipmentActive), true);
-		equipmentAvailable.color(ps.equipmentActive < ps.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
-		equipmentTotal.text(" / " + ps.equipment, true);
+		equipmentAvailable.text(String.valueOf(ps.activeProduction.equipment), true);
+		equipmentAvailable.color(ps.activeProduction.equipment < ps.production.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);
+		equipmentTotal.text(" / " + ps.production.equipment, true);
 
 		col1Width = Math.max(shipTitle.width, shipAvailable.width + shipTotal.width);
 		col2Width = Math.max(equipmentTitle.width, equipmentAvailable.width + equipmentTotal.width);
@@ -466,30 +465,7 @@ public class QuickProductionPanel extends UIContainer {
 	PlanetStatistics computeProductionInfo() {
 		PlanetStatistics result = new PlanetStatistics();
 		for (Planet p : commons.player().ownPlanets()) {
-			for (Building b : p.surface.buildings) {
-				double eff = b.getEfficiency();
-				if (Building.isOperational(eff)) {
-					if (b.hasResource("spaceship")) {
-						result.spaceshipActive += b.getResource("spaceship") * eff;
-					}
-					if (b.hasResource("equipment")) {
-						result.equipmentActive += b.getResource("equipment") * eff;
-					}
-					if (b.hasResource("weapon")) {
-						result.weaponsActive += b.getResource("weapon") * eff;
-					}
-				}
-				if (b.hasResource("spaceship")) {
-					result.spaceship += b.getResource("spaceship");
-				}
-				if (b.hasResource("equipment")) {
-					result.equipment += b.getResource("equipment");
-				}
-				if (b.hasResource("weapon")) {
-					result.weapons += b.getResource("weapon");
-				}
-			}
-			
+			result.add(p.getProductionStatistics());
 			result.planetCount++;
 		}
 

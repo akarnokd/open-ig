@@ -597,13 +597,13 @@ public final class Simulator {
 		for (Map.Entry<ResearchMainCategory, Map<ResearchType, Production>> prs : player.production.entrySet()) {
 			int capacity = 0;
 			if (prs.getKey() == ResearchMainCategory.SPACESHIPS) {
-				capacity = all.spaceshipActive;
+				capacity = all.activeProduction.spaceship;
 			} else
 			if (prs.getKey() == ResearchMainCategory.WEAPONS) {
-				capacity = all.weaponsActive;
+				capacity = all.activeProduction.weapons;
 			} else
 			if (prs.getKey() == ResearchMainCategory.EQUIPMENT) {
-				capacity = all.equipmentActive;
+				capacity = all.activeProduction.equipment;
 			}
 			int prioritySum = 0;
 			for (Production pr : prs.getValue().values()) {
