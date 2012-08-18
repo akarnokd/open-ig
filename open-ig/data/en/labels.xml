@@ -2888,6 +2888,22 @@
 	<entry key="equipment.move_half.tooltip">Move half</entry>
 	<entry key="equipment.move_all.tooltip">Move all</entry>
 
+	<entry key='singleplayer.customize_race'>Customize traits...</entry>
+	<entry key='traits.select_traits'>Select traits:</entry>
+	<entry key='traits.available_points'>Available points:</entry>
+	<entry key='traits.ok'>OK</entry>
+	<entry key='traits.reset'>Reset</entry>
+	<entry key='traits.cancel'>Cancel</entry>
+
+	<entry key='traits.pre_warp'>Pre-Hyperdrive</entry>
+	<entry key='traits.pre_warp.desc'>The civilization has not yet discovered proper Hyperspace travel. Fleet speed is reduced to %.0f and the Hyperdrive technology needs to be researched as well.</entry>
+	<entry key='traits.ship_builder'>Ship Builders</entry>
+	<entry key='traits.ship_builder.desc'>The civilization mastered ship construction before the galactic age. Ship production speed is increased to %.0f%%.</entry>
+	<entry key='traits.ship_mocker'>Ship mockers</entry>
+	<entry key='traits.ship_mocker.desc'>The civilization did not successfully master ship construction before the galactic age. Ship production speed is reduced to %.0f%%.</entry>
+	<entry key='traits.debug'>Debug mode</entry>
+	<entry key='traits.debug.desc'>Debug mode allows more traits to be selected than the regular points would allow.</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

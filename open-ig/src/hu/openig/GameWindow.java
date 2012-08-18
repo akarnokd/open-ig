@@ -358,8 +358,9 @@ public class GameWindow extends JFrame implements GameControls {
 	/** 
 	 * Constructor. 
 	 * @param config the configuration object.
+	 * @param commons the common resources
 	 */
-	public GameWindow(Configuration config) {
+	public GameWindow(Configuration config, CommonResources commons) {
 		super("Open Imperium Galactica " + Configuration.VERSION + " [pid: " + ManagementFactory.getRuntimeMXBean().getName() + "]");
 		setFocusTraversalKeysEnabled(false);
 		URL icon = this.getClass().getResource("/hu/openig/gfx/open-ig-logo.png");
@@ -371,7 +372,8 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 		
-		this.commons = new CommonResources(config, this);
+		this.commons = commons;
+		commons.control(this);
 		this.config = config;
 		this.rl = commons.rl;
 		this.surface = new ScreenRenderer();
@@ -1909,6 +1911,10 @@ public class GameWindow extends JFrame implements GameControls {
 			return (T)allScreens.gameOver;
 		case VIDEOS:
 			return (T)allScreens.videos;
+		case TRAITS:
+			return (T)allScreens.traits;
+		case SKIRMISH:
+			return (T)allScreens.skirmish;
 		default:
 			throw new AssertionError(String.valueOf(screen));
 		}

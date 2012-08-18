@@ -13,5 +13,10 @@ package hu.openig.model;
  * @author akarnokd, 2012.08.18.
  */
 public enum TraitKind {
-	
+	/** Override hyperdrive availabilities. */
+	PRE_WARP,
+	/** Change ship production ratio. */
+	SHIP_PRODUCTION,
+	/** Debug option. */
+	TRAIT_DEBUG
 }

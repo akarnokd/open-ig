@@ -2928,6 +2928,23 @@
 	<entry key="equipment.move_one.tooltip">Egy átmozgatása</entry>
 	<entry key="equipment.move_half.tooltip">A meglévő felének átmozgatása</entry>
 	<entry key="equipment.move_all.tooltip">Az összes átmozgatása</entry>
+
+	<entry key='singleplayer.customize_race'>Faj jellemvonások...</entry>
+	<entry key='traits.select_traits'>Jellemvonások kiválasztása</entry>
+	<entry key='traits.available_points'>Rendelkezésre álló pontok:</entry>
+	<entry key='traits.ok'>Rendben</entry>
+	<entry key='traits.reset'>Újra</entry>
+	<entry key='traits.cancel'>Mégsem</entry>
+
+	<entry key='traits.pre_warp'>Hiperhajtómű előtt</entry>
+	<entry key='traits.pre_warp.desc'>A civilizációd még nem találta fel a helyes hiperűr utazás módját. A flották sebessége csupán %.0f és a hiperhajtómű technológiákat is ki kell fejleszteni.</entry>
+	<entry key='traits.ship_builder'>Hajóépítők</entry>
+	<entry key='traits.ship_builder.desc'>A civilizációd mesterfokon űzte a hajógyártást a galaktikus kor előtt. A hajógyártás hatékonysága %.f%%-ra nő.</entry>
+	<entry key='traits.ship_mocker'>Hajóutánzók</entry>
+	<entry key='traits.ship_mocker.desc'>A civilizációd nem sajátította el kellően a hajógyártást a galaktikus kor előtt. A hajógyártás hatékonysága %.f%%-ra csökken.</entry>
+	<entry key='traits.debug'>Hibakereső mód</entry>
+	<entry key='traits.debug.desc'>Lehetővé teszi sokkal több </entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
