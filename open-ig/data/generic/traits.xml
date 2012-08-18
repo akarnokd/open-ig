@@ -73,6 +73,6 @@
 		kind='TRAIT_DEBUG'
 		label='traits.debug'
 		description='traits.debug.desc'
-		cost='-1000'>
+		cost='8'>
 	</trait>
 </traits>
