@@ -6,6 +6,14 @@
 
 == August, 2012 ==
 
+*August 18, 2012*
+
+In order to give some flexibility to the skirmish players, I have added a basic trait system, commonly found in other 4X turn based games. This way, you can customize the parameters and capabilities of your race for the skirmish play beyond the default Open-IG values. 
+
+To make things fun, I made this trait selection available for the campaign. It is totally optional. Check out the <a href='https://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-traits-screen.png'>screenshot</a>. 
+
+If you have comments and suggestions about new traits or their point value, make a comment <a href='http://code.google.com/p/open-ig/issues/detail?id=642'>here</a>. If you happen to find a trait related bug, please report it in a new and separate issue.
+
 *August 14, 2012*
 
 We are making progress again! See the [https://code.google.com/p/open-ig/wiki/Game_Notes release notes] for details.
