@@ -5,6 +5,8 @@
 
 = Version Beta (0.95.NNN) screenshots =
 
+https://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-traits-screen.png
+
 http://open-ig.googlecode.com/svn/trunk/open-ig/doc/open-ig-quick-research-01.png
 
 
