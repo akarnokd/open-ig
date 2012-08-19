@@ -537,6 +537,11 @@ public class MainScreen extends ScreenBase {
 				e.consume();
 				return true;
 			}
+			if (e.getKeyCode() == KeyEvent.VK_4) {
+				switchTo("fr");
+				e.consume();
+				return true;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_O) {
 			doSettings();
