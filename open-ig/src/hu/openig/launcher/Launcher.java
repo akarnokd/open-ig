@@ -2716,11 +2716,11 @@ public class Launcher extends JFrame {
 
 		final JLabel sum = new JLabel();
 		sum.setHorizontalAlignment(JLabel.RIGHT);
-		sum.setText(String.format("%,.1f MB", 0d));
 		
 		final List<JCheckBox> cbs = new ArrayList<JCheckBox>();
 		final List<Long> szs = new ArrayList<Long>();
 		final List<String> lngs = new ArrayList<String>();
+		long sz0 = 0;
 		for (String lng : flags.keySet()) {
 			
 			ParallelGroup pg0 = gl.createParallelGroup(Alignment.CENTER);
@@ -2754,6 +2754,7 @@ public class Launcher extends JFrame {
 					}
 				}
 			}
+			sz0 += sz;
 			sizes.setText(String.format("%,.1f MB", sz / 1024d / 1024d));
 			
 			cbs.add(cb);
@@ -2778,6 +2779,8 @@ public class Launcher extends JFrame {
 				}
 			});
 		}
+
+		sum.setText(String.format("%,.1f MB", sz0));
 		
 		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 		JSeparator sep2 = new JSeparator(JSeparator.HORIZONTAL);
