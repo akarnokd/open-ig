@@ -2485,14 +2485,12 @@ public class Launcher extends JFrame {
 			}
 		}
 		if (!installedLanguages.contains(language)) {
-			if (JOptionPane.showConfirmDialog(this, label(
-					"<html>You do not have the language pack installed for the current language.<br>"
-					+ "Please change your Launcher language or install the missing language packs.<br>"
-					+ "Do you wish to install the missing language packs?")) == JOptionPane.YES_OPTION) {
+			if (JOptionPane.showConfirmDialog(this, label("Missing language packs"),
+					label("Missing language pack"),
+					JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 				selectLanguagesToInstall(false);
-			} else {
-				return;
 			}
+			return;
 		}
 		if (displayPreLaunch) {
 			final JDialog dlg = new JDialog(this);
@@ -2792,6 +2790,7 @@ public class Launcher extends JFrame {
 		cbUninstall.setOpaque(false);
 		cbInstall.setVisible(!isInstall);
 		cbInstall.setOpaque(false);
+		sep3.setVisible(!isInstall);
 		// ------------------------------------------
 		
 		gl.setHorizontalGroup(
