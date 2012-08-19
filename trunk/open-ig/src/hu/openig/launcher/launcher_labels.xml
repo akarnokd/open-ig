@@ -76,6 +76,8 @@
 		<entry key='language-fr'>French</entry>
 		<entry key='Remove files of unselected packages'>Remove files of unselected packages</entry>
 		<entry key='Install new packages now'>Install new packages now</entry>
+		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
+		<entry key='Missing language pack'>Missing language pack</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 		<entry key='Processing %s'>%s feldolgozása</entry>
@@ -153,6 +155,8 @@
 		<entry key='language-fr'>Francia</entry>
 		<entry key='Remove files of unselected packages'>A ki nem választott nyelv fájljainak törlése</entry>
 		<entry key='Install new packages now'>Az új csomagok telepítése azonnal</entry>
+		<entry key='Missing language packs'>&lt;html>A jelenlegi nyelvhez nincs telepítve a nyelvi csomag.&lt;br>Kérlek, változtass nyelvet vagy telepítsd a hiányzó nyelvi csomakokat.&lt;br>Szeretnéd most telepíteni a hiányzó nyelvi csomagokat?</entry>
+		<entry key='Missing language pack'>Hiányzó nyelvi fájlok</entry>
 	</language>
 	<language id='de' flag='/hu/openig/gfx/german.png'>
 		<entry key='Processing %s'>Verarbeitung von %s</entry>
@@ -230,6 +234,8 @@
 		<entry key='language-fr'>Franzözisch</entry>
 		<entry key='Remove files of unselected packages'>Daten von nicht selektierten Sprachenpakäten entfernen</entry>
 		<entry key='Install new packages now'>Neue Pakäten jetzt installieren</entry>
+		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
+		<entry key='Missing language pack'>Missing language pack</entry>
 	</language>
 	<language id='fr' flag='/hu/openig/gfx/french.png'>
 		<entry key='Processing %s'>Processing %s</entry>
@@ -307,5 +313,7 @@
 		<entry key='language-fr'>French</entry>
 		<entry key='Remove files of unselected packages'>Remove files of unselected packages</entry>
 		<entry key='Install new packages now'>Install new packages now</entry>
+		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
+		<entry key='Missing language pack'>Missing language pack</entry>
 	</language>
 </labels>
