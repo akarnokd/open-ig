@@ -154,9 +154,8 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	}
 	/** 
 	 * Write the diagnostic info.
-	 * @param additional the additional info if non null
 	 */
-	void writeDiagnosticInfo(String additional) {
+	void writeDiagnosticInfo() {
 		area.append("An unexpected error occurred.\r\n");
 		area.append("You should consider submitting an error report via the project issue list:\r\n");
 		area.append(ISSUE_LIST);
@@ -173,13 +172,6 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 		area.append(String.format("   Parallelism: %s%n", Runtime.getRuntime().availableProcessors()));
 		area.append(String.format("   Language: %s%n", language.invoke()));
 		area.append(String.format("   Date and time: %s%n", XElement.formatDateTime(new Date())));
-		if (onCrash != null) {
-			area.append("A crash save may have been created. Please attach it in the issue report (zipped).\r\n");
-			if (additional != null) {
-				area.append(additional);
-				area.append("\r\n");
-			}
-		}
 		area.append("----\r\n");
 	}
 	/**
@@ -201,23 +193,30 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 				}
 				if (first) {
 					first = false;
-					String s = null;
-					if (onCrash != null) {
-						try {
-							s = onCrash.invoke();
-						} catch (Throwable t) {
-							final Throwable t2 = t;
-							SwingUtilities.invokeLater(new Runnable() {
-								@Override
-								public void run() {
-									t2.printStackTrace();
-								}
-							});
-						}
-					}
-					writeDiagnosticInfo(s);
+					writeDiagnosticInfo();
 				}
 				area.append(new String(b2, off, len));
+
+				// print crash log
+				if (onCrash != null) {
+					String s = null;
+					try {
+						s = onCrash.invoke();
+					} catch (Throwable t) {
+						final Throwable t2 = t;
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								t2.printStackTrace();
+							}
+						});
+					}
+					area.append("A crash save may have been created. Please attach it in the issue report (zipped).\r\n");
+					if (s != null) {
+						area.append(s);
+						area.append("\r\n");
+					}
+				}
 			}
 		});
 	}
