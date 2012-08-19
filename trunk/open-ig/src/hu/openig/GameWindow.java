@@ -602,6 +602,7 @@ public class GameWindow extends JFrame implements GameControls {
 		done();
 		dispose();
 		try {
+			config.crashLog = null;
 			config.watcherWindow.close();
 		} catch (IOException e) {
 		}

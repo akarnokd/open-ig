@@ -1251,6 +1251,12 @@ public class World {
 			}
 		}
 		
+		if (config.crashLog != null) {
+			String crashLog = config.crashLog.invoke();
+			if (crashLog != null) {
+				xworld.add("crash-log").content = crashLog;
+			}
+		}
 		return xworld;
 	}
 	/**
