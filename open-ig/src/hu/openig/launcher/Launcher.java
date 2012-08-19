@@ -97,7 +97,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.36";
+	public static final String VERSION = "0.37";
 	/**
 	 * The update XML to download.
 	 */
@@ -158,6 +158,8 @@ public class Launcher extends JFrame {
 	private JMenuItem releaseNotes;
 	/** Menu item. */
 	private JMenuItem projectPage;
+	/** Menu item. */
+	JMenuItem selfRepair;
 	/** The large font. */
 	private Font fontLarge;
 	/** The medium font. */
@@ -598,6 +600,7 @@ public class Launcher extends JFrame {
 		uninstall = new JMenuItem();
 		releaseNotes = new JMenuItem();
 		projectPage = new JMenuItem();
+		selfRepair = new JMenuItem();
 		recheck = new JMenuItem();
 		
 		verify.addActionListener(new ActionListener() {
@@ -650,6 +653,12 @@ public class Launcher extends JFrame {
 				doUpgrades();
 			}
 		});
+		selfRepair.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doUpdateSelf();
+			}
+		});
 		
 		otherMenu.add(recheck);
 		otherMenu.addSeparator();
@@ -658,6 +667,7 @@ public class Launcher extends JFrame {
 		otherMenu.addSeparator();
 		otherMenu.add(runSettings);
 		otherMenu.add(verify);
+		otherMenu.add(selfRepair);
 		otherMenu.addSeparator();
 		otherMenu.add(uninstall);
 		
@@ -667,6 +677,7 @@ public class Launcher extends JFrame {
 		verify.setFont(fontLarge);
 		uninstall.setFont(fontLarge);
 		recheck.setFont(fontLarge);
+		selfRepair.setFont(fontLarge);
 		
 		other.addActionListener(new ActionListener() {
 			@Override
@@ -896,6 +907,8 @@ public class Launcher extends JFrame {
 		
 		currentVersionLabel.setText(label("Version:"));
 		newVersionLabel.setText(label("New version available:"));
+		
+		selfRepair.setText(label("Repair launcher"));
 	}
 	/**
 	 * Close the launcher.
