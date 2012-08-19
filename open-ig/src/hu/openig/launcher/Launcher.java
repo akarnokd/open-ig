@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -96,7 +97,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.35";
+	public static final String VERSION = "0.36";
 	/**
 	 * The update XML to download.
 	 */
@@ -193,6 +194,8 @@ public class Launcher extends JFrame {
 	JComboBox<String> flag;
 	/** The available maps. */
 	final Map<String, BufferedImage> flags = new LinkedHashMap<String, BufferedImage>();
+	/** The labels. */
+	final Map<String, Map<String, String>> labels = new HashMap<String, Map<String, String>>();
 	/** The online module information. */
 	private LUpdate updates;
 	/** Not installed constant. */
@@ -265,30 +268,9 @@ public class Launcher extends JFrame {
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
-		try {
-			URL u = getClass().getResource("/hu/openig/gfx/english.png");
-			if (u != null) {
-				flags.put("en", ImageIO.read(u));
-			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		}
-		try {
-			URL u = getClass().getResource("/hu/openig/gfx/hungarian.png");
-			if (u != null) {
-				flags.put("hu", ImageIO.read(u));
-			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		}
-		try {
-			URL u = getClass().getResource("/hu/openig/gfx/german.png");
-			if (u != null) {
-				flags.put("de", ImageIO.read(u));
-			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		}
+		
+		loadLanguages();
+		
 		mainPanel = new JPanel() {
 			/** */
 			private static final long serialVersionUID = -8242002641839189095L;
@@ -322,6 +304,43 @@ public class Launcher extends JFrame {
 		setSize(640, 480);
 		setLocationRelativeTo(null);
 		init();
+	}
+	/**
+	 * Load the languages.
+	 */
+	void loadLanguages() {
+		try {
+			InputStream in = getClass().getResourceAsStream("launcher_labels.xml");
+			try {
+				XElement xlabels = XElement.parseXML(in);
+				for (XElement xlabel : xlabels.childrenWithName("language")) {
+					String id = xlabel.get("id");
+					String flag = xlabel.get("flag");
+					
+					URL url = getClass().getResource(flag);
+					
+					if (url == null) {
+						System.err.println("Can't locate flag: " + flag);
+					}
+					BufferedImage image = ImageIO.read(url);
+					
+					flags.put(id, image);
+					
+					Map<String, String> entries = new HashMap<String, String>();
+					labels.put(id, entries);
+					
+					for (XElement xentry : xlabel.childrenWithName("entry")) {
+						entries.put(xentry.get("key"), xentry.content);
+					}
+				}
+			} finally {
+				in.close();
+			}
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		} catch (XMLStreamException ex) {
+			Exceptions.add(ex);
+		}
 	}
 	/**
 	 * Parse a set of command lines.
@@ -364,74 +383,14 @@ public class Launcher extends JFrame {
 	 * @return the translated text
 	 */
 	String label(String s) {
-		if ("hu".equals(language)) {
-			if ("Processing %s".equals(s)) { return "%s feldolgozása"; }
-			if ("Run settings".equals(s)) { return "Futtatás beállítások"; }
-			if ("Browse...".equals(s)) { return "Tallózás..."; }
-			if ("Java runtime home:".equals(s)) { return "Java futásidejű környezet:"; }
-			if ("Default: %s".equals(s)) { return "Alapértelmezett: %s"; }
-			if ("MB".equals(s)) { return "MB"; }
-			if ("Memory:".equals(s)) { return "Memória:"; }
-			if ("OK".equals(s)) { return "Rendben"; }
-			if ("Cancel".equals(s)) { return "Mégsem"; }
-			if ("Error".equals(s)) { return "Hiba"; }
-			if ("Default: %s MB".equals(s)) { return "Alapértelmezett: %s MB"; }
-			if ("Checking existing game files...".equals(s)) { return "Létező játék állományok ellenőrzése..."; }
-			if ("Downloading game files...".equals(s)) { return "Játék állományok letöltése..."; }
-			if ("Some files were not correctly downloaded. Please try again a bit later.".equals(s)) { return "Néhány állomány nem töltődött le rendesen. Kérem, próbálja meg egy kicsit később."; }
-			if ("Do you want to uninstall the game (removes all game files except save)?".equals(s)) { return "Biztosan törölni akarja a játék állományait (a mentések kivételével)?"; }
-			if ("Uninstall".equals(s)) { return "Eltávolítás"; }
-			if ("The Launcher was not correctly downloaded. Please try again a bit later.".equals(s)) { return "A Launcher nem töltődött le rendesen. Kérem, próbálja meg egy kicsit később."; }
-			if ("Error during data download: %s".equals(s)) { return "Hiba történt az adatok letöltése közben: %s"; }
-			if ("Could not delete file %s".equals(s)) { return "A(z) %s állomány nem törölhető"; }
-			if ("Error while processing file %s: %s".equals(s)) { return "A(z) %s állomány feldolgozása közben hiba történt: %s"; }
-			if ("New version available: %s".equals(s)) { return "Új verzió érhető el: %s"; }
-			if ("Error while checking files: %s".equals(s)) { return "A(z) állományok ellenörzése közben hiba történt: %s"; }
-			if ("Could not access directory %s".equals(s)) { return "A(z) %s könyvtár nem elérhető"; }
-			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Néhány fájl hiányzik vagy megsérült. Kijavítsam a telepítést?"; }
-			if ("Copy".equals(s)) { return "Másolás"; }
-			if ("Manual navigation".equals(s)) { return "Kézi navigálás"; }
-			if ("The install appears to be incomplete or damaged.".equals(s)) { return "A telepítés hiányosnak vagy sérültnek tűnik."; }
-			if ("Please click on the verify button.".equals(s)) { return "Kérlek kattints az Ellenőrzés gombra."; }
-			if ("JVM parameters:".equals(s)) { return "Java virtuális gép paraméterek:"; }
-			if ("Game parameters:".equals(s)) { return "Játék paraméterek:"; }
-			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
-			return s;
-		} else
-		if ("de".equals(language)) {
-			if ("Processing %s".equals(s)) { return "Verarbeitung von %s"; }
-			if ("Run settings".equals(s)) { return "Lauf Einstellungen"; }
-			if ("Browse...".equals(s)) { return "Browse..."; }
-			if ("Java runtime home:".equals(s)) { return "Java Laufzeit Umgebung:"; }
-			if ("Default: %s".equals(s)) { return "Voreinstellung: %s"; }
-			if ("MB".equals(s)) { return "MB"; }
-			if ("Memory:".equals(s)) { return "Speicher:"; }
-			if ("OK".equals(s)) { return "Gut"; }
-			if ("Cancel".equals(s)) { return "Lieber nicht"; }
-			if ("Error".equals(s)) { return "Fehler"; }
-			if ("Default: %s MB".equals(s)) { return "Voreinstellung: %s MB"; }
-			if ("Checking existing game files...".equals(s)) { return "Gegenvärtige Spiel Datei Überprüfung..."; }
-			if ("Downloading game files...".equals(s)) { return "Spiel Datei Herunterladung..."; }
-			if ("Some files were not correctly downloaded. Please try again a bit later.".equals(s)) { return "Einige Daten waren nicht vollständig heruntergeladen. Bitte, versuchen Sie nochmal ein bischen später."; }
-			if ("Do you want to uninstall the game (removes all game files except save)?".equals(s)) { return "Sind Sie sicher um der Spiel zu löschen (auser die Spielstande)?"; }
-			if ("Uninstall".equals(s)) { return "Deinstallieren"; }
-			if ("The Launcher was not correctly downloaded. Please try again a bit later.".equals(s)) { return "Launcher war nicht vollständig heruntergeladen. Bitte, versuchen Sie nochmal ein bischen später."; }
-			if ("Error during data download: %s".equals(s)) { return "Problem whärend herunterladung: %s"; }
-			if ("Could not delete file %s".equals(s)) { return "Datei %s kan nicht gelöscht werden"; }
-			if ("Error while processing file %s: %s".equals(s)) { return "Problem whärend processierung von Datei %s: %s"; }
-			if ("New version available: %s".equals(s)) { return "Neue Version verfügbar: %s"; }
-			if ("Error while checking files: %s".equals(s)) { return "Problem whärend Überprüfung from Daten: %s"; }
-			if ("Could not access directory %s".equals(s)) { return "Mappe %s nicht verfügbar."; }
-			if ("Some files are missing or damaged. Do you wish to repair the install?".equals(s)) { return "Daten nicht verfügbar oder fählerhaft. Install reparieren?"; }
-			if ("Copy".equals(s)) { return "Kopieren"; }
-			if ("Manual navigation".equals(s)) { return "Manuelle Navigation"; }
-			if ("The install appears to be incomplete or damaged.".equals(s)) { return "Daten nicht ganz installiert oder fählerhaft."; }
-			if ("Please click on the verify button.".equals(s)) { return "Bitte auf Überprüfen klicken."; }
-			if ("JVM parameters:".equals(s)) { return "JVM Parameters:"; }
-			if ("Game parameters:".equals(s)) { return "Spiel Parameters:"; }
-			System.err.println("if (\"" + s + "\".equals(s)) { return \"\"; }");
-			return s;
+		Map<String, String> m = labels.get(language);
+		if (m != null) {
+			String t = m.get(s);
+			if (t != null) {
+				return t;
+			}
 		}
+		System.err.println("\t\t<entry key='" + s + "'>" + s + "</entry>");
 		return s;
 	}
 	/**
@@ -470,7 +429,13 @@ public class Launcher extends JFrame {
 		currentVersionLabel = new JLabel();
 		progressPanel = new JPanel();
 
-		flag = new JComboBox<String>(new String[] { "en", "hu", "de" });
+		String[] langs = new String[labels.size()];
+		int i = 0;
+		for (String l : flags.keySet()) {
+			langs[i] = l;
+			i++;
+		}
+		flag = new JComboBox<String>(langs);
 		flag.setRenderer(new DefaultListCellRenderer() {
 			/** */
 			private static final long serialVersionUID = 5312297135529455789L;
@@ -905,90 +870,32 @@ public class Launcher extends JFrame {
 	}
 	/** Set the labels for Hungarian. */
 	void setLabels() {
-		if ("en".equals(language)) {
-			install.setText("Install");
-			update.setText("Update");
-			verifyBtn.setText("Verify");
-			cancel.setText("Cancel");
-			run.setText("Run Game");
-			continueLast.setText("Continue");
-			continueLast.setToolTipText("Continue from last save.");
-			mapEditor.setText("Map Editor");
-			videoPlayer.setText("Video Player");
-			other.setText("Other options");
-			launcher.setText("Update launcher");
-			
-			projectPage.setText("Project webpage...");
-			releaseNotes.setText("Release notes...");
-			runSettings.setText("Run settings...");
-			verify.setText("Verify installation");
-			uninstall.setText("Uninstall");
-			recheck.setText("Check for new version");
-	
-			currentActionLabel.setText("Action:");
-			currentFileLabel.setText("File:");
-			currentFileProgressLabel.setText("Progress:");
-			totalFileProgressLabel.setText("Total:");
-			
-			currentVersionLabel.setText("Version:");
-			newVersionLabel.setText("New version available:");
-		} else
-		if ("hu".equals(language)) {
-			install.setText("Telepítés");
-			update.setText("Frissítés");
-			verifyBtn.setText("Ellenőrzés");
-			cancel.setText("Mégsem");
-			run.setText("Játék futtatása");
-			continueLast.setText("Folytatás");
-			continueLast.setToolTipText("Folytatás a legutolsó mentéstől.");
-			mapEditor.setText("Térképszerkesztő");
-			videoPlayer.setText("Videolejátszó");
-			other.setText("Egyéb lehetőségek");
-			launcher.setText("Indító frissítése");
-			
-			projectPage.setText("Projekt honlapja...");
-			releaseNotes.setText("Verzió jegyzetek...");
-			runSettings.setText("Futtatási beállítások...");
-			verify.setText("Telepítés ellenőrzése");
-			uninstall.setText("Eltávolítás");
-			recheck.setText("Új verzió keresése");
-	
-			currentActionLabel.setText("Művelet:");
-			currentFileLabel.setText("Állomány:");
-			currentFileProgressLabel.setText("Folyamat:");
-			totalFileProgressLabel.setText("Összesen:");
+		install.setText(label("Install"));
+		update.setText(label("Update"));
+		verifyBtn.setText(label("Verify"));
+		cancel.setText(label("Cancel"));
+		run.setText(label("Run Game"));
+		continueLast.setText(label("Continue"));
+		continueLast.setToolTipText(label("Continue from last save."));
+		mapEditor.setText(label("Map Editor"));
+		videoPlayer.setText(label("Video Player"));
+		other.setText(label("Other options"));
+		launcher.setText(label("Update launcher"));
+		
+		projectPage.setText(label("Project webpage..."));
+		releaseNotes.setText(label("Release notes..."));
+		runSettings.setText(label("Run settings..."));
+		verify.setText(label("Verify installation"));
+		uninstall.setText(label("Uninstall"));
+		recheck.setText(label("Check for new version"));
 
-			currentVersionLabel.setText("Verzió:");
-			newVersionLabel.setText("Új verzió érhető el:");
-		} else
-		if ("de".equals(language)) {
-			install.setText("Installieren");
-			update.setText("Aktualisieren");
-			verifyBtn.setText("Überprüfen");
-			cancel.setText("Lieber nicht");
-			run.setText("Spiel starten");
-			continueLast.setText("Fortsetzen");
-			continueLast.setToolTipText("Spiel fortsetzen");
-			mapEditor.setText("Karteneditor");
-			videoPlayer.setText("Videospieler");
-			other.setText("Weitere Optionen");
-			launcher.setText("Launcher aktualisieren");
-			
-			projectPage.setText("Projekt Webseite...");
-			releaseNotes.setText("Versionshinweise...");
-			runSettings.setText("Lauf Einstellungen...");
-			verify.setText("Installation überprüfen");
-			uninstall.setText("Deinstallieren");
-			recheck.setText("Neue Version suchen");
-	
-			currentActionLabel.setText("Operation:");
-			currentFileLabel.setText("Datei:");
-			currentFileProgressLabel.setText("Fortstritt:");
-			totalFileProgressLabel.setText("Gesamt:");
-
-			currentVersionLabel.setText("Version:");
-			newVersionLabel.setText("Neue Version verfügbar:");
-		}
+		currentActionLabel.setText(label("Action:"));
+		currentFileLabel.setText(label("File:"));
+		currentFileProgressLabel.setText(label("Progress:"));
+		totalFileProgressLabel.setText(label("Total:"));
+		
+		currentVersionLabel.setText(label("Version:"));
+		newVersionLabel.setText(label("New version available:"));
 	}
 	/**
 	 * Close the launcher.
@@ -1289,11 +1196,7 @@ public class Launcher extends JFrame {
 				
 				File f2 = new File(installDir, fn);
 				if (!f2.canRead()) {
-					if (!fn.endsWith(".jar") || detectedVersion == null) {
-						return false;
-					} else {
-						continue;
-					}
+					return false;
 				}
 				if (fn.startsWith("open-ig") && fn.endsWith(".zip")) {
 					ZipFile zf = new ZipFile(f2);
@@ -1315,7 +1218,7 @@ public class Launcher extends JFrame {
 		} catch (XMLStreamException ex) {
 			Exceptions.add(ex);
 		}
-		return true;
+		return false;
 	}
 	/**
 	 * Display an error message.
@@ -2163,7 +2066,7 @@ public class Launcher extends JFrame {
 
 		showHideProgress(true);
 		
-		currentAction.setText("Updating the Launcher...");
+		currentAction.setText(label("Updating the Launcher..."));
 		currentFile.setText("open-ig-launcher.jar");
 		currentFileProgress.setText("0%");
 		fileProgress.setValue(0);
@@ -2570,77 +2473,27 @@ public class Launcher extends JFrame {
 			cancel.setFont(fontMedium);
 			
 			// -----------------------------------------------------------------
-			
-			if ("en".equals(language)) {
-				dlg.setTitle("First time launch");
-				ok.setText("OK");
-				cancel.setText("Cancel");
-				
-				mainLabel.setText("<html><p>Before running Open Imperium Galactica the first time,<!--br--> you might want to set some visual and behavior settings."
-						+ " These settings can improve your experience on a <!--br--> modern computer with high resolution display."
-						+ " All of these options can be later on changed from <!--br--> within the game under Settings.</p>");
-				
-				fullScreenDesc.setText("<html><p>The original game had a fixed 640 x 480 resolution. <!--br-->You have the option to run the game in this classical initial size,<!--br--> maximized or as full screen. Otherwise, you can resize the game window at your leisure.</p>");
-				fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
-						"Classic 640 x 480",
-						"Maximized",
-						"Full screen"
-				}));
-				
-				movieDesc.setText("<html><p>The original game featured 640 x 480 <!--br-->cutscenes which might look too small in modern<!--br--> screens and larger game windows.</p>");
-				movie.setText("Scale up cutscenes to fit the game window.");
-				
-				clickDesc.setText("<html><p>You may skip cutscenes by pressing ESC, SPACE or by clicking with<!--br--> any mouse button. However, sometimes you can accidentally<!--br--> skip a cutscene with such clicks.</p>");
-				click.setText("Allow skipping cutscenes via mouse clicks.");
-				
-			} else
-			if ("hu".equals(language)) {
-				dlg.setTitle("Első indítás");
-				ok.setText("Rendben");
-				cancel.setText("Mégsem");
 
-				mainLabel.setText("<html><p>Mielőtt először elindítanád az Open Imperium Galacticát, lehetőséged van néhány látvány és viselkedésmódot beállítani."
-						+ " Ezek a beállítások feljavíthatják a játékélményt egy modern, nagyfelbontású kijelzővel rendelkező számítógépen."
-						+ " Ezeket a beállításokat később is megváltoztathatod a játékban Beállítások képernyőn.</p>");
-				
-				fullScreenDesc.setText("<html><p>Az eredeti játék rögzített 640 x 480-as felbontással rendelkezett. Lehetőséged van ekkora mérettel indítani a játékot, maximális méretben vagy teljes képernyős módon. Egyébként a játék ablaka tetszőlegesen átméretezhető.</p>");
-				fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
-						"Klasszikus 640 x 480",
-						"Maximális ablakméret",
-						"Teljes képernyős"
-				}));
-				
-				movieDesc.setText("<html><p>Az eredeti játék átvezető videói 640 x 480-ban készültek, ami kicsinek tűnhet nagyobb ablakméretek esetén.</p>");
-				movie.setText("Átvezetők felnagyítása az ablakmérethez.");
-				
-				clickDesc.setText("<html><p>Az átvezető videók az ESC, SZÓKÖZ vagy egérkattintás segítségével átugorhatók. Viszont a kattintással néha véletlenül is átugorhatsz egy átvezető videót.</p>");
-				click.setText("Átvezetők kihagyása egérkattintással.");
+			dlg.setTitle(label("First time launch"));
+			ok.setText(label("OK"));
+			cancel.setText(label("Cancel"));
 
-				
-			} else
-			if ("de".equals(language)) {
-				dlg.setTitle("Ersten Start");
-				ok.setText("OK");
-				cancel.setText("Abbrechen");
-				
-				mainLabel.setText("<html><p>Bevor sie Open Imperium Galactica das erste Mal starten, haben sie die Möglichkeit, einige Grafik- und Spieleinstellungen vorzunehmen."
-						+ " Diese Einstellungen können das Spielerlebnis auf modernen Computern mit hochauflösenden Displays verbessern. Diese Optionen können auch später noch"
-						+ " im Spiel unter dem Menüpunkt Einstellungen geändert werden.</p>");
-				
-				fullScreenDesc.setText("<html><p>Das ursprüngliche Spiel hatte eine feste Auflösung von 640x480. Sie haben die Möglichkeit, das Spiel in dieser klassischen Größe, maximiert oder in Vollbild zu spielen. Anderfalls können Sie die Größe des Spiel-Fensters frei einstellen.</p>");
-				fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
-						"Klassische 640 x 480",
-						"Maximiert",
-						"Vollbild"
-				}));
-				
-				movieDesc.setText("<html><p>Das originale Spiel beinhaltete Zwischensequenzen in 640x480, welche auf modernen Monitoren und größeren Fenstern zu klein aussehen können.</p>");
-				movie.setText("Skaliere Zwischensequenzen auf Fenstergröße.");
-				
-				clickDesc.setText("<html><p>Sie können die Zwischensequenzen durch Drücken von ESC, LEERTASTE oder einer beliebigen Maustaste überspringen. Letzteres führt jedoch manchmal zu einem versehentlichen Überspringen der Sequenzen.</p>");
-				click.setText("Zwischensequenzen mit Maustasten überspringen.");
-			}
-			
+			mainLabel.setText(label("First-time explanation"));
+
+			fullScreenDesc.setText(label("Resolution explanation"));
+
+			fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
+					label("Classic 640 x 480"),
+					label("Maximized"),
+					label("Full screen")
+			}));
+
+			movieDesc.setText(label("Movie explanation"));
+			movie.setText(label("Movie checkbox"));
+
+			clickDesc.setText(label("Click explanation"));
+			click.setText(label("Click checkbox"));
+
 			// -----------------------------------------------------------------
 			
 			JPanel p = new JPanel();
@@ -2652,8 +2505,6 @@ public class Launcher extends JFrame {
 			p.setLayout(gl);
 			
 			JSeparator sep0 = new JSeparator(JSeparator.HORIZONTAL);
-//			JSeparator sep1 = new JSeparator(JSeparator.HORIZONTAL);
-//			JSeparator sep2 = new JSeparator(JSeparator.HORIZONTAL);
 			JSeparator sep3 = new JSeparator(JSeparator.HORIZONTAL);
 			
 			gl.setHorizontalGroup(
@@ -2668,14 +2519,12 @@ public class Launcher extends JFrame {
 						.addGap(20)
 						.addComponent(fullScreen)
 					)
-//					.addComponent(sep1, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
 					.addComponent(movieDesc, 450, 450, 450)
 					.addGroup(
 						gl.createSequentialGroup()
 						.addGap(20)
 						.addComponent(movie)
 					)
-//					.addComponent(sep2, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
 					.addComponent(clickDesc, 450, 450, 450)
 					.addGroup(
 						gl.createSequentialGroup()
@@ -2697,11 +2546,9 @@ public class Launcher extends JFrame {
 				.addComponent(fullScreenDesc)
 				.addComponent(fullScreen)
 				.addGap(20)
-//				.addComponent(sep1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(movieDesc)
 				.addComponent(movie)
 				.addGap(20)
-//				.addComponent(sep2, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(clickDesc)
 				.addComponent(click)
 				.addComponent(sep3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
