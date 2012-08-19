@@ -88,9 +88,9 @@
 		<entry key='The Launcher was not correctly downloaded. Please try again a bit later.'>A Launcher nem töltődött le rendesen. Kérem, próbálja meg egy kicsit később.</entry>
 		<entry key='Error during data download: %s'>Hiba történt az adatok letöltése közben: %s</entry>
 		<entry key='Could not delete file %s'>A(z) %s állomány nem törölhető</entry>
-		<entry key='Error while processing file %s: %s'>A(z) %s állomány feldolgozása közben hiba történt: %s</entry>
+		<entry key='Error while processing file %s: %s'>A(z) %s állomány feldolgozása közben hiba történt: %s: %s</entry>
 		<entry key='New version available: %s'>Új verzió érhető el: %s</entry>
-		<entry key='Error while checking files: %s'>A(z) állományok ellenörzése közben hiba történt: %s: %s</entry>
+		<entry key='Error while checking files: %s'>A(z) állományok ellenörzése közben hiba történt: %s</entry>
 		<entry key='Could not access directory %s'>A(z) %s könyvtár nem elérhető</entry>
 		<entry key='Some files are missing or damaged. Do you wish to repair the install?'>Néhány fájl hiányzik vagy megsérült. Kijavítsam a telepítést?</entry>
 		<entry key='Copy'>Másolás</entry>
