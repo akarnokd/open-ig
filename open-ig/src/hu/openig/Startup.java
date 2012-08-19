@@ -98,10 +98,18 @@ public final class Startup {
 				return null;
 			}
 		};
-		config.watcherWindow = new ConsoleWatcher(args, 
+		@SuppressWarnings("resource")
+		final ConsoleWatcher cw = new ConsoleWatcher(args, 
 				Configuration.VERSION,
 				languageFn, 
 				onCrash);
+		config.watcherWindow = cw;
+		config.crashLog = new Func0<String>() {
+			@Override
+			public String invoke() {
+				return cw.getCrashLog();
+			}
+		};
 		config.load();
 
 		if (argset.contains("-hu")) {
@@ -326,6 +334,7 @@ public final class Startup {
 		) == JOptionPane.NO_OPTION) {
 			return;
 		}
+		config.crashLog = null;
 		U.close(config.watcherWindow);
 		File launcher = new File("open-ig-launcher.jar");
 		if (launcher.canRead()) {

@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 
+import hu.openig.core.Func0;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
@@ -33,7 +34,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.046";
+	public static final String VERSION = "0.95.047";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -109,6 +110,8 @@ public class Configuration {
 	public int videoFilter = 1;
 	/** The debug watcher window. */
 	public Closeable watcherWindow;
+	/** Returns the current crash log or null if no such log is available. */
+	public Func0<String> crashLog;
 	/** Are we in full-screen mode? */
 	@LoadSave
 	public boolean fullScreen;

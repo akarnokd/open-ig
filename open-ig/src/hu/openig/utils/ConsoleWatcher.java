@@ -234,4 +234,11 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	void doReportDialog() {
 		JOptionPane.showInputDialog("<html>Your platform doesn't support opening a web page from Java.<br>Please navigate to the URL below manually:", ISSUE_LIST);
 	}
+	/**
+	 * @return the current contents of the crash log or null if still empty
+	 */
+	public String getCrashLog() {
+		String s = area.getText();
+		return s != null && !s.isEmpty() ? s : null;
+	}
 }
