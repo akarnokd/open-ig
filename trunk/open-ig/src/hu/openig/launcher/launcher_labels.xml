@@ -67,6 +67,7 @@
 		<entry key='Movie checkbox'>Scale up cutscenes to fit the game window.</entry>
 		<entry key='Click explanation'>&lt;html>&lt;p>You may skip cutscenes by pressing ESC, SPACE or by clicking with<!--br--> any mouse button. However, sometimes you can accidentally<!--br--> skip a cutscene with such clicks.&lt;/p></entry>
 		<entry key='Click checkbox'>Allow skipping cutscenes via mouse clicks.</entry>
+		<entry key='Repair launcher'>Repair Launcher</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 		<entry key='Processing %s'>%s feldolgozása</entry>
@@ -135,6 +136,7 @@
 		<entry key='Movie checkbox'>Átvezetők felnagyítása az ablakmérethez.</entry>
 		<entry key='Click explanation'>&lt;html>&lt;p>Az átvezető videók az ESC, SZÓKÖZ vagy egérkattintás segítségével átugorhatók. Viszont a kattintással néha véletlenül is átugorhatsz egy átvezető videót.&lt;/p></entry>
 		<entry key='Click checkbox'>Átvezetők kihagyása egérkattintással.</entry>
+		<entry key='Repair launcher'>Indító kijavítása</entry>
 	</language>
 	<language id='de' flag='/hu/openig/gfx/german.png'>
 		<entry key='Processing %s'>Verarbeitung von %s</entry>
@@ -203,6 +205,7 @@
 		<entry key='Movie checkbox'>Skaliere Zwischensequenzen auf Fenstergröße.</entry>
 		<entry key='Click explanation'>&lt;html>&lt;p>Sie können die Zwischensequenzen durch Drücken von ESC, LEERTASTE oder einer beliebigen Maustaste überspringen. Letzteres führt jedoch manchmal zu einem versehentlichen Überspringen der Sequenzen.&lt;/p></entry>
 		<entry key='Click checkbox'>Zwischensequenzen mit Maustasten überspringen.</entry>
+		<entry key='Repair launcher'>Launcher repairieren</entry>
 	</language>
 	<language id='fr' flag='/hu/openig/gfx/french.png'>
 		<entry key='Processing %s'>Processing %s</entry>
@@ -271,5 +274,6 @@
 		<entry key='Movie checkbox'>Scale up cutscenes to fit the game window.</entry>
 		<entry key='Click explanation'>&lt;html>&lt;p>You may skip cutscenes by pressing ESC, SPACE or by clicking with<!--br--> any mouse button. However, sometimes you can accidentally<!--br--> skip a cutscene with such clicks.&lt;/p></entry>
 		<entry key='Click checkbox'>Allow skipping cutscenes via mouse clicks.</entry>
+		<entry key='Repair launcher'>Repair Launcher</entry>
 	</language>
 </labels>
