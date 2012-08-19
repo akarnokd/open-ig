@@ -223,7 +223,7 @@ public class MainScreen extends ScreenBase {
 		int vx = 10;
 		int vy = 428;
 		int vs = 10;
-		String vstr = "v" + Configuration.VERSION;
+		String vstr = "v" + Configuration.VERSION + " - " + config.language;
 		int w1 = commons.text().getTextWidth(vs, vstr);
 		g2.setColor(new Color(0, 0, 0, 128));
 		g2.fillRect(vx - 3, vy - 3, w1 + 6, vs + 6);

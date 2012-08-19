@@ -107,12 +107,15 @@ public final class Startup {
 		if (argset.contains("-hu")) {
 			config.language = "hu";
 		} else
-			if (argset.contains("-en")) {
-				config.language = "en";
-			} else
-				if (argset.contains("-de")) {
-					config.language = "de";
-				}
+		if (argset.contains("-en")) {
+			config.language = "en";
+		} else
+		if (argset.contains("-de")) {
+			config.language = "de";
+		} else
+		if (argset.contains("-fr")) {
+			config.language = "fr";
+		}
 		if (argset.contains("-maximized")) {
 			config.maximized = true;
 		}
