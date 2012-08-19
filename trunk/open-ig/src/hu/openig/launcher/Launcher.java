@@ -42,6 +42,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -70,7 +71,10 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -226,6 +230,10 @@ public class Launcher extends JFrame {
 	private JMenuItem recheck;
 	/** Run the verification automatically? */
 	boolean runVerify;
+	/** Set of installed languages. */
+	final Set<String> installedLanguages = new HashSet<String>();
+	/** Select install languages. */
+	JMenuItem selectLanguages;
 	/** Creates the GUI. */
 	public Launcher() {
 		super("Open Imperium Galactica Launcher v" + VERSION);
@@ -474,6 +482,9 @@ public class Launcher extends JFrame {
 		install.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (!selectLanguagesToInstall(true)) {
+					return;
+				}
 				doInstall(true);
 			}
 		});
@@ -602,6 +613,7 @@ public class Launcher extends JFrame {
 		projectPage = new JMenuItem();
 		selfRepair = new JMenuItem();
 		recheck = new JMenuItem();
+		selectLanguages = new JMenuItem();
 		
 		verify.addActionListener(new ActionListener() {
 			@Override
@@ -660,7 +672,15 @@ public class Launcher extends JFrame {
 			}
 		});
 		
+		selectLanguages.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				selectLanguagesToInstall(false);
+			}
+		});
+		
 		otherMenu.add(recheck);
+		otherMenu.add(selectLanguages);
 		otherMenu.addSeparator();
 		otherMenu.add(projectPage);
 		otherMenu.add(releaseNotes);
@@ -678,6 +698,7 @@ public class Launcher extends JFrame {
 		uninstall.setFont(fontLarge);
 		recheck.setFont(fontLarge);
 		selfRepair.setFont(fontLarge);
+		selectLanguages.setFont(fontLarge);
 		
 		other.addActionListener(new ActionListener() {
 			@Override
@@ -899,6 +920,7 @@ public class Launcher extends JFrame {
 		verify.setText(label("Verify installation"));
 		uninstall.setText(label("Uninstall"));
 		recheck.setText(label("Check for new version"));
+		selectLanguages.setText(label("Select language packs..."));
 
 		currentActionLabel.setText(label("Action:"));
 		currentFileLabel.setText(label("File:"));
@@ -1198,11 +1220,19 @@ public class Launcher extends JFrame {
 			"generic/ui/achievement.wav",
 			"generic/intro/intro_1.ani.gz"
 		));
+		for (String s : installedLanguages) {
+			testFiles.add(s + "/labels.xml");
+			testFiles.add(s + "/ui/bar.wav");
+			testFiles.add(s + "/bridge/messages_open_level_1.ani.gz");
+		}
 		try {
 			LUpdate u = new LUpdate();
 			u.process(XElement.parseXML(new File(installDir, localUpdate)));
 			LModule m = u.getModule(GAME);
 			for (LFile f : m.files) {
+				if (!"generic".equals(f.language) && !installedLanguages.contains(f.language)) {
+					continue;
+				}
 				String fn = f.url;
 				int idx = fn.lastIndexOf("/");
 				fn = fn.substring(idx + 1);
@@ -1225,7 +1255,7 @@ public class Launcher extends JFrame {
 					}
 				}
 			}
-			return testFiles.isEmpty();
+			return testFiles.isEmpty() && !installedLanguages.isEmpty();
 		} catch (IOException ex) {
 			// suppress this
 		} catch (XMLStreamException ex) {
@@ -1353,6 +1383,11 @@ public class Launcher extends JFrame {
 				flag.setSelectedItem(language);
 				jvmParams = cfg.get("jvm-params", null);
 				appParams = cfg.get("app-params", null);
+				
+				installedLanguages.clear();
+				for (XElement xinst : cfg.childrenWithName("installed-language")) {
+					installedLanguages.add(xinst.get("id"));
+				}
 				
 			} catch (XMLStreamException ex) {
 				Exceptions.add(ex);
@@ -1491,7 +1526,6 @@ public class Launcher extends JFrame {
 	 * @param askDir ask for the installation directory?
 	 */
 	void doInstall(boolean askDir) {
-		
 		if (askDir) {
 			JFileChooser fc = new JFileChooser(installDir);
 			fc.setMultiSelectionEnabled(false);
@@ -1514,6 +1548,7 @@ public class Launcher extends JFrame {
 		totalProgress.setValue(0);
 		install.setVisible(false);
 		update.setVisible(false);
+		verifyBtn.setVisible(false);
 		cancel.setVisible(true);
 		totalProgress.setVisible(true);
 		totalFileProgress.setVisible(true);
@@ -1548,6 +1583,9 @@ public class Launcher extends JFrame {
 	 * Verify the game.
 	 */
 	void doVerify() {
+		if (installedLanguages.isEmpty() && !selectLanguagesToInstall(false)) {
+			return;
+		}
 		installDir = currentDir;
 		
 		final LModule g = updates.getModule(GAME);
@@ -1559,6 +1597,7 @@ public class Launcher extends JFrame {
 		totalProgress.setValue(0);
 		install.setVisible(false);
 		update.setVisible(false);
+		verifyBtn.setVisible(false);
 		cancel.setVisible(true);
 		verifyBtn.setVisible(false);
 		totalProgress.setVisible(true);
@@ -1656,6 +1695,11 @@ public class Launcher extends JFrame {
 			String fn = lf.name();
 			setCurrentFile(fn);
 			
+			// skip files that do not belong to the selected languages
+			if (!"generic".equals(lf.language) && !installedLanguages.contains(lf.language)) {
+				continue;
+			}
+			
 			File localFile = new File(installDir, fn);
 			if (localFile.canRead()) {
 				long filePos = 0;
@@ -1727,6 +1771,7 @@ public class Launcher extends JFrame {
 		fileProgress.setValue(0);
 		totalProgress.setValue(0);
 		install.setVisible(false);
+		verifyBtn.setVisible(false);
 		cancel.setVisible(true);
 		totalProgress.setVisible(true);
 		totalFileProgress.setVisible(true);
@@ -2157,6 +2202,11 @@ public class Launcher extends JFrame {
 		cfg.set("memory", memory);
 		cfg.set("jvm-params", jvmParams);
 		cfg.set("app-params", appParams);
+		
+		for (String s : installedLanguages) {
+			cfg.add("installed-language").set("id", s);
+		}
+		
 		try {
 			cfg.save(new File(installDir, config));
 		} catch (IOException ex) {
@@ -2613,5 +2663,234 @@ public class Launcher extends JFrame {
 		} else {
 			runModule(GAME, Arrays.asList(arguments));
 		}
+	}
+	/**
+	 * Displays a dialog where the user can select which languages to install.
+	 * @param isInstall called by install?
+	 * @return true continue with the last option?
+	 */
+	boolean selectLanguagesToInstall(boolean isInstall) {
+		final JDialog dialog = new JDialog(this);
+		dialog.setTitle(label("Select language packs to install"));
+		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		
+		final AtomicBoolean okPressed = new AtomicBoolean();
+		
+		IGButton ok = new IGButton(label("OK"));
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				okPressed.set(true);
+				dialog.dispose();
+			}
+		});
+		IGButton cancel = new IGButton(label("Cancel"));
+		cancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				okPressed.set(false);
+				dialog.dispose();
+			}
+		});
+		
+		JPanel p = new JPanel();
+		GroupLayout gl = new GroupLayout(p);
+		p.setLayout(gl);
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(true);
+		
+		// create language lines
+		SequentialGroup vert = gl.createSequentialGroup();
+		
+		ParallelGroup pg1 = gl.createParallelGroup();
+		ParallelGroup pg2 = gl.createParallelGroup();
+		ParallelGroup pg3 = gl.createParallelGroup();
+
+		final JLabel sum = new JLabel();
+		sum.setHorizontalAlignment(JLabel.RIGHT);
+		sum.setText(String.format("%,.1f MB", 0d));
+		
+		final List<JCheckBox> cbs = new ArrayList<JCheckBox>();
+		final List<Long> szs = new ArrayList<Long>();
+		final List<String> lngs = new ArrayList<String>();
+		for (String lng : flags.keySet()) {
+			
+			ParallelGroup pg0 = gl.createParallelGroup(Alignment.CENTER);
+			vert.addGroup(pg0);
+			
+			JLabel  flag = new JLabel(new ImageIcon(flags.get(lng)));
+			
+			JCheckBox cb = new JCheckBox(label("language-" + lng));
+			cb.setOpaque(false);
+			
+			JLabel sizes = new JLabel();
+			sizes.setHorizontalAlignment(JLabel.RIGHT);
+			
+			pg0.addComponent(flag).addComponent(cb).addComponent(sizes);
+			
+			pg1.addComponent(flag);
+			pg2.addComponent(cb, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE);
+			pg3.addComponent(sizes);
+			
+			long sz = 0;
+			for (LFile f : updates.getModule(GAME).files) {
+				if (f.language.equals(lng)) {
+					sz += f.size;
+					try {
+						File f2 = new File(installDir, f.name());
+						if (f2.canRead()) {
+							cb.setSelected(true);
+						}
+					} catch (MalformedURLException ex) {
+						Exceptions.add(ex);
+					}
+				}
+			}
+			sizes.setText(String.format("%,.1f MB", sz / 1024d / 1024d));
+			
+			cbs.add(cb);
+			szs.add(sz);
+			lngs.add(lng);
+		}
+		
+		for (JCheckBox cb : cbs) {
+			cb.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					long sz = 0;
+					int i = 0;
+					for (JCheckBox cb2 : cbs) {
+						if (cb2.isSelected()) {
+							sz += szs.get(i);
+						}
+						i++;
+					}
+					
+					sum.setText(String.format("%,.1f MB", sz / 1024d / 1024d));
+				}
+			});
+		}
+		
+		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+		JSeparator sep2 = new JSeparator(JSeparator.HORIZONTAL);
+		JSeparator sep3 = new JSeparator(JSeparator.HORIZONTAL);
+		
+		JCheckBox cbUninstall = new JCheckBox(label("Remove files of unselected packages"));
+		JCheckBox cbInstall = new JCheckBox(label("Install new packages now"));
+		
+		cbUninstall.setVisible(!isInstall);
+		cbUninstall.setOpaque(false);
+		cbInstall.setVisible(!isInstall);
+		cbInstall.setOpaque(false);
+		// ------------------------------------------
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup(Alignment.CENTER)
+			.addGroup(
+				gl.createParallelGroup(Alignment.LEADING)
+				.addGroup(
+					gl.createParallelGroup(Alignment.TRAILING)
+					.addGroup(
+						gl.createSequentialGroup()
+						.addGroup(pg1)
+						.addGroup(pg2)
+						.addGroup(pg3)
+					)
+					.addComponent(sep)
+					.addComponent(sum, 200, 200, 200)
+				)
+				.addComponent(sep2)
+				.addComponent(cbInstall)
+				.addComponent(cbUninstall)
+			)
+			.addComponent(sep3)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(ok)
+				.addComponent(cancel)
+			)
+		);
+		
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(vert)
+			.addComponent(sep)
+			.addComponent(sum)
+			.addComponent(sep2)
+			.addComponent(cbInstall)
+			.addComponent(cbUninstall)
+			.addComponent(sep3)
+			.addGap(5)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(ok)
+				.addComponent(cancel)
+			)
+		);
+
+		gl.linkSize(SwingConstants.HORIZONTAL, ok, cancel);
+
+		for (Component cmp : p.getComponents()) {
+			if ((cmp instanceof IGButton) 
+					|| (cmp instanceof JLabel)
+					|| (cmp instanceof JCheckBox)) {
+				cmp.setFont(fontMedium);
+				cmp.setForeground(foreground);
+			}
+		}
+		p.setBackground(backgroundColoring);
+		
+		Container c = dialog.getContentPane();
+		c.add(p, BorderLayout.CENTER);
+
+		dialog.pack();
+		dialog.setResizable(false);
+		dialog.setLocationRelativeTo(this);
+		dialog.setModal(true);
+		dialog.setVisible(true);
+
+		if (okPressed.get()) {
+			installedLanguages.clear();
+			int i = 0;
+			for (JCheckBox cb : cbs) {
+				if (cb.isSelected()) {
+					installedLanguages.add(lngs.get(i));
+				}
+				i++;
+			}
+			
+			if (cbUninstall.isSelected()) {
+				Set<String> remove = new HashSet<String>();
+				i = 0;
+				for (JCheckBox cb : cbs) {
+					if (!cb.isSelected()) {
+						remove.add(lngs.get(i));
+					}
+					i++;
+				}
+				for (LFile lf : updates.getModule(GAME).files) {
+					if (remove.contains(lf.language)) {
+						try {
+							File f2 = new File(installDir, lf.name());
+							if (f2.canRead() && !f2.delete()) {
+								System.err.println("Unable to delete file: " + f2.getAbsolutePath());
+							}
+						} catch (MalformedURLException ex) {
+							Exceptions.add(ex);
+						}
+					}
+				}
+				if (!cbInstall.isSelected()) {
+					detectVersion();
+					doUpgrades();
+				}
+			}
+			if (cbInstall.isSelected()) {
+				doInstall(false);
+				return false;
+			}
+		}
+		
+		return okPressed.get();
 	}
 }

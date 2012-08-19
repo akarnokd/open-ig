@@ -68,6 +68,14 @@
 		<entry key='Click explanation'>&lt;html>&lt;p>You may skip cutscenes by pressing ESC, SPACE or by clicking with<!--br--> any mouse button. However, sometimes you can accidentally<!--br--> skip a cutscene with such clicks.&lt;/p></entry>
 		<entry key='Click checkbox'>Allow skipping cutscenes via mouse clicks.</entry>
 		<entry key='Repair launcher'>Repair Launcher</entry>
+		<entry key='Select language packs...'>Select language packs...</entry>
+		<entry key='Select language packs to install'>Select language packs to install</entry>
+		<entry key='language-en'>English</entry>
+		<entry key='language-hu'>Hungarian</entry>
+		<entry key='language-de'>German</entry>
+		<entry key='language-fr'>French</entry>
+		<entry key='Remove files of unselected packages'>Remove files of unselected packages</entry>
+		<entry key='Install new packages now'>Install new packages now</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 		<entry key='Processing %s'>%s feldolgozása</entry>
@@ -137,6 +145,14 @@
 		<entry key='Click explanation'>&lt;html>&lt;p>Az átvezető videók az ESC, SZÓKÖZ vagy egérkattintás segítségével átugorhatók. Viszont a kattintással néha véletlenül is átugorhatsz egy átvezető videót.&lt;/p></entry>
 		<entry key='Click checkbox'>Átvezetők kihagyása egérkattintással.</entry>
 		<entry key='Repair launcher'>Indító kijavítása</entry>
+		<entry key='Select language packs...'>Nyelvi csomagok kiválasztása...</entry>
+		<entry key='Select language packs to install'>Válaszd ki a telepítendő nyelvi csomagokat</entry>
+		<entry key='language-en'>Angol</entry>
+		<entry key='language-hu'>Magyar</entry>
+		<entry key='language-de'>Német</entry>
+		<entry key='language-fr'>Francia</entry>
+		<entry key='Remove files of unselected packages'>A ki nem választott nyelv fájljainak törlése</entry>
+		<entry key='Install new packages now'>Az új csomagok telepítése azonnal</entry>
 	</language>
 	<language id='de' flag='/hu/openig/gfx/german.png'>
 		<entry key='Processing %s'>Verarbeitung von %s</entry>
@@ -206,6 +222,14 @@
 		<entry key='Click explanation'>&lt;html>&lt;p>Sie können die Zwischensequenzen durch Drücken von ESC, LEERTASTE oder einer beliebigen Maustaste überspringen. Letzteres führt jedoch manchmal zu einem versehentlichen Überspringen der Sequenzen.&lt;/p></entry>
 		<entry key='Click checkbox'>Zwischensequenzen mit Maustasten überspringen.</entry>
 		<entry key='Repair launcher'>Launcher repairieren</entry>
+		<entry key='Select language packs...'>Sprachenpakäten auswählen...</entry>
+		<entry key='Select language packs to install'>Sprachenpakäten auswählen</entry>
+		<entry key='language-en'>Englisch</entry>
+		<entry key='language-hu'>Ungarisch</entry>
+		<entry key='language-de'>Deutsch</entry>
+		<entry key='language-fr'>Franzözisch</entry>
+		<entry key='Remove files of unselected packages'>Daten von nicht selektierten Sprachenpakäten entfernen</entry>
+		<entry key='Install new packages now'>Neue Pakäten jetzt installieren</entry>
 	</language>
 	<language id='fr' flag='/hu/openig/gfx/french.png'>
 		<entry key='Processing %s'>Processing %s</entry>
@@ -275,5 +299,13 @@
 		<entry key='Click explanation'>&lt;html>&lt;p>You may skip cutscenes by pressing ESC, SPACE or by clicking with<!--br--> any mouse button. However, sometimes you can accidentally<!--br--> skip a cutscene with such clicks.&lt;/p></entry>
 		<entry key='Click checkbox'>Allow skipping cutscenes via mouse clicks.</entry>
 		<entry key='Repair launcher'>Repair Launcher</entry>
+		<entry key='Select language packs...'>Select language packs...</entry>
+		<entry key='Select language packs to install'>Select language packs to install</entry>
+		<entry key='language-en'>English</entry>
+		<entry key='language-hu'>Hungarian</entry>
+		<entry key='language-de'>German</entry>
+		<entry key='language-fr'>French</entry>
+		<entry key='Remove files of unselected packages'>Remove files of unselected packages</entry>
+		<entry key='Install new packages now'>Install new packages now</entry>
 	</language>
 </labels>
