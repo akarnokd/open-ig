@@ -23,7 +23,7 @@
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  https://open-ig.googlecode.com/files/ -->
-		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='d0be4670fb0c29ed8dc64e6fd96f86248ae2450e'>
+		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='28fb6d1fbf6992f75dd28377d68cd9c0ecac8282'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
