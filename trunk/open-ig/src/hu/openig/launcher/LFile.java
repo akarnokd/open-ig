@@ -22,6 +22,8 @@ public class LFile extends LBaseItem {
 	public String sha1;
 	/** The file size in bytes. */
 	public long size;
+	/** Indicator of the resource language. */
+	public String language;
 	/**
 	 * Convert the hex string into a byte array.
 	 * @param hex the hex string

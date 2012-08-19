@@ -71,6 +71,7 @@ public class LUpdate {
 				f.url = eFile.get("url");
 				f.sha1 = eFile.get("sha1");
 				f.size = eFile.getLong("size", -1);
+				f.language = eFile.get("language", "generic");
 				f.parse(eFile);
 				mdl.files.add(f);
 			}
