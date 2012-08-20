@@ -101,6 +101,8 @@ public class AIWorld {
 	public int battleshipLimit;
 	/** The limit of space stations. */
 	public int stationLimit;
+	/** Indicator that the research requires new planets. */
+	public boolean researchRequiresColonization;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
