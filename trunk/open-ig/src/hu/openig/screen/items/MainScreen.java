@@ -139,8 +139,10 @@ public class MainScreen extends ScreenBase {
 	ClickLabel continueLabel;
 	/** The achievements screen. */
 	ClickLabel achievements;
-	/** The single player click label. */
-	ClickLabel single;
+	/** The campaign click label. */
+	ClickLabel campaign;
+	/** The skirmish click label. */
+	ClickLabel skirmish;
 	/** Label button. */
 	ClickLabel load;
 	/** Label button. */
@@ -341,16 +343,24 @@ public class MainScreen extends ScreenBase {
 
 	@Override
 	public void onInitialize() {
-		single = new ClickLabel(20, "mainmenu.singleplayer");
-		single.action = new Action0() {
+		campaign = new ClickLabel(20, "mainmenu.campaign");
+		campaign.action = new Action0() {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				displayPrimary(Screens.SINGLEPLAYER);
 			}
 		};
-		single.tooltip(get("mainmenu.single.tooltip"));
-		
+
+		skirmish = new ClickLabel(20, "mainmenu.skirmish");
+		skirmish.action = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				displayPrimary(Screens.SKIRMISH);
+			}
+		};
+
 		continueLabel = new ClickLabel(14, "mainmenu.continue");
 		continueLabel.action = new Action0() {
 			@Override
@@ -456,7 +466,9 @@ public class MainScreen extends ScreenBase {
 		}
 		scaleResize(base, margin());
 		
-		single.location(0, base.y + 135);
+		campaign.location(0, base.y + 135);
+		skirmish.location(0, base.y + 135);
+		
 		continueLabel.location(0, base.y + 168);
 		load.location(0, base.y + 195);
 		multiplayer.location(0, base.y + 225);
@@ -466,18 +478,23 @@ public class MainScreen extends ScreenBase {
 		exit.location(0, base.y + 385);
 		
 		
-		for (ClickLabel cl : Arrays.asList(single, continueLabel, load, 
+		for (ClickLabel cl : Arrays.asList(continueLabel, load, 
 				multiplayer, settings, videosLabel, exit, creditsLabel)) {
 			cl.x = base.x + base.width / 2 - cl.width / 2;
 		}
 		introLabel.x = base.x + base.width / 3 - introLabel.width / 2;
-		introLabel.y = base.y + 325;
 		titleLabel.x = base.x + base.width * 2 / 3 - titleLabel.width / 2;
+
+		introLabel.y = base.y + 325;
 		titleLabel.y = base.y + 325;
 		
 		profileLabel.location(base.x + 20, base.y + 100);
 		achievements.location(base.x + 120, base.y + 100);
+
 		
+		campaign.x = base.x + base.width / 4 - campaign.width / 2;
+		skirmish.x = base.x + base.width * 3 / 4 - skirmish.width / 2;
+
 	}
 	@Override
 	public Screens screen() {
