@@ -134,7 +134,7 @@ public class UIContainer extends UIComponent {
 				try {
 					f.setAccessible(true);
 					UIComponent c = UIComponent.class.cast(f.get(this));
-					if (c != null) {
+					if (c != null && c.parent == null) {
 						add(c);
 					}
 				} catch (IllegalArgumentException e) {
@@ -157,5 +157,20 @@ public class UIContainer extends UIComponent {
 			}
 		}
 		return super.componentAt(x, y);
+	}
+	/**
+	 * Remove a component.
+	 * @param c the component to remove
+	 * @return true if the removal succeeded
+	 */
+	public boolean remove(UIComponent c) {
+		c.parent = null;
+		return components.remove(c);
+	}
+	/**
+	 * @return the sequence of components
+	 */
+	public Iterable<UIComponent> components() {
+		return components;
 	}
 }

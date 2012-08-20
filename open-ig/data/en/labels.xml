@@ -2914,6 +2914,17 @@
 	<entry key='traits.weapon_mocker'>Weapon mockers</entry>
 	<entry key='traits.weapon_mocker.desc'>The civilization did not successfully master weapon construction before the galactic age. Weapon production speed is reduced to %.0f%%.</entry>
 
+	<entry key='mainmenu.campaign'>Campaign</entry>
+	<entry key='mainmenu.skirmish'>Skirmish</entry>
+	<entry key='skirmish.galaxy'>Galaxy</entry>
+	<entry key='skirmish.tech'>Technologies</entry>
+	<entry key='skirmish.economy'>Economy</entry>
+	<entry key='skirmish.players'>Players</entry>
+	<entry key='skirmish.back'>Back</entry>
+	<entry key='skirmish.load'>Load skirmish...</entry>
+	<entry key='skirmish.save'>Save skirmish...</entry>
+	<entry key='skirmish.play'>Play</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

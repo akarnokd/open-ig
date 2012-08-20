@@ -2955,6 +2955,17 @@
 	<entry key='traits.weapon_mocker'>Fegyverutánzók</entry>
 	<entry key='traits.weapon_mocker.desc'>A civilizációd nem sajátította el kellően a fegyverkészítést a galaktikus kor előtt. A fegyvergyártás hatékonysága %.0f%%-ra csökken.</entry>
 
+	<entry key='mainmenu.campaign'>Hadjárat</entry>
+	<entry key='mainmenu.skirmish'>Egyéni játék</entry>
+	<entry key='skirmish.galaxy'>Galaxis</entry>
+	<entry key='skirmish.tech'>Technológiák</entry>
+	<entry key='skirmish.economy'>Gazdaság</entry>
+	<entry key='skirmish.players'>Játékosok</entry>
+	<entry key='skirmish.back'>Vissza</entry>
+	<entry key='skirmish.load'>Betöltés...</entry>
+	<entry key='skirmish.save'>Mentés...</entry>
+	<entry key='skirmish.play'>Játék</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
