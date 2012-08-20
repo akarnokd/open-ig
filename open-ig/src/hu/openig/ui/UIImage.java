@@ -95,4 +95,22 @@ public class UIImage extends UIComponent {
 		this.scale = state;
 		return this;
 	}
+	/**
+	 * @return The associated image. 
+	 */
+	public BufferedImage image() {
+		return image;
+	}
+	/**
+	 * Size to content.
+	 */
+	public void sizeToContent() {
+		if (image != null) {
+			width = image.getWidth();
+			height = image.getHeight();
+		} else {
+			width = 0;
+			height = 0;
+		}
+	}
 }

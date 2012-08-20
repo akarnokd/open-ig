@@ -9,24 +9,33 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Screens;
+import hu.openig.model.SkirmishAIMode;
+import hu.openig.model.SkirmishDefinition;
+import hu.openig.model.SkirmishDiplomaticRelation;
+import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIGenericButton;
+import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIPanel;
+import hu.openig.ui.UIScrollBox;
 import hu.openig.ui.UISpinner;
 import hu.openig.utils.U;
+import hu.openig.utils.XElement;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -34,9 +43,11 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The skirmish configuration screen.
@@ -125,6 +136,58 @@ public class SkirmishScreen extends ScreenBase {
 	UILabel orbitalFactoryLabel;
 	/** Number. */
 	NumberSpinBox orbitalFactories;
+	/** Label. */
+	UILabel initialRelationLabel;
+	/** Spin. */
+	ListSpinBox<SkirmishDiplomaticRelation> initialRelation;
+	/** Label. */
+	UILabel initialDifficultyLabel;
+	/** Spin. */
+	ListSpinBox<Difficulty> initialDifficulty;
+	/** Win condition. */
+	UICheckBox winConquest;
+	/** Win condition. */
+	UICheckBox winOccupation;
+	/** Win condition. */
+	UICheckBox winEconomic;
+	/** Win condition. */
+	UICheckBox winTechnology;
+	/** Win condition. */
+	UICheckBox winSocial;
+	/** Number. */
+	NumberSpinBox winOccupationPercent;
+	/** Number. */
+	NumberSpinBox winOccupationTime;
+	/** Number. */
+	NumberSpinBox winEconomicMoney;
+	/** Number. */
+	NumberSpinBox winSocialMorale;
+	/** Number. */
+	NumberSpinBox winSocialPlanets;
+	/** Number. */
+	UILabel winOccupationPercentLabel;
+	/** Number. */
+	UILabel winOccupationTimeLabel;
+	/** Number. */
+	UILabel winEconomicMoneyLabel;
+	/** Number. */
+	UILabel winSocialMoraleLabel;
+	/** Number. */
+	UILabel winSocialPlanetsLabel;
+	/** Players list parent panel. */
+	UIPanel playersList;
+	/** Players list scoll box. */
+	UIScrollBox playersListScroll;
+	/** The template players. */
+	final List<SkirmishPlayer> templatePlayers = U.newArrayList();
+	/** The tech races. */
+	final Set<String> templateTechRaces = U.newHashSet();
+	/** The list of players. */
+	final List<PlayerLine> playerLines = U.newArrayList();
+	/** Add player button. */
+	UIGenericButton addPlayer;
+	/** Clear players button. */
+	UIGenericButton clearPlayers;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -172,12 +235,27 @@ public class SkirmishScreen extends ScreenBase {
 		
 		galaxyPanel.add(galaxyRandomSurface, galaxyRandomLayout, galaxyCustomPlanets, galaxyPlanetCount);
 		
-		galaxyRaces = new CampaignSpinBox();
+		galaxyRaces = new CampaignSpinBox() {
+			@Override
+			public void update() {
+				super.update();
+				
+				templatePlayers.clear();
+				templatePlayers.addAll(getPlayersFrom(get()));
+			}
+		};
 		galaxyRacesLabel = createLabel("skirmish.race_template");
 		
 		galaxyPanel.add(galaxyRaces, galaxyRacesLabel);
 		
-		technologyDef = new CampaignSpinBox();
+		technologyDef = new CampaignSpinBox() {
+			@Override
+			public void update() {
+				super.update();
+				templateTechRaces.clear();
+				templateTechRaces.addAll(getRacesFrom(get()));
+			}
+		};
 		technologyDefLabel = createLabel("skirmish.tech_template");
 
 		technologyLevelLabel = createLabel("skirmish.tech_level");
@@ -188,7 +266,12 @@ public class SkirmishScreen extends ScreenBase {
 		
 		
 		initialMoneyLabel = createLabel("skirmish.initial_money");
-		initialMoney = new NumberSpinBox(0, 2000000000, 10000, 100000);
+		initialMoney = new NumberSpinBox(0, 2000000000, 10000, 100000) {
+			@Override
+			public String onValue() {
+				return String.format("%,d cr", value);
+			}
+		};
 		initialMoney.value = 200000;
 		
 		initialPlanetsLabel = createLabel("skirmish.initial_planets");
@@ -217,6 +300,104 @@ public class SkirmishScreen extends ScreenBase {
 		orbitalFactories = new NumberSpinBox(0, 1000, 1, 10);
 		
 		economyPanel.add(colonyShipLabel, colonyShips, orbitalFactoryLabel, orbitalFactories);
+		
+		initialRelationLabel = createLabel("skirmish.initial_relation");
+		initialRelation = new ListSpinBox<SkirmishDiplomaticRelation>(new Func1<SkirmishDiplomaticRelation, String>() { 
+			@Override
+			public String invoke(SkirmishDiplomaticRelation value) {
+				return get("skirmish.relation." + value);
+			}
+		}, SkirmishDiplomaticRelation.values());
+		initialRelation.index = SkirmishDiplomaticRelation.DEFAULT.ordinal();
+		
+		initialDifficultyLabel = createLabel("skirmish.initial_difficulty");
+		initialDifficulty = new ListSpinBox<Difficulty>(new Func1<Difficulty, String>() { 
+			@Override
+			public String invoke(Difficulty value) {
+				return get("difficulty." + value);
+			}
+		}, Difficulty.values());
+		initialDifficulty.index = Difficulty.NORMAL.ordinal();
+		
+		galaxyPanel.add(initialRelationLabel, initialRelation, initialDifficultyLabel, initialDifficulty);
+
+		winConquest = createCheckBox("skirmish.conquest");
+		setTooltip(winConquest, "skirmish.conquest.tooltip");
+		winOccupation = createCheckBox("skirmish.occupation");
+		setTooltip(winOccupation, "skirmish.occupation.tooltip");
+		winEconomic = createCheckBox("skirmish.economic");
+		setTooltip(winEconomic, "skirmish.economic.tooltip");
+		winTechnology = createCheckBox("skirmish.technology");
+		setTooltip(winTechnology, "skirmish.technology.tooltip");
+		winSocial = createCheckBox("skirmish.social");
+		setTooltip(winSocial, "skirmish.social.tooltip");
+		
+		winOccupationPercent = new NumberSpinBox(0, 100, 1, 10) {
+			@Override
+			public String onValue() {
+				return String.format("%,d %%", value);
+			}
+		};
+		winOccupationPercent.value = 66;
+		
+		final String fdays = get("skirmish.days");
+		winOccupationTime = new NumberSpinBox(0, 1000, 1, 10) {
+			@Override
+			public String onValue() {
+				return String.format("%,d %s", value, fdays);
+			}
+		};
+		winOccupationTime.value = 30;
+		
+		winEconomicMoney = new NumberSpinBox(0, 2000000000, 1000000, 10000000) {
+			@Override
+			public String onValue() {
+				return String.format("%,d cr", value);
+			}
+		};
+		winEconomicMoney.value = 10000000;
+		
+		winSocialMorale = new NumberSpinBox(0, 100, 1, 10) {
+			@Override
+			public String onValue() {
+				return String.format("%,d %%", value);
+			}
+		};
+		winSocialMorale.value = 95;
+		
+		winSocialPlanets = new NumberSpinBox(0, 500, 1, 10);
+		winSocialPlanets.value = 30;
+
+		victoryPanel.add(winConquest, winOccupation, winEconomic, winTechnology, winSocial);
+		victoryPanel.add(winOccupationPercent, winOccupationTime, winEconomicMoney, winSocialMorale, winSocialPlanets);
+
+		winOccupationPercentLabel = createLabel("skirmish.occupation_percent");
+		winOccupationTimeLabel = createLabel("skirmish.occupation_time");
+		winEconomicMoneyLabel = createLabel("skirmish.economic_money");
+		winSocialMoraleLabel = createLabel("skirmish.social_morale");
+		winSocialPlanetsLabel = createLabel("skirmish.social_planets");
+
+		victoryPanel.add(winOccupationPercentLabel, winOccupationTimeLabel, winEconomicMoneyLabel,
+				winSocialMoraleLabel, winSocialPlanetsLabel);
+		
+		playersList = new UIPanel();
+		
+		playersListScroll = new UIScrollBox(playersList, 30,
+				new UIImageButton(commons.database().arrowUp),
+				new UIImageButton(commons.database().arrowDown)
+		);
+		playersPanel.add(playersListScroll);
+		
+		addPlayer = createButton("skirmish.add_player");
+		clearPlayers = createButton("skirmish.clear_players");
+		
+		playersPanel.add(addPlayer, clearPlayers);
+		
+		//FIXME
+		
+		galaxyRandomLayout.enabled(false);
+		galaxyPlanetCount.enabled(false);
+		galaxyCustomPlanets.enabled(false);
 		
 		addThis();
 	}
@@ -275,6 +456,16 @@ public class SkirmishScreen extends ScreenBase {
 		technologyLevel.setMaxSize();
 		technologyLevel.location(5 + technologyLevelLabel.width + 20, cy);
 
+		cy += 35;
+		initialRelationLabel.location(5, cy + 7);
+		initialRelation.setMaxSize();
+		initialRelation.location(5 + initialRelationLabel.width + 20, cy);
+		
+		cy += 35;
+		initialDifficultyLabel.location(5, cy + 7);
+		initialDifficulty.setMaxSize();
+		initialDifficulty.location(5 + initialDifficultyLabel.width + 20, cy);
+
 		//---------------------------------------------
 		cy = 0;
 		initialMoneyLabel.location(5, cy + 7);
@@ -310,6 +501,56 @@ public class SkirmishScreen extends ScreenBase {
 		orbitalFactories.setMaxSize();
 		orbitalFactories.location(15 + orbitalFactoryLabel.width + 20, cy);
 
+		// ---------------------------------------------------
+		cy = 0;
+		winConquest.location(5, cy + 7);
+		
+		cy += 35;
+		winOccupation.location(5, cy + 7);
+		
+		cy += 35;
+		winOccupationPercentLabel.location(30, cy + 7);
+		winOccupationPercent.setMaxSize();
+		winOccupationPercent.location(50 + winOccupationPercentLabel.width, cy);
+
+		cy += 35;
+		winOccupationTimeLabel.location(30, cy + 7);
+		winOccupationTime.setMaxSize();
+		winOccupationTime.location(50 + winOccupationTimeLabel.width, cy);
+		
+		cy += 35;
+		winEconomic.location(5, cy + 7);
+
+		cy += 35;
+		winEconomicMoneyLabel.location(30, cy + 7);
+		winEconomicMoney.setMaxSize();
+		winEconomicMoney.location(50 + winEconomicMoneyLabel.width, cy);
+
+		cy += 35;
+		winTechnology.location(5, cy + 7);
+		
+		cy += 35;
+		winSocial.location(5, cy + 7);
+
+		cy += 35;
+		winSocialMoraleLabel.location(30, cy + 7);
+		winSocialMorale.setMaxSize();
+		winSocialMorale.location(50 + winSocialMoraleLabel.width, cy);
+
+		cy += 35;
+		winSocialPlanetsLabel.location(30, cy + 7);
+		winSocialPlanets.setMaxSize();
+		winSocialPlanets.location(50 + winSocialPlanetsLabel.width, cy);
+
+		
+		playersListScroll.bounds(5, 30, playersPanel.width - 10, playersPanel.height - 110);
+		playersListScroll.scrollBy(0);
+		playersListScroll.adjustButtons();
+
+		playersList.width = playersListScroll.width - 40;
+
+		clearPlayers.location(playersPanel.width - 5 - clearPlayers.width, playersPanel.height - 75);
+		addPlayer.location(clearPlayers.x - 10 - addPlayer.width, clearPlayers.y);
 	}
 	/**
 	 * Create a checkbox.
@@ -326,6 +567,14 @@ public class SkirmishScreen extends ScreenBase {
 	 */
 	UILabel createLabel(String label) {
 		return new UILabel(get(label), 14, commons.text());
+	}
+	/**
+	 * Create a label.
+	 * @param label the text label
+	 * @return the label component
+	 */
+	UILabel createLabel2(String text) {
+		return new UILabel(text, 14, commons.text());
 	}
 	/**
 	 * Create a panel switch action that updates the controls.
@@ -412,13 +661,11 @@ public class SkirmishScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
 
 	}
 	@Override
@@ -526,6 +773,11 @@ public class SkirmishScreen extends ScreenBase {
 		public void update() {
 			
 		}
+		@Override
+		public UIComponent enabled(boolean state) {
+			spin.enabled(state);
+			return super.enabled(state);
+		}
 	}
 	/**
 	 * A number spin box.
@@ -569,8 +821,8 @@ public class SkirmishScreen extends ScreenBase {
 		/** Update controls. */
 		@Override
 		public void update() {
-			spin.prev.enabled(value > min);
-			spin.next.enabled(value < max);
+			spin.prev.enabled(enabled && value > min);
+			spin.next.enabled(enabled && value < max);
 		}
 		@Override
 		public String onValue() {
@@ -580,20 +832,57 @@ public class SkirmishScreen extends ScreenBase {
 		 * Set the size to the maximum of the campaign name.
 		 */
 		public void setMaxSize() {
-			int w = commons.text().getTextWidth(14, String.format("%,d", min));
-			w = Math.max(w, commons.text().getTextWidth(14, String.format("%,d", max)));
+			int val = value;
+			value = min;
+			int w = commons.text().getTextWidth(14, onValue());
+			value = max;
+			w = Math.max(w, commons.text().getTextWidth(14, onValue()));
 			width = w + spin.prev.width + spin.next.width + 20;
 			spin.width = width;
 			height = spin.prev.height;
+			value = val;
+		}
+		@Override
+		public UIComponent enabled(boolean state) {
+			spin.enabled(state);
+			if (state) {
+				update();
+			}
+			return super.enabled(state);
 		}
 	}
 	/**
-	 * Spin box referencing the campaign.
+	 * List box spin box.
 	 * @author akarnokd, 2012.08.20.
+	 * @param <T> the element type
 	 */
-	public class CampaignSpinBox extends SpinBox {
-		/** The selected index. */
+	public class ListSpinBox<T> extends SpinBox {
+		/** The current selection index. */ 
 		public int index;
+		/** The list. */
+		final List<T> list;
+		/** The value function. */
+		final Func1<T, String> valueFunc;
+		/**
+		 * Constructor. Initialize the fields.
+		 * @param list the backing list
+		 * @param valueFunc the value function
+		 */
+		public ListSpinBox(List<T> list, Func1<T, String> valueFunc) {
+			this.list = list;
+			this.valueFunc = valueFunc;
+			
+		}
+		/**
+		 * Constructor. Initialize the fields.
+		 * @param list the backing list
+		 * @param valueFunc the value function
+		 */
+		public ListSpinBox(Func1<T, String> valueFunc, T... list) {
+			this.list = Arrays.asList(list);
+			this.valueFunc = valueFunc;
+			
+		}
 		@Override
 		public void onNext(boolean shift) {
 			int cnt = shift ? 10 : 1;
@@ -608,7 +897,39 @@ public class SkirmishScreen extends ScreenBase {
 		}
 		@Override
 		public String onValue() {
-			return campaigns.get(index).title;
+			return valueFunc.invoke(list.get(index));
+		}
+		@Override
+		public void update() {
+			spin.prev.enabled(enabled && index > 0);
+			spin.next.enabled(enabled && index < list.size() - 1);
+		}
+		/**
+		 * Set the size to the maximum of the campaign name.
+		 */
+		public void setMaxSize() {
+			int w = 0;
+			for (T t : list) {
+				w = Math.max(w, commons.text().getTextWidth(14, valueFunc.invoke(t)));
+			}
+			width = w + spin.prev.width + spin.next.width + 20;
+			spin.width = width;
+			height = spin.prev.height;
+		}
+	}
+	/**
+	 * Spin box referencing the campaign.
+	 * @author akarnokd, 2012.08.20.
+	 */
+	public class CampaignSpinBox extends ListSpinBox<GameDefinition> {
+		/** Constructor. */
+		public CampaignSpinBox() {
+			super(campaigns, new Func1<GameDefinition, String>() {
+				@Override
+				public String invoke(GameDefinition value) {
+					return value.title;
+				}
+			});
 		}
 		/** Set the tooltip. */
 		@Override
@@ -616,9 +937,8 @@ public class SkirmishScreen extends ScreenBase {
 			GameDefinition d = get();
 			
 			setTooltipText(spin, d.description);
-			
-			spin.prev.enabled(index > 0);
-			spin.next.enabled(index < campaigns.size() - 1);
+
+			super.update();
 		}
 		/**
 		 * @return Get the current indexed campaign.
@@ -626,17 +946,166 @@ public class SkirmishScreen extends ScreenBase {
 		public GameDefinition get() {
 			return campaigns.get(index);
 		}
-		/**
-		 * Set the size to the maximum of the campaign name.
-		 */
-		public void setMaxSize() {
-			int w = 0;
-			for (GameDefinition d : campaigns) {
-				w = Math.max(w, commons.text().getTextWidth(14, d.title));
+	}
+	/**
+	 * Compute the icon color of the image.
+	 * @param resource the resource
+	 * @return the color
+	 */
+	public int iconColor(String resource) {
+		BufferedImage bimg = rl.getImage(resource);
+		int[] pixels = bimg.getRGB(0, 0, bimg.getWidth(), bimg.getHeight(), null, 0, bimg.getWidth());
+		long r = 0;
+		long g = 0;
+		long b = 0;
+		for (int i : pixels) {
+			if ((i & 0xFF000000) != 0) {
+				r += ((i & 0xFF0000) >> 16);
+				g += ((i & 0xFF00) >> 8);
+				b += ((i & 0xFF));
 			}
-			width = w + spin.prev.width + spin.next.width + 20;
-			spin.width = width;
-			height = spin.prev.height;
 		}
+		r /= pixels.length;
+		g /= pixels.length;
+		b /= pixels.length;
+		
+		return (int)(0xFF000000 | (r << 16) | (g << 8) | (b));
+	}
+	/**
+	 * Get the races from the tech and building definitions.
+	 * @param def the definition
+	 * @return the set of races
+	 */
+	public Set<String> getRacesFrom(GameDefinition def) {
+		Set<String> result = U.newHashSet();
+		
+		XElement xtech = rl.getXML(def.tech);
+		for (XElement xitem : xtech.childrenWithName("item")) {
+			String r = xitem.get("race");
+			
+			result.addAll(Arrays.asList(r.split("\\s*,\\s*")));
+		}
+		XElement xbuild = rl.getXML(def.buildings);
+		
+		for (XElement xb : xbuild.childrenWithName("building")) {
+			for (XElement xg : xb.childrenWithName("graphics")) {
+				for (XElement xt : xg.childElement("tech")) {
+					result.add(xt.get("id"));
+				}
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * Extract the players from the given definition.
+	 * @param def the definition
+	 * @return the set of players
+	 */
+	public Set<SkirmishPlayer> getPlayersFrom(GameDefinition def) {
+		Set<SkirmishPlayer> result = U.newHashSet();
+		
+		XElement xplayers = rl.getXML(def.players);
+		
+		for (XElement xplayer : xplayers.childrenWithName("player")) {
+			SkirmishPlayer sp = new SkirmishPlayer();
+			
+			sp.originalId = xplayer.get("id");
+			sp.race = xplayer.get("race");
+			sp.name = get(xplayer.get("name"));
+//			sp.description = get("database.race." + sp.race + ".details");
+			sp.iconRef = xplayer.get("icon");
+			sp.icon = rl.getImage(sp.iconRef);
+			sp.color = (int)Long.parseLong(xplayer.get("color"), 16);
+			sp.nodatabase = xplayer.getBoolean("nodatabase", false);
+			sp.nodiplomacy = xplayer.getBoolean("nodiplomacy", false);
+			
+			String ai = xplayer.get("ai", null);
+			if (xplayer.getBoolean("user", false)) {
+				sp.ai = SkirmishAIMode.USER;
+			} else
+			if ("TRADERS".equals(ai)) {
+				sp.ai = SkirmishAIMode.TRADER;
+			} else
+			if ("PIRATES".equals(ai)) {
+				sp.ai = SkirmishAIMode.PIRATE;
+			} else {
+				sp.ai = SkirmishAIMode.AI_NORMAL;
+			}
+			
+			result.add(sp);
+		}
+		
+		return result;
+	}
+	/**
+	 * A player definition. 
+	 * @author akarnokd, 2012.08.20.
+	 */
+	public class PlayerLine extends UIContainer {
+		/** The player name. */
+		public UILabel name;
+		/** The race. */
+		public UILabel race;
+		/** The image. */
+		public UIImage icon;
+		/** The AI. */
+		public UILabel ai;
+		/** Traits. */
+		public UILabel traits;
+		/** Group. */
+		public UILabel group;
+		/** Cunstructs the UI elements. */
+		public PlayerLine() {
+			name = createLabel2("");
+			race = createLabel2("");
+			icon = new UIImage();
+			ai = createLabel2("      ");
+			ai.horizontally(HorizontalAlignment.CENTER);
+			traits = createLabel("skirmish.traits");
+			traits.horizontally(HorizontalAlignment.CENTER);
+			
+			group = createLabel2("  ");
+			
+			
+			addThis();
+		}
+		/**
+		 * Change control size to its contents.
+		 */
+		public void sizeToContent() {
+			name.sizeToContent();
+			race.sizeToContent();
+			icon.sizeToContent();
+			ai.sizeToContent();
+			traits.sizeToContent();
+			group.sizeToContent();
+		}
+	}
+	/**
+	 * Layout all player lines.
+	 */
+	void layoutPlayers() {
+		int maxGroup = 0;
+		int maxTraits = 0;
+		int maxAI = 0;
+		int maxIcon = 0;
+		int maxRace = 0;
+		for (PlayerLine pl : playerLines) {
+			
+			pl.sizeToContent();
+			
+			maxGroup = Math.max(maxGroup, pl.group.width);
+			maxTraits = Math.max(maxTraits, pl.traits.width);
+			maxAI = Math.max(maxAI, pl.ai.width);
+			maxIcon = Math.max(maxIcon, pl.icon.width);
+			maxRace = Math.max(maxRace, pl.race.width);
+		}
+		for (PlayerLine pl : playerLines) {
+			pl.group.x = playersList.width - maxGroup;
+			pl.group.width = maxGroup;
+			
+		}		
+		
 	}
 }

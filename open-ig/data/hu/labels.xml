@@ -2982,9 +2982,36 @@
 	<entry key='skirmish.colony_ships'>Kezdeti kolonizáló hajók:</entry>
 	<entry key='skirmish.orbital_factories'>Kezdeti orbitális gyárak:</entry>
 
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key='skirmish.initial_relation'>Kezdeti viszony:</entry>
+	<entry key='skirmish.initial_difficulty'>Nehézségi szint:</entry>
+	<entry key='skirmish.relation.PEACEFUL'>Békés</entry>
+	<entry key='skirmish.relation.WAR'>Háborús</entry>
+	<entry key='skirmish.relation.DEFAULT'>Minta alapértelmezett</entry>
+	<entry key='difficulty.EASY'>Könnyű</entry>
+	<entry key='difficulty.NORMAL'>Normál</entry>
+	<entry key='difficulty.HARD'>Nehéz</entry>
+
+	<entry key='skirmish.conquest'>Hódítás általi győzelem</entry>
+	<entry key='skirmish.conquest.tooltip'>Győzdd le az összes többi csoportot</entry>
+	<entry key='skirmish.occupation'>Megszállás általi győzelem</entry>
+	<entry key='skirmish.occupation.tooltip'>Birtokold legalább a galaxis bolygóinak megadott százalékát az adott napig.</entry>
+	<entry key='skirmish.economic'>Gazdaság általi győzelem</entry>
+	<entry key='skirmish.economic.tooltip'>Legyél az első, aki eléri a megadott kreditszintet. A csoportok összpénze számít.</entry>
+	<entry key='skirmish.technology'>Technológia általi győzelem</entry>
+	<entry key='skirmish.technology.tooltip'>Legyél az első, aki kifejleszti az összes technológiát.</entry>
+	<entry key='skirmish.social'>Szociális általi győzelem</entry>
+	<entry key='skirmish.social.tooltip'>Érd el a megadott morálszintet legalább a megadott mennyiségű bolygón.</entry>
+
+	<entry key="skirmish.days">nap</entry>
+	<entry key='skirmish.occupation_percent'>Megszállás minimum százalék:</entry>
+	<entry key='skirmish.occupation_time'>Megszállás minimum ideje:</entry>
+	<entry key='skirmish.economic_money'>Minimum kredit:</entry>
+	<entry key='skirmish.social_morale'>Minimum morál:</entry>
+	<entry key='skirmish.social_planets'>Minimum bolygó:</entry>
+	<entry key='skirmish.add_player'>Játékos hozzáadása</entry>
+	<entry key='skirmish.clear_players'>Játékosok törlése</entry>
+	<entry key="skirmish.traits">J</entry>
+	<entry key="skirmish.traits.tooltip">Jellemzők beállítása</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
