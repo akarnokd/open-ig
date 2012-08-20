@@ -2965,6 +2965,22 @@
 	<entry key='skirmish.load'>Betöltés...</entry>
 	<entry key='skirmish.save'>Mentés...</entry>
 	<entry key='skirmish.play'>Játék</entry>
+	<entry key='skirmish.victory'>Győzelem</entry>
+	<entry key='skirmish.galaxy_template'>Galaxis minta:</entry>
+	<entry key='skirmish.random_surface'>Véletlenszerű felszínkiosztás</entry>
+	<entry key='skirmish.random_layout'>Véletlenszerű bolygóelrendezés</entry>
+	<entry key='skirmish.custom_planets'>Egyedi bolygódarabszám:</entry>
+	<entry key='skirmish.race_template'>Fajok minta:</entry>
+	<entry key='skirmish.tech_template'>Technológia minta:</entry>
+	<entry key='skirmish.tech_level'>Technológia szint:</entry>
+	<entry key='skirmish.initial_money'>Kezdeti pénz:</entry>
+	<entry key='skirmish.initial_planets'>Kezdeti bolygók játékosonként:</entry>
+	<entry key='skirmish.initial_population'>Kezdeti lakosság:</entry>
+	<entry key='skirmish.place_colony_hub'>Főépületek felépítése</entry>
+	<entry key='skirmish.grant_colonyship'>Kolonizáló hajó elérhető azonnal</entry>
+	<entry key='skirmish.grant_orbital_factory'>Orbitális gyár elérhető azonnal</entry>
+	<entry key='skirmish.colony_ships'>Kezdeti kolonizáló hajók:</entry>
+	<entry key='skirmish.orbital_factories'>Kezdeti orbitális gyárak:</entry>
 
 	<entry key=""></entry>
 	<entry key=""></entry>

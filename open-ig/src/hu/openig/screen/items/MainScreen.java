@@ -66,10 +66,14 @@ public class MainScreen extends ScreenBase {
 		 * @param label the label
 		 */
 		public ClickLabel(int size, String label) {
-			this.width = commons.text().getTextWidth(size, get(label)) + 20;
 			this.height = size + 10;
 			this.size = size;
 			this.label = label;
+			this.width = preferredWidth();
+		}
+		/** @return the preferred width. */
+		public int preferredWidth() {
+			return commons.text().getTextWidth(size, get(label)) + 20;
 		}
 		/** Invoke the associated action. */
 		public void invoke() {
@@ -100,9 +104,13 @@ public class MainScreen extends ScreenBase {
 			}
 			g2.setComposite(save0);
 
-			commons.text().paintTo(g2, 12, 7, size, 0xFF000000, get(label));
-			commons.text().paintTo(g2, 11, 6, size, 0xFF000000, get(label));
-			commons.text().paintTo(g2, 10, 5, size, color, get(label));
+			String s = get(label);
+			
+			int dx = (width - commons.text().getTextWidth(size, s)) / 2;
+			
+			commons.text().paintTo(g2, dx + 2, 7, size, 0xFF000000, s);
+			commons.text().paintTo(g2, dx + 1, 6, size, 0xFF000000, s);
+			commons.text().paintTo(g2, dx + 0, 5, size, color, s);
 		}
 		@Override
 		public boolean mouse(UIMouse e) {
@@ -491,6 +499,9 @@ public class MainScreen extends ScreenBase {
 		profileLabel.location(base.x + 20, base.y + 100);
 		achievements.location(base.x + 120, base.y + 100);
 
+		int w12 = Math.max(campaign.preferredWidth(), skirmish.preferredWidth());
+		campaign.width = w12;
+		skirmish.width = w12;
 		
 		campaign.x = base.x + base.width / 4 - campaign.width / 2;
 		skirmish.x = base.x + base.width * 3 / 4 - skirmish.width / 2;
