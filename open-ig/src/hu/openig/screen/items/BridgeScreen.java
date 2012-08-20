@@ -629,10 +629,9 @@ public class BridgeScreen extends ScreenBase {
 		
 		goingToTest = false;
 		
+		playMessageAppear();
 		if (gotoTest()) {
 			enterTestAnim();
-		} else {
-			playMessageAppear();
 		}
 		
 		lastLevel = world().level;
@@ -1133,6 +1132,7 @@ public class BridgeScreen extends ScreenBase {
 				List<VideoMessage> list = world().receivedMessages;
 				
 				listOffset = 0;
+				selectedVideoId = null;
 				for (VideoMessage msg : list) {
 					if (msg.id.equals(messageId)) {
 						selectedVideoId = msg;
@@ -1140,9 +1140,11 @@ public class BridgeScreen extends ScreenBase {
 					}
 					listOffset++;
 				}
-				
-				
-				playProjectorOpen();
+				if (selectedVideoId == null) {
+					Exceptions.add(new AssertionError("Missing message: " + messageId));
+				} else {
+					playProjectorOpen();
+				}
 			}
 		};
 		onProjectorComplete = new Action0() {

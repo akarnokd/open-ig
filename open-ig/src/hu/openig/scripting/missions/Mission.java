@@ -199,12 +199,14 @@ public abstract class Mission implements GameScriptingEvents {
 		world.env.stopMusic();
 		world.env.pause();
 		world.player.clearMessages();
-		world.env.forceMessage(id, new Action0() {
-			@Override
-			public void invoke() {
-				world.env.loseGame();
-			}
-		});
+		if (addIncomingMessage(id)) {
+			world.env.forceMessage(id, new Action0() {
+				@Override
+				public void invoke() {
+					world.env.loseGame();
+				}
+			});
+		}
 	}
 	/**
 	 * Lose the current game with the forced message and then full screen movie.
@@ -215,17 +217,19 @@ public abstract class Mission implements GameScriptingEvents {
 		world.env.stopMusic();
 		world.env.pause();
 		world.player.clearMessages();
-		world.env.forceMessage(message, new Action0() {
-			@Override
-			public void invoke() {
-				world.env.playVideo(movie, new Action0() {
-					@Override
-					public void invoke() {
-						world.env.loseGame();
-					}
-				});
-			}
-		});
+		if (addIncomingMessage(message)) {
+			world.env.forceMessage(message, new Action0() {
+				@Override
+				public void invoke() {
+					world.env.playVideo(movie, new Action0() {
+						@Override
+						public void invoke() {
+							world.env.loseGame();
+						}
+					});
+				}
+			});
+		}
 	}
 	/**
 	 * Lose the current game with the given forced message.
@@ -512,20 +516,30 @@ public abstract class Mission implements GameScriptingEvents {
 		}
 	}
 	/**
-	 * Show a message and then an objective.
-	 * @param messageId the message identifier
-	 * @param action the action to invoke
+	 * Add an new incoming message to the received messages.
+	 * @param messageId the message id
+	 * @return true if successful
 	 */
-	public void incomingMessage(String messageId, final Action0 action) {
+	public boolean addIncomingMessage(String messageId) {
 		VideoMessage msg = world.bridge.receiveMessages.get(messageId);
 		if (msg == null) {
 			Exceptions.add(new AssertionError("Missing video: " + messageId));
+			return false;
 		} else {
 			msg = msg.copy();
 			msg.seen = false;
 			
 			world.receivedMessages.add(0, msg);
-			
+			return true;
+		}
+	}
+	/**
+	 * Show a message and then an objective.
+	 * @param messageId the message identifier
+	 * @param action the action to invoke
+	 */
+	public void incomingMessage(String messageId, final Action0 action) {
+		if (addIncomingMessage(messageId)) {
 			SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, 
 					SoundType.NEW_MESSAGE_1, 
 					SoundType.NEW_MESSAGE_2, 

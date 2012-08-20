@@ -1340,6 +1340,12 @@ public class World {
 			statistics.load(stats);
 		}
 
+		// clear previous test
+		for (TestQuestion tq : test.values()) {
+			for (TestAnswer ta : tq.answers) {
+				ta.selected = false;
+			}
+		}
 		XElement test = xworld.childElement("test");
 		if (test != null) {
 			for (XElement qa : test.childrenWithName("q-a")) {

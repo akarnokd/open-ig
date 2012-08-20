@@ -802,12 +802,12 @@ public class GameWindow extends JFrame implements GameControls {
 		if (asPrimary) {
 //			hideMovie();
 			boolean playSec = false;
+			boolean changes = false;
 			if (secondary != null) {
 				secondary.onLeave();
 				secondary = null;
-				moveMouse();
-				repaintInner();
 				playSec = true;
+				changes = true;
 			}
 			if (primary == null || primary.screen() != screen) {
 				if (primary != null) {
@@ -820,16 +820,18 @@ public class GameWindow extends JFrame implements GameControls {
 				if (primary != null) {
 					primary.resize();
 					primary.onEnter(mode);
-					repaintInner();
-					moveMouse();
 				}
+				changes = true;
 			} else
 			if (playSec) {
 				if (sound != null) {
 					commons.playSound(SoundTarget.SCREEN, sound, null);
 				}
 			}
-			
+			if (changes) {
+				moveMouse();
+				repaintInner();
+			}
 		} else {
 			if (secondary == null || secondary.screen() != screen) {
 				if (secondary != null) {
