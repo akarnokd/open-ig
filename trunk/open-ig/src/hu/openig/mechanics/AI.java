@@ -664,6 +664,7 @@ public class AI implements AIManager {
 		planners.add(new ColonyPlanner(world, controls));
 
 		planners.add(new ResearchPlanner(world, controls, exploration));
+		planners.add(new ColonizationPlanner(world, controls));
 		planners.add(new ExplorationPlanner(world, controls, exploration));
 		
 		int mix1 = planners.size();
