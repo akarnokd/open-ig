@@ -31,6 +31,8 @@ public class UIScrollBox extends UIContainer {
 	protected int delta;
 	/** The gap between the scroll viewport and the scroll buttons. */
 	protected int gaps = 5;
+	/** The border color. */
+	protected int borderColor;
 	/**
 	 * Construct the scroll box.
 	 * @param content the scroll content
@@ -83,8 +85,10 @@ public class UIScrollBox extends UIContainer {
 		downButton.y = hgap * 2 + upButton.height;
 		Shape save0 = g2.getClip();
 		g2.clipRect(0, 0, width, height);
-		g2.setColor(Color.BLACK);
-		g2.drawRect(0, 0, width - 1, height - 1);
+		if (borderColor != 0) {
+			g2.setColor(new Color(borderColor, true));
+			g2.drawRect(0, 0, width - 1, height - 1);
+		}
 		super.draw(g2);
 		g2.setClip(save0);
 	}
@@ -92,7 +96,9 @@ public class UIScrollBox extends UIContainer {
 	public boolean mouse(UIMouse e) {
 		boolean result = false;
 		if (e.type == UIMouse.Type.WHEEL) {
-			result |= scrollBy(-e.z * delta);
+			if (!super.mouse(e)) {
+				result |= scrollBy(-e.z * delta);
+			}
 		}
 		return super.mouse(e) | result;
 	}
@@ -117,5 +123,20 @@ public class UIScrollBox extends UIContainer {
 			return true;
 		}
 		return false;
+	}
+	/**
+	 * @return the current border color ARGB
+	 */
+	public int borderColor() {
+		return borderColor;
+	}
+	/**
+	 * Set the border color.
+	 * @param newColor new color ARGB
+	 * @return this
+	 */
+	public UIScrollBox borderColor(int newColor) {
+		this.borderColor = newColor;
+		return this;
 	}
 }

@@ -30,6 +30,8 @@ public class UISpinner extends UIContainer {
 	protected int size;
 	/** The text color. */
 	protected int color = TextRenderer.GREEN;
+	/** The text color. */
+	protected int disabledColor = TextRenderer.GRAY;
 	/**
 	 * Construction.
 	 * @param size the text height
@@ -57,8 +59,14 @@ public class UISpinner extends UIContainer {
 		int w = tr.getTextWidth(size, n);
 		int dx = prev.width + (width - prev.width - next.width - w) / 2;
 		int dy = (prev.height - size) / 2;
-		tr.paintTo(g2, dx, dy, size, color, n);
+		tr.paintTo(g2, dx, dy, size, enabled ? color : disabledColor, n);
 		
 		super.draw(g2);
+	}
+	@Override
+	public UIComponent enabled(boolean state) {
+		prev.enabled(state);
+		next.enabled(state);
+		return super.enabled(state);
 	}
 }

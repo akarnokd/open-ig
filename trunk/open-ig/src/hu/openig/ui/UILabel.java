@@ -342,4 +342,12 @@ public class UILabel extends UIComponent {
 	public int textSize() {
 		return size;
 	}
+	/**
+	 * Size the label to its contents if not a wrapped label.
+	 */
+	public void sizeToContent() {
+		if (!wrap) {
+			text(text(), true);
+		}
+	}
 }
