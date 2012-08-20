@@ -183,7 +183,7 @@ public class Mission18 extends Mission {
 	}
 	@Override
 	public void onLost(Planet planet) {
-		if (planet.owner == player) {
+		if (planet.owner == player || planet.owner == null) {
 			if (planet.id.startsWith("Garthog")) {
 				Planet ach = planet("Achilles");
 				// create a fleet to colonize the planet, for convenience

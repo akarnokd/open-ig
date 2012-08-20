@@ -92,7 +92,7 @@ public class World {
 	/** The game definition. */
 	public GameDefinition definition;
 	/** The game simulation's parameters. */
-	private Parameters params;
+	private final Parameters params;
 	/** The difficulty of the game. */
 	public Difficulty difficulty;
 	/** The bridge definition. */
