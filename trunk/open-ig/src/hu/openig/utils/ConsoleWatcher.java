@@ -9,6 +9,7 @@
 package hu.openig.utils;
 
 import hu.openig.core.Func0;
+import hu.openig.utils.XElement.Appender;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -154,25 +155,26 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	}
 	/** 
 	 * Write the diagnostic info.
+	 * @param out the output
 	 */
-	void writeDiagnosticInfo() {
-		area.append("An unexpected error occurred.\r\n");
-		area.append("You should consider submitting an error report via the project issue list:\r\n");
-		area.append(ISSUE_LIST);
-		area.append("\r\n");
-		area.append("Please include the following diagnostic information followed by the error stacktrace(s):\r\n");
-		area.append(String.format("   Java version: %s%n", System.getProperty("java.version")));
-		area.append(String.format("   Java vendor: %s (%s)%n", System.getProperty("java.vendor"), System.getProperty("java.vendor.url")));
-		area.append(String.format("   Java class version: %s%n", System.getProperty("java.class.version")));
-		area.append(String.format("   Operating system: %s, %s, %s%n", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version")));
-		area.append(String.format("   Game version: %s%n", version));
-		area.append(String.format("   Command line: %s%n", Arrays.toString(commandLine)));
-		area.append(String.format("   Available memory: %s MB%n", Runtime.getRuntime().freeMemory() / 1024 / 1024));
-		area.append(String.format("   Maximum memory: %s MB%n", Runtime.getRuntime().maxMemory() / 1024 / 1024));
-		area.append(String.format("   Parallelism: %s%n", Runtime.getRuntime().availableProcessors()));
-		area.append(String.format("   Language: %s%n", language.invoke()));
-		area.append(String.format("   Date and time: %s%n", XElement.formatDateTime(new Date())));
-		area.append("----\r\n");
+	void writeDiagnosticInfo(Appender out) {
+		out.append("An unexpected error occurred.\r\n");
+		out.append("You should consider submitting an error report via the project issue list:\r\n");
+		out.append(ISSUE_LIST);
+		out.append("\r\n");
+		out.append("Please include the following diagnostic information followed by the error stacktrace(s):\r\n");
+		out.append(String.format("   Java version: %s%n", System.getProperty("java.version")));
+		out.append(String.format("   Java vendor: %s (%s)%n", System.getProperty("java.vendor"), System.getProperty("java.vendor.url")));
+		out.append(String.format("   Java class version: %s%n", System.getProperty("java.class.version")));
+		out.append(String.format("   Operating system: %s, %s, %s%n", System.getProperty("os.name"), System.getProperty("os.arch"), System.getProperty("os.version")));
+		out.append(String.format("   Game version: %s%n", version));
+		out.append(String.format("   Command line: %s%n", Arrays.toString(commandLine)));
+		out.append(String.format("   Available memory: %s MB%n", Runtime.getRuntime().freeMemory() / 1024 / 1024));
+		out.append(String.format("   Maximum memory: %s MB%n", Runtime.getRuntime().maxMemory() / 1024 / 1024));
+		out.append(String.format("   Parallelism: %s%n", Runtime.getRuntime().availableProcessors()));
+		out.append(String.format("   Language: %s%n", language.invoke()));
+		out.append(String.format("   Date and time: %s%n", XElement.formatDateTime(new Date())));
+		out.append("----\r\n");
 	}
 	/**
 	 * Write the data to the console and text area.
@@ -193,11 +195,24 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 				}
 				if (first) {
 					first = false;
-					writeDiagnosticInfo();
+					writeDiagnosticInfo(new Appender() {
+						@Override
+						public Appender append(Object o) {
+							area.append(String.valueOf(o));
+							return this;
+						}
+					});
+					crashSave(onCrash);
 				}
 				area.append(new String(b2, off, len));
-
 				// print crash log
+			}
+
+			/**
+			 * Save crash situation.
+			 * @param onCrash the crash action
+			 */
+			protected void crashSave(final Func0<String> onCrash) {
 				if (onCrash != null) {
 					String s = null;
 					try {
@@ -237,7 +252,17 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	 * @return the current contents of the crash log or null if still empty
 	 */
 	public String getCrashLog() {
-		String s = area.getText();
-		return s != null && !s.isEmpty() ? s : null;
+		final StringBuilder b = new StringBuilder();
+		writeDiagnosticInfo(new Appender() {
+			@Override
+			public Appender append(Object o) {
+				b.append(o);
+				return this;
+			}
+		});
+		for (String s : Exceptions.HISTORY.keySet()) {
+			b.append(s).append("\r\n");
+		}
+		return b.length() > 0 ? b.toString() : null;
 	}
 }

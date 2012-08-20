@@ -93,7 +93,6 @@ public class TestScreen extends ScreenBase {
 		questionScroll.prepare();
 		paused = commons.simulation.paused();
 		commons.pause();
-		
 	}
 	/** Complete the test. */
 	void doDone() {
@@ -192,6 +191,7 @@ public class TestScreen extends ScreenBase {
 			this.answer = a;
 			height = 14;
 			width = 14;
+			a.selected = false;
 		}
 		@Override
 		public void draw(Graphics2D g2) {

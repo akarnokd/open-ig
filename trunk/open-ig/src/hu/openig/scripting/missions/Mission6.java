@@ -88,11 +88,11 @@ public class Mission6 extends Mission {
 			createAttackers();
 		}
 		Objective m6 = objective("Mission-6");
+		if (checkTimeout("Mission-6-Failure")) {
+			gameover();
+			loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "lose/fired_level_2");
+		}
 		if (checkTimeout("Mission-6-Done")) {
-			if (m6.state == ObjectiveState.FAILURE) {
-				gameover();
-				loseGameMessageAndMovie("Douglas-Fire-Lost-Planet", "lose/fired_level_2");
-			}
 			m6.visible = false;
 			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
 			if (garthog != null) {
@@ -177,6 +177,7 @@ public class Mission6 extends Mission {
 			Planet ach = planet("Achilles");
 			if (ach.owner != player) {
 				setObjectiveState("Mission-6", ObjectiveState.FAILURE);
+				addTimeout("Mission-6-Failure", 1000);
 			} else {
 				setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 				
