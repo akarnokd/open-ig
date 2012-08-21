@@ -36,6 +36,7 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIPanel;
+import hu.openig.ui.UIRadioButton;
 import hu.openig.ui.UIScrollBox;
 import hu.openig.ui.UISpinner;
 import hu.openig.ui.VerticalAlignment;
@@ -51,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -192,7 +194,7 @@ public class SkirmishScreen extends ScreenBase {
 	/** Add player button. */
 	UIGenericButton addPlayer;
 	/** Clear players button. */
-	UIGenericButton clearPlayers;
+	UIGenericButton removePlayers;
 	/** Column. */
 	UICheckBox colName;
 	/** Column. */
@@ -209,6 +211,8 @@ public class SkirmishScreen extends ScreenBase {
 	GroupSelectPanel groupSelectPanel;
 	/** The icon selection panel. */
 	IconSelectPanel iconSelectPanel;
+	/** An item selection panel. */
+	ItemSelectPanel itemSelectPanel;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -416,15 +420,16 @@ public class SkirmishScreen extends ScreenBase {
 				doAddPlayer();
 			}
 		};
-		clearPlayers = createButton("skirmish.remove_players");
-		clearPlayers.onClick = new Action0() {
+		removePlayers = createButton("skirmish.remove_players");
+		removePlayers.onClick = new Action0() {
 			@Override
 			public void invoke() {
 				doRemovePlayers();
 			}
 		};
+		removePlayers.disabledPattern(commons.common().disabledPattern);
 		
-		playersPanel.add(addPlayer, clearPlayers);
+		playersPanel.add(addPlayer, removePlayers);
 
 		colName = createCheckBox("skirmish.name");
 		colName.backgroundColor(0);
@@ -432,6 +437,7 @@ public class SkirmishScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				doSelectAll(colName.selected());
+				doManageRemove();
 			}
 		};
 		colRace = createLabel("skirmish.race");
@@ -455,6 +461,9 @@ public class SkirmishScreen extends ScreenBase {
 		
 		iconSelectPanel = new IconSelectPanel();
 		iconSelectPanel.visible(false);
+		
+		itemSelectPanel = new ItemSelectPanel();
+		itemSelectPanel.visible(false);
 		
 		//FIXME
 		
@@ -612,14 +621,17 @@ public class SkirmishScreen extends ScreenBase {
 
 		playersList.width = playersListScroll.width - 40;
 
-		clearPlayers.location(playersPanel.width - 5 - clearPlayers.width, playersPanel.height - 75);
-		addPlayer.location(clearPlayers.x - 10 - addPlayer.width, clearPlayers.y);
+		removePlayers.location(playersPanel.width - 5 - removePlayers.width, playersPanel.height - 75);
+		addPlayer.location(removePlayers.x - 10 - addPlayer.width, removePlayers.y);
 		
 		groupSelectPanel.bounds(base);
 		groupSelectPanel.layout();
 		
 		iconSelectPanel.bounds(base);
 		iconSelectPanel.layout();
+		
+		itemSelectPanel.bounds(base);
+		itemSelectPanel.layout();
 		
 		layoutPlayers();
 	}
@@ -718,6 +730,7 @@ public class SkirmishScreen extends ScreenBase {
 		}
 		
 		doSelectPanel(galaxyPanel, false);
+		doManageRemove();
 	}
 	
 	/**
@@ -788,11 +801,16 @@ public class SkirmishScreen extends ScreenBase {
 				commons.control().moveMouse();
 				e.consume();
 				return true;
-			} else {
-				back.onClick.invoke();
+			} else
+			if (itemSelectPanel.visible()) {
+				itemSelectPanel.visible(false);
+				commons.control().moveMouse();
 				e.consume();
 				return true;
 			}
+			back.onClick.invoke();
+			e.consume();
+			return true;
 		}
 		return super.keyboard(e);
 	}
@@ -1161,11 +1179,32 @@ public class SkirmishScreen extends ScreenBase {
 		/** Cunstructs the UI elements. */
 		public PlayerLine() {
 			name = createCheckBox2("");
+			name.onChange = new Action0() {
+				@Override
+				public void invoke() {
+					doManageRemove();					
+				}
+			};
 			name.backgroundColor(0);
 			name.vertically(VerticalAlignment.BOTTOM);
 			name.height += 5;
 			race = createLabel2("");
-			icon = new UIImage();
+			race.onPress = new Action0() {
+				@Override
+				public void invoke() {
+					doShowRace(PlayerLine.this);
+				}
+			};
+			icon = new UIImage() {
+				@Override
+				public void draw(Graphics2D g2) {
+					if (over) {
+						g2.setColor(Color.GRAY);
+						g2.fillRect(0, 0, width, height);
+					}
+					super.draw(g2);
+				}
+			};
 			icon.center(true);
 			icon.onClick = new Action0() {
 				@Override
@@ -1175,6 +1214,12 @@ public class SkirmishScreen extends ScreenBase {
 			};
 			ai = createLabel2("      ");
 			ai.horizontally(HorizontalAlignment.CENTER);
+			ai.onPress = new Action0() {
+				@Override
+				public void invoke() {
+					doShowAI(PlayerLine.this);
+				}
+			};
 			traits = createLabel("skirmish.traits");
 			traits.horizontally(HorizontalAlignment.CENTER);
 			traits.onPress = new Action0() {
@@ -1211,10 +1256,10 @@ public class SkirmishScreen extends ScreenBase {
 		@Override
 		public void draw(Graphics2D g2) {
 			super.draw(g2);
-			if (over) {
-				g2.setColor(Color.GRAY);
-				g2.drawRect(0, 0, width, height);
-			}
+//			if (over) {
+//				g2.setColor(Color.GRAY);
+//				g2.drawRect(0, 0, width, height);
+//			}
 		}
 		/**
 		 * Update fields based on the player contents.
@@ -1315,7 +1360,7 @@ public class SkirmishScreen extends ScreenBase {
 			pl.name.width = pl.race.x - gap;
 			pl.name.y = 0;
 
-			pl.icon.height = pl.name.height;
+			pl.icon.height = pl.ai.height;
 
 			pl.y = py;
 			pl.pack();
@@ -1366,6 +1411,21 @@ public class SkirmishScreen extends ScreenBase {
 				computerSound(SoundType.NOT_AVAILABLE);
 				return;
 			}
+			// remove existing combintations
+			List<SkirmishPlayer> candidates2 = U.newArrayList(candidates);
+			for (int i = candidates.size() - 1; i >= 0; i--) {
+				for (PlayerLine pl0 : playerLines) {
+					SkirmishPlayer sp = candidates.get(i);
+					if (sp.originalId.equals(pl0.player.originalId) && sp.race.equals(pl0.player.race)) {
+						candidates.remove(i);
+						break;
+					}
+				}
+			}
+			if (candidates.isEmpty()) {
+				candidates.addAll(candidates2);
+			}
+			
 			Collections.shuffle(candidates);
 			pl.player = candidates.get(0).copy();
 			if (pl.player.ai != SkirmishAIMode.TRADER && pl.player.ai != SkirmishAIMode.PIRATE) {
@@ -1390,6 +1450,25 @@ public class SkirmishScreen extends ScreenBase {
 		buttonSound(SoundType.CLICK_HIGH_2);
 	}
 	/**
+	 * Handle the remove all clicks.
+	 */
+	void doManageRemove() {
+		int cnt = 0;
+		for (PlayerLine pl : playerLines) {
+			if (pl.name.selected()) {
+				cnt++;
+			}
+		}
+		
+		if (cnt == 0) {
+			colName.selected(false);
+		} else
+		if (cnt == playerLines.size()) {
+			colName.selected(true);
+		}
+		removePlayers.enabled(cnt != 0);
+	}
+	/**
 	 * Remove selected playes.
 	 */
 	void doRemovePlayers() {
@@ -1404,6 +1483,7 @@ public class SkirmishScreen extends ScreenBase {
 		}
 		layoutPlayers();
 		buttonSound(SoundType.CLICK_HIGH_2);
+		doManageRemove();
 	}
 	/**
 	 * Select or deselect all lines.
@@ -1606,7 +1686,7 @@ public class SkirmishScreen extends ScreenBase {
 
 					img.tooltip(imgRef);
 					img.center(true);
-					img.borderColor(0xFFE0E0E0);
+					img.borderColor(0xFF404040);
 					
 					images.add(img);
 					imageRefs.add(imgRef);
@@ -1726,5 +1806,228 @@ public class SkirmishScreen extends ScreenBase {
 			onSelectImage(selectedIndex);
 			visible(true);
 		}
+	}
+	/**
+	 * The icon selection panel.
+	 * @author akarnokd, 2012.08.21.
+	 *
+	 */
+	public class ItemSelectPanel extends UIPanel {
+		/** The inner panel. */
+		UIPanel inner;
+		/** The group select label. */
+		UILabel label;
+		/** Cancel button. */
+		UIGenericButton cancel;
+		/** Cancel button. */
+		UIGenericButton ok;
+		/** The radio buttons. */
+		final List<UIRadioButton> radioButtons = U.newArrayList();
+		/** The scroll box for the buttons. */
+		UIScrollBox scroll;
+		/** The container for the radio buttons. */
+		UIPanel scrollPanel;
+		/** The selected option. */
+		public int selectedIndex = -1;
+		/** The completion action called when the user selects ok. Gets the selected index. */
+		public Action1<Integer> onComplete;
+		/** Construct the panel. */
+		public ItemSelectPanel() {
+			backgroundColor(0x80000000);
+			
+			label = createLabel("skirmish.edit_option");
+			
+			inner = new UIPanel();
+			inner.backgroundColor(0x80000000);
+			inner.borderColor(TextRenderer.GRAY);
+			
+			ok = createButton("skirmish.ok");
+			ok.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					if (onComplete != null) {
+						onComplete.invoke(selectedIndex);
+						onComplete = null;
+					}
+					ItemSelectPanel.this.visible(false);
+					commons.control().moveMouse();
+				}
+			};
+			cancel = createButton("skirmish.cancel");
+			cancel.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					ItemSelectPanel.this.visible(false);
+					commons.control().moveMouse();
+				}
+			};
+			
+			inner.add(label, ok, cancel);
+
+			scrollPanel = new UIPanel();
+			
+			scroll = new UIScrollBox(scrollPanel, 30,
+					new UIImageButton(commons.database().arrowUp),
+					new UIImageButton(commons.database().arrowDown));
+			
+			inner.add(scroll);
+			
+			add(inner);
+		}
+		/**
+		 * Fix the layout.
+		 */
+		public void layout() {
+			
+			label.location(5, 5);
+			
+			int ry = label.y + label.height + 15;
+
+			scrollPanel.pack();
+			
+			int n = Math.min(10, radioButtons.size());
+			
+			scroll.bounds(5, ry, scrollPanel.width + 40, 30 * n);
+
+			ry += scroll.height;
+			
+			ry += 10;
+
+
+			ok.x = 0;
+			ok.y = ry;
+			cancel.x = ok.x + ok.width + 10;
+			cancel.y = ry;
+			
+			inner.pack();
+			inner.width += 5;
+			inner.height += 5;
+			
+			int okCancelWidth = ok.width + cancel.width + 10;
+			ok.x = (inner.width - okCancelWidth) / 2;
+			cancel.x = ok.x + ok.width + 10;
+
+			inner.location((width - inner.width) / 2, (height - inner.height) / 2);
+			
+			scroll.scrollBy(0);
+			scroll.adjustButtons();
+		}
+		/**
+		 * Display a list of options.
+		 * @param options the options list
+		 * @param select the indexth element to select
+		 * @param onComplete the completion handler
+		 */
+		public void show(List<String> options, int select, Action1<Integer> onComplete) {
+			this.onComplete = onComplete;
+			Iterator<UIComponent> it = scrollPanel.components().iterator();
+			while (it.hasNext()) {
+				UIComponent c = it.next();
+				if (c instanceof UIRadioButton) {
+					it.remove();
+				}
+			}
+			radioButtons.clear();
+			
+			this.selectedIndex = select;
+			int py = 0;
+			for (int i = 0; i < options.size(); i++) {
+				UIRadioButton btn = new UIRadioButton(options.get(i), 14, commons.text());
+				btn.selected(i == select);
+				final int j = i;
+				btn.onChange = new Action0() {
+					@Override
+					public void invoke() {
+						onSelected(j);
+					}
+				};
+				scrollPanel.add(btn);
+				radioButtons.add(btn);
+				btn.y = py;
+				py += 30;
+			}
+			
+			layout();
+			visible(true);
+		}
+		/**
+		 * React to option selection.
+		 * @param index the index
+		 */
+		void onSelected(int index) {
+			for (int i = 0; i < radioButtons.size(); i++) {
+				if (i != index) {
+					radioButtons.get(i).selected(false);
+				}
+			}
+			selectedIndex = index;
+		}
+	}
+	/**
+	 * Display a list of race options.
+	 * @param pl the line
+	 */
+	void doShowRace(final PlayerLine pl) {
+		final List<String> list = U.newArrayList();
+		int index = -1;
+		final List<SkirmishPlayer> tps = U.newArrayList(templatePlayers);
+		Collections.sort(tps, new Comparator<SkirmishPlayer>() {
+			@Override
+			public int compare(SkirmishPlayer o1, SkirmishPlayer o2) {
+				return o1.description.compareToIgnoreCase(o2.description);
+			}
+		});
+		for (SkirmishPlayer p : tps) {
+			if (p.originalId.equals(pl.player.originalId)) {
+				index = list.size();
+			}
+			list.add(p.description + " = " + p.race);
+		}
+		itemSelectPanel.show(list, index, new Action1<Integer>() {
+			@Override
+			public void invoke(Integer value) {
+				SkirmishPlayer p = tps.get(value);
+				
+				pl.player.name = p.name;
+				pl.player.originalId = p.originalId;
+				pl.player.race = p.race;
+				pl.player.description = p.description;
+				
+				pl.update();
+				layoutPlayers();
+			}
+		});
+	}
+	/**
+	 * Display a list of AI options.
+	 * @param pl the line
+	 */
+	void doShowAI(final PlayerLine pl) {
+		boolean you = false;
+		for (PlayerLine pl0 : playerLines) {
+			if (pl0.player.ai == SkirmishAIMode.USER && pl != pl0) {
+				you = true;
+			}
+		}
+		final List<String> list = U.newArrayList();
+		final List<SkirmishAIMode> modes = U.newArrayList();
+		int index = 0;
+		for (SkirmishAIMode m : SkirmishAIMode.values()) {
+			if (m != SkirmishAIMode.USER || !you) {
+				if (m == pl.player.ai) {
+					index = list.size();
+				}
+				list.add(get("skirmish.ai." + m + ".tooltip"));
+				modes.add(m);
+			}
+		}
+		itemSelectPanel.show(list, index, new Action1<Integer>() {
+			@Override
+			public void invoke(Integer value) {
+				pl.player.ai = modes.get(value);
+				pl.update();
+				layoutPlayers();
+			}
+		});
 	}
 }
