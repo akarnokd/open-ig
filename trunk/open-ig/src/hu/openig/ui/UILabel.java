@@ -350,4 +350,8 @@ public class UILabel extends UIComponent {
 			text(text(), true);
 		}
 	}
+	@Override
+	public String toString() {
+		return "UILabel: " + text;
+	}
 }

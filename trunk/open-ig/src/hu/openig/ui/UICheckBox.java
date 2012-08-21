@@ -40,6 +40,8 @@ public class UICheckBox extends UIComponent {
 	protected VerticalAlignment valign;
 	/** The change handler. */
 	public Action0 onChange;
+	/** The background color. */
+	protected int backgroundColor = 0xC0000000;
 	/**
 	 * Construct an UICheckBox.
 	 * @param text the text label
@@ -78,8 +80,10 @@ public class UICheckBox extends UIComponent {
 			g2.translate(0, (height - size) / 2);
 		}
 		
-		g2.setColor(new Color(0, 0, 0, 192));
-		g2.fillRect(-5, -5, width + 10, height + 10);
+		if (backgroundColor != 0) {
+	 		g2.setColor(new Color(backgroundColor, true));
+			g2.fillRect(-5, -5, width + 10, height + 10);
+		}
 
 		g2.setColor(enabled ? Color.WHITE : new Color(disabledColor));
 		g2.drawRect(0, 0, size - 1, size - 1);
@@ -113,7 +117,7 @@ public class UICheckBox extends UIComponent {
 	public UICheckBox text(String newText, boolean resize) {
 		this.text = newText;
 		if (resize) {
-			width = size + 2 + tr.getTextWidth(size, newText);
+			sizeToContent();
 		}
 		return this;
 	}
@@ -145,6 +149,35 @@ public class UICheckBox extends UIComponent {
 	 */
 	public UICheckBox vertically(VerticalAlignment valign) {
 		this.valign = valign;
+		return this;
+	}
+	/**
+	 * Size checkbox to content.
+	 */
+	public void sizeToContent() {
+		width = tr.getTextWidth(size, text) + size + 6;
+	}
+	/**
+	 * Change the current display text.
+	 * @param newText the new text
+	 * @return this
+	 */
+	public UICheckBox text(String newText) {
+		return text(newText, false);
+	}
+	/**
+	 * @return the current background color ARGB
+	 */
+	public int backgroundColor() {
+		return backgroundColor;
+	}
+	/**
+	 * Set the background color.
+	 * @param newColor the new color ARGB
+	 * @return this
+	 */
+	public UICheckBox backgroundColor(int newColor) {
+		this.backgroundColor = newColor;
 		return this;
 	}
 }

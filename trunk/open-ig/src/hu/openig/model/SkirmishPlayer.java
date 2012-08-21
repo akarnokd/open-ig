@@ -39,6 +39,8 @@ public class SkirmishPlayer {
 	public boolean nodiplomacy;
 	/** No database. */
 	public boolean nodatabase;
+	/** The traits. */
+	public final Traits traits = new Traits();
 	/**
 	 * @return a copy of this player
 	 */

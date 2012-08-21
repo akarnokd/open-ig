@@ -34,6 +34,7 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIPanel;
 import hu.openig.ui.UIScrollBox;
 import hu.openig.ui.UISpinner;
+import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -188,6 +189,18 @@ public class SkirmishScreen extends ScreenBase {
 	UIGenericButton addPlayer;
 	/** Clear players button. */
 	UIGenericButton clearPlayers;
+	/** Column. */
+	UICheckBox colName;
+	/** Column. */
+	UILabel colRace;
+	/** Column. */
+	UILabel colIcon;
+	/** Column. */
+	UILabel colAI;
+	/** Column. */
+	UILabel colTrait;
+	/** Column. */
+	UILabel colGroup;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -389,9 +402,45 @@ public class SkirmishScreen extends ScreenBase {
 		playersPanel.add(playersListScroll);
 		
 		addPlayer = createButton("skirmish.add_player");
-		clearPlayers = createButton("skirmish.clear_players");
+		addPlayer.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				doAddPlayer();
+			}
+		};
+		clearPlayers = createButton("skirmish.remove_players");
+		clearPlayers.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				doRemovePlayers();
+			}
+		};
 		
 		playersPanel.add(addPlayer, clearPlayers);
+
+		colName = createCheckBox("skirmish.name");
+		colName.backgroundColor(0);
+		colName.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				doSelectAll(colName.selected());
+			}
+		};
+		colRace = createLabel("skirmish.race");
+		colIcon = createLabel("skirmish.icon");
+		colAI = createLabel("skirmish.ai");
+		colAI.horizontally(HorizontalAlignment.CENTER);
+		colTrait = createLabel("skirmish.trait");
+		colGroup = createLabel("skirmish.group");
+		
+		colName.color(TextRenderer.LIGHT_GREEN);
+		colIcon.color(TextRenderer.LIGHT_GREEN);
+		colRace.color(TextRenderer.LIGHT_GREEN);
+		colAI.color(TextRenderer.LIGHT_GREEN);
+		colTrait.color(TextRenderer.LIGHT_GREEN);
+		colGroup.color(TextRenderer.LIGHT_GREEN);
+		
+		playersPanel.add(colName, colRace, colIcon, colAI, colTrait, colGroup);
 		
 		//FIXME
 		
@@ -543,7 +592,7 @@ public class SkirmishScreen extends ScreenBase {
 		winSocialPlanets.location(50 + winSocialPlanetsLabel.width, cy);
 
 		
-		playersListScroll.bounds(5, 30, playersPanel.width - 10, playersPanel.height - 110);
+		playersListScroll.bounds(5, 25, playersPanel.width - 10, playersPanel.height - 105);
 		playersListScroll.scrollBy(0);
 		playersListScroll.adjustButtons();
 
@@ -551,6 +600,8 @@ public class SkirmishScreen extends ScreenBase {
 
 		clearPlayers.location(playersPanel.width - 5 - clearPlayers.width, playersPanel.height - 75);
 		addPlayer.location(clearPlayers.x - 10 - addPlayer.width, clearPlayers.y);
+		
+		layoutPlayers();
 	}
 	/**
 	 * Create a checkbox.
@@ -559,6 +610,14 @@ public class SkirmishScreen extends ScreenBase {
 	 */
 	UICheckBox createCheckBox(String label) {
 		return new UICheckBox(get(label), 14, commons.common().checkmark, commons.text());
+	}
+	/**
+	 * Create a checkbox.
+	 * @param text the concrete text
+	 * @return the component
+	 */
+	UICheckBox createCheckBox2(String text) {
+		return new UICheckBox(text, 14, commons.common().checkmark, commons.text());
 	}
 	/**
 	 * Create a label.
@@ -570,7 +629,7 @@ public class SkirmishScreen extends ScreenBase {
 	}
 	/**
 	 * Create a label.
-	 * @param label the text label
+	 * @param text the concrete text
 	 * @return the label component
 	 */
 	UILabel createLabel2(String text) {
@@ -1012,8 +1071,8 @@ public class SkirmishScreen extends ScreenBase {
 			
 			sp.originalId = xplayer.get("id");
 			sp.race = xplayer.get("race");
-			sp.name = get(xplayer.get("name"));
-//			sp.description = get("database.race." + sp.race + ".details");
+			sp.name = get(xplayer.get("name") + ".short");
+			sp.description = get(xplayer.get("name"));
 			sp.iconRef = xplayer.get("icon");
 			sp.icon = rl.getImage(sp.iconRef);
 			sp.color = (int)Long.parseLong(xplayer.get("color"), 16);
@@ -1042,9 +1101,11 @@ public class SkirmishScreen extends ScreenBase {
 	 * A player definition. 
 	 * @author akarnokd, 2012.08.20.
 	 */
-	public class PlayerLine extends UIContainer {
+	public class PlayerLine extends UIPanel {
+		/** The player definition. */
+		public SkirmishPlayer player;
 		/** The player name. */
-		public UILabel name;
+		public UICheckBox name;
 		/** The race. */
 		public UILabel race;
 		/** The image. */
@@ -1057,18 +1118,23 @@ public class SkirmishScreen extends ScreenBase {
 		public UILabel group;
 		/** Cunstructs the UI elements. */
 		public PlayerLine() {
-			name = createLabel2("");
+			name = createCheckBox2("");
+			name.backgroundColor(0);
+			name.vertically(VerticalAlignment.BOTTOM);
+			name.height += 5;
 			race = createLabel2("");
 			icon = new UIImage();
+			icon.center(true);
 			ai = createLabel2("      ");
 			ai.horizontally(HorizontalAlignment.CENTER);
 			traits = createLabel("skirmish.traits");
 			traits.horizontally(HorizontalAlignment.CENTER);
 			
 			group = createLabel2("  ");
+			group.horizontally(HorizontalAlignment.CENTER);
 			
 			
-			addThis();
+			this.addThis();
 		}
 		/**
 		 * Change control size to its contents.
@@ -1081,16 +1147,56 @@ public class SkirmishScreen extends ScreenBase {
 			traits.sizeToContent();
 			group.sizeToContent();
 		}
+		@Override
+		public void draw(Graphics2D g2) {
+			super.draw(g2);
+			if (over) {
+				g2.setColor(Color.GRAY);
+				g2.drawRect(0, 0, width, height);
+			}
+		}
+		/**
+		 * Update fields based on the player contents.
+		 */
+		void update() {
+			name.text(player.name);
+			race.text(player.race);
+			race.hoverColor(0xFFFFFFFF);
+			icon.image(player.icon);
+			ai.text(get("skirmish.ai." + player.ai));
+			ai.hoverColor(0xFFFFFFFF);
+			if (player.traits.isEmpty()) {
+				traits.color(TextRenderer.GREEN);
+			} else {
+				traits.color(TextRenderer.YELLOW);
+			}
+			traits.hoverColor(0xFFFFFFFF);
+			group.text(Integer.toString(player.group));
+			group.hoverColor(0xFFFFFFFF);
+			
+			name.tooltip(player.description);
+			ai.tooltip(get("skirmish.ai." + player.ai + ".tooltip"));
+		}
 	}
 	/**
 	 * Layout all player lines.
 	 */
 	void layoutPlayers() {
-		int maxGroup = 0;
-		int maxTraits = 0;
-		int maxAI = 0;
-		int maxIcon = 0;
-		int maxRace = 0;
+		
+		colName.sizeToContent();
+		colRace.sizeToContent();
+		colIcon.sizeToContent();
+		colAI.sizeToContent();
+		colTrait.sizeToContent();
+		colGroup.sizeToContent();
+		
+		
+		int maxGroup = colGroup.width;
+		int maxTraits = colTrait.width;
+		int maxAI = colAI.width;
+		int maxIcon = colIcon.width;
+		int maxRace = colRace.width;
+		
 		for (PlayerLine pl : playerLines) {
 			
 			pl.sizeToContent();
@@ -1100,12 +1206,148 @@ public class SkirmishScreen extends ScreenBase {
 			maxAI = Math.max(maxAI, pl.ai.width);
 			maxIcon = Math.max(maxIcon, pl.icon.width);
 			maxRace = Math.max(maxRace, pl.race.width);
+			
 		}
+		
+		colGroup.x = 5 + playersList.width - maxGroup;
+		colGroup.width = maxGroup;
+
+		int gap = 5;
+		colTrait.x = colGroup.x - gap - maxTraits;
+		colTrait.width = maxTraits;
+		
+		colAI.x = colTrait.x - gap - maxAI;
+		colAI.width = maxAI;
+		
+		colIcon.x = colAI.x - gap - maxIcon;
+		colIcon.width = maxIcon;
+		
+		colRace.x = colIcon.x - gap - maxRace;
+		colRace.width = maxRace;
+
+		colName.x = 5;
+		colName.width = colRace.x - gap;
+
+		int py = 0;
+
 		for (PlayerLine pl : playerLines) {
 			pl.group.x = playersList.width - maxGroup;
 			pl.group.width = maxGroup;
+			pl.group.y = 7;
+
+			pl.traits.x = pl.group.x - gap - maxTraits;
+			pl.traits.width = maxTraits;
+			pl.traits.y = 7;
 			
-		}		
+			pl.ai.x = pl.traits.x - gap - maxAI;
+			pl.ai.width = maxAI;
+			pl.ai.y = 7;
+			
+			pl.icon.x = pl.ai.x - gap - maxIcon;
+			pl.icon.width = maxIcon;
+			pl.icon.y = 7;
+			
+			pl.race.x = pl.icon.x - gap - maxRace;
+			pl.race.width = maxRace;
+			pl.race.y = 7;
+			
+			pl.name.width = pl.race.x - gap;
+			pl.name.y = 0;
+
+			pl.icon.height = pl.name.height;
+
+			pl.y = py;
+			pl.pack();
+			py += pl.height;
+		}
+		int pw = playersList.width;
+		playersList.pack();
+		playersList.width = pw;
 		
+		playersListScroll.adjustButtons();
+		playersListScroll.scrollBy(0);
+	}
+	/**
+	 * Add a new player.
+	 */
+	void doAddPlayer() {
+		boolean userFound = false;
+		int maxGroup = 0;
+		for (PlayerLine pl : playerLines) {
+			if (pl.player.ai == SkirmishAIMode.USER) {
+				userFound = true;
+			}
+			maxGroup = Math.max(pl.player.group, maxGroup);
+		}
+		PlayerLine pl = new PlayerLine();
+		if (!userFound) {
+			for (SkirmishPlayer sp : templatePlayers) {
+				if (sp.ai == SkirmishAIMode.USER) {
+					pl.player = sp.copy();
+				}
+			}
+			if (pl.player == null) {
+				pl.player = new SkirmishPlayer();
+				pl.player.name = get("skirmish.you");
+				pl.player.race = templateTechRaces.iterator().next();
+				pl.player.originalId = "you";
+				pl.player.ai = SkirmishAIMode.USER;
+			}
+		} else {
+			List<SkirmishPlayer> candidates = U.newArrayList();
+			for (SkirmishPlayer sp : templatePlayers) {
+				if (sp.ai != SkirmishAIMode.USER) {
+					candidates.add(sp);
+				}
+			}
+			if (candidates.isEmpty()) {
+				computerSound(SoundType.NOT_AVAILABLE);
+				return;
+			}
+			Collections.shuffle(candidates);
+			pl.player = candidates.get(0);
+			if (pl.player.ai != SkirmishAIMode.TRADER && pl.player.ai != SkirmishAIMode.PIRATE) {
+				if (initialDifficulty.index == Difficulty.EASY.ordinal()) {
+					pl.player.ai = SkirmishAIMode.AI_EASY;
+				} else
+				if (initialDifficulty.index == Difficulty.NORMAL.ordinal()) {
+					pl.player.ai = SkirmishAIMode.AI_NORMAL;
+				} else
+				if (initialDifficulty.index == Difficulty.HARD.ordinal()) {
+					pl.player.ai = SkirmishAIMode.AI_HARD;
+				}
+			}
+		}
+
+		pl.player.group = maxGroup + 1;
+		
+		pl.update();
+		playerLines.add(pl);
+		playersList.add(pl);
+		layoutPlayers();
+	}
+	/**
+	 * Remove selected playes.
+	 */
+	void doRemovePlayers() {
+		for (int i = playerLines.size() - 1; i >= 0; i--) {
+			PlayerLine pl = playerLines.get(i);
+			if (pl.name.selected()) {
+				playersList.remove(playerLines.remove(i));
+			}
+		}
+		if (playerLines.isEmpty()) {
+			colName.selected(false);
+		}
+		layoutPlayers();
+	}
+	/**
+	 * Select or deselect all lines.
+	 * @param value the value
+	 */
+	void doSelectAll(boolean value) {
+		for (PlayerLine pl : playerLines) {
+			pl.name.selected(value);
+		}
 	}
 }

@@ -89,11 +89,14 @@ public class UIContainer extends UIComponent {
 //		Point pt = absLocation();
 		boolean result = false;
 		UIComponent target = null;
-		int zmax = -1;
+		int zmax = Integer.MIN_VALUE;
 		for (UIComponent c : components) {
+			if (c.parent != this) {
+				System.err.println("Parent: " + this + ", child: " + c);
+			}
 			if (c.visible && c.enabled && e.within(c.x, c.y, c.width, c.height)) {
 				if (!c.over) {
-					result |= c.mouse(e.copy(Type.ENTER));
+					result |= c.mouse(e.copy(Type.ENTER, -c.x, -c.y));
 				}
 				c.over = true;
 				if (zmax <= c.z) {
@@ -102,7 +105,7 @@ public class UIContainer extends UIComponent {
 				}
 			} else {
 				if (c.visible && c.over) {
-					result |= c.mouse(e.copy(Type.LEAVE));
+					result |= c.mouse(e.copy(Type.LEAVE, -c.x, -c.y));
 				}
 				c.over = false;
 			}

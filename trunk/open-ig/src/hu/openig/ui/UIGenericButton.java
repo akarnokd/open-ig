@@ -228,4 +228,8 @@ public class UIGenericButton extends UIComponent {
 		this.icon = icon;
 		return this;
 	}
+	@Override
+	public String toString() {
+		return "UIGenericButton: " + text;
+	}
 }

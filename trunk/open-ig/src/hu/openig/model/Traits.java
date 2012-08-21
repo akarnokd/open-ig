@@ -170,4 +170,10 @@ public class Traits implements Iterable<Trait> {
 		}
 		return value;
 	}
+	/**
+	 * @return true if there are no traits in this set
+	 */
+	public boolean isEmpty() {
+		return traits.isEmpty();
+	}
 }
