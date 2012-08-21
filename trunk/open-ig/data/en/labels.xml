@@ -2990,6 +2990,10 @@
 	<entry key='skirmish.ai.TRADER'>Trader</entry>
 	<entry key='skirmish.ai.USER.tooltip'>You</entry>
 	<entry key='skirmish.ai.USER'>You</entry>
+	<entry key='skirmish.edit_group'>Select group number:</entry>
+	<entry key='skirmish.ok'>OK</entry>
+	<entry key='skirmish.cancel'>Cancel</entry>
+	<entry key='skirmish.edit_icon'>Select the fleet icon:</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

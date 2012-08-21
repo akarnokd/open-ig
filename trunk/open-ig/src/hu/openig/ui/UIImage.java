@@ -7,6 +7,10 @@
  */
 package hu.openig.ui;
 
+import hu.openig.core.Action0;
+import hu.openig.ui.UIMouse.Type;
+
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -21,6 +25,12 @@ public class UIImage extends UIComponent {
 	private boolean scale;
 	/** Center the image? */
 	private boolean center;
+	/** The border color. */
+	protected int borderColor;
+	/** The background color. */
+	protected int backgroundColor;
+	/** The click action. */
+	public Action0 onClick;
 	/**
 	 * Default constructor without any image. The component will have zero size.
 	 */
@@ -50,6 +60,10 @@ public class UIImage extends UIComponent {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		if (backgroundColor != 0) {
+			g2.setColor(new Color(backgroundColor, true));
+			g2.fillRect(0, 0, width, height);
+		}
 		if (image != null) {
 			if (center) {
 				int dx = (width - image.getWidth()) / 2;
@@ -67,6 +81,20 @@ public class UIImage extends UIComponent {
 				g2.drawImage(image, 0, 0, null);
 			}
 		}
+		if (borderColor != 0) {
+			g2.setColor(new Color(borderColor, true));
+			g2.drawRect(0, 0, width - 1, height - 1);
+		}
+	}
+	@Override
+	public boolean mouse(UIMouse e) {
+		if (e.has(Type.DOWN)) {
+			if (onClick != null) {
+				onClick.invoke();
+				return true;
+			}
+		}
+		return super.mouse(e);
 	}
 	/**
 	 * Set the image content. Does not change the component dimensions.
@@ -112,5 +140,35 @@ public class UIImage extends UIComponent {
 			width = 0;
 			height = 0;
 		}
+	}
+	/**
+	 * @return the current border color ARGB
+	 */
+	public int borderColor() {
+		return borderColor;
+	}
+	/**
+	 * Set the border color.
+	 * @param newColor new color ARGB
+	 * @return this
+	 */
+	public UIImage borderColor(int newColor) {
+		this.borderColor = newColor;
+		return this;
+	}
+	/**
+	 * @return the current background color ARGB
+	 */
+	public int backgroundColor() {
+		return backgroundColor;
+	}
+	/**
+	 * Set the background color.
+	 * @param newColor the new color ARGB
+	 * @return this
+	 */
+	public UIImage backgroundColor(int newColor) {
+		this.backgroundColor = newColor;
+		return this;
 	}
 }

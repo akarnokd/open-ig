@@ -91,10 +91,7 @@ public class UIContainer extends UIComponent {
 		UIComponent target = null;
 		int zmax = Integer.MIN_VALUE;
 		for (UIComponent c : components) {
-			if (c.parent != this) {
-				System.err.println("Parent: " + this + ", child: " + c);
-			}
-			if (c.visible && c.enabled && e.within(c.x, c.y, c.width, c.height)) {
+			if (c.visible && c.enabled && e.within(c.x, c.y, c.width, c.height) && !e.has(Type.LEAVE)) {
 				if (!c.over) {
 					result |= c.mouse(e.copy(Type.ENTER, -c.x, -c.y));
 				}

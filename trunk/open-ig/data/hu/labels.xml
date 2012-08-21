@@ -3030,6 +3030,10 @@
 	<entry key='skirmish.ai.TRADER'>Kereskedő</entry>
 	<entry key='skirmish.ai.USER.tooltip'>Te</entry>
 	<entry key='skirmish.ai.USER'>Te</entry>
+	<entry key='skirmish.edit_group'>Csoport száma:</entry>
+	<entry key='skirmish.ok'>Rendben</entry>
+	<entry key='skirmish.cancel'>Mégsem</entry>
+	<entry key='skirmish.edit_icon'>Flottaikon kiválasztása:</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
