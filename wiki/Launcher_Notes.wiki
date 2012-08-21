@@ -4,6 +4,9 @@
 
 See the [Launcher] page about the application itself.
 
+= Version 0.37 - Language pack management =
+  [http://open-ig-dev.blogspot.hu/2012/08/launcher-037-released.html Blog]
+
 = Version 0.35 - Additional launch options =
   * Added JVM and Game parameters to the run settings dialog ([https://code.google.com/p/open-ig/issues/detail?id=591 Issue #591])
   * Instantly start from the last save button. ([https://code.google.com/p/open-ig/issues/detail?id=618 Issue #618])
