@@ -1536,7 +1536,7 @@ public class SkirmishScreen extends ScreenBase {
 			groupSelectValue = new NumberSpinBox(1, 500, 1, 10);
 			
 			groupSelect = new UIPanel();
-			groupSelect.backgroundColor(0x80000000);
+			groupSelect.backgroundColor(0xE0000000);
 			groupSelect.borderColor(TextRenderer.GRAY);
 			
 			groupOK = createButton("skirmish.ok");
@@ -1650,7 +1650,7 @@ public class SkirmishScreen extends ScreenBase {
 			label = createLabel("skirmish.edit_icon");
 			
 			inner = new UIPanel();
-			inner.backgroundColor(0x80000000);
+			inner.backgroundColor(0xE0000000);
 			inner.borderColor(TextRenderer.GRAY);
 			
 			ok = createButton("skirmish.ok");
@@ -1838,7 +1838,7 @@ public class SkirmishScreen extends ScreenBase {
 			label = createLabel("skirmish.edit_option");
 			
 			inner = new UIPanel();
-			inner.backgroundColor(0x80000000);
+			inner.backgroundColor(0xE0000000);
 			inner.borderColor(TextRenderer.GRAY);
 			
 			ok = createButton("skirmish.ok");
