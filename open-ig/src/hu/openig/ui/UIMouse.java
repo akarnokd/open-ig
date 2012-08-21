@@ -170,11 +170,29 @@ public class UIMouse {
 	 */
 	public UIMouse copy(Type newType) {
 		UIMouse m = new UIMouse();
-		m.x = x;
-		m.y = y;
-		m.z = z;
-		m.buttons.addAll(buttons);
-		m.modifiers.addAll(modifiers);
+		m.x = this.x;
+		m.y = this.y;
+		m.z = this.z;
+		m.buttons.addAll(this.buttons);
+		m.modifiers.addAll(this.modifiers);
+		m.type = newType;
+		return m;
+	}
+	/**
+	 * Create a mouse event copy from this event but use the given new event type
+	 * and the given translation.
+	 * @param newType the new event type
+	 * @param dx the delta X
+	 * @param dy the delta Y
+	 * @return the new mouse event
+	 */
+	public UIMouse copy(Type newType, int dx, int dy) {
+		UIMouse m = new UIMouse();
+		m.x = this.x + dx;
+		m.y = this.y + dy;
+		m.z = this.z;
+		m.buttons.addAll(this.buttons);
+		m.modifiers.addAll(this.modifiers);
 		m.type = newType;
 		return m;
 	}
@@ -186,11 +204,11 @@ public class UIMouse {
 	 */
 	public UIMouse translate(int dx, int dy) {
 		UIMouse m = new UIMouse();
-		m.x = x + dx;
-		m.y = y + dy;
-		m.z = z;
-		m.buttons.addAll(buttons);
-		m.modifiers.addAll(modifiers);
+		m.x = this.x + dx;
+		m.y = this.y + dy;
+		m.z = this.z;
+		m.buttons.addAll(this.buttons);
+		m.modifiers.addAll(this.modifiers);
 		m.type = type;
 		return m;
 	}

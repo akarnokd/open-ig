@@ -30,6 +30,7 @@ public class UIPanel extends UIContainer {
 			g2.setColor(new Color(backgroundColor, true));
 			g2.fillRect(0, 0, width, height);
 		}
+		super.draw(g2);
 		if (borderColor != 0) {
 			g2.setColor(new Color(borderColor, true));
 			Stroke st = g2.getStroke();
@@ -37,7 +38,6 @@ public class UIPanel extends UIContainer {
 			g2.drawRect(0, 0, width - 1, height - 1);
 			g2.setStroke(st);
 		}
-		super.draw(g2);
 	}
 	/**
 	 * @return the current border color ARGB
@@ -84,5 +84,19 @@ public class UIPanel extends UIContainer {
 		this.borderWidth = newWidth;
 		return this;
 	}
-	
+	/**
+	 * Change the size of the panel to encompass its contents.
+	 * @return this
+	 */
+	public UIPanel pack() {
+		int maxx = 0;
+		int maxy = 0;
+		for (UIComponent c : components) {
+			maxx = Math.max(c.x + c.width, maxx);
+			maxy = Math.max(c.y + c.height, maxy);
+		}
+		this.width = maxx;
+		this.height = maxy;
+		return this;
+	}
 }

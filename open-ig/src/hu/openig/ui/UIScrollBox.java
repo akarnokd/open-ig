@@ -85,11 +85,11 @@ public class UIScrollBox extends UIContainer {
 		downButton.y = hgap * 2 + upButton.height;
 		Shape save0 = g2.getClip();
 		g2.clipRect(0, 0, width, height);
+		super.draw(g2);
 		if (borderColor != 0) {
 			g2.setColor(new Color(borderColor, true));
 			g2.drawRect(0, 0, width - 1, height - 1);
 		}
-		super.draw(g2);
 		g2.setClip(save0);
 	}
 	@Override
@@ -100,7 +100,7 @@ public class UIScrollBox extends UIContainer {
 				result |= scrollBy(-e.z * delta);
 			}
 		}
-		return super.mouse(e) | result;
+		return super.mouse(e) || result;
 	}
 	/**
 	 * Scroll the content by the given amount.

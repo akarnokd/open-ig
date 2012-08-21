@@ -2966,9 +2966,30 @@
 	<entry key='skirmish.social_morale'>Minimum morale:</entry>
 	<entry key='skirmish.social_planets'>Minimum planets:</entry>
 	<entry key='skirmish.add_player'>Add player</entry>
-	<entry key='skirmish.clear_players'>Clear players</entry>
 	<entry key="skirmish.traits">T</entry>
 	<entry key="skirmish.traits.tooltip">Select traits</entry>
+	<entry key='skirmish.remove_players'>Remove players</entry>
+	<entry key='skirmish.name'>Name</entry>
+	<entry key='skirmish.race'>Race</entry>
+	<entry key='skirmish.icon'>Icon</entry>
+	<entry key='skirmish.ai'>AI</entry>
+	<entry key='skirmish.trait'>Trait</entry>
+	<entry key='skirmish.group'>Group</entry>
+	
+	<entry key='skirmish.ai.AI_HARD'>H-AI</entry>
+	<entry key='skirmish.ai.AI_NORMAL'>N-AI</entry>
+	<entry key='skirmish.ai.AI_EASY'>E-AI</entry>
+	
+	<entry key='skirmish.ai.AI_HARD.tooltip'>Hard AI</entry>
+	<entry key='skirmish.ai.AI_NORMAL.tooltip'>Normal AI</entry>
+	<entry key='skirmish.ai.AI_EASY.tooltip'>Easy AI</entry>
+
+	<entry key='skirmish.ai.PIRATE.tooltip'>Pirate</entry>
+	<entry key='skirmish.ai.PIRATE'>Pirate</entry>
+	<entry key='skirmish.ai.TRADER.tooltip'>Trader</entry>
+	<entry key='skirmish.ai.TRADER'>Trader</entry>
+	<entry key='skirmish.ai.USER.tooltip'>You</entry>
+	<entry key='skirmish.ai.USER'>You</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
