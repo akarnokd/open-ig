@@ -18,10 +18,10 @@ import java.awt.Stroke;
  * @author akarnokd, 2012.08.20.
  */
 public class UIPanel extends UIContainer {
-	/** The border color. */
-	protected int borderColor;
 	/** The border width. */
 	protected float borderWidth = 1f;
+	/** The border color. */
+	protected int borderColor;
 	/** The background color. */
 	protected int backgroundColor;
 	@Override

@@ -171,6 +171,10 @@ public class ResourceLocator {
 		public String getFileName() {
 			return fileName;
 		}
+		/** @return the resource type. */
+		public ResourceType type() {
+			return this.type;
+		}
 	}
 	/**
 	 * Set the list of resource containers.
@@ -486,12 +490,10 @@ public class ResourceLocator {
 				Map<String, ResourcePlace> e1 = e.get(s);
 				if (e1 != null) {
 					for (Map.Entry<String, ResourcePlace> e2 : e1.entrySet()) {
-						if (e2.getKey().startsWith(path)) {
-							int idx = e2.getKey().indexOf('/', path.length());
-							if (idx < 0) {
-								if (rs.add(e2.getKey())) {
-									result.add(e2.getValue());
-								}
+						String resid = e2.getKey();
+						if (resid.startsWith(path)) {
+							if (rs.add(resid)) {
+								result.add(e2.getValue());
 							}
 						}
 					}

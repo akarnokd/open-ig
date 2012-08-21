@@ -833,6 +833,9 @@ public class GameWindow extends JFrame implements GameControls {
 				repaintInner();
 			}
 		} else {
+			if (primary != null) {
+				mouseLeave(primary);
+			}
 			if (secondary == null || secondary.screen() != screen) {
 				if (secondary != null) {
 					secondary.onLeave();
@@ -952,6 +955,16 @@ public class GameWindow extends JFrame implements GameControls {
 			m.x = (int)(m.x * 100d / config.uiScale);
 			m.y = (int)(m.y * 100d / config.uiScale);
 		}
+	}
+	/**
+	 * Force a leave message.
+	 * @param c the component
+	 */
+	public void mouseLeave(UIComponent c) {
+		UIMouse m = UIMouse.createCurrent(surface);
+		scaleMouse(m);
+		m.type = UIMouse.Type.LEAVE;
+		c.mouse(m);
 	}
 	@Override
 	public void moveMouse() {

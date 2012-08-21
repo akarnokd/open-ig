@@ -9,15 +9,19 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
+import hu.openig.core.ResourceType;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishAIMode;
 import hu.openig.model.SkirmishDefinition;
 import hu.openig.model.SkirmishDiplomaticRelation;
 import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.SoundType;
+import hu.openig.model.Traits;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -201,6 +205,10 @@ public class SkirmishScreen extends ScreenBase {
 	UILabel colTrait;
 	/** Column. */
 	UILabel colGroup;
+	/** The group selection panel. */
+	GroupSelectPanel groupSelectPanel;
+	/** The icon selection panel. */
+	IconSelectPanel iconSelectPanel;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -441,6 +449,12 @@ public class SkirmishScreen extends ScreenBase {
 		colGroup.color(TextRenderer.LIGHT_GREEN);
 		
 		playersPanel.add(colName, colRace, colIcon, colAI, colTrait, colGroup);
+
+		groupSelectPanel = new GroupSelectPanel();
+		groupSelectPanel.visible(false);
+		
+		iconSelectPanel = new IconSelectPanel();
+		iconSelectPanel.visible(false);
 		
 		//FIXME
 		
@@ -601,6 +615,12 @@ public class SkirmishScreen extends ScreenBase {
 		clearPlayers.location(playersPanel.width - 5 - clearPlayers.width, playersPanel.height - 75);
 		addPlayer.location(clearPlayers.x - 10 - addPlayer.width, clearPlayers.y);
 		
+		groupSelectPanel.bounds(base);
+		groupSelectPanel.layout();
+		
+		iconSelectPanel.bounds(base);
+		iconSelectPanel.layout();
+		
 		layoutPlayers();
 	}
 	/**
@@ -644,19 +664,28 @@ public class SkirmishScreen extends ScreenBase {
 		return new Action0() {
 			@Override
 			public void invoke() {
-				galaxyPanel.visible(galaxyPanel == panel);
-				economyPanel.visible(economyPanel == panel);
-				playersPanel.visible(playersPanel == panel);
-				victoryPanel.visible(victoryPanel == panel);
-				
-				galaxyBtn.color(galaxyPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
-				economyBtn.color(economyPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
-				playersBtn.color(playersPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
-				victoryBtn.color(victoryPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
-				
-				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				doSelectPanel(panel, true);
 			}
 		};
+	}
+	/**
+	 * Select the specified panel.
+	 * @param panel the panel
+	 * @param sound play sound?
+	 */
+	void doSelectPanel(UIPanel panel, boolean sound) {
+		galaxyPanel.visible(galaxyPanel == panel);
+		economyPanel.visible(economyPanel == panel);
+		playersPanel.visible(playersPanel == panel);
+		victoryPanel.visible(victoryPanel == panel);
+		
+		galaxyBtn.color(galaxyPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
+		economyBtn.color(economyPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
+		playersBtn.color(playersPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
+		victoryBtn.color(victoryPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
+		if (sound) {
+			buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+		}
 	}
 	/**
 	 * Create a medium button.
@@ -688,7 +717,7 @@ public class SkirmishScreen extends ScreenBase {
 			}
 		}
 		
-		galaxyBtn.onPress.invoke();
+		doSelectPanel(galaxyPanel, false);
 	}
 	
 	/**
@@ -748,9 +777,22 @@ public class SkirmishScreen extends ScreenBase {
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			back.onClick.invoke();
-			e.consume();
-			return true;
+			if (groupSelectPanel.visible()) {
+				groupSelectPanel.visible(false);
+				e.consume();
+				commons.control().moveMouse();
+				return true;
+			} else 
+			if (iconSelectPanel.visible()) {
+				iconSelectPanel.visible(false);
+				commons.control().moveMouse();
+				e.consume();
+				return true;
+			} else {
+				back.onClick.invoke();
+				e.consume();
+				return true;
+			}
 		}
 		return super.keyboard(e);
 	}
@@ -1125,13 +1167,32 @@ public class SkirmishScreen extends ScreenBase {
 			race = createLabel2("");
 			icon = new UIImage();
 			icon.center(true);
+			icon.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					showIconPanel(PlayerLine.this);
+				}
+			};
 			ai = createLabel2("      ");
 			ai.horizontally(HorizontalAlignment.CENTER);
 			traits = createLabel("skirmish.traits");
 			traits.horizontally(HorizontalAlignment.CENTER);
+			traits.onPress = new Action0() {
+				@Override
+				public void invoke() {
+					doSelectTraits(PlayerLine.this);
+				}
+			};
+			
 			
 			group = createLabel2("  ");
 			group.horizontally(HorizontalAlignment.CENTER);
+			group.onPress = new Action0() {
+				@Override
+				public void invoke() {
+					showGroupPanel(PlayerLine.this);
+				}
+			};
 			
 			
 			this.addThis();
@@ -1271,6 +1332,7 @@ public class SkirmishScreen extends ScreenBase {
 	 * Add a new player.
 	 */
 	void doAddPlayer() {
+		
 		boolean userFound = false;
 		int maxGroup = 0;
 		for (PlayerLine pl : playerLines) {
@@ -1305,7 +1367,7 @@ public class SkirmishScreen extends ScreenBase {
 				return;
 			}
 			Collections.shuffle(candidates);
-			pl.player = candidates.get(0);
+			pl.player = candidates.get(0).copy();
 			if (pl.player.ai != SkirmishAIMode.TRADER && pl.player.ai != SkirmishAIMode.PIRATE) {
 				if (initialDifficulty.index == Difficulty.EASY.ordinal()) {
 					pl.player.ai = SkirmishAIMode.AI_EASY;
@@ -1325,6 +1387,7 @@ public class SkirmishScreen extends ScreenBase {
 		playerLines.add(pl);
 		playersList.add(pl);
 		layoutPlayers();
+		buttonSound(SoundType.CLICK_HIGH_2);
 	}
 	/**
 	 * Remove selected playes.
@@ -1340,6 +1403,7 @@ public class SkirmishScreen extends ScreenBase {
 			colName.selected(false);
 		}
 		layoutPlayers();
+		buttonSound(SoundType.CLICK_HIGH_2);
 	}
 	/**
 	 * Select or deselect all lines.
@@ -1348,6 +1412,319 @@ public class SkirmishScreen extends ScreenBase {
 	void doSelectAll(boolean value) {
 		for (PlayerLine pl : playerLines) {
 			pl.name.selected(value);
+		}
+	}
+	/**
+	 * Select the traits for the user.
+	 * @param pl the player line.
+	 */
+	void doSelectTraits(final PlayerLine pl) {
+		buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+		TraitScreen ts = (TraitScreen)displaySecondary(Screens.TRAITS);
+		ts.updateTraits(pl.player.traits);
+		ts.onComplete = new Action1<Traits>() {
+			@Override
+			public void invoke(Traits value) {
+				if (value != null) {
+					pl.player.traits.replace(value);
+				}
+				pl.update();
+			}
+		};
+	}
+	/** The group selection panel. */
+	public class GroupSelectPanel extends UIPanel {
+		/** The current player line. */
+		public PlayerLine pl;
+		/** The group selection. */
+		UIPanel groupSelect;
+		/** The group select value. */
+		NumberSpinBox groupSelectValue;
+		/** The group select label. */
+		UILabel groupSelectLabel;
+		/** Cancel button. */
+		UIGenericButton groupCancel;
+		/** Cancel button. */
+		UIGenericButton groupOK;
+		/**
+		 * Constructor. Initializes the fields.
+		 */
+		public GroupSelectPanel() {
+			backgroundColor(0x80000000);
+			
+			groupSelectLabel = createLabel("skirmish.edit_group");
+			groupSelectValue = new NumberSpinBox(1, 500, 1, 10);
+			
+			groupSelect = new UIPanel();
+			groupSelect.backgroundColor(0x80000000);
+			groupSelect.borderColor(TextRenderer.GRAY);
+			
+			groupOK = createButton("skirmish.ok");
+			groupOK.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					pl.player.group = groupSelectValue.value;
+					GroupSelectPanel.this.visible(false);
+					pl.update();
+					pl = null;
+					commons.control().moveMouse();
+				}
+			};
+			groupCancel = createButton("skirmish.cancel");
+			groupCancel.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					GroupSelectPanel.this.visible(false);
+					pl = null;
+					commons.control().moveMouse();
+				}
+			};
+			
+			groupSelect.add(groupSelectLabel, groupSelectValue, groupCancel, groupOK);
+			
+			add(groupSelect);
+		}
+		/**
+		 * Fix the layout.
+		 */
+		public void layout() {
+			groupSelectValue.setMaxSize();
+			
+			int ocw = groupOK.width + 10 + groupCancel.width;
+			int lvw = Math.max(groupSelectLabel.width, groupSelectValue.width);
+
+			int mw = Math.max(ocw, lvw);
+			int dlv = 0;
+			int doc = 0;
+			if (ocw < lvw) {
+				doc = (lvw - ocw) / 2;
+			} else {
+				dlv = (ocw - lvw) / 2;
+			}
+
+			groupSelectLabel.location(5 + dlv + (mw - groupSelectLabel.width) / 2, 5);
+			groupSelectValue.location(5 + dlv + (mw - groupSelectValue.width) / 2, groupSelectLabel.y + groupSelectLabel.height + 5);
+
+			groupOK.location(5 + doc, groupSelectValue.y + groupSelectValue.height + 10);
+			groupCancel.location(groupOK.x + groupOK.width + 10, groupOK.y);
+			
+			groupSelect.pack();
+			groupSelect.width += 5;
+			groupSelect.height += 5;
+			
+			groupSelect.location((width - groupSelect.width) / 2, (height - groupSelect.height) / 2);
+		}
+		/**
+		 * Show the panel for the given player line.
+		 * @param pl the player line
+		 */
+		public void show(PlayerLine pl) {
+			this.pl = pl;
+			groupSelectValue.value = pl.player.group;
+			groupSelectValue.update();
+			visible(true);
+		}
+	}
+	/**
+	 * Shwo the group panel.
+	 * @param pl the line
+	 */
+	void showGroupPanel(PlayerLine pl) {
+		buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+		groupSelectPanel.show(pl);
+	}
+	/**
+	 * Show the icon panel.
+	 * @param pl the player
+	 */
+	void showIconPanel(PlayerLine pl) {
+		buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+		iconSelectPanel.show(pl);
+	}	
+	/**
+	 * The icon selection panel.
+	 * @author akarnokd, 2012.08.21.
+	 *
+	 */
+	public class IconSelectPanel extends UIPanel {
+		/** The current player line. */
+		public PlayerLine pl;
+		/** The inner panel. */
+		UIPanel inner;
+		/** The group select label. */
+		UILabel label;
+		/** Cancel button. */
+		UIGenericButton cancel;
+		/** Cancel button. */
+		UIGenericButton ok;
+		/** The image list. */
+		final List<UIImage> images = U.newArrayList();
+		/** The resource reference. */
+		final List<String> imageRefs = U.newArrayList();
+		/** The current selected. */
+		int selectedIndex = -1;
+		/** Construct the panel. */
+		public IconSelectPanel() {
+			backgroundColor(0x80000000);
+			
+			label = createLabel("skirmish.edit_icon");
+			
+			inner = new UIPanel();
+			inner.backgroundColor(0x80000000);
+			inner.borderColor(TextRenderer.GRAY);
+			
+			ok = createButton("skirmish.ok");
+			ok.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					pl.player.icon = images.get(selectedIndex).image();
+					pl.player.iconRef = imageRefs.get(selectedIndex);
+					
+					IconSelectPanel.this.visible(false);
+					pl.update();
+					pl = null;
+					commons.control().moveMouse();
+				}
+			};
+			cancel = createButton("skirmish.cancel");
+			cancel.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					IconSelectPanel.this.visible(false);
+					pl = null;
+					commons.control().moveMouse();
+				}
+			};
+			
+			inner.add(label, ok, cancel);
+
+			int i = 0;
+			for (ResourcePlace rp : rl.list(rl.language, "starmap/fleets")) {
+				if (rp.type() == ResourceType.IMAGE) {
+					String imgRef = rp.getName();
+					UIImage img = new UIImage(rl.getImage(imgRef));
+
+					img.tooltip(imgRef);
+					img.center(true);
+					img.borderColor(0xFFE0E0E0);
+					
+					images.add(img);
+					imageRefs.add(imgRef);
+					
+					final int j = i;
+
+					img.onClick = new Action0() {
+						@Override
+						public void invoke() {
+							onSelectImage(j);
+						}
+					};
+					
+					inner.add(img);
+					
+					i++;
+				}
+			}
+			
+			add(inner);
+		}
+		/**
+		 * The action to perform when an image is clicked.
+		 * @param index the index
+		 */
+		void onSelectImage(int index) {
+			for (int i = 0; i < images.size(); i++) {
+				UIImage img = images.get(i);
+				if (i == index) {
+					img.backgroundColor(0xFF606060);
+				} else {
+					img.backgroundColor(0);
+				}
+			}
+			selectedIndex = index;
+		}
+		/**
+		 * Fix the layout.
+		 */
+		public void layout() {
+			
+			label.location(5, 5);
+			
+			int ry = label.y + label.height + 10;
+
+			int imgw = 0;
+			int imgh = 0;
+			for (int i = 0; i < images.size(); i++) {
+				UIImage img = images.get(i);
+				img.sizeToContent();
+				
+				imgw = Math.max(imgw, img.width);
+				imgh = Math.max(imgh, img.height);
+			}
+			int cols = 4;
+			int resize = 2;
+			imgw *= resize;
+			imgh *= resize;
+			int px = 5;
+			int py = 0;
+			for (int i = 0; i < images.size(); i++) {
+				if (i > 0 && (i % cols == 0)) {
+					px = 5;
+					ry += py + 5; 
+				}
+				UIImage img = images.get(i);
+				
+				img.x = px;
+				img.y = ry;
+				
+				img.width = imgw;
+				img.height = imgh;
+				
+				py = Math.max(py, img.height);
+				px += img.width + 5;
+			}
+
+			ry += py + 5;
+			
+			int okCancelWidth = ok.width + cancel.width + 10;
+			
+			ry += 10;
+			
+			ok.x = 0;
+			ok.y = ry;
+			cancel.x = ok.x + ok.width + 10;
+			cancel.y = ry;
+			
+
+			inner.pack();
+			inner.width += 5;
+			inner.height += 5;
+			
+			ok.x = (inner.width - okCancelWidth) / 2;
+			cancel.x = ok.x + ok.width + 10;
+
+			imgw = 0;
+			imgh = Integer.MAX_VALUE;
+			for (UIImage img : images) {
+				imgw = Math.max(img.x + img.width, imgw);
+				imgh = Math.min(imgh, img.x);
+			}
+			
+			int imgd = (inner.width - imgw + imgh) / 2;
+			for (UIImage img : images) {
+				img.x += imgd;
+			}			
+			inner.location((width - inner.width) / 2, (height - inner.height) / 2);
+		}
+		/**
+		 * Show the panel for the given player line.
+		 * @param pl the player line
+		 */
+		public void show(PlayerLine pl) {
+			this.pl = pl;
+			selectedIndex = imageRefs.indexOf(pl.player.iconRef);
+			onSelectImage(selectedIndex);
+			visible(true);
 		}
 	}
 }
