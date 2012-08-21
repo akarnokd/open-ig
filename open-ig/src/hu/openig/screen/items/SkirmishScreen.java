@@ -240,6 +240,7 @@ public class SkirmishScreen extends ScreenBase {
 		load = createButton("skirmish.load");
 		save = createButton("skirmish.save");
 		play = createButton("skirmish.play");
+		play.disabledPattern(commons.common().disabledPattern);
 		
 		galaxyBtn.onPress = panelSwitchAction(galaxyPanel);
 		economyBtn.onPress = panelSwitchAction(economyPanel);
@@ -731,6 +732,7 @@ public class SkirmishScreen extends ScreenBase {
 		
 		doSelectPanel(galaxyPanel, false);
 		doManageRemove();
+		doManagePlay();
 	}
 	
 	/**
@@ -1448,6 +1450,7 @@ public class SkirmishScreen extends ScreenBase {
 		playersList.add(pl);
 		layoutPlayers();
 		buttonSound(SoundType.CLICK_HIGH_2);
+		doManagePlay();
 	}
 	/**
 	 * Handle the remove all clicks.
@@ -1484,6 +1487,7 @@ public class SkirmishScreen extends ScreenBase {
 		layoutPlayers();
 		buttonSound(SoundType.CLICK_HIGH_2);
 		doManageRemove();
+		doManagePlay();
 	}
 	/**
 	 * Select or deselect all lines.
@@ -2029,5 +2033,11 @@ public class SkirmishScreen extends ScreenBase {
 				layoutPlayers();
 			}
 		});
+	}
+	/**
+	 * Check if at least one user is set up.
+	 */
+	void doManagePlay() {
+		play.enabled(!playerLines.isEmpty());
 	}
 }
