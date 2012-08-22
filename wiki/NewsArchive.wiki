@@ -6,6 +6,16 @@
 
 == August, 2012 ==
 
+*August 22, 2012*
+
+The skirmish is almost complete, you can now create a game, but victory conditions are not checked yet, and some advanced features (such as shared radar, non-attackable allies, pirate behavior) are not implemented yet. But still, you should be able to play, save and load the skirmish game.
+
+Note that many labels are still not translated into german and french.
+
+For documentation on the new Skirmish screen, please refer to these blog posts: [http://open-ig-dev.blogspot.hu/2012/08/some-skirmish-documentation.html Galaxy, Economy and Victory] tabs and [http://open-ig-dev.blogspot.hu/2012/08/skirmish-documentation-player-selection.html Players] tab.
+
+Enjoy.
+
 *August 18, 2012*
 
 In order to give some flexibility to the skirmish players, I have added a basic trait system, commonly found in other 4X turn based games. This way, you can customize the parameters and capabilities of your race for the skirmish play beyond the default Open-IG values. 
