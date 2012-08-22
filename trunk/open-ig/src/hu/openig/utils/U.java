@@ -550,4 +550,23 @@ public final class U {
 		}
 		return r;
 	}
+	/**
+	 * Pad the string from the left with the given characters up to the length.
+	 * @param s the string
+	 * @param length the length
+	 * @param c the padding character
+	 * @return the new string
+	 */
+	public static String padLeft(String s, int length, char c) {
+		if (s.length() >= length) {
+			return s;
+		}
+		StringBuilder b = new StringBuilder();
+		length -= s.length();
+		while (length-- > 0) {
+			b.append(c);
+		}
+		b.append(s);
+		return b.toString();
+	}
 }

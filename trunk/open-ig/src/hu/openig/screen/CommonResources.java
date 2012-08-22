@@ -59,6 +59,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -826,7 +828,25 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void playRegularMusic() {
 		stopMusic();
-		music.playLooped("music/Music1", "music/Music2", "music/Music3");
+		
+		List<String> musicList = U.newArrayList();
+		int maxLen = 0;
+		for (ResourcePlace rp : rl.list(language(), "music/Music")) {
+			musicList.add(rp.getName());
+			maxLen = Math.max(rp.getName().length(), maxLen);
+		}
+		final int fMaxLen = maxLen;
+		Collections.sort(musicList, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				String s1 = U.padLeft(o1.substring(11), fMaxLen, ' ');
+				String s2 = U.padLeft(o2.substring(11), fMaxLen, ' ');
+				return s1.compareTo(s2);
+			}
+		});
+		
+		String[] musics = musicList.toArray(new String[0]);
+		music.playLooped(musics);
 	}
 	/** Convenience method to start playing the original battle music. */
 	public void playBattleMusic() {
