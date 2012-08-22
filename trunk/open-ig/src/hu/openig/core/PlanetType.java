@@ -26,6 +26,10 @@ public class PlanetType {
 	public String label;
 	/** The body animation phases. */
 	public BufferedImage[] body;
+	/** The equipment image. */
+	public BufferedImage equipment;
+	/** The spacewar image. */
+	public BufferedImage spacewar;
 	/** The available tileset. */
 	public Map<Integer, Tile> tiles = new HashMap<Integer, Tile>();
 	/** The surface map variations. */

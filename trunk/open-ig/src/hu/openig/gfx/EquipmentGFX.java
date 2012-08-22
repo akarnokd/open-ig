@@ -41,9 +41,6 @@ public class EquipmentGFX {
 	/** The equipment is under development. */
 	@Img(name = "equipment/under_development_huge")
 	public BufferedImage underDevelopment;
-	/** Equipping a planet image. */
-	@Img(name = "equipment/planet_tiny")
-	public BufferedImage planetOrbit;
 	/** Add one. */
 	@Btn2(name = "equipment/button_add_one")
 	public BufferedImage[] addOne;

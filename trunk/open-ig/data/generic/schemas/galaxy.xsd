@@ -48,6 +48,12 @@
 			<xs:element name="body" type="xs:string">
 				<xs:annotation><xs:documentation>The image for the starmap screen, should contain multiple rotation phases. The number of animation items is width / height.</xs:documentation></xs:annotation>
 			</xs:element>
+			<xs:element name="equipment" type="xs:string">
+				<xs:annotation><xs:documentation>The planet's image on the equipment screen.</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="spacewar" type="xs:string">
+				<xs:annotation><xs:documentation>The planet's image on the spacewar screen.</xs:documentation></xs:annotation>
+			</xs:element>
 			<xs:element name="tileset" type="tileset">
 				<xs:annotation><xs:documentation>The size definitions of the tiles used by this planet type.</xs:documentation></xs:annotation>
 			</xs:element>

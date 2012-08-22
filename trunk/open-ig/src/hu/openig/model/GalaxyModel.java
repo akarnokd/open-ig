@@ -75,6 +75,12 @@ public class GalaxyModel {
 							XElement tileset = planet.childElement("tileset");
 							String tilePattern = tileset.get("pattern");
 							
+							XElement xequipment = planet.childElement("equipment");
+							planetType.equipment = rl.getImage(xequipment.content);
+							
+							XElement xspacewar = planet.childElement("spacewar");
+							planetType.spacewar = rl.getImage(xspacewar.content);
+							
 							for (XElement te : tileset) {
 								if (te.name.equals("tile-range")) {
 									int start = Integer.parseInt(te.get("start"));

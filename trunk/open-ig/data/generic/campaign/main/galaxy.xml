@@ -5,6 +5,8 @@
 	<planets>
 		<planet type="neptoplasm" label="planet.type.neptoplasm">
 			<body>starmap/planets/planet_alien_30x30</body>
+			<equipment>colony/surfaces/neptoplasm/equipment_neptoplasm</equipment>
+			<spacewar>colony/surfaces/neptoplasm/spacewar_neptoplasm</spacewar>
 			<tileset pattern="colony/surfaces/neptoplasm/tile_neptoplasm_%03d">
 				<tile-range start="21" end="26"/>
 				<!-- width is the up-right and height is the down-right direction. -->
@@ -21,6 +23,8 @@
 		</planet>
 		<planet type="cratered" label="planet.type.cratered">
 			<body>starmap/planets/planet_cratered_30x30</body>
+			<equipment>colony/surfaces/cratered/equipment_cratered</equipment>
+			<spacewar>colony/surfaces/cratered/spacewar_cratered</spacewar>
 			<tileset pattern="colony/surfaces/cratered/tile_cratered_%03d">
 				<tile-range start="21" end="60"/>
 				<tile id="61" width="2"/>
@@ -38,6 +42,8 @@
 		</planet>
 		<planet type="desert" label="planet.type.desert">
 			<body>starmap/planets/planet_desert_30x30</body>
+			<equipment>colony/surfaces/desert/equipment_desert</equipment>
+			<spacewar>colony/surfaces/desert/spacewar_desert</spacewar>
 			<tileset pattern="colony/surfaces/desert/tile_desert_%03d">
 				<tile-range start="21" end="54"/>
 				<tile-range start="55" end="68" width="2" height="2"/>
@@ -51,6 +57,8 @@
 		</planet>
 		<planet type="earth" label="planet.type.earth">
 			<body>starmap/planets/planet_earth_30x30</body>
+			<equipment>colony/surfaces/earth/equipment_earth</equipment>
+			<spacewar>colony/surfaces/earth/spacewar_earth</spacewar>
 			<tileset pattern="colony/surfaces/earth/tile_earth_%03d">
 				<tile-range start="21" end="107"/>
 				<tile id="108" height="2"/>
@@ -67,6 +75,8 @@
 		</planet>
 		<planet type="frozen" label="planet.type.frozen">
 			<body>starmap/planets/planet_ice_30x30</body>
+			<equipment>colony/surfaces/frozen/equipment_frozen</equipment>
+			<spacewar>colony/surfaces/frozen/spacewar_frozen</spacewar>
 			<tileset pattern="colony/surfaces/frozen/tile_frozen_%03d">
 				<tile-range start="21" end="32"/>
 				<tile-range start="33" end="37" width="2"/>
@@ -84,6 +94,8 @@
 		</planet>
 		<planet type="liquid" label="planet.type.liquid">
 			<body>starmap/planets/planet_liquid_30x30</body>
+			<equipment>colony/surfaces/liquid/equipment_liquid</equipment>
+			<spacewar>colony/surfaces/liquid/spacewar_liquid</spacewar>
 			<tileset pattern="colony/surfaces/liquid/tile_liquid_%03d">
 				<tile-range start="21" end="69"/>
 				<tile-range start="70" end="72" width="2"/>
@@ -104,6 +116,8 @@
 		</planet>
 		<planet type="rocky" label="planet.type.rocky">
 			<body>starmap/planets/planet_rocky_30x30</body>
+			<equipment>colony/surfaces/rocky/equipment_rocky</equipment>
+			<spacewar>colony/surfaces/rocky/spacewar_rocky</spacewar>
 			<tileset pattern="colony/surfaces/rocky/tile_rocky_%03d">
 				<tile-range start="21" end="41"/>
 				<tile-range start="42" end="45" width="2"/>
