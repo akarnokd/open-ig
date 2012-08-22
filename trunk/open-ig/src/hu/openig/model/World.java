@@ -14,6 +14,7 @@ import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.render.TextRenderer;
+import hu.openig.scripting.SkirmishScripting;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
@@ -369,7 +370,9 @@ public class World {
 		
 		applyTraits();
 		
-		processScripting(rl.getXML(definition.scripting));
+		if (definition.scripting != null) {
+			processScripting(rl.getXML(definition.scripting));
+		}
 		
 	}
 	/**
@@ -2808,13 +2811,16 @@ public class World {
 			
 			}
 			p.name = sp.description;
-			p.color = sp.color;
 			p.fleetIcon = rl.getImage(sp.iconRef);
+			p.color = sp.iconColor(p.fleetIcon);
 			p.money = skirmishDefinition.initialMoney;
 			p.noDatabase = sp.nodatabase;
 			p.noDiplomacy = sp.nodiplomacy;
 			p.race = sp.race;
 			p.shortName = sp.name;
+			if (sp.picture != null) {
+				p.picture = rl.getImage(sp.picture);
+			}
 
 			// create initial fleets
 			p.changeInventoryCount(researches.get("ColonyShip"), Math.max(0, skirmishDefinition.initialColonyShips - 1));
@@ -2861,6 +2867,9 @@ public class World {
 		}
 
 		applyTraits();
+		
+		scripting = new SkirmishScripting();
+		scripting.init(player, null);
 	}
 	/**
 	 * Establish diplomatic relation between groups.
