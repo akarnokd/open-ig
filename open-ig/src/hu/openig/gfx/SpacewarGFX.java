@@ -81,9 +81,9 @@ public class SpacewarGFX {
 	/** Green explosion. */
 	@Anim(name = "spacewar/explosion_4", width = 40)
 	public BufferedImage[] explosionGreen;
-	/** The planet. */
-	@Img(name = "spacewar/planet")
-	public BufferedImage planet;
+//	/** The planet. */
+//	@Img(name = "spacewar/planet")
+//	public BufferedImage planet;
 	/** The planet flipped. */
 	@Img(name = "spacewar/planet_flipped")
 	public BufferedImage planetFlipped;

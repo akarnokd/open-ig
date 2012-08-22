@@ -1260,10 +1260,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			double shieldValue = placeShields(nearbyPlanet, alien);
 			placeProjectors(nearbyPlanet, alien, shieldValue);
 
+			int planetWidth = battle.helperPlanet.type.spacewar.getWidth();
+//			int planetHeight = 506;
 //			int defenseWidth = Math.max(maxWidth(shields()), maxWidth(projectors()));
-			centerStructures(space.width - commons.spacewar().planet.getWidth() / 2, 
+			centerStructures(space.width - planetWidth / 2, 
 					U.concat(shields(), projectors()));
-			maxRightPlacement -= 3 * commons.spacewar().planet.getWidth() / 2;
+			maxRightPlacement -= 3 * planetWidth / 2;
 			
 			// place and align stations
 			placeStations(nearbyPlanet, alien);
@@ -1858,8 +1860,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		g2.drawImage(commons.spacewar().background, 0, 0, space.width, space.height, null);
 		
 		if (planetVisible) {
-			int pw = commons.spacewar().planet.getWidth();
-			g2.drawImage(commons.spacewar().planet, space.width - pw, 0, null);
+			BufferedImage pimg = battle.helperPlanet.type.spacewar;
+			int pw = pimg.getWidth();
+			int ph = pimg.getHeight();
+			g2.drawImage(pimg, space.width - pw, -ph / 3, pw, 3 * ph / 2, null);
 			
 			if (battle.showLanding) {
 				int idx = (int)((animationTimer / 2) % commons.spacewar().landingZone.length);
@@ -1933,7 +1937,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	@Override
 	public Point landingPlace() {
 		if (planetVisible && battle.showLanding) {
-			int pw = commons.spacewar().planet.getWidth();
+			int pw = battle.helperPlanet.type.spacewar.getWidth();
 			int idx = (int)((animationTimer / 2) % commons.spacewar().landingZone.length);
 			BufferedImage limg = commons.spacewar().landingZone[idx];
 			int lx = space.width - pw - limg.getWidth() / 2;

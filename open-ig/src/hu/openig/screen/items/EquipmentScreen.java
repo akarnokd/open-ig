@@ -1105,7 +1105,7 @@ public class EquipmentScreen extends ScreenBase {
 		if (planetVisible) {
 			Shape save0 = g2.getClip();
 			g2.clipRect(leftPanel.x, leftPanel.y, leftPanel.width, leftPanel.height);
-			BufferedImage planet = commons.equipment().planetOrbit;
+			BufferedImage planet = planet().type.equipment;
 			g2.drawImage(planet, leftPanel.x, leftPanel.y + (leftPanel.height - planet.getHeight()) / 2, null);
 			g2.setClip(save0);
 		}
