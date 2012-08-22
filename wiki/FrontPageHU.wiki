@@ -23,6 +23,8 @@ Sajnos az új cimkék még nincsenek lefordítva németre és franciára.
 
 Az új Egyedi játékmód képernyő leírását lásd itt (angolul): [http://open-ig-dev.blogspot.hu/2012/08/some-skirmish-documentation.html Galaxis, Gazdaság and Győzelem] tabs and [http://open-ig-dev.blogspot.hu/2012/08/skirmish-documentation-player-selection.html Játékosok] tab.
 
+Ha az Indító nem venné észre az új verziót, kérlek légy türelemmel. A Google Code sajnos néha valamiért a régi verziót mutatja a web-en, mint ami az SVN-ben megtalálható. Ezen nem tudok változtatni.
+
 Jó szórakozást.
 
 *2012 augusztus 18*
