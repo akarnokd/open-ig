@@ -2228,15 +2228,19 @@ public class GameWindow extends JFrame implements GameControls {
 		String game = xworld.get("game");
 		XElement sk = xworld.childElement("skirmish-definition");
 		World world = commons.world(); 
-		
-		if (!game.equals(currentGame) || ((sk == null) != (skirmish == null))) {
+
+		SkirmishDefinition sk1 = null;
+		if (sk != null) {
+			sk1 = new SkirmishDefinition();
+			sk1.load(sk, commons.traits);
+		}
+
+		if (!game.equals(currentGame) || !U.equal(skirmish, sk1)) {
 			commons.world(null);
 			// load world model
 			world = new World(commons);
 			
 			if (sk != null) {
-				SkirmishDefinition sk1 = new SkirmishDefinition();
-				sk1.load(sk);
 				world.skirmishDefinition = sk1;
 				world.definition = sk1.createDefinition(commons.rl);
 				world.loadSkirmish(commons.rl);

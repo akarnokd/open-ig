@@ -78,6 +78,43 @@ public class SkirmishDefinition {
 	/** The list of players. */
 	public final List<SkirmishPlayer> players = U.newArrayList();
 	/**
+	 * Save the skirmish definition.
+	 * @param xout the output
+	 */
+	public void save(XElement xout) {
+		xout.saveFields(this);
+		XElement xplayers = xout.add("players");
+		for (SkirmishPlayer p : players) {
+			XElement xplayer = xplayers.add("player");
+			xplayer.saveFields(p);
+			XElement xtraits = xplayer.add("traits");
+			for (Trait t : p.traits) {
+				xtraits.add("trait").set("id", t);
+			}
+		}
+	}
+	/**
+	 * Load the skirmish definition.
+	 * @param xin the input
+	 * @param traits the global traits
+	 */
+	public void load(XElement xin, Traits traits) {
+		players.clear();
+		xin.loadFields(this);
+		for (XElement xplayers : xin.childrenWithName("players")) {
+			for (XElement xplayer : xplayers.childrenWithName("player")) {
+				SkirmishPlayer sp = new SkirmishPlayer();
+				xplayer.loadFields(sp);
+				for (XElement xtraits : xplayer.childrenWithName("traits")) {
+					for (XElement xtrait : xtraits.childrenWithName("trait")) {
+						sp.traits.add(traits.trait(xtrait.get("id")));
+					}
+				}
+				players.add(sp);
+			}
+		}
+	}
+	/**
 	 * Create a game definition.
 	 * @param rl the resource locator.
 	 * @return the composed definition
@@ -118,20 +155,6 @@ public class SkirmishDefinition {
 		result.walks = techDef.walks;
 		
 		return result;
-	}
-	/**
-	 * Save the skirmish definition.
-	 * @param xout the output
-	 */
-	public void save(XElement xout) {
-		
-	}
-	/**
-	 * Load the skirmish definition.
-	 * @param xin the input
-	 */
-	public void load(XElement xin) {
-		
 	}
 	@Override
 	public int hashCode() {

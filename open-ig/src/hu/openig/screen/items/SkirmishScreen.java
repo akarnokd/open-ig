@@ -241,6 +241,12 @@ public class SkirmishScreen extends ScreenBase {
 		save = createButton("skirmish.save");
 		play = createButton("skirmish.play");
 		play.disabledPattern(commons.common().disabledPattern);
+		play.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				doPlay();
+			}
+		};
 		
 		galaxyBtn.onPress = panelSwitchAction(galaxyPanel);
 		economyBtn.onPress = panelSwitchAction(economyPanel);
@@ -1069,30 +1075,6 @@ public class SkirmishScreen extends ScreenBase {
 		}
 	}
 	/**
-	 * Compute the icon color of the image.
-	 * @param resource the resource
-	 * @return the color
-	 */
-	public int iconColor(String resource) {
-		BufferedImage bimg = rl.getImage(resource);
-		int[] pixels = bimg.getRGB(0, 0, bimg.getWidth(), bimg.getHeight(), null, 0, bimg.getWidth());
-		long r = 0;
-		long g = 0;
-		long b = 0;
-		for (int i : pixels) {
-			if ((i & 0xFF000000) != 0) {
-				r += ((i & 0xFF0000) >> 16);
-				g += ((i & 0xFF00) >> 8);
-				b += ((i & 0xFF));
-			}
-		}
-		r /= pixels.length;
-		g /= pixels.length;
-		b /= pixels.length;
-		
-		return (int)(0xFF000000 | (r << 16) | (g << 8) | (b));
-	}
-	/**
 	 * Get the races from the tech and building definitions.
 	 * @param def the definition
 	 * @return the set of races
@@ -1141,6 +1123,7 @@ public class SkirmishScreen extends ScreenBase {
 			sp.nodatabase = xplayer.getBoolean("nodatabase", false);
 			sp.nodiplomacy = xplayer.getBoolean("nodiplomacy", false);
 			sp.diplomacyHead = xplayer.get("diplomacy-head", null);
+			sp.picture = xplayer.get("picture", null);
 			
 			String ai = xplayer.get("ai", null);
 			if (xplayer.getBoolean("user", false)) {
@@ -2041,5 +2024,38 @@ public class SkirmishScreen extends ScreenBase {
 	 */
 	void doManagePlay() {
 		play.enabled(!playerLines.isEmpty());
+	}
+	/**
+	 * Create a skirmish definition based on the current UI settings.
+	 * @return the definition
+	 */
+	SkirmishDefinition createDefinition() {
+		SkirmishDefinition result = new SkirmishDefinition();
+		
+		// Galaxy tab --------------------
+		
+		result.galaxy = galaxyDef.get().name;
+		result.galaxyRandomSurface = galaxyRandomSurface.selected();
+		result.galaxyRandomLayout = galaxyRandomLayout.selected();
+		result.galaxyCustomPlanets = galaxyCustomPlanets.selected();
+		result.galaxyPlanetCount = galaxyPlanetCount.value;
+		
+		result.race = galaxyRaces.get().name;
+		result.tech = technologyDef.get().name;
+		result.initialLevel = technologyLevel.value;
+
+		result.initialDiplomaticRelation = SkirmishDiplomaticRelation.values()[initialRelation.index];
+		result.initialDifficulty = Difficulty.values()[initialDifficulty.index];
+		
+		// Economic tab ---------------------
+		
+		
+		return result;
+	}
+	/**
+	 * Start the skirmish.
+	 */
+	void doPlay() {
+		
 	}
 }

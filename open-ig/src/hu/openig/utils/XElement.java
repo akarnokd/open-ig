@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -782,6 +783,78 @@ public class XElement implements Iterable<XElement> {
 					queue.addLast(c);
 				}
 			}
+		}
+	}
+	/**
+	 * Save the simple fields of the given object.
+	 * @param o the object, non-null
+	 */
+	public void saveFields(Object o) {
+		for (Field f : o.getClass().getDeclaredFields()) {
+			if (f.getType() == Boolean.TYPE
+					|| f.getType() == Byte.TYPE
+					|| f.getType() == Short.TYPE
+					|| f.getType() == Integer.TYPE
+					|| f.getType() == Long.TYPE
+					|| f.getType() == Float.TYPE
+					|| f.getType() == Double.TYPE
+					|| f.getType() == Character.TYPE
+					|| f.getType() == String.class
+					|| f.getType().isEnum()) {
+				try {
+					set(f.getName(), f.get(o));
+				} catch (IllegalAccessException ex) {
+					Exceptions.add(ex);
+				}
+			}
+		}
+	}
+	/**
+	 * Load the simple fields of the given object.
+	 * @param o the object, non-null
+	 */
+	public void loadFields(Object o) {
+		for (Field f : o.getClass().getDeclaredFields()) {
+			try {
+				if (f.getType() == Boolean.TYPE) {
+					f.set(o, getBoolean(f.getName(), (Boolean)f.get(o)));
+				} else
+				if (f.getType() == Byte.TYPE) {
+					f.set(o, (byte)getInt(f.getName(), (Byte)f.get(o)));
+				} else
+				if (f.getType() == Short.TYPE) {
+					f.set(o, (short)getInt(f.getName(), (Short)f.get(o)));
+				} else
+				if (f.getType() == Integer.TYPE) {
+					f.set(o, (int)getInt(f.getName(), (Integer)f.get(o)));
+				} else
+				if (f.getType() == Long.TYPE) {
+					f.set(o, (long)getLong(f.getName(), (Long)f.get(o)));
+				} else
+				if (f.getType() == Float.TYPE) {
+					f.set(o, (float)getDouble(f.getName(), (Float)f.get(o)));
+				} else
+				if (f.getType() == Double.TYPE) {
+					f.set(o, (double)getDouble(f.getName(), (Double)f.get(o)));
+				} else
+				if (f.getType() == Character.TYPE) {
+					f.set(o, get(f.getName(), String.valueOf(f.get(o))).charAt(0));
+				} else
+				if (f.getType().isEnum()) {
+					String e = get(f.getName());
+					for (Object o2 : f.getType().getEnumConstants()) {
+						if (o2 instanceof Enum<?>) {
+							Enum<?> e2 = (Enum<?>) o2;
+							if (e2.name().equals(e)) {
+								f.set(o, e2);
+							}
+						}
+					}
+					
+				}
+			} catch (IllegalAccessException ex) {
+				Exceptions.add(ex);
+			} 
 		}
 	}
 }
