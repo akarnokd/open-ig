@@ -975,6 +975,7 @@ public class World {
 		}
 		sstate.set("save-name", worldSave.get("save-name", null));
 		sstate.set("save-mode", worldSave.get("save-mode", null));
+		sstate.set("skirmish", worldSave.childElement("skirmish-definition") != null);
 
 		return sstate;
 	}
@@ -2822,30 +2823,54 @@ public class World {
 				p.picture = rl.getImage(sp.picture);
 			}
 
-			// create initial fleets
-			p.changeInventoryCount(researches.get("ColonyShip"), Math.max(0, skirmishDefinition.initialColonyShips - 1));
-			p.changeInventoryCount(researches.get("OrbitalFactory"), Math.max(0, skirmishDefinition.initialOrbitalFactories - 1));
-
-			if (skirmishDefinition.grantColonyShip) {
-				p.setAvailable(researches.get("ColonyShip"));
+			if (p.aiMode != AIMode.PIRATES && p.aiMode != AIMode.TRADERS) {
+				// create initial fleets
+				p.changeInventoryCount(researches.get("ColonyShip"), Math.max(0, skirmishDefinition.initialColonyShips - 1));
+				p.changeInventoryCount(researches.get("OrbitalFactory"), Math.max(0, skirmishDefinition.initialOrbitalFactories - 1));
+	
+				if (skirmishDefinition.grantColonyShip) {
+					p.setAvailable(researches.get("ColonyShip"));
+				}
+				if (skirmishDefinition.grantOrbitalFactory) {
+					p.setAvailable(researches.get("OrbitalFactory"));
+				}
+				if (skirmishDefinition.initialColonyShips > 0) {
+					ResearchType rt = researches.get("ColonyShip");
+					Fleet f = new Fleet(p);
+					f.name = labels.get("@Colonizer");
+					f.addInventory(rt, 1);
+				}
+				
+				createStartingFleet(p);
 			}
-			if (skirmishDefinition.grantOrbitalFactory) {
-				p.setAvailable(researches.get("OrbitalFactory"));
-			}
-			if (skirmishDefinition.initialColonyShips > 0) {
-				ResearchType rt = researches.get("ColonyShip");
-				Fleet f = new Fleet(p);
-				f.addInventory(rt, 1);
-			}
-			
-			createStartingFleet(p);
 			
 			groups.put(p, sp.group);
 			
 			p.traits.replace(sp.traits);
+
+			for (ResearchType rt : researches.researches.values()) {
+				if (rt.race.contains(p.race) && rt.level == 0) {
+					p.add(rt);
+				}
+			}
+			
+			for (ResearchType rt : p.available().keySet()) {
+				p.setRelated(rt);
+			}
+			
 			players.players.put(p.id, p);
 			id++;
 		}
+		
+		// fix research requirements of colony ship and orbital factory
+		for (ResearchType rt : Arrays.asList(researches.get("ColonyShip"), researches.get("OrbitalFactory"))) {
+			rt.civilLab = skirmishDefinition.initialPlanets > 0 ? 1 : 0;
+			rt.mechLab = skirmishDefinition.initialPlanets > 1 ? 1 : 0;
+			rt.compLab = skirmishDefinition.initialPlanets > 2 ? 1 : 0;
+			rt.aiLab = skirmishDefinition.initialPlanets > 3 ? 1 : 0;
+			rt.milLab = skirmishDefinition.initialPlanets > 4 ? 1 : 0;
+		}
+		
 		establishDiplomacy(groups);
 		// strip planets.
 		for (Planet p : planets.values()) {
@@ -2927,7 +2952,7 @@ public class World {
 		}
 		
 		List<Integer> zoneIndex = U.newArrayList();
-		for (int zi = 0; zi < pls.size(); zi++) {
+		for (int zi = 0; zi < zones * zones; zi++) {
 			zoneIndex.add(zi);
 		}
 		Collections.shuffle(zoneIndex, random());
@@ -2967,16 +2992,23 @@ public class World {
 			}
 			Planet pl = random(candidates);
 			
+			p.currentPlanet = pl;
+			p.selectionMode = SelectionMode.PLANET;
 			pl.owner = p;
 			pl.race = p.race;
 			pl.population = skirmishDefinition.initialPopulation;
 			pl.lastPopulation = pl.population;
 			
+			p.planets.put(pl, PlanetKnowledge.BUILDING);
 			zi++;
 		}
 		// locate additional planets nearby
 		for (Player p : pls) {
-			final Planet pl = p.ownPlanets().get(0);
+			List<Planet> op = p.ownPlanets();
+			if (op.isEmpty()) {
+				continue;
+			}
+			final Planet pl = op.get(0);
 			List<Planet> rest = U.newArrayList(planets.values());
 			rest.remove(pl);
 			Collections.sort(rest, new Comparator<Planet>() {
@@ -2987,7 +3019,7 @@ public class World {
 					return U.compare(d1, d2);
 				}
 			});
-			int n = skirmishDefinition.initialPlanets;
+			int n = skirmishDefinition.initialPlanets - 1;
 			int i = 0;
 			while (n > 0 && i < rest.size()) {
 				Planet p2 = rest.get(i);
@@ -2996,9 +3028,18 @@ public class World {
 					p2.race = p.race;
 					p2.population = skirmishDefinition.initialPopulation;
 					p2.lastPopulation = p2.population;
+					p.planets.put(p2, PlanetKnowledge.BUILDING);
 					n--;
 				}
 				i++;
+			}
+			
+			for (Fleet f : p.ownFleets()) {
+				double r = 4 + random().nextDouble() * 3;
+				double a = random().nextDouble() * 2 * Math.PI;
+				
+				f.x = pl.x + r * Math.cos(a);
+				f.y = pl.y + r * Math.sin(a);
 			}
 		}
 		if (skirmishDefinition.placeColonyHubs) {
@@ -3013,6 +3054,9 @@ public class World {
 
 							pl.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
 							pl.rebuildRoads();
+							
+							b.buildProgress = b.type.hitpoints;
+							b.hitpoints = b.type.hitpoints;
 						}
 					}
 				}
@@ -3025,6 +3069,7 @@ public class World {
 	 */
 	void createStartingFleet(Player p) {
 		Fleet f = new Fleet(p);
+		f.name = labels.get("@MainFleet");
 		for (ResearchType rt : researches.values()) {
 			if (rt.race.contains(p.race)) {
 				if (p.isAvailable(rt) || rt.level == 0) {
@@ -3040,5 +3085,6 @@ public class World {
 				}
 			}
 		}
+		p.currentFleet = f;
 	}
 }

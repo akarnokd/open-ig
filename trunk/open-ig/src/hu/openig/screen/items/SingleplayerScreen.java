@@ -60,9 +60,9 @@ public class SingleplayerScreen extends ScreenBase {
 	/** The definition. */
 	final Rectangle descriptionRect = new Rectangle();
 	/** The video playback completion waiter. */
-	Thread videoWaiter;
+	volatile Thread videoWaiter;
 	/** The load waiter. */
-	Thread loadWaiter;
+	volatile Thread loadWaiter;
 	/** The reference frame. */
 	final Rectangle base = new Rectangle();
 	/** Play label. */

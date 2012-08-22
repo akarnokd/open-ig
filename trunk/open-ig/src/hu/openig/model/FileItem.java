@@ -29,6 +29,8 @@ public class FileItem {
 	public Date saveDate;
 	/** The player money. */
 	public long money;
+	/** Skirmish? */
+	public boolean skirmish;
 	/**
 	 * Constructor.
 	 * @param file the backing file

@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <labels>
   <entry key='@MainFleet'>Main fleet</entry>
+  <entry key='@Colonizer'>Colonizer fleet</entry>
   <entry key='DE'>DE</entry>
   <entry key='Dargslan.colonizer_fleet'>Dargslan colonizer</entry>
   <entry key='Dargslan.explorer_fleet'>Dargslan explorer</entry>

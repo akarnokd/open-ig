@@ -1537,6 +1537,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 					newSave.level = world().level;
 					newSave.difficulty = world().difficulty;
 					newSave.money = player().money;
+					newSave.skirmish = world().skirmishDefinition != null;
 					newSave.gameDate = world().time.getTime();
 					newSave.saveName = LoadSaveScreen.this.get("settings.new_save"); // FIXME labels
 					
@@ -1591,7 +1592,15 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 						
 						int c = TextRenderer.GREEN;
 						if (fi == selected) {
-							c = TextRenderer.YELLOW;
+							if (fi.skirmish) {
+								c = TextRenderer.WHITE;
+							} else {
+								c = TextRenderer.YELLOW;
+							}
+						} else {
+							if (fi.skirmish) {
+								c = TextRenderer.ORANGE;
+							}
 						}
 						
 						int dh = (rowHeight - textHeight) / 2;
@@ -1851,6 +1860,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 					}
 					fi.level = xml.getInt("level", 5);
 					fi.money = xml.getLong("money", 0);
+					fi.skirmish = xml.getBoolean("skirmish", false);
 					fi.difficulty = Difficulty.valueOf(xml.get("difficulty", Difficulty.NORMAL.toString()));
 					
 					saves.add(fi);

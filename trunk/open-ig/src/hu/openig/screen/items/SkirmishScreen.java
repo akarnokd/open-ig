@@ -22,6 +22,7 @@ import hu.openig.model.SkirmishDiplomaticRelation;
 import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.SoundType;
 import hu.openig.model.Traits;
+import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -55,6 +56,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Semaphore;
+
+import javax.swing.SwingUtilities;
 
 /**
  * The skirmish configuration screen.
@@ -213,6 +217,10 @@ public class SkirmishScreen extends ScreenBase {
 	IconSelectPanel iconSelectPanel;
 	/** An item selection panel. */
 	ItemSelectPanel itemSelectPanel;
+	/** The video playback completion waiter. */
+	volatile Thread videoWaiter;
+	/** The load waiter. */
+	volatile Thread loadWaiter;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -238,7 +246,13 @@ public class SkirmishScreen extends ScreenBase {
 			}
 		};
 		load = createButton("skirmish.load");
+		load.disabledPattern(commons.common().disabledPattern);
+		load.enabled(false);
+		
 		save = createButton("skirmish.save");
+		save.disabledPattern(commons.common().disabledPattern);
+		save.enabled(false);
+		
 		play = createButton("skirmish.play");
 		play.disabledPattern(commons.common().disabledPattern);
 		play.onClick = new Action0() {
@@ -319,6 +333,7 @@ public class SkirmishScreen extends ScreenBase {
 		initialPopulation.value = 5000;
 		
 		placeColonyHub = createCheckBox("skirmish.place_colony_hub");
+		placeColonyHub.selected(true);
 		grantColonyShip = createCheckBox("skirmish.grant_colonyship");
 		grantOrbitalFactory = createCheckBox("skirmish.grant_orbital_factory");
 		
@@ -327,6 +342,7 @@ public class SkirmishScreen extends ScreenBase {
 		
 		colonyShipLabel = createLabel("skirmish.colony_ships");
 		colonyShips = new NumberSpinBox(0, 1000, 1, 10);
+		colonyShips.value = 1;
 		
 		orbitalFactoryLabel = createLabel("skirmish.orbital_factories");
 		orbitalFactories = new NumberSpinBox(0, 1000, 1, 10);
@@ -770,7 +786,14 @@ public class SkirmishScreen extends ScreenBase {
 
 	@Override
 	public void onFinish() {
-
+		if (videoWaiter != null) {
+			videoWaiter.interrupt();
+			videoWaiter = null;
+		}
+		if (loadWaiter != null) {
+			loadWaiter.interrupt();
+			loadWaiter = null;
+		}
 	}
 
 	@Override
@@ -2049,6 +2072,33 @@ public class SkirmishScreen extends ScreenBase {
 		
 		// Economic tab ---------------------
 		
+		result.initialMoney = initialMoney.value;
+		result.initialPlanets = initialPlanets.value;
+		result.initialPopulation = initialPopulation.value;
+		result.placeColonyHubs = placeColonyHub.selected();
+		result.grantColonyShip = grantColonyShip.selected();
+		result.initialColonyShips = colonyShips.value;
+		result.grantOrbitalFactory = grantOrbitalFactory.selected();
+		result.initialOrbitalFactories = orbitalFactories.value;
+		
+		// Players --------------------------
+		
+		for (PlayerLine pl : playerLines) {
+			result.players.add(pl.player.copy());
+		}
+		
+		// Victory conditions ---------------
+		
+		result.victoryConquest = winConquest.selected();
+		result.victoryEconomic = winEconomic.selected();
+		result.victoryEconomicMoney = winEconomicMoney.value;
+		result.victoryOccupation = winOccupation.selected();
+		result.victoryOccupationPercent = winOccupationPercent.value;
+		result.victoryOccupationTime = winOccupationTime.value;
+		result.victoryTechnology = winTechnology.selected();
+		result.victorySocial = winSocial.selected();
+		result.victorySocialMorale = winSocialMorale.value;
+		result.victorySocialPlanets = winSocialPlanets.value;
 		
 		return result;
 	}
@@ -2056,6 +2106,102 @@ public class SkirmishScreen extends ScreenBase {
 	 * Start the skirmish.
 	 */
 	void doPlay() {
+		SkirmishDefinition def = createDefinition();
 		
+		commons.world(null);
+		commons.worldLoading = true;
+		// display the loading screen.
+		commons.control().displaySecondary(Screens.LOADING);
+		final Semaphore barrier = new Semaphore(-1);
+		startVideoWaiter(barrier);
+		// the asynchronous loading
+		startLoadWaiter(barrier, def);
+		barrier.release();
+//		// the video playback
+//		commons.control().playVideos(new Action0() {
+//			@Override
+//			public void invoke() {
+//				barrier.release();
+//			}
+//		}, selectedDefinition.intro);
+
 	}
+	/**
+	 * Start the load waiter thread.
+	 * @param barrier the notification barrier
+	 * @param def the skirmish definition
+	 */
+	void startLoadWaiter(final Semaphore barrier, final SkirmishDefinition def) {
+		loadWaiter = new Thread("Start Game Loading") {
+			@Override 
+			public void run() {
+				try {
+					final World world = new World(commons);
+					
+					world.skirmishDefinition = def;
+					world.loadSkirmish(commons.rl);
+					
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							commons.labels().replaceWith(world.labels);
+							commons.world(world);
+							commons.worldLoading = false;
+							commons.nongame = false;
+							barrier.release();
+						}
+					});
+				} finally {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							loadWaiter = null;	
+						}
+					});
+				}
+			};
+		};
+		loadWaiter.setPriority(Thread.MIN_PRIORITY);
+		loadWaiter.start();
+	}
+
+	/**
+	 * Start the video playback waiter.
+	 * @param barrier the notification barrier
+	 */
+	void startVideoWaiter(final Semaphore barrier) {
+		videoWaiter = new Thread("Start Game Video Waiter") {
+			@Override 
+			public void run() {
+				try {
+					barrier.acquire();
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override 
+						public void run() {
+							enterGame();
+						}
+					});
+				} catch (InterruptedException ex) {
+					
+				} finally {
+					videoWaiter = null;
+				}
+			};
+		};
+		videoWaiter.setPriority(Thread.MIN_PRIORITY);
+		videoWaiter.start();
+	}
+	/**
+	 * Enter the game.
+	 */
+	void enterGame() {
+		world().scripting.onNewGame();
+		final boolean csw = config.computerVoiceScreen;
+		config.computerVoiceScreen = false;
+		commons.start(true);
+		commons.control().displayPrimary(Screens.STARMAP);
+		
+		config.computerVoiceScreen = csw;
+		commons.control().displayStatusbar();
+	};
 }
