@@ -15,6 +15,16 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
+*2012 augusztus 22*
+
+Az Egyedi játékmód már majdnem készen van, viszont a győzelmi feltételeket még nem ellenőrzi a játék. Ezen felül néhány fejlettebb funkció sincs implementálva (pl. osztott radar nézet, rögzített diplomácia, kalóz viselkedés). Ettől függetlenül lehetséges új játékmódot összeállítani, menteni és visszatölteni.
+
+Sajnos az új cimkék még nincsenek lefordítva németre és franciára.
+
+Az új Egyedi játékmód képernyő leírását lásd itt (angolul): [http://open-ig-dev.blogspot.hu/2012/08/some-skirmish-documentation.html Galaxis, Gazdaság and Győzelem] tabs and [http://open-ig-dev.blogspot.hu/2012/08/skirmish-documentation-player-selection.html Játékosok] tab.
+
+Jó szórakozást.
+
 *2012 augusztus 18*
 
 Az egyedi játékmód (skirmish) flexibilitásának növelése érdekében bevezettem a más 4X játékokban oly gyakori jellemvonás rendszert (trait system). Ezzel beállíthatóak lesznek a különféle játékos fajok tulajdonságai anélkül, hogy használni kellene a Kampányszerkesztőt.
