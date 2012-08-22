@@ -1140,6 +1140,7 @@ public class SkirmishScreen extends ScreenBase {
 			sp.color = (int)Long.parseLong(xplayer.get("color"), 16);
 			sp.nodatabase = xplayer.getBoolean("nodatabase", false);
 			sp.nodiplomacy = xplayer.getBoolean("nodiplomacy", false);
+			sp.diplomacyHead = xplayer.get("diplomacy-head", null);
 			
 			String ai = xplayer.get("ai", null);
 			if (xplayer.getBoolean("user", false)) {
@@ -1996,6 +1997,7 @@ public class SkirmishScreen extends ScreenBase {
 				pl.player.originalId = p.originalId;
 				pl.player.race = p.race;
 				pl.player.description = p.description;
+				pl.player.diplomacyHead = p.diplomacyHead;
 				
 				pl.update();
 				layoutPlayers();

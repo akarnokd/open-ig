@@ -35,6 +35,8 @@ import java.util.Set;
  * @author akarnokd
  */
 public class PlanetSurface {
+	/** The surface variant. */
+	public int variant;
 	/** 
 	 * The map's width in cells. 
 	 * The width is defined as a slightly descending horizontal dimension of the map, 

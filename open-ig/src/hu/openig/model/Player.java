@@ -89,7 +89,7 @@ public class Player {
 	/** The global finalcial information today. */
 	public final PlayerFinances today = new PlayerFinances();
 	/** Initial stance for the newly discovered races. */
-	public int initialStance;
+	public int initialStance = 50;
 	/** The priority queue for the messages. */
 	protected final PriorityQueue<Message> messageQueue = new PriorityQueue<Message>();
 	/** The message history of the already displayes messages. */

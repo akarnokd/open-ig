@@ -335,4 +335,17 @@ public class BuildingModel {
 		}
 		return new Tile(width, height, image, lightMap);
 	}
+	/**
+	 * Find a specific kind of building.
+	 * @param kind the kind
+	 * @return the definition or null if not found
+	 */
+	public BuildingType find(String kind) {
+		for (BuildingType bt : buildings.values()) {
+			if (bt.kind.equals(kind)) {
+				return bt;
+			}
+		}
+		return null;
+	}
 }
