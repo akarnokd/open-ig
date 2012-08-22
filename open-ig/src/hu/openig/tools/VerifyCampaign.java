@@ -102,7 +102,9 @@ public class VerifyCampaign {
 			for (Map.Entry<String, String> v : l1.map().entrySet()) {
 				if (v.getValue() != null) {
 					for (char c : v.getValue().toCharArray()) {
-						if (!tr.isSupported(c)) {
+						if (!tr.isSupported(c) 
+								&& c != '[' && c != ']'
+								&& c != '$') {
 							System.err.println("Character " + c + " not supported in " + lang1 + " | " + v);
 							break;
 						}

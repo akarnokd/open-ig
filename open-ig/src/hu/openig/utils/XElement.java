@@ -840,6 +840,9 @@ public class XElement implements Iterable<XElement> {
 				if (f.getType() == Character.TYPE) {
 					f.set(o, get(f.getName(), String.valueOf(f.get(o))).charAt(0));
 				} else
+				if (f.getType() == String.class) {
+					f.set(o, get(f.getName()));
+				}
 				if (f.getType().isEnum()) {
 					String e = get(f.getName());
 					for (Object o2 : f.getType().getEnumConstants()) {

@@ -182,16 +182,18 @@ public class SkirmishPlayer {
 		long r = 0;
 		long g = 0;
 		long b = 0;
+		int pxc = 0;
 		for (int i : pixels) {
 			if ((i & 0xFF000000) != 0) {
 				r += ((i & 0xFF0000) >> 16);
 				g += ((i & 0xFF00) >> 8);
 				b += ((i & 0xFF));
+				pxc++;
 			}
 		}
-		r /= pixels.length;
-		g /= pixels.length;
-		b /= pixels.length;
+		r /= pxc;
+		g /= pxc;
+		b /= pxc;
 		
 		return (int)(0xFF000000 | (r << 16) | (g << 8) | (b));
 	}

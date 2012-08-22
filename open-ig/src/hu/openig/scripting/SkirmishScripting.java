@@ -20,6 +20,7 @@ import hu.openig.model.Objective;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.SkirmishDefinition;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
@@ -37,6 +38,8 @@ public class SkirmishScripting implements GameScripting {
 	protected World world;
 	/** The player object. */
 	protected Player player;
+	/** The skirmish definition. */
+	protected SkirmishDefinition def;
 	@Override
 	public void onResearched(Player player, ResearchType rt) {
 		// TODO Auto-generated method stub
@@ -324,6 +327,7 @@ public class SkirmishScripting implements GameScripting {
 	public void init(Player player, XElement in) {
 		this.player = player;
 		this.world = player.world;
+		this.def = world.skirmishDefinition;
 	}
 
 	@Override
@@ -346,14 +350,12 @@ public class SkirmishScripting implements GameScripting {
 
 	@Override
 	public boolean mayControlFleet(Fleet f) {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean mayAutoSave() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override

@@ -2451,6 +2451,7 @@
 	<entry key='chat.unavailable'>Az ellenség aktívan blokkolja a kommunikációt.</entry>
 
 	<entry key='@MainFleet'>Főflotta</entry>
+
 	<entry key="achievement.do_you_chat">Előbb csevej, aztán harc?</entry>
 	<entry key="achievement.do_you_chat.desc">Győzdd meg az ellenfelet a visszavonulásról az űrcsevejben.</entry>
 	<entry key='settings.ui_scale'>Felület nagyítás (X - normál)</entry>
@@ -3035,6 +3036,7 @@
 	<entry key='skirmish.cancel'>Mégsem</entry>
 	<entry key='skirmish.edit_icon'>Flottaikon kiválasztása:</entry>
 	<entry key="skirmish.edit_option">Válassz a lehetőségek közül:</entry>
+	<entry key='@Colonizer'>Kolonizáló flotta</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	
