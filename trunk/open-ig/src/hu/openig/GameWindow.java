@@ -33,6 +33,7 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.Screens;
+import hu.openig.model.SkirmishDefinition;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
@@ -1451,6 +1452,8 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
+		final SkirmishDefinition currentSkirmish = commons.world() != null ? commons.world().skirmishDefinition : null;
+		
 		commons.worldLoading = true;
 		boolean running = false;
 		if (commons.world() != null && commons.simulation != null) {
@@ -1496,19 +1499,7 @@ public class GameWindow extends JFrame implements GameControls {
 					
 					final XElement xworld = XElement.parseXML(lname);
 					
-					String game = xworld.get("game");
-					World world = commons.world(); 
-					if (!game.equals(currentGame)) {
-						commons.world(null);
-						// load world model
-						world = new World(commons);
-						world.definition = GameDefinition.parse(commons.rl, game);
-						world.labels = new Labels();
-						world.labels.load(commons.rl, game + "/labels");
-						world.loadCampaign(commons.rl, world.definition.name);
-					}
-					
-					world.loadState(xworld);
+					World world = loadWorldData(currentGame, currentSkirmish, xworld);
 					
 					final World fworld = world;
 					SwingUtilities.invokeLater(new Runnable() {
@@ -2223,5 +2214,42 @@ public class GameWindow extends JFrame implements GameControls {
 		if (primary == allScreens.main && secondary == null) {
 			allScreens.main.checkExistingSave();
 		}
+	}
+	/**
+	 * Load the world data, considering if it is a campaign or skirmish.
+	 * @param currentGame the current game
+	 * @param skirmish the current skirmish definition
+	 * @param xworld the world data
+	 * @return the loaded world
+	 */
+	protected World loadWorldData(final String currentGame,
+			final SkirmishDefinition skirmish,
+			final XElement xworld) {
+		String game = xworld.get("game");
+		XElement sk = xworld.childElement("skirmish-definition");
+		World world = commons.world(); 
+		
+		if (!game.equals(currentGame) || ((sk == null) != (skirmish == null))) {
+			commons.world(null);
+			// load world model
+			world = new World(commons);
+			
+			if (sk != null) {
+				SkirmishDefinition sk1 = new SkirmishDefinition();
+				sk1.load(sk);
+				world.skirmishDefinition = sk1;
+				world.definition = sk1.createDefinition(commons.rl);
+				world.loadSkirmish(commons.rl);
+			} else {
+				world.definition = GameDefinition.parse(commons.rl, game);
+				world.labels = new Labels();
+				world.labels.load(commons.rl, game + "/labels");
+				world.loadCampaign(commons.rl);
+			}
+		}
+
+		world.loadState(xworld);
+		
+		return world;
 	}
 }

@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func0;
+import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.render.TextRenderer;
@@ -19,14 +20,18 @@ import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
 import java.util.GregorianCalendar;
@@ -38,6 +43,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
@@ -56,6 +62,8 @@ public class World {
 	public String createVersion;
 	/** The name of the world. */
 	public String name;
+	/** Contains the skirmish definition, if non-null. */
+	public SkirmishDefinition skirmishDefinition;
 	/** The current world level. */
 	public int level;
 	/** The current player. */
@@ -171,10 +179,9 @@ public class World {
 	/**
 	 * Load the game world's resources.
 	 * @param resLocator the resource locator
-	 * @param game the game directory
 	 */
-	public void loadCampaign(final ResourceLocator resLocator, final String game) {
-		this.name = game;
+	public void loadCampaign(final ResourceLocator resLocator) {
+		this.name = definition.name;
 		this.rl = resLocator;
 		this.params.load(definition.parameters);
 		final ThreadPoolExecutor exec = 
@@ -321,6 +328,7 @@ public class World {
 							try {
 								XElement map = rl.getXML(n);
 								PlanetSurface ps = new PlanetSurface();
+								ps.variant = j;
 								ps.parseMap(map, galaxyModel, buildingModel);
 								synchronized (pt.surfaces) {
 									pt.surfaces.put(j, ps);
@@ -986,6 +994,10 @@ public class World {
 		xworld.set("current-talk", currentTalk);
 		xworld.set("create-version", createVersion);
 		
+		if (skirmishDefinition != null) {
+			skirmishDefinition.save(xworld.add("skirmish-definition"));
+		}
+		
 		statistics.save(xworld.add("statistics"));
 
 		// save talk states
@@ -1044,6 +1056,7 @@ public class World {
 			xp.set("ai", p.aiMode);
 			xp.set("pause-research", p.pauseResearch);
 			xp.set("pause-production", p.pauseProduction);
+			xp.set("ai-difficulty", p.difficulty);
 			
 			if (p.explorationInnerLimit != null) {
 				Rectangle r = p.explorationInnerLimit;
@@ -1190,6 +1203,8 @@ public class World {
 		for (Planet p : planets.values()) {
 			XElement xp = xworld.add("planet");
 			xp.set("id", p.id);
+			xp.set("surface-type", p.type.type);
+			xp.set("surface-variant", p.surface.variant);
 			for (InventoryItem pii : p.inventory) {
 				XElement xpii = xp.add("item");
 				xpii.set("id", pii.type.id);
@@ -1445,6 +1460,8 @@ public class World {
 			p.pauseProduction = xplayer.getBoolean("pause-production", false);
 			p.pauseResearch = xplayer.getBoolean("pause-research", false);
 
+			p.difficulty = Difficulty.valueOf(xplayer.get("ai-difficulty", difficulty.toString()));
+			
 			String xpInnerLimit = xplayer.get("exploration-inner-limit", "");
 			if (!xpInnerLimit.isEmpty()) {
 				p.explorationInnerLimit = rectangleOf(xpInnerLimit);
@@ -1601,6 +1618,15 @@ public class World {
 			p.surface.buildings.clear();
 			p.surface.buildingmap.clear();
 
+			// change surface type
+			String stype = xplanet.get("surface-type", p.type.type);
+			int svar = xplanet.getInt("surface-variant", p.surface.variant);
+			
+			if (!stype.equals(p.type.type) || svar != p.surface.variant) {
+				p.type = galaxyModel.planetTypes.get(stype);
+				p.surface = p.type.surfaces.get(svar).copy();
+			}
+			
 			for (XElement xpii : xplanet.childrenWithName("item")) {
 				InventoryItem pii = new InventoryItem(p);
 				pii.tag = xpii.get("tag", null);
@@ -2511,9 +2537,21 @@ public class World {
 	 * @param ts the list of elements
 	 * @return the selected element
 	 */
-	public <T> T random(List<T> ts) {
+	public <T> T random(Collection<T> ts) {
 		int idx = RANDOM.get().nextInt(ts.size());
-		return ts.get(idx);
+		if (ts instanceof List<?>) {
+			return ((List<T>)ts).get(idx);
+		}
+		Iterator<T> it = ts.iterator();
+		int i = 0;
+		while (it.hasNext()) {
+			T t = it.next();
+			if (i == idx) {
+				return t;
+			}
+			i++;
+		}
+		throw new NoSuchElementException();
 	}
 	/**
 	 * @return the various game parameters
@@ -2596,6 +2634,8 @@ public class World {
 			xrel.set("first", dr.first.id);
 			xrel.set("second", dr.second.id);
 			xrel.set("full", dr.full);
+			xrel.set("trade-agreement", dr.tradeAgreement);
+			xrel.set("strong-alliance", dr.strongAlliance);
 			xrel.set("wont-talk", dr.wontTalk());
 			if (dr.lastContact != null) {
 				xrel.set("last-contact", XElement.formatDateTime(dr.lastContact));
@@ -2643,6 +2683,9 @@ public class World {
 				
 				dr.full = xrel.getBoolean("full");
 				dr.value = Math.max(0, Math.min(100, xrel.getDouble("value")));
+				dr.tradeAgreement = xrel.getBoolean("trade-agreement", false);
+				dr.strongAlliance = xrel.getBoolean("strong-alliance", false);
+				
 				dr.wontTalk(xrel.getBoolean("wont-talk"));
 				String lc = xrel.get("last-contact", null);
 				if (lc != null) {
@@ -2709,6 +2752,281 @@ public class World {
 					if (rt0.has("speed")) {
 						rt0.level = Math.max(rt0.level, 1);
 						p.available().remove(rt0);
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Initializes the world via the loadCampaign, then performs the alterations.
+	 * @param rl the resource locator
+	 */
+	public void loadSkirmish(final ResourceLocator rl) {
+		definition = skirmishDefinition.createDefinition(rl);
+		labels = definition.labels;
+		difficulty = skirmishDefinition.initialDifficulty;
+		
+		loadCampaign(rl);
+		// fix players
+		
+		Map<Player, Integer> groups = U.newHashMap();
+		players.players.clear();
+		int id = 0;
+		for (SkirmishPlayer sp : skirmishDefinition.players) {
+			Player p = new Player(this, sp.originalId + "-" + id);
+
+			if (sp.ai == SkirmishAIMode.USER) {
+				player = p;
+			}
+			switch (sp.ai) {
+			case AI_EASY:
+				p.aiMode = AIMode.DEFAULT;
+				p.difficulty = Difficulty.EASY;
+				break;
+			case AI_HARD:
+				p.aiMode = AIMode.DEFAULT;
+				p.difficulty = Difficulty.HARD;
+				break;
+			case AI_NORMAL:
+				p.aiMode = AIMode.DEFAULT;
+				p.difficulty = Difficulty.NORMAL;
+				break;
+			case PIRATE:
+				p.aiMode = AIMode.PIRATES;
+				p.difficulty = difficulty;
+				break;
+			case TRADER:
+				p.aiMode = AIMode.TRADERS;
+				p.difficulty = difficulty;
+				break;
+			case USER:
+				p.aiMode = AIMode.NONE;
+				p.difficulty = difficulty;
+				break;
+			default:
+				break;
+			
+			}
+			p.name = sp.description;
+			p.color = sp.color;
+			p.fleetIcon = rl.getImage(sp.iconRef);
+			p.money = skirmishDefinition.initialMoney;
+			p.noDatabase = sp.nodatabase;
+			p.noDiplomacy = sp.nodiplomacy;
+			p.race = sp.race;
+			p.shortName = sp.name;
+
+			// create initial fleets
+			p.changeInventoryCount(researches.get("ColonyShip"), Math.max(0, skirmishDefinition.initialColonyShips - 1));
+			p.changeInventoryCount(researches.get("OrbitalFactory"), Math.max(0, skirmishDefinition.initialOrbitalFactories - 1));
+
+			if (skirmishDefinition.grantColonyShip) {
+				p.setAvailable(researches.get("ColonyShip"));
+			}
+			if (skirmishDefinition.grantOrbitalFactory) {
+				p.setAvailable(researches.get("OrbitalFactory"));
+			}
+			if (skirmishDefinition.initialColonyShips > 0) {
+				ResearchType rt = researches.get("ColonyShip");
+				Fleet f = new Fleet(p);
+				f.addInventory(rt, 1);
+			}
+			
+			createStartingFleet(p);
+			
+			groups.put(p, sp.group);
+			
+			p.traits.replace(sp.traits);
+			players.players.put(p.id, p);
+			id++;
+		}
+		establishDiplomacy(groups);
+		// strip planets.
+		for (Planet p : planets.values()) {
+			if (p.owner != null) {
+				p.die();
+			}
+			if (skirmishDefinition.galaxyRandomSurface) {
+				p.type = random(galaxyModel.planetTypes.values());
+				p.surface = random(p.type.surfaces.values()).copy();
+			}
+		}
+
+		assignPlanetsToPlayers();
+		
+		for (Player p : players.values()) {
+			p.ai = env.getAI(p);
+			p.ai.init(p);
+			p.populateProductionHistory();
+		}
+
+		applyTraits();
+	}
+	/**
+	 * Establish diplomatic relation between groups.
+	 * @param groups the group mapping
+	 */
+	protected void establishDiplomacy(Map<Player, Integer> groups) {
+		for (Player p1 : groups.keySet()) {
+			Integer g1 = groups.get(p1);
+			for (Player p2 : groups.keySet()) {
+				if (p1 != p2 && g1.equals(groups.get(p2))) {
+					DiplomaticRelation dr = establishRelation(p1, p2);
+					dr.full = true;
+					dr.value = 100;
+					dr.strongAlliance = true;
+					
+					for (Player p3 : groups.keySet()) {
+						if (!groups.get(p3).equals(g1)) {
+							dr.alliancesAgainst.add(p3);
+
+							DiplomaticRelation dr2 = establishRelation(p1, p3);
+							dr2.full = true;
+							switch (skirmishDefinition.initialDiplomaticRelation) {
+							case PEACEFUL:
+								dr2.value = 100;
+								break;
+							case WAR:
+								dr2.value = 0;
+								break;
+							default:
+								dr2.value = p3.initialStance;
+								break;
+							}
+						}
+					}
+				}
+ 			}
+		}
+	}
+	/** Assign players to random planets. */
+	void assignPlanetsToPlayers() {
+		// assign planets to players
+		int zones = 0;
+		int pc = players.values().size();
+		for (int i = 1;; i++) {
+			if (pc <= i * i) {
+				zones = i;
+				break;
+			}
+		}
+		List<Player> pls = U.newArrayList();
+		for (Player p : players.values()) {
+			if (p.aiMode != AIMode.PIRATES && p.aiMode != AIMode.TRADERS) {
+				pls.add(p);
+			}
+		}
+		
+		List<Integer> zoneIndex = U.newArrayList();
+		for (int zi = 0; zi < pls.size(); zi++) {
+			zoneIndex.add(zi);
+		}
+		Collections.shuffle(zoneIndex, random());
+
+		double gw = galaxyModel.map.getWidth();
+		double gh = galaxyModel.map.getHeight();
+		Rectangle2D.Double rect = new Rectangle2D.Double();
+		int zi = 0;
+		for (Player p : pls) {
+			int z = zoneIndex.get(zi);
+			
+			int gr = z / zones;
+			int gc = z % zones;
+
+			double dgw = gw / zones;
+			double dgh = gh / zones;
+			
+			rect.x = gr * dgw;
+			rect.y = gc * dgh;
+			rect.width = dgw;
+			rect.height = dgh;
+			
+			List<Planet> candidates = U.newArrayList();
+			for (Planet pl : planets.values()) {
+				if (rect.contains(pl.x, pl.y) && pl.owner == null) {
+					candidates.add(pl);
+				}
+			}
+			
+			if (candidates.isEmpty()) {
+				// now try on all planets
+				for (Planet pl : planets.values()) {
+					if (pl.owner == null) {
+						candidates.add(pl);
+					}
+				}
+			}
+			Planet pl = random(candidates);
+			
+			pl.owner = p;
+			pl.race = p.race;
+			pl.population = skirmishDefinition.initialPopulation;
+			pl.lastPopulation = pl.population;
+			
+			zi++;
+		}
+		// locate additional planets nearby
+		for (Player p : pls) {
+			final Planet pl = p.ownPlanets().get(0);
+			List<Planet> rest = U.newArrayList(planets.values());
+			rest.remove(pl);
+			Collections.sort(rest, new Comparator<Planet>() {
+				@Override
+				public int compare(Planet o1, Planet o2) {
+					double d1 = Point.distance(o1.x, o1.y, pl.x, pl.y);
+					double d2 = Point.distance(o2.x, o2.y, pl.x, pl.y);
+					return U.compare(d1, d2);
+				}
+			});
+			int n = skirmishDefinition.initialPlanets;
+			int i = 0;
+			while (n > 0 && i < rest.size()) {
+				Planet p2 = rest.get(i);
+				if (p2.owner == null) {
+					p2.owner = p;
+					p2.race = p.race;
+					p2.population = skirmishDefinition.initialPopulation;
+					p2.lastPopulation = p2.population;
+					n--;
+				}
+				i++;
+			}
+		}
+		if (skirmishDefinition.placeColonyHubs) {
+			for (Planet pl : planets.values()) {
+				if (pl.owner != null) {
+					BuildingType bt = buildingModel.find("MainBuilding");
+					if (bt != null) {
+						Point pt = pl.surface.placement.findLocation(pl.getPlacementDimensions(bt));
+						if (pt != null) {
+							Building b = new Building(bt, pl.race);
+							b.location = Location.of(pt.x + 1, pt.y - 1);
+
+							pl.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+							pl.rebuildRoads();
+						}
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Create the starting fleet.
+	 * @param p the player
+	 */
+	void createStartingFleet(Player p) {
+		Fleet f = new Fleet(p);
+		for (ResearchType rt : researches.values()) {
+			if (rt.race.contains(p.race)) {
+				if (p.isAvailable(rt) || rt.level == 0) {
+					if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+						f.addInventory(rt, 10);
+					} else
+					if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+						f.addInventory(rt, 3);
+					} else
+					if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+						f.addInventory(rt, 1);
 					}
 				}
 			}

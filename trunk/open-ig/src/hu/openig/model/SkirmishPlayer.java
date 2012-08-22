@@ -25,6 +25,8 @@ public class SkirmishPlayer {
 	public String description;
 	/** The color. */
 	public int color;
+	/** The diplomacy head. */
+	public String diplomacyHead;
 	/** The icon reference. */
 	public String iconRef;
 	/** The icon image. */
@@ -59,6 +61,7 @@ public class SkirmishPlayer {
 		result.group = group;
 		result.nodatabase = nodatabase;
 		result.nodiplomacy = nodiplomacy;
+		result.diplomacyHead = diplomacyHead;
 		
 		return result;
 	}

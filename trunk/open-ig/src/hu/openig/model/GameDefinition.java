@@ -78,6 +78,8 @@ public class GameDefinition {
 	public final Map<String, String> parameters = new LinkedHashMap<String, String>();
 	/** The traits to apply to the main player. */
 	public Traits traits;
+	/** The labels. */
+	public final Labels labels = new Labels();
 	/**
 	 * Parse the game definition from.
 	 * @param rl the resource locator

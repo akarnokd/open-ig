@@ -31,6 +31,10 @@ public class DiplomaticRelation {
 	public Date lastContact;
 	/** Indicator that the parties won't talk for longer periods of time. */
 	private boolean wontTalk;
+	/** The parties have trade agreement. */
+	public boolean tradeAgreement;
+	/** The alliance can't be broken and parties can't attack each other. */
+	public boolean strongAlliance;
 	/**
 	 * The set of common enemies.
 	 */
