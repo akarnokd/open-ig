@@ -500,6 +500,7 @@ public class World {
 	public void processPlayers(XElement xplayers) {
 		Map<Fleet, Integer> deferredFleets = U.newHashMap();
 		
+		int g = 1;
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
 			Player p = new Player(this, xplayer.get("id"));
 			p.color = (int)Long.parseLong(xplayer.get("color"), 16);
@@ -509,6 +510,8 @@ public class World {
 			
 			p.money = xplayer.getLong("money");
 			p.initialStance = xplayer.getInt("initial-stance");
+			
+			p.group = g++;
 			
 			p.fleetIcon = rl.getImage(xplayer.get("icon"));
 			String pic = xplayer.get("picture");
