@@ -744,7 +744,6 @@ public class AI implements AIManager {
 	@Override
 	public ResponseMode diplomacy(Player other, NegotiateType about,
 			ApproachType approach, Object argument) {
-		// TODO Auto-generated method stub
 		DiplomaticRelation r = w.getRelation(p, other);
 		if (r == null || !r.full) {
 			return ResponseMode.NO;
@@ -760,35 +759,44 @@ public class AI implements AIManager {
 		
 		switch (about) {
 		case DIPLOMATIC_RELATIONS:
-			if (rnd < 0.33) {
-				return ResponseMode.YES;
-			} else
-			if (rnd < 0.66) {
+			if (rnd < r.value / 100 && r.value < p.warThreshold + 10) {
 				return ResponseMode.MAYBE;
+			} else
+			if (rnd < r.value / 100) {
+				return ResponseMode.YES;
 			}
 			break;
 		case ALLY:
-			if (rnd < 0.5) {
-				return ResponseMode.YES;
+			Player p3 = (Player)argument;
+			if (p3.group == p.group) {
+				return ResponseMode.NO;
+			}
+			DiplomaticRelation r2 = w.getRelation(p, p3);
+			if (r2 != null) {
+				if (rnd < 0.5 && r.value >= p.warThreshold + 35
+						&& r2.value < r.value) {
+					return ResponseMode.YES;
+				}
 			}
 			break;
 		case DARGSLAN:
-			if (rnd < 0.1 && !p.id.equals("Dargslan")) {
+			if (rnd < 0.1 && r.value >= 75 
+				&& !p.id.equals("Dargslan")) {
 				return ResponseMode.YES;
 			}
 			break;
 		case MONEY:
-			if (rnd < 0.5) {
+			if (rnd < r.value / 100) {
 				return ResponseMode.YES;
 			}
 			break;
 		case SURRENDER:
-			if (rnd < 0.1 && ownStats.planetCount < 2) {
+			if (rnd < 0.1 && ownStats.planetCount < 2 && r.value < p.warThreshold) {
 				return ResponseMode.YES;
 			}
 			break;
 		case TRADE:
-			if (rnd < 0.5) {
+			if (rnd < r.value / 100 - 0.25) {
 				return ResponseMode.YES;
 			}
 			break;

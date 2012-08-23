@@ -529,6 +529,9 @@ public class GameKeyManager extends KeyAdapter {
 				// CHEAT: add more money
 				if (e.isControlDown()) {
 					world().player.money += 10000;
+					if (e.isShiftDown()) {
+						world().player.money += 90000;
+					}
 					repaintInner();
 					e.consume();
 				}

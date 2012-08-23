@@ -508,6 +508,10 @@ public class StatusbarScreen extends ScreenBase {
 				achievementAnimator.start();
 				effectSound(SoundType.ACHIEVEMENT);
 			}
+		} else {
+			if (!achievementAnimator.isRunning() && achievementTTL > 0) {
+				achievementAnimator.start();
+			}
 		}
 		if (world().level > 1 && config.quickRNP) {
 			quickProductionButton.visible(true);

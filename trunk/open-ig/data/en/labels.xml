@@ -3006,6 +3006,7 @@
 	<entry key='skirmish.objectives.technology.desc'>Be the first group who researches all of his technology tree.</entry>
 	<entry key='skirmish.objectives.social'>Social victory</entry>
 	<entry key='skirmish.objectives.social.desc'>Ensure that you have at least %d%% morale on %d of your planets.</entry>
+	<entry key='win.load'>Load...</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
