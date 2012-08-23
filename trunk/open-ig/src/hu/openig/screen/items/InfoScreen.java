@@ -2462,6 +2462,9 @@ public class InfoScreen extends ScreenBase {
 		}
 		
 		idx += dy;
+		if (dy == 0 && idx >= rts.get(c).size()) {
+			idx = rts.get(c).size() - 1;
+		} else
 		if (idx >= rts.get(c).size()) {
 			idx = 0;
 		} else
@@ -2479,23 +2482,25 @@ public class InfoScreen extends ScreenBase {
 	public List<List<ResearchType>> inventionList() {
 		List<List<ResearchType>> result = U.newArrayList();
 		for (ResearchMainCategory m : ResearchMainCategory.values()) {
+			List<ResearchType> res = new ArrayList<ResearchType>();
 			for (ResearchSubCategory sc : ResearchSubCategory.values()) {
 				if (sc.main == m) {
-					List<ResearchType> res = new ArrayList<ResearchType>();
+					List<ResearchType> res0 = U.newArrayList();
 					for (ResearchType rt : world().researches.values()) {
 						if (rt.category == sc && world().canDisplayResearch(rt)) {
-							res.add(rt);
+							res0.add(rt);
 						}
 					}
-					Collections.sort(res, new Comparator<ResearchType>() {
+					Collections.sort(res0, new Comparator<ResearchType>() {
 						@Override
 						public int compare(ResearchType o1, ResearchType o2) {
 							return o1.index - o2.index;
 						}
 					});
-					result.add(res);
+					res.addAll(res0);
 				}
 			}
+			result.add(res);
 		}
 		return result;
 	}
@@ -2965,6 +2970,17 @@ public class InfoScreen extends ScreenBase {
 		}
 		@Override
 		public boolean mouse(UIMouse e) {
+			if (e.has(Type.WHEEL)) {
+				int dx = 0;
+				int dy = 0;
+				if (e.has(Modifier.SHIFT)) {
+					dx = e.z < 0 ? -1 : 1;
+				} else {
+					dy = e.z < 0 ? -1 : 1;
+				}
+				navigateInvention(dx, dy);
+				return true;
+			}
 			if (e.has(Type.DOWN)) {
 				int col = e.x * 4 / width;
 				List<ResearchType> res = getResearchColumn(col);
