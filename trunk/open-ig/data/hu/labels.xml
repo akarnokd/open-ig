@@ -3037,6 +3037,26 @@
 	<entry key='skirmish.edit_icon'>Flottaikon kiválasztása:</entry>
 	<entry key="skirmish.edit_option">Válassz a lehetőségek közül:</entry>
 	<entry key='@Colonizer'>Kolonizáló flotta</entry>
+	<entry key='skirmish.objectives.conquest'>Hódításos győzelem</entry>
+	<entry key='skirmish.objectives.conquest.desc'>Hódítsd meg vagy pusztítsd el az ellenséges frakciók bolygóit.</entry>
+	<entry key='skirmish.objectives.economic'>Gazdasági győzelem</entry>
+	<entry key='skirmish.objectives.economic.desc'>A csoportodnak összesen %,d cr pénzt kell összegyűjtenie.</entry>
+	<entry key='skirmish.objectives.occupation'>Megszállásos győzelem</entry>
+	<entry key='skirmish.objectives.occupation.desc'>Hódítsd meg vagy kolonizáld a galaxis %d%%-át, majd tarts a tulajdonodban %d napig.</entry>
+	<entry key='skirmish.objectives.technology'>Technológiai győzelem</entry>
+	<entry key='skirmish.objectives.technology.desc'>Legyél az első, aki az összes technológiáják kifejleszti.</entry>
+	<entry key='skirmish.objectives.social'>Szociális győzelem</entry>
+	<entry key='skirmish.objectives.social.desc'>Biztosítsd, hogy a morál legalább %d%% legalább %d darab bolygódon.</entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
+	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	

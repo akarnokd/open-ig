@@ -130,6 +130,8 @@ public class Player {
 	public final Traits traits = new Traits();
 	/** The player AI's default difficulty. */
 	public Difficulty difficulty;
+	/** The group id, if bigger than zero. */
+	public int group;
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

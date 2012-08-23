@@ -11,11 +11,13 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
 import hu.openig.mechanics.DefaultAIControls;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
+import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetProblems;
@@ -1206,7 +1208,7 @@ public class StarmapScreen extends ScreenBase {
 		if (showRadarButton.selected) {
 			List<RadarCircle> radarCircles = new ArrayList<RadarCircle>();
 			for (Planet p : world().planets.values()) {
-				if (p.owner == player()) {
+				if (p.owner == player() || sharedRadar(p)) {
 					PlanetStatistics ps = cache.get(p);
 					if (ps == null) {
 						ps = p.getStatistics();
@@ -1226,7 +1228,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 			if (showFleetButton.selected) {
 				for (Fleet f : fleets) {
-					if (f.owner == player()) {
+					if (f.owner == player() || sharedRadar(f)) {
 						f.getStatistics();
 						paintRadar(g2, f.x, f.y, f.radar, zoom);
 					}
@@ -1536,6 +1538,15 @@ public class StarmapScreen extends ScreenBase {
 		super.draw(g2);
 	}
 	/**
+	 * Checks if the radar line should be shared with the object?
+	 * @param o the other object
+	 * @return true if should be shared
+	 */
+	boolean sharedRadar(Owned o) {
+		DiplomaticRelation dr = world().getRelation(player(), o.owner());
+		return dr != null && dr.value >= world().params().radarShareLimit() && !dr.alliancesAgainst.isEmpty();
+	}
+	/**
 	 * Draw the exploration limit rectangle borders.
 	 * @param g2 the graphics context
 	 */
@@ -1629,7 +1640,15 @@ public class StarmapScreen extends ScreenBase {
 				int x0 = (int)(starmapRect.x + f.x * zoom - w * 0.5);
 				int y0 = (int)(starmapRect.y + f.y * zoom - h * 0.5);
 				if (x0 <= x && x <= x0 + w && y0 <= y && y <= y0 + h) {
-					return f;
+					DiplomaticRelation dr = world().getRelation(player(), f.owner);
+					boolean strong = dr != null && dr.strongAlliance;
+					if (enemyOnly && f.owner != player()) {
+						if (!strong) {
+							return f;
+						}
+					} else {
+						return f;
+					}
 				}
 			}
 		}
@@ -1646,14 +1665,27 @@ public class StarmapScreen extends ScreenBase {
 	public Planet getPlanetAt(Player owner, int x, int y, boolean enemyOnly) {
 		double zoom = getZoom();
 		for (Planet p : commons.world().planets.values()) {
+			if (enemyOnly && p.owner == null) {
+				continue;
+			}
 			if ((!enemyOnly || p.owner != owner) 
 					&& (owner.knowledge(p, PlanetKnowledge.VISIBLE) >= 0 || showAll)) {
 				double d = p.diameter * zoom / 4;
 				int di = (int)d;
 				int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
 				int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
+				
 				if (x0 <= x && x <= x0 + di && y0 <= y && y <= y0 + di) {
-					return p;
+					DiplomaticRelation dr = world().getRelation(player(), p.owner);
+					boolean strong = dr != null && dr.strongAlliance;
+
+					if (enemyOnly && p.owner != player()) {
+						if (!strong) {
+							return p;
+						}
+					} else {
+						return p;
+					}
 				}
 			}
 		}

@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.model.Building;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.InventoryItem;
@@ -166,6 +167,24 @@ public final class Radar {
 					updateKnowledge(world, pii.owner, p, PlanetKnowledge.BUILDING);
 				}
 			}			
+		}
+		// share radar knowledge
+		for (Player p : world.players.values()) {
+			for (DiplomaticRelation dr : world.relations) {
+				if ((dr.first == p || dr.second == p) 
+						&& dr.value >= world.params().radarShareLimit()
+						&& !dr.alliancesAgainst.isEmpty()) {
+					Player p2 = (dr.first == p) ? dr.second : dr.first;
+					
+					for (Map.Entry<Fleet, FleetKnowledge> fe : p.fleets.entrySet()) {
+						updateKnowledge(world, p2, fe.getKey(), fe.getValue());
+					}
+					
+					for (Map.Entry<Planet, PlanetKnowledge> pk : p.planets.entrySet()) {
+						updateKnowledge(world, p2, pk.getKey(), pk.getValue());
+					}
+				}
+			}
 		}
 		// notify players about the radar sweep completed
 		for (Player p : world.players.values()) {

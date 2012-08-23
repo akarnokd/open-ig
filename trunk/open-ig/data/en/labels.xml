@@ -2996,6 +2996,16 @@
 	<entry key='skirmish.cancel'>Cancel</entry>
 	<entry key='skirmish.edit_icon'>Select the fleet icon:</entry>
 	<entry key="skirmish.edit_option">Select an option:</entry>
+	<entry key='skirmish.objectives.conquest'>Conquest victory</entry>
+	<entry key='skirmish.objectives.conquest.desc'>Conquer or destroy all planets of the enemy factions.</entry>
+	<entry key='skirmish.objectives.economic'>Economic victory</entry>
+	<entry key='skirmish.objectives.economic.desc'>Your group should reach a total sum of %,d cr first.</entry>
+	<entry key='skirmish.objectives.occupation'>Occupation victory</entry>
+	<entry key='skirmish.objectives.occupation.desc'>Conquer or colonize %d%% of the galaxy, then hold it for %d day(s).</entry>
+	<entry key='skirmish.objectives.technology'>Technological victory</entry>
+	<entry key='skirmish.objectives.technology.desc'>Be the first group who researches all of his technology tree.</entry>
+	<entry key='skirmish.objectives.social'>Social victory</entry>
+	<entry key='skirmish.objectives.social.desc'>Ensure that you have at least %d%% morale on %d of your planets.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
