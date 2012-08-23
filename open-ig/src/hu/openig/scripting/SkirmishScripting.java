@@ -49,7 +49,10 @@ public class SkirmishScripting implements GameScripting {
 	final Map<String, Objective> allObjectives = U.newLinkedHashMap();
 	/** Show the objectives once. */
 	protected boolean objectivesOnce = true;
-
+	/** The remaining hold time for occupation victory, in minutes. */
+	protected int holdTime;
+	/** The group holding the territories. */
+	protected int holdGroup;
 	@Override
 	public void onTime() {
 		if (objectivesOnce) {
@@ -62,7 +65,94 @@ public class SkirmishScripting implements GameScripting {
 		checkTechnologyVictory();
 		checkSocialVictory();
 	}
-	
+	/**
+	 * Check social victory condition.
+	 */
+	void checkSocialVictory() {
+		Map<Integer, Integer> groupPlanets = U.newHashMap();
+		for (Planet p : world.planets.values()) {
+			if (p.owner != null) {
+				if (p.morale >= def.victorySocialMorale) {
+					Integer v = groupPlanets.get(p.owner.group);
+					v = v != null ? v.intValue() + 1 : 1;
+					groupPlanets.put(p.owner.group, v);
+					
+					if (v.intValue() >= def.victorySocialPlanets) {
+						completeGame("social", p.owner.group == player.group);
+						return;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Check if a group had researched all of its technologies.
+	 */
+	void checkTechnologyVictory() {
+		for (Player p : world.players.values()) {
+			int avail = p.available().size();
+			
+			int req = 0;
+			for (ResearchType rt : world.researches.values()) {
+				if (rt.race.contains(p.race) && rt.level < 6) {
+					req++;
+				}
+			}
+			if (avail >= req) {
+				completeGame("technology", p.group == player.group);
+				return;
+			}
+			
+		}
+	}
+	/** Check for the occupation victory. */
+	void checkOccupationVictory() {
+		Map<Integer, Integer> groupPlanets = U.newHashMap();
+		for (Planet p : world.planets.values()) {
+			if (p.owner != null) {
+				Integer v = groupPlanets.get(p.owner.group);
+				groupPlanets.put(p.owner.group, v != null ? v.intValue() + 1 : 1);
+			}
+		}
+		int bestGroup = 0;
+		int bestSize = 0;
+		for (Map.Entry<Integer, Integer> ge : groupPlanets.entrySet()) {
+			if (ge.getValue() >= def.victoryOccupationPercent * world.planets.planets.size() / 100) {
+				if (bestSize < ge.getValue()) {
+					bestSize = ge.getValue();
+					bestGroup = ge.getKey();
+				}
+			}
+		}
+		if (bestGroup > 0) {
+			if (bestGroup != holdGroup) {
+				holdGroup = bestGroup;
+				holdTime = def.victoryOccupationTime * 24 * 60;
+			} else {
+				holdTime -= world.params().speed();
+			}
+			if (holdTime <= 0 && holdGroup > 0) {
+				completeGame("occupation", holdGroup == player.group);
+			}
+		} else {
+			holdGroup = bestGroup;
+			holdTime = 0;
+		}
+	}
+	/**
+	 * Check for economic victory.
+	 */
+	void checkEconomicVictory() {
+		Map<Integer, Long> groups = U.newHashMap();
+		for (Player p : world.players.values()) {
+			Long v = groups.get(p.group);
+			v = (v != null ? v.longValue() + p.money : p.money);
+			if (v.longValue() >= def.victoryEconomicMoney) {
+				completeGame("economic", p.group == player.group);
+				return;
+			}
+		}
+	}
 	/**
 	 * Check if all but one group has planets.
 	 */
@@ -80,13 +170,21 @@ public class SkirmishScripting implements GameScripting {
 		if (groupPlanets.size() > 1) {
 			return;
 		}
-		if (groupPlanets.containsKey(player.group)) {
-			if (setObjectiveState("conquest", ObjectiveState.SUCCESS)) {
+		completeGame("conquest", groupPlanets.containsKey(player.group));
+	}
+	/**
+	 * Complete the game by setting objective state and doing an endgame.
+	 * @param objective the objective
+	 * @param win the win state
+	 */
+	void completeGame(String objective, boolean win) {
+		if (win) {
+			if (setObjectiveState(objective, ObjectiveState.SUCCESS)) {
 				world.env.pause();
 				world.env.winGame();
 			}
 		} else {
-			if (setObjectiveState("conquest", ObjectiveState.FAILURE)) {
+			if (setObjectiveState(objective, ObjectiveState.FAILURE)) {
 				world.env.pause();
 				world.env.loseGame();
 			}
@@ -178,9 +276,19 @@ public class SkirmishScripting implements GameScripting {
 		}
 		return false;
 	}
+	/**
+	 * Get a send-message.
+	 * @param id the message id
+	 * @return the video message or null if not available
+	 */
+	public VideoMessage send(String id) {
+		return world.bridge.sendMessages.get(id);
+	}
 	@Override
 	public void load(XElement in) {
 		objectivesOnce = in.getBoolean("objectives-once", false);
+		holdTime = in.getInt("hold-time", 0);
+		holdGroup = in.getInt("hold-group", 0);
 		for (XElement xmsgs : in.childrenWithName("sends")) {
 			for (XElement xmsg : xmsgs.childrenWithName("send")) {
 				String id = xmsg.get("id");
@@ -205,17 +313,11 @@ public class SkirmishScripting implements GameScripting {
 			}
 		}
 	}
-	/**
-	 * Get a send-message.
-	 * @param id the message id
-	 * @return the video message or null if not available
-	 */
-	public VideoMessage send(String id) {
-		return world.bridge.sendMessages.get(id);
-	}
 	@Override
 	public void save(XElement out) {
 		out.set("objectives-once", objectivesOnce);
+		out.set("hold-time", holdTime);
+		out.set("hold-group", holdGroup);
 		XElement xmsgs = out.add("sends");
 		for (VideoMessage vm : world.bridge.sendMessages.values()) {
 			XElement xmsg = xmsgs.add("send");

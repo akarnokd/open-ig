@@ -2386,6 +2386,22 @@ public class InfoScreen extends ScreenBase {
 			if (showPlanetListDetails) {
 				adjustPlanetListView();
 			}
+		case INFORMATION_INVENTIONS:
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_UP:
+				navigateInvention(0, -1);
+				return true;
+			case KeyEvent.VK_DOWN:
+				navigateInvention(0, 1);
+				return true;
+			case KeyEvent.VK_LEFT:
+				navigateInvention(-1, 0);
+				return true;
+			case KeyEvent.VK_RIGHT:
+				navigateInvention(1, 0);
+				return true;
+			default:
+			}
 		default:
 		}
 		if (!e.isControlDown()) {
@@ -2423,6 +2439,65 @@ public class InfoScreen extends ScreenBase {
 			}
 		}
 		return super.keyboard(e);
+	}
+	/**
+	 * Navigate on the invention tab.
+	 * @param dx the move delta x
+	 * @param dy the move delta y
+	 */
+	public void navigateInvention(int dx, int dy) {
+		List<List<ResearchType>> rts = inventionList();
+		ResearchType rt0 = research();
+		ResearchMainCategory m = rt0 != null ? rt0.category.main : ResearchMainCategory.SPACESHIPS;
+		
+		int c = m.ordinal();
+		int idx = Math.max(0, rts.get(c).indexOf(rt0));
+		
+		c += dx;
+		if (c < 0) {
+			c = rts.size() - 1;
+		} else
+		if (c >= rts.size()) {
+			c = 0;
+		}
+		
+		idx += dy;
+		if (idx >= rts.get(c).size()) {
+			idx = 0;
+		} else
+		if (idx < 0) {
+			idx = rts.get(c).size() - 1;
+		}
+		
+		rt0 = rts.get(c).get(idx);
+		world().selectResearch(rt0);
+	}
+	/**
+	 * The list of list of main category inventions listed on the inventions tab.
+	 * @return the list
+	 */
+	public List<List<ResearchType>> inventionList() {
+		List<List<ResearchType>> result = U.newArrayList();
+		for (ResearchMainCategory m : ResearchMainCategory.values()) {
+			for (ResearchSubCategory sc : ResearchSubCategory.values()) {
+				if (sc.main == m) {
+					List<ResearchType> res = new ArrayList<ResearchType>();
+					for (ResearchType rt : world().researches.values()) {
+						if (rt.category == sc && world().canDisplayResearch(rt)) {
+							res.add(rt);
+						}
+					}
+					Collections.sort(res, new Comparator<ResearchType>() {
+						@Override
+						public int compare(ResearchType o1, ResearchType o2) {
+							return o1.index - o2.index;
+						}
+					});
+					result.add(res);
+				}
+			}
+		}
+		return result;
 	}
 	/** Adjust the highlight on the planet list view. */
 	void adjustPlanetListView() {

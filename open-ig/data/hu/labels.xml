@@ -3047,6 +3047,7 @@
 	<entry key='skirmish.objectives.technology.desc'>Legyél az első, aki az összes technológiáják kifejleszti.</entry>
 	<entry key='skirmish.objectives.social'>Szociális győzelem</entry>
 	<entry key='skirmish.objectives.social.desc'>Biztosítsd, hogy a morál legalább %d%% legalább %d darab bolygódon.</entry>
+	<entry key='win.load'>Betöltés...</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

@@ -41,5 +41,6 @@
 		battleshipLimit="3" 
 		fighterLimit="30" 
 		mediumshipLimit="25"
+		radarShareLimit="80"
 	/>
 </definition>

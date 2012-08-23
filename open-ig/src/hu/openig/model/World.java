@@ -2870,6 +2870,7 @@ public class World {
 			rt.compLab = skirmishDefinition.initialPlanets > 2 ? 1 : 0;
 			rt.aiLab = skirmishDefinition.initialPlanets > 3 ? 1 : 0;
 			rt.milLab = skirmishDefinition.initialPlanets > 4 ? 1 : 0;
+			rt.prerequisites.clear();
 		}
 		
 		establishDiplomacy(groups);

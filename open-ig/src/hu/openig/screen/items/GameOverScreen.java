@@ -12,7 +12,9 @@ import hu.openig.core.Action0;
 import hu.openig.model.Screens;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.api.SettingsPage;
 import hu.openig.ui.HorizontalAlignment;
+import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
@@ -50,6 +52,8 @@ public class GameOverScreen extends ScreenBase {
 	public boolean win;
 	/** Continue the gameplay. */
 	UIGenericButton continueButton;
+	/** Load. */
+	UIGenericButton loadButton;
 	/** Return to main menu. */
 	UIGenericButton mainMenuButton;
 	/** The win label. */
@@ -69,6 +73,15 @@ public class GameOverScreen extends ScreenBase {
 				hideSecondary();
 				commons.control().displayStatusbar();
 				commons.nongame = false;
+			}
+		};
+		loadButton = new UIGenericButton(get("win.load"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		loadButton.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				hideSecondary();
+				commons.control().displayStatusbar();
+				commons.control().displayOptions(true, SettingsPage.LOAD_SAVE);
 			}
 		};
 		mainMenuButton = new UIGenericButton(get("win.main_menu"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
@@ -181,28 +194,46 @@ public class GameOverScreen extends ScreenBase {
 			
 			g2.drawImage(gameover, dx, dy, null);
 			
-			if (win) {
-				continueButton.visible(true);
-				mainMenuButton.visible(true);
-				winLabel.visible(true);
-				
-				winLabel.location(dx, dy + 40);
-				winLabel.size(bw, 30);
-				winLabel.horizontally(HorizontalAlignment.CENTER);
-				winLabel.color(TextRenderer.YELLOW);
-				
-				int w = continueButton.width + mainMenuButton.width;
-				
-				int dx2 = (bw - w) / 3;
-				
-				continueButton.location(dx + dx2, dy + bh - 50);
-				mainMenuButton.location(dx + 2 * dx2 + continueButton.width, dy + bh - 50);
+			loadButton.visible(true);
+			mainMenuButton.visible(true);
+			continueButton.visible(win);
+			winLabel.visible(win);
+			
+			winLabel.location(dx, dy + 40);
+			winLabel.size(bw, 30);
+			winLabel.horizontally(HorizontalAlignment.CENTER);
+			winLabel.color(TextRenderer.YELLOW);
+			
+			int by = dy + bh - 50;
 
-				super.draw(g2);
-			}
+			placeButtons(dx, by, bw, 20, continueButton, loadButton, mainMenuButton);
+			
+			super.draw(g2);
 			
 			g2.setComposite(save0);
 		}
+	}
+	/**
+	 * Place buttons equally in the given width.
+	 * @param dx the delta x
+	 * @param dy the delta y
+	 * @param width the available width
+	 * @param gap the gap between buttons
+	 * @param comps the components
+	 */
+	void placeButtons(int dx, int dy, int width, int gap, UIComponent... comps) {
+		int cw = 0;
+		for (UIComponent c : comps) {
+			cw += c.width;
+		}
+		cw += gap * Math.max(0, comps.length - 1);
+		
+		dx += (width - cw) / 2;
+		for (UIComponent c : comps) {
+			c.x = dx;
+			c.y = dy;
+			dx += gap + c.width;
+		}		
 	}
 	
 	@Override
