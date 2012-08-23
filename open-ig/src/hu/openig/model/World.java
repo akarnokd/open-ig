@@ -2843,6 +2843,7 @@ public class World {
 				
 				createStartingFleet(p);
 			}
+			p.group = sp.group;
 			
 			groups.put(p, sp.group);
 			

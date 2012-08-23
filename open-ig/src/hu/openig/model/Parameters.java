@@ -70,6 +70,9 @@ public class Parameters {
 	/** The maximum number of cruisers and destroyers per fleet. */
 	@LoadField
 	protected int mediumshipLimit = 25;
+	/** The radar share limit. */
+	@LoadField
+	protected int radarShareLimit = 80;
 	/**
 	 * Constructor. Initializes the speed factor callback field.
 	 * @param speed the speed callback
@@ -184,5 +187,9 @@ public class Parameters {
 	 */
 	public int mediumshipLimit() {
 		return mediumshipLimit;
+	}
+	/** @return the radar share limit between allies. */
+	public int radarShareLimit() {
+		return radarShareLimit;
 	}
 }

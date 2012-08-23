@@ -17,17 +17,22 @@ import hu.openig.model.GameScripting;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
+import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SkirmishDefinition;
+import hu.openig.model.SoundTarget;
+import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The scripting supervising a skirmish game.
@@ -40,6 +45,200 @@ public class SkirmishScripting implements GameScripting {
 	protected Player player;
 	/** The skirmish definition. */
 	protected SkirmishDefinition def;
+	/** The map of all main and sub objectives. */
+	final Map<String, Objective> allObjectives = U.newLinkedHashMap();
+	/** Show the objectives once. */
+	protected boolean objectivesOnce = true;
+
+	@Override
+	public void onTime() {
+		if (objectivesOnce) {
+			objectivesOnce = false;
+			world.env.showObjectives(true);
+		}
+		checkConquestVictory();
+		checkEconomicVictory();
+		checkOccupationVictory();
+		checkTechnologyVictory();
+		checkSocialVictory();
+	}
+	
+	/**
+	 * Check if all but one group has planets.
+	 */
+	void checkConquestVictory() {
+		Map<Integer, Integer> groupPlanets = U.newHashMap();
+		for (Planet p : world.planets.values()) {
+			if (groupPlanets.size() > 1) {
+				return;
+			}
+			if (p.owner != null) {
+				Integer v = groupPlanets.get(p.owner.group);
+				groupPlanets.put(p.owner.group, v != null ? v.intValue() + 1 : 1);
+			}
+		}
+		if (groupPlanets.size() > 1) {
+			return;
+		}
+		if (groupPlanets.containsKey(player.group)) {
+			if (setObjectiveState("conquest", ObjectiveState.SUCCESS)) {
+				world.env.pause();
+				world.env.winGame();
+			}
+		} else {
+			if (setObjectiveState("conquest", ObjectiveState.FAILURE)) {
+				world.env.pause();
+				world.env.loseGame();
+			}
+		}
+	}
+	
+	@Override
+	public void init(Player player, XElement in) {
+		this.player = player;
+		this.world = player.world;
+		this.def = world.skirmishDefinition;
+		
+		// prepare objectives according to the win conditions
+		Objective o1 = new Objective();
+		o1.id = "conquest";
+		o1.title = world.labels.get("skirmish.objectives.conquest");
+		o1.description = world.labels.get("skirmish.objectives.conquest.desc");
+		o1.visible = def.victoryConquest;
+		
+		Objective o2 = new Objective();
+		o2.id = "economic";
+		o2.title = world.labels.get("skirmish.objectives.economic");
+		o2.description = world.labels.format("skirmish.objectives.economic.desc", def.victoryEconomicMoney);
+		o2.visible = def.victoryEconomic;
+
+		Objective o3 = new Objective();
+		o3.id = "occupation";
+		o3.title = world.labels.get("skirmish.objectives.occupation");
+		o3.description = world.labels.format("skirmish.objectives.occupation.desc", def.victoryOccupationPercent, def.victoryOccupationTime);
+		o3.visible = def.victoryOccupation;
+
+		Objective o4 = new Objective();
+		o4.id = "technology";
+		o4.title = world.labels.get("skirmish.objectives.technology");
+		o4.description = world.labels.format("skirmish.objectives.technology.desc");
+		o4.visible = def.victoryTechnology;
+
+		Objective o5 = new Objective();
+		o5.id = "social";
+		o5.title = world.labels.get("skirmish.objectives.social");
+		o5.description = world.labels.format("skirmish.objectives.social.desc", def.victorySocialMorale, def.victorySocialPlanets);
+		o5.visible = def.victorySocial;
+
+		
+		allObjectives.put(o1.id, o1);
+		allObjectives.put(o2.id, o2);
+		allObjectives.put(o3.id, o3);
+		allObjectives.put(o4.id, o4);
+		allObjectives.put(o5.id, o5);
+	}
+	@Override
+	public List<Objective> currentObjectives() {
+		List<Objective> result = U.newArrayList();
+		
+		for (Objective o : allObjectives.values()) {
+			if (o.visible) {
+				result.add(o);
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * Sets the objective state.
+	 * @param oId the identifier
+	 * @param newState the new state
+	 * @return true if the state actually changed
+	 */
+	public boolean setObjectiveState(String oId, ObjectiveState newState) {
+		return setObjectiveState(objective(oId), newState);
+	}
+	/**
+	 * Sets the objective state.
+	 * @param o the objective
+	 * @param newState the new state
+	 * @return true if the state actually changed
+	 */
+	public boolean setObjectiveState(Objective o, ObjectiveState newState) {
+		if (o.state != newState) {
+			o.state = newState;
+			world.env.showObjectives(true);
+			if (newState == ObjectiveState.SUCCESS) {
+				world.env.playSound(SoundTarget.EFFECT, SoundType.SUCCESS, null);
+			} else 
+			if (newState == ObjectiveState.FAILURE) {
+				world.env.playSound(SoundTarget.EFFECT, SoundType.FAIL, null);
+			}
+			return true;
+		}
+		return false;
+	}
+	@Override
+	public void load(XElement in) {
+		objectivesOnce = in.getBoolean("objectives-once", false);
+		for (XElement xmsgs : in.childrenWithName("sends")) {
+			for (XElement xmsg : xmsgs.childrenWithName("send")) {
+				String id = xmsg.get("id");
+				VideoMessage vm = send(id);
+				if (vm != null) {
+					vm.visible = xmsg.getBoolean("visible");
+					vm.seen = xmsg.getBoolean("seen", false);
+				}
+			}
+		}
+		// reset objectives
+		for (Objective o : allObjectives.values()) {
+			o.visible = false;
+			o.state = ObjectiveState.ACTIVE;
+		}
+		for (XElement xos : in.childrenWithName("objectives")) {
+			for (XElement xo : xos.childrenWithName("objective")) {
+				String id = xo.get("id");
+				Objective o = allObjectives.get(id);
+				o.visible = xo.getBoolean("visible");
+				o.state = ObjectiveState.valueOf(xo.get("state"));
+			}
+		}
+	}
+	/**
+	 * Get a send-message.
+	 * @param id the message id
+	 * @return the video message or null if not available
+	 */
+	public VideoMessage send(String id) {
+		return world.bridge.sendMessages.get(id);
+	}
+	@Override
+	public void save(XElement out) {
+		out.set("objectives-once", objectivesOnce);
+		XElement xmsgs = out.add("sends");
+		for (VideoMessage vm : world.bridge.sendMessages.values()) {
+			XElement xmsg = xmsgs.add("send");
+			xmsg.set("id", vm.id);
+			xmsg.set("visible", vm.visible);
+			xmsg.set("seen", vm.seen);
+		}
+		XElement xos = out.add("objectives");
+		for (Objective o : allObjectives.values()) {
+			XElement xo = xos.add("objective");
+			xo.set("id", o.id);
+			xo.set("visible", o.visible);
+			xo.set("state", o.state);
+		}
+	}
+	/**
+	 * Returns an objective.
+	 * @param id the objective id.
+	 * @return the objective
+	 */
+	public Objective objective(String id) {
+		return allObjectives.get(id);
+	}
 	@Override
 	public void onResearched(Player player, ResearchType rt) {
 		// TODO Auto-generated method stub
@@ -132,12 +331,6 @@ public class SkirmishScripting implements GameScripting {
 
 	@Override
 	public void onBattleComplete(Player player, BattleInfo battle) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onTime() {
 		// TODO Auto-generated method stub
 
 	}
@@ -318,32 +511,7 @@ public class SkirmishScripting implements GameScripting {
 	}
 
 	@Override
-	public List<Objective> currentObjectives() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void init(Player player, XElement in) {
-		this.player = player;
-		this.world = player.world;
-		this.def = world.skirmishDefinition;
-	}
-
-	@Override
 	public void done() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void load(XElement in) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void save(XElement out) {
 		// TODO Auto-generated method stub
 
 	}
