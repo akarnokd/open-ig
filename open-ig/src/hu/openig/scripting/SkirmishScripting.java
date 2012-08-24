@@ -8,6 +8,7 @@
 
 package hu.openig.scripting;
 
+import hu.openig.model.AIMode;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Chats.Chat;
@@ -90,6 +91,9 @@ public class SkirmishScripting implements GameScripting {
 	 */
 	void checkTechnologyVictory() {
 		for (Player p : world.players.values()) {
+			if (p.aiMode == AIMode.PIRATES || p.aiMode == AIMode.TRADERS) {
+				continue;
+			}
 			int avail = p.available().size();
 			
 			int req = 0;
