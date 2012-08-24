@@ -42,7 +42,7 @@ public class VerifyCampaign {
 	/** All language labels. */
 	final Map<String, Labels> labels = U.newHashMap();
 	/** Base languages. */
-	final String[] languages = { "en", "hu", "de" };
+	final String[] languages = { "en", "hu", "de", "fr" };
 	/**
 	 * Constructor, initializes the locator.
 	 * @param cfg the configuration
@@ -166,6 +166,11 @@ public class VerifyCampaign {
 		for (String k1 : l1.map().keySet()) {
 			if (!l2.map().containsKey(k1)) {
 				System.err.printf("Base label missing: present %s, missing %s%n\t<entry key='%s'>%s</entry>%n", lang1, lang2, k1, l1.map().get(k1));
+			}
+			if ((l1.map().get(k1) == null) != (l2.map().get(k1) == null)) {
+				System.err.printf("Empty/non-empty label pair (%s, %s):%n", lang1, lang2);
+				System.err.printf("\t<entry key='%s'>%s</entry>%n", k1, l1.map().get(k1));				
+				System.err.printf("\t<entry key='%s'>%s</entry>%n", k1, l2.map().get(k1));			
 			}
 		}
 	}
