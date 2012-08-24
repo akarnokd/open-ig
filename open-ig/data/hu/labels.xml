@@ -3012,7 +3012,7 @@
 	<entry key='skirmish.add_player'>Játékos hozzáadása</entry>
 	<entry key="skirmish.traits">J</entry>
 	<entry key="skirmish.traits.tooltip">Jellemzők beállítása</entry>
-	<entry key='skirmish.remove_players'></entry>
+	<entry key='skirmish.remove_players'>Játékosok eltávolítása</entry>
 	<entry key='skirmish.name'>Név</entry>
 	<entry key='skirmish.race'>Faj</entry>
 	<entry key='skirmish.icon'>Ikon</entry>
