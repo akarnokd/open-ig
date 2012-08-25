@@ -3039,6 +3039,8 @@
 	<entry key='traits.engineers.desc'>Skilled engineers will repair your fleet without military spaceports, although at a much lower rate. However, your shields will regenerate faster between battles.</entry>
 	<entry key='traits.combat_engineers'>Combat engineers</entry>
 	<entry key='traits.combat_engineers.desc'>Your engineers are brave enough to help you fix and regenerate your shields during battles, so long as the shield generator isn't destroyed.</entry>
+	<entry key='quickresearch.cost'>Research cost: %1$,d cr</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
