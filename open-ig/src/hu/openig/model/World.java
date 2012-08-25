@@ -908,14 +908,15 @@ public class World {
 	 * Get the research color for the given research type.
 	 * @param rt the research type
 	 * @param stats the global statistics
+	 * @param colorActive color the running research differently?
 	 * @return the color
 	 */
-	public int getResearchColor(ResearchType rt, PlanetStatistics stats) {
+	public int getResearchColor(ResearchType rt, PlanetStatistics stats, boolean colorActive) {
 		int c = TextRenderer.GRAY;
 		if (player.isAvailable(rt)) {
 			c = TextRenderer.ORANGE;
 		} else
-		if (player.research.containsKey(rt)) {
+		if (player.research.containsKey(rt) && colorActive) {
 			c = TextRenderer.YELLOW;
 		} else
 		if (canResearch(rt)) {
@@ -929,6 +930,15 @@ public class World {
 			}
 		}
 		return c;
+	}
+	/**
+	 * Get the research color for the given research type.
+	 * @param rt the research type
+	 * @param stats the global statistics
+	 * @return the color
+	 */
+	public int getResearchColor(ResearchType rt, PlanetStatistics stats) {
+		return getResearchColor(rt, stats, true);
 	}
 	/**
 	 * @return Returns an ordered list of the research types.
