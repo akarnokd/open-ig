@@ -528,9 +528,9 @@ public class GameKeyManager extends KeyAdapter {
 			case KeyEvent.VK_G:
 				// CHEAT: add more money
 				if (e.isControlDown()) {
-					world().player.money += 10000;
+					world().player.addMoney(10000);
 					if (e.isShiftDown()) {
-						world().player.money += 90000;
+						world().player.addMoney(90000);
 					}
 					repaintInner();
 					e.consume();

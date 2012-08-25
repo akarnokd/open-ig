@@ -62,7 +62,7 @@ public final class AutoBuilder {
 				new Func1<Building, Boolean>() {
 					@Override
 					public Boolean invoke(Building b) {
-						return b.getEnergy() > 0 && planet.owner.money >= b.type.cost;
+						return b.getEnergy() > 0 && planet.owner.money() >= b.type.cost;
 					}
 				},
 				new Func1<BuildingType, Boolean>() {
@@ -380,7 +380,7 @@ public final class AutoBuilder {
 		List<Building> result = new ArrayList<Building>();
 		for (Building b : planet.surface.buildings) {
 			if (b.upgradeLevel < b.type.upgrades.size()
-				&& b.type.cost <= planet.owner.money
+				&& b.type.cost <= planet.owner.money()
 				&& filter.invoke(b)
 			) {
 				result.add(b);
@@ -399,7 +399,7 @@ public final class AutoBuilder {
 		List<BuildingType> result = new ArrayList<BuildingType>();
 		for (BuildingType bt : world.buildingModel.buildings.values()) {
 			if (
-					planet.owner.money >= bt.cost
+					planet.owner.money() >= bt.cost
 					&& planet.canBuild(bt)
 					&& filter.invoke(bt)
 			) {
@@ -444,7 +444,7 @@ public final class AutoBuilder {
 		planet.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
 		planet.rebuildRoads();
 
-		planet.owner.money -= bt.cost;
+		planet.owner.addMoney(-bt.cost);
 		planet.owner.today.buildCost += bt.cost;
 		
 		planet.owner.statistics.buildCount++;
@@ -467,7 +467,7 @@ public final class AutoBuilder {
 			if (!upgrade(world, planet, b, b.upgradeLevel + 1)) {
 				break;
 			}
-		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money >= 30 * b.type.cost);
+		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money() >= 30 * b.type.cost);
 	}
 	/**
 	 * Update the building to the given new level.
@@ -485,7 +485,7 @@ public final class AutoBuilder {
 		int diff = newLevel - building.upgradeLevel;
 		int buildCost = building.type.cost * diff;
 
-		if (planet.owner.money < buildCost) {
+		if (planet.owner.money() < buildCost) {
 			return false;
 		}
 		
@@ -495,7 +495,7 @@ public final class AutoBuilder {
 		
 		planet.owner.today.buildCost += buildCost;
 		
-		planet.owner.money -= buildCost;
+		planet.owner.addMoney(-buildCost);
 		planet.owner.statistics.upgradeCount++;
 		planet.owner.statistics.moneySpent += buildCost;
 		planet.owner.statistics.moneyUpgrade += buildCost;

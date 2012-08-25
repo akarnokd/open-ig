@@ -101,11 +101,17 @@ public final class Simulator {
 
 			
 			if (!player.id.equals("Traders")) {
+				
+				double taxCompensation = 1;
+				if (day0 != day1) {
+					taxCompensation = taxCompensation(player, all.planetCount);
+				}
+				
 				// progress player's planets
 				for (Map.Entry<Planet, PlanetStatistics> pps : planetStats.entrySet()) {
 					Planet p = pps.getKey();
 					PlanetStatistics ps = pps.getValue();
-					progressPlanet(world, p, day0 != day1, ps);
+					progressPlanet(world, p, day0 != day1, ps, taxCompensation);
 				}
 			}
 		}
@@ -114,7 +120,6 @@ public final class Simulator {
 		if (day0 != day1) {
 			
 			for (Player p : world.players.values()) {
-				taxCompensation(p);
 				p.ai.onNewDay();
 			}
 			
@@ -180,10 +185,11 @@ public final class Simulator {
 	 * @param planet the planet
 	 * @param dayChange consider day change
 	 * @param ps the planet statistics
+	 * @param taxCompensation the compensation multiplier for planet count
 	 * @return true if repaint will be needed 
 	 */
 	static boolean progressPlanet(World world, Planet planet, boolean dayChange,
-			PlanetStatistics ps) {
+			PlanetStatistics ps, double taxCompensation) {
 		boolean result = false;
 		int tradeIncome = 0;
 		double multiply = 1.0f;
@@ -275,9 +281,9 @@ public final class Simulator {
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 					result = true;
 				} else {
-					if (planet.owner.money >= repairCost 
-							&& (b.repairing || planet.owner.money >= world.config.autoRepairLimit)) {
-						planet.owner.money -= repairCost; // FIXME repair cost per unit?
+					if (planet.owner.money() >= repairCost 
+							&& (b.repairing || planet.owner.money() >= world.config.autoRepairLimit)) {
+						planet.owner.addMoney(-repairCost); // FIXME repair cost per unit?
 						planet.owner.today.repairCost += repairCost;
 						b.hitpoints += repairAmount;
 						b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
@@ -365,7 +371,7 @@ public final class Simulator {
 			}
 		}
 		if (planet.autoBuild != AutoBuild.OFF 
-				&& (planet.owner == world.player && planet.owner.money >= world.config.autoBuildLimit)) {
+				&& (planet.owner == world.player && planet.owner.money() >= world.config.autoBuildLimit)) {
 			AutoBuilder.performAutoBuild(world, planet, ps);
 		}
 		
@@ -456,9 +462,9 @@ public final class Simulator {
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply * moneyModifier);
 			planet.taxIncome = (int)(
-					moneyModifier * planet.population * planet.morale * planet.tax.percent / 10000);
+					 taxCompensation * moneyModifier * planet.population * planet.morale * planet.tax.percent / 10000);
 
-			planet.owner.money += planet.tradeIncome + planet.taxIncome;
+			planet.owner.addMoney(planet.tradeIncome + planet.taxIncome);
 			
 			planet.owner.statistics.moneyIncome += planet.tradeIncome + planet.taxIncome;
 			planet.owner.statistics.moneyTaxIncome += planet.taxIncome;
@@ -555,11 +561,11 @@ public final class Simulator {
 				if (rs.getPercent(player.traits) < maxpc) {
 					float rel = 1.0f * rs.assignedMoney / rs.remainingMoney;
 					int dmoney = (int)(rel * world.params().researchSpeed());
-					if (dmoney < player.money) {
+					if (dmoney < player.money()) {
 						rs.remainingMoney = Math.max(0, rs.remainingMoney - dmoney);
 						rs.assignedMoney = Math.min((int)(rs.remainingMoney * rel) + 1, rs.remainingMoney);
 						player.today.researchCost += dmoney;
-						player.money -= dmoney;
+						player.addMoney(-dmoney);
 						
 						player.statistics.moneyResearch += dmoney;
 						player.statistics.moneySpent += dmoney;
@@ -639,13 +645,13 @@ public final class Simulator {
 						targetCap = 0;
 					}
 					int currentCap = (int)Math.min(Math.min(
-							player.money, 
+							player.money(), 
 							targetCap
 							),
 							pr.count * pr.type.productionCost - pr.progress
 					);
 					if (currentCap > 0) {
-						player.money -= currentCap;
+						player.addMoney(-currentCap);
 						player.today.productionCost += currentCap;
 						
 						int progress = pr.progress + currentCap;
@@ -955,35 +961,53 @@ public final class Simulator {
 		return f.getSpeed() / 4d;
 	}
 	/**
-	 * Calculate a compensated tax based on the current number of planets.
+	 * Compute the tax compensation for the given player and planet numbers.
 	 * @param p the player
+	 * @param n the number
+	 * @return the compensation value
 	 */
-	static void taxCompensation(Player p) {
-		long n = p.statistics.planetsOwned;
-		if (n > 0) {
-			if (n < 3) {
-				n = 3;
-			}
-			long diff = 0;
-			double k = 0;
-			if (p == p.world.player) {
-				k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
-			} else {
-				k = 3 / Math.sqrt(n - p.world.difficulty.ordinal());
-			}
-			for (Planet pl : p.planets.keySet()) {
-				if (pl.owner == p) {
-					int ti = pl.taxIncome;
-					pl.taxIncome = (int)(pl.taxIncome * k);
-					diff += pl.taxIncome - ti;
-				}
-			}
-			p.money += diff;
-			p.yesterday.taxIncome += diff;
-			p.statistics.moneyIncome += diff;
-			p.statistics.moneyTaxIncome += diff;
-			p.world.statistics.moneyIncome += diff;
-			p.world.statistics.moneyTaxIncome += diff;
+	static double taxCompensation(Player p, int n) {
+		if (n < 3) {
+			n = 3;
 		}
+		double k = 0;
+		if (p == p.world.player) {
+			k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
+		} else {
+			k = 3 / Math.sqrt(n - p.world.difficulty.ordinal());
+		}
+		return k;
 	}
+//	/**
+//	 * Calculate a compensated tax based on the current number of planets.
+//	 * @param p the player
+//	 */
+//	static void taxCompensation(Player p) {
+//		long n = p.statistics.planetsOwned;
+//		if (n > 0) {
+//			if (n < 3) {
+//				n = 3;
+//			}
+//			long diff = 0;
+//			double k = 0;
+//			if (p == p.world.player) {
+//				k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
+//			} else {
+//				k = 3 / Math.sqrt(n - p.world.difficulty.ordinal());
+//			}
+//			for (Planet pl : p.planets.keySet()) {
+//				if (pl.owner == p) {
+//					int ti = pl.taxIncome;
+//					pl.taxIncome = (int)(pl.taxIncome * k);
+//					diff += pl.taxIncome - ti;
+//				}
+//			}
+//			p.addMoney(diff);
+//			p.yesterday.taxIncome += diff;
+//			p.statistics.moneyIncome += diff;
+//			p.statistics.moneyTaxIncome += diff;
+//			p.world.statistics.moneyIncome += diff;
+//			p.world.statistics.moneyTaxIncome += diff;
+//		}
+//	}
 }

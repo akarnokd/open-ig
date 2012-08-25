@@ -1536,7 +1536,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 					newSave.saveDate = new Date();
 					newSave.level = world().level;
 					newSave.difficulty = world().difficulty;
-					newSave.money = player().money;
+					newSave.money = player().money();
 					newSave.skirmish = world().skirmishDefinition != null;
 					newSave.gameDate = world().time.getTime();
 					newSave.saveName = LoadSaveScreen.this.get("settings.new_save"); // FIXME labels

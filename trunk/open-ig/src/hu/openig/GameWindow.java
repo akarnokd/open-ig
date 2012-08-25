@@ -1033,7 +1033,7 @@ public class GameWindow extends JFrame implements GameControls {
 				p.setAvailable(rt);
 			}
 		}
-		p.money = 100000;
+		p.money(100000);
 		saveWorld(null, SaveMode.QUICK);
 	}
 	/**

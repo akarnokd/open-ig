@@ -474,7 +474,7 @@ public class StatusbarScreen extends ScreenBase {
 	/** Update the state displays. */
 	public void update() {
 		money.bounds(top.x + 75, top.y + 3, 82, 14);
-		money.text("" + player().money);
+		money.text("" + player().money());
 		pause.location(top.x + 1, top.y + 2);
 		speed1.location(top.x + 16, top.y + 2);
 		speed2.location(top.x + 31, top.y + 2);
@@ -610,7 +610,7 @@ public class StatusbarScreen extends ScreenBase {
 		setTooltip(speed1, "statusbar.speed1.tooltip");
 		setTooltip(speed2, "statusbar.speed2.tooltip");
 		setTooltip(speed4, "statusbar.speed4.tooltip");
-		setTooltip(money, "statusbar.money.tooltip", player().money);
+		setTooltip(money, "statusbar.money.tooltip", player().money());
 		setTooltip(objectivesButton, "statusbar.objectives.tooltip");
 		if (commons.battleMode) {
 			setTooltip(notification, null);

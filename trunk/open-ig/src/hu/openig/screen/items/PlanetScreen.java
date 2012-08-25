@@ -2879,7 +2879,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						long m = currentBuilding.type.cost * dl;
 						setTooltip(up, "buildings.upgrade.cost", 
 								currentBuilding.type.upgrades.get(i).description, 
-								m <= player().money ? "FFFFFFFF" : "FFFF0000",
+								m <= player().money() ? "FFFFFFFF" : "FFFF0000",
 								m);
 					}
 				} else {
@@ -2934,8 +2934,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	void doUpgrade(int j) {
 		if (currentBuilding != null && currentBuilding.upgradeLevel < j) {
 			int delta = (j - currentBuilding.upgradeLevel) * currentBuilding.type.cost;
-			if (player().money >= delta) {
-				player().money -= delta;
+			if (player().money() >= delta) {
+				player().addMoney(-delta);
 				player().today.buildCost += delta;
 				
 				currentBuilding.buildProgress = currentBuilding.type.hitpoints * 1 / 4;
@@ -3346,7 +3346,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void placeBuilding(boolean more) {
 		if (surface().placement.canPlaceBuilding(placementRectangle)
-				&& player().money >= player().currentBuilding.cost
+				&& player().money() >= player().currentBuilding.cost
 				&& planet().canBuild(player().currentBuilding)
 		) {
 				
@@ -3366,7 +3366,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				buildingInfoPanel.update();
 				setBuildingList(0);
 
-				player().money -= player().currentBuilding.cost;
+				player().addMoney(-player().currentBuilding.cost);
 				player().today.buildCost += player().currentBuilding.cost;
 				
 				player().statistics.buildCount++;
@@ -3379,7 +3379,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				
 				effectSound(SoundType.DEPLOY_BUILDING);
 		} else {
-			if (player().money < player().currentBuilding.cost) {
+			if (player().money() < player().currentBuilding.cost) {
 				buttonSound(SoundType.NOT_AVAILABLE);
 				
 				commons.control().displayError(get("message.not_enough_money"));

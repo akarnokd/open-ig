@@ -2541,7 +2541,7 @@ public class EquipmentScreen extends ScreenBase {
 				
 				worth /= 2;
 				
-				player().money += worth;
+				player().addMoney(worth);
 				
 				player().statistics.sellCount++;
 				player().statistics.moneyIncome += worth;

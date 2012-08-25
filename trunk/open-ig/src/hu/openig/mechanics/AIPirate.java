@@ -75,7 +75,7 @@ public class AIPirate implements AIManager {
 	}
 	@Override
 	public void apply() {
-		p.money += 30 * (world.ownPlanets.size() + 1); // FIXME is enough?
+		p.addMoney(30 * (world.ownPlanets.size() + 1)); // FIXME is enough?
 		for (Action0 a : applyActions) {
 			a.invoke();
 		}
