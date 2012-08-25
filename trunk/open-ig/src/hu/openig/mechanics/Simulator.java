@@ -33,6 +33,8 @@ import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.TaxLevel;
+import hu.openig.model.Trait;
+import hu.openig.model.TraitKind;
 import hu.openig.model.World;
 import hu.openig.utils.U;
 
@@ -190,6 +192,11 @@ public final class Simulator {
 		long eqPlaytime = 6L * 60 * 60 * 1000;
 		double populationGrowthModifier = ps.populationGrowthModifier;
 		double planetTypeModifier = world.galaxyModel.getGrowth(planet.type.type, planet.race);
+		// apply fertility trait
+		Trait t = planet.owner.traits.trait(TraitKind.FERTILE);
+		if (t != null) {
+			planetTypeModifier *= 1 + t.value / 100;
+		}
 		
 		final int repairCost = world.params().repairCost();
 		final int repairAmount = world.params().repairSpeed();
@@ -441,8 +448,15 @@ public final class Simulator {
 			
 			planet.population = (int)nextPopulation;
 			
-			planet.tradeIncome = (int)(tradeIncome * multiply);
-			planet.taxIncome = (int)(1.0f * planet.population * planet.morale * planet.tax.percent / 10000);
+			double moneyModifier = 1;
+			t = planet.owner.traits.trait(TraitKind.TAX);
+			if (t != null) {
+				moneyModifier = 1 + t.value / 100;
+			}
+			
+			planet.tradeIncome = (int)(tradeIncome * multiply * moneyModifier);
+			planet.taxIncome = (int)(
+					moneyModifier * planet.population * planet.morale * planet.tax.percent / 10000);
 
 			planet.owner.money += planet.tradeIncome + planet.taxIncome;
 			
@@ -538,7 +552,7 @@ public final class Simulator {
 			// test for money
 			// test for max percentage
 			if (rs.remainingMoney > 0) {
-				if (rs.getPercent() < maxpc) {
+				if (rs.getPercent(player.traits) < maxpc) {
 					float rel = 1.0f * rs.assignedMoney / rs.remainingMoney;
 					int dmoney = (int)(rel * world.params().researchSpeed());
 					if (dmoney < player.money) {
@@ -825,7 +839,9 @@ public final class Simulator {
 	static void regenerateFleet(Fleet f) {
 		Planet np = f.nearbyPlanet();
 		boolean spaceport = f.task != FleetTask.SCRIPT 
-				&& np != null && np.owner == f.owner && np.hasMilitarySpaceport();
+				&& ((np != null 
+				&& np.owner == f.owner 
+				&& np.hasMilitarySpaceport()));
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
 			regenerateInventory(spaceport, ii);
 		}
@@ -840,15 +856,23 @@ public final class Simulator {
 	 */
 	protected static void regenerateInventory(boolean spaceport,
 			InventoryItem ii) {
+		boolean engineers = ii.owner.traits.has(TraitKind.ENGINEERS);
 		double spd = ii.owner.world.params().speed();
 		if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 			spd *= 5;
+		} else
+		if (engineers) {
+			if (!spaceport) {
+				spd /= 5;
+			} else {
+				spd *= 1.2;
+			}
 		}
-		int hpMax = ii.owner.world.getHitpoints(ii.type);
-		if (spaceport || ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+		int hpMax = ii.owner.world.getHitpoints(ii.type, ii.owner);
+		if (spaceport || engineers || ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 			if (ii.hp < hpMax) {
 				double delta0 = spd;
-				ii.hp = (int)Math.min(hpMax, ii.hp + delta0);
+				ii.hp = Math.min(hpMax, ii.hp + delta0);
 			}
 			// regenerate slots
 			for (InventorySlot is : ii.slots) {
@@ -858,7 +882,7 @@ public final class Simulator {
 		}
 		int sm = ii.shieldMax();
 		if (sm > 0 && ii.shield < sm) {
-			double delta = spd;
+			double delta = engineers ? spd : 2 * spd;
 			ii.shield = (int)Math.min(sm, ii.shield + delta);
 		}
 	}

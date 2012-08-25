@@ -57,7 +57,7 @@ public class SpacewarStructure extends SpacewarObject {
 	/** The shield hitpoints. */
 	public double shield;
 	/** The maximum shield hitpoints. */
-	public int shieldMax;
+	public double shieldMax;
 	/** The ECM level. */
 	public int ecmLevel;
 	/** The destruction sound. */
@@ -87,7 +87,7 @@ public class SpacewarStructure extends SpacewarObject {
 	/** Attack anything in range. */
 	public boolean guard;
 	/** Kamikaze mode mode if greater than zero, indicates impact damage. */
-	public int kamikaze;
+	public double kamikaze;
 	/** The available hitpoints. */
 	public double hp;
 	/** The maximum hitpoints. */
@@ -139,11 +139,11 @@ public class SpacewarStructure extends SpacewarObject {
 		return (int)(100 * (hpMax - hp) / hpMax);
 	}
 	/** @return the firepower of the beam weapons on board. */
-	public int getFirepower() {
-		int sum = 0;
+	public double getFirepower() {
+		double sum = 0;
 		for (SpacewarWeaponPort p : ports) {
 			if (p.projectile.mode == Mode.BEAM) {
-				sum += p.projectile.damage * p.count;
+				sum += p.damage(owner) * p.count;
 			}
 		}
 		return sum;

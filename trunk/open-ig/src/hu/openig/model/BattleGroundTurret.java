@@ -30,9 +30,22 @@ public class BattleGroundTurret {
 	/** The firing range. */
 	public double maxRange;
 	/** The damage. */
-	public int damage;
+	public int baseDamage;
 	/** The rotation time per angle-segment. */
 	public int rotationTime;
 	/** The delay between firing. */
 	public int delay;
+	/**
+	 * Returns the damage for the given owner.
+	 * @param owner the owner
+	 * @return the damage
+	 */
+	public double damage(Player owner) {
+		double dmg = baseDamage;
+		Trait t = owner.traits.trait(TraitKind.WEAPONS);
+		if (t != null) {
+			dmg *= 1 + t.value / 100;
+		}
+		return dmg;
+	}
 }

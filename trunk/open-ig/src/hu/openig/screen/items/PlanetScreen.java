@@ -50,6 +50,7 @@ import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
 import hu.openig.model.SurfaceFeature;
 import hu.openig.model.Tile;
+import hu.openig.model.Trait;
 import hu.openig.model.TraitKind;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
@@ -307,7 +308,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		/** The owner. */
 		public Player owner;
 		/** The damage to inflict. */
-		public int damage;
+		public double damage;
 	}
 	/** The grouping of structures. */
 	final Map<Object, Integer> groups = U.newHashMap();
@@ -2686,11 +2687,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
 			if (p.owner == null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				double g = world().galaxyModel.getGrowth(p.type.type, player().race);
+				Trait t = player().traits.trait(TraitKind.FERTILE);
+				if (t != null) {
+					g *= 1 + t.value / 100;
+				}
 				surfaceText = format("colonyinfo.surface2", 
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			} else
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race) * ps.populationGrowthModifier;
+
+				Trait t = player().traits.trait(TraitKind.FERTILE);
+				if (t != null) {
+					g *= 1 + t.value / 100;
+				}
+
 				surfaceText = format("colonyinfo.surface2", 
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			}
@@ -4319,7 +4330,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param b the target building
 	 * @param damage the damage amout
 	 */
-	void damageBuilding(Building b, int damage) {
+	void damageBuilding(Building b, double damage) {
 		int hpBefore = b.hitpoints;
 		int maxHp = world().getHitpoints(b.type, planet().owner, false);
 		b.hitpoints = (int)Math.max(0, b.hitpoints - 1L * damage * b.type.hitpoints / maxHp);
@@ -4399,7 +4410,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				u.phase++;
 				if (u.phase >= u.maxPhase()) {
 					Mine m = new Mine();
-					m.damage = u.model.damage;
+					m.damage = u.damage();
 					m.owner = u.owner;
 					mines.put(loc, m);
 					minelayers.remove(u);
@@ -4586,7 +4597,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			special(u);
 		} else
 		if (u.model.type != GroundwarUnitType.ROCKET_SLED) {
-			damageBuilding(u.attackBuilding, u.model.damage);
+			damageBuilding(u.attackBuilding, u.damage());
 		}
 		
 		if (u.attackBuilding.isDestroyed()) {
@@ -4605,7 +4616,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return;
 		}
 		if (u.model.type == GroundwarUnitType.ARTILLERY) {
-			damageArea(u.attackUnit.x, u.attackUnit.y, u.model.damage, u.model.area, u.owner);
+			damageArea(u.attackUnit.x, u.attackUnit.y, u.damage(), u.model.area, u.owner);
 		} else
 		if (u.model.type == GroundwarUnitType.KAMIKAZE 
 			&& u.hp * 10 < u.model.hp) {
@@ -4613,7 +4624,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		} else
 		if (unitWithinRange(u, u.attackUnit)) {
 			if (!u.attackUnit.isDestroyed()) {
-				u.attackUnit.damage(u.model.damage);
+				u.attackUnit.damage(u.damage());
 				if (u.attackUnit.isDestroyed()) {
 					effectSound(u.attackUnit.model.destroy);
 					createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
@@ -4648,7 +4659,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param area the effect area
 	 * @param owner the units and structures *NOT* to damage
 	 */
-	void damageArea(double cx, double cy, int damage, int area, Player owner) {
+	void damageArea(double cx, double cy, double damage, int area, Player owner) {
 		for (GroundwarUnit u : units) {
 			if (u.owner != owner) {
 				if (cellInRange(cx, cy, u.x, u.y, area)) {
@@ -4700,7 +4711,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (g.attack != null && !g.attack.isDestroyed() 
 						&& unitInRange(g, g.attack)) {
 					if (!g.attack.isDestroyed()) {
-						g.attack.damage(g.model.damage);
+						g.attack.damage(g.damage());
 						if (g.attack.isDestroyed()) {
 							effectSound(g.attack.model.destroy);
 							createExplosion(g.attack, ExplosionType.GROUND_RED);
@@ -5316,7 +5327,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		rocket.targetY = y;
 		rocket.movementSpeed = 25; // FIXME rocket movement speed
 		
-		rocket.damage = sender.model.damage;
+		rocket.damage = sender.damage();
 		rocket.area = sender.model.area;
 		
 		Point pg = centerOf(sender.x, sender.y);
@@ -5863,7 +5874,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			double x = u.x;
 			double y = u.y;
 			double m = world().battle.getDoubleProperty(u.model.id, u.owner.id, "self-destruct-multiplier");
-			damageArea(x, y, (int)(u.model.damage * m), u.model.area, u.owner);
+			damageArea(x, y, (u.damage() * m), u.model.area, u.owner);
 			u.hp = 0; // destroy self
 			createExplosion(u, ExplosionType.GROUND_YELLOW);
 		}
@@ -6050,9 +6061,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				int iw = (width - img.getWidth()) / 2;
 				g2.drawImage(img, iw, 25, null);
 				
+				double dmg = u.damage();
 				commons.text().paintTo(g2, 10, h0 - 25, 7, u.owner.color, 
-						format("spacewar.selection.firepower_dps", u.model.damage * count, 
-						String.format("%.1f", u.model.damage * count * 1000d / u.model.delay)));
+						format("spacewar.selection.firepower_dps", dmg * count, 
+						String.format("%.1f", dmg * count * 1000d / u.model.delay)));
 				commons.text().paintTo(g2, 10, h0 - 15, 7, u.owner.color, get("spacewar.selection.defense_values") + ((int)sumHp));
 				
 			} else {

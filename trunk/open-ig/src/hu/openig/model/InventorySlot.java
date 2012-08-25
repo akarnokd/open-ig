@@ -58,7 +58,7 @@ public class InventorySlot {
 		int result = 0;
 		int cnt = 0;
 		for (ResearchType rt : slot.items) {
-			result += owner.world.getHitpoints(rt);
+			result += owner.world.getHitpoints(rt, owner);
 			cnt++;
 		}
 		return result / cnt;

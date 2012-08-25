@@ -136,9 +136,25 @@ public class ResearchType {
 		}
 		return Integer.parseInt(s);
 	}
-	/** @return the research time in 10s of ingame minutes. */
-	public int researchTime() {
-		return researchCost * 3 / 80;
+	/** 
+	 * @param traits the traits to consider
+	 * @return the research time in 10s of ingame minutes. 
+	 */
+	public int researchTime(Traits traits) {
+		return researchCost(traits) * 3 / 80;
+	}
+	/**
+	 * The research cost for your race.
+	 * @param traits the traits to consider
+	 * @return the cost
+	 */
+	public int researchCost(Traits traits) {
+		Trait t = traits.trait(TraitKind.SCIENCE);
+		int v = researchCost;
+		if (t != null) {
+			v = (int)(v * (1 + t.value / 100));
+		}
+		return v;
 	}
 	/**
 	 * Check if the global planet statistics provides enough active labs to support the given research.

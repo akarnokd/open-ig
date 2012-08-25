@@ -26,9 +26,9 @@ public class FleetStatistics {
 	/** The maximum speed. */
 	public int speed;
 	/** The firepower. */
-	public int firepower;
+	public double firepower;
 	/** The ground firepower. */
-	public int groundFirepower;
+	public double groundFirepower;
 	/** The nearby planet, where distance < 45 units. */
 	public Planet planet;
 }

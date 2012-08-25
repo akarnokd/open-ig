@@ -28,7 +28,7 @@ public class InventoryItem {
 	/** The item's count. */
 	public int count;
 	/** The current hit points. */
-	public int hp;
+	public double hp;
 	/** The current shield points. */
 	public int shield;
 	/** The optional tag used by the AI or scripting to remember a concrete inventory item. */
@@ -56,7 +56,7 @@ public class InventoryItem {
 			}
 		}
 		if (result >= 0) {
-			return result * owner.world.getHitpoints(type) / 100;
+			return result * owner.world.getHitpoints(type, owner) / 100;
 		}
 		return -1;
 	}
@@ -203,28 +203,31 @@ public class InventoryItem {
 	}
 	/** @return the Max hitpoits. */
 	public int hpMax() {
-		return owner.world.getHitpoints(type);
+		return owner.world.getHitpoints(type, owner);
 	}
 	/**
 	 * Compute the damage/dps of regular weapons.
 	 * @return the pair of damage and dps
 	 */
-	public Pair<Integer, Double> maxDamageDPS() {
-		int damage = 0;
+	public Pair<Double, Double> maxDamageDPS() {
+		double damage = 0;
 		double dps = 0;
 		for (InventorySlot is : slots) {
 			if (is.type != null && (is.type.category == ResearchSubCategory.WEAPONS_CANNONS
 					|| is.type.category == ResearchSubCategory.WEAPONS_LASERS)) {
 				BattleProjectile bp = owner.world.battle.projectiles.get(is.type.get("projectile"));
-				damage += bp.damage * is.count * count;
-				dps += bp.damage * is.count * 1000d / bp.delay * count;
+				double dmg = bp.damage(owner);
+				damage += dmg * is.count * count;
+				dps += dmg * is.count * 1000d / bp.delay * count;
 			}
 		}
 		if (type.category == ResearchSubCategory.WEAPONS_TANKS 
 				|| type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 			BattleGroundVehicle bgw = owner.world.battle.groundEntities.get(type.id);
-			damage += bgw.damage * count;
-			dps += bgw.damage * 1000d * count / bgw.delay;
+
+			double dmg = bgw.damage(owner);
+			damage += dmg * count;
+			dps += dmg * 1000d * count / bgw.delay;
 		}
 		return Pair.of(damage, dps);
 	}

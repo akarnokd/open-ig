@@ -43,6 +43,7 @@ import hu.openig.model.SpacewarObject;
 import hu.openig.model.SpacewarProjectile;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
+import hu.openig.model.TraitKind;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.model.SpacewarWorld;
@@ -1479,7 +1480,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param alien true if allied with the non-player
 	 */
 	void placeStations(Planet nearbyPlanet, boolean alien) {
-		
 		for (InventoryItem ii : nearbyPlanet.inventory) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS 
 					&& ii.owner == nearbyPlanet.owner) {
@@ -1496,8 +1496,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.infoImageName = bse.infoImageName;
 				st.shield = ii.shield;
 				st.shieldMax = Math.max(0, ii.shieldMax());
+				
+				st.hpMax = world().getHitpoints(ii.type, ii.owner);
 				st.hp = ii.hp;
-				st.hpMax = world().getHitpoints(ii.type);
+
 				st.value = ii.type.productionCost;
 				st.planet = nearbyPlanet;
 				
@@ -1518,6 +1520,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	double placeShields(Planet nearbyPlanet, boolean alien) {
 		double shieldValue = 0;
+		
 		// add shields
 		for (Building b : nearbyPlanet.surface.buildings) {
 			double power = Math.abs(b.assignedEnergy * 1.0 / b.getEnergy());
@@ -1533,7 +1536,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
 				st.infoImageName = bge.infoImageName;
 				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
-				st.hp = (int)(1L * b.hitpoints * st.hpMax / b.type.hitpoints);
+				st.hp = (1L * b.hitpoints * st.hpMax / b.type.hitpoints);
 				st.value = b.type.cost;
 				st.destruction = bge.destruction;
 				st.building = b;
@@ -1546,8 +1549,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		for (SpacewarStructure sws : shields()) {
-			sws.shield = (int)(sws.hp * shieldValue / 100);
-			sws.shieldMax = (int)(sws.hpMax * shieldValue / 100);
+			sws.shield = (sws.hp * shieldValue / 100);
+			sws.shieldMax = (sws.hpMax * shieldValue / 100);
 		}
 		return shieldValue;
 	}
@@ -1571,14 +1574,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.angle = Math.PI;
 				st.infoImageName = bge.infoImageName;
 				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
+				
 				st.value = b.type.cost;
-				st.hp = (int)(1L * b.hitpoints * st.hpMax / b.type.hitpoints);
+				st.hp = (1L * b.hitpoints * st.hpMax / b.type.hitpoints);
 				st.destruction = bge.destruction;
 				st.building = b;
 				st.planet = nearbyPlanet;
 				
-				st.shield = (int)(st.hp * shieldValue / 100);
-				st.shieldMax = (int)(st.hpMax * shieldValue / 100);
+				st.shield = (st.hp * shieldValue / 100);
+				st.shieldMax = (st.hpMax * shieldValue / 100);
 				
 				st.rotationTime = bge.rotationTime;
 
@@ -1586,7 +1590,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				SpacewarWeaponPort wp = new SpacewarWeaponPort(null);
 				wp.projectile = pr.copy();
-				wp.projectile.damage = bge.damage;
+				wp.projectile.baseDamage = bge.damage(st.owner);
 				
 				st.efficiencies = bge.efficiencies;
 				
@@ -1762,7 +1766,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.shield = ii.shield;
 				st.shieldMax = Math.max(0, ii.shieldMax());
 				st.hp = ii.hp;
-				st.hpMax = world().getHitpoints(ii.type);
+				st.hpMax = world().getHitpoints(ii.type, ii.owner);
 				st.value = totalValue(ii);
 				st.count = ii.count;
 				st.rotationTime = bse.rotationTime;
@@ -2398,7 +2402,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The losses. */
 		public int losses;
 		/** The firepower. */
-		public int firepower;
+		public double firepower;
 		/** The damage per second. */
 		public double dps;
 		/** The total hitpoints. */
@@ -2435,7 +2439,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_own_units", own.units, own.hp);
 			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_losses", own.losses);
-			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_firepower", own.firepower, own.dps);
+			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_firepower", (int)own.firepower, own.dps);
 			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_ground", own.groundUnits);
 			y = drawLine(g2, y, TextRenderer.GREEN, "spacewar.statistics_rockets", own.rockets, own.bombs);
 			
@@ -2452,7 +2456,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_enemy_units", other.units, other.hp);
 			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_losses", other.losses);
-			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_firepower", other.firepower, other.dps);
+			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_firepower", (int)other.firepower, other.dps);
 			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_ground", other.groundUnits);
 			y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_rockets", other.rockets, other.bombs);
 			
@@ -2505,7 +2509,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (e.type == StructureType.SHIP) {
 				stat.units++;
 			}
-			setPortStatistics(stat, e.ports, e.count);
+			setPortStatistics(stat, e.ports, e.count, e.owner);
 			if (e.item != null) {
 				int vm = 0;
 				if (e.item.type.has("vehicles")) {
@@ -2542,12 +2546,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param stat the output statistics
 	 * @param ports the port sequence
 	 * @param count the count of units
+	 * @param owner the owner
 	 */
-	void setPortStatistics(SpacebattleStatistics stat, Iterable<? extends SpacewarWeaponPort> ports, int count) {
+	void setPortStatistics(SpacebattleStatistics stat, 
+			Iterable<? extends SpacewarWeaponPort> ports, 
+			int count,
+			Player owner) {
 		for (SpacewarWeaponPort p : ports) {
 			if (p.projectile.mode == Mode.BEAM) {
-				stat.firepower += p.count * p.projectile.damage * count;
-				stat.dps += p.count * p.projectile.damage * count * 1000d / p.projectile.delay;
+				stat.firepower += p.count * p.damage(owner) * count;
+				stat.dps += p.count * p.damage(owner) * count * 1000d / p.projectile.delay;
 			} else {
 				if (p.projectile.mode == Mode.BOMB || p.projectile.mode == Mode.VIRUS) {
 					stat.bombs += p.count;
@@ -2627,7 +2635,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_wins")), maxLabelWidth);
 					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_crew")), maxLabelWidth);
 				}
-				int firepower = item.getFirepower();
+				double firepower = item.getFirepower();
 				if (firepower >= 0) {
 					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_firepower")), maxLabelWidth);
 				}
@@ -3099,7 +3107,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		proj.angle = r.fired.angle;
 		proj.destruction = SoundType.EXPLOSION_MEDIUM;
 		proj.ecmLevel = r.type.getInt("anti-ecm", 0);
-		proj.kamikaze = r.port.projectile.damage;
+		proj.kamikaze = r.port.damage(proj.owner);
 		proj.hp = world().battle.getIntProperty(proj.techId, proj.owner.id, "hp");
 		proj.hpMax = (int)proj.hp;
 		switch (r.port.projectile.mode) {
@@ -3150,7 +3158,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					&& ship.kamikaze == 0 && ship.type == StructureType.SHIP 
 					&& ship.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
-				setPortStatistics(sbs, ship.ports, ship.count);
+				setPortStatistics(sbs, ship.ports, ship.count, ship.owner);
 				ship.kamikaze = sbs.firepower * ship.count * 5;
 				ship.selected = false;
 			}
@@ -3542,6 +3550,24 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					handleKamikaze(ship);
 					continue;
 				}
+				if (ship.owner.traits.has(TraitKind.COMBAT_ENGINEERS)) {
+					if (ship.shieldMax > 0) {
+						boolean sg = false;
+						if (ship.item != null) {
+							for (InventorySlot is : ship.item.slots) {
+								if (is.type != null && is.type.has("shield") && is.count > 0) {
+									sg = true;
+								}
+							}
+						} else {
+							sg = true;
+						}
+						if (sg) {
+							ship.shield = Math.min(ship.shieldMax, ship.shield + 1); // FIXME rate?
+						}
+					}
+				}
+
 				// general cooldown of weapons
 				for (SpacewarWeaponPort p : ship.ports) {
 					p.cooldown = Math.max(0, p.cooldown - SIMULATION_DELAY);
@@ -3778,7 +3804,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				double y2 = ship.attack.y + sr * Math.sin(a);
 
 				createExplosion(x2, y2, SoundType.EXPLOSION_MEDIUM);
-				damageArea(x2, y2, (int)(ship.kamikaze * sm), sa, SoundType.EXPLOSION_MEDIUM, ship.techId, ship.owner.id);
+				damageArea(x2, y2, (ship.kamikaze * sm), sa, SoundType.EXPLOSION_MEDIUM, ship.techId, ship.owner.id);
 			}
 		}
 	}
@@ -3828,7 +3854,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void damageArea(
 			SpacewarStructure target, 
-			int damage,
+			double damage,
 			double area,
 			SoundType impactSound,
 			String techId,
@@ -3843,7 +3869,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					if (d <= area) {
 						d = Math.max(0, d);
 						damageTarget(s, 
-								(int)(s.count * damage * (area - d) / area), impactSound, techId, owner);
+								(s.count * damage * (area - d) / area), impactSound, techId, owner);
 					}
 				}
 			}
@@ -3860,7 +3886,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param techId the technology that inflicted the damage
 	 * @param owner the owner of the technology
 	 */
-	void damageArea(double x, double y, int damage,
+	void damageArea(double x, double y, 
+			double damage,
 			double area,
 			SoundType impactSound,
 			String techId,
@@ -4114,7 +4141,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
 		sp.matrix = sp.owner == player() ? p.projectile.alternative : p.projectile.matrix;
 		
-		sp.damage = p.projectile.damage * p.count;
+		sp.damage = p.damage(sp.owner) * p.count;
 
 		BattleEfficiencyModel bem = source.getEfficiency(target);
 		if (bem != null) {
@@ -4441,7 +4468,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The HP ratio. */
 		double hpRatio;
 		/** The firepower. */
-		int firepower;
+		double firepower;
 		/** The damage per second. */
 		double dps;
 		/** The rocket count. */
@@ -4497,8 +4524,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			for (SpacewarWeaponPort p : s.ports) {
 				if (p.projectile.mode == Mode.BEAM) {
-					firepower += p.count * p.projectile.damage;
-					dps += p.count * p.projectile.damage * 1000.0 / p.projectile.delay;
+					double dmg = p.damage(s.owner);
+					firepower += p.count * dmg;
+					dps += p.count * dmg * 1000.0 / p.projectile.delay;
 				} else
 				if (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET) {
 					rockets += p.count;
@@ -4523,7 +4551,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.owner", owner)));
 			w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.parent", parent)));
-			w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.firepower_dps", firepower, dps)));
+			w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.firepower_dps", (int)firepower, dps)));
 			if (rockets > 0 || bombs > 0) {
 				w = Math.max(w, commons.text().getTextWidth(7, format("spacewar.selection.bombs_rockets", bombs, rockets)));
 			}
@@ -4948,7 +4976,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			} else 
 			if (mode == Mode.KAMIKAZE) {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
-				setPortStatistics(sbs, s.ports, s.count);
+				setPortStatistics(sbs, s.ports, s.count, s.owner);
 				s.kamikaze = sbs.firepower * s.count * 5;
 				s.selected = false;
 			} else {

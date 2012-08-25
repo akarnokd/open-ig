@@ -278,7 +278,7 @@ public class AITrader implements AIManager {
 						}
 	
 						for (InventoryItem ii : lf.fleet.inventory) {
-							ii.hp = world.getHitpoints(ii.type);
+							ii.hp = world.getHitpoints(ii.type, ii.owner);
 						}
 	
 						lf.fleet.owner.fleets.put(lf.fleet, FleetKnowledge.FULL);
@@ -400,7 +400,7 @@ public class AITrader implements AIManager {
 		ii.owner = player;
 		ii.count = 1;
 		ii.type = world.random(rts);
-		ii.hp = world.getHitpoints(ii.type);
+		ii.hp = world.getHitpoints(ii.type, ii.owner);
 		ii.createSlots();
 		
 		nf.inventory.add(ii);
@@ -431,7 +431,7 @@ public class AITrader implements AIManager {
 			ii.owner = player;
 			ii.count = 1;
 			ii.type = type;
-			ii.hp = world.getHitpoints(ii.type);
+			ii.hp = world.getHitpoints(ii.type, ii.owner);
 			ii.createSlots();
 			
 			nf.inventory.add(ii);

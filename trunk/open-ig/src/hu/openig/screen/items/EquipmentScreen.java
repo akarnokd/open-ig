@@ -1167,7 +1167,7 @@ public class EquipmentScreen extends ScreenBase {
 			o = fleet().owner;
 		}
 		
-		int damage = 0;
+		double damage = 0;
 		double dps = 0;
 		int hp = 0;
 		int sp = 0;
@@ -1178,7 +1178,7 @@ public class EquipmentScreen extends ScreenBase {
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 					)) {
-				Pair<Integer, Double> dmgDps = ii.maxDamageDPS();
+				Pair<Double, Double> dmgDps = ii.maxDamageDPS();
 				
 				damage += dmgDps.first;
 				dps += dmgDps.second;
@@ -1203,7 +1203,7 @@ public class EquipmentScreen extends ScreenBase {
 		
 		tss.clear();
 		tss.add(new TextSegment(get("equipment.dps2"), TextRenderer.GREEN));
-		tss.add(new TextSegment(Integer.toString(damage), Color.GREEN.getRGB()));
+		tss.add(new TextSegment(Integer.toString((int)damage), Color.GREEN.getRGB()));
 		tss.add(new TextSegment(" / ", TextRenderer.GREEN));
 		tss.add(new TextSegment(Double.toString(dps), Color.ORANGE.getRGB()));
 		
@@ -1218,11 +1218,11 @@ public class EquipmentScreen extends ScreenBase {
 	void drawDPS(Graphics2D g2, InventoryItem ii) {
 		int hpm = ii.hpMax();
 		int spm = ii.shieldMax();
-		String hp = format("equipment.hp", ii.hp, hpm);
+		String hp = format("equipment.hp", (int)ii.hp, hpm);
 		String sp = format("equipment.sp", ii.shield, spm);
-		Pair<Integer, Double> dmgDps = ii.maxDamageDPS();
+		Pair<Double, Double> dmgDps = ii.maxDamageDPS();
 		
-		String def = format("equipment.defense", ii.hp + ii.shield, hpm + spm);
+		String def = format("equipment.defense", (int)(ii.hp + ii.shield), hpm + spm);
 		String dps = format("equipment.dps", dmgDps.first, Math.round(dmgDps.second));
 		
 		int hpw = commons.text().getTextWidth(7, hp);
@@ -2034,7 +2034,7 @@ public class EquipmentScreen extends ScreenBase {
 						pii.owner = player();
 						pii.type = research();
 						pii.count = 1;
-						pii.hp = world().getHitpoints(pii.type);
+						pii.hp = world().getHitpoints(pii.type, pii.owner);
 						
 						pii.createSlots();
 						
@@ -2720,7 +2720,7 @@ public class EquipmentScreen extends ScreenBase {
 		ii.owner = p.owner;
 		ii.type = bestStation;
 		ii.count = 1;
-		ii.hp = world().getHitpoints(ii.type);
+		ii.hp = world().getHitpoints(ii.type, ii.owner);
 		ii.createSlots();
 //		ii.shield = Math.max(0, ii.shieldMax());
 		planet().inventory.add(ii);

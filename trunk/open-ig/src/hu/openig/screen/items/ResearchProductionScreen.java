@@ -583,7 +583,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	 */
 	void doAdjustMoney(float scale) {
 		Research r = player().research.get(player().runningResearch());
-		r.assignedMoney += scale * r.type.researchCost / 20;
+		r.assignedMoney += scale * r.type.researchCost(player().traits) / 20;
 		r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
 	}
 
@@ -702,8 +702,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			rs = new Research();
 			rs.type = rt;
 			player().research.put(rt, rs);
-			rs.remainingMoney = rt.researchCost;
-			rs.assignedMoney = (int)(rt.researchCost * (long)config.researchMoneyPercent / 2000);
+			rs.remainingMoney = rt.researchCost(player().traits);
+			rs.assignedMoney = (int)(rs.remainingMoney * (long)config.researchMoneyPercent / 2000);
 		}
 		rs.state = ResearchState.RUNNING;
 		screenSound(SoundType.START_RESEARCH);
@@ -1668,23 +1668,24 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 						Research rs = player().research.get(rt);
 						switch (rs.state) {
 						case RUNNING:
-							selectedTechStatusValue.text(format("researchinfo.progress.running", (int)rs.getPercent())).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.running", (int)rs.getPercent((player().traits)))).visible(true);
 							break;
 						case STOPPED:
-							selectedTechStatusValue.text(format("researchinfo.progress.paused", (int)rs.getPercent())).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.paused", (int)rs.getPercent((player().traits)))).visible(true);
 							break;
 						case LAB:
-							selectedTechStatusValue.text(format("researchinfo.progress.lab", (int)rs.getPercent())).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.lab", (int)rs.getPercent((player().traits)))).visible(true);
 							break;
 						case MONEY:
-							selectedTechStatusValue.text(format("researchinfo.progress.money", (int)rs.getPercent())).visible(true);
+							selectedTechStatusValue.text(format("researchinfo.progress.money", (int)rs.getPercent((player().traits)))).visible(true);
 							break;
 						default:
 							selectedTechStatusValue.text("");
 						}
-						selectedCompleteValue.text((int)(rs.getPercent()) + "%");
-						selectedTimeValue.text("" + rs.getTime());
-						if (rs.getTime() >= 10000) {
+						selectedCompleteValue.text((int)(rs.getPercent((player().traits))) + "%");
+						int rtm = rs.getTime(player().traits);
+						selectedTimeValue.text("" + rtm);
+						if (rtm >= 10000) {
 							selectedTimeValue.size(10);
 						} else {
 							selectedTimeValue.size(14);
@@ -1705,7 +1706,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 					} else {
 						selectedTechStatusValue.text(get("researchinfo.progress.can"));
 						selectedCompleteValue.text("----");
-						int rtime = rt.researchTime();
+						int rtime = rt.researchTime(player().traits);
 						selectedTimeValue.text("" + (rtime));
 						if (rtime >= 10000) {
 							selectedTimeValue.size(10);
@@ -1813,7 +1814,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			Research rs = player().research.get(rt);
 			
 			activeMoneyValue.text(rs.assignedMoney + "/" + rs.remainingMoney).visible(true);
-			activeMoneyPercentValue.text(((int)rs.getPercent()) + "%").visible(true);
+			activeMoneyPercentValue.text(((int)rs.getPercent(player().traits)) + "%").visible(true);
 			
 			moneyButton.enabled(true);
 			viewActive.visible(true);

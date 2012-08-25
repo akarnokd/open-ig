@@ -29,9 +29,22 @@ public class BattleGroundProjector {
 	/** The information image. */
 	public String infoImageName;
 	/** The inflicted damage. */
-	public int damage;
+	public int baseDamage;
 	/** The rotation speed. */
 	public int rotationTime;
 	/** The battle efficiency settings of this projector. */
 	public final List<BattleEfficiencyModel> efficiencies = U.newArrayList();
+	/**
+	 * Returns the damage for the given owner.
+	 * @param owner the owner
+	 * @return the damage
+	 */
+	public double damage(Player owner) {
+		double dmg = baseDamage;
+		Trait t = owner.traits.trait(TraitKind.WEAPONS);
+		if (t != null) {
+			dmg *= 1 + t.value / 100;
+		}
+		return dmg;
+	}
 }

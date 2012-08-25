@@ -62,6 +62,7 @@ public class SkirmishPlayer {
 		result.nodiplomacy = nodiplomacy;
 		result.diplomacyHead = diplomacyHead;
 		result.picture = picture;
+		result.traits.replace(traits);
 		
 		return result;
 	}

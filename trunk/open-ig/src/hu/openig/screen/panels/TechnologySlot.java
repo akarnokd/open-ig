@@ -86,7 +86,7 @@ public class TechnologySlot extends UIComponent {
 			Research rp = commons.world().player.research.get(type);
 			float percent = 0;
 			if (rp != null) {
-				percent = rp.getPercent() / 100f;
+				percent = rp.getPercent(commons.player().traits) / 100f;
 			}
 			for (int i = 0; i < target.height - 7; i += 2) {
 				float perc = 1.0f * i / (target.height - 7);
@@ -100,7 +100,7 @@ public class TechnologySlot extends UIComponent {
 				g2.drawImage(rolling[animationStep % rolling.length], target.x + 5, target.y + 49, null);
 
 				commons.text().paintTo(g2, target.x + 28, target.y + 54, 10, 
-						TextRenderer.YELLOW, Integer.toString((int)commons.world().player.research.get(type).getPercent()) + "%");
+						TextRenderer.YELLOW, Integer.toString((int)commons.world().player.research.get(type).getPercent(commons.player().traits)) + "%");
 				
 			}
 			LabLevel lvl = commons.world().player.hasEnoughLabs(type, statistics.invoke());
@@ -112,7 +112,7 @@ public class TechnologySlot extends UIComponent {
 			}
 			if (displayResearchCost) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
-						selectedTextColor, Integer.toString(type.researchCost));
+						selectedTextColor, Integer.toString(type.researchCost(commons.player().traits)));
 			}
 		} else {
 			g2.setColor(Color.BLACK);

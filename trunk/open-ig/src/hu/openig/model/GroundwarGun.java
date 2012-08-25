@@ -64,4 +64,10 @@ public class GroundwarGun extends GroundwarObject implements Owned {
 		Point2D.Double p1 = building.exactLocation();
 		return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 	}
+	/**
+	 * @return the damage provided by this unit
+	 */
+	public double damage() {
+		return model.damage(owner);
+	}
 }

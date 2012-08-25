@@ -204,16 +204,16 @@ public class QuickResearchPanel extends UIContainer {
 
 			switch (rs.state) {
 			case RUNNING:
-				currentResearchStatus.text(commons.format("researchinfo.progress.running", String.format("%.1f", rs.getPercent())), true);
+				currentResearchStatus.text(commons.format("researchinfo.progress.running", String.format("%.1f", rs.getPercent(commons.player().traits))), true);
 				break;
 			case STOPPED:
-				currentResearchStatus.text(commons.format("researchinfo.progress.paused", String.format("%.1f", rs.getPercent())), true);
+				currentResearchStatus.text(commons.format("researchinfo.progress.paused", String.format("%.1f", rs.getPercent(commons.player().traits))), true);
 				break;
 			case LAB:
-				currentResearchStatus.text(commons.format("researchinfo.progress.lab", String.format("%.1f", rs.getPercent())), true);
+				currentResearchStatus.text(commons.format("researchinfo.progress.lab", String.format("%.1f", rs.getPercent(commons.player().traits))), true);
 				break;
 			case MONEY:
-				currentResearchStatus.text(commons.format("researchinfo.progress.money", String.format("%.1f", rs.getPercent())), true);
+				currentResearchStatus.text(commons.format("researchinfo.progress.money", String.format("%.1f", rs.getPercent(commons.player().traits))), true);
 				break;
 			default:
 				currentResearchStatus.text("");
@@ -300,7 +300,7 @@ public class QuickResearchPanel extends UIContainer {
 				if (rs1 == null) {
 					cl.text(ri.first.name, true);
 				} else {
-					cl.text(String.format("%s - %d%%", ri.first.name, (int)rs1.getPercent()), true);
+					cl.text(String.format("%s - %d%%", ri.first.name, (int)rs1.getPercent(commons.player().traits)), true);
 				}
 				cl.color(ri.second);
 				cl.hoverColor(TextRenderer.WHITE);
@@ -317,7 +317,7 @@ public class QuickResearchPanel extends UIContainer {
 						commons.computerSound(SoundType.START_RESEARCH);
 					}
 				};
-				cl.description = Pair.of(ri.first.longName + "  (" + ri.first.researchCost + " cr)", ri.first.description);
+				cl.description = Pair.of(ri.first.longName + "  (" + ri.first.researchCost(commons.player().traits) + " cr)", ri.first.description);
 				if (cl.over) {
 					currentText = ri.first;
 					anyOver |= cl.over;
@@ -556,7 +556,7 @@ public class QuickResearchPanel extends UIContainer {
 	void doAdjustMoney(float scale) {
 		Research r = commons.player().research.get(commons.player().runningResearch());
 		if (r != null) {
-			r.assignedMoney += scale * r.type.researchCost / 20;
+			r.assignedMoney += scale * r.type.researchCost(commons.player().traits) / 20;
 			r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
 		}
 	}

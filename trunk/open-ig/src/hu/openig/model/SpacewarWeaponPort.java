@@ -35,4 +35,12 @@ public class SpacewarWeaponPort {
 		r.count = count;
 		return r;
 	}
+	/**
+	 * Returns the damage for the given owner.
+	 * @param owner the owner
+	 * @return The damage of this projectile. 
+	 */
+	public double damage(Player owner) {
+		return projectile.damage(owner);
+	}
 }

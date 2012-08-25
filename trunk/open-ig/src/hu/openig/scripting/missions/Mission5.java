@@ -503,7 +503,7 @@ public class Mission5 extends Mission {
 			pii.type = research(pirateTech);
 			pii.owner = player("Pirates");
 			pii.count = 1;
-			pii.hp = world.getHitpoints(pii.type);
+			pii.hp = world.getHitpoints(pii.type, pii.owner);
 			pii.tag = "Mission-5-Help";
 			pii.createSlots();
 			pii.shield = Math.max(0, pii.shieldMax());

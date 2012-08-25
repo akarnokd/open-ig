@@ -145,7 +145,6 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void groundBattle(GroundwarWorld battle) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -155,7 +154,6 @@ public class AIUser implements AIManager {
 	}
 	@Override
 	public void groundBattleInit(GroundwarWorld battle) {
-		// TODO Auto-generated method stub
 		
 	}
 	@Override
@@ -164,19 +162,16 @@ public class AIUser implements AIManager {
 	}
 	@Override
 	public void spaceBattleInit(SpacewarWorld world) {
-		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
 	public void save(XElement out) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void load(XElement in) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -247,19 +242,16 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onFleetArrivedAtPoint(Fleet fleet, double x, double y) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onFleetArrivedAtPlanet(Fleet fleet, Planet planet) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void onFleetArrivedAtFleet(Fleet fleet, Fleet other) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -277,13 +269,10 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void onLostSight(Fleet fleet) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onLostTarget(Fleet fleet, Fleet target) {
-		// TODO Auto-generated method stub
 
 	}
 	@Override

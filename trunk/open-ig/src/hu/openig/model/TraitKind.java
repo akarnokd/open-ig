@@ -22,5 +22,25 @@ public enum TraitKind {
 	/** Change weapon production ratio. */
 	WEAPON_PRODUCTION,
 	/** Debug option. */
-	TRAIT_DEBUG
+	TRAIT_DEBUG,
+	/** Modify fertility values. */
+	FERTILE,
+	/** Modify tax collection values. */
+	TAX,
+	/** Hitpoint change of guns, shields and space stations. */
+	SPACE_DEFENSE,
+	/** Weapon damage. */
+	WEAPONS,
+	/** Change research costs. */
+	SCIENCE,
+	/** Reveal nearby planets. */
+	ASTRONOMER,
+	/** Reveal all planets. */
+	ASTRONOMER_PLUS,
+	/** Change diplomatic success rates. */
+	DIPLOMACY,
+	/** Regenerate shields faster, repair ships without military spaceport. */
+	ENGINEERS,
+	/** Regenerate shields during combat. */
+	COMBAT_ENGINEERS
 }
