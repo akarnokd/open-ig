@@ -678,7 +678,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		Integer count = player().inventory.get(research());
 		if (count != null && count > 0) {
 			player().inventory.put(research(), count - 1);
-			player().money += research().productionCost / 2;
+			player().addMoney(research().productionCost / 2);
 			
 			player().statistics.moneySellIncome += research().productionCost / 2;
 			player().statistics.moneyIncome += research().productionCost / 2;

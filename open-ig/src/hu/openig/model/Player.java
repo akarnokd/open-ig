@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.Rectangle;
@@ -81,7 +82,7 @@ public class Player {
 	/** The type of the last selected thing: planet or fleet. */
 	public SelectionMode selectionMode = SelectionMode.PLANET;
 	/** The current money amount. */
-	public long money;
+	private long money;
 	/** The player level statistics. */
 	public final PlayerStatistics statistics = new PlayerStatistics();
 	/** The global financial information yesterday. */
@@ -637,6 +638,30 @@ public class Player {
 			if (rts.size() < world.config.productionHistoryLimit && !rts.contains(rt)) {
 				rts.add(rt);
 			}
+		}
+	}
+	/** @return The current money. */
+	public long money() {
+		return money;
+	}
+	/**
+	 * Set a new money amount.
+	 * @param newMoney the money amount
+	 */
+	public void money(long newMoney) {
+		this.money = newMoney;
+		if (this.money < 0) {
+			Exceptions.add(new AssertionError("Negative money"));
+		}
+	}
+	/**
+	 * Change the money amount by the delta.
+	 * @param delta the delta amount
+	 */
+	public void addMoney(long delta) {
+		this.money += delta;
+		if (this.money < 0) {
+			Exceptions.add(new AssertionError("Negative money"));
 		}
 	}
 }

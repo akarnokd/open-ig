@@ -266,7 +266,7 @@ public class StaticDefensePlanner extends Planner {
 				planet.statistics.vehicleMax, 
 				p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
 		
-		if (planet.owner.money >= MONEY_LIMIT) {
+		if (planet.owner.money() >= MONEY_LIMIT) {
 			// issue production order for the difference
 			for (Map.Entry<ResearchType, Integer> prod : plan.demand.entrySet()) {
 				ResearchType rt = prod.getKey();

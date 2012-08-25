@@ -508,7 +508,7 @@ public class World {
 			p.name = labels.get(xplayer.get("name"));
 			p.shortName = labels.get(xplayer.get("name") + ".short");
 			
-			p.money = xplayer.getLong("money");
+			p.money(xplayer.getLong("money"));
 			p.initialStance = xplayer.getInt("initial-stance");
 			
 			p.group = g++;
@@ -1063,7 +1063,7 @@ public class World {
 		for (Player p : players.values()) {
 			XElement xp = xworld.add("player");
 			xp.set("id", p.id);
-			xp.set("money", p.money);
+			xp.set("money", p.money());
 			xp.set("planet", p.currentPlanet != null ? p.currentPlanet.id : null);
 			xp.set("fleet", p.currentFleet != null ? p.currentFleet.id : null);
 			xp.set("building", p.currentBuilding != null ? p.currentBuilding.id : null);
@@ -1449,7 +1449,7 @@ public class World {
 			p.messageQueue.clear();
 			
 			
-			p.money = xplayer.getLong("money");
+			p.money(xplayer.getLong("money"));
 			p.currentPlanet = planets.get(xplayer.get("planet", null));
 			
 			p.currentBuilding = buildingModel.buildings.get(xplayer.get("building", null));
@@ -2882,7 +2882,7 @@ public class World {
 			p.name = sp.description;
 			p.fleetIcon = rl.getImage(sp.iconRef);
 			p.color = sp.iconColor(p.fleetIcon);
-			p.money = skirmishDefinition.initialMoney;
+			p.money(skirmishDefinition.initialMoney);
 			p.noDatabase = sp.nodatabase;
 			p.noDiplomacy = sp.nodiplomacy;
 			p.race = sp.race;

@@ -130,7 +130,7 @@ public class InventoryItem {
 	 */
 	public void sell() {
 		long money = sellValue();
-		owner.money += money;
+		owner.addMoney(money);
 		owner.statistics.moneySellIncome += money;
 		owner.statistics.moneyIncome += money;
 		

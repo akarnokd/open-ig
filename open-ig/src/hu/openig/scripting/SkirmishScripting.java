@@ -160,7 +160,7 @@ public class SkirmishScripting implements GameScripting {
 		Map<Integer, Long> groups = U.newHashMap();
 		for (Player p : world.players.values()) {
 			Long v = groups.get(p.group);
-			v = (v != null ? v.longValue() + p.money : p.money);
+			v = (v != null ? v.longValue() + p.money() : p.money());
 			if (v.longValue() >= def.victoryEconomicMoney) {
 				completeGame("economic", p.group == player.group);
 				return;

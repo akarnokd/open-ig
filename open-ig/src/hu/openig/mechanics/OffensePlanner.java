@@ -711,7 +711,7 @@ public class OffensePlanner extends Planner {
 						p.changeInventoryCount(key, -value);
 						
 						long money = key.productionCost * 1L * value / 2;
-						p.money += money;
+						p.addMoney(money);
 						p.statistics.moneyIncome += money;
 						p.statistics.moneySellIncome += money;
 						p.world.statistics.moneyIncome += money;

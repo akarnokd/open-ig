@@ -1153,7 +1153,7 @@ public class DiplomacyScreen extends ScreenBase {
 					OptionItem item = new OptionItem();
 					item.label = String.format("%,8d", m);
 					item.userObject = Pair.of(neg, m);
-					item.enabled = m <= player().money;
+					item.enabled = m <= player().money();
 					moneyList.items.add(item);
 				}
 				moneyList.items.add(cancel);
@@ -1289,11 +1289,11 @@ public class DiplomacyScreen extends ScreenBase {
 					a.second);
 			
 
-			if (m == ResponseMode.YES && a.second >= player().money) {
-				player().money -= a.second;
+			if (m == ResponseMode.YES && a.second >= player().money()) {
+				player().addMoney(-a.second.intValue());
 				player().statistics.moneySpent += a.second;
 				
-				other.money += a.second;
+				other.addMoney(a.second);
 				other.statistics.moneyIncome += a.second;
 			} else {
 				m = ResponseMode.NO;

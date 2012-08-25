@@ -48,7 +48,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> MILLIONAIRE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.money >= 1000000;
+			return u.money() >= 1000000;
 		}
 	};
 	/** Test for achievement. */

@@ -2240,7 +2240,7 @@ public class InfoScreen extends ScreenBase {
 						BuildingType p = planets.get(pidx);
 						int c = TextRenderer.GRAY;
 						if (planet().canBuild(p) && planet().owner == player()) {
-							if (p.cost > player().money) {
+							if (p.cost > player().money()) {
 								c = 0xFFFF8080;
 							} else {
 								c = TextRenderer.YELLOW;
@@ -2722,7 +2722,7 @@ public class InfoScreen extends ScreenBase {
 			buildingTitle.text(bt.name);
 			
 			buildingCost.text(format("buildinginfo.building.cost", bt.cost), true);
-			if (bt.cost > player().money) {
+			if (bt.cost > player().money()) {
 				buildingCost.color(0xFFFF8080);
 			} else {
 				buildingCost.color(TextRenderer.GREEN);

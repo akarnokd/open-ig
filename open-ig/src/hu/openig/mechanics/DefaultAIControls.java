@@ -125,7 +125,7 @@ public class DefaultAIControls implements AIControls {
 				map.remove(rt);
 				// update statistics
 				int m = prod.progress / 2;
-				player.money += m;
+				player.addMoney(m);
 				player.statistics.moneyProduction -= m;
 				player.statistics.moneySpent -= m;
 				player.world.statistics.moneyProduction -= m;
@@ -221,7 +221,7 @@ public class DefaultAIControls implements AIControls {
 			planet.changeInventory(satellite, planet.owner, -count);
 			
 			int money = count * satellite.productionCost / 2; 
-			planet.owner.money += money;
+			planet.owner.addMoney(money);
 			planet.owner.statistics.sellCount += count;
 			planet.owner.statistics.moneySellIncome += money;
 			planet.owner.statistics.moneyIncome += money;
@@ -282,7 +282,7 @@ public class DefaultAIControls implements AIControls {
 			log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = not supported or no colony hub", planet.id, buildingType.id);
 			return AIResult.NO_AVAIL;
 		} else
-		if (p.money >= buildingType.cost) {
+		if (p.money() >= buildingType.cost) {
 			Point pt = planet.surface.placement.findLocation(planet.getPlacementDimensions(buildingType));
 			if (pt != null) {
 				AutoBuilder.construct(w, planet, buildingType, pt);
@@ -314,7 +314,7 @@ public class DefaultAIControls implements AIControls {
 		
 		int moneyBack = building.type.cost * (1 + building.upgradeLevel) / 2;
 		
-		planet.owner.money += moneyBack;
+		planet.owner.addMoney(moneyBack);
 		
 		planet.owner.statistics.demolishCount++;
 		planet.owner.statistics.moneyDemolishIncome += moneyBack;

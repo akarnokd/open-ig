@@ -117,7 +117,7 @@ public class AIWorld {
 		
 		explorationInnerLimit = player.explorationInnerLimit;
 		explorationOuterLimit = player.explorationOuterLimit;
-		money = player.money;
+		money = player.money();
 		statistics = player.statistics.copy();
 		this.colonizationLimit = player.colonizationLimit;
 		

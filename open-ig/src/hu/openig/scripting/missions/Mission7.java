@@ -94,7 +94,7 @@ public class Mission7 extends Mission {
 					dr.value = 75;
 				} else {
 					int reward = 5000;
-					player.money += reward;
+					player.addMoney(reward);
 					player.statistics.moneyIncome += reward;
 				}
 				addTimeout("Mission-7-Hide", 13000);
