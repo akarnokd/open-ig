@@ -1085,6 +1085,7 @@ public class DiplomacyScreen extends ScreenBase {
 	 * Update the list of options based on the current talking partner.
 	 */
 	void updateOptions() {
+		DiplomaticRelation dr = world().getRelation(player(), other);
 		Diplomacy de = world().diplomacy.get(other.id);
 		options.items.clear();
 		if (de != null) {
@@ -1093,6 +1094,11 @@ public class DiplomacyScreen extends ScreenBase {
 				opt.label = get("diplomacy.type." + neg.type.toString());
 				opt.userObject = neg;
 				opt.enabled = !mentioned.contains(neg);
+				
+				if (neg.type == NegotiateType.TRADE && dr.tradeAgreement) {
+					opt.enabled = false;
+				}
+				
 				options.items.add(opt);
 			}
 		}
@@ -1359,11 +1365,20 @@ public class DiplomacyScreen extends ScreenBase {
 			} else
 			if (neg.type == NegotiateType.DARGSLAN) {
 				setAlliance(world().players.get("Dargslan"));
+			} else
+			if (neg.type == NegotiateType.TRADE) {
+				setTradeAgreement();
 			}
 		}		
 		displayResults(neg, "", at, m);
 	}
-
+	/**
+	 * Set up the trade agreement.
+	 */
+	void setTradeAgreement() {
+		DiplomaticRelation dr = world().getRelation(player(), other);
+		dr.tradeAgreement = true;
+	}
 	/**
 	 * Aliens surrender.
 	 */
