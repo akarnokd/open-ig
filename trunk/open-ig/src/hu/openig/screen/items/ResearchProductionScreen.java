@@ -1901,6 +1901,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 
 		int prioritySum = 0;
 		for (Production pr : productions.values()) {
+			if (pr.type.has("needsOrbitalFactory") && ps.orbitalFactory == 0) {
+				continue;
+			}
 			if (pr.count > 0) {
 				prioritySum += pr.priority;
 			}
@@ -1926,8 +1929,12 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			pl.name.text(pr.type.name);
 			pl.priority.text("" + pr.priority);
 			if (prioritySum > 0 && pr.count > 0) {
-				pl.capacity.text("" + (capacity * pr.priority / prioritySum));
-				pl.capacityPercent.text("" + (pr.priority * 100 / prioritySum) + "%");
+				int pri = pr.priority;
+				if (pr.type.has("needsOrbitalFactory") && ps.orbitalFactory == 0) {
+					pri = 0;
+				}
+				pl.capacity.text("" + (capacity * pri / prioritySum));
+				pl.capacityPercent.text("" + (pri * 100 / prioritySum) + "%");
 			} else {
 				pl.capacity.text("0");
 				pl.capacityPercent.text("0%");
@@ -1954,7 +1961,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				&& !rt.nobuild
 				&& productions.size() < 5
 				&& rt.category.main != ResearchMainCategory.BUILDINGS
-				&& (!rt.has("needsOrbitalFactory") || ps.orbitalFactory > 0)
+//				&& (!rt.has("needsOrbitalFactory") || ps.orbitalFactory > 0)
 		);
 		
 		removeButton.visible(
