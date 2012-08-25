@@ -256,7 +256,8 @@ public class QuickResearchPanel extends UIContainer {
 		for (ResearchType rt : commons.world().researches.values()) {
 			if (rt.race.contains(commons.player().race) && rt != ar) {
 				if (commons.world().canResearch(rt)) {
-					columns.get(rt.category.main).add(Pair.of(rt, commons.world().getResearchColor(rt, ps)));
+					columns.get(rt.category.main).add(Pair.of(rt, 
+							commons.world().getResearchColor(rt, ps, false)));
 				}
 			}
 		}
