@@ -1966,7 +1966,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				}
 				String cs = cost + " cr";
 				int w = commons.text().getTextWidth(10, cs);
-				commons.text().paintTo(g2, width - w - 2, height - 12, 10, TextRenderer.YELLOW, cs);
+				
+				int color = TextRenderer.YELLOW;
+				if (player().money < cost) {
+					color = 0xFFFF8080;
+				}
+				
+				commons.text().paintTo(g2, width - w - 2, height - 12, 10, color, cs);
 				commons.text().paintTo(g2, 2, height - 12, 10, TextRenderer.GREEN, Integer.toString(count));
 			}
 		}

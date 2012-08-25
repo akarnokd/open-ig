@@ -2238,7 +2238,14 @@ public class InfoScreen extends ScreenBase {
 					int pidx = (j + columnIndex) * rowCount + i; 
 					if (pidx >= 0 && pidx < planets.size()) {
 						BuildingType p = planets.get(pidx);
-						int c = planet().canBuild(p) && planet().owner == player() ? TextRenderer.YELLOW : TextRenderer.GRAY;
+						int c = TextRenderer.GRAY;
+						if (planet().canBuild(p) && planet().owner == player()) {
+							if (p.cost > player().money) {
+								c = 0xFFFF8080;
+							} else {
+								c = TextRenderer.YELLOW;
+							}
+						}
 						String t = p.name;
 						commons.text().paintTo(g2, x0 + 30, y0 + 2, fontSize, c, t);
 						
@@ -2247,7 +2254,8 @@ public class InfoScreen extends ScreenBase {
 							Integer c1 = counts.get(p);
 							
 							String n = (c0 != null ? c0 : 0) + "/" + (c1 != null ? c1 : 0);
-							commons.text().paintTo(g2, x0, y0 + 4, 7, c1 != null ? TextRenderer.GREEN : TextRenderer.GRAY, n);
+							int col = c1 != null ? TextRenderer.GREEN : TextRenderer.GRAY;
+							commons.text().paintTo(g2, x0, y0 + 4, 7, col, n);
 						}
 						if (p == player().currentBuilding) {
 							g2.setColor(new Color(player().color));
@@ -2714,6 +2722,11 @@ public class InfoScreen extends ScreenBase {
 			buildingTitle.text(bt.name);
 			
 			buildingCost.text(format("buildinginfo.building.cost", bt.cost), true);
+			if (bt.cost > player().money) {
+				buildingCost.color(0xFFFF8080);
+			} else {
+				buildingCost.color(TextRenderer.GREEN);
+			}
 			int e = (int)(bt.resources.get("energy").amount);
 			int w = (int)(bt.resources.get("worker").amount);
 			buildingEnergy.text(format("buildinginfo.building.energy", e < 0 ? -e : e), true);

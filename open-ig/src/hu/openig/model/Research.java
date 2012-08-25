@@ -27,7 +27,8 @@ public class Research {
 	 */
 	public float getPercent(Traits traits) {
 		int c = type.researchCost(traits);
-		return (c - remainingMoney) * 100f / c;
+		float result = (c - remainingMoney) * 100f / c; 
+		return result;
 	}
 	/** 
 	 * @param traits the traits to consider 
