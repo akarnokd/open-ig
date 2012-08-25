@@ -68,6 +68,8 @@ public class QuickResearchPanel extends UIContainer {
 	UIMouse moneyMouseLast;
 	/** Description of the currently hovered research. */
 	UILabel hoverResearchDescription;
+	/** The hover cost. */
+	UILabel hoverCost;
 	/** Description of the currently hovered research. */
 	UILabel hoverResearchTitle;
 	/** The current hover text title and details. */
@@ -148,6 +150,9 @@ public class QuickResearchPanel extends UIContainer {
 
 		hoverResearchDescription = new UILabel("", 10, commons.text());
 		hoverResearchDescription.wrap(true);
+		
+		hoverCost = new UILabel("", 10, commons.text());
+		hoverCost.color(TextRenderer.YELLOW);
 		
 		hoverResearchTitle = new UILabel("", 10, commons.text());
 		hoverResearchTitle.color(TextRenderer.RED);
@@ -368,7 +373,8 @@ public class QuickResearchPanel extends UIContainer {
 		hoverResearchTitle.width = 200;
 
 		hoverResearchDescription.location(MARGIN, hoverResearchTitle.y + hoverResearchTitle.height + MARGIN / 2);
-		hoverResearchDescription.height = 1;
+		hoverResearchDescription.height = 0;
+		hoverCost.height = 0;
 		// fill in lab counts
 
 		setActives(labActives, 0, ps.activeLabs.civil, ps.labs.civil, TextRenderer.YELLOW);
@@ -416,14 +422,19 @@ public class QuickResearchPanel extends UIContainer {
 			hoverResearchDescription.text(currentText.description);
 			hoverResearchTitle.text(currentText.longName);
 			hoverResearchDescription.height = hoverResearchDescription.getWrappedHeight();
+			hoverCost.text(commons.format("quickresearch.cost", currentText.researchCost(commons.player().traits)), true);
+			hoverCost.height = hoverCost.textSize();
+			hoverCost.location(hoverResearchDescription.x, 
+					hoverResearchDescription.y + hoverResearchDescription.height + MARGIN / 2);
 		} else {
 			hoverResearchDescription.text("");
 			hoverResearchDescription.height = 0;
 			hoverResearchTitle.text(commons.get("quickresearch.no_active"));
+			hoverCost.text("");
 		}
 		
-		bottomDivider = hoverResearchDescription.y + hoverResearchDescription.height + MARGIN / 2;
-		mh = Math.max(mh, hoverResearchDescription.y + hoverResearchDescription.height);
+		bottomDivider = hoverCost.y + hoverCost.height + MARGIN / 2;
+		mh = Math.max(mh, hoverCost.y + hoverCost.height);
 		
 		// bottom area
 		
