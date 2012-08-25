@@ -63,7 +63,7 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	 * Apply damage to this unit.
 	 * @param points the points of damage
 	 */
-	public void damage(int points) {
+	public void damage(double points) {
 		hp = Math.max(0, hp - points);
 	}
 	/**
@@ -143,5 +143,11 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	@Override
 	public Player owner() {
 		return owner;
+	}
+	/**
+	 * @return the damage provided by this unit
+	 */
+	public double damage() {
+		return model.damage(owner);
 	}
 }

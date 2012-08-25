@@ -29,7 +29,7 @@ public class BattleGroundVehicle {
 	/** The hitpoints. */
 	public int hp;
 	/** The inflicted damage. */
-	public int damage;
+	public int baseDamage;
 	/** The minimum range. */
 	public double minRange;
 	/** The maximum range. */
@@ -52,4 +52,17 @@ public class BattleGroundVehicle {
 	public int width;
 	/** The original image height. */
 	public int height;
+	/**
+	 * Returns the damage for the given owner.
+	 * @param owner the owner
+	 * @return the damage
+	 */
+	public double damage(Player owner) {
+		double dmg = baseDamage;
+		Trait t = owner.traits.trait(TraitKind.WEAPONS);
+		if (t != null) {
+			dmg *= 1 + t.value / 100;
+		}
+		return dmg;
+	}
 }

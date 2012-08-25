@@ -67,8 +67,8 @@ public class DefaultAIControls implements AIControls {
 		if (r == null) {
 			r = new Research();
 			r.type = rt;
-			r.remainingMoney = r.type.researchCost;
-			r.assignedMoney = (int)(r.type.researchCost * moneyFactor / 2);
+			r.remainingMoney = r.type.researchCost(p.traits);
+			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
 			p.research.put(r.type, r);
 		} else {
 			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
@@ -155,7 +155,7 @@ public class DefaultAIControls implements AIControls {
 			ii.type = satellite;
 			ii.owner = player;
 			ii.count = 1;
-			ii.hp = player.world.getHitpoints(satellite);
+			ii.hp = player.world.getHitpoints(satellite, ii.owner);
 			ii.createSlots();
 			planet.inventory.add(ii);
 			int ttl = player.world.getSatelliteTTL(satellite);
@@ -192,7 +192,7 @@ public class DefaultAIControls implements AIControls {
 				ii.type = fighter;
 				ii.owner = player;
 				ii.count = count;
-				ii.hp = player.world.getHitpoints(fighter);
+				ii.hp = player.world.getHitpoints(fighter, ii.owner);
 				ii.createSlots();
 				planet.inventory.add(ii);
 				int ttl = player.world.getSatelliteTTL(fighter);

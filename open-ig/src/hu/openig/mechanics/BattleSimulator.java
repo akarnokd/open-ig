@@ -372,7 +372,7 @@ public final class BattleSimulator {
 		double d = 0;
 		
 		for (GroundwarUnit ii : items) {
-			a += ii.model.damage * 1.0 / ii.model.delay;
+			a += ii.damage() * 1.0 / ii.model.delay;
 			d += ii.hp;
 		}
 		
@@ -412,7 +412,7 @@ public final class BattleSimulator {
 		int i = 0;
 		for (BattleGroundTurret bt : turrets) {
 			if (i < turretCount) {
-				result.attack += bt.damage * 1.0 / bt.delay;
+				result.attack += bt.damage(p.owner) * 1.0 / bt.delay;
 			}
 		}
 		int hpMax = world.getHitpoints(b.type, p.owner, false);
@@ -627,7 +627,7 @@ public final class BattleSimulator {
 					
 				} else {
 					SpacewarStructure str = new SpacewarStructure(ii.type);
-					str.hpMax = world.getHitpoints(ii.type);
+					str.hpMax = world.getHitpoints(ii.type, ii.owner);
 					str.count = ii.count;
 					str.hp = ii.hp;
 					str.shield = ii.shield;
@@ -712,7 +712,7 @@ public final class BattleSimulator {
 			}
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-				double hp = world.getHitpoints(ii.type);
+				double hp = world.getHitpoints(ii.type, ii.owner);
 				hp += ii.shield;
 				if (hitpoints >= hp * ii.count) {
 					p.inventory.remove(ii);
@@ -829,16 +829,17 @@ public final class BattleSimulator {
 			if (ii.owner == p.owner) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					defense += p.owner.world.getHitpoints(ii.type) * ii.count;
+					defense += ii.hp * ii.count;
 					defense += ii.shield * ii.count;
 					for (InventorySlot is : ii.slots) {
 						if (is.type != null) {
 							BattleProjectile bp = p.owner.world.battle.projectiles.get(is.type.id);
 							if (bp != null) {
+								double dmg = bp.damage(p.owner);
 								if (bp.mode == Mode.BEAM) {
-									offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+									offense += ii.count * is.count * dmg * 1.0 / bp.delay;
 								} else {
-									offense += ii.count * bp.damage * 1.0 / bp.delay;
+									offense += ii.count * dmg * 1.0 / bp.delay;
 								}
 							}
 						}
@@ -860,7 +861,7 @@ public final class BattleSimulator {
 					BattleGroundProjector bge = p.owner.world.battle.groundProjectors.get(b.type.id);
 					if (bge != null && bge.projectile != null) {
 						BattleProjectile pr = p.owner.world.battle.projectiles.get(bge.projectile);
-						offense += bge.damage * 1.0 / pr.delay;
+						offense += bge.damage(p.owner) * 1.0 / pr.delay;
 					}
 					
 				}
@@ -889,7 +890,8 @@ public final class BattleSimulator {
 					BattleProjectile bp = f.owner.world.battle.projectiles.get(is.type.id);
 					if (bp != null) {
 						if (bp.mode == Mode.BEAM) {
-							offense += ii.count * is.count * bp.damage * 1.0 / bp.delay;
+							double dmg = bp.damage(ii.owner);
+							offense += ii.count * is.count * dmg * 1.0 / bp.delay;
 						}
 					}
 				}

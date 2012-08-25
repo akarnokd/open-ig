@@ -34,6 +34,8 @@ import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.TileSet;
+import hu.openig.model.Trait;
+import hu.openig.model.TraitKind;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -1639,11 +1641,23 @@ public class InfoScreen extends ScreenBase {
 			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
 			if (p.owner == null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				double g = world().galaxyModel.getGrowth(p.type.type, player().race);
+				
+				Trait t = player().traits.trait(TraitKind.FERTILE);
+				if (t != null) {
+					g *= 1 + t.value / 100;
+				}
+				
 				surfaceText = format("colonyinfo.surface2", 
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			} else
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race) * localStatistics.populationGrowthModifier;
+
+				Trait t = player().traits.trait(TraitKind.FERTILE);
+				if (t != null) {
+					g *= 1 + t.value / 100;
+				}
+				
 				surfaceText = format("colonyinfo.surface2", 
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			}
@@ -3081,21 +3095,21 @@ public class InfoScreen extends ScreenBase {
 				Research rs = player().research.get(rt);
 				switch (rs.state) {
 				case RUNNING:
-					researchProgress.text(format("researchinfo.progress.running", (int)rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.running", (int)rs.getPercent(player().traits)), true).visible(true);
 					break;
 				case STOPPED:
-					researchProgress.text(format("researchinfo.progress.paused", (int)rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.paused", (int)rs.getPercent(player().traits)), true).visible(true);
 					break;
 				case LAB:
-					researchProgress.text(format("researchinfo.progress.lab", (int)rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.lab", (int)rs.getPercent(player().traits)), true).visible(true);
 					break;
 				case MONEY:
-					researchProgress.text(format("researchinfo.progress.money", (int)rs.getPercent()), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.money", (int)rs.getPercent(player().traits)), true).visible(true);
 					break;
 				default:
 					researchProgress.text("");
 				}
-				researchCost.text(format("researchinfo.progress.cost", rt.researchCost), true).visible(true);
+				researchCost.text(format("researchinfo.progress.cost", rt.researchCost(player().traits)), true).visible(true);
 			} else {
 				if (player().isAvailable(rt)) {
 					researchProgress.text(get("researchinfo.progress.done"), true).visible(true);
@@ -3107,7 +3121,7 @@ public class InfoScreen extends ScreenBase {
 				} else {
 					if (world().canResearch(rt)) {
 						researchProgress.text(get("researchinfo.progress.can"), true).visible(true);
-						researchCost.text(format("researchinfo.progress.cost", rt.researchCost), true).visible(true);
+						researchCost.text(format("researchinfo.progress.cost", rt.researchCost(player().traits)), true).visible(true);
 					} else {
 						researchProgress.text(get("researchinfo.progress.cant"), true).visible(true);
 						descriptionImage.image(null);
@@ -3230,6 +3244,10 @@ public class InfoScreen extends ScreenBase {
 			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race);
+				Trait t = player().traits.trait(TraitKind.FERTILE);
+				if (t != null) {
+					g *= 1 + t.value / 100;
+				}
 				surfaceText = format("colonyinfo.surface2", 
 						firstUpper(get(p.type.label)), (int)(g * 100));
 			}

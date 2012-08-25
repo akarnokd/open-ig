@@ -121,7 +121,7 @@ public class AttackPlanner extends Planner {
 				final AIFleet ownFleet = Collections.max(fleets, new Comparator<AIFleet>() {
 					@Override
 					public int compare(AIFleet o1, AIFleet o2) {
-						return o1.statistics.firepower - o2.statistics.firepower;
+						return U.compare(o1.statistics.firepower, o2.statistics.firepower);
 					}
 				});
 				AIFleet targetFleet = null;

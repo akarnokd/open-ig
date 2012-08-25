@@ -543,8 +543,8 @@ public class StatusbarScreen extends ScreenBase {
 				quickProductionButton.textColor = TextRenderer.YELLOW;
 			}
 			
+			quickResearchButton.visible(world().level > 2);
 			if (world().level > 2) {
-				quickResearchButton.visible(true);
 
 				String rs = "-";
 				ResearchType rt = player().runningResearch();
@@ -552,7 +552,7 @@ public class StatusbarScreen extends ScreenBase {
 				if (rt != null) {
 					Research r = player().research.get(rt);
 					if (r != null) {
-						rs = String.format("%.1f%%", r.getPercent());
+						rs = String.format("%.1f%%", r.getPercent(player().traits));
 						mayBlink |= r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;
 						if (mayBlink) {
 							setTooltip(quickResearchButton, "statusbar.quickresearch.problem." + r.state, rt.longName);

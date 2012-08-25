@@ -1807,7 +1807,7 @@ public class GameWindow extends JFrame implements GameControls {
 		ii.owner = target.owner;
 		ii.type = rt;
 		ii.count = count;
-		ii.hp = commons.world().getHitpoints(ii.type);
+		ii.hp = commons.world().getHitpoints(ii.type, ii.owner);
 		ii.createSlots();
 		// fill in best equipment
 		for (InventorySlot is : ii.slots) {

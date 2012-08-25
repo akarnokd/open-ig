@@ -21,17 +21,24 @@ public class Research {
 	public int assignedMoney;
 	/** The remaining money amount. */
 	public int remainingMoney;
-	/** @return the research progress as 100s percent. */
-	public float getPercent() {
-		return (type.researchCost - remainingMoney) * 100f / type.researchCost;
+	/**
+	 * @param traits the traits to consider 
+	 * @return the research progress as 100s percent. 
+	 */
+	public float getPercent(Traits traits) {
+		int c = type.researchCost(traits);
+		return (c - remainingMoney) * 100f / c;
 	}
-	/** @return Get the research time amount. */
-	public int getTime() {
+	/** 
+	 * @param traits the traits to consider 
+	 * @return Get the research time amount. 
+	 */
+	public int getTime(Traits traits) {
 		if (remainingMoney == 0) {
 			return 0;
 		}
-		int normalFullTime = type.researchTime();
-		float remainingPercent = (100 - getPercent()) / 100;
+		int normalFullTime = type.researchTime(traits);
+		float remainingPercent = (100 - getPercent(traits)) / 100;
 		float fundingPercent = 0.5f * remainingMoney / assignedMoney;
 		return (int)(normalFullTime * fundingPercent * remainingPercent);
 	}

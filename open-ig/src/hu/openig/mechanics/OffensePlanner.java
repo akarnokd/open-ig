@@ -49,7 +49,7 @@ public class OffensePlanner extends Planner {
 	final Comparator<AIFleet> firepowerAsc = new Comparator<AIFleet>() {
 		@Override
 		public int compare(AIFleet o1, AIFleet o2) {
-			return o1.statistics.firepower - o2.statistics.firepower;
+			return U.compare(o1.statistics.firepower, o2.statistics.firepower);
 		}
 	};
 	/**
@@ -210,7 +210,7 @@ public class OffensePlanner extends Planner {
 			if (w != null) {
 				BattleProjectile proj = this.w.battle.projectiles.get(w.id);
 				if (proj != null) {
-					result += proj.damage * es.max;
+					result += proj.damage(p) * es.max;
 				}
 			}
 		}

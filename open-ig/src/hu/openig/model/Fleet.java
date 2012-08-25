@@ -136,7 +136,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
-			pii.hp = owner.world.getHitpoints(type);
+			pii.hp = owner.world.getHitpoints(type, pii.owner);
 			pii.createSlots();
 			pii.shield = Math.max(0, pii.shieldMax());
 			
@@ -198,7 +198,7 @@ public class Fleet implements Named, Owned, HasInventory {
 				
 				BattleGroundVehicle v = owner.world.battle.groundEntities.get(fii.type.id);
 				if (v != null) {
-					result.groundFirepower += v.damage;
+					result.groundFirepower += v.damage(fii.owner);
 				}
 				
 			}
@@ -222,7 +222,8 @@ public class Fleet implements Named, Owned, HasInventory {
 					if (checkFirepower && slot.type.has("projectile")) {
 						BattleProjectile bp = owner.world.battle.projectiles.get(slot.type.get("projectile"));
 						if (bp != null && bp.mode == Mode.BEAM) {
-							result.firepower += slot.count * bp.damage * fii.count;
+							double dmg = bp.damage(owner);
+							result.firepower += slot.count * dmg * fii.count;
 						}
 					}
 				}
@@ -318,7 +319,7 @@ public class Fleet implements Named, Owned, HasInventory {
 				ii.count = 1;
 				ii.type = type;
 				ii.owner = owner;
-				ii.hp = owner.world.getHitpoints(type);
+				ii.hp = owner.world.getHitpoints(type, ii.owner);
 				ii.createSlots();
 				
 				inventory.add(ii);

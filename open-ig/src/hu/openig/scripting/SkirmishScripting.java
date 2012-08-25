@@ -60,11 +60,21 @@ public class SkirmishScripting implements GameScripting {
 			objectivesOnce = false;
 			world.env.showObjectives(true);
 		}
-		checkConquestVictory();
-		checkEconomicVictory();
-		checkOccupationVictory();
-		checkTechnologyVictory();
-		checkSocialVictory();
+		if (def.victoryConquest) {
+			checkConquestVictory();
+		}
+		if (def.victoryEconomic) {
+			checkEconomicVictory();
+		}
+		if (def.victoryOccupation) {
+			checkOccupationVictory();
+		}
+		if (def.victoryTechnology) {
+			checkTechnologyVictory();
+		}
+		if (def.victorySocial) {
+			checkSocialVictory();
+		}
 	}
 	/**
 	 * Check social victory condition.

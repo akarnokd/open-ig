@@ -707,7 +707,7 @@ public class World {
 				ii.owner = players.get(xinv.get("owner"));
 				ii.type = researches.get(xinv.get("id"));
 				ii.count = xinv.getInt("count");
-				ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type)), getHitpoints(ii.type));
+				ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
 				ii.createSlots();
 				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
 
@@ -1640,7 +1640,7 @@ public class World {
 				pii.owner = players.get(xpii.get("owner"));
 				pii.type = researches.get(xpii.get("id"));
 				pii.count = xpii.getInt("count");
-				pii.hp = Math.min(xpii.getInt("hp", getHitpoints(pii.type)), getHitpoints(pii.type));
+				pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
 				pii.createSlots();
 				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
 				
@@ -1916,7 +1916,7 @@ public class World {
 						if (es.fixed) {
 							fis.type = es.items.get(0);
 							fis.count = es.max;
-							fis.hp = getHitpoints(fis.type);
+							fis.hp = getHitpoints(fis.type, fii.owner);
 						}
 						fii.slots.add(fis);
 					}
@@ -1924,7 +1924,7 @@ public class World {
 				
 				int shieldMax = Math.max(0, fii.shieldMax());
 				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
-				fii.hp = Math.min(xfii.getInt("hp", getHitpoints(fii.type)), getHitpoints(fii.type));
+				fii.hp = Math.min(xfii.getDouble("hp", getHitpoints(fii.type, fii.owner)), getHitpoints(fii.type, fii.owner));
 				f.inventory.add(fii);
 			}
 			// fi
@@ -2091,7 +2091,7 @@ public class World {
 			if (xproj.has("sound")) {
 				bp.sound = SoundType.valueOf(xproj.get("sound"));
 			}
-			bp.damage = xproj.getInt("damage");
+			bp.baseDamage = xproj.getInt("damage");
 			bp.range = xproj.getInt("range");
 			bp.delay = xproj.getInt("delay");
 			if (xproj.has("area")) {
@@ -2180,7 +2180,7 @@ public class World {
 			}
 			se.projectile = xdefense.get("projectile");
 			se.rotationTime = xdefense.getInt("rotation-time");
-			se.damage = xdefense.getInt("damage");
+			se.baseDamage = xdefense.getInt("damage");
 			
 			// load efficiency model
 			loadEfficiencyModel(se.efficiencies, xdefense);
@@ -2248,7 +2248,7 @@ public class World {
 			
 			ge.hp = xground.getInt("hp");
 			
-			ge.damage = xground.getInt("damage");
+			ge.baseDamage = xground.getInt("damage");
 			ge.type = GroundwarUnitType.valueOf(xground.get("type"));
 			ge.minRange = Double.parseDouble(xground.get("min-range"));
 			ge.maxRange = Double.parseDouble(xground.get("max-range"));
@@ -2289,7 +2289,7 @@ public class World {
 					
 					tr.fire = SoundType.valueOf(xport.get("fire"));
 					tr.maxRange = Double.parseDouble(xport.get("max-range"));
-					tr.damage = xport.getInt("damage");
+					tr.baseDamage = xport.getInt("damage");
 					tr.rotationTime = xport.getInt("rotation-time");
 					tr.delay = xport.getInt("delay");
 					
@@ -2459,18 +2459,25 @@ public class World {
 	/**
 	 * Returns the hitpoints of the given research type.
 	 * @param rt the research type
+	 * @param owner the owner
 	 * @return the hitpoints
 	 */
-	public int getHitpoints(ResearchType rt) {
+	public int getHitpoints(ResearchType rt, Player owner) {
+		Trait sd = owner.traits.trait(TraitKind.SPACE_DEFENSE);
+		double hpMultiply = 1;
+		
+		if (sd != null && (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS)) {
+			hpMultiply = 1 + sd.value / 100;
+		}
 		BattleSpaceEntity se = battle.spaceEntities.get(rt.id);
 		if (se != null) {
-			return se.hp;
+			return (int)(se.hp * hpMultiply);
 		}
 		BattleGroundVehicle e = battle.groundEntities.get(rt.id);
 		if (e != null) {
-			return e.hp;
+			return (int)(e.hp * hpMultiply);
 		}
-		return rt.productionCost / params().costToHitpoints();
+		return (int)(rt.productionCost * hpMultiply / params().costToHitpoints());
 	}
 	/**
 	 * Returns the hitpoints of the given building type.
@@ -2480,16 +2487,23 @@ public class World {
 	 * @return the hitpoints
 	 */
 	public int getHitpoints(BuildingType rt, Player owner, boolean space) {
+		Trait sd = owner.traits.trait(TraitKind.SPACE_DEFENSE);
+		double hpMultiply = 1;
+		
+		if (sd != null && (rt.kind.equals("Gun") || rt.kind.equals("Shield"))) {
+			hpMultiply = 1 + sd.value / 100;
+		}
+		
 		Map<Pair<String, String>, Integer> map = space ? battle.spaceHitpoints : battle.groundHitpoints;
 		Integer hp = map.get(Pair.of(rt.id, owner.id));
 		if (hp != null) {
-			return hp;
+			return (int)(hp * hpMultiply);
 		}
 		hp = map.get(Pair.of(rt.id, null));
 		if (hp != null) {
-			return hp;
+			return (int)(hp * hpMultiply);
 		}
-		return rt.hitpoints / params().costToHitpoints();
+		return (int)(rt.hitpoints * hpMultiply / params().costToHitpoints());
 	}
 	/**
 	 * Calculate the current fleet health.
@@ -2503,7 +2517,7 @@ public class World {
 		double max = 0;
 		double hp = 0;
 		for (InventoryItem fi : f.inventory) {
-			max += getHitpoints(fi.type);
+			max += getHitpoints(fi.type, fi.owner);
 			int s = fi.shieldMax();
 			if (s >= 0) {
 				max += s;
@@ -2762,7 +2776,48 @@ public class World {
 					}
 				}
 			}
+			if (p.traits.has(TraitKind.ASTRONOMER)) {
+				for (Planet pl : U.newArrayList(p.ownPlanets())) {
+					List<Planet> pls = planetsFromPlanet(pl);
+					for (Planet pl2 : pls) {
+						if (pl2.owner != p && !p.planets.containsKey(pl2)) {
+							p.planets.put(pl2, PlanetKnowledge.NAME);
+							break;
+						}
+					}
+				}
+			}
+			if (p.traits.has(TraitKind.ASTRONOMER_PLUS)) {
+				int cnt = Math.max(planets.planets.size() - p.ownPlanets().size(), 0);
+				p.changeInventoryCount(researches.get("Satellite"), cnt);
+				
+				for (Planet pl : planets.values()) {
+					if (pl.owner != p && !p.planets.containsKey(pl)) {
+						p.planets.put(pl, PlanetKnowledge.NAME);
+					}
+				}
+			}
 		}
+	}
+	/**
+	 * Create a sorted list of planets based on their distance from the center planet.
+	 * @param center the center
+	 * @return the list of planets
+	 */
+	List<Planet> planetsFromPlanet(final Planet center) {
+		List<Planet> result = U.newArrayList(planets.values());
+		result.remove(center);
+		
+		Collections.sort(result, new Comparator<Planet>() {
+			@Override
+			public int compare(Planet o1, Planet o2) {
+				double d1 = Point.distance(o1.x, o1.y, center.x, center.y);
+				double d2 = Point.distance(o2.x, o2.y, center.x, center.y);
+				return U.compare(d1, d2);
+			}
+		});
+		
+		return result;
 	}
 	/**
 	 * Initializes the world via the loadCampaign, then performs the alterations.
@@ -2826,6 +2881,26 @@ public class World {
 				p.picture = rl.getImage(sp.picture);
 			}
 
+			p.group = sp.group;
+			
+			groups.put(p, sp.group);
+			
+			p.traits.replace(sp.traits);
+			if (sp.ai == SkirmishAIMode.USER) {
+				definition.traits = new Traits();
+				definition.traits.replace(sp.traits);
+			}
+
+			for (ResearchType rt : researches.researches.values()) {
+				if (rt.race.contains(p.race) && rt.level == 0) {
+					p.add(rt);
+				}
+			}
+			
+			for (ResearchType rt : p.available().keySet()) {
+				p.setRelated(rt);
+			}
+
 			if (p.aiMode != AIMode.PIRATES && p.aiMode != AIMode.TRADERS) {
 				// create initial fleets
 				p.changeInventoryCount(researches.get("ColonyShip"), Math.max(0, skirmishDefinition.initialColonyShips - 1));
@@ -2846,22 +2921,7 @@ public class World {
 				
 				createStartingFleet(p);
 			}
-			p.group = sp.group;
-			
-			groups.put(p, sp.group);
-			
-			p.traits.replace(sp.traits);
 
-			for (ResearchType rt : researches.researches.values()) {
-				if (rt.race.contains(p.race) && rt.level == 0) {
-					p.add(rt);
-				}
-			}
-			
-			for (ResearchType rt : p.available().keySet()) {
-				p.setRelated(rt);
-			}
-			
 			players.players.put(p.id, p);
 			id++;
 		}

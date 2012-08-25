@@ -24,7 +24,7 @@ public class GroundwarRocket extends GroundwarObject {
 	/** The target cell point. */
 	public double targetY;
 	/** The damage to inflict. */
-	public int damage;
+	public double damage;
 	/** The damage area. */
 	public int area;
 	/** How fast the rocket flies. */

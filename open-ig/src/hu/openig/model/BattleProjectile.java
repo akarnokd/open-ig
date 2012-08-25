@@ -43,7 +43,7 @@ public class BattleProjectile {
 	/** The range of the projectile, -1 means unlimited. */
 	public int range;
 	/** The damage caused by the projectile. */
-	public int damage;
+	public double baseDamage;
 	/** The damage area. */
 	public int area;
 	/** The projectile mode. */
@@ -62,11 +62,24 @@ public class BattleProjectile {
 		result.alternative = alternative;
 		result.delay = delay;
 		result.range = range;
-		result.damage = damage;
+		result.baseDamage = baseDamage;
 		result.area = area;
 		result.mode = mode;
 		result.movementSpeed = movementSpeed;
 		result.rotationTime = rotationTime;
 		return result;
+	}
+	/**
+	 * Returns the damage for the given owner.
+	 * @param owner the owner
+	 * @return the damage
+	 */
+	public double damage(Player owner) {
+		double dmg = baseDamage;
+		Trait t = owner.traits.trait(TraitKind.WEAPONS);
+		if (t != null) {
+			dmg *= 1 + t.value / 100;
+		}
+		return dmg;
 	}
 }

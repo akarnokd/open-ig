@@ -898,7 +898,7 @@ public class StarmapScreen extends ScreenBase {
 		}
 		
 		if (knowledge(f, FleetKnowledge.FULL) >= 0) {
-			fleetFirepower.text(format("fleetstatus.firepower", fs.firepower), true).visible(true);
+			fleetFirepower.text(format("fleetstatus.firepower", (int)fs.firepower), true).visible(true);
 			fleetComposition.text(format("fleetstatus.composition",
 					zeroDash(fs.battleshipCount),
 					zeroDash(fs.cruiserCount),

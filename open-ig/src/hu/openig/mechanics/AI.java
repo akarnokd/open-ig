@@ -45,6 +45,8 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.model.Trait;
+import hu.openig.model.TraitKind;
 import hu.openig.model.World;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -382,7 +384,7 @@ public class AI implements AIManager {
 		for (GroundwarUnit u : war.units()) {
 			if (u.owner != p) {
 				hp += u.hp;
-				dps += u.model.damage * 1.0 / u.model.delay;
+				dps += u.damage() * 1.0 / u.model.delay;
 			}
 		}
 		
@@ -415,7 +417,7 @@ public class AI implements AIManager {
 			if (s.owner != p) {
 				hp += s.hp + s.shield;
 				for (SpacewarWeaponPort wp : s.ports) {
-					dps += wp.count * wp.projectile.damage * 1.0 / wp.projectile.delay;
+					dps += wp.count * wp.damage(s.owner) * 1.0 / wp.projectile.delay;
 				}
 			}
 		}
@@ -759,6 +761,12 @@ public class AI implements AIManager {
 //		PlanetStatistics senderStas = computeVisibleStats(other);
 		
 		double rnd = p.world.random().nextDouble();
+
+		Trait t = other.traits.trait(TraitKind.DIPLOMACY);
+		if (t != null) {
+			rnd = rnd * (1 + t.value / 100);
+			rnd = Math.min(0.99, Math.max(0.01, rnd));
+		}
 		
 		switch (about) {
 		case DIPLOMATIC_RELATIONS:

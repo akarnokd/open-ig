@@ -146,7 +146,7 @@ public class Mission11 extends Mission {
 			// check station strength
 			for (InventoryItem ii : p.inventory) {
 				if (ii.owner == player && ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					sp += world.getHitpoints(ii.type);
+					sp += world.getHitpoints(ii.type, ii.owner);
 				}
 			}
 			// check gun and shield strength, check fortification strength
