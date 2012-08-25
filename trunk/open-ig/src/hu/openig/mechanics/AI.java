@@ -453,10 +453,13 @@ public class AI implements AIManager {
 		// update diplomatic relations
 		DiplomaticRelation dr = w.establishRelation(e, p);
 		dr.full = true;
-		dr.value = 5;
-		dr.wontTalk(true);
-		dr.lastContact = w.time.getTime();
-		dr.alliancesAgainst.clear();
+		if (!dr.strongAlliance) {
+			dr.value = 5;
+			dr.tradeAgreement = false;
+			dr.wontTalk(true);
+			dr.lastContact = w.time.getTime();
+			dr.alliancesAgainst.clear();
+		}
 	}
 	/**
 	 * Returns or creates the strength estimate record for the given enemy.

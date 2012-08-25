@@ -14,6 +14,7 @@ import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -153,10 +154,24 @@ public class AITrader implements AIManager {
 				fleets.add(tf);
 			}
 		}
+		Set<Player> drs = U.newHashSet();
+		for (DiplomaticRelation dr0 : world.relations) {
+			if (dr0.first == world.player || dr0.second == world.player) {
+				if (dr0.tradeAgreement) {
+					if (dr0.first == world.player) {
+						drs.add(dr0.second);
+					} else {
+						drs.add(dr0.first);
+					}
+				}
+			}
+		}
 		planets.clear();
 		for (Planet pl : world.planets.values()) {
 			if (pl.owner != null) {
-				if (pl.owner == world.player || (pl.owner != null && pl.owner == player) /* || world.random().nextDouble() < 0.4 */) {
+				if (pl.owner == world.player 
+						|| (pl.owner != null && pl.owner == player)
+						|| drs.contains(pl.owner)) {
 					planets.add(pl);
 				}
 			}
