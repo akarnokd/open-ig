@@ -13,6 +13,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetStatistics;
@@ -769,13 +770,7 @@ public final class Simulator {
 							world.scripting.onFleetAt(f, f.x, f.y);
 						}
 						if (f.mode == FleetMode.ATTACK) {
-							BattleInfo bi = new BattleInfo();
-							bi.attacker = f;
-							bi.targetFleet = f.targetFleet;
-							bi.targetPlanet = f.targetPlanet();
-							f.task = FleetTask.IDLE;
-
-							world.pendingBattles.add(bi);
+							handleAttack(world, f);
 						}
 						f.mode = null;
 						if (clearFleet) {
@@ -797,6 +792,31 @@ public final class Simulator {
 		}
 		
 		return invokeRadar;
+	}
+	/**
+	 * Handle the case when the fleet reached the target planet.
+	 * @param world the world
+	 * @param f the fleet
+	 */
+	protected static void handleAttack(World world, Fleet f) {
+		Planet tp = f.targetPlanet();
+		Fleet tf = f.targetFleet;
+		Player o = tp != null ? tp.owner : (tf != null ? tf.owner : null); 
+		if (o != null) {
+			// do not attack a strong ally
+			DiplomaticRelation dr = world.getRelation(f.owner, o);
+			if (dr == null || !dr.strongAlliance) {
+				BattleInfo bi = new BattleInfo();
+				bi.attacker = f;
+				bi.targetFleet = tf;
+				bi.targetPlanet = tp;
+				f.task = FleetTask.IDLE;
+		
+				world.pendingBattles.add(bi);
+				return;
+			}
+		}
+		f.task = FleetTask.IDLE;
 	}
 	/**
 	 * Regenerate the shields and/or health.
