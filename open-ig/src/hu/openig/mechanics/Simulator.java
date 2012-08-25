@@ -622,13 +622,19 @@ public final class Simulator {
 			}
 			int prioritySum = 0;
 			for (Production pr : prs.getValue().values()) {
+				if (pr.type.has("needsOrbitalFactory") && all.orbitalFactory == 0) {
+					continue;
+				}
 				if (pr.count > 0) {
 					prioritySum += pr.priority;
 				}
 			}
 			if (prioritySum > 0) {
 				for (Production pr : new ArrayList<Production>(prs.getValue().values())) {
-					int targetCap = (int)(capacity * pr.priority / world.params().productionUnit() / prioritySum);
+					if (pr.type.has("needsOrbitalFactory") && all.orbitalFactory == 0) {
+						continue;
+					}
+					int targetCap = (int)(1d * capacity * pr.priority / world.params().productionUnit() / prioritySum);
 					if (pr.count == 0) {
 						targetCap = 0;
 					}
