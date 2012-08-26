@@ -171,6 +171,11 @@ public class ColonyPlanner extends Planner {
 				return true;
 			}
 		}
+		if (!planet.statistics.constructing) {
+			if (checkGrowth(planet)) {
+				return true;
+			}
+		}
 		// if very low morale, yield
 		if (planet.morale >= 10 && planet.morale < 35 
 				&& planet.statistics.problems.size() + planet.statistics.warnings.size() > 0
@@ -324,6 +329,29 @@ public class ColonyPlanner extends Planner {
 		};
 		if (planet.population >= 30000 && planet.population > planet.statistics.workerDemand * 1.1) {
 			return manageBuildings(planet, fire, costOrder, true);
+		}
+		return false;
+	}
+	/** 
+	 * Ensure that no living space shortage present.
+	 * @param planet the planet to work with
+	 * @return if action taken
+	 */
+	boolean checkGrowth(final AIPlanet planet) {
+		BuildingSelector growth = new BuildingSelector() {
+			@Override
+			public boolean accept(AIPlanet planet, AIBuilding value) {
+				return value.hasResource("population-growth");
+			}
+			@Override
+			public boolean accept(AIPlanet planet, BuildingType value) {
+				return value.hasResource("population-growth") && count(planet, value) < 1;
+			}
+		};
+		if (planet.population >= 7500 
+				&& planet.population > planet.statistics.workerDemand * 1.1
+				&& world.money >= 75000) {
+			return manageBuildings(planet, growth, costOrder, true);
 		}
 		return false;
 	}
