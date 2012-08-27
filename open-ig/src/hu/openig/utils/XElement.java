@@ -826,16 +826,16 @@ public class XElement implements Iterable<XElement> {
 					f.set(o, (short)getInt(f.getName(), (Short)f.get(o)));
 				} else
 				if (f.getType() == Integer.TYPE) {
-					f.set(o, (int)getInt(f.getName(), (Integer)f.get(o)));
+					f.set(o, getInt(f.getName(), (Integer)f.get(o)));
 				} else
 				if (f.getType() == Long.TYPE) {
-					f.set(o, (long)getLong(f.getName(), (Long)f.get(o)));
+					f.set(o, getLong(f.getName(), (Long)f.get(o)));
 				} else
 				if (f.getType() == Float.TYPE) {
 					f.set(o, (float)getDouble(f.getName(), (Float)f.get(o)));
 				} else
 				if (f.getType() == Double.TYPE) {
-					f.set(o, (double)getDouble(f.getName(), (Double)f.get(o)));
+					f.set(o, getDouble(f.getName(), (Double)f.get(o)));
 				} else
 				if (f.getType() == Character.TYPE) {
 					f.set(o, get(f.getName(), String.valueOf(f.get(o))).charAt(0));
