@@ -21,6 +21,7 @@ import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -3122,16 +3123,19 @@ public class World {
 				if (pl.owner != null) {
 					BuildingType bt = buildingModel.find("MainBuilding");
 					if (bt != null) {
-						Point pt = pl.surface.placement.findLocation(pl.getPlacementDimensions(bt));
-						if (pt != null) {
-							Building b = new Building(bt, pl.race);
-							b.location = Location.of(pt.x + 1, pt.y - 1);
-
-							pl.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
-							pl.rebuildRoads();
-							
-							b.buildProgress = b.type.hitpoints;
-							b.hitpoints = b.type.hitpoints;
+						Dimension pd = pl.getPlacementDimensions(bt);
+						if (pd != null) {
+							Point pt = pl.surface.placement.findLocation(pd);
+							if (pt != null) {
+								Building b = new Building(bt, pl.race);
+								b.location = Location.of(pt.x + 1, pt.y - 1);
+	
+								pl.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+								pl.rebuildRoads();
+								
+								b.buildProgress = b.type.hitpoints;
+								b.hitpoints = b.type.hitpoints;
+							}
 						}
 					}
 				}
