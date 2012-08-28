@@ -269,7 +269,7 @@
 		<property id="MultiheadedRocket" hp="2000" area='-1' secondary-count='6' secondary-radius='40' secondary-multiplier='0.5' secondary-area='10'/> <!-- previously 10, -1 only target -->
 		<property id="Bomb1" ground-radius="6" damage-percent="5" hp="1000"/>
 		<property id="Bomb2" ground-radius="10" damage-percent="10" hp="2000"/>
-		<property id="VirusBomb2" ground-radius="6" damage-percent="5" hp="2000"/>
+		<property id="VirusBomb" ground-radius="6" damage-percent="5" hp="2000"/>
 		<property id="MorgathKamikazeTank" self-destruct-multiplier="50"/>
 	</properties>
 	<ecm-vs-matrix>
