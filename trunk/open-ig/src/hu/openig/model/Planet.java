@@ -746,7 +746,10 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public Dimension getPlacementDimensions(BuildingType bt) {
 		TileSet ts = bt.tileset.get(race);
-		return new Dimension(ts.normal.width + 2, ts.normal.height + 2);
+		if (ts != null) {
+			return new Dimension(ts.normal.width + 2, ts.normal.height + 2);
+		}
+		return null;
 	}
 	/** Remove inventory items with zero counts. */
 	public void cleanup() {
