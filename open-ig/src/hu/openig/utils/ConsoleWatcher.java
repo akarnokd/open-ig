@@ -18,9 +18,11 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Closeable;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Date;
@@ -198,13 +200,13 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 					writeDiagnosticInfo(new Appender() {
 						@Override
 						public Appender append(Object o) {
-							area.append(String.valueOf(o));
+							areaAppend(String.valueOf(o));
 							return this;
 						}
 					});
 					crashSave(onCrash);
 				}
-				area.append(new String(b2, off, len));
+				areaAppend(new String(b2, off, len));
 				// print crash log
 			}
 
@@ -226,14 +228,31 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 							}
 						});
 					}
-					area.append("A crash save may have been created. Please attach it in the issue report (zipped).\r\n");
+					areaAppend("A crash save may have been created. Please attach it in the issue report (zipped).\r\n");
 					if (s != null) {
-						area.append(s);
-						area.append("\r\n");
+						areaAppend(s);
+						areaAppend("\r\n");
 					}
 				}
 			}
 		});
+	}
+	/**
+	 * Append data to the text area and the log file.
+	 * @param s the text
+	 */
+	void areaAppend(String s) {
+		try {
+			PrintWriter out = new PrintWriter(new FileWriter("open-ig.log", true));
+			try {
+				out.print(s);
+			} finally {
+				out.close();
+			}
+		} catch (Throwable t) {
+			// ignored
+		}
+		area.append(s);
 	}
 	/** Open the project issue page. */
 	void doReport() {

@@ -404,7 +404,7 @@ public class AchievementsScreen extends ScreenBase {
 		if (mode == Screens.STATISTICS) {
 			if (statistics.size() > statisticsCount) {
 				int oldIndex = statisticsIndex;
-				statisticsIndex = Math.min(statisticsIndex + 1, statistics.size() - statisticsCount);
+				statisticsIndex = Math.max(0, Math.min(statisticsIndex + 1, statistics.size() - statisticsCount));
 				if (oldIndex != statisticsIndex) {
 					adjustScrollButtons();
 				}
@@ -414,7 +414,7 @@ public class AchievementsScreen extends ScreenBase {
 			List<AchievementEntry> achList = achievements();
 			if (achList.size() > achievementCount) {
 				int oldIndex = achievementIndex;
-				achievementIndex = Math.min(achievementIndex + 1, achList.size() - achievementCount);
+				achievementIndex = Math.max(Math.min(achievementIndex + 1, achList.size() - achievementCount), 0);
 				if (oldIndex != achievementIndex) {
 					adjustScrollButtons();
 				}
@@ -428,7 +428,7 @@ public class AchievementsScreen extends ScreenBase {
 			scrollDownButton.visible(statisticsIndex < statistics.size() - statisticsCount);
 		} else
 		if (mode == Screens.ACHIEVEMENTS) {
-			achievementIndex = Math.min(achievementIndex, achievements().size() - achievementCount);
+			achievementIndex = Math.max(0, Math.min(achievementIndex, achievements().size() - achievementCount));
 			scrollUpButton.visible(achievementIndex > 0);
 			List<AchievementEntry> achList = achievements();
 			scrollDownButton.visible(achievementIndex < achList.size() - achievementCount);
@@ -439,6 +439,10 @@ public class AchievementsScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		this.mode = mode == null ? Screens.STATISTICS : mode;
 		onResize();
+		
+		statisticsIndex = Math.max(0, statisticsIndex);
+		achievementIndex = Math.max(0, achievementIndex);
+		
 		adjustScrollButtons();
 		adjustLabels();
 		
