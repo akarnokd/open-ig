@@ -8,6 +8,7 @@
 
 package hu.openig.scripting.missions;
 
+import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.Objective;
@@ -129,10 +130,10 @@ public class Mission12 extends Mission {
 				stage = M12Stages.SUBSEQUENT_RUNDOWN;
 			}
 		}
-		if ("New Caroline-Garthog-Virus-Resolved".equals(id)
-				|| "New Caroline-Garthog-Virus-Again-Deaths".equals(id)) {
-			completeActiveTask();				
-		}
+//		if ("New Caroline-Garthog-Virus-Resolved".equals(id)
+//				|| "New Caroline-Garthog-Virus-Again-Deaths".equals(id)) {
+//			completeActiveTask();				
+//		}
 		if ("Douglas-Report-Viruses".equals(id)) {
 			addMission("Mission-14", 8);
 			objective("Mission-12-Task-6").visible = true;
@@ -182,22 +183,24 @@ public class Mission12 extends Mission {
 		for (int i = turns; i >= 1; i--) {
 			Objective o = objective("Mission-12-Task-" + i);
 			if (o.visible && o.state == ObjectiveState.ACTIVE) {
-				setObjectiveState("Mission-12-Task-" + i, ObjectiveState.SUCCESS);
-				if (hasMission("Mission-12-TaskSuccess")) {
-					clearMission("Mission-12-TaskSuccess");
-				}
-				if (i >= 2) {
-					send("Douglas-Report-Viruses").visible = true;
-				}
-				if (i >= turns && !noCarriers) {
-					showObjective("Mission-12-Task-6");
+				if (setObjectiveState("Mission-12-Task-" + i, ObjectiveState.SUCCESS)) {
+					if (hasMission("Mission-12-TaskSuccess")) {
+						clearMission("Mission-12-TaskSuccess");
+					}
+					if (i >= 2) {
+						send("Douglas-Report-Viruses").visible = true;
+					}
+					if (i >= turns && !noCarriers) {
+						showObjective("Mission-12-Task-6");
+					}
 				}
 				break;
 			}
 		}
 		if (noCarriers) {
-			setObjectiveState("Mission-12", ObjectiveState.SUCCESS);
-			addTimeout("Mission-12-Hide", 13000);
+			if (setObjectiveState("Mission-12", ObjectiveState.SUCCESS)) {
+				addTimeout("Mission-12-Hide", 13000);
+			}
 		}
 	}
 	@Override
@@ -222,11 +225,17 @@ public class Mission12 extends Mission {
 			}
 		}
 		if (cnt == 0) {
+			Action0 completer = new Action0() {
+				@Override
+				public void invoke() {
+					completeActiveTask();				
+				}
+			};
 			if (stage == M12Stages.FIRST_RUNDOWN || stage == M12Stages.FIRST_MESSAGE) {
 				if (multipleInfections) {
-					incomingMessage("New Caroline-Garthog-Virus-Breached");
+					incomingMessage("New Caroline-Garthog-Virus-Breached", completer);
 				} else {
-					incomingMessage("New Caroline-Garthog-Virus-Resolved");
+					incomingMessage("New Caroline-Garthog-Virus-Resolved", completer);
 				}
 				addMission("Mission-12-Subsequent", 24);
 				addMission("Mission-12-TaskSuccess", 2);
@@ -235,12 +244,12 @@ public class Mission12 extends Mission {
 			}
 			if (stage == M12Stages.SUBSEQUENT_RUNDOWN || stage == M12Stages.SUBSEQUENT_MESSAGE) {
 				if (tradersLost) {
-					incomingMessage("New Caroline-Garthog-Virus-Again-Deaths");
+					incomingMessage("New Caroline-Garthog-Virus-Again-Deaths", completer);
 				} else 
 				if (multipleInfections) {
-					incomingMessage("New Caroline-Garthog-Virus-Breached");
+					incomingMessage("New Caroline-Garthog-Virus-Breached", completer);
 				} else {
-					incomingMessage("New Caroline-Garthog-Virus-Resolved");
+					incomingMessage("New Caroline-Garthog-Virus-Resolved", completer);
 				}
 				boolean noCarriers = objective("Mission-14").state == ObjectiveState.SUCCESS;
 				for (int i = turns; i >= 2; i--) {
