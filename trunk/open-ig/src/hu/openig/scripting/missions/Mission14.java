@@ -59,6 +59,9 @@ public class Mission14 extends Mission {
 		}
 		if (checkTimeout("Mission-14-Hide")) {
 			objective("Mission-14").visible = false;
+			objective("Mission-12").visible = false;
+			objective("Mission-12-Task-6").visible = false;
+			send("Douglas-Virus-Carriers-Destroyed").visible = false;
 		}
 		if (checkTimeout("Mission-14-Report-Hide")) {
 			send("Douglas-Virus-Carriers-Destroyed").visible = false;
@@ -69,6 +72,7 @@ public class Mission14 extends Mission {
 		}
 		if (checkTimeout("Mission-14-Success")) {
 			setObjectiveState("Mission-14", ObjectiveState.SUCCESS);
+			setObjectiveState("Mission-12", ObjectiveState.SUCCESS);
 			addTimeout("Mission-14-Hide", 13000);
 		}
 	}
