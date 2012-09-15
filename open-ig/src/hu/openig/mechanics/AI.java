@@ -10,7 +10,6 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
-import hu.openig.core.Difficulty;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.model.AIControls;
@@ -129,9 +128,9 @@ public class AI implements AIManager {
 	public void apply() {
 		
 		int actionLimit = Integer.MAX_VALUE;
-		if (world.difficulty != Difficulty.HARD) {
-			actionLimit = Math.max(1, (int)(w.params().speed() / 10d + 0.5));
-		}
+//		if (world.difficulty != Difficulty.HARD) {
+//			actionLimit = Math.max(1, (int)(w.params().speed() / 10d + 0.5));
+//		}
 		
 		try {
 			for (Action0 a : applyActions) {
