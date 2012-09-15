@@ -193,26 +193,28 @@ public class AITrader implements AIManager {
 		int actions = 0;
 		// if more planets available than fleets
 		int maxFleets = maxFleets();
-		while (activeCount < maxFleets) {
-			// create new fleets as landed
-			Fleet nf = createFleet();
-			
-			LandedFleet lf = new LandedFleet();
-			lf.fleet = nf;
-			
-			lf.target = world.random(planets);
-			lf.ttl = LANDING_TTL;
-			
-			nf.x = lf.target.x;
-			nf.y = lf.target.y;
-			
-			landed.add(lf);
-			
-			world.removeFleet(lf.fleet);
-			
-			activeCount++;
-			if (++actions >= actionCount) {
-				break;
+		if (!planets.isEmpty()) {
+			while (activeCount < maxFleets) {
+				// create new fleets as landed
+				Fleet nf = createFleet();
+				
+				LandedFleet lf = new LandedFleet();
+				lf.fleet = nf;
+				
+				lf.target = world.random(planets);
+				lf.ttl = LANDING_TTL;
+				
+				nf.x = lf.target.x;
+				nf.y = lf.target.y;
+				
+				landed.add(lf);
+				
+				world.removeFleet(lf.fleet);
+				
+				activeCount++;
+				if (++actions >= actionCount) {
+					break;
+				}
 			}
 		}
 		
@@ -227,7 +229,9 @@ public class AITrader implements AIManager {
 				fleetTurnedBack.remove(lf.fleet);
 			}
 		}
-		emergeFleets(actions);
+		if (!planets.isEmpty()) {
+			emergeFleets(actions);
+		}
 		// notice script-created fleets
 		for (Fleet f : player.ownFleets()) {
 			if (f.task != FleetTask.SCRIPT) {
