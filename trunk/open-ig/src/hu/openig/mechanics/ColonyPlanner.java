@@ -180,7 +180,7 @@ public class ColonyPlanner extends Planner {
 		if (planet.morale >= 10 && planet.morale < 35 
 				&& planet.statistics.problems.size() + planet.statistics.warnings.size() > 0
 				&& world.money < 100000) {
-			addEmpty();
+			world.money = 0L; // do not let money-related tasks to continue
 			return true;
 		}
 		return false;
@@ -210,8 +210,8 @@ public class ColonyPlanner extends Planner {
 				return true;
 			}
 		}
-		if (builtCount(planet) < 1 && world.money < 500000) {
-			addEmpty();
+		if (builtCount(planet) < 1 && world.money < 150000) {
+			world.money = 0L; // do not let money-related tasks to continue
 			return true;
 		}
 		return false;
@@ -758,7 +758,7 @@ public class ColonyPlanner extends Planner {
 					return true;
 				} else {
 					// if no money could be gained, simply wait for the next day
-					addEmpty();
+					world.money = 0L; // do not let money-related tasks to continue
 					return true;
 				}
 			}

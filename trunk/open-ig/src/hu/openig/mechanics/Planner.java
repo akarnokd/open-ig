@@ -210,17 +210,17 @@ public abstract class Planner {
 	final void add(Action0 action) {
 		applyActions.add(action);
 	}
-	/**
-	 * Add an empty action.
-	 */
-	final void addEmpty() {
-		applyActions.add(new Action0() {
-			@Override
-			public void invoke() {
-				
-			}
-		});
-	}
+//	/**
+//	 * Add an empty action.
+//	 */
+//	final void addEmpty() {
+//		applyActions.add(new Action0() {
+//			@Override
+//			public void invoke() {
+//				
+//			}
+//		});
+//	}
 	/**
 	 * Display the action log.
 	 * @param message the message
