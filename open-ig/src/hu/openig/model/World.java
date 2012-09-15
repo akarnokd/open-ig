@@ -2844,6 +2844,7 @@ public class World {
 		
 		Map<Player, Integer> groups = U.newHashMap();
 		players.players.clear();
+		player = null;
 		int id = 0;
 		for (SkirmishPlayer sp : skirmishDefinition.players) {
 			Player p = new Player(this, sp.originalId + "-" + id);
@@ -2935,6 +2936,10 @@ public class World {
 
 			players.players.put(p.id, p);
 			id++;
+		}
+		
+		if (player == null) {
+			player = random(players.values());
 		}
 		
 		// fix research requirements of colony ship and orbital factory
