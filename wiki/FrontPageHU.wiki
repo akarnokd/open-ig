@@ -117,16 +117,16 @@ Szívesen fogadom olyanok tippjeit és ötleteit, akik már programoztak többj�
 
 Köszönöm *Silvern Tiger*-nek a tesztelést és német fordítást.
 
-Nagy köszönet jár *Norbert "Silver83" Pellny*nek, aki vállalta azt a hatalmas munkát, ami a játék [https://code.google.com/p/open-ig/issues/detail?id=367 háttérképeinek kitisztítása jelentett], segített a német verzió konverziójában, valamint fáradhatatlanul tesztelte a játékot.
+Nagy köszönet jár *Norbert "Silver83" Pellny*-nek, aki vállalta azt a hatalmas munkát, ami a játék [https://code.google.com/p/open-ig/issues/detail?id=367 háttérképeinek kitisztítása jelentett], segített a német verzió konverziójában, valamint fáradhatatlanul tesztelte a játékot.
 
-Köszönöm *Torma "Joe" József*nek az alapos tesztelő munkáját, segítségét a hangok minőségjavításában, a grafikában, a mesterséges intelligencia beállításában, a koncepciók kidolgozásában és még számtalan más dologban.
+Köszönöm *Torma "Joe" József*-nek az alapos tesztelő munkáját, segítségét a hangok minőségjavításában, a grafikában, a mesterséges intelligencia beállításában, a koncepciók kidolgozásában és még számtalan más dologban.
 
 Köszönöm *TCH*-nak a [http://dosgames.abkant3000.hu/community/index.php DOSGames] fórumból, hogy segített kideríteni az eredeti játék animációs fájl formátumát. Ő adta az ötletet, hogy két tömörítési réteg lehet.
 
-Köszönöm kollégámnak, *Galaxy*nak az Open-IG nyitóképernyőjének elkészítését, valamint a rengeteg hasznos tanácsát a játék kezdeti adatmodelljének felépítése során.
+Köszönöm kollégámnak, *Galaxy*-nak az Open-IG nyitóképernyőjének elkészítését, valamint a rengeteg hasznos tanácsát a játék kezdeti adatmodelljének felépítése során.
 
 Köszönöm *Harrach Gergely*-nek az eredeti játék készítőiről szerzett információt, a hajó tűzerőket, a videó feliratokat és más egyéb munkákat.
 
-Köszönöm *Góz Tamás*nak a magyarszinkron.hu weblapról, aki segített beazonosítani jó néhány szinkronhangot a videókban.
+Köszönöm *Góz Tamás*-nak a magyarszinkron.hu weblapról, aki segített beazonosítani jó néhány szinkronhangot a videókban.
 
 http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/OpenIG_Splash_medium.png
