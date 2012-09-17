@@ -834,7 +834,8 @@ public class CommonResources implements GameEnvironment {
 		for (ResourcePlace rp : rl.list(language(), "music/Music")) {
 			musicList.add(rp.getName());
 			maxLen = Math.max(rp.getName().length(), maxLen);
-		}
+		} 
+		
 		final int fMaxLen = maxLen;
 		Collections.sort(musicList, new Comparator<String>() {
 			@Override

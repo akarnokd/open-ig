@@ -285,7 +285,7 @@ public class ResourceLocator {
 				name = name.substring(0, name.length() - 1);
 			}
 			out.type = type;
-			out.name = name.toLowerCase();
+			out.name = name;
 			return true;
 		}
 		return false;
