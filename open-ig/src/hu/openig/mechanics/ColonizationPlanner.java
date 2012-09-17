@@ -57,9 +57,21 @@ public class ColonizationPlanner extends Planner {
 		//if low on money and planets, plan for conquest
 		maySpendMoney = (world.money >= 100000 || world.global.planetCount > 2);
 		
-		if (world.researchRequiresColonization || checkEnemyExpansion()) {
+		boolean rq = world.researchRequiresColonization;
+		boolean exp = checkEnemyExpansion();
+		boolean col = checkColonizersReady();
+		if (rq || exp || col) { 
 			conquerMorePlanets();
 		}
+	}
+	/**
+	 * Check if we have colonizers in inventory or in fleet.
+	 * @return true if colonizers can be activated
+	 */
+	boolean checkColonizersReady() {
+		return world.inventoryCount("ColonyShip").first > 0
+				|| !findFleetsFor(FleetTask.COLONIZE, hasColonyShip).isEmpty()
+				|| !findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip).isEmpty();
 	}
 	/**
 	 * Check if enemies have more planets then we have.

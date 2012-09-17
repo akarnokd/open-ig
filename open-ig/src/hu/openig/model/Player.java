@@ -116,7 +116,7 @@ public class Player {
 	/** If non-null, it represents the rectangle where the explorers should not go outside. */
 	public Rectangle explorationOuterLimit;
 	/** The colonization limit, -1 means unlimited. */
-	public int colonizationLimit;
+	public int colonizationLimit = -1;
 	/** The limit where the AI considers attacking the other party. */
 	public int warThreshold = 45;
 	/** The negotiation offers from players. */
