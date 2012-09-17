@@ -14,6 +14,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.Labels;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishAIMode;
@@ -1133,13 +1134,16 @@ public class SkirmishScreen extends ScreenBase {
 		
 		XElement xplayers = rl.getXML(def.players);
 		
+		Labels lbl = new Labels();
+		lbl.load(rl, def.name);
+		
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
 			SkirmishPlayer sp = new SkirmishPlayer();
 			
 			sp.originalId = xplayer.get("id");
 			sp.race = xplayer.get("race");
-			sp.name = get(xplayer.get("name") + ".short");
-			sp.description = get(xplayer.get("name"));
+			sp.name = lbl.get(xplayer.get("name") + ".short");
+			sp.description = lbl.get(xplayer.get("name"));
 			sp.iconRef = xplayer.get("icon");
 			sp.icon = rl.getImage(sp.iconRef);
 			sp.color = (int)Long.parseLong(xplayer.get("color"), 16);

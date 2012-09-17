@@ -675,7 +675,7 @@ public abstract class Planner {
 			Collections.shuffle(planets);
 			// try building one somewhere randomly
 			for (final AIPlanet planet : planets) {
-				if (planet.findLocation(ms) != null) {
+				if (!planet.statistics.constructing && planet.findLocation(ms) != null) {
 					world.money -= ms.cost;
 					add(new Action0() {
 						@Override
