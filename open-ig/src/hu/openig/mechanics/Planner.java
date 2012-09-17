@@ -573,6 +573,15 @@ public abstract class Planner {
 		return w.env.labels().get(value);
 	}
 	/**
+	 * Returns the given formated label.
+	 * @param value the label
+	 * @param params the parameters
+	 * @return the translation
+	 */
+	public String format(String value, Object... params) {
+		return w.env.labels().format(value, params);
+	}
+	/**
 	 * Find fleets for the specific tasks.
 	 * @param forTask the target task, any lower priority fleets will be found
 	 * @param filter optional filter for fleet properties

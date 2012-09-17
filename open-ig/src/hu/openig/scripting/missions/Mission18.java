@@ -187,7 +187,7 @@ public class Mission18 extends Mission {
 			if (planet.id.startsWith("Garthog")) {
 				Planet ach = planet("Achilles");
 				// create a fleet to colonize the planet, for convenience
-				Fleet f = createFleet(label("Empire.colonizer_fleet"), player, ach.x, player.explorationOuterLimit.y - 5);
+				Fleet f = createFleet(format("colonizer_fleet", player.shortName), player, ach.x, player.explorationOuterLimit.y - 5);
 				f.addInventory(research("ColonyShip"), 1);
 				f.moveTo(planet);
 				f.task = FleetTask.SCRIPT;

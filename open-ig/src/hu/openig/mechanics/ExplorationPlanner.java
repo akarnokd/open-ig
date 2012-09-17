@@ -368,7 +368,7 @@ public class ExplorationPlanner extends Planner {
 				@Override
 				public void invoke() {
 					if (deploy.planet.owner.inventoryCount(fwhat) > 0) {
-						Fleet f = controls.actionCreateFleet(w.env.labels().get(p.id + ".explorer_fleet"), deploy.planet);
+						Fleet f = controls.actionCreateFleet(format("explorer_fleet", p.shortName), deploy.planet);
 						f.addInventory(fwhat, 1);
 						f.upgradeAll();
 						f.owner.changeInventoryCount(fwhat, -1);
