@@ -167,7 +167,6 @@ public class BuildingModel {
 				b.minimapTiles = bmt;
 				
 				XElement gfx = building.childElement("graphics");
-				String pattern = gfx.get("base");
 				for (XElement r : gfx.childrenWithName("tech")) {
 					final TileSet ts = new TileSet();
 					
@@ -175,7 +174,7 @@ public class BuildingModel {
 					final int width = Integer.parseInt(r.get("width"));
 					final int height = Integer.parseInt(r.get("height"));
 					
-					final String normalImg = String.format(pattern, rid);
+					final String normalImg = r.get("image");
 					final String normalLight = normalImg + "_lights";
 					final String damagedImg = normalImg + "_damaged";
 					final String previewImg = normalImg + "_mini";

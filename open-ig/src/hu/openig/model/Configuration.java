@@ -34,7 +34,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.097";
+	public static final String VERSION = "0.95.098";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -405,6 +405,19 @@ public class Configuration {
 		List<String> result = new ArrayList<String>();
 		if (new File("audio").exists()) {
 			result.add("audio");
+		}
+		File dlc = new File("dlc");
+		if (dlc.exists()) {
+			File[] dlcs = dlc.listFiles();
+			if (dlcs != null) {
+				TreeSet<String> upgrades = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+				for (File f : dlcs) {
+					if (f.getName().endsWith(".zip") || f.isDirectory()) {
+						upgrades.add("dlc/" + f.getName());
+					}
+				}
+				result.addAll(upgrades);
+			}
 		}
 		if (new File("data").exists()) {
 			result.add("data");

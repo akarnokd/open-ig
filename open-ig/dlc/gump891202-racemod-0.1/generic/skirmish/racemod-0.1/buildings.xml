@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<buildings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation='../../schemas/buildings.xsd'>
+<buildings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation='../../../../../data/generic/schemas/buildings.xsd'>
   <building id='ColonyHub' name='buildings.colony_hub'>
     <graphics>
       <tech id='human' width='8' height='7' image='colony/buildings/human/colony_hub'/>
@@ -548,6 +548,13 @@
   <building name='buildings.traders_spaceport' id='TradersSpaceport'>
     <graphics>
       <tech id='human' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='garthog' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='morgath' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='sullep' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='ychom' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='dargslan' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='ecalep' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='dribs' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
     </graphics>
     <build limit='1' kind='Economic' cost='10000'/>
     <operation>
@@ -589,6 +596,8 @@
   <building name='buildings.bank' id='Bank'>
     <graphics>
       <tech id='human' height='4' width='3' image='colony/buildings/human/bank'/>
+      <tech id='ychom' height='4' width='3' image='colony/buildings/human/bank'/>
+      <tech id='ecalep' height='4' width='3' image='colony/buildings/human/bank'/>
     </graphics>
     <build limit='1' kind='Economic' cost='16000'/>
     <operation>
@@ -1014,6 +1023,13 @@
   <building name='buildings.church' id='Church'>
     <graphics>
       <tech id='human' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='garthog' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='morgath' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='sullep' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='ychom' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='dargslan' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='ecalep' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='dribs' height='3' width='3' image='colony/buildings/human/church'/>
     </graphics>
     <build limit='*' kind='Social' cost='4000'/>
     <operation>
