@@ -28,7 +28,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.95.097'>
+	<module id='Game' version='0.95.098'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -45,7 +45,7 @@
 			<desc lang='de'>Beta + Skirmish.</desc>
 			<desc lang='en'>Beta + Skirmish.</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.097.jar' sha1='2b7e6ad8ab22052364e8e60a1719bb0d5560c531'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.098.jar' sha1='c717cd0701c966b01dbeaaf2c521f76d467e003d'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120828a2.zip' sha1='99e6dd3652989a21cfdb10334c6687b9567e29b4'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120823a.zip' sha1='d5b8ea09b82e492b7cb395dc22623bdd8c19917a'/>
 

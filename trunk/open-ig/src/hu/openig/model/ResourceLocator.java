@@ -249,37 +249,46 @@ public class ResourceLocator {
 			return;
 		}
 		rp.language = name.substring(0, idx);
-		int idx2 = name.indexOf('.');
-		
-		String type = "";
-		if (idx2 > 0) {
-			type = name.substring(idx2 + 1).toLowerCase();
-			rp.name = name.substring(idx + 1, idx2);
-		} else {
-			rp.name = name.substring(idx + 1);
-		}
 		
 		rp.fileName = name;
 		
-		if ("png".equals(type) || "img".equals(type)) {
-			rp.type = ResourceType.IMAGE;
-		} else
-		if ("wav.raw".equals(type) || "wav".equals(type) || "ogg".equals(type)) {
-			rp.type = ResourceType.AUDIO;
-		} else
-		if ("sub".equals(type)) {
-			rp.type = ResourceType.SUBTITLE;
-		} else
-		if ("ani.gz".equals(type)) {
-			rp.type = ResourceType.VIDEO;
-		} else 
-		if ("xml".equals(type)) {
-			rp.type = ResourceType.DATA;
-		} else {
-			rp.type = ResourceType.OTHER;
-		}
+		name = name.substring(idx + 1);
 		
+		if (!setNameType(name, "png", ResourceType.IMAGE, rp)) {
+			if (!setNameType(name, "wav", ResourceType.AUDIO, rp)) {
+				if (!setNameType(name, "ogg", ResourceType.AUDIO, rp)) {
+					if (!setNameType(name, "sub", ResourceType.SUBTITLE, rp)) {
+						if (!setNameType(name, "ani.gz", ResourceType.VIDEO, rp)) {
+							if (!setNameType(name, "xml", ResourceType.DATA, rp)) {
+								rp.name = name;
+								rp.type = ResourceType.OTHER;
+							}
+						}
+					}
+				}
+			}
+		}
 		addResourcePlace(rp);
+	}
+	/**
+	 * Set the name and type if the filename matches the given extension.
+	 * @param name the filename
+	 * @param ext the extension
+	 * @param type the type
+	 * @param out the output
+	 * @return true if matches
+	 */
+	static boolean setNameType(String name, String ext, ResourceType type, ResourcePlace out) {
+		if (name.toLowerCase().endsWith(ext.toLowerCase())) {
+			name = name.substring(0, name.length() - ext.length());
+			if (name.endsWith(".")) {
+				name = name.substring(0, name.length() - 1);
+			}
+			out.type = type;
+			out.name = name.toLowerCase();
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * @param rp add a resource place.
