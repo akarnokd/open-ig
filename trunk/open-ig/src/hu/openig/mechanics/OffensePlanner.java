@@ -158,7 +158,7 @@ public class OffensePlanner extends Planner {
 		add(new Action0() {
 			@Override
 			public void invoke() {
-				Fleet f = controls.actionCreateFleet(w.env.labels().get(p.id + ".fleet"), spaceport);
+				Fleet f = controls.actionCreateFleet(format("fleet", p.shortName), spaceport);
 				if (!fighters.isEmpty()) {
 					ResearchType rt = fighters.get(0);
 					if (f.owner.inventoryCount(rt) > 0) {
