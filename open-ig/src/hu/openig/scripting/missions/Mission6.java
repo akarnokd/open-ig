@@ -197,7 +197,7 @@ public class Mission6 extends Mission {
 	void createAttackers() {
 		Planet from = planet("Achilles");
 		Player garthog = player("Garthog");
-		Fleet f = createFleet(label("Garthog.fleet"), garthog, from.x + 20, from.y + 10);
+		Fleet f = createFleet(format("fleet", garthog.shortName), garthog, from.x + 20, from.y + 10);
 		// --------------------------------------------------
 		f.addInventory(research("GarthogFighter"), 10);
 		equipFully(f.addInventory(research("GarthogDestroyer"), 3));

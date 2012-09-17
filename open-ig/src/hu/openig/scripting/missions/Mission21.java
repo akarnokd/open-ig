@@ -159,7 +159,7 @@ public class Mission21 extends Mission {
 		
 		Player g = player("Garthog");
 		
-		Fleet gf = createFleet(label("Garthog.fleet"), g, f.x + 3, f.y + 3);
+		Fleet gf = createFleet(format("fleet", g.shortName), g, f.x + 3, f.y + 3);
 		
 		// ----------------------------
 

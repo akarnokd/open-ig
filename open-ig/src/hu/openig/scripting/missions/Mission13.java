@@ -148,7 +148,7 @@ public class Mission13 extends Mission {
 	void createGarthog() {
 		Planet g1 = planet("Garthog 1");
 		Player g = garthog();
-		Fleet f = createFleet(label("Garthog.fleet"), g, g1.x, g1.y);
+		Fleet f = createFleet(format("fleet", g.shortName), g, g1.x, g1.y);
 
 		//---------------------------------
 		
