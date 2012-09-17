@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
-<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../schemas/definition.xsd">
+<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../data/generic/schemas/definition.xsd">
 	<texts language='hu'>
 		<title>Gummp891202 Race Mod</title>
 		<description>Gummp891202 Race Mod, felturbózott idegen technológiákkal, kifejezetten egyéni játékra.</description>
@@ -24,4 +24,23 @@
 	<walks>campaign/main/walks</walks>
 	<scripting>skirmish/racemod-0.1/scripting</scripting>
 	<chats>campaign/main/chat</chats>
+	<parameters 
+		groundRadarUnitSize="35" 
+		fleetRadarUnitSize="25" 
+		researchSpeed="8" 
+		productionUnit="250" 
+		constructionSpeed="20" 
+		constructionCost="20" 
+		repairSpeed="10" 
+		repairCost="2" 
+		costToHitpoints="10" 
+		nearbyDistance="10" 
+		simulationRatio="4" 
+		fleetSpeed="0.016" 
+		stationLimit="3" 
+		battleshipLimit="3" 
+		fighterLimit="30" 
+		mediumshipLimit="25"
+		radarShareLimit="80"
+	/>
 </definition>
