@@ -259,9 +259,12 @@ public class AttackPlanner extends Planner {
 				}
 				DiplomaticRelation dr = world.relations.get(p.owner);
 				if (dr != null && dr.full && !dr.strongAlliance) {
-					if (dr.value < this.p.warThreshold && !hasActiveAlliance(dr.alliancesAgainst)) {
-						candidates.add(p);
-						ps.add(p.owner);
+					if (dr.value < this.p.warThreshold 
+							&& !hasActiveAlliance(dr.alliancesAgainst)) {
+						if (planetValue(p) > 0) {
+							candidates.add(p);
+							ps.add(p.owner);
+						}
 					}
 				}
 			}
@@ -342,7 +345,7 @@ public class AttackPlanner extends Planner {
 	 */
 	public static double planetValue(AIPlanet p) {
 		if (p.knowledge == PlanetKnowledge.OWNER) {
-			return 0;
+			return 1;
 		}
 		double v = 0;
 		if (p.knowledge.ordinal() >= PlanetKnowledge.STATIONS.ordinal()) {
