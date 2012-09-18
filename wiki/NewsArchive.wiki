@@ -4,6 +4,18 @@
 
 = Recent =
 
+== September, 2012 ==
+
+*September 18, 2012*
+
+We have, again, entered into a slow-paced development phase. Expect only minor updates and bugfixes only, no "game changer" modifications for a month at least. I'll try to push out a simple campaign editor within 2 weeks.
+
+If you haven't filled out the forms, please do so:
+
+[https://docs.google.com/spreadsheet/viewform?formkey=dE9uSTQ5RUlNUS14MTBzNmRRallOSlE6MQ#gid=0 English form]
+
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/hungarian.png' alt='Hungarian flag' width='32'/>[https://docs.google.com/spreadsheet/viewform?formkey=dHlxTFFPVHo3NmtQQlJJdW1WSkloQkE6MA#gid=0 Magyar űrlap]
+
 == August, 2012 ==
 
 *August 22, 2012*
