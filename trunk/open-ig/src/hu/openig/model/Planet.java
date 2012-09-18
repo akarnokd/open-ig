@@ -626,6 +626,7 @@ public class Planet implements Named, Owned, HasInventory {
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
+			pii.hp = owner.world.getHitpoints(type, owner);
 			pii.createSlots();
 			pii.shield = Math.max(0, pii.shieldMax());
 			
