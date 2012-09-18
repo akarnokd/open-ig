@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<players xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../data/generic/schemas/players.xsd">
+<players>
 	<player id='Empire' race='human' name='players.empire'
 		icon='starmap/fleets/human_fleet'
 		color='FFFCB000'
@@ -28,7 +28,7 @@
 		color='FFFC2828'
 		picture='database/garthog'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
@@ -36,11 +36,12 @@
 		
 	>
 		
-		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='PhoodFactory' list=''/>
 		</available>
+		<inventory id='ColonyShip' count='2'/>
 		
+		 -->
 	</player>
 	
 	<player id='Ychom' race='ychom' name='players.ychom'
@@ -48,7 +49,7 @@
 		color='FF00FFFF'
 		picture='database/ychom'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
@@ -56,31 +57,32 @@
 		
 	>
 		
-		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='PhoodFactory' list=''/>
 		</available>
+		<inventory id='ColonyShip' count='2'/>
 		
+		 -->
 	</player>
 	<player id='Morgath' race='morgath' name='players.morgath'
 		icon='starmap/fleets/morgath_fleet'
 		color='FFFCFCFC'
 		picture='database/morgath'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
-		ai='NONE'
-		user='true'
 		diplomacy-head='diplomacy/dipfej1'
 		
 	>
 		
-		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='PhoodFactory' list=''/>
 		</available>
+		<inventory id='ColonyShip' count='2'/>
+		
+		 -->
 	</player>
 	
 	<player id='Dribs' race='dribs' name='players.dribs'
@@ -88,7 +90,7 @@
 		color='FFFC00FC'
 		picture='database/drib'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
@@ -96,10 +98,12 @@
 		
 	>
 		
-		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='PhoodFactory' list=''/>
 		</available>
+		<inventory id='ColonyShip' count='2'/>
+		
+		 -->
 	</player>
 	
 	<player id='Sullep' race='sullep' name='players.sullep'
@@ -107,7 +111,9 @@
 		color='FFFCFC58'
 		picture='database/sullep'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
+		user='true'
+		ai='NONE'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
@@ -115,10 +121,12 @@
 		
 	>
 		
-		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='PhoodFactory' list=''/>
 		</available>
+		<inventory id='ColonyShip' count='2'/>
+		
+		 -->
 	</player>
 	
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
@@ -126,7 +134,7 @@
 		color='FF009800'
 		picture='database/dargslan'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
@@ -134,10 +142,12 @@
 		
 	>
 		
-		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='PhoodFactory' list=''/>
 		</available>
+		<inventory id='ColonyShip' count='2'/>
+		
+		 -->
 	</player>
 	
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
@@ -145,7 +155,7 @@
 		color='FFB0FC6C'
 		picture='database/ecalep'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
@@ -153,10 +163,12 @@
 		
 	>
 		
-		<inventory id='ColonyShip' count='2'/>
 		<available>
 			<type id='PhoodFactory' list=''/>
 		</available>
+		<inventory id='ColonyShip' count='2'/>
+		
+		 -->
 	</player>
 	
 	<player id='FreeTraders' race='human' name='players.free_traders'
@@ -164,7 +176,7 @@
 		color='FF3C3CFC'
 		picture='database/freetraders'
 		money='1000000'
-		initial-stance='40'
+		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
 		colonization-limit='-1'
@@ -175,10 +187,11 @@
 		
 		<inventory id='ColonyShip' count='2'/>
 		
+		 -->
 	</player>
 	<player id='archyet' race='human' name='players.archyet'
 		icon='starmap/fleets/extra_4_fleet'
-		color='FFD67FFF'
+		color='D67FFF'
 		picture='database/freenations'
 		money='1000000'
 		initial-stance='10'

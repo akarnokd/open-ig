@@ -315,20 +315,20 @@
 		<hitpoints id="InversionShield" space="8000" ground="1000"/>
 		<hitpoints id="HyperShield" space="30000" ground="2000"/>
 		<hitpoints id="IonProjector" space="6500" ground="1000"/>
-		<hitpoints id="PlasmaProjector" space="12500" ground="2000"/>
-		<hitpoints id="ParticleProjector" space="18500" ground="3000"/>
-		<hitpoints id="MesonProjector" space="25000" ground="5000"/>
+		<hitpoints id="PlasmaProjector" space="15500" ground="2000"/>
+		<hitpoints id="ParticleProjector" space="20500" ground="3000"/>
+		<hitpoints id="MesonProjector" space="27500" ground="5000"/>
 		<hitpoints id="Barracks" space="10000" ground="900"/>
 		<hitpoints id="Fortress" space="20000" ground="2000"/>
 		<hitpoints id="Stronghold" space="30000" ground="2500"/>
 		<!-- Individual Fortress HP's for Non Human races -->
-		<hitpoints id="Fortress" player="Garthog" space="20000" ground="1000"/>
+		<hitpoints id="Fortress" player="Garthog" space="20000" ground="2000"/>
 		<hitpoints id="Fortress" player="Morgath" space="20000" ground="2000"/>
 		<hitpoints id="Fortress" player="Sullep" space="20000" ground="2000"/>
 		<hitpoints id="Fortress" player="Ychom" space="20000" ground="2000"/>
 		<hitpoints id="Fortress" player="Dribs" space="20000" ground="2000"/>
-		<hitpoints id="Fortress" player="Dargslan" space="20000" ground="2500"/>
-		<hitpoints id="Fortress" player="Ecalep" space="20000" ground="2500"/>
+		<hitpoints id="Fortress" player="Dargslan" space="20000" ground="2000"/>
+		<hitpoints id="Fortress" player="Ecalep" space="20000" ground="2000"/>
 		<!-- 
 		<hitpoints id='Building_name' player='racename' space='amount_spaceHP' ground='amount_groundHP'/>
 		 -->
