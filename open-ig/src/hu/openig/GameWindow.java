@@ -1588,6 +1588,8 @@ public class GameWindow extends JFrame implements GameControls {
 		xworld.set("starmap-fleets", allScreens.starmap.showFleetButton.selected);
 		xworld.set("starmap-names", allScreens.starmap.showNames());
 		
+		xworld.set("bridge-send", allScreens.bridge.sendSelected);
+		xworld.set("bridge-receive", allScreens.bridge.receiveSelected);
 		
 		config.saveProperties(xworld);
 	}
@@ -1630,6 +1632,9 @@ public class GameWindow extends JFrame implements GameControls {
 
 		commons.music.setVolume(config.musicVolume);
 		commons.music.setMute(config.muteMusic);
+		
+		allScreens.bridge.sendSelected = xworld.getBoolean("bridge-send", false);
+		allScreens.bridge.receiveSelected = xworld.getBoolean("bridge-receive", true);
 	}
 	@Override
 	public Screens primary() {
