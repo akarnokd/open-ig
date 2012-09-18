@@ -3135,6 +3135,9 @@ public class World {
 				f.x = pl.x + r * Math.cos(a);
 				f.y = pl.y + r * Math.sin(a);
 			}
+			if (skirmishDefinition.initialOrbitalFactories > 0) {
+				pl.changeInventory(researches.get("OrbitalFactory"), p, 1);
+			}
 		}
 		if (skirmishDefinition.placeColonyHubs) {
 			for (Planet pl : planets.values()) {
