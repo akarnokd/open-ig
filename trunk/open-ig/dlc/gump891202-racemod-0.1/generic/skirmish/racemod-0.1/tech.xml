@@ -380,13 +380,13 @@
 		<slot-fixed id="Laser" count="1" item="Laser1"/>
 	</item>
 	<item id="DargslanDestroyer" name="tech.dargslandestroyer.name" long-name="tech.dargslandestroyer.longname" description="tech.dargslandestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/dargslan_destroyer" factory="spaceship" research-cost="44000" production-cost="22000" level="0" mech="1"  comp="1" mil="2" race="dargslan" index="0">
-		<slot id="laser1" x="20" y="20" width="20" height="10" max="6" items="Laser1, Laser2, Laser3"/>
+		<slot id="laser1" x="20" y="20" width="20" height="10" max="6" items="Laser1, Laser2"/>
 		<slot id="hyperdrive" x="80" y="20" width="20" height="20" max="1" items="DargslanHyperDrive1, DargslanHyperDrive2"/>
 		<slot id="cannon" x="50" y="20" width="20" height="20" max="4" items="IonCannon, PlasmaCannon, ParticleCannon"/>
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2"/>
 	</item>
 	<item id="DargslanDestroyer2" name="tech.dargslandestroyer2.name" long-name="tech.dargslandestroyer2.longname" description="tech.dargslandestroyer2.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/dargslan_destroyer" factory="spaceship" research-cost="65000" production-cost="40000" requires="Laser3, DargslanHyperDrive3" mech="4" comp="3" ai="2" mil="5" level="2" race="dargslan" index="1">
-		<slot id="laser1" x="20" y="20" width="20" height="10" max="8" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser1" x="20" y="20" width="20" height="10" max="8" items="Laser1, Laser2, Laser3"/>
 		<slot id="shield" x="50" y="20" width="20" height="10" max="1" items="Shield1"/>
 		<slot id="cannon" x="80" y="20" width="20" height="10" max="10" items="IonCannon, PlasmaCannon, ParticleCannon"/>
 		<slot id="hyperdrive" x="20" y="40" width="20" height="10" max="1" items="DargslanHyperDrive1, DargslanHyperDrive2, DargslanHyperDrive3, DargslanHyperDrive4"/>
@@ -478,31 +478,33 @@
 		<slot id="shield" x="50" y="20" width="20" height="10" max="1" items="Shield1, Shield2"/>
 		<slot id="laser1" x="20" y="20" width="20" height="10" max="6" items="Laser1, Laser2, Laser3"/>
 		<slot id="hyperdrive" x="80" y="20" width="20" height="20" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4"/>
+		<slot id="radar" x="50" y="40" width="20" height="20" max="1" items="Radar1, Radar2"/>
 	</item>
 	<item id="GarthogDestroyer2" name="tech.garthogdestroyer2.name" long-name="tech.garthogdestroyer2.longname" description="tech.garthogdestroyer2.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer" factory="spaceship" research-cost="40000" production-cost="19000" level="2" race="garthog" mech="2" comp="2" ai="2" mil="3" index="1">
-		<slot id="laser1" x="20" y="20" width="20" height="10" max="12" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser1" x="20" y="20" width="20" height="10" max="10" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="shield" x="50" y="20" width="20" height="10" max="1" items="Shield1, Shield2"/>
-		<slot id="laser2" x="80" y="20" width="20" height="10" max="10" items="Laser1, Laser2, Laser3"/>
+		<slot id="laser2" x="80" y="20" width="20" height="10" max="8" items="Laser1, Laser2, Laser3"/>
 		<slot id="hyperdrive" x="20" y="40" width="20" height="10" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4"/>
+		<slot id="radar" x="50" y="40" width="20" height="20" max="1" items="Radar1, Radar2"/>
 	</item>
 	<item id="GarthogDestroyer3" name="tech.garthogdestroyer3.name" long-name="tech.garthogdestroyer3.longname" description="tech.garthogdestroyer3.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer" factory="spaceship" research-cost="55000" production-cost="26000" mech="6" comp="5" ai="2" mil="5" level="4" race="garthog" index="2">
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2"/>
 		<slot id="shield" x="50" y="40" width="20" height="10" max="1" items="Shield1, Shield2"/>
-		<slot id="laser1" x="20" y="20" width="20" height="10" max="9" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser1" x="20" y="20" width="20" height="10" max="8" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="hyperdrive" x="20" y="60" width="20" height="10" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5"/>
-		<slot id="laser2" x="50" y="20" width="20" height="10" max="9" items="Laser1, Laser2, Laser3, Laser4"/>
-		<slot id="laser3" x="80" y="20" width="20" height="10" max="12" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser2" x="50" y="20" width="20" height="10" max="8" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser3" x="80" y="20" width="20" height="10" max="10" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="cannon" x="20" y="40" width="20" height="10" max="4" items="IonCannon, PlasmaCannon"/>
 	</item>
 	<item id="MorgathDestroyer" name="tech.morgathdestroyer.name" long-name="tech.morgathdestroyer.longname" description="tech.morgathdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/morgath_destroyer" factory="spaceship" research-cost="40000" production-cost="11500" level="0" mech="1"  comp="1" mil="1" race="morgath" index="0">
 		<slot id="shield" x="50" y="20" width="20" height="10" max="1" items="Shield1"/>
-		<slot id="laser" x="20" y="20" width="20" height="10" max="3" items="Laser1"/>
+		<slot id="laser" x="20" y="20" width="20" height="10" max="6" items="Laser1"/>
 		<slot id="cannon" x="80" y="20" width="20" height="10" max="2" items="IonCannon, PlasmaCannon"/>
 		<slot id="hyperdrive" x="20" y="40" width="20" height="20" max="1" items="HyperDrive1"/>
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2"/>
 	</item>
 	<item id="MorgathDestroyer2" name="tech.morgathdestroyer2.name" long-name="tech.morgathdestroyer2.longname" description="tech.morgathdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/morgath_destroyer" factory="spaceship" research-cost="45000" production-cost="18500" requires="Laser2" mech="3" comp="2" ai="2" mil="4" level="2" race="morgath" index="1">
-		<slot id="laser" x="20" y="20" width="20" height="10" max="3" items="Laser1, Laser2"/>
+		<slot id="laser" x="20" y="20" width="20" height="10" max="3" items="Laser1, Laser2, Laser3"/>
 		<slot id="shield" x="50" y="20" width="20" height="10" max="1" items="Shield1, Shield2"/>
 		<slot id="cannon" x="80" y="20" width="20" height="10" max="6" items="IonCannon, PlasmaCannon"/>
 		<slot id="cannon1" x="80" y="20" width="20" height="10" max="6" items="IonCannon, PlasmaCannon"/>
@@ -512,10 +514,10 @@
 	<item id="MorgathDestroyer3" name="tech.morgathdestroyer3.name" long-name="tech.morgathdestroyer3.longname" description="tech.morgathdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/morgath_destroyer" factory="spaceship" research-cost="62500" production-cost="34000" requires="Radar2, HyperDrive4, ParticleCannon" civil="1" mech="6" comp="5" ai="3" mil="5" level="4" race="morgath" index="2">
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2"/>
 		<slot id="shield" x="50" y="40" width="20" height="10" max="1" items="Shield1, Shield2, Shield3, Shield4"/>
-		<slot id="laser1" x="20" y="20" width="20" height="10" max="6" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser1" x="20" y="20" width="20" height="10" max="8" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="hyperdrive" x="20" y="60" width="20" height="10" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5"/>
 		<slot id="cannon" x="50" y="20" width="20" height="10" max="8" items="IonCannon, PlasmaCannon"/>
-		<slot id="cannon1" x="80" y="20" width="20" height="10" max="10" items="PlasmaCannon, ParticleCannon"/>
+		<slot id="cannon1" x="80" y="20" width="20" height="10" max="12" items="PlasmaCannon, ParticleCannon"/>
 		<slot id="cannon2" x="20" y="40" width="20" height="10" max="3" items="IonCannon, PlasmaCannon, ParticleCannon, DestructCannon"/>
 	</item>
 	<item id="PirateDestroyer" name="tech.piratedestroyer.name" long-name="tech.piratedestroyer.longname" description="tech.piratedestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/pirate_destroyer" factory="spaceship" research-cost="10000" production-cost="12000" level="0" race="pirates" index="0">
@@ -526,7 +528,7 @@
 		was not any in the original game. -->
 	<item id="YchomDestroyer" name="tech.ychomdestroyer.name" long-name="tech.ychomdestroyer.longname" description="tech.ychomdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/ychom_destroyer" factory="spaceship" research-cost="16000" production-cost="13500" requires="OrbitalFactory" mech="1" comp="1" mil="1" level="0" race="ychom" index="0">
 		<slot id="shield" x="50" y="20" width="20" height="10" max="1" items="Shield1, Shield2"/>
-		<slot id="laser" x="20" y="20" width="20" height="10" max="3" items="Laser1"/>
+		<slot id="laser" x="20" y="20" width="20" height="10" max="4" items="Laser1, Laser2"/>
 		<slot id="cannon" x="80" y="20" width="20" height="10" max="3" items="IonCannon"/>
 		<slot id="hyperdrive" x="20" y="40" width="20" height="20" max="1" items="HyperDrive1, HyperDrive2"/>
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2"/>
@@ -577,7 +579,7 @@
 	</item>
 	<item id="DargslanBattleship3" name="tech.dargslanbattleship3.name" long-name="tech.dargslanbattleship3.longname" description="tech.dargslanbattleship3.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/dargslan_battleship" factory="spaceship" research-cost="220000" production-cost="400000" civil="5" mech="5" comp="5" ai="5" mil="9" level="5" race="dargslan" index="2">
 		<slot id="bomb" x="20" y="40" width="20" height="10" max="9" items="Bomb1, Bomb2"/>
-		<slot id="cannon1" x="20" y="20" width="20" height="10" max="11" items="IonCannon, PlasmaCannon, ParticleCannon"/>
+		<slot id="cannon1" x="20" y="20" width="20" height="10" max="9" items="IonCannon, PlasmaCannon, ParticleCannon"/>
 		<slot id="cannon" x="20" y="80" width="20" height="10" max="15" items="IonCannon, PlasmaCannon, ParticleCannon, MesonCannon"/>
 		<slot id="rocket" x="80" y="20" width="20" height="10" max="8" items="Rocket1, Rocket2, MultiHeadedRocket"/>
 		<slot id="storage" x="50" y="40" width="20" height="10" max="1" items="Storage1, Storage2"/>
@@ -591,7 +593,7 @@
 	</item>
 	<item id="DribsBattleship" name="tech.dribsbattleship.name" long-name="tech.dribsbattleship.longname" description="tech.dribsbattleship.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/dribs_battleship" factory="spaceship" research-cost="100000" production-cost="85000" civil="1" mech="1" comp="1" ai="1" mil="1" level="3" race="dribs" index="0">
 		<slot id="bomb" x="20" y="40" width="20" height="10" max="6" items="Bomb1, Bomb2"/>
-		<slot id="cannon1" x="20" y="20" width="20" height="10" max="4" items="IonCannon, PlasmaCannon, ParticleCannon"/>
+		<slot id="cannon1" x="20" y="20" width="20" height="10" max="8" items="IonCannon, PlasmaCannon, ParticleCannon"/>
 		<slot id="rocket" x="80" y="20" width="20" height="10" max="6" items="Rocket1"/>
 		<slot id="storage" x="50" y="40" width="20" height="10" max="1" items="Storage1"/>
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2, Radar3"/>
@@ -618,19 +620,19 @@
 	<item id="DribsBattleship3" name="tech.dribsbattleship3.name" long-name="tech.dribsbattleship3.longname" description="tech.dribsbattleship3.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/dribs_battleship" factory="spaceship" research-cost="190000" production-cost="210000" civil="4" mech="5" comp="5" ai="5" mil="7" level="5" race="dribs" index="2">
 		<slot id="bomb" x="20" y="40" width="20" height="10" max="6" items="Bomb1, Bomb2"/>
 		<slot id="cannon1" x="20" y="20" width="20" height="10" max="14" items="IonCannon, PlasmaCannon"/>
-		<slot id="cannon" x="20" y="80" width="20" height="10" max="16" items="IonCannon, PlasmaCannon, ParticleCannon, MesonCannon"/>
+		<slot id="cannon" x="20" y="80" width="20" height="10" max="14" items="IonCannon, PlasmaCannon, ParticleCannon, MesonCannon"/>
 		<slot id="rocket" x="80" y="20" width="20" height="10" max="8" items="Rocket1, Rocket2"/>
 		<slot id="storage" x="50" y="40" width="20" height="10" max="1" items="Storage1, Storage2"/>
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2, Radar3"/>
 		<slot id="shield" x="20" y="60" width="20" height="10" max="1" items="Shield1, Shield2, Shield3, Shield4"/>
-		<slot id="laser" x="50" y="20" width="20" height="10" max="26" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser" x="50" y="20" width="20" height="10" max="24" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="hyperdrive" x="50" y="60" width="20" height="10" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDirve5"/>
 		<property name="vehicles" value="10"/>
 		<property name="needsOrbitalFactory" value="true"/>
 	</item>
 	<item id="EcalepBattleship" name="tech.ecalepbattleship.name" long-name="tech.ecalepbattleship.longname" description="tech.ecalepbattleship.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/ecalep_battleship" factory="spaceship" research-cost="110000" production-cost="90000" civil="1" mech="1" comp="1" ai="1" mil="1" level="3" race="ecalep" index="0">
 		<slot id="bomb" x="20" y="40" width="20" height="10" max="4" items="Bomb1, Bomb2"/>
-		<slot id="cannon1" x="20" y="20" width="20" height="10" max="4" items="IonCannon, PlasmaCannon, ParticleCannon"/>
+		<slot id="cannon1" x="20" y="20" width="20" height="10" max="8" items="IonCannon, PlasmaCannon, ParticleCannon"/>
 		<slot id="rocket" x="80" y="20" width="20" height="10" max="6" items="Rocket1, Rocket2, MultiHeadedRocket"/>
 		<slot id="storage" x="50" y="40" width="20" height="10" max="1" items="Storage1"/>
 		<slot id="radar" x="80" y="40" width="20" height="10" max="1" items="Radar1, Radar2, Radar3"/>
@@ -653,7 +655,7 @@
 		<slot id="hyperdrive" x="50" y="80" width="20" height="10" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5"/>
 	</item>
 	<item id="EcalepBattleship3" name="tech.ecalepbattleship3.name" long-name="tech.ecalepbattleship3.longname" description="tech.ecalepbattleship3.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/ecalep_battleship" factory="spaceship" research-cost="200000" production-cost="240000" civil="4" mech="5" comp="5" ai="5" mil="7" level="5" race="ecalep" index="2">
-		<slot id="cannon1" x="20" y="20" width="20" height="10" max="15" items="IonCannon, PlasmaCannon"/>
+		<slot id="cannon1" x="20" y="20" width="20" height="10" max="18" items="IonCannon, PlasmaCannon"/>
 		<slot id="bomb" x="50" y="40" width="20" height="10" max="8" items="Bomb1, Bomb2"/>
 		<slot id="cannon2" x="50" y="20" width="20" height="10" max="12" items="IonCannon, PlasmaCannon, ParticleCannon, MesonCannon"/>
 		<slot id="rocket" x="80" y="40" width="20" height="10" max="14" items="Rocket1, Rocket2, MultiHeadedRocket"/>
@@ -688,8 +690,8 @@
 		<slot id="radar" x="50" y="60" width="20" height="10" max="1" items="Radar1, Radar2, Radar3"/>
 		<slot id="ecm" x="20" y="80" width="20" height="10" max="1" items="ECM1"/>
 		<slot id="shield" x="80" y="60" width="20" height="10" max="1" items="Shield1, Shield2, Shield3"/>
-		<slot id="laser1" x="80" y="20" width="20" height="10" max="20" items="Laser1, Laser2, Laser3, Laser4"/>
-		<slot id="laser2" x="20" y="40" width="20" height="10" max="20" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser1" x="80" y="20" width="20" height="10" max="12" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser2" x="20" y="40" width="20" height="10" max="12" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="hyperdrive" x="50" y="80" width="20" height="10" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5"/>
 		<property name="vehicles" value="9"/>
 		<property name="needsOrbitalFactory" value="true"/>
@@ -703,8 +705,8 @@
 		<slot id="radar" x="20" y="80" width="20" height="10" max="1" items="Radar1, Radar2, Radar3"/>
 		<slot id="ecm" x="50" y="60" width="20" height="10" max="1" items="ECM1, ECM2"/>
 		<slot id="shield" x="80" y="60" width="20" height="10" max="1" items="Shield1, Shield2, Shield3, Shield4"/>
-		<slot id="laser1" x="80" y="20" width="20" height="10" max="25" items="Laser1, Laser2, Laser3, Laser4"/>
-		<slot id="laser2" x="20" y="40" width="20" height="10" max="25" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser1" x="80" y="20" width="20" height="10" max="18" items="Laser1, Laser2, Laser3, Laser4"/>
+		<slot id="laser2" x="20" y="40" width="20" height="10" max="18" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="hyperdrive" x="50" y="80" width="20" height="10" max="1" items="HyperDrive1, HyperDrive2, HyperDrive3, HyperDrive4, HyperDrive5"/>
 		<slot id="ECM" x="80" y="80" width="20" height="10" max="1" items="ECM1"/>
 		<property name="vehicles" value="14"/>

@@ -950,19 +950,6 @@
     </operation>
     <upgrades/>
   </building>
-  <building name='buildings.barracks' id='Barracks'>
-    <graphics>
-      <tech id='human' height='3' width='3' image='colony/buildings/human/barracks'/>
-    </graphics>
-    <build limit='*' kind='Defensive' cost='15000'/>
-    <operation>
-      <resource type='vehicles'>4</resource>
-      <resource type='laser'>2</resource>
-      <resource type='energy'>-1000</resource>
-      <resource type='worker'>-360</resource>
-    </operation>
-    <upgrades/>
-  </building>
   <building name='buildings.fortress' id='Fortress'>
     <graphics>
       <tech id='human' height='3' width='3' image='colony/buildings/human/fortress'/>
@@ -976,7 +963,7 @@
     </graphics>
     <build limit='*' kind='Defensive' cost='30000' research='Fortress'/>
     <operation>
-      <resource type='vehicles'>8</resource>
+      <resource type='vehicles'>4</resource>
       <resource type='laser'>4</resource>
       <resource type='energy'>-1500</resource>
       <resource type='worker'>-530</resource>
@@ -989,7 +976,7 @@
     </graphics>
     <build limit='*' kind='Defensive' cost='50000' research='Stronghold'/>
     <operation>
-      <resource type='vehicles'>12</resource>
+      <resource type='vehicles'>6</resource>
       <resource type='laser'>6</resource>
       <resource type='energy'>-2000</resource>
       <resource type='worker'>-550</resource>
@@ -1014,7 +1001,7 @@
     </graphics>
     <build limit='*' kind='Social' cost='14000' except='desert,frozen,cratered,liquid,neptoplasm'/>
     <operation>
-      <resource type='morale'>10</resource>
+      <resource type='morale'>5</resource>
       <resource type='energy'>-200</resource>
       <resource type='worker'>-100</resource>
     </operation>
@@ -1033,7 +1020,7 @@
     </graphics>
     <build limit='*' kind='Social' cost='4000'/>
     <operation>
-      <resource type='morale'>10</resource>
+      <resource type='morale'>15</resource>
       <resource type='energy'>-100</resource>
       <resource type='worker'>-90</resource>
     </operation>
@@ -1045,7 +1032,7 @@
     </graphics>
     <build limit='*' kind='Social' cost='6300'/>
     <operation>
-      <resource type='morale'>15</resource>
+      <resource type='morale'>5</resource>
       <resource type='energy'>-700</resource>
       <resource type='worker'>-410</resource>
     </operation>
@@ -1054,6 +1041,13 @@
   <building name='buildings.stadium' id='Stadium'>
     <graphics>
       <tech id='human' height='6' width='5' image='colony/buildings/human/stadium'/>
+	  <tech id='garthog' height='6' width='5' image='colony/buildings/human/stadium'/>
+	  <tech id='ychom' height='6' width='5' image='colony/buildings/human/stadium'/>
+	  <tech id='ecalep' height='6' width='5' image='colony/buildings/human/stadium'/>
+	  <tech id='sullep' height='6' width='5' image='colony/buildings/human/stadium'/>
+	  <tech id='dargslan' height='6' width='5' image='colony/buildings/human/stadium'/>
+	  <tech id='morgath' height='6' width='5' image='colony/buildings/human/stadium'/>
+	  <tech id='dribs' height='6' width='5' image='colony/buildings/human/stadium'/>
     </graphics>
     <build limit='*' kind='Social' cost='50000'/>
     <operation>
