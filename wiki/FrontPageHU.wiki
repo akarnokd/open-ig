@@ -15,13 +15,24 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
+*2012 szeptember 18*
+
+Ismét egy lassú fejlesztési fázisba érkeztünk. Csak apró frissítésekre és hibajavításokra lehet számítani az elkövetkező egy hónapban a játékot illetően. Megpróbálok két héten belül kiadni egy egyszerű kampányszerkesztőt.
+
+Ha még nem töltötted ki valamelyik űrlapot, akkor kérlek tedd meg minél hamarabb:
+
+[https://docs.google.com/spreadsheet/viewform?formkey=dE9uSTQ5RUlNUS14MTBzNmRRallOSlE6MQ#gid=0 Angol űrlap]
+
+<img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/hungarian.png' alt='Hungarian flag' width='32'/>[https://docs.google.com/spreadsheet/viewform?formkey=dHlxTFFPVHo3NmtQQlJJdW1WSkloQkE6MA#gid=0 Magyar űrlap]
+
+
 *2012 augusztus 22*
 
 Az Egyedi játékmód már majdnem készen van, viszont a győzelmi feltételeket még nem ellenőrzi a játék. Ezen felül néhány fejlettebb funkció sincs implementálva (pl. osztott radar nézet, rögzített diplomácia, kalóz viselkedés). Ettől függetlenül lehetséges új játékmódot összeállítani, menteni és visszatölteni.
 
 Sajnos az új cimkék még nincsenek lefordítva németre és franciára.
 
-Az új Egyedi játékmód képernyő leírását lásd itt (angolul): [http://open-ig-dev.blogspot.hu/2012/08/some-skirmish-documentation.html Galaxis, Gazdaság and Győzelem] tabs and [http://open-ig-dev.blogspot.hu/2012/08/skirmish-documentation-player-selection.html Játékosok] tab.
+Az új Egyedi játékmód képernyő leírását lásd itt (angolul): [http://open-ig-dev.blogspot.hu/2012/08/some-skirmish-documentation.html Galaxis, Gazdaság and Győzelem] és [http://open-ig-dev.blogspot.hu/2012/08/skirmish-documentation-player-selection.html Játékosok] fül.
 
 Ha az Indító nem venné észre az új verziót, kérlek légy türelemmel. A Google Code sajnos néha valamiért a régi verziót mutatja a web-en, mint ami az SVN-ben megtalálható. Ezen nem tudok változtatni.
 
