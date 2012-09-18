@@ -150,16 +150,40 @@ public class AI implements AIManager {
 //		if (idles.size() == 0) {
 //			return SpacewarAction.CONTINUE;
 //		}
-		Pair<Double, Double> fh = fleetHealth(world.structures(p));
+		List<SpacewarStructure> own = world.structures(p);
+		Pair<Double, Double> fh = fleetHealth(own);
 		double health = fh.first / fh.second;
 		double switchToCostAttack = p.aiDefensiveRatio / (p.aiOffensiveRatio + p.aiDefensiveRatio);
 		double switchToFlee = p.aiSocialRatio() * switchToCostAttack;
 		
-		if (health >= switchToFlee) {
-			defaultAttackBehavior(world, idles, p);				
-			return SpacewarAction.CONTINUE;
+		if (hasWeapons(own)) {
+			if (health >= switchToFlee) {
+				defaultAttackBehavior(world, idles, p);				
+				return SpacewarAction.CONTINUE;
+			}
+		}
+		BattleInfo battle = world.battle();
+		if (battle.attacker.owner == p) {
+			for (SpacewarStructure s : own) {
+				world.flee(s);
+			}
 		}
 		return SpacewarAction.FLEE;
+	}
+	/**
+	 * Check if the structures have any weapons remaining.
+	 * @param structs the structures
+	 * @return true if there is at least one ship with weapons
+	 */
+	public boolean hasWeapons(List<SpacewarStructure> structs) {
+		for (SpacewarStructure s : structs) {
+			for (SpacewarWeaponPort wp : s.ports) {
+				if (wp.count > 0) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	/**
 	 * The default group attack behavior which chooses the in-range enemy or

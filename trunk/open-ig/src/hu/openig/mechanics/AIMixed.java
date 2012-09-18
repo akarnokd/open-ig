@@ -96,7 +96,7 @@ public class AIMixed implements AIManager {
 			List<SpacewarStructure> idles) {
 		SpacewarAction action1 = first.spaceBattle(world, idles);
 		SpacewarAction action2 = second.spaceBattle(world, idles);
-		return Collections.min(Arrays.asList(action1, action2));
+		return Collections.max(Arrays.asList(action1, action2));
 	}
 
 	@Override
