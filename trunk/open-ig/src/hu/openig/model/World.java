@@ -2982,36 +2982,49 @@ public class World {
 	 * @param groups the group mapping
 	 */
 	protected void establishDiplomacy(Map<Player, Integer> groups) {
+		// establish strong alliances and basic enemies
 		for (Player p1 : groups.keySet()) {
 			Integer g1 = groups.get(p1);
 			for (Player p2 : groups.keySet()) {
-				if (p1 != p2 && g1.equals(groups.get(p2))) {
+				Integer g2 = groups.get(p2);
+				if (p1 != p2) {
 					DiplomaticRelation dr = establishRelation(p1, p2);
 					dr.full = true;
-					dr.value = 100;
-					dr.strongAlliance = true;
-					
-					for (Player p3 : groups.keySet()) {
-						if (!groups.get(p3).equals(g1)) {
-							dr.alliancesAgainst.add(p3);
-
-							DiplomaticRelation dr2 = establishRelation(p1, p3);
-							dr2.full = true;
-							switch (skirmishDefinition.initialDiplomaticRelation) {
-							case PEACEFUL:
-								dr2.value = 100;
-								break;
-							case WAR:
-								dr2.value = 0;
-								break;
-							default:
-								dr2.value = p3.initialStance;
-								break;
-							}
+					if (g1.equals(g2)) {
+						dr.value = 100;
+						dr.strongAlliance = true;
+					} else {
+						switch (skirmishDefinition.initialDiplomaticRelation) {
+						case PEACEFUL:
+							dr.value = 100;
+							break;
+						case WAR:
+							dr.value = 0;
+							break;
+						default:
+							dr.value = p2.initialStance;
+							break;
 						}
 					}
 				}
- 			}
+			}
+		}
+		// establish common alliances
+		// establish strong alliances and basic enemies
+		for (Player p1 : groups.keySet()) {
+			Integer g1 = groups.get(p1);
+			for (Player p2 : groups.keySet()) {
+				Integer g2 = groups.get(p2);
+				if (p1 != p2 && g1.equals(g2)) {
+					for (Player p3 : groups.keySet()) {
+						Integer g3 = groups.get(p3);
+						if (!g3.equals(g1)) {
+							DiplomaticRelation dr = getRelation(p1, p2);
+							dr.alliancesAgainst.add(p3);
+						}
+					}
+				}
+			}
 		}
 	}
 	/** Assign players to random planets. */

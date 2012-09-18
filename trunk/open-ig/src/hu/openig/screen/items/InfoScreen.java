@@ -14,6 +14,7 @@ import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BuildingType;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -3799,11 +3800,11 @@ public class InfoScreen extends ScreenBase {
 				maxw = Math.max(maxw, commons.text().getTextWidth(textSize, p.shortName));
 				pl.add(p);
 				if (player().knows(p)) {
-					int s = player().getStance(p);
-					if (s < 10) {
+					DiplomaticRelation dr = world().getRelation(player(), p);
+					if (dr.value <= player().warThreshold && dr.value <= p.warThreshold) {
 						war.add(p);
 					} else
-					if (s > 90) {
+					if (!dr.alliancesAgainst.isEmpty()) {
 						ally.add(p);
 					}
 				}

@@ -12,14 +12,19 @@ import hu.openig.model.Configuration;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +38,9 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 /**
@@ -47,12 +55,15 @@ public final class PackageStuff {
 	/**
 	 * Build the graphics/data patch file.
 	 * @param version the version number in the file
+	 * @return the digest
 	 */
-	static void buildPatch(String version) {
+	static String buildPatch(String version) {
+		String result = "";
+		String fileName = "open-ig-images-" + version + ".zip";
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
-							new FileOutputStream("open-ig-images-" + version + ".zip"), 1024 * 1024));
+							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
 				processDirectory(".\\images\\", ".\\images", zout, null);
@@ -73,52 +84,38 @@ public final class PackageStuff {
 			} finally {
 				zout.close();
 			}
+			result += computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
+		fileName = "open-ig-upgrade-" + version + "2.zip";
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
-							new FileOutputStream("open-ig-upgrade-" + version + "2.zip"), 1024 * 1024));
+							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
 				processDirectory(".\\data\\", ".\\data", zout, null);
 			} finally {
 				zout.close();
 			}
+			result += computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
-	}
-	/**
-	 * Build the map editor with the target version number.
-	 * @param version the target version number
-	 */
-	static void buildMapEditor(String version) {
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
-					new BufferedOutputStream(
-							new FileOutputStream("open-ig-mapeditor-" + version + ".jar"), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory(".\\bin\\", ".\\bin", zout, null);
-				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.mapeditor", zout);
-			} finally {
-				zout.close();
-			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		}
+		return result;
 	}
 	/**
 	 * Build the game's runnable jar.
 	 * @param version the target version
+	 * @return the digest
 	 */
-	static void buildGame(String version) {
+	static String buildGame(String version) {
+		String fileName = "open-ig-" + version + ".jar";
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
-							new FileOutputStream("open-ig-" + version + ".jar"), 1024 * 1024));
+							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
 				processDirectory(".\\bin\\", ".\\bin", zout, new FilenameFilter() {
@@ -140,18 +137,53 @@ public final class PackageStuff {
 			} finally {
 				zout.close();
 			}
+			return computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
+		return "";
+	}
+	/**
+	 * Compute the SHA1 digest of the given file.
+	 * @param fileName the filename
+	 * @return the digest string + the filename
+	 * @throws IOException on error
+	 */
+	static String computeDigest(String fileName) throws IOException {
+		try {
+			DigestInputStream din = new DigestInputStream(new FileInputStream(fileName), MessageDigest.getInstance("SHA1"));
+			try {
+				byte[] buffer = new byte[8192];
+				while (true) {
+					if (din.read(buffer) < 0) {
+						break;
+					}
+				}
+				byte[] digest = din.getMessageDigest().digest();
+				StringBuilder sb = new StringBuilder();
+				for (byte b : digest) {
+					sb.append(String.format("%02X", b & 0xFF));
+				}
+				sb.append(" ").append(fileName).append("\r\n");
+				return sb.toString();
+			} finally {
+				din.close();
+			}
+		} catch (NoSuchAlgorithmException ex) {
+			Exceptions.add(ex);
+		}
+		return "";
 	}
 	/**
 	 * Build the launcher file.
+	 * @return the digest
 	 */
-	static void buildLauncher() {
+	static String buildLauncher() {
+		String fileName = "open-ig-launcher.jar";
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
-							new FileOutputStream("open-ig-launcher.jar"), 1024 * 1024));
+							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
 				processDirectory(".\\bin\\", ".\\bin", zout, new FilenameFilter() {
@@ -191,29 +223,11 @@ public final class PackageStuff {
 			} finally {
 				zout.close();
 			}
+			return computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
-	}
-	/**
-	 * Build the testbed application.
-	 * @param version the version
-	 */
-	static void buildTestbed(String version) {
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
-					new BufferedOutputStream(
-							new FileOutputStream("open-ig-testbed-" + version + ".jar"), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory(".\\bin\\", ".\\bin", zout, null);
-				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.testbed", zout);
-			} finally {
-				zout.close();
-			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		}
+		return "";
 	}
 	/**
 	 * Add the given fileName to the zip stream wiht the given entry name.
@@ -273,6 +287,19 @@ public final class PackageStuff {
 		}
 	}
 	/**
+	 * Append a result line.
+	 * @param area the target text area
+	 * @param line the line
+	 */
+	static void appendLine(final JTextArea area, final String line) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				area.append(line);
+			}
+		});
+	}
+	/**
 	 * @param args no arguments
 	 * @throws Exception ignored
 	 */
@@ -290,12 +317,19 @@ public final class PackageStuff {
 		final JCheckBox cb2 = new JCheckBox("Build launcher", false);
 		final JCheckBox cb3 = new JCheckBox("Build patch", false);
 		
+		final JTextArea text = new JTextArea(6, 50);
+		text.setFont(new Font(Font.MONOSPACED, Font.PLAIN, cb1.getFont().getSize()));
+		text.setColumns(80);
+		final JScrollPane sp = new JScrollPane(text);
+		
+		
 		final JButton run = new JButton("Run");
 		
 		run.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				text.setText("");
 				run.setEnabled(false);
 				final boolean v1 = cb1.isSelected();
 				final boolean v2 = cb2.isSelected();
@@ -308,7 +342,7 @@ public final class PackageStuff {
 							exec.execute(new Runnable() {
 								@Override
 								public void run() {
-									buildGame(Configuration.VERSION);
+									appendLine(text, buildGame(Configuration.VERSION));
 								}
 							});
 						}
@@ -316,7 +350,7 @@ public final class PackageStuff {
 							exec.execute(new Runnable() {
 								@Override
 								public void run() {
-									buildLauncher();
+									appendLine(text, buildLauncher());
 								}
 							});
 						}
@@ -325,7 +359,7 @@ public final class PackageStuff {
 								@Override
 								public void run() {
 									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-									buildPatch(sdf.format(new Date()) + "a");
+									appendLine(text, buildPatch(sdf.format(new Date()) + "a"));
 								}
 							});
 						} 
@@ -345,6 +379,7 @@ public final class PackageStuff {
 		p.add(cb1);
 		p.add(cb2);
 		p.add(cb3);
+		p.add(sp);
 		p.add(run);
 		f.pack();
 		f.setResizable(false);
