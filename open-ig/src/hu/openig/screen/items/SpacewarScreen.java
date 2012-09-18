@@ -3619,21 +3619,35 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		
 		boolean isEnemyFleeing = battle.enemyFlee;
-		SpacewarAction act = SpacewarAction.CONTINUE;
-		act = player().ai.spaceBattle(this, playerIdles);
-		act = nonPlayer().ai.spaceBattle(this, enemyIdles);
+		SpacewarAction act1 = player().ai.spaceBattle(this, playerIdles);
+		SpacewarAction act2 = nonPlayer().ai.spaceBattle(this, enemyIdles);
 		
 		SpacewarScriptResult r = world().scripting.onSpacewarStep(this);
 		
 		for (SoundType st : soundsToPlay) {
 			effectSound(st);
 		}
-		Player winner = act == SpacewarAction.SURRENDER ? player() : checkWinner();
+		Player winner = null;
+		if (act1 == SpacewarAction.FLEE) {
+			retreat.visible = false;
+			confirmRetreat.visible = false;
+			stopRetreat.visible = true;
+			enableSelectedFleetControls();
+		} else
+		if (act1 == SpacewarAction.SURRENDER) {
+			winner = nonPlayer();
+		} else
+		if (act2 == SpacewarAction.SURRENDER) {
+			winner = player();
+		}
 		if (r == SpacewarScriptResult.PLAYER_WIN) {
 			winner = player();
 		} else
 		if (r == SpacewarScriptResult.PLAYER_LOSE) {
 			winner = nonPlayer();
+		}
+		if (winner == null) {
+			winner = checkWinner();
 		}
 		if (winner != null 
 				&& ((explosions.size() == 0 && projectiles.size() == 0)
@@ -4074,7 +4088,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (nonplayerUnits == 0) {
 			return player();
 		}
-		if (stopRetreat.visible && playerRetreatedBeyondScreen(player())) {
+		if (/* stopRetreat.visible && */playerRetreatedBeyondScreen(player())) {
 			return other;
 		} else
 		if (playerRetreatedBeyondScreen(other)) {
