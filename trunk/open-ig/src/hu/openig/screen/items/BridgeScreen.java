@@ -164,6 +164,10 @@ public class BridgeScreen extends ScreenBase {
 	public boolean resumeAfterVideo;
 	/** Indicate if going to test. */
 	public boolean goingToTest;
+	/** Is the receive mode on? */
+	public boolean receiveSelected = true;
+	/** Is the send mode on? */
+	public boolean sendSelected;
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -593,6 +597,8 @@ public class BridgeScreen extends ScreenBase {
 		send.onClick = new Action0() {
 			@Override
 			public void invoke() {
+				sendSelected = true;
+				receiveSelected = false;
 				send.selected = true;
 				receive.selected = false;
 				listOffset = 0;
@@ -603,6 +609,8 @@ public class BridgeScreen extends ScreenBase {
 		receive.onClick = new Action0() {
 			@Override
 			public void invoke() {
+				sendSelected = false;
+				receiveSelected = true;
 				send.selected = false;
 				receive.selected = true;
 				listOffset = 0;
@@ -620,11 +628,11 @@ public class BridgeScreen extends ScreenBase {
 		clearVideoSurface();
 		clearProjectorSurface();
 		
-		send.selected = true;
-		receive.selected = false;
-
 		scrollList(0);
-		
+
+		receive.selected = receiveSelected;
+		send.selected = sendSelected;
+
 		onResize();
 		
 		goingToTest = false;
