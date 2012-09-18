@@ -2,6 +2,58 @@
 
 <wiki:toc max_depth="1" />
 
+= Version 0.95.102 - Skirmish and bugfixes =
+  * Released: 2012-09-18 10:30 CET
+  * French language support related changes
+  * A quick fix for a crash and mission no-progression bug (Issue #644).
+  * Skirmish screen. You can find some ideas about it in Issue #638.
+  * Fixed crashes caused by missing video references in forced messages (such as fired) (Issue #647).
+  * Fixed missing bridge message panel when the Psychologist test is completed.
+  * Fixed crash when user clicks on the Game over screen, and the bridge screen still interprets this click as in-game.
+  * Fixed test questionare state when reloading a save.
+  * Added logic for shared-radar for campaign and skirmish. You need to have a relation of 80 with the aliens along with an alliance against someone else. The settings can be changed in the definition.xml.
+  * Modified AI diplomatic reaction to consider the current relation with you (and the third party in ally case), therefore, if you are good friends with the alien, they will accept money in P = relation %.
+  * Starmap modified do disallow attacking fleets and planets of the same group in skirmish.
+  * The game now can play external OGG music. Place your music under /audio/generic/music and name your files Music4.ogg, Music5.ogg etc. You don't need to padd the numbers. (Issue #639)
+  * Fixed case where the new trait system did not properly load old saves. (Issue #643)
+  * Fixed a no-progression bug. (Issue #644)
+  * Fixed NPE crash due the new message-history behavior on the bridge (Issue #647)
+  * Added new failsafe cases for level 3 when you manage to desert a Garthog planet, a colony ship will automatically recolonize it for you. (Issue #649)
+  * Skirmish victory conditions fully implemented. The new win screen, loading and saving a skirmish definition will be handled later (Issue #638, Issue #259, Issue #637)
+  * Fixed NPE crash in space battle (Issue #654)
+  * Fixed Technology victory checking to ignore Pirate and Trader AI players.
+  *Fixed quick-research panel button visible in levels 1-2 in some cases.
+  * Fixed cases where the AI could attack strong allies.
+  * Added trade agreement management: trader AI starts to visit the other planets as well. Updated the diplomacy screen to allow trade agreement to be established only once. Going to war with the other will clear the trade agreement.
+  * Added more traits. (Issue #642)
+  * Fixed traits not working in skirmish mode.
+  * Fixed victory condition checking.
+  * Fixed initial fleet not equipped properly.
+  * Added mouse scroll and keyboard navigation to information/inventions screen (Issue #651).
+  * Buildings list on the info panel now get a light-red color when the player doesn't have enough money to build them.
+  * Quick research now displays the research cost under the description.
+  * Fixed cases where the money can go below zero.
+  * AI will now explicitly build Water Vaporator even when the morale is above 50.
+  * Some German translation fixes (external contributor).
+  * Fixed virus bomb missing battle parameters. (Issue #655)
+  * Fixed crash in the Achievements screen when showing/hiding achievements in the list. (Issue #659)
+  * Error logging into file open-ig.log in the game's main directory.
+  * Fixed mission objective representation and behavior issue during M12: New Caroline Virus. (Issue #661)
+  * AI now executes unlimited actions on all difficulties. Fleet strength limits still apply on EASY and NORMAL.
+  * Fixed cases where the AI paused all its actions until the colonization completed on a planet.
+  * Fixed skirmish not letting the AI attack or colonize before the player colonized at least one planet.
+  * Fixed Trader AI related crash.
+  * Fixed case when the skirmish settings doesn't contain a player ("You"). You'll get assigned to a random AI faction. You can just observe or give commands, however, the AI might overrule you in some situations.
+  * Changed the buildings.xml & xsd format to reference the building image resources directly and not through a filename pattern.
+  * Fixed AI colonization not working in skirmish.
+  * Fixed AI colonization in general: if the AI has colony ships in inventory or deployed, it will colonize a planet if available.
+  * Fixed skirmish screen mod and label related errors.
+  * Fixed missing labels for AI fleet names in skirmish mode.
+  * Fixed music not playing.
+  * Fixed Garthog fleet labels in the main campaign.
+  * The diplomacy panel on the information screen no longer lists aliens as allies if the relation is above 90. The new logic considers only players whom which the player has active alliance agains another player.
+  *Fixed the initial stance settings for the skirmish screen. Alliances and enemies are now correctly established.
+
 = Version 0.95.043 - Battle balance and bugfixes =
   * Released: 2012-08-17 17:30 CET
   * Reduced fighter hitpoints into the 200-1000 range. ([https://code.google.com/p/open-ig/issues/detail?id=614 Issue #614])
