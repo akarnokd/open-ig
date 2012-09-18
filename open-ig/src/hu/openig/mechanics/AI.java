@@ -168,6 +168,7 @@ public class AI implements AIManager {
 				world.flee(s);
 			}
 		}
+		battle.enemyFlee = p != p.world.player;
 		return SpacewarAction.FLEE;
 	}
 	/**
