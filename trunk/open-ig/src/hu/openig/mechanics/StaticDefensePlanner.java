@@ -60,6 +60,17 @@ public class StaticDefensePlanner extends Planner {
 				}
 			}
 		}
+		ResearchType ort = world.isAvailable("OrbitalFactory");
+		if (world.global.orbitalFactory == 0 
+				&& ort != null
+				&& world.money >= ort.productionCost * 3 / 4) {
+			for (ResearchType rt : world.availableResearch) {
+				if (rt.has("needsOrbitalFactory")) {
+					checkOrbitalFactory();
+					break;
+				}
+			}
+		}
 	}
 	/**
 	 * Manage a planet. Used by the AutoBuilder.
