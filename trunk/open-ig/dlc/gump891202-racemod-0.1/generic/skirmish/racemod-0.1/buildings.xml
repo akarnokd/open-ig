@@ -950,6 +950,39 @@
     </operation>
     <upgrades/>
   </building>
+  <building name="buildings.barracks" id="Barracks">
+		<graphics>
+			<tech id='human' height='3' width='3' image='colony/buildings/human/barracks'/>
+			<tech id="garthog" height="3" width="3" image='colony/buildings/human/barracks'/>
+			<tech id="dargslan" height="3" width="3" image='colony/buildings/human/barracks'/>
+			<tech id="ecalep" height="3" width="3" image='colony/buildings/human/barracks'/>
+			<tech id="sullep" height="3" width="3" image='colony/buildings/human/barracks'/>
+			<tech id="morgath" height="3" width="3" image='colony/buildings/human/barracks'/>
+			<tech id="dribs" height="3" width="3" image='colony/buildings/human/barracks'/>
+			<tech id="ychom" height="3" width="3" image='colony/buildings/human/barracks'/>
+		</graphics>
+		<build limit="-5" kind="Defensive" cost="15000"/>
+		<operation>
+			<resource type="vehicles">2</resource>
+			<resource type="laser">2</resource>
+			<resource type="energy">-1000</resource>
+			<resource type="worker">-360</resource>
+		</operation>
+		<upgrades>
+			<!-- 
+			<upgrade desc="buildings.barracks.upgrade_1">
+				<resource type='laser'>1.5</resource>
+				<resource type='energy'>1.5</resource>
+				<resource type='worker'>1.5</resource>
+			</upgrade>
+			<upgrade desc="buildings.barracks.upgrade_2">
+				<resource type='laser'>2</resource>
+				<resource type='energy'>2</resource>
+				<resource type='worker'>2</resource>
+			</upgrade>
+		 -->
+		</upgrades>
+	</building>
   <building name='buildings.fortress' id='Fortress'>
     <graphics>
       <tech id='human' height='3' width='3' image='colony/buildings/human/fortress'/>
@@ -961,7 +994,7 @@
       <tech id='dargslan' height='3' width='2' image='colony/buildings/dargslan/fortress'/>
       <tech id='ecalep' height='3' width='3' image='colony/buildings/ecalep/fortress'/>
     </graphics>
-    <build limit='*' kind='Defensive' cost='30000' research='Fortress'/>
+    <build limit='-5' kind='Defensive' cost='30000' research='Fortress'/>
     <operation>
       <resource type='vehicles'>4</resource>
       <resource type='laser'>4</resource>
@@ -974,7 +1007,7 @@
     <graphics>
       <tech id='human' height='4' width='4' image='colony/buildings/human/stronghold'/>
     </graphics>
-    <build limit='*' kind='Defensive' cost='50000' research='Stronghold'/>
+    <build limit='-5' kind='Defensive' cost='50000' research='Stronghold'/>
     <operation>
       <resource type='vehicles'>6</resource>
       <resource type='laser'>6</resource>
