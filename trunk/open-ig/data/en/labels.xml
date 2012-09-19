@@ -2671,7 +2671,7 @@
 	<entry key="buildings.upgrade.cost">Purchase upgrade[n][c=FFFFFF00]%s[/c][n][c=%s]Upgrade cost: %,d cr[/c]</entry>
 	<entry key="buildings.upgrade.bought">Purchased upgrade[n][c=FFFFFF00]%s[/c]</entry>
 	<entry key="buildings.demolish.tooltip">Demolish building[n][c=FFFFFFFF]Money returned: %,d cr[/c]</entry>
-	<entry key="colony.zoom.tooltip">Zoom in or out of the surface[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out[n][c=FFFFFFFF]Középső egérgomb[/c]: normal zoom and center view</entry>
+	<entry key="colony.zoom.tooltip">Zoom in or out of the surface[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out[n][c=FFFFFFFF]Middle mouse button[/c]: normal zoom and center view</entry>
 	<entry key="colony.prev.tooltip">Jump to previous planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]MINUS[/c]</entry>
 	<entry key="colony.next.tooltip">Jump to next planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]PLUS[/c]</entry>
 	<entry key="colony.info.tooltip">Colony information[n]Shortcut: [c=FFFFFFFF]F7[/c]</entry>
