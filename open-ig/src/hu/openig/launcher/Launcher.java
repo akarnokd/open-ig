@@ -101,7 +101,7 @@ public class Launcher extends JFrame {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.37";
+	public static final String VERSION = "0.38";
 	/**
 	 * The update XML to download.
 	 */
@@ -2496,7 +2496,7 @@ public class Launcher extends JFrame {
 			final JDialog dlg = new JDialog(this);
 			
 			dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dlg.setResizable(false);
+//			dlg.setResizable(false);
 			
 			JLabel mainLabel = new JLabel();
 			mainLabel.setForeground(foreground);
@@ -2615,7 +2615,7 @@ public class Launcher extends JFrame {
 				.addComponent(mainLabel)
 				.addComponent(sep0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addComponent(fullScreenDesc)
-				.addComponent(fullScreen)
+				.addComponent(fullScreen, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 				.addGap(20)
 				.addComponent(movieDesc)
 				.addComponent(movie)
@@ -2748,13 +2748,13 @@ public class Launcher extends JFrame {
 						File f2 = new File(installDir, f.name());
 						if (f2.canRead()) {
 							cb.setSelected(true);
+							sz0 += f.size;
 						}
 					} catch (MalformedURLException ex) {
 						Exceptions.add(ex);
 					}
 				}
 			}
-			sz0 += sz;
 			sizes.setText(String.format("%,.1f MB", sz / 1024d / 1024d));
 			
 			cbs.add(cb);
@@ -2780,7 +2780,7 @@ public class Launcher extends JFrame {
 			});
 		}
 
-		sum.setText(String.format("%,.1f MB", sz0));
+		sum.setText(String.format("%,.1f MB", sz0 / 1024d / 1024d));
 		
 		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 		JSeparator sep2 = new JSeparator(JSeparator.HORIZONTAL);
