@@ -292,14 +292,13 @@ public class ResearchPlanner extends Planner {
 			}
 			if (bt.cost <= world.money) {
 				Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
-				final AssertionError e = new AssertionError("Warning: " + planet0.id + ", " + bt.id);
 				if (pt != null) {
 					applyActions.add(new Action0() {
 						@Override
 						public void invoke() {
 							AIResult r = controls.actionPlaceBuilding(planet0, bt);
 							if (r == AIResult.NO_AVAIL) {
-								Exceptions.add(e);
+								System.out.println("Can't place building on " + planet0.id + ", " + bt.id + " for player " + p.id + ".");
 							}
 						}
 					});
