@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
-	<module id='Launcher' version='0.38'>
+	<module id='Launcher' version='0.39'>
 		<!-- General module description -->
 		<general url='https://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
@@ -23,12 +23,12 @@
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  https://open-ig.googlecode.com/files/ -->
-		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='6EAE83D221C014CC5D60912D88F013BAA1D0F79F'>
+		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='7A6A776AD90C5219F0B6D51FB165B2090ABD1E1C'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.95.104'>
+	<module id='Game' version='0.95.105'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -45,8 +45,8 @@
 			<desc lang='de'>Beta + Skirmish.</desc>
 			<desc lang='en'>Beta + Skirmish.</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.104.jar' sha1='F21E34B2AE36A052EFD51A10B937ECCBDCCA2995'/>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120917a2.zip' sha1='c3bfa036a85d9d78e4dafedc84f83b1bdaf8beac'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.105.jar' sha1='5CA7F9DD1D156F9F316FFCE215C34374222E324A'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20120920a2.zip' sha1='5EB25BD379EC67683FC365110BB5739783B70D54'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120823a.zip' sha1='d5b8ea09b82e492b7cb395dc22623bdd8c19917a'/>
 
 		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
@@ -133,7 +133,7 @@
 			<desc lang='hu'>Kampányszerkesztő.</desc>
 			<desc lang='en'>Campaign editor.</desc>
 		</general>
-		<execute file='open-ig-ce-%s.jar' memory='1024' class='hu.openig.editors.ce.'/>
+		<execute file='open-ig-ce-%s.jar' memory='1024' class='hu.openig.editors.ce.CampaignEditor'/>
 		<!-- Release notes -->
 		<notes url='https://code.google.com/p/open-ig/wiki/CampaignEditor_Notes'>
 			<desc lang='hu'>Első verzió</desc>
