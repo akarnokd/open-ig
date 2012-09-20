@@ -16,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import javax.swing.Icon;
 import javax.swing.JButton;
 
 /**
@@ -63,6 +64,12 @@ public class IGButton extends JButton {
 			largeButtonPressed.paintTo(g2, 0, 0, getWidth(), getHeight(), true, getText());
 		} else {
 			largeButton.paintTo(g2, 0, 0, getWidth(), getHeight(), false, getText());
+		}
+		Icon icon = getIcon();
+		if (icon != null) {
+			int w = (getWidth() - icon.getIconWidth()) / 2;
+			int h = (getHeight() - icon.getIconHeight()) / 2;
+			icon.paintIcon(this, g, w, h);
 		}
 		if (!isEnabled()) {
 			RenderTools.fill(g2, 0, 0, getWidth(), getHeight(), disabledPattern);

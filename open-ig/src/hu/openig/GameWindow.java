@@ -362,7 +362,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param commons the common resources
 	 */
 	public GameWindow(Configuration config, CommonResources commons) {
-		super("Open Imperium Galactica " + Configuration.VERSION + " [pid: " + ManagementFactory.getRuntimeMXBean().getName() + "]");
+		super("Open Imperium Galactica " + Configuration.VERSION + " [pid: " + ManagementFactory.getRuntimeMXBean().getName() + "][Java: " + System.getProperty("java.version") + "]");
 		setFocusTraversalKeysEnabled(false);
 		URL icon = this.getClass().getResource("/hu/openig/gfx/open-ig-logo.png");
 		if (icon != null) {
