@@ -77,6 +77,13 @@
 		<entry key='Install new packages now'>Install new packages now</entry>
 		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
 		<entry key='Missing language pack'>Missing language pack</entry>
+		<entry key='Java 6 detected, upgrade needed.'>&lt;html>&lt;p>It seems you are running Java 6.&lt;/p>&lt;p>It is recommended that you upgrade to Java 7 or later&lt;/p>&lt;p> and/or set it as the default JVM.&lt;/p></entry>
+		<entry key='Do not remind me.'>Do not remind me again.</entry>
+		<entry key='Java 6 detected'>Java 6 detected</entry>
+		<entry key='Campaign Editor'>Campaign Editor</entry>
+		<entry key='Other tools'>Tools</entry>
+		<entry key='DLCs...'>DLCs...</entry>
+		<entry key='Soon...'>Soon...</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 		<entry key='Processing %s'>%s feldolgozása</entry>
@@ -155,6 +162,13 @@
 		<entry key='Install new packages now'>Az új csomagok telepítése azonnal</entry>
 		<entry key='Missing language packs'>&lt;html>A jelenlegi nyelvhez nincs telepítve a nyelvi csomag.&lt;br>Kérlek, változtass nyelvet vagy telepítsd a hiányzó nyelvi csomakokat.&lt;br>Szeretnéd most telepíteni a hiányzó nyelvi csomagokat?</entry>
 		<entry key='Missing language pack'>Hiányzó nyelvi fájlok</entry>
+		<entry key='Java 6 detected, upgrade needed.'>&lt;html>&lt;p>Úgy tűnik, hogy Java 6 alól futtatod a programot.&lt;/p>&lt;p>Ajánlott átállni legalább Java 7-re&lt;/p>&lt;p> és beállítani azt mint alapértelmezett JVM.&lt;/p></entry>
+		<entry key='Do not remind me.'>Ne emlékeztess rá ezentúl.</entry>
+		<entry key='Java 6 detected'>Java 6-ot észleltem</entry>
+		<entry key='Campaign Editor'>Kampányszerkesztő</entry>
+		<entry key='Other tools'>Eszközök</entry>
+		<entry key='DLCs...'>DLC-k...</entry>
+		<entry key='Soon...'>Hamarosan...</entry>
 	</language>
 	<language id='de' flag='/hu/openig/gfx/german.png'>
 		<entry key='Processing %s'>Verarbeitung von %s</entry>
@@ -233,6 +247,13 @@
 		<entry key='Install new packages now'>Neue Pakete jetzt installieren</entry>
 		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
 		<entry key='Missing language pack'>Missing language pack</entry>
+		<entry key='Java 6 detected, upgrade needed.'>&lt;html>&lt;p>It seems you are running Java 6.&lt;/p>&lt;p>It is recommended that you upgrade to Java 7 or later&lt;/p>&lt;p> and/or set it as the default JVM.&lt;/p></entry>
+		<entry key='Do not remind me.'>Do not remind me again.</entry>
+		<entry key='Java 6 detected'>Java 6 detected</entry>
+		<entry key='Campaign Editor'>Campaign Editor</entry>
+		<entry key='Other tools'>Tools</entry>
+		<entry key='DLCs...'>DLCs...</entry>
+		<entry key='Soon...'>Soon...</entry>
 	</language>
 	<language id='fr' flag='/hu/openig/gfx/french.png'>
 		<entry key='Processing %s'>Processing %s</entry>
@@ -311,5 +332,12 @@
 		<entry key='Install new packages now'>Install new packages now</entry>
 		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
 		<entry key='Missing language pack'>Missing language pack</entry>
+		<entry key='Java 6 detected, upgrade needed.'>&lt;html>&lt;p>It seems you are running Java 6.&lt;/p>&lt;p>It is recommended that you upgrade to Java 7 or later&lt;/p>&lt;p> and/or set it as the default JVM.&lt;/p></entry>
+		<entry key='Do not remind me.'>Do not remind me again.</entry>
+		<entry key='Java 6 detected'>Java 6 detected</entry>
+		<entry key='Campaign Editor'>Campaign Editor</entry>
+		<entry key='Other tools'>Tools</entry>
+		<entry key='DLCs...'>DLCs...</entry>
+		<entry key='Soon...'>Soon...</entry>
 	</language>
 </labels>

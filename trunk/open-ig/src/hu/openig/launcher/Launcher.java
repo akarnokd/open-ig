@@ -10,7 +10,6 @@ package hu.openig.launcher;
 
 import hu.openig.core.Func0;
 import hu.openig.ui.IGButton;
-import hu.openig.ui.IGCheckBox;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
@@ -30,8 +29,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -41,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.management.ManagementFactory;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -61,20 +59,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -86,7 +79,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -97,11 +89,11 @@ import javax.xml.stream.XMLStreamException;
  * The improved launcher.
  * @author akarnokd, 2012.01.16.
  */
-public class Launcher extends JFrame {
+public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.38";
+	public static final String VERSION = "0.39";
 	/**
 	 * The update XML to download.
 	 */
@@ -125,9 +117,11 @@ public class Launcher extends JFrame {
 	/** Run the game. */
 	IGButton continueLast;
 	/** Run the map editor. */
-	IGButton mapEditor;
+	IGButton campaignEditor;
+	/** The tools button. */
+	IGButton tools;
 	/** Run the video player. */
-	IGButton videoPlayer;
+	IGButton dlcManager;
 	/** Change startup parameters. */
 	IGButton other;
 	/** Update launcher. */
@@ -234,9 +228,21 @@ public class Launcher extends JFrame {
 	final Set<String> installedLanguages = new HashSet<String>();
 	/** Select install languages. */
 	JMenuItem selectLanguages;
+	/** Show the java 6 warning dialog? */
+	boolean java6warning = true;
+	/** The down image. */
+	BufferedImage down;
+	/** Run the map editor. */
+	JMenuItem toolsMapEditor;
+	/** Run the video player. */
+	JMenuItem toolsVideoPlayer;
+	/** The tools menu. */
+	JPopupMenu toolsMenu;
 	/** Creates the GUI. */
 	public Launcher() {
-		super("Open Imperium Galactica Launcher v" + VERSION);
+		super();
+		
+		setTitle("Open Imperium Galactica Launcher v" + VERSION + " [pid: " + ManagementFactory.getRuntimeMXBean().getName() + "][Java: " + System.getProperty("java.version") + "]");
 		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -275,9 +281,15 @@ public class Launcher extends JFrame {
 			if (u != null) {
 				background = ImageIO.read(u);
 			}
+			
+			u = getClass().getResource("/hu/openig/gfx/down.png");
+			if (u != null) {
+				down = ImageIO.read(u);
+			}
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
+		
 		
 		loadLanguages();
 		
@@ -387,12 +399,8 @@ public class Launcher extends JFrame {
 		
 		return result;
 	}
-	/**
-	 * Returns the label.
-	 * @param s the label
-	 * @return the translated text
-	 */
-	String label(String s) {
+	@Override
+	public String label(String s) {
 		Map<String, String> m = labels.get(language);
 		if (m != null) {
 			String t = m.get(s);
@@ -403,13 +411,8 @@ public class Launcher extends JFrame {
 		System.err.println("\t\t<entry key='" + s + "'>" + s + "</entry>");
 		return s;
 	}
-	/**
-	 * Format a label.
-	 * @param s the label id
-	 * @param params the label params
-	 * @return the translated text
-	 */
-	String format(String s, Object... params) {
+	@Override
+	public String format(String s, Object... params) {
 		return String.format(label(s), params);
 	}
 	/**
@@ -427,8 +430,9 @@ public class Launcher extends JFrame {
 		verifyBtn = new IGButton();
 		run = new IGButton();
 		continueLast = new IGButton();
-		mapEditor = new IGButton();
-		videoPlayer = new IGButton();
+		campaignEditor = new IGButton();
+		tools = new IGButton();
+		dlcManager = new IGButton();
 		other = new IGButton();
 		cancel = new IGButton();
 		otherMenu = new JPopupMenu();
@@ -439,6 +443,12 @@ public class Launcher extends JFrame {
 		currentVersionLabel = new JLabel();
 		progressPanel = new JPanel();
 
+		toolsMenu = new JPopupMenu();
+		toolsMapEditor = new JMenuItem();
+		toolsVideoPlayer = new JMenuItem();
+		
+		tools.setIcon(new ImageIcon(down));
+		
 		String[] langs = new String[labels.size()];
 		int i = 0;
 		for (String l : flags.keySet()) {
@@ -534,16 +544,28 @@ public class Launcher extends JFrame {
 				doRunGame("-continue");
 			}
 		});
-		mapEditor.addActionListener(new ActionListener() {
+		campaignEditor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				runModule("CampaignEditor", Collections.<String>emptyList());
+			}
+		});
+		toolsMapEditor.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				runModule("MapEditor", Collections.<String>emptyList());
 			}
 		});
-		videoPlayer.addActionListener(new ActionListener() {
+		toolsVideoPlayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				runModule("VideoPlayer", Collections.<String>emptyList());
+			}
+		});
+		dlcManager.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(Launcher.this, label("Soon..."));
 			}
 		});
 		
@@ -552,8 +574,9 @@ public class Launcher extends JFrame {
 		verifyBtn.setFont(fontMedium);
 		run.setFont(fontLarge);
 		continueLast.setFont(fontLarge);
-		mapEditor.setFont(fontMedium);
-		videoPlayer.setFont(fontMedium);
+		campaignEditor.setFont(fontMedium);
+		tools.setFont(fontMedium);
+		dlcManager.setFont(fontMedium);
 		other.setFont(fontMedium);
 		cancel.setFont(fontMedium);
 		otherMenu.setFont(fontLarge);
@@ -569,8 +592,8 @@ public class Launcher extends JFrame {
 		verifyBtn.setVisible(false);
 		run.setVisible(false);
 		continueLast.setVisible(false);
-		mapEditor.setVisible(false);
-		videoPlayer.setVisible(false);
+		campaignEditor.setVisible(false);
+		dlcManager.setVisible(false);
 		other.setVisible(false);
 		cancel.setVisible(false);
 		otherMenu.setVisible(false);
@@ -589,8 +612,9 @@ public class Launcher extends JFrame {
 		verifyBtn.setForeground(foreground);
 		run.setForeground(foreground);
 		continueLast.setForeground(foreground);
-		mapEditor.setForeground(foreground);
-		videoPlayer.setForeground(foreground);
+		campaignEditor.setForeground(foreground);
+		tools.setForeground(foreground);
+		dlcManager.setForeground(foreground);
 		cancel.setForeground(foreground);
 		other.setForeground(foreground);
 
@@ -700,10 +724,25 @@ public class Launcher extends JFrame {
 		selfRepair.setFont(fontLarge);
 		selectLanguages.setFont(fontLarge);
 		
+		
+		
 		other.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				otherMenu.show(other, 0, other.getHeight());
+			}
+		});
+		
+		toolsMapEditor.setFont(fontLarge);
+		toolsVideoPlayer.setFont(fontLarge);
+		
+		toolsMenu.add(toolsMapEditor);
+		toolsMenu.add(toolsVideoPlayer);
+		
+		tools.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				toolsMenu.show(tools, 0, tools.getHeight());
 			}
 		});
 		
@@ -743,9 +782,10 @@ public class Launcher extends JFrame {
 				)
 				.addGroup(
 					gl.createSequentialGroup()
-					.addComponent(mapEditor)
+					.addComponent(campaignEditor)
+					.addComponent(tools, 25, 25, 25)
 					.addGap(25)
-					.addComponent(videoPlayer)
+					.addComponent(dlcManager)
 					.addGap(25)
 					.addComponent(other)
 				)
@@ -785,9 +825,10 @@ public class Launcher extends JFrame {
 			.addGap(25)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(mapEditor)
+				.addComponent(campaignEditor)
+				.addComponent(tools)
 				.addGap(30)
-				.addComponent(videoPlayer)
+				.addComponent(dlcManager)
 				.addGap(30)
 				.addComponent(other)
 			)
@@ -909,8 +950,12 @@ public class Launcher extends JFrame {
 		run.setText(label("Run Game"));
 		continueLast.setText(label("Continue"));
 		continueLast.setToolTipText(label("Continue from last save."));
-		mapEditor.setText(label("Map Editor"));
-		videoPlayer.setText(label("Video Player"));
+		campaignEditor.setText(label("Campaign Editor"));
+		tools.setToolTipText(label("Other tools"));
+		tools.setText(" ");
+		toolsMapEditor.setText(label("Map Editor"));
+		toolsVideoPlayer.setText(label("Video Player"));
+		dlcManager.setText(label("DLCs..."));
 		other.setText(label("Other options"));
 		launcher.setText(label("Update launcher"));
 		
@@ -1137,10 +1182,23 @@ public class Launcher extends JFrame {
 				doActOnUpdates();
 				setLabels();
 				
+				checkJavaVersion();
+				
 				doUpgrades();
 			}
 		};
 		w.execute();
+	}
+	/**
+	 * Check if we run on Java 6?
+	 */
+	void checkJavaVersion() {
+		String ver = System.getProperty("java.version");
+		if (ver.startsWith("1.6") && java6warning) {
+			MessageDialog dlg = new MessageDialog(this, this, this);
+			dlg.display(this);
+			java6warning = !dlg.isOnce();
+		}
 	}
 	/** Check for upgrades. */
 	void doUpgrades() {
@@ -1383,6 +1441,7 @@ public class Launcher extends JFrame {
 				flag.setSelectedItem(language);
 				jvmParams = cfg.get("jvm-params", null);
 				appParams = cfg.get("app-params", null);
+				java6warning = cfg.getBoolean("java-6-warning", true);
 				
 				installedLanguages.clear();
 				for (XElement xinst : cfg.childrenWithName("installed-language")) {
@@ -1467,8 +1526,11 @@ public class Launcher extends JFrame {
 			currentVersionLabel.setVisible(false);
 			run.setVisible(false);
 			continueLast.setVisible(false);
-			mapEditor.setVisible(false);
-			videoPlayer.setVisible(false);
+			
+			campaignEditor.setVisible(false);
+			tools.setVisible(false);
+			dlcManager.setVisible(false);
+			
 			other.setVisible(false);
 			if (g != null) {
 				install.setVisible(true);
@@ -1483,8 +1545,9 @@ public class Launcher extends JFrame {
 			
 			run.setVisible(true);
 			continueLast.setVisible(true);
-			mapEditor.setVisible(true);
-			videoPlayer.setVisible(true);
+			campaignEditor.setVisible(true);
+			tools.setVisible(true);
+			dlcManager.setVisible(true);
 			other.setVisible(true);
 			
 			install.setVisible(false);
@@ -2109,8 +2172,9 @@ public class Launcher extends JFrame {
 
 		run.setEnabled(!visible);
 		continueLast.setEnabled(!visible);
-		mapEditor.setEnabled(!visible);
-		videoPlayer.setEnabled(!visible);
+		campaignEditor.setVisible(!visible);
+		tools.setVisible(!visible);
+		dlcManager.setVisible(!visible);
 		other.setEnabled(!visible);
 	}
 	/**
@@ -2202,6 +2266,7 @@ public class Launcher extends JFrame {
 		cfg.set("memory", memory);
 		cfg.set("jvm-params", jvmParams);
 		cfg.set("app-params", appParams);
+		cfg.set("java-6-warning", java6warning);
 		
 		for (String s : installedLanguages) {
 			cfg.add("installed-language").set("id", s);
@@ -2222,248 +2287,20 @@ public class Launcher extends JFrame {
 			return;
 		}
 		
+		final RunSettingsDialog dialog = new RunSettingsDialog(this, this, this);
+		dialog.setJVM(this.jvm);
+		dialog.setMemory(this.memory);
+		dialog.setDefaultMemory(m.memory);
+		dialog.setAppParams(this.appParams);
+		dialog.setJVMParams(this.jvmParams);
 		
-		
-		final JDialog dialog = new JDialog(this, label("Run settings"));
-		
-		Container c = dialog.getContentPane();
-		
-		JPanel p = new JPanel();
-		p.setBackground(backgroundColoring);
-		
-		c.add(p);
-		
-		GroupLayout gl = new GroupLayout(p);
-		p.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-		
-		final JTextField jvmField = new JTextField(30);
-		if (jvm != null) {
-			jvmField.setText(jvm);
+		dialog.display(this);
+		if (dialog.approved) {
+			this.jvm = dialog.getJVM();
+			this.memory = dialog.getMemory();
+			this.appParams = dialog.getAppParams();
+			this.jvmParams = dialog.getJVMParams();
 		}
-		IGButton browse = new IGButton(label("Browse..."));
-		browse.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				String path = System.getProperty("java.home");
-				if (!jvmField.getText().isEmpty()) {
-					path = jvmField.getText();
-				}
-				JFileChooser fc = new JFileChooser(path);
-				fc.setMultiSelectionEnabled(false);
-				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				if (fc.showOpenDialog(dialog) == JFileChooser.APPROVE_OPTION) {
-					jvmField.setText(fc.getSelectedFile().getAbsolutePath());
-				}
-				
-			}
-		});
-		final JTextField memField = new JTextField(5);
-		if (memory != null) {
-			memField.setText(memory.toString());
-		}
-		
-		JLabel jvmLabel = new JLabel(label("Java runtime home:"));
-		JLabel jvmLabelNow = new JLabel(format("Default: %s", System.getProperty("java.home")));
-		JLabel jvmVersion = new JLabel(System.getProperty("java.version") + ", " + System.getProperty("os.name") + ", " + System.getProperty("os.arch"));
-		
-		
-		JLabel memMb = new JLabel(label("MB"));
-
-		JLabel memLabel = new JLabel(label("Memory:"));
-		JLabel memLabelNow = new JLabel(format("Default: %s MB", m.memory));
-
-		JLabel jvmParamsLabel = new JLabel(format("JVM parameters:"));
-		final JTextField jvmParams = new JTextField(this.jvmParams);
-		
-		JLabel appParamsLabel = new JLabel(format("Game parameters:"));
-		final JTextField appParams = new JTextField(this.appParams);
-		
-		IGButton ok = new IGButton(label("OK"));
-		ok.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (memField.getText().isEmpty()) {
-					memory = null;
-				} else {
-					String o = memField.getText();
-					if (!o.isEmpty()) {
-						try {
-							int mi = Integer.parseInt(o);
-							if (mi <= 0) {
-								memory = null;
-							} else {
-								memory = mi;
-							}
-						} catch (NumberFormatException ex) {
-							
-						}
-					} else {
-						memory = null;
-					}
-				}
-				if (jvmField.getText().isEmpty()) {
-					jvm = null;
-				} else {
-					jvm = jvmField.getText();
-				}
-				
-				if (jvmParams.getText().isEmpty()) {
-					Launcher.this.jvmParams = null;
-				} else {
-					Launcher.this.jvmParams = jvmParams.getText();
-				}
-
-				if (appParams.getText().isEmpty()) {
-					Launcher.this.appParams = null;
-				} else {
-					Launcher.this.appParams = appParams.getText();
-				}
-
-				dialog.dispose();
-			}
-		});
-		IGButton cancel = new IGButton(label("Cancel"));
-		cancel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				dialog.dispose();
-			}
-		});
-
-		jvmLabel.setFont(fontMedium);
-		jvmLabelNow.setFont(fontMedium);
-		jvmField.setFont(fontMedium);
-		
-		memLabelNow.setFont(fontMedium);
-		memLabel.setFont(fontMedium);
-		memField.setFont(fontMedium);
-		memMb.setFont(fontMedium);
-		
-		jvmLabel.setForeground(foreground);
-		jvmLabelNow.setForeground(foreground);
-		jvmField.setForeground(Color.BLACK);
-		
-		memLabelNow.setForeground(foreground);
-		memLabel.setForeground(foreground);
-		memField.setForeground(Color.BLACK);
-		memMb.setForeground(foreground);
-
-		jvmVersion.setForeground(foreground);
-		jvmVersion.setFont(fontMedium);
-
-		jvmParamsLabel.setForeground(foreground);
-		jvmParamsLabel.setFont(fontMedium);
-		jvmParams.setForeground(Color.BLACK);
-		jvmParams.setFont(fontMedium);
-
-		appParamsLabel.setForeground(foreground);
-		appParamsLabel.setFont(fontMedium);
-		appParams.setForeground(Color.BLACK);
-		appParams.setFont(fontMedium);
-
-		ok.setFont(fontMedium);
-		cancel.setFont(fontMedium);
-		browse.setFont(fontMedium);
-		ok.setForeground(foreground);
-		cancel.setForeground(foreground);
-		browse.setForeground(foreground);
-		
-		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
-		
-		gl.setHorizontalGroup(
-			gl.createParallelGroup(Alignment.CENTER)
-			.addGroup(
-				gl.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addGroup(
-						gl.createParallelGroup()
-						.addComponent(jvmLabel)
-						.addComponent(memLabel)
-						.addComponent(jvmParamsLabel)
-						.addComponent(appParamsLabel)
-					)
-					.addGroup(
-						gl.createParallelGroup()
-						.addComponent(jvmField)
-						.addGroup(
-							gl.createSequentialGroup()
-							.addComponent(memField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(memMb)
-						)
-						.addComponent(jvmParams)
-						.addComponent(appParams)
-					)
-					.addComponent(browse)
-				)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addGap(30)
-					.addComponent(jvmLabelNow)
-				)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addGap(30)
-					.addComponent(jvmVersion)
-				)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addGap(30)
-					.addComponent(memLabelNow)
-				)
-			)
-			.addComponent(sep)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(ok)
-				.addComponent(cancel)
-			)
-		);
-		
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(jvmLabel)
-				.addComponent(jvmField)
-				.addComponent(browse)
-			)
-			.addComponent(jvmLabelNow)
-			.addComponent(jvmVersion)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(memLabel)
-				.addComponent(memField)
-				.addComponent(memMb)
-			)
-			.addComponent(memLabelNow)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(jvmParamsLabel)
-				.addComponent(jvmParams)
-			)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(appParamsLabel)
-				.addComponent(appParams)
-			)
-			.addComponent(sep, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(ok)
-				.addComponent(cancel)
-			)
-		);
-		
-		gl.linkSize(SwingConstants.HORIZONTAL, ok, cancel);
-		
-		dialog.setResizable(false);
-		dialog.pack();
-		dialog.setLocationRelativeTo(this);
-		dialog.setModal(true);
-		dialog.setVisible(true);
 	}
 	/**
 	 * Run the game or pop-up the first-time configuration window.
@@ -2493,173 +2330,24 @@ public class Launcher extends JFrame {
 			return;
 		}
 		if (displayPreLaunch) {
-			final JDialog dlg = new JDialog(this);
-			
-			dlg.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-//			dlg.setResizable(false);
-			
-			JLabel mainLabel = new JLabel();
-			mainLabel.setForeground(foreground);
-			mainLabel.setFont(fontMedium);
-			
-			JLabel fullScreenDesc = new JLabel();
-			fullScreenDesc.setForeground(foreground);
-			fullScreenDesc.setFont(fontMedium);
-			
-			JComboBox<String> fullScreen = new JComboBox<String>();
-			fullScreen.setFont(fontMedium);
-			
-			JLabel movieDesc = new JLabel();
-			movieDesc.setForeground(foreground);
-			movieDesc.setFont(fontMedium);
-			IGCheckBox movie = new IGCheckBox("", fontMedium);
-			movie.setForeground(foreground);
-			
-			JLabel clickDesc = new JLabel();
-			clickDesc.setForeground(foreground);
-			clickDesc.setFont(fontMedium);
-			IGCheckBox click = new IGCheckBox("", fontMedium);
-			click.setForeground(foreground);
-			
-			final AtomicBoolean approve = new AtomicBoolean();
-			
-			IGButton ok = new IGButton();
-			ok.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					approve.set(true);
-					dlg.dispose();
-				}
-			});
-			IGButton cancel = new IGButton();
-			cancel.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					dlg.dispose();
-				}
-			});
-			ok.setForeground(foreground);
-			ok.setFont(fontMedium);
-			cancel.setForeground(foreground);
-			cancel.setFont(fontMedium);
-			
-			// -----------------------------------------------------------------
+			final FirstRunDialog dlg = new FirstRunDialog(this, this, this);
 
-			dlg.setTitle(label("First time launch"));
-			ok.setText(label("OK"));
-			cancel.setText(label("Cancel"));
-
-			mainLabel.setText(label("First-time explanation"));
-
-			fullScreenDesc.setText(label("Resolution explanation"));
-
-			fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
-					label("Classic 640 x 480"),
-					label("Maximized"),
-					label("Full screen")
-			}));
-
-			movieDesc.setText(label("Movie explanation"));
-			movie.setText(label("Movie checkbox"));
-
-			clickDesc.setText(label("Click explanation"));
-			click.setText(label("Click checkbox"));
-
-			// -----------------------------------------------------------------
-			
-			JPanel p = new JPanel();
-			p.setBackground(backgroundColoring);
-			
-			GroupLayout gl = new GroupLayout(p);
-			gl.setAutoCreateContainerGaps(true);
-			gl.setAutoCreateGaps(true);
-			p.setLayout(gl);
-			
-			JSeparator sep0 = new JSeparator(JSeparator.HORIZONTAL);
-			JSeparator sep3 = new JSeparator(JSeparator.HORIZONTAL);
-			
-			gl.setHorizontalGroup(
-				gl.createParallelGroup(Alignment.CENTER)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(mainLabel, 450, 450, 450)
-					.addComponent(sep0, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-					.addComponent(fullScreenDesc, 450, 450, 450)
-					.addGroup(
-						gl.createSequentialGroup()
-						.addGap(20)
-						.addComponent(fullScreen)
-					)
-					.addComponent(movieDesc, 450, 450, 450)
-					.addGroup(
-						gl.createSequentialGroup()
-						.addGap(20)
-						.addComponent(movie)
-					)
-					.addComponent(clickDesc, 450, 450, 450)
-					.addGroup(
-						gl.createSequentialGroup()
-						.addGap(20)
-						.addComponent(click)
-					)
-				)
-				.addComponent(sep3, 0, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addComponent(ok)
-					.addComponent(cancel)
-				)
-			);
-			gl.setVerticalGroup(
-				gl.createSequentialGroup()
-				.addComponent(mainLabel)
-				.addComponent(sep0, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(fullScreenDesc)
-				.addComponent(fullScreen, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addGap(20)
-				.addComponent(movieDesc)
-				.addComponent(movie)
-				.addGap(20)
-				.addComponent(clickDesc)
-				.addComponent(click)
-				.addComponent(sep3, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addGroup(
-					gl.createParallelGroup(Alignment.BASELINE)
-					.addComponent(ok)
-					.addComponent(cancel)
-				)
-			);
-			
-			
-			gl.linkSize(SwingConstants.HORIZONTAL, ok, cancel);
-			
-			dlg.getContentPane().add(p);
-			dlg.setModal(true);
-			dlg.pack();
-			dlg.setLocationRelativeTo(Launcher.this);
-			dlg.addComponentListener(new ComponentAdapter() {
-				@Override
-				public void componentShown(ComponentEvent e) {
-					dlg.pack();
-					dlg.setLocationRelativeTo(Launcher.this);
-				}
-			});
-			dlg.setVisible(true);
-			if (!approve.get()) {
+			if (!dlg.display(this)) {
 				return;
 			}
+			
 			List<String> params = new ArrayList<String>();
 			
-			if (fullScreen.getSelectedIndex() == 1) {
+			if (dlg.screenMode() == 1) {
 				params.add("-maximized");
 			} else
-			if (fullScreen.getSelectedIndex() == 2) {
+			if (dlg.screenMode() == 2) {
 				params.add("-fullscreen");
 			}
-			if (movie.isSelected()) {
+			if (dlg.movieMode()) {
 				params.add("-fullscreenvideos");
 			}
-			if (click.isSelected()) {
+			if (dlg.clickMode()) {
 				params.add("-clickskip");
 			} else {
 				params.add("-noclickskip");
@@ -2678,208 +2366,14 @@ public class Launcher extends JFrame {
 	 * @return true continue with the last option?
 	 */
 	boolean selectLanguagesToInstall(boolean isInstall) {
-		final JDialog dialog = new JDialog(this);
-		dialog.setTitle(label("Select language packs to install"));
-		dialog.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		
-		final AtomicBoolean okPressed = new AtomicBoolean();
-		
-		IGButton ok = new IGButton(label("OK"));
-		ok.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				okPressed.set(true);
-				dialog.dispose();
-			}
-		});
-		IGButton cancel = new IGButton(label("Cancel"));
-		cancel.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				okPressed.set(false);
-				dialog.dispose();
-			}
-		});
-		
-		JPanel p = new JPanel();
-		GroupLayout gl = new GroupLayout(p);
-		p.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-		
-		// create language lines
-		SequentialGroup vert = gl.createSequentialGroup();
-		
-		ParallelGroup pg1 = gl.createParallelGroup();
-		ParallelGroup pg2 = gl.createParallelGroup();
-		ParallelGroup pg3 = gl.createParallelGroup();
-
-		final JLabel sum = new JLabel();
-		sum.setHorizontalAlignment(JLabel.RIGHT);
-		
-		final List<JCheckBox> cbs = new ArrayList<JCheckBox>();
-		final List<Long> szs = new ArrayList<Long>();
-		final List<String> lngs = new ArrayList<String>();
-		long sz0 = 0;
-		for (String lng : flags.keySet()) {
-			
-			ParallelGroup pg0 = gl.createParallelGroup(Alignment.CENTER);
-			vert.addGroup(pg0);
-			
-			JLabel  flag = new JLabel(new ImageIcon(flags.get(lng)));
-			
-			JCheckBox cb = new JCheckBox(label("language-" + lng));
-			cb.setOpaque(false);
-			
-			JLabel sizes = new JLabel();
-			sizes.setHorizontalAlignment(JLabel.RIGHT);
-			
-			pg0.addComponent(flag).addComponent(cb).addComponent(sizes);
-			
-			pg1.addComponent(flag);
-			pg2.addComponent(cb, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE);
-			pg3.addComponent(sizes);
-			
-			long sz = 0;
-			for (LFile f : updates.getModule(GAME).files) {
-				if (f.language.equals(lng)) {
-					sz += f.size;
-					try {
-						File f2 = new File(installDir, f.name());
-						if (f2.canRead()) {
-							cb.setSelected(true);
-							sz0 += f.size;
-						}
-					} catch (MalformedURLException ex) {
-						Exceptions.add(ex);
-					}
-				}
-			}
-			sizes.setText(String.format("%,.1f MB", sz / 1024d / 1024d));
-			
-			cbs.add(cb);
-			szs.add(sz);
-			lngs.add(lng);
-		}
-		
-		for (JCheckBox cb : cbs) {
-			cb.addActionListener(new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					long sz = 0;
-					int i = 0;
-					for (JCheckBox cb2 : cbs) {
-						if (cb2.isSelected()) {
-							sz += szs.get(i);
-						}
-						i++;
-					}
-					
-					sum.setText(String.format("%,.1f MB", sz / 1024d / 1024d));
-				}
-			});
-		}
-
-		sum.setText(String.format("%,.1f MB", sz0 / 1024d / 1024d));
-		
-		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
-		JSeparator sep2 = new JSeparator(JSeparator.HORIZONTAL);
-		JSeparator sep3 = new JSeparator(JSeparator.HORIZONTAL);
-		
-		JCheckBox cbUninstall = new JCheckBox(label("Remove files of unselected packages"));
-		JCheckBox cbInstall = new JCheckBox(label("Install new packages now"));
-		
-		cbUninstall.setVisible(!isInstall);
-		cbUninstall.setOpaque(false);
-		cbInstall.setVisible(!isInstall);
-		cbInstall.setOpaque(false);
-		sep3.setVisible(!isInstall);
-		// ------------------------------------------
-		
-		gl.setHorizontalGroup(
-			gl.createParallelGroup(Alignment.CENTER)
-			.addGroup(
-				gl.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-					gl.createParallelGroup(Alignment.TRAILING)
-					.addGroup(
-						gl.createSequentialGroup()
-						.addGroup(pg1)
-						.addGroup(pg2)
-						.addGroup(pg3)
-					)
-					.addComponent(sep)
-					.addComponent(sum, 200, 200, 200)
-				)
-				.addComponent(sep2)
-				.addComponent(cbInstall)
-				.addComponent(cbUninstall)
-			)
-			.addComponent(sep3)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(ok)
-				.addComponent(cancel)
-			)
-		);
-		
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addGroup(vert)
-			.addComponent(sep)
-			.addComponent(sum)
-			.addComponent(sep2)
-			.addComponent(cbInstall)
-			.addComponent(cbUninstall)
-			.addComponent(sep3)
-			.addGap(5)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(ok)
-				.addComponent(cancel)
-			)
-		);
-
-		gl.linkSize(SwingConstants.HORIZONTAL, ok, cancel);
-
-		for (Component cmp : p.getComponents()) {
-			if ((cmp instanceof IGButton) 
-					|| (cmp instanceof JLabel)
-					|| (cmp instanceof JCheckBox)) {
-				cmp.setFont(fontMedium);
-				cmp.setForeground(foreground);
-			}
-		}
-		p.setBackground(backgroundColoring);
-		
-		Container c = dialog.getContentPane();
-		c.add(p, BorderLayout.CENTER);
-
-		dialog.pack();
-		dialog.setResizable(false);
-		dialog.setLocationRelativeTo(this);
-		dialog.setModal(true);
-		dialog.setVisible(true);
-
-		if (okPressed.get()) {
+		LanguagePacksDialog dlg = new LanguagePacksDialog(
+				this, this, this, 
+				flags,  updates.getModule(GAME).files, installDir, isInstall);
+		if (dlg.display(this)) {
 			installedLanguages.clear();
-			int i = 0;
-			for (JCheckBox cb : cbs) {
-				if (cb.isSelected()) {
-					installedLanguages.add(lngs.get(i));
-				}
-				i++;
-			}
-			
-			if (cbUninstall.isSelected()) {
-				Set<String> remove = new HashSet<String>();
-				i = 0;
-				for (JCheckBox cb : cbs) {
-					if (!cb.isSelected()) {
-						remove.add(lngs.get(i));
-					}
-					i++;
-				}
+			installedLanguages.addAll(dlg.getLanguages(true));
+			if (dlg.doUninstall()) {
+				Set<String> remove = new HashSet<String>(dlg.getLanguages(false));
 				for (LFile lf : updates.getModule(GAME).files) {
 					if (remove.contains(lf.language)) {
 						try {
@@ -2892,17 +2386,29 @@ public class Launcher extends JFrame {
 						}
 					}
 				}
-				if (!cbInstall.isSelected()) {
+				if (dlg.doInstall()) {
 					detectVersion();
 					doUpgrades();
 				}
 			}
-			if (cbInstall.isSelected()) {
+			if (dlg.doInstall()) {
 				doInstall(false);
 				return false;
 			}
+			return true;
 		}
-		
-		return okPressed.get();
+		return false;
+	}
+	@Override
+	public Color backgroundColor() {
+		return backgroundColoring;
+	}
+	@Override
+	public Color foreground() {
+		return foreground;
+	}
+	@Override
+	public Font fontMedium() {
+		return fontMedium;
 	}
 }
