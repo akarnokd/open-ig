@@ -15,10 +15,10 @@
 		</general>
 		<!-- Release notes -->
 		<notes url='https://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-			<desc lang='hu'>Francia nyelv támogatás.</desc>
-			<desc lang='en'>French language support.</desc>
-			<desc lang='de'>Französische Sprache möglichkeit.</desc>
-			<desc lang='fr'>French language support (translation needed).</desc>
+			<desc lang='hu'>Javítások és előkészület.</desc>
+			<desc lang='en'>Fixes and preparations.</desc>
+			<desc lang='de'>Fehlrebehebungend und vorbereitungen.</desc>
+			<desc lang='fr'>Fixes and preparations.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
