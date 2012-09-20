@@ -115,7 +115,9 @@ public class MediaPlayer {
 					try {
 						barrier.await();
 					} catch (BrokenBarrierException ex) {
-						Exceptions.add(ex);
+						if (!stop) {
+							Exceptions.add(ex);
+						}
 					} catch (InterruptedException ex) {
 						// ignored, maybe cancel
 					}
@@ -165,7 +167,9 @@ public class MediaPlayer {
 							} catch (InterruptedException ex) {
 								
 							} catch (BrokenBarrierException ex) {
-								Exceptions.add(ex);
+								if (!stop) {
+									Exceptions.add(ex);
+								}
 							} finally {
 								sdl.close();
 							}

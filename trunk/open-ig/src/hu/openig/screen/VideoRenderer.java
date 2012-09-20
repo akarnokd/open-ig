@@ -172,7 +172,9 @@ public class VideoRenderer extends Thread {
 								} catch (InterruptedException ex) {
 									
 								} catch (BrokenBarrierException ex) {
-									
+									if (!stopped) {
+										Exceptions.add(ex);
+									}
 								}
 								frames2 = (int)Math.ceil(audioLength * fps / 22050.0);
 								starttime = System.nanoTime();
