@@ -2175,7 +2175,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		campaignEditor.setVisible(!visible);
 		tools.setVisible(!visible);
 		dlcManager.setVisible(!visible);
-		other.setEnabled(!visible);
+		other.setVisible(!visible);
 	}
 	/**
 	 * Update the launcher itself.
