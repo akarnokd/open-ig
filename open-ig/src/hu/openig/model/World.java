@@ -14,7 +14,6 @@ import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.PlanetType;
 import hu.openig.render.TextRenderer;
-import hu.openig.scripting.SkirmishScripting;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
@@ -2833,8 +2832,10 @@ public class World {
 	/**
 	 * Initializes the world via the loadCampaign, then performs the alterations.
 	 * @param rl the resource locator
+	 * @param scripting the scripting to use
 	 */
-	public void loadSkirmish(final ResourceLocator rl) {
+	public void loadSkirmish(final ResourceLocator rl,
+			GameScripting scripting) {
 		definition = skirmishDefinition.createDefinition(rl);
 		labels = definition.labels;
 		difficulty = skirmishDefinition.initialDifficulty;
@@ -2974,8 +2975,8 @@ public class World {
 
 		applyTraits();
 		
-		scripting = new SkirmishScripting();
-		scripting.init(player, null);
+		this.scripting = scripting;
+		this.scripting.init(player, null);
 	}
 	/**
 	 * Establish diplomatic relation between groups.

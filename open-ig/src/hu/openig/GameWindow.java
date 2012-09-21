@@ -68,6 +68,7 @@ import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
 import hu.openig.screen.items.TraitScreen;
 import hu.openig.screen.items.VideoScreen;
+import hu.openig.scripting.SkirmishScripting;
 import hu.openig.ui.UIColorLabel;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIMouse;
@@ -2248,7 +2249,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (sk != null) {
 				world.skirmishDefinition = sk1;
 				world.definition = sk1.createDefinition(commons.rl);
-				world.loadSkirmish(commons.rl);
+				world.loadSkirmish(commons.rl, new SkirmishScripting());
 			} else {
 				world.definition = GameDefinition.parse(commons.rl, game);
 				world.labels = new Labels();
