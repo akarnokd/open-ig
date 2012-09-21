@@ -27,6 +27,7 @@ import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.scripting.SkirmishScripting;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
 import hu.openig.ui.UIComponent;
@@ -2143,7 +2144,7 @@ public class SkirmishScreen extends ScreenBase {
 					final World world = new World(commons);
 					
 					world.skirmishDefinition = def;
-					world.loadSkirmish(commons.rl);
+					world.loadSkirmish(commons.rl, new SkirmishScripting());
 					
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
