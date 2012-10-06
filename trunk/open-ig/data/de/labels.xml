@@ -1846,7 +1846,7 @@
 	<entry key='fleetstatus.attack'>Angriff von %s</entry>
 	<entry key='fleetstatus.composition'>Flaggschiffe:%s Kreuzern:%s Jäger: %s Panzern:%s</entry>
 	<entry key='fleetstatus.composition.alien'>Raumschiffe: %s, Jäger: %s</entry>
-	<entry key='fleetstatus.firepower'>Feuerkraft: %d</entry>
+	<entry key='fleetstatus.firepower'>Feuerkraft: %.0f</entry>
 	<entry key='fleetstatus.moving'>Bewegt</entry>
 	<entry key='fleetstatus.moving.after'>Bevolgung von %s</entry>
 	<entry key='fleetstatus.moving.to'>Bewegt nach %s</entry>

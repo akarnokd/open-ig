@@ -1407,7 +1407,7 @@
   <entry key='fleetstatus.attack'>Attacking %s</entry>
   <entry key='fleetstatus.composition'>Battleships:%s Cruisers:%s Fighters: %s Tanks:%s</entry>
   <entry key='fleetstatus.composition.alien'>Spaceships: %s, Fighters: %s</entry>
-  <entry key='fleetstatus.firepower'>Firepower: %d</entry>
+  <entry key='fleetstatus.firepower'>Firepower: %.0f</entry>
   <entry key='fleetstatus.moving'>Moving</entry>
   <entry key='fleetstatus.moving.after'>Following %s</entry>
   <entry key='fleetstatus.moving.to'>Moving to %s</entry>
