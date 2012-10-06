@@ -945,7 +945,7 @@
 	<entry key='fleetstatus.moving.to'>Irány: %s</entry>
 	<entry key='fleetstatus.moving.after'>Követés: %s</entry>
 	<entry key='fleetstatus.composition'>Csatahajó:%s Cirkáló:%s Vadász: %s Tank:%s</entry>
-	<entry key='fleetstatus.firepower'>Tűzerő  : %d</entry>
+	<entry key='fleetstatus.firepower'>Tűzerő  : %.0f</entry>
 	<entry key='fleetstatus.speed'    >Sebesség: %d</entry>
 	<entry key='fleetstatus.nearby'>Közeli bolygó: %s</entry>
 		
