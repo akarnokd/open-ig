@@ -32,6 +32,7 @@ import hu.openig.model.World;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -623,7 +624,7 @@ public class SkirmishScripting implements GameScripting {
 	@Override
 	public List<VideoMessage> getSendMessages() {
 		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 	@Override
