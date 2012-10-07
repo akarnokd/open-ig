@@ -89,7 +89,7 @@ public class SkirmishDefinition {
 			xplayer.saveFields(p);
 			XElement xtraits = xplayer.add("traits");
 			for (Trait t : p.traits) {
-				xtraits.add("trait").set("id", t);
+				xtraits.add("trait").set("id", t.id);
 			}
 		}
 	}
