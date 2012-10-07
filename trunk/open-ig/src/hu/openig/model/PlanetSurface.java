@@ -349,6 +349,7 @@ public class PlanetSurface {
 		PlanetSurface result = new PlanetSurface();
 		
 		result.setSize(width, height);
+		result.variant = variant;
 		
 		for (Building b : buildings) {
 			Building bc = b.copy();
