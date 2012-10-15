@@ -296,6 +296,7 @@ public class Mission2 extends Mission {
 
 		Fleet tf = findTaggedFleet(MISSION_2_TRADER, player("Traders"));
 		if (tf != null) {
+			removeScripted(tf);
 			for (InventoryItem ii : tf.inventory) {
 				ii.owner = tf.owner;
 				ii.tag = null;
