@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The base class for missions.
@@ -479,10 +480,12 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @return true if it is the related spacewar
 	 */
 	protected boolean isMissionSpacewar(BattleInfo battle, String mission) {
-		if (objective(mission).isActive() 
+		Objective o = objective(mission);
+		Set<Integer> scripted = helper.scriptedFleets();
+		if (o.isActive() 
 				&& battle.attacker.owner == player 
 				&& battle.targetFleet != null) {
-			return helper.scriptedFleets().contains(battle.targetFleet.id);
+			return scripted.contains(battle.targetFleet.id);
 		}
 		return false;
 	}
