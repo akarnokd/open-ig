@@ -15,6 +15,10 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
+*2012 október 17*
+
+Ismét növekedett a Java biztonságossága. Erősen javaslom a frissítést a [http://www.oracle.com/technetwork/java/javase/overview/index.html legújabb 7u9-es] verzióra.
+
 *2012 szeptember 18*
 
 Ismét egy lassú fejlesztési fázisba érkeztünk. Csak apró frissítésekre és hibajavításokra lehet számítani az elkövetkező egy hónapban a játékot illetően. Megpróbálok két héten belül kiadni egy egyszerű kampányszerkesztőt.
