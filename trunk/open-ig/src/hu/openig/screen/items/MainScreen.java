@@ -570,6 +570,11 @@ public class MainScreen extends ScreenBase {
 				e.consume();
 				return true;
 			}
+			if (e.getKeyCode() == KeyEvent.VK_4) {
+				switchTo("ru");
+				e.consume();
+				return true;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_O) {
 			doSettings();
