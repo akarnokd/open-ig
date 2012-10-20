@@ -188,11 +188,13 @@ public class Mission22 extends Mission {
 
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
 		xmission.set("planets-owned", planetsOwned);
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M22.valueOf(xmission.get("stage", M22.NONE.toString()));
 		planetsOwned = xmission.getLong("planets-owned");
 	}

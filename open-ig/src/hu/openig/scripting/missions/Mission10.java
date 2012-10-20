@@ -108,10 +108,12 @@ public class Mission10 extends Mission {
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M10Stages.valueOf(xmission.get("stage", M10Stages.NONE.toString()));
 	}
 	@Override

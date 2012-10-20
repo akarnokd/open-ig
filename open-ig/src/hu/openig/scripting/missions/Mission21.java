@@ -56,10 +56,12 @@ public class Mission21 extends Mission {
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M21.valueOf(xmission.get("stage", M21.NONE.toString()));
 	}
 	@Override

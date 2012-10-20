@@ -55,11 +55,13 @@ public class Mission16 extends Mission {
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M16.valueOf(xmission.get("stage"));
 		reinforcements = xmission.getBoolean("reinforcements");
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
 		xmission.set("reinforcements", reinforcements);
 	}

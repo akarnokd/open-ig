@@ -653,5 +653,9 @@ public class SkirmishScripting implements GameScripting {
 	public boolean mayPlayerAttack(Player player) {
 		return true;
 	}
-
+	@Override
+	public void onLoaded() {
+		// TODO Auto-generated method stub
+		
+	}
 }

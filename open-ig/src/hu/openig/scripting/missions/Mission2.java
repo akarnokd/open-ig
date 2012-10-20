@@ -376,6 +376,7 @@ public class Mission2 extends Mission {
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		task1Once = xmission.getBoolean("task-1-once", objective("Mission-2-Task-1").isCompleted());
 		task2Once = xmission.getBoolean("task-2-once", objective("Mission-2-Task-2").isCompleted());
 		task3Once = xmission.getBoolean("task-3-once", objective("Mission-2-Task-3").isCompleted());
@@ -383,6 +384,7 @@ public class Mission2 extends Mission {
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("task-1-once", task1Once);
 		xmission.set("task-2-once", task2Once);
 		xmission.set("task-3-once", task3Once);

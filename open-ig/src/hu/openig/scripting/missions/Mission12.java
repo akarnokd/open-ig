@@ -55,6 +55,8 @@ public class Mission12 extends Mission {
 	protected boolean reinforcements;
 	/** The infection turns. */
 	protected int turns = 3;
+	/** Execute the completion routine on load? */
+	protected boolean runCompleter;
 	@Override
 	public void onTime() {
 		Objective m11t1 = objective("Mission-11");
@@ -225,16 +227,13 @@ public class Mission12 extends Mission {
 			}
 		}
 		if (cnt == 0) {
-			Action0 completer = new Action0() {
-				@Override
-				public void invoke() {
-					completeActiveTask();				
-				}
-			};
+			Action0 completer = createCompleter();
 			if (stage == M12Stages.FIRST_RUNDOWN || stage == M12Stages.FIRST_MESSAGE) {
 				if (multipleInfections) {
+					runCompleter = true;
 					incomingMessage("New Caroline-Garthog-Virus-Breached", completer);
 				} else {
+					runCompleter = true;
 					incomingMessage("New Caroline-Garthog-Virus-Resolved", completer);
 				}
 				addMission("Mission-12-Subsequent", 24);
@@ -244,11 +243,14 @@ public class Mission12 extends Mission {
 			}
 			if (stage == M12Stages.SUBSEQUENT_RUNDOWN || stage == M12Stages.SUBSEQUENT_MESSAGE) {
 				if (tradersLost) {
+					runCompleter = true;
 					incomingMessage("New Caroline-Garthog-Virus-Again-Deaths", completer);
 				} else 
 				if (multipleInfections) {
+					runCompleter = true;
 					incomingMessage("New Caroline-Garthog-Virus-Breached", completer);
 				} else {
+					runCompleter = true;
 					incomingMessage("New Caroline-Garthog-Virus-Resolved", completer);
 				}
 				boolean noCarriers = objective("Mission-14").state == ObjectiveState.SUCCESS;
@@ -267,6 +269,19 @@ public class Mission12 extends Mission {
 				}				
 			}
 		}
+	}
+	/**
+	 * Create the completer action.
+	 * @return the action
+	 */
+	private Action0 createCompleter() {
+		return new Action0() {
+			@Override
+			public void invoke() {
+				runCompleter = false;
+				completeActiveTask();				
+			}
+		};
 	}
 	@Override
 	public void onPlanetInfected(Planet planet) {
@@ -315,17 +330,28 @@ public class Mission12 extends Mission {
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M12Stages.valueOf(xmission.get("stage"));
 		tradersLost = xmission.getBoolean("traders-lost");
 		multipleInfections = xmission.getBoolean("multiple-infections", false);
 		reinforcements = xmission.getBoolean("reinforcements", false);
+		runCompleter = xmission.getBoolean("run-completer", false);
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
 		xmission.set("traders-lost", tradersLost);
 		xmission.set("multiple-infections", multipleInfections);
 		xmission.set("reinforcements", reinforcements);
+		xmission.set("run-completer", runCompleter);
+	}
+	@Override
+	public void onLoaded() {
+		super.onLoaded();
+		if (runCompleter) {
+			createCompleter().invoke();
+		}
 	}
 	@Override
 	public void reset() {

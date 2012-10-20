@@ -41,6 +41,7 @@ import hu.openig.utils.XElement;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +57,8 @@ public abstract class Mission implements GameScriptingEvents {
 	protected Player player;
 	/** The scripting helper. */
 	private MissionScriptingHelper helper;
+	/** The pending objectives in case of save between incoming message and objective showup. */
+	protected Deque<String[]> pendingObjectives = U.newLinkedList();
 	/**
 	 * Initializes the mission object.
 	 * @param player the main player
@@ -508,9 +511,11 @@ public abstract class Mission implements GameScriptingEvents {
 		if (objective.length == 0) {
 			incomingMessage(messageId, (Action0)null);
 		} else {
+			pendingObjectives.add(objective);
 			incomingMessage(messageId, new Action0() {
 				@Override
 				public void invoke() {
+					pendingObjectives.remove(objective);
 					for (String o : objective) {
 						showObjective(o);
 					}
@@ -727,18 +732,24 @@ public abstract class Mission implements GameScriptingEvents {
 		return null;
 	}
 	/**
-	 * Load the state.
+	 * Load the state. Implementors should always call super.load().
 	 * @param xmission the mission XML
 	 */
 	public void load(XElement xmission) {
-		
+		pendingObjectives.clear();
+		for (XElement xobj : xmission.childrenWithName("pending-objective")) {
+			pendingObjectives.add(U.split(xobj.get("list"), ","));
+		}
 	}
 	/**
-	 * Save the state.
+	 * Save the state. Implementors should always call super.save().
 	 * @param xmission the mission XML
 	 */
 	public void save(XElement xmission) {
-		
+		for (String[] obj : pendingObjectives) {
+			XElement xobj = xmission.add("pending-objective");
+			xobj.set("list", U.join(obj, ","));
+		}
 	}
 	/** @return Check if this mission is still applicable (e.g., level check). */
 	public abstract boolean applicable();
@@ -1025,6 +1036,16 @@ public abstract class Mission implements GameScriptingEvents {
 						is.type = is.slot.items.get(0);
 					}
 				}
+			}
+		}
+	}
+	@Override
+	public void onLoaded() {
+		// show queued objectives
+		while (!pendingObjectives.isEmpty()) {
+			String[] objs = pendingObjectives.removeFirst();
+			for (String s : objs) {
+				showObjective(s);
 			}
 		}
 	}

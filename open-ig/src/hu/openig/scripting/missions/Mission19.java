@@ -66,11 +66,13 @@ public class Mission19 extends Mission {
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
 		xmission.set("original-relation", originalRelation);
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M19.valueOf(xmission.get("stage"));
 		originalRelation = xmission.getDouble("original-relation", 50);
 	}

@@ -278,6 +278,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 
 	@Override
 	public void load(XElement in) {
+		super.load(in);
 		lastLevel = in.getInt("lastLevel", world.level);
 		for (XElement xmsgs : in.childrenWithName("sends")) {
 			for (XElement xmsg : xmsgs.childrenWithName("send")) {
@@ -768,6 +769,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 	@Override
 	public void save(XElement out) {
+		super.save(out);
 		out.set("lastLevel", lastLevel);
 		
 		XElement xmsgs = out.add("sends");
@@ -1293,5 +1295,12 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		t.printStackTrace(pw);
 		pw.flush();
 		return sw.toString();
+	}
+	@Override
+	public void onLoaded() {
+		super.onLoaded();
+		for (Mission m : missions) {
+			m.onLoaded();
+		}
 	}
 }

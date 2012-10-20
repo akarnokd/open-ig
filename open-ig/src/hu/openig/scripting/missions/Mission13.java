@@ -299,11 +299,13 @@ public class Mission13 extends Mission {
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M13.valueOf(xmission.get("stage"));
 		bensonReached = xmission.getBoolean("benson-reached", false);
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
 		xmission.set("benson-reached", bensonReached);
 	}

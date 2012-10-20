@@ -55,6 +55,8 @@ public class Mission5 extends Mission {
 	protected boolean reinforcements;
 	/** The current stage. */
 	M5 stage = M5.NONE;
+	/** Execute the task 3 success action? */
+	boolean runTask3Success;
 	@Override
 	public boolean applicable() {
 		return world.level == 1;
@@ -171,14 +173,22 @@ public class Mission5 extends Mission {
 				if (own != null) {
 					own.addInventory(research("Fighter1"), 3);
 				}
-				world.env.playSound(SoundTarget.COMPUTER, SoundType.REINFORCEMENT_ARRIVED_1, new Action0() {
-					@Override
-					public void invoke() {
-						setObjectiveState("Mission-5-Task-3", ObjectiveState.SUCCESS);
-					}
-				});
+				runTask3Success = true;
+				world.env.playSound(SoundTarget.COMPUTER, SoundType.REINFORCEMENT_ARRIVED_1, createTask3Success());
 			}
 		}
+	}
+	/**
+	 * @return Creates a task success action.
+	 */
+	private Action0 createTask3Success() {
+		return new Action0() {
+			@Override
+			public void invoke() {
+				runTask3Success = false;
+				setObjectiveState("Mission-5-Task-3", ObjectiveState.SUCCESS);
+			}
+		};
 	}
 	/**
 	 * Perform the promotion action.
@@ -514,17 +524,28 @@ public class Mission5 extends Mission {
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		reinforcements = xmission.getBoolean("reinforcements", false);
 		stage = M5.valueOf(xmission.get("stage", M5.NONE.toString()));
+		runTask3Success = xmission.getBoolean("run-task-3-success", false);
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("reinforcements", reinforcements);
 		xmission.set("stage", stage);
+		xmission.set("run-task-3-success", runTask3Success);
 	}
 	@Override
 	public void reset() {
 		reinforcements = false;
 		stage = M5.NONE;
+	}
+	@Override
+	public void onLoaded() {
+		super.onLoaded();
+		if (runTask3Success) {
+			createTask3Success().invoke();
+		}
 	}
 }
