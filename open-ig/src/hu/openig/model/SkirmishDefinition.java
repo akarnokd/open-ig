@@ -34,7 +34,9 @@ public class SkirmishDefinition {
 	/** The technology definitions. */
 	public String tech;
 	/** The initial tech level. */
-	public int initialLevel;
+	public int startLevel;
+	/** The maximum tech level. */
+	public int maxLevel;
 	/** The initial money. */
 	public int initialMoney;
 	/** The initial planets per player. */
@@ -148,7 +150,8 @@ public class SkirmishDefinition {
 		result.planets = galaxyDef.planets;
 		result.players = playerDef.players;
 		result.scripting = null;
-		result.startingLevel = initialLevel;
+		result.level = maxLevel;
+		result.techLevel = startLevel;
 		result.talks = playerDef.talks;
 		result.tech = techDef.tech;
 		result.test = playerDef.test;
@@ -176,7 +179,8 @@ public class SkirmishDefinition {
 				* result
 				+ ((initialDiplomaticRelation == null) ? 0
 						: initialDiplomaticRelation.hashCode());
-		result = prime * result + initialLevel;
+		result = prime * result + startLevel;
+		result = prime * result + maxLevel;
 		result = prime * result + initialMoney;
 		result = prime * result + initialOrbitalFactories;
 		result = prime * result + initialPlanets;
@@ -243,7 +247,10 @@ public class SkirmishDefinition {
 		if (initialDiplomaticRelation != other.initialDiplomaticRelation) {
 			return false;
 		}
-		if (initialLevel != other.initialLevel) {
+		if (startLevel != other.startLevel) {
+			return false;
+		}
+		if (maxLevel != other.maxLevel) {
 			return false;
 		}
 		if (initialMoney != other.initialMoney) {

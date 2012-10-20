@@ -121,8 +121,12 @@ public class SkirmishScreen extends ScreenBase {
 	CampaignSpinBox technologyDef;
 	/** Technology level label. */
 	UILabel technologyLevelLabel;
-	/** Technology level. */
-	NumberSpinBox technologyLevel;
+	/** Technology level label. */
+	UILabel technologyLevelMaxLabel;
+	/** Technology level start. */
+	NumberSpinBox technologyLevelStart;
+	/** Technology level maximum. */
+	NumberSpinBox technologyLevelMax;
 	/** Label. */
 	UILabel initialMoneyLabel;
 	/** Number. */
@@ -307,10 +311,15 @@ public class SkirmishScreen extends ScreenBase {
 		technologyDefLabel = createLabel("skirmish.tech_template");
 
 		technologyLevelLabel = createLabel("skirmish.tech_level");
-		technologyLevel = new NumberSpinBox(1, 5, 1, 1);
-		technologyLevel.value = 5;
+		technologyLevelMaxLabel = createLabel("skirmish.tech_level_max");
+		
+		technologyLevelMax = new NumberSpinBox(1, 5, 1, 1);
+		technologyLevelMax.value = 5;
 
-		galaxyPanel.add(technologyDef, technologyDefLabel, technologyLevelLabel, technologyLevel);
+		technologyLevelStart = new NumberSpinBox(0, 6, 1, 1);
+		technologyLevelStart.value = 0;
+
+		galaxyPanel.add(technologyDef, technologyDefLabel, technologyLevelLabel, technologyLevelStart, technologyLevelMaxLabel, technologyLevelMax);
 		
 		
 		initialMoneyLabel = createLabel("skirmish.initial_money");
@@ -550,8 +559,12 @@ public class SkirmishScreen extends ScreenBase {
 		
 		cy += 35;
 		technologyLevelLabel.location(5, cy + 7);
-		technologyLevel.setMaxSize();
-		technologyLevel.location(5 + technologyLevelLabel.width + 20, cy);
+		technologyLevelStart.setMaxSize();
+		technologyLevelStart.location(5 + technologyLevelLabel.width + 20, cy);
+
+		technologyLevelMaxLabel.location(technologyLevelStart.x + technologyLevelStart.width + 30, cy + 7);
+		technologyLevelMax.setMaxSize();
+		technologyLevelMax.location(technologyLevelMaxLabel.x + technologyLevelMaxLabel.width + 20, cy);
 
 		cy += 35;
 		initialRelationLabel.location(5, cy + 7);
@@ -2070,7 +2083,8 @@ public class SkirmishScreen extends ScreenBase {
 		
 		result.race = galaxyRaces.get().name;
 		result.tech = technologyDef.get().name;
-		result.initialLevel = technologyLevel.value;
+		result.startLevel = technologyLevelStart.value;
+		result.maxLevel = technologyLevelMax.value;
 
 		result.initialDiplomaticRelation = SkirmishDiplomaticRelation.values()[initialRelation.index];
 		result.initialDifficulty = Difficulty.values()[initialDifficulty.index];

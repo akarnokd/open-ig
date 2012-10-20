@@ -3123,6 +3123,7 @@
 	<entry key='traits.combat_engineers'>Combat engineers</entry>
 	<entry key='traits.combat_engineers.desc'>Your engineers are brave enough to help you fix and regenerate your shields during battles, so long as the shield generator isn't destroyed.</entry>
 	<entry key='quickresearch.cost'>Research cost: %1$,d cr</entry>
+	<entry key='skirmish.tech_level_max'>Maximum:</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

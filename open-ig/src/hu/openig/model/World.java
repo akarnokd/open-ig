@@ -202,7 +202,7 @@ public class World {
 		exec.allowCoreThreadTimeOut(true);
 		final WipPort wip = new WipPort(8);
 		try {
-			level = definition.startingLevel;
+			level = definition.level;
 			
 			processResearches(rl.getXML(definition.tech));
 
@@ -568,7 +568,7 @@ public class World {
 			this.players.put(p.id, p);
 			
 			for (ResearchType rt : researches.researches.values()) {
-				if (rt.race.contains(p.race) && rt.level == 0) {
+				if (rt.race.contains(p.race) && rt.level <= definition.techLevel) {
 					p.add(rt);
 				}
 			}

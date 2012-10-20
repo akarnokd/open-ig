@@ -34,7 +34,9 @@ public class GameDefinition {
 	/** The game name. */
 	public String name;
 	/** The starting level of the game. */
-	public int startingLevel;
+	public int level;
+	/** The immediately available technology level. */
+	public int techLevel;
 	/** Resource location. */
 	@LoadField
 	public String battle;
@@ -111,7 +113,9 @@ public class GameDefinition {
 		if (image != null) {
 			result.image = rl.getImage(image);
 		}
-		result.startingLevel = Integer.parseInt(root.childValue("level"));
+		result.level = Integer.parseInt(root.childValue("level"));
+		String techLevelStr = root.childValue("tech-level");
+		result.techLevel = techLevelStr != null ? Integer.parseInt(techLevelStr) : 0;
 		
 		for (Field f : GameDefinition.class.getDeclaredFields()) {
 			if (f.isAnnotationPresent(LoadField.class)) {
