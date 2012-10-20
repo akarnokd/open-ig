@@ -93,7 +93,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.39";
+	public static final String VERSION = "0.40";
 	/**
 	 * The update XML to download.
 	 */
@@ -201,7 +201,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** Not installed constant. */
 	static final String NOT_INSTALLED = "0.00.000";
 	/** The installed version. */
-	String detectedVersion;
+	String detectedVersion = NOT_INSTALLED;
 	/** The current worker. */
 	SwingWorker<?, ?> worker;
 	/** The installation directory. */
@@ -2170,12 +2170,17 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	void showHideProgress(boolean visible) {
 		progressPanel.setVisible(visible);
 
+		
 		run.setEnabled(!visible);
 		continueLast.setEnabled(!visible);
-		campaignEditor.setVisible(!visible);
-		tools.setVisible(!visible);
-		dlcManager.setVisible(!visible);
-		other.setVisible(!visible);
+		
+		boolean isInstalled = !NOT_INSTALLED.equals(detectedVersion);
+		campaignEditor.setVisible(isInstalled && !visible);
+		tools.setVisible(isInstalled && !visible);
+		dlcManager.setVisible(isInstalled && !visible);
+		other.setVisible(isInstalled && !visible);
+		
+		
 	}
 	/**
 	 * Update the launcher itself.
