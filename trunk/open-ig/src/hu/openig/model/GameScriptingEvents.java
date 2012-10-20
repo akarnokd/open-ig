@@ -261,4 +261,6 @@ public interface GameScriptingEvents {
 	void onSpaceChat(SpacewarWorld world, Chat chat, Node node);
 	/** Called when the user clicks on the record message button. */
 	void onRecordMessage();
+	/** Notification when the game was just loaded. Should execute any timed and pending operations. */
+	void onLoaded();
 }

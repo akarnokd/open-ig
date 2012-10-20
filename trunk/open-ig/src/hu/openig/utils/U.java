@@ -569,4 +569,45 @@ public final class U {
 		b.append(s);
 		return b.toString();
 	}
+	/**
+	 * Join the specified array of elements by the given separator.
+	 * @param objs the object array
+	 * @param separator the separator
+	 * @return the string
+	 */
+	public static String join(Object[] objs, String separator) {
+		StringBuilder b = new StringBuilder();
+		
+		if (objs != null) {
+			int i = 0;
+			for (Object o : objs) {
+				if (i > 0) {
+					b.append(separator);
+				}
+				b.append(o);
+			}
+		}
+		return b.toString();
+	}
+	/**
+	 * Splits the value string by the given separator.
+	 * @param value the value
+	 * @param separator the separator
+	 * @return the array of components
+	 */
+	public static String[] split(String value, String separator) {
+		List<String> result = newArrayList();
+		int idx = 0;
+		while (true) {
+			int idx2 = value.indexOf(separator, idx);
+			if (idx2 < 0) {
+				result.add(value.substring(idx));
+				break;
+			} else {
+				result.add(value.substring(idx, idx2));
+				idx = idx2 + separator.length();
+			}
+		}
+		return result.toArray(new String[0]);
+	}
 }

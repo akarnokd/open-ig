@@ -13,12 +13,15 @@ import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
+import hu.openig.utils.XElement;
 
 /**
  * Mission 8: Test and visions.
  * @author akarnokd, 2012.01.18.
  */
 public class Mission8 extends Mission {
+	/** Re-execute the waiting? */
+	boolean runWaiting;
 	@Override
 	public boolean applicable() {
 		return world.level == 2;
@@ -35,14 +38,8 @@ public class Mission8 extends Mission {
 	public void onTime() {
 		final Objective m8 = objective("Mission-8");
 		if (checkMission("Mission-8")) {
-			world.env.playSound(SoundTarget.COMPUTER, SoundType.PHSYCHOLOGIST_WAITING, new Action0() {
-				@Override
-				public void invoke() {
-					showObjective(m8);
-					world.testNeeded = true;
-					world.testCompleted = false;
-				}
-			});
+			runWaiting = true;
+			world.env.playSound(SoundTarget.COMPUTER, SoundType.PHSYCHOLOGIST_WAITING, createWaiting(m8));
 		}
 		if (world.testCompleted && m8.state == ObjectiveState.ACTIVE) {
 			setObjectiveState(m8, ObjectiveState.SUCCESS);
@@ -93,6 +90,22 @@ public class Mission8 extends Mission {
 			world.currentTalk = null;
 		}
 	}
+	/**
+	 * Create the action to execute after the announcement of the phsychologist.
+	 * @param m8 the mission 8
+	 * @return the action
+	 */
+	private Action0 createWaiting(final Objective m8) {
+		return new Action0() {
+			@Override
+			public void invoke() {
+				runWaiting = false;
+				showObjective(m8);
+				world.testNeeded = true;
+				world.testCompleted = false;
+			}
+		};
+	}
 	@Override
 	public void onTalkCompleted() {
 		if ("phsychologist".equals(world.currentTalk)) {
@@ -100,6 +113,23 @@ public class Mission8 extends Mission {
 				clearMission("Mission-8-Task-1-Timeout");
 				addTimeout("Mission-8-Task-1-Hide", 13000);
 			}
+		}
+	}
+	@Override
+	public void load(XElement xmission) {
+		super.load(xmission);
+		runWaiting = xmission.getBoolean("run-waiting", false);
+	}
+	@Override
+	public void save(XElement xmission) {
+		super.save(xmission);
+		xmission.set("run-waiting", runWaiting);
+	}
+	@Override
+	public void onLoaded() {
+		super.onLoaded();
+		if (runWaiting) {
+			createWaiting(objective("Mission-8")).invoke();
 		}
 	}
 }

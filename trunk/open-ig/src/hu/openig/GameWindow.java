@@ -1567,6 +1567,7 @@ public class GameWindow extends JFrame implements GameControls {
 		if (status) {
 			displayStatusbar();
 		}
+		fworld.scripting.onLoaded();
 	}
 	/**
 	 * Save the game related settings such as position and configuration values.

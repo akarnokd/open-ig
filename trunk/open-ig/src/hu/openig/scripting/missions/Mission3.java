@@ -42,6 +42,8 @@ public class Mission3 extends Mission {
 	}
 	/** The current mission stage. */
 	protected M3 stage = M3.NONE;
+	/** Execute the completion routine on load? */
+	protected boolean runCompleter;
 	@Override
 	public boolean applicable() {
 		return world.level == 1;
@@ -88,13 +90,8 @@ public class Mission3 extends Mission {
 			world.env.playVideo("interlude/merchant_destroyed", new Action0() {
 				@Override
 				public void invoke() {
-					incomingMessage("Douglas-Carrier-Lost", new Action0() {
-						@Override
-						public void invoke() {
-							setObjectiveState("Mission-3", ObjectiveState.FAILURE);
-							addTimeout("Mission-3-Done", 13000);
-						}
-					});
+					runCompleter = true;
+					incomingMessage("Douglas-Carrier-Lost", createCompleter());
 				}
 			});
 		}
@@ -106,6 +103,19 @@ public class Mission3 extends Mission {
 		if (checkTimeout("Mission-3-Done")) {
 			objective("Mission-3").visible = false;
 		}
+	}
+	/**
+	 * @return creates an action that runs if the carrier is lost.
+	 */
+	private Action0 createCompleter() {
+		return new Action0() {
+			@Override
+			public void invoke() {
+				runCompleter = false;
+				setObjectiveState("Mission-3", ObjectiveState.FAILURE);
+				addTimeout("Mission-3-Done", 13000);
+			}
+		};
 	}
 	
 	/** Remove the scripted fleets. */
@@ -261,11 +271,15 @@ public class Mission3 extends Mission {
 	}
 	@Override
 	public void save(XElement xmission) {
+		super.save(xmission);
 		xmission.set("stage", stage);
+		xmission.set("run-completer", runCompleter);
 	}
 	@Override
 	public void load(XElement xmission) {
+		super.load(xmission);
 		stage = M3.valueOf(xmission.get("stage", M3.NONE.toString()));
+		runCompleter = xmission.getBoolean("run-completer", false);
 	}
 	@Override
 	public boolean fleetBlink(Fleet f) {
@@ -291,6 +305,13 @@ public class Mission3 extends Mission {
 					createCarrierTask();
 				}
 			});
+		}
+	}
+	@Override
+	public void onLoaded() {
+		super.onLoaded();
+		if (runCompleter) {
+			createCompleter().invoke();
 		}
 	}
 }
