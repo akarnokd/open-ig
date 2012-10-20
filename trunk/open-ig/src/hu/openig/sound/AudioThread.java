@@ -112,7 +112,7 @@ public class AudioThread extends Thread {
 				} else {
 					sdl.write(data.data, 0, data.data.length);
 				}
-				sdl.drain();
+//				sdl.drain();
 			}
 		} catch (InterruptedException ex) {
 			// time to quit;

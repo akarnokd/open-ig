@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<original-converter>
+	<!-- Already converted. -->
+	<copy src='Sound/NOI01.SMP.wav' dst='ui/new_message_1.wav' type='audio' />
+	<copy src='Sound/NOI02.SMP.wav' dst='ui/new_message_2.wav' type='audio' />
+	<copy src='Sound/NOI03.SMP.wav' dst='ui/message.wav' type='audio' />
+	<copy src='Sound/NOI04.SMP.wav' dst='ui/new_message_3.wav' type='audio' />
+	<copy src='Sound/NOI08.SMP.wav' dst='ui/phsychologist_waiting.wav'
+		type='audio' />
+	<copy src='Sound/NOI09.SMP.wav' dst='ui/enemy_fleet_detected.wav'
+		type='audio' />
+	<copy src='Sound/NOI10.SMP.wav' dst='ui/carrier_under_attack.wav'
+		type='audio' />
+	<copy src='Sound/NOI15.SMP.wav' dst='ui/reinforcement_arrived_1.wav'
+		type='audio' />
+	<copy src='Sound/NOI16.SMP.wav' dst='ui/reinforcement_arrived_2.wav'
+		type='audio' />
+	<copy src='Sound/NOI24.SMP.wav' dst='ui/bridge.wav' type='audio' />
+	<copy src='Sound/NOI25.SMP.wav' dst='ui/starmap.wav' type='audio' />
+	<copy src='Sound/NOI26.SMP.wav' dst='ui/colony.wav' type='audio' />
+	<copy src='Sound/NOI27.SMP.wav' dst='ui/equipment.wav' type='audio' />
+	<copy src='Sound/NOI28.SMP.wav' dst='ui/production.wav' type='audio' />
+	<copy src='Sound/NOI29.SMP.wav' dst='ui/research.wav' type='audio' />
+	<copy src='Sound/NOI30.SMP.wav' dst='ui/information.wav' type='audio' />
+	<copy src='Sound/NOI31.SMP.wav' dst='ui/cabin.wav' type='audio' />
+	<copy src='Sound/NOI32.SMP.wav' dst='ui/bar.wav' type='audio' />
+	<copy src='Sound/NOI33.SMP.wav' dst='ui/diplomacy.wav' type='audio' />
+	<copy src='Sound/NOI34.SMP.wav' dst='ui/inventions.wav' type='audio' />
+	<copy src='Sound/NOI35.SMP.wav' dst='ui/aliens.wav' type='audio' />
+	<copy src='Sound/NOI36.SMP.wav' dst='ui/financial_info.wav' type='audio' />
+	<copy src='Sound/NOI37.SMP.wav' dst='ui/military_info.wav' type='audio' />
+	<copy src='Sound/NOI38.SMP.wav' dst='ui/colony_info.wav' type='audio' />
+	<copy src='Sound/NOI39.SMP.wav' dst='ui/fleets.wav' type='audio' />
+	<copy src='Sound/NOI40.SMP.wav' dst='ui/buildings.wav' type='audio' />
+	<copy src='Sound/NOI41.SMP.wav' dst='ui/planets.wav' type='audio' />
+	<copy src='Sound/NOI42.SMP.wav' dst='ui/ship_deployed.wav' type='audio' />
+	<copy src='Sound/NOI49.SMP.wav' dst='ui/split_fleet.wav' type='audio' />
+	<copy src='Sound/NOI50.SMP.wav' dst='ui/join_fleets.wav' type='audio' />
+	<copy src='Sound/NOI51.SMP.wav' dst='ui/new_fleet.wav' type='audio' />
+	<copy src='Sound/NOI52.SMP.wav' dst='ui/add_production.wav' type='audio' />
+	<copy src='Sound/NOI53.SMP.wav' dst='ui/del_production.wav' type='audio' />
+	<copy src='Sound/NOI54.SMP.wav' dst='ui/start_research.wav' type='audio' />
+	<copy src='Sound/NOI55.SMP.wav' dst='ui/stop_research.wav' type='audio' />
+	<copy src='Sound/NOI56.SMP.wav' dst='ui/production_complete.wav'
+		type='audio' />
+	<copy src='Sound/NOI57.SMP.wav' dst='ui/research_completed.wav'
+		type='audio' />
+	<copy src='Sound/NOI58.SMP.wav' dst='ui/satellite_destroyed.wav'
+		type='audio' />
+	<copy src='Sound/NOI59.SMP.wav' dst='ui/unknown_ship.wav' type='audio' />
+	<copy src='Sound/NOI60.SMP.wav' dst='ui/revolt.wav' type='audio' />
+	<copy src='Sound/NOI61.SMP.wav' dst='ui/unknown_fleet.wav' type='audio' />
+	<copy src='Sound/NOI80.SMP.wav' dst='ui/record_message_no.wav'
+		type='audio' />
+	<copy src='Sound/NOI81.SMP.wav' dst='ui/record_message_yes.wav'
+		type='audio' />
+	<copy src='Sound/NOI84.SMP.wav' dst='ui/welcome.wav' type='audio' />
+	<copy src='Sound/NOI85.SMP.wav' dst='ui/good_bye.wav' type='audio' />
+	<!-- Original -->
+	<smp src='Sound/NOI01.SMP' dst='ui/new_message_1.wav' />
+	<smp src='Sound/NOI02.SMP' dst='ui/new_message_2.wav' />
+	<smp src='Sound/NOI03.SMP' dst='ui/message.wav' />
+	<smp src='Sound/NOI04.SMP' dst='ui/new_message_3.wav' />
+	<smp src='Sound/NOI08.SMP' dst='ui/phsychologist_waiting.wav' />
+	<smp src='Sound/NOI09.SMP' dst='ui/enemy_fleet_detected.wav' />
+	<smp src='Sound/NOI10.SMP' dst='ui/carrier_under_attack.wav' />
+	<smp src='Sound/NOI15.SMP' dst='ui/reinforcement_arrived_1.wav' />
+	<smp src='Sound/NOI16.SMP' dst='ui/reinforcement_arrived_2.wav' />
+	<smp src='Sound/NOI24.SMP' dst='ui/bridge.wav' />
+	<smp src='Sound/NOI25.SMP' dst='ui/starmap.wav' />
+	<smp src='Sound/NOI26.SMP' dst='ui/colony.wav' />
+	<smp src='Sound/NOI27.SMP' dst='ui/equipment.wav' />
+	<smp src='Sound/NOI28.SMP' dst='ui/production.wav' />
+	<smp src='Sound/NOI29.SMP' dst='ui/research.wav' />
+	<smp src='Sound/NOI30.SMP' dst='ui/information.wav' />
+	<smp src='Sound/NOI31.SMP' dst='ui/cabin.wav' />
+	<smp src='Sound/NOI32.SMP' dst='ui/bar.wav' />
+	<smp src='Sound/NOI33.SMP' dst='ui/diplomacy.wav' />
+	<smp src='Sound/NOI34.SMP' dst='ui/inventions.wav' />
+	<smp src='Sound/NOI35.SMP' dst='ui/aliens.wav' />
+	<smp src='Sound/NOI36.SMP' dst='ui/financial_info.wav' />
+	<smp src='Sound/NOI37.SMP' dst='ui/military_info.wav' />
+	<smp src='Sound/NOI38.SMP' dst='ui/colony_info.wav' />
+	<smp src='Sound/NOI39.SMP' dst='ui/fleets.wav' />
+	<smp src='Sound/NOI40.SMP' dst='ui/buildings.wav' />
+	<smp src='Sound/NOI41.SMP' dst='ui/planets.wav' />
+	<smp src='Sound/NOI42.SMP' dst='ui/ship_deployed.wav' />
+	<smp src='Sound/NOI49.SMP' dst='ui/split_fleet.wav' />
+	<smp src='Sound/NOI50.SMP' dst='ui/join_fleets.wav' />
+	<smp src='Sound/NOI51.SMP' dst='ui/new_fleet.wav' />
+	<smp src='Sound/NOI52.SMP' dst='ui/add_production.wav' />
+	<smp src='Sound/NOI53.SMP' dst='ui/del_production.wav' />
+	<smp src='Sound/NOI54.SMP' dst='ui/start_research.wav' />
+	<smp src='Sound/NOI55.SMP' dst='ui/stop_research.wav' />
+	<smp src='Sound/NOI56.SMP' dst='ui/production_complete.wav' />
+	<smp src='Sound/NOI57.SMP' dst='ui/research_completed.wav' />
+	<smp src='Sound/NOI58.SMP' dst='ui/satellite_destroyed.wav' />
+	<smp src='Sound/NOI59.SMP' dst='ui/unknown_ship.wav' />
+	<smp src='Sound/NOI60.SMP' dst='ui/revolt.wav' />
+	<smp src='Sound/NOI61.SMP' dst='ui/unknown_fleet.wav' />
+	<smp src='Sound/NOI80.SMP' dst='ui/record_message_no.wav' />
+	<smp src='Sound/NOI81.SMP' dst='ui/record_message_yes.wav' />
+	<smp src='Sound/NOI84.SMP' dst='ui/welcome.wav' />
+	<smp src='Sound/NOI85.SMP' dst='ui/good_bye.wav' />
+
+	<!-- Intro -->
+	<ani-sound src='INTRO/Block1.ANI' dst='intro/intro_1.wav' />
+	<ani-sound src='INTRO/Block23.ANI' dst='intro/intro_2.wav' />
+	<ani-sound src='INTRO/Block4.ANI' dst='intro/intro_3.wav' />
+
+	<!-- Messages -->
+	<ani-sound src='message/1GO.ANI' dst='messages/douglas_fire_1_test_failed.wav' />
+	<ani-sound src='message/2GO.ANI' dst='messages/douglas_fire_1_no_order.wav' />
+	<ani-sound src='message/3GO.ANI' dst='messages/douglas_fire_1_battle.wav' />
+	<ani-sound src='message/DIGI003.ANI' dst='messages/merchant_under_attack_1.wav' />
+	<ani-sound src='message/DIGI004.ANI' dst='messages/merchant_under_attack_2.wav' />
+	<ani-sound src='message/DIGI005.ANI' dst='messages/merchant_under_attack_3.wav' />
+	<ani-sound src='message/DIGI006.ANI' dst='messages/merchant_under_attack_4.wav' />
+	<ani-sound src='message/DIGI007.ANI' dst='messages/merchant_under_attack_5.wav' />
+	<ani-sound src='message/DIGI008.ANI' dst='messages/douglas_pirates_destroyed_a_ship.wav' />
+	<ani-sound src='message/DIGI009.ANI' dst='messages/douglas_fire_1_mistakes.wav' />
+	<ani-sound src='message/DIGI012.ANI' dst='messages/wife_1.wav' />
+	<ani-sound src='message/DIGI013.ANI' dst='messages/naxos_unknown_ships_nearby.wav' />
+	<ani-sound src='message/DIGI014.ANI' dst='messages/douglas_escort_thorin.wav' />
+	<ani-sound src='message/digi016.ani' dst='messages/naxos_no_problem.wav' />
+	<ani-sound src='message/DIGI017.ANI' dst='messages/douglas_reinforcements_denied.wav' />
+	<ani-sound src='message/DIGI018.ANI' dst='messages/douglas_escort_thorin_reinforcements.wav' />
+	<ani-sound src='message/DIGI019.ANI' dst='messages/douglas_promotion_2.wav' />
+	<ani-sound src='message/DIGI022.ANI' dst='messages/merchant_under_attack_6.wav' />
+	<ani-sound src='message/DIGI023.ANI' dst='messages/merchant_under_attack_7.wav' />
+	<ani-sound src='message/DIGI024.ANI' dst='messages/merchant_under_attack_garthog.wav' />
+	<ani-sound src='message/DIGI025.ANI' dst='messages/douglas_fire_2_lost_merchants.wav' />
+	<ani-sound src='message/DIGI026.ANI' dst='messages/naxos_under_attack.wav' />
+	<ani-sound src='message/DIGI026_.ANI' dst='messages/san_sterling_under_attack.wav' />
+	<ani-sound src='message/DIGI027.ANI' dst='messages/san_sterling_under_attack_2.wav' />
+	<ani-sound src='message/DIGI028B.ANI' dst='messages/new_caroline_under_attack.wav' />
+	<ani-sound src='message/DIGI028D.ANI' dst='messages/achilles_under_attack.wav' />
+	<ani-sound src='message/DIGI028F.ANI' dst='messages/zeuson_under_attack.wav' />
+	<ani-sound src='message/DIGI029.ANI' dst='messages/douglas_fire_3_lost_planet.wav' />
+	<ani-sound src='message/DIGI030.ANI' dst='messages/douglas_escort_carrier.wav' />
+	<ani-sound src='message/DIGI031.ANI' dst='messages/douglas_escort_carrier_lost.wav' />
+	<ani-sound src='message/DIGI033.ANI' dst='messages/douglas_escort_centronom_governor.wav' />
+	<ani-sound src='message/DIGI034.ANI' dst='messages/douglas_escort_admiral_benson.wav' />
+	<ani-sound src='message/DIGI035.ANI' dst='messages/douglas_escort_admiral_benson_failed.wav' />
+	<ani-sound src='message/DIGI036.ANI' dst='messages/douglas_fire_4_not_met_with_benson.wav' />
+	<ani-sound src='message/DIGI037.ANI' dst='messages/wife_2.wav' />
+	<ani-sound src='message/DIGI038.ANI' dst='messages/san_sterling_smuggler.wav' />
+	<ani-sound src='message/DIGI039.ANI' dst='messages/san_sterling_smuggler_escaped.wav' />
+	<ani-sound src='message/DIGI040.ANI' dst='messages/san_sterling_smuggler_killed_innocent.wav' />
+	<ani-sound src='message/DIGI041.ANI' dst='messages/san_sterling_smuggler_killed.wav' />
+	<ani-sound src='message/DIGI042.ANI' dst='messages/new_caroline_virus.wav' />
+	<ani-sound src='message/DIGI043.ANI' dst='messages/new_caroline_virus_resolved.wav' />
+	<ani-sound src='message/DIGI044.ANI' dst='messages/new_caroline_virus_quarantine_breached.wav' />
+	<ani-sound src='message/DIGI045.ANI' dst='messages/new_caroline_virus_again.wav' />
+	<ani-sound src='message/DIGI046.ANI' dst='messages/new_caroline_virus_again_deaths.wav' />
+	<ani-sound src='message/DIGI047.ANI' dst='messages/douglas_reinforcements_approved.wav' />
+	<ani-sound src='message/DIGI047B.ANI' dst='messages/douglas_reinforcements_again_denied.wav' />
+	<ani-sound src='message/DIGI048.ANI' dst='messages/douglas_report_viruses.wav' />
+	<ani-sound src='message/DIGI050.ANI' dst='messages/douglas_fire_5_lost_planet_2.wav' />
+	<ani-sound src='message/digi051.ani' dst='messages/wife_3.wav' />
+	<ani-sound src='message/DIGI052.ANI' dst='messages/douglas_escort_money.wav' />
+	<ani-sound src='message/DIGI053.ANI' dst='messages/douglas_fire_6_escort_failed.wav' />
+	<ani-sound src='message/DIGI054.ANI' dst='messages/douglas_prototype_stolen.wav' />
+	<ani-sound src='message/DIGI055.ANI' dst='messages/douglas_fire_7_prototype_lost.wav' />
+	<ani-sound src='message/DIGI056.ANI' dst='messages/douglas_prototype_success.wav' />
+	<ani-sound src='message/digi060a.ani' dst='messages/naxos_not_under_attack.wav' />
+	<ani-sound src='message/digi060b.ani' dst='messages/san_sterling_not_under_attack.wav' />
+	<ani-sound src='message/digi060c.ani' dst='messages/new_caroline_not_under_attack.wav' />
+	<ani-sound src='message/digi060d.ani' dst='messages/achilles_not_under_attack.wav' />
+	<ani-sound src='message/digi060e.ani' dst='messages/centronom_not_under_attack.wav' />
+	<ani-sound src='message/digi060f.ani' dst='messages/zeuson_not_under_attack.wav' />
+	<ani-sound src='message/DIGI061.ANI' dst='messages/naxos_is_under_attack.wav' />
+	<ani-sound src='message/DIGI062.ANI' dst='messages/new_caroline_is_under_attack.wav' />
+	<ani-sound src='message/DIGI063.ANI' dst='messages/san_sterling_is_under_attack.wav' />
+	<ani-sound src='message/DIGI064.ANI' dst='messages/achilles_is_under_attack.wav' />
+	<ani-sound src='message/DIGI065.ANI' dst='messages/centronom_is_under_attack.wav' />
+	<ani-sound src='message/DIGI066.ANI' dst='messages/zeuson_is_under_attack.wav' />
+	<ani-sound src='message/DIGI067.ANI' dst='messages/wife_4.wav' />
+	<ani-sound src='message/digi068.ani' dst='messages/douglas_rebel_governor.wav' />
+	<ani-sound src='message/DIGI069.ANI' dst='messages/douglas_fire_8_rebel_governor.wav' />
+	<ani-sound src='message/DIGI070.ANI' dst='messages/douglas_success.wav' />
+	<ani-sound src='message/digi071.ani' dst='messages/douglas_escort_prototype.wav' />
+	<ani-sound src='message/DIGI072.ANI' dst='messages/prototype_escort_thanks.wav' />
+	<ani-sound src='message/digi073.ani' dst='messages/douglas_escort_prototype_failed.wav' />
+	<ani-sound src='message/DIGI095.ANI' dst='messages/naxos_virus_infection.wav' />
+	<ani-sound src='message/DIGI096.ANI' dst='messages/new_caroline_virus_infection.wav' />
+	<ani-sound src='message/DIGI096_.ANI' dst='messages/san_sterling_virus_infection.wav' />
+	<ani-sound src='message/DIGI097.ANI' dst='messages/achilles_virus_infection.wav' />
+	<ani-sound src='message/DIGI098.ANI' dst='messages/centronom_virus_infection.wav' />
+	<ani-sound src='message/DIGI099.ANI' dst='messages/zeuson_virus_infection.wav' />
+	<ani-sound src='message/digi100.ani' dst='messages/san_sterling_check.wav' />
+	<ani-sound src='message/DIGI101.ANI' dst='messages/douglas_report_spy.wav' />
+	<ani-sound src='message/digi101x.ani' dst='messages/new_caroline_check.wav' />
+	<ani-sound src='message/digi103.ani' dst='messages/centronom_check.wav' />
+	<ani-sound src='message/digi104.ani' dst='messages/zeuson_check.wav' />
+	<ani-sound src='message/DIGI141.ANI' dst='messages/douglas_virus_carriers_destroyed.wav' />
+	<ani-sound src='message/digi150.ani' dst='messages/naxos_come_quickly.wav' />
+	<ani-sound src='message/digi151.ani' dst='messages/new_caroline_come_quickly.wav' />
+	<ani-sound src='message/digi152.ani' dst='messages/san_sterling_come_quickly.wav' />
+	<ani-sound src='message/digi153.ani' dst='messages/achilles_come_quickly.wav' />
+	<ani-sound src='message/digi154.ani' dst='messages/centronom_come_quickly.wav' />
+	<ani-sound src='message/digi155.ani' dst='messages/zeuson_come_quickly.wav' />
+	<ani-sound src='message/digi206.ani' dst='messages/android.wav' />
+	<ani-sound src='message/zizeg.ani' dst='messages/generic_is_under_attack.wav' />
+
+	<!-- Bar -->
+	<ani-sound src='Local/K0_01.ANI' dst='bar/kelly_001.wav'/>
+	<ani-sound src='Local/K0_11.ANI' dst='bar/kelly_011.wav'/>
+	<ani-sound src='Local/K0_21.ANI' dst='bar/kelly_021.wav'/>
+	<ani-sound src='Local/K0_22.ANI' dst='bar/kelly_022.wav'/>
+	<ani-sound src='Local/K0_32.ANI' dst='bar/kelly_032.wav'/>
+	<ani-sound src='Local/K0_41.ANI' dst='bar/kelly_041.wav'/>
+	<ani-sound src='Local/K1_01.ANI' dst='bar/phsychologist_101.wav'/>
+	<ani-sound src='Local/K1_11.ANI' dst='bar/phsychologist_111.wav'/>
+	<ani-sound src='Local/K1_12.ANI' dst='bar/phsychologist_112.wav'/>
+	<ani-sound src='Local/K1_21.ANI' dst='bar/phsychologist_121.wav'/>
+	<ani-sound src='Local/k3_01.ani' dst='bar/brian_301.wav'/>
+	<ani-sound src='Local/k3_11.ani' dst='bar/brian_311.wav'/>
+	<ani-sound src='Local/k3_12.ani' dst='bar/brian_312.wav'/>
+	<ani-sound src='Local/k3_21.ani' dst='bar/brian_321.wav'/>
+	<ani-sound src='Local/k3_23.ani' dst='bar/brian_323.wav'/>
+	<ani-sound src='Local/k3_31.ani' dst='bar/brian_331.wav'/>
+	<ani-sound src='Local/k4_01.ani' dst='bar/doctor_401.wav'/>
+	<ani-sound src='Local/k4_02.ani' dst='bar/doctor_402.wav'/>
+	<ani-sound src='Local/k4_11.ani' dst='bar/doctor_411.wav'/>
+	<ani-sound src='Local/k4_12.ani' dst='bar/doctor_412.wav'/>
+	<ani-sound src='Local/k4_21.ani' dst='bar/doctor_421.wav'/>
+	<ani-sound src='Local/k4_31.ani' dst='bar/doctor_431.wav'/>
+	<ani-sound src='Local/k4_41.ani' dst='bar/doctor_441.wav'/>
+	<ani-sound src='Local/k4_51.ani' dst='bar/doctor_451.wav'/>
+
+	<smp src='sound/K0_01.smp' dst='bar/kelly_001.wav'/>
+	<smp src='sound/K0_11.smp' dst='bar/kelly_011.wav'/>
+	<smp src='sound/K0_21.smp' dst='bar/kelly_021.wav'/>
+	<smp src='sound/K0_22.smp' dst='bar/kelly_022.wav'/>
+	<smp src='sound/K0_32.smp' dst='bar/kelly_032.wav'/>
+	<smp src='sound/K0_41.smp' dst='bar/kelly_041.wav'/>
+	<smp src='sound/K1_01.smp' dst='bar/phsychologist_101.wav'/>
+	<smp src='sound/K1_11.smp' dst='bar/phsychologist_111.wav'/>
+	<smp src='sound/K1_12.smp' dst='bar/phsychologist_112.wav'/>
+	<smp src='sound/K1_21.smp' dst='bar/phsychologist_121.wav'/>
+	<smp src='sound/k3_01.smp' dst='bar/brian_301.wav'/>
+	<smp src='sound/k3_11.smp' dst='bar/brian_311.wav'/>
+	<smp src='sound/k3_12.smp' dst='bar/brian_312.wav'/>
+	<smp src='sound/k3_21.smp' dst='bar/brian_321.wav'/>
+	<smp src='sound/k3_23.smp' dst='bar/brian_323.wav'/>
+	<smp src='sound/k3_31.smp' dst='bar/brian_331.wav'/>
+	<smp src='sound/k4_01.smp' dst='bar/doctor_401.wav'/>
+	<smp src='sound/k4_02.smp' dst='bar/doctor_402.wav'/>
+	<smp src='sound/k4_11.smp' dst='bar/doctor_411.wav'/>
+	<smp src='sound/k4_12.smp' dst='bar/doctor_412.wav'/>
+	<smp src='sound/k4_21.smp' dst='bar/doctor_421.wav'/>
+	<smp src='sound/k4_31.smp' dst='bar/doctor_431.wav'/>
+	<smp src='sound/k4_41.smp' dst='bar/doctor_441.wav'/>
+	<smp src='sound/k4_51.smp' dst='bar/doctor_451.wav'/>
+
+	<ani-sound src='ATVEZETO/alom1.ani' dst='interlude/dream_4.wav' />
+	<ani-sound src='ATVEZETO/alom2.ani' dst='interlude/dream_3.wav' />
+	<ani-sound src='ATVEZETO/alom3.ani' dst='interlude/dream_2.wav' />
+	<ani-sound src='ATVEZETO/ALOM4.ANI' dst='interlude/dream_1.wav' />
+	<ani-sound src='ATVEZETO/ATVEZ001.ANI' dst='interlude/campaign_start.wav' />
+	<ani-sound src='ATVEZETO/ATVEZ005.ANI' dst='interlude/thorin_escort.wav' />
+	<ani-sound src='ATVEZETO/ATVEZ007.ANI' dst='interlude/level_2_intro.wav' />
+	<ani-sound src='ATVEZETO/ATVEZ011.ANI' dst='interlude/level_3_intro.wav' />
+	<ani-sound src='ATVEZETO/atvez012.ani' dst='interlude/level_4_intro.wav' />
+	<ani-sound src='ATVEZETO/ATVEZ015.ANI' dst='interlude/retake_prototype.wav' />
+	<ani-sound src='ATVEZETO/atvez020.ani' dst='interlude/take_prisoner.wav' />
+	<ani-sound src='ATVEZETO/ATVEZ021.ANI' dst='interlude/watch_recording.wav' />
+	<ani-sound src='ATVEZETO/ATVEZ022.ANI' dst='interlude/spy_on_johnson.wav' />
+	<ani-sound src='ATVEZETO/atvez024.ani' dst='interlude/escort.wav' />
+	<ani-sound src='ATVEZETO/atvez025.ani' dst='interlude/level_5_intro.wav' />
+
+	<ani-sound src='ATVEZETO/megnyer.ani' dst='win/win.wav' />
+
+	<ani-sound src='ATVEZETO/test.ani' dst='test/phsychologist_test.wav' />
+	<ani-sound src='ATVEZETO/test2.ani' dst='test/phsychologist_test_completed.wav' />
+
+	<!-- <copy src='' dst=''/> <ani-sound src='' dst=''/> <ani-image src='' 
+		dst=''/> <image src=''> <area coords='' dst=''/> </image> -->
+</original-converter>
