@@ -20,6 +20,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -201,6 +202,21 @@ public class XElement implements Iterable<XElement> {
 		XMLInputFactory inf = XMLInputFactory.newInstance();
 		XMLStreamReader ir = inf.createXMLStreamReader(in);
 		return parseXML(ir);
+	}
+	/**
+	 * Parses an XML from the given URL.
+	 * @param u the url
+	 * @return the parsed XML
+	 * @throws XMLStreamException on error
+	 * @throws IOException on error
+	 */
+	public static XElement parseXML(URL u) throws XMLStreamException, IOException {
+		InputStream in = u.openStream();
+		try {
+			return parseXML(in);
+		} finally {
+			in.close();
+		}
 	}
 	/**
 	 * Parse an XML from an XML stream reader. Does not close the stream
