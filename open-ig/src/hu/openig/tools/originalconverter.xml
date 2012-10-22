@@ -227,7 +227,7 @@
 	<ani-video src='ANIM/1_HIDF.ANI' dst='bridge/messages_close_level_1.ani.gz'/>
 	<ani-video src='ANIM/2_HIDF.ANI' dst='bridge/messages_close_level_2.ani.gz'/>
 	<ani-video src='ANIM/3_HIDF.ANI' dst='bridge/messages_close_level_3.ani.gz'/>
--->
+
 	<image src='SCREENS\1_HID_X.PCX'>
 		<area coords='0,0,49,30' dst='flagship\button_receive_level_1.png'/>
 		<area coords='100,0,49,30' dst='flagship\button_receive_level_1_pressed.png'/>
@@ -294,6 +294,60 @@
 		<area coords='336,117,102,39' dst='research\button_equipment_pressed.png'/>
 		<area coords='437,166,115,23' dst='research\button_view.png'/>
 		<area coords='437,189,115,23' dst='research\button_view_pressed.png'/>
+		<area coords='336,156,101,39' dst='research\button_production_pressed.png'/>
+		<area coords='336,39,102,39' dst='research\button_start.png'/>
+		<area coords='336,78,102,39' dst='research\button_start_pressed.png'/>
+		<area coords='438,0,111,20' dst='research\label_spaceships_selected.png'/>
+		<area coords='438,23,111,20' dst='research\label_equipment_selected.png'/>
+		<area coords='438,42,111,20' dst='research\label_weapons_selected.png'/>
+		<area coords='438,64,111,20' dst='research\label_buildings_selected.png'/>
+		<area coords='438,82,111,20' dst='research\label_spaceships.png'/>
+		<area coords='438,105,111,20' dst='research\label_equipment.png'/>
+		<area coords='438,124,111,20' dst='research\label_weapons.png'/>
+		<area coords='438,146,111,20' dst='research\label_buildings.png'/>
+		<area coords='437,235,115,23' dst='research\button_stop.png'/>
+		<area coords='437,258,115,23' dst='research\button_stop_pressed.png'/>
+		
+		<area coords='0,0,166,15' dst='research\label_fighters.png'/>
+		<area coords='166,0,166,15' dst='research\label_fighters_selected.png'/>
+		<area coords='0,15,166,15' dst='research\label_cruisers.png'/>
+		<area coords='166,15,166,15' dst='research\label_cruisers_selected.png'/>
+		<area coords='0,30,166,15' dst='research\label_battleships.png'/>
+		<area coords='166,30,166,15' dst='research\label_battleships_selected.png'/>
+		<area coords='0,45,166,15' dst='research\label_satellites.png'/>
+		<area coords='166,45,166,15' dst='research\label_satellites_selected.png'/>
+		<area coords='0,60,166,15' dst='research\label_space_stations.png'/>
+		<area coords='166,60,166,15' dst='research\label_space_stations_selected.png'/>
+		
+		<area coords='0,77,166,15' dst='research\label_hyperdrives.png'/>
+		<area coords='166,77,166,15' dst='research\label_hyperdrives_selected.png'/>
+		<area coords='0,92,166,15' dst='research\label_modules.png'/>
+		<area coords='166,92,166,15' dst='research\label_modules_selected.png'/>
+		<area coords='0,107,166,15' dst='research\label_radars.png'/>
+		<area coords='166,107,166,15' dst='research\label_radars_selected.png'/>
+		<area coords='0,122,166,15' dst='research\label_shields.png'/>
+		<area coords='166,122,166,15' dst='research\label_shields_selected.png'/>
+
+		<area coords='0,155,166,15' dst='research\label_lasers.png'/>
+		<area coords='166,155,166,15' dst='research\label_lasers_selected.png'/>
+		<area coords='0,170,166,15' dst='research\label_cannons.png'/>
+		<area coords='166,170,166,15' dst='research\label_cannons_selected.png'/>
+		<area coords='0,185,166,15' dst='research\label_projectiles.png'/>
+		<area coords='166,185,166,15' dst='research\label_projectiles_selected.png'/>
+		<area coords='0,200,166,15' dst='research\label_tanks.png'/>
+		<area coords='166,200,166,15' dst='research\label_tanks_selected.png'/>
+		<area coords='0,215,166,15' dst='research\label_vehicles.png'/>
+		<area coords='166,215,166,15' dst='research\label_vehicles_selected.png'/>
+		
+		<area coords='0,234,166,15' dst='research\label_civil_buildings.png'/>
+		<area coords='166,234,166,15' dst='research\label_civil_buildings_selected.png'/>
+		<area coords='0,249,166,15' dst='research\label_military_buildings.png'/>
+		<area coords='166,249,166,15' dst='research\label_military_buildings_selected.png'/>
+		<area coords='0,264,166,15' dst='research\label_radar_buildings.png'/>
+		<area coords='166,264,166,15' dst='research\label_radar_buildings_selected.png'/>
+		<area coords='0,279,166,15' dst='research\label_planetary_guns.png'/>
+		<area coords='166,279,166,15' dst='research\label_planetary_guns_selected.png'/>
+		
 	</image>
 
 	<image src='SCREENS\FELSZ_X.PCX'>
@@ -338,6 +392,19 @@
 	<image src='SCREENS\FEJLESZT.PCX'>
 		<area coords='534,322,102,39' dst='research\button_equipment.png'/>
 		<area coords='534,361,102,39' dst='research\button_production.png'/>
+		<area coords='445,308,23,20' dst='research\label_ai_lab.png'/>
+		<area coords='293,308,23,20' dst='research\label_civil_lab.png'/>
+		<area coords='388,308,39,20' dst='research\label_comp_lab.png'/>
+		<area coords='334,308,36,20' dst='research\label_mech_lab.png'/>
+		<area coords='486,308,23,20' dst='research\label_mil_lab.png'/>
+		<area coords='6,289,119,17' dst='research\label_project_name.png'/>
+		<area coords='6,308,119,17' dst='research\label_project_status.png'/>
+		<area coords='6,341,119,17' dst='research\label_project.png'/>
+		<area coords='66,362,59,17' dst='research\label_money.png'/>
+		<area coords='287,288,52,19' dst='research\label_completed.png'/>
+		<area coords='287,288,52,19' dst='research\label_project_completed.png'/>
+		<area coords='396,288,73,19' dst='research\label_time_remaining.png'/>
+		<area coords='547,114,74,17' dst='research\label_requirements.png'/>
 	</image>
 
 	<image src='SCREENS\INFO_X.PCX'>
@@ -378,6 +445,7 @@
 		<area coords='102,39,102,40' dst='info\button_starmap_pressed.png'/>
 		<area coords='274,190,70,30' dst='info\button_tax_less.png'/>
 		<area coords='414,190,70,30' dst='info\button_tax_less_pressed.png'/>
+		<area coords='204,190,70,30' dst='info\button_tax_more.png'/>
 		<area coords='344,190,70,30' dst='info\button_tax_more_pressed.png'/>
 	</image>
 
@@ -387,7 +455,14 @@
 		<area coords='336,195,102,39' dst='research\button_remove.png'/>
 		<area coords='440,168,52,21' dst='research\button_sell.png'/>
 		<area coords='440,192,52,21' dst='research\button_sell_pressed.png'/>
+		<area coords='337,273,101,39' dst='research\button_remove_pressed.png'/>
 	</image>
+	<image src='SCREENS\PRODUCT.PCX'>
+		<area coords='5,285,167,16' dst='research\label_invention_name.png'/>
+		<area coords='173,285,80,16' dst='research\label_importance.png'/>
+		<area coords='350,285,52,16' dst='research\label_pieces.png'/>
+		<area coords='275,418,143,19' dst='research\label_capacity.png'/>
+	</image>	
 
 	<image src='SCREENS\SPWAR_X.PCX'>
 		<area coords='358,37,66,30' dst='spacewar\button_attack_selected.png'/>
@@ -466,14 +541,18 @@
 		<area coords='534,58,103,28' dst='starmap\button_colony.png'/>
 		<area coords='535,290,102,40' dst='button_bridge.png'/>
 	</image>
-
-	<!--
-	<image src='SCREENS/1_HID_X.PCX'>
-		<area coords='' dst=''/>
-		<areas dst=''>
-			<part coords='' to=''/>
-		</areas>
-	</image>
-	-->
-	<!-- <area coords='' dst=''/> </image> -->
+	
+	<image-copy src='DATAPIC/AL0.PCX' dst='database/aliens.png'/>
+	<image-copy src='DATAPIC/BR0.PCX' dst='database/bridge.png'/>
+	<image-copy src='DATAPIC/DI0.PCX' dst='database/diplomacy.png'/>
+	<image-copy src='DATAPIC/ET0.PCX' dst='database/exit_database.png'/>
+	<image-copy src='DATAPIC/HL0.PCX' dst='database/help.png'/>
+	<image-copy src='DATAPIC/IN0.PCX' dst='database/info.png'/>
+	<image-copy src='DATAPIC/RM0.PCX' dst='database/record_message.png'/>
+	<image-copy src='DATAPIC/ST0.PCX' dst='database/starmap.png'/>
+	<image-copy src='DATAPIC/SM0.PCX' dst='database/ship_map.png'/>
+-->
+	
+<!--	<image-copy src='' dst=''/>-->
+	
 </original-converter>
