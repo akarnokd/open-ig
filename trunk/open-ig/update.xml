@@ -47,8 +47,8 @@
 			<desc lang='ru'>Бета + перестрелка.</desc>
 		</notes>
 		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.109.jar' sha1='E3F45AFEC551AEC5AD03604F969DCC366F83D5FE'/>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20121006a2.zip' sha1='F5A24105F595EB847DD2D2700497B9F2CF7AD523'/>
-		<file url='https://open-ig.googlecode.com/files/open-ig-images-20120823a.zip' sha1='d5b8ea09b82e492b7cb395dc22623bdd8c19917a'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20121022a2.zip' sha1='914aa795cf692a81dbe117a3cb9aab4bc8e59c00'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-images-20121022a.zip' sha1='2c8e2b4b5ae0b62b4ee160d95d94f35c7a885f3b'/>
 
 		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
@@ -102,6 +102,7 @@
 		<remove file='open-ig-images-20120625a.zip'/>
 		<remove file='open-ig-images-20120814a.zip'/>
 		<remove file='open-ig-images-20120819a.zip'/>
+		<remove file='open-ig-images-20120823a.zip'/>
 	</module>
 	<module id='MapEditor' version='0.60'>
 		<general url='https://code.google.com/p/open-ig/wiki/MapEditor'>
