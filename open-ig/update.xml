@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
 	<!-- Update definitions for the Open Imperium Galactica components -->
-	<module id='Launcher' version='0.39'>
+	<module id='Launcher' version='0.40'>
 		<!-- General module description -->
 		<general url='https://code.google.com/p/open-ig/wiki/Launcher'>
 			<desc lang='hu'>
@@ -15,15 +15,16 @@
 		</general>
 		<!-- Release notes -->
 		<notes url='https://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-			<desc lang='hu'>Javítások és előkészület.</desc>
-			<desc lang='en'>Fixes and preparations.</desc>
-			<desc lang='de'>Fehlrebehebungend und vorbereitungen.</desc>
-			<desc lang='fr'>Fixes and preparations.</desc>
+			<desc lang='hu'>Orosz nyelvi támogatás.</desc>
+			<desc lang='en'>Russian language support.</desc>
+			<desc lang='de'>Russische sprache.</desc>
+			<desc lang='fr'>Support de la langue Russe.</desc>
+			<desc lang='ru'>Поддержка русского языка.</desc>
 		</notes>
 		<execute file='open-ig-launcher.jar' memory='64'/>
 		<!-- Particular files location and hashes, file descriptions -->
 		<!--  https://open-ig.googlecode.com/files/ -->
-		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='BA78B7405A56D46B369491A5164F5106169948BD'>
+		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='BB276C2C1AC41647027A371733331361A6927C69'>
 			<desc lang='hu'>Az indító fő fájlja</desc>
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
@@ -66,7 +67,7 @@
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b' size='38058005'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907' size='3302023' language='de'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-video-fr-20121022.zip' sha1='574c3c4c52937c10553f519da9428338e55cb51a' size='3310322' language='fr'/>
-		<file url='https://open-ig.googlecode.com/files/open-ig-video-ru-20121022.zip' sha1='24d11c154dc8cf3b6ab967c350e01de0e3dc7d22' size='3106853' language='ru'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-video-ru-20121022.zip' sha1='bde1bfd60776fb0d8270f3898ff15a5a262ca22a' size='3106835' language='ru'/>
 
 		<file url='https://open-ig.googlecode.com/files/open-ig-audio-en-20120623A.zip' sha1='b62309158878f832510b48ab7873790cbafa1ff7' size='46004980' language='en'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609' size='42768624' language='hu'/>
