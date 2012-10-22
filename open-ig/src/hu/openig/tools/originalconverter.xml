@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <original-converter>
-	<!-- Original -->
+<!--
 	<smp src='Sound/NOI01.SMP' dst='ui/new_message_1.wav' />
 	<smp src='Sound/NOI02.SMP' dst='ui/new_message_2.wav' />
 	<smp src='Sound/NOI03.SMP' dst='ui/message.wav' />
@@ -47,12 +47,10 @@
 	<smp src='Sound/NOI84.SMP' dst='ui/welcome.wav' />
 	<smp src='Sound/NOI85.SMP' dst='ui/good_bye.wav' />
 
-	<!-- Intro -->
 	<ani-sound src='INTRO/Block1.ANI' dst='intro/intro_1.wav' />
 	<ani-sound src='INTRO/Block23.ANI' dst='intro/intro_2.wav' />
 	<ani-sound src='INTRO/Block4.ANI' dst='intro/intro_3.wav' />
 
-	<!-- Messages -->
 	<ani-sound src='message/1GO.ANI' dst='messages/douglas_fire_1_test_failed.wav' />
 	<ani-sound src='message/2GO.ANI' dst='messages/douglas_fire_1_no_order.wav' />
 	<ani-sound src='message/3GO.ANI' dst='messages/douglas_fire_1_battle.wav' />
@@ -147,7 +145,6 @@
 	<ani-sound src='message/digi206.ani' dst='messages/android.wav' />
 	<ani-sound src='message/zizeg.ani' dst='messages/generic_is_under_attack.wav' />
 
-	<!-- Bar -->
 	<ani-sound src='Local/K0_01.ANI' dst='bar/kelly_001.wav'/>
 	<ani-sound src='Local/K0_11.ANI' dst='bar/kelly_011.wav'/>
 	<ani-sound src='Local/K0_21.ANI' dst='bar/kelly_021.wav'/>
@@ -230,6 +227,245 @@
 	<ani-video src='ANIM/1_HIDF.ANI' dst='bridge/messages_close_level_1.ani.gz'/>
 	<ani-video src='ANIM/2_HIDF.ANI' dst='bridge/messages_close_level_2.ani.gz'/>
 	<ani-video src='ANIM/3_HIDF.ANI' dst='bridge/messages_close_level_3.ani.gz'/>
+-->
+	<image src='SCREENS\1_HID_X.PCX'>
+		<area coords='0,0,49,30' dst='flagship\button_receive_level_1.png'/>
+		<area coords='100,0,49,30' dst='flagship\button_receive_level_1_pressed.png'/>
+		<area coords='50,0,49,31' dst='flagship\button_send_level_1.png'/>
+		<area coords='150,0,49,31' dst='flagship\button_send_level_1_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\2_HID_X.PCX'>
+		<area coords='0,0,49,30' dst='flagship\button_receive_level_2.png'/>
+		<area coords='100,0,49,30' dst='flagship\button_receive_level_2_pressed.png'/>
+		<area coords='50,0,49,31' dst='flagship\button_send_level_2.png'/>
+		<area coords='150,0,49,31' dst='flagship\button_send_level_2_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\3_HID_X.PCX'>
+		<area coords='0,0,49,30' dst='flagship\button_receive_level_3.png'/>
+		<area coords='100,0,49,30' dst='flagship\button_receive_level_3_pressed.png'/>
+		<area coords='50,0,49,31' dst='flagship\button_send_level_3.png'/>
+		<area coords='150,0,49,31' dst='flagship\button_send_level_3_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\COLONY_X.PCX'>
+		<area coords='395,170,105,28' dst='colony\button_bridge.png'/>
+		<area coords='395,198,105,28' dst='colony\button_bridge_pressed.png'/>
+		<area coords='544,160,81,21' dst='colony\button_build_pressed.png'/>
+		<area coords='80,170,105,28' dst='colony\button_colony_info.png'/>
+		<area coords='80,198,105,28' dst='colony\button_colony_info_pressed.png'/>
+		<area coords='435,244,145,18' dst='colony\button_constructing.png'/>
+		<area coords='145,226,145,18' dst='colony\button_damaged.png'/>
+		<area coords='500,208,81,21' dst='colony\button_list_pressed.png'/>
+		<area coords='185,170,105,28' dst='colony\button_planets.png'/>
+		<area coords='185,198,105,28' dst='colony\button_planets_pressed.png'/>
+		<area coords='0,226,145,18' dst='colony\button_repairing.png'/>
+		<area coords='290,170,105,28' dst='colony\button_starmap.png'/>
+		<area coords='290,198,105,28' dst='colony\button_starmap_pressed.png'/>
+		<area coords='145,244,145,18' dst='colony\button_status_damaged.png'/>
+		<area coords='290,226,145,18' dst='colony\button_status_inactive.png'/>
+		<area coords='290,244,145,18' dst='colony\button_status_no_energy.png'/>
+		<area coords='0,244,145,18' dst='colony\button_status_offline.png'/>
+		<area coords='0,0,20,170' dst='colony\button_buildings.png'/>
+		<area coords='20,61,20,160' dst='colony\button_radar.png'/>
+		<area coords='40,0,20,147' dst='colony\button_building_info.png'/>
+		<area coords='261,28,66,16' dst='colony\label_energy.png'/>
+		<area coords='261,44,66,16' dst='colony\label_workers.png'/>
+		<area coords='261,60,66,16' dst='colony\label_operational.png'/>
+		<area coords='261,76,66,16' dst='colony\label_production.png'/>
+	</image>
+
+	<image src='SCREENS\COLONZ_X.PCX'>
+		<area coords='395,170,105,28' dst='colony\button_start_battle.png'/>
+		<area coords='395,198,105,28' dst='colony\button_start_battle_pressed.png'/>
+		<area coords='611,182,29,90' dst='colony\button_demolish_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\COLONY.PCX'>
+		<area coords='432,98,145,18' dst='colony\button_active.png'/>
+		<area coords='113,142,81,21' dst='colony\button_build.png'/>
+		<area coords='585,50,29,90' dst='colony\button_demolish.png'/>
+		<area coords='26,142,81,21' dst='colony\button_list.png'/>
+		<area coords='432,122,145,18' dst='colony\button_undamaged.png'/>
+	</image>
+
+	<image src='SCREENS\FEJL_X.PCX'>
+		<area coords='336,117,102,39' dst='research\button_equipment_pressed.png'/>
+		<area coords='437,166,115,23' dst='research\button_view.png'/>
+		<area coords='437,189,115,23' dst='research\button_view_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\FELSZ_X.PCX'>
+		<area coords='102,117,102,39' dst='button_info_pressed.png'/>
+		<area coords='404,50,75,23' dst='equipment\button_add.png'/>
+		<area coords='404,73,75,23' dst='equipment\button_add_pressed.png'/>
+		<area coords='448,119,78,23' dst='equipment\button_delete.png'/>
+		<area coords='322,176,102,39' dst='equipment\button_end_join.png'/>
+		<area coords='102,195,102,39' dst='equipment\button_end_join_pressed.png'/>
+		<area coords='424,176,102,39' dst='equipment\button_end_split.png'/>
+		<area coords='102,156,102,39' dst='equipment\button_end_split_pressed.png'/>
+		<area coords='526,211,77,23' dst='equipment\button_join.png'/>
+		<area coords='526,234,77,23' dst='equipment\button_join_pressed.png'/>
+		<area coords='606,119,17,143' dst='equipment\button_list.png'/>
+		<area coords='526,119,77,23' dst='equipment\button_new.png'/>
+		<area coords='526,142,77,23' dst='equipment\button_new_pressed.png'/>
+		<area coords='227,39,24,157' dst='equipment\button_planet_pressed.png'/>
+		<area coords='324,50,76,23' dst='equipment\button_remove.png'/>
+		<area coords='324,73,76,23' dst='equipment\button_remove_pressed.png'/>
+		<area coords='526,165,78,23' dst='equipment\button_split.png'/>
+		<area coords='526,188,78,23' dst='equipment\button_split_pressed.png'/>
+		<area coords='371,119,77,23' dst='equipment\button_transfer.png'/>
+		<area coords='371,142,77,23' dst='equipment\button_transfer_pressed.png'/>
+		<area coords='324,96,155,23' dst='equipment\label_not_your_planet.png'/>
+		<area coords='479,96,155,23' dst='equipment\label_no_planet_nearby.png'/>
+		<area coords='0,156,102,39' dst='research\button_research_pressed.png'/>
+		<area coords='623,119,17,143' dst='equipment\button_list_pressed.png'/>
+		<area coords='204,39,24,157' dst='equipment\button_starmap_pressed.png'/>
+		<areas dst='equipment\label_no_spaceport.png'>
+			<part coords='199,234,80,23' to='0,0'/>
+			<part coords='204,211,75,23' to='80,0'/>
+		</areas>
+	</image>
+
+	<image src='SCREENS\FELSZER.PCX'>
+		<area coords='505,283,24,157' dst='equipment\button_planet.png'/>
+		<area coords='479,283,24,157' dst='equipment\button_starmap.png'/>
+		<area coords='535,361,102,39' dst='info\button_research.png'/>
+		<area coords='535,361,102,39' dst='research\button_research.png'/>
+	</image>
+
+	<image src='SCREENS\FEJLESZT.PCX'>
+		<area coords='534,322,102,39' dst='research\button_equipment.png'/>
+		<area coords='534,361,102,39' dst='research\button_production.png'/>
+	</image>
+
+	<image src='SCREENS\INFO_X.PCX'>
+		<area coords='102,162,102,28' dst='info\button_aliens.png'/>
+		<area coords='510,162,102,28' dst='info\button_aliens_selected.png'/>
+		<area coords='306,162,102,28' dst='info\button_aliens_selected_pressed.png'/>
+		<area coords='306,78,102,28' dst='info\button_buildings.png'/>
+		<area coords='306,134,102,28' dst='info\button_buildings_selected.png'/>
+		<area coords='306,106,102,28' dst='info\button_buildings_selected_pressed.png'/>
+		<area coords='0,0,102,39' dst='info\button_colony.png'/>
+		<area coords='0,78,102,28' dst='info\button_colony_info.png'/>
+		<area coords='0,134,102,28' dst='info\button_colony_info_selected.png'/>
+		<area coords='0,106,102,28' dst='info\button_colony_info_selected_pressed.png'/>
+		<area coords='0,39,102,39' dst='info\button_colony_pressed.png'/>
+		<area coords='510,0,102,39' dst='info\button_diplomacy.png'/>
+		<area coords='510,39,102,39' dst='info\button_diplomacy_pressed.png'/>
+		<area coords='204,0,102,39' dst='info\button_equipment.png'/>
+		<area coords='204,39,102,39' dst='info\button_equipment_pressed.png'/>
+		<area coords='204,78,102,28' dst='info\button_financial_info.png'/>
+		<area coords='204,134,102,28' dst='info\button_financial_info_selected.png'/>
+		<area coords='204,106,102,28' dst='info\button_financial_info_selected_pressed.png'/>
+		<area coords='510,78,102,28' dst='info\button_fleets.png'/>
+		<area coords='510,134,102,28' dst='info\button_fleets_selected.png'/>
+		<area coords='510,106,102,28' dst='info\button_fleets_selected_pressed.png'/>
+		<area coords='0,162,102,28' dst='info\button_inventions.png'/>
+		<area coords='408,162,102,28' dst='info\button_inventions_selected.png'/>
+		<area coords='204,162,102,28' dst='info\button_inventions_selected_pressed.png'/>
+		<area coords='102,78,102,28' dst='info\button_military_info.png'/>
+		<area coords='102,134,102,28' dst='info\button_military_info_selected.png'/>
+		<area coords='102,106,102,28' dst='info\button_military_info_selected_pressed.png'/>
+		<area coords='408,78,102,28' dst='info\button_planets.png'/>
+		<area coords='408,134,102,28' dst='info\button_planets_selected.png'/>
+		<area coords='408,106,102,28' dst='info\button_planets_selected_pressed.png'/>
+		<area coords='408,0,102,39' dst='info\button_production.png'/>
+		<area coords='408,39,102,39' dst='info\button_production_pressed.png'/>
+		<area coords='306,39,102,39' dst='info\button_research_pressed.png'/>
+		<area coords='102,0,102,39' dst='info\button_starmap.png'/>
+		<area coords='102,39,102,40' dst='info\button_starmap_pressed.png'/>
+		<area coords='274,190,70,30' dst='info\button_tax_less.png'/>
+		<area coords='414,190,70,30' dst='info\button_tax_less_pressed.png'/>
+		<area coords='344,190,70,30' dst='info\button_tax_more_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\PROD_X.PCX'>
+		<area coords='336,156,102,39' dst='research\button_add.png'/>
+		<area coords='336,234,102,39' dst='research\button_add_pressed.png'/>
+		<area coords='336,195,102,39' dst='research\button_remove.png'/>
+		<area coords='440,168,52,21' dst='research\button_sell.png'/>
+		<area coords='440,192,52,21' dst='research\button_sell_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\SPWAR_X.PCX'>
+		<area coords='358,37,66,30' dst='spacewar\button_attack_selected.png'/>
+		<area coords='216,37,66,30' dst='spacewar\button_attack_selected_pressed.png'/>
+		<area coords='286,107,66,25' dst='spacewar\button_command_selected.png'/>
+		<area coords='144,107,66,25' dst='spacewar\button_command_selected_pressed.png'/>
+		<area coords='358,107,66,25' dst='spacewar\button_damage_selected.png'/>
+		<area coords='216,107,66,25' dst='spacewar\button_damage_selected_pressed.png'/>
+		<area coords='286,137,66,25' dst='spacewar\button_fire_range_selected.png'/>
+		<area coords='144,137,66,25' dst='spacewar\button_fire_range_selected_pressed.png'/>
+		<area coords='358,137,66,25' dst='spacewar\button_grid_selected.png'/>
+		<area coords='216,137,66,25' dst='spacewar\button_grid_selected_pressed.png'/>
+		<area coords='286,72,66,30' dst='spacewar\button_guard_selected.png'/>
+		<area coords='144,72,66,30' dst='spacewar\button_guard_selected_pressed.png'/>
+		<area coords='358,2,66,30' dst='spacewar\button_move_selected.png'/>
+		<area coords='216,2,66,30' dst='spacewar\button_move_selected_pressed.png'/>
+		<area coords='541,167,25,71' dst='spacewar\button_retreat_pressed.png'/>
+		<area coords='358,72,66,30' dst='spacewar\button_rocket_selected.png'/>
+		<area coords='216,72,66,30' dst='spacewar\button_rocket_selected_pressed.png'/>
+		<area coords='448,167,25,71' dst='spacewar\button_sure.png'/>
+		<area coords='478,167,25,71' dst='spacewar\button_sure_pressed.png'/>
+	</image>
+
+	<image src='SCREENS\SPWAR.PCX'>
+		<area coords='105,39,66,30' dst='spacewar\button_attack.png'/>
+		<area coords='33,109,66,25' dst='spacewar\button_command.png'/>
+		<area coords='105,109,66,25' dst='spacewar\button_damage.png'/>
+		<area coords='33,139,66,25' dst='spacewar\button_fire_range.png'/>
+		<area coords='105,139,66,25' dst='spacewar\button_grid.png'/>
+		<area coords='33,74,66,30' dst='spacewar\button_guard.png'/>
+		<area coords='105,4,66,30' dst='spacewar\button_move.png'/>
+		<area coords='33,169,25,71' dst='spacewar\button_retreat.png'/>
+		<area coords='105,74,66,30' dst='spacewar\button_rocket.png'/>
+	</image>
+
+	<image src='SCREENS\STAR_X.PCX'>
+		<area coords='533,39,102,39' dst='button_bridge_pressed.png'/>
+		<area coords='385,23,98,23' dst='starmap\button_attack.png'/>
+		<area coords='385,92,98,23' dst='starmap\button_attack_selected.png'/>
+		<area coords='483,20,50,20' dst='starmap\button_backwards.png'/>
+		<area coords='483,40,50,20' dst='starmap\button_backwards_pressed.png'/>
+		<area coords='0,126,108,15' dst='starmap\button_colonize.png'/>
+		<area coords='216,84,103,28' dst='starmap\button_colony_pressed.png'/>
+		<area coords='109,105,84,17' dst='starmap\button_deploy_hubble.png'/>
+		<area coords='109,54,84,17' dst='starmap\button_deploy_satellite.png'/>
+		<area coords='109,71,84,17' dst='starmap\button_deploy_spy_satellite_1.png'/>
+		<area coords='109,88,84,17' dst='starmap\button_deploy_spy_satellite_2.png'/>
+		<area coords='216,112,103,28' dst='starmap\button_equipment.png'/>
+		<area coords='216,28,103,28' dst='starmap\button_equipment_pressed.png'/>
+		<area coords='483,80,49,20' dst='starmap\button_forwards.png'/>
+		<area coords='483,100,49,20' dst='starmap\button_forwards_pressed.png'/>
+		<area coords='385,0,98,23' dst='starmap\button_move.png'/>
+		<area coords='385,69,98,23' dst='starmap\button_move_selected.png'/>
+		<area coords='0,108,108,18' dst='starmap\button_names_both.png'/>
+		<area coords='0,90,108,18' dst='starmap\button_names_fleets.png'/>
+		<area coords='0,54,108,18' dst='starmap\button_names_none.png'/>
+		<area coords='0,72,108,18' dst='starmap\button_names_planets.png'/>
+		<area coords='385,46,98,23' dst='starmap\button_stop.png'/>
+		<area coords='385,115,98,23' dst='starmap\button_stop_selected.png'/>
+		<area coords='108,0,53,18' dst='starmap\button_view_border.png'/>
+		<area coords='0,0,53,18' dst='starmap\button_view_border_selected.png'/>
+		<area coords='161,18,53,18' dst='starmap\button_view_fleet.png'/>
+		<area coords='53,18,53,18' dst='starmap\button_view_fleet_selected.png'/>
+		<area coords='161,0,53,18' dst='starmap\button_view_radar.png'/>
+		<area coords='53,0,53,18' dst='starmap\button_view_radar_selected.png'/>
+		<area coords='161,36,53,18' dst='starmap\button_view_sector.png'/>
+		<area coords='53,36,53,18' dst='starmap\button_view_sector_selected.png'/>
+		<area coords='108,18,53,18' dst='starmap\button_view_star.png'/>
+		<area coords='0,18,53,18' dst='starmap\button_view_star_selected.png'/>
+		<area coords='108,36,53,18' dst='starmap\button_view_target.png'/>
+		<area coords='0,36,53,18' dst='starmap\button_view_target_selected.png'/>
+	</image>
+
+	<image src='SCREENS\STARMAP.PCX'>
+		<area coords='535,251,102,39' dst='button_info.png'/>
+		<area coords='534,58,103,28' dst='starmap\button_colony.png'/>
+		<area coords='535,290,102,40' dst='button_bridge.png'/>
+	</image>
 
 	<!--
 	<image src='SCREENS/1_HID_X.PCX'>

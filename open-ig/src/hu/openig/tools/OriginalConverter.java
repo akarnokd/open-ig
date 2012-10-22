@@ -226,7 +226,8 @@ public final class OriginalConverter {
 		BufferedImage img2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = img2.createGraphics();
 		for (Pair<Rectangle, Point> f : fragments) {
-			g2.drawImage(img, f.first.x, f.first.y, f.first.width, f.first.height, f.second.x, f.second.y, f.first.width, f.first.height, null);
+			g2.drawImage(img.getSubimage(f.first.x, f.first.y, f.first.width, f.first.height), 
+					f.second.x, f.second.y, null);
 		}
 		g2.dispose();
 		
@@ -426,6 +427,7 @@ public final class OriginalConverter {
 				for (XElement area : ximg.childrenWithName("area")) {
 					String[] coords = U.split(area.get("coords"), ",");
 					String dst = area.get("dst");
+					System.out.printf("IMAGE: %s -> %s%n", src, dst);
 					
 					extractImage(img,
 							Collections.singleton(Pair.of(fromCoords(coords), new Point(0, 0))),
@@ -434,6 +436,7 @@ public final class OriginalConverter {
 				}
 				for (XElement xareas : ximg.childrenWithName("areas")) {
 					String dst = xareas.get("dst");
+					System.out.printf("IMAGE: %s -> %s%n", src, dst);
 					List<Pair<Rectangle, Point>> fragments = U.newArrayList();
 					for (XElement xpart : xareas.childrenWithName("part")) {
 						String[] coords = U.split(xpart.get("coords"), ",");
