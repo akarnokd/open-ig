@@ -474,7 +474,9 @@ public final class OriginalConverter {
 	 * @return the file
 	 */
 	private static File createDestination(String type, String dst) {
-		return new File(destination + type + "/" + language + "/" + dst);
+		File f = new File(destination + type + "/" + language + "/" + dst);
+		f.getParentFile().mkdirs();
+		return f;
 	}
 
 }

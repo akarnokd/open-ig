@@ -8,7 +8,10 @@
 package hu.openig.render;
 
 import hu.openig.model.ResourceLocator;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.LRUHashMap;
+import hu.openig.utils.U;
+import hu.openig.utils.XElement;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -17,9 +20,12 @@ import java.awt.Graphics2D;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Text graphics drawer and container class.
@@ -139,6 +145,44 @@ public class TextRenderer {
 		split(GRAY);
 		split(RED);
 	}
+	/**
+	 * A line definition.
+	 * @author akarnokd, 2012.10.22.
+	 */
+	static class LineDefinition {
+		/** The characters. */
+		String characters;
+		/** The width. */
+		int width;
+		/** The height. */
+		int height;
+		/** The X spacing. */
+		int spaceX;
+		/** The Y spacing. */
+		int spaceY;
+	}
+	/** The characters. */
+	static final List<LineDefinition> CHARACTERS;
+	static {
+		CHARACTERS = U.newArrayList();
+		try {
+			XElement charset = XElement.parseXML(TextRenderer.class.getResource("charset.xml"));
+			for (XElement xline : charset.childrenWithName("line")) {
+				LineDefinition def = new LineDefinition();
+				def.characters = xline.content;
+				def.width = xline.getInt("width");
+				def.height = xline.getInt("height");
+				def.spaceX = xline.getInt("spacing-x");
+				def.spaceY = xline.getInt("spacing-y");
+				CHARACTERS.add(def);
+			}
+		} catch (XMLStreamException ex) {
+			Exceptions.add(ex);
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		}
+		
+	}
 	/** Characters in various lines. */
 	static final String[] LINE_CHARACTERS = {
 			/* Size: 7 */
@@ -160,34 +204,15 @@ public class TextRenderer {
 			"?!()'\"+-:;.,1234567890%& /\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
 			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=<>*"
 	};
-	/** Character heights in various lines. */
-	static final int[] HEIGHTS = {
-			7, 7, 7, 
-			10, 10, 10, 
-			14, 14, 14, 14, 14,
-			5, 5, 5
-	};
-	/** Character widths in various lines. */
-	static final int[] WIDTHS = {
-			5, 5, 5, 
-			7, 7, 7, 
-			12, 12, 12, 12, 12,
-			5, 5, 5
-	};
-	/** Spacing between characters for various lines. */
-	static final int[] SPACING_X = {
-			3, 3, 3, 
-			1, 1, 1, 
-			0, 0, 0, 0, 0,
-			1, 1, 1
-	};
-	/** Spacing between character lines. */
-	static final int[] SPACING_Y = {
-			1, 1, 2, 
-			0, 0, 1, 
-			0, 0, 0, 0, 1,
-			1, 1, 1
-	};
+	/** 
+	 * Print original characters.
+	 * @param args no arguments
+	 */
+	public static void main(String[] args) {
+		for (String s : LINE_CHARACTERS) {
+			System.out.println(s);
+		}
+	}
 	/** The maximum text size available. */
 	int maxSize = 14;
 	/**
@@ -201,24 +226,24 @@ public class TextRenderer {
 		coloredCharImages.put(color, charMap);
 		BufferedImage workImage = colorRemap(charImage, color);
 		int y = 0;
-		for (int j = 0; j < LINE_CHARACTERS.length; j++) {
-			charsetWidths.put(HEIGHTS[j], WIDTHS[j]);
-			SizedCharImages charToImg = charMap.get(HEIGHTS[j]);
+		for (LineDefinition def : CHARACTERS) {
+			charsetWidths.put(def.height, def.width);
+			SizedCharImages charToImg = charMap.get(def.height);
 			if (charToImg == null) {
 				charToImg = new SizedCharImages();
-				charToImg.width = WIDTHS[j];
+				charToImg.width = def.width;
 //				charToImg.height = HEIGHTS[j];
-				charMap.put(HEIGHTS[j], charToImg);
+				charMap.put(def.height, charToImg);
 			}
 			int x = 0;
-			String s = LINE_CHARACTERS[j];
+			String s = def.characters;
 			for (int i = 0; i < s.length(); i++) {
-				BufferedImage ci = workImage.getSubimage(x, y, WIDTHS[j], HEIGHTS[j]);
-				charToImg.chars.put(LINE_CHARACTERS[j].charAt(i), ci);
+				BufferedImage ci = workImage.getSubimage(x, y, def.width, def.height);
+				charToImg.chars.put(s.charAt(i), ci);
 				
-				x += WIDTHS[j] + SPACING_X[j];
+				x += def.width + def.spaceX;
 			}
-			y += HEIGHTS[j] + SPACING_Y[j];
+			y += def.height + def.spaceY;
 		}
 		charsetSpaces.put(5, 1);
 		charsetSpaces.put(7, 1);
