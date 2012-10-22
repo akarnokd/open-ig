@@ -1,61 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <original-converter>
-	<!-- Already converted. -->
-	<copy src='Sound/NOI01.SMP.wav' dst='ui/new_message_1.wav' type='audio' />
-	<copy src='Sound/NOI02.SMP.wav' dst='ui/new_message_2.wav' type='audio' />
-	<copy src='Sound/NOI03.SMP.wav' dst='ui/message.wav' type='audio' />
-	<copy src='Sound/NOI04.SMP.wav' dst='ui/new_message_3.wav' type='audio' />
-	<copy src='Sound/NOI08.SMP.wav' dst='ui/phsychologist_waiting.wav'
-		type='audio' />
-	<copy src='Sound/NOI09.SMP.wav' dst='ui/enemy_fleet_detected.wav'
-		type='audio' />
-	<copy src='Sound/NOI10.SMP.wav' dst='ui/carrier_under_attack.wav'
-		type='audio' />
-	<copy src='Sound/NOI15.SMP.wav' dst='ui/reinforcement_arrived_1.wav'
-		type='audio' />
-	<copy src='Sound/NOI16.SMP.wav' dst='ui/reinforcement_arrived_2.wav'
-		type='audio' />
-	<copy src='Sound/NOI24.SMP.wav' dst='ui/bridge.wav' type='audio' />
-	<copy src='Sound/NOI25.SMP.wav' dst='ui/starmap.wav' type='audio' />
-	<copy src='Sound/NOI26.SMP.wav' dst='ui/colony.wav' type='audio' />
-	<copy src='Sound/NOI27.SMP.wav' dst='ui/equipment.wav' type='audio' />
-	<copy src='Sound/NOI28.SMP.wav' dst='ui/production.wav' type='audio' />
-	<copy src='Sound/NOI29.SMP.wav' dst='ui/research.wav' type='audio' />
-	<copy src='Sound/NOI30.SMP.wav' dst='ui/information.wav' type='audio' />
-	<copy src='Sound/NOI31.SMP.wav' dst='ui/cabin.wav' type='audio' />
-	<copy src='Sound/NOI32.SMP.wav' dst='ui/bar.wav' type='audio' />
-	<copy src='Sound/NOI33.SMP.wav' dst='ui/diplomacy.wav' type='audio' />
-	<copy src='Sound/NOI34.SMP.wav' dst='ui/inventions.wav' type='audio' />
-	<copy src='Sound/NOI35.SMP.wav' dst='ui/aliens.wav' type='audio' />
-	<copy src='Sound/NOI36.SMP.wav' dst='ui/financial_info.wav' type='audio' />
-	<copy src='Sound/NOI37.SMP.wav' dst='ui/military_info.wav' type='audio' />
-	<copy src='Sound/NOI38.SMP.wav' dst='ui/colony_info.wav' type='audio' />
-	<copy src='Sound/NOI39.SMP.wav' dst='ui/fleets.wav' type='audio' />
-	<copy src='Sound/NOI40.SMP.wav' dst='ui/buildings.wav' type='audio' />
-	<copy src='Sound/NOI41.SMP.wav' dst='ui/planets.wav' type='audio' />
-	<copy src='Sound/NOI42.SMP.wav' dst='ui/ship_deployed.wav' type='audio' />
-	<copy src='Sound/NOI49.SMP.wav' dst='ui/split_fleet.wav' type='audio' />
-	<copy src='Sound/NOI50.SMP.wav' dst='ui/join_fleets.wav' type='audio' />
-	<copy src='Sound/NOI51.SMP.wav' dst='ui/new_fleet.wav' type='audio' />
-	<copy src='Sound/NOI52.SMP.wav' dst='ui/add_production.wav' type='audio' />
-	<copy src='Sound/NOI53.SMP.wav' dst='ui/del_production.wav' type='audio' />
-	<copy src='Sound/NOI54.SMP.wav' dst='ui/start_research.wav' type='audio' />
-	<copy src='Sound/NOI55.SMP.wav' dst='ui/stop_research.wav' type='audio' />
-	<copy src='Sound/NOI56.SMP.wav' dst='ui/production_complete.wav'
-		type='audio' />
-	<copy src='Sound/NOI57.SMP.wav' dst='ui/research_completed.wav'
-		type='audio' />
-	<copy src='Sound/NOI58.SMP.wav' dst='ui/satellite_destroyed.wav'
-		type='audio' />
-	<copy src='Sound/NOI59.SMP.wav' dst='ui/unknown_ship.wav' type='audio' />
-	<copy src='Sound/NOI60.SMP.wav' dst='ui/revolt.wav' type='audio' />
-	<copy src='Sound/NOI61.SMP.wav' dst='ui/unknown_fleet.wav' type='audio' />
-	<copy src='Sound/NOI80.SMP.wav' dst='ui/record_message_no.wav'
-		type='audio' />
-	<copy src='Sound/NOI81.SMP.wav' dst='ui/record_message_yes.wav'
-		type='audio' />
-	<copy src='Sound/NOI84.SMP.wav' dst='ui/welcome.wav' type='audio' />
-	<copy src='Sound/NOI85.SMP.wav' dst='ui/good_bye.wav' type='audio' />
 	<!-- Original -->
 	<smp src='Sound/NOI01.SMP' dst='ui/new_message_1.wav' />
 	<smp src='Sound/NOI02.SMP' dst='ui/new_message_2.wav' />
@@ -275,6 +219,25 @@
 	<ani-sound src='ATVEZETO/test.ani' dst='test/phsychologist_test.wav' />
 	<ani-sound src='ATVEZETO/test2.ani' dst='test/phsychologist_test_completed.wav' />
 
-	<!-- <copy src='' dst=''/> <ani-sound src='' dst=''/> <ani-image src='' 
-		dst=''/> <image src=''> <area coords='' dst=''/> </image> -->
+	<ani-video src='ANIM/1_HID0.ANI' dst='bridge/messages_appear_level_1.ani.gz'/>
+	<ani-video src='ANIM/2_HID0.ANI' dst='bridge/messages_appear_level_2.ani.gz'/>
+	<ani-video src='ANIM/3_HID0.ANI' dst='bridge/messages_appear_level_3.ani.gz'/>
+
+	<ani-video src='ANIM/1_HID.ANI' dst='bridge/messages_open_level_1.ani.gz'/>
+	<ani-video src='ANIM/2_HID.ANI' dst='bridge/messages_open_level_2.ani.gz'/>
+	<ani-video src='ANIM/3_HID.ANI' dst='bridge/messages_open_level_3.ani.gz'/>
+	
+	<ani-video src='ANIM/1_HIDF.ANI' dst='bridge/messages_close_level_1.ani.gz'/>
+	<ani-video src='ANIM/2_HIDF.ANI' dst='bridge/messages_close_level_2.ani.gz'/>
+	<ani-video src='ANIM/3_HIDF.ANI' dst='bridge/messages_close_level_3.ani.gz'/>
+
+	<!--
+	<image src='SCREENS/1_HID_X.PCX'>
+		<area coords='' dst=''/>
+		<areas dst=''>
+			<part coords='' to=''/>
+		</areas>
+	</image>
+	-->
+	<!-- <area coords='' dst=''/> </image> -->
 </original-converter>
