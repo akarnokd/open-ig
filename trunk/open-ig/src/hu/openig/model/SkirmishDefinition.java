@@ -36,7 +36,7 @@ public class SkirmishDefinition {
 	/** The initial tech level. */
 	public int startLevel;
 	/** The maximum tech level. */
-	public int maxLevel;
+	public int maxLevel = 5;
 	/** The initial money. */
 	public int initialMoney;
 	/** The initial planets per player. */

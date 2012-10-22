@@ -8,19 +8,11 @@
 
 package hu.openig.tools;
 
-import hu.openig.core.Pair;
-import hu.openig.utils.U;
+import hu.openig.core.Func1E;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
 
 import javax.imageio.ImageIO;
 
@@ -62,123 +54,20 @@ public final class PNGToVideo {
 	 * @param output the output file
 	 * @throws IOException on error
 	 */
-	public static void convert(String filename, int start, int count, double fps,
+	public static void convert(final String filename, int start, int count, double fps,
 			String output) throws IOException {
-		DataOutputStream bout = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(output))));
-		try {
-			BufferedImage i0 = get(filename, 0);
-			
-			// header
-			bout.writeInt(Integer.reverseBytes(i0.getWidth()));
-			bout.writeInt(Integer.reverseBytes(i0.getHeight()));
-			bout.writeInt(Integer.reverseBytes(count));
-			bout.writeInt(Integer.reverseBytes((int)(fps * 1000)));
-
-			Pair<int[], Map<Integer, Integer>> uc = uniqueColors(i0);
-			writePalette(bout, uc.first, uc.second.size());
-
-			bout.write('I');
-			byte[] b0 = colorToPalette(i0, uc.second);
-			bout.write(b0);
-			
-			if (count > 1) {
-				int idx = start;
-				do {
-					System.out.printf("Frame: %d ", idx);
-					BufferedImage i2 = get(filename, idx);
-					if (i2 == null) {
-						System.out.printf(" no more%n");
-						break;
-					}
-					
-					Pair<int[], Map<Integer, Integer>> uc2 = uniqueColors(i2);
-					
-					if (!Arrays.equals(uc.first, uc2.first)) {
-						writePalette(bout, uc2.first, uc2.second.size());
-					}
-
-					byte[] b2 = colorToPalette(i2, uc2.second);
-					
-					bout.write('I');
-					
-					for (int i = 0; i < b2.length; i++) {
-						int p0 = b0[i] & 0xFF;
-						int p1 = b2[i] & 0xFF;
-						
-						int c0 = uc.first[p0];
-						int c1 = uc2.first[p1];
-						if (c0 == c1) {
-							bout.writeByte(255);
-						} else {
-							bout.writeByte(p1);
-						}
-					}
-					
-					uc = uc2;
-					b0 = b2;
-					idx++;
-					System.out.printf(" done.%n");
-				} while (idx < count + start);
-			}
-			
-			// end of data
-			bout.write('X');
-		} finally {
-			bout.close();
-		}
-	}
-	/**
-	 * Convert the given RGBA image into an array of 8-bit palette-based image.
-	 * @param img the image
-	 * @param pal the palette
-	 * @return the bytes
-	 */
-	static byte[] colorToPalette(BufferedImage img, Map<Integer, Integer> pal) {
-		int[] pxs = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
-		byte[] result = new byte[pxs.length];
-		for (int i = 0; i < pxs.length; i++) {
-			int c = pxs[i];
-			int b = pal.get(c);
-			result[i] = (byte)b;
-		}
-		return result;
-	}
-	/**
-	 * Write the palette settings.
-	 * @param bout the data output
-	 * @param palette the RGBA palette 
-	 * @param n the number of entries
-	 * @throws IOException on error
-	 */
-	static void writePalette(DataOutput bout, int[] palette, int n) throws IOException {
-		bout.write('P');
-		bout.writeByte(n);
-		for (int i = 0; i < n; i++) {
-			int c = palette[i];
-			
-			bout.writeByte((c & 0xFF0000) >> 16);
-			bout.writeByte((c & 0xFF00) >> 8);
-			bout.writeByte((c & 0xFF));
-		}
-	}
-	/**
-	 * Extract the unique colors into a palette.
-	 * @param img the image
-	 * @return the palette and maximum color count
-	 */
-	static Pair<int[], Map<Integer, Integer>> uniqueColors(BufferedImage img) {
-		int[] pxs = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
-		Map<Integer, Integer> colors = U.newHashMap();
-		int[] result = new int[256];
 		
-		for (int c : pxs) {
-			if (!colors.containsKey(c)) {
-				int idx = colors.size();
-				colors.put(c, idx);
-				result[idx] = c;
+		Ani2009Writer out = new Ani2009Writer(new File(output), fps, count, new Func1E<Integer, BufferedImage, IOException>() {
+			@Override
+			public BufferedImage invoke(Integer value) throws IOException {
+				return get(filename, value);
 			}
+		});
+		try {
+			out.run();
+		} finally {
+			out.close();
 		}
-		return Pair.of(result, colors);
 	}
 	/**
 	 * Read the given image file.
