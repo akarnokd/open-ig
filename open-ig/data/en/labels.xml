@@ -3010,6 +3010,14 @@
 	<entry key='quickresearch.cost'>Research cost: %1$,d cr</entry>
 	<entry key='skirmish.tech_level_max'>Maximum:</entry>
 
+	<entry key='EN'>EN</entry>
+	<entry key='ES'>ES</entry>
+	<entry key='Empire.main_fleet'>Main fleet</entry>
+	<entry key='FR'>FR</entry>
+	<entry key='Garthog.pirates'>Garthog pirates</entry>
+	<entry key='Garthog.virus-carrier'>Virus carrier</entry>
+	<entry key='HU'>HU</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

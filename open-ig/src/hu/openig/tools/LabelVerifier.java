@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Utility class to check whether all labels are present in both languages.
@@ -36,24 +37,27 @@ public final class LabelVerifier {
 	 */
 	public static void main(String[] args) throws Exception {
 		XElement xhu = XElement.parseXML("data/hu/labels.xml");
-		XElement xen = XElement.parseXML("data/en/labels.xml");
-		
-		Map<String, String> labelsHu = U.newLinkedHashMap();
-		Map<String, String> labelsEn = U.newLinkedHashMap();
-		
-		load(xhu, labelsHu);
-		load(xen, labelsEn);
-		
-		System.out.printf("Missing from english:%n---%n");
-		for (String s : sort(labelsHu.keySet())) {
-			if (!labelsEn.containsKey(s)) {
-				System.out.printf("\t<entry key='%s'>%s</entry>%n", s, labelsHu.get(s));
+		Set<String> langs = U.newHashSet("en", "fr", "ru", "de");
+		for (String l : langs) {
+			XElement xen = XElement.parseXML("data/" + l + "/labels.xml");
+			
+			Map<String, String> labelsHu = U.newLinkedHashMap();
+			Map<String, String> labelsEn = U.newLinkedHashMap();
+			
+			load(xhu, labelsHu);
+			load(xen, labelsEn);
+			
+			System.out.printf("Missing from %s:%n---%n", l);
+			for (String s : sort(labelsHu.keySet())) {
+				if (!labelsEn.containsKey(s)) {
+					System.out.printf("\t<entry key='%s'>%s</entry>%n", s, labelsHu.get(s));
+				}
 			}
-		}
-		System.out.printf("Missing from hungarian:%n---%n");
-		for (String s : sort(labelsEn.keySet())) {
-			if (!labelsHu.containsKey(s)) {
-				System.out.printf("\t<entry key='%s'>%s</entry>%n", s, labelsEn.get(s));
+			System.out.printf("Missing from hungarian:%n---%n");
+			for (String s : sort(labelsEn.keySet())) {
+				if (!labelsHu.containsKey(s)) {
+					System.out.printf("\t<entry key='%s'>%s</entry>%n", s, labelsEn.get(s));
+				}
 			}
 		}
 	}
