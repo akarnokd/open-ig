@@ -127,9 +127,6 @@ public class ColonyGFX {
 	/** Workers label. */
 	@Img(name = "colony/label_workers")
 	public BufferedImage workers;
-	/** Offline animation. */
-	@Anim(name = "colony/off", step = 2)
-	public BufferedImage[] off;
 	/** The upgrade star. */
 	@Img(name = "colony/upgrade")
 	public BufferedImage upgrade;
