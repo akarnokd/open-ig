@@ -34,7 +34,7 @@ public final class ImageCrossOut {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		final Path base = Paths.get("images/ru");
+		final Path base = Paths.get("images/fr");
 		Files.walkFileTree(base, new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path file,

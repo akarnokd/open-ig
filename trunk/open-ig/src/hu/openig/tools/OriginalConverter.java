@@ -456,7 +456,23 @@ public final class OriginalConverter {
 				System.out.printf("IMAGE: %s not found%n", f.getAbsolutePath());
 			}
 		}
-		
+		for (XElement ximg : instructions.childrenWithName("image-copy")) {
+			String src = ximg.get("src");
+			String dst = ximg.get("dst");
+			BufferedImage img = null;
+			File f = new File(source + src);
+			if (f.canRead()) {
+				if (src.toLowerCase().endsWith(".pcx")) {
+					img = PCXImage.from(f, -1);
+				} else {
+					img = ImageIO.read(f);
+				}
+				System.out.printf("IMAGE-COPY: %s -> %s%n", src, dst);
+				ImageIO.write(img, "png", createDestination("images", dst));
+			} else {
+				System.out.printf("IMAGE-COPY: %s not found%n", f.getAbsolutePath());
+			}
+		}
 	}
 	/**
 	 * Creates a rectangle from a 4-element array of position and size.
