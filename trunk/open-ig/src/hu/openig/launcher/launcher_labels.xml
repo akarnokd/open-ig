@@ -73,6 +73,7 @@
 		<entry key='language-hu'>Hungarian</entry>
 		<entry key='language-de'>German</entry>
 		<entry key='language-fr'>French</entry>
+		<entry key='language-ru'>Russian</entry>
 		<entry key='Remove files of unselected packages'>Remove files of unselected packages</entry>
 		<entry key='Install new packages now'>Install new packages now</entry>
 		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
@@ -158,6 +159,7 @@
 		<entry key='language-hu'>Magyar</entry>
 		<entry key='language-de'>Német</entry>
 		<entry key='language-fr'>Francia</entry>
+		<entry key='language-ru'>Orosz</entry>
 		<entry key='Remove files of unselected packages'>A ki nem választott nyelv fájljainak törlése</entry>
 		<entry key='Install new packages now'>Az új csomagok telepítése azonnal</entry>
 		<entry key='Missing language packs'>&lt;html>A jelenlegi nyelvhez nincs telepítve a nyelvi csomag.&lt;br>Kérlek, változtass nyelvet vagy telepítsd a hiányzó nyelvi csomakokat.&lt;br>Szeretnéd most telepíteni a hiányzó nyelvi csomagokat?</entry>
@@ -243,6 +245,7 @@
 		<entry key='language-hu'>Ungarisch</entry>
 		<entry key='language-de'>Deutsch</entry>
 		<entry key='language-fr'>Französisch</entry>
+		<entry key='language-ru'>Russisch</entry>
 		<entry key='Remove files of unselected packages'>Daten von nicht selektierte Sprachenpakete entfernen</entry>
 		<entry key='Install new packages now'>Neue Pakete jetzt installieren</entry>
 		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
@@ -328,6 +331,7 @@
 		<entry key='language-hu'>Hongrois</entry>
 		<entry key='language-de'>Allemand</entry>
 		<entry key='language-fr'>Français</entry>
+		<entry key='language-ru'>Russe</entry>
 		<entry key='Remove files of unselected packages'>Remove files of unselected packages</entry>
 		<entry key='Install new packages now'>Install new packages now</entry>
 		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
@@ -413,6 +417,7 @@
 		<entry key='language-hu'>Hungarian</entry>
 		<entry key='language-de'>German</entry>
 		<entry key='language-fr'>French</entry>
+		<entry key='language-ru'>Russian</entry>
 		<entry key='Remove files of unselected packages'>Remove files of unselected packages</entry>
 		<entry key='Install new packages now'>Install new packages now</entry>
 		<entry key='Missing language packs'>&lt;html>You do not have the language pack installed for the current language.&lt;br>Please change your Launcher language or install the missing language packs.&lt;br>Do you wish to install the missing language packs?</entry>
