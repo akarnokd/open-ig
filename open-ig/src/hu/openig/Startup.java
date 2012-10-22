@@ -112,17 +112,13 @@ public final class Startup {
 		};
 		config.load();
 
-		if (argset.contains("-hu")) {
-			config.language = "hu";
-		} else
-		if (argset.contains("-en")) {
-			config.language = "en";
-		} else
-		if (argset.contains("-de")) {
-			config.language = "de";
-		} else
-		if (argset.contains("-fr")) {
-			config.language = "fr";
+		Set<String> langCodes = U.newHashSet("hu", "en", "de", "fr", "ru");
+
+		for (String lc : langCodes) {
+			if (argset.contains("-" + lc)) {
+				config.language = lc;
+				break;
+			}
 		}
 		if (argset.contains("-maximized")) {
 			config.maximized = true;
