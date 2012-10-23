@@ -590,6 +590,26 @@ public final class U {
 		return b.toString();
 	}
 	/**
+	 * Join the specified sequence of elements by the given separator.
+	 * @param objs the object array
+	 * @param separator the separator
+	 * @return the string
+	 */
+	public static String join(Iterable<?> objs, String separator) {
+		StringBuilder b = new StringBuilder();
+		
+		if (objs != null) {
+			int i = 0;
+			for (Object o : objs) {
+				if (i > 0) {
+					b.append(separator);
+				}
+				b.append(o);
+			}
+		}
+		return b.toString();
+	}
+	/**
 	 * Splits the value string by the given separator.
 	 * @param value the value
 	 * @param separator the separator

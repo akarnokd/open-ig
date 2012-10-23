@@ -26,7 +26,7 @@ public final class ChatConverter {
 		
 	}
 	/** A message. */
-	static class Message {
+	public static class Message {
 		/** Which party. */
 		int party;
 		/** The message text. */
@@ -37,7 +37,7 @@ public final class ChatConverter {
 		}
 	}
 	/** A choice entry. */
-	static class Choice {
+	public static class Choice {
 		/** The choice text. */
 		String text;
 		/** The choice procedure. */
@@ -48,7 +48,7 @@ public final class ChatConverter {
 		}
 	}
 	/** A procedure. */
-	static class Procedure {
+	public static class Procedure {
 		/** The procedure name. */
 		String name;
 		/** The procedure body text. */
@@ -71,7 +71,7 @@ public final class ChatConverter {
 		}
 	}
 	/** The IG script. */
-	static class IGScript {
+	public static class IGScript {
 		/** The starting procedure. */
 		String start;
 		/** The map of procedures. */
