@@ -73,6 +73,8 @@ public final class OriginalConverter {
 	static XElement instructions;
 	/** The target language. */
 	static String language;
+	/** The plaintext file encoding. */
+	static String encoding; // russian CP-855, french CP-863
 	/**
 	 * Convert an SMP file into a WAV file.
 	 * @param src the source file
@@ -368,128 +370,6 @@ public final class OriginalConverter {
 		}
 	}
 	/**
-	 * 
-	 * @param args no arguments
-	 * @throws Exception ignored.
-	 */
-	public static void main(String[] args) throws Exception {
-		
-		instructions = XElement.parseXML(OriginalConverter.class.getResource("originalconverter.xml"));
-		
-		source = "c:/games/igru/";
-		destination = "./";
-		language = "ru";
-		
-		for (XElement xsmp : instructions.childrenWithName("smp")) {
-			String src = xsmp.get("src");
-			String dst = xsmp.get("dst");
-			File src2 = new File(source + src);
-			File dst2 = createDestination("audio", dst);
-			if (src2.canRead()) {
-				System.out.printf("SMP: %s -> %s%n", src, dst);
-				convertSMP(src2, dst2);
-			} else {
-				src2 = new File(source + src + ".wav");
-				if (src2.canRead()) {
-					System.out.printf("COPY: %s -> %s%n", src + ".wav", dst);
-					copyFile(src2, dst2);
-				}
-			}
-		}
-		for (XElement xaa : instructions.childrenWithName("ani-sound")) {
-			String src = xaa.get("src");
-			String dst = xaa.get("dst");
-			File srcFile = new File(source + src);
-			File dstFile = createDestination("audio", dst);
-			if (srcFile.canRead()) {
-				System.out.printf("ANI-SOUND: %s -> %s%n", src, dst);
-				convertANISound(srcFile, dstFile);
-			} else {
-				srcFile = new File(source + src + ".wav");
-				if (srcFile.canRead()) {
-					System.out.printf("COPY: %s -> %s%n", src + ".wav", dst);
-					copyFile(srcFile, dstFile);
-				} else {
-					System.err.printf("ANI-SOUND: %s missing%n", src, dst);
-					System.err.flush();
-				}
-			}
-		}
-		for (XElement xaa : instructions.childrenWithName("ani-video")) {
-			String src = xaa.get("src");
-			String dst = xaa.get("dst");
-			File srcFile = new File(source + src);
-			if (srcFile.canRead()) {
-				System.out.printf("ANI-VIDEO: %s -> %s%n", src, dst);
-				convertAni(srcFile, createDestination("video", dst));
-			} else {
-				System.err.printf("ANI-VIDEO: %s missing%n", src, dst);
-				System.err.flush();
-			}
-		}
-		for (XElement ximg : instructions.childrenWithName("image")) {
-			String src = ximg.get("src");
-			BufferedImage img = null;
-			File f = new File(source + src);
-			if (f.canRead()) {
-				if (src.toLowerCase().endsWith(".pcx")) {
-					img = PCXImage.from(f, -1);
-				} else {
-					img = ImageIO.read(f);
-				}
-				for (XElement area : ximg.childrenWithName("area")) {
-					String[] coords = U.split(area.get("coords"), ",");
-					String dst = area.get("dst");
-					System.out.printf("IMAGE: %s -> %s%n", src, dst);
-					
-					extractImage(img,
-							Collections.singleton(Pair.of(fromCoords(coords), new Point(0, 0))),
-							createDestination("images", dst)
-					);
-				}
-				for (XElement xareas : ximg.childrenWithName("areas")) {
-					String dst = xareas.get("dst");
-					System.out.printf("IMAGE: %s -> %s%n", src, dst);
-					List<Pair<Rectangle, Point>> fragments = U.newArrayList();
-					for (XElement xpart : xareas.childrenWithName("part")) {
-						String[] coords = U.split(xpart.get("coords"), ",");
-						String[] to = U.split(xpart.get("to"), ",");
-						
-						Rectangle rect = fromCoords(coords);
-						Point pt = new Point(Integer.parseInt(to[0]), Integer.parseInt(to[1]));
-						
-						fragments.add(Pair.of(rect, pt));
-					}
-					extractImage(img,
-							fragments,
-							createDestination("images", dst)
-					);
-				}
-			} else {
-				System.out.printf("IMAGE: %s not found%n", f.getAbsolutePath());
-			}
-		}
-		for (XElement ximg : instructions.childrenWithName("image-copy")) {
-			String src = ximg.get("src");
-			String dst = ximg.get("dst");
-			BufferedImage img = null;
-			File f = new File(source + src);
-			if (f.canRead()) {
-				if (src.toLowerCase().endsWith(".pcx")) {
-					img = PCXImage.from(f, -1);
-				} else {
-					img = ImageIO.read(f);
-				}
-				System.out.printf("IMAGE-COPY: %s -> %s%n", src, dst);
-				ImageIO.write(img, "png", createDestination("images", dst));
-			} else {
-				System.out.printf("IMAGE-COPY: %s not found%n", f.getAbsolutePath());
-			}
-		}
-		
-		convertLabels();
-	}
-	/**
 	 * Convert the labels.
 	 * @throws XMLStreamException on error
 	 * @throws IOException on error
@@ -507,9 +387,6 @@ public final class OriginalConverter {
 				labels.put(key, xentry.content);
 			}
 		}
-		String encoding = "CP-855"; // russian
-		// String encoding = "CP-855"; // russian
-		// String encoding = "CP-863"; // french
 		Map<String, Pair<String, String>> codepages = U.newHashMap();
 		for (XElement xcodepage : instructions.childrenWithName("codepage")) {
 			codepages.put(xcodepage.get("id"), Pair.of(xcodepage.get("latin"), xcodepage.get("utf")));
@@ -1348,7 +1225,7 @@ public final class OriginalConverter {
 				b.append(c2);
 			} else {
 				if (c >= 'A') {
-					System.err.printf("Charcode: %d %s%n", (int)c, c);
+					System.err.printf("Charcode: %d %s  %s%n", (int)c, c, text);
 				}
 				if (c == 0) {
 					c = ' ';
@@ -1404,5 +1281,135 @@ public final class OriginalConverter {
 		f.getParentFile().mkdirs();
 		return f;
 	}
-
+	/**
+	 * The conversion routines.
+	 * @throws IOException on error
+	 * @throws XMLStreamException on error
+	 */
+	public static void runConversions() throws IOException, XMLStreamException {
+		for (XElement xsmp : instructions.childrenWithName("smp")) {
+			String src = xsmp.get("src");
+			String dst = xsmp.get("dst");
+			File src2 = new File(source + src);
+			File dst2 = createDestination("audio", dst);
+			if (src2.canRead()) {
+				System.out.printf("SMP: %s -> %s%n", src, dst);
+				convertSMP(src2, dst2);
+			} else {
+				src2 = new File(source + src + ".wav");
+				if (src2.canRead()) {
+					System.out.printf("COPY: %s -> %s%n", src + ".wav", dst);
+					copyFile(src2, dst2);
+				}
+			}
+		}
+		for (XElement xaa : instructions.childrenWithName("ani-sound")) {
+			String src = xaa.get("src");
+			String dst = xaa.get("dst");
+			File srcFile = new File(source + src);
+			File dstFile = createDestination("audio", dst);
+			if (srcFile.canRead()) {
+				System.out.printf("ANI-SOUND: %s -> %s%n", src, dst);
+				convertANISound(srcFile, dstFile);
+			} else {
+				srcFile = new File(source + src + ".wav");
+				if (srcFile.canRead()) {
+					System.out.printf("COPY: %s -> %s%n", src + ".wav", dst);
+					copyFile(srcFile, dstFile);
+				} else {
+					System.err.printf("ANI-SOUND: %s missing%n", src, dst);
+					System.err.flush();
+				}
+			}
+		}
+		for (XElement xaa : instructions.childrenWithName("ani-video")) {
+			String src = xaa.get("src");
+			String dst = xaa.get("dst");
+			File srcFile = new File(source + src);
+			if (srcFile.canRead()) {
+				System.out.printf("ANI-VIDEO: %s -> %s%n", src, dst);
+				convertAni(srcFile, createDestination("video", dst));
+			} else {
+				System.err.printf("ANI-VIDEO: %s missing%n", src, dst);
+				System.err.flush();
+			}
+		}
+		for (XElement ximg : instructions.childrenWithName("image")) {
+			String src = ximg.get("src");
+			BufferedImage img = null;
+			File f = new File(source + src);
+			if (f.canRead()) {
+				if (src.toLowerCase().endsWith(".pcx")) {
+					img = PCXImage.from(f, -1);
+				} else {
+					img = ImageIO.read(f);
+				}
+				for (XElement area : ximg.childrenWithName("area")) {
+					String[] coords = U.split(area.get("coords"), ",");
+					String dst = area.get("dst");
+					System.out.printf("IMAGE: %s -> %s%n", src, dst);
+					
+					extractImage(img,
+							Collections.singleton(Pair.of(fromCoords(coords), new Point(0, 0))),
+							createDestination("images", dst)
+					);
+				}
+				for (XElement xareas : ximg.childrenWithName("areas")) {
+					String dst = xareas.get("dst");
+					System.out.printf("IMAGE: %s -> %s%n", src, dst);
+					List<Pair<Rectangle, Point>> fragments = U.newArrayList();
+					for (XElement xpart : xareas.childrenWithName("part")) {
+						String[] coords = U.split(xpart.get("coords"), ",");
+						String[] to = U.split(xpart.get("to"), ",");
+						
+						Rectangle rect = fromCoords(coords);
+						Point pt = new Point(Integer.parseInt(to[0]), Integer.parseInt(to[1]));
+						
+						fragments.add(Pair.of(rect, pt));
+					}
+					extractImage(img,
+							fragments,
+							createDestination("images", dst)
+					);
+				}
+			} else {
+				System.out.printf("IMAGE: %s not found%n", f.getAbsolutePath());
+			}
+		}
+		for (XElement ximg : instructions.childrenWithName("image-copy")) {
+			String src = ximg.get("src");
+			String dst = ximg.get("dst");
+			BufferedImage img = null;
+			File f = new File(source + src);
+			if (f.canRead()) {
+				if (src.toLowerCase().endsWith(".pcx")) {
+					img = PCXImage.from(f, -1);
+				} else {
+					img = ImageIO.read(f);
+				}
+				System.out.printf("IMAGE-COPY: %s -> %s%n", src, dst);
+				ImageIO.write(img, "png", createDestination("images", dst));
+			} else {
+				System.out.printf("IMAGE-COPY: %s not found%n", f.getAbsolutePath());
+			}
+		}
+		
+		convertLabels();
+	}
+	/**
+	 * 
+	 * @param args no arguments
+	 * @throws Exception ignored.
+	 */
+	public static void main(String[] args) throws Exception {
+		
+		instructions = XElement.parseXML(OriginalConverter.class.getResource("originalconverter.xml"));
+		
+		encoding = "CP-863"; //CP-855 
+		source = "c:/games/igfr/";
+		destination = "./";
+		language = "fr";
+		
+		runConversions();
+	}
 }

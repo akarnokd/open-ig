@@ -555,8 +555,12 @@
 	<codepage id='CP-855' 
 		latin='abcdefghijklmnopqrstuvwxyzßêéèáÉABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜäöü'
 		  utf='фисвуапршолдьтщзйкыегмцчняхъжэбюФИСВТАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯХЪЖЭБЮ'/>
+	<codepage id='CP-863'
+		latin='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZΘα⌠ΓΦ∩Ω√ε£τ∙╟░'
+		  utf='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZéàôâèïêûîœçùÇ°'
+	/>
 	
-	<building-map enabled='false'>
+	<building-map enabled='true'>
 		<entry key='buildings.colony_hub'/>
 		<entry key='buildings.prefab_housing'/>
 		<entry key='buildings.apartment_block'/>
@@ -601,7 +605,7 @@
 		<entry key='buildings.bar'/>
 		<entry key='buildings.stadium'/>
 	</building-map>
-	<tech-map enabled='false'>
+	<tech-map enabled='true'>
 		<entry key='tech.fighter1'/>
 		<entry key='tech.fighter2'/>
 		<entry key='tech.fighter3'/>
