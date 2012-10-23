@@ -25,9 +25,8 @@ public final class SortLabels {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
 
-		String fn = "data/en/labels.xml";
+		String fn = "data/ru/labels.xml";
 		
 		XElement e = XElement.parseXML(fn);
 		

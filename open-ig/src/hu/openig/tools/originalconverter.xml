@@ -552,7 +552,244 @@
 	<image-copy src='DATAPIC/ST0.PCX' dst='database/starmap.png'/>
 	<image-copy src='DATAPIC/SM0.PCX' dst='database/ship_map.png'/>
 -->
+	<codepage id='CP-855' 
+		latin='abcdefghijklmnopqrstuvwxyzßêéèáÉABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜäöü'
+		  utf='фисвуапршолдьтщзйкыегмцчняхъжэбюФИСВТАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯХЪЖЭБЮ'/>
 	
+	<building-map enabled='false'>
+		<entry key='buildings.colony_hub'/>
+		<entry key='buildings.prefab_housing'/>
+		<entry key='buildings.apartment_block'/>
+		<entry key='buildings.arcology'/>
+		<entry key='buildings.nuclear_plant'/>
+		<entry key='buildings.fusion_plant'/>
+		<entry key='buildings.solar_plant'/>
+		<entry key='buildings.water_vaporator'/>
+		<entry key='buildings.hydroponic_food_farm'/>
+		<entry key='buildings.phood_factory'/>
+		<entry key='buildings.spaceship_factory'/>
+		<entry key='buildings.equipment_factory'/>
+		<entry key='buildings.weapon_factory'/>
+		<entry key='buildings.civil_dev_center'/>
+		<entry key='buildings.mechanical_dev_center'/>
+		<entry key='buildings.computer_dev_center'/>
+		<entry key='buildings.ai_dev_center'/>
+		<entry key='buildings.military_dev_center'/>
+		<entry key='buildings.traders_spaceport'/>
+		<entry key='buildings.military_spaceport'/>
+		<entry key='buildings.bank'/>
+		<entry key='buildings.trade_center'/>
+		<entry key='buildings.hospital'/>
+		<entry key='buildings.police_station'/>
+		<entry key='buildings.fire_brigade'/>
+		<entry key='buildings.radar_telescope'/>
+		<entry key='buildings.field_telescope'/>
+		<entry key='buildings.phased_telescope'/>
+		<entry key='buildings.bunker'/>
+		<entry key='buildings.ion_projector'/>
+		<entry key='buildings.plasma_projector'/>
+		<entry key='buildings.particle_projector'/>
+		<entry key='buildings.meson_projector'/>
+		<entry key='buildings.inversion_shield'/>
+		<entry key='buildings.hypershield'/>
+		<entry key='buildings.barracks'/>
+		<entry key='buildings.fortress'/>
+		<entry key='buildings.stronghold'/>
+		<entry key='buildings.recreation_center'/>
+		<entry key='buildings.park'/>
+		<entry key='buildings.church'/>
+		<entry key='buildings.bar'/>
+		<entry key='buildings.stadium'/>
+	</building-map>
+	<tech-map enabled='false'>
+		<entry key='tech.fighter1'/>
+		<entry key='tech.fighter2'/>
+		<entry key='tech.fighter3'/>
+		<entry key='tech.fighter4'/>
+		<entry key='tech.fighter5'/>
+		<entry key='tech.fighter6'/>
+		<entry key='tech.destroyer1'/>
+		<entry key='tech.destroyer2'/>
+		<entry key='tech.destroyer3'/>
+		<entry key='tech.cruiser1'/>
+		<entry key='tech.cruiser2'/>
+		<entry key='tech.cruiser3'/>
+		<entry key='tech.battleship1'/>
+		<entry key='tech.battleship2'/>
+		<entry key='tech.battleship3'/>
+		<entry key='tech.colonyship'/>
+		<entry key='tech.flagship'/>
+		<entry key=''/> <!-- empty slot, original: tech.carrier? -->
+		<entry key='tech.satellite'/>
+		<entry key='tech.spysatellite1'/>
+		<entry key='tech.spysatellite2'/>
+		<entry key='tech.hubble2'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.spacestation1'/>
+		<entry key='tech.orbitalfactory'/>
+		<entry key='tech.spacestation2'/>
+		<entry key='tech.spacestation3'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.hyperdrive1'/>
+		<entry key='tech.hyperdrive2'/>
+		<entry key='tech.hyperdrive3'/>
+		<entry key='tech.hyperdrive4'/>
+		<entry key='tech.hyperdrive5'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.ecm1'/>
+		<entry key='tech.ecm2'/>
+		<entry key='tech.storage1'/>
+		<entry key='tech.storage2'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		
+		<entry key='tech.radar1'/>
+		<entry key='tech.radar2'/>
+		<entry key='tech.radar3'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.shield1'/>
+		<entry key='tech.shield2'/>
+		<entry key='tech.shield3'/>
+		<entry key='tech.shield4'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+
+		<entry key='tech.laser1'/>
+		<entry key='tech.laser2'/>
+		<entry key='tech.laser3'/>
+		<entry key='tech.laser4'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.ioncannon'/>
+		<entry key='tech.plasmacannon'/>
+		<entry key='tech.particlecannon'/>
+		<entry key='tech.mesoncannon'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.bomb1'/>
+		<entry key='tech.bomb2'/>
+		<entry key='tech.virusbomb'/>
+		<entry key='tech.rocket1'/>
+		<entry key='tech.rocket2'/>
+		<entry key='tech.multiheadedrocket'/>
+		
+		<entry key='tech.lighttank'/>
+		<entry key='tech.mediumtank'/>
+		<entry key='tech.heavytank'/>
+		<entry key='tech.behemoth'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.radarcar'/>
+		<entry key='tech.rocketlauncher1'/>
+		<entry key='tech.rocketlauncher2'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		
+		<entry key='tech.solarplant'/>
+		<entry key='tech.phoodfactory'/>
+		<entry key='tech.tradecenter'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.inversionshield'/>
+		<entry key='tech.hypershield'/>
+		<entry key='tech.fortress'/>
+		<entry key='tech.stronghold'/>
+		<entry key='tech.bunker'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.radartelescope'/>
+		<entry key='tech.fieldtelescope'/>
+		<entry key='tech.phasedtelescope'/>
+		<entry key=''/> <!-- empty slot -->
+		<entry key='tech.plasmaprojector'/>
+		<entry key='tech.particleprojector'/>
+		<entry key='tech.mesonprojector'/>
+		<entry key=''/> <!-- empty slot: originally: ion projector -->
+	</tech-map>
+	
+	<diplomacy/>
+	
+	<chat src='KOR1.SCR' labels='chat.bo.1.%s'/>
+	<chat src='KOR2.SCR' labels='chat.bo.2.%s'/>
+	<chat src='KOR3.SCR' labels='chat.bo.3.%s'/>
+	<chat src='KOR4.SCR' labels='chat.bo.4.%s'/>
+	<chat src='KOR5.SCR' labels='chat.bo.5.%s'/>
+	<chat src='KOR6.SCR' labels='chat.bo.6.%s'/>
+	<chat src='KOR7.SCR' labels='chat.bo.7.%s'/>
+	<chat src='KOR8.SCR' labels='chat.bo.8.%s'/>
+
+	<chat src='KOK1.SCR' labels='chat.bi.1.%s'/>
+	<chat src='KOK2.SCR' labels='chat.bi.2.%s'/>
+	<chat src='KOK3.SCR' labels='chat.bi.3.%s'/>
+	<chat src='KOK4.SCR' labels='chat.bi.4.%s'/>
+	<chat src='KOK5.SCR' labels='chat.bi.5.%s'/>
+	<chat src='KOK6.SCR' labels='chat.bi.6.%s'/>
+	<chat src='KOK7.SCR' labels='chat.bi.7.%s'/>
+	<chat src='KOK8.SCR' labels='chat.bi.8.%s'/>
+
+	<chat src='VIRKIB1.SCR' labels='chat.vo.1.%s'/>
+	<chat src='VIRKIB2.SCR' labels='chat.vo.2.%s'/>
+	<chat src='VIRKIB3.SCR' labels='chat.vo.3.%s'/>
+	<chat src='VIRKIB4.SCR' labels='chat.vo.4.%s'/>
+	<chat src='VIRKIB5.SCR' labels='chat.vo.5.%s'/>
+	<chat src='VIRKIB6.SCR' labels='chat.vo.6.%s'/>
+	<chat src='VIRKIB7.SCR' labels='chat.vo.7.%s'/>
+	<chat src='VIRKIB8.SCR' labels='chat.vo.8.%s'/>
+
+	<chat src='VIRBE1.SCR' labels='chat.vi.1.%s'/>
+	<chat src='VIRBE2.SCR' labels='chat.vi.2.%s'/>
+	<chat src='VIRBE3.SCR' labels='chat.vi.3.%s'/>
+	<chat src='VIRBE4.SCR' labels='chat.vi.4.%s'/>
+	<chat src='VIRBE5.SCR' labels='chat.vi.5.%s'/>
+	<chat src='VIRBE6.SCR' labels='chat.vi.6.%s'/>
+	<chat src='VIRBE7.SCR' labels='chat.vi.7.%s'/>
+	<chat src='VIRBE8.SCR' labels='chat.vi.8.%s'/>
+
+	<chat src='KER1.SCR' labels='chat.merchant1.%s'/>
+	<chat src='KER2.SCR' labels='chat.merchant2.%s'/>
+	<chat src='KER3.SCR' labels='chat.merchant3.%s'/>
+	<chat src='KER4.SCR' labels='chat.merchant4.%s'/>
+	<chat src='KER5.SCR' labels='chat.merchant5.%s'/>
+	<chat src='KER6.SCR' labels='chat.merchant6.%s'/>
+	<chat src='KER7.SCR' labels='chat.merchant7.%s'/>
+	<chat src='KER8.SCR' labels='chat.merchant8.%s'/>
+
+	<chat src='SCR09A.SCR' labels='chat.m10.%s'/>
+	<chat src='SCR18.SCR' labels='chat.m12.%s'/>
+	<chat src='SCR09A.SCR' labels='chat.m13.%s'/>
+	<chat src='SCR23.SCR' labels='chat.m14.%s'/>
+	<chat src='SCR09A.SCR' labels='chat.m16.%s'/>
+	<chat src='SCR09A.SCR' labels='chat.m17.%s'/>
+	<chat src='SCR31.SCR' labels='chat.m19.%s'/>
+	
+	<chat src='SCR01.SCR' labels='chat.m2.merchant1.%s'/>
+	<chat src='SCR02.SCR' labels='chat.m2.merchant2.%s'/>
+	<chat src='SCR03.SCR' labels='chat.m2.merchant3.%s'/>
+	<chat src='SCR04.SCR' labels='chat.m2.merchant4.%s'/>
+	<chat src='SCR05.SCR' labels='chat.m2.merchant5.%s'/>
+	<chat src='SCR06.SCR' labels='chat.m2.merchant6.%s'/>
+
+	<chat src='SCR32.SCR' labels='chat.m21.%s'/>
+	<chat src='SCR11.SCR' labels='chat.m3.%s'/>
+	<chat src='SCR12.SCR' labels='chat.m4.%s'/>
+	<chat src='SCR09.SCR' labels='chat.m5.%s'/>
+	<chat src='SCR14.SCR' labels='chat.m6.%s'/>
+	<chat src='SCR07.SCR' labels='chat.m7.merchant1.%s'/>
+	<chat src='SCR08.SCR' labels='chat.m7.merchant2.%s'/>
+	<chat src='SCR17.SCR' labels='chat.m9.%s'/>
+
 <!--	<image-copy src='' dst=''/>-->
 	
 </original-converter>

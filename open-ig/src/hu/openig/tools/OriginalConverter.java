@@ -10,6 +10,11 @@ package hu.openig.tools;
 
 import hu.openig.core.Func1E;
 import hu.openig.core.Pair;
+import hu.openig.model.Chats.Node;
+import hu.openig.tools.ChatConverter.Choice;
+import hu.openig.tools.ChatConverter.IGScript;
+import hu.openig.tools.ChatConverter.Message;
+import hu.openig.tools.ChatConverter.Procedure;
 import hu.openig.tools.ani.Framerates;
 import hu.openig.tools.ani.Framerates.Rates;
 import hu.openig.tools.ani.SpidyAniDecoder;
@@ -18,6 +23,8 @@ import hu.openig.tools.ani.SpidyAniFile;
 import hu.openig.tools.ani.SpidyAniFile.Block;
 import hu.openig.tools.ani.SpidyAniFile.Sound;
 import hu.openig.utils.IOUtils;
+import hu.openig.utils.PACFile;
+import hu.openig.utils.PACFile.PACEntry;
 import hu.openig.utils.PCXImage;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -28,6 +35,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,14 +44,18 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import javax.imageio.ImageIO;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Takes an original game install and extracts all language-specific resource, then names
@@ -473,6 +486,900 @@ public final class OriginalConverter {
 				System.out.printf("IMAGE-COPY: %s not found%n", f.getAbsolutePath());
 			}
 		}
+		
+		convertLabels();
+	}
+	/**
+	 * Convert the labels.
+	 * @throws XMLStreamException on error
+	 * @throws IOException on error
+	 */
+	public static void convertLabels() throws XMLStreamException, IOException {
+		// -------------------------------------------------------
+		// translations
+		Map<String, PACEntry> pacs = PACFile.mapByName(PACFile.parseFully(new File(source + "DATA/TEXT.PAC")));
+		Map<String, String> labels = U.newLinkedHashMap();
+		File dest = createDestination("data", "labels.xml");
+		XElement xlabels = XElement.parseXML(dest);
+		for (XElement xentry : xlabels.childrenWithName("entry")) {
+			String key = xentry.get("key");
+			if (!key.isEmpty()) {
+				labels.put(key, xentry.content);
+			}
+		}
+		String encoding = "CP-855"; // russian
+		// String encoding = "CP-855"; // russian
+		// String encoding = "CP-863"; // french
+		Map<String, Pair<String, String>> codepages = U.newHashMap();
+		for (XElement xcodepage : instructions.childrenWithName("codepage")) {
+			codepages.put(xcodepage.get("id"), Pair.of(xcodepage.get("latin"), xcodepage.get("utf")));
+		}
+
+		Pair<String, String> codes = codepages.get(encoding);
+		
+		List<String> buildings = U.newArrayList();
+		for (XElement xbuildingMap : instructions.childrenWithName("building-map")) {
+			if (xbuildingMap.getBoolean("enabled", true)) {
+				for (XElement xentry : xbuildingMap.childrenWithName("entry")) {
+					buildings.add(xentry.get("key"));
+				}
+			}
+		}
+
+		if (!buildings.isEmpty()) {
+			System.out.println("LABELS: Building names.");
+			List<String> epulNev = getText(pacs, "EPUL_NEV.TXT", codes);
+			for (int i = 0; i < epulNev.size(); i++) {
+				labels.put(buildings.get(i), epulNev.get(i));
+			}
+			
+			System.out.println("LABELS: Building details.");
+			List<String> epulInfo = getText(pacs, "EPUL_INF.TXT", codes);
+			for (int i = 0; i < epulNev.size(); i++) {
+				labels.put(buildings.get(i) + ".desc", 
+						U.join(epulInfo.subList(i * 3, Math.min(i * 3 + 3, epulInfo.size())), " ").replaceAll("\\s{2,}", " ")
+				);
+			}
+		}
+
+		List<String> techs = U.newArrayList();
+		for (XElement techMap : instructions.childrenWithName("tech-map")) {
+			if (techMap.getBoolean("enabled", true)) {
+				for (XElement xentry : techMap.childrenWithName("entry")) {
+					techs.add(xentry.get("key"));
+				}
+			}
+		}
+
+		if (!techs.isEmpty()) {
+			System.out.println("LABELS: Inventions.");
+			List<String> talNev = getText(pacs, "TAL_NEV.TXT", codes);
+			for (int i = 0; i < techs.size(); i++) {
+				String key = techs.get(i);
+				if (!key.isEmpty()) {
+					labels.put(key + ".name", talNev.get(i));
+				}
+			}
+			System.out.println("LABELS: Invention description.");
+			List<String> eqTxt = getText(pacs, "EQTXT.TXT", codes);
+			int eqIdx = 0;
+			for (int i = 0; i < techs.size(); i++) {
+				String key = techs.get(i);
+				if (!key.isEmpty()) {
+					labels.put(key + ".longname", eqTxt.get(eqIdx * 3));
+					
+					List<String> desc = eqTxt.subList(eqIdx * 3 + 1, eqIdx * 3 + 3);
+					
+					labels.put(key + ".description", U.join(desc, " ").replaceAll("\\s{2,}", " "));
+					
+					eqIdx++;
+				}
+			}
+		}
+		
+		if (instructions.childElement("diplomacy") != null) {
+			System.out.println("LABELS: diplomacy.");
+			// diplomacy text
+			Map<String, String> dipLabels = U.newLinkedHashMap();
+			convertDiplomacy(pacs, dipLabels);
+			
+			for (Map.Entry<String, String> e : dipLabels.entrySet()) {
+				labels.put(e.getKey(), transcode(e.getValue(), codes));
+			}
+		}		
+		// convert chat programs
+		
+		for (XElement xchat : instructions.childrenWithName("chat")) {
+			Map<String, String> chatLabels = U.newLinkedHashMap();
+			
+			String src = xchat.get("src");
+			String labelPattern = xchat.get("labels");
+
+			System.out.printf("LABELS: Chat: %s -> %s.%n", src, labelPattern);
+
+			convertChat(pacs, src, labelPattern, chatLabels);
+
+			for (Map.Entry<String, String> e : chatLabels.entrySet()) {
+				labels.put(e.getKey(), transcode(e.getValue(), codes));
+			}
+
+		}
+		
+		// --------------------- store labels
+		xlabels.clear();
+		for (Map.Entry<String, String> e : labels.entrySet()) {
+			XElement xentry = xlabels.add("entry");
+			xentry.set("key", e.getKey());
+			xentry.content = e.getValue();
+		}
+		xlabels.save(dest);
+	}
+	/**
+	 * Convert the diplomatic text.
+	 * @param mapByName the original file package
+	 * @param name the source file name
+	 * @param labelPattern the label pattern
+	 * @param labels the translation map
+	 * @throws IOException on error
+	 */
+	static void convertChat(Map<String, PACEntry> mapByName,
+			String name,
+			String labelPattern,
+			Map<String, String> labels) throws IOException {
+
+		IGScript scr = parseScript(mapByName.get(name).data, "Cp437"); //hu: Cp850, de: Cp1250, other: Cp437
+		
+		List<Node> nodes = U.newArrayList();
+		
+		for (Procedure proc : scr.procedures.values()) {
+			if (!proc.messages.isEmpty()) {
+				Message m0 = proc.messages.get(0);
+
+				String n0n = proc.name + "-p";
+				if (proc.name.equals(scr.start)) {
+					n0n = "0";
+				}
+				
+				String opt = null;
+				
+				for (Procedure p2 : scr.procedures.values()) {
+					for (Choice c : p2.choices) {
+						if (c.proc.equals(proc.name)) {
+							opt = c.text;
+							if (p2.name.equals(scr.start)) {
+								n0n = "0";
+							}
+							if (m0.text.isEmpty()) {
+								m0.text = c.text;
+							}
+						}
+					}
+				}
+				Node n0 = new Node(n0n);
+				n0.message = m0.text;
+				n0.option = opt;
+				
+				n0.transitions.add(proc.name + "-e");
+				
+				nodes.add(n0);
+				
+				//**********************************************************
+				
+				Message m1 = proc.messages.get(1);
+				Node n1 = new Node(proc.name + "-e");
+				n1.retreat = proc.retreat;
+
+				if (m1.text.isEmpty() && proc.next != null) {
+					Procedure p2 = scr.procedures.get(proc.next);
+					m1 = p2.messages.get(1);
+					n1.retreat |= p2.retreat;
+				}
+				
+				n1.enemy = true;
+				n1.message = m1.text;
+				
+				if (proc.next != null) {
+					Procedure p2 = scr.procedures.get(proc.next);
+					for (Choice c : p2.choices) {
+						n1.transitions.add(c.proc + "-p");
+					}
+				}
+				
+				nodes.add(n1);
+			}
+		}
+		int idx = 0;
+		Map<String, Integer> nodeMap = U.newHashMap();
+		List<Node> nodes2 = U.newArrayList(nodes);
+		nodes.clear();
+		for (Node n : nodes2) {
+			if (!n.message.isEmpty()) {
+				nodeMap.put(n.id, idx);
+				idx++;
+				nodes.add(n);
+			}
+		}
+		
+		for (Node n : nodes) {
+			boolean found = false;
+			outer:
+			for (Node n2 : nodes) {
+				for (String tr0 : n2.transitions) {
+					if (tr0.equals(n.id)) {
+						found = true;
+						break outer;
+					}
+				}
+			}
+			if (!found && !n.id.equals("0")) {
+				continue;
+			}
+			
+			int nidx = nodeMap.get(n.id);
+			
+			if (n.option != null) {
+				
+				String lbl = String.format(labelPattern, "n" + nidx + ".o");
+				
+				labels.put(lbl, n.option);
+				
+			}
+
+			String lbl = String.format(labelPattern, "n" + nidx);
+			labels.put(lbl, n.message);
+			
+			if (!n.transitions.isEmpty()) {
+				for (String tr : n.transitions) {
+					Integer trs = nodeMap.get(tr);
+					if (trs == null) {
+						System.err.printf("Transition %s missing %n", tr);
+						System.err.flush();
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Parse an IG script file.
+	 * @param data the data bytes
+	 * @param charset the charset
+	 * @return the parsed script
+	 * @throws IOException on error
+	 */
+	static IGScript parseScript(byte[] data, String charset) throws IOException {
+		IGScript result = new IGScript();
+		String txt = new String(data, charset);
+		int pi = 0;
+		// parse procedures
+		while (pi >= 0) {
+			int pi2 = txt.indexOf("procedure ", pi);
+			if (pi2 >= 0) {
+				int pi3 = txt.indexOf('\r', pi2);
+				Procedure proc = new Procedure();
+				
+				proc.name = txt.substring(pi2 + 10, pi3).trim();
+				
+				int pi2e1 = txt.indexOf("procedure ", pi3);
+				int pi2e = txt.indexOf("end\r", pi3);
+				
+				int pinc = 4;
+				// check if the end is missing
+				if (pi2e1 >= 0 && pi2e1 < pi2e) {
+					pi2e = pi2e1;
+					pinc = 0;
+				}
+				
+				proc.body = txt.substring(pi3 + 1, pi2e).trim();
+				
+				result.procedures.put(proc.name, proc);
+
+				pi = pi2e + pinc;
+			} else {
+				break;
+			}
+		}
+		// parse each procedures.
+		for (Procedure proc : result.procedures.values()) {
+			int choiceIdx = proc.body.indexOf("valaszt ");
+			// manage choices
+			if (choiceIdx >= 0) {
+				int ce = proc.body.indexOf("\r", choiceIdx);
+				String cn = proc.body.substring(choiceIdx + 8, ce).trim();
+				int choiceCount = Integer.parseInt(cn);
+				
+				for (int i = 0; i < choiceCount; i++) {
+					int ce2 = proc.body.indexOf("\r", ce + 1);
+					if (ce2 < 0) {
+						ce2 = proc.body.length();
+					}
+					
+					String choiceEntryStr = proc.body.substring(ce + 1, ce2).trim();
+					
+					int sep = choiceEntryStr.lastIndexOf(' ');
+					int qidx0 = choiceEntryStr.indexOf('"');
+					int qidx = choiceEntryStr.lastIndexOf('"');
+
+					Choice c = new Choice();
+
+					c.text = noquot(choiceEntryStr.substring(qidx0, qidx + 1));
+					
+					if (qidx < sep) {
+						c.proc = choiceEntryStr.substring(sep + 1).trim();
+					} else {
+						// the next line contains the target
+						int ce3 = proc.body.indexOf("\r", ce2 + 1);
+						if (ce3 < 0) {
+							ce3 = proc.body.length();
+						}
+						c.proc = proc.body.substring(ce2 + 1, ce3).trim();
+						ce2 = ce3 - 1;
+					}
+					
+					proc.choices.add(c);
+					
+					ce = ce2 + 1;
+				}
+			} else {
+				Message m0 = new Message();
+				Message m1 = new Message();
+				m1.party = 1;
+				
+				for (String s0 : proc.body.split("\r")) {
+					s0 = s0.trim();
+					
+					if (s0.startsWith("message0")) {
+						m0.text += " " + noquot(s0.substring(9));
+					} else
+					if (s0.startsWith("message1")) {
+						m1.text += " " + noquot(s0.substring(9));
+					} else 
+					if (s0.startsWith("visszavonulas")) {
+						proc.retreat = true;
+					} else {
+						if (result.procedures.containsKey(s0)) {
+							proc.next = s0;
+						}
+					}
+				}
+				
+				m0.text = m0.text.trim();
+				m1.text = m1.text.trim();
+				proc.messages.add(m0);
+				proc.messages.add(m1);
+			}
+		}
+		
+		// find the entry point
+		int pi0 = txt.indexOf("procedure ");
+		
+		for (String s0 : txt.substring(0, pi0).split("\r")) {
+			int s0i = s0.indexOf(' ');
+			if (s0i < 0) {
+				s0i = s0.length();
+			}
+			
+			String n0 = s0.substring(0, s0i).trim();
+			if (result.procedures.containsKey(n0)) {
+				result.start = n0;
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * Removes the leading and trailing quotation marks.
+	 * @param s the string
+	 * @return the cleaned string
+	 */
+	static String noquot(String s) {
+		if (s.startsWith("\"")) {
+			s = s.substring(1);
+		}
+		if (s.endsWith("\"")) {
+			s = s.substring(0, s.length() - 1);
+		}
+		return s.trim();
+	}
+	/**
+	 * Convert the diplomatic text.
+	 * @param mapByName the original file package
+	 * @param labels the translation map
+	 * @throws IOException on error
+	 */
+	static void convertDiplomacy(Map<String, PACEntry> mapByName, 
+			Map<String, String> labels) throws IOException {
+		for (String s : mapByName.keySet()) {
+			String st = new String(mapByName.get(s).data, "CP437");
+			if (st.contains("This is a template text fot Jason")
+					|| st.contains("This is a template text for Jason")) {
+				parse(s, st, labels);
+			}
+		}
+
+	}
+	/**
+	 * Parse the plain diplomacy content.
+	 * @param name the race name
+	 * @param content the content
+	 * @param map the label mapping
+	 * @return the element
+	 */
+	static XElement parse(String name, String content, Map<String, String> map) {
+		XElement result = new XElement("player");
+		if (name.startsWith("ALIEN3")) {
+			result.set("id", "Morgath");
+		} else
+		if (name.startsWith("ALIEN4")) {
+			result.set("id", "Ychom");
+		} else
+		if (name.startsWith("ALIEN5")) {
+			result.set("id", "Dribs");
+		} else
+		if (name.startsWith("ALIEN6")) {
+			result.set("id", "Sullep");
+		} else
+		if (name.startsWith("ALIEN7")) {
+			result.set("id", "Dargslan");
+		} else
+		if (name.startsWith("ALIEN8")) {
+			result.set("id", "Ecalep");
+		} else
+		if (name.startsWith("ALIEN9")) {
+			result.set("id", "FreeTraders");
+		} else
+		if (name.startsWith("ALIEN10")) {
+			result.set("id", "FreeNations");
+		}
+		
+		List<String> ts = split(content);
+		XElement neg = result.add("negotiate");
+		neg.set("type", "DIPLOMATIC_RELATIONS");
+		XElement appr = null;
+		
+		for (int i = 1; i <= 3; i++) {
+			appr = neg.add("approach");
+			appr.set("type", "AGGRESSIVE");
+			appr.content = label(result, neg, appr, i, ts.get(i - 1), map);
+		}			
+		for (int i = 4; i <= 6; i++) {
+			appr = neg.add("approach");
+			appr.set("type", "NEUTRAL");
+			appr.content = label(result, neg, appr, i, ts.get(i - 1), map);
+		}			
+		for (int i = 7; i <= 9; i++) {
+			appr = neg.add("approach");
+			appr.set("type", "HUMBLE");
+			appr.content = label(result, neg, appr, i, ts.get(i - 1), map);
+		}			
+		
+		for (int i = 10; i <= 18; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			resp.set("type", "AGGRESSIVE");
+			if (i < 13) {
+				resp.set("mode", "YES");
+			} else
+			if (i < 16) {
+				resp.set("mode", "MAYBE");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		for (int i = 19; i <= 27; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			resp.set("type", "NEUTRAL");
+			if (i < 22) {
+				resp.set("mode", "YES");
+			} else
+			if (i < 25) {
+				resp.set("mode", "MAYBE");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		for (int i = 28; i <= 36; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			resp.set("type", "AGGRESSIVE");
+			if (i < 31) {
+				resp.set("mode", "YES");
+			} else
+			if (i < 34) {
+				resp.set("mode", "MAYBE");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		neg = result.add("negotiate");
+		neg.set("type", "MONEY");
+		appr = neg.add("approach");
+		appr.content = label(result, neg, 37, ts.get(36), map);
+		
+		for (int i = 38; i <= 43; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			if (i < 41) {
+				resp.set("mode", "YES");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		neg = result.add("negotiate");
+		neg.set("type", "TRADE");
+		appr = neg.add("approach");
+		appr.content = label(result, neg, 44, ts.get(43), map);
+		
+		for (int i = 45; i <= 50; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			if (i < 48) {
+				resp.set("mode", "YES");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		neg = result.add("negotiate");
+		neg.set("type", "ALLY");
+		appr = neg.add("approach");
+		appr.content = label(result, neg, 51, ts.get(50), map);
+		
+		for (int i = 52; i <= 57; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			if (i < 55) {
+				resp.set("mode", "YES");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		neg = result.add("negotiate");
+		neg.set("type", "DARGSLAN");
+		appr = neg.add("approach");
+		appr.content = label(result, neg, 58, ts.get(57), map);
+		
+		for (int i = 59; i <= 64; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			if (i < 62) {
+				resp.set("mode", "YES");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		neg = result.add("negotiate");
+		neg.set("type", "SURRENDER");
+		appr = neg.add("approach");
+		appr.content = label(result, neg, 65, ts.get(64), map);
+		
+		for (int i = 66; i <= 71; i++) {
+			String e = ts.get(i - 1);
+			XElement resp = neg.add("response");
+			if (i < 69) {
+				resp.set("mode", "YES");
+			} else {
+				resp.set("mode", "NO");
+			}
+			if (e.startsWith("*")) {
+				resp.set("notalk", "true");
+				e = e.substring(1);
+			}
+			int idx = nonDigit(e);
+			if (idx >= 0 && (e.startsWith("+") || e.startsWith("-"))) {
+				resp.set("change", e.substring(0, idx));
+				resp.content = label(result, neg, resp, i, e.substring(idx + 1), map);
+			} else {
+				resp.set("change", "0");
+				resp.content = label(result, neg, resp, i, e, map);
+			}
+		}
+		
+		neg = result.add("terminate");
+		neg.content = label(result, neg, 72, ts.get(71), map);
+
+		neg = result.add("call");
+		neg.set("type", "SURRENDER");
+		for (int i = 73; i <= 75; i++) {
+			appr = neg.add("approach");
+			appr.content = label(result, neg, i, ts.get(i - 1), map);
+		}
+		
+		neg = result.add("call");
+		neg.set("type", "ALLIANCE");
+		for (int i = 76; i <= 78; i++) {
+			appr = neg.add("approach");
+			appr.content = label(result, neg, i, ts.get(i - 1), map);
+		}
+		
+		neg = result.add("call");
+		neg.set("type", "PEACE");
+		for (int i = 79; i <= 81; i++) {
+			appr = neg.add("approach");
+			appr.content = label(result, neg, i, ts.get(i - 1), map);
+		}
+		
+		neg = result.add("call");
+		neg.set("type", "MONEY");
+		for (int i = 82; i <= 84; i++) {
+			appr = neg.add("approach");
+			appr.content = label(result, neg, i, ts.get(i - 1), map);
+		}
+		
+		neg = result.add("call");
+		neg.set("type", "WAR");
+		for (int i = 85; i <= 87; i++) {
+			appr = neg.add("approach");
+			appr.content = label(result, neg, i, ts.get(i - 1), map);
+		}
+		
+		neg = result.add("call");
+		neg.set("type", "RESIGN");
+		for (int i = 88; i <= 90; i++) {
+			appr = neg.add("approach");
+			appr.content = label(result, neg, i, ts.get(i - 1), map);
+		}
+		
+		return result;
+	}
+	/** 
+	 * Select the last non-letter character. 
+	 * @param s the string
+	 * @return the index
+	 */
+	static int nonDigit(String s) {
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			if (c != '-' && c != '+' && c != ' ' && !Character.isDigit(c)) {
+				return i - 1;
+			}
+		}
+		return -1;
+	}
+	/**
+	 * Create a label entry for the given raw content.
+	 * @param race the race element
+	 * @param neg the negotiation/call element
+	 * @param appr the approach/response element
+	 * @param i the index
+	 * @param content the content
+	 * @param map the map for the labels
+	 * @return the key
+	 */
+	public static String label(XElement race, XElement neg, XElement appr, int i, String content, Map<String, String> map) {
+		String key = "diplomacy."
+			+ race.get("id")
+			+ "."
+			+ neg.get("type")
+		;
+		if (appr.has("type")) {
+			key += "." + appr.get("type");
+		}
+		if (appr.has("mode")) {
+			key += "." + appr.get("mode");
+		}
+		key += "." + i;
+		content = content
+		.replaceAll("\r\n", " ")
+		.replaceAll("\\s+", " ")
+		.replaceAll("zzzzzzz", "%s")
+		.replaceAll("xxxxx", "%s")
+		.replaceAll("aaaaa", "%s")
+		.trim();
+		
+		if (map.put(key, content) != null) {
+			System.err.printf("duplicate: %s = %s%n", key, content);
+		}
+		
+		return key;
+	}
+	/**
+	 * Create a label entry for the given raw content.
+	 * @param race the race element
+	 * @param neg the negotiation/call element
+	 * @param i the index
+	 * @param content the content
+	 * @param map the map for the labels
+	 * @return the key
+	 */
+	public static String label(XElement race, XElement neg, int i, String content, Map<String, String> map) {
+		String key = "diplomacy."
+			+ race.get("id")
+		;
+		if (neg.has("type")) {
+			key += "." + neg.get("type");
+		} else {
+			key += "." + neg.name;
+		}
+
+		key += "." + i;
+		content = content
+		.replaceAll("\r\n", " ")
+		.replaceAll("\\s+", " ")
+		.replaceAll("zzzzzzz", "%s")
+		.replaceAll("xxxxx", "%s")
+		.replaceAll("aaaaa", "%s")
+		.trim();
+		
+		if (content.startsWith("*")) {
+			content = content.substring(1);
+		}
+		
+		if (map.put(key, content) != null) {
+			System.err.printf("duplicate: %s = %s%n", key, content);
+		}
+		
+		return key;
+	}
+	/**
+	 * Split the content by the @ symbols.
+	 * @param content the content
+	 * @return the talks
+	 */
+	static List<String> split(String content) {
+		List<String> result = new ArrayList<String>();
+		
+		content = content.replaceAll("#.*?\r\n", "").trim();
+		
+		int start = 0;
+		do {
+			int next = content.indexOf('@', start);
+			if (next > 0) {
+				result.add(content.substring(start, next));
+			} else 
+			if (next < 0) {
+				result.add(content.substring(start));
+				break;
+			}
+			start = next + 1;
+		} while (true);
+		
+		return result;
+	}
+	/**
+	 * Transcode a latin text into a proper UTF-8 text.
+	 * @param text the source text
+	 * @param codes the code table
+	 * @return the transcoded text
+	 */
+	public static String transcode(String text, Pair<String, String> codes) {
+		if (codes == null) {
+			return text;
+		}
+		Map<Character, Character> map = U.newHashMap();
+		for (int i = 0; i < codes.first.length(); i++) {
+			map.put(codes.first.charAt(i), codes.second.charAt(i));
+		}
+		StringBuilder b = new StringBuilder();
+		for (int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			Character c2 = map.get(c);
+			if (c2 != null) {
+				b.append(c2);
+			} else {
+				if (c >= 'A') {
+					System.err.printf("Charcode: %d %s%n", (int)c, c);
+				}
+				if (c == 0) {
+					c = ' ';
+				}
+				b.append(c);
+			}
+		}
+		
+		return b.toString();
+	}
+	/**
+	 * Extract a text file from the map.
+	 * @param pacs the PAC map.
+	 * @param name the file name
+	 * @param codes the transcoding table.
+	 * @return list of lines
+	 * @throws IOException on error
+	 */
+	public static List<String> getText(Map<String, PACEntry> pacs, String name, Pair<String, String> codes)
+			throws IOException {
+		List<String> result = U.newArrayList();
+		BufferedReader bin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(pacs.get(name).data), "CP437"));
+		try {
+			String line = null;
+			while ((line = bin.readLine()) != null) {
+				result.add(transcode(line, codes));
+			}
+		} finally {
+			bin.close();
+		}
+		return result;
 	}
 	/**
 	 * Creates a rectangle from a 4-element array of position and size.

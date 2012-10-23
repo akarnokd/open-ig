@@ -11,6 +11,7 @@ package hu.openig.tools;
 import hu.openig.utils.PACFile;
 import hu.openig.utils.PACFile.PACEntry;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
@@ -26,9 +27,12 @@ public final class Unpack {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		List<PACFile.PACEntry> pf = PACFile.parseFully("c:/games/igde/data/text.pac");
+		String src = "c:/games/igru/data";
+		String dst = "c:/games/igru/data/text";
+		new File(dst).mkdirs();
+		List<PACFile.PACEntry> pf = PACFile.parseFully(src + "/text.pac");
 		for (PACEntry pe : pf) {
-			FileOutputStream out = new FileOutputStream("c:/games/igde/data/text/" + pe.filename);
+			FileOutputStream out = new FileOutputStream(dst + "/" + pe.filename);
 			out.write(pe.data);
 			out.close();
 		}
