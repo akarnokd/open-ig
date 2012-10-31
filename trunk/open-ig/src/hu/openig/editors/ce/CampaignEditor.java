@@ -13,7 +13,9 @@ import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -25,6 +27,10 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.undo.UndoManager;
 import javax.xml.stream.XMLStreamException;
@@ -46,6 +52,14 @@ public class CampaignEditor extends JFrame implements CEContext {
 	public static String language = "en";
 	/** The undo manager. */
 	UndoManager undoManager;
+	/** The main menu. */
+	JMenuBar mainMenu;
+	/** The main split that divides the tabs and the error/warning panel. */
+	JSplitPane mainSplit;
+	/** The tabs. */
+	JTabbedPane tabs;
+	/** The error panel. */
+	JPanel problemPanel;
 	/**
 	 * Initialize the GUI.
 	 */
@@ -193,6 +207,41 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 */
 	void initComponents() {
 		undoManager = new UndoManager();
+		
+		mainMenu = new JMenuBar();
+		
+		initMenu();
+		
+		mainSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+
+		tabs = new JTabbedPane();
+		
+		initTabs();
+		
+		problemPanel = new JPanel();
+		
+		mainSplit.setTopComponent(tabs);
+		mainSplit.setBottomComponent(problemPanel);
+		mainSplit.setOneTouchExpandable(true);
+		mainSplit.setResizeWeight(1d);
+		
+		setJMenuBar(mainMenu);
+		
+		Container c = getContentPane();
+		c.add(mainSplit, BorderLayout.CENTER);
+		// TODO other stuff
+	}
+	/**
+	 * Initialize the tabs.
+	 */
+	void initTabs() {
+		// TODO initialize tabs
+	}
+	/**
+	 * Initialize the menu.
+	 */
+	void initMenu() {
+		// TODO create menu items
 	}
 	@Override
 	public XElement getXML(String resource) {
@@ -222,12 +271,12 @@ public class CampaignEditor extends JFrame implements CEContext {
 	@Override
 	public String get(String key) {
 		// TODO Auto-generated method stub
-		return null;
+		return key;
 	}
 	@Override
 	public String format(String key, Object... params) {
 		// TODO Auto-generated method stub
-		return null;
+		return String.format(key, params);
 	}
 	@Override
 	public String projectLanguage() {
@@ -278,5 +327,15 @@ public class CampaignEditor extends JFrame implements CEContext {
 		// TODO Auto-generated method stub
 		
 	}
-	
+	@Override
+	public void addProblem(CESeverityIndicator severity, String message,
+			String panel, CEProblemLocator c, XElement description) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void clearProblems(String panel) {
+		// TODO Auto-generated method stub
+		
+	}
 }

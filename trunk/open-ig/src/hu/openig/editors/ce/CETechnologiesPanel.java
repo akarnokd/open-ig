@@ -14,7 +14,8 @@ import hu.openig.utils.XElement;
  * The Technologies panel to edit contents of the <code>tech.xml</code>. 
  * @author akarnokd, 2012.10.31.
  */
-public class CETechnologiesPanel extends CEBasePanel implements CEPanelPreferences, CEUndoRedoSupport {
+public class CETechnologiesPanel extends CEBasePanel 
+implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	/** */
 	private static final long serialVersionUID = 8419996018754156220L;
 	/**
@@ -43,6 +44,11 @@ public class CETechnologiesPanel extends CEBasePanel implements CEPanelPreferenc
 	}
 	@Override
 	public void restoreState(XElement state) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void locateProblem(XElement description) {
 		// TODO Auto-generated method stub
 		
 	}
