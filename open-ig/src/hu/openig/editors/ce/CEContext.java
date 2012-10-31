@@ -124,4 +124,22 @@ public interface CEContext {
 	 * @param resource the resource path
 	 */
 	void delete(String resource);
+	/**
+	 * Adds a problem to the global issue list.
+	 * @param severity the severity
+	 * @param message the message
+	 * @param panel the panel's name
+	 * @param c the problem locator component
+	 * @param description the description
+	 */
+	void addProblem(CESeverityIndicator severity, 
+			String message,
+			String panel,
+			CEProblemLocator c, 
+			XElement description);
+	/**
+	 * Remove all problems of the specified panel name.
+	 * @param panel the panel name, as given to the addProblem() method
+	 */
+	void clearProblems(String panel);
 }
