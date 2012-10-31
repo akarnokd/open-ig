@@ -13,32 +13,39 @@ import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.undo.UndoManager;
 import javax.xml.stream.XMLStreamException;
 
 /**
  * The campaign editor.
  * @author akarnokd, 2012.08.15.
  */
-public class CampaignEditor extends JFrame {
+public class CampaignEditor extends JFrame implements CEContext {
 	/** */
 	private static final long serialVersionUID = -4044298769130516091L;
 	/** The main version. */
-	public static final String VERSION = "0.01";
+	public static final String VERSION = "0.02";
 	/** The configuration file. */
 	public static final String CONFIG_FILE = "open-ig-ce-config.xml";
 	/** The console watcher. */
 	public static Closeable consoleWatcher;
 	/** The UI language. */
 	public static String language = "en";
+	/** The undo manager. */
+	UndoManager undoManager;
 	/**
 	 * Initialize the GUI.
 	 */
@@ -185,6 +192,91 @@ public class CampaignEditor extends JFrame {
 	 * Initialize the internal components.
 	 */
 	void initComponents() {
+		undoManager = new UndoManager();
+	}
+	@Override
+	public XElement getXML(String resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<String> getText(String resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public byte[] getData(String resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public BufferedImage getImage(String resource) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public ImageIcon getIcon(CESeverityIndicator indicator) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String get(String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String format(String key, Object... params) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String projectLanguage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String label(String language, String key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void updateTab(Component c, String title, ImageIcon icon) {
+		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void addUndo(CEUndoRedoSupport c, String name, XElement oldState, XElement newState) {
+		undoManager.addEdit(new CEUndoRedoEntry(c, name, oldState, newState));
+	}
+	@Override
+	public void saveXML(String resource, XElement xml) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void saveText(String resource, Iterable<String> lines) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void saveText(String resource, CharSequence text) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void saveData(String resource, byte[] data) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void saveImage(String resource, BufferedImage image) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void delete(String resource) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
