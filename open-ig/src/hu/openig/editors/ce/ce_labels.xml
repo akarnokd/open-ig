@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<labels>
+	<language id='en' flag='/hu/openig/gfx/english.png'>
+		<entry key='Project'>Project</entry>
+		<entry key='Definition'>Definition</entry>
+		<entry key='Labels'>Labels</entry>
+		<entry key='Galaxy'>Galaxy</entry>
+		<entry key='Players'>Players</entry>
+		<entry key='Planets'>Planets</entry>
+		<entry key='Technology'>Technology</entry>
+		<entry key='tech.id'>Identifier</entry>
+		<entry key='tech.name'>Name</entry>
+		<entry key='tech.race'>Races</entry>
+		<entry key='tech.research_cost'>Research cost</entry>
+		<entry key='tech.production_cost'>Production cost</entry>
+		<entry key='tech.filter'>Filter</entry>
+		<entry key='tech.clear'>Clear</entry>
+		<entry key='Buildings'>Buildings</entry>
+		<entry key='Battle'>Battle</entry>
+		<entry key='Diplomacy'>Diplomacy</entry>
+		<entry key='Bridge'>Bridge</entry>
+		<entry key='Talks'>Talks</entry>
+		<entry key='Shipwalk'>Shipwalk</entry>
+		<entry key='Chat'>Chat</entry>
+		<entry key='Test'>Test</entry>
+		<entry key='tech.category'>Category</entry>
+		<entry key='tech.#'>#</entry>
+		<entry key='SPACESHIPS_FIGHTERS'>Spaceships / Fighters</entry>
+		<entry key='SPACESHIPS_CRUISERS'>Spaceships / Cruisers</entry>
+		<entry key='SPACESHIPS_BATTLESHIPS'>Spaceships / Battleships</entry>
+		<entry key='SPACESHIPS_SATELLITES'>Spaceships / Satellites</entry>
+		<entry key='SPACESHIPS_STATIONS'>Spaceships / Stations</entry>
+		<entry key='EQUIPMENT_HYPERDRIVES'>Equipment / Hyperdrives</entry>
+		<entry key='EQUIPMENT_MODULES'>Equipment / Modules</entry>
+		<entry key='EQUIPMENT_RADARS'>Equipment / Radars</entry>
+		<entry key='EQUIPMENT_SHIELDS'>Equipment / Shields</entry>
+		<entry key='WEAPONS_LASERS'>Weapons / Lasers</entry>
+		<entry key='WEAPONS_CANNONS'>Weapons / Cannons</entry>
+		<entry key='WEAPONS_PROJECTILES'>Weapons / Projectiles</entry>
+		<entry key='WEAPONS_TANKS'>Weapons / Tanks</entry>
+		<entry key='WEAPONS_VEHICLES'>Weapons / Vehicles</entry>
+		<entry key='BUILDINGS_CIVIL'>Buildings / Civil</entry>
+		<entry key='BUILDINGS_MILITARY'>Buildings / Military</entry>
+		<entry key='BUILDINGS_RADARS'>Buildings / Radars</entry>
+		<entry key='BUILDINGS_GUNS'>Buildings / Guns</entry>
+		<entry key='tech.level'>Level</entry>
+	</language>
+	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
+	</language>
+	<language id='de' flag='/hu/openig/gfx/german.png'>
+	</language>
+	<language id='fr' flag='/hu/openig/gfx/french.png'>
+	</language>
+	<language id='ru' flag='/hu/openig/gfx/russian.png'>
+	</language>
+</labels>

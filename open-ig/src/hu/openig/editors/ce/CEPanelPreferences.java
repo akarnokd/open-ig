@@ -26,4 +26,6 @@ public interface CEPanelPreferences {
 	 * @param preferences the parent element where to save the preferences
 	 */
 	void savePreferences(XElement preferences);
+	/** @return the preferences identifier to use in the XML. */
+	String preferencesId();
 }

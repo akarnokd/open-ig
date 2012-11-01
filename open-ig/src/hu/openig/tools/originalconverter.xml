@@ -560,7 +560,7 @@
 		  utf='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZéàôâèïêûîœçùÇ°'
 	/>
 	
-	<building-map enabled='true'>
+	<building-map enabled='false'>
 		<entry key='buildings.colony_hub'/>
 		<entry key='buildings.prefab_housing'/>
 		<entry key='buildings.apartment_block'/>
@@ -605,7 +605,7 @@
 		<entry key='buildings.bar'/>
 		<entry key='buildings.stadium'/>
 	</building-map>
-	<tech-map enabled='true'>
+	<tech-map enabled='false'>
 		<entry key='tech.fighter1'/>
 		<entry key='tech.fighter2'/>
 		<entry key='tech.fighter3'/>
@@ -723,6 +723,7 @@
 		<entry key=''/> <!-- empty slot: originally: ion projector -->
 	</tech-map>
 	
+<!--
 	<diplomacy/>
 	
 	<chat src='KOR1.SCR' labels='chat.bo.1.%s'/>
@@ -793,7 +794,107 @@
 	<chat src='SCR07.SCR' labels='chat.m7.merchant1.%s'/>
 	<chat src='SCR08.SCR' labels='chat.m7.merchant2.%s'/>
 	<chat src='SCR17.SCR' labels='chat.m9.%s'/>
-
+	-->
+	<message-codes enabled='true'>
+		<entry src='1GO.ANI' dst='messages/douglas_fire_1_test_failed.sub' />
+		<entry src='2GO.ANI' dst='messages/douglas_fire_1_no_order.sub' />
+		<entry src='3GO.ANI' dst='messages/douglas_fire_1_battle.sub' />
+		<entry src='GO1.ANI' dst='messages/douglas_fire_1_test_failed.sub' />
+		<entry src='GO2.ANI' dst='messages/douglas_fire_1_no_order.sub' />
+		<entry src='GO3.ANI' dst='messages/douglas_fire_1_battle.sub' />
+		<entry src='DIGI003.ANI' dst='messages/merchant_under_attack_1.sub' />
+		<entry src='DIGI004.ANI' dst='messages/merchant_under_attack_2.sub' />
+		<entry src='DIGI005.ANI' dst='messages/merchant_under_attack_3.sub' />
+		<entry src='DIGI006.ANI' dst='messages/merchant_under_attack_4.sub' />
+		<entry src='DIGI007.ANI' dst='messages/merchant_under_attack_5.sub' />
+		<entry src='DIGI008.ANI' dst='messages/douglas_pirates_destroyed_a_ship.sub' />
+		<entry src='DIGI009.ANI' dst='messages/douglas_fire_1_mistakes.sub' />
+		<entry src='DIGI012.ANI' dst='messages/wife_1.sub' />
+		<entry src='DIGI013.ANI' dst='messages/naxos_unknown_ships_nearby.sub' />
+		<entry src='DIGI014.ANI' dst='messages/douglas_escort_thorin.sub' />
+		<entry src='digi016.ani' dst='messages/naxos_no_problem.sub' />
+		<entry src='DIGI017.ANI' dst='messages/douglas_reinforcements_denied.sub' />
+		<entry src='DIGI018.ANI' dst='messages/douglas_escort_thorin_reinforcements.sub' />
+		<entry src='DIGI019.ANI' dst='messages/douglas_promotion_2.sub' />
+		<entry src='DIGI022.ANI' dst='messages/merchant_under_attack_6.sub' />
+		<entry src='DIGI023.ANI' dst='messages/merchant_under_attack_7.sub' />
+		<entry src='DIGI023..ANI' dst='messages/merchant_under_attack_7.sub' />
+		<entry src='DIGI024.ANI' dst='messages/merchant_under_attack_garthog.sub' />
+		<entry src='DIGI025.ANI' dst='messages/douglas_fire_2_lost_merchants.sub' />
+		<entry src='DIGI026.ANI' dst='messages/naxos_under_attack.sub' />
+		<entry src='DIGI026_.ANI' dst='messages/san_sterling_under_attack.sub' />
+		<entry src='DIGI027.ANI' dst='messages/san_sterling_under_attack_2.sub' />
+		<entry src='DIGI028B.ANI' dst='messages/new_caroline_under_attack.sub' />
+		<entry src='DIGI028D.ANI' dst='messages/achilles_under_attack.sub' />
+		<entry src='DIGI028F.ANI' dst='messages/zeuson_under_attack.sub' />
+		<entry src='DIGI029.ANI' dst='messages/douglas_fire_3_lost_planet.sub' />
+		<entry src='DIGI030.ANI' dst='messages/douglas_escort_carrier.sub' />
+		<entry src='DIGI031.ANI' dst='messages/douglas_escort_carrier_lost.sub' />
+		<entry src='DIGI033.ANI' dst='messages/douglas_escort_centronom_governor.sub' />
+		<entry src='DIGI034.ANI' dst='messages/douglas_escort_admiral_benson.sub' />
+		<entry src='DIGI035.ANI' dst='messages/douglas_escort_admiral_benson_failed.sub' />
+		<entry src='DIGI036.ANI' dst='messages/douglas_fire_4_not_met_with_benson.sub' />
+		<entry src='DIGI037.ANI' dst='messages/wife_2.sub' />
+		<entry src='DIGI038.ANI' dst='messages/san_sterling_smuggler.sub' />
+		<entry src='DIGI039.ANI' dst='messages/san_sterling_smuggler_escaped.sub' />
+		<entry src='DIGI040.ANI' dst='messages/san_sterling_smuggler_killed_innocent.sub' />
+		<entry src='DIGI041.ANI' dst='messages/san_sterling_smuggler_killed.sub' />
+		<entry src='DIGI042.ANI' dst='messages/new_caroline_virus.sub' />
+		<entry src='DIGI043.ANI' dst='messages/new_caroline_virus_resolved.sub' />
+		<entry src='DIGI044.ANI' dst='messages/new_caroline_virus_quarantine_breached.sub' />
+		<entry src='DIGI045.ANI' dst='messages/new_caroline_virus_again.sub' />
+		<entry src='DIGI046.ANI' dst='messages/new_caroline_virus_again_deaths.sub' />
+		<entry src='DIGI047.ANI' dst='messages/douglas_reinforcements_approved.sub' />
+		<entry src='DIGI047B.ANI' dst='messages/douglas_reinforcements_again_denied.sub' />
+		<entry src='DIGI048.ANI' dst='messages/douglas_report_viruses.sub' />
+		<entry src='DIGI050.ANI' dst='messages/douglas_fire_5_lost_planet_2.sub' />
+		<entry src='digi051.ani' dst='messages/wife_3.sub' />
+		<entry src='DIGI052.ANI' dst='messages/douglas_escort_money.sub' />
+		<entry src='DIGI053.ANI' dst='messages/douglas_fire_6_escort_failed.sub' />
+		<entry src='DIGI054.ANI' dst='messages/douglas_prototype_stolen.sub' />
+		<entry src='DIGI055.ANI' dst='messages/douglas_fire_7_prototype_lost.sub' />
+		<entry src='DIGI056.ANI' dst='messages/douglas_prototype_success.sub' />
+		<entry src='digi060a.ani' dst='messages/naxos_not_under_attack.sub' />
+		<entry src='digi060b.ani' dst='messages/san_sterling_not_under_attack.sub' />
+		<entry src='digi060c.ani' dst='messages/new_caroline_not_under_attack.sub' />
+		<entry src='digi060d.ani' dst='messages/achilles_not_under_attack.sub' />
+		<entry src='digi060e.ani' dst='messages/centronom_not_under_attack.sub' />
+		<entry src='digi060f.ani' dst='messages/zeuson_not_under_attack.sub' />
+		<entry src='DIGI061.ANI' dst='messages/naxos_is_under_attack.sub' />
+		<entry src='DIGI062.ANI' dst='messages/new_caroline_is_under_attack.sub' />
+		<entry src='DIGI063.ANI' dst='messages/san_sterling_is_under_attack.sub' />
+		<entry src='DIGI064.ANI' dst='messages/achilles_is_under_attack.sub' />
+		<entry src='DIGI065.ANI' dst='messages/centronom_is_under_attack.sub' />
+		<entry src='DIGI066.ANI' dst='messages/zeuson_is_under_attack.sub' />
+		<entry src='DIGI067.ANI' dst='messages/wife_4.sub' />
+		<entry src='digi068.ani' dst='messages/douglas_rebel_governor.sub' />
+		<entry src='DIGI069.ANI' dst='messages/douglas_fire_8_rebel_governor.sub' />
+		<entry src='DIGI070.ANI' dst='messages/douglas_success.sub' />
+		<entry src='digi071.ani' dst='messages/douglas_escort_prototype.sub' />
+		<entry src='DIGI072.ANI' dst='messages/prototype_escort_thanks.sub' />
+		<entry src='digi073.ani' dst='messages/douglas_escort_prototype_failed.sub' />
+		<entry src='DIGI095.ANI' dst='messages/naxos_virus_infection.sub' />
+		<entry src='DIGI096.ANI' dst='messages/new_caroline_virus_infection.sub' />
+		<entry src='DIGI096_.ANI' dst='messages/san_sterling_virus_infection.sub' />
+		<entry src='DIGI096B.ANI' dst='messages/san_sterling_virus_infection.sub' />
+		<entry src='DIGI097.ANI' dst='messages/achilles_virus_infection.sub' />
+		<entry src='DIGI098.ANI' dst='messages/centronom_virus_infection.sub' />
+		<entry src='DIGI099.ANI' dst='messages/zeuson_virus_infection.sub' />
+		<entry src='digi100.ani' dst='messages/san_sterling_check.sub' />
+		<entry src='DIGI101.ANI' dst='messages/douglas_report_spy.sub' />
+		<entry src='digi101x.ani' dst='messages/new_caroline_check.sub' />
+		<entry src='digi103.ani' dst='messages/centronom_check.sub' />
+		<entry src='digi104.ani' dst='messages/zeuson_check.sub' />
+		<entry src='DIGI141.ANI' dst='messages/douglas_virus_carriers_destroyed.sub' />
+		<entry src='digi150.ani' dst='messages/naxos_come_quickly.sub' />
+		<entry src='digi151.ani' dst='messages/new_caroline_come_quickly.sub' />
+		<entry src='digi152.ani' dst='messages/san_sterling_come_quickly.sub' />
+		<entry src='digi153.ani' dst='messages/achilles_come_quickly.sub' />
+		<entry src='digi154.ani' dst='messages/centronom_come_quickly.sub' />
+		<entry src='digi155.ani' dst='messages/zeuson_come_quickly.sub' />
+		<entry src='digi206.ani' dst='messages/android.sub' />
+		<entry src='zizeg.ani' dst='messages/generic_is_under_attack.sub' />
+	</message-codes>	
 <!--	<image-copy src='' dst=''/>-->
 	
 </original-converter>

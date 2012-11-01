@@ -8,6 +8,9 @@
 
 package hu.openig.editors.ce;
 
+import java.net.URL;
+
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 /**
@@ -25,5 +28,34 @@ public class CEBasePanel extends JPanel {
 	 */
 	public CEBasePanel(CEContext context) {
 		this.context = context;
+	}
+	/**
+	 * Get a translation for the given key.
+	 * @param key the key
+	 * @return the translation
+	 */
+	public String get(String key) {
+		return context.get(key);
+	}
+	/**
+	 * Format a translation for the given key and parameters.
+	 * @param key the key
+	 * @param params the parameters
+	 * @return the translation
+	 */
+	public String format(String key, Object... params) {
+		return context.format(key, params);
+	}
+	/**
+	 * Creates an image icon for the given resource path.
+	 * @param path the path
+	 * @return the image icon
+	 */
+	public ImageIcon icon(String path) {
+		URL u = getClass().getResource(path);
+		if (u == null) {
+			System.err.printf("Missing resource: %s%n", path);
+		}
+		return new ImageIcon(u);
 	}
 }

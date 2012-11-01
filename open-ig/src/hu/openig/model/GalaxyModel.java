@@ -81,7 +81,7 @@ public class GalaxyModel {
 							XElement xspacewar = planet.childElement("spacewar");
 							planetType.spacewar = rl.getImage(xspacewar.content);
 							
-							for (XElement te : tileset) {
+							for (XElement te : tileset.children()) {
 								if (te.name.equals("tile-range")) {
 									int start = Integer.parseInt(te.get("start"));
 									int end = Integer.parseInt(te.get("end"));

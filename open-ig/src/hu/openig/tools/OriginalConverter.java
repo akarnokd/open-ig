@@ -46,6 +46,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -482,6 +485,8 @@ public final class OriginalConverter {
 
 		}
 		
+		convertOtherText(pacs, codes);
+		
 		// --------------------- store labels
 		xlabels.clear();
 		for (Map.Entry<String, String> e : labels.entrySet()) {
@@ -490,6 +495,142 @@ public final class OriginalConverter {
 			xentry.content = e.getValue();
 		}
 		xlabels.save(dest);
+	}
+	/**
+	 * Simply extract other text into a single big file.
+	 * @param pacs the package content
+	 * @param codes the translator codes
+	 * @throws IOException on error
+	 */
+	static void convertOtherText(Map<String, PACEntry> pacs, Pair<String, String> codes) throws IOException {
+		List<String> out = U.newArrayList();
+		List<String> entries = U.newArrayList(pacs.keySet());
+		Collections.sort(entries);
+		for (String key : entries) {
+			String keyLower = key.toLowerCase();
+			if (keyLower.endsWith(".p")) {
+				List<String> lines = getLines(pacs.get(key).data, Charset.forName("CP437"));
+				for (int i = lines.size() - 1; i >= 0; i--) {
+					String line = lines.get(i);
+					if (line.startsWith("@")) {
+						lines.remove(i);
+					} else {
+						lines.set(i, transcode(line, codes));
+					}
+				}
+				if (!lines.isEmpty()) {
+					out.add(key);
+					out.addAll(lines);
+					out.add("----------------------------------------------------------------------------");
+				}
+			}
+			if (keyLower.startsWith("k") && keyLower.endsWith("_duma.txt")) {
+				List<String> lines = getLines(pacs.get(key).data, Charset.forName("CP437"));
+				for (int i = lines.size() - 1; i >= 0; i--) {
+					String line = lines.get(i);
+					if (line.startsWith("-")) {
+						lines.set(i, transcode(line.substring(8), codes));
+					} else {
+						lines.remove(i);
+					}
+				}				
+				out.add(key);
+				out.addAll(lines);
+				out.add("----------------------------------------------------------------------------");
+			}
+			if (keyLower.startsWith("k") && keyLower.endsWith("_text.txt")) {
+				List<String> lines = getLines(pacs.get(key).data, Charset.forName("CP437"));
+				for (int i = lines.size() - 1; i >= 0; i--) {
+					String line = lines.get(i);
+					if (line.length() >= 5 && line.charAt(2) != ' ') {
+						lines.set(i, transcode(line.substring(4), codes));
+					} else {
+						lines.remove(i);
+					}
+				}				
+				out.add(key);
+				out.addAll(lines);
+				out.add("----------------------------------------------------------------------------");
+			}
+		}
+		Map<String, String> messageCodes = U.newLinkedHashMap();
+		for (XElement mc : instructions.childrenWithName("message-codes")) {
+			if (mc.getBoolean("enabled")) {
+				for (XElement xe : mc.childrenWithName("entry")) {
+					messageCodes.put(xe.get("src").toLowerCase(), xe.get("dst"));
+				}
+			}
+		}
+		
+		if (!messageCodes.isEmpty()) {
+			// message transcripts
+			List<String> lines = getLines(pacs.get("MESSTXT.TXT").data, Charset.forName("CP437"));
+			for (int i = 0; i < lines.size();) {
+				String line = lines.get(i);
+				if (line.startsWith("# Digi")) {
+					int idx0 = line.indexOf(' ', 7);
+					if (idx0 < 0) {
+						idx0 = line.length();
+					}
+					String number = line.substring(7, idx0).trim().toLowerCase();
+					
+					String e = messageCodes.get("digi" + number + ".ani");
+					if (e == null) {
+						e = messageCodes.get("digi0" + number + ".ani");
+					}
+					if (e == null) {
+						e = messageCodes.get("digi00" + number + ".ani");
+					}
+					if (e == null) {
+						e = messageCodes.get(number + ".ani");
+					}
+					if (e == null) {
+						System.err.println("Missing " + line + " (" + number + ")");
+					}
+					out.add(e);
+					i++;
+					int j = i;
+					while (!lines.get(i).startsWith("# Digi") && !lines.get(i).startsWith("@end") && i < lines.size()) {
+						i++;
+					}
+					for (int k = j; k < i; k++) {
+						line = lines.get(k);
+						if (line.length() >= 11 && (line.startsWith("A ") || line.startsWith("B "))
+								&& Character.isDigit(line.charAt(2))
+								&& Character.isDigit(line.charAt(7))) {
+							out.add(transcode(line.substring(10), codes));
+						}
+					}
+					
+					out.add("----------------------------------------------------------------------------");
+				} else {
+					i++;
+				}
+			}
+		}
+		
+		Files.write(Paths.get("./othertext.txt"), out, Charset.forName("UTF-8"));
+	}
+	/**
+	 * Convert an array of bytes into a multiline string.
+	 * @param data the data bytes
+	 * @param cs the charset
+	 * @return the lines
+	 * @throws IOException on error
+	 */
+	static List<String> getLines(byte[] data, Charset cs) throws IOException {
+		List<String> result = U.newArrayList();
+		
+		String line = null;
+		BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data), cs));
+		try {
+			while ((line = in.readLine()) != null) {
+				result.add(line);
+			}
+		} finally {
+			in.close();
+		}
+		return result;
 	}
 	/**
 	 * Convert the diplomatic text.
@@ -1405,10 +1546,10 @@ public final class OriginalConverter {
 		
 		instructions = XElement.parseXML(OriginalConverter.class.getResource("originalconverter.xml"));
 		
-		encoding = "CP-863"; //CP-855 
-		source = "c:/games/igfr/";
+		encoding = "CP-855"; //RU: CP-855, FR: CP-863 
+		source = "c:/games/igru/";
 		destination = "./";
-		language = "fr";
+		language = "ru";
 		
 		runConversions();
 	}
