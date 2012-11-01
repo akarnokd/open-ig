@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Deque;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +42,7 @@ import javax.xml.stream.XMLStreamReader;
  * A simplified XML element model.
  * @author akarnokd
  */
-public class XElement implements Iterable<XElement> {
+public class XElement {
 	/** The element name. */
 	public final String name;
 	/** The content of a simple node. */
@@ -139,6 +138,30 @@ public class XElement implements Iterable<XElement> {
 		return Integer.parseInt(val);
 	}
 	/**
+	 * Get an integer attribute as object or null if not present.
+	 * @param attributeName the attribute name
+	 * @return the integer value
+	 */
+	public Integer getIntObject(String attributeName) {
+		String val = get(attributeName, null);
+		if (val != null) {
+			return Integer.valueOf(val);
+		}
+		return null;
+	}
+	/**
+	 * Get a double attribute as object or null if not present.
+	 * @param attributeName the attribute name
+	 * @return the integer value
+	 */
+	public Double getDoubleObject(String attributeName) {
+		String val = get(attributeName, null);
+		if (val != null) {
+			return Double.valueOf(val);
+		}
+		return null;
+	}
+	/**
 	 * Get an float attribute.
 	 * @param attributeName the attribute name
 	 * @return the float value
@@ -146,10 +169,6 @@ public class XElement implements Iterable<XElement> {
 	public float getFloat(String attributeName) {
 		String val = get(attributeName);
 		return Float.parseFloat(val);
-	}
-	@Override
-	public Iterator<XElement> iterator() {
-		return children.iterator();
 	}
 	/**
 	 * Returns an iterator which enumerates all children with the given name.

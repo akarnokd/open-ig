@@ -102,7 +102,7 @@ public class CreditsScreen extends ScreenBase {
 		RenderTools.setInterpolation(g2, true);
 		RenderTools.setAntiailas(g2, true);
 		int y = height - offset;
-		for (XElement e : credits) {
+		for (XElement e : credits.children()) {
 			if ("h1".equals(e.name)) {
 				y += 5;
 				g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));

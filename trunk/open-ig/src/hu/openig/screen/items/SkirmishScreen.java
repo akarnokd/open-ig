@@ -1130,7 +1130,7 @@ public class SkirmishScreen extends ScreenBase {
 		
 		for (XElement xb : xbuild.childrenWithName("building")) {
 			for (XElement xg : xb.childrenWithName("graphics")) {
-				for (XElement xt : xg.childElement("tech")) {
+				for (XElement xt : xg.childElement("tech").children()) {
 					result.add(xt.get("id"));
 				}
 			}

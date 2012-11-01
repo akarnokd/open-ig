@@ -75,6 +75,12 @@ public interface CEContext {
 	 */
 	String label(String language, String key);
 	/**
+	 * Returns the label for the project language and key.
+	 * @param key the key
+	 * @return the translation or null if not present
+	 */
+	String label(String key);
+	/**
 	 * Update the enclosin tab's icon.
 	 * @param c the component who's tab should be changed
 	 * @param title the new title, if not null
