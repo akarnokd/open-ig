@@ -45,13 +45,15 @@ public class CEValueBox<C extends JComponent> extends JPanel {
 		
 		GroupLayout gl = new GroupLayout(this);
 		setLayout(gl);
-		gl.setAutoCreateGaps(true);
 		
 		gl.setHorizontalGroup(
 			gl.createSequentialGroup()
 			.addComponent(label)
+			.addGap(10)
 			.addComponent(component)
+			.addGap(5)
 			.addComponent(valid, 20, 20, 20)
+			.addGap(20)
 		);
 		gl.setVerticalGroup(
 			gl.createParallelGroup(Alignment.BASELINE)
@@ -85,7 +87,7 @@ public class CEValueBox<C extends JComponent> extends JPanel {
 	 * @param component the component
 	 * @return the value box
 	 */
-	public <E extends JComponent> CEValueBox<E> of(String displayText, E component) {
+	public static <E extends JComponent> CEValueBox<E> of(String displayText, E component) {
 		return new CEValueBox<E>(displayText, component);
 	}
 }

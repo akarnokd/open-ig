@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -621,7 +622,14 @@ public class CampaignEditor extends JFrame implements CEContext {
 	}
 	@Override
 	public BufferedImage getImage(String resource) {
-		// TODO Auto-generated method stub
+		byte[] data = getData(projectLanguage, resource);
+		if (data != null) {
+			try {
+				return ImageIO.read(new ByteArrayInputStream(data));
+			} catch (IOException ex) {
+				// ignored
+			}
+		}
 		return null;
 	}
 	@Override
@@ -759,5 +767,21 @@ public class CampaignEditor extends JFrame implements CEContext {
 				}
 			}
 		}
+	}
+	@Override
+	public void setLabel(String key, String value) {
+		if (key == null || key.isEmpty()) {
+			return;
+		}
+		Map<String, String> lang = mainLabels.get(projectLanguage);
+		if (lang == null) {
+			lang = U.newLinkedHashMap();
+			mainLabels.put(projectLanguage, lang);
+		}
+		lang.put(key, value);
+	}
+	@Override
+	public File getWorkDir() {
+		return workDir;
 	}
 }

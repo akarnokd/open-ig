@@ -12,6 +12,7 @@ import hu.openig.utils.XElement;
 
 import java.awt.Component;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -81,6 +82,12 @@ public interface CEContext {
 	 */
 	String label(String key);
 	/**
+	 * Update the label for the project language and key.
+	 * @param key the key
+	 * @param value the value
+	 */
+	void setLabel(String key, String value);
+	/**
 	 * Update the enclosin tab's icon.
 	 * @param c the component who's tab should be changed
 	 * @param title the new title, if not null
@@ -148,4 +155,6 @@ public interface CEContext {
 	 * @param panel the panel name, as given to the addProblem() method
 	 */
 	void clearProblems(String panel);
+	/** @return the working directory. */
+	File getWorkDir();
 }

@@ -9,9 +9,13 @@
 package hu.openig.utils;
 
 import java.awt.Component;
+import java.awt.Container;
+import java.util.Deque;
+import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
@@ -118,5 +122,29 @@ public final class GUIUtils {
     		selected[i] = table.convertRowIndexToModel(selected[i]);
     	}
     	return selected;
+    }
+    /**
+     * Returns a set of all components under the given parent.
+     * @param parent the parent
+     * @return the set of components
+     */
+    public static Set<JComponent> allComponents(JComponent parent) {
+    	Set<JComponent> result = U.newHashSet();
+    	Deque<JComponent> queue = U.newLinkedList();
+    	queue.add(parent);
+    	while (!queue.isEmpty()) {
+    		JComponent c = queue.removeFirst();
+    		result.add(c);
+    		if (c instanceof Container) {
+				Container container = (Container) c;
+				for (Component c0 : container.getComponents()) {
+					if (c0 instanceof JComponent) {
+						queue.add((JComponent)c0);
+					}
+				}
+    		}
+    	}
+    	result.remove(parent);
+    	return result;
     }
 }

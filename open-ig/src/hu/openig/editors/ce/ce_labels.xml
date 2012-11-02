@@ -76,6 +76,38 @@
 		<entry key='Slots'>Slots</entry>
 		<entry key='Properties'>Properties</entry>
 		<entry key='tech.invalid.empty_identifier'>Empty identifier</entry>
+		<entry key='tech.invalid.select_category'>Select the category</entry>
+		<entry key='tech.invalid.select_factory'>Select the factory</entry>
+		<entry key='tech.invalid.empty'>Empty</entry>
+		<entry key='tech.labs'>Lab requirements</entry>
+		<entry key='tech.lab.civil'>Civil</entry>
+		<entry key='tech.lab.mech'>Mechanical</entry>
+		<entry key='tech.lab.comp'>Computer</entry>
+		<entry key='tech.lab.ai'>A.I.</entry>
+		<entry key='tech.lab.mil'>Military</entry>
+		<entry key='tech.level.0'>0 - Always available</entry>
+		<entry key='tech.level.1'>1 - Lieutenant</entry>
+		<entry key='tech.level.2'>2 - Commander</entry>
+		<entry key='tech.level.3'>3 - Captain</entry>
+		<entry key='tech.level.4'>4 - Admiral</entry>
+		<entry key='tech.level.5'>5 - Grand Admiral</entry>
+		<entry key='tech.level.6'>6 - Not available normally</entry>
+		<entry key='tech.lab.sum'>Total lab count</entry>
+		<entry key='tech.longname'>Long name</entry>
+		<entry key='tech.desc'>Description</entry>
+		<entry key='field.invalid.empty'>Empty field</entry>
+		<entry key='field.invalid.missing_label'>Label missing</entry>
+		<entry key='field.invalid.range'>Value out of range (%d .. %d).</entry>
+		<entry key='tech.image'>Image</entry>
+		<entry key='tech.image.normal'>Production</entry>
+		<entry key='tech.image.info_available'>Info / Available</entry>
+		<entry key='tech.image.info_wired'>Info / Wired</entry>
+		<entry key='tech.image.spacewar'>Spacewar</entry>
+		<entry key='tech.image.equipment_details'>Equipment / Details</entry>
+		<entry key='tech.image.equipment_fleet'>Equipment / Fleet</entry>
+		<entry key='tech.invalid.select_level'>Select level</entry>
+		<entry key='tech.invalid.empty_image'>Missing image</entry>
+		<entry key='browse'>Browse...</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>
