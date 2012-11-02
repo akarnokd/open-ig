@@ -44,6 +44,38 @@
 		<entry key='BUILDINGS_RADARS'>Buildings / Radars</entry>
 		<entry key='BUILDINGS_GUNS'>Buildings / Guns</entry>
 		<entry key='tech.level'>Level</entry>
+		<entry key='tech.filter.intro'>
+		You can filter for various keys and value-patterns.&lt;br>
+		Keys besides in the table below, you can filter for any XML attribute of the tech/item element.&lt;br>
+		Add @ before the filter key to explicitely filter for the XML attribute and not the display value. &lt;br>
+		Keys and values may be enclosed by quotes. &lt;br>
+		Keys are case sensitive, values are not. &lt;br>
+		Values can contain * and ? wildcards. &lt;br>
+		The syntax is the following.</entry>
+		<entry key='tech.filter.format'>&lt;code>[key:]value [[key:]value]&lt;/code></entry>
+		<entry key='tech.filter.key'>&lt;b>Key&lt;/b></entry>
+		<entry key='tech.filter.desc'>&lt;b>Description&lt;/b></entry>
+		<entry key='tech.filter.key.id'>Technology identifier (item/@id). Example: &lt;code>id:fighter*&lt;/code></entry>
+		<entry key='tech.filter.key.name'>Technology short name in the current display language (item/@name)</entry>
+		<entry key='tech.filter.key.category'>The category. Example: &lt;code>category:spaceship*&lt;/code></entry>
+		<entry key='tech.filter.key.level'>The technology level</entry>
+		<entry key='tech.filter.key.race'>The race. Example: &lt;code>race:*human*&lt;/code></entry>
+		<entry key='tech.filter.key.races'>The race. Example: &lt;code>races:*human*&lt;/code></entry>
+		<entry key='tech.filter.key.production-cost'>The production cost</entry>
+		<entry key='tech.filter.key.research-cost'>The research cost</entry>
+		<entry key='tech.filter.key.valid'>Validity indicator. Values can be &lt;code>ok, warning, error&lt;/code></entry>
+		<entry key='General'>General</entry>
+		<entry key='SPACESHIP'>Spaceship</entry>
+		<entry key='EQUIPMENT'>Equipment</entry>
+		<entry key='WEAPON'>Weapon</entry>
+		<entry key='BUILDING'>Building</entry>
+		<entry key='tech.factory'>Factory</entry>
+		<entry key='tech.index'>Index</entry>
+		<entry key='Graphics'>Graphics</entry>
+		<entry key='Videos'>Videos</entry>
+		<entry key='Slots'>Slots</entry>
+		<entry key='Properties'>Properties</entry>
+		<entry key='tech.invalid.empty_identifier'>Empty identifier</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>

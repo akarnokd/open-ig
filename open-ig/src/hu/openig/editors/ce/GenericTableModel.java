@@ -79,6 +79,14 @@ public abstract class GenericTableModel<T> extends AbstractTableModel {
 		return getValueFor(items.get(rowIndex), rowIndex, columnIndex);
 	}
 	/**
+	 * Returns the element in the specified row.
+	 * @param rowIndex the row index
+	 * @return the element
+	 */
+	public T get(int rowIndex) {
+		return items.get(rowIndex);
+	}
+	/**
 	 * Returns a value for the specified row, column and object at that row.
 	 * @param item the item in that row
 	 * @param rowIndex the row index

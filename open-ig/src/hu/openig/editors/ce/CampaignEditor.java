@@ -45,6 +45,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 import javax.swing.undo.UndoManager;
 import javax.xml.stream.XMLStreamException;
 
@@ -302,6 +303,8 @@ public class CampaignEditor extends JFrame implements CEContext {
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
+		
+		ToolTipManager.sharedInstance().setDismissDelay(120000);
 		
 		projectLanguage = language;
 		

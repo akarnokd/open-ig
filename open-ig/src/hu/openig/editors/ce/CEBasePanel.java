@@ -22,12 +22,18 @@ public class CEBasePanel extends JPanel {
 	private static final long serialVersionUID = 6893457628554154892L;
 	/** The context. */
 	protected final CEContext context;
+	/** The error icon. */
+	protected ImageIcon errorIcon;
+	/** The warning icon. */
+	protected ImageIcon warningIcon;
 	/**
 	 * Constructor. Saves the context.
 	 * @param context the context object
 	 */
 	public CEBasePanel(CEContext context) {
 		this.context = context;
+		errorIcon = context.getIcon(CESeverityIndicator.ERROR);
+		warningIcon = context.getIcon(CESeverityIndicator.WARNING);
 	}
 	/**
 	 * Get a translation for the given key.
