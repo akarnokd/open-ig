@@ -240,8 +240,8 @@ public class CEBasePanel extends JPanel {
 			try {
 				int n = Integer.parseInt(value);
 				if (n < min || n > max) {
-					f.setInvalid(warningIcon, format("field.invalid.range", min, max));
-					icon = max(icon, warningIcon);
+					f.setInvalid(errorIcon, format("field.invalid.range", min, max));
+					icon = max(icon, errorIcon);
 				}
 			} catch (NumberFormatException ex) {
 				f.setInvalid(errorIcon, get("field.invalid.number"));

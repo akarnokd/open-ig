@@ -108,6 +108,12 @@
 		<entry key='tech.invalid.select_level'>Select level</entry>
 		<entry key='tech.invalid.empty_image'>Missing image</entry>
 		<entry key='browse'>Browse...</entry>
+		<entry key='tech.video'>Video</entry>
+		<entry key='tech.video.normal'>Normal</entry>
+		<entry key='tech.video.wired'>Wired</entry>
+		<entry key='tech.invalid.empty_video'>Video base missing</entry>
+		<entry key='missing_video'>Missing video file</entry>
+		<entry key='missing_image'>Missing image file</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>

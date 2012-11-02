@@ -157,4 +157,12 @@ public interface CEContext {
 	void clearProblems(String panel);
 	/** @return the working directory. */
 	File getWorkDir();
+	/**
+	 * Check if the given resource exists.
+	 * @param resource the resource
+	 * @return true if exists
+	 */
+	boolean exists(String resource);
+	/** @return the main player's race. */
+	String mainPlayerRace();
 }
