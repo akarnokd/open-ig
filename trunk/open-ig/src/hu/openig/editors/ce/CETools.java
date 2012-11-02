@@ -104,11 +104,4 @@ public final class CETools {
 		result.append("$");
 		return Pattern.compile(result.toString(), Pattern.CASE_INSENSITIVE);
 	}
-	/**
-	 * Test program.
-	 * @param args no arguments
-	 */
-	public static void main(String[] args) {
-		System.out.println(parseFilter("\"example string\" in:data out:\"code word\""));
-	}
 }

@@ -388,8 +388,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	}
 	@Override
 	public byte[] getData(String resource) {
-		// TODO Auto-generated method stub
-		return null;
+		return getData(projectLanguage, resource);
 	}
 	/** @return scan for all languages. */
 	public List<String> getLanguages() {
@@ -465,6 +464,85 @@ public class CampaignEditor extends JFrame implements CEContext {
 		}
 		
 		return U.newArrayList(result);
+	}
+	/**
+	 * Check if the given resource exists under the language or generic.
+	 * @param language the language
+	 * @param resource the resource with extension
+	 * @return true if exists
+	 */
+	public boolean exists(String language, String resource) {
+		File dlc = new File(workDir, "dlc");
+		
+		// check unpacked dlcs
+		File[] dlcDirs = dlc.listFiles(new DirFilter());
+		if (dlcDirs != null) {
+			boolean result = scanDirsExist(language, resource, dlcDirs);
+			if (result) {
+				return true;
+			}
+		}
+		// check dlc zips
+		File[] dlcZips = dlc.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip");
+			}
+		});
+		if (dlcZips != null) {
+			boolean result = scanZipsExist(language, resource, dlcZips);
+			if (result) {
+				return result;
+			}
+		}
+		// check master directories
+		File[] normalDirs = new File[defaultDirectories.length];
+		for (int i = 0; i < normalDirs.length; i++) {
+			normalDirs[i] = new File(workDir, defaultDirectories[i]);
+		}
+		
+		boolean result = scanDirsExist(language, resource, normalDirs);
+		if (result) {
+			return result;
+		}
+		
+		// check dlc zips
+		File[] upgradeZips = dlc.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				String n = pathname.getName().toLowerCase();
+				return pathname.isFile() && n.startsWith("open-ig-upgrade") && n.endsWith(".zip");
+			}
+		});
+		if (upgradeZips != null) {
+			Arrays.sort(upgradeZips, new Comparator<File>() {
+				@Override
+				public int compare(File o1, File o2) {
+					return o2.getName().toLowerCase().compareTo(o1.getName().toLowerCase());
+				}
+			});
+			result = scanZipsExist(language, resource, upgradeZips);
+			if (result) {
+				return result;
+			}
+		}
+
+		// check dlc zips
+		File[] normalZips = dlc.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				String n = pathname.getName().toLowerCase();
+				return pathname.isFile() && n.startsWith("open-ig-") && !n.startsWith("open-ig-upgrade") && n.endsWith(".zip");
+			}
+		});
+		if (normalZips != null) {
+			result = scanZipsExist(language, resource, normalZips);
+			if (result) {
+				return result;
+			}
+		}
+
+		return false;
 	}
 	/**
 	 * Get a resource for the specified language (or generic).
@@ -575,6 +653,35 @@ public class CampaignEditor extends JFrame implements CEContext {
 		return null;
 	}
 	/**
+	 * Scan a set of zip files for a particular resource.
+	 * @param language the language
+	 * @param resource the resource
+	 * @param dlcZips the zip files
+	 * @return true if exists
+	 */
+	public boolean scanZipsExist(String language, String resource, File[] dlcZips) {
+		for (File f : dlcZips) {
+			try {
+				ZipFile zf = new ZipFile(f);
+				try {
+					ZipEntry ze = zf.getEntry(language + "/" + resource);
+					if (ze != null) {
+						return true;
+					}
+					ze = zf.getEntry("generic/" + resource);
+					if (ze != null) {
+						return true;
+					}
+				} finally {
+					zf.close();
+				}
+			} catch (IOException ex) {
+				// ignored
+			}
+		}
+		return false;
+	}
+	/**
 	 * Scan the directories for a specific resource file.
 	 * @param language the target language
 	 * @param resource the resource path
@@ -593,6 +700,26 @@ public class CampaignEditor extends JFrame implements CEContext {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Scan the directories for a specific resource file.
+	 * @param language the target language
+	 * @param resource the resource path
+	 * @param dlcDirs the directories
+	 * @return true if the resource exists
+	 */
+	public boolean scanDirsExist(String language, String resource, File[] dlcDirs) {
+		for (File f : dlcDirs) {
+			File res = new File(f, language + "/" + resource);
+			if (res.canRead()) {
+				return true;
+			}
+			res = new File(f, "generic/" + resource);
+			if (res.canRead()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Reads a zip entry.
@@ -783,5 +910,13 @@ public class CampaignEditor extends JFrame implements CEContext {
 	@Override
 	public File getWorkDir() {
 		return workDir;
+	}
+	@Override
+	public boolean exists(String resource) {
+		return exists(projectLanguage, resource);
+	}
+	@Override
+	public String mainPlayerRace() {
+		return "human"; // FIXME for now
 	}
 }

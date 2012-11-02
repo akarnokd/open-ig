@@ -8,6 +8,7 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Pair;
 import hu.openig.model.ResearchSubCategory;
@@ -139,6 +140,13 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	CEImageRef imageEquipDetails;
 	/** Image. */
 	CEImageRef imageEquipFleet;
+	/** The video field. */
+	@CETextAttribute(name = "video")
+	CEValueBox<JTextField> videoField;
+	/** The normal video. */
+	CEVideoRef normalVideo;
+	/** The wired video. */
+	CEVideoRef wiredVideo;
 	/**
 	 * Constructor. Initializes the GUI.
 	 * @param context the context object.
@@ -167,7 +175,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 				case 5: return item.get("race", null);
 				case 6: return item.getIntObject("production-cost");
 				case 7: return item.getIntObject("research-cost");
-				case 8: return context.getIcon(getValidity(item));
+				case 8: return context.getIcon(validateItem(item));
 				default:
 					return null;
 				}
@@ -509,8 +517,80 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	 * @param item the item
 	 * @return the indicator
 	 */
-	CESeverityIndicator getValidity(XElement item) {
-		return CESeverityIndicator.WARNING; // FIXME 
+	CESeverityIndicator validateItem(XElement item) {
+		CESeverityIndicator result = CESeverityIndicator.OK;
+		
+		if (item.get("id", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("category", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("factory", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("level", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("production-cost", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("research-cost", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("index", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		String races = item.get("race", "");
+		if (races.isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("image", "").isEmpty()) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (item.get("video", "").isEmpty()) {
+			if (races.contains(context.mainPlayerRace())) {
+				result = U.max(result, CESeverityIndicator.ERROR);
+			} else {
+				result = U.max(result, CESeverityIndicator.WARNING);
+			}
+		}
+		
+		int sumLab = 0;
+		try {
+			sumLab += item.getInt("civil", 0);
+		} catch (NumberFormatException ex) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		try {
+			sumLab += item.getInt("mech", 0);
+		} catch (NumberFormatException ex) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		try {
+			sumLab += item.getInt("comp", 0);
+		} catch (NumberFormatException ex) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		try {
+			sumLab += item.getInt("ai", 0);
+		} catch (NumberFormatException ex) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		try {
+			sumLab += item.getInt("mil", 0);
+		} catch (NumberFormatException ex) {
+			result = U.max(result, CESeverityIndicator.ERROR);
+		}
+		if (sumLab == 0) {
+			if (races.contains(context.mainPlayerRace())) {
+				result = U.max(result, CESeverityIndicator.ERROR);
+			} else {
+				result = U.max(result, CESeverityIndicator.WARNING);
+			}
+		}
+		
+		return result; 
 	}
 	/** @return construct the filter help. */
 	String createFilterHelp() {
@@ -593,7 +673,56 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
-		// TODO Auto-generated method stub
+		videoField = CEValueBox.of(get("tech.video"), new JTextField());
+		
+		normalVideo = new CEVideoRef(get("tech.video.normal"));
+		wiredVideo = new CEVideoRef(get("tech.video.wired"));
+		
+
+		addTextChanged(videoField.component, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				setVideos();
+			}
+		});
+		
+		// --------------------------------------------------
+		
+		int imageSize = 100;
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup()
+			.addComponent(videoField)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(normalVideo.image, imageSize, imageSize, imageSize)
+				.addComponent(normalVideo.valid)
+				.addComponent(normalVideo.label)
+				.addComponent(normalVideo.path)
+				.addGap(30)
+				.addComponent(wiredVideo.image, imageSize, imageSize, imageSize)
+				.addComponent(wiredVideo.valid)
+				.addComponent(wiredVideo.label)
+				.addComponent(wiredVideo.path)
+			)
+		);
+		
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addComponent(videoField)
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(normalVideo.image, imageSize, imageSize, imageSize)
+				.addComponent(normalVideo.valid)
+				.addComponent(normalVideo.label)
+				.addComponent(normalVideo.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(wiredVideo.image, imageSize, imageSize, imageSize)
+				.addComponent(wiredVideo.valid)
+				.addComponent(wiredVideo.label)
+				.addComponent(wiredVideo.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+		);
+		
 		return panel;
 	}
 	/**
@@ -875,6 +1004,19 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		sumLabsTF.setEditable(false);
 		sumLabs = CEValueBox.of(get("tech.lab.sum"), sumLabsTF);
 		
+		Action1<Object> labValid = new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				setSumLab();
+			}
+		};
+		
+		addTextChanged(civilField.component, labValid);
+		addTextChanged(mechField.component, labValid);
+		addTextChanged(compField.component, labValid);
+		addTextChanged(aiField.component, labValid);
+		addTextChanged(milField.component, labValid);
+		
 		// ------------------------------------------------------
 
 		gl.setHorizontalGroup(
@@ -958,9 +1100,8 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 
 			setSumLab();
 
-			setLabels();
-
-			setImages();
+//			setLabels();
+//			setImages();
 			
 			doValidate();
 		} else {
@@ -1055,6 +1196,14 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		
 		generalIcon = null;
 
+		validateImages();
+		validateVideos();
+	}
+	/**
+	 * Validate images.
+	 */
+	public void validateImages() {
+		ImageIcon generalIcon = null;
 		String image = idField.component.getText();
 		if (image.isEmpty()) {
 			imageField.setInvalid(errorIcon, get("tech.invalid.empty_image"));
@@ -1069,6 +1218,22 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		generalIcon = max(generalIcon, (ImageIcon)imageEquipFleet.valid.getIcon());
 		
 		details.setIconAt(2, generalIcon);
+	}
+	/**
+	 * Validate images.
+	 */
+	public void validateVideos() {
+		ImageIcon generalIcon = null;
+		String image = videoField.component.getText();
+		if (image.isEmpty()) {
+			videoField.setInvalid(errorIcon, get("tech.invalid.empty_video"));
+			generalIcon = max(generalIcon, errorIcon);
+		}
+		
+		generalIcon = max(generalIcon, (ImageIcon)normalVideo.valid.getIcon());
+		generalIcon = max(generalIcon, (ImageIcon)wiredVideo.valid.getIcon());
+		
+		details.setIconAt(3, generalIcon);
 	}
 	/**
 	 * Validate the label fields.
@@ -1102,15 +1267,41 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	void doStoreDetails(XElement item) {
 		getValueBoxes(item);
 	}
+	/** Set the video images. */
+	void setVideos() {
+		String videoBase = videoField.component.getText();
+		if (videoBase != null && !videoBase.isEmpty()) {
+			Action0 act = new Action0() {
+				@Override
+				public void invoke() {
+					validateVideos();
+				}
+			};
+			
+			normalVideo.setVideo(videoBase + ".ani.gz", context, act);
+			wiredVideo.setVideo(videoBase + "_wired.ani.gz", context, act);
+		} else {
+			
+			normalVideo.error(errorIcon);
+			wiredVideo.error(errorIcon);
+			validateVideos();
+		}
+	}
 	/**
 	 * Set the images.
 	 */
 	void setImages() {
 		String imageBase = imageField.component.getText();
 		if (imageBase != null && !imageBase.isEmpty()) {
-			imageNormal.setImage(imageBase + ".png", context);
-			imageInfoAvail.setImage(imageBase + "_large.png", context);
-			imageInfoWired.setImage(imageBase + "_wired_large.png", context);
+			Action0 act = new Action0() {
+				@Override
+				public void invoke() {
+					validateImages();
+				}
+			};
+			imageNormal.setImage(imageBase + ".png", context, act);
+			imageInfoAvail.setImage(imageBase + "_large.png", context, act);
+			imageInfoWired.setImage(imageBase + "_wired_large.png", context, act);
 
 			imageSpacewar.clear();
 			imageEquipDetails.clear();
@@ -1133,11 +1324,11 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 			);
 
 			if (forSpacewar.contains(ci)) {
-				imageSpacewar.setImage(imageBase + "_huge.png", context);
+				imageSpacewar.setImage(imageBase + "_huge.png", context, act);
 			}
 			if (forEquipment.contains(ci)) {
-				imageEquipDetails.setImage(imageBase + "_small.png", context);
-				imageEquipFleet.setImage(imageBase + "_tiny.png", context);
+				imageEquipDetails.setImage(imageBase + "_small.png", context, act);
+				imageEquipFleet.setImage(imageBase + "_tiny.png", context, act);
 			}
 			
 		} else {
@@ -1147,6 +1338,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 			imageSpacewar.error(errorIcon);
 			imageEquipDetails.error(errorIcon);
 			imageEquipFleet.error(errorIcon);
+			validateImages();
 		}
 	}
 }

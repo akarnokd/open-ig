@@ -10,6 +10,8 @@ package hu.openig.utils;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -629,5 +631,37 @@ public final class U {
 			}
 		}
 		return result.toArray(new String[0]);
+	}
+	/**
+	 * Returns the stacktrace string.
+	 * @param t the exception
+	 * @return the string of the stacktrace
+	 */
+	public static String stacktrace(Throwable t) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		t.printStackTrace(pw);
+		pw.flush();
+		return sw.toString();
+	}
+	/**
+	 * Returns the bigger of the two comparable objects.
+	 * @param <T> the self-comparable type
+	 * @param t1 the first object
+	 * @param t2 the second object
+	 * @return the bigger
+	 */
+	public static <T extends Comparable<? super T>> T max(T t1, T t2) {
+		return t1.compareTo(t2) < 0 ? t2 : t1;
+	}
+	/**
+	 * Returns the bigger of the two comparable objects.
+	 * @param <T> the self-comparable type
+	 * @param t1 the first object
+	 * @param t2 the second object
+	 * @return the bigger
+	 */
+	public static <T extends Comparable<? super T>> T min(T t1, T t2) {
+		return t1.compareTo(t2) > 0 ? t2 : t1;
 	}
 }

@@ -9,11 +9,15 @@
 package hu.openig.editors.ce;
 
 import hu.openig.core.Action0;
+import hu.openig.screen.VideoRenderer;
 import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -21,10 +25,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 
 /**
- * Container for an image, valid, label and path. 
+ * Container for an first video frame, valid, label and path. Opens a video player
  * @author akarnokd, 2012.11.02.
  */
-public class CEImageRef {
+public class CEVideoRef {
 	/** The image. */
 	public CEImage image = new CEImage();
 	/** Is it valid? */
@@ -39,7 +43,7 @@ public class CEImageRef {
 	 * Constructor. Sets the label text.
 	 * @param displayText the label's text
 	 */
-	public CEImageRef(String displayText) {
+	public CEVideoRef(String displayText) {
 		label.setText(displayText);
 		path.setEditable(false);
 	}
@@ -49,7 +53,7 @@ public class CEImageRef {
 	 * @param context the context
 	 * @param complete the completion handler
 	 */
-	public void setImage(final String resource, final CEContext context, final Action0 complete) {
+	public void setVideo(final String resource, final CEContext context, final Action0 complete) {
 		if (worker != null) {
 			worker.cancel(true);
 			worker = null;
@@ -58,33 +62,37 @@ public class CEImageRef {
 		worker = new SwingWorker<BufferedImage, Void>() {
 			@Override
 			protected BufferedImage doInBackground() throws Exception {
-				return context.getImage(resource);
+				byte[] data = context.getData(resource);
+				if (data != null) {
+					return VideoRenderer.firstFrame(new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data))));
+				}
+				return null;
 			}
 			@Override
 			protected void done() {
 				path.setText(resource);
+				worker = null;
 				valid.setIcon(null);
 				valid.setToolTipText(null);
-				worker = null;
 				try {
 					BufferedImage ico = get();
 					if (ico != null) {
 						image.setIcon(ico);
 					} else {
 						valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
-						valid.setToolTipText(context.get("missing_image"));
+						valid.setToolTipText(context.get("missing_video"));
 					}
 				} catch (ExecutionException ex) {
 					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
 					valid.setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
 				} catch (InterruptedException ex) {
 					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
-					valid.setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
+					valid.setToolTipText("<html><pre>" + U.stacktrace(ex));
 				} catch (CancellationException ex) {
 					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
-					valid.setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
+					valid.setToolTipText("<html><pre>" + U.stacktrace(ex));
 				}
-				if (complete != null) { 
+				if (complete != null) {
 					complete.invoke();
 				}
 			}
@@ -97,6 +105,7 @@ public class CEImageRef {
 	public void clear() {
 		path.setText("");
 		valid.setIcon(null);
+		valid.setToolTipText(null);
 		image.setIcon(null);
 	}
 	/**
