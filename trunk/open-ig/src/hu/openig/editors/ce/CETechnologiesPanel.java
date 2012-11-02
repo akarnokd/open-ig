@@ -8,6 +8,7 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Action1;
 import hu.openig.core.Pair;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.utils.Exceptions;
@@ -19,8 +20,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -28,6 +29,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -35,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
@@ -64,18 +67,78 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	JButton optionsButton;
 	/** The total row counts. */
 	JLabel counts;
-	/** The first selected row. */
+	/** The first selected row under edit. */
 	XElement selected;
 	/** The details panel. */
 	JTabbedPane details;
 	/** The ID. */
-	private CEValueBox<JTextField> idField;
+	@CETextAttribute(name = "id")
+	CEValueBox<JTextField> idField;
 	/** The category field. */
-	private CEValueBox<JComboBox<String>> categoryField;
+	@CEEnumAttribute(name = "category", enumClass = ResearchSubCategory.class)
+	CEValueBox<JComboBox<String>> categoryField;
 	/** The factory field. */
-	private CEValueBox<JComboBox<String>> factoryField;
+	@CETextEnumAttribute(name = "factory", values = { "spaceship", "equipment", "weapon", "building" })
+	CEValueBox<JComboBox<String>> factoryField;
 	/** The index field. */
-	private CEValueBox<JTextField> indexField;
+	@CETextAttribute(name = "index")
+	CEValueBox<JTextField> indexField;
+	/** Lab number. */
+	@CETextAttribute(name = "civil")
+	CEValueBox<JTextField> civilField;
+	/** Lab number. */
+	@CETextAttribute(name = "mech")
+	CEValueBox<JTextField> mechField;
+	/** Lab number. */
+	@CETextAttribute(name = "comp")
+	CEValueBox<JTextField> compField;
+	/** Lab number. */
+	@CETextAttribute(name = "ai")
+	CEValueBox<JTextField> aiField;
+	/** Lab number. */
+	@CETextAttribute(name = "mil")
+	CEValueBox<JTextField> milField;
+	/** Production cost. */
+	@CETextAttribute(name = "production-cost")
+	CEValueBox<JTextField> productionField;
+	/** Research cost. */
+	@CETextAttribute(name = "research-cost")
+	CEValueBox<JTextField> researchField;
+	/** Level. */
+	@CETextEnumAttribute(name = "level", values = { "0", "1", "2", "3", "4", "5", "6" })
+	CEValueBox<JComboBox<String>> levelField;
+	/** The total lab count. */
+	CEValueBox<JTextField> sumLabs;
+	/** Label. */
+	@CETextAttribute(name = "name")
+	CEValueBox<JTextField> nameField;
+	/** Label. */
+	JTextArea nameLabel;
+	/** Label. */
+	@CETextAttribute(name = "long-name")
+	CEValueBox<JTextField> longNameField;
+	/** Label. */
+	JTextArea longNameLabel;
+	/** Label. */
+	@CETextAttribute(name = "description")
+	CEValueBox<JTextField> descField;
+	/** Label. */
+	JTextArea descLabel;
+	/** Image base. */
+	@CETextAttribute(name = "image")
+	CEValueBox<JTextField> imageField;
+	/** Image. */
+	CEImageRef imageNormal;
+	/** Image. */
+	CEImageRef imageInfoAvail;
+	/** Image. */
+	CEImageRef imageInfoWired;
+	/** Image. */
+	CEImageRef imageSpacewar;
+	/** Image. */
+	CEImageRef imageEquipDetails;
+	/** Image. */
+	CEImageRef imageEquipFleet;
 	/**
 	 * Constructor. Initializes the GUI.
 	 * @param context the context object.
@@ -147,12 +210,14 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		technologies.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				int idx = technologies.getSelectedRow();
-				if (idx >= 0) {
-					idx = technologies.convertRowIndexToModel(idx);
-					doDetails(technologiesModel.get(idx));
-				} else {
-					doDetails(null);
+				if (!e.getValueIsAdjusting()) {
+					int idx = technologies.getSelectedRow();
+					if (idx >= 0) {
+						idx = technologies.convertRowIndexToModel(idx);
+						doDetails(technologiesModel.get(idx), idx);
+					} else {
+						doDetails(null, -1);
+					}
 				}
 			}
 		});
@@ -167,6 +232,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		JPanel bottom = createBottomPanel();
 		
 		split.setBottomComponent(bottom);
+		split.setResizeWeight(0.75);
 		
 		setLayout(new BorderLayout());
 		add(split, BorderLayout.CENTER);
@@ -492,7 +558,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		return panel;
 	}
 	/**
-	 * @return
+	 * @return create the properties panel
 	 */
 	Component createPropertiesPanel() {
 		JPanel panel = new JPanel();
@@ -505,7 +571,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		return panel;
 	}
 	/**
-	 * @return
+	 * @return creates the slots panel
 	 */
 	Component createSlotsPanel() {
 		JPanel panel = new JPanel();
@@ -518,7 +584,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		return panel;
 	}
 	/**
-	 * @return
+	 * @return create the videos panel
 	 */
 	Component createVideosPanel() {
 		JPanel panel = new JPanel();
@@ -531,7 +597,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		return panel;
 	}
 	/**
-	 * @return
+	 * @return create the graphics panel
 	 */
 	Component createGraphicsPanel() {
 		JPanel panel = new JPanel();
@@ -539,12 +605,142 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		panel.setLayout(gl);
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
+
+		imageField = CEValueBox.of(get("tech.image"), new JTextField());
 		
-		// TODO Auto-generated method stub
-		return panel;
+		imageNormal = new CEImageRef(get("tech.image.normal"));
+		imageInfoAvail = new CEImageRef(get("tech.image.info_available"));
+		imageInfoWired = new CEImageRef(get("tech.image.info_wired"));
+		imageSpacewar = new CEImageRef(get("tech.image.spacewar"));
+		imageEquipDetails = new CEImageRef(get("tech.image.equipment_details"));
+		imageEquipFleet = new CEImageRef(get("tech.image.equipment_fleet"));
+		
+		JButton browse = new JButton(get("browse"));
+		browse.setVisible(false);
+		
+		addTextChanged(imageField.component, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				setImages();
+			}
+		});
+		
+		// -----------------------------------------------
+		
+		int imageSize = 75;
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup()
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(imageField)
+				.addComponent(browse)
+			)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageNormal.image, imageSize, imageSize, imageSize)
+					.addComponent(imageInfoAvail.image, imageSize, imageSize, imageSize)
+					.addComponent(imageInfoWired.image, imageSize, imageSize, imageSize)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageNormal.valid, 20, 20, 20)
+					.addComponent(imageInfoAvail.valid, 20, 20, 20)
+					.addComponent(imageInfoWired.valid, 20, 20, 20)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageNormal.label)
+					.addComponent(imageInfoAvail.label)
+					.addComponent(imageInfoWired.label)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageNormal.path)
+					.addComponent(imageInfoAvail.path)
+					.addComponent(imageInfoWired.path)
+				)
+				.addGap(30)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageSpacewar.image, imageSize, imageSize, imageSize)
+					.addComponent(imageEquipDetails.image, imageSize, imageSize, imageSize)
+					.addComponent(imageEquipFleet.image, imageSize, imageSize, imageSize)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageSpacewar.valid, 20, 20, 20)
+					.addComponent(imageEquipDetails.valid, 20, 20, 20)
+					.addComponent(imageEquipFleet.valid, 20, 20, 20)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageSpacewar.label)
+					.addComponent(imageEquipDetails.label)
+					.addComponent(imageEquipFleet.label)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(imageSpacewar.path)
+					.addComponent(imageEquipDetails.path)
+					.addComponent(imageEquipFleet.path)
+				)
+			)
+		);
+		
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(imageField)
+				.addComponent(browse)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(imageNormal.image, imageSize, imageSize, imageSize)
+				.addComponent(imageNormal.valid)
+				.addComponent(imageNormal.label)
+				.addComponent(imageNormal.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(imageSpacewar.image, imageSize, imageSize, imageSize)
+				.addComponent(imageSpacewar.valid)
+				.addComponent(imageSpacewar.label)
+				.addComponent(imageSpacewar.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(imageInfoAvail.image, imageSize, imageSize, imageSize)
+				.addComponent(imageInfoAvail.valid)
+				.addComponent(imageInfoAvail.label)
+				.addComponent(imageInfoAvail.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(imageEquipDetails.image, imageSize, imageSize, imageSize)
+				.addComponent(imageEquipDetails.valid)
+				.addComponent(imageEquipDetails.label)
+				.addComponent(imageEquipDetails.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(imageInfoWired.image, imageSize, imageSize, imageSize)
+				.addComponent(imageInfoWired.valid)
+				.addComponent(imageInfoWired.label)
+				.addComponent(imageInfoWired.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				.addComponent(imageEquipFleet.image, imageSize, imageSize, imageSize)
+				.addComponent(imageEquipFleet.valid)
+				.addComponent(imageEquipFleet.label)
+				.addComponent(imageEquipFleet.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+		);
+
+		JScrollPane sp = new JScrollPane(panel);
+		
+		sp.getVerticalScrollBar().setUnitIncrement(30);
+		sp.getVerticalScrollBar().setBlockIncrement(90);
+		
+		return sp;
 	}
 	/**
-	 * @return
+	 * @return create the labels panel
 	 */
 	Component createLabelsPanel() {
 		JPanel panel = new JPanel();
@@ -553,7 +749,78 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
-		// TODO Auto-generated method stub
+		nameField = CEValueBox.of(get("tech.name"), new JTextField());
+		longNameField = CEValueBox.of(get("tech.longname"), new JTextField());
+		descField = CEValueBox.of(get("tech.desc"), new JTextField());
+
+		nameLabel = new JTextArea();
+		longNameLabel = new JTextArea();
+		descLabel = new JTextArea();
+
+		addTextChanged(nameField.component, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				setLabels();
+			}
+		});
+		addTextChanged(longNameField.component, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				setLabels();
+			}
+		});
+		addTextChanged(descField.component, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				setLabels();
+			}
+		});
+
+		addTextChanged(nameLabel, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				context.setLabel(nameField.component.getText(), nameLabel.getText());
+				validateLabels();
+			}
+		});
+		addTextChanged(longNameLabel, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				context.setLabel(longNameField.component.getText(), longNameLabel.getText());
+				validateLabels();
+			}
+		});
+		addTextChanged(descLabel, new Action1<Object>() {
+			@Override
+			public void invoke(Object value) {
+				context.setLabel(descField.component.getText(), descLabel.getText());
+				validateLabels();
+			}
+		});
+
+		
+		// --------------------------------------------------------
+		
+		gl.setHorizontalGroup(
+			gl.createParallelGroup()
+			.addComponent(nameField)
+			.addComponent(nameLabel)
+			.addComponent(longNameField)
+			.addComponent(longNameLabel)
+			.addComponent(descField)
+			.addComponent(descLabel)
+		);
+		
+		gl.setVerticalGroup(
+			gl.createSequentialGroup()
+			.addComponent(nameField)
+			.addComponent(nameLabel)
+			.addComponent(longNameField)
+			.addComponent(longNameLabel)
+			.addComponent(descField)
+			.addComponent(descLabel)
+		);
+		
 		return panel;
 	}
 	/**
@@ -574,18 +841,39 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		for (ResearchSubCategory cat : ResearchSubCategory.values()) {
 			category.addItem(get(cat.toString()));
 		}
+		category.setSelectedIndex(-1);
 		categoryField = new CEValueBox<JComboBox<String>>(get("tech.category"), category); 
 		
 		JComboBox<String> factory = new JComboBox<String>(new String[] {
 				get("SPACESHIP"), get("EQUIPMENT"), get("WEAPON"), get("BUILDING")
 		});
+		factory.setSelectedIndex(-1);
 		factoryField = new CEValueBox<JComboBox<String>>(get("tech.factory"), factory);
 
-		JTextField index = new JTextField(2);
-		index.setHorizontalAlignment(JTextField.RIGHT);
+		indexField = new CEValueBox<JTextField>(get("tech.index"), numberField());
 		
-		indexField = new CEValueBox<JTextField>(get("tech.index"), index);
+		productionField = CEValueBox.of(get("tech.production_cost"), numberField());
+		researchField = CEValueBox.of(get("tech.research_cost"), numberField());
 		
+		JComboBox<String> level = new JComboBox<String>(new String[] {
+				get("tech.level.0"), get("tech.level.1"), get("tech.level.2"),
+				get("tech.level.3"), get("tech.level.4"), get("tech.level.5"),
+				get("tech.level.6")
+		});
+		level.setSelectedIndex(-1);
+		levelField = CEValueBox.of(get("tech.level"), level);
+		
+		JLabel labsLabel = new JLabel(get("tech.labs"));
+		
+		civilField = CEValueBox.of(get("tech.lab.civil"), numberField());
+		mechField = CEValueBox.of(get("tech.lab.mech"), numberField());
+		compField = CEValueBox.of(get("tech.lab.comp"), numberField());
+		aiField = CEValueBox.of(get("tech.lab.ai"), numberField());
+		milField = CEValueBox.of(get("tech.lab.mil"), numberField());
+		
+		JTextField sumLabsTF = numberField();
+		sumLabsTF.setEditable(false);
+		sumLabs = CEValueBox.of(get("tech.lab.sum"), sumLabsTF);
 		
 		// ------------------------------------------------------
 
@@ -598,6 +886,25 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 				.addComponent(factoryField)
 				.addComponent(indexField)
 			)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(researchField)
+				.addComponent(productionField)
+				.addComponent(levelField)
+			)
+			.addComponent(labsLabel)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(civilField)
+				.addComponent(mechField)
+				.addComponent(compField)
+				.addComponent(aiField)
+				.addComponent(milField)
+			)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(sumLabs)
+			)
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
@@ -608,6 +915,25 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 				.addComponent(factoryField)
 				.addComponent(indexField)
 			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(researchField)
+				.addComponent(productionField)
+				.addComponent(levelField)
+			)
+			.addComponent(labsLabel)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(civilField)
+				.addComponent(mechField)
+				.addComponent(compField)
+				.addComponent(aiField)
+				.addComponent(milField)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(sumLabs)
+			)
 		);
 		
 		return panel;
@@ -615,31 +941,62 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	/**
 	 * Show the details of an item. If null, all fields should be emptied/disabled as necessary.
 	 * @param item the item
+	 * @param index the model index
 	 */
-	void doDetails(XElement item) {
+	void doDetails(XElement item, int index) {
+		if (selected != null) {
+			doStoreDetails(selected);
+			int idx = technologiesModel.items.indexOf(selected);
+			if (idx >= 0) {
+				technologiesModel.fireTableRowsUpdated(idx, idx);
+			}
+		}
 		this.selected = item;
-		// TODO implement
 		if (item != null) {
 			
-			String xid = item.get("id", "");
-			idField.component.setText(xid);
-			
-			String xcategory = item.get("category", "");
-			List<String> ecategories = U.newArrayList();
-			for (ResearchSubCategory cat : ResearchSubCategory.values()) {
-				ecategories.add(cat.toString());
-			}
-			categoryField.component.setSelectedIndex(ecategories.indexOf(xcategory));
-			
-			String xfactory = item.get("factory", "");
-			factoryField.component.setSelectedIndex(Arrays.asList("spaceship", "equipment", "weapon", "building").indexOf(xfactory));
-			
-			String xindex = item.get("index", "");
-			indexField.component.setText(xindex);
+			setValueBoxes(item);
+
+			setSumLab();
+
+			setLabels();
+
+			setImages();
 			
 			doValidate();
 		} else {
 			doClearValidation();
+			clearValueBoxes();
+		}
+	}
+	/**
+	 * Set the labels.
+	 */
+	void setLabels() {
+		nameLabel.setText(context.label(nameField.component.getText()));
+		longNameLabel.setText(context.label(longNameField.component.getText()));
+		descLabel.setText(context.label(descField.component.getText()));
+		doValidate();
+	}
+	/**
+	 * Set the sum labs.
+	 */
+	void setSumLab() {
+		String l1 = civilField.component.getText();
+		String l2 = mechField.component.getText();
+		String l3 = compField.component.getText();
+		String l4 = aiField.component.getText();
+		String l5 = milField.component.getText();
+		
+		int sumLabCount = 0;
+		try {
+			sumLabCount += l1.isEmpty() ? 0 : Integer.parseInt(l1);
+			sumLabCount += l2.isEmpty() ? 0 : Integer.parseInt(l2);
+			sumLabCount += l3.isEmpty() ? 0 : Integer.parseInt(l3);
+			sumLabCount += l4.isEmpty() ? 0 : Integer.parseInt(l4);
+			sumLabCount += l5.isEmpty() ? 0 : Integer.parseInt(l5);
+			sumLabs.component.setText(String.valueOf(sumLabCount));
+		} catch (NumberFormatException ex) {
+			sumLabs.component.setText("");
 		}
 	}
 	/**
@@ -648,26 +1005,148 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	void doValidate() {
 		doClearValidation();
 		
+		ImageIcon generalIcon = null;
+		
 		String id = idField.component.getText();
 		if (id.isEmpty()) {
 			idField.setInvalid(errorIcon, get("tech.invalid.empty_identifier"));
+			generalIcon = max(generalIcon, errorIcon);
 		} else {
 			for (XElement e : technologiesModel.items) {
 				if (e != selected && e.get("id", "").equals(id)) {
 					idField.setInvalid(warningIcon, get("tech.invalid.duplicate_identifier"));
+					generalIcon = max(generalIcon, warningIcon);
 				}
 			}
 		}
 		if (categoryField.component.getSelectedIndex() < 0) {
 			categoryField.setInvalid(errorIcon, get("tech.invalid.select_category"));
+			generalIcon = max(generalIcon, errorIcon);
 		}
 		if (factoryField.component.getSelectedIndex() < 0) {
 			factoryField.setInvalid(errorIcon, get("tech.invalid.select_factory"));
+			generalIcon = max(generalIcon, errorIcon);
+		}
+
+		generalIcon = validateNumberField(indexField, generalIcon, 0, 6, true);
+
+		generalIcon = validateNumberField(productionField, generalIcon, true);
+		generalIcon = validateNumberField(researchField, generalIcon, true);
+		if (levelField.component.getSelectedIndex() < 0) {
+			levelField.setInvalid(errorIcon, get("tech.invalid.select_level"));
+			generalIcon = max(generalIcon, errorIcon);
 		}
 		
+		generalIcon = validateNumberField(civilField, generalIcon, false);
+		generalIcon = validateNumberField(mechField, generalIcon, false);
+		generalIcon = validateNumberField(compField, generalIcon, false);
+		generalIcon = validateNumberField(aiField, generalIcon, false);
+		generalIcon = validateNumberField(milField, generalIcon, false);
+
+		generalIcon = validateNumberField(sumLabs, generalIcon, 1, Integer.MAX_VALUE, true);
+		
+		details.setIconAt(0, generalIcon);
+		
+		// --------------------------------------------------------------------
+		
+		validateLabels();
+
+		// --------------------------------------------------------------------
+		
+		generalIcon = null;
+
+		String image = idField.component.getText();
+		if (image.isEmpty()) {
+			imageField.setInvalid(errorIcon, get("tech.invalid.empty_image"));
+			generalIcon = max(generalIcon, errorIcon);
+		}
+		
+		generalIcon = max(generalIcon, (ImageIcon)imageNormal.valid.getIcon());
+		generalIcon = max(generalIcon, (ImageIcon)imageInfoAvail.valid.getIcon());
+		generalIcon = max(generalIcon, (ImageIcon)imageInfoWired.valid.getIcon());
+		generalIcon = max(generalIcon, (ImageIcon)imageSpacewar.valid.getIcon());
+		generalIcon = max(generalIcon, (ImageIcon)imageEquipDetails.valid.getIcon());
+		generalIcon = max(generalIcon, (ImageIcon)imageEquipFleet.valid.getIcon());
+		
+		details.setIconAt(2, generalIcon);
+	}
+	/**
+	 * Validate the label fields.
+	 */
+	public void validateLabels() {
+		ImageIcon generalIcon;
+		generalIcon = null;
+		
+		generalIcon = validateLabelRefField(nameField, generalIcon);
+		generalIcon = validateLabelRefField(longNameField, generalIcon);
+		generalIcon = validateLabelRefField(descField, generalIcon);
+
+		details.setIconAt(1, generalIcon);
 	}
 	/** Remove all validation markers from the panels. */
 	void doClearValidation() {
-		idField.clearInvalid();
+		for (int i = 0; i < details.getTabCount(); i++) {
+			details.setIconAt(i, null);
+		}
+		for (JComponent c : GUIUtils.allComponents(this)) {
+			if (c instanceof CEValueBox<?>) {
+				CEValueBox<?> ceValueBox = (CEValueBox<?>) c;
+				ceValueBox.clearInvalid();
+			}
+		}
+	}
+	/**
+	 * Save the details.
+	 * @param item the target item to update
+	 */
+	void doStoreDetails(XElement item) {
+		getValueBoxes(item);
+	}
+	/**
+	 * Set the images.
+	 */
+	void setImages() {
+		String imageBase = imageField.component.getText();
+		if (imageBase != null && !imageBase.isEmpty()) {
+			imageNormal.setImage(imageBase + ".png", context);
+			imageInfoAvail.setImage(imageBase + "_large.png", context);
+			imageInfoWired.setImage(imageBase + "_wired_large.png", context);
+
+			imageSpacewar.clear();
+			imageEquipDetails.clear();
+			imageEquipFleet.clear();
+
+			int ci = categoryField.component.getSelectedIndex();
+			Set<Integer> forSpacewar = U.newHashSet(
+					ResearchSubCategory.SPACESHIPS_FIGHTERS.ordinal(),
+					ResearchSubCategory.SPACESHIPS_CRUISERS.ordinal(),
+					ResearchSubCategory.SPACESHIPS_BATTLESHIPS.ordinal(),
+					ResearchSubCategory.SPACESHIPS_STATIONS.ordinal()
+			);
+			Set<Integer> forEquipment = U.newHashSet(
+					ResearchSubCategory.SPACESHIPS_FIGHTERS.ordinal(),
+					ResearchSubCategory.SPACESHIPS_CRUISERS.ordinal(),
+					ResearchSubCategory.SPACESHIPS_BATTLESHIPS.ordinal(),
+					ResearchSubCategory.SPACESHIPS_STATIONS.ordinal(),
+					ResearchSubCategory.WEAPONS_TANKS.ordinal(),
+					ResearchSubCategory.WEAPONS_VEHICLES.ordinal()
+			);
+
+			if (forSpacewar.contains(ci)) {
+				imageSpacewar.setImage(imageBase + "_huge.png", context);
+			}
+			if (forEquipment.contains(ci)) {
+				imageEquipDetails.setImage(imageBase + "_small.png", context);
+				imageEquipFleet.setImage(imageBase + "_tiny.png", context);
+			}
+			
+		} else {
+			imageNormal.error(errorIcon);
+			imageInfoAvail.error(errorIcon);
+			imageInfoWired.error(errorIcon);
+			imageSpacewar.error(errorIcon);
+			imageEquipDetails.error(errorIcon);
+			imageEquipFleet.error(errorIcon);
+		}
 	}
 }
