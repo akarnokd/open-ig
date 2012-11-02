@@ -10,6 +10,8 @@ package hu.openig.utils;
 
 import java.awt.Component;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
@@ -83,5 +85,38 @@ public final class GUIUtils {
  
         return table;
     }
-
+    /**
+     * Checks if the item is in the combobox. If yes, then it is moved to the beginning,
+     * otherwise, the item is added as first.
+     * @param <T> the element type
+     * @param combobox the combobox
+     * @param item the item
+     */
+    public static <T> void addFirstItem(JComboBox<T> combobox, T item) {
+    	int idx = -1;
+    	DefaultComboBoxModel<T> model = (DefaultComboBoxModel<T>)combobox.getModel();
+		for (int i = 0; i < model.getSize(); i++) {
+    		T t = model.getElementAt(i);
+    		if (U.equal(t, item)) {
+    			idx = i;
+    			break;
+    		}
+    	}
+		model.insertElementAt(item, 0);
+    	if (idx >= 0) {
+    		model.removeElementAt(idx + 1);
+    	}
+    }
+    /**
+     * Converts the selected view indexes to model indexes.
+     * @param table the table
+     * @return the selected model indices
+     */
+    public static int[] convertSelectionToModel(JTable table) {
+    	int[] selected = table.getSelectedRows();
+    	for (int i = 0; i < selected.length; i++) {
+    		selected[i] = table.convertRowIndexToModel(selected[i]);
+    	}
+    	return selected;
+    }
 }
