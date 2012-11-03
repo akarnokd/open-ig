@@ -28,7 +28,7 @@ import javax.swing.SwingWorker;
  * Container for an first video frame, valid, label and path. Opens a video player
  * @author akarnokd, 2012.11.02.
  */
-public class CEVideoRef {
+public class CEVideoRef implements CEInvalid {
 	/** The image. */
 	public CEImage image = new CEImage();
 	/** Is it valid? */
@@ -116,5 +116,19 @@ public class CEVideoRef {
 		path.setText("");
 		valid.setIcon(errorIcon);
 		image.setIcon(null);
+	}
+	@Override
+	public ImageIcon getInvalid() {
+		return (ImageIcon)valid.getIcon();
+	}
+	@Override
+	public void clearInvalid() {
+		valid.setIcon(null);
+		valid.setToolTipText(null);
+	}
+	@Override
+	public void setInvalid(ImageIcon icon, String errorText) {
+		valid.setIcon(icon);
+		valid.setToolTipText(errorText);
 	}
 }

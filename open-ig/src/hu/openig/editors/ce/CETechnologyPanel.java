@@ -8,10 +8,8 @@
 
 package hu.openig.editors.ce;
 
-import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Pair;
-import hu.openig.model.ResearchSubCategory;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.GUIUtils;
 import hu.openig.utils.U;
@@ -22,7 +20,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
@@ -30,7 +27,6 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -38,8 +34,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -71,89 +65,19 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	/** The first selected row under edit. */
 	XElement selected;
 	/** The details panel. */
-	JTabbedPane details;
-	/** The ID. */
-	@CETextAttribute(name = "id")
-	CEValueBox<JTextField> idField;
-	/** The category field. */
-	@CEEnumAttribute(name = "category", enumClass = ResearchSubCategory.class)
-	CEValueBox<JComboBox<String>> categoryField;
-	/** The factory field. */
-	@CETextEnumAttribute(name = "factory", values = { "spaceship", "equipment", "weapon", "building" })
-	CEValueBox<JComboBox<String>> factoryField;
-	/** The index field. */
-	@CETextAttribute(name = "index")
-	CEValueBox<JTextField> indexField;
-	/** The races. */
-	@CETextAttribute(name = "race")
-	CEValueBox<JTextField> raceField;
-	/** Lab number. */
-	@CETextAttribute(name = "civil")
-	CEValueBox<JTextField> civilField;
-	/** Lab number. */
-	@CETextAttribute(name = "mech")
-	CEValueBox<JTextField> mechField;
-	/** Lab number. */
-	@CETextAttribute(name = "comp")
-	CEValueBox<JTextField> compField;
-	/** Lab number. */
-	@CETextAttribute(name = "ai")
-	CEValueBox<JTextField> aiField;
-	/** Lab number. */
-	@CETextAttribute(name = "mil")
-	CEValueBox<JTextField> milField;
-	/** Production cost. */
-	@CETextAttribute(name = "production-cost")
-	CEValueBox<JTextField> productionField;
-	/** Research cost. */
-	@CETextAttribute(name = "research-cost")
-	CEValueBox<JTextField> researchField;
-	/** Level. */
-	@CETextEnumAttribute(name = "level", values = { "0", "1", "2", "3", "4", "5", "6" })
-	CEValueBox<JComboBox<String>> levelField;
-	/** The total lab count. */
-	CEValueBox<JTextField> sumLabs;
-	/** Label. */
-	@CETextAttribute(name = "name")
-	CEValueBox<JTextField> nameField;
-	/** Label. */
-	CEValueBox<JTextArea> nameLabel;
-	/** Label. */
-	@CETextAttribute(name = "long-name")
-	CEValueBox<JTextField> longNameField;
-	/** Label. */
-	CEValueBox<JTextArea> longNameLabel;
-	/** Label. */
-	@CETextAttribute(name = "description")
-	CEValueBox<JTextField> descField;
-	/** Label. */
-	CEValueBox<JTextArea> descLabel;
-	/** Image base. */
-	@CETextAttribute(name = "image")
-	CEValueBox<JTextField> imageField;
-	/** Image. */
-	CEImageRef imageNormal;
-	/** Image. */
-	CEImageRef imageInfoAvail;
-	/** Image. */
-	CEImageRef imageInfoWired;
-	/** Image. */
-	CEImageRef imageSpacewar;
-	/** Image. */
-	CEImageRef imageEquipDetails;
-	/** Image. */
-	CEImageRef imageEquipFleet;
-	/** The video field. */
-	@CETextAttribute(name = "video")
-	CEValueBox<JTextField> videoField;
-	/** The normal video. */
-	CEVideoRef normalVideo;
-	/** The wired video. */
-	CEVideoRef wiredVideo;
+	JTabbedPane detailTabs;
 	/** The slots panel. */
 	CETechnologySlotsPanel slotsPanel;
 	/** The technology properties panel. */
 	CETechnologyPropertiesPanel propertiesPanel;
+	/** Sub-panel. */
+	private CETechnologyVideosPanel videosPanel;
+	/** Sub-panel. */
+	private CETechnologyImagesPanel imagesPanel;
+	/** Sub-panel. */
+	private CETechnologyLabelsPanel labelsPanel;
+	/** Sub-panel. */
+	private CETechnologyGeneralPanel generalPanel;
 	/**
 	 * Constructor. Initializes the GUI.
 	 * @param context the context object.
@@ -253,6 +177,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		add(split, BorderLayout.CENTER);
 		
 		doUpdateCount();
+		doDetails(null, -1);
 	}
 	/** 
 	 * @return Create the top panel. 
@@ -403,6 +328,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		
 		if (filterStr.isEmpty()) {
 			technologiesSorter.setRowFilter(null);
+			technologiesModel.fireTableDataChanged();
 		} else {
 			GUIUtils.addFirstItem(filter, filterStr);
 			final List<Pair<String, Pattern>> parsed = CETools.parseFilter(filterStr);
@@ -647,16 +573,31 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		
-		details = new JTabbedPane();
+		detailTabs = new JTabbedPane();
 		
-		details.addTab(get("General"), createGeneralPanel());
-		details.addTab(get("Labels"), createLabelsPanel());
-		details.addTab(get("Graphics"), createGraphicsPanel());
-		details.addTab(get("Videos"), createVideosPanel());
-		details.addTab(get("Slots"), createSlotsPanel());
-		details.addTab(get("Properties"), createPropertiesPanel());
+		detailTabs.addTab(get("General"), createGeneralPanel());
+		detailTabs.addTab(get("Labels"), createLabelsPanel());
+		detailTabs.addTab(get("Graphics"), createGraphicsPanel());
+		detailTabs.addTab(get("Videos"), createVideosPanel());
+		detailTabs.addTab(get("Slots"), createSlotsPanel());
+		detailTabs.addTab(get("Properties"), createPropertiesPanel());
+
+		for (int i = 0; i < detailTabs.getTabCount(); i++) {
+			Component c = detailTabs.getComponent(i);
+			if (c instanceof CESlavePanel) {
+				CESlavePanel sp = (CESlavePanel) c;
+				final int j = i;
+				sp.onValidate = new Action1<ImageIcon>() {
+					@Override
+					public void invoke(ImageIcon value) {
+						detailTabs.setIconAt(j, value);
+					}
+				};
+			}
+		}
 		
-		panel.add(details, BorderLayout.CENTER);
+		
+		panel.add(detailTabs, BorderLayout.CENTER);
 		
 		return panel;
 	}
@@ -678,419 +619,31 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	 * @return create the videos panel
 	 */
 	Component createVideosPanel() {
-		JPanel panel = new JPanel();
-		GroupLayout gl = new GroupLayout(panel);
-		panel.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
+		videosPanel = new CETechnologyVideosPanel(context);
 		
-		videoField = CEValueBox.of(get("tech.video"), new JTextField());
-		
-		normalVideo = new CEVideoRef(get("tech.video.normal"));
-		wiredVideo = new CEVideoRef(get("tech.video.wired"));
-		
-		addValidator(videoField, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				setVideos();
-			}
-		});
-		
-		// --------------------------------------------------
-		
-		int imageSize = 100;
-		
-		gl.setHorizontalGroup(
-			gl.createParallelGroup()
-			.addComponent(videoField)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(normalVideo.image, imageSize, imageSize, imageSize)
-				.addComponent(normalVideo.valid)
-				.addComponent(normalVideo.label)
-				.addComponent(normalVideo.path)
-				.addGap(30)
-				.addComponent(wiredVideo.image, imageSize, imageSize, imageSize)
-				.addComponent(wiredVideo.valid)
-				.addComponent(wiredVideo.label)
-				.addComponent(wiredVideo.path)
-			)
-		);
-		
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addComponent(videoField)
-			.addGroup(
-				gl.createParallelGroup(Alignment.CENTER)
-				.addComponent(normalVideo.image, imageSize, imageSize, imageSize)
-				.addComponent(normalVideo.valid)
-				.addComponent(normalVideo.label)
-				.addComponent(normalVideo.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(wiredVideo.image, imageSize, imageSize, imageSize)
-				.addComponent(wiredVideo.valid)
-				.addComponent(wiredVideo.label)
-				.addComponent(wiredVideo.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			)
-		);
-		
-		return panel;
+		return videosPanel;
 	}
 	/**
 	 * @return create the graphics panel
 	 */
 	Component createGraphicsPanel() {
-		JPanel panel = new JPanel();
-		GroupLayout gl = new GroupLayout(panel);
-		panel.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-
-		imageField = CEValueBox.of(get("tech.image"), new JTextField());
-		
-		imageNormal = new CEImageRef(get("tech.image.normal"));
-		imageInfoAvail = new CEImageRef(get("tech.image.info_available"));
-		imageInfoWired = new CEImageRef(get("tech.image.info_wired"));
-		imageSpacewar = new CEImageRef(get("tech.image.spacewar"));
-		imageEquipDetails = new CEImageRef(get("tech.image.equipment_details"));
-		imageEquipFleet = new CEImageRef(get("tech.image.equipment_fleet"));
-		
-		JButton browse = new JButton(get("browse"));
-		browse.setVisible(false);
-		
-		addValidator(imageField, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				setImages();
-			}
-		});
-		
-		// -----------------------------------------------
-		
-		int imageSize = 75;
-		
-		gl.setHorizontalGroup(
-			gl.createParallelGroup()
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(imageField)
-				.addComponent(browse)
-			)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageNormal.image, imageSize, imageSize, imageSize)
-					.addComponent(imageInfoAvail.image, imageSize, imageSize, imageSize)
-					.addComponent(imageInfoWired.image, imageSize, imageSize, imageSize)
-				)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageNormal.valid, 20, 20, 20)
-					.addComponent(imageInfoAvail.valid, 20, 20, 20)
-					.addComponent(imageInfoWired.valid, 20, 20, 20)
-				)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageNormal.label)
-					.addComponent(imageInfoAvail.label)
-					.addComponent(imageInfoWired.label)
-				)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageNormal.path)
-					.addComponent(imageInfoAvail.path)
-					.addComponent(imageInfoWired.path)
-				)
-				.addGap(30)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageSpacewar.image, imageSize, imageSize, imageSize)
-					.addComponent(imageEquipDetails.image, imageSize, imageSize, imageSize)
-					.addComponent(imageEquipFleet.image, imageSize, imageSize, imageSize)
-				)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageSpacewar.valid, 20, 20, 20)
-					.addComponent(imageEquipDetails.valid, 20, 20, 20)
-					.addComponent(imageEquipFleet.valid, 20, 20, 20)
-				)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageSpacewar.label)
-					.addComponent(imageEquipDetails.label)
-					.addComponent(imageEquipFleet.label)
-				)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(imageSpacewar.path)
-					.addComponent(imageEquipDetails.path)
-					.addComponent(imageEquipFleet.path)
-				)
-			)
-		);
-		
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addGroup(
-				gl.createParallelGroup(Alignment.CENTER)
-				.addComponent(imageField)
-				.addComponent(browse)
-			)
-			.addGroup(
-				gl.createParallelGroup(Alignment.CENTER)
-				.addComponent(imageNormal.image, imageSize, imageSize, imageSize)
-				.addComponent(imageNormal.valid)
-				.addComponent(imageNormal.label)
-				.addComponent(imageNormal.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(imageSpacewar.image, imageSize, imageSize, imageSize)
-				.addComponent(imageSpacewar.valid)
-				.addComponent(imageSpacewar.label)
-				.addComponent(imageSpacewar.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			)
-			.addGroup(
-				gl.createParallelGroup(Alignment.CENTER)
-				.addComponent(imageInfoAvail.image, imageSize, imageSize, imageSize)
-				.addComponent(imageInfoAvail.valid)
-				.addComponent(imageInfoAvail.label)
-				.addComponent(imageInfoAvail.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(imageEquipDetails.image, imageSize, imageSize, imageSize)
-				.addComponent(imageEquipDetails.valid)
-				.addComponent(imageEquipDetails.label)
-				.addComponent(imageEquipDetails.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			)
-			.addGroup(
-				gl.createParallelGroup(Alignment.CENTER)
-				.addComponent(imageInfoWired.image, imageSize, imageSize, imageSize)
-				.addComponent(imageInfoWired.valid)
-				.addComponent(imageInfoWired.label)
-				.addComponent(imageInfoWired.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(imageEquipFleet.image, imageSize, imageSize, imageSize)
-				.addComponent(imageEquipFleet.valid)
-				.addComponent(imageEquipFleet.label)
-				.addComponent(imageEquipFleet.path, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-			)
-		);
-
-		JScrollPane sp = new JScrollPane(panel);
-		
-		sp.getVerticalScrollBar().setUnitIncrement(30);
-		sp.getVerticalScrollBar().setBlockIncrement(90);
-		
-		return sp;
+		imagesPanel = new CETechnologyImagesPanel(context);
+		return imagesPanel;
 	}
 	/**
 	 * @return create the labels panel
 	 */
 	Component createLabelsPanel() {
-		JPanel panel = new JPanel();
-		GroupLayout gl = new GroupLayout(panel);
-		panel.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
+		labelsPanel = new CETechnologyLabelsPanel(context);
 		
-		nameField = CEValueBox.of(get("tech.name"), new JTextField());
-		longNameField = CEValueBox.of(get("tech.longname"), new JTextField());
-		descField = CEValueBox.of(get("tech.desc"), new JTextField());
-
-		nameLabel = CEValueBox.of("", new JTextArea());
-		longNameLabel = CEValueBox.of("", new JTextArea());
-		descLabel = CEValueBox.of("", new JTextArea());
-
-		addValidator(nameField, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				setLabels();
-			}
-		});
-		addValidator(longNameField, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				setLabels();
-			}
-		});
-		addValidator(descField, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				setLabels();
-			}
-		});
-
-		addValidator(nameLabel, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				context.setLabel(nameField.component.getText(), nameLabel.component.getText());
-				validateLabels();
-			}
-		});
-		addValidator(longNameLabel, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				context.setLabel(longNameField.component.getText(), longNameLabel.component.getText());
-				validateLabels();
-			}
-		});
-		addValidator(descLabel, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				context.setLabel(descField.component.getText(), descLabel.component.getText());
-				validateLabels();
-			}
-		});
-
-		
-		// --------------------------------------------------------
-		
-		gl.setHorizontalGroup(
-			gl.createParallelGroup()
-			.addComponent(nameField)
-			.addComponent(nameLabel)
-			.addComponent(longNameField)
-			.addComponent(longNameLabel)
-			.addComponent(descField)
-			.addComponent(descLabel)
-		);
-		
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addComponent(nameField)
-			.addComponent(nameLabel)
-			.addComponent(longNameField)
-			.addComponent(longNameLabel)
-			.addComponent(descField)
-			.addComponent(descLabel)
-		);
-		
-		return panel;
+		return labelsPanel;
 	}
 	/**
 	 * @return the general panel
 	 */
 	Component createGeneralPanel() {
-		JPanel panel = new JPanel();
-		GroupLayout gl = new GroupLayout(panel);
-		panel.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-		
-		idField = new CEValueBox<JTextField>(get("tech.id"), new JTextField());
-
-		JComboBox<String> category = new JComboBox<String>();
-		for (ResearchSubCategory cat : ResearchSubCategory.values()) {
-			category.addItem(get(cat.toString()));
-		}
-		category.setSelectedIndex(-1);
-		categoryField = new CEValueBox<JComboBox<String>>(get("tech.category"), category); 
-		
-		JComboBox<String> factory = new JComboBox<String>(new String[] {
-				get("SPACESHIP"), get("EQUIPMENT"), get("WEAPON"), get("BUILDING")
-		});
-		factory.setSelectedIndex(-1);
-		factoryField = new CEValueBox<JComboBox<String>>(get("tech.factory"), factory);
-
-		indexField = new CEValueBox<JTextField>(get("tech.index"), numberField());
-		
-		productionField = CEValueBox.of(get("tech.production_cost"), numberField());
-		researchField = CEValueBox.of(get("tech.research_cost"), numberField());
-		
-		JComboBox<String> level = new JComboBox<String>(new String[] {
-				get("tech.level.0"), get("tech.level.1"), get("tech.level.2"),
-				get("tech.level.3"), get("tech.level.4"), get("tech.level.5"),
-				get("tech.level.6")
-		});
-		level.setSelectedIndex(-1);
-		levelField = CEValueBox.of(get("tech.level"), level);
-		
-		raceField = CEValueBox.of(get("tech.race"), new JTextField());
-		
-		JLabel labsLabel = new JLabel(get("tech.labs"));
-		
-		civilField = CEValueBox.of(get("tech.lab.civil"), numberField());
-		mechField = CEValueBox.of(get("tech.lab.mech"), numberField());
-		compField = CEValueBox.of(get("tech.lab.comp"), numberField());
-		aiField = CEValueBox.of(get("tech.lab.ai"), numberField());
-		milField = CEValueBox.of(get("tech.lab.mil"), numberField());
-		
-		JTextField sumLabsTF = numberField();
-		sumLabsTF.setEditable(false);
-		sumLabs = CEValueBox.of(get("tech.lab.sum"), sumLabsTF);
-		
-		Action1<Object> labValid = new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				setSumLab();
-			}
-		};
-		
-		addValidator(civilField, labValid);
-		addValidator(mechField, labValid);
-		addValidator(compField, labValid);
-		addValidator(aiField, labValid);
-		addValidator(milField, labValid);
-		
-		// ------------------------------------------------------
-
-		gl.setHorizontalGroup(
-			gl.createParallelGroup()
-			.addComponent(idField)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(categoryField)
-				.addComponent(factoryField)
-				.addComponent(indexField)
-			)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(researchField)
-				.addComponent(productionField)
-				.addComponent(levelField)
-			)
-			.addComponent(raceField)
-			.addComponent(labsLabel)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(civilField)
-				.addComponent(mechField)
-				.addComponent(compField)
-				.addComponent(aiField)
-				.addComponent(milField)
-			)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(sumLabs)
-			)
-		);
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addComponent(idField)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(categoryField)
-				.addComponent(factoryField)
-				.addComponent(indexField)
-			)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(researchField)
-				.addComponent(productionField)
-				.addComponent(levelField)
-			)
-			.addComponent(raceField)
-			.addComponent(labsLabel)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(civilField)
-				.addComponent(mechField)
-				.addComponent(compField)
-				.addComponent(aiField)
-				.addComponent(milField)
-			)
-			.addGroup(
-				gl.createParallelGroup(Alignment.BASELINE)
-				.addComponent(sumLabs)
-			)
-		);
-		
-		return panel;
+		generalPanel = new CETechnologyGeneralPanel(context);
+		return generalPanel;
 	}
 	/**
 	 * Show the details of an item. If null, all fields should be emptied/disabled as necessary.
@@ -1098,270 +651,13 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	 * @param index the model index
 	 */
 	void doDetails(XElement item, int index) {
-		if (selected != null) {
-			doStoreDetails(selected);
-			int idx = technologiesModel.items.indexOf(selected);
-			if (idx >= 0) {
-				technologiesModel.fireTableRowsUpdated(idx, idx);
-			}
-		}
 		this.selected = item;
-		if (item != null) {
-			
-			setValueBoxes(item);
-
-			setSumLab();
-
-			slotsPanel.setTechItem(item);
-			propertiesPanel.setTechItem(item);
-			
-			doValidate();
-		} else {
-			slotsPanel.setTechItem(null);
-			propertiesPanel.setTechItem(null);
-
-			doClearValidation();
-			clearValueBoxes();
-		}
-	}
-	/**
-	 * Set the labels.
-	 */
-	void setLabels() {
-		setTextAndEnabled(nameLabel, null, context.label(nameField.component.getText()), true);
-		setTextAndEnabled(longNameLabel, null, context.label(longNameField.component.getText()), true);
-		setTextAndEnabled(descLabel, null, context.label(descField.component.getText()), true);
-		doValidate();
-	}
-	/**
-	 * Set the sum labs.
-	 */
-	void setSumLab() {
-		String l1 = civilField.component.getText();
-		String l2 = mechField.component.getText();
-		String l3 = compField.component.getText();
-		String l4 = aiField.component.getText();
-		String l5 = milField.component.getText();
-		
-		int sumLabCount = 0;
-		try {
-			sumLabCount += l1.isEmpty() ? 0 : Integer.parseInt(l1);
-			sumLabCount += l2.isEmpty() ? 0 : Integer.parseInt(l2);
-			sumLabCount += l3.isEmpty() ? 0 : Integer.parseInt(l3);
-			sumLabCount += l4.isEmpty() ? 0 : Integer.parseInt(l4);
-			sumLabCount += l5.isEmpty() ? 0 : Integer.parseInt(l5);
-			sumLabs.component.setText(String.valueOf(sumLabCount));
-		} catch (NumberFormatException ex) {
-			sumLabs.component.setText("");
-		}
-	}
-	/**
-	 * Validate the contents of the fields and append explanation text to the icon.
-	 */
-	void doValidate() {
-		doClearValidation();
-		
-		ImageIcon generalIcon = null;
-		
-		String id = idField.component.getText();
-		if (id.isEmpty()) {
-			idField.setInvalid(errorIcon, get("tech.invalid.empty_identifier"));
-			generalIcon = max(generalIcon, errorIcon);
-		} else {
-			for (XElement e : technologiesModel.items) {
-				if (e != selected && e.get("id", "").equals(id)) {
-					idField.setInvalid(warningIcon, get("tech.invalid.duplicate_identifier"));
-					generalIcon = max(generalIcon, warningIcon);
-				}
+		for (int i = 0; i < detailTabs.getTabCount(); i++) {
+			Component c = detailTabs.getComponent(i);
+			if (c instanceof CESlavePanel) {
+				CESlavePanel sp = (CESlavePanel) c;
+				sp.setMaster(item);
 			}
-		}
-		if (categoryField.component.getSelectedIndex() < 0) {
-			categoryField.setInvalid(errorIcon, get("tech.invalid.select_category"));
-			generalIcon = max(generalIcon, errorIcon);
-		}
-		if (factoryField.component.getSelectedIndex() < 0) {
-			factoryField.setInvalid(errorIcon, get("tech.invalid.select_factory"));
-			generalIcon = max(generalIcon, errorIcon);
-		}
-
-		generalIcon = validateNumberField(indexField, generalIcon, 0, 6, true);
-
-		generalIcon = validateNumberField(productionField, generalIcon, true);
-		generalIcon = validateNumberField(researchField, generalIcon, true);
-		if (levelField.component.getSelectedIndex() < 0) {
-			levelField.setInvalid(errorIcon, get("tech.invalid.select_level"));
-			generalIcon = max(generalIcon, errorIcon);
-		}
-		
-		generalIcon = validateNumberField(civilField, generalIcon, false);
-		generalIcon = validateNumberField(mechField, generalIcon, false);
-		generalIcon = validateNumberField(compField, generalIcon, false);
-		generalIcon = validateNumberField(aiField, generalIcon, false);
-		generalIcon = validateNumberField(milField, generalIcon, false);
-
-		generalIcon = validateNumberField(sumLabs, generalIcon, 1, Integer.MAX_VALUE, true);
-		
-		details.setIconAt(0, generalIcon);
-		
-		// --------------------------------------------------------------------
-		
-		validateLabels();
-
-		// --------------------------------------------------------------------
-		
-		generalIcon = null;
-
-		validateImages();
-		validateVideos();
-	}
-	/**
-	 * Validate images.
-	 */
-	public void validateImages() {
-		ImageIcon generalIcon = null;
-		String image = idField.component.getText();
-		if (image.isEmpty()) {
-			imageField.setInvalid(errorIcon, get("tech.invalid.empty_image"));
-			generalIcon = max(generalIcon, errorIcon);
-		}
-		
-		generalIcon = max(generalIcon, (ImageIcon)imageNormal.valid.getIcon());
-		generalIcon = max(generalIcon, (ImageIcon)imageInfoAvail.valid.getIcon());
-		generalIcon = max(generalIcon, (ImageIcon)imageInfoWired.valid.getIcon());
-		generalIcon = max(generalIcon, (ImageIcon)imageSpacewar.valid.getIcon());
-		generalIcon = max(generalIcon, (ImageIcon)imageEquipDetails.valid.getIcon());
-		generalIcon = max(generalIcon, (ImageIcon)imageEquipFleet.valid.getIcon());
-		
-		details.setIconAt(2, generalIcon);
-	}
-	/**
-	 * Validate images.
-	 */
-	public void validateVideos() {
-		ImageIcon generalIcon = null;
-		String image = videoField.component.getText();
-		if (image.isEmpty()) {
-			videoField.setInvalid(errorIcon, get("tech.invalid.empty_video"));
-			generalIcon = max(generalIcon, errorIcon);
-		}
-		
-		generalIcon = max(generalIcon, (ImageIcon)normalVideo.valid.getIcon());
-		generalIcon = max(generalIcon, (ImageIcon)wiredVideo.valid.getIcon());
-		
-		details.setIconAt(3, generalIcon);
-	}
-	/**
-	 * Validate the label fields.
-	 */
-	public void validateLabels() {
-		ImageIcon generalIcon;
-		generalIcon = null;
-		
-		generalIcon = validateLabelRefField(nameField, generalIcon);
-		generalIcon = validateLabelRefField(longNameField, generalIcon);
-		generalIcon = validateLabelRefField(descField, generalIcon);
-
-		details.setIconAt(1, generalIcon);
-	}
-	/** Remove all validation markers from the panels. */
-	void doClearValidation() {
-		for (int i = 0; i < details.getTabCount(); i++) {
-			details.setIconAt(i, null);
-		}
-		for (JComponent c : GUIUtils.allComponents(this)) {
-			if (c instanceof CEValueBox<?>) {
-				CEValueBox<?> ceValueBox = (CEValueBox<?>) c;
-				ceValueBox.clearInvalid();
-			}
-		}
-	}
-	/**
-	 * Save the details.
-	 * @param item the target item to update
-	 */
-	void doStoreDetails(XElement item) {
-		getValueBoxes(item);
-	}
-	/** Set the video images. */
-	void setVideos() {
-		String videoBase = videoField.component.getText();
-		if (videoBase != null && !videoBase.isEmpty()) {
-			Action0 act = new Action0() {
-				@Override
-				public void invoke() {
-					validateVideos();
-				}
-			};
-			
-			normalVideo.setVideo(videoBase + ".ani.gz", context, act);
-			wiredVideo.setVideo(videoBase + "_wired.ani.gz", context, act);
-		} else {
-			
-			normalVideo.error(errorIcon);
-			wiredVideo.error(errorIcon);
-			validateVideos();
-		}
-	}
-	/**
-	 * Set the images.
-	 */
-	void setImages() {
-		String imageBase = imageField.component.getText();
-		slotsPanel.setImage(null);
-		if (imageBase != null && !imageBase.isEmpty()) {
-			Action0 act = new Action0() {
-				@Override
-				public void invoke() {
-					validateImages();
-				}
-			};
-			imageNormal.setImage(imageBase + ".png", context, act);
-			imageInfoAvail.setImage(imageBase + "_large.png", context, act);
-			imageInfoWired.setImage(imageBase + "_wired_large.png", context, act);
-
-			imageSpacewar.clear();
-			imageEquipDetails.clear();
-			imageEquipFleet.clear();
-
-			int ci = categoryField.component.getSelectedIndex();
-			Set<Integer> forSpacewar = U.newHashSet(
-					ResearchSubCategory.SPACESHIPS_FIGHTERS.ordinal(),
-					ResearchSubCategory.SPACESHIPS_CRUISERS.ordinal(),
-					ResearchSubCategory.SPACESHIPS_BATTLESHIPS.ordinal(),
-					ResearchSubCategory.SPACESHIPS_STATIONS.ordinal()
-			);
-			Set<Integer> forEquipment = U.newHashSet(
-					ResearchSubCategory.SPACESHIPS_FIGHTERS.ordinal(),
-					ResearchSubCategory.SPACESHIPS_CRUISERS.ordinal(),
-					ResearchSubCategory.SPACESHIPS_BATTLESHIPS.ordinal(),
-					ResearchSubCategory.SPACESHIPS_STATIONS.ordinal(),
-					ResearchSubCategory.WEAPONS_TANKS.ordinal(),
-					ResearchSubCategory.WEAPONS_VEHICLES.ordinal()
-			);
-
-			if (forSpacewar.contains(ci)) {
-				imageSpacewar.setImage(imageBase + "_huge.png", context, act);
-			}
-			if (forEquipment.contains(ci)) {
-				Action0 act2 = new Action0() {
-					@Override
-					public void invoke() {
-						validateImages();
-						slotsPanel.setImage(imageEquipDetails.image.icon);
-					}
-				};
-				imageEquipDetails.setImage(imageBase + "_small.png", context, act2);
-				imageEquipFleet.setImage(imageBase + "_tiny.png", context, act);
-			}
-			
-		} else {
-			imageNormal.error(errorIcon);
-			imageInfoAvail.error(errorIcon);
-			imageInfoWired.error(errorIcon);
-			imageSpacewar.error(errorIcon);
-			imageEquipDetails.error(errorIcon);
-			imageEquipFleet.error(errorIcon);
-			validateImages();
 		}
 	}
 }

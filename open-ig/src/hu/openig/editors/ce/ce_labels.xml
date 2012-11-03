@@ -128,6 +128,8 @@
 		<entry key='invalid_empty'>Empty value</entry>
 		<entry key='invalid_number'>Invalid number</entry>
 		<entry key='invalid_number_positive'>Invalid positive number</entry>
+		<entry key='missing_label_of'>Missing label %s</entry>
+		<entry key='missing_label'>Missing label</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>

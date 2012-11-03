@@ -24,8 +24,11 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.Transient;
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JComponent;
+import javax.swing.SwingWorker;
 
 /**
  * The slot editor.
@@ -48,6 +51,8 @@ public class CESlotEdit extends JComponent {
 	public XElement selectedSlot;
 	/** Callback if a slot is picked. */
 	public Action1<XElement> onSlotSelected;
+	/** The background worker. */
+	SwingWorker<BufferedImage, Void> worker;
 	/** Construct the event handlers. */
 	public CESlotEdit() {
 		MouseActivity ma = new MouseActivity();
@@ -103,12 +108,43 @@ public class CESlotEdit extends JComponent {
 	}
 	/**
 	 * Set the background image.
-	 * @param image the image
+	 * @param resource the image resource name
+	 * @param context the context
 	 */
-	public void setImage(BufferedImage image) {
-		this.image = image;
-		invalidate();
-		repaint();
+	public void setImage(final String resource, final CEContext context) {
+		if (worker != null) {
+			worker.cancel(true);
+			worker = null;
+		}
+		image = null;
+		setToolTipText(null);
+		worker = new SwingWorker<BufferedImage, Void>() {
+			@Override
+			protected BufferedImage doInBackground() throws Exception {
+				return context.getImage(resource);
+			}
+			@Override
+			protected void done() {
+				worker = null;
+				try {
+					image = get();
+				} catch (ExecutionException ex) {
+					setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
+				} catch (InterruptedException ex) {
+					setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
+				} catch (CancellationException ex) {
+					setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
+				}
+				invalidate();
+				repaint();
+			}
+		};
+		worker.execute();
+	}
+	/** Clear the image. */
+	public void clearImage() {
+		setToolTipText(null);
+		image = null;
 	}
 	/**
 	 * Add a new rectangle.

@@ -24,7 +24,7 @@ import javax.swing.SwingWorker;
  * Container for an image, valid, label and path. 
  * @author akarnokd, 2012.11.02.
  */
-public class CEImageRef {
+public class CEImageRef implements CEInvalid {
 	/** The image. */
 	public CEImage image = new CEImage();
 	/** Is it valid? */
@@ -107,5 +107,19 @@ public class CEImageRef {
 		path.setText("");
 		valid.setIcon(errorIcon);
 		image.setIcon(null);
+	}
+	@Override
+	public ImageIcon getInvalid() {
+		return (ImageIcon)valid.getIcon();
+	}
+	@Override
+	public void clearInvalid() {
+		valid.setIcon(null);
+		valid.setToolTipText(null);
+	}
+	@Override
+	public void setInvalid(ImageIcon icon, String errorText) {
+		valid.setIcon(icon);
+		valid.setToolTipText(errorText);
 	}
 }
