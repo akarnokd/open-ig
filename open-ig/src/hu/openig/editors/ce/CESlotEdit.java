@@ -196,15 +196,6 @@ public class CESlotEdit extends JComponent {
 			}
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				selection = new Rectangle(e.getX(), e.getY(), 0, 0);
-				List<XElement> sel = getSlotsAt(e.getX(), e.getY());
-				if (!sel.isEmpty()) {
-					selectedSlot = sel.get(0);
-				} else {
-					selectedSlot = null;
-				}
-				if (onSlotSelected != null) {
-					onSlotSelected.invoke(selectedSlot);
-				}
 			} else 
 			if (e.getButton() == MouseEvent.BUTTON3) {
 				removeSlot(e.getX(), e.getY());
@@ -248,12 +239,23 @@ public class CESlotEdit extends JComponent {
 			}
 			if (selection != null) {
 				if (selection.width > 3 && selection.height > 3) {
-					XElement slot = addSlot(selection);
-					if (onSlotAdded != null) {
-						onSlotAdded.invoke(slot);
+					if (selectedSlot != null) {
+						selectedSlot.set("x", selection.x);
+						selectedSlot.set("y", selection.y);
+						selectedSlot.set("width", selection.width);
+						selectedSlot.set("height", selection.height);
+						
+						if (onSlotSelected != null) {
+							onSlotSelected.invoke(selectedSlot);
+						}
+					} else {
+						XElement slot = addSlot(selection);
+						if (onSlotAdded != null) {
+							onSlotAdded.invoke(slot);
+						}
+						selectedSlot = slot;
 					}
 					selection = null;
-					selectedSlot = slot;
 				} else {
 					List<XElement> sel = getSlotsAt(e.getX(), e.getY());
 					if (!sel.isEmpty()) {

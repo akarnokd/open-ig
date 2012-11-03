@@ -125,6 +125,9 @@
 		<entry key='slot.type.fixed'>Fixed slot</entry>
 		<entry key='slot.type'>Type</entry>
 		<entry key='slot.count'>Count / Max</entry>
+		<entry key='invalid_empty'>Empty value</entry>
+		<entry key='invalid_number'>Invalid number</entry>
+		<entry key='invalid_number_positive'>Invalid positive number</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>

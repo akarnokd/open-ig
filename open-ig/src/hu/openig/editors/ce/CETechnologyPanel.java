@@ -21,7 +21,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -45,14 +44,13 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
-import javax.swing.text.JTextComponent;
 import javax.xml.stream.XMLStreamException;
 
 /**
  * The Technologies panel to edit contents of the <code>tech.xml</code>. 
  * @author akarnokd, 2012.10.31.
  */
-public class CETechnologiesPanel extends CEBasePanel 
+public class CETechnologyPanel extends CEBasePanel 
 implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	/** */
 	private static final long serialVersionUID = 8419996018754156220L;
@@ -119,17 +117,17 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	@CETextAttribute(name = "name")
 	CEValueBox<JTextField> nameField;
 	/** Label. */
-	JTextArea nameLabel;
+	CEValueBox<JTextArea> nameLabel;
 	/** Label. */
 	@CETextAttribute(name = "long-name")
 	CEValueBox<JTextField> longNameField;
 	/** Label. */
-	JTextArea longNameLabel;
+	CEValueBox<JTextArea> longNameLabel;
 	/** Label. */
 	@CETextAttribute(name = "description")
 	CEValueBox<JTextField> descField;
 	/** Label. */
-	JTextArea descLabel;
+	CEValueBox<JTextArea> descLabel;
 	/** Image base. */
 	@CETextAttribute(name = "image")
 	CEValueBox<JTextField> imageField;
@@ -152,37 +150,15 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	CEVideoRef normalVideo;
 	/** The wired video. */
 	CEVideoRef wiredVideo;
-	/** The slot editor. */
-	CESlotEdit slotEdit;
-	/** The normal slot image. */
-	ImageIcon slotNormal;
-	/** The fixed slot image. */
-	ImageIcon slotFixed;
-	/** The slots model. */
-	GenericTableModel<XElement> slotsModel;
-	/** The slots table. */
-	JTable slots;
-	/** The current selected slot. */
-	XElement selectedSlot;
-	/** Slot property. */
-	CEValueBox<JTextField> slotId;
-	/** Slot property. */
-	CEValueBox<JTextField> slotX;
-	/** Slot property. */
-	CEValueBox<JTextField> slotY;
-	/** Slot property. */
-	CEValueBox<JTextField> slotWidth;
-	/** Slot property. */
-	CEValueBox<JTextField> slotHeight;
-	/** Slot property. */
-	CEValueBox<JComboBox<String>> slotType;
-	/** Slot property. */
-	CEValueBox<JTextField> slotCount;
+	/** The slots panel. */
+	CETechnologySlotsPanel slotsPanel;
+	/** The technology properties panel. */
+	CETechnologyPropertiesPanel propertiesPanel;
 	/**
 	 * Constructor. Initializes the GUI.
 	 * @param context the context object.
 	 */
-	public CETechnologiesPanel(CEContext context) {
+	public CETechnologyPanel(CEContext context) {
 		super(context);
 		initGUI();
 	}
@@ -688,195 +664,15 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	 * @return create the properties panel
 	 */
 	Component createPropertiesPanel() {
-		JPanel panel = new JPanel();
-		GroupLayout gl = new GroupLayout(panel);
-		panel.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-		
-		// TODO Auto-generated method stub
-		return panel;
+		propertiesPanel = new CETechnologyPropertiesPanel(context);
+		return propertiesPanel;
 	}
 	/**
 	 * @return creates the slots panel
 	 */
 	Component createSlotsPanel() {
-		JPanel panel = new JPanel();
-		GroupLayout gl = new GroupLayout(panel);
-		panel.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
-
-		slotId = CEValueBox.of(get("slot.id"), new JTextField());
-		slotX = CEValueBox.of(get("slot.x"), new JTextField());
-		slotY = CEValueBox.of(get("slot.y"), new JTextField());
-		slotWidth = CEValueBox.of(get("slot.width"), new JTextField());
-		slotHeight = CEValueBox.of(get("slot.height"), new JTextField());
-		JComboBox<String> slotTypeBox = new JComboBox<String>(new String[] {
-				get("slot.type.normal"), get("slot.type.fixed")
-		});
-		slotType = CEValueBox.of(get("slot.type"), slotTypeBox);
-		slotCount = CEValueBox.of(get("slot.count"), numberField());
-		
-		slotNormal = createColorImage(16, 16, 0xFF00FF00);
-		slotFixed = createColorImage(16, 16, 0xFF808080);
-		
-		slotsModel = new GenericTableModel<XElement>() {
-			/** */
-			private static final long serialVersionUID = 2557373261832556243L;
-
-			@Override
-			public Object getValueFor(XElement item, int rowIndex, int columnIndex) {
-				switch (columnIndex) {
-				case 0: return item.name.equals("slot-fixed") ? slotFixed : slotNormal;
-				case 1: return item.get("id", "");
-				case 2: return item.name.equals("slot-fixed") ? item.get("count", "") : item.get("max", "");
-				case 3: return item.name.equals("slot-fixed") ? item.get("item", "") : item.get("items", "");
-				case 4: return validSlot(item);
-				default:
-					return null;
-				}
-			}
-		};
-		slotsModel.setColumnNames(
-			"", get("slot.id"), get("slot.count_max"), get("slot.items"), ""
-		);
-		slotsModel.setColumnTypes(
-			ImageIcon.class, String.class, Integer.class, String.class, ImageIcon.class
-		);
-		
-		JButton addSlot = new JButton(icon("/hu/openig/gfx/plus16.png"));
-		JButton removeSlot = new JButton(icon("/hu/openig/gfx/minus16.png"));
-
-		addSlot.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				doAddSlot();
-			}
-		});
-		removeSlot.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				doRemoveSlot();
-			}
-		});
-
-		slots = new JTable(slotsModel);
-		slots.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting()) {
-					int idx = slots.getSelectedRow();
-					if (idx >= 0) {
-						idx = slots.convertRowIndexToModel(idx);
-						doSelectSlot(slotsModel.get(idx));
-					}
-				}
-			}
-		});
-		
-		JScrollPane slotScroll = new JScrollPane(slots);
-		
-		slotEdit = new CESlotEdit();
-		slotEdit.onSlotAdded = new Action1<XElement>() {
-			@Override
-			public void invoke(XElement value) {
-				doAddSlot(value);
-			}
-		};
-		slotEdit.onSlotRemoved = new Action1<XElement>() {
-			@Override
-			public void invoke(XElement value) {
-				doRemoveSlot(value);
-			}
-		};
-		slotEdit.onSlotSelected = new Action1<XElement>() {
-			@Override
-			public void invoke(XElement value) {
-				doSelectSlotInTable(value);
-				doSelectSlot(value);
-			}
-		};
-		
-		addTextChanged(slotId.component, new Action1<Object>() {
-			@Override
-			public void invoke(Object value) {
-				
-			}
-		});
-		
-		doSelectSlot(null);
-		
-		// -----------------------------------------------------------------------------------
-		
-		gl.setHorizontalGroup(
-			gl.createParallelGroup()
-			.addGroup(
-				gl.createSequentialGroup()
-				.addComponent(slotEdit, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(slotScroll)
-				.addGroup(
-					gl.createParallelGroup()
-					.addComponent(addSlot)
-					.addComponent(removeSlot)
-				)
-			)
-			.addGroup(
-				gl.createSequentialGroup()
-				.addGroup(
-					gl.createParallelGroup()
-					.addGroup(
-						gl.createSequentialGroup()
-						.addComponent(slotId)
-						.addComponent(slotType)
-						.addComponent(slotCount)
-					)
-					.addGroup(
-						gl.createSequentialGroup()
-						.addComponent(slotX)
-						.addComponent(slotY)
-						.addComponent(slotWidth)
-						.addComponent(slotHeight)
-					)
-				)
-			)
-		);
-		
-		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addGroup(
-				gl.createParallelGroup()
-				.addComponent(slotEdit, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(slotScroll)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addComponent(addSlot)
-					.addComponent(removeSlot)
-				)
-			)
-			.addGroup(
-				gl.createParallelGroup()
-				.addGroup(
-					gl.createSequentialGroup()
-					.addGroup(
-						gl.createParallelGroup(Alignment.BASELINE)
-						.addComponent(slotId)
-						.addComponent(slotType)
-						.addComponent(slotCount)
-					)
-					.addGroup(
-						gl.createParallelGroup(Alignment.BASELINE)
-						.addComponent(slotX)
-						.addComponent(slotY)
-						.addComponent(slotWidth)
-						.addComponent(slotHeight)
-					)
-				)
-			)
-		);
-		
-		// TODO Auto-generated method stub
-		return panel;
+		slotsPanel = new CETechnologySlotsPanel(context);
+		return slotsPanel;
 	}
 	/**
 	 * @return create the videos panel
@@ -893,7 +689,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		normalVideo = new CEVideoRef(get("tech.video.normal"));
 		wiredVideo = new CEVideoRef(get("tech.video.wired"));
 		
-		addTextChanged(videoField.component, new Action1<Object>() {
+		addValidator(videoField, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
 				setVideos();
@@ -961,7 +757,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		JButton browse = new JButton(get("browse"));
 		browse.setVisible(false);
 		
-		addTextChanged(imageField.component, new Action1<Object>() {
+		addValidator(imageField, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
 				setImages();
@@ -1096,47 +892,47 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		longNameField = CEValueBox.of(get("tech.longname"), new JTextField());
 		descField = CEValueBox.of(get("tech.desc"), new JTextField());
 
-		nameLabel = new JTextArea();
-		longNameLabel = new JTextArea();
-		descLabel = new JTextArea();
+		nameLabel = CEValueBox.of("", new JTextArea());
+		longNameLabel = CEValueBox.of("", new JTextArea());
+		descLabel = CEValueBox.of("", new JTextArea());
 
-		addTextChanged(nameField.component, new Action1<Object>() {
+		addValidator(nameField, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
 				setLabels();
 			}
 		});
-		addTextChanged(longNameField.component, new Action1<Object>() {
+		addValidator(longNameField, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
 				setLabels();
 			}
 		});
-		addTextChanged(descField.component, new Action1<Object>() {
+		addValidator(descField, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
 				setLabels();
 			}
 		});
 
-		addTextChanged(nameLabel, new Action1<Object>() {
+		addValidator(nameLabel, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
-				context.setLabel(nameField.component.getText(), nameLabel.getText());
+				context.setLabel(nameField.component.getText(), nameLabel.component.getText());
 				validateLabels();
 			}
 		});
-		addTextChanged(longNameLabel, new Action1<Object>() {
+		addValidator(longNameLabel, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
-				context.setLabel(longNameField.component.getText(), longNameLabel.getText());
+				context.setLabel(longNameField.component.getText(), longNameLabel.component.getText());
 				validateLabels();
 			}
 		});
-		addTextChanged(descLabel, new Action1<Object>() {
+		addValidator(descLabel, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
-				context.setLabel(descField.component.getText(), descLabel.getText());
+				context.setLabel(descField.component.getText(), descLabel.component.getText());
 				validateLabels();
 			}
 		});
@@ -1225,11 +1021,11 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 			}
 		};
 		
-		addTextChanged(civilField.component, labValid);
-		addTextChanged(mechField.component, labValid);
-		addTextChanged(compField.component, labValid);
-		addTextChanged(aiField.component, labValid);
-		addTextChanged(milField.component, labValid);
+		addValidator(civilField, labValid);
+		addValidator(mechField, labValid);
+		addValidator(compField, labValid);
+		addValidator(aiField, labValid);
+		addValidator(milField, labValid);
 		
 		// ------------------------------------------------------
 
@@ -1310,21 +1106,20 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 			}
 		}
 		this.selected = item;
-		doSelectSlot(null);
 		if (item != null) {
 			
 			setValueBoxes(item);
 
 			setSumLab();
 
-//			setLabels();
-//			setImages();
-
-			setSlots();
-
+			slotsPanel.setTechItem(item);
+			propertiesPanel.setTechItem(item);
+			
 			doValidate();
 		} else {
-			setSlots();
+			slotsPanel.setTechItem(null);
+			propertiesPanel.setTechItem(null);
+
 			doClearValidation();
 			clearValueBoxes();
 		}
@@ -1333,9 +1128,9 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	 * Set the labels.
 	 */
 	void setLabels() {
-		nameLabel.setText(context.label(nameField.component.getText()));
-		longNameLabel.setText(context.label(longNameField.component.getText()));
-		descLabel.setText(context.label(descField.component.getText()));
+		setTextAndEnabled(nameLabel, null, context.label(nameField.component.getText()), true);
+		setTextAndEnabled(longNameLabel, null, context.label(longNameField.component.getText()), true);
+		setTextAndEnabled(descLabel, null, context.label(descField.component.getText()), true);
 		doValidate();
 	}
 	/**
@@ -1512,7 +1307,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	 */
 	void setImages() {
 		String imageBase = imageField.component.getText();
-		slotEdit.setImage(null);
+		slotsPanel.setImage(null);
 		if (imageBase != null && !imageBase.isEmpty()) {
 			Action0 act = new Action0() {
 				@Override
@@ -1552,7 +1347,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 					@Override
 					public void invoke() {
 						validateImages();
-						slotEdit.setImage(imageEquipDetails.image.icon);
+						slotsPanel.setImage(imageEquipDetails.image.icon);
 					}
 				};
 				imageEquipDetails.setImage(imageBase + "_small.png", context, act2);
@@ -1569,164 +1364,4 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 			validateImages();
 		}
 	}
-	/** Set the slots panel. */
-	void setSlots() {
-		slotEdit.setSlotParent(selected);
-		slotsModel.clear();
-		if (selected != null) {
-			for (XElement xe : selected.children()) {
-				if (xe.name.startsWith("slot")) {
-					slotsModel.add(xe);
-				}
-			}
-			GUIUtils.autoResizeColWidth(slots, slotsModel);
-		}
-	}
-	/**
-	 * Create a colored image.
-	 * @param w the width
-	 * @param h the height
-	 * @param c the fill color
-	 * @return the image icon
-	 */
-	ImageIcon createColorImage(int w, int h, int c) {
-		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < h; i++) {
-			for (int j = 0; j < w; j++) {
-				img.setRGB(j, i, c);
-			}
-		}
-		return new ImageIcon(img);
-	}
-	/** Add a new slot. */
-	void doAddSlot() {
-		if (selected != null) {
-			XElement xslot = selected.add("slot");
-			int idx = slotsModel.getRowCount();
-			slotsModel.add(xslot);
-
-			idx = slots.convertRowIndexToView(idx);
-			slots.getSelectionModel().clearSelection();
-			slots.getSelectionModel().addSelectionInterval(idx, idx);
-			
-			slotEdit.repaint();
-		}
-	}
-	/**
-	 * Add the existing slot to the table.
-	 * @param xslot the new slot
-	 */
-	void doAddSlot(XElement xslot) {
-		int idx = slotsModel.getRowCount();
-		slotsModel.add(xslot);
-
-		idx = slots.convertRowIndexToView(idx);
-		slots.getSelectionModel().clearSelection();
-		slots.getSelectionModel().addSelectionInterval(idx, idx);
-	}
-	/**
-	 * Remove the slots.
-	 */
-	void doRemoveSlot() {
-		if (selected != null) {
-			int[] idxs = GUIUtils.convertSelectionToModel(slots);
-			for (int i = 0; i < idxs.length; i++) {
-				selected.remove(slotsModel.get(idxs[i]));
-			}
-			slotsModel.delete(idxs);
-			slotEdit.repaint();
-			doSelectSlot(null);
-		}
-	}
-	/**
-	 * Remove the specified slot from the table.
-	 * @param slot the slot to remove
-	 */
-	void doRemoveSlot(XElement slot) {
-		slotsModel.delete(slot);
-	}
-	/**
-	 * Select a specific slot.
-	 * @param slot the slot
-	 */
-	void doSelectSlot(XElement slot) {
-		selectedSlot = slot;
-		slotEdit.selectedSlot = slot;
-		if (selectedSlot != null) {
-			setTextAndEnabled(slotId, slot, "id", true);
-			slotType.label.setEnabled(true);
-			slotType.component.setEnabled(true);
-			if ("slot".equals(slot.name)) {
-				
-				setTextAndEnabled(slotCount, slot, "max", true);
-				setTextAndEnabled(slotX, slot, "x", true);
-				setTextAndEnabled(slotY, slot, "y", true);
-				setTextAndEnabled(slotWidth, slot, "width", true);
-				setTextAndEnabled(slotHeight, slot, "height", true);
-				
-				slotType.component.setSelectedIndex(0);
-			} else
-			if ("slot-fixed".equals(slot.name)) {
-				setTextAndEnabled(slotCount, slot, "count", true);
-				setTextAndEnabled(slotX, null, "", false);
-				setTextAndEnabled(slotY, null, "", false);
-				setTextAndEnabled(slotWidth, null, "", false);
-				setTextAndEnabled(slotHeight, null, "", false);
-				slotType.component.setSelectedIndex(1);
-			} else {
-				setTextAndEnabled(slotCount, null, "", false);
-				setTextAndEnabled(slotX, null, "", false);
-				setTextAndEnabled(slotY, null, "", false);
-				setTextAndEnabled(slotWidth, null, "", false);
-				setTextAndEnabled(slotHeight, null, "", false);
-				slotType.component.setSelectedIndex(-1);
-			}
-			
-		} else {
-			setTextAndEnabled(slotId, null, "", false);
-			setTextAndEnabled(slotCount, null, "", false);
-			setTextAndEnabled(slotX, null, "", false);
-			setTextAndEnabled(slotY, null, "", false);
-			setTextAndEnabled(slotWidth, null, "", false);
-			setTextAndEnabled(slotHeight, null, "", false);
-			slotType.label.setEnabled(false);
-			slotType.component.setEnabled(false);
-			slotType.component.setSelectedIndex(-1);
-		}
-		slotEdit.repaint();
-	}
-	/**
-	 * Sets the text content of the value box and enables/disables it.
-	 * @param c the value box
-	 * @param item the item, if null, the attribute contains the exact text to set
-	 * @param attribute the attribute
-	 * @param enabled true if enabled
-	 */
-	void setTextAndEnabled(CEValueBox<? extends JTextComponent> c, XElement item, String attribute, boolean enabled) {
-		c.component.setText(item != null ? item.get(attribute, "") : attribute);
-		c.component.setEnabled(enabled);
-		c.label.setEnabled(enabled);
-		
-	}
-	/**
-	 * Check if the slot is valid.
-	 * @param slot the slot XML
-	 * @return the error indicator
-	 */
-	ImageIcon validSlot(XElement slot) {
-		return null;
-	}
-	/**
-	 * Select a specific slot in the table.
-	 * @param slot the slot
-	 */
-	void doSelectSlotInTable(XElement slot) {
-		slots.getSelectionModel().clearSelection();
-		int idx = slotsModel.items.indexOf(slot);
-		if (idx >= 0) {
-			idx = slots.convertRowIndexToView(idx);
-			slots.getSelectionModel().setSelectionInterval(idx, idx);
-		}
-	}
-	
 }

@@ -10,10 +10,12 @@ package hu.openig.utils;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.image.BufferedImage;
 import java.util.Deque;
 import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -147,4 +149,20 @@ public final class GUIUtils {
     	result.remove(parent);
     	return result;
     }
+	/**
+	 * Create a colored image icon.
+	 * @param w the width
+	 * @param h the height
+	 * @param c the fill color
+	 * @return the image icon
+	 */
+	public static ImageIcon createColorImageIcon(int w, int h, int c) {
+		BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		for (int i = 0; i < h; i++) {
+			for (int j = 0; j < w; j++) {
+				img.setRGB(j, i, c);
+			}
+		}
+		return new ImageIcon(img);
+	}
 }
