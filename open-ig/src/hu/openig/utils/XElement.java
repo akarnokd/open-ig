@@ -895,4 +895,22 @@ public class XElement {
 			} 
 		}
 	}
+	/**
+	 * Remove the given element from the children.
+	 * @param element the element
+	 */
+	public void remove(XElement element) {
+		children.remove(element);
+	}
+	/**
+	 * Removes all children with the given element name.
+	 * @param name the element name
+	 */
+	public void removeChildrenWithName(String name) {
+		for (int i = children.size() - 1; i >= 0; i--) {
+			if (children.get(i).name.equals(name)) {
+				children.remove(i);
+			}
+		}
+	}
 }

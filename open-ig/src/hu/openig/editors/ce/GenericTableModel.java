@@ -113,8 +113,10 @@ public abstract class GenericTableModel<T> extends AbstractTableModel {
 	 */
 	public void clear() {
 		int size = items.size();
-		items.clear();
-		fireTableRowsDeleted(0, size - 1);
+		if (size > 0) {
+			items.clear();
+			fireTableRowsDeleted(0, size - 1);
+		}
 	}
 	/**
 	 * Add new items to the table.
@@ -162,10 +164,23 @@ public abstract class GenericTableModel<T> extends AbstractTableModel {
 	 */
 	public void delete(int... indices) {
 		int[] idx2 = indices.clone();
-		Arrays.sort(idx2);
-		for (int i = idx2.length - 1; i >= 0; i--) {
-			items.remove(idx2[i]);
+		if (idx2.length > 0) {
+			Arrays.sort(idx2);
+			for (int i = idx2.length - 1; i >= 0; i--) {
+				items.remove(idx2[i]);
+			}
+			fireTableRowsDeleted(idx2[0], idx2[idx2.length - 1]);
 		}
-		fireTableRowsDeleted(idx2[0], idx2[idx2.length - 1]);
+	}
+	/** 
+	 * Remove a specific item.
+	 * @param item the item to remove
+	 */
+	public void delete(T item) {
+		int idx = items.indexOf(item);
+		if (idx >= 0) {
+			items.remove(idx);
+			fireTableRowsDeleted(idx, idx);
+		}
 	}
 }
