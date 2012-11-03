@@ -548,11 +548,27 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		if (item.get("image", "").isEmpty()) {
 			result = U.max(result, CESeverityIndicator.ERROR);
 		}
-		if (item.get("video", "").isEmpty()) {
+		String video = item.get("video", "");
+		if (video.isEmpty()) {
 			if (races.contains(context.mainPlayerRace())) {
 				result = U.max(result, CESeverityIndicator.ERROR);
 			} else {
 				result = U.max(result, CESeverityIndicator.WARNING);
+			}
+		} else {
+			if (!context.exists(video + ".ani.gz")) {
+				if (races.contains(context.mainPlayerRace())) {
+					result = U.max(result, CESeverityIndicator.ERROR);
+				} else {
+					result = U.max(result, CESeverityIndicator.WARNING);
+				}
+			}
+			if (!context.exists(video + "_wired.ani.gz")) {
+				if (races.contains(context.mainPlayerRace())) {
+					result = U.max(result, CESeverityIndicator.ERROR);
+				} else {
+					result = U.max(result, CESeverityIndicator.WARNING);
+				}
 			}
 		}
 		
