@@ -12,6 +12,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -663,5 +664,27 @@ public final class U {
 	 */
 	public static <T extends Comparable<? super T>> T min(T t1, T t2) {
 		return t1.compareTo(t2) > 0 ? t2 : t1;
+	}
+	/**
+	 * Returns the values of fields which are assignable to the type.
+	 * @param <T> the value type
+	 * @param o the parent object, non null
+	 * @param type the expected minimum type
+	 * @return the list of field values
+	 */
+	public static <T> List<T> fieldsOf(Object o, Class<T> type) {
+		List<T> result = newArrayList();
+		for (Field f : o.getClass().getDeclaredFields()) {
+			if (type.isAssignableFrom(f.getType())) {
+				try {
+					result.add(type.cast(f.get(o)));
+				} catch (IllegalArgumentException e) {
+					// ignored
+				} catch (IllegalAccessException e) {
+					// ignored
+				}
+			}
+		}
+		return result;
 	}
 }

@@ -919,4 +919,9 @@ public class CampaignEditor extends JFrame implements CEContext {
 	public String mainPlayerRace() {
 		return "human"; // FIXME for now
 	}
+	@Override
+	public boolean hasLabel(String key) {
+		String lbl = label(key);
+		return lbl != null && !lbl.isEmpty();
+	}
 }

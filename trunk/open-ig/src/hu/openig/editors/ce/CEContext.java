@@ -165,4 +165,10 @@ public interface CEContext {
 	boolean exists(String resource);
 	/** @return the main player's race. */
 	String mainPlayerRace();
+	/**
+	 * Check if a label exists.
+	 * @param key the label key
+	 * @return true if exists
+	 */
+	boolean hasLabel(String key);
 }

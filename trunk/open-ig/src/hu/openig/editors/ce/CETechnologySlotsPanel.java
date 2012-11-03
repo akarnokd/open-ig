@@ -14,7 +14,6 @@ import hu.openig.utils.XElement;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -32,7 +31,7 @@ import javax.swing.event.ListSelectionListener;
  * The technology slots panel.
  * @author akarnokd, 2012.11.03.
  */
-public class CETechnologySlotsPanel extends CEBasePanel {
+public class CETechnologySlotsPanel extends CESlavePanel {
 	/** */
 	private static final long serialVersionUID = -4055368744794508986L;
 	/** The slot editor. */
@@ -45,8 +44,6 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 	GenericTableModel<XElement> slotsModel;
 	/** The slots table. */
 	JTable slots;
-	/** The current master item. */
-	XElement selected;
 	/** The current selected slot. */
 	XElement selectedSlot;
 	/** Slot property. */
@@ -183,6 +180,9 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 					selectedSlot.set("id", slotId.component.getText());
 					if (selectedSlot.isNullOrEmpty("id")) {
 						slotId.setInvalid(errorIcon, get("invalid_empty"));
+					} else
+					if (selectedSlot.name.equals("slot") && context.label("inventoryslot." + selectedSlot.get("id")) == null) {
+						slotId.setInvalid(warningIcon, format("missing_label_of", "inventoryslot." + selectedSlot.get("id")));
 					}
 					slotsModel.update(selectedSlot);
 				}
@@ -225,7 +225,7 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 					newslot.set("max", selectedSlot.get("count", null));
 					newslot.set("items", selectedSlot.get("item", null));
 					
-					selected.replace(selectedSlot, newslot);
+					master.replace(selectedSlot, newslot);
 					slotsModel.replace(selectedSlot, newslot);
 					
 					selectedSlot = newslot;
@@ -245,7 +245,7 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 						}
 					}
 					
-					selected.replace(selectedSlot, newslot);
+					master.replace(selectedSlot, newslot);
 					slotsModel.replace(selectedSlot, newslot);
 					
 					selectedSlot = newslot;
@@ -417,8 +417,8 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 	}
 	/** Add a new slot. */
 	void doAddSlot() {
-		if (selected != null) {
-			XElement xslot = selected.add("slot");
+		if (master != null) {
+			XElement xslot = master.add("slot");
 			int idx = slotsModel.getRowCount();
 			slotsModel.add(xslot);
 
@@ -449,10 +449,10 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 	 * Remove the slots.
 	 */
 	void doRemoveSlot() {
-		if (selected != null) {
+		if (master != null) {
 			int[] idxs = GUIUtils.convertSelectionToModel(slots);
 			for (int i = 0; i < idxs.length; i++) {
-				selected.remove(slotsModel.get(idxs[i]));
+				master.remove(slotsModel.get(idxs[i]));
 			}
 			slotsModel.delete(idxs);
 			slotEdit.repaint();
@@ -516,24 +516,6 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 		}
 		slotEdit.repaint();
 	}
-	/**  
-	 * Set the current tech item element.
-	 * @param item the tech/item element
-	 */
-	public void setTechItem(XElement item) {
-		this.selected = item;
-		slotEdit.setSlotParent(selected);
-		slotsModel.clear();
-		if (selected != null) {
-			for (XElement xe : selected.children()) {
-				if (xe.name.startsWith("slot")) {
-					slotsModel.add(xe);
-				}
-			}
-			GUIUtils.autoResizeColWidth(slots, slotsModel);
-			doSelectSlot(null);
-		}
-	}
 	/**
 	 * Check if the slot is valid.
 	 * @param slot the slot XML
@@ -544,6 +526,9 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 		
 		if (!slot.has("id") || slot.get("id").isEmpty()) {
 			result = max(result, errorIcon);
+		} else
+		if (slot.name.equals("slot") &&  context.label("inventoryslot." + slot.get("id")) == null) {
+			result = max(result, warningIcon);
 		}
 		if (slot.name.equals("slot")) {
 			if (!slot.hasPositiveInt("max")) {
@@ -612,11 +597,20 @@ public class CETechnologySlotsPanel extends CEBasePanel {
 	ImageIcon isTechValid(String id) {
 		return null;
 	}
-	/**
-	 * Set the equipment details image.
-	 * @param image the image to set
-	 */
-	public void setImage(BufferedImage image) {
-		slotEdit.setImage(image);
+	@Override
+	public void onMasterChanged() {
+		slotEdit.setSlotParent(master);
+		slotEdit.clearImage();
+		slotsModel.clear();
+		if (master != null) {
+			for (XElement xe : master.children()) {
+				if (xe.name.startsWith("slot")) {
+					slotsModel.add(xe);
+				}
+			}
+			slotEdit.setImage(master.get("image") + "_small.png", context);
+			GUIUtils.autoResizeColWidth(slots, slotsModel);
+			doSelectSlot(null);
+		}
 	}
 }

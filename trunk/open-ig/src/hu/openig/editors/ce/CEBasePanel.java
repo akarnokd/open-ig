@@ -9,12 +9,13 @@
 package hu.openig.editors.ce;
 
 import hu.openig.core.Action1;
-import hu.openig.utils.Exceptions;
 import hu.openig.utils.GUIUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -94,133 +95,6 @@ public class CEBasePanel extends JPanel {
 		return f;
 	}
 	/**
-	 * Store the contents of the value boxes into the item as attributes.
-	 * @param item the output item
-	 */
-	public void getValueBoxes(XElement item) {
-		try {
-			for (Field f : getClass().getDeclaredFields()) {
-				if (CEValueBox.class.isAssignableFrom(f.getType())) {
-					CEValueBox<?> v = (CEValueBox<?>)f.get(this);
-					if (f.isAnnotationPresent(CETextAttribute.class)) {
-						CETextAttribute ta = f.getAnnotation(CETextAttribute.class);
-						if (v.component instanceof JTextField) {
-							String text = ((JTextField)v.component).getText();
-							item.set(ta.name(), text.isEmpty() ? null : text);
-						} else {
-							Exceptions.add(new AssertionError("Unsupported TextAttribute component: " + v.component));
-						}
-					} else
-					if (f.isAnnotationPresent(CEEnumAttribute.class)) {
-						CEEnumAttribute ea = f.getAnnotation(CEEnumAttribute.class);
-						if (v.component instanceof JComboBox<?>) {
-							int idx = ((JComboBox<?>)v.component).getSelectedIndex();
-							if (idx < 0) {
-								item.set(ea.name(), null);
-							} else {
-								item.set(ea.name(), ea.enumClass().getEnumConstants()[idx]);
-							}
-						} else {
-							Exceptions.add(new AssertionError("Unsupported EnumAttribute component: " + v.component));
-						}
-					} else
-					if (f.isAnnotationPresent(CETextEnumAttribute.class)) {
-						CETextEnumAttribute ta = f.getAnnotation(CETextEnumAttribute.class);
-						if (v.component instanceof JComboBox<?>) {
-							int idx = ((JComboBox<?>)v.component).getSelectedIndex();
-							if (idx < 0) {
-								item.set(ta.name(), null);
-							} else {
-								item.set(ta.name(), ta.values()[idx]);
-							}
-						} else {
-							Exceptions.add(new AssertionError("Unsupported TextEnumAttribute component: " + v.component));
-						}
-					}
-				}
-			}
-		} catch (IllegalAccessException ex) {
-			Exceptions.add(ex);
-		}
-	}
-	/**
-	 * Set the value box contents from the supplied item.
-	 * @param item the item
-	 */
-	public void setValueBoxes(XElement item) {
-		try {
-			for (Field f : getClass().getDeclaredFields()) {
-				if (CEValueBox.class.isAssignableFrom(f.getType())) {
-					CEValueBox<?> v = (CEValueBox<?>)f.get(this);
-					if (f.isAnnotationPresent(CETextAttribute.class)) {
-						CETextAttribute ta = f.getAnnotation(CETextAttribute.class);
-						if (v.component instanceof JTextField) {
-							((JTextField)v.component).setText(item.get(ta.name(), ""));
-						} else {
-							Exceptions.add(new AssertionError("Unsupported TextAttribute component: " + v.component));
-						}
-					} else
-					if (f.isAnnotationPresent(CEEnumAttribute.class)) {
-						CEEnumAttribute ea = f.getAnnotation(CEEnumAttribute.class);
-						if (v.component instanceof JComboBox<?>) {
-							int i = 0;
-							int idx = -1;
-							for (Enum<?> ec : ea.enumClass().getEnumConstants()) {
-								if (ec.toString().equals(item.get(ea.name(), ""))) {
-									idx = i;
-									break;
-								}
-								i++;
-							}
-							((JComboBox<?>)v.component).setSelectedIndex(idx);
-						} else {
-							Exceptions.add(new AssertionError("Unsupported EnumAttribute component: " + v.component));
-						}
-					} else
-					if (f.isAnnotationPresent(CETextEnumAttribute.class)) {
-						CETextEnumAttribute ta = f.getAnnotation(CETextEnumAttribute.class);
-						if (v.component instanceof JComboBox<?>) {
-							int i = 0;
-							int idx = -1;
-							for (String ec : ta.values()) {
-								if (ec.equals(item.get(ta.name(), ""))) {
-									idx = i;
-									break;
-								}
-								i++;
-							}
-							((JComboBox<?>)v.component).setSelectedIndex(idx);
-						} else {
-							Exceptions.add(new AssertionError("Unsupported TextEnumAttribute component: " + v.component));
-						}
-					}
-				}
-			}
-		} catch (IllegalAccessException ex) {
-			Exceptions.add(ex);
-		}
-	}
-	/**
-	 * Clear the contents of the value boxes.
-	 */
-	public void clearValueBoxes() {
-		for (Field f : getClass().getDeclaredFields()) {
-			if (CEValueBox.class.isAssignableFrom(f.getType())) {
-				try {
-					CEValueBox<?> v = (CEValueBox<?>)f.get(this);
-					if (v.component instanceof JTextField) {
-						((JTextField)v.component).setText("");
-					} else
-					if (v.component instanceof JComboBox<?>) {
-						((JComboBox<?>)v.component).setSelectedIndex(-1);
-					}
-				} catch (IllegalAccessException ex) {
-					Exceptions.add(ex);
-				}
-			}
-		}
-	}
-	/**
 	 * Validate that the field contains a valid number.
 	 * @param f the field
 	 * @param icon the current error icon
@@ -267,13 +141,15 @@ public class CEBasePanel extends JPanel {
 	 * @return the more severe icon
 	 */
 	public ImageIcon max(ImageIcon current, ImageIcon other) {
-		if (current == null) {
-			current = okIcon;
-		}
-		int ci = severityOrder.indexOf(current);
-		int co = severityOrder.indexOf(other);
-		if (ci < co) {
+		if (current == null && other != null) {
 			return other;
+		}
+		if (other != null) {
+			int ci = severityOrder.indexOf(current);
+			int co = severityOrder.indexOf(other);
+			if (ci < co) {
+				return other;
+			}
 		}
 		return current;
 	}
@@ -331,6 +207,22 @@ public class CEBasePanel extends JPanel {
 		});
 	}
 	/**
+	 * Add a selection change handler.
+	 * @param c the combo box
+	 * @param action the action
+	 */
+	public void addValidator2(
+			final CEValueBox<? extends JComboBox<String>> c, 
+			final Action1<? super JComboBox<String>> action) {
+		c.validator = action;
+		c.component.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				action.invoke(c.component);
+			}
+		});
+	}
+	/**
 	 * Sets the text content of the value box and enables/disables it.
 	 * @param c the value box
 	 * @param item the item, if null, the attribute contains the exact text to set
@@ -348,6 +240,63 @@ public class CEBasePanel extends JPanel {
 		} else {
 			if (prev.equals(s)) {
 				c.validateComponent();
+			}
+		}
+	}
+	/**
+	 * Set a combobox index based on the attribute value matching the set of values.
+	 * @param c the combobox
+	 * @param item the item, if null, the attr will be used as setSelectedItem()
+	 * @param attr the attribute
+	 * @param enabled enabled
+	 * @param enumClass the enumeration class
+	 */
+	public void setChoiceAndEnabled(CEValueBox<? extends JComboBox<String>> c, 
+			XElement item, String attr, boolean enabled, Class<? extends Enum<?>> enumClass) {
+		Object[] ecs = enumClass.getEnumConstants();
+		String[] enums = new String[ecs.length];
+		for (int i = 0; i < enums.length; i++) {
+			enums[i] = ecs[i].toString();
+		}
+		setChoiceAndEnabled(c, item, attr, enabled, enums);
+	}
+	/**
+	 * Set a combobox index based on the attribute value matching the set of values.
+	 * @param c the combobox
+	 * @param item the item, if null, the attr will be used as setSelectedItem()
+	 * @param attr the attribute
+	 * @param enabled enabled
+	 * @param enums the set of values
+	 */
+	public void setChoiceAndEnabled(CEValueBox<? extends JComboBox<String>> c, 
+			XElement item, String attr, boolean enabled, String... enums) {
+		c.component.setEnabled(enabled);
+		c.label.setEnabled(enabled);
+		if (item == null) {
+			Object prev = c.component.getSelectedItem();
+			c.component.setSelectedItem(attr);
+			if (U.equal(prev, attr)) {
+				c.validateComponent();
+			}
+		} else {
+			if (!enabled) {
+				c.clearInvalid();
+			} else {
+				String s = item.get(attr, "");
+				int idx = -1;
+				int j = 0;
+				for (String e : enums) {
+					if (U.equal(e, s)) {
+						idx = j;
+						break;
+					}
+					j++;
+				}
+				int oidx = c.component.getSelectedIndex();
+				c.component.setSelectedIndex(idx);
+				if (oidx == idx) {
+					c.validateComponent();
+				}
 			}
 		}
 	}

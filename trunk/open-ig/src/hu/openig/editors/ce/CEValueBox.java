@@ -13,11 +13,11 @@ import hu.openig.core.Action1;
 import java.awt.Dimension;
 
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.GroupLayout.Alignment;
 
 /**
  * A value editing box with label, editor component and validity indicator.
@@ -25,7 +25,7 @@ import javax.swing.GroupLayout.Alignment;
  *
  * @param <C> the editor component
  */
-public class CEValueBox<C extends JComponent> extends JPanel {
+public class CEValueBox<C extends JComponent> extends JPanel implements CEInvalid {
 	/** */
 	private static final long serialVersionUID = 5000917311399588321L;
 	/** The label. */
@@ -68,18 +68,12 @@ public class CEValueBox<C extends JComponent> extends JPanel {
 	
 		gl.setHonorsVisibility(valid, false);
 	}
-	/**
-	 * Clear the validity indicator.
-	 */
+	@Override
 	public void clearInvalid() {
 		valid.setIcon(null);
 		valid.setToolTipText("");
 	}
-	/**
-	 * Set an invalid state and indicate the issue.
-	 * @param icon the icon
-	 * @param explanation the explanation text
-	 */
+	@Override
 	public void setInvalid(ImageIcon icon, String explanation) {
 		valid.setIcon(icon);
 		valid.setToolTipText(explanation);
@@ -99,5 +93,9 @@ public class CEValueBox<C extends JComponent> extends JPanel {
 		if (validator != null) {
 			validator.invoke(component);
 		}
+	}
+	@Override
+	public ImageIcon getInvalid() {
+		return (ImageIcon)valid.getIcon();
 	}
 }
