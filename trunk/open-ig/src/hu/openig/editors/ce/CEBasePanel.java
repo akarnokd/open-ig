@@ -10,11 +10,14 @@ package hu.openig.editors.ce;
 
 import hu.openig.core.Action1;
 import hu.openig.utils.Exceptions;
+import hu.openig.utils.GUIUtils;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -33,18 +36,25 @@ public class CEBasePanel extends JPanel {
 	private static final long serialVersionUID = 6893457628554154892L;
 	/** The context. */
 	protected final CEContext context;
+	/** The okay icon. */
+	protected ImageIcon okIcon;
 	/** The error icon. */
 	protected ImageIcon errorIcon;
 	/** The warning icon. */
 	protected ImageIcon warningIcon;
+	/** The severity order. */
+	protected final List<ImageIcon> severityOrder;
 	/**
 	 * Constructor. Saves the context.
 	 * @param context the context object
 	 */
 	public CEBasePanel(CEContext context) {
 		this.context = context;
+		okIcon = GUIUtils.createColorImageIcon(16, 16, 0);
 		errorIcon = context.getIcon(CESeverityIndicator.ERROR);
 		warningIcon = context.getIcon(CESeverityIndicator.WARNING);
+		
+		severityOrder = Arrays.asList(okIcon, warningIcon, errorIcon);
 	}
 	/**
 	 * Get a translation for the given key.
@@ -257,7 +267,12 @@ public class CEBasePanel extends JPanel {
 	 * @return the more severe icon
 	 */
 	public ImageIcon max(ImageIcon current, ImageIcon other) {
-		if ((current == null || current == warningIcon) && other != null) {
+		if (current == null) {
+			current = okIcon;
+		}
+		int ci = severityOrder.indexOf(current);
+		int co = severityOrder.indexOf(other);
+		if (ci < co) {
 			return other;
 		}
 		return current;
@@ -293,23 +308,47 @@ public class CEBasePanel extends JPanel {
 	}
 	/**
 	 * Add a text change event handler for the given textfield.
-	 * @param f the field
+	 * @param c the value box
 	 * @param action the action
 	 */
-	public void addTextChanged(final JTextComponent f, final Action1<? super JTextComponent> action) {
-		f.getDocument().addDocumentListener(new DocumentListener() {
+	public void addValidator(
+			final CEValueBox<? extends JTextComponent> c, 
+			final Action1<? super JTextComponent> action) {
+		c.validator = action;
+		c.component.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				action.invoke(f);
+				action.invoke(c.component);
 			}
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				action.invoke(f);
+				action.invoke(c.component);
 			}
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				action.invoke(f);
+				action.invoke(c.component);
 			}
 		});
+	}
+	/**
+	 * Sets the text content of the value box and enables/disables it.
+	 * @param c the value box
+	 * @param item the item, if null, the attribute contains the exact text to set
+	 * @param attribute the attribute
+	 * @param enabled true if enabled
+	 */
+	public void setTextAndEnabled(CEValueBox<? extends JTextComponent> c, XElement item, String attribute, boolean enabled) {
+		c.component.setEnabled(enabled);
+		c.label.setEnabled(enabled);
+		String s = item != null ? item.get(attribute, "") : attribute;
+		String prev = c.component.getText();
+		c.component.setText(s);
+		if (!enabled) {
+			c.clearInvalid();
+		} else {
+			if (prev.equals(s)) {
+				c.validateComponent();
+			}
+		}
 	}
 }

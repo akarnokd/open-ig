@@ -8,6 +8,8 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Action1;
+
 import java.awt.Dimension;
 
 import javax.swing.GroupLayout;
@@ -32,12 +34,14 @@ public class CEValueBox<C extends JComponent> extends JPanel {
 	public final C component;
 	/** The validity indicator. */
 	public final JLabel valid;
+	/** The assigned validator. */
+	public Action1<? super C> validator;
 	/**
 	 * Construct the box with the given label and editor component.
 	 * @param displayText the exact text to display
 	 * @param component the component
 	 */
-	public CEValueBox(String displayText, C component) {
+	protected CEValueBox(String displayText, C component) {
 		label = new JLabel(displayText);
 		this.component = component;
 		valid = new JLabel();
@@ -89,5 +93,11 @@ public class CEValueBox<C extends JComponent> extends JPanel {
 	 */
 	public static <E extends JComponent> CEValueBox<E> of(String displayText, E component) {
 		return new CEValueBox<E>(displayText, component);
+	}
+	/** Executes the attached validator. */
+	public void validateComponent() {
+		if (validator != null) {
+			validator.invoke(component);
+		}
 	}
 }

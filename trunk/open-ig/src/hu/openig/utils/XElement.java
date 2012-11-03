@@ -913,4 +913,133 @@ public class XElement {
 			}
 		}
 	}
+	/**
+	 * Create a deep copy of this XElement.
+	 * @return the copy
+	 */
+	public XElement copy() {
+		return copy(name);
+	}
+	/**
+	 * Create a deep copy of this element with the given new name.
+	 * @param newName the new element name
+	 * @return the copy
+	 */
+	public XElement copy(String newName) {
+		XElement result = new XElement(newName);
+		result.attributes.putAll(attributes);
+		for (XElement c : children) {
+			result.add(c.copy());
+		}
+		return result;
+	}
+	/**
+	 * Replaces the specified child node with the new node. If the old node is not present
+	 * the method does nothing.
+	 * @param oldChild the old child
+	 * @param newChild the new child
+	 */
+	public void replace(XElement oldChild, XElement newChild) {
+		int idx = children.indexOf(oldChild);
+		if (idx >= 0) {
+			children.set(idx, newChild);
+			newChild.parent = this;
+		}
+	}
+	/**
+	 * Check if there is a valid integer attribute.
+	 * @param attributeName the attribute name
+	 * @return true if the attribute is a valid int
+	 */
+	public boolean hasInt(String attributeName) {
+		String attr = attributes.get(attributeName);
+		if (attr == null || attr.isEmpty()) {
+			return false;
+		}
+		try {
+			Integer.parseInt(attr);
+			return true;
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+	}
+	/**
+	 * Check if there is a valid integer attribute.
+	 * @param attributeName the attribute name
+	 * @return true if the attribute is a valid int
+	 */
+	public boolean hasLong(String attributeName) {
+		String attr = attributes.get(attributeName);
+		if (attr == null || attr.isEmpty()) {
+			return false;
+		}
+		try {
+			Long.parseLong(attr);
+			return true;
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+	}
+	/**
+	 * Check if there is a valid integer attribute.
+	 * @param attributeName the attribute name
+	 * @return true if the attribute is a valid int
+	 */
+	public boolean hasDouble(String attributeName) {
+		String attr = attributes.get(attributeName);
+		if (attr == null || attr.isEmpty()) {
+			return false;
+		}
+		try {
+			Double.parseDouble(attr);
+			return true;
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+	}
+	/**
+	 * Check if there is a valid integer attribute.
+	 * @param attributeName the attribute name
+	 * @return true if the attribute is a valid int
+	 */
+	public boolean hasFloat(String attributeName) {
+		String attr = attributes.get(attributeName);
+		if (attr == null || attr.isEmpty()) {
+			return false;
+		}
+		try {
+			Float.parseFloat(attr);
+			return true;
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+	}
+	/**
+	 * Check if there is a valid positive integer attribute.
+	 * @param attributeName the attribute name
+	 * @return true if the attribute is a valid positive int
+	 */
+	public boolean hasPositiveInt(String attributeName) {
+		String attr = attributes.get(attributeName);
+		if (attr == null || attr.isEmpty()) {
+			return false;
+		}
+		try {
+			return Integer.parseInt(attr) >= 0;
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+	}
+	/**
+	 * Check if the given attribute is present an is not empty.
+	 * @param attributeName the attribute name
+	 * @return true if null or empty
+	 */
+	public boolean isNullOrEmpty(String attributeName) {
+		String attr = attributes.get(attributeName);
+		if (attr == null || attr.isEmpty()) {
+			return true;
+		}
+		return false;
+	}
 }

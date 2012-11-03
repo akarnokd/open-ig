@@ -183,4 +183,32 @@ public abstract class GenericTableModel<T> extends AbstractTableModel {
 			fireTableRowsDeleted(idx, idx);
 		}
 	}
+	/**
+	 * Notify a change in the given row.
+	 * @param index the row index
+	 */
+	public void update(int index) {
+		if (index >= 0 && index < getRowCount()) {
+			fireTableRowsUpdated(index, index);
+		}
+	}
+	/**
+	 * Notify a change in the given item.
+	 * @param item the item
+	 */
+	public void update(T item) {
+		update(items.indexOf(item));
+	}
+	/**
+	 * Replace an old item with a new item.
+	 * @param oldItem the old item
+	 * @param newItem the new item
+	 */
+	public void replace(T oldItem, T newItem) {
+		int idx = items.indexOf(oldItem);
+		if (idx >= 0) {
+			items.set(idx, newItem);
+			update(idx);
+		}
+	}
 }

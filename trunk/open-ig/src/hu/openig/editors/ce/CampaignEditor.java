@@ -97,7 +97,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	/** The language flags. */
 	Map<String, ImageIcon> flags;
 	/** Panel. */
-	CETechnologiesPanel technologiesPanel;
+	CETechnologyPanel technologiesPanel;
 	/** Labels. */
 	CELabelsPanel labelsPanel;
 	/** The main IG labels. */
@@ -351,7 +351,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 */
 	void initTabs() {
 		labelsPanel = new CELabelsPanel(this);
-		technologiesPanel = new CETechnologiesPanel(this);
+		technologiesPanel = new CETechnologyPanel(this);
 		
 		// TODO initialize tabs
 		tabs.addTab(get("Project"), null, new JPanel());
