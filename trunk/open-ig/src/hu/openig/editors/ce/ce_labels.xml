@@ -114,6 +114,17 @@
 		<entry key='tech.invalid.empty_video'>Video base missing</entry>
 		<entry key='missing_video'>Missing video file</entry>
 		<entry key='missing_image'>Missing image file</entry>
+		<entry key='slot.id'>ID</entry>
+		<entry key='slot.count_max'>Count / Max</entry>
+		<entry key='slot.items'>Items</entry>
+		<entry key='slot.x'>X</entry>
+		<entry key='slot.y'>Y</entry>
+		<entry key='slot.width'>Width</entry>
+		<entry key='slot.height'>Height</entry>
+		<entry key='slot.type.normal'>Normal slot</entry>
+		<entry key='slot.type.fixed'>Fixed slot</entry>
+		<entry key='slot.type'>Type</entry>
+		<entry key='slot.count'>Count / Max</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>
