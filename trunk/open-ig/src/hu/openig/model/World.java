@@ -2844,7 +2844,10 @@ public class World {
 		// fix players
 		
 		Map<Player, Integer> groups = U.newHashMap();
+		
+		Map<String, Player> originalPlayers = U.newHashMap(players.players);
 		players.players.clear();
+		
 		player = null;
 		int id = 0;
 		for (SkirmishPlayer sp : skirmishDefinition.players) {
@@ -2904,8 +2907,19 @@ public class World {
 				definition.traits.replace(sp.traits);
 			}
 
+			// fix original pre-enabled tech
+			Player op = originalPlayers.get(sp.originalId);
+			
+			Set<String> opExcept = U.newHashSet("ColonyShip");
+			// enable tech originally inteded by the definition
+			for (ResearchType rt : op.available().keySet()) {
+				if (!opExcept.contains(rt.id)) {
+					p.add(rt);
+				}
+			}
+			
 			for (ResearchType rt : researches.researches.values()) {
-				if (rt.race.contains(p.race) && rt.level == 0) {
+				if (rt.race.contains(p.race) && rt.level <= definition.techLevel) {
 					p.add(rt);
 				}
 			}
