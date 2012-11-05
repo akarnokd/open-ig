@@ -9,7 +9,6 @@
 package hu.openig.utils;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.image.BufferedImage;
 import java.util.Deque;
 import java.util.Set;
@@ -137,14 +136,11 @@ public final class GUIUtils {
     	while (!queue.isEmpty()) {
     		JComponent c = queue.removeFirst();
     		result.add(c);
-    		if (c instanceof Container) {
-				Container container = (Container) c;
-				for (Component c0 : container.getComponents()) {
-					if (c0 instanceof JComponent) {
-						queue.add((JComponent)c0);
-					}
+			for (Component c0 : c.getComponents()) {
+				if (c0 instanceof JComponent) {
+					queue.add((JComponent)c0);
 				}
-    		}
+			}
     	}
     	result.remove(parent);
     	return result;

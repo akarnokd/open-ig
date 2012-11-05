@@ -45,6 +45,7 @@
 		police-ratio='15'
 	>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='OrbitalFactory' list=''/>
@@ -87,6 +88,7 @@
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id="MediumTank" list=""/>
 			<type id="RocketLauncher1" list=""/>
@@ -104,6 +106,7 @@
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='ColonyShip' list=''/>
@@ -122,6 +125,7 @@
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
@@ -139,6 +143,7 @@
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
@@ -159,6 +164,7 @@
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='Bomb2' list=''/>
 			<type id='Rocket2' list=''/>
@@ -181,6 +187,7 @@
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='MultiheadedRocket' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id="HeavyTank" list=""/>
@@ -199,6 +206,7 @@
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
@@ -227,6 +235,7 @@
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>

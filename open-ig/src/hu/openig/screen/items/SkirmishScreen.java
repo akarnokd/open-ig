@@ -1051,7 +1051,7 @@ public class SkirmishScreen extends ScreenBase {
 		@Override
 		public void onNext(boolean shift) {
 			int cnt = shift ? 10 : 1;
-			index = Math.min(campaigns.size() - 1, index + cnt);
+			index = Math.min(list.size() - 1, index + cnt);
 			update();
 		}
 		@Override
@@ -1080,6 +1080,10 @@ public class SkirmishScreen extends ScreenBase {
 			width = w + spin.prev.width + spin.next.width + 20;
 			spin.width = width;
 			height = spin.prev.height;
+		}
+		/** @return the selected index. */
+		public T selected() {
+			return list.get(index);
 		}
 	}
 	/**
