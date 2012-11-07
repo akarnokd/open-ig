@@ -107,7 +107,7 @@
   <entry key='autobuild.OFF'>Отключена</entry>
   <entry key='autobuild.SOCIAL'>Социальные сооружения</entry>
   <entry key='autobuild.UPGRADE'>Улучшение сооружений</entry>
-  <entry key='autobuild.no_more_building_space'>Автозастройка на планете % остановлена из-за нехватки территории.</entry>
+  <entry key='autobuild.no_more_building_space'>Автозастройка на планете %s остановлена из-за нехватки территории.</entry>
   <entry key='autosave'>Автосохрение</entry>
   <entry key='bar.brian.301'>Hey Brian! Aren&#39;t You a little young for a head-tech?</entry>
   <entry key='bar.brian.311'>Didn&#39;t know I have to do with a military tech-expert...</entry>
@@ -140,7 +140,7 @@
   <entry key='battlefinish.click_to_exit'>Нажмите для выхода</entry>
   <entry key='battlefinish.cruisers'>Крейсера</entry>
   <entry key='battlefinish.destroyers'>Разрушители</entry>
-  <entry key='battlefinish.enemy_fleet_destroyed'>Вражеский флот % был уничтожен.</entry>
+  <entry key='battlefinish.enemy_fleet_destroyed'>Вражеский флот %s был уничтожен.</entry>
   <entry key='battlefinish.enemy_losses_1'>Противник</entry>
   <entry key='battlefinish.fighters'>Истребители</entry>
   <entry key='battlefinish.fortifications'>Укрепления</entry>
@@ -198,7 +198,7 @@
   <entry key='building.resource.type.hospital'> человек</entry>
   <entry key='building.resource.type.house'> человек</entry>
   <entry key='building.resource.type.multiply'> x income</entry>
-  <entry key='building.resource.type.population-growth'> % +человек</entry>
+  <entry key='building.resource.type.population-growth'> %d +человек</entry>
   <entry key='buildinginfo.building.cost'>Стоимость : %d кр</entry>
   <entry key='buildinginfo.building.energy'>Энергия   : %d кВч</entry>
   <entry key='buildinginfo.building.worker'>Работники : %d</entry>
@@ -2057,7 +2057,7 @@
   <entry key='mission-2.protect_traders.desc'>Защитите торговцев от пиратских атак.</entry>
   <entry key='mission-2.save_trader'>Спасите торговца</entry>
   <entry key='mission-2.save_trader.desc'>Корабль торговца должен выжить.</entry>
-  <entry key='mission-2.save_trader.reward'>Награда: % кредитов</entry>
+  <entry key='mission-2.save_trader.reward'>Награда: %s кредитов</entry>
   <entry key='mission-20.brian'>Снова сны, поговорите с Брайаном</entry>
   <entry key='mission-20.brian.desc'>Идите с бар и поговорите с Брайаном насчет роботов.</entry>
   <entry key='mission-21.prototype2'>Сопроводите новый прототип</entry>
@@ -2098,7 +2098,7 @@
   <entry key='mission-7.protect_traders.desc'>Пираты Гартогов ищут торговые корабли. Будьте наготове.</entry>
   <entry key='mission-7.save_trader'>Спасите торговый корабль</entry>
   <entry key='mission-7.save_trader.desc'>Торговый корабль должен выжить.</entry>
-  <entry key='mission-7.save_trader.reward'>Награда: % кредитов</entry>
+  <entry key='mission-7.save_trader.reward'>Награда: %s кредитов</entry>
   <entry key='mission-8.go_to_bar'>Идите в бар и поговорите с доктором Рейнхарт о вашем видении</entry>
   <entry key='mission-8.test'>Пройдите тест</entry>
   <entry key='mission-8.test.desc'>Идите на мостик и пройдите тест доктора Рейнхарт.</entry>
