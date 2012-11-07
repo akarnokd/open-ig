@@ -552,9 +552,13 @@ public class AchievementsScreen extends ScreenBase {
 				y += 20;
 			}
 		}
+
 		g2.setClip(save0);
-		g2.setTransform(savea);
+		
 		super.draw(g2);
+
+		g2.setTransform(savea);
+
 	}
 	/** Create the test achievements. */
 	void createTestEntries() {
