@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.stream.XMLStreamException;
+
 /**
  * Combine a label with fragments.
  * @author akarnokd, 2012.10.23.
@@ -41,20 +43,40 @@ public final class LabelIntegrator {
 			}
 		}
 		// ----------------------
-		String prefix = "c:/Downloads/";
-		List<String> files = Arrays.asList("message v01.xml", "doctor-manualsave v01.xml", "MainFleet-autosave v01.xml", "battlefinish v01.xml");
+		String prefix = "e:/Downloads/";
+		List<String> files = Arrays.asList("labels v02.xml");
+		
+		String param = "%,?\\d*(s|d|f|x)";
 		
 		for (String f : files) {
-			String data = "<labels>" + new String(IOUtils.load(prefix + f), "UTF-8") + "</labels>";
+			String content = new String(IOUtils.load(prefix + f), "UTF-8");
+			XElement xentries = null;
+			try {
+				xentries = XElement.parseXML(new StringReader(content));
+			} catch (XMLStreamException ex) {
+				String data = "<labels>" + content + "</labels>";
+				xentries = XElement.parseXML(new StringReader(data));
+			}
 			
-			XElement xentries = XElement.parseXML(new StringReader(data));
 			
 			for (XElement xentry : xentries.childrenWithName("entry")) {
 				String key = xentry.get("key");
 				String value = xentry.content;
-				if (labels.containsKey(key)) {
+				String orig = labels.get(key);
+				if (orig != null) {
 //					System.out.printf("Update  %s = %s%n", key, value);
 //					System.out.flush();
+					// check for parametrization
+					
+					if (orig.matches(param)) {
+						if (!value.matches(param)) {
+							System.err.println("Missing arguments:");
+							System.err.println("Orig: " + orig);
+							System.err.println("New : " + value);
+							continue;
+						}
+					}
+					
 					labels.put(key, value);
 				} else {
 					System.err.printf("Missing %s = %s%n", key, value);
