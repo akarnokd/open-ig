@@ -15,6 +15,15 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
+*2012 November 9*
+
+Úgy döntöttem, hogy határozatlan ideig félreteszem az Androidos verzió megvalósítását. Ezt a döntést következő néhány aspektus miatt hoztam meg:
+
+  * Nem biztos, hogy felengednék az áruházakba, hiába ingyenes.
+  * Komoly munka ahhoz képest, hogy mennyi a jutalma.
+  * A játék valószínűleg csak a drágább készülékekre férne rá.
+  * A kérdőív alapján a társaság kb. 93%-a nem, vagy alacsony prioritásra taksálta.
+
 *2012 Október 23*
 
 A francia és orosz nyelvű képek és hangok bekerültek a játék legutóbbi verziójába. Sajnos az orosz verzió képjei rendkívül hanyag módon készült, és rengeteg utómunát ígényelnek. A francia verzióval látszólag minden rendben van.
