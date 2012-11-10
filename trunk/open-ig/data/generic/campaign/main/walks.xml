@@ -82,7 +82,7 @@
 		</position>
 		<position id="corridor3" picture="flagship/corridor_right_window_level_3">
 			<transition media="flagship/corridor_to_window_1_level_3" label="flagship.moveto.window" area="540,37 639,37 639,334 540,334" to="window"/>
-			<transition media="flagship/corridor_to_equipment_1_level_3" label="flgaship.moveto.equipment" area="0,360 639,360 639,441 0,441" to="equipment"/>
+			<transition media="flagship/corridor_to_equipment_1_level_3" label="flagship.moveto.equipment" area="0,360 639,360 639,441 0,441" to="equipment"/>
 			<transition media="flagship/corridor_to_production_3_level_3" label="flagship.moveto.production" area="229,154 427,154 427,315 229,315" to="production"/>
 		</position>
 		<position id="window" picture="flagship/corridor_window_level_3">
@@ -146,7 +146,7 @@
 		</position>
 		<position id="corridor3" picture="flagship/corridor_right_window_level_3">
 			<transition media="flagship/corridor_to_window_1_level_3" label="flagship.moveto.window" area="540,37 639,37 639,334 540,334" to="window"/>
-			<transition media="flagship/corridor_to_equipment_1_level_3" label="flgaship.moveto.equipment" area="0,360 639,360 639,441 0,441" to="equipment"/>
+			<transition media="flagship/corridor_to_equipment_1_level_3" label="flagship.moveto.equipment" area="0,360 639,360 639,441 0,441" to="equipment"/>
 			<transition media="flagship/corridor_to_production_3_level_3" label="flagship.moveto.production" area="229,154 427,154 427,315 229,315" to="production"/>
 		</position>
 		<position id="window" picture="flagship/corridor_window_level_3">
