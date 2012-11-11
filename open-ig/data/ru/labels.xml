@@ -201,7 +201,7 @@
   <entry key='building.resource.type.population-growth'> % +человек</entry>
   <entry key='buildinginfo.building.cost'>Стоимость : %d кр</entry>
   <entry key='buildinginfo.building.energy'>Энергия   : %d кВч</entry>
-  <entry key='buildinginfo.building.worker'>Работники : %d</entry>
+  <entry key='buildinginfo.building.worker'>Рабочие   : %d</entry>
   <entry key='buildinginfo.planet.surface'>%s поверхность</entry>
   <entry key='buildings.ai_dev_center'>НИИ И.И.</entry>
   <entry key='buildings.ai_dev_center.desc'>Научно-исследовательский институт Исскуственного Интеллекта занимается изучением искусственного интелекта, который, в свою очередь, увеличивает скорость и оптимизирует разработки в других областях.</entry>
@@ -229,15 +229,15 @@
   <entry key='buildings.computer_dev_center.desc'>Компьютерный Научно-исследовательский институт занимается компьютерными технологиями.</entry>
   <entry key='buildings.demolish.tooltip'>Demolish building[n][c=FFFFFFFF]Money returned: %,d cr[/c]</entry>
   <entry key='buildings.equipment_factory'>Завод оборудования</entry>
-  <entry key='buildings.equipment_factory.desc'>Завод оборудования увеличивает производство оборудования в колонии.</entry>
+  <entry key='buildings.equipment_factory.desc'>Завод оборудования производстводит оборудование для колонии и флота.</entry>
   <entry key='buildings.factory.upgrade_1'>Increases the capacity to 125%, the energy- and worker-demand to 150%.</entry>
   <entry key='buildings.factory.upgrade_2'>Increases the capacity to 150%, the energy- and worker-demand to 200%.</entry>
   <entry key='buildings.factory.upgrade_3'>Increases the capacity to 175%, the energy- and worker-demand to 250%.</entry>
   <entry key='buildings.factory.upgrade_4'>Increases the capacity to 200%, the energy- and worker-demand to 250%.</entry>
   <entry key='buildings.field_telescope'>Полевой телескоп</entry>
-  <entry key='buildings.field_telescope.desc'>Полевой телескоп. Его радиус действия значительно превосХодит радиотелескоп за счет сфокусированного детектора волн сверХвысокой частоты.</entry>
+  <entry key='buildings.field_telescope.desc'>Полевой телескоп. Его радиус действия значительно превосходит радиотелескоп за счет сфокусированного детектора волн сверхвысокой частоты.</entry>
   <entry key='buildings.fire_brigade'>Пожарная станция</entry>
-  <entry key='buildings.fire_brigade.desc'>Пожарные станции автоматически восстанавливают поврежденные строения до 50%- от максимума. Очень полезны, если если колонияподвержена бомбардировкам или пострадала в сражении.</entry>
+  <entry key='buildings.fire_brigade.desc'>Пожарные станции автоматически восстанавливают поврежденные строения до 50%- от максимума. Очень полезны, если колония пострадала от бомбардировки или осады.</entry>
   <entry key='buildings.fire_brigade.upgrade_1'>Increase the repair to 55%, the energy- and worker-demand to 150%.</entry>
   <entry key='buildings.fire_brigade.upgrade_2'>Increase the repair to 61%, the energy- and worker-demand to 175%.</entry>
   <entry key='buildings.fire_brigade.upgrade_3'>Increase the repair to 68%, the energy- and worker-demand to 200%.</entry>
@@ -251,7 +251,7 @@
   <entry key='buildings.fusion_plant'>Плазменная станция</entry>
   <entry key='buildings.fusion_plant.desc'>Плазменная станция более Эффективна на планетаХ, где есть источники плазмы (дейтерий, тритий, гелий-2)</entry>
   <entry key='buildings.hospital'>Больница</entry>
-  <entry key='buildings.hospital.desc'>Больницы повышают мораль и здоровье жителей колонии,уменьшают риск возникновения Эпидемий и помогают визучении форм жизни на другиХ планетаХ.</entry>
+  <entry key='buildings.hospital.desc'>Больницы повышают мораль и здоровье жителей колонии,уменьшают риск возникновения эпидемий и помогают в изучении чужих.</entry>
   <entry key='buildings.hospital.upgrade_1'>Increase the capacity to 125%, the energy- and worker-demand to 150%.</entry>
   <entry key='buildings.hospital.upgrade_2'>Increase the capacity to 150%, the energy- and worker-demand to 175%.</entry>
   <entry key='buildings.hospital.upgrade_3'>Increase the capacity to 175%, the energy- and worker-demand to 200%.</entry>
@@ -284,7 +284,7 @@
   <entry key='buildings.particle_projector'>Лучевая пушка</entry>
   <entry key='buildings.particle_projector.desc'>Лучевую пушку можно сравнить с солнцем в миниатюре. Вражеские корабли, попавшие в зону поражения, получат много повреждений.</entry>
   <entry key='buildings.phased_telescope'>Фазовый телескоп</entry>
-  <entry key='buildings.phased_telescope.desc'>Фазовый телескоп обладает наибольшим радиусом действия из всеХ приборов дальнего обнаружения. Позволяет обнаружить вражескиекорабли на сверХ дальниХ дистанцияХ.</entry>
+  <entry key='buildings.phased_telescope.desc'>Фазовый телескоп обладает наибольшим радиусом действия из всеХ приборов дальнего обнаружения. Позволяет обнаружить вражеские корабли на сверХ дальниХ дистанцияХ.</entry>
   <entry key='buildings.phood_factory'>Фабрика</entry>
   <entry key='buildings.phood_factory.desc'>Фабрика использует самые последние достижения в сфере производства продуктов питания и обеспечивает пищей колонистов.</entry>
   <entry key='buildings.plasma_projector'>Плазменная пушка</entry>
@@ -308,7 +308,7 @@
   <entry key='buildings.solar_plant'>Солнечная станция</entry>
   <entry key='buildings.solar_plant.desc'>Усовершенствованный фотопластик вместе с высокотемпературнымполупроводником и орбитальное поле фокусировки лучей делают солнечную станцию самым эффективным источником энергии.</entry>
   <entry key='buildings.spaceship_factory'>Завод кораблей</entry>
-  <entry key='buildings.spaceship_factory.desc'>Завод кораблей увеличивает производство космическиХкораблей в колонии.</entry>
+  <entry key='buildings.spaceship_factory.desc'>Завод кораблей производит космические корабли для колонии и флота.</entry>
   <entry key='buildings.stadium'>Стадион</entry>
   <entry key='buildings.stadium.desc'>На стадионаХ проХодят всевозможные спортивные состязания,начиная от межпланетного футбола и кончая боями без правил.Повышает уровень морали и жизнеспособность колонистов.</entry>
   <entry key='buildings.stronghold'>Цитадель</entry>
@@ -323,7 +323,7 @@
   <entry key='buildings.traders_spaceport.upgrade_2'>Increase the credit income, the energy- and worker-demand to 150%.</entry>
   <entry key='buildings.upgrade.bought'>Улучшение выполнено на[n][c=FFFFFF00]%s[/c]</entry>
   <entry key='buildings.upgrade.cost'>Улечшение выполнено на[n][c=FFFFFF00]%s[/c][n][c=%s]Стоимость улучшения: %,d кр[/c]</entry>
-  <entry key='buildings.upgrade.default.description'>Restore to default level (e.g., the post build level).</entry>
+  <entry key='buildings.upgrade.default.description'>Удалить все улучшения.</entry>
   <entry key='buildings.upgrade.has'>Сооружение улучшено.[n][c=FFFFFF00]%s[/c]</entry>
   <entry key='buildings.upgrade.none'>Сооружение не улучшалось.</entry>
   <entry key='buildings.water_vaporator'>Увлажнитель</entry>
@@ -705,26 +705,26 @@
   <entry key='chat.vo.7.n1'>Говорит корабль Лиза2.</entry>
   <entry key='chat.vo.8.n1'>Говорит Лейла, следую торговым рейсом.</entry>
   <entry key='colonizer_fleet'>Колонизационной флот %s</entry>
-  <entry key='colony.active.tooltip'>Switch off building</entry>
-  <entry key='colony.bridge.tooltip'>Bridge, communication[n]Shortcut: [c=FFFFFFFF]F1[/c]</entry>
-  <entry key='colony.building.build.tooltip'>Toggle build mode.[n]Hold down [c=FFFFFFFF]SHIFT[/c] to place multiple buildings.[n]Shortcut: [c=FFFFFFFF]B[/c]</entry>
-  <entry key='colony.building.list.tooltip'>Building list[n]Shortcut: [c=FFFFFFFF]F7, S[/c]</entry>
-  <entry key='colony.building.next.tooltip'>Next building[n][c=FFFFFFFF]Mouse wheel down[/c]</entry>
-  <entry key='colony.building.prev.tooltip'>Previous building[n][c=FFFFFFFF]Mouse wheel up[/c]</entry>
-  <entry key='colony.buildinginfos.tooltip'>Show or hide the building status panel.</entry>
-  <entry key='colony.buildings.tooltip'>Show or hide the building panel.</entry>
-  <entry key='colony.buttons.tooltip'>Show or hide navigation buttons.</entry>
-  <entry key='colony.damaged.tooltip'>Start repairing the building</entry>
-  <entry key='colony.inactive.tooltip'>Switch on building</entry>
-  <entry key='colony.info.tooltip'>Colony information[n]Shortcut: [c=FFFFFFFF]F7[/c]</entry>
-  <entry key='colony.infos.tooltip'>Show or hide colony information.</entry>
-  <entry key='colony.next.tooltip'>Jump to next planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]PLUS[/c]</entry>
-  <entry key='colony.planets.tooltip'>Planet listing[n]Shortcut: [c=FFFFFFFF]F7, Q[/c]</entry>
-  <entry key='colony.prev.tooltip'>Jump to previous planet: [c=%08X]%s[/c][n]Shortcut: [c=FFFFFFFF]MINUS[/c]</entry>
-  <entry key='colony.radars.tooltip'>Show or hide the radar panel.</entry>
-  <entry key='colony.repairing.tooltip'>Stop repairing the building</entry>
-  <entry key='colony.starmap.tooltip'>Starmap[n]Shortcut: [c=FFFFFFFF]F2[/c]</entry>
-  <entry key='colony.zoom.tooltip'>Zoom in or out of the surface[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out[n][c=FFFFFFFF]Middle mouse button[/c]: normal zoom and center view</entry>
+  <entry key='colony.active.tooltip'>Отключение сооружений</entry>
+  <entry key='colony.bridge.tooltip'>Рубка, связь[n]Клавиша: [c=FFFFFFFF]F1[/c]</entry>
+  <entry key='colony.building.build.tooltip'>Режим строительства.[n]Удерживая[c=FFFFFFFF]SHIFT[/c] можно построить несколько сооружений.[n]Клавиша: [c=FFFFFFFF]B[/c]</entry>
+  <entry key='colony.building.list.tooltip'>Список сооружений[n]Клавиши: [c=FFFFFFFF]F7, S[/c]</entry>
+  <entry key='colony.building.next.tooltip'>Следующее сооружение[n][c=FFFFFFFF]Колесом мыши[/c]</entry>
+  <entry key='colony.building.prev.tooltip'>Предыдущее сооружение[n][c=FFFFFFFF]Колесом мыши[/c]</entry>
+  <entry key='colony.buildinginfos.tooltip'>Показать/Скрыть информацию о сооружении.</entry>
+  <entry key='colony.buildings.tooltip'>Показать/Скрыть панель строительства.</entry>
+  <entry key='colony.buttons.tooltip'>Показать/Скрыть кнопки навигации.</entry>
+  <entry key='colony.damaged.tooltip'>Начать ремонт сооружений</entry>
+  <entry key='colony.inactive.tooltip'>Активировать сооружение</entry>
+  <entry key='colony.info.tooltip'>Информация о колонии[n]Клавиша: [c=FFFFFFFF]F7[/c]</entry>
+  <entry key='colony.infos.tooltip'>Показать/Скрыть информацию о колонии.</entry>
+  <entry key='colony.next.tooltip'>Следующая планета: [c=%08X]%s[/c][n]Клавиша: [c=FFFFFFFF]PLUS[/c]</entry>
+  <entry key='colony.planets.tooltip'>Список планета[n]Клавиши: [c=FFFFFFFF]F7, Q[/c]</entry>
+  <entry key='colony.prev.tooltip'>Предыдущая планета: [c=%08X]%s[/c][n]Клавиша: [c=FFFFFFFF]MINUS[/c]</entry>
+  <entry key='colony.radars.tooltip'>Показать/Скрыть карту колонии.</entry>
+  <entry key='colony.repairing.tooltip'>Остановить ремонт сооружения</entry>
+  <entry key='colony.starmap.tooltip'>Звездная карта[n]Клавиша: [c=FFFFFFFF]F2[/c]</entry>
+  <entry key='colony.zoom.tooltip'>Увеличить/Уменьшить[n][c=FFFFFFFF]Левая кнопка[/c]: Увеличить[n][c=FFFFFFFF]Правая кнопка[/c]: Уменьшить[n][c=FFFFFFFF]Средняя кнопка[/c]: По умолчанию</entry>
   <entry key='colonyinfo.allocation'>На поверхности   : %s</entry>
   <entry key='colonyinfo.autobuild'>Автозастройка   : %s</entry>
   <entry key='colonyinfo.energy'>Энергия       : %d / %d кВч</entry>
@@ -753,17 +753,17 @@
   <entry key='colonyinfo.trade'>Торговля : %d кр</entry>
   <entry key='colonyinfo.worker'>Работников : %d / %d человек</entry>
   <entry key='credits'>Титры</entry>
-  <entry key='database.battleship_production'>Producing battleships</entry>
+  <entry key='database.battleship_production'>Производство кораблей</entry>
   <entry key='database.battleship_production.details'>In order to produce larger ships, you need to build an orbital space factory as larger ships must be assembled in space. First, you need to develop the orbital space factory. When it has been developed, start production. Once a factory is produced, go to the equipment screen and click on a planet (in the small starmap). Once you have selected the planet, click on the space stations icon (bottom left hand corner). Click on the Orbital Space Factory, and click on the Add icon to equip the planet with the station.</entry>
-  <entry key='database.deploy_starbase'>Deploying space stations</entry>
+  <entry key='database.deploy_starbase'>Размещение космостанций</entry>
   <entry key='database.deploy_starbase.details'>Once a space station is produced, go to the equipment screen and click on a planet (in the small starmap). Once you have selected the planet, click on the space stations icon (bottom left hand corner). Click on the selected space station, and click on the Add icon to equip the planet with the new station.</entry>
-  <entry key='database.discovering_planets'>Information on planets</entry>
+  <entry key='database.discovering_planets'>Информация о планетах</entry>
   <entry key='database.discovering_planets.details'>It is very important to obtain information about planets. If a planet&#39;s name is not visible, it means you have not established contact with the planet. It could be empty, or have alien colonies on it. 
 	First, you need to deploy a satellite to establish contact and retrieve vital statistics, e.g. if the planet is habitable or not. If you have a SAT in stock and click on an empty planet on the starmap you can deploy it by clicking on the add sat icon. It will soon start to relay information on the planet.
 	The information relay will become more substantial as time progresses. If the planet is already inhabited, the satellite may be spotted, and destroyed. The next step would be to deploy a spy satellite. Spy sat 2.0 will relay more information and enable you spy on the alien race&#39;s colony of buildings when you select a planet. It will also relay information about the planetary defence forces.</entry>
-  <entry key='database.effective_groudwar'>Effective ground battle strategies</entry>
+  <entry key='database.effective_groudwar'>Стратегия наземных битв</entry>
   <entry key='database.effective_groudwar.details'>Use the pause function frequently (SPACE). Take your time to decide who you attack and with what. You can select groups by clicking the left mouse button and dragging. Use SHIFT + numbers to create groups. You may reselect these groups by pressing the numbers, e.g. SHIFT 1 will create group 1, SHIFT 2 group 2. If you press 1, then group 1 will be selected. When you attack or defend a colony, first you have to deploy your units. You must place them on the green squares. If you are attacking, you will start from the edge of the map. If you are defending your colony, you will be able to place units near your buildings. If you attack, some of the buildings will fire at you automatically (Garrisons, Fortresses, etc.). Avoid them if possible.</entry>
-  <entry key='database.effective_spacewar'>Effective space battle strategies</entry>
+  <entry key='database.effective_spacewar'>Стратегия космических сражений</entry>
   <entry key='database.effective_spacewar.details'>Use the pause function frequently (SPACE). Take your time to decide who you attack and with what. Flagships have large shields, but are slow. Try and refrain from sending them to different locations. You can select groups as well by clicking the left mouse button and dragging. Use SHIFT + numbers to create groups. You may reselect these groups by pressing the numbers, e.g. SHIFT 1 will create group 1, SHIFT 2 group 2. If you press 1, then group 1 will be selected. Flagships can be equipped with rockets that are quite useful against other spaceships, and bombs that can be used to bombard planetary defense systems. Since flagships are the only spaceships capable of carrying ground forces, one way to stop attempts to invade your colonies is to destroy the flagships before they reach your planet. Once all the flagships are destroyed, the ground forces they possessed will also have been disposed of.</entry>
   <entry key='database.map.1'>
 	
@@ -848,14 +848,14 @@
 	- taxation morale
 	
 	If the taxation level is high, (demanding and opressive) it is very likely that the population will be unhappy. The taxation morale will decrease and unrest will spread throughout the colony. On special occasions you may still use high taxation levels, but this cannot be used as a long term strategy. Taxation morale can be increased in several ways. Trade income does not depend on tax morale so it can be used effectively on alien planets to create a stable source of income. Keeping the taxes low will also make the inhabitants feel more secure.</entry>
-  <entry key='delete'>Delete</entry>
-  <entry key='difficulty.EASY'>Easy</entry>
-  <entry key='difficulty.HARD'>Hard</entry>
-  <entry key='difficulty.NORMAL'>Normal</entry>
-  <entry key='difficulty.easy'>Easy</entry>
-  <entry key='difficulty.hard'>Hard</entry>
-  <entry key='difficulty.normal'>Normal</entry>
-  <entry key='diplomacy.AGGRESSIVE'>Aggressive approach</entry>
+  <entry key='delete'>Удалить</entry>
+  <entry key='difficulty.EASY'>Легко</entry>
+  <entry key='difficulty.HARD'>Трудно</entry>
+  <entry key='difficulty.NORMAL'>Средне</entry>
+  <entry key='difficulty.easy'>Легко</entry>
+  <entry key='difficulty.hard'>Трудно</entry>
+  <entry key='difficulty.normal'>Средне</entry>
+  <entry key='diplomacy.AGGRESSIVE'>Агрессивный подход</entry>
   <entry key='diplomacy.Dargslan.ALLIANCE.76'>Империя показала нам свое величие и могущество. Мы предлагаем вам союз, Адмирал. Вы согласны?</entry>
   <entry key='diplomacy.Dargslan.ALLIANCE.77'>Свободному обществу надоели жертвы и громадные потери. Во имя спасения нации, мы сдаемся</entry>
   <entry key='diplomacy.Dargslan.ALLIANCE.78'>Президент Сзабо желает предложить Империи капитуляцию с соблюдением всеХ формальностей</entry>
@@ -1691,7 +1691,7 @@
   <entry key='equipment.dps2'>DPS: </entry>
   <entry key='equipment.fighters'>Истребители:%s</entry>
   <entry key='equipment.fighters.tooltip'>Истребители</entry>
-  <entry key='equipment.fleetname.tooltip'>Название флота. Переименовать с помощью [c=FFFFFFFF]двойной клик[/c].</entry>
+  <entry key='equipment.fleetname.tooltip'>Название флота. Переименовать с помощью [c=FFFFFFFF]двойного клика на названии[/c].</entry>
   <entry key='equipment.hp'>HP : %s / %s</entry>
   <entry key='equipment.innercount'>Сейчас:%d Максимум:%d</entry>
   <entry key='equipment.max'>Максимум:%d</entry>
@@ -1748,7 +1748,7 @@
   <entry key='fleetstatus.firepower'>Огневая мощь: %.0f</entry>
   <entry key='fleetstatus.moving'>Двигается</entry>
   <entry key='fleetstatus.moving.after'>Следует за %s</entry>
-  <entry key='fleetstatus.moving.to'>Двигается к %s</entry>
+  <entry key='fleetstatus.moving.to'>Пункт назначения %s</entry>
   <entry key='fleetstatus.nearby'>Ближайшая планета: %s</entry>
   <entry key='fleetstatus.speed'>Скорость : %d</entry>
   <entry key='fleetstatus.stopped'>Остановлен</entry>
@@ -1914,7 +1914,7 @@
   <entry key='mapeditor.save_map'>Save map</entry>
   <entry key='mapeditor.save_map_save'>Save</entry>
   <entry key='mapeditor.save_surface_features'>Save surface features</entry>
-  <entry key='mapeditor.show_hide_buildings'>Show/hide buildings</entry>
+  <entry key='mapeditor.show_hide_buildings'>Показать/Скрыть сооружения</entry>
   <entry key='mapeditor.surface_and_buildings'>Surfaces &amp; Buildings</entry>
   <entry key='mapeditor.symbolic_buildings'>Minimap rendering mode</entry>
   <entry key='mapeditor.tile_name'>Name</entry>
@@ -2342,41 +2342,41 @@
   <entry key='screens.loadsave'>ESC - Загрузить/Сохранить</entry>
   <entry key='screens.options'>O - Настройки</entry>
   <entry key='screens.production'>F5 - Производство</entry>
-  <entry key='screens.research'>F6 - Исследования (изобретения) </entry>
+  <entry key='screens.research'>F6 - Исследования</entry>
   <entry key='screens.starmap'>F2 - Карта</entry>
   <entry key='screens.statistics'>F11 - Статистика</entry>
   <entry key='settings'>Настройки</entry>
-  <entry key='settings.animatetech'>Стиль анимации</entry>
+  <entry key='settings.animatetech'>Анимация</entry>
   <entry key='settings.audio'>Звук</entry>
   <entry key='settings.audio_video'>Звук/Видео</entry>
   <entry key='settings.auto_repair'>Авторемонт сооружений</entry>
-  <entry key='settings.auto_repair_limit'>Останавливать авторемонт при нехватке средств</entry>
+  <entry key='settings.auto_repair_limit'>Авторемонт до не менее</entry>
   <entry key='settings.autobattle'>Автоматический бой</entry>
-  <entry key='settings.autobuild_limit'>Останавливать автозастройку при нехватке средств</entry>
+  <entry key='settings.autobuild_limit'>Автозастройка до не менее</entry>
   <entry key='settings.back'>Назад</entry>
   <entry key='settings.base_speed'>Скорость игры</entry>
   <entry key='settings.base_speed_value'>%d мин/шаг</entry>
-  <entry key='settings.building_name'>Показывать названия строений и их статусы</entry>
+  <entry key='settings.building_name'>Показывать названия и статусы строений</entry>
   <entry key='settings.button_sounds'>Озвучивать нажатия кнопок</entry>
   <entry key='settings.classic_controls'>Классическое управление мышью</entry>
   <entry key='settings.classic_controls.tooltip'>Продвинутое управление:[n]  Идти: [c=FFFFFFFF]SHIFT+Правая кнопка мыши[/c][n]  Атака: [c=FFFFFFFF]CTRL+Правая кнопка мыши[/c][n]  Увеличить карту: [c=FFFFFFFF]Правая кнопка мыши[/c][n]  Нормальный масштаб карты: [c=FFFFFFFF]Средняя кнопка мыши[/c][n]Стандартное управление:[n]  Идти: [c=FFFFFFFF]Клик правой кнопкой мыши на экране[/c][n]  Атака: [c=FFFFFFFF]Клик правой кнопкой мыши на противнике[/c][n]  Увеличить карту: [c=FFFFFFFF]Средняя кнопка мыши[/c][n]  Нормальный масштаб карты: [c=FFFFFFFF]CTRL+Средняя кнопка мыши[/c]</entry>
   <entry key='settings.computer_voice_notify'>Озвучивать уведомления</entry>
   <entry key='settings.computer_voice_screen'>Озвучивать переключение между экранами</entry>
-  <entry key='settings.confirm_overwrite'>Обновить записанную игру?</entry>
-  <entry key='settings.confirm_quit'>Желаете покинуть игру?</entry>
+  <entry key='settings.confirm_overwrite'>Перезаписать игру?</entry>
+  <entry key='settings.confirm_quit'>Покидаете игру?</entry>
   <entry key='settings.fullscreen'>Полный экран</entry>
-  <entry key='settings.gameplay'>Игровые настройки</entry>
+  <entry key='settings.gameplay'>Игра...</entry>
   <entry key='settings.load_save'>Загрузить / Сохранить</entry>
   <entry key='settings.movie_click_skip'>Пропускать видеоролики по клику мыши</entry>
   <entry key='settings.movie_scale'>Видеоролики на полный экран</entry>
   <entry key='settings.music_volume'>Громкость музыки</entry>
-  <entry key='settings.mute'>Отключить звук</entry>
+  <entry key='settings.mute'>Нет</entry>
   <entry key='settings.new_save'>-- Новая запись --</entry>
-  <entry key='settings.quick_rnp'>Показывать быстрый доступ к исследованиям/производству</entry>
-  <entry key='settings.radarunion'>Показывать пространство только в зоне действия радаров</entry>
-  <entry key='settings.reequip_bombs'>Пополнять боекомплекты бомб и ракет после боя</entry>
+  <entry key='settings.quick_rnp'>Быстрый доступ к исследованиям/производству</entry>
+  <entry key='settings.radarunion'>Пространство только в зоне радаров</entry>
+  <entry key='settings.reequip_bombs'>Пополнять бомбы и ракеты после боя</entry>
   <entry key='settings.reequip_tanks'>Пополнять боекомплекты танков после боя</entry>
-  <entry key='settings.research_money_percent'>Исследовать на начальные деньги</entry>
+  <entry key='settings.research_money_percent'>Исследования до не менее</entry>
   <entry key='settings.satellite_deplay'>Показывать ролик о запуске спутника</entry>
   <entry key='settings.save_name'>Имя записи:</entry>
   <entry key='settings.scale_all_screens'>Масштабировать размер экрана на все окно</entry>
@@ -2384,8 +2384,8 @@
   <entry key='settings.slow_on_attack'>Замедление времени при вражеской атаке</entry>
   <entry key='settings.sound_volume'>Громкость эффектов</entry>
   <entry key='settings.subtitles'>Субтитры</entry>
-  <entry key='settings.swap_mouse_buttons'>Поменять кнопки мыши местами (П - выбор, Л - действие)</entry>
-  <entry key='settings.ui_scale'>Масштабировать интерфейс (X - сброс)</entry>
+  <entry key='settings.swap_mouse_buttons'>Поменять кнопки мыши</entry>
+  <entry key='settings.ui_scale'>Масштаб интерфейса (X - сброс)</entry>
   <entry key='settings.video_volume'>Громкость видеороликов</entry>
   <entry key='singleplayer.back'>Назад</entry>
   <entry key='singleplayer.campaigns'>Компании</entry>
@@ -2516,9 +2516,9 @@
   <entry key='spacewar.statistics_stations'>Космобазы         : %6d</entry>
   <entry key='starmap.achievements.tooltip'>Display achievements[n]Shortcut: [c=FFFFFFFF]F12[/c]</entry>
   <entry key='starmap.statistics.tooltip'>Display statistics[n]Shortcut: [c=FFFFFFFF]F11[/c]</entry>
-  <entry key='starmap.zoom.tooltip'>Zoom in or out of the map[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out</entry>
-  <entry key='statistics'>Statistics</entry>
-  <entry key='statistics.actual_buildings'>Operational building count</entry>
+  <entry key='starmap.zoom.tooltip'>Увеличить/Уменьшить карту[n][c=FFFFFFFF]Левая кнопка[/c]: Увеличить[n][c=FFFFFFFF]Правая кнопка[/c]: Уменьшить</entry>
+  <entry key='statistics'>Статистика</entry>
+  <entry key='statistics.actual_buildings'>Построено сооружений</entry>
   <entry key='statistics.build_count'>Build count</entry>
   <entry key='statistics.buildings_destroyed'>Buildings destroyed</entry>
   <entry key='statistics.buildings_destroyed_cost'>Buildings destroyed cost</entry>
@@ -2616,12 +2616,12 @@
   <entry key='statistics.vehicles_destroyed_cost'>Vehicles destroyed cost</entry>
   <entry key='statistics.vehicles_lost'>Vehicles lost</entry>
   <entry key='statistics.vehicles_lost_cost'>Vehicles lost cost</entry>
-  <entry key='statusbar.menu.tooltip'>Show menu[n]Hold down the mouse button and release it over the desired entry.</entry>
+  <entry key='statusbar.menu.tooltip'>Открыть меню[n]Нажмите кнопку мыши и отпустите ее на выбранном пункте.</entry>
   <entry key='statusbar.money.tooltip'>%,d кр</entry>
-  <entry key='statusbar.notification.clear.tooltip'>Clear notification history</entry>
-  <entry key='statusbar.notification.tooltip'>Notifications[n][c=FFFFFFFF]Right mouse button[/c]: Show or hide notification history</entry>
-  <entry key='statusbar.objectives.tooltip'>Show or hide tasks[n]Shortcut: [c=FFFFFFFF]TAB[/c]</entry>
-  <entry key='statusbar.pause.tooltip'>Pause[n]Shortcut: [c=FFFFFFFF]SPACE[/c]</entry>
+  <entry key='statusbar.notification.clear.tooltip'>Стереть историю извещений</entry>
+  <entry key='statusbar.notification.tooltip'>Извещения[n][c=FFFFFFFF]Правая кнопка мыши[/c]: Показать/Скрыть историю извещений</entry>
+  <entry key='statusbar.objectives.tooltip'>Показать/Скрыть задания[n]Клавиша: [c=FFFFFFFF]TAB[/c]</entry>
+  <entry key='statusbar.pause.tooltip'>Пауза[n]Клавиша: [c=FFFFFFFF]SPACE[/c]</entry>
   <entry key='statusbar.quickproduction'>Quick production panel[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: production screen[n]Panel shortcut: [c=FFFFFFFF]C[/c]</entry>
   <entry key='statusbar.quickresearch.available'>Quick research panel[n]Kutatási lehetőségek vannak[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
   <entry key='statusbar.quickresearch.none'>Quick research panel[n]No active research[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
@@ -2629,9 +2629,9 @@
   <entry key='statusbar.quickresearch.problem.MONEY'>Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]pénzhiány[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
   <entry key='statusbar.quickresearch.problem.STOPPED'>Quick research panel[n][c=FFFFCC00]%s[/c] - [c=FFFF0000]leállítva[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
   <entry key='statusbar.quickresearch.running'>Quick research panel[n][c=FFFFCC00]%s[/c][n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: research screen[n]Panel shortcut: [c=FFFFFFFF]X[/c]</entry>
-  <entry key='statusbar.speed1.tooltip'>Normal speed[n]Shortcut: [c=FFFFFFFF]1[/c]</entry>
-  <entry key='statusbar.speed2.tooltip'>Double speed[n]Shortcut: [c=FFFFFFFF]2[/c]</entry>
-  <entry key='statusbar.speed4.tooltip'>Quadruple speed[n]Shortcut: [c=FFFFFFFF]3[/c]</entry>
+  <entry key='statusbar.speed1.tooltip'>1х скорость[n]Клавиша: [c=FFFFFFFF]1[/c]</entry>
+  <entry key='statusbar.speed2.tooltip'>2х скорость[n]Клавиша: [c=FFFFFFFF]2[/c]</entry>
+  <entry key='statusbar.speed4.tooltip'>4х скорость[n]Клавиша: [c=FFFFFFFF]3[/c]</entry>
   <entry key='taxlevel.ABOVE_MODERATE'>ВЫШЕ СРЕДНЕГО</entry>
   <entry key='taxlevel.EXPLOITER'>ЭКСПЛУАТАЦИЯ</entry>
   <entry key='taxlevel.HIGH'>ВЫСОКИЙ</entry>
@@ -2642,31 +2642,31 @@
   <entry key='taxlevel.SLAVERY'>РАБСТВО</entry>
   <entry key='taxlevel.VERY_HIGH'>ОЧЕНЬ ВЫСОКИЙ</entry>
   <entry key='taxlevel.VERY_LOW'>ОЧЕНЬ НИЗКИЙ</entry>
-  <entry key='tech.battleship1.description'>Мощное защитное поле, сильная огневая мощь и, кроме того, способен перевозить наземныеподразделения. Для его создания необХодима орбитальная фабрика.</entry>
+  <entry key='tech.battleship1.description'>Мощное защитное поле, сильная огневая мощь, перевозка наземных подразделений. Для его создания необХодима орбитальная фабрика.</entry>
   <entry key='tech.battleship1.longname'>Мамонт Класса Флагман</entry>
   <entry key='tech.battleship1.name'>Флагман 1</entry>
-  <entry key='tech.battleship2.description'>Питон легче, чем Мамонт, но имеет более сильное оружие. Также способенперевозить наземные подразделения.</entry>
+  <entry key='tech.battleship2.description'>Питон легче, чем Мамонт, но имеет более сильное оружие. Также способен перевозить наземные подразделения.</entry>
   <entry key='tech.battleship2.longname'>Питон Класс Флагман</entry>
   <entry key='tech.battleship2.name'>Флагман 2</entry>
-  <entry key='tech.battleship3.description'>Кракен имеет мощное поле, неплоХое вооружение и способен приземляться на вражескойтерритории. </entry>
+  <entry key='tech.battleship3.description'>Кракен имеет мощное поле, неплоХое вооружение и способен приземляться на вражеской территории. </entry>
   <entry key='tech.battleship3.longname'>Кракен Класса Флагман</entry>
   <entry key='tech.battleship3.name'>Флагман 3</entry>
-  <entry key='tech.behemoth.description'>Бегемот использует титановую сверХпрочную броню.Дальность стрельбы: 5. Скорость: 3 Броня: 7</entry>
+  <entry key='tech.behemoth.description'>Бегемот использует титановую сверХпрочную броню. Дальность стрельбы: 5. Скорость: 3 Броня: 7</entry>
   <entry key='tech.behemoth.longname'>Бегемот</entry>
   <entry key='tech.behemoth.name'>Бегемот</entry>
-  <entry key='tech.bomb1.description'>Используются для ведения наземныХ боевыХ действий. Разрушаютназемные постройки.</entry>
+  <entry key='tech.bomb1.description'>Используются для ведения наземныХ боевыХ действий. Разрушают наземные постройки.</entry>
   <entry key='tech.bomb1.longname'>Бомба 1.0 Разрушитель</entry>
   <entry key='tech.bomb1.name'>Бомба 1.0</entry>
-  <entry key='tech.bomb2.description'>Бомбы с расширенным радиусом поражения. При успешном бомбометании могут уничтожитьтысячи обитателей колонии.</entry>
+  <entry key='tech.bomb2.description'>Бомбы с расширенным радиусом поражения. При успешном бомбометании могут уничтожить тысячи обитателей колонии.</entry>
   <entry key='tech.bomb2.longname'>Бомбы 2.0 Сильный разрушитель</entry>
   <entry key='tech.bomb2.name'>Бомба 2.0</entry>
   <entry key='tech.bunker.description'>Бункеры являются убежищем для вашиХ колонистов во время нападения наколонию. Позволяют уменьшить число жертв.</entry>
   <entry key='tech.bunker.longname'>Бункер</entry>
   <entry key='tech.bunker.name'>Бункер</entry>
-  <entry key='tech.colonyship.description'>Используется для создания колонии. Он является транспортным кораблем, перевозящиминструменты и специальное оборудование, необХодимое для создания колоний.</entry>
+  <entry key='tech.colonyship.description'>Используется для создания колонии. Он является транспортным кораблем, перевозящим инструменты и специальное оборудование, необХодимое для создания колоний.</entry>
   <entry key='tech.colonyship.longname'>Корабль колонизации</entry>
   <entry key='tech.colonyship.name'>Колонизатор</entry>
-  <entry key='tech.cruiser1.description'>Еще один остаток от Старой Империи. Довольно слабый по теХническим параметрамкорабль.</entry>
+  <entry key='tech.cruiser1.description'>Еще один остаток от Старой Империи. Довольно слабый по теХническим параметрам корабль.</entry>
   <entry key='tech.cruiser1.longname'>Гром Класса Крейсер</entry>
   <entry key='tech.cruiser1.name'>Крейсер 1</entry>
   <entry key='tech.cruiser2.description'>Разработчики заменили генераторы поля на корабле Гром, получив новую модель.Но слабый двигатель, не дает преимущества в бою.</entry>
@@ -2690,7 +2690,7 @@
   <entry key='tech.destroyer1.description'>Данный корабль самый легкий из класса разрушителей. Довольно старая модель,но в то же время Хорошо зарекомендовала себя в бою.</entry>
   <entry key='tech.destroyer1.longname'>ОХранник Класса Разрушитель</entry>
   <entry key='tech.destroyer1.name'>Разрушитель 1</entry>
-  <entry key='tech.destroyer2.description'>Данный корабль является переработанным ОХранником, оборудованным современныморужием и средствами навигации.</entry>
+  <entry key='tech.destroyer2.description'>Данный корабль является переработанным ОХранником, оборудованным современным оружием и средствами навигации.</entry>
   <entry key='tech.destroyer2.longname'>Боец Класса Разрушитель</entry>
   <entry key='tech.destroyer2.name'>Разрушитель 2</entry>
   <entry key='tech.destroyer3.description'>Джаббер - вершина разработок в Этом классе. Имеет достаточное вооружение, сильноеполе и двойной помповый двигатель, развивающей огромную мощность.</entry>
@@ -2729,25 +2729,25 @@
   <entry key='tech.fieldtelescope.description'>Полевой телескоп обладает более мощной избирательностью и позволяет обнаружитькорабли противника на более значительном расстоянии</entry>
   <entry key='tech.fieldtelescope.longname'>Полевой телескоп</entry>
   <entry key='tech.fieldtelescope.name'>Полевой телескоп</entry>
-  <entry key='tech.fighter1.description'>Чиж - Это простой истребительный корабль. Он вооружен двумя лазернымиорудиями и слабым магнитным отражающем полем для защиты.</entry>
+  <entry key='tech.fighter1.description'>Чиж - простой истребитель. Вооружен двумя лазерными орудиями и слабым магнитным отражающем полем для защиты.</entry>
   <entry key='tech.fighter1.longname'>Истребитель 1 Чиж</entry>
   <entry key='tech.fighter1.name'>Истребитель 1</entry>
-  <entry key='tech.fighter2.description'>Вампир является модернизированным Чижом. Он имеет на вооружении четыре лазерныХорудия, магнитное поле Гаусса для защиты и оборудован более мощным двигателем.</entry>
+  <entry key='tech.fighter2.description'>Вампир является модернизированным Чижом. Он имеет на вооружении четыре лазерныХ орудия, магнитное поле Гаусса для защиты и оборудован более мощным двигателем.</entry>
   <entry key='tech.fighter2.longname'>Истребитель 2 Вампир</entry>
   <entry key='tech.fighter2.name'>Истребитель 2</entry>
-  <entry key='tech.fighter3.description'>Имея два сдвоенныХ лазерныХ орудия Кувалда обеспечивает более сильную огневуюподдержку, чем Вампир. Кроме того, Кувалда оборудован полем на сверХпроводникаХ.</entry>
+  <entry key='tech.fighter3.description'>Имея два сдвоенныХ лазерныХ орудия Кувалда обеспечивает более сильную огневую поддержку, чем Вампир. Кроме того, Кувалда оборудован полем на сверХпроводникаХ.</entry>
   <entry key='tech.fighter3.longname'>Истребитель 3 Кувалда</entry>
   <entry key='tech.fighter3.name'>Истребитель 3</entry>
-  <entry key='tech.fighter4.description'>Черту иногда называют кораблем смерти. 4 двойныХ лазера, вместе с сверХмощнымдвигателем дают просто фантастические результаты в бою.</entry>
+  <entry key='tech.fighter4.description'>Черту иногда называют кораблем смерти. 4 двойныХ лазера, вместе с сверХмощным двигателем дают просто фантастические результаты в бою.</entry>
   <entry key='tech.fighter4.longname'>Истребитель 4 Черта</entry>
   <entry key='tech.fighter4.name'>Истребитель 4</entry>
-  <entry key='tech.fighter5.description'>Призрак создан с использованием стелс теХнологии и оборудован фазовыми дипольнымиотражателями полей для увеличения живучести конструкции.</entry>
+  <entry key='tech.fighter5.description'>Призрак создан с использованием стелс теХнологии и оборудован фазовыми дипольными отражателями полей для увеличения живучести конструкции.</entry>
   <entry key='tech.fighter5.longname'>Истребитель 5 Призрак</entry>
   <entry key='tech.fighter5.name'>Истребитель 5</entry>
-  <entry key='tech.fighter6.description'>Бомбардир - Это тяжелый корабль, разработанный для осуществления массивногобомбометания на значительныХ расстоянияХ. В бою ему необХодимо сопровождение.</entry>
+  <entry key='tech.fighter6.description'>Бомбардир - Это тяжелый корабль, разработанный для осуществления массивного бомбометания на значительныХ расстоянияХ. В бою ему необХодимо сопровождение.</entry>
   <entry key='tech.fighter6.longname'>Истребитель 6 Бомбардир</entry>
   <entry key='tech.fighter6.name'>Истребитель 6</entry>
-  <entry key='tech.flagship.description'>Левиафан самый мощный корабль в своем классе. Обладает значительным запасомпрочности.</entry>
+  <entry key='tech.flagship.description'>Левиафан самый мощный корабль в своем классе. Обладает значительным запасом прочности.</entry>
   <entry key='tech.flagship.longname'>Левиафан Класса Флагман</entry>
   <entry key='tech.flagship.name'>Лейтенант</entry>
   <entry key='tech.fortress.description'>Укрепления помогают при ведении наземныХ боевыХ действий и является своеобразным ангаром для теХники.</entry>
@@ -2768,7 +2768,7 @@
   <entry key='tech.garthogvirusbomb.description'>Used by the Garthogs against the Empire in the early stages of the conflict.</entry>
   <entry key='tech.garthogvirusbomb.longname'>Garthog virusbomb</entry>
   <entry key='tech.garthogvirusbomb.name'>Garthog virusbomb</entry>
-  <entry key='tech.heavytank.description'>Щит для наземныХ подразделений.Дальность стрельбы: 4. Скорость: 4 Броня: 6</entry>
+  <entry key='tech.heavytank.description'>Щит для наземныХ подразделений. Дальность стрельбы: 4. Скорость: 4 Броня: 6</entry>
   <entry key='tech.heavytank.longname'>Тяжелый танк</entry>
   <entry key='tech.heavytank.name'>Тяжелый танк</entry>
   <entry key='tech.hubble1.description'>Телескоп позволяет обнаруживать малые флота противника.</entry>
@@ -2798,31 +2798,31 @@
   <entry key='tech.inversionshield.description'>Инверсное поле состоит из точно сбалансированныХ полей гравитации с противоположными спинами. Защита колонии от Разрушителей.</entry>
   <entry key='tech.inversionshield.longname'>Инверсное поле</entry>
   <entry key='tech.inversionshield.name'>Инверсное поле</entry>
-  <entry key='tech.ioncannon.description'>Ион-орудие стреляет потоком положительныХ и отрицательныХ ионов. ВзаимодействиедвуХ потоков ионов вокруг цели вызывает огромный выброс Энергии.</entry>
-  <entry key='tech.ioncannon.longname'>Ион-орудие</entry>
-  <entry key='tech.ioncannon.name'>Ион-орудие</entry>
+  <entry key='tech.ioncannon.description'>Ионное орудие стреляет потоком положительныХ и отрицательныХ ионов. Взаимодействие двуХ потоков ионов вокруг цели вызывает огромный выброс Энергии.</entry>
+  <entry key='tech.ioncannon.longname'>Ионное орудие</entry>
+  <entry key='tech.ioncannon.name'>Ионное орудие</entry>
   <entry key='tech.laser1.description'>Основное оружие стоящее на вооружении с 21 века. Дает высокую точность попаданияи значительный коЭффициент поражения цели.</entry>
   <entry key='tech.laser1.longname'>Лазер</entry>
   <entry key='tech.laser1.name'>Лазер</entry>
   <entry key='tech.laser2.description'>Лазерное оружие с повышенным уровнем огневой мощи и плотностью Энергиилуча</entry>
   <entry key='tech.laser2.longname'>Импульсный лазер</entry>
   <entry key='tech.laser2.name'>Импульсный лазер</entry>
-  <entry key='tech.laser3.description'>ТеХнология коротковолновыХ лазеров позволяет добиваться сильной поражающейспособности лазерного луча при небольшиХ ЭнергетическиХ затратаХ.</entry>
+  <entry key='tech.laser3.description'>ТеХнология коротковолновыХ лазеров позволяет добиваться сильной поражающей способности лазерного луча при небольшиХ ЭнергетическиХ затратаХ.</entry>
   <entry key='tech.laser3.longname'>КВ лазер</entry>
   <entry key='tech.laser3.name'>ТК лазер</entry>
   <entry key='tech.laser4.description'>При его создании использовалась новая теХнология фокусировки луча,в результате чего повысилась мощность лазера.</entry>
   <entry key='tech.laser4.longname'>КВ импульсный лазер</entry>
   <entry key='tech.laser4.name'>ТК имп. лазер</entry>
-  <entry key='tech.lighttank.description'>Легкий танк часто используется как быстрое наземное средство.Дальность стрельбы: 2. Скорость: 5 Броня: 3</entry>
+  <entry key='tech.lighttank.description'>Легкий танк часто используется как быстрое наземное средство. Дальность стрельбы: 2. Скорость: 5 Броня: 3</entry>
   <entry key='tech.lighttank.longname'>Легкий Танк</entry>
   <entry key='tech.lighttank.name'>Легкий танк</entry>
-  <entry key='tech.mediumtank.description'>По сравнению с легким танком, имеет большую дальность стрельбы и броню.Дальность стрельбы: 4. Скорость: 4 Броня: 4</entry>
+  <entry key='tech.mediumtank.description'>По сравнению с легким танком, имеет большую дальность стрельбы и броню. Дальность стрельбы: 4. Скорость: 4 Броня: 4</entry>
   <entry key='tech.mediumtank.longname'>Средний Танк</entry>
   <entry key='tech.mediumtank.name'>Средний танк</entry>
-  <entry key='tech.mesoncannon.description'>Выпускает поток неустойчивыХ мезонов, которые при попадании в цельвыделяют Энергию.</entry>
+  <entry key='tech.mesoncannon.description'>Выпускает поток неустойчивыХ мезонов, которые при попадании в цель выделяют Энергию.</entry>
   <entry key='tech.mesoncannon.longname'>Мезонное орудие</entry>
   <entry key='tech.mesoncannon.name'>Мезонное орудие</entry>
-  <entry key='tech.mesonprojector.description'>Мезонная пушка стреляет пучком мезонов, состоящим из субатомныХ частиц. Такие частицы при достижении целивыделяют огромную Энергию.</entry>
+  <entry key='tech.mesonprojector.description'>Мезонная пушка стреляет пучком мезонов, состоящим из субатомныХ частиц. Такие частицы при достижении цели выделяют огромную Энергию.</entry>
   <entry key='tech.mesonprojector.longname'>Мезонная пушка</entry>
   <entry key='tech.mesonprojector.name'>Мезонная пушка</entry>
   <entry key='tech.morgathbattleship.description'>Medium-strong battleship</entry>
@@ -2840,19 +2840,19 @@
   <entry key='tech.multiheadedrocket.description'>Данная ракета при подлете к цели разбрасывает много мелкиХ зарядов.Очень Эффективна для поражения большиХ участков.</entry>
   <entry key='tech.multiheadedrocket.longname'>Боеголовка</entry>
   <entry key='tech.multiheadedrocket.name'>Боеголовка</entry>
-  <entry key='tech.orbitalfactory.description'>Служит для создания 0-г конструкций и необХодимо для постройки вашиХ флагманскиХкораблей.</entry>
+  <entry key='tech.orbitalfactory.description'>Служит для создания 0-г конструкций и необХодимо для постройки вашиХ флагмански Хкораблей.</entry>
   <entry key='tech.orbitalfactory.longname'>Орбитальная фабрика</entry>
   <entry key='tech.orbitalfactory.name'>Орбиталь. завод</entry>
   <entry key='tech.particlecannon.description'>Нейтронное орудие действует по принципу ион-орудия. Но выпускает поток незаряженныХ нейтронов.</entry>
   <entry key='tech.particlecannon.longname'>Нейтронное орудие</entry>
   <entry key='tech.particlecannon.name'>Нейтронное оруд</entry>
-  <entry key='tech.particleprojector.description'>Лучевая пушка - это по сути луч плазмы, созданный на водородной основе. Обладает большой Энергией и имеетзначитльную дальность.</entry>
+  <entry key='tech.particleprojector.description'>Лучевая пушка - это по сути луч плазмы, созданный на водородной основе. Обладает большой Энергией и имеет значитльную дальность.</entry>
   <entry key='tech.particleprojector.longname'>Лучевая пушка</entry>
   <entry key='tech.particleprojector.name'>Лучевая пушка</entry>
-  <entry key='tech.phasedtelescope.description'>Фазовый телескоп - сенсор дальнего оповещения. Может обнаружить вражеские кораблина огромном расстоянии.</entry>
+  <entry key='tech.phasedtelescope.description'>Фазовый телескоп - сенсор дальнего оповещения. Может обнаружить вражеские корабли на огромном расстоянии.</entry>
   <entry key='tech.phasedtelescope.longname'>Фазовый телескоп</entry>
   <entry key='tech.phasedtelescope.name'>Фазовый телескоп</entry>
-  <entry key='tech.phoodfactory.description'>Фабрика является незаменимым источником продуктов питания для жителейколонии.</entry>
+  <entry key='tech.phoodfactory.description'>Фабрика является незаменимым источником продуктов питания для жителей колонии.</entry>
   <entry key='tech.phoodfactory.longname'>Фабрика</entry>
   <entry key='tech.phoodfactory.name'>Фабрика</entry>
   <entry key='tech.piratedestroyer.description'>Relatively weak destroyer</entry>
@@ -2861,76 +2861,76 @@
   <entry key='tech.piratefighter.description'>Relatively weak fighter</entry>
   <entry key='tech.piratefighter.longname'>Pirate Fighter</entry>
   <entry key='tech.piratefighter.name'>Pirage Fighter</entry>
-  <entry key='tech.plasmacannon.description'>Плазменное орудие стреляет потоком сверХнагретой материей. Прямое попадание вцель не оставляет ни какиХ шансов.</entry>
+  <entry key='tech.plasmacannon.description'>Плазменное орудие стреляет потоком сверХнагретой материей. Прямое попадание в цель не оставляет ни шанса.</entry>
   <entry key='tech.plasmacannon.longname'>Плазменное орудие</entry>
   <entry key='tech.plasmacannon.name'>Плазменное орудие</entry>
   <entry key='tech.plasmaprojector.description'>Плазменная пушка стреляет сверХнагретым веществом и может причинить немалый вред кораблям противника</entry>
   <entry key='tech.plasmaprojector.longname'>Плазменная пушка</entry>
   <entry key='tech.plasmaprojector.name'>Плазменная пушка</entry>
-  <entry key='tech.radar1.description'>Радаром может быть оборудован любой корабль. Он определяет любой встречный корабльв пределаХ 2 парсеков.</entry>
+  <entry key='tech.radar1.description'>Радаром может быть оборудован любой корабль. Он определяет любой встречный корабль в пределаХ 2 парсеков.</entry>
   <entry key='tech.radar1.longname'>Радар</entry>
   <entry key='tech.radar1.name'>Радар</entry>
   <entry key='tech.radar2.description'>Полевым радаром может быть оборудован любой корабль. Он определяет любой встречный корабль в пределаХ 5 парсеков.</entry>
   <entry key='tech.radar2.longname'>Полевой радар</entry>
   <entry key='tech.radar2.name'>Полевой радар</entry>
-  <entry key='tech.radar3.description'>Фазовый радар относится к классу тунельныХ радаров. Им может быть оборудованфлагман. Имеет Хорошую Характеристику обнаружения</entry>
+  <entry key='tech.radar3.description'>Фазовый радар относится к классу тунельныХ радаров. Им может быть оборудован флагман. Имеет Хорошую Характеристику обнаружения</entry>
   <entry key='tech.radar3.longname'>Фазовый радар</entry>
   <entry key='tech.radar3.name'>Фазовый радар</entry>
-  <entry key='tech.radarcar.description'>Радиомашина оснащена мощным радаром и магнитными отражателями. Используетсядля сбора информации.</entry>
+  <entry key='tech.radarcar.description'>Радиомашина оснащена мощным радаром и магнитными отражателями. Используется для сбора информации.</entry>
   <entry key='tech.radarcar.longname'>Радиомашина</entry>
   <entry key='tech.radarcar.name'>Радиомашина</entry>
-  <entry key='tech.radartelescope.description'>Радиотелескоп служит для обзора ближайшего космоса и предупреждения атакврага.</entry>
+  <entry key='tech.radartelescope.description'>Радиотелескоп служит для обзора ближайшего космоса и предупреждения атак врага.</entry>
   <entry key='tech.radartelescope.longname'>Радиотелескоп</entry>
   <entry key='tech.radartelescope.name'>Радиотелескоп</entry>
-  <entry key='tech.rocket1.description'>СТК-1 - обычная ракета, несущая боевой заряд. Маневренность: 6Скорость: 500</entry>
+  <entry key='tech.rocket1.description'>СТК-1 - обычная ракета, несущая боевой заряд. Маневренность: 6 Скорость: 500</entry>
   <entry key='tech.rocket1.longname'>СТК-1 Ракета 1.0</entry>
   <entry key='tech.rocket1.name'>Ракета 1.0</entry>
-  <entry key='tech.rocket2.description'>Новая версия СТК-1. Более маневренна и быстрее.Маневренность: 8 Скорость: 850</entry>
+  <entry key='tech.rocket2.description'>Новая версия СТК-1. Более маневренна и быстра. Маневренность: 8 Скорость: 850</entry>
   <entry key='tech.rocket2.longname'>СТК-1Ф Ракета 2.0</entry>
   <entry key='tech.rocket2.name'>Ракета 2.0</entry>
-  <entry key='tech.rocketlauncher1.description'>Мобильная ракетная пусковая установка для огневой поддержки подразделений.Дальность стрельбы: 7 Скорость: 6.5 Броня: 2</entry>
+  <entry key='tech.rocketlauncher1.description'>Мобильная ракетная пусковая установка для огневой поддержки подразделений. Дальность стрельбы: 7 Скорость: 6.5 Броня: 2</entry>
   <entry key='tech.rocketlauncher1.longname'>Ракетная установка</entry>
   <entry key='tech.rocketlauncher1.name'>Ракеты</entry>
-  <entry key='tech.rocketlauncher2.description'>Оснащена более мощными ракетами.Дальность стрельбы: 8 Скорость: 7 Броня: 1</entry>
+  <entry key='tech.rocketlauncher2.description'>Оснащена более мощными ракетами. Дальность стрельбы: 8 Скорость: 7 Броня: 1</entry>
   <entry key='tech.rocketlauncher2.longname'>Тяжелая Ракетная установка</entry>
   <entry key='tech.rocketlauncher2.name'>Тяжелые ракеты</entry>
-  <entry key='tech.satellite.description'>Спутник Обзора используется для сбора информации с неисследованныХпланет.</entry>
+  <entry key='tech.satellite.description'>Спутник Обзора используется для сбора информации с неисследованныХ планет.</entry>
   <entry key='tech.satellite.longname'>Спутник обзора</entry>
   <entry key='tech.satellite.name'>Спутник обзора</entry>
-  <entry key='tech.shield1.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличитьобороноспособность корабля на 10%.</entry>
+  <entry key='tech.shield1.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличить обороноспособность корабля на 10%.</entry>
   <entry key='tech.shield1.longname'>Легкое поле</entry>
   <entry key='tech.shield1.name'>Легкое поле</entry>
-  <entry key='tech.shield2.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличитьобороноспособность корабля на 15%.</entry>
+  <entry key='tech.shield2.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличить обороноспособность корабля на 15%.</entry>
   <entry key='tech.shield2.longname'>Среднее поле</entry>
   <entry key='tech.shield2.name'>Среднее поле</entry>
-  <entry key='tech.shield3.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличитьобороноспособность корабля на 20%.</entry>
+  <entry key='tech.shield3.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличить обороноспособность корабля на 20%.</entry>
   <entry key='tech.shield3.longname'>Тяжелое Поле</entry>
   <entry key='tech.shield3.name'>Сильное поле</entry>
-  <entry key='tech.shield4.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличитьобороноспособность корабля на 25%.</entry>
+  <entry key='tech.shield4.description'>Построено на принципе гауссовскиХ магнитныХ отражателей и позволяет увеличить обороноспособность корабля на 25%.</entry>
   <entry key='tech.shield4.longname'>Супер поле</entry>
   <entry key='tech.shield4.name'>Супер поле</entry>
-  <entry key='tech.solarplant.description'>Слияние теХнологий магнитогидродинамики, оптики, фотопластиков и сверХпроводниковсоздали такую станцию для получения Энергии.</entry>
+  <entry key='tech.solarplant.description'>Слияние теХнологий магнитогидродинамики, оптики, фотопластиков и сверХпроводников создали такую станцию для получения Энергии.</entry>
   <entry key='tech.solarplant.longname'>Солнечная Станция</entry>
   <entry key='tech.solarplant.name'>Солнечная станц</entry>
-  <entry key='tech.spacestation1.description'>Космостанции используются для защиты планеты от нападения из космоса. Ониявляются основным защитным звеном в обороне планеты.</entry>
+  <entry key='tech.spacestation1.description'>Космостанции используются для защиты планеты от нападения из космоса. Они являются основным защитным звеном в обороне планеты.</entry>
   <entry key='tech.spacestation1.longname'>Космостанция Защитник</entry>
   <entry key='tech.spacestation1.name'>Космобаза 1</entry>
-  <entry key='tech.spacestation2.description'>Гигант способен надежно защитить планету от нежелатеьлныХ гостей. Распологаетсяна высокой орбите и оповещает о приближении кораблей противника.</entry>
+  <entry key='tech.spacestation2.description'>Гигант способен надежно защитить планету от нежелатеьлныХ гостей. Распологается на высокой орбите и оповещает о приближении кораблей противника.</entry>
   <entry key='tech.spacestation2.longname'>Космостанция Гигант</entry>
   <entry key='tech.spacestation2.name'>Космобаза 2</entry>
-  <entry key='tech.spacestation3.description'>Самая большая на сегодняшний день космостанция. Может обесечить защиту дажепри значительном превосХоде сил противника.</entry>
+  <entry key='tech.spacestation3.description'>Самая большая на сегодняшний день космостанция. Может обесечить защиту даже при значительном перевесе противника.</entry>
   <entry key='tech.spacestation3.longname'>Космостанция Колосс</entry>
   <entry key='tech.spacestation3.name'>Космобаза 3</entry>
-  <entry key='tech.spysatellite1.description'>Спутники шпионы применяются для определения местоположения чужаков и наблюденийза иХ кораблями.</entry>
+  <entry key='tech.spysatellite1.description'>Спутники шпионы применяются для определения местоположения чужаков и наблюдений за иХ кораблями.</entry>
   <entry key='tech.spysatellite1.longname'>Спутник шпион</entry>
   <entry key='tech.spysatellite1.name'>Спутник шпион</entry>
-  <entry key='tech.spysatellite2.description'>Обладает всеми свойствами спутника шпиона, но изготовлен по стелс теХнологии.Его Эффективность гораздо больше.</entry>
+  <entry key='tech.spysatellite2.description'>Обладает всеми свойствами спутника шпиона, но изготовлен по стелс теХнологии. Его Эффективность гораздо больше.</entry>
   <entry key='tech.spysatellite2.longname'>Спутник Супер шпион </entry>
   <entry key='tech.spysatellite2.name'>Супер шпион</entry>
-  <entry key='tech.storage1.description'>Данная конструкция позволяет флагману нести на борту 3 дополнитеьныХ подразделения.</entry>
+  <entry key='tech.storage1.description'>Данная конструкция позволяет флагману нести на борту 3 дополнительныХ подразделения.</entry>
   <entry key='tech.storage1.longname'>Контейнер</entry>
   <entry key='tech.storage1.name'>Контейнер</entry>
-  <entry key='tech.storage2.description'>Данная конструкция позволяет флагману нести на борту до 5 дополнитеьныХ наземныХ подразделения.</entry>
+  <entry key='tech.storage2.description'>Данная конструкция позволяет флагману нести на борту до 5 дополнительныХ наземныХ подразделения.</entry>
   <entry key='tech.storage2.longname'>Тяжелый контейнер</entry>
   <entry key='tech.storage2.name'>Тяжелый контейнер</entry>
   <entry key='tech.stronghold.description'>Цитадель самое сильное фортификационное сооружение, которое можно построить в колонии.</entry>
@@ -2960,7 +2960,7 @@
   <entry key='tech.tradersfreight2.description'>Advanced ship capable of transporting 250 metric tons of equipment or material and 150 passengers.</entry>
   <entry key='tech.tradersfreight2.longname'>Traders Freight v2.0</entry>
   <entry key='tech.tradersfreight2.name'>Traders Freight v2</entry>
-  <entry key='tech.virusbomb.description'>Несет в себе секретный штамм вируса, поражающего белковые организмы.После такой чистки планеты вирус самоуничтожается.</entry>
+  <entry key='tech.virusbomb.description'>Несет в себе секретный штамм вируса, поражающего белковые организмы. После такой чистки планеты вирус самоуничтожается.</entry>
   <entry key='tech.virusbomb.longname'>Бомба с вирусом</entry>
   <entry key='tech.virusbomb.name'>Бомба с вирусом</entry>
   <entry key='tech.ychombattleship.description'>Medium-strong battleship</entry>
@@ -3009,58 +3009,58 @@
   <entry key='test.q8.a2'>Only in extenuating circumstances.</entry>
   <entry key='test.q8.a3'>A compromise will suffice.</entry>
   <entry key='traders.fleetname'>Транспорт</entry>
-  <entry key='traits.astronomers'>Astronomers</entry>
+  <entry key='traits.astronomers'>Хорошие астрономы</entry>
   <entry key='traits.astronomers.desc'>Your ancestors always looked at the stars with fascination. And they even managed to find some nearby planets.</entry>
-  <entry key='traits.available_points'>Available points:</entry>
-  <entry key='traits.bank_mastery'>Bank Mastery</entry>
+  <entry key='traits.available_points'>Выбрано настроек:</entry>
+  <entry key='traits.bank_mastery'>Банкиры</entry>
   <entry key='traits.bank_mastery.desc'>Your civilization discovered fractional reserve banking before the wheel, granting you %.0f%% more tax and trade income.</entry>
   <entry key='traits.cancel'>Отмена</entry>
-  <entry key='traits.combat_engineers'>Combat engineers</entry>
+  <entry key='traits.combat_engineers'>Инженеры</entry>
   <entry key='traits.combat_engineers.desc'>Your engineers are brave enough to help you fix and regenerate your shields during battles, so long as the shield generator isn&#39;t destroyed.</entry>
   <entry key='traits.debug'>Debug mode</entry>
   <entry key='traits.debug.desc'>Debug mode allows more traits to be selected than the regular points would allow.</entry>
   <entry key='traits.engineers'>Инженеры</entry>
   <entry key='traits.engineers.desc'>Skilled engineers will repair your fleet without military spaceports, although at a much lower rate. However, your shields will regenerate faster between battles.</entry>
-  <entry key='traits.equipment_builder'>Equipment Builders</entry>
+  <entry key='traits.equipment_builder'>Мастера оборудования</entry>
   <entry key='traits.equipment_builder.desc'>The civilization mastered equipment construction before the galactic age. Equipment production speed is increased to %.0f%%.</entry>
-  <entry key='traits.equipment_mocker'>Equipment mockers</entry>
+  <entry key='traits.equipment_mocker'>Проблемы с оборудованием</entry>
   <entry key='traits.equipment_mocker.desc'>The civilization did not successfully master equipment construction before the galactic age. Equipment production speed is reduced to %.0f%%.</entry>
-  <entry key='traits.fantastic_negotiator'>Fantastic negotiator</entry>
+  <entry key='traits.fantastic_negotiator'>Отменные переговорщики</entry>
   <entry key='traits.fantastic_negotiator.desc'>Your speech skills impress the most hard-hearted aliens. You gain %.0f%% chance they will agree to your terms.</entry>
-  <entry key='traits.fertile'>Fertile</entry>
+  <entry key='traits.fertile'>Высокая рождаемость</entry>
   <entry key='traits.fertile.desc'>Your promiscuious race gains %.0f%% growth rate on all kinds of planets. Conquered planets pick up this habit as well.</entry>
-  <entry key='traits.infertile'>Less fertile</entry>
+  <entry key='traits.infertile'>Низкая рождаемость</entry>
   <entry key='traits.infertile.desc'>Being single, or having no or few children, is accepted by your culture, resulting in %.0f%% growth rate on all planets. Conquered planets get so depressed they exhibit the same behavior.</entry>
-  <entry key='traits.jelly'>Jellyfish</entry>
+  <entry key='traits.jelly'>Слабая оборона</entry>
   <entry key='traits.jelly.desc'>Your race never really cared about defense properties of your planets. Therefore, space stations, planetary shields and planetary guns lose %.0f%% hitpoints.</entry>
-  <entry key='traits.master_astronomy'>Master astronomy</entry>
+  <entry key='traits.master_astronomy'>Мастера астрономии</entry>
   <entry key='traits.master_astronomy.desc'>Astronomers, perhaps due they get bored with their own planet, have mapped the entire galaxy of habitable planets and are quite ready to send satellites to explore them. You&#39;ll find them in your inventory.</entry>
-  <entry key='traits.master_scientists'>Master scientists</entry>
+  <entry key='traits.master_scientists'>Мастера науки</entry>
   <entry key='traits.master_scientists.desc'>Your race are better at sciences and can research technology at %.0f%% less cost and time.</entry>
-  <entry key='traits.monetary_analphabetism'>Monetary Analphabetism</entry>
+  <entry key='traits.monetary_analphabetism'>Мастера бизнеса</entry>
   <entry key='traits.monetary_analphabetism.desc'>Your monetary minister is the guru G. M., so tax aversion, unemployment and black market thrives in your empire. Your tax and trade income is reduced by %.0f%%.</entry>
   <entry key='traits.ok'>OK</entry>
-  <entry key='traits.pre_warp'>Pre-Hyperdrive</entry>
+  <entry key='traits.pre_warp'>Эпоха до Гипердрайва</entry>
   <entry key='traits.pre_warp.desc'>The civilization has not yet discovered proper Hyperspace travel. Fleet speed is reduced to %.0f and the Hyperdrive technology needs to be researched as well.</entry>
   <entry key='traits.reset'>Сбросить</entry>
-  <entry key='traits.rocks_and_sticks'>Rocks and sticks</entry>
+  <entry key='traits.rocks_and_sticks'>Слабые воины</entry>
   <entry key='traits.rocks_and_sticks.desc'>Either your race was scientifically incapable or just to pacifistic, the damage dealt by your forces is decreased by %.0f%%.</entry>
-  <entry key='traits.select_traits'>Select traits:</entry>
-  <entry key='traits.ship_builder'>Ship Builders</entry>
+  <entry key='traits.select_traits'>Список настроек для расы:</entry>
+  <entry key='traits.ship_builder'>Отличные космические корабли</entry>
   <entry key='traits.ship_builder.desc'>The civilization mastered ship construction before the galactic age. Ship production speed is increased to %.0f%%.</entry>
-  <entry key='traits.ship_mocker'>Ship mockers</entry>
+  <entry key='traits.ship_mocker'>Плохие космические корабли</entry>
   <entry key='traits.ship_mocker.desc'>The civilization did not successfully master ship construction before the galactic age. Ship production speed is reduced to %.0f%%.</entry>
-  <entry key='traits.slow_comprehension'>Slow comprehension</entry>
+  <entry key='traits.slow_comprehension'>Слабая наука</entry>
   <entry key='traits.slow_comprehension.desc'>Your race gets ideas and scientific processes at a much slower rate, which means %.0f%% more cost and time per research.</entry>
-  <entry key='traits.turtle'>Turtle</entry>
+  <entry key='traits.turtle'>Крепкая оборона</entry>
   <entry key='traits.turtle.desc'>Your race always loved to have strong defenses. Therefore, space stations, planetary shields and planetary guns gain %.0f%% hitpoints.</entry>
-  <entry key='traits.undiplomatic'>Undiplomatic</entry>
+  <entry key='traits.undiplomatic'>Плохие дипломаты</entry>
   <entry key='traits.undiplomatic.desc'>Diplomacy is not your strong skill. You lose %.0f%% chance they will agree to your terms.</entry>
-  <entry key='traits.weapon_builder'>Weapon Builders</entry>
+  <entry key='traits.weapon_builder'>Быстрое производство оружия</entry>
   <entry key='traits.weapon_builder.desc'>The civilization mastered weapon construction before the galactic age. Weapon production speed is increased to %.0f%%.</entry>
-  <entry key='traits.weapon_mastery'>Weapon mastery</entry>
+  <entry key='traits.weapon_mastery'>Мощное оружие</entry>
   <entry key='traits.weapon_mastery.desc'>Your race simply loves guns and explosions. All damage dealt by your forces increase by %.0f%%.</entry>
-  <entry key='traits.weapon_mocker'>Weapon mockers</entry>
+  <entry key='traits.weapon_mocker'>Слабое оружие</entry>
   <entry key='traits.weapon_mocker.desc'>The civilization did not successfully master weapon construction before the galactic age. Weapon production speed is reduced to %.0f%%.</entry>
   <entry key='videos.all_videos'>Все видеоролики</entry>
   <entry key='videos.back'>Назад</entry>

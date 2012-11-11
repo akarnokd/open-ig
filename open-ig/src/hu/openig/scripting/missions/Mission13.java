@@ -207,7 +207,10 @@ public class Mission13 extends Mission {
 	 */
 	boolean concludeBattle(BattleInfo battle) {
 		boolean result = false;
-		clearMission("Mission-13-Timeout");
+		// intercept before stop
+		if (hasMission("Mission-13-Timeout")) {
+			clearMission("Mission-13-Timeout");
+		}
 		Player g = garthog();
 		Fleet benson = findTaggedFleet("Mission-13-Benson", player);
 		Fleet garthog = findTaggedFleet("Mission-13-Garthog", g);
