@@ -55,6 +55,8 @@ import hu.openig.model.TraitKind;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.panels.WeatherOverlay;
+import hu.openig.screen.panels.WeatherOverlay.WeatherType;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -77,6 +79,7 @@ import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -344,6 +347,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	boolean zoomDirection;
 	/** Zoom to normal. */
 	boolean zoomNormal;
+	/** The weather overlay. */
+	WeatherOverlay weatherOverlay;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -528,13 +533,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 	@Override
 	public void onEnter(Screens mode) {
-		animationTimer = commons.register(200, new Action0() {
+		animationTimer = commons.register(150, new Action0() {
 			@Override
 			public void invoke() {
 				doAnimation();
+				doAnimation2();
 			}
 		});
-		earthQuakeTimer = commons.register(100, new Action0() {
+		earthQuakeTimer = commons.register(150, new Action0() {
 			@Override
 			public void invoke() {
 				doEarthquake();
@@ -569,6 +575,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		close0(animationTimer);
 		animationTimer = null;
+		
 		close0(earthQuakeTimer);
 		earthQuakeTimer = null;
 
@@ -1116,6 +1123,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (!units.isEmpty()) {
 					drawHiddenUnitIndicators(g2);
 				}
+
+				drawWeather(g2, surface);
 				
 				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
 					g2.setColor(Color.RED);
@@ -1435,6 +1444,20 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
 				}
 			}
+		}
+		/**
+		 * Render the weather effects.
+		 * @param g2 the graphics context
+		 * @param surface the current surface
+		 */
+		void drawWeather(Graphics2D g2, PlanetSurface surface) {
+			weatherOverlay.updateBounds(surface.boundingRectangle.width, surface.boundingRectangle.height);
+			String type = planet().type.type;
+			if ("frozen".equals(type) || "neptoplasm".equals(type)) {
+				weatherOverlay.type = WeatherType.SNOW; 
+				weatherOverlay.draw(g2);
+			}
+			weatherOverlay.draw(g2);
 		}
 		/**
 		 * Draw surface tiles and battle units.
@@ -2477,6 +2500,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		animation++;
 		blink = animation / 4 % 2 == 0;
 
+		weatherOverlay.update();
+		
+		askRepaint();
+	}
+	/** Perform the faster animation. */
+	void doAnimation2() {
+		weatherOverlay.update();
 		askRepaint();
 	}
 	/** Animate the shaking during an earthquake. */
@@ -3231,6 +3261,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		};
 
+		weatherOverlay = new WeatherOverlay(new Dimension(640, 480));
 		
 		initPathfinding();
 		
