@@ -60,12 +60,27 @@
 			<xs:element name="map" type="map">
 				<xs:annotation><xs:documentation>The resource location and pattern for surface map variations.</xs:documentation></xs:annotation>
 			</xs:element>
+			<xs:element name="weather" type="weather" minOccurs="0" maxOccurs="1">
+				<xs:annotation><xs:documentation>The optional weather definition. If absent, no weather effects are rendered.</xs:documentation></xs:annotation>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="type" type="xs:string" use="required">
 			<xs:annotation><xs:documentation>The planet type.</xs:documentation></xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="label" type="xs:string" use="required">
 			<xs:annotation><xs:documentation>The label of the planet type.</xs:documentation></xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="weather">
+		<xs:annotation><xs:documentation>The optional weather definition. If absent, no weather effects are rendered.</xs:documentation></xs:annotation>
+		<xs:attribute name="frequency" type="xs:positiveInteger" use="required">
+			<xs:annotation><xs:documentation>The weather effect frequency in game minutes.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="duration" type="xs:positiveInteger" use="required">
+			<xs:annotation><xs:documentation>The weather effect duration in game minutes.</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="drop-type" type="xs:string" use="required">
+			<xs:annotation><xs:documentation>The drop type, see WeatherType enum.</xs:documentation></xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="tileset">

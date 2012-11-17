@@ -43,8 +43,8 @@ public final class LabelIntegrator {
 			}
 		}
 		// ----------------------
-		String prefix = "e:/Downloads/";
-		List<String> files = Arrays.asList("labels v02.xml");
+		String prefix = "c:/Downloads/";
+		List<String> files = Arrays.asList("labels07.xml");
 		
 		String param = "%,?\\d*(s|d|f|x)";
 		

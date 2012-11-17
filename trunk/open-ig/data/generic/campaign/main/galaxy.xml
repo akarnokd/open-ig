@@ -20,6 +20,7 @@
 				<tile-range start="49" end="57" width="4" height="4"/>
 			</tileset>
 			<map pattern="campaign/main/surfaces/neptoplasm_%d" start="1" end="6"/>
+			<weather frequency='2880' duration='180' drop-type='RAIN'/>
 		</planet>
 		<planet type="cratered" label="planet.type.cratered">
 			<body>starmap/planets/planet_cratered_30x30</body>
@@ -39,6 +40,7 @@
 				<tile id="97" width="4" height="4"/>
 			</tileset>
 			<map pattern="campaign/main/surfaces/cratered_%d" start="1" end="9"/>
+			<weather frequency='4320' duration='120' drop-type='SNOW'/>
 		</planet>
 		<planet type="desert" label="planet.type.desert">
 			<body>starmap/planets/planet_desert_30x30</body>
@@ -54,6 +56,7 @@
 				<tile-range start="76" end="79" width="4" height="4"/>
 			</tileset>
 			<map pattern="campaign/main/surfaces/desert_%d" start="1" end="9"/>
+			<weather frequency='43200' duration='600' drop-type='RAIN'/>
 		</planet>
 		<planet type="earth" label="planet.type.earth">
 			<body>starmap/planets/planet_earth_30x30</body>
@@ -72,6 +75,7 @@
 				<tile id="161" width="6" height="6"/>
 			</tileset>
 			<map pattern="campaign/main/surfaces/earth_%d" start="1" end="8"/>
+			<weather frequency='4320' duration='120' drop-type='RAIN'/>
 		</planet>
 		<planet type="frozen" label="planet.type.frozen">
 			<body>starmap/planets/planet_ice_30x30</body>
@@ -91,6 +95,7 @@
 				<tile id="79" width="2" height="2"/>
 			</tileset>
 			<map pattern="campaign/main/surfaces/frozen_%d" start="1" end="9"/>
+			<weather frequency='2880' duration='180' drop-type='SNOW'/>
 		</planet>
 		<planet type="liquid" label="planet.type.liquid">
 			<body>starmap/planets/planet_liquid_30x30</body>
@@ -113,6 +118,7 @@
 				<tile-range start="122" end="123" width="3" height="3"/>
 			</tileset>
 			<map pattern="campaign/main/surfaces/liquid_%d" start="1" end="8"/>
+			<weather frequency='1440' duration='120' drop-type='RAIN'/>
 		</planet>
 		<planet type="rocky" label="planet.type.rocky">
 			<body>starmap/planets/planet_rocky_30x30</body>
@@ -128,6 +134,7 @@
 				<tile id="74" width="5" height="5"/>
 			</tileset>
 			<map pattern="campaign/main/surfaces/rocky_%d" start="1" end="8"/>
+			<weather frequency='5760' duration='120' drop-type='RAIN'/>
 		</planet>
 	</planets>
 	<population-growths>

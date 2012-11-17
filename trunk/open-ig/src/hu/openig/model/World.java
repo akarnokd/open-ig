@@ -1249,6 +1249,7 @@ public class World {
 				xp.set("tax-income", p.taxIncome);
 				xp.set("trade-income", p.tradeIncome);
 				xp.set("earthquake-ttl", p.earthQuakeTTL);
+				xp.set("weather-ttl", p.weatherTTL);
 				for (Building b : p.surface.buildings) {
 					XElement xb = xp.add("building");
 					xb.set("x", b.location.x);
@@ -1677,6 +1678,7 @@ public class World {
 				p.taxIncome = xplanet.getInt("tax-income");
 				p.tradeIncome = xplanet.getInt("trade-income");
 				p.earthQuakeTTL = xplanet.getInt("earthquake-ttl", 0);
+				p.weatherTTL = xplanet.getInt("weather-ttl", 0);
 				
 				p.surface.setBuildings(buildingModel, xplanet);
 				p.owner.planets.put(p, PlanetKnowledge.BUILDING);

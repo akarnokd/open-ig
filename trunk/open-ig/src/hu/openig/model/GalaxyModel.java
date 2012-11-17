@@ -109,6 +109,15 @@ public class GalaxyModel {
 							planetType.pattern = map.get("pattern");
 							planetType.start = Integer.parseInt(map.get("start"));
 							planetType.end = Integer.parseInt(map.get("end"));
+							
+							XElement xweather = planet.childElement("weather");
+							if (xweather != null) {
+								planetType.weatherFrequency = xweather.getInt("frequency");
+								planetType.weatherDuration = xweather.getInt("duration");
+								String dropType = xweather.get("drop-type", null);
+								planetType.weatherDrop = WeatherType.valueOf(dropType);
+							}
+							
 							synchronized (planetTypes) {
 								planetTypes.put(planetType.type, planetType);
 							}
