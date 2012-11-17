@@ -10,6 +10,7 @@ package hu.openig.core;
 
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.Tile;
+import hu.openig.model.WeatherType;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -40,4 +41,10 @@ public class PlanetType {
 	public int start;
 	/** The end index of the preset surface models. */
 	public int end;
+	/** The weather frequency in minutes. */
+	public int weatherFrequency = 3 * 24 * 60;
+	/** The weather duration in minutes. */
+	public int weatherDuration = 2 * 60;
+	/** The drop type or null if no weather is on this kind of planet. */
+	public WeatherType weatherDrop;
 }

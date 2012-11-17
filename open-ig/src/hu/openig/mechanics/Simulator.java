@@ -208,7 +208,9 @@ public final class Simulator {
 		final int repairAmount = world.params().repairSpeed();
 //		final int buildCost = world.params().constructionCost();
 		final int buildAmount = world.params().constructionSpeed();
-		
+
+		int speed = world.params().speed();
+
 		if (world.statistics.playTime >= eqPlaytime && (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
 			if (planet.earthQuakeTTL <= 0) {
 				// cause earthquake once in every 12, 6 or 3 months
@@ -219,8 +221,8 @@ public final class Simulator {
 				if (world.difficulty == Difficulty.HARD) {
 					eqDelta /= 4;
 				}
-				if (world.random().nextInt(eqDelta) < 1) {
-					planet.earthQuakeTTL = 6; // 1 hour
+				if (world.random().nextInt(eqDelta) < speed) {
+					planet.earthQuakeTTL = 60; // 1 hour
 					
 					Message msg = world.newMessage("message.earthquake");
 					msg.priority = 25;
@@ -230,13 +232,27 @@ public final class Simulator {
 					
 				}
 			} else {
-				planet.earthQuakeTTL--;
+				planet.earthQuakeTTL -= speed;
 			}
 		}
+		
+		// rain calculation
+		if (planet.type.weatherDrop != null) {
+			if (planet.weatherTTL <= 0) {
+				if (world.random().nextInt(planet.type.weatherFrequency) < speed) {
+					planet.weatherTTL = planet.type.weatherDuration + world.random().nextInt(120) - 60;
+				}
+			} else {
+				planet.weatherTTL -= speed;
+			}
+		} else {
+			planet.weatherTTL = -1;
+		}
+		
 
 		// progress quarantine if any
 		if (planet.quarantineTTL > 0) {
-			planet.quarantineTTL -= world.params().speed();
+			planet.quarantineTTL -= speed;
 			if (planet.quarantineTTL <= 0) {
 				planet.quarantineTTL = 0;
 

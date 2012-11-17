@@ -8,6 +8,8 @@
 
 package hu.openig.screen.panels;
 
+import hu.openig.model.WeatherType;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,8 +24,6 @@ import java.util.Random;
  * @author Daniel Bajor, 2012.11.17.
  */
 public class WeatherOverlay {
-	/** The weather types. */
-	public enum WeatherType { SNOW, RAIN }
 	/** Number of drops. */
 	public static final int MAX_DROPS = 2000;
 	/** The horizontal margin. */
@@ -48,6 +48,8 @@ public class WeatherOverlay {
 	public static final Color RAIN_COLOR = new Color(200, 200, 255);
 	/** The rendering bounds. */
 	public Dimension bounds;
+	/** The light level. */
+	public double alpha = 1d;
 	/**
 	 * Initialize the overlay.
 	 * @param bounds the the rendering bounds.
@@ -117,11 +119,14 @@ public class WeatherOverlay {
 		 * Update the drop color.
 		 */
 		private void updateColor() {
+			double a = Math.max(0, Math.min(1, alpha + random.nextDouble() * 0.2 - 0.1));  
 			color = type == WeatherType.RAIN
-					? RAIN_COLOR
-					: SNOW_COLOR;
+//					? RAIN_COLOR
+//					: SNOW_COLOR;
 //					? new Color(RAIN_COLOR.getRed(), RAIN_COLOR.getGreen(), RAIN_COLOR.getBlue(), random.nextInt(156) + 50) 
 //					: new Color(SNOW_COLOR.getRed(), SNOW_COLOR.getGreen(), SNOW_COLOR.getBlue(), random.nextInt(226) + 30);
+					? new Color((int)(RAIN_COLOR.getRed() * a), (int)(RAIN_COLOR.getGreen() * a), (int)(RAIN_COLOR.getBlue() * a)) 
+					: new Color((int)(SNOW_COLOR.getRed() * a), (int)(SNOW_COLOR.getGreen() * a), (int)(SNOW_COLOR.getBlue() * a));
 		}
 		/**
 		 * Reposition outbound drop.

@@ -56,7 +56,6 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.panels.WeatherOverlay;
-import hu.openig.screen.panels.WeatherOverlay.WeatherType;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -1449,15 +1448,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		 * @param surface the current surface
 		 */
 		void drawWeather(Graphics2D g2, PlanetSurface surface) {
-			weatherOverlay.updateBounds(surface.boundingRectangle.width, surface.boundingRectangle.height);
-			String type = planet().type.type;
-			if ("frozen".equals(type) || "neptoplasm".equals(type)) {
-				weatherOverlay.type = WeatherType.SNOW; 
+			if (planet().weatherTTL > 0 && planet().type.weatherDrop != null) {
+				weatherOverlay.updateBounds(surface.boundingRectangle.width, surface.boundingRectangle.height);
+				weatherOverlay.type = planet().type.weatherDrop;
+				weatherOverlay.alpha = alpha + 0.3;
 				weatherOverlay.draw(g2);
-			} else {
-				weatherOverlay.type = WeatherType.RAIN;
 			}
-			weatherOverlay.draw(g2);
 		}
 		/**
 		 * Draw surface tiles and battle units.
@@ -5997,6 +5993,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			float a2 = (alpha - Tile.MIN_ALPHA);
 			int n = (int)(a2 / step);
 			alpha = step * n + Tile.MIN_ALPHA;
+		}
+		if (planet().weatherTTL > 0) {
+			alpha = Math.max(Tile.MIN_ALPHA, alpha - 0.3f);
 		}
 	}
 	/**
