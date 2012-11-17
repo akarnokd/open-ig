@@ -27,12 +27,14 @@ import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sound.sampled.AudioFormat;
@@ -177,6 +179,7 @@ public class Sounds {
 			synchronized (this) { // FIX for Linux PulseAudio Mixer theading issue 
 				SourceDataLine sdl = AudioSystem.getSourceDataLine(aft.format);
 				sdl.open(aft.format);
+				lines.add(sdl);
 				return sdl;
 			}
 		} catch (LineUnavailableException ex) {
@@ -198,7 +201,6 @@ public class Sounds {
 			result = addLine(aft);
 			if (CACHE_LINES) {
 				soundPool.get(aft).add(result);
-				lines.add(result);
 			}
 		}
 		return result;
@@ -222,15 +224,15 @@ public class Sounds {
 	public void close() {
 		if (exec != null) {
 			exec.shutdown();
+			for (SourceDataLine sdl : lines) {
+				sdl.close();
+			}
 			try {
 				exec.awaitTermination(60, TimeUnit.SECONDS);
 			} catch (InterruptedException ex) {
 				// ignored
 			}
 			exec.shutdownNow();
-			for (SourceDataLine sdl : lines) {
-				sdl.close();
-			}
 			lines.clear();
 			soundPool.clear();
 			soundMap.clear();
@@ -240,36 +242,98 @@ public class Sounds {
 		
 	}
 	/**
+	 * Change the volume on all lines.
+	 * @param volume the new volume
+	 */
+	public void setVolume(int volume) {
+		for (SourceDataLine sdl : lines) {
+			AudioThread.setVolume(sdl, volume);
+		}
+	}
+	/**
 	 * Play the given sound effect.
 	 * @param effect the sound to play
 	 * @param action the action to invoke once the sound completed.
+	 * @return the future object to cancel the sound or null if no sound was played
 	 */
-	public void playSound(final SoundType effect, final Action0 action) {
+	public Action0 playSound(final SoundType effect, final Action0 action) {
+		return playSound(effect, action, false);
+	}
+	/**
+	 * Play the given sound effect.
+	 * @param effect the sound to play
+	 * @param action the action to invoke once the sound completed.
+	 * @param loop until cancelled?
+	 * @return the future object to cancel the sound or null if no sound was played
+	 */
+	public Action0 playSound(final SoundType effect, final Action0 action, final boolean loop) {
 		if (effect == null) {
 			Exceptions.add(new IllegalArgumentException("Null effect"));
-			return;
+			return null;
 		}
 		final int vol = getVolume.invoke();
 		if (vol > 0) {
 			if (effectSemaphore.tryAcquire()) {
 				try {
-					exec.execute(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								playSoundAsync(effect, vol);
-							} finally {
-								edt(action);
+					
+					final byte[] data = soundMap.get(effect);
+					final AudioFormatType aft = soundFormat.get(effect);
+					final SourceDataLine sdl = getLine(aft);
+
+					if (sdl != null) {
+						final Object cancelSync = new Object();
+						final AtomicBoolean done = new AtomicBoolean();
+						
+						final Future<?> f = exec.submit(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									String n = Thread.currentThread().getName();
+									Thread.currentThread().setName(n + "-" + effect);
+									try {
+										AudioThread.setVolume(sdl, vol);
+										sdl.start();
+										do {
+											sdl.write(data, 0, data.length);
+										} while (loop && !done.get() && !Thread.currentThread().isInterrupted());
+										sdl.drain();
+										sdl.stop();
+									} catch (Throwable t) {
+										Exceptions.add(t);
+									} finally {
+										Thread.currentThread().setName(n);
+										
+										synchronized (cancelSync) {
+											putBackLine(aft, sdl);
+											done.set(true);
+										}
+										effectSemaphore.release();
+									}
+								} finally {
+									edt(action);
+								}
 							}
-						}
-					});
+						});
+						return new Action0() {
+							@Override
+							public void invoke() {
+								synchronized (cancelSync) {
+									if (!done.get()) {
+										done.set(true);
+										sdl.flush();
+										f.cancel(true);
+									}
+								}
+							}
+						};
+					}
 				} catch (RejectedExecutionException ex) {
 					effectSemaphore.release();
 				}
 			}
-		} else {
-			edt(action);
 		}
+		edt(action);
+		return null;
 	}
 	/**
 	 * Execute an action on the edt.
@@ -283,39 +347,6 @@ public class Sounds {
 					action.invoke();
 				}
 			});
-		}
-	}
-	
-	/**
-	 * Play the sound type with the given volume asynchronously.
-	 * @param effect the effect
-	 * @param vol the volume
-	 */
-	void playSoundAsync(final SoundType effect, final int vol) {
-		String n = Thread.currentThread().getName();
-		Thread.currentThread().setName(n + "-" + effect);
-		
-		byte[] data = soundMap.get(effect);
-		AudioFormatType aft = soundFormat.get(effect);
-		try {
-			SourceDataLine sdl = getLine(aft);
-			if (sdl != null) {
-				try {
-					AudioThread.setVolume(sdl, vol);
-					sdl.start();
-					sdl.write(data, 0, data.length);
-					sdl.drain();
-					sdl.stop();
-				} finally {
-					putBackLine(aft, sdl);
-				}
-			}
-		} catch (Throwable t) {
-			Exceptions.add(t);
-		} finally {
-			Thread.currentThread().setName(n);
-
-			effectSemaphore.release();
 		}
 	}
 	/**

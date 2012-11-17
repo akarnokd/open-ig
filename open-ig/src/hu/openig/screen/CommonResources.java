@@ -970,28 +970,28 @@ public class CommonResources implements GameEnvironment {
 		m.playSequence(name);
 	}
 	@Override
-	public void playSound(SoundTarget target, SoundType type, Action0 action) {
+	public Action0 playSound(SoundTarget target, SoundType type, Action0 action) {
 		switch (target) {
 		case COMPUTER:
 			if (config.computerVoiceNotify) {
-				sounds.playSound(type, action);
+				return sounds.playSound(type, action);
 			}
 			break;
 		case BUTTON:
 			if (config.buttonSounds) {
-				sounds.playSound(type, action);
+				return sounds.playSound(type, action);
 			}
 			break;
 		case EFFECT:
-			sounds.playSound(type, action);
-			break;
+			return sounds.playSound(type, action);
 		case SCREEN:
 			if (config.computerVoiceScreen) {
-				sounds.playSound(type, action);
+				return sounds.playSound(type, action);
 			}
 			break;
 		default:
 		}
+		return null;
 	}
 	@Override
 	public void playVideo(final String name, final Action0 action) {
