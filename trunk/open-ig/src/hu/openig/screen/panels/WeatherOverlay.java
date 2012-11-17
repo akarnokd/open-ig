@@ -31,7 +31,7 @@ public class WeatherOverlay {
 	/** The vertical margin. */
 	public static final int MARGIN_Y = 15;
 	/** Rain mode velocity. */
-	public static final double RAIN_VELOCITY = 40;
+	public static final double RAIN_VELOCITY = 30;
 	/** Snow mode velocity. */
 	public static final double SNOW_VELOCITY = 4;
 	/** The individual drops. */
