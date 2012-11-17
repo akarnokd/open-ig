@@ -1002,19 +1002,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			case WHEEL:
 				if (e.has(Modifier.CTRL)) {
 					double pre = scale;
-					double mx = (e.x - offsetX) * pre;
-					double my = (e.y - offsetY) * pre;
+					int ox = offsetX;
+					int oy = offsetY;
+					double mx = (e.x - ox) / pre;
+					double my = (e.y - oy) / pre;
 					if (e.z < 0) {
 						doZoomIn();
 					} else {
 						doZoomOut();
 					}
-					double mx0 = (e.x - offsetX) * scale;
-					double my0 = (e.y - offsetY) * scale;
-					double dx = (mx - mx0) / pre;
-					double dy = (my - my0) / pre;
-					offsetX += (int)(dx);
-					offsetY += (int)(dy);
+					offsetX = (int)(e.x - scale * mx);
+					offsetY = (int)(e.y - scale * my);
 					rep = true;
 				} else
 				if (e.has(Modifier.SHIFT)) {
@@ -1456,6 +1454,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if ("frozen".equals(type) || "neptoplasm".equals(type)) {
 				weatherOverlay.type = WeatherType.SNOW; 
 				weatherOverlay.draw(g2);
+			} else {
+				weatherOverlay.type = WeatherType.RAIN;
 			}
 			weatherOverlay.draw(g2);
 		}
