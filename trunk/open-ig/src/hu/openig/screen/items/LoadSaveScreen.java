@@ -432,6 +432,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			public void invoke() {
 				config.effectVolume = Math.max(0, config.effectVolume - 1);
 				effectSound(SoundType.BAR);
+				commons.sounds.setVolume(config.effectVolume);
 				doRepaint();
 			}
 		};
@@ -440,6 +441,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			public void invoke() {
 				config.effectVolume = Math.min(100, config.effectVolume + 1);
 				effectSound(SoundType.BAR);
+				commons.sounds.setVolume(config.effectVolume);
 				doRepaint();
 			}
 		};
@@ -451,6 +453,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 					int dw = next.x - prev.x - prev.width - 2;
 					int x0 = e.x - prev.x - prev.width;
 					config.effectVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
+					commons.sounds.setVolume(config.effectVolume);
 					return true;
 				} else
 				if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.effectVolume == 100))) {

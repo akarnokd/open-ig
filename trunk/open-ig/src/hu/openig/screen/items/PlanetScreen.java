@@ -52,6 +52,7 @@ import hu.openig.model.SurfaceFeature;
 import hu.openig.model.Tile;
 import hu.openig.model.Trait;
 import hu.openig.model.TraitKind;
+import hu.openig.model.WeatherType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -348,6 +349,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	boolean zoomNormal;
 	/** The weather overlay. */
 	WeatherOverlay weatherOverlay;
+	/** The weather sound is running? */
+	Action0 weatherSoundRunning;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -386,6 +389,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				config.showBuildingName = !config.showBuildingName;
 				e.consume();
 				rep = true;
+			}
+			break;
+		case KeyEvent.VK_R:
+			if (e.isControlDown()) {
+				if (planet().weatherTTL <= 0) {
+					planet().weatherTTL = 120;
+					rep = true;
+				} else {
+					planet().weatherTTL = 0;
+					rep = true;
+				}
 			}
 			break;
 		case KeyEvent.VK_D:
@@ -569,6 +583,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 	@Override
 	public void onLeave() {
+		
+		cancelWeatherSound();
+		
 		placementMode = false;
 		buildingsPanel.build.down = false;
 
@@ -2502,8 +2519,33 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	/** Perform the faster animation. */
 	void doAnimation2() {
+		if (planet().weatherTTL > 0 && planet().type.weatherDrop == WeatherType.RAIN) {
+			if (weatherSoundRunning == null) {
+				weatherSoundRunning = commons.sounds.playSound(
+						SoundType.RAIN, new Action0() {
+					@Override
+					public void invoke() {
+						weatherSoundRunning = null;
+					}
+				}, true);
+				if (world().random().nextInt(30) < 1) {
+					effectSound(SoundType.THUNDER);
+				}
+			}
+		} else {
+			cancelWeatherSound();
+		}
 		weatherOverlay.update();
 		askRepaint();
+	}
+	/**
+	 * Cancel the weather sound.
+	 */
+	void cancelWeatherSound() {
+		if (weatherSoundRunning != null) {
+			weatherSoundRunning.invoke();
+			weatherSoundRunning = null;
+		}
 	}
 	/** Animate the shaking during an earthquake. */
 	void doEarthquake() {

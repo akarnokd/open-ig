@@ -48,8 +48,9 @@ public interface GameEnvironment {
 	 * @param target the sound target
 	 * @param type the sound type
 	 * @param action the optional completion action
+	 * @return the future object to cancel the sound
 	 */
-	void playSound(SoundTarget target, SoundType type, Action0 action);
+	Action0 playSound(SoundTarget target, SoundType type, Action0 action);
 	/** Stops the music playback. */
 	void stopMusic();
 	/** Stops the music playback. */

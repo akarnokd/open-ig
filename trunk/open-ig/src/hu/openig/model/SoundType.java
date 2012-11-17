@@ -194,7 +194,11 @@ public enum SoundType {
 	/** Hologram turn on. */
 	HOLOGRAM_ON("ui/hologram_on"),
 	/** Hologram turn off. */
-	HOLOGRAM_OFF("ui/hologram_off")
+	HOLOGRAM_OFF("ui/hologram_off"),
+	/** The rain effect. */
+	RAIN("ui/rain"),
+	/** The tunder effect. */
+	THUNDER("ui/thunder")
 	;
 	/** The associated resource location. */
 	public final String resource;
