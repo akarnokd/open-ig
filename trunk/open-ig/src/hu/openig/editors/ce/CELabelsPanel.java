@@ -8,6 +8,7 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Action1;
 import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.GUIUtils;
@@ -26,17 +27,24 @@ import java.util.regex.Pattern;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.table.TableRowSorter;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -72,7 +80,15 @@ public class CELabelsPanel extends CEBasePanel {
 	/** The back reference to the list of languages and entries. */
 	Map<String, List<XElement>> languages;
 	/** The sorter. */
-	private TableRowSorter<GenericTableModel<LabelEntry>> mainSorter;
+	TableRowSorter<GenericTableModel<LabelEntry>> mainSorter;
+	/** The key field. */
+	JTextField keyField;
+	/** The key label. */
+	JLabel keyLabel;
+	/** The bottom panel. */
+	JPanel bottomPanel;
+	/** The text areas. */
+	final Map<String, CEValueBox<JTextArea>> textAreas = U.newHashMap();
 	/**
 	 * Constructs the panel.
 	 * @param context the context
@@ -88,6 +104,7 @@ public class CELabelsPanel extends CEBasePanel {
 		verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
 		verticalSplit.setTopComponent(createTopPanel());
+		verticalSplit.setBottomComponent(createBottomPanel());
 		verticalSplit.setResizeWeight(0.75);
 		
 		setLayout(new BorderLayout());
@@ -170,6 +187,20 @@ public class CELabelsPanel extends CEBasePanel {
 		filterHelp.setToolTipText(filterHelpStr);
 		filter.setToolTipText(filterHelpStr);
 		
+		mainTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					int idx = mainTable.getSelectedRow();
+					if (idx >= 0) {
+						idx = mainTable.convertRowIndexToModel(idx);
+						doDetails(mainModel.get(idx), idx);
+					} else {
+						doDetails(null, -1);
+					}
+				}
+			}
+		});
 		
 		
 		
@@ -262,6 +293,9 @@ public class CELabelsPanel extends CEBasePanel {
 		
 		mainModel.fireTableStructureChanged();
 		mainTable.getColumnModel().getColumn(0).setMaxWidth(24);
+		
+		updateDetails();
+		doUpdateCount();
 	}
 	/** Load the test labels. */
 	void loadTestData() {
@@ -449,5 +483,120 @@ public class CELabelsPanel extends CEBasePanel {
 			strs.add(xe.content);
 		}
 		return strs.size() != context.languages().size();
+	}
+	/** @return the bottom panel. */
+	JComponent createBottomPanel() {
+		bottomPanel = new JPanel();
+		
+		GroupLayout gl = new GroupLayout(bottomPanel);
+		bottomPanel.setLayout(gl);
+		gl.setAutoCreateContainerGaps(true);
+		gl.setAutoCreateGaps(true);
+
+		keyField = new JTextField();
+		keyLabel = new JLabel(get("label.key"));
+		
+		
+		JScrollPane sp = new JScrollPane(bottomPanel);
+		sp.getVerticalScrollBar().setUnitIncrement(30);
+		sp.getVerticalScrollBar().setBlockIncrement(90);
+		
+		
+		return sp;
+	}
+	/**
+	 * Update the controls of the detail panel.
+	 */
+	void updateDetails() {
+		bottomPanel.removeAll();
+		GroupLayout gl = (GroupLayout)bottomPanel.getLayout();
+		
+		ParallelGroup c1 = gl.createParallelGroup();
+		ParallelGroup c2 = gl.createParallelGroup();
+		
+		SequentialGroup r1 = gl.createSequentialGroup();
+		
+		c1.addComponent(keyLabel);
+		c2.addComponent(keyField);
+		
+		r1.addGroup(
+			gl.createParallelGroup(Alignment.BASELINE)
+			.addComponent(keyLabel)
+			.addComponent(keyField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+		);
+		
+		textAreas.clear();
+		
+		for (final String lang : context.languages()) {
+			JLabel lbl = new JLabel(lang);
+			JTextArea ta = new JTextArea();
+			
+			final CEValueBox<JTextArea> vta = CEValueBox.of("", ta);
+			vta.validator = new Action1<JTextArea>() {
+				@Override
+				public void invoke(JTextArea value) {
+					validateLabelField(vta);
+				}
+			};
+			
+			textAreas.put(lang, vta);
+			
+			c1.addComponent(lbl);
+			c2.addComponent(vta);
+			r1.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lbl)
+				.addComponent(vta, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			);
+		}
+		
+		
+		gl.setHorizontalGroup(
+			gl.createSequentialGroup()
+			.addGroup(c1)
+			.addGroup(c2)
+		);
+		gl.setVerticalGroup(
+			r1
+		);
+	}
+	/**
+	 * Validate the label fields.
+	 * @param vta the current field
+	 */
+	void validateLabelField(final CEValueBox<JTextArea> vta) {
+		if (vta.component.getText().isEmpty()) {
+			vta.setInvalid(errorIcon, get("label.missing_translation"));
+		} else {
+			for (CEValueBox<JTextArea> vta2 : textAreas.values()) {
+				if (vta2 != vta && vta2.component.getText().equals(vta.component.getText())) {
+					vta.setInvalid(warningIcon, get("label.duplicate_translation"));
+				}
+			}
+		}
+	}
+	/**
+	 * Show the details of an item. If null, all fields should be emptied/disabled as necessary.
+	 * @param item the item
+	 * @param index the model index
+	 */
+	void doDetails(LabelEntry item, int index) {
+		for (CEValueBox<JTextArea> ta : textAreas.values()) {
+			ta.clearInvalid();
+			ta.component.setText("");
+		}
+		if (item != null) {
+			keyField.setText(item.key);
+			for (Map.Entry<String, XElement> e : item.content.entrySet()) {
+				CEValueBox<JTextArea> ceValueBox = textAreas.get(e.getKey());
+				ceValueBox.component.setText(e.getValue().content);
+			}
+			for (Map.Entry<String, XElement> e : item.content.entrySet()) {
+				CEValueBox<JTextArea> ceValueBox = textAreas.get(e.getKey());
+				ceValueBox.validateComponent();
+			}
+		} else {
+			keyField.setText("");
+		}
 	}
 }
