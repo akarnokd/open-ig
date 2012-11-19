@@ -8,20 +8,19 @@
 
 package hu.openig.editors.ce;
 
-import hu.openig.utils.XElement;
-
 import javax.swing.RowFilter;
 
 /**
  * Base class for filtering generic table model elements with XElement type.
  * @author akarnokd, 2012.11.02.
+ * @param <T> the element type
  */
-public abstract class CEXRowFilter extends
-		RowFilter<GenericTableModel<XElement>, Integer> {
+public abstract class CEXRowFilter<T> extends
+		RowFilter<GenericTableModel<T>, Integer> {
 	@Override
 	public final boolean include(
-			javax.swing.RowFilter.Entry<? extends GenericTableModel<XElement>, ? extends Integer> entry) {
-		GenericTableModel<XElement> model = entry.getModel();
+			javax.swing.RowFilter.Entry<? extends GenericTableModel<T>, ? extends Integer> entry) {
+		GenericTableModel<T> model = entry.getModel();
 		int index = entry.getIdentifier();
 		Object[] dv = new Object[model.getColumnCount()];
 		for (int i = 0; i < dv.length; i++) {
@@ -36,5 +35,5 @@ public abstract class CEXRowFilter extends
 	 * @param index the index
 	 * @return true if should be included
 	 */
-	public abstract boolean include(XElement item, Object[] displayValues, int index);
+	public abstract boolean include(T item, Object[] displayValues, int index);
 }

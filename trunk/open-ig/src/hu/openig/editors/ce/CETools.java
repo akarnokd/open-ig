@@ -86,7 +86,7 @@ public final class CETools {
 	 */
 	public static Pattern wildcardToRegex(String wildcard) {
 		StringBuilder result = new StringBuilder();
-		result.append("^");
+		result.append("\\b");
 		for (int i = 0; i < wildcard.length(); i++) {
 			char c = wildcard.charAt(i);
 			if (c == '*') {
@@ -101,7 +101,7 @@ public final class CETools {
 				result.append(c);
 			}
 		}
-		result.append("$");
+		result.append("\\b");
 		return Pattern.compile(result.toString(), Pattern.CASE_INSENSITIVE);
 	}
 }

@@ -171,4 +171,14 @@ public interface CEContext {
 	 * @return true if exists
 	 */
 	boolean hasLabel(String key);
+	/** @return the supported languages. */
+	List<String> languages();
+	/**
+	 * Get a resource for the specified language (or generic).
+	 * @param language the language
+	 * @param resource the resource name with extension
+	 * @return the data bytes or null if not found
+	 */
+	byte[] getData(String language, String resource);
+
 }

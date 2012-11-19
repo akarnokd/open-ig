@@ -130,6 +130,11 @@
 		<entry key='invalid_number_positive'>Invalid positive number</entry>
 		<entry key='missing_label_of'>Missing label %s</entry>
 		<entry key='missing_label'>Missing label</entry>
+		<entry key='label.key'>Key</entry>
+		<entry key='tech.filter.key.key'>The label's key.</entry>
+		<entry key='tech.filter.key.language'>The two letter language code.</entry>
+		<entry key='tech.filter.key.missing'>Missing translation. Values can be &lt;code>true&lt;/code>, &lt;code>false&lt;/code> or a specific language code.</entry>
+		<entry key='tech.filter.key.untranslated'>Entries which are not translated. Values can be &lt;code>true&lt;/code> or &lt;code>false&lt;/code>.</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>
