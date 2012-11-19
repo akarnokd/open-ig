@@ -332,7 +332,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		} else {
 			GUIUtils.addFirstItem(filter, filterStr);
 			final List<Pair<String, Pattern>> parsed = CETools.parseFilter(filterStr);
-			CEXRowFilter rf = new CEXRowFilter() {
+			CEXRowFilter<XElement> rf = new CEXRowFilter<XElement>() {
 				@Override
 				public boolean include(XElement item, Object[] displayValues, int index) {
 					return checkFilter(item, displayValues, parsed);

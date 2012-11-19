@@ -550,6 +550,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 * @param resource the resource name with extension
 	 * @return the data bytes or null if not found
 	 */
+	@Override
 	public byte[] getData(String language, String resource) {
 		File dlc = new File(workDir, "dlc");
 		
@@ -790,8 +791,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	}
 	@Override
 	public String projectLanguage() {
-		// TODO Auto-generated method stub
-		return null;
+		return projectLanguage;
 	}
 	@Override
 	public String label(String language, String key) {
@@ -894,6 +894,10 @@ public class CampaignEditor extends JFrame implements CEContext {
 				}
 			}
 		}
+	}
+	@Override
+	public List<String> languages() {
+		return languages;
 	}
 	@Override
 	public void setLabel(String key, String value) {
