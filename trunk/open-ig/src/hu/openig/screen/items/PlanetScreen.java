@@ -2528,9 +2528,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						weatherSoundRunning = null;
 					}
 				}, true);
-				if (world().random().nextInt(30) < 1) {
-					effectSound(SoundType.THUNDER);
-				}
+			}
+			if (world().random().nextInt(30) < 1) {
+				effectSound(SoundType.THUNDER);
 			}
 		} else {
 			cancelWeatherSound();
