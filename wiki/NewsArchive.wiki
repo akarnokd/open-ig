@@ -4,6 +4,17 @@
 
 = Recent =
 
+== November, 2012 ==
+
+*November 9, 2012*
+
+I put the Android version of Open-IG on hold indefinitely. The decision came from considering several aspects:
+
+  * I'm not sure they would let it into the online mobile store, even if it's free.
+  * It's a significant undertaking with very little return. I can use the time to finish up the desktop version and/or my upcoming 4X game.
+  * The game probably won't fit onto devices but the most expensive.
+  * The questionare shows that about 93% of people voted for don't or low priority.
+
 == September, 2012 ==
 
 *September 18, 2012*
