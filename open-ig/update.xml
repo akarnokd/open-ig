@@ -29,7 +29,7 @@
 			<desc lang='en'>The launcher's main file</desc>
 		</file>
 	</module>
-	<module id='Game' version='0.95.114'>
+	<module id='Game' version='0.95.115'>
 		<general url='https://code.google.com/p/open-ig/'>
 			<desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -47,8 +47,8 @@
 			<desc lang='en'>Beta + Skirmish.</desc>
 			<desc lang='ru'>Бета + перестрелка.</desc>
 		</notes>
-		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.114.jar' sha1='C7C466E464894F912A84BEE6F4852A591D39DAEC'/>
-		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20121114a2.zip' sha1='8A8CD1A94E1A161ED9152946C6C41BA9CAD7A2FC'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-0.95.115.jar' sha1='01705B8EAD94328AA7424099B8EED7A078EFF0B5'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20121121a2.zip' sha1='E2F4FBD63E5323047B48C02131B257027A34D25B'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-images-20121022a.zip' sha1='A0E7827EC11F782FAC34A4041D582F43DED00365'/>
 
 		<file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
@@ -75,8 +75,9 @@
 		<file url='https://open-ig.googlecode.com/files/open-ig-audio-fr-20121022.zip' sha1='0bf49594221f18163cc31840bb7cb427a673643d' size='44007662' language='fr'/>
 		<file url='https://open-ig.googlecode.com/files/open-ig-audio-ru-20121022.zip' sha1='9753b415d1feed5b6dcad754b2982561fa698d83' size='38030621' language='ru'/>
 
-		<file url='https://open-ig.googlecode.com/files/open-ig-audio-generic-20120620A.zip' sha1='e567faf22463296a682de62a576f2aebcd3f0390'/>
+		<file url='https://open-ig.googlecode.com/files/open-ig-audio-generic-20121121A.zip' sha1='a6d36fc0221582157f3ceccd48b8115ad3da6788'/>
 		
+		<remove file='open-ig-audio-generic-20120620A.zip'/>
 		<remove file='open-ig-audio-generic-20120505A.zip'/>
 		<remove file='open-ig-video-01-0.8.zip'/>
 		<remove file='open-ig-video-02-0.8.zip'/>
