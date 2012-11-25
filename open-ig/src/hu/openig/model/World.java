@@ -667,14 +667,11 @@ public class World {
 			if (nameLabel != null) {
 				p.name = labels.get(nameLabel); 
 			}
-			p.owner = players.get(xplanet.get("owner", null));
-			p.race = xplanet.get("race", null);
 			p.x = Integer.parseInt(xplanet.get("x"));
 			p.y = Integer.parseInt(xplanet.get("y"));
 			
 			p.diameter = Integer.parseInt(xplanet.get("size"));
-			p.population = Integer.parseInt(xplanet.get("population"));
-			
+
 			p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
 			p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
 			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
@@ -682,21 +679,30 @@ public class World {
 			p.morale = xplanet.getDouble("morale");
 			p.taxIncome = Integer.parseInt(xplanet.get("tax-income"));
 			p.tradeIncome = Integer.parseInt(xplanet.get("trade-income"));
-			
-			String populationDelta = xplanet.get("population-last", null);
-			if (populationDelta != null && !populationDelta.isEmpty()) {
-				p.lastPopulation = Integer.parseInt(populationDelta);
-			} else {
-				p.lastPopulation = p.population;
+
+			if (!definition.noPlanetOwner) {
+				p.owner = players.get(xplanet.get("owner", null));
+				p.race = xplanet.get("race", null);
+				p.population = Integer.parseInt(xplanet.get("population"));
+	
+				String populationDelta = xplanet.get("population-last", null);
+				if (populationDelta != null && !populationDelta.isEmpty()) {
+					p.lastPopulation = Integer.parseInt(populationDelta);
+				} else {
+					p.lastPopulation = p.population;
+				}
+				p.lastMorale = xplanet.getDouble("morale-last", p.morale);
 			}
-			p.lastMorale = xplanet.getDouble("morale-last", p.morale);
 			
 			XElement surface = xplanet.childElement("surface");
 			String si = surface.get("id");
 			String st = surface.get("type");
 			p.type = galaxyModel.planetTypes.get(st);
 			p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
-			p.surface.parseMap(xplanet, null, buildingModel);
+			
+			if (!definition.noPlanetBuildings) {
+				p.surface.parseMap(xplanet, null, buildingModel);
+			}
 			
 			if (p.owner != null) {
 				// enable placed building's researches
@@ -706,20 +712,26 @@ public class World {
 					}
 				}
 			}
-			for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
-				InventoryItem ii = new InventoryItem(p);
-				ii.tag = xinv.get("tag", null);
-				ii.owner = players.get(xinv.get("owner"));
-				ii.type = researches.get(xinv.get("id"));
-				ii.count = xinv.getInt("count");
-				ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
-				ii.createSlots();
-				ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
-
-				p.inventory.add(ii);
-				
-				if (!ii.owner.isAvailable(ii.type)) {
-					ii.owner.setAvailable(ii.type);
+			if (!definition.noPlanetInventory) {
+				for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
+					InventoryItem ii = new InventoryItem(p);
+					String ownerStr = xinv.get("owner");
+					ii.owner = players.get(ownerStr);
+					if (ii.owner == null) {
+						Exceptions.add(new AssertionError("Planet " + p.id + " inventory owner missing: " + xinv));
+					}
+					ii.tag = xinv.get("tag", null);
+					ii.type = researches.get(xinv.get("id"));
+					ii.count = xinv.getInt("count");
+					ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
+					ii.createSlots();
+					ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
+	
+					p.inventory.add(ii);
+						
+					if (!ii.owner.isAvailable(ii.type)) {
+						ii.owner.setAvailable(ii.type);
+					}
 				}
 			}
 			

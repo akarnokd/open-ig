@@ -82,6 +82,12 @@ public class GameDefinition {
 	public Traits traits;
 	/** The labels. */
 	public final Labels labels = new Labels();
+	/** Skirmish hint: do not load planetary buildings. */
+	public boolean noPlanetBuildings;
+	/** Skirmish hint: do not load planetary inventory. */
+	public boolean noPlanetInventory;
+	/** Skirmish hint: do not assign owner and population to the planet. */
+	public boolean noPlanetOwner;
 	/**
 	 * Parse the game definition from.
 	 * @param rl the resource locator
