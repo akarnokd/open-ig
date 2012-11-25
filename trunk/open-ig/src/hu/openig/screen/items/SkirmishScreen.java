@@ -1218,7 +1218,7 @@ public class SkirmishScreen extends ScreenBase {
 			};
 			name.backgroundColor(0);
 			name.vertically(VerticalAlignment.BOTTOM);
-			name.height += 5;
+			name.height += 7;
 			race = createLabel2("");
 			race.onPress = new Action0() {
 				@Override

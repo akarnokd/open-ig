@@ -157,6 +157,10 @@ public class SkirmishDefinition {
 		result.test = playerDef.test;
 		result.walks = techDef.walks;
 		
+		result.noPlanetBuildings = true;
+		result.noPlanetInventory = true;
+		result.noPlanetOwner = true;
+		
 		return result;
 	}
 	@Override
