@@ -412,6 +412,13 @@ public class GameWindow extends JFrame implements GameControls {
 				exit();
 			}
 		});
+		addWindowFocusListener(new WindowAdapter() {
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				GameWindow.this.requestFocusInWindow();
+			}
+		});
+		
 		MouseActions ma = new MouseActions();
 		surface.addMouseListener(ma);
 		surface.addMouseMotionListener(ma);
@@ -469,6 +476,12 @@ public class GameWindow extends JFrame implements GameControls {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				exit();
+			}
+		});
+		addWindowFocusListener(new WindowAdapter() {
+			@Override
+			public void windowGainedFocus(WindowEvent e) {
+				GameWindow.this.requestFocusInWindow();
 			}
 		});
 
