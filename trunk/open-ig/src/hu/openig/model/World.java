@@ -599,6 +599,11 @@ public class World {
 			p.difficulty = difficulty;
 			
 			loadTraits(p, xplayer.childElement("traits"));
+
+			// override main player's trait definition
+			if (player == p) {
+				player.traits.replace(definition.traits);
+			}
 		}
 		linkDeferredFleetTargets(deferredFleets);
 	}
@@ -2758,8 +2763,6 @@ public class World {
 	 * Apply traits of the players.
 	 */
 	public void applyTraits() {
-		player.traits.replace(definition.traits);
-		
 		for (Player p : players.values()) {
 			// remove warp technology
 			if (p.traits.has(TraitKind.PRE_WARP)) {
