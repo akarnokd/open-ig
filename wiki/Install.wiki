@@ -10,16 +10,16 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 1) Download the current upgrade pack and main game JAR file from the downloads page:
 
-[http://open-ig.googlecode.com/files/open-ig-upgrade-20121114a2.zip Upgrade 2012-11-14-a-2]
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20121121a2.zip Upgrade 2012-11-21-a-2]
 
-[http://open-ig.googlecode.com/files/open-ig-0.95.114.jar open-ig-0.95.114.jar]
+[http://open-ig.googlecode.com/files/open-ig-0.95.116.jar open-ig-0.95.116.jar]
 
 Note that the *essential* upgrade pack contains the ever changing game model and image resources. Without it, the game might not work and behave properly.
 
 2) Download the game resource files (1.3 GB!):
 
 
-[http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip Audio 1], [http://open-ig.googlecode.com/files/open-ig-audio-en-20120623A Audio 2], [http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip Audio 3], [http://open-ig.googlecode.com/files/open-ig-audio-generic-20120620A.zip Audio 4], [http://open-ig.googlecode.com/files/open-ig-audio-fr-20121022.zip Audio 5],
+[http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip Audio 1], [http://open-ig.googlecode.com/files/open-ig-audio-en-20120623A Audio 2], [http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip Audio 3], [http://open-ig.googlecode.com/files/open-ig-audio-generic-20121121A.zip Audio 4], [http://open-ig.googlecode.com/files/open-ig-audio-fr-20121022.zip Audio 5],
 [http://open-ig.googlecode.com/files/open-ig-audio-ru-20121022.zip Audio 6]
 <br><br>
 [http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png Splash], [http://open-ig.googlecode.com/files/open-ig-images-20121022a.zip Images]<br><br>
@@ -44,15 +44,15 @@ Note that the *essential* upgrade pack contains the ever changing game model and
 
 4) Run the game:
 
- * double click on {{{open-ig-0.95.114.jar}}}, or
+ * double click on {{{open-ig-0.95.116.jar}}}, or
  * run the following command line: 
 
 {{{
-java -Xmx768M -jar open-ig-0.95.114.jar -memonce
+java -Xmx768M -jar open-ig-0.95.116.jar -memonce
 }}}
 
  * create a shell script/batch file and put in: 
 
 {{{
-javaw -Xmx768M -jar open-ig-0.95.114.jar -memonce
+javaw -Xmx768M -jar open-ig-0.95.116.jar -memonce
 }}}
