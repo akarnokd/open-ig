@@ -42,6 +42,7 @@
 || C || Any || Show or hide quick production panel. ||
 || CTRL+X || Any || Toggle between fixed 30 frame/sec rendering and unrestricted frame/sec rendering modes ||
 || CTRL+Y || Any || Toggle UI debug mode. ||
+|| CTRL+R || Colony || Toggle weather effects. ||
 
 == Mouse gestures ==
 
@@ -335,6 +336,7 @@ If you run into difficult situations, want to skip parts or just want to poke ar
 
 || *Shortcut* || *Description* ||
 || CTRL+G || Add 10.000 credits ||
+|| CTRL+SHIFT+G || Add 100.000 credits ||
 || CTRL+Z || Toggle virus infection on the current planet (own or enemy) ||
 || CTRL+H || Display mission debug window (might not show up properly in fullscreen) ||
 || CTRL+P || Switch to the player of the selected planet, i.e., you can play as Dargslan: build, produce, deploy, etc. ||
