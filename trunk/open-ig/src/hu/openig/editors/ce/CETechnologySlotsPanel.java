@@ -9,11 +9,16 @@
 package hu.openig.editors.ce;
 
 import hu.openig.core.Action1;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.utils.GUIUtils;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -486,6 +491,9 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 				setTextAndEnabled(slotHeight, slot, "height", true);
 				
 				slotType.component.setSelectedIndex(0);
+				
+				slotItems.setSelectedIndex(-1);
+				
 			} else
 			if ("slot-fixed".equals(slot.name)) {
 				setTextAndEnabled(slotCount, slot, "count", true);
@@ -494,6 +502,7 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 				setTextAndEnabled(slotWidth, null, "", false);
 				setTextAndEnabled(slotHeight, null, "", false);
 				slotType.component.setSelectedIndex(1);
+				slotItems.setSelectedItem(slot.get("item", ""));
 			} else {
 				setTextAndEnabled(slotCount, null, "", false);
 				setTextAndEnabled(slotX, null, "", false);
@@ -513,6 +522,9 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 			slotType.label.setEnabled(false);
 			slotType.component.setEnabled(false);
 			slotType.component.setSelectedIndex(-1);
+			
+			slotItems.setSelectedIndex(-1);
+			slotsModel.clear();
 		}
 		slotEdit.repaint();
 	}
@@ -612,5 +624,34 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 			GUIUtils.autoResizeColWidth(slots, slotsModel);
 			doSelectSlot(null);
 		}
+	}
+	/**
+	 * Set the equipments from the available technologies list.
+	 * @param techs the technologies list
+	 */
+	public void setAllTechnologies(List<XElement> techs) {
+		Set<String> filter = U.newHashSet(
+			ResearchSubCategory.EQUIPMENT_HYPERDRIVES.toString(),
+			ResearchSubCategory.EQUIPMENT_RADARS.toString(),
+			ResearchSubCategory.EQUIPMENT_SHIELDS.toString(),
+			ResearchSubCategory.EQUIPMENT_MODULES.toString(),
+			ResearchSubCategory.WEAPONS_CANNONS.toString(),
+			ResearchSubCategory.WEAPONS_LASERS.toString(),
+			ResearchSubCategory.WEAPONS_PROJECTILES.toString()
+		);
+		List<String> items = U.newArrayList();
+		slotItems.removeAllItems();
+		for (XElement e : techs) {
+			if (e.has("id") && filter.contains(e.get("category", ""))) {
+				items.add(e.get("id"));
+			}
+		}
+		Collections.sort(items);
+		
+		for (String s : items) {
+			slotItems.addItem(s);
+		}
+		
+		slotItems.setSelectedIndex(-1);
 	}
 }

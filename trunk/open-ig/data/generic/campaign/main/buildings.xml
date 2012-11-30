@@ -1047,6 +1047,25 @@
     </operation>
     <upgrades/>
   </building>
+  <building name='buildings.spy_center' id='SpyCenter'>
+    <graphics>
+      <tech id='human' height='3' width='3' image='colony/buildings/human/spy_center'/>
+      <tech id='garthog' height='3' width='3' image='colony/buildings/human/spy_center'/>
+      <tech id='morgath' height='3' width='3' image='colony/buildings/human/spy_center'/>
+      <tech id='ychom' height='3' width='3' image='colony/buildings/human/spy_center'/>
+      <tech id='dribs' height='3' width='3' image='colony/buildings/human/spy_center'/>
+      <tech id='sullep' height='3' width='3' image='colony/buildings/human/spy_center'/>
+      <tech id='dargslan' height='3' width='3' image='colony/buildings/human/spy_center'/>
+      <tech id='ecalep' height='3' width='3' image='colony/buildings/human/spy_center'/>
+    </graphics>
+    <build limit='1' kind='Spy' cost='35000'/>
+    <operation>
+      <resource type='spy'>1</resource>
+      <resource type='energy'>-2000</resource>
+      <resource type='worker'>-1000</resource>
+    </operation>
+    <upgrades/>
+  </building>
   <roads>
     <graphics base='colony/roads/%s/%s'>
       <tech id='human'/>
