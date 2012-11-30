@@ -21,7 +21,7 @@ If you run into problems, crashes, translation errors, or simply want to share s
  * 1.5 GHz Dual Core CPU
 
 === Recommended ===
- * 64 bit operating system and Java
+ * 64 bit operating system and Java 7
  * 2.5 GB available RAM (i.e., min 4GB total)
  * GPU with DirectX/OpenGL hardware acceleration
  * 2 GHz Dual Core CPU
