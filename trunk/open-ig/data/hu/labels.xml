@@ -3160,6 +3160,8 @@
 	<entry key='planets.Persol 3'>Persol 3</entry>
 	<entry key='planets.San Sterling'>San Sterling</entry>
 	<entry key='planets.Zeuson'>Zeuson</entry>
+	<entry key='buildings.spy_center'>Kémközpont</entry>
+	<entry key='buildings.spy_center.desc'>A kémközpont egy ügynököt képes támogatni, és elsődleges szerepe van az idegen birodalmak elleni kémtevékenységben.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
