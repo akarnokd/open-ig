@@ -10,9 +10,9 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 1) Download the current upgrade pack and main game JAR file from the downloads page:
 
-[http://open-ig.googlecode.com/files/open-ig-upgrade-20121121a2.zip Upgrade 2012-11-21-a-2]
+[http://open-ig.googlecode.com/files/open-ig-upgrade-20121203a2.zip Upgrade 2012-12-03-a-2]
 
-[http://open-ig.googlecode.com/files/open-ig-0.95.116.jar open-ig-0.95.116.jar]
+[http://open-ig.googlecode.com/files/open-ig-0.95.117.jar open-ig-0.95.117.jar]
 
 Note that the *essential* upgrade pack contains the ever changing game model and image resources. Without it, the game might not work and behave properly.
 
@@ -22,7 +22,7 @@ Note that the *essential* upgrade pack contains the ever changing game model and
 [http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip Audio 1], [http://open-ig.googlecode.com/files/open-ig-audio-en-20120623A Audio 2], [http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip Audio 3], [http://open-ig.googlecode.com/files/open-ig-audio-generic-20121121A.zip Audio 4], [http://open-ig.googlecode.com/files/open-ig-audio-fr-20121022.zip Audio 5],
 [http://open-ig.googlecode.com/files/open-ig-audio-ru-20121022.zip Audio 6]
 <br><br>
-[http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png Splash], [http://open-ig.googlecode.com/files/open-ig-images-20121022a.zip Images]<br><br>
+[http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png Splash], [http://open-ig.googlecode.com/files/open-ig-images-20121203a.zip Images]<br><br>
 [http://open-ig.googlecode.com/files/open-ig-video-01.zip Video 1], 
 [http://open-ig.googlecode.com/files/open-ig-video-02.zip Video 2], 
 [http://open-ig.googlecode.com/files/open-ig-video-03-0.8.zip Video 3], <br>
