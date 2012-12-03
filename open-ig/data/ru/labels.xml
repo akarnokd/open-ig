@@ -3215,4 +3215,6 @@
   <entry key='chat.vi.8.n2.o'>Планета заражена вирусом.</entry>
   <entry key='chat.vi.8.n2'>Планета заражена вирусом. Вы должны развернуться!</entry>
   <entry key='chat.vo.2.n6.o'>Ты не понимаешь. Вы должны вернуться!</entry>
+  <entry key='buildings.spy_center'>Spy Center</entry>
+  <entry key='buildings.spy_center.desc'>Spy Centers support a single operative and play the major role in spying against enemy empires.</entry>
 </labels>

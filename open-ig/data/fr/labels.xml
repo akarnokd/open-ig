@@ -3208,5 +3208,7 @@
 	<entry key='planets.Persol 3'>Persol 3</entry>
 	<entry key='planets.San Sterling'>San Sterling</entry>
 	<entry key='planets.Zeuson'>Zeuson</entry>
+	<entry key='buildings.spy_center'>Spy Center</entry>
+	<entry key='buildings.spy_center.desc'>Spy Centers support a single operative and play the major role in spying against enemy empires.</entry>
   
 </labels>

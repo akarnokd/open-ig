@@ -9,6 +9,7 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Difficulty;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -359,6 +360,7 @@ public class Mission5 extends Mission {
 					s.angle = 0.0;
 					s.owner = f1.owner;
 					s.guard = true;
+					s.hpMax = (int)s.hp;
 				}
 				if (s.item != null && "Mission-5-Help".equals(s.item.tag)) {
 					s.x = d.width / 3;
@@ -487,7 +489,14 @@ public class Mission5 extends Mission {
 				player("Garthog"), p.x + 30, p.y - 20);
 		// -------------------------------------------------------
 		// Set strengths here
-		f.addInventory(research("GarthogFighter"), 12);
+		int fighterCounts = 6;
+		if (world.difficulty == Difficulty.NORMAL) {
+			fighterCounts = 9;
+		} else
+		if (world.difficulty == Difficulty.HARD) {
+			fighterCounts = 12;
+		}
+		f.addInventory(research("GarthogFighter"), fighterCounts);
 		equipFully(f.addInventory(research("GarthogDestroyer"), 1));
 		// -------------------------------------------------------
 		f.task = FleetTask.SCRIPT;
@@ -505,7 +514,10 @@ public class Mission5 extends Mission {
 		List<InventoryItem> result = U.newArrayList();
 		// -------------------------------------------------------
 		// Set help strength here
-		int helpingPirates = 3;
+		int helpingPirates = 2;
+		if (world.difficulty == Difficulty.HARD) {
+			helpingPirates = 3;
+		}
 		String pirateTech = "PirateFighter2";
 		// -------------------------------------------------------
 		for (int i = 0; i < helpingPirates; i++) {
