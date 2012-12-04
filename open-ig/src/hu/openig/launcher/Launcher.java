@@ -2113,6 +2113,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				mem = memory;
 			}
 			ProcessBuilder pb = new ProcessBuilder();
+			pb.directory(installDir);
 			List<String> cmdLine = new ArrayList<String>();
 
 			cmdLine.add(runJVM + "/bin/java");
@@ -2249,8 +2250,9 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 * @param ts the downloaded timestamp
 	 */
 	void doSwapSelf(long ts) {
-		String self = String.format("%s/open-ig-launcher.jar.%s", installDir.getAbsolutePath(), ts);
+		String self = String.format("open-ig-launcher.jar.%s", ts);
 		ProcessBuilder pb = new ProcessBuilder();
+		pb.directory(installDir);
 		pb.command(System.getProperty("java.home") + "/bin/java", 
 				"-jar", self, 
 				"-selfupdate", self);
