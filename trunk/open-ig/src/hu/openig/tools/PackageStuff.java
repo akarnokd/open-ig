@@ -52,6 +52,8 @@ public final class PackageStuff {
 	private PackageStuff() {
 		
 	}
+	/** The separator. */
+	static String sep = File.separator;
 	/**
 	 * Build the graphics/data patch file.
 	 * @param version the version number in the file
@@ -66,11 +68,11 @@ public final class PackageStuff {
 							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
-				processDirectory(".\\images\\", ".\\images", zout, null);
-//				processDirectory(".\\audio\\", ".\\audio", zout, new FilenameFilter() {
+				processDirectory("." + sep + "images" + sep + "", "." + sep + "images", zout, null);
+//				processDirectory("." + sep + "audio" + sep + "", "." + sep + "audio", zout, new FilenameFilter() {
 //					@Override
 //					public boolean accept(File dir, String name) {
-//						String d = dir.toString().replace('\\', '/');
+//						String d = dir.toString().replace('" + sep + "', '/');
 //						return d.contains("/ui") 
 //								|| d.contains("/groundwar")
 //								|| d.contains("/spacewar") || d.contains("generic")
@@ -95,7 +97,7 @@ public final class PackageStuff {
 							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
-				processDirectory(".\\data\\", ".\\data", zout, null);
+				processDirectory("." + sep + "data" + sep + "", "." + sep + "data", zout, null);
 			} finally {
 				zout.close();
 			}
@@ -118,7 +120,7 @@ public final class PackageStuff {
 							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
-				processDirectory(".\\bin\\", ".\\bin", zout, new FilenameFilter() {
+				processDirectory("." + sep + "bin" + sep + "", "." + sep + "bin", zout, new FilenameFilter() {
 					
 					@Override
 					public boolean accept(File dir, String name) {
@@ -186,7 +188,7 @@ public final class PackageStuff {
 							new FileOutputStream(fileName), 1024 * 1024));
 			try {
 				zout.setLevel(9);
-				processDirectory(".\\bin\\", ".\\bin", zout, new FilenameFilter() {
+				processDirectory("." + sep + "bin" + sep + "", "." + sep + "bin", zout, new FilenameFilter() {
 					@Override
 					public boolean accept(File dir, String name) {
 						String d = dir.toString().replace('\\', '/');

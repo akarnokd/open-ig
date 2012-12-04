@@ -93,7 +93,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.40";
+	public static final String VERSION = "0.41";
 	/**
 	 * The update XML to download.
 	 */
@@ -255,9 +255,14 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		
 		// working directory workaround
 		
-		currentDir = new File(".");
+		File lf = new File("open-ig-launcher.jar");
+
+		currentDir = lf.getParentFile();
+		if (currentDir == null) {
+			currentDir = new File(".");
+		}
 		
-		if (!new File(currentDir, "open-ig-launcher.jar").exists()) {
+		if (!lf.exists()) {
 			URL u = getClass().getResource("/hu/openig/gfx/launcher_background.png");
 			String p = u.toString().replace('\\', '/');
 			int fidx = p.indexOf("file:/");
@@ -267,7 +272,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				while (p2.startsWith("/")) {
 					p2 = p2.substring(1);
 				}
-				currentDir = new File(p2);
+				currentDir = new File("/" + p2);
 			}
 		}
 		installDir = currentDir;
