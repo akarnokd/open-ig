@@ -1137,6 +1137,8 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				Thread.sleep(1000);	
 			}
 			IOUtils.save(old, IOUtils.load(tempName));
+			old.setExecutable(true);
+			
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.command(System.getProperty("java.home") + "/bin/java", 
 					"-jar", "open-ig-launcher.jar", "-selfdelete", args[1]);
@@ -1899,7 +1901,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			File targetupdate = new File(currentDir, "open-ig-update.xml");
 			
 			IOUtils.save(target, IOUtils.load(local));
-
+			local.setExecutable(true);
 			try {
 				Desktop d = Desktop.getDesktop();
 				if (d != null) {
