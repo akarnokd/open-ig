@@ -44,6 +44,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -263,16 +264,12 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		}
 		
 		if (!lf.exists()) {
-			URL u = getClass().getResource("/hu/openig/gfx/launcher_background.png");
-			String p = u.toString().replace('\\', '/');
-			int fidx = p.indexOf("file:/");
-			int lidx = p.indexOf("open-ig-launcher.jar", fidx);
-			if (lidx >= 0 && fidx >= 0) {
-				String p2 = p.substring(fidx + 6, lidx);
-				while (p2.startsWith("/")) {
-					p2 = p2.substring(1);
-				}
-				currentDir = new File("/" + p2);
+			CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+			try {
+				File jf = new File(cs.getLocation().toURI().getPath());
+				currentDir = jf.getParentFile();
+			} catch (URISyntaxException ex) {
+				Exceptions.add(ex);
 			}
 		}
 		installDir = currentDir;
