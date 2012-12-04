@@ -19,7 +19,7 @@ Note that the *essential* upgrade pack contains the ever changing game model and
 2) Download the game resource files (1.3 GB!):
 
 
-[http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip Audio 1], [http://open-ig.googlecode.com/files/open-ig-audio-en-20120623A Audio 2], [http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip Audio 3], [http://open-ig.googlecode.com/files/open-ig-audio-generic-20121121A.zip Audio 4], [http://open-ig.googlecode.com/files/open-ig-audio-fr-20121022.zip Audio 5],
+[http://open-ig.googlecode.com/files/open-ig-audio-hu-20120420A.zip Audio 1], [http://open-ig.googlecode.com/files/open-ig-audio-en-20120623A.zip Audio 2], [http://open-ig.googlecode.com/files/open-ig-audio-de-20120420A.zip Audio 3], [http://open-ig.googlecode.com/files/open-ig-audio-generic-20121121A.zip Audio 4], [http://open-ig.googlecode.com/files/open-ig-audio-fr-20121022.zip Audio 5],
 [http://open-ig.googlecode.com/files/open-ig-audio-ru-20121022.zip Audio 6]
 <br><br>
 [http://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png Splash], [http://open-ig.googlecode.com/files/open-ig-images-20121203a.zip Images]<br><br>
