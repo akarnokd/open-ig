@@ -94,7 +94,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.41";
+	public static final String VERSION = "0.42";
 	/**
 	 * The update XML to download.
 	 */
@@ -1892,9 +1892,11 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	void doMoveSelfAndRun() {
 		File local = new File(currentDir, "open-ig-launcher.jar");
 		File localcfg = new File(currentDir, "open-ig-launcher-config.xml");
+		File localupdate = new File(currentDir, "open-ig-update.xml");
 		if (local.canRead()) {
 			File target = new File(installDir, "open-ig-launcher.jar");
 			File targetcfg = new File(installDir, "open-ig-launcher-config.xml");
+			File targetupdate = new File(currentDir, "open-ig-update.xml");
 			
 			IOUtils.save(target, IOUtils.load(local));
 
@@ -1923,10 +1925,17 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			}
 			
 			doClose();
+			
 			if (localcfg.canRead()) {
 				IOUtils.save(targetcfg, IOUtils.load(localcfg));
 				if (!localcfg.delete()) {
 					System.err.printf("Could not delete " + localcfg);
+				}
+			}
+			if (localupdate.canRead()) {
+				IOUtils.save(targetupdate, IOUtils.load(localupdate));
+				if (!targetupdate.delete()) {
+					System.err.printf("Could not delete " + localupdate);
 				}
 			}
 		} else {
