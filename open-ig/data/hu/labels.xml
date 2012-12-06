@@ -441,6 +441,9 @@
 	<entry key='building.resource.type.credit'> cr</entry>
 	<entry key='building.resource.type.hospital'> emb</entry>
 	<entry key='building.resource.type.population-growth'> % +emb</entry>
+    <entry key='building.resource.type.weapon'> fegyver</entry>
+    <entry key='building.resource.type.equipment'> felsz.</entry>
+    <entry key='building.resource.type.spaceship'> hajó</entry>
 	<entry key='planets.earth'>Föld</entry>
 	
 	<entry key='players.empire'>Galaktikus Birodalom</entry>

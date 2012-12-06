@@ -199,6 +199,9 @@
   <entry key='building.resource.type.house'> человек</entry>
   <entry key='building.resource.type.multiply'> x income</entry>
   <entry key='building.resource.type.population-growth'> % +человек</entry>
+  <entry key='building.resource.type.weapon'> weapon</entry>
+  <entry key='building.resource.type.equipment'> equipment</entry>
+  <entry key='building.resource.type.spaceship'> ship</entry>
   <entry key='buildinginfo.building.cost'>Стоимость : %d кр</entry>
   <entry key='buildinginfo.building.energy'>Энергия   : %d кВч</entry>
   <entry key='buildinginfo.building.worker'>Рабочие   : %d</entry>
