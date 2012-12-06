@@ -44,7 +44,7 @@ public final class LabelIntegrator {
 		}
 		// ----------------------
 		String prefix = "c:/Downloads/";
-		List<String> files = Arrays.asList("labels07.xml");
+		List<String> files = Arrays.asList("labels08.xml");
 		
 		String param = "%,?\\d*(s|d|f|x)";
 		

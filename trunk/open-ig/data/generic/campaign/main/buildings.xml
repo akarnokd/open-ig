@@ -343,7 +343,7 @@
     </graphics>
     <build limit='1' kind='Factory' cost='20000'/>
     <operation percent='true'>
-      <resource type='spaceship'>1000</resource>
+      <resource type='spaceship' display='true'>1000</resource>
       <resource type='energy'>-4000</resource>
       <resource type='worker'>-430</resource>
     </operation>
@@ -383,7 +383,7 @@
     </graphics>
     <build limit='1' kind='Factory' cost='20000'/>
     <operation percent='true'>
-      <resource type='equipment'>1000</resource>
+      <resource type='equipment' display='true'>1000</resource>
       <resource type='energy'>-2600</resource>
       <resource type='worker'>-460</resource>
     </operation>
@@ -423,7 +423,7 @@
     </graphics>
     <build limit='1' kind='Factory' cost='24000'/>
     <operation percent='true'>
-      <resource type='weapon'>1000</resource>
+      <resource type='weapon' display='true'>1000</resource>
       <resource type='energy'>-3000</resource>
       <resource type='worker'>-390</resource>
     </operation>
