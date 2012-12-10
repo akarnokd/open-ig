@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -136,7 +137,8 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		
 		// FIXME for now
 		try {
-			XElement xtech = XElement.parseXML("data/generic/campaign/main/tech.xml");
+			byte[] btech = context.getData("generic", "campaign/main/tech.xml");
+			XElement xtech = XElement.parseXML(new ByteArrayInputStream(btech));
 			technologiesModel.add(xtech.childrenWithName("item"));
 		} catch (XMLStreamException ex) {
 			Exceptions.add(ex);
