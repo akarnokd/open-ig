@@ -51,6 +51,8 @@ public class Fleet implements Named, Owned, HasInventory {
 	public FleetMode mode;
 	/** The current task. */
 	public FleetTask task = FleetTask.IDLE;
+	/** Refill once. */
+	public boolean refillOnce;
 	/**
 	 * Create a fleet with a specific ID and owner.
 	 * @param id the identifier
@@ -94,7 +96,6 @@ public class Fleet implements Named, Owned, HasInventory {
 	}
 	@Override
 	public Player owner() {
-		// TODO Auto-generated method stub
 		return owner;
 	}
 	/**
@@ -203,24 +204,24 @@ public class Fleet implements Named, Owned, HasInventory {
 				
 			}
 			
-			if (fii.type.has("vehicles")) {
-				result.vehicleMax += fii.type.getInt("vehicles"); 
+			if (fii.type.has(ResearchType.PARAMETER_VEHICLES)) {
+				result.vehicleMax += fii.type.getInt(ResearchType.PARAMETER_VEHICLES); 
 			}
 			boolean speedFound = false;
 			for (InventorySlot slot : fii.slots) {
 				if (slot.type != null && slot.count > 0) {
-					if (checkRadar && slot.type.has("radar")) {
-						radar = Math.max(radar, slot.type.getInt("radar")); 
+					if (checkRadar && slot.type.has(ResearchType.PARAMETER_RADAR)) {
+						radar = Math.max(radar, slot.type.getInt(ResearchType.PARAMETER_RADAR)); 
 					}
-					if (slot.type.has("vehicles")) {
-						result.vehicleMax += slot.type.getInt("vehicles"); 
+					if (slot.type.has(ResearchType.PARAMETER_VEHICLES)) {
+						result.vehicleMax += slot.type.getInt(ResearchType.PARAMETER_VEHICLES); 
 					}
-					if (checkHyperdrive && slot.type.has("speed")) {
+					if (checkHyperdrive && slot.type.has(ResearchType.PARAMETER_SPEED)) {
 						speedFound = true;
-						result.speed = Math.min(slot.type.getInt("speed"), result.speed);
+						result.speed = Math.min(slot.type.getInt(ResearchType.PARAMETER_SPEED), result.speed);
 					}
-					if (checkFirepower && slot.type.has("projectile")) {
-						BattleProjectile bp = owner.world.battle.projectiles.get(slot.type.get("projectile"));
+					if (checkFirepower && slot.type.has(ResearchType.PARAMETER_PROJECTILE)) {
+						BattleProjectile bp = owner.world.battle.projectiles.get(slot.type.get(ResearchType.PARAMETER_PROJECTILE));
 						if (bp != null && bp.mode == Mode.BEAM) {
 							double dmg = bp.damage(owner);
 							result.firepower += slot.count * dmg * fii.count;
@@ -265,9 +266,9 @@ public class Fleet implements Named, Owned, HasInventory {
 			if (checkHyperdrive) {
 				boolean found = false;
 				for (InventorySlot is : fii.slots) {
-					if (is.type != null && is.type.has("speed")) {
+					if (is.type != null && is.type.has(ResearchType.PARAMETER_SPEED)) {
 						found = true;
-						speed = Math.min(speed, is.type.getInt("speed"));
+						speed = Math.min(speed, is.type.getInt(ResearchType.PARAMETER_SPEED));
 					}
 				}
 				if (!found) {
@@ -363,11 +364,11 @@ public class Fleet implements Named, Owned, HasInventory {
 		FleetStatistics fs = getStatistics();
 		switch (rt.category) {
 		case SPACESHIPS_BATTLESHIPS:
-			return 3 - fs.battleshipCount;
+			return owner.world.params().battleshipLimit() - fs.battleshipCount;
 		case SPACESHIPS_CRUISERS:
-			return 25 - fs.cruiserCount;
+			return owner.world.params().mediumshipLimit() - fs.cruiserCount;
 		case SPACESHIPS_FIGHTERS:
-			return 30 - inventoryCount(rt);
+			return owner.world.params().fighterLimit() - inventoryCount(rt);
 		case WEAPONS_TANKS:
 		case WEAPONS_VEHICLES:
 			return fs.vehicleMax - fs.vehicleCount;
@@ -412,13 +413,13 @@ public class Fleet implements Named, Owned, HasInventory {
 				vehicleCount += fii.count;
 				veh.add(fii);
 			}
-			if (fii.type.has("vehicles")) {
-				vehicleMax += fii.type.getInt("vehicles"); 
+			if (fii.type.has(ResearchType.PARAMETER_VEHICLES)) {
+				vehicleMax += fii.type.getInt(ResearchType.PARAMETER_VEHICLES); 
 			}
 			for (InventorySlot slot : fii.slots) {
 				if (slot.type != null) {
-					if (slot.type.has("vehicles")) {
-						vehicleMax += slot.type.getInt("vehicles"); 
+					if (slot.type.has(ResearchType.PARAMETER_VEHICLES)) {
+						vehicleMax += slot.type.getInt(ResearchType.PARAMETER_VEHICLES); 
 					}
 				}
 			}
@@ -771,5 +772,13 @@ public class Fleet implements Named, Owned, HasInventory {
 		arrivedAt = null;
 		mode = FleetMode.MOVE;
 		task = FleetTask.MOVE;
+	}
+	/**
+	 * Put excess fighters and vehicles back into the inventory.
+	 */
+	public void removeExcess() {
+		InventoryItem.removeExcessFighters(inventory);
+		FleetStatistics fs = getStatistics();
+		InventoryItem.removeExcessTanks(inventory, owner, fs.vehicleCount, fs.vehicleMax);
 	}
 }

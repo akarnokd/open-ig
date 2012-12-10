@@ -44,7 +44,7 @@ public class VehiclePlan {
 				tanks.add(rt);
 			} else
 			if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				if (rt.has("one-per-fleet")) {
+				if (rt.has(ResearchType.PARAMETER_ONE_PER_FLEET)) {
 					onePerKind.add(rt);
 				} else {
 					BattleGroundVehicle veh = battle.groundEntities.get(rt.id);

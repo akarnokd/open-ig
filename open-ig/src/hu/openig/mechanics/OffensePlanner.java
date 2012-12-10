@@ -597,7 +597,7 @@ public class OffensePlanner extends Planner {
 			@Override
 			public Boolean invoke(ResearchType value) {
 				if (value.category == ResearchSubCategory.EQUIPMENT_MODULES) {
-					if (value.has("ecm")) {
+					if (value.has(ResearchType.PARAMETER_ECM)) {
 						return true;
 					}
 				}
@@ -608,7 +608,7 @@ public class OffensePlanner extends Planner {
 			@Override
 			public Boolean invoke(ResearchType value) {
 				if (value.category == ResearchSubCategory.EQUIPMENT_MODULES) {
-					if (value.has("vehicles")) {
+					if (value.has(ResearchType.PARAMETER_VEHICLES)) {
 						return true;
 					}
 				}
@@ -637,7 +637,7 @@ public class OffensePlanner extends Planner {
 			@Override
 			public Boolean invoke(ResearchType value) {
 				if (value.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
-					return value.has("detector");
+					return value.has(ResearchType.PARAMETER_DETECTOR);
 				}
 				return false;
 			}

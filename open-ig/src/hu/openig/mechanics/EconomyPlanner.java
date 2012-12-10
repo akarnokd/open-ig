@@ -165,8 +165,8 @@ public class EconomyPlanner extends Planner {
 		}
 		ResearchType hubble2 = null;
 		for (ResearchType rt : world.availableResearch) {
-			if (rt.has("radar") && rt.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
-				if (hubble2 == null || hubble2.getInt("radar") < rt.getInt("radar")) {
+			if (rt.has(ResearchType.PARAMETER_RADAR) && rt.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
+				if (hubble2 == null || hubble2.getInt(ResearchType.PARAMETER_RADAR) < rt.getInt(ResearchType.PARAMETER_RADAR)) {
 					hubble2 = rt;
 				}
 			}

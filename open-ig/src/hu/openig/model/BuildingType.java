@@ -53,6 +53,8 @@ public class BuildingType {
 	public Map<String, Scaffolding> scaffoldings;
 	/** The common minimap tiles for various building states. */
 	public BuildingMinimapTiles minimapTiles;
+	/** The vehicle resource type. */
+	public static final String RESOURCE_VEHICLES = "vehicles";
 	/**
 	 * Check if a given resource is present.
 	 * @param resource the resource name

@@ -1820,8 +1820,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				wp.projectile = bp;
 				ports.add(wp);
 			}
-			if (is.type != null && is.type.has("ecm")) {
-				ecmLevel = Math.max(ecmLevel, is.type.getInt("ecm"));
+			if (is.type != null && is.type.has(ResearchType.PARAMETER_ECM)) {
+				ecmLevel = Math.max(ecmLevel, is.type.getInt(ResearchType.PARAMETER_ECM));
 			}
 		}
 		return ecmLevel;
@@ -2512,11 +2512,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			setPortStatistics(stat, e.ports, e.count, e.owner);
 			if (e.item != null) {
 				int vm = 0;
-				if (e.item.type.has("vehicles")) {
-					vm += e.item.type.getInt("vehicles");
+				if (e.item.type.has(ResearchType.PARAMETER_VEHICLES)) {
+					vm += e.item.type.getInt(ResearchType.PARAMETER_VEHICLES);
 					for (InventorySlot is : e.item.slots) {
-						if (is.type != null && is.type.has("vehicles")) {
-							vm += is.type.getInt("vehicles");
+						if (is.type != null && is.type.has(ResearchType.PARAMETER_VEHICLES)) {
+							vm += is.type.getInt(ResearchType.PARAMETER_VEHICLES);
 						}
 					}
 				}
@@ -3555,7 +3555,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 						boolean sg = false;
 						if (ship.item != null) {
 							for (InventorySlot is : ship.item.slots) {
-								if (is.type != null && is.type.has("shield") && is.count > 0) {
+								if (is.type != null && is.type.has(ResearchType.PARAMETER_SHIELD) && is.count > 0) {
 									sg = true;
 								}
 							}

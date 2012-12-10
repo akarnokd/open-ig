@@ -49,6 +49,7 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.awt.Color;
@@ -2012,94 +2013,133 @@ public class EquipmentScreen extends ScreenBase {
 	}
 	/** Add a ship or vehicle to the planet or fleet. */
 	void doAddItem() {
-		addRemoveItem(1);
-	}
-	/** Remove a fighter or vehicle from the planet or fleet. */
-	void doRemoveItem() {
-		addRemoveItem(-1);
-	}
-	/**
-	 * Add or remove a given amount of the currently selected research.
-	 * @param delta the delta
-	 */
-	void addRemoveItem(int delta) {
-		if (delta < 0 || player().inventoryCount(research()) >= delta) {
-			ResearchSubCategory category = research().category;
+		ResearchType rt = research();
+		int amount = 1;
+		int inv = player().inventoryCount(rt);
+		if (inv < amount) {
+			amount = inv;
+		}
+		if (amount > 0) {
 			if (player().selectionMode == SelectionMode.PLANET) {
-				if (category == ResearchSubCategory.SPACESHIPS_STATIONS
-				) {
-					if (delta > 0 
-							&& planet().inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, player()) + delta <= world().params().stationLimit()) {
+				if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					int currentCount = planet().inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, player());
+					int limit = world().params().stationLimit();
+					if (currentCount + amount > limit) {
+						amount = Math.max(0, limit - currentCount);
+					}
+					while (amount-- > 0) {
 						InventoryItem pii = new InventoryItem(planet());
 						pii.owner = player();
-						pii.type = research();
+						pii.type = rt;
 						pii.count = 1;
 						pii.hp = world().getHitpoints(pii.type, pii.owner);
 						
 						pii.createSlots();
 						
-//						pii.shield = Math.max(0, pii.shieldMax());
-						
 						planet().inventory.add(pii);
 						leftList.items.add(pii);
 						leftList.compute();
-						player().changeInventoryCount(research(), -delta);
+						player().changeInventoryCount(rt, -1);
 						configure.item = pii;
 					}
 				} else {
 					PlanetStatistics ps = planet().getStatistics();
-					if (ps.vehicleCount + delta <= ps.vehicleMax) {
-						planet().changeInventory(research(), player(), delta);
-						player().changeInventoryCount(research(), -delta);
+					if (ps.vehicleCount + amount > ps.vehicleMax) {
+						amount = Math.max(0, ps.vehicleMax - ps.vehicleCount);
+					}
+					if (amount > 0) {
+						planet().changeInventory(rt, player(), amount);
+						player().changeInventoryCount(rt, -amount);
 					}
 				}
+				planet().removeExcess();
 			} else {
-				if (category == ResearchSubCategory.SPACESHIPS_CRUISERS
-						|| category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
-				) {
-					if (delta > 0) {
+				if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
+						|| rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+					int current = fleet().inventoryCount(rt.category);
+					int limit = rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
+							? world().params().battleshipLimit() : world().params().mediumshipLimit();
+					
+					if (current + amount > limit) {
+						amount = Math.max(0, limit - current);
+					}
+					
+					if (amount > 0) {
+						int cnt = fleet().inventoryCount(rt);
+						List<InventoryItem> iss = fleet().addInventory(rt, amount);
 						
-						int existing = fleet().inventoryCount(category);
-						int limit = 0;
-						if (category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-							limit = world().params().mediumshipLimit();
-						} else {
-							limit = world().params().battleshipLimit();
-						}
-						if (delta + existing <= limit) {
-							int cnt = fleet().inventoryCount(research());
-							List<InventoryItem> iss = fleet().addInventory(research(), delta);
-							
-							leftList.items.clear();
-							leftList.items.addAll(fleet().getSingleItems());
-							leftList.compute();
-							configure.item = iss.get(0);
-							
-							leftList.map.get(research()).index = cnt;
-							player().changeInventoryCount(research(), -delta);
-							if (config.computerVoiceScreen) {
-								effectSound(SoundType.SHIP_DEPLOYED);
-							}
+						leftList.items.clear();
+						leftList.items.addAll(fleet().getSingleItems());
+						leftList.compute();
+						configure.item = iss.get(0);
+						
+						leftList.map.get(rt).index = cnt;
+						player().changeInventoryCount(rt, -amount);
+						if (config.computerVoiceScreen) {
+							effectSound(SoundType.SHIP_DEPLOYED);
 						}
 					}
-				} else 
-				if (category == ResearchSubCategory.WEAPONS_TANKS 
-				|| category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+						|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 					FleetStatistics fs = fleet().getStatistics();
-					if (fs.vehicleCount + delta <= fs.vehicleMax) {
-						fleet().changeInventory(research(), delta);
-						player().changeInventoryCount(research(), -delta);
+					if (fs.vehicleCount + amount > fs.vehicleMax) {
+						amount = Math.max(0, fs.vehicleMax - fs.vehicleCount);
+					}
+					if (amount > 0) {
+						fleet().changeInventory(rt, amount);
+						player().changeInventoryCount(rt, -amount);
 					}
 				} else 
-				if (category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					if (fleet().inventoryCount(research()) + delta <= world().params().fighterLimit()) {
-						fleet().changeInventory(research(), delta);
-						player().changeInventoryCount(research(), -delta);
+				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					int limit = world().params().fighterLimit();
+					int count = fleet().inventoryCount(rt);
+					if (count + amount > limit) {
+						amount = Math.max(0, limit - count);
+					}
+					if (amount > 0) {
+						fleet().changeInventory(rt, amount);
+						player().changeInventoryCount(rt, -amount);
 					}
 				}
+				fleet().removeExcess();
 			}
-			doSelectListVehicle(research());
+			doSelectListVehicle(rt);
 		}
+	}
+	/** Remove a fighter or vehicle from the planet or fleet. */
+	void doRemoveItem() {
+		int amount = 1;
+		ResearchType rt = research();
+		if (player().selectionMode == SelectionMode.PLANET) {
+			if (rt.category != ResearchSubCategory.SPACESHIPS_STATIONS) {
+				int count = planet().inventoryCount(rt, player());
+				
+				if (count - amount < 0) {
+					amount = count;
+				}
+				if (count > 0) {
+					planet().changeInventory(rt, player(), -amount);
+					player().changeInventoryCount(rt, amount);
+				}
+				planet().removeExcess();
+			}
+		} else {
+			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+					|| rt.category == ResearchSubCategory.WEAPONS_TANKS
+					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				int count = fleet().inventoryCount(rt);
+				if (count - amount < 0) {
+					amount = count;
+				}
+				if (count > 0) {
+					fleet().changeInventory(rt, -amount);
+					player().changeInventoryCount(rt, amount);
+				}
+				fleet().removeExcess();
+			}
+		}
+		doSelectListVehicle(rt);
 	}
 	/** Update the inventory display based on the current selection. */
 	void updateCurrentInventory() {
@@ -2273,8 +2313,11 @@ public class EquipmentScreen extends ScreenBase {
 		if (configure.selectedSlot.count > 0) {
 			player().changeInventoryCount(configure.selectedSlot.type, 1);
 			configure.selectedSlot.count--;
-			if (configure.selectedSlot.type.has("shield")) {
+			if (configure.selectedSlot.type.has(ResearchType.PARAMETER_SHIELD)) {
 				configure.item.shield = 0;
+			}
+			if (configure.selectedSlot.type.has(ResearchType.PARAMETER_VEHICLES)) {
+				fleet().removeExcess();
 			}
 			if (configure.selectedSlot.count == 0) {
 				configure.selectedSlot.type = null;
@@ -2286,8 +2329,11 @@ public class EquipmentScreen extends ScreenBase {
 	void doRemoveMany() {
 		if (configure.selectedSlot.count > 0) {
 			player().changeInventoryCount(configure.selectedSlot.type, configure.selectedSlot.count);
-			if (configure.selectedSlot.type.has("shield")) {
+			if (configure.selectedSlot.type.has(ResearchType.PARAMETER_SHIELD)) {
 				configure.item.shield = 0;
+			}
+			if (configure.selectedSlot.type.has(ResearchType.PARAMETER_VEHICLES)) {
+				fleet().removeExcess();
 			}
 			configure.selectedSlot.count = 0;
 			configure.selectedSlot.type = null;
@@ -2487,14 +2533,6 @@ public class EquipmentScreen extends ScreenBase {
 				ii = planet().getInventoryItem(research(), player());
 			}
 			if (ii != null) {
-				int worth = ii.type.productionCost; //world().getHitpoints(ii.type);
-				
-				for (InventorySlot is : ii.slots) {
-					if (is.type != null && !is.slot.fixed) {
-						worth += is.type.productionCost * is.count;
-					}
-				}
-				
 				if (player().selectionMode == SelectionMode.FLEET) {
 					if (leftList.selectedItem != null) {
 						
@@ -2511,11 +2549,12 @@ public class EquipmentScreen extends ScreenBase {
 						}
 						
 						if (!f.inventory.remove(ii)) {
-							System.err.println("AssertionError: inventory item not found.");
+							Exceptions.add(new AssertionError("Inventory item not found."));
 						}
 					} else {
 						f.changeInventory(research(), -1);
 					}
+					f.removeExcess();
 					updateInventory(null, f, leftList);
 				} else {
 					if (leftList.selectedItem != null) {
@@ -2525,32 +2564,11 @@ public class EquipmentScreen extends ScreenBase {
 					} else {
 						planet().changeInventory(research(), player(), -1);
 					}
-					// if this was the last space station, place the fighters back into the inventory
-					if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-						if (planet().inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, player()) == 0) {
-							for (InventoryItem ii2 : new ArrayList<InventoryItem>(planet().inventory)) {
-								if (ii2.owner == player() && ii2.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-									player().changeInventoryCount(ii2.type, ii2.count);
-									planet().inventory.remove(ii2);
-								}
-							}
-						}
-					}
+					planet().removeExcess();
 					updateInventory(planet(), null, leftList);
 				}
-				
-				worth /= 2;
-				
-				player().addMoney(worth);
-				
-				player().statistics.sellCount++;
-				player().statistics.moneyIncome += worth;
-				player().statistics.moneySellIncome += worth;
-				
-				world().statistics.sellCount++;
-				world().statistics.moneyIncome += worth;
-				world().statistics.moneySellIncome += worth;
-				
+
+				ii.sell();
 			}
 			break;
 		default:
