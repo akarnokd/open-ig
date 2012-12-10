@@ -2,7 +2,7 @@
 
 <wiki:toc max_depth="1" />
 
-See the [open-ig-dev.blogspot.com Development Blog] for more frequent changelog.
+See the [http://open-ig-dev.blogspot.com Development Blog] for more frequent changelog.
 
 = Version 0.95.102 - Skirmish and bugfixes =
   * Released: 2012-09-18 10:30 CET
