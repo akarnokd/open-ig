@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 /**
@@ -57,62 +58,8 @@ public class AStarSearch<T> {
 				return g1 < g2 ? -1 : (g1 > g2 ? 1 : 0);
 			}
 		};
-		Set<T> openSet2 = U.newHashSet();
-		List<T> openSet = U.newArrayList();
 		
-		gScore.put(initial, 0);
-		hScore.put(initial, estimation.invoke(initial, destination));
-		fScore.put(initial, gScore.get(initial) + hScore.get(initial));
-		
-		openSet.add(initial);
-		openSet2.add(initial);
-		
-		while (!openSet.isEmpty()) {
-			
-			T current = openSet.get(0);
-			
-			if (current.equals(destination)) {
-				return Pair.of(true, reconstructPath(cameFrom, destination));
-			}
-			
-			openSet.remove(0);
-			openSet2.remove(current);
-			closedSet.add(current);
-			
-			for (T loc : neighbors.invoke(current)) {
-				if (!closedSet.contains(loc)) {
-					int tentativeScore = gScore.get(current) + distance.invoke(current, loc);
-					if (!openSet2.contains(loc)) {
-						
-						cameFrom.put(loc, current);
-						gScore.put(loc, tentativeScore);
-						hScore.put(loc, estimation.invoke(loc, destination));
-						fScore.put(loc, gScore.get(loc) + hScore.get(loc));
-						
-						openSet.add(loc);
-						Collections.sort(openSet, smallestF);
-						openSet2.add(loc);
-						
-					} else
-					if (tentativeScore < gScore.get(loc)) {
-						cameFrom.put(loc, current);
-						gScore.put(loc, tentativeScore);
-						hScore.put(loc, estimation.invoke(loc, destination));
-						fScore.put(loc, gScore.get(loc) + hScore.get(loc));
-						
-						Collections.sort(openSet, smallestF);
-					}
-				}
-			}
-		}
-		
-		// if we get here, there was no direct path available
-		// find a target location which minimizes initial-L-destination
-		
-		if (closedSet.isEmpty()) {
-			return Pair.of(false, Collections.<T>emptyList());
-		}
-		T nearest = Collections.min(closedSet, new Comparator<T>() {
+		Comparator<T> nearestComparator = new Comparator<T>() {
 			@Override
 			public int compare(T o1, T o2) {
 				int d1 = trueDistance.invoke(destination, o1);
@@ -125,7 +72,74 @@ public class AStarSearch<T> {
 				}
 				return c;
 			}
-		});
+		};
+		
+		Set<T> openSet2 = U.newHashSet();
+		PriorityQueue<T> openSet = new PriorityQueue<T>(1024, smallestF);
+		
+		gScore.put(initial, 0);
+		hScore.put(initial, estimation.invoke(initial, destination));
+		fScore.put(initial, gScore.get(initial) + hScore.get(initial));
+		
+		openSet.add(initial);
+		openSet2.add(initial);
+		
+		T nearest = null;
+		
+		while (!openSet.isEmpty()) {
+			
+			T current = openSet.remove();
+			
+			if (current.equals(destination)) {
+				return Pair.of(true, reconstructPath(cameFrom, destination));
+			}
+			
+			openSet.remove(0);
+			openSet2.remove(current);
+			closedSet.add(current);
+			
+			if (nearest == null || nearestComparator.compare(nearest, current) > 0) {
+				nearest = current;
+			}
+			
+			
+			for (T loc : neighbors.invoke(current)) {
+				if (!closedSet.contains(loc)) {
+					int tentativeScore = gScore.get(current) + distance.invoke(current, loc);
+					if (!openSet2.contains(loc)) {
+						cameFrom.put(loc, current);
+						
+						openSet.remove(loc);
+						
+						gScore.put(loc, tentativeScore);
+						hScore.put(loc, estimation.invoke(loc, destination));
+						fScore.put(loc, gScore.get(loc) + hScore.get(loc));
+						
+						openSet.add(loc);
+						
+						openSet2.add(loc);
+						
+					} else
+					if (tentativeScore < gScore.get(loc)) {
+						cameFrom.put(loc, current);
+
+						openSet.remove(loc);
+						
+						gScore.put(loc, tentativeScore);
+						hScore.put(loc, estimation.invoke(loc, destination));
+						fScore.put(loc, gScore.get(loc) + hScore.get(loc));
+						
+						openSet.add(loc);
+					}
+				}
+			}
+		}
+		
+		// if we get here, there was no direct path available
+		// find a target location which minimizes initial-L-destination
+		if (closedSet.isEmpty()) {
+			return Pair.of(false, Collections.<T>emptyList());
+		}
 		return Pair.of(true, reconstructPath(cameFrom, nearest));
 	}
 	/**

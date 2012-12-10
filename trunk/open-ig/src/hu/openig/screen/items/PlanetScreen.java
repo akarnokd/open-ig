@@ -105,6 +105,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -305,7 +306,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** How many steps to yield before replanning. */
 	static final int YIELD_TTL = 10 * 1000 / SIMULATION_DELAY;
 	/** List of requests about path planning. */
-	final List<PathPlanning> pathsToPlan = U.newArrayList();
+	final Set<PathPlanning> pathsToPlan = U.newHashSet();
+	/** Plan only the given amount of paths per tick. */
+	static final int PATHS_PER_TICK = 10;
 	/** A mine. */
 	public static class Mine {
 		/** The owner. */
@@ -351,6 +354,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	WeatherOverlay weatherOverlay;
 	/** The weather sound is running? */
 	Action0 weatherSoundRunning;
+	/** The map for pathfinding passability check. */
+	final Map<Location, Set<GroundwarUnit>> unitsForPathfinding = U.newHashMap();
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -615,6 +620,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		explosions.clear();
 		rockets.clear();
 		unitsAtLocation.clear();
+		unitsForPathfinding.clear();
 		unitsToPlace.clear();
 		groups.clear();
 	}
@@ -1040,9 +1046,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					rep = true;
 				} else {
 					if (e.z < 0) {
-						offsetY += 28;
+						offsetY += 28 * 3;
 					} else {
-						offsetY -= 28;
+						offsetY -= 28 * 3;
 					}
 					rep = true;
 				}
@@ -3612,6 +3618,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	void doAddUnits() {
 		units.clear();
 		unitsAtLocation.clear();
+		unitsForPathfinding.clear();
 		LinkedList<Location> locs = new LinkedList<Location>();
 		for (Building b : surface().buildings) {
 			if (b.type.kind.equals("MainBuilding")) {
@@ -3652,7 +3659,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		Player enemy = player();
 		if (planet().owner == player()) {
-			enemy = world().players.get("Garthog");
+			for (Player p : world().players.values()) {
+				if (p != player()) {
+					enemy = p;
+					break;
+				}
+			}
 		}
 		for (int d = 0; d < 4; d++) {
 			locs.clear();
@@ -4111,7 +4123,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * The task to plan a route to the given destination asynchronously. 
 	 * @author akarnokd, 2011.12.25.
 	 */
-	class PathPlanning implements Runnable {
+	class PathPlanning implements Callable<PathPlanning> {
 		/** The initial location. */
 		final Location current;
 		/** The goal location. */
@@ -4133,8 +4145,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 
 		@Override
-		public void run() {
+		public PathPlanning call() {
 			path.addAll(pathfinding.searchApproximate(current, goal));
+			return this;
 		}
 		/**
 		 * Apply the computation result.
@@ -4143,6 +4156,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			unit.path.addAll(path);
 			unit.inMotionPlanning = false;
 			unit.yieldTTL = 0;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj != null && obj.getClass() == getClass()) {
+				return unit.equals(((PathPlanning)obj).unit);
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return unit.hashCode();
 		}
 	}
 	/** 
@@ -4253,24 +4277,34 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void doPathPlannings() {
 		if (pathsToPlan.size() > 0) {
-			List<Future<?>> inProgress = U.newLinkedList();
-			for (int i = 1; i < pathsToPlan.size(); i++) {
-				inProgress.add(commons.pool.submit(pathsToPlan.get(i)));
+			
+			// map all units to locations
+			long t0 = System.nanoTime();
+			
+			List<Future<PathPlanning>> inProgress = U.newLinkedList();
+			Iterator<PathPlanning> it = pathsToPlan.iterator();
+			int i = PATHS_PER_TICK;
+			while (i-- > 0 && it.hasNext()) {
+				PathPlanning ppi = it.next();
+				it.remove();
+				inProgress.add(commons.pool.submit(ppi));
 			}
-			pathsToPlan.get(0).run();
-			for (Future<?> f : inProgress) {
+			for (Future<PathPlanning> f : inProgress) {
 				try {
-					f.get();
+					f.get().apply();
 				} catch (ExecutionException ex) {
 					Exceptions.add(ex);
 				} catch (InterruptedException ex) {
 					Exceptions.add(ex);
 				}
 			}
-			for (PathPlanning pp : pathsToPlan) {
-				pp.apply();
-			}
-			pathsToPlan.clear();
+//			for (PathPlanning pp : pathsToPlan) {
+//				pp.apply();
+//			}
+//			pathsToPlan.clear();
+
+			t0 = System.nanoTime() - t0;
+			System.out.printf("Planning %.6f%n", t0 / 1000000000d);
 		}
 	}
 
@@ -4480,7 +4514,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 		if (minelayers.contains(u) && u.path.size() == 0) {
-			Location loc = Location.of((int)u.x, (int)u.y);
+			Location loc = u.location();
 			if (!mines.containsKey(loc)) {
 				u.phase++;
 				if (u.phase >= u.maxPhase()) {
@@ -4537,7 +4571,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (!u.path.isEmpty()) {
 				moveUnit(u);
 				if (u.nextMove == null) {
-					Location loc = Location.of((int)u.x, (int)u.y);
+					Location loc = u.location();
 					Mine m = mines.get(loc);
 					if (m != null && m.owner != u.owner) {
 						effectSound(SoundType.EXPLOSION_MEDIUM);
@@ -4579,13 +4613,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		} else {
 			if (u.path.isEmpty()) {
+				Location ul = u.location();
 				if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
 					// plot path to the building
 					u.inMotionPlanning = true;
-					pathsToPlan.add(new PathPlanning(u.location(), centerCellOf(u.attackBuilding), u));
+					pathsToPlan.add(new PathPlanning(ul, buildingNearby(u.attackBuilding, ul), u));
 				} else {
 					// plot path outside the minimum range
-					Location c = centerCellOf(u.attackBuilding);
+					Location c = buildingNearby(u.attackBuilding, ul);
 					double angle = world().random().nextDouble() * 2 * Math.PI;
 					Location c1 = Location.of(
 							(int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
@@ -4598,7 +4633,52 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 	}
+	/**
+	 * Returns a reachable location of the building in relation to the source.
+	 * @param b the building
+	 * @param initial the source location
+	 * @return the nearby reachable location
+	 */
+	Location buildingNearby(Building b, final Location initial) {
+		final Location destination = centerCellOf(b);
 
+		Comparator<Location> nearestComparator = new Comparator<Location>() {
+			@Override
+			public int compare(Location o1, Location o2) {
+				int d1 = pathfinding.trueDistance.invoke(destination, o1);
+				int d2 = pathfinding.trueDistance.invoke(destination, o2);
+				int c = U.compare(d1, d2);
+				if (c == 0) {
+					d1 = pathfinding.trueDistance.invoke(initial, o1);
+					d2 = pathfinding.trueDistance.invoke(initial, o2);
+					c = U.compare(d1, d2);
+				}
+				return c;
+			}
+		};
+		Location result = null;
+		for (int x = b.location.x - 1; x < b.location.x + b.width(); x++) {
+			Location loc = Location.of(x, b.location.y + 1);
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+			loc = Location.of(x, b.location.y - b.height());
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+		}
+		for (int y = b.location.y; y > b.location.y - b.height(); y--) {
+			Location loc = Location.of(b.location.x - 1, y);
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+			loc = Location.of(b.location.x + b.width(), y);
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+		}
+		return result;
+	}
 	/**
 	 * Approach the target unit.
 	 * @param u the unit who is attacking
@@ -4610,7 +4690,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				u.path.clear();
 				u.path.add(u.nextMove);
 			} else
-			if (rotateStep(u, Location.of((int)u.attackUnit.x, (int)u.attackUnit.y))) {
+			if (rotateStep(u, u.attackUnit.location())) {
 				if (u.cooldown <= 0) {
 					u.phase++;
 					if (u.model.fire != null) {
@@ -5136,7 +5216,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void repath(final GroundwarUnit u) {
 		if (u.path.size() > 0) {
-			final Location current = Location.of((int)u.x, (int)u.y);
+			final Location current = u.location();
 			final Location goal = u.path.get(u.path.size() - 1);
 			u.path.clear();
 			u.nextMove = null;
@@ -5198,11 +5278,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				int maxx = (int)Math.ceil(gu.x);
 				int maxy = (int)Math.ceil(gu.y);
 				// check if our next position collided with the movement path of someone else
-				if (minx <= u.nextMove.x && u.nextMove.x <= maxx && miny <= u.nextMove.y && u.nextMove.y <= maxy) {
+				if (minx <= u.nextMove.x && u.nextMove.x <= maxx 
+						&& miny <= u.nextMove.y && u.nextMove.y <= maxy) {
 					// yield
 					dv = 0;
 					if (u.yieldTTL <= 0) {
-						u.yieldTTL = YIELD_TTL;
+						u.yieldTTL = world().random().nextInt(YIELD_TTL) + YIELD_TTL / 2;
 					}
 					break;
 				}
@@ -5210,17 +5291,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		if (dv > 0) {
 			u.yieldTTL = 0;
-		}
-		double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
-				+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y);
-		if (distanceToTarget < dv * dv) {
-			updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
+			double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
+					+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y);
+			if (distanceToTarget < dv * dv) {
+				updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
 
-			u.nextMove = null;
-			u.path.remove(0);
-		} else {
-			double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
-			updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);
+				u.nextMove = null;
+				u.path.remove(0);
+			} else {
+				double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
+				updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);
+			}
 		}
 	}
 	/**
@@ -5472,7 +5553,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		Set<GroundwarUnit> set = unitsAtLocation.get(loc);
 		if (set != null) {
 			if (!set.remove(u)) {
-				System.out.printf("Unit was not found at location %s, %s%n", loc.x, loc.y);
+				Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", loc.x, loc.y)));
+			}
+		}
+		// remove from pathfinding helper
+		Location pfl = u.location();
+		set = unitsForPathfinding.get(pfl);
+		if (set != null) {
+			if (!set.remove(u)) {
+				Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", pfl.x, pfl.y)));
 			}
 		}
 	}
@@ -5493,6 +5582,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void updateUnitLocation(GroundwarUnit u, double dx, double dy, boolean relative) {
 		Location current = unitLocation(u);
+		Location pfl = u.location();
+		
 		if (relative) {
 			u.x += dx;
 			u.y += dy;
@@ -5501,14 +5592,30 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			u.y = dy;
 		}
 		Location next = unitLocation(u);
+		Location pfl2 = u.location();
+
 		if (!current.equals(next)) {
 			Set<GroundwarUnit> set = unitsAtLocation.get(current);
 			if (set != null) {
 				if (!set.remove(u)) {
-					System.out.printf("Unit was not found at location %s, %s%n", current.x, current.y);
+					Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", current.x, current.y)));
+				}
+				if (unitsAtLocation.isEmpty()) {
+					unitsAtLocation.remove(current);
 				}
 			}		
-			
+		}
+		if (!pfl.equals(pfl2)) {
+			// remove from pathfinding helper
+			Set<GroundwarUnit> set = unitsForPathfinding.get(pfl);
+			if (set != null) {
+				if (!set.remove(u)) {
+					Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", pfl.x, pfl.y)));
+				}
+				if (set.isEmpty()) {
+					unitsForPathfinding.remove(pfl);
+				}
+			}
 		}
 
 		Set<GroundwarUnit> set = unitsAtLocation.get(next);
@@ -5517,7 +5624,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			unitsAtLocation.put(next, set);
 		}
 		set.add(u);
-	}
+
+		set = unitsForPathfinding.get(pfl2);
+		if (set == null) {
+			set = U.newHashSet();
+			unitsForPathfinding.put(pfl2, set);
+		}
+		set.add(u);
+}
 	/**
 	 * Add a unit with its current location to the mapping.
 	 * @param u the unit to move
@@ -5528,6 +5642,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (set == null) {
 			set = U.newHashSet();
 			unitsAtLocation.put(current, set);
+		}
+		set.add(u);
+		
+		Location pfl = u.location();
+		set = unitsForPathfinding.get(pfl);
+		if (set == null) {
+			set = U.newHashSet();
+			unitsForPathfinding.put(pfl, set);
 		}
 		set.add(u);
 	}
@@ -5970,7 +6092,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	@Override
 	public void move(GroundwarUnit u, int x, int y) {
 		stop(u);
-		Location lu = Location.of((int)u.x, (int)u.y);
+		Location lu = u.location();
 		Location lm = Location.of(x, y);
 		u.inMotionPlanning = true;
 		pathsToPlan.add(new PathPlanning(lu, lm, u));
@@ -6000,11 +6122,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	@Override
 	public boolean isPassable(int x, int y) {
 		if (surface().placement.canPlaceBuilding(x, y)) {
-			for (GroundwarUnit u : units) {
-				if (((int)(u.x) == x && (int)(u.y) == y)) {
-					return (!u.path.isEmpty() 
-							&& u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
+			Set<GroundwarUnit> gunits = unitsForPathfinding.get(Location.of(x, y));
+			if (gunits != null) {
+				boolean ip = true;
+				for (GroundwarUnit u : gunits) {
+					ip &= (!u.path.isEmpty() 
+								&& u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
 				}
+				return ip;
 			}
 			return true;
 		}
