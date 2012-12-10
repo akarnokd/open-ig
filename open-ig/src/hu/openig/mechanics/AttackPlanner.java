@@ -107,11 +107,12 @@ public class AttackPlanner extends Planner {
 			return;
 		}
 		// don't bother when exploring
-		for (AIFleet f : world.ownFleets) {
-			if (f.task.ordinal() <= FleetTask.EXPLORE.ordinal()) {
-				return;
-			}
-		}
+//		for (AIFleet f : world.ownFleets) {
+//			if (f.task.ordinal() <= FleetTask.EXPLORE.ordinal()) {
+//				return;
+//			}
+//		}
+		
 		if (world.nextAttack != null && world.nextAttack.compareTo(world.now) < 0) {
 			world.nextAttack = null;
 			
