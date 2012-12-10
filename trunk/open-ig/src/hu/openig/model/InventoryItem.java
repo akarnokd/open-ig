@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,12 +48,12 @@ public class InventoryItem {
 	 */
 	public int shieldMax() {
 		int result = -1;
-		if (type.has("shield")) {
-			result = type.getInt("shield");
+		if (type.has(ResearchType.PARAMETER_SHIELD)) {
+			result = type.getInt(ResearchType.PARAMETER_SHIELD);
 		}
 		for (InventorySlot sl : slots) {
-			if (sl.type != null && sl.type.properties.containsKey("shield")) {
-				result = Math.max(result, sl.type.getInt("shield"));
+			if (sl.type != null && sl.type.has(ResearchType.PARAMETER_SHIELD)) {
+				result = Math.max(result, sl.type.getInt(ResearchType.PARAMETER_SHIELD));
 			}
 		}
 		if (result >= 0) {
@@ -131,9 +132,12 @@ public class InventoryItem {
 	public void sell() {
 		long money = sellValue();
 		owner.addMoney(money);
+		
+		owner.statistics.sellCount++;
 		owner.statistics.moneySellIncome += money;
 		owner.statistics.moneyIncome += money;
 		
+		owner.world.statistics.sellCount++;
 		owner.world.statistics.moneyIncome += money;
 		owner.world.statistics.moneySellIncome += money;
 
@@ -215,7 +219,7 @@ public class InventoryItem {
 		for (InventorySlot is : slots) {
 			if (is.type != null && (is.type.category == ResearchSubCategory.WEAPONS_CANNONS
 					|| is.type.category == ResearchSubCategory.WEAPONS_LASERS)) {
-				BattleProjectile bp = owner.world.battle.projectiles.get(is.type.get("projectile"));
+				BattleProjectile bp = owner.world.battle.projectiles.get(is.type.get(ResearchType.PARAMETER_PROJECTILE));
 				double dmg = bp.damage(owner);
 				damage += dmg * is.count * count;
 				dps += dmg * is.count * 1000d / bp.delay * count;
@@ -230,5 +234,49 @@ public class InventoryItem {
 			dps += dmg * 1000d * count / bgw.delay;
 		}
 		return Pair.of(damage, dps);
+	}
+	/**
+	 * Remove excess fighters from the supplied inventory set.
+	 * @param items the inventory items
+	 */
+	public static void removeExcessFighters(List<InventoryItem> items) {
+		// remove above-limit fighters back into the inventory
+		for (InventoryItem ii : items) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				int diff = ii.count - ii.owner.world.params().fighterLimit();
+				if (diff > 0) {
+					ii.owner.changeInventoryCount(ii.type, diff);
+					ii.count -= diff;
+				}
+			}
+		}
+	}
+	/**
+	 * Remove excess tanks from the inventory.
+	 * @param items the inventory items
+	 * @param owner the owner
+	 * @param count the current count
+	 * @param max the maximum allowed
+	 */
+	public static void removeExcessTanks(List<InventoryItem> items, Player owner, int count, int max) {
+		// remove excess vehicles
+		while (count > max) {
+			List<InventoryItem> iis = new ArrayList<InventoryItem>(items);
+			Collections.shuffle(iis);
+			for (InventoryItem ii2 : iis) {
+				if (ii2.owner == owner 
+						&& (ii2.type.category == ResearchSubCategory.WEAPONS_TANKS
+						|| ii2.type.category == ResearchSubCategory.WEAPONS_VEHICLES)) {
+					owner.changeInventoryCount(ii2.type, 1);
+					ii2.count--;
+					if (ii2.count <= 0) {
+						items.remove(ii2);
+					}
+					count--;
+					break;
+				}
+			}
+			
+		}
 	}
 }

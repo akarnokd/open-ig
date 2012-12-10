@@ -1320,6 +1320,7 @@ public class World {
 		xfleet.set("y", f.y);
 		xfleet.set("name", f.name);
 		xfleet.set("task", f.task);
+		xfleet.set("refill-once", f.refillOnce);
 		if (f.targetFleet != null) {
 			xfleet.set("target-fleet", f.targetFleet.id);
 		} else
@@ -1897,6 +1898,8 @@ public class World {
 			}
 			
 			f.task = FleetTask.valueOf(xfleet.get("task", FleetTask.IDLE.toString()));
+			
+			f.refillOnce = xfleet.getBoolean("refill-once", true);
 			
 			s0 = xfleet.get("waypoints", null);
 			if (s0 != null) {
@@ -2782,7 +2785,7 @@ public class World {
 				for (Fleet f : p.ownFleets()) {
 					for (InventoryItem ii : f.inventory) {
 						for (InventorySlot is : ii.slots) {
-							if (is.type != null && is.type.has("speed")) {
+							if (is.type != null && is.type.has(ResearchType.PARAMETER_SPEED)) {
 								is.type = null;
 								is.count = 0;
 							}
@@ -2793,11 +2796,11 @@ public class World {
 				for (Map.Entry<ResearchType, List<ResearchType>> at : U.newArrayList(p.available().entrySet())) {
 					ResearchType rt0 = at.getKey();
 					for (ResearchType rt1 : U.newArrayList(at.getValue())) {
-						if (rt1.has("speed") && rt1.level == 0) {
+						if (rt1.has(ResearchType.PARAMETER_SPEED) && rt1.level == 0) {
 							at.getValue().remove(rt1);
 						}
 					}
-					if (rt0.has("speed")) {
+					if (rt0.has(ResearchType.PARAMETER_SPEED)) {
 						rt0.level = Math.max(rt0.level, 1);
 						p.available().remove(rt0);
 					}

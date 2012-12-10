@@ -1840,7 +1840,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	 */
 	void updateProduction(PlanetStatistics ps) {
 		ResearchType rt = research();
-		needsOrbitalFactory.visible(mode == Screens.PRODUCTION && player().isAvailable(rt) && rt.has("needsOrbitalFactory") && ps.orbitalFactory == 0);
+		needsOrbitalFactory.visible(mode == Screens.PRODUCTION && player().isAvailable(rt) 
+				&& rt.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) && ps.orbitalFactory == 0);
 
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
@@ -1901,7 +1902,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 
 		int prioritySum = 0;
 		for (Production pr : productions.values()) {
-			if (pr.type.has("needsOrbitalFactory") && ps.orbitalFactory == 0) {
+			if (pr.type.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) && ps.orbitalFactory == 0) {
 				continue;
 			}
 			if (pr.count > 0) {
@@ -1930,7 +1931,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			pl.priority.text("" + pr.priority);
 			if (prioritySum > 0 && pr.count > 0) {
 				int pri = pr.priority;
-				if (pr.type.has("needsOrbitalFactory") && ps.orbitalFactory == 0) {
+				if (pr.type.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) && ps.orbitalFactory == 0) {
 					pri = 0;
 				}
 				pl.capacity.text("" + (capacity * pri / prioritySum));

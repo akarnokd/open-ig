@@ -81,24 +81,24 @@ public class ResearchType {
 	public BufferedImage equipmentCustomizeImage;
 	/** The available equipment slots. */
 	public final Map<String, EquipmentSlot> slots = new LinkedHashMap<String, EquipmentSlot>();
-	// -------------------------------------------------
-	// Resources for the Space battle screen.
-//	/** 
-//	 * The 286x197 image to display during the space battle in the information panel. 
-//	 * Uses the <code>_huge</code> postfix.
-//	 * Projectiles may not use this. 
-//	 */
-//	public BufferedImage spaceBattleImage;
-//	/** The image sequence to rotate a ship. The first image is at angle zero relative to the screen-x coordinate. */
-//	public BufferedImage[] rotation;
-//	// -------------------------------------------------
-//	// Resources for the ground battle screen
-//	/** 
-//	 * The image matrix where the first dimension indicates a firing phase and the second indicates
-//	 * a rotation phase. The initial rotation faces the negative y axis of the surface.
-//	 * Uses the <code>_matrix</code> suffix.
-//	 */
-//	public BufferedImage[][] fireAndRotation;
+	/** The vehicle capacity parameter name. */
+	public static final String PARAMETER_VEHICLES = "vehicles";
+	/** The shield percentage parameter name. */
+	public static final String PARAMETER_SHIELD = "shield";
+	/** The radar level parameter name. */
+	public static final String PARAMETER_RADAR = "radar";
+	/** The speed parameter name. */
+	public static final String PARAMETER_SPEED = "speed";
+	/** The projectile parameter name. */
+	public static final String PARAMETER_PROJECTILE = "projectile";
+	/** The projectile parameter name. */
+	public static final String PARAMETER_DETECTOR = "detector";
+	/** AI hint for one per fleet parameter name. */
+	public static final String PARAMETER_ONE_PER_FLEET = "one-per-fleet";
+	/** Needs orbital factory parameter name. */
+	public static final String PARAMETER_NEEDS_ORBITAL_FACTORY = "needsOrbitalFactory";
+	/** The electronic countermeasure parameter name. */
+	public static final String PARAMETER_ECM = "ecm";
 	/**
 	 * Retrieve a property value.
 	 * @param property the property name

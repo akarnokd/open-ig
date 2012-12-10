@@ -260,8 +260,8 @@ public class Planet implements Named, Owned, HasInventory {
 				if ("MilitarySpaceport".equals(b.type.id)) {
 					result.hasMilitarySpaceport = true;
 				}
-				if (b.hasResource("vehicles")) {
-					result.vehicleMax += b.getResource("vehicles");
+				if (b.hasResource(BuildingType.RESOURCE_VEHICLES)) {
+					result.vehicleMax += b.getResource(BuildingType.RESOURCE_VEHICLES);
 				}
 				if (b.hasResource("population-growth")) {
 					result.populationGrowthModifier = 1 + b.getResource("population-growth") / 100;
@@ -381,8 +381,8 @@ public class Planet implements Named, Owned, HasInventory {
 		
 		for (InventoryItem pii : inventory) {
 			if (pii.owner == owner) {
-				if (pii.type.get("radar") != null) {
-					radar = Math.max(radar, Integer.parseInt(pii.type.get("radar")));
+				if (pii.type.has(ResearchType.PARAMETER_RADAR)) {
+					radar = Math.max(radar, pii.type.getInt(ResearchType.PARAMETER_RADAR));
 				}
 				if ("OrbitalFactory".equals(pii.type.id)) {
 					result.orbitalFactory++;
@@ -701,7 +701,7 @@ public class Planet implements Named, Owned, HasInventory {
 		Iterator<InventoryItem> it = inventory.iterator();
 		while (it.hasNext()) {
 			InventoryItem ii = it.next();
-			if (ii.owner == owner && ii.type.has("detector")) {
+			if (ii.owner == owner && ii.type.has(ResearchType.PARAMETER_DETECTOR)) {
 				ii.owner.changeInventoryCount(ii.type, 1);
 				it.remove();
 			}
@@ -782,5 +782,23 @@ public class Planet implements Named, Owned, HasInventory {
 		if (race != null && owner != null) {
 			surface.placeRoads(race, owner.world.buildingModel);
 		}
+	}
+	/**
+	 * Remove excess fighters and vehicles.
+	 */
+	public void removeExcess() {
+		// remove fighters if no space stations present
+		if (inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, owner) == 0) {
+			for (InventoryItem ii2 : new ArrayList<InventoryItem>(inventory)) {
+				if (ii2.owner == owner && ii2.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					owner.changeInventoryCount(ii2.type, ii2.count);
+					inventory.remove(ii2);
+				}
+			}
+		}
+		InventoryItem.removeExcessFighters(inventory);
+		// remove excess vehicles
+		PlanetStatistics ps = getStatistics();
+		InventoryItem.removeExcessTanks(inventory, owner, ps.vehicleCount, ps.vehicleMax);
 	}
 }

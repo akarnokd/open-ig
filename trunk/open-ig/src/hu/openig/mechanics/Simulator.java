@@ -867,7 +867,8 @@ public final class Simulator {
 	static void regenerateFleet(Fleet f) {
 		Planet np = f.nearbyPlanet();
 		boolean spaceport = f.task != FleetTask.SCRIPT 
-				&& ((np != null 
+				&& ((np != null
+				&& !f.refillOnce
 				&& np.owner == f.owner 
 				&& np.hasMilitarySpaceport()));
 		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
@@ -875,6 +876,10 @@ public final class Simulator {
 		}
 		if (spaceport) {
 			checkRefill(f);
+			f.refillOnce = true;
+		}
+		if (np == null && f.refillOnce) {
+			f.refillOnce = false;
 		}
 	}
 	/**
