@@ -252,7 +252,8 @@ public class CampaignEditor extends JFrame implements CEContext {
 			language = "en";
 		} else
 		if (argSet.contains("-hu")) {
-			language = "hu";
+// FIXME language = "hu";
+			language = "en";
 		} else {
 			language = "en";
 		}
