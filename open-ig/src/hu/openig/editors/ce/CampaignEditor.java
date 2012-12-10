@@ -18,6 +18,10 @@ import hu.openig.utils.XElement;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -28,6 +32,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -38,12 +43,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
@@ -110,6 +121,66 @@ public class CampaignEditor extends JFrame implements CEContext {
 	File workDir = new File(".");
 	/** The languages. */
 	List<String> languages = U.newArrayList();
+	/** The startup dialog. */
+	CEStartupDialog startupDialog;
+	/** Undo menu item. */
+	JMenuItem mnuEditUndo;
+	/** Redo menu item. */
+	JMenuItem mnuEditRedo;
+	/** Menu item. */
+	JMenuItem mnuFileNew;
+	/** Menu item. */
+	JMenuItem mnuFileOpen;
+	/** Menu item. */
+	JMenuItem mnuFileRecent;
+	/** Menu item. */
+	JMenuItem mnuFileSave;
+	/** Menu item. */
+	JMenuItem mnuFileImport;
+	/** Menu item. */
+	JMenuItem mnuFileExport;
+	/** Menu item. */
+	JMenuItem mnuFileExit;
+	/** Menu item. */
+	JMenuItem mnuHelpOnline;
+	/** Menu item. */
+	JMenuItem mnuHelpAbout;
+	/** Menu item. */
+	JMenuItem mnuEditCut;
+	/** Menu item. */
+	JMenuItem mnuEditCopy;
+	/** Menu item. */
+	JMenuItem mnuEditPaste;
+	/** Menu item. */
+	JMenuItem mnuEditDelete;
+	/** Menu item. */
+	JMenuItem mnuFileSaveAs;
+	/** Toolbar item. */
+	AbstractButton toolbarCut;
+	/** Toolbar item. */
+	AbstractButton toolbarCopy;
+	/** Toolbar item. */
+	AbstractButton toolbarPaste;
+	/** Toolbar item. */
+	AbstractButton toolbarRemove;
+	/** Toolbar item. */
+	AbstractButton toolbarUndo;
+	/** Toolbar item. */
+	AbstractButton toolbarRedo;
+	/** Toolbar item. */
+	AbstractButton toolbarNew;
+	/** Toolbar item. */
+	AbstractButton toolbarOpen;
+	/** Toolbar item. */
+	AbstractButton toolbarSave;
+	/** Toolbar item. */
+	AbstractButton toolbarImport;
+	/** Toolbar item. */
+	AbstractButton toolbarExport;
+	/** Toolbar item. */
+	AbstractButton toolbarSaveAs;
+	/** Toolbar item. */
+	AbstractButton toolbarHelp;
 	/**
 	 * Initialize the GUI.
 	 */
@@ -151,6 +222,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 */
 	void loadConfigXML(XElement xml) {
 		loadWindowState(this, xml.childElement("main-window"));
+		
 		for (XElement xpref : xml.childrenWithName("panel-preference")) {
 			String id = xpref.get("id");
 			for (Component c : tabs.getComponents()) {
@@ -162,13 +234,21 @@ public class CampaignEditor extends JFrame implements CEContext {
 				}
 			}
 		}
+		
+		for (XElement xpref : xml.childrenWithName("dialog-preference")) {
+			String id = xpref.get("id");
+			if (id.equals(startupDialog.preferencesId())) {
+				loadWindowState(startupDialog, xpref);
+				startupDialog.loadPreferences(xpref);
+			}
+		}
 	}
 	/**
 	 * Load the window state from the specified XML element.
 	 * @param w the target frame
 	 * @param xml the xml element
 	 */
-	public static void loadWindowState(JFrame w, XElement xml) {
+	public static void loadWindowState(Frame w, XElement xml) {
 		if (xml == null) {
 			return;
 		}
@@ -185,11 +265,26 @@ public class CampaignEditor extends JFrame implements CEContext {
 		}
 	}
 	/**
+	 * Load the window state from the specified XML element.
+	 * @param w the target frame
+	 * @param xml the xml element
+	 */
+	public static void loadWindowState(JDialog w, XElement xml) {
+		if (xml == null) {
+			return;
+		}
+		int x = xml.getInt("window-x", w.getX());
+		int y = xml.getInt("window-y", w.getY());
+		int width = xml.getInt("window-width", w.getWidth());
+		int height = xml.getInt("window-height", w.getHeight());
+		w.setBounds(x, y, width, height);
+	}
+	/**
 	 * Save the window state into the given XML element.
 	 * @param w the window
 	 * @param xml the output
 	 */
-	public static void saveWindowState(JFrame w, XElement xml) {
+	public static void saveWindowState(Frame w, XElement xml) {
 		int state = w.getExtendedState();
 		xml.set("window-state", state);
 		if (state != JFrame.MAXIMIZED_BOTH) {
@@ -198,6 +293,17 @@ public class CampaignEditor extends JFrame implements CEContext {
 			xml.set("window-width", w.getWidth());
 			xml.set("window-height", w.getHeight());
 		}
+	}
+	/**
+	 * Save the window state into the given XML element.
+	 * @param w the window
+	 * @param xml the output
+	 */
+	public static void saveWindowState(Dialog w, XElement xml) {
+		xml.set("window-x", w.getX());
+		xml.set("window-y", w.getY());
+		xml.set("window-width", w.getWidth());
+		xml.set("window-height", w.getHeight());
 	}
 	/**
 	 * Save the current configuration.
@@ -226,6 +332,11 @@ public class CampaignEditor extends JFrame implements CEContext {
 				pp.savePreferences(xpref);
 			}
 		}
+
+		XElement xpref0 = result.add("dialog-preference");
+		xpref0.set("id", startupDialog.preferencesId());
+		saveWindowState(startupDialog, xpref0);
+		startupDialog.savePreferences(xpref0);
 		
 		return result;
 	}
@@ -270,6 +381,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 				CampaignEditor ce = new CampaignEditor();
 				ce.loadConfig();
 				ce.setVisible(true);
+				ce.startupDialog.setVisible(true);
 			}
 		});
 	}
@@ -311,14 +423,15 @@ public class CampaignEditor extends JFrame implements CEContext {
 		projectLanguage = language;
 		
 		initMainLabels();
+
+		mainMenu = new JMenuBar();
 		
+		initMenu();
+
 		toolbar = new JToolBar();
 		
 		initToolbar();
 		
-		mainMenu = new JMenuBar();
-		
-		initMenu();
 		
 		mainSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
@@ -340,12 +453,72 @@ public class CampaignEditor extends JFrame implements CEContext {
 		c.add(toolbar, BorderLayout.PAGE_START);
 		c.add(mainSplit, BorderLayout.CENTER);
 		// TODO other stuff
+		
+		startupDialog = new CEStartupDialog(this);
 	}
 	/**
 	 * Initialize the toolbar.
 	 */
 	void initToolbar() {
 		// TODO create toolbar entries.
+
+		toolbarCut = createFor("res/Cut24.gif", "Cut", mnuEditCut, false);
+		toolbarCopy = createFor("res/Copy24.gif", "Copy", mnuEditCopy, false);
+		toolbarPaste = createFor("res/Paste24.gif", "Paste", mnuEditPaste, false);
+		toolbarRemove = createFor("res/Remove24.gif", "Remove", mnuEditDelete, false);
+		toolbarUndo = createFor("res/Undo24.gif", "Undo", mnuEditUndo, false);
+		toolbarRedo = createFor("res/Redo24.gif", "Redo", mnuEditRedo, false);
+		toolbarNew = createFor("res/New24.gif", "New", mnuFileNew, false);
+		toolbarOpen = createFor("res/Open24.gif", "Open", mnuFileOpen, false);
+		toolbarSave = createFor("res/Save24.gif", "Save", mnuFileSave, false);
+		toolbarImport = createFor("res/Import24.gif", "Import", mnuFileImport, false);
+		toolbarExport = createFor("res/Export24.gif", "Export", mnuFileImport, false);
+		toolbarSaveAs = createFor("res/SaveAs24.gif", "Save as", mnuFileSaveAs, false);
+		toolbarHelp = createFor("res/Help24.gif", "Help", mnuHelpOnline, false);
+
+		toolbar.add(toolbarNew);
+		toolbar.add(toolbarOpen);
+		toolbar.add(toolbarSave);
+		toolbar.addSeparator();
+		toolbar.add(toolbarImport);
+		toolbar.add(toolbarExport);
+		toolbar.add(toolbarSaveAs);
+		toolbar.addSeparator();
+		toolbar.add(toolbarCut);
+		toolbar.add(toolbarCopy);
+		toolbar.add(toolbarPaste);
+		
+		toolbar.add(toolbarRemove);
+		toolbar.addSeparator();
+		toolbar.add(toolbarUndo);
+		toolbar.add(toolbarRedo);
+
+		toolbar.addSeparator();
+		toolbar.add(toolbarHelp);
+
+	}
+	/**
+	 * Create a imaged button for the given menu item.
+	 * @param graphicsResource the graphics resource location.
+	 * @param tooltip the tooltip text
+	 * @param inMenu the menu item to relay the click to.
+	 * @param toggle create a toggle button?
+	 * @return the button
+	 */
+	AbstractButton createFor(String graphicsResource, String tooltip, final JMenuItem inMenu, boolean toggle) {
+		AbstractButton result = toggle ? new JToggleButton() : new JButton();
+		URL res = getClass().getResource(graphicsResource);
+		if (res != null) {
+			result.setIcon(new ImageIcon(res));
+		}
+		result.setToolTipText(tooltip);
+		result.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				inMenu.doClick();
+			}
+		});
+		return result;
 	}
 	/**
 	 * Initialize the tabs.
@@ -376,6 +549,61 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 */
 	void initMenu() {
 		// TODO create menu items
+		JMenu mnuFile = new JMenu(get("menu.file"));
+		JMenu mnuEdit = new JMenu(get("menu.edit"));
+		JMenu mnuView = new JMenu(get("menu.view"));
+		JMenu mnuTools = new JMenu(get("menu.tools"));
+		JMenu mnuHelp = new JMenu(get("menu.help"));
+
+		// -----------------------
+
+		mnuFileNew = new JMenuItem(get("menu.file.new"));
+		
+		mnuFileOpen = new JMenuItem(get("menu.file.open"));
+		mnuFileRecent = new JMenuItem(get("menu.file.recent"));
+		mnuFileSave = new JMenuItem(get("menu.file.save"));
+		mnuFileSaveAs = new JMenuItem(get("menu.file.saveas"));
+		mnuFileImport = new JMenuItem(get("menu.file.import"));
+		mnuFileExport = new JMenuItem(get("menu.file.export"));
+		
+		mnuFileExit = new JMenuItem(get("menu.file.exit"));
+		
+		mnuFile.add(mnuFileNew);
+		mnuFile.addSeparator();
+		mnuFile.add(mnuFileOpen);
+		mnuFile.add(mnuFileRecent);
+		mnuFile.add(mnuFileSave);
+		mnuFile.add(mnuFileSaveAs);
+		mnuFile.addSeparator();
+		mnuFile.add(mnuFileImport);
+		mnuFile.add(mnuFileExport);
+		mnuFile.addSeparator();
+		mnuFile.add(mnuFileExit);
+		
+		// -----------------------
+		mnuEditCut = new JMenuItem(get("menu.edit.cut"));
+		mnuEditCopy = new JMenuItem(get("menu.edit.copy"));
+		mnuEditPaste = new JMenuItem(get("menu.edit.paste"));
+		mnuEditDelete = new JMenuItem(get("menu.edit.delete"));
+		
+		mnuEditUndo = new JMenuItem(get("menu.edit.undo"));
+		mnuEditRedo = new JMenuItem(get("menu.edit.redo"));
+
+		// -----------------------
+		
+		mnuHelpOnline = new JMenuItem(get("menu.help.online"));
+		mnuHelpAbout = new JMenuItem(get("menu.help.about"));
+
+		// -----------------------
+		
+		mainMenu.add(mnuFile);
+		mainMenu.add(mnuEdit);
+		mainMenu.add(mnuView);
+		mainMenu.add(mnuTools);
+		mainMenu.add(mnuHelp);
+		
+		// -----------------------
+		updateUndoRedo();
 	}
 	@Override
 	public XElement getXML(String resource) {
@@ -821,6 +1049,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	@Override
 	public void addUndo(CEUndoRedoSupport c, String name, XElement oldState, XElement newState) {
 		undoManager.addEdit(new CEUndoRedoEntry(c, name, oldState, newState));
+		updateUndoRedo();
 	}
 	@Override
 	public void saveXML(String resource, XElement xml) {
@@ -928,5 +1157,18 @@ public class CampaignEditor extends JFrame implements CEContext {
 	public boolean hasLabel(String key) {
 		String lbl = label(key);
 		return lbl != null && !lbl.isEmpty();
+	}
+	/** Update the undo/redo menu. */
+	void updateUndoRedo() {
+		mnuEditUndo.setEnabled(undoManager.canUndo());
+		mnuEditRedo.setEnabled(undoManager.canRedo());
+	}
+	@Override
+	public UndoManager undoManager() {
+		return undoManager;
+	}
+	@Override
+	public void undoManagerChanged() {
+		updateUndoRedo();
 	}
 }
