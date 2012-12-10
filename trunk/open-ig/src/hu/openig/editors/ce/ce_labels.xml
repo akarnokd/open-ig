@@ -137,6 +137,18 @@
 		<entry key='tech.filter.key.untranslated'>Entries which are not translated. Values can be &lt;code>true&lt;/code> or &lt;code>false&lt;/code>.</entry>
 		<entry key='label.missing_translation'>Missing translation.</entry>
 		<entry key='label.duplicate_translation'>Duplicate translation.</entry>
+		<entry key='startup.title'>Startup</entry>
+		<entry key='startup.create_new'>Create a new Campaign/Skirmish</entry>
+		<entry key='startup.copy_existing'>Copy existing Campaign/Skirmish</entry>
+		<entry key='startup.open_recent'>Open recently edited Campaign/Skirmish</entry>	
+		<entry key='startup.file'>File</entry>
+		<entry key='startup.name'>Name</entry>
+		<entry key='startup.description'>Description</entry>
+		<entry key='startup.date'>Date</entry>
+		<entry key='startup.ok'>OK</entry>
+		<entry key='startup.cancel'>Cancel</entry>
+		<entry key='startup.open'>Open specific...</entry>
+		<entry key='startup.create_new_desc'>Name (directory under dlc):</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>

@@ -16,6 +16,7 @@ import java.io.File;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.undo.UndoManager;
 
 /**
  * The editor's context that lets the panels communicate with each other
@@ -180,5 +181,8 @@ public interface CEContext {
 	 * @return the data bytes or null if not found
 	 */
 	byte[] getData(String language, String resource);
-
+	/** @return the global undo manager. */
+	UndoManager undoManager();
+	/** Notify the window that the undo manager has changed. */
+	void undoManagerChanged();
 }
