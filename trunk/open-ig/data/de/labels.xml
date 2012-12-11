@@ -1964,12 +1964,14 @@
 	<entry key='messages.San Sterling'>San Sterling</entry>
 	<entry key='messages.Zeuson'>Zeuson</entry>
 	<entry key='messages.admiral_benson'>Admiral Benson</entry>
+	<entry key='messages.admiral_benson_failed'>Versag: Admiral Benson</entry>
 	<entry key='messages.android'>Android</entry>
 	<entry key='messages.android_truth'>Die Wahrheit</entry>
 	<entry key='messages.attack'>Angriff</entry>
 	<entry key='messages.attack_2'>Angriff</entry>
 	<entry key='messages.attack_garthog'>Angriff von Garthog</entry>
 	<entry key='messages.carrier'>Träger</entry>
+	<entry key='messages.carrier_failed'>Versag: Träger</entry>
 	<entry key='messages.centronom_governor'>Gouverneur von Centronom</entry>
 	<entry key='messages.check'>Status</entry>
 	<entry key='messages.douglas'>Kmdt. Douglas</entry>
@@ -1983,6 +1985,7 @@
 	<entry key='messages.pirates'>Piraten</entry>
 	<entry key='messages.promotion'>Beförderung</entry>
 	<entry key='messages.prototype'>Prototyp</entry>
+	<entry key='messages.prototype_failed'>Versag: Prototyp</entry>
 	<entry key='messages.prototype_success'>Prototyp gesichert</entry>
 	<entry key='messages.prototype_thanks'>Danke</entry>
 	<entry key='messages.quickly'>Schnell</entry>
