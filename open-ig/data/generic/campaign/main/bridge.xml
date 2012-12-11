@@ -133,15 +133,15 @@
 			<message id="Merchant-Under-Attack-6" media="messages/merchant_under_attack_6" title="messages.merchant" description="messages.attack"/>
 			<message id="Merchant-Under-Attack-7" media="messages/merchant_under_attack_7" title="messages.merchant" description="messages.attack"/>
 			<message id="Merchant-Under-Attack-Garthog" media="messages/merchant_under_attack_garthog" title="messages.merchant" description="messages.attack_garthog"/>
-			<message id="Douglas-Admiral-Benson" media="messages/douglas_escort_admiral_benson" title="messages.escort" description="messages.admiral_benson"/>
-			<message id="Douglas-Admiral-Benson-Failed" media="messages/douglas_escort_admiral_benson_failed" title="messages.escort_failed" description="messages.admiral_benson"/>
-			<message id="Douglas-Carrier" media="messages/douglas_escort_carrier" title="messages.escort" description="messages.carrier"/>
-			<message id="Douglas-Carrier-Lost" media="messages/douglas_escort_carrier_lost" title="messages.escort_failed" description="messages.carrier"/>
-			<message id="Douglas-Centronom-Governor" media="messages/douglas_escort_centronom_governor" title="messages.escort" description="messages.centronom_governor"/>
-			<message id="Douglas-Money" media="messages/douglas_escort_money" title="messages.escort" description="messages.money"/>
-			<message id="Douglas-Prototype-2" media="messages/douglas_escort_prototype" title="messages.escort" description="messages.prototype"/>
-			<message id="Douglas-Prototype-2-Failed" media="messages/douglas_escort_prototype_failed" title="messages.escort_failed" description="messages.prototype"/>
-			<message id="Douglas-Thorin" media="messages/douglas_escort_thorin" title="messages.escort" description="messages.thorin"/>
+			<message id="Douglas-Admiral-Benson" media="messages/douglas_escort_admiral_benson" title="messages.douglas" description="messages.admiral_benson"/>
+			<message id="Douglas-Admiral-Benson-Failed" media="messages/douglas_escort_admiral_benson_failed" title="messages.douglas" description="messages.admiral_benson_failed"/>
+			<message id="Douglas-Carrier" media="messages/douglas_escort_carrier" title="messages.douglas" description="messages.carrier"/>
+			<message id="Douglas-Carrier-Lost" media="messages/douglas_escort_carrier_lost" title="messages.douglas" description="messages.carrier_failed"/>
+			<message id="Douglas-Centronom-Governor" media="messages/douglas_escort_centronom_governor" title="messages.douglas" description="messages.centronom_governor"/>
+			<message id="Douglas-Money" media="messages/douglas_escort_money" title="messages.douglas" description="messages.money"/>
+			<message id="Douglas-Prototype-2" media="messages/douglas_escort_prototype" title="messages.douglas" description="messages.prototype"/>
+			<message id="Douglas-Prototype-2-Failed" media="messages/douglas_escort_prototype_failed" title="messages.douglas" description="messages.prototype_failed"/>
+			<message id="Douglas-Thorin" media="messages/douglas_escort_thorin" title="messages.douglas" description="messages.thorin"/>
 			<message id="Douglas-Fire-Battle" media="messages/douglas_fire_1_battle" title="messages.douglas" description="messages.fire"/>
 			<message id="Douglas-Fire-Mistakes" media="messages/douglas_fire_1_mistakes" title="messages.douglas" description="messages.fire"/>
 			<message id="Douglas-Fire-No-Order" media="messages/douglas_fire_1_no_order" title="messages.douglas" description="messages.fire"/>

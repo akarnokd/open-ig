@@ -901,7 +901,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							break;
 						} else
 						if (attackSelect) {
-							doAttackWithSelectedUnits(e.x, e.y);
+							if (e.has(Modifier.CTRL)) {
+								doAttackMoveSelectedUnits(e.x, e.y);
+							} else {
+								doAttackWithSelectedUnits(e.x, e.y);
+							}
 							rep = true;
 							break;
 						} else {

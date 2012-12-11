@@ -2049,13 +2049,16 @@
 	<entry key='messages.thorin'>Thorin</entry>
 	<entry key='messages.escort'>Fegyveres kíséret</entry>
 	<entry key='messages.admiral_benson'>Benson admirális</entry>
+	<entry key='messages.admiral_benson_failed'>Bukta: Benson admirális</entry>
 	<entry key='messages.escort_failed'>Kíséret kudarc</entry>
 	<entry key='messages.carrier'>Szállító</entry>
+	<entry key='messages.carrier_failed'>Bukta: Szállító</entry>
 	<entry key='messages.centronom_governor'>Centronom kormányzója</entry>
 	<entry key='messages.fire'>Ki vagy rúgva</entry>
 	<entry key='messages.money'>Pénzszállító</entry>
 	<entry key='messages.pirates'>Kalózok</entry>
 	<entry key='messages.promotion'>Előléptetés</entry>
+    <entry key='messages.prototype_failed'>Bukta: Prototípus</entry>
 	<entry key='messages.prototype_success'>Prototípus biztosítva</entry>
 	<entry key='messages.rebel'>Lázadó kormányzó</entry>
 	<entry key='messages.success'>Küldetés sikerült</entry>

@@ -1966,12 +1966,14 @@
   <entry key='messages.San Sterling'>Сан Стерлинг</entry>
   <entry key='messages.Zeuson'>Зеусон</entry>
   <entry key='messages.admiral_benson'>Адмирал Бенсон</entry>
+  <entry key='messages.admiral_benson_failed'>Провал: Адмирал Бенсон</entry>
   <entry key='messages.android'>Андроид</entry>
   <entry key='messages.android_truth'>Истина</entry>
   <entry key='messages.attack'>Атака</entry>
   <entry key='messages.attack_2'>Атака</entry>
   <entry key='messages.attack_garthog'>Атакованы Гартогами</entry>
   <entry key='messages.carrier'>Транспорт</entry>
+  <entry key='messages.carrier_failed'>Провал: Транспорт</entry>
   <entry key='messages.centronom_governor'>Губернатор Центронома</entry>
   <entry key='messages.check'>Статус</entry>
   <entry key='messages.douglas'>Коммандер Дуглас</entry>
@@ -1985,6 +1987,7 @@
   <entry key='messages.pirates'>Пираты</entry>
   <entry key='messages.promotion'>Повышение</entry>
   <entry key='messages.prototype'>Прототип</entry>
+  <entry key='messages.prototype_failed'>Провал: Прототип</entry>
   <entry key='messages.prototype_success'>Прототип в безопасности</entry>
   <entry key='messages.prototype_thanks'>Спасибо за спасение</entry>
   <entry key='messages.quickly'>Быстрее!</entry>
