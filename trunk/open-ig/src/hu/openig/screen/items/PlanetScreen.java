@@ -925,17 +925,25 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 									doAttackWithSelectedUnits(e.x, e.y);
 									rep = true;
 								} else {
-									doMoveSelectedUnits(e.x, e.y);
+									if (e.has(Modifier.CTRL)) {
+										doAttackMoveSelectedUnits(e.x, e.y);
+									} else {
+										doMoveSelectedUnits(e.x, e.y);
+									}
 									rep = true;
 								}
 							}
 						} else {
-							if (e.has(Modifier.SHIFT)) {
+							if (e.has(Modifier.SHIFT) && !e.has(Modifier.CTRL)) {
 								doMoveSelectedUnits(e.x, e.y);
 								rep = true;
 							} else 
-							if (e.has(Modifier.CTRL)) {
+							if (e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
 								doAttackWithSelectedUnits(e.x, e.y);
+								rep = true;
+							} else 
+							if (e.has(Modifier.CTRL) && e.has(Modifier.SHIFT)) {
+								doAttackMoveSelectedUnits(e.x, e.y);
 								rep = true;
 							} else {
 								drag = true;
@@ -1427,7 +1435,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			BufferedImage selBox = commons.colony().selectionBoxLight;
 			for (GroundwarUnit u : units) {
 				if (showCommand) {
-					g2.setColor(Color.WHITE);
+					g2.setColor(u.attackMove != null ? Color.RED : Color.WHITE);
 					for (int i = 0; i < u.path.size() - 1; i++) {
 						Location l0 = u.path.get(i);
 						Location l1 = u.path.get(i + 1);
@@ -2535,7 +2543,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 				}, true);
 			}
-			if (world().random().nextInt(30) < 1) {
+			if (world().random().nextInt(60) < 1) {
 				effectSound(SoundType.THUNDER);
 			}
 		} else {
@@ -4543,6 +4551,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		} else 
 		if (u.paralizedTTL == 0) {
+			Location am = u.attackMove;
 			if (u.attackUnit != null && !u.attackUnit.isDestroyed()) {
 				approachTargetUnit(u);
 			} else 
@@ -4551,19 +4560,34 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			} else {
 				if (u.attackBuilding != null && u.attackBuilding.isDestroyed()) {
 					stop(u);
+					if (am != null) {
+						move(u, am.x, am.y);
+					}
 				} else
 				if (u.attackUnit != null && u.attackUnit.isDestroyed()) {
 					stop(u);
+					if (am != null) {
+						move(u, am.x, am.y);
+					}
 				}
-				if (u.path.isEmpty() && directAttackUnits.contains(u.model.type)) {
+				if ((am != null || u.path.isEmpty()) && directAttackUnits.contains(u.model.type)) {
 					// find a new target in range
-					List<GroundwarUnit> targets = unitsInRange(u);
+  					List<GroundwarUnit> targets = unitsInRange(u);
 					if (targets.size() > 0) {
 						u.attackUnit = world().random(targets);
 					} else {
 						List<Building> targets2 = buildingsInRange(u);
 						if (targets2.size() > 0) {
 							u.attackBuilding = world().random(targets2);
+						}
+					}
+					if (u.attackUnit == null && u.attackBuilding == null 
+							&& am != null && u.path.isEmpty()) {
+						if (!am.equals(u.location())) {
+							move(u, am.x, am.y);
+							u.attackMove = am;
+						} else {
+							stop(u);
 						}
 					}
 				}
@@ -4723,18 +4747,24 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		} else {
 			if (u.path.isEmpty()) {
-				// plot path
 				u.inMotionPlanning = true;
-				pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
-			} else {
-				Location ep = u.path.get(u.path.size() - 1);
-				// if the target unit moved since last
-				double dx = ep.x - u.attackUnit.x;
-				double dy = ep.y - u.attackUnit.y;
-				if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
-					u.path.clear();
-					u.inMotionPlanning = true;
+				if (u.attackMove == null) {
+					// plot path
 					pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
+				} else {
+					pathsToPlan.add(new PathPlanning(u.location(), u.attackMove, u));
+				}
+			} else {
+				if (u.attackMove == null) {
+					Location ep = u.path.get(u.path.size() - 1);
+					// if the target unit moved since last
+					double dx = ep.x - u.attackUnit.x;
+					double dy = ep.y - u.attackUnit.y;
+					if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
+						u.path.clear();
+						u.inMotionPlanning = true;
+						pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
+					}
 				}
 			}
 		}
@@ -5375,6 +5405,27 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Perform an attack move to the designated coordinates.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 */
+	void doAttackMoveSelectedUnits(final int mx, final int my) {
+		boolean attacked = false;
+		Location lm = render.getLocationAt(mx, my);
+		for (GroundwarUnit u : units) {
+			if (u.selected && directAttackUnits.contains(u.model.type)
+					) {
+				move(u, lm.x, lm.y);
+				u.attackMove = lm;
+				attacked = true;
+			}
+		}
+		if (attacked) {
+			effectSound(SoundType.ACKNOWLEDGE_1);
+		}
+		selectCommand(null);
 	}
 	/**
 	 * Attack the object at the given mouse location with the currently selected units.
@@ -6109,6 +6160,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		u.attackBuilding = null;
 		u.attackUnit = null;
+		u.attackMove = null;
 		minelayers.remove(u);
 	}
 	@Override
