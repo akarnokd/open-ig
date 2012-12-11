@@ -39,6 +39,8 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	public GroundwarUnit attackUnit;
 	/** Building target if non null. */
 	public Building attackBuilding;
+	/** The target of the attack-move if non null. */
+	public Location attackMove;
 	/** The weapon cooldown counter. */
 	public int cooldown;
 	/** The current movement path to the target. */
