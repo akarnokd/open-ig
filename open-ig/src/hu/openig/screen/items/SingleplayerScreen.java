@@ -404,7 +404,7 @@ public class SingleplayerScreen extends ScreenBase {
 		commons.text().paintTo(g2, campaignList.x, campaignList.y - 25, 20, 0xFFFFFF00, get("singleplayer.campaigns"));
 		for (GameDefinition gd : campaigns) {
 			int color = selectedDefinition == gd ? 0xFFFFCC00 : 0xFF80FF80;
-			commons.text().paintTo(g2, campaignList.x + 10, y + 2, 14, color, gd.title);
+			commons.text().paintTo(g2, campaignList.x + 10, y + 2, 14, color, gd.getTitle(rl.language));
 			y += 20;
 		}
 		g2.drawImage(commons.database().pictureEdge[0], pictureRect.x, pictureRect.y, null);
@@ -420,7 +420,7 @@ public class SingleplayerScreen extends ScreenBase {
 		
 		if (selectedDefinition != null) {
 			List<String> lines = new ArrayList<String>();
-			commons.text().wrapText(selectedDefinition.description, descriptionRect.width - 20, 14, lines);
+			commons.text().wrapText(selectedDefinition.getDescription(rl.language), descriptionRect.width - 20, 14, lines);
 			y = descriptionRect.y + 2;
 			for (String s : lines) {
 				commons.text().paintTo(g2, descriptionRect.x + 10, y, 14, 0xFF00FF00, s);

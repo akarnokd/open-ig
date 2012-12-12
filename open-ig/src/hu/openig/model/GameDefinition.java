@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import hu.openig.utils.Exceptions;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
@@ -21,16 +22,16 @@ import java.util.Map;
  * @author akarnokd, 2010.01.16.
  */
 public class GameDefinition {
-	/**
-	 * The teaser image to display.
-	 */
+	/** The teaser image to display. */
 	public BufferedImage image;
+	/** The image resource path. */
+	public String imagePath;
 	/** The intro media to play on start. */
 	public String intro;
 	/** The title text. */
-	public String title;
+	public final Map<String, String> titles = U.newLinkedHashMap();
 	/** The campaign description. */
-	public String description;
+	public final Map<String, String> descriptions = U.newLinkedHashMap();
 	/** The game name. */
 	public String name;
 	/** The starting level of the game. */
@@ -89,6 +90,38 @@ public class GameDefinition {
 	/** Skirmish hint: do not assign owner and population to the planet. */
 	public boolean noPlanetOwner;
 	/**
+	 * Parse the definition from the XML file.
+	 * @param xdef the XML data
+	 */
+	public void parse(XElement xdef) {
+		for (XElement texts : xdef.childrenWithName("texts")) {
+			String lang = texts.get("language");
+			titles.put(lang, texts.childValue("title"));
+			descriptions.put(lang, texts.childValue("description"));
+		}
+		
+		intro = xdef.childValue("intro");
+		imagePath = xdef.childValue("image");
+		level = Integer.parseInt(xdef.childValue("level"));
+		String techLevelStr = xdef.childValue("tech-level");
+		techLevel = techLevelStr != null ? Integer.parseInt(techLevelStr) : 0;
+		
+		for (Field f : GameDefinition.class.getDeclaredFields()) {
+			if (f.isAnnotationPresent(LoadField.class)) {
+				try {
+					f.set(this, xdef.childValue(f.getName()));
+				} catch (IllegalAccessException ex) {
+					Exceptions.add(ex);
+				}
+			}
+		}
+		XElement xp = xdef.childElement("parameters");
+		if (xp != null) {
+			parameters.putAll(xp.attributes());
+		}
+
+	}
+	/**
 	 * Parse the game definition from.
 	 * @param rl the resource locator
 	 * @param name the definition/game name
@@ -98,45 +131,43 @@ public class GameDefinition {
 		GameDefinition result = new GameDefinition();
 		result.name = name;
 		XElement root = rl.getXML(name + "/definition");
-		String titleEn = null;
-		String descEn = null;
-		for (XElement texts : root.childrenWithName("texts")) {
-			if (rl.language.equals(texts.get("language"))) {
-				result.title = texts.childValue("title");
-				result.description = texts.childValue("description");
-			}
-			if ("en".equals(texts.get("language"))) {
-				titleEn = texts.childValue("title");
-				descEn = texts.childValue("description");
-			}
-		}
-		if (result.title == null) {
-			result.title = titleEn;
-			result.description = descEn;
-		}
-		result.intro = root.childValue("intro");
-		String image = root.childValue("image");
-		if (image != null) {
-			result.image = rl.getImage(image);
-		}
-		result.level = Integer.parseInt(root.childValue("level"));
-		String techLevelStr = root.childValue("tech-level");
-		result.techLevel = techLevelStr != null ? Integer.parseInt(techLevelStr) : 0;
-		
-		for (Field f : GameDefinition.class.getDeclaredFields()) {
-			if (f.isAnnotationPresent(LoadField.class)) {
-				try {
-					f.set(result, root.childValue(f.getName()));
-				} catch (IllegalAccessException ex) {
-					Exceptions.add(ex);
-				}
-			}
-		}
-		XElement xp = root.childElement("parameters");
-		if (xp != null) {
-			result.parameters.putAll(xp.attributes());
+		result.parse(root);
+		if (result.imagePath != null) {
+			result.image = rl.getImage(result.imagePath);
 		}
 		
 		return result;
+	}
+	/**
+	 * Returns the title of the game in the specified language, or in English or
+	 * the first specified language available.
+	 * @param language the language
+	 * @return the title or empty string
+	 */
+	public String getTitle(String language) {
+		String title = titles.get(language);
+		if (title == null) {
+			title = titles.get("en");
+		}
+		if (title == null && !titles.isEmpty()) {
+			title = titles.values().iterator().next();
+		}
+		return title != null ? title : "";
+	}
+	/**
+	 * Returns the description of the game in the specified language, or in English or
+	 * the first specified language available.
+	 * @param language the language
+	 * @return the title or empty string
+	 */
+	public String getDescription(String language) {
+		String description = descriptions.get(language);
+		if (description == null) {
+			description = descriptions.get("en");
+		}
+		if (description == null && !descriptions.isEmpty()) {
+			description = descriptions.values().iterator().next();
+		}
+		return description != null ? description : "";
 	}
 }

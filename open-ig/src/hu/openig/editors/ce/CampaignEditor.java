@@ -18,6 +18,7 @@ import hu.openig.utils.XElement;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -32,6 +33,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -51,6 +54,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -381,7 +385,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 				CampaignEditor ce = new CampaignEditor();
 				ce.loadConfig();
 				ce.setVisible(true);
-				ce.startupDialog.setVisible(true);
+				ce.showStartupDialog();
 			}
 		});
 	}
@@ -454,6 +458,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 		c.add(mainSplit, BorderLayout.CENTER);
 		// TODO other stuff
 		
+		updateUndoRedo();
 		startupDialog = new CEStartupDialog(this);
 	}
 	/**
@@ -507,9 +512,11 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 */
 	AbstractButton createFor(String graphicsResource, String tooltip, final JMenuItem inMenu, boolean toggle) {
 		AbstractButton result = toggle ? new JToggleButton() : new JButton();
-		URL res = getClass().getResource(graphicsResource);
+		URL res = getClass().getResource("/hu/openig/editors/" + graphicsResource);
 		if (res != null) {
-			result.setIcon(new ImageIcon(res));
+			ImageIcon icon = new ImageIcon(res);
+			result.setIcon(icon);
+			inMenu.setIcon(icon);
 		}
 		result.setToolTipText(tooltip);
 		result.addActionListener(new ActionListener() {
@@ -543,6 +550,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 		tabs.addTab(get("Shipwalk"), null, new JPanel());
 		tabs.addTab(get("Chat"), null, new JPanel());
 		tabs.addTab(get("Test"), null, new JPanel());
+		tabs.addTab(get("Spies"), null, new JPanel());
 	}
 	/**
 	 * Initialize the menu.
@@ -589,11 +597,22 @@ public class CampaignEditor extends JFrame implements CEContext {
 		mnuEditUndo = new JMenuItem(get("menu.edit.undo"));
 		mnuEditRedo = new JMenuItem(get("menu.edit.redo"));
 
+		mnuEdit.add(mnuEditUndo);
+		mnuEdit.add(mnuEditRedo);
+		mnuEdit.addSeparator();
+		mnuEdit.add(mnuEditCut);
+		mnuEdit.add(mnuEditCopy);
+		mnuEdit.add(mnuEditPaste);
+		mnuEdit.add(mnuEditDelete);
+		
 		// -----------------------
 		
 		mnuHelpOnline = new JMenuItem(get("menu.help.online"));
 		mnuHelpAbout = new JMenuItem(get("menu.help.about"));
 
+		mnuHelp.add(mnuHelpOnline);
+		mnuHelp.addSeparator();
+		mnuHelp.add(mnuHelpAbout);
 		// -----------------------
 		
 		mainMenu.add(mnuFile);
@@ -603,7 +622,28 @@ public class CampaignEditor extends JFrame implements CEContext {
 		mainMenu.add(mnuHelp);
 		
 		// -----------------------
-		updateUndoRedo();
+		// ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		
+		mnuFileNew.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showNewDialog();
+			}
+		});
+		
+		mnuFileExit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doExit();
+			}
+		});
+		
+		mnuHelpOnline.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doHelp();
+			}
+		});
 	}
 	@Override
 	public XElement getXML(String resource) {
@@ -1162,6 +1202,9 @@ public class CampaignEditor extends JFrame implements CEContext {
 	void updateUndoRedo() {
 		mnuEditUndo.setEnabled(undoManager.canUndo());
 		mnuEditRedo.setEnabled(undoManager.canRedo());
+
+		toolbarUndo.setEnabled(undoManager.canUndo());
+		toolbarRedo.setEnabled(undoManager.canRedo());
 	}
 	@Override
 	public UndoManager undoManager() {
@@ -1170,5 +1213,36 @@ public class CampaignEditor extends JFrame implements CEContext {
 	@Override
 	public void undoManagerChanged() {
 		updateUndoRedo();
+	}
+	/** Display the startup dialog. */
+	void showStartupDialog() {
+		startupDialog.showRecent(true);
+		startupDialog.findCampaigns();
+		startupDialog.setVisible(true);
+	}
+	/** Display the startup dialog. */
+	void showNewDialog() {
+		startupDialog.showRecent(false);
+		startupDialog.findCampaigns();
+		startupDialog.setVisible(true);
+	}
+	/**
+	 * Open the help page.
+	 */
+	void doHelp() {
+		try {
+			URI u = new URI("https://code.google.com/p/open-ig/wiki/CampaignEditor");
+			
+			if (Desktop.isDesktopSupported()) {
+				Desktop d = Desktop.getDesktop();
+				d.browse(u);
+			} else {
+				JOptionPane.showConfirmDialog(this, u);
+			}
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		} catch (URISyntaxException ex) {
+			Exceptions.add(ex);
+		}
 	}
 }

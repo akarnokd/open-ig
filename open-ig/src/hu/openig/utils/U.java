@@ -8,15 +8,22 @@
 
 package hu.openig.utils;
 
+import hu.openig.core.Func1;
+
 import java.io.Closeable;
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,6 +32,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Utility class for missing java functionalities.
@@ -684,6 +694,212 @@ public final class U {
 					// ignored
 				}
 			}
+		}
+		return result;
+	}
+	/**
+	 * Returns a list of the array items or an empty list if the array is null.
+	 * @param <T> the element type
+	 * @param array the array
+	 * @return the non-null list
+	 */
+	public static <T> List<T> nonNull(T[] array) {
+		if (array == null) {
+			return U.newArrayList();
+		}
+		return Arrays.asList(array);
+	}
+	/**
+	 * List the files under a directory.
+	 * @param parentDir the parent directory
+	 * @return the list of files.
+	 */
+	public static List<File> listFiles(File parentDir) {
+		return nonNull(parentDir.listFiles());
+	}
+	/**
+	 * List files under a directory filtered.
+	 * @param parentDir the parent directory
+	 * @param filter the filter function
+	 * @return the list of files found
+	 */
+	public static List<File> listFiles(File parentDir, final Func1<File, Boolean> filter) {
+		return nonNull(parentDir.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return filter.invoke(pathname);
+			}
+		}));
+	}
+	/**
+	 * Wrap the given enumeration into an iterable sequence.
+	 * The enumeration is shared between returned iterables.
+	 * @param <T> the element type
+	 * @param en the enumeration
+	 * @return the iterable
+	 */
+	public static <T> Iterable<T> enumerate(final Enumeration<? extends T> en) {
+		return new Iterable<T>() {
+			@Override
+			public Iterator<T> iterator() {
+				return new Iterator<T>() {
+					@Override
+					public boolean hasNext() {
+						return en.hasMoreElements();
+					}
+					@Override
+					public T next() {
+						return en.nextElement();
+					}
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
+	}
+	/**
+	 * List entry paths under a zip file.
+	 * @param zipFile the zip file
+	 * @return the list of elements or empty list if an error occurs or non-zip file
+	 */
+	public static List<String> zipEntries(File zipFile) {
+		List<String> result = U.newArrayList();
+		try {
+			ZipFile zf = new ZipFile(zipFile);
+			try {
+				for (ZipEntry ze : enumerate(zf.entries())) {
+					result.add(ze.getName());
+				}
+			} finally {
+				zf.close();
+			}
+		} catch (IOException ex) {
+			// ignored
+		}
+		return result;
+	}
+	/**
+	 * Returns the entry names of the zip file allowed by the filter.
+	 * @param zipFile the zip file
+	 * @param filter the entry filtering
+	 * @return the list of entries
+	 */
+	public static List<String> zipEntries(File zipFile, Func1<ZipEntry, Boolean> filter) {
+		List<String> result = U.newArrayList();
+		try {
+			ZipFile zf = new ZipFile(zipFile);
+			try {
+				for (ZipEntry ze : enumerate(zf.entries())) {
+					if (filter.invoke(ze)) {
+						result.add(ze.getName());
+					}
+				}
+			} finally {
+				zf.close();
+			}
+		} catch (IOException ex) {
+			// ignored
+		}
+		return result;
+	}
+	/**
+	 * List the file-like entries of the zip file under the supplied path.
+	 * Returns an empty list if the file is invalid.
+	 * @param zipFile the zip file
+	 * @param parentPath the parent path
+	 * @return the list of file entries
+	 */
+	public static List<String> zipFileEntries(File zipFile, String parentPath) {
+		parentPath = parentPath.replace('\\', '/').replaceAll("/{2,}", "/");
+		List<String> result = U.newArrayList();
+		try {
+			ZipFile zf = new ZipFile(zipFile);
+			try {
+				for (ZipEntry ze : enumerate(zf.entries())) {
+					String zname = ze.getName().replace('\\', '/');
+					if (!ze.isDirectory() && zname.startsWith(parentPath)) {
+						result.add(ze.getName());
+					}
+				}
+			} finally {
+				zf.close();
+			}
+		} catch (IOException ex) {
+			// ignored
+		}
+		return result;
+	}
+	/**
+	 * List the dir-like entries of the zip file under the supplied path.
+	 * Returns an empty list if the file is invalid.
+	 * @param zipFile the zip file
+	 * @param parentPath the parent path
+	 * @return the list of file entries
+	 */
+	public static List<String> zipDirEntries(File zipFile, String parentPath) {
+		parentPath = parentPath.replace('\\', '/').replaceAll("/{2,}", "/");
+		List<String> result = U.newArrayList();
+		Set<String> once = U.newHashSet();
+		try {
+			ZipFile zf = new ZipFile(zipFile);
+			try {
+				for (ZipEntry ze : enumerate(zf.entries())) {
+					String zname = ze.getName().replace('\\', '/');
+					if (ze.isDirectory() && zname.startsWith(parentPath)) {
+						if (once.add(ze.getName())) {
+							result.add(ze.getName());
+						}
+					} else
+					if (!ze.isDirectory() && zname.startsWith(parentPath)) {
+						String subPath = zname.substring(parentPath.length());
+						if (subPath.startsWith("/")) {
+							subPath = subPath.substring(1);
+						}
+						int idx = subPath.indexOf('/');
+						if (idx > 0) {
+							String path2 = parentPath + "/" + subPath.substring(0, idx);
+							if (once.add(path2)) {
+								result.add(path2);
+							}
+						}
+					}
+				}
+			} finally {
+				zf.close();
+			}
+		} catch (IOException ex) {
+			// ignored
+		}
+		return result;
+	}
+	/**
+	 * Returns the data bytes of the given zip entry.
+	 * @param zipFile the zip file
+	 * @param path the path
+	 * @return the bytes, null if not found or not a zip file
+	 */
+	public static byte[] zipData(File zipFile, String path) {
+		byte[] result = null;
+		try {
+			ZipFile zf = new ZipFile(zipFile);
+			try {
+				ZipEntry ze = zf.getEntry(path);
+				if (ze != null) {
+					InputStream in = zf.getInputStream(ze);
+					try {
+						result = new byte[in.available()];
+						in.read(result);
+					} finally {
+						in.close();
+					}
+				}
+			} finally {
+				zf.close();
+			}
+		} catch (IOException ex) {
+			// ignored
 		}
 		return result;
 	}
