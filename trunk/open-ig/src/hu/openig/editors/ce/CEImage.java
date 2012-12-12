@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
@@ -32,6 +33,8 @@ public class CEImage extends JComponent {
 	private static final long serialVersionUID = -7956863168562025891L;
 	/** the icon to draw. */
 	protected BufferedImage icon;
+	/** Show a modal dialog? */
+	protected boolean modal;
 	/** Constructor. */
 	public CEImage() {
 		addMouseListener(new MouseAdapter() {
@@ -47,13 +50,26 @@ public class CEImage extends JComponent {
 	 * Display a window with the full image.
 	 */
 	protected void display() {
-		JFrame f = new JFrame();
-		f.getContentPane().add(new JLabel(String.format("%d x %d", icon.getWidth(), icon.getHeight())), BorderLayout.NORTH);
-		f.getContentPane().add(new JLabel(new ImageIcon(icon)), BorderLayout.CENTER);
-		f.pack();
-		f.setLocationRelativeTo(this);
-		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		f.setVisible(true);
+		if (modal) {
+			JDialog f = new JDialog();
+			f.setModal(true);
+			
+			f.getContentPane().add(new JLabel(String.format("%d x %d", icon.getWidth(), icon.getHeight())), BorderLayout.NORTH);
+			f.getContentPane().add(new JLabel(new ImageIcon(icon)), BorderLayout.CENTER);
+			f.pack();
+			f.setLocationRelativeTo(this);
+			f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			f.setVisible(true);
+		} else {
+			JFrame f = new JFrame();
+			
+			f.getContentPane().add(new JLabel(String.format("%d x %d", icon.getWidth(), icon.getHeight())), BorderLayout.NORTH);
+			f.getContentPane().add(new JLabel(new ImageIcon(icon)), BorderLayout.CENTER);
+			f.pack();
+			f.setLocationRelativeTo(this);
+			f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			f.setVisible(true);
+		}
 	}
 	@Override
 	public void paint(Graphics g) {
@@ -100,5 +116,12 @@ public class CEImage extends JComponent {
 			setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		}
 		repaint();
+	}
+	/**
+	 * The dialog displayed by clicking should be modal?
+	 * @param modal true if use modal
+	 */
+	public void setModal(boolean modal) {
+		this.modal = modal;
 	}
 }

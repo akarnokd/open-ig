@@ -1096,7 +1096,7 @@ public class SkirmishScreen extends ScreenBase {
 			super(campaigns, new Func1<GameDefinition, String>() {
 				@Override
 				public String invoke(GameDefinition value) {
-					return value.title;
+					return value.getTitle(rl.language);
 				}
 			});
 		}
@@ -1105,7 +1105,7 @@ public class SkirmishScreen extends ScreenBase {
 		public void update() {
 			GameDefinition d = get();
 			
-			setTooltipText(spin, d.description);
+			setTooltipText(spin, d.getDescription(rl.language));
 
 			super.update();
 		}

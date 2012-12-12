@@ -8,14 +8,32 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Func1;
+import hu.openig.core.Pair;
+import hu.openig.model.GameDefinition;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -24,6 +42,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * The startup dialog with options to create a new campaign, copy an existing
@@ -53,6 +79,75 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	GenericTableModel<CampaignItem> copyModel;
 	/** The recent table model. */
 	GenericTableModel<CampaignItem> recentModel;
+	/** The campaign image. */
+	CEImage image;
+	/**
+	 * Table renderer for java.util.Date values.
+	 * @author akarnokd, 2012.12.12.
+	 */
+	private static final class DateTimeRenderer extends
+			DefaultTableCellRenderer {
+		/** */
+		private static final long serialVersionUID = 2590248281492761016L;
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+					row, column);
+			
+			label.setText(SimpleDateFormat.getDateTimeInstance().format((Date)value));
+			
+			return label;
+		}
+	}
+	/**
+	 * Table renderer for String values with tooltips.
+	 * @author akarnokd, 2012.12.12.
+	 */
+	private static final class StringRenderer extends
+			DefaultTableCellRenderer {
+		/** */
+		private static final long serialVersionUID = 3724817465755739661L;
+
+		@Override
+		public Component getTableCellRendererComponent(JTable table,
+				Object value, boolean isSelected, boolean hasFocus,
+				int row, int column) {
+			JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+					row, column);
+			
+			label.setToolTipText((String)value);
+			
+			return label;
+		}
+	}
+	/**
+	 * Check if the File object represents a zip file.
+	 */
+	public static final Func1<File, Boolean> IS_ZIP = new Func1<File, Boolean>() {
+		@Override
+		public Boolean invoke(File value) {
+			return value.isFile() && value.getName().toLowerCase().endsWith(".zip");
+		}
+	};
+	/**
+	 * Check if the File object represents a zip file.
+	 */
+	public static final Func1<File, Boolean> IS_DIR = new Func1<File, Boolean>() {
+		@Override
+		public Boolean invoke(File value) {
+			return value.isDirectory();
+		}
+	};
+	/** The okay button. */
+	JButton ok;
+	/** Recent table scroll. */
+	JScrollPane recentTableScroll;
+	/** Open specific. */
+	JButton open;
+	
 	/** A campaign item. */
 	static class CampaignItem {
 		/** The file name. */
@@ -63,6 +158,8 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		String description;
 		/** The access date. */
 		Date date;
+		/** The concrete definition. */
+		GameDefinition definition;
 	}
 	/**
 	 * Construct the GUI.
@@ -88,7 +185,8 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		
 		JLabel newNameLabel = new JLabel(get("startup.create_new_desc"));
 		newName = new JTextField();
-		newNameIndicator = new JLabel();
+		newNameIndicator = new JLabel(" ");
+		newNameIndicator.setForeground(Color.RED);
 		
 		copyModel = new GenericTableModel<CampaignItem>() {
 			/** */
@@ -133,17 +231,28 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		
 		copyTable = new JTable(copyModel);
 		copyTable.setAutoCreateRowSorter(true);
+		copyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		copyTable.setDefaultRenderer(Date.class, new DateTimeRenderer());
+		copyTable.setDefaultRenderer(String.class, new StringRenderer());
 		
 		recentTable = new JTable(recentModel);
-		copyTable.setAutoCreateRowSorter(true);
+		recentTable.setAutoCreateRowSorter(true);
+		recentTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		recentTable.setDefaultRenderer(Date.class, new DateTimeRenderer());
+		recentTable.setDefaultRenderer(String.class, new StringRenderer());
 		
 		JScrollPane copyTableScroll = new JScrollPane(copyTable);
-		JScrollPane recentTableScroll = new JScrollPane(recentTable);
+		recentTableScroll = new JScrollPane(recentTable);
 		
-		JButton ok = new JButton(get("startup.ok"));
-		JButton cancel = new JButton(get("startup.cancel"));
+		ok = new JButton(get("ok"));
+		ok.setEnabled(false);
+		JButton cancel = new JButton(get("cancel"));
 		
-		JButton open = new JButton(get("startup.open"));
+		open = new JButton(get("startup.open"));
+		open.setIcon(new ImageIcon(getClass().getResource("../res/Open16.gif")));
+		
+		JButton refresh = new JButton(get("startup.refresh"));
+		refresh.setIcon(new ImageIcon(getClass().getResource("../res/Refresh16.gif")));
 		
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(createNew);
@@ -152,23 +261,42 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		
 		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 		
+		image = new CEImage();
+		image.setModal(true);
+		
+		// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
 			.addGroup(
 				gl.createParallelGroup()
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(newNameLabel)
+					.addComponent(newName)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addGap(20)
+					.addComponent(newNameIndicator)
+				)
 				.addComponent(createNew)
 				.addGroup(
 					gl.createSequentialGroup()
-					.addGap(40)
-					.addComponent(newNameLabel)
-					.addComponent(newName)
-					.addComponent(newNameIndicator, 20, 20, 20)
+					.addComponent(copyExisting, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+					.addComponent(refresh)
 				)
-				.addComponent(copyExisting)
-				.addComponent(copyTableScroll)
-				.addComponent(openRecent)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(copyTableScroll)
+					.addComponent(image, 100, 100, 100)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(openRecent, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+					.addComponent(open)
+				)
 				.addComponent(recentTableScroll)
-				.addComponent(open)
 			)
 			.addComponent(sep)
 			.addGroup(
@@ -179,19 +307,30 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
-			.addComponent(createNew)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(newNameLabel)
 				.addComponent(newName, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-				.addComponent(newNameIndicator)
 			)
-			.addComponent(copyExisting)
-			.addComponent(copyTableScroll, 100, 200, Short.MAX_VALUE)
-			.addComponent(openRecent)
-			.addComponent(recentTableScroll, 100, 200, Short.MAX_VALUE)
-			.addComponent(open)
-			.addComponent(sep)
+			.addComponent(newNameIndicator)
+			.addComponent(createNew)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(copyExisting)
+				.addComponent(refresh)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.LEADING)
+				.addComponent(copyTableScroll, 100, 100, Short.MAX_VALUE)
+				.addComponent(image, 100, 100, 100)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(openRecent)
+				.addComponent(open)
+			)
+			.addComponent(recentTableScroll, 100, 100, Short.MAX_VALUE)
+			.addComponent(sep, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(ok)
@@ -199,8 +338,108 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			)
 		);
 		
+		gl.linkSize(SwingConstants.HORIZONTAL, ok, cancel);
+		
 		pack();
 		setLocationRelativeTo(null);
+		setMinimumSize(getSize());
+		
+		// oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		
+		cancel.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		refresh.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				findCampaigns();
+			}
+		});
+		ActionListener updateOkButtonAction = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				updateOkButton();
+			}
+		};
+		
+		ListSelectionListener updateOkButtonListener = new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				updateOkButton();
+			}
+		};
+		
+		createNew.addActionListener(updateOkButtonAction);
+		copyExisting.addActionListener(updateOkButtonAction);
+		openRecent.addActionListener(updateOkButtonAction);
+		
+		copyTable.getSelectionModel().addListSelectionListener(updateOkButtonListener);
+		copyTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int sel = copyTable.getSelectedRow();
+				if (sel >= 0) {
+					sel = copyTable.convertRowIndexToModel(sel);
+					CampaignItem item = copyModel.get(sel);
+					BufferedImage img = CEStartupDialog.this.ctx.getImage(item.definition.imagePath + ".png");
+					image.setIcon(img);
+				}
+			}
+		});
+		copyTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					copyExisting.setSelected(true);
+					if (copyTable.getSelectedRow() >= 0) {
+						updateOkButton();
+						ok.doClick();
+					}
+				}
+			}
+		});
+		
+		recentTable.getSelectionModel().addListSelectionListener(updateOkButtonListener);
+		recentTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					openRecent.setSelected(true);
+					if (recentTable.getSelectedRow() >= 0) {
+						updateOkButton();
+						ok.doClick();
+					}
+				}
+			}
+		});
+
+		ok.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doOk();
+			}
+		});
+		
+		newName.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				doChangeName(newName.getText());
+			}
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				doChangeName(newName.getText());
+			}
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				doChangeName(newName.getText());
+			}
+		});
+		
+		// -------
+		doChangeName("");
 	}
 	/**
 	 * Returns an editor label.
@@ -223,5 +462,187 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	public void savePreferences(XElement preferences) {
 		// TODO Auto-generated method stub
 		
+	}
+	/**
+	 * Find the latest open-ig-upgrade zip file.
+	 * @param workdir the working directory
+	 * @return the data file or null if not present
+	 */
+	File getDataPack(File workdir) {
+		List<File> baseZip = U.listFiles(workdir, new Func1<File, Boolean>() {
+			@Override
+			public Boolean invoke(File value) {
+				return value.isFile() && value.getName().startsWith("open-ig-upgrade-")
+						&& value.getName().toLowerCase().endsWith(".zip");
+			} 
+		});
+		Collections.sort(baseZip, new Comparator<File>() {
+			@Override
+			public int compare(File o1, File o2) {
+				return o2.getName().compareTo(o1.getName());
+			}
+		});
+		if (baseZip.isEmpty()) {
+			return null;
+		}
+		return baseZip.get(0);
+	}
+	/**
+	 * Find campaigns in the main files or DLC files.
+	 */
+	public void findCampaigns() {
+		File workdir = ctx.getWorkDir();
+		
+		List<File> unpackedCampaigns = U.newArrayList();
+		List<Pair<File, String>> packedCampaigns = U.newArrayList();
+		
+		// take the contents of the DLC directory
+		File dlcs = new File(workdir, "dlc");
+		for (File f : U.listFiles(dlcs)) {
+			if (f.isDirectory()) {
+				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/campaign"), IS_DIR));
+				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/skirmish"), IS_DIR));
+			} else
+			if (IS_ZIP.invoke(f)) {
+				for (String zf : U.zipDirEntries(f, "generic/campaign")) {
+					packedCampaigns.add(Pair.of(f, zf));
+				}
+				for (String zf : U.zipDirEntries(f, "generic/skirmish")) {
+					packedCampaigns.add(Pair.of(f, zf));
+				}
+			}
+		}
+		
+		// scan an unpacked base campaign
+		File baseCampaign = new File(workdir, "data/generic/campaign");
+		unpackedCampaigns.addAll(U.listFiles(baseCampaign));
+		
+		// scan an unpacked base skirmish
+		File baseSkirmish = new File(workdir, "data/generic/skirmish");
+		unpackedCampaigns.addAll(U.listFiles(baseSkirmish));
+
+		// scan a packed data zip
+		File dataPack = getDataPack(workdir);
+		if (dataPack != null) {
+			for (String zf : U.zipDirEntries(dataPack, "generic/campaign")) {
+				packedCampaigns.add(Pair.of(dataPack, zf));
+			}
+			for (String zf : U.zipDirEntries(dataPack, "generic/skirmish")) {
+				packedCampaigns.add(Pair.of(dataPack, zf));
+			}
+		}
+		
+		copyModel.clear();
+		
+		for (File unpacked : unpackedCampaigns) {
+			File def = new File(unpacked, "definition.xml");
+			if (def.canRead()) {
+				try {
+					GameDefinition gdef = new GameDefinition();
+					gdef.name = unpacked.getName();
+					gdef.parse(XElement.parseXML(def));
+					
+					CampaignItem item = new CampaignItem();
+					item.file = def.getPath();
+					item.name = gdef.getTitle(ctx.projectLanguage());
+					item.description = gdef.getDescription(ctx.projectLanguage());
+					item.date = new Date(def.lastModified());
+					item.definition = gdef;
+					copyModel.add(item);
+				} catch (IllegalArgumentException ex) {
+					// ignored
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+		}
+		for (Pair<File, String> packed : packedCampaigns) {
+			byte[] xdef = U.zipData(packed.first, packed.second + "/definition.xml");
+			if (xdef != null) {
+				try {
+					GameDefinition gdef = new GameDefinition();
+					gdef.name = packed.second;
+					int idx = gdef.name.lastIndexOf('/');
+					if (idx >= 0) {
+						gdef.name = gdef.name.substring(idx + 1);
+					}
+					gdef.parse(XElement.parseXML(new ByteArrayInputStream(xdef)));
+					CampaignItem item = new CampaignItem();
+					item.file = packed.first.getPath() + "!/" + packed.second;
+					item.name = gdef.getTitle(ctx.projectLanguage());
+					item.description = gdef.getDescription(ctx.projectLanguage());
+					item.date = new Date(packed.first.lastModified());
+					item.definition = gdef;
+					copyModel.add(item);
+				} catch (IllegalArgumentException ex) {
+					// ignored
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+		}
+	}
+	/**
+	 * Enable/disable ok button.
+	 */
+	void updateOkButton() {
+		ok.setEnabled(
+				((createNew.isSelected() 
+				|| (copyExisting.isSelected() && copyTable.getSelectedRow() >= 0))
+				&& !newName.getText().isEmpty() && newNameIndicator.getIcon() == null)
+				
+				|| (openRecent.isSelected() && recentTable.getSelectedRow() >= 0));
+	}
+	/** The okay action. */
+	void doOk() {
+		if (createNew.isSelected()) {
+			dispose();
+		} else
+		if (openRecent.isSelected()) {
+			dispose();
+		} else
+		if (copyExisting.isSelected()) {
+			CECopySettingsDialog dialog = new CECopySettingsDialog(ctx);
+			dialog.setLocationRelativeTo(this);
+			dialog.setVisible(true);
+			if (dialog.isApproved()) {
+				dispose();
+			}
+		}
+	}
+	/**
+	 * Handle the name editing.
+	 * @param text the text
+	 */
+	void doChangeName(String text) {
+		if (text.isEmpty()) {
+			newNameIndicator.setIcon(ctx.getIcon(CESeverityIndicator.ERROR));
+			newNameIndicator.setText(get("startup.name_empty"));
+		} else
+		if (!text.matches("[a-zA-Z0-9\\-_\\.]+")) {
+			newNameIndicator.setIcon(ctx.getIcon(CESeverityIndicator.ERROR));
+			newNameIndicator.setText(get("startup.invalid_characters_in_name"));
+		} else {
+			File dlcName = new File(ctx.getWorkDir(), "dlc/" + text);
+			if (dlcName.exists()) {
+				newNameIndicator.setIcon(ctx.getIcon(CESeverityIndicator.ERROR));
+				newNameIndicator.setText(get("startup.dlc_exists"));
+			} else {
+				newNameIndicator.setIcon(null);
+				newNameIndicator.setText(" ");
+			}
+		}
+		
+		updateOkButton();
+	}
+	/**
+	 * Show the recent fields?
+	 * @param visible true if visible
+	 */
+	public void showRecent(boolean visible) {
+		recentTableScroll.setVisible(visible);
+		open.setVisible(visible);
+		openRecent.setVisible(visible);
+		openRecent.setSelected(false);
 	}
 }
