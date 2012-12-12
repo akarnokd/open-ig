@@ -16,6 +16,7 @@
     * [ScreenTutorial Screens]
     * [Missions Missions]
     * [Achievements Achievements]
+  * [CampaignEditor Campaign Editor]
   * Downloadable content
     * [DLC_IG_2 Imperium Galactica 2]
   * Other utilities
