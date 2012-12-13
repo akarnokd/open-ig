@@ -38,11 +38,13 @@ public enum DataFiles {
 	/** Bar talks. */
 	TALKS,
 	/** Ship walks. */
-	SHIPWALK,
+	WALKS,
 	/** Chat. */
-	CHAT,
+	CHATS,
 	/** Test. */
 	TEST,
 	/** Spies. */
-	SPIES
+	SPIES,
+	/** Scripting. */
+	SCRIPTING
 }

@@ -48,4 +48,6 @@ public class CampaignData {
 	public XElement test;
 	/** Data. */
 	public XElement spies;
+	/** Data. */
+	public XElement scripting;
 }
