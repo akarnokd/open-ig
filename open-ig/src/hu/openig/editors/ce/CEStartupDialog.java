@@ -123,24 +123,6 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			return label;
 		}
 	}
-	/**
-	 * Check if the File object represents a zip file.
-	 */
-	public static final Func1<File, Boolean> IS_ZIP = new Func1<File, Boolean>() {
-		@Override
-		public Boolean invoke(File value) {
-			return value.isFile() && value.getName().toLowerCase().endsWith(".zip");
-		}
-	};
-	/**
-	 * Check if the File object represents a zip file.
-	 */
-	public static final Func1<File, Boolean> IS_DIR = new Func1<File, Boolean>() {
-		@Override
-		public Boolean invoke(File value) {
-			return value.isDirectory();
-		}
-	};
 	/** The okay button. */
 	JButton ok;
 	/** Recent table scroll. */
@@ -386,6 +368,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					CampaignItem item = copyModel.get(sel);
 					BufferedImage img = CEStartupDialog.this.ctx.getImage(item.definition.imagePath + ".png");
 					image.setIcon(img);
+					copyExisting.setSelected(true);
 				}
 			}
 		});
@@ -500,10 +483,10 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		File dlcs = new File(workdir, "dlc");
 		for (File f : U.listFiles(dlcs)) {
 			if (f.isDirectory()) {
-				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/campaign"), IS_DIR));
-				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/skirmish"), IS_DIR));
+				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/campaign"), CEDataManager.IS_DIR));
+				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/skirmish"), CEDataManager.IS_DIR));
 			} else
-			if (IS_ZIP.invoke(f)) {
+			if (CEDataManager.IS_ZIP.invoke(f)) {
 				for (String zf : U.zipDirEntries(f, "generic/campaign")) {
 					packedCampaigns.add(Pair.of(f, zf));
 				}
@@ -589,7 +572,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		ok.setEnabled(
 				((createNew.isSelected() 
 				|| (copyExisting.isSelected() && copyTable.getSelectedRow() >= 0))
-				&& !newName.getText().isEmpty() && newNameIndicator.getIcon() == null)
+				&& !newName.getText().isEmpty() && newNameIndicator.getIcon() != ctx.getIcon(CESeverityIndicator.ERROR))
 				
 				|| (openRecent.isSelected() && recentTable.getSelectedRow() >= 0));
 	}
@@ -607,6 +590,14 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			dialog.setVisible(true);
 			if (dialog.isApproved()) {
 				dispose();
+				
+				CEDataManager dm = ctx.dataManager();
+				dm.campaignData = new CampaignData();
+				int idx = copyTable.getSelectedRow();
+				idx = copyTable.convertRowIndexToModel(idx);
+				dm.campaignData.definition = copyModel.get(idx).definition;
+				dm.campaignData.definition.name = newName.getText();
+				dm.copy(dialog.getSettings());
 			}
 		}
 	}
@@ -625,7 +616,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		} else {
 			File dlcName = new File(ctx.getWorkDir(), "dlc/" + text);
 			if (dlcName.exists()) {
-				newNameIndicator.setIcon(ctx.getIcon(CESeverityIndicator.ERROR));
+				newNameIndicator.setIcon(ctx.getIcon(CESeverityIndicator.WARNING));
 				newNameIndicator.setText(get("startup.dlc_exists"));
 			} else {
 				newNameIndicator.setIcon(null);

@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.ResourceType;
 import hu.openig.utils.XElement;
 
 import java.util.HashMap;
@@ -24,16 +23,13 @@ public class Labels {
 	/**
 	 * Load the language file(s).
 	 * @param rl the resource locator
-	 * @param gameLabel the optional game namings, ignored if null or empty
+	 * @param labelRefs the sequence of label resources
 	 * @return this
 	 */
-	public Labels load(ResourceLocator rl, String gameLabel) {
+	public Labels load(ResourceLocator rl, Iterable<String> labelRefs) {
 		map.clear();
-		process(rl.getXML("labels"));
-		if (gameLabel != null && !gameLabel.isEmpty()) {
-			if (rl.get(gameLabel, ResourceType.DATA) != null) {
-				process(rl.getXML(gameLabel));
-			}
+		for (String ref : labelRefs) {
+			process(rl.getXML(ref));
 		}
 		return this;
 	}
@@ -96,8 +92,7 @@ public class Labels {
 	 * @param newLabels the new labels
 	 */
 	public void replaceWith(Labels newLabels) {
-		map.clear();
-		map.putAll(newLabels.map);
+		replaceWith(newLabels.map);
 	}
 	/** @return the backing map. */
 	public Map<String, String> map() {

@@ -15,6 +15,11 @@
 					<xs:documentation>The textual description of the campaign in a language.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="label" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The resource reference for extra labels, loaded in the given order.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 			<xs:element name="image" type="xs:string">
 				<xs:annotation>
 					<xs:documentation>The image resource to display on the single player screen when the campaign is selected. Leave empty for no image.</xs:documentation>
@@ -93,6 +98,11 @@
 			<xs:element name="chats" type="xs:string">
 				<xs:annotation>
 					<xs:documentation>The chat.xml resource location describing the space-chat during battles.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="spies" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The spies.xml location describing spying related properties.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="parameters" type="parameters">

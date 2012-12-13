@@ -13,6 +13,7 @@ import hu.openig.utils.U;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -36,51 +37,6 @@ public class CECopySettingsDialog extends JDialog {
 	private static final long serialVersionUID = -5563503589598771946L;
 	/** The context. */
 	protected CEContext ctx;
-	/** The copy operation. */
-	public enum CopyOp {
-		/** Reference the data file. */
-		REFERENCE,
-		/** Create a full copy of the datafile. */
-		COPY,
-		/** Have an empty datafile. */
-		BLANK
-	}
-	/**
-	 * The data files.
-	 * @author akarnokd, 2012.12.12.
-	 */
-	public enum DataFiles {
-		/** Main parameters. */
-		PARAMETERS,
-		/** Image. */
-		IMAGE,
-		/** Galaxy. */
-		GALAXY,
-		/** Players. */
-		PLAYERS,
-		/** Planets. */
-		PLANETS,
-		/** Technology. */
-		TECHNOLOGY,
-		/** Buildings. */
-		BUILDINGS,
-		/** Battle. */
-		BATTLE,
-		/** Diplomacy. */
-		DIPLOMACY,
-		/** Bridge. */
-		BRIDGE,
-		/** Bar talks. */
-		TALKS,
-		/** Ship walks. */
-		SHIPWALK,
-		/** Chat. */
-		CHAT,
-		/** Test. */
-		TEST,
-		/** Spies. */
-		SPIES
-	}
 	/** The copy operation. */
 	final List<JComboBox<String>> copyOps = U.newArrayList();
 	/** The copy labels. */
@@ -139,7 +95,7 @@ public class CECopySettingsDialog extends JDialog {
 		JSeparator sep1 = new JSeparator(JSeparator.HORIZONTAL);
 
 		Vector<String> ops = new Vector<String>();
-		for (CopyOp co : CopyOp.values()) {
+		for (CopyOperation co : CopyOperation.values()) {
 			ops.add(get("copy_settings.op_" + co));
 		}
 		
@@ -241,5 +197,18 @@ public class CECopySettingsDialog extends JDialog {
 	 */
 	public boolean isApproved() {
 		return approved;
+	}
+	/**
+	 * @return the copy settings
+	 */
+	public EnumMap<DataFiles, CopyOperation> getSettings() {
+		EnumMap<DataFiles, CopyOperation> result = new EnumMap<DataFiles, CopyOperation>(DataFiles.class);
+		
+		for (int i = 0; i < copyOps.size(); i++) {
+			JComboBox<String> cb = copyOps.get(i);
+			result.put(DataFiles.values()[i], CopyOperation.values()[cb.getSelectedIndex()]);
+		}
+		
+		return result;
 	}
 }

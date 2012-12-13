@@ -24,6 +24,7 @@
 	<walks>campaign/main/walks</walks>
 	<scripting>campaign/main/scripting</scripting>
 	<chats>campaign/main/chat</chats>
+	<spies>campaign/main/spies</spies>
 	<parameters 
 		groundRadarUnitSize="35" 
 		fleetRadarUnitSize="25" 

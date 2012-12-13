@@ -15,7 +15,10 @@ import hu.openig.utils.XElement;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The game definition used on the single player screen.
@@ -77,12 +80,14 @@ public class GameDefinition {
 	/** The optional chat definition. */
 	@LoadField
 	public String chats;
+	/** Spying. */
+	public String spying;
 	/** The game parameters. */
 	public final Map<String, String> parameters = new LinkedHashMap<String, String>();
 	/** The traits to apply to the main player. */
 	public Traits traits;
-	/** The labels. */
-	public final Labels labels = new Labels();
+	/** The referenced labels. */
+	public final List<String> labels = U.newArrayList();
 	/** Skirmish hint: do not load planetary buildings. */
 	public boolean noPlanetBuildings;
 	/** Skirmish hint: do not load planetary inventory. */
@@ -102,9 +107,12 @@ public class GameDefinition {
 		
 		intro = xdef.childValue("intro");
 		imagePath = xdef.childValue("image");
-		level = Integer.parseInt(xdef.childValue("level"));
-		String techLevelStr = xdef.childValue("tech-level");
-		techLevel = techLevelStr != null ? Integer.parseInt(techLevelStr) : 0;
+		level = xdef.intValue("level");
+		techLevel = xdef.intValue("tech-level", 0);
+		
+		for (XElement xlabels : xdef.childrenWithName("label")) {
+			labels.add(xlabels.content);
+		}
 		
 		for (Field f : GameDefinition.class.getDeclaredFields()) {
 			if (f.isAnnotationPresent(LoadField.class)) {
@@ -119,7 +127,45 @@ public class GameDefinition {
 		if (xp != null) {
 			parameters.putAll(xp.attributes());
 		}
+	}
+	/**
+	 * Save the definition.
+	 * @param xout the output XML
+	 */
+	public void save(XElement xout) {
+		// store descriptions
+		Set<String> languages = new LinkedHashSet<String>();
+		languages.addAll(titles.keySet());
+		languages.addAll(descriptions.keySet());
+		for (String lang : languages) {
+			XElement xtext = xout.add("texts");
+			xtext.set("language", lang);
+			xtext.add("title", titles.get(lang));
+			xtext.add("description", descriptions.get(lang));
+		}
+		xout.add("intro", intro);
+		xout.add("image", imagePath);
+		xout.add("level", level);
+		xout.add("tech-level", techLevel);
+		
+		for (String lr : labels) {
+			xout.add("label", lr);
+		}
 
+		for (Field f : GameDefinition.class.getDeclaredFields()) {
+			if (f.isAnnotationPresent(LoadField.class)) {
+				try {
+					xout.add(f.getName(), f.get(this));
+				} catch (IllegalAccessException ex) {
+					Exceptions.add(ex);
+				}
+			}
+		}
+
+		XElement xp = xout.add("parameters");
+		for (Map.Entry<String, String> e : parameters.entrySet()) {
+			xp.set(e.getKey(), e.getValue());
+		}
 	}
 	/**
 	 * Parse the game definition from.

@@ -185,4 +185,13 @@ public interface CEContext {
 	UndoManager undoManager();
 	/** Notify the window that the undo manager has changed. */
 	void undoManagerChanged();
+	/**
+	 * Set a new master data record.
+	 * @param newData the data
+	 */
+	void campaignData(CampaignData newData);
+	/** @return the current master data record. */
+	CampaignData campaignData();
+	/** @return the data manager. */
+	CEDataManager dataManager();
 }
