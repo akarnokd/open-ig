@@ -13,6 +13,7 @@ import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * The skirmish definition.
@@ -123,14 +124,17 @@ public class SkirmishDefinition {
 	 */
 	public GameDefinition createDefinition(ResourceLocator rl) {
 		GameDefinition galaxyDef = GameDefinition.parse(rl, this.galaxy);
-		Labels galaxyLabel = new Labels().load(rl, this.galaxy + "/labels");
 		
 		GameDefinition playerDef = GameDefinition.parse(rl, this.race);
-		Labels playerLabel = new Labels().load(rl, this.tech + "/labels");
 		
 		GameDefinition techDef = GameDefinition.parse(rl, this.tech);
-		Labels techLabel = new Labels().load(rl, this.tech + "/labels");
 
+		Set<String> labelRefs = U.newHashSet();
+		labelRefs.addAll(galaxyDef.labels);
+		labelRefs.addAll(playerDef.labels);
+		labelRefs.addAll(techDef.labels);
+
+		
 		GameDefinition result = new GameDefinition();
 		
 		result.name = "skirmish";
@@ -144,9 +148,7 @@ public class SkirmishDefinition {
 		result.diplomacy = playerDef.diplomacy;
 		result.image = galaxyDef.image;
 		result.intro = playerDef.intro;
-		result.labels.map.putAll(galaxyLabel.map);
-		result.labels.map.putAll(playerLabel.map);
-		result.labels.map.putAll(techLabel.map);
+		result.labels.addAll(labelRefs);
 		result.parameters.putAll(techDef.parameters);
 		result.planets = galaxyDef.planets;
 		result.players = playerDef.players;

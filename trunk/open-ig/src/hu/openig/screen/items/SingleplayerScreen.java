@@ -22,6 +22,7 @@ import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIMouse;
+import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -232,8 +233,9 @@ public class SingleplayerScreen extends ScreenBase {
 					final World world = new World(commons);
 					world.definition = selectedDefinition;
 					world.difficulty = Difficulty.values()[difficulty];
-					final Labels labels = new Labels(); 
-					labels.load(commons.rl, selectedDefinition.name + "/labels");
+					
+					final Labels labels = new Labels();
+					labels.load(commons.rl, U.startWith(selectedDefinition.labels, "labels"));
 					world.labels = labels;
 					
 					world.loadCampaign(commons.rl);

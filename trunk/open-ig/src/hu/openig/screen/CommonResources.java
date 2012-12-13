@@ -12,7 +12,6 @@ import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Func0;
 import hu.openig.core.Func1;
-import hu.openig.core.Pair;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SaveMode;
 import hu.openig.core.SimulationSpeed;
@@ -1061,38 +1060,6 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public boolean isBattle() {
 		return battleMode;
-	}
-	/**
-	 * Watch the current labels.
-	 */
-	void watchLabels() {
-		try {
-			while (!Thread.currentThread().isInterrupted()) {
-				Thread.sleep(1000);
-				Pair<ResourceLocator, String> rl = callEDT(new Func0<Pair<ResourceLocator, String>>() {
-					@Override
-					public Pair<ResourceLocator, String> invoke() {
-						String game = null;
-						if (world != null) {
-							game = world.name;
-						}
-						return Pair.of(CommonResources.this.rl, game);
-					}
-				});
-				final Labels labels = new Labels().load(rl.first, rl.second);
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						CommonResources.this.labels = labels;
-						control.repaintInner();
-					}
-				});
-			}
-		} catch (InterruptedException ex) {
-			// ignored, just quit
-		} catch (InvocationTargetException ex) {
-			Exceptions.add(ex);
-		}
 	}
 	/**
 	 * Execute a function on the EDT and return its value.

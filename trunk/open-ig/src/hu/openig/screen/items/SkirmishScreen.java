@@ -1153,7 +1153,7 @@ public class SkirmishScreen extends ScreenBase {
 		XElement xplayers = rl.getXML(def.players);
 		
 		Labels lbl = new Labels();
-		lbl.load(rl, def.name + "/labels");
+		lbl.load(rl, U.startWith(def.labels, "labels"));
 		
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
 			SkirmishPlayer sp = new SkirmishPlayer();

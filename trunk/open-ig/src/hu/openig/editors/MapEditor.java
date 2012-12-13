@@ -458,7 +458,7 @@ public class MapEditor extends JFrame {
 						}
 					});
 					lbl2 = new Labels();
-					lbl2.load(rl, "campaign/main");
+					lbl2.load(rl, Arrays.asList("labels", "campaign/main/labels"));
 					final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 					final WipPort wip = new WipPort(3);
 					try {
@@ -2281,7 +2281,7 @@ public class MapEditor extends JFrame {
 			deferredLanguage = language;
 			return;
 		}
-		labels.load(rl, "campaign/main");
+		labels.load(rl, Arrays.asList("labels", "campaign/main/labels"));
 		renameFieldsOf(ui);
 		renameFieldsOf(ui.allocationPanel);
 		renameFieldsOf(ui.buildingInfoPanel);

@@ -22,7 +22,30 @@ public class CampaignData {
 	public GameDefinition definition;
 	/** The label data per language. */
 	public Map<String, XElement> labels;
-	/** Use custom image? */
-	public boolean customImage;
-	
+	/** Data. */
+	public XElement galaxy;
+	/** Data. */
+	public XElement players;
+	/** Data. */
+	public XElement planets;
+	/** Data. */
+	public XElement technology;
+	/** Data. */
+	public XElement buildings;
+	/** Data. */
+	public XElement battle;
+	/** Data. */
+	public XElement diplomacy;
+	/** Data. */
+	public XElement bridge;
+	/** Data. */
+	public XElement talks;
+	/** Data. */
+	public XElement walks;
+	/** Data. */
+	public XElement chats;
+	/** Data. */
+	public XElement test;
+	/** Data. */
+	public XElement spies;
 }

@@ -198,6 +198,81 @@ public class XElement {
 		return null;
 	}
 	/**
+	 * Returns an integer value of the supplied child or throws an exception if missing.
+	 * @param name the child element name
+	 * @return the value
+	 */
+	public int intValue(String name) {
+		String s = childValue(name);
+		if (s != null) {
+			return Integer.parseInt(s);
+		}
+		throw new IllegalArgumentException(this + ": content: " + name);
+	}
+	/**
+	 * Returns a long value of the supplied child or throws an exception if missing.
+	 * @param name the child element name
+	 * @return the value
+	 */
+	public long longValue(String name) {
+		String s = childValue(name);
+		if (s != null) {
+			return Long.parseLong(s);
+		}
+		throw new IllegalArgumentException(this + ": content: " + name);
+	}
+	/**
+	 * Returns a double value of the supplied child or throws an exception if missing.
+	 * @param name the child element name
+	 * @return the value
+	 */
+	public double doubleValue(String name) {
+		String s = childValue(name);
+		if (s != null) {
+			return Double.parseDouble(s);
+		}
+		throw new IllegalArgumentException(this + ": content: " + name);
+	}
+	/**
+	 * Returns an integer value or the default value if the element is missing or empty.
+	 * @param name the element name
+	 * @param defaultValue the default value
+	 * @return the value
+	 */
+	public int intValue(String name, int defaultValue) {
+		String s = childValue(name);
+		if (s != null) {
+			return Integer.parseInt(s);
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns a long value or the default value if the element is missing or empty.
+	 * @param name the element name
+	 * @param defaultValue the default value
+	 * @return the value
+	 */
+	public long longValue(String name, long defaultValue) {
+		String s = childValue(name);
+		if (s != null) {
+			return Long.parseLong(s);
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns a double value or the default value if the element is missing or empty.
+	 * @param name the element name
+	 * @param defaultValue the default value
+	 * @return the value
+	 */
+	public double doubleValue(String name, double defaultValue) {
+		String s = childValue(name);
+		if (s != null) {
+			return Double.parseDouble(s);
+		}
+		return defaultValue;
+	}
+	/**
 	 * Returns the first child element with the given name.
 	 * @param name the child name
 	 * @return the XElement or null if not present
@@ -462,6 +537,17 @@ public class XElement {
 			attributes.remove(name);
 		}
 		
+	}
+	/**
+	 * Add an element with the supplied content text.
+	 * @param name the name
+	 * @param value the content
+	 * @return the new element
+	 */
+	public XElement add(String name, Object value) {
+		XElement result = add(name);
+		result.content = value != null ? value.toString() : null;
+		return result;
 	}
 	/**
 	 * Add a new child element with the given name.

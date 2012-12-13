@@ -195,7 +195,8 @@
 		<entry key='copy_settings.data_TEST'>Test</entry>
 		<entry key='copy_settings.data_SPIES'>Spies</entry>		
 		<entry key='copy_settings.set_all'>Set all to:</entry>
-
+		<entry key='copy_settings.data_LABELS'>Labels</entry>
+		<entry key='copy_settings.data_SURFACES'>Planet surfaces</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>

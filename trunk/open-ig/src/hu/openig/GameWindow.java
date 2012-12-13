@@ -2267,7 +2267,10 @@ public class GameWindow extends JFrame implements GameControls {
 			} else {
 				world.definition = GameDefinition.parse(commons.rl, game);
 				world.labels = new Labels();
-				world.labels.load(commons.rl, game + "/labels");
+				List<String> labels = U.newArrayList();
+				labels.add("labels");
+				labels.addAll(world.definition.labels);
+				world.labels.load(rl, labels);
 				world.loadCampaign(commons.rl);
 			}
 		}

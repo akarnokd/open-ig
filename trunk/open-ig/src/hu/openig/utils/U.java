@@ -903,4 +903,19 @@ public final class U {
 		}
 		return result;
 	}
+	/**
+	 * Append the given values to the beginning of the sequence in a new List.
+	 * @param <T> element type
+	 * @param src the source sequence
+	 * @param ts the prefix elements
+	 * @return the new list
+	 */
+	public static <T> List<T> startWith(Iterable<? extends T> src, T... ts) {
+		List<T> result = newArrayList();
+		result.addAll(Arrays.asList(ts));
+		for (T t : src) {
+			result.add(t);
+		}
+		return result;
+	}
 }

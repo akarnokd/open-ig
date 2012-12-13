@@ -2857,7 +2857,8 @@ public class World {
 	public void loadSkirmish(final ResourceLocator rl,
 			GameScripting scripting) {
 		definition = skirmishDefinition.createDefinition(rl);
-		labels = definition.labels;
+		labels = new Labels();
+		labels.load(rl, U.startWith(definition.labels, "labels"));
 		difficulty = skirmishDefinition.initialDifficulty;
 		
 		loadCampaign(rl);
