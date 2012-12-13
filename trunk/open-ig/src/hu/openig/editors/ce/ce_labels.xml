@@ -190,13 +190,14 @@
 		<entry key='copy_settings.data_DIPLOMACY'>Diplomacy</entry>
 		<entry key='copy_settings.data_BRIDGE'>Bridge (messages, animations)</entry>
 		<entry key='copy_settings.data_TALKS'>Bar talks</entry>
-		<entry key='copy_settings.data_SHIPWALK'>Ship walks</entry>
-		<entry key='copy_settings.data_CHAT'>Chat</entry>
+		<entry key='copy_settings.data_WALKS'>Ship walks</entry>
+		<entry key='copy_settings.data_CHATS'>Chat</entry>
 		<entry key='copy_settings.data_TEST'>Test</entry>
 		<entry key='copy_settings.data_SPIES'>Spies</entry>		
 		<entry key='copy_settings.set_all'>Set all to:</entry>
 		<entry key='copy_settings.data_LABELS'>Labels</entry>
 		<entry key='copy_settings.data_SURFACES'>Planet surfaces</entry>
+		<entry key='copy_settings.data_SCRIPTING'>Scripting</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>

@@ -81,7 +81,8 @@ public class GameDefinition {
 	@LoadField
 	public String chats;
 	/** Spying. */
-	public String spying;
+	@LoadField
+	public String spies;
 	/** The game parameters. */
 	public final Map<String, String> parameters = new LinkedHashMap<String, String>();
 	/** The traits to apply to the main player. */

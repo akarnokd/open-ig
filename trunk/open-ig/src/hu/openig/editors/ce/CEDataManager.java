@@ -14,6 +14,7 @@ import hu.openig.utils.IOUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -28,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import javax.xml.stream.XMLStreamException;
 
 /**
  * @author akarnokd, 2012.12.13.
@@ -535,25 +538,441 @@ public class CEDataManager {
 		
 		//********************************************************************
 		
-		CopyOperation cop = copySettings.get(DataFiles.IMAGE);
-		if (cop == CopyOperation.BLANK) {
-			campaignData.definition.image = null;
-			campaignData.definition.imagePath = null;
-		} else
-		if (cop == CopyOperation.COPY) {
-			Map<String, byte[]> allData = getDataAll(campaignData.definition.imagePath + ".png");
-			for (Map.Entry<String, byte[]> e : allData.entrySet()) {
-				File f = new File(dir, e.getKey() + "/campaign/" + name);
-				if (!f.exists() && !f.mkdirs()) {
-					Exceptions.add(new IOException("Could not create directories for " + f));
+		CopyOperation cop;
+		copyImage(copySettings, name, dir);
+
+		//********************************************************************
+
+		copyLabels(copySettings, name, dir);
+
+		//********************************************************************
+		
+		copyGalaxy(copySettings, name, dir, campaignDir);
+		
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.PLAYERS);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "players";
+			String original = campaignData.definition.players;
+			campaignData.definition.players = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
 				}
-				IOUtils.save(new File(f, "image.png"), e.getValue());
 			}
-			campaignData.definition.imagePath = "campaign/" + name + "/image"; 
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+		
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.PLANETS);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "planets";
+			String original = campaignData.definition.planets;
+			campaignData.definition.planets = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
 		}
 
 		//********************************************************************
 
+		cop = copySettings.get(DataFiles.TECHNOLOGY);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "tech";
+			String original = campaignData.definition.tech;
+			campaignData.definition.tech = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.BUILDINGS);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "buildings";
+			String original = campaignData.definition.buildings;
+			campaignData.definition.buildings = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.BATTLE);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "battle";
+			String original = campaignData.definition.battle;
+			campaignData.definition.battle = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.DIPLOMACY);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "diplomacy";
+			String original = campaignData.definition.diplomacy;
+			campaignData.definition.diplomacy = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.BRIDGE);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "bridge";
+			String original = campaignData.definition.bridge;
+			campaignData.definition.bridge = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.TALKS);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "talks";
+			String original = campaignData.definition.talks;
+			campaignData.definition.talks = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.WALKS);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "walks";
+			String original = campaignData.definition.walks;
+			campaignData.definition.walks = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+		
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.CHATS);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "chats";
+			String original = campaignData.definition.chats;
+			campaignData.definition.chats = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				if (data != null) {
+					try {
+						xml = XElement.parseXML(data);
+					} catch (XMLStreamException ex) {
+						// ignored
+					}
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.TEST);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "test";
+			String original = campaignData.definition.test;
+			campaignData.definition.test = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				try {
+					xml = XElement.parseXML(data);
+				} catch (XMLStreamException ex) {
+					// ignored
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.SPIES);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "spies";
+			String original = campaignData.definition.spies;
+			campaignData.definition.spies = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				if (data != null) {
+					try {
+						xml = XElement.parseXML(data);
+					} catch (XMLStreamException ex) {
+						// ignored
+					}
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		//********************************************************************
+
+		cop = copySettings.get(DataFiles.SCRIPTING);
+		if (cop != CopyOperation.REFERENCE) {
+			String fname = "scripting";
+			String original = campaignData.definition.scripting;
+			campaignData.definition.scripting = "campaign/" + name + "/" + fname;
+			
+			XElement xml = new XElement(fname);
+			if (cop == CopyOperation.COPY) {
+				byte[] data = getDataAll(original + ".xml").get("generic");
+				if (data != null) {
+					try {
+						xml = XElement.parseXML(data);
+					} catch (XMLStreamException ex) {
+						// ignored
+					}
+				}
+			}
+			try {
+				xml.save(new File(campaignDir, fname + ".xml"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+
+		
+		//********************************************************************
+		
+		XElement xdef = new XElement("definition");
+		campaignData.definition.save(xdef);
+		try {
+			xdef.save(new File(campaignDir, "definition.xml"));
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		}
+	}
+	/**
+	 * Copy the galaxy and surface definitions.
+	 * @param copySettings the copy settings
+	 * @param name the campaign name
+	 * @param dir the base directory of the campaign
+	 * @param campaignDir the campaign definition subdirectory
+	 */
+	public void copyGalaxy(Map<DataFiles, CopyOperation> copySettings,
+			String name, File dir, File campaignDir) {
+		CopyOperation cop;
+		try {
+			Map<String, byte[]> galaxies = getDataAll(campaignData.definition.galaxy + ".xml");
+			XElement xgalaxy = XElement.parseXML(new ByteArrayInputStream(galaxies.get("generic")));
+			
+			cop = copySettings.get(DataFiles.SURFACES);
+			if (cop != CopyOperation.REFERENCE) {
+				File f = new File(dir, "generic/campaign/" + name + "/surfaces");
+				if (!f.exists() && !f.mkdirs()) {
+					Exceptions.add(new IOException("Could not create directories for " + f));
+				}
+				
+				for (XElement xplanets : xgalaxy.childrenWithName("planets")) {
+					for (XElement xplanet : xplanets.childrenWithName("planet")) {
+						for (XElement xmap : xplanet.childrenWithName("map")) {
+							int start = xmap.getInt("start");
+							int end = xmap.getInt("end");
+							String pattern = xmap.get("pattern");
+							String pattern2 = pattern;
+							int pidx = pattern.lastIndexOf('/');
+							if (pidx >= 0) {
+								pattern2 = pattern.substring(pidx + 1);
+							}
+
+							xmap.set("pattern", "campaign/" + name + "/surfaces/" + pattern2);
+							
+							if (cop == CopyOperation.BLANK) {
+								XElement xp = new XElement("map");
+								xp.set("version", "1.0");
+								XElement xs = xp.add("surface");
+								xs.set("width", 1);
+								xs.set("height", 1);
+								xp.add("buildings");
+	
+								for (int i = start; i <= end; i++) {
+									File out = new File(f, String.format(pattern2, i) + ".xml");
+									try {
+										xp.save(out);
+									} catch (IOException ex) {
+										Exceptions.add(ex);
+									}
+								}
+							} else 
+							if (cop == CopyOperation.COPY) {
+								for (int i = start; i <= end; i++) {
+									
+									byte[] xp = getDataAll(String.format(pattern, i) + ".xml").get("generic");
+									
+									File out = new File(f, String.format(pattern2, i) + ".xml");
+									IOUtils.save(out, xp);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			cop = copySettings.get(DataFiles.GALAXY);
+			if (cop != CopyOperation.REFERENCE) {
+				if (cop == CopyOperation.BLANK) {
+					xgalaxy.clear();
+				}
+				try {
+					xgalaxy.save(new File(campaignDir, "galaxy.xml"));
+				} catch (IOException ex) {
+					Exceptions.add(ex);
+				}
+				campaignData.definition.galaxy = "campaign/" + name + "/galaxy";
+			}
+			campaignData.galaxy = xgalaxy;
+			
+		} catch (XMLStreamException ex) {
+			// ignored
+		}
+	}
+	/**
+	 * Copy the labels of the original campaign.
+	 * @param copySettings the copy settings
+	 * @param name the new campaign name
+	 * @param dir the base directory
+	 */
+	public void copyLabels(Map<DataFiles, CopyOperation> copySettings,
+			String name, File dir) {
+		CopyOperation cop;
 		cop = copySettings.get(DataFiles.LABELS);
 		if (cop == CopyOperation.BLANK) {
 			campaignData.definition.labels.clear();
@@ -588,35 +1007,76 @@ public class CEDataManager {
 			campaignData.definition.labels.clear();
 			campaignData.definition.labels.addAll(newRefs);
 		}
-
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		//********************************************************************
-		
-		XElement xdef = new XElement("definition");
-		campaignData.definition.save(xdef);
-		try {
-			xdef.save(new File(campaignDir, "definition.xml"));
-		} catch (IOException ex) {
-			Exceptions.add(ex);
+	}
+	/**
+	 * Copy the campaign image of the original campaign.
+	 * @param copySettings the copy settings
+	 * @param name the new campaign name
+	 * @param dir the base directory
+	 */
+	public void copyImage(Map<DataFiles, CopyOperation> copySettings,
+			String name, File dir) {
+		CopyOperation cop = copySettings.get(DataFiles.IMAGE);
+		if (cop == CopyOperation.BLANK) {
+			campaignData.definition.image = null;
+			campaignData.definition.imagePath = null;
+		} else
+		if (cop == CopyOperation.COPY) {
+			Map<String, byte[]> allData = getDataAll(campaignData.definition.imagePath + ".png");
+			for (Map.Entry<String, byte[]> e : allData.entrySet()) {
+				File f = new File(dir, e.getKey() + "/campaign/" + name);
+				if (!f.exists() && !f.mkdirs()) {
+					Exceptions.add(new IOException("Could not create directories for " + f));
+				}
+				IOUtils.save(new File(f, "image.png"), e.getValue());
+			}
+			campaignData.definition.imagePath = "campaign/" + name + "/image"; 
 		}
 	}
+	/**
+	 * Load the data files based on the definition.
+	 */
 	public void load() {
-		
+		campaignData.galaxy = load(campaignData.definition.galaxy);
+		campaignData.players = load(campaignData.definition.players);
+		campaignData.planets = load(campaignData.definition.planets);
+		campaignData.technology = load(campaignData.definition.tech);
+		campaignData.buildings = load(campaignData.definition.buildings);
+		campaignData.battle = load(campaignData.definition.battle);
+		campaignData.diplomacy = load(campaignData.definition.diplomacy);
+		campaignData.bridge = load(campaignData.definition.bridge);
+		campaignData.talks = load(campaignData.definition.talks);
+		campaignData.walks = load(campaignData.definition.walks);
+		campaignData.chats = load(campaignData.definition.chats);
+		campaignData.test = load(campaignData.definition.test);
+		campaignData.spies = load(campaignData.definition.spies);
+		campaignData.scripting = load(campaignData.definition.scripting);
 	}
+	/**
+	 * Load an XML reference.
+	 * @param reference the reference path
+	 * @return the XElement
+	 */
+	XElement load(String reference) {
+		try {
+			byte[] data = getDataAll(reference + ".xml").get("generic");
+			if (data != null) {
+				return XElement.parseXML(data);
+			}
+		} catch (XMLStreamException ex) {
+			// ignored
+		}
+		int idx = reference.lastIndexOf('/');
+		String key = reference;
+		if (idx >= 0) {
+			key = key.substring(idx + 1);
+		}
+		return new XElement(key);
+	}
+	/**
+	 * Save the data files based on the definition.
+	 */
 	public void save() {
-		
+		// TODO implement
 	}
 }

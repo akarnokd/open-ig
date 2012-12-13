@@ -11,6 +11,7 @@ package hu.openig.utils;
 import hu.openig.core.Action1;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -296,6 +297,15 @@ public class XElement {
 		XMLInputFactory inf = XMLInputFactory.newInstance();
 		XMLStreamReader ir = inf.createXMLStreamReader(in);
 		return parseXML(ir);
+	}
+	/**
+	 * Parse an XML from the binary data.
+	 * @param data the XML data
+	 * @return the parsed xml
+	 * @throws XMLStreamException on error
+	 */
+	public static XElement parseXML(byte[] data) throws XMLStreamException {
+		return parseXML(new ByteArrayInputStream(data));
 	}
 	/**
 	 * Parses an XML from the given URL.
