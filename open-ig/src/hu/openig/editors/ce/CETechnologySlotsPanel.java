@@ -186,7 +186,7 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 					if (selectedSlot.isNullOrEmpty("id")) {
 						slotId.setInvalid(errorIcon, get("invalid_empty"));
 					} else
-					if (selectedSlot.name.equals("slot") && context.label("inventoryslot." + selectedSlot.get("id")) == null) {
+					if (selectedSlot.name.equals("slot") && context.dataManager().label("inventoryslot." + selectedSlot.get("id")) == null) {
 						slotId.setInvalid(warningIcon, format("missing_label_of", "inventoryslot." + selectedSlot.get("id")));
 					}
 					slotsModel.update(selectedSlot);
@@ -539,7 +539,7 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 		if (!slot.has("id") || slot.get("id").isEmpty()) {
 			result = max(result, errorIcon);
 		} else
-		if (slot.name.equals("slot") &&  context.label("inventoryslot." + slot.get("id")) == null) {
+		if (slot.name.equals("slot") &&  context.dataManager().label("inventoryslot." + slot.get("id")) == null) {
 			result = max(result, warningIcon);
 		}
 		if (slot.name.equals("slot")) {

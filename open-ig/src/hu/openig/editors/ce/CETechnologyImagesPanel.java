@@ -10,8 +10,11 @@ package hu.openig.editors.ce;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.model.ResearchSubCategory;
+import hu.openig.utils.U;
 
 import java.awt.BorderLayout;
+import java.util.Set;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -231,12 +234,34 @@ public class CETechnologyImagesPanel extends CESlavePanel {
 	void validateImages() {
 		ImageIcon i = null;
 		i = max(i, imageField.getInvalid());
+		
 		i = max(i, imageNormal.getInvalid());
 		i = max(i, imageInfoAvail.getInvalid());
 		i = max(i, imageInfoWired.getInvalid());
-		i = max(i, imageSpacewar.getInvalid());
-		i = max(i, imageEquipDetails.getInvalid());
-		i = max(i, imageEquipFleet.getInvalid());
+
+		String cat = master.get("category");
+		
+		Set<String> checkSpaceCategory = U.newHashSet();
+		checkSpaceCategory.add(ResearchSubCategory.SPACESHIPS_BATTLESHIPS.toString());
+		checkSpaceCategory.add(ResearchSubCategory.SPACESHIPS_STATIONS.toString());
+		checkSpaceCategory.add(ResearchSubCategory.SPACESHIPS_CRUISERS.toString());
+		checkSpaceCategory.add(ResearchSubCategory.SPACESHIPS_FIGHTERS.toString());
+		
+		if (checkSpaceCategory.contains(cat)) {
+			i = max(i, imageSpacewar.getInvalid());
+			i = max(i, imageEquipDetails.getInvalid());
+			i = max(i, imageEquipFleet.getInvalid());
+		}
+
+		Set<String> checkVehicleCategory = U.newHashSet();
+		checkVehicleCategory.add(ResearchSubCategory.WEAPONS_TANKS.toString());
+		checkVehicleCategory.add(ResearchSubCategory.WEAPONS_VEHICLES.toString());
+
+		if (checkSpaceCategory.contains(cat)) {
+			i = max(i, imageEquipDetails.getInvalid());
+			i = max(i, imageEquipFleet.getInvalid());
+		}
+
 		
 		onValidate(i);
 	}

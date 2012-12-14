@@ -58,7 +58,7 @@ public class CEImageRef implements CEInvalid {
 		worker = new SwingWorker<BufferedImage, Void>() {
 			@Override
 			protected BufferedImage doInBackground() throws Exception {
-				return context.getImage(resource);
+				return context.dataManager().getImage(resource);
 			}
 			@Override
 			protected void done() {

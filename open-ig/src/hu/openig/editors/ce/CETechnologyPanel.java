@@ -10,7 +10,6 @@ package hu.openig.editors.ce;
 
 import hu.openig.core.Action1;
 import hu.openig.core.Pair;
-import hu.openig.utils.Exceptions;
 import hu.openig.utils.GUIUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -19,7 +18,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -39,7 +37,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * The Technologies panel to edit contents of the <code>tech.xml</code>. 
@@ -101,7 +98,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 				switch (columnIndex) {
 				case 0: return rowIndex;
 				case 1: return item.get("id", "");
-				case 2: return context.label(item.get("name", null));
+				case 2: return context.dataManager().label(item.get("name", null));
 				case 3: return context.get(item.get("category", null));
 				case 4: return item.getIntObject("level");
 				case 5: return item.get("race", null);
@@ -134,15 +131,6 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 				Integer.class,
 				ImageIcon.class
 		);
-		
-		// FIXME for now
-		try {
-			byte[] btech = context.getData("generic", "campaign/main/tech.xml");
-			XElement xtech = XElement.parseXML(new ByteArrayInputStream(btech));
-			technologiesModel.add(xtech.childrenWithName("item"));
-		} catch (XMLStreamException ex) {
-			Exceptions.add(ex);
-		}
 		
 		technologies = new JTable(technologiesModel);
 		technologiesSorter = new TableRowSorter<GenericTableModel<XElement>>(technologiesModel);
@@ -485,21 +473,22 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		}
 		String video = item.get("video", "");
 		if (video.isEmpty()) {
-			if (races.contains(context.mainPlayerRace())) {
+			if (races.contains(context.dataManager().mainPlayerRace())) {
 				result = U.max(result, CESeverityIndicator.ERROR);
 			} else {
 				result = U.max(result, CESeverityIndicator.WARNING);
 			}
 		} else {
-			if (!context.exists(video + ".ani.gz")) {
-				if (races.contains(context.mainPlayerRace())) {
+			if (!context.dataManager().exists(video + ".ani.gz")) {
+				if (races.contains(context.dataManager().mainPlayerRace())) {
 					result = U.max(result, CESeverityIndicator.ERROR);
 				} else {
 					result = U.max(result, CESeverityIndicator.WARNING);
 				}
 			}
-			if (!context.exists(video + "_wired.ani.gz")) {
-				if (races.contains(context.mainPlayerRace())) {
+			if (!context.dataManager().exists(video + "_wired.ani.gz")) {
+				if (races.contains(context.dataManager().mainPlayerRace()) 
+						&& !"0".equals(item.get("level", ""))) {
 					result = U.max(result, CESeverityIndicator.ERROR);
 				} else {
 					result = U.max(result, CESeverityIndicator.WARNING);
@@ -534,7 +523,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 			result = U.max(result, CESeverityIndicator.ERROR);
 		}
 		if (sumLab == 0) {
-			if (races.contains(context.mainPlayerRace())) {
+			if (races.contains(context.dataManager().mainPlayerRace())) {
 				result = U.max(result, CESeverityIndicator.ERROR);
 			} else {
 				result = U.max(result, CESeverityIndicator.WARNING);
@@ -661,5 +650,14 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 				sp.setMaster(item);
 			}
 		}
+	}
+	/**
+	 * Loads the data from the campaign data XMLs.
+	 */
+	public void load() {
+		technologiesModel.clear();
+		technologiesModel.add(context.campaignData().technology.childrenWithName("item"));
+		GUIUtils.autoResizeColWidth(technologies, technologiesModel);
+		doUpdateCount();
 	}
 }

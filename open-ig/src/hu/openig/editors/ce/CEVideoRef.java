@@ -62,7 +62,7 @@ public class CEVideoRef implements CEInvalid {
 		worker = new SwingWorker<BufferedImage, Void>() {
 			@Override
 			protected BufferedImage doInBackground() throws Exception {
-				byte[] data = context.getData(resource);
+				byte[] data = context.dataManager().getData(resource);
 				if (data != null) {
 					return VideoRenderer.firstFrame(new DataInputStream(new GZIPInputStream(new ByteArrayInputStream(data))));
 				}

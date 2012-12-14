@@ -24,19 +24,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -64,7 +60,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	/** */
 	private static final long serialVersionUID = -4044298769130516091L;
 	/** The main version. */
-	public static final String VERSION = "0.02";
+	public static final String VERSION = "0.03";
 	/** The configuration file. */
 	public static final String CONFIG_FILE = "open-ig-ce-config.xml";
 	/** The console watcher. */
@@ -95,10 +91,6 @@ public class CampaignEditor extends JFrame implements CEContext {
 	CETechnologyPanel technologiesPanel;
 	/** Labels. */
 	CELabelsPanel labelsPanel;
-	/** The main IG labels. */
-	Map<String, Map<String, String>> mainLabels = U.newHashMap();
-	/** The project's language. */
-	String projectLanguage;
 	/** The startup dialog. */
 	CEStartupDialog startupDialog;
 	/** Undo menu item. */
@@ -404,10 +396,6 @@ public class CampaignEditor extends JFrame implements CEContext {
 		
 		ToolTipManager.sharedInstance().setDismissDelay(120000);
 		
-		projectLanguage = language;
-		
-		initMainLabels();
-
 		mainMenu = new JMenuBar();
 		
 		initMenu();
@@ -415,7 +403,6 @@ public class CampaignEditor extends JFrame implements CEContext {
 		toolbar = new JToolBar();
 		
 		initToolbar();
-		
 		
 		mainSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
@@ -625,32 +612,6 @@ public class CampaignEditor extends JFrame implements CEContext {
 		});
 	}
 	@Override
-	public XElement getXML(String resource) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public List<String> getText(String resource) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public byte[] getData(String resource) {
-		return getData(projectLanguage, resource);
-	}
-	@Override
-	public BufferedImage getImage(String resource) {
-		byte[] data = getData(projectLanguage, resource);
-		if (data != null) {
-			try {
-				return ImageIO.read(new ByteArrayInputStream(data));
-			} catch (IOException ex) {
-				// ignored
-			}
-		}
-		return null;
-	}
-	@Override
 	public ImageIcon getIcon(CESeverityIndicator indicator) {
 		switch (indicator) {
 		case WARNING:
@@ -680,21 +641,6 @@ public class CampaignEditor extends JFrame implements CEContext {
 		return String.format(fmt, params);
 	}
 	@Override
-	public String projectLanguage() {
-		return projectLanguage;
-	}
-	@Override
-	public String label(String language, String key) {
-		if (key == null) {
-			return null;
-		}
-		Map<String, String> lang = mainLabels.get(language);
-		if (lang != null) {
-			return lang.get(key);
-		}
-		return null;
-	}
-	@Override
 	public void updateTab(Component c, String title, ImageIcon icon) {
 		for (int i = 0; i < tabs.getTabCount(); i++) {
 			Component c0 = tabs.getComponentAt(i);
@@ -713,36 +659,6 @@ public class CampaignEditor extends JFrame implements CEContext {
 		updateUndoRedo();
 	}
 	@Override
-	public void saveXML(String resource, XElement xml) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void saveText(String resource, Iterable<String> lines) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void saveText(String resource, CharSequence text) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void saveData(String resource, byte[] data) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void saveImage(String resource, BufferedImage image) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void delete(String resource) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
 	public void addProblem(CESeverityIndicator severity, String message,
 			String panel, CEProblemLocator c, XElement description) {
 		// TODO Auto-generated method stub
@@ -753,71 +669,10 @@ public class CampaignEditor extends JFrame implements CEContext {
 		// TODO Auto-generated method stub
 		
 	}
-	@Override
-	public String label(String key) {
-		return label(projectLanguage, key);
-	}
 	
-	/**
-	 * Load all available main labels.
-	 */
-	void initMainLabels() {
-		dataManager.languages.clear();
-		mainLabels.clear();
-		dataManager.languages.addAll(dataManager.getLanguages());
-		for (String lang : dataManager.languages) {
-			Map<String, String> transMap = U.newLinkedHashMap();
-			mainLabels.put(lang, transMap);
-			
-			byte[] langData = getData(lang, "labels.xml");
-			if (langData != null) {
-				try {
-					XElement xlabels = XElement.parseXML(new ByteArrayInputStream(langData));
-					for (XElement xe : xlabels.childrenWithName("entry")) {
-						String key = xe.get("key");
-						String content = xe.content;
-						if (key != null && !key.isEmpty() && content != null && !content.isEmpty()) {
-							transMap.put(key, content);
-						}
-					}
-				} catch (XMLStreamException ex) {
-					// ignored
-				}
-			}
-		}
-	}
-	@Override
-	public List<String> languages() {
-		return dataManager.languages;
-	}
-	@Override
-	public void setLabel(String key, String value) {
-		if (key == null || key.isEmpty()) {
-			return;
-		}
-		Map<String, String> lang = mainLabels.get(projectLanguage);
-		if (lang == null) {
-			lang = U.newLinkedHashMap();
-			mainLabels.put(projectLanguage, lang);
-		}
-		lang.put(key, value);
-	}
 	@Override
 	public File getWorkDir() {
 		return dataManager.workDir;
-	}
-	@Override
-	public boolean exists(String resource) {
-		return dataManager.exists(projectLanguage, resource);
-	}
-	@Override
-	public String mainPlayerRace() {
-		return "human"; // FIXME for now
-	}
-	@Override
-	public boolean hasLabel(String key) {
-		String lbl = label(key);
-		return lbl != null && !lbl.isEmpty();
 	}
 	/** Update the undo/redo menu. */
 	void updateUndoRedo() {
@@ -875,12 +730,14 @@ public class CampaignEditor extends JFrame implements CEContext {
 		this.dataManager.campaignData = newData;
 	}
 	@Override
-	public byte[] getData(String language, String resource) {
-		return dataManager.getData(language, resource);
-	}
-	@Override
 	public CEDataManager dataManager() {
 		return dataManager;
 	}
-	
+	@Override
+	public void load() {
+		labelsPanel.load();
+		technologiesPanel.load();
+
+		// TODO Auto-generated method stub
+	}
 }

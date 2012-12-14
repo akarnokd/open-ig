@@ -133,7 +133,12 @@ public class CETechnologyVideosPanel extends CESlavePanel {
 		ImageIcon invalidIcon = null;
 		invalidIcon = max(invalidIcon, videoField.getInvalid());
 		invalidIcon = max(invalidIcon, normalVideo.getInvalid());
-		invalidIcon = max(invalidIcon, wiredVideo.getInvalid());
+		
+		ImageIcon wi = wiredVideo.getInvalid();
+		if ("0".equals(master.get("level", "")) && wi != null) {
+			wi = warningIcon;
+		}
+		invalidIcon = max(invalidIcon, wi);
 		onValidate(invalidIcon);
 	}
 	@Override

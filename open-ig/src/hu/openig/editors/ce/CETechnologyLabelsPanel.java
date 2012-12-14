@@ -88,19 +88,19 @@ public class CETechnologyLabelsPanel extends CESlavePanel {
 		addValidator(nameLabel, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
-				context.setLabel(nameField.component.getText(), nameLabel.component.getText());
+				context.dataManager().setLabel(nameField.component.getText(), nameLabel.component.getText());
 			}
 		});
 		addValidator(longNameLabel, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
-				context.setLabel(longNameField.component.getText(), longNameLabel.component.getText());
+				context.dataManager().setLabel(longNameField.component.getText(), longNameLabel.component.getText());
 			}
 		});
 		addValidator(descLabel, new Action1<Object>() {
 			@Override
 			public void invoke(Object value) {
-				context.setLabel(descField.component.getText(), descLabel.component.getText());
+				context.dataManager().setLabel(descField.component.getText(), descLabel.component.getText());
 			}
 		});
 

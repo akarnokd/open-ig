@@ -161,7 +161,7 @@ public class CEBasePanel extends JPanel {
 	 */
 	public ImageIcon validateLabelRefField(CEValueBox<JTextField> f, ImageIcon icon) {
 		String value = f.component.getText();
-		String label = context.label(value);
+		String label = context.dataManager().label(value);
 		if (label == null || label.isEmpty()) {
 			f.setInvalid(warningIcon, get("field.invalid.missing_label"));
 			icon = max(icon, warningIcon);
@@ -176,7 +176,7 @@ public class CEBasePanel extends JPanel {
 	 * @return the image or null if not found
 	 */
 	public ImageIcon getImageIcon(String resource) {
-		BufferedImage img = context.getImage(resource);
+		BufferedImage img = context.dataManager().getImage(resource);
 		if (img != null) {
 			return new ImageIcon(img);
 		}

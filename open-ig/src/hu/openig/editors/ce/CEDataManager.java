@@ -9,11 +9,13 @@
 package hu.openig.editors.ce;
 
 import hu.openig.core.Func1;
+import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,6 +32,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.imageio.ImageIO;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -51,8 +54,6 @@ public class CEDataManager {
 	String[] defaultDirectories = { "data", "audio", "images", "video" };
 	/** The working directory. */
 	public File workDir = new File(".");
-	/** The languages. */
-	public List<String> languages = U.newArrayList();
 	/** The master campaign data. */
 	public CampaignData campaignData;
 	/**
@@ -316,85 +317,6 @@ public class CEDataManager {
 		}
 		
 		return result;
-	}
-	/**
-	 * Get a resource for the specified language (or generic).
-	 * @param language the language
-	 * @param resource the resource name with extension
-	 * @return the data bytes or null if not found
-	 */
-	public byte[] getData(String language, String resource) {
-		File dlc = new File(workDir, "dlc");
-		
-		// check unpacked dlcs
-		File[] dlcDirs = dlc.listFiles(new DirFilter());
-		if (dlcDirs != null) {
-			byte[] result = scanDirs(language, resource, dlcDirs);
-			if (result != null) {
-				return result;
-			}
-		}
-		// check dlc zips
-		File[] dlcZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip");
-			}
-		});
-		if (dlcZips != null) {
-			byte[] result = scanZips(language, resource, dlcZips);
-			if (result != null) {
-				return result;
-			}
-		}
-		// check master directories
-		File[] normalDirs = new File[defaultDirectories.length];
-		for (int i = 0; i < normalDirs.length; i++) {
-			normalDirs[i] = new File(workDir, defaultDirectories[i]);
-		}
-		
-		byte[] result = scanDirs(language, resource, normalDirs);
-		if (result != null) {
-			return result;
-		}
-		
-		// check dlc zips
-		File[] upgradeZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String n = pathname.getName().toLowerCase();
-				return pathname.isFile() && n.startsWith("open-ig-upgrade") && n.endsWith(".zip");
-			}
-		});
-		if (upgradeZips != null) {
-			Arrays.sort(upgradeZips, new Comparator<File>() {
-				@Override
-				public int compare(File o1, File o2) {
-					return o2.getName().toLowerCase().compareTo(o1.getName().toLowerCase());
-				}
-			});
-			result = scanZips(language, resource, upgradeZips);
-			if (result != null) {
-				return result;
-			}
-		}
-
-		// check dlc zips
-		File[] normalZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String n = pathname.getName().toLowerCase();
-				return pathname.isFile() && n.startsWith("open-ig-") && !n.startsWith("open-ig-upgrade") && n.endsWith(".zip");
-			}
-		});
-		if (normalZips != null) {
-			result = scanZips(language, resource, normalZips);
-			if (result != null) {
-				return result;
-			}
-		}
-
-		return null;
 	}
 	/**
 	 * Scan a set of zip files for a particular resource.
@@ -980,8 +902,11 @@ public class CEDataManager {
 			try {
 				for (String lang : campaignData.definition.titles.keySet()) {
 					XElement xml = new XElement("labels");
-					campaignData.labels.put(lang, xml);
-					xml.save(new File(lang + "/campaign/" + name + "/labels.xml"));
+					File fp = new File(dir, lang + "/campaign/" + name);
+					if (!fp.exists() && !fp.mkdirs()) {
+						Exceptions.add(new IOException("Could not create directories for " + fp));
+					}
+					xml.save(new File(fp, "labels.xml"));
 				}
 			} catch (IOException ex) {
 				Exceptions.add(ex);
@@ -1037,6 +962,40 @@ public class CEDataManager {
 	 * Load the data files based on the definition.
 	 */
 	public void load() {
+		campaignData.labels = U.newHashMap();
+		campaignData.labelMap = U.newHashMap();
+		
+		for (String lang : languages()) {
+			campaignData.labelMap.put(lang, U.<String, String>newHashMap());
+		}
+		List<String> labelRefs = U.newArrayList(campaignData.definition.labels);
+		labelRefs.add("labels");
+		
+		for (String lr : labelRefs) {
+			Map<String, byte[]> datas = getDataAll(lr + ".xml");
+			for (String lang : campaignData.definition.titles.keySet()) {
+				byte[] data = datas.get(lang);
+				XElement xml = new XElement("labels");
+				if (data != null) {
+					try {
+						xml = XElement.parseXML(data);
+					} catch (XMLStreamException ex) {
+						// ignored
+					}
+				}
+				campaignData.labels.put(Pair.of(lang, lr), xml);
+				for (XElement xe : xml.childrenWithName("entry")) {
+					String key = xe.get("key", "");
+					Map<String, String> map = campaignData.labelMap.get(key);
+					if (map == null) {
+						map = U.newHashMap();
+						campaignData.labelMap.put(key, map);
+					}
+					map.put(lang, xe.content);
+				}
+			}
+		}
+		
 		campaignData.galaxy = load(campaignData.definition.galaxy);
 		campaignData.players = load(campaignData.definition.players);
 		campaignData.planets = load(campaignData.definition.planets);
@@ -1078,5 +1037,148 @@ public class CEDataManager {
 	 */
 	public void save() {
 		// TODO implement
+	}
+	/**
+	 * Returns the image represented by the resource or null if not found.
+	 * @param resource the resource name with extension
+	 * @return the image or null
+	 */
+	public BufferedImage getImage(String resource) {
+		byte[] data = getData(resource);
+		if (data != null) {
+			try {
+				return ImageIO.read(new ByteArrayInputStream(data));
+			} catch (IOException ex) {
+				// ignored;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Returns the image represented by the resource or null if not found.
+	 * @param language the target language
+	 * @param resource the resource name with extension
+	 * @return the image or null
+	 */
+	public BufferedImage getImage(String language, String resource) {
+		byte[] data = getData(language, resource);
+		if (data != null) {
+			try {
+				return ImageIO.read(new ByteArrayInputStream(data));
+			} catch (IOException ex) {
+				// ignored;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Returns a data with the given resource name.
+	 * @param resource the resource name with extension
+	 * @return the data or null if missing
+	 */
+	public byte[] getData(String resource) {
+		return getData(campaignData.projectLanguage, resource);
+	}
+	/**
+	 * Returns a data with the given resource name.
+	 * @param language the target language
+	 * @param resource the resource name with extension
+	 * @return the data or null if missing
+	 */
+	public byte[] getData(String language, String resource) {
+		Map<String, byte[]> datas = getDataAll(resource);
+		byte[] data = datas.get(language);
+		if (data == null) {
+			data = datas.get("generic");
+		}
+		return data;
+	}
+	/**
+	 * Returns an XML with the given resource name.
+	 * @param resource the resource name with extension
+	 * @return the data or null if missing
+	 */
+	public XElement getXML(String resource) {
+		byte[] data = getData(resource);
+		if (data != null) {
+			try {
+				return XElement.parseXML(data);
+			} catch (XMLStreamException ex) {
+				// ignored;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Returns a campaign label.
+	 * @param key the key
+	 * @return the label or null if not found
+	 */
+	public String label(String key) {
+		Map<String, String> perLang = campaignData.labelMap.get(key);
+		if (perLang != null) {
+			return perLang.get(campaignData.projectLanguage);
+		}
+		return null;
+	}
+	/**
+	 * Sets the label for the current project language entry.
+	 * @param key the key
+	 * @param value the value
+	 */
+	public void setLabel(String key, String value) {
+		Map<String, String> perLang = campaignData.labelMap.get(key);
+		if (perLang == null) {
+			perLang = U.newHashMap();
+			campaignData.labelMap.put(key, perLang);
+		}
+		perLang.put(campaignData.projectLanguage, value);
+		
+		
+	}
+	/**
+	 * Test if a label exists in the project language.
+	 * @param key the key
+	 * @return true if the label
+	 */
+	public boolean hasLabel(String key) {
+		Map<String, String> perLang = campaignData.labelMap.get(key);
+		if (perLang != null) {
+			return perLang.containsKey(campaignData.projectLanguage);
+		}
+		return false;
+	}
+	/**
+	 * @return the ID of the main player.
+	 */
+	public String mainPlayer() {
+		for (XElement xplayer : campaignData.players.childrenWithName("player")) {
+			if ("true".equals(xplayer.get("user", ""))) {
+				return xplayer.get("id", "");
+			}
+		}
+		return null;
+	}
+	/** @return the race of the main player. */
+	public String mainPlayerRace() {
+		for (XElement xplayer : campaignData.players.childrenWithName("player")) {
+			if ("true".equals(xplayer.get("user", ""))) {
+				return xplayer.get("race", "");
+			}
+		}
+		return null;
+	}
+	/**
+	 * Check if the given reference exists.
+	 * @param reference the reference with extension
+	 * @return true
+	 */
+	public boolean exists(String reference) {
+		Map<String, byte[]> data = getDataAll(reference);
+		return data.containsKey(campaignData.projectLanguage) || data.containsKey("generic");
+	}
+	/** @return the list of supported languages of the campaign. */
+	public List<String> languages() {
+		return U.newArrayList(campaignData.definition.titles.keySet());
 	}
 }

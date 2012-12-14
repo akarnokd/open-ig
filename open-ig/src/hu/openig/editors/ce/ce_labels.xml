@@ -198,6 +198,8 @@
 		<entry key='copy_settings.data_LABELS'>Labels</entry>
 		<entry key='copy_settings.data_SURFACES'>Planet surfaces</entry>
 		<entry key='copy_settings.data_SCRIPTING'>Scripting</entry>
+		<entry key='startup.labels'>Languages (2 letters, comma separated):</entry>
+		<entry key='startup.project_language'>Project language:</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>
