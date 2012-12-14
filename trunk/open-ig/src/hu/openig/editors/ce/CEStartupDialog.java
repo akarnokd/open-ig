@@ -31,10 +31,12 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
@@ -81,6 +83,12 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	GenericTableModel<CampaignItem> recentModel;
 	/** The campaign image. */
 	CEImage image;
+	/** The label codes. */
+	JTextField languages;
+	/** The project language. */
+	JComboBox<String> projectLang;
+	/** Do not fire change events when loading. */
+	boolean projectLangLoading;
 	/**
 	 * Table renderer for java.util.Date values.
 	 * @author akarnokd, 2012.12.12.
@@ -134,10 +142,6 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	static class CampaignItem {
 		/** The file name. */
 		String file;
-		/** The campaign name. */
-		String name;
-		/** The campaign description. */
-		String description;
 		/** The access date. */
 		Date date;
 		/** The concrete definition. */
@@ -179,8 +183,8 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					int columnIndex) {
 				switch (columnIndex) {
 				case 0: return item.file;
-				case 1: return item.name;
-				case 2: return item.description;
+				case 1: return item.definition.getTitle(getProjectLanguage());
+				case 2: return item.definition.getDescription(getProjectLanguage());
 				case 3: return item.date;
 				default:
 					return null;
@@ -199,8 +203,8 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					int columnIndex) {
 				switch (columnIndex) {
 				case 0: return item.file;
-				case 1: return item.name;
-				case 2: return item.description;
+				case 1: return item.definition.getTitle(getProjectLanguage());
+				case 2: return item.definition.getDescription(getProjectLanguage());
 				case 3: return item.date;
 				default:
 					return null;
@@ -246,6 +250,13 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		image = new CEImage();
 		image.setModal(true);
 		
+		languages = new JTextField("en");
+		JLabel languagesLabel = new JLabel(get("startup.labels"));
+		
+		JLabel projectLangLabel = new JLabel(get("startup.project_language"));
+		projectLang = new JComboBox<String>();
+		projectLang.addItem("en");
+		
 		// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		
 		gl.setHorizontalGroup(
@@ -261,6 +272,16 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					gl.createSequentialGroup()
 					.addGap(20)
 					.addComponent(newNameIndicator)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(languagesLabel)
+					.addComponent(languages)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(projectLangLabel)
+					.addComponent(projectLang, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
 				)
 				.addComponent(createNew)
 				.addGroup(
@@ -295,6 +316,16 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				.addComponent(newName, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			)
 			.addComponent(newNameIndicator)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(languagesLabel)
+				.addComponent(languages, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(projectLangLabel)
+				.addComponent(projectLang, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			)
 			.addComponent(createNew)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -366,9 +397,13 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				if (sel >= 0) {
 					sel = copyTable.convertRowIndexToModel(sel);
 					CampaignItem item = copyModel.get(sel);
-					BufferedImage img = CEStartupDialog.this.ctx.getImage(item.definition.imagePath + ".png");
+					BufferedImage img = CEStartupDialog.this.ctx.dataManager().getImage(getProjectLanguage(), item.definition.imagePath + ".png");
 					image.setIcon(img);
 					copyExisting.setSelected(true);
+					projectLangLoading = true;
+					languages.setText(U.join(item.definition.titles.keySet(), ", "));
+					projectLangLoading = false;
+					updateLanguageBox();
 				}
 			}
 		});
@@ -420,9 +455,37 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				doChangeName(newName.getText());
 			}
 		});
+		languages.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				changed();
+			}
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				changed();
+			}
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				changed();
+			}
+			/** Handle changes. */
+			void changed() {
+				if (!projectLangLoading) {
+					updateLanguageBox();
+				}
+			}
+		});
+		projectLang.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				copyTable.repaint();
+				recentTable.repaint();
+			}
+		});
 		
 		// -------
 		doChangeName("");
+		projectLang.setSelectedItem("en");
 	}
 	/**
 	 * Returns an editor label.
@@ -527,8 +590,6 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					
 					CampaignItem item = new CampaignItem();
 					item.file = def.getPath();
-					item.name = gdef.getTitle(ctx.projectLanguage());
-					item.description = gdef.getDescription(ctx.projectLanguage());
 					item.date = new Date(def.lastModified());
 					item.definition = gdef;
 					copyModel.add(item);
@@ -552,8 +613,6 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					gdef.parse(XElement.parseXML(new ByteArrayInputStream(xdef)));
 					CampaignItem item = new CampaignItem();
 					item.file = packed.first.getPath() + "!/" + packed.second;
-					item.name = gdef.getTitle(ctx.projectLanguage());
-					item.description = gdef.getDescription(ctx.projectLanguage());
 					item.date = new Date(packed.first.lastModified());
 					item.definition = gdef;
 					copyModel.add(item);
@@ -570,11 +629,17 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	 */
 	void updateOkButton() {
 		ok.setEnabled(
-				((createNew.isSelected() 
-				|| (copyExisting.isSelected() && copyTable.getSelectedRow() >= 0))
-				&& !newName.getText().isEmpty() && newNameIndicator.getIcon() != ctx.getIcon(CESeverityIndicator.ERROR))
-				
-				|| (openRecent.isSelected() && recentTable.getSelectedRow() >= 0));
+			(
+				(
+					(createNew.isSelected() 
+					|| (copyExisting.isSelected() && copyTable.getSelectedRow() >= 0))
+					&& !newName.getText().isEmpty() && newNameIndicator.getIcon() != ctx.getIcon(CESeverityIndicator.ERROR)
+					&& languageArray().length > 0
+				)
+					
+				|| (openRecent.isSelected() && recentTable.getSelectedRow() >= 0)
+			) && projectLang.getSelectedIndex() >= 0
+			);
 	}
 	/** The okay action. */
 	void doOk() {
@@ -597,9 +662,22 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				idx = copyTable.convertRowIndexToModel(idx);
 				dm.campaignData.definition = copyModel.get(idx).definition;
 				dm.campaignData.definition.name = newName.getText();
+				
+				String[] langs = languageArray();
+				
+				dm.campaignData.definition.haveLanguages(langs);
+				dm.campaignData.projectLanguage = getProjectLanguage();
+				
 				dm.copy(dialog.getSettings());
+				dm.load();
+				
+				ctx.load();
 			}
 		}
+	}
+	/** @return The list of specified languages. */
+	private String[] languageArray() {
+		return U.trim(U.split(languages.getText().trim(), ","));
 	}
 	/**
 	 * Handle the name editing.
@@ -635,5 +713,23 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		open.setVisible(visible);
 		openRecent.setVisible(visible);
 		openRecent.setSelected(false);
+	}
+	/**
+	 * @return The currently selected project language.
+	 */
+	public String getProjectLanguage() {
+		return (String)projectLang.getSelectedItem();
+	}
+	/**
+	 * Update the language box to the current available project languages.
+	 */
+	void updateLanguageBox() {
+		Object sel = projectLang.getSelectedItem();
+		projectLang.setModel(new DefaultComboBoxModel<String>(languageArray()));
+		projectLang.setSelectedItem(sel);
+		
+		copyTable.repaint();
+		recentTable.repaint();
+		updateOkButton();
 	}
 }

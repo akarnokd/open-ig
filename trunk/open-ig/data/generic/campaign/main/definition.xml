@@ -8,6 +8,18 @@
 		<title>Main Campaign</title>
 		<description>The main campaign of the original Imperium Galactica</description>
 	</texts>
+	<texts language="fr">
+		<title>Main Campaign</title>
+		<description>The main campaign of the original Imperium Galactica</description>
+	</texts>
+	<texts language="de">
+		<title>Main Campaign</title>
+		<description>The main campaign of the original Imperium Galactica</description>
+	</texts>
+	<texts language="ru">
+		<title>Main Campaign</title>
+		<description>The main campaign of the original Imperium Galactica</description>
+	</texts>
 	<image>campaign/main/main_campaign_image</image>
 	<intro>interlude/campaign_start</intro>
 	<level>1</level>

@@ -14,6 +14,7 @@ import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -216,5 +217,25 @@ public class GameDefinition {
 			description = descriptions.values().iterator().next();
 		}
 		return description != null ? description : "";
+	}
+	/**
+	 * Retain the given set of languages and create empty titles and descriptions for the
+	 * new ones.
+	 * @param langs the languages
+	 */
+	public void haveLanguages(String... langs) {
+		List<String> asList = Arrays.asList(langs);
+		
+		titles.keySet().retainAll(asList);
+		descriptions.keySet().retainAll(asList);
+		
+		for (String lang : langs) {
+			if (!titles.containsKey(lang)) {
+				titles.put(lang, "");
+			}
+			if (!descriptions.containsKey(lang)) {
+				descriptions.put(lang, "");
+			}
+		}
 	}
 }

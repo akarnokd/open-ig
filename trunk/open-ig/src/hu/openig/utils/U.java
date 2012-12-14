@@ -598,6 +598,7 @@ public final class U {
 					b.append(separator);
 				}
 				b.append(o);
+				i++;
 			}
 		}
 		return b.toString();
@@ -618,17 +619,22 @@ public final class U {
 					b.append(separator);
 				}
 				b.append(o);
+				i++;
 			}
 		}
 		return b.toString();
 	}
 	/**
 	 * Splits the value string by the given separator.
+	 * If the value is empty, an empty array is returned.
 	 * @param value the value
 	 * @param separator the separator
 	 * @return the array of components
 	 */
 	public static String[] split(String value, String separator) {
+		if (value.isEmpty()) {
+			return new String[0];
+		}
 		List<String> result = newArrayList();
 		int idx = 0;
 		while (true) {
@@ -917,5 +923,16 @@ public final class U {
 			result.add(t);
 		}
 		return result;
+	}
+	/**
+	 * Trim the contents of the string array inplace.
+	 * @param strings the strings
+	 * @return the same string array
+	 */
+	public static String[] trim(String... strings) {
+		for (int i = 0; i < strings.length; i++) {
+			strings[i] = strings[i].trim();
+		}
+		return strings;
 	}
 }

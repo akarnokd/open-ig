@@ -61,12 +61,12 @@ public abstract class CESlavePanel extends CEBasePanel {
 	void validateLabelRef(String attr, CEValueBox<? extends JTextComponent> field, CEValueBox<? extends JTextComponent> label) {
 		String s = field.component.getText();
 		master.set(attr, s);
-		if (master.isNullOrEmpty(attr) || !context.hasLabel(s)) {
+		if (master.isNullOrEmpty(attr) || !context.dataManager().hasLabel(s)) {
 			field.setInvalid(warningIcon, get("missing_label"));
 		} else {
 			field.clearInvalid();
 		}
-		setTextAndEnabled(label, null, context.label(s), true);
+		setTextAndEnabled(label, null, context.dataManager().label(s), true);
 	}
 	/**
 	 * Validate a choice field against the enum values.

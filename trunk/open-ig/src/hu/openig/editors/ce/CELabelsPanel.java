@@ -10,7 +10,6 @@ package hu.openig.editors.ce;
 
 import hu.openig.core.Action1;
 import hu.openig.core.Pair;
-import hu.openig.utils.Exceptions;
 import hu.openig.utils.GUIUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -18,7 +17,6 @@ import hu.openig.utils.XElement;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayInputStream;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +43,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableRowSorter;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * Label editor panel.
@@ -96,8 +93,6 @@ public class CELabelsPanel extends CEBasePanel {
 	public CELabelsPanel(CEContext context) {
 		super(context);
 		initGUI();
-		
-		loadTestData();
 	}
 	/** Initialize the GUI. */
 	private void initGUI() {
@@ -245,7 +240,7 @@ public class CELabelsPanel extends CEBasePanel {
 	}
 	/**
 	 * Update the full table.
-	 * @param languages the languages
+	 * @param languages the map from languages to label entries
 	 */
 	public void update(Map<String, List<XElement>> languages) {
 		this.languages = languages;
@@ -296,22 +291,6 @@ public class CELabelsPanel extends CEBasePanel {
 		
 		updateDetails();
 		doUpdateCount();
-	}
-	/** Load the test labels. */
-	void loadTestData() {
-		Map<String, List<XElement>> langs = U.newHashMap();
-		for (String lang : context.languages()) {
-			byte[] langData = context.getData(lang, "labels.xml");
-			if (langData != null) {
-				try {
-					XElement xlabels = XElement.parseXML(new ByteArrayInputStream(langData));
-					langs.put(lang, xlabels.children());
-				} catch (XMLStreamException ex) {
-					Exceptions.add(ex);
-				}
-			}
-		}
-		update(langs);
 	}
 	/** Clear the filter. */
 	void doClearFilter() {
@@ -378,7 +357,7 @@ public class CELabelsPanel extends CEBasePanel {
 					}
 				}
 				int li = 2;
-				for (String lang : context.languages()) {
+				for (String lang : context.dataManager().languages()) {
 					if (lang.equals(key)) {
 						if (!checkFilterValue(displayValues[li], e.second)) {
 							return false;
@@ -470,7 +449,7 @@ public class CELabelsPanel extends CEBasePanel {
 	 * @return true if missing
 	 */
 	boolean isMissing(LabelEntry e) {
-		return e.content.size() != context.languages().size();
+		return e.content.size() != context.dataManager().languages().size();
 	}
 	/**
 	 * Are there labels with the same translation?
@@ -482,7 +461,7 @@ public class CELabelsPanel extends CEBasePanel {
 		for (XElement xe : e.content.values()) {
 			strs.add(xe.content);
 		}
-		return strs.size() != context.languages().size();
+		return strs.size() != context.dataManager().languages().size();
 	}
 	/** @return the bottom panel. */
 	JComponent createBottomPanel() {
@@ -527,7 +506,7 @@ public class CELabelsPanel extends CEBasePanel {
 		
 		textAreas.clear();
 		
-		for (final String lang : context.languages()) {
+		for (final String lang : context.dataManager().languages()) {
 			JLabel lbl = new JLabel(lang);
 			JTextArea ta = new JTextArea();
 			
@@ -598,5 +577,25 @@ public class CELabelsPanel extends CEBasePanel {
 		} else {
 			keyField.setText("");
 		}
+	}
+	/** Load the labels from the campaign data. */
+	public void load() {
+		Map<String, List<XElement>> langs = U.newHashMap();
+		
+		for (String lang : context.dataManager().languages()) {
+			langs.put(lang, U.<XElement>newArrayList());
+		}
+		
+		for (Map.Entry<Pair<String, String>, XElement> e : context.campaignData().labels.entrySet()) {
+			String lang = e.getKey().first;
+			List<XElement> xes = langs.get(lang);
+			if (xes == null) {
+				xes = U.newArrayList();
+				langs.put(lang, xes);
+			}
+			xes.addAll(e.getValue().children());
+		}
+		
+		update(langs);
 	}
 }

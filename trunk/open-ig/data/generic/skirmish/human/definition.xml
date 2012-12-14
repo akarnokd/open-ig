@@ -8,6 +8,18 @@
 		<title>Human vs. AI</title>
 		<description>Fight against the machine. Starting with three planets you should defeat the adversary.</description>
 	</texts>
+	<texts language='fr'>
+		<title>Human vs. AI</title>
+		<description>Fight against the machine. Starting with three planets you should defeat the adversary.</description>
+	</texts>
+	<texts language='de'>
+		<title>Human vs. AI</title>
+		<description>Fight against the machine. Starting with three planets you should defeat the adversary.</description>
+	</texts>
+	<texts language='ru'>
+		<title>Human vs. AI</title>
+		<description>Fight against the machine. Starting with three planets you should defeat the adversary.</description>
+	</texts>
 	<image></image>
 	<intro></intro>
 	<level>5</level>
@@ -24,4 +36,24 @@
 	<walks>campaign/main/walks</walks>
 	<scripting>skirmish/human/scripting</scripting>
 	<chats>campaign/main/chat</chats>
+	<spies>campaing/main/spies</spies>
+	<parameters		
+	    groundRadarUnitSize="35" 
+		fleetRadarUnitSize="25" 
+		researchSpeed="8" 
+		productionUnit="250" 
+		constructionSpeed="20" 
+		constructionCost="20" 
+		repairSpeed="10" 
+		repairCost="2" 
+		costToHitpoints="10" 
+		nearbyDistance="10" 
+		simulationRatio="4" 
+		fleetSpeed="0.016" 
+		stationLimit="3" 
+		battleshipLimit="3" 
+		fighterLimit="30" 
+		mediumshipLimit="25"
+		radarShareLimit="80"
+/>
 </definition>
