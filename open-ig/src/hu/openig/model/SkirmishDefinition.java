@@ -139,8 +139,7 @@ public class SkirmishDefinition {
 		
 		result.name = "skirmish";
 		result.galaxy = galaxyDef.galaxy;
-		result.titles.putAll(galaxyDef.titles);
-		result.descriptions.putAll(galaxyDef.descriptions);
+		result.texts.putAll(galaxyDef.texts);
 		result.battle = techDef.battle;
 		result.bridge = techDef.bridge;
 		result.buildings = techDef.buildings;

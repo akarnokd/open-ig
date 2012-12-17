@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,7 +57,7 @@ import javax.xml.stream.XMLStreamException;
  * The campaign editor.
  * @author akarnokd, 2012.08.15.
  */
-public class CampaignEditor extends JFrame implements CEContext {
+public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferences {
 	/** */
 	private static final long serialVersionUID = -4044298769130516091L;
 	/** The main version. */
@@ -102,7 +103,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 	/** Menu item. */
 	JMenuItem mnuFileOpen;
 	/** Menu item. */
-	JMenuItem mnuFileRecent;
+	JMenu mnuFileRecent;
 	/** Menu item. */
 	JMenuItem mnuFileSave;
 	/** Menu item. */
@@ -153,6 +154,10 @@ public class CampaignEditor extends JFrame implements CEContext {
 	AbstractButton toolbarHelp;
 	/** The data manager. */
 	CEDataManager dataManager;
+	/** The definitions panel. */
+	CEDefinitionPanel definitionsPanel;
+	/** The recent entries. */
+	final Set<String> recent = new LinkedHashSet<String>();
 	/**
 	 * Initialize the GUI.
 	 */
@@ -198,6 +203,8 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 */
 	void loadConfigXML(XElement xml) {
 		loadWindowState(this, xml.childElement("main-window"));
+		
+		loadPreferences(xml);
 		
 		for (XElement xpref : xml.childrenWithName("panel-preference")) {
 			String id = xpref.get("id");
@@ -313,6 +320,8 @@ public class CampaignEditor extends JFrame implements CEContext {
 		xpref0.set("id", startupDialog.preferencesId());
 		saveWindowState(startupDialog, xpref0);
 		startupDialog.savePreferences(xpref0);
+		
+		savePreferences(result);
 		
 		return result;
 	}
@@ -498,11 +507,12 @@ public class CampaignEditor extends JFrame implements CEContext {
 	 * Initialize the tabs.
 	 */
 	void initTabs() {
+		definitionsPanel = new CEDefinitionPanel(this);
 		labelsPanel = new CELabelsPanel(this);
 		technologiesPanel = new CETechnologyPanel(this);
 		
 		// TODO initialize tabs
-		tabs.addTab(get("Definition"), null, new JPanel());
+		tabs.addTab(get("Definition"), null, definitionsPanel);
 		tabs.addTab(get("Labels"), null, labelsPanel);
 		tabs.addTab(get("Galaxy"), null, new JPanel());
 		tabs.addTab(get("Players"), null, new JPanel());
@@ -534,7 +544,7 @@ public class CampaignEditor extends JFrame implements CEContext {
 		mnuFileNew = new JMenuItem(get("menu.file.new"));
 		
 		mnuFileOpen = new JMenuItem(get("menu.file.open"));
-		mnuFileRecent = new JMenuItem(get("menu.file.recent"));
+		mnuFileRecent = new JMenu(get("menu.file.recent"));
 		mnuFileSave = new JMenuItem(get("menu.file.save"));
 		mnuFileSaveAs = new JMenuItem(get("menu.file.saveas"));
 		mnuFileImport = new JMenuItem(get("menu.file.import"));
@@ -692,12 +702,15 @@ public class CampaignEditor extends JFrame implements CEContext {
 	}
 	/** Display the startup dialog. */
 	void showStartupDialog() {
+		startupDialog.reset();
 		startupDialog.showRecent(true);
 		startupDialog.findCampaigns();
+		startupDialog.setRecents();
 		startupDialog.setVisible(true);
 	}
 	/** Display the startup dialog. */
 	void showNewDialog() {
+		startupDialog.reset();
 		startupDialog.showRecent(false);
 		startupDialog.findCampaigns();
 		startupDialog.setVisible(true);
@@ -735,9 +748,52 @@ public class CampaignEditor extends JFrame implements CEContext {
 	}
 	@Override
 	public void load() {
+		definitionsPanel.load();
 		labelsPanel.load();
 		technologiesPanel.load();
 
 		// TODO Auto-generated method stub
+	}
+	@Override
+	public void addRecent(String s) {
+		if (recent.add(s)) {
+			updateRecentMenu();
+		}
+	}
+	/**
+	 * Update the recent menu items. 
+	 */
+	public void updateRecentMenu() {
+		mnuFileRecent.removeAll();
+		for (String r : recent) {
+			JMenuItem e = new JMenuItem();
+			e.setText(r);
+			mnuFileRecent.add(e);
+		}
+	}
+	@Override
+	public Set<String> getRecent() {
+		return recent;
+	}
+	@Override
+	public void loadPreferences(XElement preferences) {
+		recent.clear();
+		for (XElement xrecents : preferences.childrenWithName("recent-projects")) {
+			for (XElement xrecent : xrecents.childrenWithName("recent")) {
+				recent.add(xrecent.content);
+			}
+			updateRecentMenu();
+		}
+	}
+	@Override
+	public String preferencesId() {
+		return "main";
+	}
+	@Override
+	public void savePreferences(XElement preferences) {
+		XElement xrecents = preferences.add("recent-projects");
+		for (String r : recent) {
+			xrecents.add("recent", r);
+		}
 	}
 }

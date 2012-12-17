@@ -12,6 +12,7 @@ import hu.openig.utils.XElement;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.undo.UndoManager;
@@ -91,4 +92,11 @@ public interface CEContext {
 	CEDataManager dataManager();
 	/** Load up the controls with the current campaign data. */
 	void load();
+	/** @return the shared set of recent campaigns. */
+	Set<String> getRecent();
+	/** 
+	 * Add a new recent entry. 
+	 * @param s the path
+	 */
+	void addRecent(String s);
 }

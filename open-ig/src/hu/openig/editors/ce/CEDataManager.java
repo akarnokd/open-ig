@@ -448,7 +448,8 @@ public class CEDataManager {
 	 */
 	public void copy(Map<DataFiles, CopyOperation> copySettings) {
 		String name = campaignData.definition.name;
-		File dir = new File(workDir, "dlc/" + name);
+		campaignData.directory = new File(workDir, "dlc/" + name);
+		File dir = campaignData.directory;
 		if (!dir.exists() && !dir.mkdirs()) {
 			Exceptions.add(new IOException("Could not create directories for " + dir));
 		}
@@ -880,8 +881,6 @@ public class CEDataManager {
 				}
 				campaignData.definition.galaxy = "campaign/" + name + "/galaxy";
 			}
-			campaignData.galaxy = xgalaxy;
-			
 		} catch (XMLStreamException ex) {
 			// ignored
 		}
@@ -900,7 +899,7 @@ public class CEDataManager {
 			campaignData.definition.labels.clear();
 			campaignData.definition.labels.add("campaign/" + name + "/labels");
 			try {
-				for (String lang : campaignData.definition.titles.keySet()) {
+				for (String lang : campaignData.definition.languages()) {
 					XElement xml = new XElement("labels");
 					File fp = new File(dir, lang + "/campaign/" + name);
 					if (!fp.exists() && !fp.mkdirs()) {
@@ -962,6 +961,10 @@ public class CEDataManager {
 	 * Load the data files based on the definition.
 	 */
 	public void load() {
+		campaignData.def = load("campaign/" + campaignData.definition.name + "/definition");
+		
+		campaignData.definition.parse(campaignData.def);
+		
 		campaignData.labels = U.newHashMap();
 		campaignData.labelMap = U.newHashMap();
 		
@@ -973,7 +976,7 @@ public class CEDataManager {
 		
 		for (String lr : labelRefs) {
 			Map<String, byte[]> datas = getDataAll(lr + ".xml");
-			for (String lang : campaignData.definition.titles.keySet()) {
+			for (String lang : campaignData.definition.languages()) {
 				byte[] data = datas.get(lang);
 				XElement xml = new XElement("labels");
 				if (data != null) {
@@ -1179,6 +1182,10 @@ public class CEDataManager {
 	}
 	/** @return the list of supported languages of the campaign. */
 	public List<String> languages() {
-		return U.newArrayList(campaignData.definition.titles.keySet());
+		return U.newArrayList(campaignData.definition.languages());
+	}
+	/** @return the definition directory. */
+	public File getDefinitionDirectory() {
+		return new File(campaignData.directory, "generic/campaign/" + campaignData.definition.name);
 	}
 }

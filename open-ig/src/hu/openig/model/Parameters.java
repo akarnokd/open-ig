@@ -31,9 +31,9 @@ public class Parameters {
 	/** The research speed in terms of money / simulation step. */
 	@LoadField
 	protected int researchSpeed = 8;
-	/** The production unit per simulation step. The lower the faster the production is. */
+	/** The money spent on producing an item with 1 unit of capacity under 1 ingame minute. The larger the faster the production becomes. */
 	@LoadField
-	protected double productionUnit = 250d;
+	protected double productionUnit = 0.004;
 	/** The construction points per simulation step. */
 	@LoadField
 	protected int constructionSpeed = 20;
@@ -120,9 +120,9 @@ public class Parameters {
 	public int researchSpeed() {
 		return researchSpeed * speed(); // DEFAULT: 40
 	}
-	/** @return the production unit per simulation step. The lower the faster the production is. */
+	/** @return The money spent on producing an item with 1 unit of capacity under 1 ingame minute. The larger the faster the production becomes. */
 	public double productionUnit() {
-		return productionUnit / speed(); // DEFAULT: 50
+		return productionUnit * speed(); // DEFAULT: 0.004 cr / min
 	}
 	/** @return the construction points per simulation step. */
 	public int constructionSpeed() {
