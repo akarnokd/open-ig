@@ -41,7 +41,7 @@
 	    groundRadarUnitSize="35" 
 		fleetRadarUnitSize="25" 
 		researchSpeed="8" 
-		productionUnit="250" 
+		productionUnit="0.004" 
 		constructionSpeed="20" 
 		constructionCost="20" 
 		repairSpeed="10" 

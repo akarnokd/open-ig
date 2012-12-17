@@ -656,7 +656,7 @@ public final class Simulator {
 					if (pr.type.has("needsOrbitalFactory") && all.orbitalFactory == 0) {
 						continue;
 					}
-					int targetCap = (int)(1d * capacity * pr.priority / world.params().productionUnit() / prioritySum);
+					int targetCap = (int)(1d * capacity * pr.priority * world.params().productionUnit() / prioritySum);
 					if (pr.count == 0) {
 						targetCap = 0;
 					}

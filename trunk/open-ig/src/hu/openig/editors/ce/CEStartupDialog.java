@@ -8,8 +8,10 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Pair;
+import hu.openig.editors.BackgroundProgress;
 import hu.openig.model.GameDefinition;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -28,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.List;
 
 import javax.swing.ButtonGroup;
@@ -82,7 +85,9 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	/** The recent table model. */
 	GenericTableModel<CampaignItem> recentModel;
 	/** The campaign image. */
-	CEImage image;
+	CEImage imageCopy;
+	/** The campaign image. */
+	CEImage imageRecent;
 	/** The label codes. */
 	JTextField languages;
 	/** The project language. */
@@ -146,6 +151,18 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		Date date;
 		/** The concrete definition. */
 		GameDefinition definition;
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof CampaignItem) {
+				CampaignItem campaignItem = (CampaignItem) obj;
+				return file.equals(campaignItem.file);
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return file.hashCode();
+		}
 	}
 	/**
 	 * Construct the GUI.
@@ -247,9 +264,12 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		
 		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 		
-		image = new CEImage();
-		image.setModal(true);
-		
+		imageCopy = new CEImage();
+		imageCopy.setModal(true);
+
+		imageRecent = new CEImage();
+		imageRecent.setModal(true);
+
 		languages = new JTextField("en");
 		JLabel languagesLabel = new JLabel(get("startup.labels"));
 		
@@ -292,14 +312,18 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				.addGroup(
 					gl.createSequentialGroup()
 					.addComponent(copyTableScroll)
-					.addComponent(image, 100, 100, 100)
+					.addComponent(imageCopy, 100, 100, 100)
 				)
 				.addGroup(
 					gl.createSequentialGroup()
 					.addComponent(openRecent, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
 					.addComponent(open)
 				)
-				.addComponent(recentTableScroll)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(recentTableScroll)
+					.addComponent(imageRecent, 100, 100, 100)
+				)
 			)
 			.addComponent(sep)
 			.addGroup(
@@ -335,14 +359,18 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			.addGroup(
 				gl.createParallelGroup(Alignment.LEADING)
 				.addComponent(copyTableScroll, 100, 100, Short.MAX_VALUE)
-				.addComponent(image, 100, 100, 100)
+				.addComponent(imageCopy, 100, 100, 100)
 			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(openRecent)
 				.addComponent(open)
 			)
-			.addComponent(recentTableScroll, 100, 100, Short.MAX_VALUE)
+			.addGroup(
+				gl.createParallelGroup(Alignment.LEADING)
+				.addComponent(recentTableScroll, 100, 100, Short.MAX_VALUE)
+				.addComponent(imageRecent, 100, 100, 100)
+			)
 			.addComponent(sep, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
@@ -398,10 +426,10 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					sel = copyTable.convertRowIndexToModel(sel);
 					CampaignItem item = copyModel.get(sel);
 					BufferedImage img = CEStartupDialog.this.ctx.dataManager().getImage(getProjectLanguage(), item.definition.imagePath + ".png");
-					image.setIcon(img);
+					imageCopy.setIcon(img);
 					copyExisting.setSelected(true);
 					projectLangLoading = true;
-					languages.setText(U.join(item.definition.titles.keySet(), ", "));
+					languages.setText(U.join(item.definition.languages(), ", "));
 					projectLangLoading = false;
 					updateLanguageBox();
 				}
@@ -420,6 +448,23 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			}
 		});
 		
+		recentTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int sel = recentTable.getSelectedRow();
+				if (sel >= 0) {
+					sel = recentTable.convertRowIndexToModel(sel);
+					CampaignItem item = recentModel.get(sel);
+					BufferedImage img = CEStartupDialog.this.ctx.dataManager().getImage(getProjectLanguage(), item.definition.imagePath + ".png");
+					imageRecent.setIcon(img);
+					openRecent.setSelected(true);
+					projectLangLoading = true;
+					languages.setText(U.join(item.definition.languages(), ", "));
+					projectLangLoading = false;
+					updateLanguageBox();
+				}
+			}
+		});
 		recentTable.getSelectionModel().addListSelectionListener(updateOkButtonListener);
 		recentTable.addMouseListener(new MouseAdapter() {
 			@Override
@@ -506,7 +551,6 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	}
 	@Override
 	public void savePreferences(XElement preferences) {
-		// TODO Auto-generated method stub
 		
 	}
 	/**
@@ -647,33 +691,88 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			dispose();
 		} else
 		if (openRecent.isSelected()) {
-			dispose();
+			doOpenRecent();
 		} else
 		if (copyExisting.isSelected()) {
 			CECopySettingsDialog dialog = new CECopySettingsDialog(ctx);
 			dialog.setLocationRelativeTo(this);
 			dialog.setVisible(true);
 			if (dialog.isApproved()) {
-				dispose();
-				
-				CEDataManager dm = ctx.dataManager();
-				dm.campaignData = new CampaignData();
-				int idx = copyTable.getSelectedRow();
-				idx = copyTable.convertRowIndexToModel(idx);
-				dm.campaignData.definition = copyModel.get(idx).definition;
-				dm.campaignData.definition.name = newName.getText();
-				
-				String[] langs = languageArray();
-				
-				dm.campaignData.definition.haveLanguages(langs);
-				dm.campaignData.projectLanguage = getProjectLanguage();
-				
-				dm.copy(dialog.getSettings());
-				dm.load();
-				
-				ctx.load();
+				doCopyRecent(dialog);
 			}
 		}
+	}
+	/**
+	 * Copy the selected existing campaign.
+	 * @param dialog the dialog
+	 */
+	public void doCopyRecent(CECopySettingsDialog dialog) {
+		dispose();
+		
+		final CEDataManager dm = ctx.dataManager();
+		dm.campaignData = new CampaignData();
+		int idx = copyTable.getSelectedRow();
+		idx = copyTable.convertRowIndexToModel(idx);
+		CampaignItem campaignItem = copyModel.get(idx);
+		dm.campaignData.definition = campaignItem.definition;
+		dm.campaignData.definition.name = newName.getText();
+		
+		String[] langs = languageArray();
+		
+		dm.campaignData.definition.haveLanguages(langs);
+		dm.campaignData.projectLanguage = getProjectLanguage();
+
+		ctx.addRecent(new File(dm.getDefinitionDirectory(), "definition.xml").getPath());
+		if (!recentModel.items.contains(campaignItem)) {
+			recentModel.add(campaignItem);
+		}
+		final EnumMap<DataFiles, CopyOperation> settings = dialog.getSettings();
+
+		BackgroundProgress.run(get("startup.copy_existing"), get("startup.copy_existing"),
+			new Action0() {
+				@Override
+				public void invoke() {
+					dm.copy(settings);
+					dm.load();
+					ctx.load();
+				}
+			},
+			new Action0() {
+				@Override
+				public void invoke() {
+					CEStartupDialog.this.dispose();
+				};
+			}
+		);
+	}
+	/**
+	 * 
+	 */
+	public void doOpenRecent() {
+		int idx = recentTable.getSelectedRow();
+		idx = recentTable.convertRowIndexToModel(idx);
+		CampaignItem campaignItem = recentModel.get(idx);
+
+		final CEDataManager dm = ctx.dataManager();
+		dm.campaignData = new CampaignData();
+		dm.campaignData.definition = campaignItem.definition;
+		
+		BackgroundProgress.run(get("startup.opening_recent"), get("startup.opening_recent"),
+			new Action0() {
+				@Override
+				public void invoke() {
+					dm.load();
+					ctx.load();
+				}
+			},
+			new Action0() {
+				@Override
+				public void invoke() {
+					CEStartupDialog.this.dispose();
+				};
+			}
+		);
+
 	}
 	/** @return The list of specified languages. */
 	private String[] languageArray() {
@@ -730,6 +829,40 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		
 		copyTable.repaint();
 		recentTable.repaint();
+		updateOkButton();
+	}
+	/**
+	 * Set up the recent list.
+	 */
+	public void setRecents() {
+		recentModel.clear();
+		for (String r : ctx.getRecent()) {
+			try {
+				CampaignItem ci = new CampaignItem();
+				ci.file = r;
+				File f = new File(ctx.getWorkDir(), r);
+				ci.date = new Date(f.lastModified());
+				GameDefinition def = new GameDefinition();
+				def.parse(XElement.parseXML(f));
+				ci.definition = def;
+				ci.definition.name = f.getParentFile().getName();
+				
+				recentModel.add(ci);
+			} catch (XMLStreamException ex) {
+				// ingored
+			}
+		}
+	}
+	/** Reset the dialog. */
+	public void reset() {
+		copyTable.getSelectionModel().clearSelection();
+		recentTable.getSelectionModel().clearSelection();
+		newName.setText("");
+		languages.setText("en");
+		projectLang.setModel(new DefaultComboBoxModel<String>(new String[] { "en" }));
+		openRecent.setSelected(false);
+		copyExisting.setSelected(false);
+		createNew.setSelected(false);
 		updateOkButton();
 	}
 }

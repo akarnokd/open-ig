@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
@@ -15,11 +16,10 @@ import hu.openig.utils.XElement;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The game definition used on the single player screen.
@@ -32,10 +32,8 @@ public class GameDefinition {
 	public String imagePath;
 	/** The intro media to play on start. */
 	public String intro;
-	/** The title text. */
-	public final Map<String, String> titles = U.newLinkedHashMap();
-	/** The campaign description. */
-	public final Map<String, String> descriptions = U.newLinkedHashMap();
+	/** The pair of title and description strings per language. */
+	public final Map<String, Pair<String, String>> texts = U.newLinkedHashMap();
 	/** The game name. */
 	public String name;
 	/** The starting level of the game. */
@@ -101,10 +99,10 @@ public class GameDefinition {
 	 * @param xdef the XML data
 	 */
 	public void parse(XElement xdef) {
+		texts.clear();
 		for (XElement texts : xdef.childrenWithName("texts")) {
 			String lang = texts.get("language");
-			titles.put(lang, texts.childValue("title"));
-			descriptions.put(lang, texts.childValue("description"));
+			this.texts.put(lang, Pair.of(texts.childValue("title"), texts.childValue("description")));
 		}
 		
 		intro = xdef.childValue("intro");
@@ -136,14 +134,11 @@ public class GameDefinition {
 	 */
 	public void save(XElement xout) {
 		// store descriptions
-		Set<String> languages = new LinkedHashSet<String>();
-		languages.addAll(titles.keySet());
-		languages.addAll(descriptions.keySet());
-		for (String lang : languages) {
+		for (Map.Entry<String, Pair<String, String>> e : texts.entrySet()) {
 			XElement xtext = xout.add("texts");
-			xtext.set("language", lang);
-			xtext.add("title", titles.get(lang));
-			xtext.add("description", descriptions.get(lang));
+			xtext.set("language", e.getKey());
+			xtext.add("title", e.getValue().first);
+			xtext.add("description", e.getValue().second);
 		}
 		xout.add("intro", intro);
 		xout.add("image", imagePath);
@@ -193,14 +188,23 @@ public class GameDefinition {
 	 * @return the title or empty string
 	 */
 	public String getTitle(String language) {
-		String title = titles.get(language);
-		if (title == null) {
-			title = titles.get("en");
+		return getText(language).first;
+	}
+	/**
+	 * Retrieve the textual description for the supplied language, or
+	 * english or the first entry.
+	 * @param language the target language
+	 * @return the pair of title and description
+	 */
+	Pair<String, String> getText(String language) {
+		Pair<String, String> result = texts.get(language);
+		if (result == null) {
+			result = texts.get("en");
 		}
-		if (title == null && !titles.isEmpty()) {
-			title = titles.values().iterator().next();
+		if (result == null && !texts.isEmpty()) {
+			result = texts.values().iterator().next();
 		}
-		return title != null ? title : "";
+		return result != null ? result : Pair.of("", "");
 	}
 	/**
 	 * Returns the description of the game in the specified language, or in English or
@@ -209,14 +213,7 @@ public class GameDefinition {
 	 * @return the title or empty string
 	 */
 	public String getDescription(String language) {
-		String description = descriptions.get(language);
-		if (description == null) {
-			description = descriptions.get("en");
-		}
-		if (description == null && !descriptions.isEmpty()) {
-			description = descriptions.values().iterator().next();
-		}
-		return description != null ? description : "";
+		return getText(language).second;
 	}
 	/**
 	 * Retain the given set of languages and create empty titles and descriptions for the
@@ -226,16 +223,18 @@ public class GameDefinition {
 	public void haveLanguages(String... langs) {
 		List<String> asList = Arrays.asList(langs);
 		
-		titles.keySet().retainAll(asList);
-		descriptions.keySet().retainAll(asList);
+		texts.keySet().retainAll(asList);
 		
 		for (String lang : langs) {
-			if (!titles.containsKey(lang)) {
-				titles.put(lang, "");
-			}
-			if (!descriptions.containsKey(lang)) {
-				descriptions.put(lang, "");
+			if (!texts.containsKey(lang)) {
+				texts.put(lang, Pair.of("", ""));
 			}
 		}
+	}
+	/**
+	 * @return the collection of supported languages
+	 */
+	public Collection<String> languages() {
+		return texts.keySet();
 	}
 }

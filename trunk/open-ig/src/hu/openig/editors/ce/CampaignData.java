@@ -12,6 +12,7 @@ import hu.openig.core.Pair;
 import hu.openig.model.GameDefinition;
 import hu.openig.utils.XElement;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -19,6 +20,8 @@ import java.util.Map;
  * @author akarnokd, 2012.12.12.
  */
 public class CampaignData {
+	/** The campaign's directory. */
+	public File directory;
 	/** The project's language. */
 	public String projectLanguage;
 	/** The main definition. */
@@ -27,6 +30,8 @@ public class CampaignData {
 	public Map<Pair<String, String>, XElement> labels;
 	/** The label map for each label key and language. */
 	public Map<String, Map<String, String>> labelMap;
+	/** The definition in XML. */
+	public XElement def;
 	/** Data. */
 	public XElement galaxy;
 	/** Data. */

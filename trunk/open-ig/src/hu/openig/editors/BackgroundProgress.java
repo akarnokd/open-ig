@@ -7,6 +7,8 @@
  */
 package hu.openig.editors;
 
+import hu.openig.core.Action0;
+
 import java.awt.Container;
 
 import javax.swing.GroupLayout;
@@ -14,6 +16,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingWorker;
 
 /** A window with indeterminate backgound progress indicator. */
 public class BackgroundProgress extends JDialog {
@@ -52,5 +55,36 @@ public class BackgroundProgress extends JDialog {
 	 */
 	public void setLabelText(String text) {
 		label.setText(text);
+	}
+	/**
+	 * Run a background process and show a dialog during this operation.
+	 * @param title the title
+	 * @param label the label
+	 * @param activity the background activity
+	 * @param onComplete the activity once the background finished
+	 */
+	public static final void run(String title, String label, 
+			final Action0 activity, final Action0 onComplete) {
+		final BackgroundProgress bgp = new BackgroundProgress();
+		bgp.setTitle(title);
+		bgp.setLabelText(label);
+		bgp.pack();
+		bgp.setLocationRelativeTo(null);
+		SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
+			@Override
+			protected Void doInBackground() throws Exception {
+				activity.invoke();
+				return null;
+			}
+			@Override
+			protected void done() {
+				bgp.dispose();
+				if (onComplete != null) {
+					onComplete.invoke();
+				}
+			}
+		};
+		sw.execute();
+		bgp.setVisible(true);
 	}
 }
