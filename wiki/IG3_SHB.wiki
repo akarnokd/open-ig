@@ -62,6 +62,8 @@ This page summarizes some of my thoughts and requirements of the game.
     * mining light elements
   * New: Water planets
     * no buildable surface, restricted buildings
+  * New: Machine-planets?
+    * have a mechanical look
   * Moons, asteroids
     * Mining
     * Space defenses only
