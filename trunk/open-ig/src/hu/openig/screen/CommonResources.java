@@ -253,7 +253,7 @@ public class CommonResources implements GameEnvironment {
 			final Future<Labels> labelFuture = exec.submit(new Callable<Labels>() {
 				@Override
 				public Labels call() throws Exception {
-					return new Labels().load(rl, null);
+					return new Labels().load(rl, Collections.singleton("labels"));
 				}
 			});
 			final Future<StatusbarGFX> statusbarFuture = exec.submit(new Callable<StatusbarGFX>() {

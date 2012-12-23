@@ -510,6 +510,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			}
 		}
+		if (mode == PanelMode.COMMUNICATOR) {
+			if (left && rightChatPanel.visible()) {
+				rightChatPanel.visible(false);
+				rightShipInfoPanel.visible(true);
+				selectButton(rightShipInformation, false);
+			} else
+			if (!left && leftChatPanel.visible()) {
+				leftChatPanel.visible(false);
+				leftShipInfoPanel.visible(true);
+				selectButton(leftShipInformation, true);
+			}
+		}
 	}
 	/**
 	 * Animate selected buttons.
