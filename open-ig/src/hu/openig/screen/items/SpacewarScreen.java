@@ -339,6 +339,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	Node node;
 	/** The set of all initial players. */
 	final Set<Player> allPlayerSet = U.newHashSet();
+	/** The registry for fired rockets and their parents. */
+	final Map<SpacewarStructure, SpacewarStructure> rocketParent = U.newHashMap();
 	@Override
 	public void onInitialize() {
 		mainCommands = new ArrayList<ThreePhaseButton>();
@@ -1003,6 +1005,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		infoImages.clear();
 		
 		allPlayerSet.clear();
+		
+		rocketParent.clear();
 	}
 	@Override
 	public void onResize() {
@@ -2672,7 +2676,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 				drawLabel(g2, p, c, "  : " + item.getDamage() + "%");
 				if (isws) {
-					drawLabel(g2, p, c, "  : " + "0"); // wins
+					drawLabel(g2, p, c, "  : " + item.item.kills); // wins
 					drawLabel(g2, p, c, "  : " + "-"); // crew
 				}
 				if (firepower >= 0) {
@@ -3122,6 +3126,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		proj.kamikaze = r.port.damage(proj.owner);
 		proj.hp = world().battle.getIntProperty(proj.techId, proj.owner.id, "hp");
 		proj.hpMax = (int)proj.hp;
+		
+		rocketParent.put(proj, r.fired);
+		
 		switch (r.port.projectile.mode) {
 		case ROCKET:
 			proj.type = StructureType.ROCKET;
@@ -3742,10 +3749,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param ship the ship
 	 */
 	void chooseNewTarget(SpacewarStructure ship) {
+		Double backfire = world().battle.backfires.get(world().difficulty);
+		
 		List<SpacewarStructure> sts = new ArrayList<SpacewarStructure>();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.SHIP || s.type == StructureType.SHIELD 
 					|| s.type == StructureType.STATION || s.type == StructureType.PROJECTOR) {
+				if (backfire != null) {
+					if (s.owner == ship.owner && backfire < world().random().nextDouble()) {
+						continue;
+					}
+				}
 				sts.add(s);
 			}
 		}
@@ -3769,7 +3783,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					int anti = ship.ecmLevel;
 					int ecm = ship.attack.ecmLevel;
 
-					boolean newTarget = world().battle.getAntiECMProbability(anti, ecm) <= p;
+					boolean newTarget = world().battle.getAntiECMProbability(world().difficulty, anti, ecm) <= p;
 					
 					if (newTarget) {
 						chooseNewTarget(ship);
@@ -3778,10 +3792,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		if (moveStep(ship)) {
+			SpacewarStructure parent = rocketParent.get(ship);
+			if (parent == null) {
+				parent = ship;
+			}
 			if (ship.type == StructureType.MULTI_ROCKET) {
-				doMultiRocketExplosion(ship);
+				doMultiRocketExplosion(parent, ship);
 			} else {
 				damageTarget(
+						parent,
 						ship.attack, 
 						ship.kamikaze, 
 						ship.destruction,
@@ -3805,13 +3824,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/**
 	 * Create a multirocket explosion around the given ship's target.
+	 * @param source the source of the damage
 	 * @param ship the ship
 	 */
-	void doMultiRocketExplosion(SpacewarStructure ship) {
+	void doMultiRocketExplosion(
+			SpacewarStructure source,
+			SpacewarStructure ship) {
 		double area = world().battle.getDoubleProperty(ship.techId, ship.owner.id, "area");
 		int sn = world().battle.getIntProperty(ship.techId, ship.owner.id, "secondary-count");
 
-		damageArea(ship.attack, 
+		damageArea(
+				source,
+				ship.attack, 
 				ship.kamikaze,
 				area,
 				SoundType.EXPLOSION_MEDIUM, 
@@ -3830,7 +3854,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				double y2 = ship.attack.y + sr * Math.sin(a);
 
 				createExplosion(x2, y2, SoundType.EXPLOSION_MEDIUM);
-				damageArea(x2, y2, (ship.kamikaze * sm), sa, SoundType.EXPLOSION_MEDIUM, ship.techId, ship.owner.id);
+				damageArea(source, x2, y2, (ship.kamikaze * sm), sa, SoundType.EXPLOSION_MEDIUM, ship.techId, ship.owner.id);
 			}
 		}
 	}
@@ -3861,7 +3885,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (moveStep(p)) {
 				projectiles.remove(p);
 				
-				damageTarget(p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
+				damageTarget(p.source, p.target, p.damage, p.impactSound, p.model.id, p.owner.id);
 			} else
 			if (!p.intersects(0, 0, space.width, space.height)) {
 				projectiles.remove(p);
@@ -3871,6 +3895,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/**
 	 * Damage the space around the specified target.
 	 * If the nearby structures represents fighters, they get uniform damage each.
+	 * @param source the source of the damage
 	 * @param target the target
 	 * @param damage the damage
 	 * @param area the affected area
@@ -3879,6 +3904,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param owner the owner of the technology
 	 */
 	void damageArea(
+			SpacewarStructure source,
 			SpacewarStructure target, 
 			double damage,
 			double area,
@@ -3886,7 +3912,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			String techId,
 			String owner) {
 		if (area < 0) {
-			damageTarget(target, 
+			damageTarget(source, target, 
 					target.count * damage, impactSound, techId, owner);
 		} else {
 			for (SpacewarStructure s : U.newArrayList(structures)) {
@@ -3894,7 +3920,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					double d = Math.hypot(s.x - target.x, s.y - target.y) - s.get().getWidth() / 2;
 					if (d <= area) {
 						d = Math.max(0, d);
-						damageTarget(s, 
+						damageTarget(source, s, 
 								(s.count * damage * (area - d) / area), impactSound, techId, owner);
 					}
 				}
@@ -3904,6 +3930,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/**
 	 * Damage the space around the specified coordinates.
 	 * If the nearby structures represents fighters, they get uniform damage each.
+	 * @param source the source of the damage
 	 * @param x the X coordinate
 	 * @param y the Y coordinate
 	 * @param damage the damage
@@ -3912,7 +3939,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param techId the technology that inflicted the damage
 	 * @param owner the owner of the technology
 	 */
-	void damageArea(double x, double y, 
+	void damageArea(
+			SpacewarStructure source,
+			double x, 
+			double y, 
 			double damage,
 			double area,
 			SoundType impactSound,
@@ -3924,10 +3954,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				if (d <= area) {
 					if (area > 0) {
 						d = Math.max(0, d);
-						damageTarget(s, 
+						damageTarget(source, s, 
 								(s.count * damage * (area - d) / area), impactSound, techId, owner);
 					} else {
-						damageTarget(s, 
+						damageTarget(source, s, 
 								s.count * damage, impactSound, techId, owner);
 					}
 				}
@@ -3946,6 +3976,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/**
 	 * Damage the target structure.
+	 * @param source the source
 	 * @param target the target
 	 * @param damage the damage
 	 * @param impactSound the impact sound
@@ -3953,6 +3984,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param owner the owner of the technology
 	 */
 	void damageTarget(
+			SpacewarStructure source,
 			SpacewarStructure target, 
 			double damage, 
 			SoundType impactSound,
@@ -3961,6 +3993,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		int loss0 = target.loss;
 		
 		if (target.damage(damage)) {
+			
 			battle.spaceLosses.add(target);
 			soundsToPlay.add(target.destruction);
 			createExplosion(target, true);
@@ -3974,10 +4007,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				battle.defenderLosses += d;
 			}
 			
+			if (source.item != null) {
+				source.item.kills += d;
+				source.item.killsCost += target.value * d;
+			}
+			
 			if (target.type == StructureType.SHIP || target.type == StructureType.STATION) {
 				long cost = target.item.unitSellValue() * 2;
 				target.owner.statistics.shipsLost += d;
 				target.owner.statistics.shipsLostCost += cost * d;
+
 				Player p2 = world().players.get(owner);
 				if (p2 != null) {
 					p2.statistics.shipsDestroyed += d;
@@ -3988,18 +4027,22 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			soundsToPlay.add(impactSound);
 		}
 		if (target.building != null) {
-			damageBuildings(target, techId, damage, owner, impactSound);
+			damageBuildings(source, target, techId, damage, owner, impactSound);
 		}
 	}
 	/**
 	 * Damage the buildings around the target structure.
+	 * @param source the source of the damage
 	 * @param target the target
 	 * @param damage the original damage
 	 * @param techId the impactor
 	 * @param owner the owner of the impactor
 	 * @param impactSound the impact sound
 	 */
-	void damageBuildings(SpacewarStructure target, String techId, double damage,
+	void damageBuildings(
+			SpacewarStructure source,
+			SpacewarStructure target, 
+			String techId, double damage,
 			String owner, SoundType impactSound) {
 		String sradius = world().battle.getProperty(techId, owner, "ground-radius");
 		String spercent = world().battle.getProperty(techId, owner, "damage-percent");
@@ -4025,7 +4068,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		for (SpacewarStructure s : structures) {
 			if (damaged.containsKey(s.building)) {
-				damageTarget(s, damaged.get(s.building), impactSound, null, null);
+				damageTarget(source, s, damaged.get(s.building), impactSound, null, null);
 				damaged.remove(s.building);
 			}
 		}
@@ -4159,6 +4202,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		SpacewarProjectile sp = new SpacewarProjectile();
 		sp.model = p.projectile;
 		sp.owner = source.owner; 
+		sp.source = source;
 		sp.target = target;
 		sp.movementSpeed = p.projectile.movementSpeed;
 		sp.impactSound = SoundType.HIT;

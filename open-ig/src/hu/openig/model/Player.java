@@ -20,9 +20,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
 /**
  * The object describing the player's status and associated
@@ -133,6 +135,10 @@ public class Player {
 	public Difficulty difficulty;
 	/** The group id, if bigger than zero. */
 	public int group;
+	/** The list of translated nicknames. */
+	public final List<String> nicknames = U.newArrayList();
+	/** The set of colonization targets. */
+	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

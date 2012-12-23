@@ -20,6 +20,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.utils.U;
@@ -37,6 +38,8 @@ import java.util.Map;
 public class ColonizationPlanner extends Planner {
 	/** Indicator to allow actions that spendmoney. */
 	boolean maySpendMoney;
+	/** Colonize only planets from the colonizationTargets set? */
+	public boolean explicitMode;
 	/** Check colony ship function. */
 	final Pred1<AIFleet> hasColonyShip = new Pred1<AIFleet>() {
 		@Override
@@ -55,13 +58,17 @@ public class ColonizationPlanner extends Planner {
 	@Override
 	protected void plan() {
 		//if low on money and planets, plan for conquest
-		maySpendMoney = (world.money >= 100000 || world.global.planetCount > 2);
+		maySpendMoney = (world.money >= world.autoBuildLimit + 100000 || world.global.planetCount > 2);
 		
-		boolean rq = world.researchRequiresColonization;
-		boolean exp = checkEnemyExpansion();
-		boolean col = checkColonizersReady();
-		if (rq || exp || col) { 
-			conquerMorePlanets();
+		if (explicitMode) {
+			planExplicitConquest();
+		} else {
+			boolean rq = world.researchRequiresColonization;
+			boolean exp = checkEnemyExpansion();
+			boolean col = checkColonizersReady();
+			if (rq || exp || col) { 
+				conquerMorePlanets();
+			}
 		}
 	}
 	/**
@@ -103,19 +110,65 @@ public class ColonizationPlanner extends Planner {
 		}
 		return false;
 	}
-	/**
-	 * Plan for conquest.
-	 */
-	void planConquest() {
+	/** Plan to colonize the colonizationTarget planets. */
+	void planExplicitConquest() {
+		cancelColonizersIfNecessary();
 		if (checkColonizersReachedPlanet()) {
 			return;
 		}
-		List<AIPlanet> ps = findColonizablePlanets();
+		List<AIPlanet> ps = U.newArrayList();
+		outer1:
+		for (String ct : world.colonizationTargets) {
+			AIPlanet p = world.planetMap.get(ct);
+			// check if not owned or lost track
+			if (p.owner != null || p.knowledge.compareTo(PlanetKnowledge.OWNER) < 0) {
+				continue;
+			}
+			// check if not target of one of our fleets
+			for (AIFleet f : world.ownFleets) {
+				if (f.targetPlanet == p.planet && f.task == FleetTask.COLONIZE) {
+					continue outer1;
+				}
+			}
+			ps.add(p);
+		}
 		// if none, exit
-		if (ps.size() == 0) {
+		if (ps.isEmpty()) {
 			return;
 		}
+		// compute how many colony ships can we produce
+		int costs = 0;
+		if (!world.global.hasMilitarySpaceport) {
+			costs += findBuilding("MilitarySpaceport").cost;
+		}
+		ResearchType rt = world.isAvailable("ColonyShip");
+		if (rt == null) {
+			return;
+		}
+		if (rt.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY)) {
+			ResearchType rto = world.isAvailable("OrbitalFactory");
+			if (rto == null) {
+				if (world.global.orbitalFactory == 0) {
+					return;
+				} else {
+					rto = w.researches.get("OrbitalFactory");
+				}
+			}
+			costs += rto.productionCost;
+		}
 		
+		long avail = world.money - world.autoBuildLimit - costs;
+		
+		int pcount = (int)Math.max(1, avail / rt.productionCost);
+		
+		planFleetOrProduction(ps, pcount);
+	}
+	/**
+	 * Plan fleet deployment or production.
+	 * @param ps the list of target planets
+	 * @param maxProduction the maximum production
+	 */
+	void planFleetOrProduction(List<AIPlanet> ps, int maxProduction) {
 		if (assignFleetsToColonization(ps)) {
 			return;
 		}
@@ -138,8 +191,49 @@ public class ColonizationPlanner extends Planner {
 				}
 				final ResearchType cs = world.isAvailable("ColonyShip");
 				if (cs != null) {
-					placeProductionOrder(cs, 1);
+					placeProductionOrder(cs, maxProduction);
 					return;
+				}
+			}
+		}
+	}
+	/**
+	 * Plan for conquest.
+	 */
+	void planConquest() {
+		cancelColonizersIfNecessary();
+		if (checkColonizersReachedPlanet()) {
+			return;
+		}
+		List<AIPlanet> ps = findColonizablePlanets();
+		// if none, exit
+		if (ps.isEmpty()) {
+			return;
+		}
+		planFleetOrProduction(ps, 1);
+	}
+	/**
+	 * Check if the colonization fleets' targets are still marked for colonization
+	 * or still known/empty.
+	 */
+	void cancelColonizersIfNecessary() {
+		List<AIFleet> colonizers = findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip);
+		for (final AIFleet fleet : colonizers) {
+			if (fleet.targetPlanet != null) {
+				AIPlanet pl = world.planetMap.get(fleet.targetPlanet);
+				if (pl.owner != null || pl.knowledge.compareTo(PlanetKnowledge.OWNER) < 0
+						|| (explicitMode && !world.colonizationTargets.contains(pl.planet.id))) {
+					// stop the fleet
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							fleet.fleet.stop();
+						}
+					});
+					// mark it as stopped here as well
+					fleet.targetPlanet = null;
+					fleet.arrivedAt = null;
+					fleet.task = FleetTask.IDLE;
 				}
 			}
 		}
@@ -149,29 +243,32 @@ public class ColonizationPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkColonizersReachedPlanet() {
+		boolean result = false;
 		List<AIFleet> colonizers = findFleetsWithTask(FleetTask.COLONIZE, hasColonyShip);
 		for (AIFleet fleet : colonizers) {
-				if (!fleet.isMoving()
-							&& fleet.statistics.planet != null) {
+			if (!fleet.isMoving()
+					&& fleet.statistics.planet != null) {
 				final Fleet f0 = fleet.fleet;
 				final Planet p0 = fleet.statistics.planet;
 				add(new Action0() {
 					@Override
 					public void invoke() {
+						p.colonizationTargets.remove(p0.id);
 						if (p0.owner == null) {
 							controls.actionColonizePlanet(f0, p0);
 						}
 						f0.task = FleetTask.IDLE;
 					}
 				});
-				return true;
+				result = true;
+				world.colonizationTargets.remove(p0.id);
 			}
 		}
 		// if our colonizers are under way
 		if (colonizers.size() > 0) {
-			return true;
+			result = true;
 		}
-		return false;
+		return result;
 	}
 	/**
 	 * @return list of colonizable planets not already targeted
@@ -184,7 +281,7 @@ public class ColonizationPlanner extends Planner {
 			if (p.owner == null && world.withinLimits(p.planet.x, p.planet.y)) {
 				// check if no one targets this planet already
 				for (AIFleet f : world.ownFleets) {
-					if (f.targetPlanet == p.planet) {
+					if (f.targetPlanet == p.planet && f.task == FleetTask.COLONIZE) {
 						continue outer1;
 					}
 				}
@@ -199,6 +296,7 @@ public class ColonizationPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean assignFleetsToColonization(List<AIPlanet> ps) {
+		boolean result = false;
 		// bring one fleet to the target planet
 		for (final AIFleet fleet : findFleetsFor(FleetTask.COLONIZE, hasColonyShip)) {
 			final AIPlanet p0 = Collections.min(ps, new Comparator<AIPlanet>() {
@@ -216,9 +314,9 @@ public class ColonizationPlanner extends Planner {
 					controls.actionMoveFleet(fleet.fleet, p0.planet);
 				}
 			});
-			return true;
+			result = true;
 		}
-		return false;
+		return result;
 	}
 	/**
 	 * Find a military spaceport.

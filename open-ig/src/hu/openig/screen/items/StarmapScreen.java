@@ -31,6 +31,7 @@ import hu.openig.model.SoundType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton;
@@ -236,14 +237,6 @@ public class StarmapScreen extends ScreenBase {
 	private int xOffset;
 	/** The current vertical pixel offset for the starmap contents. */
 	private int yOffset;
-	/** Option to hide the right panel. */
-	private boolean rightPanelVisible = true;
-	/** Option to hide the left panel. */
-	private boolean bottomPanelVisible = true;
-	/** Option to hide the minimap. */
-	private boolean minimapVisible = true;
-	/** Are the scrollbars visible? */
-	private boolean scrollbarsVisible = true;
 	/** The main starmap window's coordinates. (E.g., the rectangle where the map is drawn.) */
 	final Rectangle starmapWindow = new Rectangle();
 	/** The rendering rectangle of the starmap. (E.g., the entire, scaled rectangle of the map.) */
@@ -263,9 +256,9 @@ public class StarmapScreen extends ScreenBase {
 	/** The scrollbar painter. */
 	ScrollBarPainter scrollbarPainter;
 	/** The right panel rectangle. */
-	final Rectangle rightPanel = new Rectangle();
+	final UIContainer rightPanel = new UIContainer();
 	/** The bottom panel rectangle. */
-	final Rectangle bottomPanel = new Rectangle();
+	final UIContainer bottomPanel = new UIContainer();
 	/** To blink the currently selected planet on the minimap. */
 	boolean minimapPlanetBlink;
 	/** The blink counter. */
@@ -404,6 +397,8 @@ public class StarmapScreen extends ScreenBase {
 	UIImageTabButton fleetStop;
 	/** Colonize with the fleet. */
 	UIImageButton fleetColonize;
+	/** Colonize with the fleet. */
+	UIImageButton fleetColonizeCancel;
 	/** The fleet separator image. */
 	UIImage fleetSeparator;
 	/** The current fleet control mode. */
@@ -434,27 +429,27 @@ public class StarmapScreen extends ScreenBase {
 		starmapWindow.y = 20;
 		starmapWindow.width = width;
 		starmapWindow.height = height - 37;
-		if (scrollbarsVisible) {
+		if (config.showStarmapScroll) {
 			starmapWindow.width -= commons.starmap().vScrollFill.getWidth();
 			starmapWindow.height -= commons.starmap().hScrollFill.getHeight();
 		}
-		if (rightPanelVisible) {
+		if (config.showStarmapLists) {
 			starmapWindow.width -= commons.starmap().panelVerticalFill.getWidth();
-			if (scrollbarsVisible) {
+			if (config.showStarmapScroll) {
 				starmapWindow.width -= 3;
 			}
 		} else {
-			if (scrollbarsVisible) {
+			if (config.showStarmapScroll) {
 				starmapWindow.width -= 1;
 			}
 		}
-		if (bottomPanelVisible) {
+		if (config.showStarmapInfo) {
 			starmapWindow.height -= commons.starmap().infoFill.getHeight();
-			if (scrollbarsVisible) {
+			if (config.showStarmapScroll) {
 				starmapWindow.height -= 3;
 			}
 		} else {
-			if (scrollbarsVisible) {
+			if (config.showStarmapScroll) {
 				starmapWindow.height -= 1;
 			}
 		}
@@ -466,24 +461,24 @@ public class StarmapScreen extends ScreenBase {
 
 		int saveX = 0;
 		int saveY = 0;
-		if (minimapVisible) {
-			if (!rightPanelVisible) {
+		if (config.showStarmapMinimap) {
+			if (!config.showStarmapLists) {
 				saveX += minimapRect.width + 1;
-				if (scrollbarsVisible) {
+				if (config.showStarmapScroll) {
 					saveX -= commons.starmap().vScrollFill.getWidth() + 1;
 				}
 			} else {
-				if (!scrollbarsVisible) {
+				if (!config.showStarmapScroll) {
 					saveX += commons.starmap().vScrollFill.getWidth() + 3;
 				}
 			}
-			if (!bottomPanelVisible) {
+			if (!config.showStarmapInfo) {
 				saveY += minimapRect.height + 1;
-				if (scrollbarsVisible) {
+				if (config.showStarmapScroll) {
 					saveY -= commons.starmap().hScrollFill.getHeight() + 1;
 				}
 			} else {
-				if (!scrollbarsVisible) {
+				if (!config.showStarmapScroll) {
 					saveY += commons.starmap().hScrollFill.getHeight() + 3;
 				}
 			}
@@ -499,6 +494,10 @@ public class StarmapScreen extends ScreenBase {
 		bottomPanel.height = commons.starmap().infoFill.getHeight();
 
 		scrollbarPainter.setBounds(starmapWindow, saveX, saveY);
+
+		Rectangle bottomPanel = new Rectangle(0, 0, this.bottomPanel.width, this.bottomPanel.height);
+		Rectangle rightPanel = new Rectangle(0, 0, this.rightPanel.width, this.rightPanel.height);
+
 		// ..............................................................
 		// the right subpanels
 		buttonsPanel.width = commons.starmap().panelVerticalFill.getWidth() - 4;
@@ -659,6 +658,7 @@ public class StarmapScreen extends ScreenBase {
 		fleetSeparator.location(bottomPanel.x + bottomPanel.width - fleetcmd - 4, bottomPanel.y + 2);
 
 		fleetColonize.location(bottomPanel.x + bottomPanel.width - 110, bottomPanel.y + 4);
+		fleetColonizeCancel.location(bottomPanel.x + bottomPanel.width - 110, bottomPanel.y + 4);
 
 		
 		computeViewport();
@@ -866,7 +866,12 @@ public class StarmapScreen extends ScreenBase {
 		fleetSpeed.visible(fleetMode);
 		
 		if (!fleetMode) {
-			fleetColonize.visible(false);
+			fleetColonize.visible((player().selectionMode == SelectionMode.PLANET 
+					&& planet().owner == null && knowledge(planet(), PlanetKnowledge.OWNER) >= 0
+					&& player().isAvailable("ColonyShip")
+					&& !player().colonizationTargets.contains(planet().id)
+			));
+			fleetColonizeCancel.visible(player().colonizationTargets.contains(planet().id));
 			return;
 		}
 		fleetName.color(f.owner.color);
@@ -880,12 +885,14 @@ public class StarmapScreen extends ScreenBase {
 		FleetStatistics fs = f.getStatistics();
 		
 		fleetColonize.visible(
-				fleetMode && f.owner == player()
-				&& fs.planet != null && fs.planet.owner == null
-				&& f.inventoryCount(world().researches.get("ColonyShip")) > 0
+				(
+					fleetMode && f.owner == player()
+					&& fs.planet != null 
+					&& fs.planet.owner == null && knowledge(fs.planet, PlanetKnowledge.OWNER) >= 0
+					&& f.inventoryCount(world().researches.get("ColonyShip")) > 0
+				)
 		);
-
-		
+		fleetColonizeCancel.visible(false);
 		
 		if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
 			fleetOwner.text(f.owner.name, true);
@@ -1461,21 +1468,17 @@ public class StarmapScreen extends ScreenBase {
 
 		// TODO panel rendering
 		
-		if (rightPanelVisible) {
-			paintVertically(g2, rightPanel, commons.starmap().panelVerticalTop, commons.starmap().panelVerticalFill, commons.starmap().panelVerticalFill);
+		if (config.showStarmapLists) {
+			paintVertically(g2, rightPanel.bounds(), commons.starmap().panelVerticalTop, commons.starmap().panelVerticalFill, commons.starmap().panelVerticalFill);
 			
-//			g2.setColor(Color.GRAY);
-//			g2.fill(planetsListPanel);
-//			g2.setColor(Color.LIGHT_GRAY);
-//			g2.fill(fleetsListPanel);
-////			g2.setColor(Color.YELLOW);
-////			g2.fill(planetFleetSplitterRange);
+			AffineTransform save1 = g2.getTransform();
+			g2.translate(rightPanel.x, rightPanel.y);
 			
 			g2.drawImage(commons.starmap().panelVerticalSeparator, planetFleetSplitterRect.x, planetFleetSplitterRect.y, null);
 			g2.drawImage(commons.starmap().panelVerticalSeparator, zoomingPanel.x, zoomingPanel.y - 2, null);
 			g2.drawImage(commons.starmap().panelVerticalSeparator, buttonsPanel.x, buttonsPanel.y - 2, null);
-			
-			g2.setClip(save0);
+
+			Shape save2 = g2.getClip();
 			g2.clipRect(planetsList.x, planetsList.y, planetsList.width, planetsList.height);
 			List<Planet> planets = planets();
 			for (int i = planetsOffset; i < planets.size(); i++) {
@@ -1486,7 +1489,7 @@ public class StarmapScreen extends ScreenBase {
 				}
 				commons.text().paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
 			}
-			g2.setClip(save0);
+			g2.setClip(save2);
 			g2.clipRect(fleetsList.x, fleetsList.y, fleetsList.width, fleetsList.height);
 			List<Fleet> playersFleet = player().ownFleets();
 			for (int i = fleetsOffset; i < playersFleet.size(); i++) {
@@ -1498,17 +1501,18 @@ public class StarmapScreen extends ScreenBase {
 				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, f.name);
 			}
 			
-			g2.setClip(save0);
+			g2.setClip(save2);
+			g2.setTransform(save1);
 		}
-		if (bottomPanelVisible) {
-			paintHorizontally(g2, bottomPanel, commons.starmap().infoLeft, commons.starmap().infoRight, commons.starmap().infoFill);
+		if (config.showStarmapInfo) {
+			paintHorizontally(g2, bottomPanel.bounds(), commons.starmap().infoLeft, commons.starmap().infoRight, commons.starmap().infoFill);
 		}
 		
-		if (scrollbarsVisible) {
+		if (config.showStarmapScroll) {
 			scrollbarPainter.paint(g2);
 		}
 		
-		if (minimapVisible) {
+		if (config.showStarmapMinimap) {
 			g2.drawImage(commons.starmap().minimap, minimapRect.x, minimapRect.y, null);
 			g2.setColor(Color.WHITE);
 			g2.drawImage(world().galaxyModel.map, minimapInnerRect.x, minimapInnerRect.y, minimapInnerRect.width, minimapInnerRect.height, null);
@@ -1534,6 +1538,8 @@ public class StarmapScreen extends ScreenBase {
 		}
 		g2.setClip(save0);
 		
+		rightPanel.visible(config.showStarmapLists);
+		bottomPanel.visible(config.showStarmapInfo);
 		
 		super.draw(g2);
 	}
@@ -1709,30 +1715,6 @@ public class StarmapScreen extends ScreenBase {
 	public double getZoom() {
 		return (minimumZoom + zoomIndex) / 4.0;
 	}
-	/**
-	 * @return the bottomPanelVisible
-	 */
-	public boolean isBottomPanelVisible() {
-		return bottomPanelVisible;
-	}
-	/**
-	 * @return the minimapVisible
-	 */
-	public boolean isMinimapVisible() {
-		return minimapVisible;
-	}
-	/**
-	 * @return the rightPanelVisible
-	 */
-	public boolean isRightPanelVisible() {
-		return rightPanelVisible;
-	}
-	/**
-	 * @return the scrollbarsVisible
-	 */
-	public boolean isScrollbarsVisible() {
-		return scrollbarsVisible;
-	}
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		boolean rep = false;
@@ -1886,7 +1868,7 @@ public class StarmapScreen extends ScreenBase {
 				rep = true;
 			}
 			if (mouseDown && !scrollX && !scrollY && !panning) {
-				if (e.has(Button.LEFT) && minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
+				if (e.has(Button.LEFT) && config.showStarmapMinimap && minimapInnerRect.contains(e.x, e.y)) {
 					scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 					rep = true;
 				}
@@ -2041,7 +2023,7 @@ public class StarmapScreen extends ScreenBase {
 			scrollX = true;
 		}
 		mouseDown = true;
-		if (e.has(Button.LEFT) && minimapVisible && minimapInnerRect.contains(e.x, e.y)) {
+		if (e.has(Button.LEFT) && config.showStarmapMinimap && minimapInnerRect.contains(e.x, e.y)) {
 			scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 			rep = true;
 		}
@@ -2171,7 +2153,7 @@ public class StarmapScreen extends ScreenBase {
 			if (planetFleetSplitterRect.contains(e.x, e.y) && planetFleetSplitterRange.height > 0) {
 				pfSplitter = true;
 			}
-			if (rightPanelVisible) {
+			if (config.showStarmapLists) {
 				if (planetsList.contains(e.x, e.y)) {
 					int idx = planetsOffset + (e.y - planetsList.y) / 10;
 					List<Planet> planets = planets();
@@ -2195,7 +2177,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 		}
 		if (e.has(Button.RIGHT)) {
-			if (rightPanelVisible) {
+			if (config.showStarmapLists) {
 				if (planetsList.contains(e.x, e.y)) {
 					int idx = planetsOffset + (e.y - planetsList.y) / 10;
 					List<Planet> planets = planets();
@@ -2575,6 +2557,17 @@ public class StarmapScreen extends ScreenBase {
 				doColonize();
 			}
 		};
+		fleetColonizeCancel = new UIImageButton(commons.starmap().colonizeCancel);
+		fleetColonizeCancel.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.NOT_AVAILABLE);
+				player().colonizationTargets.remove(planet().id);
+			}
+		};
+		setTooltip(fleetColonizeCancel, "starmap.colonize_cancel.tip");
+
+		
 		fleetSeparator = new UIImage(commons.starmap().commandSeparator);
 
 		fleetMove.onPress = new Action0() {
@@ -2603,7 +2596,33 @@ public class StarmapScreen extends ScreenBase {
 		extraFleet2 = rl.getImage("starmap/fleets/extra_2_fleet");
 		extraFleet3 = rl.getImage("starmap/fleets/extra_3_fleet");
 		
-		addThis();
+//		addThis();
+		// bottom panel elements
+		
+		bottomPanel.add(
+			colonyName, colonyOwner, colonySurface, colonyPopulationTax,
+			colonyOther,
+			problemsHouse, problemsEnergy, problemsWorker, problemsFood,
+			problemsHospital, problemsVirus, problemsStadium,
+			problemsRepair, problemsColonyHub, problemsPolice, problemsFireBrigade,
+			surveySatellite, spySatellite1, spySatellite2, hubble2,
+			showRadarButton, showFleetButton, showStarsButton, showGridButton,
+			showNamesNone, showNamesFleet, showNamesPlanet, showNamesBoth,
+			fleetName, fleetOwner, fleetStatus, fleetPlanet, fleetComposition, fleetSpeed,
+			fleetFirepower, fleetMove, fleetStop, fleetColonize, fleetColonizeCancel, fleetAttack,
+			fleetSeparator
+		);
+		
+		// right panel elements
+		
+		rightPanel.add(
+			prevPlanet, nextPlanet,
+			prevFleet, nextFleet,
+			colony, equipment, info, bridge,
+			zoom, achievements, statistics
+		);
+		
+		add(bottomPanel, rightPanel);
 	}
 	/**
 	 * Deploy a satellite with an animation.
@@ -2845,30 +2864,6 @@ public class StarmapScreen extends ScreenBase {
 	void selectRadarDot() {
 		radarDot = commons.starmap().radarDots[commons.starmap().radarDots.length * zoomIndex / (zoomLevelCount + 1)];
 	}
-	/**
-	 * @param bottomPanelVisible the bottomPanelVisible to set
-	 */
-	public void setBottomPanelVisible(boolean bottomPanelVisible) {
-		this.bottomPanelVisible = bottomPanelVisible;
-	}
-	/**
-	 * @param minimapVisible the minimapVisible to set
-	 */
-	public void setMinimapVisible(boolean minimapVisible) {
-		this.minimapVisible = minimapVisible;
-	}
-	/**
-	 * @param rightPanelVisible the rightPanelVisible to set
-	 */
-	public void setRightPanelVisible(boolean rightPanelVisible) {
-		this.rightPanelVisible = rightPanelVisible;
-	}
-	/**
-	 * @param scrollbarsVisible the scrollbarsVisible to set
-	 */
-	public void setScrollbarsVisible(boolean scrollbarsVisible) {
-		this.scrollbarsVisible = scrollbarsVisible;
-	}
 	/** Move the fleet (turns on movement selection mode. */
 	void doFleetMove() {
 		fleetMove.down = true;
@@ -2896,21 +2891,31 @@ public class StarmapScreen extends ScreenBase {
 	}
 	/** Colonize the fleet nearby planet. */
 	void doColonize() {
-		Fleet f = fleet();
-		if (f == null) {
-			return;
+		if (player().selectionMode == SelectionMode.FLEET) {
+			Fleet f = fleet();
+			if (f == null) {
+				return;
+			}
+			Planet p = f.getStatistics().planet;
+			if (p == null || p.owner != null) {
+				commons.control().displayError(get("starmap.colony_taken"));
+				effectSound(SoundType.NOT_AVAILABLE);
+				return;
+			}
+			if (DefaultAIControls.colonizeWithFleet(f, p)) {
+				displayPrimary(Screens.COLONY);
+				return;
+			}
+			commons.control().displayError(get("starmap.colonization_failed"));
+		} else {
+			Planet p = planet();
+			if (p == null || p.owner != null) {
+				commons.control().displayError(get("starmap.colony_taken"));
+				effectSound(SoundType.NOT_AVAILABLE);
+				return;
+			}
+			player().colonizationTargets.add(p.id);
 		}
-		Planet p = f.getStatistics().planet;
-		if (p == null || p.owner != null) {
-			commons.control().displayError(get("starmap.colony_taken"));
-			effectSound(SoundType.NOT_AVAILABLE);
-			return;
-		}
-		if (DefaultAIControls.colonizeWithFleet(f, p)) {
-			displayPrimary(Screens.COLONY);
-			return;
-		}
-		commons.control().displayError(get("starmap.colonization_failed"));
 	}
 	/** @return the current X offset. */
 	public int getXOffset() {

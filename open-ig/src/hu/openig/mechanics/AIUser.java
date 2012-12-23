@@ -119,6 +119,16 @@ public class AIUser implements AIManager {
 				return;
 			}
 		}
+		
+		ColonizationPlanner colonizationPlanner = new ColonizationPlanner(world, controls);
+		colonizationPlanner.explicitMode = true;
+		acts = colonizationPlanner.run();
+		if (!acts.isEmpty()) {
+			applyActions.addAll(acts);
+			if (world.money < world.autoBuildLimit) {
+				return;
+			}
+		}
 
 	}
 

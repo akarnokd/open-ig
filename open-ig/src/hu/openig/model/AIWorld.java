@@ -17,6 +17,7 @@ import java.awt.geom.Point2D;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +64,8 @@ public class AIWorld {
 	public final List<AIPlanet> enemyPlanets = new LinkedList<AIPlanet>();
 	/** The list of maybe colonizable planets. */
 	public final List<AIPlanet> unknownPlanets = new LinkedList<AIPlanet>();
-	/** The map from regular planet to AI planet. */
-	public final Map<Planet, AIPlanet> planetMap = new HashMap<Planet, AIPlanet>();
+	/** The map from regular planet or planet ID string to AI planet. */
+	public final Map<Object, AIPlanet> planetMap = new HashMap<Object, AIPlanet>();
 	/** The inner limit. */
 	public Rectangle explorationInnerLimit;
 	/** The outer limit. */
@@ -103,6 +104,8 @@ public class AIWorld {
 	public int stationLimit;
 	/** Indicator that the research requires new planets. */
 	public boolean researchRequiresColonization;
+	/** The player's current colonization targets. */
+	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -182,6 +185,7 @@ public class AIWorld {
 			AIPlanet aip = new AIPlanet();
 			aip.assign(pl, this);
 			planetMap.put(pl, aip);
+			planetMap.put(pl.id, aip);
 			if (player.knowledge(pl, PlanetKnowledge.OWNER) < 0) {
 				unknownPlanets.add(aip);
 			} else
@@ -232,6 +236,7 @@ public class AIWorld {
 			default:
 			}
 		}
+		colonizationTargets.addAll(player.colonizationTargets);
 	}
 	/**
 	 * Returns or calculates the planet statistics.

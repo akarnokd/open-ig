@@ -600,6 +600,12 @@ public class World {
 			
 			loadTraits(p, xplayer.childElement("traits"));
 
+			for (XElement xnicknames : xplayer.childrenWithName("nicknames")) {
+				for (XElement xnickname : xnicknames.childrenWithName("nickname")) {
+					p.nicknames.add(labels.get(xnickname.content));
+				}
+			}
+			
 			// override main player's trait definition
 			if (player == p) {
 				player.traits.replace(definition.traits);
@@ -727,6 +733,11 @@ public class World {
 					ii.createSlots();
 					ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
 	
+					ii.nickname = xinv.get("nickname", null);
+					ii.nicknameIndex = xinv.getInt("nickname-index", 0);
+					ii.kills = xinv.getInt("kills", 0);
+					ii.killsCost = xinv.getLong("kills-cost", 0L);
+					
 					p.inventory.add(ii);
 						
 					if (!ii.owner.isAvailable(ii.type)) {
@@ -1091,6 +1102,10 @@ public class World {
 			xp.set("pause-research", p.pauseResearch);
 			xp.set("pause-production", p.pauseProduction);
 			xp.set("ai-difficulty", p.difficulty);
+
+			if (!p.colonizationTargets.isEmpty()) {
+				xp.add("colonization-targets").content = U.join(p.colonizationTargets, ",");
+			}
 			
 			if (p.explorationInnerLimit != null) {
 				Rectangle r = p.explorationInnerLimit;
@@ -1247,6 +1262,11 @@ public class World {
 				xpii.set("hp", pii.hp);
 				xpii.set("shield", pii.shield);
 				xpii.set("tag", pii.tag);
+				xpii.set("nickname", pii.nickname);
+				xpii.set("nickname-index", pii.nicknameIndex);
+				xpii.set("kills", pii.kills);
+				xpii.set("kills-cost", pii.killsCost);
+				
 				Integer ttl = p.timeToLive.get(pii); 
 				if (ttl != null) {
 					xpii.set("ttl", ttl);
@@ -1349,6 +1369,10 @@ public class World {
 			xfii.set("hp", fii.hp);
 			xfii.set("shield", fii.shield);
 			xfii.set("tag", fii.tag);
+			xfii.set("nickname", fii.nickname);
+			xfii.set("nickname-index", fii.nicknameIndex);
+			xfii.set("kills", fii.kills);
+			xfii.set("kills-cost", fii.killsCost);
 			for (InventorySlot fis : fii.slots) {
 				XElement xfs = xfii.add("slot");
 				xfs.set("id", fis.slot.id);
@@ -1466,6 +1490,7 @@ public class World {
 			// clear player variables
 			p.messageHistory.clear();
 			p.messageQueue.clear();
+			p.colonizationTargets.clear();
 			
 			
 			p.money(xplayer.getLong("money"));
@@ -1496,6 +1521,11 @@ public class World {
 			p.pauseProduction = xplayer.getBoolean("pause-production", false);
 			p.pauseResearch = xplayer.getBoolean("pause-research", false);
 
+			XElement xcolonize = xplayer.childElement("colonization-targets");
+			if (xcolonize != null && xcolonize.content != null) {
+				p.colonizationTargets.addAll(Arrays.asList(U.split(xcolonize.content, ",")));
+			}
+			
 			p.difficulty = Difficulty.valueOf(xplayer.get("ai-difficulty", difficulty.toString()));
 			
 			String xpInnerLimit = xplayer.get("exploration-inner-limit", "");
@@ -1672,7 +1702,12 @@ public class World {
 				pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
 				pii.createSlots();
 				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
-				
+
+				pii.nickname = xpii.get("nickname", null);
+				pii.nicknameIndex = xpii.getInt("nickname-index", 0);
+				pii.kills = xpii.getInt("kills", 0);
+				pii.killsCost = xpii.getLong("kills-cost", 0L);
+
 				int ttl = xpii.getInt("ttl", getSatelliteTTL(pii.type));
 				if (ttl > 0) {
 					p.timeToLive.put(pii, ttl);
@@ -1918,6 +1953,17 @@ public class World {
 				fii.count = count;
 				fii.tag = xfii.get("tag", null);
 				fii.owner = f.owner;
+				
+				fii.nickname = xfii.get("nickname", null);
+				fii.nicknameIndex = xfii.getInt("nickname-index", 0);
+				if (fii.nickname == null) {
+					fii.generateNickname();
+				}
+				
+				fii.kills = xfii.getInt("kills", 0);
+				fii.killsCost = xfii.getLong("kills-cost", 0L);
+
+				
 				Set<String> slots = new HashSet<String>();
 				for (XElement xfis : xfii.childrenWithName("slot")) {
 					InventorySlot fis = new InventorySlot();
@@ -1957,11 +2003,10 @@ public class World {
 				int shieldMax = Math.max(0, fii.shieldMax());
 				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
 				fii.hp = Math.min(xfii.getDouble("hp", getHitpoints(fii.type, fii.owner)), getHitpoints(fii.type, fii.owner));
+				if (f.inventory.isEmpty()) {
+					p.fleets.put(f, FleetKnowledge.FULL);
+				}
 				f.inventory.add(fii);
-			}
-			// fi
-			if (!f.inventory.isEmpty()) {
-				p.fleets.put(f, FleetKnowledge.FULL);
 			}
 		}
 	}
@@ -2358,11 +2403,17 @@ public class World {
 		}
 		
 		for (XElement xvss : xbattle.childrenWithName("ecm-vs-matrix")) {
+			Difficulty diff = Difficulty.valueOf(xvss.get("difficulty"));
+			Map<Pair<Integer, Integer>, Double> matrix = U.newHashMap();
+			battle.ecmMatrix.put(diff, matrix);
+			if (xvss.has("backfire")) {
+				battle.backfires.put(diff, xvss.getDoubleObject("backfire"));
+			}
 			for (XElement xvs : xvss.childrenWithName("vs")) {
 				int a = xvs.getInt("anti-ecm");
 				int e = xvs.getInt("ecm");
 				double v = xvs.getDouble("value");
-				battle.ecmMatrix.put(Pair.of(a, e), v);
+				matrix.put(Pair.of(a, e), v);
 			}
 		}
 	}
@@ -2922,6 +2973,7 @@ public class World {
 			
 			groups.put(p, sp.group);
 			
+			
 			p.traits.replace(sp.traits);
 			if (sp.ai == SkirmishAIMode.USER) {
 				definition.traits = new Traits();
@@ -2930,6 +2982,8 @@ public class World {
 
 			// fix original pre-enabled tech
 			Player op = originalPlayers.get(sp.originalId);
+			
+			p.nicknames.addAll(op.nicknames);
 			
 			Set<String> opExcept = U.newHashSet("ColonyShip");
 			// enable tech originally inteded by the definition

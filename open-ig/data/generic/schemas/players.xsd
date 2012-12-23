@@ -27,6 +27,9 @@
 			<xs:element name="traits" type="traits" minOccurs="0">
 				<xs:annotation><xs:documentation>The optional traits for this player.</xs:documentation></xs:annotation>
 			</xs:element>
+			<xs:element name='nicknames' type='nicknames' minOccurs="0">
+				<xs:annotation><xs:documentation>The optional nicknames to be used for the larger ships. Represent label references.</xs:documentation></xs:annotation>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:string" use="required">
 			<xs:annotation><xs:documentation>The player's unique identifier.</xs:documentation></xs:annotation>
@@ -197,5 +200,13 @@
 		<xs:attribute name='id' type="xs:string" use="required">
 			<xs:annotation><xs:documentation>The ID of the global trait.</xs:documentation></xs:annotation>
 		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name='nicknames'>
+		<xs:annotation><xs:documentation>The optional nicknames to be used for the larger ships. Represent label references.</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name='nickname' type='xs:string' minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>A concrete nickname label reference.</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>		
 	</xs:complexType>
 </xs:schema>

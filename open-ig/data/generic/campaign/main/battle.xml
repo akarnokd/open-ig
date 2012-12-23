@@ -162,13 +162,13 @@
 		<tech id="RadarCar" normal="inventions/weapons/vehicles/radar_car_matrix" alternative="inventions/weapons/vehicles/alien_radar_car_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="70" damage="0" min-range="0" max-range="5.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="RADAR"/>
 		<tech id="RocketLauncher1" normal="inventions/weapons/vehicles/rocket_launcher_1_matrix" alternative="inventions/weapons/vehicles/alien_rocket_launcher_1_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_7" hp="180" damage="14" min-range="0" max-range="7.5" area="2" movement-speed="60" rotation-time="100" delay="2800" type="ROCKET_SLED"/>
 		<tech id="RocketLauncher2" normal="inventions/weapons/vehicles/rocket_launcher_2_matrix" alternative="inventions/weapons/vehicles/alien_rocket_launcher_2_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="FIRE_ROCKET" hp="120" damage="16" min-range="0" max-range="8.5" area="3" movement-speed="50" rotation-time="100" delay="3200" type="ROCKET_SLED"/>
-		<tech id="DargslanSelfRepairTank" normal="inventions/weapons/vehicles/dargslan_self_repair_tank_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_6" hp="300" damage="8" min-range="0" max-range="4.5" area="1" movement-speed="40" rotation-time="100" delay="500" type="SELF_REPAIR_TANK" repair-time="500"/>
-		<tech id="DribsParalizer" normal="inventions/weapons/vehicles/dribs_paralizer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="500" damage="1" min-range="0" max-range="3.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="PARALIZER"/>
-		<tech id="EcalepRocketJammer" normal="inventions/weapons/vehicles/ecalep_rocket_jammer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="200" damage="3" min-range="0" max-range="5.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="ROCKET_JAMMER"/>
-		<tech id="GarthogRadarJammer" normal="inventions/weapons/vehicles/garthog_radar_jammer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="70" damage="5" min-range="0" max-range="5.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="RADAR_JAMMER"/>
-		<tech id="MorgathKamikazeTank" normal="inventions/weapons/vehicles/morgath_kamikaze_tank_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_6" hp="250" damage="8" min-range="0" max-range="1.5" area="3" movement-speed="30" rotation-time="100" delay="500" type="KAMIKAZE"/>
-		<tech id="SullepArtillery" normal="inventions/weapons/vehicles/sullep_artillery_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_3" hp="300" damage="42" min-range="0" max-range="8.5" area="1" movement-speed="40" rotation-time="100" delay="2500" type="ARTILLERY"/>
-		<tech id="YchomMineLayer" normal="inventions/weapons/vehicles/ychom_mine_layer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="150" damage="100" min-range="0" max-range="5.5" area="4" movement-speed="50" rotation-time="100" delay="500" type="MINELAYER"/>
+		<tech id="DargslanSelfRepairTank" normal="inventions/weapons/vehicles/dargslan_self_repair_tank_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_6" hp="420" damage="10" min-range="0" max-range="4.5" area="1" movement-speed="40" rotation-time="100" delay="500" type="SELF_REPAIR_TANK" repair-time="500"/>
+		<tech id="DribsParalizer" normal="inventions/weapons/vehicles/dribs_paralizer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="500" damage="8" min-range="0" max-range="3.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="PARALIZER"/>
+		<tech id="EcalepRocketJammer" normal="inventions/weapons/vehicles/ecalep_rocket_jammer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="360" damage="3" min-range="0" max-range="5.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="ROCKET_JAMMER"/>
+		<tech id="GarthogRadarJammer" normal="inventions/weapons/vehicles/garthog_radar_jammer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="180" damage="5" min-range="0" max-range="5.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="RADAR_JAMMER"/>
+		<tech id="MorgathKamikazeTank" normal="inventions/weapons/vehicles/morgath_kamikaze_tank_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_6" hp="270" damage="8" min-range="0" max-range="1.5" area="3" movement-speed="30" rotation-time="100" delay="500" type="KAMIKAZE"/>
+		<tech id="SullepArtillery" normal="inventions/weapons/vehicles/sullep_artillery_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_3" hp="360" damage="45" min-range="0" max-range="8.5" area="1" movement-speed="40" rotation-time="100" delay="2500" type="ARTILLERY"/>
+		<tech id="YchomMineLayer" normal="inventions/weapons/vehicles/ychom_mine_layer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="240" damage="100" min-range="0" max-range="5.5" area="4" movement-speed="50" rotation-time="100" delay="500" type="MINELAYER"/>
 	</ground-vehicles>
 	<!-- Contains explicit battle information for building turrets and weapon 
 		projectiles -->
@@ -273,17 +273,43 @@
 		<property id="VirusBomb" ground-radius="6" damage-percent="5" hp="2000"/>
 		<property id="MorgathKamikazeTank" self-destruct-multiplier="50"/>
 	</properties>
-	<ecm-vs-matrix>
+	<ecm-vs-matrix difficulty='EASY' backfire='0.25'>
 		<vs anti-ecm='0' ecm='0' value='1'/>
 		<vs anti-ecm='1' ecm='0' value='1'/>
 		<vs anti-ecm='2' ecm='0' value='1'/>
 
-		<vs anti-ecm='0' ecm='1' value='0.15'/>
+		<vs anti-ecm='0' ecm='1' value='0.25'/>
+		<vs anti-ecm='1' ecm='1' value='0.5'/>
+		<vs anti-ecm='2' ecm='1' value='0.95'/>
+
+		<vs anti-ecm='0' ecm='2' value='0.125'/>
+		<vs anti-ecm='1' ecm='2' value='0.3'/>
+		<vs anti-ecm='2' ecm='2' value='0.6'/>
+	</ecm-vs-matrix>
+	<ecm-vs-matrix difficulty='NORMAL' backfire='0.5'>
+		<vs anti-ecm='0' ecm='0' value='1'/>
+		<vs anti-ecm='1' ecm='0' value='1'/>
+		<vs anti-ecm='2' ecm='0' value='1'/>
+
+		<vs anti-ecm='0' ecm='1' value='0.10'/>
+		<vs anti-ecm='1' ecm='1' value='0.5'/>
+		<vs anti-ecm='2' ecm='1' value='0.85'/>
+
+		<vs anti-ecm='0' ecm='2' value='0.05'/>
+		<vs anti-ecm='1' ecm='2' value='0.25'/>
+		<vs anti-ecm='2' ecm='2' value='0.5'/>
+	</ecm-vs-matrix>
+	<ecm-vs-matrix difficulty='HARD'>
+		<vs anti-ecm='0' ecm='0' value='1'/>
+		<vs anti-ecm='1' ecm='0' value='1'/>
+		<vs anti-ecm='2' ecm='0' value='1'/>
+
+		<vs anti-ecm='0' ecm='1' value='0'/>
 		<vs anti-ecm='1' ecm='1' value='0.5'/>
 		<vs anti-ecm='2' ecm='1' value='0.85'/>
 
 		<vs anti-ecm='0' ecm='2' value='0'/>
-		<vs anti-ecm='1' ecm='2' value='0.15'/>
+		<vs anti-ecm='1' ecm='2' value='0.25'/>
 		<vs anti-ecm='2' ecm='2' value='0.5'/>
 	</ecm-vs-matrix>
 </battle>

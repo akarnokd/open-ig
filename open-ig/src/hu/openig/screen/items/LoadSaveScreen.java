@@ -282,6 +282,21 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Show tooltips. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox showTooltips;
+	/** Show the planet/fleet list panel? */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox starmapLists;
+	/** Show the planet/fleet info panel?. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox starmapInfo;
+	/** Show the minimap? */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox starmapMini;
+	/** Show the scrollbars? */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox starmapScroll;
+	/** Starmap checkboxes label. */
+	@Settings(page = SettingsPage.VISUAL)
+	UILabel starmapChecks;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -1032,6 +1047,40 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 				config.showTooltips = showTooltips.selected();
 			}
 		};
+
+		starmapLists = new UICheckBox(get("settings.starmap_lists"), 14, commons.common().checkmark, commons.text());
+		starmapLists.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.showStarmapLists = starmapLists.selected();
+			}
+		};
+
+		starmapInfo = new UICheckBox(get("settings.starmap_info"), 14, commons.common().checkmark, commons.text());
+		starmapInfo.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.showStarmapInfo = starmapInfo.selected();
+			}
+		};
+
+		starmapMini = new UICheckBox(get("settings.starmap_minimap"), 14, commons.common().checkmark, commons.text());
+		starmapMini.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.showStarmapMinimap = starmapMini.selected();
+			}
+		};
+
+		starmapScroll = new UICheckBox(get("settings.starmap_scroll"), 14, commons.common().checkmark, commons.text());
+		starmapScroll.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.showStarmapScroll = starmapScroll.selected();
+			}
+		};
+
+		starmapChecks = new UILabel(get("settings.starmap_panels"), 14, commons.text());
 		
 		//-----------------------------------------------
 		
@@ -1187,6 +1236,10 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		muteVideo.selected(config.muteVideo);
 		muteMusic.selected(config.muteMusic);
 		showTooltips.selected(config.showTooltips);
+		starmapLists.selected(config.showStarmapLists);
+		starmapInfo.selected(config.showStarmapInfo);
+		starmapMini.selected(config.showStarmapMinimap);
+		starmapScroll.selected(config.showStarmapScroll);
 		
 		hideConfirm();
 
@@ -1310,6 +1363,13 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		scaleAllScreens.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		showTooltips.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		starmapChecks.location(base.x + 30, base.y + dy + 8);
+		starmapLists.location(starmapChecks.x  + starmapChecks.width + 30, base.y + dy + 8);
+		starmapInfo.location(starmapLists.x  + starmapLists.width + 30, base.y + dy + 8);
+		dy += 30;
+		starmapMini.location(starmapChecks.x  + starmapChecks.width + 30, base.y + dy + 8);
+		starmapScroll.location(starmapMini.x  + starmapMini.width + 30, base.y + dy + 8);
 		// -----------------------------
 		// controls
 		dy = 70;

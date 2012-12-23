@@ -22,12 +22,50 @@
 		</available>
 	-->
 	<!-- Initial fleets. -->
+		<available>
+			<type id='ColonyShip' list=''/>
+			<type id='OrbitalFactory' list=''/>
+			<type id='Flagship' list=''/>
+		</available>
 		<fleet id='0' x='330' y='440' name='@MainFleet'>
-			<item id='Destroyer1' count='1' tag='CampaignMainShip1'>
+			<item id='Flagship' count='1'>
+				<slot id='laser' type='Laser1' count='24'/>
+				<slot id='bomb' type='Bomb1' count='8'/>
+				<slot id='rocket' type='Rocket1' count='16'/>
+				<slot id='radar' type='Radar1' count='1'/>
+				<slot id='cannon1' type='IonCannon' count='12'/>
+				<slot id='cannon2' type='IonCannon' count='12'/>
+				<slot id='shield' type='Shield1' count='1'/>
+				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
+			</item>
+			<item id='Battleship1' count='1'>
+				<slot id='laser' type='Laser1' count='14'/>
+				<slot id='bomb' type='Bomb1' count='6'/>
+				<slot id='rocket' type='Rocket1' count='4'/>
+				<slot id='radar' type='Radar1' count='1'/>
+				<slot id='cannon' type='IonCannon' count='6'/>
+				<slot id='shield' type='Shield1' count='1'/>
+				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
+			</item>
+			<item id='Cruiser1' count='1'>
+				<slot id='laser' type='Laser1' count='6'/>
+				<slot id='shield' type='Shield1' count='1'/>
+				<slot id='cannon' type='IonCannon' count='1'/>
+				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
+			</item>
+			<item id='Cruiser1' count='1'>
+				<slot id='laser' type='Laser1' count='6'/>
+				<slot id='shield' type='Shield1' count='1'/>
+				<slot id='cannon' type='IonCannon' count='1'/>
+				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
+			</item>
+			<item id='Destroyer1' count='1'>
 				<slot id='laser' type='Laser1' count='3'/>
 				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
 			</item>
 			<item id='Fighter1' count='3' />
+			<item id='Fighter2' count='8' />
+			<item id='LightTank' count='10' />
 		</fleet>
 		<nicknames>
 			<nickname>Berserker</nickname>
@@ -85,7 +123,7 @@
 		ai='DEFAULT' ratios='1,2,1'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
-		colonization-limit='0'
+		colonization-limit='-1'
 		war-threshold='98'
 		diplomacy-head='diplomacy/dipfej9'
 		police-ratio='15'
@@ -99,6 +137,7 @@
 			<type id='HyperDrive3' list=''/>
 			<type id='Laser2' list=''/>
 			<type id='IonCannon' list=''/>
+			<type id='ColonyShip' list=''/>
 		</available>
 		<!-- 
 		<fleet id='1' x='366' y='442' name='Garthog flotta'>
@@ -127,18 +166,18 @@
 		picture='database/morgath'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='3'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej1'
 		police-ratio='15'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id="MediumTank" list=""/>
 			<type id="RocketLauncher1" list=""/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='Ychom' race='ychom' name='players.ychom'
@@ -147,17 +186,17 @@
 		picture='database/ychom'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='3'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej2'
 		police-ratio='15'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='ColonyShip' list=''/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='Dribs' race='dribs' name='players.dribs'
@@ -166,18 +205,18 @@
 		picture='database/drib'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='2'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej3'
 		police-ratio='15'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='Sullep' race='sullep' name='players.sullep'
@@ -186,17 +225,17 @@
 		picture='database/sullep'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='0'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej4'
 		police-ratio='15'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
@@ -207,13 +246,14 @@
 		initial-stance='10'
 		exploration-inner-limit=''
 		exploration-outer-limit=''
-		colonization-limit='0'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej5'
 		war-threshold='90'
 		police-ratio='15'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='Bomb2' list=''/>
@@ -222,7 +262,6 @@
 			<type id='MediumTank' list=''/>
 			<type id='HeavyTank' list=''/>
 			<type id='RocketLauncher2' list=''/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
@@ -231,19 +270,19 @@
 		picture='database/ecalep'
 		money='32000'
 		initial-stance='40'
-		colonization-limit='1'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej6'
 		police-ratio='15'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<inventory id='ColonyShip' count='1'/>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='MultiheadedRocket' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id="HeavyTank" list=""/>
 			<type id="RocketLauncher1" list=""/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='FreeTraders' race='human' name='players.free_traders'
@@ -252,12 +291,13 @@
 		picture='database/freetraders'
 		money='32000'
 		initial-stance='50'
-		colonization-limit='2'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej7'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<inventory id='ColonyShip' count='2'/>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
@@ -274,7 +314,6 @@
 			<type id='HyperDrive3' list=''/>
 			<type id='Laser2' list=''/>
 			<type id='Laser3' list=''/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='FreeNations' race='human' name='players.free_nations'
@@ -283,11 +322,12 @@
 		picture='database/freenations'
 		money='32000'
 		initial-stance='50'
-		colonization-limit='0'
+		colonization-limit='-1'
 		diplomacy-head='diplomacy/dipfej8'
 		ai='DEFAULT' ratios='1,2,1'
 	>
 		<available>
+			<type id='OrbitalFactory' list=''/>
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
@@ -304,7 +344,6 @@
 			<type id='HyperDrive3' list=''/>
 			<type id='Laser2' list=''/>
 			<type id='Laser3' list=''/>
-			<type id='OrbitalFactory' list=''/>
 		</available>
 	</player>
 	<player id='Pirates' race='pirates' name='players.pirates'
@@ -319,8 +358,8 @@
 		police-ratio='15'
 	>
 		<available>
-			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='ColonyShip' list=''/>
 		</available>
 	</player>
 	<player id='Traders' race='traders' name='players.free_traders'
@@ -335,8 +374,8 @@
 		colonization-limit='0'
 	>
 		<available>
-			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='ColonyShip' list=''/>
 		</available>
 	</player>
 </players>
