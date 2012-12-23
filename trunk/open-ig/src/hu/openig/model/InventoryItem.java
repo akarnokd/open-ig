@@ -9,10 +9,13 @@
 package hu.openig.model;
 
 import hu.openig.core.Pair;
+import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Defines a planet's or fleet's inventory. A planet may 'own' multiple things from multiple players, e.g.,
@@ -36,6 +39,14 @@ public class InventoryItem {
 	public String tag;
 	/** The fleet's inventory slots. */
 	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
+	/** Optional nickname of this ship. */
+	public String nickname;
+	/** The nickname index of this ship in case of redundancy. */
+	public int nicknameIndex;
+	/** Number of kills by this unit. */
+	public int kills;
+	/** The value of destroyed enemies. */
+	public long killsCost;
 	/**
 	 * Constructor. Initializes the parent.
 	 * @param parent the parent
@@ -278,5 +289,50 @@ public class InventoryItem {
 			}
 			
 		}
+	}
+	/**
+	 * Generate a nickname and index for this inventory item.
+	 */
+	public void generateNickname() {
+		if (owner.nicknames.isEmpty() 
+				|| (type.category != ResearchSubCategory.SPACESHIPS_CRUISERS 
+				&& type.category != ResearchSubCategory.SPACESHIPS_BATTLESHIPS)) {
+			return;
+		}
+		nickname = null;
+		nicknameIndex = 0;
+		
+		Map<String, IntValue> counts = U.newHashMap();
+		for (String nn : owner.nicknames) {
+			counts.put(nn, new IntValue());
+		}
+		// find the largest counts for each nicknames.
+		for (Fleet f : owner.ownFleets()) {
+			for (InventoryItem ii : f.inventory) {
+				if (ii.nickname != null) {
+					IntValue v = counts.get(ii.nickname);
+					if (v == null) {
+						v = new IntValue();
+						counts.put(ii.nickname, v);
+					}
+					v.value = Math.max(v.value, ii.nicknameIndex + 1);
+				}
+			}
+		}
+		// order usage counts
+		List<Pair<String, IntValue>> countsOrdered = U.newArrayList();
+		for (Map.Entry<String, IntValue> e : counts.entrySet()) {
+			countsOrdered.add(Pair.of(e.getKey(), e.getValue()));
+		}
+		Collections.shuffle(countsOrdered, owner.world.random());
+		Collections.sort(countsOrdered, new Comparator<Pair<String, IntValue>>() {
+			@Override
+			public int compare(Pair<String, IntValue> o1,
+					Pair<String, IntValue> o2) {
+				return U.compare(o1.second.value, o2.second.value);
+			}
+		});
+		nickname = countsOrdered.get(0).first;
+		nicknameIndex = countsOrdered.get(0).second.value;
 	}
 }

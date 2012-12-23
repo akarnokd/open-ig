@@ -259,6 +259,22 @@ public class Configuration {
 	/** How many technology to remember. */
 	@LoadSave
 	public int productionHistoryLimit = 10;
+	/** Show starmap lists? */
+	@LoadSave
+	@LoadSaveGame
+	public boolean showStarmapLists = true;
+	/** Show starmap info? */
+	@LoadSave
+	@LoadSaveGame
+	public boolean showStarmapInfo = true;
+	/** Show starmap minimap. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean showStarmapMinimap = true;
+	/** Show starmap scrollbars. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean showStarmapScroll = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

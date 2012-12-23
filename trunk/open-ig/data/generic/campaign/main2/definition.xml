@@ -29,7 +29,7 @@
 	<diplomacy>campaign/main/diplomacy</diplomacy>
 	<galaxy>campaign/main/galaxy</galaxy>
 	<planets>campaign/main/planets</planets>
-	<players>campaign/main/players</players>
+	<players>campaign/main2/players</players>
 	<talks>campaign/main/talks</talks>
 	<tech>campaign/main/tech</tech>
 	<test>campaign/main/test</test>

@@ -5245,6 +5245,20 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		return false;
 	}
 	/**
+	 * Checks if the given target location requires the unit to rotate before move.
+	 * @param u the unit
+	 * @param target the target location
+	 * @return true if rotation is needed
+	 */
+	boolean needsRotation(GroundwarUnit u, Location target) {
+		RotationAngles ra = computeRotation(u, target);
+		double anglePerStep = 2 * Math.PI * u.model.rotationTime / u.angleCount() / SIMULATION_DELAY;
+		if (Math.abs(ra.diff) < anglePerStep) {
+			return false;
+		}
+		return true;
+	}
+	/**
 	 * Plan a new route to the current destination.
 	 * @param u the unit.
 	 */
@@ -5332,6 +5346,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 				u.nextMove = null;
 				u.path.remove(0);
+				
+				double remaining = Math.sqrt(dv * dv - distanceToTarget);
+				if (!u.path.isEmpty()) {
+					Location nextCell = u.path.get(0);
+					if (!needsRotation(u, nextCell)) {
+						double time2 = remaining * u.model.movementSpeed * 28;
+						u.nextMove = nextCell;
+						moveUnitStep(u, time2);
+					}
+				}
+				
 			} else {
 				double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
 				updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);

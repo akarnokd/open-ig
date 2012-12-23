@@ -205,6 +205,8 @@ public class EquipmentScreen extends ScreenBase {
 	UILabel innerEquipmentSeparator;
 	/** The name and type of the current selected ship or equipment. */
 	UILabel selectedNameAndType;
+	/** The nickname of the current selected ship. */
+	UILabel selectedNickname;
 	/** The equipment slot locations. */
 	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
 	/** The rolling disk animation timer. */
@@ -674,6 +676,11 @@ public class EquipmentScreen extends ScreenBase {
 		selectedNameAndType.color(0xFF6DB269);
 		selectedNameAndType.horizontally(HorizontalAlignment.CENTER);
 		
+		selectedNickname = new UILabel("", 10, commons.text());
+		selectedNickname.visible(false);
+		selectedNickname.color(TextRenderer.YELLOW);
+		selectedNickname.horizontally(HorizontalAlignment.CENTER);
+		
 		leftList = new VehicleList(commons);
 		rightList = new VehicleList(commons);
 		rightList.visible(false);
@@ -1073,16 +1080,18 @@ public class EquipmentScreen extends ScreenBase {
 		innerEquipmentSeparator.location(innerEquipmentName.x, innerEquipmentName.y + 10);
 		innerEquipmentValue.location(innerEquipmentName.x, innerEquipmentName.y + 20);
 		
-		selectedNameAndType.location(base.x + 326, configure.y - 20);
-		selectedNameAndType.size(rightPanel.width, 20);
-
+		selectedNameAndType.location(base.x + 326, configure.y - 30);
+		selectedNameAndType.size(rightPanel.width, 15);
+		
+		selectedNickname.location(selectedNameAndType.x, selectedNameAndType.y + 15);
+		selectedNickname.size(rightPanel.width, 15);
 		
 		fleetListing.bounds(rightPanel.x + 5, listButton.y, rightPanel.width - 26, listButton.height);
 
 		minimap.bounds(base.x + 254, base.y + base.height - 161, 225, 161);
 		
-		sell.location(delButton.x - delButton.width - 2, delButton.y);
-		deleteButton.location(sell.x - sell.width, sell.y);
+		sell.location(delButton.x - delButton.width - sell.width / 2 - 2, delButton.y);
+		deleteButton.location(sell.x - sell.width * 3 / 2, sell.y);
 		
 		upgradeAll.location(deleteButton.location());
 		
@@ -1172,6 +1181,7 @@ public class EquipmentScreen extends ScreenBase {
 		double dps = 0;
 		int hp = 0;
 		int sp = 0;
+		int kills = 0;
 		
 		for (InventoryItem ii : hi.inventory()) {
 			if (ii.owner == o 
@@ -1185,6 +1195,7 @@ public class EquipmentScreen extends ScreenBase {
 				dps += dmgDps.second;
 				hp += ii.hp;
 				sp += ii.shield;
+				kills += ii.kills;
 			}
 		}
 		
@@ -1200,7 +1211,7 @@ public class EquipmentScreen extends ScreenBase {
 		
 		dps = Math.round(dps);
 		
-		commons.text().paintTo(g2, base.x + 5, base.y + base.height - 65, 10, tss);
+		commons.text().paintTo(g2, base.x + 5, base.y + base.height - 70, 10, tss);
 		
 		tss.clear();
 		tss.add(new TextSegment(get("equipment.dps2"), TextRenderer.GREEN));
@@ -1208,7 +1219,12 @@ public class EquipmentScreen extends ScreenBase {
 		tss.add(new TextSegment(" / ", TextRenderer.GREEN));
 		tss.add(new TextSegment(Double.toString(dps), Color.ORANGE.getRGB()));
 		
-		commons.text().paintTo(g2, base.x + 5, base.y + base.height - 45, 10, tss);
+		commons.text().paintTo(g2, base.x + 5, base.y + base.height - 55, 10, tss);
+
+		tss.clear();
+		tss.add(new TextSegment(get("equipment.kills"), TextRenderer.GREEN));
+		tss.add(new TextSegment(Integer.toString(kills), Color.GREEN.getRGB()));
+		commons.text().paintTo(g2, base.x + 5, base.y + base.height - 40, 10, tss);
 
 	}
 	/**
@@ -1226,17 +1242,21 @@ public class EquipmentScreen extends ScreenBase {
 		String def = format("equipment.defense", (int)(ii.hp + ii.shield), hpm + spm);
 		String dps = format("equipment.dps", dmgDps.first, Math.round(dmgDps.second));
 		
+		String kills = format("equipment.kills2", ii.kills);
+		
 		int hpw = commons.text().getTextWidth(7, hp);
 		int spw = commons.text().getTextWidth(7, sp);
 		
 		int defw = commons.text().getTextWidth(7, def);
 		int dpsw = commons.text().getTextWidth(7, dps);
 		
-		int w1 = Math.max(hpw, Math.max(spw, Math.max(defw, dpsw))) + 5;
+		int killsw = commons.text().getTextWidth(7, kills);
+		
+		int w1 = U.max(hpw, spw, defw, dpsw, killsw) + 5;
 		
 		int x0 = base.x + base.width - w1 - 10 - listButton.width - 5;
 		
-		int h0 = 45;
+		int h0 = 55;
 		if (spm < 0) {
 			h0 -= 20;
 		}
@@ -1258,6 +1278,8 @@ public class EquipmentScreen extends ScreenBase {
 			y1 += 10;
 		}
 		commons.text().paintTo(g2, x0 + 5, y1, 7, TextRenderer.GREEN, dps);
+		y1 += 10;
+		commons.text().paintTo(g2, x0 + 5, y1, 7, TextRenderer.GREEN, kills);
 
 		
 	}
@@ -1396,8 +1418,18 @@ public class EquipmentScreen extends ScreenBase {
 		}
 		if (configure.type != null) {
 			selectedNameAndType.text(configure.type.longName);
+			if (configure.item != null && configure.item.nickname != null) {
+				if (configure.item.nicknameIndex == 0) {
+					selectedNickname.text(configure.item.nickname);
+				} else {
+					selectedNickname.text(configure.item.nickname + " " + U.intToRoman(configure.item.nicknameIndex + 1));
+				}
+			} else {
+				selectedNickname.text("");
+			}
 		} else {
 			selectedNameAndType.text("");
+			selectedNickname.text("");
 		}
 		
 		// ------------------------------------
@@ -1532,6 +1564,7 @@ public class EquipmentScreen extends ScreenBase {
 			infoButton.visible(false);
 			configure.visible(false);
 			selectedNameAndType.visible(false);
+			selectedNickname.visible(false);
 			rightList.visible(true);
 			prepareCells(null, secondary, rightFighterCells, rightTankCells);
 			
@@ -1561,6 +1594,7 @@ public class EquipmentScreen extends ScreenBase {
 			right3.visible(false);
 			rightList.visible(false);
 			selectedNameAndType.visible(true);
+			selectedNickname.visible(true);
 		}
 		
 		fleetStatusLabel.visible(true);

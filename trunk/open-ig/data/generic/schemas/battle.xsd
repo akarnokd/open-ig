@@ -51,8 +51,8 @@
 					<xs:documentation>Additional battle properties.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="ecm-vs-matrix" type="ecm-vs-matrix">
-				<xs:annotation><xs:documentation>The Anti-ECM versus ECM hit probability matrix.</xs:documentation></xs:annotation>
+			<xs:element name="ecm-vs-matrix" type="ecm-vs-matrix" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>The Anti-ECM versus ECM hit probability matrix for a difficulty level.</xs:documentation></xs:annotation>
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
@@ -640,6 +640,12 @@
 				<xs:annotation><xs:documentation>A concrete versus settings for anti-ecm and ecm-levels.</xs:documentation></xs:annotation>
 			</xs:element>
 		</xs:sequence>
+		<xs:attribute name="difficulty" type='xs:string' use="required">
+			<xs:annotation><xs:documentation>The difficulty level for the matrix</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="backfire" type='xs:double' use="optional">
+			<xs:annotation><xs:documentation>The probability that the scrambled rocket will chose a new target from its owner's fleet.</xs:documentation></xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="vs">
 		<xs:annotation><xs:documentation>A concrete versus settings for anti-ecm and ecm-levels.</xs:documentation></xs:annotation>

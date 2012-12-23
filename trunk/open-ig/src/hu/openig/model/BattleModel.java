@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.utils.U;
 
@@ -39,8 +40,10 @@ public class BattleModel {
 	public final Map<Pair<String, String>, Integer> spaceHitpoints = U.newHashMap();
 	/** Additional technology properties. */
 	public final Map<Pair<String, String>, Map<String, String>> properties = U.newHashMap();
-	/** A pair of anti-ecm, ecm to hit probability. */
-	public final Map<Pair<Integer, Integer>, Double> ecmMatrix = U.newHashMap();
+	/** A pair of anti-ecm, ecm to hit probability per difficulty. */
+	public final Map<Difficulty, Map<Pair<Integer, Integer>, Double>> ecmMatrix = U.newHashMap();
+	/** The probabilities for backfiring, if not present, there is no limit. */
+	public final Map<Difficulty, Double> backfires = U.newHashMap();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.
@@ -144,14 +147,18 @@ public class BattleModel {
 	/**
 	 * Returns the probability that the given Anti-ECM leveled rocket fighting against the
 	 * given ECM leveled enemy will hit the target.
+	 * @param diff the difficulty
 	 * @param antiEcmLevel the anti-ecm level
 	 * @param ecmLevel the ecm level
 	 * @return the hit probability
 	 */
-	public double getAntiECMProbability(int antiEcmLevel, int ecmLevel) {
-		Double d = ecmMatrix.get(Pair.of(antiEcmLevel, ecmLevel));
-		if (d != null) {
-			return d;
+	public double getAntiECMProbability(Difficulty diff, int antiEcmLevel, int ecmLevel) {
+		Map<Pair<Integer, Integer>, Double> matrix = ecmMatrix.get(diff);
+		if (matrix != null) {
+			Double d = matrix.get(Pair.of(antiEcmLevel, ecmLevel));
+			if (d != null) {
+				return d;
+			}
 		}
 		// default
 		return antiEcmLevel > ecmLevel ? 1d : antiEcmLevel < ecmLevel ? 0 : 0.5;

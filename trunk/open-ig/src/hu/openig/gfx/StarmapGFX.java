@@ -110,6 +110,9 @@ public class StarmapGFX {
 	/** Colonize button. */
 	@Img(name = "starmap/button_colonize")
 	public BufferedImage colonize;
+	/** Colonize cancel button. */
+	@Img(name = "starmap/button_colonize_cancel")
+	public BufferedImage colonizeCancel;
 	/** Colony button. */
 	@Btn2(name = "starmap/button_colony")
 	public BufferedImage[] colony;

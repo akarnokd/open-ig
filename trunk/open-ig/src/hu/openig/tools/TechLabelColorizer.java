@@ -27,7 +27,7 @@ public final class TechLabelColorizer {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		File[] files = new File("images/de/research").listFiles(new FilenameFilter() {
+		File[] files = new File("images/fr/research").listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.startsWith("label_") && name.endsWith("_selected.png");
@@ -93,7 +93,9 @@ public final class TechLabelColorizer {
 					}
 				}
 			}
-			
+
+			ImageIO.write(img2, "png", f);
+
 			File f2 = new File(f.getAbsolutePath().replace("_selected", ""));
 
 			for (int y = 0; y < nh; y++) {

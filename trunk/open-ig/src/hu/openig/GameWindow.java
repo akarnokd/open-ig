@@ -31,7 +31,6 @@ import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.model.ResourceLocator;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishDefinition;
 import hu.openig.model.SoundTarget;
@@ -327,8 +326,6 @@ public class GameWindow extends JFrame implements GameControls {
 	boolean optionsVisible;
 	/** The configuration object. */
 	Configuration config;
-	/** The common resource locator. */
-	ResourceLocator rl;
 	/** The common resources. */
 	CommonResources commons;
 	/** The surface used to render the screens. */
@@ -377,7 +374,6 @@ public class GameWindow extends JFrame implements GameControls {
 		this.commons = commons;
 		commons.control(this);
 		this.config = config;
-		this.rl = commons.rl;
 		this.surface = new ScreenRenderer();
 		
 		if (config.fullScreen) {
@@ -489,7 +485,6 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		this.commons = that.commons;
 		this.commons.control(this);
-		this.rl = that.rl;
 		this.config = that.config;
 		this.screens = that.screens;
 		setIconImage(that.getIconImage());
@@ -2270,7 +2265,7 @@ public class GameWindow extends JFrame implements GameControls {
 				List<String> labels = U.newArrayList();
 				labels.add("labels");
 				labels.addAll(world.definition.labels);
-				world.labels.load(rl, labels);
+				world.labels.load(commons.rl, labels);
 				world.loadCampaign(commons.rl);
 			}
 		}

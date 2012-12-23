@@ -442,6 +442,8 @@ public class DefaultAIControls implements AIControls {
 						
 						p.owner.statistics.planetsColonized++;
 						
+						p.owner.colonizationTargets.remove(p.id);
+						
 						// uninstall satellites
 						p.removeOwnerSatellites();
 						

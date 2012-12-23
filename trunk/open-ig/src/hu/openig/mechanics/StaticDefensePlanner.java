@@ -348,9 +348,10 @@ public class StaticDefensePlanner extends Planner {
 	 */
 	boolean checkMilitarySpaceport(final AIPlanet planet) {
 		if (world.money > 100000 && world.money >= world.autoBuildLimit) {
+			final BuildingType bt = findBuilding("MilitarySpaceport");
+			int spaceportLimit = Math.min(world.global.planetCount, (int)(world.money / (world.global.planetCount * 1.5 * bt.cost + world.autoBuildLimit) + 1));
 			if (planet.statistics.militarySpaceportCount == 0 
-					&& world.global.planetCount / 2 + 1 > world.global.militarySpaceportCount) {
-				final BuildingType bt = findBuilding("MilitarySpaceport");
+					&& spaceportLimit > world.global.militarySpaceportCount) {
 				Point pt = planet.findLocation(bt);
 				if (pt != null) {
 					world.money -= bt.cost;

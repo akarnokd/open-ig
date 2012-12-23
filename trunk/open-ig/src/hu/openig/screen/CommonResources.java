@@ -247,7 +247,7 @@ public class CommonResources implements GameEnvironment {
 	}
 	/** Initialize the resources in parallel. */
 	private void init() {
-		rl = config.newResourceLocator();
+		final ResourceLocator rl = config.newResourceLocator();
 		final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		try {
 			final Future<Labels> labelFuture = exec.submit(new Callable<Labels>() {
@@ -358,6 +358,7 @@ public class CommonResources implements GameEnvironment {
 			
 			// FIXME during translation
 			
+			this.rl = rl;
 //			labelReloader = new Thread() {
 //				@Override
 //				public void run() {

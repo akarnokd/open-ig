@@ -32,6 +32,8 @@ public class SpacewarProjectile extends SpacewarObject {
 	public double damage;
 	/** The beam angle in an X-Y screen directed coordinate system, 0..2*PI. */
 	public double angle;
+	/** The source of this projectile. */
+	public SpacewarStructure source;
 	/** The targeted structure. */
 	public SpacewarStructure target;
 	/** The impact sound. */

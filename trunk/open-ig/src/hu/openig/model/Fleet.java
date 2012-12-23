@@ -140,6 +140,8 @@ public class Fleet implements Named, Owned, HasInventory {
 			pii.hp = owner.world.getHitpoints(type, pii.owner);
 			pii.createSlots();
 			pii.shield = Math.max(0, pii.shieldMax());
+
+			pii.generateNickname();
 			
 			inventory.add(pii);
 		}
@@ -322,6 +324,8 @@ public class Fleet implements Named, Owned, HasInventory {
 				ii.owner = owner;
 				ii.hp = owner.world.getHitpoints(type, ii.owner);
 				ii.createSlots();
+				
+				ii.generateNickname();
 				
 				inventory.add(ii);
 				result.add(ii);
