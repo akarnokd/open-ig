@@ -450,7 +450,7 @@
 			<transition to="3"/>
 		</node>
 		<node id="3" owner="enemy" message="chat.m9.n3"/> <!-- kkkhhhz. Krr.rrrr -->
-		<node id="-1" owner="enemy" message="chat.m9.n4"/> <!-- Don't shoot! Don't shoot! We'll leave! -->
+		<node id="-1" owner="enemy" message="chat.m9.n4" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	<chat id='chat.virus.m12.1'>
 		<node id='0' owner='player' message='chat.m12.n0'> <!-- Ship, identify yourself! -->
@@ -892,6 +892,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bi.1.n1' action='retreat'/> <!-- All right. Ship BX12 is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.incoming.2'>
@@ -928,6 +929,7 @@
 			<transition to='11'/>
 		</node>
 		<node id='11' owner='enemy' message='chat.bi.2.n11' action='retreat'/> <!-- Damn! I understand. I'm leaving. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.incoming.3'>
@@ -941,6 +943,7 @@
 			<transition to='3'/>
 		</node>
 		<node id='3' owner='enemy' message='chat.bi.3.n3' action='retreat'/> <!-- Thank you, Sir. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.incoming.4'>
@@ -962,6 +965,7 @@
 			<transition to='5'/>
 		</node>
 		<node id='5' owner='enemy' message='chat.bi.4.n5'/> <!-- Köszönöm, Kapitány! -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.incoming.5'>
@@ -983,6 +987,7 @@
 			<transition to='5'/>
 		</node>
 		<node id='5' owner='enemy' message='chat.bi.5.n5'/> <!-- Köszönöm, kapitány! -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.incoming.6'>
@@ -996,6 +1001,7 @@
 			<transition to='3'/>
 		</node>
 		<node id='3' owner='enemy' message='chat.bi.6.n3'/> <!-- kkkhhhz. Krr.rrrr -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.incoming.7'>
@@ -1009,6 +1015,7 @@
 			<transition to='3'/>
 		</node>
 		<node id='3' owner='enemy' message='chat.bi.7.n3' action='retreat'/> <!-- Thank you, Sir. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.incoming.8'>
@@ -1022,6 +1029,7 @@
 			<transition to='3'/>
 		</node>
 		<node id='3' owner='enemy' message='chat.bi.8.n3' action='retreat'/> <!-- Thank you, Sir. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 
 	<chat id='chat.blockade.outgoing.1'>
@@ -1029,6 +1037,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.1.n1' action='retreat'/> <!-- All right. Ship BX12 is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.outgoing.2'>
@@ -1036,6 +1045,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.2.n1' action='retreat'/> <!-- All right. Ship GH38 is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.outgoing.3'>
@@ -1043,6 +1053,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.3.n1' action='retreat'/> <!-- All right. Ship ECHO is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.outgoing.4'>
@@ -1050,6 +1061,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.4.n1' action='retreat'/> <!-- All right. Ship BX12 is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.outgoing.5'>
@@ -1057,6 +1069,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.5.n1' action='retreat'/> <!-- All right. Ship Max4 is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.outgoing.6'>
@@ -1064,6 +1077,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.6.n1' action='retreat'/> <!-- All right. Ship Fox is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.outgoing.7'>
@@ -1071,6 +1085,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.7.n1' action='retreat'/> <!-- All right. Ship MX109 is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 	<chat id='chat.blockade.outgoing.8'>
@@ -1078,6 +1093,7 @@
 			<transition to='1'/>
 		</node>
 		<node id='1' owner='enemy' message='chat.bo.8.n1' action='retreat'/> <!-- All right. Ship Eyola4 is leaving the planet. -->
+		<node id="-1" owner="enemy" message="chat.global.dont_shoot" action='retreat'/> <!-- Don't shoot! Don't shoot! We'll leave! -->
 	</chat>
 	
 </chats>
