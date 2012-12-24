@@ -256,9 +256,9 @@ public class StarmapScreen extends ScreenBase {
 	/** The scrollbar painter. */
 	ScrollBarPainter scrollbarPainter;
 	/** The right panel rectangle. */
-	final UIContainer rightPanel = new UIContainer();
+	UIContainer rightPanel;
 	/** The bottom panel rectangle. */
-	final UIContainer bottomPanel = new UIContainer();
+	UIContainer bottomPanel;
 	/** To blink the currently selected planet on the minimap. */
 	boolean minimapPlanetBlink;
 	/** The blink counter. */
@@ -2312,6 +2312,9 @@ public class StarmapScreen extends ScreenBase {
 		equipment = new UIImageButton(commons.starmap().equipment);
 		info = new UIImageButton(commons.common().infoButton);
 		bridge = new UIImageButton(commons.common().bridgeButton);
+		
+		bottomPanel = new UIContainer();
+		rightPanel = new UIContainer();
 		
 		prevPlanet.onClick = new Action0() {
 			@Override 

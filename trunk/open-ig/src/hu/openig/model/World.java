@@ -3032,13 +3032,15 @@ public class World {
 			player = random(players.values());
 		}
 		
+		int labLimit = Math.max(skirmishDefinition.initialPlanets, skirmishDefinition.initialColonyShips);
+		
 		// fix research requirements of colony ship and orbital factory
 		for (ResearchType rt : Arrays.asList(researches.get("ColonyShip"), researches.get("OrbitalFactory"))) {
-			rt.civilLab = skirmishDefinition.initialPlanets > 0 ? 1 : 0;
-			rt.mechLab = skirmishDefinition.initialPlanets > 1 ? 1 : 0;
-			rt.compLab = skirmishDefinition.initialPlanets > 2 ? 1 : 0;
-			rt.aiLab = skirmishDefinition.initialPlanets > 3 ? 1 : 0;
-			rt.milLab = skirmishDefinition.initialPlanets > 4 ? 1 : 0;
+			rt.civilLab = labLimit > 0 ? 1 : 0;
+			rt.mechLab = labLimit > 1 ? 1 : 0;
+			rt.compLab = labLimit > 2 ? 1 : 0;
+			rt.aiLab = labLimit > 3 ? 1 : 0;
+			rt.milLab = labLimit > 4 ? 1 : 0;
 			rt.prerequisites.clear();
 		}
 		
