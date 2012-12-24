@@ -1821,6 +1821,13 @@ public class StarmapScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		Rectangle fleetsList = new Rectangle(this.fleetsList);
+		fleetsList.translate(rightPanel.x, rightPanel.y);
+		Rectangle planetsList = new Rectangle(this.planetsList);
+		planetsList.translate(rightPanel.x, rightPanel.y);
+		Rectangle planetFleetSplitterRange = new Rectangle(this.planetFleetSplitterRange); 
+		planetFleetSplitterRange.translate(rightPanel.x, rightPanel.y);
+		
 		boolean rep = false;
 		switch (e.type) {
 		case MOVE:
@@ -1872,7 +1879,8 @@ public class StarmapScreen extends ScreenBase {
 					scrollMinimapTo(e.x - minimapInnerRect.x, e.y - minimapInnerRect.y);
 					rep = true;
 				}
-				if (e.has(Button.LEFT) && pfSplitter && planetFleetSplitterRange.contains(e.x, e.y)) {
+				if (e.has(Button.LEFT) && pfSplitter 
+						&& planetFleetSplitterRange.contains(e.x, e.y)) {
 					planetFleetSplitter = 1.0 * (e.y - planetFleetSplitterRange.y) / (planetFleetSplitterRange.height);
 					fleetsOffset = limitScrollBox(fleetsOffset, player().ownFleets().size(), fleetsList.height, 10);
 					planetsOffset = limitScrollBox(planetsOffset, planets().size(), planetsList.height, 10);
@@ -1905,7 +1913,7 @@ public class StarmapScreen extends ScreenBase {
 					rep = true;
 				}
 			} else 
-			if (planetsList.contains(e.x, e.y)) {
+			if (config.showStarmapLists && planetsList.contains(e.x, e.y)) {
 				int idx = planetsOffset + (e.y - planetsList.y) / 10;
 				List<Planet> planets = planets();
 				if (idx < planets.size()) {
@@ -1913,7 +1921,7 @@ public class StarmapScreen extends ScreenBase {
 					displayPrimary(Screens.COLONY);
 				}
 			} else
-			if (fleetsList.contains(e.x, e.y)) {
+			if (config.showStarmapLists && fleetsList.contains(e.x, e.y)) {
 				int idx = fleetsOffset + (e.y - fleetsList.y) / 10;
 				List<Fleet> fleets = player().ownFleets();
 				if (idx < fleets.size()) {
@@ -1961,7 +1969,7 @@ public class StarmapScreen extends ScreenBase {
 					}
 				}
 			} else
-			if (fleetsList.contains(e.x, e.y)) {
+			if (config.showStarmapLists && fleetsList.contains(e.x, e.y)) {
 				if (e.z < 0) {
 					fleetsOffset--;
 				} else {
@@ -1970,7 +1978,7 @@ public class StarmapScreen extends ScreenBase {
 				List<Fleet> fleets = player().ownFleets();
 				fleetsOffset = limitScrollBox(fleetsOffset, fleets.size(), fleetsList.height, 10);
 			} else
-			if (planetsList.contains(e.x, e.y)) {
+			if (config.showStarmapLists && planetsList.contains(e.x, e.y)) {
 				if (e.z < 0) {
 					planetsOffset--;
 				} else {
@@ -2010,6 +2018,16 @@ public class StarmapScreen extends ScreenBase {
 	 * @return true if repaint needed
 	 */
 	boolean onMouseDown(UIMouse e) {
+		// compensate for lousy composition
+		Rectangle fleetsList = new Rectangle(this.fleetsList);
+		fleetsList.translate(rightPanel.x, rightPanel.y);
+		Rectangle planetsList = new Rectangle(this.planetsList);
+		planetsList.translate(rightPanel.x, rightPanel.y);
+		Rectangle planetFleetSplitterRange = new Rectangle(this.planetFleetSplitterRange); 
+		planetFleetSplitterRange.translate(rightPanel.x, rightPanel.y);
+		Rectangle planetFleetSplitterRect = new Rectangle(this.planetFleetSplitterRect);
+		planetFleetSplitterRect.translate(rightPanel.x, rightPanel.y);
+
 		boolean rep = false;
 		if (((config.classicControls && e.has(Button.MIDDLE)) 
 				|| (!config.classicControls && e.has(Button.RIGHT)))
@@ -2150,7 +2168,8 @@ public class StarmapScreen extends ScreenBase {
 				}
 				rep = true;
 			} else
-			if (planetFleetSplitterRect.contains(e.x, e.y) && planetFleetSplitterRange.height > 0) {
+			if (planetFleetSplitterRect.contains(e.x, e.y) 
+					&& planetFleetSplitterRange.height > 0) {
 				pfSplitter = true;
 			}
 			if (config.showStarmapLists) {
