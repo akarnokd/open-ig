@@ -49,14 +49,18 @@ public class Research {
 	 * @return the max percent in 100s
 	 */
 	public int getResearchMaxPercent(PlanetStatistics ps) {
-		return 100 * (
-				Math.min(ps.activeLabs.civil, type.civilLab)
-				+ Math.min(ps.activeLabs.mech, type.mechLab)
-				+ Math.min(ps.activeLabs.comp, type.compLab)
-				+ Math.min(ps.activeLabs.ai, type.aiLab)
-				+ Math.min(ps.activeLabs.mil, type.milLab)
-		) 
-		/ (type.civilLab + type.mechLab + type.compLab + type.aiLab + type.milLab);
+		int totalLabs = type.civilLab + type.mechLab + type.compLab + type.aiLab + type.milLab;
+		if (totalLabs > 0) {
+			return 100 * (
+					Math.min(ps.activeLabs.civil, type.civilLab)
+					+ Math.min(ps.activeLabs.mech, type.mechLab)
+					+ Math.min(ps.activeLabs.comp, type.compLab)
+					+ Math.min(ps.activeLabs.ai, type.aiLab)
+					+ Math.min(ps.activeLabs.mil, type.milLab)
+			) 
+			/ (totalLabs);
+		}
+		return 0;
 	}
 	/**
 	 * Create a copy of this research.

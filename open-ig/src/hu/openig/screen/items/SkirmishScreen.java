@@ -332,7 +332,7 @@ public class SkirmishScreen extends ScreenBase {
 		initialMoney.value = 200000;
 		
 		initialPlanetsLabel = createLabel("skirmish.initial_planets");
-		initialPlanets = new NumberSpinBox(0, 500, 1, 10);
+		initialPlanets = new NumberSpinBox(1, 500, 1, 10);
 		initialPlanets.value = 3;
 		
 		economyPanel.add(
