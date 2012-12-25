@@ -1376,10 +1376,10 @@ public class World {
 			for (InventorySlot fis : fii.slots) {
 				XElement xfs = xfii.add("slot");
 				xfs.set("id", fis.slot.id);
+				xfs.set("hp", fis.hp);
 				if (fis.type != null) {
 					xfs.set("type", fis.type.id);
 					xfs.set("count", fis.count);
-					xfs.set("hp", fis.hp);
 				}
 			}
 		}
@@ -1980,10 +1980,12 @@ public class World {
 							fis.type = st;
 						}
 						fis.count = Math.min(xfis.getInt("count"), fis.slot.max);
-						int hp0 = fis.hpMax(f.owner);
-						fis.hp = Math.min(xfis.getDouble("hp", hp0), hp0);
 						
 					}
+					
+					int hp0 = fis.hpMax(f.owner);
+					fis.hp = Math.min(xfis.getDouble("hp", hp0), hp0);
+					
 					fii.slots.add(fis);
 				}
 				// add remaining undefined slots

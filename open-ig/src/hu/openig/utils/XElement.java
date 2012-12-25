@@ -10,6 +10,7 @@ package hu.openig.utils;
 
 import hu.openig.core.Action1;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -17,9 +18,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.ParseException;
@@ -33,6 +36,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.zip.GZIPInputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -297,6 +301,33 @@ public class XElement {
 		XMLInputFactory inf = XMLInputFactory.newInstance();
 		XMLStreamReader ir = inf.createXMLStreamReader(in);
 		return parseXML(ir);
+	}
+	/**
+	 * Parse an XML file compressed by GZIP.
+	 * @param fileName the filename
+	 * @return the parsed XML
+	 * @throws XMLStreamException on error
+	 */
+	public static XElement parseXMLGZ(String fileName) throws XMLStreamException {
+		return parseXMLGZ(new File(fileName));
+	}
+	/**
+	 * Parse an XML file compressed by GZIP.
+	 * @param file the file
+	 * @return the parsed XML
+	 * @throws XMLStreamException on error
+	 */
+	public static XElement parseXMLGZ(File file) throws XMLStreamException {
+		try {
+			GZIPInputStream gin = new GZIPInputStream(new BufferedInputStream(new FileInputStream(file), 64 * 1024));
+			try {
+				return parseXML(gin);
+			} finally {
+				gin.close();
+			}
+		} catch (IOException ex) {
+			throw new XMLStreamException(ex);
+		}
 	}
 	/**
 	 * Parse an XML from the binary data.
@@ -624,6 +655,46 @@ public class XElement {
 			});
 		} finally {
 			out.close();
+		}
+	}
+	/**
+	 * Save this XML into the supplied output stream.
+	 * @param stream the output stream
+	 * @throws IOException on error
+	 */
+	public void save(OutputStream stream) throws IOException {
+		final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(stream)));
+		try {
+			out.println("<?xml version='1.0' encoding='UTF-8'?>");
+			toStringRep("", new Appender() {
+				@Override
+				public Appender append(Object o) {
+					out.print(o);
+					return this;
+				}
+			});
+		} finally {
+			out.flush();
+		}
+	}
+	/**
+	 * Save this XML into the supplied output writer.
+	 * @param writer the output writer
+	 * @throws IOException on error
+	 */
+	public void save(Writer writer) throws IOException {
+		final PrintWriter out = new PrintWriter(new BufferedWriter(writer));
+		try {
+			out.println("<?xml version='1.0' encoding='UTF-8'?>");
+			toStringRep("", new Appender() {
+				@Override
+				public Appender append(Object o) {
+					out.print(o);
+					return this;
+				}
+			});
+		} finally {
+			out.flush();
 		}
 	}
 	/**

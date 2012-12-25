@@ -112,7 +112,9 @@ public class AIUser implements AIManager {
 			}
 		}
 		
-		acts = new StaticDefensePlanner(world, controls).run();
+		StaticDefensePlanner staticDefensePlanner = new StaticDefensePlanner(world, controls);
+		staticDefensePlanner.allowBuildOrbitalFactory = false;
+		acts = staticDefensePlanner.run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
 			if (world.money < world.autoBuildLimit) {

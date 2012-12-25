@@ -40,6 +40,8 @@ import java.util.Map;
 public class StaticDefensePlanner extends Planner {
 	/** The new construction money limit. */
 	protected static final int MONEY_LIMIT = 150000;
+	/** Let the defense planner build an orbital factory? */
+	public boolean allowBuildOrbitalFactory = true;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
@@ -60,14 +62,16 @@ public class StaticDefensePlanner extends Planner {
 				}
 			}
 		}
-		ResearchType ort = world.isAvailable("OrbitalFactory");
-		if (world.global.orbitalFactory == 0 
-				&& ort != null
-				&& world.money >= ort.productionCost * 3 / 4) {
-			for (ResearchType rt : world.availableResearch) {
-				if (rt.has("needsOrbitalFactory")) {
-					checkOrbitalFactory();
-					break;
+		if (!planets.isEmpty() && allowBuildOrbitalFactory) {
+			ResearchType ort = world.isAvailable("OrbitalFactory");
+			if (world.global.orbitalFactory == 0 
+					&& ort != null
+					&& world.money >= ort.productionCost * 3 / 4 + world.autoBuildLimit) {
+				for (ResearchType rt : world.availableResearch) {
+					if (rt.has("needsOrbitalFactory")) {
+						checkOrbitalFactory();
+						break;
+					}
 				}
 			}
 		}

@@ -445,6 +445,8 @@ public final class Simulator {
 			
 			
 			newMorale = Math.max(0, Math.min(100, newMorale));
+			
+			
 			double nextMorale = (planet.morale * 0.8d + 0.2d * newMorale);
 			if (planet.morale >= 95 && newMorale > planet.morale) {
 				nextMorale = planet.morale + (newMorale - 95) / 10;
@@ -452,17 +454,21 @@ public final class Simulator {
 			planet.morale = Math.max(0, Math.min(100, /* (int) */nextMorale));
 			
 			double nextPopulation = 0;
+			double nonOwnerRace = 1d;
+			if (!planet.race.equals(planet.owner.race)) {
+				nonOwnerRace = 3d;
+			}
 			if (nextMorale < 20) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 100);
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 100 * nonOwnerRace);
 			} else
 			if (nextMorale < 30) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 150);
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 150 * nonOwnerRace);
 			} else
 			if (nextMorale < 40) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 200);
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 200 * nonOwnerRace);
 			} else
 			if (nextMorale < 50) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250);
+				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250 * nonOwnerRace);
 			} else {
 				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
 				nextPopulation += ((nextPopulation - planet.population) * populationGrowthModifier * planetTypeModifier);

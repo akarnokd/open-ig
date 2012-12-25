@@ -10,15 +10,18 @@ package hu.openig;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func0;
+import hu.openig.core.Func1;
 import hu.openig.core.SaveMode;
 import hu.openig.model.Configuration;
 import hu.openig.screen.CommonResources;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.Exceptions;
+import hu.openig.utils.IOUtils;
 import hu.openig.utils.U;
 
 import java.awt.Frame;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +34,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -244,6 +248,9 @@ public final class Startup {
 						final boolean cont = config.continueLastGame;
 						config.continueLastGame = cont && !config.intro;
 						CommonResources commons = new CommonResources(config, null);
+						
+						convertSaves();
+						
 						final GameWindow gw = new GameWindow(config, commons);
 						gw.setVisible(true);
 						if (config.intro) {
@@ -352,5 +359,40 @@ public final class Startup {
 				+ "or please download the Launcher from the project site<br><br>"
 				+ "http://open-ig.googlecode.com<br><br> and perform a proper install with it."
 				+ "(The current directory is: " + new File(".").getAbsolutePath());
+	}
+	/**
+	 * Convert the plain saves into GZIP-ped saves.
+	 */
+	protected static void convertSaves() {
+		File saveDir = new File("save");
+		if (saveDir.exists() && saveDir.isDirectory()) {
+			for (File profileDir : U.listFiles(saveDir)) {
+				if (profileDir.isDirectory()) {
+					for (File save : U.listFiles(profileDir, new Func1<File, Boolean>() {
+						@Override
+						public Boolean invoke(File value) {
+							String n = value.getName();
+							return n.startsWith("save-") && n.endsWith(".xml");
+						}
+					})) {
+						byte[] data = IOUtils.load(save);
+						File out = new File(profileDir, save.getName() + ".gz");
+						try {
+							GZIPOutputStream gout = new GZIPOutputStream(new FileOutputStream(out));
+							try {
+								gout.write(data);
+							} finally {
+								gout.close();
+							}
+						} catch (IOException ex) {
+							Exceptions.add(ex);
+						}
+						if (!save.delete()) {
+							System.err.println("Unable to delete " + save.getAbsolutePath());
+						}
+					}
+				}
+			}
+		}
 	}
 }

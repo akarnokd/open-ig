@@ -1875,7 +1875,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 				continue;
 			}
 			
-			saveSet.add(n.substring(5, n.length() - 4));
+			saveSet.add(n.substring(5, n.length() - 7));
 			
 		}
 		
@@ -1889,7 +1889,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		while (!queue.isEmpty()) {
 			String s = queue.removeFirst();
 			File info = new File(dir, "info-" + s + ".xml");
-			File save = new File(dir, "save-" + s + ".xml");
+			File save = new File(dir, "save-" + s + ".xml.gz");
 			if (info.canRead()) {
 				// if no associated save, delete the info
 				if (!save.canRead()) {
@@ -1900,7 +1900,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 				}
 				// load world info
 				try {
-					XElement xml = XElement.parseXML(info.getAbsolutePath());
+					XElement xml = XElement.parseXML(info);
 					
 					FileItem fi = new FileItem(save);
 					fi.saveDate = new Date(save.lastModified());
@@ -1937,9 +1937,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			} else 
 			if (save.canRead()) {
 				try {
-					XElement xml = XElement.parseXML(save.getAbsolutePath());
+					XElement xml = XElement.parseXMLGZ(save);
 					// create a info and retry
-					World.deriveShortWorldState(xml).save(info.getAbsolutePath());
+					World.deriveShortWorldState(xml).save(info);
 					// retry
 					queue.addFirst(s);
 				} catch (IOException ex) {

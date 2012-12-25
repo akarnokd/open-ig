@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class Profile {
 	/** The profile's name. */
-	public String name = "default";
+	public String name;
 	/** The acquired achievements. */
 	private final Set<String> achievements = new HashSet<String>();
 	/**
