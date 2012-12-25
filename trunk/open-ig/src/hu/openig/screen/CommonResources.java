@@ -120,7 +120,7 @@ public class CommonResources implements GameEnvironment {
 	/** The general control interface. */
 	private GameControls control;
 	/** The current player's profile. */
-	public Profile profile = new Profile();
+	public Profile profile;
 	/**
 	 * The queue for notifying the user about achievements.
 	 */
@@ -187,7 +187,9 @@ public class CommonResources implements GameEnvironment {
 	public CommonResources(Configuration config, GameControls control) {
 		this.config = config;
 		this.control = control;
-
+		this.profile = new Profile();
+		this.profile.name = config.currentProfile;
+		
 		ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
 		scheduler.setKeepAliveTime(1500, TimeUnit.MILLISECONDS);
 		scheduler.allowCoreThreadTimeOut(true);
@@ -975,11 +977,19 @@ public class CommonResources implements GameEnvironment {
 		case COMPUTER:
 			if (config.computerVoiceNotify) {
 				return sounds.playSound(type, action);
+			} else {
+				if (action != null) {
+					action.invoke();
+				}
 			}
 			break;
 		case BUTTON:
 			if (config.buttonSounds) {
 				return sounds.playSound(type, action);
+			} else {
+				if (action != null) {
+					action.invoke();
+				}
 			}
 			break;
 		case EFFECT:
@@ -987,9 +997,16 @@ public class CommonResources implements GameEnvironment {
 		case SCREEN:
 			if (config.computerVoiceScreen) {
 				return sounds.playSound(type, action);
+			} else {
+				if (action != null) {
+					action.invoke();
+				}
 			}
 			break;
 		default:
+			if (action != null) {
+				action.invoke();
+			}
 		}
 		return null;
 	}

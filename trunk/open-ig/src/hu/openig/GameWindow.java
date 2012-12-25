@@ -94,8 +94,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.AffineTransform;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -114,6 +116,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.zip.GZIPOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
@@ -1307,7 +1310,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (dir.exists() || dir.mkdirs()) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 				String sdate = sdf.format(new Date());
-				File fout = new File(dir, "save-" + sdate + ".xml");
+				File fout = new File(dir, "save-" + sdate + ".xml.gz");
 				File foutx = new File(dir, "info-" + sdate + ".xml");
 				try {
 					if (name == null && mode == SaveMode.LEVEL) {
@@ -1319,7 +1322,14 @@ public class GameWindow extends JFrame implements GameControls {
 					
 					XElement info = World.deriveShortWorldState(xworld);
 					
-					xworld.save(fout);
+					GZIPOutputStream gout = new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(fout), 64 * 1024));
+					try {
+						xworld.save(gout);
+					} finally {
+						gout.close();
+					}
+					
+					
 					info.save(foutx);
 					
 					limitSaves(dir, mode);
@@ -1374,7 +1384,7 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		for (String s : savesSorted) {
 			File info = new File(dir, "info-" + s + ".xml");
-			File save = new File(dir, "save-" + s + ".xml");
+			File save = new File(dir, "save-" + s + ".xml.gz");
 			if (info.canRead()) {
 				// if no associated save, delete the info
 				if (!save.canRead()) {
@@ -1402,7 +1412,7 @@ public class GameWindow extends JFrame implements GameControls {
 			} else 
 			if (save.canRead()) {
 				try {
-					XElement xml = XElement.parseXML(save.getAbsolutePath());
+					XElement xml = XElement.parseXMLGZ(save);
 					String saveMode = xml.get("save-mode", SaveMode.AUTO.toString());
 					if (saveMode.equals(mode.toString())) {
 						remaining--;
@@ -1482,7 +1492,7 @@ public class GameWindow extends JFrame implements GameControls {
 							File[] files = dir.listFiles(new FilenameFilter() {
 								@Override
 								public boolean accept(File dir, String name) {
-									return name.startsWith("save-") && name.endsWith(".xml");
+									return name.startsWith("save-") && name.endsWith(".xml.gz");
 								}
 							});
 							if (files != null && files.length > 0) {
@@ -1506,7 +1516,7 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 
 					
-					final XElement xworld = XElement.parseXML(lname);
+					final XElement xworld = XElement.parseXMLGZ(lname);
 					
 					World world = loadWorldData(currentGame, currentSkirmish, xworld);
 					

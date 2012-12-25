@@ -336,7 +336,7 @@ public class MainScreen extends ScreenBase {
 			File[] files = dir.listFiles(new FilenameFilter() {
 				@Override
 				public boolean accept(File dir, String name) {
-					return name.startsWith("save-") && name.endsWith(".xml");
+					return name.startsWith("save-") && name.endsWith(".xml.gz");
 				}
 			});
 			return files != null && files.length > 0;
