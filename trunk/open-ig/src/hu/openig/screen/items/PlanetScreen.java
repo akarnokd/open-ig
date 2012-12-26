@@ -292,6 +292,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			GroundwarUnitType.RADAR,
 			GroundwarUnitType.RADAR_JAMMER
 	);
+	/** The set of units that may attempt to get closer to their target. */
+	final EnumSet<GroundwarUnitType> getCloserUnits = EnumSet.of(
+			GroundwarUnitType.TANK, 
+			GroundwarUnitType.KAMIKAZE,
+			GroundwarUnitType.SELF_REPAIR_TANK,
+			GroundwarUnitType.PARALIZER,
+			GroundwarUnitType.ROCKET_JAMMER
+	);
 	/** The list of remaining units to place. */
 	final LinkedList<GroundwarUnit> unitsToPlace = U.newLinkedList();
 	/** Start the battle. */
@@ -4552,6 +4560,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					attackBuildingEndPhase(u);
 				}
 				u.phase = 0;
+				
+				
+				if (u.hasValidTarget() && config.aiGroundAttackGetCloser && u.attackMove == null 
+						&& getCloserUnits.contains(u.model.type)) {
+					moveOneCellCloser(u);
+				}
 			}
 		} else 
 		if (u.paralizedTTL == 0) {
@@ -4609,10 +4623,64 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						mines.remove(loc);
 					}
 				}
+			} else {
+				if (u.advanceOnBuilding != null) {
+					u.attackBuilding = u.advanceOnBuilding;
+					u.advanceOnBuilding = null;
+				}
+				if (u.advanceOnUnit != null) {
+					u.attackUnit = u.advanceOnUnit;
+					u.advanceOnUnit = null;
+				}
 			}
 		}
 	}
-
+	/**
+	 * Try to move the unit one cell closer to its target.
+	 * @param u the unit
+	 */
+	void moveOneCellCloser(GroundwarUnit u) {
+		Location source = u.location();
+		double tx = 0d;
+		double ty = 0d;
+		if (u.attackBuilding != null) {
+			tx = u.attackBuilding.location.x + u.attackBuilding.width() / 2d;
+			ty = u.attackBuilding.location.y - u.attackBuilding.height() / 2d;
+		} else
+		if (u.attackUnit != null) {
+			Location target = u.attackUnit.location();
+			tx = target.x;
+			ty = target.y;
+		}
+		double currentDistance = Math.hypot(tx - source.x, ty - source.y);
+		if (currentDistance <= 1.42) {
+			return;
+		}
+		List<Location> neighbors = pathfinding.neighbors.invoke(source);
+		if (!neighbors.isEmpty()) {
+			Location cell = null;
+			double cellDistance = currentDistance;
+			for (Location loc : neighbors) {
+				double newDistance = Math.hypot(tx - loc.x, ty - loc.y);
+				if (newDistance < cellDistance) {
+					cellDistance = newDistance;
+					cell = loc;
+				}
+			}
+			if (cell != null) {
+				if (u.attackUnit != null) {
+					u.advanceOnUnit = u.attackUnit;
+					u.attackUnit = null;
+				}
+				if (u.attackBuilding != null) {
+					u.advanceOnBuilding = u.attackBuilding;
+					u.attackBuilding = null;
+				}
+				
+				pathsToPlan.add(new PathPlanning(source, cell, u));
+			}
+		}
+	}
 	/**
 	 * Approach the target building.
 	 * @param u the unit who is attacking
@@ -6190,6 +6258,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		u.attackBuilding = null;
 		u.attackUnit = null;
 		u.attackMove = null;
+		u.advanceOnBuilding = null;
+		u.advanceOnUnit = null;
 		minelayers.remove(u);
 	}
 	@Override

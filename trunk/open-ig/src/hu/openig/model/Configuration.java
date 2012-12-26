@@ -278,6 +278,12 @@ public class Configuration {
 	/** The current profile. */
 	@LoadSave
 	public String currentProfile = "default";
+	/** 
+	 * Attempt to move closer and closer to the target unit or building in the ground
+	 * war and don't just stop at the edge of the unit's range.
+	 */
+	@LoadSave
+	public boolean aiGroundAttackGetCloser = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
