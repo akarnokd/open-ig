@@ -663,7 +663,7 @@ public class XElement {
 	 * @throws IOException on error
 	 */
 	public void save(OutputStream stream) throws IOException {
-		final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(stream)));
+		final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(stream, "UTF-8")));
 		try {
 			out.println("<?xml version='1.0' encoding='UTF-8'?>");
 			toStringRep("", new Appender() {
