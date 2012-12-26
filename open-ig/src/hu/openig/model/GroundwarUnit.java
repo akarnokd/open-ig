@@ -57,6 +57,10 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	public int yieldTTL;
 	/** Indicate that this unit is in motion. For path planning and yielding purposes. */
 	public boolean inMotionPlanning;
+	/** The save of current target after firing one shot, then advancing to a closer cell. */
+	public GroundwarUnit advanceOnUnit;
+	/** The save of current target after firing one shot, then advancing to a closer cell. */
+	public Building advanceOnBuilding;
 	/** @return is this unit destroyed? */
 	public boolean isDestroyed() {
 		return hp <= 0;
