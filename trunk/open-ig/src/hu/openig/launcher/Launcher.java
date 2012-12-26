@@ -1291,6 +1291,8 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			LUpdate u = new LUpdate();
 			u.process(XElement.parseXML(new File(installDir, localUpdate)));
 			LModule m = u.getModule(GAME);
+			
+			
 			for (LFile f : m.files) {
 				if (!"generic".equals(f.language) && !installedLanguages.contains(f.language)) {
 					continue;
@@ -1316,6 +1318,13 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 						zf.close();
 					}
 				}
+				if (fn.endsWith(".jar") || (fn.startsWith("open-ig-upgrade-") && fn.endsWith(".zip"))) {
+					byte[] sha1hupdate = LFile.toByteArray(f.sha1);
+					byte[] sha1h = sha1(f2);
+					if (!Arrays.equals(sha1h, sha1hupdate)) {
+						return false;
+					}
+				}
 			}
 			return testFiles.isEmpty() && !installedLanguages.isEmpty();
 		} catch (IOException ex) {
@@ -1324,6 +1333,22 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			Exceptions.add(ex);
 		}
 		return false;
+	}
+	/**
+	 * Compute the SHA1 of the given file.
+	 * @param file the file
+	 * @return the digest bytes
+	 */
+	static byte[] sha1(File file) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA1");
+			byte[] data = IOUtils.load(file);
+			if (data != null) {
+				return md.digest(data);
+			}
+		} catch (NoSuchAlgorithmException ex) {
+		}
+		return new byte[0];
 	}
 	/**
 	 * Display an error message.

@@ -272,7 +272,9 @@ public final class PackageStuff {
 		if (files != null) {
 			for (File f : files) {
 				if (f.isDirectory()) {
-					processDirectory(baseDir, f.getPath(), zout, filter);
+					if (!f.getName().equals(".svn")) {
+						processDirectory(baseDir, f.getPath(), zout, filter);
+					}
 				} else {
 					String fpath = f.getPath();
 					String fpath2 = fpath.substring(baseDir.length());
