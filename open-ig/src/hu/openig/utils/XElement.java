@@ -643,16 +643,9 @@ public class XElement {
 	 * @throws IOException on error
 	 */
 	public void save(File file) throws IOException {
-		final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")));
+		FileOutputStream out = new FileOutputStream(file);
 		try {
-			out.println("<?xml version='1.0' encoding='UTF-8'?>");
-			toStringRep("", new Appender() {
-				@Override
-				public Appender append(Object o) {
-					out.print(o);
-					return this;
-				}
-			});
+			save(out);
 		} finally {
 			out.close();
 		}
@@ -663,16 +656,9 @@ public class XElement {
 	 * @throws IOException on error
 	 */
 	public void save(OutputStream stream) throws IOException {
-		final PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(stream, "UTF-8")));
+		OutputStreamWriter out = new OutputStreamWriter(stream, "UTF-8");
 		try {
-			out.println("<?xml version='1.0' encoding='UTF-8'?>");
-			toStringRep("", new Appender() {
-				@Override
-				public Appender append(Object o) {
-					out.print(o);
-					return this;
-				}
-			});
+			save(out);
 		} finally {
 			out.flush();
 		}
