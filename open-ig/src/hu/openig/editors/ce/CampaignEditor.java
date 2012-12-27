@@ -171,8 +171,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 			}
 		});
 		
-		dataManager = new CEDataManager();
-		dataManager.init();
+		dataManager = new CEDataManager(new File("."));
 		
 		initComponents();
 		pack();
@@ -682,7 +681,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	
 	@Override
 	public File getWorkDir() {
-		return dataManager.workDir;
+		return dataManager.workdir();
 	}
 	/** Update the undo/redo menu. */
 	void updateUndoRedo() {

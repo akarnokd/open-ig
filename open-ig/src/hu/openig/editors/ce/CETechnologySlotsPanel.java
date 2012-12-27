@@ -524,7 +524,6 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 			slotType.component.setSelectedIndex(-1);
 			
 			slotItems.setSelectedIndex(-1);
-			slotsModel.clear();
 		}
 		slotEdit.repaint();
 	}

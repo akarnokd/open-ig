@@ -364,6 +364,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	Action0 weatherSoundRunning;
 	/** The map for pathfinding passability check. */
 	final Map<Location, Set<GroundwarUnit>> unitsForPathfinding = U.newHashMap();
+	/** Disable AI unit management. */
+	boolean noAI;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -416,11 +418,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			break;
 		case KeyEvent.VK_D:
+			if (e.isControlDown() && e.isShiftDown()) {
+				noAI = !noAI;
+			} else
 			if (e.isControlDown()) {
 				if (battle == null) {
 					doAddGuns();
 					doAddUnits();
 					planet().allocation = ResourceAllocationStrategy.BATTLE;
+					
 					rep = true;
 				}
 			} else {
@@ -432,6 +438,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (e.isControlDown()) {
 				showCommand = !showCommand;
 				rep = true;
+				e.consume();
 			}
 			break;
 		case KeyEvent.VK_X:
@@ -4247,9 +4254,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return;
 		}
 		
-		Player np = nonPlayer();
-		if (np != null) {
-			np.ai.groundBattle(this);
+		if (!noAI) {
+			Player np = nonPlayer();
+			if (np != null) {
+				np.ai.groundBattle(this);
+			}
 		}
 		player().ai.groundBattle(this);
 		
@@ -4562,7 +4571,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				u.phase = 0;
 				
 				
-				if (u.hasValidTarget() && config.aiGroundAttackGetCloser && u.attackMove == null 
+				if (u.hasValidTarget() 
+						&& config.aiGroundAttackGetCloser
+						&& !u.guard
+						&& u.attackMove == null 
 						&& getCloserUnits.contains(u.model.type)) {
 					moveOneCellCloser(u);
 				}
@@ -4592,11 +4604,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					// find a new target in range
   					List<GroundwarUnit> targets = unitsInRange(u);
 					if (targets.size() > 0) {
-						u.attackUnit = world().random(targets);
+						attack(u, world().random(targets));
 					} else {
 						List<Building> targets2 = buildingsInRange(u);
 						if (targets2.size() > 0) {
-							u.attackBuilding = world().random(targets2);
+							attack(u, world().random(targets2));
 						}
 					}
 					if (u.attackUnit == null && u.attackBuilding == null 
@@ -5440,6 +5452,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (u.selected /* && u.owner == player() */) { // FIXME player only
 				stopped = true;
 				stop(u);
+				u.guard = true;
 			}
 		}
 		for (GroundwarGun g : guns) {
@@ -5516,6 +5529,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					) {
 				move(u, lm.x, lm.y);
 				u.attackMove = lm;
+				u.guard = true;
 				attacked = true;
 			}
 		}
@@ -5540,9 +5554,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					/* && u.owner == player() */) { // FIXME player only
 				if (b != null && planet().owner != u.owner 
 						&& u.model.type != GroundwarUnitType.PARALIZER) {
-					stop(u);
-					u.attackBuilding = b;
-					u.attackUnit = null;
+					attack(u, b);
+					u.guard = false;
 					attacked = true;
 				} else {
 					
@@ -5551,10 +5564,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						guFound = true;
 					}
 					if (gu != null) {
-						stop(u);
+						attack(u, gu);
 						attacked = true;
-						u.attackUnit = gu;
-						u.attackBuilding = null;
+						u.guard = false;
 					}
 				}
 				
@@ -5567,7 +5579,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					guFound = true;
 				}
 				if (gu != null) {
-					g.attack = gu;
+					attack(g, gu);
 					attacked = true;
 				}
 			}
@@ -6240,6 +6252,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	@Override
 	public void move(GroundwarUnit u, int x, int y) {
 		stop(u);
+		u.guard = true;
 		Location lu = u.location();
 		Location lm = Location.of(x, y);
 		u.inMotionPlanning = true;

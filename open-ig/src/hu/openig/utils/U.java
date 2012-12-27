@@ -963,5 +963,21 @@ public final class U {
             }
         }
         return roman.toString();
-    }  
+    }
+    /**
+     * Check if the given string is null or empty.
+     * @param s the string to test
+     * @return true if null or empty
+     */
+    public static boolean nullOrEmpty(String s) {
+    	return s == null || s.isEmpty();
+    }
+    /**
+     * Check if the given string is null or full of whitespace.
+     * @param s the string to test
+     * @return true if null of whitespace.
+     */
+    public static boolean nullOrWhitespace(String s) {
+    	return s == null || s.trim().isEmpty();
+    }
 }
