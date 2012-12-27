@@ -590,10 +590,10 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		File dlcs = new File(workdir, "dlc");
 		for (File f : U.listFiles(dlcs)) {
 			if (f.isDirectory()) {
-				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/campaign"), CEDataManager.IS_DIR));
-				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/skirmish"), CEDataManager.IS_DIR));
+				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/campaign"), CEResourceManager.IS_DIR));
+				unpackedCampaigns.addAll(U.listFiles(new File(f, "generic/skirmish"), CEResourceManager.IS_DIR));
 			} else
-			if (CEDataManager.IS_ZIP.invoke(f)) {
+			if (CEResourceManager.IS_ZIP.invoke(f)) {
 				for (String zf : U.zipDirEntries(f, "generic/campaign")) {
 					packedCampaigns.add(Pair.of(f, zf));
 				}
@@ -698,7 +698,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			dialog.setLocationRelativeTo(this);
 			dialog.setVisible(true);
 			if (dialog.isApproved()) {
-				doCopyRecent(dialog);
+				doCopyExisting(dialog);
 			}
 		}
 	}
@@ -706,14 +706,14 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	 * Copy the selected existing campaign.
 	 * @param dialog the dialog
 	 */
-	public void doCopyRecent(CECopySettingsDialog dialog) {
+	public void doCopyExisting(CECopySettingsDialog dialog) {
 		dispose();
 		
 		final CEDataManager dm = ctx.dataManager();
 		dm.campaignData = new CampaignData();
 		int idx = copyTable.getSelectedRow();
 		idx = copyTable.convertRowIndexToModel(idx);
-		CampaignItem campaignItem = copyModel.get(idx);
+		final CampaignItem campaignItem = copyModel.get(idx);
 		dm.campaignData.definition = campaignItem.definition;
 		dm.campaignData.definition.name = newName.getText();
 		
@@ -722,10 +722,6 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		dm.campaignData.definition.haveLanguages(langs);
 		dm.campaignData.projectLanguage = getProjectLanguage();
 
-		ctx.addRecent(new File(dm.getDefinitionDirectory(), "definition.xml").getPath());
-		if (!recentModel.items.contains(campaignItem)) {
-			recentModel.add(campaignItem);
-		}
 		final EnumMap<DataFiles, CopyOperation> settings = dialog.getSettings();
 
 		BackgroundProgress.run(get("startup.copy_existing"), get("startup.copy_existing"),
@@ -734,12 +730,18 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				public void invoke() {
 					dm.copy(settings);
 					dm.load();
-					ctx.load();
 				}
 			},
 			new Action0() {
 				@Override
 				public void invoke() {
+					File defDir = dm.getDefinitionDirectory();
+					ctx.addRecent(new File(defDir, "definition.xml").getPath());
+					if (!recentModel.items.contains(campaignItem)) {
+						recentModel.add(campaignItem);
+					}
+					
+					ctx.load();
 					CEStartupDialog.this.dispose();
 				};
 			}
@@ -756,6 +758,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		final CEDataManager dm = ctx.dataManager();
 		dm.campaignData = new CampaignData();
 		dm.campaignData.definition = campaignItem.definition;
+		dm.campaignData.projectLanguage = getProjectLanguage();
 		
 		BackgroundProgress.run(get("startup.opening_recent"), get("startup.opening_recent"),
 			new Action0() {
@@ -850,6 +853,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				recentModel.add(ci);
 			} catch (XMLStreamException ex) {
 				// ingored
+				System.out.println(U.stacktrace(ex));
 			}
 		}
 	}

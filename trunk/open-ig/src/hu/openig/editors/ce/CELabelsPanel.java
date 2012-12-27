@@ -580,22 +580,6 @@ public class CELabelsPanel extends CEBasePanel {
 	}
 	/** Load the labels from the campaign data. */
 	public void load() {
-		Map<String, List<XElement>> langs = U.newHashMap();
 		
-		for (String lang : context.dataManager().languages()) {
-			langs.put(lang, U.<XElement>newArrayList());
-		}
-		
-		for (Map.Entry<Pair<String, String>, XElement> e : context.campaignData().labels.entrySet()) {
-			String lang = e.getKey().first;
-			List<XElement> xes = langs.get(lang);
-			if (xes == null) {
-				xes = U.newArrayList();
-				langs.put(lang, xes);
-			}
-			xes.addAll(e.getValue().children());
-		}
-		
-		update(langs);
 	}
 }

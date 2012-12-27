@@ -8,12 +8,10 @@
 
 package hu.openig.editors.ce;
 
-import hu.openig.core.Pair;
 import hu.openig.model.GameDefinition;
 import hu.openig.utils.XElement;
 
 import java.io.File;
-import java.util.Map;
 
 /**
  * The container for all campaign related data.
@@ -27,9 +25,7 @@ public class CampaignData {
 	/** The main definition. */
 	public GameDefinition definition;
 	/** The label data per language + label file reference. */
-	public Map<Pair<String, String>, XElement> labels;
-	/** The label map for each label key and language. */
-	public Map<String, Map<String, String>> labelMap;
+	public CampaignLabels labels;
 	/** The definition in XML. */
 	public XElement def;
 	/** Data. */

@@ -8,8 +8,6 @@
 
 package hu.openig.editors.ce;
 
-import hu.openig.core.Func1;
-import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.U;
@@ -17,20 +15,10 @@ import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 import javax.xml.stream.XMLStreamException;
@@ -40,407 +28,17 @@ import javax.xml.stream.XMLStreamException;
  *
  */
 public class CEDataManager {
-	/**
-	 * A simple directory filter.
-	 * @author akarnokd, 2012.11.01.
-	 */
-	private final class DirFilter implements FileFilter {
-		@Override
-		public boolean accept(File pathname) {
-			return pathname.isDirectory();
-		}
-	}
-	/** The default directories. */
-	String[] defaultDirectories = { "data", "audio", "images", "video" };
-	/** The working directory. */
-	public File workDir = new File(".");
 	/** The master campaign data. */
 	public CampaignData campaignData;
+	/** The resource manager. */
+	public CEResourceManager mgr;
 	/**
-	 * Check if the File object represents a zip file.
+	 * Constructor. Initializes the resource manager.
+	 * @param workdir the working directory
 	 */
-	public static final Func1<File, Boolean> IS_ZIP = new Func1<File, Boolean>() {
-		@Override
-		public Boolean invoke(File value) {
-			return value.isFile() && value.getName().toLowerCase().endsWith(".zip");
-		}
-	};
-	/**
-	 * Check if the File object represents a zip file.
-	 */
-	public static final Func1<File, Boolean> IS_DIR = new Func1<File, Boolean>() {
-		@Override
-		public Boolean invoke(File value) {
-			return value.isDirectory();
-		}
-	};
-	/** Initialize the data manager. */
-	public void init() {
-		
-	}
-	/** @return scan for all languages. */
-	public List<String> getLanguages() {
-		Set<String> result = U.newHashSet();
-		
-		File dlc = new File(workDir, "dlc");
-		
-		List<File> dirs = U.newArrayList();
-		List<File> zips = U.newArrayList();
-		// check unpacked dlcs
-		File[] dlcDirs = dlc.listFiles(new DirFilter());
-		if (dlcDirs != null) {
-			dirs.addAll(Arrays.asList(dlcDirs));
-		}
-		for (String s : defaultDirectories) {
-			dirs.add(new File(workDir, s));
-		}
-
-		File[] dlcZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip");
-			}
-		});
-		if (dlcZips != null) {
-			zips.addAll(Arrays.asList(dlcZips));
-		}
-
-		File[] normalZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String n = pathname.getName().toLowerCase();
-				return pathname.isFile() && n.startsWith("open-ig-") && n.endsWith(".zip");
-			}
-		});
-		if (normalZips != null) {
-			zips.addAll(Arrays.asList(normalZips));
-		}
-		
-		for (File f : dirs) {
-			File[] fs = f.listFiles(new DirFilter());
-			if (fs != null) {
-				for (File fss : fs) {
-					if (!fss.getName().equals("generic")) {
-						result.add(fss.getName());
-					}
-				}
-			}
-		}
-		
-		for (File f : zips) {
-			try {
-				ZipFile zf = new ZipFile(f);
-				try {
-					Enumeration<? extends ZipEntry> zes = zf.entries();
-					while (zes.hasMoreElements()) {
-						ZipEntry ze = zes.nextElement();
-						
-						String name = ze.getName();
-						int idx = name.indexOf('/');
-						if (idx >= 0) {
-							name = name.substring(0, idx);
-						}
-						result.add(name);
-					}
-				} finally {
-					zf.close();
-				}
-				
-			} catch (IOException ex) {
-				// ignored
-			}
-		}
-		
-		return U.newArrayList(result);
-	}
-	/**
-	 * Check if the given resource exists under the language or generic.
-	 * @param language the language
-	 * @param resource the resource with extension
-	 * @return true if exists
-	 */
-	public boolean exists(String language, String resource) {
-		File dlc = new File(workDir, "dlc");
-		
-		// check unpacked dlcs
-		File[] dlcDirs = dlc.listFiles(new DirFilter());
-		if (dlcDirs != null) {
-			boolean result = scanDirsExist(language, resource, dlcDirs);
-			if (result) {
-				return true;
-			}
-		}
-		// check dlc zips
-		File[] dlcZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				return pathname.isFile() && pathname.getName().toLowerCase().endsWith(".zip");
-			}
-		});
-		if (dlcZips != null) {
-			boolean result = scanZipsExist(language, resource, dlcZips);
-			if (result) {
-				return result;
-			}
-		}
-		// check master directories
-		File[] normalDirs = new File[defaultDirectories.length];
-		for (int i = 0; i < normalDirs.length; i++) {
-			normalDirs[i] = new File(workDir, defaultDirectories[i]);
-		}
-		
-		boolean result = scanDirsExist(language, resource, normalDirs);
-		if (result) {
-			return result;
-		}
-		
-		// check dlc zips
-		File[] upgradeZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String n = pathname.getName().toLowerCase();
-				return pathname.isFile() && n.startsWith("open-ig-upgrade") && n.endsWith(".zip");
-			}
-		});
-		if (upgradeZips != null) {
-			Arrays.sort(upgradeZips, new Comparator<File>() {
-				@Override
-				public int compare(File o1, File o2) {
-					return o2.getName().toLowerCase().compareTo(o1.getName().toLowerCase());
-				}
-			});
-			result = scanZipsExist(language, resource, upgradeZips);
-			if (result) {
-				return result;
-			}
-		}
-
-		// check dlc zips
-		File[] normalZips = dlc.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File pathname) {
-				String n = pathname.getName().toLowerCase();
-				return pathname.isFile() && n.startsWith("open-ig-") && !n.startsWith("open-ig-upgrade") && n.endsWith(".zip");
-			}
-		});
-		if (normalZips != null) {
-			result = scanZipsExist(language, resource, normalZips);
-			if (result) {
-				return result;
-			}
-		}
-
-		return false;
-	}
-	/**
-	 * Retrieve all language resources.
-	 * @param resource the resource path with extension
-	 * @return the map from language code to data bytes that actually exist
-	 */
-	public Map<String, byte[]> getDataAll(String resource) {
-		Map<String, byte[]> result = U.newHashMap();
-		
-		List<File> files = U.newArrayList();
-		
-		// dlc subdirectories
-		files.addAll(U.listFiles(new File(workDir, "dlc")));
-		// main directories
-		for (String s : defaultDirectories) {
-			files.add(new File(workDir, s));
-		}
-		// dlc zips
-		files.addAll(U.listFiles(new File(workDir, "dlc"), IS_ZIP));
-
-		// main zips
-		List<File> zips = U.listFiles(new File(workDir, "dlc"), new Func1<File, Boolean>() {
-			@Override
-			public Boolean invoke(File value) {
-				String name = value.getName().toLowerCase();
-				return name.startsWith("open-ig-") && name.endsWith(".zip");
-			}
-		});
-		Collections.sort(zips, new Comparator<File>() {
-			@Override
-			public int compare(File o1, File o2) {
-				return o1.getName().compareToIgnoreCase(o2.getName());
-			}
-		});
-		// keep a single upgrade only
-		int u = 0;
-		for (int i = zips.size() - 1; i >= 0; i--) {
-			File f = zips.get(i);
-			if (f.getName().startsWith("open-ig-upgrade")) {
-				u++;
-				if (u > 1) {
-					zips.remove(i);
-				}
-			}
-		}
-		
-		files.addAll(zips);
-
-		for (File f : files) {
-			if (IS_ZIP.invoke(f)) {
-				try {
-					ZipFile zf = new ZipFile(f);
-					try {
-						for (ZipEntry ze : U.enumerate(zf.entries())) {
-							String langStr = ze.getName();
-							int idx = langStr.indexOf('/');
-							if (idx > 0) {
-								String fileStr = langStr.substring(idx + 1);
-								langStr = langStr.substring(0, idx);
-								if (fileStr.equals(resource)) {
-									if (!result.containsKey(langStr)) {
-										result.put(langStr, IOUtils.load(zf.getInputStream(ze)));
-									}									
-								}
-							}
-						}
-					} finally {
-						zf.close();
-					}
-				} catch (IOException ex) {
-					// ignored
-				}
-			} else {
-				for (File langs : U.listFiles(f, IS_DIR)) {
-					String langStr = langs.getName();
-					File f2 = new File(f, langStr + "/" + resource);
-					if (f2.canRead()) {
-						if (!result.containsKey(langStr)) {
-							result.put(langStr, IOUtils.load(f2));
-						}
-					}
-				}
-			}
-		}
-		
-		return result;
-	}
-	/**
-	 * Scan a set of zip files for a particular resource.
-	 * @param language the language
-	 * @param resource the resource
-	 * @param dlcZips the zip files
-	 * @return the data or null if not found
-	 */
-	public byte[] scanZips(String language, String resource, File[] dlcZips) {
-		for (File f : dlcZips) {
-			try {
-				ZipFile zf = new ZipFile(f);
-				try {
-					ZipEntry ze = zf.getEntry(language + "/" + resource);
-					if (ze != null) {
-						return readEntry(zf, ze);
-					}
-					ze = zf.getEntry("generic/" + resource);
-					if (ze != null) {
-						return readEntry(zf, ze);
-					}
-				} finally {
-					zf.close();
-				}
-			} catch (IOException ex) {
-				// ignored
-			}
-		}
-		return null;
-	}
-	/**
-	 * Scan a set of zip files for a particular resource.
-	 * @param language the language
-	 * @param resource the resource
-	 * @param dlcZips the zip files
-	 * @return true if exists
-	 */
-	public boolean scanZipsExist(String language, String resource, File[] dlcZips) {
-		for (File f : dlcZips) {
-			try {
-				ZipFile zf = new ZipFile(f);
-				try {
-					ZipEntry ze = zf.getEntry(language + "/" + resource);
-					if (ze != null) {
-						return true;
-					}
-					ze = zf.getEntry("generic/" + resource);
-					if (ze != null) {
-						return true;
-					}
-				} finally {
-					zf.close();
-				}
-			} catch (IOException ex) {
-				// ignored
-			}
-		}
-		return false;
-	}
-	/**
-	 * Scan the directories for a specific resource file.
-	 * @param language the target language
-	 * @param resource the resource path
-	 * @param dlcDirs the directories
-	 * @return the data or null if not found
-	 */
-	public byte[] scanDirs(String language, String resource, File[] dlcDirs) {
-		for (File f : dlcDirs) {
-			File res = new File(f, language + "/" + resource);
-			if (res.canRead()) {
-				return IOUtils.load(res);
-			}
-			res = new File(f, "generic/" + resource);
-			if (res.canRead()) {
-				return IOUtils.load(res);
-			}
-		}
-		return null;
-	}
-	/**
-	 * Scan the directories for a specific resource file.
-	 * @param language the target language
-	 * @param resource the resource path
-	 * @param dlcDirs the directories
-	 * @return true if the resource exists
-	 */
-	public boolean scanDirsExist(String language, String resource, File[] dlcDirs) {
-		for (File f : dlcDirs) {
-			File res = new File(f, language + "/" + resource);
-			if (res.canRead()) {
-				return true;
-			}
-			res = new File(f, "generic/" + resource);
-			if (res.canRead()) {
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Reads a zip entry.
-	 * @param zf the zip file
-	 * @param ze the zip entry
-	 * @return the byte array
-	 * @throws IOException on error
-	 */
-	byte[] readEntry(ZipFile zf, ZipEntry ze) throws IOException {
-		InputStream in = zf.getInputStream(ze);
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			byte[] buffer = new byte[8192];
-			while (true) {
-				int read = in.read(buffer);
-				if (read > 0) {
-					out.write(buffer, 0, read);
-				} else
-				if (read < 0) {
-					break;
-				}
-			}
-			return out.toByteArray();
-		} finally {
-			in.close();
-		}
+	public CEDataManager(File workdir) {
+		mgr = new CEResourceManager(workdir);
+		mgr.scan();
 	}
 	/**
 	 * Perform a copy of the current definition based on the supplied settings.
@@ -448,7 +46,7 @@ public class CEDataManager {
 	 */
 	public void copy(Map<DataFiles, CopyOperation> copySettings) {
 		String name = campaignData.definition.name;
-		campaignData.directory = new File(workDir, "dlc/" + name);
+		campaignData.directory = new File(mgr.workdir(), "dlc/" + name);
 		File dir = campaignData.directory;
 		if (!dir.exists() && !dir.mkdirs()) {
 			Exceptions.add(new IOException("Could not create directories for " + dir));
@@ -482,7 +80,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -506,7 +104,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -530,7 +128,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -554,7 +152,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -578,7 +176,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -602,7 +200,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -626,7 +224,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -650,7 +248,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -675,7 +273,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -699,7 +297,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				if (data != null) {
 					try {
 						xml = XElement.parseXML(data);
@@ -725,7 +323,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				try {
 					xml = XElement.parseXML(data);
 				} catch (XMLStreamException ex) {
@@ -750,7 +348,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				if (data != null) {
 					try {
 						xml = XElement.parseXML(data);
@@ -776,7 +374,7 @@ public class CEDataManager {
 			
 			XElement xml = new XElement(fname);
 			if (cop == CopyOperation.COPY) {
-				byte[] data = getDataAll(original + ".xml").get("generic");
+				byte[] data = mgr.getData(original + ".xml", "generic");
 				if (data != null) {
 					try {
 						xml = XElement.parseXML(data);
@@ -814,7 +412,7 @@ public class CEDataManager {
 			String name, File dir, File campaignDir) {
 		CopyOperation cop;
 		try {
-			Map<String, byte[]> galaxies = getDataAll(campaignData.definition.galaxy + ".xml");
+			Map<String, byte[]> galaxies = mgr.getData(campaignData.definition.galaxy + ".xml");
 			XElement xgalaxy = XElement.parseXML(new ByteArrayInputStream(galaxies.get("generic")));
 			
 			cop = copySettings.get(DataFiles.SURFACES);
@@ -858,7 +456,7 @@ public class CEDataManager {
 							if (cop == CopyOperation.COPY) {
 								for (int i = start; i <= end; i++) {
 									
-									byte[] xp = getDataAll(String.format(pattern, i) + ".xml").get("generic");
+									byte[] xp = mgr.getData(String.format(pattern, i) + ".xml", "generic");
 									
 									File out = new File(f, String.format(pattern2, i) + ".xml");
 									IOUtils.save(out, xp);
@@ -915,7 +513,7 @@ public class CEDataManager {
 			List<String> newRefs = U.newArrayList();
 			int i = 1;
 			for (String ref : campaignData.definition.labels) {
-				Map<String, byte[]> allData = getDataAll(ref);
+				Map<String, byte[]> allData = mgr.getData(ref);
 				for (Map.Entry<String, byte[]> e : allData.entrySet()) {
 					File f = new File(dir, e.getKey() + "/campaign/" + name);
 					if (!f.exists() && !f.mkdirs()) {
@@ -946,7 +544,7 @@ public class CEDataManager {
 			campaignData.definition.imagePath = null;
 		} else
 		if (cop == CopyOperation.COPY) {
-			Map<String, byte[]> allData = getDataAll(campaignData.definition.imagePath + ".png");
+			Map<String, byte[]> allData = mgr.getData(campaignData.definition.imagePath + ".png");
 			for (Map.Entry<String, byte[]> e : allData.entrySet()) {
 				File f = new File(dir, e.getKey() + "/campaign/" + name);
 				if (!f.exists() && !f.mkdirs()) {
@@ -965,39 +563,9 @@ public class CEDataManager {
 		
 		campaignData.definition.parse(campaignData.def);
 		
-		campaignData.labels = U.newHashMap();
-		campaignData.labelMap = U.newHashMap();
+		campaignData.labels = new CampaignLabels();
+		campaignData.labels.load(campaignData.definition);
 		
-		for (String lang : languages()) {
-			campaignData.labelMap.put(lang, U.<String, String>newHashMap());
-		}
-		List<String> labelRefs = U.newArrayList(campaignData.definition.labels);
-		labelRefs.add("labels");
-		
-		for (String lr : labelRefs) {
-			Map<String, byte[]> datas = getDataAll(lr + ".xml");
-			for (String lang : campaignData.definition.languages()) {
-				byte[] data = datas.get(lang);
-				XElement xml = new XElement("labels");
-				if (data != null) {
-					try {
-						xml = XElement.parseXML(data);
-					} catch (XMLStreamException ex) {
-						// ignored
-					}
-				}
-				campaignData.labels.put(Pair.of(lang, lr), xml);
-				for (XElement xe : xml.childrenWithName("entry")) {
-					String key = xe.get("key", "");
-					Map<String, String> map = campaignData.labelMap.get(key);
-					if (map == null) {
-						map = U.newHashMap();
-						campaignData.labelMap.put(key, map);
-					}
-					map.put(lang, xe.content);
-				}
-			}
-		}
 		
 		campaignData.galaxy = load(campaignData.definition.galaxy);
 		campaignData.players = load(campaignData.definition.players);
@@ -1021,7 +589,7 @@ public class CEDataManager {
 	 */
 	XElement load(String reference) {
 		try {
-			byte[] data = getDataAll(reference + ".xml").get("generic");
+			byte[] data = mgr.getData(reference + ".xml", "generic");
 			if (data != null) {
 				return XElement.parseXML(data);
 			}
@@ -1089,10 +657,9 @@ public class CEDataManager {
 	 * @return the data or null if missing
 	 */
 	public byte[] getData(String language, String resource) {
-		Map<String, byte[]> datas = getDataAll(resource);
-		byte[] data = datas.get(language);
-		if (data == null) {
-			data = datas.get("generic");
+		byte[] data = mgr.getData(resource, language);
+		if (data == null && !language.equals("generic")) {
+			data = mgr.getData(resource, "generic");
 		}
 		return data;
 	}
@@ -1118,11 +685,7 @@ public class CEDataManager {
 	 * @return the label or null if not found
 	 */
 	public String label(String key) {
-		Map<String, String> perLang = campaignData.labelMap.get(key);
-		if (perLang != null) {
-			return perLang.get(campaignData.projectLanguage);
-		}
-		return null;
+		return campaignData.labels.get(campaignData.projectLanguage, key);
 	}
 	/**
 	 * Sets the label for the current project language entry.
@@ -1130,14 +693,7 @@ public class CEDataManager {
 	 * @param value the value
 	 */
 	public void setLabel(String key, String value) {
-		Map<String, String> perLang = campaignData.labelMap.get(key);
-		if (perLang == null) {
-			perLang = U.newHashMap();
-			campaignData.labelMap.put(key, perLang);
-		}
-		perLang.put(campaignData.projectLanguage, value);
-		
-		
+		campaignData.labels.set(campaignData.projectLanguage, key, value);
 	}
 	/**
 	 * Test if a label exists in the project language.
@@ -1145,11 +701,7 @@ public class CEDataManager {
 	 * @return true if the label
 	 */
 	public boolean hasLabel(String key) {
-		Map<String, String> perLang = campaignData.labelMap.get(key);
-		if (perLang != null) {
-			return perLang.containsKey(campaignData.projectLanguage);
-		}
-		return false;
+		return !U.nullOrEmpty(campaignData.labels.get(campaignData.projectLanguage, key));
 	}
 	/**
 	 * @return the ID of the main player.
@@ -1177,8 +729,7 @@ public class CEDataManager {
 	 * @return true
 	 */
 	public boolean exists(String reference) {
-		Map<String, byte[]> data = getDataAll(reference);
-		return data.containsKey(campaignData.projectLanguage) || data.containsKey("generic");
+		return mgr.exists(reference, campaignData.projectLanguage) || mgr.exists(reference, "generic");
 	}
 	/** @return the list of supported languages of the campaign. */
 	public List<String> languages() {
@@ -1187,5 +738,9 @@ public class CEDataManager {
 	/** @return the definition directory. */
 	public File getDefinitionDirectory() {
 		return new File(campaignData.directory, "generic/campaign/" + campaignData.definition.name);
+	}
+	/** @return the working directory. */
+	public File workdir() {
+		return mgr.workdir();
 	}
 }

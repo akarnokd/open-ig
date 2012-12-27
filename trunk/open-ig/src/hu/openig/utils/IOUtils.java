@@ -632,7 +632,7 @@ public final class IOUtils {
 	}
 	/**
 	 * Load everything from the given input stream.
-	 * Does nto close the inputstream
+	 * Does not close the input stream.
 	 * @param in the input stream
 	 * @return the bytes
 	 */
