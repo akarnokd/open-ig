@@ -76,6 +76,8 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	private CETechnologyLabelsPanel labelsPanel;
 	/** Sub-panel. */
 	private CETechnologyGeneralPanel generalPanel;
+	/** The split position. */
+	JSplitPane verticalSplit;
 	/**
 	 * Constructor. Initializes the GUI.
 	 * @param context the context object.
@@ -154,17 +156,17 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		
 		JPanel top = createTopPanel();
 		
-		JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		verticalSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		
-		split.setTopComponent(top);
+		verticalSplit.setTopComponent(top);
 		
 		JPanel bottom = createBottomPanel();
 		
-		split.setBottomComponent(bottom);
-		split.setResizeWeight(0.75);
+		verticalSplit.setBottomComponent(bottom);
+		verticalSplit.setResizeWeight(0.75);
 		
 		setLayout(new BorderLayout());
-		add(split, BorderLayout.CENTER);
+		add(verticalSplit, BorderLayout.CENTER);
 		
 		doUpdateCount();
 		doDetails(null, -1);
@@ -413,13 +415,11 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 	}
 	@Override
 	public void loadPreferences(XElement preferences) {
-		// TODO Auto-generated method stub
-		
+		verticalSplit.setDividerLocation(preferences.getInt("vertical-split", verticalSplit.getDividerLocation()));
 	}
 	@Override
 	public void savePreferences(XElement preferences) {
-		// TODO Auto-generated method stub
-		
+		preferences.set("vertical-split", verticalSplit.getDividerLocation());
 	}
 	@Override
 	public void restoreState(XElement state) {

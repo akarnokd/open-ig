@@ -765,12 +765,12 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				@Override
 				public void invoke() {
 					dm.load();
-					ctx.load();
 				}
 			},
 			new Action0() {
 				@Override
 				public void invoke() {
+					ctx.load();
 					CEStartupDialog.this.dispose();
 				};
 			}

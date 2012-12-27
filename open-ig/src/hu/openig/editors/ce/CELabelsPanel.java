@@ -17,7 +17,6 @@ import hu.openig.utils.XElement;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,7 +47,7 @@ import javax.swing.table.TableRowSorter;
  * Label editor panel.
  * @author akarnokd, 2012.11.01.
  */
-public class CELabelsPanel extends CEBasePanel {
+public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 	/** */
 	private static final long serialVersionUID = -3156259343025443390L;
 	/** The vertical splitter. */
@@ -70,12 +69,10 @@ public class CELabelsPanel extends CEBasePanel {
 		/** The label key. */
 		public String key;
 		/** The label content. */
-		public final Map<String, XElement> content = U.newHashMap();
+		public final Map<String, String> content = U.newHashMap();
 	}
 	/** The language index to code. */
 	final Map<Integer, String> languageIndex = U.newHashMap();
-	/** The back reference to the list of languages and entries. */
-	Map<String, List<XElement>> languages;
 	/** The sorter. */
 	TableRowSorter<GenericTableModel<LabelEntry>> mainSorter;
 	/** The key field. */
@@ -141,8 +138,7 @@ public class CELabelsPanel extends CEBasePanel {
 					return item.key;
 				}
 				String lng = languageIndex.get(columnIndex);
-				XElement xe = item.content.get(lng);
-				return xe != null ? xe.content : null;
+				return item.content.get(lng);
 			}
 		};
 		
@@ -240,19 +236,14 @@ public class CELabelsPanel extends CEBasePanel {
 	}
 	/**
 	 * Update the full table.
-	 * @param languages the map from languages to label entries
 	 */
-	public void update(Map<String, List<XElement>> languages) {
-		this.languages = languages;
+	public void update() {
 		languageIndex.clear();
 		mainModel.clear();
-
-		Set<String> keys = new LinkedHashSet<String>();
-		for (List<XElement> e : languages.values()) {
-			for (XElement k : e) {
-				keys.add(k.get("key", ""));
-			}
-		}
+		
+		CampaignData cd = context.campaignData();
+		List<String> languages = U.newArrayList(cd.definition.languages());
+		
 		
 		Class<?>[] classes = new Class<?>[languages.size() + 2];
 		classes[0] = ImageIcon.class;
@@ -262,29 +253,23 @@ public class CELabelsPanel extends CEBasePanel {
 		names.add("");
 		names.add(get("label.key"));
 		int k = 0;
-		for (String lk : languages.keySet()) {
+		for (String lk : languages) {
 			languageIndex.put(k + 2, lk);
 			classes[k + 2] = String.class;
 			names.add(lk);
 			k++;
 		}
-		
-		Map<String, LabelEntry> map = U.newHashMap();
-		for (String s : keys) {
-			LabelEntry le = new LabelEntry();
-			le.key = s;
-			mainModel.add(le);
-			map.put(s, le);
-		}
 
-		for (Map.Entry<String, List<XElement>> e : languages.entrySet()) {
-			for (XElement item : e.getValue()) {
-				LabelEntry le = map.get(item.get("key", ""));
-				le.content.put(e.getKey(), item);
-			}
-		}
 		mainModel.setColumnNames(names.toArray(new String[0]));
 		mainModel.setColumnTypes(classes);
+		
+		for (String key : cd.labels.keys()) {
+			LabelEntry le = new LabelEntry();
+			le.key = key;
+			cd.labels.putInto(key, le.content);
+			mainModel.add(le);
+		}
+		
 		
 		mainModel.fireTableStructureChanged();
 		mainTable.getColumnModel().getColumn(0).setMaxWidth(24);
@@ -458,8 +443,8 @@ public class CELabelsPanel extends CEBasePanel {
 	 */
 	boolean isUntranslated(LabelEntry e) {
 		Set<String> strs = U.newHashSet();
-		for (XElement xe : e.content.values()) {
-			strs.add(xe.content);
+		for (String xe : e.content.values()) {
+			strs.add(xe);
 		}
 		return strs.size() != context.dataManager().languages().size();
 	}
@@ -566,11 +551,11 @@ public class CELabelsPanel extends CEBasePanel {
 		}
 		if (item != null) {
 			keyField.setText(item.key);
-			for (Map.Entry<String, XElement> e : item.content.entrySet()) {
+			for (Map.Entry<String, String> e : item.content.entrySet()) {
 				CEValueBox<JTextArea> ceValueBox = textAreas.get(e.getKey());
-				ceValueBox.component.setText(e.getValue().content);
+				ceValueBox.component.setText(e.getValue());
 			}
-			for (Map.Entry<String, XElement> e : item.content.entrySet()) {
+			for (Map.Entry<String, String> e : item.content.entrySet()) {
 				CEValueBox<JTextArea> ceValueBox = textAreas.get(e.getKey());
 				ceValueBox.validateComponent();
 			}
@@ -580,6 +565,18 @@ public class CELabelsPanel extends CEBasePanel {
 	}
 	/** Load the labels from the campaign data. */
 	public void load() {
-		
+		update();
+	}
+	@Override
+	public void loadPreferences(XElement preferences) {
+		verticalSplit.setDividerLocation(preferences.getInt("vertical-split", verticalSplit.getDividerLocation()));
+	}
+	@Override
+	public String preferencesId() {
+		return "labels-panel";
+	}
+	@Override
+	public void savePreferences(XElement preferences) {
+		preferences.set("vertical-split", verticalSplit.getDividerLocation());
 	}
 }

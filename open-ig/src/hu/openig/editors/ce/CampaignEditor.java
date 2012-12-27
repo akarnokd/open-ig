@@ -8,7 +8,9 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Action0;
 import hu.openig.core.Func0;
+import hu.openig.editors.BackgroundProgress;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -224,6 +226,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 				startupDialog.loadPreferences(xpref);
 			}
 		}
+		
 	}
 	/**
 	 * Load the window state from the specified XML element.
@@ -613,6 +616,18 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 			}
 		});
 		
+		mnuFileSave.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				BackgroundProgress.run(get("saving_project"), get("saving_project"), new Action0() {
+					@Override
+					public void invoke() {
+						save();
+					}
+				}, null);
+			}
+		});
+		
 		mnuHelpOnline.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -793,6 +808,14 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 		XElement xrecents = preferences.add("recent-projects");
 		for (String r : recent) {
 			xrecents.add("recent", r);
+		}
+	}
+	/**
+	 * Save the current project.
+	 */
+	public void save() {
+		if (dataManager.campaignData != null) {
+			dataManager.save();
 		}
 	}
 }
