@@ -15,6 +15,7 @@ import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -564,7 +565,7 @@ public class CEDataManager {
 		campaignData.definition.parse(campaignData.def);
 		
 		campaignData.labels = new CampaignLabels();
-		campaignData.labels.load(campaignData.definition);
+		campaignData.labels.load(campaignData.definition, mgr);
 		
 		
 		campaignData.galaxy = load(campaignData.definition.galaxy);
@@ -581,6 +582,33 @@ public class CEDataManager {
 		campaignData.test = load(campaignData.definition.test);
 		campaignData.spies = load(campaignData.definition.spies);
 		campaignData.scripting = load(campaignData.definition.scripting);
+		
+		mgr.saveDir = mgr.getContainer("campaign/" + campaignData.definition.name + "/definition.xml", "generic");
+	}
+	/**
+	 * Save the data files.
+	 */
+	public void save() {
+		campaignData.definition.save(campaignData.def);
+		
+		save("campaign/" + campaignData.definition.name + "/definition", campaignData.def);
+		campaignData.labels.save(mgr);
+		
+		save(campaignData.definition.galaxy, campaignData.galaxy);
+		save(campaignData.definition.players, campaignData.players);
+		save(campaignData.definition.planets, campaignData.planets);
+		save(campaignData.definition.tech, campaignData.technology);
+		save(campaignData.definition.buildings, campaignData.buildings);
+		save(campaignData.definition.battle, campaignData.battle);
+		save(campaignData.definition.diplomacy, campaignData.diplomacy);
+		save(campaignData.definition.bridge, campaignData.bridge);
+		save(campaignData.definition.talks, campaignData.talks);
+		save(campaignData.definition.walks, campaignData.walks);
+		save(campaignData.definition.chats, campaignData.chats);
+		save(campaignData.definition.test, campaignData.test);
+		save(campaignData.definition.spies, campaignData.spies);
+		save(campaignData.definition.scripting, campaignData.scripting);
+		
 	}
 	/**
 	 * Load an XML reference.
@@ -605,9 +633,26 @@ public class CEDataManager {
 	}
 	/**
 	 * Save the data files based on the definition.
+	 * @param reference the file reference without extension
+	 * @param xml the XML to save
 	 */
-	public void save() {
-		// TODO implement
+	void save(String reference, XElement xml) {
+		if (xml == null) {
+			int idx = reference.lastIndexOf('/');
+			String key = reference;
+			if (idx >= 0) {
+				key = key.substring(idx + 1);
+			}
+			xml = new XElement(key);
+		}
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		try {
+			xml.save(bout);
+		} catch (IOException ex) {
+			// ignored
+		}
+		
+		mgr.saveData(reference + ".xml", "generic", bout.toByteArray());
 	}
 	/**
 	 * Returns the image represented by the resource or null if not found.

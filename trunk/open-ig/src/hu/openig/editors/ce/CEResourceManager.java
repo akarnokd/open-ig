@@ -9,6 +9,7 @@
 package hu.openig.editors.ce;
 
 import hu.openig.core.Func1;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
 import hu.openig.utils.U;
 
@@ -53,6 +54,8 @@ public class CEResourceManager {
 			return value.isDirectory();
 		}
 	};
+	/** The default save directory for new objects. */
+	public File saveDir;
 	/**
 	 * Constructor. Sets the game's working directory.
 	 * @param workdir the working directory.
@@ -269,6 +272,19 @@ public class CEResourceManager {
 		return workdir;
 	}
 	/**
+	 * Retrieves the container file of the given resource.
+	 * @param resource the resource.
+	 * @param language the language
+	 * @return the container file
+	 */
+	public File getContainer(String resource, String language) {
+		Map<String, File> res = map.get(resource);
+		if (res != null) {
+			return res.get(language);
+		}
+		return null;
+	}
+	/**
 	 * Test routine.
 	 * @param args the arguments.
 	 */
@@ -276,5 +292,24 @@ public class CEResourceManager {
 		CEResourceManager mgr = new CEResourceManager(new File("."));
 		mgr.scan();
 		System.out.println(mgr.map);
+	}
+	/**
+	 * Update a data resource.
+	 * @param resource the resource path and extension
+	 * @param language the language
+	 * @param data the data bytes
+	 */
+	public void saveData(String resource, String language, byte[] data) {
+		if (saveDir == null) {
+			Exceptions.add(new AssertionError("No save directory present."));
+			return;
+		}
+		File f = getContainer(resource, language);
+		if (f != null && f.isDirectory()) {
+			IOUtils.save(new File(f, language + "/" + resource), data);
+		} else
+		if (f == null) {
+			IOUtils.save(new File(saveDir, language + "/" + resource), data);
+		}
 	}
 }
