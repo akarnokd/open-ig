@@ -11,6 +11,7 @@ package hu.openig.editors.ce;
 import hu.openig.core.Action0;
 import hu.openig.core.Func0;
 import hu.openig.editors.BackgroundProgress;
+import hu.openig.model.GameDefinition;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -438,6 +439,31 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 		
 		updateUndoRedo();
 		startupDialog = new CEStartupDialog(this);
+		
+		// FIXME disabled menu and toolbars
+		
+		mnuFileOpen.setEnabled(false);
+		mnuFileSave.setEnabled(false);
+		mnuFileSaveAs.setEnabled(false);
+		mnuFileImport.setEnabled(false);
+		mnuFileExport.setEnabled(false);
+		
+		mnuEditCopy.setEnabled(false);
+		mnuEditCut.setEnabled(false);
+		mnuEditPaste.setEnabled(false);
+		mnuEditDelete.setEnabled(false);
+		
+		mnuHelpAbout.setEnabled(false);
+		
+		toolbarOpen.setEnabled(false);
+		toolbarSave.setEnabled(false);
+		toolbarImport.setEnabled(false);
+		toolbarExport.setEnabled(false);
+		toolbarCut.setEnabled(false);
+		toolbarCopy.setEnabled(false);
+		toolbarPaste.setEnabled(false);
+		toolbarRemove.setEnabled(false);
+		toolbarSaveAs.setEnabled(false);
 	}
 	/**
 	 * Initialize the toolbar.
@@ -779,10 +805,51 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	 */
 	public void updateRecentMenu() {
 		mnuFileRecent.removeAll();
-		for (String r : recent) {
+		for (final String r : recent) {
 			JMenuItem e = new JMenuItem();
 			e.setText(r);
 			mnuFileRecent.add(e);
+			
+			e.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					doOpenRecent(r);
+				}
+			});
+		}
+	}
+	/**
+	 * Open a recent file.
+	 * @param f the file
+	 */
+	void doOpenRecent(String f) {
+		final CEDataManager dm = dataManager();
+		dm.campaignData = new CampaignData();
+		File f0 = new File(getWorkDir(), f);
+		if (f0.canRead()) {
+			dm.campaignData.definition = new GameDefinition();
+			try {
+				dm.campaignData.definition.parse(XElement.parseXML(f0));
+				
+				dm.campaignData.definition.name = f0.getParentFile().getName();
+				
+				BackgroundProgress.run(get("startup.opening_recent"), get("startup.opening_recent"),
+					new Action0() {
+						@Override
+						public void invoke() {
+							dm.load();
+						}
+					},
+					new Action0() {
+						@Override
+						public void invoke() {
+							load();
+						};
+					}
+				);
+			} catch (XMLStreamException ex) {
+				Exceptions.add(ex);
+			}
 		}
 	}
 	@Override

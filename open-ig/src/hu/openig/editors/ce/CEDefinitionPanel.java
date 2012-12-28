@@ -8,6 +8,7 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.core.Pair;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Parameters;
 import hu.openig.utils.Exceptions;
@@ -40,11 +41,9 @@ import javax.swing.JTextField;
  * The main definition panel.
  * @author akarnokd, 2012.12.17.
  */
-public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
+public class CEDefinitionPanel extends CEBasePanel implements CEPanelPreferences {
 	/** */
 	private static final long serialVersionUID = 3418547993103195127L;
-	/** The context. */
-	protected CEContext ctx;
 	/** The element names. */
 	protected static final String[] ELEMENT_NAMES = {
 		"intro", "image", "battle", "bridge", "buildings",
@@ -86,7 +85,7 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 	 * @param ctx the context
 	 */
 	public CEDefinitionPanel(CEContext ctx) {
-		this.ctx = ctx;
+		super(ctx);
 		initComponents();
 	}
 	/** Initialize the content. */
@@ -141,7 +140,7 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 				if (Desktop.isDesktopSupported()) {
 					Desktop d = Desktop.getDesktop();
 					try {
-						d.open(ctx.dataManager().getDefinitionDirectory().getCanonicalFile());
+						d.open(context.dataManager().getDefinitionDirectory().getCanonicalFile());
 					} catch (IOException e1) {
 						Exceptions.add(e1);
 					}
@@ -276,14 +275,6 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 		return "definition-panel";
 	}
 	/**
-	 * Returns an editor label.
-	 * @param key the label key
-	 * @return the translation
-	 */
-	String get(String key) {
-		return ctx.get(key);
-	}
-	/**
 	 * Update the text fields.
 	 */
 	void updateTexts() {
@@ -295,11 +286,11 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 		titleFields.clear();
 		descriptionFields.clear();
 		
-		ParallelGroup hg = gl0.createParallelGroup();
+		ParallelGroup hg = gl0.createParallelGroup(Alignment.CENTER);
 		SequentialGroup vg = gl0.createSequentialGroup();
 		
-		GameDefinition definition = ctx.campaignData().definition;
-		for (String lang : definition.languages()) {
+		final GameDefinition definition = context.campaignData().definition;
+		for (final String lang : definition.languages()) {
 			textsSubPanel.add(new JSeparator(JSeparator.HORIZONTAL));
 			
 			JLabel langLabel = new JLabel(get("definition_language"));
@@ -308,6 +299,14 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 			JTextField titleField = new JTextField(definition.getTitle(lang));
 			JLabel descLabel = new JLabel(get("definition_description"));
 			JTextArea descField = new JTextArea(definition.getDescription(lang));
+			JButton remove = new JButton(icon("/hu/openig/gfx/minus16.png"));
+			remove.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					definition.texts.remove(lang);
+					updateTexts();
+				}
+			});
 			
 			languageFields.add(langField);
 			titleFields.add(titleField);
@@ -320,57 +319,86 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 			gl.setAutoCreateGaps(true);
 			
 			gl.setHorizontalGroup(
-				gl.createParallelGroup()
-				.addGroup(
-					gl.createSequentialGroup()
-					.addComponent(langLabel)
-					.addComponent(langField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(30)
-					.addComponent(titleLabel)
-					.addComponent(titleField)
-				)
-				.addGroup(
-					gl.createSequentialGroup()
-					.addComponent(descLabel)
-					.addComponent(descField)
-				)
-			);
-			gl.setVerticalGroup(
 				gl.createSequentialGroup()
 				.addGroup(
-					gl.createParallelGroup(Alignment.BASELINE)
-					.addComponent(langLabel)
-					.addComponent(langField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addComponent(titleLabel)
-					.addComponent(titleField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					gl.createParallelGroup()
+					.addGroup(
+						gl.createSequentialGroup()
+						.addComponent(langLabel)
+						.addComponent(langField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGap(30)
+						.addComponent(titleLabel)
+						.addComponent(titleField)
+					)
+					.addGroup(
+						gl.createSequentialGroup()
+						.addComponent(descLabel)
+						.addComponent(descField)
+					)
 				)
+				.addComponent(remove)
+			);
+			gl.setVerticalGroup(
+				gl.createParallelGroup(Alignment.CENTER)
 				.addGroup(
-					gl.createParallelGroup(Alignment.BASELINE)
-					.addComponent(descLabel)
-					.addComponent(descField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					gl.createSequentialGroup()
+					.addGroup(
+						gl.createParallelGroup(Alignment.BASELINE)
+						.addComponent(langLabel)
+						.addComponent(langField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(titleLabel)
+						.addComponent(titleField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					)
+					.addGroup(
+						gl.createParallelGroup(Alignment.BASELINE)
+						.addComponent(descLabel)
+						.addComponent(descField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					)
 				)
+				.addComponent(remove)
 			);
 			
 			JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 			
+			hg.addComponent(p);
+			vg.addComponent(p);
+
 			hg.addComponent(sep);
 			vg.addComponent(sep, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
 			
-			hg.addComponent(p);
-			vg.addComponent(p);
 		}
+		
+		JButton addNew = new JButton(icon("/hu/openig/gfx/plus16.png"));
+		addNew.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doAddNewLanguage();
+			}
+		});
+		
+		hg.addComponent(addNew);
+		vg.addComponent(addNew);
 		
 		gl0.setHorizontalGroup(hg);
 		gl0.setVerticalGroup(vg);
 		
 	}
 	/**
+	 * Add a new language.
+	 */
+	void doAddNewLanguage() {
+		GameDefinition definition = context.campaignData().definition;
+		String n = Integer.toString(definition.languages().size() + 1);
+		definition.texts.put(n, Pair.of("", ""));
+		updateTexts();
+	}
+	/**
 	 * Load the fields.
 	 */
 	public void load() {
-		CampaignData cd = ctx.campaignData();
+		CampaignData cd = context.campaignData();
 		try {
-			directory.setText(ctx.dataManager().getDefinitionDirectory().getCanonicalPath());
+			directory.setText(context.dataManager().getDefinitionDirectory().getCanonicalPath());
 		} catch (IOException e1) {
 			Exceptions.add(e1);
 		}

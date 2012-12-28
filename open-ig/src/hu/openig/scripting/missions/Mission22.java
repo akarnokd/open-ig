@@ -130,6 +130,7 @@ public class Mission22 extends Mission {
 			addTimeout("Mission-22-Objective", 4000);
 			planetsOwned = player.statistics.planetsOwned;
 			addMission("Mission-22-Delay", 28 * 24);
+			addMission("Mission-22-Delay-2", 7 * 24);
 		}
 		// delay any dargslan activity
 		if (checkMission("Mission-22-Delay")) {
@@ -142,7 +143,12 @@ public class Mission22 extends Mission {
 				dsl.explorationInnerLimit = null;
 				dsl.explorationOuterLimit = null;
 			}
-
+		}
+		// unbound colonization
+		if (checkMission("Mission-22-Delay-2")) {
+			for (Player p : world.players.values()) {
+				p.colonizationLimit = -1;
+			}
 		}
 		if (checkTimeout("Mission-22-Objective")) {
 			showObjective("Mission-22");

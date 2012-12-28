@@ -13,6 +13,7 @@ import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.editors.BackgroundProgress;
 import hu.openig.model.GameDefinition;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -32,6 +33,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -252,10 +254,10 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		JButton cancel = new JButton(get("cancel"));
 		
 		open = new JButton(get("startup.open"));
-		open.setIcon(new ImageIcon(getClass().getResource("../res/Open16.gif")));
+		open.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Open16.gif")));
 		
 		JButton refresh = new JButton(get("startup.refresh"));
-		refresh.setIcon(new ImageIcon(getClass().getResource("../res/Refresh16.gif")));
+		refresh.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Refresh16.gif")));
 		
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(createNew);
@@ -728,8 +730,12 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			new Action0() {
 				@Override
 				public void invoke() {
-					dm.copy(settings);
-					dm.load();
+					try {
+						dm.copy(settings);
+						dm.load();
+					} catch (Exception ex) {
+						Exceptions.add(ex);
+					}
 				}
 			},
 			new Action0() {
@@ -748,7 +754,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		);
 	}
 	/**
-	 * 
+	 * Open the selected recent entry.
 	 */
 	public void doOpenRecent() {
 		int idx = recentTable.getSelectedRow();
@@ -815,6 +821,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		open.setVisible(visible);
 		openRecent.setVisible(visible);
 		openRecent.setSelected(false);
+		imageRecent.setVisible(visible);
 	}
 	/**
 	 * @return The currently selected project language.
@@ -839,26 +846,35 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	 */
 	public void setRecents() {
 		recentModel.clear();
-		for (String r : ctx.getRecent()) {
+		Set<String> recent = ctx.getRecent();
+		for (String r : U.newArrayList(recent)) {
 			try {
 				CampaignItem ci = new CampaignItem();
 				ci.file = r;
 				File f = new File(ctx.getWorkDir(), r);
 				ci.date = new Date(f.lastModified());
 				GameDefinition def = new GameDefinition();
-				def.parse(XElement.parseXML(f));
-				ci.definition = def;
-				ci.definition.name = f.getParentFile().getName();
-				
-				recentModel.add(ci);
+				if (f.canRead()) {
+					def.parse(XElement.parseXML(f));
+					ci.definition = def;
+					ci.definition.name = f.getParentFile().getName();
+					
+					if (!ci.file.contains("!/")) {
+						recentModel.add(ci);
+					}
+				} else {
+					recent.remove(r);
+				}
 			} catch (XMLStreamException ex) {
 				// ingored
 				System.out.println(U.stacktrace(ex));
 			}
 		}
 		for (CampaignItem ci : copyModel.items) {
-			if (!ci.file.contains("!/")) {
-				recentModel.add(ci);
+			if (!ci.file.contains("!/") && !recentModel.items.contains(ci)) {
+				if (new File(ci.file).exists()) {
+					recentModel.add(ci);
+				}
 			}
 		}
 	}
