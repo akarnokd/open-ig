@@ -106,6 +106,8 @@ public class AIWorld {
 	public boolean researchRequiresColonization;
 	/** The player's current colonization targets. */
 	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
+	/** Does the user have diplomacy room? */
+	public boolean hasDiplomacyRoom;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -237,6 +239,7 @@ public class AIWorld {
 			}
 		}
 		colonizationTargets.addAll(player.colonizationTargets);
+		hasDiplomacyRoom = player.world.getShip().positions.containsKey("*diplomacy");
 	}
 	/**
 	 * Returns or calculates the planet statistics.

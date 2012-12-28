@@ -40,7 +40,7 @@
       <building id='PhoodFactory' tech='ecalep' x='2' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='ecalep' x='-17' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='ecalep' x='-7' y='-45' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='ecalep' x='0' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='ecalep' x='0' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
   <planet id='Andromeda 2' name='Andromeda 2' x='912' y='614' size='30' owner='Ecalep' race='ecalep' rotate='LR' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0' label='planets.Andromeda 2'>
@@ -99,7 +99,7 @@
       <building id='NuclearPlant' tech='ecalep' x='3' y='-21' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhasedTelescope' tech='ecalep' x='-19' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='ecalep' x='0' y='-12' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='ecalep' x='-15' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='ecalep' x='-15' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='TradeCenter' tech='ecalep' x='-3' y='-21' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
@@ -176,7 +176,7 @@
       <building id='NuclearPlant' tech='ychom' x='-34' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='NuclearPlant' tech='ychom' x='8' y='-38' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='ychom' x='-7' y='-55' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='ychom' x='-6' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='ychom' x='-6' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='ychom' x='-7' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='ychom' x='-12' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='ychom' x='-3' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
@@ -257,7 +257,7 @@
       <building id='NuclearPlant' tech='ychom' x='-14' y='-52' enabled='true' repairing='false' energy='0' worker='0' level='4'/>
       <building id='NuclearPlant' tech='ychom' x='10' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='4'/>
       <building id='PhoodFactory' tech='ychom' x='-11' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='ychom' x='-8' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='ychom' x='-8' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='ychom' x='-6' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='ychom' x='-2' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
@@ -518,7 +518,7 @@
       <building id='NuclearPlant' tech='morgath' x='-16' y='-65' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='morgath' x='-9' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='morgath' x='10' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='morgath' x='-6' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='morgath' x='-6' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='RadarTelescope' tech='morgath' x='6' y='-38' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='morgath' x='-12' y='-51' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='morgath' x='1' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
@@ -543,7 +543,7 @@
       <building id='NuclearPlant' tech='morgath' x='-19' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='morgath' x='-11' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='morgath' x='-6' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='morgath' x='-15' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='morgath' x='-15' y='-27' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
   <planet id='Exterior 4' name='Exterior 4' x='236' y='638' size='24' owner='Sullep' race='sullep' rotate='RL' population='10000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0' label='planets.Exterior 4'>
@@ -570,7 +570,7 @@
       <building id='NuclearPlant' tech='sullep' x='-21' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='4'/>
       <building id='NuclearPlant' tech='sullep' x='-25' y='-47' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='sullep' x='-14' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='sullep' x='-30' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='sullep' x='-30' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='sullep' x='-16' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='sullep' x='-19' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
@@ -595,7 +595,7 @@
       <building id='PhoodFactory' tech='sullep' x='-16' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='sullep' x='-5' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='sullep' x='-5' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='sullep' x='1' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='sullep' x='1' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='TradeCenter' tech='sullep' x='-10' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
@@ -619,7 +619,7 @@
       <building id='PhoodFactory' tech='sullep' x='-21' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='sullep' x='-2' y='-43' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='sullep' x='-6' y='-54' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='sullep' x='-16' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='sullep' x='-16' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='sullep' x='-6' y='-50' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
@@ -670,7 +670,7 @@
       <building id='NuclearPlant' tech='sullep' x='-16' y='-45' enabled='true' repairing='false' energy='0' worker='0' level='4'/>
       <building id='NuclearPlant' tech='sullep' x='5' y='-20' enabled='true' repairing='false' energy='0' worker='0' level='4'/>
       <building id='PhoodFactory' tech='sullep' x='-2' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='sullep' x='4' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='sullep' x='4' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='RadarTelescope' tech='sullep' x='4' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='sullep' x='-6' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='TradeCenter' tech='sullep' x='-8' y='-44' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
@@ -711,7 +711,7 @@
       <building id='PhoodFactory' tech='sullep' x='-5' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='sullep' x='-19' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='sullep' x='-17' y='-49' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='sullep' x='-14' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='sullep' x='-14' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='TradeCenter' tech='sullep' x='-2' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='sullep' x='-15' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
@@ -794,7 +794,7 @@
       <building id='NuclearPlant' tech='sullep' x='-4' y='-38' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='NuclearPlant' tech='sullep' x='-11' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='sullep' x='-11' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='sullep' x='-18' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='sullep' x='-18' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='RadarTelescope' tech='sullep' x='-16' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='sullep' x='-9' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='TradeCenter' tech='sullep' x='-8' y='-42' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
@@ -870,7 +870,7 @@
       <building id='NuclearPlant' tech='garthog' x='-14' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='2'/>
       <building id='PhoodFactory' tech='garthog' x='-10' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='garthog' x='-14' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='garthog' x='1' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='garthog' x='1' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='RadarTelescope' tech='garthog' x='7' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='garthog' x='8' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
@@ -903,7 +903,7 @@
       <building id='NuclearPlant' tech='garthog' x='-17' y='-51' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='NuclearPlant' tech='garthog' x='-19' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='garthog' x='-5' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='garthog' x='-13' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='garthog' x='-13' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='RadarTelescope' tech='garthog' x='-14' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='garthog' x='-5' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
@@ -935,7 +935,7 @@
       <building id='PlasmaProjector' tech='garthog' x='-5' y='-51' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='garthog' x='7' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='garthog' x='-1' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='garthog' x='-10' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='garthog' x='-10' y='-40' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='RadarTelescope' tech='garthog' x='-10' y='-44' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='garthog' x='-5' y='-18' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='WeaponFactory' tech='garthog' x='-5' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
@@ -1266,7 +1266,7 @@
       <building id='NuclearPlant' tech='dribs' x='-1' y='-24' enabled='true' repairing='false' energy='0' worker='0' level='4'/>
       <building id='PhasedTelescope' tech='dribs' x='-1' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='dribs' x='-6' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='dribs' x='1' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='dribs' x='1' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='dribs' x='-13' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
@@ -1405,7 +1405,7 @@
       <building id='PhoodFactory' tech='dargslan' x='-7' y='-50' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='dargslan' x='-23' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PlasmaProjector' tech='dargslan' x='-13' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='dargslan' x='-9' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='dargslan' x='-9' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='TradeCenter' tech='dargslan' x='-18' y='-32' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
@@ -1445,7 +1445,7 @@
       <building id='NuclearPlant' tech='dargslan' x='-9' y='-44' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='NuclearPlant' tech='dargslan' x='-17' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhasedTelescope' tech='dargslan' x='-14' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='dargslan' x='-11' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='dargslan' x='-11' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>
   </planet>
   <planet id='Outer 11' name='Outer 11' x='768' y='164' size='30' owner='Dargslan' race='dargslan' rotate='LR' population='20000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0' label='planets.Outer 11'>
@@ -1490,7 +1490,7 @@
       <building id='NuclearPlant' tech='dargslan' x='-8' y='-44' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhasedTelescope' tech='dargslan' x='-19' y='-46' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='PhoodFactory' tech='dargslan' x='-14' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building id='PoliceStation' tech='dargslan' x='-23' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building id='PoliceStation2' tech='dargslan' x='-23' y='-41' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='SpaceshipFactory' tech='dargslan' x='-14' y='-25' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building id='TradeCenter' tech='dargslan' x='-20' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
     </buildings>

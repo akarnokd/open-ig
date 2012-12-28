@@ -3178,10 +3178,22 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					&& ship.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
 				setPortStatistics(sbs, ship.ports, ship.count, ship.owner);
-				ship.kamikaze = sbs.firepower * ship.count * 5;
+				ship.kamikaze = ship.count * kamikazeDamage(ship.techId, ship.owner.id);
 				ship.selected = false;
 			}
 		}
+	}
+	/**
+	 * Returns the kamikaze damage of the given ship. 
+	 * @param techId the technology
+	 * @param ownerId the owner identifier
+	 * @return the damage
+	 */
+	double kamikazeDamage(String techId, String ownerId) {
+		if (world().battle.hasProperty(techId, ownerId, "kamikaze-damage")) {
+			return world().battle.getDoubleProperty(techId, ownerId, "kamikaze-damage");
+		}
+		return 500;
 	}
 	/**
 	 * Stop the activity of the selected structures.
@@ -5047,7 +5059,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (mode == Mode.KAMIKAZE) {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
 				setPortStatistics(sbs, s.ports, s.count, s.owner);
-				s.kamikaze = sbs.firepower * s.count * 5;
+				s.kamikaze = s.count * kamikazeDamage(s.techId, s.owner.id);
 				s.selected = false;
 			} else {
 				s.attack = null;

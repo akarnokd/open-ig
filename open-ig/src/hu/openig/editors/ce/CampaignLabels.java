@@ -31,12 +31,15 @@ public class CampaignLabels {
 	protected Set<Pair<String, String>> modifiable = U.newHashSet();
 	/** The resource name for new or modified read-only entries. */
 	public String newEntryLocation;
+	/** Indicate that the local file. */
+	public boolean newEntryUsed;
 	/**
 	 * Loads the labels associated with the given definition.
 	 * @param def the definition.
 	 * @param mgr the resource manager
 	 */
 	public void load(GameDefinition def, CEResourceManager mgr) {
+		newEntryUsed = false;
 		newEntryLocation = "campaign/ " + def.name + "/labels.xml";
 		for (String res : U.startWith(def.labels, "labels.xml")) {
 			Map<String, byte[]> data = mgr.getData(res);
@@ -154,6 +157,7 @@ public class CampaignLabels {
 		if (kv == null || kv.length != 2 || !modifiable.contains(Pair.of(language, kv[0]))) {
 			kv = new String[] { newEntryLocation, value };
 			entry.put(language, kv);
+			newEntryUsed = true;
 		} else {
 			kv[1] = value;
 		}

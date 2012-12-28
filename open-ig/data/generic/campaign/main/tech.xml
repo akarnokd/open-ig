@@ -287,49 +287,25 @@
 	<item id="MesonProjector" name="tech.mesonprojector.name" long-name="tech.mesonprojector.longname" description="tech.mesonprojector.description" category="BUILDINGS_GUNS" image="inventions/buildings/guns/meson_projector" factory="building" research-cost="60000" production-cost="40000" level="5" race="human,morgath,ychom,dribs,sullep,dargslan,ecalep" requires="ParticleProjector" civil="5" mech="4" comp="4" ai="4" mil="6" index="2" video="technology/buildings/guns/meson_projector"/>
 	<!-- Alien technology -->
 	<item id="DargslanSelfRepairTank" name="tech.dargslanselfrepairtank.name" long-name="tech.dargslanselfrepairtank.longname" description="tech.dargslanselfrepairtank.description" category="WEAPONS_TANKS" factory="weapon" level="0" research-cost="32000" production-cost="20000" race="dargslan" image="inventions/weapons/vehicles/dargslan_self_repair_tank" index="3">
-		<property name="range" value="5"/>
-		<property name="speed" value="3"/>
-		<property name="armor" value="7"/>
-		<property name="damage" value="4"/>
 		<property name="selfrepair" value="true"/>
 	</item>
 	<item id="DribsParalizer" name="tech.dribsparalizer.name" long-name="tech.dribsparalizer.longname" description="tech.dribsparalizer.description" category="WEAPONS_VEHICLES" factory="weapon" level="0" research-cost="32000" production-cost="20000" race="dribs" image="inventions/weapons/vehicles/dribs_paralizer" index="3">
-		<property name="range" value="8"/>
-		<property name="speed" value="5"/>
-		<property name="armor" value="2"/>
 		<property name="paralizer" value="true"/>
 	</item>
 	<item id="EcalepRocketJammer" name="tech.ecaleprocketjammer.name" long-name="tech.ecaleprocketjammer.longname" description="tech.ecaleprocketjammer.description" category="WEAPONS_VEHICLES" factory="weapon" level="0" research-cost="32000" production-cost="20000" race="ecalep" image="inventions/weapons/vehicles/ecalep_rocket_jammer" index="3">
-		<property name="range" value="5"/>
-		<property name="speed" value="5"/>
-		<property name="armor" value="2"/>
 		<property name="rocketjammer" value="true"/>
 	</item>
 	<item id="GarthogRadarJammer" name="tech.garthogradarjammer.name" long-name="tech.garthogradarjammer.longname" description="tech.garthogradarjammer.description" category="WEAPONS_VEHICLES" factory="weapon" level="0" research-cost="24000" production-cost="12000" race="garthog" image="inventions/weapons/vehicles/garthog_radar_jammer" index="3">
-		<property name="speed" value="4"/>
-		<property name="armor" value="3"/>
 		<property name="one-per-fleet" value="true"/>
 		<property name="radarjammer" value="true"/>
 	</item>
 	<item id="MorgathKamikazeTank" name="tech.morgathkamikazetank.name" long-name="tech.morgathkamikazetank.longname" description="tech.morgathkamikazetank.description" category="WEAPONS_TANKS" factory="weapon" level="0" research-cost="24000" production-cost="12000" race="morgath" image="inventions/weapons/vehicles/morgath_kamikaze_tank" index="3">
-		<property name="speed" value="4"/>
-		<property name="armor" value="8"/>
-		<property name="damage" value="8"/>
-		<property name="area" value="3"/>
 		<property name="kamikaze" value="true"/>
 	</item>
 	<item id="SullepArtillery" name="tech.sullepartillery.name" long-name="tech.sullepartillery.longname" description="tech.sullepartillery.description" category="WEAPONS_VEHICLES" factory="weapon" level="0" research-cost="24000" production-cost="12000" race="sullep" image="inventions/weapons/vehicles/sullep_artillery" index="3">
-		<property name="speed" value="4"/>
-		<property name="armor" value="4"/>
-		<property name="damage" value="4"/>
-		<property name="area" value="1"/>
-		<property name="range" value="10"/>
-		<property name="range-minimum" value="3"/>
 		<property name="kamikaze" value="true"/>
 	</item>
 	<item id="YchomMineLayer" name="tech.ychomminelayer.name" long-name="tech.ychomminelayer.longname" description="tech.ychomminelayer.description" category="WEAPONS_VEHICLES" factory="weapon" level="0" research-cost="24000" production-cost="12000" race="ychom" image="inventions/weapons/vehicles/ychom_mine_layer" index="3">
-		<property name="speed" value="4"/>
-		<property name="armor" value="4"/>
 		<property name="minelayer" value="true"/>
 	</item>
 	<item id="DargslanFighter" name="tech.dargslanfighter.name" long-name="tech.dargslanfighter.longname" description="tech.dargslanfighter.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="0" research-cost="24000" production-cost="12000" race="dargslan" image="inventions/spaceships/fighters/dargslan_fighter" index="0">

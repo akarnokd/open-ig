@@ -856,6 +856,11 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				System.out.println(U.stacktrace(ex));
 			}
 		}
+		for (CampaignItem ci : copyModel.items) {
+			if (!ci.file.contains("!/")) {
+				recentModel.add(ci);
+			}
+		}
 	}
 	/** Reset the dialog. */
 	public void reset() {

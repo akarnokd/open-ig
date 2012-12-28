@@ -272,6 +272,22 @@
 		<property id="Bomb2" ground-radius="10" damage-percent="10" hp="2000"/>
 		<property id="VirusBomb" ground-radius="6" damage-percent="5" hp="2000"/>
 		<property id="MorgathKamikazeTank" self-destruct-multiplier="50"/>
+		<property id='Fighter1' kamikaze-damage='400'/>
+		<property id='Fighter2' kamikaze-damage='500'/>
+		<property id='Fighter3' kamikaze-damage='600'/>
+		<property id='Fighter4' kamikaze-damage='700'/>
+		<property id='Fighter5' kamikaze-damage='800'/>
+		<property id='Fighter6' kamikaze-damage='900'/>
+		<property id="PirateFighter" kamikaze-damage='400'/>
+		<property id="PirateFighter2" kamikaze-damage='400'/> <!-- Mission 4 custom fighter. -->
+		<property id="GarthogFighter" kamikaze-damage='500'/>
+		<property id="DargslanFighter" kamikaze-damage='900'/>
+		<property id="DribsFighter" kamikaze-damage='700'/>
+		<property id="EcalepFighter" kamikaze-damage='700'/>
+		<property id="MorgathFighter" kamikaze-damage='600'/>
+		<property id="SullepFighter1" kamikaze-damage='600'/>
+		<property id="SullepFighter2" kamikaze-damage='800'/>
+		<property id="YchomFighter" kamikaze-damage='800'/>
 	</properties>
 	<ecm-vs-matrix difficulty='EASY' backfire='0.25'>
 		<vs anti-ecm='0' ecm='0' value='1'/>
