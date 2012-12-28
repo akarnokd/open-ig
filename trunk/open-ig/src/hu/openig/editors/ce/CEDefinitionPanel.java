@@ -8,6 +8,7 @@
 
 package hu.openig.editors.ce;
 
+import hu.openig.model.GameDefinition;
 import hu.openig.model.Parameters;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -18,6 +19,7 @@ import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.GroupLayout;
@@ -28,7 +30,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
@@ -68,6 +73,14 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 	final Map<String, JLabel> indicators = U.newLinkedHashMap();
 	/** The input fields. */
 	final Map<String, JTextField> fields = U.newLinkedHashMap();
+	/** The language fields. */
+	final List<JTextField> languageFields = U.newArrayList();
+	/** The language fields. */
+	final List<JTextField> titleFields = U.newArrayList();
+	/** The language fields. */
+	final List<JTextArea> descriptionFields = U.newArrayList();
+	/** The texts subpanel. */
+	JPanel textsSubPanel;
 	/**
 	 * Constructor. Initializes the panel.
 	 * @param ctx the context
@@ -140,6 +153,14 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 	JPanel createTextsPanel() {
 		JPanel p = new JPanel();
 		// TODO
+		p.setLayout(new BorderLayout());
+		
+		textsSubPanel = new JPanel();
+		JScrollPane comp = new JScrollPane(textsSubPanel);
+		comp.getVerticalScrollBar().setBlockIncrement(90);
+		comp.getVerticalScrollBar().setUnitIncrement(30);
+		p.add(comp, BorderLayout.CENTER);
+		
 		return p;
 	}
 	/** @return The referenced main data files panel. */
@@ -263,6 +284,87 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 		return ctx.get(key);
 	}
 	/**
+	 * Update the text fields.
+	 */
+	void updateTexts() {
+		textsSubPanel.removeAll();
+		GroupLayout gl0 = new GroupLayout(textsSubPanel);
+		textsSubPanel.setLayout(gl0);
+		
+		languageFields.clear();
+		titleFields.clear();
+		descriptionFields.clear();
+		
+		ParallelGroup hg = gl0.createParallelGroup();
+		SequentialGroup vg = gl0.createSequentialGroup();
+		
+		GameDefinition definition = ctx.campaignData().definition;
+		for (String lang : definition.languages()) {
+			textsSubPanel.add(new JSeparator(JSeparator.HORIZONTAL));
+			
+			JLabel langLabel = new JLabel(get("definition_language"));
+			JTextField langField = new JTextField(lang, 2);
+			JLabel titleLabel = new JLabel(get("definition_title"));
+			JTextField titleField = new JTextField(definition.getTitle(lang));
+			JLabel descLabel = new JLabel(get("definition_description"));
+			JTextArea descField = new JTextArea(definition.getDescription(lang));
+			
+			languageFields.add(langField);
+			titleFields.add(titleField);
+			descriptionFields.add(descField);
+			
+			JPanel p = new JPanel();
+			GroupLayout gl = new GroupLayout(p);
+			p.setLayout(gl);
+			gl.setAutoCreateContainerGaps(true);
+			gl.setAutoCreateGaps(true);
+			
+			gl.setHorizontalGroup(
+				gl.createParallelGroup()
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(langLabel)
+					.addComponent(langField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGap(30)
+					.addComponent(titleLabel)
+					.addComponent(titleField)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(descLabel)
+					.addComponent(descField)
+				)
+			);
+			gl.setVerticalGroup(
+				gl.createSequentialGroup()
+				.addGroup(
+					gl.createParallelGroup(Alignment.BASELINE)
+					.addComponent(langLabel)
+					.addComponent(langField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(titleLabel)
+					.addComponent(titleField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				)
+				.addGroup(
+					gl.createParallelGroup(Alignment.BASELINE)
+					.addComponent(descLabel)
+					.addComponent(descField, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+				)
+			);
+			
+			JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+			
+			hg.addComponent(sep);
+			vg.addComponent(sep, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE);
+			
+			hg.addComponent(p);
+			vg.addComponent(p);
+		}
+		
+		gl0.setHorizontalGroup(hg);
+		gl0.setVerticalGroup(vg);
+		
+	}
+	/**
 	 * Load the fields.
 	 */
 	public void load() {
@@ -292,5 +394,6 @@ public class CEDefinitionPanel extends JPanel implements CEPanelPreferences {
 				tf.setText(val);
 			}
 		}
+		updateTexts();
 	}
 }

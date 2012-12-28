@@ -258,6 +258,9 @@
 		<entry key='definition.refprop_radarShareLimit'>Radar share limit</entry>
 		<entry key='definition.refprop_radarShareLimit.tip'>The minimum diplomacy relation level from where the radars are shared between parties.</entry>
 		<entry key='saving_project'>Saving project...</entry>
+		<entry key='definition_language'>Language:</entry>
+		<entry key='definition_title'>Title:</entry>
+		<entry key='definition_description'>Description:</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>
