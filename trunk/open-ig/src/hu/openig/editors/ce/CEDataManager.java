@@ -401,6 +401,8 @@ public class CEDataManager {
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
+		
+		mgr.scan();
 	}
 	/**
 	 * Copy the galaxy and surface definitions.
