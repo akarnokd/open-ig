@@ -109,7 +109,8 @@
 			<transition media="flagship/corridor_to_lift_2_level_3" label="flagship.moveto.lift" area="561,73 639,73 639,397 561,397" to="lift"/>
 		</position>
 	</ship>
-	<ship id="4">
+	<ship id="4" ref='3'/>
+	<ship id="5">
 		<position id="*bridge" picture="flagship/bridge_level_3">
 			<transition media="flagship/bridge_to_production_level_3" label="flagship.moveto.production" area="0,115 103,115 103,294 0,294" to="production"/>
 			<transition media="flagship/bridge_to_starmap_level_3" label="flagship.moveto.starmap" area="166,137 479,137 479,239 166,239" to="*starmap"/>
@@ -182,5 +183,4 @@
 			<transition media="flagship/corridor_to_lift_3_level_4" label="flagship.moveto.lift" area="0,65 112,65 112,410 0,410" to="lift"/>
 		</position>
 	</ship>
-	<ship id="5" ref="4"/>
 </walks>

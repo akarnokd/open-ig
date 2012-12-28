@@ -682,6 +682,38 @@
   <building name='buildings.police_station' id='PoliceStation'>
     <graphics>
       <tech id='human' height='5' width='5' image='colony/buildings/human/police_station'/>
+    </graphics>
+    <build limit='*' kind='Social' cost='26000'/>
+    <operation>
+      <resource type='police'>50000</resource>
+      <resource type='energy'>-1200</resource>
+      <resource type='worker'>-400</resource>
+    </operation>
+    <upgrades>
+      <upgrade desc='buildings.police_station.upgrade_1'>
+        <resource type='police'>1.25</resource>
+        <resource type='energy'>1.5</resource>
+        <resource type='worker'>1.5</resource>
+      </upgrade>
+      <upgrade desc='buildings.police_station.upgrade_2'>
+        <resource type='police'>1.5</resource>
+        <resource type='energy'>1.75</resource>
+        <resource type='worker'>1.75</resource>
+      </upgrade>
+      <upgrade desc='buildings.police_station.upgrade_3'>
+        <resource type='police'>1.75</resource>
+        <resource type='energy'>2</resource>
+        <resource type='worker'>2</resource>
+      </upgrade>
+      <upgrade desc='buildings.police_station.upgrade_4'>
+        <resource type='police'>2</resource>
+        <resource type='energy'>2</resource>
+        <resource type='worker'>2</resource>
+      </upgrade>
+    </upgrades>
+  </building>
+  <building name='buildings.police_station' id='PoliceStation2'>
+    <graphics>
       <tech id='garthog' height='3' width='5' image='colony/buildings/garthog/police_station'/>
       <tech id='morgath' height='4' width='4' image='colony/buildings/morgath/police_station'/>
       <tech id='ychom' height='4' width='4' image='colony/buildings/ychom/police_station'/>
@@ -690,8 +722,9 @@
       <tech id='dargslan' height='4' width='5' image='colony/buildings/dargslan/police_station'/>
       <tech id='ecalep' height='4' width='2' image='colony/buildings/ecalep/police_station'/>
     </graphics>
-    <build limit='*' kind='Social' cost='26000'/>
+    <build limit='*' kind='Social' cost='10000'/>
     <operation>
+      <resource type='morale'>15</resource>
       <resource type='police'>50000</resource>
       <resource type='energy'>-1200</resource>
       <resource type='worker'>-400</resource>

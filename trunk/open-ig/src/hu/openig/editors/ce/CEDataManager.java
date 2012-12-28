@@ -589,10 +589,17 @@ public class CEDataManager {
 	 * Save the data files.
 	 */
 	public void save() {
+		if (campaignData.labels.newEntryUsed) {
+			String nel = campaignData.labels.newEntryLocation;
+			if (campaignData.definition.labels.contains(nel)) {
+				campaignData.definition.labels.add(nel);
+			}
+		}
 		campaignData.definition.save(campaignData.def);
-		
 		save("campaign/" + campaignData.definition.name + "/definition", campaignData.def);
+
 		campaignData.labels.save(mgr);
+
 		
 		save(campaignData.definition.galaxy, campaignData.galaxy);
 		save(campaignData.definition.players, campaignData.players);

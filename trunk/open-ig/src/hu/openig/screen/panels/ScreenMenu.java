@@ -86,8 +86,8 @@ public class ScreenMenu extends UIContainer {
 	boolean isScreenDisabled(int idx) {
 		return (idx == 4 && commons.world().level < 2) 
 				|| (idx == 5 && commons.world().level < 3)
-				|| (idx == 8 && commons.world().level < 2)
-				|| (idx == 9 && commons.world().level < 4)
+				|| (idx == 8 && !commons.world().getShip().positions.containsKey("*bar"))
+				|| (idx == 9 && !commons.world().getShip().positions.containsKey("*diplomacy"))
 				|| (idx < 12 && commons.battleMode);
 	}
 	@Override
@@ -140,12 +140,12 @@ public class ScreenMenu extends UIContainer {
 			commons.control().displaySecondary(Screens.DATABASE);
 			break;
 		case 8:
-			if (commons.world().level >= 2) {
+			if (commons.world().getShip().positions.containsKey("*bar")) {
 				commons.control().displaySecondary(Screens.BAR);
 			}
 			break;
 		case 9:
-			if (commons.world().level >= 4) {
+			if (commons.world().getShip().positions.containsKey("*diplomacy")) {
 				commons.control().displaySecondary(Screens.DIPLOMACY);
 			}
 			break;

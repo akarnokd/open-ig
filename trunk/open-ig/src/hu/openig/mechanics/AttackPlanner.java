@@ -156,7 +156,7 @@ public class AttackPlanner extends Planner {
 					});
 				}
 			}
-			if (world.level >= 4) {
+			if (world.hasDiplomacyRoom) {
 				manageDiplomacy();
 			}
 		}

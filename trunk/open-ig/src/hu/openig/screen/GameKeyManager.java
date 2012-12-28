@@ -370,7 +370,7 @@ public class GameKeyManager extends KeyAdapter {
 				e.consume();
 				break;
 			case KeyEvent.VK_F9:
-				if (world().level > 1) {
+				if (world().getShip().positions.containsKey("*bar")) {
 					if (secondary != null) {
 						if (secondary.screen() == Screens.BAR) {
 							hideSecondary();
@@ -384,7 +384,7 @@ public class GameKeyManager extends KeyAdapter {
 				e.consume();
 				break;
 			case KeyEvent.VK_F10:
-				if (world().level > 3) {
+				if (world().getShip().positions.containsKey("*diplomacy")) {
 					if (secondary != null) {
 						if (secondary.screen() == Screens.DIPLOMACY) {
 							hideSecondary();

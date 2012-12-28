@@ -20,6 +20,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
+import hu.openig.model.Production;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Tile;
@@ -32,6 +33,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Planner for building ground defenses and space stations.
@@ -169,7 +171,7 @@ public class StaticDefensePlanner extends Planner {
 				}
 			});
 		}
-		if (world.money >= 150000) {
+		if (world.money >= MONEY_LIMIT) {
 			if (world.level > 1) {
 				actions.add(new Pred0() {
 					@Override
@@ -240,8 +242,8 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if all economic buildings built
 	 */
 	boolean isEconomyBuilt(AIPlanet planet) {
-		boolean hasMultiply = false;
-		boolean hasCredit = false;
+		boolean hasMultiply = !buildingResourceSupported(planet, "credit");
+		boolean hasCredit = !buildingResourceSupported(planet, "multiply");
 		boolean hasTrade = world.isAvailable("TradeCenter") == null;
 		boolean hasRadar = false;
 		boolean hasSocial = false;
@@ -259,16 +261,62 @@ public class StaticDefensePlanner extends Planner {
 				hasTrade |= b.type.id.equals("TradeCenter");
 			}
 		}
+		Set<String> rf = getRequiredFactories();
 		return hasMultiply && hasCredit
-				&& planet.statistics.hasTradersSpaceport
-				&& planet.statistics.activeProduction.weapons > 0
-				&& planet.statistics.activeProduction.equipment > 0
-				&& planet.statistics.activeProduction.spaceship > 0
+				&& (planet.statistics.hasTradersSpaceport || !buildingSupported(planet, "TradersSpaceport"))
+				&& (planet.statistics.activeProduction.weapons > 0 || !rf.contains("weapon"))
+				&& (planet.statistics.activeProduction.equipment > 0 || !rf.contains("equipment"))
+				&& (planet.statistics.activeProduction.spaceship > 0 || !rf.contains("spaceship"))
 				&& hasRadar
 				&& hasSocial
 				&& hasPolice
 				&& hasHospital
 				&& hasTrade;
+	}
+	/**
+	 * Collects the factory types to be built based on technological requirements.
+	 * @return the set of factory types
+	 */
+	Set<String> getRequiredFactories() {
+		Set<String> result = U.newHashSet();
+		for (ResearchType rt : w.researches.values()) {
+			if (rt.race.contains(p.race) && rt.level <= w.level) {
+				result.add(rt.factory);
+			}
+		}
+		return result;
+	}
+	/**
+	 * Check if there is a building that supports the given resource on the planet.
+	 * @param planet the target planet
+	 * @param resource the resource
+	 * @return true if supported
+	 */
+	boolean buildingResourceSupported(AIPlanet planet, String resource) {
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			if (planet.canBuild(bt)) {
+				if (bt.hasResource(resource)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if there is a building that supports the given resource on the planet.
+	 * @param planet the target planet
+	 * @param buildingId the building identifier
+	 * @return true if supported
+	 */
+	boolean buildingSupported(AIPlanet planet, String buildingId) {
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			if (planet.canBuild(bt)) {
+				if (bt.id.equals(buildingId)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	/**
 	 * Check the tanks.
@@ -282,6 +330,7 @@ public class StaticDefensePlanner extends Planner {
 				p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
 		
 		if (planet.owner.money() >= MONEY_LIMIT) {
+			boolean productionPlaced = false;
 			// issue production order for the difference
 			for (Map.Entry<ResearchType, Integer> prod : plan.demand.entrySet()) {
 				ResearchType rt = prod.getKey();
@@ -292,12 +341,14 @@ public class StaticDefensePlanner extends Planner {
 				int localDemand = count - inventoryLocal;
 				if (localDemand > 0 && localDemand > inventoryGlobal) {
 					// if in production wait
-					if (world.productionCount(rt) > 0) {
-						return false;
+					if (world.productionCount(rt) == 0 && activeProductionLanes("weapon") < 5) {
+						placeProductionOrder(rt, localDemand - inventoryGlobal);
+						productionPlaced = true;
 					}
-					placeProductionOrder(rt, localDemand - inventoryGlobal);
-					return true;
 				}
+			}
+			if (productionPlaced) {
+				return true;
 			}
 		
 			// undeploy old technology
@@ -344,6 +395,20 @@ public class StaticDefensePlanner extends Planner {
 		}
 		
 		return false;
+	}
+	/**
+	 * Counts the number of active production lanes in the given factory.
+	 * @param factory the factory
+	 * @return the number
+	 */
+	int activeProductionLanes(String factory) {
+		int count = 0;
+		for (Production pr : world.productions.values()) {
+			if (pr.type.factory.equals(factory) && pr.count > 0) {
+				count++;
+			}
+		}
+		return count;
 	}
 	/**
 	 * Try constructing planets / 2 + 1 spaceports.
