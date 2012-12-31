@@ -49,7 +49,7 @@
 				<close video="bridge/projector_retract_level_3" audio="ui/comm_deploy"/>
 			</comm-panel>
 		</level>
-		<level id="5" image="flagship/bridge_level_3" ship-id="4">
+		<level id="5" image="flagship/bridge_level_3" ship-id="5">
 			<message-panel>
 				<appear video="bridge/messages_appear_level_3" audio=""/>
 				<open video="bridge/messages_open_level_3" audio="ui/messages_deploy"/>

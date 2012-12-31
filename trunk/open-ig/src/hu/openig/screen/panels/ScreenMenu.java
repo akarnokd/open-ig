@@ -9,6 +9,7 @@
 package hu.openig.screen.panels;
 
 import hu.openig.model.Screens;
+import hu.openig.model.WalkPosition;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.api.LoadSaveScreenAPI;
@@ -19,6 +20,7 @@ import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Map;
 
 /**
  * A popup menu to switch to arbitrary screen by the mouse.
@@ -84,10 +86,11 @@ public class ScreenMenu extends UIContainer {
 	 * @return true if disabled
 	 */
 	boolean isScreenDisabled(int idx) {
+		Map<String, WalkPosition> positions = commons.world().getShip().positions;
 		return (idx == 4 && commons.world().level < 2) 
 				|| (idx == 5 && commons.world().level < 3)
-				|| (idx == 8 && !commons.world().getShip().positions.containsKey("*bar"))
-				|| (idx == 9 && !commons.world().getShip().positions.containsKey("*diplomacy"))
+				|| (idx == 8 && !positions.containsKey("*bar"))
+				|| (idx == 9 && !positions.containsKey("*diplomacy"))
 				|| (idx < 12 && commons.battleMode);
 	}
 	@Override
@@ -101,6 +104,10 @@ public class ScreenMenu extends UIContainer {
 		if (!isScreenDisabled(highlight)) {
 			if (e.has(Type.UP)) {
 				switchScreen();
+			}
+		} else {
+			if (e.has(Type.UP)) {
+				visible(false);
 			}
 		}
 		super.mouse(e);
