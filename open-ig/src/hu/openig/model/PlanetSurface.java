@@ -260,12 +260,19 @@ public class PlanetSurface {
 		
 		for (XElement tile : buildings.childrenWithName("building")) {
 			String id = tile.get("id");
+			// FIXME name change
 			if (id.equals("FusionProjector")) {
 				id = "ParticleProjector";
 			}
 			String tech = tile.get("tech");
 			
-			Building b = new Building(bm.buildings.get(id), tech);
+			// FIXME police split
+			BuildingType bt = bm.buildings.get(id);
+			if (bt.tileset.get(tech) == null) {
+				id += "2";
+				bt = bm.buildings.get(id);
+			}
+			Building b = new Building(bt, tech);
 			int x = tile.getInt("x");
 			int y = tile.getInt("y");
 		
