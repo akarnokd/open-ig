@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2012, David Karnok 
+ * Copyright 2008-2013, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -8,9 +8,11 @@
 
 package hu.openig.tools;
 
+import hu.openig.launcher.Launcher;
 import hu.openig.model.Configuration;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
+import hu.openig.utils.XElement;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -27,6 +29,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +64,7 @@ public final class PackageStuff {
 	 * @param version the version number in the file
 	 * @return the digest
 	 */
-	static String buildPatch(String version) {
+	static String buildImages(String version) {
 		String result = "";
 		String fileName = "open-ig-images-" + version + ".zip";
 		try {
@@ -69,20 +74,6 @@ public final class PackageStuff {
 			try {
 				zout.setLevel(9);
 				processDirectory("." + sep + "images" + sep + "", "." + sep + "images", zout, null);
-//				processDirectory("." + sep + "audio" + sep + "", "." + sep + "audio", zout, new FilenameFilter() {
-//					@Override
-//					public boolean accept(File dir, String name) {
-//						String d = dir.toString().replace('" + sep + "', '/');
-//						return d.contains("/ui") 
-//								|| d.contains("/groundwar")
-//								|| d.contains("/spacewar") || d.contains("generic")
-//								;
-//					}
-//				});
-//				addFile("generic/messages/achilles_check.ani.gz", "video/generic/messages/achilles_check.ani.gz", zout);
-//				addFile("hu/messages/achilles_check.wav", "audio/hu/messages/achilles_check.wav", zout);
-//				addFile("hu/messages/centronom_check.wav", "audio/hu/messages/centronom_check.wav", zout);
-//				addFile("en/messages/achilles_check.wav", "audio/en/messages/achilles_check.wav", zout);
 			} finally {
 				zout.close();
 			}
@@ -90,7 +81,16 @@ public final class PackageStuff {
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
-		fileName = "open-ig-upgrade-" + version + "2.zip";
+		return result;
+	}
+	/**
+	 * Build the graphics/data patch file.
+	 * @param version the version number in the file
+	 * @return the digest
+	 */
+	static String buildData(String version) {
+		String result = "";
+		String fileName = "open-ig-upgrade-" + version + "2.zip";
 		try {
 			ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
@@ -321,7 +321,9 @@ public final class PackageStuff {
 		
 		final JCheckBox cb1 = new JCheckBox("Build game", true);
 		final JCheckBox cb2 = new JCheckBox("Build launcher", false);
-		final JCheckBox cb3 = new JCheckBox("Build patch", false);
+		final JCheckBox cb3 = new JCheckBox("Build data", true);
+		final JCheckBox cb4 = new JCheckBox("Build images", false);
+		final JCheckBox cb5 = new JCheckBox("Modify update.xml", false);
 		
 		final JTextArea text = new JTextArea(6, 50);
 		text.setFont(new Font(Font.MONOSPACED, Font.PLAIN, cb1.getFont().getSize()));
@@ -340,15 +342,20 @@ public final class PackageStuff {
 				final boolean v1 = cb1.isSelected();
 				final boolean v2 = cb2.isSelected();
 				final boolean v3 = cb3.isSelected();
+				final boolean v4 = cb4.isSelected();
+				final boolean v5 = cb5.isSelected();
 				SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
 					@Override
 					protected Void doInBackground() throws Exception {
+						final ConcurrentMap<String, String> checksums = new ConcurrentHashMap<String, String>();
 						final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 						if (v1) {
 							exec.execute(new Runnable() {
 								@Override
 								public void run() {
-									appendLine(text, buildGame(Configuration.VERSION));
+									String buildGame = buildGame(Configuration.VERSION);
+									appendLine(text, buildGame);
+									checksums.put("game", buildGame);
 								}
 							});
 						}
@@ -356,7 +363,9 @@ public final class PackageStuff {
 							exec.execute(new Runnable() {
 								@Override
 								public void run() {
-									appendLine(text, buildLauncher());
+									String buildLauncher = buildLauncher();
+									appendLine(text, buildLauncher);
+									checksums.put("launcher", buildLauncher);
 								}
 							});
 						}
@@ -365,13 +374,28 @@ public final class PackageStuff {
 								@Override
 								public void run() {
 									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-									appendLine(text, buildPatch(sdf.format(new Date()) + "a"));
+									String buildData = buildData(sdf.format(new Date()) + "a");
+									appendLine(text, buildData);
+									checksums.put("data", buildData);
 								}
 							});
 						} 
-
+						if (v4) {
+							exec.execute(new Runnable() {
+								@Override
+								public void run() {
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+									String buildImages = buildImages(sdf.format(new Date()) + "a");
+									appendLine(text, buildImages);
+									checksums.put("images", buildImages);
+								}
+							});
+						}
 						exec.shutdown();
 						exec.awaitTermination(1, TimeUnit.DAYS);
+						if (v5) {
+							modifyUpdateXML(checksums);
+						}
 						return null;
 					}
 					@Override
@@ -385,11 +409,126 @@ public final class PackageStuff {
 		p.add(cb1);
 		p.add(cb2);
 		p.add(cb3);
+		p.add(cb4);
+		p.add(cb5);
 		p.add(sp);
 		p.add(run);
 		f.pack();
 		f.setResizable(false);
 		f.setLocationRelativeTo(null);
 		f.setVisible(true);
+	}
+	/**
+	 * Modify the update.xml according to the changed resources.
+	 * @param checksums the checksums
+	 */
+	static void modifyUpdateXML(Map<String, String> checksums) {
+		try {
+			XElement update = XElement.parseXML("update.xml");
+			
+			if (checksums.containsKey("game")) {
+				updateJarFile(update, "Game", Configuration.VERSION, checksums.get("game"));
+			}
+			if (checksums.containsKey("launcher")) {
+				updateJarFile(update, "Launcher", Launcher.VERSION, checksums.get("launcher"));
+			}
+			if (checksums.containsKey("data")) {
+				updateZipFile(update, "Game", "open-ig-upgrade-", checksums.get("data"), false);
+			}
+			if (checksums.containsKey("images")) {
+				updateZipFile(update, "Game", "open-ig-images-", checksums.get("images"), true);
+			}
+			
+			if (!checksums.isEmpty()) {
+				update.save("update.xml");
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Update a module's main JAR file.
+	 * @param update the XML
+	 * @param module the module name
+	 * @param version the jar version
+	 * @param checksum the sha1 + filename
+	 */
+	static void updateJarFile(XElement update, 
+			String module, 
+			String version, 
+			String checksum) {
+		String sha1 = checksum;
+		String name = sha1.substring(41).trim();
+		sha1 = sha1.substring(0, 40).trim();
+		
+		for (XElement xmodules : update.childrenWithName("module")) {
+			if (module.equals(xmodules.get("id"))) {
+				xmodules.set("version", version);
+				
+				for (XElement xfile : xmodules.childrenWithName("file")) {
+					String url = xfile.get("url");
+					if (url.endsWith(".jar")) {
+						int idx = url.lastIndexOf('/');
+						String prefix = url.substring(0, idx + 1);
+						xfile.set("url", prefix + name);
+						xfile.set("sha1", sha1);
+						return;
+					}
+				}
+			}
+		}
+		throw new AssertionError("Entry not found");
+	}
+	/**
+	 * Update a module's main JAR file.
+	 * @param update the XML
+	 * @param module the module name
+	 * @param namePrefix the file name's prefix
+	 * @param checksum the sha1 + filename
+	 * @param removeOld place a remove element?
+	 */
+	static void updateZipFile(XElement update, 
+			String module, 
+			String namePrefix, 
+			String checksum,
+			boolean removeOld) {
+		String sha1 = checksum;
+		String name = sha1.substring(41).trim();
+		sha1 = sha1.substring(0, 40).trim();
+		
+		for (XElement xmodules : update.childrenWithName("module")) {
+			if (module.equals(xmodules.get("id"))) {
+				
+				for (XElement xfile : xmodules.childrenWithName("file")) {
+					String url = xfile.get("url");
+					if (url.endsWith(".zip")) {
+						int idx = url.lastIndexOf('/');
+						String prefix = url.substring(0, idx + 1);
+						String currentName = url.substring(idx + 1);
+						if (currentName.startsWith(namePrefix)) {
+							xfile.set("url", prefix + name);
+							xfile.set("sha1", sha1);
+							
+							if (removeOld && !currentName.equals(name)) {
+								boolean found = false;
+								for (XElement xremove : xmodules.childrenWithName("remove")) {
+									if (currentName.equals(xremove.get("file"))) {
+										found = true;
+										break;
+									}
+								}
+								if (!found) {
+									XElement xremove = xmodules.add("remove");
+									xremove.set("file", currentName);
+								}
+							}
+							
+							return;
+						}
+					}
+				}
+			}
+		}
+		throw new AssertionError("Entry not found");
 	}
 }
