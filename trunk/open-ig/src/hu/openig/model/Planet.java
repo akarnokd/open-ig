@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.PlanetType;
 import hu.openig.model.PlanetStatistics.LabStatistics;
 import hu.openig.model.PlanetStatistics.ProductionStatistics;
 

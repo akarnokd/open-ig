@@ -8,7 +8,6 @@
 package hu.openig.model;
 
 import hu.openig.core.Pair;
-import hu.openig.core.PlanetType;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;

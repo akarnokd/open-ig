@@ -10,7 +10,6 @@ package hu.openig.editors;
 
 import hu.openig.core.Func0;
 import hu.openig.core.Location;
-import hu.openig.core.PlanetType;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingModel;
@@ -20,6 +19,7 @@ import hu.openig.model.GalaxyModel;
 import hu.openig.model.Labels;
 import hu.openig.model.OriginalBuilding;
 import hu.openig.model.PlanetSurface;
+import hu.openig.model.PlanetType;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Resource;
 import hu.openig.model.ResourceLocator;

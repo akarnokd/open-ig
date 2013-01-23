@@ -8,7 +8,6 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.core.PlanetType;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
 import hu.openig.utils.Exceptions;

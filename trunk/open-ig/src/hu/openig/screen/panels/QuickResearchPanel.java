@@ -319,7 +319,7 @@ public class QuickResearchPanel extends UIContainer {
 						QuickResearchPanel.this.visible(false);
 						askRepaint();
 						commons.player().currentResearch(ri.first);
-						commons.selectAnim(ri.first);
+						commons.researchChanged(ri.first);
 						commons.computerSound(SoundType.START_RESEARCH);
 					}
 				};
