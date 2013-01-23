@@ -34,6 +34,7 @@ import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.api.EquipmentScreenAPI;
 import hu.openig.screen.panels.EquipmentConfigure;
 import hu.openig.screen.panels.EquipmentMinimap;
 import hu.openig.screen.panels.FleetListing;
@@ -70,7 +71,7 @@ import java.util.Random;
  * The equipment screen.
  * @author akarnokd, 2010.01.11.
  */
-public class EquipmentScreen extends ScreenBase {
+public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	/** The panel base rectangle. */
 	final Rectangle base = new Rectangle();
 	/** The left panel. */
@@ -1641,6 +1642,17 @@ public class EquipmentScreen extends ScreenBase {
 				&& (research().category == ResearchSubCategory.WEAPONS_TANKS
 				|| research().category == ResearchSubCategory.WEAPONS_VEHICLES));
 
+		if (configure.selectedSlot != null && (
+				rt.category == ResearchSubCategory.WEAPONS_TANKS
+				|| rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+				|| rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+				|| rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+				|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+		)) {
+			configure.selectedSlot = null;
+			displayCategory(rt.category);
+		}
+		
 		if (ps != null && fs.planet.owner == f.owner 
 				&& ps.hasMilitarySpaceport && secondary == null) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -1682,7 +1694,9 @@ public class EquipmentScreen extends ScreenBase {
 			if (configure.selectedSlot != null) {
 				addOne.visible(
 						player().inventoryCount(rt) > 0
-						&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
+						&& configure.selectedSlot.supports(rt)
+						&& (configure.selectedSlot.type != rt
+						|| !configure.selectedSlot.isFilled())
 				);
 				removeOne.visible(
 						configure.selectedSlot.type != null && configure.selectedSlot.count > 0
@@ -1779,6 +1793,16 @@ public class EquipmentScreen extends ScreenBase {
 		cruisersEmpty.visible(true);
 		stations.visible(true);
 		
+		if (configure.selectedSlot != null && (
+				rt.category == ResearchSubCategory.SPACESHIPS_STATIONS
+				|| rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+				|| rt.category == ResearchSubCategory.WEAPONS_TANKS
+				|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+		)) {
+			configure.selectedSlot = null;
+			displayCategory(rt.category);
+		}
+		
 		if (own && rt.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 			addButton.visible(player().inventoryCount(rt) > 0
 					&& planet().inventoryCount(rt.category, player()) < world().params().stationLimit());
@@ -1825,8 +1849,10 @@ public class EquipmentScreen extends ScreenBase {
 
 		if (configure.selectedSlot != null) {
 			addOne.visible(
-					player().inventoryCount(rt) > 0
-					&& (configure.selectedSlot.type != rt || !configure.selectedSlot.isFilled())
+					configure.selectedSlot.supports(rt)
+					&& player().inventoryCount(rt) > 0
+					&& (configure.selectedSlot.type != rt 
+					|| !configure.selectedSlot.isFilled())
 			);
 			removeOne.visible(
 					configure.selectedSlot.type != null && configure.selectedSlot.count > 0
@@ -2016,6 +2042,26 @@ public class EquipmentScreen extends ScreenBase {
 			}
 		}
 		doSelectCategoryButtons(cat);
+	}
+	@Override
+	public void onResearchChanged() {
+		ResearchType rt = research();
+		if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+			|| rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+			|| rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+			|| rt.category == ResearchSubCategory.SPACESHIPS_STATIONS
+			|| rt.category == ResearchSubCategory.WEAPONS_TANKS
+			|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+		) {
+			displayCategory(rt.category);
+			doSelectVehicle(rt);
+			doSelectListVehicle(rt);
+	
+			updateCurrentInventory();
+			configure.type = rt;
+			configure.item = leftList.selectedItem;
+			configure.selectedSlot = null;
+		}
 	}
 	/**
 	 * Check if the fleet has the given research.

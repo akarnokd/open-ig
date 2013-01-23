@@ -622,7 +622,7 @@ public class QuickProductionPanel extends UIContainer {
 				ResearchType crt = commons.player().currentResearch();
 				if (crt != rt.type) {
 					commons.player().currentResearch(rt.type);
-					commons.selectAnim(rt.type);
+					commons.researchChanged(rt.type);
 				}
 			}
 			return super.mouse(e);

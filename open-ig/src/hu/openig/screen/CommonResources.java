@@ -45,6 +45,7 @@ import hu.openig.model.Traits;
 import hu.openig.model.World;
 import hu.openig.music.Music;
 import hu.openig.render.TextRenderer;
+import hu.openig.screen.api.EquipmentScreenAPI;
 import hu.openig.screen.api.ResearchProductionAnimation;
 import hu.openig.sound.Sounds;
 import hu.openig.utils.Exceptions;
@@ -1171,10 +1172,14 @@ public class CommonResources implements GameEnvironment {
 	 * Instruct the R/P screen to play the animation of the technology.
 	 * @param rt the technology
 	 */
-	public void selectAnim(ResearchType rt) {
+	public void researchChanged(ResearchType rt) {
 		Screens sb = control().secondary();
 		if (sb == Screens.RESEARCH || sb == Screens.PRODUCTION) {
 			((ResearchProductionAnimation)control().getScreen(sb)).playAnim(rt, true);
+		}
+		if (sb == Screens.EQUIPMENT) {
+			EquipmentScreenAPI eq = (EquipmentScreenAPI)control().getScreen(Screens.EQUIPMENT);
+			eq.onResearchChanged();
 		}
 	}
 	@Override

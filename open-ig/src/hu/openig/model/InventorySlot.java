@@ -63,4 +63,12 @@ public class InventorySlot {
 		}
 		return result / cnt;
 	}
+	/** 
+	 * Check if the current slot supports the given technology.
+	 * @param rt the technology to check
+	 * @return true if the technology is supported
+	 */
+	public boolean supports(ResearchType rt) {
+		return slot.items.contains(rt);
+	}
 }

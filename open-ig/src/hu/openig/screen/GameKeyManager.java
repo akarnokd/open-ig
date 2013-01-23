@@ -505,7 +505,7 @@ public class GameKeyManager extends KeyAdapter {
 						cnt = cnt != null ? cnt + 1 : 1;
 						world().player.inventory.put(crt, cnt);
 						if (researched) {
-							commons.selectAnim(crt);
+							commons.researchChanged(crt);
 						}
 						repaintInner();
 					}

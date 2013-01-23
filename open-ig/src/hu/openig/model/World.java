@@ -12,7 +12,6 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func0;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
-import hu.openig.core.PlanetType;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
