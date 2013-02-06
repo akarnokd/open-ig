@@ -4,6 +4,12 @@
 
 = Recent =
 
+==February, 2013==
+
+*February 6, 2013*
+
+I have to put Open-IG aside for a few months. I hope when I return to the development I'll be able to continue with the multiplayer feature. However, this will put the Campaign Editor aside.
+
 == December, 2012 ==
 
 *December 24, 2012*
