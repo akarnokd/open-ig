@@ -785,4 +785,34 @@ public class Fleet implements Named, Owned, HasInventory {
 		FleetStatistics fs = getStatistics();
 		InventoryItem.removeExcessTanks(inventory, owner, fs.vehicleCount, fs.vehicleMax);
 	}
+	/**
+	 * Fills in the equipment of the fleet's members.
+	 */
+	public void refillEquipment() {
+		if (owner == owner.world.player) {
+			if (owner.world.env.config().reequipBombs) {
+				for (InventoryItem ii : inventory) {
+					for (InventorySlot is : ii.slots) {
+						if (is.getCategory() == ResearchSubCategory.WEAPONS_PROJECTILES 
+								&& !is.isFilled()) {
+							is.refill(owner);
+						}
+					}
+				}
+			}
+			if (owner.world.env.config().reequipTanks) {
+				FleetStatistics fs = getStatistics();
+				if (fs.vehicleCount < fs.vehicleMax) {
+					stripVehicles();
+					upgradeVehicles(fs.vehicleMax);
+				}
+			}
+		}
+	}
+	/**
+	 * @return Check if the fleet still exists in the world.
+	 */
+	public boolean exists() {
+		return owner.fleets.containsKey(this);
+	}
 }

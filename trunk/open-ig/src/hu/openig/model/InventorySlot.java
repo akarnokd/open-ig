@@ -71,4 +71,32 @@ public class InventorySlot {
 	public boolean supports(ResearchType rt) {
 		return slot.items.contains(rt);
 	}
+	/**
+	 * Refills the slot based on available inventory of the given player.
+	 * @param owner the owner of this slot
+	 */
+	public void refill(Player owner) {
+		if (type != null) {
+			int demand = slot.max - count;
+			int inv = owner.inventoryCount(type);
+			int add = Math.min(inv, demand);
+			count += add;
+			owner.changeInventoryCount(type, -add);
+		} else {
+			for (int i = slot.items.size() - 1; i >= 0; i--) {
+				ResearchType rt = slot.items.get(i);
+				if (owner.isAvailable(rt)) {
+					int demand = slot.max;
+					int inv = owner.inventoryCount(rt);
+					int add = Math.min(inv, demand);
+					if (add > 0) {
+						type = rt;
+						count = add;
+						owner.changeInventoryCount(rt, -add);
+						break;
+					}
+				}
+			}
+		}
+	}
 }

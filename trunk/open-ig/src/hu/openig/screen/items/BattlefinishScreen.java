@@ -460,6 +460,8 @@ public class BattlefinishScreen extends ScreenBase {
 				textDelay.stop();
 				return true;
 			}
+			
+			battle.battleFinished();
 			displayPrimary(Screens.STARMAP);
 			commons.speed1();
 			return false;

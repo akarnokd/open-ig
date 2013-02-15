@@ -271,4 +271,24 @@ public class BattleInfo {
 			targetPlanet.owner.statistics.groundLoses++;
 		}
 	}
+	/**
+	 * Execute post battle actions.
+	 */
+	public void battleFinished() {
+		if (attacker != null && attacker.exists()) {
+			attacker.refillOnce = true;
+		}
+		if (targetFleet != null && targetFleet.exists()) {
+			targetFleet.refillOnce = true;
+		}
+		if (helperFleet != null && helperFleet.exists()) {
+			helperFleet.refillOnce = true;
+		}
+		if (targetPlanet != null) {
+			targetPlanet.refillEquipment();
+		}
+		if (helperPlanet != null) {
+			helperPlanet.refillEquipment();
+		}
+	}
 }

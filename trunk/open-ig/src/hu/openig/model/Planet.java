@@ -800,4 +800,19 @@ public class Planet implements Named, Owned, HasInventory {
 		PlanetStatistics ps = getStatistics();
 		InventoryItem.removeExcessTanks(inventory, owner, ps.vehicleCount, ps.vehicleMax);
 	}
+	/**
+	 * Refills the equimpent of the space stations around the planet.
+	 */
+	public void refillEquipment() {
+		if (owner == owner.world.player && owner.world.env.config().reequipBombs) {
+			for (InventoryItem ii : inventory) {
+				if (ii.owner == owner 
+						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+					for (InventorySlot is : ii.slots) {
+						is.refill(owner);
+					}
+				}
+			}
+		}
+	}
 }
