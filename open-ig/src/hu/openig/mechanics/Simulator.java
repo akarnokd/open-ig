@@ -16,7 +16,6 @@ import hu.openig.model.Building;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
-import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
@@ -392,15 +391,10 @@ public final class Simulator {
 		}
 		
 		// reequip station bombs and rockets
-		if (planet.owner == world.player && world.env.config().reequipBombs) {
-			for (InventoryItem ii : planet.inventory) {
-				if (ii.owner == planet.owner 
-						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					for (InventorySlot is : ii.slots) {
-						refillSlot(planet.owner, is);
-					}
-					regenerateInventory(true, ii);
-				}
+		for (InventoryItem ii : planet.inventory) {
+			if (ii.owner == planet.owner 
+					&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				regenerateInventory(true, ii);
 			}
 		}
 		
@@ -880,10 +874,7 @@ public final class Simulator {
 			regenerateInventory(spaceport, ii);
 		}
 		if (spaceport && f.refillOnce) {
-			checkRefill(f);
-			f.refillOnce = true;
-		}
-		if (np == null && f.refillOnce) {
+			f.refillEquipment();
 			f.refillOnce = false;
 		}
 	}
@@ -922,60 +913,6 @@ public final class Simulator {
 		if (sm > 0 && ii.shield < sm) {
 			double delta = engineers ? spd : 2 * spd;
 			ii.shield = (int)Math.min(sm, ii.shield + delta);
-		}
-	}
-	/**
-	 * Check if the auto-refill of tanks and equipment is on.
-	 * @param f the target fleet
-	 */
-	static void checkRefill(Fleet f) {
-		if (f.owner == f.owner.world.player) {
-			for (InventoryItem ii : f.inventory) {
-				if (f.owner.world.env.config().reequipBombs) {
-					for (InventorySlot is : ii.slots) {
-						if (is.getCategory() == ResearchSubCategory.WEAPONS_PROJECTILES 
-								&& !is.isFilled()) {
-							refillSlot(f.owner, is);
-						}
-					}
-				}
-			}
-			if (f.owner.world.env.config().reequipTanks) {
-				FleetStatistics fs = f.getStatistics();
-				if (fs.vehicleCount < fs.vehicleMax) {
-					f.stripVehicles();
-					f.upgradeVehicles(fs.vehicleMax);
-				}
-			}
-		}
-	}
-	/**
-	 * Refill a particular inventory slot.
-	 * @param owner the owner
-	 * @param is the slot
-	 */
-	static void refillSlot(Player owner, InventorySlot is) {
-		if (is.type != null) {
-			int demand = is.slot.max - is.count;
-			int inv = owner.inventoryCount(is.type);
-			int add = Math.min(inv, demand);
-			is.count += add;
-			owner.changeInventoryCount(is.type, -add);
-		} else {
-			for (int i = is.slot.items.size() - 1; i >= 0; i--) {
-				ResearchType rt = is.slot.items.get(i);
-				if (owner.isAvailable(rt)) {
-					int demand = is.slot.max;
-					int inv = owner.inventoryCount(rt);
-					int add = Math.min(inv, demand);
-					if (add > 0) {
-						is.type = rt;
-						is.count = add;
-						owner.changeInventoryCount(rt, -add);
-						break;
-					}
-				}
-			}
 		}
 	}
 	/**

@@ -497,7 +497,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				rep = true;
 			}
 		}
-		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+		if (commons.battleMode && e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 			// back out of fight instantly
 			commons.restoreMainSimulationSpeedFunction();
 			commons.battleMode = false;

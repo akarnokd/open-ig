@@ -4390,6 +4390,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			commons.battleMode = false;
 			commons.playRegularMusic();
 			commons.simulation.speed(battle.originalSpeed);
+			bi.battleFinished();
 			displayPrimary(Screens.STARMAP);
 		}
 	}

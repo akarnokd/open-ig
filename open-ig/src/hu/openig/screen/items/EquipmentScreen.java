@@ -1111,7 +1111,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		
 		update();
 
-		super.draw(g2);
 
 		if (planetVisible) {
 			Shape save0 = g2.getClip();
@@ -1120,7 +1119,9 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			g2.drawImage(planet, leftPanel.x, leftPanel.y + (leftPanel.height - planet.getHeight()) / 2, null);
 			g2.setClip(save0);
 		}
-		
+
+		super.draw(g2);
+
 		if (innerEquipmentVisible) {
 			g2.setColor(new Color(0, 0, 0, 128));
 			g2.fillRect(innerEquipment.x, innerEquipment.y, innerEquipment.width - 1, innerEquipment.height - 1);
@@ -1834,8 +1835,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		noSpaceStation.visible(own && !ps.hasSpaceStation 
 				&& rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS);
 
-		addOne.visible(false);
-		removeOne.visible(false);
 		editPrimary = false;
 		editSecondary = false;
 		transferMode = false;
@@ -1857,6 +1856,9 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			removeOne.visible(
 					configure.selectedSlot.type != null && configure.selectedSlot.count > 0
 			);
+		} else {
+			addOne.visible(false);
+			removeOne.visible(false);
 		}
 
 		left1.visible(false);

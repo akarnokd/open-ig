@@ -1270,6 +1270,8 @@ public class World {
 				if (ttl != null) {
 					xpii.set("ttl", ttl);
 				}
+				
+				saveInventorySlot(pii.slots, xpii);
 			}
 			if (p.owner != null) {
 				xp.set("owner", p.owner.id);
@@ -1372,14 +1374,22 @@ public class World {
 			xfii.set("nickname-index", fii.nicknameIndex);
 			xfii.set("kills", fii.kills);
 			xfii.set("kills-cost", fii.killsCost);
-			for (InventorySlot fis : fii.slots) {
-				XElement xfs = xfii.add("slot");
-				xfs.set("id", fis.slot.id);
-				xfs.set("hp", fis.hp);
-				if (fis.type != null) {
-					xfs.set("type", fis.type.id);
-					xfs.set("count", fis.count);
-				}
+			saveInventorySlot(fii.slots, xfii);
+		}
+	}
+	/**
+	 * Saves the contents of the inventory slots.
+	 * @param slots the slots list
+	 * @param xparent the parent XElement to store
+	 */
+	void saveInventorySlot(List<InventorySlot> slots, XElement xparent) {
+		for (InventorySlot fis : slots) {
+			XElement xfs = xparent.add("slot");
+			xfs.set("id", fis.slot.id);
+			xfs.set("hp", fis.hp);
+			if (fis.type != null) {
+				xfs.set("type", fis.type.id);
+				xfs.set("count", fis.count);
 			}
 		}
 	}
@@ -1712,6 +1722,8 @@ public class World {
 					p.timeToLive.put(pii, ttl);
 				}
 				
+				loadInventorySlots(pii, xpii);
+				
 				p.inventory.add(pii);
 			}
 			String sowner = xplanet.get("owner", null);
@@ -1962,44 +1974,7 @@ public class World {
 				fii.kills = xfii.getInt("kills", 0);
 				fii.killsCost = xfii.getLong("kills-cost", 0L);
 
-				
-				Set<String> slots = new HashSet<String>();
-				for (XElement xfis : xfii.childrenWithName("slot")) {
-					InventorySlot fis = new InventorySlot();
-					String sid = xfis.get("id");
-					if (!fii.type.slots.containsKey(sid)) {
-						continue; // drop nonexistent slots
-					}
-					slots.add(sid);
-					fis.slot = fii.type.slots.get(sid);
-					fis.type = researches.get(xfis.get("type", null));
-					if (fis.type != null) {
-						ResearchType st = fis.slot.items.get(0);
-						if (fis.slot.fixed && st != fis.type) {
-							fis.type = st;
-						}
-						fis.count = Math.min(xfis.getInt("count"), fis.slot.max);
-						
-					}
-					
-					int hp0 = fis.hpMax(f.owner);
-					fis.hp = Math.min(xfis.getDouble("hp", hp0), hp0);
-					
-					fii.slots.add(fis);
-				}
-				// add remaining undefined slots
-				for (EquipmentSlot es : fii.type.slots.values()) {
-					if (!slots.contains(es.id)) {
-						InventorySlot fis = new InventorySlot();
-						fis.slot = es;
-						if (es.fixed) {
-							fis.type = es.items.get(0);
-							fis.count = es.max;
-							fis.hp = getHitpoints(fis.type, fii.owner);
-						}
-						fii.slots.add(fis);
-					}
-				}
+				loadInventorySlots(fii, xfii);
 				
 				int shieldMax = Math.max(0, fii.shieldMax());
 				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
@@ -2008,6 +1983,60 @@ public class World {
 					p.fleets.put(f, FleetKnowledge.FULL);
 				}
 				f.inventory.add(fii);
+			}
+		}
+	}
+	/**
+	 * Loads the inventory slot contents from the supplied XML parent.
+	 * @param fii the target inventory item
+	 * @param xfii the parent XElement of the slot items
+	 */
+	void loadInventorySlots(InventoryItem fii, XElement xfii) {
+		Set<String> slots = new HashSet<String>();
+		for (XElement xfis : xfii.childrenWithName("slot")) {
+			String sid = xfis.get("id");
+			
+			if (!fii.type.slots.containsKey(sid)) {
+				continue; // drop nonexistent slots
+			}
+
+			InventorySlot fis = fii.getSlot(sid);
+			if (fis == null) {
+				fis = new InventorySlot();
+				fii.slots.add(fis);
+			}
+			
+			slots.add(sid);
+			
+			fis.slot = fii.type.slots.get(sid);
+			fis.type = researches.get(xfis.get("type", null));
+			if (fis.type != null) {
+				ResearchType st = fis.slot.items.get(0);
+				if (fis.slot.fixed && st != fis.type) {
+					fis.type = st;
+				}
+				fis.count = Math.min(xfis.getInt("count"), fis.slot.max);
+				
+			}
+			
+			int hp0 = fis.hpMax(fii.owner);
+			fis.hp = Math.min(xfis.getDouble("hp", hp0), hp0);
+			
+		}
+		// add remaining undefined slots
+		for (EquipmentSlot es : fii.type.slots.values()) {
+			if (!slots.contains(es.id)) {
+				InventorySlot fis = fii.getSlot(es.id);
+				if (fis == null) {
+					fis = new InventorySlot();
+					fis.slot = es;
+					if (es.fixed) {
+						fis.type = es.items.get(0);
+						fis.count = es.max;
+						fis.hp = getHitpoints(fis.type, fii.owner);
+					}
+					fii.slots.add(fis);
+				}
 			}
 		}
 	}
