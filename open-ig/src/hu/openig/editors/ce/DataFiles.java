@@ -15,6 +15,8 @@ package hu.openig.editors.ce;
 public enum DataFiles {
 	/** Labels. */
 	LABELS,
+	/** The default labels. */
+	DEFAULT_LABELS,
 	/** Image. */
 	IMAGE,
 	/** Galaxy. */
@@ -46,5 +48,5 @@ public enum DataFiles {
 	/** Spies. */
 	SPIES,
 	/** Scripting. */
-	SCRIPTING
+	SCRIPTING,
 }

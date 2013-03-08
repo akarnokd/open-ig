@@ -532,6 +532,21 @@ public class CEDataManager {
 			campaignData.definition.labels.clear();
 			campaignData.definition.labels.addAll(newRefs);
 		}
+		cop = copySettings.get(DataFiles.DEFAULT_LABELS);
+		if (cop == CopyOperation.COPY) {
+			Map<String, byte[]> labels2 = mgr.getData("labels.xml");
+			if (labels2 != null && !labels2.isEmpty()) {
+				for (Map.Entry<String, byte[]> e : labels2.entrySet()) {
+					File f = new File(dir, e.getKey() + "/campaign/" + name);
+					if (!f.exists() && !f.mkdirs()) {
+						Exceptions.add(new IOException("Could not create directories for " + f));
+					}
+					IOUtils.save(new File(f, "labels.xml"), e.getValue());
+				}
+				
+				campaignData.definition.labels.add("campaign/" + name + "/labels");
+			}
+		}
 	}
 	/**
 	 * Copy the campaign image of the original campaign.

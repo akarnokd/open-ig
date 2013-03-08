@@ -261,6 +261,7 @@
 		<entry key='definition_language'>Language:</entry>
 		<entry key='definition_title'>Title:</entry>
 		<entry key='definition_description'>Description:</entry>
+		<entry key='copy_settings.data_DEFAULT_LABELS'>Global labels</entry>
 	</language>
 	<language id='hu' flag='/hu/openig/gfx/hungarian.png'>
 	</language>
