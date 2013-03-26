@@ -70,7 +70,7 @@ public class Mission7 extends Mission {
 		Objective m12t1 = objective("Mission-12-Task-1");
 		if (m12t1.isCompleted() && !m7t2.isCompleted() && stage == M7.DONE_1) {
 			stage = M7.WAIT_2;
-			addMission("Mission-7-Task-2", 7 * 24);
+			addMission("Mission-7-Task-2", 6 * 24 + 12);
 		}
 		
 		if (checkMission("Mission-7")) {
