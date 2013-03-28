@@ -281,13 +281,13 @@ public class PlanetSurface {
 			if (bp == null || bp.isEmpty()) {
 				b.buildProgress = b.type.hitpoints;
 			} else {
-				b.buildProgress = Integer.parseInt(bp);
+				b.buildProgress = Math.min(Integer.parseInt(bp), b.type.hitpoints);
 			}
 			String hp = tile.get("hp", null);
 			if (hp == null || hp.isEmpty()) {
 				b.hitpoints = b.type.hitpoints;
 			} else {
-				b.hitpoints = Integer.parseInt(hp);
+				b.hitpoints = Math.min(Integer.parseInt(hp), b.type.hitpoints);
 			}
 			b.setLevel(Math.min(Integer.parseInt(tile.get("level")), b.type.upgrades.size())
 			);

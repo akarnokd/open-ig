@@ -38,8 +38,8 @@ public final class BuildingAllocationWorker {
 	public void read() {
 		this.energyDemand = (int)building.getResource("energy");
 		this.workerDemand = (int)building.getResource("worker");
-		this.producesEnergy = energyDemand >= 0;
 		this.efficiencyBound = building.hitpoints / (float)building.type.hitpoints;
+		this.producesEnergy = energyDemand >= 0;
 	}
 	/** Apply the changes back on the building. */
 	public void write() {
