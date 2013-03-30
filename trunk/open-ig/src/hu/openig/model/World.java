@@ -3027,6 +3027,7 @@ public class World {
 				if (rt.race.contains(p.race) && rt.level <= definition.techLevel) {
 					p.add(rt);
 				}
+				rt.nobuild = false;
 			}
 			
 			for (ResearchType rt : p.available().keySet()) {
