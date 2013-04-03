@@ -15,6 +15,14 @@ Amennyiben problémába, összeomlásba vagy fordítási hibába futsz, esetleg 
 
 = Hírek =
 
+*2013 Április 3*
+
+Nagy örömömre szolgál bejelenteni, hogy szerződést kötöttem a Digital Reality-vel (az eredeti fejlesztők, akik újra rendelkeznek az Imperium Galactica jogaival) és engedélyt kaptam az eredeti Imperium Galactica erőforrásainak felhasználására ebben az Open Imperium Galactica projektben, továbbá ezeket akár eredeti, akár módosítva, akár belőlük származtatva, *ingyenesen* letölthetővé tehetem ezen a honlapon.
+
+Magyarul, az Open Imperium Galactica mostantól teljesen legális projekt, és te, a felhasználó, ingyen és legálisan letöltheted és játszhatsz az Open-IG játékkal.
+
+Hamarosan összeállítok egy GYIK-ot a szerződés részleteiről és hogy ez milyen hatással van a projekt LGPL részére.
+
 *2012 December 24*
 
 Kellemes ünnepeket!
