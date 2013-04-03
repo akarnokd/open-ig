@@ -28,5 +28,6 @@
     * [MapEditor The Map Editor]
       * [MapEditor_Notes Release notes]
   * [Questions Questions & Answers]
+    * [LegalFAQ Legal FAQ]
     * [Typical_Issues Typical Issues]
   * [Credits Credits]
