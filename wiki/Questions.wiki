@@ -87,18 +87,17 @@ But these properties on todays computers are not bad at all. Here is why:
 
 == Why is the development slow? ==
 It has some aspects:
-  * I develop it alone, I test it alone and I spend my spare time to develop it.
+  * I develop it basically alone.
   * Each screen has enormous amount of small pieces: buttons, text, clickable obects etc. These have to be placed, wired together manually to resemble to the original screen and behavior. Most screens are not even buildable/testable until a real data model is under it (this is the case with the recently enhanced information screen). This needs lots of testing and comparison with the original game.
   * Some issues require small developments but require lots of explaining.
+  * Some issues look simple but require complicated developments.
 
-== What languages are supported ==
+== What languages are supported? ==
 
-English, German and Hungarian are supported at the moment. These include fixed graphics text (on buttons) and dynamic text on other labels.
-
-I've obtained a French version of the original game but apart from graphics and few texts, I'm not able to translate the rest on my own.
+English, German, French, Russian and Hungarian are supported at the moment. These include fixed graphics text (on buttons) and dynamic text on other labels.
 
 == Can I change the language? ==
-Yes. The Launcher lets you choose a language and the game itself lets you do that on the main menu. If you are in game, you need to exit to the main menu.
+Yes. The Launcher lets you choose a language and the game itself lets you do that on the main menu. Currently, there is no easy way to change the language besides hitting CTRL+1 thru CTRL+5 in the main menu.
 
 == What differences exist between the varius language versions of the original game? ==
 Apart from having different language labels, there is a really subtle difference in the game's animation files. Strangely, in the english version these animations are in lower resolution, about 2/3 of the hungarian version. The reason is unknown. Certainly, the size gain is neglectible as the english version is still occupying 2 CDs with total size of 1.1GB.
