@@ -5,7 +5,7 @@ Az *Open Imperium Galactica* (röviden Open-IG) egy nyílt forrású [http://www
 
 Az Open-IG megpróbálja visszaadni az eredeti játékélményt, miközben számtalan hibát, inkonzisztenciát javít, valamint új képességekkel bővíti azt. Azonban nem célja a teljes, viselkedésben és kinézetben tökéletes másolat létrehozása.
 
-A projektben a futtatáshoz szükséges minden fájl megtalálható, nincs szükség az eredeti játék fájljaira. Az eredeti játék jogtulajdonosa (Digital Reality) hozzájárult ezen fájlok elérhetővé tételéhez és ingyenes letölthetőségéhez.
+A projektben a futtatáshoz szükséges minden fájl megtalálható, nincs szükség az eredeti játék fájljaira. *Az eredeti játék jogtulajdonosa (Digital Reality) hozzájárult ezen fájlok elérhetővé tételéhez és ingyenes letölthetőségéhez.*
 
 *<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Az Indító letöltése. Rajta keresztül települ és indul el a játék</a>* (verzió: 0.42)
 
