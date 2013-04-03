@@ -10,7 +10,7 @@
 
 I'm happy to report that I signed a contract with Digital Reality (the original developers who own the rights to Imperium Galactica again) and I received the official permission to use the original Imperium Galactica resources in this Open Imperium Galactica project, and make them or any modified/derived resources *freely* downloadable from this site. 
 
-In other terms, Open Imperium Galactica is now a completely legal project and you, the users can freely and legally download and play the game.
+In other terms, Open Imperium Galactica is now a completely legal project and you, the users can freely and legally download and play Open-IG.
 
 Soon I'll compose a FAQ about the subtle details of this contract and how it affects the LGPL part of the project.
 
