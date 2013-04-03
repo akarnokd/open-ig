@@ -32,11 +32,11 @@ Once upon a time, the aim was to create an engine to run with the original game 
 
 == Isn't the game copyrighted? ==
 
-~~The copyright belongs to Atari when I last checked. Recently, Digital Reality has released IG2 for iPad, which might mean they have some rights retained all these years.
+~~The copyright belongs to Atari when I last checked. Recently, Digital Reality has released IG2 for iPad, which might mean they have some rights retained all these years.~~
 
-The game doesn't depend on the original distribution. You can feel safer if you own the original but you can't purchase it first hand today to my best knowledge.~~
+~~The game doesn't depend on the original distribution. You can feel safer if you own the original but you can't purchase it first hand today to my best knowledge.~~
 
-~The original game is now abandonware and my actions are all fair-use.~
+~~The original game is now abandonware and my actions are all fair-use.~~
 
 
 Yes, the original game is copyrighted, along with all of its resources. However, - as of 3rd April, 2013 - I signed a contract with Digital Reality, the developer and current owner of the copyrights, and they gave permission to rework and/or publish any necessary files from the original for free as part of this project.
