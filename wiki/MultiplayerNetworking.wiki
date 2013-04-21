@@ -295,7 +295,10 @@ LOAD {
   ],
   inventory=[
     INVENTORY { ... }
-  ]
+  ],
+  researches={
+    available=[ "type 1" ]
+  }
 }
 }}}
 
@@ -625,6 +628,116 @@ or
 ERROR_PLANET_ALREADY_COLONIZED { }
 }}}
 
+== Fleet equipment commands ==
+
+=== Requests ===
+
+Create a new fleet at the specified location.
+{{{
+NEW_FLEET_AT_PLANET { 
+  id=""
+}
+}}}
+
+Create a new fleet at the specified other fleet.
+{{{
+NEW_FLEET_AT_FLEET {
+  id=10
+}
+}}}
+
+{{{
+RENAME_FLEET {
+  id=10,
+  name=""
+}
+}}}
+
+{{{
+SELL_FLEET_ITEM {
+  id=10,
+  item_id=521
+}
+}}}
+
+{{{
+DEPLOY_FLEET_ITEM {
+  id=10,
+  type=""
+}
+}}}
+
+{{{
+UNDEPLOY_FLEET_ITEM {
+  id=10,
+  item_id=521
+}
+}}}
+
+Add or replace equipment at the specified slot
+{{{
+ADD_FLEET_EQUIPMENT {
+  id=10,
+  item_id=522,
+  slot_id="radar",
+  type="Radar1",
+  count=1
+}
+}}}
+
+{{{
+REMOVE_FLEET_EQUIPMENT {
+  id=10,
+  item_id=522,
+  slot_id="radar",
+  count=1
+}
+}}}
+
+{{{
+FLEET_AUTO_UPGRADE { 
+  id=10
+}
+}}}
+
+=== Responses ===
+
+{{{
+NEW_FLEET_OK {
+  id=10
+}
+}}}
+
+{{{
+ERROR_NO_MILITARY_SPACEPORT { }
+}}}
+
+{{{
+ERROR_UNKNOWN_FLEET { }
+}}}
+
+{{{
+ERROR_UNKNOWN_FLEET_ITEM { }
+}}}
+
+{{{
+ERROR_UNKNOWN_FLEET_EQUIPMENT { }
+}}}
+
+{{{
+ERROR_UNKNOWN_TECHNOLOGY { }
+}}}
+
+{{{
+ERROR_INVALID_FLEET_EQUIPMENT { }
+}}}
+
+{{{
+DEPLOY_FLEET_ITEM_OK {
+  id=412
+}
+}}}
+
 == Planet colonization commands ==
 
 === Requests ===
@@ -755,7 +868,11 @@ Level down not supported.
 ERROR_LEVEL_DOWN { }
 }}}
 
+== Planet equipment commands ==
 
+=== Requests ===
+
+=== Responses ===
 
 = In-game space battle commands =
 
