@@ -1,0 +1,175 @@
+#summary Design of message exchanges for multiplayer
+
+<wiki:toc max_depth="2" />
+
+= Basic properties =
+
+  * TCP based approach
+  * Cryptography will be avoided for now.
+  * Sessioning (to allow reconnection)
+  * Text commands and responses, UTF-8
+  * Strings enclosed by ""
+    * Escape sequences: \" \\ \n \r
+  * Complex objects enclosed by { }
+  * Messages may span multiple lines
+  * Message terminated by a final '}' and chr(13), chr(10)
+
+== Message format ==
+
+Remark: whitespaces may be used freely where it does not cause ambiguity
+
+{{{
+message :: MESSAGE_TYPE_NAME '{' [attributes] '}'
+}}}
+
+{{{
+attributes :: attribute [, attribute [,...]]
+}}}
+
+{{{
+attribute :: attribute_name=value
+}}}
+
+{{{
+value :: "string" | 1234 | 1234.567 | false | true | array | null | object
+}}}
+
+{{{
+array :: '[' [value [, value [,...]]] ']'
+}}}
+
+{{{
+object :: [OBJECT_TYPE] '{' [attributes] '}'
+}}}
+
+= Request and response formats =
+
+== General errors ==
+
+=== response ===
+
+{{{
+ERROR { code=1234, message="" }
+}}}
+
+Codes
+|| *Code* || *Meaning* ||
+|| 1 || Request format error ||
+|| 2 || Unknown message type ||
+|| 3 || Invalid user or passphrase ||
+|| 4 || Client version error ||
+|| 5 || Message type not allowed in the current state ||
+
+TBD
+
+== Keepalive or latency measurement ==
+
+When: any time
+
+=== Request ===
+{{{
+PING { }
+}}}
+
+=== Response ===
+{{{
+PONG { }
+}}}
+
+
+== Login ==
+
+When: after establishing a TCP connection.
+
+=== Request ===
+{{{
+LOGIN { user="", passphrase="", language="", version="" }
+}}}
+
+Remarks:
+  * {{{passphrase}}} is plaintext
+  * {{{language}}} the client's requested language
+
+=== Responses ===
+
+{{{
+WELCOME { session="", language="" }
+}}}
+
+Remarks:
+  * {{{session}}} contains a string that can be used to re-login in case of lost connection. Values will be unique among clients and started gameplays.
+  * {{{language}}} the requested language or if not available, the server's supplied language
+
+or an {{{ERROR}}}
+
+== Relogin ==
+
+When: after establishing a TCP connection.
+
+=== Request ===
+{{{
+RELOGIN { session="" }
+}}}
+
+=== Response ===
+
+{{{
+WELCOME_BACK { }
+}}}
+
+== Choosing side ==
+
+When: after login, before game start
+
+=== Request ===
+
+{{{
+GET_MATCH_SETTINGS { }
+}}}
+
+=== Response ===
+
+{{{
+MATCH_SETTINGS {
+  galaxy_template="", 
+  races_template="", 
+  technology_template="",
+  tech_level_start=0, 
+  tech_level_max=5,
+  money=200000, 
+  planets=3, 
+  population=5000, 
+  colony_hub_built=true, 
+  colony_ship_available=true, 
+  colony_ships=1,
+  orbital_factory_available=true, 
+  orbital_factories=0,
+  conquest_victory=true,
+  occupation_victory=true,
+  occupation_percent=66,
+  occupation_time=30,
+  economic_victory=true,
+  economic_credits=10000000,
+  technology_victory=true,
+  social_victory=true,
+  social_morale=95,
+  social_planets=30,
+  players=[
+    PLAYER {
+      id="",
+      name="",
+      control="AI_EASY|AI_MEDIUM|AI_HARD|TRADERS|PIRATES|USER",
+      race="",
+      icon="",
+      group=1,
+      user="",
+      may_chose_race=true,
+      may_chose_icon=true
+    }
+  ]
+}
+}}}
+
+Remarks:
+  * The {{{PLAYER.name}}} contains the user-editable empire name.
+  * {{{PLAYER.user}}} tells who is assigned to the slot, {{{null}}} means the slot may be chosen by the player, if it contains the user name, the roles are preset.
