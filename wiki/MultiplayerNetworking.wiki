@@ -20,7 +20,15 @@
 Remark: whitespaces may be used freely where it does not cause ambiguity
 
 {{{
-message :: MESSAGE_TYPE_NAME '{' [attributes] '}'
+message :: object | array
+}}}
+
+{{{
+object :: [OBJECT_TYPE] '{' [attributes] '}'
+}}}
+
+{{{
+array :: [ARRAY_NAME] '[' [value [, value [,...]]] ']'
 }}}
 
 {{{
@@ -35,13 +43,6 @@ attribute :: attribute_name=value
 value :: "string" | 1234 | 1234.567 | false | true | array | null | object
 }}}
 
-{{{
-array :: '[' [value [, value [,...]]] ']'
-}}}
-
-{{{
-object :: [OBJECT_TYPE] '{' [attributes] '}'
-}}}
 
 = Request and response formats =
 
