@@ -79,6 +79,7 @@ PING { }
 PONG { }
 }}}
 
+= Game preparation messages =
 
 == Login ==
 
@@ -236,11 +237,16 @@ LOAD {
       size=30,
       surface_type="cratered",
       surface_variant=1,
-      owned=true
+      owned=true,
+      colony_hub=true,
+      orbital_factory=true
     }
   ],
   fleet_settings=[
     FLEET { ... }
+  ],
+  inventory=[
+    INVENTORY { ... }
   ]
 }
 }}}
@@ -252,8 +258,8 @@ MATCH_CANCELLED { }
 }}}
 
 Remark:
-  * Fields {{{x}}}, {{{y}}}, {{{size}}} and {{{owned}}} is optional. The first 3 of them might come in a later version.
-  * See the definition of the {{{FLEET}}} object later on.
+  * All fields may be optional in many combinations.
+  * See the definition of the {{{FLEET}}} and {{{INVENTORY}}} object later on.
 
 == Synchronize start of the game ==
 
@@ -270,3 +276,16 @@ READY
 {{{
 BEGIN
 }}}
+
+= In-game non-battle commands =
+
+= In-game non-battle status requests =
+
+= In-game space battle commands =
+
+= In-game space battle status requests =
+
+= In-game ground battle commands =
+
+= In-game ground battle status requests =
+
