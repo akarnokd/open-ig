@@ -371,7 +371,7 @@ public class MessageObject implements MessageSerializable {
 		StringReader r = new StringReader(
 				"OBJECT { value=1, i=true, a=-1, b=.1, c=-.1, d=-1.1, array=[ \"str\\\"\" ] }");
 		
-		System.out.println(MessageObject.parse(r));
+		System.out.println(MessageObject.parse(new MessageTokenizer(r).iterator()));
 		
 		r = new StringReader(
 				"Array [ 1, 2, 3 ]");
