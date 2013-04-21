@@ -50,7 +50,10 @@ object :: [OBJECT_TYPE] '{' [attributes] '}'
 === response ===
 
 {{{
-ERROR { code=1234, message="" }
+ERROR { 
+  code=1234, 
+  message="" 
+}
 }}}
 
 Codes
@@ -87,7 +90,12 @@ When: after establishing a TCP connection.
 
 === Request ===
 {{{
-LOGIN { user="", passphrase="", language="", version="" }
+LOGIN { 
+  user="", 
+  passphrase="", 
+  language="", 
+  version="" 
+}
 }}}
 
 Remarks:
@@ -97,7 +105,10 @@ Remarks:
 === Responses ===
 
 {{{
-WELCOME { session="", language="" }
+WELCOME { 
+  session="", 
+  language="" 
+}
 }}}
 
 Remarks:
@@ -229,6 +240,17 @@ Instructs the clients to start loading assets based on the match settings previo
 
 {{{
 LOAD { 
+  players=[
+    PLAYER {
+      id="",
+      name="",
+      control="",
+      race="",
+      icon="",
+      group=1,
+      user=""
+    }
+  ]
   planet_settings=[
     PLANET {
       id="",
@@ -268,18 +290,109 @@ When: after client finished the load
 === Request ===
 
 {{{
-READY
+READY { }
 }}}
 
 === Response ===
 
 {{{
-BEGIN
+BEGIN { }
+}}}
+
+= In-game non-battle status requests =
+
+== Query Fleet statuses ==
+
+=== Request ===
+
+{{{
+QUERY_FLEETS { }
+}}}
+
+{{{
+QUERY_FLEET {
+  id=""
+}
+}}}
+
+=== Response ===
+
+{{{
+FLEETS {
+  fleets=[
+    FLEET {
+      id="",
+      name="",
+      owner=""
+    }
+  ]
+}
 }}}
 
 = In-game non-battle commands =
 
-= In-game non-battle status requests =
+== Fleet commands ==
+
+=== Request ===
+
+{{{
+MOVE_FLEET {
+  id="",
+  path=[
+    POINT {
+      x = 0.1,
+      y = 0.1
+    }
+  ]  
+}
+}}}
+
+{{{
+ATTACK_FLEET {
+  id="",
+  target=""
+}
+}}}
+
+{{{
+ATTACK_PLANET {
+  id="",
+  target="",
+}
+}}}
+
+{{{
+MOVE_FLEET_PLANET {
+  id="",
+  target="",
+}
+}}}
+
+{{{
+FOLLOW_FLEET {
+  id="",
+  target="",
+}
+}}}
+=== Response ===
+
+{{{
+OK { }
+}}}
+
+or
+
+{{{
+ERROR_FLEET_MISSING { }
+}}}
+
+{{{
+ERROR_UNKNOWN_TARGET { }
+}}}
+
+{{{
+ERROR_CANT_ATTACK { }
+}}}
 
 = In-game space battle commands =
 
@@ -288,4 +401,3 @@ BEGIN
 = In-game ground battle commands =
 
 = In-game ground battle status requests =
-
