@@ -276,7 +276,7 @@ LOAD {
       group=1,
       user=""
     }
-  ]
+  ],
   planet_settings=[
     PLANET {
       id="",
@@ -479,7 +479,7 @@ QUERY_RESEARCHES
 RESEARCHES {
   available=[
     "tech id", "tech id"
-  ]
+  ],
   running=[
     RESEARCH {
       type="",
@@ -1049,8 +1049,16 @@ TBD
 
 = In-game space battle commands =
 
+TBD
+
 = In-game space battle status requests =
+
+TBD
 
 = In-game ground battle commands =
 
+TBD
+
 = In-game ground battle status requests =
+
+TBD
