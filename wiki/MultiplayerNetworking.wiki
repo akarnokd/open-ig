@@ -13,6 +13,7 @@
   * Complex objects enclosed by { }
   * Messages may span multiple lines
   * Message terminated by a final '}' and chr(13), chr(10)
+  * Message exchanges will be pull-based for now, i.e., the server will never send data without a prior request from clients.
 
 == Message format ==
 
@@ -59,6 +60,8 @@ Codes
 || 3 || Invalid user or passphrase ||
 || 4 || Client version error ||
 || 5 || Message type not allowed in the current state ||
+|| 6 || Unable to relogin, match might have ended ||
+|| 7 || Match settings rejected; requested settings not allowed ||
 
 TBD
 
@@ -117,7 +120,7 @@ RELOGIN { session="" }
 WELCOME_BACK { }
 }}}
 
-== Choosing side ==
+== Match settings ==
 
 When: after login, before game start
 
@@ -134,6 +137,7 @@ MATCH_SETTINGS {
   galaxy_template="", 
   races_template="", 
   technology_template="",
+  random_surfaces=false,
   tech_level_start=0, 
   tech_level_max=5,
   money=200000, 
@@ -154,6 +158,8 @@ MATCH_SETTINGS {
   social_victory=true,
   social_morale=95,
   social_planets=30,
+  races=[ "race1", "race2" ],
+  icons=[ "icon_path1" ],
   players=[
     PLAYER {
       id="",
@@ -163,8 +169,12 @@ MATCH_SETTINGS {
       icon="",
       group=1,
       user="",
+      traits=["TRAIT1", "TRAIT2"],
+      home_planet=""
       may_chose_race=true,
-      may_chose_icon=true
+      may_chose_icon=true,
+      may_chose_traits=true
+      may_chose_home_planet=true,
     }
   ]
 }
@@ -173,3 +183,90 @@ MATCH_SETTINGS {
 Remarks:
   * The {{{PLAYER.name}}} contains the user-editable empire name.
   * {{{PLAYER.user}}} tells who is assigned to the slot, {{{null}}} means the slot may be chosen by the player, if it contains the user name, the roles are preset.
+
+== Choosing player settings ==
+
+When: after match settings, before starting a match.
+
+=== Request ===
+
+{{{
+PLAYER_SETTINGS {
+  id="",
+  name="",
+  race="",
+  icon="",
+  traits=[ "" ],
+  home_planet="",
+}
+}}}
+
+=== Response ===
+
+{{{
+PLAYER_SETTINGS_ACCEPTED { }
+}}}
+
+or {{{ERROR}}}
+
+== Signal the intent to join the match ==
+
+When: After player settings accepted
+
+=== Request ===
+
+{{{
+JOIN { }
+}}}
+
+Remark:
+  * Clients should wait for the response messages.
+
+=== Response ===
+
+Instructs the clients to start loading assets based on the match settings previously sent/chosen and with the given custom planet configuration,
+
+{{{
+LOAD { 
+  planet_settings=[
+    PLANET {
+      id="",
+      x=100,
+      y=100,
+      size=30,
+      surface_type="cratered",
+      surface_variant=1,
+      owned=true
+    }
+  ],
+  fleet_settings=[
+    FLEET { ... }
+  ]
+}
+}}}
+
+or
+
+{{{
+MATCH_CANCELLED { }
+}}}
+
+Remark:
+  * Fields {{{x}}}, {{{y}}}, {{{size}}} and {{{owned}}} is optional. The first 3 of them might come in a later version.
+  * See the definition of the {{{FLEET}}} object later on.
+
+== Synchronize start of the game ==
+
+When: after client finished the load
+
+=== Request ===
+
+{{{
+READY
+}}}
+
+=== Response ===
+
+{{{
+BEGIN
+}}}
