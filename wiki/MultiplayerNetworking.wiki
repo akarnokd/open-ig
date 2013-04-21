@@ -331,7 +331,35 @@ BEGIN { }
 = In-game non-battle status requests =
 
 
-== Query Fleet statuses ==
+== Query empire status ==
+
+=== Requests ===
+
+{{{
+QUERY_EMPIRE_STATUSES { }
+}}}
+
+{{{
+QUERY_EMPIRE_STATUS {
+  id=""
+}
+}}}
+
+=== Response ===
+
+{{{
+EMPIRE_STATUSES {
+  date="yyyy-MM-dd HH:mm:ss",
+  empires=[
+    EMPIRE {
+      id="",
+      money=100000
+    }
+  ]
+}
+}}}
+
+== Query fleet statuses ==
 
 === Request ===
 
@@ -430,7 +458,8 @@ PRODUCTIONS {
     PRODUCTION {
       type="",
       count=1,
-      progress=20
+      progress=20,
+      priority=50
     }
   }
 }
@@ -930,6 +959,93 @@ DEPLOY_PLANET_ITEM_OK {
 ERROR_PLANET_ITEM_LIMIT { }
 }}}
 
+== Production commands ==
+
+=== Requests ===
+
+{{{
+START_PRODUCTION {
+  type="",
+  count=10
+}
+}}}
+
+{{{
+STOP_PRODUCTION {
+  type=""
+}
+}}}
+
+{{{
+ADD_PRODUCTION_UNITS {
+  type="",
+  count=1
+}
+}}}
+
+{{{
+REMOVE_PRODUCTION_UNITS {
+  type="",
+  count=1
+}
+}}}
+
+{{{
+SET_PRODUCTION_PRIORITY {
+  type="",
+  priority=50
+}
+}}}
+
+=== Responses ===
+
+{{{
+ERROR_UNKNOWN_TECHNOLOGY { }
+}}}
+
+== Research commands ==
+
+=== Requests ===
+{{{
+START_RESEARCH {
+  type="",
+  assigned=1000
+}
+}}}
+
+{{{
+STOP_RESEARCH {
+  type=""
+}}}
+
+{{{
+SET_RESEARCH_MONEY {
+  type="",
+  assigned=100
+}
+}}}
+
+=== Responses ===
+
+{{{
+OK { }
+}}}
+
+{{{
+ERROR_PREREQUISITES_MISSING { }
+}}}
+
+{{{
+ERROR_ALREADY_RESEARCHED { }
+}}}
+
+== Spying commands ==
+
+TBD
+
+== Trade commands ==
+
+TBD
 
 = In-game space battle commands =
 
