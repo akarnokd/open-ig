@@ -582,6 +582,13 @@ FOLLOW_FLEET {
   target="",
 }
 }}}
+
+{{{
+COLONIZE_FLEET {
+  id=1
+}
+}}}
+
 === Response ===
 
 {{{
@@ -594,13 +601,161 @@ or
 ERROR_FLEET_MISSING { }
 }}}
 
+or
+
 {{{
 ERROR_UNKNOWN_TARGET { }
 }}}
 
+or
+
 {{{
 ERROR_CANT_ATTACK { }
 }}}
+
+or
+
+{{{
+ERROR_NO_COLONY_SHIPS { }
+}}}
+
+or
+
+{{{
+ERROR_PLANET_ALREADY_COLONIZED { }
+}}}
+
+== Planet colonization commands ==
+
+=== Requests ===
+
+Mark the planet for automatic colonization.
+{{{
+COLONIZE { 
+  id=""
+}
+}}}
+
+{{{
+CANCEL_COLONIZE { 
+  id=""
+}
+}}}
+
+=== Responses ===
+
+{{{
+OK { }
+}}}
+
+or
+
+{{{
+ERROR_PLANET_ALREADY_COLONIZED { }
+}}}
+
+or
+
+{{{
+ERROR_TECHNOLOGY_MISSING { }
+}}}
+
+== Planet management commands ==
+
+=== Requests ===
+
+{{{
+BUILD {
+  planet="",
+  building_type="",
+  building_race="",
+  x=-20,
+  y=-50
+}
+}}}
+
+{{{
+ENABLE {
+  id=10
+}
+}}}
+
+{{{
+DISABLE {
+  id=10
+}
+}}}
+
+{{{
+REPAIR_ON {
+  id=10
+}
+}}}
+
+{{{
+REPAIR_OFF {
+  id=10
+}
+}}}
+
+{{{
+DEMOLISH {
+  id=10
+}}}
+
+{{{
+LEVEL {
+  id=10,
+  level=4
+}
+}}}
+=== Responses ===
+
+General acknowledgement.
+{{{
+OK { }
+}}}
+
+Command accepted, return the building's unique id.
+{{{
+BUILD_OK { 
+  id=5
+}
+}}}
+
+or
+
+{{{
+ERROR_PLANET_LOST { }
+}}}
+
+or
+
+{{{
+ERROR_NO_MONEY { }
+}}}
+
+or, building is at maximum level
+{{{
+ERROR_MAX_LEVEL { }
+}}}
+
+or, the destination position is blocked
+
+{{{
+ERROR_CANT_PLACE { }
+}}}
+
+{{{
+ERROR_UNKNOWN_BUILDING { }
+}}}
+
+Level down not supported.
+{{{
+ERROR_LEVEL_DOWN { }
+}}}
+
+
 
 = In-game space battle commands =
 
