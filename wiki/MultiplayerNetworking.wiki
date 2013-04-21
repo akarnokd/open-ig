@@ -45,6 +45,32 @@ object :: [OBJECT_TYPE] '{' [attributes] '}'
 
 = Request and response formats =
 
+== Batch queries ==
+
+Send multiple requests and commands with one message exchange.
+
+=== Request ===
+
+{{{
+BATCH {
+  messages=[
+    MESSAGE_TYPE_1 { ... },
+    MESSAGE_TYPE_2 { ... }
+  ]
+}
+}}}
+
+=== Response ===
+
+{{{
+BATCH_RESPONSE {
+  responses=[
+    RESPONSE_TO_MESSAGE_1 { ... },
+    RESPONSE_TO_MESSAGE_2 { ... }
+  ]
+}
+}}}
+
 == General errors ==
 
 === response ===
@@ -301,31 +327,6 @@ BEGIN { }
 
 = In-game non-battle status requests =
 
-== Batch queries ==
-
-Send multiple requests and commands with one message exchange.
-
-=== Request ===
-
-{{{
-BATCH {
-  messages=[
-    MESSAGE_TYPE_1 { ... },
-    MESSAGE_TYPE_2 { ... }
-  ]
-}
-}}}
-
-=== Response ===
-
-{{{
-BATCH_RESPONSE {
-  responses=[
-    RESPONSE_TO_MESSAGE_1 { ... },
-    RESPONSE_TO_MESSAGE_2 { ... }
-  ]
-}
-}}}
 
 == Query Fleet statuses ==
 
@@ -370,6 +371,7 @@ FLEETS {
           hp=100,
           shield=100,
           count=1,
+          tag=null,
           equipment=[
             EQUIPMENT {
               id="",
@@ -458,7 +460,82 @@ RESEARCHES {
 }
 }}}
 
+== Query spy statuses ==
 
+TBD
+
+== Query trade statuses ==
+
+TBD
+
+== Query planet statuses ==
+
+=== Request ===
+
+{{{
+QUERY_PLANETS { }
+}}}
+
+{{{
+QUERY_PLANET {
+  id=""
+}}}
+
+=== Response ===
+
+{{{
+PLANETS {
+  planets=[
+    PLANET {
+      id="",
+      owner="",
+      race="",
+      morale=50,
+      last_morale=50,
+      auto_build="NONE|CIVIL|...",
+      tax="NONE|VERY_LOW|...",
+      tax_income=50,
+      trade_income=50,
+      construction=50,
+      inventory=[
+        INVENTORY {
+          id=2
+          owner="",
+          type="",
+          count=1,
+          hp=100,
+          shield=100,
+          equipment=[
+            EQUIPMENT {
+              id="",
+              type="",
+              count=1,
+              hp=100
+            }
+          ]
+        }
+      ]
+      buildings=[
+        BUILDING {
+          id=511,
+          x=-50,
+          y=-20,
+          type="",
+          race="",
+          enabled=true,
+          repair=false,
+          construction=5000,
+          hp=5000,
+          level=0
+        }
+      ]
+    }
+  ]
+}
+}}}
+
+Remarks:
+  * If the inventory contains enemy satellites or the whole planet is owned by an enemy, only partial information is contained in the records.
 
 = In-game non-battle commands =
 
