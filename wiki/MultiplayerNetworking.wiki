@@ -301,6 +301,32 @@ BEGIN { }
 
 = In-game non-battle status requests =
 
+== Batch queries ==
+
+Send multiple requests and commands with one message exchange.
+
+=== Request ===
+
+{{{
+BATCH {
+  messages=[
+    MESSAGE_TYPE_1 { ... },
+    MESSAGE_TYPE_2 { ... }
+  ]
+}
+}}}
+
+=== Response ===
+
+{{{
+BATCH_RESPONSE {
+  responses=[
+    RESPONSE_TO_MESSAGE_1 { ... },
+    RESPONSE_TO_MESSAGE_2 { ... }
+  ]
+}
+}}}
+
 == Query Fleet statuses ==
 
 === Request ===
@@ -311,9 +337,10 @@ QUERY_FLEETS { }
 
 {{{
 QUERY_FLEET {
-  id=""
+  id=1
 }
 }}}
+
 
 === Response ===
 
@@ -321,13 +348,117 @@ QUERY_FLEET {
 FLEETS {
   fleets=[
     FLEET {
-      id="",
+      id=1,
       name="",
-      owner=""
+      owner="",
+      x=0.1,
+      y=0.1,
+      task="",
+      target_fleet=null,
+      target_planet=null,
+      attacking=false,
+      path=[
+        POINT {
+          x=0.1,
+          y=0.1
+        }
+      ],
+      inventory=[
+        INVENTORY {
+          id=0,
+          type="",
+          hp=100,
+          shield=100,
+          count=1,
+          equipment=[
+            EQUIPMENT {
+              id="",
+              type="",
+              count=1,
+              hp=1
+            }
+          ]
+        }
+      ]
     }
   ]
 }
 }}}
+
+Remarks:
+  * Other player's fleet won't have inventory details, up to 1 path entry, no task and no target fields if it is not referring to the current player's objects.
+
+== Query own inventory ==
+
+=== Request ===
+
+{{{
+QUERY_INVENTORY { }
+}}}
+
+=== Response ===
+
+{{{
+INVENTORIES {
+  inventories=[
+    INVENTORY {
+      type="",
+      count=1
+    }
+  ]
+}
+}}}
+
+== Query production status ==
+
+=== Request ===
+
+{{{
+QUERY_PRODUCTIONS
+}}}
+
+=== Response ===
+
+{{{
+PRODUCTIONS {
+  productions={
+    PRODUCTION {
+      type="",
+      count=1,
+      progress=20
+    }
+  }
+}
+}}}
+
+== Query research status ==
+
+=== Request ===
+
+{{{
+QUERY_RESEARCHES
+}}}
+
+=== Response ===
+
+{{{
+RESEARCHES {
+  available=[
+    "tech id", "tech id"
+  ]
+  running=[
+    RESEARCH {
+      type="",
+      status="RUNNING|MONEY|LAB|STOPPED",
+      assigned=1400,
+      total=1400,
+      current=true
+    }
+  ]
+}
+}}}
+
+
 
 = In-game non-battle commands =
 
@@ -337,7 +468,7 @@ FLEETS {
 
 {{{
 MOVE_FLEET {
-  id="",
+  id=1,
   path=[
     POINT {
       x = 0.1,
@@ -349,21 +480,21 @@ MOVE_FLEET {
 
 {{{
 ATTACK_FLEET {
-  id="",
-  target=""
+  id=1,
+  target=2
 }
 }}}
 
 {{{
 ATTACK_PLANET {
-  id="",
+  id=1,
   target="",
 }
 }}}
 
 {{{
 MOVE_FLEET_PLANET {
-  id="",
+  id=1,
   target="",
 }
 }}}
