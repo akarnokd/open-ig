@@ -352,7 +352,7 @@ QUERY_FLEET {
 FLEETS {
   fleets=[
     FLEET {
-      id=1,
+      fleet_id=1,
       name="",
       owner="",
       x=0.1,
@@ -369,7 +369,7 @@ FLEETS {
       ],
       inventory=[
         INVENTORY {
-          id=0,
+          item_id=0,
           type="",
           hp=100,
           shield=100,
@@ -481,7 +481,7 @@ QUERY_PLANETS { }
 
 {{{
 QUERY_PLANET {
-  id=""
+  planet_id=""
 }}}
 
 === Response ===
@@ -548,7 +548,7 @@ Remarks:
 
 {{{
 MOVE_FLEET {
-  id=1,
+  fleet_id=1,
   path=[
     POINT {
       x = 0.1,
@@ -560,35 +560,35 @@ MOVE_FLEET {
 
 {{{
 ATTACK_FLEET {
-  id=1,
+  fleet_id=1,
   target=2
 }
 }}}
 
 {{{
 ATTACK_PLANET {
-  id=1,
+  fleet_id=1,
   target="",
 }
 }}}
 
 {{{
 MOVE_FLEET_PLANET {
-  id=1,
+  fleet_id=1,
   target="",
 }
 }}}
 
 {{{
 FOLLOW_FLEET {
-  id="",
+  fleet_id=1,
   target="",
 }
 }}}
 
 {{{
 COLONIZE_FLEET {
-  id=1
+  fleet_id=1
 }
 }}}
 
@@ -635,41 +635,41 @@ ERROR_PLANET_ALREADY_COLONIZED { }
 Create a new fleet at the specified location.
 {{{
 NEW_FLEET_AT_PLANET { 
-  id=""
+  planet_id=""
 }
 }}}
 
 Create a new fleet at the specified other fleet.
 {{{
 NEW_FLEET_AT_FLEET {
-  id=10
+  fleet_id=10
 }
 }}}
 
 {{{
 RENAME_FLEET {
-  id=10,
+  fleet_id=10,
   name=""
 }
 }}}
 
 {{{
 SELL_FLEET_ITEM {
-  id=10,
+  fleet_id=10,
   item_id=521
 }
 }}}
 
 {{{
 DEPLOY_FLEET_ITEM {
-  id=10,
+  fleet_id=10,
   type=""
 }
 }}}
 
 {{{
 UNDEPLOY_FLEET_ITEM {
-  id=10,
+  fleet_id=10,
   item_id=521
 }
 }}}
@@ -677,7 +677,7 @@ UNDEPLOY_FLEET_ITEM {
 Add or replace equipment at the specified slot
 {{{
 ADD_FLEET_EQUIPMENT {
-  id=10,
+  fleet_id=10,
   item_id=522,
   slot_id="radar",
   type="Radar1",
@@ -687,7 +687,7 @@ ADD_FLEET_EQUIPMENT {
 
 {{{
 REMOVE_FLEET_EQUIPMENT {
-  id=10,
+  fleet_id=10,
   item_id=522,
   slot_id="radar",
   count=1
@@ -696,7 +696,7 @@ REMOVE_FLEET_EQUIPMENT {
 
 {{{
 FLEET_AUTO_UPGRADE { 
-  id=10
+  fleet_id=10
 }
 }}}
 
@@ -704,7 +704,7 @@ FLEET_AUTO_UPGRADE {
 
 {{{
 NEW_FLEET_OK {
-  id=10
+  fleet_id=10
 }
 }}}
 
@@ -734,7 +734,7 @@ ERROR_INVALID_FLEET_EQUIPMENT { }
 
 {{{
 DEPLOY_FLEET_ITEM_OK {
-  id=412
+  fleet_id=412
 }
 }}}
 
@@ -745,13 +745,13 @@ DEPLOY_FLEET_ITEM_OK {
 Mark the planet for automatic colonization.
 {{{
 COLONIZE { 
-  id=""
+  planet_id=""
 }
 }}}
 
 {{{
 CANCEL_COLONIZE { 
-  id=""
+  planet_id=""
 }
 }}}
 
@@ -779,7 +779,7 @@ ERROR_TECHNOLOGY_MISSING { }
 
 {{{
 BUILD {
-  planet="",
+  planet_id="",
   building_type="",
   building_race="",
   x=-20,
@@ -789,36 +789,36 @@ BUILD {
 
 {{{
 ENABLE {
-  id=10
+  building_id=10
 }
 }}}
 
 {{{
 DISABLE {
-  id=10
+  building_id=10
 }
 }}}
 
 {{{
 REPAIR_ON {
-  id=10
+  building_id=10
 }
 }}}
 
 {{{
 REPAIR_OFF {
-  id=10
+  building_id=10
 }
 }}}
 
 {{{
 DEMOLISH {
-  id=10
+  building_id=10
 }}}
 
 {{{
 LEVEL {
-  id=10,
+  building_id=10,
   level=4
 }
 }}}
@@ -832,7 +832,7 @@ OK { }
 Command accepted, return the building's unique id.
 {{{
 BUILD_OK { 
-  id=5
+  building_id=5
 }
 }}}
 
@@ -872,7 +872,64 @@ ERROR_LEVEL_DOWN { }
 
 === Requests ===
 
+{{{
+DEPLOY_PLANET_ITEM {
+  planet_id="",
+  type="SpaceStation1",
+  count=1
+}
+}}}
+
+{{{
+UNDEPLOY_PLANET_ITEM {
+  planet_id="",
+  item_id=100
+  count=1
+}
+}}}
+
+Add or replace equipment at the specified slot
+{{{
+ADD_PLANET_EQUIPMENT {
+  planet_id="",
+  item_id=522,
+  slot_id="radar",
+  type="Radar1",
+  count=1
+}
+}}}
+
+{{{
+REMOVE_PLANET_EQUIPMENT {
+  planet_id="",
+  item_id=522,
+  slot_id="radar",
+  count=1
+}
+}}}
+
+{{{
+PLANET_AUTO_UPGRADE { 
+  planet_id=""
+}
+}}}
+
 === Responses ===
+
+{{{
+OK { }
+}}}
+
+{{{
+DEPLOY_PLANET_ITEM_OK {
+  item_id=100
+}
+}}}
+
+{{{
+ERROR_PLANET_ITEM_LIMIT { }
+}}}
+
 
 = In-game space battle commands =
 
