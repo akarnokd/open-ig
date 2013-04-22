@@ -44,7 +44,7 @@ public class MessageTokenizer implements Iterable<Token> {
 	 * The output token record.
 	 * @author akarnokd, 2013.04.21.
 	 */
-	public static class Token {
+	public static final class Token {
 		/** The type. */
 		public final TokenType type;
 		/** The value. */
@@ -271,6 +271,8 @@ public class MessageTokenizer implements Iterable<Token> {
 		case STRING:
 		case SYMBOL:
 			return (new Token(tok, value.toString()));
+		case EOF:
+			return new Token(tok, null);
 		default:
 			throw new IllegalArgumentException(tok + " " + value);
 		}

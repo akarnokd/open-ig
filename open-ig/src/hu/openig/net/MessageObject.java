@@ -12,6 +12,7 @@ import hu.openig.net.MessageTokenizer.Token;
 import hu.openig.net.MessageTokenizer.TokenType;
 import hu.openig.utils.Exceptions;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -49,6 +50,20 @@ public class MessageObject implements MessageSerializable {
 	 */
 	public boolean has(String name) {
 		return attributes.containsKey(name);
+	}
+	/**
+	 * Tests if the given attribute is present and is the instance of the requested
+	 * type.
+	 * @param name the name
+	 * @param clazz the class
+	 * @return true if present
+	 */
+	public boolean has(String name, Class<?> clazz) {
+		if (attributes.containsKey(name)) {
+			Object value = attributes.get(name);
+			return clazz.isInstance(value);
+		}
+		return false;
 	}
 	/**
 	 * Retrieve a specific attribute object.
@@ -171,7 +186,7 @@ public class MessageObject implements MessageSerializable {
 	 * @throws IOException on error
 	 */
 	public static Object parse(Reader in) throws IOException {
-		return parse(new MessageTokenizer(in).parse().iterator());
+		return parse(new MessageTokenizer(in).iterator());
 	}
 	/**
 	 * Parse a message object from the supplied tokenizer.
@@ -208,6 +223,9 @@ public class MessageObject implements MessageSerializable {
 				parse(tok, ma);
 				return ma;
 			}
+		} else
+		if (t.type == TokenType.EOF) {
+			throw new EOFException();
 		}
 		throw new MessageSyntaxError("Unexpected token: " + t);
 	}
@@ -388,5 +406,205 @@ public class MessageObject implements MessageSerializable {
 
 		System.out.println(MessageObject.parse(r));
 
+	}
+	/**
+	 * Returns an integer value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the integer value
+	 */
+	public int getInt(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Number) {
+				return ((Number)v).intValue();
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a long value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the long value
+	 */
+	public long getLong(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Number) {
+				return ((Number)v).longValue();
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a double value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the double value
+	 */
+	public double getDouble(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Number) {
+				return ((Number)v).doubleValue();
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a boolean value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the boolean value
+	 */
+	public boolean getBoolean(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Boolean) {
+				return v == Boolean.TRUE;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a string attribute that might be null.
+	 * @param name the attribute name
+	 * @return the value
+	 */
+	public String getString(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof String) {
+				return (String)v;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a message object or throws a MissingAttributeException.
+	 * @param name the attribute name
+	 * @return the message object
+	 */
+	public MessageObject getObject(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof MessageObject) {
+				return (MessageObject)v;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a message array or throws a MissingAttributeException.
+	 * @param name the attribute name
+	 * @return the message object
+	 */
+	public MessageArray getArray(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof MessageArray) {
+				return (MessageArray)v;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns the specified attribute value or the
+	 * default value.
+	 * @param name the attribute name
+	 * @param defaultValue the default value
+	 * @return the object
+	 */
+	public Object get(String name, Object defaultValue) {
+		if (attributes.containsKey(name)) {
+			return attributes.get(name);
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns the specified attribute value or the
+	 * default value if the attribute is missing or set to null.
+	 * @param name the attribute name
+	 * @param defaultValue the default value
+	 * @return the object
+	 */
+	public Object getValue(String name, Object defaultValue) {
+		if (attributes.containsKey(name)) {
+			Object o = attributes.get(name);
+			return o != null ? o : defaultValue;
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns a string attribute that might be null.
+	 * @param name the attribute name
+	 * @param defaultValue the default value
+	 * @return the value
+	 */
+	public String getString(String name, String defaultValue) {
+		if (attributes.containsKey(name)) {
+			Object o = attributes.get(name);
+			if (o instanceof String) {
+				return (String)o;
+			}
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns an integer value with the given attribute name.
+	 * @param name the attribute name
+	 * @param defaultValue the default value
+	 * @return the integer value
+	 */
+	public int getInt(String name, int defaultValue) {
+		if (attributes.containsKey(name)) {
+			Object o = attributes.get(name);
+			if (o instanceof Number) {
+				return ((Number)o).intValue();
+			}
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns a long value with the given attribute name.
+	 * @param name the attribute name
+	 * @param defaultValue the default value
+	 * @return the long value
+	 */
+	public long getLong(String name, long defaultValue) {
+		if (attributes.containsKey(name)) {
+			Object o = attributes.get(name);
+			if (o instanceof Number) {
+				return ((Number)o).longValue();
+			}
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns a double value with the given attribute name.
+	 * @param name the attribute name
+	 * @param defaultValue the default value
+	 * @return the double value
+	 */
+	public double getDouble(String name, double defaultValue) {
+		if (attributes.containsKey(name)) {
+			Object o = attributes.get(name);
+			if (o instanceof Number) {
+				return ((Number)o).doubleValue();
+			}
+		}
+		return defaultValue;
+	}
+	/**
+	 * Returns a boolean value with the given attribute name.
+	 * @param name the attribute name
+	 * @param defaultValue the default value
+	 * @return the boolean value
+	 */
+	public boolean getBoolean(String name, boolean defaultValue) {
+		if (attributes.containsKey(name)) {
+			Object o = attributes.get(name);
+			if (o instanceof Boolean) {
+				return o == Boolean.TRUE;
+			}
+		}
+		return defaultValue;
 	}
 }
