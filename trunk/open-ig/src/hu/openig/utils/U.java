@@ -506,6 +506,46 @@ public final class U {
 		}
 	}
 	/**
+	 * Close all the closeables and return all exceptions at once.
+	 * @param cs the array of closeables
+	 * @throws IOException the exception
+	 */
+	public static void close(Closeable... cs) throws IOException {
+		IOException ex = null;
+		for (Closeable c : cs) {
+			try {
+				if (c != null) {
+					c.close();
+				}
+			} catch (IOException exc) {
+				ex = exc; // FIXME aggregate exceptions
+			}
+		}
+		if (ex != null) {
+			throw ex;
+		}
+	}
+	/**
+	 * Close all the closeables and return all exceptions at once.
+	 * @param cs the array of closeables
+	 * @throws IOException the exception
+	 */
+	public static void close(Iterable<? extends Closeable> cs) throws IOException {
+		IOException ex = null;
+		for (Closeable c : cs) {
+			try {
+				if (c != null) {
+					c.close();
+				}
+			} catch (IOException exc) {
+				ex = exc; // FIXME aggregate exceptions
+			}
+		}
+		if (ex != null) {
+			throw ex;
+		}
+	}
+	/**
 	 * Returns an integer parameter or the default value.
 	 * @param parameters the parameter map
 	 * @param name the parameter name
