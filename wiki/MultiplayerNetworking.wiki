@@ -87,11 +87,12 @@ Codes
 || *Code* || *Meaning* ||
 || 1 || Request format error ||
 || 2 || Unknown message type ||
-|| 3 || Invalid user or passphrase ||
-|| 4 || Client version error ||
-|| 5 || Message type not allowed in the current state ||
-|| 6 || Unable to relogin, match might have ended ||
-|| 7 || Match settings rejected; requested settings not allowed ||
+|| 3 || Unknown error ||
+|| 4 || Invalid user or passphrase ||
+|| 5 || Client version error ||
+|| 6 || Message type not allowed in the current state ||
+|| 7 || Unable to relogin, match might have ended ||
+|| 8 || Match settings rejected; requested settings not allowed ||
 
 TBD
 
