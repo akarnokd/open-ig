@@ -88,11 +88,12 @@ Codes
 || 1 || Request format error ||
 || 2 || Unknown message type ||
 || 3 || Unknown error ||
-|| 4 || Invalid user or passphrase ||
-|| 5 || Client version error ||
-|| 6 || Message type not allowed in the current state ||
-|| 7 || Unable to relogin, match might have ended ||
-|| 8 || Match settings rejected; requested settings not allowed ||
+|| 4 || Server not ready ||
+|| 5 || Invalid user or passphrase ||
+|| 6 || Client version error ||
+|| 7 || Message type not allowed in the current state ||
+|| 8 || Unable to relogin, match might have ended ||
+|| 9 || Match settings rejected; requested settings not allowed ||
 
 TBD
 
