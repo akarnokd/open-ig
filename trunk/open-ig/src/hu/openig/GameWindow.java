@@ -333,6 +333,8 @@ public class GameWindow extends JFrame implements GameControls {
 	CommonResources commons;
 	/** The surface used to render the screens. */
 	ScreenRenderer surface;
+	/** The current overlay component. */
+	JComponent overlayComponent;
 	/** The list of screens. */
 	List<ScreenBase> screens;
 	/** The location save to switch back from full-screen. */

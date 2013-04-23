@@ -3221,6 +3221,23 @@
 	<entry key='settings.starmap_panels'>Csillagtérkép:</entry>
 	<entry key='starmap.colonize_cancel.tip'>Kolonizálás visszavonása.[n]A kolonizálás miatti építés vagy gyártás nem kerül leállításra,[n]de nem kerülnek majd felhasználásra a következő lépésben.[n]Létező vagy úton lévő kolonizáló hajók megállnak, és akár másik kijelölt bolygóra is átállhatnak.</entry>
 
+	<entry key='multiplayer.settings.title'>Többjátékos mód beállítása</entry>
+	<entry key='multiplayer.settings.local_address'>Helyi cím:</entry>
+	<entry key='multiplayer.settings.local_port'>Helyi port:</entry>
+	<entry key='multiplayer.settings.upnp'>UPnP használata</entry>
+	<entry key='multiplayer.settings.upnp_settings'>Beállítások...</entry>
+	<entry key='multiplayer.settings.host_game'>Játék szervezése</entry>
+	<entry key='multiplayer.settings.join_game'>Csatlakozás játékhoz</entry>
+	<entry key='multiplayer.settings.general'>Általános</entry>
+	<entry key='multiplayer.settings.galaxy'>Galaxis</entry>
+	<entry key='multiplayer.settings.economy'>Gazdaság</entry>
+	<entry key='multiplayer.settings.players'>Játékosok</entry>
+	<entry key='multiplayer.settings.victory'>Győzelem</entry>
+	<entry key='multiplayer.settings.remote_address'>Távoli cím:</entry>
+	<entry key='multiplayer.settings.remote_port'>Távoli port:</entry>
+	<entry key='multiplayer.settings.connect'>Kapcsolódás</entry>
+	<entry key='multiplayer.settings.back'>Vissza</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
