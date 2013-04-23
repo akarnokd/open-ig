@@ -284,6 +284,30 @@ public class Configuration {
 	 */
 	@LoadSave
 	public boolean aiGroundAttackGetCloser = true;
+	/** The list of server ports entered in the multiplayer screen. */
+	@LoadSave
+	public final List<String> serverPorts = new ArrayList<String>();
+	/** The last hosting port used. */
+	@LoadSave
+	public String lastServerPort = "13951";
+	/** The last hosting address used. */
+	@LoadSave
+	public String lastServerAddress;
+	/** The last joining port used. */
+	@LoadSave
+	public String lastClientPort;
+	/** The last joining address used. */
+	@LoadSave
+	public String lastClientAddress;
+	/** The join ports entered. */
+	@LoadSave
+	public final List<String> clientPorts = new ArrayList<String>();
+	/** The join addresses entered. */
+	@LoadSave
+	public final List<String> clientAddresses = new ArrayList<String>();
+	/** Use UPnP? */
+	@LoadSave
+	public boolean upnp;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

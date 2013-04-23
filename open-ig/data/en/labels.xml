@@ -3185,6 +3185,23 @@
 	<entry key='settings.starmap_panels'>Starmap panels:</entry>
 	<entry key='starmap.colonize_cancel.tip'>Cancel colonization.[n]Construction or production related to the earlier colonization attempt won't be stopped,[n]although it won't progress to the next step.[n]Existing or en-route colony ships might be diverted to another colonization tasks.</entry>
 
+	<entry key='multiplayer.settings.title'>Multiplayer settings</entry>
+	<entry key='multiplayer.settings.local_address'>Local address:</entry>
+	<entry key='multiplayer.settings.local_port'>Local port</entry>
+	<entry key='multiplayer.settings.upnp'>Use UPnP</entry>
+	<entry key='multiplayer.settings.upnp_settings'>Settings...</entry>
+	<entry key='multiplayer.settings.host_game'>Host game</entry>
+	<entry key='multiplayer.settings.join_game'>Join game</entry>
+	<entry key='multiplayer.settings.general'>General</entry>
+	<entry key='multiplayer.settings.galaxy'>Galaxy</entry>
+	<entry key='multiplayer.settings.economy'>Economy</entry>
+	<entry key='multiplayer.settings.players'>Players</entry>
+	<entry key='multiplayer.settings.victory'>Victory</entry>
+	<entry key='multiplayer.settings.remote_address'>Remote address:</entry>
+	<entry key='multiplayer.settings.remote_port'>Remote port:</entry>
+	<entry key='multiplayer.settings.connect'>Connect</entry>
+	<entry key='multiplayer.settings.back'>Back</entry>
+
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

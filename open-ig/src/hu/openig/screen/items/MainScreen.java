@@ -13,6 +13,7 @@ import hu.openig.core.Pair;
 import hu.openig.model.Configuration;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
+import hu.openig.multiplayer.MultiplayerScreen;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
@@ -169,6 +170,8 @@ public class MainScreen extends ScreenBase {
 	ClickLabel creditsLabel;
 	/** Label button. */
 	ClickLabel profileLabel;
+	/** The current multiplayer frame. */
+	MultiplayerScreen multiplayerFrame;
 	/** Resume the last gameplay. */
 	void doContinue() {
 		continueLabel.enabled(isSaveAvailable());
@@ -345,8 +348,9 @@ public class MainScreen extends ScreenBase {
 	}
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
-
+		if (multiplayerFrame != null) {
+			multiplayerFrame = null;
+		}
 	}
 
 	@Override
@@ -392,7 +396,17 @@ public class MainScreen extends ScreenBase {
 		};
 		
 		multiplayer = new ClickLabel(20 , "mainmenu.multiplayer");
-		multiplayer.enabled(false);
+		multiplayer.action = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				if (multiplayerFrame == null) {
+					multiplayerFrame = new MultiplayerScreen(commons);
+					multiplayerFrame.setLocationRelativeTo(commons.control().renderingComponent());
+				}
+				multiplayerFrame.setVisible(true);
+			}
+		};
 		
 		settings = new ClickLabel(20, "mainmenu.settings");
 		settings.action = new Action0() {
