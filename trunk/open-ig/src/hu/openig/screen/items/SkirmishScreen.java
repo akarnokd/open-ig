@@ -15,6 +15,7 @@ import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Labels;
+import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishAIMode;
@@ -293,7 +294,7 @@ public class SkirmishScreen extends ScreenBase {
 				super.update();
 				
 				templatePlayers.clear();
-				templatePlayers.addAll(getPlayersFrom(get()));
+				templatePlayers.addAll(getPlayersFrom(rl, get()));
 			}
 		};
 		galaxyRacesLabel = createLabel("skirmish.race_template");
@@ -1144,11 +1145,13 @@ public class SkirmishScreen extends ScreenBase {
 	}
 	/**
 	 * Extract the players from the given definition.
+	 * @param rl the resource locator
 	 * @param def the definition
 	 * @return the set of players
 	 */
-	public Set<SkirmishPlayer> getPlayersFrom(GameDefinition def) {
-		Set<SkirmishPlayer> result = U.newHashSet();
+	public static List<SkirmishPlayer> getPlayersFrom(ResourceLocator rl, GameDefinition def) {
+		List<SkirmishPlayer> result = U.newArrayList();
+		Set<SkirmishPlayer> rs = U.newHashSet();
 		
 		XElement xplayers = rl.getXML(def.players);
 		
@@ -1183,7 +1186,9 @@ public class SkirmishScreen extends ScreenBase {
 				sp.ai = SkirmishAIMode.AI_NORMAL;
 			}
 			
-			result.add(sp);
+			if (rs.add(sp)) {
+				result.add(sp);
+			}
 		}
 		
 		return result;

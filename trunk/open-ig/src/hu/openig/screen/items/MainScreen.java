@@ -349,6 +349,7 @@ public class MainScreen extends ScreenBase {
 	@Override
 	public void onFinish() {
 		if (multiplayerFrame != null) {
+			multiplayerFrame.dispose();
 			multiplayerFrame = null;
 		}
 	}

@@ -2979,7 +2979,7 @@
 	<entry key='skirmish.economic.tooltip'>Legyél az első, aki eléri a megadott kreditszintet. A csoportok összpénze számít.</entry>
 	<entry key='skirmish.technology'>Technológia általi győzelem</entry>
 	<entry key='skirmish.technology.tooltip'>Legyél az első, aki kifejleszti az összes technológiát.</entry>
-	<entry key='skirmish.social'>Szociális általi győzelem</entry>
+	<entry key='skirmish.social'>Szociális győzelem</entry>
 	<entry key='skirmish.social.tooltip'>Érd el a megadott morálszintet legalább a megadott mennyiségű bolygón.</entry>
 
 	<entry key="skirmish.days">nap</entry>
@@ -3237,6 +3237,38 @@
 	<entry key='multiplayer.settings.remote_port'>Távoli port:</entry>
 	<entry key='multiplayer.settings.connect'>Kapcsolódás</entry>
 	<entry key='multiplayer.settings.back'>Vissza</entry>
+	<entry key='multiplayer.settings.quicksave'>A szervező gyorsmenthet</entry>
+	<entry key='multiplayer.settings.autosave'>A szervező auto-menthet</entry>
+	<entry key='multiplayer.settings.pause'>A szervező szüneteltethet</entry>
+	<entry key='multiplayer.settings.simulation_speed'>Játék sebesség:</entry>
+	<entry key='multiplayer.settings.speed_normal'>1x</entry>
+	<entry key='multiplayer.settings.speed_double'>2x</entry>
+	<entry key='multiplayer.settings.speed_quadruple'>4x</entry>
+	<entry key='multiplayer.settings.timestep'>Játék időlépés (perc):</entry>
+	<entry key='multiplayer.settings.publish'>Játék meghirdetése</entry>
+	<entry key='multiplayer.settings.join'>Csatlakozás a játékhoz</entry>
+	<entry key='multiplayer.settings.user'>Játékos</entry>
+	<entry key='multiplayer.settings.race'>Birodalom-faj</entry>
+	<entry key='multiplayer.settings.icon'>Ikon</entry>
+	<entry key='multiplayer.settings.ai'>M.I.</entry>
+	<entry key='multiplayer.settings.traits'>Jell.</entry>
+	<entry key='multiplayer.settings.group'>Csoport</entry>
+	<entry key='multiplayer.settings.add_player'>Hozzáadás...</entry>
+	<entry key='multiplayer.settings.edit_player'>Szerkesztés...</entry>
+	<entry key='multiplayer.settings.remove_player'>Törlés</entry>
+	<entry key='multiplayer.settings.add_user'>Játékos létrehozása</entry>
+	<entry key='multiplayer.settings.user_type'>Játékos típus:</entry>
+	<entry key='multiplayer.settings.client_user'>Kliens</entry>
+	<entry key='multiplayer.settings.client_name'>Játékos név:</entry>
+	<entry key='multiplayer.settings.client_passphrase'>Játékos jelmondat:</entry>
+	<entry key='multiplayer.settings.empire_race'>Birodalom és faj:</entry>
+	<entry key='multiplayer.settings.icons'>Ikon:</entry>
+	<entry key='multiplayer.settings.client_icons'>Játékos választhat ikont</entry>
+	<entry key='multiplayer.settings.user_edit_ok'>Rendben</entry>
+	<entry key='multiplayer.settings.user_edit_cancel'>Mégsem</entry>
+	<entry key='multiplayer.settings.client_race'>Játékos választhat birodalmat</entry>
+	<entry key='multiplayer.settings.traits_long'>Jellemvonások:</entry>
+	<entry key='multiplayer.settings.client_traits'>Játékos választhat jellemvonásokat</entry>
 
 	<entry key=""></entry>
 	<entry key=""></entry>
