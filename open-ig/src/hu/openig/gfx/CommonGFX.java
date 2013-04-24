@@ -167,6 +167,9 @@ public class CommonGFX {
 	/** Small okay icon. */
 	@Img(name = "ok")
 	public BufferedImage okayIcon;
+	/** Small info icon. */
+	@Img(name = "info")
+	public BufferedImage infoIcon;
 	/** The shield icon. */
 	@Btn3H(name = "shield")
 	public BufferedImage[] shield;
