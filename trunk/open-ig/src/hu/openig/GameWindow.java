@@ -21,6 +21,7 @@ import hu.openig.model.AIManager;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Configuration;
+import hu.openig.model.CustomGameDefinition;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.InventoryItem;
@@ -1473,7 +1474,7 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
-		final SkirmishDefinition currentSkirmish = commons.world() != null ? commons.world().skirmishDefinition : null;
+		final CustomGameDefinition currentSkirmish = commons.world() != null ? commons.world().skirmishDefinition : null;
 		
 		commons.worldLoading = true;
 		boolean running = false;
@@ -2250,7 +2251,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @return the loaded world
 	 */
 	protected World loadWorldData(final String currentGame,
-			final SkirmishDefinition skirmish,
+			final CustomGameDefinition skirmish,
 			final XElement xworld) {
 		String game = xworld.get("game");
 		XElement sk = xworld.childElement("skirmish-definition");

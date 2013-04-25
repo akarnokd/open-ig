@@ -3228,6 +3228,19 @@
 	<entry key='multiplayer.settings.client_icons'>Client may change icon</entry>
 	<entry key='multiplayer.settings.user_edit_ok'>OK</entry>
 	<entry key='multiplayer.settings.user_edit_cancel'>Cancel</entry>
+	<entry key='multiplayer.settings.join_user_name'>User:</entry>
+	<entry key='multiplayer.settings.join_passphrase'>Passphrase</entry>
+	<entry key='multiplayer.settings.edit_user'>Edit user</entry>
+	<entry key='multiplayer.settings.error'>Error</entry>
+	<entry key='multiplayer.settings.error_enter_user_name'>Please enter a user name.</entry>
+	<entry key='multiplayer.settings.error_enter_unique_user_name'>User name already exists.</entry>
+	<entry key='multiplayer.settings.change_groups'>Client may change group</entry>
+	<entry key='multiplayer.settings.not_enough_players'>Not enough players.</entry>
+	<entry key='multiplayer.settings.error_enter_unique_icon'>Icon already used by another player.</entry>
+	<entry key='multiplayer.settings.you_missing'>Please add the organizer user as well.</entry>
+	<entry key='multiplayer.settings.too_many_you'>Only a signle organizer user may be present.</entry>
+	<entry key='multiplayer.settings.joined'>Joined</entry>
+	<entry key='multiplayer.settings.cheat'>Allow cheats</entry>
 
 	<entry key=""></entry>
 	<entry key=""></entry>

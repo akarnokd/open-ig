@@ -13,6 +13,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Chats.Chat;
 import hu.openig.model.Chats.Node;
+import hu.openig.model.CustomGameDefinition;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameScripting;
 import hu.openig.model.GroundwarWorld;
@@ -22,7 +23,6 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
-import hu.openig.model.SkirmishDefinition;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
@@ -46,7 +46,7 @@ public class SkirmishScripting implements GameScripting {
 	/** The player object. */
 	protected Player player;
 	/** The skirmish definition. */
-	protected SkirmishDefinition def;
+	protected CustomGameDefinition def;
 	/** The map of all main and sub objectives. */
 	final Map<String, Objective> allObjectives = U.newLinkedHashMap();
 	/** Show the objectives once. */
