@@ -11,6 +11,7 @@ package hu.openig.editors.ce;
 import hu.openig.utils.U;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -20,7 +21,7 @@ import javax.swing.table.AbstractTableModel;
  * @author akarnokd, 2012.11.01.
  * @param <T> the element type.
  */
-public abstract class GenericTableModel<T> extends AbstractTableModel {
+public abstract class GenericTableModel<T> extends AbstractTableModel implements Iterable<T> {
 	/**	 */
 	private static final long serialVersionUID = 9135016542736539537L;
 	/** The items. */
@@ -210,5 +211,9 @@ public abstract class GenericTableModel<T> extends AbstractTableModel {
 			items.set(idx, newItem);
 			update(idx);
 		}
+	}
+	@Override
+	public Iterator<T> iterator() {
+		return items.iterator();
 	}
 }

@@ -13,6 +13,7 @@ import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
+import hu.openig.model.CustomGameDefinition;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Labels;
 import hu.openig.model.ResourceLocator;
@@ -99,7 +100,7 @@ public class SkirmishScreen extends ScreenBase {
 	/** The list of campaigns. */
 	final List<GameDefinition> campaigns = new ArrayList<GameDefinition>();
 	/** The skirmish definition. */
-	SkirmishDefinition definition;
+	CustomGameDefinition definition;
 	/** The galaxy definition label. */
 	UILabel galaxyDefLabel;
 	/** The galaxy definition spin-box. */

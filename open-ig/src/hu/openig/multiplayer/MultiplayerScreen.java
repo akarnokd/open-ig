@@ -13,26 +13,35 @@ import hu.openig.core.ResourceType;
 import hu.openig.editors.ce.GenericTableModel;
 import hu.openig.model.Configuration;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.MultiplayerUser;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.SkirmishAIMode;
 import hu.openig.model.SkirmishDiplomaticRelation;
 import hu.openig.model.SkirmishPlayer;
+import hu.openig.model.Trait;
+import hu.openig.model.TraitKind;
 import hu.openig.screen.CommonResources;
 import hu.openig.screen.items.SkirmishScreen;
 import hu.openig.ui.IGButton;
 import hu.openig.ui.IGCheckBox;
 import hu.openig.utils.Exceptions;
+import hu.openig.utils.GUIUtils;
 import hu.openig.utils.U;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -40,10 +49,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -51,16 +66,21 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolTip;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * The multiplayer setup screen.
@@ -189,6 +209,28 @@ public class MultiplayerScreen extends JFrame {
 	private PlayerModel playerModel;
 	/** The player table. */
 	private JTable playerTable;
+	/** UI component. */
+	private JTextField joinUserName;
+	/** UI component. */
+	private JTextField joinPassphrase;
+	/** UI component. */
+	private IGButton addPlayer;
+	/** UI component. */
+	private IGButton editPlayer;
+	/** UI component. */
+	private IGButton removePlayer;
+	/** UI component. */
+	private JLabel playerState;
+	/** UI component. */
+	private IGCheckBox defaultChangeIcon;
+	/** UI component. */
+	private IGCheckBox defaultChangeTraits;
+	/** UI component. */
+	private IGCheckBox defaultChangeRace;
+	/** Allow changing the group? */
+	private IGCheckBox defaultChangeGroup;
+	/** Allow cheating? */
+	private IGCheckBox allowCheat;
 	/**
 	 * Constructor. Initializes the sceen.
 	 * @param commons the commons object
@@ -277,6 +319,10 @@ public class MultiplayerScreen extends JFrame {
 				joinButton.setForeground(Color.BLACK);
 				publishGame.setVisible(true);
 				joinGame.setVisible(false);
+
+				addPlayer.setEnabled(true);
+				updatePlayerButtons();
+				checkEnablePublish();
 			}
 		});
 		
@@ -289,6 +335,9 @@ public class MultiplayerScreen extends JFrame {
 				joinButton.setForeground(Color.WHITE);
 				publishGame.setVisible(false);
 				joinGame.setVisible(true);
+				addPlayer.setEnabled(false);
+				
+				updatePlayerButtons();
 			}
 		});
 		
@@ -380,6 +429,8 @@ public class MultiplayerScreen extends JFrame {
 		
 		setLayout(new BorderLayout());
 		add(basePanel, BorderLayout.CENTER);
+
+		checkEnablePublish();
 		
 		pack();
 		setMinimumSize(getSize());
@@ -582,6 +633,13 @@ public class MultiplayerScreen extends JFrame {
 			remotePortBox.setSelectedItem(config.lastClientPort);
 		}
 
+		JLabel joinUserNameLabel = createLabel("multiplayer.settings.join_user_name");
+		joinUserName = new JTextField();
+		joinUserName.setFont(fontMedium);
+		JLabel joinPassphraseLabel = createLabel("multiplayer.settings.join_passphrase");
+		joinPassphrase = new JTextField();
+		joinPassphrase.setFont(fontMedium);
+		
 		IGButton connect = new IGButton(get("multiplayer.settings.connect"));
 		connect.setFont(fontMedium);
 		connect.setForeground(Color.WHITE);
@@ -592,17 +650,20 @@ public class MultiplayerScreen extends JFrame {
 		gl.setAutoCreateGaps(true);
 
 		gl.setHorizontalGroup(
-			gl.createParallelGroup()
+			gl.createParallelGroup(Alignment.CENTER)
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(remoteAddress)
 				.addComponent(remoteAddressBox)
+				.addComponent(remotePort)
+				.addComponent(remotePortBox, 100, 100, 100)
 			)
 			.addGroup(
 				gl.createSequentialGroup()
-				.addComponent(remotePort)
-				.addComponent(remotePortBox, 100, 100, 100)
-				.addGap(30)
+				.addComponent(joinUserNameLabel)
+				.addComponent(joinUserName)
+				.addComponent(joinPassphraseLabel)
+				.addComponent(joinPassphrase)
 				.addComponent(connect)
 			)
 		);
@@ -612,11 +673,15 @@ public class MultiplayerScreen extends JFrame {
 				gl.createParallelGroup(Alignment.CENTER)
 				.addComponent(remoteAddress)
 				.addComponent(remoteAddressBox)
+				.addComponent(remotePort)
+				.addComponent(remotePortBox)
 			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.CENTER)
-				.addComponent(remotePort)
-				.addComponent(remotePortBox)
+				.addComponent(joinUserNameLabel)
+				.addComponent(joinUserName)
+				.addComponent(joinPassphraseLabel)
+				.addComponent(joinPassphrase)
 				.addComponent(connect)
 			)
 		);
@@ -632,6 +697,12 @@ public class MultiplayerScreen extends JFrame {
 		allowQuicksave = createCheckBox("multiplayer.settings.quicksave");
 		allowAutosave = createCheckBox("multiplayer.settings.autosave");
 		allowPause = createCheckBox("multiplayer.settings.pause");
+		allowCheat = createCheckBox("multiplayer.settings.cheat");
+		
+		defaultChangeRace = createCheckBox("multiplayer.settings.client_race"); 
+		defaultChangeIcon = createCheckBox("multiplayer.settings.client_icons"); 
+		defaultChangeTraits = createCheckBox("multiplayer.settings.client_traits");
+		defaultChangeGroup = createCheckBox("multiplayer.settings.change_groups");
 		
 		JLabel simulationSpeed = createLabel("multiplayer.settings.simulation_speed");
 		simulationSpeed.setFont(fontMedium);
@@ -653,9 +724,24 @@ public class MultiplayerScreen extends JFrame {
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup()
-			.addComponent(allowQuicksave)
-			.addComponent(allowAutosave)
-			.addComponent(allowPause)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(allowQuicksave)
+					.addComponent(allowAutosave)
+					.addComponent(allowPause)
+					.addComponent(allowCheat)
+				)
+				.addGap(50)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(defaultChangeRace)
+					.addComponent(defaultChangeIcon)
+					.addComponent(defaultChangeTraits)
+					.addComponent(defaultChangeGroup)
+				)
+			)
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(simulationSpeed)
@@ -669,9 +755,23 @@ public class MultiplayerScreen extends JFrame {
 		);
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
-			.addComponent(allowQuicksave)
-			.addComponent(allowAutosave)
-			.addComponent(allowPause)
+			.addGroup(
+				gl.createParallelGroup()
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(allowQuicksave)
+					.addComponent(allowAutosave)
+					.addComponent(allowPause)
+					.addComponent(allowCheat)
+				)
+				.addGroup(
+					gl.createSequentialGroup()
+					.addComponent(defaultChangeRace)
+					.addComponent(defaultChangeIcon)
+					.addComponent(defaultChangeTraits)
+					.addComponent(defaultChangeGroup)
+				)
+			)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(simulationSpeed)
@@ -727,7 +827,7 @@ public class MultiplayerScreen extends JFrame {
 			int index = box.getSelectedIndex();
 			if (index >= 0) {
 				GameDefinition gd = campaigns.get(index);
-				info.setToolTipText(gd.getDescription(rl.language));
+				info.setToolTipText("<html><div style='width: 400px;'>" + gd.getDescription(rl.language));
 			} else {
 				info.setToolTipText(null);
 			}
@@ -1027,7 +1127,7 @@ public class MultiplayerScreen extends JFrame {
 	 */
 	void setTooltip(JComponent c, String tipKey) {
 		if (tipKey != null) {
-			c.setToolTipText(get(tipKey));
+			c.setToolTipText("<html><div style='width: 400px;'>" + get(tipKey));
 		} else {
 			c.setToolTipText(null);
 		}
@@ -1138,13 +1238,6 @@ public class MultiplayerScreen extends JFrame {
 		);
 	}
 	/**
-	 * The record type of the user.
-	 * @author akarnokd, 2013.04.24.
-	 */
-	public static class MultiplayerUser {
-		// TODO fields
-	}
-	/**
 	 * The players table model.
 	 * @author akarnokd, 2013.04.24.
 	 *
@@ -1155,78 +1248,119 @@ public class MultiplayerScreen extends JFrame {
 		@Override
 		public Object getValueFor(MultiplayerUser item, int rowIndex,
 				int columnIndex) {
-			// TODO Auto-generated method stub
-			return null;
+			switch (columnIndex) {
+			case 0:
+				if (item.ai == null) {
+					return item.userName;
+				}
+				return MultiplayerScreen.this.get("skirmish.ai." + item.ai + ".tooltip");
+			case 1:
+				return item.description + " - " + item.race;
+			case 2:
+				if (item.icon != null) {
+					return new ImageIcon(item.icon);
+				}
+				return null;
+			case 3:
+				return !item.traits.isEmpty();
+			case 4:
+				return item.group;
+			case 5:
+				return item.joined;
+			default:
+				return null;
+			}
 		}
 	}
 	/** Initialize players panel. */
 	void initPlayers() {
-		
 		playerModel = new PlayerModel();
 		playerModel.setColumnTypes(
 				String.class,
-				ImageIcon.class,
 				String.class,
+				ImageIcon.class,
 				Boolean.class,
-				Integer.class
+				Integer.class,
+				Boolean.class
 		);
 		playerModel.setColumnNames(
 				get("multiplayer.settings.user"),
 				get("multiplayer.settings.race"),
 				get("multiplayer.settings.icon"),
 				get("multiplayer.settings.traits"),
-				get("multiplayer.settings.group")
+				get("multiplayer.settings.group"),
+				get("multiplayer.settings.joined")
 		);
 		
 		playerTable = new JTable(playerModel);
 		playerTable.setFont(fontMedium);
 		playerTable.getTableHeader().setFont(fontMedium);
+		playerTable.setRowHeight(20);
+		
+		playerTable.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+			/** */
+			private static final long serialVersionUID = 7042968471226335390L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table,
+					Object value, boolean isSelected, boolean hasFocus,
+					int row, int column) {
+				JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				label.setOpaque(true);
+				if (!isSelected) {
+					label.setBackground(Color.BLACK);
+				} else {
+					label.setBackground(Color.DARK_GRAY);
+				}
+				label.setText(null);
+				label.setIcon((Icon)value);
+				label.setHorizontalAlignment(JLabel.CENTER);
+				return label;
+			}
+		});
+		
 		JScrollPane sp = new JScrollPane(playerTable);
 		
-		final IGButton addPlayer = new IGButton(get("multiplayer.settings.add_player"));
+		addPlayer = new IGButton(get("multiplayer.settings.add_player"));
 		addPlayer.setFont(fontMedium);
 		addPlayer.setForeground(Color.WHITE);
 		addPlayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				GameDefinition def = campaigns.get(galaxyRacesBox.getSelectedIndex());
-				EditMultiplayerUser dialog = new EditMultiplayerUser(null, def);
+				EditMultiplayerUser dialog = new EditMultiplayerUser(null, def, isJoinMode());
 				dialog.setLocationRelativeTo(MultiplayerScreen.this);
 				MultiplayerUser mu = dialog.showDialog();
 				if (mu != null) {
 					playerModel.add(mu);
+					GUIUtils.autoResizeColWidth(playerTable, playerModel);
+					checkEnablePublish();
 				}
 			}
 		});
 		
 		
-		final IGButton editPlayer = new IGButton(get("multiplayer.settings.edit_player"));
+		editPlayer = new IGButton(get("multiplayer.settings.edit_player"));
 		editPlayer.setFont(fontMedium);
 		editPlayer.setForeground(Color.WHITE);
 		editPlayer.setEnabled(false);
 		editPlayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int idx = playerTable.getSelectedRow();
-				if (idx >= 0) {
-					idx = playerTable.convertRowIndexToModel(idx);
-
-					MultiplayerUser mu = playerModel.get(idx);
-					
-					GameDefinition def = campaigns.get(galaxyRacesBox.getSelectedIndex());
-					
-					EditMultiplayerUser dialog = new EditMultiplayerUser(mu, def);
-					dialog.setLocationRelativeTo(MultiplayerScreen.this);
-					mu = dialog.showDialog();
-					if (mu != null) {
-						playerModel.update(idx);
-					}
+				doEditPlayer();
+			}
+		});
+		playerTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() >= 2) {
+					doEditPlayer();
 				}
 			}
 		});
 		
 		
-		final IGButton removePlayer = new IGButton(get("multiplayer.settings.remove_player"));
+		removePlayer = new IGButton(get("multiplayer.settings.remove_player"));
 		removePlayer.setFont(fontMedium);
 		removePlayer.setForeground(Color.WHITE);
 		removePlayer.setEnabled(false);
@@ -1238,16 +1372,19 @@ public class MultiplayerScreen extends JFrame {
 					idxs[i] = playerTable.convertRowIndexToModel(idxs[i]);
 				}
 				playerModel.delete(idxs);
+				checkEnablePublish();
 			}
 		});
+		
+		playerState = new JLabel("");
+		playerState.setFont(fontMedium);
 		
 		playerTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				boolean isSelected = playerTable.getSelectedRow() >= 0;
-				editPlayer.setEnabled(isSelected);
-				removePlayer.setEnabled(isSelected);
+				updatePlayerButtons();
 			}
+
 		});
 		
 		GroupLayout gl = new GroupLayout(playersPanel);
@@ -1257,6 +1394,7 @@ public class MultiplayerScreen extends JFrame {
 		gl.setHorizontalGroup(
 			gl.createParallelGroup(Alignment.CENTER)
 			.addComponent(sp)
+			.addComponent(playerState)
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(addPlayer)
@@ -1267,6 +1405,7 @@ public class MultiplayerScreen extends JFrame {
 		gl.setVerticalGroup(
 			gl.createSequentialGroup()
 			.addComponent(sp)
+			.addComponent(playerState)
 			.addGroup(
 				gl.createParallelGroup(Alignment.CENTER)
 				.addComponent(addPlayer)
@@ -1274,6 +1413,68 @@ public class MultiplayerScreen extends JFrame {
 				.addComponent(removePlayer)
 			)
 		);
+	}
+	/**
+	 * Update the player button states.
+	 */
+	void updatePlayerButtons() {
+		boolean isSelected = playerTable.getSelectedRow() >= 0;
+		editPlayer.setEnabled(isSelected);
+		removePlayer.setEnabled(isSelected && !isJoinMode());
+	}
+	/** @return Are we in join game mode? */
+	boolean isJoinMode() {
+		return joinGamePanel.isVisible();
+	}
+	/**
+	 * Edit the currently selected player. 
+	 */
+	void doEditPlayer() {
+		int idx = playerTable.getSelectedRow();
+		if (idx >= 0) {
+			idx = playerTable.convertRowIndexToModel(idx);
+
+			MultiplayerUser mu = playerModel.get(idx);
+			
+			GameDefinition def = campaigns.get(galaxyRacesBox.getSelectedIndex());
+			
+			EditMultiplayerUser dialog = new EditMultiplayerUser(mu, def, isJoinMode());
+			dialog.setLocationRelativeTo(MultiplayerScreen.this);
+			mu = dialog.showDialog();
+			if (mu != null) {
+				playerModel.update(idx);
+				GUIUtils.autoResizeColWidth(playerTable, playerModel);
+				checkEnablePublish();
+			}
+		}
+	}
+	/**
+	 * A checkbox with custom tooltip.
+	 * @author akarnokd, 2013.04.25.
+	 */
+	static class IGCheckBox2 extends IGCheckBox {
+		/** */
+		private static final long serialVersionUID = -4517019104964592795L;
+		/** The associatd trait. */
+		public Trait trait;
+		/**
+		 * Constructor.
+		 * @param text the text
+		 * @param font the font
+		 * @param trait the associated trait
+		 */
+		public IGCheckBox2(String text, Font font, Trait trait) {
+			super(text, font);
+			this.trait = trait;
+		}
+		@Override
+		public JToolTip createToolTip() {
+			JToolTip tip = new JToolTip();
+			tip.setForeground(Color.BLACK);
+			tip.setBackground(Color.YELLOW);
+			tip.setFont(getFont());
+			return tip;
+		}
 	}
 	/**
 	 * Edit an user. 
@@ -1303,21 +1504,47 @@ public class MultiplayerScreen extends JFrame {
 		/** UI component. */
 		private JComboBox<ImageIcon> icons;
 		/** UI component. */
+		private JSpinner group;
+		/** UI component. */
 		private IGCheckBox changeIcon;
 		/** UI component. */
 		private IGCheckBox changeTraits;
 		/** UI component. */
-		private JSpinner group;
-		/** UI component. */
 		private IGCheckBox changeRace;
+		/** Allow changing the group? */
+		private IGCheckBox changeGroup;
+		/** The trait checkboxes. */
+		private final List<IGCheckBox2> traitCheckboxes = U.newArrayList();
+		/** The traits for each checkbox. */
+		private final List<Trait> traitList = U.newArrayList();
+		/** The list of icon images. */
+		private final List<BufferedImage> iconImages = U.newArrayList();
+		/** UI component. */
+		private JLabel traitPoints;
+		/** Indicate if the editor dialog is for the join mode. */
+		private boolean joinMode;
+		/** The group number in join mode. */
+		private JLabel groupStatic;
+		/** UI component. */
+		private JLabel userNameLabel;
+		/** UI component. */
+		private JLabel userPassphraseLabel;
+		/** UI component. */
+		private JLabel empireRaceStatic;
+		/** UI component. */
+		private JLabel iconStatic;
+		/** UI component. */
+		private JLabel userTypeStatic;
 		/**
 		 * Constructor.
 		 * @param user The user to edit or null to create a new
 		 * @param def The current player game definition
+		 * @param joinMode if viewing a game join.
 		 */
-		public EditMultiplayerUser(MultiplayerUser user, GameDefinition def) {
+		public EditMultiplayerUser(MultiplayerUser user, GameDefinition def, boolean joinMode) {
 			super();
 			this.def = def;
+			this.joinMode = joinMode;
 			setTitle(user == null ? get("multiplayer.settings.add_user") : get("multiplayer.settings.edit_user"));
 			initDialog();
 			if (user != null) {
@@ -1325,6 +1552,7 @@ public class MultiplayerScreen extends JFrame {
 				loadValues();
 			} else {
 				this.user = new MultiplayerUser();
+				prepareNewUser();
 			}
 		}
 		/** Initialize the dialog. */
@@ -1339,47 +1567,59 @@ public class MultiplayerScreen extends JFrame {
 			for (SkirmishAIMode m : SkirmishAIMode.values()) {
 				userTypeBox.addItem(get("skirmish.ai." + m + ".tooltip"));
 			}
+			userTypeStatic = new JLabel();
+			userTypeStatic.setFont(fontMedium);
+			userTypeStatic.setVisible(false);
 
-			final JLabel userNameLabel = createLabel("multiplayer.settings.client_name");
+			userNameLabel = createLabel("multiplayer.settings.client_name");
 			
 			userName = new JTextField();
+			userName.setFont(fontMedium);
 			
-			final JLabel userPassphraseLabel = createLabel("multiplayer.settings.client_passphrase");
+			userPassphraseLabel = createLabel("multiplayer.settings.client_passphrase");
 			
 			userPassphrase = new JTextField();
+			userPassphrase.setFont(fontMedium);
 			
 			JLabel empireRaceLabel = createLabel("multiplayer.settings.empire_race");
 			empireRace = new JComboBox<String>();
 			empireRace.setFont(fontMedium);
 			
+			empireRaceStatic = new JLabel();
+			empireRaceStatic.setFont(fontMedium);
+			empireRaceStatic.setVisible(false);
+			
 			templatePlayers = U.newArrayList(SkirmishScreen.getPlayersFrom(rl, def));
-//			Collections.sort(templatePlayers, new Comparator<SkirmishPlayer>() {
-//				@Override
-//				public int compare(SkirmishPlayer o1, SkirmishPlayer o2) {
-//					return o1.description.compareToIgnoreCase(o2.description);
-//				}
-//			});
 			for (SkirmishPlayer p : templatePlayers) {
 				empireRace.addItem(p.description + " = " + p.race);
 			}
+
 			changeRace = createCheckBox("multiplayer.settings.client_race"); 
+			changeIcon = createCheckBox("multiplayer.settings.client_icons"); 
+			changeTraits = createCheckBox("multiplayer.settings.client_traits");
+			changeGroup = createCheckBox("multiplayer.settings.change_groups");
 
 			JLabel iconsLabel = createLabel("multiplayer.settings.icons");
 			icons = new JComboBox<ImageIcon>();
 			icons.setBackground(Color.BLACK);
 			iconNames = new ArrayList<String>();
-//			icons.addItem(null);
-//			iconNames.add(null);
-			
+
+			iconStatic = new JLabel();
+			iconStatic.setFont(fontMedium);
+			iconStatic.setVisible(false);
+			iconStatic.setBackground(Color.BLACK);
+			iconStatic.setOpaque(true);
+			iconStatic.setHorizontalAlignment(JLabel.CENTER);
+
 			for (ResourcePlace rp : rl.list(rl.language, "starmap/fleets")) {
 				if (rp.type() == ResourceType.IMAGE) {
 					String imgRef = rp.getName();
 					iconNames.add(imgRef);
-					icons.addItem(new ImageIcon(rl.getImage(imgRef)));
+					BufferedImage image = rl.getImage(imgRef);
+					iconImages.add(image);
+					icons.addItem(new ImageIcon(image));
 				}
 			}
-			
-			changeIcon = createCheckBox("multiplayer.settings.client_icons"); 
 			
 			IGButton okayPlayer = new IGButton(get("multiplayer.settings.user_edit_ok"));
 			okayPlayer.setFont(fontMedium);
@@ -1391,12 +1631,57 @@ public class MultiplayerScreen extends JFrame {
 			JLabel traitsLabel = createLabel("multiplayer.settings.traits_long");
 			JPanel traitsPanel = new JPanel();
 			JScrollPane traitsScroll = new JScrollPane(traitsPanel);
+			traitsScroll.getVerticalScrollBar().setUnitIncrement(20);
+			traitsScroll.getVerticalScrollBar().setBlockIncrement(60);
 			traitsScroll.setPreferredSize(new Dimension(400, 100));
 			
-			changeTraits = createCheckBox("multiplayer.settings.client_traits");
+			GroupLayout gl2 = new GroupLayout(traitsPanel);
+			gl2.setAutoCreateGaps(true);
+			gl2.setAutoCreateContainerGaps(true);
+			traitsPanel.setLayout(gl2);
+			
+			ParallelGroup pg1 = gl2.createParallelGroup();
+			ParallelGroup pg2 = gl2.createParallelGroup();
+			SequentialGroup sg = gl2.createSequentialGroup();
+			
+			for (Trait t : commons.traits()) {
+				IGCheckBox2 tcb = new IGCheckBox2(get(t.label), fontMedium, t);
+				tcb.setToolTipText("<html><div style='width: 400px;'>" + format(t.description, t.value));
+				traitCheckboxes.add(tcb);
+				traitList.add(t);
+				pg1.addComponent(tcb);
+				JLabel pointLabel = new JLabel((t.cost > 0 ? "+" : "") + t.cost);
+				pointLabel.setFont(fontMedium);
+				pg2.addComponent(pointLabel);
+				
+				tcb.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						doTraitChanged();
+					}
+				});
+				
+				sg.addGroup(
+					gl2.createParallelGroup(Alignment.CENTER)
+					.addComponent(tcb)
+					.addComponent(pointLabel)
+				);
+			}
+			gl2.setHorizontalGroup(
+				gl2.createSequentialGroup()
+				.addGroup(pg1)
+				.addGroup(pg2)
+			);
+			gl2.setVerticalGroup(sg);
+			
 			
 			JLabel groupLabel = createLabel("multiplayer.settings.group");
 			group = createSpinner(1, 1, 100, 1);
+			
+			
+			groupStatic = new JLabel();
+			groupStatic.setFont(fontMedium);
+			groupStatic.setVisible(false);
 			
 			okayPlayer.addActionListener(new ActionListener() {
 				@Override
@@ -1405,6 +1690,20 @@ public class MultiplayerScreen extends JFrame {
 				}
 			});
 			cancelPlayer.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					doPlayerCancel();
+				}
+			});
+			
+			KeyStroke ks = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+			
+			JRootPane rp = getRootPane();
+			rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(ks, "close-player-edit");
+			rp.getActionMap().put("close-player-edit", new AbstractAction() {
+				/** */
+				private static final long serialVersionUID = -6075726698236355846L;
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					doPlayerCancel();
@@ -1422,6 +1721,7 @@ public class MultiplayerScreen extends JFrame {
 						changeIcon.setEnabled(true);
 						changeRace.setEnabled(true);
 						changeTraits.setEnabled(true);
+						changeGroup.setEnabled(true);
 					} else {
 						userNameLabel.setEnabled(false);
 						userName.setEnabled(false);
@@ -1430,9 +1730,36 @@ public class MultiplayerScreen extends JFrame {
 						changeIcon.setEnabled(false);
 						changeRace.setEnabled(false);
 						changeTraits.setEnabled(false);
+						changeGroup.setEnabled(false);
 					}
 				}
 			});
+			
+			traitPoints = new JLabel();
+			traitPoints.setFont(fontLarge);
+			
+			JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+			
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					userName.requestFocusInWindow();
+				}
+			});
+			
+			doTraitChanged();
+
+			if (joinMode) {
+				userTypeBox.setEditable(false);
+				userName.setEditable(false);
+				userPassphrase.setEnabled(false);
+				userPassphraseLabel.setEnabled(false);
+				changeIcon.setVisible(false);
+				changeRace.setVisible(false);
+				changeTraits.setVisible(false);
+				changeGroup.setVisible(false);
+			}
+			
 			// ---------------
 			
 			Container c = getContentPane();
@@ -1460,18 +1787,25 @@ public class MultiplayerScreen extends JFrame {
 						.addGroup(
 							gl.createParallelGroup()
 							.addComponent(userTypeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(userTypeStatic)
 							.addComponent(userName)
 							.addComponent(userPassphrase)
 							.addComponent(empireRace, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(empireRaceStatic)
 							.addComponent(icons, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(iconStatic, 30, 30, 30)
 							.addComponent(traitsScroll)
+							.addComponent(traitPoints)
 							.addComponent(group, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(groupStatic)
 						)
 					)
 					.addComponent(changeRace)
 					.addComponent(changeIcon)
 					.addComponent(changeTraits)
+					.addComponent(changeGroup)
 				)
+				.addComponent(sep)
 				.addGroup(
 					gl.createSequentialGroup()
 					.addComponent(okayPlayer)
@@ -1484,6 +1818,7 @@ public class MultiplayerScreen extends JFrame {
 					gl.createParallelGroup(Alignment.CENTER)
 					.addComponent(userType)
 					.addComponent(userTypeBox, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(userTypeStatic)
 				)
 				.addGroup(
 					gl.createParallelGroup(Alignment.CENTER)
@@ -1499,12 +1834,14 @@ public class MultiplayerScreen extends JFrame {
 					gl.createParallelGroup(Alignment.CENTER)
 					.addComponent(empireRaceLabel)
 					.addComponent(empireRace, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(empireRaceStatic)
 				)
 				.addComponent(changeRace)
 				.addGroup(
 					gl.createParallelGroup(Alignment.CENTER)
 					.addComponent(iconsLabel)
 					.addComponent(icons, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(iconStatic, 20, 20, 20)
 				)
 				.addComponent(changeIcon)
 				.addGroup(
@@ -1512,12 +1849,16 @@ public class MultiplayerScreen extends JFrame {
 					.addComponent(traitsLabel)
 					.addComponent(traitsScroll)
 				)
+				.addComponent(traitPoints)
 				.addComponent(changeTraits)
 				.addGroup(
 					gl.createParallelGroup(Alignment.CENTER)
 					.addComponent(groupLabel)
-					.addComponent(group)
+					.addComponent(group, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(groupStatic)
 				)
+				.addComponent(changeGroup)
+				.addComponent(sep)
 				.addGroup(
 					gl.createParallelGroup(Alignment.CENTER)
 					.addComponent(okayPlayer)
@@ -1527,10 +1868,38 @@ public class MultiplayerScreen extends JFrame {
 			pack();
 		}
 		/**
+		 * Prepare the controls if a new user is created.
+		 */
+		private void prepareNewUser() {
+			this.user.group = 1 + playerModel.getRowCount();
+			group.setValue(this.user.group);
+			
+			if (this.user.group == 1) {
+				userTypeBox.setSelectedIndex(1);
+			}
+			
+			Set<String> usedIcons = new HashSet<String>();
+			for (MultiplayerUser mu : playerModel) {
+				usedIcons.add(mu.iconRef);
+			}
+			for (int i = 0; i < iconNames.size(); i++) {
+				if (!usedIcons.contains(iconNames.get(i))) {
+					icons.setSelectedIndex(i);
+					break;
+				}
+			}
+			
+			changeIcon.setSelected(defaultChangeIcon.isSelected());
+			changeRace.setSelected(defaultChangeRace.isSelected());
+			changeTraits.setSelected(defaultChangeTraits.isSelected());
+			changeGroup.setSelected(defaultChangeGroup.isSelected());
+		}
+		/**
 		 * Show the dialog and return the user object.
 		 * @return the the added/modified
 		 */
 		public MultiplayerUser showDialog() {
+			pack();
 			setVisible(true);
 			if (accept) {
 				return user;
@@ -1542,12 +1911,149 @@ public class MultiplayerScreen extends JFrame {
 		 * @return true if the input data is valid
 		 */
 		boolean saveValues() {
+			if (userTypeBox.getSelectedIndex() == 0) {
+				String un = userName.getText();
+				if (un.isEmpty()) {
+					userName.requestFocusInWindow();
+					JOptionPane.showMessageDialog(this, get("multiplayer.settings.error_enter_user_name"), getTitle(), JOptionPane.ERROR_MESSAGE);
+					return false;
+				}
+				for (MultiplayerUser mu : playerModel) {
+					if (mu != user) { 
+						if (U.equal(mu.userName, un)) {
+							userName.requestFocusInWindow();
+							JOptionPane.showMessageDialog(this, get("multiplayer.settings.error_enter_unique_user_name"), getTitle(), JOptionPane.ERROR_MESSAGE);
+							return false;
+						} else
+						if (U.equal(mu.iconRef, iconNames.get(icons.getSelectedIndex()))) {
+							icons.requestFocusInWindow();
+							JOptionPane.showMessageDialog(this, get("multiplayer.settings.error_enter_unique_icon"), getTitle(), JOptionPane.ERROR_MESSAGE);
+							return false;
+						}
+					}
+				}
+				
+				user.ai = null;
+				user.userName = un;
+				user.passphrase = userPassphrase.getText();
+			} else {
+				user.ai = SkirmishAIMode.values()[userTypeBox.getSelectedIndex() - 1];
+				user.userName = null;
+				user.passphrase = null;
+				for (MultiplayerUser mu : playerModel) {
+					if (mu != user) { 
+						if (U.equal(mu.iconRef, iconNames.get(icons.getSelectedIndex()))) {
+							icons.requestFocusInWindow();
+							JOptionPane.showMessageDialog(this, get("multiplayer.settings.error_enter_unique_icon"), getTitle(), JOptionPane.ERROR_MESSAGE);
+							return false;
+						}
+					}
+				}
+			}
+			SkirmishPlayer sp = templatePlayers.get(empireRace.getSelectedIndex());
+			
+			user.race = sp.race;
+			user.name = sp.name;
+			user.description = sp.description;
+			user.diplomacyHead = sp.diplomacyHead;
+			user.originalId = sp.originalId;
+			user.nodatabase = sp.nodatabase;
+			user.nodiplomacy = sp.nodiplomacy;
+			user.picture = sp.picture;
+			user.color = sp.color;
+			user.iconRef = iconNames.get(icons.getSelectedIndex());
+			user.icon = iconImages.get(icons.getSelectedIndex());
+
+			user.changeIcon = changeIcon.isSelected();
+			user.changeRace = changeRace.isSelected();
+			user.changeTraits = changeTraits.isSelected();
+			user.changeGroup = changeGroup.isSelected();
+			
+			user.traits.clear();
+			int i = 0;
+			for (Trait t : traitList) {
+				if (traitCheckboxes.get(i).isSelected()) {
+					user.traits.add(t);
+				}
+				i++;
+			}
+			
+			user.group = (Integer)group.getValue();
+			
 			return true;
 		}
 		/**
 		 * Load values from the user object.
 		 */
 		void loadValues() {
+			if (user.ai == null) {
+				userTypeBox.setSelectedIndex(0);
+				userName.setText(user.userName);
+				userPassphrase.setText(user.passphrase);
+			} else {
+				userTypeBox.setSelectedIndex(1 + user.ai.ordinal());
+				userName.setText("");
+				userPassphrase.setText("");
+			}
+			userTypeStatic.setText((String)userTypeBox.getSelectedItem());
+			int i = 0;
+			for (SkirmishPlayer sp : templatePlayers) {
+				if (sp.originalId.equals(user.originalId)) {
+					empireRace.setSelectedIndex(i);
+					empireRaceStatic.setText((String)empireRace.getSelectedItem());
+					break;
+				}
+				i++;
+			}
+			changeRace.setSelected(user.changeRace);
+			icons.setSelectedIndex(iconNames.indexOf(user.iconRef));
+			
+			iconStatic.setIcon(new ImageIcon(iconImages.get(icons.getSelectedIndex())));
+			
+			changeIcon.setSelected(user.changeIcon);
+			i = 0;
+			for (Trait t : traitList) {
+				traitCheckboxes.get(i).setSelected(user.traits.has(t.id));
+				i++;
+			}
+			changeTraits.setSelected(user.changeTraits);
+			
+			group.setValue(user.group);
+			groupStatic.setText("" + user.group);
+
+			doTraitChanged();
+			
+			if (joinMode) {
+				userTypeBox.setVisible(false);
+				userTypeStatic.setVisible(true);
+				userPassphrase.setVisible(false);
+				userPassphraseLabel.setVisible(false);
+				group.setVisible(user.changeGroup);
+				groupStatic.setVisible(!user.changeGroup);
+				icons.setVisible(user.changeIcon);
+				iconStatic.setVisible(!user.changeIcon);
+				empireRace.setVisible(user.changeRace);
+				empireRaceStatic.setVisible(!user.changeRace);
+				
+				for (IGCheckBox2 tcb : traitCheckboxes) {
+					tcb.setEditable(!tcb.isEnabled());
+					tcb.setEnabled(user.changeTraits);
+				}
+			} else {
+				userTypeBox.setVisible(true);
+				userTypeStatic.setVisible(false);
+				userPassphrase.setVisible(true);
+				userPassphraseLabel.setVisible(true);
+				group.setVisible(true);
+				groupStatic.setVisible(false);
+				icons.setVisible(true);
+				empireRace.setVisible(true);
+				iconStatic.setVisible(false);
+				empireRaceStatic.setVisible(false);
+				for (IGCheckBox2 tcb : traitCheckboxes) {
+					tcb.setEditable(true);
+				}
+			}
 			
 		}
 		/** Accept changes. */
@@ -1561,6 +2067,91 @@ public class MultiplayerScreen extends JFrame {
 		void doPlayerCancel() {
 			accept = false;
 			dispose();
+		}
+		/**
+		 * Update trait counts and controls.
+		 */
+		void doTraitChanged() {
+			int points = 0;
+			loop:
+			while (!Thread.currentThread().isInterrupted()) {
+				Set<String> excludeIds = U.newHashSet();
+				Set<TraitKind> excludeKinds = U.newHashSet();
+				
+				// collect exclusion settings
+				for (IGCheckBox2 tcb : traitCheckboxes) {
+					if (tcb.isSelected()) {
+						excludeIds.addAll(tcb.trait.excludeIds);
+						excludeKinds.addAll(tcb.trait.excludeKinds);
+					}
+				}
+				points = commons.traits().initialPoints;
+				for (IGCheckBox2 tcb : traitCheckboxes) {
+					boolean enabled = !excludeIds.contains(tcb.trait.id) && !excludeKinds.contains(tcb.trait.kind);
+					
+					tcb.setSelected(tcb.isSelected() & enabled);
+					tcb.setEnabled(enabled);
+					
+					if (tcb.isSelected()) {
+						points -= tcb.trait.cost;
+					}
+				}
+				if (points < 0) {
+					for (IGCheckBox2 tcb : traitCheckboxes) {
+						if (tcb.isSelected() && tcb.trait.cost > 0) {
+							tcb.setSelected(false);
+							continue loop;
+						}
+					}
+					throw new AssertionError("Points remained negative?!");
+				} else {
+					for (IGCheckBox2 tcb : traitCheckboxes) {
+						if (tcb.trait.cost > points && !tcb.isSelected()) {
+							tcb.setEnabled(false);
+						}
+					}
+					break;
+				}
+			}
+			
+			traitPoints.setText(get("traits.available_points") + " " + points);			
+		}
+	}
+	/**
+	 * Check the conditions to enable game publishing.
+	 */
+	void checkEnablePublish() {
+		if (playerModel.getRowCount() >= 2) {
+			int you = 0;
+			boolean remote = false;
+			for (MultiplayerUser mu : playerModel) {
+				if (mu.ai == null) {
+					remote |= true;
+				} else
+				if (mu.ai == SkirmishAIMode.USER) {
+					you++;
+				}
+			}
+			publishGame.setEnabled(you == 1 && remote);
+			if (you == 0) {
+				playerState.setText(get("multiplayer.settings.you_missing"));
+				playerState.setIcon(new ImageIcon(commons.common().warningIcon));
+			} else
+			if (you > 1) {
+				playerState.setText(get("multiplayer.settings.too_many_you"));
+				playerState.setIcon(new ImageIcon(commons.common().warningIcon));
+			} else
+			if (!remote) {
+				playerState.setText(get("multiplayer.settings.no_remote_user"));
+				playerState.setIcon(new ImageIcon(commons.common().warningIcon));
+			} else {
+				playerState.setText("");
+				playerState.setIcon(null);
+			}
+		} else {
+			publishGame.setEnabled(false);
+			playerState.setText(get("multiplayer.settings.not_enough_players"));
+			playerState.setIcon(new ImageIcon(commons.common().warningIcon));
 		}
 	}
 }

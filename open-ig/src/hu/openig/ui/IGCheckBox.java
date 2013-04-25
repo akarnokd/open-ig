@@ -34,6 +34,8 @@ public class IGCheckBox extends JCheckBox {
 	protected BufferedImage check;
 	/** The check icon grayscale. */
 	protected BufferedImage checkGs;
+	/** Is the checkbox changeable? */
+	protected boolean editable = true;
 	/** 
 	 * Constructor.
 	 * @param text the text
@@ -69,7 +71,7 @@ public class IGCheckBox extends JCheckBox {
 		g2.setFont(getFont());
 		
 		int size = 16;
-		if (isEnabled()) {
+		if (isEnabled() || !editable) {
 			g2.setColor(getForeground());
 		} else {
 			g2.setColor(Color.GRAY);
@@ -78,7 +80,7 @@ public class IGCheckBox extends JCheckBox {
 		g2.drawRect(1, check.getHeight() - size + 1, size - 3, size - 3);
 		
 		if (isSelected()) {
-			if (isEnabled()) {
+			if (isEnabled() || !editable) {
 				g2.drawImage(check, 0, 0, null);
 			} else {
 				g2.drawImage(checkGs, 0, 0, null);
@@ -91,4 +93,21 @@ public class IGCheckBox extends JCheckBox {
 
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, rh);
 	}
+	/**
+	 * Is the checkbox editable?
+	 * @return true if editable
+	 */
+	public boolean isEditable() {
+		return editable;
+	}
+	/**
+	 * Indicate if the disabled state means only read-only.
+	 * E.g., if the component is disabled and is set to read-only,
+	 * it will appear as regular combobox, but won't react to changes. 
+	 * @param value the editable state
+	 */
+	public void setEditable(boolean value) {
+		this.editable = value;
+	}
+	
 }

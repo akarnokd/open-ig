@@ -3269,6 +3269,19 @@
 	<entry key='multiplayer.settings.client_race'>Játékos választhat birodalmat</entry>
 	<entry key='multiplayer.settings.traits_long'>Jellemvonások:</entry>
 	<entry key='multiplayer.settings.client_traits'>Játékos választhat jellemvonásokat</entry>
+	<entry key='multiplayer.settings.join_user_name'>Felhasználó:</entry>
+	<entry key='multiplayer.settings.join_passphrase'>Jelmondat:</entry>
+	<entry key='multiplayer.settings.edit_user'>Játékos szerkesztése</entry>
+	<entry key='multiplayer.settings.error'>Hiba</entry>
+	<entry key='multiplayer.settings.error_enter_user_name'>Adj meg egy felhasználó nevet.</entry>
+	<entry key='multiplayer.settings.error_enter_unique_user_name'>A felhasználó név már létezik.</entry>
+	<entry key='multiplayer.settings.change_groups'>Játékos választhat csoportot</entry>
+	<entry key='multiplayer.settings.not_enough_players'>Nincs elég játékos megadva</entry>
+	<entry key='multiplayer.settings.error_enter_unique_icon'>Az ikon már egy másik felhasználóhoz van rendelve.</entry>
+	<entry key='multiplayer.settings.you_missing'>Hiányzik a szervező játékos.</entry>
+	<entry key='multiplayer.settings.too_many_you'>Csak egy szervező játékos lehet.</entry>
+	<entry key='multiplayer.settings.joined'>Aktív</entry>
+	<entry key='multiplayer.settings.cheat'>Csalások</entry>
 
 	<entry key=""></entry>
 	<entry key=""></entry>
