@@ -14,13 +14,11 @@ import hu.openig.net.MessageObject;
  * The login request object.
  * @author akarnokd, 2013.04.22.
  */
-public class LoginRequest implements MessageIO {
+public class LoginRequest implements MessageObjectIO {
 	/** The user. */
 	public String user;
 	/** The passphrase. */
 	public String passphrase;
-	/** The language. */
-	public String language;
 	/** The client version. */
 	public String version;
 	@Override
@@ -29,7 +27,6 @@ public class LoginRequest implements MessageIO {
 		
 		req.set("user", user);
 		req.set("passphrase", passphrase);
-		req.set("language", language);
 		req.set("version", version);
 
 		return req;
@@ -38,7 +35,6 @@ public class LoginRequest implements MessageIO {
 	public void fromMessage(MessageObject mo) {
 		user = mo.getString("user");
 		passphrase = mo.getString("passphrase");
-		language = mo.getString("language");
 		version = mo.getString("version");
 	}
 }

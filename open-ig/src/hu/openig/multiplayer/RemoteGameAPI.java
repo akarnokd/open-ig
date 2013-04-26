@@ -15,6 +15,8 @@ import java.io.IOException;
 
 /**
  * The remote game API interface.
+ * <p>Implementations should ensure that the methods are executed on the proper
+ * thread, for example, in EDT.
  * @author akarnokd, 2013.04.22.
  */
 public interface RemoteGameAPI {

@@ -532,7 +532,11 @@ public final class U {
 	 */
 	public static void close(Iterable<? extends Closeable> cs) throws IOException {
 		IOException ex = null;
+		List<Closeable> cs1 = new ArrayList<Closeable>();
 		for (Closeable c : cs) {
+			cs1.add(c);
+		}
+		for (Closeable c : cs1) {
 			try {
 				if (c != null) {
 					c.close();

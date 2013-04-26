@@ -33,6 +33,7 @@ import hu.openig.model.AIManager;
 import hu.openig.model.Configuration;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.Labels;
+import hu.openig.model.MultiplayerEnvironment;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.ResearchType;
@@ -87,7 +88,7 @@ import javax.swing.Timer;
  * Contains all common ang game specific graphical and textual resources.
  * @author akarnokd, 2009.12.25.
  */
-public class CommonResources implements GameEnvironment {
+public class CommonResources implements GameEnvironment, MultiplayerEnvironment {
 	/** The main configuration object. */
 	public Configuration config;
 	/** The main resource locator object. */
@@ -132,7 +133,7 @@ public class CommonResources implements GameEnvironment {
 	/** The game world. */
 	private World world;
 	/** Flag to indicate the game world is loading. */
-	public boolean worldLoading;
+	public volatile boolean worldLoading;
 	/** The game is in battle mode. */
 	public boolean battleMode;
 	/** Flag indicating the statusbar screen to show a non-game statusbar. */
@@ -637,7 +638,7 @@ public class CommonResources implements GameEnvironment {
 			// act on the world state
 			p.ai.manage();
 			// issue commands
-			copleteAIAsync(p);
+			completeAIAsync(p);
 		} catch (Throwable t) {
 			Exceptions.add(t);
 		}
@@ -646,7 +647,7 @@ public class CommonResources implements GameEnvironment {
 	 * Complete the AI activities on the EDT.
 	 * @param p the player
 	 */
-	void copleteAIAsync(final Player p) {
+	void completeAIAsync(final Player p) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -1185,5 +1186,9 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public Traits traits() {
 		return traits;
+	}
+	@Override
+	public boolean isLoading() {
+		return worldLoading;
 	}
 }

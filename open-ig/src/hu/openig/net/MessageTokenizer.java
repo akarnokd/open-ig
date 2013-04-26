@@ -9,9 +9,7 @@
 package hu.openig.net;
 
 import hu.openig.net.MessageTokenizer.Token;
-import hu.openig.utils.Exceptions;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -93,9 +91,11 @@ public class MessageTokenizer implements Iterable<Token> {
 		Token current;
 		/** The last read character. */
 		int v;
+		/** Should the next move entry fetch a character? */
+		boolean fetchNext;
 		/** Constructor. Reads the first character. */
 		protected TokenIterator() {
-			fetch();
+			fetchNext = true;
 		}
 		@Override
 		public boolean hasNext() {
@@ -121,10 +121,10 @@ public class MessageTokenizer implements Iterable<Token> {
 		}
 		/** Fetches the next character. */
 		void fetch() {
+			fetchNext = false;
 			try {
 				v = r.read();
 			} catch (IOException ex) {
-				Exceptions.add(ex);
 				v = -1;
 			}
 		}
@@ -133,109 +133,107 @@ public class MessageTokenizer implements Iterable<Token> {
 		 * @return true if a token was extracted
 		 */
 		boolean move() {
-			if (v < 0) {
-				return false;
+			if (fetchNext) {
+				fetch();
 			}
-			try {
-				while (v >= 0) {
-					char c = (char)v;
-					if (tok == null) {
-						if (c == '"') {
-							tok = TokenType.STRING;
-						} else
-						if (c == '-') {
-							tok = TokenType.INTEGER;
-							b.append(c);
-						} else
-						if (c == '.') {
-							tok = TokenType.DOUBLE;
-							b.append(c);
-						} else
-						if (Character.isDigit(c)) {
-							tok = TokenType.INTEGER;
-							b.append(c);
-						} else
-						if (Character.isJavaIdentifierStart(c)) {
-							tok = TokenType.IDENTIFIER;
-							b.append(c);
-						} else 
-						if (!Character.isWhitespace(c)) {
-							current = create(TokenType.SYMBOL, String.valueOf(c));
-							fetch();
-							return true;
-						}
+			while (v >= 0) {
+				char c = (char)v;
+				if (tok == null) {
+					if (c == '"') {
+						tok = TokenType.STRING;
 					} else
-					if (tok == TokenType.IDENTIFIER) {
-						if (Character.isJavaIdentifierPart(c)) {
-							b.append(c);
-						} else {
-							current = create(TokenType.IDENTIFIER, b);
-							clear();
-							return true;
-						}
+					if (c == '-') {
+						tok = TokenType.INTEGER;
+						b.append(c);
 					} else
-					if (tok == TokenType.DOUBLE) {
-						if (Character.isDigit(c)) {
-							b.append(c);
-						} else {
-							current = create(TokenType.DOUBLE, b);
-							clear();
-							return true;
-						}
+					if (c == '.') {
+						tok = TokenType.DOUBLE;
+						b.append(c);
 					} else
-					if (tok == TokenType.INTEGER) {
-						if (c == '.') {
-							b.append(c);
-							tok = TokenType.DOUBLE;
-						} else
-						if (Character.isDigit(c)) {
-							b.append(c);
-						} else {
-							current = create(TokenType.INTEGER, b);
-							clear();
-							return true;
-						}
+					if (Character.isDigit(c)) {
+						tok = TokenType.INTEGER;
+						b.append(c);
 					} else
-					if (tok == TokenType.STRING) {
-						if (c == '\\') {
-							v = r.read();
-							if (v < 0) {
-								throw new EOFException();
-							}
-							c = (char)v;
-							if (c == 'n') {
-								b.append("\n");
-							} else
-							if (c == 'r') {
-								b.append("\r");
-							} else
-							if (c == 't') {
-								b.append("\t");
-							} else {
-								b.append(c);
-							}
-						} else
-						if (c == '"') {
-							current = create(TokenType.STRING, b);
-							clear();
-							fetch();
-							return true;
-						} else {
-							b.append(c);
-						}
+					if (Character.isJavaIdentifierStart(c)) {
+						tok = TokenType.IDENTIFIER;
+						b.append(c);
+					} else 
+					if (!Character.isWhitespace(c)) {
+						current = create(TokenType.SYMBOL, String.valueOf(c));
+						fetchNext = true;
+						return true;
 					}
-					v = r.read();
+				} else
+				if (tok == TokenType.IDENTIFIER) {
+					if (Character.isJavaIdentifierPart(c)) {
+						b.append(c);
+					} else {
+						current = create(TokenType.IDENTIFIER, b);
+						clear();
+						return true;
+					}
+				} else
+				if (tok == TokenType.DOUBLE) {
+					if (Character.isDigit(c)) {
+						b.append(c);
+					} else {
+						current = create(TokenType.DOUBLE, b);
+						clear();
+						return true;
+					}
+				} else
+				if (tok == TokenType.INTEGER) {
+					if (c == '.') {
+						b.append(c);
+						tok = TokenType.DOUBLE;
+					} else
+					if (Character.isDigit(c)) {
+						b.append(c);
+					} else {
+						current = create(TokenType.INTEGER, b);
+						clear();
+						return true;
+					}
+				} else
+				if (tok == TokenType.STRING) {
+					if (c == '\\') {
+						fetch();
+						if (v < 0) {
+							break;
+						}
+						c = (char)v;
+						if (c == 'n') {
+							b.append("\n");
+						} else
+						if (c == 'r') {
+							b.append("\r");
+						} else
+						if (c == 't') {
+							b.append("\t");
+						} else {
+							b.append(c);
+						}
+					} else
+					if (c == '"') {
+						current = create(TokenType.STRING, b);
+						clear();
+						fetchNext = true;
+						return true;
+					} else {
+						b.append(c);
+					}
 				}
-				
-				if (tok != null) {
-					current = create(tok, b);
-					clear();
-					return true;
-				}
+				fetch();
+			}
+			
+			if (tok != null) {
+				current = create(tok, b);
+				clear();
+				return true;
+			}
+			if (current == null || current.type != TokenType.EOF) {
 				current = create(TokenType.EOF, null);
 				return true;
-			} catch (IOException ex) {
-				Exceptions.add(ex);
 			}
 			return false;
 		}

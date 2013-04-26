@@ -73,6 +73,9 @@ public class MessageClient implements Closeable {
 	 * @throws IOException on error
 	 */
 	public Object query(MessageSerializable request) throws IOException {
+		if (writer == null) {
+			throw new IOException("MessageClient not connected");
+		}
 		request.save(writer);
 		writer.flush();
 		return MessageObject.parse(reader);
@@ -84,6 +87,9 @@ public class MessageClient implements Closeable {
 	 * @throws IOException on error
 	 */
 	public Object query(CharSequence request) throws IOException {
+		if (writer == null) {
+			throw new IOException("MessageClient not connected");
+		}
 		writer.append(request);
 		writer.flush();
 		return MessageObject.parse(reader);
@@ -102,6 +108,9 @@ public class MessageClient implements Closeable {
 	public Future<?> query(MessageSerializable request, 
 			ExecutorService waiter, 
 			final Action1<Object> onResponse) throws IOException {
+		if (writer == null) {
+			throw new IOException("MessageClient not connected");
+		}
 		request.save(writer);
 		writer.flush();
 		return waiter.submit(new Runnable() {
@@ -129,6 +138,9 @@ public class MessageClient implements Closeable {
 	public Future<?> query(CharSequence request, 
 			ExecutorService waiter, 
 			final Action1<Object> onResponse) throws IOException {
+		if (writer == null) {
+			throw new IOException("MessageClient not connected");
+		}
 		writer.append(request);
 		writer.flush();
 		return waiter.submit(new Runnable() {

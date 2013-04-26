@@ -10,6 +10,7 @@ package hu.openig.net;
 
 import hu.openig.core.Action2E;
 import hu.openig.multiplayer.model.ErrorResponse;
+import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
 import java.io.BufferedReader;
@@ -85,7 +86,9 @@ public class MessageConnection implements Runnable, Closeable {
 				
 			}
 		} catch (IOException ex) {
-			// FIXME report error ?
+			if (!socket.isClosed()) {
+				Exceptions.add(ex);
+			}
 		} finally {
 			clients.remove(this);
 		}

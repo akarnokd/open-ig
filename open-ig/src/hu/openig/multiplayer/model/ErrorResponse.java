@@ -39,6 +39,16 @@ public class ErrorResponse extends IOException {
 	public static final int ERROR_RESPONSE = 10;
 	/** Message format error, i.e., missing or invalid attributes. */
 	public static final int ERROR_FORMAT = 11;
+	/** Server run into an assertion bug. */
+	public static final int ERROR_SERVER_BUG = 12;
+	/** Server run into an assertion bug. */
+	public static final int ERROR_SERVER_IO = 13;
+	/** The session has been changed by a new login. */
+	public static final int ERROR_SESSION_INVALID = 14;
+	/** The user is not logged in. */
+	public static final int ERROR_NOT_LOGGED_IN = 15;
+	/** Server activity interrupted/cancelled. */
+	public static final int ERROR_INTERRUPTED = 16;
 	/** The error code. */
 	public final int code;
 	/**
