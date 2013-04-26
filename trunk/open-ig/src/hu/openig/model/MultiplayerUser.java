@@ -53,8 +53,38 @@ public class MultiplayerUser {
 	/** The description text. */
 	public String description;
 	/** Player has joined. */
-	public boolean joined;
+	private boolean joined;
+	/** The player's session id. */
+	private String sessionId;
 	/** The traits. */
 	public final Traits traits = new Traits();
+	/**
+	 * Returns the join status of this player.
+	 * @return has the player joined?
+	 */
+	public synchronized boolean joined() {
+		return joined;
+	}
+	/**
+	 * Returns the current session ID of the user.
+	 * @return the session id or null if the user has not yet logged in
+	 */
+	public synchronized String sessionId() {
+		return sessionId;
+	}
+	/**
+	 * Set the joined state.
+	 * @param value the new joined state
+	 */
+	public synchronized void joined(boolean value) {
+		this.joined = value;
+	}
+	/**
+	 * Set the session ID of the user.
+	 * @param value the new session id
+	 */
+	public synchronized void sessionId(String value) {
+		this.sessionId = value;
+	}
 	// TODO fields
 }

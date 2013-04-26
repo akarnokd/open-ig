@@ -14,22 +14,18 @@ import hu.openig.net.MessageObject;
  * The answer of a successful login request.
  * @author akarnokd, 2013.04.22.
  */
-public class WelcomeResponse implements MessageIO {
+public class WelcomeResponse implements MessageObjectIO {
 	/** The assigned session id. */
-	public String session;
-	/** The language code. */
-	public String language;
+	public String sessionId;
 	@Override
 	public void fromMessage(MessageObject mo) {
-		session = mo.getString("session");
-		language = mo.getString("language");
+		sessionId = mo.getString("session");
 	}
 	@Override
 	public MessageObject toMessage() {
 		MessageObject mo = new MessageObject("WELCOME");
 		
-		mo.set("session", session);
-		mo.set("language", language);
+		mo.set("session", sessionId);
 		
 		return mo;
 	}

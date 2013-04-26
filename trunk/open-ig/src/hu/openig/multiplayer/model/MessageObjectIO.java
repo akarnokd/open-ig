@@ -15,7 +15,7 @@ import hu.openig.net.MessageObject;
  * and load from a MessageObject.
  * @author akarnokd, 2013.04.23.
  */
-public interface MessageIO {
+public interface MessageObjectIO {
 	/**
 	 * Serialize the contents into a message object.
 	 * @return the message object, not null

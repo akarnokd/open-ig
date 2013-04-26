@@ -1266,7 +1266,7 @@ public class MultiplayerScreen extends JFrame {
 			case 4:
 				return item.group;
 			case 5:
-				return item.joined;
+				return item.joined();
 			default:
 				return null;
 			}

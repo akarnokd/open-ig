@@ -39,7 +39,7 @@ public class RemoteGameAPIClient implements RemoteGameAPI {
 		
 		MessageUtils.expectObject(client.query("PING { }"), "PONG");
 		
-		return System.nanoTime() - timestamp;
+		return (System.nanoTime() - timestamp) / 1000000;
 	}
 
 	@Override
