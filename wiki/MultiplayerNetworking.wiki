@@ -11,8 +11,9 @@
   * Strings enclosed by ""
     * Escape sequences: \" \\ \n \r
   * Complex objects enclosed by { }
+  * Arrays enclosed by `[` `]`
   * Messages may span multiple lines
-  * Message terminated by a final '}' and chr(13), chr(10)
+  * Message terminated by a matching final '}'
   * Message exchanges will be pull-based for now, i.e., the server will never send data without a prior request from clients.
 
 == Message format ==
@@ -53,23 +54,20 @@ Send multiple requests and commands with one message exchange.
 === Request ===
 
 {{{
-BATCH {
-  messages=[
-    MESSAGE_TYPE_1 { ... },
-    MESSAGE_TYPE_2 { ... }
-  ]
-}
+BATCH [
+  MESSAGE_TYPE_1 { ... },
+  MESSAGE_TYPE_2 [ ... ]
+]
+
 }}}
 
 === Response ===
 
 {{{
-BATCH_RESPONSE {
-  responses=[
-    RESPONSE_TO_MESSAGE_1 { ... },
-    RESPONSE_TO_MESSAGE_2 { ... }
-  ]
-}
+BATCH_RESPONSE [
+  RESPONSE_TO_MESSAGE_1 { ... },
+  RESPONSE_TO_MESSAGE_2 [ ... ]
+]
 }}}
 
 == General errors ==
