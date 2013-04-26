@@ -70,6 +70,8 @@ BATCH_RESPONSE [
 ]
 }}}
 
+If any of the individual batch records cause an error, the whole response message will be that error.
+
 == General errors ==
 
 === response ===
