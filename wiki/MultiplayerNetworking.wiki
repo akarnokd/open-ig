@@ -122,7 +122,6 @@ When: after establishing a TCP connection.
 LOGIN { 
   user="", 
   passphrase="", 
-  language="", 
   version="" 
 }
 }}}
@@ -135,8 +134,7 @@ Remarks:
 
 {{{
 WELCOME { 
-  session="", 
-  language="" 
+  session=""
 }
 }}}
 
