@@ -151,7 +151,7 @@ public class DefaultAIControls implements AIControls {
 					&& current >= player.world.params().stationLimit()) {
 				return false;
 			}
-			InventoryItem ii = new InventoryItem(planet);
+			InventoryItem ii = new InventoryItem(planet.world.newId(), planet);
 			ii.type = satellite;
 			ii.owner = player;
 			ii.count = 1;
@@ -188,7 +188,7 @@ public class DefaultAIControls implements AIControls {
 				if (count > player.world.params().fighterLimit()) {
 					return false;
 				}
-				ii = new InventoryItem(planet);
+				ii = new InventoryItem(planet.world.newId(), planet);
 				ii.type = fighter;
 				ii.owner = player;
 				ii.count = count;
@@ -425,7 +425,7 @@ public class DefaultAIControls implements AIControls {
 							}
 						}
 						// place building
-						Building b = new Building(bt, f.owner.race);
+						Building b = new Building(f.owner.world.newId(), bt, f.owner.race);
 						p.owner = f.owner;
 						p.race = f.owner.race;
 						p.population = 5000;

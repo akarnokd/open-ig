@@ -27,7 +27,9 @@ import java.util.Map;
  */
 public class Planet implements Named, Owned, HasInventory {
 	/** The planet's identifier. */
-	public String id;
+	public final String id;
+	/** The world object. */
+	public final World world;
 	/** The planet's display name. */
 	public String name;
 	/** The X coordinate on the unscaled starmap. */
@@ -87,6 +89,15 @@ public class Planet implements Named, Owned, HasInventory {
 	/** @return the morale label for the current morale level. */
 	public String getMoraleLabel() {
 		return getMoraleLabel(morale);
+	}
+	/**
+	 * Constructor, sets the planet id and the world object.
+	 * @param id the planet id
+	 * @param world the world object
+	 */
+	public Planet(String id, World world) {
+		this.id = id;
+		this.world = world;
 	}
 	/**
 	 * Return the morale label for the given level.
@@ -401,7 +412,7 @@ public class Planet implements Named, Owned, HasInventory {
 		}
 		
 		if (owner != null && radar > 0) {
-			radar *= owner.world.params().groundRadarUnitSize();
+			radar *= world.params().groundRadarUnitSize();
 		}
 		this.radar = radar;
 		
@@ -441,7 +452,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public boolean canBuild(String buildingType) {
 		if (owner != null) {
-			BuildingType bt = owner.world.buildingModel.buildings.get(buildingType);
+			BuildingType bt = world.buildingModel.buildings.get(buildingType);
 			if (bt != null) {
 				return canBuild(bt);
 			}
@@ -623,11 +634,11 @@ public class Planet implements Named, Owned, HasInventory {
 			idx++;
 		}
 		if (!found && amount > 0) {
-			InventoryItem pii = new InventoryItem(this);
+			InventoryItem pii = new InventoryItem(world.newId(), this);
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
-			pii.hp = owner.world.getHitpoints(type, owner);
+			pii.hp = world.getHitpoints(type, owner);
 			pii.createSlots();
 			pii.shield = Math.max(0, pii.shieldMax());
 			
@@ -738,7 +749,7 @@ public class Planet implements Named, Owned, HasInventory {
 		// notify about ownership change
 		lastOwner.ai.onPlanetLost(this);
 		newOwner.ai.onPlanetConquered(this, lastOwner);
-		newOwner.world.scripting.onConquered(this, lastOwner);
+		world.scripting.onConquered(this, lastOwner);
 	}
 	/**
 	 * Returns the dimensions for the given building type on this planet,
@@ -779,7 +790,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public void rebuildRoads() {
 		if (race != null && owner != null) {
-			surface.placeRoads(race, owner.world.buildingModel);
+			surface.placeRoads(race, world.buildingModel);
 		}
 	}
 	/**
@@ -804,7 +815,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 * Refills the equimpent of the space stations around the planet.
 	 */
 	public void refillEquipment() {
-		if (owner == owner.world.player && owner.world.env.config().reequipBombs) {
+		if (owner == world.player && world.env.config().reequipBombs) {
 			for (InventoryItem ii : inventory) {
 				if (ii.owner == owner 
 						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
@@ -814,5 +825,36 @@ public class Planet implements Named, Owned, HasInventory {
 				}
 			}
 		}
+	}
+	@Override
+	public InventoryItem find(int id) {
+		for (InventoryItem ii : inventory) {
+			if (ii.id == id) {
+				return ii;
+			}
+		}
+		return null;
+	}
+	@Override
+	public InventoryItem find(String type) {
+		for (InventoryItem ii : inventory) {
+			if (ii.type.id.equals(type)) {
+				return ii;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Find a building with the specified id.
+	 * @param id the building id
+	 * @return the building or null
+	 */
+	public Building findBuilding(int id) {
+		for (Building b : surface.buildings) {
+			if (b.id == id) {
+				return b;
+			}
+		}
+		return null;
 	}
 }

@@ -20,4 +20,16 @@ public interface HasInventory {
 	 * @return the inventory list 
 	 */
 	List<InventoryItem> inventory();
+	/**
+	 * Finds a specified inventory item by its id.
+	 * @param id the inventory item id
+	 * @return the inventory item or null if not found
+	 */
+	InventoryItem find(int id);
+	/**
+	 * Find an inventory item by its technology type id.
+	 * @param type the technology type id, not null
+	 * @return the inventory item or null if not found
+	 */
+	InventoryItem find(String type);
 }

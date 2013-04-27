@@ -27,8 +27,8 @@
 			<type id='OrbitalFactory' list=''/>
 			<type id='Flagship' list=''/>
 		</available>
-		<fleet id='0' x='330' y='440' name='@MainFleet'>
-			<item id='Flagship' count='1'>
+		<fleet id='-1' x='330' y='440' name='@MainFleet'>
+			<item id='-1' type='Flagship' count='1'>
 				<slot id='laser' type='Laser1' count='24'/>
 				<slot id='bomb' type='Bomb1' count='8'/>
 				<slot id='rocket' type='Rocket1' count='16'/>
@@ -38,7 +38,7 @@
 				<slot id='shield' type='Shield1' count='1'/>
 				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
 			</item>
-			<item id='Battleship1' count='1'>
+			<item id='-1' type='Battleship1' count='1'>
 				<slot id='laser' type='Laser1' count='14'/>
 				<slot id='bomb' type='Bomb1' count='6'/>
 				<slot id='rocket' type='Rocket1' count='4'/>
@@ -47,25 +47,25 @@
 				<slot id='shield' type='Shield1' count='1'/>
 				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
 			</item>
-			<item id='Cruiser1' count='1'>
+			<item id='-1' type='Cruiser1' count='1'>
 				<slot id='laser' type='Laser1' count='6'/>
 				<slot id='shield' type='Shield1' count='1'/>
 				<slot id='cannon' type='IonCannon' count='1'/>
 				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
 			</item>
-			<item id='Cruiser1' count='1'>
+			<item id='-1' type='Cruiser1' count='1'>
 				<slot id='laser' type='Laser1' count='6'/>
 				<slot id='shield' type='Shield1' count='1'/>
 				<slot id='cannon' type='IonCannon' count='1'/>
 				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
 			</item>
-			<item id='Destroyer1' count='1'>
+			<item id='-1' type='Destroyer1' count='1'>
 				<slot id='laser' type='Laser1' count='3'/>
 				<slot id='hyperdrive' type='HyperDrive1' count='1'/>
 			</item>
-			<item id='Fighter1' count='3' />
-			<item id='Fighter2' count='8' />
-			<item id='LightTank' count='10' />
+			<item id='-1' type='Fighter1' count='3' />
+			<item id='-1' type='Fighter2' count='8' />
+			<item id='-1' type='LightTank' count='10' />
 		</fleet>
 		<nicknames>
 			<nickname>Berserker</nickname>
@@ -140,23 +140,23 @@
 			<type id='ColonyShip' list=''/>
 		</available>
 		<!-- 
-		<fleet id='1' x='366' y='442' name='Garthog flotta'>
-			<item id='GarthogBattleship' count='1'/>
-			<item id='GarthogBattleship' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogFighter' count='30'/>
+		<fleet id='-1' x='366' y='442' name='Garthog flotta'>
+			<item id='-1' type='GarthogBattleship' count='1'/>
+			<item id='-1' type='GarthogBattleship' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogDestroyer' count='1'/>
+			<item id='-1' type='GarthogFighter' count='30'/>
 		</fleet>
 		 -->
 	</player>

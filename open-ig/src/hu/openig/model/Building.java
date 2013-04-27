@@ -18,10 +18,12 @@ import java.awt.geom.Point2D.Double;
  * @author akarnokd, 2010.01.07.
  */
 public class Building implements HasLocation {
+	/** The building's unique id. */
+	public final int id;
 	/** The building type definition. */
 	public final BuildingType type;
-	/** The technology ID for selecting a Tileset from the building type. */
-	public final String techId;
+	/** The race of the building. */
+	public final String race;
 	/** The tileset used when rendering the building. */
 	public final TileSet tileset;
 	/** The scaffolding used when rendering the building build. */
@@ -48,14 +50,16 @@ public class Building implements HasLocation {
 	public final BuildingAllocationWorker allocationWorker;
 	/**
 	 * Constructs a building instance and assigns the prototype model.
+	 * @param id the building's unique id
 	 * @param type the building type
-	 * @param techId the technology id
+	 * @param race the technology id
 	 */
-	public Building(BuildingType type, String techId) {
+	public Building(int id, BuildingType type, String race) {
+		this.id = id;
 		this.type = type;
-		this.techId = techId;
-		this.tileset = type.tileset.get(techId);
-		this.scaffolding = type.scaffoldings.get(techId);
+		this.race = race;
+		this.tileset = type.tileset.get(race);
+		this.scaffolding = type.scaffoldings.get(race);
 		this.allocationWorker = new BuildingAllocationWorker(this);
 	}
 	/**
@@ -224,10 +228,13 @@ public class Building implements HasLocation {
 		return allocationWorker;
 	}
 	/**
-	 * @return Create a copy of this building.
+	 * Create a copy of this building.
+	 * @param id the unique id of the new building
+	 * @return the new building object
 	 */
-	public Building copy() {
-		Building result = new Building(type, techId);
+	public Building copy(int id) {
+		Building result = new Building(id, type, race);
+
 		result.buildProgress = buildProgress;
 		result.hitpoints = hitpoints;
 		result.setLevel(upgradeLevel);

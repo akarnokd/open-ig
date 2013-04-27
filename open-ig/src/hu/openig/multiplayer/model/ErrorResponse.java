@@ -19,43 +19,13 @@ import java.io.IOException;
 public class ErrorResponse extends IOException {
 	/** */
 	private static final long serialVersionUID = 1135911041025210489L;
-	/** Message syntax error. */
-	public static final int ERROR_SYNTAX = 1;
-	/** Unknown message. */
-	public static final int ERROR_UNKNOWN_MESSAGE = 2;
-	/** Unknown error. */
-	public static final int ERROR_UNKNOWN = 3;
-	/** Server not ready. */
-	public static final int ERROR_NOT_READY = 4;
-	/** The user login failed due credential errors. */
-	public static final int ERROR_USER = 5;
-	/** The server version differs from the client version. */
-	public static final int ERROR_VERSION = 6;
-	/** The message can't be used in the current state. */
-	public static final int ERROR_INVALID_MESSAGE = 7;
-	/** Unable to relogin. */
-	public static final int ERROR_RELOGIN = 8;
-	/** Unexpected response. */
-	public static final int ERROR_RESPONSE = 10;
-	/** Message format error, i.e., missing or invalid attributes. */
-	public static final int ERROR_FORMAT = 11;
-	/** Server run into an assertion bug. */
-	public static final int ERROR_SERVER_BUG = 12;
-	/** Server run into an assertion bug. */
-	public static final int ERROR_SERVER_IO = 13;
-	/** The session has been changed by a new login. */
-	public static final int ERROR_SESSION_INVALID = 14;
-	/** The user is not logged in. */
-	public static final int ERROR_NOT_LOGGED_IN = 15;
-	/** Server activity interrupted/cancelled. */
-	public static final int ERROR_INTERRUPTED = 16;
 	/** The error code. */
-	public final int code;
+	public final ErrorType code;
 	/**
 	 * Constructor with error code.
 	 * @param code the error code
 	 */
-	public ErrorResponse(int code) {
+	public ErrorResponse(ErrorType code) {
 		super();
 		this.code = code;
 	}
@@ -64,7 +34,7 @@ public class ErrorResponse extends IOException {
 	 * @param code the error code
 	 * @param message the error message
 	 */
-	public ErrorResponse(int code, String message) {
+	public ErrorResponse(ErrorType code, String message) {
 		super(message);
 		this.code = code;
 	}
@@ -79,7 +49,7 @@ public class ErrorResponse extends IOException {
 			MessageObject mo = (MessageObject)response;
 			if (mo.name != null && mo.name.startsWith("ERROR")) {
 				throw new ErrorResponse(
-						mo.getInt("code", ERROR_UNKNOWN), 
+						ErrorType.from(mo.get("code", null), ErrorType.ERROR_UNKNOWN), 
 						mo.getString("message", null));
 			}
 		}

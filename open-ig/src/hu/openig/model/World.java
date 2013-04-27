@@ -119,6 +119,8 @@ public class World {
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The chat settings. */
 	public Chats chats;
+	/** The global id sequence. */
+	protected final AtomicInteger idSequence = new AtomicInteger();
 	/** The date formatter. */
 	public static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
 		@Override
@@ -137,8 +139,6 @@ public class World {
 			return new Random();
 		}
 	};
-	/** The sequence to assign unique ids to fleets. */
-	public int fleetIdSequence;
 	/** The test questions. */
 	public Map<String, TestQuestion> test;
 	/** The test is needed. */
@@ -329,7 +329,7 @@ public class World {
 								XElement map = rl.getXML(n);
 								PlanetSurface ps = new PlanetSurface();
 								ps.variant = j;
-								ps.parseMap(map, galaxyModel, buildingModel);
+								ps.parseMap(map, galaxyModel, buildingModel, newIdFunc);
 								synchronized (pt.surfaces) {
 									pt.surfaces.put(j, ps);
 								}
@@ -665,8 +665,7 @@ public class World {
 	 */
 	public void processPlanets(XElement xplanets) {
 		for (XElement xplanet : xplanets.childrenWithName("planet")) {
-			Planet p = new Planet();
-			p.id = xplanet.get("id");
+			Planet p = new Planet(xplanet.get("id"), this);
 			p.name = xplanet.get("name");
 			String nameLabel = xplanet.get("label", null);
 			if (nameLabel != null) {
@@ -703,10 +702,10 @@ public class World {
 			String si = surface.get("id");
 			String st = surface.get("type");
 			p.type = galaxyModel.planetTypes.get(st);
-			p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy();
+			p.surface = p.type.surfaces.get(Integer.parseInt(si)).copy(newIdFunc);
 			
 			if (!definition.noPlanetBuildings) {
-				p.surface.parseMap(xplanet, null, buildingModel);
+				p.surface.parseMap(xplanet, null, buildingModel, newIdFunc);
 			}
 			
 			if (p.owner != null) {
@@ -719,14 +718,19 @@ public class World {
 			}
 			if (!definition.noPlanetInventory) {
 				for (XElement xinv : xplanet.childElement("inventory").childrenWithName("item")) {
-					InventoryItem ii = new InventoryItem(p);
+					int id = xinv.getInt("id", -1);
+					if (id < 0) {
+						id = newId();
+					}
 					String ownerStr = xinv.get("owner");
+
+					InventoryItem ii = new InventoryItem(id, p);
 					ii.owner = players.get(ownerStr);
 					if (ii.owner == null) {
 						Exceptions.add(new AssertionError("Planet " + p.id + " inventory owner missing: " + xinv));
 					}
 					ii.tag = xinv.get("tag", null);
-					ii.type = researches.get(xinv.get("id"));
+					ii.type = researches.get(xinv.get("type"));
 					ii.count = xinv.getInt("count");
 					ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
 					ii.createSlots();
@@ -1037,6 +1041,7 @@ public class World {
 		xworld.set("message-recording", messageRecording);
 		xworld.set("current-talk", currentTalk);
 		xworld.set("create-version", createVersion);
+		xworld.set("id-sequence", idSequence.get());
 		
 		if (skirmishDefinition != null) {
 			skirmishDefinition.save(xworld.add("skirmish-definition"));
@@ -1255,7 +1260,8 @@ public class World {
 			xp.set("surface-variant", p.surface.variant);
 			for (InventoryItem pii : p.inventory) {
 				XElement xpii = xp.add("item");
-				xpii.set("id", pii.type.id);
+				xpii.set("id", pii.id);
+				xpii.set("type", pii.type.id);
 				xpii.set("owner", pii.owner.id);
 				xpii.set("count", pii.count);
 				xpii.set("hp", pii.hp);
@@ -1290,10 +1296,11 @@ public class World {
 				xp.set("weather-ttl", p.weatherTTL);
 				for (Building b : p.surface.buildings) {
 					XElement xb = xp.add("building");
+					xb.set("id", b.id);
 					xb.set("x", b.location.x);
 					xb.set("y", b.location.y);
-					xb.set("id", b.type.id);
-					xb.set("tech", b.techId);
+					xb.set("type", b.type.id);
+					xb.set("race", b.race);
 					xb.set("enabled", b.enabled);
 					xb.set("repairing", b.repairing);
 					xb.set("hp", b.hitpoints);
@@ -1365,7 +1372,8 @@ public class World {
 		
 		for (InventoryItem fii : f.inventory) {
 			XElement xfii = xfleet.add("item");
-			xfii.set("id", fii.type.id);
+			xfii.set("id", fii.id);
+			xfii.set("type", fii.type.id);
 			xfii.set("count", fii.count);
 			xfii.set("hp", fii.hp);
 			xfii.set("shield", fii.shield);
@@ -1400,7 +1408,11 @@ public class World {
 	public void loadState(XElement xworld) {
 		difficulty = Difficulty.valueOf(xworld.get("difficulty"));
 		level = xworld.getInt("level");
-		fleetIdSequence = 0;
+		
+		// FIXME all tricks and patches should be removed in gamma
+		patchWorld(xworld);
+		
+		idSequence.set(xworld.getInt("id-sequence"));
 		testNeeded = xworld.getBoolean("test-needed", false);
 		testCompleted = xworld.getBoolean("test-completed", false);
 		allowRecordMessage = xworld.getBoolean("allow-record-message", false);
@@ -1699,14 +1711,16 @@ public class World {
 			
 			if (!stype.equals(p.type.type) || svar != p.surface.variant) {
 				p.type = galaxyModel.planetTypes.get(stype);
-				p.surface = p.type.surfaces.get(svar).copy();
+				p.surface = p.type.surfaces.get(svar).copy(newIdFunc);
 			}
 			
 			for (XElement xpii : xplanet.childrenWithName("item")) {
-				InventoryItem pii = new InventoryItem(p);
+				int id = xpii.getInt("id");
+				
+				InventoryItem pii = new InventoryItem(id, p);
 				pii.tag = xpii.get("tag", null);
 				pii.owner = players.get(xpii.get("owner"));
-				pii.type = researches.get(xpii.get("id"));
+				pii.type = researches.get(xpii.get("type"));
 				pii.count = xpii.getInt("count");
 				pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
 				pii.createSlots();
@@ -1744,7 +1758,7 @@ public class World {
 				p.earthQuakeTTL = xplanet.getInt("earthquake-ttl", 0);
 				p.weatherTTL = xplanet.getInt("weather-ttl", 0);
 				
-				p.surface.setBuildings(buildingModel, xplanet);
+				p.surface.setBuildings(buildingModel, xplanet, newIdFunc);
 				p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 				// make owned technology available, just in case
 				for (Building b : p.surface.buildings) {
@@ -1760,7 +1774,6 @@ public class World {
 			Planet p = planets.get(rest);
 			p.die();
 		}
-		fleetIdSequence++;
 		for (Map.Entry<Player, XElement[]> e : deferredMessages.entrySet()) {
 			if (e.getValue()[0] != null) {
 				e.getKey().messageQueue.clear();
@@ -1898,26 +1911,12 @@ public class World {
 			XElement xplayer, Player p) {
 		for (XElement xfleet : xplayer.childrenWithName("fleet")) {
 			int id = xfleet.getInt("id", -1);
-			
-			boolean duplicate = checkDuplicate(id);
-			
-			Fleet f = null;;
-			// if no id automatically assign a new sequence
-			boolean noTargetFleet = false;
 			if (id < 0) {
-				f = new Fleet(p);
-				noTargetFleet = true; // ignore target fleet in this case
-			} else {
-				if (!duplicate) {
-					f = new Fleet(id, p);
-				} else {
-					f = new Fleet(p);
-					noTargetFleet = true; // ignore target fleet in this case
-				}
+				id = newId();
 			}
-
-			fleetIdSequence = Math.max(fleetIdSequence, f.id) + 1;
 			
+			Fleet f = new Fleet(id, p);
+
 			f.x = xfleet.getFloat("x");
 			f.y = xfleet.getFloat("y");
 			f.name = xfleet.get("name");
@@ -1926,7 +1925,7 @@ public class World {
 			}
 			
 			String s0 = xfleet.get("target-fleet", null);
-			if (s0 != null && !noTargetFleet) {
+			if (s0 != null) {
 				deferredTargets.put(f, Integer.parseInt(s0));
 			}
 			s0 = xfleet.get("target-planet", null);
@@ -1959,8 +1958,9 @@ public class World {
 				if (count <= 0) {
 					continue;
 				}
-				InventoryItem fii = new InventoryItem(f);
-				fii.type = researches.get(xfii.get("id"));
+				int itemid = xfii.getInt("id");
+				InventoryItem fii = new InventoryItem(itemid, f);
+				fii.type = researches.get(xfii.get("type"));
 				fii.count = count;
 				fii.tag = xfii.get("tag", null);
 				fii.owner = f.owner;
@@ -3083,7 +3083,7 @@ public class World {
 			}
 			if (skirmishDefinition.galaxyRandomSurface) {
 				p.type = random(galaxyModel.planetTypes.values());
-				p.surface = random(p.type.surfaces.values()).copy();
+				p.surface = random(p.type.surfaces.values()).copy(newIdFunc);
 			}
 		}
 
@@ -3271,7 +3271,7 @@ public class World {
 						if (pd != null) {
 							Point pt = pl.surface.placement.findLocation(pd);
 							if (pt != null) {
-								Building b = new Building(bt, pl.race);
+								Building b = new Building(newId(), bt, pl.race);
 								b.location = Location.of(pt.x + 1, pt.y - 1);
 	
 								pl.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
@@ -3310,4 +3310,87 @@ public class World {
 		}
 		p.currentFleet = f;
 	}
+	/**
+	 * Creates a new identifier.
+	 * @return the new unique identifier
+	 */
+	public int newId() {
+		return idSequence.incrementAndGet();
+	}
+	/** A function that generates a globally unique identifier. */
+	public final Func0<Integer> newIdFunc = new Func0<Integer>() {
+		@Override
+		public Integer invoke() {
+			return newId();
+		}
+	};
+	/**
+	 * Add the missing identifiers to inventory items and building instances,
+	 * and remap fleet ids to conform the new single global id sequence.
+	 * @param xworld the world object
+	 */
+	protected void patchWorld(XElement xworld) {
+		if (!xworld.has("id-sequence")) {
+			Map<Integer, Integer> fleetRemap = new HashMap<Integer, Integer>();
+			// fix player fleets
+			for (XElement xplayer : xworld.childrenWithName("player")) {
+				for (XElement xfleet : xplayer.childrenWithName("fleet")) {
+					// replace fleet id with an unique number
+					int current = xfleet.getInt("id", -1);
+					if (current >= 0) {
+						int newId = newId();
+						fleetRemap.put(current, newId);
+						xfleet.set("id", newId);
+					}
+					// move the inventory.id into inventory.type and set an id with unique number
+					for (XElement xfii : xfleet.childrenWithName("item")) {
+						xfii.set("type", xfii.get("id"));
+						xfii.set("id", newId());
+					}
+				}
+			}
+			// fix player fleet targets
+			for (XElement xplayer : xworld.childrenWithName("player")) {
+				for (XElement xfleet : xplayer.childrenWithName("fleet")) {
+					int tf = xfleet.getInt("target-fleet", -1);
+					if (tf >= 0) {
+						Integer nfi = fleetRemap.get(tf);
+						if (nfi != null) {
+							xfleet.set("target-fleet", nfi);
+						} else {
+							xfleet.set("target-fleet", null);
+							xfleet.set("mode", null);
+							xfleet.set("task", null);
+						}
+					}
+				}
+			}
+			// fix planet inventory and buildings
+			for (XElement xplanet : xworld.childrenWithName("planet")) {
+				for (XElement xpii : xplanet.childrenWithName("item")) {
+					xpii.set("type", xpii.get("id"));
+					xpii.set("id", newId());
+				}
+				for (XElement xpii : xplanet.childrenWithName("building")) {
+					String type = xpii.get("id");
+					String race = xpii.get("tech");
+					// name change
+					if (type.equals("FusionProjector")) {
+						type = "ParticleProjector";
+					}
+					// police split
+					if (buildingModel.buildings.get(type).tileset.get(race) == null) {
+						type += "2";
+					}
+
+					xpii.set("type", type);
+					xpii.set("race", race);
+					xpii.set("id", newId());
+
+				}
+			}
+			xworld.set("id-sequence", idSequence.get());
+		}
+	}
+	
 }

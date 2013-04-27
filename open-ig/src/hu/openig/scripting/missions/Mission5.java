@@ -521,7 +521,7 @@ public class Mission5 extends Mission {
 		String pirateTech = "PirateFighter2";
 		// -------------------------------------------------------
 		for (int i = 0; i < helpingPirates; i++) {
-			InventoryItem pii = new InventoryItem(parent);
+			InventoryItem pii = new InventoryItem(world.newId(), parent);
 			pii.type = research(pirateTech);
 			pii.owner = player("Pirates");
 			pii.count = 1;

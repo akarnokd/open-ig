@@ -7,6 +7,7 @@
  */
 package hu.openig.model;
 
+import hu.openig.core.Func0;
 import hu.openig.core.Location;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
@@ -212,8 +213,11 @@ public class PlanetSurface {
 	 * @param map the map
 	 * @param gm the galaxy model, null if no surface needs to be loaded
 	 * @param bm the building model, null if no building needs to be loaded
+	 * @param newId the function that generates new ids
 	 */
-	public void parseMap(XElement map, GalaxyModel gm, BuildingModel bm) {
+	public void parseMap(XElement map, 
+			GalaxyModel gm, 
+			BuildingModel bm, Func0<Integer> newId) {
 		if (gm != null) {
 			XElement surface = map.childElement("surface");
 			if (surface != null) {
@@ -244,7 +248,7 @@ public class PlanetSurface {
 		if (bm != null) {
 			XElement buildings = map.childElement("buildings");
 			if (buildings != null) {
-				setBuildings(bm, buildings);
+				setBuildings(bm, buildings, newId);
 			}
 		}
 	}
@@ -252,26 +256,23 @@ public class PlanetSurface {
 	 * Set the surface buildings from the given XElement.
 	 * @param bm the building model
 	 * @param buildings the buildings XElement
+	 * @param newId the function that generates new ids
 	 */
-	void setBuildings(BuildingModel bm, XElement buildings) {
+	void setBuildings(BuildingModel bm, XElement buildings, Func0<Integer> newId) {
 		this.buildings.clear();
 		this.buildingmap.clear();
 		
 		for (XElement tile : buildings.childrenWithName("building")) {
-			String id = tile.get("id");
-			// FIXME name change
-			if (id.equals("FusionProjector")) {
-				id = "ParticleProjector";
+			int id = tile.getInt("id", -1);
+			if (id < 0) {
+				id = newId.invoke();
 			}
-			String tech = tile.get("tech");
-			
-			// FIXME police split
-			BuildingType bt = bm.buildings.get(id);
-			if (bt.tileset.get(tech) == null) {
-				id += "2";
-				bt = bm.buildings.get(id);
-			}
-			Building b = new Building(bt, tech);
+			String type = tile.get("type");
+			String race = tile.get("race");
+
+			BuildingType bt = bm.buildings.get(type);
+
+			Building b = new Building(id, bt, race);
 			int x = tile.getInt("x");
 			int y = tile.getInt("y");
 		
@@ -323,8 +324,9 @@ public class PlanetSurface {
 			XElement xbuildings = map.add("buildings");
 			for (Building b : buildings) {
 				XElement xb = xbuildings.add("building");
-				xb.set("id", b.type.id);
-				xb.set("tech", b.techId);
+				xb.set("id", b.id);
+				xb.set("type", b.type.id);
+				xb.set("race", b.race);
 				xb.set("x", b.location.x);
 				xb.set("y", b.location.y);
 				xb.set("build", b.buildProgress);
@@ -342,23 +344,24 @@ public class PlanetSurface {
 	 */
 	public String getTechnology() {
 		if (buildings.size() > 0) {
-			return buildings.get(buildings.size() - 1).techId;
+			return buildings.get(buildings.size() - 1).race;
 		}
 		return null;
 	}
 	/**
 	 * Create a deep copy of the surface by sharing the basemap but
 	 * copying the buildings.
+	 * @param newId the function that generates new ids.
 	 * @return the planet surface copy
 	 */
-	public PlanetSurface copy() {
+	public PlanetSurface copy(Func0<Integer> newId) {
 		PlanetSurface result = new PlanetSurface();
 		
 		result.setSize(width, height);
 		result.variant = variant;
 		
 		for (Building b : buildings) {
-			Building bc = b.copy();
+			Building bc = b.copy(newId.invoke());
 			result.placeBuilding(bc.tileset.normal, bc.location.x, bc.location.y, bc);
 		}
 		// share basemap

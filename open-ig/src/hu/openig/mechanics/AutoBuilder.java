@@ -438,7 +438,7 @@ public final class AutoBuilder {
 	 */
 	public static void construct(World world, Planet planet, BuildingType bt,
 			Point pt) {
-		Building b = new Building(bt, planet.race);
+		Building b = new Building(world.newId(), bt, planet.race);
 		b.location = Location.of(pt.x + 1, pt.y - 1);
 
 		planet.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);

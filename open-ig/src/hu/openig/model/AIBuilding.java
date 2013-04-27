@@ -20,7 +20,7 @@ public class AIBuilding extends Building {
 	 * @param b the other building
 	 */
 	public AIBuilding(Building b) {
-		super(b.type, b.techId);
+		super(b.id, b.type, b.race);
 		this.building = b;
 		this.location = b.location;
 		this.assignedEnergy = b.assignedEnergy;

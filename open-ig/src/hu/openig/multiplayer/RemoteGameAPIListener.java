@@ -11,7 +11,7 @@ package hu.openig.multiplayer;
 import hu.openig.core.Action2E;
 import hu.openig.multiplayer.model.DeferredCall;
 import hu.openig.multiplayer.model.ErrorResponse;
-import hu.openig.multiplayer.model.LoginRequest;
+import hu.openig.multiplayer.model.ErrorType;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageConnection;
 import hu.openig.net.MessageObject;
@@ -74,18 +74,18 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 			if (response instanceof MessageSerializable) {
 				conn.send(message, (MessageSerializable)response);
 			} else {
-				conn.error(message, ErrorResponse.ERROR_SERVER_BUG, response != null ? response.getClass().toString() : "null");
+				conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), response != null ? response.getClass().toString() : "null");
 			}
 		} catch (MissingAttributeException ex) {
-			conn.error(message, ErrorResponse.ERROR_FORMAT, ex.toString());
+			conn.error(message, ErrorType.ERROR_FORMAT.ordinal(), ex.toString());
 		} catch (ErrorResponse ex) {
-			conn.error(message, ex.code, ex.toString());
+			conn.error(message, ex.code.ordinal(), ex.toString());
 		} catch (IOException ex) {
-			conn.error(message, ErrorResponse.ERROR_SERVER_IO, ex.toString());
+			conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), ex.toString());
 		} catch (InterruptedException ex) {
-			conn.error(message, ErrorResponse.ERROR_INTERRUPTED, ex.toString());
+			conn.error(message, ErrorType.ERROR_INTERRUPTED.ordinal(), ex.toString());
 		} catch (InvocationTargetException ex) {
-			conn.error(message, ErrorResponse.ERROR_SERVER_BUG, ex.toString());
+			conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), ex.toString());
 		}
 	}
 	/**
@@ -108,7 +108,7 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 					if (o instanceof MessageObject) {
 						calls.add(processMessageObjectDeferred((MessageObject)o));
 					} else {
-						throw new ErrorResponse(ErrorResponse.ERROR_UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
+						throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
 					}
 				}
 				return new DeferredCall() {
@@ -139,7 +139,7 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 		if (message instanceof MessageObject) {
 			return processMessageObjectDeferred((MessageObject)message);
 		}
-		throw new ErrorResponse(ErrorResponse.ERROR_UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
+		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
 	}
 	/**
 	 * Process requests with message array as their outer elements.
@@ -148,7 +148,7 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 	 * @throws IOException on error
 	 */
 	protected DeferredCall processMessageArrayDeferred(MessageArray ma) throws IOException {
-		throw new ErrorResponse(ErrorResponse.ERROR_UNKNOWN_MESSAGE, ma != null ? ma.name : "null");
+		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, ma != null ? ma.name : "null");
 		
 	}
 	/**
@@ -159,25 +159,11 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 	 */
 	protected DeferredCall processMessageObjectDeferred(MessageObject mo) throws IOException {
 		if ("PING".equals(mo.name)) {
-			return new DeferredCall() {
-				@Override
-				protected Object invoke() throws IOException {
-					api.ping();
-					return "PONG { }";
-				}
-			};
+			// FIXME
 		} else
 		if ("LOGIN".equals(mo.name)) {
-			final LoginRequest req = new LoginRequest();
-			req.fromMessage(mo);
-			
-			return new DeferredCall() {
-				@Override
-				protected Object invoke() throws IOException {
-					return api.login(req);
-				}
-			};
+			// FIXME
 		}
-		throw new ErrorResponse(ErrorResponse.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
+		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
 	}
 }
