@@ -54,7 +54,6 @@ public class MultiplayerSession implements RemoteGameAPI {
 	@Override
 	public WelcomeResponse login(LoginRequest request) throws IOException {
 		if (U.equal(request.version, Configuration.VERSION)) {
-			// FIXME there should be one API per user
 			for (MultiplayerUser mu : definition.players) {
 				if (U.equal(mu.userName, request.user) 
 						&& U.equal(mu.passphrase, request.passphrase)) {
