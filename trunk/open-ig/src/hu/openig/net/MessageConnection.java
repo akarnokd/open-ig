@@ -73,7 +73,7 @@ public class MessageConnection implements Runnable, Closeable {
 						try {
 							onMessage.invoke(this, msg);
 						} catch (ErrorResponse ex) {
-							error(msg, ex.code, ex.getMessage());
+							error(msg, ex.code.ordinal(), ex.getMessage());
 						}
 					} else {
 						error(msg, 4, "Message handler missing on server.");

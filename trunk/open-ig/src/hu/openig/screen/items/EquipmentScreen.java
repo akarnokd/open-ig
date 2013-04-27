@@ -1151,7 +1151,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						cnt = fleet().inventoryCount(configure.type);
 					}
 					if (cnt > 0) {
-						InventoryItem ii = new InventoryItem(hi);
+						InventoryItem ii = new InventoryItem(world().newId(), hi);
 						ii.owner = o;
 						ii.count = cnt;
 						ii.type = configure.type;
@@ -2110,7 +2110,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						amount = Math.max(0, limit - currentCount);
 					}
 					while (amount-- > 0) {
-						InventoryItem pii = new InventoryItem(planet());
+						InventoryItem pii = new InventoryItem(world().newId(), planet());
 						pii.owner = player();
 						pii.type = rt;
 						pii.count = 1;
@@ -2816,7 +2816,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	 * @param bestStation the station type
 	 */
 	protected void addStation(Planet p, ResearchType bestStation) {
-		InventoryItem ii = new InventoryItem(p);
+		InventoryItem ii = new InventoryItem(world().newId(), p);
 		ii.owner = p.owner;
 		ii.type = bestStation;
 		ii.count = 1;

@@ -65,11 +65,11 @@ public class Fleet implements Named, Owned, HasInventory {
 		owner.statistics.fleetsCreated++;
 	}
 	/**
-	 * Create a fleet for the specific player and automatic ID.
+	 * Create a new fleet for the specific player and automatic ID.
 	 * @param owner the owner
 	 */
 	public Fleet(Player owner) {
-		this(owner.world.fleetIdSequence++, owner);
+		this(owner.world.newId(), owner);
 	}
 	/**
 	 * Set the new target planet and save the current target into {@code arrivedAt}.
@@ -133,7 +133,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			idx++;
 		}
 		if (!found && amount > 0) {
-			InventoryItem pii = new InventoryItem(this);
+			InventoryItem pii = new InventoryItem(owner.world.newId(), this);
 			pii.type = type;
 			pii.owner = owner;
 			pii.count = amount;
@@ -318,7 +318,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			changeInventory(type, amount);
 		} else {
 			for (int i = 0; i < amount; i++) {
-				InventoryItem ii = new InventoryItem(this);
+				InventoryItem ii = new InventoryItem(owner.world.newId(), this);
 				ii.count = 1;
 				ii.type = type;
 				ii.owner = owner;
@@ -814,5 +814,23 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public boolean exists() {
 		return owner.fleets.containsKey(this);
+	}
+	@Override
+	public InventoryItem find(int id) {
+		for (InventoryItem ii : inventory) {
+			if (ii.id == id) {
+				return ii;
+			}
+		}
+		return null;
+	}
+	@Override
+	public InventoryItem find(String type) {
+		for (InventoryItem ii : inventory) {
+			if (ii.type.id.equals(type)) {
+				return ii;
+			}
+		}
+		return null;
 	}
 }

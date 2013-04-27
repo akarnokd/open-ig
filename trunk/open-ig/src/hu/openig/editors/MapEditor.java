@@ -1441,7 +1441,7 @@ public class MapEditor extends JFrame {
 				}
 			}
 			if (checkBuildings && bld != null) {
-				renderer.surface.placeRoads(bld.techId, buildingModel);
+				renderer.surface.placeRoads(bld.race, buildingModel);
 			}
 		}
 	}
@@ -1768,7 +1768,7 @@ public class MapEditor extends JFrame {
 				
 				for (int x = renderer.selectedRectangle.x; x < renderer.selectedRectangle.x + renderer.selectedRectangle.width; x += te.tile.width + 1) {
 					for (int y = renderer.selectedRectangle.y; y > renderer.selectedRectangle.y - renderer.selectedRectangle.height; y -= te.tile.height + 1) {
-						Building bld = new Building(te.buildingType, te.surface);
+						Building bld = new Building(-1, te.buildingType, te.surface);
 						bld.makeFullyBuilt();
 						bld.location = Location.of(x + 1, y - 1);
 						renderer.surface.placeBuilding(te.tile, bld.location.x, bld.location.y, bld);
@@ -1835,7 +1835,7 @@ public class MapEditor extends JFrame {
 					BuildingType bt = buildingModel.buildings.get(ob.getName()); 
 					String r = imp.planet.getRaceTechId();
 					TileSet t = bt.tileset.get(r);
-					Building bld = new Building(bt, r);
+					Building bld = new Building(-1, bt, r);
 					bld.makeFullyBuilt();
 					bld.location = Location.of(ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue);
 					
@@ -1926,7 +1926,7 @@ public class MapEditor extends JFrame {
 		} else
 		if (currentBuildingType != null && renderer.surface.placement.canPlaceBuilding(renderer.placementRectangle) && renderer.placementRectangle.width > 0) {
 			UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
-			Building bld = new Building(currentBuildingType, currentBuildingRace);
+			Building bld = new Building(-1, currentBuildingType, currentBuildingRace);
 			bld.makeFullyBuilt();
 			bld.location = Location.of(renderer.placementRectangle.x + 1, renderer.placementRectangle.y - 1); // leave room for the roads!
 			
@@ -2122,7 +2122,7 @@ public class MapEditor extends JFrame {
 		ui.buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
 		ui.buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
 		ui.buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
-		ui.buildingInfoPanel.tech.setText(currentBuilding.techId);
+		ui.buildingInfoPanel.tech.setText(currentBuilding.race);
 		ui.buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
 		ui.buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
 		ui.buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
@@ -2243,6 +2243,12 @@ public class MapEditor extends JFrame {
 	 * @param settings the settings
 	 */
 	void loadPlanet(MapSaveSettings settings) {
+		Func0<Integer> constMinus1 = new Func0<Integer>() {
+			@Override
+			public Integer invoke() {
+				return -1;
+			}
+		};
 		try {
 			if (renderer.surface == null) {
 				createPlanetSurface(33, 66);
@@ -2254,12 +2260,12 @@ public class MapEditor extends JFrame {
 			}
 			if (settings.surface) {
 				doClearSurfaces(false);
-				renderer.surface.parseMap(planet, galaxyModel, null);
+				renderer.surface.parseMap(planet, galaxyModel, null, constMinus1);
 			}
 			if (settings.buildings) {
 				doClearBuildings(false);
 				String tech = renderer.surface.getTechnology();
-				renderer.surface.parseMap(planet, null, buildingModel);
+				renderer.surface.parseMap(planet, null, buildingModel, constMinus1);
 				if (tech != null) {
 					renderer.surface.placeRoads(tech, buildingModel);
 				}
@@ -2807,7 +2813,7 @@ public class MapEditor extends JFrame {
 						if (b.containsLocation(i, j)) {
 							if (memory.put(b, b) == null) {
 								out.printf("    <building id='%s' tech='%s' x='%d' y='%d' build='%d' hp='%d' level='%d' worker='%d' energy='%d' enabled='%s' repairing='%s' />%n",
-										b.type.id, b.techId, b.location.x, b.location.y, b.buildProgress, b.hitpoints, b.upgradeLevel, b.assignedWorker, b.assignedEnergy, b.enabled, b.repairing);
+										b.type.id, b.race, b.location.x, b.location.y, b.buildProgress, b.hitpoints, b.upgradeLevel, b.assignedWorker, b.assignedEnergy, b.enabled, b.repairing);
 							}
 							break;
 						}
@@ -2884,7 +2890,7 @@ public class MapEditor extends JFrame {
 						String id = tile.get("id");
 						tech = tile.get("tech");
 						
-						Building b = new Building(buildingModel.buildings.get(id), tech);
+						Building b = new Building(-1, buildingModel.buildings.get(id), tech);
 						int x = Integer.parseInt(tile.get("x"));
 						int y = Integer.parseInt(tile.get("y"));
 					

@@ -9,8 +9,6 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.AsyncResult;
-import hu.openig.multiplayer.model.LoginRequest;
-import hu.openig.multiplayer.model.WelcomeResponse;
 
 import java.io.IOException;
 
@@ -32,17 +30,11 @@ public interface RemoteGameAsyncAPI {
 	 * @param out the async completion handler when all responses have
 	 * been received and processed.
 	 */
-	void end(AsyncResult<? super Void, ? extends IOException> out);
+	void end(AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * A simple ping-pong request pair with the time elapsed in
 	 * milliseconds.
 	 * @param out the async result
 	 */
-	void ping(AsyncResult<? super Long, ? extends IOException> out);
-	/**
-	 * Login.
-	 * @param request the login details
-	 * @param out the async result with the session info or error
-	 */
-	void login(LoginRequest request, AsyncResult<? super WelcomeResponse, ? extends IOException> out);
+	void ping(AsyncResult<? super Long, ? super IOException> out);
 }

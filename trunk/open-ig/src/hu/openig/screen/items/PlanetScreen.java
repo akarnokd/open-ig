@@ -3452,7 +3452,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				&& planet().canBuild(player().currentBuilding)
 		) {
 				
-				Building b = new Building(player().currentBuilding, race());
+				Building b = new Building(world().newId(), player().currentBuilding, race());
 				b.location = Location.of(placementRectangle.x + 1, placementRectangle.y - 1);
 				
 				planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);

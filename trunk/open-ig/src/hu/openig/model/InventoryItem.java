@@ -23,6 +23,8 @@ import java.util.Map;
  * @author akarnokd, 2011.04.05.
  */
 public class InventoryItem {
+	/** The inventory item's unique id. */
+	public final int id;
 	/** The parent fleet or planet. */
 	public HasInventory parent;
 	/** The owner. */
@@ -48,10 +50,12 @@ public class InventoryItem {
 	/** The value of destroyed enemies. */
 	public long killsCost;
 	/**
-	 * Constructor. Initializes the parent.
+	 * Constructor. Initializes the parent and unique id.
+	 * @param id the unique identifier
 	 * @param parent the parent
 	 */
-	public InventoryItem(HasInventory parent) {
+	public InventoryItem(int id, HasInventory parent) {
+		this.id = id;
 		this.parent = parent;
 	}
 	/**

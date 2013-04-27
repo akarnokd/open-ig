@@ -1831,7 +1831,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param count the count
 	 */
 	void addToFleet(Fleet target, ResearchType rt, int count) {
-		InventoryItem ii = new InventoryItem(target);
+		InventoryItem ii = new InventoryItem(world().newId(), target);
 		ii.owner = target.owner;
 		ii.type = rt;
 		ii.count = count;

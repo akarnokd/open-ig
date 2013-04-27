@@ -13,6 +13,7 @@ import hu.openig.model.Building;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResourceAllocationStrategy;
+import hu.openig.model.World;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -259,7 +260,7 @@ public class AllocationPanel extends JPanel {
 		apply.setEnabled(false);
 		doRefresh();
 
-		final Planet p = new Planet();
+		final Planet p = new Planet("", new World(null));
 		p.surface = new PlanetSurface();
 		p.population = Integer.parseInt(availableWorkers.getText());
 		p.surface.buildings.addAll(buildings);
