@@ -10,11 +10,11 @@ package hu.openig.multiplayer;
 
 import hu.openig.core.Result;
 import hu.openig.model.Configuration;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerEnvironment;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.Production;
-import hu.openig.model.ResearchType;
 import hu.openig.multiplayer.model.EmpireStatuses;
 import hu.openig.multiplayer.model.ErrorResponse;
 import hu.openig.multiplayer.model.ErrorType;
@@ -81,11 +81,29 @@ public class MultiplayerSession implements RemoteGameAPI {
 					return Result.newValue(result);
 				}
 			}
-			return Result.newError(new ErrorResponse(ErrorType.ERROR_USER));
+			return error(ErrorType.ERROR_USER);
 		}
-		return Result.newError(new ErrorResponse(ErrorType.ERROR_VERSION, "Server: " + Configuration.VERSION + " - Client: " + version));
+		return error(ErrorType.ERROR_VERSION, "Server: " + Configuration.VERSION + " - Client: " + version);
 	}
-	
+	/**
+	 * Creates and returns an ErrorResponse with the given code.
+	 * @param <T> the value type, not used
+	 * @param type the error type
+	 * @return the result with error
+	 */
+	protected <T> Result<T, IOException> error(ErrorType type) {
+		return Result.newError(new ErrorResponse(type));
+	}
+	/**
+	 * Creates and returns an ErrorResponse with the given code and message.
+	 * @param <T> the value type, not used
+	 * @param type the error type
+	 * @param message the error message
+	 * @return the result with error
+	 */
+	protected <T> Result<T, IOException> error(ErrorType type, String message) {
+		return Result.newError(new ErrorResponse(type, message));
+	}
 	/**
 	 * Generate a random session id.
 	 * @return the session id
@@ -102,355 +120,393 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 	/**
 	 * Checks if the user is logged in and this is still its only session.
-	 * @throws ErrorResponse if the user is not logged in or its session is invalid
+	 * @param <T> the unused value type
+	 * @return a non null value indicates an error
 	 */
-	protected void ensureLogin() throws ErrorResponse {
+	protected <T> Result<T, IOException> ensureLogin() {
 		if (user == null) {
-			throw new ErrorResponse(ErrorType.ERROR_NOT_LOGGED_IN);
+			return error(ErrorType.ERROR_NOT_LOGGED_IN);
 		}
 		if (!U.equal(user.sessionId(), sessionId)) {
-			throw new ErrorResponse(ErrorType.ERROR_SESSION_INVALID);
+			return error(ErrorType.ERROR_SESSION_INVALID);
 		}
+		return null;
 	}
 
 	@Override
-	public void relogin(String sessionId) {
-		// TODO Auto-generated method stub
+	public Result<Void, IOException> leave() {
+		Result<Void, IOException> result = ensureLogin();
+		if (result != null) {
+			// FIXME invalidate
+			return result;
+		}
 		
+		return Result.newVoid();
 	}
 
 	@Override
-	public void leave() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public MultiplayerDefinition getGameDefinition() {
+	public Result<Void, IOException> relogin(String sessionId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void choosePlayerSettings(MultiplayerUser user) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public MultiplayerGameSetup join() {
+	public Result<MultiplayerDefinition, IOException> getGameDefinition() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void ready() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public EmpireStatuses getEmpireStatuses() {
+	public Result<Void, IOException> choosePlayerSettings(MultiplayerUser user) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<FleetStatus> getFleets() {
+	public Result<MultiplayerGameSetup, IOException> join() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public FleetStatus getFleet(int fleetId) {
+	public Result<Void, IOException> ready() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Map<ResearchType, Integer> getInventory() {
+	public Result<EmpireStatuses, IOException> getEmpireStatuses() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Production> getProductions() {
+	public Result<List<FleetStatus>, IOException> getFleets() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ResearchStatus getResearches() {
+	public Result<FleetStatus, IOException> getFleet(int fleetId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<PlanetStatus> getPlanetStatuses() {
+	public Result<Map<String, Integer>, IOException> getInventory() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public PlanetStatus getPlanetStatus(String id) {
+	public Result<List<Production>, IOException> getProductions() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void moveFleet(int id, double x, double y) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void addFleetWaypoint(int id, double x, double y) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void moveToPlanet(int id, String target) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void followFleet(int id, int target) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void attackFleet(int id, int target) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void attackPlanet(int id, String target) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void colonize(int id, String target) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public FleetStatus newFleet(String planet) {
+	public Result<ResearchStatus, IOException> getResearches() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public FleetStatus newFleet(int id) {
+	public Result<List<PlanetStatus>, IOException> getPlanetStatuses() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void deleteFleet(int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void renameFleet(int id, String name) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public InventoryItemStatus sellFleetItem(int id, int itemId) {
+	public Result<PlanetStatus, IOException> getPlanetStatus(String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus deployFleetItem(int id, String type) {
+	public Result<Void, IOException> moveFleet(int id, double x, double y) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus undeployFleetItem(int id, int itemId) {
+	public Result<Void, IOException> addFleetWaypoint(int id, double x, double y) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus addFleetEquipment(int id, int itemId,
-			String slotId, String type) {
+	public Result<Void, IOException> moveToPlanet(int id, String target) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus removeFleetEquipment(int id, int itemId,
-			String slotId) {
+	public Result<Void, IOException> followFleet(int id, int target) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void fleetUpgrade(int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void transfer(int sourceFleet, int destinationFleet, int sourceItem,
-			FleetTransferMode mode) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void colonize(String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void cancelColonize(String id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int build(String planetId, String type, String race, int x, int y) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int build(String planetId, String type, String race) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void enable(String planetId, int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void disable(String planetId, int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void repair(String planetId, int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void repairOff(String planetId, int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void demolish(String planetId, int id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void fleetUpgrade(String planetId, int id, int level) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public InventoryItemStatus deployPlanetItem(String planetId, String type) {
+	public Result<Void, IOException> attackFleet(int id, int target) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus undeployPlanetItem(String planetId, int itemId) {
+	public Result<Void, IOException> attackPlanet(int id, String target) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus sellPlanetItem(String planetId, int itemId) {
+	public Result<Void, IOException> colonize(int id, String target) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus addPlanetEquipment(String planetId, int itemId,
-			String slotId, String type) {
+	public Result<FleetStatus, IOException> newFleet(String planet) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public InventoryItemStatus removePlanetEquipment(String planetId,
-			int itemId, String slotId) {
+	public Result<FleetStatus, IOException> newFleet(String planet,
+			List<InventoryItem> inventory) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void planetUpgrade(String planetId) {
+	public Result<FleetStatus, IOException> newFleet(int id) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void startProduction(String type) {
+	public Result<FleetStatus, IOException> newFleet(int id,
+			List<InventoryItem> inventory) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void stopProduction(String type) {
+	public Result<Void, IOException> deleteFleet(int id) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void setProductionQuantity(String type, int count) {
+	public Result<Void, IOException> renameFleet(int id, String name) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void setProductionPriority(String type, int priority) {
+	public Result<InventoryItemStatus, IOException> sellFleetItem(int id,
+			int itemId) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void sellInventory(String type, int count) {
+	public Result<InventoryItemStatus, IOException> deployFleetItem(int id,
+			String type) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void startResearch(String type) {
+	public Result<InventoryItemStatus, IOException> undeployFleetItem(int id,
+			int itemId) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void stopResearch(String type) {
+	public Result<InventoryItemStatus, IOException> addFleetEquipment(int id,
+			int itemId, String slotId, String type) {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	@Override
-	public void setResearchMoney(String type, int money) {
+	public Result<InventoryItemStatus, IOException> removeFleetEquipment(
+			int id, int itemId, String slotId) {
 		// TODO Auto-generated method stub
-		
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> fleetUpgrade(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> stopFleet(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> transfer(int sourceFleet,
+			int destinationFleet, int sourceItem, FleetTransferMode mode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> colonize(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> cancelColonize(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Integer, IOException> build(String planetId, String type,
+			String race, int x, int y) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Integer, IOException> build(String planetId, String type,
+			String race) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> enable(String planetId, int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> disable(String planetId, int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> repair(String planetId, int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> repairOff(String planetId, int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> demolish(String planetId, int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> buildingUpgrade(String planetId, int id,
+			int level) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<InventoryItemStatus, IOException> deployPlanetItem(
+			String planetId, String type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<InventoryItemStatus, IOException> undeployPlanetItem(
+			String planetId, int itemId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<InventoryItemStatus, IOException> sellPlanetItem(
+			String planetId, int itemId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<InventoryItemStatus, IOException> addPlanetEquipment(
+			String planetId, int itemId, String slotId, String type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<InventoryItemStatus, IOException> removePlanetEquipment(
+			String planetId, int itemId, String slotId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> planetUpgrade(String planetId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> startProduction(String type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> stopProduction(String type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> setProductionQuantity(String type,
+			int count) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> setProductionPriority(String type,
+			int priority) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> sellInventory(String type, int count) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> startResearch(String type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> stopResearch(String type) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Result<Void, IOException> setResearchMoney(String type, int money) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

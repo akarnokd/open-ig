@@ -94,4 +94,15 @@ public final class Result<T, E> {
 			out.onSuccess((T)value);
 		}
 	}
+	/** The constant void result. */
+	private static final Result<Void, Object> VOID = newValue(null);
+	/**
+	 * Returns a properly typed void value result.
+	 * @param <E> the unused error type
+	 * @return the void result
+	 */
+	@SuppressWarnings("unchecked")
+	public static <E> Result<Void, E> newVoid() {
+		return (Result<Void, E>)VOID;
+	}
 }
