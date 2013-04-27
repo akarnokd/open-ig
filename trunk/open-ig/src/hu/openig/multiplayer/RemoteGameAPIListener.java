@@ -9,6 +9,7 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.Action2E;
+import hu.openig.core.Result;
 import hu.openig.multiplayer.model.DeferredCall;
 import hu.openig.multiplayer.model.ErrorResponse;
 import hu.openig.multiplayer.model.ErrorType;
@@ -55,37 +56,44 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 	@Override
 	public void invoke(MessageConnection conn, Object message)
 			throws IOException {
+		DeferredCall responseCall = null;
 		try {
-			final DeferredCall responseCall = processMessageDeferred(message);
-			
-			if (useEDT) {
-				SwingUtilities.invokeAndWait(responseCall);
-			} else {
-				responseCall.run();
-			}
-			
-			responseCall.done();
-			
-			Object response = responseCall.result();
-			
-			if (response instanceof CharSequence) {
-				conn.send(message, (CharSequence)response);
-			} else
-			if (response instanceof MessageSerializable) {
-				conn.send(message, (MessageSerializable)response);
-			} else {
-				conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), response != null ? response.getClass().toString() : "null");
-			}
+			responseCall = processMessageDeferred(message);
 		} catch (MissingAttributeException ex) {
 			conn.error(message, ErrorType.ERROR_FORMAT.ordinal(), ex.toString());
-		} catch (ErrorResponse ex) {
-			conn.error(message, ex.code.ordinal(), ex.toString());
-		} catch (IOException ex) {
-			conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), ex.toString());
-		} catch (InterruptedException ex) {
-			conn.error(message, ErrorType.ERROR_INTERRUPTED.ordinal(), ex.toString());
-		} catch (InvocationTargetException ex) {
-			conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), ex.toString());
+			return;
+		}			
+		if (useEDT) {
+			try {
+				SwingUtilities.invokeAndWait(responseCall);
+			} catch (InterruptedException ex) {
+				conn.error(message, ErrorType.ERROR_INTERRUPTED.ordinal(), ex.toString());
+			} catch (InvocationTargetException ex) {
+				conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), ex.toString());
+			}
+		} else {
+			responseCall.run();
+		}
+			
+		responseCall.done();
+			
+		Result<? extends Object, IOException> response = responseCall.result();
+			
+		if (response.isError()) {
+			if (response.error() instanceof ErrorResponse) {
+				ErrorResponse er = (ErrorResponse)response.error();
+				conn.error(message, er.code.ordinal(), er.toString());
+			} else {
+				conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), response.error().toString());
+			}
+		} else
+		if (response.value() instanceof CharSequence) {
+			conn.send(message, (CharSequence)response.value());
+		} else
+		if (response.value() instanceof MessageSerializable) {
+			conn.send(message, (MessageSerializable)response.value());
+		} else {
+			conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), response != null ? response.getClass().toString() : "null");
 		}
 	}
 	/**
@@ -113,23 +121,23 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 				}
 				return new DeferredCall() {
 					@Override
-					protected Object invoke() throws IOException {
+					protected Result<Object, IOException> invoke() {
 						for (DeferredCall dc : calls) {
 							dc.run();
-							if (dc.hasError()) {
+							if (dc.result().isError()) {
 								break;
 							}
 						}
-						return null;
+						return Result.newValue(null);
 					}
 					@Override
-					public void done() throws IOException {
+					public void done() {
 						MessageArray result = new MessageArray("BATCH_RESPONSE");
 						for (DeferredCall dc : calls) {
 							dc.done();
 							result.add(dc.result());
 						}
-						this.result = result;
+						this.result = Result.newValue((Object)result);
 					}
 				};
 			} else {
@@ -157,11 +165,22 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 	 * @return the deferred call object
 	 * @throws IOException on error
 	 */
-	protected DeferredCall processMessageObjectDeferred(MessageObject mo) throws IOException {
+	protected DeferredCall processMessageObjectDeferred(final MessageObject mo) throws IOException {
 		if ("PING".equals(mo.name)) {
-			// FIXME
+			return new DeferredCall() {
+				@Override
+				protected Result<? extends Object, IOException> invoke() {
+					return api.ping();
+				}
+			};
 		} else
 		if ("LOGIN".equals(mo.name)) {
+			return new DeferredCall() {
+				@Override
+				protected Result<? extends Object, IOException> invoke() {
+					return api.login(mo.getString("user"), mo.getString("passphrase"), mo.getString("version"));
+				}
+			};
 			// FIXME
 		}
 		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
