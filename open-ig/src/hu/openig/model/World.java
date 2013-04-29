@@ -1349,6 +1349,7 @@ public class World {
 		xfleet.set("name", f.name);
 		xfleet.set("task", f.task);
 		xfleet.set("refill-once", f.refillOnce);
+		xfleet.set("formation", f.formation);
 		if (f.targetFleet != null) {
 			xfleet.set("target-fleet", f.targetFleet.id);
 		} else
@@ -1945,6 +1946,8 @@ public class World {
 			f.task = FleetTask.valueOf(xfleet.get("task", FleetTask.IDLE.toString()));
 			
 			f.refillOnce = xfleet.getBoolean("refill-once", true);
+			
+			f.formation = xfleet.getInt("formation", -1);
 			
 			s0 = xfleet.get("waypoints", null);
 			if (s0 != null) {

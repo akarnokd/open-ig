@@ -53,6 +53,8 @@ public class Fleet implements Named, Owned, HasInventory {
 	public FleetTask task = FleetTask.IDLE;
 	/** Refill once. */
 	public boolean refillOnce;
+	/** The formation index. */
+	public int formation;
 	/**
 	 * Create a fleet with a specific ID and owner.
 	 * @param id the identifier
