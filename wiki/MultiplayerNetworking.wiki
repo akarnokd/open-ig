@@ -197,8 +197,6 @@ MATCH_SETTINGS {
   social_victory=true,
   social_morale=95,
   social_planets=30,
-  races=[ "race1", "race2" ],
-  icons=[ "icon_path1" ],
   players=[
     PLAYER {
       id="",
@@ -210,10 +208,10 @@ MATCH_SETTINGS {
       user="",
       traits=["TRAIT1", "TRAIT2"],
       home_planet=""
-      may_chose_race=true,
-      may_chose_icon=true,
-      may_chose_traits=true
-      may_chose_home_planet=true,
+      may_choose_race=true,
+      may_choose_icon=true,
+      may_choose_traits=true
+      may_choose_group=true,
     }
   ]
 }
@@ -235,8 +233,8 @@ PLAYER_SETTINGS {
   name="",
   race="",
   icon="",
-  traits=[ "" ],
-  home_planet="",
+  group=1,
+  traits=[ "" ]
 }
 }}}
 
@@ -378,8 +376,7 @@ QUERY_FLEET {
 === Response ===
 
 {{{
-FLEETS {
-  fleets=[
+FLEETS [
     FLEET {
       fleet_id=1,
       name="",
@@ -398,7 +395,7 @@ FLEETS {
       ],
       inventory=[
         INVENTORY {
-          item_id=0,
+          id=0,
           type="",
           hp=100,
           shield=100,
@@ -415,8 +412,7 @@ FLEETS {
         }
       ]
     }
-  ]
-}
+]
 }}}
 
 Remarks:
@@ -433,14 +429,12 @@ QUERY_INVENTORY { }
 === Response ===
 
 {{{
-INVENTORIES {
-  inventories=[
+INVENTORIES [
     INVENTORY {
       type="",
       count=1
     }
-  ]
-}
+]
 }}}
 
 == Query production status ==
@@ -454,16 +448,14 @@ QUERY_PRODUCTIONS
 === Response ===
 
 {{{
-PRODUCTIONS {
-  productions={
+PRODUCTIONS [
     PRODUCTION {
       type="",
       count=1,
       progress=20,
       priority=50
     }
-  }
-}
+]
 }}}
 
 == Query research status ==
@@ -517,8 +509,7 @@ QUERY_PLANET {
 === Response ===
 
 {{{
-PLANETS {
-  planets=[
+PLANETS [
     PLANET {
       id="",
       owner="",
@@ -563,8 +554,7 @@ PLANETS {
         }
       ]
     }
-  ]
-}
+]
 }}}
 
 Remarks:
@@ -1050,16 +1040,245 @@ TBD
 
 = In-game space battle commands =
 
-TBD
+{{{
+STOP_SPACE_UNIT {
+  id=1
+}
+}}}
+
+{{{
+MOVE_SPACE_UNIT {
+  id=1,
+  x=10,
+  y=20
+}
+}}}
+
+{{{
+ATTACK_SPACE_UNIT {
+  id=1,
+  target=200
+}
+}}}
+
+{{{
+SPACE_KAMIKAZE {
+  id=1
+}
+}}}
+
+{{{
+SPACE_FIRE_ROCKET {
+  id=1,
+  target=200
+}
+}}}
+
+{{{
+SPACE_GUARD {
+  id=1
+}
+}}}
+
+{{{
+SPACE_RETREAT { 
+  battle_id=1
+}
+}}}
+
+{{{
+SPACE_STOP_RETREAT { 
+  battle_id=1
+}
+}}}
+
+Set default fleet formation.
+{{{
+FLEET_FORMATION {
+  id=1,
+  formation=6
+}
+}}}
 
 = In-game space battle status requests =
 
-TBD
+== Ongoing space battles ==
+
+=== Request ===
+{{{
+QUERY_BATTLES { }
+}}}
+
+{{{
+QUERY_BATTLE {
+  id=1
+}
+}}}
+
+=== Response ===
+
+{{{
+BATTLES [
+  BATTLE {
+    id=1,
+    planet="planet id",
+    players=[ "player1", "player2" ],
+    fleets=[
+      FLEET {
+        id=1,
+        target_fleet=null,
+        target_planet="planet"
+      }
+    ],
+    in_space_battle=true,
+    in_space_retreat=true,
+    in_ground_battle=false,
+    in_ground_retreat=false,
+    statistics={ ... }
+  }
+]
+}}}
+
+== Space battle information ==
+
+=== Request ===
+{{{
+QUERY_SPACE_BATTLE_UNITS {
+  id=1
+}
+}}}
+
+=== Response ===
+{{{
+SPACE_BATTLE_UNITS [
+  UNIT {
+    id=1,
+    owner="",
+    type="Cruiser1",
+    count=1,
+    hp=100,
+    shield=100,
+    x=50,
+    y=50,
+    angle=0.4,
+    target=null,
+    guard=true,
+    move_x=null,
+    move_y=null,
+    kamikaze=true,
+    equipment=[
+      EQUIPMENT {
+        id="",
+        type="",
+        count=1,
+        hp=1,
+        cooldown=5
+    ]
+  }  
+]
+}}}
+
 
 = In-game ground battle commands =
 
-TBD
+== Unit commands ==
+
+=== Request ===
+
+Stop vehicle or gun.
+{{{
+STOP_GROUND_UNIT {
+  id=1
+}
+}}}
+
+{{{
+MOVE_GROUND_UNIT {
+  id=1,
+  x=-5,
+  y=-5
+}
+}}}
+
+{{{
+ATTACK_GROUND_UNIT {
+  id=1,
+  target=5
+}
+}}}
+
+{{{
+ATTACK_BUILDING {
+  id=1,
+  target=10
+}
+}}}
+
+{{{
+DEPLOY_MINE {
+  id=1
+}
+}}}
+
+{{{
+GROUND_RETREAT {
+  battle_id=1
+}
+}}}
+
+{{{
+STOP_GROUND_RETREAT {
+  battle_id=1
+}
+}}}
 
 = In-game ground battle status requests =
 
-TBD
+== Basic status ==
+
+=== Requests ===
+
+{{{
+QUERY_GROUND_BATTLE_UNITS {
+}
+}}}
+
+
+=== Responses ===
+
+{{{
+GROUND_BATTLE_UNITS [
+  UNIT {
+    id=1,
+    type="type",
+    owner="owner",
+    hp=100,
+    phase=0,
+    cooldown=5,
+    x=-1.1,
+    y=-1.1,
+    angle=0.5,
+    attack_unit=null,
+    attack_building=null,
+    attack_move_x=null,
+    attack_move_y=null,
+    move_x=null,
+    move_y=null,
+    path=[
+      POINT {
+        x=-5,
+        y=-5,
+      }
+    ]
+  },
+  GUN {
+    id=5
+    type="type",
+    building=11,
+    phase=0,
+    cooldown=5,
+    angle=0.5,
+    attack_unit=null
+  }
+]
+}}}
