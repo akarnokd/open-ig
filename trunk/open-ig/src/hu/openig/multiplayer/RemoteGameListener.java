@@ -9,7 +9,6 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.Action2E;
-import hu.openig.core.Result;
 import hu.openig.multiplayer.model.DeferredCall;
 import hu.openig.multiplayer.model.ErrorResponse;
 import hu.openig.multiplayer.model.ErrorType;
@@ -31,7 +30,7 @@ import javax.swing.SwingUtilities;
  * message responses.
  * @author akarnokd, 2013.04.23.
  */
-public class RemoteGameAPIListener implements Action2E<MessageConnection, Object, IOException> {
+public class RemoteGameListener implements Action2E<MessageConnection, Object, IOException> {
 	/** The game API. */
 	protected final RemoteGameAPI api;
 	/** Use the EDT to execute the API methods? */
@@ -40,7 +39,7 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 	 * Constructor, takes a remote API entry point and uses the EDT to call its methods.
 	 * @param api the API entry point
 	 */
-	public RemoteGameAPIListener(RemoteGameAPI api) {
+	public RemoteGameListener(RemoteGameAPI api) {
 		this.api = api;
 		this.useEDT = true;
 	}
@@ -49,7 +48,7 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 	 * @param api the API entry point
 	 * @param useEDT use EDT for the methods?
 	 */
-	public RemoteGameAPIListener(RemoteGameAPI api, boolean useEDT) {
+	public RemoteGameListener(RemoteGameAPI api, boolean useEDT) {
 		this.api = api;
 		this.useEDT = useEDT;
 	}
@@ -77,23 +76,23 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 			
 		responseCall.done();
 			
-		Result<? extends Object, IOException> response = responseCall.result();
-			
-		if (response.isError()) {
-			if (response.error() instanceof ErrorResponse) {
-				ErrorResponse er = (ErrorResponse)response.error();
+		if (responseCall.hasError()) {
+			if (responseCall.error() instanceof ErrorResponse) {
+				ErrorResponse er = (ErrorResponse)responseCall.error();
 				conn.error(message, er.code.ordinal(), er.toString());
 			} else {
-				conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), response.error().toString());
+				conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), responseCall.error().toString());
 			}
-		} else
-		if (response.value() instanceof CharSequence) {
-			conn.send(message, (CharSequence)response.value());
-		} else
-		if (response.value() instanceof MessageSerializable) {
-			conn.send(message, (MessageSerializable)response.value());
 		} else {
-			conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), response != null ? response.getClass().toString() : "null");
+			Object value = responseCall.value();
+			if (value instanceof CharSequence) {
+				conn.send(message, (CharSequence)value);
+			} else
+			if (value instanceof MessageSerializable) {
+				conn.send(message, (MessageSerializable)value);
+			} else {
+				conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), value != null ? value.getClass().toString() : "null");
+			}
 		}
 	}
 	/**
@@ -121,23 +120,26 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 				}
 				return new DeferredCall() {
 					@Override
-					protected Result<Object, IOException> invoke() {
+					protected Object invoke() throws IOException {
 						for (DeferredCall dc : calls) {
 							dc.run();
-							if (dc.result().isError()) {
+							if (dc.hasError()) {
 								break;
 							}
 						}
-						return Result.newValue(null);
+						return null;
 					}
 					@Override
 					public void done() {
 						MessageArray result = new MessageArray("BATCH_RESPONSE");
 						for (DeferredCall dc : calls) {
+							if (dc.hasError()) {
+								break;
+							}
 							dc.done();
-							result.add(dc.result());
+							result.add(dc.value());
 						}
-						this.result = Result.newValue((Object)result);
+						this.value = result;
 					}
 				};
 			} else {
@@ -169,7 +171,7 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 		if ("PING".equals(mo.name)) {
 			return new DeferredCall() {
 				@Override
-				protected Result<? extends Object, IOException> invoke() {
+				protected Object invoke() throws IOException {
 					return api.ping();
 				}
 			};
@@ -177,7 +179,7 @@ public class RemoteGameAPIListener implements Action2E<MessageConnection, Object
 		if ("LOGIN".equals(mo.name)) {
 			return new DeferredCall() {
 				@Override
-				protected Result<? extends Object, IOException> invoke() {
+				protected Object invoke() throws IOException {
 					return api.login(mo.getString("user"), mo.getString("passphrase"), mo.getString("version"));
 				}
 			};

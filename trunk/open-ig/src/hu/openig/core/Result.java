@@ -105,4 +105,17 @@ public final class Result<T, E> {
 	public static <E> Result<Void, E> newVoid() {
 		return (Result<Void, E>)VOID;
 	}
+	/**
+	 * Cast this class into the given value-type
+	 * in case this is in fact an error.
+	 * @param <U> the expected value type, irrelevant
+	 * @return the cast this
+	 */
+	@SuppressWarnings("unchecked")
+	public <U> Result<U, E> castError() {
+		if (isError) {
+			return (Result<U, E>)this;
+		}
+		throw new IllegalStateException("Must be just an error");
+	}
 }

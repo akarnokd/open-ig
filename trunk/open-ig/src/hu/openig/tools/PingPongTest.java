@@ -10,8 +10,8 @@ package hu.openig.tools;
 
 import hu.openig.core.Pred1;
 import hu.openig.multiplayer.MultiplayerSession;
-import hu.openig.multiplayer.RemoteGameAPIClient;
-import hu.openig.multiplayer.RemoteGameAPIListener;
+import hu.openig.multiplayer.RemoteGameClient;
+import hu.openig.multiplayer.RemoteGameListener;
 import hu.openig.net.MessageClient;
 import hu.openig.net.MessageConnection;
 import hu.openig.net.MessageListener;
@@ -39,7 +39,7 @@ public final class PingPongTest {
 			mlistener2.setOnConnection(new Pred1<MessageConnection>() {
 				@Override
 				public Boolean invoke(MessageConnection value) {
-					value.setOnMessage(new RemoteGameAPIListener(new MultiplayerSession(null, null)));
+					value.setOnMessage(new RemoteGameListener(new MultiplayerSession(null, null)));
 					return true;
 				}
 			});
@@ -55,7 +55,7 @@ public final class PingPongTest {
 					@Override
 					public Boolean invoke(MessageConnection value) {
 						value.setOnMessage(
-								new RemoteGameAPIListener(new RemoteGameAPIClient(mc), false));
+								new RemoteGameListener(new RemoteGameClient(mc), false));
 						return true;
 					}
 				});
@@ -63,7 +63,7 @@ public final class PingPongTest {
 		
 				try {
 					MessageClient mclient2 = new MessageClient(InetAddress.getLoopbackAddress(), 10002);
-					final RemoteGameAPIClient client2 = new RemoteGameAPIClient(mclient2);
+					final RemoteGameClient client2 = new RemoteGameClient(mclient2);
 					
 					mclient2.connect();
 					System.out.println("Client 2 Test");
@@ -77,7 +77,7 @@ public final class PingPongTest {
 			
 					System.out.println("Client 1 Test");
 					MessageClient mclient1 = new MessageClient(InetAddress.getLoopbackAddress(), 10001);
-					final RemoteGameAPIClient client1 = new RemoteGameAPIClient(mclient1);
+					final RemoteGameClient client1 = new RemoteGameClient(mclient1);
 					mclient1.connect();
 					try {
 						for (int j = 0; j < 10; j++) {

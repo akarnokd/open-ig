@@ -34,6 +34,96 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 		}
 		this.name = name;
 	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, Object... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, boolean... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, byte... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, short... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, char... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, int... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, long... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, float... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value array
+	 */
+	public MessageArray(String name, double... values) {
+		this(name);
+		addAll(values);
+	}
+	/**
+	 * Constructs a message array with the given values.
+	 * @param name the object name
+	 * @param values the value sequence
+	 */
+	public MessageArray(String name, Iterable<?> values) {
+		this(name);
+		addAll(values);
+	}
 	@Override
 	public void save(Appendable out) throws IOException {
 		if (name != null) {
@@ -66,11 +156,140 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 		return items.get(index);
 	}
 	/**
+	 * Wrap a primitive or object array value into
+	 * a MessageArray, or just return the value.
+	 * @param value the value
+	 * @return the wrapped value
+	 */
+	public static Object wrap(Object value) {
+		if (value instanceof Object[]) {
+			value = new MessageArray(null, (Object[])value);
+		} else
+		if (value instanceof Iterable<?>) {
+			value = new MessageArray(null, (Iterable<?>)value);
+		} else
+		if (value instanceof boolean[]) {
+			value = new MessageArray(null, (boolean[])value);
+		} else
+		if (value instanceof byte[]) {
+			value = new MessageArray(null, (byte[])value);
+		} else
+		if (value instanceof short[]) {
+			value = new MessageArray(null, (short[])value);
+		} else
+		if (value instanceof char[]) {
+			value = new MessageArray(null, (char[])value);
+		} else
+		if (value instanceof int[]) {
+			value = new MessageArray(null, (int[])value);
+		} else
+		if (value instanceof long[]) {
+			value = new MessageArray(null, (long[])value);
+		} else
+		if (value instanceof float[]) {
+			value = new MessageArray(null, (float[])value);
+		} else
+		if (value instanceof double[]) {
+			value = new MessageArray(null, (double[])value);
+		}
+		return value;
+	}
+	/**
 	 * Add a new object to the list.
 	 * @param value the value to add
 	 */
 	public void add(Object value) {
-		items.add(value);
+		items.add(wrap(value));
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(Object... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(boolean... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(byte... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(short... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(char... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(int... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(long... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(float... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value array.
+	 * @param values the value array
+	 */
+	public void addAll(double... values) {
+		for (Object o : values) {
+			add(o);
+		}
+	}
+	/**
+	 * Adds all items from the value sequence.
+	 * @param values the value sequence
+	 */
+	public void addAll(Iterable<?> values) {
+		for (Object o : values) {
+			add(o);
+		}
 	}
 	/**
 	 * Adds a value at the specified index.
@@ -78,7 +297,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 * @param value the value
 	 */
 	public void add(int index, Object value) {
-		items.add(index, value);
+		items.add(index, wrap(value));
 	}
 	/**
 	 * Remove a value at the specified index.

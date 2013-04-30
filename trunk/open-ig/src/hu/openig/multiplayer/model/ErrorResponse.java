@@ -45,13 +45,26 @@ public class ErrorResponse extends IOException {
 	 * @throws ErrorResponse if the response is an error
 	 */
 	public static void throwIfError(Object response) throws ErrorResponse {
+		ErrorResponse er = asError(response);
+		if (er != null) {
+			throw er;
+		}
+	}
+	/**
+	 * Returns an ErrorResponse exception if the given
+	 * object is an ERROR message, null otherwise.
+	 * @param response the response
+	 * @return ErrorResponse if the response is an error
+	 */
+	public static ErrorResponse asError(Object response) {
 		if (response instanceof MessageObject) {
 			MessageObject mo = (MessageObject)response;
 			if (mo.name != null && mo.name.startsWith("ERROR")) {
-				throw new ErrorResponse(
+				return new ErrorResponse(
 						ErrorType.from(mo.get("code", null), ErrorType.ERROR_UNKNOWN), 
 						mo.getString("message", null));
 			}
 		}
+		return null;
 	}
 }
