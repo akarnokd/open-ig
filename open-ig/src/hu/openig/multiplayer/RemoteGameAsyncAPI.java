@@ -23,8 +23,9 @@ public interface RemoteGameAsyncAPI {
 	void begin();
 	/**
 	 * Finish a batch request and send out the composite requests.
+	 * @throws IOException in case the send and receive fails
 	 */
-	void end();
+	void end() throws IOException;
 	/**
 	 * Finish a batch request and send out the composite requests.
 	 * @param out the async completion handler when all responses have

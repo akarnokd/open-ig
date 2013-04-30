@@ -44,6 +44,35 @@ public class MessageObject implements MessageSerializable {
 		this.name = name;
 	}
 	/**
+	 * Constructs an object with the given key-value pairs, which
+	 * will be turned into message objects and message arrays as
+	 * it goes.
+	 * @param name the name
+	 * @param nameValues the name-value pairs
+	 */
+	public MessageObject(String name, Object... nameValues) {
+		this(name);
+		setMany(nameValues);
+	}
+	/**
+	 * Sets several attribues from an array of name-value pairs.
+	 * @param nameValues the name-value pairs
+	 */
+	public void setMany(Object... nameValues) {
+		if (nameValues.length % 2 != 0) {
+			throw new IllegalArgumentException("nameValues needs to be even length array");
+		}
+		for (int i = 0; i < nameValues.length; i++) {
+			if (nameValues[i] instanceof CharSequence) {
+				String pn = nameValues[i].toString();
+				Object o = MessageArray.wrap(nameValues[i + 1]);
+				set(pn, o);
+			} else {
+				throw new IllegalArgumentException("Entry " + i + " is not string-like");
+			}
+		}
+	}
+	/**
 	 * Tests if the given attribute is present.
 	 * @param name the name
 	 * @return true if present
@@ -158,6 +187,11 @@ public class MessageObject implements MessageSerializable {
 		if (v instanceof CharSequence) {
 			out.append('"');
 			out.append(sanitize((CharSequence)v));
+			out.append('"');
+		} else
+		if (v instanceof Character) {
+			out.append('"');
+			out.append(sanitize(v.toString()));
 			out.append('"');
 		} else
 		if (v instanceof MessageSerializable) {

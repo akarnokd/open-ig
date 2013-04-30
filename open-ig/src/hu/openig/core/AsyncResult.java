@@ -16,15 +16,15 @@ package hu.openig.core;
  * @param <E> the error type
  * @see Result
  */
-public interface AsyncResult<T, E> {
+public abstract class AsyncResult<T, E> {
 	/**
 	 * The success callback.
 	 * @param value the return value
 	 */
-	void onSuccess(T value);
+	public abstract void onSuccess(T value);
 	/**
 	 * The error callback.
 	 * @param ex the exception
 	 */
-	void onError(E ex);
+	public abstract void onError(E ex);
 }

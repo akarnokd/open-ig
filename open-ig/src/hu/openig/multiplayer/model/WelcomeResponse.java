@@ -9,6 +9,7 @@
 package hu.openig.multiplayer.model;
 
 import hu.openig.net.MessageObject;
+import hu.openig.net.MissingAttributeException;
 
 /**
  * The answer of a successful login request.
@@ -28,5 +29,20 @@ public class WelcomeResponse implements MessageObjectIO {
 		mo.set("session", sessionId);
 		
 		return mo;
+	}
+	/**
+	 * Creates a new instance from the message object.
+	 * @param mo the message object
+	 * @return the welcome message
+	 * @throws ErrorResponse on message format error
+	 */
+	public static WelcomeResponse from(MessageObject mo) throws ErrorResponse {
+		try {
+			WelcomeResponse result = new WelcomeResponse();
+			result.fromMessage(mo);
+			return result;
+		} catch (MissingAttributeException ex) {
+			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString());
+		}
 	}
 }

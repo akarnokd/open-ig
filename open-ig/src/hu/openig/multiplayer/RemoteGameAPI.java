@@ -8,7 +8,6 @@
 
 package hu.openig.multiplayer;
 
-import hu.openig.core.Result;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerUser;
@@ -36,151 +35,188 @@ public interface RemoteGameAPI {
 	/** 
 	 * Send a simple ping-pong request.
 	 * @return the latency in milliseconds
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Long, IOException> ping();
+	long ping() throws IOException;
 	/**
 	 * Login.
 	 * @param user the user object
 	 * @param passphrase the passphrase
 	 * @param version the caller's version
 	 * @return the welcome message if successful.
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<WelcomeResponse, IOException> login(String user, String passphrase, String version);
+	WelcomeResponse login(String user, String passphrase, String version) throws IOException;
 	/**
 	 * Relogin into a running session.
 	 * @param sessionId the session id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> relogin(String sessionId);
+	void relogin(String sessionId) throws IOException;
 	/**
 	 * Indicate the intent to leave the game/connection.
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> leave();
+	void leave() throws IOException;
 	/**
 	 * Retrieve the current game definition.
 	 * @return the game definition
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<MultiplayerDefinition, IOException> getGameDefinition();
+	MultiplayerDefinition getGameDefinition() throws IOException;
 	/**
 	 * Ask the game host to use the given user settings for the game.
 	 * @param user the user settings
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> choosePlayerSettings(MultiplayerUser user);
+	void choosePlayerSettings(MultiplayerUser user) throws IOException;
 	/**
 	 * Join the current match.
 	 * @return the game settings to use
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<MultiplayerGameSetup, IOException> join();
+	MultiplayerGameSetup join() throws IOException;
 	/**
 	 * Signal the server that the game has finished loading
-	 * and initializing; synchronizes multiple players.
-	 * @return a void result or an exception 
+	 * and initializing throws IOException; synchronizes multiple players.
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> ready();
+	void ready() throws IOException;
 	/**
 	 * Returns the empire status information.
 	 * @return the empire statuses
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<EmpireStatuses, IOException> getEmpireStatuses();
+	EmpireStatuses getEmpireStatuses() throws IOException;
 	/**
 	 * Returns the own and known fleets list.
 	 * @return the list of fleets.
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<List<FleetStatus>, IOException> getFleets();
+	List<FleetStatus> getFleets() throws IOException;
 	/**
 	 * Get information about a concrete fleet.
 	 * @param fleetId the fleet identifier
 	 * @return the fleet
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<FleetStatus, IOException> getFleet(int fleetId);
+	FleetStatus getFleet(int fleetId) throws IOException;
 	/**
 	 * Retrieve current inventory status.
 	 * @return the map from tech id to number.
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Map<String, Integer>, IOException> getInventory();
+	Map<String, Integer> getInventory() throws IOException;
 	/**
 	 * Returns a list of active productions.
 	 * @return the list of active productions
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<List<Production>, IOException> getProductions();
+	List<Production> getProductions() throws IOException;
 	/**
 	 * Returns the current research status, including
 	 * available and in-progress technology info.
 	 * @return the research status object
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<ResearchStatus, IOException> getResearches();
+	ResearchStatus getResearches() throws IOException;
 	/**
 	 * Returns a list of planet statuses for all visible
 	 * planets.
 	 * @return the list of planet statuses
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<List<PlanetStatus>, IOException> getPlanetStatuses();
+	List<PlanetStatus> getPlanetStatuses() throws IOException;
 	/**
 	 * Retrieve a concrete planet's status.
 	 * @param id the planet identifier
 	 * @return the planet status record
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<PlanetStatus, IOException> getPlanetStatus(String id);
+	PlanetStatus getPlanetStatus(String id) throws IOException;
 	/**
 	 * Move a fleet to the specified coordinates.
 	 * @param id the fleet id
 	 * @param x the target coordinate
 	 * @param y the target coordinate
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> moveFleet(int id, double x, double y);
+	void moveFleet(int id, double x, double y) throws IOException;
 	/**
 	 * Add a waypoint to the given fleet's movement order.
 	 * @param id the fleet id
 	 * @param x the new waypoint coordinate
 	 * @param y the new waypoint coordinate
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> addFleetWaypoint(int id, double x, double y);
+	void addFleetWaypoint(int id, double x, double y) throws IOException;
 	/**
 	 * Instruct the fleet to move to a specified planet.
 	 * @param id the own fleet id
 	 * @param target the target planet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> moveToPlanet(int id, String target);
+	void moveToPlanet(int id, String target) throws IOException;
 	/**
 	 * Instruct the fleet to follow another fleet.
 	 * @param id the own fleet id
 	 * @param target the target fleet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> followFleet(int id, int target);
+	void followFleet(int id, int target) throws IOException;
 	/**
 	 * Issue an attack order against the other fleet.
 	 * @param id the own fleet id
 	 * @param target the target fleet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> attackFleet(int id, int target);
+	void attackFleet(int id, int target) throws IOException;
 	/**
 	 * Attack a planet with the fleet.
 	 * @param id the own fleet id
 	 * @param target the target planet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> attackPlanet(int id, String target);
+	void attackPlanet(int id, String target) throws IOException;
 	/**
 	 * Instruct a fleet to colonize a planet by one of its
 	 * colony ships.
 	 * @param id the fleet id
 	 * @param target the target planet
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> colonize(int id, String target);
+	void colonize(int id, String target) throws IOException;
 	/**
 	 * Create a new fleet around the given planet.
 	 * @param planet the planet
 	 * @return the created fleet status object
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<FleetStatus, IOException> newFleet(String planet);
+	FleetStatus newFleet(String planet) throws IOException;
 	/**
 	 * Create a new fleet around the given planet and
 	 * deploy ships and equipment according to the specification
@@ -188,14 +224,18 @@ public interface RemoteGameAPI {
 	 * @param planet the target planet
 	 * @param inventory the target inventory
 	 * @return the created fleet status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<FleetStatus, IOException> newFleet(String planet, List<InventoryItem> inventory);
+	FleetStatus newFleet(String planet, List<InventoryItem> inventory) throws IOException;
 	/**
 	 * Create a new fleet next to the given fleet.
 	 * @param id the fleet identifier
 	 * @return the created fleet status object
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<FleetStatus, IOException> newFleet(int id);
+	FleetStatus newFleet(int id) throws IOException;
 	/**
 	 * Create a new fleet next to the given other fleet
 	 * and transfer units from it according to the inventory item 
@@ -203,42 +243,52 @@ public interface RemoteGameAPI {
 	 * @param id the target fleet
 	 * @param inventory the target inventory
 	 * @return the created fleet status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<FleetStatus, IOException> newFleet(int id, List<InventoryItem> inventory);
+	FleetStatus newFleet(int id, List<InventoryItem> inventory) throws IOException;
 	/**
 	 * Delete an empty fleet.
 	 * @param id the target fleet
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> deleteFleet(int id);
+	void deleteFleet(int id) throws IOException;
 	/**
 	 * Rename the fleet.
 	 * @param id the fleet id
 	 * @param name the new name
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> renameFleet(int id, String name);
+	void renameFleet(int id, String name) throws IOException;
 	/**
 	 * Sells one unit from the given fleet inventory item.
 	 * @param id the fleet id
 	 * @param itemId the inventory item id within the fleet
 	 * @return the inventory item status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> sellFleetItem(int id, int itemId);
+	InventoryItemStatus sellFleetItem(int id, int itemId) throws IOException;
 	/**
 	 * Deploy one unit of the given type into the target fleet.
 	 * @param id the fleet id
 	 * @param type the unit type
 	 * @return the inventory item status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> deployFleetItem(int id, String type);
+	InventoryItemStatus deployFleetItem(int id, String type) throws IOException;
 	/**
 	 * Undeploy a single fleet item (such as fighters and vehicles).
 	 * @param id the fleet id
 	 * @param itemId the inventory item id within the fleet
 	 * @return the inventory item status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> undeployFleetItem(int id, int itemId);
+	InventoryItemStatus undeployFleetItem(int id, int itemId) throws IOException;
 	/**
 	 * Adds one unit of equipment into the given fleet's
 	 * given inventory item's slot.
@@ -247,8 +297,10 @@ public interface RemoteGameAPI {
 	 * @param slotId the slot id
 	 * @param type the technology to add
 	 * @return the inventory item status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> addFleetEquipment(int id, int itemId, String slotId, String type);
+	InventoryItemStatus addFleetEquipment(int id, int itemId, String slotId, String type) throws IOException;
 	/**
 	 * Remove one unit of equipment from the given fleet's
 	 * given inventory items' slot.
@@ -256,41 +308,48 @@ public interface RemoteGameAPI {
 	 * @param itemId the inventory item id within the fleet
 	 * @param slotId the slot id
 	 * @return the inventory item status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> removeFleetEquipment(int id, int itemId, String slotId);
+	InventoryItemStatus removeFleetEquipment(int id, int itemId, String slotId) throws IOException;
 	/**
 	 * Automatically upgrade and fill in fleet items.
 	 * @param id the fleet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> fleetUpgrade(int id);
+	void fleetUpgrade(int id) throws IOException;
 	/**
 	 * Stop the given fleet.
 	 * @param id the fleet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> stopFleet(int id);
+	void stopFleet(int id) throws IOException;
 	/**
 	 * Transfer units between two fleets.
 	 * @param sourceFleet the source fleet
 	 * @param destinationFleet the destination fleet
 	 * @param sourceItem the source inventory item id
 	 * @param mode the transfer type the transfer mode
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> transfer(int sourceFleet, int destinationFleet, int sourceItem, FleetTransferMode mode);
+	void transfer(int sourceFleet, int destinationFleet, int sourceItem, FleetTransferMode mode) throws IOException;
 	/**
 	 * Mark the planet for colonization.
 	 * @param id the planet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> colonize(String id);
+	void colonize(String id) throws IOException;
 	/**
 	 * Cancel the colonization of the given planet.
 	 * @param id the planet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> cancelColonize(String id);
+	void cancelColonize(String id) throws IOException;
 	/**
 	 * Place a building on the given planet at the specified location.
 	 * @param planetId the planet identifier
@@ -299,8 +358,10 @@ public interface RemoteGameAPI {
 	 * @param x the location
 	 * @param y the location
 	 * @return the created building id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Integer, IOException> build(String planetId, String type, String race, int x, int y);
+	Integer build(String planetId, String type, String race, int x, int y) throws IOException;
 	/**
 	 * Place a building on the given planet at a suitable location
 	 * (using the same placement logic as the AI would).
@@ -308,51 +369,59 @@ public interface RemoteGameAPI {
 	 * @param type the building type
 	 * @param race the building race
 	 * @return the created building id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Integer, IOException> build(String planetId, String type, String race);
+	Integer build(String planetId, String type, String race) throws IOException;
 	/**
 	 * Enable a specific building on the planet.
 	 * @param planetId the planet id
 	 * @param id the building id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> enable(String planetId, int id);
+	void enable(String planetId, int id) throws IOException;
 	/**
 	 * Disable a specific building on the planet.
 	 * @param planetId the planet id
 	 * @param id the building id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> disable(String planetId, int id);
+	void disable(String planetId, int id) throws IOException;
 	/**
 	 * Activate the repair function on the target building.
 	 * @param planetId the planet id
 	 * @param id the building id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> repair(String planetId, int id);
+	void repair(String planetId, int id) throws IOException;
 	/**
 	 * Deactivate the repair function on the target building.
 	 * @param planetId the planet id
 	 * @param id the building id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> repairOff(String planetId, int id);
+	void repairOff(String planetId, int id) throws IOException;
 	/**
 	 * Demolish the given building on the planet.
 	 * @param planetId the planet id
 	 * @param id the building id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> demolish(String planetId, int id);
+	void demolish(String planetId, int id) throws IOException;
 	/**
 	 * Upgrade the given building to the specified level.
 	 * @param planetId the planet id
 	 * @param id the building id
 	 * @param level the new level
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> buildingUpgrade(String planetId, int id, int level);
+	void buildingUpgrade(String planetId, int id, int level) throws IOException;
 	/**
 	 * Deploy an unit with the given type into the planet's inventory.
 	 * The deployed item is owned by the current player.
@@ -361,23 +430,29 @@ public interface RemoteGameAPI {
 	 * @param planetId the target planet id
 	 * @param type the technology id
 	 * @return the inventory status after the action
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> deployPlanetItem(String planetId, String type);
+	InventoryItemStatus deployPlanetItem(String planetId, String type) throws IOException;
 	/**
 	 * Undeploy an unit from the planet's inventory, must be the
 	 * current player's planet.
 	 * @param planetId the planet id
 	 * @param itemId the inventory item id
 	 * @return the inventory status after the action
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> undeployPlanetItem(String planetId, int itemId);
+	InventoryItemStatus undeployPlanetItem(String planetId, int itemId) throws IOException;
 	/**
 	 * Sell an unit from the planet's inventory.
 	 * @param planetId the planet id
 	 * @param itemId the inventory item id
 	 * @return the inventory item status after the action
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> sellPlanetItem(String planetId, int itemId);
+	InventoryItemStatus sellPlanetItem(String planetId, int itemId) throws IOException;
 	/**
 	 * Add one unit of the given equipment type into the given slot
 	 * of the given inventory item of the given planet.
@@ -386,74 +461,112 @@ public interface RemoteGameAPI {
 	 * @param slotId the slot id
 	 * @param type the technology id
 	 * @return the inventory item status after the action
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> addPlanetEquipment(String planetId, int itemId, String slotId, String type);
+	InventoryItemStatus addPlanetEquipment(String planetId, int itemId, String slotId, String type) throws IOException;
 	/**
 	 * Remove one unit of the technology at the given slot, inventory item and planet.
 	 * @param planetId the planet identifier
 	 * @param itemId the inventory item id
 	 * @param slotId the slot id
 	 * @return the inventory item status after the action
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<InventoryItemStatus, IOException> removePlanetEquipment(String planetId, int itemId, String slotId);
+	InventoryItemStatus removePlanetEquipment(String planetId, int itemId, String slotId) throws IOException;
 	/**
 	 * Upgrade the planet inventory to the best technology and
 	 * available item counts.
 	 * @param planetId the target planet id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> planetUpgrade(String planetId);
+	void planetUpgrade(String planetId) throws IOException;
 	/**
 	 * Add the given technology to the production list with zero
 	 * quantity and default priority, if the production lines aren't full.
 	 * @param type the technology id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> startProduction(String type);
+	void startProduction(String type) throws IOException;
 	/**
 	 * Remove the production line with the given technology.
 	 * @param type the technology id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> stopProduction(String type);
+	void stopProduction(String type) throws IOException;
 	/**
 	 * Set the production quantity on a production line.
 	 * @param type the technology id
 	 * @param count the new quantity
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> setProductionQuantity(String type, int count);
+	void setProductionQuantity(String type, int count) throws IOException;
 	/**
 	 * Set the production priority on the given. 
 	 * @param type the technology id
 	 * @param priority the new priority
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> setProductionPriority(String type, int priority);
+	void setProductionPriority(String type, int priority) throws IOException;
 	/**
 	 * Sell the given amount of units from the player's inventory.
 	 * @param type the technology id
 	 * @param count the number of items to sell
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> sellInventory(String type, int count);
+	void sellInventory(String type, int count) throws IOException;
 	/**
 	 * Start researching the given technology.
 	 * @param type the technology id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> startResearch(String type);
+	void startResearch(String type) throws IOException;
 	/**
 	 * Stop researching the given technology.
 	 * @param type the technology id
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> stopResearch(String type);
+	void stopResearch(String type) throws IOException;
 	/**
 	 * Set the money allocated to the running research.
 	 * @param type the technology id
 	 * @param money the allocated money
-	 * @return a void result or an exception 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
 	 */
-	Result<Void, IOException> setResearchMoney(String type, int money);
+	void setResearchMoney(String type, int money) throws IOException;
+	/**
+	 * Globally pause the research without removing the current
+	 * research.
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void pauseResearch() throws IOException;
+	/**
+	 * Globally pause the production without removing any production lines. 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void pauseProduction() throws IOException;
+	/**
+	 * Globally unpause the production.
+ 	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void unpauseProduction() throws IOException;
+	/**
+	 * Globally unpause the research.
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void unpauseResearch() throws IOException;
 }
