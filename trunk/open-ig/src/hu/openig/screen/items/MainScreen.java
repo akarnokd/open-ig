@@ -13,7 +13,6 @@ import hu.openig.core.Pair;
 import hu.openig.model.Configuration;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
-import hu.openig.multiplayer.MultiplayerScreen;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;

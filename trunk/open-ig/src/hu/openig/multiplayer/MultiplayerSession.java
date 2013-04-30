@@ -15,8 +15,6 @@ import hu.openig.model.MultiplayerEnvironment;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.Production;
 import hu.openig.multiplayer.model.EmpireStatuses;
-import hu.openig.multiplayer.model.ErrorResponse;
-import hu.openig.multiplayer.model.ErrorType;
 import hu.openig.multiplayer.model.FleetStatus;
 import hu.openig.multiplayer.model.FleetTransferMode;
 import hu.openig.multiplayer.model.InventoryItemStatus;
@@ -24,6 +22,8 @@ import hu.openig.multiplayer.model.MultiplayerGameSetup;
 import hu.openig.multiplayer.model.PlanetStatus;
 import hu.openig.multiplayer.model.ResearchStatus;
 import hu.openig.multiplayer.model.WelcomeResponse;
+import hu.openig.net.ErrorResponse;
+import hu.openig.net.ErrorType;
 import hu.openig.utils.U;
 
 import java.io.IOException;

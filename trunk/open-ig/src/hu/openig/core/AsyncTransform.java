@@ -6,10 +6,8 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.multiplayer;
+package hu.openig.core;
 
-import hu.openig.core.Action1;
-import hu.openig.core.AsyncResult;
 
 /**
  * Class that wraps an async result with different
@@ -23,8 +21,8 @@ import hu.openig.core.AsyncResult;
  * @param <V> the outgoing type of the wrapped AsyncResult
  * @param <E> the error type
  */
-public abstract class AsyncTransform<T, V, E> extends 
-AsyncResult<T, E> implements Action1<T> {
+public abstract class AsyncTransform<T, V, E extends Exception> 
+implements AsyncResult<T, E>, Action1E<T, E> {
 	/** The wrapped async result. */
 	protected final AsyncResult<? super V, ? super E> out;
 	/** The externally transformed value. */

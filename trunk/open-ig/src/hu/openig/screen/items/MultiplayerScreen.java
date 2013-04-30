@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.multiplayer;
+package hu.openig.screen.items;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceType;
@@ -22,7 +22,6 @@ import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.Trait;
 import hu.openig.model.TraitKind;
 import hu.openig.screen.CommonResources;
-import hu.openig.screen.items.SkirmishScreen;
 import hu.openig.ui.IGButton;
 import hu.openig.ui.IGCheckBox;
 import hu.openig.utils.Exceptions;

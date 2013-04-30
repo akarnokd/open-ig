@@ -9,6 +9,8 @@
 package hu.openig.multiplayer.model;
 
 import hu.openig.core.Result;
+import hu.openig.net.ErrorResponse;
+import hu.openig.net.ErrorType;
 import hu.openig.net.MissingAttributeException;
 
 import java.io.IOException;

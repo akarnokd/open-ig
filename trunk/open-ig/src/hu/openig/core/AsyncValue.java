@@ -6,36 +6,35 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.net;
+package hu.openig.core;
 
-import hu.openig.core.AsyncResult;
 
 import java.io.IOException;
 
 /**
  * A runnable implementation which submits a constant
- * IOException to an AsyncResult object.
+ * value to an AsyncResult object.
  * @author akarnokd, 2013.04.30.
  */
-public final class AsyncException implements Runnable {
+public final class AsyncValue implements Runnable {
 	/** The exception. */
-	private final IOException ex;
+	private final Object value;
 	/** The async result object. */
-	private final AsyncResult<?, ? super IOException> onResponse;
+	private final AsyncResult<Object, ? super IOException> onResponse;
 
 	/**
 	 * Constructor, sets the fields.
-	 * @param ex the execption
+	 * @param value the value
 	 * @param onResponse the async callback
 	 */
-	public AsyncException(IOException ex,
-			AsyncResult<?, ? super IOException> onResponse) {
-		this.ex = ex;
+	public AsyncValue(Object value,
+			AsyncResult<Object, ? super IOException> onResponse) {
+		this.value = value;
 		this.onResponse = onResponse;
 	}
 
 	@Override
 	public void run() {
-		onResponse.onError(ex);
+		onResponse.onSuccess(value);
 	}
 }

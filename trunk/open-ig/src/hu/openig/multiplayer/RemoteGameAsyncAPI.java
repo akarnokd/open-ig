@@ -9,6 +9,7 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.AsyncResult;
+import hu.openig.multiplayer.model.WelcomeResponse;
 
 import java.io.IOException;
 
@@ -38,4 +39,12 @@ public interface RemoteGameAsyncAPI {
 	 * @param out the async result
 	 */
 	void ping(AsyncResult<? super Long, ? super IOException> out);
+	/**
+	 * Login.
+	 * @param user the user object
+	 * @param passphrase the passphrase
+	 * @param version the caller's version
+	 * @param out the async result
+	 */
+	void login(String user, String passphrase, String version, AsyncResult<? super WelcomeResponse, ? super IOException> out);
 }

@@ -9,14 +9,17 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.Action1;
+import hu.openig.core.AsyncException;
 import hu.openig.core.AsyncResult;
+import hu.openig.core.AsyncTransform;
 import hu.openig.core.Scheduler;
-import hu.openig.multiplayer.model.ErrorResponse;
 import hu.openig.multiplayer.model.MessageUtils;
-import hu.openig.net.AsyncException;
+import hu.openig.multiplayer.model.WelcomeResponse;
+import hu.openig.net.ErrorResponse;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageClient;
 import hu.openig.net.MessageObject;
+import hu.openig.net.MessageSerializable;
 import hu.openig.utils.U;
 
 import java.io.IOException;
@@ -96,9 +99,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	protected final MessageClient client;
 	/** The scheduler used to dispatch results. */
 	protected final Scheduler scheduler;
-	/**
-	 * The list of callbacks filled in during batch operation.
-	 */
+	/** The list of callbacks filled in during batch operation. */
 	protected List<AsyncResult<Object, ? super IOException>> callbacks;
 	/** The composed batch request. */
 	protected MessageArray batchRequest;
@@ -160,7 +161,21 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	protected boolean isBatchMode() {
 		return callbacks != null;
 	}
-	
+	/**
+	 * Sends out the request or adds it to the batch
+	 * request list, depending on the current mode.
+	 * @param request the request object
+	 * @param out the async result callback
+	 */
+	protected void send(MessageSerializable request, 
+			AsyncResult<Object, ? super IOException> out) {
+		if (isBatchMode()) {
+			batchRequest.add(request);
+			callbacks.add(out);
+		} else {
+			client.query(request, scheduler, out);
+		}
+	}
 	@Override
 	public void ping(AsyncResult<? super Long, ? super IOException> out) {
 		MessageObject request = new MessageObject("PING");
@@ -170,11 +185,18 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 				this.setValue(0L);
 			}
 		};
-		if (isBatchMode()) {
-			batchRequest.add(request);
-			callbacks.add(tr);
-		} else {
-			client.query(request, scheduler, tr);
-		}
+		send(request, tr);
+	}
+	@Override
+	public void login(String user, String passphrase, String version,
+			AsyncResult<? super WelcomeResponse, ? super IOException> out) {
+		MessageObject request = new MessageObject("PING");
+		AsyncTransform<Object, WelcomeResponse, IOException> tr = new AsyncTransform<Object, WelcomeResponse, IOException>(out) {
+			@Override
+			public void invoke(Object value) throws IOException {
+				this.setValue(WelcomeResponse.from(MessageUtils.expectObject(value, "WELCOME")));
+			}
+		};
+		send(request, tr);
 	}
 }

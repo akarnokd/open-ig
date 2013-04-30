@@ -8,6 +8,8 @@
 
 package hu.openig.multiplayer.model;
 
+import hu.openig.net.ErrorResponse;
+import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
 import hu.openig.utils.U;

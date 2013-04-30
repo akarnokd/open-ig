@@ -8,6 +8,7 @@
 
 package hu.openig.core;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
@@ -26,7 +27,7 @@ public final class Schedulers {
 	 * @param <V> the value type
 	 * @param <E> the error type
 	 */
-	public static final class ScheduledAsyncResult<V, E> extends
+	public static final class ScheduledAsyncResult<V, E> implements
 			AsyncResult<V, E> {
 		/** The wrapped async result. */
 		private final AsyncResult<? super V, ? super E> onResult;
@@ -75,6 +76,15 @@ public final class Schedulers {
 			return ft;
 		}
 	};
+	/** The EDT scheduler. */
+	private static final Scheduler CURRENT = new Scheduler() {
+		@Override
+		public Future<?> schedule(Runnable run) {
+			final FutureTask<Void> ft = new FutureTask<Void>(run, null);
+			ft.run();
+			return ft;
+		}
+	};
 	/**
 	 * @return the EDT scheduler
 	 */
@@ -82,15 +92,36 @@ public final class Schedulers {
 		return EDT;
 	}
 	/**
+	 * @return the current thread scheduler
+	 */
+	public static Scheduler current() {
+		return CURRENT;
+	}
+	/**
 	 * Wraps an executor service into a scheduler.
 	 * @param exec the executor service
 	 * @return the scheduler
 	 */
-	public static Scheduler executorService(final ExecutorService exec) {
+	public static Scheduler executor(final ExecutorService exec) {
 		return new Scheduler() {
 			@Override
 			public Future<?> schedule(Runnable run) {
 				return exec.submit(run);
+			}
+		};
+	}
+	/**
+	 * Wraps an executor service into a scheduler.
+	 * @param exec the executor service
+	 * @return the scheduler
+	 */
+	public static Scheduler executor(final Executor exec) {
+		return new Scheduler() {
+			@Override
+			public Future<?> schedule(Runnable run) {
+				FutureTask<Void> ft = new FutureTask<Void>(run, null);
+				exec.execute(run);
+				return ft;
 			}
 		};
 	}
