@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.multiplayer.model;
+package hu.openig.net;
 
 
 /**

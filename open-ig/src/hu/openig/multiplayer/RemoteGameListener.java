@@ -10,8 +10,8 @@ package hu.openig.multiplayer;
 
 import hu.openig.core.Action2E;
 import hu.openig.multiplayer.model.DeferredCall;
-import hu.openig.multiplayer.model.ErrorResponse;
-import hu.openig.multiplayer.model.ErrorType;
+import hu.openig.net.ErrorResponse;
+import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageConnection;
 import hu.openig.net.MessageObject;

@@ -9,7 +9,6 @@
 package hu.openig.net;
 
 import hu.openig.core.Action2E;
-import hu.openig.multiplayer.model.ErrorResponse;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 

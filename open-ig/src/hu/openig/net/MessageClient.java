@@ -9,9 +9,11 @@
 package hu.openig.net;
 
 import hu.openig.core.Action1;
+import hu.openig.core.Action1E;
+import hu.openig.core.AsyncException;
 import hu.openig.core.AsyncResult;
+import hu.openig.core.AsyncValue;
 import hu.openig.core.Scheduler;
-import hu.openig.multiplayer.model.ErrorResponse;
 import hu.openig.utils.U;
 
 import java.io.BufferedReader;
@@ -172,6 +174,15 @@ public class MessageClient implements Closeable {
 			@SuppressWarnings("unchecked")
 			Action1<Object> func1 = (Action1<Object>)onResponse;
 			func1.invoke(response);
+		} else
+		if (onResponse instanceof Action1E<?, ?>) {
+			@SuppressWarnings("unchecked")
+			Action1E<Object, IOException> func1 = (Action1E<Object, IOException>)onResponse;
+			try {
+				func1.invoke(response);
+			} catch (IOException ex) {
+				return waiter.schedule(new AsyncException(ex, onResponse));
+			}
 		}
 		return waiter.schedule(new AsyncValue(response, onResponse));
 	}
