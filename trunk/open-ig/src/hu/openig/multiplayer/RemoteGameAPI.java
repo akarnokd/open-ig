@@ -11,13 +11,13 @@ package hu.openig.multiplayer;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerUser;
-import hu.openig.model.Production;
 import hu.openig.multiplayer.model.EmpireStatuses;
 import hu.openig.multiplayer.model.FleetStatus;
 import hu.openig.multiplayer.model.FleetTransferMode;
 import hu.openig.multiplayer.model.InventoryItemStatus;
 import hu.openig.multiplayer.model.MultiplayerGameSetup;
 import hu.openig.multiplayer.model.PlanetStatus;
+import hu.openig.multiplayer.model.ProductionStatus;
 import hu.openig.multiplayer.model.ResearchStatus;
 import hu.openig.multiplayer.model.WelcomeResponse;
 
@@ -121,11 +121,11 @@ public interface RemoteGameAPI {
 	Map<String, Integer> getInventory() throws IOException;
 	/**
 	 * Returns a list of active productions.
-	 * @return the list of active productions
+	 * @return the production status
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	List<Production> getProductions() throws IOException;
+	ProductionStatus getProductions() throws IOException;
 	/**
 	 * Returns the current research status, including
 	 * available and in-progress technology info.

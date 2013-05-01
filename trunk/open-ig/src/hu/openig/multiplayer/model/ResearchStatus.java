@@ -22,6 +22,8 @@ import java.util.Map;
  * @author akarnokd, 2013.04.27.
  */
 public class ResearchStatus {
+	/** Indicates that the research is globally paused. */
+	public boolean paused;
 	/** The current running research. */
 	public ResearchType runningResearch;
 	/** The completed research. */
