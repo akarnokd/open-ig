@@ -11,7 +11,6 @@ package hu.openig.multiplayer;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerUser;
-import hu.openig.model.Production;
 import hu.openig.multiplayer.model.EmpireStatuses;
 import hu.openig.multiplayer.model.FleetStatus;
 import hu.openig.multiplayer.model.FleetTransferMode;
@@ -19,6 +18,7 @@ import hu.openig.multiplayer.model.InventoryItemStatus;
 import hu.openig.multiplayer.model.MessageUtils;
 import hu.openig.multiplayer.model.MultiplayerGameSetup;
 import hu.openig.multiplayer.model.PlanetStatus;
+import hu.openig.multiplayer.model.ProductionStatus;
 import hu.openig.multiplayer.model.ResearchStatus;
 import hu.openig.multiplayer.model.WelcomeResponse;
 import hu.openig.net.MessageClient;
@@ -110,7 +110,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		return null;
 	}
 	@Override
-	public List<Production> getProductions() throws IOException {
+	public ProductionStatus getProductions() throws IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}
