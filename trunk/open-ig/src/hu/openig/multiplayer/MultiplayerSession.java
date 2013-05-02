@@ -13,14 +13,17 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerEnvironment;
 import hu.openig.model.MultiplayerUser;
+import hu.openig.multiplayer.model.BattleStatus;
 import hu.openig.multiplayer.model.EmpireStatuses;
 import hu.openig.multiplayer.model.FleetStatus;
 import hu.openig.multiplayer.model.FleetTransferMode;
+import hu.openig.multiplayer.model.GroundBattleUnit;
 import hu.openig.multiplayer.model.InventoryItemStatus;
 import hu.openig.multiplayer.model.MultiplayerGameSetup;
 import hu.openig.multiplayer.model.PlanetStatus;
 import hu.openig.multiplayer.model.ProductionStatus;
 import hu.openig.multiplayer.model.ResearchStatus;
+import hu.openig.multiplayer.model.SpaceBattleUnit;
 import hu.openig.multiplayer.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
@@ -505,5 +508,125 @@ public class MultiplayerSession implements RemoteGameAPI {
 	public void unpauseResearch() throws IOException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void stopSpaceUnit(int unitId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void moveSpaceUnit(int unitId, double x, double y)
+			throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void attackSpaceUnit(int unitId, int targetUnitId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void kamikazeSpaceUnit(int unitId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fireSpaceRocket(int unitId, int targetUnitId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void spaceRetreat(int battleId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopSpaceRetreat(int battleId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void fleetFormation(int fleetId, int formation) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<BattleStatus> getBattles() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BattleStatus getBattle(int battleId) throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<SpaceBattleUnit> getSpaceBattleUnits(int battleId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void stopGroundUnit(int unitId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void moveGroundUnit(int unitId, int x, int y) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void attackGroundUnit(int unitId, int targetUnitId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void attackBuilding(int unitId, int buildingId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deployMine(int unitId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void groundRetreat(int battleId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stopGroundRetreat(int battleId) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<GroundBattleUnit> getGroundBattleUnits(int battleId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
