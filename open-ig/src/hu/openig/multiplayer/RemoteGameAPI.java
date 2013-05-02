@@ -11,14 +11,17 @@ package hu.openig.multiplayer;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerUser;
+import hu.openig.multiplayer.model.BattleStatus;
 import hu.openig.multiplayer.model.EmpireStatuses;
 import hu.openig.multiplayer.model.FleetStatus;
 import hu.openig.multiplayer.model.FleetTransferMode;
+import hu.openig.multiplayer.model.GroundBattleUnit;
 import hu.openig.multiplayer.model.InventoryItemStatus;
 import hu.openig.multiplayer.model.MultiplayerGameSetup;
 import hu.openig.multiplayer.model.PlanetStatus;
 import hu.openig.multiplayer.model.ProductionStatus;
 import hu.openig.multiplayer.model.ResearchStatus;
+import hu.openig.multiplayer.model.SpaceBattleUnit;
 import hu.openig.multiplayer.model.WelcomeResponse;
 
 import java.io.IOException;
@@ -569,4 +572,151 @@ public interface RemoteGameAPI {
 	 * a gameplay related error result.
 	 */
 	void unpauseResearch() throws IOException;
+	/**
+	 * Stop a space unit.
+	 * @param unitId the unit id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void stopSpaceUnit(int unitId) throws IOException;
+	/**
+	 * Move a space unit to the designated coordinates.
+	 * @param unitId the unit id
+	 * @param x the coordinate
+	 * @param y the coordinate
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void moveSpaceUnit(int unitId, double x, double y) throws IOException;
+	/**
+	 * Attack another space unit.
+	 * @param unitId the unit id
+	 * @param targetUnitId the target unit id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void attackSpaceUnit(int unitId, int targetUnitId) throws IOException;
+	/**
+	 * Set the unit into kamikaze mode.
+	 * @param unitId the unit id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void kamikazeSpaceUnit(int unitId) throws IOException;
+	/**
+	 * Instruct the unit to fire rockets and/or bombs at
+	 * the target unit.
+	 * @param unitId the unit id
+	 * @param targetUnitId the target unit id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void fireSpaceRocket(int unitId, int targetUnitId) throws IOException;
+	/**
+	 * Perform retreat in the given space battle.
+	 * @param battleId the battle id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void spaceRetreat(int battleId) throws IOException;
+	/**
+	 * Stop retreating in the given space battle.
+	 * @param battleId the battle id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void stopSpaceRetreat(int battleId) throws IOException;
+	/**
+	 * Set the default fleet formation on the given fleet id.
+	 * @param fleetId the fleet id
+	 * @param formation the fleet formation index 
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void fleetFormation(int fleetId, int formation) throws IOException;
+	/**
+	 * Returns a list of all ongoing space battles which affects the player.
+	 * @return the list of space battles
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	List<BattleStatus> getBattles() throws IOException;
+	/**
+	 * Retrieve a concrete space battle status.
+	 * @param battleId the battle identifier
+	 * @return the battle status
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	BattleStatus getBattle(int battleId) throws IOException;
+	/**
+	 * Returns a list of space units for the given battle.
+	 * @param battleId the battle id
+	 * @return the list of space units
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	List<SpaceBattleUnit> getSpaceBattleUnits(int battleId) throws IOException;
+	/**
+	 * Stop a ground unit.
+	 * @param unitId the unit id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void stopGroundUnit(int unitId) throws IOException;
+	/**
+	 * Move a ground unit into the given cell.
+	 * @param unitId the unit id
+	 * @param x the coordinate
+	 * @param y the coordinate
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void moveGroundUnit(int unitId, int x, int y) throws IOException;
+	/**
+	 * Attack another ground unit.
+	 * @param unitId the unit id
+	 * @param targetUnitId the target unit id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void attackGroundUnit(int unitId, int targetUnitId) throws IOException;
+	/**
+	 * Attack a building with a ground unit.
+	 * @param unitId the unit id
+	 * @param buildingId the building id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void attackBuilding(int unitId, int buildingId) throws IOException;
+	/**
+	 * Deploy a mine with the given mine layer.
+	 * @param unitId the unit id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void deployMine(int unitId) throws IOException;
+	/**
+	 * Retreat from ground battle.
+	 * @param battleId the battle id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void groundRetreat(int battleId) throws IOException;
+	/**
+	 * Stop retreating from ground battle.
+	 * @param battleId the battle id
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void stopGroundRetreat(int battleId) throws IOException;
+	/**
+	 * Returns a list of ground battle units (guns and vehicles) of
+	 * the given battle.
+	 * @param battleId the battle id
+	 * @return the list of units.
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	List<GroundBattleUnit> getGroundBattleUnits(int battleId) throws IOException;
 }
