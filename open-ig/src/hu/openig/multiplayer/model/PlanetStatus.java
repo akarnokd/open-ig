@@ -8,9 +8,11 @@
 
 package hu.openig.multiplayer.model;
 
+import hu.openig.core.Func0;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.TaxLevel;
+import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
  * A planet's status.
  * @author akarnokd, 2013.04.27.
  */
-public class PlanetStatus {
+public class PlanetStatus implements MessageObjectIO, Func0<PlanetStatus> {
 	/** The planet's identifier. */
 	public String id;
 	/** 
@@ -57,4 +59,18 @@ public class PlanetStatus {
 	public int weatherTTL;
 	/** The building statuses. */
 	public final List<BuildingStatus> buildings = new ArrayList<BuildingStatus>();
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public PlanetStatus invoke() {
+		return new PlanetStatus();
+	}
 }

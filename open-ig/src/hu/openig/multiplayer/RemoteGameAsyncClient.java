@@ -22,12 +22,15 @@ import hu.openig.multiplayer.model.FleetStatus;
 import hu.openig.multiplayer.model.FleetTransferMode;
 import hu.openig.multiplayer.model.GroundBattleUnit;
 import hu.openig.multiplayer.model.InventoryItemStatus;
+import hu.openig.multiplayer.model.MessageArrayAsync;
+import hu.openig.multiplayer.model.MessageObjectAsync;
 import hu.openig.multiplayer.model.MessageUtils;
 import hu.openig.multiplayer.model.MultiplayerGameSetup;
 import hu.openig.multiplayer.model.PlanetStatus;
 import hu.openig.multiplayer.model.ProductionStatus;
 import hu.openig.multiplayer.model.ResearchStatus;
 import hu.openig.multiplayer.model.SpaceBattleUnit;
+import hu.openig.multiplayer.model.VoidAsync;
 import hu.openig.multiplayer.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.MessageArray;
@@ -38,6 +41,7 @@ import hu.openig.utils.U;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -205,110 +209,116 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void login(String user, String passphrase, String version,
 			AsyncResult<? super WelcomeResponse, ? super IOException> out) {
-		MessageObject request = new MessageObject("PING");
-		AsyncTransform<Object, WelcomeResponse, IOException> tr = new AsyncTransform<Object, WelcomeResponse, IOException>(out) {
-			@Override
-			public void invoke(Object value) throws IOException {
-				this.setValue(WelcomeResponse.from(MessageUtils.expectObject(value, "WELCOME")));
-			}
-		};
-		send(request, tr);
+		MessageObject request = new MessageObject("LOGIN",
+				"user", user, "passphrase", passphrase, "version", version);
+		send(request, new MessageObjectAsync<WelcomeResponse>(out, new WelcomeResponse(), "WELCOME"));
 	}
-
 	@Override
 	public void relogin(String sessionId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		MessageObject request = new MessageObject("RELOGIN", "session", sessionId);
+		send(request, new VoidAsync(out, "WELCOME_BACK"));
 	}
 
 	@Override
 	public void leave(AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		MessageObject request = new MessageObject("LEAVE");
+		send(request, new VoidAsync(out, "OK"));
 	}
 
 	@Override
 	public void getGameDefinition(
 			AsyncResult<? super MultiplayerDefinition, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_GAME_DEFINITION"), 
+				new MessageObjectAsync<MultiplayerDefinition>(out, new MultiplayerDefinition(), "GAME_DEFINITION"));
 	}
 
 	@Override
 	public void choosePlayerSettings(MultiplayerUser user,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(user.toMessage(), new VoidAsync(out, "OK"));
 	}
 
 	@Override
 	public void join(
 			AsyncResult<? super MultiplayerGameSetup, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("JOIN"), new MessageObjectAsync<MultiplayerGameSetup>(out, new MultiplayerGameSetup(), "LOAD"));
 	}
 
 	@Override
 	public void ready(AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("READY"), new VoidAsync(out, "BEGIN"));
 	}
 
 	@Override
 	public void getEmpireStatuses(
 			AsyncResult<? super EmpireStatuses, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_EMPIRE_STATUSES"), 
+				new MessageObjectAsync<EmpireStatuses>(out, new EmpireStatuses(), "EMPIRE_STATUSES"));
 	}
 
 	@Override
 	public void getFleets(
 			AsyncResult<? super List<FleetStatus>, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_FLEETS"),
+				new MessageArrayAsync<FleetStatus>(out, new FleetStatus(), "FLEET_STATUSES"));
 	}
 
 	@Override
 	public void getFleet(int fleetId,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_FLEET", "fleetId", fleetId),
+				new MessageObjectAsync<FleetStatus>(out, new FleetStatus(), "FLEET_STATUS"));
 	}
 
 	@Override
 	public void getInventory(
 			AsyncResult<? super Map<String, Integer>, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		AsyncTransform<Object, Map<String, Integer>, IOException> at = new AsyncTransform<Object, Map<String, Integer>, IOException>(out) {
+			@Override
+			public void invoke(Object param1) throws IOException {
+				MessageArray ma = MessageUtils.expectArray(param1, "INVENTORIES");
+				
+				Map<String, Integer> map = new HashMap<String, Integer>();
+				
+				for (Object o : ma) {
+					MessageObject mo = MessageUtils.expectObject(o, "INVENTORY");
+					
+					map.put(mo.getString("type"), mo.getInt("count"));
+				}
+				
+				setValue(map);
+			}
+		};
+		send(new MessageObject("QUERY_INVENTORIES"), at);
 	}
 
 	@Override
 	public void getProductions(
 			AsyncResult<? super ProductionStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_PRODUCTIONS"),
+				new MessageObjectAsync<ProductionStatus>(out, new ProductionStatus(), "PRODUCTIONS"));
 	}
 
 	@Override
 	public void getResearches(
 			AsyncResult<? super ResearchStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_RESEARCHES"),
+				new MessageObjectAsync<ResearchStatus>(out, new ResearchStatus(), "RESEARCHES"));
 	}
 
 	@Override
 	public void getPlanetStatuses(
 			AsyncResult<? super List<PlanetStatus>, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_PLANET_STATUSES"),
+				new MessageArrayAsync<PlanetStatus>(out, new PlanetStatus(), "PLANET_STATUSES"));
 	}
 
 	@Override
 	public void getPlanetStatus(String id,
 			AsyncResult<? super PlanetStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_PLANET_STATUS", "planetId", id),
+				new MessageObjectAsync<PlanetStatus>(out, new PlanetStatus(), "PLANET_STATUS"));
 	}
 
 	@Override

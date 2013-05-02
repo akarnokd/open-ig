@@ -31,12 +31,14 @@ public final class MessageUtils {
 	 * @return the MessageObject
 	 * @throws IOException if the message is incorrect.
 	 */
-	public static MessageObject expectObject(Object response, String name) throws IOException {
+	public static MessageObject expectObject(Object response, String... name) throws IOException {
 		ErrorResponse.throwIfError(response);
 		if (response instanceof MessageObject) {
 			MessageObject mo = (MessageObject)response;
-			if (U.equal(name, mo.name)) {
-				return mo;
+			for (String n : name) {
+				if (U.equal(n, mo.name)) {
+					return mo;
+				}
 			}
 		}
 		throw new ErrorResponse(ErrorType.ERROR_RESPONSE, response != null ? response.toString() : "null");
@@ -49,12 +51,14 @@ public final class MessageUtils {
 	 * @return the MessageArray
 	 * @throws IOException if the message is incorrect.
 	 */
-	public static MessageArray expectArray(Object response, String name) throws IOException {
+	public static MessageArray expectArray(Object response, String... name) throws IOException {
 		ErrorResponse.throwIfError(response);
 		if (response instanceof MessageArray) {
 			MessageArray ma = (MessageArray)response;
-			if (name.equals(ma)) {
-				return ma;
+			for (String n : name) {
+				if (n.equals(ma)) {
+					return ma;
+				}
 			}
 		}
 		throw new ErrorResponse(ErrorType.ERROR_RESPONSE, response != null ? response.toString() : "null");
