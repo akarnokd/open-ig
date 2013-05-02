@@ -10,6 +10,7 @@ package hu.openig.multiplayer.model;
 
 import hu.openig.model.Research;
 import hu.openig.model.ResearchType;
+import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -21,7 +22,7 @@ import java.util.Map;
  * research status record.
  * @author akarnokd, 2013.04.27.
  */
-public class ResearchStatus {
+public class ResearchStatus implements MessageObjectIO {
 	/** Indicates that the research is globally paused. */
 	public boolean paused;
 	/** The current running research. */
@@ -30,4 +31,14 @@ public class ResearchStatus {
 	public final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<ResearchType, List<ResearchType>>();
 	/** The in-progress research. */
 	public final List<Research> research = new ArrayList<Research>();
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

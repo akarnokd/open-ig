@@ -7,13 +7,16 @@
  */
 package hu.openig.model;
 
+import hu.openig.multiplayer.model.MessageObjectIO;
+import hu.openig.net.MessageObject;
+
 import java.awt.image.BufferedImage;
 
 /**
  * The record type of the user.
  * @author akarnokd, 2013.04.24.
  */
-public class MultiplayerUser {
+public class MultiplayerUser implements MessageObjectIO {
 	/**  The AI mode, if null, this is a remote user. */
 	public SkirmishAIMode ai;
 	/** The user name. */
@@ -85,6 +88,16 @@ public class MultiplayerUser {
 	 */
 	public synchronized void sessionId(String value) {
 		this.sessionId = value;
+	}
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	// TODO fields
 }

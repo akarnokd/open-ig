@@ -12,6 +12,7 @@ import hu.openig.model.DiplomaticOffer;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.PlayerFinances;
 import hu.openig.model.PlayerStatistics;
+import hu.openig.net.MessageObject;
 import hu.openig.utils.U;
 
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import java.util.Set;
  * empires, including diplomacy info.
  * @author akarnokd, 2013.04.27.
  */
-public class EmpireStatuses {
+public class EmpireStatuses implements MessageObjectIO {
 	/** The current time in UTC milliseconds. */
 	public long currentTime;
 	/** The current money. */
@@ -46,6 +47,16 @@ public class EmpireStatuses {
 	/** The set of colonization targets. */
 	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
 
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	// TODO other global player statuses?
 
 }

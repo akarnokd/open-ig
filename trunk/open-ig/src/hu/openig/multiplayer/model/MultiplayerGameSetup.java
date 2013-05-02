@@ -9,6 +9,7 @@
 package hu.openig.multiplayer.model;
 
 import hu.openig.model.MultiplayerUser;
+import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -20,7 +21,7 @@ import java.util.Set;
  * including initial inventories, fleets, planet format, etc.
  * @author akarnokd, 2013.04.27.
  */
-public class MultiplayerGameSetup {
+public class MultiplayerGameSetup implements MessageObjectIO {
 	/**
 	 * The list of all players.
 	 */
@@ -34,4 +35,14 @@ public class MultiplayerGameSetup {
 	 * The set of available researches.
 	 */
 	public final Set<String> availableResearch = new LinkedHashSet<String>();
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

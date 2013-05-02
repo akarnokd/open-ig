@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.multiplayer.model.MessageObjectIO;
+import hu.openig.net.MessageObject;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -17,7 +19,7 @@ import java.util.List;
  * Multiplayer definition record. 
  * @author akarnokd, 2013.04.25.
  */
-public class MultiplayerDefinition extends CustomGameDefinition {
+public class MultiplayerDefinition extends CustomGameDefinition implements MessageObjectIO {
 	/** The list of multiplayer users. */
 	public final List<MultiplayerUser> players = U.newArrayList();
 	/**
@@ -56,5 +58,15 @@ public class MultiplayerDefinition extends CustomGameDefinition {
 				players.add(sp);
 			}
 		}
+	}
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
