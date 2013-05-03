@@ -8,6 +8,9 @@
 
 package hu.openig.multiplayer.model;
 
+import hu.openig.core.Func0;
+import hu.openig.net.MessageObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +18,7 @@ import java.util.List;
  * The inventory item status record.
  * @author akarnokd, 2013.04.27.
  */
-public class InventoryItemStatus {
+public class InventoryItemStatus implements MessageObjectIO, Func0<InventoryItemStatus> {
 	/** The inventory id. */
 	public int id;
 	/** The research type. */
@@ -42,4 +45,18 @@ public class InventoryItemStatus {
 	public long killsCost;
 	/** The inventory slot status. */
 	public final List<InventorySlotStatus> slots = new ArrayList<InventorySlotStatus>();
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public InventoryItemStatus invoke() {
+		return new InventoryItemStatus();
+	}
 }
