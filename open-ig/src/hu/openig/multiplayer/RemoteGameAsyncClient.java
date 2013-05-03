@@ -14,6 +14,7 @@ import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
 import hu.openig.core.Scheduler;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.multiplayer.model.BattleStatus;
@@ -223,7 +224,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void leave(AsyncResult<? super Void, ? super IOException> out) {
 		MessageObject request = new MessageObject("LEAVE");
-		send(request, new VoidAsync(out, "OK"));
+		send(request, voidOk(out));
 	}
 
 	@Override
@@ -232,11 +233,18 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		send(new MessageObject("QUERY_GAME_DEFINITION"), 
 				new MessageObjectAsync<MultiplayerDefinition>(out, new MultiplayerDefinition(), "GAME_DEFINITION"));
 	}
-
+	/**
+	 * Creates a new void async result object.
+	 * @param out the async result callback
+	 * @return the void async
+	 */
+	protected VoidAsync voidOk(AsyncResult<? super Void, ? super IOException> out) {
+		return new VoidAsync(out, "OK");
+	}
 	@Override
 	public void choosePlayerSettings(MultiplayerUser user,
 			AsyncResult<? super Void, ? super IOException> out) {
-		send(user.toMessage(), new VoidAsync(out, "OK"));
+		send(user.toMessage(), voidOk(out));
 	}
 
 	@Override
@@ -324,347 +332,412 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void moveFleet(int id, double x, double y,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
+		send(new MessageObject("MOVE_FLEET", "fleetId", id, "x", x, "y", y),
+				voidOk(out));
 		
 	}
 
 	@Override
 	public void addFleetWaypoint(int id, double x, double y,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("ADD_FLEET_WAYPOINT", "fleetId", id, "x", x, "y", y),
+				voidOk(out));
 	}
 
 	@Override
 	public void moveToPlanet(int id, String target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("MOVE_TO_PLANET", "fleetId", id, "target", target),
+				voidOk(out));
 	}
 
 	@Override
 	public void followFleet(int id, int target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("FOLLOW_FLEET", "fleetId", id, "target", target),
+				voidOk(out));
 	}
 
 	@Override
 	public void attackFleet(int id, int target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("ATTACK_FLEET", "fleetId", id, "target", target),
+				voidOk(out));
 	}
 
 	@Override
 	public void attackPlanet(int id, String target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("ATTACK_PLANET", "fleetId", id, "target", target),
+				voidOk(out));
 	}
 
 	@Override
 	public void colonize(int id, String target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("COLONIZE_FLEET", "fleetId", id, "target", target),
+				voidOk(out));
 	}
 
 	@Override
 	public void newFleet(String planet,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("NEW_FLEET_AT_PLANET", "planetId", planet),
+				new MessageObjectAsync<FleetStatus>(out, new FleetStatus(), "FLEET_STATUS"));
 	}
 
 	@Override
 	public void newFleet(String planet, List<InventoryItem> inventory,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		MessageObject mo = new MessageObject("NEW_FLEET_AT_PLANET_CONFIG", "planetId", planet);
+		sendFleetConfig(inventory, out, mo);
+	}
+
+	/**
+	 * Send a fleet configuration request.
+	 * @param inventory the inventory describing the fleet contents
+	 * @param out the async result
+	 * @param mo the request object to fill in and send
+	 */
+	void sendFleetConfig(List<InventoryItem> inventory,
+			AsyncResult<? super FleetStatus, ? super IOException> out,
+			MessageObject mo) {
+		MessageArray inv = new MessageArray(null);
+		mo.set("inventory", inv);
+		for (InventoryItem ii : inventory) {
+			MessageObject mii = new MessageObject("INVENTORY");
+			mii.setMany("type", ii.type.id, "tag", ii.tag,
+					"count", ii.count, "nickname", ii.nickname,
+					"nicknameIndex", ii.nicknameIndex);
+			MessageArray eq = new MessageArray(null);
+			mii.set("equipment", eq);
+			for (InventorySlot is : ii.slots) {
+				MessageObject miis = new MessageObject("EQUIPMENT");
+				miis.setMany("id", is.slot.id, "type", is.type, "count", is.count);
+				eq.add(miis);
+			}
+			inv.add(mii);
+		}
+		send(mo, new MessageObjectAsync<FleetStatus>(out, new FleetStatus(), "FLEET_STATUS"));
 	}
 
 	@Override
 	public void newFleet(int id,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("NEW_FLEET_AT_FLEET", "fleetId", id),
+				new MessageObjectAsync<FleetStatus>(out, new FleetStatus(), "FLEET_STATUS"));
 	}
 
 	@Override
 	public void newFleet(int id, List<InventoryItem> inventory,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		MessageObject mo = new MessageObject("NEW_FLEET_AT_PLANET_CONFIG", 
+				"fleetId", id);
+		sendFleetConfig(inventory, out, mo);
 	}
 
 	@Override
 	public void deleteFleet(int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("DELETE_FLEET", "fleetId", id),
+				voidOk(out));
 	}
 
 	@Override
 	public void renameFleet(int id, String name,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("RENAME_FLEET", "fleetId", id, "name", name),
+				voidOk(out));
 	}
 
 	@Override
 	public void sellFleetItem(int id, int itemId,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SELL_FLEET_ITEM", "fleetId", id, "itemId", itemId),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void deployFleetItem(int id, String type,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("DEPLOY_FLEET_ITEM", "fleetId", id, "type", type),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void undeployFleetItem(int id, int itemId,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("UNDEPLOY_FLEET_ITEM", "fleetId", id, "itemId", itemId),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void addFleetEquipment(int id, int itemId, String slotId,
 			String type,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("ADD_FLEET_EQUIPMENT", 
+				"fleetId", id, "itemId", itemId, 
+				"slotId", slotId, "type", type),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void removeFleetEquipment(int id, int itemId, String slotId,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("REMOVE_FLEET_EQUIPMENT", 
+				"fleetId", id, "itemId", itemId, 
+				"slotId", slotId),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void fleetUpgrade(int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("FLEET_UPGRADE", "fleetId", id), voidOk(out));
 	}
 
 	@Override
 	public void stopFleet(int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("STOP_FLEET", "fleetId", id), voidOk(out));
 	}
 
 	@Override
 	public void transfer(int sourceFleet, int destinationFleet, int sourceItem,
 			FleetTransferMode mode,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("TRANSFER", 
+				"source", sourceFleet, "destination", destinationFleet,
+				"itemId", sourceItem, "mode", mode.toString()
+				), voidOk(out));
 	}
 
 	@Override
 	public void colonize(String id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("COLONIZE", "planetId", id), voidOk(out));
 	}
 
 	@Override
 	public void cancelColonize(String id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("CANCEL_COLONIZE", "planetId", id), voidOk(out));
 	}
 
 	@Override
 	public void build(String planetId, String type, String race, int x, int y,
 			AsyncResult<? super Integer, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
+			@Override
+			public void invoke(Object param1) throws IOException {
+				MessageObject mo = MessageUtils.expectObject(param1, "BUILDING");
+				setValue(mo.getInt("buildingId"));
+			}
+		};
+		send(new MessageObject("BUILD_AT", "planetId", planetId,
+				"type", type, "race", race,
+				"x", x, "y", y), at);
 	}
 
 	@Override
 	public void build(String planetId, String type, String race,
 			AsyncResult<? super Integer, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
+			@Override
+			public void invoke(Object param1) throws IOException {
+				MessageObject mo = MessageUtils.expectObject(param1, "BUILDING");
+				setValue(mo.getInt("buildingId"));
+			}
+		};
+		send(new MessageObject("BUILD", "planetId", planetId,
+				"type", type, "race", race), at);
 	}
 
 	@Override
 	public void enable(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("ENABLE", "planetId", planetId,
+				"buildingId", id), voidOk(out));
 	}
 
 	@Override
 	public void disable(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("DISABLE", "planetId", planetId,
+				"buildingId", id), voidOk(out));
 	}
 
 	@Override
 	public void repair(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("REPAIR", "planetId", planetId,
+				"buildingId", id), voidOk(out));
 	}
 
 	@Override
 	public void repairOff(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("REPAIR_OFF", "planetId", planetId,
+				"buildingId", id), voidOk(out));
 	}
 
 	@Override
 	public void demolish(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("DEMOLISH", "planetId", planetId,
+				"buildingId", id), voidOk(out));
 	}
 
 	@Override
 	public void buildingUpgrade(String planetId, int id, int level,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("BUILDING_UPGRADE", "planetId", planetId,
+				"buildingId", id, "level", level), voidOk(out));
 	}
 
 	@Override
 	public void deployPlanetItem(String planetId, String type,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
+		send(new MessageObject("DEPLOY_PLANET_ITEM", 
+				"planetId", planetId, "type", type
+				),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 		
 	}
 
 	@Override
 	public void undeployPlanetItem(String planetId, int itemId,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("UNDEPLOY_PLANET_ITEM", 
+				"planetId", planetId, "itemId", itemId
+				),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void sellPlanetItem(String planetId, int itemId,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SELL_PLANET_ITEM", 
+				"planetId", planetId, "itemId", itemId
+				),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void addPlanetEquipment(String planetId, int itemId, String slotId,
 			String type,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SELL_PLANET_ITEM", 
+				"planetId", planetId, "itemId", itemId,
+				"slotId", slotId, "type", type
+				),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void removePlanetEquipment(String planetId, int itemId,
 			String slotId,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("REMOVE_PLANET_ITEM", 
+				"planetId", planetId, "itemId", itemId,
+				"slotId", slotId
+				),
+				new MessageObjectAsync<InventoryItemStatus>(out, new InventoryItemStatus(), "INVENTORY"));
 	}
 
 	@Override
 	public void planetUpgrade(String planetId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("PLANET_UPGRADE", 
+				"planetId", planetId
+				), voidOk(out));
 	}
 
 	@Override
 	public void startProduction(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("START_PRODUCTION", 
+				"type", type
+				), voidOk(out));
 	}
 
 	@Override
 	public void stopProduction(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("STOP_PRODUCTION", 
+				"type", type
+				), voidOk(out));
 	}
 
 	@Override
 	public void setProductionQuantity(String type, int count,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SET_PRODUCTION_QUANTITY", 
+				"type", type, "count", count
+				), voidOk(out));
 	}
 
 	@Override
 	public void setProductionPriority(String type, int priority,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SET_PRODUCTION_PRIORITY", 
+				"type", type, "priority", priority
+				), voidOk(out));
 	}
 
 	@Override
 	public void sellInventory(String type, int count,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SELL_INVENTORY", 
+				"type", type, "count", count
+				), voidOk(out));
 	}
 
 	@Override
 	public void startResearch(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("START_RESEARCH", 
+				"type", type
+				), voidOk(out));
 	}
 
 	@Override
 	public void stopResearch(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("STOP_RESEARCH", 
+				"type", type
+				), voidOk(out));
 	}
 
 	@Override
 	public void setResearchMoney(String type, int money,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SET_RESEARCH_MONEY", 
+				"type", type, "money", money
+				), voidOk(out));
 	}
 
 	@Override
 	public void pauseResearch(AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("PAUSE_RESEARCH"), voidOk(out));
 	}
 
 	@Override
 	public void pauseProduction(
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("PAUSE_PRODUCTION"), voidOk(out));
 	}
 
 	@Override
 	public void unpauseProduction(
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("UNPAUSE_PRODUCTION"), voidOk(out));
 	}
 
 	@Override
 	public void unpauseResearch(
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("UNPAUSE_RESEARCH"), voidOk(out));
 	}
 
 	@Override
