@@ -10,6 +10,9 @@ package hu.openig.model;
 
 import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
+import hu.openig.net.ErrorResponse;
+import hu.openig.net.ErrorType;
+import hu.openig.net.MissingAttributeException;
 
 import java.io.IOException;
 
@@ -39,7 +42,11 @@ public class MessageObjectAsync<T extends MessageObjectIO> extends AsyncTransfor
 	}
 	@Override
 	public void invoke(Object param1) throws IOException {
-		response.fromMessage(MessageUtils.expectObject(param1, responseType));
-		setValue(response);
+		try {
+			response.fromMessage(MessageUtils.expectObject(param1, responseType));
+			setValue(response);
+		} catch (MissingAttributeException ex) {
+			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+		}
 	}
 }

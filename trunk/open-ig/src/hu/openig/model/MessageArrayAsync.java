@@ -15,6 +15,7 @@ import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
+import hu.openig.net.MissingAttributeException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,16 +49,20 @@ extends AsyncTransform<Object, List<T>, IOException> {
 	@Override
 	public void invoke(Object param1) throws IOException {
 		MessageArray ma = MessageUtils.expectArray(param1, responseType);
-		List<T> result = new ArrayList<T>(ma.size());
-		for (Object o : ma) {
-			if (o instanceof MessageObject) {
-				T t = factory.invoke();
-				t.fromMessage((MessageObject)o);
-				result.add(t);
-			} else {
-				throw new ErrorResponse(ErrorType.ERROR_FORMAT, o != null ? o.getClass().toString() : "null");
+		try {
+			List<T> result = new ArrayList<T>(ma.size());
+			for (Object o : ma) {
+				if (o instanceof MessageObject) {
+					T t = factory.invoke();
+					t.fromMessage((MessageObject)o);
+					result.add(t);
+				} else {
+					throw new ErrorResponse(ErrorType.ERROR_FORMAT, o != null ? o.getClass().toString() : "null");
+				}
 			}
+			setValue(result);
+		} catch (MissingAttributeException ex) {
+			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
 		}
-		setValue(result);
 	}
 }
