@@ -3046,13 +3046,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				
 				upgradePanel.hideUpgradeSelection();
 				
-				player().statistics.upgradeCount += j - currentBuilding.upgradeLevel;
-				player().statistics.moneyUpgrade += delta;
-				player().statistics.moneySpent += delta;
+				player().statistics.upgradeCount.value += j - currentBuilding.upgradeLevel;
+				player().statistics.moneyUpgrade.value += delta;
+				player().statistics.moneySpent.value += delta;
 				
-				world().statistics.upgradeCount += j - currentBuilding.upgradeLevel;
-				world().statistics.moneyUpgrade += delta;
-				world().statistics.moneySpent += delta;
+				world().statistics.upgradeCount.value += j - currentBuilding.upgradeLevel;
+				world().statistics.moneyUpgrade.value += delta;
+				world().statistics.moneySpent.value += delta;
 
 				currentBuilding.setLevel(j);
 				buttonSound(SoundType.CLICK_MEDIUM_2);
@@ -3471,13 +3471,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				player().addMoney(-player().currentBuilding.cost);
 				player().today.buildCost += player().currentBuilding.cost;
 				
-				player().statistics.buildCount++;
-				player().statistics.moneyBuilding += player().currentBuilding.cost;
-				player().statistics.moneySpent += player().currentBuilding.cost;
+				player().statistics.buildCount.value++;
+				player().statistics.moneyBuilding.value += player().currentBuilding.cost;
+				player().statistics.moneySpent.value += player().currentBuilding.cost;
 				
-				world().statistics.buildCount++;
-				world().statistics.moneyBuilding += player().currentBuilding.cost;
-				world().statistics.moneySpent += player().currentBuilding.cost;
+				world().statistics.buildCount.value++;
+				world().statistics.moneyBuilding.value += player().currentBuilding.cost;
+				world().statistics.moneySpent.value += player().currentBuilding.cost;
 				
 				effectSound(SoundType.DEPLOY_BUILDING);
 		} else {
@@ -4514,12 +4514,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		surface().removeBuilding(b);
 		b.hitpoints = 0;
 		
-		planet().owner.statistics.buildingsLost++;
-		planet().owner.statistics.buildingsLostCost += b.type.cost * (1 + b.upgradeLevel);
+		planet().owner.statistics.buildingsLost.value++;
+		planet().owner.statistics.buildingsLostCost.value += b.type.cost * (1 + b.upgradeLevel);
 		
 		if (battle != null) {
-			battle.attacker.owner.statistics.buildingsDestroyed++;
-			battle.attacker.owner.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
+			battle.attacker.owner.statistics.buildingsDestroyed.value++;
+			battle.attacker.owner.statistics.buildingsDestroyedCost.value += b.type.cost * (1 + b.upgradeLevel);
 		}
 		doAllocation();
 	}
@@ -4907,11 +4907,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						}
 					}
 					
-					u.attackUnit.owner.statistics.vehiclesLost++;
-					u.attackUnit.owner.statistics.vehiclesLostCost += world().researches.get(u.attackUnit.model.id).productionCost;
+					u.attackUnit.owner.statistics.vehiclesLost.value++;
+					u.attackUnit.owner.statistics.vehiclesLostCost.value += world().researches.get(u.attackUnit.model.id).productionCost;
 
-					u.owner.statistics.vehiclesDestroyed++;
-					u.owner.statistics.vehiclesDestroyedCost += world().researches.get(u.attackUnit.model.id).productionCost;
+					u.owner.statistics.vehiclesDestroyed.value++;
+					u.owner.statistics.vehiclesDestroyedCost.value += world().researches.get(u.attackUnit.model.id).productionCost;
 
 					u.attackUnit = null;
 				}
@@ -4937,11 +4937,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						if (u.isDestroyed()) {
 							createExplosion(u, ExplosionType.GROUND_RED);
 							
-							u.owner.statistics.vehiclesLost++;
-							u.owner.statistics.vehiclesLostCost += world().researches.get(u.model.id).productionCost;
+							u.owner.statistics.vehiclesLost.value++;
+							u.owner.statistics.vehiclesLostCost.value += world().researches.get(u.model.id).productionCost;
 
-							owner.statistics.vehiclesDestroyed++;
-							owner.statistics.vehiclesDestroyedCost += world().researches.get(u.model.id).productionCost;
+							owner.statistics.vehiclesDestroyed.value++;
+							owner.statistics.vehiclesDestroyedCost.value += world().researches.get(u.model.id).productionCost;
 
 						}
 					}
@@ -4985,11 +4985,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							effectSound(g.attack.model.destroy);
 							createExplosion(g.attack, ExplosionType.GROUND_RED);
 							
-							g.attack.owner.statistics.vehiclesLost++;
-							g.attack.owner.statistics.vehiclesLostCost += world().researches.get(g.attack.model.id).productionCost;
+							g.attack.owner.statistics.vehiclesLost.value++;
+							g.attack.owner.statistics.vehiclesLostCost.value += world().researches.get(g.attack.model.id).productionCost;
 
-							g.owner.statistics.vehiclesDestroyed++;
-							g.owner.statistics.vehiclesDestroyedCost += world().researches.get(g.attack.model.id).productionCost;
+							g.owner.statistics.vehiclesDestroyed.value++;
+							g.owner.statistics.vehiclesDestroyedCost.value += world().researches.get(g.attack.model.id).productionCost;
 							
 							g.attack = null;
 						}

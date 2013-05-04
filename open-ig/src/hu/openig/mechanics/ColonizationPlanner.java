@@ -103,7 +103,7 @@ public class ColonizationPlanner extends Planner {
 	boolean conquerMorePlanets() {
 		if (world.mayConquer 
 				&& (world.colonizationLimit < 0 
-				|| world.colonizationLimit > world.statistics.planetsColonized)) {
+				|| world.colonizationLimit > world.statistics.planetsColonized.value)) {
 			// TODO this is more complicated
 			planConquest();
 			return true;

@@ -126,10 +126,10 @@ public class DefaultAIControls implements AIControls {
 				// update statistics
 				int m = prod.progress / 2;
 				player.addMoney(m);
-				player.statistics.moneyProduction -= m;
-				player.statistics.moneySpent -= m;
-				player.world.statistics.moneyProduction -= m;
-				player.world.statistics.moneySpent -= m;
+				player.statistics.moneyProduction.value -= m;
+				player.statistics.moneySpent.value -= m;
+				player.world.statistics.moneyProduction.value -= m;
+				player.world.statistics.moneySpent.value -= m;
 				
 				player.addProductionHistory(rt);
 			}
@@ -222,12 +222,12 @@ public class DefaultAIControls implements AIControls {
 			
 			int money = count * satellite.productionCost / 2; 
 			planet.owner.addMoney(money);
-			planet.owner.statistics.sellCount += count;
-			planet.owner.statistics.moneySellIncome += money;
-			planet.owner.statistics.moneyIncome += money;
-			planet.owner.world.statistics.sellCount += count;
-			planet.owner.world.statistics.moneySellIncome += money;
-			planet.owner.world.statistics.moneyIncome += money;
+			planet.owner.statistics.sellCount.value += count;
+			planet.owner.statistics.moneySellIncome.value += money;
+			planet.owner.statistics.moneyIncome.value += money;
+			planet.owner.world.statistics.sellCount.value += count;
+			planet.owner.world.statistics.moneySellIncome.value += money;
+			planet.owner.world.statistics.moneyIncome.value += money;
 			
 //			log("SellSatellite, Planet = %s, Type = %s, Count = %s", planet.id, satellite.id, count);
 		}
@@ -316,13 +316,13 @@ public class DefaultAIControls implements AIControls {
 		
 		planet.owner.addMoney(moneyBack);
 		
-		planet.owner.statistics.demolishCount++;
-		planet.owner.statistics.moneyDemolishIncome += moneyBack;
-		planet.owner.statistics.moneyIncome += moneyBack;
+		planet.owner.statistics.demolishCount.value++;
+		planet.owner.statistics.moneyDemolishIncome.value += moneyBack;
+		planet.owner.statistics.moneyIncome.value += moneyBack;
 
-		world.statistics.demolishCount++;
-		world.statistics.moneyDemolishIncome += moneyBack;
-		world.statistics.moneyDemolishIncome += moneyBack;
+		world.statistics.demolishCount.value++;
+		world.statistics.moneyDemolishIncome.value += moneyBack;
+		world.statistics.moneyDemolishIncome.value += moneyBack;
 
 	}
 	@Override
@@ -440,7 +440,7 @@ public class DefaultAIControls implements AIControls {
 						p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 						p.owner.currentPlanet = p;
 						
-						p.owner.statistics.planetsColonized++;
+						p.owner.statistics.planetsColonized.value++;
 						
 						p.owner.colonizationTargets.remove(p.id);
 						

@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Func0;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ import java.util.Set;
  * @author akarnokd, 2013.05.02.
  *
  */
-public class BattleStatus implements MessageObjectIO, Func0<BattleStatus> {
+public class BattleStatus implements MessageObjectIO, MessageArrayItemFactory<BattleStatus> {
 	/** The battle identifier. */
 	public int id;
 	/** The nearby planet id. */
@@ -55,5 +54,13 @@ public class BattleStatus implements MessageObjectIO, Func0<BattleStatus> {
 	@Override
 	public BattleStatus invoke() {
 		return new BattleStatus();
+	}
+	@Override
+	public String arrayName() {
+		return "BATTLES";
+	}
+	@Override
+	public String name() {
+		return "BATTLE";
 	}
 }

@@ -6,24 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
+package hu.openig.model;
 
 
-import hu.openig.model.BattleStatus;
-import hu.openig.model.EmpireStatuses;
-import hu.openig.model.FleetStatus;
-import hu.openig.model.FleetTransferMode;
-import hu.openig.model.GroundBattleUnit;
-import hu.openig.model.InventoryItem;
-import hu.openig.model.InventoryItemStatus;
-import hu.openig.model.MultiplayerDefinition;
-import hu.openig.model.MultiplayerGameSetup;
-import hu.openig.model.MultiplayerUser;
-import hu.openig.model.PlanetStatus;
-import hu.openig.model.ProductionStatus;
-import hu.openig.model.ResearchStatus;
-import hu.openig.model.SpaceBattleUnit;
-import hu.openig.model.WelcomeResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -36,64 +21,6 @@ import java.util.Map;
  * @author akarnokd, 2013.04.22.
  */
 public interface GameAPI {
-	/** 
-	 * Send a simple ping-pong request.
-	 * @return the latency in milliseconds
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	long ping() throws IOException;
-	/**
-	 * Login.
-	 * @param user the user object
-	 * @param passphrase the passphrase
-	 * @param version the caller's version
-	 * @return the welcome message if successful.
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	WelcomeResponse login(String user, String passphrase, String version) throws IOException;
-	/**
-	 * Relogin into a running session.
-	 * @param sessionId the session id
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	void relogin(String sessionId) throws IOException;
-	/**
-	 * Indicate the intent to leave the game/connection.
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	void leave() throws IOException;
-	/**
-	 * Retrieve the current game definition.
-	 * @return the game definition
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	MultiplayerDefinition getGameDefinition() throws IOException;
-	/**
-	 * Ask the game host to use the given user settings for the game.
-	 * @param user the user settings
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	void choosePlayerSettings(MultiplayerUser user) throws IOException;
-	/**
-	 * Join the current match.
-	 * @return the game settings to use
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	MultiplayerGameSetup join() throws IOException;
-	/**
-	 * Signal the server that the game has finished loading
-	 * and initializing throws IOException; synchronizes multiple players.
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	void ready() throws IOException;
 	/**
 	 * Returns the empire status information.
 	 * @return the empire statuses

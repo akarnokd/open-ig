@@ -30,7 +30,7 @@ public abstract class DeferredCall implements Runnable {
 		try {
 			value = invoke();
 		} catch (MissingAttributeException ex) {
-			error = new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString());
+			error = new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
 		} catch (IOException ex) {
 			error = ex;
 		}

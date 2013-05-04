@@ -171,7 +171,7 @@ public class EmptyScripting implements GameScripting {
 			int remaining = 0;
 			for (Player p : player.world.players.values()) {
 				if (p != player) {
-					remaining += p.statistics.planetsOwned;
+					remaining += p.statistics.planetsOwned.value;
 				}
 			}
 			if (remaining == 0) {

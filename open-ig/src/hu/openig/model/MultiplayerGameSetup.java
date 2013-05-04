@@ -44,4 +44,8 @@ public class MultiplayerGameSetup implements MessageObjectIO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public String name() {
+		return "LOAD";
+	}
 }

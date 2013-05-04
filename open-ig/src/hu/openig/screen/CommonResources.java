@@ -725,9 +725,9 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 		radarHandler = register(1000, new Action0() {
 			@Override
 			public void invoke() {
-				world.statistics.playTime++;
+				world.statistics.playTime.value++;
 				if (!simulation.paused()) {
-					world.statistics.simulationTime++;
+					world.statistics.simulationTime.value++;
 				}
 				Radar.compute(world);
 				if (control.primary() == Screens.STARMAP) {

@@ -8,17 +8,16 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Func0;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The space battle unit status record.
  * @author akarnokd, 2013.05.02.
- *
  */
-public class SpaceBattleUnit implements MessageObjectIO, Func0<SpaceBattleUnit> {
+public class SpaceBattleUnit implements MessageObjectIO, MessageArrayItemFactory<SpaceBattleUnit> {
 	/** The unit's unique id. */
 	public int id;
 	/** The owner. */
@@ -66,5 +65,13 @@ public class SpaceBattleUnit implements MessageObjectIO, Func0<SpaceBattleUnit> 
 	@Override
 	public SpaceBattleUnit invoke() {
 		return new SpaceBattleUnit();
+	}
+	@Override
+	public String arrayName() {
+		return "SPACE_BATTLE_UNITS";
+	}
+	@Override
+	public String name() {
+		return "SPACE_UNIT";
 	}
 }

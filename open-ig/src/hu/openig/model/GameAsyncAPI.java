@@ -6,24 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
+package hu.openig.model;
 
 import hu.openig.core.AsyncResult;
-import hu.openig.model.BattleStatus;
-import hu.openig.model.EmpireStatuses;
-import hu.openig.model.FleetStatus;
-import hu.openig.model.FleetTransferMode;
-import hu.openig.model.GroundBattleUnit;
-import hu.openig.model.InventoryItem;
-import hu.openig.model.InventoryItemStatus;
-import hu.openig.model.MultiplayerDefinition;
-import hu.openig.model.MultiplayerGameSetup;
-import hu.openig.model.MultiplayerUser;
-import hu.openig.model.PlanetStatus;
-import hu.openig.model.ProductionStatus;
-import hu.openig.model.ResearchStatus;
-import hu.openig.model.SpaceBattleUnit;
-import hu.openig.model.WelcomeResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,53 +34,6 @@ public interface GameAsyncAPI {
 	 * been received and processed.
 	 */
 	void end(AsyncResult<? super Void, ? super IOException> out);
-	/**
-	 * A simple ping-pong request pair with the time elapsed in
-	 * milliseconds.
-	 * @param out the async result
-	 */
-	void ping(AsyncResult<? super Long, ? super IOException> out);
-	/**
-	 * Login.
-	 * @param user the user object
-	 * @param passphrase the passphrase
-	 * @param version the caller's version
-	 * @param out the async result or the error
-	 */
-	void login(String user, String passphrase, String version, AsyncResult<? super WelcomeResponse, ? super IOException> out);
-	/**
-	 * Relogin into a running session.
-	 * @param sessionId the session id
-	 * @param out the async result or the error
-	 */
-	void relogin(String sessionId, AsyncResult<? super Void, ? super IOException> out);
-	/**
-	 * Indicate the intent to leave the game/connection.
-	 * @param out the async result or the error
-	 */
-	void leave(AsyncResult<? super Void, ? super IOException> out);
-	/**
-	 * Retrieve the current game definition.
-	 * @param out the async result or the error
-	 */
-	void getGameDefinition(AsyncResult<? super MultiplayerDefinition, ? super IOException> out);
-	/**
-	 * Ask the game host to use the given user settings for the game.
-	 * @param user the user settings
-	 * @param out the async result or the error
-	 */
-	void choosePlayerSettings(MultiplayerUser user, AsyncResult<? super Void, ? super IOException> out);
-	/**
-	 * Join the current match.
-	 * @param out the async result or the error
-	 */
-	void join(AsyncResult<? super MultiplayerGameSetup, ? super IOException> out);
-	/**
-	 * Signal the server that the game has finished loading
-	 * and initializing; synchronizes multiple players.
-	 * @param out the async result or the error
-	 */
-	void ready(AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Returns the empire status information.
 	 * @param out the async result or the error

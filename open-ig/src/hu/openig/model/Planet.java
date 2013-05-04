@@ -728,11 +728,11 @@ public class Planet implements Named, Owned, HasInventory {
 	public void takeover(Player newOwner) {
 		Player lastOwner = owner;
 		owner = newOwner;
-		newOwner.statistics.planetsConquered++;
+		newOwner.statistics.planetsConquered.value++;
 		if (!newOwner.id.equals("Pirates")) {
-			lastOwner.statistics.planetsLostAlien++;
+			lastOwner.statistics.planetsLostAlien.value++;
 		}
-		lastOwner.statistics.planetsLost++;
+		lastOwner.statistics.planetsLost.value++;
 		for (Building b : surface.buildings) {
 			if (b.type.research != null) {
 				newOwner.setAvailable(b.type.research);

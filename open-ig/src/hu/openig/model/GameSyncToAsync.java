@@ -6,24 +6,9 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
+package hu.openig.model;
 
 import hu.openig.core.AsyncSubject;
-import hu.openig.model.BattleStatus;
-import hu.openig.model.EmpireStatuses;
-import hu.openig.model.FleetStatus;
-import hu.openig.model.FleetTransferMode;
-import hu.openig.model.GroundBattleUnit;
-import hu.openig.model.InventoryItem;
-import hu.openig.model.InventoryItemStatus;
-import hu.openig.model.MultiplayerDefinition;
-import hu.openig.model.MultiplayerGameSetup;
-import hu.openig.model.MultiplayerUser;
-import hu.openig.model.PlanetStatus;
-import hu.openig.model.ProductionStatus;
-import hu.openig.model.ResearchStatus;
-import hu.openig.model.SpaceBattleUnit;
-import hu.openig.model.WelcomeResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -74,55 +59,6 @@ public class GameSyncToAsync implements GameAPI {
 			}
 			throw new IOException(ex);
 		}
-	}
-	@Override
-	public long ping() throws IOException {
-		Value<Long> as = newSubject();
-		api.ping(as);
-		return get(as);
-	}
-	@Override
-	public WelcomeResponse login(String user, String passphrase, String version)
-			throws IOException {
-		Value<WelcomeResponse> as = newSubject();
-		api.login(user, passphrase, version, as);
-		return get(as);
-	}
-	@Override
-	public void relogin(String sessionId) throws IOException {
-		Value<Void> as = newSubject();
-		api.relogin(sessionId, as);
-		get(as);
-	}
-	@Override
-	public void leave() throws IOException {
-		Value<Void> as = newSubject();
-		api.leave(as);
-		get(as);
-	}
-	@Override
-	public MultiplayerDefinition getGameDefinition() throws IOException {
-		Value<MultiplayerDefinition> as = newSubject();
-		api.getGameDefinition(as);
-		return get(as);
-	}
-	@Override
-	public void choosePlayerSettings(MultiplayerUser user) throws IOException {
-		Value<Void> as = newSubject();
-		api.choosePlayerSettings(user, as);
-		get(as);
-	}
-	@Override
-	public MultiplayerGameSetup join() throws IOException {
-		Value<MultiplayerGameSetup> as = newSubject();
-		api.join(as);
-		return get(as);
-	}
-	@Override
-	public void ready() throws IOException {
-		Value<Void> as = newSubject();
-		api.ready(as);
-		get(as);
 	}
 	@Override
 	public EmpireStatuses getEmpireStatuses() throws IOException {

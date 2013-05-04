@@ -1291,10 +1291,10 @@ public class DiplomacyScreen extends ScreenBase {
 
 			if (m == ResponseMode.YES && a.second >= player().money()) {
 				player().addMoney(-a.second.intValue());
-				player().statistics.moneySpent += a.second;
+				player().statistics.moneySpent.value += a.second;
 				
 				other.addMoney(a.second);
-				other.statistics.moneyIncome += a.second;
+				other.statistics.moneyIncome.value += a.second;
 			} else {
 				m = ResponseMode.NO;
 			}
@@ -1337,13 +1337,13 @@ public class DiplomacyScreen extends ScreenBase {
 	 */
 	protected void setAlliance(Player enemy) {
 		DiplomaticRelation dr = world().getRelation(player(), other);
-		dr.alliancesAgainst.add(enemy);
+		dr.alliancesAgainst.add(enemy.id);
 		
 		dr = world().getRelation(player(), enemy);
-		dr.alliancesAgainst.remove(other);
+		dr.alliancesAgainst.remove(other.id);
 		
 		dr = world().getRelation(other, enemy);
-		dr.alliancesAgainst.remove(player());
+		dr.alliancesAgainst.remove(player().id);
 		
 		dr.value = Math.min(dr.value, 30);
 	}
@@ -1437,7 +1437,7 @@ public class DiplomacyScreen extends ScreenBase {
 			
 			responseText.width = base.width - 20;
 			if (na.callType == CallType.MONEY) {
-				responseText.text(format(label, na.value));
+				responseText.text(format(label, na.value()));
 			} else {
 				responseText.text(get(label));
 			}

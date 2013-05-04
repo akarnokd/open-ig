@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Object containing other message objects.
@@ -333,5 +334,91 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 			Exceptions.add(ex);
 		}
 		return b.toString();
+	}
+	/**
+	 * Returns a message object at the specified index.
+	 * @param index the index
+	 * @return the message object
+	 */
+	public MessageObject getObject(int index) {
+		Object o = items.get(index);
+		if (o instanceof MessageObject) {
+			return (MessageObject)o;
+		}
+		throw new IllegalArgumentException("Invalid type: " + (o != null ? o.getClass().toString() : "null"));
+	}
+	/**
+	 * Returns a message array at the specified index. 
+	 * @param index the index
+	 * @return the message array
+	 */
+	public MessageArray getArray(int index) {
+		Object o = items.get(index);
+		if (o instanceof MessageArray) {
+			return (MessageArray)o;
+		}
+		throw new IllegalArgumentException("Invalid type: " + (o != null ? o.getClass().toString() : "null"));
+	}
+	/**
+	 * Returns an iterable sequence of the contents of this
+	 * array as message objects.
+	 * @return the iterable sequence
+	 */
+	public Iterable<MessageObject> objects() {
+		return new Iterable<MessageObject>() {
+			@Override
+			public Iterator<MessageObject> iterator() {
+				return new Iterator<MessageObject>() {
+					/** The running index. */
+					int index;
+					@Override
+					public boolean hasNext() {
+						return index < size();
+					}
+					@Override
+					public MessageObject next() {
+						if (hasNext()) {
+							return getObject(index++);
+						}
+						throw new NoSuchElementException();
+					}
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
+	}
+	/**
+	 * Returns an iterable sequence of the contents of this
+	 * array as message arrays.
+	 * @return the iterable sequence
+	 */
+	public Iterable<MessageArray> arrays() {
+		return new Iterable<MessageArray>() {
+			@Override
+			public Iterator<MessageArray> iterator() {
+				return new Iterator<MessageArray>() {
+					/** The running index. */
+					int index;
+					@Override
+					public boolean hasNext() {
+						return index < size();
+					}
+					@Override
+					public MessageArray next() {
+						if (hasNext()) {
+							return getArray(index++);
+						}
+						throw new NoSuchElementException();
+					}
+					@Override
+					public void remove() {
+						throw new UnsupportedOperationException();
+					}
+				};
+			}
+		};
 	}
 }

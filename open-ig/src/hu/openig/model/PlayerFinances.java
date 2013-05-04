@@ -38,6 +38,7 @@ public class PlayerFinances {
 		taxIncome = other.taxIncome;
 		tradeIncome = other.tradeIncome;
 		taxMorale = other.taxMorale;
+		taxMoraleCount = other.taxMoraleCount;
 	}
 	/** Clear values. */
 	public void clear() {

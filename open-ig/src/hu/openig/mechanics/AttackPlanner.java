@@ -306,9 +306,9 @@ public class AttackPlanner extends Planner {
 	 * @param against the sequence of other players
 	 * @return true if any of those players still has planets
 	 */
-	boolean hasActiveAlliance(Iterable<? extends Player> against) {
-		for (Player p0 : against) {
-			if (!p0.ownPlanets().isEmpty()) {
+	boolean hasActiveAlliance(Iterable<? extends String> against) {
+		for (String p0 : against) {
+			if (!world.planetsOf(p0).isEmpty()) {
 				return true;
 			}
 		}
@@ -416,7 +416,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at, 10000 * (w.random().nextInt(10) + 1)));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(10000 * (w.random().nextInt(10) + 1)));
 						}
 					});
 					break;

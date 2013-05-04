@@ -14,6 +14,7 @@ import hu.openig.utils.U;
 
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -127,7 +128,7 @@ public class AIWorld {
 		this.colonizationLimit = player.colonizationLimit;
 		
 		if (player != player.world.player) {
-			mayConquer = player.world.player.statistics.planetsColonized > 0
+			mayConquer = player.world.player.statistics.planetsColonized.value > 0
 					|| player.world.scripting.mayPlayerAttack(player);
 		} else {
 			mayConquer = true;
@@ -201,11 +202,11 @@ public class AIWorld {
 		now = player.world.time.getTime();
 		
 		for (DiplomaticRelation dr : player.world.relations) {
-			if (dr.first == player) {
-				relations.put(dr.second, dr);
+			if (dr.first.equals(player.id)) {
+				relations.put(player.world.players.get(dr.second), dr);
 			} else
-			if (dr.second == player) {
-				relations.put(dr.first, dr);
+			if (dr.second.equals(player.id)) {
+				relations.put(player.world.players.get(dr.first), dr);
 			}
 		}
 		for (Player p : player.world.players.values()) {
@@ -384,5 +385,22 @@ public class AIWorld {
 			return prod.count;
 		}
 		return 0;
+	}
+	/**
+	 * Returns the list of known planets of the given player.
+	 * @param player the target player
+	 * @return the list of planets
+	 */
+	public List<AIPlanet> planetsOf(String player) {
+		List<AIPlanet> result = new ArrayList<AIPlanet>();
+		for (Map.Entry<Object, AIPlanet> e : planetMap.entrySet()) {
+			if (e.getKey() instanceof String) {
+				AIPlanet value = e.getValue();
+				if (value.owner.id.equals(player)) {
+					result.add(value);
+				}
+			}
+		}
+		return result;
 	}
 }

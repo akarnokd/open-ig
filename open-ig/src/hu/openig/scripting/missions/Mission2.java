@@ -162,8 +162,8 @@ public class Mission2 extends Mission {
 					// Reward
 					int m = moneyReward[i];
 					player.addMoney(m);
-					player.statistics.moneyIncome += m;
-					world.statistics.moneyIncome += m;
+					player.statistics.moneyIncome.value += m;
+					world.statistics.moneyIncome.value += m;
 				}
 			}
 		}

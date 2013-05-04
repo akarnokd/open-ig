@@ -6,26 +6,11 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
+package hu.openig.model;
 
 import hu.openig.core.AsyncResult;
 import hu.openig.core.DeferredAction;
 import hu.openig.core.DeferredVoid;
-import hu.openig.model.BattleStatus;
-import hu.openig.model.EmpireStatuses;
-import hu.openig.model.FleetStatus;
-import hu.openig.model.FleetTransferMode;
-import hu.openig.model.GroundBattleUnit;
-import hu.openig.model.InventoryItem;
-import hu.openig.model.InventoryItemStatus;
-import hu.openig.model.MultiplayerDefinition;
-import hu.openig.model.MultiplayerGameSetup;
-import hu.openig.model.MultiplayerUser;
-import hu.openig.model.PlanetStatus;
-import hu.openig.model.ProductionStatus;
-import hu.openig.model.ResearchStatus;
-import hu.openig.model.SpaceBattleUnit;
-import hu.openig.model.WelcomeResponse;
 import hu.openig.utils.U;
 
 import java.io.IOException;
@@ -93,90 +78,6 @@ public class GameAsyncToSync implements GameAsyncAPI {
 		} else {
 			action.run();
 		}
-	}
-	@Override
-	public void ping(final AsyncResult<? super Long, ? super IOException> out) {
-		execute(new DeferredAction<Long, IOException>(out) {
-			@Override
-			public Long invoke() throws IOException {
-				return api.ping();
-			}
-		});
-	}
-	@Override
-	public void login(final String user, final String passphrase, final String version,
-			final AsyncResult<? super WelcomeResponse, ? super IOException> out) {
-		execute(new DeferredAction<WelcomeResponse, IOException>(out) {
-			@Override
-			public WelcomeResponse invoke() throws IOException {
-				return api.login(user, passphrase, version);
-			}
-		});
-	}
-
-	@Override
-	public void relogin(final String sessionId,
-			AsyncResult<? super Void, ? super IOException> out) {
-		execute(new DeferredVoid< IOException>(out) {
-			@Override
-			public void invoke() throws IOException {
-				api.relogin(sessionId);
-			}
-		});
-	}
-
-	@Override
-	public void leave(AsyncResult<? super Void, ? super IOException> out) {
-		execute(new DeferredVoid<IOException>(out) {
-			@Override
-			public void invoke() throws IOException {
-				api.leave();
-			}
-		});
-	}
-
-	@Override
-	public void getGameDefinition(
-			AsyncResult<? super MultiplayerDefinition, ? super IOException> out) {
-		execute(new DeferredAction<MultiplayerDefinition, IOException>(out) {
-			@Override
-			public MultiplayerDefinition invoke() throws IOException {
-				return api.getGameDefinition();
-			}
-		});
-	}
-
-	@Override
-	public void choosePlayerSettings(final MultiplayerUser user,
-			AsyncResult<? super Void, ? super IOException> out) {
-		execute(new DeferredVoid<IOException>(out) {
-			@Override
-			public void invoke() throws IOException {
-				api.choosePlayerSettings(user);
-			}
-		});
-	}
-
-	@Override
-	public void join(
-			AsyncResult<? super MultiplayerGameSetup, ? super IOException> out) {
-		execute(new DeferredAction<MultiplayerGameSetup, IOException>(out) {
-			@Override
-			public MultiplayerGameSetup invoke() throws IOException {
-				return api.join();
-			}
-		});
-		
-	}
-
-	@Override
-	public void ready(AsyncResult<? super Void, ? super IOException> out) {
-		execute(new DeferredVoid<IOException>(out) {
-			@Override
-			public void invoke() throws IOException {
-				api.ready();
-			}
-		});
 	}
 
 	@Override

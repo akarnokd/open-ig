@@ -47,4 +47,8 @@ public class WelcomeResponse implements MessageObjectIO {
 			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString());
 		}
 	}
+	@Override
+	public String name() {
+		return "WELCOME";
+	}
 }

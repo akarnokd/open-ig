@@ -264,11 +264,11 @@ public final class BattleSimulator {
 				units.remove(u);
 				u.item.count--;
 				
-				u.owner.statistics.vehiclesLost++;
-				u.owner.statistics.vehiclesLostCost += world.researches.get(u.model.id).productionCost;
+				u.owner.statistics.vehiclesLost.value++;
+				u.owner.statistics.vehiclesLostCost.value += world.researches.get(u.model.id).productionCost;
 				
-				battle.enemy(u.owner).statistics.vehiclesDestroyed++;
-				battle.enemy(u.owner).statistics.vehiclesDestroyedCost += world.researches.get(u.model.id).productionCost;
+				battle.enemy(u.owner).statistics.vehiclesDestroyed.value++;
+				battle.enemy(u.owner).statistics.vehiclesDestroyedCost.value += world.researches.get(u.model.id).productionCost;
 			} else {
 				u.hp -= hitpoints;
 				hitpoints = 0;
@@ -301,11 +301,11 @@ public final class BattleSimulator {
 					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				inv.remove(ii);
 				
-				ii.owner.statistics.vehiclesLost++;
-				ii.owner.statistics.vehiclesLostCost += ii.type.productionCost;
+				ii.owner.statistics.vehiclesLost.value++;
+				ii.owner.statistics.vehiclesLostCost.value += ii.type.productionCost;
 				
-				battle.enemy(ii.owner).statistics.vehiclesDestroyed++;
-				battle.enemy(ii.owner).statistics.vehiclesDestroyedCost += ii.type.productionCost;
+				battle.enemy(ii.owner).statistics.vehiclesDestroyed.value++;
+				battle.enemy(ii.owner).statistics.vehiclesDestroyedCost.value += ii.type.productionCost;
 			}
 		}
 	}
@@ -587,7 +587,7 @@ public final class BattleSimulator {
 		
 		for (Fleet f : fleets) {
 			if (f.inventory.isEmpty()) {
-				f.owner.statistics.fleetsLost++;
+				f.owner.statistics.fleetsLost.value++;
 			}
 		}
 	}
@@ -628,11 +628,11 @@ public final class BattleSimulator {
 					inv.remove(ii);
 					hitpoints -= hp * ii.count;
 					
-					ii.owner.statistics.shipsLost += ii.count;
-					ii.owner.statistics.shipsLostCost += 2 * ii.sellValue();
+					ii.owner.statistics.shipsLost.value += ii.count;
+					ii.owner.statistics.shipsLostCost.value += 2 * ii.sellValue();
 					
-					battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
-					battle.enemy(ii.owner).statistics.shipsDestroyedCost += 2 * ii.sellValue();
+					battle.enemy(ii.owner).statistics.shipsDestroyed.value += ii.count;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost.value += 2 * ii.sellValue();
 					
 				} else {
 					SpacewarStructure str = new SpacewarStructure(ii.type);
@@ -652,11 +652,11 @@ public final class BattleSimulator {
 
 					long cost = ii.unitSellValue();
 					
-					ii.owner.statistics.shipsLost += diff;
-					ii.owner.statistics.shipsLostCost += diff * cost;
+					ii.owner.statistics.shipsLost.value += diff;
+					ii.owner.statistics.shipsLostCost.value += diff * cost;
 
-					battle.enemy(ii.owner).statistics.shipsDestroyed += diff;
-					battle.enemy(ii.owner).statistics.shipsDestroyedCost += diff * cost;
+					battle.enemy(ii.owner).statistics.shipsDestroyed.value += diff;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost.value += diff * cost;
 				}
 			}
 		}
@@ -727,11 +727,11 @@ public final class BattleSimulator {
 					p.inventory.remove(ii);
 					hitpoints -= hp * ii.count;
 					
-					ii.owner.statistics.shipsLost += ii.count;
-					ii.owner.statistics.shipsDestroyedCost += ii.sellValue() * 2;
+					ii.owner.statistics.shipsLost.value += ii.count;
+					ii.owner.statistics.shipsDestroyedCost.value += ii.sellValue() * 2;
 					
-					battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
-					battle.enemy(ii.owner).statistics.shipsDestroyedCost += ii.sellValue() * 2;
+					battle.enemy(ii.owner).statistics.shipsDestroyed.value += ii.count;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost.value += ii.sellValue() * 2;
 
 				} else {
 					int dc = (int)(hitpoints / hp);
@@ -746,11 +746,11 @@ public final class BattleSimulator {
 					
 					long sellDelta = cs0 - ii.sellValue();
 					
-					ii.owner.statistics.shipsLost += diff;
-					ii.owner.statistics.shipsDestroyedCost += 2 * sellDelta;
+					ii.owner.statistics.shipsLost.value += diff;
+					ii.owner.statistics.shipsDestroyedCost.value += 2 * sellDelta;
 					
-					battle.enemy(ii.owner).statistics.shipsDestroyed += diff;
-					battle.enemy(ii.owner).statistics.shipsDestroyedCost += 2 * sellDelta;
+					battle.enemy(ii.owner).statistics.shipsDestroyed.value += diff;
+					battle.enemy(ii.owner).statistics.shipsDestroyedCost.value += 2 * sellDelta;
 
 				}
 			}
@@ -801,11 +801,11 @@ public final class BattleSimulator {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 				
-				ii.owner.statistics.shipsLost += ii.count;
-				ii.owner.statistics.shipsDestroyedCost += ii.sellValue() * 2;
+				ii.owner.statistics.shipsLost.value += ii.count;
+				ii.owner.statistics.shipsDestroyedCost.value += ii.sellValue() * 2;
 				
-				battle.enemy(ii.owner).statistics.shipsDestroyed += ii.count;
-				battle.enemy(ii.owner).statistics.shipsDestroyedCost += ii.sellValue() * 2;
+				battle.enemy(ii.owner).statistics.shipsDestroyed.value += ii.count;
+				battle.enemy(ii.owner).statistics.shipsDestroyedCost.value += ii.sellValue() * 2;
 
 				p.inventory.remove(ii);
 			}
@@ -820,11 +820,11 @@ public final class BattleSimulator {
 	void destroyBuilding(Planet p, Building b) {
 		p.surface.removeBuilding(b);
 		
-		p.owner.statistics.buildingsDestroyed++;
-		p.owner.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
+		p.owner.statistics.buildingsDestroyed.value++;
+		p.owner.statistics.buildingsDestroyedCost.value += b.type.cost * (1 + b.upgradeLevel);
 		
-		battle.attacker.owner.statistics.buildingsDestroyed++;
-		battle.attacker.owner.statistics.buildingsDestroyedCost += b.type.cost * (1 + b.upgradeLevel);
+		battle.attacker.owner.statistics.buildingsDestroyed.value++;
+		battle.attacker.owner.statistics.buildingsDestroyedCost.value += b.type.cost * (1 + b.upgradeLevel);
 	}
 	/**
 	 * Compute the planet strength.

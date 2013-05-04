@@ -68,4 +68,8 @@ public class MultiplayerDefinition extends CustomGameDefinition implements Messa
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public String name() {
+		return "GAME_DEFINITION";
+	}
 }

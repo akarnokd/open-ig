@@ -680,13 +680,13 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			player().inventory.put(research(), count - 1);
 			player().addMoney(research().productionCost / 2);
 			
-			player().statistics.moneySellIncome += research().productionCost / 2;
-			player().statistics.moneyIncome += research().productionCost / 2;
-			player().statistics.sellCount++;
+			player().statistics.moneySellIncome.value += research().productionCost / 2;
+			player().statistics.moneyIncome.value += research().productionCost / 2;
+			player().statistics.sellCount.value++;
 			
-			world().statistics.moneySellIncome += research().productionCost / 2;
-			world().statistics.moneyIncome += research().productionCost / 2;
-			world().statistics.sellCount++;
+			world().statistics.moneySellIncome.value += research().productionCost / 2;
+			world().statistics.moneyIncome.value += research().productionCost / 2;
+			world().statistics.sellCount.value++;
 
 		}
 	}
