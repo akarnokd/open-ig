@@ -8,23 +8,23 @@
 
 package hu.openig.multiplayer;
 
+import hu.openig.model.BattleStatus;
 import hu.openig.model.Configuration;
+import hu.openig.model.EmpireStatuses;
+import hu.openig.model.FleetStatus;
+import hu.openig.model.FleetTransferMode;
+import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerEnvironment;
+import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
-import hu.openig.multiplayer.model.BattleStatus;
-import hu.openig.multiplayer.model.EmpireStatuses;
-import hu.openig.multiplayer.model.FleetStatus;
-import hu.openig.multiplayer.model.FleetTransferMode;
-import hu.openig.multiplayer.model.GroundBattleUnit;
-import hu.openig.multiplayer.model.InventoryItemStatus;
-import hu.openig.multiplayer.model.MultiplayerGameSetup;
-import hu.openig.multiplayer.model.PlanetStatus;
-import hu.openig.multiplayer.model.ProductionStatus;
-import hu.openig.multiplayer.model.ResearchStatus;
-import hu.openig.multiplayer.model.SpaceBattleUnit;
-import hu.openig.multiplayer.model.WelcomeResponse;
+import hu.openig.model.PlanetStatus;
+import hu.openig.model.ProductionStatus;
+import hu.openig.model.ResearchStatus;
+import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
 import hu.openig.utils.U;
@@ -511,33 +511,33 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public void stopSpaceUnit(int unitId) throws IOException {
+	public void stopSpaceUnit(int battleId, int unitId) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void moveSpaceUnit(int unitId, double x, double y)
+	public void moveSpaceUnit(int battleId, int unitId, double x, double y)
 			throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void attackSpaceUnit(int unitId, int targetUnitId)
+	public void attackSpaceUnit(int battleId, int unitId, int targetUnitId)
 			throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void kamikazeSpaceUnit(int unitId) throws IOException {
+	public void kamikazeSpaceUnit(int battleId, int unitId) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void fireSpaceRocket(int unitId, int targetUnitId)
+	public void fireSpaceRocket(int battleId, int unitId, int targetUnitId)
 			throws IOException {
 		// TODO Auto-generated method stub
 		
@@ -581,32 +581,32 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public void stopGroundUnit(int unitId) throws IOException {
+	public void stopGroundUnit(int battleId, int unitId) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void moveGroundUnit(int unitId, int x, int y) throws IOException {
+	public void moveGroundUnit(int battleId, int unitId, int x, int y) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void attackGroundUnit(int unitId, int targetUnitId)
+	public void attackGroundUnit(int battleId, int unitId, int targetUnitId)
 			throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void attackBuilding(int unitId, int buildingId) throws IOException {
+	public void attackBuilding(int battleId, int unitId, int buildingId) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void deployMine(int unitId) throws IOException {
+	public void deployMine(int battleId, int unitId) throws IOException {
 		// TODO Auto-generated method stub
 		
 	}

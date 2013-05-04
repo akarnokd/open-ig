@@ -7,7 +7,6 @@
  */
 package hu.openig.model;
 
-import hu.openig.multiplayer.model.MessageObjectIO;
 import hu.openig.net.MessageObject;
 
 import java.awt.image.BufferedImage;

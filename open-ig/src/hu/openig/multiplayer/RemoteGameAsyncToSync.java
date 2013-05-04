@@ -9,22 +9,22 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.AsyncResult;
+import hu.openig.model.BattleStatus;
+import hu.openig.model.DeferredAction;
+import hu.openig.model.EmpireStatuses;
+import hu.openig.model.FleetStatus;
+import hu.openig.model.FleetTransferMode;
+import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MultiplayerDefinition;
+import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
-import hu.openig.multiplayer.model.BattleStatus;
-import hu.openig.multiplayer.model.DeferredAction;
-import hu.openig.multiplayer.model.EmpireStatuses;
-import hu.openig.multiplayer.model.FleetStatus;
-import hu.openig.multiplayer.model.FleetTransferMode;
-import hu.openig.multiplayer.model.GroundBattleUnit;
-import hu.openig.multiplayer.model.InventoryItemStatus;
-import hu.openig.multiplayer.model.MultiplayerGameSetup;
-import hu.openig.multiplayer.model.PlanetStatus;
-import hu.openig.multiplayer.model.ProductionStatus;
-import hu.openig.multiplayer.model.ResearchStatus;
-import hu.openig.multiplayer.model.SpaceBattleUnit;
-import hu.openig.multiplayer.model.WelcomeResponse;
+import hu.openig.model.PlanetStatus;
+import hu.openig.model.ProductionStatus;
+import hu.openig.model.ResearchStatus;
+import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.WelcomeResponse;
 import hu.openig.utils.U;
 
 import java.io.IOException;
@@ -877,12 +877,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void stopSpaceUnit(final int unitId,
+	public void stopSpaceUnit(final int battleId, final int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.stopSpaceUnit(unitId);
+				api.stopSpaceUnit(battleId, unitId);
 				return null;
 			}
 		});
@@ -890,12 +890,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void moveSpaceUnit(final int unitId, final double x, final double y,
+	public void moveSpaceUnit(final int battleId, final int unitId, final double x, final double y,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.moveSpaceUnit(unitId, x, y);
+				api.moveSpaceUnit(battleId, unitId, x, y);
 				return null;
 			}
 		});
@@ -903,12 +903,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void attackSpaceUnit(final int unitId, final int targetUnitId,
+	public void attackSpaceUnit(final int battleId, final int unitId, final int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.attackSpaceUnit(unitId, targetUnitId);
+				api.attackSpaceUnit(battleId, unitId, targetUnitId);
 				return null;
 			}
 		});
@@ -916,24 +916,24 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void kamikazeSpaceUnit(final int unitId,
+	public void kamikazeSpaceUnit(final int battleId, final int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.kamikazeSpaceUnit(unitId);
+				api.kamikazeSpaceUnit(battleId, unitId);
 				return null;
 			}
 		});
 	}
 
 	@Override
-	public void fireSpaceRocket(final int unitId, final int targetUnitId,
+	public void fireSpaceRocket(final int battleId, final int unitId, final int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.fireSpaceRocket(unitId, targetUnitId);
+				api.fireSpaceRocket(battleId, unitId, targetUnitId);
 				return null;
 			}
 		});
@@ -1014,12 +1014,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void stopGroundUnit(final int unitId,
+	public void stopGroundUnit(final int battleId, final int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.stopGroundUnit(unitId);
+				api.stopGroundUnit(battleId, unitId);
 				return null;
 			}
 		});
@@ -1027,12 +1027,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void moveGroundUnit(final int unitId, final int x, final int y,
+	public void moveGroundUnit(final int battleId, final int unitId, final int x, final int y,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.moveGroundUnit(unitId, x, y);
+				api.moveGroundUnit(battleId, unitId, x, y);
 				return null;
 			}
 		});
@@ -1040,12 +1040,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void attackGroundUnit(final int unitId, final int targetUnitId,
+	public void attackGroundUnit(final int battleId, final int unitId, final int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.attackGroundUnit(unitId, targetUnitId);
+				api.attackGroundUnit(battleId, unitId, targetUnitId);
 				return null;
 			}
 		});
@@ -1053,12 +1053,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void attackBuilding(final int unitId, final int buildingId,
+	public void attackBuilding(final int battleId, final int unitId, final int buildingId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.attackBuilding(unitId, buildingId);
+				api.attackBuilding(battleId, unitId, buildingId);
 				return null;
 			}
 		});
@@ -1066,12 +1066,12 @@ public class RemoteGameAsyncToSync implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void deployMine(final int unitId,
+	public void deployMine(final int battleId, final int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		execute(new DeferredAction<Void, IOException>(out) {
 			@Override
 			public Void invoke() throws IOException {
-				api.deployMine(unitId);
+				api.deployMine(battleId, unitId);
 				return null;
 			}
 		});

@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.multiplayer.model.MessageObjectIO;
 import hu.openig.net.MessageObject;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
