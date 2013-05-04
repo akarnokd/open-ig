@@ -481,7 +481,7 @@ public class GameKeyManager extends KeyAdapter {
 							p.owner = world().player;
 							p.population = 5000; // initial colony
 							p.race = world().player.race;
-							p.owner.statistics.planetsColonized++;
+							p.owner.statistics.planetsColonized.value++;
 							p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 							world().scripting.onColonized(p);
 						} else {

@@ -1247,7 +1247,7 @@ public class World {
 				DiplomaticOffer dio = e.getValue();
 				xdipl.set("call", dio.callType);
 				xdipl.set("approach", dio.approach);
-				xdipl.set("value", dio.value);
+				xdipl.set("value", dio.value());
 			}
 			
 			saveTraits(p, xp);
@@ -1684,9 +1684,9 @@ public class World {
 					String from = xdipl.get("from");
 					CallType nt = CallType.valueOf(xdipl.get("call"));
 					ApproachType at = ApproachType.valueOf(xdipl.get("approach"));
-					String value = xdipl.get("value", "10000");
+					int value = xdipl.getInt("value", 10000);
 					
-					p.offers.put(from, new DiplomaticOffer(nt, at, value));
+					p.offers.put(from, new DiplomaticOffer(nt, at).value(value));
 				}
 			}
 			
@@ -2724,7 +2724,8 @@ public class World {
 	 */
 	public DiplomaticRelation getRelation(Player first, Player second) {
 		for (DiplomaticRelation dr : relations) {
-			if ((dr.first == first && dr.second == second) || (dr.first == second && dr.second == first)) {
+			if ((dr.first.equals(first.id) && dr.second.equals(second.id)) 
+					|| (dr.first.equals(second.id) && dr.second.equals(first.id))) {
 				return dr;
 			}
 		}
@@ -2740,7 +2741,7 @@ public class World {
 		DiplomaticRelation dr = getRelation(first, second);
 		if (dr != null) {
 			// establish full relation
-			dr.full |= dr.second == first;
+			dr.full |= dr.second.equals(first.id);
 		}  else {
 			dr = createDiplomaticRelation(first, second);
 		}
@@ -2754,8 +2755,8 @@ public class World {
 	 */
 	DiplomaticRelation createDiplomaticRelation(Player first, Player second) {
 		DiplomaticRelation dr = new DiplomaticRelation();
-		dr.first = first;
-		dr.second = second;
+		dr.first = first.id;
+		dr.second = second.id;
 		dr.value = (first.initialStance + second.initialStance) / 2;
 		relations.add(dr);
 		return dr;
@@ -2768,8 +2769,8 @@ public class World {
 		XElement xrels = xworld.add("relations");
 		for (DiplomaticRelation dr : relations) {
 			XElement xrel = xrels.add("relation");
-			xrel.set("first", dr.first.id);
-			xrel.set("second", dr.second.id);
+			xrel.set("first", dr.first);
+			xrel.set("second", dr.second);
 			xrel.set("full", dr.full);
 			xrel.set("trade-agreement", dr.tradeAgreement);
 			xrel.set("strong-alliance", dr.strongAlliance);
@@ -2781,11 +2782,11 @@ public class World {
 			
 			StringBuilder sb = new StringBuilder();
 			
-			for (Player p2 : dr.alliancesAgainst) {
+			for (String p2 : dr.alliancesAgainst) {
 				if (sb.length() > 0) {
 					sb.append(",");
 				}
-				sb.append(p2.id);
+				sb.append(p2);
 			}
 			
 			xrel.set("ally-against", sb.toString());
@@ -2842,7 +2843,7 @@ public class World {
 						if (p2 == pfirst || p2 == psecond) {
 							throw new AssertionError("DiplomaticRelation.allyAgainstSelf: " + xrel);
 						}
-						dr.alliancesAgainst.add(p2);
+						dr.alliancesAgainst.add(p2.id);
 					}
 				}
 			}
@@ -3146,7 +3147,7 @@ public class World {
 						Integer g3 = groups.get(p3);
 						if (!g3.equals(g1)) {
 							DiplomaticRelation dr = getRelation(p1, p2);
-							dr.alliancesAgainst.add(p3);
+							dr.alliancesAgainst.add(p3.id);
 						}
 					}
 				}

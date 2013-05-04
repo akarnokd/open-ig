@@ -19,7 +19,7 @@ public class DiplomaticOffer {
 	/** The approach type. */
 	public ApproachType approach;
 	/** The optional parameter. */
-	public Object value;
+	private Object value;
 	/** 
 	 * Empty constructor.
 	 */
@@ -32,17 +32,58 @@ public class DiplomaticOffer {
 	 * @param approach the approach
 	 */
 	public DiplomaticOffer(CallType callType, ApproachType approach) {
-		this(callType, approach, null);
-	}
-	/**
-	 * Initializes the offer with a call type, approach and parameter.
-	 * @param callType the call type
-	 * @param approach the approach
-	 * @param value the value
-	 */
-	public DiplomaticOffer(CallType callType, ApproachType approach, Object value) {
 		this.callType = callType;
 		this.approach = approach;
-		this.value = value;
+	}
+	/**
+	 * The optional offer value.
+	 * @return the value
+	 */
+	public Object value() {
+		return value;
+	}
+	/**
+	 * Sets a money value.
+	 * @param money the money
+	 * @return this
+	 */
+	public DiplomaticOffer value(long money) {
+		this.value = money;
+		return this;
+	}
+	/**
+	 * Sets a player value.
+	 * @param player a layer
+	 * @return this
+	 */
+	public DiplomaticOffer value(Player player) {
+		this.value = player.id;
+		return this;
+	}
+	/**
+	 * Sets the value from the given object,
+	 * or throws an IllegalArgumentException if 
+	 * the type is not supported.
+	 * @param o the object
+	 * @return this
+	 */
+	public DiplomaticOffer value(Object o) {
+		if (o == null) {
+			value = null;
+			return this;
+		} else
+		if (o instanceof Number) {
+			value(((Number)o).longValue());
+			return this;
+		} else
+		if (o instanceof String) {
+			value = o;
+			return this;
+		} else
+		if (o instanceof Player) {
+			value((Player)o);
+			return this;
+		}
+		throw new IllegalArgumentException("Unsupported type: " + (o != null ? o.getClass().toString() : "null"));
 	}
 }

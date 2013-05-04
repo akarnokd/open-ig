@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Func0;
 import hu.openig.net.MessageObject;
 
 
@@ -16,7 +15,7 @@ import hu.openig.net.MessageObject;
  * The basic ground battle unit status.
  * @author akarnokd, 2013.05.02.
  */
-public class GroundBattleUnit implements MessageObjectIO, Func0<GroundBattleUnit> {
+public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactory<GroundBattleUnit> {
 	/** The unit unique id. */
 	public int id;
 	/** The unit research type. */
@@ -45,5 +44,13 @@ public class GroundBattleUnit implements MessageObjectIO, Func0<GroundBattleUnit
 	public GroundBattleUnit invoke() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public String arrayName() {
+		return "GROUND_BATTLE_UNITS";
+	}
+	@Override
+	public String name() {
+		return "GROUND_UNIT";
 	}
 }

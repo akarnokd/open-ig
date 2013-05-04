@@ -136,17 +136,17 @@ public final class Simulator {
 	 * @param world the world object
 	 */
 	static void prepareGlobalStatistics(World world) {
-		world.statistics.totalPopulation = 0;
-		world.statistics.totalBuilding = 0;
-		world.statistics.totalAvailableBuilding = 0;
+		world.statistics.totalPopulation.value = 0;
+		world.statistics.totalBuilding.value = 0;
+		world.statistics.totalAvailableBuilding.value = 0;
 		
-		world.statistics.totalWorkerDemand = 0;
-		world.statistics.totalEnergyDemand = 0;
-		world.statistics.totalAvailableEnergy = 0;
-		world.statistics.totalAvailableHouse = 0;
-		world.statistics.totalAvailableFood = 0;
-		world.statistics.totalAvailableHospital = 0;
-		world.statistics.totalAvailablePolice = 0;
+		world.statistics.totalWorkerDemand.value = 0;
+		world.statistics.totalEnergyDemand.value = 0;
+		world.statistics.totalAvailableEnergy.value = 0;
+		world.statistics.totalAvailableHouse.value = 0;
+		world.statistics.totalAvailableFood.value = 0;
+		world.statistics.totalAvailableHospital.value = 0;
+		world.statistics.totalAvailablePolice.value = 0;
 	}
 	/**
 	 * Prepare the world and player statistics.
@@ -156,27 +156,27 @@ public final class Simulator {
 	 */
 	static void preparePlayerStatistics(World world, Player player,
 			PlanetStatistics all) {
-		player.statistics.totalPopulation = 0;
-		player.statistics.totalBuilding = 0;
-		player.statistics.totalAvailableBuilding = 0;
+		player.statistics.totalPopulation.value = 0;
+		player.statistics.totalBuilding.value = 0;
+		player.statistics.totalAvailableBuilding.value = 0;
 		
-		player.statistics.totalWorkerDemand = all.workerDemand;
-		player.statistics.totalEnergyDemand = all.energyDemand;
-		player.statistics.totalAvailableEnergy = all.energyAvailable;
-		player.statistics.totalAvailableHouse = all.houseAvailable;
-		player.statistics.totalAvailableFood = all.foodAvailable;
-		player.statistics.totalAvailableHospital = all.hospitalAvailable;
-		player.statistics.totalAvailablePolice = all.policeAvailable;
+		player.statistics.totalWorkerDemand.value = all.workerDemand;
+		player.statistics.totalEnergyDemand.value = all.energyDemand;
+		player.statistics.totalAvailableEnergy.value = all.energyAvailable;
+		player.statistics.totalAvailableHouse.value = all.houseAvailable;
+		player.statistics.totalAvailableFood.value = all.foodAvailable;
+		player.statistics.totalAvailableHospital.value = all.hospitalAvailable;
+		player.statistics.totalAvailablePolice.value = all.policeAvailable;
 
-		world.statistics.totalWorkerDemand += all.workerDemand;
-		world.statistics.totalEnergyDemand += all.energyDemand;
-		world.statistics.totalAvailableEnergy += all.energyAvailable;
-		world.statistics.totalAvailableHouse += all.houseAvailable;
-		world.statistics.totalAvailableFood += all.foodAvailable;
-		world.statistics.totalAvailableHospital += all.hospitalAvailable;
-		world.statistics.totalAvailablePolice += all.policeAvailable;
+		world.statistics.totalWorkerDemand.value += all.workerDemand;
+		world.statistics.totalEnergyDemand.value += all.energyDemand;
+		world.statistics.totalAvailableEnergy.value += all.energyAvailable;
+		world.statistics.totalAvailableHouse.value += all.houseAvailable;
+		world.statistics.totalAvailableFood.value += all.foodAvailable;
+		world.statistics.totalAvailableHospital.value += all.hospitalAvailable;
+		world.statistics.totalAvailablePolice.value += all.policeAvailable;
 		
-		player.statistics.planetsOwned = 0;
+		player.statistics.planetsOwned.value = 0;
 	}
 	/**
 	 * Make progress on the buildings of the planet.
@@ -210,7 +210,7 @@ public final class Simulator {
 
 		int speed = world.params().speed();
 
-		if (world.statistics.playTime >= eqPlaytime && (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
+		if (world.statistics.playTime.value >= eqPlaytime && (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
 			if (planet.earthQuakeTTL <= 0) {
 				// cause earthquake once in every 12, 6 or 3 months
 				int eqDelta = 36 * 24 * 60;
@@ -264,14 +264,14 @@ public final class Simulator {
 		
 		for (Building b : new ArrayList<Building>(planet.surface.buildings)) {
 			
-			planet.owner.statistics.totalBuilding++;
-			world.statistics.totalBuilding++;
+			planet.owner.statistics.totalBuilding.value++;
+			world.statistics.totalBuilding.value++;
 			
 			double eff = b.getEfficiency();
 			
 			if (Building.isOperational(eff)) {
-				planet.owner.statistics.totalAvailableBuilding++;
-				world.statistics.totalAvailableBuilding++;
+				planet.owner.statistics.totalAvailableBuilding.value++;
+				world.statistics.totalAvailableBuilding.value++;
 			}
 			
 			if (b.isConstructing()) {
@@ -304,11 +304,11 @@ public final class Simulator {
 						b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 						result = true;
 						
-						planet.owner.statistics.moneyRepair += repairCost;
-						planet.owner.statistics.moneySpent += repairCost;
+						planet.owner.statistics.moneyRepair.value += repairCost;
+						planet.owner.statistics.moneySpent.value += repairCost;
 
-						world.statistics.moneyRepair += repairCost;
-						world.statistics.moneySpent += repairCost;
+						world.statistics.moneyRepair.value += repairCost;
+						world.statistics.moneySpent.value += repairCost;
 					}
 				}
 			} else
@@ -482,13 +482,13 @@ public final class Simulator {
 
 			planet.owner.addMoney(planet.tradeIncome + planet.taxIncome);
 			
-			planet.owner.statistics.moneyIncome += planet.tradeIncome + planet.taxIncome;
-			planet.owner.statistics.moneyTaxIncome += planet.taxIncome;
-			planet.owner.statistics.moneyTradeIncome += planet.tradeIncome;
+			planet.owner.statistics.moneyIncome.value += planet.tradeIncome + planet.taxIncome;
+			planet.owner.statistics.moneyTaxIncome.value += planet.taxIncome;
+			planet.owner.statistics.moneyTradeIncome.value += planet.tradeIncome;
 
-			world.statistics.moneyIncome += planet.tradeIncome + planet.taxIncome;
-			world.statistics.moneyTaxIncome += planet.taxIncome;
-			world.statistics.moneyTradeIncome += planet.tradeIncome;
+			world.statistics.moneyIncome.value += planet.tradeIncome + planet.taxIncome;
+			world.statistics.moneyTaxIncome.value += planet.taxIncome;
+			world.statistics.moneyTradeIncome.value += planet.tradeIncome;
 			
 			planet.owner.yesterday.taxIncome += planet.taxIncome;
 			planet.owner.yesterday.tradeIncome += planet.tradeIncome;
@@ -498,13 +498,13 @@ public final class Simulator {
 			if (planet.population == 0) {
 				planet.owner.ai.onPlanetDied(planet);
 				world.scripting.onLost(planet);
-				planet.owner.statistics.planetsDied++;
+				planet.owner.statistics.planetsDied.value++;
 				planet.die();
 			} else {
 				if (planet.morale <= 15) {
 					planet.owner.ai.onPlanetRevolt(planet);
 					if (planet.lastMorale > 15) {
-						planet.owner.statistics.planetsRevolted++;
+						planet.owner.statistics.planetsRevolted.value++;
 					}
 					if (planet.morale < 10 && planet.lastMorale < 10) {
 						revoltPlanet(world, planet);
@@ -515,9 +515,9 @@ public final class Simulator {
 
 		
 		if (planet.owner != null) {
-			planet.owner.statistics.totalPopulation += planet.population;
-			world.statistics.totalPopulation += planet.population;
-			planet.owner.statistics.planetsOwned++;
+			planet.owner.statistics.totalPopulation.value += planet.population;
+			world.statistics.totalPopulation.value += planet.population;
+			planet.owner.statistics.planetsOwned.value++;
 		}
 		
 		return result;
@@ -555,7 +555,7 @@ public final class Simulator {
 		} else {
 			planet.owner.ai.onPlanetDied(planet);
 			world.scripting.onLost(planet);
-			planet.owner.statistics.planetsDied++;
+			planet.owner.statistics.planetsDied.value++;
 			planet.die();
 		}
 	}
@@ -583,11 +583,11 @@ public final class Simulator {
 						player.today.researchCost += dmoney;
 						player.addMoney(-dmoney);
 						
-						player.statistics.moneyResearch += dmoney;
-						player.statistics.moneySpent += dmoney;
+						player.statistics.moneyResearch.value += dmoney;
+						player.statistics.moneySpent.value += dmoney;
 
-						world.statistics.moneyResearch += dmoney;
-						world.statistics.moneySpent += dmoney;
+						world.statistics.moneyResearch.value += dmoney;
+						world.statistics.moneySpent.value += dmoney;
 
 						rs.state = ResearchState.RUNNING;
 						if (last != rs.state) {
@@ -613,7 +613,7 @@ public final class Simulator {
 				player.research.remove(rs.type);
 				player.setAvailable(rs.type);
 				
-				player.statistics.researchCount++;
+				player.statistics.researchCount.value++;
 				
 				player.ai.onResearchStateChange(rs.type, rs.state);
 				world.scripting.onResearched(player, rs.type);
@@ -683,14 +683,14 @@ public final class Simulator {
 						Integer invCount = player.inventory.get(pr.type);
 						player.inventory.put(pr.type, invCount != null ? invCount + intoInventory : intoInventory);
 						
-						player.statistics.moneyProduction += currentCap;
-						player.statistics.moneySpent += currentCap;
+						player.statistics.moneyProduction.value += currentCap;
+						player.statistics.moneySpent.value += currentCap;
 						
-						world.statistics.moneyProduction += currentCap;
-						world.statistics.moneySpent += currentCap;
+						world.statistics.moneyProduction.value += currentCap;
+						world.statistics.moneySpent.value += currentCap;
 						
-						player.statistics.productionCount += intoInventory;
-						world.statistics.productionCount += intoInventory;
+						player.statistics.productionCount.value += intoInventory;
+						world.statistics.productionCount.value += intoInventory;
 						
 						result = true;
 						

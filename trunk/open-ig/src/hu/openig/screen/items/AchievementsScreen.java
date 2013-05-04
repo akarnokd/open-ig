@@ -576,7 +576,7 @@ public class AchievementsScreen extends ScreenBase {
 		new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return toTime(world().statistics.playTime);
+				return toTime(world().statistics.playTime.value);
 			}
 		}
 		));
@@ -584,7 +584,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return toTime(world().statistics.simulationTime);
+				return toTime(world().statistics.simulationTime.value);
 			}
 		}
 		));
@@ -592,7 +592,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return toTime(world().statistics.playTime - world().statistics.simulationTime);
+				return toTime(world().statistics.playTime.value - world().statistics.simulationTime.value);
 			}
 		}
 		));

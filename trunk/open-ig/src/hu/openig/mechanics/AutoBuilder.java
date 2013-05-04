@@ -447,13 +447,13 @@ public final class AutoBuilder {
 		planet.owner.addMoney(-bt.cost);
 		planet.owner.today.buildCost += bt.cost;
 		
-		planet.owner.statistics.buildCount++;
-		planet.owner.statistics.moneyBuilding += bt.cost;
-		planet.owner.statistics.moneySpent += bt.cost;
+		planet.owner.statistics.buildCount.value++;
+		planet.owner.statistics.moneyBuilding.value += bt.cost;
+		planet.owner.statistics.moneySpent.value += bt.cost;
 		
-		world.statistics.buildCount++;
-		world.statistics.moneyBuilding += bt.cost;
-		world.statistics.moneySpent += bt.cost;
+		world.statistics.buildCount.value++;
+		world.statistics.moneyBuilding.value += bt.cost;
+		world.statistics.moneySpent.value += bt.cost;
 	}
 	/**
 	 * Increase the level of the given building by one.
@@ -496,13 +496,13 @@ public final class AutoBuilder {
 		planet.owner.today.buildCost += buildCost;
 		
 		planet.owner.addMoney(-buildCost);
-		planet.owner.statistics.upgradeCount++;
-		planet.owner.statistics.moneySpent += buildCost;
-		planet.owner.statistics.moneyUpgrade += buildCost;
+		planet.owner.statistics.upgradeCount.value++;
+		planet.owner.statistics.moneySpent.value += buildCost;
+		planet.owner.statistics.moneyUpgrade.value += buildCost;
 		
-		world.statistics.upgradeCount++;
-		world.statistics.moneySpent += buildCost;
-		world.statistics.moneyUpgrade += buildCost;
+		world.statistics.upgradeCount.value++;
+		world.statistics.moneySpent.value += buildCost;
+		world.statistics.moneyUpgrade.value += buildCost;
 		
 		return true;
 	}

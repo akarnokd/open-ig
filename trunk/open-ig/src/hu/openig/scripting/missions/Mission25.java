@@ -41,7 +41,7 @@ public class Mission25 extends Mission {
 			stage = M25.RUNNING;
 		}
 		if (stage == M25.RUNNING) {
-			if (player("Dargslan").statistics.planetsOwned == 0) {
+			if (player("Dargslan").statistics.planetsOwned.value == 0) {
 				stage = M25.DONE;
 				setObjectiveState("Mission-25", ObjectiveState.SUCCESS);
 				addTimeout("Win", 6000);

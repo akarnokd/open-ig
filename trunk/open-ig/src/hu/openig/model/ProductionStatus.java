@@ -34,4 +34,8 @@ public class ProductionStatus implements MessageObjectIO {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public String name() {
+		return "PRODUCTIONS";
+	}
 }

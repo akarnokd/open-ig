@@ -128,7 +128,7 @@ public class Mission22 extends Mission {
 		if (stage == M22.NONE) {
 			stage = M22.WAIT;
 			addTimeout("Mission-22-Objective", 4000);
-			planetsOwned = player.statistics.planetsOwned;
+			planetsOwned = player.statistics.planetsOwned.value;
 			addMission("Mission-22-Delay", 28 * 24);
 			addMission("Mission-22-Delay-2", 7 * 24);
 		}
@@ -155,7 +155,7 @@ public class Mission22 extends Mission {
 			stage = M22.RUN;
 		}
 		if (stage == M22.RUN) {
-			if (player.statistics.planetsOwned >= planetsOwned + 7) {
+			if (player.statistics.planetsOwned.value >= planetsOwned + 7) {
 				setObjectiveState("Mission-22", ObjectiveState.SUCCESS);
 				stage = M22.DONE;
 				addTimeout("Mission-22-Hide", 13000);

@@ -148,13 +148,13 @@ public class InventoryItem {
 		long money = sellValue();
 		owner.addMoney(money);
 		
-		owner.statistics.sellCount++;
-		owner.statistics.moneySellIncome += money;
-		owner.statistics.moneyIncome += money;
+		owner.statistics.sellCount.value++;
+		owner.statistics.moneySellIncome.value += money;
+		owner.statistics.moneyIncome.value += money;
 		
-		owner.world.statistics.sellCount++;
-		owner.world.statistics.moneyIncome += money;
-		owner.world.statistics.moneySellIncome += money;
+		owner.world.statistics.sellCount.value++;
+		owner.world.statistics.moneyIncome.value += money;
+		owner.world.statistics.moneySellIncome.value += money;
 
 		count = 0;
 		slots.clear();

@@ -8,13 +8,12 @@
 
 package hu.openig.model;
 
+import hu.openig.core.LongField;
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
-import hu.openig.utils.U;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Response with the current own and known
@@ -24,35 +23,49 @@ import java.util.Set;
 public class EmpireStatuses implements MessageObjectIO {
 	/** The current time in UTC milliseconds. */
 	public long currentTime;
-	/** The current money. */
-	public long money;
-	/** The map of known other players and the diplomatic relations. */
-	public final Map<String, DiplomaticRelation> knownPlayers = new HashMap<String, DiplomaticRelation>();
-	/** The negotiation offers from players. */
-	public final Map<String, DiplomaticOffer> offers = U.newLinkedHashMap();
-	/** The player level statistics. */
-	public final PlayerStatistics statistics = new PlayerStatistics();
-	/** The global financial information yesterday. */
-	public final PlayerFinances yesterday = new PlayerFinances();
-	/** The global finalcial information today. */
-	public final PlayerFinances today = new PlayerFinances();
-	/** Pause the production without changing the production line settings. */
-	public boolean pauseProduction;
-	/** Pause the research without changing the current research settings. */
-	public boolean pauseResearch;
-	/** The set of colonization targets. */
-	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
-
+	/** The list of empires. */
+	public final Map<String, EmpireStatus> empires = new LinkedHashMap<String, EmpireStatus>();
+	/** The global statistics. */
+	public final WorldStatistics statistics = new WorldStatistics();
 	@Override
 	public void fromMessage(MessageObject mo) {
-		// TODO Auto-generated method stub
-		
+		currentTime = mo.getLong("date");
+		for (MessageObject moi : mo.getArray("empires").objects()) {
+			EmpireStatus es = new EmpireStatus();
+			es.fromMessage(moi);
+			empires.put(es.id, es);
+		}
+		MessageObject ps = mo.getObject("statistics");
+		for (String sn : ps.attributeNames()) {
+			LongField f = statistics.fields.get(sn);
+			if (f != null) {
+				f.value = ps.getLong(sn);
+			}
+		}
 	}
 	@Override
 	public MessageObject toMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		MessageObject result = new MessageObject(name());
+		
+		result.set("date", currentTime);
+		
+		MessageArray ma = new MessageArray(null);
+		result.set("empires", ma);
+		
+		for (EmpireStatus es : empires.values()) {
+			ma.add(es.toMessage());
+		}
+		
+		MessageObject ps = new MessageObject(null);
+		result.set("statistics", ps);
+		for (Map.Entry<String, LongField> e : statistics.fields.entrySet()) {
+			ps.set(e.getKey(), e.getValue().value);
+		}
+		
+		return result;
 	}
-	// TODO other global player statuses?
-
+	@Override
+	public String name() {
+		return "EMPIRE_STATUSES";
+	}
 }

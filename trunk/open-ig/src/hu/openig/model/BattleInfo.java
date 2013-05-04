@@ -214,61 +214,61 @@ public class BattleInfo {
 	 * Add one to the space battle counters.
 	 */
 	public void incrementSpaceBattles() {
-		attacker.owner.statistics.spaceBattles++;
+		attacker.owner.statistics.spaceBattles.value++;
 		if (targetFleet != null) {
-			targetFleet.owner.statistics.spaceBattles++;
+			targetFleet.owner.statistics.spaceBattles.value++;
 		}
 		if (targetPlanet != null) {
-			targetPlanet.owner.statistics.spaceBattles++;
+			targetPlanet.owner.statistics.spaceBattles.value++;
 		}
 		for (Player p0 : attackerAllies) {
-			p0.statistics.spaceBattles++;
+			p0.statistics.spaceBattles.value++;
 		}
 	}
 	/**
 	 * Add one to the ground war counters.
 	 */
 	public void incrementGroundBattles() {
-		attacker.owner.statistics.groundBattles++;
+		attacker.owner.statistics.groundBattles.value++;
 		if (targetPlanet != null) {
-			targetPlanet.owner.statistics.groundBattles++;
+			targetPlanet.owner.statistics.groundBattles.value++;
 		}
 	}
 	/**
 	 * Increment the space winner statistics.
 	 */
 	public void incrementSpaceWin() {
-		spacewarWinner.statistics.spaceWins++;
+		spacewarWinner.statistics.spaceWins.value++;
 		if (attacker.owner == spacewarWinner) {
 			for (Player p0 : attackerAllies) {
-				p0.statistics.spaceWins++;
+				p0.statistics.spaceWins.value++;
 			}
 			if (targetFleet != null) {
-				targetFleet.owner.statistics.spaceLoses++;
+				targetFleet.owner.statistics.spaceLoses.value++;
 			}
 			if (targetPlanet != null) {
-				targetPlanet.owner.statistics.spaceLoses++;
+				targetPlanet.owner.statistics.spaceLoses.value++;
 			}
 		} else {
-			attacker.owner.statistics.spaceLoses++;
+			attacker.owner.statistics.spaceLoses.value++;
 			if (retreated) {
-				attacker.owner.statistics.spaceRetreats++;
+				attacker.owner.statistics.spaceRetreats.value++;
 			}
 			for (Player p0 : attackerAllies) {
-				p0.statistics.spaceLoses++;
+				p0.statistics.spaceLoses.value++;
 				if (retreated) {
-					p0.statistics.spaceRetreats++;
+					p0.statistics.spaceRetreats.value++;
 				}
 			}
 		}
 	}
 	/** Increment the ground war winner statistics. */
 	public void incrementGroundWin() {
-		groundwarWinner.statistics.groundWins++;
+		groundwarWinner.statistics.groundWins.value++;
 		if (groundwarWinner == targetPlanet.owner) {
-			attacker.owner.statistics.groundLoses++;
+			attacker.owner.statistics.groundLoses.value++;
 		} else {
-			targetPlanet.owner.statistics.groundLoses++;
+			targetPlanet.owner.statistics.groundLoses.value++;
 		}
 	}
 	/**

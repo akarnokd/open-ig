@@ -40,7 +40,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> CONQUEROR = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsConquered > 0;
+			return u.statistics.planetsConquered.value > 0;
 		}
 	};
 	/** Test for achievement. */
@@ -57,7 +57,7 @@ public final class AchievementManager {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Pirates");
-			if (p != null && p.statistics.planetsOwned > 0) {
+			if (p != null && p.statistics.planetsOwned.value > 0) {
 				return true;
 			}
 			return false;
@@ -79,7 +79,7 @@ public final class AchievementManager {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Dargslan");
-			if (p != null && p.statistics.planetsOwned == 0) {
+			if (p != null && p.statistics.planetsOwned.value == 0) {
 				return true;
 			}
 			return false;
@@ -90,7 +90,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> ENERGIZER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.totalAvailableEnergy >= 10000000;
+			return u.statistics.totalAvailableEnergy.value >= 10000000;
 		}
 	};
 	/** Test for achievement. */
@@ -98,7 +98,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> DEATH_STAR = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsDied > 0;
+			return u.statistics.planetsDied.value > 0;
 		}
 	};
 	/** Test for achievement. */
@@ -106,7 +106,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> RESEARCH_ASSISTANT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.researchCount >= 5;
+			return u.statistics.researchCount.value >= 5;
 		}
 	};
 	/** Test for achievement. */
@@ -114,7 +114,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> SCIENTIST = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.researchCount >= 15;
+			return u.statistics.researchCount.value >= 15;
 		}
 	};
 	/** Test for achievement. */
@@ -146,7 +146,8 @@ public final class AchievementManager {
 					popular++;
 				}
 			}
-			return popular >= u.statistics.planetsOwned && u.statistics.planetsOwned >= 3;
+			return popular >= u.statistics.planetsOwned.value 
+					&& u.statistics.planetsOwned.value >= 3;
 		}
 	};
 	/** Test for achievement. */
@@ -160,7 +161,8 @@ public final class AchievementManager {
 					popular++;
 				}
 			}
-			return popular >= u.statistics.planetsOwned && u.statistics.planetsOwned >= 3;
+			return popular >= u.statistics.planetsOwned.value
+					&& u.statistics.planetsOwned.value >= 3;
 		}
 	};
 	/** Test for achievement. */
@@ -174,7 +176,8 @@ public final class AchievementManager {
 					popular++;
 				}
 			}
-			return popular >= u.statistics.planetsOwned && u.statistics.planetsOwned >= 3;
+			return popular >= u.statistics.planetsOwned.value
+					&& u.statistics.planetsOwned.value >= 3;
 		}
 	};
 	/** Test for achievement. */
@@ -182,7 +185,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> REVOLUTIONER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsRevolted > 0;
+			return u.statistics.planetsRevolted.value > 0;
 		}
 	};
 	/** Test for achievement. */
@@ -190,7 +193,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> MASS_EFFECT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.totalPopulation >= 1000000;
+			return u.statistics.totalPopulation.value >= 1000000;
 		}
 	};
 	/** Test for achievement. */
@@ -214,7 +217,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> COLUMBUS = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsColonized > 0;
+			return u.statistics.planetsColonized.value > 0;
 		}
 	};
 
@@ -223,7 +226,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> QUARTER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsOwned >= 25;
+			return u.statistics.planetsOwned.value >= 25;
 		}
 	};
 	/** Test for achievement. */
@@ -231,7 +234,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> MANUFACTURER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.productionCount >= 1000;
+			return u.statistics.productionCount.value >= 1000;
 		}
 	};
 	/** Test for achievement. */
@@ -239,7 +242,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> SALVAGE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.shipsDestroyed >= 1000;
+			return u.statistics.shipsDestroyed.value >= 1000;
 		}
 	};
 	/** Test for achievement. */
@@ -247,7 +250,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> LIVING_SPACE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsDiscovered > 0;
+			return u.statistics.planetsDiscovered.value > 0;
 		}
 	};
 	/** Test for achievement. */
@@ -255,7 +258,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> FOOD = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.totalAvailableFood > 1000000;
+			return u.statistics.totalAvailableFood.value > 1000000;
 		}
 	};
 	/** Test for achievement. */
@@ -279,7 +282,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> ALL_YOUR_BASE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsLostAlien > 0;
+			return u.statistics.planetsLostAlien.value > 0;
 		}
 	};
 	/** Test for achievement. */
@@ -288,8 +291,8 @@ public final class AchievementManager {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			for (DiplomaticRelation dr : t.relations) {
-				Player p = dr.second;
-				if (dr.first == u && !p.race.equals(u.race) 
+				Player p = u.world.players.get(dr.second);
+				if (dr.first.equals(u.id) && !p.race.equals(u.race) 
 						&& !p.race.equals("traders") 
 						&& !p.race.equals("pirates")) {
 					return true;
@@ -303,7 +306,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> COFFEE_BREAK = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return t.statistics.playTime - t.statistics.simulationTime >= 30 * 60;
+			return t.statistics.playTime.value - t.statistics.simulationTime.value >= 30 * 60;
 		}
 	};
 	/** Test for achievement. */
@@ -328,7 +331,7 @@ public final class AchievementManager {
 					}
 				}
 			}
-			return u.statistics.planetsOwned >= 3;
+			return u.statistics.planetsOwned.value >= 3;
 		}
 	};
 	/** Test for achievement. */
@@ -434,7 +437,7 @@ public final class AchievementManager {
 	protected static final Pred2<World, Player> WELL_RESPECTED_FEATURE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.chats >= 100;
+			return u.statistics.chats.value >= 100;
 		}
 	};
 	// -------------------------------------------------------------------------------	

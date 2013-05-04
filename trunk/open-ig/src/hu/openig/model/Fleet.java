@@ -64,7 +64,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		this.id = id;
 		this.owner = owner;
 		this.owner.fleets.put(this, FleetKnowledge.FULL);
-		owner.statistics.fleetsCreated++;
+		owner.statistics.fleetsCreated.value++;
 	}
 	/**
 	 * Create a new fleet for the specific player and automatic ID.
@@ -441,11 +441,11 @@ public class Fleet implements Named, Owned, HasInventory {
 					veh.remove(fii);
 				}
 				
-				fii.owner.statistics.vehiclesLost++;
-				fii.owner.statistics.vehiclesLostCost += fii.type.productionCost;
+				fii.owner.statistics.vehiclesLost.value++;
+				fii.owner.statistics.vehiclesLostCost.value += fii.type.productionCost;
 				
-				to.statistics.vehiclesDestroyed++;
-				to.statistics.vehiclesDestroyedCost += fii.type.productionCost;
+				to.statistics.vehiclesDestroyed.value++;
+				to.statistics.vehiclesDestroyedCost.value += fii.type.productionCost;
 			}
 		}
 		return result;

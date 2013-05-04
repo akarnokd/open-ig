@@ -26,4 +26,9 @@ public interface MessageObjectIO {
 	 * @param mo the message object
 	 */
 	void fromMessage(MessageObject mo);
+	/**
+	 * Returns the name of the message object.
+	 * @return the name used to create and expect a message object
+	 */
+	String name();
 }

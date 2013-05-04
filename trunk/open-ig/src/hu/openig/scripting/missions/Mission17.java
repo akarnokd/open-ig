@@ -73,7 +73,7 @@ public class Mission17 extends Mission {
 		}
 		if (checkTimeout("Mission-6-Close-2")) {
 			// check production count
-			if (player.statistics.productionCount > 0) {
+			if (player.statistics.productionCount.value > 0) {
 				setObjectiveState("Mission-6-Task-2", ObjectiveState.SUCCESS);
 			} else {
 				setObjectiveState("Mission-6-Task-2", ObjectiveState.FAILURE);

@@ -149,7 +149,7 @@ public class Mission18 extends Mission {
 	/** Check if we own all the necessary planets. */
 	void checkSuccess() {
 		Player g = player("Garthog");
-		if (g.statistics.planetsOwned == 0 && !hasMission("Mission-18-Promote")) {
+		if (g.statistics.planetsOwned.value == 0 && !hasMission("Mission-18-Promote")) {
 			setObjectiveState("Mission-18", ObjectiveState.SUCCESS);
 			addTimeout("Mission-18-Hide", 13000);
 			addMission("Mission-18-Promote", 3);

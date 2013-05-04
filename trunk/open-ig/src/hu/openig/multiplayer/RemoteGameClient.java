@@ -8,8 +8,6 @@
 
 package hu.openig.multiplayer;
 
-import hu.openig.core.Func0;
-import hu.openig.mechanics.GameAPI;
 import hu.openig.model.BattleStatus;
 import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
@@ -18,6 +16,7 @@ import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.MessageArrayItemFactory;
 import hu.openig.model.MessageObjectIO;
 import hu.openig.model.MessageUtils;
 import hu.openig.model.MultiplayerDefinition;
@@ -25,6 +24,7 @@ import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.ProductionStatus;
+import hu.openig.model.RemoteGameAPI;
 import hu.openig.model.ResearchStatus;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.WelcomeResponse;
@@ -47,7 +47,7 @@ import java.util.Map;
  * on MessageObject exchanges.
  * @author akarnokd, 2013.04.22.
  */
-public class RemoteGameClient implements GameAPI {
+public class RemoteGameClient implements RemoteGameAPI {
 	/** The message client object. */
 	protected final MessageClientAPI client;
 	/**
@@ -70,16 +70,14 @@ public class RemoteGameClient implements GameAPI {
 	 * @param <T> the result object type
 	 * @param request the request message
 	 * @param response the response object
-	 * @param accept the message types to accept
 	 * @return the response object
 	 * @throws IOException on communication error
 	 */
 	protected <T extends MessageObjectIO> T query(
 			MessageSerializable request, 
-			T response, 
-			String... accept) throws IOException {
+			T response) throws IOException {
 		Object r = client.query(request);
-		MessageObject mo = MessageUtils.expectObject(r, accept);
+		MessageObject mo = MessageUtils.expectObject(r, response.name());
 		try {
 			response.fromMessage(mo);
 		} catch (MissingAttributeException ex) {
@@ -94,16 +92,14 @@ public class RemoteGameClient implements GameAPI {
 	 * @param <T> the result object type
 	 * @param request the request message
 	 * @param itemFactory the factory for each list item
-	 * @param accept the message types to accept
 	 * @return the response object
 	 * @throws IOException on communication error
 	 */
 	protected <T extends MessageObjectIO> List<T> queryList(
 			MessageSerializable request, 
-			Func0<? extends T> itemFactory, 
-			String... accept) throws IOException {
+			MessageArrayItemFactory<? extends T> itemFactory) throws IOException {
 		Object r = client.query(request);
-		MessageArray ma = MessageUtils.expectArray(r, accept);
+		MessageArray ma = MessageUtils.expectArray(r, itemFactory.arrayName());
 		List<T> result = new ArrayList<T>();
 		try {
 			for (Object o : ma) {
@@ -146,7 +142,7 @@ public class RemoteGameClient implements GameAPI {
 						"user", user, 
 						"passphrase", passphrase, 
 						"version", version);
-		return query(request, new WelcomeResponse(), "WELCOME");
+		return query(request, new WelcomeResponse());
 	}
 	@Override
 	public void relogin(String sessionId) throws IOException {
@@ -163,7 +159,7 @@ public class RemoteGameClient implements GameAPI {
 	@Override
 	public MultiplayerDefinition getGameDefinition() throws IOException {
 		MessageObject request = new MessageObject("QUERY_GAME_DEFINITION");
-		return query(request, new MultiplayerDefinition(), "GAME_DEFINITION");
+		return query(request, new MultiplayerDefinition());
 	}
 	@Override
 	public void choosePlayerSettings(MultiplayerUser user) throws IOException {
@@ -174,7 +170,7 @@ public class RemoteGameClient implements GameAPI {
 	@Override
 	public MultiplayerGameSetup join() throws IOException {
 		MessageObject request = new MessageObject("JOIN");
-		return query(request, new MultiplayerGameSetup(), "LOAD");
+		return query(request, new MultiplayerGameSetup());
 	}
 
 	@Override
@@ -186,19 +182,19 @@ public class RemoteGameClient implements GameAPI {
 	@Override
 	public EmpireStatuses getEmpireStatuses() throws IOException {
 		MessageObject request = new MessageObject("QUERY_EMPIRE_STATUSES");
-		return query(request, new EmpireStatuses(), "EMPIRE_STATUSES");
+		return query(request, new EmpireStatuses());
 	}
 
 	@Override
 	public List<FleetStatus> getFleets() throws IOException {
 		MessageObject request = new MessageObject("QUERY_FLEETS");
-		return queryList(request, new FleetStatus(), "FLEET_STATUSES");
+		return queryList(request, new FleetStatus());
 	}
 
 	@Override
 	public FleetStatus getFleet(int fleetId) throws IOException {
 		MessageObject request = new MessageObject("QUERY_FLEET", "fleetId", fleetId);
-		return query(request, new FleetStatus(), "FLEET_STATUS");
+		return query(request, new FleetStatus());
 	}
 
 	@Override
@@ -223,25 +219,25 @@ public class RemoteGameClient implements GameAPI {
 	@Override
 	public ProductionStatus getProductions() throws IOException {
 		MessageObject request = new MessageObject("QUERY_PRODUCTIONS");
-		return query(request, new ProductionStatus(), "PRODUCTIONS");
+		return query(request, new ProductionStatus());
 	}
 
 	@Override
 	public ResearchStatus getResearches() throws IOException {
 		MessageObject request = new MessageObject("QUERY_RESEARCHES");
-		return query(request, new ResearchStatus(), "RESEARCHES");
+		return query(request, new ResearchStatus());
 	}
 
 	@Override
 	public List<PlanetStatus> getPlanetStatuses() throws IOException {
 		MessageObject request = new MessageObject("QUERY_PLANET_STATUSES");
-		return queryList(request, new PlanetStatus(), "PLANET_STATUSES");
+		return queryList(request, new PlanetStatus());
 	}
 
 	@Override
 	public PlanetStatus getPlanetStatus(String id) throws IOException {
 		MessageObject request = new MessageObject("QUERY_PLANET_STATUS", "planetId", id);
-		return query(request, new PlanetStatus(), "PLANET_STATUS");
+		return query(request, new PlanetStatus());
 	}
 
 	@Override
@@ -317,7 +313,7 @@ public class RemoteGameClient implements GameAPI {
 			}
 			inv.add(mii);
 		}
-		return query(mo, new FleetStatus(), "FLEET_STATUS");
+		return query(mo, new FleetStatus());
 	}
 
 	@Override
@@ -348,7 +344,7 @@ public class RemoteGameClient implements GameAPI {
 	@Override
 	public InventoryItemStatus deployFleetItem(int id, String type) throws IOException {
 		MessageObject request = new MessageObject("DEPLOY_FLEET_ITEM", "fleetId", id, "type", type);
-		return query(request, new InventoryItemStatus(), "INVENTORY");
+		return query(request, new InventoryItemStatus());
 	}
 
 	@Override
@@ -482,7 +478,7 @@ public class RemoteGameClient implements GameAPI {
 		MessageObject request = new MessageObject("DEPLOY_PLANET_ITEM", 
 						"planetId", planetId, "type", type
 						);
-		return query(request, new InventoryItemStatus(), "INVENTORY");
+		return query(request, new InventoryItemStatus());
 	}
 
 	@Override
@@ -689,19 +685,19 @@ public class RemoteGameClient implements GameAPI {
 	@Override
 	public List<BattleStatus> getBattles() throws IOException {
 		MessageObject request = new MessageObject("QUERY_BATTLES");
-		return queryList(request, new BattleStatus(), "BATTLES");
+		return queryList(request, new BattleStatus());
 	}
 
 	@Override
 	public BattleStatus getBattle(int battleId) throws IOException {
 		MessageObject request = new MessageObject("QUERY_BATTLE", "battleId", battleId);
-		return query(request, new BattleStatus(), "BATTLE");
+		return query(request, new BattleStatus());
 	}
 
 	@Override
 	public List<SpaceBattleUnit> getSpaceBattleUnits(int battleId) throws IOException {
 		MessageObject request = new MessageObject("QUERY_SPACE_BATTLE_UNITS", "battleId", battleId);
-		return queryList(request, new SpaceBattleUnit(), "SPACE_BATTLE_UNITS");
+		return queryList(request, new SpaceBattleUnit());
 	}
 
 	@Override
@@ -764,6 +760,6 @@ public class RemoteGameClient implements GameAPI {
 	@Override
 	public List<GroundBattleUnit> getGroundBattleUnits(int battleId) throws IOException {
 		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS", "battleId", battleId);
-		return queryList(request, new GroundBattleUnit(), "GROUND_BATTLE_UNITS");
+		return queryList(request, new GroundBattleUnit());
 	}
 }

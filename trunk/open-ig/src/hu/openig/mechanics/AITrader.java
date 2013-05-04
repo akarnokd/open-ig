@@ -154,11 +154,12 @@ public class AITrader implements AIManager {
 				fleets.add(tf);
 			}
 		}
-		Set<Player> drs = U.newHashSet();
+		Set<String> drs = U.newHashSet();
 		for (DiplomaticRelation dr0 : world.relations) {
-			if (dr0.first == world.player || dr0.second == world.player) {
+			if (dr0.first.equals(world.player.id) 
+					|| dr0.second.equals(world.player.id)) {
 				if (dr0.tradeAgreement) {
-					if (dr0.first == world.player) {
+					if (dr0.first.equals(world.player.id)) {
 						drs.add(dr0.second);
 					} else {
 						drs.add(dr0.first);
@@ -171,7 +172,7 @@ public class AITrader implements AIManager {
 			if (pl.owner != null) {
 				if (pl.owner == world.player 
 						|| (pl.owner != null && pl.owner == player)
-						|| drs.contains(pl.owner)) {
+						|| drs.contains(pl.owner.id)) {
 					planets.add(pl);
 				}
 			}

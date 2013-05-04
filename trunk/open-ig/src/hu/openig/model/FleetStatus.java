@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Func0;
 import hu.openig.net.MessageObject;
 
 import java.awt.geom.Point2D;
@@ -19,7 +18,7 @@ import java.util.List;
  * Record for a fleet status.
  * @author akarnokd, 2013.04.27.
  */
-public class FleetStatus implements MessageObjectIO, Func0<FleetStatus> {
+public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<FleetStatus> {
 	/** The fleet's unique identifier. */
 	public int id;
 	/** The knowledge about the fleet. */
@@ -65,5 +64,13 @@ public class FleetStatus implements MessageObjectIO, Func0<FleetStatus> {
 	@Override
 	public FleetStatus invoke() {
 		return new FleetStatus();
+	}
+	@Override
+	public String name() {
+		return "FLEET_STATUS";
+	}
+	@Override
+	public String arrayName() {
+		return "FLEET_STATUSES";
 	}
 }

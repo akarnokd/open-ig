@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Func0;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
  * A planet's status.
  * @author akarnokd, 2013.04.27.
  */
-public class PlanetStatus implements MessageObjectIO, Func0<PlanetStatus> {
+public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<PlanetStatus> {
 	/** The planet's identifier. */
 	public String id;
 	/** 
@@ -69,5 +68,13 @@ public class PlanetStatus implements MessageObjectIO, Func0<PlanetStatus> {
 	@Override
 	public PlanetStatus invoke() {
 		return new PlanetStatus();
+	}
+	@Override
+	public String arrayName() {
+		return "PLANET_STATUSES";
+	}
+	@Override
+	public String name() {
+		return "PLANET_STATUS";
 	}
 }

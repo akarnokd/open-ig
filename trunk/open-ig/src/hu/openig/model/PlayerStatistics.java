@@ -8,10 +8,14 @@
 
 package hu.openig.model;
 
+import hu.openig.core.LongField;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The per player statistics.
@@ -19,183 +23,146 @@ import java.lang.reflect.Field;
  */
 public class PlayerStatistics {
 	/** Total positive money income. */
-	public long moneyIncome;
+	public LongField moneyIncome;
 	/** The total trade income. */
-	public long moneyTradeIncome;
+	public LongField moneyTradeIncome;
 	/** The total tax income. */
-	public long moneyTaxIncome;
+	public LongField moneyTaxIncome;
 	/** The total demolish income. */
-	public long moneyDemolishIncome;
+	public LongField moneyDemolishIncome;
 	/** The income from selling equipment. */
-	public long moneySellIncome;
+	public LongField moneySellIncome;
 	/** Total money spent. */
-	public long moneySpent;
+	public LongField moneySpent;
 	/** The money spent on building. */
-	public long moneyBuilding;
+	public LongField moneyBuilding;
 	/** The money spent on repairing. */
-	public long moneyRepair;
+	public LongField moneyRepair;
 	/** The money spent on research. */
-	public long moneyResearch;
+	public LongField moneyResearch;
 	/** The money spent on production. */
-	public long moneyProduction;
+	public LongField moneyProduction;
 	/** The money spent on upgrading. */
-	public long moneyUpgrade;
+	public LongField moneyUpgrade;
 	/** The total build count. */
-	public long buildCount;
+	public LongField buildCount;
 	/** The demolish count. */
-	public long demolishCount;
+	public LongField demolishCount;
 	/** The sell count. */
-	public long sellCount;
+	public LongField sellCount;
 	/** The research count. */
-	public long researchCount;
+	public LongField researchCount;
 	/** The production count. */
-	public long productionCount;
+	public LongField productionCount;
 	/** The upgrade count. */
-	public long upgradeCount;
+	public LongField upgradeCount;
 	/** Number of planets owned. */
-	public long planetsOwned;
+	public LongField planetsOwned;
 	/** Number of planets discovered. */
-	public long planetsDiscovered;
+	public LongField planetsDiscovered;
 	/** Number of planets conquered. */
-	public long planetsConquered;
+	public LongField planetsConquered;
 	/** Number of planets colonized. */
-	public long planetsColonized;
+	public LongField planetsColonized;
 	/** Number of planets lost to the enemy. */
-	public long planetsLost;
+	public LongField planetsLost;
 	/** Planets lost to aliens (non pirates). */
-	public long planetsLostAlien;
+	public LongField planetsLostAlien;
 	/** Number of planets lost due revolts. */
-	public long planetsRevolted;
+	public LongField planetsRevolted;
 	/** Number of planets lost due it died out. */
-	public long planetsDied;
+	public LongField planetsDied;
 	/** Number of fought space battles. */
-	public long spaceBattles;
+	public LongField spaceBattles;
 	/** Number of fought ground battles. */
-	public long groundBattles;
+	public LongField groundBattles;
 	/** Number of space wins. */
-	public long spaceWins;
+	public LongField spaceWins;
 	/** Number of ground wins. */
-	public long groundWins;
+	public LongField groundWins;
 	/** Number of space loses. */
-	public long spaceLoses;
+	public LongField spaceLoses;
 	/** Number of ground loses. */
-	public long groundLoses;
+	public LongField groundLoses;
 	/** Number of space retreats. */
-	public long spaceRetreats;
+	public LongField spaceRetreats;
 	/** Fleets created. */
-	public long fleetsCreated;
+	public LongField fleetsCreated;
 	/** Fleets lost. */
-	public long fleetsLost;
+	public LongField fleetsLost;
 	/** Number of buildings destroyed during battle. TODO gather */
-	public long buildingsDestroyed;
+	public LongField buildingsDestroyed;
 	/** The cost of buildings destroyed. TODO gather  */
-	public long buildingsDestroyedCost;
+	public LongField buildingsDestroyedCost;
 	/** The count of lost buildings. TODO gather  */
-	public long buildingsLost;
+	public LongField buildingsLost;
 	/** The cost of lost buildings. TODO gather */
-	public long buildingsLostCost;
+	public LongField buildingsLostCost;
 	/** Number of ships destroyed. */
-	public long shipsDestroyed;
+	public LongField shipsDestroyed;
 	/** Const of ships destroyed. */
-	public long shipsDestroyedCost;
+	public LongField shipsDestroyedCost;
 	/** Number of ships lost. */
-	public long shipsLost;
+	public LongField shipsLost;
 	/** Cost of ships lost. */
-	public long shipsLostCost;
+	public LongField shipsLostCost;
 	/** Number of vehicles destroyed. TODO gather */
-	public long vehiclesDestroyed;
+	public LongField vehiclesDestroyed;
 	/** Cost of vehicles destroyed. *TODO gather */
-	public long vehiclesDestroyedCost;
+	public LongField vehiclesDestroyedCost;
 	/** Number of vehicles lost. *TODO gather */
-	public long vehiclesLost;
+	public LongField vehiclesLost;
 	/** Cost of vehicles. TODO gather */
-	public long vehiclesLostCost;
+	public LongField vehiclesLostCost;
 	/** Total buildings. */
-	public long totalBuilding;
+	public LongField totalBuilding;
 	/** Total working buildings. */
-	public long totalAvailableBuilding;
+	public LongField totalAvailableBuilding;
 	/** The total population. */
-	public long totalPopulation;
+	public LongField totalPopulation;
 	/** Total available house. */
-	public long totalAvailableHouse;
+	public LongField totalAvailableHouse;
 	/** Total energy demand. */
-	public long totalEnergyDemand;
+	public LongField totalEnergyDemand;
 	/** Total worker demand. */
-	public long totalWorkerDemand;
+	public LongField totalWorkerDemand;
 	/** Total available energy. */
-	public long totalAvailableEnergy;
+	public LongField totalAvailableEnergy;
 	/** Total available food. */
-	public long totalAvailableFood;
+	public LongField totalAvailableFood;
 	/** Total available hospital. */
-	public long totalAvailableHospital;
+	public LongField totalAvailableHospital;
 	/** Total available police. */
-	public long totalAvailablePolice;
+	public LongField totalAvailablePolice;
 	/** The number of mission chats used. */
-	public long chats;
+	public LongField chats;
+	/** The map of fields. */
+	public final Map<String, LongField> fields;
+	/**
+	 * Constructor, initializes the mapping and the fields.
+	 */
+	public PlayerStatistics() {
+		Map<String, LongField> fields = new LinkedHashMap<String, LongField>();
+		for (Field f : getClass().getFields()) {
+			try {
+				LongField lf = new LongField();
+				fields.put(f.getName(), lf);
+				f.set(this, lf);
+			} catch (IllegalArgumentException e) {
+				Exceptions.add(e);
+			} catch (IllegalAccessException e) {
+				Exceptions.add(e);
+			}
+		}
+		this.fields = Collections.unmodifiableMap(fields);
+	}
 	/** @return creates a copy of this object */
 	public PlayerStatistics copy() {
 		PlayerStatistics result = new PlayerStatistics();
-		result.moneyIncome = moneyIncome;
-		result.moneyTradeIncome = moneyTradeIncome;
-		result.moneyTaxIncome = moneyTaxIncome;
-		result.moneyDemolishIncome = moneyDemolishIncome;
-		result.moneySellIncome = moneySellIncome;
-		result.moneySpent = moneySpent;
-		result.moneyBuilding = moneyBuilding;
-		result.moneyRepair = moneyRepair;
-		result.moneyResearch = moneyResearch;
-		result.moneyProduction = moneyProduction;
-		result.moneyUpgrade = moneyUpgrade;
-		result.buildCount = buildCount;
-		result.demolishCount = demolishCount;
-		result.sellCount = sellCount;
-		result.researchCount = researchCount;
-		result.productionCount = productionCount;
-		result.upgradeCount = upgradeCount;
-		result.planetsOwned = planetsOwned;
-		result.planetsDiscovered = planetsDiscovered;
-		result.planetsConquered = planetsConquered;
-		result.planetsColonized = planetsColonized;
-		result.planetsLost = planetsLost;
-		result.planetsLostAlien = planetsLostAlien;
-		result.planetsRevolted = planetsRevolted;
-		result.planetsDied = planetsDied;
-		result.spaceBattles = spaceBattles;
-		result.groundBattles = groundBattles;
-		result.spaceWins = spaceWins;
-		result.groundWins = groundWins;
-		result.spaceLoses = spaceLoses;
-		result.groundLoses = groundLoses;
-		result.spaceRetreats = spaceRetreats;
-		result.fleetsCreated = fleetsCreated;
-		result.fleetsLost = fleetsLost;
-		result.buildingsDestroyed = buildingsDestroyed;
-		result.shipsDestroyed = shipsDestroyed;
-		result.shipsLost = shipsLost;
-		result.totalBuilding = totalBuilding;
-		result.totalAvailableBuilding = totalAvailableBuilding;
-		result.totalPopulation = totalPopulation;
-		result.totalAvailableHouse = totalAvailableHouse;
-		result.totalEnergyDemand = totalEnergyDemand;
-		result.totalWorkerDemand = totalWorkerDemand;
-		result.totalAvailableEnergy = totalAvailableEnergy;
-		result.totalAvailableFood = totalAvailableFood;
-		result.totalAvailableHospital = totalAvailableHospital;
-		result.totalAvailablePolice = totalAvailablePolice;
-		result.chats = chats;
-		
-		result.buildingsDestroyed = buildingsDestroyed;
-		result.buildingsDestroyedCost = buildingsDestroyedCost;
-		result.buildingsLost = buildingsLost;
-		result.buildingsLostCost = buildingsLostCost;
-		result.shipsDestroyed = shipsDestroyed;
-		result.shipsDestroyedCost = shipsDestroyedCost;
-		result.shipsLost = shipsLost;
-		result.shipsLostCost = shipsLostCost;
-		result.vehiclesDestroyed = vehiclesDestroyed;
-		result.vehiclesDestroyedCost = vehiclesDestroyedCost;
-		result.vehiclesLost = vehiclesLost;
-		result.vehiclesLostCost = vehiclesLostCost;
+
+		for (Map.Entry<String, LongField> e : result.fields.entrySet()) {
+			e.getValue().value = fields.get(e.getKey()).value;
+		}
 		
 		return result;
 	}
@@ -204,14 +171,8 @@ public class PlayerStatistics {
 	 * @param target the target XElement
 	 */
 	public void save(XElement target) {
-		for (Field f : getClass().getFields()) {
-			try {
-				target.set(f.getName(), f.get(this));
-			} catch (IllegalArgumentException e) {
-				Exceptions.add(e);
-			} catch (IllegalAccessException e) {
-				Exceptions.add(e);
-			}
+		for (Map.Entry<String, LongField> e : fields.entrySet()) {
+			target.set(e.getKey(), e.getValue().value);
 		}
 	}
 	/**
@@ -219,48 +180,15 @@ public class PlayerStatistics {
 	 * @param source the source
 	 */
 	public void load(XElement source) {
-		for (Field f : getClass().getFields()) {
-			try {
-				String s = source.get(f.getName(), null);
-				if (f.getType() == Integer.TYPE) {
-					if (s != null) {
-						f.set(this, Integer.parseInt(s));
-					} else {
-						f.set(this, 0);
-					}
-				} else
-				if (f.getType() == Long.TYPE) {
-					if (s != null) {
-						f.set(this, Long.parseLong(s));
-					} else {
-						f.set(this, 0L);
-					}
-				} else
-				if (f.getType() == Float.TYPE) {
-					if (s != null) {
-						f.set(this, Float.parseFloat(s));
-					} else {
-						f.set(this, 0f);
-					}
-				} else
-				if (f.getType() == Double.TYPE) {
-					if (s != null) {
-						f.set(this, Double.parseDouble(s));
-					} else {
-						f.set(this, 0d);
-					}
-				} else
-				if (f.getType() == Boolean.TYPE) {
-					if (s != null) {
-						f.set(this, "true".equals(s));
-					} else {
-						f.set(this, false);
-					}
+		for (Map.Entry<String, LongField> e : fields.entrySet()) {
+			String s = source.get(e.getKey(), null);
+			e.getValue().value = 0;
+			if (s != null) {
+				try {
+					e.getValue().value = Long.parseLong(s);
+				} catch (NumberFormatException ex) {
+					Exceptions.add(ex);
 				}
-			} catch (IllegalArgumentException e) {
-				Exceptions.add(e);
-			} catch (IllegalAccessException e) {
-				Exceptions.add(e);
 			}
 		}
 	}

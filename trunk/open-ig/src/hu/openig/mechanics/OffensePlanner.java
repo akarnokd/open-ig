@@ -712,10 +712,10 @@ public class OffensePlanner extends Planner {
 						
 						long money = key.productionCost * 1L * value / 2;
 						p.addMoney(money);
-						p.statistics.moneyIncome += money;
-						p.statistics.moneySellIncome += money;
-						p.world.statistics.moneyIncome += money;
-						p.world.statistics.moneySellIncome += money;
+						p.statistics.moneyIncome.value += money;
+						p.statistics.moneySellIncome.value += money;
+						p.world.statistics.moneyIncome.value += money;
+						p.world.statistics.moneySellIncome.value += money;
 						
 						log("SellOldTechnology, Technology = %s, Amount = %s, Money = %s", key.id, value, money);
 					}

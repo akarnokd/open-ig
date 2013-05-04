@@ -9,13 +9,14 @@
 package hu.openig.core;
 
 /**
- * An action without parameters and a throws.
+ * An action without parameters.
  * @author akarnokd, 2011.12.08.
+ * @param <E> the exception
  */
-public interface Action0 {
+public interface Action0E<E extends Exception> {
 	/**
 	 * Invoke the action.
-	 * @throws
+	 * @throws E on error
 	 */
-	void invoke();
+	void invoke() throws E;
 }

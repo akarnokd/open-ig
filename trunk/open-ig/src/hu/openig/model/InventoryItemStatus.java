@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Func0;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
  * The inventory item status record.
  * @author akarnokd, 2013.04.27.
  */
-public class InventoryItemStatus implements MessageObjectIO, Func0<InventoryItemStatus> {
+public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFactory<InventoryItemStatus> {
 	/** The inventory id. */
 	public int id;
 	/** The research type. */
@@ -58,5 +57,13 @@ public class InventoryItemStatus implements MessageObjectIO, Func0<InventoryItem
 	@Override
 	public InventoryItemStatus invoke() {
 		return new InventoryItemStatus();
+	}
+	@Override
+	public String arrayName() {
+		return "INVENTORIES";
+	}
+	@Override
+	public String name() {
+		return "INVENTORY";
 	}
 }

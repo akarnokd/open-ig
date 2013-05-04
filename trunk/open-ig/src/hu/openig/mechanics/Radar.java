@@ -171,10 +171,10 @@ public final class Radar {
 		// share radar knowledge
 		for (Player p : world.players.values()) {
 			for (DiplomaticRelation dr : world.relations) {
-				if ((dr.first == p || dr.second == p) 
+				if ((dr.first.equals(p.id) || dr.second.equals(p.id)) 
 						&& dr.value >= world.params().radarShareLimit()
 						&& !dr.alliancesAgainst.isEmpty()) {
-					Player p2 = (dr.first == p) ? dr.second : dr.first;
+					Player p2 = world.players.get((dr.first.equals(p.id)) ? dr.second : dr.first);
 					
 					for (Map.Entry<Fleet, FleetKnowledge> fe : p.fleets.entrySet()) {
 						updateKnowledge(world, p2, fe.getKey(), fe.getValue());
@@ -201,7 +201,7 @@ public final class Radar {
 	static void updateKnowledge(World world, Player player, Planet planet, PlanetKnowledge k) {
 		PlanetKnowledge k0 = player.planets.get(planet);
 		if (k0 == null && planet.owner != player) {
-			player.statistics.planetsDiscovered++;
+			player.statistics.planetsDiscovered.value++;
 
 			player.ai.onDiscoverPlanet(planet);
 			world.scripting.onDiscovered(player, planet);

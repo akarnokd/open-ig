@@ -12,9 +12,7 @@ import hu.openig.core.Action1;
 import hu.openig.core.AsyncException;
 import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
-import hu.openig.core.Func0;
 import hu.openig.core.Scheduler;
-import hu.openig.mechanics.GameAsyncAPI;
 import hu.openig.model.BattleStatus;
 import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
@@ -24,6 +22,7 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.MessageArrayAsync;
+import hu.openig.model.MessageArrayItemFactory;
 import hu.openig.model.MessageObjectAsync;
 import hu.openig.model.MessageObjectIO;
 import hu.openig.model.MessageUtils;
@@ -32,6 +31,7 @@ import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.ProductionStatus;
+import hu.openig.model.RemoteGameAsyncAPI;
 import hu.openig.model.ResearchStatus;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.VoidAsync;
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author akarnokd, 2013.04.30.
  *
  */
-public class RemoteGameAsyncClient implements GameAsyncAPI {
+public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	/**
 	 * Dispatches a list of values to a list of async
 	 * result receivers and notifies another async
@@ -207,15 +207,12 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	 * @param request the request message
 	 * @param out the async result
 	 * @param result the result object that will be loaded with the result value
-	 * @param names the array of names to accept
 	 */
 	protected <T extends MessageObjectIO> void query(
 			MessageSerializable request,
 			AsyncResult<? super T, ? super IOException> out,
-			T result,
-			String... names
-			) {
-		sendDirect(request, new MessageObjectAsync<T>(out, result, names));
+			T result) {
+		sendDirect(request, new MessageObjectAsync<T>(out, result, result.name()));
 	}
 	/**
 	 * Execute a query and parse the result into a list.
@@ -223,15 +220,12 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	 * @param request the request message
 	 * @param out the async result
 	 * @param itemFactory the factory to produce list items
-	 * @param names the array of names to accept
 	 */
 	protected <T extends MessageObjectIO> void queryList(
 			MessageSerializable request,
 			AsyncResult<? super List<T>, ? super IOException> out,
-			Func0<? extends T> itemFactory,
-			String... names
-			) {
-		sendDirect(request, new MessageArrayAsync<T>(out, itemFactory, names));
+			MessageArrayItemFactory<? extends T> itemFactory) {
+		sendDirect(request, new MessageArrayAsync<T>(out, itemFactory, itemFactory.arrayName()));
 	}
 	/**
 	 * Sends a requests and expects a single OK response.
@@ -267,7 +261,7 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 			AsyncResult<? super WelcomeResponse, ? super IOException> out) {
 		MessageObject request = new MessageObject("LOGIN",
 				"user", user, "passphrase", passphrase, "version", version);
-		query(request, out, new WelcomeResponse(), "WELCOME");
+		query(request, out, new WelcomeResponse());
 	}
 	@Override
 	public void relogin(String sessionId,
@@ -286,7 +280,7 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	public void getGameDefinition(
 			AsyncResult<? super MultiplayerDefinition, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_GAME_DEFINITION");
-		query(request, out, new MultiplayerDefinition(), "GAME_DEFINITION");
+		query(request, out, new MultiplayerDefinition());
 	}
 	@Override
 	public void choosePlayerSettings(MultiplayerUser user,
@@ -299,7 +293,7 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	public void join(
 			AsyncResult<? super MultiplayerGameSetup, ? super IOException> out) {
 		MessageObject request = new MessageObject("JOIN");
-		query(request, out, new MultiplayerGameSetup(), "LOAD");
+		query(request, out, new MultiplayerGameSetup());
 	}
 
 	@Override
@@ -312,21 +306,21 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	public void getEmpireStatuses(
 			AsyncResult<? super EmpireStatuses, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_EMPIRE_STATUSES");
-		query(request, out, new EmpireStatuses(), "EMPIRE_STATUSES");
+		query(request, out, new EmpireStatuses());
 	}
 
 	@Override
 	public void getFleets(
 			AsyncResult<? super List<FleetStatus>, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_FLEETS");
-		queryList(request, out, new FleetStatus(), "FLEET_STATUSES");
+		queryList(request, out, new FleetStatus());
 	}
 
 	@Override
 	public void getFleet(int fleetId,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_FLEET", "fleetId", fleetId);
-		query(request, out, new FleetStatus(), "FLEET_STATUS");
+		query(request, out, new FleetStatus());
 	}
 
 	@Override
@@ -356,28 +350,28 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	public void getProductions(
 			AsyncResult<? super ProductionStatus, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_PRODUCTIONS");
-		query(request, out, new ProductionStatus(), "PRODUCTIONS");
+		query(request, out, new ProductionStatus());
 	}
 
 	@Override
 	public void getResearches(
 			AsyncResult<? super ResearchStatus, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_RESEARCHES");
-		query(request, out, new ResearchStatus(), "RESEARCHES");
+		query(request, out, new ResearchStatus());
 	}
 
 	@Override
 	public void getPlanetStatuses(
 			AsyncResult<? super List<PlanetStatus>, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_PLANET_STATUSES");
-		queryList(request, out, new PlanetStatus(), "PLANET_STATUSES");
+		queryList(request, out, new PlanetStatus());
 	}
 
 	@Override
 	public void getPlanetStatus(String id,
 			AsyncResult<? super PlanetStatus, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_PLANET_STATUS", "planetId", id);
-		query(request, out, new PlanetStatus(), "PLANET_STATUS");
+		query(request, out, new PlanetStatus());
 	}
 
 	@Override
@@ -462,7 +456,7 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 			}
 			inv.add(mii);
 		}
-		query(mo, out, new FleetStatus(), "FLEET_STATUS");
+		query(mo, out, new FleetStatus());
 	}
 
 	@Override
@@ -498,7 +492,7 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	public void deployFleetItem(int id, String type,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
 		MessageObject request = new MessageObject("DEPLOY_FLEET_ITEM", "fleetId", id, "type", type);
-		query(request, out, new InventoryItemStatus(), "INVENTORY");
+		query(request, out, new InventoryItemStatus());
 	}
 
 	@Override
@@ -651,7 +645,7 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 		MessageObject request = new MessageObject("DEPLOY_PLANET_ITEM", 
 						"planetId", planetId, "type", type
 						);
-		query(request, out, new InventoryItemStatus(), "INVENTORY");
+		query(request, out, new InventoryItemStatus());
 	}
 
 	@Override
@@ -883,21 +877,21 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	public void getBattles(
 			AsyncResult<? super List<BattleStatus>, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_BATTLES");
-		queryList(request, out, new BattleStatus(), "BATTLES");
+		queryList(request, out, new BattleStatus());
 	}
 
 	@Override
 	public void getBattle(int battleId,
 			AsyncResult<? super BattleStatus, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_BATTLE", "battleId", battleId);
-		query(request, out, new BattleStatus(), "BATTLE");
+		query(request, out, new BattleStatus());
 	}
 
 	@Override
 	public void getSpaceBattleUnits(int battleId,
 			AsyncResult<? super List<SpaceBattleUnit>, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_SPACE_BATTLE_UNITS", "battleId", battleId);
-		queryList(request, out, new SpaceBattleUnit(), "SPACE_BATTLE_UNITS");
+		queryList(request, out, new SpaceBattleUnit());
 	}
 
 	@Override
@@ -968,6 +962,6 @@ public class RemoteGameAsyncClient implements GameAsyncAPI {
 	public void getGroundBattleUnits(int battleId,
 			AsyncResult<? super List<GroundBattleUnit>, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS", "battleId", battleId);
-		queryList(request, out, new GroundBattleUnit(), "GROUND_BATTLE_UNITS");
+		queryList(request, out, new GroundBattleUnit());
 	}
 }

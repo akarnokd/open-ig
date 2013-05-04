@@ -19,10 +19,10 @@ import java.util.Set;
  * @author akarnokd, 2012.03.19.
  */
 public class DiplomaticRelation {
-	/** The first player who made the contact. */
-	public Player first;
-	/** The second player who made the contact. */
-	public Player second;
+	/** The first player ID who made the contact. */
+	public String first;
+	/** The second player ID who made the contact. */
+	public String second;
 	/** Indicate that the secondary side has also discovered the first. */
 	public boolean full;
 	/** The relation value, 0..100. */
@@ -38,7 +38,7 @@ public class DiplomaticRelation {
 	/**
 	 * The set of common enemies.
 	 */
-	public final Set<Player> alliancesAgainst = U.newHashSet();
+	public final Set<String> alliancesAgainst = U.newHashSet();
 	/** @return a copy of this record. */
 	public DiplomaticRelation copy() {
 		DiplomaticRelation dr = new DiplomaticRelation();

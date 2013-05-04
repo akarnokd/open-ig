@@ -340,7 +340,7 @@ public class Player {
 	 * @return does this player know the other player? */
 	public boolean knows(Player p) {
 		DiplomaticRelation dr = world.getRelation(this, p);
-		return dr != null && (dr.second == p || (dr.first == p && dr.full));
+		return dr != null && (dr.second.equals(p.id) || (dr.first.equals(p.id) && dr.full));
 	}
 	/**
 	 * @return the set ow known players
@@ -348,11 +348,11 @@ public class Player {
 	public Map<Player, DiplomaticRelation> knownPlayers() {
 		Map<Player, DiplomaticRelation> result = U.newLinkedHashMap();
 		for (DiplomaticRelation dr : world.relations) {
-			if (dr.first == this) {
-				result.put(dr.second, dr);
+			if (dr.first.equals(id)) {
+				result.put(world.players.get(dr.second), dr);
 			}
-			if (dr.second == this && dr.full) {
-				result.put(dr.first, dr);
+			if (dr.second.equals(id) && dr.full) {
+				result.put(world.players.get(dr.first), dr);
 			}
 		}
 		return result;

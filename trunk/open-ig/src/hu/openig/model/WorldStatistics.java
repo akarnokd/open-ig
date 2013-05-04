@@ -8,10 +8,14 @@
 
 package hu.openig.model;
 
+import hu.openig.core.LongField;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * The global world statistics.
@@ -19,76 +23,100 @@ import java.lang.reflect.Field;
  */
 public class WorldStatistics {
 	/** The seconds spent in game. */
-	public long playTime;
+	public LongField playTime;
 	/** The seconds spent running the game simulation. */ 
-	public long simulationTime;
+	public LongField simulationTime;
 	/** Total positive money income. */
-	public long moneyIncome;
+	public LongField moneyIncome;
 	/** The total trade income. */
-	public long moneyTradeIncome;
+	public LongField moneyTradeIncome;
 	/** The total tax income. */
-	public long moneyTaxIncome;
+	public LongField moneyTaxIncome;
 	/** The total demolish income. */
-	public long moneyDemolishIncome;
+	public LongField moneyDemolishIncome;
 	/** The income from selling equipment. */
-	public long moneySellIncome;
+	public LongField moneySellIncome;
 	/** Total money spent. */
-	public long moneySpent;
+	public LongField moneySpent;
 	/** The money spent on building. */
-	public long moneyBuilding;
+	public LongField moneyBuilding;
 	/** The money spent on repairing. */
-	public long moneyRepair;
+	public LongField moneyRepair;
 	/** The money spent on research. */
-	public long moneyResearch;
+	public LongField moneyResearch;
 	/** The money spent on production. */
-	public long moneyProduction;
+	public LongField moneyProduction;
 	/** The money spent on upgrading. */
-	public long moneyUpgrade;
+	public LongField moneyUpgrade;
 	/** The total build count. */
-	public long buildCount;
+	public LongField buildCount;
 	/** The demolish count. */
-	public long demolishCount;
+	public LongField demolishCount;
 	/** The sell count. */
-	public long sellCount;
+	public LongField sellCount;
 	/** The research count. */
-	public long researchCount;
+	public LongField researchCount;
 	/** The production count. */
-	public long productionCount;
+	public LongField productionCount;
 	/** The upgrade count. */
-	public long upgradeCount;
+	public LongField upgradeCount;
 	/** Total buildings. */
-	public long totalBuilding;
+	public LongField totalBuilding;
 	/** Total working buildings. */
-	public long totalAvailableBuilding;
+	public LongField totalAvailableBuilding;
 	/** The total population. */
-	public long totalPopulation;
+	public LongField totalPopulation;
 	/** Total available house. */
-	public long totalAvailableHouse;
+	public LongField totalAvailableHouse;
 	/** Total energy demand. */
-	public long totalEnergyDemand;
+	public LongField totalEnergyDemand;
 	/** Total worker demand. */
-	public long totalWorkerDemand;
+	public LongField totalWorkerDemand;
 	/** Total available energy. */
-	public long totalAvailableEnergy;
+	public LongField totalAvailableEnergy;
 	/** Total available food. */
-	public long totalAvailableFood;
+	public LongField totalAvailableFood;
 	/** Total available hospital. */
-	public long totalAvailableHospital;
+	public LongField totalAvailableHospital;
 	/** Total available police. */
-	public long totalAvailablePolice;
+	public LongField totalAvailablePolice;
+	/** The map of fields. */
+	public final Map<String, LongField> fields;
 	/**
-	 * Save the statistics.
-	 * @param target the target XElement
+	 * Constructor, initializes the mapping and the fields.
 	 */
-	public void save(XElement target) {
+	public WorldStatistics() {
+		Map<String, LongField> fields = new LinkedHashMap<String, LongField>();
 		for (Field f : getClass().getFields()) {
 			try {
-				target.set(f.getName(), f.get(this));
+				LongField lf = new LongField();
+				fields.put(f.getName(), lf);
+				f.set(this, lf);
 			} catch (IllegalArgumentException e) {
 				Exceptions.add(e);
 			} catch (IllegalAccessException e) {
 				Exceptions.add(e);
 			}
+		}
+		this.fields = Collections.unmodifiableMap(fields);
+	}
+	/** @return creates a copy of this object */
+	public PlayerStatistics copy() {
+		PlayerStatistics result = new PlayerStatistics();
+
+		for (Map.Entry<String, LongField> e : result.fields.entrySet()) {
+			e.getValue().value = fields.get(e.getKey()).value;
+		}
+		
+		return result;
+	}
+	/**
+	 * Save the statistics.
+	 * @param target the target XElement
+	 */
+	public void save(XElement target) {
+		for (Map.Entry<String, LongField> e : fields.entrySet()) {
+			target.set(e.getKey(), e.getValue().value);
 		}
 	}
 	/**
@@ -96,48 +124,15 @@ public class WorldStatistics {
 	 * @param source the source
 	 */
 	public void load(XElement source) {
-		for (Field f : getClass().getFields()) {
-			try {
-				String s = source.get(f.getName(), null);
-				if (f.getType() == Integer.TYPE) {
-					if (s != null) {
-						f.set(this, Integer.parseInt(s));
-					} else {
-						f.set(this, 0);
-					}
-				} else
-				if (f.getType() == Long.TYPE) {
-					if (s != null) {
-						f.set(this, Long.parseLong(s));
-					} else {
-						f.set(this, 0L);
-					}
-				} else
-				if (f.getType() == Float.TYPE) {
-					if (s != null) {
-						f.set(this, Float.parseFloat(s));
-					} else {
-						f.set(this, 0f);
-					}
-				} else
-				if (f.getType() == Double.TYPE) {
-					if (s != null) {
-						f.set(this, Double.parseDouble(s));
-					} else {
-						f.set(this, 0d);
-					}
-				} else
-				if (f.getType() == Boolean.TYPE) {
-					if (s != null) {
-						f.set(this, "true".equals(s));
-					} else {
-						f.set(this, false);
-					}
+		for (Map.Entry<String, LongField> e : fields.entrySet()) {
+			String s = source.get(e.getKey(), null);
+			e.getValue().value = 0;
+			if (s != null) {
+				try {
+					e.getValue().value = Long.parseLong(s);
+				} catch (NumberFormatException ex) {
+					Exceptions.add(ex);
 				}
-			} catch (IllegalArgumentException e) {
-				Exceptions.add(e);
-			} catch (IllegalAccessException e) {
-				Exceptions.add(e);
 			}
 		}
 	}
