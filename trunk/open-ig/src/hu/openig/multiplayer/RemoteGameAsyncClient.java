@@ -13,26 +13,26 @@ import hu.openig.core.AsyncException;
 import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
 import hu.openig.core.Scheduler;
+import hu.openig.model.BattleStatus;
+import hu.openig.model.EmpireStatuses;
+import hu.openig.model.FleetStatus;
+import hu.openig.model.FleetTransferMode;
+import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.MessageArrayAsync;
+import hu.openig.model.MessageObjectAsync;
+import hu.openig.model.MessageUtils;
 import hu.openig.model.MultiplayerDefinition;
+import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
-import hu.openig.multiplayer.model.BattleStatus;
-import hu.openig.multiplayer.model.EmpireStatuses;
-import hu.openig.multiplayer.model.FleetStatus;
-import hu.openig.multiplayer.model.FleetTransferMode;
-import hu.openig.multiplayer.model.GroundBattleUnit;
-import hu.openig.multiplayer.model.InventoryItemStatus;
-import hu.openig.multiplayer.model.MessageArrayAsync;
-import hu.openig.multiplayer.model.MessageObjectAsync;
-import hu.openig.multiplayer.model.MessageUtils;
-import hu.openig.multiplayer.model.MultiplayerGameSetup;
-import hu.openig.multiplayer.model.PlanetStatus;
-import hu.openig.multiplayer.model.ProductionStatus;
-import hu.openig.multiplayer.model.ResearchStatus;
-import hu.openig.multiplayer.model.SpaceBattleUnit;
-import hu.openig.multiplayer.model.VoidAsync;
-import hu.openig.multiplayer.model.WelcomeResponse;
+import hu.openig.model.PlanetStatus;
+import hu.openig.model.ProductionStatus;
+import hu.openig.model.ResearchStatus;
+import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.VoidAsync;
+import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageClient;
@@ -741,73 +741,88 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void stopSpaceUnit(int unitId,
+	public void stopSpaceUnit(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("STOP_SPACE_UNIT",
+				"battleId", battleId,
+				"unitId", unitId), voidOk(out));
 	}
 
 	@Override
-	public void moveSpaceUnit(int unitId, double x, double y,
+	public void moveSpaceUnit(int battleId, int unitId, double x, double y,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("MOVE_SPACE_UNIT",
+				"battleId", battleId,
+				"unitId", unitId,
+				"x", x, "y", y
+				), voidOk(out));
 	}
 
 	@Override
-	public void attackSpaceUnit(int unitId, int targetUnitId,
+	public void attackSpaceUnit(int battleId, int unitId, int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("ATTACK_SPACE_UNIT",
+				"battleId", battleId,
+				"unitId", unitId,
+				"target", targetUnitId
+				), voidOk(out));
 	}
 
 	@Override
-	public void kamikazeSpaceUnit(int unitId,
+	public void kamikazeSpaceUnit(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("KAMIKAZE_SPACE_UNIT",
+				"battleId", battleId,
+				"unitId", unitId), voidOk(out));
 	}
 
 	@Override
-	public void fireSpaceRocket(int unitId, int targetUnitId,
+	public void fireSpaceRocket(int battleId, int unitId, int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("FIRE_SPACE_ROCKET",
+				"battleId", battleId,
+				"unitId", unitId,
+				"target", targetUnitId), voidOk(out));
 	}
 
 	@Override
 	public void spaceRetreat(int battleId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("SPACE_RETREAT",
+				"battleId", battleId
+				), voidOk(out));
 	}
 
 	@Override
 	public void stopSpaceRetreat(int battleId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("STOP_SPACE_RETREAT",
+				"battleId", battleId
+				), voidOk(out));
 	}
 
 	@Override
 	public void fleetFormation(int fleetId, int formation,
 			AsyncResult<? super Void, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("FLEET_FORMATION",
+				"fleetId", fleetId,
+				"formation", formation), voidOk(out));
 	}
 
 	@Override
 	public void getBattles(
 			AsyncResult<? super List<BattleStatus>, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_BATTLES"),
+				new MessageArrayAsync<BattleStatus>(out, new BattleStatus(), "BATTLES")
+				);
 	}
 
 	@Override
 	public void getBattle(int battleId,
 			AsyncResult<? super BattleStatus, ? super IOException> out) {
-		// TODO Auto-generated method stub
-		
+		send(new MessageObject("QUERY_BATTLE", "battleId", battleId),
+				new MessageObjectAsync<BattleStatus>(out, new BattleStatus(), "BATTLE")
+				);
 	}
 
 	@Override
@@ -818,35 +833,35 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void stopGroundUnit(int unitId,
+	public void stopGroundUnit(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void moveGroundUnit(int unitId, int x, int y,
+	public void moveGroundUnit(int battleId, int unitId, int x, int y,
 			AsyncResult<? super Void, ? super IOException> out) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void attackGroundUnit(int unitId, int targetUnitId,
+	public void attackGroundUnit(int battleId, int unitId, int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void attackBuilding(int unitId, int buildingId,
+	public void attackBuilding(int battleId, int unitId, int buildingId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void deployMine(int unitId,
+	public void deployMine(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
 		// TODO Auto-generated method stub
 		

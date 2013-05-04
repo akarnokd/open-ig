@@ -9,21 +9,21 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.AsyncResult;
+import hu.openig.model.BattleStatus;
+import hu.openig.model.EmpireStatuses;
+import hu.openig.model.FleetStatus;
+import hu.openig.model.FleetTransferMode;
+import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MultiplayerDefinition;
+import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
-import hu.openig.multiplayer.model.BattleStatus;
-import hu.openig.multiplayer.model.EmpireStatuses;
-import hu.openig.multiplayer.model.FleetStatus;
-import hu.openig.multiplayer.model.FleetTransferMode;
-import hu.openig.multiplayer.model.GroundBattleUnit;
-import hu.openig.multiplayer.model.InventoryItemStatus;
-import hu.openig.multiplayer.model.MultiplayerGameSetup;
-import hu.openig.multiplayer.model.PlanetStatus;
-import hu.openig.multiplayer.model.ProductionStatus;
-import hu.openig.multiplayer.model.ResearchStatus;
-import hu.openig.multiplayer.model.SpaceBattleUnit;
-import hu.openig.multiplayer.model.WelcomeResponse;
+import hu.openig.model.PlanetStatus;
+import hu.openig.model.ProductionStatus;
+import hu.openig.model.ResearchStatus;
+import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.WelcomeResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -496,39 +496,44 @@ public interface RemoteGameAsyncAPI {
 	void unpauseResearch(AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Stop a space unit.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param out the async result or the error
 	 */
-	void stopSpaceUnit(int unitId, AsyncResult<? super Void, ? super IOException> out);
+	void stopSpaceUnit(int battleId, int unitId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Move a space unit to the designated coordinates.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param x the coordinate
 	 * @param y the coordinate
 	 * @param out the async result or the error
 	 */
-	void moveSpaceUnit(int unitId, double x, double y, AsyncResult<? super Void, ? super IOException> out);
+	void moveSpaceUnit(int battleId, int unitId, double x, double y, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Attack another space unit.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param targetUnitId the target unit id
 	 * @param out the async result or the error
 	 */
-	void attackSpaceUnit(int unitId, int targetUnitId, AsyncResult<? super Void, ? super IOException> out);
+	void attackSpaceUnit(int battleId, int unitId, int targetUnitId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Set the unit into kamikaze mode.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param out the async result or the error
 	 */
-	void kamikazeSpaceUnit(int unitId, AsyncResult<? super Void, ? super IOException> out);
+	void kamikazeSpaceUnit(int battleId, int unitId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Instruct the unit to fire rockets and/or bombs at
 	 * the target unit.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param targetUnitId the target unit id
 	 * @param out the async result or the error
 	 */
-	void fireSpaceRocket(int unitId, int targetUnitId, AsyncResult<? super Void, ? super IOException> out);
+	void fireSpaceRocket(int battleId, int unitId, int targetUnitId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Perform retreat in the given space battle.
 	 * @param battleId the battle id
@@ -567,38 +572,43 @@ public interface RemoteGameAsyncAPI {
 	void getSpaceBattleUnits(int battleId, AsyncResult<? super List<SpaceBattleUnit>, ? super IOException> out);
 	/**
 	 * Stop a ground unit.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param out the async result or the error
 	 */
-	void stopGroundUnit(int unitId, AsyncResult<? super Void, ? super IOException> out);
+	void stopGroundUnit(int battleId, int unitId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Move a ground unit into the given cell.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param x the coordinate
 	 * @param y the coordinate
 	 * @param out the async result or the error
 	 */
-	void moveGroundUnit(int unitId, int x, int y, AsyncResult<? super Void, ? super IOException> out);
+	void moveGroundUnit(int battleId, int unitId, int x, int y, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Attack another ground unit.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param targetUnitId the target unit id
 	 * @param out the async result or the error
 	 */
-	void attackGroundUnit(int unitId, int targetUnitId, AsyncResult<? super Void, ? super IOException> out);
+	void attackGroundUnit(int battleId, int unitId, int targetUnitId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Attack a building with a ground unit.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param buildingId the building id
 	 * @param out the async result or the error
 	 */
-	void attackBuilding(int unitId, int buildingId, AsyncResult<? super Void, ? super IOException> out);
+	void attackBuilding(int battleId, int unitId, int buildingId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Deploy a mine with the given mine layer.
+	 * @param battleId the battle identifier
 	 * @param unitId the unit id
 	 * @param out the async result or the error
 	 */
-	void deployMine(int unitId, AsyncResult<? super Void, ? super IOException> out);
+	void deployMine(int battleId, int unitId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Retreat from ground battle.
 	 * @param battleId the battle id
