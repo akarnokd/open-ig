@@ -6,7 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.multiplayer;
+package hu.openig.mechanics;
 
 import hu.openig.core.AsyncResult;
 import hu.openig.model.BattleStatus;
@@ -33,7 +33,7 @@ import java.util.Map;
  * The asynchronous version of the RemoteGameAPI.
  * @author akarnokd, 2013.04.27.
  */
-public interface RemoteGameAsyncAPI {
+public interface GameAsyncAPI {
 	/**
 	 * Start a batch request.
 	 */
@@ -193,12 +193,6 @@ public interface RemoteGameAsyncAPI {
 	 */
 	void colonize(int id, String target, AsyncResult<? super Void, ? super IOException> out);
 	/**
-	 * Create a new fleet around the given planet.
-	 * @param planet the planet
-	 * @param out the async result or the error
-	 */
-	void newFleet(String planet, AsyncResult<? super FleetStatus, ? super IOException> out);
-	/**
 	 * Create a new fleet around the given planet and
 	 * deploy ships and equipment according to the specification
 	 * given by the list of inventory item.
@@ -207,12 +201,6 @@ public interface RemoteGameAsyncAPI {
 	 * @param out the async result or the error
 	 */
 	void newFleet(String planet, List<InventoryItem> inventory, AsyncResult<? super FleetStatus, ? super IOException> out);
-	/**
-	 * Create a new fleet next to the given fleet.
-	 * @param id the fleet identifier
-	 * @param out the async result or the error
-	 */
-	void newFleet(int id, AsyncResult<? super FleetStatus, ? super IOException> out);
 	/**
 	 * Create a new fleet next to the given other fleet
 	 * and transfer units from it according to the inventory item 
@@ -241,7 +229,7 @@ public interface RemoteGameAsyncAPI {
 	 * @param itemId the inventory item id within the fleet
 	 * @param out the async result or the error
 	 */
-	void sellFleetItem(int id, int itemId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void sellFleetItem(int id, int itemId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Deploy one unit of the given type into the target fleet.
 	 * @param id the fleet id
@@ -255,7 +243,7 @@ public interface RemoteGameAsyncAPI {
 	 * @param itemId the inventory item id within the fleet
 	 * @param out the async result or the error
 	 */
-	void undeployFleetItem(int id, int itemId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void undeployFleetItem(int id, int itemId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Adds one unit of equipment into the given fleet's
 	 * given inventory item's slot.
@@ -265,7 +253,7 @@ public interface RemoteGameAsyncAPI {
 	 * @param type the technology to add
 	 * @param out the async result or the error
 	 */
-	void addFleetEquipment(int id, int itemId, String slotId, String type, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void addFleetEquipment(int id, int itemId, String slotId, String type, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Remove one unit of equipment from the given fleet's
 	 * given inventory items' slot.
@@ -274,7 +262,7 @@ public interface RemoteGameAsyncAPI {
 	 * @param slotId the slot id
 	 * @param out the async result or the error
 	 */
-	void removeFleetEquipment(int id, int itemId, String slotId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void removeFleetEquipment(int id, int itemId, String slotId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Automatically upgrade and fill in fleet items.
 	 * @param id the fleet id
@@ -387,14 +375,14 @@ public interface RemoteGameAsyncAPI {
 	 * @param itemId the inventory item id
 	 * @param out the async result or the error
 	 */
-	void undeployPlanetItem(String planetId, int itemId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void undeployPlanetItem(String planetId, int itemId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Sell an unit from the planet's inventory.
 	 * @param planetId the planet id
 	 * @param itemId the inventory item id
 	 * @param out the async result or the error
 	 */
-	void sellPlanetItem(String planetId, int itemId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void sellPlanetItem(String planetId, int itemId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Add one unit of the given equipment type into the given slot
 	 * of the given inventory item of the given planet.
@@ -404,7 +392,7 @@ public interface RemoteGameAsyncAPI {
 	 * @param type the technology id
 	 * @param out the async result or the error
 	 */
-	void addPlanetEquipment(String planetId, int itemId, String slotId, String type, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void addPlanetEquipment(String planetId, int itemId, String slotId, String type, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Remove one unit of the technology at the given slot, inventory item and planet.
 	 * @param planetId the planet identifier
@@ -412,7 +400,7 @@ public interface RemoteGameAsyncAPI {
 	 * @param slotId the slot id
 	 * @param out the async result or the error
 	 */
-	void removePlanetEquipment(String planetId, int itemId, String slotId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void removePlanetEquipment(String planetId, int itemId, String slotId, AsyncResult<? super Void, ? super IOException> out);
 	/**
 	 * Upgrade the planet inventory to the best technology and
 	 * available item counts.

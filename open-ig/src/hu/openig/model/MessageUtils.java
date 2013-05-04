@@ -27,7 +27,7 @@ public final class MessageUtils {
 	 * Checks if the response object is a MessageObject and
 	 * has the given name.
 	 * @param response the response object
-	 * @param name the name
+	 * @param name the array of expected names; if empty, any array name is accepted
 	 * @return the MessageObject
 	 * @throws IOException if the message is incorrect.
 	 */
@@ -40,6 +40,9 @@ public final class MessageUtils {
 					return mo;
 				}
 			}
+			if (name.length == 0) {
+				return mo;
+			}
 		}
 		throw new ErrorResponse(ErrorType.ERROR_RESPONSE, response != null ? response.toString() : "null");
 	}
@@ -47,7 +50,7 @@ public final class MessageUtils {
 	 * Checks if the response object is a MessageArray and
 	 * has the given name.
 	 * @param response the response object
-	 * @param name the name
+	 * @param name the array of expected names; if empty, any array name is accepted
 	 * @return the MessageArray
 	 * @throws IOException if the message is incorrect.
 	 */
@@ -56,9 +59,12 @@ public final class MessageUtils {
 		if (response instanceof MessageArray) {
 			MessageArray ma = (MessageArray)response;
 			for (String n : name) {
-				if (n.equals(ma)) {
+				if (U.equal(n, ma)) {
 					return ma;
 				}
+			}
+			if (name.length == 0) {
+				return ma;
 			}
 		}
 		throw new ErrorResponse(ErrorType.ERROR_RESPONSE, response != null ? response.toString() : "null");

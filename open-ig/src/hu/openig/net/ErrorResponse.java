@@ -21,6 +21,25 @@ public class ErrorResponse extends IOException {
 	/** The error code. */
 	public final ErrorType code;
 	/**
+	 * Constructor with error code and a cause.
+	 * @param code the error code
+	 * @param cause the original exception
+	 */
+	public ErrorResponse(ErrorType code, Throwable cause) {
+		super(cause);
+		this.code = code;
+	}
+	/**
+	 * Constructor with error code and message.
+	 * @param code the error code
+	 * @param message the error message
+	 * @param cause the original exception
+	 */
+	public ErrorResponse(ErrorType code, String message, Throwable cause) {
+		super(message, cause);
+		this.code = code;
+	}
+	/**
 	 * Constructor with error code.
 	 * @param code the error code
 	 */

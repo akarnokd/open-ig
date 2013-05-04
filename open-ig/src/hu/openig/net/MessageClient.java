@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
  * blocking fashion.
  * @author akarnokd, 2013.04.22.
  */
-public class MessageClient implements Closeable {
+public class MessageClient implements Closeable, MessageClientAPI {
 	/** The backing socket connection. */
 	protected Socket socket;
 	/** The incoming data reader. */
@@ -70,12 +70,7 @@ public class MessageClient implements Closeable {
 		reader = null;
 		writer = null;
 	}
-	/**
-	 * Send a query and parse the response, blocking in the process.
-	 * @param request the request message
-	 * @return the response object
-	 * @throws IOException on communication error or message error
-	 */
+	@Override
 	public Object query(MessageSerializable request) throws IOException {
 		if (writer == null) {
 			throw new IOException("MessageClient not connected");
@@ -84,12 +79,7 @@ public class MessageClient implements Closeable {
 		writer.flush();
 		return MessageObject.parse(reader);
 	}
-	/**
-	 * Send a raw query and parse the response, blocking in the process.
-	 * @param request the request message
-	 * @return the response object or error
-	 * @throws IOException on communication error or message error
-	 */
+	@Override
 	public Object query(CharSequence request) throws IOException {
 		if (writer == null) {
 			throw new IOException("MessageClient not connected");
@@ -99,16 +89,7 @@ public class MessageClient implements Closeable {
 		return MessageObject.parse(reader);
 	}
 	
-	/**
-	 * Send a request and await the answer asynchronously on
-	 * the given thread pool and response processor.
-	 * @param request the request object
-	 * @param waiter the waiter thread pool, should be a single threaded
-	 * or striped thread pool to avoid overlapping reads of subsequent
-	 * async queries.
-	 * @param onResponse the response message receiver, might receive an exception object
-	 * @return the future of the async wait
-	 */
+	@Override
 	public Future<?> query(
 			MessageSerializable request, 
 			Scheduler waiter, 
@@ -126,16 +107,7 @@ public class MessageClient implements Closeable {
 			return waiter.schedule(new AsyncException(ex, onResponse));
 		}
 	}
-	/**
-	 * Send a request and await the answer asynchronously on
-	 * the given thread pool and response processor.
-	 * @param request the request object
-	 * @param waiter the waiter thread pool, should be a single threaded
-	 * or striped thread pool to avoid overlapping reads of subsequent
-	 * async queries.
-	 * @param onResponse the response message receiver, might receive an exception object
-	 * @return the future of the async wait
-	 */
+	@Override
 	public Future<?> query(
 			CharSequence request, 
 			Scheduler waiter, 

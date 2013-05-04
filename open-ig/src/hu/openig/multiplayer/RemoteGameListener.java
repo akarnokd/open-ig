@@ -9,6 +9,7 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.Action2E;
+import hu.openig.mechanics.GameAPI;
 import hu.openig.model.DeferredCall;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
@@ -32,14 +33,14 @@ import javax.swing.SwingUtilities;
  */
 public class RemoteGameListener implements Action2E<MessageConnection, Object, IOException> {
 	/** The game API. */
-	protected final RemoteGameAPI api;
+	protected final GameAPI api;
 	/** Use the EDT to execute the API methods? */
 	protected final boolean useEDT;
 	/**
 	 * Constructor, takes a remote API entry point and uses the EDT to call its methods.
 	 * @param api the API entry point
 	 */
-	public RemoteGameListener(RemoteGameAPI api) {
+	public RemoteGameListener(GameAPI api) {
 		this.api = api;
 		this.useEDT = true;
 	}
@@ -48,7 +49,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	 * @param api the API entry point
 	 * @param useEDT use EDT for the methods?
 	 */
-	public RemoteGameListener(RemoteGameAPI api, boolean useEDT) {
+	public RemoteGameListener(GameAPI api, boolean useEDT) {
 		this.api = api;
 		this.useEDT = useEDT;
 	}

@@ -8,6 +8,9 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Func0;
+import hu.openig.net.MessageObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +18,7 @@ import java.util.List;
  * @author akarnokd, 2013.05.02.
  *
  */
-public class SpaceBattleUnit {
+public class SpaceBattleUnit implements MessageObjectIO, Func0<SpaceBattleUnit> {
 	/** The unit's unique id. */
 	public int id;
 	/** The owner. */
@@ -50,4 +53,18 @@ public class SpaceBattleUnit {
 	public boolean kamikaze;
 	/** The list of equipment statuses. */
 	public final List<EquipmentStatus> equipment = new ArrayList<EquipmentStatus>();
+	@Override
+	public void fromMessage(MessageObject mo) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public MessageObject toMessage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public SpaceBattleUnit invoke() {
+		return new SpaceBattleUnit();
+	}
 }

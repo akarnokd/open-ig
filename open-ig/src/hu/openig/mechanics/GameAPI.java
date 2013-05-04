@@ -6,7 +6,8 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.multiplayer;
+package hu.openig.mechanics;
+
 
 import hu.openig.model.BattleStatus;
 import hu.openig.model.EmpireStatuses;
@@ -34,7 +35,7 @@ import java.util.Map;
  * thread, for example, in EDT.
  * @author akarnokd, 2013.04.22.
  */
-public interface RemoteGameAPI {
+public interface GameAPI {
 	/** 
 	 * Send a simple ping-pong request.
 	 * @return the latency in milliseconds
@@ -213,17 +214,9 @@ public interface RemoteGameAPI {
 	 */
 	void colonize(int id, String target) throws IOException;
 	/**
-	 * Create a new fleet around the given planet.
-	 * @param planet the planet
-	 * @return the created fleet status object
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	FleetStatus newFleet(String planet) throws IOException;
-	/**
 	 * Create a new fleet around the given planet and
 	 * deploy ships and equipment according to the specification
-	 * given by the list of inventory item.
+	 * given by the list of inventory items.
 	 * @param planet the target planet
 	 * @param inventory the target inventory
 	 * @return the created fleet status
@@ -231,14 +224,6 @@ public interface RemoteGameAPI {
 	 * a gameplay related error result.
 	 */
 	FleetStatus newFleet(String planet, List<InventoryItem> inventory) throws IOException;
-	/**
-	 * Create a new fleet next to the given fleet.
-	 * @param id the fleet identifier
-	 * @return the created fleet status object
-	 * @throws IOException on communication error, a ErrorResponse indicates
-	 * a gameplay related error result.
-	 */
-	FleetStatus newFleet(int id) throws IOException;
 	/**
 	 * Create a new fleet next to the given other fleet
 	 * and transfer units from it according to the inventory item 
@@ -269,11 +254,10 @@ public interface RemoteGameAPI {
 	 * Sells one unit from the given fleet inventory item.
 	 * @param id the fleet id
 	 * @param itemId the inventory item id within the fleet
-	 * @return the inventory item status
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus sellFleetItem(int id, int itemId) throws IOException;
+	void sellFleetItem(int id, int itemId) throws IOException;
 	/**
 	 * Deploy one unit of the given type into the target fleet.
 	 * @param id the fleet id
@@ -287,11 +271,10 @@ public interface RemoteGameAPI {
 	 * Undeploy a single fleet item (such as fighters and vehicles).
 	 * @param id the fleet id
 	 * @param itemId the inventory item id within the fleet
-	 * @return the inventory item status
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus undeployFleetItem(int id, int itemId) throws IOException;
+	void undeployFleetItem(int id, int itemId) throws IOException;
 	/**
 	 * Adds one unit of equipment into the given fleet's
 	 * given inventory item's slot.
@@ -299,22 +282,20 @@ public interface RemoteGameAPI {
 	 * @param itemId the inventory item id within the fleet
 	 * @param slotId the slot id
 	 * @param type the technology to add
-	 * @return the inventory item status
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus addFleetEquipment(int id, int itemId, String slotId, String type) throws IOException;
+	void addFleetEquipment(int id, int itemId, String slotId, String type) throws IOException;
 	/**
 	 * Remove one unit of equipment from the given fleet's
 	 * given inventory items' slot.
 	 * @param id the fleet id
 	 * @param itemId the inventory item id within the fleet
 	 * @param slotId the slot id
-	 * @return the inventory item status
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus removeFleetEquipment(int id, int itemId, String slotId) throws IOException;
+	void removeFleetEquipment(int id, int itemId, String slotId) throws IOException;
 	/**
 	 * Automatically upgrade and fill in fleet items.
 	 * @param id the fleet id
@@ -364,7 +345,7 @@ public interface RemoteGameAPI {
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	Integer build(String planetId, String type, String race, int x, int y) throws IOException;
+	int build(String planetId, String type, String race, int x, int y) throws IOException;
 	/**
 	 * Place a building on the given planet at a suitable location
 	 * (using the same placement logic as the AI would).
@@ -375,7 +356,7 @@ public interface RemoteGameAPI {
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	Integer build(String planetId, String type, String race) throws IOException;
+	int build(String planetId, String type, String race) throws IOException;
 	/**
 	 * Enable a specific building on the planet.
 	 * @param planetId the planet id
@@ -442,20 +423,18 @@ public interface RemoteGameAPI {
 	 * current player's planet.
 	 * @param planetId the planet id
 	 * @param itemId the inventory item id
-	 * @return the inventory status after the action
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus undeployPlanetItem(String planetId, int itemId) throws IOException;
+	void undeployPlanetItem(String planetId, int itemId) throws IOException;
 	/**
 	 * Sell an unit from the planet's inventory.
 	 * @param planetId the planet id
 	 * @param itemId the inventory item id
-	 * @return the inventory item status after the action
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus sellPlanetItem(String planetId, int itemId) throws IOException;
+	void sellPlanetItem(String planetId, int itemId) throws IOException;
 	/**
 	 * Add one unit of the given equipment type into the given slot
 	 * of the given inventory item of the given planet.
@@ -463,21 +442,19 @@ public interface RemoteGameAPI {
 	 * @param itemId the inventory item id
 	 * @param slotId the slot id
 	 * @param type the technology id
-	 * @return the inventory item status after the action
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus addPlanetEquipment(String planetId, int itemId, String slotId, String type) throws IOException;
+	void addPlanetEquipment(String planetId, int itemId, String slotId, String type) throws IOException;
 	/**
 	 * Remove one unit of the technology at the given slot, inventory item and planet.
 	 * @param planetId the planet identifier
 	 * @param itemId the inventory item id
 	 * @param slotId the slot id
-	 * @return the inventory item status after the action
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	InventoryItemStatus removePlanetEquipment(String planetId, int itemId, String slotId) throws IOException;
+	void removePlanetEquipment(String planetId, int itemId, String slotId) throws IOException;
 	/**
 	 * Upgrade the planet inventory to the best technology and
 	 * available item counts.
