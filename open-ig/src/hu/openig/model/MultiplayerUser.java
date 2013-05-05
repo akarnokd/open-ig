@@ -100,7 +100,7 @@ public class MultiplayerUser implements MessageObjectIO {
 	}
 	// TODO fields
 	@Override
-	public String name() {
+	public String objectName() {
 		return "MULTIPLAYER_USER";
 	}
 }

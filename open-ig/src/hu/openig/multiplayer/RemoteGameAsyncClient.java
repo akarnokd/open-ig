@@ -29,9 +29,9 @@ import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.PlanetStatus;
-import hu.openig.model.ProductionStatus;
+import hu.openig.model.ProductionStatuses;
 import hu.openig.model.RemoteGameAsyncAPI;
-import hu.openig.model.ResearchStatus;
+import hu.openig.model.ResearchStatuses;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.VoidAsync;
 import hu.openig.model.WelcomeResponse;
@@ -211,7 +211,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 			MessageSerializable request,
 			AsyncResult<? super T, ? super IOException> out,
 			T result) {
-		sendDirect(request, new MessageObjectAsync<T>(out, result, result.name()));
+		sendDirect(request, new MessageObjectAsync<T>(out, result, result.objectName()));
 	}
 	/**
 	 * Execute a query and parse the result into a list.
@@ -351,16 +351,16 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 
 	@Override
 	public void getProductions(
-			AsyncResult<? super ProductionStatus, ? super IOException> out) {
+			AsyncResult<? super ProductionStatuses, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_PRODUCTIONS");
-		query(request, out, new ProductionStatus());
+		query(request, out, new ProductionStatuses());
 	}
 
 	@Override
 	public void getResearches(
-			AsyncResult<? super ResearchStatus, ? super IOException> out) {
+			AsyncResult<? super ResearchStatuses, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_RESEARCHES");
-		query(request, out, new ResearchStatus());
+		query(request, out, new ResearchStatuses());
 	}
 
 	@Override
@@ -446,10 +446,17 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 
 	@Override
 	public void newFleet(String planet, List<InventoryItem> inventory,
-			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		MessageObject mo = new MessageObject("NEW_FLEET_AT_PLANET")
+			AsyncResult<? super Integer, ? super IOException> out) {
+		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
+			@Override
+			public void invoke(Object param1) throws IOException {
+				MessageObject mo = MessageUtils.expectObject(param1, "FLEET");
+				setValue(mo.getInt("fleetId"));
+			}
+		};
+		MessageObject request = new MessageObject("NEW_FLEET_AT_PLANET")
 		.set("planetId", planet);
-		sendFleetConfig(inventory, out, mo);
+		sendFleetConfig(inventory, at, request);
 	}
 
 	/**
@@ -458,23 +465,30 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	 * @param out the async result
 	 * @param mo the request object to fill in and send
 	 */
-	void sendFleetConfig(List<InventoryItem> inventory,
-			AsyncResult<? super FleetStatus, ? super IOException> out,
+	private void sendFleetConfig(List<InventoryItem> inventory,
+			AsyncTransform<Object, Integer, IOException> out,
 			MessageObject mo) {
 		MessageArray inv = new MessageArray(null);
 		mo.set("inventory", inv);
 		for (InventoryItem ii : inventory) {
 			inv.add(ii.toInventoryItemStatus().toMessage());
 		}
-		query(mo, out, new FleetStatus());
+		sendDirect(mo, out);
 	}
 
 	@Override
 	public void newFleet(int id, List<InventoryItem> inventory,
-			AsyncResult<? super FleetStatus, ? super IOException> out) {
+			AsyncResult<? super Integer, ? super IOException> out) {
+		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
+			@Override
+			public void invoke(Object param1) throws IOException {
+				MessageObject mo = MessageUtils.expectObject(param1, "FLEET");
+				setValue(mo.getInt("fleetId"));
+			}
+		};
 		MessageObject mo = new MessageObject("NEW_FLEET_AT_FLEET")
 		.set("fleetId", id);
-		sendFleetConfig(inventory, out, mo);
+		sendFleetConfig(inventory, at, mo);
 	}
 
 	@Override
@@ -505,11 +519,18 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 
 	@Override
 	public void deployFleetItem(int id, String type,
-			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
+			AsyncResult<? super Integer, ? super IOException> out) {
+		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
+			@Override
+			public void invoke(Object param1) throws IOException {
+				MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+				setValue(mo.getInt("id"));
+			}
+		};
 		MessageObject request = new MessageObject("DEPLOY_FLEET_ITEM")
 		.set("fleetId", id)
 		.set("type", type);
-		query(request, out, new InventoryItemStatus());
+		sendDirect(request, at);
 	}
 
 	@Override
@@ -680,11 +701,18 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 
 	@Override
 	public void deployPlanetItem(String planetId, String type,
-			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
+			AsyncResult<? super Integer, ? super IOException> out) {
+		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
+			@Override
+			public void invoke(Object param1) throws IOException {
+				MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+				setValue(mo.getInt("id"));
+			}
+		};
 		MessageObject request = new MessageObject("DEPLOY_PLANET_ITEM")
 		.set("planetId", planetId)
 		.set("type", type);
-		query(request, out, new InventoryItemStatus());
+		sendDirect(request, at);
 	}
 
 	@Override
@@ -999,5 +1027,23 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS")
 		.set("battleId", battleId);
 		queryList(request, out, new GroundBattleUnit());
+	}
+	@Override
+	public void getInventoryStatus(int fleetId, int itemId,
+			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
+		MessageObject request = new MessageObject("QUERY_FLEET_INVENTORY")
+		.set("fleetId", fleetId)
+		.set("itemId", itemId)
+		;
+		query(request, out, new InventoryItemStatus());
+	}
+	@Override
+	public void getInventoryStatus(String planetId, int itemId,
+			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
+		MessageObject request = new MessageObject("QUERY_PLANET_INVENTORY")
+		.set("planetId", planetId)
+		.set("itemId", itemId)
+		;
+		query(request, out, new InventoryItemStatus());
 	}
 }

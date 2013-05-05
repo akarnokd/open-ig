@@ -32,7 +32,7 @@ public class InventorySlotStatus implements MessageObjectIO {
 	}
 	@Override
 	public MessageObject toMessage() {
-		MessageObject mo = new MessageObject(name());
+		MessageObject mo = new MessageObject(objectName());
 		
 		mo.set("id", id);
 		mo.set("type", type);
@@ -42,7 +42,7 @@ public class InventorySlotStatus implements MessageObjectIO {
 		return mo;
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "SLOT";
 	}
 }

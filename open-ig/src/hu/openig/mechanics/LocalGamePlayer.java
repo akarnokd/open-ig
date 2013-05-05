@@ -20,8 +20,8 @@ import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.Player;
-import hu.openig.model.ProductionStatus;
-import hu.openig.model.ResearchStatus;
+import hu.openig.model.ProductionStatuses;
+import hu.openig.model.ResearchStatuses;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.World;
@@ -92,15 +92,13 @@ public class LocalGamePlayer implements GameAPI {
 	}
 
 	@Override
-	public ProductionStatus getProductions() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+	public ProductionStatuses getProductions() throws IOException {
+		return player.toProductionStatuses();
 	}
 
 	@Override
-	public ResearchStatus getResearches() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+	public ResearchStatuses getResearches() throws IOException {
+		return player.toResearchStatuses();
 	}
 
 	@Override
@@ -158,17 +156,17 @@ public class LocalGamePlayer implements GameAPI {
 	}
 
 	@Override
-	public FleetStatus newFleet(String planet, List<InventoryItem> inventory)
+	public int newFleet(String planet, List<InventoryItem> inventory)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
-	public FleetStatus newFleet(int id, List<InventoryItem> inventory)
+	public int newFleet(int id, List<InventoryItem> inventory)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
@@ -190,10 +188,10 @@ public class LocalGamePlayer implements GameAPI {
 	}
 
 	@Override
-	public InventoryItemStatus deployFleetItem(int id, String type)
+	public int deployFleetItem(int id, String type)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
@@ -299,10 +297,10 @@ public class LocalGamePlayer implements GameAPI {
 	}
 
 	@Override
-	public InventoryItemStatus deployPlanetItem(String planetId, String type)
+	public int deployPlanetItem(String planetId, String type)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
@@ -534,4 +532,17 @@ public class LocalGamePlayer implements GameAPI {
 		return null;
 	}
 
+	@Override
+	public InventoryItemStatus getInventoryStatus(int fleetId, int itemId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public InventoryItemStatus getInventoryStatus(String planetId, int itemId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

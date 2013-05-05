@@ -926,7 +926,7 @@ public class World implements ModelLookup {
 		if (player.isAvailable(rt)) {
 			c = TextRenderer.ORANGE;
 		} else
-		if (player.research.containsKey(rt) && colorActive) {
+		if (player.researches.containsKey(rt) && colorActive) {
 			c = TextRenderer.YELLOW;
 		} else
 		if (canResearch(rt)) {
@@ -1160,7 +1160,7 @@ public class World implements ModelLookup {
 					}
 				}
 			}
-			for (Map.Entry<ResearchType, Research> res : p.research.entrySet()) {
+			for (Map.Entry<ResearchType, Research> res : p.researches.entrySet()) {
 				XElement xres = xp.add("research");
 				xres.set("id", res.getKey().id);
 				xres.set("assigned", res.getValue().assignedMoney);
@@ -1594,7 +1594,7 @@ public class World implements ModelLookup {
 					prod.put(rt, pr);
 				}
 			}
-			p.research.clear();
+			p.researches.clear();
 			for (XElement xres : xplayer.childrenWithName("research")) {
 				ResearchType rt = researches.get(xres.get("id"));
 				if (rt == null) {
@@ -1605,7 +1605,7 @@ public class World implements ModelLookup {
 				rs.state = rt == p.runningResearch() ? ResearchState.RUNNING : ResearchState.STOPPED; 
 				rs.assignedMoney = xres.getInt("assigned");
 				rs.remainingMoney = xres.getInt("remaining");
-				p.research.put(rt, rs);
+				p.researches.put(rt, rs);
 			}
 			
 			// add free technologies

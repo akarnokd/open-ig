@@ -76,7 +76,7 @@ public class EmpireStatuses implements MessageObjectIO {
 	}
 	@Override
 	public MessageObject toMessage() {
-		MessageObject result = new MessageObject(name());
+		MessageObject result = new MessageObject(objectName());
 		
 		result.set("date", ModelUtils.format(currentTime));
 		
@@ -114,7 +114,7 @@ public class EmpireStatuses implements MessageObjectIO {
 		return result;
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "EMPIRE_STATUSES";
 	}
 }

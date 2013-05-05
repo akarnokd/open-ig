@@ -48,7 +48,7 @@ public class WelcomeResponse implements MessageObjectIO {
 		}
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "WELCOME";
 	}
 }

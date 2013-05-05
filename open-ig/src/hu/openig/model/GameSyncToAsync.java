@@ -85,14 +85,14 @@ public class GameSyncToAsync implements GameAPI {
 		return get(as);
 	}
 	@Override
-	public ProductionStatus getProductions() throws IOException {
-		Value<ProductionStatus> as = newSubject();
+	public ProductionStatuses getProductions() throws IOException {
+		Value<ProductionStatuses> as = newSubject();
 		api.getProductions(as);
 		return get(as);
 	}
 	@Override
-	public ResearchStatus getResearches() throws IOException {
-		Value<ResearchStatus> as = newSubject();
+	public ResearchStatuses getResearches() throws IOException {
+		Value<ResearchStatuses> as = newSubject();
 		api.getResearches(as);
 		return get(as);
 	}
@@ -151,16 +151,16 @@ public class GameSyncToAsync implements GameAPI {
 		get(as);
 	}
 	@Override
-	public FleetStatus newFleet(String planet, List<InventoryItem> inventory)
+	public int newFleet(String planet, List<InventoryItem> inventory)
 			throws IOException {
-		Value<FleetStatus> as = newSubject();
+		Value<Integer> as = newSubject();
 		api.newFleet(planet, inventory, as);
 		return get(as);
 	}
 	@Override
-	public FleetStatus newFleet(int id, List<InventoryItem> inventory)
+	public int newFleet(int id, List<InventoryItem> inventory)
 			throws IOException {
-		Value<FleetStatus> as = newSubject();
+		Value<Integer> as = newSubject();
 		api.newFleet(id, inventory, as);
 		return get(as);
 	}
@@ -184,9 +184,9 @@ public class GameSyncToAsync implements GameAPI {
 		get(as);
 	}
 	@Override
-	public InventoryItemStatus deployFleetItem(int id, String type)
+	public int deployFleetItem(int id, String type)
 			throws IOException {
-		Value<InventoryItemStatus> as = newSubject();
+		Value<Integer> as = newSubject();
 		api.deployFleetItem(id, type, as);
 		return get(as);
 	}
@@ -294,9 +294,9 @@ public class GameSyncToAsync implements GameAPI {
 		get(as);
 	}
 	@Override
-	public InventoryItemStatus deployPlanetItem(String planetId, String type)
+	public int deployPlanetItem(String planetId, String type)
 			throws IOException {
-		Value<InventoryItemStatus> as = newSubject();
+		Value<Integer> as = newSubject();
 		api.deployPlanetItem(planetId, type, as);
 		return get(as);
 	}
@@ -528,6 +528,20 @@ public class GameSyncToAsync implements GameAPI {
 			throws IOException {
 		Value<List<GroundBattleUnit>> as = newSubject();
 		api.getGroundBattleUnits(battleId, as);
+		return get(as);
+	}
+	@Override
+	public InventoryItemStatus getInventoryStatus(int fleetId, int itemId)
+			throws IOException {
+		Value<InventoryItemStatus> as = newSubject();
+		api.getInventoryStatus(fleetId, itemId, as);
+		return get(as);
+	}
+	@Override
+	public InventoryItemStatus getInventoryStatus(String planetId, int itemId)
+			throws IOException {
+		Value<InventoryItemStatus> as = newSubject();
+		api.getInventoryStatus(planetId, itemId, as);
 		return get(as);
 	}
 }

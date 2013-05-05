@@ -3105,8 +3105,8 @@ public class InfoScreen extends ScreenBase {
 					planetTitle.color(TextRenderer.GRAY);
 				}
 			}
-			if (player().research.containsKey(rt)) {
-				Research rs = player().research.get(rt);
+			if (player().researches.containsKey(rt)) {
+				Research rs = player().researches.get(rt);
 				switch (rs.state) {
 				case RUNNING:
 					researchProgress.text(format("researchinfo.progress.running", (int)rs.getPercent(player().traits)), true).visible(true);

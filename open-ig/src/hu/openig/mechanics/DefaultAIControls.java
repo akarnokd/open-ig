@@ -58,18 +58,18 @@ public class DefaultAIControls implements AIControls {
 	@Override
 	public void actionStartResearch(ResearchType rt, double moneyFactor) {
 		if (p.runningResearch() != null) {
-			Research r = p.research.get(p.runningResearch());
+			Research r = p.researches.get(p.runningResearch());
 			r.state = ResearchState.STOPPED;
 			log(p, "PauseResearch, Type = %s", r.type.id);
 		}
 		p.runningResearch(rt);
-		Research r = p.research.get(rt);
+		Research r = p.researches.get(rt);
 		if (r == null) {
 			r = new Research();
 			r.type = rt;
 			r.remainingMoney = r.type.researchCost(p.traits);
 			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
-			p.research.put(r.type, r);
+			p.researches.put(r.type, r);
 		} else {
 			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
 		}
@@ -388,7 +388,7 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionStopResearch(ResearchType rt) {
-		Research r = p.research.get(rt);
+		Research r = p.researches.get(rt);
 		if (r != null) {
 			r.state = ResearchState.STOPPED;
 			if (r.type == p.runningResearch()) {

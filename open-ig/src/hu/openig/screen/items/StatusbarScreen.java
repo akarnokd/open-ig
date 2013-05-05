@@ -550,7 +550,7 @@ public class StatusbarScreen extends ScreenBase {
 				ResearchType rt = player().runningResearch();
 				boolean mayBlink = false;
 				if (rt != null) {
-					Research r = player().research.get(rt);
+					Research r = player().researches.get(rt);
 					if (r != null) {
 						rs = String.format("%.1f%%", r.getPercent(player().traits));
 						mayBlink |= r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;

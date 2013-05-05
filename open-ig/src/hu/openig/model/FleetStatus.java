@@ -82,7 +82,7 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 	}
 	@Override
 	public MessageObject toMessage() {
-		MessageObject result = new MessageObject(name());
+		MessageObject result = new MessageObject(objectName());
 		
 		result.set("id", id);
 		result.set("knowledge", knowledge);
@@ -118,7 +118,7 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 		return new FleetStatus();
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "FLEET_STATUS";
 	}
 	@Override

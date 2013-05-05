@@ -45,7 +45,7 @@ public class MultiplayerGameSetup implements MessageObjectIO {
 		return null;
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "LOAD";
 	}
 }

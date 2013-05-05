@@ -74,7 +74,7 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 		return "PLANET_STATUSES";
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "PLANET_STATUS";
 	}
 }

@@ -158,7 +158,7 @@ public class AIWorld {
 				productions.put(prod.type, prod.copy());
 			}
 		}
-		for (Research res : player.research.values()) {
+		for (Research res : player.researches.values()) {
 			researches.put(res.type, res.copy());
 		}
 		

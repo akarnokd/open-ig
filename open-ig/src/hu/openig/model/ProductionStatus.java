@@ -10,32 +10,37 @@ package hu.openig.model;
 
 import hu.openig.net.MessageObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * The production status.
- * @author akarnokd, 2013.05.01.
+ * A concrete in-progress production.
+ * @author akarnokd, 2013.05.05.
  */
 public class ProductionStatus implements MessageObjectIO {
-	/** Is the production paused? */
-	public boolean paused;
-	/**
-	 * The list of production line statuses.
-	 */
-	public final List<Production> productions = new ArrayList<Production>();
-	@Override
-	public void fromMessage(MessageObject mo) {
-		// TODO Auto-generated method stub
-		
-	}
+	/** The research type. */
+	public String type;
+	/** The number of items to produce. */
+	public int count;
+	/** The progress into the current item. */
+	public int progress;
+	/** The priority value. */
+	public int priority;
 	@Override
 	public MessageObject toMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		return new MessageObject(objectName())
+		.set("type", type)
+		.set("count", count)
+		.set("progress", progress)
+		.set("priority", priority);
 	}
 	@Override
-	public String name() {
-		return "PRODUCTIONS";
+	public void fromMessage(MessageObject mo) {
+		type = mo.getString("type");
+		count = mo.getInt("count");
+		progress = mo.getInt("progress");
+		priority = mo.getInt("priority");
 	}
+	@Override
+	public String objectName() {
+		return "PRODUCTION";
+	}
+	
 }

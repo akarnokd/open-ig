@@ -50,7 +50,7 @@ public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactor
 		return "GROUND_BATTLE_UNITS";
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "GROUND_UNIT";
 	}
 }

@@ -60,7 +60,7 @@ public class BattleStatus implements MessageObjectIO, MessageArrayItemFactory<Ba
 		return "BATTLES";
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "BATTLE";
 	}
 }

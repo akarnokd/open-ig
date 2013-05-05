@@ -59,13 +59,13 @@ public interface GameAsyncAPI {
 	 * Returns a list of active productions.
 	 * @param out the async result or the error
 	 */
-	void getProductions(AsyncResult<? super ProductionStatus, ? super IOException> out);
+	void getProductions(AsyncResult<? super ProductionStatuses, ? super IOException> out);
 	/**
 	 * Returns the current research status, including
 	 * available and in-progress technology info.
 	 * @param out the async result or the error
 	 */
-	void getResearches(AsyncResult<? super ResearchStatus, ? super IOException> out);
+	void getResearches(AsyncResult<? super ResearchStatuses, ? super IOException> out);
 	/**
 	 * Returns a list of planet statuses for all visible
 	 * planets.
@@ -138,7 +138,7 @@ public interface GameAsyncAPI {
 	 * @param inventory the target inventory
 	 * @param out the async result or the error
 	 */
-	void newFleet(String planet, List<InventoryItem> inventory, AsyncResult<? super FleetStatus, ? super IOException> out);
+	void newFleet(String planet, List<InventoryItem> inventory, AsyncResult<? super Integer, ? super IOException> out);
 	/**
 	 * Create a new fleet next to the given other fleet
 	 * and transfer units from it according to the inventory item 
@@ -147,7 +147,7 @@ public interface GameAsyncAPI {
 	 * @param inventory the target inventory
 	 * @param out the async result or the error
 	 */
-	void newFleet(int id, List<InventoryItem> inventory, AsyncResult<? super FleetStatus, ? super IOException> out);
+	void newFleet(int id, List<InventoryItem> inventory, AsyncResult<? super Integer, ? super IOException> out);
 	/**
 	 * Delete an empty fleet.
 	 * @param id the target fleet
@@ -174,7 +174,7 @@ public interface GameAsyncAPI {
 	 * @param type the unit type
 	 * @param out the async result or the error
 	 */
-	void deployFleetItem(int id, String type, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void deployFleetItem(int id, String type, AsyncResult<? super Integer, ? super IOException> out);
 	/**
 	 * Undeploy a single fleet item (such as fighters and vehicles).
 	 * @param id the fleet id
@@ -305,7 +305,7 @@ public interface GameAsyncAPI {
 	 * @param type the technology id
 	 * @param out the async result or the error
 	 */
-	void deployPlanetItem(String planetId, String type, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	void deployPlanetItem(String planetId, String type, AsyncResult<? super Integer, ? super IOException> out);
 	/**
 	 * Undeploy an unit from the planet's inventory, must be the
 	 * current player's planet.
@@ -554,4 +554,20 @@ public interface GameAsyncAPI {
 	 * @param out the async result or the error
 	 */
 	void getGroundBattleUnits(int battleId, AsyncResult<? super List<GroundBattleUnit>, ? super IOException> out);
+	/**
+	 * Returns the inventory item status of the given fleet and inventory.
+	 * @param fleetId the fleet id
+	 * @param itemId the inventory id, if -1, the id of the last
+	 * deployFleetItem() call.
+	 * @param out the async result or the error
+	 */
+	void getInventoryStatus(int fleetId, int itemId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	/**
+	 * Returns the inventory item status of the given planet and inventory.
+	 * @param planetId the planet identifier
+	 * @param itemId the inventory id, if -1, the id of the last
+	 * deployFleetItem() call.
+	 * @param out the async result or the error
+	 */
+	void getInventoryStatus(String planetId, int itemId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
 }

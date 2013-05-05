@@ -71,7 +71,7 @@ public class SpaceBattleUnit implements MessageObjectIO, MessageArrayItemFactory
 		return "SPACE_BATTLE_UNITS";
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "SPACE_UNIT";
 	}
 }
