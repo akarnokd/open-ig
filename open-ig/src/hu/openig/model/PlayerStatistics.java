@@ -156,13 +156,21 @@ public class PlayerStatistics {
 		}
 		this.fields = Collections.unmodifiableMap(fields);
 	}
+	/**
+	 * Assign the values from another player statistics.
+	 * @param ps the other player statistics
+	 */
+	public void assign(PlayerStatistics ps) {
+		for (Map.Entry<String, LongField> e : ps.fields.entrySet()) {
+			fields.get(e.getKey()).value = e.getValue().value;
+		}
+		
+	}
 	/** @return creates a copy of this object */
 	public PlayerStatistics copy() {
 		PlayerStatistics result = new PlayerStatistics();
 
-		for (Map.Entry<String, LongField> e : result.fields.entrySet()) {
-			e.getValue().value = fields.get(e.getKey()).value;
-		}
+		result.assign(this);
 		
 		return result;
 	}

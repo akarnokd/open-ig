@@ -19,6 +19,7 @@ import hu.openig.model.EquipmentSlot;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -95,7 +96,7 @@ public class ExplorationPlanner extends Planner {
 			}
 		} else {
 			// yield more when exploration is finished
-			if (w.random().nextDouble() < 0.10) {
+			if (ModelUtils.random() < 0.10) {
 				// exploration complete, set explorers to idle
 				for (final AIFleet f : findFleetsWithTask(FleetTask.EXPLORE, null)) {
 					add(new Action0() {
@@ -231,7 +232,7 @@ public class ExplorationPlanner extends Planner {
 	 * @param bf the fleet
 	 */
 	void setPatrolTarget(final AIFleet bf) {
-		AIPlanet p = w.random(world.ownPlanets);
+		AIPlanet p = ModelUtils.random(world.ownPlanets);
 		final int x = p.planet.x;
 		final int y = p.planet.y;
 		add(new Action0() {
@@ -309,9 +310,9 @@ public class ExplorationPlanner extends Planner {
 		} else {
 			List<Location> ls = U.sort(allowed, distance);
 			if (ls.size() > 20) {
-				loc = w.random(ls.subList(0, 20));
+				loc = ModelUtils.random(ls.subList(0, 20));
 			} else {
-				loc = w.random(ls);
+				loc = ModelUtils.random(ls);
 			}
 		}
 		final Location floc = loc;
@@ -356,7 +357,7 @@ public class ExplorationPlanner extends Planner {
 		if (mss.isEmpty()) {
 			return false;
 		}
-		final AIPlanet deploy = w.random(mss);
+		final AIPlanet deploy = ModelUtils.random(mss);
 		ResearchType what = findBestFixed();
 		if (what == null) {
 			what = findBestNormal();

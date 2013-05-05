@@ -25,6 +25,7 @@ import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetTask;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
@@ -128,7 +129,7 @@ public class AttackPlanner extends Planner {
 				AIFleet targetFleet = null;
 				AIPlanet targetPlanet = null;
 				if (world.mayConquer && ownFleet.statistics.groundFirepower > 0) {
-					if (w.random().nextBoolean()) {
+					if (ModelUtils.randomBool()) {
 						targetFleet = selectTargetFleet();
 					}
 					if (targetFleet == null) {
@@ -191,7 +192,7 @@ public class AttackPlanner extends Planner {
 				if (world.difficulty == Difficulty.EASY) {
 					base = 7;
 				}
-				long next = 1L * (w.random().nextInt(3) + base) * (8 + 2 * w.random().nextInt(6)) * 60 * 60 * 1000;
+				long next = 1L * (ModelUtils.randomInt(3) + base) * (8 + 2 * ModelUtils.randomInt(6)) * 60 * 60 * 1000;
 				world.nextAttack = new Date(world.now.getTime() + next);
 				setNewAttack.invoke(world.nextAttack);
 			}
@@ -275,7 +276,7 @@ public class AttackPlanner extends Planner {
 			
 			Collections.sort(candidates, new PlanetTargetValueComparator(center));
 			
-			double prob = w.random().nextDouble();
+			double prob = ModelUtils.random();
 			if (prob >= 0.35 || candidates.size() == 1) {
 				return candidates.get(0);
 			} else
@@ -283,7 +284,7 @@ public class AttackPlanner extends Planner {
 				return candidates.get(1);
 			} else
 			if (prob > 0.05) {
-				return w.random(candidates);
+				return ModelUtils.random(candidates);
 			}
 		}
 		return null;
@@ -376,14 +377,14 @@ public class AttackPlanner extends Planner {
 	void manageDiplomacy() {
 		for (Map.Entry<Player, DiplomaticRelation> dr0 : world.relations.entrySet()) {
 			final Player other = dr0.getKey();
-			double rnd = w.random().nextDouble();
+			double rnd = ModelUtils.random();
 			DiplomaticRelation dr = dr0.getValue();
 			boolean mayContact = dr.lastContact == null 
 					|| (world.now.getTime() - dr.lastContact.getTime() >= (dr.wontTalk() ? 7L : 1L) * 24 * 60 * 60 * 1000);
 			
 			if (dr.full && !world.activeOffer.contains(other) && mayContact) {
 				
-				final ApproachType at = w.random(Arrays.asList(ApproachType.values()));
+				final ApproachType at = ModelUtils.random(Arrays.asList(ApproachType.values()));
 				
 				if (rnd < 0.1 && world.ownPlanets.size() < 2 && dr.value < p.warThreshold) {
 					add(new Action0() {
@@ -416,7 +417,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(10000 * (w.random().nextInt(10) + 1)));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(10000 * (ModelUtils.randomInt(10) + 1)));
 						}
 					});
 					break;

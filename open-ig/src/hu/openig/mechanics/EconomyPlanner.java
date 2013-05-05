@@ -15,6 +15,7 @@ import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.BuildingType;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
@@ -135,7 +136,7 @@ public class EconomyPlanner extends Planner {
 
 		if (world.money >= 200000 || world.global.planetCount >= 2) {
 			// random arbitration
-			Collections.shuffle(functions, w.random());
+			ModelUtils.shuffle(functions);
 		}
 		
 		for (Pred1<AIPlanet> f : functions) {

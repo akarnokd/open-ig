@@ -18,6 +18,7 @@ import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -297,7 +298,7 @@ public class Mission4 extends Mission {
 			Player pirates = player("Pirates");
 			for (SpacewarStructure s : world.structures(pirates)) {
 				if (s.item != null && MISSION_4_PIRATES_2.equals(s.item.tag)) {
-					world.attack(s, this.world.random(world.structures(player)), Mode.BEAM);
+					world.attack(s, ModelUtils.random(world.structures(player)), Mode.BEAM);
 				}
 			}
 		}

@@ -29,6 +29,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
@@ -331,7 +332,7 @@ public class AI implements AIManager {
 	 */
 	static void selectNewTarget(SpacewarWorld world, final SpacewarStructure ship) {
 		List<SpacewarStructure> es = world.enemiesInRange(ship);
-		Collections.shuffle(es, world.random());
+		ModelUtils.shuffle(es);
 		SpacewarStructure best = null;
 		double bestEfficiency = 0d;
 		for (SpacewarStructure s : es) {
@@ -356,7 +357,7 @@ public class AI implements AIManager {
 	 */
 	static SpacewarStructure selectNewTarget(SpacewarWorld world, 
 			final SpacewarStructure ship, List<SpacewarStructure> es) {
-		Collections.shuffle(es, world.random());
+		ModelUtils.shuffle(es);
 		SpacewarStructure best = null;
 		double bestEfficiency = 0d;
 		for (SpacewarStructure s : es) {
@@ -709,7 +710,7 @@ public class AI implements AIManager {
 			}
 		}));
 
-		Collections.shuffle(planners.subList(mix1, mix2), w.random());
+		ModelUtils.shuffle(planners.subList(mix1, mix2));
 
 		for (Planner p : planners) {
 			List<Action0> acts = p.run();
@@ -784,7 +785,7 @@ public class AI implements AIManager {
 
 //		PlanetStatistics senderStas = computeVisibleStats(other);
 		
-		double rnd = p.world.random().nextDouble();
+		double rnd = ModelUtils.random();
 
 		Trait t = other.traits.trait(TraitKind.DIPLOMACY);
 		if (t != null) {

@@ -328,7 +328,7 @@ public class InventoryItem {
 		for (Map.Entry<String, IntValue> e : counts.entrySet()) {
 			countsOrdered.add(Pair.of(e.getKey(), e.getValue()));
 		}
-		Collections.shuffle(countsOrdered, owner.world.random());
+		ModelUtils.shuffle(countsOrdered);
 		Collections.sort(countsOrdered, new Comparator<Pair<String, IntValue>>() {
 			@Override
 			public int compare(Pair<String, IntValue> o1,

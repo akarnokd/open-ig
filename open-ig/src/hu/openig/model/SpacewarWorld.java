@@ -12,7 +12,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Interface to tell things about the spacewar state to AI players and the Scripting.
@@ -49,13 +48,6 @@ public interface SpacewarWorld {
 	 * @return the list of the enemies in range of the structure. 
 	 */
 	List<SpacewarStructure> enemiesInRange(SpacewarStructure s);
-	/**
-	 * Returns a random element from the list.
-	 * @param <T> the element type
-	 * @param list the list of elements
-	 * @return the selected element
-	 */
-	<T> T random(List<T> list);
 	/**
 	 * Set the structure to move outside of the screen as an indication of fleeing.
 	 * @param s the target structure
@@ -112,6 +104,4 @@ public interface SpacewarWorld {
 			EnumSet<ResearchSubCategory> categories);
 	/** @return the landing lace location on the battlemap or null if no such place. */
 	Point landingPlace();
-	/** @return the global random object. */
-	Random random();
 }

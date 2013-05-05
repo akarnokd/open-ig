@@ -431,7 +431,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			}
 		}
 		while (vehicleCount > vehicleMax && veh.size() > 0) {
-			InventoryItem fii = owner.world.random(veh);
+			InventoryItem fii = ModelUtils.random(veh);
 			if (fii.count > 0) {
 				fii.count--;
 				vehicleCount--;

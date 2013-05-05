@@ -24,6 +24,7 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarUnitType;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
@@ -294,7 +295,7 @@ public abstract class Planner {
 	 */
 	<T> List<T> shuffle(Collection<? extends T> collection) {
 		List<T> result = new ArrayList<T>(collection);
-		Collections.shuffle(result, w.random());
+		ModelUtils.shuffle(result);
 		return result;
 	}
 	/**

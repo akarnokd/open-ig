@@ -16,6 +16,7 @@ import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -288,7 +289,7 @@ public class Mission19 extends Mission {
 			for (SpacewarStructure s : world.structures(pirates)) {
 				if (s.item != null && MISSION_19_GOVERNOR.equals(s.item.tag)
 						&& s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-					world.attack(s, this.world.random(world.structures(player)), Mode.BEAM);
+					world.attack(s, ModelUtils.random(world.structures(player)), Mode.BEAM);
 				}
 			}
 			

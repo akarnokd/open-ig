@@ -24,6 +24,7 @@ import hu.openig.model.GroundwarUnit;
 import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpaceStrengths;
@@ -166,9 +167,9 @@ public final class BattleSimulator {
 						// take turns
 						while (!attackerUnits.isEmpty()) {
 							// Determines how many units will attack at once
-							final int accessibility = world.random().nextInt(4) + 2;
+							final int accessibility = ModelUtils.randomInt(4) + 2;
 							
-							Collections.shuffle(attackerUnits, world.random());
+							ModelUtils.shuffle(attackerUnits);
 							
 							List<GroundwarUnit> attacking = subList(attackerUnits, 0, accessibility);
 							attackerTVBattle = vehicleStrength(attacking);
@@ -254,7 +255,7 @@ public final class BattleSimulator {
 	 */
 	void applyDamage(List<GroundwarUnit> units, double hitpoints) {
 		List<GroundwarUnit> us = new ArrayList<GroundwarUnit>(units);
-		Collections.shuffle(us, world.random());
+		ModelUtils.shuffle(us);
 		for (GroundwarUnit u : us) {
 			if (hitpoints <= 0) {
 				break;
@@ -714,7 +715,7 @@ public final class BattleSimulator {
 	void applyDamage(Planet p, double hitpoints) {
 		
 		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>(p.inventory);
-		Collections.shuffle(is, world.random());
+		ModelUtils.shuffle(is);
 		for (InventoryItem ii : is) {
 			if (hitpoints <= 0) {
 				break;
@@ -759,7 +760,7 @@ public final class BattleSimulator {
 		
 		double shieldValue = shieldValue(p);
 		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
-		Collections.shuffle(bs, world.random());
+		ModelUtils.shuffle(bs);
 		for (Building b : bs) {
 			if (hitpoints <= 0) {
 				break;

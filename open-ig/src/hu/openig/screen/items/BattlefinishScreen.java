@@ -12,6 +12,7 @@ import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.Screens;
 import hu.openig.model.SpacewarStructure;
@@ -88,11 +89,11 @@ public class BattlefinishScreen extends ScreenBase {
 	}
 	/** Set a random win image. */
 	void setWinImage() {
-		background = rl.getImage("battlefinish/win_" + (1 + world().random().nextInt(6)));
+		background = rl.getImage("battlefinish/win_" + (1 + ModelUtils.randomInt(6)));
 	}
 	/** Set a random lose image. */
 	void setLoseImage() {
-		background = rl.getImage("battlefinish/lose_" + (1 + world().random().nextInt(2)));
+		background = rl.getImage("battlefinish/lose_" + (1 + ModelUtils.randomInt(2)));
 	}
 	/** Set the reward image. */
 	void setRewardImage() {

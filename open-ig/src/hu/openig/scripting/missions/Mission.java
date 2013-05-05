@@ -20,6 +20,7 @@ import hu.openig.model.GameScriptingEvents;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -40,7 +41,6 @@ import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
@@ -548,10 +548,11 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	public void incomingMessage(String messageId, final Action0 action) {
 		if (addIncomingMessage(messageId)) {
-			SoundType snd = world.random(Arrays.asList(SoundType.MESSAGE, 
+			SoundType snd = ModelUtils.random(
+					SoundType.MESSAGE, 
 					SoundType.NEW_MESSAGE_1, 
 					SoundType.NEW_MESSAGE_2, 
-					SoundType.NEW_MESSAGE_3));
+					SoundType.NEW_MESSAGE_3);
 			world.env.playSound(SoundTarget.COMPUTER, snd, action);
 		}
 	}

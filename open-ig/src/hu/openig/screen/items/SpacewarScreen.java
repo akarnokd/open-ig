@@ -30,6 +30,7 @@ import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
@@ -43,11 +44,11 @@ import hu.openig.model.SpacewarObject;
 import hu.openig.model.SpacewarProjectile;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarStructure;
-import hu.openig.model.TraitKind;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWeaponPort;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.Tile;
+import hu.openig.model.TraitKind;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.render.TextRenderer.TextSegment;
@@ -85,7 +86,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -93,7 +93,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -3743,7 +3742,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void selectNewTarget(final SpacewarStructure ship) {
 		List<SpacewarStructure> es = enemiesInRange(ship);
-		Collections.shuffle(es, world().random());
+		ModelUtils.shuffle(es);
 		SpacewarStructure best = null;
 		double bestEfficiency = 0d;
 		for (SpacewarStructure s : es) {
@@ -3768,7 +3767,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (s.type == StructureType.SHIP || s.type == StructureType.SHIELD 
 					|| s.type == StructureType.STATION || s.type == StructureType.PROJECTOR) {
 				if (backfire != null) {
-					if (s.owner == ship.owner && backfire < world().random().nextDouble()) {
+					if (s.owner == ship.owner && backfire < ModelUtils.random()) {
 						continue;
 					}
 				}
@@ -3776,7 +3775,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		if (sts.size() > 0) {
-			ship.attack = world().random(sts);
+			ship.attack = ModelUtils.random(sts);
 		}
 	}
 	/**
@@ -3790,7 +3789,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			double d = Math.hypot(ship.x - ship.attack.x, ship.y - ship.attack.y);
 			if (d < 80 && ship.type != StructureType.SHIP && ship.attack.ecmLevel > 0) {
 				if (scrambled.add(ship)) {
-					double p = world().random().nextDouble();
+					double p = ModelUtils.random();
 					
 					int anti = ship.ecmLevel;
 					int ecm = ship.attack.ecmLevel;
@@ -4434,10 +4433,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			infoImages.put(name, result);
 		}
 		return result;
-	}
-	@Override
-	public <T> T random(List<T> list) {
-		return world().random(list);
 	}
 	@Override
 	public List<SpacewarStructure> structures() {
@@ -5434,9 +5429,5 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		
 		return true;
-	}
-	@Override
-	public Random random() {
-		return world().random();
 	}
 }

@@ -266,7 +266,7 @@ public class SpacewarStructure extends SpacewarObject {
 				}
 			}
 			if (!iss.isEmpty()) {
-				InventorySlot is = owner.world.random(iss);
+				InventorySlot is = ModelUtils.random(iss);
 				int ihp = is.hpMax(item.owner);
 				is.hp = Math.max(is.hp - ihp * ratio, 0);
 				

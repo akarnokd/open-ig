@@ -17,6 +17,7 @@ import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -26,7 +27,6 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -140,7 +140,7 @@ public class Mission11 extends Mission {
 		double strength = Double.MAX_VALUE;
 		// No Cheat: doesn't check garrison count, only things that can be seen by spysat2
 		List<Planet> ps = player.ownPlanets();
-		Collections.shuffle(ps, world.random());
+		ModelUtils.shuffle(ps);
 		for (Planet p : ps) {
 			double sp = 0;
 			// check station strength

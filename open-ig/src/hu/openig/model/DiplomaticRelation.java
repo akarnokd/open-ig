@@ -42,14 +42,30 @@ public class DiplomaticRelation {
 	/** @return a copy of this record. */
 	public DiplomaticRelation copy() {
 		DiplomaticRelation dr = new DiplomaticRelation();
-		dr.first = first;
-		dr.second = second;
-		dr.full = full;
-		dr.value = value;
-		dr.lastContact = lastContact;
-		dr.wontTalk = wontTalk;
-		dr.alliancesAgainst.addAll(alliancesAgainst);
+		dr.assign(this);
 		return dr;
+	}
+	/**
+	 * Assign the values from the other diplomatic relation.
+	 * @param other the other relation
+	 */
+	public void assign(DiplomaticRelation other) {
+		first = other.first;
+		second = other.second;
+		full = other.full;
+		value = other.value;
+		lastContact = other.lastContact;
+		wontTalk = other.wontTalk;
+		alliancesAgainst.addAll(other.alliancesAgainst);
+	}
+	/**
+	 * Check if the given player knows about this relation.
+	 * @param playerId the player identifier
+	 * @return true if the player is the establisher of this relation
+	 * or the relation is full.
+	 */
+	public boolean knows(String playerId) {
+		return first.equals(playerId) || (second.equals(playerId) && full);
 	}
 	/**
 	 * Set the new won't talk value.

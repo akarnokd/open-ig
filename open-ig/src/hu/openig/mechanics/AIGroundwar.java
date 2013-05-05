@@ -15,6 +15,7 @@ import hu.openig.model.GroundwarGun;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.HasLocation;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Player;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
@@ -140,10 +141,10 @@ public class AIGroundwar {
 						n = targets.get(0);
 					} else
 					if (targets.size() == 2) {
-						n = p.world.random(targets.subList(0, 2));
+						n = ModelUtils.random(targets.subList(0, 2));
 					} else
 					if (targets.size() > 2) {
-						n = p.world.random(targets.subList(0, 3));
+						n = ModelUtils.random(targets.subList(0, 3));
 					}
 				} else {
 					n = nearest(u, targets);

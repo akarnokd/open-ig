@@ -14,6 +14,7 @@ import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -23,7 +24,6 @@ import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -154,7 +154,7 @@ public class Mission7 extends Mission {
 			objective("Mission-7").visible = true;
 						
 			world.env.speed1();
-			Fleet f = world.random(fs);
+			Fleet f = ModelUtils.random(fs);
 			f.stop();
 			f.task = FleetTask.SCRIPT;
 			for (InventoryItem ii : f.inventory) {
@@ -301,9 +301,9 @@ public class Mission7 extends Mission {
 				ii.owner = merchant.owner;
 				ii.tag = null;
 			}
-			merchant.moveTo(world.random(Arrays.asList(
+			merchant.moveTo(ModelUtils.random(
 					planet("Achilles"), planet("Naxos"), planet("San Sterling"),
-					planet("Centronom"), planet("New Caroline"))));
+					planet("Centronom"), planet("New Caroline")));
 			merchant.task = FleetTask.MOVE;
 		}
 		Fleet g = findTaggedFleet("Mission-7-Garthog", pirates);

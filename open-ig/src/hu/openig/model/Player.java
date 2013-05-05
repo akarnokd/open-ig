@@ -52,14 +52,7 @@ public class Player {
 	public String diplomacyHead;
 	/** The in-progress production list. */
 	public final Map<ResearchMainCategory, Map<ResearchType, Production>> production = new HashMap<ResearchMainCategory, Map<ResearchType, Production>>();
-	{
-		for (ResearchMainCategory cat : ResearchMainCategory.values()) {
-			production.put(cat, new LinkedHashMap<ResearchType, Production>());
-		}
-	}
-	/**
-	 * The production history.
-	 */
+	/** The production history. */
 	public final Map<ResearchMainCategory, List<ResearchType>> productionHistory = U.newHashMap();
 	/** The in-progress research. */
 	public final Map<ResearchType, Research> research = new HashMap<ResearchType, Research>();
@@ -103,10 +96,6 @@ public class Player {
 	public double aiDefensiveRatio = 1.0 / 3;
 	/** The offensive ratio for AI player. Ratios sum up to 1. */
 	public double aiOffensiveRatio = 1.0 / 3;
-	/** @return the socual ratio for AI player. Ratios sum up to 1. */
-	public double aiSocialRatio() {
-		return Math.max(0, 1.0d - aiOffensiveRatio - aiDefensiveRatio);
-	}
 	/** Do not list this player on the database screen. */
 	public boolean noDatabase;
 	/** Do not list this player in diplomacy tables. */
@@ -147,6 +136,13 @@ public class Player {
 	public Player(World world, String id) {
 		this.world = world;
 		this.id = id;
+		for (ResearchMainCategory cat : ResearchMainCategory.values()) {
+			production.put(cat, new LinkedHashMap<ResearchType, Production>());
+		}
+	}
+	/** @return the socual ratio for AI player. Ratios sum up to 1. */
+	public double aiSocialRatio() {
+		return Math.max(0, 1.0d - aiOffensiveRatio - aiDefensiveRatio);
 	}
 	/**
 	 * @return returns the next planet by goind top-bottom relative to the current planet
@@ -336,11 +332,11 @@ public class Player {
 	}
 	/** 
 	 * Does this player know the other player?
-	 * @param p the other player
+	 * @param other the other player
 	 * @return does this player know the other player? */
-	public boolean knows(Player p) {
-		DiplomaticRelation dr = world.getRelation(this, p);
-		return dr != null && (dr.second.equals(p.id) || (dr.first.equals(p.id) && dr.full));
+	public boolean knows(Player other) {
+		DiplomaticRelation dr = world.getRelation(this, other);
+		return dr != null && (dr.second.equals(other.id) || (dr.first.equals(other.id) && dr.full));
 	}
 	/**
 	 * @return the set ow known players
@@ -669,5 +665,48 @@ public class Player {
 		if (this.money < 0) {
 			Exceptions.add(new AssertionError("Negative money"));
 		}
+	}
+	/**
+	 * Returns an empire status copy of this player.
+	 * @return the empire status
+	 */
+	public EmpireStatus toEmpireStatus() {
+		EmpireStatus result = new EmpireStatus();
+		
+		result.id = id;
+		result.money = money;
+
+		for (Map.Entry<String, DiplomaticOffer> e : offers.entrySet()) {
+			offers.put(e.getKey(), e.getValue().copy());
+		}
+		
+		result.statistics.assign(statistics);
+		result.yesterday.assign(yesterday);
+		result.today.assign(today);
+		
+		result.pauseProduction = pauseProduction;
+		result.pauseResearch = pauseResearch;
+		
+		result.colonizationTargets.addAll(colonizationTargets);
+		
+		return result;
+	}
+	/**
+	 * Assign the values from the empire status record.
+	 * @param es the empire status record
+	 */
+	public void fromEmpireStatus(EmpireStatus es) {
+		this.money(es.money);
+		this.offers.clear();
+		for (Map.Entry<String, DiplomaticOffer> e : es.offers.entrySet()) {
+			this.offers.put(e.getKey(), e.getValue().copy());
+		}
+		this.statistics.assign(es.statistics);
+		this.yesterday.assign(es.yesterday);
+		this.today.assign(es.today);
+		this.pauseProduction = es.pauseProduction;
+		this.pauseResearch = es.pauseResearch;
+		this.colonizationTargets.clear();
+		this.colonizationTargets.addAll(es.colonizationTargets);
 	}
 }
