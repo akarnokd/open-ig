@@ -64,6 +64,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		this.id = id;
 		this.owner = owner;
 		this.owner.fleets.put(this, FleetKnowledge.FULL);
+		this.owner.world.fleets.put(id, this);
 		owner.statistics.fleetsCreated.value++;
 	}
 	/**
@@ -212,7 +213,7 @@ public class Fleet implements Named, Owned, HasInventory {
 				result.vehicleMax += fii.type.getInt(ResearchType.PARAMETER_VEHICLES); 
 			}
 			boolean speedFound = false;
-			for (InventorySlot slot : fii.slots) {
+			for (InventorySlot slot : fii.slots.values()) {
 				if (slot.type != null && slot.count > 0) {
 					if (checkRadar && slot.type.has(ResearchType.PARAMETER_RADAR)) {
 						radar = Math.max(radar, slot.type.getInt(ResearchType.PARAMETER_RADAR)); 
@@ -269,7 +270,7 @@ public class Fleet implements Named, Owned, HasInventory {
 					|| fii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS;
 			if (checkHyperdrive) {
 				boolean found = false;
-				for (InventorySlot is : fii.slots) {
+				for (InventorySlot is : fii.slots.values()) {
 					if (is.type != null && is.type.has(ResearchType.PARAMETER_SPEED)) {
 						found = true;
 						speed = Math.min(speed, is.type.getInt(ResearchType.PARAMETER_SPEED));
@@ -422,7 +423,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			if (fii.type.has(ResearchType.PARAMETER_VEHICLES)) {
 				vehicleMax += fii.type.getInt(ResearchType.PARAMETER_VEHICLES); 
 			}
-			for (InventorySlot slot : fii.slots) {
+			for (InventorySlot slot : fii.slots.values()) {
 				if (slot.type != null) {
 					if (slot.type.has(ResearchType.PARAMETER_VEHICLES)) {
 						vehicleMax += slot.type.getInt(ResearchType.PARAMETER_VEHICLES); 
@@ -794,7 +795,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		if (owner == owner.world.player) {
 			if (owner.world.env.config().reequipBombs) {
 				for (InventoryItem ii : inventory) {
-					for (InventorySlot is : ii.slots) {
+					for (InventorySlot is : ii.slots.values()) {
 						if (is.getCategory() == ResearchSubCategory.WEAPONS_PROJECTILES 
 								&& !is.isFilled()) {
 							is.refill(owner);
@@ -834,5 +835,95 @@ public class Fleet implements Named, Owned, HasInventory {
 			}
 		}
 		return null;
+	}
+	/**
+	 * Returns a fleet status object.
+	 * @return the status object
+	 */
+	public FleetStatus toFleetStatus() {
+		FleetStatus result = new FleetStatus();
+		
+		result.id = id;
+		result.knowledge = owner.fleets.get(this);
+		result.owner = owner.id;
+		result.x = x;
+		result.y = y;
+		result.name = name;
+
+		if (targetFleet != null) {
+			result.targetFleet = targetFleet.id;
+		}
+		if (targetPlanet != null) {
+			result.targetPlanet = targetPlanet.id;
+		}
+		if (arrivedAt != null) {
+			result.arrivedAt = arrivedAt.id;
+		}
+		result.mode = mode;
+		result.task = task;
+		result.refillOnce = refillOnce;
+		result.formation = formation;
+		result.infectedBy = owner.world.infectedFleets.get(id);
+		
+		for (Point2D.Double wp : waypoints) {
+			result.waypoints.add(new Point2D.Double(wp.x, wp.y));
+		}
+		
+		for (InventoryItem ii : inventory) {
+			result.inventory.add(ii.toInventoryItemStatus());
+		}
+		
+		return result;
+	}
+	/**
+	 * Load values from the fleet status object.
+	 * @param fs the fleet status object
+	 */
+	public void fromFleetStatus(FleetStatus fs) {
+		// we don't allow owner changes this way?
+		owner.fleets.put(this, fs.knowledge);
+		x = fs.x;
+		y = fs.y;
+		name = fs.name;
+
+		for (Point2D.Double wp : fs.waypoints) {
+			waypoints.add(new Point2D.Double(wp.x, wp.y));
+		}
+		
+		if (fs.targetFleet == null) {
+			targetFleet = null;
+		} else {
+			targetFleet = owner.fleet(fs.targetFleet);
+		}
+		
+		if (fs.targetPlanet == null) {
+			targetPlanet = null;
+		} else {
+			targetPlanet = owner.world.planet(fs.targetPlanet);
+		}
+		
+		if (fs.arrivedAt == null) {
+			arrivedAt = null;
+		} else {
+			arrivedAt = owner.world.planet(fs.targetPlanet);
+		}
+		
+		mode = fs.mode;
+		task = fs.task;
+		refillOnce = fs.refillOnce;
+		if (fs.infectedBy != null) {
+			owner.world.infectedFleets.put(id, fs.infectedBy);
+		} else {
+			owner.world.infectedFleets.remove(id);
+		}
+		
+		// FIXME merge instead of replace?
+		inventory.clear();
+		for (InventoryItemStatus iis : fs.inventory) {
+			InventoryItem ii = new InventoryItem(iis.id, this);
+			ii.createSlots();
+			ii.fromInventoryItemStatus(iis, owner.world);
+			inventory.add(ii);
+		}
 	}
 }

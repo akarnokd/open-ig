@@ -10,6 +10,8 @@ package hu.openig.mechanics;
 
 import hu.openig.model.BattleStatus;
 import hu.openig.model.EmpireStatuses;
+import hu.openig.model.Fleet;
+import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GameAPI;
@@ -23,8 +25,11 @@ import hu.openig.model.ResearchStatus;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.World;
+import hu.openig.net.ErrorResponse;
+import hu.openig.net.ErrorType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,14 +62,24 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public List<FleetStatus> getFleets() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		List<FleetStatus> result = new ArrayList<FleetStatus>(player.fleets.size() + 1);
+		
+		for (Fleet f : player.fleets.keySet()) {
+			result.add(f.toFleetStatus());
+		}
+		
+		return result;
 	}
 
 	@Override
 	public FleetStatus getFleet(int fleetId) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		Fleet f = world.fleet(fleetId);
+		if (f != null) {
+			if (player.knowledge(f, FleetKnowledge.VISIBLE) >= 0) { 
+				return f.toFleetStatus();
+			}
+		}
+		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_FLEET);
 	}
 
 	@Override

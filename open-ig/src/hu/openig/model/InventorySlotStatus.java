@@ -8,11 +8,13 @@
 
 package hu.openig.model;
 
+import hu.openig.net.MessageObject;
+
 /**
  * The inventory slot status.
  * @author akarnokd, 2013.04.27.
  */
-public class InventorySlotStatus {
+public class InventorySlotStatus implements MessageObjectIO {
 	/** The inventory slot id. */
 	public String id;
 	/** The assigned technology, if not null. */
@@ -21,4 +23,26 @@ public class InventorySlotStatus {
 	public int count;
 	/** Slot hitpoints. */
 	public double hp;
+	@Override
+	public void fromMessage(MessageObject mo) {
+		id = mo.getString("id");
+		type = mo.getString("type");
+		count = mo.getInt("count");
+		hp = mo.getDouble("hp");
+	}
+	@Override
+	public MessageObject toMessage() {
+		MessageObject mo = new MessageObject(name());
+		
+		mo.set("id", id);
+		mo.set("type", type);
+		mo.set("count", count);
+		mo.set("hp", hp);
+		
+		return mo;
+	}
+	@Override
+	public String name() {
+		return "SLOT";
+	}
 }

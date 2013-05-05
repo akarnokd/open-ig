@@ -45,7 +45,15 @@ public enum ErrorType {
 	/** The user is not logged in. */
 	ERROR_NOT_LOGGED_IN,
 	/** Server activity interrupted/cancelled. */
-	ERROR_INTERRUPTED
+	ERROR_INTERRUPTED,
+	/** Fleet missing or not visible to the player. */
+	ERROR_UNKNOWN_FLEET,
+	/** Planet missing or not visible to the player. */
+	ERROR_UNKNOWN_PLANET,
+	/** Research missing. */
+	ERROR_UNKNOWN_RESEARCH,
+	/** Player missing or not known to the player. */
+	ERROR_UNKNOWN_PLAYER
 	;
 	/**
 	 * Interprets the message attribute as error code or error name string.

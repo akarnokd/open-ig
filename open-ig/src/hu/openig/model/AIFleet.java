@@ -74,7 +74,7 @@ public class AIFleet {
 			inventory.add(new AIInventoryItem(ii));
 			Integer v = inventoryCounts.get(ii.type);
 			inventoryCounts.put(ii.type, v != null ? v + ii.count : ii.count);
-			for (InventorySlot is : ii.slots) {
+			for (InventorySlot is : ii.slots.values()) {
 				if (is.type != null && !is.slot.fixed) {
 					v = inventoryCounts.get(is.type);
 					inventoryCounts.put(is.type, v != null ? v + is.count * ii.count : is.count * ii.count);

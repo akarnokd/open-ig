@@ -622,7 +622,7 @@ public class StaticDefensePlanner extends Planner {
 										p.changeInventoryCount(frt1, -fd);
 										
 										if (ii.parent != null) {
-											for (InventorySlot is : ii.parent.slots) {
+											for (InventorySlot is : ii.parent.slots.values()) {
 												if (is.slot == fes) {
 													is.count += fd;
 													break;

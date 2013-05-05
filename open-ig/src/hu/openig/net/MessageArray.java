@@ -163,37 +163,49 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 * @return the wrapped value
 	 */
 	public static Object wrap(Object value) {
+		if (value instanceof CharSequence
+				|| value instanceof Number
+				|| value instanceof Boolean
+				|| value instanceof MessageSerializable) {
+			return value;
+		} else
+		if (value == null) {
+			return null;
+		} else
 		if (value instanceof Object[]) {
-			value = new MessageArray(null, (Object[])value);
+			return new MessageArray(null, (Object[])value);
 		} else
 		if (value instanceof Iterable<?>) {
-			value = new MessageArray(null, (Iterable<?>)value);
+			return new MessageArray(null, (Iterable<?>)value);
 		} else
 		if (value instanceof boolean[]) {
-			value = new MessageArray(null, (boolean[])value);
+			return new MessageArray(null, (boolean[])value);
 		} else
 		if (value instanceof byte[]) {
-			value = new MessageArray(null, (byte[])value);
+			return new MessageArray(null, (byte[])value);
 		} else
 		if (value instanceof short[]) {
-			value = new MessageArray(null, (short[])value);
+			return new MessageArray(null, (short[])value);
 		} else
 		if (value instanceof char[]) {
-			value = new MessageArray(null, (char[])value);
+			return new MessageArray(null, (char[])value);
 		} else
 		if (value instanceof int[]) {
-			value = new MessageArray(null, (int[])value);
+			return new MessageArray(null, (int[])value);
 		} else
 		if (value instanceof long[]) {
-			value = new MessageArray(null, (long[])value);
+			return new MessageArray(null, (long[])value);
 		} else
 		if (value instanceof float[]) {
-			value = new MessageArray(null, (float[])value);
+			return new MessageArray(null, (float[])value);
 		} else
 		if (value instanceof double[]) {
-			value = new MessageArray(null, (double[])value);
+			return new MessageArray(null, (double[])value);
+		} else
+		if (value instanceof Enum<?>) {
+			return value.toString();
 		}
-		return value;
+		throw new IllegalArgumentException("Unsupported type " + value.getClass());
 	}
 	/**
 	 * Add a new object to the list.
@@ -217,7 +229,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 */
 	public void addAll(boolean... values) {
 		for (Object o : values) {
-			add(o);
+			items.add(o);
 		}
 	}
 	/**
@@ -226,7 +238,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 */
 	public void addAll(byte... values) {
 		for (Object o : values) {
-			add(o);
+			items.add(o);
 		}
 	}
 	/**
@@ -235,7 +247,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 */
 	public void addAll(short... values) {
 		for (Object o : values) {
-			add(o);
+			items.add(o);
 		}
 	}
 	/**
@@ -244,7 +256,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 */
 	public void addAll(char... values) {
 		for (Object o : values) {
-			add(o);
+			items.add(String.valueOf(o));
 		}
 	}
 	/**
@@ -253,7 +265,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 */
 	public void addAll(int... values) {
 		for (Object o : values) {
-			add(o);
+			items.add(o);
 		}
 	}
 	/**
@@ -262,7 +274,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	 */
 	public void addAll(long... values) {
 		for (Object o : values) {
-			add(o);
+			items.add(o);
 		}
 	}
 	/**

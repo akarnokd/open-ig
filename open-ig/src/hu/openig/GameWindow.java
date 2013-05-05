@@ -1838,7 +1838,7 @@ public class GameWindow extends JFrame implements GameControls {
 		ii.hp = commons.world().getHitpoints(ii.type, ii.owner);
 		ii.createSlots();
 		// fill in best equipment
-		for (InventorySlot is : ii.slots) {
+		for (InventorySlot is : ii.slots.values()) {
 			if (!is.slot.fixed) {
 				is.type = is.slot.items.get(is.slot.items.size() - 1);
 				is.count = is.slot.max;

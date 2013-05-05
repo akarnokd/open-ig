@@ -841,7 +841,7 @@ public final class BattleSimulator {
 						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					defense += ii.hp * ii.count;
 					defense += ii.shield * ii.count;
-					for (InventorySlot is : ii.slots) {
+					for (InventorySlot is : ii.slots.values()) {
 						if (is.type != null) {
 							BattleProjectile bp = p.owner.world.battle.projectiles.get(is.type.id);
 							if (bp != null) {
@@ -895,7 +895,7 @@ public final class BattleSimulator {
 			defense += ii.hp * ii.count;
 			defense += ii.shield * ii.count;
 			
-			for (InventorySlot is : ii.slots) {
+			for (InventorySlot is : ii.slots.values()) {
 				if (is.type != null) {
 					BattleProjectile bp = f.owner.world.battle.projectiles.get(is.type.id);
 					if (bp != null) {

@@ -54,7 +54,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * The world object.
  * @author akarnokd, 2009.10.25.
  */
-public class World {
+public class World implements ModelLookup {
 	/** The version when the game was created. */
 	public String createVersion;
 	/** The name of the world. */
@@ -131,6 +131,8 @@ public class World {
 	public final List<DiplomaticRelation> relations = U.newArrayList();
 	/** The list of all messages received, including history and duplicates. */
 	public final List<VideoMessage> receivedMessages = U.newArrayList();
+	/** The global map of fleets. */
+	public final Map<Integer, Fleet> fleets = U.newLinkedHashMap();
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -1254,7 +1256,7 @@ public class World {
 					xpii.set("ttl", ttl);
 				}
 				
-				saveInventorySlot(pii.slots, xpii);
+				saveInventorySlot(pii.slots.values(), xpii);
 			}
 			if (p.owner != null) {
 				xp.set("owner", p.owner.id);
@@ -1360,7 +1362,7 @@ public class World {
 			xfii.set("nickname-index", fii.nicknameIndex);
 			xfii.set("kills", fii.kills);
 			xfii.set("kills-cost", fii.killsCost);
-			saveInventorySlot(fii.slots, xfii);
+			saveInventorySlot(fii.slots.values(), xfii);
 		}
 	}
 	/**
@@ -1368,7 +1370,7 @@ public class World {
 	 * @param slots the slots list
 	 * @param xparent the parent XElement to store
 	 */
-	void saveInventorySlot(List<InventorySlot> slots, XElement xparent) {
+	void saveInventorySlot(Iterable<InventorySlot> slots, XElement xparent) {
 		for (InventorySlot fis : slots) {
 			XElement xfs = xparent.add("slot");
 			xfs.set("id", fis.slot.id);
@@ -1462,6 +1464,8 @@ public class World {
 				}
 			}
 		}
+		
+		fleets.clear();
 		
 		// restore known infected fleets
 		infectedFleets.clear();
@@ -1972,21 +1976,13 @@ public class World {
 	 * @param xfii the parent XElement of the slot items
 	 */
 	void loadInventorySlots(InventoryItem fii, XElement xfii) {
-		Set<String> slots = new HashSet<String>();
 		for (XElement xfis : xfii.childrenWithName("slot")) {
 			String sid = xfis.get("id");
-			
-			if (!fii.type.slots.containsKey(sid)) {
-				continue; // drop nonexistent slots
-			}
 
 			InventorySlot fis = fii.getSlot(sid);
 			if (fis == null) {
-				fis = new InventorySlot();
-				fii.slots.add(fis);
+				continue; // ignore nonexistent slots
 			}
-			
-			slots.add(sid);
 			
 			fis.slot = fii.type.slots.get(sid);
 			fis.type = researches.get(xfis.get("type", null));
@@ -2001,23 +1997,6 @@ public class World {
 			
 			int hp0 = fis.hpMax(fii.owner);
 			fis.hp = Math.min(xfis.getDouble("hp", hp0), hp0);
-			
-		}
-		// add remaining undefined slots
-		for (EquipmentSlot es : fii.type.slots.values()) {
-			if (!slots.contains(es.id)) {
-				InventorySlot fis = fii.getSlot(es.id);
-				if (fis == null) {
-					fis = new InventorySlot();
-					fis.slot = es;
-					if (es.fixed) {
-						fis.type = es.items.get(0);
-						fis.count = es.max;
-						fis.hp = getHitpoints(fis.type, fii.owner);
-					}
-					fii.slots.add(fis);
-				}
-			}
 		}
 	}
 	/**
@@ -2528,6 +2507,7 @@ public class World {
 	 * @param fleet the fleet
 	 */
 	public void removeFleet(Fleet fleet) {
+		fleets.remove(fleet.id);
 		infectedFleets.remove(fleet.id);
 		for (Player p : players.values()) {
 			p.fleets.remove(fleet);
@@ -2817,7 +2797,7 @@ public class World {
 				// remove hyperdrive as equipment
 				for (Fleet f : p.ownFleets()) {
 					for (InventoryItem ii : f.inventory) {
-						for (InventorySlot is : ii.slots) {
+						for (InventorySlot is : ii.slots.values()) {
 							if (is.type != null && is.type.has(ResearchType.PARAMETER_SPEED)) {
 								is.type = null;
 								is.count = 0;
@@ -3421,5 +3401,33 @@ public class World {
 			relations.clear();
 			relations.addAll(rels);
 		}
+	}
+	/**
+	 * Returns a planet by the given id.
+	 * @param planetId the planet id
+	 * @return the planet object, or null if not found
+	 */
+	public Planet planet(String planetId) {
+		return planets.get(planetId);
+	}
+	/**
+	 * Finds a fleet by its id.
+	 * @param fleetId the fleet id
+	 * @return the fleet object, or null if not found
+	 */
+	public Fleet fleet(int fleetId) {
+		return fleets.get(fleetId);
+	}
+	@Override
+	public Player player(String playerId) {
+		return players.get(playerId);
+	}
+	@Override
+	public ResearchType research(String typeId) {
+		return researches.get(typeId);
+	}
+	@Override
+	public BuildingType building(String buildingTypeId) {
+		return buildingModel.find(buildingTypeId);
 	}
 }
