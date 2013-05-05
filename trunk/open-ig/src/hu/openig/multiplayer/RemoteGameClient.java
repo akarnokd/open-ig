@@ -22,9 +22,9 @@ import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.PlanetStatus;
-import hu.openig.model.ProductionStatus;
+import hu.openig.model.ProductionStatuses;
 import hu.openig.model.RemoteGameAPI;
-import hu.openig.model.ResearchStatus;
+import hu.openig.model.ResearchStatuses;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
@@ -76,7 +76,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 			MessageSerializable request, 
 			T response) throws IOException {
 		Object r = client.query(request);
-		MessageObject mo = MessageUtils.expectObject(r, response.name());
+		MessageObject mo = MessageUtils.expectObject(r, response.objectName());
 		try {
 			response.fromMessage(mo);
 		} catch (MissingAttributeException ex) {
@@ -218,15 +218,15 @@ public class RemoteGameClient implements RemoteGameAPI {
 	}
 
 	@Override
-	public ProductionStatus getProductions() throws IOException {
+	public ProductionStatuses getProductions() throws IOException {
 		MessageObject request = new MessageObject("QUERY_PRODUCTIONS");
-		return query(request, new ProductionStatus());
+		return query(request, new ProductionStatuses());
 	}
 
 	@Override
-	public ResearchStatus getResearches() throws IOException {
+	public ResearchStatuses getResearches() throws IOException {
 		MessageObject request = new MessageObject("QUERY_RESEARCHES");
-		return query(request, new ResearchStatus());
+		return query(request, new ResearchStatuses());
 	}
 
 	@Override
@@ -300,32 +300,38 @@ public class RemoteGameClient implements RemoteGameAPI {
 		send(request);
 	}
 
+	/**
+	 * Send a fleet configuration request.
+	 * @param inventory the inventory describing the fleet contents
+	 * @param request the request object to fill in and send
+	 * @return the fleet status object response
+	 * @throws IOException on format- or communication error
+	 */
+	int sendFleetConfig(List<InventoryItem> inventory,
+			MessageObject request) throws IOException {
+		MessageArray inv = new MessageArray(null);
+		request.set("inventory", inv);
+		for (InventoryItem ii : inventory) {
+			inv.add(ii.toInventoryItemStatus().toMessage());
+		}
+		Object param1 = client.query(request);
+		MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+		try {
+			return mo.getInt("id");
+		} catch (MissingAttributeException ex) {
+			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+		}
+	}
+
 	@Override
-	public FleetStatus newFleet(String planet, List<InventoryItem> inventory) throws IOException {
+	public int newFleet(String planet, List<InventoryItem> inventory) throws IOException {
 		MessageObject mo = new MessageObject("NEW_FLEET_AT_PLANET")
 		.set("planetId", planet);
 		return sendFleetConfig(inventory, mo);
 	}
 
-	/**
-	 * Send a fleet configuration request.
-	 * @param inventory the inventory describing the fleet contents
-	 * @param mo the request object to fill in and send
-	 * @return the fleet status object response
-	 * @throws IOException on format- or communication error
-	 */
-	FleetStatus sendFleetConfig(List<InventoryItem> inventory,
-			MessageObject mo) throws IOException {
-		MessageArray inv = new MessageArray(null);
-		mo.set("inventory", inv);
-		for (InventoryItem ii : inventory) {
-			inv.add(ii.toInventoryItemStatus().toMessage());
-		}
-		return query(mo, new FleetStatus());
-	}
-
 	@Override
-	public FleetStatus newFleet(int id, List<InventoryItem> inventory) throws IOException {
+	public int newFleet(int id, List<InventoryItem> inventory) throws IOException {
 		MessageObject mo = new MessageObject("NEW_FLEET_AT_FLEET") 
 		.set("fleetId", id);
 		return sendFleetConfig(inventory, mo);
@@ -355,11 +361,17 @@ public class RemoteGameClient implements RemoteGameAPI {
 	}
 
 	@Override
-	public InventoryItemStatus deployFleetItem(int id, String type) throws IOException {
+	public int deployFleetItem(int id, String type) throws IOException {
 		MessageObject request = new MessageObject("DEPLOY_FLEET_ITEM")
 		.set("fleetId", id)
 		.set("type", type);
-		return query(request, new InventoryItemStatus());
+		Object param1 = client.query(request);
+		MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+		try {
+			return mo.getInt("id");
+		} catch (MissingAttributeException ex) {
+			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+		}
 	}
 
 	@Override
@@ -511,11 +523,17 @@ public class RemoteGameClient implements RemoteGameAPI {
 	}
 
 	@Override
-	public InventoryItemStatus deployPlanetItem(String planetId, String type) throws IOException {
+	public int deployPlanetItem(String planetId, String type) throws IOException {
 		MessageObject request = new MessageObject("DEPLOY_PLANET_ITEM") 
 		.set("planetId", planetId)
 		.set("type", type);
-		return query(request, new InventoryItemStatus());
+		Object param1 = client.query(request);
+		MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+		try {
+			return mo.getInt("id");
+		} catch (MissingAttributeException ex) {
+			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+		}
 	}
 
 	@Override
@@ -795,5 +813,23 @@ public class RemoteGameClient implements RemoteGameAPI {
 		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS")
 		.set("battleId", battleId);
 		return queryList(request, new GroundBattleUnit());
+	}
+	@Override
+	public InventoryItemStatus getInventoryStatus(int fleetId, int itemId)
+			throws IOException {
+		MessageObject request = new MessageObject("QUERY_FLEET_INVENTORY")
+		.set("fleetId", fleetId)
+		.set("itemId", itemId)
+		;
+		return query(request, new InventoryItemStatus());
+	}
+	@Override
+	public InventoryItemStatus getInventoryStatus(String planetId, int itemId)
+			throws IOException {
+		MessageObject request = new MessageObject("QUERY_PLANET_INVENTORY")
+		.set("planetId", planetId)
+		.set("itemId", itemId)
+		;
+		return query(request, new InventoryItemStatus());
 	}
 }

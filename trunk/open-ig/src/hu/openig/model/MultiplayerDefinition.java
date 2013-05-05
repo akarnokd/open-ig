@@ -69,7 +69,7 @@ public class MultiplayerDefinition extends CustomGameDefinition implements Messa
 		return null;
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "GAME_DEFINITION";
 	}
 }

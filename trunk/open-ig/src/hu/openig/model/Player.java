@@ -55,7 +55,7 @@ public class Player {
 	/** The production history. */
 	public final Map<ResearchMainCategory, List<ResearchType>> productionHistory = U.newHashMap();
 	/** The in-progress research. */
-	public final Map<ResearchType, Research> research = new HashMap<ResearchType, Research>();
+	public final Map<ResearchType, Research> researches = new LinkedHashMap<ResearchType, Research>();
 	/** The completed research. */
 	private final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<ResearchType, List<ResearchType>>();
 	/** The fleets owned. */
@@ -684,9 +684,6 @@ public class Player {
 		result.yesterday.assign(yesterday);
 		result.today.assign(today);
 		
-		result.pauseProduction = pauseProduction;
-		result.pauseResearch = pauseResearch;
-		
 		result.colonizationTargets.addAll(colonizationTargets);
 		
 		return result;
@@ -704,9 +701,92 @@ public class Player {
 		this.statistics.assign(es.statistics);
 		this.yesterday.assign(es.yesterday);
 		this.today.assign(es.today);
-		this.pauseProduction = es.pauseProduction;
-		this.pauseResearch = es.pauseResearch;
 		this.colonizationTargets.clear();
 		this.colonizationTargets.addAll(es.colonizationTargets);
+	}
+	/**
+	 * Returns the production statuses copy of this player.
+	 * @return the production statuses
+	 */
+	public ProductionStatuses toProductionStatuses() {
+		ProductionStatuses result = new ProductionStatuses();
+		
+		result.paused = pauseProduction;
+		
+		for (Map<ResearchType, Production> prs : production.values()) {
+			for (Production pr : prs.values()) {
+				result.productions.add(pr.toProductionStatus());
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * Assigns the values from the production statuses.
+	 * @param status the production statuses
+	 */
+	public void fromProductionStatuses(ProductionStatuses status) {
+		pauseProduction = status.paused;
+		// replace production lines
+		for (Map<ResearchType, Production> prs : production.values()) {
+			prs.clear();
+		}
+		for (ProductionStatus ps : status.productions) {
+			Production p = new Production();
+			p.fromProductionStatus(ps, world);
+			
+			production.get(p.type.category.main).put(p.type, p);
+		}
+	}
+	/**
+	 * Returns the research status copy of the player.
+	 * @return the research status object.
+	 */
+	public ResearchStatuses toResearchStatuses() {
+		ResearchStatuses result = new ResearchStatuses();
+		result.paused = pauseResearch;
+		if (runningResearch != null) {
+			result.runningResearch = runningResearch.id;
+		}
+		for (Map.Entry<ResearchType, List<ResearchType>> e : availableResearch.entrySet()) {
+			List<String> list = new ArrayList<String>();
+			
+			for (ResearchType rt : e.getValue()) {
+				list.add(rt.id);
+			}
+			
+			result.availableResearch.put(e.getKey().id, list);
+		}
+		for (Research r : researches.values()) {
+			result.researches.add(r.toResearchStatus());
+		}
+		
+		return result;
+	}
+	/**
+	 * Assigns the values from the research statuses.
+	 * @param rss the research statuses object
+	 */
+	public void fromResearchStatuses(ResearchStatuses rss) {
+		pauseResearch = rss.paused;
+		if (rss.runningResearch != null) {
+			runningResearch = world.research(rss.runningResearch);
+		}
+		availableResearch.clear();
+		for (Map.Entry<String, List<String>> e : rss.availableResearch.entrySet()) {
+			List<ResearchType> list = new ArrayList<ResearchType>();
+			
+			for (String s : e.getValue()) {
+				list.add(world.research(s));
+			}
+			
+			availableResearch.put(world.research(e.getKey()), list);
+		}
+		researches.clear();
+		for (ResearchStatus rs : rss.researches) {
+			Research r = new Research();
+			r.fromResearchStatus(rs, world);
+			researches.put(r.type, r);
+		}
 	}
 }

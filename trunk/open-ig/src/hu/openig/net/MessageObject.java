@@ -460,7 +460,7 @@ public class MessageObject implements MessageSerializable {
 			} else
 			if (t.type == TokenType.IDENTIFIER) {
 				if ("null".equals(t.value)) {
-					ma.add(null);
+					ma.addNull();
 					valueFound = true;
 				} else
 				if ("false".equals(t.value)) {

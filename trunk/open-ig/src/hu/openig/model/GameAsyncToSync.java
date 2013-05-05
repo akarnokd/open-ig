@@ -130,10 +130,10 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void getProductions(
-			AsyncResult<? super ProductionStatus, ? super IOException> out) {
-		execute(new DeferredAction<ProductionStatus, IOException>(out) {
+			AsyncResult<? super ProductionStatuses, ? super IOException> out) {
+		execute(new DeferredAction<ProductionStatuses, IOException>(out) {
 			@Override
-			public ProductionStatus invoke() throws IOException {
+			public ProductionStatuses invoke() throws IOException {
 				return api.getProductions();
 			}
 		});
@@ -142,10 +142,10 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void getResearches(
-			AsyncResult<? super ResearchStatus, ? super IOException> out) {
-		execute(new DeferredAction<ResearchStatus, IOException>(out) {
+			AsyncResult<? super ResearchStatuses, ? super IOException> out) {
+		execute(new DeferredAction<ResearchStatuses, IOException>(out) {
 			@Override
-			public ResearchStatus invoke() throws IOException {
+			public ResearchStatuses invoke() throws IOException {
 				return api.getResearches();
 			}
 		});
@@ -257,10 +257,10 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void newFleet(final String planet, final List<InventoryItem> inventory,
-			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		execute(new DeferredAction<FleetStatus, IOException>(out) {
+			AsyncResult<? super Integer, ? super IOException> out) {
+		execute(new DeferredAction<Integer, IOException>(out) {
 			@Override
-			public FleetStatus invoke() throws IOException {
+			public Integer invoke() throws IOException {
 				return api.newFleet(planet, inventory);
 			}
 		});
@@ -269,10 +269,10 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void newFleet(final int id, final List<InventoryItem> inventory,
-			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		execute(new DeferredAction<FleetStatus, IOException>(out) {
+			AsyncResult<? super Integer, ? super IOException> out) {
+		execute(new DeferredAction<Integer, IOException>(out) {
 			@Override
-			public FleetStatus invoke() throws IOException {
+			public Integer invoke() throws IOException {
 				return api.newFleet(id, inventory);
 			}
 		});
@@ -315,10 +315,10 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void deployFleetItem(final int id, final String type,
-			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		execute(new DeferredAction<InventoryItemStatus, IOException>(out) {
+			AsyncResult<? super Integer, ? super IOException> out) {
+		execute(new DeferredAction<Integer, IOException>(out) {
 			@Override
-			public InventoryItemStatus invoke() throws IOException {
+			public Integer invoke() throws IOException {
 				return api.deployFleetItem(id, type);
 			}
 		});
@@ -513,10 +513,10 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void deployPlanetItem(final String planetId, final String type,
-			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		execute(new DeferredAction<InventoryItemStatus, IOException>(out) {
+			AsyncResult<? super Integer, ? super IOException> out) {
+		execute(new DeferredAction<Integer, IOException>(out) {
 			@Override
-			public InventoryItemStatus invoke() throws IOException {
+			public Integer invoke() throws IOException {
 				return api.deployPlanetItem(planetId, type);
 			}
 		});
@@ -939,7 +939,26 @@ public class GameAsyncToSync implements GameAsyncAPI {
 				return api.getGroundBattleUnits(battleId);
 			}
 		});
-		
 	}
 
+	@Override
+	public void getInventoryStatus(final int fleetId, final int itemId,
+			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
+		execute(new DeferredAction<InventoryItemStatus, IOException>(out) {
+			@Override
+			public InventoryItemStatus invoke() throws IOException {
+				return api.getInventoryStatus(fleetId, itemId);
+			}
+		});
+	}
+	@Override
+	public void getInventoryStatus(final String planetId, final int itemId,
+			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
+		execute(new DeferredAction<InventoryItemStatus, IOException>(out) {
+			@Override
+			public InventoryItemStatus invoke() throws IOException {
+				return api.getInventoryStatus(planetId, itemId);
+			}
+		});
+	}
 }

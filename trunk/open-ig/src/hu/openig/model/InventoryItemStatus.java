@@ -64,7 +64,7 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	}
 	@Override
 	public MessageObject toMessage() {
-		MessageObject mo = new MessageObject(name());
+		MessageObject mo = new MessageObject(objectName());
 		
 		mo.set("id", id)
 		.set("type", type)
@@ -94,7 +94,7 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 		return "INVENTORIES";
 	}
 	@Override
-	public String name() {
+	public String objectName() {
 		return "INVENTORY";
 	}
 }

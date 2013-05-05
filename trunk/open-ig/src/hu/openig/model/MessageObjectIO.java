@@ -30,5 +30,5 @@ public interface MessageObjectIO {
 	 * Returns the name of the message object.
 	 * @return the name used to create and expect a message object
 	 */
-	String name();
+	String objectName();
 }

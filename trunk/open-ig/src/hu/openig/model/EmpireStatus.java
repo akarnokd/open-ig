@@ -34,10 +34,6 @@ public class EmpireStatus implements MessageObjectIO {
 	public final PlayerFinances yesterday = new PlayerFinances();
 	/** The global finalcial information today. */
 	public final PlayerFinances today = new PlayerFinances();
-	/** Pause the production without changing the production line settings. */
-	public boolean pauseProduction;
-	/** Pause the research without changing the current research settings. */
-	public boolean pauseResearch;
 	/** The set of colonization targets. */
 	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
 	// TODO other global player statuses?
@@ -67,8 +63,6 @@ public class EmpireStatus implements MessageObjectIO {
 		setPlayerFinances(today, mo.getObject("today"));
 		setPlayerFinances(yesterday, mo.getObject("yesterday"));
 		
-		pauseProduction = mo.getBoolean("pauseProduction");
-		pauseResearch = mo.getBoolean("pauseResearch");
 		for (Object o : mo.getArray("colonize")) {
 			colonizationTargets.add((String)o);
 		}
@@ -105,7 +99,7 @@ public class EmpireStatus implements MessageObjectIO {
 	}
 	@Override
 	public MessageObject toMessage() {
-		MessageObject result = new MessageObject(name());
+		MessageObject result = new MessageObject(objectName());
 		result.set("id", id);
 		result.set("money", money);
 		
@@ -138,9 +132,6 @@ public class EmpireStatus implements MessageObjectIO {
 		setPlayerFinances(yesterday, this.yesterday);
 		
 		
-		result.set("pauseProduction", pauseProduction);
-		result.set("pauseResearch", pauseResearch);
-		
 		result.set("colonize", new MessageArray(null, colonizationTargets));
 		
 		return result;
@@ -148,7 +139,7 @@ public class EmpireStatus implements MessageObjectIO {
 
 
 	@Override
-	public String name() {
+	public String objectName() {
 		return "EMPIRE";
 	}
 

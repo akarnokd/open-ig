@@ -21,9 +21,9 @@ import hu.openig.model.MultiplayerEnvironment;
 import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.PlanetStatus;
-import hu.openig.model.ProductionStatus;
+import hu.openig.model.ProductionStatuses;
 import hu.openig.model.RemoteGameAPI;
-import hu.openig.model.ResearchStatus;
+import hu.openig.model.ResearchStatuses;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
@@ -176,13 +176,13 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public ProductionStatus getProductions() throws IOException {
+	public ProductionStatuses getProductions() throws IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ResearchStatus getResearches() throws IOException {
+	public ResearchStatuses getResearches() throws IOException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -242,17 +242,17 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public FleetStatus newFleet(String planet, List<InventoryItem> inventory)
+	public int newFleet(String planet, List<InventoryItem> inventory)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
-	public FleetStatus newFleet(int id, List<InventoryItem> inventory)
+	public int newFleet(int id, List<InventoryItem> inventory)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
@@ -274,10 +274,10 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public InventoryItemStatus deployFleetItem(int id, String type)
+	public int deployFleetItem(int id, String type)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
@@ -381,10 +381,10 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public InventoryItemStatus deployPlanetItem(String planetId, String type)
+	public int deployPlanetItem(String planetId, String type)
 			throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	@Override
@@ -611,6 +611,18 @@ public class MultiplayerSession implements RemoteGameAPI {
 
 	@Override
 	public List<GroundBattleUnit> getGroundBattleUnits(int battleId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public InventoryItemStatus getInventoryStatus(int fleetId, int itemId)
+			throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public InventoryItemStatus getInventoryStatus(String planetId, int itemId)
 			throws IOException {
 		// TODO Auto-generated method stub
 		return null;

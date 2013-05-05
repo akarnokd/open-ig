@@ -120,7 +120,7 @@ public class QuickResearchPanel extends UIContainer {
 			@Override
 			public void invoke() {
 				if (commons.player().runningResearch() != null) {
-					commons.player().research.get(commons.player().runningResearch()).state = ResearchState.STOPPED;
+					commons.player().researches.get(commons.player().runningResearch()).state = ResearchState.STOPPED;
 				}
 				commons.player().runningResearch(null);
 				commons.screenSound(SoundType.STOP_RESEARCH);
@@ -202,7 +202,7 @@ public class QuickResearchPanel extends UIContainer {
 		
 		ResearchType ar = commons.player().runningResearch();
 		if (ar != null) {
-			Research rs = commons.player().research.get(ar);
+			Research rs = commons.player().researches.get(ar);
 			
 			currentResearchName.text(ar.name, true);
 			currentResearchName.color(TextRenderer.YELLOW);
@@ -301,7 +301,7 @@ public class QuickResearchPanel extends UIContainer {
 					cl = catlist.get(j);
 				}
 				
-				Research rs1 = commons.player().research.get(ri.first);
+				Research rs1 = commons.player().researches.get(ri.first);
 				
 				if (rs1 == null) {
 					cl.text(ri.first.name, true);
@@ -566,7 +566,7 @@ public class QuickResearchPanel extends UIContainer {
 	 * @param scale the scale factor -1.0 ... +1.0
 	 */
 	void doAdjustMoney(float scale) {
-		Research r = commons.player().research.get(commons.player().runningResearch());
+		Research r = commons.player().researches.get(commons.player().runningResearch());
 		if (r != null) {
 			r.assignedMoney += scale * r.type.researchCost(commons.player().traits) / 20;
 			r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);

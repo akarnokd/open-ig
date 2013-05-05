@@ -215,6 +215,54 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 		items.add(wrap(value));
 	}
 	/**
+	 * Add a null object to the array.
+	 */
+	public void addNull() {
+		items.add(null);
+	}
+	/**
+	 * Add a new object to the list.
+	 * @param value the value to add
+	 */
+	public void add(Number value) {
+		items.add(value);
+	}
+	/**
+	 * Add a new object to the list.
+	 * @param value the value to add
+	 */
+	public void add(Boolean value) {
+		items.add(value);
+	}
+	/**
+	 * Add a new object to the list.
+	 * @param value the value to add
+	 */
+	public void add(Character value) {
+		items.add(value != null ? value.toString() : null);
+	}
+	/**
+	 * Add a new object to the list.
+	 * @param value the value to add
+	 */
+	public void add(CharSequence value) {
+		items.add(value != null ? value.toString() : null);
+	}
+	/**
+	 * Add a new object to the list.
+	 * @param value the value to add
+	 */
+	public void add(MessageObject value) {
+		items.add(value);
+	}
+	/**
+	 * Add a new object to the list.
+	 * @param value the value to add
+	 */
+	public void add(MessageArray value) {
+		items.add(value);
+	}
+	/**
 	 * Adds all items from the value array.
 	 * @param values the value array
 	 */
