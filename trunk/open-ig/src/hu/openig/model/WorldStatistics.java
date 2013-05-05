@@ -101,14 +101,21 @@ public class WorldStatistics {
 		this.fields = Collections.unmodifiableMap(fields);
 	}
 	/** @return creates a copy of this object */
-	public PlayerStatistics copy() {
-		PlayerStatistics result = new PlayerStatistics();
+	public WorldStatistics copy() {
+		WorldStatistics result = new WorldStatistics();
 
-		for (Map.Entry<String, LongField> e : result.fields.entrySet()) {
-			e.getValue().value = fields.get(e.getKey()).value;
-		}
+		result.assign(this);
 		
 		return result;
+	}
+	/**
+	 * Assign the values from another world statistics.
+	 * @param other the other world statistics
+	 */
+	public void assign(WorldStatistics other) {
+		for (Map.Entry<String, LongField> e : fields.entrySet()) {
+			e.getValue().value = other.fields.get(e.getKey()).value;
+		}
 	}
 	/**
 	 * Save the statistics.

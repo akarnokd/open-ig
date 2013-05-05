@@ -58,4 +58,15 @@ public class PlayerFinances {
 	public int getTotalCost() {
 		return productionCost + researchCost + buildCost + repairCost;
 	}
+	/**
+	 * Creates a copy of this player finances record.
+	 * @return the copy
+	 */
+	public PlayerFinances copy() {
+		PlayerFinances result = new PlayerFinances();
+		
+		result.assign(this);
+		
+		return result;
+	}
 }

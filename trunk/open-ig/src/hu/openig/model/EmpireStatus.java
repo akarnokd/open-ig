@@ -9,13 +9,11 @@
 package hu.openig.model;
 
 import hu.openig.core.LongField;
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,8 +26,6 @@ public class EmpireStatus implements MessageObjectIO {
 	public String id;
 	/** The current money. */
 	public long money;
-	/** The map of known other players and the diplomatic relations. */
-	public final List<DiplomaticRelation> knownPlayers = new ArrayList<DiplomaticRelation>();
 	/** The negotiation offers from players. */
 	public final Map<String, DiplomaticOffer> offers = new LinkedHashMap<String, DiplomaticOffer>();
 	/** The player level statistics. */
@@ -50,26 +46,6 @@ public class EmpireStatus implements MessageObjectIO {
 	public void fromMessage(MessageObject mo) {
 		id = mo.getString("id");
 		money = mo.getLong("money");
-		for (MessageObject dro : mo.getArray("relations").objects()) {
-			DiplomaticRelation dr = new DiplomaticRelation();
-			
-			dr.first = dro.getString("first");
-			dr.second = dro.getString("second");
-			dr.full = dro.getBoolean("full");
-			dr.value = dro.getDouble("value");
-			dr.lastContact = new Date(dro.getLong("lastContact"));
-			dr.wontTalk(dro.getBoolean("wontTalk"));
-			dr.tradeAgreement = dro.getBoolean("tradeAgreement");
-			dr.strongAlliance = dro.getBoolean("strongAlliance");
-			
-			for (Object o : dro.getArray("allianceAgainst")) {
-				if (o instanceof String) {
-					dr.alliancesAgainst.add((String)o);
-				}
-			}
-			
-			knownPlayers.add(dr);
-		}
 		for (MessageObject moffer : mo.getArray("offers").objects()) {
 			String id = moffer.getString("id");
 			
@@ -112,10 +88,61 @@ public class EmpireStatus implements MessageObjectIO {
 		f.taxMorale = o.getDouble("taxMorale");
 		f.taxMoraleCount = o.getInt("taxMoraleCount");
 	}
+	/**
+	 * Sets the player finances on the message object.
+	 * @param o the message object
+	 * @param f the finance record
+	 */
+	protected void setPlayerFinances(MessageObject o, PlayerFinances f) {
+		o.set("productionCost", f.productionCost);
+		o.set("researchCost", f.researchCost);
+		o.set("buildCost", f.buildCost);
+		o.set("repairCost", f.repairCost);
+		o.set("taxIncome", f.taxIncome);
+		o.set("tradeIncome", f.tradeIncome);
+		o.set("taxMorale", f.taxMorale);
+		o.set("taxMoraleCount", f.taxMoraleCount);
+	}
 	@Override
 	public MessageObject toMessage() {
 		MessageObject result = new MessageObject(name());
-		// TODO Auto-generated method stub
+		result.set("id", id);
+		result.set("money", money);
+		
+		MessageArray o = new MessageArray(null);
+		result.set("offers", o);
+		for (Map.Entry<String, DiplomaticOffer> e : offers.entrySet()) {
+			MessageObject oo = new MessageObject(null);
+			
+			oo.set("id", e.getKey());
+			DiplomaticOffer offer = e.getValue();
+			oo.set("callType", offer.callType.toString());
+			oo.set("approach", offer.approach.toString());
+			oo.set("value", offer.value());
+			
+			o.add(oo);
+		}
+		MessageObject ps = new MessageObject(null);
+		result.set("statistics", ps);
+		
+		for (Map.Entry<String, LongField> e : statistics.fields.entrySet()) {
+			ps.set(e.getKey(), e.getValue().value);
+		}
+		
+		MessageObject today = new MessageObject(null);
+		result.set("today", today);
+		setPlayerFinances(today, this.today);
+		
+		MessageObject yesterday = new MessageObject(null);
+		result.set("yesterday", yesterday);
+		setPlayerFinances(yesterday, this.yesterday);
+		
+		
+		result.set("pauseProduction", pauseProduction);
+		result.set("pauseResearch", pauseResearch);
+		
+		result.set("colonize", new MessageArray(null, colonizationTargets));
+		
 		return result;
 	}
 

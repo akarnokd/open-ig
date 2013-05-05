@@ -23,6 +23,7 @@ import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -1227,14 +1228,14 @@ public class DiplomacyScreen extends ScreenBase {
 		
 		mentioned.add(n);
 		
-		Diplomacy.Response r0 = world().random(n.responseFor(at, m));
+		Diplomacy.Response r0 = ModelUtils.random(n.responseFor(at, m));
 		
 		DiplomaticRelation dr = world().getRelation(player(), other);
 		
 		dr.wontTalk(r0.notalk);
 		change = r0.change / 10d;
 		
-		String sOffer = format(world().random(n.approachFor(at)).label, parameter);
+		String sOffer = format(ModelUtils.random(n.approachFor(at)).label, parameter);
 		String sResponse = format(r0.label, parameter);
 		setupTexts(sOffer, sResponse);
 

@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.model.Building;
 import hu.openig.model.Fleet;
 import hu.openig.model.Message;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -134,8 +135,7 @@ public class Mission1 extends Mission {
 
 			addMission("Mission-1-Task-3", 72);
 			
-			// FIXME M2 delay
-			int mission2Time = /* 24 * */ 3 * (world.random().nextInt(2) + 3);
+			int mission2Time = 3 * (ModelUtils.randomInt(2) + 3);
 			addMission("Mission-2", mission2Time);
 			addTimeout("Welcome", 1500);
 		}

@@ -12,7 +12,6 @@ import hu.openig.utils.Exceptions;
 import hu.openig.utils.XElement;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -53,12 +52,11 @@ public class Message implements Comparable<Message> {
 	/** 
 	 * Save the message.
 	 * @param xmessage the target element 
-	 * @param sdf the date formatter
 	 */
-	public void save(XElement xmessage, SimpleDateFormat sdf) {
+	public void save(XElement xmessage) {
 		xmessage.set("priority", priority);
-		xmessage.set("gametime", sdf.format(new Date(gametime)));
-		xmessage.set("timestamp", sdf.format(new Date(timestamp)));
+		xmessage.set("gametime", ModelUtils.format(new Date(gametime)));
+		xmessage.set("timestamp", ModelUtils.format(new Date(timestamp)));
 		if (sound != null) {
 			xmessage.set("sound", sound.toString());
 		}
@@ -90,8 +88,8 @@ public class Message implements Comparable<Message> {
 	public void load(XElement xmessage, World world) {
 		priority = xmessage.getInt("priority");
 		try {
-			gametime = World.DATE_FORMAT.get().parse(xmessage.get("gametime")).getTime();
-			timestamp = World.DATE_FORMAT.get().parse(xmessage.get("timestamp")).getTime();
+			gametime = ModelUtils.parse(xmessage.get("gametime")).getTime();
+			timestamp = ModelUtils.parse(xmessage.get("timestamp")).getTime();
 		} catch (ParseException ex) {
 			Exceptions.add(ex);
 		}

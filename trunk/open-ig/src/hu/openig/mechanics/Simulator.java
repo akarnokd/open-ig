@@ -20,6 +20,7 @@ import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Message;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatistics;
@@ -39,7 +40,6 @@ import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -220,7 +220,7 @@ public final class Simulator {
 				if (world.difficulty == Difficulty.HARD) {
 					eqDelta /= 4;
 				}
-				if (world.random().nextInt(eqDelta) < speed) {
+				if (ModelUtils.randomInt(eqDelta) < speed) {
 					planet.earthQuakeTTL = 60; // 1 hour
 					
 					Message msg = world.newMessage("message.earthquake");
@@ -238,8 +238,8 @@ public final class Simulator {
 		// rain calculation
 		if (planet.type.weatherDrop != null) {
 			if (planet.weatherTTL <= 0) {
-				if (world.random().nextInt(planet.type.weatherFrequency) < speed) {
-					planet.weatherTTL = planet.type.weatherDuration + world.random().nextInt(120) - 60;
+				if (ModelUtils.randomInt(planet.type.weatherFrequency) < speed) {
+					planet.weatherTTL = planet.type.weatherDuration + ModelUtils.randomInt(120) - 60;
 				}
 			} else {
 				planet.weatherTTL -= speed;
@@ -731,7 +731,7 @@ public final class Simulator {
 	public static boolean moveFleets(World world) {
 		boolean radar = false;
 		List<Player> ps = U.newArrayList(world.players.values());
-		Collections.shuffle(ps, world.random());
+		ModelUtils.shuffle(ps);
 		for (Player p : ps) {
 			radar |= moveFleets(p.ownFleets(), world);
 		}

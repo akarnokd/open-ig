@@ -33,6 +33,7 @@ import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
@@ -2562,7 +2563,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 				}, true);
 			}
-			if (world().random().nextInt(60) < 1) {
+			if (ModelUtils.randomInt(60) < 1) {
 				effectSound(SoundType.THUNDER);
 			}
 		} else {
@@ -2584,8 +2585,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	void doEarthquake() {
 		if (planet().earthQuakeTTL > 0) {
 			if (!commons.simulation.paused()) {
-				render.offsetX += (2 - world().random().nextInt(5)) * 2;
-				render.offsetY += (1 - world().random().nextInt(3));
+				render.offsetX += (2 - ModelUtils.randomInt(5)) * 2;
+				render.offsetY += (1 - ModelUtils.randomInt(3));
 				askRepaint();
 			}
 		}
@@ -4604,11 +4605,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					// find a new target in range
   					List<GroundwarUnit> targets = unitsInRange(u);
 					if (targets.size() > 0) {
-						attack(u, world().random(targets));
+						attack(u, ModelUtils.random(targets));
 					} else {
 						List<Building> targets2 = buildingsInRange(u);
 						if (targets2.size() > 0) {
-							attack(u, world().random(targets2));
+							attack(u, ModelUtils.random(targets2));
 						}
 					}
 					if (u.attackUnit == null && u.attackBuilding == null 
@@ -4729,7 +4730,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				} else {
 					// plot path outside the minimum range
 					Location c = buildingNearby(u.attackBuilding, ul);
-					double angle = world().random().nextDouble() * 2 * Math.PI;
+					double angle = ModelUtils.random() * 2 * Math.PI;
 					Location c1 = Location.of(
 							(int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
 							(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
@@ -5016,7 +5017,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				// find a new target
 				List<GroundwarUnit> targets = unitsInRange(g);
 				if (targets.size() > 0) {
-					g.attack = targets.get(world().random().nextInt(targets.size()));
+					g.attack = ModelUtils.random(targets);
 				}
 			}
 		}
@@ -5411,7 +5412,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					// yield
 					dv = 0;
 					if (u.yieldTTL <= 0) {
-						u.yieldTTL = world().random().nextInt(YIELD_TTL) + YIELD_TTL / 2;
+						u.yieldTTL = ModelUtils.randomInt(YIELD_TTL) + YIELD_TTL / 2;
 					}
 					break;
 				}
@@ -5927,7 +5928,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (atBuildings) {
 			placeAroundInCircle(gus, locations, car.icx, car.icy, car.rmax);
 		} else {
-			Location furthest = world().random(U.newArrayList(locations));
+			Location furthest = ModelUtils.random(locations);
 //			// locate geometric center
 //			double cx = 0;
 //			double cy = 0;

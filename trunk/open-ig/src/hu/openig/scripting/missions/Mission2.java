@@ -13,6 +13,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -22,7 +23,6 @@ import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -79,7 +79,7 @@ public class Mission2 extends Mission {
 					fs = filterByRange(fs, world.params().groundRadarUnitSize() - 2, 
 							"Naxos", "San Sterling", "Achilles");
 					if (!fs.isEmpty()) {
-						Fleet f = world.random(fs);
+						Fleet f = ModelUtils.random(fs);
 
 						int fidx = ((AITrader)f.owner.ai).fleetIndex(f);
 						
@@ -233,16 +233,16 @@ public class Mission2 extends Mission {
 	void scheduleTasks() {
 		if (!objective("Mission-2-Task-1").visible && !task1Once) {
 			task1Once = true;
-			addMission("Mission-2-Task-1", (8 + world.random().nextInt(3)));
+			addMission("Mission-2-Task-1", (8 + ModelUtils.randomInt(3)));
 		}
 		if (objective("Mission-3").isCompleted() && !task2Once) {
 			task2Once = true;
-			addMission("Mission-2-Task-2", (8 + world.random().nextInt(3)));
+			addMission("Mission-2-Task-2", (8 + ModelUtils.randomInt(3)));
 			addMission("Mission-26-Wife-1", 2);
 		}
 		if (objective("Mission-4").isCompleted() && !task3Once) {
 			task3Once = true;
-			addMission("Mission-2-Task-3", (8 + world.random().nextInt(3)));
+			addMission("Mission-2-Task-3", (8 + ModelUtils.randomInt(3)));
 		}
 	}
 	@Override
@@ -302,7 +302,10 @@ public class Mission2 extends Mission {
 				ii.tag = null;
 			}
 			tf.task = FleetTask.IDLE;
-			tf.moveTo(world.random(Arrays.asList(planet("Achilles"), planet("Naxos"), planet("San Sterling"))));
+			tf.moveTo(ModelUtils.random(
+					planet("Achilles"), 
+					planet("Naxos"), 
+					planet("San Sterling")));
 		}
 		Fleet pf = findTaggedFleet(MISSION_2_PIRATE, player("Pirates")); 
 		if (pf != null) {
@@ -380,7 +383,7 @@ public class Mission2 extends Mission {
 		task1Once = xmission.getBoolean("task-1-once", objective("Mission-2-Task-1").isCompleted());
 		task2Once = xmission.getBoolean("task-2-once", objective("Mission-2-Task-2").isCompleted());
 		task3Once = xmission.getBoolean("task-3-once", objective("Mission-2-Task-3").isCompleted());
-		traderMessage = xmission.getInt("trader-message", 1 + world.random().nextInt(7));
+		traderMessage = xmission.getInt("trader-message", 1 + ModelUtils.randomInt(7));
 	}
 	@Override
 	public void save(XElement xmission) {

@@ -11,6 +11,7 @@ package hu.openig.scripting.missions;
 import hu.openig.core.Action0;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -106,7 +107,7 @@ public class Mission12 extends Mission {
 				if (infectionCount > 2) {
 					List<Planet> ps = player.ownPlanets();
 					ps.remove(nc);
-					world.random(ps).quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
+					ModelUtils.random(ps).quarantineTTL = Planet.DEFAULT_QUARANTINE_TTL;
 				}
 			}
 		}

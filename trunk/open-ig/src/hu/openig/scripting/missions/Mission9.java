@@ -14,6 +14,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -131,7 +132,7 @@ public class Mission9 extends Mission {
 			}
 		}
 		
-		ResearchType rt0 = world.random(shipTypes);
+		ResearchType rt0 = ModelUtils.random(shipTypes);
 		f0.addInventory(rt0, 1);
 		
 		f0.moveTo(planet("San Sterling"));
@@ -146,7 +147,7 @@ public class Mission9 extends Mission {
 		Fleet pf = createFleet(label("mission-9.trader_name"), 
 				tr, sst.x + 80, sst.y + 80);
 		pf.task = FleetTask.SCRIPT;
-		int n = world.random().nextInt(2) + 1;
+		int n = ModelUtils.randomInt(2) + 1;
 		// ----------------------------------------------------------------
 		pf.addInventory(research("TradersFreight" + n), 1);
 		// ----------------------------------------------------------------

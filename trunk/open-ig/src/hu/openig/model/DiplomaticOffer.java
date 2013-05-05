@@ -36,6 +36,13 @@ public class DiplomaticOffer {
 		this.approach = approach;
 	}
 	/**
+	 * Creates a copy of this object.
+	 * @return the copy
+	 */
+	public DiplomaticOffer copy() {
+		return new DiplomaticOffer(callType, approach).value(value);
+	}
+	/**
 	 * The optional offer value.
 	 * @return the value
 	 */

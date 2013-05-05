@@ -21,6 +21,7 @@ import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
@@ -202,7 +203,7 @@ public class AITrader implements AIManager {
 				LandedFleet lf = new LandedFleet();
 				lf.fleet = nf;
 				
-				lf.target = world.random(planets);
+				lf.target = ModelUtils.random(planets);
 				lf.ttl = LANDING_TTL;
 				
 				nf.x = lf.target.x;
@@ -260,7 +261,7 @@ public class AITrader implements AIManager {
 			// if time out, put back the fleet
 			if (--lf.ttl <= 0) {
 				if (lf.target == null) {
-					lf.target = world.random(planets);
+					lf.target = ModelUtils.random(planets);
 				}
 				boolean infected = lf.target.quarantineTTL > 0;
 
@@ -268,13 +269,13 @@ public class AITrader implements AIManager {
 					List<Planet> planets2 = U.newArrayList(planets);
 					planets2.remove(lf.target);
 					if (!planets2.isEmpty()) {
-						Planet nt = world.random(planets2);
+						Planet nt = ModelUtils.random(planets2);
 						if (infected) {
 							world.infectedFleets.put(lf.fleet.id, lf.target.id);
 							if (nt.owner != lf.target.owner) {
 								List<Planet> cand2 = lf.target.owner.ownPlanets();
 								cand2.remove(lf.target);
-								nt = world.random(cand2);
+								nt = ModelUtils.random(cand2);
 							}
 						}
 						lf.fleet.moveTo(nt);
@@ -404,7 +405,7 @@ public class AITrader implements AIManager {
 		InventoryItem ii = new InventoryItem(world.newId(), nf);
 		ii.owner = player;
 		ii.count = 1;
-		ii.type = world.random(rts);
+		ii.type = ModelUtils.random(rts);
 		ii.hp = world.getHitpoints(ii.type, ii.owner);
 		ii.createSlots();
 		

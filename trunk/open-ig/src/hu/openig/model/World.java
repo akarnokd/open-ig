@@ -12,6 +12,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func0;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
+import hu.openig.net.MissingAttributeException;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
@@ -26,10 +27,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -43,8 +42,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -72,15 +69,6 @@ public class World {
 	public final Players players = new Players();
 	/** The time. */
 	public final GregorianCalendar time = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-	{
-		time.set(GregorianCalendar.YEAR, 3427);
-		time.set(GregorianCalendar.MONTH, GregorianCalendar.AUGUST);
-		time.set(GregorianCalendar.DATE, 13);
-		time.set(GregorianCalendar.HOUR_OF_DAY, 8);
-		time.set(GregorianCalendar.MINUTE, 50);
-		time.set(GregorianCalendar.SECOND, 0);
-		time.set(GregorianCalendar.MILLISECOND, 0);
-	}
 	/** The initial game date. */
 	public final Date initialDate = time.getTime();
 	/** The available planets. */
@@ -121,24 +109,6 @@ public class World {
 	public Chats chats;
 	/** The global id sequence. */
 	protected final AtomicInteger idSequence = new AtomicInteger();
-	/** The date formatter. */
-	public static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
-		@Override
-		protected SimpleDateFormat initialValue() {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-			sdf.setCalendar(new GregorianCalendar(TimeZone.getTimeZone("GMT")));
-			return sdf;
-		}
-	};
-	/**
-	 * The random number generator for simulation/AI activities.
-	 */
-	public static final ThreadLocal<Random> RANDOM = new ThreadLocal<Random>() {
-		@Override
-		public Random get() {
-			return new Random();
-		}
-	};
 	/** The test questions. */
 	public Map<String, TestQuestion> test;
 	/** The test is needed. */
@@ -175,6 +145,13 @@ public class World {
 				return config.timestep;
 			}
 		});
+		time.set(GregorianCalendar.YEAR, 3427);
+		time.set(GregorianCalendar.MONTH, GregorianCalendar.AUGUST);
+		time.set(GregorianCalendar.DATE, 13);
+		time.set(GregorianCalendar.HOUR_OF_DAY, 8);
+		time.set(GregorianCalendar.MINUTE, 50);
+		time.set(GregorianCalendar.SECOND, 0);
+		time.set(GregorianCalendar.MILLISECOND, 0);
 	}
 	/**
 	 * Load the game world's resources.
@@ -1034,7 +1011,7 @@ public class World {
 		xworld.set("game", name);
 		xworld.set("player", player.id);
 		xworld.set("difficulty", difficulty);
-		xworld.set("time", DATE_FORMAT.get().format(time.getTime()));
+		xworld.set("time", ModelUtils.format(time.getTime()));
 		xworld.set("test-needed", testNeeded);
 		xworld.set("test-completed", testCompleted);
 		xworld.set("allow-record-message", allowRecordMessage);
@@ -1132,14 +1109,14 @@ public class World {
 				XElement xqueue = xp.add("message-queue");
 				for (Message msg : p.messageQueue) {
 					XElement xmessage = xqueue.add("message");
-					msg.save(xmessage, DATE_FORMAT.get());
+					msg.save(xmessage);
 				}
 			}
 			if (p.messageHistory.size() > 0) {
 				XElement xqueue = xp.add("message-history");
 				for (Message msg : p.messageHistory) {
 					XElement xmessage = xqueue.add("message");
-					msg.save(xmessage, DATE_FORMAT.get());
+					msg.save(xmessage);
 				}
 			}
 			
@@ -1422,7 +1399,7 @@ public class World {
 		createVersion = xworld.get("create-version", env.version());
 		
 		try {
-			time.setTime(DATE_FORMAT.get().parse(xworld.get("time")));
+			time.setTime(ModelUtils.parse(xworld.get("time")));
 			time.set(GregorianCalendar.MINUTE, (time.get(GregorianCalendar.MINUTE) / 10) * 10);
 			time.set(GregorianCalendar.SECOND, 0);
 			time.set(GregorianCalendar.MILLISECOND, 0);
@@ -2669,39 +2646,10 @@ public class World {
 		return player != null && player.aiMode != AIMode.TRADERS && player.aiMode != AIMode.PIRATES;
 	}
 	/**
-	 * Returns a random element from the list.
-	 * @param <T> the element type
-	 * @param ts the list of elements
-	 * @return the selected element
-	 */
-	public <T> T random(Collection<T> ts) {
-		int idx = RANDOM.get().nextInt(ts.size());
-		if (ts instanceof List<?>) {
-			return ((List<T>)ts).get(idx);
-		}
-		Iterator<T> it = ts.iterator();
-		int i = 0;
-		while (it.hasNext()) {
-			T t = it.next();
-			if (i == idx) {
-				return t;
-			}
-			i++;
-		}
-		throw new NoSuchElementException();
-	}
-	/**
 	 * @return the various game parameters
 	 */
 	public Parameters params() {
 		return this.params;
-	}
-	/**
-	 * Returns the random number generator.
-	 * @return the random number generator
-	 */
-	public Random random() {
-		return RANDOM.get();
 	}
 	/**
 	 * Cure fleets which were infected by the given planet.
@@ -3064,7 +3012,7 @@ public class World {
 		}
 		
 		if (player == null) {
-			player = random(players.values());
+			player = ModelUtils.random(players.values());
 		}
 		
 		int labLimit = Math.max(skirmishDefinition.initialPlanets, skirmishDefinition.initialColonyShips);
@@ -3086,8 +3034,8 @@ public class World {
 				p.die();
 			}
 			if (skirmishDefinition.galaxyRandomSurface) {
-				p.type = random(galaxyModel.planetTypes.values());
-				p.surface = random(p.type.surfaces.values()).copy(newIdFunc);
+				p.type = ModelUtils.random(galaxyModel.planetTypes.values());
+				p.surface = ModelUtils.random(p.type.surfaces.values()).copy(newIdFunc);
 			}
 		}
 
@@ -3176,7 +3124,7 @@ public class World {
 		for (int zi = 0; zi < zones * zones; zi++) {
 			zoneIndex.add(zi);
 		}
-		Collections.shuffle(zoneIndex, random());
+		ModelUtils.shuffle(zoneIndex);
 
 		double gw = galaxyModel.map.getWidth();
 		double gh = galaxyModel.map.getHeight();
@@ -3211,7 +3159,7 @@ public class World {
 					}
 				}
 			}
-			Planet pl = random(candidates);
+			Planet pl = ModelUtils.random(candidates);
 			
 			p.currentPlanet = pl;
 			p.selectionMode = SelectionMode.PLANET;
@@ -3256,8 +3204,8 @@ public class World {
 			}
 			
 			for (Fleet f : p.ownFleets()) {
-				double r = 4 + random().nextDouble() * 3;
-				double a = random().nextDouble() * 2 * Math.PI;
+				double r = 4 + ModelUtils.random() * 3;
+				double a = ModelUtils.random() * 2 * Math.PI;
 				
 				f.x = pl.x + r * Math.cos(a);
 				f.y = pl.y + r * Math.sin(a);
@@ -3396,5 +3344,82 @@ public class World {
 			xworld.set("id-sequence", idSequence.get());
 		}
 	}
-	
+	/**
+	 * Creates the empire statuses record from this world object.
+	 * @param playerId from the player's perspective, or null for all players
+	 * @return the empire statuses
+	 */
+	public EmpireStatuses toEmpireStatuses(String playerId) {
+		EmpireStatuses result = new EmpireStatuses();
+		
+		result.currentTime = time.getTime();
+		result.statistics.assign(this.statistics);
+		
+		if (playerId == null) {
+			for (Player p : players.values()) {
+				result.empires.put(p.id, p.toEmpireStatus());
+			}
+			for (DiplomaticRelation dr : relations) {
+				result.relations.add(dr.copy());
+			}
+		} else {
+			result.empires.put(playerId, players.get(playerId).toEmpireStatus());
+			for (DiplomaticRelation dr : relations) {
+				if (dr.knows(playerId)) {
+					result.relations.add(dr.copy());
+				}
+			}
+		}
+		
+		return result;
+	}
+	/**
+	 * Load values from the empire statuses record.
+	 * @param ess the empire statuses record
+	 * @param playerId the target player id if not null
+	 */
+	public void fromEmpireStatuses(EmpireStatuses ess, String playerId) {
+		time.setTime(ess.currentTime);
+		statistics.assign(ess.statistics);
+		
+		if (playerId == null) {
+			for (EmpireStatus es : ess.empires.values()) {
+				Player p = players.get(es.id);
+				if (p == null) {
+					throw new MissingAttributeException("player id " + es.id);
+				}
+				p.fromEmpireStatus(es);
+			}
+			relations.clear();
+			for (DiplomaticRelation dr : ess.relations) {
+				relations.add(dr.copy());
+			}
+		} else {
+			EmpireStatus es = ess.empires.get(playerId);
+			if (es == null) {
+				throw new MissingAttributeException("player id " + playerId);
+			}
+			Player p = players.get(playerId);
+			if (p == null) {
+				throw new MissingAttributeException("player id " + playerId);
+			}
+			p.fromEmpireStatus(es);
+			
+			// replace the player's relations only
+			List<DiplomaticRelation> rels = new ArrayList<DiplomaticRelation>();
+			for (DiplomaticRelation dr : relations) {
+				if (!playerId.equals(dr.first) && !playerId.equals(dr.second)) {
+					rels.add(dr);
+				}
+			}
+			for (DiplomaticRelation dr : ess.relations) {
+				if (playerId.equals(dr.first) || playerId.equals(dr.second)) {
+					rels.add(dr.copy());
+				}
+			}
+			
+			relations.clear();
+			relations.addAll(rels);
+		}
+	}
 }

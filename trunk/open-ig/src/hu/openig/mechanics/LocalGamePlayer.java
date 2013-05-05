@@ -20,10 +20,12 @@ import hu.openig.model.PlanetStatus;
 import hu.openig.model.Player;
 import hu.openig.model.ProductionStatus;
 import hu.openig.model.ResearchStatus;
+import hu.openig.model.ResearchType;
 import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.World;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,8 +52,7 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public EmpireStatuses getEmpireStatuses() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return world.toEmpireStatuses(player.id);
 	}
 
 	@Override
@@ -68,8 +69,11 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public Map<String, Integer> getInventory() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		HashMap<String, Integer> result = new HashMap<String, Integer>();
+		for (Map.Entry<ResearchType, Integer> e : player.inventory.entrySet()) {
+			result.put(e.getKey().id, e.getValue());
+		}
+		return result;
 	}
 
 	@Override
