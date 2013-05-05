@@ -819,7 +819,7 @@ public class Planet implements Named, Owned, HasInventory {
 			for (InventoryItem ii : inventory) {
 				if (ii.owner == owner 
 						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					for (InventorySlot is : ii.slots) {
+					for (InventorySlot is : ii.slots.values()) {
 						is.refill(owner);
 					}
 				}

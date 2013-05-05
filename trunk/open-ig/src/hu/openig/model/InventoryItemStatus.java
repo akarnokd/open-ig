@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
@@ -26,8 +27,6 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	public int count;
 	/** The item owner. */
 	public String owner;
-	/** Time to live. */
-	public int ttl;
 	/** The current HP. */
 	public double hp;
 	/** The current shield. */
@@ -46,13 +45,45 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	public final List<InventorySlotStatus> slots = new ArrayList<InventorySlotStatus>();
 	@Override
 	public void fromMessage(MessageObject mo) {
-		// TODO Auto-generated method stub
-		
+		id = mo.getInt("id");
+		type = mo.getString("type");
+		count = mo.getInt("count");
+		owner = mo.getString("owner");
+		hp = mo.getDouble("hp");
+		shield = mo.getDouble("shield");
+		tag = mo.getString("tag");
+		nickname = mo.getString("nickname");
+		nicknameIndex = mo.getInt("nicknameIndex");
+		kills = mo.getInt("kills");
+		killsCost = mo.getInt("killsCost");
+		for (MessageObject ms : mo.getArray("slots").objects()) {
+			InventorySlotStatus iss = new InventorySlotStatus();
+			iss.fromMessage(ms);
+			slots.add(iss);
+		}
 	}
 	@Override
 	public MessageObject toMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		MessageObject mo = new MessageObject(name());
+		
+		mo.set("id", id)
+		.set("type", type)
+		.set("count", count)
+		.set("owner", owner)
+		.set("hp", hp)
+		.set("shield", shield)
+		.set("tag", tag)
+		.set("nickname", nickname)
+		.set("nicknameIndex", nicknameIndex)
+		.set("kills", kills)
+		.set("killsCost", killsCost);
+		MessageArray ma = new MessageArray(null);
+		mo.set("slots", ma);
+		for (InventorySlotStatus iss : slots) {
+			ma.add(iss.toMessage());
+		}
+		
+		return mo;
 	}
 	@Override
 	public InventoryItemStatus invoke() {

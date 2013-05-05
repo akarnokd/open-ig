@@ -289,7 +289,7 @@ public class VehicleList extends UIContainer {
 				
 				long sMax = ii.shieldMax();
 				if (sMax > 0) {
-					long s0 = ii.shield;
+					double s0 = ii.shield;
 					int shx = (int)((availableWidth - maxWidth) * s0 / sMax);
 					g2.setColor(Color.ORANGE);
 					g2.drawRect(maxWidth + 5, y + 5, (availableWidth - 5 - maxWidth) - 1, 4 - 1);

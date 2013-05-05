@@ -43,35 +43,34 @@ public class MessageObject implements MessageSerializable {
 		}
 		this.name = name;
 	}
-	/**
-	 * Constructs an object with the given key-value pairs, which
-	 * will be turned into message objects and message arrays as
-	 * it goes.
-	 * @param name the name
-	 * @param nameValues the name-value pairs
-	 */
-	public MessageObject(String name, Object... nameValues) {
-		this(name);
-		setMany(nameValues);
-	}
-	/**
-	 * Sets several attribues from an array of name-value pairs.
-	 * @param nameValues the name-value pairs
-	 */
-	public void setMany(Object... nameValues) {
-		if (nameValues.length % 2 != 0) {
-			throw new IllegalArgumentException("nameValues needs to be even length array");
-		}
-		for (int i = 0; i < nameValues.length; i++) {
-			if (nameValues[i] instanceof CharSequence) {
-				String pn = nameValues[i].toString();
-				Object o = MessageArray.wrap(nameValues[i + 1]);
-				set(pn, o);
-			} else {
-				throw new IllegalArgumentException("Entry " + i + " is not string-like");
-			}
-		}
-	}
+//	/**
+//	 * Constructs an object with the given key-value pairs, which
+//	 * will be turned into message objects and message arrays as
+//	 * it goes.
+//	 * @param name the name
+//	 * @param nameValues the name-value pairs
+//	 */
+//	public MessageObject(String name, Object... nameValues) {
+//		this(name);
+//		setMany(nameValues);
+//	}
+//	/**
+//	 * Sets several attribues from an array of name-value pairs.
+//	 * @param nameValues the name-value pairs
+//	 */
+//	public void setMany(Object... nameValues) {
+//		if (nameValues.length % 2 != 0) {
+//			throw new IllegalArgumentException("nameValues needs to be even length array");
+//		}
+//		for (int i = 0; i < nameValues.length; i++) {
+//			if (nameValues[i] instanceof CharSequence) {
+//				String pn = nameValues[i].toString();
+//				set(pn, MessageArray.wrap(nameValues[i + 1]));
+//			} else {
+//				throw new IllegalArgumentException("Entry " + i + " is not string-like");
+//			}
+//		}
+//	}
 	/**
 	 * Tests if the given attribute is present.
 	 * @param name the name
@@ -107,11 +106,104 @@ public class MessageObject implements MessageSerializable {
 	 * @param name the attribute name
 	 * @param value the value
 	 */
-	public void set(String name, Object value) {
+	private void setRaw(String name, Object value) {
 		if (!verifyName(name)) {
 			throw new IllegalArgumentException("Invalid name");
 		}
 		attributes.put(name, value);
+	}
+	/**
+	 * Sets an arbitrary object attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, Object value) {
+		setRaw(name, MessageArray.wrap(value));
+		return this;
+	}
+	/**
+	 * Sets a nullable basic type value attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, Boolean value) {
+		setRaw(name, value);
+		return this;
+	}
+	/**
+	 * Sets a nullable basic type value attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, Number value) {
+		setRaw(name, value);
+		return this;
+	}
+	/**
+	 * Sets a nullable basic type value attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, Character value) {
+		setRaw(name, value.toString());
+		return this;
+	}
+	/**
+	 * Sets a nullable basic type value attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, CharSequence value) {
+		setRaw(name, value);
+		return this;
+	}
+	/**
+	 * Sets a message object attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, MessageObject value) {
+		setRaw(name, value);
+		return this;
+	}
+	/**
+	 * Sets a message object attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, MessageArray value) {
+		setRaw(name, value);
+		return this;
+	}
+	/**
+	 * Sets an enum attribute.
+	 * @param name the attribute name
+	 * @param value the value
+	 * @return this
+	 */
+	public MessageObject set(String name, Enum<?> value) {
+		if (value != null) {
+			setRaw(name, value.name());
+		} else {
+			setRaw(name, null);
+		}
+		return this;
+	}
+	/**
+	 * Sets an untyped null attribute.
+	 * @param name the attribute name
+	 * @return this
+	 */
+	public MessageObject setNull(String name) {
+		setRaw(name, null);
+		return this;
 	}
 	/**
 	 * Returns a modifiable set of the attribute names.
@@ -190,6 +282,11 @@ public class MessageObject implements MessageSerializable {
 			out.append('"');
 		} else
 		if (v instanceof Character) {
+			out.append('"');
+			out.append(sanitize(v.toString()));
+			out.append('"');
+		} else
+		if (v instanceof Enum<?>) {
 			out.append('"');
 			out.append(sanitize(v.toString()));
 			out.append('"');
@@ -284,7 +381,7 @@ public class MessageObject implements MessageSerializable {
 					if (t.type == TokenType.IDENTIFIER) {
 						if ("null".equals(t.value)) {
 							valueFound = true;
-							mo.set(name, null);
+							mo.setNull(name);
 						} else
 						if ("false".equals(t.value)) {
 							valueFound = true;
@@ -328,7 +425,7 @@ public class MessageObject implements MessageSerializable {
 					} else
 					if (t.type == TokenType.INTEGER || t.type == TokenType.DOUBLE || t.type == TokenType.STRING) {
 						valueFound = true;
-						mo.set(name, t.value);
+						mo.setRaw(name, t.value);
 					} else {
 						throw new MessageSyntaxError("Unexpected token: " + t);
 					}
@@ -456,6 +553,23 @@ public class MessageObject implements MessageSerializable {
 		throw new MissingAttributeException(name + " missing or invalid type");
 	}
 	/**
+	 * Returns a nullable integer value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the integer value
+	 */
+	public Integer getIntObject(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Number) {
+				return ((Number)v).intValue();
+			} else
+			if (v == null) {
+				return null;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
 	 * Returns a long value with the given attribute name.
 	 * @param name the attribute name
 	 * @return the long value
@@ -465,6 +579,23 @@ public class MessageObject implements MessageSerializable {
 			Object v = attributes.get(name);
 			if (v instanceof Number) {
 				return ((Number)v).longValue();
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a nullable long value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the long value
+	 */
+	public Long getLongObject(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Number) {
+				return ((Number)v).longValue();
+			} else
+			if (v == null) {
+				return null;
 			}
 		}
 		throw new MissingAttributeException(name + " missing or invalid type");
@@ -484,6 +615,23 @@ public class MessageObject implements MessageSerializable {
 		throw new MissingAttributeException(name + " missing or invalid type");
 	}
 	/**
+	 * Returns a double value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the double value
+	 */
+	public Double getDoubleObject(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Number) {
+				return ((Number)v).doubleValue();
+			} else
+			if (v == null) {
+				return null;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
 	 * Returns a boolean value with the given attribute name.
 	 * @param name the attribute name
 	 * @return the boolean value
@@ -498,7 +646,24 @@ public class MessageObject implements MessageSerializable {
 		throw new MissingAttributeException(name + " missing or invalid type");
 	}
 	/**
-	 * Returns a string attribute that might be null.
+	 * Returns a boolean value with the given attribute name.
+	 * @param name the attribute name
+	 * @return the boolean value
+	 */
+	public Boolean getBooleanObject(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof Boolean) {
+				return (Boolean)v;
+			} else
+			if (v == null) {
+				return null;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a string attribute that is not null.
 	 * @param name the attribute name
 	 * @return the value
 	 */
@@ -507,6 +672,23 @@ public class MessageObject implements MessageSerializable {
 			Object v = attributes.get(name);
 			if (v instanceof String) {
 				return (String)v;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns a string attribute that can be null.
+	 * @param name the attribute name
+	 * @return the value
+	 */
+	public String getStringObject(String name) {
+		if (attributes.containsKey(name)) {
+			Object v = attributes.get(name);
+			if (v instanceof String) {
+				return (String)v;
+			} else
+			if (v == null) {
+				return null;
 			}
 		}
 		throw new MissingAttributeException(name + " missing or invalid type");
@@ -524,6 +706,41 @@ public class MessageObject implements MessageSerializable {
 			}
 		}
 		throw new MissingAttributeException(name + " missing or invalid type");
+	}
+	/**
+	 * Returns an enum attribute, which is not null.
+	 * @param <E> the enum type
+	 * @param name the attribute name
+	 * @param values the available enumeration values
+	 * @return the enum
+	 */
+	public <E extends Enum<E>> E getEnum(String name, E[] values) {
+		String s = getString(name);
+		for (E e : values) {
+			if (e.name().equals(s)) {
+				return e;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or not enum");
+	}
+	/**
+	 * Returns a nullable enum value.
+	 * @param <E> the enum type
+	 * @param name the attribute name
+	 * @param values the available enumeration values
+	 * @return the enum or null if the attribute was null
+	 */
+	public <E extends Enum<E>> E getEnumObject(String name, E[] values) {
+		String s = getStringObject(name);
+		if (s == null) {
+			return null;
+		}
+		for (E e : values) {
+			if (e.name().equals(s)) {
+				return e;
+			}
+		}
+		throw new MissingAttributeException(name + " missing or not enum");
 	}
 	/**
 	 * Returns a message array or throws a MissingAttributeException.
@@ -567,7 +784,8 @@ public class MessageObject implements MessageSerializable {
 		return defaultValue;
 	}
 	/**
-	 * Returns a string attribute that might be null.
+	 * Returns a string attribute value or the default value if the
+	 * attribute is missing or null.
 	 * @param name the attribute name
 	 * @param defaultValue the default value
 	 * @return the value

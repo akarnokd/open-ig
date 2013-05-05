@@ -14,6 +14,7 @@ import hu.openig.utils.U;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +37,11 @@ public class InventoryItem {
 	/** The current hit points. */
 	public double hp;
 	/** The current shield points. */
-	public int shield;
+	public double shield;
 	/** The optional tag used by the AI or scripting to remember a concrete inventory item. */
 	public String tag;
 	/** The fleet's inventory slots. */
-	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
+	public final Map<String, InventorySlot> slots = new LinkedHashMap<String, InventorySlot>();
 	/** Optional nickname of this ship. */
 	public String nickname;
 	/** The nickname index of this ship in case of redundancy. */
@@ -66,7 +67,7 @@ public class InventoryItem {
 		if (type.has(ResearchType.PARAMETER_SHIELD)) {
 			result = type.getInt(ResearchType.PARAMETER_SHIELD);
 		}
-		for (InventorySlot sl : slots) {
+		for (InventorySlot sl : slots.values()) {
 			if (sl.type != null && sl.type.has(ResearchType.PARAMETER_SHIELD)) {
 				result = Math.max(result, sl.type.getInt(ResearchType.PARAMETER_SHIELD));
 			}
@@ -82,12 +83,7 @@ public class InventoryItem {
 	 * @return the the slot or null if no such slot
 	 */
 	public InventorySlot getSlot(String id) {
-		for (InventorySlot is : slots) {
-			if (is.slot.id.equals(id)) {
-				return is;
-			}
-		}
-		return null;
+		return slots.get(id);
 	}
 	/**
 	 * Create slots from the base definition.
@@ -119,7 +115,7 @@ public class InventoryItem {
 			}
 			is.hp = is.hpMax(owner);
 			
-			slots.add(is);
+			slots.put(es.id, is);
 		}
 	}
 	/**
@@ -134,7 +130,7 @@ public class InventoryItem {
 	 */
 	public long unitSellValue() {
 		long result = 1L * type.productionCost / 2;
-		for (InventorySlot is : slots) {
+		for (InventorySlot is : slots.values()) {
 			if (is.type != null && !is.slot.fixed) {
 				result += is.count * is.type.productionCost / 2;
 			}
@@ -163,7 +159,7 @@ public class InventoryItem {
 	 * Strip the assigned equipment and put it back into the owner's inventory.
 	 */
 	public void strip() {
-		for (InventorySlot is : slots) {
+		for (InventorySlot is : slots.values()) {
 			if (is.type != null && !is.slot.fixed) {
 				owner.changeInventoryCount(is.type, is.count);
 				is.type = null;
@@ -179,7 +175,7 @@ public class InventoryItem {
 	 * Upgrade the slots of this inventory item.
 	 */
 	public void upgradeSlots() {
-		for (InventorySlot is : slots) {
+		for (InventorySlot is : slots.values()) {
 			if (!is.slot.fixed) {
 				for (int i = is.slot.items.size() - 1; i >= 0; i--) {
 					ResearchType rt = is.slot.items.get(i);
@@ -200,7 +196,7 @@ public class InventoryItem {
 	 * @return true if equipment upgrade can be performed
 	 */
 	public boolean checkSlots() {
-		for (InventorySlot is : slots) {
+		for (InventorySlot is : slots.values()) {
 			if (!is.slot.fixed) {
 				// check if next better type is available
 				int index = is.slot.items.indexOf(is.type) + 1;
@@ -231,7 +227,7 @@ public class InventoryItem {
 	public Pair<Double, Double> maxDamageDPS() {
 		double damage = 0;
 		double dps = 0;
-		for (InventorySlot is : slots) {
+		for (InventorySlot is : slots.values()) {
 			if (is.type != null && (is.type.category == ResearchSubCategory.WEAPONS_CANNONS
 					|| is.type.category == ResearchSubCategory.WEAPONS_LASERS)) {
 				BattleProjectile bp = owner.world.battle.projectiles.get(is.type.get(ResearchType.PARAMETER_PROJECTILE));
@@ -338,5 +334,49 @@ public class InventoryItem {
 		});
 		nickname = countsOrdered.get(0).first;
 		nicknameIndex = countsOrdered.get(0).second.value;
+	}
+	/**
+	 * Returns the inventory item status for this item.
+	 * @return the inventory item status record
+	 */
+	public InventoryItemStatus toInventoryItemStatus() {
+		InventoryItemStatus result = new InventoryItemStatus();
+		
+		result.id = id;
+		result.type = type.id;
+		result.count = count;
+		result.owner = owner.id;
+		result.hp = hp;
+		result.shield = shield;
+		result.tag = tag;
+		result.nickname = nickname;
+		result.nicknameIndex = nicknameIndex;
+		result.kills = kills;
+		result.killsCost = killsCost;
+		for (InventorySlot is : slots.values()) {
+			result.slots.add(is.toInventorySlotStatus());
+		}
+		
+		return result;
+	}
+	/**
+	 * Loads the inventory item from the inventory item status.
+	 * @param iis the inventory item status
+	 * @param lookup the model lookup
+	 */
+	public void fromInventoryItemStatus(InventoryItemStatus iis, ModelLookup lookup) {
+		type = lookup.research(iis.type);
+		count = iis.count;
+		owner = lookup.player(iis.owner);
+		hp = iis.hp;
+		shield = iis.shield;
+		tag = iis.tag;
+		nickname = iis.nickname;
+		nicknameIndex = iis.nicknameIndex;
+		kills = iis.kills;
+		killsCost = iis.killsCost;
+		for (InventorySlotStatus iss : iis.slots) {
+			getSlot(iss.id).fromInventorySlotStatus(iss, lookup);
+		}
 	}
 }

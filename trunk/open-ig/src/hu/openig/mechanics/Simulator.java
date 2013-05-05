@@ -904,7 +904,7 @@ public final class Simulator {
 				ii.hp = Math.min(hpMax, ii.hp + delta0);
 			}
 			// regenerate slots
-			for (InventorySlot is : ii.slots) {
+			for (InventorySlot is : ii.slots.values()) {
 				int m = is.hpMax(ii.owner);
 				is.hp = Math.min(m, is.hp + spd / 4);
 			}

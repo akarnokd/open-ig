@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
 
 import java.awt.geom.Point2D;
@@ -34,7 +35,7 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 	/** The current list of movement waypoints. */
 	public final List<Point2D.Double> waypoints = new ArrayList<Point2D.Double>();
 	/** If the fleet should follow the other fleet. */
-	public int targetFleet;
+	public Integer targetFleet;
 	/** If the fleet should move to the planet. */
 	public String targetPlanet;
 	/** If the fleet was moved to a planet. */
@@ -47,19 +48,70 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 	public boolean refillOnce;
 	/** The default fleet formation. */
 	public int formation;
-	/**
-	 * The inventory.
-	 */
+	/** The source of the infection of this fleet if not null. */
+	public String infectedBy;
+	/** The inventory. */
 	public final List<InventoryItemStatus> inventory = new ArrayList<InventoryItemStatus>();
 	@Override
 	public void fromMessage(MessageObject mo) {
-		// TODO Auto-generated method stub
+		id = mo.getInt("id");
+		knowledge = mo.getEnum("knowledge", FleetKnowledge.values());
+		owner = mo.getString("owner");
+		x = mo.getDouble("x");
+		y = mo.getDouble("y");
+		name = mo.getString("name");
 		
+		for (MessageObject wp : mo.getArray("waypoints").objects()) {
+			waypoints.add(new Point2D.Double(wp.getDouble("x"), wp.getDouble("y")));
+		}
+		
+		targetFleet = mo.getIntObject("targetFleet");
+		targetPlanet = mo.getStringObject("targetPlanet");
+		arrivedAt = mo.getStringObject("arrivedAt");
+		mode = mo.getEnumObject("mode", FleetMode.values());
+		task = mo.getEnum("task", FleetTask.values());
+		refillOnce = mo.getBoolean("refillOnce");
+		formation = mo.getInt("formation");
+		infectedBy = mo.getStringObject("infectedBy");
+		
+		for (MessageObject mio : mo.getArray("inventory").objects()) {
+			InventoryItemStatus iis = new InventoryItemStatus();
+			iis.fromMessage(mio);
+			inventory.add(iis);
+		}
 	}
 	@Override
 	public MessageObject toMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		MessageObject result = new MessageObject(name());
+		
+		result.set("id", id);
+		result.set("knowledge", knowledge);
+		result.set("owner", owner);
+		result.set("x", x);
+		result.set("y", y);
+		result.set("name", name);
+		
+		MessageArray ma = new MessageArray(null);
+		result.set("waypoints", ma);
+		for (Point2D.Double pt : waypoints) {
+			ma.add(new MessageObject("POINT").set("x", pt.x).set("y", pt.y));
+		}
+		result.set("targetFleet", targetFleet);
+		result.set("targetPlanet", targetPlanet);
+		result.set("arrivedAt", arrivedAt);
+		result.set("mode", mode);
+		result.set("task", task);
+		result.set("refillOnce", refillOnce);
+		result.set("formation", formation);
+		result.set("infectedBy", infectedBy);
+		
+		MessageArray ia = new MessageArray(null);
+		result.set("inventory", ia);
+		for (InventoryItemStatus iis : inventory) {
+			ia.add(iis.toMessage());
+		}
+		
+		return result;
 	}
 	@Override
 	public FleetStatus invoke() {

@@ -43,7 +43,7 @@ public class AIInventoryItem {
 		this.count = ii.count;
 		this.owner = ii.owner;
 		this.tag = ii.tag;
-		for (InventorySlot is : ii.slots) {
+		for (InventorySlot is : ii.slots.values()) {
 			slots.add(is.copy());
 		}
 	}

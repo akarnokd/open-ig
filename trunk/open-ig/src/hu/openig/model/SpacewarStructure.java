@@ -260,7 +260,7 @@ public class SpacewarStructure extends SpacewarObject {
 		// subsystem damage
 		if (item != null && ratio > 0) {
 			List<InventorySlot> iss = U.newArrayList();
-			for (InventorySlot is0 : item.slots) {
+			for (InventorySlot is0 : item.slots.values()) {
 				if (!is0.slot.fixed && is0.type != null && is0.count > 0) {
 					iss.add(is0);
 				}

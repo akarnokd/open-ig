@@ -72,7 +72,7 @@ public final class Radar {
 					// find the max radar
 					float radar = 0.3f;
 					for (InventoryItem fi : f.inventory) {
-						for (InventorySlot fis : fi.slots) {
+						for (InventorySlot fis : fi.slots.values()) {
 							if (fis.type != null) {
 								radar = Math.max(radar, fis.type.getInt("radar", 0));
 							}

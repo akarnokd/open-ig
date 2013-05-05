@@ -76,7 +76,7 @@ public class EquipmentConfigure extends UIComponent {
 	public static void drawSlots(Graphics2D g2, 
 			InventoryItem item, InventorySlot selected, World world) {
 		Color green = new Color(0x009A00);
-		for (InventorySlot is : item.slots) {
+		for (InventorySlot is : item.slots.values()) {
 			if (!is.slot.fixed) {
 				if (is.type != null) {
 					g2.setColor(is == selected ? green : Color.BLACK);
@@ -112,7 +112,7 @@ public class EquipmentConfigure extends UIComponent {
 	public boolean mouse(UIMouse e) {
 		if (onSelect != null && item != null 
 				&& e.has(Button.LEFT) && e.has(Type.DOWN)) {
-			for (InventorySlot es : item.slots) {
+			for (InventorySlot es : item.slots.values()) {
 				if (!es.slot.fixed && e.within(es.slot.x, es.slot.y, es.slot.width, es.slot.height)) {
 					onSelect.invoke(es);
 					return true;

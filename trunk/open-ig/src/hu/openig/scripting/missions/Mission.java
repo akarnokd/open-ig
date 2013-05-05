@@ -587,7 +587,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param count the item count
 	 */
 	protected void setSlot(InventoryItem ii, String slotId, String technology, int count) {
-		for (InventorySlot is : ii.slots) {
+		for (InventorySlot is : ii.slots.values()) {
 			if (is.slot.id.equals(slotId) && !is.slot.fixed) {
 				is.type = research(technology);
 				is.hp = is.hpMax(ii.owner);
@@ -1030,7 +1030,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	public void equipFully(Iterable<? extends InventoryItem> sequence) {
 		for (InventoryItem ii : sequence) {
-			for (InventorySlot is : ii.slots) {
+			for (InventorySlot is : ii.slots.values()) {
 				if (!is.slot.fixed) {
 					is.count = is.slot.max;
 					if (is.type == null) {

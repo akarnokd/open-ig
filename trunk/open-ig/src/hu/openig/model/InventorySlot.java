@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+
 /**
  * A concrete slot settings for an inventory item, e.g., cruisers and battleships.
  * @author akarnokd, 2011.04.05.
@@ -98,5 +99,35 @@ public class InventorySlot {
 				}
 			}
 		}
+	}
+	/**
+	 * Returns an inventory slot status record export of this object.
+	 * @return the inventory slot status record
+	 */
+	public InventorySlotStatus toInventorySlotStatus() {
+		InventorySlotStatus result = new InventorySlotStatus();
+		
+		result.id = slot.id;
+		if (type != null) {
+			result.type = type.id;
+		}
+		result.count = count;
+		result.hp = hp;
+		
+		return result;
+	}
+	/**
+	 * Loads the slot status from the given inventory slot status record.
+	 * @param iss the inventory slot status record
+	 * @param lookup the model lookup
+	 */
+	public void fromInventorySlotStatus(InventorySlotStatus iss, ModelLookup lookup) {
+		if (iss.type == null) {
+			type = null;
+		} else {
+			type = lookup.research(iss.type);
+		}
+		count = iss.count;
+		hp = iss.hp;
 	}
 }

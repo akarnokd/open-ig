@@ -1804,7 +1804,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	int totalValue(InventoryItem ii) {
 		int result = ii.type.productionCost;
-		for (InventorySlot is : ii.slots) {
+		for (InventorySlot is : ii.slots.values()) {
 			if (is.type != null) {
 				result += is.type.productionCost * is.count;
 			}
@@ -1821,7 +1821,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	int setWeaponPorts(InventoryItem ii, Collection<? super SpacewarWeaponPort> ports) {
 		int ecmLevel = 0;
 		// add weapons
-		for (InventorySlot is : ii.slots) {
+		for (InventorySlot is : ii.slots.values()) {
 			if (is.type != null 
 					&& (is.type.category == ResearchSubCategory.WEAPONS_CANNONS
 					|| is.type.category == ResearchSubCategory.WEAPONS_LASERS
@@ -2262,7 +2262,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (e.has(Type.DOWN) && e.has(Button.LEFT) && item != null) {
 				int dx = -6;
 				int dy = 15;
-				for (InventorySlot es : item.slots) {
+				for (InventorySlot es : item.slots.values()) {
 					if (!es.slot.fixed && e.within(es.slot.x + dx, es.slot.y + dy, es.slot.width, es.slot.height)) {
 						updateSlot(es);
 						return true;
@@ -2347,7 +2347,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		public void selectFirstSlot() {
 			updateSlot(null);
 			if (item != null) {
-				for (InventorySlot is : item.slots) {
+				for (InventorySlot is : item.slots.values()) {
 					if (!is.slot.fixed) {
 						updateSlot(is);
 						return;
@@ -2529,7 +2529,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				int vm = 0;
 				if (e.item.type.has(ResearchType.PARAMETER_VEHICLES)) {
 					vm += e.item.type.getInt(ResearchType.PARAMETER_VEHICLES);
-					for (InventorySlot is : e.item.slots) {
+					for (InventorySlot is : e.item.slots.values()) {
 						if (is.type != null && is.type.has(ResearchType.PARAMETER_VEHICLES)) {
 							vm += is.type.getInt(ResearchType.PARAMETER_VEHICLES);
 						}
@@ -2658,7 +2658,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				if (isws) {
 					maxLabelWidth = Math.max(drawLabel(g2, p, c, get("spacewar.ship_information_equipment")), maxLabelWidth);
 					
-					for (InventorySlot is : item.item.slots) {
+					for (InventorySlot is : item.item.slots.values()) {
 						if ((!is.slot.fixed || showFixed) && is.type != null) {
 							maxLabelWidth = Math.max(drawLabel(g2, p, c, "- " + is.type.name), maxLabelWidth);
 						}
@@ -2683,7 +2683,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 				p.y += 20;
 				if (isws) {
-					for (InventorySlot is : item.item.slots) {
+					for (InventorySlot is : item.item.slots.values()) {
 						if ((!is.slot.fixed || showFixed) &&  is.type != null) {
 							drawLabel(g2, p, c, "  : " + is.count);
 						}
@@ -3584,7 +3584,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					if (ship.shieldMax > 0) {
 						boolean sg = false;
 						if (ship.item != null) {
-							for (InventorySlot is : ship.item.slots) {
+							for (InventorySlot is : ship.item.slots.values()) {
 								if (is.type != null && is.type.has(ResearchType.PARAMETER_SHIELD) && is.count > 0) {
 									sg = true;
 								}

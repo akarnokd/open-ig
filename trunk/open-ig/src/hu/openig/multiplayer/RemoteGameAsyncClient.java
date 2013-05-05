@@ -20,7 +20,6 @@ import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
-import hu.openig.model.InventorySlot;
 import hu.openig.model.MessageArrayAsync;
 import hu.openig.model.MessageArrayItemFactory;
 import hu.openig.model.MessageObjectAsync;
@@ -259,14 +258,17 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void login(String user, String passphrase, String version,
 			AsyncResult<? super WelcomeResponse, ? super IOException> out) {
-		MessageObject request = new MessageObject("LOGIN",
-				"user", user, "passphrase", passphrase, "version", version);
+		MessageObject request = new MessageObject("LOGIN")
+		.set("user", user)
+		.set("passphrase", passphrase)
+		.set("version", version);
 		query(request, out, new WelcomeResponse());
 	}
 	@Override
 	public void relogin(String sessionId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("RELOGIN", "session", sessionId);
+		MessageObject request = new MessageObject("RELOGIN")
+		.set("session", sessionId);
 		send(request, out, "WELCOME_BACK");
 	}
 
@@ -319,7 +321,8 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void getFleet(int fleetId,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		MessageObject request = new MessageObject("QUERY_FLEET", "fleetId", fleetId);
+		MessageObject request = new MessageObject("QUERY_FLEET")
+		.set("fleetId", fleetId);
 		query(request, out, new FleetStatus());
 	}
 
@@ -370,14 +373,18 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void getPlanetStatus(String id,
 			AsyncResult<? super PlanetStatus, ? super IOException> out) {
-		MessageObject request = new MessageObject("QUERY_PLANET_STATUS", "planetId", id);
+		MessageObject request = new MessageObject("QUERY_PLANET_STATUS")
+		.set("planetId", id);
 		query(request, out, new PlanetStatus());
 	}
 
 	@Override
 	public void moveFleet(int id, double x, double y,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("MOVE_FLEET", "fleetId", id, "x", x, "y", y);
+		MessageObject request = new MessageObject("MOVE_FLEET")
+		.set("fleetId", id)
+		.set("x", x)
+		.set("y", y);
 		send(request, out);
 		
 	}
@@ -385,49 +392,63 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void addFleetWaypoint(int id, double x, double y,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ADD_FLEET_WAYPOINT", "fleetId", id, "x", x, "y", y);
+		MessageObject request = new MessageObject("ADD_FLEET_WAYPOINT")
+		.set("fleetId", id)
+		.set("x", x)
+		.set("y", y);
 		send(request, out);
 	}
 
 	@Override
 	public void moveToPlanet(int id, String target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("MOVE_TO_PLANET", "fleetId", id, "target", target);
+		MessageObject request = new MessageObject("MOVE_TO_PLANET")
+		.set("fleetId", id)
+		.set("target", target);
 		send(request, out);
 	}
 
 	@Override
 	public void followFleet(int id, int target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("FOLLOW_FLEET", "fleetId", id, "target", target);
+		MessageObject request = new MessageObject("FOLLOW_FLEET")
+		.set("fleetId", id)
+		.set("target", target);
 		send(request, out);
 	}
 
 	@Override
 	public void attackFleet(int id, int target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ATTACK_FLEET", "fleetId", id, "target", target);
+		MessageObject request = new MessageObject("ATTACK_FLEET")
+		.set("fleetId", id)
+		.set("target", target);
 		send(request, out);
 	}
 
 	@Override
 	public void attackPlanet(int id, String target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ATTACK_PLANET", "fleetId", id, "target", target);
+		MessageObject request = new MessageObject("ATTACK_PLANET")
+		.set("fleetId", id)
+		.set("target", target);
 		send(request, out);
 	}
 
 	@Override
 	public void colonize(int id, String target,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("COLONIZE_FLEET", "fleetId", id, "target", target);
+		MessageObject request = new MessageObject("COLONIZE_FLEET")
+		.set("fleetId", id)
+		.set("target", target);
 		send(request, out);
 	}
 
 	@Override
 	public void newFleet(String planet, List<InventoryItem> inventory,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		MessageObject mo = new MessageObject("NEW_FLEET_AT_PLANET", "planetId", planet);
+		MessageObject mo = new MessageObject("NEW_FLEET_AT_PLANET")
+		.set("planetId", planet);
 		sendFleetConfig(inventory, out, mo);
 	}
 
@@ -443,18 +464,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		MessageArray inv = new MessageArray(null);
 		mo.set("inventory", inv);
 		for (InventoryItem ii : inventory) {
-			MessageObject mii = new MessageObject("INVENTORY");
-			mii.setMany("type", ii.type.id, "tag", ii.tag,
-					"count", ii.count, "nickname", ii.nickname,
-					"nicknameIndex", ii.nicknameIndex);
-			MessageArray eq = new MessageArray(null);
-			mii.set("equipment", eq);
-			for (InventorySlot is : ii.slots) {
-				MessageObject miis = new MessageObject("EQUIPMENT");
-				miis.setMany("id", is.slot.id, "type", is.type, "count", is.count);
-				eq.add(miis);
-			}
-			inv.add(mii);
+			inv.add(ii.toInventoryItemStatus().toMessage());
 		}
 		query(mo, out, new FleetStatus());
 	}
@@ -462,43 +472,52 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void newFleet(int id, List<InventoryItem> inventory,
 			AsyncResult<? super FleetStatus, ? super IOException> out) {
-		MessageObject mo = new MessageObject("NEW_FLEET_AT_FLEET", 
-				"fleetId", id);
+		MessageObject mo = new MessageObject("NEW_FLEET_AT_FLEET")
+		.set("fleetId", id);
 		sendFleetConfig(inventory, out, mo);
 	}
 
 	@Override
 	public void deleteFleet(int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("DELETE_FLEET", "fleetId", id);
+		MessageObject request = new MessageObject("DELETE_FLEET")
+		.set("fleetId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void renameFleet(int id, String name,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("RENAME_FLEET", "fleetId", id, "name", name);
+		MessageObject request = new MessageObject("RENAME_FLEET")
+		.set("fleetId", id)
+		.set("name", name);
 		send(request, out);
 	}
 
 	@Override
 	public void sellFleetItem(int id, int itemId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SELL_FLEET_ITEM", "fleetId", id, "itemId", itemId);
+		MessageObject request = new MessageObject("SELL_FLEET_ITEM")
+		.set("fleetId", id)
+		.set("itemId", itemId);
 		send(request, out);
 	}
 
 	@Override
 	public void deployFleetItem(int id, String type,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		MessageObject request = new MessageObject("DEPLOY_FLEET_ITEM", "fleetId", id, "type", type);
+		MessageObject request = new MessageObject("DEPLOY_FLEET_ITEM")
+		.set("fleetId", id)
+		.set("type", type);
 		query(request, out, new InventoryItemStatus());
 	}
 
 	@Override
 	public void undeployFleetItem(int id, int itemId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("UNDEPLOY_FLEET_ITEM", "fleetId", id, "itemId", itemId);
+		MessageObject request = new MessageObject("UNDEPLOY_FLEET_ITEM")
+		.set("fleetId", id)
+		.set("itemId", itemId);
 		send(request, out);
 	}
 
@@ -506,32 +525,37 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	public void addFleetEquipment(int id, int itemId, String slotId,
 			String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ADD_FLEET_EQUIPMENT", 
-						"fleetId", id, "itemId", itemId, 
-						"slotId", slotId, "type", type);
+		MessageObject request = new MessageObject("ADD_FLEET_EQUIPMENT")
+		.set("fleetId", id)
+		.set("itemId", itemId)
+		.set("slotId", slotId)
+		.set("type", type);
 		send(request, out);
 	}
 
 	@Override
 	public void removeFleetEquipment(int id, int itemId, String slotId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("REMOVE_FLEET_EQUIPMENT", 
-						"fleetId", id, "itemId", itemId, 
-						"slotId", slotId);
+		MessageObject request = new MessageObject("REMOVE_FLEET_EQUIPMENT")
+		.set("fleetId", id)
+		.set("itemId", itemId)
+		.set("slotId", slotId);
 		send(request, out);
 	}
 
 	@Override
 	public void fleetUpgrade(int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("FLEET_UPGRADE", "fleetId", id);
+		MessageObject request = new MessageObject("FLEET_UPGRADE")
+		.set("fleetId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void stopFleet(int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("STOP_FLEET", "fleetId", id);
+		MessageObject request = new MessageObject("STOP_FLEET")
+		.set("fleetId", id);
 		send(request, out);
 	}
 
@@ -539,24 +563,27 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	public void transfer(int sourceFleet, int destinationFleet, int sourceItem,
 			FleetTransferMode mode,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("TRANSFER", 
-						"source", sourceFleet, "destination", destinationFleet,
-						"itemId", sourceItem, "mode", mode.toString()
-						);
+		MessageObject request = new MessageObject("TRANSFER")
+		.set("source", sourceFleet)
+		.set("destination", destinationFleet)
+		.set("itemId", sourceItem)
+		.set("mode", mode);
 		send(request, out);
 	}
 
 	@Override
 	public void colonize(String id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("COLONIZE", "planetId", id);
+		MessageObject request = new MessageObject("COLONIZE")
+		.set("planetId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void cancelColonize(String id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("CANCEL_COLONIZE", "planetId", id);
+		MessageObject request = new MessageObject("CANCEL_COLONIZE")
+		.set("planetId", id);
 		send(request, out);
 	}
 
@@ -570,9 +597,12 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 				setValue(mo.getInt("buildingId"));
 			}
 		};
-		MessageObject request = new MessageObject("BUILD_AT", "planetId", planetId,
-				"type", type, "race", race,
-				"x", x, "y", y);
+		MessageObject request = new MessageObject("BUILD_AT")
+		.set("planetId", planetId)
+		.set("type", type)
+		.set("race", race)
+		.set("x", x)
+		.set("y", y);
 		sendDirect(request, at);
 	}
 
@@ -586,83 +616,92 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 				setValue(mo.getInt("buildingId"));
 			}
 		};
-		MessageObject request = new MessageObject("BUILD", "planetId", planetId,
-				"type", type, "race", race);
+		MessageObject request = new MessageObject("BUILD")
+		.set("planetId", planetId)
+		.set("type", type)
+		.set("race", race);
 		sendDirect(request, at);
 	}
 
 	@Override
 	public void enable(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ENABLE", "planetId", planetId,
-						"buildingId", id);
+		MessageObject request = new MessageObject("ENABLE")
+		.set("planetId", planetId)
+		.set("buildingId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void disable(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("DISABLE", "planetId", planetId,
-						"buildingId", id);
+		MessageObject request = new MessageObject("DISABLE")
+		.set("planetId", planetId)
+		.set("buildingId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void repair(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("REPAIR", "planetId", planetId,
-						"buildingId", id);
+		MessageObject request = new MessageObject("REPAIR")
+		.set("planetId", planetId)
+		.set("buildingId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void repairOff(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("REPAIR_OFF", "planetId", planetId,
-						"buildingId", id);
+		MessageObject request = new MessageObject("REPAIR_OFF")
+		.set("planetId", planetId)
+		.set("buildingId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void demolish(String planetId, int id,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("DEMOLISH", "planetId", planetId,
-						"buildingId", id);
+		MessageObject request = new MessageObject("DEMOLISH")
+		.set("planetId", planetId)
+		.set("buildingId", id);
 		send(request, out);
 	}
 
 	@Override
 	public void buildingUpgrade(String planetId, int id, int level,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("BUILDING_UPGRADE", "planetId", planetId,
-						"buildingId", id, "level", level);
+		MessageObject request = new MessageObject("BUILDING_UPGRADE")
+		.set("planetId", planetId)
+		.set("buildingId", id)
+		.set("level", level);
 		send(request, out);
 	}
 
 	@Override
 	public void deployPlanetItem(String planetId, String type,
 			AsyncResult<? super InventoryItemStatus, ? super IOException> out) {
-		MessageObject request = new MessageObject("DEPLOY_PLANET_ITEM", 
-						"planetId", planetId, "type", type
-						);
+		MessageObject request = new MessageObject("DEPLOY_PLANET_ITEM")
+		.set("planetId", planetId)
+		.set("type", type);
 		query(request, out, new InventoryItemStatus());
 	}
 
 	@Override
 	public void undeployPlanetItem(String planetId, int itemId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("UNDEPLOY_PLANET_ITEM", 
-						"planetId", planetId, "itemId", itemId
-						);
+		MessageObject request = new MessageObject("UNDEPLOY_PLANET_ITEM")
+		.set("planetId", planetId)
+		.set("itemId", itemId);
 		send(request, out);
 	}
 
 	@Override
 	public void sellPlanetItem(String planetId, int itemId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SELL_PLANET_ITEM", 
-						"planetId", planetId, "itemId", itemId
-						);
+		MessageObject request = new MessageObject("SELL_PLANET_ITEM")
+		.set("planetId", planetId)
+		.set("itemId", itemId);
 		send(request, out);
 	}
 
@@ -670,10 +709,11 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	public void addPlanetEquipment(String planetId, int itemId, String slotId,
 			String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SELL_PLANET_ITEM", 
-						"planetId", planetId, "itemId", itemId,
-						"slotId", slotId, "type", type
-						);
+		MessageObject request = new MessageObject("SELL_PLANET_ITEM")
+		.set("planetId", planetId)
+		.set("itemId", itemId)
+		.set("slotId", slotId)
+		.set("type", type);
 		send(request, out);
 	}
 
@@ -681,91 +721,86 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	public void removePlanetEquipment(String planetId, int itemId,
 			String slotId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("REMOVE_PLANET_ITEM", 
-						"planetId", planetId, "itemId", itemId,
-						"slotId", slotId
-						);
+		MessageObject request = new MessageObject("REMOVE_PLANET_ITEM")
+		.set("planetId", planetId)
+		.set("itemId", itemId)
+		.set("slotId", slotId);
 		send(request, out);
 	}
 
 	@Override
 	public void planetUpgrade(String planetId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("PLANET_UPGRADE", 
-						"planetId", planetId
-						);
+		MessageObject request = new MessageObject("PLANET_UPGRADE")
+		.set("planetId", planetId);
 		send(request, out);
 	}
 
 	@Override
 	public void startProduction(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("START_PRODUCTION", 
-						"type", type
-						);
+		MessageObject request = new MessageObject("START_PRODUCTION")
+		.set("type", type);
 		send(request, out);
 	}
 
 	@Override
 	public void stopProduction(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("STOP_PRODUCTION", 
-						"type", type
-						);
+		MessageObject request = new MessageObject("STOP_PRODUCTION")
+		.set("type", type);
 		send(request, out);
 	}
 
 	@Override
 	public void setProductionQuantity(String type, int count,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SET_PRODUCTION_QUANTITY", 
-						"type", type, "count", count
-						);
+		MessageObject request = new MessageObject("SET_PRODUCTION_QUANTITY")
+		.set("type", type)
+		.set("count", count);
 		send(request, out);
 	}
 
 	@Override
 	public void setProductionPriority(String type, int priority,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SET_PRODUCTION_PRIORITY", 
-						"type", type, "priority", priority
-						);
+		MessageObject request = new MessageObject("SET_PRODUCTION_PRIORITY")
+		.set("type", type)
+		.set("priority", priority);
 		send(request, out);
 	}
 
 	@Override
 	public void sellInventory(String type, int count,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SELL_INVENTORY", 
-						"type", type, "count", count
-						);
+		MessageObject request = new MessageObject("SELL_INVENTORY")
+		.set("type", type)
+		.set("count", count);
 		send(request, out);
 	}
 
 	@Override
 	public void startResearch(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("START_RESEARCH", 
-						"type", type
-						);
+		MessageObject request = new MessageObject("START_RESEARCH")
+		.set("type", type);
 		send(request, out);
 	}
 
 	@Override
 	public void stopResearch(String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("STOP_RESEARCH", 
-						"type", type
-						);
+		MessageObject request = new MessageObject("STOP_RESEARCH")
+		.set("type", type);
 		send(request, out);
 	}
 
 	@Override
 	public void setResearchMoney(String type, int money,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SET_RESEARCH_MONEY", 
-						"type", type, "money", money
-						);
+		MessageObject request = new MessageObject("SET_RESEARCH_MONEY")
+		.set("type", type)
+		.set("money", money);
 		send(request, out);
 	}
 
@@ -799,77 +834,74 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void stopSpaceUnit(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("STOP_SPACE_UNIT",
-						"battleId", battleId,
-						"unitId", unitId);
+		MessageObject request = new MessageObject("STOP_SPACE_UNIT")
+		.set("battleId", battleId)
+		.set("unitId", unitId);
 		send(request, out);
 	}
 
 	@Override
 	public void moveSpaceUnit(int battleId, int unitId, double x, double y,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("MOVE_SPACE_UNIT",
-						"battleId", battleId,
-						"unitId", unitId,
-						"x", x, "y", y
-						);
+		MessageObject request = new MessageObject("MOVE_SPACE_UNIT")
+		.set("battleId", battleId)
+		.set("unitId", unitId)
+		.set("x", x)
+		.set("y", y);
 		send(request, out);
 	}
 
 	@Override
 	public void attackSpaceUnit(int battleId, int unitId, int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ATTACK_SPACE_UNIT",
-						"battleId", battleId,
-						"unitId", unitId,
-						"target", targetUnitId
-						);
+		MessageObject request = new MessageObject("ATTACK_SPACE_UNIT")
+		.set("battleId", battleId)
+		.set("unitId", unitId)
+		.set("target", targetUnitId);
 		send(request, out);
 	}
 
 	@Override
 	public void kamikazeSpaceUnit(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("KAMIKAZE_SPACE_UNIT",
-						"battleId", battleId,
-						"unitId", unitId);
+		MessageObject request = new MessageObject("KAMIKAZE_SPACE_UNIT")
+		.set("battleId", battleId)
+		.set("unitId", unitId);
 		send(request, out);
 	}
 
 	@Override
 	public void fireSpaceRocket(int battleId, int unitId, int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("FIRE_SPACE_ROCKET",
-						"battleId", battleId,
-						"unitId", unitId,
-						"target", targetUnitId);
+		MessageObject request = new MessageObject("FIRE_SPACE_ROCKET")
+		.set("battleId", battleId)
+		.set("unitId", unitId)
+		.set("target", targetUnitId);
 		send(request, out);
 	}
 
 	@Override
 	public void spaceRetreat(int battleId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SPACE_RETREAT",
-						"battleId", battleId
-						);
+		MessageObject request = new MessageObject("SPACE_RETREAT")
+		.set("battleId", battleId);
 		send(request, out);
 	}
 
 	@Override
 	public void stopSpaceRetreat(int battleId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("STOP_SPACE_RETREAT",
-						"battleId", battleId
-						);
+		MessageObject request = new MessageObject("STOP_SPACE_RETREAT")
+		.set("battleId", battleId);
 		send(request, out);
 	}
 
 	@Override
 	public void fleetFormation(int fleetId, int formation,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("FLEET_FORMATION",
-						"fleetId", fleetId,
-						"formation", formation);
+		MessageObject request = new MessageObject("FLEET_FORMATION")
+		.set("fleetId", fleetId)
+		.set("formation", formation);
 		send(request, out);
 	}
 
@@ -883,85 +915,89 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	@Override
 	public void getBattle(int battleId,
 			AsyncResult<? super BattleStatus, ? super IOException> out) {
-		MessageObject request = new MessageObject("QUERY_BATTLE", "battleId", battleId);
+		MessageObject request = new MessageObject("QUERY_BATTLE")
+		.set("battleId", battleId);
 		query(request, out, new BattleStatus());
 	}
 
 	@Override
 	public void getSpaceBattleUnits(int battleId,
 			AsyncResult<? super List<SpaceBattleUnit>, ? super IOException> out) {
-		MessageObject request = new MessageObject("QUERY_SPACE_BATTLE_UNITS", "battleId", battleId);
+		MessageObject request = new MessageObject("QUERY_SPACE_BATTLE_UNITS")
+		.set("battleId", battleId);
 		queryList(request, out, new SpaceBattleUnit());
 	}
 
 	@Override
 	public void stopGroundUnit(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("STOP_GROUND_UNIT",
-						"battleId", battleId,
-						"unitId", unitId);
+		MessageObject request = new MessageObject("STOP_GROUND_UNIT")
+		.set("battleId", battleId)
+		.set("unitId", unitId);
 		send(request, out);
 	}
 
 	@Override
 	public void moveGroundUnit(int battleId, int unitId, int x, int y,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("MOVE_GROUND_UNIT",
-						"battleId", battleId,
-						"unitId", unitId,
-						"x", x, "y", y);
+		MessageObject request = new MessageObject("MOVE_GROUND_UNIT")
+		.set("battleId", battleId)
+		.set("unitId", unitId)
+		.set("x", x)
+		.set("y", y);
 		send(request, out);
 	}
 
 	@Override
 	public void attackGroundUnit(int battleId, int unitId, int targetUnitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ATTACK_GROUND_UNIT",
-						"battleId", battleId,
-						"unitId", unitId,
-						"target", targetUnitId);
+		MessageObject request = new MessageObject("ATTACK_GROUND_UNIT")
+		.set("battleId", battleId)
+		.set("unitId", unitId)
+		.set("target", targetUnitId);
 		send(request, out);
 	}
 
 	@Override
 	public void attackBuilding(int battleId, int unitId, int buildingId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("ATTACK_BUILDING",
-						"battleId", battleId,
-						"unitId", unitId,
-						"buildingId", buildingId);
+		MessageObject request = new MessageObject("ATTACK_BUILDING")
+		.set("battleId", battleId)
+		.set("unitId", unitId)
+		.set("buildingId", buildingId);
 		send(request, out);
 	}
 
 	@Override
 	public void deployMine(int battleId, int unitId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("DEPLOY_MINE",
-						"battleId", battleId,
-						"unitId", unitId);
+		MessageObject request = new MessageObject("DEPLOY_MINE")
+		.set("battleId", battleId)
+		.set("unitId", unitId);
 		send(request, out);
 	}
 
 	@Override
 	public void groundRetreat(int battleId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("GROUND_RETREAT",
-						"battleId", battleId);
+		MessageObject request = new MessageObject("GROUND_RETREAT")
+		.set("battleId", battleId);
 		send(request, out);
 	}
 
 	@Override
 	public void stopGroundRetreat(int battleId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("STOP_GROUND_RETREAT",
-						"battleId", battleId);
+		MessageObject request = new MessageObject("STOP_GROUND_RETREAT")
+		.set("battleId", battleId);
 		send(request, out);
 	}
 
 	@Override
 	public void getGroundBattleUnits(int battleId,
 			AsyncResult<? super List<GroundBattleUnit>, ? super IOException> out) {
-		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS", "battleId", battleId);
+		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS")
+		.set("battleId", battleId);
 		queryList(request, out, new GroundBattleUnit());
 	}
 }
