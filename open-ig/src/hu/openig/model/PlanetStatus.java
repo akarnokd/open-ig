@@ -11,7 +11,9 @@ package hu.openig.model;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A planet's status.
@@ -42,19 +44,21 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 	/** The last day's morale percent in hundreds. */
 	public double lastMorale = 50;
 	/** The auto build mode. */
-	public AutoBuild autoBuild;
+	public AutoBuild autoBuild = AutoBuild.OFF;
 	/** The last day's tax income. */
 	public int taxIncome;
 	/** The last day's trade income. */
 	public int tradeIncome;
-	/** The planet's inventory. */
-	public final List<InventoryItemStatus> inventory = new ArrayList<InventoryItemStatus>();
 	/** The countdown for an earthquake lasting 10s of ingame minutes. */
 	public int earthQuakeTTL;
 	/** The remaining time for a weather event. */
 	public int weatherTTL;
+	/** The planet's inventory. */
+	public final List<InventoryItemStatus> inventory = new ArrayList<InventoryItemStatus>();
 	/** The building statuses. */
 	public final List<BuildingStatus> buildings = new ArrayList<BuildingStatus>();
+	/** The inventory time to live values. */
+	public final Map<Integer, Integer> timeToLive = new HashMap<Integer, Integer>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		// TODO Auto-generated method stub

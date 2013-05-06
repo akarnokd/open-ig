@@ -1738,7 +1738,7 @@ public class GameWindow extends JFrame implements GameControls {
 				boolean spaceBattle = false;
 				boolean groundBattle = false;
 				// check inventory for defensive items
-				for (InventoryItem ii : bi.targetPlanet.inventory) {
+				for (InventoryItem ii : bi.targetPlanet.inventory.iterable()) {
 					if (ii.owner == bi.targetPlanet.owner) {
 						if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 								|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
@@ -1751,7 +1751,7 @@ public class GameWindow extends JFrame implements GameControls {
 					}
 				}
 				// check surface for defensive structures
-				for (Building b : bi.targetPlanet.surface.buildings) {
+				for (Building b : bi.targetPlanet.surface.buildings.iterable()) {
 					if (b.isOperational() && "Defensive".equals(b.type.kind)) {
 						groundBattle = true;
 					}
@@ -1777,7 +1777,7 @@ public class GameWindow extends JFrame implements GameControls {
 				} else {
 					// check if the attacker has ground vehicles at all
 					boolean ableToGroundBattle = false;
-					for (InventoryItem ii : bi.attacker.inventory) {
+					for (InventoryItem ii : bi.attacker.inventory.iterable()) {
 						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 								|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 							ableToGroundBattle = true;
@@ -1831,9 +1831,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 * @param count the count
 	 */
 	void addToFleet(Fleet target, ResearchType rt, int count) {
-		InventoryItem ii = new InventoryItem(world().newId(), target);
-		ii.owner = target.owner;
-		ii.type = rt;
+		InventoryItem ii = new InventoryItem(world().newId(), target.owner, rt);
 		ii.count = count;
 		ii.hp = commons.world().getHitpoints(ii.type, ii.owner);
 		ii.createSlots();

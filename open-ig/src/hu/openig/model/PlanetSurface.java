@@ -30,8 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The container class for the planetary surface objects, including the base surface map,
- * builings, roads and vehicles.
+ * The container class for the planetary surface objects, 
+ * including the base surface map,
+ * builings and roads.
  * @author akarnokd
  */
 public class PlanetSurface {
@@ -71,7 +72,7 @@ public class PlanetSurface {
 	/** The bounding rectangle that fits all cells of this map. */
 	public Rectangle boundingRectangle;
 	/** The list of building instances. */
-	public final List<Building> buildings = new ArrayList<Building>();
+	public final Buildings buildings = new Buildings();
 	/** The list of surface features. */
 	public List<SurfaceFeature> features = new ArrayList<SurfaceFeature>();
 	/** The placement helper. */
@@ -97,7 +98,7 @@ public class PlanetSurface {
 			return width;
 		};
 		@Override
-		protected List<Building> buildings() {
+		protected Buildings buildings() {
 			return buildings;
 		}
 	};
@@ -322,7 +323,7 @@ public class PlanetSurface {
 		}
 		if (withBuildings) {
 			XElement xbuildings = map.add("buildings");
-			for (Building b : buildings) {
+			for (Building b : buildings.iterable()) {
 				XElement xb = xbuildings.add("building");
 				xb.set("id", b.id);
 				xb.set("type", b.type.id);
@@ -343,8 +344,8 @@ public class PlanetSurface {
 	 * @return the technology id of the last building placed on the planet, null if no buildings present
 	 */
 	public String getTechnology() {
-		if (buildings.size() > 0) {
-			return buildings.get(buildings.size() - 1).race;
+		if (!buildings.isEmpty()) {
+			return buildings.iterable().iterator().next().race;
 		}
 		return null;
 	}
@@ -360,7 +361,7 @@ public class PlanetSurface {
 		result.setSize(width, height);
 		result.variant = variant;
 		
-		for (Building b : buildings) {
+		for (Building b : buildings.iterable()) {
 			Building bc = b.copy(newId.invoke());
 			result.placeBuilding(bc.tileset.normal, bc.location.x, bc.location.y, bc);
 		}
@@ -394,7 +395,7 @@ public class PlanetSurface {
 		}
 		
 		Set<Location> corners = new HashSet<Location>();
-		for (Building bld : buildings) {
+		for (Building bld : buildings.iterable()) {
 			Rectangle rect = new Rectangle(bld.location.x - 1, bld.location.y + 1, bld.tileset.normal.width + 2, bld.tileset.normal.height + 2);
 			addRoadAround(rts, rect, corners);
 		}
@@ -552,7 +553,7 @@ public class PlanetSurface {
 		/** @return the base map. */
 		protected abstract Map<Location, SurfaceEntity> basemap();
 		/** @return the existing buildings. */
-		protected abstract List<Building> buildings();
+		protected abstract Buildings buildings();
 		/**
 		 * Test if the given rectangular region is eligible for building placement, e.g.:
 		 * all cells are within the map's boundary, no other buildings are present within the given bounds,
@@ -834,7 +835,7 @@ public class PlanetSurface {
 		 * @return the adjusted location
 		 */
 		Point gravityAdjust(Point original, int width, int height) {
-			List<Building> bs = buildings();
+			Buildings bs = buildings();
 			if (bs.isEmpty()) {
 				return original;
 			}
@@ -843,7 +844,7 @@ public class PlanetSurface {
 			while (!Thread.currentThread().isInterrupted() && (countDown-- > 0)) {
 				Point2D.Double force0 = new Point2D.Double(0, 0);
 				double mass0 = width * height;
-				for (Building b : bs) {
+				for (Building b : bs.iterable()) {
 					int bw = b.tileset.normal.width;
 					int bh = b.tileset.normal.height;
 					// vector from origin to building

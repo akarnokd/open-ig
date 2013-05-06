@@ -23,6 +23,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventoryItems;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -128,8 +128,8 @@ public final class BattleSimulator {
 		
 		battle.incrementGroundBattles();
 		
-		List<GroundwarUnit> attackerUnits = vehicles(battle.attacker.inventory);
-		List<GroundwarUnit> defenderUnits = vehicles(battle.targetPlanet.inventory);
+		List<GroundwarUnit> attackerUnits = vehicles(battle.attacker.inventory.iterable());
+		List<GroundwarUnit> defenderUnits = vehicles(battle.targetPlanet.inventory.iterable());
 		
 		AttackDefense attackerTVBattle = vehicleStrength(attackerUnits);
 		AttackDefense defenderTVBattle = vehicleStrength(defenderUnits);
@@ -153,7 +153,7 @@ public final class BattleSimulator {
 			applyDamage(attackerUnits, attackerTime * defenderTVBattle.attack);
 
 			// attack buildings one by one
-			for (Building b : new ArrayList<Building>(battle.targetPlanet.surface.buildings)) {
+			for (Building b : battle.targetPlanet.surface.buildings.list()) {
 				if (b.type.kind.equals("Defensive")) {
 					double attackerRange = bestVehicleRange(attackerUnits);
 					double defenderRange = bestBuildingRange(battle.targetPlanet, b);
@@ -205,8 +205,8 @@ public final class BattleSimulator {
 					}
 				}
 			}
-			cleanupInventory(battle.targetPlanet);
-			cleanupInventory(battle.attacker);
+			cleanupInventory(battle.targetPlanet.inventory);
+			cleanupInventory(battle.attacker.inventory);
 			if (attackerUnits.isEmpty()) {
 				applyPlanetDefended(battle.targetPlanet, PLANET_DEFENSE_LOSS);
 			} else {
@@ -239,14 +239,8 @@ public final class BattleSimulator {
 	 * Remove empty inventory items.
 	 * @param inv the inventory provied
 	 */
-	void cleanupInventory(HasInventory inv) {
-		Iterator<InventoryItem> it = inv.inventory().iterator();
-		while (it.hasNext()) {
-			InventoryItem ii = it.next();
-			if (ii.count <= 0) {
-				it.remove();
-			}
-		}
+	void cleanupInventory(InventoryItems inv) {
+		inv.removeIf(InventoryItem.CLEANUP);
 	}
 	/**
 	 * Deal certain amount of damage to units.
@@ -281,7 +275,7 @@ public final class BattleSimulator {
 	 * @param p the target planet
 	 */
 	void removeBuildings(Planet p) {
-		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
+		List<Building> bs = p.surface.buildings.list();
 		for (Building b : bs) {
 			if (b.type.kind.equals("Defensive")) {
 				destroyBuilding(p, b);
@@ -292,15 +286,15 @@ public final class BattleSimulator {
 	}
 	/**
 	 * Remove all vehicles from the fleet.
-	 * @param f the fleet
+	 * @param inv the inventory items
 	 */
-	void removeVehicles(HasInventory f) {
-		List<InventoryItem> inv = f.inventory();
-		List<InventoryItem> is = new ArrayList<InventoryItem>(inv);
+	void removeVehicles(HasInventory inv) {
+		InventoryItems inventory = inv.inventory();
+		List<InventoryItem> is = inventory.list();
 		for (InventoryItem ii : is) {
 			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				inv.remove(ii);
+				inventory.remove(ii);
 				
 				ii.owner.statistics.vehiclesLost.value++;
 				ii.owner.statistics.vehiclesLostCost.value += ii.type.productionCost;
@@ -329,10 +323,8 @@ public final class BattleSimulator {
 	 */
 	double bestBuildingRange(Planet p) {
 		double r = 0;
-		for (Building b : p.surface.buildings) {
-			if (b.type.kind.equals("Defensive")) {
-				r = Math.max(r, bestBuildingRange(p, b));
-			}
+		for (Building b : p.surface.buildings.findByKind("Defensive")) {
+			r = Math.max(r, bestBuildingRange(p, b));
 		}
 		return r;
 	}
@@ -355,7 +347,7 @@ public final class BattleSimulator {
 	 * @param items the items
 	 * @return the list of units
 	 */
-	List<GroundwarUnit> vehicles(Collection<InventoryItem> items) {
+	List<GroundwarUnit> vehicles(Iterable<InventoryItem> items) {
 		List<GroundwarUnit> result = U.newArrayList();
 		for (InventoryItem ii : items) {
 			BattleGroundVehicle bgv = world.battle.groundEntities.get(ii.type.id);
@@ -399,10 +391,8 @@ public final class BattleSimulator {
 	AttackDefense buildingStrength(Planet p) {
 		AttackDefense result = new AttackDefense();
 		
-		for (Building b : p.surface.buildings) {
-			if (b.type.kind.equals("Defensive")) {
-				buildingStrength(p, b, result);
-			}
+		for (Building b : p.surface.buildings.findByKind("Defensive")) {
+			buildingStrength(p, b, result);
 		}
 		
 		return result;
@@ -468,22 +458,13 @@ public final class BattleSimulator {
 		SpaceStrengths str = getSpaceStrengths(battle);
 		
 		// mark participating fleets
-		Set<Fleet> fleets = U.newHashSet();
+		Set<Fleet> fleets = U.newHashSet(battle.otherFleets);
 		fleets.add(battle.attacker);
-		for (InventoryItem ii : battle.attacker.inventory) {
-			if (ii.parent instanceof Fleet) {
-				fleets.add((Fleet)ii.parent);
-			}
-		}
 		Fleet f2 = battle.getFleet();
 		if (f2 != null) {
 			fleets.add(f2);
-			for (InventoryItem ii : f2.inventory) {
-				if (ii.parent instanceof Fleet) {
-					fleets.add((Fleet)ii.parent);
-				}
-			}
 		}
+		
 		
 		battle.attacker.owner.ai.onAutoSpacewarStart(battle, str);
 		battle.enemy(battle.attacker.owner).ai.onAutoSpacewarStart(battle, str);
@@ -599,10 +580,10 @@ public final class BattleSimulator {
 	 * @param filter the filter for items
 	 */
 	void applyDamage(HasInventory f, double hitpoints, Func1<InventoryItem, Boolean> filter) {
-		List<InventoryItem> inv = f.inventory();
+		List<InventoryItem> inv = f.inventory().list();
 		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>();
 		for (InventoryItem ii : inv) {
-			if (ii.parent == f) {
+			if (f.inventory().contains(ii)) {
 				is.add(ii);
 			}
 		}
@@ -614,7 +595,7 @@ public final class BattleSimulator {
 		});
 		// put those elements at the back who are not part of the same parent
 		for (InventoryItem ii : inv) {
-			if (ii.parent != f) {
+			if (!f.inventory().contains(ii)) {
 				is.add(ii);
 			}
 		}
@@ -679,7 +660,7 @@ public final class BattleSimulator {
 	static double shieldValue(Planet p) {
 		double shieldValue = 0;
 		// add shields
-		for (Building b : p.surface.buildings) {
+		for (Building b : p.surface.buildings.iterable()) {
 			double eff = b.getEfficiency();
 			if (Building.isOperational(eff)) {
 				if (b.type.kind.equals("Shield")) {
@@ -714,7 +695,7 @@ public final class BattleSimulator {
 	 */
 	void applyDamage(Planet p, double hitpoints) {
 		
-		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>(p.inventory);
+		List<InventoryItem> is = p.inventory.list();
 		ModelUtils.shuffle(is);
 		for (InventoryItem ii : is) {
 			if (hitpoints <= 0) {
@@ -759,7 +740,7 @@ public final class BattleSimulator {
 		
 		
 		double shieldValue = shieldValue(p);
-		ArrayList<Building> bs = new ArrayList<Building>(p.surface.buildings);
+		List<Building> bs = p.surface.buildings.list();
 		ModelUtils.shuffle(bs);
 		for (Building b : bs) {
 			if (hitpoints <= 0) {
@@ -790,7 +771,7 @@ public final class BattleSimulator {
 	 */
 	void demolishDefenses(Planet p) {
 		// demolish buildings
-		for (Building b : new ArrayList<Building>(p.surface.buildings)) {
+		for (Building b : p.surface.buildings.list()) {
 			if (b.isOperational()) {
 				if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
 					destroyBuilding(p, b);
@@ -798,7 +779,7 @@ public final class BattleSimulator {
 			}
 		}
 		// remove ships and stations
-		for (InventoryItem ii : new ArrayList<InventoryItem>(p.inventory)) {
+		for (InventoryItem ii : p.inventory.list()) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 				
@@ -835,7 +816,7 @@ public final class BattleSimulator {
 	static AttackDefense planetStrength(Planet p) {
 		double offense = 0;
 		double defense = 0;
-		for (InventoryItem ii : p.inventory) {
+		for (InventoryItem ii : p.inventory.iterable()) {
 			if (ii.owner == p.owner) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
@@ -858,7 +839,7 @@ public final class BattleSimulator {
 			}
 		}
 		double shieldValue = shieldValue(p);
-		for (Building b : p.surface.buildings) {
+		for (Building b : p.surface.buildings.iterable()) {
 			double eff = b.getEfficiency();
 			if (Building.isOperational(eff)) {
 				if (b.type.kind.equals("Shield")
@@ -891,7 +872,7 @@ public final class BattleSimulator {
 	static AttackDefense fleetStrength(Fleet f) {
 		double offense = 0;
 		double defense = 0;
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			defense += ii.hp * ii.count;
 			defense += ii.shield * ii.count;
 			
@@ -918,7 +899,7 @@ public final class BattleSimulator {
 	 */
 	boolean attackerCanAttackGround() {
 		if (battle.targetPlanet != null) {
-			for (InventoryItem ii : battle.attacker.inventory) {
+			for (InventoryItem ii : battle.attacker.inventory.iterable()) {
 				if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 						|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 					return true;
@@ -937,7 +918,7 @@ public final class BattleSimulator {
 		if (vehicles > 0) {
 			return true;
 		}
-		for (Building b : planet.surface.buildings) {
+		for (Building b : planet.surface.buildings.iterable()) {
 			if (b.isOperational() && b.type.kind.equals("Defensive")) {
 				return true;
 			}
@@ -950,10 +931,8 @@ public final class BattleSimulator {
 	 * @return true if has bunker
 	 */
 	public static boolean hasBunker(Planet planet) {
-		for (Building b : planet.surface.buildings) {
-			if (b.type.kind.equals("Bunker")) {
-				return true;
-			}
+		for (Building b : planet.surface.buildings.findByKind("Bunker")) {
+			return b.isOperational();
 		}
 		return false;
 	}

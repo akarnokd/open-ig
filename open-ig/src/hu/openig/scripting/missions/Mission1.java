@@ -41,8 +41,8 @@ public class Mission1 extends Mission {
 	void checkMission1Task1() {
 		Objective o = objective("Mission-1-Task-1");
 		if (o.isActive()) {
-			for (Building b : planet("Achilles").surface.buildings) {
-				if (b.isComplete() && b.type.kind.equals("MainBuilding")) {
+			for (Building b : planet("Achilles").surface.buildings.findByKind("MainBuilding")) {
+				if (b.isComplete()) {
 					setObjectiveState(o, ObjectiveState.SUCCESS);
 				}
 			}
@@ -68,7 +68,7 @@ public class Mission1 extends Mission {
 		};
 		boolean okay = true;
 		Set<String> buildingTypes = U.newHashSet();
-		for (Building b : p.surface.buildings) {
+		for (Building b : p.surface.buildings.iterable()) {
 			if (b.isOperational() /* && !b.isDamaged() */) {
 				buildingTypes.add(b.type.id);
 			}

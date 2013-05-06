@@ -25,12 +25,10 @@ import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -331,7 +329,7 @@ public class Mission5 extends Mission {
 				f2.owner.ai.spaceBattleInit(war);
 			} else {
 				// garthog attacked
-				war.addStructures(f1.inventory, EnumSet.of(
+				war.addStructures(f1, EnumSet.of(
 						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
 						ResearchSubCategory.SPACESHIPS_CRUISERS,
 						ResearchSubCategory.SPACESHIPS_FIGHTERS));
@@ -339,9 +337,10 @@ public class Mission5 extends Mission {
 			int helpers = 0; 
 			if (checkMission("Mission-4-Helped")) {
 				// add 3 helper pirates
-				List<InventoryItem> iis = createHelperShips(f1);
-				helpers = iis.size();
-				war.addStructures(iis, EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS));
+				Fleet hf = createHelperShips(f1);
+				helpers = hf.inventory.size();
+				war.addStructures(hf, EnumSet.of(
+						ResearchSubCategory.SPACESHIPS_FIGHTERS));
 				battle.attackerAllies.add(player("Pirates"));
 				
 				battle.chat = "chat.mission-5.garthog.with.allied.pirates";
@@ -402,6 +401,10 @@ public class Mission5 extends Mission {
 		if (garthog != null) {
 			world.removeFleet(garthog);
 		}
+		Fleet hf = findTaggedFleet("Mission-5-Help", player("Pirates"));
+		if (hf != null) {
+			world.removeFleet(hf);
+		}
 		cleanupScriptedFleets();
 		Fleet own = findTaggedFleet("CampaignMainShip1", player);
 		if (survive && own != null) {
@@ -424,9 +427,9 @@ public class Mission5 extends Mission {
 			if (battle.targetFleet == f1) {
 				battle.targetFleet = f2;
 			}
-			battle.attacker.inventory.addAll(f1.inventory);
+			battle.attacker.inventory.addAll(f1.inventory.iterable());
 			if (checkMission("Mission-4-Helped")) {
-				battle.attacker.inventory.addAll(createHelperShips(f1));
+				battle.attacker.inventory.addAll(createHelperShips(f1).inventory.list());
 			}
 			
 			if (!reinforcements) {
@@ -439,7 +442,7 @@ public class Mission5 extends Mission {
 	public void onAutobattleFinish(BattleInfo battle) {
 		if (isMissionSpacewar(battle, "Mission-5")) {
 			boolean tullenSurvived = false;
-			for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+			for (InventoryItem ii : battle.attacker.inventory.list()) {
 				if ("Mission-5".equals(ii.tag)) {
 					tullenSurvived = true;
 					battle.attacker.inventory.remove(ii);
@@ -459,7 +462,7 @@ public class Mission5 extends Mission {
 		Planet p = planet("Naxos");
 		Fleet f = createFleet(label("mission-5.tullens_fleet"), player, p.x + 40, p.y - 10);
 		f.addInventory(research("Flagship"), 1);
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-5";
 			if (ii.type.id.equals("Flagship")) {
 				// -------------------------------------------------------
@@ -500,7 +503,7 @@ public class Mission5 extends Mission {
 		equipFully(f.addInventory(research("GarthogDestroyer"), 1));
 		// -------------------------------------------------------
 		f.task = FleetTask.SCRIPT;
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-5-Garthog";
 		}
 		addScripted(f);
@@ -510,8 +513,11 @@ public class Mission5 extends Mission {
 	 * @param parent the parent fleet
 	 * @return the list of added items
 	 */
-	List<InventoryItem> createHelperShips(Fleet parent) {
-		List<InventoryItem> result = U.newArrayList();
+	Fleet createHelperShips(Fleet parent) {
+		Fleet result = new Fleet(world.newId(), player("Pirates"));
+		result.x = parent.x;
+		result.y = parent.y;
+		result.name = "";
 		// -------------------------------------------------------
 		// Set help strength here
 		int helpingPirates = 2;
@@ -521,15 +527,13 @@ public class Mission5 extends Mission {
 		String pirateTech = "PirateFighter2";
 		// -------------------------------------------------------
 		for (int i = 0; i < helpingPirates; i++) {
-			InventoryItem pii = new InventoryItem(world.newId(), parent);
-			pii.type = research(pirateTech);
-			pii.owner = player("Pirates");
+			InventoryItem pii = new InventoryItem(world.newId(), player("Pirates"), research(pirateTech));
 			pii.count = 1;
 			pii.hp = world.getHitpoints(pii.type, pii.owner);
 			pii.tag = "Mission-5-Help";
 			pii.createSlots();
 			pii.shield = Math.max(0, pii.shieldMax());
-			result.add(pii);
+			result.inventory.add(pii);
 		}
 		
 		return result;

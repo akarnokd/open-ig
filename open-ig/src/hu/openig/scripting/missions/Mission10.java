@@ -78,7 +78,7 @@ public class Mission10 extends Mission {
 		pf.addInventory(research("ColonyShip"), 1);
 		pf.addInventory(research("TradersFreight1"), 1);
 		// ----------------------------------------------------------------
-		for (InventoryItem ii : pf.inventory) {
+		for (InventoryItem ii : pf.inventory.iterable()) {
 			ii.tag = "Mission-10-Governor";
 		}
 		pf.mode = FleetMode.MOVE;

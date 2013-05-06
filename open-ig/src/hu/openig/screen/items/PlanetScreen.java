@@ -33,6 +33,7 @@ import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventoryItems;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.Owned;
 import hu.openig.model.Planet;
@@ -1290,7 +1291,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				ur.width = bi.getWidth();
 				ur.height = bi.getHeight();
 				
-				for (Building b : surface().buildings) {
+				for (Building b : surface().buildings.iterable()) {
 					if (u.y <= b.location.y - b.tileset.normal.height
 							|| u.x < b.location.x
 							) {
@@ -1330,7 +1331,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		 * @param surface the surface object
 		 */
 		void drawBuildingHelpers(Graphics2D g2, PlanetSurface surface) {
-			for (Building b : surface.buildings) {
+			for (Building b : surface.buildings.iterable()) {
 				Rectangle r = getBoundingRect(b.location);
 				int nameSize = 10;
 				int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
@@ -3540,7 +3541,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	Set<Location> getDeploymentLocations(boolean atBuildings, boolean skipEdge) {
 		Set<Location> result = U.newHashSet();;
 		if (atBuildings) {
-			for (Building b : planet().surface.buildings) {
+			for (Building b : planet().surface.buildings.iterable()) {
 				result.addAll(placeAround(b));
 			}
 		} else {
@@ -3624,7 +3625,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Add guns for the buildings. */
 	void doAddGuns() {
 		guns.clear();
-		for (Building b : planet().surface.buildings) {
+		for (Building b : planet().surface.buildings.iterable()) {
 			if (b.type.kind.equals("Defensive") && b.isComplete()) {
 				List<BattleGroundTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
 				int n = b.hitpoints * 2 < b.type.hitpoints ? turrets.size() / 2 : turrets.size();
@@ -3648,7 +3649,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		unitsAtLocation.clear();
 		unitsForPathfinding.clear();
 		LinkedList<Location> locs = new LinkedList<Location>();
-		for (Building b : surface().buildings) {
+		for (Building b : surface().buildings.iterable()) {
 			if (b.type.kind.equals("MainBuilding")) {
 				Set<Location> locations = new HashSet<Location>();
 				
@@ -4389,7 +4390,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			BattleSimulator.applyPlanetConquered(planet(), BattleSimulator.PLANET_CONQUER_LOSS);
 
 			// remove unfinished buildings
-			for (Building b : U.newArrayList(planet().surface.buildings)) {
+			for (Building b : planet().surface.buildings.list()) {
 				if (!b.isComplete()) {
 					destroyBuilding(b);
 				}
@@ -4950,7 +4951,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 		if (planet().owner != owner) {
-			for (Building b : new ArrayList<Building>(surface().buildings)) {
+			for (Building b : surface().buildings.list()) {
 				Location u = centerCellOf(b);
 				if (cellInRange(cx, cy, u.x, u.y, area)) {
 					damageBuilding(b, (int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
@@ -5109,7 +5110,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	List<Building> buildingsInRange(GroundwarUnit g) {
 		List<Building> result = U.newArrayList();
-		for (Building u : surface().buildings) {
+		for (Building u : surface().buildings.iterable()) {
 			if (planet().owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)
 					&& !unitInRange(g, u, g.model.minRange) && u.type.kind.equals("Defensive")) {
@@ -5844,8 +5845,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		unitsToPlace.clear();
 		boolean atBuildings = planet().owner == player();
-		Iterable<InventoryItem> iis = (atBuildings ? planet() : battle.attacker).inventory();
-		createGroundUnits(atBuildings, iis, unitsToPlace);
+		InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
+		createGroundUnits(atBuildings, iis.iterable(), unitsToPlace);
 		
 		startBattle.visible(true);
 		
@@ -5855,11 +5856,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	void deployNonPlayerVehicles() {
 		boolean atBuildings = planet().owner != player();
 		
-		Iterable<InventoryItem> iis = (atBuildings ? planet() : battle.attacker).inventory();
+		InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
 		
 		LinkedList<GroundwarUnit> gus = U.newLinkedList();
 		// create units
-		createGroundUnits(atBuildings, iis, gus);
+		createGroundUnits(atBuildings, iis.iterable(), gus);
 		
 		placeGroundUnits(atBuildings, gus);
 	}

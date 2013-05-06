@@ -97,10 +97,10 @@ public interface SpacewarWorld {
 	void includeFleet(Fleet f, Player side);
 	/**
 	 * Add the spacewar ships from the given inventory list and category filters to the spacewar.
-	 * @param inventory the inventory provider
+	 * @param inventory the inventory map with the parent for each item
 	 * @param categories the categories to use
 	 */
-	void addStructures(Iterable<InventoryItem> inventory,
+	void addStructures(HasInventory inventory,
 			EnumSet<ResearchSubCategory> categories);
 	/** @return the landing lace location on the battlemap or null if no such place. */
 	Point landingPlace();

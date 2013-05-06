@@ -40,7 +40,6 @@ import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.List;
@@ -141,7 +140,7 @@ public abstract class Mission implements GameScriptingEvents {
 	protected Fleet findTaggedFleet(String tag, Player owner) {
 		for (Fleet f : owner.fleets.keySet()) {
 			if (f.owner == owner) {
-				for (InventoryItem ii : f.inventory) {
+				for (InventoryItem ii : f.inventory.iterable()) {
 					if (tag.equals(ii.tag)) {
 						return f;
 					}
@@ -711,7 +710,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @return true if fleet has tag
 	 */
 	protected boolean hasTag(Fleet f, String tag) {
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			if (tag.equals(ii.tag)) {
 				return true;
 			}
@@ -764,7 +763,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @param tag the new tag, null to untag
 	 */
 	public void tagFleet(Fleet f, String tag) {
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = tag;
 		}
 	}
@@ -787,9 +786,10 @@ public abstract class Mission implements GameScriptingEvents {
 			if (battle.targetFleet == f1) {
 				war.includeFleet(f2, f2.owner);
 				battle.targetFleet = f2;
+				battle.otherFleets.add(f1);
 				f2.owner.ai.spaceBattleInit(war);
 			} else {
-				war.addStructures(f1.inventory, EnumSet.of(
+				war.addStructures(f1, EnumSet.of(
 						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
 						ResearchSubCategory.SPACESHIPS_CRUISERS,
 						ResearchSubCategory.SPACESHIPS_FIGHTERS));
@@ -834,8 +834,9 @@ public abstract class Mission implements GameScriptingEvents {
 		if (battle.targetFleet != null && (battle.targetFleet == f1 || battle.targetFleet == f2)) {
 			if (battle.targetFleet == f1) {
 				battle.targetFleet = f2;
+				battle.otherFleets.add(f1);
 			}
-			battle.attacker.inventory.addAll(f1.inventory);
+			battle.attacker.inventory.addAll(f1.inventory.iterable());
 			return true;
 		}
 		return false;
@@ -848,7 +849,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	boolean finishJointAutoSpaceBattle(BattleInfo battle, String allyTag) {
 		boolean result = false;
-		for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+		for (InventoryItem ii : battle.attacker.inventory.list()) {
 			if (allyTag.equals(ii.tag)) {
 				battle.attacker.inventory.remove(ii);
 				result = true;

@@ -139,7 +139,7 @@ public class Mission3 extends Mission {
 		Planet naxos = planet("Naxos");
 		Fleet f = createFleet(label("mission-3.escort_carrier.name"), player, naxos.x + 20, naxos.y + 40);
 		f.addInventory(world.researches.get("TradersFreight3"), 1);
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-3-Carrier";
 		}
 		f.task = FleetTask.SCRIPT;
@@ -177,7 +177,7 @@ public class Mission3 extends Mission {
 								player("Pirates"), fi.x + 1, fi.y + 1);
 						
 						pf.addInventory(research("PirateFighter"), 3);
-						for (InventoryItem ii : pf.inventory) {
+						for (InventoryItem ii : pf.inventory.iterable()) {
 							ii.tag = "Mission-3-Pirates";
 						}
 						

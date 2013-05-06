@@ -46,7 +46,7 @@ public final class Allocator {
 				continue;
 			}
 			final List<BuildingAllocationWorker> baw = U.newArrayList();
-			for (Building b : ras.surface.buildings) {
+			for (Building b : ras.surface.buildings.iterable()) {
 				if (b.enabled && b.isComplete()) {
 					baw.add(b.getAllocationWorker());
 				} else {
@@ -107,7 +107,7 @@ public final class Allocator {
 			return;
 		}
 		final List<BuildingAllocationWorker> baw = U.newArrayList();
-		for (Building b : planet.surface.buildings) {
+		for (Building b : planet.surface.buildings.iterable()) {
 			if (b.enabled) {
 				baw.add(b.getAllocationWorker());
 			} else {

@@ -1417,10 +1417,10 @@ public class MapEditor extends JFrame {
 						}
 					}
 					if (checkBuildings) {
-						for (int i = renderer.surface.buildings.size() - 1; i >= 0; i--) {
-							bld = renderer.surface.buildings.get(i);
+						for (Building b0 : renderer.surface.buildings.list()) {
+							bld = b0;
 							if (bld.containsLocation(a, b)) {
-								renderer.surface.buildings.remove(i);
+								renderer.surface.buildings.remove(b0);
 								if (bld == currentBuilding) {
 									renderer.buildingBox = null;
 									currentBuilding = null;
@@ -1695,7 +1695,7 @@ public class MapEditor extends JFrame {
 		ui.mapsize.setText(width + " x " + height);
 		renderer.surface = new PlanetSurface();
 		renderer.surface.setSize(width, height);
-		ui.allocationPanel.buildings = renderer.surface.buildings;
+		ui.allocationPanel.buildings.addAll(renderer.surface.buildings.list());
 	}
 //	/**
 //	 * Place a tile onto the current surface map.
@@ -2385,7 +2385,7 @@ public class MapEditor extends JFrame {
 			surfaceBefore = new ArrayList<SurfaceFeature>(surface.features);
 			
 			buildingmapBefore = new HashMap<Location, SurfaceEntity>(surface.buildingmap);
-			buildingsBefore = new ArrayList<Building>(surface.buildings);
+			buildingsBefore = surface.buildings.list();
 		}
 		/**
 		 * Set the after status of the surface.
@@ -2395,7 +2395,7 @@ public class MapEditor extends JFrame {
 			surfaceAfter = new ArrayList<SurfaceFeature>(surface.features);
 			
 			buildingmapAfter = new HashMap<Location, SurfaceEntity>(surface.buildingmap);
-			buildingsAfter = new ArrayList<Building>(surface.buildings);
+			buildingsAfter = surface.buildings.list();
 		}
 		/**
 		 * Restore the state to before.
@@ -2676,13 +2676,12 @@ public class MapEditor extends JFrame {
 		}
 		int buildingCount = 0;
 		UndoableMapEdit undo = new UndoableMapEdit(renderer.surface);
-		for (int i = renderer.surface.buildings.size() - 1; i >= 0; i--) {
-			Building b = renderer.surface.buildings.get(i);
+		for (Building b : renderer.surface.buildings.list()) {
 			inner:
 			for (int x = b.location.x; x < b.location.x + b.tileset.normal.width; x++) {
 				for (int y = b.location.y; y > b.location.y - b.tileset.normal.height; y--) {
 					if (!renderer.surface.cellInMap(x, y)) {
-						renderer.surface.buildings.remove(i);
+						renderer.surface.buildings.remove(b);
 						if (currentBuilding == b) {
 							currentBuilding = null;
 						}
@@ -2809,7 +2808,7 @@ public class MapEditor extends JFrame {
 					}
 				}
 				if (building) {
-					for (Building b : renderer.surface.buildings) {
+					for (Building b : renderer.surface.buildings.iterable()) {
 						if (b.containsLocation(i, j)) {
 							if (memory.put(b, b) == null) {
 								out.printf("    <building id='%s' tech='%s' x='%d' y='%d' build='%d' hp='%d' level='%d' worker='%d' energy='%d' enabled='%s' repairing='%s' />%n",
