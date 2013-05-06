@@ -22,7 +22,6 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -297,8 +296,7 @@ public class Mission2 extends Mission {
 		Fleet tf = findTaggedFleet(MISSION_2_TRADER, player("Traders"));
 		if (tf != null) {
 			removeScripted(tf);
-			for (InventoryItem ii : tf.inventory) {
-				ii.owner = tf.owner;
+			for (InventoryItem ii : tf.inventory.iterable()) {
 				ii.tag = null;
 			}
 			tf.task = FleetTask.IDLE;
@@ -344,7 +342,7 @@ public class Mission2 extends Mission {
 			if (isMissionSpacewar(battle, "Mission-2-Task-" + task) && missionAttack) {
 				Player trader = player("Traders");
 				boolean traderSurvived = false;
-				for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+				for (InventoryItem ii : battle.attacker.inventory.list()) {
 					if (ii.owner == trader) {
 						traderSurvived = true;
 						battle.attacker.inventory.remove(ii);

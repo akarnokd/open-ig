@@ -210,7 +210,7 @@ public class ResearchPlanner extends Planner {
 			applyActions.add(new Action0() {
 				@Override
 				public void invoke() {
-					for (Building b : planet.surface.buildings) {
+					for (Building b : planet.surface.buildings.iterable()) {
 						if (b.type.resources.containsKey(resource)) {
 							controls.actionDemolishBuilding(planet, b);
 							return;

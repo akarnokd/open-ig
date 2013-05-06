@@ -8,10 +8,10 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.utils.U;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -26,12 +26,10 @@ import java.util.Map;
 public class InventoryItem {
 	/** The inventory item's unique id. */
 	public final int id;
-	/** The parent fleet or planet. */
-	public HasInventory parent;
 	/** The owner. */
-	public Player owner;
+	public final Player owner;
 	/** The item's type. */
-	public ResearchType type;
+	public final ResearchType type;
 	/** The item's count. */
 	public int count;
 	/** The current hit points. */
@@ -50,14 +48,24 @@ public class InventoryItem {
 	public int kills;
 	/** The value of destroyed enemies. */
 	public long killsCost;
+	/** The cleanup predicate. */
+	public static final Func1<InventoryItem, Boolean> CLEANUP = new Func1<InventoryItem, Boolean>() {
+		@Override
+		public Boolean invoke(InventoryItem value) {
+			return value.count <= 0;
+		}
+	};
 	/**
 	 * Constructor. Initializes the parent and unique id.
 	 * @param id the unique identifier
-	 * @param parent the parent
+	 * @param owner the owner of the item
+	 * @param type the inventory type
 	 */
-	public InventoryItem(int id, HasInventory parent) {
+	public InventoryItem(int id, 
+			Player owner, ResearchType type) {
 		this.id = id;
-		this.parent = parent;
+		this.owner = owner;
+		this.type = type;
 	}
 	/**
 	 * @return the maximum shield amount or -1 for no shielding
@@ -247,50 +255,6 @@ public class InventoryItem {
 		return Pair.of(damage, dps);
 	}
 	/**
-	 * Remove excess fighters from the supplied inventory set.
-	 * @param items the inventory items
-	 */
-	public static void removeExcessFighters(List<InventoryItem> items) {
-		// remove above-limit fighters back into the inventory
-		for (InventoryItem ii : items) {
-			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-				int diff = ii.count - ii.owner.world.params().fighterLimit();
-				if (diff > 0) {
-					ii.owner.changeInventoryCount(ii.type, diff);
-					ii.count -= diff;
-				}
-			}
-		}
-	}
-	/**
-	 * Remove excess tanks from the inventory.
-	 * @param items the inventory items
-	 * @param owner the owner
-	 * @param count the current count
-	 * @param max the maximum allowed
-	 */
-	public static void removeExcessTanks(List<InventoryItem> items, Player owner, int count, int max) {
-		// remove excess vehicles
-		while (count > max) {
-			List<InventoryItem> iis = new ArrayList<InventoryItem>(items);
-			Collections.shuffle(iis);
-			for (InventoryItem ii2 : iis) {
-				if (ii2.owner == owner 
-						&& (ii2.type.category == ResearchSubCategory.WEAPONS_TANKS
-						|| ii2.type.category == ResearchSubCategory.WEAPONS_VEHICLES)) {
-					owner.changeInventoryCount(ii2.type, 1);
-					ii2.count--;
-					if (ii2.count <= 0) {
-						items.remove(ii2);
-					}
-					count--;
-					break;
-				}
-			}
-			
-		}
-	}
-	/**
 	 * Generate a nickname and index for this inventory item.
 	 */
 	public void generateNickname() {
@@ -308,7 +272,7 @@ public class InventoryItem {
 		}
 		// find the largest counts for each nicknames.
 		for (Fleet f : owner.ownFleets()) {
-			for (InventoryItem ii : f.inventory) {
+			for (InventoryItem ii : f.inventory.iterable()) {
 				if (ii.nickname != null) {
 					IntValue v = counts.get(ii.nickname);
 					if (v == null) {
@@ -334,6 +298,50 @@ public class InventoryItem {
 		});
 		nickname = countsOrdered.get(0).first;
 		nicknameIndex = countsOrdered.get(0).second.value;
+	}
+	/**
+	 * Remove excess fighters from the supplied inventory set.
+	 * @param items the inventory items
+	 */
+	public static void removeExcessFighters(InventoryItems items) {
+		// remove above-limit fighters back into the inventory
+		for (InventoryItem ii : items.iterable()) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				int diff = ii.count - ii.owner.world.params().fighterLimit();
+				if (diff > 0) {
+					ii.owner.changeInventoryCount(ii.type, diff);
+					ii.count -= diff;
+				}
+			}
+		}
+	}
+	/**
+	 * Remove excess tanks from the inventory.
+	 * @param items the inventory items
+	 * @param owner the owner
+	 * @param count the current count
+	 * @param max the maximum allowed
+	 */
+	public static void removeExcessTanks(InventoryItems items, Player owner, int count, int max) {
+		// remove excess vehicles
+		while (count > max) {
+			List<InventoryItem> iis = items.list();
+			Collections.shuffle(iis);
+			for (InventoryItem ii2 : iis) {
+				if (ii2.owner == owner 
+						&& (ii2.type.category == ResearchSubCategory.WEAPONS_TANKS
+						|| ii2.type.category == ResearchSubCategory.WEAPONS_VEHICLES)) {
+					owner.changeInventoryCount(ii2.type, 1);
+					ii2.count--;
+					if (ii2.count <= 0) {
+						items.remove(ii2);
+					}
+					count--;
+					break;
+				}
+			}
+			
+		}
 	}
 	/**
 	 * Returns the inventory item status for this item.
@@ -365,9 +373,7 @@ public class InventoryItem {
 	 * @param lookup the model lookup
 	 */
 	public void fromInventoryItemStatus(InventoryItemStatus iis, ModelLookup lookup) {
-		type = lookup.research(iis.type);
 		count = iis.count;
-		owner = lookup.player(iis.owner);
 		hp = iis.hp;
 		shield = iis.shield;
 		tag = iis.tag;
@@ -378,5 +384,23 @@ public class InventoryItem {
 		for (InventorySlotStatus iss : iis.slots) {
 			getSlot(iss.id).fromInventorySlotStatus(iss, lookup);
 		}
+	}
+	/**
+	 * Assigns the status and slot info from another inventory item.
+	 * @param ii the inventory item
+	 */
+	public void assign(InventoryItem ii) {
+		count = ii.count;
+		hp = ii.hp;
+		shield = ii.shield;
+		tag = ii.tag;
+		slots.clear();
+		for (Map.Entry<String, InventorySlot> e : ii.slots.entrySet()) {
+			slots.put(e.getKey(), e.getValue().copy());
+		}
+		nickname = ii.nickname;
+		nicknameIndex = ii.nicknameIndex;
+		kills = ii.kills;
+		killsCost = ii.killsCost;
 	}
 }

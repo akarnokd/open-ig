@@ -63,7 +63,6 @@ import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -1138,23 +1137,18 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 					drawDPS(g2, configure.item);
 				} else
 				if (configure.type != null) {
-					HasInventory hi = null;
 					Player o = null;
 					int cnt = 0;
 					if (player().selectionMode == SelectionMode.PLANET || fleet() == null) {
-						hi = planet();
 						o = planet().owner;
 						cnt = planet().inventoryCount(configure.type, o);
 					} else {
-						hi = fleet();
 						o = fleet().owner;
 						cnt = fleet().inventoryCount(configure.type);
 					}
 					if (cnt > 0) {
-						InventoryItem ii = new InventoryItem(world().newId(), hi);
-						ii.owner = o;
+						InventoryItem ii = new InventoryItem(world().newId(), o, configure.type);
 						ii.count = cnt;
-						ii.type = configure.type;
 						ii.hp = ii.hpMax();
 						ii.createSlots();
 						drawDPS(g2, ii);
@@ -1185,7 +1179,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		int sp = 0;
 		int kills = 0;
 		
-		for (InventoryItem ii : hi.inventory()) {
+		for (InventoryItem ii : hi.inventory().iterable()) {
 			if (ii.owner == o 
 					&& (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
@@ -1990,7 +1984,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		
 		if (p != null && p.owner == player()) {
 			list.group = false;
-			for (InventoryItem pii : p.inventory) {
+			for (InventoryItem pii : p.inventory.iterable()) {
 				if (pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					list.items.add(pii);
 				}
@@ -1998,7 +1992,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		} else 
 		if (f != null && f.owner == player()) {		
 			list.group = true;
-			for (InventoryItem pii : f.inventory) {
+			for (InventoryItem pii : f.inventory.iterable()) {
 				if (pii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 						|| pii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 				) {
@@ -2073,11 +2067,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	boolean fleetHasResearch(ResearchType rt) {
 		Fleet f = fleet();
 		if (f != null && f.owner == player()) {
-			for (InventoryItem ii : f.inventory) {
-				if (ii.type == rt) {
-					return true;
-				}
-			}
+			return !f.inventory.findByType(rt.id).isEmpty();
 		}
 		return false;
 	}
@@ -2110,9 +2100,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						amount = Math.max(0, limit - currentCount);
 					}
 					while (amount-- > 0) {
-						InventoryItem pii = new InventoryItem(world().newId(), planet());
-						pii.owner = player();
-						pii.type = rt;
+						InventoryItem pii = new InventoryItem(world().newId(), player(), rt);
 						pii.count = 1;
 						pii.hp = world().getHitpoints(pii.type, pii.owner);
 						
@@ -2516,13 +2504,11 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			
 			if (type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 					|| type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-				for (Iterator<InventoryItem> it = src.inventory.iterator(); it.hasNext();) {
-					InventoryItem ii = it.next();
+				for (InventoryItem ii : src.inventory.list()) {
 					if (ii.type == type) {
 						// start only at the indexth element of this category
 						if (startIndex == 0) {
-							it.remove();
-							ii.parent = dst;
+							src.inventory.remove(ii);
 							dst.inventory.add(ii);
 							transferCount--;
 						} else {
@@ -2538,8 +2524,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				FleetStatistics fs = src.getStatistics();
 				if (fs.vehicleCount > fs.vehicleMax) {
 					int delta = fs.vehicleCount - fs.vehicleMax;
-					for (int j = src.inventory.size() - 1; j >= 0; j--) {
-						InventoryItem ii = src.inventory.get(j);
+					for (InventoryItem ii : src.inventory.list()) {
 						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 							|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
 						) {
@@ -2714,8 +2699,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		
 		// existing stations may be replaced?
 		if (bestStation != null) {
-			for (InventoryItem ii : p.inventory) {
-				if (ii.owner == p.owner && ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS && ii.type != orbitalFactory) {
+			for (InventoryItem ii : p.inventory.findByOwner(p.owner.id)) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS && ii.type != orbitalFactory) {
 					if (ii.type.productionCost < bestStation.productionCost) {
 						return true;
 					}
@@ -2723,8 +2708,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			}
 		}
 		// station inventory can be refilled?
-		for (InventoryItem ii : p.inventory) {
-			if (ii.owner == p.owner && ii.checkSlots()) {
+		for (InventoryItem ii : p.inventory.findByOwner(p.owner.id)) {
+			if (ii.checkSlots()) {
 				return true;
 			}
 		}
@@ -2755,7 +2740,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				stations++;
 			}
 			// replace old stations with newer ones if possible
-			for (InventoryItem ii : U.newArrayList(p.inventory)) {
+			for (InventoryItem ii : p.inventory.list()) {
 				if (ii.owner == p.owner 
 						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS
 						&& ii.type != orbitalFactory) {
@@ -2791,7 +2776,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		
 		// upgrade station equipment: strip current settings
 		List<InventoryItem> uis = U.newArrayList();
-		for (InventoryItem ii : p.inventory) {
+		for (InventoryItem ii : p.inventory.iterable()) {
 			if (ii.owner == p.owner 
 					&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS
 					&& ii.type != orbitalFactory) {
@@ -2816,9 +2801,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	 * @param bestStation the station type
 	 */
 	protected void addStation(Planet p, ResearchType bestStation) {
-		InventoryItem ii = new InventoryItem(world().newId(), p);
-		ii.owner = p.owner;
-		ii.type = bestStation;
+		InventoryItem ii = new InventoryItem(world().newId(), p.owner, bestStation);
 		ii.count = 1;
 		ii.hp = world().getHitpoints(ii.type, ii.owner);
 		ii.createSlots();

@@ -262,7 +262,7 @@ public final class Simulator {
 		boolean rebuildroads = false;
 		boolean runAllocator = false;
 		
-		for (Building b : new ArrayList<Building>(planet.surface.buildings)) {
+		for (Building b : planet.surface.buildings.list()) {
 			
 			planet.owner.statistics.totalBuilding.value++;
 			world.statistics.totalBuilding.value++;
@@ -363,10 +363,8 @@ public final class Simulator {
 			Allocator.computeNow(planet);
 		}
 		// search for radar capable inventory
-		for (InventoryItem pii : planet.inventory) {
-			if (pii.owner == planet.owner) {
-				radar = Math.max(radar, pii.type.getInt("radar", 0));
-			}
+		for (InventoryItem pii : planet.inventory.findByOwner(planet.owner.id)) {
+			radar = Math.max(radar, pii.type.getInt("radar", 0));
 		}		
 		if (radar != 0) {
 			for (Map.Entry<InventoryItem, Integer> ittl : new ArrayList<Map.Entry<InventoryItem, Integer>>(planet.timeToLive.entrySet())) {
@@ -391,9 +389,8 @@ public final class Simulator {
 		}
 		
 		// reequip station bombs and rockets
-		for (InventoryItem ii : planet.inventory) {
-			if (ii.owner == planet.owner 
-					&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+		for (InventoryItem ii : planet.inventory.findByOwner(planet.owner.id)) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 				regenerateInventory(true, ii);
 			}
 		}
@@ -870,7 +867,7 @@ public final class Simulator {
 				&& ((np != null
 				&& np.owner == f.owner 
 				&& np.hasMilitarySpaceport()));
-		for (InventoryItem ii : new ArrayList<InventoryItem>(f.inventory)) {
+		for (InventoryItem ii : f.inventory.list()) {
 			regenerateInventory(spaceport, ii);
 		}
 		if (spaceport && f.refillOnce) {

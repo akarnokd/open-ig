@@ -1390,13 +1390,16 @@ public class DiplomacyScreen extends ScreenBase {
 		}
 		// FIXME keep their fleets as own?
 		for (Fleet f : other.ownFleets()) {
-			f.owner = player();
-			for (InventoryItem ii : f.inventory) {
-				ii.owner = player();
+			
+			world().removeFleet(f);
+			Fleet f0 = new Fleet(f.id, player());
+			for (InventoryItem ii : f.inventory.iterable()) {
+				InventoryItem ii0 = new InventoryItem(ii.id, player(), ii.type);
+				ii0.assign(ii);
+				f0.inventory.add(ii0);
 			}
-			player().fleets.put(f, FleetKnowledge.FULL);
+			player().fleets.put(f0, FleetKnowledge.FULL);
 		}
-		other.fleets.clear();
 	}
 	/**
 	 * Setup the text labels.

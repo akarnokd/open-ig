@@ -151,7 +151,7 @@ public class Mission9 extends Mission {
 		// ----------------------------------------------------------------
 		pf.addInventory(research("TradersFreight" + n), 1);
 		// ----------------------------------------------------------------
-		for (InventoryItem ii : pf.inventory) {
+		for (InventoryItem ii : pf.inventory.iterable()) {
 			ii.tag = "Mission-9-Smuggler";
 		}
 		pf.mode = FleetMode.MOVE;

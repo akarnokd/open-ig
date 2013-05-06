@@ -63,7 +63,7 @@ public class Mission6 extends Mission {
 			}
 			f.addInventory(research("Fighter2"), 2);
 			f.addInventory(research("Cruiser1"), 1);
-			for (InventoryItem ii : f.inventory) {
+			for (InventoryItem ii : f.inventory.iterable()) {
 				if (ii.type.id.equals("Cruiser1")) {
 					ii.tag = "CampaignMainShip2";
 					setSlot(ii, "laser", "Laser1", 6);
@@ -207,7 +207,7 @@ public class Mission6 extends Mission {
 		f.addInventory(research("GarthogRadarJammer"), 1);
 		// ---------------------------------------------------
 		
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-6-Garthog";
 		}
 		Planet ach = planet("Achilles");

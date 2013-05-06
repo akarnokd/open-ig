@@ -283,7 +283,7 @@ public class AITrader implements AIManager {
 							System.err.println("Going back already? " + nt.id);
 						}
 	
-						for (InventoryItem ii : lf.fleet.inventory) {
+						for (InventoryItem ii : lf.fleet.inventory.iterable()) {
 							ii.hp = world.getHitpoints(ii.type, ii.owner);
 						}
 	
@@ -402,10 +402,8 @@ public class AITrader implements AIManager {
 				rts.add(rt);
 			}
 		}
-		InventoryItem ii = new InventoryItem(world.newId(), nf);
-		ii.owner = player;
+		InventoryItem ii = new InventoryItem(world.newId(), player, ModelUtils.random(rts));
 		ii.count = 1;
-		ii.type = ModelUtils.random(rts);
 		ii.hp = world.getHitpoints(ii.type, ii.owner);
 		ii.createSlots();
 		
@@ -433,10 +431,8 @@ public class AITrader implements AIManager {
 		if (type != null) {
 			Fleet nf = id < 0 ? new Fleet(player) : new Fleet(id, player);
 			nf.name = traderLabel;
-			InventoryItem ii = new InventoryItem(world.newId(), nf);
-			ii.owner = player;
+			InventoryItem ii = new InventoryItem(world.newId(), player, type);
 			ii.count = 1;
-			ii.type = type;
 			ii.hp = world.getHitpoints(ii.type, ii.owner);
 			ii.createSlots();
 			
@@ -733,7 +729,7 @@ public class AITrader implements AIManager {
 				XElement xlf = out.add("landed");
 				if (lf.target != null) {
 					xlf.set("id", lf.fleet.id);
-					xlf.set("fleet", lf.fleet.inventory.get(0).type.id);
+					xlf.set("fleet", lf.fleet.inventory.iterable().iterator().next().type.id);
 					xlf.set("planet", lf.target.id);
 					xlf.set("ttl", lf.ttl);
 				}

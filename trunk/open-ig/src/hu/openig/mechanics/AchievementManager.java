@@ -318,7 +318,7 @@ public final class AchievementManager {
 				if (p.owner == u) {
 					int shieldCount = 0;
 					int gunCount = 0;
-					for (Building b : p.surface.buildings) {
+					for (Building b : p.surface.buildings.iterable()) {
 						if (b.isOperational() && b.type.kind.equals("Gun")) {
 							gunCount++;
 						} else

@@ -14,7 +14,6 @@ import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +71,7 @@ public class AIPlanet {
 		this.tax = planet.tax;
 		this.autoBuild = planet.autoBuild;
 		
-		for (InventoryItem ii : planet.inventory) {
+		for (InventoryItem ii : planet.inventory.iterable()) {
 			inventory.add(new AIInventoryItem(ii));
 		}
 		nonbuildable.putAll(planet.surface.buildingmap);
@@ -80,7 +79,7 @@ public class AIPlanet {
 		final int width = planet.surface.width;
 		final int height = planet.surface.height;
 
-		for (Building b : planet.surface.buildings) {
+		for (Building b : planet.surface.buildings.iterable()) {
 			buildings.add(new AIBuilding(b));
 		}
 		
@@ -110,9 +109,9 @@ public class AIPlanet {
 				return planet.surface.basemap;
 			}
 			@Override
-			protected List<Building> buildings() {
+			protected Buildings buildings() {
 				// prevents gravity adjust, not really necessary for placement tests
-				return Collections.emptyList();
+				return new Buildings();
 			}
 		};
 	}

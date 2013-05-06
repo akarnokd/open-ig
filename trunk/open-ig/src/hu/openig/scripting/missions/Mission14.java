@@ -105,7 +105,7 @@ public class Mission14 extends Mission {
 		f.addInventory(research("GarthogVirusBomb"), 3);
 		// ---------------------------------------------------
 		
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-14-Garthog";
 		}
 		Planet nc = planet("New Caroline");

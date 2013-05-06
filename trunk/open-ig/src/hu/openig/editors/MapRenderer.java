@@ -324,7 +324,7 @@ public class MapRenderer extends JComponent {
 			if (buildingBox != null) {
 				g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
 			}
-			for (Building b : surface.buildings) {
+			for (Building b : surface.buildings.iterable()) {
 				Rectangle r = getBoundingRect(b.location);
 //				if (r == null) {
 //					continue;

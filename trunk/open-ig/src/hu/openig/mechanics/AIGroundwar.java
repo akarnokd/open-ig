@@ -204,7 +204,7 @@ public class AIGroundwar {
 	 */
 	private void categorizeObjects() {
 		if (war.planet().owner != p) {
-			for (Building b : war.planet().surface.buildings) {
+			for (Building b : war.planet().surface.buildings.iterable()) {
 				boolean add = p.world.env.config().aiGroundAttackEverything;
 				
 				add |= b.type.kind.equals("Defensive");

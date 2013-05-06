@@ -17,8 +17,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A fleet.
@@ -28,7 +30,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	/** The unique fleet identifier. */
 	public final int id;
 	/** The owner of the fleet. */
-	public Player owner;
+	public final Player owner;
 	/** The X coordinate. */
 	public double x;
 	/** The Y coordinate. */
@@ -38,7 +40,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	/** The fleet name. */
 	public String name;
 	/** The fleet inventory: ships and tanks. */
-	public final List<InventoryItem> inventory = new ArrayList<InventoryItem>();
+	public final InventoryItems inventory = new InventoryItems();
 	/** The current list of movement waypoints. */
 	public final List<Point2D.Double> waypoints = new ArrayList<Point2D.Double>();
 	/** If the fleet should follow the other fleet. */
@@ -108,10 +110,8 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public int inventoryCount(ResearchType rt) {
 		int count = 0;
-		for (InventoryItem pii : inventory) {
-			if (pii.type == rt) {
-				count += pii.count;
-			}
+		for (InventoryItem pii : inventory.findByType(rt.id)) {
+			count += pii.count;
 		}
 		return count;
 	}
@@ -122,23 +122,21 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @param amount the amount delta
 	 */
 	public void changeInventory(ResearchType type, int amount) {
-		int idx = 0;
+		int idx = -1;
 		boolean found = false;
-		for (InventoryItem pii : inventory) {
-			if (pii.type == type) {
-				pii.count += amount;
-				if (pii.count <= 0) {
-					inventory.remove(idx);
-				}
-				found = true;
-				break;
+		for (InventoryItem pii : inventory.findByType(type.id)) {
+			pii.count += amount;
+			if (pii.count <= 0) {
+				idx = pii.id;
 			}
-			idx++;
+			found = true;
+			break;
+		}
+		if (idx >= 0) {
+			inventory.remove(idx);
 		}
 		if (!found && amount > 0) {
-			InventoryItem pii = new InventoryItem(owner.world.newId(), this);
-			pii.type = type;
-			pii.owner = owner;
+			InventoryItem pii = new InventoryItem(owner.world.newId(), owner, type);
 			pii.count = amount;
 			pii.hp = owner.world.getHitpoints(type, pii.owner);
 			pii.createSlots();
@@ -156,7 +154,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public int inventoryCount(ResearchSubCategory cat) {
 		int count = 0;
-		for (InventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory.iterable()) {
 			if (pii.type.category == cat) {
 				count += pii.count;
 			}
@@ -177,7 +175,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		
 		result.speed = Integer.MAX_VALUE;
 		int radar = 0;
-		for (InventoryItem fii : inventory) {
+		for (InventoryItem fii : inventory.iterable()) {
 			boolean checkHyperdrive = false;
 			boolean checkFirepower = false;
 			boolean checkRadar = false;
@@ -265,7 +263,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			baseSpeed = (int)t.value;
 		}
 		int speed = Integer.MAX_VALUE;
-		for (InventoryItem fii : inventory) {
+		for (InventoryItem fii : inventory.iterable()) {
 			boolean checkHyperdrive = fii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
 					|| fii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS;
 			if (checkHyperdrive) {
@@ -321,10 +319,8 @@ public class Fleet implements Named, Owned, HasInventory {
 			changeInventory(type, amount);
 		} else {
 			for (int i = 0; i < amount; i++) {
-				InventoryItem ii = new InventoryItem(owner.world.newId(), this);
+				InventoryItem ii = new InventoryItem(owner.world.newId(), owner, type);
 				ii.count = 1;
-				ii.type = type;
-				ii.owner = owner;
 				ii.hp = owner.world.getHitpoints(type, ii.owner);
 				ii.createSlots();
 				
@@ -339,7 +335,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	/** @return the non-fighter and non-vehicular inventory items. */
 	public List<InventoryItem> getSingleItems() {
 		List<InventoryItem> result = new ArrayList<InventoryItem>();
-		for (InventoryItem ii : inventory) {
+		for (InventoryItem ii : inventory.iterable()) {
 			if (ii.type.category != ResearchSubCategory.SPACESHIPS_FIGHTERS
 					&& ii.type.category != ResearchSubCategory.WEAPONS_TANKS
 					&& ii.type.category != ResearchSubCategory.WEAPONS_VEHICLES
@@ -355,10 +351,8 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @return the inventory item or null if not present
 	 */
 	public InventoryItem getInventoryItem(ResearchType rt) {
-		for (InventoryItem ii : inventory) {
-			if (ii.type == rt) {
-				return ii;
-			}
+		for (InventoryItem ii : inventory.findByType(rt.id)) {
+			return ii;
 		}
 		return null;
 	}
@@ -401,7 +395,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		return result;
 	}
 	@Override
-	public List<InventoryItem> inventory() {
+	public InventoryItems inventory() {
 		return inventory;
 	}
 	/**
@@ -414,7 +408,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		int vehicleMax = 0;
 		int result = 0;
 		List<InventoryItem> veh = new ArrayList<InventoryItem>();
-		for (InventoryItem fii : inventory) {
+		for (InventoryItem fii : inventory.iterable()) {
 			if (fii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				vehicleCount += fii.count;
@@ -458,7 +452,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void upgradeAll() {
 		strip();
-		List<InventoryItem> iis = U.newArrayList(inventory);
+		List<InventoryItem> iis = inventory.list();
 		Collections.sort(iis, new Comparator<InventoryItem>() {
 			@Override
 			public int compare(InventoryItem o1, InventoryItem o2) {
@@ -530,7 +524,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * Remove all tanks and vehicles and place them back into the owner's inventory.
 	 */
 	public void stripVehicles() {
-		for (InventoryItem ii : new ArrayList<InventoryItem>(inventory)) {
+		for (InventoryItem ii : inventory.list()) {
 			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				owner.changeInventoryCount(ii.type, ii.count);
@@ -543,7 +537,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @return true if there are options available to upgrade the fleet.
 	 */
 	public boolean canUpgrade() {
-		for (InventoryItem ii : inventory) {
+		for (InventoryItem ii : inventory.iterable()) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 				if (ii.checkSlots()) { 
@@ -562,7 +556,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * Unload tanks, fighters, equipment.
 	 */
 	public void strip() {
-		for (InventoryItem ii : new ArrayList<InventoryItem>(inventory)) {
+		for (InventoryItem ii : inventory.list()) {
 			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
 					|| ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -580,7 +574,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * Sell all inventory item.
 	 */
 	public void sell() {
-		for (InventoryItem ii : inventory) {
+		for (InventoryItem ii : inventory.iterable()) {
 			ii.sell();
 		}
 		
@@ -600,11 +594,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	}
 	/** Remove inventory items with zero counts. */
 	public void cleanup() {
-		for (int i = inventory.size() - 1; i >= 0; i--) {
-			if (inventory.get(i).count <= 0) {
-				inventory.remove(i);
-			}
-		}
+		inventory.removeIf(InventoryItem.CLEANUP);
 	}
 	/**
 	 * Replace a medium or large ship from inventory.
@@ -629,7 +619,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		}
 		// lets remove excess
 		if (current > limit) {
-			List<InventoryItem> iis = U.sort(inventory, new Comparator<InventoryItem>() {
+			List<InventoryItem> iis = U.sort(inventory.list(), new Comparator<InventoryItem>() {
 				@Override
 				public int compare(InventoryItem o1, InventoryItem o2) {
 					return ResearchType.CHEAPEST_FIRST.compare(o1.type, o2.type);
@@ -794,7 +784,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	public void refillEquipment() {
 		if (owner == owner.world.player) {
 			if (owner.world.env.config().reequipBombs) {
-				for (InventoryItem ii : inventory) {
+				for (InventoryItem ii : inventory.iterable()) {
 					for (InventorySlot is : ii.slots.values()) {
 						if (is.getCategory() == ResearchSubCategory.WEAPONS_PROJECTILES 
 								&& !is.isFilled()) {
@@ -817,24 +807,6 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public boolean exists() {
 		return owner.fleets.containsKey(this);
-	}
-	@Override
-	public InventoryItem find(int id) {
-		for (InventoryItem ii : inventory) {
-			if (ii.id == id) {
-				return ii;
-			}
-		}
-		return null;
-	}
-	@Override
-	public InventoryItem find(String type) {
-		for (InventoryItem ii : inventory) {
-			if (ii.type.id.equals(type)) {
-				return ii;
-			}
-		}
-		return null;
 	}
 	/**
 	 * Returns a fleet status object.
@@ -869,7 +841,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			result.waypoints.add(new Point2D.Double(wp.x, wp.y));
 		}
 		
-		for (InventoryItem ii : inventory) {
+		for (InventoryItem ii : inventory.iterable()) {
 			result.inventory.add(ii.toInventoryItemStatus());
 		}
 		
@@ -917,13 +889,17 @@ public class Fleet implements Named, Owned, HasInventory {
 			owner.world.infectedFleets.remove(id);
 		}
 		
-		// FIXME merge instead of replace?
-		inventory.clear();
+		Set<Integer> current = new HashSet<Integer>();
 		for (InventoryItemStatus iis : fs.inventory) {
-			InventoryItem ii = new InventoryItem(iis.id, this);
-			ii.createSlots();
+			InventoryItem ii = inventory.findById(iis.id);
+			if (ii == null) {
+				ii = new InventoryItem(iis.id, owner.world.player(iis.owner), owner.world.research(iis.type));
+				ii.createSlots();
+				inventory.add(ii);
+			}
 			ii.fromInventoryItemStatus(iis, owner.world);
-			inventory.add(ii);
+			current.add(ii.id);
 		}
+		inventory.removeById(current);
 	}
 }

@@ -151,9 +151,7 @@ public class DefaultAIControls implements AIControls {
 					&& current >= player.world.params().stationLimit()) {
 				return false;
 			}
-			InventoryItem ii = new InventoryItem(planet.world.newId(), planet);
-			ii.type = satellite;
-			ii.owner = player;
+			InventoryItem ii = new InventoryItem(planet.world.newId(), player, satellite);
 			ii.count = 1;
 			ii.hp = player.world.getHitpoints(satellite, ii.owner);
 			ii.createSlots();
@@ -188,9 +186,7 @@ public class DefaultAIControls implements AIControls {
 				if (count > player.world.params().fighterLimit()) {
 					return false;
 				}
-				ii = new InventoryItem(planet.world.newId(), planet);
-				ii.type = fighter;
-				ii.owner = player;
+				ii = new InventoryItem(planet.world.newId(), player, fighter);
 				ii.count = count;
 				ii.hp = player.world.getHitpoints(fighter, ii.owner);
 				ii.createSlots();

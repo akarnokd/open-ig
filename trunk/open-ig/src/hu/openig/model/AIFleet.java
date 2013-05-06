@@ -70,7 +70,7 @@ public class AIFleet {
 		task = fleet.task;
 		x = fleet.x;
 		y = fleet.y;
-		for (InventoryItem ii : fleet.inventory) {
+		for (InventoryItem ii : fleet.inventory.iterable()) {
 			inventory.add(new AIInventoryItem(ii));
 			Integer v = inventoryCounts.get(ii.type);
 			inventoryCounts.put(ii.type, v != null ? v + ii.count : ii.count);

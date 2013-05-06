@@ -30,7 +30,6 @@ import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -125,7 +124,7 @@ public class Mission4 extends Mission {
 		Player pirate = player("Pirates");
 		Fleet f = createFleet(label("pirates.fleet_name"), pirate, naxos.x + 15, naxos.y - 5);
 		f.addInventory(world.researches.get("PirateFighter2"), 1);
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-4-Pirates-1";
 		}
 		f.task = FleetTask.SCRIPT;
@@ -133,7 +132,7 @@ public class Mission4 extends Mission {
 		
 		f = createFleet(label("pirates.fleet_name"), pirate, naxos.x + 17, naxos.y - 3);
 		f.addInventory(world.researches.get("PirateFighter"), 2);
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = MISSION_4_PIRATES_2;
 		}
 		f.task = FleetTask.SCRIPT;
@@ -170,7 +169,7 @@ public class Mission4 extends Mission {
 	public void onAutobattleFinish(BattleInfo battle) {
 		if (isMissionSpacewar(battle, "Mission-4")) {
 			boolean pirateSurvived = false;
-			for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+			for (InventoryItem ii : battle.attacker.inventory.list()) {
 				if ("Mission-4-Pirates-1".equals(ii.tag)) {
 					pirateSurvived = true;
 					battle.attacker.inventory.remove(ii);
@@ -195,21 +194,22 @@ public class Mission4 extends Mission {
 			Fleet f2 = findTaggedFleet(MISSION_4_PIRATES_2, pirates);
 
 			if (battle.targetFleet != null && (battle.targetFleet == f1 || battle.targetFleet == f2)) {
+				Player pirate2 = createSecondPirate();
 				// pirate 1 attacked
 				if (battle.targetFleet == f1) {
 					war.includeFleet(f2, f2.owner);
 					battle.targetFleet = f2;
 					f2.owner.ai.spaceBattleInit(war);
+					battle.otherFleets.add(f1);
 				} else {
 					// pirate 2 attacked
-					war.addStructures(f1.inventory, EnumSet.of(
+					war.addStructures(f1, EnumSet.of(
 							ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
 							ResearchSubCategory.SPACESHIPS_CRUISERS,
 							ResearchSubCategory.SPACESHIPS_FIGHTERS));
 				}
 				
-				patchPlayer(f1);
-				battle.attackerAllies.add(f1.owner);
+				battle.attackerAllies.add(pirate2);
 				// center pirate
 				Dimension d = war.space();
 				List<SpacewarStructure> structures = war.structures();
@@ -219,7 +219,7 @@ public class Mission4 extends Mission {
 						s.x = d.width / 2;
 						s.y = d.height / 2;
 						s.angle = 0.0;
-						s.owner = f1.owner;
+						s.owner = pirate2;
 						a = s;
 						s.guard = true;
 					}
@@ -233,13 +233,13 @@ public class Mission4 extends Mission {
 		}
 	}
 	/**
-	 * Duplicate the player as player2.
-	 * @param f the fleet
+	 * Create a temporary second pirate player to avoid
+	 * the same-owner issue in space battle.
+	 * @return f2 the patched fleet
 	 */
-	void patchPlayer(Fleet f) {
-		Player owner = f.owner;
-		
-		Player newOwner = new Player(owner.world, owner.id + "2");
+	Player createSecondPirate() {
+		Player newOwner = new Player(world, "Pirates2");
+		Player owner = player("Pirates");
 		newOwner.name = owner.name;
 		newOwner.color = owner.color;
 		newOwner.shortName = owner.shortName;
@@ -249,9 +249,8 @@ public class Mission4 extends Mission {
 		newOwner.ai = world.env.getAI(newOwner);
 		newOwner.noDatabase = owner.noDatabase;
 		newOwner.noDiplomacy = owner.noDiplomacy;
-		
-		
-		f.owner = newOwner;
+
+		return newOwner;
 	}
 	@Override
 	public void onSpacewarFinish(SpacewarWorld war) {
@@ -261,8 +260,6 @@ public class Mission4 extends Mission {
 			for (SpacewarStructure s : war.structures()) {
 				if (s.item != null && "Mission-4-Pirates-1".equals(s.item.tag)) {
 					Player pirates = player("Pirates");
-					// restore owner
-					s.fleet.owner = pirates;
 					pirates.fleets.put(s.fleet, FleetKnowledge.FULL);
 					pirateSurvived = true;
 					break;

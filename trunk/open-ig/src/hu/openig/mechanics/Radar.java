@@ -71,7 +71,7 @@ public final class Radar {
 				if (f.owner == player) {
 					// find the max radar
 					float radar = 0.3f;
-					for (InventoryItem fi : f.inventory) {
+					for (InventoryItem fi : f.inventory.iterable()) {
 						for (InventorySlot fis : fi.slots.values()) {
 							if (fis.type != null) {
 								radar = Math.max(radar, fis.type.getInt("radar", 0));
@@ -115,7 +115,7 @@ public final class Radar {
 			for (Planet p : player.ownPlanets()) {
 				updateKnowledge(world, p.owner, p, PlanetKnowledge.BUILDING);
 				int radar = 0;
-				for (InventoryItem pii : p.inventory) {
+				for (InventoryItem pii : p.inventory.iterable()) {
 					radar = pii.type.getInt("radar", 0);
 					if (radar > 0) {
 						for (Planet q : findPlanetsInRange(world, p.x, p.y, radar * rrg)) {
@@ -128,7 +128,7 @@ public final class Radar {
 					}
 				}
 				if (radar == 0) {
-					for (Building b : p.surface.buildings) {
+					for (Building b : p.surface.buildings.iterable()) {
 						if (b.isOperational()) {
 							if (b.hasResource("radar")) {
 								radar = Math.max(radar, (int)b.getResource("radar"));
@@ -155,7 +155,7 @@ public final class Radar {
 		}
 		// spy satellites
 		for (Planet p : world.planets.values()) {
-			for (InventoryItem pii : p.inventory) {
+			for (InventoryItem pii : p.inventory.iterable()) {
 				int detectorType = pii.type.getInt("detector", 0);
 				if (detectorType == 1) {
 					updateKnowledge(world, pii.owner, p, PlanetKnowledge.OWNER);

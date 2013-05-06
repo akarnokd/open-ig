@@ -97,4 +97,17 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	public String objectName() {
 		return "INVENTORY";
 	}
+	/**
+	 * Clear the enemy info.
+	 */
+	public void clearEnemyInfo() {
+		hp = 1;
+		shield = 0;
+		tag = null;
+		kills = 0;
+		killsCost = 0;
+		nickname = null;
+		nicknameIndex = 0;
+		slots.clear();
+	}
 }

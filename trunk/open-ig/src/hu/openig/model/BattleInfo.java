@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.utils.U;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -76,6 +77,8 @@ public class BattleInfo {
 	public String chat;
 	/** Show the landing marker? */
 	public boolean showLanding;
+	/** The set of other participating fleets. */
+	public final Set<Fleet> otherFleets = new HashSet<Fleet>();
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;
@@ -126,13 +129,13 @@ public class BattleInfo {
 			p = helperPlanet;
 		}
 		if (p != null) {
-			for (InventoryItem ii : p.inventory) {
+			for (InventoryItem ii : p.inventory.iterable()) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					return true;
 				}
 			}
-			for (Building b : p.surface.buildings) {
+			for (Building b : p.surface.buildings.iterable()) {
 				if (b.isOperational()) {
 					if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
 						return true;

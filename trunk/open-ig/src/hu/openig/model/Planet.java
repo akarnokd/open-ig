@@ -17,9 +17,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A planet.
@@ -75,7 +76,7 @@ public class Planet implements Named, Owned, HasInventory {
 	/** The last day's trade income. */
 	public int tradeIncome;
 	/** The planet's inventory. */
-	public final List<InventoryItem> inventory = new ArrayList<InventoryItem>();
+	public final InventoryItems inventory = new InventoryItems();
 	/** The time to live counter for objects which need to be removed after the given simulation step (which is 10 ingame minutes. */
 	public final Map<InventoryItem, Integer> timeToLive = new HashMap<InventoryItem, Integer>();
 	/** The countdown for an earthquake lasting 10s of ingame minutes. */
@@ -165,7 +166,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public PlanetStatistics getProductionStatistics() {
 		PlanetStatistics result = new PlanetStatistics();
-		for (Building b : surface.buildings) {
+		for (Building b : surface.buildings.iterable()) {
 			double eff = b.getEfficiency();
 			if (Building.isOperational(eff)) {
 				addProduction(result.activeProduction, b, eff, owner.traits);
@@ -201,7 +202,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public PlanetStatistics getResearchStatistics() {
 		PlanetStatistics ps = new PlanetStatistics();
-		for (Building b : surface.buildings) {
+		for (Building b : surface.buildings.iterable()) {
 			if (Building.isOperational(b.getEfficiency())) {
 				addLabs(ps.activeLabs, b);
 			}
@@ -227,7 +228,7 @@ public class Planet implements Named, Owned, HasInventory {
 		
 		result.vehicleMax = 8; // default per planet
 		
-		for (Building b : surface.buildings) {
+		for (Building b : surface.buildings.iterable()) {
 			double eff = b.getEfficiency();
 			if (b.isConstructing()) {
 				result.constructing = true;
@@ -304,7 +305,7 @@ public class Planet implements Named, Owned, HasInventory {
 			colonyHub |= "MainBuilding".equals(b.type.kind) && !b.isConstructing();
 		}
 		// check if there is still a building with unallocated resources
-		for (Building b : surface.buildings) {
+		for (Building b : surface.buildings.iterable()) {
 			if (b.enabled 
 					&& ((b.assignedWorker == 0 && population > 0)
 							|| (result.energyAvailable > 0 && b.getEnergy() < 0 
@@ -389,7 +390,7 @@ public class Planet implements Named, Owned, HasInventory {
 			result.addWarning(PlanetProblems.COLONY_HUB);
 		}
 		
-		for (InventoryItem pii : inventory) {
+		for (InventoryItem pii : inventory.iterable()) {
 			if (pii.owner == owner) {
 				if (pii.type.has(ResearchType.PARAMETER_RADAR)) {
 					radar = Math.max(radar, pii.type.getInt(ResearchType.PARAMETER_RADAR));
@@ -429,7 +430,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return can be built here?
 	 */
 	public boolean canBuild(BuildingType bt) {
-		return canBuild(this, surface.buildings, 
+		return canBuild(this, surface.buildings.iterable(), 
 				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), 
 						bt, true);
 	}
@@ -441,7 +442,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return can be built here?
 	 */
 	public boolean canBuildReplacement(BuildingType bt) {
-		return canBuild(this, surface.buildings, 
+		return canBuild(this, surface.buildings.iterable(), 
 				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), 
 						bt, false);
 	}
@@ -470,7 +471,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return can be built here?
 	 */
 	public static boolean canBuild(Planet planet, 
-			Collection<? extends Building> buildings,
+			Iterable<? extends Building> buildings,
 			Collection<? extends ResearchType> researches,
 			BuildingType bt,
 			boolean checkLimit) {
@@ -515,7 +516,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public Map<BuildingType, Integer> countBuildings() {
 		Map<BuildingType, Integer> result = new HashMap<BuildingType, Integer>();
-		for (Building b : surface.buildings) {
+		for (Building b : surface.buildings.iterable()) {
 			Integer cnt = result.get(b.type);
 			result.put(b.type, cnt != null ? cnt + 1 : 1);
 		}
@@ -528,26 +529,19 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public int getInventoryCount(ResearchType rt) {
 		int result = 0;
-		for (InventoryItem pii : inventory) {
-			if (pii.type == rt) {
-				result += pii.count;
-			}
+		for (InventoryItem pii : inventory.findByType(rt.id)) {
+			result += pii.count;
 		}
 		return result;
 	}
 	/**
 	 * Remove everything from the planet and reset to its default stance.
+	 * Does not affect the statistics.
 	 */
 	public void die() {
-		// remove equipment of the owner
-		Iterator<InventoryItem> pit = inventory.iterator();
-		while (pit.hasNext()) {
-			InventoryItem pii = pit.next();
-			if (pii.owner == owner) {
-				pit.remove();
-			}
-		}
 		if (owner != null) {
+			// remove equipment of the owner
+			inventory.removeByOwner(owner.id);
 			owner.planets.put(this, PlanetKnowledge.NAME);
 		}
 		owner = null;
@@ -574,8 +568,8 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return the owner
 	 */
 	public boolean hasInventory(ResearchType rt, Player owner) {
-		for (InventoryItem pii : inventory) {
-			if (pii.type == rt && pii.owner == owner) {
+		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
+			if (pii.type == rt) {
 				return true;
 			}
 		}
@@ -589,8 +583,8 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public int inventoryCount(ResearchType rt, Player owner) {
 		int count = 0;
-		for (InventoryItem pii : inventory) {
-			if (pii.type == rt && pii.owner == owner) {
+		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
+			if (pii.type == rt) {
 				count += pii.count;
 			}
 		}
@@ -604,8 +598,8 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public int inventoryCount(ResearchSubCategory cat, Player owner) {
 		int count = 0;
-		for (InventoryItem pii : inventory) {
-			if (pii.type.category == cat && pii.owner == owner) {
+		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
+			if (pii.type.category == cat) {
 				count += pii.count;
 			}
 		}
@@ -620,23 +614,23 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public void changeInventory(ResearchType type, 
 			Player owner, int amount) {
-		int idx = 0;
+		int idx = -1;
 		boolean found = false;
-		for (InventoryItem pii : inventory) {
-			if (pii.type == type && pii.owner == owner) {
+		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
+			if (pii.type == type) {
 				pii.count += amount;
 				if (pii.count <= 0) {
-					inventory.remove(idx);
+					idx = pii.id;
 				}
 				found = true;
 				break;
 			}
-			idx++;
+		}
+		if (idx >= 0) {
+			inventory.remove(idx);
 		}
 		if (!found && amount > 0) {
-			InventoryItem pii = new InventoryItem(world.newId(), this);
-			pii.type = type;
-			pii.owner = owner;
+			InventoryItem pii = new InventoryItem(world.newId(), owner, type);
 			pii.count = amount;
 			pii.hp = world.getHitpoints(type, owner);
 			pii.createSlots();
@@ -669,10 +663,8 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return the inventory item or null if not present
 	 */
 	public InventoryItem getInventoryItem(ResearchType rt) {
-		for (InventoryItem ii : inventory) {
-			if (ii.type == rt) {
-				return ii;
-			}
+		for (InventoryItem ii : inventory.findByType(rt.id)) {
+			return ii;
 		}
 		return null;
 	}
@@ -683,8 +675,8 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return the inventory item or null if not present
 	 */
 	public InventoryItem getInventoryItem(ResearchType rt, Player owner) {
-		for (InventoryItem ii : inventory) {
-			if (ii.type == rt && ii.owner == owner) {
+		for (InventoryItem ii : inventory.findByOwner(owner.id)) {
+			if (ii.type == rt) {
 				return ii;
 			}
 		}
@@ -696,29 +688,22 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return the count
 	 */
 	public int countBuilding(BuildingType bt) {
-		int count = 0;
-		for (Building b : surface.buildings) {
-			if (b.type == bt) {
-				count++;
-			}
-		}
-		return count;
+		return surface.buildings.findByType(bt.id).size();
 	}
 	/**
 	 * Remove detector-capable satellites (e.g., spy satellites) from orbit.
 	 */
 	public void removeOwnerSatellites() {
-		Iterator<InventoryItem> it = inventory.iterator();
-		while (it.hasNext()) {
-			InventoryItem ii = it.next();
-			if (ii.owner == owner && ii.type.has(ResearchType.PARAMETER_DETECTOR)) {
+		List<InventoryItem> set = new ArrayList<InventoryItem>(inventory.findByOwner(owner.id));
+		for (InventoryItem ii : set) {
+			if (ii.type.has(ResearchType.PARAMETER_DETECTOR)) {
 				ii.owner.changeInventoryCount(ii.type, 1);
-				it.remove();
 			}
 		}
+		inventory.removeAll(set);
 	}
 	@Override
-	public List<InventoryItem> inventory() {
+	public InventoryItems inventory() {
 		return inventory;
 	}
 	/**
@@ -733,7 +718,7 @@ public class Planet implements Named, Owned, HasInventory {
 			lastOwner.statistics.planetsLostAlien.value++;
 		}
 		lastOwner.statistics.planetsLost.value++;
-		for (Building b : surface.buildings) {
+		for (Building b : surface.buildings.iterable()) {
 			if (b.type.research != null) {
 				newOwner.setAvailable(b.type.research);
 			}
@@ -766,11 +751,7 @@ public class Planet implements Named, Owned, HasInventory {
 	}
 	/** Remove inventory items with zero counts. */
 	public void cleanup() {
-		for (int i = inventory.size() - 1; i >= 0; i--) {
-			if (inventory.get(i).count <= 0) {
-				inventory.remove(i);
-			}
-		}
+		inventory.removeIf(InventoryItem.CLEANUP);
 	}
 	@Override
 	public String toString() {
@@ -778,8 +759,8 @@ public class Planet implements Named, Owned, HasInventory {
 	}
 	/** @return true if this planet has a military spaceport. */
 	public boolean hasMilitarySpaceport() {
-		for (Building b : surface.buildings) {
-			if ("MilitarySpaceport".equals(b.type.id) && b.isOperational()) {
+		for (Building b : surface.buildings.findByType("MilitarySpaceport")) {
+			if (b.isOperational()) {
 				return true;
 			}
 		}
@@ -799,7 +780,7 @@ public class Planet implements Named, Owned, HasInventory {
 	public void removeExcess() {
 		// remove fighters if no space stations present
 		if (inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, owner) == 0) {
-			for (InventoryItem ii2 : new ArrayList<InventoryItem>(inventory)) {
+			for (InventoryItem ii2 : inventory.list()) {
 				if (ii2.owner == owner && ii2.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					owner.changeInventoryCount(ii2.type, ii2.count);
 					inventory.remove(ii2);
@@ -816,9 +797,8 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public void refillEquipment() {
 		if (owner == world.player && world.env.config().reequipBombs) {
-			for (InventoryItem ii : inventory) {
-				if (ii.owner == owner 
-						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+			for (InventoryItem ii : inventory.findByOwner(owner.id)) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					for (InventorySlot is : ii.slots.values()) {
 						is.refill(owner);
 					}
@@ -826,35 +806,153 @@ public class Planet implements Named, Owned, HasInventory {
 			}
 		}
 	}
-	@Override
-	public InventoryItem find(int id) {
-		for (InventoryItem ii : inventory) {
-			if (ii.id == id) {
-				return ii;
-			}
-		}
-		return null;
-	}
-	@Override
-	public InventoryItem find(String type) {
-		for (InventoryItem ii : inventory) {
-			if (ii.type.id.equals(type)) {
-				return ii;
-			}
-		}
-		return null;
-	}
 	/**
 	 * Find a building with the specified id.
 	 * @param id the building id
 	 * @return the building or null
 	 */
 	public Building findBuilding(int id) {
-		for (Building b : surface.buildings) {
-			if (b.id == id) {
-				return b;
+		return surface.buildings.findById(id);
+	}
+	/**
+	 * Places a building onto the surface.
+	 * @param b the building object
+	 */
+	public void placeBuilding(Building b) {
+		surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+	}
+	/**
+	 * Returns the planet status copy of this planet.
+	 * @param player the player whose perspective needs to be established
+	 * @return the planet status copy
+	 */
+	public PlanetStatus toPlanetStatus(Player player) {
+		PlanetStatus result = new PlanetStatus();
+		result.id = id;
+		result.knowledge = player.planets.get(this);
+		
+		if (result.knowledge != null) {
+			if (result.knowledge.compareTo(PlanetKnowledge.OWNER) >= 0) {
+				result.owner = owner.id;
+				result.race = race;
+			}
+			if (result.knowledge.compareTo(PlanetKnowledge.STATIONS) >= 0) {
+				result.population = population;
+				result.lastPopulation = population;
+			}
+			if (owner == player) {
+				result.lastPopulation = lastPopulation;
+				result.quarantineTTL = quarantineTTL;
+				result.tax = tax;
+				result.morale = morale;
+				result.lastMorale = lastMorale;
+				result.taxIncome = taxIncome;
+				result.tradeIncome = tradeIncome;
+				result.earthQuakeTTL = earthQuakeTTL;
+				result.weatherTTL = weatherTTL;
+			}
+			// add in-orbit objects belonging to the player
+			for (InventoryItem ii : inventory.iterable()) {
+				InventoryItemStatus iis = ii.toInventoryItemStatus();
+				Integer ttl = timeToLive.get(ii);
+				if (ttl != null) {
+					result.timeToLive.put(ii.id, ttl);
+				}
+				if (ii.owner == player) {
+					result.inventory.add(iis);
+				} else
+				if (result.knowledge.compareTo(PlanetKnowledge.STATIONS) >= 0) {
+					if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+						// enemy space station, drop knowledge
+						iis.clearEnemyInfo();
+						result.inventory.add(iis);
+					}
+				}
+			}
+			for (Building b : surface.buildings.iterable()) {
+				BuildingStatus bs = b.toBuildingStatus();
+				if (owner == player || result.knowledge.compareTo(PlanetKnowledge.BUILDING) >= 0) {
+					result.buildings.add(bs);
+				} else
+				if (result.knowledge.compareTo(PlanetKnowledge.OWNER) >= 0) {
+					bs.clearEnemyInfo();
+					result.buildings.add(bs);
+				}
+			}
+			
+		}
+		
+		return result;
+	}
+	/**
+	 * Loads the status info from the planet status record.
+	 * @param ps the planet status record
+	 * @param lookup the model lookup
+	 */
+	public void fromPlanetStatus(PlanetStatus ps, ModelLookup lookup) {
+		if (ps.owner != null) {
+			owner = lookup.player(ps.owner);
+			race = ps.race;
+			
+			population = ps.population;
+			lastPopulation = ps.lastPopulation;
+			quarantineTTL = ps.quarantineTTL;
+			tax = ps.tax;
+			morale = ps.morale;
+			lastMorale = ps.lastMorale;
+			taxIncome = ps.taxIncome;
+			tradeIncome = ps.tradeIncome;
+			earthQuakeTTL = ps.earthQuakeTTL;
+			weatherTTL = ps.weatherTTL;
+			
+			Set<Integer> current = new HashSet<Integer>();
+			// merge inventory
+			for (InventoryItemStatus iis : ps.inventory) {
+				current.add(iis.id);
+				InventoryItem ii = inventory.findById(iis.id);
+				if (ii == null) {
+					ii = new InventoryItem(iis.id,
+							lookup.player(iis.owner), lookup.research(iis.type));
+					inventory.add(ii);
+				}
+				ii.fromInventoryItemStatus(iis, lookup);
+				Integer ttl = ps.timeToLive.get(iis.id);
+				if (ttl != null) {
+					timeToLive.put(ii, ttl);
+				}
+			}
+			
+			inventory.retainAllById(current);
+			timeToLive.keySet().retainAll(inventory.inventoryIds());
+			
+			// merge buildings
+			current.clear();
+			boolean roads = false;
+			for (BuildingStatus bs : ps.buildings) {
+				current.add(bs.id);
+				Building b = findBuilding(bs.id);
+				if (b == null) {
+					b = new Building(bs.id, lookup.building(bs.type), bs.race);
+					b.fromBuildingStatus(bs);
+					placeBuilding(b);
+					roads = true;
+				} else {
+					b.fromBuildingStatus(bs);
+				}
+			}
+			for (Building b : surface.buildings.list()) {
+				if (!current.contains(b.id)) {
+					surface.removeBuilding(b);
+					roads = true;
+				}
+			}
+			if (roads) {
+				rebuildRoads();
+			}
+		} else {
+			if (owner != null) {
+				die();
 			}
 		}
-		return null;
 	}
 }

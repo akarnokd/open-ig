@@ -28,6 +28,7 @@ import hu.openig.model.Chats.Node;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
+import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.ModelUtils;
@@ -1292,7 +1293,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			// add fighters of the planet
 			List<SpacewarStructure> shipWall = U.newArrayList();
-			createStructures(nearbyPlanet.inventory, 
+			createStructures(inventoryWithParent(nearbyPlanet), 
 					EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
 			for (SpacewarStructure s : shipWall) {
@@ -1311,21 +1312,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			attackerOnRight = true;
 			
-			placeFleet(maxRightPlacement, true, battle.attacker.inventory);
+			placeFleet(maxRightPlacement, true, inventoryWithParent(battle.attacker));
 			// place the defender on the left side
 			
 			if (nearbyFleet != null) {
-				placeFleet(0, false, nearbyFleet.inventory);
+				placeFleet(0, false, inventoryWithParent(nearbyFleet));
 			}
 		} else {
 			// place attacker on the left side
-			placeFleet(0, false, battle.attacker.inventory);
+			placeFleet(0, false, inventoryWithParent(battle.attacker));
 			
 			attackerOnRight = false;
 			
 			// place the defender on the planet side (right side)
 			if (nearbyFleet != null) {
-				placeFleet(maxRightPlacement, true, nearbyFleet.inventory);
+				placeFleet(maxRightPlacement, true, inventoryWithParent(nearbyFleet));
 			}
 		}
 		
@@ -1391,6 +1392,18 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		// update statistics
 		battle.incrementSpaceBattles();
+	}
+	/**
+	 * Create a map from the given inventory parent.
+	 * @param inv the inventory parent
+	 * @return the inventory item with their parent
+	 */
+	Map<InventoryItem, HasInventory> inventoryWithParent(HasInventory inv) {
+		Map<InventoryItem, HasInventory> result = new LinkedHashMap<InventoryItem, HasInventory>();
+		for (InventoryItem ii : inv.inventory().iterable()) {
+			result.put(ii, inv);
+		}
+		return result;
 	}
 	/**
 	 * Find all players.
@@ -1463,7 +1476,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param left expand to the left?
 	 * @param inventory the sequence of inventory items
 	 */
-	void placeFleet(int x, boolean left, Iterable<InventoryItem> inventory) {
+	void placeFleet(int x, boolean left, Map<InventoryItem, HasInventory> inventory) {
 		List<SpacewarStructure> largeShipWall = U.newArrayList();
 		// place attacker on the planet side (right side)
 		createStructures(inventory, 
@@ -1495,7 +1508,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param alien true if allied with the non-player
 	 */
 	void placeStations(Planet nearbyPlanet, boolean alien) {
-		for (InventoryItem ii : nearbyPlanet.inventory) {
+		for (InventoryItem ii : nearbyPlanet.inventory.iterable()) {
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS 
 					&& ii.owner == nearbyPlanet.owner) {
 				
@@ -1537,7 +1550,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double shieldValue = 0;
 		
 		// add shields
-		for (Building b : nearbyPlanet.surface.buildings) {
+		for (Building b : nearbyPlanet.surface.buildings.iterable()) {
 			double power = Math.abs(b.assignedEnergy * 1.0 / b.getEnergy());
 			if (power >= 0.5 && b.type.kind.equals("Shield")) {
 				
@@ -1576,7 +1589,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param shieldValue the shield percentage
 	 */
 	void placeProjectors(Planet nearbyPlanet, boolean alien, double shieldValue) {
-		for (Building b : nearbyPlanet.surface.buildings) {
+		for (Building b : nearbyPlanet.surface.buildings.iterable()) {
 			double power = Math.abs(b.assignedEnergy * 1.0 / b.getEnergy());
 			if (power >= 0.5 && b.type.kind.equals("Gun")) {
 				
@@ -1739,9 +1752,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		return maxWidth;
 	}
 	@Override
-	public void addStructures(Iterable<InventoryItem> inventory,
+	public void addStructures(HasInventory inventory,
 			EnumSet<ResearchSubCategory> categories) {
-		createStructures(inventory, categories, structures);
+		createStructures(inventoryWithParent(inventory), categories, structures);
 	}
 	/**
 	 * Create the spacewar ships from the given inventory list and category filters.
@@ -1749,11 +1762,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param categories the categories to use
 	 * @param ships the output of ships
 	 */
-	void createStructures(Iterable<InventoryItem> inventory,
+	void createStructures(Map<InventoryItem, HasInventory> inventory,
 			EnumSet<ResearchSubCategory> categories,
-			Collection<? super SpacewarStructure> ships
-			) {
-		for (InventoryItem ii : inventory) {
+			Collection<? super SpacewarStructure> ships) {
+		for (Map.Entry<InventoryItem, HasInventory> e : inventory.entrySet()) {
+			InventoryItem ii = e.getKey();
+			HasInventory parent = e.getValue();
 			// Fix for zero inventory entries
 			if (ii.count <= 0) {
 				continue;
@@ -1767,10 +1781,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				
 				SpacewarStructure st = new SpacewarStructure(ii.type);
 
-				if (ii.parent instanceof Planet) {
-					st.planet = (Planet)ii.parent;
+				if (parent instanceof Planet) {
+					st.planet = (Planet)parent;
 				} else {
-					st.fleet = (Fleet)ii.parent;
+					st.fleet = (Fleet)parent;
 				}
 				st.type = StructureType.SHIP;
 				st.item = ii;
@@ -2587,7 +2601,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	int groundUnitCount(Fleet f) {
 		int result = 0;
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				result += ii.count;
@@ -4066,7 +4080,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		Map<Building, Double> damaged = U.newHashMap();
 		
-		for (Building b : target.planet.surface.buildings) {
+		for (Building b : target.planet.surface.buildings.iterable()) {
 			if (b != target.building) {
 				Point2D.Double loc = buildingCenter(b);
 				double d = loc.distance(center); 
@@ -4399,12 +4413,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return true if has bunker
 	 */
 	boolean hasBunker(Planet planet) {
-		for (Building b : planet.surface.buildings) {
-			if (b.type.kind.equals("Bunker")) {
-				return true;
-			}
-		}
-		return false;
+		return !planet.surface.buildings.findByKind("Bunker").isEmpty();
 	}
 	/**
 	 * Remove the structure from its parent inventory (either a planet or a fleet).
@@ -5114,15 +5123,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		
-		List<InventoryItem> common = U.newArrayList();
-		common.addAll(f.inventory);
+		Map<InventoryItem, HasInventory> common = inventoryWithParent(f);
 		
 		if (f.owner == battle.attacker.owner) {
-			common.addAll(battle.attacker.inventory);
+			common.putAll(inventoryWithParent(battle.attacker));
 		}
 		Fleet nearbyFleet = battle.getFleet();
 		if (nearbyFleet != null && nearbyFleet.owner == f.owner) {
-			common.addAll(nearbyFleet.inventory);
+			common.putAll(inventoryWithParent(nearbyFleet));
 		}
 		
 		Planet nearbyPlanet = battle.getPlanet();

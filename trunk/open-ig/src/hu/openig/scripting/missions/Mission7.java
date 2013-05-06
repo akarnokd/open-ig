@@ -23,7 +23,6 @@ import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.utils.XElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -157,7 +156,7 @@ public class Mission7 extends Mission {
 			Fleet f = ModelUtils.random(fs);
 			f.stop();
 			f.task = FleetTask.SCRIPT;
-			for (InventoryItem ii : f.inventory) {
+			for (InventoryItem ii : f.inventory.iterable()) {
 				ii.tag = "Mission-7-Trader";
 			}
 			
@@ -193,7 +192,7 @@ public class Mission7 extends Mission {
 					equipFully(pf.addInventory(world.researches.get("GarthogDestroyer"), 2));
 				}
 			}
-			for (InventoryItem ii : pf.inventory) {
+			for (InventoryItem ii : pf.inventory.iterable()) {
 				ii.tag = "Mission-7-Garthog";
 			}
 
@@ -297,8 +296,7 @@ public class Mission7 extends Mission {
 			removeScripted(merchant);
 			
 			// fix owner
-			for (InventoryItem ii : merchant.inventory) {
-				ii.owner = merchant.owner;
+			for (InventoryItem ii : merchant.inventory.iterable()) {
 				ii.tag = null;
 			}
 			merchant.moveTo(ModelUtils.random(
@@ -330,7 +328,7 @@ public class Mission7 extends Mission {
 			if (isMissionSpacewar(battle, "Mission-7-Task-" + task)) {
 				Player trader = player("Traders");
 				boolean traderSurvived = false;
-				for (InventoryItem ii : new ArrayList<InventoryItem>(battle.attacker.inventory)) {
+				for (InventoryItem ii : battle.attacker.inventory.list()) {
 					if (ii.owner == trader) {
 						traderSurvived = true;
 						battle.attacker.inventory.remove(ii);

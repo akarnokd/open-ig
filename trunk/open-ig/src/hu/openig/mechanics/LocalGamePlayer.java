@@ -18,6 +18,8 @@ import hu.openig.model.GameAPI;
 import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
+import hu.openig.model.Planet;
+import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.Player;
 import hu.openig.model.ProductionStatuses;
@@ -103,14 +105,20 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public List<PlanetStatus> getPlanetStatuses() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		List<PlanetStatus> result = new ArrayList<PlanetStatus>();
+		for (Map.Entry<Planet, PlanetKnowledge> pe : player.planets.entrySet()) {
+			result.add(pe.getKey().toPlanetStatus(player));
+		}
+		return result;
 	}
 
 	@Override
 	public PlanetStatus getPlanetStatus(String id) throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		Planet p = world.planet(id);
+		if (player.knowledge(p, PlanetKnowledge.VISIBLE) >= 0) {
+			return p.toPlanetStatus(player);
+		}
+		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_PLANET, id);
 	}
 
 	@Override

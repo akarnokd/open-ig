@@ -689,7 +689,7 @@ public class World implements ModelLookup {
 			
 			if (p.owner != null) {
 				// enable placed building's researches
-				for (Building b : p.surface.buildings) {
+				for (Building b : p.surface.buildings.iterable()) {
 					if (b.type.research != null && !p.owner.isAvailable(b.type.research)) {
 						p.owner.setAvailable(b.type.research);
 					}
@@ -703,13 +703,11 @@ public class World implements ModelLookup {
 					}
 					String ownerStr = xinv.get("owner");
 
-					InventoryItem ii = new InventoryItem(id, p);
-					ii.owner = players.get(ownerStr);
+					InventoryItem ii = new InventoryItem(id, player(ownerStr), research(xinv.get("type")));
 					if (ii.owner == null) {
 						Exceptions.add(new AssertionError("Planet " + p.id + " inventory owner missing: " + xinv));
 					}
 					ii.tag = xinv.get("tag", null);
-					ii.type = researches.get(xinv.get("type"));
 					ii.count = xinv.getInt("count");
 					ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
 					ii.createSlots();
@@ -1237,7 +1235,7 @@ public class World implements ModelLookup {
 			xp.set("id", p.id);
 			xp.set("surface-type", p.type.type);
 			xp.set("surface-variant", p.surface.variant);
-			for (InventoryItem pii : p.inventory) {
+			for (InventoryItem pii : p.inventory.iterable()) {
 				XElement xpii = xp.add("item");
 				xpii.set("id", pii.id);
 				xpii.set("type", pii.type.id);
@@ -1273,7 +1271,7 @@ public class World implements ModelLookup {
 				xp.set("trade-income", p.tradeIncome);
 				xp.set("earthquake-ttl", p.earthQuakeTTL);
 				xp.set("weather-ttl", p.weatherTTL);
-				for (Building b : p.surface.buildings) {
+				for (Building b : p.surface.buildings.iterable()) {
 					XElement xb = xp.add("building");
 					xb.set("id", b.id);
 					xb.set("x", b.location.x);
@@ -1350,7 +1348,7 @@ public class World implements ModelLookup {
 			xfleet.set("waypoints", wp.toString());
 		}
 		
-		for (InventoryItem fii : f.inventory) {
+		for (InventoryItem fii : f.inventory.iterable()) {
 			XElement xfii = xfleet.add("item");
 			xfii.set("id", fii.id);
 			xfii.set("type", fii.type.id);
@@ -1699,10 +1697,8 @@ public class World implements ModelLookup {
 			for (XElement xpii : xplanet.childrenWithName("item")) {
 				int id = xpii.getInt("id");
 				
-				InventoryItem pii = new InventoryItem(id, p);
+				InventoryItem pii = new InventoryItem(id, player(xpii.get("owner")), research(xpii.get("type")));
 				pii.tag = xpii.get("tag", null);
-				pii.owner = players.get(xpii.get("owner"));
-				pii.type = researches.get(xpii.get("type"));
 				pii.count = xpii.getInt("count");
 				pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
 				pii.createSlots();
@@ -1743,7 +1739,7 @@ public class World implements ModelLookup {
 				p.surface.setBuildings(buildingModel, xplanet, newIdFunc);
 				p.owner.planets.put(p, PlanetKnowledge.BUILDING);
 				// make owned technology available, just in case
-				for (Building b : p.surface.buildings) {
+				for (Building b : p.surface.buildings.iterable()) {
 					if (b.type.research != null) {
 						p.owner.setAvailable(b.type.research);
 					}
@@ -1943,11 +1939,9 @@ public class World implements ModelLookup {
 					continue;
 				}
 				int itemid = xfii.getInt("id");
-				InventoryItem fii = new InventoryItem(itemid, f);
-				fii.type = researches.get(xfii.get("type"));
+				InventoryItem fii = new InventoryItem(itemid, f.owner, research(xfii.get("type")));
 				fii.count = count;
 				fii.tag = xfii.get("tag", null);
-				fii.owner = f.owner;
 				
 				fii.nickname = xfii.get("nickname", null);
 				fii.nicknameIndex = xfii.getInt("nickname-index", 0);
@@ -2038,7 +2032,7 @@ public class World implements ModelLookup {
 	/** @return Return the list of other important items. */
 	public String getOtherItems() {
 		StringBuilder os = new StringBuilder();
-		for (InventoryItem pii : player.currentPlanet.inventory) {
+		for (InventoryItem pii : player.currentPlanet.inventory.iterable()) {
 			if (pii.owner == player && pii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
 				if (os.length() > 0) {
 					os.append(", ");
@@ -2584,12 +2578,12 @@ public class World implements ModelLookup {
 	 * @return the health percent 0..1
 	 */
 	public double fleetHealth(Fleet f) {
-		if (f.inventory.size() == 0) {
+		if (f.inventory.isEmpty()) {
 			return 0.0;
 		}
 		double max = 0;
 		double hp = 0;
-		for (InventoryItem fi : f.inventory) {
+		for (InventoryItem fi : f.inventory.iterable()) {
 			max += getHitpoints(fi.type, fi.owner);
 			int s = fi.shieldMax();
 			if (s >= 0) {
@@ -2605,12 +2599,12 @@ public class World implements ModelLookup {
 	 * @return the colony health percentage of 0..1
 	 */
 	public double colonyHealth(Planet p) {
-		if (p.surface.buildings.size() == 0) {
+		if (p.surface.buildings.isEmpty()) {
 			return 0.0;
 		}
 		double max = 0;
 		double hp = 0;
-		for (Building b : p.surface.buildings) {
+		for (Building b : p.surface.buildings.iterable()) {
 			max += getHitpoints(b.type, p.owner, false);
 			hp += b.hitpoints;
 		}
@@ -2796,7 +2790,7 @@ public class World implements ModelLookup {
 			if (p.traits.has(TraitKind.PRE_WARP)) {
 				// remove hyperdrive as equipment
 				for (Fleet f : p.ownFleets()) {
-					for (InventoryItem ii : f.inventory) {
+					for (InventoryItem ii : f.inventory.iterable()) {
 						for (InventorySlot is : ii.slots.values()) {
 							if (is.type != null && is.type.has(ResearchType.PARAMETER_SPEED)) {
 								is.type = null;

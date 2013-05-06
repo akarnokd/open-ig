@@ -58,7 +58,7 @@ public class Mission17 extends Mission {
 			boolean t1 = false;
 			outer:
 			for (Planet p : player.ownPlanets()) {
-				for (Building b : p.surface.buildings) {
+				for (Building b : p.surface.buildings.iterable()) {
 					if (b.type.kind.equals("Defensive")) {
 						setObjectiveState("Mission-6-Task-1", ObjectiveState.SUCCESS);
 						t1 = true;

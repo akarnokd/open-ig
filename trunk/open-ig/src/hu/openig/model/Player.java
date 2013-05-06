@@ -220,7 +220,7 @@ public class Player {
 		Map<BuildingType, Integer> result = new HashMap<BuildingType, Integer>();
 		for (Planet p : planets.keySet()) {
 			if (p.owner == this) {
-				for (Building b : p.surface.buildings) {
+				for (Building b : p.surface.buildings.iterable()) {
 					Integer cnt = result.get(b.type);
 					result.put(b.type, cnt != null ? cnt + 1 : 1);
 				}

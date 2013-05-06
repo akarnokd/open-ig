@@ -107,7 +107,7 @@ public class Mission11 extends Mission {
 		f.addInventory(research("GarthogRadarJammer"), 1);
 		// ---------------------------------------------------
 		
-		for (InventoryItem ii : f.inventory) {
+		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-11-Garthog";
 		}
 		InventoryItem iib = f.getInventoryItem(research("GarthogBattleship"));
@@ -144,13 +144,13 @@ public class Mission11 extends Mission {
 		for (Planet p : ps) {
 			double sp = 0;
 			// check station strength
-			for (InventoryItem ii : p.inventory) {
+			for (InventoryItem ii : p.inventory.iterable()) {
 				if (ii.owner == player && ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
 					sp += world.getHitpoints(ii.type, ii.owner);
 				}
 			}
 			// check gun and shield strength, check fortification strength
-			for (Building b : p.surface.buildings) {
+			for (Building b : p.surface.buildings.iterable()) {
 				if (b.type.kind.equals("Gun")) {
 					sp += world.getHitpoints(b.type, player, true);
 				}
