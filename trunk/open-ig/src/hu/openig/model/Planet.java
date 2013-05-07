@@ -848,7 +848,7 @@ public class Planet implements Named, Owned, HasInventory {
 				result.lastMorale = lastMorale;
 				result.taxIncome = taxIncome;
 				result.tradeIncome = tradeIncome;
-				result.earthQuakeTTL = earthQuakeTTL;
+				result.earthquakeTTL = earthQuakeTTL;
 				result.weatherTTL = weatherTTL;
 			}
 			// add in-orbit objects belonging to the player
@@ -902,7 +902,7 @@ public class Planet implements Named, Owned, HasInventory {
 			lastMorale = ps.lastMorale;
 			taxIncome = ps.taxIncome;
 			tradeIncome = ps.tradeIncome;
-			earthQuakeTTL = ps.earthQuakeTTL;
+			earthQuakeTTL = ps.earthquakeTTL;
 			weatherTTL = ps.weatherTTL;
 			
 			Set<Integer> current = new HashSet<Integer>();

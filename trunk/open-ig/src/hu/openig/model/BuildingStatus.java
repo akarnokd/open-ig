@@ -41,13 +41,35 @@ public class BuildingStatus implements MessageObjectIO {
 	public boolean repairing;
 	@Override
 	public void fromMessage(MessageObject mo) {
-		// TODO Auto-generated method stub
-		
+		id = mo.getInt("id");
+		type = mo.getString("type");
+		race = mo.getString("race");
+		x = mo.getInt("x");
+		y = mo.getInt("y");
+		assignedEnergy = mo.getInt("energy");
+		assignedWorker = mo.getInt("worker");
+		buildProgress = mo.getInt("progress");
+		hitpoints = mo.getInt("hp");
+		upgradeLevel = mo.getInt("level");
+		enabled = mo.getBoolean("enabled");
+		repairing = mo.getBoolean("repairing");
 	}
 	@Override
 	public MessageObject toMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		MessageObject mo = new MessageObject(objectName());
+		mo.set("id", id)
+		.set("type", type)
+		.set("race", race)
+		.set("x", x)
+		.set("y", y)
+		.set("energy", assignedEnergy)
+		.set("worker", assignedWorker)
+		.set("hp", hitpoints)
+		.set("level", upgradeLevel)
+		.set("enabled", enabled)
+		.set("repairing", repairing)
+		;
+		return mo;
 	}
 	@Override
 	public String objectName() {
