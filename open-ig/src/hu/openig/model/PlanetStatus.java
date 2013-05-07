@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 	/** The last day's trade income. */
 	public int tradeIncome;
 	/** The countdown for an earthquake lasting 10s of ingame minutes. */
-	public int earthQuakeTTL;
+	public int earthquakeTTL;
 	/** The remaining time for a weather event. */
 	public int weatherTTL;
 	/** The planet's inventory. */
@@ -61,13 +62,81 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 	public final Map<Integer, Integer> timeToLive = new HashMap<Integer, Integer>();
 	@Override
 	public void fromMessage(MessageObject mo) {
-		// TODO Auto-generated method stub
-		
+		id = mo.getString("id");
+		knowledge = mo.getEnum("knowledge", PlanetKnowledge.values());
+		owner = mo.getStringObject("owner");
+		race = mo.getStringObject("race");
+		population = mo.getInt("population");
+		lastPopulation = mo.getInt("lastPopulation");
+		quarantineTTL = mo.getInt("quarantineTTL");
+		tax = mo.getEnum("tax", TaxLevel.values());
+		morale = mo.getDouble("morale");
+		lastMorale = mo.getDouble("lastMorale");
+		autoBuild = mo.getEnum("autoBuild", AutoBuild.values());
+		taxIncome = mo.getInt("taxIncome");
+		tradeIncome = mo.getInt("tradeIncome");
+		earthquakeTTL = mo.getInt("earthquakeTTL");
+		weatherTTL = mo.getInt("weatherTTL");
+		for (MessageObject mi : mo.getArray("inventory").objects()) {
+			InventoryItemStatus iis = new InventoryItemStatus();
+			iis.fromMessage(mi);
+			inventory.add(iis);
+		}
+		for (MessageObject mb : mo.getArray("buildings").objects()) {
+			BuildingStatus bs = new BuildingStatus();
+			bs.fromMessage(mb);
+			buildings.add(bs);
+		}
+		for (MessageObject ttl : mo.getArray("timeToLive").objects()) {
+			timeToLive.put(ttl.getInt("id"), ttl.getInt("value"));
+		}
 	}
 	@Override
 	public MessageObject toMessage() {
-		// TODO Auto-generated method stub
-		return null;
+		MessageObject result = new MessageObject(objectName());
+		
+		result.set("id", id)
+		.set("knowledge", knowledge)
+		.set("owner", owner)
+		.set("race", race)
+		.set("population", population)
+		.set("lastPopulation", lastPopulation)
+		.set("quarantineTTL", quarantineTTL)
+		.set("tax", tax)
+		.set("morale", morale)
+		.set("lastMorale", lastMorale)
+		.set("autoBuild", autoBuild)
+		.set("taxIncome", taxIncome)
+		.set("tradeIncome", tradeIncome)
+		.set("earthquakeTTL", earthquakeTTL)
+		.set("weatherTTL", weatherTTL)
+		;
+		
+		MessageArray mi = new MessageArray(null);
+		result.set("inventory", mi);
+		
+		for (InventoryItemStatus iis : inventory) {
+			mi.add(iis.toMessage());
+		}
+		
+		MessageArray mb = new MessageArray(null);
+		result.set("buildings", mb);
+		
+		for (BuildingStatus bs : buildings) {
+			mb.add(bs.toMessage());
+		}
+		
+		MessageArray mt = new MessageArray(null);
+		result.set("timeToLive", mt);
+		
+		for (Map.Entry<Integer, Integer> e : timeToLive.entrySet()) {
+			MessageObject mto = new MessageObject("TTL");
+			mto.set("id", e.getKey());
+			mto.set("value", e.getValue());
+			mt.add(mto);
+		}
+		
+		return result;
 	}
 	@Override
 	public PlanetStatus invoke() {
