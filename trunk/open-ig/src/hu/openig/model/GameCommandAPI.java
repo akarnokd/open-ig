@@ -85,7 +85,7 @@ public interface GameCommandAPI {
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	int newFleet(String planet, List<InventoryItem> inventory) throws IOException;
+	int newFleet(String planet, List<InventoryItemStatus> inventory) throws IOException;
 	/**
 	 * Create a new fleet next to the given other fleet
 	 * and transfer units from it according to the inventory item 
@@ -96,7 +96,7 @@ public interface GameCommandAPI {
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	int newFleet(int id, List<InventoryItem> inventory) throws IOException;
+	int newFleet(int id, List<InventoryItemStatus> inventory) throws IOException;
 	/**
 	 * Delete an empty fleet.
 	 * @param id the target fleet

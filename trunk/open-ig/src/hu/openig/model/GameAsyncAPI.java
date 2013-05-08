@@ -35,6 +35,10 @@ public interface GameAsyncAPI {
 	 */
 	void end(AsyncResult<? super Void, ? super IOException> out);
 	/**
+	 * Cancel the building of batch requests.
+	 */
+	void cancel();
+	/**
 	 * Returns the empire status information.
 	 * @param out the async result or the error
 	 */
@@ -138,7 +142,7 @@ public interface GameAsyncAPI {
 	 * @param inventory the target inventory
 	 * @param out the async result or the error
 	 */
-	void newFleet(String planet, List<InventoryItem> inventory, AsyncResult<? super Integer, ? super IOException> out);
+	void newFleet(String planet, List<InventoryItemStatus> inventory, AsyncResult<? super Integer, ? super IOException> out);
 	/**
 	 * Create a new fleet next to the given other fleet
 	 * and transfer units from it according to the inventory item 
@@ -147,7 +151,7 @@ public interface GameAsyncAPI {
 	 * @param inventory the target inventory
 	 * @param out the async result or the error
 	 */
-	void newFleet(int id, List<InventoryItem> inventory, AsyncResult<? super Integer, ? super IOException> out);
+	void newFleet(int id, List<InventoryItemStatus> inventory, AsyncResult<? super Integer, ? super IOException> out);
 	/**
 	 * Delete an empty fleet.
 	 * @param id the target fleet

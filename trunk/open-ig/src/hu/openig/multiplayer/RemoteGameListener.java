@@ -10,6 +10,14 @@ package hu.openig.multiplayer;
 
 import hu.openig.core.Action2E;
 import hu.openig.model.DeferredCall;
+import hu.openig.model.DeferredInvoke;
+import hu.openig.model.DeferredRunnable;
+import hu.openig.model.DeferredTransform;
+import hu.openig.model.FleetStatus;
+import hu.openig.model.InventoryItemStatus;
+import hu.openig.model.MessageObjectIO;
+import hu.openig.model.MultiplayerUser;
+import hu.openig.model.PlanetStatus;
 import hu.openig.model.RemoteGameAPI;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
@@ -18,11 +26,13 @@ import hu.openig.net.MessageConnection;
 import hu.openig.net.MessageObject;
 import hu.openig.net.MessageSerializable;
 import hu.openig.net.MissingAttributeException;
+import hu.openig.utils.Exceptions;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
@@ -56,7 +66,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	@Override
 	public void invoke(MessageConnection conn, Object message)
 			throws IOException {
-		DeferredCall responseCall = null;
+		DeferredRunnable responseCall = null;
 		try {
 			responseCall = processMessageDeferred(message);
 		} catch (MissingAttributeException ex) {
@@ -77,23 +87,15 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 			
 		responseCall.done();
 			
-		if (responseCall.hasError()) {
-			if (responseCall.error() instanceof ErrorResponse) {
-				ErrorResponse er = (ErrorResponse)responseCall.error();
-				conn.error(message, er.code.ordinal(), er.toString());
-			} else {
-				conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), responseCall.error().toString());
-			}
-		} else {
-			Object value = responseCall.value();
-			if (value instanceof CharSequence) {
-				conn.send(message, (CharSequence)value);
-			} else
-			if (value instanceof MessageSerializable) {
-				conn.send(message, (MessageSerializable)value);
-			} else {
-				conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), value != null ? value.getClass().toString() : "null");
-			}
+		try {
+			conn.send(message, responseCall.get());
+		} catch (ErrorResponse ex) {
+			conn.error(message, ex.code.ordinal(), ex.toString());
+		} catch (IOException ex) {
+			conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), ex.toString());
+		} catch (Throwable ex) {
+			conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), ex.toString());
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -104,11 +106,11 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	 * @return the main deferred call
 	 * @throws IOException on error
 	 */
-	protected DeferredCall processMessageDeferred(Object message) throws IOException {
+	protected DeferredRunnable processMessageDeferred(Object message) throws IOException {
 		if (message instanceof MessageArray) {
 			MessageArray ma = (MessageArray)message;
 			if ("BATCH".equals(ma.name)) {
-				final List<DeferredCall> calls = new ArrayList<DeferredCall>();
+				final List<DeferredRunnable> calls = new ArrayList<DeferredRunnable>();
 				for (Object o : ma) {
 					if (o instanceof MessageArray) {
 						calls.add(processMessageArrayDeferred((MessageArray)o));
@@ -119,28 +121,25 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 						throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
 					}
 				}
-				return new DeferredCall() {
+				return new DeferredTransform<Void>() {
 					@Override
-					protected Object invoke() throws IOException {
-						for (DeferredCall dc : calls) {
+					protected Void invoke() throws IOException {
+						for (DeferredRunnable dc : calls) {
 							dc.run();
-							if (dc.hasError()) {
+							if (dc.isError()) {
 								break;
 							}
 						}
 						return null;
 					}
 					@Override
-					public void done() {
+					public MessageArray transform(Void intermediate) throws IOException {
 						MessageArray result = new MessageArray("BATCH_RESPONSE");
-						for (DeferredCall dc : calls) {
-							if (dc.hasError()) {
-								break;
-							}
+						for (DeferredRunnable dc : calls) {
 							dc.done();
-							result.add(dc.value());
+							result.add(dc.get());
 						}
-						this.value = result;
+						return result;
 					}
 				};
 			} else {
@@ -158,7 +157,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	 * @return the deferred call object
 	 * @throws IOException on error
 	 */
-	protected DeferredCall processMessageArrayDeferred(MessageArray ma) throws IOException {
+	protected DeferredRunnable processMessageArrayDeferred(MessageArray ma) throws IOException {
 		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, ma != null ? ma.name : "null");
 		
 	}
@@ -168,24 +167,272 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	 * @return the deferred call object
 	 * @throws IOException on error
 	 */
-	protected DeferredCall processMessageObjectDeferred(final MessageObject mo) throws IOException {
+	protected DeferredRunnable processMessageObjectDeferred(final MessageObject mo) throws IOException {
 		if ("PING".equals(mo.name)) {
-			return new DeferredCall() {
+			return new DeferredInvoke("PONG") {
 				@Override
-				protected Object invoke() throws IOException {
-					return api.ping();
+				protected void invoke() throws IOException {
+					api.ping();
 				}
 			};
 		} else
 		if ("LOGIN".equals(mo.name)) {
+			final String user = mo.getString("user");
+			final String passphrase = mo.getString("passphrase");
+			final String version = mo.getString("version");
 			return new DeferredCall() {
 				@Override
-				protected Object invoke() throws IOException {
-					return api.login(mo.getString("user"), mo.getString("passphrase"), mo.getString("version"));
+				protected MessageObjectIO invoke() throws IOException {
+					return api.login(user, passphrase, version);
 				}
 			};
-			// FIXME
+		} else
+		if ("RELOGIN".equals(mo.name)) {
+			final String sessionId = mo.getString("session");
+			return new DeferredInvoke("WELCOME_BACK") {
+				@Override
+				protected void invoke() throws IOException {
+					api.relogin(sessionId);
+				}
+			};
+		} else
+		if ("LEAVE".equals(mo.name)) {
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.leave();
+				}
+			};
+		} else
+		if ("QUERY_GAME_DEFINITION".equals(mo.name)) {
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getGameDefinition();
+				}
+			};
+		} else
+		if ("MULTIPLAYER_USER".equals(mo.name)) {
+			final MultiplayerUser userSettings = new MultiplayerUser();
+			userSettings.fromMessage(mo);
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.choosePlayerSettings(userSettings);
+				}
+			};
+		} else
+		if ("JOIN".equals(mo.name)) {
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.join();
+				}
+			};
+		} else
+		if ("READY".equals(mo.name)) {
+			return new DeferredInvoke("BEGIN") {
+				@Override
+				protected void invoke() throws IOException {
+					api.ready();
+				}
+			};
+		} else
+		if ("QUERY_EMPIRE_STATUSES".equals(mo.name)) {
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getEmpireStatuses();
+				}
+			};
+		} else
+		if ("QUERY_FLEETS".equals(mo.name)) {
+			return new DeferredTransform<List<FleetStatus>>() {
+				@Override
+				protected List<FleetStatus> invoke() throws IOException {
+					return api.getFleets();
+				}
+				@Override
+				protected MessageSerializable transform(
+						List<FleetStatus> intermediate) throws IOException {
+					return FleetStatus.toArray(intermediate);
+				}
+			};
+		} else
+		if ("QUERY_FLEET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getFleet(fleetId);
+				}
+			};
+		} else
+		if ("QUERY_INVENTORIES".equals(mo.name)) {
+			return new DeferredTransform<Map<String, Integer>>() {
+				@Override
+				protected Map<String, Integer> invoke() throws IOException {
+					return api.getInventory();
+				}
+				@Override
+				protected MessageSerializable transform(
+						Map<String, Integer> intermediate) throws IOException {
+					MessageArray ma = new MessageArray("INVENTORIES");
+					for (Map.Entry<String, Integer> e : intermediate.entrySet()) {
+						MessageObject mo = new MessageObject("ENTRY");
+						mo.set("type", e.getKey());
+						mo.set("count", e.getValue());
+						ma.add(mo);
+					}
+					return ma;
+				}
+			};
+		} else
+		if ("QUERY_PRODUCTIONS".equals(mo.name)) {
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getProductions();
+				}
+			};
+		} else
+		if ("QUERY_RESEARCHES".equals(mo.name)) {
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getResearches();
+				}
+			};
+		} else
+		if ("QUERY_PLANET_STATUSES".equals(mo.name)) {
+			return new DeferredTransform<List<PlanetStatus>>() {
+				@Override
+				protected List<PlanetStatus> invoke() throws IOException {
+					return api.getPlanetStatuses();
+				}
+				@Override
+				protected MessageSerializable transform(
+						List<PlanetStatus> intermediate) throws IOException {
+					return PlanetStatus.toArray(intermediate);
+				}
+			};
+		} else
+		if ("QUERY_PLANET_STATUS".equals(mo.name)) {
+			final String planetId = mo.getString("planetId");
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getPlanetStatus(planetId);
+				}
+			};
+		} else
+		if ("MOVE_FLEET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final double x = mo.getDouble("x");
+			final double y = mo.getDouble("y");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.moveFleet(fleetId, x, y);
+				}
+			};
+		} else
+		if ("ADD_FLEET_WAYPOINT".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final double x = mo.getDouble("x");
+			final double y = mo.getDouble("y");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.addFleetWaypoint(fleetId, x, y);
+				}
+			};
+		} else
+		if ("MOVE_TO_PLANET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final String target = mo.getString("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.moveToPlanet(fleetId, target);
+				}
+			};
+		} else
+		if ("FOLLOW_FLEET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final int target = mo.getInt("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.followFleet(fleetId, target);
+				}
+			};
+		} else
+		if ("ATTACK_FLEET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final int target = mo.getInt("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.attackFleet(fleetId, target);
+				}
+			};
+		} else
+		if ("ATTACK_PLANET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final String target = mo.getString("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.attackPlanet(fleetId, target);
+				}
+			};
+		} else
+		if ("COLONIZE_FLEET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final String target = mo.getString("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.colonize(fleetId, target);
+				}
+			};
+		} else
+		if ("NEW_FLEET_AT_PLANET".equals(mo.name)) {
+			final String planetId = mo.getString("planetId");
+			final List<InventoryItemStatus> list = InventoryItemStatus.fromArray(mo.getArray("inventory"));
+			return new DeferredTransform<Integer>() {
+				@Override
+				protected Integer invoke() throws IOException {
+					return api.newFleet(planetId, list);
+				}
+				@Override
+				protected MessageSerializable transform(Integer intermediate)
+						throws IOException {
+					MessageObject r = new MessageObject("FLEET");
+					r.set("id", intermediate);
+					return r;
+				}
+			};
+		} else
+		if ("NEW_FLEET_AT_FLEET".equals(mo.name)) {
+			final String fleetId = mo.getString("fleetId");
+			final List<InventoryItemStatus> list = InventoryItemStatus.fromArray(mo.getArray("inventory"));
+			return new DeferredTransform<Integer>() {
+				@Override
+				protected Integer invoke() throws IOException {
+					return api.newFleet(fleetId, list);
+				}
+				@Override
+				protected MessageSerializable transform(Integer intermediate)
+						throws IOException {
+					MessageObject r = new MessageObject("FLEET");
+					r.set("id", intermediate);
+					return r;
+				}
+			};
 		}
+		
 		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
 	}
 }

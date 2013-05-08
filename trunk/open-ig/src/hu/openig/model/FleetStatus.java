@@ -20,6 +20,8 @@ import java.util.List;
  * @author akarnokd, 2013.04.27.
  */
 public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<FleetStatus> {
+	/** Array name. */
+	private static final String ARRAY_NAME = "FLEET_STATUSES";
 	/** The fleet's unique identifier. */
 	public int id;
 	/** The knowledge about the fleet. */
@@ -123,6 +125,18 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 	}
 	@Override
 	public String arrayName() {
-		return "FLEET_STATUSES";
+		return ARRAY_NAME;
+	}
+	/**
+	 * Convert the list of fleet statuses into a message array.
+	 * @param list the list
+	 * @return the message array
+	 */
+	public static MessageArray toArray(Iterable<? extends FleetStatus> list) {
+		MessageArray ma = new MessageArray(ARRAY_NAME);
+		for (FleetStatus fs : list) {
+			ma.add(fs.toMessage());
+		}
+		return ma;
 	}
 }

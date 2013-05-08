@@ -38,7 +38,7 @@ public enum ErrorType {
 	ERROR_FORMAT,
 	/** Server run into an assertion bug. */
 	ERROR_SERVER_BUG,
-	/** Server run into an assertion bug. */
+	/** Server run into an internal or reflected IO error. */
 	ERROR_SERVER_IO,
 	/** The session has been changed by a new login. */
 	ERROR_SESSION_INVALID,
