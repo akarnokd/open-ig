@@ -151,14 +151,14 @@ public class GameSyncToAsync implements GameAPI {
 		get(as);
 	}
 	@Override
-	public int newFleet(String planet, List<InventoryItem> inventory)
+	public int newFleet(String planet, List<InventoryItemStatus> inventory)
 			throws IOException {
 		Value<Integer> as = newSubject();
 		api.newFleet(planet, inventory, as);
 		return get(as);
 	}
 	@Override
-	public int newFleet(int id, List<InventoryItem> inventory)
+	public int newFleet(int id, List<InventoryItemStatus> inventory)
 			throws IOException {
 		Value<Integer> as = newSubject();
 		api.newFleet(id, inventory, as);

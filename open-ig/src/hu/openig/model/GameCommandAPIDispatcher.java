@@ -69,7 +69,7 @@ public class GameCommandAPIDispatcher implements GameCommandAPI {
 		second.colonize(id, target);
 	}
 	@Override
-	public int newFleet(String planet, List<InventoryItem> inventory)
+	public int newFleet(String planet, List<InventoryItemStatus> inventory)
 			throws IOException {
 		// FIXME which id to return?
 		int id = first.newFleet(planet, inventory);
@@ -77,7 +77,7 @@ public class GameCommandAPIDispatcher implements GameCommandAPI {
 		return id;
 	}
 	@Override
-	public int newFleet(int id, List<InventoryItem> inventory)
+	public int newFleet(int id, List<InventoryItemStatus> inventory)
 			throws IOException {
 		// FIXME which id to return?
 		int nid = first.newFleet(id, inventory);

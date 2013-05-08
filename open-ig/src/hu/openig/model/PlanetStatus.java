@@ -21,6 +21,8 @@ import java.util.Map;
  * @author akarnokd, 2013.04.27.
  */
 public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<PlanetStatus> {
+	/** The array name. */
+	public static final String ARRAY_NAME = "PLANET_STATUSES";
 	/** The planet's identifier. */
 	public String id;
 	/** 
@@ -144,10 +146,22 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 	}
 	@Override
 	public String arrayName() {
-		return "PLANET_STATUSES";
+		return ARRAY_NAME;
 	}
 	@Override
 	public String objectName() {
 		return "PLANET_STATUS";
+	}
+	/**
+	 * Convert the list of fleet statuses into a message array.
+	 * @param list the list
+	 * @return the message array
+	 */
+	public static MessageArray toArray(Iterable<? extends PlanetStatus> list) {
+		MessageArray ma = new MessageArray(ARRAY_NAME);
+		for (PlanetStatus fs : list) {
+			ma.add(fs.toMessage());
+		}
+		return ma;
 	}
 }

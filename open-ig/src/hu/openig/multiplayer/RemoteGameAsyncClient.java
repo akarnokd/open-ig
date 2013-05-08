@@ -18,7 +18,6 @@ import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GroundBattleUnit;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MessageArrayAsync;
 import hu.openig.model.MessageArrayItemFactory;
@@ -175,6 +174,14 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		batchRequest = null;
 		callbacks = null;
 
+	}
+	@Override
+	public void cancel() {
+		if (!isBatchMode()) {
+			throw new IllegalStateException("Not in batch mode!");
+		}
+		batchRequest = null;
+		callbacks = null;
 	}
 	/**
 	 * Test if we are in batch mode.
@@ -337,7 +344,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 				Map<String, Integer> map = new HashMap<String, Integer>();
 				
 				for (Object o : ma) {
-					MessageObject mo = MessageUtils.expectObject(o, "INVENTORY");
+					MessageObject mo = MessageUtils.expectObject(o, "ENTRY");
 					
 					map.put(mo.getString("type"), mo.getInt("count"));
 				}
@@ -445,7 +452,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	}
 
 	@Override
-	public void newFleet(String planet, List<InventoryItem> inventory,
+	public void newFleet(String planet, List<InventoryItemStatus> inventory,
 			AsyncResult<? super Integer, ? super IOException> out) {
 		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
 			@Override
@@ -465,19 +472,19 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	 * @param out the async result
 	 * @param mo the request object to fill in and send
 	 */
-	private void sendFleetConfig(List<InventoryItem> inventory,
+	private void sendFleetConfig(List<InventoryItemStatus> inventory,
 			AsyncTransform<Object, Integer, IOException> out,
 			MessageObject mo) {
 		MessageArray inv = new MessageArray(null);
 		mo.set("inventory", inv);
-		for (InventoryItem ii : inventory) {
-			inv.add(ii.toInventoryItemStatus().toMessage());
+		for (InventoryItemStatus ii : inventory) {
+			inv.add(ii.toMessage());
 		}
 		sendDirect(mo, out);
 	}
 
 	@Override
-	public void newFleet(int id, List<InventoryItem> inventory,
+	public void newFleet(int id, List<InventoryItemStatus> inventory,
 			AsyncResult<? super Integer, ? super IOException> out) {
 		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
 			@Override

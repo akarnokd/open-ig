@@ -19,6 +19,8 @@ import java.util.List;
  * @author akarnokd, 2013.04.27.
  */
 public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFactory<InventoryItemStatus> {
+	/** The array name. */
+	private static final String ARRAY_NAME = "INVENTORIES";
 	/** The inventory id. */
 	public int id;
 	/** The research type. */
@@ -91,7 +93,7 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	}
 	@Override
 	public String arrayName() {
-		return "INVENTORIES";
+		return ARRAY_NAME;
 	}
 	@Override
 	public String objectName() {
@@ -109,5 +111,31 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 		nickname = null;
 		nicknameIndex = 0;
 		slots.clear();
+	}
+	/**
+	 * Convert a list of inventory item statuses into a message array.
+	 * @param list the inventory item status sequence
+	 * @return the message array representation
+	 */
+	public static MessageArray toArray(Iterable<InventoryItemStatus> list) {
+		MessageArray ma = new MessageArray(ARRAY_NAME);
+		for (InventoryItemStatus iis : list) {
+			ma.add(iis.toMessage());
+		}
+		return ma;
+	}
+	/**
+	 * Parses a list of inventory item status from the message array.
+	 * @param ma the message array
+	 * @return the list of inventory item status records
+	 */
+	public static List<InventoryItemStatus> fromArray(MessageArray ma) {
+		List<InventoryItemStatus> result = new ArrayList<InventoryItemStatus>();
+		for (MessageObject mo : ma.objects()) {
+			InventoryItemStatus e = new InventoryItemStatus();
+			e.fromMessage(mo);
+			result.add(e);
+		}
+		return result;
 	}
 }

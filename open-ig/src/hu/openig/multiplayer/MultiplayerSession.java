@@ -14,7 +14,6 @@ import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GroundBattleUnit;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerEnvironment;
@@ -242,14 +241,14 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public int newFleet(String planet, List<InventoryItem> inventory)
+	public int newFleet(String planet, List<InventoryItemStatus> inventory)
 			throws IOException {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int newFleet(int id, List<InventoryItem> inventory)
+	public int newFleet(int id, List<InventoryItemStatus> inventory)
 			throws IOException {
 		// TODO Auto-generated method stub
 		return 0;

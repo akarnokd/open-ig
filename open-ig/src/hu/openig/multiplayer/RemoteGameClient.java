@@ -13,7 +13,6 @@ import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GroundBattleUnit;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MessageArrayItemFactory;
 import hu.openig.model.MessageObjectIO;
@@ -207,7 +206,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		try {
 			for (Object o : ma) {
-				MessageObject mo = MessageUtils.expectObject(o, "INVENTORY");
+				MessageObject mo = MessageUtils.expectObject(o, "ENTRY");
 				
 				map.put(mo.getString("type"), mo.getInt("count"));
 			}
@@ -307,15 +306,15 @@ public class RemoteGameClient implements RemoteGameAPI {
 	 * @return the fleet status object response
 	 * @throws IOException on format- or communication error
 	 */
-	int sendFleetConfig(List<InventoryItem> inventory,
+	int sendFleetConfig(List<InventoryItemStatus> inventory,
 			MessageObject request) throws IOException {
 		MessageArray inv = new MessageArray(null);
 		request.set("inventory", inv);
-		for (InventoryItem ii : inventory) {
-			inv.add(ii.toInventoryItemStatus().toMessage());
+		for (InventoryItemStatus ii : inventory) {
+			inv.add(ii.toMessage());
 		}
 		Object param1 = client.query(request);
-		MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+		MessageObject mo = MessageUtils.expectObject(param1, "FLEET");
 		try {
 			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
@@ -324,14 +323,14 @@ public class RemoteGameClient implements RemoteGameAPI {
 	}
 
 	@Override
-	public int newFleet(String planet, List<InventoryItem> inventory) throws IOException {
+	public int newFleet(String planet, List<InventoryItemStatus> inventory) throws IOException {
 		MessageObject mo = new MessageObject("NEW_FLEET_AT_PLANET")
 		.set("planetId", planet);
 		return sendFleetConfig(inventory, mo);
 	}
 
 	@Override
-	public int newFleet(int id, List<InventoryItem> inventory) throws IOException {
+	public int newFleet(int id, List<InventoryItemStatus> inventory) throws IOException {
 		MessageObject mo = new MessageObject("NEW_FLEET_AT_FLEET") 
 		.set("fleetId", id);
 		return sendFleetConfig(inventory, mo);

@@ -59,6 +59,9 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void end(AsyncResult<? super Void, ? super IOException> out) {
+		if (!isBatch()) {
+			throw new IllegalStateException("not in batch");
+		}
 		List<Runnable> bs = U.newArrayList(batch);
 		batch = null;
 		for (Runnable r : bs) {
@@ -67,6 +70,13 @@ public class GameAsyncToSync implements GameAsyncAPI {
 		if (out != null) {
 			out.onSuccess(null);
 		}
+	}
+	@Override
+	public void cancel() {
+		if (!isBatch()) {
+			throw new IllegalStateException("not in batch");
+		}
+		batch = null;
 	}
 	/**
 	 * Executes an action or adds it to the batch list.
@@ -256,7 +266,7 @@ public class GameAsyncToSync implements GameAsyncAPI {
 	}
 
 	@Override
-	public void newFleet(final String planet, final List<InventoryItem> inventory,
+	public void newFleet(final String planet, final List<InventoryItemStatus> inventory,
 			AsyncResult<? super Integer, ? super IOException> out) {
 		execute(new DeferredAction<Integer, IOException>(out) {
 			@Override
@@ -268,7 +278,7 @@ public class GameAsyncToSync implements GameAsyncAPI {
 	}
 
 	@Override
-	public void newFleet(final int id, final List<InventoryItem> inventory,
+	public void newFleet(final int id, final List<InventoryItemStatus> inventory,
 			AsyncResult<? super Integer, ? super IOException> out) {
 		execute(new DeferredAction<Integer, IOException>(out) {
 			@Override
