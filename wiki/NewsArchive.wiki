@@ -4,6 +4,12 @@
 
 = Recent =
 
+==May, 2013==
+
+*May 9, 2013*
+
+[http://open-ig-dev.blogspot.hu/2013/05/java-6-support-to-be-dropped.html Java 6 support will be dropped] in the upcoming major version.
+
 ==April, 2013==
 
 *ANNOUNCEMENT*
