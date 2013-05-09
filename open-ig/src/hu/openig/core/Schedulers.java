@@ -71,7 +71,7 @@ public final class Schedulers {
 	private static final Scheduler EDT = new Scheduler() {
 		@Override
 		public Future<?> schedule(Runnable run) {
-			final FutureTask<Void> ft = new FutureTask<Void>(run, null);
+			final FutureTask<Void> ft = new FutureTask<>(run, null);
 			SwingUtilities.invokeLater(ft);
 			return ft;
 		}
@@ -80,7 +80,7 @@ public final class Schedulers {
 	private static final Scheduler CURRENT = new Scheduler() {
 		@Override
 		public Future<?> schedule(Runnable run) {
-			final FutureTask<Void> ft = new FutureTask<Void>(run, null);
+			final FutureTask<Void> ft = new FutureTask<>(run, null);
 			ft.run();
 			return ft;
 		}
@@ -119,7 +119,7 @@ public final class Schedulers {
 		return new Scheduler() {
 			@Override
 			public Future<?> schedule(Runnable run) {
-				FutureTask<Void> ft = new FutureTask<Void>(run, null);
+				FutureTask<Void> ft = new FutureTask<>(run, null);
 				exec.execute(run);
 				return ft;
 			}
@@ -137,6 +137,6 @@ public final class Schedulers {
 	public static <V, E> AsyncResult<V, E> scheduleOn(
 			final AsyncResult<? super V, ? super E> onResult, 
 			final Scheduler scheduler) {
-		return new ScheduledAsyncResult<V, E>(onResult, scheduler);
+		return new ScheduledAsyncResult<>(onResult, scheduler);
 	}
 }

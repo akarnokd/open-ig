@@ -78,7 +78,7 @@ public class Planet implements Named, Owned, HasInventory {
 	/** The planet's inventory. */
 	public final InventoryItems inventory = new InventoryItems();
 	/** The time to live counter for objects which need to be removed after the given simulation step (which is 10 ingame minutes. */
-	public final Map<InventoryItem, Integer> timeToLive = new HashMap<InventoryItem, Integer>();
+	public final Map<InventoryItem, Integer> timeToLive = new HashMap<>();
 	/** The countdown for an earthquake lasting 10s of ingame minutes. */
 	public int earthQuakeTTL;
 	/** The remaining time for a weather event. */
@@ -515,7 +515,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return the number of built buildings per type
 	 */
 	public Map<BuildingType, Integer> countBuildings() {
-		Map<BuildingType, Integer> result = new HashMap<BuildingType, Integer>();
+		Map<BuildingType, Integer> result = new HashMap<>();
 		for (Building b : surface.buildings.iterable()) {
 			Integer cnt = result.get(b.type);
 			result.put(b.type, cnt != null ? cnt + 1 : 1);
@@ -694,7 +694,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 * Remove detector-capable satellites (e.g., spy satellites) from orbit.
 	 */
 	public void removeOwnerSatellites() {
-		List<InventoryItem> set = new ArrayList<InventoryItem>(inventory.findByOwner(owner.id));
+		List<InventoryItem> set = new ArrayList<>(inventory.findByOwner(owner.id));
 		for (InventoryItem ii : set) {
 			if (ii.type.has(ResearchType.PARAMETER_DETECTOR)) {
 				ii.owner.changeInventoryCount(ii.type, 1);
@@ -905,7 +905,7 @@ public class Planet implements Named, Owned, HasInventory {
 			earthQuakeTTL = ps.earthquakeTTL;
 			weatherTTL = ps.weatherTTL;
 			
-			Set<Integer> current = new HashSet<Integer>();
+			Set<Integer> current = new HashSet<>();
 			// merge inventory
 			for (InventoryItemStatus iis : ps.inventory) {
 				current.add(iis.id);

@@ -107,9 +107,9 @@ public class LanguagePacksDialog extends JDialog {
 		final JLabel sum = new JLabel();
 		sum.setHorizontalAlignment(JLabel.RIGHT);
 		
-		checkBoxes = new ArrayList<JCheckBox>();
-		final List<Long> szs = new ArrayList<Long>();
-		languages = new ArrayList<String>();
+		checkBoxes = new ArrayList<>();
+		final List<Long> szs = new ArrayList<>();
+		languages = new ArrayList<>();
 		long sz0 = 0;
 		for (String lng : flags.keySet()) {
 			
@@ -272,7 +272,7 @@ public class LanguagePacksDialog extends JDialog {
 	 * @return The selected language codes.
 	 */
 	public Collection<String> getLanguages(boolean selected) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		int i = 0;
 		for (JCheckBox cb : checkBoxes) {
 			if (cb.isSelected() == selected) {

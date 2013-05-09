@@ -221,17 +221,12 @@ public class Music {
 	 * @throws IOException on IO error
 	 */
 	private boolean playbackOgg(ResourcePlace res) throws IOException {
-		InputStream raf = res.openNew();
-		try {
+		try (InputStream raf = res.openNew()) {
 			oggMusic = new OggMusic(Thread.currentThread());
 			oggMusic.setVolume(volume);
 			oggMusic.setMute(mute);
 			oggMusic.playOgg(raf);
 			return true;
-		} finally {
-			if (raf != null) {
-				raf.close();
-			}
 		}
 	}
 	/**
@@ -239,36 +234,31 @@ public class Music {
 	 * @param rp the resource to play back
 	 */
 	private void playBackClip(ResourcePlace rp) {
-		try {
-			AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rp.get()));
-			try {
-				AudioFormat af = ain.getFormat();
-				byte[] snd = IOUtils.load(ain);
-				// upscale an 8 bit sample to 16 bit
-				if (af.getSampleSizeInBits() == 8) {
-					// signify if unsigned, because the upscaling works on signed data
-					if (af.getEncoding() == Encoding.PCM_UNSIGNED) {
-						for (int i = 0; i < snd.length; i++) {
-							snd[i] = (byte)((snd[i] & 0xFF) - 128);
-						}
+		try (AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rp.get()))) {
+			AudioFormat af = ain.getFormat();
+			byte[] snd = IOUtils.load(ain);
+			// upscale an 8 bit sample to 16 bit
+			if (af.getSampleSizeInBits() == 8) {
+				// signify if unsigned, because the upscaling works on signed data
+				if (af.getEncoding() == Encoding.PCM_UNSIGNED) {
+					for (int i = 0; i < snd.length; i++) {
+						snd[i] = (byte)((snd[i] & 0xFF) - 128);
 					}
-					snd = AudioThread.convert8To16(snd);
-					af = new AudioFormat(af.getSampleRate(), 16, af.getChannels(), true, af.isBigEndian());
 				}
-				sdl = AudioSystem.getSourceDataLine(af);
-				sdl.open(af);
-				try {
-					setVolume(volume);
-					setMute(mute);
-					sdl.start();
-					sdl.write(snd, 0, snd.length);
-					sdl.drain();
-				} finally {
-					sdl.close();
-					sdl = null;
-				}
+				snd = AudioThread.convert8To16(snd);
+				af = new AudioFormat(af.getSampleRate(), 16, af.getChannels(), true, af.isBigEndian());
+			}
+			sdl = AudioSystem.getSourceDataLine(af);
+			sdl.open(af);
+			try {
+				setVolume(volume);
+				setMute(mute);
+				sdl.start();
+				sdl.write(snd, 0, snd.length);
+				sdl.drain();
 			} finally {
-				ain.close();
+				sdl.close();
+				sdl = null;
 			}
 		} catch (UnsupportedAudioFileException e) {
 			Exceptions.add(e);
@@ -297,11 +287,10 @@ public class Music {
 			if (type == 0x61746164) {
 				IOUtils.skipFully(raf, 4);
 				return offset + 4;
-			} else {
-				int count = IOUtils.readIntLE(raf);
-				IOUtils.skipFully(raf, count);
-				offset += count;
 			}
+			int count = IOUtils.readIntLE(raf);
+			IOUtils.skipFully(raf, count);
+			offset += count;
 		}
 	}
 	/**
@@ -322,11 +311,10 @@ public class Music {
 			if (type == 0x61746164) {
 				IOUtils.skipFullyD(raf, 4);
 				return offset + 4;
-			} else {
-				int count = IOUtils.readIntLE(raf);
-				IOUtils.skipFullyD(raf, count);
-				offset += count;
 			}
+			int count = IOUtils.readIntLE(raf);
+			IOUtils.skipFullyD(raf, count);
+			offset += count;
 		}
 	}
 	/**

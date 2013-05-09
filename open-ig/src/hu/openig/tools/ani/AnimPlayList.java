@@ -79,7 +79,7 @@ public class AnimPlayList extends JFrame {
 		/** */
 		private static final long serialVersionUID = 866676136521268534L;
 		/** the list of files. */
-		final List<File> rows = new ArrayList<File>();
+		final List<File> rows = new ArrayList<>();
 		/** The column names. */
 		final String[] colNames = {
 			"Name", "Size", "Path", "Date", "FPS", "Delay"
@@ -167,7 +167,7 @@ public class AnimPlayList extends JFrame {
 		
 		directory = new JTextField();
 		directory.setText(root.getAbsolutePath());
-		languageCode = new JComboBox<String>(new String[] { "English", "Hungarian" });
+		languageCode = new JComboBox<>(new String[] { "English", "Hungarian" });
 		languageCode.setToolTipText("Select the language code to be used for displaying the FPS/Delay values");
 		scan = new JButton("Scan");
 		AnimPlay.setAL(scan, "scanDirectory", this);
@@ -271,7 +271,7 @@ public class AnimPlayList extends JFrame {
 		scan.setEnabled(false);
 		final File dir = new File(directory.getText());
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
-			final List<File> files = new LinkedList<File>();
+			final List<File> files = new LinkedList<>();
 			@Override
 			protected Void doInBackground() throws Exception {
 				try {

@@ -67,16 +67,15 @@ public final class PackageStuff {
 	static String buildImages(String version) {
 		String result = "";
 		String fileName = "open-ig-images-" + version + ".zip";
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
+		try (ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
-							new FileOutputStream(fileName), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory("." + sep + "images" + sep + "", "." + sep + "images", zout, null);
-			} finally {
-				zout.close();
-			}
+							new FileOutputStream(fileName), 1024 * 1024))) {
+			zout.setLevel(9);
+			processDirectory("." + sep + "images" + sep + "", "." + sep + "images", zout, null);
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		}
+		try {
 			result += computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
@@ -91,16 +90,15 @@ public final class PackageStuff {
 	static String buildData(String version) {
 		String result = "";
 		String fileName = "open-ig-upgrade-" + version + "2.zip";
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
+		try (ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
-							new FileOutputStream(fileName), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory("." + sep + "data" + sep + "", "." + sep + "data", zout, null);
-			} finally {
-				zout.close();
-			}
+							new FileOutputStream(fileName), 1024 * 1024))) {
+			zout.setLevel(9);
+			processDirectory("." + sep + "data" + sep + "", "." + sep + "data", zout, null);
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		}
+		try {
 			result += computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
@@ -114,31 +112,30 @@ public final class PackageStuff {
 	 */
 	static String buildGame(String version) {
 		String fileName = "open-ig-" + version + ".jar";
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
-					new BufferedOutputStream(
-							new FileOutputStream(fileName), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory("." + sep + "bin" + sep + "", "." + sep + "bin", zout, new FilenameFilter() {
-					
-					@Override
-					public boolean accept(File dir, String name) {
-						name = name.toLowerCase();
-						String d = dir.toString().replace('\\', '/');
-						if (!d.endsWith("/")) {
-							d += "/";
-						}
-						d += name;
-						return !name.contains("splash_medium")
-								&& !name.contains("launcher_background")
-								&& !d.contains("/launcher");
+		try (ZipOutputStream zout = new ZipOutputStream(
+				new BufferedOutputStream(
+						new FileOutputStream(fileName), 1024 * 1024))) {
+			zout.setLevel(9);
+			processDirectory("." + sep + "bin" + sep + "", "." + sep + "bin", zout, new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File dir, String name) {
+					name = name.toLowerCase();
+					String d = dir.toString().replace('\\', '/');
+					if (!d.endsWith("/")) {
+						d += "/";
 					}
-				});
-				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF", zout);
-			} finally {
-				zout.close();
-			}
+					d += name;
+					return !name.contains("splash_medium")
+							&& !name.contains("launcher_background")
+							&& !d.contains("/launcher");
+				}
+			});
+			addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF", zout);
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		}
+		try {
 			return computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
@@ -152,25 +149,20 @@ public final class PackageStuff {
 	 * @throws IOException on error
 	 */
 	static String computeDigest(String fileName) throws IOException {
-		try {
-			DigestInputStream din = new DigestInputStream(new FileInputStream(fileName), MessageDigest.getInstance("SHA1"));
-			try {
-				byte[] buffer = new byte[8192];
-				while (true) {
-					if (din.read(buffer) < 0) {
-						break;
-					}
+		try (DigestInputStream din = new DigestInputStream(new FileInputStream(fileName), MessageDigest.getInstance("SHA1"))) {
+			byte[] buffer = new byte[8192];
+			while (true) {
+				if (din.read(buffer) < 0) {
+					break;
 				}
-				byte[] digest = din.getMessageDigest().digest();
-				StringBuilder sb = new StringBuilder();
-				for (byte b : digest) {
-					sb.append(String.format("%02X", b & 0xFF));
-				}
-				sb.append(" ").append(fileName).append("\r\n");
-				return sb.toString();
-			} finally {
-				din.close();
 			}
+			byte[] digest = din.getMessageDigest().digest();
+			StringBuilder sb = new StringBuilder();
+			for (byte b : digest) {
+				sb.append(String.format("%02X", b & 0xFF));
+			}
+			sb.append(" ").append(fileName).append("\r\n");
+			return sb.toString();
 		} catch (NoSuchAlgorithmException ex) {
 			Exceptions.add(ex);
 		}
@@ -182,51 +174,50 @@ public final class PackageStuff {
 	 */
 	static String buildLauncher() {
 		String fileName = "open-ig-launcher.jar";
-		try {
-			ZipOutputStream zout = new ZipOutputStream(
-					new BufferedOutputStream(
-							new FileOutputStream(fileName), 1024 * 1024));
-			try {
-				zout.setLevel(9);
-				processDirectory("." + sep + "bin" + sep + "", "." + sep + "bin", zout, new FilenameFilter() {
-					@Override
-					public boolean accept(File dir, String name) {
-						String d = dir.toString().replace('\\', '/');
-						if (!d.endsWith("/")) {
-							d += "/";
-						}
-						d += name;
-						return d.contains("hu/openig/launcher") 
-								|| d.contains("hu/openig/utils/Exceptions")
-								|| d.contains("hu/openig/utils/XElement")
-								|| d.contains("hu/openig/utils/IOUtils")
-								|| d.contains("hu/openig/utils/Parallels")
-								|| d.contains("hu/openig/utils/ImageUtils")
-								|| d.contains("hu/openig/utils/ConsoleWatcher")
-								|| d.contains("hu/openig/gfx/checkmark_grayscale.png")
-								|| d.contains("hu/openig/gfx/checkmark.png")
-								|| d.contains("hu/openig/gfx/button_medium.png")
-								|| d.contains("hu/openig/gfx/button_medium_pressed.png")
-								|| d.contains("hu/openig/gfx/launcher_background.png")
-								|| d.contains("hu/openig/gfx/hungarian.png")
-								|| d.contains("hu/openig/gfx/english.png")
-								|| d.contains("hu/openig/gfx/german.png")
-								|| d.contains("hu/openig/gfx/french.png")
-								|| d.contains("hu/openig/gfx/russian.png")
-								|| d.contains("hu/openig/gfx/loading.gif")
-								|| d.contains("hu/openig/gfx/down.png")
-								|| d.contains("hu/openig/ui/IGButton")
-								|| d.contains("hu/openig/ui/IGCheckBox")
-								|| d.contains("hu/openig/render/RenderTools")
-								|| d.contains("hu/openig/render/GenericMediumButton")
-								|| d.contains("hu/openig/render/GenericButtonRenderer")
-								|| d.contains("hu/openig/core/Func0");
+		try (ZipOutputStream zout = new ZipOutputStream(
+				new BufferedOutputStream(
+						new FileOutputStream(fileName), 1024 * 1024))) {
+			zout.setLevel(9);
+			processDirectory("." + sep + "bin" + sep + "", "." + sep + "bin", zout, new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String name) {
+					String d = dir.toString().replace('\\', '/');
+					if (!d.endsWith("/")) {
+						d += "/";
 					}
-				});
-				addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.launcher", zout);
-			} finally {
-				zout.close();
-			}
+					d += name;
+					return d.contains("hu/openig/launcher") 
+							|| d.contains("hu/openig/utils/Exceptions")
+							|| d.contains("hu/openig/utils/XElement")
+							|| d.contains("hu/openig/utils/IOUtils")
+							|| d.contains("hu/openig/utils/Parallels")
+							|| d.contains("hu/openig/utils/ImageUtils")
+							|| d.contains("hu/openig/utils/ConsoleWatcher")
+							|| d.contains("hu/openig/gfx/checkmark_grayscale.png")
+							|| d.contains("hu/openig/gfx/checkmark.png")
+							|| d.contains("hu/openig/gfx/button_medium.png")
+							|| d.contains("hu/openig/gfx/button_medium_pressed.png")
+							|| d.contains("hu/openig/gfx/launcher_background.png")
+							|| d.contains("hu/openig/gfx/hungarian.png")
+							|| d.contains("hu/openig/gfx/english.png")
+							|| d.contains("hu/openig/gfx/german.png")
+							|| d.contains("hu/openig/gfx/french.png")
+							|| d.contains("hu/openig/gfx/russian.png")
+							|| d.contains("hu/openig/gfx/loading.gif")
+							|| d.contains("hu/openig/gfx/down.png")
+							|| d.contains("hu/openig/ui/IGButton")
+							|| d.contains("hu/openig/ui/IGCheckBox")
+							|| d.contains("hu/openig/render/RenderTools")
+							|| d.contains("hu/openig/render/GenericMediumButton")
+							|| d.contains("hu/openig/render/GenericButtonRenderer")
+							|| d.contains("hu/openig/core/Func0");
+				}
+			});
+			addFile("META-INF/MANIFEST.MF", "META-INF/MANIFEST.MF.launcher", zout);
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		}
+		try {
 			return computeDigest(fileName);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
@@ -347,7 +338,7 @@ public final class PackageStuff {
 				SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
 					@Override
 					protected Void doInBackground() throws Exception {
-						final ConcurrentMap<String, String> checksums = new ConcurrentHashMap<String, String>();
+						final ConcurrentMap<String, String> checksums = new ConcurrentHashMap<>();
 						final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 						if (v1) {
 							exec.execute(new Runnable() {

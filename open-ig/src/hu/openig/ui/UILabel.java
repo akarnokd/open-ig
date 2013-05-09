@@ -98,7 +98,7 @@ public class UILabel extends UIComponent {
 			g2.fillRect(0, 0, width, height);
 		}
 		if (wrap) {
-			List<String> lines = new ArrayList<String>();
+			List<String> lines = new ArrayList<>();
 			if (shadowColor == 0) {
 				tr.wrapText(text, width, size, lines);
 			} else {
@@ -199,7 +199,7 @@ public class UILabel extends UIComponent {
 	 * @return the wrapped case height
 	 */
 	public int getWrappedHeight() {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		if (shadowColor == 0) {
 			tr.wrapText(text, width, size, lines);
 		} else {

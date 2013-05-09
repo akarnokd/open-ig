@@ -15,6 +15,9 @@ import hu.openig.utils.XElement;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,9 +29,9 @@ import javax.xml.stream.XMLStreamException;
  */
 public class CampaignLabels {
 	/** Map from key to language to resource location (path + extension) and the actual text. */
-	protected Map<String, Map<String, String[]>> map = U.newLinkedHashMap();
+	protected Map<String, Map<String, String[]>> map = new LinkedHashMap<>();
 	/** The set of modifiable pair of language and resource location. */
-	protected Set<Pair<String, String>> modifiable = U.newHashSet();
+	protected Set<Pair<String, String>> modifiable = new HashSet<>();
 	/** The resource name for new or modified read-only entries. */
 	public String newEntryLocation;
 	/** Indicate that the local file. */
@@ -68,7 +71,7 @@ public class CampaignLabels {
 	 * @param mgr the resource manager
 	 */
 	public void save(CEResourceManager mgr) {
-		Map<String, Map<String, XElement>> labelFiles = U.newHashMap();
+		Map<String, Map<String, XElement>> labelFiles = new HashMap<>();
 		for (Map.Entry<String, Map<String, String[]>> e : map.entrySet()) {
 			String key = e.getKey();
 			for (Map.Entry<String, String[]> e2 : e.getValue().entrySet()) {
@@ -78,7 +81,7 @@ public class CampaignLabels {
 				
 				Map<String, XElement> perLang = labelFiles.get(res);
 				if (perLang == null) {
-					perLang = U.newHashMap();
+					perLang = new HashMap<>();
 					labelFiles.put(res, perLang);
 				}
 				XElement xml = perLang.get(lang);
@@ -119,7 +122,7 @@ public class CampaignLabels {
 	protected void add(String key, String language, String resource, String value) {
 		Map<String, String[]> perLang = map.get(key);
 		if (perLang == null) {
-			perLang = U.newHashMap();
+			perLang = new HashMap<>();
 			map.put(key, perLang);
 		}
 		perLang.put(language, new String[] { resource, value });
@@ -150,7 +153,7 @@ public class CampaignLabels {
 	public void set(String language, String key, String value) {
 		Map<String, String[]> entry = map.get(key);
 		if (entry == null) {
-			entry = U.newHashMap();
+			entry = new HashMap<>();
 			map.put(key, entry);
 		}
 		String[] kv = entry.get(language);

@@ -208,19 +208,19 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	/** The nickname of the current selected ship. */
 	UILabel selectedNickname;
 	/** The equipment slot locations. */
-	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
+	final List<TechnologySlot> slots = new ArrayList<>();
 	/** The rolling disk animation timer. */
 	Closeable animation;
 	/** The current animation step counter. */
 	int animationStep;
 	/** The left fighter cells. */
-	final List<VehicleCell> leftFighterCells = new ArrayList<VehicleCell>();
+	final List<VehicleCell> leftFighterCells = new ArrayList<>();
 	/** The left tank cells. */
-	final List<VehicleCell> leftTankCells = new ArrayList<VehicleCell>();
+	final List<VehicleCell> leftTankCells = new ArrayList<>();
 	/** The right fighter cells. */
-	final List<VehicleCell> rightFighterCells = new ArrayList<VehicleCell>();
+	final List<VehicleCell> rightFighterCells = new ArrayList<>();
 	/** The right tank cells. */
-	final List<VehicleCell> rightTankCells = new ArrayList<VehicleCell>();
+	final List<VehicleCell> rightTankCells = new ArrayList<>();
 	/** The left vehicle listing. */
 	VehicleList leftList;
 	/** The right vehicle listing. */
@@ -943,7 +943,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		animation = null;
 		fleetListing.visible(false);
 		// delete empty fleets
-		for (Fleet f : new ArrayList<Fleet>(player().fleets.keySet())) {
+		for (Fleet f : new ArrayList<>(player().fleets.keySet())) {
 			if (f.inventory.isEmpty()) {
 				world().removeFleet(f);
 			}
@@ -1195,7 +1195,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			}
 		}
 		
-		List<TextSegment> tss = U.newArrayList();
+		List<TextSegment> tss = new ArrayList<>();
 		tss.add(new TextSegment(get("equipment.defense2"), TextRenderer.GREEN));
 		tss.add(new TextSegment(Integer.toString(hp), Color.GREEN.getRGB()));
 		if (sp >= 0) {
@@ -1321,15 +1321,14 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN) && !minimap.panMode) {
 			hideSecondary();
 			return true;
-		} else {
-			if (e.has(Type.DOWN)) {
-				if (!e.within(fleetListing.x, fleetListing.y, fleetListing.width, fleetListing.height) 
-						&& !e.within(listButton.x, listButton.y, listButton.width, listButton.height)) {
-					fleetListing.visible(false);
-				}
-			}
-			return super.mouse(e);
 		}
+		if (e.has(Type.DOWN)) {
+			if (!e.within(fleetListing.x, fleetListing.y, fleetListing.width, fleetListing.height) 
+					&& !e.within(listButton.x, listButton.y, listButton.width, listButton.height)) {
+				fleetListing.visible(false);
+			}
+		}
+		return super.mouse(e);
 	}
 	@Override
 	public Screens screen() {
@@ -2775,7 +2774,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		}
 		
 		// upgrade station equipment: strip current settings
-		List<InventoryItem> uis = U.newArrayList();
+		List<InventoryItem> uis = new ArrayList<>();
 		for (InventoryItem ii : p.inventory.iterable()) {
 			if (ii.owner == p.owner 
 					&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS

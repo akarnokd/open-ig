@@ -9,10 +9,11 @@
 package hu.openig.model;
 
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,7 @@ import java.util.Set;
  */
 public class Chats {
 	/** The chat options. */
-	protected final Map<String, Chat> chats = U.newLinkedHashMap();
+	protected final Map<String, Chat> chats = new LinkedHashMap<>();
 	/**
 	 * @return The available chat option identifiers.
 	 */
@@ -77,7 +78,7 @@ public class Chats {
 		/** The identifier. */
 		public final String id;
 		/** The node map. */
-		protected Map<String, Node> nodes = U.newLinkedHashMap();
+		protected Map<String, Node> nodes = new LinkedHashMap<>();
 		/**
 		 * Creates the chat entry.
 		 * @param id the identifier
@@ -130,7 +131,7 @@ public class Chats {
 		/** Should the enemy retreat? */
 		public boolean retreat;
 		/** The available transitions. */
-		public final List<String> transitions = U.newArrayList();
+		public final List<String> transitions = new ArrayList<>();
 		/**
 		 * Constructor with node id.
 		 * @param id the identifier

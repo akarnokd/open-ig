@@ -21,8 +21,11 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,7 +52,7 @@ public final class DiplomacyAnimation {
 	public static void main(String[] args) throws Exception {
 		int nfej = 8;
 		
-		final List<List<int[]>> allFrames = U.newArrayList();
+		final List<List<int[]>> allFrames = new ArrayList<>();
 		for (int i = 1; i <= nfej; i++) {
 			allFrames.add(getFrames("video/generic/diplomacy/dipfej" + i + ".ani.gz"));
 		}
@@ -134,7 +137,7 @@ public final class DiplomacyAnimation {
 						}
 						
 						// reduce color space to 0-254 colors
-						Map<Integer, Integer> colorCounts = U.newHashMap();
+						Map<Integer, Integer> colorCounts = new HashMap<>();
 						for (int k = 0; k < imgc.length; k++) {
 							Integer c = colorCounts.get(imgc[k] & 0xFFFFFF);
 							colorCounts.put(imgc[k] & 0xFFFFFF, c != null ? c + 1 : 1);
@@ -149,8 +152,8 @@ public final class DiplomacyAnimation {
 								}
 							});
 							
-							Set<Integer> keptColors = U.newHashSet();
-							Map<Integer, Integer> translate = U.newHashMap();
+							Set<Integer> keptColors = new HashSet<>();
+							Map<Integer, Integer> translate = new HashMap<>();
 							for (int i = 0; i < 254; i++) {
 								keptColors.add(lst.get(i).getKey());
 							}
@@ -277,7 +280,7 @@ public final class DiplomacyAnimation {
 	 * @param argb the ARGB color
 	 * @return array of alpha, h, s, v
 	 */
-	float[] argbToHsv(int argb) {
+	static float[] argbToHsv(int argb) {
 		float[] result = new float[4];
 		
 		result[0] = ((argb & 0xFF000000) >> 24) / 255;
@@ -383,10 +386,9 @@ public final class DiplomacyAnimation {
 	 * @throws IOException on error
 	 */
 	static List<int[]> getFrames(String videoFile) throws IOException {
-		List<int[]> result = U.newArrayList();
-		DataInputStream in = new DataInputStream(
-				new BufferedInputStream(new GZIPInputStream(new FileInputStream(videoFile), 1024 * 1024), 1024 * 1024));
-		try {
+		List<int[]> result = new ArrayList<>();
+		try (DataInputStream in = new DataInputStream(
+				new BufferedInputStream(new GZIPInputStream(new FileInputStream(videoFile), 1024 * 1024), 1024 * 1024))) {
 			int w = Integer.reverseBytes(in.readInt());
 			int h = Integer.reverseBytes(in.readInt());
 			in.skipBytes(8);
@@ -420,8 +422,6 @@ public final class DiplomacyAnimation {
 					result.add(currentImage.clone());
 				}
 			}
-		} finally {
-			try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 		}
 		return result;
 	}

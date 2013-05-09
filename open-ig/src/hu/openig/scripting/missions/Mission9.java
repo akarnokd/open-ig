@@ -25,9 +25,9 @@ import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -125,7 +125,7 @@ public class Mission9 extends Mission {
 		Fleet f0 = createFleet(label("traders.fleetname"), 
 				tr, pl.x, pl.y);
 		
-		List<ResearchType> shipTypes = U.newArrayList();
+		List<ResearchType> shipTypes = new ArrayList<>();
 		for (ResearchType rt : world.researches.values()) {
 			if (rt.race.contains("traders") && rt.category.main == ResearchMainCategory.SPACESHIPS) {
 				shipTypes.add(rt);

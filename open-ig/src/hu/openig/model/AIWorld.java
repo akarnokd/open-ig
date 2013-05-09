@@ -10,7 +10,6 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
-import hu.openig.utils.U;
 
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -36,37 +35,37 @@ public class AIWorld {
 	/** The global planet statistics. */
 	public PlanetStatistics global;
 	/** The precomputed planet statistics. */
-	public final Map<Planet, PlanetStatistics> planetStatistics = new HashMap<Planet, PlanetStatistics>();
+	public final Map<Planet, PlanetStatistics> planetStatistics = new HashMap<>();
 	/** The precomputed planet statistics. */
-	public final Map<Fleet, FleetStatistics> fleetStatistics = new HashMap<Fleet, FleetStatistics>();
+	public final Map<Fleet, FleetStatistics> fleetStatistics = new HashMap<>();
 	/** The active productions. */
-	public final Map<ResearchType, Production> productions = new HashMap<ResearchType, Production>();
+	public final Map<ResearchType, Production> productions = new HashMap<>();
 	/** The active researches. */
-	public final Map<ResearchType, Research> researches = new HashMap<ResearchType, Research>();
+	public final Map<ResearchType, Research> researches = new HashMap<>();
 	/** The currently running research. */
 	public ResearchType runningResearch;
 	/** The current inventory level. */
-	public final Map<ResearchType, Integer> inventory = new HashMap<ResearchType, Integer>();
+	public final Map<ResearchType, Integer> inventory = new HashMap<>();
 	/** The set of available researches. */
-	public final Set<ResearchType> availableResearch = new HashSet<ResearchType>();
+	public final Set<ResearchType> availableResearch = new HashSet<>();
 	/** The set of remaining research. */
-	public final Set<ResearchType> remainingResearch = new HashSet<ResearchType>();
+	public final Set<ResearchType> remainingResearch = new HashSet<>();
 	/** The set of researches which can be developed in the current level. */
-	public final Set<ResearchType> furtherResearch = new HashSet<ResearchType>();
+	public final Set<ResearchType> furtherResearch = new HashSet<>();
 	/** The list of known other players. */
-	public final List<Player> players = new LinkedList<Player>();
+	public final List<Player> players = new LinkedList<>();
 	/** The list of own fleets. */
-	public final List<AIFleet> ownFleets = new LinkedList<AIFleet>();
+	public final List<AIFleet> ownFleets = new LinkedList<>();
 	/** The list of own planets. */
-	public final List<AIPlanet> ownPlanets = new LinkedList<AIPlanet>();
+	public final List<AIPlanet> ownPlanets = new LinkedList<>();
 	/** List of known, non-player fleets. */
-	public final List<AIFleet> enemyFleets = new LinkedList<AIFleet>();
+	public final List<AIFleet> enemyFleets = new LinkedList<>();
 	/** List of known, non-player planets. */
-	public final List<AIPlanet> enemyPlanets = new LinkedList<AIPlanet>();
+	public final List<AIPlanet> enemyPlanets = new LinkedList<>();
 	/** The list of maybe colonizable planets. */
-	public final List<AIPlanet> unknownPlanets = new LinkedList<AIPlanet>();
+	public final List<AIPlanet> unknownPlanets = new LinkedList<>();
 	/** The map from regular planet or planet ID string to AI planet. */
-	public final Map<Object, AIPlanet> planetMap = new HashMap<Object, AIPlanet>();
+	public final Map<Object, AIPlanet> planetMap = new HashMap<>();
 	/** The inner limit. */
 	public Rectangle explorationInnerLimit;
 	/** The outer limit. */
@@ -86,9 +85,9 @@ public class AIWorld {
 	/** The current level. */
 	public int level;
 	/** The relations with other players. */
-	public final Map<Player, DiplomaticRelation> relations = U.newHashMap();
+	public final Map<Player, DiplomaticRelation> relations = new HashMap<>();
 	/** Players with active offers. */
-	public final Set<Player> activeOffer = U.newHashSet();
+	public final Set<Player> activeOffer = new HashSet<>();
 	/** The main player of the game. */
 	public Player mainPlayer;
 	/** The current auto-build limit. */
@@ -106,7 +105,7 @@ public class AIWorld {
 	/** Indicator that the research requires new planets. */
 	public boolean researchRequiresColonization;
 	/** The player's current colonization targets. */
-	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
+	public final Set<String> colonizationTargets = new LinkedHashSet<>();
 	/** Does the user have diplomacy room? */
 	public boolean hasDiplomacyRoom;
 	/**
@@ -392,7 +391,7 @@ public class AIWorld {
 	 * @return the list of planets
 	 */
 	public List<AIPlanet> planetsOf(String player) {
-		List<AIPlanet> result = new ArrayList<AIPlanet>();
+		List<AIPlanet> result = new ArrayList<>();
 		for (Map.Entry<Object, AIPlanet> e : planetMap.entrySet()) {
 			if (e.getKey() instanceof String) {
 				AIPlanet value = e.getValue();

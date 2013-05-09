@@ -48,9 +48,13 @@ import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,25 +72,25 @@ import javax.swing.JTextArea;
  */
 public class MainCampaignScripting extends Mission implements GameScripting, MissionScriptingHelper {
 	/** The view limits. */
-	final Map<String, ViewLimit> viewLimits = U.newHashMap();
+	final Map<String, ViewLimit> viewLimits = new HashMap<>();
 	/** The map of root objectives. */
-	final Map<String, Objective> rootObjectives = U.newLinkedHashMap();
+	final Map<String, Objective> rootObjectives = new LinkedHashMap<>();
 	/** The map of all main and sub objectives. */
-	final Map<String, Objective> allObjectives = U.newLinkedHashMap();
+	final Map<String, Objective> allObjectives = new LinkedHashMap<>();
 	/** The last level. */
 	int lastLevel;
 	/** The countdowns of various actions. */
-	final Map<String, Integer> countdowns = U.newHashMap();
+	final Map<String, Integer> countdowns = new HashMap<>();
 	/** The mission timer. Contains mission specific start after N hours based on the current game since the start of the entire game. */
-	final Map<String, Integer> missiontimer = U.newHashMap();
+	final Map<String, Integer> missiontimer = new HashMap<>();
 	/** The mission timer deallocation log. */
-	final Map<String, String> missiontimerlog = U.newHashMap();
+	final Map<String, String> missiontimerlog = new HashMap<>();
 	/** Indicates a game over condition. */
 	boolean gameOver;
 	/** Set of fleet ids currently under control of scripting. */
-	final Set<Integer> scriptedFleets = U.newHashSet();
+	final Set<Integer> scriptedFleets = new HashSet<>();
 	/** The list of missions. */
-	final List<Mission> missions = U.newArrayList();
+	final List<Mission> missions = new ArrayList<>();
 	/** The debugging frame. */
 	private JFrame debugFrame;
 	/**
@@ -114,7 +118,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				setOwner(pi, traders);
 			}
 		}
-		for (Map.Entry<Planet, PlanetKnowledge> e : U.newHashMap(empire.planets).entrySet()) {
+		for (Map.Entry<Planet, PlanetKnowledge> e : new HashMap<>(empire.planets).entrySet()) {
 			if (e.getKey().owner == empire || e.getKey().owner == traders) {
 				empire.planets.remove(e.getKey());
 			}
@@ -162,7 +166,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 	@Override
 	public List<Objective> currentObjectives() {
-		List<Objective> result = U.newArrayList();
+		List<Objective> result = new ArrayList<>();
 		
 		for (Objective o : rootObjectives.values()) {
 			if (o.visible) {
@@ -192,7 +196,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 
 	@Override
 	public List<VideoMessage> getSendMessages() {
-		List<VideoMessage> result = U.newArrayList();
+		List<VideoMessage> result = new ArrayList<>();
 		
 		for (VideoMessage msg : world.bridge.sendMessages.values()) {
 			if (msg.visible) {
@@ -360,7 +364,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			}
 		}
 		
-		Map<String, Mission> mss = U.newHashMap();
+		Map<String, Mission> mss = new HashMap<>();
 		for (Mission m : missions) {
 			mss.put(m.getClass().getName(), m);
 		}
@@ -384,7 +388,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	 * @return the list of child objectives
 	 */
 	List<Objective> loadObjectives(XElement xos, boolean root) {
-		List<Objective> result = U.newArrayList();
+		List<Objective> result = new ArrayList<>();
 		for (XElement xo : xos.childrenWithName("objective")) {
 			Objective o = createObjective(xo);
 			if (root) {

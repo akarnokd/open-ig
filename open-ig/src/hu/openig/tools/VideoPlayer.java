@@ -220,7 +220,7 @@ public class VideoPlayer extends JFrame {
 		/** The column names. */
 		public String[] colNames = { "Name", "Path", "Audio", "Subtitles" };
 		/** The rows. */
-		public List<VideoEntry> rows = new ArrayList<VideoEntry>();
+		public List<VideoEntry> rows = new ArrayList<>();
 		@Override
 		public int getColumnCount() {
 			return colNames.length;
@@ -260,7 +260,7 @@ public class VideoPlayer extends JFrame {
 	protected void scan() {
 		rl = config.newResourceLocator();
 		videoModel.rows.clear();
-		Set<VideoEntry> result = new LinkedHashSet<VideoEntry>();
+		Set<VideoEntry> result = new LinkedHashSet<>();
 		Map<String, Map<String, ResourcePlace>> videos = rl.resourceMap.get(ResourceType.VIDEO);
 		Map<String, Map<String, ResourcePlace>> audios = rl.resourceMap.get(ResourceType.AUDIO);
 		
@@ -776,49 +776,44 @@ public class VideoPlayer extends JFrame {
 		}
 		@Override
 		protected void work() {
-			try {
-				AudioInputStream in = AudioSystem.getAudioInputStream(new BufferedInputStream(
-						audio.open(), 256 * 1024));
+			try (AudioInputStream in = AudioSystem.getAudioInputStream(new BufferedInputStream(
+						audio.open(), 256 * 1024))) {
+				byte[] buffer = new byte[in.available()];
+				in.read(buffer);
 				try {
-					byte[] buffer = new byte[in.available()];
-					in.read(buffer);
-					try {
-						AudioFormat af = in.getFormat();
-						byte[] buffer2 = null;
-						if (af.getSampleSizeInBits() == 8) {
-							if (af.getEncoding() == AudioFormat.Encoding.PCM_UNSIGNED) {
-								for (int i = 0; i < buffer.length; i++) {
-									buffer[i] = (byte)((buffer[i] & 0xFF) - 128);
-								}
+					AudioFormat af = in.getFormat();
+					byte[] buffer2 = null;
+					if (af.getSampleSizeInBits() == 8) {
+						if (af.getEncoding() == AudioFormat.Encoding.PCM_UNSIGNED) {
+							for (int i = 0; i < buffer.length; i++) {
+								buffer[i] = (byte)((buffer[i] & 0xFF) - 128);
 							}
-							buffer2 = AudioThread.convert8To16(buffer);
-							af = new AudioFormat(af.getFrameRate(), 16, af.getChannels(), true, false);
-						} else {
-							buffer2 = buffer;
 						}
-						DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, af);
-						clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
-						clip.open();
-						setVolume(initialVolume);
-						audioLen = buffer.length / 2;
-						try {
-							barrier.await();
-						} catch (InterruptedException ex) {
-							
-						} catch (BrokenBarrierException ex) {
-							
-						}
-						clip.start();
-						if (skip * 2 < buffer2.length) {
-							clip.write(buffer2, skip * 2, buffer2.length - skip * 2);
-						}
-						clip.drain();
-						clip.close();
-					} catch (LineUnavailableException ex) {
-						Exceptions.add(ex);
+						buffer2 = AudioThread.convert8To16(buffer);
+						af = new AudioFormat(af.getFrameRate(), 16, af.getChannels(), true, false);
+					} else {
+						buffer2 = buffer;
 					}
-				} finally {
-					in.close();
+					DataLine.Info clipInfo = new DataLine.Info(SourceDataLine.class, af);
+					clip = (SourceDataLine) AudioSystem.getLine(clipInfo);
+					clip.open();
+					setVolume(initialVolume);
+					audioLen = buffer.length / 2;
+					try {
+						barrier.await();
+					} catch (InterruptedException ex) {
+						
+					} catch (BrokenBarrierException ex) {
+						
+					}
+					clip.start();
+					if (skip * 2 < buffer2.length) {
+						clip.write(buffer2, skip * 2, buffer2.length - skip * 2);
+					}
+					clip.drain();
+					clip.close();
+				} catch (LineUnavailableException ex) {
+					Exceptions.add(ex);
 				}
 			} catch (UnsupportedAudioFileException ex) {
 				Exceptions.add(ex);
@@ -847,80 +842,73 @@ public class VideoPlayer extends JFrame {
 	 * @param skipFrames the numer of frames to skip
 	 */
 	public void decodeVideo(ResourcePlace video, int skipFrames) {
-		try {
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
-			try {
-				int w = Integer.reverseBytes(in.readInt());
-				int h = Integer.reverseBytes(in.readInt());
-				final int frames = Integer.reverseBytes(in.readInt());
-				double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
-				currentFps = fps;
-				
-				surface.init(w, h);
-				
-				int[] palette = new int[256];
-				byte[] bytebuffer = new byte[w * h];
-				int[] currentImage = new int[w * h];
-				int frameCount = 0;
-				long starttime = 0;
-				int frames2 = frames;
-				while (!stop) {
-					int c = in.read();
-					if (c < 0 || c == 'X') {
-						break;
-					} else
-					if (c == 'P') {
-						int len = in.read();
-						for (int j = 0; j < len; j++) {
-							int r = in.read() & 0xFF;
-							int g = in.read() & 0xFF;
-							int b = in.read() & 0xFF;
-							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
-						}
-					} else
-					if (c == 'I') {
-						in.readFully(bytebuffer);
-						for (int i = 0; i < bytebuffer.length; i++) {
-							int c0 = palette[bytebuffer[i] & 0xFF];
-							if (c0 != 0) {
-								currentImage[i] = c0;
-							}
-						}
-						if (frameCount >= skipFrames) {
-							if (frameCount == skipFrames) {
-								try {
-									barrier.await();
-								} catch (InterruptedException ex) {
-									
-								} catch (BrokenBarrierException ex) {
-									
-								}
-								frames2 = (int)Math.ceil(audioLen * fps / 22050.0);
-								setMaximumFrame(Math.max(frames, frames2));
-								starttime = System.nanoTime();
-							}
-							surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
-							surface.swap();
-							setPosition(fps, frameCount);
-							// wait the frame/sec
-							starttime += (1000000000.0 / fps);
-			       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
-						}
-		       			frameCount++;
+		try (DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024))) {
+			int w = Integer.reverseBytes(in.readInt());
+			int h = Integer.reverseBytes(in.readInt());
+			final int frames = Integer.reverseBytes(in.readInt());
+			double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
+			currentFps = fps;
+			
+			surface.init(w, h);
+			
+			int[] palette = new int[256];
+			byte[] bytebuffer = new byte[w * h];
+			int[] currentImage = new int[w * h];
+			int frameCount = 0;
+			long starttime = 0;
+			int frames2 = frames;
+			while (!stop) {
+				int c = in.read();
+				if (c < 0 || c == 'X') {
+					break;
+				} else
+				if (c == 'P') {
+					int len = in.read();
+					for (int j = 0; j < len; j++) {
+						int r = in.read() & 0xFF;
+						int g = in.read() & 0xFF;
+						int b = in.read() & 0xFF;
+						palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
 					}
-				}
-				// continue to emit reposition events
-				if (frames2 > frames && !stop) {
-					for (int i = frames; i < frames2 && !stop; i++) {
-						setPosition(fps, i);
+				} else
+				if (c == 'I') {
+					in.readFully(bytebuffer);
+					for (int i = 0; i < bytebuffer.length; i++) {
+						int c0 = palette[bytebuffer[i] & 0xFF];
+						if (c0 != 0) {
+							currentImage[i] = c0;
+						}
+					}
+					if (frameCount >= skipFrames) {
+						if (frameCount == skipFrames) {
+							try {
+								barrier.await();
+							} catch (InterruptedException ex) {
+								
+							} catch (BrokenBarrierException ex) {
+								
+							}
+							frames2 = (int)Math.ceil(audioLen * fps / 22050.0);
+							setMaximumFrame(Math.max(frames, frames2));
+							starttime = System.nanoTime();
+						}
+						surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
+						surface.swap();
+						setPosition(fps, frameCount);
 						// wait the frame/sec
 						starttime += (1000000000.0 / fps);
 		       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
 					}
+	       			frameCount++;
 				}
-			} finally {
-				try { in.close(); } catch (IOException ex) {
-					Exceptions.add(ex);
+			}
+			// continue to emit reposition events
+			if (frames2 > frames && !stop) {
+				for (int i = frames; i < frames2 && !stop; i++) {
+					setPosition(fps, i);
+					// wait the frame/sec
+					starttime += (1000000000.0 / fps);
+	       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
 				}
 			}
 		} catch (IOException ex) {
@@ -945,7 +933,7 @@ public class VideoPlayer extends JFrame {
 		if (jfc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			lastDir = jfc.getSelectedFile();
 			int[] sels = videoTable.getSelectedRows();
-			final List<AVExport> exportList = new ArrayList<AVExport>();
+			final List<AVExport> exportList = new ArrayList<>();
 			for (int i = 0; i < sels.length; i++) {
 				VideoEntry ve = videoModel.rows.get(videoTable.convertRowIndexToModel(sels[i]));
 				
@@ -1053,120 +1041,103 @@ public class VideoPlayer extends JFrame {
 				currentLabel.setText("Current file: " + fileNameBase);
 			}
 		});
-		try {
-			DataInputStream in = new DataInputStream(
-					new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
-			try {
-				int w = Integer.reverseBytes(in.readInt());
-				int h = Integer.reverseBytes(in.readInt());
-				final int frames = Integer.reverseBytes(in.readInt());
-				double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
-				
-				int[] palette = new int[256];
-				byte[] bytebuffer = new byte[w * h];
-				int[] currentImage = new int[w * h];
-				int frameCount = 0;
-				
-				int frames2 = frames;
-				if (audio != null) {
-					try {
-						AudioInputStream ain = AudioSystem.getAudioInputStream(new BufferedInputStream(
-								audio.open(), 256 * 1024));
-						try {
-							frames2 = (int)Math.ceil(ain.available() * fps / 22050.0);
-						} finally {
-							ain.close();
+		try (DataInputStream in = new DataInputStream(
+				new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024))) {
+			int w = Integer.reverseBytes(in.readInt());
+			int h = Integer.reverseBytes(in.readInt());
+			final int frames = Integer.reverseBytes(in.readInt());
+			double fps = Integer.reverseBytes(in.readInt()) / 1000.0;
+			
+			int[] palette = new int[256];
+			byte[] bytebuffer = new byte[w * h];
+			int[] currentImage = new int[w * h];
+			int frameCount = 0;
+			
+			int frames2 = frames;
+			if (audio != null) {
+				try (AudioInputStream ain = AudioSystem.getAudioInputStream(new BufferedInputStream(
+							audio.open(), 256 * 1024))) {
+					frames2 = (int)Math.ceil(ain.available() * fps / 22050.0);
+				} catch (UnsupportedAudioFileException ex) {
+					Exceptions.add(ex);
+				}
+			}
+			final int f = Math.max(frames, frames2);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					currentProgress.setMaximum(f);
+					currentLabel.setText("Current file: " + fileNameBase + ", 0 of " + f);
+				}
+			});
+			if (audio != null) {
+				// make a copy of the audio
+				String audioNaming = fileNameBase.substring(0, fileNameBase.length() - 9) + ".wav";
+				try (InputStream asrc = audio.open();
+					FileOutputStream acopy = new FileOutputStream(audioNaming)) {
+					byte[] ab = new byte[1024 * 1024];
+					while (!Thread.currentThread().isInterrupted()) {
+						int read = asrc.read(ab);
+						if (read < 0) {
+							break;
+						} else
+						if (read > 0) {
+							acopy.write(ab, 0, read);
 						}
-					} catch (UnsupportedAudioFileException ex) {
-						Exceptions.add(ex);
 					}
 				}
-				final int f = Math.max(frames, frames2);
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						currentProgress.setMaximum(f);
-						currentLabel.setText("Current file: " + fileNameBase + ", 0 of " + f);
+			}
+			
+			BufferedImage frameImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			while (!Thread.currentThread().isInterrupted()) {
+				int c = in.read();
+				if (c < 0 || c == 'X') {
+					break;
+				} else
+				if (c == 'P') {
+					int len = in.read();
+					for (int j = 0; j < len; j++) {
+						int r = in.read() & 0xFF;
+						int g = in.read() & 0xFF;
+						int b = in.read() & 0xFF;
+						palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
 					}
-				});
-				if (audio != null) {
-					// make a copy of the audio
-					String audioNaming = fileNameBase.substring(0, fileNameBase.length() - 9) + ".wav";
-					InputStream asrc = audio.open();
-					try {
-						FileOutputStream acopy = new FileOutputStream(audioNaming);
-						try {
-							byte[] ab = new byte[1024 * 1024];
-							while (!Thread.currentThread().isInterrupted()) {
-								int read = asrc.read(ab);
-								if (read < 0) {
-									break;
-								} else
-								if (read > 0) {
-									acopy.write(ab, 0, read);
-								}
-							}
-						} finally {
-							acopy.close();
+				} else
+				if (c == 'I') {
+					in.readFully(bytebuffer);
+					for (int i = 0; i < bytebuffer.length; i++) {
+						int c0 = palette[bytebuffer[i] & 0xFF];
+						if (c0 != 0) {
+							currentImage[i] = c0;
 						}
-					} finally {
-						asrc.close();
 					}
-				}
-				
-				BufferedImage frameImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-				while (!Thread.currentThread().isInterrupted()) {
-					int c = in.read();
-					if (c < 0 || c == 'X') {
-						break;
-					} else
-					if (c == 'P') {
-						int len = in.read();
-						for (int j = 0; j < len; j++) {
-							int r = in.read() & 0xFF;
-							int g = in.read() & 0xFF;
-							int b = in.read() & 0xFF;
-							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
+					frameImage.setRGB(0, 0, w, h, currentImage, 0, w);
+	       			ImageIO.write(frameImage, "png", new File(String.format(fileNameBase, frameCount)));
+	       			frameCount++;
+	       			final int fc = frameCount;
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							currentProgress.setValue(fc);
+							currentLabel.setText("Current file: " + String.format(fileNameBase, fc) + ", " + fc + " of " + f);
 						}
-					} else
-					if (c == 'I') {
-						in.readFully(bytebuffer);
-						for (int i = 0; i < bytebuffer.length; i++) {
-							int c0 = palette[bytebuffer[i] & 0xFF];
-							if (c0 != 0) {
-								currentImage[i] = c0;
-							}
+					});
+				}
+			}
+			// continue to emit reposition events
+			if (frames2 > frames && !Thread.currentThread().isInterrupted()) {
+				for (int i = frames; i < frames2 && !Thread.currentThread().isInterrupted(); i++) {
+	       			ImageIO.write(frameImage, "png", new File(String.format(fileNameBase, frameCount)));
+	       			frameCount++;
+	       			final int fc = frameCount;
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							currentProgress.setValue(fc);
+							currentLabel.setText("Current file: " + String.format(fileNameBase, fc) + ", " + fc + " of " + f);
 						}
-						frameImage.setRGB(0, 0, w, h, currentImage, 0, w);
-		       			ImageIO.write(frameImage, "png", new File(String.format(fileNameBase, frameCount)));
-		       			frameCount++;
-		       			final int fc = frameCount;
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								currentProgress.setValue(fc);
-								currentLabel.setText("Current file: " + String.format(fileNameBase, fc) + ", " + fc + " of " + f);
-							}
-						});
-					}
+					});
 				}
-				// continue to emit reposition events
-				if (frames2 > frames && !Thread.currentThread().isInterrupted()) {
-					for (int i = frames; i < frames2 && !Thread.currentThread().isInterrupted(); i++) {
-		       			ImageIO.write(frameImage, "png", new File(String.format(fileNameBase, frameCount)));
-		       			frameCount++;
-		       			final int fc = frameCount;
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								currentProgress.setValue(fc);
-								currentLabel.setText("Current file: " + String.format(fileNameBase, fc) + ", " + fc + " of " + f);
-							}
-						});
-					}
-				}
-			} finally {
-				try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 			}
 		} catch (IOException ex) {
 			Exceptions.add(ex);

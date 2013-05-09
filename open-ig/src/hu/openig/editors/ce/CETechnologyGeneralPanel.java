@@ -73,27 +73,27 @@ public class CETechnologyGeneralPanel extends CESlavePanel {
 		gl.setAutoCreateContainerGaps(true);
 		gl.setAutoCreateGaps(true);
 		
-		idField = new CEValueBox<JTextField>(get("tech.id"), new JTextField());
+		idField = new CEValueBox<>(get("tech.id"), new JTextField());
 
-		JComboBox<String> category = new JComboBox<String>();
+		JComboBox<String> category = new JComboBox<>();
 		for (ResearchSubCategory cat : ResearchSubCategory.values()) {
 			category.addItem(get(cat.toString()));
 		}
 		category.setSelectedIndex(-1);
-		categoryField = new CEValueBox<JComboBox<String>>(get("tech.category"), category); 
+		categoryField = new CEValueBox<>(get("tech.category"), category); 
 		
-		JComboBox<String> factory = new JComboBox<String>(new String[] {
+		JComboBox<String> factory = new JComboBox<>(new String[] {
 				get("SPACESHIP"), get("EQUIPMENT"), get("WEAPON"), get("BUILDING")
 		});
 		factory.setSelectedIndex(-1);
-		factoryField = new CEValueBox<JComboBox<String>>(get("tech.factory"), factory);
+		factoryField = new CEValueBox<>(get("tech.factory"), factory);
 
-		indexField = new CEValueBox<JTextField>(get("tech.index"), numberField());
+		indexField = new CEValueBox<>(get("tech.index"), numberField());
 		
 		productionField = CEValueBox.of(get("tech.production_cost"), numberField());
 		researchField = CEValueBox.of(get("tech.research_cost"), numberField());
 		
-		JComboBox<String> level = new JComboBox<String>(new String[] {
+		JComboBox<String> level = new JComboBox<>(new String[] {
 				get("tech.level.0"), get("tech.level.1"), get("tech.level.2"),
 				get("tech.level.3"), get("tech.level.4"), get("tech.level.5"),
 				get("tech.level.6")

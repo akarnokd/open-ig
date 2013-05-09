@@ -9,8 +9,8 @@
 package hu.openig.tools;
 
 import hu.openig.core.Func1;
-import hu.openig.utils.U;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -59,7 +59,7 @@ public final class IDAStarGOAP {
 	/** Caches the visited world states to avoid going down them again. */
 	static class TranspositionTable {
 		/** The state map. */
-		final Map<Integer, Entry> map = U.newHashMap();
+		final Map<Integer, Entry> map = new HashMap<>();
 		/**
 		 * Did we encounter this world state before?
 		 * @param model the model

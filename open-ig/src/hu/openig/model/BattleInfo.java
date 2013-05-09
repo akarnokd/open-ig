@@ -9,7 +9,6 @@
 package hu.openig.model;
 
 import hu.openig.core.SimulationSpeed;
-import hu.openig.utils.U;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -58,13 +57,13 @@ public class BattleInfo {
 	/** The number of fortifications destroyed. */
 	public int defenderFortificationLosses;
 	/** The structure losses. */
-	public final Set<SpacewarStructure> spaceLosses = U.newHashSet();
+	public final Set<SpacewarStructure> spaceLosses = new HashSet<>();
 	/** The ground unit losses. */
-	public final Set<GroundwarUnit> groundLosses = U.newHashSet();
+	public final Set<GroundwarUnit> groundLosses = new HashSet<>();
 	/** The original simulation speed before the battle.*/
 	public SimulationSpeed originalSpeed = SimulationSpeed.NORMAL;
 	/** The set of the allies of the attacker which can be controlled. */
-	public final Set<Player> attackerAllies = U.newHashSet();
+	public final Set<Player> attackerAllies = new HashSet<>();
 	/** The optional finish image resource id. */
 	public String rewardImage;
 	/** The optional reward display text. */
@@ -78,7 +77,7 @@ public class BattleInfo {
 	/** Show the landing marker? */
 	public boolean showLanding;
 	/** The set of other participating fleets. */
-	public final Set<Fleet> otherFleets = new HashSet<Fleet>();
+	public final Set<Fleet> otherFleets = new HashSet<>();
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

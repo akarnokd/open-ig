@@ -8,9 +8,8 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
-
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,5 +33,5 @@ public class BattleSpaceEntity {
 	/** The default hitpoints. */
 	public int hp;
 	/** The battle efficiency settings of this projector. */
-	public final List<BattleEfficiencyModel> efficiencies = U.newArrayList();
+	public final List<BattleEfficiencyModel> efficiencies = new ArrayList<>();
 }

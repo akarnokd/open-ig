@@ -50,6 +50,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -133,7 +134,7 @@ public class MultiplayerScreen extends JFrame {
 	/** UI component. */
 	private JSpinner timestepSpin;
 	/** The list of campaigns. */
-	final List<GameDefinition> campaigns = new ArrayList<GameDefinition>();
+	final List<GameDefinition> campaigns = new ArrayList<>();
 	/** UI component. */
 	private JComboBox<String> galaxyBox;
 	/** UI component. */
@@ -522,7 +523,7 @@ public class MultiplayerScreen extends JFrame {
 	private void initHost() {
 		JLabel localAddress = createLabel("multiplayer.settings.local_address");
 		localAddress.setFont(fontMedium);
-		localAddressBox = new JComboBox<String>();
+		localAddressBox = new JComboBox<>();
 		localAddressBox.setFont(fontMedium);
 		try {
 			boolean oneLoopback = false;
@@ -548,7 +549,7 @@ public class MultiplayerScreen extends JFrame {
 		
 		JLabel localPort = createLabel("multiplayer.settings.local_port");
 		localPort.setFont(fontMedium);
-		localPortBox = new JComboBox<String>();
+		localPortBox = new JComboBox<>();
 		localPortBox.setEditable(true);
 		localPortBox.setFont(fontMedium);
 		for (String port : config.serverPorts) {
@@ -610,7 +611,7 @@ public class MultiplayerScreen extends JFrame {
 	private void initJoin() {
 		JLabel remoteAddress = createLabel("multiplayer.settings.remote_address");
 		remoteAddress.setFont(fontMedium);
-		remoteAddressBox = new JComboBox<String>();
+		remoteAddressBox = new JComboBox<>();
 		remoteAddressBox.setEditable(true);
 		remoteAddressBox.setFont(fontMedium);
 		for (String s : config.clientAddresses) {
@@ -622,7 +623,7 @@ public class MultiplayerScreen extends JFrame {
 		
 		JLabel remotePort = createLabel("multiplayer.settings.remote_port");
 		remotePort.setFont(fontMedium);
-		remotePortBox = new JComboBox<String>();
+		remotePortBox = new JComboBox<>();
 		remotePortBox.setEditable(true);
 		remotePortBox.setFont(fontMedium);
 		for (String s : config.clientPorts) {
@@ -705,7 +706,7 @@ public class MultiplayerScreen extends JFrame {
 		
 		JLabel simulationSpeed = createLabel("multiplayer.settings.simulation_speed");
 		simulationSpeed.setFont(fontMedium);
-		simulationSpeedBox = new JComboBox<String>(new String[] {
+		simulationSpeedBox = new JComboBox<>(new String[] {
 			get("multiplayer.settings.speed_normal"),	
 			get("multiplayer.settings.speed_double"),	
 			get("multiplayer.settings.speed_quadruple")	
@@ -862,7 +863,7 @@ public class MultiplayerScreen extends JFrame {
 	void initGalaxy() {
 		findCampaigns();
 		JLabel galaxy = createLabel("skirmish.galaxy_template");
-		galaxyBox = new JComboBox<String>();
+		galaxyBox = new JComboBox<>();
 		galaxyBox.setFont(fontMedium);
 		galaxyInfo = new InfoLabel(commons.common().infoIcon);
 		
@@ -877,12 +878,12 @@ public class MultiplayerScreen extends JFrame {
 		galaxyPlanetCount.setFont(fontMedium);
 		
 		JLabel galaxyRaces = createLabel("skirmish.race_template");
-		galaxyRacesBox = new JComboBox<String>();
+		galaxyRacesBox = new JComboBox<>();
 		galaxyRacesBox.setFont(fontMedium);
 		galaxyRacesInfo = new InfoLabel(commons.common().infoIcon);
 		
 		JLabel technologyDef = createLabel("skirmish.tech_template");
-		technologyDefBox = new JComboBox<String>();
+		technologyDefBox = new JComboBox<>();
 		technologyDefBox.setFont(fontMedium);
 		technologyDefInfo = new InfoLabel(commons.common().infoIcon);
 		
@@ -906,7 +907,7 @@ public class MultiplayerScreen extends JFrame {
 		technologyLevelMaxSpin.setFont(fontMedium);
 
 		JLabel initialRelationLabel = createLabel("skirmish.initial_relation");
-		initialRelation = new JComboBox<String>();
+		initialRelation = new JComboBox<>();
 		
 		for (SkirmishDiplomaticRelation dr : SkirmishDiplomaticRelation.values()) {
 			initialRelation.addItem(get("skirmish.relation." + dr));
@@ -915,7 +916,7 @@ public class MultiplayerScreen extends JFrame {
 		initialRelation.setFont(fontMedium);
 		
 		JLabel initialDifficultyLabel = createLabel("skirmish.initial_difficulty");
-		initialDifficulty = new JComboBox<String>();
+		initialDifficulty = new JComboBox<>();
 		for (Difficulty value : Difficulty.values()) {
 			initialDifficulty.addItem(get("difficulty." + value));
 		}
@@ -1513,11 +1514,11 @@ public class MultiplayerScreen extends JFrame {
 		/** Allow changing the group? */
 		private IGCheckBox changeGroup;
 		/** The trait checkboxes. */
-		private final List<IGCheckBox2> traitCheckboxes = U.newArrayList();
+		private final List<IGCheckBox2> traitCheckboxes = new ArrayList<>();
 		/** The traits for each checkbox. */
-		private final List<Trait> traitList = U.newArrayList();
+		private final List<Trait> traitList = new ArrayList<>();
 		/** The list of icon images. */
-		private final List<BufferedImage> iconImages = U.newArrayList();
+		private final List<BufferedImage> iconImages = new ArrayList<>();
 		/** UI component. */
 		private JLabel traitPoints;
 		/** Indicate if the editor dialog is for the join mode. */
@@ -1560,7 +1561,7 @@ public class MultiplayerScreen extends JFrame {
 			setModal(true);
 			
 			final JLabel userType = createLabel("multiplayer.settings.user_type");
-			userTypeBox = new JComboBox<String>();
+			userTypeBox = new JComboBox<>();
 			userTypeBox.setFont(fontMedium);
 			userTypeBox.addItem(get("multiplayer.settings.client_user"));
 			for (SkirmishAIMode m : SkirmishAIMode.values()) {
@@ -1581,7 +1582,7 @@ public class MultiplayerScreen extends JFrame {
 			userPassphrase.setFont(fontMedium);
 			
 			JLabel empireRaceLabel = createLabel("multiplayer.settings.empire_race");
-			empireRace = new JComboBox<String>();
+			empireRace = new JComboBox<>();
 			empireRace.setFont(fontMedium);
 			
 			empireRaceStatic = new JLabel();
@@ -1599,9 +1600,9 @@ public class MultiplayerScreen extends JFrame {
 			changeGroup = createCheckBox("multiplayer.settings.change_groups");
 
 			JLabel iconsLabel = createLabel("multiplayer.settings.icons");
-			icons = new JComboBox<ImageIcon>();
+			icons = new JComboBox<>();
 			icons.setBackground(Color.BLACK);
-			iconNames = new ArrayList<String>();
+			iconNames = new ArrayList<>();
 
 			iconStatic = new JLabel();
 			iconStatic.setFont(fontMedium);
@@ -1877,7 +1878,7 @@ public class MultiplayerScreen extends JFrame {
 				userTypeBox.setSelectedIndex(1);
 			}
 			
-			Set<String> usedIcons = new HashSet<String>();
+			Set<String> usedIcons = new HashSet<>();
 			for (MultiplayerUser mu : playerModel) {
 				usedIcons.add(mu.iconRef);
 			}
@@ -1919,12 +1920,12 @@ public class MultiplayerScreen extends JFrame {
 				}
 				for (MultiplayerUser mu : playerModel) {
 					if (mu != user) { 
-						if (U.equal(mu.userName, un)) {
+						if (Objects.equals(mu.userName, un)) {
 							userName.requestFocusInWindow();
 							JOptionPane.showMessageDialog(this, get("multiplayer.settings.error_enter_unique_user_name"), getTitle(), JOptionPane.ERROR_MESSAGE);
 							return false;
 						} else
-						if (U.equal(mu.iconRef, iconNames.get(icons.getSelectedIndex()))) {
+						if (Objects.equals(mu.iconRef, iconNames.get(icons.getSelectedIndex()))) {
 							icons.requestFocusInWindow();
 							JOptionPane.showMessageDialog(this, get("multiplayer.settings.error_enter_unique_icon"), getTitle(), JOptionPane.ERROR_MESSAGE);
 							return false;
@@ -1941,7 +1942,7 @@ public class MultiplayerScreen extends JFrame {
 				user.passphrase = null;
 				for (MultiplayerUser mu : playerModel) {
 					if (mu != user) { 
-						if (U.equal(mu.iconRef, iconNames.get(icons.getSelectedIndex()))) {
+						if (Objects.equals(mu.iconRef, iconNames.get(icons.getSelectedIndex()))) {
 							icons.requestFocusInWindow();
 							JOptionPane.showMessageDialog(this, get("multiplayer.settings.error_enter_unique_icon"), getTitle(), JOptionPane.ERROR_MESSAGE);
 							return false;
@@ -2074,8 +2075,8 @@ public class MultiplayerScreen extends JFrame {
 			int points = 0;
 			loop:
 			while (!Thread.currentThread().isInterrupted()) {
-				Set<String> excludeIds = U.newHashSet();
-				Set<TraitKind> excludeKinds = U.newHashSet();
+				Set<String> excludeIds = new HashSet<>();
+				Set<TraitKind> excludeKinds = new HashSet<>();
 				
 				// collect exclusion settings
 				for (IGCheckBox2 tcb : traitCheckboxes) {
@@ -2103,14 +2104,13 @@ public class MultiplayerScreen extends JFrame {
 						}
 					}
 					throw new AssertionError("Points remained negative?!");
-				} else {
-					for (IGCheckBox2 tcb : traitCheckboxes) {
-						if (tcb.trait.cost > points && !tcb.isSelected()) {
-							tcb.setEnabled(false);
-						}
-					}
-					break;
 				}
+				for (IGCheckBox2 tcb : traitCheckboxes) {
+					if (tcb.trait.cost > points && !tcb.isSelected()) {
+						tcb.setEnabled(false);
+					}
+				}
+				break;
 			}
 			
 			traitPoints.setText(get("traits.available_points") + " " + points);			

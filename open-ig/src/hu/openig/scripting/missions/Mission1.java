@@ -17,8 +17,8 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.SoundType;
-import hu.openig.utils.U;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -67,7 +67,7 @@ public class Mission1 extends Mission {
 				{ "RadarTelescope", "FieldTelescope", "PhasedTelescope" }, 
 		};
 		boolean okay = true;
-		Set<String> buildingTypes = U.newHashSet();
+		Set<String> buildingTypes = new HashSet<>();
 		for (Building b : p.surface.buildings.iterable()) {
 			if (b.isOperational() /* && !b.isDamaged() */) {
 				buildingTypes.add(b.type.id);

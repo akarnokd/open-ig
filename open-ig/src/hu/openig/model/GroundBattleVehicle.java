@@ -38,6 +38,6 @@ public class GroundBattleVehicle extends GroundBattleUnit {
 	/** The next movement cell. */
 	public Integer moveY;
 	/** The path points. */
-	public final List<Point> path = new ArrayList<Point>();
+	public final List<Point> path = new ArrayList<>();
 
 }

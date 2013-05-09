@@ -9,12 +9,12 @@
 package hu.openig.tools;
 
 import hu.openig.utils.IOUtils;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.io.File;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public final class LabelIntegrator {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		Map<String, String> labels = U.newLinkedHashMap();
+		Map<String, String> labels = new LinkedHashMap<>();
 		File dest = new File("data/ru/labels.xml");
 		XElement xlabels = XElement.parseXML(dest);
 		for (XElement xentry : xlabels.childrenWithName("entry")) {

@@ -17,6 +17,9 @@ import hu.openig.utils.XElement;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -69,10 +72,10 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 		/** The label key. */
 		public String key;
 		/** The label content. */
-		public final Map<String, String> content = U.newHashMap();
+		public final Map<String, String> content = new HashMap<>();
 	}
 	/** The language index to code. */
-	final Map<Integer, String> languageIndex = U.newHashMap();
+	final Map<Integer, String> languageIndex = new HashMap<>();
 	/** The sorter. */
 	TableRowSorter<GenericTableModel<LabelEntry>> mainSorter;
 	/** The key field. */
@@ -82,7 +85,7 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 	/** The bottom panel. */
 	JPanel bottomPanel;
 	/** The text areas. */
-	final Map<String, CEValueBox<JTextArea>> textAreas = U.newHashMap();
+	final Map<String, CEValueBox<JTextArea>> textAreas = new HashMap<>();
 	/**
 	 * Constructs the panel.
 	 * @param context the context
@@ -107,7 +110,7 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 	/** @return creates the top panel. */
 	private JPanel createTopPanel() {
 		JLabel filterLabel = new JLabel(get("tech.filter"));
-		filter = new JComboBox<String>();
+		filter = new JComboBox<>();
 		filter.setEditable(true);
 		
 		JButton filterButton = new JButton(icon("/hu/openig/editors/res/Zoom16.gif"));
@@ -144,7 +147,7 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 		
 		mainTable = new JTable(mainModel);
 
-		mainSorter = new TableRowSorter<GenericTableModel<LabelEntry>>(mainModel);
+		mainSorter = new TableRowSorter<>(mainModel);
 		mainTable.setRowSorter(mainSorter);
 
 		JScrollPane mainScroll = new JScrollPane(mainTable);
@@ -249,7 +252,7 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 		classes[0] = ImageIcon.class;
 		classes[1] = String.class;
 		
-		List<String> names = U.newArrayList();
+		List<String> names = new ArrayList<>();
 		names.add("");
 		names.add(get("label.key"));
 		int k = 0;
@@ -442,7 +445,7 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 	 * @return true if untranslated present
 	 */
 	boolean isUntranslated(LabelEntry e) {
-		Set<String> strs = U.newHashSet();
+		Set<String> strs = new HashSet<>();
 		for (String xe : e.content.values()) {
 			strs.add(xe);
 		}

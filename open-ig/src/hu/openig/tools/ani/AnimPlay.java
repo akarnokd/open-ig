@@ -674,128 +674,123 @@ public final class AnimPlay {
 	 * @param progress the progress indicator callback.
 	 */
 	public static void transcodeToWav(final String infile, final String outFile, final ProgressCallback progress) {
-		try {
-			final RandomAccessFile rf = new RandomAccessFile(outFile, "rw");
-			try {
-				rf.write("RIFF".getBytes("Latin1"));
-				final long size1 = rf.getFilePointer();
-				rf.writeInt(rotate(0 + 36)); // WE write this value later
-				rf.write("WAVE".getBytes("Latin1"));
-				rf.write("fmt ".getBytes("Latin1"));
-				rf.writeInt(rotate(16));
-				rf.writeShort(rotateShort(1)); // audioformat
-				rf.writeShort(rotateShort(1)); // channels
-				rf.writeInt(rotate(22050)); // samplerate
-				rf.writeInt(rotate(22050)); // byterate
-				rf.writeShort(rotateShort(1)); // block alignment
-				rf.writeShort(rotateShort(8)); // bytes per sample
-				rf.write("data".getBytes("Latin1"));
-				final long size2 = rf.getFilePointer();
-				rf.writeInt(rotate(0)); // We write this value later
-				SpidyAniCallback callback = new SpidyAniCallback() {
-					/** The current frame index. */
-					private int frameCount;
-					/** The maximum frame count. */
-					private int maxFrameCount;
-					/** The total byte counter. */
-					private int byteCount;
-					@Override
-					public void audioData(byte[] data) {
-						try {
-							for (int i = 0; i < data.length; i++) {
-								data[i] = (byte)(data[i] + 128); // offset to unsigned
-							}
-							rf.write(data);
-							byteCount += data.length;
-						} catch (IOException ex) {
-							throw new RuntimeException(ex);
+		try (final RandomAccessFile rf = new RandomAccessFile(outFile, "rw")) {
+			rf.write("RIFF".getBytes("Latin1"));
+			final long size1 = rf.getFilePointer();
+			rf.writeInt(rotate(0 + 36)); // WE write this value later
+			rf.write("WAVE".getBytes("Latin1"));
+			rf.write("fmt ".getBytes("Latin1"));
+			rf.writeInt(rotate(16));
+			rf.writeShort(rotateShort(1)); // audioformat
+			rf.writeShort(rotateShort(1)); // channels
+			rf.writeInt(rotate(22050)); // samplerate
+			rf.writeInt(rotate(22050)); // byterate
+			rf.writeShort(rotateShort(1)); // block alignment
+			rf.writeShort(rotateShort(8)); // bytes per sample
+			rf.write("data".getBytes("Latin1"));
+			final long size2 = rf.getFilePointer();
+			rf.writeInt(rotate(0)); // We write this value later
+			SpidyAniCallback callback = new SpidyAniCallback() {
+				/** The current frame index. */
+				private int frameCount;
+				/** The maximum frame count. */
+				private int maxFrameCount;
+				/** The total byte counter. */
+				private int byteCount;
+				@Override
+				public void audioData(byte[] data) {
+					try {
+						for (int i = 0; i < data.length; i++) {
+							data[i] = (byte)(data[i] + 128); // offset to unsigned
 						}
+						rf.write(data);
+						byteCount += data.length;
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
 					}
+				}
 
-					@Override
-					public void fatal(Throwable t) {
-						t.printStackTrace();
-						stopped();
-					}
+				@Override
+				public void fatal(Throwable t) {
+					t.printStackTrace();
+					stopped();
+				}
 
-					@Override
-					public void finished() {
-						try {
-							// data size must be even!
-							if (byteCount % 2 == 1) {
-								rf.write(0x80);
-								byteCount++;
-							}
-							rf.seek(size1);
-							rf.writeInt(rotate(byteCount + 36));
-							rf.seek(size2);
-							rf.writeInt(rotate(byteCount));
-							rf.close();
-						} catch (IOException ex) {
-							throw new RuntimeException(ex);
+				@Override
+				public void finished() {
+					try {
+						// data size must be even!
+						if (byteCount % 2 == 1) {
+							rf.write(0x80);
+							byteCount++;
 						}
+						rf.seek(size1);
+						rf.writeInt(rotate(byteCount + 36));
+						rf.seek(size2);
+						rf.writeInt(rotate(byteCount));
+						rf.close();
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
 					}
+				}
 
-					@Override
-					public String getFileName() {
-						return infile;
+				@Override
+				public String getFileName() {
+					return infile;
+				}
+
+				@Override
+				public InputStream getNewInputStream() {
+					try {
+						return new FileInputStream(getFileName());
+					} catch (FileNotFoundException ex) {
+						throw new RuntimeException(ex);
 					}
+				}
 
-					@Override
-					public InputStream getNewInputStream() {
-						try {
-							return new FileInputStream(getFileName());
-						} catch (FileNotFoundException ex) {
-							throw new RuntimeException(ex);
+				@Override
+				public void imageData(int[] image) {
+					if (progress != null) {
+						progress.progress(frameCount, maxFrameCount);
+					}
+					frameCount++;
+				}
+
+				@Override
+				public void initialize(int width, int height, int frames,
+						int languageCode, double fps, int audioDelay) {
+					this.maxFrameCount = frames;
+					// introduce the audio delay as no sound
+					try {
+						int delay = (int)(audioDelay / fps * 22050);
+						byte[] silence = new byte[delay];
+						for (int i = 0; i < silence.length; i++) {
+							silence[i] = -128;
 						}
+						rf.write(silence);
+						byteCount += delay;
+					} catch (IOException ex) {
+						throw new RuntimeException(ex);
 					}
+				}
 
-					@Override
-					public void imageData(int[] image) {
-						if (progress != null) {
-							progress.progress(frameCount, maxFrameCount);
-						}
-						frameCount++;
-					}
+				@Override
+				public boolean isPaused() {
+					return false;
+				}
 
-					@Override
-					public void initialize(int width, int height, int frames,
-							int languageCode, double fps, int audioDelay) {
-						this.maxFrameCount = frames;
-						// introduce the audio delay as no sound
-						try {
-							int delay = (int)(audioDelay / fps * 22050);
-							byte[] silence = new byte[delay];
-							for (int i = 0; i < silence.length; i++) {
-								silence[i] = -128;
-							}
-							rf.write(silence);
-							byteCount += delay;
-						} catch (IOException ex) {
-							throw new RuntimeException(ex);
-						}
-					}
+				@Override
+				public boolean isStopped() {
+					return progress != null && progress.cancel();
+				}
 
-					@Override
-					public boolean isPaused() {
-						return false;
-					}
-
-					@Override
-					public boolean isStopped() {
-						return progress != null && progress.cancel();
-					}
-
-					@Override
-					public void stopped() {
-						finished();
-					}
-					
-				};
-				SpidyAniDecoder.decodeLoop(callback);
-			} finally {
-				rf.close();
-			}
+				@Override
+				public void stopped() {
+					finished();
+				}
+				
+			};
+			SpidyAniDecoder.decodeLoop(callback);
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}

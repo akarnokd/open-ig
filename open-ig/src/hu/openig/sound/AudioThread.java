@@ -64,7 +64,7 @@ public class AudioThread extends Thread {
 	 */
 	public AudioThread() {
 		super("AudioPlayback");
-		queue = new LinkedBlockingQueue<Data>();
+		queue = new LinkedBlockingQueue<>();
 		sdl = createAudioOutput();
 	}
 	/**

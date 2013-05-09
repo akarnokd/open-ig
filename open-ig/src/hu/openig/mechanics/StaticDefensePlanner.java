@@ -31,6 +31,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +57,7 @@ public class StaticDefensePlanner extends Planner {
 
 	@Override
 	protected void plan() {
-		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, BEST_PLANET);
 		for (AIPlanet planet : planets) {
 			if (managePlanet(planet)) {
@@ -107,7 +109,7 @@ public class StaticDefensePlanner extends Planner {
 			return false;
 		}
 		
-		List<Pred0> actions = new ArrayList<Pred0>();
+		List<Pred0> actions = new ArrayList<>();
 		
 		// FIXME how many barracks to build per difficulty
 		int defenseLimit = 1;
@@ -228,9 +230,8 @@ public class StaticDefensePlanner extends Planner {
 			if (p.invoke()) {
 				if (world.mainPlayer != this.p || world.money < world.autoBuildLimit) {
 					return true;
-				} else {
-					result = true;
 				}
+				result = true;
 			}
 		}
 		
@@ -278,7 +279,7 @@ public class StaticDefensePlanner extends Planner {
 	 * @return the set of factory types
 	 */
 	Set<String> getRequiredFactories() {
-		Set<String> result = U.newHashSet();
+		Set<String> result = new HashSet<>();
 		for (ResearchType rt : w.researches.values()) {
 			if (rt.race.contains(p.race) && rt.level <= w.level) {
 				result.add(rt.factory);
@@ -431,18 +432,17 @@ public class StaticDefensePlanner extends Planner {
 						}
 					});
 					return true;
-				} else {
-					// if no room, make it by demolishing a traders spaceport
-					for (final AIBuilding b : planet.buildings) {
-						if (b.type.id.equals("TradersSpaceport")) {
-							add(new Action0() {
-								@Override
-								public void invoke() {
-									controls.actionDemolishBuilding(planet.planet, b.building);
-								}
-							});
-							return true;
-						}
+				}
+				// if no room, make it by demolishing a traders spaceport
+				for (final AIBuilding b : planet.buildings) {
+					if (b.type.id.equals("TradersSpaceport")) {
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								controls.actionDemolishBuilding(planet.planet, b.building);
+							}
+						});
+						return true;
 					}
 				}
 			}
@@ -495,18 +495,17 @@ public class StaticDefensePlanner extends Planner {
 					}
 				});
 				return true;
-			} else {
-				// if the cheapest is cheaper than the best station, sell it
-				if (cheapest != null && cheapest.type.productionCost < station.productionCost) {
-					final AIInventoryItem fcheapest = cheapest;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionSellSatellite(planet.planet, fcheapest.type, 1);
-						}
-					});
-					return true;
-				}
+			}
+			// if the cheapest is cheaper than the best station, sell it
+			if (cheapest != null && cheapest.type.productionCost < station.productionCost) {
+				final AIInventoryItem fcheapest = cheapest;
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						controls.actionSellSatellite(planet.planet, fcheapest.type, 1);
+					}
+				});
+				return true;
 			}
 		}
 		return false;
@@ -589,7 +588,7 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action performed
 	 */
 	boolean checkRockets(AIPlanet planet) {
-		Map<ResearchType, Integer> demand = U.newHashMap();
+		Map<ResearchType, Integer> demand = new HashMap<>();
 		boolean result = false;
 		// collect rocket demands
 		for (final AIInventoryItem ii : planet.inventory) {

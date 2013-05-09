@@ -98,7 +98,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 			MessageArrayItemFactory<? extends T> itemFactory) throws IOException {
 		Object r = client.query(request);
 		MessageArray ma = MessageUtils.expectArray(r, itemFactory.arrayName());
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 		try {
 			for (Object o : ma) {
 				if (o instanceof MessageObject) {
@@ -203,7 +203,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		Object param1 = client.query(request);
 		MessageArray ma = MessageUtils.expectArray(param1, "INVENTORIES");
 		
-		Map<String, Integer> map = new HashMap<String, Integer>();
+		Map<String, Integer> map = new HashMap<>();
 		try {
 			for (Object o : ma) {
 				MessageObject mo = MessageUtils.expectObject(o, "ENTRY");

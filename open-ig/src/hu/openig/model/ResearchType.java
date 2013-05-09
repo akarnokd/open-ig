@@ -46,7 +46,7 @@ public class ResearchType {
 	/** The cost of production. */
 	public int productionCost;
 	/** The target races. */
-	public final Set<String> race = new HashSet<String>();
+	public final Set<String> race = new HashSet<>();
 	/** The level when this item becomes available for research. Zero means always available. */
 	public int level;
 	/** The civil lab requirements. */
@@ -66,9 +66,9 @@ public class ResearchType {
 	/** Do not allow producing this technology. */
 	public boolean nobuild;
 	/** The optional prerequisites. */
-	public final List<ResearchType> prerequisites = new ArrayList<ResearchType>();
+	public final List<ResearchType> prerequisites = new ArrayList<>();
 	/** The optional properties. */
-	public final Map<String, String> properties = new HashMap<String, String>();
+	public final Map<String, String> properties = new HashMap<>();
 	// -------------------------------------------------
 	// Resources for the Equipment screen.
 	/** The equipment image to display as a fleet listing (left panel). Uses the <code>_tiny</code> postfix. */
@@ -80,7 +80,7 @@ public class ResearchType {
 	 */
 	public BufferedImage equipmentCustomizeImage;
 	/** The available equipment slots. */
-	public final Map<String, EquipmentSlot> slots = new LinkedHashMap<String, EquipmentSlot>();
+	public final Map<String, EquipmentSlot> slots = new LinkedHashMap<>();
 	/** The vehicle capacity parameter name. */
 	public static final String PARAMETER_VEHICLES = "vehicles";
 	/** The shield percentage parameter name. */

@@ -27,5 +27,5 @@ public class TalkState {
 	/** The resource name of the picture. */
 	public String pictureName;
 	/** The available talk speeches. */
-	public final List<TalkSpeech> speeches = new ArrayList<TalkSpeech>();
+	public final List<TalkSpeech> speeches = new ArrayList<>();
 }

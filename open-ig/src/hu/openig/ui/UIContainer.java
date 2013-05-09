@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class UIContainer extends UIComponent {
 	/** The list of sub-components. */
-	protected final List<UIComponent> components = new ArrayList<UIComponent>();
+	protected final List<UIComponent> components = new ArrayList<>();
 	/** The currently focused component, which receives keyboard events. */
 	protected UIComponent focused;
 	/**

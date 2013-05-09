@@ -144,21 +144,20 @@ public final class UPnPTestMain {
 		if (activeGW.getSpecificPortMappingEntry(SAMPLE_PORT, "TCP", portMapping)) {
 			addLogline("Port " + SAMPLE_PORT + " is already mapped. Aborting test.");
 			return;
-		} else {
-			addLogline("Mapping free. Sending port mapping request for port " + SAMPLE_PORT);
-
-			// test static lease duration mapping
-			if (activeGW.addPortMapping(SAMPLE_PORT, SAMPLE_PORT, localAddress.getHostAddress(), "TCP", "test")) {
-				addLogline("Mapping SUCCESSFUL. Waiting " + WAIT_TIME + " seconds before removing mapping...");
-				Thread.sleep(1000 * WAIT_TIME);
-
-				if (activeGW.deletePortMapping(SAMPLE_PORT, "TCP")) {
-					addLogline("Port mapping removed, test SUCCESSFUL");
-				} else {
-					addLogline("Port mapping removal FAILED");
-				}
-			}
 		} 
+		addLogline("Mapping free. Sending port mapping request for port " + SAMPLE_PORT);
+
+		// test static lease duration mapping
+		if (activeGW.addPortMapping(SAMPLE_PORT, SAMPLE_PORT, localAddress.getHostAddress(), "TCP", "test")) {
+			addLogline("Mapping SUCCESSFUL. Waiting " + WAIT_TIME + " seconds before removing mapping...");
+			Thread.sleep(1000 * WAIT_TIME);
+
+			if (activeGW.deletePortMapping(SAMPLE_PORT, "TCP")) {
+				addLogline("Port mapping removed, test SUCCESSFUL");
+			} else {
+				addLogline("Port mapping removal FAILED");
+			}
+		}
 
 		addLogline("Stopping weupnp");
 	}

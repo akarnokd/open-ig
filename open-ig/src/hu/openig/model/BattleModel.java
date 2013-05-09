@@ -10,8 +10,9 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
-import hu.openig.utils.U;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,29 +22,29 @@ import java.util.Map;
  */
 public class BattleModel {
 	/** A map from building id to (map from race to list of turret definition). */
-	public final Map<String, Map<String, List<BattleGroundTurret>>> turrets = U.newHashMap();
+	public final Map<String, Map<String, List<BattleGroundTurret>>> turrets = new HashMap<>();
 	/** The space entity definitions. */
-	public final Map<String, BattleSpaceEntity> spaceEntities = U.newHashMap();
+	public final Map<String, BattleSpaceEntity> spaceEntities = new HashMap<>();
 	/** The ground entity definitions. */
-	public final Map<String, BattleGroundVehicle> groundEntities = U.newHashMap();
+	public final Map<String, BattleGroundVehicle> groundEntities = new HashMap<>();
 	/** The map from projectile ID to [rotation][fire-phase] images. */
-	public final Map<String, BattleProjectile> projectiles = U.newHashMap();
+	public final Map<String, BattleProjectile> projectiles = new HashMap<>();
 	/** The ground projectors definitions. */
-	public final Map<String, BattleGroundProjector> groundProjectors = U.newHashMap();
+	public final Map<String, BattleGroundProjector> groundProjectors = new HashMap<>();
 	/** The ground shield definitions. */
-	public final Map<String, BattleGroundShield> groundShields = U.newHashMap();
+	public final Map<String, BattleGroundShield> groundShields = new HashMap<>();
 	/** The space battle layouts. */
-	public final List<BattleSpaceLayout> layouts = U.newArrayList();
+	public final List<BattleSpaceLayout> layouts = new ArrayList<>();
 	/** The ground hit points of buildings per player. */
-	public final Map<Pair<String, String>, Integer> groundHitpoints = U.newHashMap();
+	public final Map<Pair<String, String>, Integer> groundHitpoints = new HashMap<>();
 	/** The space hitpoints of buildings. */
-	public final Map<Pair<String, String>, Integer> spaceHitpoints = U.newHashMap();
+	public final Map<Pair<String, String>, Integer> spaceHitpoints = new HashMap<>();
 	/** Additional technology properties. */
-	public final Map<Pair<String, String>, Map<String, String>> properties = U.newHashMap();
+	public final Map<Pair<String, String>, Map<String, String>> properties = new HashMap<>();
 	/** A pair of anti-ecm, ecm to hit probability per difficulty. */
-	public final Map<Difficulty, Map<Pair<Integer, Integer>, Double>> ecmMatrix = U.newHashMap();
+	public final Map<Difficulty, Map<Pair<Integer, Integer>, Double>> ecmMatrix = new HashMap<>();
 	/** The probabilities for backfiring, if not present, there is no limit. */
-	public final Map<Difficulty, Double> backfires = U.newHashMap();
+	public final Map<Difficulty, Double> backfires = new HashMap<>();
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.
@@ -53,12 +54,12 @@ public class BattleModel {
 	public void addTurret(String buildingId, String race, BattleGroundTurret turret) {
 		Map<String, List<BattleGroundTurret>> bt = turrets.get(buildingId);
 		if (bt == null) {
-			bt = U.newHashMap();
+			bt = new HashMap<>();
 			turrets.put(buildingId, bt);
 		}
 		List<BattleGroundTurret> ts = bt.get(race);
 		if (ts == null) {
-			ts = U.newArrayList();
+			ts = new ArrayList<>();
 			bt.put(race, ts);
 		}
 		ts.add(turret);
@@ -139,7 +140,7 @@ public class BattleModel {
 		Pair<String, String> key = Pair.of(technology, player);
 		Map<String, String> kv = properties.get(key);
 		if (kv == null) {
-			kv = U.newHashMap();
+			kv = new HashMap<>();
 			properties.put(key, kv);
 		}
 		kv.put(property, value);

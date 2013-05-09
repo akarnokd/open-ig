@@ -8,9 +8,9 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -29,9 +29,9 @@ public class Trait {
 	/** The cost of the trait. */
 	public int cost;
 	/** Set of traits which should be unavailable when this trait is selected. */
-	public final Set<String> excludeIds = U.newHashSet();
+	public final Set<String> excludeIds = new HashSet<>();
 	/** Set of trait kinds which should be unavailable when this trait is selected. */
-	public final Set<TraitKind> excludeKinds = U.newHashSet();
+	public final Set<TraitKind> excludeKinds = new HashSet<>();
 	/** Parameter. */
 	public double value;
 	/** 

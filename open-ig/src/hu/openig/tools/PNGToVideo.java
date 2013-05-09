@@ -57,16 +57,13 @@ public final class PNGToVideo {
 	public static void convert(final String filename, int start, int count, double fps,
 			String output) throws IOException {
 		
-		Ani2009Writer out = new Ani2009Writer(new File(output), fps, count, new Func1E<Integer, BufferedImage, IOException>() {
+		try (Ani2009Writer out = new Ani2009Writer(new File(output), fps, count, new Func1E<Integer, BufferedImage, IOException>() {
 			@Override
 			public BufferedImage invoke(Integer value) throws IOException {
 				return get(filename, value);
 			}
-		});
-		try {
+		})) {
 			out.run();
-		} finally {
-			out.close();
 		}
 	}
 	/**

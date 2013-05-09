@@ -35,6 +35,8 @@ import hu.openig.utils.U;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -344,7 +346,7 @@ public class OffensePlanner extends Planner {
 		}
 		final AIFleet fleet = Collections.min(upgradeCandidates, firepowerAsc);
 
-		Map<ResearchType, Integer> demands = U.newHashMap();
+		Map<ResearchType, Integer> demands = new HashMap<>();
 
 		for (ResearchType rt : fighters) {
 			demands.put(rt, world.fighterLimit);
@@ -373,7 +375,7 @@ public class OffensePlanner extends Planner {
 		demands.putAll(plan.demand);
 		
 		// create equipment and upgrade the fleet
-		Set<ResearchMainCategory> running = U.newHashSet();
+		Set<ResearchMainCategory> running = new HashSet<>();
 		boolean bringin = false;
 		
 		List<Map.Entry<ResearchType, Integer>> demandList = U.sort(demands.entrySet(), new Comparator<Map.Entry<ResearchType, Integer>>() {
@@ -385,7 +387,7 @@ public class OffensePlanner extends Planner {
 				return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
 			}
 		});
-		Set<ResearchType> upgradeSet = U.newHashSet();
+		Set<ResearchType> upgradeSet = new HashSet<>();
 		for (Map.Entry<ResearchType, Integer> e : demandList) {
 			ResearchType rt = e.getKey();
 			if (!running.contains(rt.category.main)) {
@@ -507,9 +509,8 @@ public class OffensePlanner extends Planner {
 				produce = Math.min(produce, limit);
 				placeProductionOrder(rt, produce);
 				return UpgradeResult.ACTION;
-			} else {
-				return UpgradeResult.DEPLOY; 
 			}
+			return UpgradeResult.DEPLOY; 
 		}
 		return UpgradeResult.CONTINUE;
 	}
@@ -526,13 +527,13 @@ public class OffensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkSellOldTech() {
-		Set<ResearchType> inuse = U.newHashSet();
+		Set<ResearchType> inuse = new HashSet<>();
 		for (Production prod : world.productions.values()) {
 			inuse.add(prod.type);
 		}
 		
-		Map<String, Pred1<ResearchType>> filters = U.newHashMap();
-		Map<String, ResearchType> bestValue = U.newHashMap();
+		Map<String, Pred1<ResearchType>> filters = new HashMap<>();
+		Map<String, ResearchType> bestValue = new HashMap<>();
 		filters.put("Tank", new Pred1<ResearchType>() {
 			@Override
 			public Boolean invoke(ResearchType value) {

@@ -30,11 +30,11 @@ import java.util.concurrent.ExecutorService;
  */
 public class BuildingModel {
 	/** The list of all building types. Maps from building ID to building type definition. */
-	public final Map<String, BuildingType> buildings = new LinkedHashMap<String, BuildingType>();
+	public final Map<String, BuildingType> buildings = new LinkedHashMap<>();
 	/** The road tile map from tech id to road type to tile. */
-	public final Map<String, Map<RoadType, Tile>> roadTiles = new HashMap<String, Map<RoadType, Tile>>();
+	public final Map<String, Map<RoadType, Tile>> roadTiles = new HashMap<>();
 	/** The road tile to road type reverse lookup table. */
-	public final Map<String, Map<Tile, RoadType>> tileRoads = new HashMap<String, Map<Tile, RoadType>>();
+	public final Map<String, Map<Tile, RoadType>> tileRoads = new HashMap<>();
 	/** The configuration. */
 	protected final Configuration config;
 	/**
@@ -76,7 +76,7 @@ public class BuildingModel {
 			XElement scaff = buildings.childElement("scaffolding");
 			XElement scaffGraph = scaff.childElement("graphics");
 			String scaffBase = scaffGraph.get("base");
-			Map<String, Scaffolding> scaffoldings = new HashMap<String, Scaffolding>();
+			Map<String, Scaffolding> scaffoldings = new HashMap<>();
 			for (XElement scaffTech : scaffGraph.childrenWithName("tech")) {
 				String id = scaffTech.get("id");
 				final Scaffolding scaffolding = new Scaffolding();
@@ -252,7 +252,7 @@ public class BuildingModel {
 			XElement roads = buildings.childElement("roads");
 			XElement graph = roads.childElement("graphics");
 			String roadBase = graph.get("base");
-			List<String> techs = new ArrayList<String>();
+			List<String> techs = new ArrayList<>();
 			for (XElement e : graph.childrenWithName("tech")) {
 				techs.add(e.get("id"));
 			}
@@ -298,14 +298,14 @@ public class BuildingModel {
 	synchronized void addRoadType(String rid, RoadType rt, Tile tile) {
 		Map<RoadType, Tile> tiles = roadTiles.get(rid);
 		if (tiles == null) {
-			tiles = new HashMap<RoadType, Tile>();
+			tiles = new HashMap<>();
 			roadTiles.put(rid, tiles);
 		}
 		tiles.put(rt, tile);
 		
 		Map<Tile, RoadType> roads = tileRoads.get(rid);
 		if (roads == null) {
-			roads = new HashMap<Tile, RoadType>();
+			roads = new HashMap<>();
 			tileRoads.put(rid, roads);
 		}
 		roads.put(tile, rt);

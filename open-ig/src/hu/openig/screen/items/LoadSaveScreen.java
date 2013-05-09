@@ -1578,7 +1578,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Start the list population worker. */
 	void startWorker() {
 		listWorker = new SwingWorker<Void, Void>() {
-			final List<FileItem> flist = new ArrayList<FileItem>();
+			final List<FileItem> flist = new ArrayList<>();
 			@Override
 			protected Void doInBackground() throws Exception {
 				try {
@@ -1621,7 +1621,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		/** The selected row. */
 		FileItem selected;
 		/** The file items. */
-		final List<FileItem> items = new ArrayList<FileItem>();
+		final List<FileItem> items = new ArrayList<>();
 		/** The row height. */
 		int rowHeight = 18;
 		/** The text height. */
@@ -1865,7 +1865,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		if (files == null) {
 			return;
 		}
-		Set<String> saveSet = new HashSet<String>();
+		Set<String> saveSet = new HashSet<>();
 		for (File f : files) {
 			String n = f.getName();
 			if (n.startsWith("savex-")) {
@@ -1879,7 +1879,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			
 		}
 		
-		Deque<String> queue = new LinkedList<String>(saveSet);
+		Deque<String> queue = new LinkedList<>(saveSet);
 
 		SimpleDateFormat sdf0 = new SimpleDateFormat("MM-dd HH:mm:ss");
 

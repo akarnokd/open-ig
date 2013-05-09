@@ -32,7 +32,6 @@ import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.World;
-import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -192,7 +191,7 @@ public abstract class Planner {
 		this.controls = controls;
 		this.p = world.player;
 		this.w = p.world;
-		this.applyActions = new ArrayList<Action0>();
+		this.applyActions = new ArrayList<>();
 	}
 	/**
 	 * Execute the planning and return the action list.
@@ -273,7 +272,7 @@ public abstract class Planner {
 			BuildingSelector selector, 
 			BuildingOrder order, boolean upgradeFirst) {
 		// try to upgrade or build a new power plant
-		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, planetOrder);
 		for (final AIPlanet planet : planets) {
 			if (planet.statistics.constructing) {
@@ -294,7 +293,7 @@ public abstract class Planner {
 	 * @return the shuffled collection
 	 */
 	<T> List<T> shuffle(Collection<? extends T> collection) {
-		List<T> result = new ArrayList<T>(collection);
+		List<T> result = new ArrayList<>(collection);
 		ModelUtils.shuffle(result);
 		return result;
 	}
@@ -589,7 +588,7 @@ public abstract class Planner {
 	 * @return the list of fleets
 	 */
 	List<AIFleet> findFleetsFor(FleetTask forTask, Func1<AIFleet, Boolean> filter) {
-		List<AIFleet> result = new ArrayList<AIFleet>();
+		List<AIFleet> result = new ArrayList<>();
 		for (AIFleet f : world.ownFleets) {
 			if (f.task.ordinal() > forTask.ordinal()) {
 				if (filter == null || filter.invoke(f)) {
@@ -606,7 +605,7 @@ public abstract class Planner {
 	 * @return the list of fleets
 	 */
 	List<AIFleet> findFleetsWithTask(FleetTask withTask, Func1<AIFleet, Boolean> filter) {
-		List<AIFleet> result = new ArrayList<AIFleet>();
+		List<AIFleet> result = new ArrayList<>();
 		for (AIFleet f : world.ownFleets) {
 			if (f.task == withTask) {
 				if (filter == null || filter.invoke(f)) {
@@ -628,7 +627,7 @@ public abstract class Planner {
 			// check if we have orbital factory in inventory, deploy it
 			final Pair<Integer, ResearchType> orbital = world.inventoryCount("OrbitalFactory");
 			if (orbital.first > 0) {
-				List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+				List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 				Collections.sort(planets, BEST_PLANET);
 				
 				if (deployOrbitalFactory(orbital.second, planets)) {
@@ -681,7 +680,7 @@ public abstract class Planner {
 		final BuildingType ms = findBuilding("MilitarySpaceport");
 		// check if we can afford it
 		if (ms.cost <= world.money) {
-			List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+			List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 			Collections.shuffle(planets);
 			// try building one somewhere randomly
 			for (final AIPlanet planet : planets) {
@@ -806,7 +805,7 @@ public abstract class Planner {
 	 * @return true if action taken
 	 */
 	protected boolean checkProduction(Map<ResearchType, Integer> demand) {
-		List<ResearchType> rts = new ArrayList<ResearchType>(demand.keySet());
+		List<ResearchType> rts = new ArrayList<>(demand.keySet());
 		if (!isAnyProduction(rts)) {
 			Collections.sort(rts, ResearchType.EXPENSIVE_FIRST);
 			for (ResearchType rt : rts) {
@@ -851,9 +850,9 @@ public abstract class Planner {
 		/** The best rocket sled technology. */
 		ResearchType bestSled = null;
 		/** The current tank in inventory. */
-		final NavigableSet<ResearchType> currentTank = new TreeSet<ResearchType>(ResearchType.EXPENSIVE_FIRST);
+		final NavigableSet<ResearchType> currentTank = new TreeSet<>(ResearchType.EXPENSIVE_FIRST);
 		/** The current sled in inventory. */
-		final NavigableSet<ResearchType> currentSled = new TreeSet<ResearchType>(ResearchType.EXPENSIVE_FIRST);
+		final NavigableSet<ResearchType> currentSled = new TreeSet<>(ResearchType.EXPENSIVE_FIRST);
 		/**
 		 * Check if we have better tanks or vehicles.
 		 * @param inv the inventory
@@ -911,7 +910,7 @@ public abstract class Planner {
 	 * @return the planet with the spaceport
 	 */
 	public AIPlanet findBestMilitarySpaceport() {
-		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, BEST_PLANET);
 		for (AIPlanet p : planets) {
 			if (p.statistics.hasMilitarySpaceport) {
@@ -927,7 +926,7 @@ public abstract class Planner {
 	 * @return the planet with the spaceport
 	 */
 	public AIPlanet findClosestMilitarySpaceport(final double x, final double y) {
-		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
@@ -949,7 +948,7 @@ public abstract class Planner {
 	 * @return the list of available research
 	 */
 	public List<ResearchType> availableResearchOf(EnumSet<ResearchSubCategory> categories) {
-		List<ResearchType> result = U.newArrayList();
+		List<ResearchType> result = new ArrayList<>();
 		for (ResearchType rt : world.availableResearch) {
 			if (categories.contains(rt.category)) {
 				result.add(rt);

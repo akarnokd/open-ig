@@ -42,7 +42,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	/** The fleet inventory: ships and tanks. */
 	public final InventoryItems inventory = new InventoryItems();
 	/** The current list of movement waypoints. */
-	public final List<Point2D.Double> waypoints = new ArrayList<Point2D.Double>();
+	public final List<Point2D.Double> waypoints = new ArrayList<>();
 	/** If the fleet should follow the other fleet. */
 	public Fleet targetFleet;
 	/** If the fleet should move to the planet. */
@@ -311,7 +311,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @return result the items added
 	 */
 	public List<InventoryItem> addInventory(ResearchType type, int amount) {
-		List<InventoryItem> result = new ArrayList<InventoryItem>();
+		List<InventoryItem> result = new ArrayList<>();
 		if (type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 			|| type.category == ResearchSubCategory.WEAPONS_TANKS
 			|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
@@ -334,7 +334,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	}
 	/** @return the non-fighter and non-vehicular inventory items. */
 	public List<InventoryItem> getSingleItems() {
-		List<InventoryItem> result = new ArrayList<InventoryItem>();
+		List<InventoryItem> result = new ArrayList<>();
 		for (InventoryItem ii : inventory.iterable()) {
 			if (ii.type.category != ResearchSubCategory.SPACESHIPS_FIGHTERS
 					&& ii.type.category != ResearchSubCategory.WEAPONS_TANKS
@@ -383,7 +383,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @return the list of nearby fleets
 	 */
 	public List<Fleet> fleetsInRange(float limit) {
-		List<Fleet> result = new ArrayList<Fleet>();
+		List<Fleet> result = new ArrayList<>();
 		for (Fleet f : owner.fleets.keySet()) {
 			if (f.owner == owner && f != this) {
 				double dist = (x - f.x) * (x - f.x) + (y - f.y) * (y - f.y);
@@ -407,7 +407,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		int vehicleCount = 0;
 		int vehicleMax = 0;
 		int result = 0;
-		List<InventoryItem> veh = new ArrayList<InventoryItem>();
+		List<InventoryItem> veh = new ArrayList<>();
 		for (InventoryItem fii : inventory.iterable()) {
 			if (fii.type.category == ResearchSubCategory.WEAPONS_TANKS
 					|| fii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
@@ -498,7 +498,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			vehicleMax -= count;
 		}
 		if (vehicleMax > 0) {
-			List<ResearchType> remaining = U.newArrayList();
+			List<ResearchType> remaining = new ArrayList<>();
 			int max = Math.max(plan.tanks.size(), plan.sleds.size());
 			for (int i = 1; i < max; i++) {
 				if (i < plan.tanks.size()) {
@@ -889,7 +889,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			owner.world.infectedFleets.remove(id);
 		}
 		
-		Set<Integer> current = new HashSet<Integer>();
+		Set<Integer> current = new HashSet<>();
 		for (InventoryItemStatus iis : fs.inventory) {
 			InventoryItem ii = inventory.findById(iis.id);
 			if (ii == null) {

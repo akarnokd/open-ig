@@ -12,8 +12,10 @@ import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.utils.U;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,7 @@ public class InventoryItem {
 	/** The optional tag used by the AI or scripting to remember a concrete inventory item. */
 	public String tag;
 	/** The fleet's inventory slots. */
-	public final Map<String, InventorySlot> slots = new LinkedHashMap<String, InventorySlot>();
+	public final Map<String, InventorySlot> slots = new LinkedHashMap<>();
 	/** Optional nickname of this ship. */
 	public String nickname;
 	/** The nickname index of this ship in case of redundancy. */
@@ -266,7 +268,7 @@ public class InventoryItem {
 		nickname = null;
 		nicknameIndex = 0;
 		
-		Map<String, IntValue> counts = U.newHashMap();
+		Map<String, IntValue> counts = new HashMap<>();
 		for (String nn : owner.nicknames) {
 			counts.put(nn, new IntValue());
 		}
@@ -284,7 +286,7 @@ public class InventoryItem {
 			}
 		}
 		// order usage counts
-		List<Pair<String, IntValue>> countsOrdered = U.newArrayList();
+		List<Pair<String, IntValue>> countsOrdered = new ArrayList<>();
 		for (Map.Entry<String, IntValue> e : counts.entrySet()) {
 			countsOrdered.add(Pair.of(e.getKey(), e.getValue()));
 		}

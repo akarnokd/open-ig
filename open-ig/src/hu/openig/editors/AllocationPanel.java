@@ -100,7 +100,7 @@ public class AllocationPanel extends JPanel {
 		
 		apply = new JButton("Apply");
 		refresh = new JButton("Refresh");
-		strategies = new JComboBox<ResourceAllocationStrategy>(ResourceAllocationStrategy.values());
+		strategies = new JComboBox<>(ResourceAllocationStrategy.values());
 		
 		workerDemand = new JTextField(6);
 		workerDemand.setEditable(false);

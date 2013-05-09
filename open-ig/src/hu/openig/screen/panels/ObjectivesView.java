@@ -18,6 +18,7 @@ import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -180,7 +181,7 @@ public class ObjectivesView extends UIComponent {
 	 * @return the delta y
 	 */
 	int drawText(Graphics2D g2, int x, int y, int w, int size, int color, String text) {
-		List<String> lines = U.newArrayList();
+		List<String> lines = new ArrayList<>();
 		commons.text().wrapText(text, w, size, lines);
 		int dy = 0;
 		for (String s : lines) {
@@ -225,7 +226,7 @@ public class ObjectivesView extends UIComponent {
 		
 		int h = 0;
 		if (titleWidth > w) {
-			List<String> lines = U.newArrayList();
+			List<String> lines = new ArrayList<>();
 			commons.text().wrapText(o.title, w, 14, lines);
 			h += lines.size() * 17 + 3;
 		} else {
@@ -234,7 +235,7 @@ public class ObjectivesView extends UIComponent {
 		
 		if (descriptionWidth > 0) {
 			if (descriptionWidth > w) {
-				List<String> lines = U.newArrayList();
+				List<String> lines = new ArrayList<>();
 				commons.text().wrapText(o.description, w, 10, lines);
 				h += lines.size() * 13;
 			} else {

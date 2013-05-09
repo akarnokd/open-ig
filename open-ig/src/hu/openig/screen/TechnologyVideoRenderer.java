@@ -20,9 +20,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.LockSupport;
 import java.util.zip.GZIPInputStream;
@@ -39,13 +36,13 @@ public class TechnologyVideoRenderer {
 	/** The associated video. */
 	protected final ResourcePlace video;
 	/** The technology frames. */
-	protected List<BufferedImage> images = new ArrayList<BufferedImage>();
+	protected List<BufferedImage> images = new ArrayList<>();
 	/** The frames per second override. */
 	public Double fpsOverride;
 	/** The action to invoke on the EDT for each frame. */
 	public final Action1<BufferedImage> onFrame;
-	/** The future for the video runnable. */
-	protected Future<Closeable> videoRun;
+	/** The handle to close the video loop. */
+	protected Closeable videoRun;
 	/** The common resources. */
 	private final CommonResources commons;
 	/**
@@ -65,10 +62,10 @@ public class TechnologyVideoRenderer {
 	 * @param pool the scheduler
 	 */
 	public void start(final ScheduledExecutorService pool) {
-		videoRun = pool.submit(new Callable<Closeable>() {
+		pool.execute(new Runnable() {
 			@Override
-			public Closeable call() throws Exception {
-				return prepare(pool);
+			public void run() {
+				prepare();
 			}
 		});
 	}
@@ -76,31 +73,22 @@ public class TechnologyVideoRenderer {
 	public void stop() {
 		stopped = true;
 		try {
-			Closeable loop = videoRun.get();
-			if (loop != null) {
-				try {
-					loop.close();
-				} catch (IOException ex) {
-					// ignored
-				}
+			Closeable c = videoRun;
+			videoRun = null;
+			if (c != null) {
+				c.close();
 			}
-		} catch (InterruptedException ex) {
-			
-		} catch (ExecutionException ex) {
-			Exceptions.add(ex);
+		} catch (IOException ex) {
 		}
 	}
 	/**
 	 * The main decoding loop.
-	 * @param pool the scheduler pool
-	 * @return the future representing the frame loop
 	 */
-	Closeable prepare(final ScheduledExecutorService pool) {
+	void prepare() {
 		double fps = 0.0;
 		int frames = 0;
 		try {
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
-			try {
+			try (DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024))) {
 				int w = Integer.reverseBytes(in.readInt());
 				int h = Integer.reverseBytes(in.readInt());
 				frames = Integer.reverseBytes(in.readInt());
@@ -158,28 +146,30 @@ public class TechnologyVideoRenderer {
 		       			frameCount++;
 					}
 				}
-			} finally {
-				try { in.close(); } catch (IOException ex) {  }
 			}
 		} catch (Throwable ex) {
 			Exceptions.add(ex);
 		}
 		if (images.size() > 0 && !stopped) {
 			final int frameSize = frames; 
-			int delay = (((int)(1000 / fps)) / 25) * 25; // round frames down
-			Closeable t = commons.register(delay, new Action0() {
-				int frameIndex = 0;
+			final int delay = (((int)(1000 / fps)) / 25) * 25; // round frames down
+			SwingUtilities.invokeLater(new Runnable() {
 				@Override
-				public void invoke() {
-					if (!stopped) {
-						final BufferedImage fimg = images.get(frameIndex);
-						onFrame.invoke(fimg);
-						frameIndex = (frameIndex < frameSize - 1) ? frameIndex + 1 : 0;
+				public void run() {
+					if (stopped) {
+						return;
 					}
+					videoRun = commons.register(delay, new Action0() {
+						int frameIndex = 0;
+						@Override
+						public void invoke() {
+							final BufferedImage fimg = images.get(frameIndex);
+							onFrame.invoke(fimg);
+							frameIndex = (frameIndex < frameSize - 1) ? frameIndex + 1 : 0;
+						}
+					});
 				}
 			});
-			return t;
 		}
-		return null;
 	}
 }

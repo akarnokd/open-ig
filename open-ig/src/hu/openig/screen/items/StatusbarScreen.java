@@ -39,7 +39,6 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -48,6 +47,7 @@ import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Closeable;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -728,33 +728,32 @@ public class StatusbarScreen extends ScreenBase {
 			int idx = msgText.indexOf("%s");
 			if (idx < 0) {
 				return commons.text().getTextWidth(10, msgText);
-			} else {
-				String pre = msgText.substring(0, idx);
-				String post = msgText.substring(idx + 2);
-				String param = "";
-				if (currentMessage.targetPlanet != null) {
-					param = currentMessage.targetPlanet.name;
-				} else
-				if (currentMessage.targetFleet != null) {
-					param = currentMessage.targetFleet.name;
-				} else
-				if (currentMessage.targetProduct != null) {
-					param = currentMessage.targetProduct.name;
-				} else
-				if (currentMessage.targetResearch != null) {
-					param = currentMessage.targetResearch.name;
-				} else
-				if (currentMessage.value != null) {
-					param = currentMessage.value;
-				} else
-				if (currentMessage.label != null) {
-					param = get(currentMessage.label);
-				}
-				int w0 = commons.text().getTextWidth(10, pre);
-				int w1 = commons.text().getTextWidth(10, param);
-				int w2 = commons.text().getTextWidth(10, post);
-				return w0 + w1 + w2;
 			}
+			String pre = msgText.substring(0, idx);
+			String post = msgText.substring(idx + 2);
+			String param = "";
+			if (currentMessage.targetPlanet != null) {
+				param = currentMessage.targetPlanet.name;
+			} else
+			if (currentMessage.targetFleet != null) {
+				param = currentMessage.targetFleet.name;
+			} else
+			if (currentMessage.targetProduct != null) {
+				param = currentMessage.targetProduct.name;
+			} else
+			if (currentMessage.targetResearch != null) {
+				param = currentMessage.targetResearch.name;
+			} else
+			if (currentMessage.value != null) {
+				param = currentMessage.value;
+			} else
+			if (currentMessage.label != null) {
+				param = get(currentMessage.label);
+			}
+			int w0 = commons.text().getTextWidth(10, pre);
+			int w1 = commons.text().getTextWidth(10, param);
+			int w2 = commons.text().getTextWidth(10, post);
+			return w0 + w1 + w2;
 		}
 		@Override
 		public boolean mouse(UIMouse e) {
@@ -802,20 +801,19 @@ public class StatusbarScreen extends ScreenBase {
 //						askRepaint();
 						doAnimation();
 						return;
-					} else {
-						animationStep++;
-						if (animationStep < accelerationStep) {
-							askRepaint();
-						} else
-						if (animationStep < accelerationStep + stayStep) {
-							int frame = animationStep - accelerationStep;
-							if (frame == 0 || frame == stayStep / 3 || frame == stayStep * 2 / 3) {
-								askRepaint();
-							}
-						} else
-						if (animationStep >= accelerationStep + stayStep) {
+					}
+					animationStep++;
+					if (animationStep < accelerationStep) {
+						askRepaint();
+					} else
+					if (animationStep < accelerationStep + stayStep) {
+						int frame = animationStep - accelerationStep;
+						if (frame == 0 || frame == stayStep / 3 || frame == stayStep * 2 / 3) {
 							askRepaint();
 						}
+					} else
+					if (animationStep >= accelerationStep + stayStep) {
+						askRepaint();
 					}
 				} else
 				if (animationStep == 0) {
@@ -854,7 +852,7 @@ public class StatusbarScreen extends ScreenBase {
 	 * @return the list of planet ids under attack
 	 */
 	List<Planet> playerUnderAttack() {
-		List<Planet> result = U.newArrayList();
+		List<Planet> result = new ArrayList<>();
 		for (Fleet f : player().fleets.keySet()) {
 			if (f.owner != player() 
 					&& f.targetPlanet() != null

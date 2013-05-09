@@ -41,7 +41,7 @@ public class MessageConnection implements Runnable, Closeable {
 	/** The incoming message handler. */
 	protected Action2E<MessageConnection, Object, IOException> onMessage;
 	/** The current message that needs to be answered. */
-	protected final List<Object> messages = new Vector<Object>();
+	protected final List<Object> messages = new Vector<>();
 	/** The client registry. */
 	protected final List<MessageConnection> clients;
 	/**

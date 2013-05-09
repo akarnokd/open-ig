@@ -69,7 +69,7 @@ public final class Result<T, E> {
 	 * @param <E> the error type
 	 */
 	public static <T, E> Result<T, E> newValue(T value) {
-		return new Result<T, E>(false, value);
+		return new Result<>(false, value);
 	}
 	/**
 	 * Constructs a result object with the given error.
@@ -80,7 +80,7 @@ public final class Result<T, E> {
 	 * @param <F> the inference fix type
 	 */
 	public static <T, E, F extends E> Result<T, E> newError(F error) {
-		return new Result<T, E>(true, error);
+		return new Result<>(true, error);
 	}
 	/**
 	 * Sends the value or error to the given async result.

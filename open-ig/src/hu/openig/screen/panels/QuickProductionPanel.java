@@ -26,10 +26,10 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -82,9 +82,9 @@ public class QuickProductionPanel extends UIContainer {
 	/** Description of the currently hovered research. */
 	UILabel hoverResearchTitle;
 	/** The production simple lines. */
-	final List<List<ProductionSimpleLine>> lines = U.newArrayList();
+	final List<List<ProductionSimpleLine>> lines = new ArrayList<>();
 	/** The production simple lines. */
-	final List<List<ProductionHistoryLine>> historyLines = U.newArrayList();
+	final List<List<ProductionHistoryLine>> historyLines = new ArrayList<>();
 	/** Column widths. */
 	private int col1Width;
 	/** Column widths. */
@@ -357,7 +357,7 @@ public class QuickProductionPanel extends UIContainer {
 			prods = Collections.emptyMap();
 		}
 		while (lines.size() <= column) {
-			lines.add(U.<ProductionSimpleLine>newArrayList());
+			lines.add(new ArrayList<ProductionSimpleLine>());
 		}
 		boolean changed = false;
 		int w = 0;
@@ -404,7 +404,7 @@ public class QuickProductionPanel extends UIContainer {
 			prods = Collections.emptyList();
 		}
 		while (historyLines.size() <= column) {
-			historyLines.add(U.<ProductionHistoryLine>newArrayList());
+			historyLines.add(new ArrayList<ProductionHistoryLine>());
 		}
 		boolean changed = false;
 		int w = 0;

@@ -20,5 +20,5 @@ public class TalkPerson {
 	/** The person id. */
 	public String id;
 	/** The talk states. */
-	public final Map<String, TalkState> states = new HashMap<String, TalkState>();
+	public final Map<String, TalkState> states = new HashMap<>();
 }

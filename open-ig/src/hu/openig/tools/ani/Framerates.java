@@ -51,7 +51,7 @@ public class Framerates {
 	 * Constructor. Initializes the map and fills it.
 	 */
 	public Framerates() {
-		rates = new HashMap<String, Map<Integer, Rates>>();
+		rates = new HashMap<>();
 		loadFromResource("framerates.xml");
 	}
 	/**
@@ -76,7 +76,7 @@ public class Framerates {
 			String name = ani.get("name");
 			Map<Integer, Rates> rt = rates.get(name);
 			if (rt == null) {
-				rt = new HashMap<Integer, Rates>();
+				rt = new HashMap<>();
 				rates.put(name, rt);
 			}
 			for (XElement type : ani.childrenWithName("type")) {

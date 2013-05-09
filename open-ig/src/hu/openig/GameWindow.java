@@ -75,7 +75,6 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.Parallels;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Color;
@@ -112,6 +111,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -633,7 +633,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	/** Initialize the various screen renderers. */
 	protected void initScreens() {
-		screens = new ArrayList<ScreenBase>();
+		screens = new ArrayList<>();
 		try {
 			for (Field f : allScreens.getClass().getFields()) {
 				if (ScreenBase.class.isAssignableFrom(f.getType())) {
@@ -1034,7 +1034,7 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 		// remove all non-default technologies
-		for (ResearchType rt : new ArrayList<ResearchType>(p.available().keySet())) {
+		for (ResearchType rt : new ArrayList<>(p.available().keySet())) {
 			if (rt.level > 0 && rt.race.contains(p.race)) {
 				p.available().remove(rt);
 			}
@@ -1325,11 +1325,8 @@ public class GameWindow extends JFrame implements GameControls {
 					
 					XElement info = World.deriveShortWorldState(xworld);
 					
-					GZIPOutputStream gout = new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(fout), 64 * 1024));
-					try {
+					try (GZIPOutputStream gout = new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(fout), 64 * 1024))) {
 						xworld.save(gout);
-					} finally {
-						gout.close();
 					}
 					
 					
@@ -1340,9 +1337,8 @@ public class GameWindow extends JFrame implements GameControls {
 					Exceptions.add(ex);
 				}
 				return fout;
-			} else {
-				System.err.println("Could not create save/default.");
 			}
+			System.err.println("Could not create save/default.");
 		} catch (Throwable t) {
 			Exceptions.add(t);
 		} finally {
@@ -1360,7 +1356,7 @@ public class GameWindow extends JFrame implements GameControls {
 			return;
 		}
 		// locate saves
-		Set<String> saves = new HashSet<String>();
+		Set<String> saves = new HashSet<>();
 		File[] files = dir.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -1378,7 +1374,7 @@ public class GameWindow extends JFrame implements GameControls {
 			saves.add(n);
 		}
 		
-		List<String> savesSorted = new ArrayList<String>(saves);
+		List<String> savesSorted = new ArrayList<>(saves);
 		Collections.sort(savesSorted);
 		// latest first
 		Collections.reverse(savesSorted);
@@ -2042,7 +2038,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		ScreenBase top = null;
 		UIComponent c = null;
-		List<ScreenBase> bases = U.newArrayList();
+		List<ScreenBase> bases = new ArrayList<>();
 		if (optionsVisible) {
 			bases.add(options);
 		} else {
@@ -2061,9 +2057,8 @@ public class GameWindow extends JFrame implements GameControls {
 			if (c != b) {
 				top = b;
 				break;
-			} else {
-				c = null;
 			}
+			c = null;
 		}
 		if (!optionsVisible) {
 			// if no inner component, use the screen itself
@@ -2116,7 +2111,7 @@ public class GameWindow extends JFrame implements GameControls {
 			tooltipVisible = false;
 			tooltipShowTimer.stop();
 		}
-		if (!U.equal(r, tooltipHelper) || !U.equal(tooltipText, t0)) {
+		if (!Objects.equals(r, tooltipHelper) || !Objects.equals(tooltipText, t0)) {
 			tooltipVisible = false;
 			tooltipShowTimer.stop();
 			tooltipShowTimer.start();
@@ -2260,8 +2255,7 @@ public class GameWindow extends JFrame implements GameControls {
 			sk1 = new SkirmishDefinition();
 			sk1.load(sk, commons.traits);
 		}
-
-		if (!game.equals(currentGame) || !U.equal(skirmish, sk1)) {
+		if (!game.equals(currentGame) || !Objects.equals(skirmish, sk1)) {
 			commons.world(null);
 			// load world model
 			world = new World(commons);
@@ -2273,7 +2267,7 @@ public class GameWindow extends JFrame implements GameControls {
 			} else {
 				world.definition = GameDefinition.parse(commons.rl, game);
 				world.labels = new Labels();
-				List<String> labels = U.newArrayList();
+				List<String> labels = new ArrayList<>();
 				labels.add("labels");
 				labels.addAll(world.definition.labels);
 				world.labels.load(commons.rl, labels);

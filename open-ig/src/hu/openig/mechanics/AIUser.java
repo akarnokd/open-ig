@@ -38,10 +38,10 @@ import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.World;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -63,9 +63,9 @@ public class AIUser implements AIManager {
 	/** The controls. */
 	AIControls controls;
 	/** The list of actions to apply. */
-	final List<Action0> applyActions = new ArrayList<Action0>();
+	final List<Action0> applyActions = new ArrayList<>();
 	/** The detected attacks. */
-	final Set<Integer> detectedAttack = U.newHashSet();
+	final Set<Integer> detectedAttack = new HashSet<>();
 	@Override
 	public void init(Player p) {
 		this.p = p;

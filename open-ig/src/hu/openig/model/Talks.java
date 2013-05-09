@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class Talks {
 	/** The map of talk persons. */
-	public final Map<String, TalkPerson> persons = new HashMap<String, TalkPerson>();
+	public final Map<String, TalkPerson> persons = new HashMap<>();
 	/**
 	 * Load the talks from the given game.
 	 * @param rl the resource locator

@@ -204,10 +204,9 @@ public class Mission7 extends Mission {
 			// set failure timeout
 			addMission(m7tio, 24);
 			return true;
-		} else {
-			// schedule again
-			addMission(m7ti, 0);
 		}
+		// schedule again
+		addMission(m7ti, 0);
 		return false;
 	}
 	/**

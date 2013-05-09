@@ -12,7 +12,6 @@ import hu.openig.core.Location;
 import hu.openig.core.RoadType;
 import hu.openig.core.Sides;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
@@ -56,15 +55,15 @@ public class PlanetSurface {
 	 * The base map of the surface. Kept separate from the building maps for the case the user
 	 * demolishes a building.
 	 */
-	public Map<Location, SurfaceEntity> basemap = new HashMap<Location, SurfaceEntity>();
+	public Map<Location, SurfaceEntity> basemap = new HashMap<>();
 	/**
 	 * The buildings and roads map.
 	 */
-	public final Map<Location, SurfaceEntity> buildingmap = new HashMap<Location, SurfaceEntity>();
+	public final Map<Location, SurfaceEntity> buildingmap = new HashMap<>();
 	/** The pre-computed locations where the angular rendering should start. */
-	public final List<Location> renderingOrigins = new ArrayList<Location>();
+	public final List<Location> renderingOrigins = new ArrayList<>();
 	/** The pre-computed locations where the angular rendering should end. */
-	public final List<Integer> renderingLength = new ArrayList<Integer>();
+	public final List<Integer> renderingLength = new ArrayList<>();
 	/** The base X offset to shift the (0,0) cell horizontally. */
 	public int baseXOffset;
 	/** The base Y offset to shift the (0,0) vertically. */
@@ -74,7 +73,7 @@ public class PlanetSurface {
 	/** The list of building instances. */
 	public final Buildings buildings = new Buildings();
 	/** The list of surface features. */
-	public List<SurfaceFeature> features = new ArrayList<SurfaceFeature>();
+	public List<SurfaceFeature> features = new ArrayList<>();
 	/** The placement helper. */
 	public PlacementHelper placement = new PlacementHelper() {
 		@Override
@@ -107,7 +106,7 @@ public class PlanetSurface {
 		renderingOrigins.clear();
 		renderingLength.clear();
 		// y -> x
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		Map<Integer, Integer> map = new HashMap<>();
 		for (int i = 0; i < height; i++) {
 			map.put(-i, -i);
 		}
@@ -394,7 +393,7 @@ public class PlanetSurface {
 			}
 		}
 		
-		Set<Location> corners = new HashSet<Location>();
+		Set<Location> corners = new HashSet<>();
 		for (Building bld : buildings.iterable()) {
 			Rectangle rect = new Rectangle(bld.location.x - 1, bld.location.y + 1, bld.tileset.normal.width + 2, bld.tileset.normal.height + 2);
 			addRoadAround(rts, rect, corners);
@@ -593,16 +592,14 @@ public class PlanetSurface {
 		public boolean canPlaceBuilding(int x, int y) {
 			if (!cellInMap(x, y)) {
 				return false;
-			} else {
-				SurfaceEntity se = buildingmap().get(Location.of(x, y));
-				if (se != null && se.type == SurfaceEntityType.BUILDING) {
-					return false;
-				} else {
-					se = basemap().get(Location.of(x, y));
-					if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
-						return false;
-					}
-				}
+			}
+			SurfaceEntity se = buildingmap().get(Location.of(x, y));
+			if (se != null && se.type == SurfaceEntityType.BUILDING) {
+				return false;
+			}
+			se = basemap().get(Location.of(x, y));
+			if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
+				return false;
 			}
 			return true;
 		}
@@ -633,7 +630,7 @@ public class PlanetSurface {
 			int ry2 = Math.abs(cy);
 			int maxr = Math.max(Math.max(rx1, rx2), Math.max(ry1, ry2));
 			// the square size
-			List<PlaceCandidate> candidates = U.newArrayList();
+			List<PlaceCandidate> candidates = new ArrayList<>();
 			for (int i = 0; i < maxr; i++) {
 				int len = i * 2 + 1;
 				int size = len > 1 ? len * 2 + (len - 2) * 2 : 1;

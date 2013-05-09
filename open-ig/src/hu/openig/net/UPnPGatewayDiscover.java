@@ -30,6 +30,8 @@
  */
 package hu.openig.net;
 
+import hu.openig.utils.Exceptions;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -78,7 +80,7 @@ public class UPnPGatewayDiscover {
      * The assumption is that a machine is connected to up to a Gateway Device
      * per InetAddress
      */
-    private Map<InetAddress, UPnPGatewayDevice> devices = new HashMap<InetAddress, UPnPGatewayDevice>();
+    private Map<InetAddress, UPnPGatewayDevice> devices = new HashMap<>();
 
     /**
      *  Thread class for sending a search datagram and process the response.
@@ -101,11 +103,8 @@ public class UPnPGatewayDiscover {
         @Override
         public void run() {
 
-            DatagramSocket ssdp = null;
-
-            try {
+            try (DatagramSocket ssdp = new DatagramSocket(new InetSocketAddress(ip, 0))) {
                 // Create socket bound to specified local address
-                ssdp = new DatagramSocket(new InetSocketAddress(ip, 0));
 
                 byte[] searchMessageBytes = searchMessage.getBytes();
                 DatagramPacket ssdpDiscoverPacket = new DatagramPacket(searchMessageBytes, searchMessageBytes.length);
@@ -139,11 +138,7 @@ public class UPnPGatewayDiscover {
                 }
 
             } catch (Exception e) {
-                // e.printStackTrace();
-            } finally {
-                if (null != ssdp) {
-                    ssdp.close();
-                }
+            	Exceptions.add(e);
             }
         }
     }
@@ -184,7 +179,7 @@ public class UPnPGatewayDiscover {
                     + "\r\n";
 
             // perform search requests for multiple network adapters concurrently
-            Collection<SendDiscoveryThread> threads = new ArrayList<SendDiscoveryThread>();
+            Collection<SendDiscoveryThread> threads = new ArrayList<>();
             for (InetAddress ip : ips) {
                 SendDiscoveryThread thread = new SendDiscoveryThread(ip, searchMessage);
                 threads.add(thread);
@@ -215,7 +210,7 @@ public class UPnPGatewayDiscover {
      * @param reply the raw bytes received as a reply
      * @return the representation of a GatewayDevice
      */
-    private UPnPGatewayDevice parseMSearchReplay(byte[] reply) {
+    private static UPnPGatewayDevice parseMSearchReplay(byte[] reply) {
 
     	UPnPGatewayDevice device = new UPnPGatewayDevice();
 
@@ -288,8 +283,8 @@ public class UPnPGatewayDiscover {
      * @param sortIPv4BeforeIPv6 if true, IPv4 addresses will be sorted before IPv6 addresses
      * @return Collection if {@link InetAddress}es
      */
-    private List<InetAddress> getLocalInetAddresses(boolean getIPv4, boolean getIPv6, boolean sortIPv4BeforeIPv6) {
-        List<InetAddress> arrayIPAddress = new ArrayList<InetAddress>();
+    private static List<InetAddress> getLocalInetAddresses(boolean getIPv4, boolean getIPv6, boolean sortIPv4BeforeIPv6) {
+        List<InetAddress> arrayIPAddress = new ArrayList<>();
         int lastIPv4Index = 0;
 
         // Get all network interfaces

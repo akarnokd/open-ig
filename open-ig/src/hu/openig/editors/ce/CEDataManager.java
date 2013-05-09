@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -513,7 +514,7 @@ public class CEDataManager {
 			}
 		} else
 		if (cop == CopyOperation.COPY) {
-			List<String> newRefs = U.newArrayList();
+			List<String> newRefs = new ArrayList<>();
 			int i = 1;
 			for (String ref : campaignData.definition.labels) {
 				Map<String, byte[]> allData = mgr.getData(ref);

@@ -59,7 +59,7 @@ public final class Startup {
 	 * @param args arguments
 	 */
 	public static void main(String[] args) {
-		Set<String> argset = new LinkedHashSet<String>(Arrays.asList(args));
+		Set<String> argset = new LinkedHashSet<>(Arrays.asList(args));
 		long maxMem = Runtime.getRuntime().maxMemory();
 		if (maxMem < MINIMUM_MEMORY * 1024 * 1024 * 95 / 100) {
 			if (!argset.contains("-memonce")) {
@@ -116,7 +116,7 @@ public final class Startup {
 		};
 		config.load();
 
-		Set<String> langCodes = U.newHashSet("hu", "en", "de", "fr", "ru");
+		Set<String> langCodes = U.newSet("hu", "en", "de", "fr", "ru");
 
 		for (String lc : langCodes) {
 			if (argset.contains("-" + lc)) {
@@ -167,7 +167,7 @@ public final class Startup {
 	 */
 	private static boolean doLowMemory(Set<String> args) {
 		ProcessBuilder pb = new ProcessBuilder();
-		List<String> cmdLine = new ArrayList<String>();
+		List<String> cmdLine = new ArrayList<>();
 		cmdLine.add(System.getProperty("java.home") + "/bin/java");
 		cmdLine.add("-Xmx" + MINIMUM_MEMORY + "M");
 		cmdLine.add("-cp");
@@ -282,7 +282,7 @@ public final class Startup {
 	 */
 	static boolean checkInstall() {
 		File installDir = new File(".");
-		Set<String> testFiles = new HashSet<String>(Arrays.asList(
+		Set<String> testFiles = new HashSet<>(Arrays.asList(
 				"generic/options_1.png",
 				"generic/campaign/main/definition.xml",
 				"generic/ui/achievement.wav",
@@ -298,17 +298,12 @@ public final class Startup {
 		});
 		if (files != null) {
 			for (File f : files) {
-				try {
-					ZipFile zf = new ZipFile(f);
-					try {
-						Enumeration<? extends ZipEntry> en = zf.entries();
-						while (en.hasMoreElements()) {
-							ZipEntry ze = en.nextElement();
-							String zn = ze.getName().replace('\\', '/');
-							testFiles.remove(zn);
-						}
-					} finally {
-						zf.close();
+				try (ZipFile zf = new ZipFile(f)) {
+					Enumeration<? extends ZipEntry> en = zf.entries();
+					while (en.hasMoreElements()) {
+						ZipEntry ze = en.nextElement();
+						String zn = ze.getName().replace('\\', '/');
+						testFiles.remove(zn);
 					}
 				} catch (IOException ex) {
 					return false;
@@ -377,13 +372,8 @@ public final class Startup {
 					})) {
 						byte[] data = IOUtils.load(save);
 						File out = new File(profileDir, save.getName() + ".gz");
-						try {
-							GZIPOutputStream gout = new GZIPOutputStream(new FileOutputStream(out));
-							try {
-								gout.write(data);
-							} finally {
-								gout.close();
-							}
+						try (GZIPOutputStream gout = new GZIPOutputStream(new FileOutputStream(out))) {
+							gout.write(data);
 						} catch (IOException ex) {
 							Exceptions.add(ex);
 						}

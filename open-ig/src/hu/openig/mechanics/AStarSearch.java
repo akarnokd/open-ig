@@ -15,6 +15,8 @@ import hu.openig.utils.U;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +47,11 @@ public class AStarSearch<T> {
 	 * false and list with a path that brings close to the target. 
 	 */
 	public Pair<Boolean, List<T>> search(final T initial, final T destination) {
-		Set<T> closedSet = U.newHashSet();
-		Map<T, T> cameFrom = U.newHashMap();
-		final Map<T, Integer> gScore = U.newHashMap();
-		final Map<T, Integer> hScore = U.newHashMap();
-		final Map<T, Integer> fScore = U.newHashMap();
+		Set<T> closedSet = new HashSet<>();
+		Map<T, T> cameFrom = new HashMap<>();
+		final Map<T, Integer> gScore = new HashMap<>();
+		final Map<T, Integer> hScore = new HashMap<>();
+		final Map<T, Integer> fScore = new HashMap<>();
 		final Comparator<T> smallestF = new Comparator<T>() {
 			@Override
 			public int compare(T o1, T o2) {
@@ -74,8 +76,8 @@ public class AStarSearch<T> {
 			}
 		};
 		
-		Set<T> openSet2 = U.newHashSet();
-		PriorityQueue<T> openSet = new PriorityQueue<T>(1024, smallestF);
+		Set<T> openSet2 = new HashSet<>();
+		PriorityQueue<T> openSet = new PriorityQueue<>(1024, smallestF);
 		
 		gScore.put(initial, 0);
 		hScore.put(initial, estimation.invoke(initial, destination));
@@ -149,7 +151,7 @@ public class AStarSearch<T> {
 	 * @return the list of the path elements
 	 */
 	public List<T> reconstructPath(Map<T, T> cameFrom, T current) {
-		LinkedList<T> path = U.newLinkedList();
+		LinkedList<T> path = new LinkedList<>();
 		path.addLast(current);
 		T parent = cameFrom.get(current);
 		while (parent != null) {

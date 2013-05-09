@@ -41,7 +41,7 @@ public class MessageListener implements Closeable {
 	/** The accepter future object. */
 	protected Future<?> accepter;
 	/** The list of active client connections. */
-	protected final List<MessageConnection> clients = new Vector<MessageConnection>();
+	protected final List<MessageConnection> clients = new Vector<>();
 	/** The event handler called after accepting a connection. */
 	protected Func1<MessageConnection, Boolean> onConnection;
 	/** Is the listener closed manually? */

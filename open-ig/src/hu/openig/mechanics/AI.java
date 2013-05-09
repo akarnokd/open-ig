@@ -57,6 +57,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -77,13 +79,13 @@ public class AI implements AIManager {
 	/** The exploration map manager. */
 	ExplorationMap exploration;
 	/** Set of fleets which will behave as defenders in the space battle. */
-	final Set<Integer> defensiveTask = U.newHashSet();
+	final Set<Integer> defensiveTask = new HashSet<>();
 	/** The estimations about how strong the other player's fleets are. */
-	final Map<String, PlayerStrength> strengths = U.newHashMap();
+	final Map<String, PlayerStrength> strengths = new HashMap<>();
 	/** Exponential smoothing of strength changes. */
 	static final double STRENGTH_DISCOUNT = 0.2;
 	/** The list of actions to apply. */
-	final List<Action0> applyActions = new ArrayList<Action0>();
+	final List<Action0> applyActions = new ArrayList<>();
 	/** The next attack date. */
 	Date nextAttack;
 	/**
@@ -214,7 +216,7 @@ public class AI implements AIManager {
 	 */
 	static List<SpacewarStructure> defaultAttackOutOfRange(SpacewarWorld world,
 			List<SpacewarStructure> idles) {
-		List<SpacewarStructure> esl = new ArrayList<SpacewarStructure>();
+		List<SpacewarStructure> esl = new ArrayList<>();
 		for (SpacewarStructure ship : idles) {
 			esl.addAll(world.enemiesOf(ship));
 			break;
@@ -689,7 +691,7 @@ public class AI implements AIManager {
 	public void manage() {
 		updateExplorationMap();
 		
-		List<Planner> planners = U.newArrayList();
+		List<Planner> planners = new ArrayList<>();
 
 		planners.add(new ColonyPlanner(world, controls));
 

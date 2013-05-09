@@ -13,6 +13,9 @@ import hu.openig.utils.IOUtils;
 import hu.openig.utils.U;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,9 +57,9 @@ public final class ChatConverter {
 		/** The procedure body text. */
 		String body;
 		/** List of message entries. */
-		final List<Message> messages = U.newArrayList();
+		final List<Message> messages = new ArrayList<>();
 		/** List of choice entries. */
-		final List<Choice> choices = U.newArrayList();
+		final List<Choice> choices = new ArrayList<>();
 		/** Issue retreat? */
 		boolean retreat;
 		/** The next procedure. */
@@ -65,9 +68,8 @@ public final class ChatConverter {
 		public String toString() {
 			if (!messages.isEmpty()) {
 				return name + " M" + messages + " -> " + next;
-			} else {
-				return name + " C" + choices;
 			}
+			return name + " C" + choices;
 		}
 	}
 	/** The IG script. */
@@ -75,7 +77,7 @@ public final class ChatConverter {
 		/** The starting procedure. */
 		String start;
 		/** The map of procedures. */
-		final Map<String, Procedure> procedures = U.newLinkedHashMap();
+		final Map<String, Procedure> procedures = new LinkedHashMap<>();
 		@Override
 		public String toString() {
 			return "Start: " + start + "\r\n" + procedures.values();
@@ -87,7 +89,7 @@ public final class ChatConverter {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		Map<String, String> labels = U.newLinkedHashMap();
+		Map<String, String> labels = new LinkedHashMap<>();
 
 		for (int i = 1; i <= 8; i++) {
 			IGScript scr = parseScript("c:/games/ighu/data/text/kor" + i + ".scr", "Cp850"); //hu: Cp850, de: Cp1250
@@ -96,7 +98,7 @@ public final class ChatConverter {
 			String labelPattern = "chat.bo.%d.%s";
 			
 			
-			List<Node> nodes = U.newArrayList();
+			List<Node> nodes = new ArrayList<>();
 			
 			for (Procedure proc : scr.procedures.values()) {
 				if (!proc.messages.isEmpty()) {
@@ -156,7 +158,7 @@ public final class ChatConverter {
 				}
 			}
 			int idx = 0;
-			Map<String, Integer> nodeMap = U.newHashMap();
+			Map<String, Integer> nodeMap = new HashMap<>();
 			List<Node> nodes2 = U.newArrayList(nodes);
 			nodes.clear();
 			for (Node n : nodes2) {

@@ -27,11 +27,11 @@ import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
-import hu.openig.utils.U;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -68,10 +68,10 @@ public class MultiplayerSession implements RemoteGameAPI {
 
 	@Override
 	public WelcomeResponse login(String user, String passphrase, String version) throws IOException {
-		if (U.equal(version, Configuration.VERSION)) {
+		if (Objects.equals(version, Configuration.VERSION)) {
 			for (MultiplayerUser mu : definition.players) {
-				if (U.equal(mu.userName, user) 
-						&& U.equal(mu.passphrase, passphrase)) {
+				if (Objects.equals(mu.userName, user) 
+						&& Objects.equals(mu.passphrase, passphrase)) {
 					
 					this.sessionId = generateSessionId();
 					this.user = mu;
@@ -109,7 +109,7 @@ public class MultiplayerSession implements RemoteGameAPI {
 		if (user == null) {
 			throw new ErrorResponse(ErrorType.ERROR_NOT_LOGGED_IN);
 		}
-		if (!U.equal(user.sessionId(), sessionId)) {
+		if (!Objects.equals(user.sessionId(), sessionId)) {
 			throw new ErrorResponse(ErrorType.ERROR_SESSION_INVALID);
 		}
 	}

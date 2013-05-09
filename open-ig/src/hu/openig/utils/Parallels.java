@@ -61,7 +61,7 @@ public final class Parallels {
 	public static void invokeAndWait(Runnable... run) {
 		ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 		try {
-			List<Future<?>> futures = new LinkedList<Future<?>>();
+			List<Future<?>> futures = new LinkedList<>();
 			for (Runnable r : run) {
 				futures.add(exec.submit(r));
 			}

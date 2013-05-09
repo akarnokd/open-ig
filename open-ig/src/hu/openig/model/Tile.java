@@ -80,7 +80,7 @@ public class Tile {
 	 * @param lightMap the original buffered image
 	 * @return the array containing [index,color] pairs subsequently
 	 */
-	private int[] createLightmapRLE(BufferedImage lightMap) {
+	private static int[] createLightmapRLE(BufferedImage lightMap) {
 		int[] w = WORK.get()[0];
 		lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), w, 0, lightMap.getWidth());
 		int[] result = new int[512];

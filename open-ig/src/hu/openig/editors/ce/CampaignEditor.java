@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -160,7 +161,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	/** The definitions panel. */
 	CEDefinitionPanel definitionsPanel;
 	/** The recent entries. */
-	final Set<String> recent = new LinkedHashSet<String>();
+	final Set<String> recent = new LinkedHashSet<>();
 	/**
 	 * Initialize the GUI.
 	 */
@@ -345,7 +346,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	 * @param args no arguments
 	 */
 	public static void main(final String[] args) {
-		Set<String> argSet = U.newHashSet(args);
+		Set<String> argSet = U.newSet(args);
 
 		if (argSet.contains("-en")) {
 			language = "en";
@@ -382,8 +383,8 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 		warning = new ImageIcon(getClass().getResource("/hu/openig/gfx/warning.png"));
 		error = new ImageIcon(getClass().getResource("/hu/openig/gfx/error.png"));
 		
-		labels = U.newHashMap();
-		flags = U.newHashMap();
+		labels = new HashMap<>();
+		flags = new HashMap<>();
 		
 		// fetch labels
 		try {

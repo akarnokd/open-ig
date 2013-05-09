@@ -25,12 +25,13 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIScrollBox;
 import hu.openig.ui.VerticalAlignment;
-import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -226,11 +227,11 @@ public class TraitScreen extends ScreenBase {
 		/** The available traits. */
 		Traits traits;
 		/** The trait checkbox. */
-		final List<TraitCheckBox> traitCheckBoxes = U.newArrayList();
+		final List<TraitCheckBox> traitCheckBoxes = new ArrayList<>();
 		/** The trait cost labels. */
-		final List<UILabel> traitCosts = U.newArrayList();
+		final List<UILabel> traitCosts = new ArrayList<>();
 		/** The trait description labels. */
-		final List<UILabel> traitDesc = U.newArrayList();
+		final List<UILabel> traitDesc = new ArrayList<>();
 		/**
 		 * Prepare the trait list. 
 		 * @param base the traits
@@ -324,8 +325,8 @@ public class TraitScreen extends ScreenBase {
 			int points = 0;
 			loop:
 			while (!Thread.currentThread().isInterrupted()) {
-				Set<String> excludeIds = U.newHashSet();
-				Set<TraitKind> excludeKinds = U.newHashSet();
+				Set<String> excludeIds = new HashSet<>();
+				Set<TraitKind> excludeKinds = new HashSet<>();
 				
 				// collect exclusion settings
 				for (TraitCheckBox tcb : traitCheckBoxes) {
@@ -353,14 +354,13 @@ public class TraitScreen extends ScreenBase {
 						}
 					}
 					throw new AssertionError("Points remained negative?!");
-				} else {
-					for (TraitCheckBox tcb : traitCheckBoxes) {
-						if (tcb.trait.cost > points && !tcb.selected()) {
-							tcb.enabled(false);
-						}
-					}
-					break;
 				}
+				for (TraitCheckBox tcb : traitCheckBoxes) {
+					if (tcb.trait.cost > points && !tcb.selected()) {
+						tcb.enabled(false);
+					}
+				}
+				break;
 			}
 			
 			// color components according to their state
@@ -403,7 +403,7 @@ public class TraitScreen extends ScreenBase {
 		 * @param traits the traits
 		 */
 		public void update(Traits traits) {
-			Set<String> ids = U.newHashSet();
+			Set<String> ids = new HashSet<>();
 			if (traits != null) {
 				for (Trait t : traits) {
 					ids.add(t.id);

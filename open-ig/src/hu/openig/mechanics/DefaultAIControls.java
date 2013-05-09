@@ -284,10 +284,9 @@ public class DefaultAIControls implements AIControls {
 				AutoBuilder.construct(w, planet, buildingType, pt);
 //				log("PlaceBuilding, Planet = %s, Type = %s", planet.id, buildingType.id);
 				return AIResult.SUCCESS;
-			} else {
-				log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
-				return AIResult.NO_ROOM;
 			}
+			log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = no room", planet.id, buildingType.id);
+			return AIResult.NO_ROOM;
 		} else {
 			log(p, "PlaceBuilding, Planet = %s, Type = %s, FAIL = no money", planet.id, buildingType.id);
 			return AIResult.NO_MONEY;
@@ -444,9 +443,8 @@ public class DefaultAIControls implements AIControls {
 						p.removeOwnerSatellites();
 						
 						return true;
-					} else {
-						System.err.printf("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, f.owner.race);
 					}
+					System.err.printf("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, f.owner.race);
 				}
 			}
 		}

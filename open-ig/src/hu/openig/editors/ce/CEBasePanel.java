@@ -10,7 +10,6 @@ package hu.openig.editors.ce;
 
 import hu.openig.core.Action1;
 import hu.openig.utils.GUIUtils;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.event.ActionEvent;
@@ -19,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -275,7 +275,7 @@ public class CEBasePanel extends JPanel {
 		if (item == null) {
 			Object prev = c.component.getSelectedItem();
 			c.component.setSelectedItem(attr);
-			if (U.equal(prev, attr)) {
+			if (Objects.equals(prev, attr)) {
 				c.validateComponent();
 			}
 		} else {
@@ -286,7 +286,7 @@ public class CEBasePanel extends JPanel {
 				int idx = -1;
 				int j = 0;
 				for (String e : enums) {
-					if (U.equal(e, s)) {
+					if (Objects.equals(e, s)) {
 						idx = j;
 						break;
 					}

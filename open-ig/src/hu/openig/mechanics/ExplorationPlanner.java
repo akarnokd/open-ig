@@ -123,7 +123,7 @@ public class ExplorationPlanner extends Planner {
 			}
 		}
 		
-		List<AIPlanet> survey = new ArrayList<AIPlanet>(world.unknownPlanets);
+		List<AIPlanet> survey = new ArrayList<>(world.unknownPlanets);
 		survey.addAll(world.enemyPlanets);
 		
 		final Point2D.Double center = world.center();
@@ -174,19 +174,18 @@ public class ExplorationPlanner extends Planner {
 					}
 				});
 				return;
-			} else {
-				// find the best available detector
-				for (ResearchType rt : p.available().keySet()) {
-					if (rt.has("detector")) {
-						if (sat == null || sat.getInt("detector") < rt.getInt("detector")) {
-							sat = rt;
-						}
+			}
+			// find the best available detector
+			for (ResearchType rt : p.available().keySet()) {
+				if (rt.has("detector")) {
+					if (sat == null || sat.getInt("detector") < rt.getInt("detector")) {
+						sat = rt;
 					}
 				}
-				if (sat != null) {
-					placeProductionOrder(sat, 10);
-					return;
-				}
+			}
+			if (sat != null) {
+				placeProductionOrder(sat, 10);
+				return;
 			}
 		}
 	}
@@ -348,7 +347,7 @@ public class ExplorationPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkDeploy() {
-		List<AIPlanet> mss = U.newArrayList();
+		List<AIPlanet> mss = new ArrayList<>();
 		for (final AIPlanet planet : world.ownPlanets) {
 			if (planet.statistics.hasMilitarySpaceport) {
 				mss.add(planet);
@@ -535,14 +534,14 @@ public class ExplorationPlanner extends Planner {
 			return true;
 		}
 		// list available radars
-		List<ResearchType> radars = new ArrayList<ResearchType>();
+		List<ResearchType> radars = new ArrayList<>();
 		for (ResearchType rt : world.availableResearch) {
 			if (rt.has("radar") && rt.category == ResearchSubCategory.EQUIPMENT_RADARS) {
 				radars.add(rt);
 			}
 		}
 		// list ships capable of carrying radar
-		List<ResearchType> ships = new ArrayList<ResearchType>();
+		List<ResearchType> ships = new ArrayList<>();
 		outer4:
 		for (ResearchType rt1 : world.availableResearch) {
 			if (fitForExploration(rt1)) {

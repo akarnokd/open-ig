@@ -28,7 +28,6 @@ import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
-import hu.openig.utils.U;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -37,6 +36,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * A screen base class.
@@ -489,7 +489,7 @@ public abstract class ScreenBase extends UIContainer {
 	public void setTooltipText(UIComponent c, String text) {
 		String t1 = c.tooltip();
 		c.tooltip(text);
-		if (!U.equal(t1, text)) {
+		if (!Objects.equals(t1, text)) {
 			commons.control().tooltipChanged(c);
 		}
 	}

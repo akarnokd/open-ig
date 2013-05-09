@@ -17,11 +17,11 @@ import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
 import hu.openig.model.World;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -446,12 +446,12 @@ public final class AchievementManager {
 		// utility class
 	}
 	/** The functions map for achievements. */
-	protected static final Map<String, Pred2<World, Player>> FUNCTIONS = U.newHashMap();
+	protected static final Map<String, Pred2<World, Player>> FUNCTIONS = new HashMap<>();
 	static {
 		for (Field f : AchievementManager.class.getDeclaredFields()) {
 			if (Pred2.class.isAssignableFrom(f.getType()) && f.isAnnotationPresent(ID.class)) {
 				try {
-					@SuppressWarnings("unchecked") Pred2<World, Player> pred2 = (Pred2<World, Player>)f.get(null);
+					Pred2<World, Player> pred2 = (Pred2<World, Player>)f.get(null);
 					FUNCTIONS.put("achievement." + f.getName().toLowerCase(), pred2);
 				} catch (IllegalAccessException ex) {
 					Exceptions.add(ex);

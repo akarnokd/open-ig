@@ -20,9 +20,6 @@ public class LRUHashMap<K, V> extends LinkedHashMap<K, V> {
 	private static final long serialVersionUID = -8032627958631838087L;
 	/** The capacity. */
 	private int capacity;
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	protected boolean removeEldestEntry(java.util.Map.Entry<K, V> eldest) {
 		return size() == capacity;
@@ -43,6 +40,6 @@ public class LRUHashMap<K, V> extends LinkedHashMap<K, V> {
 	 * @return the new LRUHashMap
 	 */
 	public static <K, V> LRUHashMap<K, V> create(int size) {
-		return new LRUHashMap<K, V>(size);
+		return new LRUHashMap<>(size);
 	}
 }

@@ -53,7 +53,7 @@ public class SingleplayerScreen extends ScreenBase {
 	/** The background image. */
 	BufferedImage background;
 	/** The list of campaigns. */
-	final List<GameDefinition> campaigns = new ArrayList<GameDefinition>();
+	final List<GameDefinition> campaigns = new ArrayList<>();
 	/** The currently selected definition. */
 	GameDefinition selectedDefinition;
 	/** The campaign list. */
@@ -421,7 +421,7 @@ public class SingleplayerScreen extends ScreenBase {
 		commons.text().paintTo(g2, descriptionRect.x, descriptionRect.y + descriptionRect.height + 5, 20, 0xFFFFFF00, get("singleplayer.difficulty"));
 		
 		if (selectedDefinition != null) {
-			List<String> lines = new ArrayList<String>();
+			List<String> lines = new ArrayList<>();
 			commons.text().wrapText(selectedDefinition.getDescription(rl.language), descriptionRect.width - 20, 14, lines);
 			y = descriptionRect.y + 2;
 			for (String s : lines) {

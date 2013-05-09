@@ -142,7 +142,7 @@ public class PlayerStatistics {
 	 * Constructor, initializes the mapping and the fields.
 	 */
 	public PlayerStatistics() {
-		Map<String, LongField> fields = new LinkedHashMap<String, LongField>();
+		Map<String, LongField> fields = new LinkedHashMap<>();
 		for (Field f : getClass().getFields()) {
 			try {
 				LongField lf = new LongField();

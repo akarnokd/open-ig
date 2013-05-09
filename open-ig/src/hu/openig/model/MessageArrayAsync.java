@@ -50,7 +50,7 @@ extends AsyncTransform<Object, List<T>, IOException> {
 	public void invoke(Object param1) throws IOException {
 		MessageArray ma = MessageUtils.expectArray(param1, responseType);
 		try {
-			List<T> result = new ArrayList<T>(ma.size());
+			List<T> result = new ArrayList<>(ma.size());
 			for (Object o : ma) {
 				if (o instanceof MessageObject) {
 					T t = factory.invoke();

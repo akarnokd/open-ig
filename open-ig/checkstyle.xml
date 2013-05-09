@@ -66,7 +66,9 @@
     </module>
     <module name="ModifierOrder"/>
     <module name="RedundantModifier"/>
-    <module name="AvoidNestedBlocks"/>
+    <module name="AvoidNestedBlocks">
+      <property name="allowInSwitchCase" value="true"/>
+    </module>
     <module name="EmptyBlock">
       <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,STATIC_INIT,LITERAL_TRY,LITERAL_WHILE"/>
     </module>

@@ -37,7 +37,7 @@ public class BuildingInfoPanel extends JPanel {
 		/**	 */
 		private static final long serialVersionUID = 6093762358692787521L;
 		/** The rows. */
-		final List<Resource> rows = new ArrayList<Resource>();
+		final List<Resource> rows = new ArrayList<>();
 		/** Column names. */
 		/** Column classes. */
 		Class<?>[] colClasses = { String.class, Float.class };
@@ -253,7 +253,7 @@ public class BuildingInfoPanel extends JPanel {
 		buildingRepairing = new JCheckBox("Repairing");
 		
 		upgradeLbl = new JLabel("Upgrades:");
-		upgradeList = new JComboBox<String>();
+		upgradeList = new JComboBox<>();
 		upgradeList.addItem("None");
 		
 		resourceTableModel = new ResourceTableModel();

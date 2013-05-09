@@ -15,9 +15,9 @@ import hu.openig.core.Img;
 import hu.openig.model.ExplosionType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -204,7 +204,7 @@ public class ColonyGFX {
 	@Cat(name = "colony/button_zoom")
 	public BufferedImage[] zoom;
 	/** The explosion images. */
-	public final Map<ExplosionType, BufferedImage[]> explosions = U.newHashMap();
+	public final Map<ExplosionType, BufferedImage[]> explosions = new HashMap<>();
 	/**
 	 * Load the resources for the given language.
 	 * @param rl the resource locator

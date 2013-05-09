@@ -8,9 +8,8 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
-
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class BattleGroundProjector {
 	/** The rotation speed. */
 	public int rotationTime;
 	/** The battle efficiency settings of this projector. */
-	public final List<BattleEfficiencyModel> efficiencies = U.newArrayList();
+	public final List<BattleEfficiencyModel> efficiencies = new ArrayList<>();
 	/**
 	 * Returns the damage for the given owner.
 	 * @param owner the owner

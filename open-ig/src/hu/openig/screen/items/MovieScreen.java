@@ -51,7 +51,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	/** The back buffer. */
 	BufferedImage backBuffer;
 	/** The media queue to play videos after each other. */
-	public final Queue<String> mediaQueue = new LinkedList<String>();
+	public final Queue<String> mediaQueue = new LinkedList<>();
 	/** The action to invoke when the playback has finished. */
 	public Action0 playbackFinished;
 	/**
@@ -284,7 +284,7 @@ public class MovieScreen extends ScreenBase implements SwappableRenderer {
 	 * @param height the draw height
 	 */
 	public void paintLabel(Graphics2D g2, int x0, int y0, int width, int height) {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		int maxWidth = commons.text().wrapText(label, width, 14, lines);
 		int y = height - lines.size() * 21 - 7;
 		Composite cp = g2.getComposite();

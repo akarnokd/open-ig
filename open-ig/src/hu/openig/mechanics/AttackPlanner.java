@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -203,7 +204,7 @@ public class AttackPlanner extends Planner {
 	 * @return the weakest fleet or null if no fleet available
 	 */
 	AIFleet selectTargetFleet() {
-		List<AIFleet> candidates = new ArrayList<AIFleet>();
+		List<AIFleet> candidates = new ArrayList<>();
 		for (AIFleet f : world.enemyFleets) {
 			if (!(f.fleet.owner.ai instanceof AITrader) && !(f.fleet.owner.ai instanceof AIPirate)) {
 				
@@ -249,8 +250,8 @@ public class AttackPlanner extends Planner {
 	 * @return the planet or null if none found
 	 */
 	AIPlanet selectTargetPlanet() {
-		List<AIPlanet> candidates = U.newArrayList();
-		Set<Player> ps = U.newHashSet();
+		List<AIPlanet> candidates = new ArrayList<>();
+		Set<Player> ps = new HashSet<>();
 		for (AIPlanet p : world.enemyPlanets) {
 			if (p.owner != null) {
 				if (world.explorationInnerLimit != null && world.explorationInnerLimit.contains(p.planet.x, p.planet.y)) {

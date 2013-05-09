@@ -48,7 +48,7 @@ public class Configuration {
 	public String language = "hu";
 	/** List of files or directories to be ignored by the resource locator. */
 	@LoadSave
-	public final List<String> ignore = new ArrayList<String>();
+	public final List<String> ignore = new ArrayList<>();
 	/** Disable D3D. */
 	@LoadSave
 	public boolean disableD3D;
@@ -286,7 +286,7 @@ public class Configuration {
 	public boolean aiGroundAttackGetCloser = true;
 	/** The list of server ports entered in the multiplayer screen. */
 	@LoadSave
-	public final List<String> serverPorts = new ArrayList<String>();
+	public final List<String> serverPorts = new ArrayList<>();
 	/** The last hosting port used. */
 	@LoadSave
 	public String lastServerPort = "13951";
@@ -301,10 +301,10 @@ public class Configuration {
 	public String lastClientAddress;
 	/** The join ports entered. */
 	@LoadSave
-	public final List<String> clientPorts = new ArrayList<String>();
+	public final List<String> clientPorts = new ArrayList<>();
 	/** The join addresses entered. */
 	@LoadSave
-	public final List<String> clientAddresses = new ArrayList<String>();
+	public final List<String> clientAddresses = new ArrayList<>();
 	/** Use UPnP? */
 	@LoadSave
 	public boolean upnp;
@@ -340,11 +340,8 @@ public class Configuration {
 	private boolean processConfig() {
 		try {
 			Properties props = new Properties();
-			FileInputStream fin = new FileInputStream(fileName);
-			try {
+			try (FileInputStream fin = new FileInputStream(fileName)) {
 				props.loadFromXML(fin);
-			} finally {
-				fin.close();
 			}
 			loadProperties(props);
 			return true;
@@ -378,7 +375,6 @@ public class Configuration {
 						f.set(this, props.getProperty(n, (String)f.get(this)));
 					} else
 					if (List.class.isAssignableFrom(f.getType())) {
-						@SuppressWarnings("unchecked")
 						List<String> lst = (List<String>)f.get(this);
 						int cnt = Integer.parseInt(props.getProperty(n + "-count", "0"));
 						for (int i = 0; i < cnt; i++) {
@@ -403,7 +399,6 @@ public class Configuration {
 					Object o = f.get(this);
 					if (o != null) {
 						if (List.class.isAssignableFrom(f.getType())) {
-							@SuppressWarnings("unchecked")
 							List<String> lst = (List<String>)f.get(this);
 							props.setProperty(n + "-count", Integer.toString(lst.size()));
 							for (int i = 0; i < lst.size(); i++) {
@@ -426,12 +421,9 @@ public class Configuration {
 	public boolean save() {
 		try {
 			Properties props = new Properties();
-			FileOutputStream fout = new FileOutputStream(fileName);
-			saveProperties(props);
-			try {
+			try (FileOutputStream fout = new FileOutputStream(fileName)) {
+				saveProperties(props);
 				props.storeToXML(fout, "Open Imperium Galactica Configuration");
-			} finally {
-				fout.close();
 			}
 			isNew = false;
 			return true;
@@ -457,7 +449,7 @@ public class Configuration {
 	 * @return Find the containers automatically
 	 */
 	public List<String> getContainersAutomatically() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (new File("audio").exists()) {
 			result.add("audio");
 		}
@@ -465,7 +457,7 @@ public class Configuration {
 		if (dlc.exists()) {
 			File[] dlcs = dlc.listFiles();
 			if (dlcs != null) {
-				TreeSet<String> upgrades = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+				TreeSet<String> upgrades = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 				for (File f : dlcs) {
 					if (f.getName().endsWith(".zip") || f.isDirectory()) {
 						upgrades.add("dlc/" + f.getName());
@@ -490,7 +482,7 @@ public class Configuration {
 				return name.toLowerCase().startsWith("open-ig-") && name.toLowerCase().endsWith(".zip");
 			}
 		});
-		TreeSet<String> upgrades = new TreeSet<String>(new Comparator<String>() {
+		TreeSet<String> upgrades = new TreeSet<>(new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
 				return o1.compareTo(o2);

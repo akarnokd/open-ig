@@ -33,7 +33,6 @@ import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.Parallels;
-import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -145,7 +144,7 @@ public class BridgeScreen extends ScreenBase {
 	/** The current graphical list level. */
 	int listOffset;
 	/** The list of videos. */
-	final List<VideoMessageEntry> videos = U.newArrayList();
+	final List<VideoMessageEntry> videos = new ArrayList<>();
 	/** The currently selected video. */
 	VideoMessage selectedVideoId;
 	/** The message list row height. */
@@ -193,9 +192,9 @@ public class BridgeScreen extends ScreenBase {
 		}
 	}
 	/** The incoming message list. */
-	public final List<VideoMessage> incoming = U.newArrayList();
+	public final List<VideoMessage> incoming = new ArrayList<>();
 	/** The outgoing message list. */
-	public final List<VideoMessage> outgoing = U.newArrayList();
+	public final List<VideoMessage> outgoing = new ArrayList<>();
 	@Override
 	public void onInitialize() {
 		videoAppearAnim = new Timer(50, new ActionListener() {
@@ -924,7 +923,7 @@ public class BridgeScreen extends ScreenBase {
 	 * @param width the draw width
 	 */
 	public void paintLabel(Graphics2D g2, int x0, int y0, int width) {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 		int maxWidth = commons.text().wrapText(videoSubtitle, width, 14, lines);
 		int y = y0 + 6;
 		Composite cp = g2.getComposite();
@@ -1211,14 +1210,13 @@ public class BridgeScreen extends ScreenBase {
 				}
 			});
 			return;
-		} else {
-			List<VideoMessage> vms = world().receivedMessages;
-			for (VideoMessage vm : vms) {
-				if (!vm.seen) {
-					selectedVideoId = vm;
-					playVideo(vm);
-					break;
-				}
+		}
+		List<VideoMessage> vms = world().receivedMessages;
+		for (VideoMessage vm : vms) {
+			if (!vm.seen) {
+				selectedVideoId = vm;
+				playVideo(vm);
+				break;
 			}
 		}
 	}

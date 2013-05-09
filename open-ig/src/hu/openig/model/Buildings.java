@@ -26,11 +26,11 @@ import java.util.Set;
  */
 public class Buildings {
 	/** Map by unique id. */
-	protected Map<Integer, Building> byId = new LinkedHashMap<Integer, Building>();
+	protected Map<Integer, Building> byId = new LinkedHashMap<>();
 	/** Map by building type. */
-	protected Map<String, Set<Building>> byType = new HashMap<String, Set<Building>>();
+	protected Map<String, Set<Building>> byType = new HashMap<>();
 	/** Map by kind. */
-	protected Map<String, Set<Building>> byKind = new HashMap<String, Set<Building>>();
+	protected Map<String, Set<Building>> byKind = new HashMap<>();
 	/**
 	 * Remove all buildings.
 	 */
@@ -50,14 +50,14 @@ public class Buildings {
 			
 			Set<Building> bs = byType.get(b.type.id);
 			if (bs == null) {
-				bs = new HashSet<Building>();
+				bs = new HashSet<>();
 				byType.put(b.type.id, bs);
 			}
 			bs.add(b);
 			
 			bs = byKind.get(b.type.kind);
 			if (bs == null) {
-				bs = new HashSet<Building>();
+				bs = new HashSet<>();
 				byKind.put(b.type.kind, bs);
 			}
 			bs.add(b);
@@ -128,7 +128,7 @@ public class Buildings {
 	 * @return the building list
 	 */
 	public List<Building> list() {
-		List<Building> result = new ArrayList<Building>(1 + size());
+		List<Building> result = new ArrayList<>(1 + size());
 		result.addAll(byId.values());
 		return result;
 	}

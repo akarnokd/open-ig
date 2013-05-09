@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class Players {
 	/** The map of player-id to player object. */
-	public final Map<String, Player> players = new LinkedHashMap<String, Player>();
+	public final Map<String, Player> players = new LinkedHashMap<>();
 	/**
 	 * Retrieve a player.
 	 * @param id the player id

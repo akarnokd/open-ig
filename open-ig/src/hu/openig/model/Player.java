@@ -11,7 +11,6 @@ package hu.openig.model;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -51,19 +50,19 @@ public class Player {
 	/** The optional resource to play when contacting this race. */
 	public String diplomacyHead;
 	/** The in-progress production list. */
-	public final Map<ResearchMainCategory, Map<ResearchType, Production>> production = new HashMap<ResearchMainCategory, Map<ResearchType, Production>>();
+	public final Map<ResearchMainCategory, Map<ResearchType, Production>> production = new HashMap<>();
 	/** The production history. */
-	public final Map<ResearchMainCategory, List<ResearchType>> productionHistory = U.newHashMap();
+	public final Map<ResearchMainCategory, List<ResearchType>> productionHistory = new HashMap<>();
 	/** The in-progress research. */
-	public final Map<ResearchType, Research> researches = new LinkedHashMap<ResearchType, Research>();
+	public final Map<ResearchType, Research> researches = new LinkedHashMap<>();
 	/** The completed research. */
-	private final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<ResearchType, List<ResearchType>>();
+	private final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<>();
 	/** The fleets owned. */
-	public final Map<Fleet, FleetKnowledge> fleets = new LinkedHashMap<Fleet, FleetKnowledge>();
+	public final Map<Fleet, FleetKnowledge> fleets = new LinkedHashMap<>();
 	/** The planets owned. */
-	public final Map<Planet, PlanetKnowledge> planets = new HashMap<Planet, PlanetKnowledge>();
+	public final Map<Planet, PlanetKnowledge> planets = new HashMap<>();
 	/** The inventory counts. */
-	public final Map<ResearchType, Integer> inventory = new HashMap<ResearchType, Integer>();
+	public final Map<ResearchType, Integer> inventory = new HashMap<>();
 	/** The current running research. */
 	private ResearchType runningResearch;
 	/** The actual planet. */
@@ -87,9 +86,9 @@ public class Player {
 	/** Initial stance for the newly discovered races. */
 	public int initialStance = 50;
 	/** The priority queue for the messages. */
-	protected final PriorityQueue<Message> messageQueue = new PriorityQueue<Message>();
+	protected final PriorityQueue<Message> messageQueue = new PriorityQueue<>();
 	/** The message history of the already displayes messages. */
-	public final List<Message> messageHistory = new ArrayList<Message>();
+	public final List<Message> messageHistory = new ArrayList<>();
 	/** The AI behavior mode. */
 	public AIMode aiMode;
 	/** The defensive ratio for AI player. Ratios sum up to 1. */
@@ -111,7 +110,7 @@ public class Player {
 	/** The limit where the AI considers attacking the other party. */
 	public int warThreshold = 45;
 	/** The negotiation offers from players. */
-	public final Map<String, DiplomaticOffer> offers = U.newLinkedHashMap();
+	public final Map<String, DiplomaticOffer> offers = new LinkedHashMap<>();
 	/** The factor for police-to-morale conversion. */
 	public double policeRatio;
 	/** Pause the production without changing the production line settings. */
@@ -125,9 +124,9 @@ public class Player {
 	/** The group id, if bigger than zero. */
 	public int group;
 	/** The list of translated nicknames. */
-	public final List<String> nicknames = U.newArrayList();
+	public final List<String> nicknames = new ArrayList<>();
 	/** The set of colonization targets. */
-	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
+	public final Set<String> colonizationTargets = new LinkedHashSet<>();
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world
@@ -217,7 +216,7 @@ public class Player {
 	 * @return the number of built buildings per type
 	 */
 	public Map<BuildingType, Integer> countBuildings() {
-		Map<BuildingType, Integer> result = new HashMap<BuildingType, Integer>();
+		Map<BuildingType, Integer> result = new HashMap<>();
 		for (Planet p : planets.keySet()) {
 			if (p.owner == this) {
 				for (Building b : p.surface.buildings.iterable()) {
@@ -342,7 +341,7 @@ public class Player {
 	 * @return the set ow known players
 	 */
 	public Map<Player, DiplomaticRelation> knownPlayers() {
-		Map<Player, DiplomaticRelation> result = U.newLinkedHashMap();
+		Map<Player, DiplomaticRelation> result = new LinkedHashMap<>();
 		for (DiplomaticRelation dr : world.relations) {
 			if (dr.first.equals(id)) {
 				result.put(world.players.get(dr.second), dr);
@@ -357,13 +356,13 @@ public class Player {
 	 * @return The collection of all visible fleets. 
 	 */
 	public List<Fleet> visibleFleets() {
-		return new ArrayList<Fleet>(fleets.keySet());
+		return new ArrayList<>(fleets.keySet());
 	}
 	/**
 	 * @return the list of player owned fleets sorted by name
 	 */
 	public List<Fleet> ownFleets() {
-		List<Fleet> result = new ArrayList<Fleet>();
+		List<Fleet> result = new ArrayList<>();
 		for (Fleet f : fleets.keySet()) {
 			if (f.owner == this) {
 				result.add(f);
@@ -379,7 +378,7 @@ public class Player {
 	}
 	/** @return List the own planets. */
 	public List<Planet> ownPlanets() {
-		List<Planet> result = new ArrayList<Planet>();
+		List<Planet> result = new ArrayList<>();
 		for (Planet p : planets.keySet()) {
 			if (p.owner == this) {
 				result.add(p);
@@ -429,7 +428,7 @@ public class Player {
 	 * @param rt the research type to set base technologies
 	 */
 	public void setRelated(ResearchType rt) {
-		List<ResearchType> avail = new ArrayList<ResearchType>();
+		List<ResearchType> avail = new ArrayList<>();
 		
 		for (EquipmentSlot slot : rt.slots.values()) {
 			ResearchType et0 = null;
@@ -618,7 +617,7 @@ public class Player {
 	public void addProductionHistory(ResearchType rt) {
 		List<ResearchType> rts = productionHistory.get(rt.category.main);
 		if (rts == null) {
-			rts = U.newArrayList();
+			rts = new ArrayList<>();
 			productionHistory.put(rt.category.main, rts);
 		}
 		rts.remove(rt);
@@ -634,7 +633,7 @@ public class Player {
 		for (ResearchType rt : available().keySet()) {
 			List<ResearchType> rts = productionHistory.get(rt.category.main);
 			if (rts == null) {
-				rts = U.newArrayList();
+				rts = new ArrayList<>();
 				productionHistory.put(rt.category.main, rts);
 			}
 			if (rts.size() < world.config.productionHistoryLimit && !rts.contains(rt)) {
@@ -749,7 +748,7 @@ public class Player {
 			result.runningResearch = runningResearch.id;
 		}
 		for (Map.Entry<ResearchType, List<ResearchType>> e : availableResearch.entrySet()) {
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			
 			for (ResearchType rt : e.getValue()) {
 				list.add(rt.id);
@@ -774,7 +773,7 @@ public class Player {
 		}
 		availableResearch.clear();
 		for (Map.Entry<String, List<String>> e : rss.availableResearch.entrySet()) {
-			List<ResearchType> list = new ArrayList<ResearchType>();
+			List<ResearchType> list = new ArrayList<>();
 			
 			for (String s : e.getValue()) {
 				list.add(world.research(s));

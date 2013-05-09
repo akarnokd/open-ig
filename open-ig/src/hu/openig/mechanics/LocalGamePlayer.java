@@ -63,7 +63,7 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public List<FleetStatus> getFleets() throws IOException {
-		List<FleetStatus> result = new ArrayList<FleetStatus>(player.fleets.size() + 1);
+		List<FleetStatus> result = new ArrayList<>(player.fleets.size() + 1);
 		
 		for (Fleet f : player.fleets.keySet()) {
 			result.add(f.toFleetStatus());
@@ -85,7 +85,7 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public Map<String, Integer> getInventory() throws IOException {
-		HashMap<String, Integer> result = new HashMap<String, Integer>();
+		HashMap<String, Integer> result = new HashMap<>();
 		for (Map.Entry<ResearchType, Integer> e : player.inventory.entrySet()) {
 			result.put(e.getKey().id, e.getValue());
 		}
@@ -104,7 +104,7 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public List<PlanetStatus> getPlanetStatuses() throws IOException {
-		List<PlanetStatus> result = new ArrayList<PlanetStatus>();
+		List<PlanetStatus> result = new ArrayList<>();
 		for (Map.Entry<Planet, PlanetKnowledge> pe : player.planets.entrySet()) {
 			result.add(pe.getKey().toPlanetStatus(player));
 		}

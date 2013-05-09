@@ -62,7 +62,7 @@ public class VideoScreen extends ScreenBase {
 	/** The view count. */
 	int videoCount;
 	/** The list of videos. */
-	final List<VideoEntry> videos = new ArrayList<VideoEntry>();
+	final List<VideoEntry> videos = new ArrayList<>();
 	/** The selected video. */
 	VideoEntry selectedVideo;
 	/* (non-Javadoc)

@@ -194,9 +194,9 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** The language flag. */
 	JComboBox<String> flag;
 	/** The available maps. */
-	final Map<String, BufferedImage> flags = new LinkedHashMap<String, BufferedImage>();
+	final Map<String, BufferedImage> flags = new LinkedHashMap<>();
 	/** The labels. */
-	final Map<String, Map<String, String>> labels = new HashMap<String, Map<String, String>>();
+	final Map<String, Map<String, String>> labels = new HashMap<>();
 	/** The online module information. */
 	private LUpdate updates;
 	/** Not installed constant. */
@@ -226,7 +226,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** Run the verification automatically? */
 	boolean runVerify;
 	/** Set of installed languages. */
-	final Set<String> installedLanguages = new HashSet<String>();
+	final Set<String> installedLanguages = new HashSet<>();
 	/** Select install languages. */
 	JMenuItem selectLanguages;
 	/** Show the java 6 warning dialog? */
@@ -333,32 +333,27 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 * Load the languages.
 	 */
 	void loadLanguages() {
-		try {
-			InputStream in = getClass().getResourceAsStream("launcher_labels.xml");
-			try {
-				XElement xlabels = XElement.parseXML(in);
-				for (XElement xlabel : xlabels.childrenWithName("language")) {
-					String id = xlabel.get("id");
-					String flag = xlabel.get("flag");
-					
-					URL url = getClass().getResource(flag);
-					
-					if (url == null) {
-						System.err.println("Can't locate flag: " + flag);
-					}
-					BufferedImage image = ImageIO.read(url);
-					
-					flags.put(id, image);
-					
-					Map<String, String> entries = new HashMap<String, String>();
-					labels.put(id, entries);
-					
-					for (XElement xentry : xlabel.childrenWithName("entry")) {
-						entries.put(xentry.get("key"), xentry.content);
-					}
+		try (InputStream in = getClass().getResourceAsStream("launcher_labels.xml")) {
+			XElement xlabels = XElement.parseXML(in);
+			for (XElement xlabel : xlabels.childrenWithName("language")) {
+				String id = xlabel.get("id");
+				String flag = xlabel.get("flag");
+				
+				URL url = getClass().getResource(flag);
+				
+				if (url == null) {
+					System.err.println("Can't locate flag: " + flag);
 				}
-			} finally {
-				in.close();
+				BufferedImage image = ImageIO.read(url);
+				
+				flags.put(id, image);
+				
+				Map<String, String> entries = new HashMap<>();
+				labels.put(id, entries);
+				
+				for (XElement xentry : xlabel.childrenWithName("entry")) {
+					entries.put(xentry.get("key"), xentry.content);
+				}
 			}
 		} catch (IOException ex) {
 			Exceptions.add(ex);
@@ -372,7 +367,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 * @return the list of commands
 	 */
 	List<String> parseCommandLine(String line) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		line = line.trim();
 		StringBuilder b = new StringBuilder();
 		boolean escapeSpace = false;
@@ -457,7 +452,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			langs[i] = l;
 			i++;
 		}
-		flag = new JComboBox<String>(langs);
+		flag = new JComboBox<>(langs);
 		flag.setRenderer(new DefaultListCellRenderer() {
 			/** */
 			private static final long serialVersionUID = 5312297135529455789L;
@@ -1012,7 +1007,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				doSelfDelete(args);
 			}
 		}
-		final Set<String> argset = new HashSet<String>(Arrays.asList(args));
+		final Set<String> argset = new HashSet<>(Arrays.asList(args));
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -1276,7 +1271,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 * @return true if the check succeded
 	 */
 	boolean checkInstall() {
-		Set<String> testFiles = new HashSet<String>(Arrays.asList(
+		Set<String> testFiles = new HashSet<>(Arrays.asList(
 			"generic/options_1.png",
 			"generic/campaign/main/definition.xml",
 			"generic/ui/achievement.wav",
@@ -1306,16 +1301,13 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 					return false;
 				}
 				if (fn.startsWith("open-ig") && fn.endsWith(".zip")) {
-					ZipFile zf = new ZipFile(f2);
-					try {
+					try (ZipFile zf = new ZipFile(f2)) {
 						Enumeration<? extends ZipEntry> e = zf.entries();
 						while (e.hasMoreElements()) {
 							ZipEntry ze = e.nextElement();
 							String zn = ze.getName().replace('\\', '/');
 							testFiles.remove(zn);
 						}
-					} finally {
-						zf.close();
 					}
 				}
 				if (fn.endsWith(".jar") || (fn.startsWith("open-ig-upgrade-") && fn.endsWith(".zip"))) {
@@ -1762,7 +1754,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			}
 		}
 		
-		List<LFile> toDownload = new ArrayList<LFile>();
+		List<LFile> toDownload = new ArrayList<>();
 
 		long start = System.currentTimeMillis();
 		long position = 0;
@@ -1800,8 +1792,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				try {
 					long start1 = System.currentTimeMillis();
 					MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-					FileInputStream fin = new FileInputStream(localFile);
-					try {
+					try (FileInputStream fin = new FileInputStream(localFile)) {
 						while (!Thread.currentThread().isInterrupted()) {
 							int read = fin.read(buffer);
 							if (read > 0) {
@@ -1833,8 +1824,6 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 						if (!Arrays.equals(sha1h, sha1hupdate)) {
 							toDownload.add(lf);
 						}
-					} finally {
-						fin.close();
 					}
 				} catch (IOException ex) {
 					Exceptions.add(ex);
@@ -2005,70 +1994,62 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			
 			HttpURLConnection conn = (HttpURLConnection)u.openConnection();
 			conn.connect();
-			try {
-				InputStream in = conn.getInputStream();
+			try (InputStream in = conn.getInputStream()) {
 				long length = conn.getContentLength();
+				long filePos = 0;
+				byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
+				/** The SHA1 hash computer. */
 				try {
-					long filePos = 0;
-					byte[] buffer = new byte[DOWNLOAD_BUFFER_SIZE];
-					/** The SHA1 hash computer. */
-					try {
-						MessageDigest sha1 = MessageDigest.getInstance("SHA1");
-						long start1 = System.currentTimeMillis();
-						
-						FileOutputStream fout = new FileOutputStream(localFile);
-						try {
-							while (!Thread.currentThread().isInterrupted()) {
-								int read = in.read(buffer);
-								if (read > 0) {
-									filePos += read;
-									position += read;
-									sha1.update(buffer, 0, read);
-									fout.write(buffer, 0, read);
-									// update local progress
-									double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
-									setFileProgress(filePos, length, speed1);
-									// update global progress
-									speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-									
-									int pos = (i) * 100 / files.size();
-									long fileProgress = length > 0 ? filePos * 100 / length : 0;
-									if (fileProgress >= 0) {
-										pos += fileProgress / files.size();
-									}
-									setTotalProgress(i + 1, files.size(), pos, position, -1, speed);
-								} else
-								if (read < 0) {
-									break;
+					MessageDigest sha1 = MessageDigest.getInstance("SHA1");
+					long start1 = System.currentTimeMillis();
+					
+					try (FileOutputStream fout = new FileOutputStream(localFile)) {
+						while (!Thread.currentThread().isInterrupted()) {
+							int read = in.read(buffer);
+							if (read > 0) {
+								filePos += read;
+								position += read;
+								sha1.update(buffer, 0, read);
+								fout.write(buffer, 0, read);
+								// update local progress
+								double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
+								setFileProgress(filePos, length, speed1);
+								// update global progress
+								speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+								
+								int pos = (i) * 100 / files.size();
+								long fileProgress = length > 0 ? filePos * 100 / length : 0;
+								if (fileProgress >= 0) {
+									pos += fileProgress / files.size();
 								}
+								setTotalProgress(i + 1, files.size(), pos, position, -1, speed);
+							} else
+							if (read < 0) {
+								break;
 							}
-							// update local progress
-							double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
-							setFileProgress(filePos, length, speed1);
-							// update global progress
-							speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
-							setTotalProgress(i + 1, files.size(), (i + 1) * 100 / files.size(), position, -1, speed);
-							
-							if (timestamp < 0) {
-								byte[] sha1h = sha1.digest();
-								byte[] sha1hupdate = LFile.toByteArray(lf.sha1);
-								if (!Arrays.equals(sha1h, sha1hupdate)) {
-									allOk = false;
-								}
-							}
-						} finally {
-							fout.close();
 						}
-					} catch (IOException ex) {
-						Exceptions.add(ex);
-						allOk = false;
-					} catch (NoSuchAlgorithmException ex) {
-						Exceptions.add(ex);
-						allOk = false;
-					}					
-				} finally {
-					in.close();
-				}
+						// update local progress
+						double speed1 = filePos * 1000d / 1024 / (System.currentTimeMillis() - start1);
+						setFileProgress(filePos, length, speed1);
+						// update global progress
+						speed = position * 1000d / 1024 / (System.currentTimeMillis() - start);
+						setTotalProgress(i + 1, files.size(), (i + 1) * 100 / files.size(), position, -1, speed);
+						
+						if (timestamp < 0) {
+							byte[] sha1h = sha1.digest();
+							byte[] sha1hupdate = LFile.toByteArray(lf.sha1);
+							if (!Arrays.equals(sha1h, sha1hupdate)) {
+								allOk = false;
+							}
+						}
+					}
+				} catch (IOException ex) {
+					Exceptions.add(ex);
+					allOk = false;
+				} catch (NoSuchAlgorithmException ex) {
+					Exceptions.add(ex);
+					allOk = false;
+				}					
 			} finally {
 				conn.disconnect();
 			}
@@ -2086,7 +2067,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		if (m == null) {
 			return;
 		}
-		final Set<String> curr = new HashSet<String>();
+		final Set<String> curr = new HashSet<>();
 		for  (LFile lf : m.files) {
 			int idx = lf.url.indexOf("open-ig-upgrade-");
 			if (idx >= 0) {
@@ -2124,17 +2105,9 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			// extract splash
 			File hack = new File(currentDir, "open-ig-splash.png");
 			if (!hack.exists()) {
-				try {
-					JarFile jf = new JarFile(jar);
-					try {
-						InputStream in = jf.getInputStream(jf.getJarEntry("hu/openig/gfx/OpenIG_Splash.png"));
-						try {
-							IOUtils.save(hack, IOUtils.load(in));
-						} finally {
-							in.close();
-						}
-					} finally {
-						jf.close();
+				try (JarFile jf = new JarFile(jar)) {
+					try (InputStream in = jf.getInputStream(jf.getJarEntry("hu/openig/gfx/OpenIG_Splash.png"))) {
+						IOUtils.save(hack, IOUtils.load(in));
 					}
 				} catch (IOException ex) {
 					Exceptions.add(ex);
@@ -2150,7 +2123,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			}
 			ProcessBuilder pb = new ProcessBuilder();
 			pb.directory(installDir);
-			List<String> cmdLine = new ArrayList<String>();
+			List<String> cmdLine = new ArrayList<>();
 
 			cmdLine.add(runJVM + "/bin/java");
 			if (jvmParams != null) {
@@ -2381,7 +2354,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				return;
 			}
 			
-			List<String> params = new ArrayList<String>();
+			List<String> params = new ArrayList<>();
 			
 			if (dlg.screenMode() == 1) {
 				params.add("-maximized");
@@ -2418,7 +2391,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			installedLanguages.clear();
 			installedLanguages.addAll(dlg.getLanguages(true));
 			if (dlg.doUninstall()) {
-				Set<String> remove = new HashSet<String>(dlg.getLanguages(false));
+				Set<String> remove = new HashSet<>(dlg.getLanguages(false));
 				for (LFile lf : updates.getModule(GAME).files) {
 					if (remove.contains(lf.language)) {
 						try {

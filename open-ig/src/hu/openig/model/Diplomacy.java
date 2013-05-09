@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.util.ArrayList;
@@ -25,16 +24,16 @@ public class Diplomacy {
 		/** The negotiation's type. */
 		public NegotiateType type;
 		/** The available approaches. */
-		public final List<Approach> approaches = new ArrayList<Approach>();
+		public final List<Approach> approaches = new ArrayList<>();
 		/** The available responses. */
-		public final List<Response> responses = new ArrayList<Response>();
+		public final List<Response> responses = new ArrayList<>();
 		/**
 		 * Find the approaches for the specified type.
 		 * @param type the approach type
 		 * @return the list of available approach definitions
 		 */
 		public List<Approach> approachFor(ApproachType type) {
-			List<Approach> result = U.newArrayList();
+			List<Approach> result = new ArrayList<>();
 			for (Approach a : approaches) {
 				if (a.type == type) {
 					result.add(a);
@@ -49,7 +48,7 @@ public class Diplomacy {
 		 * @return the list of concrete responses
 		 */
 		public List<Response> responseFor(ApproachType type, ResponseMode mode) {
-			List<Response> result = U.newArrayList();
+			List<Response> result = new ArrayList<>();
 			for (Response r : responses) {
 				if (r.type == type && r.mode == mode) {
 					result.add(r);
@@ -83,12 +82,12 @@ public class Diplomacy {
 		/** The call type. */
 		public CallType type;
 		/** The list of approaches. */
-		public final List<Approach> approaches = new ArrayList<Approach>();
+		public final List<Approach> approaches = new ArrayList<>();
 	}
 	/** The negotiation topics. */
-	public final List<Negotiate> negotiations = new ArrayList<Negotiate>();
+	public final List<Negotiate> negotiations = new ArrayList<>();
 	/** The call topics. */
-	public final List<Call> calls = new ArrayList<Call>();
+	public final List<Call> calls = new ArrayList<>();
 	/** The label used for terminating the negotiation. */
 	public String terminateLabel;
 	/**

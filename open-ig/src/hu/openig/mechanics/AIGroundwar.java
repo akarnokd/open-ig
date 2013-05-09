@@ -24,6 +24,7 @@ import hu.openig.utils.U;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,17 +39,17 @@ public class AIGroundwar {
 	/** The war context. */
 	protected final GroundwarWorld war;
 	/** The list of actions issued by the AI. */
-	protected final List<Action0> actions = U.newArrayList();
+	protected final List<Action0> actions = new ArrayList<>();
 	/** Vehicle category. */
-	protected final List<GroundwarUnit> tanks = new ArrayList<GroundwarUnit>();
+	protected final List<GroundwarUnit> tanks = new ArrayList<>();
 	/** Vehicle category. */
-	protected final List<GroundwarUnit> ranged = new ArrayList<GroundwarUnit>();
+	protected final List<GroundwarUnit> ranged = new ArrayList<>();
 	/** Vehicle category. */
-	protected final List<GroundwarUnit> minelayers = new ArrayList<GroundwarUnit>();
+	protected final List<GroundwarUnit> minelayers = new ArrayList<>();
 	/** Vehicle category. */
-	protected final List<GroundwarUnit> paralizers = new ArrayList<GroundwarUnit>();
+	protected final List<GroundwarUnit> paralizers = new ArrayList<>();
 	/** Targets. */
-	protected final List<HasLocation> targets = new ArrayList<HasLocation>();
+	protected final List<HasLocation> targets = new ArrayList<>();
 	/**
 	 * Initialize this class.
 	 * @param p the player
@@ -114,7 +115,7 @@ public class AIGroundwar {
 	 * @return the list of attackers
 	 */
 	private List<HasLocation> attackersOf(GroundwarUnit u) {
-		List<HasLocation> result = U.newArrayList();
+		List<HasLocation> result = new ArrayList<>();
 		for (GroundwarUnit gu : war.units()) {
 			if (gu.attackUnit == u && (u.inRange(gu) || gu.inRange(u))) {
 				result.add(gu);
@@ -190,7 +191,7 @@ public class AIGroundwar {
 	 * @param u the unit
 	 * @return the target or null if idle
 	 */
-	private HasLocation targetOf(GroundwarUnit u) {
+	private static HasLocation targetOf(GroundwarUnit u) {
 		if (u.attackBuilding != null) {
 			return u.attackBuilding;
 		} else
@@ -252,7 +253,7 @@ public class AIGroundwar {
 	 * @param targets the possible targets
 	 * @return the nearest target or null if no targets at all
 	 */
-	private HasLocation nearest(final GroundwarUnit u, List<HasLocation> targets) {
+	private static HasLocation nearest(final GroundwarUnit u, List<HasLocation> targets) {
 		if (targets.isEmpty()) {
 			return null;
 		}
@@ -270,7 +271,7 @@ public class AIGroundwar {
 	 * @param u the unti
 	 * @param targets the list of targets
 	 */
-	private void orderByDistance(final GroundwarUnit u, List<HasLocation> targets) {
+	private static void orderByDistance(final GroundwarUnit u, List<HasLocation> targets) {
 		Collections.sort(targets, new Comparator<HasLocation>() { 
 			@Override
 			public int compare(HasLocation o1, HasLocation o2) {
@@ -286,7 +287,7 @@ public class AIGroundwar {
 	 * @param locs the locations
 	 * @return the location or null if locs is empty
 	 */
-	private Location nearest(final GroundwarUnit u, Set<Location> locs) {
+	private static Location nearest(final GroundwarUnit u, Set<Location> locs) {
 		if (locs.isEmpty()) {
 			return null;
 		}
@@ -304,7 +305,7 @@ public class AIGroundwar {
 	 * @return the set of unminded roads
 	 */
 	private Set<Location> unmined() {
-		Set<Location> result = U.newHashSet();
+		Set<Location> result = new HashSet<>();
 		for (Map.Entry<Location, SurfaceEntity> e : war.planet().surface.buildingmap.entrySet()) {
 			if (e.getValue().type == SurfaceEntityType.ROAD) {
 				Location key = e.getKey();

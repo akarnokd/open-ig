@@ -9,7 +9,6 @@
 package hu.openig.model;
 
 import hu.openig.model.BattleProjectile.Mode;
-import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -65,7 +64,7 @@ public class SpacewarStructure extends SpacewarObject {
 	/** The structure type. */
 	public StructureType type;
 	/** The available weapon ports. */
-	public final List<SpacewarWeaponPort> ports = new ArrayList<SpacewarWeaponPort>();
+	public final List<SpacewarWeaponPort> ports = new ArrayList<>();
 	/** The angle images of the spaceship. */
 	public BufferedImage[] angles;
 	/** The beam angle in an X-Y screen directed coordinate system. */
@@ -209,7 +208,7 @@ public class SpacewarStructure extends SpacewarObject {
 	 * @return the list of weapon ports
 	 */
 	public List<SpacewarWeaponPort> inRange(SpacewarObject target) {
-		List<SpacewarWeaponPort> result = U.newArrayList();
+		List<SpacewarWeaponPort> result = new ArrayList<>();
 		double d = Math.hypot(x - target.x, y - target.y);
 		for (SpacewarWeaponPort p : ports) {
 			if (p.projectile.range >= d && p.projectile.mode == Mode.BEAM) {
@@ -259,7 +258,7 @@ public class SpacewarStructure extends SpacewarObject {
 		
 		// subsystem damage
 		if (item != null && ratio > 0) {
-			List<InventorySlot> iss = U.newArrayList();
+			List<InventorySlot> iss = new ArrayList<>();
 			for (InventorySlot is0 : item.slots.values()) {
 				if (!is0.slot.fixed && is0.type != null && is0.count > 0) {
 					iss.add(is0);

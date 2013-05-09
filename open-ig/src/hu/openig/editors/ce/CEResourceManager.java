@@ -15,8 +15,10 @@ import hu.openig.utils.U;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class CEResourceManager {
 	/** The working directory. */
 	protected final File workdir;
 	/** A resource name (slashed and with extension) to a language to a parent container. */
-	protected final Map<String, Map<String, File>> map = U.newHashMap();
+	protected final Map<String, Map<String, File>> map = new HashMap<>();
 	/** The default directories. */
 	protected static String[] defaultDirectories = { "data", "audio", "images", "video" };
 	/**
@@ -68,7 +70,7 @@ public class CEResourceManager {
 	 */
 	public void scan() {
 		// scan regular zips in the work directory
-		List<File> upgrades = U.newArrayList();
+		List<File> upgrades = new ArrayList<>();
 		for (File f : U.listFiles(workdir, IS_ZIP)) {
 			if (!f.getName().startsWith("open-ig-upgrade")) {
 				processZip(f);
@@ -108,7 +110,7 @@ public class CEResourceManager {
 	protected void add(String resource, String language, File container) {
 		Map<String, File> perLang = map.get(resource);
 		if (perLang == null) {
-			perLang = U.newHashMap();
+			perLang = new HashMap<>();
 			map.put(resource, perLang);
 		}
 		perLang.put(language, container);
@@ -119,8 +121,7 @@ public class CEResourceManager {
 	 */
 	protected void processZip(File f) {
 		try {
-			ZipFile zf = new ZipFile(f);
-			try {
+			try (ZipFile zf = new ZipFile(f)) {
 				for (ZipEntry ze : U.enumerate(zf.entries())) {
 					if (!ze.isDirectory()) {
 						String n = ze.getName().replace('\\', '/');
@@ -132,8 +133,6 @@ public class CEResourceManager {
 						}
 					}
 				}
-			} finally {
-				zf.close();
 			}
 		} catch (IOException ex) {
 			// ignored
@@ -159,7 +158,7 @@ public class CEResourceManager {
 	protected void processSubdir(String language, File base, File parent) {
 		for (File f : U.listFiles(parent)) {
 			if (f.isFile()) {
-				LinkedList<String> pathElements = U.newLinkedList();
+				LinkedList<String> pathElements = new LinkedList<>();
 				pathElements.add(f.getName());
 				File pf = f.getParentFile();
 				while (pf != null && !pf.equals(base)) {
@@ -216,14 +215,11 @@ public class CEResourceManager {
 			if (f != null) {
 				if (f.isFile() && f.getName().toLowerCase().endsWith(".zip")) {
 					try {
-						ZipFile zf = new ZipFile(f);
-						try {
+						try (ZipFile zf = new ZipFile(f)) {
 							ZipEntry ze = zf.getEntry(language + "/" + resource);
 							if (ze != null) {
 								data = IOUtils.load(zf.getInputStream(ze));
 							}
-						} finally {
-							zf.close();
 						}
 					} catch (IOException ex) {
 						// ignored
@@ -243,7 +239,7 @@ public class CEResourceManager {
 	 */
 	public Map<String, byte[]> getData(String resource) {
 		Map<String, File> res = map.get(resource);
-		Map<String, byte[]> result = U.newHashMap();
+		Map<String, byte[]> result = new HashMap<>();
 		if (res != null) {
 			for (String s : res.keySet()) {
 				result.put(s, getData(resource, s));

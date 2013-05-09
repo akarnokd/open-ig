@@ -14,7 +14,9 @@ import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.utils.U;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ import java.util.List;
  */
 public class UIColorLabel extends UIComponent {
 	/** The parsed segments. */
-	final List<List<TextSegment>> segments = U.newArrayList();
+	final List<List<TextSegment>> segments = new ArrayList<>();
 	/** The default text color. */
 	int textColor = TextRenderer.LIGHT_GREEN;
 	/** The line spacing. */
@@ -36,7 +38,7 @@ public class UIColorLabel extends UIComponent {
 	/** The horizontal alignment. */
 	HorizontalAlignment align = HorizontalAlignment.LEFT;
 	/** The current line. */
-	final List<TextSegment> line = U.newArrayList();
+	final List<TextSegment> line = new ArrayList<>();
 	/** The raw text. */
 	String rawText;
 	/**
@@ -61,7 +63,7 @@ public class UIColorLabel extends UIComponent {
 		
 		StringBuilder b = new StringBuilder();
 		int currentColor = textColor;
-		Deque<Integer> colorstack = U.newLinkedList();
+		Deque<Integer> colorstack = new LinkedList<>();
 		for (int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			if (c == '[') {
@@ -129,7 +131,7 @@ public class UIColorLabel extends UIComponent {
 	 */
 	void addSegment(String text, int color) {
 		text = text.replaceAll("\\s{2,}", " ");
-		List<String> words = U.newArrayList();
+		List<String> words = new ArrayList<>();
 		int i = 0;
 		for (int j = 0; j < text.length(); j++) {
 			if (text.charAt(j) == ' ') {

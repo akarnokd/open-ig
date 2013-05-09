@@ -28,17 +28,17 @@ import java.util.Set;
  */
 public class InventoryItems {
 	/** The map by id. */
-	protected final Map<Integer, InventoryItem> byId = new LinkedHashMap<Integer, InventoryItem>();
+	protected final Map<Integer, InventoryItem> byId = new LinkedHashMap<>();
 	/** The map by type. */
-	protected final Map<String, Set<InventoryItem>> byType = new HashMap<String, Set<InventoryItem>>();
+	protected final Map<String, Set<InventoryItem>> byType = new HashMap<>();
 	/** The map by owner. */
-	protected final Map<String, Set<InventoryItem>> byOwner = new HashMap<String, Set<InventoryItem>>();
+	protected final Map<String, Set<InventoryItem>> byOwner = new HashMap<>();
 	/**
 	 * Returns a list copy of the inventory items in this collection.
 	 * @return the inventory item list
 	 */
 	public List<InventoryItem> list() {
-		List<InventoryItem> result = new ArrayList<InventoryItem>(1 + size());
+		List<InventoryItem> result = new ArrayList<>(1 + size());
 		result.addAll(byId.values());
 		return result;
 	}
@@ -81,14 +81,14 @@ public class InventoryItems {
 			byId.put(ii.id, ii);
 			Set<InventoryItem> is = byType.get(ii.type.id);
 			if (is == null) {
-				is = new HashSet<InventoryItem>();
+				is = new HashSet<>();
 				byType.put(ii.type.id, is);
 			}
 			is.add(ii);
 			
 			is = byOwner.get(ii.owner.id);
 			if (is == null) {
-				is = new HashSet<InventoryItem>();
+				is = new HashSet<>();
 				byOwner.put(ii.owner.id, is);
 			}
 			is.add(ii);
@@ -221,7 +221,7 @@ public class InventoryItems {
 		if (ids instanceof Set<?>) {
 			idSet = (Set<Integer>)ids;
 		} else {
-			idSet = new HashSet<Integer>();
+			idSet = new HashSet<>();
 			for (Integer i : ids) {
 				idSet.add(i);
 			}

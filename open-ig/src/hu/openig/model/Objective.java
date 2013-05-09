@@ -9,8 +9,8 @@
 package hu.openig.model;
 
 import hu.openig.core.Func0;
-import hu.openig.utils.U;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +33,7 @@ public class Objective {
 	/** Optional function to indicate a progress textually. */
 	public Func0<String> progressValue;
 	/** The sub objectives. */
-	public final List<Objective> subObjectives = U.newArrayList();
+	public final List<Objective> subObjectives = new ArrayList<>();
 	/** @return is the objective active (visible and ACTIVE state). */
 	public boolean isActive() {
 		return visible && state == ObjectiveState.ACTIVE;

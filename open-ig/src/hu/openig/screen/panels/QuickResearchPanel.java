@@ -33,9 +33,11 @@ import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +59,7 @@ public class QuickResearchPanel extends UIContainer {
 	/** The margin inside the panel. */
 	static final int MARGIN = 6;
 	/** The labels for the current available set of researches. */
-	final List<List<QuickResearchLabel>> researches = U.newArrayList();
+	final List<List<QuickResearchLabel>> researches = new ArrayList<>();
 	/** The top divider y. */
 	int topDivider;
 	/** The middle divider. */
@@ -81,11 +83,11 @@ public class QuickResearchPanel extends UIContainer {
 	/** The lab-required main label. */
 	UILabel labRequired;
 	/** The lab titles. */
-	final List<UILabel> labTitles = U.newArrayList();
+	final List<UILabel> labTitles = new ArrayList<>();
 	/** The active counts. */
-	final List<UILabel> labActives = U.newArrayList();
+	final List<UILabel> labActives = new ArrayList<>();
 	/** The required counts. */
-	final List<UILabel> labRequireds = U.newArrayList();
+	final List<UILabel> labRequireds = new ArrayList<>();
 	/** The common resources. */
 	final CommonResources commons;
 	/** 
@@ -246,9 +248,9 @@ public class QuickResearchPanel extends UIContainer {
 		
 		// ---------------------------------------------------------------------
 		// collect startable researches
-		Map<ResearchMainCategory, List<Pair<ResearchType, Integer>>> columns = U.newLinkedHashMap();
+		Map<ResearchMainCategory, List<Pair<ResearchType, Integer>>> columns = new LinkedHashMap<>();
 		for (ResearchMainCategory mcat : ResearchMainCategory.values()) {
-			columns.put(mcat, U.<Pair<ResearchType, Integer>>newArrayList());
+			columns.put(mcat, new ArrayList<Pair<ResearchType, Integer>>());
 		}
 		
 		PlanetStatistics ps = evaluatePlanetsForResearch();
@@ -285,7 +287,7 @@ public class QuickResearchPanel extends UIContainer {
 			
 			
 			if (researches.size() == i) {
-				researches.add(U.<QuickResearchLabel>newArrayList());
+				researches.add(new ArrayList<QuickResearchLabel>());
 			}
 			List<QuickResearchLabel> catlist = researches.get(i);
 

@@ -41,6 +41,7 @@ import hu.openig.utils.U;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,7 +74,7 @@ public final class Simulator {
 		// -------------------------
 		
 		for (Player player : world.players.values()) {
-			Map<Planet, PlanetStatistics> planetStats = U.newHashMap();
+			Map<Planet, PlanetStatistics> planetStats = new HashMap<>();
 			
 			PlanetStatistics all = player.getPlanetStatistics(planetStats);
 			
@@ -367,7 +368,7 @@ public final class Simulator {
 			radar = Math.max(radar, pii.type.getInt("radar", 0));
 		}		
 		if (radar != 0) {
-			for (Map.Entry<InventoryItem, Integer> ittl : new ArrayList<Map.Entry<InventoryItem, Integer>>(planet.timeToLive.entrySet())) {
+			for (Map.Entry<InventoryItem, Integer> ittl : new ArrayList<>(planet.timeToLive.entrySet())) {
 				if (ittl.getKey().owner != planet.owner) {
 					Integer cttl = ittl.getValue();
 					int cttl2 = cttl.intValue() - radar;
@@ -649,7 +650,7 @@ public final class Simulator {
 				}
 			}
 			if (prioritySum > 0) {
-				for (Production pr : new ArrayList<Production>(prs.getValue().values())) {
+				for (Production pr : new ArrayList<>(prs.getValue().values())) {
 					if (pr.type.has("needsOrbitalFactory") && all.orbitalFactory == 0) {
 						continue;
 					}

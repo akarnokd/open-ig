@@ -8,9 +8,9 @@
 
 package hu.openig.model;
 
-import java.io.IOException;
-
 import hu.openig.net.MessageSerializable;
+
+import java.io.IOException;
 
 
 /**

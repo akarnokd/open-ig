@@ -14,7 +14,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -38,69 +37,61 @@ public final class MediaCut {
 		
 		int framesStart = 0;
 		int framesCount = 65;
-		DataOutputStream gout = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(dest))));
-		try {
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(source), 1024 * 1024), 1024 * 1024));
-			try {
-				int w = Integer.reverseBytes(in.readInt());
-				int h = Integer.reverseBytes(in.readInt());
-				in.skipBytes(4);
+		try (DataOutputStream gout = new DataOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(dest))));
+				DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(source), 1024 * 1024), 1024 * 1024))) {
+			int w = Integer.reverseBytes(in.readInt());
+			int h = Integer.reverseBytes(in.readInt());
+			in.skipBytes(4);
 //				final int frames = Integer.reverseBytes(in.readInt());
-				int fps1000 = Integer.reverseBytes(in.readInt());
+			int fps1000 = Integer.reverseBytes(in.readInt());
 //				double fps = fps1000 / 1000.0;
-				
-				gout.writeInt(Integer.reverseBytes(w));
-				gout.writeInt(Integer.reverseBytes(h));
-				gout.writeInt(Integer.reverseBytes(framesCount));
-				gout.writeInt(Integer.reverseBytes(fps1000));
+			
+			gout.writeInt(Integer.reverseBytes(w));
+			gout.writeInt(Integer.reverseBytes(h));
+			gout.writeInt(Integer.reverseBytes(framesCount));
+			gout.writeInt(Integer.reverseBytes(fps1000));
 
-				int[] palette = new int[256];
-				byte[] bytebuffer = new byte[w * h];
-				
-				int frameIndex = 0;
-				boolean paletteWritten = false;
-				int paletteLen = 0;
-				while (!Thread.currentThread().isInterrupted()) {
-					int c = in.read();
-					if (c < 0 || c == 'X') {
-						break;
-					} else
-					if (c == 'P') {
-						paletteWritten = false;
-						paletteLen = in.readUnsignedByte() ;
-						for (int j = 0; j < paletteLen; j++) {
-							int r = in.read() & 0xFF;
-							int g = in.read() & 0xFF;
-							int b = in.read() & 0xFF;
-							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
-						}
-					} else
-					if (c == 'I') {
-						in.readFully(bytebuffer);
-						if (frameIndex >= framesStart 
-								&& frameIndex < framesStart + framesCount) {
-							if (!paletteWritten) {
-								paletteWritten = true;
-								gout.write('P');
-								gout.writeByte(paletteLen);
-								for (int j = 0; j < paletteLen; j++) {
-									gout.writeByte((palette[j] & 0xFF0000) >> 16);
-									gout.writeByte((palette[j] & 0xFF00) >> 8);
-									gout.writeByte((palette[j] & 0xFF));
-								}
-							}
-							gout.writeByte('I');
-							gout.write(bytebuffer);
-						}
-						frameIndex++;
+			int[] palette = new int[256];
+			byte[] bytebuffer = new byte[w * h];
+			
+			int frameIndex = 0;
+			boolean paletteWritten = false;
+			int paletteLen = 0;
+			while (!Thread.currentThread().isInterrupted()) {
+				int c = in.read();
+				if (c < 0 || c == 'X') {
+					break;
+				} else
+				if (c == 'P') {
+					paletteWritten = false;
+					paletteLen = in.readUnsignedByte() ;
+					for (int j = 0; j < paletteLen; j++) {
+						int r = in.read() & 0xFF;
+						int g = in.read() & 0xFF;
+						int b = in.read() & 0xFF;
+						palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
 					}
+				} else
+				if (c == 'I') {
+					in.readFully(bytebuffer);
+					if (frameIndex >= framesStart 
+							&& frameIndex < framesStart + framesCount) {
+						if (!paletteWritten) {
+							paletteWritten = true;
+							gout.write('P');
+							gout.writeByte(paletteLen);
+							for (int j = 0; j < paletteLen; j++) {
+								gout.writeByte((palette[j] & 0xFF0000) >> 16);
+								gout.writeByte((palette[j] & 0xFF00) >> 8);
+								gout.writeByte((palette[j] & 0xFF));
+							}
+						}
+						gout.writeByte('I');
+						gout.write(bytebuffer);
+					}
+					frameIndex++;
 				}
-			} finally {
-				try { in.close(); } catch (IOException ex) {  }
 			}
-		} finally {
-			gout.writeByte('X');
-			gout.close();
 		}
 	}
 

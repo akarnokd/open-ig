@@ -14,6 +14,7 @@ import hu.openig.utils.U;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -29,8 +30,8 @@ public final class AudioMatcher {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		Map<String, byte[]> srcMap = U.newLinkedHashMap();
-		Map<String, byte[]> dstMap = U.newLinkedHashMap();
+		Map<String, byte[]> srcMap = new LinkedHashMap<>();
+		Map<String, byte[]> dstMap = new LinkedHashMap<>();
 
 		scanMessages(srcMap, dstMap);
 		

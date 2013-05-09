@@ -19,7 +19,6 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.Tile;
-import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -84,7 +83,7 @@ public class ColonyPlanner extends Planner {
 
 	@Override
 	protected void plan() {
-		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, WORST_PLANET);
 		for (AIPlanet planet : planets) {
 			if (managePlanet(planet)) {
@@ -551,7 +550,7 @@ public class ColonyPlanner extends Planner {
 	 * @return the list of buildings
 	 */
 	List<AIBuilding> disableCandidates(AIPlanet planet) {
-		List<AIBuilding> result = U.newArrayList();
+		List<AIBuilding> result = new ArrayList<>();
 		for (AIBuilding b : planet.buildings) {
 			if (b.enabled && b.isComplete() && !b.type.kind.equals("MainBuilding") && b.getEnergy() < 0) {
 				result.add(b);
@@ -756,11 +755,10 @@ public class ColonyPlanner extends Planner {
 			if (world.money < bt.cost) {
 				if (getMoreMoney(planet)) {
 					return true;
-				} else {
-					// if no money could be gained, simply wait for the next day
-					world.money = 0L; // do not let money-related tasks to continue
-					return true;
 				}
+				// if no money could be gained, simply wait for the next day
+				world.money = 0L; // do not let money-related tasks to continue
+				return true;
 			}
 			add(new Action0() {
 				@Override
@@ -787,7 +785,7 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean getMoreMoney(final AIPlanet current) {
-		List<Func1<Building, Boolean>> functions = U.newArrayList();
+		List<Func1<Building, Boolean>> functions = new ArrayList<>();
 		// severly damaged
 		functions.add(new Func1<Building, Boolean>() {
 			@Override

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class Scaffolding {
 	/** The normal elements. */
-	public final List<Tile> normal = new ArrayList<Tile>();
+	public final List<Tile> normal = new ArrayList<>();
 	/** The damaged elements. */
-	public final List<Tile> damaged = new ArrayList<Tile>();
+	public final List<Tile> damaged = new ArrayList<>();
 }

@@ -11,12 +11,11 @@ package hu.openig.screen;
 import hu.openig.core.ResourceType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -26,9 +25,9 @@ import java.util.zip.GZIPInputStream;
  */
 public class RawAnimation {
 	/** The list of image frames. */
-	public List<byte[]> images = U.newArrayList();
+	public List<byte[]> images = new ArrayList<>();
 	/** The palettes. */
-	public List<int[]> palettes = U.newArrayList();
+	public List<int[]> palettes = new ArrayList<>();
 	/** The animation frames per second. */
 	public double fps;
 	/** The total number of frames. */
@@ -113,44 +112,39 @@ public class RawAnimation {
 			ha.fps = 17.89;
 			return ha;
 		}
-		try {
-			DataInputStream in = new DataInputStream(
+		try (DataInputStream in = new DataInputStream(
 					new BufferedInputStream(
-							new GZIPInputStream(rl.get(resource, ResourceType.VIDEO).open(), 1024 * 1024), 1024 * 1024));
-			try {
-				ha.w = Integer.reverseBytes(in.readInt());
-				ha.h = Integer.reverseBytes(in.readInt());
-				ha.frames = Integer.reverseBytes(in.readInt());
-				ha.fps = Integer.reverseBytes(in.readInt()) / 1000.0;
-				int[] palette = new int[256];
-				int frameCount = 0;
-				while (frameCount < ha.frames) {
-					int c = in.read();
-					if (c < 0 || c == 'X') {
-						break;
-					} else
-					if (c == 'P') {
-						int len = in.read();
-						for (int j = 0; j < len; j++) {
-							int r = in.read() & 0xFF;
-							int g = in.read() & 0xFF;
-							int b = in.read() & 0xFF;
-							palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
-						}
-					} else
-					if (c == 'I') {
-						byte[] bytebuffer = new byte[ha.w * ha.h];
-						in.readFully(bytebuffer);
-						
-						ha.images.add(bytebuffer);
-						ha.palettes.add(palette.clone());
-						
-						
-		       			frameCount++;
+							new GZIPInputStream(rl.get(resource, ResourceType.VIDEO).open(), 1024 * 1024), 1024 * 1024))) {
+			ha.w = Integer.reverseBytes(in.readInt());
+			ha.h = Integer.reverseBytes(in.readInt());
+			ha.frames = Integer.reverseBytes(in.readInt());
+			ha.fps = Integer.reverseBytes(in.readInt()) / 1000.0;
+			int[] palette = new int[256];
+			int frameCount = 0;
+			while (frameCount < ha.frames) {
+				int c = in.read();
+				if (c < 0 || c == 'X') {
+					break;
+				} else
+				if (c == 'P') {
+					int len = in.read();
+					for (int j = 0; j < len; j++) {
+						int r = in.read() & 0xFF;
+						int g = in.read() & 0xFF;
+						int b = in.read() & 0xFF;
+						palette[j] = 0xFF000000 | (r << 16) | (g << 8) | b;
 					}
+				} else
+				if (c == 'I') {
+					byte[] bytebuffer = new byte[ha.w * ha.h];
+					in.readFully(bytebuffer);
+					
+					ha.images.add(bytebuffer);
+					ha.palettes.add(palette.clone());
+					
+					
+	       			frameCount++;
 				}
-			} finally {
-				try { in.close(); } catch (IOException ex) {  }
 			}
 		} catch (Throwable ex) {
 			Exceptions.add(ex);

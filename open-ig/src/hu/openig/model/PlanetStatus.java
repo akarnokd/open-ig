@@ -57,11 +57,11 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 	/** The remaining time for a weather event. */
 	public int weatherTTL;
 	/** The planet's inventory. */
-	public final List<InventoryItemStatus> inventory = new ArrayList<InventoryItemStatus>();
+	public final List<InventoryItemStatus> inventory = new ArrayList<>();
 	/** The building statuses. */
-	public final List<BuildingStatus> buildings = new ArrayList<BuildingStatus>();
+	public final List<BuildingStatus> buildings = new ArrayList<>();
 	/** The inventory time to live values. */
-	public final Map<Integer, Integer> timeToLive = new HashMap<Integer, Integer>();
+	public final Map<Integer, Integer> timeToLive = new HashMap<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		id = mo.getString("id");

@@ -8,11 +8,10 @@
 
 package hu.openig.editors.ce;
 
-import hu.openig.utils.U;
-
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Vector;
@@ -38,9 +37,9 @@ public class CECopySettingsDialog extends JDialog {
 	/** The context. */
 	protected CEContext ctx;
 	/** The copy operation. */
-	final List<JComboBox<String>> copyOps = U.newArrayList();
+	final List<JComboBox<String>> copyOps = new ArrayList<>();
 	/** The copy labels. */
-	final List<JLabel> copyLabels = U.newArrayList();
+	final List<JLabel> copyLabels = new ArrayList<>();
 	/** Was the dialog approved? */
 	protected boolean approved;
 	/**
@@ -78,7 +77,7 @@ public class CECopySettingsDialog extends JDialog {
 		
 		int columns = 4;
 		SequentialGroup allCols = gl.createSequentialGroup();
-		List<ParallelGroup> cols = U.newArrayList();;
+		List<ParallelGroup> cols = new ArrayList<>();;
 		for (int i = 0; i < columns; i++) {
 			ParallelGroup col = gl.createParallelGroup();
 			allCols.addGroup(col);
@@ -94,7 +93,7 @@ public class CECopySettingsDialog extends JDialog {
 		JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
 		JSeparator sep1 = new JSeparator(JSeparator.HORIZONTAL);
 
-		Vector<String> ops = new Vector<String>();
+		Vector<String> ops = new Vector<>();
 		for (CopyOperation co : CopyOperation.values()) {
 			ops.add(get("copy_settings.op_" + co));
 		}
@@ -103,7 +102,7 @@ public class CECopySettingsDialog extends JDialog {
 		int j = 0;
 		for (DataFiles df : DataFiles.values()) {
 			JLabel label = new JLabel(get("copy_settings.data_" + df));
-			JComboBox<String> box = new JComboBox<String>(ops);
+			JComboBox<String> box = new JComboBox<>(ops);
 			
 			copyLabels.add(label);
 			copyOps.add(box);
@@ -128,7 +127,7 @@ public class CECopySettingsDialog extends JDialog {
 		}
 		
 		JLabel setAllLabel = new JLabel(get("copy_settings.set_all"));
-		final JComboBox<String> setAll = new JComboBox<String>(ops);
+		final JComboBox<String> setAll = new JComboBox<>(ops);
 		setAll.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -202,7 +201,7 @@ public class CECopySettingsDialog extends JDialog {
 	 * @return the copy settings
 	 */
 	public EnumMap<DataFiles, CopyOperation> getSettings() {
-		EnumMap<DataFiles, CopyOperation> result = new EnumMap<DataFiles, CopyOperation>(DataFiles.class);
+		EnumMap<DataFiles, CopyOperation> result = new EnumMap<>(DataFiles.class);
 		
 		for (int i = 0; i < copyOps.size(); i++) {
 			JComboBox<String> cb = copyOps.get(i);

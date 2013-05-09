@@ -19,7 +19,6 @@ import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +44,7 @@ public class EconomyPlanner extends Planner {
 
 	@Override
 	protected void plan() {
-		List<AIPlanet> planets = new ArrayList<AIPlanet>(world.ownPlanets);
+		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, WORST_PLANET);
 		Collections.reverse(planets);
 		
@@ -106,7 +105,7 @@ public class EconomyPlanner extends Planner {
 		// don't upgrade unless we have a ton of money
 		final boolean allowUpgrades = world.money >= 10000 + world.ownPlanets.size() * sumEconomy / Math.max(1, nEconomy);
 		final boolean allowUpgrades2 = world.money >= 250000 + world.ownPlanets.size() * sumFactory / Math.max(1, nFactory);
-		List<Pred1<AIPlanet>> functions = U.newArrayList();
+		List<Pred1<AIPlanet>> functions = new ArrayList<>();
 		functions.add(new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet planet) {

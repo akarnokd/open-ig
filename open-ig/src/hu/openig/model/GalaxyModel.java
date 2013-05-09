@@ -29,11 +29,11 @@ public class GalaxyModel {
 	/** The maximum scaling level. */
 	public float maxScale;
 	/** The planet types. */
-	public final Map<String, PlanetType> planetTypes = new HashMap<String, PlanetType>();
+	public final Map<String, PlanetType> planetTypes = new HashMap<>();
 	/** The configuration. */
 	protected final Configuration config;
 	/** The population growth map. */
-	protected final Map<Pair<String, String>, Double> populationGrowth = U.newHashMap();
+	protected final Map<Pair<String, String>, Double> populationGrowth = new HashMap<>();
 	/**
 	 * Constructor. Set the configuration.
 	 * @param config the configuration

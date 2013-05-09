@@ -51,6 +51,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
@@ -102,12 +104,8 @@ public final class OriginalConverter {
 	 */
 	protected static void writeWav(File dst, byte[] sample)
 			throws IOException {
-
-		DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dst), 1024 * 1024));
-		try {
+		try (DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dst), 1024 * 1024))) {
 			writeWav(sample, dout);
-		} finally {
-			dout.close();
 		}
 	}
 	/**
@@ -177,7 +175,7 @@ public final class OriginalConverter {
 	 * @return the byte data
 	 */
 	public static byte[] extractWav(File src) {
-		List<byte[]> data = U.newArrayList();
+		List<byte[]> data = new ArrayList<>();
 		int len = 0;
 		
 		final SpidyAniFile saf = new SpidyAniFile();
@@ -270,7 +268,7 @@ public final class OriginalConverter {
 			/** The output. */
 			Ani2009Writer out;
 			/** The image queue. */
-			BlockingDeque<BufferedImage> images = new LinkedBlockingDeque<BufferedImage>(1);
+			BlockingDeque<BufferedImage> images = new LinkedBlockingDeque<>(1);
 			@Override
 			public void audioData(byte[] data) {
 				// ignored
@@ -381,7 +379,7 @@ public final class OriginalConverter {
 		// -------------------------------------------------------
 		// translations
 		Map<String, PACEntry> pacs = PACFile.mapByName(PACFile.parseFully(new File(source + "DATA/TEXT.PAC")));
-		Map<String, String> labels = U.newLinkedHashMap();
+		Map<String, String> labels = new LinkedHashMap<>();
 		File dest = createDestination("data", "labels.xml");
 		XElement xlabels = XElement.parseXML(dest);
 		for (XElement xentry : xlabels.childrenWithName("entry")) {
@@ -390,14 +388,14 @@ public final class OriginalConverter {
 				labels.put(key, xentry.content);
 			}
 		}
-		Map<String, Pair<String, String>> codepages = U.newHashMap();
+		Map<String, Pair<String, String>> codepages = new HashMap<>();
 		for (XElement xcodepage : instructions.childrenWithName("codepage")) {
 			codepages.put(xcodepage.get("id"), Pair.of(xcodepage.get("latin"), xcodepage.get("utf")));
 		}
 
 		Pair<String, String> codes = codepages.get(encoding);
 		
-		List<String> buildings = U.newArrayList();
+		List<String> buildings = new ArrayList<>();
 		for (XElement xbuildingMap : instructions.childrenWithName("building-map")) {
 			if (xbuildingMap.getBoolean("enabled", true)) {
 				for (XElement xentry : xbuildingMap.childrenWithName("entry")) {
@@ -422,7 +420,7 @@ public final class OriginalConverter {
 			}
 		}
 
-		List<String> techs = U.newArrayList();
+		List<String> techs = new ArrayList<>();
 		for (XElement techMap : instructions.childrenWithName("tech-map")) {
 			if (techMap.getBoolean("enabled", true)) {
 				for (XElement xentry : techMap.childrenWithName("entry")) {
@@ -460,7 +458,7 @@ public final class OriginalConverter {
 		if (instructions.childElement("diplomacy") != null) {
 			System.out.println("LABELS: diplomacy.");
 			// diplomacy text
-			Map<String, String> dipLabels = U.newLinkedHashMap();
+			Map<String, String> dipLabels = new LinkedHashMap<>();
 			convertDiplomacy(pacs, dipLabels);
 			
 			for (Map.Entry<String, String> e : dipLabels.entrySet()) {
@@ -470,7 +468,7 @@ public final class OriginalConverter {
 		// convert chat programs
 		
 		for (XElement xchat : instructions.childrenWithName("chat")) {
-			Map<String, String> chatLabels = U.newLinkedHashMap();
+			Map<String, String> chatLabels = new LinkedHashMap<>();
 			
 			String src = xchat.get("src");
 			String labelPattern = xchat.get("labels");
@@ -503,7 +501,7 @@ public final class OriginalConverter {
 	 * @throws IOException on error
 	 */
 	static void convertOtherText(Map<String, PACEntry> pacs, Pair<String, String> codes) throws IOException {
-		List<String> out = U.newArrayList();
+		List<String> out = new ArrayList<>();
 		List<String> entries = U.newArrayList(pacs.keySet());
 		Collections.sort(entries);
 		for (String key : entries) {
@@ -553,7 +551,7 @@ public final class OriginalConverter {
 				out.add("----------------------------------------------------------------------------");
 			}
 		}
-		Map<String, String> messageCodes = U.newLinkedHashMap();
+		Map<String, String> messageCodes = new LinkedHashMap<>();
 		for (XElement mc : instructions.childrenWithName("message-codes")) {
 			if (mc.getBoolean("enabled")) {
 				for (XElement xe : mc.childrenWithName("entry")) {
@@ -619,16 +617,13 @@ public final class OriginalConverter {
 	 * @throws IOException on error
 	 */
 	static List<String> getLines(byte[] data, Charset cs) throws IOException {
-		List<String> result = U.newArrayList();
+		List<String> result = new ArrayList<>();
 		
 		String line = null;
-		BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data), cs));
-		try {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data), cs))) {
 			while ((line = in.readLine()) != null) {
 				result.add(line);
 			}
-		} finally {
-			in.close();
 		}
 		return result;
 	}
@@ -647,7 +642,7 @@ public final class OriginalConverter {
 
 		IGScript scr = parseScript(mapByName.get(name).data, "Cp437"); //hu: Cp850, de: Cp1250, other: Cp437
 		
-		List<Node> nodes = U.newArrayList();
+		List<Node> nodes = new ArrayList<>();
 		
 		for (Procedure proc : scr.procedures.values()) {
 			if (!proc.messages.isEmpty()) {
@@ -707,7 +702,7 @@ public final class OriginalConverter {
 			}
 		}
 		int idx = 0;
-		Map<String, Integer> nodeMap = U.newHashMap();
+		Map<String, Integer> nodeMap = new HashMap<>();
 		List<Node> nodes2 = U.newArrayList(nodes);
 		nodes.clear();
 		for (Node n : nodes2) {
@@ -1325,7 +1320,7 @@ public final class OriginalConverter {
 	 * @return the talks
 	 */
 	static List<String> split(String content) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		
 		content = content.replaceAll("#.*?\r\n", "").trim();
 		
@@ -1354,7 +1349,7 @@ public final class OriginalConverter {
 		if (codes == null) {
 			return text;
 		}
-		Map<Character, Character> map = U.newHashMap();
+		Map<Character, Character> map = new HashMap<>();
 		for (int i = 0; i < codes.first.length(); i++) {
 			map.put(codes.first.charAt(i), codes.second.charAt(i));
 		}
@@ -1387,15 +1382,12 @@ public final class OriginalConverter {
 	 */
 	public static List<String> getText(Map<String, PACEntry> pacs, String name, Pair<String, String> codes)
 			throws IOException {
-		List<String> result = U.newArrayList();
-		BufferedReader bin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(pacs.get(name).data), "CP437"));
-		try {
+		List<String> result = new ArrayList<>();
+		try (BufferedReader bin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(pacs.get(name).data), "CP437"))) {
 			String line = null;
 			while ((line = bin.readLine()) != null) {
 				result.add(transcode(line, codes));
 			}
-		} finally {
-			bin.close();
 		}
 		return result;
 	}
@@ -1498,7 +1490,7 @@ public final class OriginalConverter {
 				for (XElement xareas : ximg.childrenWithName("areas")) {
 					String dst = xareas.get("dst");
 					System.out.printf("IMAGE: %s -> %s%n", src, dst);
-					List<Pair<Rectangle, Point>> fragments = U.newArrayList();
+					List<Pair<Rectangle, Point>> fragments = new ArrayList<>();
 					for (XElement xpart : xareas.childrenWithName("part")) {
 						String[] coords = U.split(xpart.get("coords"), ",");
 						String[] to = U.split(xpart.get("to"), ",");

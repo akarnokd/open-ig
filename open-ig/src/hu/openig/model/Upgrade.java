@@ -18,7 +18,7 @@ public class Upgrade {
 	/** The display upgrade description. */
 	public String description;
 	/** The resources associated with this upgrade. */
-	public final Map<String, Resource> resources = new HashMap<String, Resource>();
+	public final Map<String, Resource> resources = new HashMap<>();
 	/**
 	 * Retrieves the amount of the given resource type.
 	 * @param resourceType the resource type

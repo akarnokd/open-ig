@@ -242,13 +242,8 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	 * @param s the text
 	 */
 	void areaAppend(String s) {
-		try {
-			PrintWriter out = new PrintWriter(new FileWriter("open-ig.log", true));
-			try {
-				out.print(s);
-			} finally {
-				out.close();
-			}
+		try (PrintWriter out = new PrintWriter(new FileWriter("open-ig.log", true))) {
+			out.print(s);
 		} catch (Throwable t) {
 			// ignored
 		}

@@ -79,7 +79,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 				MessageArray ma) {
 			this.out = out;
 			this.callbacks = U.newArrayList(callbacks);
-			this.results = new ArrayList<Object>(ma.size());
+			this.results = new ArrayList<>(ma.size());
 			
 			int max = Math.max(ma.size(), this.callbacks.size());
 			for (int i = 0; i < max; i++) {
@@ -139,7 +139,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		if (isBatchMode()) {
 			throw new IllegalStateException("Already in batch mode!");
 		}
-		callbacks = U.newArrayList();
+		callbacks = new ArrayList<>();
 		batchRequest = new MessageArray("BATCH");
 	}
 
@@ -218,7 +218,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 			MessageSerializable request,
 			AsyncResult<? super T, ? super IOException> out,
 			T result) {
-		sendDirect(request, new MessageObjectAsync<T>(out, result, result.objectName()));
+		sendDirect(request, new MessageObjectAsync<>(out, result, result.objectName()));
 	}
 	/**
 	 * Execute a query and parse the result into a list.
@@ -231,7 +231,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 			MessageSerializable request,
 			AsyncResult<? super List<T>, ? super IOException> out,
 			MessageArrayItemFactory<? extends T> itemFactory) {
-		sendDirect(request, new MessageArrayAsync<T>(out, itemFactory, itemFactory.arrayName()));
+		sendDirect(request, new MessageArrayAsync<>(out, itemFactory, itemFactory.arrayName()));
 	}
 	/**
 	 * Sends a requests and expects a single OK response.
@@ -341,7 +341,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 			public void invoke(Object param1) throws IOException {
 				MessageArray ma = MessageUtils.expectArray(param1, "INVENTORIES");
 				
-				Map<String, Integer> map = new HashMap<String, Integer>();
+				Map<String, Integer> map = new HashMap<>();
 				
 				for (Object o : ma) {
 					MessageObject mo = MessageUtils.expectObject(o, "ENTRY");

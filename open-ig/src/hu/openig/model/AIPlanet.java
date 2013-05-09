@@ -10,10 +10,10 @@ package hu.openig.model;
 
 import hu.openig.core.Location;
 import hu.openig.model.PlanetSurface.PlacementHelper;
-import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +38,11 @@ public class AIPlanet {
 	/** The population. */
 	public int population;
 	/** The inventory items of the planet. */
-	public final List<AIInventoryItem> inventory = U.newArrayList();
+	public final List<AIInventoryItem> inventory = new ArrayList<>();
 	/** Set of locations where no buildings may be placed. */
-	public final Map<Location, SurfaceEntity> nonbuildable = U.newHashMap();
+	public final Map<Location, SurfaceEntity> nonbuildable = new HashMap<>();
 	/** Building list. */
-	public final List<AIBuilding> buildings = new ArrayList<AIBuilding>();
+	public final List<AIBuilding> buildings = new ArrayList<>();
 	/** The placement helper. */
 	public PlacementHelper placement;
 	/** The current morale. */

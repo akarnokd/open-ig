@@ -37,7 +37,7 @@ public class CreditsScreen extends ScreenBase {
 	/** The credits XML. */
 	XElement credits;
 	/** The image cache. */
-	final Map<String, BufferedImage> imageCache = new HashMap<String, BufferedImage>();
+	final Map<String, BufferedImage> imageCache = new HashMap<>();
 	/** Indicator that it reached the end. */
 	boolean reachedEnd;
 	@Override

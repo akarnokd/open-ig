@@ -10,7 +10,6 @@ package hu.openig.render;
 import hu.openig.model.ResourceLocator;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.LRUHashMap;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Color;
@@ -21,6 +20,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class TextRenderer {
 		/** The uniform character height. */
 //		public int height;
 		/** The map of characters to its images. */
-		public final Map<Character, BufferedImage> chars = new HashMap<Character, BufferedImage>();
+		public final Map<Character, BufferedImage> chars = new HashMap<>();
 	}
 	/** The entire backing image. */
 	private BufferedImage charImage;
@@ -123,9 +123,9 @@ public class TextRenderer {
 	/** The cache for color-remaped charImages. */
 	private Map<Integer, Map<Integer, SizedCharImages>> coloredCharImages = LRUHashMap.create(64);
 	/** The character width on a particular character size. */
-	private Map<Integer, Integer> charsetWidths = new HashMap<Integer, Integer>();
+	private Map<Integer, Integer> charsetWidths = new HashMap<>();
 	/** The character space for a particular character size. */
-	private Map<Integer, Integer> charsetSpaces = new HashMap<Integer, Integer>();
+	private Map<Integer, Integer> charsetSpaces = new HashMap<>();
 	/** Use standard Java fonts instead of the original bitmap fonts. */
 	private boolean useStandardFonts;
 	/** The default font rendering context. */
@@ -164,7 +164,7 @@ public class TextRenderer {
 	/** The characters. */
 	static final List<LineDefinition> CHARACTERS;
 	static {
-		CHARACTERS = U.newArrayList();
+		CHARACTERS = new ArrayList<>();
 		try {
 			XElement charset = XElement.parseXML(TextRenderer.class.getResource("charset.xml"));
 			for (XElement xline : charset.childrenWithName("line")) {
@@ -222,7 +222,7 @@ public class TextRenderer {
 	 */
 	private Map<Integer, SizedCharImages> split(int color) {
 		// first sequence for siz
-		Map<Integer, SizedCharImages> charMap = new HashMap<Integer, SizedCharImages>();
+		Map<Integer, SizedCharImages> charMap = new HashMap<>();
 		coloredCharImages.put(color, charMap);
 		BufferedImage workImage = colorRemap(charImage, color);
 		int y = 0;
@@ -257,7 +257,7 @@ public class TextRenderer {
 	 * @param color the color value
 	 * @return the new image
 	 */
-	private BufferedImage colorRemap(BufferedImage src, int color) {
+	private static BufferedImage colorRemap(BufferedImage src, int color) {
 		BufferedImage result = new BufferedImage(src.getWidth(), src.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		int c0 = 0xFF000000 
 		| ((int)Math.min(((color & 0xFF0000) >> 16) * 1.3f, 0xFC) << 16) 

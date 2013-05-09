@@ -19,7 +19,7 @@ public class OriginalBuilding {
 	/** The location. */
 	public Location location;
 	/** The translation map. */
-	public static final Map<String, String> TRANSLATE = new HashMap<String, String>();
+	public static final Map<String, String> TRANSLATE = new HashMap<>();
 	static {
 		TRANSLATE.put("ColonyHub", "ColonyHub");
 		TRANSLATE.put("PrefabHousing", "PrefabHousing");

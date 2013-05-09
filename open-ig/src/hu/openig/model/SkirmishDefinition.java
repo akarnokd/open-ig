@@ -8,9 +8,10 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ import java.util.Set;
  */
 public class SkirmishDefinition extends CustomGameDefinition {
 	/** The list of players. */
-	public final List<SkirmishPlayer> players = U.newArrayList();
+	public final List<SkirmishPlayer> players = new ArrayList<>();
 	/**
 	 * Save the skirmish definition.
 	 * @param xout the output
@@ -70,7 +71,7 @@ public class SkirmishDefinition extends CustomGameDefinition {
 		
 		GameDefinition techDef = GameDefinition.parse(rl, this.tech);
 
-		Set<String> labelRefs = U.newHashSet();
+		Set<String> labelRefs = new HashSet<>();
 		labelRefs.addAll(galaxyDef.labels);
 		labelRefs.addAll(playerDef.labels);
 		labelRefs.addAll(techDef.labels);

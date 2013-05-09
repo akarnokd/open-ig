@@ -9,9 +9,10 @@
 package hu.openig.model;
 
 import hu.openig.core.Difficulty;
-import hu.openig.utils.U;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,15 +22,15 @@ import java.util.Map;
  */
 public class VehiclePlan {
 	/** Units of one per kind per composition. */
-	public final List<ResearchType> onePerKind = U.newArrayList();
+	public final List<ResearchType> onePerKind = new ArrayList<>();
 	/** Tank technologies. */
-	public final List<ResearchType> tanks = U.newArrayList();
+	public final List<ResearchType> tanks = new ArrayList<>();
 	/** Sled technologies. */
-	public final List<ResearchType> sleds = U.newArrayList();
+	public final List<ResearchType> sleds = new ArrayList<>();
 	/** Demands per type. */
-	public final Map<ResearchType, Integer> demand = U.newHashMap();
+	public final Map<ResearchType, Integer> demand = new HashMap<>();
 	/** The list of special units. */
-	protected final List<ResearchType> special = U.newArrayList();
+	protected final List<ResearchType> special = new ArrayList<>();
 	/**
 	 * Calculate the composition.
 	 * @param available the available technology

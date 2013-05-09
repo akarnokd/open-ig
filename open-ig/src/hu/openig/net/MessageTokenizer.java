@@ -281,7 +281,7 @@ public class MessageTokenizer implements Iterable<Token> {
 	 * @throws IOException on error
 	 */
 	public List<Token> parse() throws IOException {
-		List<Token> result = new ArrayList<Token>();
+		List<Token> result = new ArrayList<>();
 		process(result);
 		return result;
 	}
@@ -296,7 +296,7 @@ public class MessageTokenizer implements Iterable<Token> {
 
 		/*
 		MessageTokenizer mt = new MessageTokenizer(r);
-		List<Token> list = U.newArrayList();
+		List<Token> list = new ArrayList<>();
 		mt.process(list);
 		
 		for (Token e : list) {

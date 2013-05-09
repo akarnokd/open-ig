@@ -50,23 +50,17 @@ public class GenericMediumButton implements GenericButtonRenderer {
 	 * @param name the resource name
 	 */
 	public GenericMediumButton(String name) {
-		try {
-			InputStream in = getClass().getResource(name).openStream();
-			try {
-				BufferedImage img = ImageIO.read(in);
+		try (InputStream in = getClass().getResource(name).openStream()) {
+			BufferedImage img = ImageIO.read(in);
 
-				topLeft = ImageUtils.newSubimage(img, 0, 0, 10, 6);
-				bottomLeft = ImageUtils.newSubimage(img, 0, 22, 10, 6);
-				topRight = ImageUtils.newSubimage(img, 63 + 30, 0, 10, 6);
-				bottomRight = ImageUtils.newSubimage(img, 63 + 30, 22, 10, 6);
-				topCenter = ImageUtils.newSubimage(img, 39, 0, 1, 6);
-				bottomCenter = ImageUtils.newSubimage(img, 40, 22, 1, 6);
-				leftMiddle = ImageUtils.newSubimage(img, 0, 7, 4, 1);
-				rightMiddle = ImageUtils.newSubimage(img, 99, 7, 4, 1);
-
-			} finally {
-				in.close();
-			}
+			topLeft = ImageUtils.newSubimage(img, 0, 0, 10, 6);
+			bottomLeft = ImageUtils.newSubimage(img, 0, 22, 10, 6);
+			topRight = ImageUtils.newSubimage(img, 63 + 30, 0, 10, 6);
+			bottomRight = ImageUtils.newSubimage(img, 63 + 30, 22, 10, 6);
+			topCenter = ImageUtils.newSubimage(img, 39, 0, 1, 6);
+			bottomCenter = ImageUtils.newSubimage(img, 40, 22, 1, 6);
+			leftMiddle = ImageUtils.newSubimage(img, 0, 7, 4, 1);
+			rightMiddle = ImageUtils.newSubimage(img, 99, 7, 4, 1);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
