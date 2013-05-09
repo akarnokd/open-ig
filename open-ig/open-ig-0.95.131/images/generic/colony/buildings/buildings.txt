@@ -1,1 +1,0 @@
-Building images: normal, damaged, mini.
