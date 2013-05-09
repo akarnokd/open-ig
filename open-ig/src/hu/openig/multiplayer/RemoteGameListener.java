@@ -431,6 +431,25 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return r;
 				}
 			};
+		} else
+		if ("DELETE_FLEET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.deleteFleet(fleetId);
+				}
+			};
+		} else
+		if ("RENAME_FLEET".equals(mo.name)) {
+			final int fleetId = mo.getInt("fleetId");
+			final String name = mo.getString("name");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.renameFleet(fleetId, name);
+				}
+			};
 		}
 		
 		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
