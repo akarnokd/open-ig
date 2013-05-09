@@ -13,6 +13,7 @@ import hu.openig.utils.XElement;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,11 +34,11 @@ public final class IssueStatistics {
 		
 		XElement comments = XElement.parseXML("issues.xml");
 		
-		Set<String> users = U.newHashSet("akarn", "norbert", "Jozsef");
+		Set<String> users = U.newSet("akarn", "norbert", "Jozsef");
 
 		int commentsTotal = 0;
 		int commentsNonEmpty = 0;
-		Map<String, Integer> counters = U.newHashMap();
+		Map<String, Integer> counters = new HashMap<>();
 		for (String s : users) {
 			counters.put(s, 0);
 		}
@@ -75,14 +76,11 @@ public final class IssueStatistics {
 			System.out.println("Issue #" + i);
 			URL u = new URL("https://code.google.com/feeds/issues/p/open-ig/issues/" + i + "/comments/full");
 
-			InputStream in = u.openStream();
-			try {
+			try (InputStream in = u.openStream()) {
 				XElement ce = XElement.parseXML(in);
 				XElement issue = comments.add("issue");
 				issue.set("id", i);
 				issue.add(ce.childrenWithName("entry"));
-			} finally {
-				in.close();
 			}
 		}
 		comments.save("issues.xml");

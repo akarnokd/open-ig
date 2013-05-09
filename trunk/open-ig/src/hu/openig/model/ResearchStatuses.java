@@ -28,16 +28,16 @@ public class ResearchStatuses implements MessageObjectIO {
 	/** The current running research. */
 	public String runningResearch;
 	/** The completed research. */
-	public final Map<String, List<String>> availableResearch = new LinkedHashMap<String, List<String>>();
+	public final Map<String, List<String>> availableResearch = new LinkedHashMap<>();
 	/** The in-progress research. */
-	public final List<ResearchStatus> researches = new ArrayList<ResearchStatus>();
+	public final List<ResearchStatus> researches = new ArrayList<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		paused = mo.getBoolean("paused");
 		runningResearch = mo.getStringObject("running");
 		for (MessageObject o : mo.getArray("available").objects()) {
 			String rid = o.getString("type");
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for (Object lo : o.getArray("list")) {
 				if (lo instanceof String) {
 					list.add((String)lo);

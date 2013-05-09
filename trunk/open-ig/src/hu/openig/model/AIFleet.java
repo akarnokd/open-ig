@@ -8,10 +8,9 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +46,9 @@ public class AIFleet {
 	/** Fleet can be upgraded? */
 	public boolean canUpgrade;
 	/** The inventory. */
-	public final List<AIInventoryItem> inventory = new ArrayList<AIInventoryItem>();
+	public final List<AIInventoryItem> inventory = new ArrayList<>();
 	/** The inventory counts. */
-	public final Map<ResearchType, Integer> inventoryCounts = U.newHashMap();
+	public final Map<ResearchType, Integer> inventoryCounts = new HashMap<>();
 	/**
 	 * Assign the necessary properties from a fleet.
 	 * @param fleet the target fleet

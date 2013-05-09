@@ -23,6 +23,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.beans.Transient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -188,7 +189,7 @@ public class CESlotEdit extends JComponent {
 	 * @return the list of slots
 	 */
 	public List<XElement> getSlotsAt(int mx, int my) {
-		List<XElement> result = U.newArrayList();
+		List<XElement> result = new ArrayList<>();
 
 		Iterable<XElement> childrenWithName = parent.childrenWithName("slot");
 		for (XElement r : childrenWithName) {

@@ -196,11 +196,10 @@ public final class BattleSimulator {
 								debug("Attacker won, damage taken: %s%n", attackerTime * defenderBuildings.attack);
 								applyDamage(attacking, attackerTime * defenderBuildings.attack);
 								break; // next building
-							} else {
-								applyDamage(attacking, defenderTime * defenderBuildings.attack * 2);
-								debug("Defender won, damage taken: %s%n", defenderTime * attackerTVBattle.attack);
-								applyGroundDamage(battle.targetPlanet, b, defenderTime * attackerTVBattle.attack);
 							}
+							applyDamage(attacking, defenderTime * defenderBuildings.attack * 2);
+							debug("Defender won, damage taken: %s%n", defenderTime * attackerTVBattle.attack);
+							applyGroundDamage(battle.targetPlanet, b, defenderTime * attackerTVBattle.attack);
 						}
 					}
 				}
@@ -226,9 +225,9 @@ public final class BattleSimulator {
 	 * @param end the end index exclusive
 	 * @return the sublist
 	 */
-	<T> List<T> subList(List<T> list, int start, int end) {
+	static <T> List<T> subList(List<T> list, int start, int end) {
 		if (start >= list.size()) {
-			return new ArrayList<T>();
+			return new ArrayList<>();
 		}
 		if (end >= list.size()) {
 			end = list.size();
@@ -239,7 +238,7 @@ public final class BattleSimulator {
 	 * Remove empty inventory items.
 	 * @param inv the inventory provied
 	 */
-	void cleanupInventory(InventoryItems inv) {
+	static void cleanupInventory(InventoryItems inv) {
 		inv.removeIf(InventoryItem.CLEANUP);
 	}
 	/**
@@ -248,7 +247,7 @@ public final class BattleSimulator {
 	 * @param hitpoints the hitpoints
 	 */
 	void applyDamage(List<GroundwarUnit> units, double hitpoints) {
-		List<GroundwarUnit> us = new ArrayList<GroundwarUnit>(units);
+		List<GroundwarUnit> us = new ArrayList<>(units);
 		ModelUtils.shuffle(us);
 		for (GroundwarUnit u : us) {
 			if (hitpoints <= 0) {
@@ -309,7 +308,7 @@ public final class BattleSimulator {
 	 * @param invs the inventory
 	 * @return the range
 	 */
-	double bestVehicleRange(Collection<GroundwarUnit> invs) {
+	static double bestVehicleRange(Collection<GroundwarUnit> invs) {
 		double r = 0;
 		for (GroundwarUnit ii : invs) {
 			r = Math.max(r, ii.model.maxRange);
@@ -348,7 +347,7 @@ public final class BattleSimulator {
 	 * @return the list of units
 	 */
 	List<GroundwarUnit> vehicles(Iterable<InventoryItem> items) {
-		List<GroundwarUnit> result = U.newArrayList();
+		List<GroundwarUnit> result = new ArrayList<>();
 		for (InventoryItem ii : items) {
 			BattleGroundVehicle bgv = world.battle.groundEntities.get(ii.type.id);
 			if (bgv != null) {
@@ -369,7 +368,7 @@ public final class BattleSimulator {
 	 * @param items the vehicle inventory
 	 * @return the strength
 	 */
-	AttackDefense vehicleStrength(Collection<GroundwarUnit> items) {
+	static AttackDefense vehicleStrength(Collection<GroundwarUnit> items) {
 		double a = 0;
 		double d = 0;
 		
@@ -458,7 +457,7 @@ public final class BattleSimulator {
 		SpaceStrengths str = getSpaceStrengths(battle);
 		
 		// mark participating fleets
-		Set<Fleet> fleets = U.newHashSet(battle.otherFleets);
+		Set<Fleet> fleets = U.newSet(battle.otherFleets);
 		fleets.add(battle.attacker);
 		Fleet f2 = battle.getFleet();
 		if (f2 != null) {
@@ -581,7 +580,7 @@ public final class BattleSimulator {
 	 */
 	void applyDamage(HasInventory f, double hitpoints, Func1<InventoryItem, Boolean> filter) {
 		List<InventoryItem> inv = f.inventory().list();
-		ArrayList<InventoryItem> is = new ArrayList<InventoryItem>();
+		ArrayList<InventoryItem> is = new ArrayList<>();
 		for (InventoryItem ii : inv) {
 			if (f.inventory().contains(ii)) {
 				is.add(ii);

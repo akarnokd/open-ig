@@ -35,7 +35,7 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 	/** The fleet name. */
 	public String name;
 	/** The current list of movement waypoints. */
-	public final List<Point2D.Double> waypoints = new ArrayList<Point2D.Double>();
+	public final List<Point2D.Double> waypoints = new ArrayList<>();
 	/** If the fleet should follow the other fleet. */
 	public Integer targetFleet;
 	/** If the fleet should move to the planet. */
@@ -53,7 +53,7 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 	/** The source of the infection of this fleet if not null. */
 	public String infectedBy;
 	/** The inventory. */
-	public final List<InventoryItemStatus> inventory = new ArrayList<InventoryItemStatus>();
+	public final List<InventoryItemStatus> inventory = new ArrayList<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		id = mo.getInt("id");

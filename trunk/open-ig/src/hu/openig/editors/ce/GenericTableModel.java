@@ -8,8 +8,7 @@
 
 package hu.openig.editors.ce;
 
-import hu.openig.utils.U;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +33,7 @@ public abstract class GenericTableModel<T> extends AbstractTableModel implements
 	 * Initializes the table with an empty list.
 	 */
 	public GenericTableModel() {
-		this(U.<T>newArrayList());
+		this(new ArrayList<T>());
 	}
 	/**
 	 * Initializes the table by taking over the supplied item list.
@@ -123,7 +122,8 @@ public abstract class GenericTableModel<T> extends AbstractTableModel implements
 	 * Add new items to the table.
 	 * @param newItems the new items to add
 	 */
-	public void add(T... newItems) {
+	@SafeVarargs
+	public final void add(T... newItems) {
 		add(Arrays.asList(newItems));
 	}
 	/**
@@ -142,7 +142,8 @@ public abstract class GenericTableModel<T> extends AbstractTableModel implements
 	 * @param rowIndex the row index
 	 * @param newItems the items
 	 */
-	public void insert(int rowIndex, T... newItems) {
+	@SafeVarargs
+	public final void insert(int rowIndex, T... newItems) {
 		insert(rowIndex, Arrays.asList(newItems));
 	}
 	/**

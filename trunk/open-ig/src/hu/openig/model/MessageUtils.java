@@ -12,9 +12,9 @@ import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
-import hu.openig.utils.U;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Message utilities class.
@@ -36,7 +36,7 @@ public final class MessageUtils {
 		if (response instanceof MessageObject) {
 			MessageObject mo = (MessageObject)response;
 			for (String n : name) {
-				if (U.equal(n, mo.name)) {
+				if (Objects.equals(n, mo.name)) {
 					return mo;
 				}
 			}
@@ -59,7 +59,7 @@ public final class MessageUtils {
 		if (response instanceof MessageArray) {
 			MessageArray ma = (MessageArray)response;
 			for (String n : name) {
-				if (U.equal(n, ma)) {
+				if (Objects.equals(n, ma)) {
 					return ma;
 				}
 			}

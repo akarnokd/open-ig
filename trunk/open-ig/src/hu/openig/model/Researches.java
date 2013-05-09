@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class Researches {
 	/** The list of available researches. */
-	public final Map<String, ResearchType> researches = new HashMap<String, ResearchType>();
+	public final Map<String, ResearchType> researches = new HashMap<>();
 	/** 
 	 * @return the researches map
 	 */

@@ -102,7 +102,7 @@ public class DatabaseScreen extends ScreenBase {
 	/** The scroll text offset. */
 	protected int textOffset;
 	/** The text rows. */
-	protected final List<String> rows = new ArrayList<String>();
+	protected final List<String> rows = new ArrayList<>();
 	/** Move up. */
 	protected DatabaseButton moveUp;
 	/** Move down. */
@@ -200,7 +200,7 @@ public class DatabaseScreen extends ScreenBase {
 	/** Diplomacy. */
 	protected DatabaseButton diplomacy;
 	/** The list of database buttons. */
-	protected final Set<DatabaseButton> buttons = new HashSet<DatabaseButton>();
+	protected final Set<DatabaseButton> buttons = new HashSet<>();
 	/** Help text labels. */
 	protected String[] helpTexts = {
 		"database.repair_colony_buildings",
@@ -223,8 +223,8 @@ public class DatabaseScreen extends ScreenBase {
 		expandCollapse = new Timer(0, null);
 		expandCollapse.setDelay(50);
 		
-		highlight = new HashSet<DatabaseButton>();
-		unlight = new HashSet<DatabaseButton>();
+		highlight = new HashSet<>();
+		unlight = new HashSet<>();
 		highlightTimer = new Timer(50, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -334,7 +334,7 @@ public class DatabaseScreen extends ScreenBase {
 	 * @return the set of other players who may appear in the database screen.
 	 */
 	private Iterable<Player> getKnownOtherPlayers() {
-		List<Player> p = new LinkedList<Player>();
+		List<Player> p = new LinkedList<>();
 		for (Player q : player().knownPlayers().keySet()) {
 			if (!q.noDatabase) {
 				p.add(q);
@@ -909,21 +909,20 @@ public class DatabaseScreen extends ScreenBase {
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			hideSecondary();
 			return true;
-		} else {
-			if (e.has(Type.CLICK)) {
-				doMouseClicked(e);
-			} else
-			if (e.has(Type.MOVE) 
-					|| e.has(Type.ENTER) 
-					|| e.has(Type.LEAVE)
-					|| e.has(Type.DRAG)) {
-				doMouseMoved(e);
-			} else
-			if (e.has(Type.WHEEL)) {
-				doMouseWheelMoved(e);
-			}
-			return super.mouse(e);
 		}
+		if (e.has(Type.CLICK)) {
+			doMouseClicked(e);
+		} else
+		if (e.has(Type.MOVE) 
+				|| e.has(Type.ENTER) 
+				|| e.has(Type.LEAVE)
+				|| e.has(Type.DRAG)) {
+			doMouseMoved(e);
+		} else
+		if (e.has(Type.WHEEL)) {
+			doMouseWheelMoved(e);
+		}
+		return super.mouse(e);
 	}
 	@Override
 	public void draw(Graphics2D g2) {

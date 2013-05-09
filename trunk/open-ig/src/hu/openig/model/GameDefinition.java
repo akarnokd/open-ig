@@ -10,11 +10,11 @@ package hu.openig.model;
 
 import hu.openig.core.Pair;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -33,7 +33,7 @@ public class GameDefinition {
 	/** The intro media to play on start. */
 	public String intro;
 	/** The pair of title and description strings per language. */
-	public final Map<String, Pair<String, String>> texts = U.newLinkedHashMap();
+	public final Map<String, Pair<String, String>> texts = new LinkedHashMap<>();
 	/** The game name. */
 	public String name;
 	/** The starting level of the game. */
@@ -83,11 +83,11 @@ public class GameDefinition {
 	@LoadField
 	public String spies;
 	/** The game parameters. */
-	public final Map<String, String> parameters = new LinkedHashMap<String, String>();
+	public final Map<String, String> parameters = new LinkedHashMap<>();
 	/** The traits to apply to the main player. */
 	public Traits traits;
 	/** The referenced labels. */
-	public final List<String> labels = U.newArrayList();
+	public final List<String> labels = new ArrayList<>();
 	/** Skirmish hint: do not load planetary buildings. */
 	public boolean noPlanetBuildings;
 	/** Skirmish hint: do not load planetary inventory. */

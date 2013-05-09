@@ -135,7 +135,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		);
 		
 		technologies = new JTable(technologiesModel);
-		technologiesSorter = new TableRowSorter<GenericTableModel<XElement>>(technologiesModel);
+		technologiesSorter = new TableRowSorter<>(technologiesModel);
 		technologies.setRowSorter(technologiesSorter);
 		
 		technologies.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -184,7 +184,7 @@ implements CEPanelPreferences, CEUndoRedoSupport, CEProblemLocator {
 		gl.setAutoCreateGaps(true);
 		
 		JLabel filterLabel = new JLabel(get("tech.filter"));
-		filter = new JComboBox<String>();
+		filter = new JComboBox<>();
 		filter.setEditable(true);
 		
 		JButton filterButton = new JButton(icon("/hu/openig/editors/res/Zoom16.gif"));

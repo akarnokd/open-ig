@@ -58,19 +58,19 @@ public final class UploadToWeb {
 				
 				c.connect();
 				
-				OutputStream out = c.getOutputStream();
+				try (OutputStream out = c.getOutputStream()) {
 
-				out.write(("--" + boundary + "\r\n").getBytes("ISO-8859-1"));
-				out.write(String.format("Content-Disposition: form-data; name=\"summary\"\r\n\r\nUpload.\r\n").getBytes("ISO-8859-1"));
-
-				out.write(("--" + boundary + "\r\n").getBytes("ISO-8859-1"));
-				out.write(String.format("Content-Disposition: form-data; name=\"filename\"; filename=\"%s1\"\r\n", filename).getBytes("ISO-8859-1"));
-				out.write(String.format("Content-Type: application/octet-stream\r\n").getBytes("ISO-8859-1"));
-				out.write("\r\n".getBytes("ISO-8859-1"));
-				out.write(IOUtils.load(filename));
-				out.write(("\r\n\r\n--" + boundary + "--\r\n").getBytes("ISO-8859-1"));
-				out.flush();
-				out.close();
+					out.write(("--" + boundary + "\r\n").getBytes("ISO-8859-1"));
+					out.write(String.format("Content-Disposition: form-data; name=\"summary\"\r\n\r\nUpload.\r\n").getBytes("ISO-8859-1"));
+	
+					out.write(("--" + boundary + "\r\n").getBytes("ISO-8859-1"));
+					out.write(String.format("Content-Disposition: form-data; name=\"filename\"; filename=\"%s1\"\r\n", filename).getBytes("ISO-8859-1"));
+					out.write(String.format("Content-Type: application/octet-stream\r\n").getBytes("ISO-8859-1"));
+					out.write("\r\n".getBytes("ISO-8859-1"));
+					out.write(IOUtils.load(filename));
+					out.write(("\r\n\r\n--" + boundary + "--\r\n").getBytes("ISO-8859-1"));
+					out.flush();
+				}
 				
 				System.out.write(IOUtils.load(c.getInputStream()));
 				

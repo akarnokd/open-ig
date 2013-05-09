@@ -74,13 +74,8 @@ public class VideoRenderer extends Thread {
 	 * @return the frame
 	 */
 	public static BufferedImage firstFrame(ResourcePlace video) {
-		try {
-			DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 32 * 1024), 64 * 1024));
-			try {
-				return firstFrame(in);
-			} finally {
-				in.close();
-			}
+		try (DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 32 * 1024), 64 * 1024))) {
+			return firstFrame(in);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
@@ -134,10 +129,9 @@ public class VideoRenderer extends Thread {
 	@Override 
 	public void run() {
 		
-		try {
+		try  {
 			do {
-				DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024));
-				try {
+				try (DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024))) {
 					int w = Integer.reverseBytes(in.readInt());
 					int h = Integer.reverseBytes(in.readInt());
 					final int frames = Integer.reverseBytes(in.readInt());
@@ -209,8 +203,6 @@ public class VideoRenderer extends Thread {
 			       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
 						}
 					}
-				} finally {
-					try { in.close(); } catch (IOException ex) {  }
 				}
 			} while (repeat && !stopped);
 		} catch (IOException ex) {

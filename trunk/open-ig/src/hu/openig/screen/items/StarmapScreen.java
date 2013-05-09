@@ -41,7 +41,6 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -408,7 +407,7 @@ public class StarmapScreen extends ScreenBase {
 	/** Show the fleet names. */
 	boolean showFleetNames = true;
 	/** The statistics cache delayed by ~450ms. */
-	final Map<Planet, PlanetStatistics> cache = new HashMap<Planet, PlanetStatistics>();
+	final Map<Planet, PlanetStatistics> cache = new HashMap<>();
 	/** The statistics button. */
 	UIImageButton statistics;
 	/** The achievements button. */
@@ -1202,7 +1201,7 @@ public class StarmapScreen extends ScreenBase {
 		
 		Collection<Fleet> fleets = player().visibleFleets();
 		if (showAll) {
-			fleets = U.newArrayList();
+			fleets = new ArrayList<>();
 			addAllFleets(fleets);
 		}
 		
@@ -1213,7 +1212,7 @@ public class StarmapScreen extends ScreenBase {
 		
 		// render radar circles
 		if (showRadarButton.selected) {
-			List<RadarCircle> radarCircles = new ArrayList<RadarCircle>();
+			List<RadarCircle> radarCircles = new ArrayList<>();
 			for (Planet p : world().planets.values()) {
 				if (p.owner == player() || sharedRadar(p)) {
 					PlanetStatistics ps = cache.get(p);
@@ -1299,9 +1298,9 @@ public class StarmapScreen extends ScreenBase {
 					cache.put(p, ps);
 				}
 				
-				Set<PlanetProblems> combined = new HashSet<PlanetProblems>();
-				combined.addAll(ps.problems.keySet());
-				combined.addAll(ps.warnings.keySet());
+				Set<PlanetProblems> combined = new HashSet<>();
+				combined.addAll(ps.problems);
+				combined.addAll(ps.warnings);
 				
 				if (combined.size() > 0) {
 					int w = combined.size() * 11 - 1;
@@ -1636,7 +1635,7 @@ public class StarmapScreen extends ScreenBase {
 		double zoom = getZoom();
 		Collection<Fleet> vf = player().visibleFleets();
 		if (showAll) {
-			vf = U.newArrayList();
+			vf = new ArrayList<>();
 			addAllFleets(vf);
 		}
 		for (Fleet f : vf) {
@@ -2713,9 +2712,9 @@ public class StarmapScreen extends ScreenBase {
 		/** The area to fill in. */
 		Area radarArea;
 		/** The radar dots. */
-		final List<Point> dots = new ArrayList<Point>();
+		final List<Point> dots = new ArrayList<>();
 		/** The old radar circle. */
-		final Set<RadarCircle> old = new HashSet<RadarCircle>();
+		final Set<RadarCircle> old = new HashSet<>();
 		/** 
 		 * Test if the old circles are still the same as the new circles.
 		 * @param that the another list

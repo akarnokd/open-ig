@@ -43,9 +43,9 @@ import javax.xml.stream.XMLStreamException;
  */
 public class ResourceLocator {
 	/** The directories and ZIP files that contain resources, order is inportant. */
-	private final List<String> containers = new ArrayList<String>();
+	private final List<String> containers = new ArrayList<>();
 	/** The resource map from type to language to path. */
-	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<ResourceType, Map<String, Map<String, ResourcePlace>>>();
+	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<>();
 	/** The default language to use. */
 	public String language;
 	/** The pre-opened ZIP containers. */
@@ -53,7 +53,7 @@ public class ResourceLocator {
 		new ThreadLocal<Map<String, ZipFile>>() {
 		@Override
 		protected Map<String, ZipFile> initialValue() {
-			return new HashMap<String, ZipFile>();
+			return new HashMap<>();
 		};
 	};
 	/** 
@@ -114,14 +114,12 @@ public class ResourceLocator {
 							zipContainers.get().put(container, zf);
 							return zf.getInputStream(zf.getEntry(fileName));
 						}
-					} else {
-						zf = new ZipFile(container);
-						zipContainers.get().put(container, zf);
-						return zf.getInputStream(zf.getEntry(fileName));
 					}
-				} else {
-					return new FileInputStream(container + "/" + fileName);
+					zf = new ZipFile(container);
+					zipContainers.get().put(container, zf);
+					return zf.getInputStream(zf.getEntry(fileName));
 				}
+				return new FileInputStream(container + "/" + fileName);
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			} 
@@ -140,9 +138,8 @@ public class ResourceLocator {
 						}
 					};
 					return bin;
-				} else {
-					return new FileInputStream(container + "/" + fileName);
 				}
+				return new FileInputStream(container + "/" + fileName);
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			} 
@@ -150,13 +147,8 @@ public class ResourceLocator {
 		}
 		/** @return get the data as byte array */
 		public byte[] get() {
-			try {
-				InputStream in = open();
-				try {
-					return IOUtils.load(in);
-				} finally {
-					in.close();
-				}
+			try (InputStream in = open()) {
+				return IOUtils.load(in);
 			} catch (IOException ex) {
 				throw new RuntimeException(ex);
 			}
@@ -215,8 +207,7 @@ public class ResourceLocator {
 	 * @param zipFile the zip file to analyze
 	 */
 	private void analyzeZip(String zipFile) {
-		try {
-			ZipFile zf = new ZipFile(zipFile);
+		try (ZipFile zf = new ZipFile(zipFile)) {
 			zipContainers.get().put(zipFile, zf);
 			Enumeration<? extends ZipEntry> en = zf.entries();
 			while (en.hasMoreElements()) {
@@ -232,7 +223,6 @@ public class ResourceLocator {
 				
 				setNameParts(name, rp);
 			}
-			zf.close();
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
@@ -296,12 +286,12 @@ public class ResourceLocator {
 	private void addResourcePlace(ResourcePlace rp) {
 		Map<String, Map<String, ResourcePlace>> res = resourceMap.get(rp.type);
 		if (res == null) {
-			res = new HashMap<String, Map<String, ResourcePlace>>();
+			res = new HashMap<>();
 			resourceMap.put(rp.type, res);
 		}
 		Map<String, ResourcePlace> rps = res.get(rp.language);
 		if (rps == null) {
-			rps = new HashMap<String, ResourcePlace>();
+			rps = new HashMap<>();
 			res.put(rp.language, rps);
 		}
 		rps.put(rp.name, rp);
@@ -415,19 +405,12 @@ public class ResourceLocator {
 			}
 			return null;
 		}
-		InputStream in = rp.open();
-		try {
-			BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()));
-			try {
-				return optimizeImage(ImageIO.read(bin));
-			} finally {
-				try { bin.close(); } catch (IOException ex) { Exceptions.add(ex); }
-			}
+		try (InputStream in = rp.open();
+			BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()))) {
+			return optimizeImage(ImageIO.read(bin));
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 			throw new AssertionError("Resource error" + language + " " + resourceName);
-		} finally {
-			try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 		}
 	}
 	/**
@@ -465,8 +448,7 @@ public class ResourceLocator {
 		if (rp == null) {
 			throw new AssertionError("Missing resource: " + language + " " + resourceName);
 		}
-		InputStream in = rp.open();
-		try {
+		try (InputStream in = rp.open()) {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			byte[] buffer = new byte[Math.max(8192, in.available())];
 			int read = 0;
@@ -480,8 +462,6 @@ public class ResourceLocator {
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 			throw new AssertionError("Resource error" + language + " " + resourceName);
-		} finally {
-			try { in.close(); } catch (IOException ex) { Exceptions.add(ex); }
 		}
 				
 	}
@@ -492,8 +472,8 @@ public class ResourceLocator {
 	 * @return the list of resources
 	 */
 	public List<ResourcePlace> list(String language, String path) {
-		List<ResourcePlace> result = new ArrayList<ResourcePlace>();
-		Set<String> rs = new HashSet<String>();
+		List<ResourcePlace> result = new ArrayList<>();
+		Set<String> rs = new HashSet<>();
 		for (Map<String, Map<String, ResourcePlace>> e : resourceMap.values()) {
 			for (String s : new String[] { language, "generic" }) {
 				Map<String, ResourcePlace> e1 = e.get(s);
@@ -518,7 +498,7 @@ public class ResourceLocator {
 	 * @return the list of directory names
 	 */
 	public List<String> listDirectories(String language, String path) {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		for (Map<String, Map<String, ResourcePlace>> e : resourceMap.values()) {
 			for (String s : new String[] { language, "generic" }) {
 				Map<String, ResourcePlace> e1 = e.get(s);
@@ -534,7 +514,7 @@ public class ResourceLocator {
 				}
 			}
 		}
-		return new ArrayList<String>(result);
+		return new ArrayList<>(result);
 	}
 	/**
 	 * Get the given XML resource.
@@ -547,16 +527,9 @@ public class ResourceLocator {
 			if (rp == null) {
 				throw new AssertionError("Missing resource: " + language + " " + resourceName);
 			}
-			InputStream in = rp.open();
-			try {
-				BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()));
-				try {
-					return XElement.parseXML(bin);
-				} finally {
-					bin.close();
-				}
-			} finally {
-				in.close();
+			try (InputStream in = rp.open();
+					BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()))) {
+				return XElement.parseXML(bin);
 			}
 		} catch (IOException ex) {
 			Exceptions.add(ex);

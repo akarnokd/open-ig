@@ -32,6 +32,7 @@
 package hu.openig.net;
 
 import java.util.Map;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

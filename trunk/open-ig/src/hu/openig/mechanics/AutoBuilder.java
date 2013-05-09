@@ -377,7 +377,7 @@ public final class AutoBuilder {
 	 * @return the list of potential buildings
 	 */
 	static List<Building> findUpgradables(Planet planet, Func1<Building, Boolean> filter) {
-		List<Building> result = new ArrayList<Building>();
+		List<Building> result = new ArrayList<>();
 		for (Building b : planet.surface.buildings.iterable()) {
 			if (b.upgradeLevel < b.type.upgrades.size()
 				&& b.type.cost <= planet.owner.money()
@@ -396,7 +396,7 @@ public final class AutoBuilder {
 	 * @return the list of potential building types
 	 */
 	static List<BuildingType> findBuildables(World world, Planet planet, Func1<BuildingType, Boolean> filter) {
-		List<BuildingType> result = new ArrayList<BuildingType>();
+		List<BuildingType> result = new ArrayList<>();
 		for (BuildingType bt : world.buildingModel.buildings.values()) {
 			if (
 					planet.owner.money() >= bt.cost

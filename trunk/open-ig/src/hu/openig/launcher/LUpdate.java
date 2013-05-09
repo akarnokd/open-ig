@@ -24,7 +24,7 @@ import javax.xml.stream.XMLStreamException;
  */
 public class LUpdate {
 	/** The list of modules. */
-	public final List<LModule> modules = new ArrayList<LModule>();
+	public final List<LModule> modules = new ArrayList<>();
 	/**
 	 * Parse a module definition located at the specified URL.
 	 * @param data the XML data in byte array

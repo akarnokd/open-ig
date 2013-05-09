@@ -229,7 +229,7 @@ public final class RenderTools {
 		public Color color;
 	}
 	/** The list of stars. */
-	private static List<Star> stars = new ArrayList<Star>();
+	private static List<Star> stars = new ArrayList<>();
 	/**
 	 * Paint the multiple layer of stars.
 	 * @param g2 the graphics object

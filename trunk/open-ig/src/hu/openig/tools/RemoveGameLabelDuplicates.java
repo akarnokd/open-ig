@@ -8,9 +8,9 @@
 
 package hu.openig.tools;
 
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,7 +27,7 @@ public final class RemoveGameLabelDuplicates {
 	 */
 	public static void main(String[] args) throws Exception {
 		XElement main = XElement.parseXML("data/hu/labels.xml");
-		Map<String, String> mainMap = U.newHashMap();
+		Map<String, String> mainMap = new HashMap<>();
 		for (XElement xe : main.childrenWithName("entry")) {
 			if (xe.content != null) {
 				mainMap.put(xe.get("key"), xe.content);

@@ -181,9 +181,8 @@ public class Comment {
 					// We return a pointer to the data, not a copy
 					// return user_comments[i] + taglen + 1;
 					return i;
-				} else {
-					found++;
 				}
+				found++;
 			}
 		}
 		return -1;

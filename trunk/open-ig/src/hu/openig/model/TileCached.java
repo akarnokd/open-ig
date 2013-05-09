@@ -8,10 +8,9 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
-
 import java.awt.image.BufferedImage;
 import java.lang.ref.SoftReference;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -20,7 +19,7 @@ import java.util.Map;
  */
 public class TileCached extends Tile {
 	/** The cached image strips. The key is maxCount times the alpha value. */
-	protected final Map<Integer, Ref<BufferedImage[]>> cache = U.newHashMap();
+	protected final Map<Integer, Ref<BufferedImage[]>> cache = new HashMap<>();
 	/** The maximum alpha cache count. */
 	protected final int maxCount;
 	/**
@@ -89,7 +88,7 @@ public class TileCached extends Tile {
 	 */
 	protected <T> Ref<T> createReference(T value) {
 		//return new SoftReference<T>(value);
-		return new StrongRef<T>(value);
+		return new StrongRef<>(value);
 	}
 	/** 
 	 * Reference class to store soft, weak or strong references.
@@ -114,7 +113,7 @@ public class TileCached extends Tile {
 		 * @param value the value
 		 */
 		public SoftRef(T value) {
-			this.value = new SoftReference<T>(value);
+			this.value = new SoftReference<>(value);
 		}
 		@Override
 		public T get() {

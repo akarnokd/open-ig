@@ -9,11 +9,11 @@
 package hu.openig.editors.ce;
 
 import hu.openig.core.Pair;
-import hu.openig.utils.U;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -31,7 +31,7 @@ public final class CETools {
 	 * @return the list of fields and patterns to check
 	 */
 	public static List<Pair<String, Pattern>> parseFilter(String filterStr) {
-		List<Pair<String, Pattern>> result = U.newArrayList();
+		List<Pair<String, Pattern>> result = new ArrayList<>();
 
 		StreamTokenizer st = new StreamTokenizer(new StringReader(filterStr));
 		st.slashSlashComments(false);
@@ -45,7 +45,7 @@ public final class CETools {
 		st.wordChars('_', '_');
 		st.quoteChar('"');
 
-		List<String> tokens = U.newArrayList();
+		List<String> tokens = new ArrayList<>();
 		try {
 			while (true) {
 				int tok = st.nextToken();

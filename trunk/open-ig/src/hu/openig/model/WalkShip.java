@@ -19,5 +19,5 @@ public class WalkShip {
 	/** The ship walk level. */
 	public String level;
 	/** The map of positions in the ship. */
-	public final Map<String, WalkPosition> positions = new HashMap<String, WalkPosition>();
+	public final Map<String, WalkPosition> positions = new HashMap<>();
 }

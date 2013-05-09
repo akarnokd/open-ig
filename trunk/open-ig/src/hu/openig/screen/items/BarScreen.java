@@ -54,7 +54,7 @@ public class BarScreen extends ScreenBase {
 	/** The transition the mouse is pointing at. */
 	WalkTransition pointerTransition;
 	/** The list of choices. */
-	final List<Choice> choices = new ArrayList<Choice>();
+	final List<Choice> choices = new ArrayList<>();
 	/** The state picture. */
 	BufferedImage picture;
 	/** The bar images. */
@@ -66,7 +66,7 @@ public class BarScreen extends ScreenBase {
 		/** The target rendering rectangle. */
 		final Rectangle rect = new Rectangle();
 		/** The choice text rows. */
-		final List<String> rows = new ArrayList<String>();
+		final List<String> rows = new ArrayList<>();
 		/**
 		 * Paint the rows.
 		 * @param g2 the graphics

@@ -32,9 +32,9 @@ public final class Unpack {
 		new File(dst).mkdirs();
 		List<PACFile.PACEntry> pf = PACFile.parseFully(src + "/text.pac");
 		for (PACEntry pe : pf) {
-			FileOutputStream out = new FileOutputStream(dst + "/" + pe.filename);
-			out.write(pe.data);
-			out.close();
+			try (FileOutputStream out = new FileOutputStream(dst + "/" + pe.filename)) {
+				out.write(pe.data);
+			}
 		}
 	}
 

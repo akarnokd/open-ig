@@ -110,7 +110,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 		if (message instanceof MessageArray) {
 			MessageArray ma = (MessageArray)message;
 			if ("BATCH".equals(ma.name)) {
-				final List<DeferredRunnable> calls = new ArrayList<DeferredRunnable>();
+				final List<DeferredRunnable> calls = new ArrayList<>();
 				for (Object o : ma) {
 					if (o instanceof MessageArray) {
 						calls.add(processMessageArrayDeferred((MessageArray)o));
@@ -142,9 +142,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 						return result;
 					}
 				};
-			} else {
-				return processMessageArrayDeferred(ma);
 			}
+			return processMessageArrayDeferred(ma);
 		}
 		if (message instanceof MessageObject) {
 			return processMessageObjectDeferred((MessageObject)message);
@@ -159,7 +158,6 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	 */
 	protected DeferredRunnable processMessageArrayDeferred(MessageArray ma) throws IOException {
 		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, ma != null ? ma.name : "null");
-		
 	}
 	/**
 	 * Process request with message object as their outer elements.
@@ -168,15 +166,15 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	 * @throws IOException on error
 	 */
 	protected DeferredRunnable processMessageObjectDeferred(final MessageObject mo) throws IOException {
-		if ("PING".equals(mo.name)) {
+		switch (mo.name) {
+		case "PING":
 			return new DeferredInvoke("PONG") {
 				@Override
 				protected void invoke() throws IOException {
 					api.ping();
 				}
 			};
-		} else
-		if ("LOGIN".equals(mo.name)) {
+		case "LOGIN":
 			final String user = mo.getString("user");
 			final String passphrase = mo.getString("passphrase");
 			final String version = mo.getString("version");
@@ -186,8 +184,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return api.login(user, passphrase, version);
 				}
 			};
-		} else
-		if ("RELOGIN".equals(mo.name)) {
+		case "RELOGIN":
 			final String sessionId = mo.getString("session");
 			return new DeferredInvoke("WELCOME_BACK") {
 				@Override
@@ -195,24 +192,21 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.relogin(sessionId);
 				}
 			};
-		} else
-		if ("LEAVE".equals(mo.name)) {
+		case "LEAVE":
 			return new DeferredInvoke() {
 				@Override
 				protected void invoke() throws IOException {
 					api.leave();
 				}
 			};
-		} else
-		if ("QUERY_GAME_DEFINITION".equals(mo.name)) {
+		case "QUERY_GAME_DEFINITION":
 			return new DeferredCall() {
 				@Override
 				protected MessageObjectIO invoke() throws IOException {
 					return api.getGameDefinition();
 				}
 			};
-		} else
-		if ("MULTIPLAYER_USER".equals(mo.name)) {
+		case "MULTIPLAYER_USER":
 			final MultiplayerUser userSettings = new MultiplayerUser();
 			userSettings.fromMessage(mo);
 			return new DeferredInvoke() {
@@ -221,32 +215,28 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.choosePlayerSettings(userSettings);
 				}
 			};
-		} else
-		if ("JOIN".equals(mo.name)) {
+		case "JOIN":
 			return new DeferredCall() {
 				@Override
 				protected MessageObjectIO invoke() throws IOException {
 					return api.join();
 				}
 			};
-		} else
-		if ("READY".equals(mo.name)) {
+		case "READY":
 			return new DeferredInvoke("BEGIN") {
 				@Override
 				protected void invoke() throws IOException {
 					api.ready();
 				}
 			};
-		} else
-		if ("QUERY_EMPIRE_STATUSES".equals(mo.name)) {
+		case "QUERY_EMPIRE_STATUSES":
 			return new DeferredCall() {
 				@Override
 				protected MessageObjectIO invoke() throws IOException {
 					return api.getEmpireStatuses();
 				}
 			};
-		} else
-		if ("QUERY_FLEETS".equals(mo.name)) {
+		case "QUERY_FLEETS":
 			return new DeferredTransform<List<FleetStatus>>() {
 				@Override
 				protected List<FleetStatus> invoke() throws IOException {
@@ -258,8 +248,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return FleetStatus.toArray(intermediate);
 				}
 			};
-		} else
-		if ("QUERY_FLEET".equals(mo.name)) {
+		case "QUERY_FLEET": {
 			final int fleetId = mo.getInt("fleetId");
 			return new DeferredCall() {
 				@Override
@@ -267,8 +256,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return api.getFleet(fleetId);
 				}
 			};
-		} else
-		if ("QUERY_INVENTORIES".equals(mo.name)) {
+		}
+		case "QUERY_INVENTORIES":
 			return new DeferredTransform<Map<String, Integer>>() {
 				@Override
 				protected Map<String, Integer> invoke() throws IOException {
@@ -287,24 +276,21 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return ma;
 				}
 			};
-		} else
-		if ("QUERY_PRODUCTIONS".equals(mo.name)) {
+		case "QUERY_PRODUCTIONS":
 			return new DeferredCall() {
 				@Override
 				protected MessageObjectIO invoke() throws IOException {
 					return api.getProductions();
 				}
 			};
-		} else
-		if ("QUERY_RESEARCHES".equals(mo.name)) {
+		case "QUERY_RESEARCHES": 
 			return new DeferredCall() {
 				@Override
 				protected MessageObjectIO invoke() throws IOException {
 					return api.getResearches();
 				}
 			};
-		} else
-		if ("QUERY_PLANET_STATUSES".equals(mo.name)) {
+		case "QUERY_PLANET_STATUSES":
 			return new DeferredTransform<List<PlanetStatus>>() {
 				@Override
 				protected List<PlanetStatus> invoke() throws IOException {
@@ -316,8 +302,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return PlanetStatus.toArray(intermediate);
 				}
 			};
-		} else
-		if ("QUERY_PLANET_STATUS".equals(mo.name)) {
+		case "QUERY_PLANET_STATUS": {
 			final String planetId = mo.getString("planetId");
 			return new DeferredCall() {
 				@Override
@@ -325,8 +310,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return api.getPlanetStatus(planetId);
 				}
 			};
-		} else
-		if ("MOVE_FLEET".equals(mo.name)) {
+		}
+		case "MOVE_FLEET": {
 			final int fleetId = mo.getInt("fleetId");
 			final double x = mo.getDouble("x");
 			final double y = mo.getDouble("y");
@@ -336,8 +321,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.moveFleet(fleetId, x, y);
 				}
 			};
-		} else
-		if ("ADD_FLEET_WAYPOINT".equals(mo.name)) {
+		}	
+		case "ADD_FLEET_WAYPOINT": {
 			final int fleetId = mo.getInt("fleetId");
 			final double x = mo.getDouble("x");
 			final double y = mo.getDouble("y");
@@ -347,8 +332,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.addFleetWaypoint(fleetId, x, y);
 				}
 			};
-		} else
-		if ("MOVE_TO_PLANET".equals(mo.name)) {
+		}
+		case "MOVE_TO_PLANET": {
 			final int fleetId = mo.getInt("fleetId");
 			final String target = mo.getString("target");
 			return new DeferredInvoke() {
@@ -357,8 +342,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.moveToPlanet(fleetId, target);
 				}
 			};
-		} else
-		if ("FOLLOW_FLEET".equals(mo.name)) {
+		}
+		case "FOLLOW_FLEET": {
 			final int fleetId = mo.getInt("fleetId");
 			final int target = mo.getInt("target");
 			return new DeferredInvoke() {
@@ -367,8 +352,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.followFleet(fleetId, target);
 				}
 			};
-		} else
-		if ("ATTACK_FLEET".equals(mo.name)) {
+		}
+		case "ATTACK_FLEET": {
 			final int fleetId = mo.getInt("fleetId");
 			final int target = mo.getInt("target");
 			return new DeferredInvoke() {
@@ -377,8 +362,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.attackFleet(fleetId, target);
 				}
 			};
-		} else
-		if ("ATTACK_PLANET".equals(mo.name)) {
+		}
+		case "ATTACK_PLANET": {
 			final int fleetId = mo.getInt("fleetId");
 			final String target = mo.getString("target");
 			return new DeferredInvoke() {
@@ -387,8 +372,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.attackPlanet(fleetId, target);
 				}
 			};
-		} else
-		if ("COLONIZE_FLEET".equals(mo.name)) {
+		}
+		case "COLONIZE_FLEET": {
 			final int fleetId = mo.getInt("fleetId");
 			final String target = mo.getString("target");
 			return new DeferredInvoke() {
@@ -397,8 +382,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.colonize(fleetId, target);
 				}
 			};
-		} else
-		if ("NEW_FLEET_AT_PLANET".equals(mo.name)) {
+		}
+		case "NEW_FLEET_AT_PLANET": {
 			final String planetId = mo.getString("planetId");
 			final List<InventoryItemStatus> list = InventoryItemStatus.fromArray(mo.getArray("inventory"));
 			return new DeferredTransform<Integer>() {
@@ -414,8 +399,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return r;
 				}
 			};
-		} else
-		if ("NEW_FLEET_AT_FLEET".equals(mo.name)) {
+		}
+		case "NEW_FLEET_AT_FLEET": {
 			final String fleetId = mo.getString("fleetId");
 			final List<InventoryItemStatus> list = InventoryItemStatus.fromArray(mo.getArray("inventory"));
 			return new DeferredTransform<Integer>() {
@@ -431,8 +416,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					return r;
 				}
 			};
-		} else
-		if ("DELETE_FLEET".equals(mo.name)) {
+		}
+		case "DELETE_FLEET": {
 			final int fleetId = mo.getInt("fleetId");
 			return new DeferredInvoke() {
 				@Override
@@ -440,8 +425,8 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					api.deleteFleet(fleetId);
 				}
 			};
-		} else
-		if ("RENAME_FLEET".equals(mo.name)) {
+		}
+		case "RENAME_FLEET": {
 			final int fleetId = mo.getInt("fleetId");
 			final String name = mo.getString("name");
 			return new DeferredInvoke() {
@@ -451,7 +436,18 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 				}
 			};
 		}
-		
-		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
+		case "SELL_FLEET_ITEM": {
+			final int fleetId = mo.getInt("fleetId");
+			final int itemId = mo.getInt("itemId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.sellFleetItem(fleetId, itemId);
+				}
+			};
+		}
+		default:
+			throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
+		}
 	}
 }

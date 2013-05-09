@@ -16,6 +16,7 @@ import hu.openig.utils.XElement;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +92,7 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 		slotY = CEValueBox.of(get("slot.y"), new JTextField());
 		slotWidth = CEValueBox.of(get("slot.width"), new JTextField());
 		slotHeight = CEValueBox.of(get("slot.height"), new JTextField());
-		JComboBox<String> slotTypeBox = new JComboBox<String>(new String[] {
+		JComboBox<String> slotTypeBox = new JComboBox<>(new String[] {
 				get("slot.type.normal"), get("slot.type.fixed")
 		});
 		slotType = CEValueBox.of(get("slot.type"), slotTypeBox);
@@ -263,7 +264,7 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 		addNumberChanged(slotWidth, "width", true);
 		addNumberChanged(slotHeight, "height", true);
 
-		slotItems = new JComboBox<String>();
+		slotItems = new JComboBox<>();
 		slotItemField = CEValueBox.of(get("slot.items"), slotItems);
 
 		GenericTableModel<String> slotItemModel = new GenericTableModel<String>() {
@@ -629,7 +630,7 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 	 * @param techs the technologies list
 	 */
 	public void setAllTechnologies(List<XElement> techs) {
-		Set<String> filter = U.newHashSet(
+		Set<String> filter = U.newSet(
 			ResearchSubCategory.EQUIPMENT_HYPERDRIVES.toString(),
 			ResearchSubCategory.EQUIPMENT_RADARS.toString(),
 			ResearchSubCategory.EQUIPMENT_SHIELDS.toString(),
@@ -638,7 +639,7 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 			ResearchSubCategory.WEAPONS_LASERS.toString(),
 			ResearchSubCategory.WEAPONS_PROJECTILES.toString()
 		);
-		List<String> items = U.newArrayList();
+		List<String> items = new ArrayList<>();
 		slotItems.removeAllItems();
 		for (XElement e : techs) {
 			if (e.has("id") && filter.contains(e.get("category", ""))) {

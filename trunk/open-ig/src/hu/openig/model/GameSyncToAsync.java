@@ -40,7 +40,7 @@ public class GameSyncToAsync implements GameAPI {
 	 * @return the async subject object
 	 */
 	protected <T> Value<T> newSubject() {
-		return new Value<T>();
+		return new Value<>();
 	}
 	/**
 	 * Extracts the value or exception from the given async subject,

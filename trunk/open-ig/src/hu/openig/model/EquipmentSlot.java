@@ -31,5 +31,5 @@ public class EquipmentSlot {
 	/** The maximum amount allowed. */
 	public int max;
 	/** The list of allowed research types. */
-	public final List<ResearchType> items = new ArrayList<ResearchType>();
+	public final List<ResearchType> items = new ArrayList<>();
 }

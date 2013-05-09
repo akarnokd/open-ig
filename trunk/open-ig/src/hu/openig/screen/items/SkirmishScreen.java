@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -98,7 +99,7 @@ public class SkirmishScreen extends ScreenBase {
 	/** The galactic background. */
 	BufferedImage background;
 	/** The list of campaigns. */
-	final List<GameDefinition> campaigns = new ArrayList<GameDefinition>();
+	final List<GameDefinition> campaigns = new ArrayList<>();
 	/** The skirmish definition. */
 	CustomGameDefinition definition;
 	/** The galaxy definition label. */
@@ -198,11 +199,11 @@ public class SkirmishScreen extends ScreenBase {
 	/** Players list scoll box. */
 	UIScrollBox playersListScroll;
 	/** The template players. */
-	final List<SkirmishPlayer> templatePlayers = U.newArrayList();
+	final List<SkirmishPlayer> templatePlayers = new ArrayList<>();
 	/** The tech races. */
-	final Set<String> templateTechRaces = U.newHashSet();
+	final Set<String> templateTechRaces = new HashSet<>();
 	/** The list of players. */
-	final List<PlayerLine> playerLines = U.newArrayList();
+	final List<PlayerLine> playerLines = new ArrayList<>();
 	/** Add player button. */
 	UIGenericButton addPlayer;
 	/** Clear players button. */
@@ -363,7 +364,7 @@ public class SkirmishScreen extends ScreenBase {
 		economyPanel.add(colonyShipLabel, colonyShips, orbitalFactoryLabel, orbitalFactories);
 		
 		initialRelationLabel = createLabel("skirmish.initial_relation");
-		initialRelation = new ListSpinBox<SkirmishDiplomaticRelation>(new Func1<SkirmishDiplomaticRelation, String>() { 
+		initialRelation = new ListSpinBox<>(new Func1<SkirmishDiplomaticRelation, String>() { 
 			@Override
 			public String invoke(SkirmishDiplomaticRelation value) {
 				return get("skirmish.relation." + value);
@@ -372,7 +373,7 @@ public class SkirmishScreen extends ScreenBase {
 		initialRelation.index = SkirmishDiplomaticRelation.DEFAULT.ordinal();
 		
 		initialDifficultyLabel = createLabel("skirmish.initial_difficulty");
-		initialDifficulty = new ListSpinBox<Difficulty>(new Func1<Difficulty, String>() { 
+		initialDifficulty = new ListSpinBox<>(new Func1<Difficulty, String>() { 
 			@Override
 			public String invoke(Difficulty value) {
 				return get("difficulty." + value);
@@ -758,7 +759,7 @@ public class SkirmishScreen extends ScreenBase {
 		
 		onResize();
 		
-		List<UIComponent> all = U.newArrayList();
+		List<UIComponent> all = new ArrayList<>();
 		U.addAll(all, galaxyPanel.components());
 		U.addAll(all, economyPanel.components()); 
 		U.addAll(all, victoryPanel.components()); 
@@ -1045,6 +1046,7 @@ public class SkirmishScreen extends ScreenBase {
 		 * @param list the backing list
 		 * @param valueFunc the value function
 		 */
+		@SafeVarargs
 		public ListSpinBox(Func1<T, String> valueFunc, T... list) {
 			this.list = Arrays.asList(list);
 			this.valueFunc = valueFunc;
@@ -1124,7 +1126,7 @@ public class SkirmishScreen extends ScreenBase {
 	 * @return the set of races
 	 */
 	public Set<String> getRacesFrom(GameDefinition def) {
-		Set<String> result = U.newHashSet();
+		Set<String> result = new HashSet<>();
 		
 		XElement xtech = rl.getXML(def.tech);
 		for (XElement xitem : xtech.childrenWithName("item")) {
@@ -1151,8 +1153,8 @@ public class SkirmishScreen extends ScreenBase {
 	 * @return the set of players
 	 */
 	public static List<SkirmishPlayer> getPlayersFrom(ResourceLocator rl, GameDefinition def) {
-		List<SkirmishPlayer> result = U.newArrayList();
-		Set<SkirmishPlayer> rs = U.newHashSet();
+		List<SkirmishPlayer> result = new ArrayList<>();
+		Set<SkirmishPlayer> rs = new HashSet<>();
 		
 		XElement xplayers = rl.getXML(def.players);
 		
@@ -1438,7 +1440,7 @@ public class SkirmishScreen extends ScreenBase {
 				pl.player.ai = SkirmishAIMode.USER;
 			}
 		} else {
-			List<SkirmishPlayer> candidates = U.newArrayList();
+			List<SkirmishPlayer> candidates = new ArrayList<>();
 			for (SkirmishPlayer sp : templatePlayers) {
 				if (sp.ai != SkirmishAIMode.USER) {
 					candidates.add(sp);
@@ -1677,9 +1679,9 @@ public class SkirmishScreen extends ScreenBase {
 		/** Cancel button. */
 		UIGenericButton ok;
 		/** The image list. */
-		final List<UIImage> images = U.newArrayList();
+		final List<UIImage> images = new ArrayList<>();
 		/** The resource reference. */
-		final List<String> imageRefs = U.newArrayList();
+		final List<String> imageRefs = new ArrayList<>();
 		/** The current selected. */
 		int selectedIndex = -1;
 		/** Construct the panel. */
@@ -1861,7 +1863,7 @@ public class SkirmishScreen extends ScreenBase {
 		/** Cancel button. */
 		UIGenericButton ok;
 		/** The radio buttons. */
-		final List<UIRadioButton> radioButtons = U.newArrayList();
+		final List<UIRadioButton> radioButtons = new ArrayList<>();
 		/** The scroll box for the buttons. */
 		UIScrollBox scroll;
 		/** The container for the radio buttons. */
@@ -2007,7 +2009,7 @@ public class SkirmishScreen extends ScreenBase {
 	 * @param pl the line
 	 */
 	void doShowRace(final PlayerLine pl) {
-		final List<String> list = U.newArrayList();
+		final List<String> list = new ArrayList<>();
 		int index = -1;
 		final List<SkirmishPlayer> tps = U.newArrayList(templatePlayers);
 		Collections.sort(tps, new Comparator<SkirmishPlayer>() {
@@ -2049,8 +2051,8 @@ public class SkirmishScreen extends ScreenBase {
 				you = true;
 			}
 		}
-		final List<String> list = U.newArrayList();
-		final List<SkirmishAIMode> modes = U.newArrayList();
+		final List<String> list = new ArrayList<>();
+		final List<SkirmishAIMode> modes = new ArrayList<>();
 		int index = 0;
 		for (SkirmishAIMode m : SkirmishAIMode.values()) {
 			if (m != SkirmishAIMode.USER || !you) {

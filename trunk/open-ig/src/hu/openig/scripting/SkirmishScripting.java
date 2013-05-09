@@ -29,10 +29,12 @@ import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.World;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +50,7 @@ public class SkirmishScripting implements GameScripting {
 	/** The skirmish definition. */
 	protected CustomGameDefinition def;
 	/** The map of all main and sub objectives. */
-	final Map<String, Objective> allObjectives = U.newLinkedHashMap();
+	final Map<String, Objective> allObjectives = new LinkedHashMap<>();
 	/** Show the objectives once. */
 	protected boolean objectivesOnce = true;
 	/** The remaining hold time for occupation victory, in minutes. */
@@ -81,7 +83,7 @@ public class SkirmishScripting implements GameScripting {
 	 * Check social victory condition.
 	 */
 	void checkSocialVictory() {
-		Map<Integer, Integer> groupPlanets = U.newHashMap();
+		Map<Integer, Integer> groupPlanets = new HashMap<>();
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
 				if (p.morale >= def.victorySocialMorale) {
@@ -122,7 +124,7 @@ public class SkirmishScripting implements GameScripting {
 	}
 	/** Check for the occupation victory. */
 	void checkOccupationVictory() {
-		Map<Integer, Integer> groupPlanets = U.newHashMap();
+		Map<Integer, Integer> groupPlanets = new HashMap<>();
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
 				Integer v = groupPlanets.get(p.owner.group);
@@ -158,7 +160,7 @@ public class SkirmishScripting implements GameScripting {
 	 * Check for economic victory.
 	 */
 	void checkEconomicVictory() {
-		Map<Integer, Long> groups = U.newHashMap();
+		Map<Integer, Long> groups = new HashMap<>();
 		for (Player p : world.players.values()) {
 			Long v = groups.get(p.group);
 			v = (v != null ? v.longValue() + p.money() : p.money());
@@ -172,7 +174,7 @@ public class SkirmishScripting implements GameScripting {
 	 * Check if all but one group has planets.
 	 */
 	void checkConquestVictory() {
-		Map<Integer, Integer> groupPlanets = U.newHashMap();
+		Map<Integer, Integer> groupPlanets = new HashMap<>();
 		for (Planet p : world.planets.values()) {
 			if (groupPlanets.size() > 1) {
 				return;
@@ -252,7 +254,7 @@ public class SkirmishScripting implements GameScripting {
 	}
 	@Override
 	public List<Objective> currentObjectives() {
-		List<Objective> result = U.newArrayList();
+		List<Objective> result = new ArrayList<>();
 		
 		for (Objective o : allObjectives.values()) {
 			if (o.visible) {

@@ -88,6 +88,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -192,11 +193,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** Stop retreat. */
 	TwoPhaseButton stopRetreat;
 	/** The space ships for animation. */
-	final List<SpacewarStructure> structures = new ArrayList<SpacewarStructure>();
+	final List<SpacewarStructure> structures = new ArrayList<>();
 	/** The projectiles for animation. */
-	final List<SpacewarProjectile> projectiles = new ArrayList<SpacewarProjectile>();
+	final List<SpacewarProjectile> projectiles = new ArrayList<>();
 	/** The space explosions for animation. */
-	final List<SpacewarExplosion> explosions = new ArrayList<SpacewarExplosion>();
+	final List<SpacewarExplosion> explosions = new ArrayList<>();
 	/** The location of the minimap. */
 	final Rectangle minimap = new Rectangle();
 	/** The location of the main window area. */
@@ -262,9 +263,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** Right movie. */
 	AnimatedRadioButton rightMovie;
 	/** The list of animation buttons. */
-	List<AnimatedRadioButton> animatedButtonsLeft = new ArrayList<AnimatedRadioButton>();
+	List<AnimatedRadioButton> animatedButtonsLeft = new ArrayList<>();
 	/** The list of animation buttons. */
-	List<AnimatedRadioButton> animatedButtonsRight = new ArrayList<AnimatedRadioButton>();
+	List<AnimatedRadioButton> animatedButtonsRight = new ArrayList<>();
 	/** The left equipment configuration. */
 	@Show(mode = PanelMode.SHIP_STATUS, left = true)
 	ShipStatusPanel leftStatusPanel;
@@ -315,11 +316,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** Indicates if the attacker is placed on the right side. */
 	boolean attackerOnRight;
 	/** Scramble projectiles once. */
-	final Set<SpacewarObject> scrambled = new HashSet<SpacewarObject>();
+	final Set<SpacewarObject> scrambled = new HashSet<>();
 	/** The sounds to play. */
-	final Set<SoundType> soundsToPlay = new HashSet<SoundType>();
+	final Set<SoundType> soundsToPlay = new HashSet<>();
 	/** The grouping of structures. */
-	final Map<SpacewarStructure, Integer> groups = U.newHashMap();
+	final Map<SpacewarStructure, Integer> groups = new HashMap<>();
 	/** Info image cache. */
 	final Map<String, BufferedImage> infoImages = new LinkedHashMap<String, BufferedImage>() {
 		/** */
@@ -338,12 +339,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** The current chat node. */
 	Node node;
 	/** The set of all initial players. */
-	final Set<Player> allPlayerSet = U.newHashSet();
+	final Set<Player> allPlayerSet = new HashSet<>();
 	/** The registry for fired rockets and their parents. */
-	final Map<SpacewarStructure, SpacewarStructure> rocketParent = U.newHashMap();
+	final Map<SpacewarStructure, SpacewarStructure> rocketParent = new HashMap<>();
 	@Override
 	public void onInitialize() {
-		mainCommands = new ArrayList<ThreePhaseButton>();
+		mainCommands = new ArrayList<>();
 		
 		stopButton = new ThreePhaseButton(33, 24, commons.spacewar().stop, commons.common().disabledPattern);
 		stopButton.action = new Action0() {
@@ -382,7 +383,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		mainCommands.add(guardButton);
 		mainCommands.add(rocketButton);
 		
-		viewCommands = new ArrayList<ThreePhaseButton>();
+		viewCommands = new ArrayList<>();
 		
 		viewCommand = new ThreePhaseButton(33, 24 + 35 * 3, commons.spacewar().command, commons.common().disabledPattern);
 		viewDamage = new ThreePhaseButton(33 + 72, 24 + 35 * 3, commons.spacewar().damage, commons.common().disabledPattern);
@@ -836,7 +837,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return Returns a list of the currently selected structures.
 	 */
 	List<SpacewarStructure> getSelection() {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (s.selected) {
 				result.add(s);
@@ -848,7 +849,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * Select the structures which intersect with the current selection box.
 	 */
 	void doSelectStructures() {
-		List<SpacewarStructure> candidates = new ArrayList<SpacewarStructure>();
+		List<SpacewarStructure> candidates = new ArrayList<>();
 		List<SpacewarStructure> currentSelection = getSelection();
 		boolean own = false;
 		if (selectionMode == SelectionBoxMode.ADD) {
@@ -1292,7 +1293,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			
 			// add fighters of the planet
-			List<SpacewarStructure> shipWall = U.newArrayList();
+			List<SpacewarStructure> shipWall = new ArrayList<>();
 			createStructures(inventoryWithParent(nearbyPlanet), 
 					EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
 			
@@ -1399,7 +1400,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return the inventory item with their parent
 	 */
 	Map<InventoryItem, HasInventory> inventoryWithParent(HasInventory inv) {
-		Map<InventoryItem, HasInventory> result = new LinkedHashMap<InventoryItem, HasInventory>();
+		Map<InventoryItem, HasInventory> result = new LinkedHashMap<>();
 		for (InventoryItem ii : inv.inventory().iterable()) {
 			result.put(ii, inv);
 		}
@@ -1432,7 +1433,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of shield structures. */
 	List<SpacewarStructure> shields() {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.SHIELD) {
 				result.add(s);
@@ -1442,7 +1443,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of projector structures. */
 	List<SpacewarStructure> projectors() {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.PROJECTOR) {
 				result.add(s);
@@ -1452,7 +1453,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of ship structures. */
 	List<SpacewarStructure> ships() {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.SHIP) {
 				result.add(s);
@@ -1462,7 +1463,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	/** @return a list of station structures. */
 	List<SpacewarStructure> stations() {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.STATION) {
 				result.add(s);
@@ -1477,7 +1478,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param inventory the sequence of inventory items
 	 */
 	void placeFleet(int x, boolean left, Map<InventoryItem, HasInventory> inventory) {
-		List<SpacewarStructure> largeShipWall = U.newArrayList();
+		List<SpacewarStructure> largeShipWall = new ArrayList<>();
 		// place attacker on the planet side (right side)
 		createStructures(inventory, 
 				EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS, ResearchSubCategory.SPACESHIPS_CRUISERS), largeShipWall);
@@ -1487,8 +1488,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			x = left ? (x - maxw) : (x + maxw);
 		}
 		
-		List<SpacewarStructure> smallShipWall = U.newArrayList();
-		List<SpacewarStructure> smallShipWallOut = U.newArrayList();
+		List<SpacewarStructure> smallShipWall = new ArrayList<>();
+		List<SpacewarStructure> smallShipWallOut = new ArrayList<>();
 		
 		createStructures(inventory, 
 				EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), smallShipWall);
@@ -1647,8 +1648,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			maxHeight += e.get().getWidth();
 		}
 		
-		LinkedList<SpacewarStructure> ships = new LinkedList<SpacewarStructure>(items);
-		LinkedList<SpacewarStructure> group = new LinkedList<SpacewarStructure>();
+		LinkedList<SpacewarStructure> ships = new LinkedList<>(items);
+		LinkedList<SpacewarStructure> group = new LinkedList<>();
 
 		while (!ships.isEmpty()) {
 			SpacewarStructure sws = ships.removeFirst();
@@ -1721,7 +1722,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			Collection<? extends SpacewarStructure> ships, 
 			Collection<? super SpacewarStructure> out) {
 		
-		List<List<SpacewarStructure>> rows = new ArrayList<List<SpacewarStructure>>();
+		List<List<SpacewarStructure>> rows = new ArrayList<>();
 		int rowIndex = -1;
 		int y = 0;
 		List<SpacewarStructure> currentRow = null;
@@ -1730,7 +1731,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		for (SpacewarStructure sws : ships) {
 			if (y + sws.get().getHeight() >= space.height || rowIndex < 0) {
 				rowIndex++;
-				currentRow = new ArrayList<SpacewarStructure>();
+				currentRow = new ArrayList<>();
 				rows.add(currentRow);
 				y = 0;
 			}
@@ -2733,8 +2734,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void applyLayout(final Iterable<? extends SpacewarStructure> ships, 
 			final Player owner, final BattleSpaceLayout layout) {
-		LinkedList<SpacewarStructure> fighters = U.newLinkedList();
-		LinkedList<SpacewarStructure> nonFighters = U.newLinkedList();
+		LinkedList<SpacewarStructure> fighters = new LinkedList<>();
+		LinkedList<SpacewarStructure> nonFighters = new LinkedList<>();
 		for (SpacewarStructure sws : ships) {
 			if (sws.owner == owner && world().scripting.mayControlFleet(sws.fleet)) { // DO not layout ships from non-controllable fleets of the player
 				if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
@@ -2749,7 +2750,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		// fill in the regular places
 		List<Map.Entry<Location, Boolean>> olist = layout.order();
-		List<SpacewarStructure> placed = new ArrayList<SpacewarStructure>();
+		List<SpacewarStructure> placed = new ArrayList<>();
 		for (Map.Entry<Location, Boolean> e : olist) {
 			Location p = e.getKey();
 			if (e.getValue()) {
@@ -3235,7 +3236,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	@Override
 	public List<SpacewarStructure> enemiesInRange(SpacewarStructure ship) {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (!areAllies(s.owner, ship.owner) && !s.isDestroyed()) {
 				if (ship.inRange(s).size() > 0) {
@@ -3267,9 +3268,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (Math.abs(diff) < anglePerStep) {
 			ship.angle = targetAngle;
 			return true;
-		} else {
-			ship.angle += Math.signum(diff) * anglePerStep;
 		}
+		ship.angle += Math.signum(diff) * anglePerStep;
 		return false;
 	}
 	/**
@@ -3294,9 +3294,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		if (Math.abs(diff) < anglePerStep) {
 			proj.angle = targetAngle;
 			return true;
-		} else {
-			proj.angle += Math.signum(diff) * anglePerStep;
 		}
+		proj.angle += Math.signum(diff) * anglePerStep;
 		return false;
 	}
 	/**
@@ -3574,7 +3573,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void doSpacewarSimulation() {
 		soundsToPlay.clear();
 		// advance explosions
-		for (SpacewarExplosion exp : new ArrayList<SpacewarExplosion>(explosions)) {
+		for (SpacewarExplosion exp : new ArrayList<>(explosions)) {
 			if (exp.next()) {
 				explosions.remove(exp);
 			} else
@@ -3585,10 +3584,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		handleProjectiles();
 		
-		List<SpacewarStructure> enemyIdles = U.newArrayList();
-		List<SpacewarStructure> playerIdles = U.newArrayList();
+		List<SpacewarStructure> enemyIdles = new ArrayList<>();
+		List<SpacewarStructure> playerIdles = new ArrayList<>();
 		// fleet movements
-		for (SpacewarStructure ship : new ArrayList<SpacewarStructure>(structures)) {
+		for (SpacewarStructure ship : new ArrayList<>(structures)) {
 			if (!ship.isDestroyed()) {
 				if (ship.kamikaze > 0) {
 					handleKamikaze(ship);
@@ -3776,7 +3775,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void chooseNewTarget(SpacewarStructure ship) {
 		Double backfire = world().battle.backfires.get(world().difficulty);
 		
-		List<SpacewarStructure> sts = new ArrayList<SpacewarStructure>();
+		List<SpacewarStructure> sts = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.SHIP || s.type == StructureType.SHIELD 
 					|| s.type == StructureType.STATION || s.type == StructureType.PROJECTOR) {
@@ -3906,7 +3905,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void handleProjectiles() {
 		// move projectiles
-		for (SpacewarProjectile p : new ArrayList<SpacewarProjectile>(projectiles)) {
+		for (SpacewarProjectile p : new ArrayList<>(projectiles)) {
 			if (moveStep(p)) {
 				projectiles.remove(p);
 				
@@ -4078,7 +4077,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double percent = Double.parseDouble(spercent) / 100;
 		Point2D.Double center = buildingCenter(target.building);
 		
-		Map<Building, Double> damaged = U.newHashMap();
+		Map<Building, Double> damaged = new HashMap<>();
 		
 		for (Building b : target.planet.surface.buildings.iterable()) {
 			if (b != target.building) {
@@ -4130,7 +4129,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * Drop ground shields.
 	 */
 	void dropGroundShields() {
-		List<SpacewarStructure> ground = U.newArrayList();
+		List<SpacewarStructure> ground = new ArrayList<>();
 		int shieldCount = 0;
 		for (SpacewarStructure s : structures) {
 			if (s.type == StructureType.PROJECTOR) {
@@ -4178,7 +4177,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public List<SpacewarStructure> enemiesOf(Player p) {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure f : structures) {
 			if (f.owner != p) {
 				if (!areAllies(f.owner, p)) {
@@ -4253,8 +4252,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void concludeBattle(Player winner) {
 		
 		boolean groundLosses = false;
-		Set<Fleet> fleets = new HashSet<Fleet>();
-		Set<Planet> planets = U.newHashSet();
+		Set<Fleet> fleets = new HashSet<>();
+		Set<Planet> planets = new HashSet<>();
 		
 		// reset surviving stucture counts
 		for (SpacewarStructure s : structures) {
@@ -4479,7 +4478,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	}
 	@Override
 	public List<SpacewarStructure> structures(Player owner) {
-		List<SpacewarStructure> result = U.newArrayList();
+		List<SpacewarStructure> result = new ArrayList<>();
 		for (SpacewarStructure s : structures) {
 			if (s.owner == owner) {
 				result.add(s);
@@ -4739,7 +4738,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				y2 += 9;
 			}
 			
-			List<TextSegment> tss = U.newArrayList();
+			List<TextSegment> tss = new ArrayList<>();
 			tss.add(new TextSegment(get("spacewar.selection.defense_values"), color));
 			tss.add(new TextSegment(Integer.toString(hp), Color.GREEN.getRGB()));
 			if (sp >= 0) {
@@ -4763,11 +4762,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The row height. */
 		final int rowHeight = 30;
 		/** The last selection. */
-		List<SpacewarStructure> lastSelection = U.newArrayList();
+		List<SpacewarStructure> lastSelection = new ArrayList<>();
 		/** The group buttons. */
-		final List<UIImageButton> groupButtons = U.newArrayList();
+		final List<UIImageButton> groupButtons = new ArrayList<>();
 		/** The cells currently displayable. */
-		final List<SelectionCell> cells = U.newArrayList();
+		final List<SelectionCell> cells = new ArrayList<>();
 		/** Constructs the selection panel buttons. */
 		public SelectionPanel() {
 			int x = 5;
@@ -4823,7 +4822,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		@Override
 		public void draw(Graphics2D g2) {
-			Set<Integer> groupSet = U.newHashSet(groups.values());
+			Set<Integer> groupSet = U.newSet(groups.values());
 			groupSet.add(-1);
 			for (int i = 0; i < 11; i++) {
 				boolean v0 = groupButtons.get(i).visible();
@@ -5220,11 +5219,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The nochat label. */
 		UILabel nochat;
 		/** The color+line that printed. */
-		final List<Pair<Integer, String>> lines = U.newArrayList();
+		final List<Pair<Integer, String>> lines = new ArrayList<>();
 		/** The current text or -1 if show all. */
 		int currentIndex = 0;
 		/** The available options. */
-		final List<Node> options = U.newArrayList();
+		final List<Node> options = new ArrayList<>();
 		/** Highlight option. */
 		int highlight = -1;
 		/** Row height. */
@@ -5264,7 +5263,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				if (i == lines.size() - 1 && currentIndex >= 0) {
 					lns = lns.substring(0, currentIndex);
 				}
-				List<String> lout = U.newArrayList();
+				List<String> lout = new ArrayList<>();
 				commons.text().wrapText(lns, width - 4, 7, lout);
 				
 				y -= 9;
@@ -5288,10 +5287,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			if (options.size() > 0) {
 				// compute option height
 				int oh = 0;
-				List<List<String>> ols = U.newArrayList();
+				List<List<String>> ols = new ArrayList<>();
 				for (Node nso : options) {
 					String so = get(nso.getOption());
-					List<String> lout = U.newArrayList();
+					List<String> lout = new ArrayList<>();
 					commons.text().wrapText(so, width - 4, 7, lout);
 					oh += lout.size() * rowHeight;
 					ols.add(lout);
@@ -5359,7 +5358,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			int i = 0;
 			for (Node nso : options) {
 				String so = get(nso.getOption());
-				List<String> lout = U.newArrayList();
+				List<String> lout = new ArrayList<>();
 				commons.text().wrapText(so, width - 4, 7, lout);
 				int oh0 = oh;
 				oh += lout.size() * rowHeight;

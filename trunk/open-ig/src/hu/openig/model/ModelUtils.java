@@ -122,6 +122,7 @@ public final class ModelUtils {
 	 * @param ts the array of Ts
 	 * @return the random element
 	 */
+	@SafeVarargs
 	public static <T> T random(T... ts) {
 		int idx = ModelUtils.randomInt(ts.length);
 		return ts[idx];

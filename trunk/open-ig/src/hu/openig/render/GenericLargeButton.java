@@ -50,23 +50,18 @@ public class GenericLargeButton implements GenericButtonRenderer {
 	 * @param name the resource name
 	 */
 	public GenericLargeButton(String name) {
-		try {
-			InputStream in = getClass().getResource(name).openStream();
-			try {
-				BufferedImage img = ImageIO.read(in);
+		try (InputStream in = getClass().getResource(name).openStream()) {
+			BufferedImage img = ImageIO.read(in);
 
-				topLeft = ImageUtils.newSubimage(img, 0, 0, 40, 7);
-				bottomLeft = ImageUtils.newSubimage(img, 0, 32, 40, 7);
-				topRight = ImageUtils.newSubimage(img, 62, 0, 40, 7);
-				bottomRight = ImageUtils.newSubimage(img, 62, 32, 40, 7);
-				topCenter = ImageUtils.newSubimage(img, 39, 0, 1, 7);
-				bottomCenter = ImageUtils.newSubimage(img, 40, 32, 1, 7);
-				leftMiddle = ImageUtils.newSubimage(img, 0, 8, 5, 1);
-				rightMiddle = ImageUtils.newSubimage(img, 98, 7, 4, 1);
+			topLeft = ImageUtils.newSubimage(img, 0, 0, 40, 7);
+			bottomLeft = ImageUtils.newSubimage(img, 0, 32, 40, 7);
+			topRight = ImageUtils.newSubimage(img, 62, 0, 40, 7);
+			bottomRight = ImageUtils.newSubimage(img, 62, 32, 40, 7);
+			topCenter = ImageUtils.newSubimage(img, 39, 0, 1, 7);
+			bottomCenter = ImageUtils.newSubimage(img, 40, 32, 1, 7);
+			leftMiddle = ImageUtils.newSubimage(img, 0, 8, 5, 1);
+			rightMiddle = ImageUtils.newSubimage(img, 98, 7, 4, 1);
 
-			} finally {
-				in.close();
-			}
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}

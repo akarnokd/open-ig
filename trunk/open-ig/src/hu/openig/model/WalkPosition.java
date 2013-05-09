@@ -24,5 +24,5 @@ public class WalkPosition {
 	/** The static image of the position. */
 	public String pictureName;
 	/** The list of possible transitions. */
-	public final List<WalkTransition> transitions = new ArrayList<WalkTransition>();
+	public final List<WalkTransition> transitions = new ArrayList<>();
 }

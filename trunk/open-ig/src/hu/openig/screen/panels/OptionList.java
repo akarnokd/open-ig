@@ -13,9 +13,9 @@ import hu.openig.render.TextRenderer;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.U;
 
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +55,7 @@ public class OptionList extends UIContainer {
 	/** The distance before the text. */
 	public int before = 0;
 	/** The list of items. */
-	public final List<OptionItem> items = U.newArrayList();
+	public final List<OptionItem> items = new ArrayList<>();
 	/** The action to invoke when a menu item is selected. */
 	public Action1<Integer> onSelect;
 	/** Called when the given item is highlight changes. */

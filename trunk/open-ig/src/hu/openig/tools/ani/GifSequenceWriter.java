@@ -147,9 +147,8 @@ public class GifSequenceWriter {
 		Iterator<ImageWriter> iter = ImageIO.getImageWritersBySuffix("gif");
 		if (!iter.hasNext()) {
 			throw new IIOException("No GIF Image Writers Exist");
-		} else {
-			return iter.next();
 		}
+		return iter.next();
 	}
 
 	/**

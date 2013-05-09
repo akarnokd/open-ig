@@ -24,16 +24,16 @@ public class MultiplayerGameSetup implements MessageObjectIO {
 	/**
 	 * The list of all players.
 	 */
-	public final List<MultiplayerUser> players = new ArrayList<MultiplayerUser>();
+	public final List<MultiplayerUser> players = new ArrayList<>();
 	/**
 	 * The list of existing planets, some might be
 	 * overrides.
 	 */
-	public final List<MultiplayerPlanet> planets = new ArrayList<MultiplayerPlanet>();
+	public final List<MultiplayerPlanet> planets = new ArrayList<>();
 	/**
 	 * The set of available researches.
 	 */
-	public final Set<String> availableResearch = new LinkedHashSet<String>();
+	public final Set<String> availableResearch = new LinkedHashSet<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		// TODO Auto-generated method stub

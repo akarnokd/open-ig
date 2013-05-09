@@ -61,7 +61,7 @@ public class FirstRunDialog extends JDialog {
 		fullScreenDesc.setForeground(styles.foreground());
 		fullScreenDesc.setFont(styles.fontMedium());
 		
-		fullScreen = new JComboBox<String>();
+		fullScreen = new JComboBox<>();
 		fullScreen.setFont(styles.fontMedium());
 		
 		JLabel movieDesc = new JLabel();
@@ -106,7 +106,7 @@ public class FirstRunDialog extends JDialog {
 
 		fullScreenDesc.setText(lbl.label("Resolution explanation"));
 
-		fullScreen.setModel(new DefaultComboBoxModel<String>(new String[] { 
+		fullScreen.setModel(new DefaultComboBoxModel<>(new String[] { 
 				lbl.label("Classic 640 x 480"),
 				lbl.label("Maximized"),
 				lbl.label("Full screen")

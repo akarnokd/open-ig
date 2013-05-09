@@ -9,9 +9,9 @@
 package hu.openig.model;
 
 import hu.openig.net.MessageObject;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class MultiplayerDefinition extends CustomGameDefinition implements MessageObjectIO {
 	/** The list of multiplayer users. */
-	public final List<MultiplayerUser> players = U.newArrayList();
+	public final List<MultiplayerUser> players = new ArrayList<>();
 	/**
 	 * Save the multiplayer definition.
 	 * @param xout the output

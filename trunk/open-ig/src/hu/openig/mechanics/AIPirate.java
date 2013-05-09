@@ -47,7 +47,7 @@ public class AIPirate implements AIManager {
 	/** The controls. */
 	AIControls controls;
 	/** The list of actions to apply. */
-	final List<Action0> applyActions = new ArrayList<Action0>();
+	final List<Action0> applyActions = new ArrayList<>();
 	/** The spacewar hitpoints. */
 	double battleHP;
 	@Override

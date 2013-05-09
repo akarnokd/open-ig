@@ -23,9 +23,9 @@ import hu.openig.model.ResearchType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.VideoMessage;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class EmptyScripting implements GameScripting {
 	boolean resumeAfterWin;
 	@Override
 	public List<VideoMessage> getSendMessages() {
-		return U.newArrayList();
+		return new ArrayList<>();
 	}
 
 	@Override

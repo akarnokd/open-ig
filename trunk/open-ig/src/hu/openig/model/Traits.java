@@ -9,9 +9,10 @@
 package hu.openig.model;
 
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +23,11 @@ import java.util.Map;
  */
 public class Traits implements Iterable<Trait> {
 	/** The list of traits. */
-	protected final List<Trait> traits = U.newArrayList();
+	protected final List<Trait> traits = new ArrayList<>();
 	/** Traits by id. */
-	protected final Map<String, Trait> traitsById = U.newHashMap();
+	protected final Map<String, Trait> traitsById = new HashMap<>();
 	/** Traits by kind. */
-	protected final Map<TraitKind, Trait> traitsByKind = U.newHashMap();
+	protected final Map<TraitKind, Trait> traitsByKind = new HashMap<>();
 	/** The initial points to spend. */
 	public int initialPoints;
 	/**
@@ -51,7 +52,6 @@ public class Traits implements Iterable<Trait> {
 	 * @param id the id
 	 * @return the trait, or null if not found
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Trait> T trait(String id) {
 		return (T)traitsById.get(id);
 	}
@@ -61,7 +61,6 @@ public class Traits implements Iterable<Trait> {
 	 * @param kind the kind
 	 * @return the trait, or null if not found
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Trait> T trait(TraitKind kind) {
 		return (T)traitsByKind.get(kind);
 	}

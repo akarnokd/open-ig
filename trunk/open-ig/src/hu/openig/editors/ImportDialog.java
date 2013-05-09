@@ -78,9 +78,9 @@ public class ImportDialog extends JDialog {
 		}
 	}
 	/** The reference for the original map definitions. */
-	List<MapType> originalMaps = new ArrayList<MapType>();
+	List<MapType> originalMaps = new ArrayList<>();
 	/** The list of original planet ids. */
-	List<OriginalPlanet> originalPlanets = new ArrayList<OriginalPlanet>();
+	List<OriginalPlanet> originalPlanets = new ArrayList<>();
 	/** The original map to select. */
 	JComboBox<String> cbOriginalMap;
 	/** The number of coordinates to shift the original map. */
@@ -125,7 +125,7 @@ public class ImportDialog extends JDialog {
 		buildMap(8, 'f', "earth");
 		buildMap(6, 'g', "neptoplasm");
 		
-		cbOriginalMap = new JComboBox<String>();
+		cbOriginalMap = new JComboBox<>();
 		cbOriginalMap.addItem("-Don't import any-");
 		for (MapType mt : originalMaps) {
 			cbOriginalMap.addItem(mt.surfaceType + " " + mt.name);
@@ -153,7 +153,7 @@ public class ImportDialog extends JDialog {
 		btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCancel(); } });
 		
-		cbOriginalPlanets = new JComboBox<String>();
+		cbOriginalPlanets = new JComboBox<>();
 		cbOriginalPlanets.addItem("-Don't import any-");
 		
 		parseOriginalPlanet();
@@ -162,7 +162,7 @@ public class ImportDialog extends JDialog {
 			cbOriginalPlanets.addItem(op.name + " [" + op.surfaceType + " (" + op.surfaceVariant + "): " + (op.race != null ? op.race : "-") + "]");
 		}
 		// sort by surface and variant then add it to the list again
-		List<OriginalPlanet> ops2 = new ArrayList<OriginalPlanet>(originalPlanets);
+		List<OriginalPlanet> ops2 = new ArrayList<>(originalPlanets);
 		Collections.sort(ops2, new Comparator<OriginalPlanet>() {
 			@Override
 			public int compare(OriginalPlanet o1, OriginalPlanet o2) {

@@ -14,6 +14,7 @@ import hu.openig.utils.XElement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,12 +38,12 @@ public final class LabelVerifier {
 	 */
 	public static void main(String[] args) throws Exception {
 		XElement xhu = XElement.parseXML("data/hu/labels.xml");
-		Set<String> langs = U.newHashSet("en", "fr", "ru", "de");
+		Set<String> langs = U.newSet("en", "fr", "ru", "de");
 		for (String l : langs) {
 			XElement xen = XElement.parseXML("data/" + l + "/labels.xml");
 			
-			Map<String, String> labelsHu = U.newLinkedHashMap();
-			Map<String, String> labelsEn = U.newLinkedHashMap();
+			Map<String, String> labelsHu = new LinkedHashMap<>();
+			Map<String, String> labelsEn = new LinkedHashMap<>();
 			
 			load(xhu, labelsHu);
 			load(xen, labelsEn);
@@ -68,7 +69,7 @@ public final class LabelVerifier {
 	 * @return the sorted list
 	 */
 	static <T extends Comparable<? super T>> List<T> sort(Collection<T> src) {
-		List<T> result = new ArrayList<T>(src);
+		List<T> result = new ArrayList<>(src);
 		Collections.sort(result);
 		return result;
 	}

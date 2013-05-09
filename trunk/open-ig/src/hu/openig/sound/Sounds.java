@@ -76,11 +76,11 @@ public class Sounds {
 		}
 	}
 	/** The sound map. */
-	final Map<SoundType, byte[]> soundMap = new HashMap<SoundType, byte[]>();
+	final Map<SoundType, byte[]> soundMap = new HashMap<>();
 	/** The sound map. */
-	final Map<SoundType, AudioFormatType> soundFormat = new HashMap<SoundType, AudioFormatType>();
+	final Map<SoundType, AudioFormatType> soundFormat = new HashMap<>();
 	/** The sound pool. */
-	final Map<AudioFormatType, BlockingQueue<SourceDataLine>> soundPool = new ConcurrentHashMap<AudioFormatType, BlockingQueue<SourceDataLine>>();
+	final Map<AudioFormatType, BlockingQueue<SourceDataLine>> soundPool = new ConcurrentHashMap<>();
 	/** The sound pool. */
 	ExecutorService exec;
 	/** The parallel sound effect semaphore. */
@@ -88,7 +88,7 @@ public class Sounds {
 	/** Function to retrieve the current volume. */
 	private Func0<Integer> getVolume;
 	/** The open lines. */
-	final BlockingQueue<SourceDataLine> lines = new LinkedBlockingQueue<SourceDataLine>();
+	final BlockingQueue<SourceDataLine> lines = new LinkedBlockingQueue<>();
 	/** Should the sound map cache lines? */
 	static final boolean CACHE_LINES = false;
 	/**
@@ -102,8 +102,7 @@ public class Sounds {
 				if (rp == null) {
 					throw new AssertionError("Missing resource: " + rl.language + " " + st.resource);
 				}
-				AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rp.get()));
-				try {
+				try (AudioInputStream ain = AudioSystem.getAudioInputStream(new ByteArrayInputStream(rp.get()))) {
 					AudioFormat af = ain.getFormat();
 					byte[] snd = IOUtils.load(ain);
 					// upscale an 8 bit sample to 16 bit
@@ -119,8 +118,6 @@ public class Sounds {
 					}
 					soundMap.put(st, snd);
 					soundFormat.put(st, new AudioFormatType(af));
-				} finally {
-					ain.close();
 				}
 			} catch (UnsupportedAudioFileException e) {
 				Exceptions.add(e);

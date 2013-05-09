@@ -26,7 +26,6 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -84,9 +83,9 @@ public class AchievementsScreen extends ScreenBase {
 		}
 	}
 	/** The list of achievements. */
-	public final List<AchievementEntry> achievementList = new ArrayList<AchievementEntry>();
+	public final List<AchievementEntry> achievementList = new ArrayList<>();
 	/** The list of statistics. */
-	public final List<StatisticsEntry> statistics = new ArrayList<StatisticsEntry>();
+	public final List<StatisticsEntry> statistics = new ArrayList<>();
 	/** The saved statistics index. */
 	int statisticsIndex;
 	/** The saved statistics count. */
@@ -514,7 +513,7 @@ public class AchievementsScreen extends ScreenBase {
 				AchievementEntry ae = achList.get(i);
 				String desc = get(ae.description);
 				int tw = r.width - commons.common().achievement.getWidth() - 10;
-				List<String> lines = new ArrayList<String>();
+				List<String> lines = new ArrayList<>();
 				commons.text().wrapText(desc, tw, 10, lines);
 				BufferedImage img = commons.common().achievement;
 				int color = 0xFF00FF00;
@@ -1335,7 +1334,7 @@ public class AchievementsScreen extends ScreenBase {
 	 * @return the list of achievements to display
 	 */
 	protected List<AchievementEntry> achievements() {
-		List<AchievementEntry> result = U.newArrayList();
+		List<AchievementEntry> result = new ArrayList<>();
 		for (AchievementEntry e : achievementList) {
 			if ((e.enabled() && earned.selected()) || (!e.enabled() && unearned.selected())) {
 				result.add(e);

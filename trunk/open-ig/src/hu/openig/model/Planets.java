@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class Planets {
 	/** All planets on the starmap. */
-	public final Map<String, Planet> planets = new LinkedHashMap<String, Planet>();
+	public final Map<String, Planet> planets = new LinkedHashMap<>();
 	/**
 	 * Retrieve a planets.
 	 * @param id the planet id

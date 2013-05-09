@@ -27,7 +27,7 @@ public class EmpireStatus implements MessageObjectIO {
 	/** The current money. */
 	public long money;
 	/** The negotiation offers from players. */
-	public final Map<String, DiplomaticOffer> offers = new LinkedHashMap<String, DiplomaticOffer>();
+	public final Map<String, DiplomaticOffer> offers = new LinkedHashMap<>();
 	/** The player level statistics. */
 	public final PlayerStatistics statistics = new PlayerStatistics();
 	/** The global financial information yesterday. */
@@ -35,7 +35,7 @@ public class EmpireStatus implements MessageObjectIO {
 	/** The global finalcial information today. */
 	public final PlayerFinances today = new PlayerFinances();
 	/** The set of colonization targets. */
-	public final Set<String> colonizationTargets = new LinkedHashSet<String>();
+	public final Set<String> colonizationTargets = new LinkedHashSet<>();
 	// TODO other global player statuses?
 
 	@Override

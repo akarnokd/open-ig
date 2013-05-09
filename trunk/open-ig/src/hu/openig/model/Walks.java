@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class Walks {
 	/** The map of ships to be walked. */
-	public final Map<String, WalkShip> ships = new HashMap<String, WalkShip>();
+	public final Map<String, WalkShip> ships = new HashMap<>();
 	/**
 	 * Load the shipwalk.xml from the resoure locator.
 	 * @param rl the resource locator
@@ -59,8 +59,8 @@ public class Walks {
 						wt.label = transition.get("label");
 						wt.to = transition.get("to");
 						String area = transition.get("area");
-						List<Integer> xs = new ArrayList<Integer>();
-						List<Integer> ys = new ArrayList<Integer>();
+						List<Integer> xs = new ArrayList<>();
+						List<Integer> ys = new ArrayList<>();
 						String[] pairs = area.split("\\s+");
 						for (String p : pairs) {
 							String[] xy = p.split(",");

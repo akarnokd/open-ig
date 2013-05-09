@@ -40,7 +40,7 @@ public final class ConvertDiplomacy {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		
-		Map<String, String> map = new LinkedHashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<>();
 
 		XElement dipl = new XElement("diplomacy");
 		Map<String, PACEntry> mapByName = PACFile.mapByName(PACFile.parseFully(new File("c:/games/IGHU/data/TEXT.PAC ")));
@@ -51,19 +51,19 @@ public final class ConvertDiplomacy {
 				dipl.add(parse(s, st, map));
 			}
 		}
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream("diplomacy_hu.xml"), "UTF-8"));
-		out.println("<?xml version='1.0' encoding='UTF-8'?>");
-		out.println(dipl.toString());
-		out.close();
-		
-		out = new PrintWriter(new OutputStreamWriter(new FileOutputStream("labels_hu.xml"), "UTF-8"));
-		out.println("<?xml version='1.0' encoding='UTF-8'?>");
-		out.println("<labels>");
-		for (Map.Entry<String, String> me : map.entrySet()) {
-			out.printf("\t<entry key='%s'>%s</entry>%n", XElement.sanitize(me.getKey()), XElement.sanitize(me.getValue()));
+		try (PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream("diplomacy_hu.xml"), "UTF-8"))) {
+			out.println("<?xml version='1.0' encoding='UTF-8'?>");
+			out.println(dipl.toString());
 		}
-		out.println("</labels>");
-		out.close();
+		
+		try (PrintWriter out = new PrintWriter(new OutputStreamWriter(new FileOutputStream("labels_hu.xml"), "UTF-8"))) {
+			out.println("<?xml version='1.0' encoding='UTF-8'?>");
+			out.println("<labels>");
+			for (Map.Entry<String, String> me : map.entrySet()) {
+				out.printf("\t<entry key='%s'>%s</entry>%n", XElement.sanitize(me.getKey()), XElement.sanitize(me.getValue()));
+			}
+			out.println("</labels>");
+		}
 		
 		/*
 		// -----------------------------------------------------
@@ -502,7 +502,7 @@ public final class ConvertDiplomacy {
 	 * @return the talks
 	 */
 	static List<String> split(String content) {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		
 		content = content.replaceAll("#.*?\r\n", "").trim();
 		

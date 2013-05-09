@@ -44,7 +44,7 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	/** The value of destroyed enemies. */
 	public long killsCost;
 	/** The inventory slot status. */
-	public final List<InventorySlotStatus> slots = new ArrayList<InventorySlotStatus>();
+	public final List<InventorySlotStatus> slots = new ArrayList<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		id = mo.getInt("id");
@@ -130,7 +130,7 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	 * @return the list of inventory item status records
 	 */
 	public static List<InventoryItemStatus> fromArray(MessageArray ma) {
-		List<InventoryItemStatus> result = new ArrayList<InventoryItemStatus>();
+		List<InventoryItemStatus> result = new ArrayList<>();
 		for (MessageObject mo : ma.objects()) {
 			InventoryItemStatus e = new InventoryItemStatus();
 			e.fromMessage(mo);

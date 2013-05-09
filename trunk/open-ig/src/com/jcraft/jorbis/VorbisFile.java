@@ -33,8 +33,6 @@
 
 package com.jcraft.jorbis;
 
-import hu.openig.utils.Exceptions;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -135,23 +133,13 @@ public class VorbisFile {
 	 */
 	public VorbisFile(String file) throws JOrbisException {
 		super();
-		InputStream is = null;
-		try {
-			is = new SeekableInputStream(file);
+		try (InputStream is = new SeekableInputStream(file)) {
 			int ret = open(is, null, 0);
 			if (ret == -1) {
 				throw new JOrbisException("VorbisFile: open return -1");
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new JOrbisException("VorbisFile: " + e.toString(), e);
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					Exceptions.add(e);
-				}
-			}
 		}
 	}
 	/**
@@ -261,9 +249,8 @@ public class VorbisFile {
 						throw new JOrbisException();
 					}
 					break;
-				} else {
-					offst = ret;
 				}
+				offst = ret;
 			}
 		}
 		seekHelper(offst); // !!!
@@ -877,27 +864,23 @@ public class VorbisFile {
 				bits += (offsets[j + 1] - dataoffsets[j]) * 8;
 			}
 			return ((int) Math.rint(bits / timeTotal(-1)));
-		} else {
-			if (seekable) {
-				// return the actual bitrate
-				return ((int) Math.rint((offsets[i + 1] - dataoffsets[i]) * 8
-						/ timeTotal(i)));
-			} else {
-				// return nominal if set
-				if (vi[i].bitrateNominal > 0) {
-					return vi[i].bitrateNominal;
-				} else {
-					if (vi[i].bitrateUpper > 0) {
-						if (vi[i].bitrateLower > 0) {
-							return (vi[i].bitrateUpper + vi[i].bitrateLower) / 2;
-						} else {
-							return vi[i].bitrateUpper;
-						}
-					}
-					return (-1);
-				}
-			}
 		}
+		if (seekable) {
+			// return the actual bitrate
+			return ((int) Math.rint((offsets[i + 1] - dataoffsets[i]) * 8
+					/ timeTotal(i)));
+		}
+		// return nominal if set
+		if (vi[i].bitrateNominal > 0) {
+			return vi[i].bitrateNominal;
+		}
+		if (vi[i].bitrateUpper > 0) {
+			if (vi[i].bitrateLower > 0) {
+				return (vi[i].bitrateUpper + vi[i].bitrateLower) / 2;
+			}
+			return vi[i].bitrateUpper;
+		}
+		return (-1);
 	}
 	/**
 	 * Returns the actual bitrate since last call. returns -1 if no
@@ -930,9 +913,8 @@ public class VorbisFile {
 		}
 		if (i < 0) {
 			return (currentSerialno);
-		} else {
-			return (serialnos[i]);
 		}
+		return (serialnos[i]);
 	}
 	/**
 	 * Returns total raw (compressed) length of content if i==-1
@@ -971,9 +953,8 @@ public class VorbisFile {
 				acc += pcmTotal(j);
 			}
 			return (acc);
-		} else {
-			return (pcmlengths[i]);
 		}
+		return (pcmlengths[i]);
 	}
 	/**
 	 * Returns the total seconds of content if i==-1
@@ -992,9 +973,8 @@ public class VorbisFile {
 				acc += timeTotal(j);
 			}
 			return (acc);
-		} else {
-			return ((float) (pcmlengths[i]) / vi[i].rate);
 		}
+		return ((float) (pcmlengths[i]) / vi[i].rate);
 	}
 	/**
 	 * Seek to an offset relative to the *compressed* data. This also
@@ -1281,23 +1261,18 @@ public class VorbisFile {
 			if (link < 0) {
 				if (decodeReady) {
 					return vi[currentLink];
-				} else {
-					return null;
 				}
-			} else {
-				if (link >= links) {
-					return null;
-				} else {
-					return vi[link];
-				}
-			}
-		} else {
-			if (decodeReady) {
-				return vi[0];
-			} else {
 				return null;
 			}
+			if (link >= links) {
+				return null;
+			}
+			return vi[link];
 		}
+		if (decodeReady) {
+			return vi[0];
+		}
+		return null;
 	}
 	/**
 	 * Retuns the comment for the link.
@@ -1310,23 +1285,18 @@ public class VorbisFile {
 			if (link < 0) {
 				if (decodeReady) {
 					return vc[currentLink];
-				} else {
-					return null;
 				}
-			} else {
-				if (link >= links) {
-					return null;
-				} else {
-					return vc[link];
-				}
-			}
-		} else {
-			if (decodeReady) {
-				return vc[0];
-			} else {
 				return null;
 			}
+			if (link >= links) {
+				return null;
+			}
+			return vc[link];
 		}
+		if (decodeReady) {
+			return vc[0];
+		}
+		return null;
 	}
 	/**
 	 * Returns 1 if the host is in big endian.

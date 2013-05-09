@@ -9,7 +9,6 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
-import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -34,13 +33,13 @@ public class BattleSpaceLayout {
 	/** The medium and large ship color on the image. */
 	public static final int SHIP_COLOR = 0xFFFFBE00;
 	/** The map from location to figher (true) or ship (false). */
-	public final Map<Location, Boolean> map = new HashMap<Location, Boolean>();
+	public final Map<Location, Boolean> map = new HashMap<>();
 	/**
 	 * Scan the image and build the layout map.
 	 */
 	public void parse() {
 		map.clear();
-		Set<Location> ignore = new HashSet<Location>();
+		Set<Location> ignore = new HashSet<>();
 		for (int y = 0; y < image.getHeight(); y++) {
 			for (int x = 0; x < image.getWidth(); x++) {
 				Location loc = Location.of(x, y);
@@ -67,7 +66,7 @@ public class BattleSpaceLayout {
 	 * @return the order
 	 */
 	public List<Map.Entry<Location, Boolean>> order() {
-		List<Map.Entry<Location, Boolean>> result = new ArrayList<Map.Entry<Location, Boolean>>(map.entrySet());
+		List<Map.Entry<Location, Boolean>> result = new ArrayList<>(map.entrySet());
 		
 		double gx = 0;
 		double gy = 0;
@@ -78,8 +77,8 @@ public class BattleSpaceLayout {
 		gx /= map.size();
 		gy /= map.size();
 		
-		final Map<Location, Integer> distances = U.newHashMap();
-		final Map<Location, Integer> angles = U.newHashMap();
+		final Map<Location, Integer> distances = new HashMap<>();
+		final Map<Location, Integer> angles = new HashMap<>();
 		for (Location loc : map.keySet()) {
 			distances.put(loc, (int)(World.dist(gx, gy, loc.x + 0.5, loc.y + 0.5) * 100));
 			angles.put(loc, (int)Math.abs((Math.atan2(loc.y - gy + 0.5, loc.x - gx + 0.5) * 180)));

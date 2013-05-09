@@ -14,6 +14,7 @@ import hu.openig.core.DeferredVoid;
 import hu.openig.utils.U;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public class GameAsyncToSync implements GameAsyncAPI {
 		if (isBatch()) {
 			throw new IllegalStateException("is batch");
 		}
-		batch = U.newArrayList();
+		batch = new ArrayList<>();
 	}
 
 	@Override

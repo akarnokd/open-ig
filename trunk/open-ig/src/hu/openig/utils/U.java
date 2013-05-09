@@ -9,6 +9,7 @@
 package hu.openig.utils;
 
 import hu.openig.core.Func1;
+import hu.openig.core.MultiIOException;
 
 import java.io.Closeable;
 import java.io.File;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -136,57 +136,6 @@ public final class U {
 		}
 	};
 	/**
-	 * Nullsafe equality test.
-	 * @param o1 the first object
-	 * @param o2 the second object
-	 * @return true if they are the same or o1.equals(o2). This also includes the null == null case
-	 */
-	public static boolean equal(Object o1, Object o2) {
-		return o1 == o2 || (o1 != null && o1.equals(o2));
-	}
-	/**
-	 * Creates a new array list with default capacity.
-	 * @param <T> the type of the elements in the list
-	 * @return the new array list
-	 */
-	public static <T> ArrayList<T> newArrayList() {
-		return new ArrayList<T>();
-	}
-	/**
-	 * Creates a new linked list with default capacity.
-	 * @param <T> the type of the elements in the list
-	 * @return the new linked list
-	 */
-	public static <T> LinkedList<T> newLinkedList() {
-		return new LinkedList<T>();
-	}
-	/**
-	 * Creates a new hash map with default capacity.
-	 * @param <K> the type of the key
-	 * @param <V> the type of the value
-	 * @return the new hash map
-	 */
-	public static <K, V> HashMap<K, V> newHashMap() {
-		return new HashMap<K, V>();
-	}
-	/**
-	 * Creates a new linked hash map with default capacity.
-	 * @param <K> the type of the key
-	 * @param <V> the type of the value
-	 * @return the new linked hash map
-	 */
-	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap() {
-		return new LinkedHashMap<K, V>();
-	}
-	/**
-	 * Creates a new hash set with default capacity.
-	 * @param <T> the value type
-	 * @return the new hash set
-	 */
-	public static <T> HashSet<T> newHashSet() {
-		return new HashSet<T>();
-	}
-	/**
 	 * Wraps the given runnable into another one which captures and prints
 	 * the stack trace for any exception occurred in the original run() method.
 	 * @param run the runnable to wrap
@@ -255,7 +204,7 @@ public final class U {
 	 * @return the concatenated list
 	 */
 	public static <T> List<T> concat(List<? extends T> first, List<? extends T> second) {
-		List<T> result = newArrayList();
+		List<T> result = new ArrayList<>();
 		result.addAll(first);
 		result.addAll(second);
 		return result;
@@ -269,7 +218,7 @@ public final class U {
 	 * @return the concatenated list
 	 */
 	public static <T> List<T> concat(List<? extends T> first, List<? extends T> second, List<? extends T> third) {
-		List<T> result = newArrayList();
+		List<T> result = new ArrayList<>();
 		result.addAll(first);
 		result.addAll(second);
 		result.addAll(third);
@@ -308,7 +257,7 @@ public final class U {
 	 * @return the list sorted.
 	 */
 	public static <T extends Comparable<? super T>> List<T> sort(Iterable<? extends T> src) {
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 		for (T t : src) {
 			result.add(t);
 		}
@@ -323,7 +272,7 @@ public final class U {
 	 * @return the list sorted.
 	 */
 	public static <T> List<T> sort(final Iterable<? extends T> src, final Comparator<? super T> comp) {
-		List<T> result = new ArrayList<T>();
+		List<T> result = new ArrayList<>();
 		for (T t : src) {
 			result.add(t);
 		}
@@ -365,9 +314,9 @@ public final class U {
 	 */
 	public static <T> ArrayList<T> newArrayList(Iterable<? extends T> src) {
 		if (src instanceof Collection) {
-			return new ArrayList<T>((Collection<? extends T>)src);
+			return new ArrayList<>((Collection<? extends T>)src);
 		}
-		ArrayList<T> result = newArrayList();
+		ArrayList<T> result = new ArrayList<>();
 		for (T t : src) {
 			result.add(t);
 		}
@@ -379,11 +328,11 @@ public final class U {
 	 * @param src the source sequence
 	 * @return the created and filled-in HashSet
 	 */
-	public static <T> HashSet<T> newHashSet(Iterable<? extends T> src) {
+	public static <T> HashSet<T> newSet(Iterable<? extends T> src) {
 		if (src instanceof Collection) {
-			return new HashSet<T>((Collection<? extends T>)src);
+			return new HashSet<>((Collection<? extends T>)src);
 		}
-		HashSet<T> result = newHashSet();
+		HashSet<T> result = new HashSet<>();
 		for (T t : src) {
 			result.add(t);
 		}
@@ -395,22 +344,13 @@ public final class U {
 	 * @param src the source array
 	 * @return the created and filled-in HashSet
 	 */
-	public static <T> HashSet<T> newHashSet(T... src) {
-		HashSet<T> result = newHashSet();
+	@SafeVarargs
+	public static <T> HashSet<T> newSet(T... src) {
+		HashSet<T> result = new HashSet<>();
 		for (T t : src) {
 			result.add(t);
 		}
 		return result;
-	}
-	/**
-	 * Create a new {@code HashMap} from the supplied other map.
-	 * @param <K> the key type
-	 * @param <V> the value type
-	 * @param src the source map
-	 * @return the created and filled-in HashMap
-	 */
-	public static <K, V> HashMap<K, V> newHashMap(Map<? extends K, ? extends V> src) {
-		return new HashMap<K, V>(src);
 	}
 	/**
 	 * Create a new {@code HashMap} from the supplied sequence of map entries.
@@ -420,21 +360,11 @@ public final class U {
 	 * @return the created and filled-in HashMap
 	 */
 	public static <K, V> HashMap<K, V> newHashMap(Iterable<? extends Map.Entry<? extends K, ? extends V>> src) {
-		HashMap<K, V> result = newHashMap();
+		HashMap<K, V> result = new HashMap<>();
 		for (Map.Entry<? extends K, ? extends V> e : src) {
 			result.put(e.getKey(), e.getValue());
 		}
 		return result;
-	}
-	/**
-	 * Create a new {@code HashMap} from the supplied other map.
-	 * @param <K> the key type
-	 * @param <V> the value type
-	 * @param src the source map
-	 * @return the created and filled-in HashMap
-	 */
-	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(Map<? extends K, ? extends V> src) {
-		return new LinkedHashMap<K, V>(src);
 	}
 	/**
 	 * Create a new {@code HashMap} from the supplied sequence of map entries.
@@ -445,7 +375,7 @@ public final class U {
 	 */
 	public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(
 			Iterable<? extends Map.Entry<? extends K, ? extends V>> src) {
-		LinkedHashMap<K, V> result = newLinkedHashMap();
+		LinkedHashMap<K, V> result = new LinkedHashMap<>();
 		for (Map.Entry<? extends K, ? extends V> e : src) {
 			result.put(e.getKey(), e.getValue());
 		}
@@ -511,14 +441,14 @@ public final class U {
 	 * @throws IOException the exception
 	 */
 	public static void close(Closeable... cs) throws IOException {
-		IOException ex = null;
+		MultiIOException ex = null;
 		for (Closeable c : cs) {
 			try {
 				if (c != null) {
 					c.close();
 				}
 			} catch (IOException exc) {
-				ex = exc; // FIXME aggregate exceptions
+				ex = MultiIOException.add(ex, exc);
 			}
 		}
 		if (ex != null) {
@@ -531,8 +461,8 @@ public final class U {
 	 * @throws IOException the exception
 	 */
 	public static void close(Iterable<? extends Closeable> cs) throws IOException {
-		IOException ex = null;
-		List<Closeable> cs1 = new ArrayList<Closeable>();
+		MultiIOException ex = null;
+		List<Closeable> cs1 = new ArrayList<>();
 		for (Closeable c : cs) {
 			cs1.add(c);
 		}
@@ -542,7 +472,7 @@ public final class U {
 					c.close();
 				}
 			} catch (IOException exc) {
-				ex = exc; // FIXME aggregate exceptions
+				ex = MultiIOException.add(ex, exc);
 			}
 		}
 		if (ex != null) {
@@ -679,17 +609,16 @@ public final class U {
 		if (value.isEmpty()) {
 			return new String[0];
 		}
-		List<String> result = newArrayList();
+		List<String> result = new ArrayList<>();
 		int idx = 0;
 		while (true) {
 			int idx2 = value.indexOf(separator, idx);
 			if (idx2 < 0) {
 				result.add(value.substring(idx));
 				break;
-			} else {
-				result.add(value.substring(idx, idx2));
-				idx = idx2 + separator.length();
 			}
+			result.add(value.substring(idx, idx2));
+			idx = idx2 + separator.length();
 		}
 		return result.toArray(new String[0]);
 	}
@@ -733,7 +662,7 @@ public final class U {
 	 * @return the list of field values
 	 */
 	public static <T> List<T> fieldsOf(Object o, Class<T> type) {
-		List<T> result = newArrayList();
+		List<T> result = new ArrayList<>();
 		for (Field f : o.getClass().getDeclaredFields()) {
 			if (type.isAssignableFrom(f.getType())) {
 				try {
@@ -755,7 +684,7 @@ public final class U {
 	 */
 	public static <T> List<T> nonNull(T[] array) {
 		if (array == null) {
-			return U.newArrayList();
+			return new ArrayList<>();
 		}
 		return Arrays.asList(array);
 	}
@@ -815,15 +744,10 @@ public final class U {
 	 * @return the list of elements or empty list if an error occurs or non-zip file
 	 */
 	public static List<String> zipEntries(File zipFile) {
-		List<String> result = U.newArrayList();
-		try {
-			ZipFile zf = new ZipFile(zipFile);
-			try {
-				for (ZipEntry ze : enumerate(zf.entries())) {
-					result.add(ze.getName());
-				}
-			} finally {
-				zf.close();
+		List<String> result = new ArrayList<>();
+		try (ZipFile zf = new ZipFile(zipFile)) {
+			for (ZipEntry ze : enumerate(zf.entries())) {
+				result.add(ze.getName());
 			}
 		} catch (IOException ex) {
 			// ignored
@@ -837,17 +761,12 @@ public final class U {
 	 * @return the list of entries
 	 */
 	public static List<String> zipEntries(File zipFile, Func1<ZipEntry, Boolean> filter) {
-		List<String> result = U.newArrayList();
-		try {
-			ZipFile zf = new ZipFile(zipFile);
-			try {
-				for (ZipEntry ze : enumerate(zf.entries())) {
-					if (filter.invoke(ze)) {
-						result.add(ze.getName());
-					}
+		List<String> result = new ArrayList<>();
+		try (ZipFile zf = new ZipFile(zipFile)) {
+			for (ZipEntry ze : enumerate(zf.entries())) {
+				if (filter.invoke(ze)) {
+					result.add(ze.getName());
 				}
-			} finally {
-				zf.close();
 			}
 		} catch (IOException ex) {
 			// ignored
@@ -863,18 +782,13 @@ public final class U {
 	 */
 	public static List<String> zipFileEntries(File zipFile, String parentPath) {
 		parentPath = parentPath.replace('\\', '/').replaceAll("/{2,}", "/");
-		List<String> result = U.newArrayList();
-		try {
-			ZipFile zf = new ZipFile(zipFile);
-			try {
-				for (ZipEntry ze : enumerate(zf.entries())) {
-					String zname = ze.getName().replace('\\', '/');
-					if (!ze.isDirectory() && zname.startsWith(parentPath)) {
-						result.add(ze.getName());
-					}
+		List<String> result = new ArrayList<>();
+		try (ZipFile zf = new ZipFile(zipFile)) {
+			for (ZipEntry ze : enumerate(zf.entries())) {
+				String zname = ze.getName().replace('\\', '/');
+				if (!ze.isDirectory() && zname.startsWith(parentPath)) {
+					result.add(ze.getName());
 				}
-			} finally {
-				zf.close();
 			}
 		} catch (IOException ex) {
 			// ignored
@@ -890,34 +804,29 @@ public final class U {
 	 */
 	public static List<String> zipDirEntries(File zipFile, String parentPath) {
 		parentPath = parentPath.replace('\\', '/').replaceAll("/{2,}", "/");
-		List<String> result = U.newArrayList();
-		Set<String> once = U.newHashSet();
-		try {
-			ZipFile zf = new ZipFile(zipFile);
-			try {
-				for (ZipEntry ze : enumerate(zf.entries())) {
-					String zname = ze.getName().replace('\\', '/');
-					if (ze.isDirectory() && zname.startsWith(parentPath)) {
-						if (once.add(ze.getName())) {
-							result.add(ze.getName());
-						}
-					} else
-					if (!ze.isDirectory() && zname.startsWith(parentPath)) {
-						String subPath = zname.substring(parentPath.length());
-						if (subPath.startsWith("/")) {
-							subPath = subPath.substring(1);
-						}
-						int idx = subPath.indexOf('/');
-						if (idx > 0) {
-							String path2 = parentPath + "/" + subPath.substring(0, idx);
-							if (once.add(path2)) {
-								result.add(path2);
-							}
+		List<String> result = new ArrayList<>();
+		Set<String> once = new HashSet<>();
+		try (ZipFile zf = new ZipFile(zipFile)) {
+			for (ZipEntry ze : enumerate(zf.entries())) {
+				String zname = ze.getName().replace('\\', '/');
+				if (ze.isDirectory() && zname.startsWith(parentPath)) {
+					if (once.add(ze.getName())) {
+						result.add(ze.getName());
+					}
+				} else
+				if (!ze.isDirectory() && zname.startsWith(parentPath)) {
+					String subPath = zname.substring(parentPath.length());
+					if (subPath.startsWith("/")) {
+						subPath = subPath.substring(1);
+					}
+					int idx = subPath.indexOf('/');
+					if (idx > 0) {
+						String path2 = parentPath + "/" + subPath.substring(0, idx);
+						if (once.add(path2)) {
+							result.add(path2);
 						}
 					}
 				}
-			} finally {
-				zf.close();
 			}
 		} catch (IOException ex) {
 			// ignored
@@ -932,21 +841,13 @@ public final class U {
 	 */
 	public static byte[] zipData(File zipFile, String path) {
 		byte[] result = null;
-		try {
-			ZipFile zf = new ZipFile(zipFile);
-			try {
-				ZipEntry ze = zf.getEntry(path);
-				if (ze != null) {
-					InputStream in = zf.getInputStream(ze);
-					try {
-						result = new byte[in.available()];
-						in.read(result);
-					} finally {
-						in.close();
-					}
+		try (ZipFile zf = new ZipFile(zipFile)) {
+			ZipEntry ze = zf.getEntry(path);
+			if (ze != null) {
+				try (InputStream in = zf.getInputStream(ze)) {
+					result = new byte[in.available()];
+					in.read(result);
 				}
-			} finally {
-				zf.close();
 			}
 		} catch (IOException ex) {
 			// ignored
@@ -960,8 +861,9 @@ public final class U {
 	 * @param ts the prefix elements
 	 * @return the new list
 	 */
+	@SafeVarargs
 	public static <T> List<T> startWith(Iterable<? extends T> src, T... ts) {
-		List<T> result = newArrayList();
+		List<T> result = new ArrayList<>();
 		result.addAll(Arrays.asList(ts));
 		for (T t : src) {
 			result.add(t);
@@ -1024,4 +926,21 @@ public final class U {
     public static boolean nullOrWhitespace(String s) {
     	return s == null || s.trim().isEmpty();
     }
+	/**
+	 * Test if the array contains the give item.
+	 * @param <T> the element type
+	 * @param item the item to find
+	 * @param array the array of Ts
+	 * @return true if the item is in the array
+	 */
+	@SafeVarargs
+	public static <T> boolean contains(T item, T... array) {
+		for (T a : array) {
+			if (item == a || (item != null && item.equals(a))) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

@@ -24,7 +24,7 @@ public class MessageArray implements Iterable<Object>, MessageSerializable {
 	/** The array's name. */
 	public final String name;
 	/** The list of message objects. */
-	protected final List<Object> items = new ArrayList<Object>();
+	protected final List<Object> items = new ArrayList<>();
 	/**
 	 * Constructor, sets the optional object name.
 	 * @param name the object name

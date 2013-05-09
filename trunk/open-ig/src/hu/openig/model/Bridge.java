@@ -18,9 +18,9 @@ import java.util.Map;
  */
 public class Bridge {
 	/** The list of level graphics. */
-	public final Map<Integer, Level> levels = new HashMap<Integer, Level>();
+	public final Map<Integer, Level> levels = new HashMap<>();
 	/** The messages to send. */
-	public final Map<String, VideoMessage> sendMessages = new LinkedHashMap<String, VideoMessage>();
+	public final Map<String, VideoMessage> sendMessages = new LinkedHashMap<>();
 	/** The messages to receive. */
-	public final Map<String, VideoMessage> receiveMessages = new LinkedHashMap<String, VideoMessage>();
+	public final Map<String, VideoMessage> receiveMessages = new LinkedHashMap<>();
 }

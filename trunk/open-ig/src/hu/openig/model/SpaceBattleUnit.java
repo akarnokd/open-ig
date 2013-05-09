@@ -51,7 +51,7 @@ public class SpaceBattleUnit implements MessageObjectIO, MessageArrayItemFactory
 	/** Is this unit in kamikaze mode? */
 	public boolean kamikaze;
 	/** The list of equipment statuses. */
-	public final List<EquipmentStatus> equipment = new ArrayList<EquipmentStatus>();
+	public final List<EquipmentStatus> equipment = new ArrayList<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		// TODO Auto-generated method stub

@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class Labels {
 	/** The label map. */
-	protected final Map<String, String> map = new HashMap<String, String>();
+	protected final Map<String, String> map = new HashMap<>();
 	/**
 	 * Load the language file(s).
 	 * @param rl the resource locator

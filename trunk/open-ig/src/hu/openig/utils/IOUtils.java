@@ -119,14 +119,9 @@ public final class IOUtils {
 	public static byte[] load(File f) {
 		if (f.canRead()) {
 			byte[] buffer = new byte[(int)f.length()];
-			try {
-				RandomAccessFile fin = new RandomAccessFile(f, "r");
-				try {
-					fin.readFully(buffer);
-					return buffer;
-				} finally {
-					fin.close();
-				}
+			try (RandomAccessFile fin = new RandomAccessFile(f, "r")) {
+				fin.readFully(buffer);
+				return buffer;
 			} catch (IOException ex) {
 				Exceptions.add(ex);
 			}
@@ -157,13 +152,8 @@ public final class IOUtils {
 	 * @param data the non null data to save
 	 */
 	public static void save(File f, byte[] data) {
-		try {
-			FileOutputStream fout = new FileOutputStream(f);
-			try {
-				fout.write(data);
-			} finally {
-				fout.close();
-			}
+		try (FileOutputStream fout = new FileOutputStream(f)) {
+			fout.write(data);
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}

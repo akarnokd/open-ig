@@ -24,7 +24,7 @@ public class ProductionStatuses implements MessageObjectIO {
 	/**
 	 * The list of production line statuses.
 	 */
-	public final List<ProductionStatus> productions = new ArrayList<ProductionStatus>();
+	public final List<ProductionStatus> productions = new ArrayList<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		paused = mo.getBoolean("paused");

@@ -8,8 +8,8 @@
 
 package hu.openig.model;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Record to store the planet wide statistics used by the information screens.
@@ -93,9 +93,9 @@ public class PlanetStatistics {
 	/** THe total laboratories. */
 	public final LabStatistics labs = new LabStatistics();
 	/** The current list of problems. */
-	public final Map<PlanetProblems, PlanetProblems> problems = new LinkedHashMap<PlanetProblems, PlanetProblems>();
+	public final Set<PlanetProblems> problems = new LinkedHashSet<>();
 	/** The current list of warnings. */
-	public final Map<PlanetProblems, PlanetProblems> warnings = new LinkedHashMap<PlanetProblems, PlanetProblems>();
+	public final Set<PlanetProblems> warnings = new LinkedHashSet<>();
 	/** Free repair percent. */
 	public double freeRepair = 0;
 	/** Free repair efficiency. */
@@ -144,8 +144,8 @@ public class PlanetStatistics {
 		production.add(other.production);
 		
 		orbitalFactory += other.orbitalFactory;
-		problems.putAll(other.problems);
-		warnings.putAll(other.warnings);
+		problems.addAll(other.problems);
+		warnings.addAll(other.warnings);
 		constructing |= other.constructing;
 		hasMilitarySpaceport |= other.hasMilitarySpaceport;
 		hasSpaceStation |= other.hasSpaceStation;
@@ -160,14 +160,14 @@ public class PlanetStatistics {
 	 * @return present
 	 */
 	public boolean hasProblem(PlanetProblems probl) {
-		return problems.containsKey(probl);
+		return problems.contains(probl);
 	}
 	/** 
 	 * Add the given planet problem to the map.
 	 * @param probl the planet problem
 	 */
 	public void addProblem(PlanetProblems probl) {
-		problems.put(probl, probl);
+		problems.add(probl);
 	}
 	/**
 	 * The planet has the specified problem?
@@ -175,14 +175,14 @@ public class PlanetStatistics {
 	 * @return present
 	 */
 	public boolean hasWarning(PlanetProblems probl) {
-		return warnings.containsKey(probl);
+		return warnings.contains(probl);
 	}
 	/** 
 	 * Add the given planet problem to the map.
 	 * @param probl the planet problem
 	 */
 	public void addWarning(PlanetProblems probl) {
-		warnings.put(probl, probl);
+		warnings.add(probl);
 	}
 	/**
 	 * @return the total number of built labs.

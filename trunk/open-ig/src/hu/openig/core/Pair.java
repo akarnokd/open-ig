@@ -37,7 +37,7 @@ public final class Pair<T, U> {
 	 * @return the pair
 	 */
 	public static <A, B> Pair<A, B> of(A a, B b) {
-		return new Pair<A, B>(a, b);
+		return new Pair<>(a, b);
 	}
 	@Override
 	public boolean equals(Object obj) {

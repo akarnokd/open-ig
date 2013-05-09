@@ -42,9 +42,12 @@ import hu.openig.utils.XElement;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -58,19 +61,19 @@ public class AITrader implements AIManager {
 	/** The incoming chat. */
 	private static final String CHAT_VIRUS_INCOMING = "chat.virus.incoming";
 	/** List of the trader's fleets. */
-	final List<TraderFleet> fleets = U.newArrayList();
+	final List<TraderFleet> fleets = new ArrayList<>();
 	/** List of the planets with trader's spaceport. */ 
-	final List<Planet> planets = U.newArrayList();
+	final List<Planet> planets = new ArrayList<>();
 	// -----------------------------------------------------------------
 	// State
 	/** Map of the landed fleets. */
-	final List<LandedFleet> landed = U.newArrayList();
+	final List<LandedFleet> landed = new ArrayList<>();
 	/** Set of fleets turned back by space battle. */
-	final Set<Fleet> fleetTurnedBack = U.newHashSet();
+	final Set<Fleet> fleetTurnedBack = new HashSet<>();
 	/** The last visited planet of the fleet. */
-	final Map<Fleet, Planet> lastVisitedPlanet = U.newHashMap();
+	final Map<Fleet, Planet> lastVisitedPlanet = new HashMap<>();
 	/** The list of existing fleet indexes ever created. */
-	final List<Integer> createdFleets = U.newArrayList();
+	final List<Integer> createdFleets = new ArrayList<>();
 	// -----------------------------------------------------------------
 	/** The world. */
 	World world;
@@ -155,7 +158,7 @@ public class AITrader implements AIManager {
 				fleets.add(tf);
 			}
 		}
-		Set<String> drs = U.newHashSet();
+		Set<String> drs = new HashSet<>();
 		for (DiplomaticRelation dr0 : world.relations) {
 			if (dr0.first.equals(world.player.id) 
 					|| dr0.second.equals(world.player.id)) {
@@ -396,7 +399,7 @@ public class AITrader implements AIManager {
 	public Fleet createFleet() {
 		Fleet nf = new Fleet(player);
 		nf.name = traderLabel;
-		List<ResearchType> rts = U.newArrayList();
+		List<ResearchType> rts = new ArrayList<>();
 		for (ResearchType rt : world.researches.values()) {
 			if (rt.race.contains(player.race) && rt.category.main == ResearchMainCategory.SPACESHIPS) {
 				rts.add(rt);
@@ -476,18 +479,17 @@ public class AITrader implements AIManager {
 				}
 			}
 			return SpacewarAction.FLEE;
-		} else {
-			// move a bit forward
-			int facing = world.facing();
-			
-			if (battle.invert) {
-				facing = -facing;
-			}
-			
-			for (SpacewarStructure s : idles) {
-				s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
-			}			
 		}
+		// move a bit forward
+		int facing = world.facing();
+		
+		if (battle.invert) {
+			facing = -facing;
+		}
+		
+		for (SpacewarStructure s : idles) {
+			s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
+		}			
 		
 		if (battle.showLanding) {
 			Point lp = world.landingPlace();
@@ -647,7 +649,7 @@ public class AITrader implements AIManager {
 	 * @return the list of chats with the prefix
 	 */
 	public List<String> filterChats(String filter) {
-		List<String> chats = U.newArrayList();
+		List<String> chats = new ArrayList<>();
 		for (String c : player.world.chats.keys()) {
 			if (c.startsWith(filter)) {
 				chats.add(c);

@@ -8,9 +8,8 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.U;
-
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -38,7 +37,7 @@ public class DiplomaticRelation {
 	/**
 	 * The set of common enemies.
 	 */
-	public final Set<String> alliancesAgainst = U.newHashSet();
+	public final Set<String> alliancesAgainst = new HashSet<>();
 	/** @return a copy of this record. */
 	public DiplomaticRelation copy() {
 		DiplomaticRelation dr = new DiplomaticRelation();

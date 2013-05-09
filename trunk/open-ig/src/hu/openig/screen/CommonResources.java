@@ -126,7 +126,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 	/**
 	 * The queue for notifying the user about achievements.
 	 */
-	public final Deque<String> achievementNotifier = new LinkedList<String>();
+	public final Deque<String> achievementNotifier = new LinkedList<>();
 	// --------------------------------------------
 	// The various screen objects
 	// --------------------------------------------
@@ -149,7 +149,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 	/** The timer tick. */
 	long tick;
 	/** The registration map. */
-	final Map<Closeable, TimerAction> timerHandlers = new ConcurrentHashMap<Closeable, TimerAction>();
+	final Map<Closeable, TimerAction> timerHandlers = new ConcurrentHashMap<>();
 	/** The timer action. */
 	static class TimerAction {
 		/** The operation frequency. */
@@ -170,7 +170,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 	/** The current simulation controls. */
 	public SimulationTimer simulation;
 	/** Map of currently running AIs. */
-	public final Map<Player, Future<?>> runningAI = new HashMap<Player, Future<?>>();
+	public final Map<Player, Future<?>> runningAI = new HashMap<>();
 	/** Indicate if an asynchronous save is in operation. */
 	public final WipPort saving = new WipPort();
 	/** Disable controls and force watching the video. */
@@ -677,7 +677,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 			// run AI routines in background
 			final WipPort wip = new WipPort(1);
 			
-			List<Player> ais = U.newArrayList();
+			List<Player> ais = new ArrayList<>();
 			for (final Player p : world.players.values()) {
 				if (p.ai != null) {
 					if (prepareAI(p, wip)) {
@@ -787,7 +787,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 	}
 	/** Execute the timer tick actions. */
 	void doTimerTick() {
-		for (TimerAction act : new ArrayList<TimerAction>(timerHandlers.values())) {
+		for (TimerAction act : new ArrayList<>(timerHandlers.values())) {
 			if (!act.cancelled) {
 				if ((tick * TIMER_DELAY) % act.delay == 0) {
 					try {
@@ -833,7 +833,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 	public void playRegularMusic() {
 		stopMusic();
 		
-		List<String> musicList = U.newArrayList();
+		List<String> musicList = new ArrayList<>();
 		int maxLen = 0;
 		for (ResourcePlace rp : rl.list(language(), "music/Music")) {
 			musicList.add(rp.getName());
@@ -979,19 +979,17 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 		case COMPUTER:
 			if (config.computerVoiceNotify) {
 				return sounds.playSound(type, action);
-			} else {
-				if (action != null) {
-					action.invoke();
-				}
+			}
+			if (action != null) {
+				action.invoke();
 			}
 			break;
 		case BUTTON:
 			if (config.buttonSounds) {
 				return sounds.playSound(type, action);
-			} else {
-				if (action != null) {
-					action.invoke();
-				}
+			}
+			if (action != null) {
+				action.invoke();
 			}
 			break;
 		case EFFECT:
@@ -999,10 +997,9 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 		case SCREEN:
 			if (config.computerVoiceScreen) {
 				return sounds.playSound(type, action);
-			} else {
-				if (action != null) {
-					action.invoke();
-				}
+			}
+			if (action != null) {
+				action.invoke();
 			}
 			break;
 		default:
@@ -1094,7 +1091,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 		if (SwingUtilities.isEventDispatchThread()) {
 			return func.invoke();
 		}
-		final AtomicReference<T> result = new AtomicReference<T>();
+		final AtomicReference<T> result = new AtomicReference<>();
 		SwingUtilities.invokeAndWait(new Runnable() {
 			@Override
 			public void run() {

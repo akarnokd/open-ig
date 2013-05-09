@@ -39,7 +39,6 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -52,6 +51,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -222,7 +222,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		}
 	}
 	/** The equipment slot locations. */
-	final List<TechnologySlot> slots = new ArrayList<TechnologySlot>();
+	final List<TechnologySlot> slots = new ArrayList<>();
 	/** The rolling disk animation timer. */
 	Closeable animation;
 	/** The current animation step counter. */
@@ -464,7 +464,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	UIImageButton sell;
 	/** The production lines. */
 	@ModeUI(mode = Screens.PRODUCTION)
-	final List<ProductionLine> productionLines = new ArrayList<ProductionLine>();
+	final List<ProductionLine> productionLines = new ArrayList<>();
 	/** The total capacity label. */
 	@ModeUI(mode = Screens.PRODUCTION)
 	UIImage capacityLabel;
@@ -475,9 +475,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	@ModeUI(mode = Screens.PRODUCTION)
 	UILabel totalCapacityValue;
 	/** The labels associated with various main categories. */
-	final Map<ResearchMainCategory, UIImageTabButton> mainComponents = new LinkedHashMap<ResearchMainCategory, UIImageTabButton>();
+	final Map<ResearchMainCategory, UIImageTabButton> mainComponents = new LinkedHashMap<>();
 	/** The labels associated with various sub categories. */
-	final Map<ResearchSubCategory, UIImageTabButton> subComponents = new LinkedHashMap<ResearchSubCategory, UIImageTabButton>();
+	final Map<ResearchSubCategory, UIImageTabButton> subComponents = new LinkedHashMap<>();
 	/** The screen mode mode. */
 	Screens mode;
 	/** The animated research type. */
@@ -778,9 +778,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
 			hideSecondary();
 			return true;
-		} else {
-			return super.mouse(e);
 		}
+		return super.mouse(e);
 	}
 	@Override
 	public void onEndGame() {
@@ -1265,7 +1264,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				Arrays.asList(spaceshipsLabel, equipmentsLabel, weaponsLabel, buildingsLabel));
 		
 		for (ResearchMainCategory cat : ResearchMainCategory.values()) {
-			List<UIComponent> comps = new ArrayList<UIComponent>();
+			List<UIComponent> comps = new ArrayList<>();
 			for (ResearchSubCategory scat : ResearchSubCategory.values()) {
 				if (scat.main == cat) {
 					comps.add(subComponents.get(scat));
@@ -1504,7 +1503,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	 * @return the list of sub-categories
 	 */
 	List<ResearchSubCategory> subCategories(ResearchMainCategory mcat) {
-		List<ResearchSubCategory> result = U.newArrayList();
+		List<ResearchSubCategory> result = new ArrayList<>();
 		for (Map.Entry<ResearchSubCategory, UIImageTabButton> e : subComponents.entrySet()) {
 			ResearchSubCategory sc = e.getKey();
 			boolean sub = sc.main == mcat;
@@ -1846,7 +1845,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		ResearchMainCategory cat = getCurrentMainCategory();
 		Map<ResearchType, Production> productions = player().production.get(cat);
 		if (productions == null) {
-			productions = U.newHashMap();
+			productions = new HashMap<>();
 		}
 		int capacity = 0;
 		if (!needsOrbitalFactory.visible()) {

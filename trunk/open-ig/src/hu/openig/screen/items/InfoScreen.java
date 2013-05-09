@@ -450,12 +450,12 @@ public class InfoScreen extends ScreenBase {
 	@ModeUI(mode = { 
 			Screens.INFORMATION_INVENTIONS
 	})
-	final List<UILabel> researchLabs = new ArrayList<UILabel>();
+	final List<UILabel> researchLabs = new ArrayList<>();
 	/** The available research labs. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_INVENTIONS
 	})
-	final List<UILabel> researchAvailable = new ArrayList<UILabel>();
+	final List<UILabel> researchAvailable = new ArrayList<>();
 	/** The military info panel. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_MILITARY
@@ -631,7 +631,7 @@ public class InfoScreen extends ScreenBase {
 		
 		minimap = new Minimap();
 		
-		colonies = new Listing<Planet>();
+		colonies = new Listing<>();
 		colonies.getList = new Func1<Void, List<Planet>>() {
 			@Override
 			public List<Planet> invoke(Void value) {
@@ -677,7 +677,7 @@ public class InfoScreen extends ScreenBase {
 		};
 		
 		
-		fleets = new Listing<Fleet>();
+		fleets = new Listing<>();
 		fleets.columns = 3;
 		fleets.getList = new Func1<Void, List<Fleet>>() {
 			@Override
@@ -1302,9 +1302,8 @@ public class InfoScreen extends ScreenBase {
 				}
 			}
 			return true;
-		} else {
-			return super.mouse(e);
 		}
+		return super.mouse(e);
 	}
 	@Override
 	public Screens screen() {
@@ -1321,7 +1320,7 @@ public class InfoScreen extends ScreenBase {
 					try {
 						UIComponent c = UIComponent.class.cast(f.get(this));
 						if (c != null) {
-							c.visible(contains(mode, mi.mode()));
+							c.visible(U.contains(mode, mi.mode()));
 						}
 					} catch (IllegalAccessException ex) {
 						Exceptions.add(ex);
@@ -1336,7 +1335,7 @@ public class InfoScreen extends ScreenBase {
 								Object o = iter.next();
 								if (UIComponent.class.isAssignableFrom(o.getClass())) {
 									UIComponent c = UIComponent.class.cast(o);
-									c.visible(contains(mode, mi.mode()));
+									c.visible(U.contains(mode, mi.mode()));
 								}
 							}
 						}
@@ -1346,21 +1345,6 @@ public class InfoScreen extends ScreenBase {
 				}
 			}
 		}
-	}
-	/**
-	 * Test if the array contains the give item.
-	 * @param <T> the element type
-	 * @param item the item to find
-	 * @param array the array of Ts
-	 * @return true if the item is in the array
-	 */
-	static <T> boolean contains(T item, T... array) {
-		for (T a : array) {
-			if (item == a || (item != null && item.equals(a))) {
-				return true;
-			}
-		}
-		return false;
 	}
 	/**
 	 * The information panel showing some details.
@@ -2158,7 +2142,7 @@ public class InfoScreen extends ScreenBase {
 	 * @param s2 the second string
 	 * @return the comparison result
 	 */
-	int compareString(String s1, String s2) {
+	static int compareString(String s1, String s2) {
 		char c1 = s1.charAt(s1.length() - 1);
 		char c2 = s2.charAt(s2.length() - 1);
 		if (Character.isDigit(c1) && Character.isDigit(c2)) {
@@ -2177,7 +2161,7 @@ public class InfoScreen extends ScreenBase {
 	}
 	/** @return an ordered list of planets to display. */
 	List<Planet> planetsList() {
-		List<Planet> planets = new ArrayList<Planet>();
+		List<Planet> planets = new ArrayList<>();
 		for (Planet p : world().planets.values()) {
 			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				planets.add(p);
@@ -2188,7 +2172,7 @@ public class InfoScreen extends ScreenBase {
 	}
 	/** @return an ordered list of planets to display. */
 	List<Fleet> fleetsList() {
-		List<Fleet> fleets = new ArrayList<Fleet>();
+		List<Fleet> fleets = new ArrayList<>();
 		for (Fleet f : player().fleets.keySet()) {
 			if (knowledge(f, FleetKnowledge.VISIBLE) >= 0) {
 				fleets.add(f);
@@ -2503,12 +2487,12 @@ public class InfoScreen extends ScreenBase {
 	 * @return the list
 	 */
 	public List<List<ResearchType>> inventionList() {
-		List<List<ResearchType>> result = U.newArrayList();
+		List<List<ResearchType>> result = new ArrayList<>();
 		for (ResearchMainCategory m : ResearchMainCategory.values()) {
-			List<ResearchType> res = new ArrayList<ResearchType>();
+			List<ResearchType> res = new ArrayList<>();
 			for (ResearchSubCategory sc : ResearchSubCategory.values()) {
 				if (sc.main == m) {
-					List<ResearchType> res0 = U.newArrayList();
+					List<ResearchType> res0 = new ArrayList<>();
 					for (ResearchType rt : world().researches.values()) {
 						if (rt.category == sc && world().canDisplayResearch(rt)) {
 							res0.add(rt);
@@ -2964,7 +2948,7 @@ public class InfoScreen extends ScreenBase {
 				int cat = 0;
 				for (ResearchSubCategory sc : ResearchSubCategory.values()) {
 					if (sc.main == mc) {
-						List<ResearchType> res = new ArrayList<ResearchType>();
+						List<ResearchType> res = new ArrayList<>();
 						for (ResearchType rt : world().researches.values()) {
 							if (rt.category == sc && world().canDisplayResearch(rt)) {
 								res.add(rt);
@@ -3048,7 +3032,7 @@ public class InfoScreen extends ScreenBase {
 	 * @return the list of reseaches in that column
 	 */
 	public List<ResearchType> getResearchColumn(int column) {
-		List<ResearchType> res = new ArrayList<ResearchType>();
+		List<ResearchType> res = new ArrayList<>();
 		for (ResearchSubCategory sc : ResearchSubCategory.values()) {
 			if (sc.main == ResearchMainCategory.values()[column]) {
 				for (ResearchType rt : world().researches.values()) {
@@ -3429,7 +3413,7 @@ public class InfoScreen extends ScreenBase {
 				}
 				break;
 			case 3:
-				final Map<Planet, Set<PlanetProblems>> ppc = new HashMap<Planet, Set<PlanetProblems>>();
+				final Map<Planet, Set<PlanetProblems>> ppc = new HashMap<>();
 				if (ascending) {
 					Collections.sort(list, new Comparator<Planet>() {
 						@Override
@@ -3440,18 +3424,18 @@ public class InfoScreen extends ScreenBase {
 									
 									Set<PlanetProblems> pp1 = ppc.get(o1);
 									if (pp1 == null) {
-										pp1 = new HashSet<PlanetProblems>();
+										pp1 = new HashSet<>();
 										PlanetStatistics ps = o1.getStatistics();
-										pp1.addAll(ps.problems.keySet());
-										pp1.addAll(ps.warnings.keySet());
+										pp1.addAll(ps.problems);
+										pp1.addAll(ps.warnings);
 										ppc.put(o1, pp1);
 									}
 									Set<PlanetProblems> pp2 = ppc.get(o2);
 									if (pp2 == null) {
-										pp2 = new HashSet<PlanetProblems>();
+										pp2 = new HashSet<>();
 										PlanetStatistics ps = o2.getStatistics();
-										pp2.addAll(ps.problems.keySet());
-										pp2.addAll(ps.warnings.keySet());
+										pp2.addAll(ps.problems);
+										pp2.addAll(ps.warnings);
 										ppc.put(o2, pp2);
 									}
 									
@@ -3470,18 +3454,18 @@ public class InfoScreen extends ScreenBase {
 									
 									Set<PlanetProblems> pp1 = ppc.get(o1);
 									if (pp1 == null) {
-										pp1 = new HashSet<PlanetProblems>();
+										pp1 = new HashSet<>();
 										PlanetStatistics ps = o1.getStatistics();
-										pp1.addAll(ps.problems.keySet());
-										pp1.addAll(ps.warnings.keySet());
+										pp1.addAll(ps.problems);
+										pp1.addAll(ps.warnings);
 										ppc.put(o1, pp1);
 									}
 									Set<PlanetProblems> pp2 = ppc.get(o2);
 									if (pp2 == null) {
-										pp2 = new HashSet<PlanetProblems>();
+										pp2 = new HashSet<>();
 										PlanetStatistics ps = o2.getStatistics();
-										pp2.addAll(ps.problems.keySet());
-										pp2.addAll(ps.warnings.keySet());
+										pp2.addAll(ps.problems);
+										pp2.addAll(ps.warnings);
 										ppc.put(o2, pp2);
 									}
 									
@@ -3789,9 +3773,9 @@ public class InfoScreen extends ScreenBase {
 			int hlimit = 6;
 			int maxh = hlimit * 9;
 			
-			List<Player> pl = new ArrayList<Player>();
-			List<Player> war = new ArrayList<Player>();
-			List<Player> ally = new ArrayList<Player>();
+			List<Player> pl = new ArrayList<>();
+			List<Player> war = new ArrayList<>();
+			List<Player> ally = new ArrayList<>();
 			pl.add(player());
 			for (Player p : player().knownPlayers().keySet()) {
 				if (p == player() || p.noDiplomacy) {

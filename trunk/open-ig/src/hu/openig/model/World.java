@@ -120,19 +120,19 @@ public class World implements ModelLookup {
 	/** The battle object. */
 	public BattleModel battle;
 	/** The list of pending battles. */
-	public Deque<BattleInfo> pendingBattles = new LinkedList<BattleInfo>();
+	public Deque<BattleInfo> pendingBattles = new LinkedList<>();
 	/** The game environment. */
 	public final GameEnvironment env;
 	/** The campaign scripting. */
 	public GameScripting scripting;
 	/** The IDs for infected fleets and their source of infection. */
-	public final Map<Integer, String> infectedFleets = new HashMap<Integer, String>();
+	public final Map<Integer, String> infectedFleets = new HashMap<>();
 	/** The map of all diplomatic relations. */
-	public final List<DiplomaticRelation> relations = U.newArrayList();
+	public final List<DiplomaticRelation> relations = new ArrayList<>();
 	/** The list of all messages received, including history and duplicates. */
-	public final List<VideoMessage> receivedMessages = U.newArrayList();
+	public final List<VideoMessage> receivedMessages = new ArrayList<>();
 	/** The global map of fleets. */
-	public final Map<Integer, Fleet> fleets = U.newLinkedHashMap();
+	public final Map<Integer, Fleet> fleets = new LinkedHashMap<>();
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -193,8 +193,8 @@ public class World implements ModelLookup {
 			walks = new Walks();
 			buildingModel = new BuildingModel(env.config());
 			galaxyModel = new GalaxyModel(env.config());
-			test = U.newLinkedHashMap();
-			diplomacy = U.newLinkedHashMap();
+			test = new LinkedHashMap<>();
+			diplomacy = new LinkedHashMap<>();
 			chats = new Chats();
 
 			exec.submit(new Runnable() {
@@ -476,7 +476,7 @@ public class World implements ModelLookup {
 	 * @param xplayers the players node
 	 */
 	public void processPlayers(XElement xplayers) {
-		Map<Fleet, Integer> deferredFleets = U.newHashMap();
+		Map<Fleet, Integer> deferredFleets = new HashMap<>();
 		
 		int g = 1;
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
@@ -854,7 +854,7 @@ public class World implements ModelLookup {
 	 * @return the list of available building types
 	 */
 	public List<BuildingType> listBuildings(Player player, Planet planet) {
-		List<BuildingType> result = new ArrayList<BuildingType>();
+		List<BuildingType> result = new ArrayList<>();
 		
 		if (player.knowledge(planet, PlanetKnowledge.BUILDING) >= 0) {
 			for (BuildingType bt : buildingModel.buildings.values()) {
@@ -952,7 +952,7 @@ public class World implements ModelLookup {
 	 * @return Returns an ordered list of the research types.
 	 */
 	public List<ResearchType> getResearch() {
-		List<ResearchType> res = new ArrayList<ResearchType>();
+		List<ResearchType> res = new ArrayList<>();
 		for (ResearchType rt0 : researches.values()) {
 			if (canDisplayResearch(rt0)) {
 				res.add(rt0);
@@ -1478,9 +1478,9 @@ public class World implements ModelLookup {
 		
 		loadDiplomaticRelations(xworld);
 		
-		Map<Player, XElement[]> deferredMessages = new HashMap<Player, XElement[]>();
+		Map<Player, XElement[]> deferredMessages = new HashMap<>();
 		/** The deferred fleet-to-fleet targeting. */
-		Map<Fleet, Integer> deferredTargets = new HashMap<Fleet, Integer>();
+		Map<Fleet, Integer> deferredTargets = new HashMap<>();
 		
 		for (Player p : players.values()) {
 			p.fleets.clear(); 
@@ -1586,7 +1586,7 @@ public class World implements ModelLookup {
 					
 					Map<ResearchType, Production> prod = p.production.get(rt.category.main);
 					if (prod == null) {
-						prod = new LinkedHashMap<ResearchType, Production>();
+						prod = new LinkedHashMap<>();
 						p.production.put(rt.category.main, prod);
 					}
 					prod.put(rt, pr);
@@ -1671,7 +1671,7 @@ public class World implements ModelLookup {
 			
 			loadTraits(p, xplayer.childElement("traits"));
 		}
-		Set<String> allPlanets = new HashSet<String>(planets.keySet());
+		Set<String> allPlanets = new HashSet<>(planets.keySet());
 		for (XElement xplanet : xworld.childrenWithName("planet")) {
 			Planet p = planets.get(xplanet.get("id"));
 
@@ -1821,7 +1821,7 @@ public class World implements ModelLookup {
 	}
 	/** Check for unique fleet IDs. */
 	void checkUniqueFleets() {
-		Set<Integer> ids = U.newHashSet();
+		Set<Integer> ids = new HashSet<>();
 		
 		for (Player p : players.values()) {
 			for (Fleet f : p.ownFleets()) {
@@ -2328,7 +2328,7 @@ public class World implements ModelLookup {
 
 			battle.groundEntities.put(id, ge);
 		}
-		Map<String, BufferedImage[][]> matrices = U.newHashMap();
+		Map<String, BufferedImage[][]> matrices = new HashMap<>();
 		for (XElement xmatrix : xbattle.childElement("buildings").childrenWithName("matrix")) {
 			int nx = xmatrix.getInt("width");
 			int ny = xmatrix.getInt("height");
@@ -2387,7 +2387,7 @@ public class World implements ModelLookup {
 		
 		for (XElement xvss : xbattle.childrenWithName("ecm-vs-matrix")) {
 			Difficulty diff = Difficulty.valueOf(xvss.get("difficulty"));
-			Map<Pair<Integer, Integer>, Double> matrix = U.newHashMap();
+			Map<Pair<Integer, Integer>, Double> matrix = new HashMap<>();
 			battle.ecmMatrix.put(diff, matrix);
 			if (xvss.has("backfire")) {
 				battle.backfires.put(diff, xvss.getDoubleObject("backfire"));
@@ -2871,9 +2871,9 @@ public class World implements ModelLookup {
 		loadCampaign(rl);
 		// fix players
 		
-		Map<Player, Integer> groups = U.newHashMap();
+		Map<Player, Integer> groups = new HashMap<>();
 		
-		Map<String, Player> originalPlayers = U.newHashMap(players.players);
+		Map<String, Player> originalPlayers = new HashMap<>(players.players);
 		players.players.clear();
 		
 		player = null;
@@ -2941,7 +2941,7 @@ public class World implements ModelLookup {
 			
 			p.nicknames.addAll(op.nicknames);
 			
-			Set<String> opExcept = U.newHashSet("ColonyShip");
+			Set<String> opExcept = U.newSet("ColonyShip");
 			// enable tech originally inteded by the definition
 			for (ResearchType rt : op.available().keySet()) {
 				if (!opExcept.contains(rt.id)) {
@@ -3087,14 +3087,14 @@ public class World implements ModelLookup {
 				break;
 			}
 		}
-		List<Player> pls = U.newArrayList();
+		List<Player> pls = new ArrayList<>();
 		for (Player p : players.values()) {
 			if (p.aiMode != AIMode.PIRATES && p.aiMode != AIMode.TRADERS) {
 				pls.add(p);
 			}
 		}
 		
-		List<Integer> zoneIndex = U.newArrayList();
+		List<Integer> zoneIndex = new ArrayList<>();
 		for (int zi = 0; zi < zones * zones; zi++) {
 			zoneIndex.add(zi);
 		}
@@ -3118,7 +3118,7 @@ public class World implements ModelLookup {
 			rect.width = dgw;
 			rect.height = dgh;
 			
-			List<Planet> candidates = U.newArrayList();
+			List<Planet> candidates = new ArrayList<>();
 			for (Planet pl : planets.values()) {
 				if (rect.contains(pl.x, pl.y) && pl.owner == null) {
 					candidates.add(pl);
@@ -3257,7 +3257,7 @@ public class World implements ModelLookup {
 	 */
 	protected void patchWorld(XElement xworld) {
 		if (!xworld.has("id-sequence")) {
-			Map<Integer, Integer> fleetRemap = new HashMap<Integer, Integer>();
+			Map<Integer, Integer> fleetRemap = new HashMap<>();
 			// fix player fleets
 			for (XElement xplayer : xworld.childrenWithName("player")) {
 				for (XElement xfleet : xplayer.childrenWithName("fleet")) {
@@ -3380,7 +3380,7 @@ public class World implements ModelLookup {
 			p.fromEmpireStatus(es);
 			
 			// replace the player's relations only
-			List<DiplomaticRelation> rels = new ArrayList<DiplomaticRelation>();
+			List<DiplomaticRelation> rels = new ArrayList<>();
 			for (DiplomaticRelation dr : relations) {
 				if (!playerId.equals(dr.first) && !playerId.equals(dr.second)) {
 					rels.add(dr);

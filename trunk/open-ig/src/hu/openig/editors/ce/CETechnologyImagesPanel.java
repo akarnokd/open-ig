@@ -11,9 +11,9 @@ package hu.openig.editors.ce;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.model.ResearchSubCategory;
-import hu.openig.utils.U;
 
 import java.awt.BorderLayout;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.GroupLayout;
@@ -241,7 +241,7 @@ public class CETechnologyImagesPanel extends CESlavePanel {
 
 		String cat = master.get("category");
 		
-		Set<String> checkSpaceCategory = U.newHashSet();
+		Set<String> checkSpaceCategory = new HashSet<>();
 		checkSpaceCategory.add(ResearchSubCategory.SPACESHIPS_BATTLESHIPS.toString());
 		checkSpaceCategory.add(ResearchSubCategory.SPACESHIPS_STATIONS.toString());
 		checkSpaceCategory.add(ResearchSubCategory.SPACESHIPS_CRUISERS.toString());
@@ -253,7 +253,7 @@ public class CETechnologyImagesPanel extends CESlavePanel {
 			i = max(i, imageEquipFleet.getInvalid());
 		}
 
-		Set<String> checkVehicleCategory = U.newHashSet();
+		Set<String> checkVehicleCategory = new HashSet<>();
 		checkVehicleCategory.add(ResearchSubCategory.WEAPONS_TANKS.toString());
 		checkVehicleCategory.add(ResearchSubCategory.WEAPONS_VEHICLES.toString());
 

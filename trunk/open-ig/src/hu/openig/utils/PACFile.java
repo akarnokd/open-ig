@@ -61,34 +61,29 @@ public final class PACFile {
 	 * @return the non-null list of pac entry records filled with data
 	 */
 	public static List<PACEntry> parseFully(File f) {
-		try {
-			RandomAccessFile fin = new RandomAccessFile(f, "r");
-			try {
-				// Parse header
-				byte[] entry = new byte[20];
-				fin.readFully(entry, 0, 2);
-				int count = (entry[1] & 0xFF) << 8 | (entry[0] & 0xFF);
-				List<PACEntry> result = new ArrayList<PACEntry>(count);
-				// parse entries
-				for (int i = 0 ; i < count; i++) {
-					PACEntry pe = new PACEntry();
-					fin.readFully(entry);
-					pe.filename = new String(entry, 1, entry[0], "ISO-8859-1");
-					pe.size = (entry[0x0E] & 0xFF) | (entry[0x0F] & 0xFF) << 8;
-					pe.offset = (entry[0x10] & 0xFF) | (entry[0x11] & 0xFF) << 8 | (entry[0x12] & 0xFF) << 16 | (entry[0x13] & 0xFF) << 24;
-					result.add(pe);
-				}
-				// load entries
-				for (int i = 0; i < count; i++) {
-					PACEntry e = result.get(i);
-					fin.seek(e.offset);
-					e.data = new byte[e.size];
-					fin.readFully(e.data);
-				}
-				return result;
-			} finally {
-				fin.close();
+		try (RandomAccessFile fin = new RandomAccessFile(f, "r")) {
+			// Parse header
+			byte[] entry = new byte[20];
+			fin.readFully(entry, 0, 2);
+			int count = (entry[1] & 0xFF) << 8 | (entry[0] & 0xFF);
+			List<PACEntry> result = new ArrayList<>(count);
+			// parse entries
+			for (int i = 0 ; i < count; i++) {
+				PACEntry pe = new PACEntry();
+				fin.readFully(entry);
+				pe.filename = new String(entry, 1, entry[0], "ISO-8859-1");
+				pe.size = (entry[0x0E] & 0xFF) | (entry[0x0F] & 0xFF) << 8;
+				pe.offset = (entry[0x10] & 0xFF) | (entry[0x11] & 0xFF) << 8 | (entry[0x12] & 0xFF) << 16 | (entry[0x13] & 0xFF) << 24;
+				result.add(pe);
 			}
+			// load entries
+			for (int i = 0; i < count; i++) {
+				PACEntry e = result.get(i);
+				fin.seek(e.offset);
+				e.data = new byte[e.size];
+				fin.readFully(e.data);
+			}
+			return result;
 		} catch (IOException ex) {
 			// ignored
 			return Collections.emptyList();
@@ -119,7 +114,7 @@ public final class PACFile {
 		din.readFully(entry, 0, 2);
 		offset += 2;
 		int count = (entry[1] & 0xFF) << 8 | (entry[0] & 0xFF);
-		List<PACEntry> result = new ArrayList<PACEntry>(count);
+		List<PACEntry> result = new ArrayList<>(count);
 		// parse entries
 		for (int i = 0 ; i < count; i++) {
 			PACEntry pe = new PACEntry();
@@ -152,7 +147,7 @@ public final class PACFile {
 	 * @return a map from PACEntry.filename to PACEntry objects
 	 */
 	public static Map<String, PACEntry> mapByName(Collection<? extends PACEntry> it) {
-		Map<String, PACEntry> result = new LinkedHashMap<String, PACEntry>(it.size());
+		Map<String, PACEntry> result = new LinkedHashMap<>(it.size());
 		for (PACEntry e : it) {
 			result.put(e.filename, e);
 		}

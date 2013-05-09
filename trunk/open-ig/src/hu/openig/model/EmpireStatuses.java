@@ -29,11 +29,11 @@ public class EmpireStatuses implements MessageObjectIO {
 	/** The current time in UTC milliseconds. */
 	public Date currentTime;
 	/** The list of empires. */
-	public final Map<String, EmpireStatus> empires = new LinkedHashMap<String, EmpireStatus>();
+	public final Map<String, EmpireStatus> empires = new LinkedHashMap<>();
 	/** The global statistics. */
 	public final WorldStatistics statistics = new WorldStatistics();
 	/** The map of known other players and the diplomatic relations. */
-	public final List<DiplomaticRelation> relations = new ArrayList<DiplomaticRelation>();
+	public final List<DiplomaticRelation> relations = new ArrayList<>();
 	@Override
 	public void fromMessage(MessageObject mo) {
 		try {

@@ -40,8 +40,10 @@ import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -57,7 +59,7 @@ public abstract class Mission implements GameScriptingEvents {
 	/** The scripting helper. */
 	private MissionScriptingHelper helper;
 	/** The pending objectives in case of save between incoming message and objective showup. */
-	protected Deque<String[]> pendingObjectives = U.newLinkedList();
+	protected Deque<String[]> pendingObjectives = new LinkedList<>();
 	/**
 	 * Initializes the mission object.
 	 * @param player the main player
@@ -103,7 +105,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 * @return the list of fleets found
 	 */
 	protected List<Fleet> findVisibleFleets(Player toPlayer, boolean shouldSee, Player owner, int ds) {
-		List<Fleet> result = U.newArrayList();
+		List<Fleet> result = new ArrayList<>();
 		
 		for (Fleet f : owner.fleets.keySet()) {
 			if (f.owner == owner 
@@ -532,13 +534,12 @@ public abstract class Mission implements GameScriptingEvents {
 		if (msg == null) {
 			Exceptions.add(new AssertionError("Missing video: " + messageId));
 			return false;
-		} else {
-			msg = msg.copy();
-			msg.seen = false;
-			
-			world.receivedMessages.add(0, msg);
-			return true;
 		}
+		msg = msg.copy();
+		msg.seen = false;
+		
+		world.receivedMessages.add(0, msg);
+		return true;
 	}
 	/**
 	 * Show a message and then an objective.

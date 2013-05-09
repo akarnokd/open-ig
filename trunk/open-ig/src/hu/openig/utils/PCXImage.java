@@ -182,7 +182,7 @@ public class PCXImage {
 		/** A default 16 color palette data. */
 		public byte[] palette = new byte[48];
 		/** An indexed color map. */
-		private Map<Integer, Color> colormap = new HashMap<Integer, Color>();
+		private Map<Integer, Color> colormap = new HashMap<>();
 		/**
 		 * Returns a Color object for the given index in the palette.
 		 * @param index the index

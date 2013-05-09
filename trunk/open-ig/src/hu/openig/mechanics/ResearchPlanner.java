@@ -39,7 +39,7 @@ import java.util.Set;
 public class ResearchPlanner extends Planner {
 	/** The set of resource names. */
 	private static final Set<String> LAB_RESOURCE_NAMES = 
-			new HashSet<String>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
+			new HashSet<>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
 	/** Indicator to allow actions that spendmoney. */
 	boolean maySpendMoney;
 	/** The exploration map. */
@@ -73,14 +73,14 @@ public class ResearchPlanner extends Planner {
 		//if low on money and planets, plan for conquest
 		maySpendMoney = (world.money >= 100000 || world.global.planetCount > 2);
 		
-		final Map<ResearchType, Integer> enablesCount = new HashMap<ResearchType, Integer>();
-		final Map<ResearchType, Integer> rebuildCount = new HashMap<ResearchType, Integer>();
-		List<ResearchType> candidatesImmediate = new ArrayList<ResearchType>();
-		List<ResearchType> candidatesReconstruct = new ArrayList<ResearchType>();
-		List<ResearchType> candidatesGetMorePlanets = new ArrayList<ResearchType>();
+		final Map<ResearchType, Integer> enablesCount = new HashMap<>();
+		final Map<ResearchType, Integer> rebuildCount = new HashMap<>();
+		List<ResearchType> candidatesImmediate = new ArrayList<>();
+		List<ResearchType> candidatesReconstruct = new ArrayList<>();
+		List<ResearchType> candidatesGetMorePlanets = new ArrayList<>();
 		
 		// prepare lab costs
-		Map<String, Integer> labCosts = new HashMap<String, Integer>();
+		Map<String, Integer> labCosts = new HashMap<>();
 		for (BuildingType bt : w.buildingModel.buildings.values()) {
 			for (String s : LAB_RESOURCE_NAMES) {
 				if (bt.resources.containsKey(s)) {
@@ -303,12 +303,10 @@ public class ResearchPlanner extends Planner {
 						}
 					});
 					return AIResult.SUCCESS;
-				} else {
-					return AIResult.NO_ROOM;
 				}
-			} else {
-				return AIResult.NO_MONEY;
+				return AIResult.NO_ROOM;
 			}
+			return AIResult.NO_MONEY;
 		}
 		return AIResult.CONTINUE;
 	}

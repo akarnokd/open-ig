@@ -26,13 +26,13 @@ public class BattleStatus implements MessageObjectIO, MessageArrayItemFactory<Ba
 	/** The nearby planet id. */
 	public String planetId;
 	/** The list of participating players. */
-	public final List<String> players = new ArrayList<String>();
+	public final List<String> players = new ArrayList<>();
 	/** The list of participating fleets. */
-	public final List<FleetStatus> fleets = new ArrayList<FleetStatus>();
+	public final List<FleetStatus> fleets = new ArrayList<>();
 	/** The winners of the space battle. */
-	public final Set<String> spaceWinner = new HashSet<String>();
+	public final Set<String> spaceWinner = new HashSet<>();
 	/** The winners of the ground battle. */
-	public final Set<String> groundWinner = new HashSet<String>();
+	public final Set<String> groundWinner = new HashSet<>();
 	/** Is this battle in space mode? */
 	public boolean inSpaceBattle;
 	/** Is this battle in space retreat? */

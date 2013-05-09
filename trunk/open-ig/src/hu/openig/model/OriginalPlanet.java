@@ -27,7 +27,7 @@ public class OriginalPlanet {
 	/** The location on the galaxy map. */
 	public final Point location = new Point();
 	/** The list of buildings. */
-	public final List<OriginalBuilding> buildings = new ArrayList<OriginalBuilding>();
+	public final List<OriginalBuilding> buildings = new ArrayList<>();
 	/** @return Create the map file name from the type and variants */
 	public String getMapName() {
 		if ("Desert".equals(surfaceType)) {

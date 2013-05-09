@@ -9,7 +9,6 @@
 package hu.openig.tools;
 
 import hu.openig.utils.PCXImage;
-import hu.openig.utils.U;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -22,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -43,7 +43,7 @@ public final class ImageMatcher {
 	 * @throws Exception exception
 	 */
 	public static void main(String[] args) throws Exception {
-		final Map<String, BufferedImage> images = U.newLinkedHashMap();
+		final Map<String, BufferedImage> images = new LinkedHashMap<>();
 
 		System.out.println("Scanning images");
 		final Path base = Paths.get("images/hu");
@@ -60,7 +60,7 @@ public final class ImageMatcher {
 			}
 		});
 
-		final Map<String, BufferedImage> pcxs = U.newLinkedHashMap();
+		final Map<String, BufferedImage> pcxs = new LinkedHashMap<>();
 		
 		System.out.println("Scanning PCXs");
 		final Path base2 = Paths.get("c:/games/IGHU");
@@ -79,7 +79,7 @@ public final class ImageMatcher {
 			}
 		});
 		
-		final ConcurrentMap<String, String> unused = new ConcurrentHashMap<String, String>();
+		final ConcurrentMap<String, String> unused = new ConcurrentHashMap<>();
 		for (String k : images.keySet()) {
 			unused.put(k, k);
 		}

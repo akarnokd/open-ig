@@ -99,8 +99,7 @@ public final class SpidyAniDecoder {
 		if (callback == null) {
 			throw new IllegalArgumentException("callback null");
 		}
-		InputStream in = callback.getNewInputStream();
-		try {
+		try (InputStream in = callback.getNewInputStream()) {
 			final SpidyAniFile saf = new SpidyAniFile();
 			saf.open(in);
 			saf.load();
@@ -191,12 +190,6 @@ public final class SpidyAniDecoder {
 			
 		} catch (IOException ex) {
 			callback.fatal(ex);
-		} finally {
-			try {
-				in.close();
-			} catch (IOException ex) {
-				// ignored
-			}
 		}
 	}
 	/**

@@ -12,7 +12,6 @@ import hu.openig.core.Pair;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.Parameters;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.BorderLayout;
@@ -20,6 +19,8 @@ import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -69,15 +70,15 @@ public class CEDefinitionPanel extends CEBasePanel implements CEPanelPreferences
 	/** The campaign's directory. */
 	JTextField directory;
 	/** The indicators. */
-	final Map<String, JLabel> indicators = U.newLinkedHashMap();
+	final Map<String, JLabel> indicators = new LinkedHashMap<>();
 	/** The input fields. */
-	final Map<String, JTextField> fields = U.newLinkedHashMap();
+	final Map<String, JTextField> fields = new LinkedHashMap<>();
 	/** The language fields. */
-	final List<JTextField> languageFields = U.newArrayList();
+	final List<JTextField> languageFields = new ArrayList<>();
 	/** The language fields. */
-	final List<JTextField> titleFields = U.newArrayList();
+	final List<JTextField> titleFields = new ArrayList<>();
 	/** The language fields. */
-	final List<JTextArea> descriptionFields = U.newArrayList();
+	final List<JTextArea> descriptionFields = new ArrayList<>();
 	/** The texts subpanel. */
 	JPanel textsSubPanel;
 	/**

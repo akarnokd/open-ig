@@ -28,6 +28,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -276,7 +277,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		JLabel languagesLabel = new JLabel(get("startup.labels"));
 		
 		JLabel projectLangLabel = new JLabel(get("startup.project_language"));
-		projectLang = new JComboBox<String>();
+		projectLang = new JComboBox<>();
 		projectLang.addItem("en");
 		
 		// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -585,8 +586,8 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	public void findCampaigns() {
 		File workdir = ctx.getWorkDir();
 		
-		List<File> unpackedCampaigns = U.newArrayList();
-		List<Pair<File, String>> packedCampaigns = U.newArrayList();
+		List<File> unpackedCampaigns = new ArrayList<>();
+		List<Pair<File, String>> packedCampaigns = new ArrayList<>();
 		
 		// take the contents of the DLC directory
 		File dlcs = new File(workdir, "dlc");
@@ -834,7 +835,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 	 */
 	void updateLanguageBox() {
 		Object sel = projectLang.getSelectedItem();
-		projectLang.setModel(new DefaultComboBoxModel<String>(languageArray()));
+		projectLang.setModel(new DefaultComboBoxModel<>(languageArray()));
 		projectLang.setSelectedItem(sel);
 		
 		copyTable.repaint();
@@ -884,7 +885,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		recentTable.getSelectionModel().clearSelection();
 		newName.setText("");
 		languages.setText("en");
-		projectLang.setModel(new DefaultComboBoxModel<String>(new String[] { "en" }));
+		projectLang.setModel(new DefaultComboBoxModel<>(new String[] { "en" }));
 		openRecent.setSelected(false);
 		copyExisting.setSelected(false);
 		createNew.setSelected(false);

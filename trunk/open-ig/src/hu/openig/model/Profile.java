@@ -27,7 +27,7 @@ public class Profile {
 	/** The profile's name. */
 	public String name;
 	/** The acquired achievements. */
-	private final Set<String> achievements = new HashSet<String>();
+	private final Set<String> achievements = new HashSet<>();
 	/**
 	 * Test if the given achievement is taken.
 	 * @param name the achievement name

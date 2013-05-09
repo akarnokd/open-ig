@@ -29,9 +29,9 @@ public class PlanetType {
 	/** The spacewar image. */
 	public BufferedImage spacewar;
 	/** The available tileset. */
-	public Map<Integer, Tile> tiles = new HashMap<Integer, Tile>();
+	public Map<Integer, Tile> tiles = new HashMap<>();
 	/** The surface map variations. */
-	public Map<Integer, PlanetSurface> surfaces = new HashMap<Integer, PlanetSurface>();
+	public Map<Integer, PlanetSurface> surfaces = new HashMap<>();
 	/** The pattern with a single %d element to resolve the surface definitions. */
 	public String pattern;
 	/** The start index of the preset surface models. */

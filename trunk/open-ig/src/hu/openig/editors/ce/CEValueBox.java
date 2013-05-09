@@ -86,7 +86,7 @@ public class CEValueBox<C extends JComponent> extends JPanel implements CEInvali
 	 * @return the value box
 	 */
 	public static <E extends JComponent> CEValueBox<E> of(String displayText, E component) {
-		return new CEValueBox<E>(displayText, component);
+		return new CEValueBox<>(displayText, component);
 	}
 	/** Executes the attached validator. */
 	public void validateComponent() {

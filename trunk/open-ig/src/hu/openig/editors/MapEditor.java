@@ -32,7 +32,6 @@ import hu.openig.render.TextRenderer;
 import hu.openig.utils.ConsoleWatcher;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
@@ -415,13 +414,13 @@ public class MapEditor extends JFrame {
 	/** The undo manager. */
 	UndoManager undoManager;
 	/** The custom surface names. */
-	final List<TileEntry> customSurfaceNames = new ArrayList<TileEntry>();
+	final List<TileEntry> customSurfaceNames = new ArrayList<>();
 	/** The custom building names. */
-	final List<TileEntry> customBuildingNames = new ArrayList<TileEntry>();
+	final List<TileEntry> customBuildingNames = new ArrayList<>();
 	/** The deferred language change. */
 	String deferredLanguage = "en";
 	/** The set of recent files. */
-	final Set<String> recent = new HashSet<String>();
+	final Set<String> recent = new HashSet<>();
 	/** Load the resource locator. */
 	void loadResourceLocator() {
 		final BackgroundProgress bgp = new BackgroundProgress();
@@ -436,11 +435,11 @@ public class MapEditor extends JFrame {
 			/** The colony graphics. */
 			private ColonyGFX colonyGraphics;
 			/** Surface list. */
-			private List<TileEntry> surfaces = U.newArrayList();
+			private List<TileEntry> surfaces = new ArrayList<>();
 			/** Buildings list. */
-			private List<TileEntry> buildings = U.newArrayList();
+			private List<TileEntry> buildings = new ArrayList<>();
 			/** Races. */
-			private Set<String> races = U.newHashSet();
+			private Set<String> races = new HashSet<>();
 			/** The loaded text renderer. */
 			TextRenderer txt;
 			/** The loaded labels. */
@@ -541,7 +540,7 @@ public class MapEditor extends JFrame {
 //		System.setProperty("sun.java2d.d3d", "false");
 //		System.setProperty("sun.java2d.noddraw", "true");
 //		System.setProperty("sun.java2d.translaccel", "true");
-		Set<String> argset = new HashSet<String>(Arrays.asList(args));
+		Set<String> argset = new HashSet<>(Arrays.asList(args));
 		long maxMem = Runtime.getRuntime().maxMemory();
 		if (maxMem < MINIMUM_MEMORY * 1024 * 1024 * 95 / 100) {
 			if (!argset.contains("-memonce")) {
@@ -672,11 +671,11 @@ public class MapEditor extends JFrame {
 		buildingTable.setRowHeight(32);
 
 		surfaceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		surfaceSorter = new TableRowSorter<TileList>(surfaceTableModel);
+		surfaceSorter = new TableRowSorter<>(surfaceTableModel);
 		surfaceTable.setRowSorter(surfaceSorter);
 		
 		buildingTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		buildingSorter = new TableRowSorter<TileList>(buildingTableModel);
+		buildingSorter = new TableRowSorter<>(buildingTableModel);
 		buildingTable.setRowSorter(buildingSorter);
 
 		surfaceTable.getColumnModel().getColumn(0).setPreferredWidth(45);
@@ -1540,7 +1539,7 @@ public class MapEditor extends JFrame {
 		/** The column classes. */
 		final Class<?>[] colClasses = { ImageIcon.class, String.class, String.class, String.class };
 		/** The list of rows. */
-		public List<TileEntry> rows = new ArrayList<TileEntry>();
+		public List<TileEntry> rows = new ArrayList<>();
 		@Override
 		public int getColumnCount() {
 			return colNames.length;
@@ -1596,7 +1595,7 @@ public class MapEditor extends JFrame {
 		buildingTableModel.rows = buildings;
 		surfaceTableModel.fireTableDataChanged();
 		buildingTableModel.fireTableDataChanged();
-		List<String> racesList = new ArrayList<String>(races);
+		List<String> racesList = new ArrayList<>(races);
 		Collections.sort(racesList);
 		for (final String s : racesList) {
 			JMenuItem mnuPlaceRoad = new JMenuItem(s);
@@ -2185,17 +2184,12 @@ public class MapEditor extends JFrame {
 	 * @param settings the save settings
 	 */
 	void savePlanet(MapSaveSettings settings) {
-		try {
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(settings.fileName), 1024 * 1024), "UTF-8"));
-			try {
-				out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
-				XElement map = new XElement("map");
-				map.set("version", "1.0");
-				renderer.surface.storeMap(map, settings.surface, settings.buildings);
-				out.println(map.toString());
-			} finally {
-				out.close();
-			}
+		try (PrintWriter out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(settings.fileName), 1024 * 1024), "UTF-8"))) {
+			out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
+			XElement map = new XElement("map");
+			map.set("version", "1.0");
+			renderer.surface.storeMap(map, settings.surface, settings.buildings);
+			out.println(map.toString());
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
@@ -2381,20 +2375,20 @@ public class MapEditor extends JFrame {
 		 */
 		public UndoableMapEdit(PlanetSurface surface) {
 			this.surface = surface;
-			basemapBefore = new HashMap<Location, SurfaceEntity>(surface.basemap);
-			surfaceBefore = new ArrayList<SurfaceFeature>(surface.features);
+			basemapBefore = new HashMap<>(surface.basemap);
+			surfaceBefore = new ArrayList<>(surface.features);
 			
-			buildingmapBefore = new HashMap<Location, SurfaceEntity>(surface.buildingmap);
+			buildingmapBefore = new HashMap<>(surface.buildingmap);
 			buildingsBefore = surface.buildings.list();
 		}
 		/**
 		 * Set the after status of the surface.
 		 */
 		public void setAfter() {
-			basemapAfter = new HashMap<Location, SurfaceEntity>(surface.basemap);
-			surfaceAfter = new ArrayList<SurfaceFeature>(surface.features);
+			basemapAfter = new HashMap<>(surface.basemap);
+			surfaceAfter = new ArrayList<>(surface.features);
 			
-			buildingmapAfter = new HashMap<Location, SurfaceEntity>(surface.buildingmap);
+			buildingmapAfter = new HashMap<>(surface.buildingmap);
 			buildingsAfter = surface.buildings.list();
 		}
 		/**
@@ -2472,41 +2466,36 @@ public class MapEditor extends JFrame {
 	}
 	/** Save the current editor state. */
 	void saveConfig() {
-		try {
-			PrintWriter out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-config.xml"), 64 * 1024), "UTF-8"));
-			try {
-				out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
-				out.printf("<mapeditor-config>%n");
-				out.printf("  <window x='%d' y='%d' width='%d' height='%d' state='%d'/>%n", getX(), getY(), getWidth(), getHeight(), getExtendedState());
-				out.printf("  <language id='%s'/>%n", ui.languageEn.isSelected() ? "en" : "hu");
-				out.printf("  <splitters main='%d' preview='%d' surfaces='%d'/>%n", split.getDividerLocation(), toolSplit.getDividerLocation(), featuresSplit.getDividerLocation());
-				out.printf("  <editmode type='%s'/>%n", ui.buildButton.isSelected());
-				out.printf("  <tabs selected='%d'/>%n", propertyTab.getSelectedIndex());
-				out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(renderer.alpha));
-				out.printf("  <filter surface='%s' building='%s'/>%n", XElement.sanitize(filterSurface.getText()), XElement.sanitize(filterBuilding.getText()));
-				out.printf("  <allocation worker='%s' strategy='%d'/>%n", ui.allocationPanel.availableWorkers.getText(), ui.allocationPanel.strategies.getSelectedIndex());
-				out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s' standard-fonts='%s' placement-hints='%s'/>%n", ui.viewShowBuildings.isSelected(), 
-						ui.viewSymbolicBuildings.isSelected(), ui.viewTextBackgrounds.isSelected(), Double.toString(renderer.scale), ui.viewStandardFonts.isSelected()
-						, ui.viewPlacementHints.isSelected());
-				out.printf("  <custom-surface-names>%n");
-				for (TileEntry te : surfaceTableModel.rows) {
-					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XElement.sanitize(te.surface), XElement.sanitize(te.name));
-				}
-				out.printf("  </custom-surface-names>%n");
-				out.printf("  <custom-building-names>%n");
-				for (TileEntry te : buildingTableModel.rows) {
-					out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XElement.sanitize(te.surface), XElement.sanitize(te.name));
-				}
-				out.printf("  </custom-building-names>%n");
-				out.printf("  <recent>%n");
-				for (int i = ui.fileRecent.getItemCount() - 1; i >= 2 ; i--) {
-					out.printf("    <entry file='%s'/>%n", XElement.sanitize(ui.fileRecent.getItem(i).getText()));
-				}
-				out.printf("  </recent>%n");
-				out.printf("</mapeditor-config>%n");
-			} finally {
-				out.close();
+		try (PrintWriter out = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream("open-ig-mapeditor-config.xml"), 64 * 1024), "UTF-8"))) {
+			out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
+			out.printf("<mapeditor-config>%n");
+			out.printf("  <window x='%d' y='%d' width='%d' height='%d' state='%d'/>%n", getX(), getY(), getWidth(), getHeight(), getExtendedState());
+			out.printf("  <language id='%s'/>%n", ui.languageEn.isSelected() ? "en" : "hu");
+			out.printf("  <splitters main='%d' preview='%d' surfaces='%d'/>%n", split.getDividerLocation(), toolSplit.getDividerLocation(), featuresSplit.getDividerLocation());
+			out.printf("  <editmode type='%s'/>%n", ui.buildButton.isSelected());
+			out.printf("  <tabs selected='%d'/>%n", propertyTab.getSelectedIndex());
+			out.printf("  <lights preview='%d' map='%s'/>%n", alphaSlider.getValue(), Float.toString(renderer.alpha));
+			out.printf("  <filter surface='%s' building='%s'/>%n", XElement.sanitize(filterSurface.getText()), XElement.sanitize(filterBuilding.getText()));
+			out.printf("  <allocation worker='%s' strategy='%d'/>%n", ui.allocationPanel.availableWorkers.getText(), ui.allocationPanel.strategies.getSelectedIndex());
+			out.printf("  <view buildings='%s' minimap='%s' textboxes='%s' zoom='%s' standard-fonts='%s' placement-hints='%s'/>%n", ui.viewShowBuildings.isSelected(), 
+					ui.viewSymbolicBuildings.isSelected(), ui.viewTextBackgrounds.isSelected(), Double.toString(renderer.scale), ui.viewStandardFonts.isSelected()
+					, ui.viewPlacementHints.isSelected());
+			out.printf("  <custom-surface-names>%n");
+			for (TileEntry te : surfaceTableModel.rows) {
+				out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XElement.sanitize(te.surface), XElement.sanitize(te.name));
 			}
+			out.printf("  </custom-surface-names>%n");
+			out.printf("  <custom-building-names>%n");
+			for (TileEntry te : buildingTableModel.rows) {
+				out.printf("    <tile id='%s' type='%s' name='%s'/>%n", te.id, XElement.sanitize(te.surface), XElement.sanitize(te.name));
+			}
+			out.printf("  </custom-building-names>%n");
+			out.printf("  <recent>%n");
+			for (int i = ui.fileRecent.getItemCount() - 1; i >= 2 ; i--) {
+				out.printf("    <entry file='%s'/>%n", XElement.sanitize(ui.fileRecent.getItem(i).getText()));
+			}
+			out.printf("  </recent>%n");
+			out.printf("</mapeditor-config>%n");
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
@@ -2794,7 +2783,7 @@ public class MapEditor extends JFrame {
 		out.printf("<?xml version='1.0' encoding='UTF-8'?>%n");
 		out.printf("<map x='%d' y='%d' width='%d' height='%d'>%n", renderer.selectedRectangle.x, renderer.selectedRectangle.y, renderer.selectedRectangle.width, renderer.selectedRectangle.height);
 		
-		Map<Object, Object> memory = new IdentityHashMap<Object, Object>();
+		Map<Object, Object> memory = new IdentityHashMap<>();
 		for (int i = renderer.selectedRectangle.x; i < renderer.selectedRectangle.x + renderer.selectedRectangle.width; i++) {
 			for (int j = renderer.selectedRectangle.y; j > renderer.selectedRectangle.y - renderer.selectedRectangle.height; j--) {
 				if (surface) {

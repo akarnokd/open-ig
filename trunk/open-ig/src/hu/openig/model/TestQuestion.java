@@ -24,7 +24,7 @@ public class TestQuestion {
 	/** The question label. */
 	public String label;
 	/** The available answers. */
-	public final List<TestAnswer> answers = new ArrayList<TestAnswer>();
+	public final List<TestAnswer> answers = new ArrayList<>();
 	/**
 	 * Choose an option and mark its answer as selected while deselect the others.
 	 * @param id the id to select

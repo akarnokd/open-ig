@@ -336,10 +336,9 @@ class Residue0 extends FuncResidue {
 			}
 		}
 		if (used != 0) {
-			return (f01inverse(vb, vl, in, used, 0));
-		} else {
-			return (0);
+			return f01inverse(vb, vl, in, used, 0);
 		}
+		return 0;
 	}
 	/**
 	 * Lookup residue 0.

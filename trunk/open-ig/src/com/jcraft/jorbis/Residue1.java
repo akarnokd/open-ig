@@ -51,8 +51,7 @@ class Residue1 extends Residue0 {
 		}
 		if (used != 0) {
 			return (f01inverse(vb, vl, in, used, 1));
-		} else {
-			return 0;
 		}
+		return 0;
 	}
 }

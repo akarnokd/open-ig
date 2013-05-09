@@ -11,6 +11,9 @@ package hu.openig.utils;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
@@ -102,7 +105,7 @@ public final class GUIUtils {
     	DefaultComboBoxModel<T> model = (DefaultComboBoxModel<T>)combobox.getModel();
 		for (int i = 0; i < model.getSize(); i++) {
     		T t = model.getElementAt(i);
-    		if (U.equal(t, item)) {
+    		if (Objects.equals(t, item)) {
     			idx = i;
     			break;
     		}
@@ -130,8 +133,8 @@ public final class GUIUtils {
      * @return the set of components
      */
     public static Set<JComponent> allComponents(JComponent parent) {
-    	Set<JComponent> result = U.newHashSet();
-    	Deque<JComponent> queue = U.newLinkedList();
+    	Set<JComponent> result = new HashSet<>();
+    	Deque<JComponent> queue = new LinkedList<>();
     	queue.add(parent);
     	while (!queue.isEmpty()) {
     		JComponent c = queue.removeFirst();

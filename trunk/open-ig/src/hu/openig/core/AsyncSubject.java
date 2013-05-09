@@ -58,7 +58,7 @@ public class AsyncSubject<T, E extends Exception> implements AsyncResult<T, E> {
 	/** The value has already been set. */
 	protected boolean done;
 	/** The list of clients. */
-	protected final List<AsyncResult<? super T, ? super E>> clients = new ArrayList<AsyncResult<? super T, ? super E>>();
+	protected final List<AsyncResult<? super T, ? super E>> clients = new ArrayList<>();
 	/** The lock protecting the data structures. */
 	protected final Lock lock = new ReentrantLock();
 	/** The waiting condition. */

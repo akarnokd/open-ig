@@ -240,7 +240,7 @@ public class UPnPGatewayDevice {
 
         conn.getOutputStream().write(soapBodyBytes);
 
-        Map<String, String> nameValue = new HashMap<String, String>();
+        Map<String, String> nameValue = new HashMap<>();
         XMLReader parser = XMLReaderFactory.createXMLReader();
         parser.setContentHandler(new UPnPNameValueHandler(nameValue));
         if (conn.getResponseCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) {
@@ -254,11 +254,10 @@ public class UPnPGatewayDevice {
             }
             conn.disconnect();
             return nameValue;
-        } else {
-            parser.parse(new InputSource(conn.getInputStream()));
-            conn.disconnect();
-            return nameValue;
         }
+        parser.parse(new InputSource(conn.getInputStream()));
+        conn.disconnect();
+        return nameValue;
     }
 
     /**
@@ -321,7 +320,7 @@ public class UPnPGatewayDevice {
     public boolean addPortMapping(int externalPort, int internalPort,
                                   String internalClient, String protocol, String description)
             throws IOException, SAXException {
-        Map<String, String> args = new HashMap<String, String>();
+        Map<String, String> args = new HashMap<>();
         args.put("NewRemoteHost", "");    // wildcard, any remote host matches
         args.put("NewExternalPort", Integer.toString(externalPort));
         args.put("NewProtocol", protocol);
@@ -364,7 +363,7 @@ public class UPnPGatewayDevice {
         portMappingEntry.setExternalPort(externalPort);
         portMappingEntry.setProtocol(protocol);
 
-        Map<String, String> args = new HashMap<String, String>();
+        Map<String, String> args = new HashMap<>();
         args.put("NewRemoteHost", ""); // wildcard, any remote host matches
         args.put("NewExternalPort", Integer.toString(externalPort));
         args.put("NewProtocol", protocol);
@@ -416,7 +415,7 @@ public class UPnPGatewayDevice {
     public boolean getGenericPortMappingEntry(int index,
                                               final UPnPPortMappingEntry portMappingEntry)
             throws IOException, SAXException {
-        Map<String, String> args = new HashMap<String, String>();
+        Map<String, String> args = new HashMap<>();
         args.put("NewPortMappingIndex", Integer.toString(index));
 
         Map<String, String> nameValue = simpleUPnPcommand(controlURL,
@@ -484,7 +483,7 @@ public class UPnPGatewayDevice {
      */
     public boolean deletePortMapping(int externalPort, String protocol)
             throws IOException, SAXException {
-        Map<String, String> args = new HashMap<String, String>();
+        Map<String, String> args = new HashMap<>();
         args.put("NewRemoteHost", "");
         args.put("NewExternalPort", Integer.toString(externalPort));
         args.put("NewProtocol", protocol);
@@ -823,7 +822,7 @@ public class UPnPGatewayDevice {
      * @param src the source
      * @return the combined
      */
-    private String copyOrCatUrl(String dst, String src) {
+    private static String copyOrCatUrl(String dst, String src) {
         if (src != null) {
             if (src.startsWith("http://")) {
                 dst = src;

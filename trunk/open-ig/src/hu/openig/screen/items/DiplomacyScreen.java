@@ -58,6 +58,8 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +146,7 @@ public class DiplomacyScreen extends ScreenBase {
 	/** Indicate that the message exchange is in progress. 0 = no message, 1 send, 2 response */
 	int messagePhase;
 	/** The negotiation memory. */
-	final Set<Negotiate> mentioned = U.newHashSet();
+	final Set<Negotiate> mentioned = new HashSet<>();
 	/** The relation when the conversation started. */
 	double initialRelation;
 	/** Quit talking. */
@@ -557,7 +559,7 @@ public class DiplomacyScreen extends ScreenBase {
 					stanceColor = TextRenderer.LIGHT_GREEN;
 				}
 			}
-			List<TextSegment> tss = U.newArrayList();
+			List<TextSegment> tss = new ArrayList<>();
 			tss.add(new TextSegment(String.format("%.1f", r), stanceColor));
 			tss.add(new TextSegment(" (", TextRenderer.GREEN));
 			tss.add(new TextSegment(fill, c));
@@ -906,7 +908,7 @@ public class DiplomacyScreen extends ScreenBase {
 			int cellSize = 18;
 			
 			// filter diplomatic races
-			List<Player> players = U.newArrayList();
+			List<Player> players = new ArrayList<>();
 			players.add(player());
 			for (Player p : player().knownPlayers().keySet()) {
 				if (!p.noDiplomacy) {
@@ -1166,7 +1168,7 @@ public class DiplomacyScreen extends ScreenBase {
 			if (neg.type == NegotiateType.ALLY) {
 				negotiationTitle.text(get("diplomacy.type." + neg.type), true).visible(true);
 
-				Set<Player> others = new LinkedHashSet<Player>(player().knownPlayers().keySet());
+				Set<Player> others = new LinkedHashSet<>(player().knownPlayers().keySet());
 				others.remove(other);
 				others.retainAll(other.knownPlayers().keySet());
 
@@ -1185,7 +1187,7 @@ public class DiplomacyScreen extends ScreenBase {
 			} else {
 				if (neg.approaches.size() > 1) {
 					
-					Set<ApproachType> at = U.newHashSet();
+					Set<ApproachType> at = new HashSet<>();
 					for (Approach a : neg.approaches) {
 						at.add(a.type);
 					}
@@ -1254,7 +1256,6 @@ public class DiplomacyScreen extends ScreenBase {
 			approachList.visible(false);
 			negotiationTitle.visible(false);
 		} else {
-			@SuppressWarnings("unchecked")
 			Pair<Negotiate, ApproachType> a = (Pair<Negotiate, ApproachType>)approachList.items.get(index).userObject;
 			
 			approachList.visible(false);
@@ -1278,7 +1279,6 @@ public class DiplomacyScreen extends ScreenBase {
 			moneyList.visible(false);
 			negotiationTitle.visible(false);
 		} else {
-			@SuppressWarnings("unchecked")
 			Pair<Negotiate, Integer> a = (Pair<Negotiate, Integer>)moneyList.items.get(index).userObject;
 			moneyList.visible(false);
 			
@@ -1314,7 +1314,6 @@ public class DiplomacyScreen extends ScreenBase {
 			enemies.visible(false);
 			negotiationTitle.visible(false);
 		} else {
-			@SuppressWarnings("unchecked")
 			Pair<Negotiate, Player> a = (Pair<Negotiate, Player>)enemies.items.get(index).userObject;
 			enemies.visible(false);
 			

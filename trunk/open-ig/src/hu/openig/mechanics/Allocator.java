@@ -40,12 +40,12 @@ public final class Allocator {
 	 * @return a list of Future objects if the caller wants to do something when they are complete
 	 */
 	public static List<Future<?>> compute(World world, ExecutorService pool) {
-		List<Future<?>> result = new ArrayList<Future<?>>();
+		List<Future<?>> result = new ArrayList<>();
 		for (final Planet ras : world.planets.values()) {
 			if (ras.surface.buildings.size() == 0) {
 				continue;
 			}
-			final List<BuildingAllocationWorker> baw = U.newArrayList();
+			final List<BuildingAllocationWorker> baw = new ArrayList<>();
 			for (Building b : ras.surface.buildings.iterable()) {
 				if (b.enabled && b.isComplete()) {
 					baw.add(b.getAllocationWorker());
@@ -106,7 +106,7 @@ public final class Allocator {
 		if (planet.surface.buildings.size() == 0) {
 			return;
 		}
-		final List<BuildingAllocationWorker> baw = U.newArrayList();
+		final List<BuildingAllocationWorker> baw = new ArrayList<>();
 		for (Building b : planet.surface.buildings.iterable()) {
 			if (b.enabled) {
 				baw.add(b.getAllocationWorker());
@@ -212,9 +212,9 @@ public final class Allocator {
 	 */
 	static void doBattleStrategy(List<BuildingAllocationWorker> ras, 
 			int availableWorkers) {
-		List<BuildingAllocationWorker> energy = U.newArrayList();
-		List<BuildingAllocationWorker> defense = U.newArrayList();
-		List<BuildingAllocationWorker> rest = U.newArrayList();
+		List<BuildingAllocationWorker> energy = new ArrayList<>();
+		List<BuildingAllocationWorker> defense = new ArrayList<>();
+		List<BuildingAllocationWorker> rest = new ArrayList<>();
 		
 		for (BuildingAllocationWorker w : ras) {
 			boolean op = Building.isOperational(w.efficiencyBound);
@@ -247,7 +247,7 @@ public final class Allocator {
 			energyAvailable -= w.energyDemand * w.workerAllocated / w.workerDemand;
 			availableWorkers -= w.workerAllocated;
 		}
-		List<List<BuildingAllocationWorker>> wss = U.newArrayList();
+		List<List<BuildingAllocationWorker>> wss = new ArrayList<>();
 		wss.add(defense);
 		wss.add(rest);
 		for (List<BuildingAllocationWorker> ws : wss) {

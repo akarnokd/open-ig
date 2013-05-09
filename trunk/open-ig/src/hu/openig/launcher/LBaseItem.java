@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class LBaseItem {
 	/** The descriptions in various languages. */
-	public final List<LDescription> descriptions = new ArrayList<LDescription>();
+	public final List<LDescription> descriptions = new ArrayList<>();
 	/**
 	 * Retrieve the description for the given language.
 	 * @param language the language code

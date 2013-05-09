@@ -62,8 +62,8 @@ public enum RoadType {
 	private static final Map<Integer, RoadType> INDEX_MAP;
 	/** Initialize MAP. */
 	static {
-		MAP = new HashMap<Integer, RoadType>();
-		INDEX_MAP = new HashMap<Integer, RoadType>();
+		MAP = new HashMap<>();
+		INDEX_MAP = new HashMap<>();
 		for (RoadType rt : values()) {
 			MAP.put(rt.pattern, rt);
 			INDEX_MAP.put(rt.index, rt);

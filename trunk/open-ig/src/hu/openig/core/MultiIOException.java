@@ -24,7 +24,7 @@ public class MultiIOException extends IOException {
 	/** */
 	private static final long serialVersionUID = -4142647125004280002L;
 	/** The list of suppressed exceptions. */
-	protected final List<IOException> exceptions = new ArrayList<IOException>();
+	protected final List<IOException> exceptions = new ArrayList<>();
 	/**
 	 * Adds the exception to the multi-IO exception. Creates
 	 * a new multi-IO exception if ex is null.

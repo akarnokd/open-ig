@@ -50,9 +50,9 @@ public class VehicleList extends UIContainer {
 	/** The currently selected inventory item. */
 	public InventoryItem selectedItem;
 	/** The items. */
-	public final List<InventoryItem> items = new ArrayList<InventoryItem>();
+	public final List<InventoryItem> items = new ArrayList<>();
 	/** The grouping map. */
-	public final Map<ResearchType, InventoryItemGroup> map = new LinkedHashMap<ResearchType, InventoryItemGroup>();
+	public final Map<ResearchType, InventoryItemGroup> map = new LinkedHashMap<>();
 	/** The common resources. */
 	final CommonResources commons;
 	/** 

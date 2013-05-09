@@ -100,6 +100,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -262,23 +263,23 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Show the screen navigation buttons? */
 	boolean showSidebarButtons = true;
 	/** The set where the vehicles may be placed. */
-	final Set<Location> battlePlacements = U.newHashSet();
+	final Set<Location> battlePlacements = new HashSet<>();
 	/** The ground war units. */
-	final List<GroundwarUnit> units = U.newArrayList();
+	final List<GroundwarUnit> units = new ArrayList<>();
 	/** The guns. */
-	final List<GroundwarGun> guns = U.newArrayList();
+	final List<GroundwarGun> guns = new ArrayList<>();
 	/** The user is dragging a selection box. */
 	boolean selectionMode;
 	/** The pathfinding routine. */
 	Pathfinding pathfinding;
 	/** The current animating explosions. */
-	Set<GroundwarExplosion> explosions = U.newHashSet();
+	Set<GroundwarExplosion> explosions = new HashSet<>();
 	/** The active rockets. */
-	Set<GroundwarRocket> rockets = U.newHashSet();
+	Set<GroundwarRocket> rockets = new HashSet<>();
 	/** The groundwar animation simulator. */
 	Closeable simulator;
 	/** The helper map to list ground units to be rendered at a specific location. */
-	final Map<Location, Set<GroundwarUnit>> unitsAtLocation = U.newHashMap();
+	final Map<Location, Set<GroundwarUnit>> unitsAtLocation = new HashMap<>();
 	/** The direct attack units. */
 	final EnumSet<GroundwarUnitType> directAttackUnits = EnumSet.of(
 			GroundwarUnitType.ARTILLERY,
@@ -303,7 +304,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			GroundwarUnitType.ROCKET_JAMMER
 	);
 	/** The list of remaining units to place. */
-	final LinkedList<GroundwarUnit> unitsToPlace = U.newLinkedList();
+	final LinkedList<GroundwarUnit> unitsToPlace = new LinkedList<>();
 	/** Start the battle. */
 	@DragSensitive
 	UIImageButton startBattle;
@@ -316,7 +317,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** How many steps to yield before replanning. */
 	static final int YIELD_TTL = 10 * 1000 / SIMULATION_DELAY;
 	/** List of requests about path planning. */
-	final Set<PathPlanning> pathsToPlan = U.newHashSet();
+	final Set<PathPlanning> pathsToPlan = new HashSet<>();
 	/** Plan only the given amount of paths per tick. */
 	static final int PATHS_PER_TICK = 10;
 	/** A mine. */
@@ -327,13 +328,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		public double damage;
 	}
 	/** The grouping of structures. */
-	final Map<Object, Integer> groups = U.newHashMap();
+	final Map<Object, Integer> groups = new HashMap<>();
 	/**
 	 * The mine locations.
 	 */
-	final Map<Location, Mine> mines = U.newHashMap();
+	final Map<Location, Mine> mines = new HashMap<>();
 	/** Set of minelayers currently placing a mine. */
-	final Set<GroundwarUnit> minelayers = U.newHashSet();
+	final Set<GroundwarUnit> minelayers = new HashSet<>();
 	/** Indicate the deploy spray mode. */
 	boolean deploySpray;
 	/** Indicate the undeploy spray mode. */
@@ -365,7 +366,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** The weather sound is running? */
 	Action0 weatherSoundRunning;
 	/** The map for pathfinding passability check. */
-	final Map<Location, Set<GroundwarUnit>> unitsForPathfinding = U.newHashMap();
+	final Map<Location, Set<GroundwarUnit>> unitsForPathfinding = new HashMap<>();
 	/** Disable AI unit management. */
 	boolean noAI;
 	@Override
@@ -1632,9 +1633,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		 * @param ps the statistics
 		 */
 		void renderProblems(Graphics2D g2, PlanetStatistics ps) {
-			Set<PlanetProblems> combined = new HashSet<PlanetProblems>();
-			combined.addAll(ps.problems.keySet());
-			combined.addAll(ps.warnings.keySet());
+			Set<PlanetProblems> combined = new HashSet<>();
+			combined.addAll(ps.problems);
+			combined.addAll(ps.warnings);
 			
 			if (combined.size() > 0) {
 				int w = combined.size() * 11 - 1;
@@ -1705,7 +1706,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		
 	}
 	/** The cached zigzag map. */
-	static final Map<Pair<Integer, Integer>, Pair<int[], int[]>> ZIGZAGS = U.newHashMap();
+	static final Map<Pair<Integer, Integer>, Pair<int[], int[]>> ZIGZAGS = new HashMap<>();
 	/**
 	 * Compute the X, Y coordinates of the linear address in the zig-zagged coordinate system
 	 * enclosed by a rectangle of width and height.
@@ -1766,17 +1767,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		return new Point(xs[linear], ys[linear]);
 	}
 	
-//	public static void main(String[] args) {
-//		System.out.println(deZigZag(5, 5, 2));
-//	}
-	
 	/**
 	 * Prepare the surface tiles in parallel.
 	 * @param surface the target planet surface
 	 */
 	void prepareTilesAsync(PlanetSurface surface) {
 		long time = System.nanoTime();
-		List<Future<?>> futures = new LinkedList<Future<?>>();
+		List<Future<?>> futures = new LinkedList<>();
 		for (final SurfaceFeature sf : surface.features) {
 			futures.add(commons.pool.submit(new Runnable() {
 				@Override
@@ -2360,7 +2357,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (b != null) {
 				buildingInfoName.text(b.type.name);
 				
-				Set<UIComponent> tohide = new HashSet<UIComponent>(Arrays.asList(
+				Set<UIComponent> tohide = U.newSet(
 						undamaged,
 						damaged,		
 						repairing,		
@@ -2372,7 +2369,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						stateNoEnergy,		
 						progressLower,		
 						progressUpper		
-				));
+				);
 				
 				if (b.isConstructing()) {
 					energy.text("-");
@@ -2595,7 +2592,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Demolish the selected building. */
 	void doDemolish() {
 		boolean fortif = false;
-		for (GroundwarGun g : new ArrayList<GroundwarGun>(guns)) {
+		for (GroundwarGun g : new ArrayList<>(guns)) {
 			if (g.building == currentBuilding) {
 				guns.remove(g);
 				g.selected = false;
@@ -2934,7 +2931,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		/** The upgrade static label. */
 		UIImage upgradeLabel;
 		/** The upgrade steps. */
-		final List<UIImageButton> steps = new ArrayList<UIImageButton>();
+		final List<UIImageButton> steps = new ArrayList<>();
 		/** No upgrades. */
 		private UIImageButton none;
 		/** Construct the panel. */
@@ -3539,7 +3536,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the set of locations 
 	 */
 	Set<Location> getDeploymentLocations(boolean atBuildings, boolean skipEdge) {
-		Set<Location> result = U.newHashSet();;
+		Set<Location> result = new HashSet<>();;
 		if (atBuildings) {
 			for (Building b : planet().surface.buildings.iterable()) {
 				result.addAll(placeAround(b));
@@ -3557,7 +3554,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the set of available placement locations
 	 */
 	Set<Location> placeAround(Building b) {
-		Set<Location> result = U.newHashSet();
+		Set<Location> result = new HashSet<>();
 		for (int x = b.location.x - 3; x < b.location.x + b.tileset.normal.width + 3; x++) {
 			for (int y = b.location.y + 3; y > b.location.y - b.tileset.normal.height - 3; y--) {
 				if (surface().placement.canPlaceBuilding(x, y)) {
@@ -3573,7 +3570,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the set of available placement locations
 	 */
 	Set<Location> placeEdge(int distance) {
-		Set<Location> result = U.newHashSet();
+		Set<Location> result = new HashSet<>();
 		int w = planet().surface.width;
 		int h = planet().surface.height;
 		int n = 0;
@@ -3648,10 +3645,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		units.clear();
 		unitsAtLocation.clear();
 		unitsForPathfinding.clear();
-		LinkedList<Location> locs = new LinkedList<Location>();
+		LinkedList<Location> locs = new LinkedList<>();
 		for (Building b : surface().buildings.iterable()) {
 			if (b.type.kind.equals("MainBuilding")) {
-				Set<Location> locations = new HashSet<Location>();
+				Set<Location> locations = new HashSet<>();
 				
 				for (int x = b.location.x - 1; x < b.location.x + b.tileset.normal.width + 1; x++) {
 					for (int y = b.location.y + 1; y > b.location.y - b.tileset.normal.height - 1; y--) {
@@ -3734,7 +3731,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (unitsAt == null) {
 			return;
 		}
-		List<GroundwarUnit> multiple = new ArrayList<GroundwarUnit>(unitsAt);
+		List<GroundwarUnit> multiple = new ArrayList<>(unitsAt);
 		// order by y first, x later
 		Collections.sort(multiple, new Comparator<GroundwarUnit>() {
 			@Override
@@ -3806,7 +3803,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param cy the cell coordinates
 	 */
 	void drawRockets(Graphics2D g2, int cx, int cy) {
-		List<GroundwarRocket> multiple = U.newArrayList();
+		List<GroundwarRocket> multiple = new ArrayList<>();
 		for (GroundwarRocket u : rockets) {
 			if ((int)Math.floor(u.x - 1) == cx && (int)Math.floor(u.y - 1) == cy) {
 				multiple.add(u);
@@ -4160,7 +4157,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		/** The unit. */
 		final GroundwarUnit unit;
 		/** The computed path. */
-		final List<Location> path = U.newArrayList();
+		final List<Location> path = new ArrayList<>();
 		/**
 		 * Constructor. Initializes the fields.
 		 * @param initial the initial location
@@ -4268,10 +4265,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		doPathPlannings();
 		
 		// destruction animations
-		for (GroundwarExplosion exp : new ArrayList<GroundwarExplosion>(explosions)) {
+		for (GroundwarExplosion exp : new ArrayList<>(explosions)) {
 			updateExplosion(exp);
 		}
-		for (GroundwarRocket rocket : new ArrayList<GroundwarRocket>(rockets)) {
+		for (GroundwarRocket rocket : new ArrayList<>(rockets)) {
 			updateRocket(rocket);
 		}
 		Iterator<GroundwarGun> itg = guns.iterator();
@@ -4312,7 +4309,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			// map all units to locations
 			long t0 = System.nanoTime();
 			
-			List<Future<PathPlanning>> inProgress = U.newLinkedList();
+			List<Future<PathPlanning>> inProgress = new LinkedList<>();
 			Iterator<PathPlanning> it = pathsToPlan.iterator();
 			int i = PATHS_PER_TICK;
 			while (i-- > 0 && it.hasNext()) {
@@ -5055,9 +5052,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (Math.abs(diff) < anglePerStep) {
 			gun.angle = targetAngle;
 			return true;
-		} else {
-			gun.angle += Math.signum(diff) * anglePerStep;
 		}
+		gun.angle += Math.signum(diff) * anglePerStep;
 		return false;
 	}
 	/**
@@ -5093,7 +5089,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the units in range
 	 */
 	List<GroundwarUnit> unitsInRange(GroundwarUnit g) {
-		List<GroundwarUnit> result = U.newArrayList();
+		List<GroundwarUnit> result = new ArrayList<>();
 		for (GroundwarUnit u : units) {
 			if (u.owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)
@@ -5109,7 +5105,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the units in range
 	 */
 	List<Building> buildingsInRange(GroundwarUnit g) {
-		List<Building> result = U.newArrayList();
+		List<Building> result = new ArrayList<>();
 		for (Building u : surface().buildings.iterable()) {
 			if (planet().owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u, g.model.maxRange)
@@ -5125,7 +5121,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the units in range
 	 */
 	List<GroundwarUnit> unitsInRange(GroundwarGun g) {
-		List<GroundwarUnit> result = U.newArrayList();
+		List<GroundwarUnit> result = new ArrayList<>();
 		for (GroundwarUnit u : units) {
 			if (u.owner != g.owner && !u.isDestroyed() 
 					&& unitInRange(g, u)) {
@@ -5321,9 +5317,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (Math.abs(ra.diff) < anglePerStep) {
 			u.angle = ra.targetAngle;
 			return true;
-		} else {
-			u.angle += Math.signum(ra.diff) * anglePerStep;
 		}
+		u.angle += Math.signum(ra.diff) * anglePerStep;
 		return false;
 	}
 	/**
@@ -5599,7 +5594,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @return the nearest or null if no units nearby
 	 */
 	GroundwarUnit findNearest(final int mx, final int my, Player enemyOf) {
-		List<GroundwarUnit> us = new ArrayList<GroundwarUnit>();
+		List<GroundwarUnit> us = new ArrayList<>();
 		for (GroundwarUnit u1 : units) {
 			if (u1.owner != enemyOf) {
 				Rectangle r = unitRectangle(u1);
@@ -5782,14 +5777,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		Set<GroundwarUnit> set = unitsAtLocation.get(next);
 		if (set == null) {
-			set = U.newHashSet();
+			set = new HashSet<>();
 			unitsAtLocation.put(next, set);
 		}
 		set.add(u);
 
 		set = unitsForPathfinding.get(pfl2);
 		if (set == null) {
-			set = U.newHashSet();
+			set = new HashSet<>();
 			unitsForPathfinding.put(pfl2, set);
 		}
 		set.add(u);
@@ -5802,7 +5797,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		Location current = unitLocation(u);
 		Set<GroundwarUnit> set = unitsAtLocation.get(current);
 		if (set == null) {
-			set = U.newHashSet();
+			set = new HashSet<>();
 			unitsAtLocation.put(current, set);
 		}
 		set.add(u);
@@ -5810,7 +5805,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		Location pfl = u.location();
 		set = unitsForPathfinding.get(pfl);
 		if (set == null) {
-			set = U.newHashSet();
+			set = new HashSet<>();
 			unitsForPathfinding.put(pfl, set);
 		}
 		set.add(u);
@@ -5858,7 +5853,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		
 		InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
 		
-		LinkedList<GroundwarUnit> gus = U.newLinkedList();
+		LinkedList<GroundwarUnit> gus = new LinkedList<>();
 		// create units
 		createGroundUnits(atBuildings, iis.iterable(), gus);
 		
@@ -6108,7 +6103,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void removeUnitAt(int mx, int my) {
 		Location lm = render.getLocationAt(mx, my);
-		for (GroundwarUnit u : new ArrayList<GroundwarUnit>(units)) {
+		for (GroundwarUnit u : new ArrayList<>(units)) {
 			if ((int)Math.floor(u.x) == lm.x && (int)Math.floor(u.y) == lm.y) {
 				battlePlacements.add(lm);
 				units.remove(u);
@@ -6160,7 +6155,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param groupNo the group number
 	 */
 	void assignGroup(int groupNo) {
-		List<Owned> selected = U.newArrayList();
+		List<Owned> selected = new ArrayList<>();
 		boolean own = false;
 		boolean enemy = false;
 		for (GroundwarUnit u : units) {
@@ -6339,7 +6334,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		/** Background image. */
 		BufferedImage background;
 		/** The group buttons. */
-		final List<UIImageButton> groupButtons = U.newArrayList();
+		final List<UIImageButton> groupButtons = new ArrayList<>();
 		/** Construct the tank panel. */
 		public TankPanel() {
 			background = commons.colony().tankPanel;
@@ -6448,7 +6443,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			commons.text().paintTo(g2, (width - w) / 2 + 1, 10, tsize, TextRenderer.RED, n);
 			commons.text().paintTo(g2, (width - w) / 2, 10, tsize, TextRenderer.YELLOW, n);
 			
-			Set<Integer> selgr = U.newHashSet(groups.values());
+			Set<Integer> selgr = new HashSet<>(groups.values());
 			selgr.add(-1);
 			int ibx = 5;
 			int ibi = 0;

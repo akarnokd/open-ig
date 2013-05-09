@@ -23,7 +23,7 @@ public final class Exceptions {
 	/**
 	 * The set to remember exception stacktraces.
 	 */
-	protected static final ConcurrentMap<String, String> HISTORY = new ConcurrentHashMap<String, String>();
+	protected static final ConcurrentMap<String, String> HISTORY = new ConcurrentHashMap<>();
 	/**
 	 * Add a throwable to the history and show it if this is the first time.
 	 * @param t the throwable

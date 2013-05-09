@@ -32,7 +32,7 @@ public class MessageObject implements MessageSerializable {
 	/** The object name. */
 	public final String name;
 	/** The attribute map. */
-	protected final Map<String, Object> attributes = new LinkedHashMap<String, Object>();
+	protected final Map<String, Object> attributes = new LinkedHashMap<>();
 	/**
 	 * Constructs an empty message object.
 	 * @param name the name

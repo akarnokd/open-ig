@@ -17,10 +17,10 @@ import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
@@ -40,7 +40,7 @@ public class VerifyCampaign {
 	/** The game definition. */
 	GameDefinition def;
 	/** All language labels. */
-	final Map<String, Labels> labels = U.newHashMap();
+	final Map<String, Labels> labels = new HashMap<>();
 	/** Base languages. */
 	final String[] languages = { "en", "hu", "de", "fr" };
 	/**
@@ -249,7 +249,7 @@ public class VerifyCampaign {
 	void verifyTech() {
 		XElement xtechs = rl.getXML(def.tech);
 		XElement xbattle = rl.getXML(def.battle);
-		Map<String, XElement> techMap = U.newHashMap();
+		Map<String, XElement> techMap = new HashMap<>();
 		for (XElement xtech : xtechs.childrenWithName("item")) {
 			String id = xtech.get("id");
 			techMap.put(id, xtech);

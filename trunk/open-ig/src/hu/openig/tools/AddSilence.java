@@ -23,35 +23,35 @@ public final class AddSilence {
 	 * @throws Exception ignored
 	 */
 	public static void main(String[] args) throws Exception {
-		RandomAccessFile raf = new RandomAccessFile("audio/de/messages/douglas_rebel_governor.wav", "rw");
-		int len = 2205 * 20;
-		raf.seek(4);
-		int clen = Integer.reverseBytes(raf.readInt());
-		raf.seek(4);
-		raf.writeInt(Integer.reverseBytes(clen + len));
-		raf.seek(0x28);
-		int dlen = Integer.reverseBytes(raf.readInt());
-		raf.seek(0x28);
-		raf.writeInt(Integer.reverseBytes(dlen + len));
-		
-		byte[] prev = new byte[len];
-		int pc = len;
-		Arrays.fill(prev, (byte)0x80);
-		byte[] next = new byte[len];
-		int nc = 0;
-		// replaceloop
-		do {
-			long p = raf.getFilePointer();
-			nc = raf.read(next);
-			raf.seek(p);
-			raf.write(prev, 0, pc);
-			pc = nc;
-			// swap buffers
-			byte[] tmp = prev;
-			prev = next;
-			next = tmp;
-		} while (nc >= 0);
-		raf.close();
+		try (RandomAccessFile raf = new RandomAccessFile("audio/de/messages/douglas_rebel_governor.wav", "rw")) {
+			int len = 2205 * 20;
+			raf.seek(4);
+			int clen = Integer.reverseBytes(raf.readInt());
+			raf.seek(4);
+			raf.writeInt(Integer.reverseBytes(clen + len));
+			raf.seek(0x28);
+			int dlen = Integer.reverseBytes(raf.readInt());
+			raf.seek(0x28);
+			raf.writeInt(Integer.reverseBytes(dlen + len));
+			
+			byte[] prev = new byte[len];
+			int pc = len;
+			Arrays.fill(prev, (byte)0x80);
+			byte[] next = new byte[len];
+			int nc = 0;
+			// replaceloop
+			do {
+				long p = raf.getFilePointer();
+				nc = raf.read(next);
+				raf.seek(p);
+				raf.write(prev, 0, pc);
+				pc = nc;
+				// swap buffers
+				byte[] tmp = prev;
+				prev = next;
+				next = tmp;
+			} while (nc >= 0);
+		}
 	}
 
 }

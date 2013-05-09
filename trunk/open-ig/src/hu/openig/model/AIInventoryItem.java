@@ -27,7 +27,7 @@ public class AIInventoryItem {
 	/** The inventory item tag. */
 	public String tag;
 	/** The copy of the inventory slots. */
-	public final List<InventorySlot> slots = new ArrayList<InventorySlot>();
+	public final List<InventorySlot> slots = new ArrayList<>();
 	/**
 	 * Constructs an empty object.
 	 */

@@ -10,7 +10,6 @@ package hu.openig.tools;
 
 import hu.openig.core.Func1E;
 import hu.openig.core.Pair;
-import hu.openig.utils.U;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -21,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
@@ -161,7 +161,7 @@ public class Ani2009Writer implements Closeable {
 	 */
 	static Pair<int[], Map<Integer, Integer>> uniqueColors(BufferedImage img) {
 		int[] pxs = img.getRGB(0, 0, img.getWidth(), img.getHeight(), null, 0, img.getWidth());
-		Map<Integer, Integer> colors = U.newHashMap();
+		Map<Integer, Integer> colors = new HashMap<>();
 		int[] result = new int[256];
 		
 		for (int c : pxs) {

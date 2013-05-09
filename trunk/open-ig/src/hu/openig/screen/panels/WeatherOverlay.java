@@ -35,7 +35,7 @@ public class WeatherOverlay {
 	/** Snow mode velocity. */
 	public static final double SNOW_VELOCITY = 4;
 	/** The individual drops. */
-	private final List<WeatherDrop> drops = new ArrayList<WeatherDrop>(MAX_DROPS);
+	private final List<WeatherDrop> drops = new ArrayList<>(MAX_DROPS);
 	/** Current horizontal wind speed. */
 	private double wind;
 	/** The current weather type. */

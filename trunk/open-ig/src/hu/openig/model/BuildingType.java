@@ -28,7 +28,7 @@ public class BuildingType {
 	/** The display description. */
 	public String description;
 	/** The tile set for various race (more like techraces). */
-	public final Map<String, TileSet> tileset = new HashMap<String, TileSet>();
+	public final Map<String, TileSet> tileset = new HashMap<>();
 	/** The hit point amount. */
 	public int hitpoints;
 	/** The build cost. */
@@ -38,7 +38,7 @@ public class BuildingType {
 	/** The build limit: negative value represents a per-kind build limit. */
 	public int limit;
 	/** The planet type (surface) exception set. */
-	public final Set<String> except = new HashSet<String>();
+	public final Set<String> except = new HashSet<>();
 	/** The required research to be available. */
 	public ResearchType research;
 	/** Is the operation level dependent on the supplied energy and worker amounts? */
@@ -46,9 +46,9 @@ public class BuildingType {
 	/** The primary resource to display in the info panel. */
 	public String primary;
 	/** The resources associated with this building type. */
-	public final Map<String, Resource> resources = new HashMap<String, Resource>();
+	public final Map<String, Resource> resources = new HashMap<>();
 	/** The ordered list of upgrades for this building, if any. */
-	public final List<Upgrade> upgrades = new ArrayList<Upgrade>();
+	public final List<Upgrade> upgrades = new ArrayList<>();
 	/** The common scaffolding map. */
 	public Map<String, Scaffolding> scaffoldings;
 	/** The common minimap tiles for various building states. */

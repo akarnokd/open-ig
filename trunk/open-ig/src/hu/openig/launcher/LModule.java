@@ -25,9 +25,9 @@ public class LModule {
 	/** The release notes. */
 	public final LInformation releaseNotes = new LInformation();
 	/** The files required. */
-	public final List<LFile> files = new ArrayList<LFile>();
+	public final List<LFile> files = new ArrayList<>();
 	/** The files to remove. */
-	public final List<LRemoveFile> removeFiles = new ArrayList<LRemoveFile>();
+	public final List<LRemoveFile> removeFiles = new ArrayList<>();
 	/** The startup memory in megabytes. */
 	public int memory;
 	/** The file to execute. */

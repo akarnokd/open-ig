@@ -46,7 +46,7 @@ public class Tile0 {
 	/** The strip cache. */
 	private final BufferedImage[] stripCache;
 	/** The alpha cache for this tile. */
-	private final Map<Integer, BufferedImage[]> alphaCache = new HashMap<Integer, BufferedImage[]>();
+	private final Map<Integer, BufferedImage[]> alphaCache = new HashMap<>();
 	/**
 	 * Constructor. Sets the fields.
 	 * @param width the width in top-right angle.
@@ -78,7 +78,7 @@ public class Tile0 {
 	 * @param lightMap the original buffered image
 	 * @return the array containing [index,color] pairs subsequently
 	 */
-	private int[] createLightmapRLE(BufferedImage lightMap) {
+	private static int[] createLightmapRLE(BufferedImage lightMap) {
 		int[] w = work.get()[0];
 		lightMap.getRGB(0, 0, lightMap.getWidth(), lightMap.getHeight(), w, 0, lightMap.getWidth());
 		int[] result = new int[512];

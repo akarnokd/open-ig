@@ -18,9 +18,9 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.World;
-import hu.openig.utils.U;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +55,7 @@ public final class Radar {
 				}
 			}
 			// change back to visible only
-			Set<Fleet> visibleEnemySet = U.newHashSet();
+			Set<Fleet> visibleEnemySet = new HashSet<>();
 			Iterator<Map.Entry<Fleet, FleetKnowledge>> itf = player.fleets.entrySet().iterator();
 			while (itf.hasNext()) {
 				Map.Entry<Fleet, FleetKnowledge> f = itf.next();
@@ -67,7 +67,7 @@ public final class Radar {
 				}
 			}
 			// run fleet-radar detection
-			for (Fleet f : new ArrayList<Fleet>(player.fleets.keySet())) {
+			for (Fleet f : new ArrayList<>(player.fleets.keySet())) {
 				if (f.owner == player) {
 					// find the max radar
 					float radar = 0.3f;
@@ -249,7 +249,7 @@ public final class Radar {
 	 * @return the list of planets in range
 	 */
 	static List<Planet> findPlanetsInRange(World world, double x, double y, double range) {
-		List<Planet> result = new ArrayList<Planet>();
+		List<Planet> result = new ArrayList<>();
 		for (Planet p : world.planets.values()) {
 			if ((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y) < range * range) {
 				result.add(p);
@@ -267,7 +267,7 @@ public final class Radar {
 	 * @return the list of planets in range
 	 */
 	static List<Fleet> findFleetsInRange(World world, double x, double y, double range) {
-		List<Fleet> result = new ArrayList<Fleet>();
+		List<Fleet> result = new ArrayList<>();
 		for (Player p : world.players.values()) {
 			for (Fleet f : p.fleets.keySet()) {
 				if ((x - f.x) * (x - f.x) + (y - f.y) * (y - f.y) < range * range) {

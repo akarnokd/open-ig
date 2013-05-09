@@ -47,9 +47,8 @@ public final class PlaySMP {
 			byte[] sample = IOUtils.load(f);
 			int dataLen = sample.length + (sample.length % 2 == 0 ? 0 : 1);
 	
-			DataOutputStream dout = new DataOutputStream(
-					new FileOutputStream(fn + "/" + f.getName() + ".wav"));
-			try {
+			try (DataOutputStream dout = new DataOutputStream(
+					new FileOutputStream(fn + "/" + f.getName() + ".wav"))) {
 				// HEADER
 				dout.write("RIFF".getBytes("ISO-8859-1"));
 				dout.writeInt(Integer.reverseBytes(36 + dataLen)); // chunk size
@@ -74,8 +73,6 @@ public final class PlaySMP {
 				for (int i = sample.length; i < dataLen; i++) {
 					dout.write(0);
 				}
-			} finally {		
-				dout.close();
 			}
 		}
 	}
@@ -85,18 +82,18 @@ public final class PlaySMP {
 	 * @throws InterruptedException on error
 	 */
 	static void enumerateSounds() throws IOException, InterruptedException {
-		DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get("c:/Games/IGHU/sound/"), "NOI85.SMP");
-		for (Path p : ds) {
-			System.out.println(p);
-			AudioThread at = new AudioThread();
-			at.start();
-			at.startPlaybackNow();
-			at.submit(IOUtils.load(p.toFile()), true);
-			at.submit(new byte[0], false);
-			at.join();
-			Thread.sleep(200);
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get("c:/Games/IGHU/sound/"), "NOI85.SMP")) {
+			for (Path p : ds) {
+				System.out.println(p);
+				AudioThread at = new AudioThread();
+				at.start();
+				at.startPlaybackNow();
+				at.submit(IOUtils.load(p.toFile()), true);
+				at.submit(new byte[0], false);
+				at.join();
+				Thread.sleep(200);
+			}
 		}
-		ds.close();
 	}
 
 }

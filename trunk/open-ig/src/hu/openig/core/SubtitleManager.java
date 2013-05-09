@@ -8,6 +8,8 @@
 
 package hu.openig.core;
 
+import hu.openig.utils.Exceptions;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -44,7 +46,7 @@ public class SubtitleManager {
 		}
 	}
 	/** The entry list. */
-	final List<SubEntry> entries = new ArrayList<SubEntry>();
+	final List<SubEntry> entries = new ArrayList<>();
 	/** The last time. */
 	long lastTime;
 	/** The last index. */
@@ -60,28 +62,23 @@ public class SubtitleManager {
 	 * @param in the input stream
 	 */
 	private void loadSub(InputStream in) {
-		try {
-			BufferedReader bin = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-			try {
-				String line = null;
-				while ((line = bin.readLine()) != null) {
-					if (line.length() > 19) {
-						SubEntry e = new SubEntry(); // 00:00.000-00:00.000
-						e.start = Integer.parseInt(line.substring(0, 2)) * 60 * 1000
-						+ Integer.parseInt(line.substring(3, 5)) * 1000
-						+ Integer.parseInt(line.substring(6, 9));
-						e.end = Integer.parseInt(line.substring(10, 12)) * 60 * 1000
-						+ Integer.parseInt(line.substring(13, 15)) * 1000
-						+ Integer.parseInt(line.substring(16, 19));
-						e.text = line.substring(19);
-						entries.add(e);
-					}
+		try (BufferedReader bin = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+			String line = null;
+			while ((line = bin.readLine()) != null) {
+				if (line.length() > 19) {
+					SubEntry e = new SubEntry(); // 00:00.000-00:00.000
+					e.start = Integer.parseInt(line.substring(0, 2)) * 60 * 1000
+					+ Integer.parseInt(line.substring(3, 5)) * 1000
+					+ Integer.parseInt(line.substring(6, 9));
+					e.end = Integer.parseInt(line.substring(10, 12)) * 60 * 1000
+					+ Integer.parseInt(line.substring(13, 15)) * 1000
+					+ Integer.parseInt(line.substring(16, 19));
+					e.text = line.substring(19);
+					entries.add(e);
 				}
-			} finally {
-				bin.close();
 			}
 		} catch (IOException ex) {
-			
+			Exceptions.add(ex);
 		}
 	}
 	/**
@@ -149,21 +146,20 @@ public class SubtitleManager {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		OutputStream out = new FileOutputStream("c:/download/campaign_start.sub");
-		
-		SubtitleManager sm1 = new SubtitleManager(new FileInputStream("data/en/message/campaign_start.sub"));
-		sm1.toSub(out);
-//		SubtitleManager sm1 = new SubtitleManager(new FileInputStream("data/en/intro/intro_1.sub"));
-//		sm1.toSub(out);
-		
-//		SubtitleManager sm2 = new SubtitleManager(new FileInputStream("data/en/intro/intro_2.sub"));
-//		sm2.offset(3 * 60 * 1000 + 21 * 1000 + 500);
-//		sm2.toSub(out);
-//
-//		SubtitleManager sm3 = new SubtitleManager(new FileInputStream("data/en/intro/intro_3.sub"));
-//		sm3.offset(3 * 60 * 1000 + 21 * 1000 + 500 + 4 * 60 * 1000 + 50 * 1000 + 888);
-//		sm3.toSub(out);
-
-		out.close();
+		try (OutputStream out = new FileOutputStream("c:/download/campaign_start.sub")) {
+			
+			SubtitleManager sm1 = new SubtitleManager(new FileInputStream("data/en/message/campaign_start.sub"));
+			sm1.toSub(out);
+	//		SubtitleManager sm1 = new SubtitleManager(new FileInputStream("data/en/intro/intro_1.sub"));
+	//		sm1.toSub(out);
+			
+	//		SubtitleManager sm2 = new SubtitleManager(new FileInputStream("data/en/intro/intro_2.sub"));
+	//		sm2.offset(3 * 60 * 1000 + 21 * 1000 + 500);
+	//		sm2.toSub(out);
+	//
+	//		SubtitleManager sm3 = new SubtitleManager(new FileInputStream("data/en/intro/intro_3.sub"));
+	//		sm3.offset(3 * 60 * 1000 + 21 * 1000 + 500 + 4 * 60 * 1000 + 50 * 1000 + 888);
+	//		sm3.toSub(out);
+		}
 	}
 }

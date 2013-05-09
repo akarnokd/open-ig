@@ -23,11 +23,11 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
-import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +85,7 @@ public class ColonizationPlanner extends Planner {
 	 * @return true if expansion is needed
 	 */
 	boolean checkEnemyExpansion() {
-		Map<Player, Integer> counts = U.newHashMap();
+		Map<Player, Integer> counts = new HashMap<>();
 		for (AIPlanet p : world.enemyPlanets) {
 			Integer i = counts.get(p.owner);
 			counts.put(p.owner, i != null ? i.intValue() + 1 : 1);
@@ -116,7 +116,7 @@ public class ColonizationPlanner extends Planner {
 		if (checkColonizersReachedPlanet()) {
 			return;
 		}
-		List<AIPlanet> ps = U.newArrayList();
+		List<AIPlanet> ps = new ArrayList<>();
 		outer1:
 		for (String ct : world.colonizationTargets) {
 			AIPlanet p = world.planetMap.get(ct);
@@ -150,9 +150,8 @@ public class ColonizationPlanner extends Planner {
 			if (rto == null) {
 				if (world.global.orbitalFactory == 0) {
 					return;
-				} else {
-					rto = w.researches.get("OrbitalFactory");
 				}
+				rto = w.researches.get("OrbitalFactory");
 			}
 			costs += rto.productionCost;
 		}
@@ -275,7 +274,7 @@ public class ColonizationPlanner extends Planner {
 	 */
 	List<AIPlanet> findColonizablePlanets() {
 		// locate knownly colonizable planets
-		List<AIPlanet> ps = new ArrayList<AIPlanet>();
+		List<AIPlanet> ps = new ArrayList<>();
 		outer1:
 		for (AIPlanet p : world.enemyPlanets) {
 			if (p.owner == null && world.withinLimits(p.planet.x, p.planet.y)) {
@@ -329,12 +328,11 @@ public class ColonizationPlanner extends Planner {
 			if (pl.statistics.hasMilitarySpaceport) {
 				sp = pl;
 				break;
-			} else {
-				// if constructing here, return
-				for (AIBuilding b : pl.buildings) {
-					if (b.type.id.equals("MilitarySpaceport") && pl.statistics.constructing) {
-						return Pair.of(false, null);
-					}
+			}
+			// if constructing here, return
+			for (AIBuilding b : pl.buildings) {
+				if (b.type.id.equals("MilitarySpaceport") && pl.statistics.constructing) {
+					return Pair.of(false, null);
 				}
 			}
 		}

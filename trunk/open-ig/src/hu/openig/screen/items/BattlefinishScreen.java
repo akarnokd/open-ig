@@ -21,7 +21,6 @@ import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.U;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -32,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Timer;
@@ -322,9 +322,8 @@ public class BattlefinishScreen extends ScreenBase {
 		if (enemy.inventory.size() > 0) {
 			if (battle.enemyFlee) {
 				return EnemyStatus.RETREATED;
-			} else {
-				return EnemyStatus.SLIPPED;
 			}
+			return EnemyStatus.SLIPPED;
 		}
 		return EnemyStatus.DESTROYED;
 	}
@@ -442,7 +441,7 @@ public class BattlefinishScreen extends ScreenBase {
 	 * @return the delta Y due wrapping
 	 */
 	int textCenterWrap(Graphics2D g2, int x, int y, int width, int color, int size, String text) {
-		List<String> lines = U.newArrayList();
+		List<String> lines = new ArrayList<>();
 		commons.text().wrapText(text, width, size, lines);
 		int dy = 0;
 		for (String line : lines) {
