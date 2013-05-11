@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
@@ -18,6 +19,10 @@ import java.util.List;
  * @author akarnokd, 2013.05.02.
  */
 public class SpaceBattleUnit implements MessageObjectIO, MessageArrayItemFactory<SpaceBattleUnit> {
+	/** */
+	private static final String OBJECT_NAME = "SPACE_UNIT";
+	/** */
+	private static final String ARRAY_NAME = "SPACE_BATTLE_UNITS";
 	/** The unit's unique id. */
 	public int id;
 	/** The owner. */
@@ -68,10 +73,36 @@ public class SpaceBattleUnit implements MessageObjectIO, MessageArrayItemFactory
 	}
 	@Override
 	public String arrayName() {
-		return "SPACE_BATTLE_UNITS";
+		return ARRAY_NAME;
 	}
 	@Override
 	public String objectName() {
-		return "SPACE_UNIT";
+		return OBJECT_NAME;
+	}
+	/**
+	 * Create a message array from the sequence of space battle units.
+	 * @param src the source sequence
+	 * @return the message array
+	 */
+	public static MessageArray toArray(Iterable<? extends SpaceBattleUnit> src) {
+		MessageArray o = new MessageArray(ARRAY_NAME);
+		for (SpaceBattleUnit u : src) {
+			o.add(u.toMessage());
+		}
+		return o;
+	}
+	/**
+	 * Parses a message array of space battle unit elements.
+	 * @param ma the message array
+	 * @return the list of units
+	 */
+	public static List<SpaceBattleUnit> fromArray(MessageArray ma) {
+		List<SpaceBattleUnit> list = new ArrayList<>();
+		for (MessageObject o : ma.objects()) {
+			SpaceBattleUnit u = new SpaceBattleUnit();
+			u.fromMessage(o);
+			list.add(u);
+		}
+		return list;
 	}
 }

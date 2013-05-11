@@ -9,6 +9,7 @@
 package hu.openig.multiplayer;
 
 import hu.openig.model.BattleStatus;
+import hu.openig.model.BuildingStatus;
 import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
@@ -449,9 +450,9 @@ public class RemoteGameClient implements RemoteGameAPI {
 		.set("x", x)
 		.set("y", y);
 		Object param1 = client.query(request);
-		MessageObject mo = MessageUtils.expectObject(param1, "BUILDING");
+		MessageObject mo = MessageUtils.expectObject(param1, BuildingStatus.OBJECT_NAME);
 		try {
-			return mo.getInt("buildingId");
+			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
 			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
 		}
@@ -464,9 +465,9 @@ public class RemoteGameClient implements RemoteGameAPI {
 		.set("type", type)
 		.set("race", race);
 		Object param1 = client.query(request);
-		MessageObject mo = MessageUtils.expectObject(param1, "BUILDING");
+		MessageObject mo = MessageUtils.expectObject(param1, BuildingStatus.OBJECT_NAME);
 		try {
-			return mo.getInt("buildingId");
+			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
 			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
 		}
@@ -527,7 +528,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		.set("planetId", planetId)
 		.set("type", type);
 		Object param1 = client.query(request);
-		MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+		MessageObject mo = MessageUtils.expectObject(param1, InventoryItemStatus.OBJECT_NAME);
 		try {
 			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
@@ -554,7 +555,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 	@Override
 	public void addPlanetEquipment(String planetId, int itemId, String slotId,
 			String type) throws IOException {
-		MessageObject request = new MessageObject("SELL_PLANET_ITEM") 
+		MessageObject request = new MessageObject("ADD_PLANET_EQUIPMENT") 
 		.set("planetId", planetId)
 		.set("itemId", itemId)
 		.set("slotId", slotId)
@@ -565,7 +566,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 	@Override
 	public void removePlanetEquipment(String planetId, int itemId,
 			String slotId) throws IOException {
-		MessageObject request = new MessageObject("REMOVE_PLANET_ITEM") 
+		MessageObject request = new MessageObject("REMOVE_PLANET_EQUIPMENT") 
 		.set("planetId", planetId)
 		.set("itemId", itemId)
 		.set("slotId", slotId);

@@ -712,7 +712,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		AsyncTransform<Object, Integer, IOException> at = new AsyncTransform<Object, Integer, IOException>(out) {
 			@Override
 			public void invoke(Object param1) throws IOException {
-				MessageObject mo = MessageUtils.expectObject(param1, "INVENTORY");
+				MessageObject mo = MessageUtils.expectObject(param1, InventoryItemStatus.OBJECT_NAME);
 				setValue(mo.getInt("id"));
 			}
 		};
@@ -744,7 +744,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	public void addPlanetEquipment(String planetId, int itemId, String slotId,
 			String type,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("SELL_PLANET_ITEM")
+		MessageObject request = new MessageObject("ADD_PLANET_EQUIPMENT")
 		.set("planetId", planetId)
 		.set("itemId", itemId)
 		.set("slotId", slotId)
@@ -756,7 +756,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	public void removePlanetEquipment(String planetId, int itemId,
 			String slotId,
 			AsyncResult<? super Void, ? super IOException> out) {
-		MessageObject request = new MessageObject("REMOVE_PLANET_ITEM")
+		MessageObject request = new MessageObject("REMOVE_PLANET_EQUIPMENT")
 		.set("planetId", planetId)
 		.set("itemId", itemId)
 		.set("slotId", slotId);

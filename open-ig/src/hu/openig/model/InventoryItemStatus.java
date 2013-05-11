@@ -20,7 +20,9 @@ import java.util.List;
  */
 public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFactory<InventoryItemStatus> {
 	/** The array name. */
-	private static final String ARRAY_NAME = "INVENTORIES";
+	public static final String ARRAY_NAME = "INVENTORIES";
+	/** The object name. */
+	public static final String OBJECT_NAME = "INVENTORY";
 	/** The inventory id. */
 	public int id;
 	/** The research type. */
@@ -97,7 +99,7 @@ public class InventoryItemStatus implements MessageObjectIO, MessageArrayItemFac
 	}
 	@Override
 	public String objectName() {
-		return "INVENTORY";
+		return OBJECT_NAME;
 	}
 	/**
 	 * Clear the enemy info.

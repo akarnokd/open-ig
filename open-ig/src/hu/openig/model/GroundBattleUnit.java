@@ -8,7 +8,11 @@
 
 package hu.openig.model;
 
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -16,6 +20,10 @@ import hu.openig.net.MessageObject;
  * @author akarnokd, 2013.05.02.
  */
 public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactory<GroundBattleUnit> {
+	/** Object name. */
+	public static final String OBJECT_NAME = "GROUND_UNIT";
+	/** Array name. */
+	public static final String ARRAY_NAME = "GROUND_BATTLE_UNITS";
 	/** The unit unique id. */
 	public int id;
 	/** The unit research type. */
@@ -42,15 +50,44 @@ public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactor
 	}
 	@Override
 	public GroundBattleUnit invoke() {
-		// TODO Auto-generated method stub
-		return null;
+		return new GroundBattleUnit();
 	}
 	@Override
 	public String arrayName() {
-		return "GROUND_BATTLE_UNITS";
+		return ARRAY_NAME;
 	}
 	@Override
 	public String objectName() {
-		return "GROUND_UNIT";
+		return OBJECT_NAME;
+	}
+	/**
+	 * Creates a message array from the sequence of ground battle units.
+	 * @param src the sequence
+	 * @return the message array
+	 */
+	public static MessageArray toArray(Iterable<? extends GroundBattleUnit> src) {
+		MessageArray ma = new MessageArray(ARRAY_NAME);
+		
+		for (GroundBattleUnit u : src) {
+			ma.add(u.toMessage());
+		}
+		
+		return ma;
+	}
+	/**
+	 * Parse a message array for ground battle unit records.
+	 * @param ma the message array
+	 * @return the list of ground units
+	 */
+	public static List<GroundBattleUnit> fromArray(MessageArray ma) {
+		List<GroundBattleUnit> result = new ArrayList<>();
+		
+		for (MessageObject o : ma.objects()) {
+			GroundBattleUnit u = new GroundBattleUnit();
+			u.fromMessage(o);
+			result.add(u);
+		}
+		
+		return result;
 	}
 }

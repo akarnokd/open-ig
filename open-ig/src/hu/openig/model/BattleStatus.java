@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
 
 import java.util.ArrayList;
@@ -21,6 +22,10 @@ import java.util.Set;
  *
  */
 public class BattleStatus implements MessageObjectIO, MessageArrayItemFactory<BattleStatus> {
+	/** The object name. */
+	public static final String OBJECT_NAME = "BATTLE";
+	/** The array name. */
+	public static final String ARRAY_NAME = "BATTLES";
 	/** The battle identifier. */
 	public int id;
 	/** The nearby planet id. */
@@ -57,10 +62,22 @@ public class BattleStatus implements MessageObjectIO, MessageArrayItemFactory<Ba
 	}
 	@Override
 	public String arrayName() {
-		return "BATTLES";
+		return ARRAY_NAME;
 	}
 	@Override
 	public String objectName() {
-		return "BATTLE";
+		return OBJECT_NAME;
+	}
+	/**
+	 * Creates a message array from the sequence of battle status records.
+	 * @param src the sequence of battle status records.
+	 * @return the message array
+	 */
+	public static MessageArray toArray(Iterable<? extends BattleStatus> src) {
+		MessageArray ma = new MessageArray(ARRAY_NAME);
+		for (BattleStatus bs : src) {
+			ma.add(bs.toMessage());
+		}
+		return ma;
 	}
 }

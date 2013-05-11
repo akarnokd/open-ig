@@ -9,16 +9,21 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.Action2E;
+import hu.openig.model.BattleStatus;
+import hu.openig.model.BuildingStatus;
 import hu.openig.model.DeferredCall;
 import hu.openig.model.DeferredInvoke;
 import hu.openig.model.DeferredRunnable;
 import hu.openig.model.DeferredTransform;
 import hu.openig.model.FleetStatus;
+import hu.openig.model.FleetTransferMode;
+import hu.openig.model.GroundBattleUnit;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MessageObjectIO;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.RemoteGameAPI;
+import hu.openig.model.SpaceBattleUnit;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
@@ -394,7 +399,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 				@Override
 				protected MessageSerializable transform(Integer intermediate)
 						throws IOException {
-					MessageObject r = new MessageObject("FLEET");
+					MessageObject r = new MessageObject(FleetStatus.OBJECT_NAME);
 					r.set("id", intermediate);
 					return r;
 				}
@@ -411,7 +416,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 				@Override
 				protected MessageSerializable transform(Integer intermediate)
 						throws IOException {
-					MessageObject r = new MessageObject("FLEET");
+					MessageObject r = new MessageObject(FleetStatus.OBJECT_NAME);
 					r.set("id", intermediate);
 					return r;
 				}
@@ -443,6 +448,604 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 				@Override
 				protected void invoke() throws IOException {
 					api.sellFleetItem(fleetId, itemId);
+				}
+			};
+		}
+		case "DEPLOY_FLEET_ITEM": {
+			final int fleetId = mo.getInt("fleetId");
+			final String type = mo.getString("type");
+			return new DeferredTransform<Integer>() {
+				@Override
+				protected Integer invoke() throws IOException {
+					return api.deployFleetItem(fleetId, type);
+				}
+				@Override
+				protected MessageSerializable transform(Integer intermediate)
+						throws IOException {
+					MessageObject mo = new MessageObject(InventoryItemStatus.OBJECT_NAME);
+					mo.set("id", intermediate);
+					return mo;
+				}
+			};
+		}
+		case "UNDEPLOY_FLEET_ITEM": {
+			final int fleetId = mo.getInt("fleetId");
+			final int itemId = mo.getInt("itemId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.undeployFleetItem(fleetId, itemId);
+				}
+			};
+		}
+		case "ADD_FLEET_EQUIPMENT": {
+			final int fleetId = mo.getInt("fleetId");
+			final int itemId = mo.getInt("itemId");
+			final String slotId = mo.getString("slotId");
+			final String type = mo.getString("type");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.addFleetEquipment(fleetId, itemId, slotId, type);
+				}
+			};
+		}
+		case "REMOVE_FLEET_EQUIPMENT": {
+			final int fleetId = mo.getInt("fleetId");
+			final int itemId = mo.getInt("itemId");
+			final String slotId = mo.getString("slotId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.removeFleetEquipment(fleetId, itemId, slotId);
+				}
+			};
+		}
+		case "FLEET_UPGRADE": {
+			final int fleetId = mo.getInt("fleetId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.fleetUpgrade(fleetId);
+				}
+			};
+		}
+		case "STOP_FLEET": {
+			final int fleetId = mo.getInt("fleetId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.stopFleet(fleetId);
+				}
+			};
+		}
+		case "TRANSFER": {
+			final int sourceFleet = mo.getInt("source");
+			final int destinationFleet = mo.getInt("destination");
+			final int itemId = mo.getInt("itemId");
+			final FleetTransferMode mode = mo.getEnum("mode", FleetTransferMode.values());
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.transfer(sourceFleet, destinationFleet, itemId, mode);
+				}
+			};
+		}
+		case "COLONIZE": {
+			final String planetId = mo.getString("planetId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.colonize(planetId);
+				}
+			};
+		}
+		case "CANCEL_COLONIZE": {
+			final String planetId = mo.getString("planetId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.cancelColonize(planetId);
+				}
+			};
+		}
+		case "BUILD_AT": {
+			final String planetId = mo.getString("planetId");
+			final String type = mo.getString("type");
+			final String race = mo.getString("race");
+			final int x = mo.getInt("x");
+			final int y = mo.getInt("y");
+			return new DeferredTransform<Integer>() {
+				@Override
+				protected Integer invoke() throws IOException {
+					return api.build(planetId, type, race, x, y);
+				}
+				@Override
+				protected MessageSerializable transform(Integer intermediate)
+						throws IOException {
+					MessageObject o = new MessageObject(BuildingStatus.OBJECT_NAME);
+					o.set("id", intermediate);
+					return o;
+				}
+			};
+		}
+		case "BUILD": {
+			final String planetId = mo.getString("planetId");
+			final String type = mo.getString("type");
+			final String race = mo.getString("race");
+			return new DeferredTransform<Integer>() {
+				@Override
+				protected Integer invoke() throws IOException {
+					return api.build(planetId, type, race);
+				}
+				@Override
+				protected MessageSerializable transform(Integer intermediate)
+						throws IOException {
+					MessageObject o = new MessageObject(BuildingStatus.OBJECT_NAME);
+					o.set("id", intermediate);
+					return o;
+				}
+			};
+		}
+		case "ENABLE": {
+			final String planetId = mo.getString("planetId");
+			final int buildingId = mo.getInt("buildingId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.enable(planetId, buildingId);
+				}
+			};
+		}
+		case "DISABLE": {
+			final String planetId = mo.getString("planetId");
+			final int buildingId = mo.getInt("buildingId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.disable(planetId, buildingId);
+				}
+			};
+		}
+		case "REPAIR": {
+			final String planetId = mo.getString("planetId");
+			final int buildingId = mo.getInt("buildingId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.repair(planetId, buildingId);
+				}
+			};
+		}
+		case "REPAIR_OFF": {
+			final String planetId = mo.getString("planetId");
+			final int buildingId = mo.getInt("buildingId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.repairOff(planetId, buildingId);
+				}
+			};
+		}
+		case "DEMOLISH": {
+			final String planetId = mo.getString("planetId");
+			final int buildingId = mo.getInt("buildingId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.demolish(planetId, buildingId);
+				}
+			};
+		}
+		case "BUILDING_UPGRADE": {
+			final String planetId = mo.getString("planetId");
+			final int buildingId = mo.getInt("buildingId");
+			final int level = mo.getInt("level");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.buildingUpgrade(planetId, buildingId, level);
+				}
+			};
+		}
+		case "DEPLOY_PLANET_ITEM": {
+			final String planetId = mo.getString("planetId");
+			final String type = mo.getString("type");
+			return new DeferredTransform<Integer>() {
+				@Override
+				protected Integer invoke() throws IOException {
+					return api.deployPlanetItem(planetId, type);
+				}
+				@Override
+				protected MessageSerializable transform(Integer intermediate)
+						throws IOException {
+					MessageObject o = new MessageObject(InventoryItemStatus.OBJECT_NAME);
+					o.set("id", intermediate);
+					return o;
+				}
+			};
+		}
+		case "UNDEPLOY_PLANET_ITEM": {
+			final String planetId = mo.getString("planetId");
+			final int itemId = mo.getInt("itemId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.undeployPlanetItem(planetId, itemId);
+				}
+			};
+		}
+		case "SELL_PLANET_ITEM": {
+			final String planetId = mo.getString("planetId");
+			final int itemId = mo.getInt("itemId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.sellPlanetItem(planetId, itemId);
+				}
+			};
+		}
+		case "ADD_PLANET_EQUIPMENT": {
+			final String planetId = mo.getString("planetId");
+			final int itemId = mo.getInt("itemId");
+			final String slotId = mo.getString("slotId");
+			final String type = mo.getString("type");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.addPlanetEquipment(planetId, itemId, slotId, type);
+				}
+			};
+		}
+		case "REMOVE_PLANET_EQUIPMENT": {
+			final String planetId = mo.getString("planetId");
+			final int itemId = mo.getInt("itemId");
+			final String slotId = mo.getString("slotId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.removePlanetEquipment(planetId, itemId, slotId);
+				}
+			};
+		}
+		case "PLANET_UPGRADE": {
+			final String planetId = mo.getString("planetId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.planetUpgrade(planetId);
+				}
+			};
+		}
+		case "START_PRODUCTION": {
+			final String type = mo.getString("type");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.startProduction(type);
+				}
+			};
+		}
+		case "STOP_PRODUCTION": {
+			final String type = mo.getString("type");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.stopProduction(type);
+				}
+			};
+		}
+		case "SET_PRODUCTION_QUANTITY": {
+			final String type = mo.getString("type");
+			final int count = mo.getInt("count");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.setProductionQuantity(type, count);
+				}
+			};
+		}
+		case "SET_PRODUCTION_PRIORITY": {
+			final String type = mo.getString("type");
+			final int priority = mo.getInt("priority");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.setProductionQuantity(type, priority);
+				}
+			};
+		}
+		case "SELL_INVENTORY": {
+			final String type = mo.getString("type");
+			final int count = mo.getInt("count");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.sellInventory(type, count);
+				}
+			};
+		}
+		case "START_RESEARCH": {
+			final String type = mo.getString("type");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.startResearch(type);
+				}
+			};
+		}
+		case "STOP_RESEARCH": {
+			final String type = mo.getString("type");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.stopResearch(type);
+				}
+			};
+		}
+		case "SET_RESEARCH_MONEY": {
+			final String type = mo.getString("type");
+			final int money = mo.getInt("money");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.setResearchMoney(type, money);
+				}
+			};
+		}
+		case "PAUSE_RESEARCH": {
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.pauseResearch();
+				}
+			};
+		}
+		case "PAUSE_PRODUCTION": {
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.pauseProduction();
+				}
+			};
+		}
+		case "UNPAUSE_PRODUCTION": {
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.unpauseProduction();
+				}
+			};
+		}
+		case "UNPAUSE_RESEARCH": {
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.unpauseResearch();
+				}
+			};
+		}
+		case "STOP_SPACE_UNIT": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.stopSpaceUnit(battleId, unitId);
+				}
+			};
+		}
+		case "MOVE_SPACE_UNIT": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			final double x = mo.getDouble("x");
+			final double y = mo.getDouble("y");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.moveSpaceUnit(battleId, unitId, x, y);
+				}
+			};
+		}
+		case "ATTACK_SPACE_UNIT": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			final int target = mo.getInt("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.attackSpaceUnit(battleId, unitId, target);
+				}
+			};
+		}
+		case "KAMIKAZE_SPACE_UNIT": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.kamikazeSpaceUnit(battleId, unitId);
+				}
+			};
+		}
+		case "FIRE_SPACE_ROCKET": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			final int target = mo.getInt("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.fireSpaceRocket(battleId, unitId, target);
+				}
+			};
+		}
+		case "SPACE_RETREAT": {
+			final int battleId = mo.getInt("battleId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.spaceRetreat(battleId);
+				}
+			};
+		}
+		case "STOP_SPACE_RETREAT": {
+			final int battleId = mo.getInt("battleId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.stopSpaceRetreat(battleId);
+				}
+			};
+		}
+		case "FLEET_FORMATION": {
+			final int fleetId = mo.getInt("fleetId");
+			final int formation = mo.getInt("formation");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.fleetFormation(fleetId, formation);
+				}
+			};
+		}
+		case "QUERY_BATTLES": {
+			return new DeferredTransform<List<BattleStatus>>() {
+				@Override
+				protected List<BattleStatus> invoke() throws IOException {
+					return api.getBattles();
+				}
+				@Override
+				protected MessageSerializable transform(
+						List<BattleStatus> intermediate) throws IOException {
+					return BattleStatus.toArray(intermediate);
+				}
+			};
+		}
+		case "QUERY_BATTLE": {
+			final int battleId = mo.getInt("battleId");
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getBattle(battleId);
+				}
+			};
+		}
+		case "QUERY_SPACE_BATTLE_UNITS": {
+			final int battleId = mo.getInt("battleId");
+			return new DeferredTransform<List<SpaceBattleUnit>>() {
+				@Override
+				protected List<SpaceBattleUnit> invoke() throws IOException {
+					return api.getSpaceBattleUnits(battleId);
+				}
+				@Override
+				protected MessageSerializable transform(
+						List<SpaceBattleUnit> intermediate) throws IOException {
+					return SpaceBattleUnit.toArray(intermediate);
+				}
+			};
+		}
+		case "STOP_GROUND_UNIT": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.stopGroundUnit(battleId, unitId);
+				}
+			};
+		}
+		case "MOVE_GROUND_UNIT": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			final int x = mo.getInt("x");
+			final int y = mo.getInt("y");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.moveGroundUnit(battleId, unitId, x, y);
+				}
+			};
+		}
+		case "ATTACK_GROUND_UNIT": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			final int target = mo.getInt("target");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.attackGroundUnit(battleId, unitId, target);
+				}
+			};
+		}
+		case "ATTACK_BUILDING": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			final int buildingId = mo.getInt("buildingId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.attackBuilding(battleId, unitId, buildingId);
+				}
+			};
+		}
+		case "DEPLOY_MINE": {
+			final int battleId = mo.getInt("battleId");
+			final int unitId = mo.getInt("unitId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.deployMine(battleId, unitId);
+				}
+			};
+		}
+		case "GROUND_RETREAT": {
+			final int battleId = mo.getInt("battleId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.groundRetreat(battleId);
+				}
+			};
+		}
+		case "STOP_GROUND_RETREAT": {
+			final int battleId = mo.getInt("battleId");
+			return new DeferredInvoke() {
+				@Override
+				protected void invoke() throws IOException {
+					api.stopGroundRetreat(battleId);
+				}
+			};
+		}
+		case "QUERY_GROUND_BATTLE_UNITS": {
+			final int battleId = mo.getInt("battleId");
+			return new DeferredTransform<List<GroundBattleUnit>>() {
+				@Override
+				protected List<GroundBattleUnit> invoke() throws IOException {
+					return api.getGroundBattleUnits(battleId);
+				}
+				@Override
+				protected MessageSerializable transform(
+						List<GroundBattleUnit> intermediate) throws IOException {
+					return GroundBattleUnit.toArray(intermediate);
+				}
+			};
+		}
+		case "QUERY_FLEET_INVENTORY": {
+			final int fleetId = mo.getInt("fleetId");
+			final int itemId = mo.getInt("itemId");
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getInventoryStatus(fleetId, itemId);
+				}
+			};
+		}
+		case "QUERY_PLANET_INVENTORY": {
+			final String planetId = mo.getString("planetId");
+			final int itemId = mo.getInt("itemId");
+			return new DeferredCall() {
+				@Override
+				protected MessageObjectIO invoke() throws IOException {
+					return api.getInventoryStatus(planetId, itemId);
 				}
 			};
 		}
