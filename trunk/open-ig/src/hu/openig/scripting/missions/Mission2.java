@@ -94,21 +94,21 @@ public class Mission2 extends Mission {
 						Fleet pf = createFleet(label("pirates.fleet_name"), player("Pirates"), f.x + 1, f.y + 1);
 						
 						if (i == 1) {
-							pf.addInventory(world.researches.get("PirateFighter"), 2);
+							addInventory(pf, "PirateFighter", 2);
 						} else
 						if (i == 2) {
-							pf.addInventory(world.researches.get("PirateFighter"), 3);
+							addInventory(pf, "PirateFighter", 3);
 						} else {
 							switch (world.difficulty) {
 							case NORMAL:
-								pf.addInventory(world.researches.get("PirateFighter"), 1);
+								addInventory(pf, "PirateFighter", 1);
 								break;
 							case HARD:
-								pf.addInventory(world.researches.get("PirateFighter"), 3);
+								addInventory(pf, "PirateFighter", 3);
 								break;
 							default:
 							}
-							pf.addInventory(world.researches.get("PirateDestroyer"), 1);
+							addInventory(pf, "PirateDestroyer", 1);
 						}
 						
 						tagFleet(pf, MISSION_2_PIRATE);

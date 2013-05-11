@@ -125,7 +125,7 @@ public class Mission13 extends Mission {
 		
 		//---------------------------------
 		ResearchType bs1 = research("Battleship1");
-		f.addInventory(bs1, 1);
+		addInventory(f, bs1.id, 1);
 		
 		InventoryItem ii = f.getInventoryItem(bs1);
 		
@@ -152,9 +152,9 @@ public class Mission13 extends Mission {
 
 		//---------------------------------
 		
-		f.addInventory(research("GarthogFighter"), 3);
-		equipFully(f.addInventory(research("GarthogDestroyer"), 2));
-		equipFully(f.addInventory(research("GarthogBattleship"), 1));
+		addInventory(f, "GarthogFighter", 3);
+		equipFully(addInventory(f, "GarthogDestroyer", 2));
+		equipFully(addInventory(f, "GarthogBattleship", 1));
 		
 		//---------------------------------
 		

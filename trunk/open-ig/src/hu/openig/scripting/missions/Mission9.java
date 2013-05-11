@@ -133,7 +133,7 @@ public class Mission9 extends Mission {
 		}
 		
 		ResearchType rt0 = ModelUtils.random(shipTypes);
-		f0.addInventory(rt0, 1);
+		addInventory(f0, rt0.id, 1);
 		
 		f0.moveTo(planet("San Sterling"));
 		
@@ -149,7 +149,7 @@ public class Mission9 extends Mission {
 		pf.task = FleetTask.SCRIPT;
 		int n = ModelUtils.randomInt(2) + 1;
 		// ----------------------------------------------------------------
-		pf.addInventory(research("TradersFreight" + n), 1);
+		addInventory(pf, "TradersFreight" + n, 1);
 		// ----------------------------------------------------------------
 		for (InventoryItem ii : pf.inventory.iterable()) {
 			ii.tag = "Mission-9-Smuggler";

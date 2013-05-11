@@ -79,7 +79,7 @@ public class ErrorResponse extends IOException {
 			MessageObject mo = (MessageObject)response;
 			if (mo.name != null && mo.name.startsWith("ERROR")) {
 				return new ErrorResponse(
-						ErrorType.from(mo.get("code", null), ErrorType.ERROR_UNKNOWN), 
+						ErrorType.from(mo.get("code", null), ErrorType.UNKNOWN), 
 						mo.getString("message", null));
 			}
 		}

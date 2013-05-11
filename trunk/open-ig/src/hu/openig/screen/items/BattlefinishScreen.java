@@ -238,7 +238,7 @@ public class BattlefinishScreen extends ScreenBase {
 				y = printStatistics(g2, y, "battlefinish.shields", lossCount(true, "Shield"), lossCount(false, "Shield"));
 			}
 			if (battle.groundwarWinner != null) {
-				y = printStatistics(g2, y, "battlefinish.fortifications", 0, battle.defenderFortificationLosses); // TODO
+				y = printStatistics(g2, y, "battlefinish.fortifications", 0, battle.defenderFortificationLosses);
 			}
 			y += 20;
 			
@@ -493,7 +493,6 @@ public class BattlefinishScreen extends ScreenBase {
 	 */
 	public void displayBattleSummary(BattleInfo battle) {
 		this.battle = battle;
-		// TODO
 		setBackground();
 		setPausedSimulator();
 	}

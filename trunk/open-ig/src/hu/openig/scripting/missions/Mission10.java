@@ -12,7 +12,6 @@ import hu.openig.core.Action0;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
-import hu.openig.model.InventoryItem;
 import hu.openig.model.Objective;
 import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
@@ -75,12 +74,10 @@ public class Mission10 extends Mission {
 				player, sst.x, sst.y);
 		pf.task = FleetTask.SCRIPT;
 		// ----------------------------------------------------------------
-		pf.addInventory(research("ColonyShip"), 1);
-		pf.addInventory(research("TradersFreight1"), 1);
+		addInventory(pf, "ColonyShip", 1);
+		addInventory(pf, "TradersFreight1", 1);
 		// ----------------------------------------------------------------
-		for (InventoryItem ii : pf.inventory.iterable()) {
-			ii.tag = "Mission-10-Governor";
-		}
+		tagFleet(pf, "Mission-10-Governor");
 		pf.mode = FleetMode.MOVE;
 		pf.targetPlanet(nax);
 

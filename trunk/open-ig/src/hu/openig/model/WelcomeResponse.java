@@ -44,7 +44,7 @@ public class WelcomeResponse implements MessageObjectIO {
 			result.fromMessage(mo);
 			return result;
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString());
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString());
 		}
 	}
 	@Override

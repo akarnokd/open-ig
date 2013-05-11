@@ -788,4 +788,14 @@ public class Player {
 			researches.put(r.type, r);
 		}
 	}
+	/**
+	 * Does the player have a strong alliance with the other
+	 * player?
+	 * @param other the other player
+	 * @return true if it has a strong alliance
+	 */
+	public boolean isStrongAlliance(Player other) {
+		DiplomaticRelation dr = world.getRelation(this, other);
+		return dr != null ? dr.strongAlliance : false;
+	}
 }

@@ -2923,7 +2923,7 @@ public class StarmapScreen extends ScreenBase {
 				effectSound(SoundType.NOT_AVAILABLE);
 				return;
 			}
-			if (DefaultAIControls.colonizeWithFleet(f, p)) {
+			if (f.colonize(p)) {
 				displayPrimary(Screens.COLONY);
 				return;
 			}

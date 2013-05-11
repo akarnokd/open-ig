@@ -41,6 +41,7 @@ import hu.openig.utils.XElement;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.EnumSet;
 import java.util.LinkedList;
@@ -1051,5 +1052,30 @@ public abstract class Mission implements GameScriptingEvents {
 				showObjective(s);
 			}
 		}
+	}
+	/**
+	 * Adds the given number of technology to the inventory
+	 * of the fleet, bypassing standard deployment constraints.
+	 * @param f the target fleet
+	 * @param type the technology id
+	 * @param count the number of items
+	 * @return the list of created inventory items
+	 */
+	public List<InventoryItem> addInventory(Fleet f, String type, int count) {
+		ResearchType rt = research(type);
+		if (f.canUndeploy(rt)) {
+			InventoryItem ii = new InventoryItem(world.newId(), f.owner, rt);
+			ii.init();
+			ii.count = count;
+			return Collections.singletonList(ii);
+		}
+		List<InventoryItem> r = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			InventoryItem ii = new InventoryItem(world.newId(), f.owner, rt);
+			ii.init();
+			ii.count = 1;
+			r.add(ii);
+		}
+		return r;
 	}
 }

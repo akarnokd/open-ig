@@ -96,9 +96,10 @@ public class InventoryItem {
 		return slots.get(id);
 	}
 	/**
-	 * Create slots from the base definition.
+	 * Create slots from the base definition and setup
+	 * the hitpoints and shield points.
 	 */
-	public void createSlots() {
+	public void init() {
 		for (EquipmentSlot es : type.slots.values()) {
 			InventorySlot is = new InventorySlot();
 			is.slot = es;
@@ -127,6 +128,9 @@ public class InventoryItem {
 			
 			slots.put(es.id, is);
 		}
+		hp = owner.world.getHitpoints(type, owner);
+		shield = Math.max(0, shieldMax());
+		generateNickname();
 	}
 	/**
 	 * Returns the sell value of this inventory item.
@@ -148,10 +152,12 @@ public class InventoryItem {
 		return result;
 	}
 	/**
-	 * Sell the inventory item.
+	 * Sell the given number of items from this inventory item.
+	 * @param count the number of items to sell
 	 */
-	public void sell() {
-		long money = sellValue();
+	public void sell(int count) {
+		int n = Math.min(this.count, count);
+		long money = unitSellValue() * n;
 		owner.addMoney(money);
 		
 		owner.statistics.sellCount.value++;
@@ -162,8 +168,10 @@ public class InventoryItem {
 		owner.world.statistics.moneyIncome.value += money;
 		owner.world.statistics.moneySellIncome.value += money;
 
-		count = 0;
-		slots.clear();
+		count -= n;
+		if (count == 0) {
+			slots.clear();
+		}
 	}
 	/**
 	 * Strip the assigned equipment and put it back into the owner's inventory.
@@ -259,10 +267,11 @@ public class InventoryItem {
 	/**
 	 * Generate a nickname and index for this inventory item.
 	 */
-	public void generateNickname() {
+	private void generateNickname() {
 		if (owner.nicknames.isEmpty() 
 				|| (type.category != ResearchSubCategory.SPACESHIPS_CRUISERS 
-				&& type.category != ResearchSubCategory.SPACESHIPS_BATTLESHIPS)) {
+				&& type.category != ResearchSubCategory.SPACESHIPS_BATTLESHIPS)
+				|| nickname != null) {
 			return;
 		}
 		nickname = null;
@@ -404,5 +413,67 @@ public class InventoryItem {
 		nicknameIndex = ii.nicknameIndex;
 		kills = ii.kills;
 		killsCost = ii.killsCost;
+	}
+	/**
+	 * Tries to deploy the given number of equipment into the
+	 * slot if the inventory and slot limits allow.
+	 * @param slotId the target slot id
+	 * @param type the research type to deploy
+	 * @param count the number of items to deploy
+	 */
+	public void deployEquipment(String slotId, ResearchType type, int count) {
+		if (count <= 0) {
+			throw new IllegalArgumentException("count > 0 required");
+		}
+		InventorySlot is = slots.get(slotId);
+		if (slotId != null) {
+			if (is.slot.fixed) {
+				throw new IllegalArgumentException("slot " + slotId + " is fixed ");
+			}
+			if (!is.supports(type)) {
+				throw new IllegalArgumentException("slot " + slotId + " doesn't support technology " + type);
+			}
+			if (is.type != type) {
+				if (is.type != null) {
+					owner.changeInventoryCount(is.type, is.count);
+				}
+				is.count = 0;
+				is.type = null;
+			}
+			int max = is.slot.max - is.count;
+			int invCount = owner.inventoryCount(type);
+			int toDeploy = Math.min(count, Math.min(invCount, max));
+			is.type = type;
+			is.count += toDeploy;
+			owner.changeInventoryCount(type, -toDeploy);
+		} else {
+			throw new IllegalArgumentException("unknown slot " + slotId);
+		}
+	}
+	/**
+	 * Undeploy the given amount of item from the given equipment slot.
+	 * @param slotId the target slot id
+	 * @param count the number of equipments to undeploy
+	 */
+	public void undeployEquipment(String slotId, int count) {
+		if (count <= 0) {
+			throw new IllegalArgumentException("count > 0 required");
+		}
+		InventorySlot is = slots.get(slotId);
+		if (slotId != null) {
+			if (is.slot.fixed) {
+				throw new IllegalArgumentException("slot " + slotId + " is fixed ");
+			}
+			int toRemove = Math.min(count, is.count);
+			is.count -= toRemove;
+			if (is.type != null) {
+				owner.changeInventoryCount(is.type, toRemove);
+			}
+			if (is.count == 0) {
+				is.type = null;
+			}
+		} else {
+			throw new IllegalArgumentException("unknown slot " + slotId);
+		}
 	}
 }

@@ -146,7 +146,7 @@ public class Mission16 extends Mission {
 	void createCarrier() {
 		Fleet f = createFleet(label("mission-16.fleet"), player, player.explorationOuterLimit.x, player.explorationOuterLimit.y);
 		
-		f.addInventory(research("TradersFreight1"), 1);
+		addInventory(f, "TradersFreight1", 1);
 		
 		tagFleet(f, ALLY);
 		
@@ -173,8 +173,8 @@ public class Mission16 extends Mission {
 				f = createFleet(label("Empire.main_fleet"), player, f.x + 5, f.y + 5);
 			}
 
-			f.addInventory(research("Fighter1"), f1);
-			f.addInventory(research("Fighter2"), f2);
+			addInventory(f, "Fighter1", f1);
+			addInventory(f, "Fighter2", f2);
 			
 			// --------------------------------------------
 			
@@ -252,8 +252,8 @@ public class Mission16 extends Mission {
 
 		//---------------------------------
 		
-		f.addInventory(research("GarthogFighter"), 4);
-		equipFully(f.addInventory(research("GarthogDestroyer"), 2));
+		addInventory(f, "GarthogFighter", 4);
+		equipFully(addInventory(f, "GarthogDestroyer", 2));
 		
 		//---------------------------------
 		

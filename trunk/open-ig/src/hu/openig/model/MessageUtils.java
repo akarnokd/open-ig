@@ -44,7 +44,7 @@ public final class MessageUtils {
 				return mo;
 			}
 		}
-		throw new ErrorResponse(ErrorType.ERROR_RESPONSE, response != null ? response.toString() : "null");
+		throw new ErrorResponse(ErrorType.RESPONSE, response != null ? response.toString() : "null");
 	}
 	/**
 	 * Checks if the response object is a MessageArray and
@@ -67,7 +67,7 @@ public final class MessageUtils {
 				return ma;
 			}
 		}
-		throw new ErrorResponse(ErrorType.ERROR_RESPONSE, response != null ? response.toString() : "null");
+		throw new ErrorResponse(ErrorType.RESPONSE, response != null ? response.toString() : "null");
 	}
 
 }

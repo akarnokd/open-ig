@@ -80,7 +80,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		try {
 			response.fromMessage(mo);
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex);
 		}
 		return response;
 	}
@@ -107,11 +107,11 @@ public class RemoteGameClient implements RemoteGameAPI {
 					item.fromMessage((MessageObject)o);
 					result.add(item);
 				} else {
-					throw new ErrorResponse(ErrorType.ERROR_FORMAT, o != null ? o.getClass().toString() : "null");
+					throw new ErrorResponse(ErrorType.FORMAT, o != null ? o.getClass().toString() : "null");
 				}
 			}
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex);
 		}
 		return result;
 	}
@@ -212,7 +212,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 				map.put(mo.getString("type"), mo.getInt("count"));
 			}
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 		return map;
 	}
@@ -319,7 +319,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		try {
 			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 	}
 
@@ -370,7 +370,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		try {
 			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 	}
 
@@ -454,7 +454,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		try {
 			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 	}
 
@@ -469,7 +469,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		try {
 			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 	}
 
@@ -532,7 +532,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 		try {
 			return mo.getInt("id");
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 	}
 

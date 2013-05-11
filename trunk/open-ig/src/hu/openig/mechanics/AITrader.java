@@ -407,8 +407,7 @@ public class AITrader implements AIManager {
 		}
 		InventoryItem ii = new InventoryItem(world.newId(), player, ModelUtils.random(rts));
 		ii.count = 1;
-		ii.hp = world.getHitpoints(ii.type, ii.owner);
-		ii.createSlots();
+		ii.init();
 		
 		nf.inventory.add(ii);
 		
@@ -436,8 +435,7 @@ public class AITrader implements AIManager {
 			nf.name = traderLabel;
 			InventoryItem ii = new InventoryItem(world.newId(), player, type);
 			ii.count = 1;
-			ii.hp = world.getHitpoints(ii.type, ii.owner);
-			ii.createSlots();
+			ii.init();
 			
 			nf.inventory.add(ii);
 			

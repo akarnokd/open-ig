@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import java.util.List;
+
 
 /**
  * Interface for inventory management.
@@ -19,4 +21,43 @@ public interface HasInventory {
 	 * @return the inventory list 
 	 */
 	InventoryItems inventory();
+	/**
+	 * Check if the given technology can be undeployed from the inventory.
+	 * @param type the technology
+	 * @return true if it can be undeployed
+	 */
+	boolean canUndeploy(ResearchType type);
+	/**
+	 * Check if the given technology can be deployed into this inventory.
+	 * @param type the technology
+	 * @return true if can be deployed
+	 */
+	boolean canDeploy(ResearchType type);
+	/**
+	 * Deploys a given amount of items with the given type if
+	 * there is enough available in the main inventory
+	 * and it doesn't violate capacity constraints.
+	 * <p>The method does not check if the research itself
+	 * is available to the user or not.</p>
+	 * @param rt the technology
+	 * @param count the number of items to deploy
+	 * @return the list of created inventory items
+	 */
+	List<InventoryItem> deployItem(ResearchType rt, int count);
+	/**
+	 * Sells the given amount of items from the given inventory
+	 * item.
+	 * @param itemId item id
+	 * @param count the number of items to sell
+	 */
+	void sell(int itemId, int count);
+	/**
+	 * Undeploy the given amount of items from the
+	 * given inventory item, if there is that many.
+	 * Items are placed back in the player's global
+	 * inventory.
+	 * @param itemId the inventory item id
+	 * @param count the number of items to remove
+	 */
+	void undeployItem(int itemId, int count);
 }

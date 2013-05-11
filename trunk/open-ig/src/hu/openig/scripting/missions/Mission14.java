@@ -102,7 +102,7 @@ public class Mission14 extends Mission {
 		
 		Fleet f = createFleet(label("Garthog.virus-carrier"), garthog, g2.x, g2.y);
 		
-		f.addInventory(research("GarthogVirusBomb"), 3);
+		addInventory(f, "GarthogVirusBomb", 3);
 		// ---------------------------------------------------
 		
 		for (InventoryItem ii : f.inventory.iterable()) {

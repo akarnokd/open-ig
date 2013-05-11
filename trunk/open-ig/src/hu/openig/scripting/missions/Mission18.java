@@ -9,7 +9,6 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
@@ -70,8 +69,8 @@ public class Mission18 extends Mission {
 			f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
 		}			
 		ResearchType rt = research("Battleship1");
-		f.addInventory(rt, 1);
-		f.addInventory(research("LightTank"), 4);
+		addInventory(f, rt.id, 1);
+		addInventory(f, "LightTank", 4);
 		
 		InventoryItem ii = f.getInventoryItem(rt);
 		ii.tag = "CampaignMainShip3";
@@ -188,7 +187,7 @@ public class Mission18 extends Mission {
 				Planet ach = planet("Achilles");
 				// create a fleet to colonize the planet, for convenience
 				Fleet f = createFleet(format("colonizer_fleet", player.shortName), player, ach.x, player.explorationOuterLimit.y - 5);
-				f.addInventory(research("ColonyShip"), 1);
+				addInventory(f, "ColonyShip", 1);
 				f.moveTo(planet);
 				f.task = FleetTask.SCRIPT;
 				tagFleet(f, "Mission-18-Colonizer");
@@ -206,7 +205,7 @@ public class Mission18 extends Mission {
 		if (fleet.owner == player && planet.owner == null 
 				&& hasTag(fleet, "Mission-18-Colonizer")) {
 			removeScripted(fleet);
-			DefaultAIControls.colonizeWithFleet(fleet, planet);
+			fleet.colonize(planet);
 		}
 	}
 }

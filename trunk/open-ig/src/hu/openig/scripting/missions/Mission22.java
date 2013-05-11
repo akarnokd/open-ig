@@ -95,11 +95,11 @@ public class Mission22 extends Mission {
 			f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
 		}			
 		ResearchType rt = research("Flagship");
-		f.addInventory(rt, 1);
-		f.addInventory(research("LightTank"), 6);
+		addInventory(f, rt.id, 1);
+		addInventory(f, "LightTank", 6);
 		
-		f.addInventory(research("Cruiser1"), 1);
-		f.addInventory(research("Fighter2"), 6);
+		addInventory(f, "Cruiser1", 1);
+		addInventory(f, "Fighter2", 6);
 		
 		InventoryItem ii = f.getInventoryItem(rt);
 		ii.tag = "CampaignMainShip4";

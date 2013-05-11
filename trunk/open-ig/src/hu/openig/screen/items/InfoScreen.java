@@ -1246,7 +1246,7 @@ public class InfoScreen extends ScreenBase {
 	public boolean mouse(UIMouse e) {
 		scaleMouse(e, base, margin());
 		if (e.has(Type.DOWN)) {
-			if (showPlanetListDetails) { // FIXME
+			if (showPlanetListDetails) {
 				String s1 = get("info.planet_name");
 				int w1 = commons.text().getTextWidth(10, s1);
 				String s2 = get("info.population_details");

@@ -75,16 +75,16 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 		try {
 			responseCall = processMessageDeferred(message);
 		} catch (MissingAttributeException ex) {
-			conn.error(message, ErrorType.ERROR_FORMAT.ordinal(), ex.toString());
+			conn.error(message, ErrorType.FORMAT.ordinal(), ex.toString());
 			return;
 		}			
 		if (useEDT) {
 			try {
 				SwingUtilities.invokeAndWait(responseCall);
 			} catch (InterruptedException ex) {
-				conn.error(message, ErrorType.ERROR_INTERRUPTED.ordinal(), ex.toString());
+				conn.error(message, ErrorType.INTERRUPTED.ordinal(), ex.toString());
 			} catch (InvocationTargetException ex) {
-				conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), ex.toString());
+				conn.error(message, ErrorType.SERVER_BUG.ordinal(), ex.toString());
 			}
 		} else {
 			responseCall.run();
@@ -97,9 +97,9 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 		} catch (ErrorResponse ex) {
 			conn.error(message, ex.code.ordinal(), ex.toString());
 		} catch (IOException ex) {
-			conn.error(message, ErrorType.ERROR_SERVER_IO.ordinal(), ex.toString());
+			conn.error(message, ErrorType.SERVER_IO.ordinal(), ex.toString());
 		} catch (Throwable ex) {
-			conn.error(message, ErrorType.ERROR_SERVER_BUG.ordinal(), ex.toString());
+			conn.error(message, ErrorType.SERVER_BUG.ordinal(), ex.toString());
 			Exceptions.add(ex);
 		}
 	}
@@ -123,7 +123,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					if (o instanceof MessageObject) {
 						calls.add(processMessageObjectDeferred((MessageObject)o));
 					} else {
-						throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
+						throw new ErrorResponse(ErrorType.UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
 					}
 				}
 				return new DeferredTransform<Void>() {
@@ -153,7 +153,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 		if (message instanceof MessageObject) {
 			return processMessageObjectDeferred((MessageObject)message);
 		}
-		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
+		throw new ErrorResponse(ErrorType.UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
 	}
 	/**
 	 * Process requests with message array as their outer elements.
@@ -162,7 +162,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	 * @throws IOException on error
 	 */
 	protected DeferredRunnable processMessageArrayDeferred(MessageArray ma) throws IOException {
-		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, ma != null ? ma.name : "null");
+		throw new ErrorResponse(ErrorType.UNKNOWN_MESSAGE, ma != null ? ma.name : "null");
 	}
 	/**
 	 * Process request with message object as their outer elements.
@@ -1050,7 +1050,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 			};
 		}
 		default:
-			throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
+			throw new ErrorResponse(ErrorType.UNKNOWN_MESSAGE, mo != null ? mo.name : "null");
 		}
 	}
 }

@@ -61,8 +61,8 @@ public class Mission6 extends Mission {
 			} else {
 				f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
 			}
-			f.addInventory(research("Fighter2"), 2);
-			f.addInventory(research("Cruiser1"), 1);
+			addInventory(f, "Fighter2", 2);
+			addInventory(f, "Cruiser1", 1);
 			for (InventoryItem ii : f.inventory.iterable()) {
 				if (ii.type.id.equals("Cruiser1")) {
 					ii.tag = "CampaignMainShip2";
@@ -199,12 +199,12 @@ public class Mission6 extends Mission {
 		Player garthog = player("Garthog");
 		Fleet f = createFleet(format("fleet", garthog.shortName), garthog, from.x + 20, from.y + 10);
 		// --------------------------------------------------
-		f.addInventory(research("GarthogFighter"), 10);
-		equipFully(f.addInventory(research("GarthogDestroyer"), 3));
-		equipFully(f.addInventory(research("GarthogBattleship"), 2));
-		f.addInventory(research("LightTank"), 6);
-		f.addInventory(research("RadarCar"), 1);
-		f.addInventory(research("GarthogRadarJammer"), 1);
+		addInventory(f, "GarthogFighter", 10);
+		equipFully(addInventory(f, "GarthogDestroyer", 3));
+		equipFully(addInventory(f, "GarthogBattleship", 2));
+		addInventory(f, "LightTank", 6);
+		addInventory(f, "RadarCar", 1);
+		addInventory(f, "GarthogRadarJammer", 1);
 		// ---------------------------------------------------
 		
 		for (InventoryItem ii : f.inventory.iterable()) {

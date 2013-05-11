@@ -167,14 +167,14 @@ public class Mission12 extends Mission {
 		int f1 = 4;
 		int f2 = 2;
 		
-		if (f.inventoryCount(research("Fighter1")) > 30 - f1
-				|| f.inventoryCount(research("Fighter2")) > 30 - f2) {
+		if (f.inventoryCount(research("Fighter1")) > world.params().fighterLimit() - f1
+				|| f.inventoryCount(research("Fighter2")) > world.params().fighterLimit() - f2) {
 			
 			f = createFleet(label("Empire.main_fleet"), player, f.x + 5, f.y + 5);
 		}
 
-		f.addInventory(research("Fighter1"), f1);
-		f.addInventory(research("Fighter2"), f2);
+		addInventory(f, "Fighter1", f1);
+		addInventory(f, "Fighter2", f2);
 
 		world.env.playSound(SoundTarget.COMPUTER, SoundType.REINFORCEMENT_ARRIVED_2, null);
 	}

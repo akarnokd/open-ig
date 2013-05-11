@@ -465,12 +465,16 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				if (player().selectionMode == SelectionMode.PLANET) {
-					doCreateFleet(true, planet().x, planet().y);
+					Fleet f = planet().newFleet();
+					player().currentFleet = f;
+					player().selectionMode = SelectionMode.FLEET;
 				} else {
 					if (fleet() != null) {
 						FleetStatistics fs = fleet().getStatistics();
 						if (fs.planet != null && fs.planet.owner == player()) {
-							doCreateFleet(true, fs.planet.x, fs.planet.y);
+							Fleet f = fs.planet.newFleet();
+							player().currentFleet = f;
+							player().selectionMode = SelectionMode.FLEET;
 						}
 					}
 				}
@@ -1149,8 +1153,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 					if (cnt > 0) {
 						InventoryItem ii = new InventoryItem(world().newId(), o, configure.type);
 						ii.count = cnt;
-						ii.hp = ii.hpMax();
-						ii.createSlots();
+						ii.init();
 						drawDPS(g2, ii);
 					}
 				}
@@ -1352,29 +1355,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		secondary = null;
 		fleetShown = null;
 		planetShown = null;
-	}
-	/** 
-	 * Create a new fleet. 
-	 * @param select the new fleet?
-	 * @param whereX where to create
-	 * @param whereY where to create
-	 * @return the new fleet
-	 */
-	Fleet doCreateFleet(boolean select, double whereX, double whereY) {
-		Fleet f = new Fleet(player());
-		f.name = get("newfleet.name");
-		
-		double r = Math.max(0, rnd.nextDouble() * world().params().nearbyDistance() - 1);
-		double k = rnd.nextDouble() * 2 * Math.PI;
-		f.x = (whereX + Math.cos(k) * r);
-		f.y = (whereY + Math.sin(k) * r);
-		
-		if (select) {
-			player().currentFleet = f;
-			player().selectionMode = SelectionMode.FLEET;
-		}
-		player().fleets.put(f, FleetKnowledge.FULL);
-		return f;
 	}
 	/**
 	 * Update the display values based on the current selection.
@@ -2101,9 +2081,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 					while (amount-- > 0) {
 						InventoryItem pii = new InventoryItem(world().newId(), player(), rt);
 						pii.count = 1;
-						pii.hp = world().getHitpoints(pii.type, pii.owner);
-						
-						pii.createSlots();
+						pii.init();
 						
 						planet().inventory.add(pii);
 						leftList.items.add(pii);
@@ -2135,7 +2113,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 					
 					if (amount > 0) {
 						int cnt = fleet().inventoryCount(rt);
-						List<InventoryItem> iss = fleet().addInventory(rt, amount);
+						List<InventoryItem> iss = fleet().deployItem(rt, amount);
 						
 						leftList.items.clear();
 						leftList.items.addAll(fleet().getSingleItems());
@@ -2143,7 +2121,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						configure.item = iss.get(0);
 						
 						leftList.map.get(rt).index = cnt;
-						player().changeInventoryCount(rt, -amount);
 						if (config.computerVoiceScreen) {
 							effectSound(SoundType.SHIP_DEPLOYED);
 						}
@@ -2156,8 +2133,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						amount = Math.max(0, fs.vehicleMax - fs.vehicleCount);
 					}
 					if (amount > 0) {
-						fleet().changeInventory(rt, amount);
-						player().changeInventoryCount(rt, -amount);
+						fleet().deployItem(rt, amount);
 					}
 				} else 
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -2167,8 +2143,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						amount = Math.max(0, limit - count);
 					}
 					if (amount > 0) {
-						fleet().changeInventory(rt, amount);
-						player().changeInventoryCount(rt, -amount);
+						fleet().deployItem(rt, amount);
 					}
 				}
 				fleet().removeExcess();
@@ -2194,17 +2169,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				planet().removeExcess();
 			}
 		} else {
-			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
-					|| rt.category == ResearchSubCategory.WEAPONS_TANKS
-					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				int count = fleet().inventoryCount(rt);
-				if (count - amount < 0) {
-					amount = count;
-				}
-				if (count > 0) {
-					fleet().changeInventory(rt, -amount);
-					player().changeInventoryCount(rt, amount);
-				}
+			if (fleet().canUndeploy(rt)) {
+				fleet().undeployItem(rt, amount);
 				fleet().removeExcess();
 			}
 		}
@@ -2452,7 +2418,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	 * Split the current fleet to another.
 	 */
 	void doSplit() {
-		secondary = doCreateFleet(false, fleet().x, fleet().y);
+		secondary = fleet().newFleet();
 		clearCells(rightFighterCells);
 		clearCells(rightTankCells);
 		rightList.clear();
@@ -2528,8 +2494,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 							|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
 						) {
 							int toremove = delta > ii.count ? ii.count : delta;
-							dst.changeInventory(ii.type, toremove);
-							src.changeInventory(ii.type, -toremove);
+							src.undeployItem(ii.type, toremove);
+							dst.deployItem(ii.type, toremove);
 							delta -= toremove;
 							if (delta == 0) {
 								break;
@@ -2541,8 +2507,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				updateInventory(null, fleet(), leftList);
 				updateInventory(null, secondary, rightList);
 			} else {
-				src.changeInventory(type, -transferCount);
-				dst.changeInventory(type, transferCount);
+				src.transferTo(dst, type, transferCount);
 			}
 		}
 	}
@@ -2617,8 +2582,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						if (!f.inventory.remove(ii)) {
 							Exceptions.add(new AssertionError("Inventory item not found."));
 						}
-					} else {
-						f.changeInventory(research(), -1);
+//					} else {
+//						f.changeInventory(research(), -1);
 					}
 					f.removeExcess();
 					updateInventory(null, f, leftList);
@@ -2627,14 +2592,14 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						planet().inventory.remove(ii);
 						leftList.selectedItem = planet().getInventoryItem(research(), player());
 						configure.item = leftList.selectedItem;
-					} else {
-						planet().changeInventory(research(), player(), -1);
+//					} else {
+//						planet().changeInventory(research(), player(), -1);
 					}
 					planet().removeExcess();
 					updateInventory(planet(), null, leftList);
 				}
 
-				ii.sell();
+				ii.sell(1);
 			}
 			break;
 		default:
@@ -2746,7 +2711,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 					if (ii.type.productionCost < bestStation.productionCost 
 							&& p.owner.inventoryCount(bestStation) > 0) {
 						ii.strip();
-						ii.sell();
+						ii.sell(ii.count);
 						p.inventory.remove(ii);
 						leftList.items.remove(ii);
 						addStation(p, bestStation);
@@ -2802,9 +2767,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	protected void addStation(Planet p, ResearchType bestStation) {
 		InventoryItem ii = new InventoryItem(world().newId(), p.owner, bestStation);
 		ii.count = 1;
-		ii.hp = world().getHitpoints(ii.type, ii.owner);
-		ii.createSlots();
-//		ii.shield = Math.max(0, ii.shieldMax());
+		ii.init();
 		planet().inventory.add(ii);
 		leftList.items.add(ii);
 		leftList.compute();

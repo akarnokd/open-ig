@@ -46,7 +46,7 @@ public class MessageObjectAsync<T extends MessageObjectIO> extends AsyncTransfor
 			response.fromMessage(MessageUtils.expectObject(param1, responseType));
 			setValue(response);
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 	}
 }

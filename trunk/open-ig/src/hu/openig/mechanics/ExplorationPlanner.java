@@ -369,9 +369,8 @@ public class ExplorationPlanner extends Planner {
 				public void invoke() {
 					if (deploy.planet.owner.inventoryCount(fwhat) > 0) {
 						Fleet f = controls.actionCreateFleet(format("explorer_fleet", p.shortName), deploy.planet);
-						f.addInventory(fwhat, 1);
+						f.deployItem(fwhat, 1);
 						f.upgradeAll();
-						f.owner.changeInventoryCount(fwhat, -1);
 					}
 				}
 			});

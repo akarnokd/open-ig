@@ -140,10 +140,10 @@ public class Mission17 extends Mission {
 		
 		// ------------------------------------
 		
-		equipFully(f.addInventory(research("GarthogBattleship"), 2));
-		equipFully(f.addInventory(research("GarthogDestroyer"), 2));
-		f.addInventory(research("GarthogFighter"), 3);
-		f.addInventory(research("Destroyer2"), 1);
+		equipFully(addInventory(f, "GarthogBattleship", 2));
+		equipFully(addInventory(f, "GarthogDestroyer", 2));
+		addInventory(f, "GarthogFighter", 3);
+		addInventory(f, "Destroyer2", 1);
 
 		InventoryItem ii = f.getInventoryItem(research("Destroyer2"));
 		

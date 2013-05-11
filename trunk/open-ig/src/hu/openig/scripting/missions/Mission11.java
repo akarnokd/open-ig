@@ -99,17 +99,14 @@ public class Mission11 extends Mission {
 		Fleet f = createFleet(format("fleet", garthog.shortName), garthog, from.x, from.y);
 		// --------------------------------------------------
 		// Adjust attacker strength here
-		f.addInventory(research("GarthogFighter"), 20);
-		equipFully(f.addInventory(research("GarthogDestroyer"), 10));
-		equipFully(f.addInventory(research("GarthogBattleship"), 2));
-		f.addInventory(research("LightTank"), 6);
-		f.addInventory(research("RadarCar"), 1);
-		f.addInventory(research("GarthogRadarJammer"), 1);
+		addInventory(f, "GarthogFighter", 20);
+		equipFully(addInventory(f, "GarthogDestroyer", 10));
+		equipFully(addInventory(f, "GarthogBattleship", 2));
+		addInventory(f, "LightTank", 6);
+		addInventory(f, "RadarCar", 1);
+		addInventory(f, "GarthogRadarJammer", 1);
 		// ---------------------------------------------------
-		
-		for (InventoryItem ii : f.inventory.iterable()) {
-			ii.tag = "Mission-11-Garthog";
-		}
+		tagFleet(f, "Mission-11-Garthog");
 		InventoryItem iib = f.getInventoryItem(research("GarthogBattleship"));
 		InventorySlot is = iib.getSlot("hyperdrive");
 		if (is != null) {
