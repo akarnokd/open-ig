@@ -15,6 +15,8 @@ import hu.openig.net.MessageObject;
  * @author akarnokd, 2013.04.27.
  */
 public class BuildingStatus implements MessageObjectIO {
+	/** The object name. */
+	public static final String OBJECT_NAME = "BUILDING";
 	/** The building's unique id. */
 	public int id;
 	/** The building's type. */
@@ -73,7 +75,7 @@ public class BuildingStatus implements MessageObjectIO {
 	}
 	@Override
 	public String objectName() {
-		return "BUILDING";
+		return OBJECT_NAME;
 	}
 	/**
 	 * Remove information that doesn't concern an enemy player.

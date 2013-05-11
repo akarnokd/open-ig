@@ -21,7 +21,9 @@ import java.util.List;
  */
 public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<FleetStatus> {
 	/** Array name. */
-	private static final String ARRAY_NAME = "FLEET_STATUSES";
+	public static final String ARRAY_NAME = "FLEET_STATUSES";
+	/** The object name. */
+	public static final String OBJECT_NAME = "FLEET";
 	/** The fleet's unique identifier. */
 	public int id;
 	/** The knowledge about the fleet. */
@@ -121,7 +123,7 @@ public class FleetStatus implements MessageObjectIO, MessageArrayItemFactory<Fle
 	}
 	@Override
 	public String objectName() {
-		return "FLEET_STATUS";
+		return OBJECT_NAME;
 	}
 	@Override
 	public String arrayName() {
