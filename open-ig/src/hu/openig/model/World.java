@@ -704,13 +704,13 @@ public class World implements ModelLookup {
 					String ownerStr = xinv.get("owner");
 
 					InventoryItem ii = new InventoryItem(id, player(ownerStr), research(xinv.get("type")));
+					ii.init();
 					if (ii.owner == null) {
 						Exceptions.add(new AssertionError("Planet " + p.id + " inventory owner missing: " + xinv));
 					}
 					ii.tag = xinv.get("tag", null);
 					ii.count = xinv.getInt("count");
 					ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
-					ii.createSlots();
 					ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
 	
 					ii.nickname = xinv.get("nickname", null);
@@ -1698,10 +1698,10 @@ public class World implements ModelLookup {
 				int id = xpii.getInt("id");
 				
 				InventoryItem pii = new InventoryItem(id, player(xpii.get("owner")), research(xpii.get("type")));
+				pii.init();
 				pii.tag = xpii.get("tag", null);
 				pii.count = xpii.getInt("count");
 				pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
-				pii.createSlots();
 				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
 
 				pii.nickname = xpii.get("nickname", null);
@@ -1940,14 +1940,14 @@ public class World implements ModelLookup {
 				}
 				int itemid = xfii.getInt("id");
 				InventoryItem fii = new InventoryItem(itemid, f.owner, research(xfii.get("type")));
+				
+				fii.nickname = xfii.get("nickname", fii.nickname);
+				fii.nicknameIndex = xfii.getInt("nickname-index", 0);
+
+				fii.init();
 				fii.count = count;
 				fii.tag = xfii.get("tag", null);
 				
-				fii.nickname = xfii.get("nickname", null);
-				fii.nicknameIndex = xfii.getInt("nickname-index", 0);
-				if (fii.nickname == null) {
-					fii.generateNickname();
-				}
 				
 				fii.kills = xfii.getInt("kills", 0);
 				fii.killsCost = xfii.getLong("kills-cost", 0L);
@@ -2975,7 +2975,8 @@ public class World implements ModelLookup {
 					ResearchType rt = researches.get("ColonyShip");
 					Fleet f = new Fleet(p);
 					f.name = labels.get("@Colonizer");
-					f.addInventory(rt, 1);
+					p.changeInventoryCount(rt, 1);
+					f.deployItem(rt, 1);
 				}
 				
 				createStartingFleet(p);
@@ -3223,13 +3224,16 @@ public class World implements ModelLookup {
 			if (rt.race.contains(p.race)) {
 				if (p.isAvailable(rt) || rt.level == 0) {
 					if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-						f.addInventory(rt, 10);
+						p.changeInventoryCount(rt, 10);
+						f.deployItem(rt, 10);
 					} else
 					if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
-						f.addInventory(rt, 3);
+						p.changeInventoryCount(rt, 3);
+						f.deployItem(rt, 3);
 					} else
 					if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-						f.addInventory(rt, 1);
+						p.changeInventoryCount(rt, 1);
+						f.deployItem(rt, 1);
 					}
 				}
 			}

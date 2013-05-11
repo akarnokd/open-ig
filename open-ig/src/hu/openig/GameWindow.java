@@ -1829,8 +1829,7 @@ public class GameWindow extends JFrame implements GameControls {
 	void addToFleet(Fleet target, ResearchType rt, int count) {
 		InventoryItem ii = new InventoryItem(world().newId(), target.owner, rt);
 		ii.count = count;
-		ii.hp = commons.world().getHitpoints(ii.type, ii.owner);
-		ii.createSlots();
+		ii.init();
 		// fill in best equipment
 		for (InventorySlot is : ii.slots.values()) {
 			if (!is.slot.fixed) {

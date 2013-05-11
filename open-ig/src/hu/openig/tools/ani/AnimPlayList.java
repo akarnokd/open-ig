@@ -407,7 +407,6 @@ public class AnimPlayList extends JFrame {
 		pf.setMax(idxs.length);
 		final String targetStr = saveDirectory.getText();
 		final boolean usesubdirs = useSubdirs.isSelected();
-		// FIXME workaround for Java 7 single threaded swingworker pool - deadlocks if one swingworker starts another swingworker and waits for the other's result
     	Thread t = new Thread("SaveAsPNGWAV") {
 			@Override
 			public void run() {

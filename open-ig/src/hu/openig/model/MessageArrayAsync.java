@@ -57,12 +57,12 @@ extends AsyncTransform<Object, List<T>, IOException> {
 					t.fromMessage((MessageObject)o);
 					result.add(t);
 				} else {
-					throw new ErrorResponse(ErrorType.ERROR_FORMAT, o != null ? o.getClass().toString() : "null");
+					throw new ErrorResponse(ErrorType.FORMAT, o != null ? o.getClass().toString() : "null");
 				}
 			}
 			setValue(result);
 		} catch (MissingAttributeException ex) {
-			throw new ErrorResponse(ErrorType.ERROR_FORMAT, ex.toString(), ex);
+			throw new ErrorResponse(ErrorType.FORMAT, ex.toString(), ex);
 		}
 	}
 }

@@ -138,8 +138,8 @@ public class Mission19 extends Mission {
 		Fleet f = createFleet(label("mission-19.unknown"), ft, z.x, z.y);
 		// -----------------
 		
-		f.addInventory(research(governorShipType), 1);
-		f.addInventory(research("Fighter1"), 2);
+		addInventory(f, governorShipType, 1);
+		addInventory(f, "Fighter1", 2);
 		
 		// -----------------
 		tagFleet(f, MISSION_19_GOVERNOR);

@@ -374,8 +374,7 @@ public class ColonizationPlanner extends Planner {
 				public void invoke() {
 					if (p.inventoryCount(csi.second) > 0) {
 						Fleet f = controls.actionCreateFleet(format("colonizer_fleet", p.shortName), spaceport.planet);
-						f.addInventory(csi.second, 1);
-						spaceport.owner.changeInventoryCount(csi.second, -1);
+						f.deployItem(csi.second, 1);
 					}
 				}
 			});

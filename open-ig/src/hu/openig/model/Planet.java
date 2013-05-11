@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.model.PlanetStatistics.LabStatistics;
 import hu.openig.model.PlanetStatistics.ProductionStatistics;
+import hu.openig.utils.Exceptions;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -632,9 +633,7 @@ public class Planet implements Named, Owned, HasInventory {
 		if (!found && amount > 0) {
 			InventoryItem pii = new InventoryItem(world.newId(), owner, type);
 			pii.count = amount;
-			pii.hp = world.getHitpoints(type, owner);
-			pii.createSlots();
-			pii.shield = Math.max(0, pii.shieldMax());
+			pii.init();
 			
 			inventory.add(pii);
 		}
@@ -953,6 +952,134 @@ public class Planet implements Named, Owned, HasInventory {
 			if (owner != null) {
 				die();
 			}
+		}
+	}
+	/**
+	 * Creates a new fleet for the owner of this planet
+	 * around this planet.
+	 * @return the new fleet
+	 */
+	public Fleet newFleet() {
+		if (owner == null) {
+			Exceptions.add(new AssertionError("Planet has no owner: " + id));
+			return null;
+		}
+		
+		Fleet f = new Fleet(owner);
+		f.name = world.labels.get("newfleet.name");
+		
+		double r = Math.max(0, ModelUtils.random() * world.params().nearbyDistance() - 1);
+		double k = ModelUtils.random() * 2 * Math.PI;
+		f.x = (x + Math.cos(k) * r);
+		f.y = (y + Math.sin(k) * r);
+
+		return f;
+	}
+	@Override
+	public boolean canDeploy(ResearchType type) {
+		return type.category == ResearchSubCategory.WEAPONS_TANKS
+				|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
+				|| type.category == ResearchSubCategory.SPACESHIPS_STATIONS
+				|| type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+				|| type.category == ResearchSubCategory.SPACESHIPS_SATELLITES;
+	}
+	@Override
+	public boolean canUndeploy(ResearchType type) {
+		return type.category == ResearchSubCategory.WEAPONS_TANKS
+				|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
+				|| type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+				|| type.category == ResearchSubCategory.SPACESHIPS_SATELLITES;
+	}
+	/**
+	 * Compute how many of the supplied items can be added without violating the limit constraints. 
+	 * @param rt the item type
+	 * @return the currently alloved
+	 */
+	public int getAddLimit(ResearchType rt) {
+		PlanetStatistics fs = getStatistics();
+		switch (rt.category) {
+		case SPACESHIPS_FIGHTERS:
+			return owner.world.params().fighterLimit() - inventoryCount(rt, owner);
+		case WEAPONS_TANKS:
+		case WEAPONS_VEHICLES:
+			return fs.vehicleMax - fs.vehicleCount;
+		case SPACESHIPS_STATIONS:
+			return owner.world.params().stationLimit() - inventoryCount(rt, owner);
+		case SPACESHIPS_SATELLITES:
+			return 1; // FIXME per owner! 
+		default:
+			return 0;
+		}
+	}
+	@Override
+	public List<InventoryItem> deployItem(ResearchType rt, int count) {
+		if (count <= 0) {
+			throw new IllegalArgumentException("count > 0 required");
+		}
+		int fleetLimit = getAddLimit(rt);
+		boolean single = false;
+		switch (rt.category) {
+		case WEAPONS_TANKS:
+		case WEAPONS_VEHICLES:
+		case SPACESHIPS_FIGHTERS:
+			single = true;
+			break;
+		default:
+		}
+
+		int invAvail = owner.inventoryCount(rt);
+		
+		int toDeploy = Math.min(count, Math.min(fleetLimit, invAvail));
+		if (toDeploy > 0) {
+			owner.changeInventoryCount(rt, -toDeploy);
+
+			if (single) {
+				InventoryItem ii = getInventoryItem(rt);
+				if (ii == null) {
+					ii = new InventoryItem(owner.world.newId(), owner, rt);
+					ii.init();
+					inventory.add(ii);
+				}
+				ii.count += toDeploy;
+				return Collections.singletonList(ii);
+			}
+			List<InventoryItem> r = new ArrayList<>();
+			for (int i = 0; i < toDeploy; i++) {
+				InventoryItem ii = new InventoryItem(owner.world.newId(), owner, rt);
+				ii.init();
+				inventory.add(ii);
+				r.add(ii);
+			}
+			return r;
+		}
+		return Collections.emptyList();
+	}
+	@Override
+	public void sell(int itemId, int count) {
+		InventoryItem ii = inventory.findById(itemId);
+		if (ii != null) {
+			ii.sell(count);
+			if (ii.count <= 0) {
+				inventory.remove(ii);
+			}
+		}
+	}
+	@Override
+	public void undeployItem(int itemId, int count) {
+		InventoryItem ii = inventory.findById(itemId);
+		if (ii != null) {
+			if (canUndeploy(ii.type)) {
+				int n = Math.min(count, ii.count);
+				ii.count -= n;
+				owner.changeInventoryCount(ii.type, n);
+				if (ii.count <= 0) {
+					inventory.remove(ii);
+				}
+			} else {
+				throw new IllegalArgumentException("inventory item can't be undeployed: " + ii.type);
+			}
+		} else {
+			throw new IllegalArgumentException("inventory item not found: " + itemId);
 		}
 	}
 }

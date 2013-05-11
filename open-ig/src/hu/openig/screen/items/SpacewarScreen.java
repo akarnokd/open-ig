@@ -1571,7 +1571,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.building = b;
 				st.planet = nearbyPlanet;
 
-//				shieldValue = Math.max(shieldValue, eff * bge.shields); FIXME
 				shieldValue += eff * bge.shields;
 
 				structures.add(st);

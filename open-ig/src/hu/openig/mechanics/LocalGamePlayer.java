@@ -16,7 +16,9 @@ import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GameAPI;
 import hu.openig.model.GroundBattleUnit;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
+import hu.openig.model.InventorySlotStatus;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatus;
@@ -47,6 +49,14 @@ public class LocalGamePlayer implements GameAPI {
 	protected final World world;
 	/** The player object. */
 	protected final Player player;
+	/** The id of the last fleet created. */
+	protected int lastFleet = -1;
+	/** The id of the last fleet inventory created. */
+	protected int lastFleetInventoryItem = -1;
+	/** The id of the last planet inventory created. */
+	protected int lastPlanetInventoryItem = -1;
+	/** The last deployed building id. */
+	protected int lastBuilding = -1;
 	/**
 	 * Constructor, sets the player object.
 	 * @param player the player
@@ -80,7 +90,8 @@ public class LocalGamePlayer implements GameAPI {
 				return f.toFleetStatus();
 			}
 		}
-		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_FLEET);
+		ErrorType.UNKNOWN_FLEET.raise();
+		return null;
 	}
 
 	@Override
@@ -114,97 +125,258 @@ public class LocalGamePlayer implements GameAPI {
 	@Override
 	public PlanetStatus getPlanetStatus(String id) throws IOException {
 		Planet p = world.planet(id);
-		if (player.knowledge(p, PlanetKnowledge.VISIBLE) >= 0) {
+		if (p !=  null && player.knowledge(p, PlanetKnowledge.VISIBLE) >= 0) {
 			return p.toPlanetStatus(player);
 		}
-		throw new ErrorResponse(ErrorType.ERROR_UNKNOWN_PLANET, id);
+		ErrorType.UNKNOWN_PLANET.raise(id);
+		return null;
+	}
+
+	/**
+	 * Verify the existence and accessibility of the given fleet.
+	 * @param id the fleet id
+	 * @return the fleet object or null to do nothing
+	 * @throws ErrorResponse on error
+	 */
+	protected Fleet fleetCheck(int id) throws ErrorResponse {
+		Fleet f = world.fleet(id);
+		if (f == null) {
+			f = player.fleet(id);
+		}
+		if (f == null) {
+			ErrorType.UNKNOWN_FLEET.raise("" + id);
+		}
+		if (f.owner != null) {
+			ErrorType.NOT_YOUR_FLEET.raise("" + id);
+		}
+		if (world.scripting.mayControlFleet(f)) {
+			return f;
+		}
+		return null;
 	}
 
 	@Override
 	public void moveFleet(int id, double x, double y) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			f.moveTo(x, y);
+		}
 	}
-
+	
 	@Override
 	public void addFleetWaypoint(int id, double x, double y) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			f.addWaypoint(x, y);
+		}
 	}
 
 	@Override
 	public void moveToPlanet(int id, String target) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		Planet p = world.planet(target);
+		if (p == null || player.knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
+			ErrorType.UNKNOWN_PLANET.raise(target);
+		}
+		if (f != null) {
+			f.moveTo(p);
+		}
 	}
 
 	@Override
 	public void followFleet(int id, int target) throws IOException {
-		// TODO Auto-generated method stub
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			Fleet f2 = world.fleet(target);
+			if (f2 == null || player.knowledge(f2, FleetKnowledge.VISIBLE) < 0) {
+				ErrorType.UNKNOWN_FLEET.raise("" + target);
+			}
+			if (f != f2) {
+				f.follow(f2);
+			}
+		}
 
 	}
 
 	@Override
 	public void attackFleet(int id, int target) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			Fleet f2 = world.fleet(target);
+			if (f2 == null || player.knowledge(f2, FleetKnowledge.VISIBLE) < 0) {
+				ErrorType.UNKNOWN_FLEET.raise("" + target);
+			}
+			if (f == f2 || f.owner == f2.owner || player.isStrongAlliance(f2.owner)) {
+				ErrorType.FRIENDLY_FLEET.raise("" + target);
+			}
+			f.attack(f2);
+		}
 	}
 
 	@Override
 	public void attackPlanet(int id, String target) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			Planet p = world.planet(target);
+			if (p == null || p.owner == null || player.knowledge(p, PlanetKnowledge.OWNER) < 0) {
+				ErrorType.UNKNOWN_PLANET.raise(target);
+			}
+			if (player.isStrongAlliance(p.owner)) {
+				ErrorType.FRIENDLY_PLANET.raise("" + target);
+			}
+			f.attack(p);
+		}
 	}
 
 	@Override
 	public void colonize(int id, String target) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			Planet p = world.planet(target);
+			if (p == null || player.knowledge(p, PlanetKnowledge.OWNER) < 0) {
+				ErrorType.UNKNOWN_PLANET.raise(target);
+				return;
+			}
+			if (f.nearbyPlanet() != p) {
+				ErrorType.NO_PLANET_NEARBY.raise(target);
+				return;
+			}
+			if (p.owner != null) {
+				ErrorType.PLANET_OCCUPIED.raise("" + target);
+				return;
+			}
+			f.colonize(p);
+		}
+		
 	}
-
+	/**
+	 * Add the given ships and equipment to the fleet, deducing from
+	 * the player's inventory.
+	 * @param f the target fleet
+	 * @param inventory the inventory settings
+	 */
+	protected void setupFleet(Fleet f, List<InventoryItemStatus> inventory) {
+		for (InventoryItemStatus iis : inventory) {
+			ResearchType rt = world.research(iis.type);
+			if (rt != null) {
+				for (InventoryItem ii : f.deployItem(rt, iis.count)) {
+					ii.tag = iis.tag;
+					for (InventorySlotStatus iss : iis.slots) {
+						ResearchType rt0 = world.research(iss.type);
+						if (rt0 != null) {
+							ii.deployEquipment(iss.id, rt0, iss.count);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	@Override
 	public int newFleet(String planet, List<InventoryItemStatus> inventory)
 			throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		Planet p = world.planet(planet);
+		if (p == null || player.knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
+			ErrorType.UNKNOWN_PLANET.raise(planet);
+		} else
+		if (p.owner == player) {
+			ErrorType.NOT_YOUR_PLANET.raise(planet);
+		} else
+		if (!p.hasMilitarySpaceport()) {
+			ErrorType.NO_SPACEPORT.raise(planet);
+		}
+		Fleet f = p.newFleet();
+		lastFleet = f.id;
+		setupFleet(f, inventory);
+		return f.id;
 	}
 
 	@Override
 	public int newFleet(int id, List<InventoryItemStatus> inventory)
 			throws IOException {
-		// TODO Auto-generated method stub
+		Fleet f0 = fleetCheck(id);
+		if (f0 != null) {
+			Fleet f = f0.newFleet();
+			lastFleet = f.id;
+			setupFleet(f, inventory);
+			return f.id;
+		}
+		ErrorType.CANT_CREATE_FLEET.raise();
 		return 0;
 	}
 
 	@Override
 	public void deleteFleet(int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			if (f.inventory.isEmpty()) {
+				world.removeFleet(f);
+			} else {
+				ErrorType.FLEET_ISNT_EMPTY.raise("" + id);
+			}
+		}
 	}
 
 	@Override
 	public void renameFleet(int id, String name) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			f.name = name;
+		}
 	}
 
 	@Override
 	public void sellFleetItem(int id, int itemId) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			if (f.inventory.contains(itemId)) {
+				f.sell(itemId, 1);
+			} else {
+				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
+			}
+		}
 	}
 
 	@Override
 	public int deployFleetItem(int id, String type)
 			throws IOException {
-		// TODO Auto-generated method stub
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			ResearchType rt = world.research(type);
+			if (rt != null && player.isAvailable(rt)) {
+				if (f.canDeploy(rt)) {
+					List<InventoryItem> iil = f.deployItem(rt, 1);
+					for (InventoryItem ii : iil) {
+						lastFleetInventoryItem = ii.id;
+						return ii.id;
+					}
+				} else {
+					ErrorType.CANT_DEPLOY_INVENTORY.raise(type);
+				}
+			} else {
+				ErrorType.UNKNOWN_RESEARCH.raise(type);
+			}
+			
+		}
+		ErrorType.CANT_DEPLOY_INVENTORY.raise(type);
 		return 0;
 	}
 
 	@Override
 	public void undeployFleetItem(int id, int itemId) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			InventoryItem ii = f.inventory.findById(itemId);
+			if (ii != null) {
+				if (f.canUndeploy(ii.type)) {
+					f.undeployItem(itemId, 1);
+				} else {
+					ErrorType.CANT_UNDEPLOY_INVENTORY.raise();
+				}
+			} else {
+				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
+			}
+		}		
 	}
 
 	@Override

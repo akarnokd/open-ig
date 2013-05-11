@@ -152,7 +152,6 @@ public class CEDefinitionPanel extends CEBasePanel implements CEPanelPreferences
 	/** @return Create the textual descriptions panel. */
 	JPanel createTextsPanel() {
 		JPanel p = new JPanel();
-		// TODO
 		p.setLayout(new BorderLayout());
 		
 		textsSubPanel = new JPanel();

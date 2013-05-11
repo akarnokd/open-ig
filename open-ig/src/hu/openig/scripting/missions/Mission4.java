@@ -123,7 +123,7 @@ public class Mission4 extends Mission {
 		Planet naxos = planet("Naxos");
 		Player pirate = player("Pirates");
 		Fleet f = createFleet(label("pirates.fleet_name"), pirate, naxos.x + 15, naxos.y - 5);
-		f.addInventory(world.researches.get("PirateFighter2"), 1);
+		addInventory(f, "PirateFighter2", 1);
 		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-4-Pirates-1";
 		}
@@ -131,7 +131,7 @@ public class Mission4 extends Mission {
 		addScripted(f);
 		
 		f = createFleet(label("pirates.fleet_name"), pirate, naxos.x + 17, naxos.y - 3);
-		f.addInventory(world.researches.get("PirateFighter"), 2);
+		addInventory(f, "PirateFighter", 2);
 		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = MISSION_4_PIRATES_2;
 		}

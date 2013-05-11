@@ -8,7 +8,6 @@
 
 package hu.openig.mechanics;
 
-import hu.openig.core.Location;
 import hu.openig.model.AIAttackMode;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIResult;
@@ -20,21 +19,17 @@ import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
-import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.model.SelectionMode;
 import hu.openig.model.TaxLevel;
-import hu.openig.model.TileSet;
 import hu.openig.model.World;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -152,9 +147,8 @@ public class DefaultAIControls implements AIControls {
 				return false;
 			}
 			InventoryItem ii = new InventoryItem(planet.world.newId(), player, satellite);
+			ii.init();
 			ii.count = 1;
-			ii.hp = player.world.getHitpoints(satellite, ii.owner);
-			ii.createSlots();
 			planet.inventory.add(ii);
 			int ttl = player.world.getSatelliteTTL(satellite);
 			if (ttl > 0) {
@@ -188,8 +182,7 @@ public class DefaultAIControls implements AIControls {
 				}
 				ii = new InventoryItem(planet.world.newId(), player, fighter);
 				ii.count = count;
-				ii.hp = player.world.getHitpoints(fighter, ii.owner);
-				ii.createSlots();
+				ii.init();
 				planet.inventory.add(ii);
 				int ttl = player.world.getSatelliteTTL(fighter);
 				if (ttl > 0) {
@@ -372,7 +365,7 @@ public class DefaultAIControls implements AIControls {
 	@Override
 	public void actionColonizePlanet(Fleet fleet, Planet planet) {
 		if (fleet.getStatistics().planet == planet) {
-			if (colonizeWithFleet(fleet, planet)) {
+			if (fleet.colonize(planet)) {
 				log(p, "ColonizePlanet, Fleet = %s, Planet = %s", fleet.name, planet.id);
 			} else {
 				log(p, "ColonizePlanet, Fleet = %s, Planet = %s, FAILED = no room", fleet.name, planet.id);
@@ -390,65 +383,6 @@ public class DefaultAIControls implements AIControls {
 				p.runningResearch(null);
 			}
 		}
-	}
-	/**
-	 * Apply colonizationc changes to the given planet and reduce the colony ship count in the fleet.
-	 * @param f the fleet
-	 * @param p the planet
-	 * @return true if colonization successful
-	 */
-	public static boolean colonizeWithFleet(Fleet f, Planet p) {
-		World w = f.owner.world;
-		for (BuildingType bt : w.buildingModel.buildings.values()) {
-			if ("MainBuilding".equals(bt.kind)) {
-				TileSet ts = bt.tileset.get(f.owner.race);
-				if (ts != null) {
-					Point pt = p.surface.placement.findLocation(ts.normal.width + 2, ts.normal.height + 2);
-					if (pt != null) {
-						// remove colony ship from fleet
-						f.changeInventory(w.researches.get("ColonyShip"), -1);
-						
-						// remove empty fleet
-						if (f.inventory.isEmpty()) {
-							w.removeFleet(f);
-							List<Fleet> of = f.owner.ownFleets();
-							if (of.size() > 0) {
-								f.owner.currentFleet = of.iterator().next();
-							} else {
-								f.owner.currentFleet = null;
-								f.owner.selectionMode = SelectionMode.PLANET;
-							}
-						}
-						// place building
-						Building b = new Building(f.owner.world.newId(), bt, f.owner.race);
-						p.owner = f.owner;
-						p.race = f.owner.race;
-						p.population = 5000;
-						p.morale = 50;
-						p.lastMorale = 50;
-						p.lastPopulation = 5000;
-						b.location = Location.of(pt.x + 1, pt.y - 1);
-						
-						p.surface.placeBuilding(ts.normal, b.location.x, b.location.y, b);
-						p.rebuildRoads();
-						
-						p.owner.planets.put(p, PlanetKnowledge.BUILDING);
-						p.owner.currentPlanet = p;
-						
-						p.owner.statistics.planetsColonized.value++;
-						
-						p.owner.colonizationTargets.remove(p.id);
-						
-						// uninstall satellites
-						p.removeOwnerSatellites();
-						
-						return true;
-					}
-					System.err.printf("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, f.owner.race);
-				}
-			}
-		}
-		return false;
 	}
 	
 	@Override

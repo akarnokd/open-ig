@@ -166,13 +166,13 @@ public class Mission21 extends Mission {
 		// ----------------------------
 
 		if (world.difficulty == Difficulty.EASY) {
-			equipFully(gf.addInventory(research("GarthogBattleship"), 1));
-			equipFully(gf.addInventory(research("GarthogDestroyer"), 5));
-			gf.addInventory(research("GarthogFighter"), 15);
+			equipFully(addInventory(gf, "GarthogBattleship", 1));
+			equipFully(addInventory(gf, "GarthogDestroyer", 5));
+			addInventory(gf, "GarthogFighter", 15);
 		} else {
-			equipFully(gf.addInventory(research("GarthogBattleship"), 1));
-			equipFully(gf.addInventory(research("GarthogDestroyer"), 10));
-			gf.addInventory(research("GarthogFighter"), 30);
+			equipFully(addInventory(gf, "GarthogBattleship", 1));
+			equipFully(addInventory(gf, "GarthogDestroyer", 10));
+			addInventory(gf, "GarthogFighter", 30);
 		}
 		
 		
@@ -217,8 +217,8 @@ public class Mission21 extends Mission {
 		// -----------------------------------
 		
 		ResearchType d = research("Destroyer2");
-		f.addInventory(d, 1);
-		f.addInventory(research("Fighter2"), 4);
+		addInventory(f, d.id, 1);
+		addInventory(f, "Fighter2", 4);
 		
 		InventoryItem ii = f.getInventoryItem(d);
 		

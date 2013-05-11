@@ -50,9 +50,9 @@ public abstract class DeferredTransform<U> implements DeferredRunnable {
 		} catch (ErrorResponse ex) {
 			error = ex;
 		} catch (IOException ex) {
-			error = new ErrorResponse(ErrorType.ERROR_SERVER_IO, ex);
+			error = new ErrorResponse(ErrorType.SERVER_IO, ex);
 		} catch (Throwable ex) {
-			error = new ErrorResponse(ErrorType.ERROR_SERVER_IO, ex);
+			error = new ErrorResponse(ErrorType.SERVER_IO, ex);
 			Exceptions.add(ex);
 		}
 	}
@@ -64,9 +64,9 @@ public abstract class DeferredTransform<U> implements DeferredRunnable {
 			} catch (ErrorResponse ex) {
 				error = ex;
 			} catch (IOException ex) {
-				error = new ErrorResponse(ErrorType.ERROR_SERVER_IO, ex);
+				error = new ErrorResponse(ErrorType.SERVER_IO, ex);
 			} catch (Throwable ex) {
-				error = new ErrorResponse(ErrorType.ERROR_SERVER_BUG, ex);
+				error = new ErrorResponse(ErrorType.SERVER_BUG, ex);
 				Exceptions.add(ex);
 			}
 		}

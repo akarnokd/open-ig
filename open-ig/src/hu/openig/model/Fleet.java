@@ -9,10 +9,12 @@
 package hu.openig.model;
 
 import hu.openig.core.Difficulty;
+import hu.openig.core.Location;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,38 +116,6 @@ public class Fleet implements Named, Owned, HasInventory {
 			count += pii.count;
 		}
 		return count;
-	}
-	/** 
-	 * Change the inventory amount of a given technology. 
-	 * <p>Does not change the owner's inventory
-	 * @param type the item type
-	 * @param amount the amount delta
-	 */
-	public void changeInventory(ResearchType type, int amount) {
-		int idx = -1;
-		boolean found = false;
-		for (InventoryItem pii : inventory.findByType(type.id)) {
-			pii.count += amount;
-			if (pii.count <= 0) {
-				idx = pii.id;
-			}
-			found = true;
-			break;
-		}
-		if (idx >= 0) {
-			inventory.remove(idx);
-		}
-		if (!found && amount > 0) {
-			InventoryItem pii = new InventoryItem(owner.world.newId(), owner, type);
-			pii.count = amount;
-			pii.hp = owner.world.getHitpoints(type, pii.owner);
-			pii.createSlots();
-			pii.shield = Math.max(0, pii.shieldMax());
-
-			pii.generateNickname();
-			
-			inventory.add(pii);
-		}
 	}
 	/**
 	 * Returns the number of items of the give category of the given owner.
@@ -302,36 +272,6 @@ public class Fleet implements Named, Owned, HasInventory {
 		}
 		return null;
 	}
-	/** 
-	 * Add a given number of inventory item to this fleet.
-	 * <p>Cruisers and Battleships get default equipment.</p>
-	 * <p>Does not change the owner's inventory!</p>
-	 * @param type the technology to add
-	 * @param amount the amount to add
-	 * @return result the items added
-	 */
-	public List<InventoryItem> addInventory(ResearchType type, int amount) {
-		List<InventoryItem> result = new ArrayList<>();
-		if (type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
-			|| type.category == ResearchSubCategory.WEAPONS_TANKS
-			|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
-		) {
-			changeInventory(type, amount);
-		} else {
-			for (int i = 0; i < amount; i++) {
-				InventoryItem ii = new InventoryItem(owner.world.newId(), owner, type);
-				ii.count = 1;
-				ii.hp = owner.world.getHitpoints(type, ii.owner);
-				ii.createSlots();
-				
-				ii.generateNickname();
-				
-				inventory.add(ii);
-				result.add(ii);
-			}
-		}
-		return result;
-	}
 	/** @return the non-fighter and non-vehicular inventory items. */
 	public List<InventoryItem> getSingleItems() {
 		List<InventoryItem> result = new ArrayList<>();
@@ -471,8 +411,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		for (ResearchType rt : owner.available().keySet()) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				int count = Math.min(30, owner.inventoryCount(rt));
-				addInventory(rt, count);
-				owner.changeInventoryCount(rt, -count);
+				deployItem(rt, count);
 			}
 		}
 		upgradeVehicles(getStatistics().vehicleMax);
@@ -493,8 +432,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			int demand = e.getValue();
 			ResearchType rt = e.getKey();
 			int count = Math.min(demand, owner.inventoryCount(rt));
-			addInventory(rt, count);
-			owner.changeInventoryCount(rt, -count);
+			deployItem(rt, count);
 			vehicleMax -= count;
 		}
 		if (vehicleMax > 0) {
@@ -514,8 +452,7 @@ public class Fleet implements Named, Owned, HasInventory {
 					break;
 				}
 				int add = Math.min(vehicleMax, owner.inventoryCount(rt));
-				addInventory(rt, add);
-				owner.changeInventoryCount(rt, -add);
+				deployItem(rt, add);
 				vehicleMax -= add;
 			}
 		}
@@ -575,7 +512,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void sell() {
 		for (InventoryItem ii : inventory.iterable()) {
-			ii.sell();
+			ii.sell(ii.count);
 		}
 		
 		inventory.clear();
@@ -612,8 +549,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		int toAdd = Math.min(limit - invLocal, invGlobal);
 		
 		while (toAdd > 0) {
-			addInventory(rt, 1);
-			owner.changeInventoryCount(rt, -1);
+			deployItem(rt, 1);
 			current++;
 			toAdd--;
 		}
@@ -732,8 +668,16 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @param otherFleet the other fleet
 	 */
 	public void attack(Fleet otherFleet) {
-		if (this == otherFleet || this.owner == otherFleet.owner) {
+		if (this == otherFleet) {
+			Exceptions.add(new AssertionError("Can't attack self!"));
+			return;
+		} else
+		if (this.owner == otherFleet.owner) {
 			Exceptions.add(new AssertionError("Can't attack friendly!"));
+			return;
+		} else
+		if (!owner.isStrongAlliance(otherFleet.owner)) {
+			Exceptions.add(new AssertionError("Strong alliance!"));
 			return;
 		}
 		stop();
@@ -752,6 +696,10 @@ public class Fleet implements Named, Owned, HasInventory {
 		}
 		if (planet.owner == null) {
 			Exceptions.add(new AssertionError("Can't attack empty planet!"));
+			return;
+		}
+		if (owner.isStrongAlliance(planet.owner)) {
+			Exceptions.add(new AssertionError("Can't attack ally planet!"));
 			return;
 		}
 		stop();
@@ -894,12 +842,256 @@ public class Fleet implements Named, Owned, HasInventory {
 			InventoryItem ii = inventory.findById(iis.id);
 			if (ii == null) {
 				ii = new InventoryItem(iis.id, owner.world.player(iis.owner), owner.world.research(iis.type));
-				ii.createSlots();
+				ii.init();
 				inventory.add(ii);
 			}
 			ii.fromInventoryItemStatus(iis, owner.world);
 			current.add(ii.id);
 		}
 		inventory.removeById(current);
+	}
+	/**
+	 * Colonize the nearby planet if possible.
+	 * @param p the planet
+	 * @return true if colonization successful
+	 */
+	public boolean colonize(Planet p) {
+		if (p.owner != null) {
+			Exceptions.add(new AssertionError("Planet occupied: " + p.id));
+			return false;
+		}
+		if (p != nearbyPlanet()) {
+			Exceptions.add(new AssertionError("Planet too far: " + p.id));
+		}
+		World w = owner.world;
+		ResearchType cs = w.research("ColonyShip");
+		if (inventoryCount(cs) == 0) {
+			Exceptions.add(new AssertionError("No colony ships available"));
+			return false;
+		}
+		for (BuildingType bt : w.buildingModel.buildings.values()) {
+			if ("MainBuilding".equals(bt.kind)) {
+				TileSet ts = bt.tileset.get(owner.race);
+				if (ts != null) {
+					Point pt = p.surface.placement.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+					if (pt != null) {
+						// remove colony ship from fleet
+						inventory.remove(getInventoryItem(cs));
+						
+						// remove empty fleet
+						if (inventory.isEmpty()) {
+							w.removeFleet(this);
+							List<Fleet> of = owner.ownFleets();
+							if (of.size() > 0) {
+								owner.currentFleet = of.iterator().next();
+							} else {
+								owner.currentFleet = null;
+								owner.selectionMode = SelectionMode.PLANET;
+							}
+						}
+						// place building
+						Building b = new Building(owner.world.newId(), bt, owner.race);
+						p.owner = owner;
+						p.race = owner.race;
+						p.population = 5000;
+						p.morale = 50;
+						p.lastMorale = 50;
+						p.lastPopulation = 5000;
+						b.location = Location.of(pt.x + 1, pt.y - 1);
+						
+						p.surface.placeBuilding(ts.normal, b.location.x, b.location.y, b);
+						p.rebuildRoads();
+						
+						p.owner.planets.put(p, PlanetKnowledge.BUILDING);
+						p.owner.currentPlanet = p;
+						
+						p.owner.statistics.planetsColonized.value++;
+						
+						p.owner.colonizationTargets.remove(p.id);
+						
+						// uninstall satellites
+						p.removeOwnerSatellites();
+						
+						return true;
+					}
+					Exceptions.add(new AssertionError(
+							String.format("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, owner.race)));
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Creates a new fleat near this fleet.
+	 * @return the new fleet.
+	 */
+	public Fleet newFleet() {
+		Fleet f = new Fleet(owner);
+		f.name = owner.world.labels.get("newfleet.name");
+		
+		double r = Math.max(0, ModelUtils.random() * owner.world.params().nearbyDistance() - 1);
+		double k = ModelUtils.random() * 2 * Math.PI;
+		f.x = (x + Math.cos(k) * r);
+		f.y = (y + Math.sin(k) * r);
+
+		return f;
+	}
+	@Override
+	public List<InventoryItem> deployItem(ResearchType rt, int count) {
+		if (count <= 0) {
+			throw new IllegalArgumentException("count > 0 required");
+		}
+		int fleetLimit = getAddLimit(rt);
+		boolean single = false;
+		switch (rt.category) {
+		case WEAPONS_TANKS:
+		case WEAPONS_VEHICLES:
+		case SPACESHIPS_FIGHTERS:
+			single = true;
+			break;
+		default:
+		}
+
+		int invAvail = owner.inventoryCount(rt);
+		
+		int toDeploy = Math.min(count, Math.min(fleetLimit, invAvail));
+		if (toDeploy > 0) {
+			owner.changeInventoryCount(rt, -toDeploy);
+
+			if (single) {
+				InventoryItem ii = getInventoryItem(rt);
+				if (ii == null) {
+					ii = new InventoryItem(owner.world.newId(), owner, rt);
+					ii.init();
+					inventory.add(ii);
+				}
+				ii.count += toDeploy;
+				return Collections.singletonList(ii);
+			}
+			List<InventoryItem> r = new ArrayList<>();
+			for (int i = 0; i < toDeploy; i++) {
+				InventoryItem ii = new InventoryItem(owner.world.newId(), owner, rt);
+				ii.init();
+				inventory.add(ii);
+				r.add(ii);
+			}
+			return r;
+		}
+		return Collections.emptyList();
+	}
+	@Override
+	public void sell(int itemId, int count) {
+		InventoryItem ii = inventory.findById(itemId);
+		if (ii != null) {
+			ii.sell(count);
+			if (ii.count <= 0) {
+				inventory.remove(ii);
+			}
+		}
+	}
+	/**
+	 * Sell a given amount of the given technology from this fleet.
+	 * <p>For example, selling 2 cruisers will remove both from
+	 * the inventory collection.</p>
+	 * @param type the technology type
+	 * @param count the number of items to sell.
+	 */
+	public void sell(ResearchType type, int count) {
+		for (InventoryItem ii : new ArrayList<>(inventory.findByType(type.id))) {
+			int n = ii.count;
+			int s = Math.min(n, count);
+			ii.sell(s);
+			if (ii.count <= 0) {
+				inventory.remove(ii);
+			}
+			count -= s;
+			if (count <= 0) {
+				break;
+			}
+		}
+	}
+	@Override
+	public void undeployItem(int itemId, int count) {
+		InventoryItem ii = inventory.findById(itemId);
+		if (ii != null) {
+			if (canUndeploy(ii.type)) {
+				int n = Math.min(count, ii.count);
+				ii.count -= n;
+				owner.changeInventoryCount(ii.type, n);
+				if (ii.count <= 0) {
+					inventory.remove(ii);
+				}
+			} else {
+				throw new IllegalArgumentException("inventory item can't be undeployed: " + ii.type);
+			}
+		} else {
+			throw new IllegalArgumentException("inventory item not found: " + itemId);
+		}
+	}
+	/**
+	 * Undeploys the given amount of the technology from the fleet's
+	 * inventory.
+	 * @param rt the technology
+	 * @param count the number of items to undeploy
+	 */
+	public void undeployItem(ResearchType rt, int count) {
+		for (InventoryItem ii : inventory.findByType(rt.id)) {
+			undeployItem(ii.id, count);
+			return;
+		}
+	}
+	@Override
+	public boolean canUndeploy(ResearchType type) {
+		return type.category == ResearchSubCategory.WEAPONS_TANKS
+				|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
+				|| type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS;
+	}
+	@Override
+	public boolean canDeploy(ResearchType type) {
+		return type.category == ResearchSubCategory.WEAPONS_TANKS
+				|| type.category == ResearchSubCategory.WEAPONS_VEHICLES
+				|| type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
+				|| type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+				|| type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
+	}
+	/**
+	 * Transfer the given amount of technology to the other fleet.
+	 * @param other the other fleet
+	 * @param type the technology to transfer
+	 * @param count the number of items to transfer
+	 */
+	public void transferTo(Fleet other, ResearchType type, int count) {
+		if (count <= 0) {
+			throw new IllegalArgumentException("count > 0 required");
+		}
+		if (canUndeploy(type)) {
+			InventoryItem ii = getInventoryItem(type);
+			int n = Math.min(ii.count, count);
+			ii.count -= n;
+			if (ii.count <= 0) {
+				inventory.remove(ii);
+			}
+			
+			InventoryItem ii2 = other.getInventoryItem(type);
+			if (ii2 == null) {
+				ii2 = new InventoryItem(owner.world.newId(), other.owner, type);
+				ii2.init();
+				other.inventory.add(ii2);
+			}
+			ii2.count += n;
+		} else
+		if (canDeploy(type)) {
+			for (InventoryItem ii : new ArrayList<>(inventory.findByType(type.id))) {
+				inventory.remove(ii);
+				other.inventory.add(ii);
+				count -= ii.count;
+				if (count <= 0) {
+					break;
+				}
+			}
+		} else {
+			throw new IllegalArgumentException("Can't transfer items: " + type);
+		}
+		
 	}
 }

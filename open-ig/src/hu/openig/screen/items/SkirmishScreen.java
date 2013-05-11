@@ -502,7 +502,7 @@ public class SkirmishScreen extends ScreenBase {
 		itemSelectPanel = new ItemSelectPanel();
 		itemSelectPanel.visible(false);
 		
-		//FIXME
+		//FIXME implement random layout
 		
 		galaxyRandomLayout.enabled(false);
 		galaxyPlanetCount.enabled(false);

@@ -170,7 +170,7 @@ public class Mission5 extends Mission {
 				reinforcements = true;
 				Fleet own = findTaggedFleet("CampaignMainShip1", player);
 				if (own != null) {
-					own.addInventory(research("Fighter1"), 3);
+					addInventory(own, "Fighter1", 3);
 				}
 				runTask3Success = true;
 				world.env.playSound(SoundTarget.COMPUTER, SoundType.REINFORCEMENT_ARRIVED_1, createTask3Success());
@@ -461,7 +461,7 @@ public class Mission5 extends Mission {
 	void createTullen() {
 		Planet p = planet("Naxos");
 		Fleet f = createFleet(label("mission-5.tullens_fleet"), player, p.x + 40, p.y - 10);
-		f.addInventory(research("Flagship"), 1);
+		addInventory(f, "Flagship", 1);
 		for (InventoryItem ii : f.inventory.iterable()) {
 			ii.tag = "Mission-5";
 			if (ii.type.id.equals("Flagship")) {
@@ -499,8 +499,8 @@ public class Mission5 extends Mission {
 		if (world.difficulty == Difficulty.HARD) {
 			fighterCounts = 12;
 		}
-		f.addInventory(research("GarthogFighter"), fighterCounts);
-		equipFully(f.addInventory(research("GarthogDestroyer"), 1));
+		addInventory(f, "GarthogFighter", fighterCounts);
+		equipFully(addInventory(f, "GarthogDestroyer", 1));
 		// -------------------------------------------------------
 		f.task = FleetTask.SCRIPT;
 		for (InventoryItem ii : f.inventory.iterable()) {
@@ -529,10 +529,8 @@ public class Mission5 extends Mission {
 		for (int i = 0; i < helpingPirates; i++) {
 			InventoryItem pii = new InventoryItem(world.newId(), player("Pirates"), research(pirateTech));
 			pii.count = 1;
-			pii.hp = world.getHitpoints(pii.type, pii.owner);
+			pii.init();
 			pii.tag = "Mission-5-Help";
-			pii.createSlots();
-			pii.shield = Math.max(0, pii.shieldMax());
 			result.inventory.add(pii);
 		}
 		

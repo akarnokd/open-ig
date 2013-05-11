@@ -83,9 +83,9 @@ public class MultiplayerSession implements RemoteGameAPI {
 					return result;
 				}
 			}
-			throw new ErrorResponse(ErrorType.ERROR_USER);
+			throw new ErrorResponse(ErrorType.USER);
 		}
-		throw new ErrorResponse(ErrorType.ERROR_VERSION, "Server: " + Configuration.VERSION + " - Client: " + version);
+		throw new ErrorResponse(ErrorType.VERSION, "Server: " + Configuration.VERSION + " - Client: " + version);
 	}
 	/**
 	 * Generate a random session id.
@@ -107,10 +107,10 @@ public class MultiplayerSession implements RemoteGameAPI {
 	 */
 	protected void ensureLogin() throws IOException {
 		if (user == null) {
-			throw new ErrorResponse(ErrorType.ERROR_NOT_LOGGED_IN);
+			throw new ErrorResponse(ErrorType.NOT_LOGGED_IN);
 		}
 		if (!Objects.equals(user.sessionId(), sessionId)) {
-			throw new ErrorResponse(ErrorType.ERROR_SESSION_INVALID);
+			throw new ErrorResponse(ErrorType.SESSION_INVALID);
 		}
 	}
 

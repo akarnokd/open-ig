@@ -359,7 +359,6 @@ public class OggMusic {
 											iptr += 2 * (vi.channels);
 										}
 									}
-									// FIXME sound emission here
 									int len = 2 * vi.channels * bout;
 									if (mute) {
 										for (int m = 0; m < bout; m += 2) {

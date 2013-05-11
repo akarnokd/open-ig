@@ -17,43 +17,73 @@ public enum ErrorType {
 	/** There was no error. */
 	SUCCESS,
 	/** Message syntax error. */
-	ERROR_SYNTAX,
+	SYNTAX,
 	/** Unknown message. */
-	ERROR_UNKNOWN_MESSAGE,
+	UNKNOWN_MESSAGE,
 	/** Unknown error. */
-	ERROR_UNKNOWN,
+	UNKNOWN,
 	/** Server not ready. */
-	ERROR_NOT_READY,
+	NOT_READY,
 	/** The user login failed due credential errors. */
-	ERROR_USER,
+	USER,
 	/** The server version differs from the client version. */
-	ERROR_VERSION,
+	VERSION,
 	/** The message can't be used in the current state. */
-	ERROR_INVALID_MESSAGE,
+	INVALID_MESSAGE,
 	/** Unable to relogin. */
-	ERROR_RELOGIN,
+	RELOGIN,
 	/** Unexpected response. */
-	ERROR_RESPONSE,
+	RESPONSE,
 	/** Message format error, i.e., missing or invalid attributes. */
-	ERROR_FORMAT,
+	FORMAT,
 	/** Server run into an assertion bug. */
-	ERROR_SERVER_BUG,
+	SERVER_BUG,
 	/** Server run into an internal or reflected IO error. */
-	ERROR_SERVER_IO,
+	SERVER_IO,
 	/** The session has been changed by a new login. */
-	ERROR_SESSION_INVALID,
+	SESSION_INVALID,
 	/** The user is not logged in. */
-	ERROR_NOT_LOGGED_IN,
+	NOT_LOGGED_IN,
 	/** Server activity interrupted/cancelled. */
-	ERROR_INTERRUPTED,
+	INTERRUPTED,
 	/** Fleet missing or not visible to the player. */
-	ERROR_UNKNOWN_FLEET,
+	UNKNOWN_FLEET,
 	/** Planet missing or not visible to the player. */
-	ERROR_UNKNOWN_PLANET,
+	UNKNOWN_PLANET,
 	/** Research missing. */
-	ERROR_UNKNOWN_RESEARCH,
+	UNKNOWN_RESEARCH,
 	/** Player missing or not known to the player. */
-	ERROR_UNKNOWN_PLAYER
+	UNKNOWN_PLAYER,
+	/** Is not your fleet. */
+	NOT_YOUR_FLEET,
+	/** Trying to attack a friendly fleet. */
+	FRIENDLY_FLEET,
+	/** Trying to attack a friendly planet. */
+	FRIENDLY_PLANET,
+	/** Planet occupied. */
+	PLANET_OCCUPIED,
+	/** No colonizable planet near by. */
+	NO_PLANET_NEARBY,
+	/** Not your planet. */
+	NOT_YOUR_PLANET,
+	/** No military spaceport. */
+	NO_SPACEPORT,
+	/** Can't create fleet. */
+	CANT_CREATE_FLEET,
+	/** The fleet isn't empty. */
+	FLEET_ISNT_EMPTY,
+	/** Unknown fleet item. */
+	UNKNOWN_FLEET_ITEM,
+	/** Unknown planet item. */
+	UNKNOWN_PLANET_ITEM,
+	/** Unknown fleet equipment. */
+	UNKNOWN_FLEET_EQUIPMENT,
+	/** Unknown planet equipment. */
+	UNKNOWN_PLANET_EQUIPMENT,
+	/** Unable to deploy inventory. */
+	CANT_DEPLOY_INVENTORY,
+	/** Unable to undeploy inventory. */
+	CANT_UNDEPLOY_INVENTORY
 	;
 	/**
 	 * Interprets the message attribute as error code or error name string.
@@ -76,5 +106,37 @@ public enum ErrorType {
 			}
 		}
 		return defaultValue;
+	}
+	/**
+	 * Raise an exception with this error code.
+	 * @throws ErrorResponse the error response exception
+	 */
+	public void raise() throws ErrorResponse {
+		throw new ErrorResponse(this);
+	}
+	/**
+	 * Raise an exception with this error code and the message.
+	 * @param message the error message
+	 * @throws ErrorResponse the error response exception
+	 */
+	public void raise(String message) throws ErrorResponse {
+		throw new ErrorResponse(this, message);
+	}
+	/**
+	 * Raise an exception with this error code.
+	 * @param ex the exception to wrap
+	 * @throws ErrorResponse the error response exception
+	 */
+	public void raise(Throwable ex) throws ErrorResponse {
+		throw new ErrorResponse(this, ex);
+	}
+	/**
+	 * Raise an exception with this error code.
+	 * @param message the message
+	 * @param ex the exception to wrap
+	 * @throws ErrorResponse the error response exception
+	 */
+	public void raise(String message, Throwable ex) throws ErrorResponse {
+		throw new ErrorResponse(this, message, ex);
 	}
 }
