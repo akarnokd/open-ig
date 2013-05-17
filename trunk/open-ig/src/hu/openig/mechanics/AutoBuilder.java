@@ -10,7 +10,6 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
-import hu.openig.core.Location;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
@@ -438,22 +437,7 @@ public final class AutoBuilder {
 	 */
 	public static void construct(World world, Planet planet, BuildingType bt,
 			Point pt) {
-		Building b = new Building(world.newId(), bt, planet.race);
-		b.location = Location.of(pt.x + 1, pt.y - 1);
-
-		planet.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
-		planet.rebuildRoads();
-
-		planet.owner.addMoney(-bt.cost);
-		planet.owner.today.buildCost += bt.cost;
-		
-		planet.owner.statistics.buildCount.value++;
-		planet.owner.statistics.moneyBuilding.value += bt.cost;
-		planet.owner.statistics.moneySpent.value += bt.cost;
-		
-		world.statistics.buildCount.value++;
-		world.statistics.moneyBuilding.value += bt.cost;
-		world.statistics.moneySpent.value += bt.cost;
+		planet.build(bt.id, planet.race, pt.x + 1, pt.y - 1);
 	}
 	/**
 	 * Increase the level of the given building by one.

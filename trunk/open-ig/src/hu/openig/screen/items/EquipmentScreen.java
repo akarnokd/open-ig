@@ -17,6 +17,7 @@ import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
 import hu.openig.model.FleetStatistics;
+import hu.openig.model.FleetTransferMode;
 import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemGroup;
@@ -602,7 +603,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
-				doMoveItem(secondary, fleet(), research(), 1, rightList.groupIndex(research(), 0));
+				doMoveItem(secondary, fleet(), research(), FleetTransferMode.ONE, rightList.groupIndex(research(), 0));
 			}
 		};
 		left2 = new UIImageButton(commons.equipment().moveLeft2);
@@ -611,7 +612,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
-				doMoveItem(secondary, fleet(), research(), 2, rightList.groupIndex(research(), 0));
+				doMoveItem(secondary, fleet(), research(), FleetTransferMode.HALF, rightList.groupIndex(research(), 0));
 			}
 		};
 		left3 = new UIImageButton(commons.equipment().moveLeft3);
@@ -620,7 +621,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
-				doMoveItem(secondary, fleet(), research(), 3, rightList.groupIndex(research(), 0));
+				doMoveItem(secondary, fleet(), research(), FleetTransferMode.ALL, rightList.groupIndex(research(), 0));
 			}
 		};
 		right1 = new UIImageButton(commons.equipment().moveRight1);
@@ -629,7 +630,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
-				doMoveItem(fleet(), secondary, research(), 1, leftList.groupIndex(research(), 0));
+				doMoveItem(fleet(), secondary, research(), FleetTransferMode.ONE, leftList.groupIndex(research(), 0));
 			}
 		};
 		right2 = new UIImageButton(commons.equipment().moveRight2);
@@ -638,7 +639,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
-				doMoveItem(fleet(), secondary, research(), 2, leftList.groupIndex(research(), 0));
+				doMoveItem(fleet(), secondary, research(), FleetTransferMode.HALF, leftList.groupIndex(research(), 0));
 			}
 		};
 		right3 = new UIImageButton(commons.equipment().moveRight3);
@@ -647,7 +648,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
-				doMoveItem(fleet(), secondary, research(), 3, leftList.groupIndex(research(), 0));
+				doMoveItem(fleet(), secondary, research(), FleetTransferMode.ALL, leftList.groupIndex(research(), 0));
 			}
 		};
 
@@ -2455,59 +2456,25 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	 * @param mode the transfer mode: 1 - one, 2 - half, 3 - full
 	 * @param startIndex the start index for the given type (when grouped items are transferred)
 	 */
-	void doMoveItem(Fleet src, Fleet dst, ResearchType type, int mode, int startIndex) {
+	void doMoveItem(Fleet src, Fleet dst, ResearchType type, FleetTransferMode mode, int startIndex) {
 		int srcCount = src.inventoryCount(type); 
 		if (srcCount > 0) {
-			int transferCount = 1;
-			if (mode == 2) {
-				transferCount = (srcCount + 1) / 2;
-			} else
-			if (mode == 3) {
-				transferCount = srcCount;
-			}
-			transferCount = Math.min(transferCount, dst.getAddLimit(type));
-			
 			if (type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 					|| type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-				for (InventoryItem ii : src.inventory.list()) {
-					if (ii.type == type) {
-						// start only at the indexth element of this category
-						if (startIndex == 0) {
-							src.inventory.remove(ii);
-							dst.inventory.add(ii);
-							transferCount--;
-						} else {
-							startIndex--;
-						}
-					}
-					if (transferCount == 0) {
+
+				for (InventoryItem ii : src.inventory.findByType(type.id)) {
+					if (startIndex == 0) {
+						src.transferTo(dst, ii.id, mode);
 						break;
 					}
-				}
-				
-				// move some vehicles if they would not fin onto the src fleet
-				FleetStatistics fs = src.getStatistics();
-				if (fs.vehicleCount > fs.vehicleMax) {
-					int delta = fs.vehicleCount - fs.vehicleMax;
-					for (InventoryItem ii : src.inventory.list()) {
-						if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
-							|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES
-						) {
-							int toremove = delta > ii.count ? ii.count : delta;
-							src.undeployItem(ii.type, toremove);
-							dst.deployItem(ii.type, toremove);
-							delta -= toremove;
-							if (delta == 0) {
-								break;
-							}
-						}
-					}
+					startIndex--;
 				}
 				
 				updateInventory(null, fleet(), leftList);
 				updateInventory(null, secondary, rightList);
 			} else {
-				src.transferTo(dst, type, transferCount);
+				InventoryItem ii = src.getInventoryItem(type);
+				src.transferTo(dst, ii.id, mode);
 			}
 		}
 	}

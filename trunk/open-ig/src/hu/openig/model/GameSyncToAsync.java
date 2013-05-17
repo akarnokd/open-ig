@@ -544,4 +544,17 @@ public class GameSyncToAsync implements GameAPI {
 		api.getInventoryStatus(planetId, itemId, as);
 		return get(as);
 	}
+	@Override
+	public void setAutoBuild(String planetId, AutoBuild auto)
+			throws IOException {
+		Value<Void> as = newSubject();
+		api.setAutoBuild(planetId, auto, as);
+		get(as);
+	}
+	@Override
+	public void setTaxLevel(String planetId, TaxLevel tax) throws IOException {
+		Value<Void> as = newSubject();
+		api.setTaxLevel(planetId, tax, as);
+		get(as);
+	}
 }

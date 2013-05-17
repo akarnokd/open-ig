@@ -415,6 +415,34 @@ public class InventoryItem {
 		killsCost = ii.killsCost;
 	}
 	/**
+	 * Check if the given slot exists and supports the
+	 * given technology.
+	 * @param slotId the slot identifier
+	 * @param rt the technology
+	 * @return true if the slot can accept the given equipment
+	 */
+	public boolean canDeployEquipment(String slotId, ResearchType rt) {
+		InventorySlot is = slots.get(slotId);
+		if (slotId != null) {
+			if (!is.slot.fixed) {
+				return is.slot.items.contains(rt);
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if the given slot exists and can be undeployed.
+	 * @param slotId the slot identifier
+	 * @return true if the slot can accept the given equipment
+	 */
+	public boolean canUndeployEquipment(String slotId) {
+		InventorySlot is = slots.get(slotId);
+		if (slotId != null) {
+			return !is.slot.fixed;
+		}
+		return false;
+	}
+	/**
 	 * Tries to deploy the given number of equipment into the
 	 * slot if the inventory and slot limits allow.
 	 * @param slotId the target slot id
@@ -469,8 +497,9 @@ public class InventoryItem {
 			if (is.type != null) {
 				owner.changeInventoryCount(is.type, toRemove);
 			}
-			if (is.count == 0) {
+			if (is.count <= 0) {
 				is.type = null;
+				is.count = 0;
 			}
 		} else {
 			throw new IllegalArgumentException("unknown slot " + slotId);

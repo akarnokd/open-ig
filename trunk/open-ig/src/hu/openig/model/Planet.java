@@ -8,11 +8,13 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Location;
 import hu.openig.model.PlanetStatistics.LabStatistics;
 import hu.openig.model.PlanetStatistics.ProductionStatistics;
 import hu.openig.utils.Exceptions;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -454,7 +456,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public boolean canBuild(String buildingType) {
 		if (owner != null) {
-			BuildingType bt = world.buildingModel.buildings.get(buildingType);
+			BuildingType bt = world.building(buildingType);
 			if (bt != null) {
 				return canBuild(bt);
 			}
@@ -817,8 +819,175 @@ public class Planet implements Named, Owned, HasInventory {
 	 * Places a building onto the surface.
 	 * @param b the building object
 	 */
-	public void placeBuilding(Building b) {
+	private void placeBuilding(Building b) {
 		surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
+	}
+	/**
+	 * Start building by auto-placing a building.
+	 * @param type the building type
+	 * @param race the race
+	 * @return the building id or -1 if no room left
+	 */
+	public Building build(String type, String race) {
+		if (owner == null) {
+			throw new IllegalStateException("owner is null");
+		}
+		if (!canBuild(type)) {
+			throw new IllegalArgumentException("Building type not supported here: " + id + " - " + type);
+		}
+		BuildingType bt = owner.world.building(type);
+		if (bt.cost > owner.money()) {
+			throw new IllegalArgumentException("Not enough money");
+		}
+		TileSet ts = bt.tileset.get(race);
+		if (ts == null) {
+			throw new IllegalArgumentException("Building has no race-specific version: " + type + " - " + race);
+		}
+		
+		Point pt = findLocation(ts);
+		if (pt != null) {
+			Building bid = placeNewBuilding(bt, race, pt.x + 1, pt.y - 1);
+			rebuildRoads();
+			return bid;
+		}
+		return null;
+	}
+	/**
+	 * Internally places a building of the given type and at a specified location.
+	 * <p>Note that no validity check is performed here.</p>
+	 * <p>Updates the statistics and removes money from the owner.</p>
+	 * @param bt the building type
+	 * @param race the race
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return the building id
+	 */
+	private Building placeNewBuilding(BuildingType bt, String race, int x, int y) {
+		int bid = world.newId();
+		Building b = new Building(bid, bt, race);
+		b.location = Location.of(x, y);
+		placeBuilding(b);
+
+		owner.addMoney(-bt.cost);
+		owner.today.buildCost += bt.cost;
+		
+		owner.statistics.buildCount.value++;
+		owner.statistics.moneyBuilding.value += bt.cost;
+		owner.statistics.moneySpent.value += bt.cost;
+		
+		world.statistics.buildCount.value++;
+		world.statistics.moneyBuilding.value += bt.cost;
+		world.statistics.moneySpent.value += bt.cost;
+
+		return b;
+	}
+	/**
+	 * Start a building at the specified location.
+	 * @param type the building type
+	 * @param race the race
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return the building unique id
+	 */
+	public Building build(String type, String race, int x, int y) {
+		if (owner == null) {
+			throw new IllegalStateException("owner is null");
+		}
+		if (!canBuild(type)) {
+			throw new IllegalArgumentException("Building type not supported here: " + id + " - " + type);
+		}
+		BuildingType bt = owner.world.building(type);
+		if (bt.cost > owner.money()) {
+			throw new IllegalArgumentException("Not enough money");
+		}
+		if (!bt.tileset.containsKey(race)) {
+			throw new IllegalArgumentException("Building has no race-specific version: " + type + " - " + race);
+		}
+		if (canPlace(type, race, x, y)) {
+			Building bid = placeNewBuilding(bt, race, x, y);
+			rebuildRoads();
+			return bid;
+		}
+		throw new IllegalArgumentException("Can't place building at " + x + ", " + y);
+	}
+	/**
+	 * Colonize the planet by the given owner.
+	 * @param owner the new owner
+	 * @return true if colonization successfull
+	 */
+	public boolean colonize(Player owner) {
+		if (this.owner != null) {
+			throw new IllegalStateException("Planet is owned by " + this.owner.id);
+		}
+		this.owner = owner;
+
+		this.race = owner.race;
+		this.population = 5000;
+		this.morale = 50;
+		this.lastMorale = 50;
+		this.lastPopulation = 5000;
+		this.owner.planets.put(this, PlanetKnowledge.BUILDING);
+		this.owner.currentPlanet = this;
+		
+		this.owner.statistics.planetsColonized.value++;
+		
+		this.owner.colonizationTargets.remove(this.id);
+		
+		// uninstall satellites
+		this.removeOwnerSatellites();
+
+		return buildColonyHub();
+	}
+	/**
+	 * Build a colony hub on this planet.
+	 * @return true if successfully built
+	 */
+	public boolean buildColonyHub() {
+		BuildingType bt = world.buildingModel.find("MainBuilding");
+		if (bt != null) {
+			TileSet ts = bt.tileset.get(owner.race);
+			if (ts != null) {
+				Point pt = findLocation(ts);
+				if (pt != null) {
+					Building b = new Building(owner.world.newId(), bt, owner.race);
+					b.location = Location.of(pt.x + 1, pt.y - 1);
+					placeBuilding(b);
+					rebuildRoads();
+					
+					world.statistics.buildCount.value++;
+					owner.statistics.buildCount.value++;
+					
+					return true;
+				}				
+			}
+		}
+		return false;
+	}
+	/**
+	 * Find a location for the given tileset-building.
+	 * @param ts the tileset
+	 * @return the location or null if no room
+	 */
+	private Point findLocation(TileSet ts) {
+		return surface.placement.findLocation(ts.normal.width + 2, ts.normal.height + 2);
+	}
+	/**
+	 * Check if the given building type can be built at the specified location.
+	 * @param type the building type
+	 * @param race the building race
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @return true if can be placed
+	 */
+	public boolean canPlace(String type, String race, int x, int y) {
+		BuildingType bt = owner.world.building(type);
+		if (bt != null) {
+			TileSet ts = bt.tileset.get(race);
+			if (ts != null) {
+				surface.placement.canPlaceBuilding(x - 1, y - 1, ts.normal.width + 2, ts.normal.height + 2);
+			}
+		}
+		return false;
 	}
 	/**
 	 * Returns the planet status copy of this planet.
@@ -849,6 +1018,7 @@ public class Planet implements Named, Owned, HasInventory {
 				result.tradeIncome = tradeIncome;
 				result.earthquakeTTL = earthQuakeTTL;
 				result.weatherTTL = weatherTTL;
+				result.autoBuild = autoBuild;
 			}
 			// add in-orbit objects belonging to the player
 			for (InventoryItem ii : inventory.iterable()) {
@@ -903,6 +1073,7 @@ public class Planet implements Named, Owned, HasInventory {
 			tradeIncome = ps.tradeIncome;
 			earthQuakeTTL = ps.earthquakeTTL;
 			weatherTTL = ps.weatherTTL;
+			autoBuild = ps.autoBuild;
 			
 			Set<Integer> current = new HashSet<>();
 			// merge inventory

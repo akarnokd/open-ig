@@ -375,4 +375,15 @@ public class GameCommandAPIDispatcher implements GameCommandAPI {
 		first.stopGroundRetreat(battleId);
 		second.stopGroundRetreat(battleId);
 	}
+	@Override
+	public void setAutoBuild(String planetId, AutoBuild auto)
+			throws IOException {
+		first.setAutoBuild(planetId, auto);
+		second.setAutoBuild(planetId, auto);
+	}
+	@Override
+	public void setTaxLevel(String planetId, TaxLevel tax) throws IOException {
+		first.setTaxLevel(planetId, tax);
+		second.setTaxLevel(planetId, tax);
+	}
 }
