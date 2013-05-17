@@ -17,7 +17,6 @@ import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
-import hu.openig.mechanics.DefaultAIControls;
 import hu.openig.mechanics.Pathfinding;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleGroundTurret;
@@ -2608,8 +2607,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		}
 		
-		DefaultAIControls.demolishBuilding(world(), planet(), currentBuilding);
-
+		planet().demolish(currentBuilding);
+		
 
 		doAllocation();
 		buildingBox = null;

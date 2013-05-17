@@ -287,31 +287,8 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionDemolishBuilding(Planet planet, Building b) {
-		demolishBuilding(w, planet, b);
+		planet.demolish(b);
 //		log("DemolishBuilding, Planet = %s, Building = %s", planet.id, b.type.id);
-	}
-	/**
-	 * Demolish a building on the given planet, update statistics and get some money back.
-	 * @param world the world object
-	 * @param planet the target planet
-	 * @param building the target building
-	 */
-	public static void demolishBuilding(World world, Planet planet, Building building) {
-		planet.surface.removeBuilding(building);
-		planet.rebuildRoads();
-		
-		int moneyBack = building.type.cost * (1 + building.upgradeLevel) / 2;
-		
-		planet.owner.addMoney(moneyBack);
-		
-		planet.owner.statistics.demolishCount.value++;
-		planet.owner.statistics.moneyDemolishIncome.value += moneyBack;
-		planet.owner.statistics.moneyIncome.value += moneyBack;
-
-		world.statistics.demolishCount.value++;
-		world.statistics.moneyDemolishIncome.value += moneyBack;
-		world.statistics.moneyDemolishIncome.value += moneyBack;
-
 	}
 	@Override
 	public void actionUpgradeBuilding(Planet planet, Building building, int newLevel) {

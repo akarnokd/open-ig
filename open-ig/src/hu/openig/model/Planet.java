@@ -1253,4 +1253,28 @@ public class Planet implements Named, Owned, HasInventory {
 			throw new IllegalArgumentException("inventory item not found: " + itemId);
 		}
 	}
+	/**
+	 * Demolish the given building.
+	 * <p>Updates the statistics and player money.</p>
+	 * @param b the building to demolish
+	 */
+	public void demolish(Building b) {
+		if (surface.removeBuilding(b)) {
+			rebuildRoads();
+			
+			int moneyBack = b.type.cost * (1 + b.upgradeLevel) / 2;
+			
+			owner.addMoney(moneyBack);
+			
+			owner.statistics.demolishCount.value++;
+			owner.statistics.moneyDemolishIncome.value += moneyBack;
+			owner.statistics.moneyIncome.value += moneyBack;
+	
+			world.statistics.demolishCount.value++;
+			world.statistics.moneyDemolishIncome.value += moneyBack;
+			world.statistics.moneyIncome.value += moneyBack;
+		} else {
+			throw new IllegalStateException("Failed to remove building " + b.id);
+		}
+	}
 }
