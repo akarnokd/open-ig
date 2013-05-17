@@ -571,35 +571,70 @@ public class LocalGamePlayer implements GameAPI {
 			}
 		}
 	}
-	
+	/**
+	 * Returns the building from the planet.
+	 * @param p the planet
+	 * @param id the building id, or -1 for the last built building id.
+	 * @return the building
+	 */
+	protected Building building(Planet p, int id) {
+		if (id < 0) {
+			id = lastBuilding;
+		}
+		return p.findBuilding(id);
+	}
 	@Override
 	public void enable(String planetId, int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		Building b = building(p, id);
+		if (b != null) {
+			b.enabled = true;
+		} else {
+			ErrorType.UNKNOWN_BUILDING.raise("" + id);
+		}
 	}
 
 	@Override
 	public void disable(String planetId, int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		Building b = building(p, id);
+		if (b != null) {
+			b.enabled = false;
+		} else {
+			ErrorType.UNKNOWN_BUILDING.raise("" + id);
+		}
 	}
 
 	@Override
 	public void repair(String planetId, int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		Building b = building(p, id);
+		if (b != null) {
+			b.repairing = true;
+		} else {
+			ErrorType.UNKNOWN_BUILDING.raise("" + id);
+		}
 	}
 
 	@Override
 	public void repairOff(String planetId, int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		Building b = building(p, id);
+		if (b != null) {
+			b.repairing = false;
+		} else {
+			ErrorType.UNKNOWN_BUILDING.raise("" + id);
+		}
 	}
 
 	@Override
 	public void demolish(String planetId, int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		Building b = building(p, id);
+		if (b != null) {
+			p.demolish(b);
+		}
+		ErrorType.UNKNOWN_BUILDING.raise("" + id);
 	}
 
 	@Override

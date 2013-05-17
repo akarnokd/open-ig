@@ -520,8 +520,9 @@ public class PlanetSurface {
 	/**
 	 * Removes the given building from the map.
 	 * @param building the building to remove
+	 * @return true if the building was successfully removed
 	 */
-	public void removeBuilding(Building building) {
+	public boolean removeBuilding(Building building) {
 		building.hitpoints = 0;
 		if (buildings.remove(building)) {
 			for (int a = building.location.x; a < building.location.x + building.tileset.normal.width; a++) {
@@ -529,7 +530,9 @@ public class PlanetSurface {
 					buildingmap.remove(Location.of(a, b));
 				}
 			}
+			return true;
 		}
+		return false;
 	}
 	/**
 	 * The placement helper class to determine if a specific region size is available on the surface.
