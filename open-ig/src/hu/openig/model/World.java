@@ -10,7 +10,6 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func0;
-import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.net.MissingAttributeException;
 import hu.openig.render.TextRenderer;
@@ -20,7 +19,6 @@ import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -2508,6 +2506,12 @@ public class World implements ModelLookup {
 			if (p.currentFleet == fleet) {
 				p.currentFleet = null;
 				p.selectionMode = SelectionMode.PLANET;
+				if (p == fleet.owner) {
+					List<Fleet> of = p.ownFleets();
+					if (of.size() > 0) {
+						p.currentFleet = of.iterator().next();
+					}
+				}
 			}
 			// if someone targeted this fleet
 			for (Fleet f : p.fleets.keySet()) {
@@ -3192,23 +3196,7 @@ public class World implements ModelLookup {
 		if (skirmishDefinition.placeColonyHubs) {
 			for (Planet pl : planets.values()) {
 				if (pl.owner != null) {
-					BuildingType bt = buildingModel.find("MainBuilding");
-					if (bt != null) {
-						Dimension pd = pl.getPlacementDimensions(bt);
-						if (pd != null) {
-							Point pt = pl.surface.placement.findLocation(pd);
-							if (pt != null) {
-								Building b = new Building(newId(), bt, pl.race);
-								b.location = Location.of(pt.x + 1, pt.y - 1);
-	
-								pl.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
-								pl.rebuildRoads();
-								
-								b.buildProgress = b.type.hitpoints;
-								b.hitpoints = b.type.hitpoints;
-							}
-						}
-					}
+					pl.buildColonyHub();
 				}
 			}
 		}

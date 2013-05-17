@@ -8,6 +8,7 @@
 
 package hu.openig.multiplayer;
 
+import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleStatus;
 import hu.openig.model.Configuration;
 import hu.openig.model.EmpireStatuses;
@@ -24,6 +25,7 @@ import hu.openig.model.ProductionStatuses;
 import hu.openig.model.RemoteGameAPI;
 import hu.openig.model.ResearchStatuses;
 import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.TaxLevel;
 import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
@@ -625,5 +627,16 @@ public class MultiplayerSession implements RemoteGameAPI {
 			throws IOException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public void setAutoBuild(String planetId, AutoBuild auto)
+			throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void setTaxLevel(String planetId, TaxLevel tax) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

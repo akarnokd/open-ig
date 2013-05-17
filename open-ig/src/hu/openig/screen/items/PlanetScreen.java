@@ -3451,34 +3451,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				&& planet().canBuild(player().currentBuilding)
 		) {
 				
-				Building b = new Building(world().newId(), player().currentBuilding, race());
-				b.location = Location.of(placementRectangle.x + 1, placementRectangle.y - 1);
+			Building b = planet().build(building().id, race(), placementRectangle.x + 1, placementRectangle.y - 1);
 				
-				planet().surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
-	
-				planet().rebuildRoads();
-				
-				placementMode = more && planet().canBuild(building());
-				buildingsPanel.build.down = placementMode;
-	
-				buildingBox = getBoundingRect(b.location);
-				doSelectBuilding(b);
-				
-				buildingInfoPanel.update();
-				setBuildingList(0);
+			placementMode = more && planet().canBuild(building());
+			buildingsPanel.build.down = placementMode;
 
-				player().addMoney(-player().currentBuilding.cost);
-				player().today.buildCost += player().currentBuilding.cost;
-				
-				player().statistics.buildCount.value++;
-				player().statistics.moneyBuilding.value += player().currentBuilding.cost;
-				player().statistics.moneySpent.value += player().currentBuilding.cost;
-				
-				world().statistics.buildCount.value++;
-				world().statistics.moneyBuilding.value += player().currentBuilding.cost;
-				world().statistics.moneySpent.value += player().currentBuilding.cost;
-				
-				effectSound(SoundType.DEPLOY_BUILDING);
+			buildingBox = getBoundingRect(b.location);
+			doSelectBuilding(b);
+			
+			buildingInfoPanel.update();
+			setBuildingList(0);
+
+			effectSound(SoundType.DEPLOY_BUILDING);
 		} else {
 			if (player().money() < player().currentBuilding.cost) {
 				buttonSound(SoundType.NOT_AVAILABLE);

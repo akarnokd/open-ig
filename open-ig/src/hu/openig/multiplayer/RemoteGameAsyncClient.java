@@ -13,6 +13,7 @@ import hu.openig.core.AsyncException;
 import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
 import hu.openig.core.Scheduler;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleStatus;
 import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
@@ -32,6 +33,7 @@ import hu.openig.model.ProductionStatuses;
 import hu.openig.model.RemoteGameAsyncAPI;
 import hu.openig.model.ResearchStatuses;
 import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.TaxLevel;
 import hu.openig.model.VoidAsync;
 import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
@@ -1052,5 +1054,24 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		.set("itemId", itemId)
 		;
 		query(request, out, new InventoryItemStatus());
+	}
+	@Override
+	public void setAutoBuild(String planetId, AutoBuild auto,
+			AsyncResult<? super Void, ? super IOException> out) {
+		MessageObject request = new MessageObject("SET_PLANET_AUTOBUILD")
+		.set("planetId", planetId)
+		.set("auto", auto)
+		;
+		send(request, out);
+		
+	}
+	@Override
+	public void setTaxLevel(String planetId, TaxLevel tax,
+			AsyncResult<? super Void, ? super IOException> out) {
+		MessageObject request = new MessageObject("SET_PLANET_TAX")
+		.set("planetId", planetId)
+		.set("tax", tax)
+		;
+		send(request, out);
 	}
 }

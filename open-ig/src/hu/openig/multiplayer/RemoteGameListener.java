@@ -9,6 +9,7 @@
 package hu.openig.multiplayer;
 
 import hu.openig.core.Action2E;
+import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleStatus;
 import hu.openig.model.BuildingStatus;
 import hu.openig.model.DeferredCall;
@@ -24,6 +25,7 @@ import hu.openig.model.MultiplayerUser;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.RemoteGameAPI;
 import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.TaxLevel;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
@@ -1046,6 +1048,26 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 				@Override
 				protected MessageObjectIO invoke() throws IOException {
 					return api.getInventoryStatus(planetId, itemId);
+				}
+			};
+		}
+		case "SET_PLANET_AUTOBUILD": {
+			final String planetId = mo.getStringObject("planetId");
+			final AutoBuild auto = mo.getEnum("auto", AutoBuild.values());
+			return new DeferredInvoke() {
+				@Override
+				public void invoke() throws IOException {
+					api.setAutoBuild(planetId, auto);
+				}
+			};
+		}
+		case "SET_PLANET_TAX": {
+			final String planetId = mo.getStringObject("planetId");
+			final TaxLevel tax = mo.getEnum("tax", TaxLevel.values());
+			return new DeferredInvoke() {
+				@Override
+				public void invoke() throws IOException {
+					api.setTaxLevel(planetId, tax);
 				}
 			};
 		}

@@ -8,7 +8,10 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleStatus;
+import hu.openig.model.Building;
+import hu.openig.model.BuildingType;
 import hu.openig.model.EmpireStatuses;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
@@ -27,6 +30,7 @@ import hu.openig.model.ProductionStatuses;
 import hu.openig.model.ResearchStatuses;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.TaxLevel;
 import hu.openig.model.World;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
@@ -139,6 +143,9 @@ public class LocalGamePlayer implements GameAPI {
 	 * @throws ErrorResponse on error
 	 */
 	protected Fleet fleetCheck(int id) throws ErrorResponse {
+		if (id < 0) {
+			id = lastFleet;
+		}
 		Fleet f = world.fleet(id);
 		if (f == null) {
 			f = player.fleet(id);
@@ -154,7 +161,20 @@ public class LocalGamePlayer implements GameAPI {
 		}
 		return null;
 	}
-
+	/**
+	 * Check if the given planet exists and belongs to the player.
+	 * @param id the planet id
+	 * @return the planet object
+	 * @throws ErrorResponse on error
+	 */
+	protected Planet checkPlanet(String id) throws ErrorResponse {
+		Planet p = world.planet(id);
+		if (p != null && p.owner == player) {
+			return p;
+		}
+		ErrorType.UNKNOWN_PLANET.raise(id);
+		return null;
+	}
 	@Override
 	public void moveFleet(int id, double x, double y) throws IOException {
 		Fleet f = fleetCheck(id);
@@ -382,62 +402,176 @@ public class LocalGamePlayer implements GameAPI {
 	@Override
 	public void addFleetEquipment(int id, int itemId, String slotId, String type)
 			throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			InventoryItem ii = f.inventory.findById(itemId);
+			if (ii != null) {
+				ResearchType rt = world.research(type);
+				if (rt != null && player.isAvailable(rt)) {
+					if (ii.canDeployEquipment(slotId, rt)) {
+						ii.deployEquipment(slotId, rt, 1);
+					} else {
+						ErrorType.UNKNOWN_FLEET_EQUIPMENT.raise(slotId);
+					}
+				} else {
+					ErrorType.UNKNOWN_RESEARCH.raise(type);
+				}
+			} else {
+				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
+			}
+		}
 	}
 
 	@Override
 	public void removeFleetEquipment(int id, int itemId, String slotId)
 			throws IOException {
-		// TODO Auto-generated method stub
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			InventoryItem ii = f.inventory.findById(itemId);
+			if (ii != null) {
+				if (ii.canUndeployEquipment(slotId)) {
+					ii.undeployEquipment(slotId, 1);
+				} else {
+					ErrorType.UNKNOWN_FLEET_EQUIPMENT.raise(slotId);
+				}
+			} else {
+				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
+			}
+		}
 
 	}
 
 	@Override
 	public void fleetUpgrade(int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			f.upgradeAll();
+		}
 	}
 
 	@Override
 	public void stopFleet(int id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(id);
+		if (f != null) {
+			f.stop();
+		}
 	}
 
 	@Override
 	public void transfer(int sourceFleet, int destinationFleet, int sourceItem,
 			FleetTransferMode mode) throws IOException {
-		// TODO Auto-generated method stub
-
+		Fleet f = fleetCheck(sourceFleet);
+		if (f != null) {
+			Fleet f2 = fleetCheck(destinationFleet);
+			if (f2 != null) {
+				InventoryItem ii = f2.inventory().findById(sourceItem);
+				if (ii != null) {
+					f.transferTo(f2, sourceItem, mode);
+				} else {
+					ErrorType.UNKNOWN_FLEET_ITEM.raise("" + sourceItem);
+				}
+			}
+		}
 	}
 
 	@Override
 	public void colonize(String id) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = world.planet(id);
+		if (p == null || player.knowledge(p, PlanetKnowledge.OWNER) < 0) {
+			ErrorType.UNKNOWN_PLANET.raise(id);
+			return;
+		}
+		if (p.owner != null) {
+			ErrorType.PLANET_OCCUPIED.raise(id);
+			return;
+		}
+		player.colonizationTargets.add(id);
 	}
 
 	@Override
 	public void cancelColonize(String id) throws IOException {
-		// TODO Auto-generated method stub
-
+		player.colonizationTargets.remove(id);
 	}
 
 	@Override
 	public int build(String planetId, String type, String race, int x, int y)
 			throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		Planet p = checkPlanet(planetId);
+		
+		BuildingType bt = world.building(type);
+		if (bt == null) {
+			ErrorType.UNKNOWN_BUILDING.raise(type);
+			return 0;
+		}
+		if (!bt.tileset.containsKey(race)) {
+			ErrorType.UNKNOWN_BUILDING_RACE.raise(type + " " + race);
+			return 0;
+		}
+		if (!p.canBuild(type)) {
+			ErrorType.CANT_BUILD.raise(type);
+			return 0;
+		}
+		if (!p.canPlace(type, race, x, y)) {
+			ErrorType.CANT_PLACE_BUILDING.raise(x + ", " + y);
+			return 0;
+		}
+		
+		Building bid = p.build(type, race, x, y);
+		lastBuilding = bid.id;
+		return bid.id;
 	}
 
 	@Override
 	public int build(String planetId, String type, String race)
 			throws IOException {
-		// TODO Auto-generated method stub
+		Planet p = checkPlanet(planetId);
+		
+		BuildingType bt = world.building(type);
+		if (bt == null) {
+			ErrorType.UNKNOWN_BUILDING.raise(type);
+			return 0;
+		}
+		if (!bt.tileset.containsKey(race)) {
+			ErrorType.UNKNOWN_BUILDING_RACE.raise(type + " " + race);
+			return 0;
+		}
+		if (!p.canBuild(type)) {
+			ErrorType.CANT_BUILD.raise(type);
+			return 0;
+		}
+		Building bid = p.build(type, race);
+		if (bid != null) {
+			lastBuilding = bid.id;
+			return bid.id;
+		}
+		ErrorType.NOT_ENOUGH_ROOM.raise(type);
 		return 0;
 	}
 
+	@Override
+	public void setAutoBuild(String planetId, AutoBuild auto)
+			throws IOException {
+		if (planetId != null) {
+			Planet p = checkPlanet(planetId);
+			p.autoBuild = auto;
+		} else {
+			for (Planet p : player.ownPlanets()) {
+				p.autoBuild = auto;
+			}
+		}
+	}
+	@Override
+	public void setTaxLevel(String planetId, TaxLevel tax) throws IOException {
+		if (planetId != null) {
+			Planet p = checkPlanet(planetId);
+			p.tax = tax;
+		} else {
+			for (Planet p : player.ownPlanets()) {
+				p.tax = tax;
+			}
+		}
+	}
+	
 	@Override
 	public void enable(String planetId, int id) throws IOException {
 		// TODO Auto-generated method stub

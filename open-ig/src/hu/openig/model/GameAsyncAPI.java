@@ -574,4 +574,18 @@ public interface GameAsyncAPI {
 	 * @param out the async result or the error
 	 */
 	void getInventoryStatus(String planetId, int itemId, AsyncResult<? super InventoryItemStatus, ? super IOException> out);
+	/**
+	 * Set the tax level on the given planet.
+	 * @param planetId the planet id, if null, all planets of the player.
+	 * @param tax the tax level
+	 * @param out the async result or the error
+	 */
+	void setTaxLevel(String planetId, TaxLevel tax, AsyncResult<? super Void, ? super IOException> out);
+	/**
+	 * Set the auto-build on the given planet.
+	 * @param planetId the target planet id, if null, all planets of the player
+	 * @param auto the state
+	 * @param out the async result or the error
+	 */
+	void setAutoBuild(String planetId, AutoBuild auto, AsyncResult<? super Void, ? super IOException> out);
 }

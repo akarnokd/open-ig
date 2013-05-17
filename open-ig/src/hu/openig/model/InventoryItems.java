@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -81,14 +82,14 @@ public class InventoryItems {
 			byId.put(ii.id, ii);
 			Set<InventoryItem> is = byType.get(ii.type.id);
 			if (is == null) {
-				is = new HashSet<>();
+				is = new LinkedHashSet<>();
 				byType.put(ii.type.id, is);
 			}
 			is.add(ii);
 			
 			is = byOwner.get(ii.owner.id);
 			if (is == null) {
-				is = new HashSet<>();
+				is = new LinkedHashSet<>();
 				byOwner.put(ii.owner.id, is);
 			}
 			is.add(ii);

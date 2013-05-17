@@ -536,4 +536,20 @@ public interface GameCommandAPI {
 	 * a gameplay related error result.
 	 */
 	void stopGroundRetreat(int battleId) throws IOException;
+	/**
+	 * Set the tax level on the given planet.
+	 * @param planetId the planet id, if null, all planets of the player.
+	 * @param tax the tax level
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void setTaxLevel(String planetId, TaxLevel tax) throws IOException;
+	/**
+	 * Set the auto-build on the given planet.
+	 * @param planetId the target planet id, if null, all planets of the player
+	 * @param auto the state
+	 * @throws IOException on communication error, a ErrorResponse indicates
+	 * a gameplay related error result.
+	 */
+	void setAutoBuild(String planetId, AutoBuild auto) throws IOException;
 }

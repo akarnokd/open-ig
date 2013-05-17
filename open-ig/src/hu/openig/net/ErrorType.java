@@ -83,7 +83,19 @@ public enum ErrorType {
 	/** Unable to deploy inventory. */
 	CANT_DEPLOY_INVENTORY,
 	/** Unable to undeploy inventory. */
-	CANT_UNDEPLOY_INVENTORY
+	CANT_UNDEPLOY_INVENTORY,
+	/** Unknown building type. */
+	UNKNOWN_BUILDING,
+	/** Unknown building race. */
+	UNKNOWN_BUILDING_RACE,
+	/** The building is not available yet or here. */
+	CANT_BUILD,
+	/** Can't place building at the specified coordinates. */
+	CANT_PLACE_BUILDING,
+	/** Not enough money. */
+	NOT_ENOUGH_MONEY,
+	/** Not enough room for building. */
+	NOT_ENOUGH_ROOM,
 	;
 	/**
 	 * Interprets the message attribute as error code or error name string.

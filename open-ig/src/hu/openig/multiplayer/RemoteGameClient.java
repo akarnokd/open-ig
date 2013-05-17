@@ -8,6 +8,7 @@
 
 package hu.openig.multiplayer;
 
+import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleStatus;
 import hu.openig.model.BuildingStatus;
 import hu.openig.model.EmpireStatuses;
@@ -26,6 +27,7 @@ import hu.openig.model.ProductionStatuses;
 import hu.openig.model.RemoteGameAPI;
 import hu.openig.model.ResearchStatuses;
 import hu.openig.model.SpaceBattleUnit;
+import hu.openig.model.TaxLevel;
 import hu.openig.model.WelcomeResponse;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
@@ -831,5 +833,22 @@ public class RemoteGameClient implements RemoteGameAPI {
 		.set("itemId", itemId)
 		;
 		return query(request, new InventoryItemStatus());
+	}
+	@Override
+	public void setAutoBuild(String planetId, AutoBuild auto)
+			throws IOException {
+		MessageObject request = new MessageObject("SET_PLANET_AUTOBUILD")
+		.set("planetId", planetId)
+		.set("auto", auto)
+		;
+		send(request);
+	}
+	@Override
+	public void setTaxLevel(String planetId, TaxLevel tax) throws IOException {
+		MessageObject request = new MessageObject("SET_PLANET_TAX")
+		.set("planetId", planetId)
+		.set("tax", tax)
+		;
+		send(request);
 	}
 }

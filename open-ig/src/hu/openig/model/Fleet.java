@@ -9,12 +9,10 @@
 package hu.openig.model;
 
 import hu.openig.core.Difficulty;
-import hu.openig.core.Location;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -869,57 +867,13 @@ public class Fleet implements Named, Owned, HasInventory {
 			Exceptions.add(new AssertionError("No colony ships available"));
 			return false;
 		}
-		for (BuildingType bt : w.buildingModel.buildings.values()) {
-			if ("MainBuilding".equals(bt.kind)) {
-				TileSet ts = bt.tileset.get(owner.race);
-				if (ts != null) {
-					Point pt = p.surface.placement.findLocation(ts.normal.width + 2, ts.normal.height + 2);
-					if (pt != null) {
-						// remove colony ship from fleet
-						inventory.remove(getInventoryItem(cs));
-						
-						// remove empty fleet
-						if (inventory.isEmpty()) {
-							w.removeFleet(this);
-							List<Fleet> of = owner.ownFleets();
-							if (of.size() > 0) {
-								owner.currentFleet = of.iterator().next();
-							} else {
-								owner.currentFleet = null;
-								owner.selectionMode = SelectionMode.PLANET;
-							}
-						}
-						// place building
-						Building b = new Building(owner.world.newId(), bt, owner.race);
-						p.owner = owner;
-						p.race = owner.race;
-						p.population = 5000;
-						p.morale = 50;
-						p.lastMorale = 50;
-						p.lastPopulation = 5000;
-						b.location = Location.of(pt.x + 1, pt.y - 1);
-						
-						p.surface.placeBuilding(ts.normal, b.location.x, b.location.y, b);
-						p.rebuildRoads();
-						
-						p.owner.planets.put(p, PlanetKnowledge.BUILDING);
-						p.owner.currentPlanet = p;
-						
-						p.owner.statistics.planetsColonized.value++;
-						
-						p.owner.colonizationTargets.remove(p.id);
-						
-						// uninstall satellites
-						p.removeOwnerSatellites();
-						
-						return true;
-					}
-					Exceptions.add(new AssertionError(
-							String.format("Could not colonize planet %s, not enough initial space for colony hub of race %s.", p.id, owner.race)));
-				}
-			}
+		inventory.remove(getInventoryItem(cs));
+		// remove empty fleet
+		if (inventory.isEmpty()) {
+			w.removeFleet(this);
 		}
-		return false;
+		
+		return p.colonize(owner);
 	}
 	/**
 	 * Creates a new fleat near this fleet.
@@ -1055,43 +1009,49 @@ public class Fleet implements Named, Owned, HasInventory {
 				|| type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS;
 	}
 	/**
-	 * Transfer the given amount of technology to the other fleet.
+	 * Transfer a specific inventory item to the other fleet.
 	 * @param other the other fleet
-	 * @param type the technology to transfer
-	 * @param count the number of items to transfer
+	 * @param itemId the inventory item in this fleet
+	 * @param mode the transfer mode
 	 */
-	public void transferTo(Fleet other, ResearchType type, int count) {
-		if (count <= 0) {
-			throw new IllegalArgumentException("count > 0 required");
+	public void transferTo(Fleet other, int itemId, FleetTransferMode mode) {
+		InventoryItem ii = inventory.findById(itemId);
+		if (ii == null) {
+			throw new IllegalArgumentException("Unknown inventory item: " + itemId);
 		}
-		if (canUndeploy(type)) {
-			InventoryItem ii = getInventoryItem(type);
-			int n = Math.min(ii.count, count);
-			ii.count -= n;
-			if (ii.count <= 0) {
-				inventory.remove(ii);
-			}
-			
-			InventoryItem ii2 = other.getInventoryItem(type);
-			if (ii2 == null) {
-				ii2 = new InventoryItem(owner.world.newId(), other.owner, type);
-				ii2.init();
-				other.inventory.add(ii2);
-			}
-			ii2.count += n;
-		} else
-		if (canDeploy(type)) {
-			for (InventoryItem ii : new ArrayList<>(inventory.findByType(type.id))) {
-				inventory.remove(ii);
-				other.inventory.add(ii);
-				count -= ii.count;
-				if (count <= 0) {
-					break;
-				}
-			}
-		} else {
-			throw new IllegalArgumentException("Can't transfer items: " + type);
+		if (ii.count <= 0) {
+			throw new IllegalStateException("Inventory has count of " + ii.count);
 		}
+
+		int count = 0;
+		switch (mode) {
+		case ONE:
+			count = 1;
+			break;
+		case HALF:
+			count = ii.count / 2 + 1;
+			break;
+		case ALL:
+			count = ii.count;
+			break;
+		default:
+			throw new IllegalArgumentException("Unsupported transfer type: " + mode);
+		}
+
 		
+		InventoryItem ii2 = other.getInventoryItem(ii.type);
+		if (ii2 == null) {
+			ii2 = new InventoryItem(owner.world.newId(), other.owner, ii.type);
+			ii2.init();
+			other.inventory.add(ii2);
+			ii2.count = count;
+		} else {
+			int toAdd = Math.min(getAddLimit(ii.type), count);
+			ii2.count += toAdd;
+		}
+		ii.count -= ii2.count;
+		if (ii.count <= 0) {
+			inventory.remove(ii);
+		}
 	}
 }

@@ -972,4 +972,24 @@ public class GameAsyncToSync implements GameAsyncAPI {
 			}
 		});
 	}
+	@Override
+	public void setAutoBuild(final String planetId, final AutoBuild auto,
+			AsyncResult<? super Void, ? super IOException> out) {
+		execute(new DeferredVoid<IOException>(out) {
+			@Override
+			public void invoke() throws IOException {
+				api.setAutoBuild(planetId, auto);
+			}
+		});
+	}
+	@Override
+	public void setTaxLevel(final String planetId, final TaxLevel tax,
+			AsyncResult<? super Void, ? super IOException> out) {
+		execute(new DeferredVoid<IOException>(out) {
+			@Override
+			public void invoke() throws IOException {
+				api.setTaxLevel(planetId, tax);
+			}
+		});
+	}
 }
