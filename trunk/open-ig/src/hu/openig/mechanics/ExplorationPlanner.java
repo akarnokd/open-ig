@@ -141,7 +141,7 @@ public class ExplorationPlanner extends Planner {
 		for (final AIPlanet planet : survey) {
 			AIInventoryItem currentSatellite = null;
 			for (AIInventoryItem ii : planet.inventory) {
-				if (ii.owner == p && ii.type.has("detector") 
+				if (ii.owner == p && ii.type.has(ResearchType.PARAMETER_DETECTOR) 
 						&& ii.type.category == ResearchSubCategory.SPACESHIPS_SATELLITES) {
 					currentSatellite = ii;
 				}
@@ -150,11 +150,11 @@ public class ExplorationPlanner extends Planner {
 			ResearchType sat = null;
 			for (Map.Entry<ResearchType, Integer> e : world.inventory.entrySet()) {
 				ResearchType rt = e.getKey();
-				int radar = rt.getInt("detector", 0);
+				int radar = rt.getInt(ResearchType.PARAMETER_DETECTOR, 0);
 				if (e.getValue() > 0 
 						&& rt.category == ResearchSubCategory.SPACESHIPS_SATELLITES
 						&& radar > 0) {
-					if (sat == null || sat.getInt("detector") < radar) {
+					if (sat == null || sat.getInt(ResearchType.PARAMETER_DETECTOR) < radar) {
 						sat = rt;
 					}
 				}
@@ -162,7 +162,7 @@ public class ExplorationPlanner extends Planner {
 			if (sat != null) {
 				// if we couldn't find a better satellite
 				if (currentSatellite != null 
-						&& currentSatellite.type.getInt("detector") >= sat.getInt("detector")) {
+						&& currentSatellite.type.getInt(ResearchType.PARAMETER_DETECTOR) >= sat.getInt(ResearchType.PARAMETER_DETECTOR)) {
 					continue outer;
 				}
 				final ResearchType sat0 = sat;
@@ -177,8 +177,8 @@ public class ExplorationPlanner extends Planner {
 			}
 			// find the best available detector
 			for (ResearchType rt : p.available().keySet()) {
-				if (rt.has("detector")) {
-					if (sat == null || sat.getInt("detector") < rt.getInt("detector")) {
+				if (rt.has(ResearchType.PARAMETER_DETECTOR)) {
+					if (sat == null || sat.getInt(ResearchType.PARAMETER_DETECTOR) < rt.getInt(ResearchType.PARAMETER_DETECTOR)) {
 						sat = rt;
 					}
 				}
@@ -369,7 +369,7 @@ public class ExplorationPlanner extends Planner {
 				public void invoke() {
 					if (deploy.planet.owner.inventoryCount(fwhat) > 0) {
 						Fleet f = controls.actionCreateFleet(format("explorer_fleet", p.shortName), deploy.planet);
-						f.deployItem(fwhat, 1);
+						f.deployItem(fwhat, p, 1);
 						f.upgradeAll();
 					}
 				}

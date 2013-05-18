@@ -15,7 +15,6 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
-import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SoundType;
 import hu.openig.render.TextRenderer;
@@ -121,10 +120,10 @@ public class QuickResearchPanel extends UIContainer {
 		currentResearchStop.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				if (commons.player().runningResearch() != null) {
-					commons.player().researches.get(commons.player().runningResearch()).state = ResearchState.STOPPED;
+				ResearchType rrt = commons.player().runningResearch();
+				if (rrt != null) {
+					commons.player().stopResearch(rrt);
 				}
-				commons.player().runningResearch(null);
 				commons.screenSound(SoundType.STOP_RESEARCH);
 				QuickResearchPanel.this.visible(false);
 				askRepaint();
@@ -203,10 +202,9 @@ public class QuickResearchPanel extends UIContainer {
 	public void update() {
 		
 		ResearchType ar = commons.player().runningResearch();
-		if (ar != null) {
-			Research rs = commons.player().researches.get(ar);
-			
-			currentResearchName.text(ar.name, true);
+		Research rs = commons.player().runningResearchProgress();
+		if (rs != null) {
+			currentResearchName.text(rs.type.name, true);
 			currentResearchName.color(TextRenderer.YELLOW);
 
 			switch (rs.state) {
@@ -257,7 +255,7 @@ public class QuickResearchPanel extends UIContainer {
 		
 		for (ResearchType rt : commons.world().researches.values()) {
 			if (rt.race.contains(commons.player().race) && rt != ar) {
-				if (commons.world().canResearch(rt)) {
+				if (commons.player().canResearch(rt)) {
 					columns.get(rt.category.main).add(Pair.of(rt, 
 							commons.world().getResearchColor(rt, ps, false)));
 				}
@@ -303,7 +301,7 @@ public class QuickResearchPanel extends UIContainer {
 					cl = catlist.get(j);
 				}
 				
-				Research rs1 = commons.player().researches.get(ri.first);
+				Research rs1 = commons.player().getResearch(ri.first);
 				
 				if (rs1 == null) {
 					cl.text(ri.first.name, true);
@@ -568,7 +566,7 @@ public class QuickResearchPanel extends UIContainer {
 	 * @param scale the scale factor -1.0 ... +1.0
 	 */
 	void doAdjustMoney(float scale) {
-		Research r = commons.player().researches.get(commons.player().runningResearch());
+		Research r = commons.player().runningResearchProgress();
 		if (r != null) {
 			r.assignedMoney += scale * r.type.researchCost(commons.player().traits) / 20;
 			r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);

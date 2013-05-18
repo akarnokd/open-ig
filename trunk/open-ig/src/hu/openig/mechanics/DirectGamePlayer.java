@@ -19,6 +19,7 @@ import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GameAPI;
 import hu.openig.model.GroundBattleUnit;
+import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.InventorySlotStatus;
@@ -26,7 +27,9 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.PlanetStatus;
 import hu.openig.model.Player;
+import hu.openig.model.Production;
 import hu.openig.model.ProductionStatuses;
+import hu.openig.model.Research;
 import hu.openig.model.ResearchStatuses;
 import hu.openig.model.ResearchType;
 import hu.openig.model.SpaceBattleUnit;
@@ -48,7 +51,7 @@ import java.util.Map;
  * where the world data lives.</p>
  * @author akarnokd, 2013.05.04.
  */
-public class LocalGamePlayer implements GameAPI {
+public class DirectGamePlayer implements GameAPI {
 	/** The world object. */
 	protected final World world;
 	/** The player object. */
@@ -65,7 +68,7 @@ public class LocalGamePlayer implements GameAPI {
 	 * Constructor, sets the player object.
 	 * @param player the player
 	 */
-	public LocalGamePlayer(Player player) {
+	public DirectGamePlayer(Player player) {
 		this.player = player;
 		this.world = player.world;
 	}
@@ -279,7 +282,7 @@ public class LocalGamePlayer implements GameAPI {
 		for (InventoryItemStatus iis : inventory) {
 			ResearchType rt = world.research(iis.type);
 			if (rt != null) {
-				for (InventoryItem ii : f.deployItem(rt, iis.count)) {
+				for (InventoryItem ii : f.deployItem(rt, f.owner, iis.count)) {
 					ii.tag = iis.tag;
 					for (InventorySlotStatus iss : iis.slots) {
 						ResearchType rt0 = world.research(iss.type);
@@ -344,39 +347,84 @@ public class LocalGamePlayer implements GameAPI {
 			f.name = name;
 		}
 	}
-
+	/**
+	 * Sell the given item from the inventory-having object.
+	 * @param inv the inventory
+	 * @param itemId the item id
+	 * @throws IOException if the item can't be found
+	 */
+	protected void sellItem(HasInventory inv, int itemId) throws IOException {
+		if (inv.contains(itemId)) {
+			inv.sell(itemId, 1);
+		} else {
+			ErrorType.UNKNOWN_INVENTORY_ITEM.raise("" + itemId);
+		}
+	}
+	/**
+	 * Deploy a new inventory item.
+	 * @param inv the inventory-having object
+	 * @param type the technology
+	 * @return the inventory id
+	 * @throws IOException if the technology is missing or the deploy failed
+	 */
+	protected int deployItem(HasInventory inv, String type) throws IOException {
+		ResearchType rt = world.research(type);
+		if (rt != null && player.isAvailable(rt)) {
+			if (inv.canDeploy(rt)) {
+				List<InventoryItem> iil = inv.deployItem(rt, player, 1);
+				for (InventoryItem ii : iil) {
+					return ii.id;
+				}
+			}
+			ErrorType.CANT_DEPLOY_INVENTORY.raise(type);
+		} else {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		return 0;
+	}
+	/**
+	 *  Undeploy one item from the inventory.
+	 * @param inv the inventory-having object.
+	 * @param itemId the item id
+	 * @throws IOException if the item can't be undeployed or is missing.
+	 */
+	protected void undeployItem(HasInventory inv, int itemId) throws IOException {
+		InventoryItem ii = inv.inventory().findById(itemId);
+		if (ii != null) {
+			if (inv.canUndeploy(ii.type)) {
+				inv.undeployItem(itemId, 1);
+			} else {
+				ErrorType.CANT_UNDEPLOY_INVENTORY.raise();
+			}
+		} else {
+			ErrorType.UNKNOWN_INVENTORY_ITEM.raise("" + itemId);
+		}
+	}
 	@Override
 	public void sellFleetItem(int id, int itemId) throws IOException {
 		Fleet f = fleetCheck(id);
 		if (f != null) {
-			if (f.inventory.contains(itemId)) {
-				f.sell(itemId, 1);
-			} else {
-				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
-			}
+			sellItem(f, checkLast(itemId, lastFleetInventoryItem));
 		}
 	}
-
+	/**
+	 * Returns the lastValue if value is less than zero, or the value if it is non-negative.
+	 * @param value the value to check
+	 * @param lastValue the last value if value is negative
+	 * @return the checked value
+	 */
+	protected int checkLast(int value, int lastValue) {
+		return value < 0 ? lastValue : value;
+	}
+	
 	@Override
 	public int deployFleetItem(int id, String type)
 			throws IOException {
 		Fleet f = fleetCheck(id);
 		if (f != null) {
-			ResearchType rt = world.research(type);
-			if (rt != null && player.isAvailable(rt)) {
-				if (f.canDeploy(rt)) {
-					List<InventoryItem> iil = f.deployItem(rt, 1);
-					for (InventoryItem ii : iil) {
-						lastFleetInventoryItem = ii.id;
-						return ii.id;
-					}
-				} else {
-					ErrorType.CANT_DEPLOY_INVENTORY.raise(type);
-				}
-			} else {
-				ErrorType.UNKNOWN_RESEARCH.raise(type);
-			}
-			
+			int r = deployItem(f, type);
+			lastFleetInventoryItem = r;
+			return r;
 		}
 		ErrorType.CANT_DEPLOY_INVENTORY.raise(type);
 		return 0;
@@ -386,39 +434,60 @@ public class LocalGamePlayer implements GameAPI {
 	public void undeployFleetItem(int id, int itemId) throws IOException {
 		Fleet f = fleetCheck(id);
 		if (f != null) {
-			InventoryItem ii = f.inventory.findById(itemId);
-			if (ii != null) {
-				if (f.canUndeploy(ii.type)) {
-					f.undeployItem(itemId, 1);
-				} else {
-					ErrorType.CANT_UNDEPLOY_INVENTORY.raise();
-				}
-			} else {
-				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
-			}
+			undeployItem(f, checkLast(itemId, lastFleetInventoryItem));
 		}		
 	}
-
+	/**
+	 * Adds an equipment to the inventory-having object's inventory item.
+	 * @param inv the inventory-having object
+	 * @param itemId the inventory item id
+	 * @param slotId the slot id
+	 * @param type the technology
+	 * @throws IOException on invalid equipment, technology or item
+	 */
+	protected void addEquipment(HasInventory inv, int itemId, String slotId, String type) throws IOException {
+		InventoryItem ii = inv.inventory().findById(itemId);
+		if (ii != null) {
+			ResearchType rt = world.research(type);
+			if (rt != null && player.isAvailable(rt)) {
+				if (ii.canDeployEquipment(slotId, rt)) {
+					ii.deployEquipment(slotId, rt, 1);
+				} else {
+					ErrorType.UNKNOWN_EQUIPMENT.raise(slotId);
+				}
+			} else {
+				ErrorType.UNKNOWN_RESEARCH.raise(type);
+			}
+		} else {
+			ErrorType.UNKNOWN_INVENTORY_ITEM.raise("" + itemId);
+		}
+	}
+	/**
+	 * Removes an equipment from the target inventory-having objects inventory.
+	 * @param inv the inventory-having object
+	 * @param itemId the inventory item id
+	 * @param slotId the slot id
+	 * @throws IOException if the slot can't be undeployed or the inventory item is missing
+	 */
+	protected void removeEquipment(HasInventory inv, int itemId, String slotId) throws IOException {
+		InventoryItem ii = inv.inventory().findById(itemId);
+		if (ii != null) {
+			if (ii.canUndeployEquipment(slotId)) {
+				ii.undeployEquipment(slotId, 1);
+			} else {
+				ErrorType.UNKNOWN_EQUIPMENT.raise(slotId);
+			}
+		} else {
+			ErrorType.UNKNOWN_INVENTORY_ITEM.raise("" + itemId);
+		}
+	}
+	
 	@Override
 	public void addFleetEquipment(int id, int itemId, String slotId, String type)
 			throws IOException {
 		Fleet f = fleetCheck(id);
 		if (f != null) {
-			InventoryItem ii = f.inventory.findById(itemId);
-			if (ii != null) {
-				ResearchType rt = world.research(type);
-				if (rt != null && player.isAvailable(rt)) {
-					if (ii.canDeployEquipment(slotId, rt)) {
-						ii.deployEquipment(slotId, rt, 1);
-					} else {
-						ErrorType.UNKNOWN_FLEET_EQUIPMENT.raise(slotId);
-					}
-				} else {
-					ErrorType.UNKNOWN_RESEARCH.raise(type);
-				}
-			} else {
-				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
-			}
+			addEquipment(f, checkLast(itemId, lastFleetInventoryItem), slotId, type);
 		}
 	}
 
@@ -427,16 +496,7 @@ public class LocalGamePlayer implements GameAPI {
 			throws IOException {
 		Fleet f = fleetCheck(id);
 		if (f != null) {
-			InventoryItem ii = f.inventory.findById(itemId);
-			if (ii != null) {
-				if (ii.canUndeployEquipment(slotId)) {
-					ii.undeployEquipment(slotId, 1);
-				} else {
-					ErrorType.UNKNOWN_FLEET_EQUIPMENT.raise(slotId);
-				}
-			} else {
-				ErrorType.UNKNOWN_FLEET_ITEM.raise("" + itemId);
-			}
+			removeEquipment(f, checkLast(itemId, lastFleetInventoryItem), slotId);
 		}
 
 	}
@@ -463,12 +523,12 @@ public class LocalGamePlayer implements GameAPI {
 		Fleet f = fleetCheck(sourceFleet);
 		if (f != null) {
 			Fleet f2 = fleetCheck(destinationFleet);
-			if (f2 != null) {
-				InventoryItem ii = f2.inventory().findById(sourceItem);
+			if (f2 != null && f != f2) {
+				InventoryItem ii = f2.inventory().findById(checkLast(sourceItem, lastFleetInventoryItem));
 				if (ii != null) {
 					f.transferTo(f2, sourceItem, mode);
 				} else {
-					ErrorType.UNKNOWN_FLEET_ITEM.raise("" + sourceItem);
+					ErrorType.UNKNOWN_INVENTORY_ITEM.raise("" + sourceItem);
 				}
 			}
 		}
@@ -640,122 +700,217 @@ public class LocalGamePlayer implements GameAPI {
 	@Override
 	public void buildingUpgrade(String planetId, int id, int level)
 			throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		Building b = building(p, id);
+		if (b != null) {
+			if (b.canUpgrade(level)) {
+				if (b.upgradeCost(level) <= player.money()) {
+					p.upgrade(b, level);
+				} else {
+					ErrorType.NOT_ENOUGH_MONEY.raise("" + level);
+				}
+			} else {
+				ErrorType.CANT_UPGRADE_BUILDING.raise();
+			}
+		}
+		ErrorType.UNKNOWN_BUILDING.raise("" + id);
 	}
 
 	@Override
 	public int deployPlanetItem(String planetId, String type)
 			throws IOException {
-		// TODO Auto-generated method stub
-		return 0;
+		Planet p = world.planet(planetId);
+		if (p == null || player.knowledge(p, PlanetKnowledge.VISIBLE) < 0) {
+			ErrorType.UNKNOWN_PLANET.raise(planetId);
+		}
+		int piid = deployItem(p, type);
+		lastPlanetInventoryItem = piid;
+		return piid;
 	}
 
 	@Override
 	public void undeployPlanetItem(String planetId, int itemId)
 			throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		undeployItem(p, checkLast(itemId, lastPlanetInventoryItem));
 	}
 
 	@Override
 	public void sellPlanetItem(String planetId, int itemId) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		sellItem(p, checkLast(itemId, lastPlanetInventoryItem));
 	}
 
 	@Override
 	public void addPlanetEquipment(String planetId, int itemId, String slotId,
 			String type) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		addEquipment(p, checkLast(itemId, lastPlanetInventoryItem), slotId, type);
 	}
 
 	@Override
 	public void removePlanetEquipment(String planetId, int itemId, String slotId)
 			throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		removeEquipment(p, checkLast(itemId, lastPlanetInventoryItem), slotId);
 	}
 
 	@Override
 	public void planetUpgrade(String planetId) throws IOException {
-		// TODO Auto-generated method stub
-
+		Planet p = checkPlanet(planetId);
+		p.upgradeAll();
 	}
 
 	@Override
 	public void startProduction(String type) throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null || rt.nobuild || !player.isAvailable(rt)) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		if (player.addProduction(rt) == null) {
+			ErrorType.PRODUCTION_LINES_FULL.raise();
+		}
 	}
 
 	@Override
 	public void stopProduction(String type) throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null || rt.nobuild || !player.isAvailable(rt)) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		player.removeProduction(rt);
 	}
 
 	@Override
 	public void setProductionQuantity(String type, int count)
 			throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null || rt.nobuild || !player.isAvailable(rt)) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		Production prod = player.getProduction(rt);
+		if (prod != null) {
+			prod.count = count;
+		} else {
+			ErrorType.NOT_PRODUCING.raise(type);
+		}
 	}
 
 	@Override
 	public void setProductionPriority(String type, int priority)
 			throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null || rt.nobuild || !player.isAvailable(rt)) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		Production prod = player.getProduction(rt);
+		if (prod != null) {
+			prod.priority = Math.max(0, Math.min(100, priority));
+		} else {
+			ErrorType.NOT_PRODUCING.raise(type);
+		}
 	}
 
 	@Override
 	public void sellInventory(String type, int count) throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null || !player.isAvailable(rt)) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		player.sellInventory(rt, count);
 	}
 
 	@Override
 	public void startResearch(String type) throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null || rt.level > world.level) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		if (player.canResearch(rt)) {
+			player.startResearch(rt);
+		} else {
+			ErrorType.PREREQUISITES_NOT_MET.raise(type);
+		}
 	}
 
 	@Override
 	public void stopResearch(String type) throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		player.stopResearch(rt);
 	}
 
 	@Override
 	public void setResearchMoney(String type, int money) throws IOException {
-		// TODO Auto-generated method stub
-
+		ResearchType rt = world.research(type);
+		if (rt == null) {
+			ErrorType.UNKNOWN_RESEARCH.raise(type);
+		}
+		Research rs = player.getResearch(rt);
+		if (rs != null) {
+			rs.setAssignedMoney(money);
+		} else {
+			ErrorType.NOT_RESEARCHING.raise(type);
+		}
 	}
 
 	@Override
 	public void pauseResearch() throws IOException {
-		// TODO Auto-generated method stub
-
+		player.pauseResearch = true;
 	}
 
 	@Override
 	public void pauseProduction() throws IOException {
-		// TODO Auto-generated method stub
-
+		player.pauseProduction = true;
 	}
 
 	@Override
 	public void unpauseProduction() throws IOException {
-		// TODO Auto-generated method stub
-
+		player.pauseProduction = false;
 	}
 
 	@Override
 	public void unpauseResearch() throws IOException {
-		// TODO Auto-generated method stub
-
+		player.pauseResearch = false;
+	}
+	/**
+	 * Retrieves the inventory item status of a given inventory item on an
+	 * object having inventory.
+	 * @param inv the inventory-having object
+	 * @param itemId the inventory item id
+	 * @return the item status
+	 * @throws IOException if the inventory item is missing
+	 */
+	protected InventoryItemStatus getInventoryStatus(HasInventory inv, int itemId) throws IOException {
+		InventoryItem ii = inv.inventory().findById(checkLast(itemId, lastFleetInventoryItem));
+		if (ii != null) {
+			return ii.toInventoryItemStatus();
+		}
+		ErrorType.UNKNOWN_INVENTORY_ITEM.raise("" + itemId);
+		return null;
+	}
+	
+	@Override
+	public InventoryItemStatus getInventoryStatus(int fleetId, int itemId)
+			throws IOException {
+		Fleet f = fleetCheck(fleetId);
+		if (f != null) {
+			return getInventoryStatus(f, itemId);
+		}
+		ErrorType.UNKNOWN_FLEET.raise();
+		return null;
+	}
+	
+	@Override
+	public InventoryItemStatus getInventoryStatus(String planetId, int itemId)
+			throws IOException {
+		Planet p = checkPlanet(planetId);
+		if (p != null) {
+			return getInventoryStatus(p, itemId);
+		}
+		return null;
 	}
 
 	@Override
@@ -875,20 +1030,6 @@ public class LocalGamePlayer implements GameAPI {
 
 	@Override
 	public List<GroundBattleUnit> getGroundBattleUnits(int battleId)
-			throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public InventoryItemStatus getInventoryStatus(int fleetId, int itemId)
-			throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public InventoryItemStatus getInventoryStatus(String planetId, int itemId)
 			throws IOException {
 		// TODO Auto-generated method stub
 		return null;

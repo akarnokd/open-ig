@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -131,6 +132,12 @@ public class World implements ModelLookup {
 	public final List<VideoMessage> receivedMessages = new ArrayList<>();
 	/** The global map of fleets. */
 	public final Map<Integer, Fleet> fleets = new LinkedHashMap<>();
+	/** The array of main categories that allow a technology to be produced. */
+	public static final EnumSet<ResearchMainCategory> PRODUCTION_CATEGORIES = EnumSet.of(
+			ResearchMainCategory.SPACESHIPS,
+			ResearchMainCategory.EQUIPMENT,
+			ResearchMainCategory.WEAPONS
+	);
 	/**
 	 * Constructs a world under the given game environment.
 	 * @param env the environment
@@ -884,25 +891,6 @@ public class World implements ModelLookup {
 				player.currentPlanet);
 	}
 	/**
-	 * Returns true if all prerequisites of the given research type have been met.
-	 * If a research is available, it will result as false
-	 * @param rt the research type
-	 * @return true
-	 */
-	public boolean canResearch(ResearchType rt) {
-		if (!player.isAvailable(rt)) {
-			if (rt.level <= level) {
-				for (ResearchType rt0 : rt.prerequisites) {
-					if (!player.isAvailable(rt0)) {
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
 	 * Can the research be shown in listings?
 	 * @param rt the research type
 	 * @return true if display
@@ -925,7 +913,7 @@ public class World implements ModelLookup {
 		if (player.researches.containsKey(rt) && colorActive) {
 			c = TextRenderer.YELLOW;
 		} else
-		if (canResearch(rt)) {
+		if (player.canResearch(rt)) {
 			if (rt.hasEnoughLabs(stats)) {
 				c = TextRenderer.LIGHT_BLUE;
 			} else 
@@ -1835,7 +1823,7 @@ public class World implements ModelLookup {
 	 * @return the TTL in simulation steps
 	 */
 	public int getSatelliteTTL(ResearchType satellite) {
-		int radar = satellite.getInt("detector", 0);
+		int radar = satellite.getInt(ResearchType.PARAMETER_DETECTOR, 0);
 		int ttl = 0;
 		switch (radar) {
 		case 1:
@@ -2980,7 +2968,7 @@ public class World implements ModelLookup {
 					Fleet f = new Fleet(p);
 					f.name = labels.get("@Colonizer");
 					p.changeInventoryCount(rt, 1);
-					f.deployItem(rt, 1);
+					f.deployItem(rt, f.owner, 1);
 				}
 				
 				createStartingFleet(p);
@@ -3213,15 +3201,15 @@ public class World implements ModelLookup {
 				if (p.isAvailable(rt) || rt.level == 0) {
 					if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 						p.changeInventoryCount(rt, 10);
-						f.deployItem(rt, 10);
+						f.deployItem(rt, f.owner, 10);
 					} else
 					if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 						p.changeInventoryCount(rt, 3);
-						f.deployItem(rt, 3);
+						f.deployItem(rt, f.owner, 3);
 					} else
 					if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 						p.changeInventoryCount(rt, 1);
-						f.deployItem(rt, 1);
+						f.deployItem(rt, f.owner, 1);
 					}
 				}
 			}

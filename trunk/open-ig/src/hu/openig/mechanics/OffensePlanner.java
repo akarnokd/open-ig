@@ -164,19 +164,19 @@ public class OffensePlanner extends Planner {
 				if (!fighters.isEmpty()) {
 					ResearchType rt = fighters.get(0);
 					if (f.owner.inventoryCount(rt) > 0) {
-						f.deployItem(rt, 1);
+						f.deployItem(rt, p, 1);
 					}
 				}
 				if (!cruisers.isEmpty()) {
 					ResearchType rt = cruisers.get(0);
 					if (f.owner.inventoryCount(rt) > 0) {
-						f.deployItem(rt, 1);
+						f.deployItem(rt, p, 1);
 					}
 				}
 				if (!battleships.isEmpty()) {
 					ResearchType rt = battleships.get(0);
 					if (f.owner.inventoryCount(rt) > 0) {
-						f.deployItem(rt, 1);
+						f.deployItem(rt, p, 1);
 					}
 				}
 				if (f.inventory.isEmpty()) {

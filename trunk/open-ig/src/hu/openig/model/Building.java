@@ -250,7 +250,26 @@ public class Building implements HasLocation {
 	}
 	/** @return true if this building can be further upgraded */
 	public boolean canUpgrade() {
-		return upgradeLevel < type.upgrades.size();
+		int maxUpgrades = type.upgrades.size();
+		return upgradeLevel < maxUpgrades;
+	}
+	/**
+	 * Returns true if the given upgrade level is accessible to this building. 
+	 * @param newLevel the upgrade level
+	 * @return true if this building can be further upgraded 
+	 */
+	public boolean canUpgrade(int newLevel) {
+		int maxUpgrades = type.upgrades.size();
+		return upgradeLevel < maxUpgrades && newLevel <= maxUpgrades;
+	}
+	/**
+	 * Returns the cost of upgrading to the given new level.
+	 * @param newLevel the new level
+	 * @return the cost
+	 */
+	public int upgradeCost(int newLevel) {
+		int diff = newLevel - upgradeLevel;
+		return type.cost * diff;
 	}
 	@Override
 	public String toString() {

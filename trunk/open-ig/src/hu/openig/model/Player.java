@@ -15,6 +15,7 @@ import hu.openig.utils.Exceptions;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -50,13 +51,13 @@ public class Player {
 	/** The optional resource to play when contacting this race. */
 	public String diplomacyHead;
 	/** The in-progress production list. */
-	public final Map<ResearchMainCategory, Map<ResearchType, Production>> production = new HashMap<>();
+	protected final Map<ResearchMainCategory, Map<ResearchType, Production>> production = new HashMap<>();
 	/** The production history. */
 	public final Map<ResearchMainCategory, List<ResearchType>> productionHistory = new HashMap<>();
 	/** The in-progress research. */
-	public final Map<ResearchType, Research> researches = new LinkedHashMap<>();
+	protected final Map<ResearchType, Research> researches = new LinkedHashMap<>();
 	/** The completed research. */
-	private final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<>();
+	protected final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<>();
 	/** The fleets owned. */
 	public final Map<Fleet, FleetKnowledge> fleets = new LinkedHashMap<>();
 	/** The planets owned. */
@@ -797,5 +798,228 @@ public class Player {
 	public boolean isStrongAlliance(Player other) {
 		DiplomaticRelation dr = world.getRelation(this, other);
 		return dr != null ? dr.strongAlliance : false;
+	}
+	/**
+	 * Adds a production line for the given research type.
+	 * @param rt the technology
+	 * @return non-null if a new line was added or the production is already present
+	 */
+	public Production addProduction(ResearchType rt) {
+		if (rt.nobuild) {
+			throw new IllegalArgumentException("The technology can't be produced.");
+		}
+		if (rt.category.main == ResearchMainCategory.BUILDINGS) {
+			throw new IllegalArgumentException("Buildings can't be produced.");
+		}
+		if (isAvailable(rt)) {
+			Map<ResearchType, Production> prodLine = production.get(rt.category.main);
+			Production prod = prodLine.get(rt);
+			if (prod == null) {
+				if (prodLine.size() < 5) {
+					prod = new Production();
+					prod.type = rt;
+					prod.priority = 50;
+					prodLine.put(rt, prod);
+					addProductionHistory(rt);
+					return prod; 
+				}
+			} else {
+				addProductionHistory(rt);
+				return prod;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Remove the production line for the given technology.
+	 * Unfinished progress is refunded 50%.
+	 * @param rt the research type
+	 */
+	public void removeProduction(ResearchType rt) {
+		Map<ResearchType, Production> prodLine = production.get(rt.category.main);
+		Production prod = prodLine.remove(rt);
+		if (prod != null) {
+			int m = prod.progress / 2;
+			addMoney(m);
+			statistics.moneyProduction.value -= m;
+			statistics.moneySpent.value -= m;
+			world.statistics.moneyProduction.value -= m;
+			world.statistics.moneySpent.value -= m;
+			
+			addProductionHistory(rt);
+		}		
+	}
+	/**
+	 * Returns the production line for the given technology, if exists.
+	 * @param rt the technology
+	 * @return the production entry or null if not in production
+	 */
+	public Production getProduction(ResearchType rt) {
+		Map<ResearchType, Production> prodLine = production.get(rt.category.main);
+		return prodLine.get(rt);
+	}
+	/**
+	 * Sell the given number of items from the main inventory.
+	 * @param rt the technology.
+	 * @param count the count to sell
+	 */
+	public void sellInventory(ResearchType rt, int count) {
+		int current = inventoryCount(rt);
+		int sell = Math.min(current, count);
+		
+		if (sell > 0) {
+			changeInventoryCount(rt, -sell);
+			
+			long m = 1L * sell * rt.productionCost / 2;
+			
+			addMoney(m);
+			
+			statistics.moneySellIncome.value += m;
+			statistics.moneyIncome.value += m;
+			statistics.sellCount.value += sell;
+			
+			world.statistics.moneySellIncome.value += m;
+			world.statistics.moneyIncome.value += m;
+			world.statistics.sellCount.value += sell;
+		}
+	}
+	/**
+	 * Returns true if all prerequisites of the given research type have been met.
+	 * If a research is available, it will result as false
+	 * @param rt the research type
+	 * @return true
+	 */
+	public boolean canResearch(ResearchType rt) {
+		if (!isAvailable(rt)) {
+			if (rt.level <= world.level) {
+				return checkPrerequisites(rt);
+			}
+		}
+		return false;
+	}
+	/**
+	 * Check if the prerequisites of the research are available.
+	 * @param rt the technology to check
+	 * @return true if all prerequisites are met
+	 */
+	private boolean checkPrerequisites(ResearchType rt) {
+		for (ResearchType rt0 : rt.prerequisites) {
+			if (!isAvailable(rt0)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * Starts the given research.
+	 * @param rt the technology to start
+	 * @return the research progress object
+	 */
+	public Research startResearch(ResearchType rt) {
+		if (rt.level > world.level) {
+			throw new IllegalArgumentException("Research not available on this level");
+		}
+		if (isAvailable(rt)) {
+			throw new IllegalStateException("Research available");
+		}
+		if (!checkPrerequisites(rt)) {
+			throw new IllegalStateException("Prerequisites not met.");
+		}
+		ResearchType rrt = runningResearch();
+		if (rrt != null) {
+			Research r = researches.get(rrt);
+			r.state = ResearchState.STOPPED;
+		}
+		
+		double moneyFactor = world.config.researchMoneyPercent / 1000d;
+		
+		runningResearch(rt);
+		Research r = researches.get(rt);
+		if (r == null) {
+			r = new Research();
+			r.type = rt;
+			r.remainingMoney = r.type.researchCost(traits);
+			researches.put(rt, r);
+		}
+		r.setMoneyFactor(moneyFactor);
+		r.state = ResearchState.RUNNING;
+		return r;
+	}
+	/**
+	 * Stop the given research.
+	 * @param rt the research to stop
+	 */
+	public void stopResearch(ResearchType rt) {
+		Research r = researches.get(rt);
+		if (r != null) {
+			r.state = ResearchState.STOPPED;
+			if (r.type == runningResearch()) {
+				runningResearch(null);
+			}
+		}
+	}
+	/**
+	 * Complete the the given running research and
+	 * remove it from the researches map.
+	 * @param rt the technology to complete
+	 */
+	public void completeResearch(ResearchType rt) {
+		Research r = researches.remove(rt);
+		if (r != null) {
+			r.state = ResearchState.COMPLETE;
+			r.remainingMoney = 0;
+			r.assignedMoney = 0;
+			if (currentResearch == rt) {
+				currentResearch = null;
+			}
+			setAvailable(rt);
+			
+			statistics.researchCount.value++;
+			world.statistics.researchCount.value++;
+		}
+	}
+	/**
+	 * Returns a collection of all activated research progress.
+	 * @return the collection of research progress
+	 */
+	public Collection<Research> researches() {
+		return researches.values();
+	}
+	/**
+	 * Returns the research progress for the given technology if it
+	 * is among the started but unfinished researches.
+	 * @param rt the technology
+	 * @return the research progress or null if not present
+	 */
+	public Research getResearch(ResearchType rt) {
+		return researches.get(rt);
+	}
+	/**
+	 * Returns the progress for the current running research if any.
+	 * @return the current research progress or null if nothing is running
+	 */
+	public Research runningResearchProgress() {
+		ResearchType rrt = runningResearch();
+		if (rrt != null) {
+			return researches.get(rrt);
+		}
+		return null;
+	}
+	/**
+	 * Returns a collection for the active production lines under the given
+	 * main category.
+	 * @param mcat the main category
+	 * @return the collection of production lines
+	 */
+	public Collection<Production> productionLines(ResearchMainCategory mcat) {
+		return production.get(mcat).values();
+	}
+	/**
+	 * Returns the active production technologies under the given main category.
+	 * @param mcat the main category
+	 * @return the set of running production technologies
+	 */
+	public Set<ResearchType> productionLineTypes(ResearchMainCategory mcat) {
+		return production.get(mcat).keySet();
 	}
 }

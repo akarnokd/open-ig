@@ -40,10 +40,11 @@ public interface HasInventory {
 	 * <p>The method does not check if the research itself
 	 * is available to the user or not.</p>
 	 * @param rt the technology
+	 * @param owner the owner
 	 * @param count the number of items to deploy
 	 * @return the list of created inventory items
 	 */
-	List<InventoryItem> deployItem(ResearchType rt, int count);
+	List<InventoryItem> deployItem(ResearchType rt, Player owner, int count);
 	/**
 	 * Sells the given amount of items from the given inventory
 	 * item.
@@ -51,6 +52,13 @@ public interface HasInventory {
 	 * @param count the number of items to sell
 	 */
 	void sell(int itemId, int count);
+	/**
+	 * Sells the given amount of items from the given inventory
+	 * item.
+	 * @param ii the inventory item
+	 * @param count the number of items to sell
+	 */
+	void sell(InventoryItem ii, int count);
 	/**
 	 * Undeploy the given amount of items from the
 	 * given inventory item, if there is that many.
@@ -60,4 +68,10 @@ public interface HasInventory {
 	 * @param count the number of items to remove
 	 */
 	void undeployItem(int itemId, int count);
+	/**
+	 * Check if the given inventory item id is in this inventory.
+	 * @param itemId the item id
+	 * @return true if contains
+	 */
+	boolean contains(int itemId);
 }

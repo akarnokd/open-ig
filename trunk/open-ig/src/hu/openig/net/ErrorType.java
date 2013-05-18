@@ -72,14 +72,10 @@ public enum ErrorType {
 	CANT_CREATE_FLEET,
 	/** The fleet isn't empty. */
 	FLEET_ISNT_EMPTY,
-	/** Unknown fleet item. */
-	UNKNOWN_FLEET_ITEM,
-	/** Unknown planet item. */
-	UNKNOWN_PLANET_ITEM,
+	/** Unknown fleet/planet item. */
+	UNKNOWN_INVENTORY_ITEM,
 	/** Unknown fleet equipment. */
-	UNKNOWN_FLEET_EQUIPMENT,
-	/** Unknown planet equipment. */
-	UNKNOWN_PLANET_EQUIPMENT,
+	UNKNOWN_EQUIPMENT,
 	/** Unable to deploy inventory. */
 	CANT_DEPLOY_INVENTORY,
 	/** Unable to undeploy inventory. */
@@ -96,6 +92,16 @@ public enum ErrorType {
 	NOT_ENOUGH_MONEY,
 	/** Not enough room for building. */
 	NOT_ENOUGH_ROOM,
+	/** Can't upgrade the building to the target level. */
+	CANT_UPGRADE_BUILDING,
+	/** Production lines are full. */
+	PRODUCTION_LINES_FULL,
+	/** Technology not under production. */
+	NOT_PRODUCING,
+	/** Technology not under research. */
+	NOT_RESEARCHING,
+	/** Research prerequisites not met. */
+	PREREQUISITES_NOT_MET,
 	;
 	/**
 	 * Interprets the message attribute as error code or error name string.

@@ -142,7 +142,7 @@ public class AIWorld {
 				}
 			} else
 			if (rt.race.contains(player.race)) {
-				if (player.world.canResearch(rt)) {
+				if (player.canResearch(rt)) {
 					remainingResearch.add(rt);
 				} else
 				if (rt.level <= player.world.level) {

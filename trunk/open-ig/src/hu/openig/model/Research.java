@@ -100,4 +100,18 @@ public class Research {
 		remainingMoney = rs.remainingMoney;
 		assignedMoney = rs.assignedMoney;
 	}
+	/**
+	 * Set the assigned money by the given factor of the remaining money.
+	 * @param moneyFactor the money factor
+	 */
+	public void setMoneyFactor(double moneyFactor) {
+		assignedMoney = (int)(remainingMoney * moneyFactor / 2);
+	}
+	/**
+	 * Sets the assigned money.
+	 * @param money the new assigned money
+	 */
+	public void setAssignedMoney(int money) {
+		assignedMoney = Math.max(0, Math.min(money, remainingMoney));
+	}
 }

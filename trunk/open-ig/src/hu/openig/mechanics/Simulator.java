@@ -40,6 +40,7 @@ import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -566,7 +567,7 @@ public final class Simulator {
 	 */
 	static boolean progressResearch(World world, Player player, PlanetStatistics all) {
 		if (player.runningResearch() != null) {
-			Research rs = player.researches.get(player.runningResearch());
+			Research rs = player.runningResearchProgress();
 			ResearchState last = rs.state;
 			int maxpc = rs.getResearchMaxPercent(all);
 			// test for money
@@ -606,12 +607,7 @@ public final class Simulator {
 			}
 			// test for completedness
 			if (rs.remainingMoney == 0) {
-				rs.state = ResearchState.COMPLETE;
-				player.runningResearch(null);
-				player.researches.remove(rs.type);
-				player.setAvailable(rs.type);
-				
-				player.statistics.researchCount.value++;
+				player.completeResearch(rs.type);
 				
 				player.ai.onResearchStateChange(rs.type, rs.state);
 				world.scripting.onResearched(player, rs.type);
@@ -629,20 +625,27 @@ public final class Simulator {
 	 */
 	static boolean progressProduction(World world, Player player, PlanetStatistics all) {
 		boolean result = false;
-		for (Map.Entry<ResearchMainCategory, Map<ResearchType, Production>> prs : player.production.entrySet()) {
+		for (ResearchMainCategory mcat : World.PRODUCTION_CATEGORIES) {
 			int capacity = 0;
-			if (prs.getKey() == ResearchMainCategory.SPACESHIPS) {
+			switch (mcat) {
+			case SPACESHIPS:
 				capacity = all.activeProduction.spaceship;
-			} else
-			if (prs.getKey() == ResearchMainCategory.WEAPONS) {
+				break;
+			case WEAPONS:
 				capacity = all.activeProduction.weapons;
-			} else
-			if (prs.getKey() == ResearchMainCategory.EQUIPMENT) {
+				break;
+			case EQUIPMENT:
 				capacity = all.activeProduction.equipment;
+				break;
+			default:
+				throw new AssertionError("Production of category not supported: " + mcat);
 			}
+			Collection<Production> prods = player.productionLines(mcat);
+			// sum priorities
 			int prioritySum = 0;
-			for (Production pr : prs.getValue().values()) {
-				if (pr.type.has("needsOrbitalFactory") && all.orbitalFactory == 0) {
+			for (Production pr : prods) {
+				if (pr.type.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) 
+						&& all.orbitalFactory == 0) {
 					continue;
 				}
 				if (pr.count > 0) {
@@ -650,8 +653,9 @@ public final class Simulator {
 				}
 			}
 			if (prioritySum > 0) {
-				for (Production pr : new ArrayList<>(prs.getValue().values())) {
-					if (pr.type.has("needsOrbitalFactory") && all.orbitalFactory == 0) {
+				for (Production pr : new ArrayList<>(prods)) {
+					if (pr.type.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) 
+							&& all.orbitalFactory == 0) {
 						continue;
 					}
 					int targetCap = (int)(1d * capacity * pr.priority * world.params().productionUnit() / prioritySum);

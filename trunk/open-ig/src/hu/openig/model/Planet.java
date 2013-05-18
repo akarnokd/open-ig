@@ -1164,30 +1164,44 @@ public class Planet implements Named, Owned, HasInventory {
 	/**
 	 * Compute how many of the supplied items can be added without violating the limit constraints. 
 	 * @param rt the item type
+	 * @param owner the owner
 	 * @return the currently alloved
 	 */
-	public int getAddLimit(ResearchType rt) {
+	public int getAddLimit(ResearchType rt, Player owner) {
 		PlanetStatistics fs = getStatistics();
 		switch (rt.category) {
 		case SPACESHIPS_FIGHTERS:
+			if (owner != this.owner) {
+				return 0;
+			}
 			return owner.world.params().fighterLimit() - inventoryCount(rt, owner);
 		case WEAPONS_TANKS:
 		case WEAPONS_VEHICLES:
+			if (owner != this.owner) {
+				return 0;
+			}
 			return fs.vehicleMax - fs.vehicleCount;
 		case SPACESHIPS_STATIONS:
-			return owner.world.params().stationLimit() - inventoryCount(rt, owner);
+			if (owner != this.owner) {
+				return 0;
+			}
+			return owner.world.params().stationLimit() - inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, owner);
 		case SPACESHIPS_SATELLITES:
-			return 1; // FIXME per owner! 
+			int c = inventoryCount(rt, owner);
+			if (owner == this.owner && rt.has(ResearchType.PARAMETER_DETECTOR)) {
+				return 0;
+			}
+			return c > 0 ? 0 : 1; 
 		default:
 			return 0;
 		}
 	}
 	@Override
-	public List<InventoryItem> deployItem(ResearchType rt, int count) {
+	public List<InventoryItem> deployItem(ResearchType rt, Player owner, int count) {
 		if (count <= 0) {
 			throw new IllegalArgumentException("count > 0 required");
 		}
-		int fleetLimit = getAddLimit(rt);
+		int fleetLimit = getAddLimit(rt, owner);
 		boolean single = false;
 		switch (rt.category) {
 		case WEAPONS_TANKS:
@@ -1212,6 +1226,11 @@ public class Planet implements Named, Owned, HasInventory {
 					inventory.add(ii);
 				}
 				ii.count += toDeploy;
+				
+				if (owner != this.owner) {
+					timeToLive.put(ii, world.getSatelliteTTL(rt));
+				}
+				
 				return Collections.singletonList(ii);
 			}
 			List<InventoryItem> r = new ArrayList<>();
@@ -1220,6 +1239,10 @@ public class Planet implements Named, Owned, HasInventory {
 				ii.init();
 				inventory.add(ii);
 				r.add(ii);
+
+				if (owner != this.owner) {
+					timeToLive.put(ii, world.getSatelliteTTL(rt));
+				}
 			}
 			return r;
 		}
@@ -1229,10 +1252,18 @@ public class Planet implements Named, Owned, HasInventory {
 	public void sell(int itemId, int count) {
 		InventoryItem ii = inventory.findById(itemId);
 		if (ii != null) {
-			ii.sell(count);
-			if (ii.count <= 0) {
-				inventory.remove(ii);
-			}
+			sell(ii, count);
+		}
+	}
+	@Override
+	public boolean contains(int itemId) {
+		return inventory.contains(itemId);
+	}
+	@Override
+	public void sell(InventoryItem ii, int count) {
+		ii.sell(count);
+		if (ii.count <= 0) {
+			inventory.remove(ii);
 		}
 	}
 	@Override
@@ -1242,7 +1273,7 @@ public class Planet implements Named, Owned, HasInventory {
 			if (canUndeploy(ii.type)) {
 				int n = Math.min(count, ii.count);
 				ii.count -= n;
-				owner.changeInventoryCount(ii.type, n);
+				ii.owner.changeInventoryCount(ii.type, n);
 				if (ii.count <= 0) {
 					inventory.remove(ii);
 				}
@@ -1276,5 +1307,178 @@ public class Planet implements Named, Owned, HasInventory {
 		} else {
 			throw new IllegalStateException("Failed to remove building " + b.id);
 		}
+	}
+	/**
+	 * Upgrade the specified building.
+	 * @param building the building object
+	 * @param newLevel the new level
+	 * @return true if successful
+	 */
+	public boolean upgrade(Building building, int newLevel) {
+		if (!building.canUpgrade(newLevel)) {
+			return false;
+		}
+		int buildCost = building.upgradeCost(newLevel);
+
+		if (owner.money() < buildCost) {
+			return false;
+		}
+		
+		building.setLevel(newLevel);
+		building.buildProgress = building.type.hitpoints * 1 / 4;
+		building.hitpoints = building.buildProgress;
+		
+		owner.today.buildCost += buildCost;
+		
+		owner.addMoney(-buildCost);
+		owner.statistics.upgradeCount.value++;
+		owner.statistics.moneySpent.value += buildCost;
+		owner.statistics.moneyUpgrade.value += buildCost;
+		
+		world.statistics.upgradeCount.value++;
+		world.statistics.moneySpent.value += buildCost;
+		world.statistics.moneyUpgrade.value += buildCost;
+		
+		return true;
+	}
+	/**
+	 * Upgrade fighters, vehicles and starbases to the most enhanced version, 
+	 * if the inventory permits it.
+	 */
+	public void upgradeAll() {
+		ResearchType bestStation = null;
+		ResearchType orbitalFactory = world.research("OrbitalFactory");
+		for (ResearchType rt : owner.available().keySet()) {
+			if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS && rt != orbitalFactory) {
+				if (owner.inventoryCount(rt) > 0) {
+					if (bestStation == null || bestStation.productionCost < rt.productionCost) {
+						bestStation = rt;
+					}
+				}
+			}
+		}
+		int stations = inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, owner);
+		// deploy stations if possible
+		if (bestStation != null) {
+			while (stations < world.params().stationLimit() && owner.inventoryCount(bestStation) > 0) {
+				deployItem(bestStation, owner, 1);
+				stations++;
+			}
+			// replace old stations with newer ones if possible
+			for (InventoryItem ii : inventory.list()) {
+				if (ii.owner == owner 
+						&& ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS
+						&& ii.type != orbitalFactory) {
+					if (ii.type.productionCost < bestStation.productionCost 
+							&& owner.inventoryCount(bestStation) > 0) {
+						ii.strip();
+						ii.sell(ii.count);
+						inventory.remove(ii);
+						deployItem(bestStation, owner, 1);
+					}
+				}
+			}
+		}
+		
+		// if we have stations, deploy any available fighters
+		if (stations > 0) {
+			for (ResearchType rt : owner.available().keySet()) {
+				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					int placed = inventoryCount(rt, owner);
+					if (placed < world.params().fighterLimit()) {
+						int avail = owner.inventoryCount(rt);
+						if (avail > 0) {
+							int n = Math.min(world.params().fighterLimit() - placed, avail);
+							deployItem(rt, owner, n);
+						}
+					}
+				}
+			}			
+		}
+		
+		// upgrade station equipment: strip current settings
+		List<InventoryItem> uis = new ArrayList<>();
+		for (InventoryItem ii : inventory.findByOwner(owner.id)) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS
+					&& ii.type != orbitalFactory) {
+				ii.strip();
+				uis.add(ii);
+			}
+		}
+		// allocate equipment
+		Collections.sort(uis, new Comparator<InventoryItem>() {
+			@Override
+			public int compare(InventoryItem o1, InventoryItem o2) {
+				return ResearchType.EXPENSIVE_FIRST.compare(o1.type, o2.type);
+			}
+		});
+		for (InventoryItem ii : uis) {
+			ii.upgradeSlots();
+		}
+	}
+	/**
+	 * Test if the planet can be auto-upgraded.
+	 * @return true if auto-upgrade is possible
+	 */
+	public boolean canUpgrade() {
+		boolean newFighters = false;
+		ResearchType bestStation = null;
+		
+		ResearchType orbitalFactory = owner.world.researches.get("OrbitalFactory");
+
+		for (ResearchType rt : owner.available().keySet()) {
+			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				if (inventoryCount(rt, owner) < world.params().fighterLimit() && owner.inventoryCount(rt) > 0) {
+					newFighters = true;
+				}
+			}
+			if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS && rt != orbitalFactory) {
+				if (owner.inventoryCount(rt) > 0) {
+					if (bestStation == null || bestStation.productionCost < rt.productionCost) {
+						
+						bestStation = rt;
+					}
+				}
+			}
+		}
+		boolean hasSpaceStation = false;
+		for (InventoryItem ii : inventory.findByOwner(owner.id)) {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS 
+					/* && ii.type != orbitalFactory*/) {
+				hasSpaceStation = true;
+				break;
+			}
+		}
+
+		// more fighters may be added (after possibly adding a station)
+		if (newFighters && (hasSpaceStation || bestStation != null)) {
+			return true;
+		}
+		
+		// room for new space stations?
+		int stationCount = inventoryCount(ResearchSubCategory.SPACESHIPS_STATIONS, owner);
+		
+		if (stationCount < world.params().stationLimit() && bestStation != null) {
+			return true;
+		}
+		
+		// existing stations may be replaced?
+		if (bestStation != null) {
+			for (InventoryItem ii : inventory.findByOwner(owner.id)) {
+				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS && ii.type != orbitalFactory) {
+					if (ii.type.productionCost < bestStation.productionCost) {
+						return true;
+					}
+				}
+			}
+		}
+		// station inventory can be refilled?
+		for (InventoryItem ii : inventory.findByOwner(owner.id)) {
+			if (ii.checkSlots()) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
