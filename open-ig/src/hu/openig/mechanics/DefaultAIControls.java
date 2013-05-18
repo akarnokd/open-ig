@@ -15,22 +15,18 @@ import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
-import hu.openig.model.FleetMode;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
-import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.World;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.util.Map;
 
 /**
  * The default AI controls.
@@ -52,23 +48,8 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionStartResearch(ResearchType rt, double moneyFactor) {
-		if (p.runningResearch() != null) {
-			Research r = p.researches.get(p.runningResearch());
-			r.state = ResearchState.STOPPED;
-			log(p, "PauseResearch, Type = %s", r.type.id);
-		}
-		p.runningResearch(rt);
-		Research r = p.researches.get(rt);
-		if (r == null) {
-			r = new Research();
-			r.type = rt;
-			r.remainingMoney = r.type.researchCost(p.traits);
-			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
-			p.researches.put(r.type, r);
-		} else {
-			r.assignedMoney = (int)(r.remainingMoney * moneyFactor / 2);
-		}
-		r.state = ResearchState.RUNNING;
+		Research r = p.startResearch(rt);
+		r.setMoneyFactor(moneyFactor);
 //		log("StartResearch, Type = %s, MoneyFactor = %s", rt.id, moneyFactor);
 	}
 	@Override
@@ -113,22 +94,7 @@ public class DefaultAIControls implements AIControls {
 	 * @param rt the research
 	 */
 	public static void actionRemoveProduction(Player player, ResearchType rt) {
-		Map<ResearchType, Production> map = player.production.get(rt.category.main);
-		if (map != null) {
-			Production prod = map.get(rt);
-			if (prod != null) {
-				map.remove(rt);
-				// update statistics
-				int m = prod.progress / 2;
-				player.addMoney(m);
-				player.statistics.moneyProduction.value -= m;
-				player.statistics.moneySpent.value -= m;
-				player.world.statistics.moneyProduction.value -= m;
-				player.world.statistics.moneySpent.value -= m;
-				
-				player.addProductionHistory(rt);
-			}
-		}
+		player.removeProduction(rt);
 	}
 	/**
 	 * Deploy a satellite of the given player to the target planet.
@@ -235,35 +201,20 @@ public class DefaultAIControls implements AIControls {
 	 * @return true if the action succeeded
 	 */
 	public static boolean actionStartProduction(Player p, ResearchType rt, int count, int priority) {
-		if (rt.nobuild) {
-			log(p, "StartProduction, Type = %s, Failed = not buildable");
+		Production prod = p.addProduction(rt);
+		if (prod != null) {
+			prod.priority = priority;
+			prod.count = Math.max(prod.count + count, 0);
+			return true;
 		}
-		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
-		Production prod = prodLine.get(rt);
-		if (prod == null) {
-			if (prodLine.size() < 5) {
-				prod = new Production();
-				prod.type = rt;
-				prodLine.put(rt, prod);
-			} else {
-				log(p, "StartProduction, Type = %s, Count = %s, Priority = %s, Failed = production line limit", rt.id, count, priority);
-				return false;
-			}
-		}
-		prod.priority = priority;
-		prod.count = Math.max(prod.count + count, 0);
-		p.addProductionHistory(rt);
-//		log("StartProduction, Type = %s, Count = %s, Priority = %s", rt.id, count, priority);
-		return true;
+		return false;
 	}
 	@Override
 	public void actionPauseProduction(ResearchType rt) {
-		Map<ResearchType, Production> prodLine = p.production.get(rt.category.main);
-		Production prod = prodLine.get(rt);
-		if (prod != null) {
-			prod.priority = 0;
+		Production pr = p.getProduction(rt);
+		if (pr != null) {
+			pr.priority = 0;
 		}
-		log(p, "PauseProduction, Type = %s", rt.id);
 	}
 	@Override
 	public AIResult actionPlaceBuilding(Planet planet, BuildingType buildingType) {
@@ -305,36 +256,25 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionAttackPlanet(Fleet fleet, Planet planet, AIAttackMode mode) {
-		fleet.task = FleetTask.ATTACK;
-		fleet.targetPlanet(planet);
-		fleet.mode = FleetMode.ATTACK;
+		fleet.attack(planet);
 		log(p, "AttackPlanet, Attacker = %s, Defender = %s", fleet.name, planet.name);
 	}
 	@Override
 	public void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense) {
-		fleet.task = FleetTask.ATTACK;
-		fleet.targetFleet = enemy;
-		fleet.mode = FleetMode.ATTACK;
+		fleet.attack(enemy);
 		log(p, "AttackFleet, Attacker = %s, Defender = %s", fleet.name, enemy.name);
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, double x, double y) {
 		if (fleet.task != FleetTask.SCRIPT) {
-			fleet.targetFleet = null;
-			fleet.targetPlanet(null);
-			fleet.waypoints.clear();
-			fleet.waypoints.add(new Point2D.Double(x, y));
-			fleet.mode = FleetMode.MOVE;
+			fleet.moveTo(x, y);
 //		log("MoveFleet, Fleet = %s, Location = %s;%s", fleet.name, x, y);
 		}
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, Planet planet) {
 		if (fleet.task != FleetTask.SCRIPT) {
-			fleet.targetFleet = null;
-			fleet.waypoints.clear();
-			fleet.targetPlanet(planet);
-			fleet.mode = FleetMode.MOVE;
+			fleet.moveTo(planet);
 			log(p, "MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name, fleet.id, planet.id);
 		}
 	}
@@ -353,13 +293,7 @@ public class DefaultAIControls implements AIControls {
 	}
 	@Override
 	public void actionStopResearch(ResearchType rt) {
-		Research r = p.researches.get(rt);
-		if (r != null) {
-			r.state = ResearchState.STOPPED;
-			if (r.type == p.runningResearch()) {
-				p.runningResearch(null);
-			}
-		}
+		p.stopResearch(rt);
 	}
 	
 	@Override

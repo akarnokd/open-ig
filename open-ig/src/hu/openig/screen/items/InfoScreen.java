@@ -3070,10 +3070,12 @@ public class InfoScreen extends ScreenBase {
 		researchPre1.visible(false);
 		researchPre2.visible(false);
 		researchPre3.visible(false);
+
+		Player p = player();
 		
 		if (rt != null) {
 			planetTitle.text(rt.name);
-			if (player().isAvailable(rt) || world().canResearch(rt)) {
+			if (p.isAvailable(rt) || p.canResearch(rt)) {
 				descriptionImage.image(rt.infoImage);
 				descriptionText.text(rt.description);
 				descriptionTitle.text(rt.longName);
@@ -3083,50 +3085,50 @@ public class InfoScreen extends ScreenBase {
 				descriptionImage.image(rt.infoImageWired);
 				descriptionText.text("");
 				descriptionTitle.text(rt.longName);
-				if (world().canResearch(rt)) {
+				if (p.canResearch(rt)) {
 					planetTitle.color(TextRenderer.GREEN);
 				} else {
 					planetTitle.color(TextRenderer.GRAY);
 				}
 			}
-			if (player().researches.containsKey(rt)) {
-				Research rs = player().researches.get(rt);
+			Research rs = p.getResearch(rt);
+			if (rs != null) {
 				switch (rs.state) {
 				case RUNNING:
-					researchProgress.text(format("researchinfo.progress.running", (int)rs.getPercent(player().traits)), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.running", (int)rs.getPercent(p.traits)), true).visible(true);
 					break;
 				case STOPPED:
-					researchProgress.text(format("researchinfo.progress.paused", (int)rs.getPercent(player().traits)), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.paused", (int)rs.getPercent(p.traits)), true).visible(true);
 					break;
 				case LAB:
-					researchProgress.text(format("researchinfo.progress.lab", (int)rs.getPercent(player().traits)), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.lab", (int)rs.getPercent(p.traits)), true).visible(true);
 					break;
 				case MONEY:
-					researchProgress.text(format("researchinfo.progress.money", (int)rs.getPercent(player().traits)), true).visible(true);
+					researchProgress.text(format("researchinfo.progress.money", (int)rs.getPercent(p.traits)), true).visible(true);
 					break;
 				default:
 					researchProgress.text("");
 				}
-				researchCost.text(format("researchinfo.progress.cost", rt.researchCost(player().traits)), true).visible(true);
+				researchCost.text(format("researchinfo.progress.cost", rt.researchCost(p.traits)), true).visible(true);
 			} else {
-				if (player().isAvailable(rt)) {
+				if (p.isAvailable(rt)) {
 					researchProgress.text(get("researchinfo.progress.done"), true).visible(true);
 					researchCost.text(format("researchinfo.progress.price", rt.productionCost), true).visible(true);
-					Integer cnt = player().inventory.get(rt);
+					Integer cnt = p.inventory.get(rt);
 					if (rt.category.main != ResearchMainCategory.BUILDINGS) {
 						researchInventory.text(format("researchinfo.progress.inventory", cnt != null ? cnt : 0), true).visible(true);
 					}
 				} else {
-					if (world().canResearch(rt)) {
+					if (p.canResearch(rt)) {
 						researchProgress.text(get("researchinfo.progress.can"), true).visible(true);
-						researchCost.text(format("researchinfo.progress.cost", rt.researchCost(player().traits)), true).visible(true);
+						researchCost.text(format("researchinfo.progress.cost", rt.researchCost(p.traits)), true).visible(true);
 					} else {
 						researchProgress.text(get("researchinfo.progress.cant"), true).visible(true);
 						descriptionImage.image(null);
 					}
 				}
 			}
-			globalStatistics = player().getPlanetStatistics(null);
+			globalStatistics = p.getPlanetStatistics(null);
 
 			if (rt.prerequisites.size() > 0) {
 				researchPrerequisites.visible(true);

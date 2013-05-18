@@ -409,7 +409,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		for (ResearchType rt : owner.available().keySet()) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				int count = Math.min(30, owner.inventoryCount(rt));
-				deployItem(rt, count);
+				deployItem(rt, owner, count);
 			}
 		}
 		upgradeVehicles(getStatistics().vehicleMax);
@@ -430,7 +430,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			int demand = e.getValue();
 			ResearchType rt = e.getKey();
 			int count = Math.min(demand, owner.inventoryCount(rt));
-			deployItem(rt, count);
+			deployItem(rt, owner, count);
 			vehicleMax -= count;
 		}
 		if (vehicleMax > 0) {
@@ -450,7 +450,7 @@ public class Fleet implements Named, Owned, HasInventory {
 					break;
 				}
 				int add = Math.min(vehicleMax, owner.inventoryCount(rt));
-				deployItem(rt, add);
+				deployItem(rt, owner, add);
 				vehicleMax -= add;
 			}
 		}
@@ -547,7 +547,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		int toAdd = Math.min(limit - invLocal, invGlobal);
 		
 		while (toAdd > 0) {
-			deployItem(rt, 1);
+			deployItem(rt, owner, 1);
 			current++;
 			toAdd--;
 		}
@@ -891,7 +891,11 @@ public class Fleet implements Named, Owned, HasInventory {
 		return f;
 	}
 	@Override
-	public List<InventoryItem> deployItem(ResearchType rt, int count) {
+	public List<InventoryItem> deployItem(ResearchType rt, Player owner,
+			int count) {
+		if (owner != this.owner) {
+			throw new IllegalArgumentException("You can only deploy items for the same owner as the fleet.");
+		}
 		if (count <= 0) {
 			throw new IllegalArgumentException("count > 0 required");
 		}
@@ -937,11 +941,19 @@ public class Fleet implements Named, Owned, HasInventory {
 	public void sell(int itemId, int count) {
 		InventoryItem ii = inventory.findById(itemId);
 		if (ii != null) {
-			ii.sell(count);
-			if (ii.count <= 0) {
-				inventory.remove(ii);
-			}
+			sell(ii, count);
 		}
+	}
+	@Override
+	public void sell(InventoryItem ii, int count) {
+		ii.sell(count);
+		if (ii.count <= 0) {
+			inventory.remove(ii);
+		}
+	}
+	@Override
+	public boolean contains(int itemId) {
+		return inventory.contains(itemId);
 	}
 	/**
 	 * Sell a given amount of the given technology from this fleet.

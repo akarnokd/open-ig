@@ -160,16 +160,16 @@ public class InventoryItem {
 		long money = unitSellValue() * n;
 		owner.addMoney(money);
 		
-		owner.statistics.sellCount.value++;
+		owner.statistics.sellCount.value += n;
 		owner.statistics.moneySellIncome.value += money;
 		owner.statistics.moneyIncome.value += money;
 		
-		owner.world.statistics.sellCount.value++;
+		owner.world.statistics.sellCount.value += n;
 		owner.world.statistics.moneyIncome.value += money;
 		owner.world.statistics.moneySellIncome.value += money;
 
 		count -= n;
-		if (count == 0) {
+		if (count <= 0) {
 			slots.clear();
 		}
 	}

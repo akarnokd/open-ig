@@ -462,32 +462,6 @@ public final class AutoBuilder {
 	 * @return true if the upgrade was successful
 	 */
 	public static boolean upgrade(World world, Planet planet, Building building, int newLevel) {
-		if (!building.canUpgrade() 
-				|| newLevel > building.type.upgrades.size()) {
-			return false;
-		}
-		int diff = newLevel - building.upgradeLevel;
-		int buildCost = building.type.cost * diff;
-
-		if (planet.owner.money() < buildCost) {
-			return false;
-		}
-		
-		building.setLevel(newLevel);
-		building.buildProgress = building.type.hitpoints * 1 / 4;
-		building.hitpoints = building.buildProgress;
-		
-		planet.owner.today.buildCost += buildCost;
-		
-		planet.owner.addMoney(-buildCost);
-		planet.owner.statistics.upgradeCount.value++;
-		planet.owner.statistics.moneySpent.value += buildCost;
-		planet.owner.statistics.moneyUpgrade.value += buildCost;
-		
-		world.statistics.upgradeCount.value++;
-		world.statistics.moneySpent.value += buildCost;
-		world.statistics.moneyUpgrade.value += buildCost;
-		
-		return true;
+		return planet.upgrade(building, newLevel);
 	}
 }

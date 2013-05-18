@@ -16,12 +16,14 @@ import hu.openig.model.Message;
 import hu.openig.model.Planet;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
+import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionMode;
 import hu.openig.model.SoundType;
 import hu.openig.model.VideoMessage;
+import hu.openig.model.World;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.panels.NotificationHistory;
@@ -51,7 +53,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.swing.Timer;
 
@@ -432,7 +433,7 @@ public class StatusbarScreen extends ScreenBase {
 	/** @return Check if any of the technologies are available for research. */
 	boolean isResearchAvailable() {
 		for (ResearchType rt : world().researches.values()) {
-			if (rt.race.contains(player().race) && world().canResearch(rt)) {
+			if (rt.race.contains(player().race) && player().canResearch(rt)) {
 				return true;
 			}
 		}
@@ -443,8 +444,8 @@ public class StatusbarScreen extends ScreenBase {
 	 */
 	int computeTotalProduction() {
 		int remainingCost = 0;
-		for (Map<ResearchType, Production> prods : player().production.values()) {
-			for (Production prod : prods.values()) {
+		for (ResearchMainCategory mcat : World.PRODUCTION_CATEGORIES) {
+			for (Production prod : player().productionLines(mcat)) {
 				remainingCost += prod.count;
 			}
 		}
@@ -550,7 +551,7 @@ public class StatusbarScreen extends ScreenBase {
 				ResearchType rt = player().runningResearch();
 				boolean mayBlink = false;
 				if (rt != null) {
-					Research r = player().researches.get(rt);
+					Research r = player().getResearch(rt);
 					if (r != null) {
 						rs = String.format("%.1f%%", r.getPercent(player().traits));
 						mayBlink |= r.state == ResearchState.LAB || r.state == ResearchState.MONEY || r.state == ResearchState.STOPPED;

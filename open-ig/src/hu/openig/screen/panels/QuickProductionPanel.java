@@ -30,9 +30,10 @@ import hu.openig.ui.UIMouse.Type;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * The quick production panel.
@@ -352,9 +353,9 @@ public class QuickProductionPanel extends UIContainer {
 	 * @return the maximum width of the column based on the contents
 	 */
 	int layoutCategory(ResearchMainCategory mcat, int column) {
-		Map<ResearchType, Production> prods = commons.player().production.get(mcat);
+		Collection<Production> prods = commons.player().productionLines(mcat);
 		if (prods == null) {
-			prods = Collections.emptyMap();
+			prods = Collections.emptyList();
 		}
 		while (lines.size() <= column) {
 			lines.add(new ArrayList<ProductionSimpleLine>());
@@ -363,7 +364,7 @@ public class QuickProductionPanel extends UIContainer {
 		int w = 0;
 		List<ProductionSimpleLine> list = lines.get(column);
 		int i = 0;
-		for (Production prod : prods.values()) {
+		for (Production prod : prods) {
 			ProductionSimpleLine psl = null;
 			if (list.size() > i) {
 				psl = list.get(i);
@@ -399,9 +400,12 @@ public class QuickProductionPanel extends UIContainer {
 	 */
 	int layoutHistoryCategory(ResearchMainCategory mcat, int column) {
 		List<ResearchType> prods = commons.player().productionHistory.get(mcat);
-		Map<ResearchType, ?> currProds = commons.player().production.get(mcat);
 		if (prods == null) {
 			prods = Collections.emptyList();
+		}
+		Set<ResearchType> currProds = commons.player().productionLineTypes(mcat);
+		if (currProds == null) {
+			currProds = Collections.emptySet();
 		}
 		while (historyLines.size() <= column) {
 			historyLines.add(new ArrayList<ProductionHistoryLine>());
@@ -412,7 +416,7 @@ public class QuickProductionPanel extends UIContainer {
 		int i = 0;
 		for (ResearchType prod : prods) {
 			// skip running production
-			if (currProds != null && currProds.containsKey(prod)) {
+			if (currProds != null && currProds.contains(prod)) {
 				continue;
 			}
 			if (prod.nobuild) {

@@ -17,7 +17,6 @@ import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Production;
 import hu.openig.model.Research;
 import hu.openig.model.ResearchMainCategory;
-import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
@@ -51,7 +50,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -549,25 +549,18 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	}
 	/** Add a new production. */
 	void doAddProduction() {
-		ResearchMainCategory cat = getCurrentMainCategory();
+		ResearchMainCategory mcat = getCurrentMainCategory();
+		player().addProduction(research());
 		
-		
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = new Production();
-		prod.type = research();
-		prod.count = 0;
-		prod.priority = 50;
-		productions.put(prod.type, prod);
-		
-		if (statistics.production.weapons == 0 && cat == ResearchMainCategory.WEAPONS) {
+		if (statistics.production.weapons == 0 && mcat == ResearchMainCategory.WEAPONS) {
 			buttonSound(SoundType.NOT_AVAILABLE);
 			commons.control().displayError(get("production.missing_weapons_factory"));
 		} else
-		if (statistics.production.equipment == 0 && cat == ResearchMainCategory.EQUIPMENT) {
+		if (statistics.production.equipment == 0 && mcat == ResearchMainCategory.EQUIPMENT) {
 			buttonSound(SoundType.NOT_AVAILABLE);
 			commons.control().displayError(get("production.missing_equipment_factory"));
 		} else
-		if (statistics.production.spaceship == 0 && cat == ResearchMainCategory.SPACESHIPS) {
+		if (statistics.production.spaceship == 0 && mcat == ResearchMainCategory.SPACESHIPS) {
 			buttonSound(SoundType.NOT_AVAILABLE);
 			commons.control().displayError(get("production.missing_spaceship_factory"));
 		} else {
@@ -582,7 +575,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	 * @param scale the scale factor -1.0 ... +1.0
 	 */
 	void doAdjustMoney(float scale) {
-		Research r = player().researches.get(player().runningResearch());
+		Research r = player().runningResearchProgress();
 		r.assignedMoney += scale * r.type.researchCost(player().traits) / 20;
 		r.assignedMoney = Math.max(Math.min(r.assignedMoney, r.remainingMoney), r.remainingMoney / 8);
 	}
@@ -607,9 +600,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	 * @param delta the amount
 	 */
 	void doChangeCount(int delta) {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(research());
+		Production prod = player().getProduction(research());
 		if (prod != null) {
 			prod.count = Math.max(0, prod.count + delta);
 		}
@@ -619,9 +610,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	 * Increase the priority of a line.
 	 */
 	void doLessPriority() {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(research());
+		Production prod = player().getProduction(research());
 		if (prod != null) {
 			prod.priority = Math.max(0, prod.priority - 5);
 		}
@@ -630,9 +619,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	 * Decrease the priority of a line.
 	 */
 	void doMorePriority() {
-		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
-		Production prod = productions.get(research());
+		Production prod = player().getProduction(research());
 		if (prod != null) {
 			prod.priority = Math.min(100, prod.priority + 5);
 		}
@@ -651,9 +638,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		for (ProductionLine pl0 : productionLines) {
 			pl0.select(pl0 == pl);
 			ResearchMainCategory cat = getCurrentMainCategory();
-			Map<ResearchType, Production> productions = player().production.get(cat);
+			Collection<Production> productions = player().productionLines(cat);
 			int row = 0;
-			for (Production pr : productions.values()) {
+			for (Production pr : productions) {
 				if (row++ == j) {
 					doSelectTechnology(pr.type);
 					break;
@@ -675,37 +662,11 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	}
 	/** Sell one of the current research. */
 	void doSell() {
-		Integer count = player().inventory.get(research());
-		if (count != null && count > 0) {
-			player().inventory.put(research(), count - 1);
-			player().addMoney(research().productionCost / 2);
-			
-			player().statistics.moneySellIncome.value += research().productionCost / 2;
-			player().statistics.moneyIncome.value += research().productionCost / 2;
-			player().statistics.sellCount.value++;
-			
-			world().statistics.moneySellIncome.value += research().productionCost / 2;
-			world().statistics.moneyIncome.value += research().productionCost / 2;
-			world().statistics.sellCount.value++;
-
-		}
+		player().sellInventory(research(), 1);
 	}
 	/** Start a new research. */
 	void doStartNew() {
-		if (player().runningResearch() != null) {
-			player().researches.get(player().runningResearch()).state = ResearchState.STOPPED;
-		}
-		ResearchType rt = research();
-		player().runningResearch(rt);
-		Research rs = player().researches.get(rt);
-		if (rs == null) {
-			rs = new Research();
-			rs.type = rt;
-			player().researches.put(rt, rs);
-			rs.remainingMoney = rt.researchCost(player().traits);
-			rs.assignedMoney = (int)(rs.remainingMoney * (long)config.researchMoneyPercent / 2000);
-		}
-		rs.state = ResearchState.RUNNING;
+		player().startResearch(research());
 		screenSound(SoundType.START_RESEARCH);
 	}
 	@Override
@@ -1416,7 +1377,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				video.image(rt.infoImage);
 				animationResearchReady = true;
 			} else
-			if (world().canResearch(rt)) {
+			if (player().canResearch(rt)) {
 				video.image(rt.infoImageWired);
 			}
 			video.center(true);
@@ -1427,7 +1388,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 						vid = null;
 					}
 				} else
-				if (world().canResearch(rt)) {
+				if (player().canResearch(rt)) {
 					vid = rt.video + "_wired";
 					if (commons.video(vid) == null) {
 						vid = null;
@@ -1638,7 +1599,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			}
 			
 			descriptionTitle.text(rt.longName);
-			if (player().isAvailable(rt) || world().canResearch(rt)) {
+			if (player().isAvailable(rt) || player().canResearch(rt)) {
 				descriptionBody.text(rt.description);
 			} else {
 				descriptionBody.text("");
@@ -1662,9 +1623,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				selectedCompleteValue.text(get("researchinfo.progress.done"));
 				selectedTimeValue.text("----");
 			} else {
-				if (world().canResearch(rt)) {
-					if (player().researches.containsKey(rt)) {
-						Research rs = player().researches.get(rt);
+				if (player().canResearch(rt)) {
+					Research rs = player().getResearch(rt);
+					if (rs != null) {
 						switch (rs.state) {
 						case RUNNING:
 							selectedTechStatusValue.text(format("researchinfo.progress.running", (int)rs.getPercent((player().traits)))).visible(true);
@@ -1738,7 +1699,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			startNew.visible(
 					mode == Screens.RESEARCH
 					&& player().runningResearch() != rt 
-					&& world().canResearch(rt));
+					&& player().canResearch(rt));
 		} else {
 			for (TechnologySlot slot : slots) {
 				slot.visible(false);
@@ -1779,7 +1740,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		
 		for (TechnologySlot ts : slots) {
 			if (ts.type != null 
-					&& (commons.world().player.isAvailable(ts.type) || commons.world().canResearch(ts.type))) {
+					&& (player().isAvailable(ts.type) || player().canResearch(ts.type))) {
 				setTooltip(ts, "production.line.tooltip", ts.type.longName, ts.type.description);
 			} else {
 				ts.tooltip(null);
@@ -1810,7 +1771,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 
 			activeTechNameValue.text(rt.name, true).visible(true);
 
-			Research rs = player().researches.get(rt);
+			Research rs = player().getResearch(rt);
 			
 			activeMoneyValue.text(rs.assignedMoney + "/" + rs.remainingMoney).visible(true);
 			activeMoneyPercentValue.text(((int)rs.getPercent(player().traits)) + "%").visible(true);
@@ -1843,9 +1804,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				&& rt.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) && ps.orbitalFactory == 0);
 
 		ResearchMainCategory cat = getCurrentMainCategory();
-		Map<ResearchType, Production> productions = player().production.get(cat);
+		Collection<Production> productions = player().productionLines(cat);
 		if (productions == null) {
-			productions = new HashMap<>();
+			productions = Collections.emptyList();
 		}
 		int capacity = 0;
 		if (!needsOrbitalFactory.visible()) {
@@ -1900,7 +1861,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		}
 
 		int prioritySum = 0;
-		for (Production pr : productions.values()) {
+		for (Production pr : productions) {
 			if (pr.type.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) && ps.orbitalFactory == 0) {
 				continue;
 			}
@@ -1912,7 +1873,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		
 		int row = 0;
 		Production selected = null;
-		for (Production pr : productions.values()) {
+		boolean inProduction = false;
+		for (Production pr : productions) {
+			inProduction |= pr.type == rt;
 			if (row >= productionLines.size()) {
 				continue;
 			}
@@ -1956,7 +1919,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		addButton.visible(
 				mode == Screens.PRODUCTION
 				&& player().isAvailable(rt) 
-				&& !productions.containsKey(rt) 
+				&& !inProduction 
 				&& rt.category.main == cat
 				&& !rt.nobuild
 				&& productions.size() < 5
@@ -1966,7 +1929,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		
 		removeButton.visible(
 				mode == Screens.PRODUCTION
-				&& productions.containsKey(rt)
+				&& inProduction
 		);
 		
 		Integer count = player().inventory.get(research());
@@ -1994,11 +1957,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	}
 	/** Top the research. */
 	void doStopResearch() {
-		doSelectTechnology(player().runningResearch());
-		if (player().runningResearch() != null) {
-			player().researches.get(player().runningResearch()).state = ResearchState.STOPPED;
-		}
-		player().runningResearch(null);
+		ResearchType rt = player().runningResearch();
+		doSelectTechnology(rt);
+		player().stopResearch(rt);
 		screenSound(SoundType.STOP_RESEARCH);
 	}
 	@Override
