@@ -10,6 +10,7 @@ package hu.openig.screen;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
+import hu.openig.core.Action1E;
 import hu.openig.core.Func0;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
@@ -31,15 +32,18 @@ import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
 import hu.openig.model.AIManager;
 import hu.openig.model.Configuration;
+import hu.openig.model.GameDefinition;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.Labels;
-import hu.openig.model.MultiplayerEnvironment;
+import hu.openig.model.MultiplayerDefinition;
+import hu.openig.model.MultiplayerUser;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
+import hu.openig.model.SkirmishDefinition;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.Traits;
@@ -58,7 +62,6 @@ import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -88,7 +91,7 @@ import javax.swing.Timer;
  * Contains all common ang game specific graphical and textual resources.
  * @author akarnokd, 2009.12.25.
  */
-public class CommonResources implements GameEnvironment, MultiplayerEnvironment {
+public class CommonResources implements GameEnvironment {
 	/** The main configuration object. */
 	public Configuration config;
 	/** The main resource locator object. */
@@ -181,6 +184,10 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 	protected Thread labelReloader;
 	/** The global traits. */
 	public final Traits traits = new Traits();
+	/** The multiplayer context. */
+	public final MultiplayerContext multiplayer = new MultiplayerContext(this);
+	/** The join callback for multiplayer. */
+	public Action1E<MultiplayerUser, IOException> joinCallback;
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -195,25 +202,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 		ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
 		scheduler.setKeepAliveTime(1500, TimeUnit.MILLISECONDS);
 		scheduler.allowCoreThreadTimeOut(true);
-
-		/* 
-		 * the setRemoveOnCancelPolicy() was introduced in Java 7 to
-		 * allow the option to remove tasks from work queue if its initial delay hasn't
-		 * elapsed -> therfore, if no other tasks are present, the scheduler might go idle earlier
-		 * instead of waiting for the initial delay to pass to discover there is nothing to do.
-		 * Because the library is currenlty aimed at Java 6, we use a reflection to set this policy
-		 * on a Java 7 runtime. 
-		 */
-		try {
-			Method m = scheduler.getClass().getMethod("setRemoveOnCancelPolicy", Boolean.TYPE);
-			m.invoke(scheduler, true);
-		} catch (InvocationTargetException ex) {
-
-		} catch (NoSuchMethodException e) {
-		} catch (SecurityException e) {
-		} catch (IllegalAccessException e) {
-		} catch (IllegalArgumentException e) {
-		}
+		scheduler.setRemoveOnCancelPolicy(true);
 		pool = scheduler;
 
 //		timer = new Timer(25, new ActionListener() {
@@ -1108,6 +1097,7 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 			labelReloader.interrupt();
 			labelReloader = null;
 		}
+		multiplayer.stopServer();
 	}
 	@Override
 	public void save(SaveMode mode) {
@@ -1187,5 +1177,30 @@ public class CommonResources implements GameEnvironment, MultiplayerEnvironment 
 	@Override
 	public boolean isLoading() {
 		return worldLoading;
+	}
+	@Override
+	public Action1E<MultiplayerUser, IOException> joinCallback() {
+		return joinCallback;
+	}
+	/**
+	 * Start a new campaign game.
+	 * @param game the game definition to load
+	 */
+	public void startGame(GameDefinition game) {
+		// TODO refactor/implement
+	}
+	/**
+	 * Start a new skirmish game.
+	 * @param game the game definition to load
+	 */
+	public void startGame(SkirmishDefinition game) {
+		// TODO refactor/implement
+	}
+	/**
+	 * Start a new mulitplayer game.
+	 * @param game the game to start
+	 */
+	public void startGame(MultiplayerDefinition game) {
+		// TODO implement
 	}
 }

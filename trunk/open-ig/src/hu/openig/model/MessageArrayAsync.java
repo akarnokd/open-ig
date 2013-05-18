@@ -44,7 +44,7 @@ extends AsyncTransform<Object, List<T>, IOException> {
 			String... responseType) {
 		super(out);
 		this.factory = factory;
-		this.responseType = responseType;
+		this.responseType = responseType.clone();
 	}
 	@Override
 	public void invoke(Object param1) throws IOException {

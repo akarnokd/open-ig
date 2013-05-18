@@ -9,7 +9,6 @@
 package hu.openig.net;
 
 import hu.openig.core.AsyncResult;
-import hu.openig.core.Scheduler;
 
 import java.io.IOException;
 import java.util.concurrent.Future;
@@ -28,40 +27,14 @@ public interface MessageClientAPI {
 	 */
 	Object query(MessageSerializable request) throws IOException;
 	/**
-	 * Send a raw query and parse the response, blocking in the process.
-	 * @param request the request message
-	 * @return the response object or error
-	 * @throws IOException on communication error or message error
-	 */
-	Object query(CharSequence request) throws IOException;
-	
-	/**
-	 * Send a request and await the answer asynchronously on
-	 * the given thread pool and response processor.
+	 * Sends a message on an asynchronous thread, awaits
+	 * the result and executes the response handler on a different thread.
 	 * @param request the request object
-	 * @param waiter the waiter thread pool, should be a single threaded
-	 * or striped thread pool to avoid overlapping reads of subsequent
-	 * async queries.
-	 * @param onResponse the response message receiver, might receive an exception object
-	 * @return the future of the async wait
+	 * @param onResponse the async response handler
+	 * @return the future for the entire query
 	 */
 	Future<?> query(
 			MessageSerializable request, 
-			Scheduler waiter, 
-			final AsyncResult<Object, ? super IOException> onResponse);
-	/**
-	 * Send a request and await the answer asynchronously on
-	 * the given thread pool and response processor.
-	 * @param request the request object
-	 * @param waiter the waiter thread pool, should be a single threaded
-	 * or striped thread pool to avoid overlapping reads of subsequent
-	 * async queries.
-	 * @param onResponse the response message receiver, might receive an exception object
-	 * @return the future of the async wait
-	 */
-	Future<?> query(
-			CharSequence request, 
-			Scheduler waiter, 
 			final AsyncResult<Object, ? super IOException> onResponse);
 
 }

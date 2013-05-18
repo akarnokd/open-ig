@@ -8,11 +8,9 @@
 
 package hu.openig.multiplayer;
 
-import hu.openig.core.Action1;
-import hu.openig.core.AsyncException;
+import hu.openig.core.Action1E;
 import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
-import hu.openig.core.Scheduler;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleStatus;
 import hu.openig.model.EmpireStatuses;
@@ -36,7 +34,6 @@ import hu.openig.model.SpaceBattleUnit;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.VoidAsync;
 import hu.openig.model.WelcomeResponse;
-import hu.openig.net.ErrorResponse;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageClientAPI;
 import hu.openig.net.MessageObject;
@@ -61,67 +58,60 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	 * result when the whole batch has been dispatched.
 	 * @author akarnokd, 2013.05.01.
 	 */
-	public static final class BatchResultAsync implements Runnable {
-		/** The end notification async result if not null. */
-		private final AsyncResult<? super Void, ? super IOException> out;
+	public static final class BatchResultAsync implements AsyncResult<Object, IOException>,
+	Action1E<Object, IOException> {
 		/** The list of async results to notify. */
 		private final List<AsyncResult<Object, ? super IOException>> callbacks;
-		/** The list of results to dispatch. */
+		/** The individually parsed results. */
 		private final List<Object> results;
-
+		/** The completion notification. */
+		private final AsyncResult<? super Void, ? super IOException> out;
+		
 		/**
 		 * Constructor. Initializes the fields.
-		 * @param out the end notification async result, may be null
+		 * @param out the notification for the error response or
+		 * the completion of the notification of all callbacks
 		 * @param callbacks the list async results to notify
-		 * @param ma the batch result array
 		 */
 		public BatchResultAsync(
 				AsyncResult<? super Void, ? super IOException> out,
-				List<AsyncResult<Object, ? super IOException>> callbacks,
-				MessageArray ma) {
+				List<AsyncResult<Object, ? super IOException>> callbacks) {
 			this.out = out;
 			this.callbacks = U.newArrayList(callbacks);
-			this.results = new ArrayList<>(ma.size());
-			
-			int max = Math.max(ma.size(), this.callbacks.size());
-			for (int i = 0; i < max; i++) {
-				AsyncResult<Object, ? super IOException> ar = this.callbacks.get(i);
-				Object o = ma.get(i);
-				ErrorResponse er = ErrorResponse.asError(o);
-				if (er != null) {
-					results.add(er);
-				} else {
-					if (ar instanceof Action1<?>) {
-						@SuppressWarnings("unchecked")
-						Action1<Object> func1 = (Action1<Object>) ar;
-						func1.invoke(o);
-					}
-					results.add(o);
-				}
+			this.results = new ArrayList<>(callbacks.size());
+		}
+		@Override
+		public void invoke(Object param1) throws IOException {
+			MessageArray ma = MessageUtils.expectArray(param1, "BATCH_RESPONSE");
+			int i = 0;
+			for (Object o : ma) {
+				AsyncResult<Object, ? super IOException> ar = callbacks.get(i);
+				MessageUtils.applyTransform(ar, o);
+				results.add(o);
+				i++;
 			}
 		}
-
 		@Override
-		public void run() {
-			for (int i = 0; i < results.size(); i++) {
-				AsyncResult<Object, ? super IOException> ar = callbacks.get(i);
-				Object o = results.get(i);
-				if (o instanceof IOException) {
-					ar.onError((IOException)o);
-				} else {
-					ar.onSuccess(o);
-				}
+		public void onSuccess(Object value) {
+			int i = 0;
+			for (Object o : results) {
+				callbacks.get(i).onSuccess(o);
+				i++;
 			}
 			if (out != null) {
 				out.onSuccess(null);
+			}
+		}
+		@Override
+		public void onError(IOException ex) {
+			if (out != null) {
+				out.onError(ex);
 			}
 		}
 	}
 
 	/** The message client object. */
 	protected final MessageClientAPI client;
-	/** The scheduler used to dispatch results. */
-	protected final Scheduler scheduler;
 	/** The list of callbacks filled in during batch operation. */
 	protected List<AsyncResult<Object, ? super IOException>> callbacks;
 	/** The composed batch request. */
@@ -129,11 +119,9 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 	/**
 	 * Constructor. Sets the message client object.
 	 * @param client the client object
-	 * @param scheduler the scheduler
 	 */
-	public RemoteGameAsyncClient(MessageClientAPI client, Scheduler scheduler) {
+	public RemoteGameAsyncClient(MessageClientAPI client) {
 		this.client = client;
-		this.scheduler = scheduler;
 	}
 
 	@Override
@@ -150,11 +138,8 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		if (!isBatchMode()) {
 			throw new IllegalStateException("Not in batch mode!");
 		}
-		// query batch
-		MessageArray ma = MessageUtils.expectArray(client.query(batchRequest), "BATCH_RESPONSE");
-
 		
-		scheduler.schedule(new BatchResultAsync(null, callbacks, ma));
+		client.query(batchRequest, new BatchResultAsync(null, callbacks));
 
 		batchRequest = null;
 		callbacks = null;
@@ -165,14 +150,8 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 		if (!isBatchMode()) {
 			throw new IllegalStateException("Not in batch mode!");
 		}
-		try {
-			// query batch
-			MessageArray ma = MessageUtils.expectArray(client.query(batchRequest), "BATCH_RESPONSE");
-
-			scheduler.schedule(new BatchResultAsync(out, callbacks, ma));
-		} catch (IOException ex) {
-			scheduler.schedule(new AsyncException(ex, out));
-		}
+		client.query(batchRequest, new BatchResultAsync(null, callbacks));
+		
 		batchRequest = null;
 		callbacks = null;
 
@@ -205,7 +184,7 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 			batchRequest.add(request);
 			callbacks.add(out);
 		} else {
-			client.query(request, scheduler, out);
+			client.query(request, out);
 		}
 	}
 	/**

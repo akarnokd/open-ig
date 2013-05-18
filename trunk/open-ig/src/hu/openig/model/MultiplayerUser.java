@@ -16,6 +16,8 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2013.04.24.
  */
 public class MultiplayerUser implements MessageObjectIO {
+	/** The player's identifier. */
+	public String id;
 	/**  The AI mode, if null, this is a remote user. */
 	public SkirmishAIMode ai;
 	/** The user name. */
@@ -102,5 +104,38 @@ public class MultiplayerUser implements MessageObjectIO {
 	@Override
 	public String objectName() {
 		return "MULTIPLAYER_USER";
+	}
+	/**
+	 * Create a copy of this object.
+	 * @return a copy of this record
+	 */
+	public MultiplayerUser copy() {
+		MultiplayerUser r = new MultiplayerUser();
+		
+		r.id = id;
+		r.ai = ai;
+		r.userName = userName;
+		r.passphrase = passphrase;
+		r.color = color;
+		r.iconRef = iconRef;
+		r.icon = icon;
+		r.group = group;
+		r.changeIcon = changeIcon;
+		r.changeRace = changeRace;
+		r.changeTraits = changeTraits;
+		r.changeGroup = changeGroup;
+		r.originalId = r.originalId;
+		r.diplomacyHead = diplomacyHead;
+		r.nodiplomacy = nodiplomacy;
+		r.nodatabase = nodatabase;
+		r.picture = picture;
+		r.race = race;
+		r.name = name;
+		r.description = description;
+		r.joined = joined();
+		r.sessionId = sessionId();
+		r.traits.replace(traits);
+
+		return r;
 	}
 }

@@ -8,12 +8,10 @@
 
 package hu.openig.net;
 
-import hu.openig.core.Action1;
-import hu.openig.core.Action1E;
-import hu.openig.core.AsyncException;
 import hu.openig.core.AsyncResult;
-import hu.openig.core.AsyncValue;
 import hu.openig.core.Scheduler;
+import hu.openig.core.Schedulers;
+import hu.openig.model.MessageUtils;
 import hu.openig.utils.U;
 
 import java.io.BufferedReader;
@@ -26,7 +24,13 @@ import java.io.Reader;
 import java.io.Writer;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A game client sending and receiving messages in
@@ -44,118 +48,111 @@ public class MessageClient implements Closeable, MessageClientAPI {
 	protected final InetAddress address;
 	/** The endpoint port. */
 	protected final int port;
+	/** The message sending pool. */
+	protected ExecutorService sendPool;
+	/** The scheduler where the received message is sent to the async listener. */
+	protected final Scheduler receivePool;
+	/**
+	 * Constructor, uses the EDT to process the receive result.
+	 * @param address the endpoint address
+	 * @param port the port address
+	 */
+	public MessageClient(InetAddress address, int port) {
+		this.address = address;
+		this.port = port;
+		receivePool = Schedulers.edt();
+	}
 	/**
 	 * Constructor.
 	 * @param address the endpoint address
 	 * @param port the port address
-	 * @throws IOException on error
+	 * @param receivePool where the asyncresult is notified.
 	 */
-	public MessageClient(InetAddress address, int port) throws IOException {
+	public MessageClient(InetAddress address, int port, Scheduler receivePool) {
 		this.address = address;
 		this.port = port;
+		this.receivePool = receivePool;
 	}
 	/**
 	 * Establish a connection.
 	 * @throws IOException on connection error
 	 */
 	public void connect() throws IOException {
+		ThreadPoolExecutor tp = new ThreadPoolExecutor(1, 1, 3, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+		tp.allowCoreThreadTimeOut(true);
+		sendPool = tp;
+		
 		socket = new Socket(address, port);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 	}
 	@Override
 	public void close() throws IOException {
+		ExecutorService sp = sendPool;
+		if (sp != null) {
+			sp.shutdown();
+			sendPool = null;
+		}
 		U.close(writer, reader, socket);
 		socket = null;
 		reader = null;
 		writer = null;
 	}
 	@Override
-	public Object query(MessageSerializable request) throws IOException {
-		if (writer == null) {
-			throw new IOException("MessageClient not connected");
+	public Object query(final MessageSerializable request) throws IOException {
+		Future<Object> f = sendPool.submit(new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				if (writer == null) {
+					throw new IOException("MessageClient not connected");
+				}
+				request.save(writer);
+				writer.flush();
+				return MessageObject.parse(reader);
+			}
+		});
+		try {
+			return f.get();
+		} catch (InterruptedException | ExecutionException e) {
+			if (e.getCause() instanceof IOException) {
+				throw (IOException)e.getCause();
+			}
+			throw new IOException(e);
 		}
-		request.save(writer);
-		writer.flush();
-		return MessageObject.parse(reader);
-	}
-	@Override
-	public Object query(CharSequence request) throws IOException {
-		if (writer == null) {
-			throw new IOException("MessageClient not connected");
-		}
-		writer.append(request);
-		writer.flush();
-		return MessageObject.parse(reader);
 	}
 	
 	@Override
 	public Future<?> query(
-			MessageSerializable request, 
-			Scheduler waiter, 
+			final MessageSerializable request, 
 			final AsyncResult<Object, ? super IOException> onResponse) {
-		if (writer == null) {
-			final IOException ex = new IOException("MessageClient not connected");
-			return waiter.schedule(new AsyncException(ex, onResponse));
-		}
-		try {
-			request.save(writer);
-			writer.flush();
-			
-			return readAndDispatchAsync(waiter, onResponse);
-		} catch (final IOException ex) { 
-			return waiter.schedule(new AsyncException(ex, onResponse));
-		}
-	}
-	@Override
-	public Future<?> query(
-			CharSequence request, 
-			Scheduler waiter, 
-			final AsyncResult<Object, ? super IOException> onResponse) {
-		if (writer == null) {
-			final IOException ex = new IOException("MessageClient not connected");
-			return waiter.schedule(new AsyncException(ex, onResponse));
-		}
-		try {
-			writer.append(request);
-			writer.flush();
-			
-			return readAndDispatchAsync(waiter, onResponse);
-		} catch (final IOException ex) { 
-			return waiter.schedule(new AsyncException(ex, onResponse));
-		}
-	}
-	/**
-	 * Reads the response of a query then
-	 * dispatches the answer to the given response handler.
-	 * @param waiter the scheduler for the execution of the notification
-	 * @param onResponse the callback, if it implements Action1&lt;Object>,
-	 * its invoke() method is called on the current thread.
-	 * @return the future to the async execution
-	 * @throws IOException on parsing or I/O error
-	 */
-	Future<?> readAndDispatchAsync(Scheduler waiter,
-			final AsyncResult<Object, ? super IOException> onResponse)
-			throws IOException {
-		Object response = MessageObject.parse(reader);
-		ErrorResponse er = ErrorResponse.asError(response);
-		if (er != null) {
-			return waiter.schedule(new AsyncException(er, onResponse));
-		} else
-		if (onResponse instanceof Action1<?>) {
-			@SuppressWarnings("unchecked")
-			Action1<Object> func1 = (Action1<Object>)onResponse;
-			func1.invoke(response);
-		} else
-		if (onResponse instanceof Action1E<?, ?>) {
-			@SuppressWarnings("unchecked")
-			Action1E<Object, IOException> func1 = (Action1E<Object, IOException>)onResponse;
-			try {
-				func1.invoke(response);
-			} catch (IOException ex) {
-				return waiter.schedule(new AsyncException(ex, onResponse));
+		return sendPool.submit(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					if (writer == null) {
+						throw new IOException("MessageClient not connected");
+					}				
+					request.save(writer);
+					writer.flush();
+					final Object o = MessageObject.parse(reader);
+					
+					MessageUtils.applyTransform(onResponse, o);
+					
+					receivePool.schedule(new Runnable() {
+						@Override
+						public void run() {
+							onResponse.onSuccess(o);
+						}
+					});
+				} catch (final IOException ex) {
+					receivePool.schedule(new Runnable() {
+						@Override
+						public void run() {
+							onResponse.onError(ex);
+						}
+					});
+				}
 			}
-		}
-		return waiter.schedule(new AsyncValue(response, onResponse));
+		});
 	}
 }

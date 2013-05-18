@@ -61,7 +61,7 @@ public class RemoteGameClient implements RemoteGameAPI {
 	@Override
 	public long ping() throws IOException {
 		long t = System.nanoTime();
-		MessageUtils.expectObject(client.query("PING{}"), "PONG");
+		MessageUtils.expectObject(client.query(new MessageObject("PING")), "PONG");
 		return (System.nanoTime() - t) / 1000000L;
 	}
 	/**

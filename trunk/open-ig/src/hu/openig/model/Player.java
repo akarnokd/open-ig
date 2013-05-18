@@ -128,6 +128,10 @@ public class Player {
 	public final List<String> nicknames = new ArrayList<>();
 	/** The set of colonization targets. */
 	public final Set<String> colonizationTargets = new LinkedHashSet<>();
+	/** The API interface to execute commands in the name of this player. */
+	public GameAPI api;
+	/** The asynchronouse API interface to execute commands in the name of this player. */
+	public GameAsyncAPI asyncAPI;
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world
