@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Action1E;
+import hu.openig.core.AsyncResult;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
@@ -69,5 +71,19 @@ public final class MessageUtils {
 		}
 		throw new ErrorResponse(ErrorType.RESPONSE, response != null ? response.toString() : "null");
 	}
-
+	/**
+	 * Execute an Action1E if the given result object implements it.
+	 * This can be used to execute an internal transform on the result
+	 * which replaces the onSuccess value.
+	 * @param result the async result object
+	 * @param o the value to transform
+	 * @throws IOException on error
+	 */
+	public static void applyTransform(AsyncResult<Object, ? super IOException> result, Object o) throws IOException {
+		if (result instanceof Action1E<?, ?>) {
+			@SuppressWarnings("unchecked")
+			Action1E<Object, IOException> at = (Action1E<Object, IOException>)result;
+			at.invoke(o);
+		}
+	}
 }

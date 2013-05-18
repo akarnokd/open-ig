@@ -8,11 +8,14 @@
 
 package hu.openig.screen.items;
 
+import hu.openig.core.Action1E;
 import hu.openig.core.Difficulty;
 import hu.openig.core.ResourceType;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.editors.ce.GenericTableModel;
 import hu.openig.model.Configuration;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerUser;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
@@ -21,12 +24,14 @@ import hu.openig.model.SkirmishDiplomaticRelation;
 import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.Trait;
 import hu.openig.model.TraitKind;
+import hu.openig.net.ErrorType;
 import hu.openig.screen.CommonResources;
 import hu.openig.ui.IGButton;
 import hu.openig.ui.IGCheckBox;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.GUIUtils;
 import hu.openig.utils.U;
+import hu.openig.utils.XElement;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -41,6 +46,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -64,6 +71,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -80,7 +88,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * The multiplayer setup screen.
@@ -115,6 +125,8 @@ public class MultiplayerScreen extends JFrame {
 	private Font fontMedium;
 	/** UI component. */
 	private JComboBox<String> localAddressBox;
+	/** The addresses. */
+	private final List<InetAddress> localAddresses = new ArrayList<>();
 	/** UI component. */
 	private JComboBox<String> localPortBox;
 	/** UI component. */
@@ -231,6 +243,12 @@ public class MultiplayerScreen extends JFrame {
 	private IGCheckBox defaultChangeGroup;
 	/** Allow cheating? */
 	private IGCheckBox allowCheat;
+	/** UI component. */
+	private IGButton openButton;
+	/** UI component. */
+	private IGButton saveButton;
+	/**  The last open/save directory. */
+	private File lastDir = new File(".");
 	/**
 	 * Constructor. Initializes the sceen.
 	 * @param commons the commons object
@@ -306,6 +324,12 @@ public class MultiplayerScreen extends JFrame {
 		joinGame.setForeground(Color.WHITE);
 		
 		publishGame.setEnabled(false);
+		publishGame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doPublishGame();
+			}
+		});
 		joinGame.setEnabled(false);
 		joinGame.setVisible(false);
 
@@ -367,6 +391,23 @@ public class MultiplayerScreen extends JFrame {
 		cancel.setFont(fontLarge);
 		cancel.setForeground(Color.WHITE);
 		
+		openButton = new IGButton();
+		openButton.setIcon(new ImageIcon(getClass().getResource("hu/openig/editors/res/Open24.gif")));
+		openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doOpen();
+			}
+		});
+		saveButton = new IGButton();
+		saveButton.setIcon(new ImageIcon(getClass().getResource("hu/openig/editors/res/Save24.gif")));
+		saveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doSave();
+			}
+		});
+		
 		initHost();
 		initJoin();
 		
@@ -402,6 +443,9 @@ public class MultiplayerScreen extends JFrame {
 			.addComponent(sep1)
 			.addGroup(
 				gl.createSequentialGroup()
+				.addComponent(openButton)
+				.addComponent(saveButton)
+				.addGap(30)
 				.addComponent(publishGame)
 				.addComponent(joinGame)
 				.addComponent(cancel)
@@ -421,6 +465,8 @@ public class MultiplayerScreen extends JFrame {
 			.addComponent(sep1, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(openButton)
+				.addComponent(saveButton)
 				.addComponent(publishGame)
 				.addComponent(joinGame)
 				.addComponent(cancel)
@@ -537,6 +583,7 @@ public class MultiplayerScreen extends JFrame {
 						InetAddress ia = addrs.nextElement();
 						String ha = ia.getHostAddress();
 						localAddressBox.addItem(ha);
+						localAddresses.add(ia);
 					}
 				}
 			}
@@ -688,6 +735,8 @@ public class MultiplayerScreen extends JFrame {
 	}
 	/** Close the panel. */
 	void doCancel() {
+		commons.joinCallback = null;
+		commons.multiplayer.stopServer();
 		dispose();
 	}
 	/**
@@ -2152,5 +2201,310 @@ public class MultiplayerScreen extends JFrame {
 			playerState.setText(get("multiplayer.settings.not_enough_players"));
 			playerState.setIcon(new ImageIcon(commons.common().warningIcon));
 		}
+	}
+	/**
+	 * Create the multiplayer definition from the GUI state.
+	 * @return the multiplayer definition
+	 */
+	public MultiplayerDefinition createDefinition() {
+		MultiplayerDefinition r = new MultiplayerDefinition();
+		
+		// global definitions
+		
+		r.allowQuickSave = this.allowQuicksave.isSelected();
+		r.allowAutoSave = this.allowAutosave.isSelected();
+		r.allowPause = this.allowPause.isSelected();
+		r.allowCheat = this.allowCheat.isSelected();
+		
+		r.speed = SimulationSpeed.values()[this.simulationSpeedBox.getSelectedIndex()];
+		r.timestep = ((Number)this.timestepSpin.getValue()).intValue();
+		
+		// add galaxy mode
+		
+		r.galaxy = campaigns.get(galaxyBox.getSelectedIndex()).name;
+		r.race = campaigns.get(galaxyRacesBox.getSelectedIndex()).name;
+		r.tech = campaigns.get(technologyDefBox.getSelectedIndex()).name;
+		r.galaxyRandomSurface = galaxyRandomSurface.isSelected();
+		r.galaxyRandomLayout = galaxyRandomLayout.isSelected();
+		r.galaxyCustomPlanets = galaxyCustomPlanets.isSelected();
+		r.galaxyPlanetCount = ((Number)galaxyPlanetCount.getValue()).intValue();
+		
+		r.startLevel = ((Number)technologyLevelStartSpin.getValue()).intValue();
+		r.maxLevel = ((Number)technologyLevelMaxSpin.getValue()).intValue();
+		r.initialDiplomaticRelation = SkirmishDiplomaticRelation.values()[initialRelation.getSelectedIndex()];
+		r.initialDifficulty = Difficulty.values()[initialDifficulty.getSelectedIndex()];
+		
+		// add economy
+		
+		r.initialMoney = ((Number)initialMoney.getValue()).intValue();
+		r.initialPlanets = ((Number)initialPlanets.getValue()).intValue();
+		r.initialPopulation = ((Number)initialPopulation.getValue()).intValue();
+		r.placeColonyHubs = placeColonyHub.isSelected();
+		r.grantColonyShip = grantColonyShip.isSelected();
+		r.grantOrbitalFactory = grantOrbitalFactory.isSelected();
+		r.initialColonyShips = ((Number)colonyShips.getValue()).intValue();
+		r.initialOrbitalFactories = ((Number)orbitalFactories.getValue()).intValue();
+		
+		// add players
+		for (MultiplayerUser mu : playerModel) {
+			r.players.add(mu.copy());
+		}
+		// add victory conditions
+		
+		r.victoryConquest = winConquest.isSelected();
+		r.victoryOccupation = winOccupation.isSelected();
+		r.victoryEconomic = winEconomic.isSelected();
+		r.victoryTechnology = winTechnology.isSelected();
+		r.victorySocial = winSocial.isSelected();
+		
+		r.victoryOccupationPercent = ((Number)winOccupationPercent.getValue()).intValue();
+		r.victoryOccupationTime = ((Number)winOccupationTime.getValue()).intValue();
+		r.victoryEconomicMoney = ((Number)winEconomicMoney.getValue()).intValue();
+		r.victorySocialMorale = ((Number)winSocialMorale.getValue()).intValue();
+		r.victorySocialPlanets = ((Number)winSocialPlanets.getValue()).intValue();
+		
+		return r;
+	}
+	/**
+	 * @return the file filter for multiplayer file
+	 */
+	private FileFilter multiplayerFileFilter() {
+		return new javax.swing.filechooser.FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return get("multiplayer.file_type");
+			}
+			
+			@Override
+			public boolean accept(File f) {
+				return f.getName().endsWith(".mp.xml");
+			}
+		};
+	}
+	/**
+	 * Open an existing multiplayer definition.
+	 */
+	void doOpen() {
+		JFileChooser fc = new JFileChooser(lastDir);
+		fc.setDialogTitle(get("multiplayer.load_file"));
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setAcceptAllFileFilterUsed(true);
+		fc.setFileFilter(multiplayerFileFilter());
+		
+		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File f = fc.getSelectedFile();
+			lastDir = f.getParentFile();
+			doOpenFile(f);
+		}
+	}
+	/**
+	 * Save the current multiplayer definition.
+	 */
+	void doSave() {
+		JFileChooser fc = new JFileChooser(lastDir);
+		fc.setDialogTitle(get("multiplayer.save_file"));
+		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+		fc.setAcceptAllFileFilterUsed(true);
+		fc.setFileFilter(multiplayerFileFilter());
+		
+		if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			File f = fc.getSelectedFile();
+			
+			lastDir = f.getParentFile();
+			doSaveFile(f);
+		}
+	}
+	/**
+	 * Sets a boolean value on the checkbox.
+	 * @param value the source value
+	 * @param cb the target checkbox
+	 */
+	void set(boolean value, JCheckBox cb) {
+		cb.setSelected(value);
+	}
+	/**
+	 * Set an integer value on the spinner.
+	 * @param value the source value
+	 * @param sp the target spinner
+	 */
+	void set(int value, JSpinner sp) {
+		sp.setValue(value);
+	}
+	/**
+	 * Set a string on the combobox based on its index value.
+	 * @param value the source value
+	 * @param cb the target combobox
+	 * @param options the options
+	 */
+	void set(String value, JComboBox<?> cb, List<String> options) {
+		cb.setSelectedIndex(options.indexOf(value));
+	}
+	/**
+	 * Set an enum on the combobox value based on its ordinal value.
+	 * @param <E> the enum type
+	 * @param value the source value
+	 * @param cb the combobox
+	 */
+	<E extends Enum<E>> void set(E value, JComboBox<?> cb) {
+		cb.setSelectedIndex(value.ordinal());
+	}
+	/**
+	 * Load GUI from the definition record.
+	 * @param r the definition record
+	 */
+	void loadFromDefinition(MultiplayerDefinition r) {
+		set(r.allowQuickSave, this.allowQuicksave);
+		set(r.allowAutoSave, this.allowAutosave);
+		set(r.allowPause, this.allowPause);
+		set(r.allowCheat, this.allowCheat);
+		
+		set(r.speed, this.simulationSpeedBox);
+		set(r.timestep, this.timestepSpin);
+		
+		List<String> campaignNames = new ArrayList<>();
+		for (GameDefinition  gd : campaigns) {
+			campaignNames.add(gd.name);
+		}
+		
+		// add galaxy mode
+		
+		set(r.galaxy, galaxyBox, campaignNames);
+		set(r.race, galaxyRacesBox, campaignNames);
+		set(r.tech, technologyDefBox, campaignNames);
+		set(r.galaxyRandomSurface, galaxyRandomSurface);
+		set(r.galaxyRandomLayout, galaxyRandomLayout);
+		set(r.galaxyCustomPlanets, galaxyCustomPlanets);
+		set(r.galaxyPlanetCount, galaxyPlanetCount);
+		
+		set(r.startLevel, technologyLevelStartSpin);
+		set(r.maxLevel, technologyLevelMaxSpin);
+		set(r.initialDiplomaticRelation, initialRelation);
+		set(r.initialDifficulty, initialDifficulty);
+		
+		// add economy
+		
+		set(r.initialMoney, initialMoney);
+		set(r.initialPlanets, initialPlanets);
+		set(r.initialPopulation, initialPopulation);
+		set(r.placeColonyHubs, placeColonyHub);
+		set(r.grantColonyShip, grantColonyShip);
+		set(r.grantOrbitalFactory, grantOrbitalFactory);
+		set(r.initialColonyShips, colonyShips);
+		set(r.initialOrbitalFactories, orbitalFactories);
+		
+		// add players
+		playerModel.clear();
+		playerModel.add(r.players);
+		// add victory conditions
+		
+		set(r.victoryConquest, winConquest);
+		set(r.victoryOccupation, winOccupation);
+		set(r.victoryEconomic, winEconomic);
+		set(r.victoryTechnology, winTechnology);
+		set(r.victorySocial, winSocial);
+		
+		set(r.victoryOccupationPercent, winOccupationPercent);
+		set(r.victoryOccupationTime, winOccupationTime);
+		set(r.victoryEconomicMoney, winEconomicMoney);
+		set(r.victorySocialMorale, winSocialMorale);
+		set(r.victorySocialPlanets, winSocialPlanets);
+		
+	}
+	/**
+	 * Load a multiplayer definition and setup the GUI accordingly.
+	 * @param f the file to load
+	 */
+	void doOpenFile(File f) {
+		try {
+			XElement xmp = XElement.parseXML(f);
+			MultiplayerDefinition def = new MultiplayerDefinition();
+			def.load(xmp, commons.traits);
+			loadFromDefinition(def);
+		} catch (XMLStreamException ex) {
+			Exceptions.add(ex);
+		}
+	}
+	/**
+	 * Save the current definition into the file.
+	 * @param f the target file
+	 */
+	void doSaveFile(File f) {
+		try {
+			MultiplayerDefinition def = createDefinition();
+			XElement xmp = new XElement("multiplayer-definition");
+			def.save(xmp);
+
+			if (!f.getName().contains(".")) {
+				f = new File(f.getParentFile(), f.getName() + ".mp.xml");
+			}
+			
+			xmp.save(f);
+		} catch (IOException ex) {
+			Exceptions.add(ex);
+		}
+	}
+	/**
+	 * Setup the join callback.
+	 */
+	void setupJoinCallback() {
+		commons.joinCallback = new Action1E<MultiplayerUser, IOException>() {
+			@Override
+			public void invoke(MultiplayerUser param1) throws IOException {
+				doHandleJoin(param1);
+			}
+		};
+	}
+	/**
+	 * Handle the join of the user.
+	 * @param mu the multiplayer user
+	 * @throws IOException to indicate error
+	 */
+	void doHandleJoin(MultiplayerUser mu) throws IOException {
+		boolean allJoined = false;
+		for (MultiplayerUser mu0 : playerModel) {
+			if (Objects.equals(mu0.userName, mu.userName)
+					&& Objects.equals(mu0.passphrase, mu.passphrase)) {
+				
+				if (!mu0.changeGroup && mu0.group != mu.group) {
+					ErrorType.JOIN_REJECTED.raise("group changed");
+				}
+				if (!mu0.changeIcon && !Objects.equals(mu0.iconRef, mu.iconRef)) {
+					ErrorType.JOIN_REJECTED.raise("icon changed");
+				}
+				if (!mu0.changeRace && (!Objects.equals(mu0.race, mu.race) || !Objects.equals(mu0.originalId, mu.originalId))) {
+					ErrorType.JOIN_REJECTED.raise("icon changed");
+				}
+				if (!mu0.changeTraits && !Objects.equals(mu0.traits, mu.traits)) {
+					ErrorType.JOIN_REJECTED.raise("icon changed");
+				}
+				
+				mu0.group = mu.group;
+				mu0.iconRef = mu.iconRef;
+				mu0.icon = rl.getImage(mu0.iconRef);
+				mu0.race = mu.race;
+				mu0.originalId = mu.originalId;
+				mu0.joined(true);
+				
+				playerModel.update(mu0);
+			}
+			allJoined |= mu0.ai == SkirmishAIMode.USER | mu0.joined();
+		}
+		if (allJoined) {
+			// start loading the multiplayer map
+			dispose();
+			commons.startGame(createDefinition());
+		}
+	}
+	/**
+	 * Take the current settings and start a server.
+	 */
+	void doPublishGame() {
+		commons.multiplayer.definition = createDefinition();
+		commons.multiplayer.startServer(
+				localAddresses.get(localAddressBox.getSelectedIndex()),
+				Integer.parseInt((String)localPortBox.getSelectedItem()),
+				upnp.isSelected()
+		);
 	}
 }

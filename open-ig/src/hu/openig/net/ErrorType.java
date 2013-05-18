@@ -102,6 +102,14 @@ public enum ErrorType {
 	NOT_RESEARCHING,
 	/** Research prerequisites not met. */
 	PREREQUISITES_NOT_MET,
+	/** No game running. */
+	NO_GAME_RUNNING,
+	/** Cheats are not allowed. */
+	CHEATS_DISABLED,
+	/** No game is available to join. */
+	NO_GAME_AVAILABLE,
+	/** The required user settings were not accepted. */
+	JOIN_REJECTED
 	;
 	/**
 	 * Interprets the message attribute as error code or error name string.

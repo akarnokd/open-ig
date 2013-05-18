@@ -172,8 +172,13 @@ public class DirectGamePlayer implements GameAPI {
 	 */
 	protected Planet checkPlanet(String id) throws ErrorResponse {
 		Planet p = world.planet(id);
-		if (p != null && p.owner == player) {
-			return p;
+		if (p != null) {
+			if (p.owner == player) {
+				return p;
+			}
+			if (player.knowledge(p, PlanetKnowledge.OWNER) >= 0) {
+				ErrorType.NOT_YOUR_PLANET.raise(id);
+			}
 		}
 		ErrorType.UNKNOWN_PLANET.raise(id);
 		return null;

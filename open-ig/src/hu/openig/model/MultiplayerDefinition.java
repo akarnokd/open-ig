@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.SimulationSpeed;
 import hu.openig.net.MessageObject;
 import hu.openig.utils.XElement;
 
@@ -19,6 +20,18 @@ import java.util.List;
  * @author akarnokd, 2013.04.25.
  */
 public class MultiplayerDefinition extends CustomGameDefinition implements MessageObjectIO {
+	/** Allow server quicksaving. */
+	public boolean allowQuickSave;
+	/** Allow server autosave. */
+	public boolean allowAutoSave;
+	/** Allow server pause. */
+	public boolean allowPause;
+	/** Allow cheats. */
+	public boolean allowCheat;
+	/** Base simulation speed. */
+	public SimulationSpeed speed;
+	/** Base timestep. */
+	public int timestep;
 	/** The list of multiplayer users. */
 	public final List<MultiplayerUser> players = new ArrayList<>();
 	/**

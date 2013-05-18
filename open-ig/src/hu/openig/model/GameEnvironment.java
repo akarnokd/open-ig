@@ -9,8 +9,10 @@
 package hu.openig.model;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1E;
 import hu.openig.core.SaveMode;
 
+import java.io.IOException;
 import java.util.Deque;
 
 /**
@@ -109,4 +111,9 @@ public interface GameEnvironment {
 	String version();
 	/** @return the available global traits. */
 	Traits traits();
+	/** @return Is the game in load mode? */
+	boolean isLoading();
+	/** @return The join callback for multiplayer. */
+	Action1E<MultiplayerUser, IOException> joinCallback();
+
 }
