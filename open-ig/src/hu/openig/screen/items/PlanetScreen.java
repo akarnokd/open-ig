@@ -4670,7 +4670,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					u.advanceOnBuilding = u.attackBuilding;
 					u.attackBuilding = null;
 				}
-				
+				u.inMotionPlanning = true;
 				pathsToPlan.add(new PathPlanning(source, cell, u));
 			}
 		}

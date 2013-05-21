@@ -88,14 +88,16 @@ public class WorldStatistics {
 	public WorldStatistics() {
 		Map<String, LongField> fields = new LinkedHashMap<>();
 		for (Field f : getClass().getFields()) {
-			try {
-				LongField lf = new LongField();
-				fields.put(f.getName(), lf);
-				f.set(this, lf);
-			} catch (IllegalArgumentException e) {
-				Exceptions.add(e);
-			} catch (IllegalAccessException e) {
-				Exceptions.add(e);
+			if (LongField.class.isAssignableFrom(f.getType())) {
+				try {
+					LongField lf = new LongField();
+					fields.put(f.getName(), lf);
+					f.set(this, lf);
+				} catch (IllegalArgumentException e) {
+					Exceptions.add(e);
+				} catch (IllegalAccessException e) {
+					Exceptions.add(e);
+				}
 			}
 		}
 		this.fields = Collections.unmodifiableMap(fields);
