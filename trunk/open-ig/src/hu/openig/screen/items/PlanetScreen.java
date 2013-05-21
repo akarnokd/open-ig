@@ -269,8 +269,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	final List<GroundwarGun> guns = new ArrayList<>();
 	/** The user is dragging a selection box. */
 	boolean selectionMode;
-	/** The pathfinding routine. */
-	Pathfinding pathfinding;
 	/** The current animating explosions. */
 	Set<GroundwarExplosion> explosions = new HashSet<>();
 	/** The active rockets. */
@@ -3332,8 +3330,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		weatherOverlay = new WeatherOverlay(new Dimension(640, 480));
 		
-		initPathfinding();
-		
 		addThis();
 	}
 	@Override
@@ -4141,21 +4137,29 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		final GroundwarUnit unit;
 		/** The computed path. */
 		final List<Location> path = new ArrayList<>();
+		/** The player to ignore. */
+		final Player ignore;
 		/**
 		 * Constructor. Initializes the fields.
 		 * @param initial the initial location
 		 * @param goal the goal location
 		 * @param unit the unit
+		 * @param ignore the player units to ignore
 		 */
-		public PathPlanning(Location initial, Location goal, GroundwarUnit unit) {
+		public PathPlanning(
+				Location initial, 
+				Location goal, 
+				GroundwarUnit unit,
+				Player ignore) {
 			this.current = initial;
 			this.goal = goal;
 			this.unit = unit;
+			this.ignore = ignore;
 		}
 
 		@Override
 		public PathPlanning call() {
-			path.addAll(pathfinding.searchApproximate(current, goal));
+			path.addAll(getPathfinding(ignore).searchApproximate(current, goal));
 			return this;
 		}
 		/**
@@ -4197,38 +4201,66 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			selectCommand(null);
 		}
 	}
-	/**
-	 * Initialize the pathfinding functions.
+	/** 
+	 * The default cell-passable test which ignores moving units
+	 * and other units currently doing pathfinding calculation.
 	 */
-	void initPathfinding() {
-		pathfinding = new Pathfinding();
-		pathfinding.isPassable = new Func1<Location, Boolean>() {
-			@Override
-			public Boolean invoke(Location value) {
-				return isPassable(value.x, value.y);
+	final Func1<Location, Boolean> defaultPassable = new Func1<Location, Boolean>() {
+		@Override
+		public Boolean invoke(Location value) {
+			return isPassable(value.x, value.y);
+		}
+	};
+	/**
+	 * The defalt estimator for distance away from the target.
+	 */
+	final Func2<Location, Location, Integer> defaultEstimator = new Func2<Location, Location, Integer>() {
+		@Override
+		public Integer invoke(Location t, Location u) {
+			return (Math.abs(t.x - u.x) + Math.abs(t.y - u.y)) * 1000;
+		}
+	};
+	/** Routine that tells the distance between two neighboring locations. */
+	final Func2<Location, Location, Integer> defaultDistance = new Func2<Location, Location, Integer>() {
+		@Override
+		public Integer invoke(Location t, Location u) {
+			if (t.x == u.x || u.y == t.y) {
+				return 1000;
 			}
-		};
-		pathfinding.estimation = new Func2<Location, Location, Integer>() {
-			@Override
-			public Integer invoke(Location t, Location u) {
-				return (Math.abs(t.x - u.x) + Math.abs(t.y - u.y)) * 1000;
-			}
-		};
-		pathfinding.distance = new Func2<Location, Location, Integer>() {
-			@Override
-			public Integer invoke(Location t, Location u) {
-				if (t.x == u.x || u.y == t.y) {
-					return 1000;
+			return 1414;
+		}
+	};
+	/**
+	 * Computes the distance between any cells.
+	 */
+	final Func2<Location, Location, Integer> defaultTrueDistance = new Func2<Location, Location, Integer>() {
+		@Override
+		public Integer invoke(Location t, Location u) {
+			return (int)(1000 * Math.hypot(t.x - u.x, t.y - u.y));
+		}
+	}; 
+	/**
+	 * Returns a preset pathfinding object with the optional
+	 * ignore player.
+	 * @param ignore the player to ignore
+	 * @return the pathfinding ibject
+	 */
+	Pathfinding getPathfinding(final Player ignore) {
+		Pathfinding pathfinding = new Pathfinding();
+		if (ignore != null) {
+			pathfinding.isPassable = defaultPassable;
+		} else {
+			pathfinding.isPassable = new Func1<Location, Boolean>() {
+				@Override
+				public Boolean invoke(Location value) {
+					return isPassable(value.x, value.y, ignore);
 				}
-				return 1414;
-			}
-		};
-		pathfinding.trueDistance = new Func2<Location, Location, Integer>() {
-			@Override
-			public Integer invoke(Location t, Location u) {
-				return (int)(1000 * Math.hypot(t.x - u.x, t.y - u.y));
-			}
-		};
+			};
+		}
+		pathfinding.estimation = defaultEstimator;
+		pathfinding.distance = defaultDistance;
+		pathfinding.trueDistance = defaultTrueDistance;
+		return pathfinding;
 	}
 	/** The ground war simulation. */
 	void doGroundWarSimulation() {
@@ -4571,15 +4603,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				approachTargetBuilding(u);
 			} else {
 				if (u.attackBuilding != null && u.attackBuilding.isDestroyed()) {
-					stop(u);
 					if (am != null) {
 						move(u, am.x, am.y);
+						u.attackMove = am;
+					} else {
+						stop(u);
 					}
 				} else
 				if (u.attackUnit != null && u.attackUnit.isDestroyed()) {
-					stop(u);
 					if (am != null) {
 						move(u, am.x, am.y);
+						u.attackMove = am;
+					} else {
+						stop(u);
 					}
 				}
 				if ((am != null || u.path.isEmpty()) && directAttackUnits.contains(u.model.type)) {
@@ -4587,17 +4623,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
   					List<GroundwarUnit> targets = unitsInRange(u);
 					if (targets.size() > 0) {
 						attack(u, ModelUtils.random(targets));
+						u.attackMove = am;
 					} else {
 						List<Building> targets2 = buildingsInRange(u);
 						if (targets2.size() > 0) {
 							attack(u, ModelUtils.random(targets2));
+							u.attackMove = am;
 						}
 					}
 					if (u.attackUnit == null && u.attackBuilding == null 
 							&& am != null && u.path.isEmpty()) {
 						if (!am.equals(u.location())) {
-							move(u, am.x, am.y);
-							u.attackMove = am;
+							attackMove(u, am.x, am.y);
 						} else {
 							stop(u);
 						}
@@ -4650,7 +4687,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (currentDistance <= 1.42) {
 			return;
 		}
-		List<Location> neighbors = pathfinding.neighbors.invoke(source);
+		List<Location> neighbors = getPathfinding(null).neighbors.invoke(source);
 		if (!neighbors.isEmpty()) {
 			Location cell = null;
 			double cellDistance = currentDistance;
@@ -4671,7 +4708,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					u.attackBuilding = null;
 				}
 				u.inMotionPlanning = true;
-				pathsToPlan.add(new PathPlanning(source, cell, u));
+				pathsToPlan.add(new PathPlanning(source, cell, u, null));
 			}
 		}
 	}
@@ -4707,7 +4744,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
 					// plot path to the building
 					u.inMotionPlanning = true;
-					pathsToPlan.add(new PathPlanning(ul, buildingNearby(u.attackBuilding, ul), u));
+					pathsToPlan.add(new PathPlanning(ul, 
+							buildingNearby(u.attackBuilding, ul), u, null));
 				} else {
 					// plot path outside the minimum range
 					Location c = buildingNearby(u.attackBuilding, ul);
@@ -4718,7 +4756,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					);
 					
 					u.inMotionPlanning = true;
-					pathsToPlan.add(new PathPlanning(u.location(), c1, u));
+					pathsToPlan.add(new PathPlanning(u.location(), c1, u, null));
 				}
 			}
 		}
@@ -4732,6 +4770,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	Location buildingNearby(Building b, final Location initial) {
 		final Location destination = centerCellOf(b);
 
+		final Pathfinding pathfinding = getPathfinding(null);
+		
 		Comparator<Location> nearestComparator = new Comparator<Location>() {
 			@Override
 			public int compare(Location o1, Location o2) {
@@ -4816,9 +4856,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				u.inMotionPlanning = true;
 				if (u.attackMove == null) {
 					// plot path
-					pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
+					pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u, null));
 				} else {
-					pathsToPlan.add(new PathPlanning(u.location(), u.attackMove, u));
+					pathsToPlan.add(new PathPlanning(u.location(), u.attackMove, u, enemy(u.owner)));
 				}
 			} else {
 				if (u.attackMove == null) {
@@ -4829,7 +4869,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
 						u.path.clear();
 						u.inMotionPlanning = true;
-						pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u));
+						pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u, null));
 					}
 				}
 			}
@@ -5330,7 +5370,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			u.nextMove = null;
 			u.nextRotate = null;
 			u.inMotionPlanning = true;
-			pathsToPlan.add(new PathPlanning(current, goal, u));
+			pathsToPlan.add(new PathPlanning(current, goal, u, u.attackMove != null ? enemy(u.owner) : null));
 		}
 	}
 	/**
@@ -5354,7 +5394,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			u.nextRotate = u.nextMove;
 			
 			// is the next move location still passable?
-			if (!pathfinding.isPassable.invoke(u.nextMove)) {
+			if (!isPassable(u.nextMove.x, u.nextMove.y)) {
 				// trigger replanning
 				repath(u);
 				return;
@@ -6236,7 +6276,42 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		Location lu = u.location();
 		Location lm = Location.of(x, y);
 		u.inMotionPlanning = true;
-		pathsToPlan.add(new PathPlanning(lu, lm, u));
+		pathsToPlan.add(new PathPlanning(lu, lm, u, null));
+	}
+	/**
+	 * Perform an attack move towards the specified location
+	 * and ignore enemy ground units in the path.
+	 * @param u the unit to use for attack move
+	 * @param x the target X coordinate
+	 * @param y the target Y coordinate
+	 */
+	public void attackMove(GroundwarUnit u, int x, int y) {
+		stop(u);
+		u.guard = true;
+		Location lu = u.location();
+		Location lm = Location.of(x, y);
+		u.attackMove = lm;
+		u.inMotionPlanning = true;
+		pathsToPlan.add(new PathPlanning(lu, lm, u, enemy(u.owner)));
+	}
+	/**
+	 * Returns the enemy player to the given player.
+	 * @param p the player
+	 * @return the enemy player
+	 */
+	protected Player enemy(Player p) {
+		// FIXME development patch
+		if (battle == null) {
+			if (planet().owner != p) {
+				return planet().owner;
+			}
+			for (GroundwarUnit u : units) {
+				if (u.owner != p) {
+					return u.owner;
+				}
+			}
+		}
+		return battle.enemy(p);
 	}
 	@Override
 	public void stop(GroundwarGun g) {
@@ -6272,6 +6347,30 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				for (GroundwarUnit u : gunits) {
 					ip &= (!u.path.isEmpty() 
 								&& u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
+				}
+				return ip;
+			}
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Check if the given cell is passable and ignore the units
+	 * of the given player.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param ignore the player units to ignore
+	 * @return true if the place is passable
+	 */
+	public boolean isPassable(int x, int y, Player ignore) {
+		if (surface().placement.canPlaceBuilding(x, y)) {
+			Set<GroundwarUnit> gunits = unitsForPathfinding.get(Location.of(x, y));
+			if (gunits != null) {
+				boolean ip = true;
+				for (GroundwarUnit u : gunits) {
+					ip &= u.owner == ignore
+							|| (!u.path.isEmpty() && u.yieldTTL * 2 < YIELD_TTL) 
+							|| u.inMotionPlanning;
 				}
 				return ip;
 			}
