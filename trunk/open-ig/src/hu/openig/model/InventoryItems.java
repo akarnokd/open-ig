@@ -188,7 +188,7 @@ public class InventoryItems {
 		if (set != null) {
 			for (InventoryItem ii : set) {
 				byId.remove(ii.id);
-				byType.get(ii.type).remove(ii);
+				byType.get(ii.type.id).remove(ii);
 			}
 			return !set.isEmpty();
 		}
@@ -205,7 +205,7 @@ public class InventoryItems {
 		if (set != null) {
 			for (InventoryItem ii : set) {
 				byId.remove(ii.id);
-				byOwner.get(ii.owner).remove(ii);
+				byOwner.get(ii.owner.id).remove(ii);
 			}
 			return !set.isEmpty();
 		}

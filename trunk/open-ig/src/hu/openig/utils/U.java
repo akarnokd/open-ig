@@ -942,5 +942,18 @@ public final class U {
 		}
 		return false;
 	}
-
+	/**
+	 * Returns all fields of the class, including all
+	 * inherited fields.
+	 * @param clazz the class to get fields on
+	 * @return the list of fields
+	 */
+	public static List<Field> allFields(Class<?> clazz) {
+		List<Field> r = new ArrayList<>();
+		while (clazz != null) {
+			r.addAll(Arrays.asList(clazz.getDeclaredFields()));
+			clazz = clazz.getSuperclass();
+		}
+		return r;
+	}
 }

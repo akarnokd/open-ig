@@ -715,8 +715,8 @@ public class World implements ModelLookup {
 					}
 					ii.tag = xinv.get("tag", null);
 					ii.count = xinv.getInt("count");
-					ii.hp = Math.min(xinv.getInt("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
-					ii.shield = xinv.getInt("shield", Math.max(0, ii.shieldMax()));
+					ii.hp = Math.min(xinv.getDouble("hp", getHitpoints(ii.type, ii.owner)), getHitpoints(ii.type, ii.owner));
+					ii.shield = xinv.getDouble("shield", Math.max(0, ii.shieldMax()));
 	
 					ii.nickname = xinv.get("nickname", null);
 					ii.nicknameIndex = xinv.getInt("nickname-index", 0);
@@ -1688,7 +1688,7 @@ public class World implements ModelLookup {
 				pii.tag = xpii.get("tag", null);
 				pii.count = xpii.getInt("count");
 				pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
-				pii.shield = xpii.getInt("shield", Math.max(0, pii.shieldMax()));
+				pii.shield = xpii.getDouble("shield", Math.max(0, pii.shieldMax()));
 
 				pii.nickname = xpii.get("nickname", null);
 				pii.nicknameIndex = xpii.getInt("nickname-index", 0);
@@ -1941,7 +1941,7 @@ public class World implements ModelLookup {
 				loadInventorySlots(fii, xfii);
 				
 				int shieldMax = Math.max(0, fii.shieldMax());
-				fii.shield = Math.min(shieldMax, xfii.getInt("shield", shieldMax));
+				fii.shield = Math.min(shieldMax, xfii.getDouble("shield", shieldMax));
 				fii.hp = Math.min(xfii.getDouble("hp", getHitpoints(fii.type, fii.owner)), getHitpoints(fii.type, fii.owner));
 				if (f.inventory.isEmpty()) {
 					p.fleets.put(f, FleetKnowledge.FULL);
@@ -2637,10 +2637,12 @@ public class World implements ModelLookup {
 	 * @return the relation or null if no two-sided relation exists
 	 */
 	public DiplomaticRelation getRelation(Player first, Player second) {
-		for (DiplomaticRelation dr : relations) {
-			if ((dr.first.equals(first.id) && dr.second.equals(second.id)) 
-					|| (dr.first.equals(second.id) && dr.second.equals(first.id))) {
-				return dr;
+		if (first != null && second != null) {
+			for (DiplomaticRelation dr : relations) {
+				if ((dr.first.equals(first.id) && dr.second.equals(second.id)) 
+						|| (dr.first.equals(second.id) && dr.second.equals(first.id))) {
+					return dr;
+				}
 			}
 		}
 		return null;
