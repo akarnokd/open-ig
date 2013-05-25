@@ -959,7 +959,7 @@ public class XElement {
 	 * @param o the object, non-null
 	 */
 	public void saveFields(Object o) {
-		for (Field f : o.getClass().getDeclaredFields()) {
+		for (Field f : U.allFields(o.getClass())) {
 			if (f.getType() == Boolean.TYPE
 					|| f.getType() == Byte.TYPE
 					|| f.getType() == Short.TYPE
@@ -983,7 +983,7 @@ public class XElement {
 	 * @param o the object, non-null
 	 */
 	public void loadFields(Object o) {
-		for (Field f : o.getClass().getDeclaredFields()) {
+		for (Field f : U.allFields(o.getClass())) {
 			try {
 				if (f.getType() == Boolean.TYPE) {
 					f.set(o, getBoolean(f.getName(), (Boolean)f.get(o)));

@@ -1548,8 +1548,11 @@ public class StarmapScreen extends ScreenBase {
 	 * @return true if should be shared
 	 */
 	boolean sharedRadar(Owned o) {
-		DiplomaticRelation dr = world().getRelation(player(), o.owner());
-		return dr != null && dr.value >= world().params().radarShareLimit() && !dr.alliancesAgainst.isEmpty();
+		if (o.owner() != null) {
+			DiplomaticRelation dr = world().getRelation(player(), o.owner());
+			return dr != null && dr.value >= world().params().radarShareLimit() && !dr.alliancesAgainst.isEmpty();
+		}
+		return false;
 	}
 	/**
 	 * Draw the exploration limit rectangle borders.
