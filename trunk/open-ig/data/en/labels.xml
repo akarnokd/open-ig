@@ -3246,6 +3246,12 @@
 	<entry key='multiplayer.settings.add_user'>Add</entry>
 	<entry key='multiplayer.settings.user_type'>Player type:</entry>
 	<entry key='multiplayer.settings.traits_long'>Traits:</entry>
+	<entry key='multiplayer.load_file'>Load multiplayer definition</entry>
+	<entry key='multiplayer.file_type'>Multiplayer definition file (*.mp.xml)</entry>
+	<entry key='multiplayer.save_file'>Save multiplayer definition</entry>
+	<entry key='multiplayer.host_game'>Host game</entry>
+	<entry key='multiplayer.settings.setup'>Setup game</entry>
+	<entry key='multiplayer.join_game'>Join game</entry>
 
 	<entry key=""></entry>
 	<entry key=""></entry>

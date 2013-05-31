@@ -85,4 +85,11 @@ public class ErrorResponse extends IOException {
 		}
 		return null;
 	}
+	/**
+	 * Returns the error code enum and the message.
+	 * @return the text representation of this exception
+	 */
+	public String getText() {
+		return code + ": " + getMessage();
+	}
 }

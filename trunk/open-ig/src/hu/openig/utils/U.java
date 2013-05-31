@@ -951,7 +951,7 @@ public final class U {
 	public static List<Field> allFields(Class<?> clazz) {
 		List<Field> r = new ArrayList<>();
 		while (clazz != null) {
-			r.addAll(Arrays.asList(clazz.getDeclaredFields()));
+			r.addAll(Arrays.asList(clazz.getFields()));
 			clazz = clazz.getSuperclass();
 		}
 		return r;

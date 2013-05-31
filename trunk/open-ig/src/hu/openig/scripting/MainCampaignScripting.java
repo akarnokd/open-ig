@@ -1307,4 +1307,23 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			m.onLoaded();
 		}
 	}
+	@Override
+	public boolean mayPlayerImproveDefenses(Player player) {
+		return world.level >= 3 || !"Garthog".equals(player.id);
+	}
+	@Override
+	public int playerPopulationGrowthOverride(Planet planet, int simulatorValue) {
+		if ("Garthog".equals(planet.owner.id) && world.level < 3) {
+			return Math.min(planet.population + 50, simulatorValue);
+		}
+		return simulatorValue;
+	}
+	@Override
+	public int playerTaxIncomeOverride(Planet planet, int simulatorValue) {
+		if ("Garthog".equals(planet.owner.id) && world.level < 3) {
+			return Math.min(10000, simulatorValue);
+		}
+		return simulatorValue;
+	}
+	
 }

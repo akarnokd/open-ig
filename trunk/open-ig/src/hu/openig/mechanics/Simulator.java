@@ -467,7 +467,7 @@ public final class Simulator {
 				nextPopulation += ((nextPopulation - planet.population) * populationGrowthModifier * planetTypeModifier);
 			}
 			
-			planet.population = (int)nextPopulation;
+			planet.population = world.scripting.playerPopulationGrowthOverride(planet, (int)nextPopulation);
 			
 			double moneyModifier = 1;
 			t = planet.owner.traits.trait(TraitKind.TAX);
@@ -476,8 +476,9 @@ public final class Simulator {
 			}
 			
 			planet.tradeIncome = (int)(tradeIncome * multiply * moneyModifier);
-			planet.taxIncome = (int)(
+			int taxIncomeSim = (int)(
 					 taxCompensation * moneyModifier * planet.population * planet.morale * planet.tax.percent / 10000);
+			planet.taxIncome = world.scripting.playerTaxIncomeOverride(planet, taxIncomeSim); 
 
 			planet.owner.addMoney(planet.tradeIncome + planet.taxIncome);
 			

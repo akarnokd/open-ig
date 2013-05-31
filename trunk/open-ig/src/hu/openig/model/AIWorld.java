@@ -108,6 +108,8 @@ public class AIWorld {
 	public final Set<String> colonizationTargets = new LinkedHashSet<>();
 	/** Does the user have diplomacy room? */
 	public boolean hasDiplomacyRoom;
+	/** Allow the deployment of more defenses? */
+	public boolean mayImproveDefenses;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -132,6 +134,7 @@ public class AIWorld {
 		} else {
 			mayConquer = true;
 		}
+		mayImproveDefenses = player.world.scripting.mayPlayerImproveDefenses(player);
 		
 		inventory.putAll(player.inventory);
 		

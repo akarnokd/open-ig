@@ -101,11 +101,13 @@ public class StaticDefensePlanner extends Planner {
 		if (planet.statistics.constructing) {
 			return false;
 		}
-//		if (planet.planet.id.equals("Centronom")) {
-//			System.out.println();
-//		}
+		if (!world.mayImproveDefenses) {
+			return false;
+		}
 		
-		if (world.autobuildEconomyFirst && p == world.mainPlayer && !isEconomyBuilt(planet)) {
+		if (world.autobuildEconomyFirst 
+				&& p == world.mainPlayer 
+				&& !isEconomyBuilt(planet)) {
 			return false;
 		}
 		
