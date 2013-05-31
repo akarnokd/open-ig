@@ -9,10 +9,10 @@
 package hu.openig.screen;
 
 import hu.openig.core.Func1;
-import hu.openig.model.GameAPI;
-import hu.openig.model.GameAsyncAPI;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.MultiplayerDefinition;
+import hu.openig.model.RemoteGameAPI;
+import hu.openig.model.RemoteGameAsyncAPI;
 import hu.openig.multiplayer.MultiplayerSession;
 import hu.openig.multiplayer.RemoteGameAsyncClient;
 import hu.openig.multiplayer.RemoteGameClient;
@@ -59,9 +59,11 @@ public class MultiplayerContext {
 	/** The messaging client. */
 	protected MessageClient client;
 	/** The remote game API. */
-	protected GameAPI remoteAPI;
+	public RemoteGameAPI remoteAPI;
 	/** The remote asynchronous API. */
-	protected GameAsyncAPI remoteAsyncAPI;
+	public RemoteGameAsyncAPI remoteAsyncAPI;
+	/** The remote session id after the login. */
+	public String remoteSessionId;
 	/**
 	 * Costructor, stores the game environment.
 	 * @param env the environment
@@ -173,6 +175,7 @@ public class MultiplayerContext {
 			
 			remoteAPI = new RemoteGameClient(client);
 			remoteAsyncAPI = new RemoteGameAsyncClient(client);
+			remoteSessionId = null;
 			
 			client.connect();
 		} catch (IOException ex) {
@@ -191,6 +194,7 @@ public class MultiplayerContext {
 			}
 			remoteAPI = null;
 			remoteAsyncAPI = null;
+			remoteSessionId = null;
 		}
 	}
 }

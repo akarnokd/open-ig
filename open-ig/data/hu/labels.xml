@@ -3282,6 +3282,12 @@
 	<entry key='multiplayer.settings.too_many_you'>Csak egy szervező játékos lehet.</entry>
 	<entry key='multiplayer.settings.joined'>Aktív</entry>
 	<entry key='multiplayer.settings.cheat'>Csalások</entry>
+	<entry key='multiplayer.load_file'>Többjátékos definíció betöltése</entry>
+	<entry key='multiplayer.file_type'>Többjátékos definíció (*.mp.xml)</entry>
+	<entry key='multiplayer.save_file'>Többjátékos definíció mentése</entry>
+	<entry key='multiplayer.host_game'>Játék szervezése</entry>
+	<entry key='multiplayer.settings.setup'>Játék beállítása</entry>
+	<entry key='multiplayer.join_game'>Csatlakozás játékhoz</entry>
 
 	<entry key=""></entry>
 	<entry key=""></entry>

@@ -67,4 +67,27 @@ public interface GameScripting extends GameScriptingEvents {
 	 * @return true if attack is allowed
 	 */
 	boolean mayPlayerAttack(Player player);
+	/**
+	 * Script modifier to prevent the AI from building additional
+	 * space and ground defenses.
+	 * @param player the target player
+	 * @return true if the AI is allowed to build defenses.
+	 */
+	boolean mayPlayerImproveDefenses(Player player);
+	/**
+	 * Modify the population growth
+	 * numbers for the given player and planet.
+	 * @param planet the target planet 
+	 * @param simulatorValue the new population value as computed by the simulator.
+	 * The current value is still in the planet record
+	 * @return the modified population delta.
+	 */
+	int playerPopulationGrowthOverride(Planet planet, int simulatorValue);
+	/**
+	 * Modify the tax income for the given planet.
+	 * @param planet the target planet 
+	 * @param simulatorValue the tax income as computed by the simulator
+	 * @return the modified tax income
+	 */
+	int playerTaxIncomeOverride(Planet planet, int simulatorValue);
 }

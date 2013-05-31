@@ -346,4 +346,16 @@ public class EmptyScripting implements GameScripting {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean mayPlayerImproveDefenses(Player player) {
+		return true;
+	}
+	@Override
+	public int playerPopulationGrowthOverride(Planet planet, int simulatorValue) {
+		return simulatorValue;
+	}
+	@Override
+	public int playerTaxIncomeOverride(Planet planet, int simulatorValue) {
+		return simulatorValue;
+	}
 }
