@@ -3252,9 +3252,10 @@
 	<entry key='multiplayer.host_game'>Host game</entry>
 	<entry key='multiplayer.settings.setup'>Setup game</entry>
 	<entry key='multiplayer.join_game'>Join game</entry>
+	<entry key='multiplayer.error'>Multiplayer Error</entry>
 
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="multiplayer.error.connect_game">Failed to connect to a game: %s</entry>
+	<entry key="multiplayer.settings.host_player">Host</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

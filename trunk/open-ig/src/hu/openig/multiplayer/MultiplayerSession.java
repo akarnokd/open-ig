@@ -174,7 +174,8 @@ public class MultiplayerSession implements RemoteGameAPI {
 		user.iconRef = u.iconRef;
 		user.race = u.race;
 		user.originalId = u.originalId;
-		user.traits.replace(u.traits);
+		user.traits.clear();
+		user.traits.addAll(u.traits);
 	}
 	@Override
 	public MultiplayerGameSetup join() throws IOException {

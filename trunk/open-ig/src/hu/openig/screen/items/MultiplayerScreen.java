@@ -35,6 +35,7 @@ import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -88,6 +89,8 @@ public class MultiplayerScreen extends JFrame {
 	private IGButton setupGame;
 	/** Connect to game button. */
 	private IGButton connectGame;
+	/** UI component. */
+	private IGButton openButton;
 	/**
 	 * Constructor. Initializes the sceen.
 	 * @param commons the commons object
@@ -240,6 +243,15 @@ public class MultiplayerScreen extends JFrame {
 			}
 		});
 
+		openButton = new IGButton();
+		openButton.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Open24.gif")));
+		openButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doOpen();
+			}
+		});
+
 		ActionListener localEditAction = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -297,7 +309,11 @@ public class MultiplayerScreen extends JFrame {
 					.addComponent(upnpSettings)
 				)
 			)
-			.addComponent(setupGame)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(setupGame)
+				.addComponent(openButton)
+			)
 		);
 		
 		gl.setVerticalGroup(
@@ -314,7 +330,11 @@ public class MultiplayerScreen extends JFrame {
 				.addComponent(upnp)
 				.addComponent(upnpSettings)
 			)
-			.addComponent(setupGame)
+			.addGroup(
+				gl.createParallelGroup(Alignment.CENTER)
+				.addComponent(setupGame)
+				.addComponent(openButton)
+			)
 		);
 		enableSetupGame();
 	}
@@ -368,10 +388,10 @@ public class MultiplayerScreen extends JFrame {
 		}
 
 		JLabel joinUserNameLabel = createLabel("multiplayer.settings.join_user_name");
-		joinUserName = new JTextField();
+		joinUserName = new JTextField(config.joinUserName);
 		joinUserName.setFont(fontMedium);
 		JLabel joinPassphraseLabel = createLabel("multiplayer.settings.join_passphrase");
-		joinPassphrase = new JTextField();
+		joinPassphrase = new JTextField(config.joinPassphrase);
 		joinPassphrase.setFont(fontMedium);
 		
 		connectGame = new IGButton(get("multiplayer.settings.connect"));
@@ -550,6 +570,7 @@ public class MultiplayerScreen extends JFrame {
 						public void error(IOException ex) {
 							if (ex instanceof ErrorResponse) {
 								errorDialog(((ErrorResponse)ex).getText());
+								Exceptions.add(ex);
 							} else {
 								Exceptions.add(ex);
 							}
@@ -558,6 +579,8 @@ public class MultiplayerScreen extends JFrame {
 			);
 		} catch (UnknownHostException ex) {
 			errorDialog(get("multiplayer.error.unknown_host"));
+		} catch (IOException ex) {
+			errorDialog(format("multiplayer.error.connect_game", ex.toString()));
 		}
 	}
 	/**
@@ -585,6 +608,7 @@ public class MultiplayerScreen extends JFrame {
 			public void error(IOException ex) {
 				if (ex instanceof ErrorResponse) {
 					errorDialog(((ErrorResponse)ex).getText());
+					Exceptions.add(ex);
 				} else {
 					Exceptions.add(ex);
 				}
@@ -595,6 +619,14 @@ public class MultiplayerScreen extends JFrame {
 	 * Setup the game.
 	 */
 	void doSetupGame() {
+		MultiplayerSetupScreen mpss = prepareSetupScreen();
+		dispose();
+		mpss.setVisible(true);
+	}
+	/**
+	 * @return the prepared but invisible setup screen
+	 */
+	MultiplayerSetupScreen prepareSetupScreen() {
 		InetAddress serverAddress = localAddresses.get(localAddressBox.getSelectedIndex());
 		String sp = (String)localPortBox.getSelectedItem();
 		int serverPort = Integer.parseInt(sp);
@@ -608,9 +640,19 @@ public class MultiplayerScreen extends JFrame {
 			config.hostPorts.add(sp);
 		}
 		
-		MultiplayerSetupScreen mpss = new MultiplayerSetupScreen(commons, serverAddress, serverPort, serverUPnP);
+		MultiplayerSetupScreen mpss = new MultiplayerSetupScreen(commons, 
+				serverAddress, serverPort, serverUPnP);
 		mpss.setLocationRelativeTo(MultiplayerScreen.this);
-		dispose();
-		mpss.setVisible(true);
+		return mpss;
+	}
+	/**
+	 * Open an existing multiplayer definition.
+	 */
+	void doOpen() {
+		MultiplayerSetupScreen mpss = prepareSetupScreen();
+		if (mpss.doOpen()) {
+			dispose();
+			mpss.setVisible(true);
+		}
 	}
 }

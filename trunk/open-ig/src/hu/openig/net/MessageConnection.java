@@ -100,9 +100,9 @@ public class MessageConnection implements Runnable, Closeable {
 	 */
 	public void send(Object requestMessage, MessageSerializable responseMessage) throws IOException {
 		checkRequest(requestMessage);
-		messages.remove(0);
 		responseMessage.save(writer);
 		writer.flush();
+		messages.remove(0);
 	}
 	/**
 	 * Respond with an error code and message.
@@ -142,9 +142,9 @@ public class MessageConnection implements Runnable, Closeable {
 	 */
 	public void send(Object requestMessage, CharSequence responseMessage) throws IOException {
 		checkRequest(requestMessage);
-		messages.remove(0);
 		writer.append(responseMessage);
 		writer.flush();
+		messages.remove(0);
 	}
 	/**
 	 * Sets the message handler.
