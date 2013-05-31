@@ -1013,7 +1013,7 @@ public class XElement {
 					f.set(o, get(f.getName(), (String)f.get(o)));
 				}
 				if (f.getType().isEnum()) {
-					String e = get(f.getName());
+					String e = get(f.getName(), null);
 					for (Object o2 : f.getType().getEnumConstants()) {
 						if (o2 instanceof Enum<?>) {
 							Enum<?> e2 = (Enum<?>) o2;

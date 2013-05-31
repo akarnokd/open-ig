@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.net.ErrorType;
+import hu.openig.net.MessageObject;
 import hu.openig.net.MessageSerializable;
 
 import java.io.IOException;
@@ -21,6 +23,10 @@ import java.io.IOException;
 public abstract class DeferredCall extends DeferredTransform<MessageObjectIO> {
 	@Override
 	protected final MessageSerializable transform(MessageObjectIO intermediate) throws IOException {
-		return intermediate.toMessage();
+		MessageObject message = intermediate.toMessage();
+		if (message == null) {
+			ErrorType.TO_MESSAGE_NOT_IMPLEMENTED.raise();
+		}
+		return message;
 	}
 }

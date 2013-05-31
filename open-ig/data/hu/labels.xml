@@ -3288,9 +3288,10 @@
 	<entry key='multiplayer.host_game'>Játék szervezése</entry>
 	<entry key='multiplayer.settings.setup'>Játék beállítása</entry>
 	<entry key='multiplayer.join_game'>Csatlakozás játékhoz</entry>
+	<entry key='multiplayer.error'>Többjátékos hiba</entry>
 
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="multiplayer.error.connect_game">Nem sikerült csatlakozni a játékhoz: %s</entry>
+	<entry key="multiplayer.settings.host_player">Szervező</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

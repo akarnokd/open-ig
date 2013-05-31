@@ -168,19 +168,20 @@ public class MultiplayerContext {
 	 * Establish a connection to the remote client.
 	 * @param remoteAddress the remote address
 	 * @param remotePort the remote port
+	 * @throws IOException if an error occurs
 	 */
-	public void startClient(InetAddress remoteAddress, int remotePort) {
-		try {
-			client = new MessageClient(remoteAddress, remotePort);
-			
-			remoteAPI = new RemoteGameClient(client);
-			remoteAsyncAPI = new RemoteGameAsyncClient(client);
-			remoteSessionId = null;
-			
-			client.connect();
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		}
+	public void startClient(InetAddress remoteAddress, int remotePort) throws IOException {
+		MessageClient client = new MessageClient(remoteAddress, remotePort);
+		
+		RemoteGameClient remoteAPI = new RemoteGameClient(client);
+		RemoteGameAsyncClient remoteAsyncAPI = new RemoteGameAsyncClient(client);
+		
+		client.connect();
+		
+		this.client = client;
+		this.remoteSessionId = null;
+		this.remoteAPI = remoteAPI;
+		this.remoteAsyncAPI = remoteAsyncAPI;
 	}
 	/**
 	 * Stop the remote client.

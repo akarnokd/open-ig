@@ -109,7 +109,9 @@ public enum ErrorType {
 	/** No game is available to join. */
 	NO_GAME_AVAILABLE,
 	/** The required user settings were not accepted. */
-	JOIN_REJECTED
+	JOIN_REJECTED,
+	/** The toMessage of a MessageObjectIO returned null. */
+	TO_MESSAGE_NOT_IMPLEMENTED
 	;
 	/**
 	 * Interprets the message attribute as error code or error name string.
