@@ -53,6 +53,9 @@ import hu.openig.render.TextRenderer;
 import hu.openig.screen.api.EquipmentScreenAPI;
 import hu.openig.screen.api.ResearchProductionAnimation;
 import hu.openig.sound.Sounds;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
@@ -1202,5 +1205,22 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public void startGame(MultiplayerDefinition game) {
 		// TODO implement
+	}
+	/**
+	 * Check if the mouse event is a panning event.
+	 * @param e the event
+	 * @return true if panning event
+	 */
+	public boolean isPanningEvent(UIMouse e) {
+		return (e.has(Button.RIGHT) && !config.classicControls && !e.has(Modifier.CTRL))
+				|| (e.has(Button.MIDDLE) && config.classicControls);
+	}
+	@Override
+	public <T> Future<T> schedule(Callable<T> call) {
+		return pool.submit(call);
+	}
+	@Override
+	public Future<?> schedule(Runnable run) {
+		return pool.submit(run);
 	}
 }

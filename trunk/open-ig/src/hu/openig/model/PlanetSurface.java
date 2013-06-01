@@ -891,4 +891,96 @@ public class PlanetSurface {
 			return result;
 		}
 	}
+	/**
+	 * Return a building instance at the specified location.
+	 * @param loc the location
+	 * @return the building object or null
+	 */
+	public Building getBuildingAt(Location loc) {
+		SurfaceEntity se = buildingmap.get(loc);
+		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+			return se.building;
+		}
+		return null;
+	}
+	/**
+	 * Compute the bounding rectangle of the rendered building object.
+	 * @param loc the location to look for a building.
+	 * @return the bounding rectangle or null if the target does not contain a building
+	 */
+	public Rectangle getBoundingRect(Location loc) {
+		SurfaceEntity se = buildingmap.get(loc);
+		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+			int a0 = loc.x - se.virtualColumn;
+			int b0 = loc.y + se.virtualRow;
+			
+			int x = baseXOffset + Tile.toScreenX(a0, b0);
+			int y = baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
+			
+			return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
+		}
+		return null;
+	}
+	/**
+	 * Returns the bounding rectangle of the building in non-scaled screen coordinates.
+	 * @param b the building to test
+	 * @return the bounding rectangle
+	 */
+	public Rectangle buildingRectangle(Building b) {
+		Rectangle r = b.rectangle();
+		r.x += baseXOffset;
+		r.y += baseYOffset;
+		return r;
+	}
+	/**
+	 * Returns the bounding rectangle of the given surface feature in non-scaled screen coordinates.
+	 * @param f the surface feature
+	 * @return the bounding rectangle
+	 */
+	public Rectangle featureRectangle(SurfaceFeature f) {
+		int a0 = f.location.x;
+		int b0 = f.location.y;
+		int x = baseXOffset + Tile.toScreenX(a0, b0);
+		int y = baseYOffset + Tile.toScreenY(a0, b0 - f.tile.height + 1) + 27;
+		return new Rectangle(x, y - f.tile.imageHeight, f.tile.imageWidth, f.tile.imageHeight);
+	}
+	/**
+	 * Returns the screen coordinates of the center of the given location (without offset).
+	 * @param loc the surface coordinates
+	 * @return the screen coordinates
+	 */
+	public Point center(Location loc) {
+		return new Point(Tile.toScreenX(loc.x, loc.y) + 28, 
+				Tile.toScreenY(loc.x, loc.y) + 14);
+	}
+	/**
+	 * Returns the screen coordinates of the center of the given location (without offset).
+	 * @param x the surface X coordinate
+	 * @param y the surface Y coordinate
+	 * @return the screen coordinates
+	 */
+	public Point center(double x, double y) {
+		return new Point((int)(Tile.toScreenX(x, y) + 28), 
+				(int)(Tile.toScreenY(x, y) + 14));
+	}
+	/**
+	 * Returns the screen coordinates of the center of the given location (with offset).
+	 * @param loc the surface coordinates
+	 * @return the screen coordinates
+	 */
+	public Point centerOffset(Location loc) {
+		return new Point(baseXOffset + Tile.toScreenX(loc.x, loc.y) + 28, 
+				baseYOffset + Tile.toScreenY(loc.x, loc.y) + 14);
+		
+	}
+	/**
+	 * Returns the screen coordinates of the center of the given location (with offset).
+	 * @param x the surface X coordinate
+	 * @param y the surface Y coordinate
+	 * @return the screen coordinates
+	 */
+	public Point centerOffset(double x, double y) {
+		return new Point((int)(baseXOffset + Tile.toScreenX(x, y) + 28), 
+				(int)(baseYOffset + Tile.toScreenY(x, y) + 14));
+	}
 }

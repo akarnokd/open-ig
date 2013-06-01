@@ -2385,6 +2385,15 @@ public class World implements ModelLookup {
 				matrix.put(Pair.of(a, e), v);
 			}
 		}
+		
+		for (ExplosionType et : ExplosionType.values()) {
+			BufferedImage img = rl.getImage(et.image);
+			battle.groundExplosions.put(et, ImageUtils.splitByWidth(img, img.getWidth() / et.frames));
+		}
+		
+		BufferedImage rimg = rl.getImage("inventions/weapons/vehicles/rocket_matrix");
+		battle.groundRocket = ImageUtils.split(rimg, rimg.getWidth() / 16, rimg.getHeight() / 3);
+
 	}
 	/**
 	 * Load a list of efficiency settings from the given parent XML node.

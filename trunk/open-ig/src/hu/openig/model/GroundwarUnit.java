@@ -9,7 +9,10 @@
 package hu.openig.model;
 
 import hu.openig.core.Location;
+import hu.openig.utils.U;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
@@ -157,5 +160,75 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	 */
 	public double damage() {
 		return model.damage(owner);
+	}
+	/**
+	 * Check if the given other unit is within the range of this unit.
+	 * @param other the other unit
+	 * @param range the maximum range
+	 * @return true if within that range
+	 */
+	public boolean inRange(GroundwarUnit other, double range) {
+		return Math.hypot(other.x - x, other.y - y) <= range;
+	}
+	/**
+	 * Check if the given building is within the given range of
+	 * this unit.
+	 * @param b the building to check
+	 * @param range the maximum range
+	 * @return true if within the range
+	 */
+	public boolean inRange(Building b, double range) {
+		int bx = b.location.x;
+		int bx2 = bx + b.width() - 1;
+		int by = b.location.y;
+		int by2 = by - b.height() + 1;
+		
+		if (Math.hypot(x - bx, y - by) <= range) {
+			return true;
+		} else
+		if (Math.hypot(x - bx2, y - by) <= range) {
+			return true;
+		} else
+		if (Math.hypot(x - bx, y - by2) <= range) {
+			return true;
+		} else
+		if (Math.hypot(x - bx2, y - by2) <= range) {
+			return true;
+		} else
+		if (x >= bx && x <= bx2 && (U.within(y - by, 0, range) || U.within(by2 - y, 0, range))) {
+			return true;
+		} else
+		if (y <= by && y >= by2 && (U.within(bx - x, 0, range) || U.within(x - bx2, 0, range))) {
+			return true;
+		}
+		return false; 
+	}
+	/**
+	 * Returns the bounding rectangle in screen coordinates (without offset).
+	 * @return the rectangle with screen coordinates
+	 */
+	public Rectangle rectangle() {
+		int px = (int)Tile.toScreenX(x, y);
+		int py = (int)Tile.toScreenY(x, y) + 27 - model.height;
+		return new Rectangle(px, py, model.width, model.height);
+	}
+	/**
+	 * Returns the top-left point of the bounding rectangle
+	 * in screen coordinates (without offset).
+	 * @return the top-left point in screen coordinates
+	 */
+	public Point position() {
+		int px = (int)Tile.toScreenX(x, y);
+		int py = (int)Tile.toScreenY(x, y) + 27 - model.height;
+		return new Point(px, py);
+	}
+	/**
+	 * Returns the center of the bounding rectangle in screen coordinates (without offset).
+	 * @return the center point with screen coordinates
+	 */
+	public Point center() {
+		int px = (int)Tile.toScreenX(x, y);
+		int py = (int)Tile.toScreenY(x, y) + 27 - model.height;
+		return new Point(px + model.width / 2, py + model.height / 2);
 	}
 }

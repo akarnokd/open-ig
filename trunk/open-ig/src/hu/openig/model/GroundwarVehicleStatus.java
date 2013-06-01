@@ -16,7 +16,7 @@ import java.util.List;
  * A ground battle vehicle.
  * @author akarnokd, 2013.05.02.
  */
-public class GroundBattleVehicle extends GroundBattleUnit {
+public class GroundwarVehicleStatus extends GroundwarUnitStatus {
 	/** Vehicle hitpoints.*/
 	public double hp;
 	/** Vehicle maximum hitpoints. */

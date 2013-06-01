@@ -10,6 +10,8 @@ package hu.openig.model;
 
 import hu.openig.core.Location;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 
@@ -328,5 +330,30 @@ public class Building implements HasLocation {
 		upgradeLevel = st.upgradeLevel;
 		enabled = st.enabled;
 		repairing = st.repairing;
+	}
+	/**
+	 * Returns the bounding rectangle of this building (without offset).
+	 * @return the bounding rectangle 
+	 */
+	public Rectangle rectangle() {
+		int a0 = location.x;
+		int b0 = location.y;
+		int x = Tile.toScreenX(a0, b0);
+		int y = Tile.toScreenY(a0, b0 - tileset.normal.height + 1) + 27;
+		
+		return new Rectangle(x, y - tileset.normal.imageHeight, 
+				tileset.normal.imageWidth, tileset.normal.imageHeight);
+
+	}
+	/**
+	 * Returns the center of the footprint's bounding rectangle (without offset).
+	 * @return the point
+	 */
+	public Point center() {
+		double cx = location.x + width() / 2d;
+		double cy = location.y - height() / 2d;
+		
+		return new Point((int)(Tile.toScreenX(cx, cy) + 28), 
+				(int)(Tile.toScreenY(cx, cy) + 14));
 	}
 }

@@ -19,7 +19,7 @@ import java.util.List;
  * The basic ground battle unit status.
  * @author akarnokd, 2013.05.02.
  */
-public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactory<GroundBattleUnit> {
+public class GroundwarUnitStatus implements MessageObjectIO, MessageArrayItemFactory<GroundwarUnitStatus> {
 	/** Object name. */
 	public static final String OBJECT_NAME = "GROUND_UNIT";
 	/** Array name. */
@@ -49,8 +49,8 @@ public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactor
 		return null;
 	}
 	@Override
-	public GroundBattleUnit invoke() {
-		return new GroundBattleUnit();
+	public GroundwarUnitStatus invoke() {
+		return new GroundwarUnitStatus();
 	}
 	@Override
 	public String arrayName() {
@@ -65,10 +65,10 @@ public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactor
 	 * @param src the sequence
 	 * @return the message array
 	 */
-	public static MessageArray toArray(Iterable<? extends GroundBattleUnit> src) {
+	public static MessageArray toArray(Iterable<? extends GroundwarUnitStatus> src) {
 		MessageArray ma = new MessageArray(ARRAY_NAME);
 		
-		for (GroundBattleUnit u : src) {
+		for (GroundwarUnitStatus u : src) {
 			ma.add(u.toMessage());
 		}
 		
@@ -79,11 +79,11 @@ public class GroundBattleUnit implements MessageObjectIO, MessageArrayItemFactor
 	 * @param ma the message array
 	 * @return the list of ground units
 	 */
-	public static List<GroundBattleUnit> fromArray(MessageArray ma) {
-		List<GroundBattleUnit> result = new ArrayList<>();
+	public static List<GroundwarUnitStatus> fromArray(MessageArray ma) {
+		List<GroundwarUnitStatus> result = new ArrayList<>();
 		
 		for (MessageObject o : ma.objects()) {
-			GroundBattleUnit u = new GroundBattleUnit();
+			GroundwarUnitStatus u = new GroundwarUnitStatus();
 			u.fromMessage(o);
 			result.add(u);
 		}

@@ -1834,7 +1834,7 @@ public class StarmapScreen extends ScreenBase {
 		switch (e.type) {
 		case MOVE:
 		case DRAG:
-			if (panning || isPanningEvent(e)) {
+			if (panning || commons.isPanningEvent(e)) {
 				if (starmapWindow.contains(e.x, e.y)) {
 					if (!panning) {
 						lastX = e.x;

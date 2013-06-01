@@ -5,16 +5,14 @@
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
-
 package hu.openig.model;
 
-/**
- * A ground battle gun.
- * @author akarnokd, 2013.05.02.
+/** 
+ * A mine object. 
  */
-public class GroundBattleGun extends GroundBattleUnit {
-	/** The parent building id. */
-	public int parentBuilding;
-	/** The index within the building's guns. */
-	public int index;
+public class Mine {
+	/** The owner. */
+	public Player owner;
+	/** The damage to inflict. */
+	public double damage;
 }

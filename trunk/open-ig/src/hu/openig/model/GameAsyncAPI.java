@@ -557,7 +557,7 @@ public interface GameAsyncAPI {
 	 * @param battleId the battle id
 	 * @param out the async result or the error
 	 */
-	void getGroundBattleUnits(int battleId, AsyncResult<? super List<GroundBattleUnit>, ? super IOException> out);
+	void getGroundBattleUnits(int battleId, AsyncResult<? super List<GroundwarUnitStatus>, ? super IOException> out);
 	/**
 	 * Returns the inventory item status of the given fleet and inventory.
 	 * @param fleetId the fleet id

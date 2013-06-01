@@ -11,7 +11,9 @@ package hu.openig.model;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pair;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,33 @@ public class BattleModel {
 	public final Map<Difficulty, Map<Pair<Integer, Integer>, Double>> ecmMatrix = new HashMap<>();
 	/** The probabilities for backfiring, if not present, there is no limit. */
 	public final Map<Difficulty, Double> backfires = new HashMap<>();
+	/** The explosion images. */
+	public final Map<ExplosionType, BufferedImage[]> groundExplosions = new HashMap<>();
+	/** The flying rocket [phase][angle]. */
+	public BufferedImage[][] groundRocket;
+	/** The direct attack units. */
+	public final EnumSet<GroundwarUnitType> directAttackUnits = EnumSet.of(
+			GroundwarUnitType.ARTILLERY,
+			GroundwarUnitType.TANK,
+			GroundwarUnitType.ROCKET_SLED,
+			GroundwarUnitType.SELF_REPAIR_TANK,
+			GroundwarUnitType.KAMIKAZE,
+			GroundwarUnitType.PARALIZER,
+			GroundwarUnitType.ROCKET_JAMMER
+	);
+	/** Units to ignore for winner checks. */
+	public final EnumSet<GroundwarUnitType> winIngoreUnits = EnumSet.of(
+			GroundwarUnitType.RADAR,
+			GroundwarUnitType.RADAR_JAMMER
+	);
+	/** The set of units that may attempt to get closer to their target. */
+	public final EnumSet<GroundwarUnitType> getCloserUnits = EnumSet.of(
+			GroundwarUnitType.TANK, 
+			GroundwarUnitType.KAMIKAZE,
+			GroundwarUnitType.SELF_REPAIR_TANK,
+			GroundwarUnitType.PARALIZER,
+			GroundwarUnitType.ROCKET_JAMMER
+	);
 	/**
 	 * Add a turret definition to the {@code turrets} mapping.
 	 * @param buildingId the building identifier.

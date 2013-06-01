@@ -18,7 +18,7 @@ import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GameAPI;
 import hu.openig.model.GameEnvironment;
-import hu.openig.model.GroundBattleUnit;
+import hu.openig.model.GroundwarUnitStatus;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerGameSetup;
@@ -650,7 +650,7 @@ public class MultiplayerSession implements RemoteGameAPI {
 	}
 
 	@Override
-	public List<GroundBattleUnit> getGroundBattleUnits(int battleId)
+	public List<GroundwarUnitStatus> getGroundBattleUnits(int battleId)
 			throws IOException {
 		ensureGame();
 		return api.getGroundBattleUnits(battleId);

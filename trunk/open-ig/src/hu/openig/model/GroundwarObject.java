@@ -11,8 +11,8 @@ package hu.openig.model;
 import java.awt.image.BufferedImage;
 
 /**
+ * The base class for a ground war object.
  * @author akarnokd, 2011.09.07.
- *
  */
 public abstract class GroundwarObject {
 	/** The facing angle. */
@@ -21,8 +21,6 @@ public abstract class GroundwarObject {
 	public int phase;
 	/** The owner. */
 	public Player owner;
-	/** Is the specific gun selected? */
-	public boolean selected;
 	/** The cached angle. */
 	protected double cachedAngle = Double.NaN;
 	/** The cached index. */
