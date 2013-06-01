@@ -3395,7 +3395,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return U.compare(o1.morale, o2.morale);
+									return Double.compare(o1.morale, o2.morale);
 								}
 							});
 						}
@@ -3407,7 +3407,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return U.compare(o2.morale, o1.morale);
+									return Double.compare(o2.morale, o1.morale);
 								}
 							});
 						}

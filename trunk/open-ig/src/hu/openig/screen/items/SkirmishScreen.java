@@ -15,8 +15,6 @@ import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
 import hu.openig.model.CustomGameDefinition;
 import hu.openig.model.GameDefinition;
-import hu.openig.model.Labels;
-import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishAIMode;
@@ -296,7 +294,7 @@ public class SkirmishScreen extends ScreenBase {
 				super.update();
 				
 				templatePlayers.clear();
-				templatePlayers.addAll(getPlayersFrom(rl, get()));
+				templatePlayers.addAll(commons.getPlayersFrom(get()));
 			}
 		};
 		galaxyRacesLabel = createLabel("skirmish.race_template");
@@ -1141,56 +1139,6 @@ public class SkirmishScreen extends ScreenBase {
 				for (XElement xt : xg.childElement("tech").children()) {
 					result.add(xt.get("id"));
 				}
-			}
-		}
-		
-		return result;
-	}
-	/**
-	 * Extract the players from the given definition.
-	 * @param rl the resource locator
-	 * @param def the definition
-	 * @return the set of players
-	 */
-	public static List<SkirmishPlayer> getPlayersFrom(ResourceLocator rl, GameDefinition def) {
-		List<SkirmishPlayer> result = new ArrayList<>();
-		Set<SkirmishPlayer> rs = new HashSet<>();
-		
-		XElement xplayers = rl.getXML(def.players);
-		
-		Labels lbl = new Labels();
-		lbl.load(rl, U.startWith(def.labels, "labels"));
-		
-		for (XElement xplayer : xplayers.childrenWithName("player")) {
-			SkirmishPlayer sp = new SkirmishPlayer();
-			
-			sp.originalId = xplayer.get("id");
-			sp.race = xplayer.get("race");
-			sp.name = lbl.get(xplayer.get("name") + ".short");
-			sp.description = lbl.get(xplayer.get("name"));
-			sp.iconRef = xplayer.get("icon");
-			sp.icon = rl.getImage(sp.iconRef);
-			sp.color = (int)Long.parseLong(xplayer.get("color"), 16);
-			sp.nodatabase = xplayer.getBoolean("nodatabase", false);
-			sp.nodiplomacy = xplayer.getBoolean("nodiplomacy", false);
-			sp.diplomacyHead = xplayer.get("diplomacy-head", null);
-			sp.picture = xplayer.get("picture", null);
-			
-			String ai = xplayer.get("ai", null);
-			if (xplayer.getBoolean("user", false)) {
-				sp.ai = SkirmishAIMode.USER;
-			} else
-			if ("TRADERS".equals(ai)) {
-				sp.ai = SkirmishAIMode.TRADER;
-			} else
-			if ("PIRATES".equals(ai)) {
-				sp.ai = SkirmishAIMode.PIRATE;
-			} else {
-				sp.ai = SkirmishAIMode.AI_NORMAL;
-			}
-			
-			if (rs.add(sp)) {
-				result.add(sp);
 			}
 		}
 		

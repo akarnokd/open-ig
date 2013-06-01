@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
+import hu.openig.net.MessageUtils;
 
 import java.io.IOException;
 

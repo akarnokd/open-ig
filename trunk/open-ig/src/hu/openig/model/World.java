@@ -2853,7 +2853,7 @@ public class World implements ModelLookup {
 			public int compare(Planet o1, Planet o2) {
 				double d1 = Point.distance(o1.x, o1.y, center.x, center.y);
 				double d2 = Point.distance(o2.x, o2.y, center.x, center.y);
-				return U.compare(d1, d2);
+				return Double.compare(d1, d2);
 			}
 		});
 		
@@ -3163,7 +3163,7 @@ public class World implements ModelLookup {
 				public int compare(Planet o1, Planet o2) {
 					double d1 = Point.distance(o1.x, o1.y, pl.x, pl.y);
 					double d2 = Point.distance(o2.x, o2.y, pl.x, pl.y);
-					return U.compare(d1, d2);
+					return Double.compare(d1, d2);
 				}
 			});
 			int n = skirmishDefinition.initialPlanets - 1;

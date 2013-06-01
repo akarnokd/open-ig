@@ -29,7 +29,6 @@ import hu.openig.model.ModelUtils;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
-import hu.openig.utils.U;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
@@ -81,7 +80,7 @@ public class AttackPlanner extends Planner {
 			double n1 = relation1 * distance1 / value1;
 			double n2 = relation2 * distance2 / value2;
 			
-			return U.compare(n1, n2);
+			return java.lang.Double.compare(n1, n2);
 		}
 	}
 	/** The war limit. */
@@ -124,7 +123,7 @@ public class AttackPlanner extends Planner {
 				final AIFleet ownFleet = Collections.max(fleets, new Comparator<AIFleet>() {
 					@Override
 					public int compare(AIFleet o1, AIFleet o2) {
-						return U.compare(o1.statistics.firepower, o2.statistics.firepower);
+						return java.lang.Double.compare(o1.statistics.firepower, o2.statistics.firepower);
 					}
 				});
 				AIFleet targetFleet = null;

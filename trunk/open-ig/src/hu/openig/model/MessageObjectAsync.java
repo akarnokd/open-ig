@@ -12,6 +12,7 @@ import hu.openig.core.AsyncResult;
 import hu.openig.core.AsyncTransform;
 import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
+import hu.openig.net.MessageUtils;
 import hu.openig.net.MissingAttributeException;
 
 import java.io.IOException;

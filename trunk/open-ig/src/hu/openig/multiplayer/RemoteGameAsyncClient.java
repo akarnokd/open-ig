@@ -22,7 +22,6 @@ import hu.openig.model.MessageArrayAsync;
 import hu.openig.model.MessageArrayItemFactory;
 import hu.openig.model.MessageObjectAsync;
 import hu.openig.model.MessageObjectIO;
-import hu.openig.model.MessageUtils;
 import hu.openig.model.MultiplayerDefinition;
 import hu.openig.model.MultiplayerGameSetup;
 import hu.openig.model.MultiplayerUser;
@@ -38,6 +37,7 @@ import hu.openig.net.MessageArray;
 import hu.openig.net.MessageClientAPI;
 import hu.openig.net.MessageObject;
 import hu.openig.net.MessageSerializable;
+import hu.openig.net.MessageUtils;
 import hu.openig.utils.U;
 
 import java.io.IOException;

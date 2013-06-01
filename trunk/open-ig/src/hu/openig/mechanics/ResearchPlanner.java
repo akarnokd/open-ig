@@ -19,7 +19,6 @@ import hu.openig.model.ExplorationMap;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchType;
 import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -344,13 +343,13 @@ public class ResearchPlanner extends Planner {
 			Integer count2 = map.get(o2);
 			int c = count1.compareTo(count2);
 			if (c == 0) {
-				c = U.compare(o1.researchCost(p.traits), o2.researchCost(p.traits));
+				c = Integer.compare(o1.researchCost(p.traits), o2.researchCost(p.traits));
 			}
 			if (c == 0) {
 				c = o1.level - o2.level;
 			}
 			if (c == 0) {
-				c = U.compare(o1.productionCost, o2.productionCost);
+				c = Integer.compare(o1.productionCost, o2.productionCost);
 			}
 			return c;
 		}

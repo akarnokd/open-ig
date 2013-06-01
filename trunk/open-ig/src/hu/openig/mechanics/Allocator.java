@@ -13,7 +13,6 @@ import hu.openig.model.BuildingAllocationWorker;
 import hu.openig.model.Planet;
 import hu.openig.model.ResourceAllocationStrategy;
 import hu.openig.model.World;
-import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -235,7 +234,7 @@ public final class Allocator {
 			@Override
 			public int compare(BuildingAllocationWorker o1,
 					BuildingAllocationWorker o2) {
-				return U.compare(o2.building.type.cost * o2.efficiencyBound, o1.building.type.cost * o1.efficiencyBound);
+				return Double.compare(o2.building.type.cost * o2.efficiencyBound, o1.building.type.cost * o1.efficiencyBound);
 			}
 		};
 		Collections.sort(energy, costReverse);

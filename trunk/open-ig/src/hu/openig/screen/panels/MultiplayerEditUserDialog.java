@@ -18,7 +18,6 @@ import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.Trait;
 import hu.openig.model.TraitKind;
 import hu.openig.screen.CommonResources;
-import hu.openig.screen.items.SkirmishScreen;
 import hu.openig.ui.IGButton;
 import hu.openig.ui.IGCheckBox;
 import hu.openig.utils.U;
@@ -239,7 +238,7 @@ public class MultiplayerEditUserDialog extends JDialog {
 		empireRaceStatic.setFont(fontMedium);
 		empireRaceStatic.setVisible(false);
 		
-		templatePlayers = U.newArrayList(SkirmishScreen.getPlayersFrom(commons.rl, def));
+		templatePlayers = U.newArrayList(commons.getPlayersFrom(def));
 		for (SkirmishPlayer p : templatePlayers) {
 			empireRace.addItem(p.description + " = " + p.race);
 		}

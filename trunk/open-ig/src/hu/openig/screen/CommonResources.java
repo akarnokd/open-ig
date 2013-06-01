@@ -41,6 +41,8 @@ import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResourceLocator;
+import hu.openig.model.SkirmishAIMode;
+import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishDefinition;
@@ -59,6 +61,7 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
+import hu.openig.utils.XElement;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,9 +73,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1222,5 +1227,54 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public Future<?> schedule(Runnable run) {
 		return pool.submit(run);
+	}
+	/**
+	 * Extract the players from the given definition.
+	 * @param def the definition
+	 * @return the set of players
+	 */
+	public List<SkirmishPlayer> getPlayersFrom(GameDefinition def) {
+		List<SkirmishPlayer> result = new ArrayList<>();
+		Set<SkirmishPlayer> rs = new HashSet<>();
+		
+		XElement xplayers = rl.getXML(def.players);
+		
+		Labels lbl = new Labels();
+		lbl.load(rl, U.startWith(def.labels, "labels"));
+		
+		for (XElement xplayer : xplayers.childrenWithName("player")) {
+			SkirmishPlayer sp = new SkirmishPlayer();
+			
+			sp.originalId = xplayer.get("id");
+			sp.race = xplayer.get("race");
+			sp.name = lbl.get(xplayer.get("name") + ".short");
+			sp.description = lbl.get(xplayer.get("name"));
+			sp.iconRef = xplayer.get("icon");
+			sp.icon = rl.getImage(sp.iconRef);
+			sp.color = (int)Long.parseLong(xplayer.get("color"), 16);
+			sp.nodatabase = xplayer.getBoolean("nodatabase", false);
+			sp.nodiplomacy = xplayer.getBoolean("nodiplomacy", false);
+			sp.diplomacyHead = xplayer.get("diplomacy-head", null);
+			sp.picture = xplayer.get("picture", null);
+			
+			String ai = xplayer.get("ai", null);
+			if (xplayer.getBoolean("user", false)) {
+				sp.ai = SkirmishAIMode.USER;
+			} else
+			if ("TRADERS".equals(ai)) {
+				sp.ai = SkirmishAIMode.TRADER;
+			} else
+			if ("PIRATES".equals(ai)) {
+				sp.ai = SkirmishAIMode.PIRATE;
+			} else {
+				sp.ai = SkirmishAIMode.AI_NORMAL;
+			}
+			
+			if (rs.add(sp)) {
+				result.add(sp);
+			}
+		}
+		
+		return result;
 	}
 }

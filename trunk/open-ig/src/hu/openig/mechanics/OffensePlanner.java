@@ -51,7 +51,7 @@ public class OffensePlanner extends Planner {
 	final Comparator<AIFleet> firepowerAsc = new Comparator<AIFleet>() {
 		@Override
 		public int compare(AIFleet o1, AIFleet o2) {
-			return U.compare(o1.statistics.firepower, o2.statistics.firepower);
+			return Double.compare(o1.statistics.firepower, o2.statistics.firepower);
 		}
 	};
 	/**
