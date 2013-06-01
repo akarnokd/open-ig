@@ -13,10 +13,10 @@ import hu.openig.core.ImageInterpolation;
 import hu.openig.core.MovieSurface;
 import hu.openig.core.MovieSurface.ScalingMode;
 import hu.openig.core.ResourceType;
-import hu.openig.core.SubtitleManager;
 import hu.openig.model.Configuration;
 import hu.openig.model.ResourceLocator;
 import hu.openig.model.ResourceLocator.ResourcePlace;
+import hu.openig.screen.SubtitleManager;
 import hu.openig.sound.AudioThread;
 import hu.openig.utils.Exceptions;
 

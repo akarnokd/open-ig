@@ -148,7 +148,7 @@ public final class DiplomacyAnimation {
 								@Override
 								public int compare(Entry<Integer, Integer> o1,
 										Entry<Integer, Integer> o2) {
-									return U.compare(o2.getValue(), o1.getValue());
+									return Integer.compare(o2.getValue(), o1.getValue());
 								}
 							});
 							
@@ -176,7 +176,7 @@ public final class DiplomacyAnimation {
 											diff = argb2[m] - argb3[m];
 											sum2 += diff * diff;
 										}
-										return U.compare(sum1, sum2);
+										return Double.compare(sum1, sum2);
 									}
 								});
 								translate.put(c, cm);

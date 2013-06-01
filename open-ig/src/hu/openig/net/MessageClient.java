@@ -11,7 +11,6 @@ package hu.openig.net;
 import hu.openig.core.AsyncResult;
 import hu.openig.core.Scheduler;
 import hu.openig.core.Schedulers;
-import hu.openig.model.MessageUtils;
 import hu.openig.utils.U;
 
 import java.io.BufferedReader;

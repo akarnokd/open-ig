@@ -394,7 +394,7 @@ public class Fleet implements Named, Owned, HasInventory {
 		Collections.sort(iis, new Comparator<InventoryItem>() {
 			@Override
 			public int compare(InventoryItem o1, InventoryItem o2) {
-				return U.compare(o2.type.productionCost, o1.type.productionCost);
+				return Integer.compare(o2.type.productionCost, o1.type.productionCost);
 			}
 		});
 		// walk

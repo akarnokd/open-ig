@@ -11,7 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Func1;
 import hu.openig.core.Func2;
 import hu.openig.core.Location;
-import hu.openig.mechanics.Pathfinding;
+import hu.openig.core.Pathfinding;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
@@ -1055,11 +1055,11 @@ public class GroundwarManager implements GroundwarWorld {
 			public int compare(Location o1, Location o2) {
 				int d1 = pathfinding.trueDistance.invoke(destination, o1);
 				int d2 = pathfinding.trueDistance.invoke(destination, o2);
-				int c = U.compare(d1, d2);
+				int c = Integer.compare(d1, d2);
 				if (c == 0) {
 					d1 = pathfinding.trueDistance.invoke(initial, o1);
 					d2 = pathfinding.trueDistance.invoke(initial, o2);
-					c = U.compare(d1, d2);
+					c = Integer.compare(d1, d2);
 				}
 				return c;
 			}

@@ -6,10 +6,8 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
+package hu.openig.core;
 
-import hu.openig.core.Func1;
-import hu.openig.core.Location;
 
 import java.util.HashSet;
 import java.util.LinkedList;

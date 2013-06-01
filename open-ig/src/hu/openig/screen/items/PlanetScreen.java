@@ -2444,7 +2444,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 
 					double d2 = Math.hypot(mx - r2.x - r2.width / 2d, my - r2.y - r2.height / 2);
 					
-					return U.compare(d1, d2);
+					return Double.compare(d1, d2);
 				}
 			});
 		}
@@ -2455,6 +2455,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	 * @param battle the battle information
 	 */
 	public void initiateBattle(BattleInfo battle) {
+		// FIXME
 //		this.battle = battle;
 //		
 //		player().currentPlanet = battle.targetPlanet;

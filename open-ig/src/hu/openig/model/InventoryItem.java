@@ -10,7 +10,6 @@ package hu.openig.model;
 
 import hu.openig.core.Func1;
 import hu.openig.core.Pair;
-import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -304,7 +303,7 @@ public class InventoryItem {
 			@Override
 			public int compare(Pair<String, IntValue> o1,
 					Pair<String, IntValue> o2) {
-				return U.compare(o1.second.value, o2.second.value);
+				return Integer.compare(o1.second.value, o2.second.value);
 			}
 		});
 		nickname = countsOrdered.get(0).first;

@@ -15,6 +15,7 @@ import hu.openig.net.ErrorResponse;
 import hu.openig.net.ErrorType;
 import hu.openig.net.MessageArray;
 import hu.openig.net.MessageObject;
+import hu.openig.net.MessageUtils;
 import hu.openig.net.MissingAttributeException;
 
 import java.io.IOException;

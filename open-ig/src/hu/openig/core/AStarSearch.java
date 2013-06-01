@@ -6,12 +6,7 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.mechanics;
-
-import hu.openig.core.Func1;
-import hu.openig.core.Func2;
-import hu.openig.core.Pair;
-import hu.openig.utils.U;
+package hu.openig.core;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,11 +61,11 @@ public class AStarSearch<T> {
 			public int compare(T o1, T o2) {
 				int d1 = trueDistance.invoke(destination, o1);
 				int d2 = trueDistance.invoke(destination, o2);
-				int c = U.compare(d1, d2);
+				int c = Integer.compare(d1, d2);
 				if (c == 0) {
 					d1 = trueDistance.invoke(initial, o1);
 					d2 = trueDistance.invoke(initial, o2);
-					c = U.compare(d1, d2);
+					c = Integer.compare(d1, d2);
 				}
 				return c;
 			}

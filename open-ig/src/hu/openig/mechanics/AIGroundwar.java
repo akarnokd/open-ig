@@ -19,7 +19,6 @@ import hu.openig.model.ModelUtils;
 import hu.openig.model.Player;
 import hu.openig.model.SurfaceEntity;
 import hu.openig.model.SurfaceEntityType;
-import hu.openig.utils.U;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -262,7 +261,7 @@ public class AIGroundwar {
 			public int compare(HasLocation o1, HasLocation o2) {
 				double d1 = u.distance(o1);
 				double d2 = u.distance(o2);
-				return U.compare(d1, d2);
+				return Double.compare(d1, d2);
 			}
 		});
 	}
@@ -277,7 +276,7 @@ public class AIGroundwar {
 			public int compare(HasLocation o1, HasLocation o2) {
 				double d1 = u.distance(o1);
 				double d2 = u.distance(o2);
-				return U.compare(d1, d2);
+				return Double.compare(d1, d2);
 			}
 		});
 	}
@@ -296,7 +295,7 @@ public class AIGroundwar {
 			public int compare(Location o1, Location o2) {
 				double d1 = u.distance(o1);
 				double d2 = u.distance(o2);
-				return U.compare(d1, d2);
+				return Double.compare(d1, d2);
 			}
 		});
 	}

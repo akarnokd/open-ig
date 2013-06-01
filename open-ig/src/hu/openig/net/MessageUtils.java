@@ -6,14 +6,10 @@
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
-package hu.openig.model;
+package hu.openig.net;
 
 import hu.openig.core.Action1E;
 import hu.openig.core.AsyncResult;
-import hu.openig.net.ErrorResponse;
-import hu.openig.net.ErrorType;
-import hu.openig.net.MessageArray;
-import hu.openig.net.MessageObject;
 
 import java.io.IOException;
 import java.util.Objects;
