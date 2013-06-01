@@ -12,13 +12,9 @@ import hu.openig.core.Anim;
 import hu.openig.core.Btn2;
 import hu.openig.core.Cat;
 import hu.openig.core.Img;
-import hu.openig.model.ExplosionType;
 import hu.openig.model.ResourceLocator;
-import hu.openig.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The colony graphics.
@@ -193,8 +189,6 @@ public class ColonyGFX {
 	/** The unit selection box. */
 	@Img(name = "groundwar/selection_box_dark")
 	public BufferedImage selectionBoxDark;
-	/** The flying rocket [phase][angle]. */
-	public BufferedImage[][] rocket;
 	/** The laid mine. */
 	public BufferedImage[][] mine;
 	/** The tank info panel. */
@@ -203,8 +197,6 @@ public class ColonyGFX {
 	/** The zoom button (horizontal). */
 	@Cat(name = "colony/button_zoom")
 	public BufferedImage[] zoom;
-	/** The explosion images. */
-	public final Map<ExplosionType, BufferedImage[]> explosions = new HashMap<>();
 	/**
 	 * Load the resources for the given language.
 	 * @param rl the resource locator
@@ -213,13 +205,6 @@ public class ColonyGFX {
 	public ColonyGFX load(ResourceLocator rl) {
 		GFXLoader.loadResources(this, rl);
 		
-		for (ExplosionType et : ExplosionType.values()) {
-			BufferedImage img = rl.getImage(et.image);
-			explosions.put(et, ImageUtils.splitByWidth(img, img.getWidth() / et.frames));
-		}
-		
-		BufferedImage rimg = rl.getImage("inventions/weapons/vehicles/rocket_matrix");
-		rocket = ImageUtils.split(rimg, rimg.getWidth() / 16, rimg.getHeight() / 3);
 		mine = new BufferedImage[][] {
 			{ rl.getImage("groundwar/mine") }
 		};

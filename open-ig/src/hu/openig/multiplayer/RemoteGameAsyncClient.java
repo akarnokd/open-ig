@@ -16,7 +16,7 @@ import hu.openig.model.BattleStatus;
 import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
-import hu.openig.model.GroundBattleUnit;
+import hu.openig.model.GroundwarUnitStatus;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MessageArrayAsync;
 import hu.openig.model.MessageArrayItemFactory;
@@ -1011,10 +1011,10 @@ public class RemoteGameAsyncClient implements RemoteGameAsyncAPI {
 
 	@Override
 	public void getGroundBattleUnits(int battleId,
-			AsyncResult<? super List<GroundBattleUnit>, ? super IOException> out) {
+			AsyncResult<? super List<GroundwarUnitStatus>, ? super IOException> out) {
 		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS")
 		.set("battleId", battleId);
-		queryList(request, out, new GroundBattleUnit());
+		queryList(request, out, new GroundwarUnitStatus());
 	}
 	@Override
 	public void getInventoryStatus(int fleetId, int itemId,

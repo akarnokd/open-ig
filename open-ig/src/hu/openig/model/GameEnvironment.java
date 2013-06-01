@@ -14,6 +14,8 @@ import hu.openig.core.SaveMode;
 
 import java.io.IOException;
 import java.util.Deque;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 /**
  * Represents a set of callback options to interact with the game environment
@@ -115,5 +117,17 @@ public interface GameEnvironment {
 	boolean isLoading();
 	/** @return The join callback for multiplayer. */
 	Action1E<MultiplayerUser, IOException> joinCallback();
-
+	/**
+	 * Schedule the given runnable on the thread pool.
+	 * @param run the task to run
+	 * @return the future of the task
+	 */
+	Future<?> schedule(Runnable run);
+	/**
+	 * Schedule the given callable on the thread pool.
+	 * @param call the callable
+	 * @return the future of the task
+	 * @param <T> the return type
+	 */
+	<T> Future<T> schedule(Callable<T> call);
 }

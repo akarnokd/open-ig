@@ -524,9 +524,9 @@ public class GameSyncToAsync implements GameAPI {
 		get(as);
 	}
 	@Override
-	public List<GroundBattleUnit> getGroundBattleUnits(int battleId)
+	public List<GroundwarUnitStatus> getGroundBattleUnits(int battleId)
 			throws IOException {
-		Value<List<GroundBattleUnit>> as = newSubject();
+		Value<List<GroundwarUnitStatus>> as = newSubject();
 		api.getGroundBattleUnits(battleId, as);
 		return get(as);
 	}

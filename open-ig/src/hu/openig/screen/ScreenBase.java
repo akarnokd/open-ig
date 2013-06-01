@@ -28,8 +28,6 @@ import hu.openig.render.RenderTools;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIMouse;
-import hu.openig.ui.UIMouse.Button;
-import hu.openig.ui.UIMouse.Modifier;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -326,15 +324,6 @@ public abstract class ScreenBase extends UIContainer {
 	 */
 	public void screenSound(SoundType type) {
 		commons.playSound(SoundTarget.SCREEN, type, null);
-	}
-	/**
-	 * Check if the mouse event is a panning event.
-	 * @param e the event
-	 * @return true if panning event
-	 */
-	public boolean isPanningEvent(UIMouse e) {
-		return (e.has(Button.RIGHT) && !config.classicControls && !e.has(Modifier.CTRL))
-				|| (e.has(Button.MIDDLE) && config.classicControls);
 	}
 	/**
 	 * Scale the mouse coordinates according to the current screen scaling policy or do nothing.

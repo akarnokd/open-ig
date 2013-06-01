@@ -943,10 +943,10 @@ public class GameAsyncToSync implements GameAsyncAPI {
 
 	@Override
 	public void getGroundBattleUnits(final int battleId,
-			AsyncResult<? super List<GroundBattleUnit>, ? super IOException> out) {
-		execute(new DeferredAction<List<GroundBattleUnit>, IOException>(out) {
+			AsyncResult<? super List<GroundwarUnitStatus>, ? super IOException> out) {
+		execute(new DeferredAction<List<GroundwarUnitStatus>, IOException>(out) {
 			@Override
-			public List<GroundBattleUnit> invoke() throws IOException {
+			public List<GroundwarUnitStatus> invoke() throws IOException {
 				return api.getGroundBattleUnits(battleId);
 			}
 		});

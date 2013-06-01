@@ -18,7 +18,7 @@ import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.GameAPI;
-import hu.openig.model.GroundBattleUnit;
+import hu.openig.model.GroundwarUnitStatus;
 import hu.openig.model.HasInventory;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemStatus;
@@ -1034,7 +1034,7 @@ public class DirectGamePlayer implements GameAPI {
 	}
 
 	@Override
-	public List<GroundBattleUnit> getGroundBattleUnits(int battleId)
+	public List<GroundwarUnitStatus> getGroundBattleUnits(int battleId)
 			throws IOException {
 		// TODO Auto-generated method stub
 		return null;

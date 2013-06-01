@@ -18,7 +18,7 @@ import hu.openig.model.DeferredRunnable;
 import hu.openig.model.DeferredTransform;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
-import hu.openig.model.GroundBattleUnit;
+import hu.openig.model.GroundwarUnitStatus;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MessageObjectIO;
 import hu.openig.model.MultiplayerUser;
@@ -1019,15 +1019,15 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 		}
 		case "QUERY_GROUND_BATTLE_UNITS": {
 			final int battleId = mo.getInt("battleId");
-			return new DeferredTransform<List<GroundBattleUnit>>() {
+			return new DeferredTransform<List<GroundwarUnitStatus>>() {
 				@Override
-				protected List<GroundBattleUnit> invoke() throws IOException {
+				protected List<GroundwarUnitStatus> invoke() throws IOException {
 					return api.getGroundBattleUnits(battleId);
 				}
 				@Override
 				protected MessageSerializable transform(
-						List<GroundBattleUnit> intermediate) throws IOException {
-					return GroundBattleUnit.toArray(intermediate);
+						List<GroundwarUnitStatus> intermediate) throws IOException {
+					return GroundwarUnitStatus.toArray(intermediate);
 				}
 			};
 		}

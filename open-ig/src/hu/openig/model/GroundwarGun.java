@@ -8,7 +8,10 @@
 
 package hu.openig.model;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 
 /**
  * A ground war gun.
@@ -69,5 +72,33 @@ public class GroundwarGun extends GroundwarObject implements Owned {
 	 */
 	public double damage() {
 		return model.damage(owner);
+	}
+	/**
+	 * Returns the screen rectangle of this gun (no screen offset).
+	 * @return the rectangle in screen coordinates
+	 */
+	public Rectangle rectangle() {
+		int px = (Tile.toScreenX(rx, ry));
+		int py = (Tile.toScreenY(rx, ry));
+		BufferedImage img = get();
+		
+		int ux = px + (54 - img.getWidth()) / 2 + model.px;
+		int uy = py + (28 - img.getHeight()) / 2 + model.py;
+		
+		return new Rectangle(ux, uy, img.getWidth(), img.getHeight());
+	}
+	/**
+	 * Returns the center screen coordinates of this gun (no screen offset).
+	 * @return the point in screen coordinates
+	 */
+	public Point center() {
+		int px = (Tile.toScreenX(rx, ry));
+		int py = (Tile.toScreenY(rx, ry));
+		BufferedImage img = get();
+		
+		int ux = px + (54 - img.getWidth()) / 2 + model.px;
+		int uy = py + (28 - img.getHeight()) / 2 + model.py;
+
+		return new Point(ux + img.getWidth() / 2, uy + img.getHeight() / 2);
 	}
 }

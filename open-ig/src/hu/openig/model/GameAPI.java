@@ -112,7 +112,7 @@ public interface GameAPI extends GameCommandAPI {
 	 * @throws IOException on communication error, a ErrorResponse indicates
 	 * a gameplay related error result.
 	 */
-	List<GroundBattleUnit> getGroundBattleUnits(int battleId) throws IOException;
+	List<GroundwarUnitStatus> getGroundBattleUnits(int battleId) throws IOException;
 	/**
 	 * Returns the inventory item status of the given fleet and inventory.
 	 * @param fleetId the fleet id

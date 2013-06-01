@@ -86,6 +86,10 @@ public class Planet implements Named, Owned, HasInventory {
 	public int earthQuakeTTL;
 	/** The remaining time for a weather event. */
 	public int weatherTTL;
+	/** The persistent deployed ground units and turrets. */
+	public final PlanetGround ground;
+	/** The ground war manager for this planet. */
+	public final GroundwarManager war;
 	/** @return The total income. */
 	public int getTotalIncome() {
 		return taxIncome + tradeIncome;
@@ -102,6 +106,8 @@ public class Planet implements Named, Owned, HasInventory {
 	public Planet(String id, World world) {
 		this.id = id;
 		this.world = world;
+		this.ground = new PlanetGround();
+		this.war = new GroundwarManager(this);
 	}
 	/**
 	 * Return the morale label for the given level.

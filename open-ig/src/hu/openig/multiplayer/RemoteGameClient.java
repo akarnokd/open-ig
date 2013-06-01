@@ -14,7 +14,7 @@ import hu.openig.model.BuildingStatus;
 import hu.openig.model.EmpireStatuses;
 import hu.openig.model.FleetStatus;
 import hu.openig.model.FleetTransferMode;
-import hu.openig.model.GroundBattleUnit;
+import hu.openig.model.GroundwarUnitStatus;
 import hu.openig.model.InventoryItemStatus;
 import hu.openig.model.MessageArrayItemFactory;
 import hu.openig.model.MessageObjectIO;
@@ -811,10 +811,10 @@ public class RemoteGameClient implements RemoteGameAPI {
 	}
 
 	@Override
-	public List<GroundBattleUnit> getGroundBattleUnits(int battleId) throws IOException {
+	public List<GroundwarUnitStatus> getGroundBattleUnits(int battleId) throws IOException {
 		MessageObject request = new MessageObject("QUERY_GROUND_BATTLE_UNITS")
 		.set("battleId", battleId);
-		return queryList(request, new GroundBattleUnit());
+		return queryList(request, new GroundwarUnitStatus());
 	}
 	@Override
 	public InventoryItemStatus getInventoryStatus(int fleetId, int itemId)

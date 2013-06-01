@@ -11,6 +11,7 @@ package hu.openig.utils;
 import hu.openig.core.Func1;
 import hu.openig.core.MultiIOException;
 
+import java.awt.Rectangle;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileFilter;
@@ -955,5 +956,78 @@ public final class U {
 			clazz = clazz.getSuperclass();
 		}
 		return r;
+	}
+	/** 
+	 * First letter to uppercase.
+	 * @param s the string
+	 * @return the modified string
+	 */
+	public static String firstUpper(String s) {
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
+	}
+	/**
+	 * Check if r1's center is closer to r0's center than r2's center is.
+	 * @param r0 the base rectangle
+	 * @param r1 the first rectangle
+	 * @param r2 the second rectangle
+	 * @return true if r1 is closer than r2
+	 */
+	public static boolean closerToCenter(Rectangle r0, Rectangle r1, Rectangle r2) {
+		double d1 = Math.hypot(r0.x + r0.width / 2d - r1.x - r1.width / 2d, r0.y + r0.height / 2d - r1.y - r1.height / 2d);
+		double d2 = Math.hypot(r0.x + r0.width / 2d - r2.x - r2.width / 2d, r0.y + r0.height / 2d - r2.y - r2.height / 2d);
+		return d1 < d2;
+	}
+
+	/**
+	 * Check if two cells are within the distance of range.
+	 * @param cx the first cell X
+	 * @param cy the first cell Y
+	 * @param px the second cell X
+	 * @param py the second cell Y
+	 * @param range the range in cells
+	 * @return true if within range
+	 */
+	public static boolean cellInRange(double cx, double cy, double px, double py, int range) {
+		return (cx - px) * (cx - px) + (cy - py) * (cy - py) <= range * range; 
+	}
+	/**
+	 * Check if the value is within the specified range.
+	 * @param value the value
+	 * @param x0 the range
+	 * @param x1 the range
+	 * @return true if within
+	 */
+	public static boolean within(double value, double x0, double x1) {
+		if (x0 < x1) {
+			return value >= x0 && value <= x1;
+		}
+		return value >= x1 && value <= x0;
+	}
+	/**
+	 * Check if the Px,Py is in the given rectangle.
+	 * @param rx the rectangle X
+	 * @param ry the rectangle Y
+	 * @param rw the width
+	 * @param rh the height
+	 * @param px the test point X
+	 * @param py the test point Y
+	 * @return true if in
+	 */
+	public static boolean within(double rx, double ry, double rw, double rh, double px, double py) {
+		return (px < rx || rx + rw < px || py < ry || ry + rh < ry);
+	}
+	/**
+	 * Check if the Px,Py is in the given rectangle.
+	 * @param rx the rectangle X
+	 * @param ry the rectangle Y
+	 * @param rw the width
+	 * @param rh the height
+	 * @param px the test point X
+	 * @param py the test point Y
+	 * @return true if in
+	 */
+	public static boolean within(int rx, int ry, int rw, int rh, 
+			int px, int py) {
+		return (px < rx || rx + rw < px || py < ry || ry + rh < ry);
 	}
 }
