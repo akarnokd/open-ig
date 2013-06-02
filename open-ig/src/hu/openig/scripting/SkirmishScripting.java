@@ -107,7 +107,7 @@ public class SkirmishScripting implements GameScripting {
 			if (p.aiMode == AIMode.PIRATES || p.aiMode == AIMode.TRADERS) {
 				continue;
 			}
-			int avail = p.available().size();
+			int avail = p.availableCount();
 			
 			int req = 0;
 			for (ResearchType rt : world.researches.values()) {
@@ -671,5 +671,9 @@ public class SkirmishScripting implements GameScripting {
 	@Override
 	public int playerTaxIncomeOverride(Planet planet, int simulatorValue) {
 		return simulatorValue;
+	}
+	@Override
+	public int fleetSpeedOverride(Fleet fleet, int speed) {
+		return speed;
 	}
 }

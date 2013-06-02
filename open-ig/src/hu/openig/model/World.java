@@ -556,7 +556,7 @@ public class World implements ModelLookup {
 				}
 			}
 			
-			for (ResearchType rt : p.available().keySet()) {
+			for (ResearchType rt : p.available()) {
 				p.setRelated(rt);
 			}
 			
@@ -1152,12 +1152,13 @@ public class World implements ModelLookup {
 			}
 			
 			XElement res = xp.add("available");
-			for (Map.Entry<ResearchType, List<ResearchType>> ae : p.available().entrySet()) {
+			for (ResearchType ae : p.available()) {
 				XElement av = res.add("type");
-				av.set("id", ae.getKey().id);
-				if (ae.getValue().size() > 0) {
+				av.set("id", ae.id);
+				List<ResearchType> rel = p.availableResearch.get(ae);
+				if (rel.size() > 0) {
 					StringBuilder sb = new StringBuilder();
-					for (ResearchType aert : ae.getValue()) {
+					for (ResearchType aert : rel) {
 						if (sb.length() > 0) {
 							sb.append(", ");
 						}
@@ -1593,7 +1594,7 @@ public class World implements ModelLookup {
 			}
 			
 			// add free technologies
-			p.available().clear();
+			p.availableResearch.clear();
 			for (ResearchType rt : researches.values()) {
 				if (rt.level == 0 && rt.race.equals(p.race)) {
 					p.add(rt);
@@ -2803,16 +2804,15 @@ public class World implements ModelLookup {
 					}
 				}
 				// remove technology
-				for (Map.Entry<ResearchType, List<ResearchType>> at : U.newArrayList(p.available().entrySet())) {
-					ResearchType rt0 = at.getKey();
-					for (ResearchType rt1 : U.newArrayList(at.getValue())) {
+				for (ResearchType at : U.newArrayList(p.available())) {
+					for (ResearchType rt1 : U.newArrayList(p.availableResearch.get(at))) {
 						if (rt1.has(ResearchType.PARAMETER_SPEED) && rt1.level == 0) {
-							at.getValue().remove(rt1);
+							p.availableResearch.get(at).remove(rt1);
 						}
 					}
-					if (rt0.has(ResearchType.PARAMETER_SPEED)) {
-						rt0.level = Math.max(rt0.level, 1);
-						p.available().remove(rt0);
+					if (at.has(ResearchType.PARAMETER_SPEED)) {
+						at.level = Math.max(at.level, 1);
+						p.availableResearch.remove(at);
 					}
 				}
 			}
@@ -2946,7 +2946,7 @@ public class World implements ModelLookup {
 			
 			Set<String> opExcept = U.newSet("ColonyShip");
 			// enable tech originally inteded by the definition
-			for (ResearchType rt : op.available().keySet()) {
+			for (ResearchType rt : op.available()) {
 				if (!opExcept.contains(rt.id)) {
 					p.add(rt);
 				}
@@ -2959,7 +2959,7 @@ public class World implements ModelLookup {
 				rt.nobuild = false;
 			}
 			
-			for (ResearchType rt : p.available().keySet()) {
+			for (ResearchType rt : p.available()) {
 				p.setRelated(rt);
 			}
 

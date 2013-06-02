@@ -581,7 +581,6 @@ public class QuickResearchPanel extends UIContainer {
 		
 		for (Planet p : commons.player().ownPlanets()) {
 			ps.add(p.getResearchStatistics());
-			ps.planetCount++;
 		}
 		
 		return ps;

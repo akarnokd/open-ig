@@ -358,4 +358,8 @@ public class EmptyScripting implements GameScripting {
 	public int playerTaxIncomeOverride(Planet planet, int simulatorValue) {
 		return simulatorValue;
 	}
+	@Override
+	public int fleetSpeedOverride(Fleet fleet, int speed) {
+		return speed;
+	}
 }

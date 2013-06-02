@@ -2708,9 +2708,9 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		}
 		
 		buildingsPanel.visible(planet().owner == player() 
-				&& showBuildingList && planet().war == null);
+				&& showBuildingList);
 		buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
-		infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && planet().war == null);
+		infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo);
 		
 		PlanetGround ground = planet().ground;
 		

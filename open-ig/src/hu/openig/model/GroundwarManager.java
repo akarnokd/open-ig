@@ -19,10 +19,12 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -62,6 +64,8 @@ public class GroundwarManager implements GroundwarWorld {
 	public boolean runAllocator;
 	/** The set of sounds to play after the simulation step was run. */
 	public final EnumSet<SoundType> playSounds = EnumSet.noneOf(SoundType.class);
+	/** The battle objects of those who are involved. */
+	public final Map<Integer, BattleInfo> battles = new HashMap<>();
 	/** 
 	 * The default cell-passable test which ignores moving units
 	 * and other units currently doing pathfinding calculation.

@@ -196,7 +196,13 @@ public final class Simulator {
 		double multiply = 1.0f;
 		double moraleBoost = 0;
 		int radar = 0;
-		long eqPlaytime = 6L * 60 * 60 * 1000;
+		long eqPlaytime = 20L * 60 * 60;
+		if (world.difficulty == Difficulty.NORMAL) {
+			eqPlaytime /= 2;
+		} else
+		if (world.difficulty == Difficulty.HARD) {
+			eqPlaytime /= 4;
+		}
 		double populationGrowthModifier = ps.populationGrowthModifier;
 		double planetTypeModifier = world.galaxyModel.getGrowth(planet.type.type, planet.race);
 		// apply fertility trait
@@ -212,7 +218,8 @@ public final class Simulator {
 
 		int speed = world.params().speed();
 
-		if (world.statistics.playTime.value >= eqPlaytime && (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
+		if (world.statistics.playTime.value >= eqPlaytime 
+				&& (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
 			if (planet.earthQuakeTTL <= 0) {
 				// cause earthquake once in every 12, 6 or 3 months
 				int eqDelta = 36 * 24 * 60;
@@ -924,7 +931,9 @@ public final class Simulator {
 	 * @return the speed
 	 */
 	static double getSpeed(Fleet f) {
-		return f.getSpeed() / 4d;
+		int fsp = f.getSpeed();
+		int fspo = f.owner.world.scripting.fleetSpeedOverride(f, fsp);
+		return fspo / 4d;
 	}
 	/**
 	 * Compute the tax compensation for the given player and planet numbers.

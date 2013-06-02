@@ -440,7 +440,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public boolean canBuild(BuildingType bt) {
 		return canBuild(this, surface.buildings.iterable(), 
-				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), 
+				owner != null ? this.owner.availableSet() : Collections.<ResearchType>emptyList(), 
 						bt, true);
 	}
 	/**
@@ -452,7 +452,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public boolean canBuildReplacement(BuildingType bt) {
 		return canBuild(this, surface.buildings.iterable(), 
-				owner != null ? this.owner.available().keySet() : Collections.<ResearchType>emptyList(), 
+				owner != null ? this.owner.availableSet() : Collections.<ResearchType>emptyList(), 
 						bt, false);
 	}
 	/**
@@ -1354,7 +1354,7 @@ public class Planet implements Named, Owned, HasInventory {
 	public void upgradeAll() {
 		ResearchType bestStation = null;
 		ResearchType orbitalFactory = world.research("OrbitalFactory");
-		for (ResearchType rt : owner.available().keySet()) {
+		for (ResearchType rt : owner.available()) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_STATIONS && rt != orbitalFactory) {
 				if (owner.inventoryCount(rt) > 0) {
 					if (bestStation == null || bestStation.productionCost < rt.productionCost) {
@@ -1388,7 +1388,7 @@ public class Planet implements Named, Owned, HasInventory {
 		
 		// if we have stations, deploy any available fighters
 		if (stations > 0) {
-			for (ResearchType rt : owner.available().keySet()) {
+			for (ResearchType rt : owner.available()) {
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					int placed = inventoryCount(rt, owner);
 					if (placed < world.params().fighterLimit()) {
@@ -1432,7 +1432,7 @@ public class Planet implements Named, Owned, HasInventory {
 		
 		ResearchType orbitalFactory = owner.world.researches.get("OrbitalFactory");
 
-		for (ResearchType rt : owner.available().keySet()) {
+		for (ResearchType rt : owner.available()) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				if (inventoryCount(rt, owner) < world.params().fighterLimit() && owner.inventoryCount(rt) > 0) {
 					newFighters = true;

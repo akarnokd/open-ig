@@ -75,6 +75,7 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.Parallels;
+import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
 import java.awt.Color;
@@ -1034,9 +1035,9 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		}
 		// remove all non-default technologies
-		for (ResearchType rt : new ArrayList<>(p.available().keySet())) {
+		for (ResearchType rt : U.newArrayList(p.available())) {
 			if (rt.level > 0 && rt.race.contains(p.race)) {
-				p.available().remove(rt);
+				p.removeAvailable(rt);
 			}
 		}
 		// enable colony ship
