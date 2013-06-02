@@ -176,7 +176,7 @@ public class ExplorationPlanner extends Planner {
 				return;
 			}
 			// find the best available detector
-			for (ResearchType rt : p.available().keySet()) {
+			for (ResearchType rt : world.availableResearch) {
 				if (rt.has(ResearchType.PARAMETER_DETECTOR)) {
 					if (sat == null || sat.getInt(ResearchType.PARAMETER_DETECTOR) < rt.getInt(ResearchType.PARAMETER_DETECTOR)) {
 						sat = rt;

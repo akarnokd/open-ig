@@ -602,7 +602,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyIncome);
+				return df.format(player().statistics.moneyIncome.value);
 			}
 		}
 		));
@@ -610,7 +610,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyTaxIncome);
+				return df.format(player().statistics.moneyTaxIncome.value);
 			}
 		}
 		));
@@ -618,7 +618,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyTradeIncome);
+				return df.format(player().statistics.moneyTradeIncome.value);
 			}
 		}
 		));
@@ -627,7 +627,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyDemolishIncome);
+				return df.format(player().statistics.moneyDemolishIncome.value);
 			}
 		}
 		));
@@ -635,7 +635,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneySellIncome);
+				return df.format(player().statistics.moneySellIncome.value);
 			}
 		}
 		));
@@ -644,7 +644,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneySpent);
+				return df.format(player().statistics.moneySpent.value);
 			}
 		}
 		));
@@ -652,7 +652,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyBuilding);
+				return df.format(player().statistics.moneyBuilding.value);
 			}
 		}
 		));
@@ -660,7 +660,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyRepair);
+				return df.format(player().statistics.moneyRepair.value);
 			}
 		}
 		));
@@ -668,7 +668,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyProduction);
+				return df.format(player().statistics.moneyProduction.value);
 			}
 		}
 		));
@@ -676,7 +676,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyResearch);
+				return df.format(player().statistics.moneyResearch.value);
 			}
 		}
 		));
@@ -684,7 +684,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.moneyUpgrade);
+				return df.format(player().statistics.moneyUpgrade.value);
 			}
 		}
 		));
@@ -692,7 +692,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.buildCount);
+				return df.format(player().statistics.buildCount.value);
 			}
 		}
 		));
@@ -700,7 +700,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.demolishCount);
+				return df.format(player().statistics.demolishCount.value);
 			}
 		}
 		));
@@ -708,7 +708,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.sellCount);
+				return df.format(player().statistics.sellCount.value);
 			}
 		}
 		));
@@ -716,7 +716,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.productionCount);
+				return df.format(player().statistics.productionCount.value);
 			}
 		}
 		));
@@ -724,7 +724,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.researchCount);
+				return df.format(player().statistics.researchCount.value);
 			}
 		}
 		));
@@ -732,7 +732,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.upgradeCount);
+				return df.format(player().statistics.upgradeCount.value);
 			}
 		}
 		));
@@ -740,7 +740,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsOwned);
+				return df.format(player().statistics.planetsOwned.value);
 			}
 		}
 		));
@@ -748,7 +748,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsDiscovered);
+				return df.format(player().statistics.planetsDiscovered.value);
 			}
 		}
 		));
@@ -756,7 +756,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsColonized);
+				return df.format(player().statistics.planetsColonized.value);
 			}
 		}
 		));
@@ -764,7 +764,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsConquered);
+				return df.format(player().statistics.planetsConquered.value);
 			}
 		}
 		));
@@ -772,7 +772,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsLost);
+				return df.format(player().statistics.planetsLost.value);
 			}
 		}
 		));
@@ -780,7 +780,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsLostAlien);
+				return df.format(player().statistics.planetsLostAlien.value);
 			}
 		}
 		));
@@ -788,7 +788,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsRevolted);
+				return df.format(player().statistics.planetsRevolted.value);
 			}
 		}
 		));
@@ -796,7 +796,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.planetsDied);
+				return df.format(player().statistics.planetsDied.value);
 			}
 		}
 		));
@@ -806,7 +806,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.spaceBattles);
+				return df.format(player().statistics.spaceBattles.value);
 			}
 		}
 		));
@@ -814,7 +814,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.spaceWins);
+				return df.format(player().statistics.spaceWins.value);
 			}
 		}
 		));
@@ -822,7 +822,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.spaceLoses);
+				return df.format(player().statistics.spaceLoses.value);
 			}
 		}
 		));
@@ -830,7 +830,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.spaceRetreats);
+				return df.format(player().statistics.spaceRetreats.value);
 			}
 		}
 		));
@@ -839,7 +839,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.groundBattles);
+				return df.format(player().statistics.groundBattles.value);
 			}
 		}
 		));
@@ -847,7 +847,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.spaceWins);
+				return df.format(player().statistics.spaceWins.value);
 			}
 		}
 		));
@@ -855,7 +855,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.spaceLoses);
+				return df.format(player().statistics.spaceLoses.value);
 			}
 		}
 		));
@@ -863,7 +863,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.fleetsCreated);
+				return df.format(player().statistics.fleetsCreated.value);
 			}
 		}
 		));
@@ -871,7 +871,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.fleetsLost);
+				return df.format(player().statistics.fleetsLost.value);
 			}
 		}
 		));
@@ -879,7 +879,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.shipsDestroyed);
+				return df.format(player().statistics.shipsDestroyed.value);
 			}
 		}
 		));
@@ -887,7 +887,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.shipsDestroyedCost) + " cr";
+				return df.format(player().statistics.shipsDestroyedCost.value) + " cr";
 			}
 		}
 		));
@@ -895,7 +895,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.shipsLost);
+				return df.format(player().statistics.shipsLost.value);
 			}
 		}
 		));
@@ -903,7 +903,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.shipsLostCost) + " cr";
+				return df.format(player().statistics.shipsLostCost.value) + " cr";
 			}
 		}
 		));
@@ -911,7 +911,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.buildingsDestroyed);
+				return df.format(player().statistics.buildingsDestroyed.value);
 			}
 		}
 		));
@@ -919,7 +919,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.buildingsDestroyedCost) + " cr";
+				return df.format(player().statistics.buildingsDestroyedCost.value) + " cr";
 			}
 		}
 		));
@@ -927,7 +927,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.buildingsLost);
+				return df.format(player().statistics.buildingsLost.value);
 			}
 		}
 		));
@@ -935,7 +935,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.buildingsLostCost) + " cr";
+				return df.format(player().statistics.buildingsLostCost.value) + " cr";
 			}
 		}
 		));
@@ -944,7 +944,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.vehiclesDestroyed);
+				return df.format(player().statistics.vehiclesDestroyed.value);
 			}
 		}
 		));
@@ -952,7 +952,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.vehiclesDestroyedCost) + " cr";
+				return df.format(player().statistics.vehiclesDestroyedCost.value) + " cr";
 			}
 		}
 		));
@@ -960,7 +960,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.vehiclesLost);
+				return df.format(player().statistics.vehiclesLost.value);
 			}
 		}
 		));
@@ -968,7 +968,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.vehiclesLostCost) + " cr";
+				return df.format(player().statistics.vehiclesLostCost.value) + " cr";
 			}
 		}
 		));
@@ -980,7 +980,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalBuilding);
+				return df.format(player().statistics.totalBuilding.value);
 			}
 		}
 		));
@@ -988,7 +988,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalAvailableBuilding);
+				return df.format(player().statistics.totalAvailableBuilding.value);
 			}
 		}
 		));
@@ -997,7 +997,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalPopulation);
+				return df.format(player().statistics.totalPopulation.value);
 			}
 		}
 		));
@@ -1005,7 +1005,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalAvailableHouse);
+				return df.format(player().statistics.totalAvailableHouse.value);
 			}
 		}
 		));
@@ -1013,7 +1013,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalWorkerDemand);
+				return df.format(player().statistics.totalWorkerDemand.value);
 			}
 		}
 		));
@@ -1021,7 +1021,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalAvailableEnergy);
+				return df.format(player().statistics.totalAvailableEnergy.value);
 			}
 		}
 		));
@@ -1029,7 +1029,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalEnergyDemand);
+				return df.format(player().statistics.totalEnergyDemand.value);
 			}
 		}
 		));
@@ -1038,7 +1038,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalAvailableFood);
+				return df.format(player().statistics.totalAvailableFood.value);
 			}
 		}
 		));
@@ -1046,7 +1046,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalAvailableHospital);
+				return df.format(player().statistics.totalAvailableHospital.value);
 			}
 		}
 		));
@@ -1054,7 +1054,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(player().statistics.totalAvailablePolice);
+				return df.format(player().statistics.totalAvailablePolice.value);
 			}
 		}
 		));
@@ -1065,7 +1065,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyIncome);
+				return df.format(world().statistics.moneyIncome.value);
 			}
 		}
 		));
@@ -1073,7 +1073,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyTaxIncome);
+				return df.format(world().statistics.moneyTaxIncome.value);
 			}
 		}
 		));
@@ -1081,7 +1081,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyTradeIncome);
+				return df.format(world().statistics.moneyTradeIncome.value);
 			}
 		}
 		));
@@ -1090,7 +1090,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyDemolishIncome);
+				return df.format(world().statistics.moneyDemolishIncome.value);
 			}
 		}
 		));
@@ -1098,7 +1098,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneySellIncome);
+				return df.format(world().statistics.moneySellIncome.value);
 			}
 		}
 		));
@@ -1107,7 +1107,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneySpent);
+				return df.format(world().statistics.moneySpent.value);
 			}
 		}
 		));
@@ -1115,7 +1115,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyBuilding);
+				return df.format(world().statistics.moneyBuilding.value);
 			}
 		}
 		));
@@ -1123,7 +1123,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyRepair);
+				return df.format(world().statistics.moneyRepair.value);
 			}
 		}
 		));
@@ -1131,7 +1131,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyProduction);
+				return df.format(world().statistics.moneyProduction.value);
 			}
 		}
 		));
@@ -1139,7 +1139,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyResearch);
+				return df.format(world().statistics.moneyResearch.value);
 			}
 		}
 		));
@@ -1147,7 +1147,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.moneyUpgrade);
+				return df.format(world().statistics.moneyUpgrade.value);
 			}
 		}
 		));
@@ -1155,7 +1155,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.buildCount);
+				return df.format(world().statistics.buildCount.value);
 			}
 		}
 		));
@@ -1163,7 +1163,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.demolishCount);
+				return df.format(world().statistics.demolishCount.value);
 			}
 		}
 		));
@@ -1171,7 +1171,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.sellCount);
+				return df.format(world().statistics.sellCount.value);
 			}
 		}
 		));
@@ -1179,7 +1179,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.productionCount);
+				return df.format(world().statistics.productionCount.value);
 			}
 		}
 		));
@@ -1187,7 +1187,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.researchCount);
+				return df.format(world().statistics.researchCount.value);
 			}
 		}
 		));
@@ -1195,7 +1195,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.upgradeCount);
+				return df.format(world().statistics.upgradeCount.value);
 			}
 		}
 		));
@@ -1204,7 +1204,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalBuilding);
+				return df.format(world().statistics.totalBuilding.value);
 			}
 		}
 		));
@@ -1212,7 +1212,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalAvailableBuilding);
+				return df.format(world().statistics.totalAvailableBuilding.value);
 			}
 		}
 		));
@@ -1221,7 +1221,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalPopulation);
+				return df.format(world().statistics.totalPopulation.value);
 			}
 		}
 		));
@@ -1229,7 +1229,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalAvailableHouse);
+				return df.format(world().statistics.totalAvailableHouse.value);
 			}
 		}
 		));
@@ -1237,7 +1237,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalWorkerDemand);
+				return df.format(world().statistics.totalWorkerDemand.value);
 			}
 		}
 		));
@@ -1245,7 +1245,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalAvailableEnergy);
+				return df.format(world().statistics.totalAvailableEnergy.value);
 			}
 		}
 		));
@@ -1253,7 +1253,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalEnergyDemand);
+				return df.format(world().statistics.totalEnergyDemand.value);
 			}
 		}
 		));
@@ -1262,7 +1262,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalAvailableFood);
+				return df.format(world().statistics.totalAvailableFood.value);
 			}
 		}
 		));
@@ -1270,7 +1270,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalAvailableHospital);
+				return df.format(world().statistics.totalAvailableHospital.value);
 			}
 		}
 		));
@@ -1278,7 +1278,7 @@ public class AchievementsScreen extends ScreenBase {
 				new Func1<Void, String>() {
 			@Override
 			public String invoke(Void value) {
-				return df.format(world().statistics.totalAvailablePolice);
+				return df.format(world().statistics.totalAvailablePolice.value);
 			}
 		}
 		));

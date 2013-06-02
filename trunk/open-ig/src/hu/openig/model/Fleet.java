@@ -406,7 +406,7 @@ public class Fleet implements Named, Owned, HasInventory {
 //			ii.shield = Math.max(0, ii.shieldMax());
 		}
 		
-		for (ResearchType rt : owner.available().keySet()) {
+		for (ResearchType rt : owner.available()) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 				int count = Math.min(30, owner.inventoryCount(rt));
 				deployItem(rt, owner, count);
@@ -421,7 +421,7 @@ public class Fleet implements Named, Owned, HasInventory {
 	 */
 	public void upgradeVehicles(int vehicleMax) {
 		VehiclePlan plan = new VehiclePlan();
-		plan.calculate(owner.available().keySet(), 
+		plan.calculate(owner.available(), 
 				owner.world.battle, 
 				vehicleMax, 
 				owner == owner.world.player ? Difficulty.HARD : owner.world.difficulty);

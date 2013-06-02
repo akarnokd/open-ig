@@ -1325,5 +1325,13 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}
 		return simulatorValue;
 	}
-	
+	@Override
+	public int fleetSpeedOverride(Fleet fleet, int speed) {
+		if ("Traders".equals(fleet.owner.id) 
+				&& player.traits.has("PreWarp")
+				&& !player.isAvailable("HyperDrive1")) {
+			return speed / 2;
+		}
+		return speed;
+	}
 }

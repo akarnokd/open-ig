@@ -90,4 +90,11 @@ public interface GameScripting extends GameScriptingEvents {
 	 * @return the modified tax income
 	 */
 	int playerTaxIncomeOverride(Planet planet, int simulatorValue);
+	/**
+	 * Modify the fleet's speed.
+	 * @param fleet the target fleet
+	 * @param speed the default computed speed
+	 * @return the overridden speed
+	 */
+	int fleetSpeedOverride(Fleet fleet, int speed);
 }

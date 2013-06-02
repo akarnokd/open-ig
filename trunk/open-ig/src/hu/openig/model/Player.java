@@ -57,7 +57,7 @@ public class Player {
 	/** The in-progress research. */
 	protected final Map<ResearchType, Research> researches = new LinkedHashMap<>();
 	/** The completed research. */
-	protected final Map<ResearchType, List<ResearchType>> availableResearch = new LinkedHashMap<>();
+	protected final AvailableResearches availableResearch = new AvailableResearches();
 	/** The fleets owned. */
 	public final Map<Fleet, FleetKnowledge> fleets = new LinkedHashMap<>();
 	/** The planets owned. */
@@ -210,12 +210,7 @@ public class Player {
 	 * @return true if available
 	 */
 	public boolean isAvailable(String researchId) {
-		for (ResearchType rt : availableResearch.keySet()) {
-			if (rt.id.equals(researchId)) {
-				return true;
-			}
-		}
-		return false;
+		return availableResearch.containsKey(researchId);
 	}
 	/**
 	 * @return the number of built buildings per type
@@ -410,7 +405,7 @@ public class Player {
 	 * @return true if this was a new research
 	 */
 	public boolean add(ResearchType rt) {
-		if (!availableResearch.containsKey(rt)) {
+		if (!availableResearch.containsKey(rt.id)) {
 			availableResearch.put(rt, new ArrayList<ResearchType>()) ;
 			return true;
 		}
@@ -452,8 +447,26 @@ public class Player {
 		availableResearch.put(rt, avail);
 	}
 	/** @return map set of of the available research. */
-	public Map<ResearchType, List<ResearchType>> available() {
-		return availableResearch;
+	public Iterable<ResearchType> available() {
+		return availableResearch.map().keySet();
+	}
+	/** @return map set of of the available research. */
+	public Set<ResearchType> availableSet() {
+		return availableResearch.map().keySet();
+	}
+	/**
+	 * Returns the number of available researches.
+	 * @return the available research count
+	 */
+	public int availableCount() {
+		return availableResearch.map().size();
+	}
+	/**
+	 * Removes the given available research.
+	 * @param rt the research to remove.
+	 */
+	public void removeAvailable(ResearchType rt) {
+		availableResearch.remove(rt);
 	}
 	/**
 	 * Returns a list of available researches used by the given research when it was completed.
@@ -635,7 +648,7 @@ public class Player {
 	 * Fill-up available technologies.
 	 */
 	public void populateProductionHistory() {
-		for (ResearchType rt : available().keySet()) {
+		for (ResearchType rt : available()) {
 			List<ResearchType> rts = productionHistory.get(rt.category.main);
 			if (rts == null) {
 				rts = new ArrayList<>();
@@ -752,7 +765,7 @@ public class Player {
 		if (runningResearch != null) {
 			result.runningResearch = runningResearch.id;
 		}
-		for (Map.Entry<ResearchType, List<ResearchType>> e : availableResearch.entrySet()) {
+		for (Map.Entry<ResearchType, List<ResearchType>> e : availableResearch.map().entrySet()) {
 			List<String> list = new ArrayList<>();
 			
 			for (ResearchType rt : e.getValue()) {
