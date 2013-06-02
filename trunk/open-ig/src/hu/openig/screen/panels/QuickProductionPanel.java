@@ -470,7 +470,6 @@ public class QuickProductionPanel extends UIContainer {
 		PlanetStatistics result = new PlanetStatistics();
 		for (Planet p : commons.player().ownPlanets()) {
 			result.add(p.getProductionStatistics());
-			result.planetCount++;
 		}
 
 		return result;
