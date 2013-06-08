@@ -69,7 +69,7 @@ public class World implements ModelLookup {
 	/** The time. */
 	public final GregorianCalendar time = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
 	/** The initial game date. */
-	public final Date initialDate = time.getTime();
+	public final Date initialDate;
 	/** The available planets. */
 	public final Planets planets = new Planets();
 	/** The researches. */
@@ -159,6 +159,7 @@ public class World implements ModelLookup {
 		time.set(GregorianCalendar.MINUTE, 50);
 		time.set(GregorianCalendar.SECOND, 0);
 		time.set(GregorianCalendar.MILLISECOND, 0);
+		initialDate = time.getTime();
 	}
 	/**
 	 * Load the game world's resources.
