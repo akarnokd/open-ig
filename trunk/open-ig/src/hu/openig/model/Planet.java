@@ -990,7 +990,7 @@ public class Planet implements Named, Owned, HasInventory {
 		if (bt != null) {
 			TileSet ts = bt.tileset.get(race);
 			if (ts != null) {
-				surface.placement.canPlaceBuilding(x - 1, y - 1, ts.normal.width + 2, ts.normal.height + 2);
+				return surface.placement.canPlaceBuilding(x - 1, y + 1, ts.normal.width + 2, ts.normal.height + 2);
 			}
 		}
 		return false;
