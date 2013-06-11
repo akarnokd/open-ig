@@ -3023,11 +3023,14 @@ public class World implements ModelLookup {
 		for (Player p : players.values()) {
 			p.ai = env.getAI(p);
 			p.ai.init(p);
-			p.populateProductionHistory();
 		}
 
 		applyTraits();
-		
+
+		for (Player p : players.values()) {
+			p.populateProductionHistory();
+		}
+
 		this.scripting = scripting;
 		this.scripting.init(player, null);
 	}
