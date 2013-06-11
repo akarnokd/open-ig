@@ -3414,6 +3414,6 @@ public class World implements ModelLookup {
 	}
 	@Override
 	public BuildingType building(String buildingTypeId) {
-		return buildingModel.find(buildingTypeId);
+		return buildingModel.get(buildingTypeId);
 	}
 }

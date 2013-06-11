@@ -347,4 +347,12 @@ public class BuildingModel {
 		}
 		return null;
 	}
+	/**
+	 * Returns the building definition or null if not found.
+	 * @param id the building type id
+	 * @return the definition or null if not found
+	 */
+	public BuildingType get(String id) {
+		return buildings.get(id);
+	}
 }
