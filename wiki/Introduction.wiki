@@ -7,13 +7,13 @@ Open-IG attempts to reproduce the feel of the original game while fixing many bu
 
 The project contains all necessary files to run the Open Imperium Galactica standalone: there is no need for the original game's files.
 
-It should run on any platform supporting *Java 7*: e.g., Windows, Linux and Mac. (Java 6 works but not recommended.) You need to download the Launcher only once (unless noted otherwise). From then on, the Launcher will update the game or itself.
+It should run on any platform supporting *Java 7*: e.g., Windows, Linux and Mac. You need to download the Launcher only once (unless noted otherwise). From then on, the Launcher will update the game or itself.
 
 If you run into problems, crashes, translation errors, or simply want to share some of your ideas and suggestions, please create an [https://code.google.com/p/open-ig/issues/list Issue]. You may use *english*, *hungarian* or german language in your reports.
 
 == System requirements ==
 === Minimum ===
- * Java JRE/JDK 1.7.X, (Java 6 not recommended)
+ * Java JRE/JDK 1.7
  * Any operating system with graphical user interface
  * A mouse with scroll wheel.
  * 768 MB RAM
