@@ -407,6 +407,7 @@ public class MainScreen extends ScreenBase {
 				multiplayerFrame.setVisible(true);
 			}
 		};
+		multiplayer.enabled(false);
 		
 		settings = new ClickLabel(20, "mainmenu.settings");
 		settings.action = new Action0() {

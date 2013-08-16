@@ -66,6 +66,8 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	public Building advanceOnBuilding;
 	/** Is the unit in guard mode? */
 	public boolean guard = true;
+	/** Is the unit selected? */
+	public boolean selected;
 	/** @return is this unit destroyed? */
 	public boolean isDestroyed() {
 		return hp <= 0;

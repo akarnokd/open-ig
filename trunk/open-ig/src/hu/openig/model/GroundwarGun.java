@@ -44,6 +44,8 @@ public class GroundwarGun extends GroundwarObject implements Owned {
 	public int index;
 	/** The total number of guns. */
 	public int count;
+	/** Is the unit selected? */
+	public boolean selected;
 	@Override
 	public Player owner() {
 		return owner;

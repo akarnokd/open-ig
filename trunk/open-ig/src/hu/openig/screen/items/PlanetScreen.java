@@ -10,29 +10,46 @@ package hu.openig.screen.items;
 
 
 import hu.openig.core.Action0;
+import hu.openig.core.Func1;
+import hu.openig.core.Func2;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
+import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.Allocator;
+import hu.openig.mechanics.BattleSimulator;
+import hu.openig.core.Pathfinding;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.BattleGroundTurret;
+import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.ExplosionType;
+import hu.openig.model.GroundwarExplosion;
 import hu.openig.model.GroundwarGun;
+import hu.openig.model.GroundwarRocket;
 import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarUnitType;
+import hu.openig.model.GroundwarWorld;
+import hu.openig.model.InventoryItem;
+import hu.openig.model.InventoryItems;
 import hu.openig.model.ModelUtils;
+import hu.openig.model.Owned;
 import hu.openig.model.Planet;
-import hu.openig.model.PlanetGround;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.PlanetSurface;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.ResourceAllocationStrategy;
 import hu.openig.model.Screens;
 import hu.openig.model.SelectionBoxMode;
 import hu.openig.model.SoundType;
-import hu.openig.model.SurfaceCell;
 import hu.openig.model.SurfaceEntity;
+import hu.openig.model.SurfaceEntityType;
+import hu.openig.model.SurfaceFeature;
 import hu.openig.model.Tile;
 import hu.openig.model.Trait;
 import hu.openig.model.TraitKind;
@@ -40,8 +57,7 @@ import hu.openig.model.WeatherType;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
-import hu.openig.screen.api.SurfaceEvents;
-import hu.openig.screen.panels.SurfaceRenderer;
+import hu.openig.screen.panels.WeatherOverlay;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIContainer;
@@ -56,13 +72,17 @@ import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Exceptions;
+import hu.openig.utils.ImageUtils;
+import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
@@ -77,23 +97,86 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * The planet surface rendering screen.
  * @author akarnokd, 2010.01.11.
  */
-public class PlanetScreen extends ScreenBase implements SurfaceEvents {
+public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Indicate if a component is drag sensitive. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface DragSensitive { }
+	/** 
+	 * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
+	 * the width points to +X and height points to -Y direction
+	 */
+//	Rectangle selectedRectangle;
+	/** The selection tile. */
+	Tile selection;
+	/** The placement tile for allowed area. */
+	Tile areaAccept;
+	/** The empty tile indicator. */
+	Tile areaEmpty;
+	/** The area where to deploy. */
+	Tile areaDeploy;
+	/** The placement tile for denied area. */
+	Tile areaDeny;
+	/** The current cell tile. */
+	Tile areaCurrent;
+	/** Used to place buildings on the surface. */
+	final Rectangle placementRectangle = new Rectangle();
+	/** The building bounding box. */
+	Rectangle buildingBox;
+	/** Are we in placement mode? */
+	boolean placementMode;
+	/** The simple blinking state. */
+	boolean blink;
+	/** The animation index. */
+	int animation;
 	/** The animation timer. */
 	Closeable animationTimer;
 	/** The animation timer. */
 	Closeable earthQuakeTimer;
+	/** Enable the drawing of black boxes behind building names and percentages. */
+	boolean textBackgrounds = true;
+	/** Render placement hints on the surface. */
+	boolean placementHints;
+	/** The unit selection rectangle start. */
+	Point selectionStart;
+	/** The unit selection rectangle end. */
+	Point selectionEnd;
+	/** The surface cell image. */
+	static class SurfaceCell {
+		/** The tile target. */
+		public int a;
+		/** The tile target. */
+		public int b;
+		/** The image to render. */
+		public BufferedImage image;
+		/** The Y coordinate compensation. */
+		public int yCompensation;
+	}
+	/** The surface cell helper. */
+	final SurfaceCell cell = new SurfaceCell();
+	/** The last mouse coordinate. */
+	int lastX;
+	/** The last mouse coordinate. */
+	int lastY;
+	/** Is the map dragged. */
+	boolean drag;
 	/** The originating location. */
 	Location orig;
 	/** The base rectangle. */
@@ -153,6 +236,10 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	/** The drawable radar rectangle. */
 	@DragSensitive
 	RadarRender radar;
+	/** The last surface. */
+	PlanetSurface lastSurface;
+	/** The lighting level. */
+	float alpha = 1.0f;
 	/** The currently selected building. */
 	Building currentBuilding;
 	/** The information panel. */
@@ -174,11 +261,83 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	boolean showInfo = true;
 	/** Show the screen navigation buttons? */
 	boolean showSidebarButtons = true;
+	/** The set where the vehicles may be placed. */
+	final Set<Location> battlePlacements = new HashSet<>();
+	/** The ground war units. */
+	final List<GroundwarUnit> units = new ArrayList<>();
+	/** The guns. */
+	final List<GroundwarGun> guns = new ArrayList<>();
+	/** The user is dragging a selection box. */
+	boolean selectionMode;
+	/** The current animating explosions. */
+	Set<GroundwarExplosion> explosions = new HashSet<>();
+	/** The active rockets. */
+	Set<GroundwarRocket> rockets = new HashSet<>();
 	/** The groundwar animation simulator. */
 	Closeable simulator;
+	/** The helper map to list ground units to be rendered at a specific location. */
+	final Map<Location, Set<GroundwarUnit>> unitsAtLocation = new HashMap<>();
+	/** The direct attack units. */
+	final EnumSet<GroundwarUnitType> directAttackUnits = EnumSet.of(
+			GroundwarUnitType.ARTILLERY,
+			GroundwarUnitType.TANK,
+			GroundwarUnitType.ROCKET_SLED,
+			GroundwarUnitType.SELF_REPAIR_TANK,
+			GroundwarUnitType.KAMIKAZE,
+			GroundwarUnitType.PARALIZER,
+			GroundwarUnitType.ROCKET_JAMMER
+	);
+	/** Units to ignore for winner checks. */
+	final EnumSet<GroundwarUnitType> winIngoreUnits = EnumSet.of(
+			GroundwarUnitType.RADAR,
+			GroundwarUnitType.RADAR_JAMMER
+	);
+	/** The set of units that may attempt to get closer to their target. */
+	final EnumSet<GroundwarUnitType> getCloserUnits = EnumSet.of(
+			GroundwarUnitType.TANK, 
+			GroundwarUnitType.KAMIKAZE,
+			GroundwarUnitType.SELF_REPAIR_TANK,
+			GroundwarUnitType.PARALIZER,
+			GroundwarUnitType.ROCKET_JAMMER
+	);
+	/** The list of remaining units to place. */
+	final LinkedList<GroundwarUnit> unitsToPlace = new LinkedList<>();
 	/** Start the battle. */
 	@DragSensitive
 	UIImageButton startBattle;
+	/** The simulation delay on normal speed. */
+	static final int SIMULATION_DELAY = 100;
+	/** The battle information. */
+	BattleInfo battle;
+	/** The time in sumulations steps during the paralize effect is in progress. */
+	static final int PARALIZED_TTL = 15 * 1000 / SIMULATION_DELAY;
+	/** How many steps to yield before replanning. */
+	static final int YIELD_TTL = 10 * 1000 / SIMULATION_DELAY;
+	/** List of requests about path planning. */
+	final Set<PathPlanning> pathsToPlan = new HashSet<>();
+	/** Plan only the given amount of paths per tick. */
+	static final int PATHS_PER_TICK = 10;
+	/** A mine. */
+	public static class Mine {
+		/** The owner. */
+		public Player owner;
+		/** The damage to inflict. */
+		public double damage;
+	}
+	/** The grouping of structures. */
+	final Map<Object, Integer> groups = new HashMap<>();
+	/**
+	 * The mine locations.
+	 */
+	final Map<Location, Mine> mines = new HashMap<>();
+	/** Set of minelayers currently placing a mine. */
+	final Set<GroundwarUnit> minelayers = new HashSet<>();
+	/** Indicate the deploy spray mode. */
+	boolean deploySpray;
+	/** Indicate the undeploy spray mode. */
+	boolean undeploySpray;
+	/** Display the commands given to units. */
+	boolean showCommand;
 	/** Stop the selected units. */
 	UIImageTabButton2 stopUnit;
 	/** Move the selected units. */
@@ -188,6 +347,10 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	/** The tank panel. */
 	@DragSensitive
 	TankPanel tankPanel;
+	/** Indicate the left click will select an attack target. */
+	boolean attackSelect;
+	/** Indicate the left click will select a move target. */
+	boolean moveSelect;
 	/** The zoom button. */
 	@DragSensitive
 	UIImageButton zoom;
@@ -195,10 +358,14 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	boolean zoomDirection;
 	/** Zoom to normal. */
 	boolean zoomNormal;
+	/** The weather overlay. */
+	WeatherOverlay weatherOverlay;
 	/** The weather sound is running? */
 	Action0 weatherSoundRunning;
-	/** The last surface. */
-	PlanetSurface lastSurface;
+	/** The map for pathfinding passability check. */
+	final Map<Location, Set<GroundwarUnit>> unitsForPathfinding = new HashMap<>();
+	/** Disable AI unit management. */
+	boolean noAI;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -225,8 +392,8 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			rep = true;
 			break;
 		case KeyEvent.VK_ESCAPE:
-			if (render.placementMode) {
-				render.placementMode = false;
+			if (placementMode) {
+				placementMode = false;
 				buildingsPanel.build.down = false;
 				e.consume();
 				rep = true;
@@ -251,12 +418,25 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			}
 			break;
 		case KeyEvent.VK_D:
-			doMineLayerDeploy();
-			rep = true;
+			if (e.isControlDown() && e.isShiftDown()) {
+				noAI = !noAI;
+			} else
+			if (e.isControlDown()) {
+				if (battle == null) {
+					doAddGuns();
+					doAddUnits();
+					planet().allocation = ResourceAllocationStrategy.BATTLE;
+					
+					rep = true;
+				}
+			} else {
+				doMineLayerDeploy();
+				rep = true;
+			}
 			break;
 		case KeyEvent.VK_C:
 			if (e.isControlDown()) {
-				render.showCommand = !render.showCommand;
+				showCommand = !showCommand;
 				rep = true;
 				e.consume();
 			}
@@ -305,14 +485,14 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		}
 		if (e.isControlDown()) {
 			if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
-				planet().ground.assignGroup(e.getKeyCode() - KeyEvent.VK_0, player());
+				assignGroup(e.getKeyCode() - KeyEvent.VK_0);
 				e.consume();
 				rep = true;
 			}
 		}
 		if (e.isShiftDown()) {
 			if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
-				planet().ground.recallGroup(e.getKeyCode() - KeyEvent.VK_0);
+				recallGroup(e.getKeyCode() - KeyEvent.VK_0);
 				e.consume();
 				rep = true;
 			}
@@ -331,14 +511,57 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	 * Issue mine laying orders to the selected mine layers.
 	 */
 	void doMineLayerDeploy() {
-		PlanetGround ground = planet().ground;
-		for (GroundwarUnit u : ground.selectedUnits) {
-			if (u.owner == player()) {
-				if (u.model.type == GroundwarUnitType.MINELAYER) {
-					ground.minelayers.add(u);
-				}
+		for (GroundwarUnit u : units) {
+//			if (u.owner != player()) {
+//				continue;
+//			}
+			if (u.selected && u.model.type == GroundwarUnitType.MINELAYER) {
+				minelayers.add(u);
 			}
 		}
+	}
+	/**
+	 * Zoom to 100%.
+	 */
+	protected void doZoomNormal() {
+		doZoom(1.0 - render.scale);
+		askRepaint();
+	}
+	/**
+	 * Zoom out by decreasing the scale by 0.1.
+	 */
+	protected void doZoomOut() {
+		doZoom(-0.1);
+		askRepaint();
+	}
+	/**
+	 * Perform a central zoom with a zoom delta.
+	 * @param scaleDelta the delta
+	 */
+	protected void doZoom(double scaleDelta) {
+		double pre = render.scale;
+		
+		int ex = render.width / 2;
+		int ey = render.height / 2;
+		
+		double mx = (ex - render.offsetX) * pre;
+		double my = (ey - render.offsetY) * pre;
+		
+		render.scale = Math.max(0.1, Math.min(2, render.scale + scaleDelta));
+		
+		double mx0 = (ex - render.offsetX) * render.scale;
+		double my0 = (ey - render.offsetY) * render.scale;
+		double dx = (mx - mx0) / pre;
+		double dy = (my - my0) / pre;
+		render.offsetX += (int)(dx);
+		render.offsetY += (int)(dy);
+	}
+	/**
+	 * Zoom in by increasing the scale by 0.1.
+	 */
+	protected void doZoomIn() {
+		doZoom(0.1);
+		askRepaint();
 	}
 
 	@Override
@@ -362,8 +585,17 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		}
 		focused = render;
 		
-		render.moveSelect = false;
-		render.attackSelect = false;
+		if (battle == null) {
+			startBattle.visible(false);
+			simulator = commons.register(SIMULATION_DELAY, new Action0() {
+				@Override
+				public void invoke() {
+					doGroundWarSimulation();
+				}
+			});
+		}
+		moveSelect = false;
+		attackSelect = false;
 		attackUnit.enabled(false);
 		moveUnit.enabled(false);
 		stopUnit.enabled(false);
@@ -374,7 +606,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		
 		cancelWeatherSound();
 		
-		render.placementMode = false;
+		placementMode = false;
 		buildingsPanel.build.down = false;
 
 		close0(animationTimer);
@@ -383,18 +615,1179 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		close0(earthQuakeTimer);
 		earthQuakeTimer = null;
 
+		clearGroundBattle();
+		
+		battle = null;
 		close0(simulator);
 		simulator = null;
 	}
 
+	/**
+	 * Clear the fields of ground battle.
+	 */
+	void clearGroundBattle() {
+		battlePlacements.clear();
+		guns.clear();
+		units.clear();
+		mines.clear();
+		minelayers.clear();
+		pathsToPlan.clear();
+		explosions.clear();
+		rockets.clear();
+		unitsAtLocation.clear();
+		unitsForPathfinding.clear();
+		unitsToPlace.clear();
+		groups.clear();
+	}
+
+	/**
+	 * Return the image (strip) representing this surface entry.
+	 * The default behavior returns the tile strips along its lower 'V' arc.
+	 * This method to be overridden to handle the case of damaged or in-progress buildings
+	 * @param se the surface entity
+	 * @param symbolic display a symbolic tile instead of the actual building image.
+	 * @param loc1 the the target cell location
+	 * @param cell the output for the image and the Y coordinate compensation
+	 */
+	public void getImage(SurfaceEntity se, boolean symbolic, Location loc1, SurfaceCell cell) {
+		if (se.type != SurfaceEntityType.BUILDING) {
+			cell.yCompensation = 27 - se.tile.imageHeight;
+			cell.a = loc1.x - se.virtualColumn;
+			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				se.tile.alpha = alpha;
+				cell.image = se.tile.getStrip(se.virtualRow);
+				return;
+			} else
+			if (se.virtualRow == se.tile.height - 1) {
+				se.tile.alpha = alpha;
+				cell.image = se.tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+				return;
+			}
+			cell.image = null;
+			return;
+		}
+		if (symbolic) {
+			Tile tile = null;
+			if (knowledge(planet(), PlanetKnowledge.BUILDING) < 0) {
+				tile = se.building.type.minimapTiles.destroyed;
+			} else
+			if (se.building.isConstructing()) {
+				if (se.building.isSeverlyDamaged()) {
+					tile = se.building.type.minimapTiles.constructingDamaged;
+				} else {
+					tile = se.building.type.minimapTiles.constructing;
+				}
+			} else {
+				if (se.building.isDestroyed()) {
+					tile = se.building.type.minimapTiles.destroyed;
+				} else
+				if (se.building.isDamaged()) {
+					tile = se.building.type.minimapTiles.damaged;
+				} else
+				if (se.building.isOperational()) {
+					tile = se.building.type.minimapTiles.normal;
+				} else {
+					tile = se.building.type.minimapTiles.inoperable;
+				}
+			}
+			
+			cell.yCompensation = 27 - tile.imageHeight;
+			cell.image = tile.getStrip(0);
+			cell.a = loc1.x;
+			cell.b = loc1.y;
+			
+			return;
+		} else
+		if (knowledge(planet(), PlanetKnowledge.BUILDING) < 0 && (battle == null || startBattle.visible())) {
+			Tile tile =  se.building.scaffolding.normal.get(0);
+			cell.yCompensation = 27 - tile.imageHeight;
+			tile.alpha = alpha;
+			cell.image = tile.getStrip(0);
+			cell.a = loc1.x;
+			cell.b = loc1.y;
+			return;
+		}
+
+		if (se.building.isConstructing()) {
+			Tile tile = null;
+			List<Tile> scaffolding = null;
+			if (se.building.isSeverlyDamaged()) {
+				scaffolding = se.building.scaffolding.damaged;
+			} else {
+				scaffolding = se.building.scaffolding.normal;
+			}
+			
+			int index0 = (int)(se.building.hitpoints * 1L * scaffolding.size() / se.building.type.hitpoints);
+			int area = se.building.width() * se.building.height();
+			
+			int index1 = (se.building.width() * se.virtualRow + se.virtualColumn) * scaffolding.size() / area;
+			
+			if (se.building.hitpoints * 100 < se.building.type.hitpoints) {
+				index0 = 0;
+				index1 = 0;
+			}
+			
+			tile = scaffolding.get((index0 + index1) % scaffolding.size());
+			
+			cell.yCompensation = 27 - tile.imageHeight;
+			tile.alpha = alpha;
+			cell.image = tile.getStrip(0);
+			cell.a = loc1.x;
+			cell.b = loc1.y;
+		} else {
+			Tile tile = null;
+			if (se.building.isSeverlyDamaged()) {
+				tile = se.building.tileset.damaged;
+			} else 
+			if (se.building.isOperational()) {
+				tile = se.building.tileset.normal;
+			} else {
+				tile = se.building.tileset.nolight;
+			}
+			cell.yCompensation = 27 - tile.imageHeight;
+			cell.a = loc1.x - se.virtualColumn;
+			cell.b = loc1.y + se.virtualRow - se.tile.height + 1;
+			if (se.virtualColumn == 0 && se.virtualRow < se.tile.height) {
+				tile.alpha = alpha;
+				cell.image = tile.getStrip(se.virtualRow);
+				return;
+			} else
+			if (se.virtualRow == se.tile.height - 1) {
+				tile.alpha = alpha;
+				cell.image = tile.getStrip(se.tile.height - 1 + se.virtualColumn);
+				return;
+			}
+			cell.image = null;
+			return;
+		}
+			
+	}
+	/**
+	 * Compute the bounding rectangle of the rendered building object.
+	 * @param loc the location to look for a building.
+	 * @return the bounding rectangle or null if the target does not contain a building
+	 */
+	public Rectangle getBoundingRect(Location loc) {
+		SurfaceEntity se = surface().buildingmap.get(loc);
+		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+			int a0 = loc.x - se.virtualColumn;
+			int b0 = loc.y + se.virtualRow;
+			
+			int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
+			int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
+			
+			return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
+		}
+		return null;
+	}
+	/**
+	 * Returns the bounding rectangle of the building in non-scaled screen coordinates.
+	 * @param b the building to test
+	 * @return the bounding rectangle
+	 */
+	public Rectangle buildingRectangle(Building b) {
+		int a0 = b.location.x;
+		int b0 = b.location.y;
+		int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
+		int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - b.tileset.normal.height + 1) + 27;
+		
+		return new Rectangle(x, y - b.tileset.normal.imageHeight, b.tileset.normal.imageWidth, b.tileset.normal.imageHeight);
+	}
+	/**
+	 * Returns the bounding rectangle of the given surface feature in non-scaled screen coordinates.
+	 * @param f the surface feature
+	 * @return the bounding rectangle
+	 */
+	public Rectangle featureRectangle(SurfaceFeature f) {
+		int a0 = f.location.x;
+		int b0 = f.location.y;
+		int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
+		int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - f.tile.height + 1) + 27;
+		return new Rectangle(x, y - f.tile.imageHeight, f.tile.imageWidth, f.tile.imageHeight);
+	}
+	/**
+	 * Return a building instance at the specified location.
+	 * @param loc the location
+	 * @return the building object or null
+	 */
+	public Building getBuildingAt(Location loc) {
+		SurfaceEntity se = surface().buildingmap.get(loc);
+		if (se != null && se.type == SurfaceEntityType.BUILDING) {
+			return se.building;
+		}
+		return null;
+	}
+	/**
+	 * The surface renderer component.
+	 * @author akarnokd, Mar 27, 2011
+	 */
+	class SurfaceRenderer extends UIComponent {
+		/** The current scaling factor. */
+		double scale = 1;
+		/** The offset X. */
+		int offsetX;
+		/** The offset Y. */
+		int offsetY;
+		/**
+		 * Get a location based on the mouse coordinates.
+		 * @param mx the mouse X coordinate
+		 * @param my the mouse Y coordinate
+		 * @return the location
+		 */
+		public Location getLocationAt(int mx, int my) {
+			if (surface() != null) {
+				double mx0 = mx - (surface().baseXOffset + 28) * scale - offsetX; // Half left
+				double my0 = my - (surface().baseYOffset + 27) * scale - offsetY; // Half up
+				int a = (int)Math.floor(Tile.toTileX((int)mx0, (int)my0) / scale);
+				int b = (int)Math.floor(Tile.toTileY((int)mx0, (int)my0) / scale) ;
+				return Location.of(a, b);
+			}
+			return null;
+		}
+		@Override
+		public boolean mouse(UIMouse e) {
+			boolean rep = false;
+			switch (e.type) {
+			case MOVE:
+			case DRAG:
+				if (drag || commons.isPanningEvent(e)) {
+					if (!drag) {
+						drag = true;
+						lastX = e.x;
+						lastY = e.y;
+						doDragMode(true);
+					}
+					offsetX += e.x - lastX;
+					offsetY += e.y - lastY;
+					
+					lastX = e.x;
+					lastY = e.y;
+					rep = true;
+				} else
+				if (placementMode) {
+					int mx = e.x;
+					int my = e.y;
+					if (placementRectangle.width % 2 == 0) {
+						mx += 28;
+					}
+					if (placementRectangle.height % 2 == 0) {
+						my += 13;
+					}
+					Location current = getLocationAt(mx, my);
+					if (current != null) {
+						placementRectangle.x = current.x - placementRectangle.width / 2;
+						placementRectangle.y = current.y + placementRectangle.height / 2;
+						rep = true;
+					}
+				} else
+				if (selectionMode) {
+					selectionEnd = new Point(e.x, e.y);
+					rep = true;
+				}
+				if (deploySpray) {
+					placeUnitAt(e.x, e.y);
+					rep = true;
+				} else
+				if (undeploySpray) {
+					removeUnitAt(e.x, e.y);
+					rep = true;
+				}
+				break;
+			case DOUBLE_CLICK:
+				if (e.has(Button.LEFT)) {
+					SelectionBoxMode mode = SelectionBoxMode.NEW;
+					if (e.has(Modifier.SHIFT)) {
+						mode = SelectionBoxMode.ADD;
+					} else
+					if (e.has(Modifier.CTRL)) {
+						mode = SelectionBoxMode.SUBTRACT;
+					}
+					doSelectUnitType(e.x, e.y, mode);
+					rep = true;
+				}
+				break;
+			case DOWN:
+//				if (battle != null) { FIXME only if battle
+					if (e.has(Button.LEFT)) {
+						if (moveSelect) {
+							doMoveSelectedUnits(e.x, e.y);
+							rep = true;
+							break;
+						} else
+						if (attackSelect) {
+							if (e.has(Modifier.CTRL)) {
+								doAttackMoveSelectedUnits(e.x, e.y);
+							} else {
+								doAttackWithSelectedUnits(e.x, e.y);
+							}
+							rep = true;
+							break;
+						} else {
+							toggleUnitPlacementAt(e.x, e.y);
+						}
+					} else
+					if (e.has(Button.RIGHT)) {
+						if (config.classicControls) {
+							Building b = buildingAt(e.x, e.y);
+							if (b != null) {
+								if (planet().owner == selectionOwner()) {
+									doMoveSelectedUnits(e.x, e.y);
+									rep = true;
+								} else {
+									doAttackWithSelectedUnits(e.x, e.y);
+									rep = true;
+								}
+							} else {
+								GroundwarUnit u = unitAt(e.x, e.y);
+								if (u != null && u.owner != selectionOwner()) {
+									doAttackWithSelectedUnits(e.x, e.y);
+									rep = true;
+								} else {
+									if (e.has(Modifier.CTRL)) {
+										doAttackMoveSelectedUnits(e.x, e.y);
+									} else {
+										doMoveSelectedUnits(e.x, e.y);
+									}
+									rep = true;
+								}
+							}
+						} else {
+							if (e.has(Modifier.SHIFT) && !e.has(Modifier.CTRL)) {
+								doMoveSelectedUnits(e.x, e.y);
+								rep = true;
+							} else 
+							if (e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
+								doAttackWithSelectedUnits(e.x, e.y);
+								rep = true;
+							} else 
+							if (e.has(Modifier.CTRL) && e.has(Modifier.SHIFT)) {
+								doAttackMoveSelectedUnits(e.x, e.y);
+								rep = true;
+							} else {
+								drag = true;
+								lastX = e.x;
+								lastY = e.y;
+								doDragMode(true);
+							}
+						}
+					}
+//				} else FIXME only if battle
+				if (e.has(Button.MIDDLE) && config.classicControls == e.has(Modifier.CTRL)) {
+					render.offsetX = -(surface().boundingRectangle.width - width) / 2;
+					render.offsetY = -(surface().boundingRectangle.height - height) / 2;
+					scale = 1;
+					rep = true;
+				}
+				if (e.has(Button.LEFT)) {
+					if (placementMode) {
+						placeBuilding(e.has(Modifier.SHIFT));	
+					} else {
+						if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 
+								|| planet().owner == player()) {
+							Location loc = getLocationAt(e.x, e.y);
+							buildingBox = getBoundingRect(loc);
+							doSelectBuilding(getBuildingAt(loc));
+							if (currentBuilding != null) {
+								buttonSound(SoundType.CLICK_MEDIUM_2);
+							}
+							rep = true;
+						} else {
+							doSelectBuilding(null);
+						}
+//						if (battle != null && !startBattle.visible()) { FIXME only if battle
+							if (!deploySpray && !undeploySpray) {
+								selectionMode = true;
+								selectionStart = new Point(e.x, e.y);
+								selectionEnd = selectionStart;
+								rep = true;
+								doDragMode(true);
+							}
+//						} FIXME only if battle
+					}
+				}
+				break;
+			case UP:
+				if (e.has(Button.RIGHT) || e.has(Button.MIDDLE)) {
+					drag = false;
+					doDragMode(false);
+				}
+				if (e.has(Button.LEFT) && selectionMode) {
+					selectionMode = false;
+					selectionEnd = new Point(e.x, e.y);
+					SelectionBoxMode mode = SelectionBoxMode.NEW;
+					if (e.has(Modifier.SHIFT)) {
+						mode = SelectionBoxMode.ADD;
+					} else
+					if (e.has(Modifier.CTRL)) {
+						mode = SelectionBoxMode.SUBTRACT;
+					}
+					selectUnits(mode);
+					doDragMode(false);
+				}
+				if (e.has(Button.LEFT)) {
+					deploySpray = false;
+					undeploySpray = false;
+				}
+				rep = true;
+				break;
+			case LEAVE:
+				drag = false;
+				doDragMode(false);
+				if (selectionMode) {
+					selectionMode = false;
+					selectionEnd = new Point(e.x, e.y);
+					SelectionBoxMode mode = SelectionBoxMode.NEW;
+					if (e.has(Modifier.SHIFT)) {
+						mode = SelectionBoxMode.ADD;
+					} else
+					if (e.has(Modifier.CTRL)) {
+						mode = SelectionBoxMode.SUBTRACT;
+					}
+					selectUnits(mode);
+					rep = true;
+				}
+				break;
+			case WHEEL:
+				if (e.has(Modifier.CTRL)) {
+					double pre = scale;
+					int ox = offsetX;
+					int oy = offsetY;
+					double mx = (e.x - ox) / pre;
+					double my = (e.y - oy) / pre;
+					if (e.z < 0) {
+						doZoomIn();
+					} else {
+						doZoomOut();
+					}
+					offsetX = (int)(e.x - scale * mx);
+					offsetY = (int)(e.y - scale * my);
+					rep = true;
+				} else
+				if (e.has(Modifier.SHIFT)) {
+					if (e.z < 0) {
+						offsetX += 54;
+					} else {
+						offsetX -= 54;
+					}
+					rep = true;
+				} else {
+					if (e.z < 0) {
+						offsetY += 28 * 3;
+					} else {
+						offsetY -= 28 * 3;
+					}
+					rep = true;
+				}
+				break;
+			default:
+			}
+			return rep;
+		}
+		@Override
+		public void draw(Graphics2D g2) {
+			PlanetSurface surface = surface();
+			if (surface == null) {
+				return;
+			}
+
+			PlanetStatistics ps = update(surface);
+			
+			computeAlpha();
+			
+			RenderTools.setInterpolation(g2, true);
+			
+			Shape save0 = g2.getClip();
+			g2.clipRect(0, 0, width, height);
+			
+			g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
+			g2.fillRect(0, 0, width, height);
+			
+			
+			AffineTransform at = g2.getTransform();
+			g2.translate(offsetX, offsetY);
+			g2.scale(scale, scale);
+			
+			int x0 = surface.baseXOffset;
+			int y0 = surface.baseYOffset;
+
+			if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
+			
+				drawTiles(g2, surface, x0, y0);
+				if (placementHints) {
+					for (Location loc : surface.basemap.keySet()) {
+						if (!surface().placement.canPlaceBuilding(loc.x, loc.y)) {
+							int x = x0 + Tile.toScreenX(loc.x, loc.y);
+							int y = y0 + Tile.toScreenY(loc.x, loc.y);
+							g2.drawImage(areaDeny.getStrip(0), x, y, null);
+						}
+					}
+				}
+				if (battlePlacements.size() > 0) {
+					for (Location loc : battlePlacements) {
+						int x = x0 + Tile.toScreenX(loc.x, loc.y);
+						int y = y0 + Tile.toScreenY(loc.x, loc.y);
+						g2.drawImage(areaDeploy.getStrip(0), x, y, null);
+					}
+				}
+//				if (!placementMode) {
+//					if (selectedRectangle != null) {
+//						for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
+//							for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
+//								int x = x0 + Tile.toScreenX(i, j);
+//								int y = y0 + Tile.toScreenY(i, j);
+//								g2.drawImage(selection.getStrip(0), x, y, null);
+//							}
+//						}
+//					}
+//				}
+				if (placementMode) {
+					if (placementRectangle.width > 0) {
+						for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
+							for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
+								
+								BufferedImage img = areaAccept.getStrip(0);
+								// check for existing building
+								if (!surface().placement.canPlaceBuilding(i, j)) {
+									img = areaDeny.getStrip(0);
+								}
+								
+								int x = x0 + Tile.toScreenX(i, j);
+								int y = y0 + Tile.toScreenY(i, j);
+								g2.drawImage(img, x, y, null);
+							}
+						}
+					}
+				}
+				drawBattleHelpers(g2, x0, y0);
+				if (config.showBuildingName 
+						&& (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0 
+						|| (battle != null && !startBattle.visible() && !battle.isGroundwarComplete()))) {
+					drawBuildingHelpers(g2, surface);
+				}
+				// paint red on overlapping images of buildings, land-features and vehicles
+
+				if (!units.isEmpty()) {
+					drawHiddenUnitIndicators(g2);
+				}
+
+				drawWeather(g2, surface);
+				
+				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
+					g2.setColor(Color.RED);
+					g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
+				}
+				
+				g2.setTransform(at);
+				g2.setColor(Color.BLACK);
+				
+				String pn = planet().name;
+				int nameHeight = 14;
+				int nameWidth = commons.text().getTextWidth(nameHeight, pn);
+				int nameLeft = (width - nameWidth) / 2;
+				g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
+				
+				int pc = TextRenderer.GRAY;
+				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && planet().owner != null) {
+					pc = planet().owner.color;
+				}
+				commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
 	
+				if (ps != null && planet().owner == player()) {
+					renderProblems(g2, ps);
+				}
+			} else {
+				g2.setTransform(at);
+				
+				g2.setColor(new Color(0, 0, 0, 128));
+				
+				String installSatellite = get("planet.install_satellite_1");
+				int tw = commons.text().getTextWidth(14, installSatellite);
+				int tx = (width - tw) / 2;
+				int ty = (height - 14) / 2 - 12;
+				g2.fillRect(tx - 5, ty - 5, tw + 10, 24);
+				commons.text().paintTo(g2, tx, ty, 14, TextRenderer.WHITE, installSatellite);
+				
+				installSatellite = get("planet.install_satellite_2");
+				tw = commons.text().getTextWidth(14, installSatellite);
+				tx = (width - tw) / 2;
+				ty = (height - 14) / 2 + 12;
+				g2.fillRect(tx - 5, ty - 5, tw + 10, 24);
+				commons.text().paintTo(g2, tx, ty, 14, TextRenderer.WHITE, installSatellite);
+			}
+
+			if (selectionMode) {
+				g2.setColor(new Color(255, 255, 255, 128));
+				g2.fill(selectionRectangle());
+			}
+
+			g2.setClip(save0);
+			RenderTools.setInterpolation(g2, false);
+			
+			if (prev.visible() && next.visible()) {
+				g2.setColor(Color.BLACK);
+				g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2, 
+						prev.width + next.width + 6, prev.height + zoom.height + 8);
+			} else 
+			if (zoom.visible()) {
+				g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2, 
+						zoom.width + 4, zoom.height + 2);
+			}
+			if (battle != null && startBattle.visible()) {
+				drawNextVehicleToDeploy(g2);
+			}
+			
+			
+		}
+		/**
+		 * Draw the next vehicle's image to deploy.
+		 * @param g2 the graphics context
+		 */
+		void drawNextVehicleToDeploy(Graphics2D g2) {
+			if (!unitsToPlace.isEmpty()) {
+				BufferedImage img = commons.colony().smallInfoPanel;
+				int x = buildingsPanel.x;
+				int y = buildingsPanel.y;
+				int w = img.getWidth();
+				int h = img.getHeight();
+				g2.drawImage(img, x, y, null);
+
+				String s = unitsToPlace.size() + " / " + (unitsToPlace.size() + units.size());
+				int sx = x + (w - commons.text().getTextWidth(7, s)) / 2;
+				commons.text().paintTo(g2, sx, y + 10, 7, TextRenderer.YELLOW, s);
+
+				
+				GroundwarUnit u = unitsToPlace.getFirst();
+				
+				BufferedImage ui = u.matrix()[0][0];
+				int ux = x + (w - ui.getWidth()) / 2;
+				int uy = y + 24;
+				
+				g2.drawImage(ui, ux, uy, null);
+				
+				s = u.item.type.name;
+				sx = x + (w - commons.text().getTextWidth(7, s)) / 2;
+				commons.text().paintTo(g2, sx, y + h - 14, 7, TextRenderer.YELLOW, s);
+			}
+		}
+		/**
+		 * Draw hidden unit indicator red pixels.
+		 * @param g2 the graphics context
+		 */
+		void drawHiddenUnitIndicators(Graphics2D g2) {
+			for (GroundwarUnit u : units) {
+				Rectangle ur = unitRectangle(u);
+
+				
+				// compensate rectangle to have only the trimmed image
+				BufferedImage bi = u.get();
+				int tx = (u.model.width - bi.getWidth()) / 2;
+				int ty = (u.model.height - bi.getHeight()) / 2;
+
+				ur.x += tx;
+				ur.y += ty;
+				ur.width = bi.getWidth();
+				ur.height = bi.getHeight();
+				
+				for (Building b : surface().buildings.iterable()) {
+					if (u.y <= b.location.y - b.tileset.normal.height
+							|| u.x < b.location.x
+							) {
+						continue;
+					}
+					Rectangle bur = buildingRectangle(b);
+					if (ur.intersects(bur)) {
+						Rectangle is = ur.intersection(bur);
+						BufferedImage ci = collisionImage(u, ur, b.tileset.normal, bur, is);
+						if (ci != null) {
+							g2.drawImage(ci, is.x, is.y, null);
+						}
+					}
+				}
+				for (SurfaceFeature sf : surface().features) {
+					if (sf.tile.width > 1 || sf.tile.height > 1) {
+						if (u.y <= sf.location.y - sf.tile.height
+								|| u.x < sf.location.x
+								) {
+							continue;
+						}
+						Rectangle fur = featureRectangle(sf);
+						if (ur.intersects(fur)) {
+							Rectangle is = ur.intersection(fur);
+							BufferedImage ci = collisionImage(u, ur, sf.tile, fur, is);
+							if (ci != null) {
+								g2.drawImage(ci, is.x, is.y, null);
+							}
+						}
+					}
+				}
+			}
+		}
+		/**
+		 * Draw building name, upgrade level, damage and allocation status.
+		 * @param g2 the graphics context
+		 * @param surface the surface object
+		 */
+		void drawBuildingHelpers(Graphics2D g2, PlanetSurface surface) {
+			for (Building b : surface.buildings.iterable()) {
+				Rectangle r = getBoundingRect(b.location);
+				int nameSize = 10;
+				int nameLen = commons.text().getTextWidth(nameSize, b.type.name);
+				int h = (r.height - nameSize) / 2;
+				int nx = r.x + (r.width - nameLen) / 2;
+				int ny = r.y + h;
+				
+				Composite compositeSave = null;
+				Composite a1 = null;
+				
+				if (textBackgrounds) {
+					compositeSave = g2.getComposite();
+					a1 = AlphaComposite.SrcOver.derive(0.8f);
+					g2.setComposite(a1);
+					g2.setColor(Color.BLACK);
+					g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
+					g2.setComposite(compositeSave);
+				}
+				
+				commons.text().paintTo(g2, nx + 1, ny + 1, nameSize, 0xFF8080FF, b.type.name);
+				commons.text().paintTo(g2, nx, ny, nameSize, 0xD4FC84, b.type.name);
+
+				// paint upgrade level indicator
+				int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
+				int ux = r.x + (r.width - uw) / 2;
+				int uy = r.y + h - commons.colony().upgrade.getHeight() - 4; 
+
+				String percent = null;
+				int color = 0xFF8080FF;
+				if (b.isConstructing()) {
+					percent = (b.buildProgress * 100 / b.type.hitpoints) + "%";
+				} else
+				if (b.hitpoints < b.type.hitpoints) {
+					percent = ((b.type.hitpoints - b.hitpoints) * 100 / b.type.hitpoints) + "%";
+					if (!blink) {
+						color = 0xFFFF0000;
+					}
+				}
+				if (percent != null) {
+					int pw = commons.text().getTextWidth(10, percent);
+					int px = r.x + (r.width - pw) / 2;
+					int py = uy - 14;
+
+					if (textBackgrounds) {
+						g2.setComposite(a1);
+						g2.setColor(Color.BLACK);
+						g2.fillRect(px - 2, py - 2, pw + 4, 15);
+						g2.setComposite(compositeSave);
+					}
+					
+					commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
+					commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
+				}
+				if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
+					for (int i = 1; i <= b.upgradeLevel; i++) {
+						g2.drawImage(commons.colony().upgrade, ux, uy, null);
+						ux += commons.colony().upgrade.getWidth();
+					}
+					
+					if (b.enabled) {
+						int ey = r.y + h + 11;
+						int w = 0;
+						if (b.isEnergyShortage()) {
+							w += commons.colony().unpowered[0].getWidth();
+						}
+						if (b.isWorkerShortage()) {
+							w += commons.colony().worker[0].getWidth();
+						}
+						if (b.repairing) {
+							w += commons.colony().repair[0].getWidth();
+						}
+						int ex = r.x + (r.width - w) / 2;
+						
+						// paint power shortage
+						if (b.isEnergyShortage()) {
+							g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
+							ex += commons.colony().unpowered[0].getWidth();
+						}
+						if (b.isWorkerShortage()) {
+							g2.drawImage(commons.colony().worker[blink ? 0 : 1], ex, ey, null);
+							ex += commons.colony().worker[0].getWidth();
+						}
+						if (b.repairing) {
+							g2.drawImage(commons.colony().repair[(animation % 3)], ex, ey, null);
+							ex += commons.colony().repair[0].getWidth();
+						}
+					} else {
+						int ey = r.y + h + 13;
+						String offline = get("buildings.offline");
+						int w = commons.text().getTextWidth(10, offline);
+						color = 0xFF8080FF;
+						if (!blink) {
+							color = 0xFFFF0000;
+						}
+						int ex = r.x + (r.width - w) / 2;
+						if (textBackgrounds) {
+							g2.setComposite(a1);
+							g2.setColor(Color.BLACK);
+							g2.fillRect(ex - 2, ey - 2, w + 4, 15);
+							g2.setComposite(compositeSave);
+						}
+						
+						commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
+						commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
+						
+						if (b.repairing) {
+							g2.drawImage(commons.colony().repair[(animation % 3)], ex + w + 3, ey, null);
+						}
+						
+					}
+				}
+			}
+		}
+		/**
+		 * Draw battle helper objects such as paths and attack targets.
+		 * @param g2 the graphics context
+		 * @param x0 the base x offset
+		 * @param y0 the base y offset
+		 */
+		void drawBattleHelpers(Graphics2D g2, int x0, int y0) {
+			// unit selection boxes}
+			BufferedImage selBox = commons.colony().selectionBoxLight;
+			for (GroundwarUnit u : units) {
+				if (showCommand) {
+					g2.setColor(u.attackMove != null ? Color.RED : Color.WHITE);
+					for (int i = 0; i < u.path.size() - 1; i++) {
+						Location l0 = u.path.get(i);
+						Location l1 = u.path.get(i + 1);
+						
+						int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
+						int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
+						int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
+						int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
+						
+						g2.drawLine(xa, ya, xb, yb);
+					}
+					if (u.attackBuilding != null) {
+						Point gp = centerOf(u.attackBuilding);
+						Point up = centerOf(u);
+						g2.setColor(Color.RED);
+						g2.drawLine(gp.x, gp.y, up.x, up.y);
+						
+					} else
+					if (u.attackUnit != null) {
+						Point gp = centerOf(u.attackUnit);
+						Point up = centerOf(u);
+						g2.setColor(Color.RED);
+						g2.drawLine(gp.x, gp.y, up.x, up.y);
+					}
+				}
+				if (u.selected) {
+					Point p = unitPosition(u);
+					g2.drawImage(selBox, p.x, p.y, null);
+				}
+			}
+			for (GroundwarGun g : guns) {
+				if (g.selected) {
+					Rectangle r = gunRectangle(g);
+					g2.drawImage(selBox, r.x + (r.width - selBox.getWidth()) / 2, r.y + (r.height - selBox.getHeight()) / 2, null);
+				}
+			}
+		}
+		/**
+		 * Render the weather effects.
+		 * @param g2 the graphics context
+		 * @param surface the current surface
+		 */
+		void drawWeather(Graphics2D g2, PlanetSurface surface) {
+			if (planet().weatherTTL > 0 && planet().type.weatherDrop != null) {
+				weatherOverlay.updateBounds(surface.boundingRectangle.width, surface.boundingRectangle.height);
+				weatherOverlay.type = planet().type.weatherDrop;
+				weatherOverlay.alpha = alpha + 0.3;
+				weatherOverlay.draw(g2);
+			}
+		}
+		/**
+		 * Draw surface tiles and battle units.
+		 * @param g2 the graphics context
+		 * @param surface the surface object
+		 * @param x0 the base x offset
+		 * @param y0 the base y offset
+		 */
+		void drawTiles(Graphics2D g2, PlanetSurface surface, int x0, int y0) {
+			Rectangle br = surface.boundingRectangle;
+			g2.setColor(Color.YELLOW);
+			g2.drawRect(br.x, br.y, br.width, br.height);
+			
+			Rectangle renderingWindow = new Rectangle(0, 0, width, height);
+			for (int i = 0; i < surface.renderingOrigins.size(); i++) {
+				Location loc = surface.renderingOrigins.get(i);
+				for (int j = 0; j < surface.renderingLength.get(i) + 2; j++) {
+					int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
+					Location loc1 = Location.of(loc.x - j, loc.y);
+					SurfaceEntity se = surface.buildingmap.get(loc1);
+					if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
+						se = surface.basemap.get(loc1);
+					}
+					if (se != null) {
+						getImage(se, false, loc1, cell);
+						int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
+						if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
+							if (cell.image != null) {
+								g2.drawImage(cell.image, x, yref, null);
+							}
+						}
+						// add smoke
+						if (se.building != null) {
+							drawBuildingSmokeFire(g2, x0, y0, loc1, se);
+						}
+						// place guns on buildings or roads
+						if ((se.building != null 
+								&& "Defensive".equals(se.building.type.kind))
+								|| se.type == SurfaceEntityType.ROAD) {
+							drawGuns(g2, loc.x - j, loc.y);
+						}
+					}
+//					if (battle != null) { FIXME during battle only
+						drawMine(g2, loc.x - j, loc.y);
+						drawUnits(g2, loc.x - j, loc.y);
+						drawExplosions(g2, loc.x - j, loc.y);
+						drawRockets(g2, loc.x - j, loc.y);
+//					} FIXME during battle only
+				}
+			}
+		}
+		/**
+		 * Draws the smoke and fire on damaged buildings.
+		 * @param g2 the graphics context
+		 * @param x0 the render origin
+		 * @param y0 the render origin
+		 * @param loc1 the cell location
+		 * @param se the surface entity
+		 */
+		void drawBuildingSmokeFire(Graphics2D g2, int x0, int y0,
+				Location loc1, SurfaceEntity se) {
+			int dr = se.building.hitpoints * 100 / se.building.type.hitpoints;
+			if (dr < 100 && se.building.isComplete()) {
+				if (se.virtualColumn == 0 && se.virtualRow + 1 == se.building.height()) {
+					int len = se.building.width() * se.building.height();
+					int nsmoke = 0;
+					if (dr < 50) {
+						nsmoke = (50 - dr) / 5 + 1;
+					} else {
+						nsmoke = (100 - dr) / 10 + 1;
+					}
+					
+					double sep = 1.0 * len  / (nsmoke + 1);
+					int cnt = 0;
+					for (double sj = sep; sj < len; sj += sep) {
+						int si = (int)Math.round(sj);
+						if (si < len) {
+							Point zz = deZigZag(si, se.building.width(), se.building.height());
+
+							int mix = Math.abs(loc1.x + zz.x) + Math.abs(loc1.y + zz.y) + animation;
+							BufferedImage[] animFrames = null;
+							if (dr < 50) {
+								if ((cnt % 3) == (mix / 320 % 3)) {
+									animFrames = commons.colony().buildingSmoke;
+								} else {
+									animFrames = commons.colony().buildingFire;
+								}
+							} else {
+								animFrames = commons.colony().buildingSmoke;
+							}
+							
+							BufferedImage smokeFire = animFrames[mix % animFrames.length];
+							
+							int smx = x0 + Tile.toScreenX(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
+							int smy = y0 + Tile.toScreenY(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
+							int dx = 27 - smokeFire.getWidth() / 2;
+							g2.drawImage(smokeFire, smx + dx, smy - 14, null);
+						}
+						cnt++;
+					}
+				}
+			}
+		}
+		/**
+		 * Render any mine in the specified location.
+		 * @param g2 the graphics context
+		 * @param cx the cell coordinete
+		 * @param cy the cell coordinate
+		 */
+		void drawMine(Graphics2D g2, int cx, int cy) {
+			Mine m = mines.get(Location.of(cx, cy));
+			if (m != null) {
+				int x0 = planet().surface.baseXOffset;
+				int y0 = planet().surface.baseYOffset;
+				int px = (x0 + Tile.toScreenX(cx, cy));
+				int py = (y0 + Tile.toScreenY(cx, cy));
+				BufferedImage bimg = commons.colony().mine[0][0];
+				g2.drawImage(bimg, px + 21, py + 12, null);
+			}
+		}
+		/**
+		 * Render the problem icons.
+		 * @param g2 the graphics
+		 * @param ps the statistics
+		 */
+		void renderProblems(Graphics2D g2, PlanetStatistics ps) {
+			Set<PlanetProblems> combined = new HashSet<>();
+			combined.addAll(ps.problems);
+			combined.addAll(ps.warnings);
+			
+			if (combined.size() > 0) {
+				int w = combined.size() * 11 - 1;
+				g2.setColor(Color.BLACK);
+				g2.fillRect((width - w) / 2 - 2, 18, w + 4, 15);
+				int i = 0;
+				for (PlanetProblems pp : combined) {
+					BufferedImage icon = null;
+					BufferedImage iconDark = null;
+					switch (pp) {
+					case HOUSING:
+						icon = commons.common().houseIcon;
+						iconDark = commons.common().houseIconDark;
+						break;
+					case FOOD:
+						icon = commons.common().foodIcon;
+						iconDark = commons.common().foodIconDark;
+						break;
+					case HOSPITAL:
+						icon = commons.common().hospitalIcon;
+						iconDark = commons.common().hospitalIconDark;
+						break;
+					case ENERGY:
+						icon = commons.common().energyIcon;
+						iconDark = commons.common().energyIconDark;
+						break;
+					case WORKFORCE:
+						icon = commons.common().workerIcon;
+						iconDark = commons.common().workerIconDark;
+						break;
+					case STADIUM:
+						icon = commons.common().stadiumIcon;
+						iconDark = commons.common().stadiumIconDark;
+						break;
+					case VIRUS:
+						icon = commons.common().virusIcon;
+						iconDark = commons.common().virusIconDark;
+						break;
+					case REPAIR:
+						icon = commons.common().repairIcon;
+						iconDark = commons.common().repairIconDark;
+						break;
+					case COLONY_HUB:
+						icon = commons.common().colonyHubIcon;
+						iconDark = commons.common().colonyHubIconDark;
+						break;
+					case POLICE:
+						icon = commons.common().policeIcon;
+						iconDark = commons.common().policeIconDark;
+						break;
+					case FIRE_BRIGADE:
+						icon = commons.common().fireBrigadeIcon;
+						iconDark = commons.common().fireBrigadeIcon;
+						break;
+					default:
+					}
+					if (ps.hasProblem(pp)) {
+						g2.drawImage(icon, (width - w) / 2 + i * 11, 20, null);
+					} else
+					if (ps.hasWarning(pp)) {
+						g2.drawImage(iconDark, (width - w) / 2 + i * 11, 20, null);
+					}
+					i++;
+				}
+			}
+
+		}
+		
+	}
+	/** The cached zigzag map. */
+	static final Map<Pair<Integer, Integer>, Pair<int[], int[]>> ZIGZAGS = new HashMap<>();
+	/**
+	 * Compute the X, Y coordinates of the linear address in the zig-zagged coordinate system
+	 * enclosed by a rectangle of width and height.
+	 * @param linear the linear address, &lt; width * height;
+	 * @param width the width of the enclosing rectangle
+	 * @param height the height of the rectangle
+	 * @return the point
+	 */
+	static Point deZigZag(int linear, int width, int height) {
+		
+		Pair<Integer, Integer> key = Pair.of(width, height);
+		
+		int[] xs = null;
+		int[] ys = null;
+		
+		Pair<int[], int[]> value = ZIGZAGS.get(key);
+		if (value == null) {
+			int wh = width * height;
+			
+			xs = new int[wh];
+			ys = new int[wh];
+			
+			int base = width <= height ? width : height;
+			int s = 0;
+			for (int i = 0; i < base; i++) {
+				int s2 = s + i + 1;
+				for (int j = s; j < s2; j++) {
+					xs[j] = i - j + s;
+					ys[j] = j - s;
+					
+					xs[wh - 1 - j] = (width - 1) - xs[j];
+					ys[wh - 1 - j] = (height - 1) - ys[j];
+				}
+				s = s2;
+			}
+			if (width <= height) {
+				for (int i = 0; i < height - width - 1; i++) {
+					for (int j = 0; j < width; j++) {
+						xs[s] = width - 1 - j;
+						ys[s] = i + 1 + j;
+						s++;
+					}
+				}
+			} else {
+				for (int i = 0; i < width - height - 1; i++) {
+					for (int j = 0; j < height; j++) {
+						xs[s] = height + i - j;
+						ys[s] = j;
+						s++;
+					}
+				}
+			}
+			ZIGZAGS.put(key, Pair.of(xs, ys));
+		} else {
+			xs = value.first;
+			ys = value.second;
+		}
+		return new Point(xs[linear], ys[linear]);
+	}
+	
+	/**
+	 * Prepare the surface tiles in parallel.
+	 * @param surface the target planet surface
+	 */
+	void prepareTilesAsync(PlanetSurface surface) {
+		long time = System.nanoTime();
+		List<Future<?>> futures = new LinkedList<>();
+		for (final SurfaceFeature sf : surface.features) {
+			futures.add(commons.pool.submit(new Runnable() {
+				@Override
+				public void run() {
+					sf.tile.getStrip(0);
+				}
+			}));
+		}
+		Parallels.waitForAll(futures);
+		System.out.println("PrepareTilesAsync: " + (1E9 / (System.nanoTime() - time)));
+	}
+
 	/**
 	 * The radar renderer component.
 	 * @author akarnokd, Mar 27, 2011
 	 */
 	class RadarRender extends UIComponent {
-		/** The surface cell helper. */
-		final SurfaceCell cell = new SurfaceCell();
 		/** The jammer frame counter. */
 		int jammerCounter;
 		/** The pre-rendered noise. */
@@ -416,10 +1809,6 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		}
 		@Override
 		public void draw(Graphics2D g2) {
-			
-			float alpha = render.alpha;
-			Tile areaEmpty = render.areaEmpty;
-			
 			RenderTools.setInterpolation(g2, true);
 			
 			Shape save0 = g2.getClip();
@@ -460,7 +1849,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 							se = surface.basemap.get(loc1);
 						}
 						if (se != null) {
-							render.getImage(se, true, loc1, cell);
+							getImage(se, true, loc1, cell);
 							int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
 							if (renderingWindow.intersects(x * scale, yref * scale, 57 * scale, se.tile.imageHeight * scale)) {
 								if (cell.image != null) {
@@ -476,7 +1865,6 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 				}
 				g2.setColor(Color.RED);
 				if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0) {
-					Rectangle buildingBox = render.buildingBox;
 					if (buildingBox != null) {
 						g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
 					}
@@ -489,7 +1877,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 						(int)(render.height / render.scale - 1));
 			}
 			boolean jammed = false;
-			for (GroundwarUnit u : planet().ground.units) {
+			for (GroundwarUnit u : units) {
 				if (u.model.type == GroundwarUnitType.RADAR_JAMMER 
 						&& u.owner != player() && u.paralizedTTL == 0) {
 					jammed = true;
@@ -497,8 +1885,8 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 				}
 			}			
 			if (!jammed) {
-				for (GroundwarUnit u : planet().ground.units) {
-					if (render.blink) {
+				for (GroundwarUnit u : units) {
+					if (blink) {
 						int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
 						int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
 						
@@ -512,7 +1900,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			g2.setTransform(at);
 			
 			if (jammed) {
-				g2.drawImage(noises[render.animation % noises.length], 0, 0, null);
+				g2.drawImage(noises[animation % noises.length], 0, 0, null);
 			}
 			
 			g2.setClip(save0);
@@ -525,9 +1913,9 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 				if (e.has(Modifier.CTRL)) {
 					if (moveViewPort(e)) {
 						if (e.z < 0) {
-							render.zoomIn();
+							doZoomIn();
 						} else {
-							render.zoomOut();
+							doZoomOut();
 						}
 					
 						return true;
@@ -572,13 +1960,16 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	@Override
 	public boolean mouse(UIMouse e) {
 		if (e.has(Type.UP) && e.has(Button.RIGHT)) {
-			render.drag = false;
-			onDrag(false);
+			drag = false;
+			doDragMode(drag);
 		}
 		return super.mouse(e);
 	}
-	@Override
-	public void onDrag(boolean dragging) {
+	/** 
+	 * Set drag mode UI settings. 
+	 * @param dragging the dragging indicator.
+	 */
+	void doDragMode(boolean dragging) {
 		for (Field f : getClass().getDeclaredFields()) {
 			if (f.isAnnotationPresent(DragSensitive.class)) {
 				try {
@@ -739,7 +2130,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			buildingList.onClick = new Action0() {
 				@Override
 				public void invoke() {
-					render.placementMode = false;
+					placementMode = false;
 					build.down = false;
 					upgradePanel.hideUpgradeSelection();
 					displaySecondary(Screens.INFORMATION_BUILDINGS);
@@ -748,14 +2139,14 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			build.onPress = new Action0() {
 				@Override
 				public void invoke() {
-					render.placementMode = !render.placementMode;
-					if (render.placementMode) {
+					placementMode = !placementMode;
+					if (placementMode) {
 						buttonSound(SoundType.CLICK_HIGH_2);
 						build.down = true;
 						currentBuilding = null;
-						render.buildingBox = null;
+						buildingBox = null;
 						Tile t = player().currentBuilding.tileset.get(race()).normal;
-						render.placementRectangle.setSize(t.width + 2, t.height + 2);
+						placementRectangle.setSize(t.width + 2, t.height + 2);
 					} else {
 						build.down = false;
 					}
@@ -1145,13 +2536,13 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	/** Perform the animation. */
 	void doAnimation() {
 		//wrap animation index
-		if (render.animation == Integer.MAX_VALUE) {
-			render.animation = -1;
+		if (animation == Integer.MAX_VALUE) {
+			animation = -1;
 		}
-		render.animation++;
-		render.blink = render.animation / 4 % 2 == 0;
+		animation++;
+		blink = animation / 4 % 2 == 0;
 
-		render.weatherOverlay.update();
+		weatherOverlay.update();
 		
 		askRepaint();
 	}
@@ -1173,7 +2564,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		} else {
 			cancelWeatherSound();
 		}
-		render.weatherOverlay.update();
+		weatherOverlay.update();
 		askRepaint();
 	}
 	/**
@@ -1198,15 +2589,16 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	/** Demolish the selected building. */
 	void doDemolish() {
 		boolean fortif = false;
-		for (GroundwarGun g : new ArrayList<>(planet().ground.guns)) {
+		for (GroundwarGun g : new ArrayList<>(guns)) {
 			if (g.building == currentBuilding) {
-				planet().ground.remove(g);
+				guns.remove(g);
+				g.selected = false;
 				fortif = true;
 			}
 		}
-		if (fortif) {
-//				battle.defenderFortificationLosses++;
-			for (GroundwarUnit gu : planet().ground.units) {
+		if (battle != null && fortif) {
+			battle.defenderFortificationLosses++;
+			for (GroundwarUnit gu : units) {
 				if (gu.attackBuilding == currentBuilding) {
 					gu.attackBuilding = null;
 				}
@@ -1217,7 +2609,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		
 
 		doAllocation();
-		render.buildingBox = null;
+		buildingBox = null;
 		doSelectBuilding(null);
 		effectSound(SoundType.DEMOLISH_BUILDING);
 	}
@@ -1242,23 +2634,11 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	}
 	/** Perform the resource allocation now! */
 	void doAllocation() {
-		if (enemyOnSurface()) {
+		if (battle != null || !units.isEmpty()) {
 			Allocator.computeNow(planet(), ResourceAllocationStrategy.BATTLE);
 		} else {
 			Allocator.computeNow(planet());
 		}
-	}
-	/**
-	 * Check if there are enemy units on the surface.
-	 * @return true if enemy units are present
-	 */
-	boolean enemyOnSurface() {
-		for (GroundwarUnit u : planet().ground.units) {
-			if (u.owner != player()) {
-				return true;
-			}
-		}
-		return false;
 	}
 	/**
 	 * The information panel showing some details.
@@ -1407,7 +2787,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 				planet.color(TextRenderer.GRAY);
 			}
 			
-			String surfaceText = format("colonyinfo.surface", U.firstUpper(get(p.type.label)));
+			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
 			if (p.owner == null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				double g = world().galaxyModel.getGrowth(p.type.type, player().race);
 				Trait t = player().traits.trait(TraitKind.FERTILE);
@@ -1415,7 +2795,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 					g *= 1 + t.value / 100;
 				}
 				surfaceText = format("colonyinfo.surface2", 
-						U.firstUpper(get(p.type.label)), (int)(g * 100));
+						firstUpper(get(p.type.label)), (int)(g * 100));
 			} else
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race) * ps.populationGrowthModifier;
@@ -1426,7 +2806,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 				}
 
 				surfaceText = format("colonyinfo.surface2", 
-						U.firstUpper(get(p.type.label)), (int)(g * 100));
+						firstUpper(get(p.type.label)), (int)(g * 100));
 			}
 			surface.text(surfaceText, true);
 			
@@ -1531,6 +2911,14 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			}
 			return "0";
 		}
+	}
+	/** 
+	 * First letter to uppercase.
+	 * @param s the string
+	 * @return the modified string
+	 */
+	String firstUpper(String s) {
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
 	/**
 	 * The upgrade panel.
@@ -1672,8 +3060,17 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	}
 	@Override
 	public void onInitialize() {
-		render = new SurfaceRenderer(commons, this);
-		render.z = -1;
+		selection = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFFFFFF00), null);
+		areaAccept = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
+		areaEmpty = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF808080), null);
+		areaDeploy = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
+		areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFF0000), null);
+		areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFFCC00), null);
+		
+		selection.alpha = 1.0f;
+		areaAccept.alpha = 1.0f;
+		areaDeny.alpha = 1.0f;
+		areaCurrent.alpha = 1.0f;
 		
 		sidebarBuildings = new UIImageButton(commons.colony().sidebarBuildings);
 		sidebarBuildingsEmpty = new UIImage(commons.colony().sidebarBuildingsEmpty);
@@ -1691,6 +3088,9 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		bridge = new UIImageButton(commons.colony().bridge);
 		planets = new UIImageButton(commons.colony().planets);
 		starmap = new UIImageButton(commons.colony().starmap);
+		
+		render = new SurfaceRenderer();
+		render.z = -1;
 		
 		leftFill = new UIImageFill(commons.colony().sidebarLeftTop, commons.colony().sidebarLeftFill, commons.colony().sidebarLeftBottom, false);
 		rightFill = new UIImageFill(commons.colony().sidebarRightTop, commons.colony().sidebarRightFill, commons.colony().sidebarRightBottom, false);
@@ -1747,7 +3147,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		colonyInfo.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				render.placementMode = false;
+				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_COLONY);
@@ -1756,7 +3156,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		planets.onClick = new Action0() {
 			@Override
 			public void invoke() {
-				render.placementMode = false;
+				placementMode = false;
 				buildingsPanel.build.down = false;
 				upgradePanel.hideUpgradeSelection();
 				displaySecondary(Screens.INFORMATION_PLANETS);
@@ -1918,16 +3318,18 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			@Override
 			public void invoke() {
 				if (zoomNormal) {
-					render.zoomNormal();
+					doZoomNormal();
 				} else
 				if (zoomDirection) {
-					render.zoomIn();
+					doZoomIn();
 				} else {
-					render.zoomOut();
+					doZoomOut();
 				}
 			}
 		};
 
+		weatherOverlay = new WeatherOverlay(new Dimension(640, 480));
+		
 		addThis();
 	}
 	@Override
@@ -2000,13 +3402,13 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			}
 			String race = race();
 			Tile t = player().currentBuilding.tileset.get(race).normal;
-			render.placementRectangle.setSize(t.width + 2, t.height + 2);
+			placementRectangle.setSize(t.width + 2, t.height + 2);
 			
 			buildingsPanel.preview.building = bt.tileset.get(race).preview;
 			buildingsPanel.preview.cost = bt.cost;
 			buildingsPanel.preview.count = planet().countBuilding(bt);
 			buildingsPanel.preview.enabled(planet().canBuild(bt) && planet().owner == player());
-			render.placementMode = render.placementMode && planet().canBuild(bt);
+			placementMode = placementMode && planet().canBuild(bt);
 			buildingsPanel.build.down = buildingsPanel.build.down && planet().canBuild(bt);
 			buildingsPanel.buildingName.text(bt.name);
 			buildingsPanel.build.enabled(buildingsPanel.preview.enabled());
@@ -2034,19 +3436,22 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			commons.control().tooltipChanged(buildingsPanel.buildingUp);
 		}
 	}
-	@Override
-	public void placeBuilding(boolean more) {
-		if (surface().placement.canPlaceBuilding(render.placementRectangle)
+	/**
+	 * Try placing a building to the current placementRectange.
+	 * @param more cancel the building mode on successful place?
+	 */
+	void placeBuilding(boolean more) {
+		if (surface().placement.canPlaceBuilding(placementRectangle)
 				&& player().money() >= player().currentBuilding.cost
 				&& planet().canBuild(player().currentBuilding)
 		) {
 				
-			Building b = planet().build(building().id, race(), render.placementRectangle.x + 1, render.placementRectangle.y - 1);
+			Building b = planet().build(building().id, race(), placementRectangle.x + 1, placementRectangle.y - 1);
 				
-			render.placementMode = more && planet().canBuild(building());
-			buildingsPanel.build.down = render.placementMode;
+			placementMode = more && planet().canBuild(building());
+			buildingsPanel.build.down = placementMode;
 
-			render.buildingBox = surface().getBoundingRect(b.location);
+			buildingBox = getBoundingRect(b.location);
 			doSelectBuilding(b);
 			
 			buildingInfoPanel.update();
@@ -2059,7 +3464,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 				
 				commons.control().displayError(get("message.not_enough_money"));
 			} else
-			if (!surface().placement.canPlaceBuilding(render.placementRectangle)) {
+			if (!surface().placement.canPlaceBuilding(placementRectangle)) {
 				buttonSound(SoundType.NOT_AVAILABLE);
 				
 				commons.control().displayError(get("message.cant_build_there"));
@@ -2077,266 +3482,589 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	@Override
 	public void onEndGame() {
 		currentBuilding = null;
-		render.buildingBox = null;
+		buildingBox = null;
 		lastSurface = null;
 	}
 	
-//	/** Set the spacewar time controls. */
-//	void setGroundWarTimeControls() {
-//		commons.replaceSimulation(new Action0() {
-//			@Override
-//			public void invoke() {
-//				doGroundWarSimulation();
-//			}
-//		},
-//		new Func1<SimulationSpeed, Integer>() {
-//			@Override
-//			public Integer invoke(SimulationSpeed value) {
-//				switch (value) {
-//				case NORMAL: return SIMULATION_DELAY;
-//				case FAST: return SIMULATION_DELAY / 2;
-//				case ULTRA_FAST: return SIMULATION_DELAY / 4;
-//				default:
-//					throw new AssertionError("" + value);
-//				}
-//			};
-//		}
-//		);
-//	}
-//	/** Add guns for the buildings. */
-//	void doAddGuns() {
-//		guns.clear();
-//		for (Building b : planet().surface.buildings.iterable()) {
-//			if (b.type.kind.equals("Defensive") && b.isComplete()) {
-//				List<BattleGroundTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
-//				int n = b.hitpoints * 2 < b.type.hitpoints ? turrets.size() / 2 : turrets.size();
-//				for (int j = 0; j < turrets.size(); j++) {
-//					BattleGroundTurret bt = turrets.get(j);
-//					GroundwarGun g = new GroundwarGun(bt);
-//					g.rx = b.location.x + bt.rx;
-//					g.ry = b.location.y + bt.ry;
-//					g.building = b;
-//					g.owner = planet().owner;
-//					g.index = j;
-//					g.count = n;
-//					guns.add(g);
-//				}
-//			}
-//		}
-//	}
-//	/** Place various units around the colony hub. */
-//	void doAddUnits() {
-//		units.clear();
-//		unitsAtLocation.clear();
-//		unitsForPathfinding.clear();
-//		LinkedList<Location> locs = new LinkedList<>();
-//		for (Building b : surface().buildings.iterable()) {
-//			if (b.type.kind.equals("MainBuilding")) {
-//				Set<Location> locations = new HashSet<>();
-//				
-//				for (int x = b.location.x - 1; x < b.location.x + b.tileset.normal.width + 1; x++) {
-//					for (int y = b.location.y + 1; y > b.location.y - b.tileset.normal.height - 1; y--) {
-//						Location loc = Location.of(x, y);
-//						if (surface().placement.canPlaceBuilding(loc.x, loc.y)) {
-//							locations.add(loc);
-//						}
-//					}
-//				}
-//				// place enemy units
-//				locs.addAll(locations);
-//				for (ResearchType rt : world().researches.values()) {
-//					if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
-//							|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-//						BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
-//						
-//						GroundwarUnit u = new GroundwarUnit(planet().owner == player() ? bgv.normal : bgv.alternative);
-//						Location loc = locs.removeFirst();
-//						updateUnitLocation(u, loc.x, loc.y, false);
-//						
-//						u.selected = true;
-//						u.owner = planet().owner;
-//						u.planet = planet();
-//						
-//						u.model = bgv;
-//						u.hp = u.model.hp;
-//						
-//						units.add(u);
-//					}
-//				}
-//				
-//				break;
-//			}
-//		}
-//		Player enemy = player();
-//		if (planet().owner == player()) {
-//			for (Player p : world().players.values()) {
-//				if (p != player()) {
-//					enemy = p;
-//					break;
-//				}
-//			}
-//		}
-//		for (int d = 0; d < 4; d++) {
-//			locs.clear();
-//			for (int x = 0; x > -surface().height; x--) {
-//				if (surface().placement.canPlaceBuilding(x + d, x - 1 - d)) {
-//					locs.add(Location.of(x + d, x - 1 - d));
-//				}
-//			}
-//			for (ResearchType rt : world().researches.values()) {
-//				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
-//						|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-//					BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
-//					GroundwarUnit u = new GroundwarUnit(enemy == player() ? bgv.normal : bgv.alternative);
-//					Location loc = locs.removeFirst();
-//					updateUnitLocation(u, loc.x, loc.y, false);
-//					
-//					u.selected = true;
-//					u.owner = enemy;
-//					u.planet = planet();
-//					
-//					u.model = bgv;
-//					u.hp = u.model.hp;
-//					
-//					units.add(u);
-//				}
-//			}
-//		}
-//		
-//	}
-	@Override
-	public void selectUnitType(int mx, int my, SelectionBoxMode mode) {
-		PlanetGround ground = planet().ground;
-		for (GroundwarUnit u : ground.units) {
-			Rectangle r = render.unitRectangle(u);
+	/** Set the spacewar time controls. */
+	void setGroundWarTimeControls() {
+		commons.replaceSimulation(new Action0() {
+			@Override
+			public void invoke() {
+				doGroundWarSimulation();
+			}
+		},
+		new Func1<SimulationSpeed, Integer>() {
+			@Override
+			public Integer invoke(SimulationSpeed value) {
+				switch (value) {
+				case NORMAL: return SIMULATION_DELAY;
+				case FAST: return SIMULATION_DELAY / 2;
+				case ULTRA_FAST: return SIMULATION_DELAY / 4;
+				default:
+					throw new AssertionError("" + value);
+				}
+			};
+		}
+		);
+	}
+	/** 
+	 * Generate the set of deployment locations.
+	 * @param atBuildings should the placement locations around buildings?
+	 * @param skipEdge skip the most outer location
+	 * @return the set of locations 
+	 */
+	Set<Location> getDeploymentLocations(boolean atBuildings, boolean skipEdge) {
+		Set<Location> result = new HashSet<>();;
+		if (atBuildings) {
+			for (Building b : planet().surface.buildings.iterable()) {
+				result.addAll(placeAround(b));
+			}
+		} else {
+			for (int i = skipEdge ? 1 : 0; i < 3; i++) {
+				result.addAll(placeEdge(i));
+			}
+		}
+		return result;
+	}
+	/**
+	 * Place around building.
+	 * @param b the building
+	 * @return the set of available placement locations
+	 */
+	Set<Location> placeAround(Building b) {
+		Set<Location> result = new HashSet<>();
+		for (int x = b.location.x - 3; x < b.location.x + b.tileset.normal.width + 3; x++) {
+			for (int y = b.location.y + 3; y > b.location.y - b.tileset.normal.height - 3; y--) {
+				if (surface().placement.canPlaceBuilding(x, y)) {
+					result.add(Location.of(x, y));
+				}						
+			}
+		}
+		return result;
+	}
+	/**
+	 * Place deployment indicators.
+	 * @param distance the distance from edge
+	 * @return the set of available placement locations
+	 */
+	Set<Location> placeEdge(int distance) {
+		Set<Location> result = new HashSet<>();
+		int w = planet().surface.width;
+		int h = planet().surface.height;
+		int n = 0;
+		int x = 0;
+		int y = -distance;
+		while (n < w) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
+				result.add(Location.of(x, y));
+			}						
+			x++;
+			y--;
+			n++;
+		}
+		n = 0;
+		x = 0;
+		y = -distance;
+		while (n < h) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
+				result.add(Location.of(x, y));
+			}						
+			x--;
+			y--;
+			n++;
+		}
+		n = 0;
+		x = -h + distance + 1;
+		y = -h + 1;
+		while (n < w) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
+				result.add(Location.of(x, y));
+			}						
+			x++;
+			y--;
+			n++;
+		}
+		n = 0;
+		x = w - distance - 1;
+		y = -w + 1;
+		while (n < h) {
+			if (surface().placement.canPlaceBuilding(x, y)) {
+				result.add(Location.of(x, y));
+			}						
+			x--;
+			y--;
+			n++;
+		}
+		return result;
+	}
+	/** Add guns for the buildings. */
+	void doAddGuns() {
+		guns.clear();
+		for (Building b : planet().surface.buildings.iterable()) {
+			if (b.type.kind.equals("Defensive") && b.isComplete()) {
+				List<BattleGroundTurret> turrets = world().battle.getTurrets(b.type.id, planet().race);
+				int n = b.hitpoints * 2 < b.type.hitpoints ? turrets.size() / 2 : turrets.size();
+				for (int j = 0; j < turrets.size(); j++) {
+					BattleGroundTurret bt = turrets.get(j);
+					GroundwarGun g = new GroundwarGun(bt);
+					g.rx = b.location.x + bt.rx;
+					g.ry = b.location.y + bt.ry;
+					g.building = b;
+					g.owner = planet().owner;
+					g.index = j;
+					g.count = n;
+					guns.add(g);
+				}
+			}
+		}
+	}
+	/** Place various units around the colony hub. */
+	void doAddUnits() {
+		units.clear();
+		unitsAtLocation.clear();
+		unitsForPathfinding.clear();
+		LinkedList<Location> locs = new LinkedList<>();
+		for (Building b : surface().buildings.iterable()) {
+			if (b.type.kind.equals("MainBuilding")) {
+				Set<Location> locations = new HashSet<>();
+				
+				for (int x = b.location.x - 1; x < b.location.x + b.tileset.normal.width + 1; x++) {
+					for (int y = b.location.y + 1; y > b.location.y - b.tileset.normal.height - 1; y--) {
+						Location loc = Location.of(x, y);
+						if (surface().placement.canPlaceBuilding(loc.x, loc.y)) {
+							locations.add(loc);
+						}
+					}
+				}
+				// place enemy units
+				locs.addAll(locations);
+				for (ResearchType rt : world().researches.values()) {
+					if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+							|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+						BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
+						
+						GroundwarUnit u = new GroundwarUnit(planet().owner == player() ? bgv.normal : bgv.alternative);
+						Location loc = locs.removeFirst();
+						updateUnitLocation(u, loc.x, loc.y, false);
+						
+						u.selected = true;
+						u.owner = planet().owner;
+						u.planet = planet();
+						
+						u.model = bgv;
+						u.hp = u.model.hp;
+						
+						units.add(u);
+					}
+				}
+				
+				break;
+			}
+		}
+		Player enemy = player();
+		if (planet().owner == player()) {
+			for (Player p : world().players.values()) {
+				if (p != player()) {
+					enemy = p;
+					break;
+				}
+			}
+		}
+		for (int d = 0; d < 4; d++) {
+			locs.clear();
+			for (int x = 0; x > -surface().height; x--) {
+				if (surface().placement.canPlaceBuilding(x + d, x - 1 - d)) {
+					locs.add(Location.of(x + d, x - 1 - d));
+				}
+			}
+			for (ResearchType rt : world().researches.values()) {
+				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+						|| rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+					BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
+					GroundwarUnit u = new GroundwarUnit(enemy == player() ? bgv.normal : bgv.alternative);
+					Location loc = locs.removeFirst();
+					updateUnitLocation(u, loc.x, loc.y, false);
+					
+					u.selected = true;
+					u.owner = enemy;
+					u.planet = planet();
+					
+					u.model = bgv;
+					u.hp = u.model.hp;
+					
+					units.add(u);
+				}
+			}
+		}
+		
+	}
+	/**
+	 * Draw units into the cell.
+	 * @param g2 the graphics context
+	 * @param cx the cell coordinates
+	 * @param cy the cell coordinates
+	 */
+	void drawUnits(Graphics2D g2, int cx, int cy) {
+		Set<GroundwarUnit> unitsAt = unitsAtLocation.get(Location.of(cx, cy));
+		if (unitsAt == null) {
+			return;
+		}
+		List<GroundwarUnit> multiple = new ArrayList<>(unitsAt);
+		// order by y first, x later
+		Collections.sort(multiple, new Comparator<GroundwarUnit>() {
+			@Override
+			public int compare(GroundwarUnit o1, GroundwarUnit o2) {
+				if (o1.y > o2.y) {
+					return -1; 
+				} else
+				if (o1.y < o2.y) {
+					return 1;
+				} else
+				if (o1.x > o2.x) {
+					return -1;
+				} else
+				if (o1.x < o2.x) {
+					return 1;
+				}
+				return 0;
+			}
+		});
+		
+		for (GroundwarUnit u : multiple) {
+			Point p = unitPosition(u);
+			BufferedImage img = u.get();
 			
-			render.scaleToScreen(r);
+			// compensate for trimmed image
+			int tx = (u.model.width - img.getWidth()) / 2;
+			int ty = (u.model.height - img.getHeight()) / 2;
+			
+			g2.drawImage(img, p.x + tx, p.y + ty, null);
+			
+			if (u.paralizedTTL > 0) {
+				// draw green paralization effect
+				BufferedImage[] expl = world().battle.groundExplosions.get(ExplosionType.GROUND_GREEN);
+				int idx = (PARALIZED_TTL - u.paralizedTTL) % expl.length;
+
+				BufferedImage icon = expl[idx];
+				int dx = p.x + tx + (img.getWidth() - icon.getWidth()) / 2;
+				int dy = p.y + ty + (img.getHeight() - icon.getHeight()) / 2;
+				g2.drawImage(icon, dx, dy, null);
+			}
+			// paint health bar
+			g2.setColor(Color.BLACK);
+			g2.fillRect(p.x + 4, p.y + 3, u.model.width - 7, 5);
+			if (u.owner == player()) {
+				g2.setColor(new Color(0x458AAA));
+			} else {
+				g2.setColor(new Color(0xAE6951));
+			}
+			g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (u.model.width - 9) / u.model.hp), 3);
+			
+			BufferedImage smokeFire = null;
+			if (u.hp * 3 <= u.model.hp) {
+				smokeFire = commons.colony().buildingFire[animation % commons.colony().buildingFire.length];
+			} else
+			if (u.hp * 3 <= u.model.hp * 2) {
+				smokeFire = commons.colony().buildingSmoke[animation % commons.colony().buildingSmoke.length];
+			}
+			if (smokeFire != null) {
+				int dx = p.x + tx + (img.getWidth() - smokeFire.getWidth()) / 2;
+				int dy = p.y + ty + (img.getHeight() / 2 - smokeFire.getHeight());
+				g2.drawImage(smokeFire, dx, dy, null);
+			}
+		}
+	}
+	/**
+	 * Draw rockets into the cell.
+	 * @param g2 the graphics context
+	 * @param cx the cell coordinates
+	 * @param cy the cell coordinates
+	 */
+	void drawRockets(Graphics2D g2, int cx, int cy) {
+		List<GroundwarRocket> multiple = new ArrayList<>();
+		for (GroundwarRocket u : rockets) {
+			if ((int)Math.floor(u.x - 1) == cx && (int)Math.floor(u.y - 1) == cy) {
+				multiple.add(u);
+			}
+		}
+		// order by y first, x later
+		Collections.sort(multiple, new Comparator<GroundwarRocket>() {
+			@Override
+			public int compare(GroundwarRocket o1, GroundwarRocket o2) {
+				if (o1.y > o2.y) {
+					return -1; 
+				} else
+				if (o1.y < o2.y) {
+					return 1;
+				} else
+				if (o1.x > o2.x) {
+					return -1;
+				} else
+				if (o1.x < o2.x) {
+					return 1;
+				}
+				return 0;
+			}
+		});
+		
+		for (GroundwarRocket u : multiple) {
+			Point p = unitPosition(u);
+			BufferedImage img = u.get();
+			g2.drawImage(img, p.x, p.y, null);
+//			g2.drawRect(p.x, p.y, img.getWidth(), img.getHeight());
+		}
+	}
+	/**
+	 * Computes the unit bounding rectangle's left-top position.
+	 * @param u the unit
+	 * @return the position
+	 */
+	Point unitPosition(GroundwarUnit u) {
+		return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(u.x, u.y)), 
+				(int)(planet().surface.baseYOffset + Tile.toScreenY(u.x, u.y)) + 27 - u.model.height);
+	}
+	/**
+	 * Computes the unit bounding rectangle's left-top position.
+	 * @param u the unit
+	 * @return the position
+	 */
+	Point unitPosition(GroundwarRocket u) {
+		return new Point(
+				(int)(planet().surface.baseXOffset + Tile.toScreenX(u.x + 0.5, u.y)), 
+				(int)(planet().surface.baseYOffset + Tile.toScreenY(u.x + 0.5, u.y)));
+	}
+	/**
+	 * The on-screen rectangle of the ground unit.
+	 * @param u the unit to test
+	 * @return the rectangle
+	 */
+	public Rectangle unitRectangle(GroundwarUnit u) {
+//		BufferedImage img = u.get();
+		Point p = unitPosition(u);
+		return new Rectangle(p.x, p.y, u.model.width, u.model.height);
+	}
+	/** 
+	 * Draw guns at the specified location.
+	 * @param g2 the graphics context
+	 * @param cx the cell X coordinate
+	 * @param cy the cell Y coordinate 
+	 */
+	void drawGuns(Graphics2D g2, int cx, int cy) {
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		for (GroundwarGun u : guns) {
+			if (u.rx - 1 == cx && u.ry - 1 == cy) {
+				int px = (x0 + Tile.toScreenX(u.rx, u.ry));
+				int py = (y0 + Tile.toScreenY(u.rx, u.ry));
+				BufferedImage img = u.get();
+				
+				int ux = px + (54 - 90) / 2 + u.model.px;
+				int uy = py + (28 - 55) / 2 + u.model.py;
+				
+				
+				g2.drawImage(img, ux, uy, null);
+				
+				if (u.attack != null && showCommand) {
+					Point gp = centerOf(u.attack);
+					Point up = centerOf(u);
+					g2.setColor(Color.RED);
+					g2.drawLine(gp.x, gp.y, up.x, up.y);
+				}
+			}
+		}
+
+	}
+	/**
+	 * Draw explosions for the given cell.
+	 * @param g2 the graphics context
+	 * @param cx the cell coordinate
+	 * @param cy the cell coordinate
+	 */
+	void drawExplosions(Graphics2D g2, int cx, int cy) {
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		int px = (x0 + Tile.toScreenX(cx + 1, cy + 1));
+		int py = (y0 + Tile.toScreenY(cx + 1, cy + 1));
+		for (GroundwarExplosion exp : explosions) {
+			if (exp.within(px, py, 54, 28)) {
+				BufferedImage img = exp.get();
+				g2.drawImage(img, (int)(exp.x - img.getWidth() / 2), (int)(exp.y - img.getHeight() / 2), null);
+			}
+		}
+	}
+	/**
+	 * Compute the collision image.
+	 * @param u the ground unit object
+	 * @param ur the ground unit bounding rectangle
+	 * @param t the tile
+	 * @param tr the tile bounding rectangle
+	 * @param is the intersection rectangle
+	 * @return the collision image
+	 */
+	BufferedImage collisionImage(GroundwarUnit u, Rectangle ur, Tile t, Rectangle tr, Rectangle is) {
+		BufferedImage bi = u.get();
+		BufferedImage result = new BufferedImage(is.width, is.height, BufferedImage.TYPE_INT_ARGB);
+		boolean wasCollision = false;
+		
+		for (int y = is.y; y < is.y + is.height; y++) {
+			for (int x = is.x; x < is.x + is.width; x++) {
+				int urgb = bi.getRGB(x - ur.x, y - ur.y);
+				if ((urgb & 0xFF000000) != 0) {
+					int trgb = t.image[(y - tr.y) * t.imageWidth + (x - tr.x)];
+					if ((trgb & 0xFF000000) != 0) {
+						result.setRGB(x - is.x, y - is.y, 0xFFFF0000);
+						wasCollision = true;
+					}
+				}
+			}
+			
+		}
+		return wasCollision ? result : null;
+	}
+	/**
+	 * @return Computes the selection rectangle.
+	 */
+	Rectangle selectionRectangle() {
+		int x0 = Math.min(selectionStart.x, selectionEnd.x);
+		int y0 = Math.min(selectionStart.y, selectionEnd.y);
+		int x1 = Math.max(selectionStart.x, selectionEnd.x);
+		int y1 = Math.max(selectionStart.y, selectionEnd.y);
+		
+		return new Rectangle(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
+	}
+	/**
+	 * Select units of the same type.
+	 * @param mx the mouse coordinate
+	 * @param my the mouse coordinate
+	 * @param mode the selection mode
+	 */
+	void doSelectUnitType(int mx, int my, SelectionBoxMode mode) {
+		for (GroundwarUnit u : units) {
+			Rectangle r = unitRectangle(u);
+			
+			scaleToScreen(r);
 
 			if (r.contains(mx, my)) {
-				for (GroundwarUnit u2 : ground.units) {
-					if (u2.owner == u.owner && u2.model.id.equals(u.model.id)) {
-						ground.select(u2);
-					} else {
-						ground.deselect(u2);
-					}
+				for (GroundwarUnit u2 : units) {
+					u2.selected = u2.owner == u.owner && u2.model.id.equals(u.model.id);
 				}
 				return;
 			}
 		}
 		// select guns of the same building
-		for (GroundwarGun g : ground.guns) {
-			Rectangle r = render.gunRectangle(g);
-			render.scaleToScreen(r);
+		for (GroundwarGun g : guns) {
+			Rectangle r = gunRectangle(g);
+			scaleToScreen(r);
 			
 			if (r.contains(mx, my)) {
-				for (GroundwarGun g2 : ground.guns) {
-					if (g2.building == g.building) {
-						ground.select(g2);
-					} else {
-						ground.deselect(g2);
-					}
+				for (GroundwarGun g2 : guns) {
+					g2.selected = g2.building == g.building;
 				}
 				return;
 			}
 		}		
 	}
-	@Override
-	public void selectUnits(SelectionBoxMode mode) {
-		PlanetGround ground = planet().ground;
+	/**
+	 * Select units within the selection rectangle.
+	 * @param mode the selection mode
+	 */
+	void selectUnits(SelectionBoxMode mode) {
 		boolean allowCommands = false; 
-		Rectangle sr = render.selectionRectangle();
+		Rectangle sr = selectionRectangle();
 		if (sr.width < 4 && sr.height < 4) {
 			GroundwarUnit u2 = null;
 			Rectangle u2r = null;
-			ground.deselectAll();
-			for (GroundwarUnit u : ground.units) {
-				Rectangle r = render.unitRectangle(u);
-				render.scaleToScreen(r);
+			deselectAll();
+			for (GroundwarUnit u : units) {
+				u.selected = false;
+				Rectangle r = unitRectangle(u);
+				scaleToScreen(r);
 				
 				if (r.intersects(sr)) {
-					if (u2 == null || U.closerToCenter(sr, r, u2r)) {
+					if (u2 == null || closerToCenter(sr, r, u2r)) {
 						u2 = u;
 						u2r = r;
 					}
 				}
 			}			
 			GroundwarGun g2 = null;
-			for (GroundwarGun g : ground.guns) {
-				ground.deselect(g);
-				Rectangle r = render.gunRectangle(g);
-				render.scaleToScreen(r);
+			for (GroundwarGun g : guns) {
+				g.selected = false;
+				Rectangle r = gunRectangle(g);
+				scaleToScreen(r);
 
 				if (r.intersects(sr)) {
-					if (g2 == null || U.closerToCenter(sr, r, u2r)) {
+					if (g2 == null || closerToCenter(sr, r, u2r)) {
 						g2 = g;
 					}
 				}
 			}
 			if (u2 != null && g2 == null) {
 				allowCommands = u2.owner == player();
-				ground.select(u2);
+				u2.selected = true;
 			} else
 			if (g2 != null && u2 == null) {
 				allowCommands = g2.owner == player();
-				ground.select(g2);
+				g2.selected = true;
 			} else
 			if (g2 != null && u2 != null) {
-				Rectangle r = render.unitRectangle(u2);
-				render.scaleToScreen(r);
+				Rectangle r = unitRectangle(u2);
+				scaleToScreen(r);
 				
-				Rectangle r2 = render.gunRectangle(g2);
-				render.scaleToScreen(r2);
+				Rectangle r2 = gunRectangle(g2);
+				scaleToScreen(r2);
 				
-				if (U.closerToCenter(sr, r, r2)) {
+				if (closerToCenter(sr, r, r2)) {
 					allowCommands = u2.owner == player();
-					ground.select(u2);
+					u2.selected = true;
 				} else {
 					allowCommands = g2.owner == player();
-					ground.select(g2);
+					g2.selected = true;
 				}
 			}
 		} else {
 			boolean own = false;
 			boolean enemy = false;
 			
-			for (GroundwarUnit u : ground.units) {
-				Rectangle r = render.unitRectangle(u);
+			for (GroundwarUnit u : units) {
+				Rectangle r = unitRectangle(u);
 				
-				render.scaleToScreen(r);
+				scaleToScreen(r);
 			
 				
 				boolean in = sr.contains(r.x + r.width / 2, r.y + r.height / 2);
 				if (mode == SelectionBoxMode.NEW) {
-					ground.select(u, in);
+					u.selected = in;
 				} else
 				if (mode == SelectionBoxMode.SUBTRACT) {
-					ground.select(u, ground.isSelected(u) && !in);
+					u.selected &= !in;
 				} else
 				if (mode == SelectionBoxMode.ADD) {
-					ground.select(u, ground.isSelected(u) || in);
+					u.selected |= in;
 				}
 				
-				if (ground.isSelected(u)) {
+				if (u.selected) {
 					own |= u.owner == player();
 					enemy |= u.owner != player();
 				}
 			}
-			for (GroundwarGun g : ground.guns) {
-				Rectangle r = render.gunRectangle(g);
-				render.scaleToScreen(r);
+			for (GroundwarGun g : guns) {
+				Rectangle r = gunRectangle(g);
+				scaleToScreen(r);
 				
 				boolean in = sr.contains(r.x + r.width / 2, r.y + r.height / 2);
 				if (mode == SelectionBoxMode.NEW) {
-					ground.select(g, in);
+					g.selected = in;
 				} else
 				if (mode == SelectionBoxMode.SUBTRACT) {
-					ground.select(g, ground.isSelected(g) && !in);
+					g.selected &= !in;
 				} else
 				if (mode == SelectionBoxMode.ADD) {
-					ground.select(g, ground.isSelected(g) || in);
+					g.selected |= in;
 				}
 	
-				if (ground.isSelected(g)) {
+				if (g.selected) {
 					own |= g.owner == player();
 					enemy |= g.owner != player();
 				}
@@ -2344,11 +4072,11 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			
 			// if mixed selection, deselect aliens
 			if (own && enemy) {
-				for (GroundwarUnit u : ground.units) {
-					ground.select(u, ground.isSelected(u) && u.owner == player());
+				for (GroundwarUnit u : units) {
+					u.selected = u.selected && u.owner == player();
 				}			
-				for (GroundwarGun g : ground.guns) {
-					ground.select(g, ground.isSelected(g) && g.owner == player());
+				for (GroundwarGun u : guns) {
+					u.selected = u.selected && u.owner == player();
 				}			
 			}
 			allowCommands = own || enemy;
@@ -2358,10 +4086,1402 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		stopUnit.enabled(allowCommands);
 	}
 	/**
+	 * Check if r1's center is closer to r0's center than r2's center is.
+	 * @param r0 the base rectangle
+	 * @param r1 the first rectangle
+	 * @param r2 the second rectangle
+	 * @return true if r1 is closer than r2
+	 */
+	boolean closerToCenter(Rectangle r0, Rectangle r1, Rectangle r2) {
+		double d1 = Math.hypot(r0.x + r0.width / 2d - r1.x - r1.width / 2d, r0.y + r0.height / 2d - r1.y - r1.height / 2d);
+		double d2 = Math.hypot(r0.x + r0.width / 2d - r2.x - r2.width / 2d, r0.y + r0.height / 2d - r2.y - r2.height / 2d);
+		return d1 < d2;
+	}
+	/**
+	 * Sacle and position the given rectangle according to the current offset and scale.
+	 * @param r the target rectangle
+	 */
+	void scaleToScreen(Rectangle r) {
+		r.x = (int)(r.x * render.scale + render.offsetX);
+		r.y = (int)(r.y * render.scale + render.offsetY);
+		r.width *= render.scale;
+		r.height *= render.scale;
+	}
+	/**
+	 * Returns the unscaled bounding rectangle of the gun in reference to the surface map.
+	 * @param g the gun object
+	 * @return the bounding rectangle
+	 */
+	Rectangle gunRectangle(GroundwarGun g) {
+		int x0 = planet().surface.baseXOffset;
+		int y0 = planet().surface.baseYOffset;
+		int px = (x0 + Tile.toScreenX(g.rx, g.ry));
+		int py = (y0 + Tile.toScreenY(g.rx, g.ry));
+		BufferedImage img = g.get();
+		
+		int ux = px + (54 - img.getWidth()) / 2 + g.model.px;
+		int uy = py + (28 - img.getHeight()) / 2 + g.model.py;
+		
+		return new Rectangle(ux, uy, img.getWidth(), img.getHeight());
+	}
+	/**
+	 * The task to plan a route to the given destination asynchronously. 
+	 * @author akarnokd, 2011.12.25.
+	 */
+	class PathPlanning implements Callable<PathPlanning> {
+		/** The initial location. */
+		final Location current;
+		/** The goal location. */
+		final Location goal;
+		/** The unit. */
+		final GroundwarUnit unit;
+		/** The computed path. */
+		final List<Location> path = new ArrayList<>();
+		/** The player to ignore. */
+		final Player ignore;
+		/**
+		 * Constructor. Initializes the fields.
+		 * @param initial the initial location
+		 * @param goal the goal location
+		 * @param unit the unit
+		 * @param ignore the player units to ignore
+		 */
+		public PathPlanning(
+				Location initial, 
+				Location goal, 
+				GroundwarUnit unit,
+				Player ignore) {
+			this.current = initial;
+			this.goal = goal;
+			this.unit = unit;
+			this.ignore = ignore;
+		}
+
+		@Override
+		public PathPlanning call() {
+			path.addAll(getPathfinding(ignore).searchApproximate(current, goal));
+			return this;
+		}
+		/**
+		 * Apply the computation result.
+		 */
+		public void apply() {
+			unit.path.addAll(path);
+			unit.inMotionPlanning = false;
+			unit.yieldTTL = 0;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (obj != null && obj.getClass() == getClass()) {
+				return unit.equals(((PathPlanning)obj).unit);
+			}
+			return false;
+		}
+		@Override
+		public int hashCode() {
+			return unit.hashCode();
+		}
+	}
+	/** 
+	 * Compute a path for one of the selected unit.
+	 * @param mx the mouse x
+	 * @param my the mouse y
+	 */
+	void doMoveSelectedUnits(int mx, int my) {
+		boolean moved = false;
+		for (GroundwarUnit u : units) {
+			if (u.selected /* && u.owner == player() */) {  // FIXME player only
+				moved = true;
+				Location lm = render.getLocationAt(mx, my);
+				move(u, lm.x, lm.y);
+			}
+		}
+		if (moved) {
+			effectSound(SoundType.ACKNOWLEDGE_2);
+			selectCommand(null);
+		}
+	}
+	/** 
+	 * The default cell-passable test which ignores moving units
+	 * and other units currently doing pathfinding calculation.
+	 */
+	final Func1<Location, Boolean> defaultPassable = new Func1<Location, Boolean>() {
+		@Override
+		public Boolean invoke(Location value) {
+			return isPassable(value.x, value.y);
+		}
+	};
+	/**
+	 * The defalt estimator for distance away from the target.
+	 */
+	final Func2<Location, Location, Integer> defaultEstimator = new Func2<Location, Location, Integer>() {
+		@Override
+		public Integer invoke(Location t, Location u) {
+			return (Math.abs(t.x - u.x) + Math.abs(t.y - u.y)) * 1000;
+		}
+	};
+	/** Routine that tells the distance between two neighboring locations. */
+	final Func2<Location, Location, Integer> defaultDistance = new Func2<Location, Location, Integer>() {
+		@Override
+		public Integer invoke(Location t, Location u) {
+			if (t.x == u.x || u.y == t.y) {
+				return 1000;
+			}
+			return 1414;
+		}
+	};
+	/**
+	 * Computes the distance between any cells.
+	 */
+	final Func2<Location, Location, Integer> defaultTrueDistance = new Func2<Location, Location, Integer>() {
+		@Override
+		public Integer invoke(Location t, Location u) {
+			return (int)(1000 * Math.hypot(t.x - u.x, t.y - u.y));
+		}
+	}; 
+	/**
+	 * Returns a preset pathfinding object with the optional
+	 * ignore player.
+	 * @param ignore the player to ignore
+	 * @return the pathfinding ibject
+	 */
+	Pathfinding getPathfinding(final Player ignore) {
+		Pathfinding pathfinding = new Pathfinding();
+		if (ignore != null) {
+			pathfinding.isPassable = defaultPassable;
+		} else {
+			pathfinding.isPassable = new Func1<Location, Boolean>() {
+				@Override
+				public Boolean invoke(Location value) {
+					return isPassable(value.x, value.y, ignore);
+				}
+			};
+		}
+		pathfinding.estimation = defaultEstimator;
+		pathfinding.distance = defaultDistance;
+		pathfinding.trueDistance = defaultTrueDistance;
+		return pathfinding;
+	}
+	/** The ground war simulation. */
+	void doGroundWarSimulation() {
+		if (startBattle.visible() || commons.simulation.paused()) {
+			return;
+		}
+		
+		if (!noAI) {
+			Player np = nonPlayer();
+			if (np != null) {
+				np.ai.groundBattle(this);
+			}
+		}
+		player().ai.groundBattle(this);
+		
+		// execute path plannings
+		doPathPlannings();
+		
+		// destruction animations
+		for (GroundwarExplosion exp : new ArrayList<>(explosions)) {
+			updateExplosion(exp);
+		}
+		for (GroundwarRocket rocket : new ArrayList<>(rockets)) {
+			updateRocket(rocket);
+		}
+		Iterator<GroundwarGun> itg = guns.iterator();
+		while (itg.hasNext()) {
+			GroundwarGun g = itg.next();
+			if (g.building == null || g.building.hitpoints <= 0) {
+				g.selected = false;
+				itg.remove();
+			} else {
+				updateGun(g);
+			}
+		}
+
+		for (GroundwarUnit u : units) {
+			updateUnit(u);
+		}
+
+		
+		Player winner = checkWinner();
+		if (winner != null) {
+			for (GroundwarUnit u : units) {
+				stop(u);
+			}
+			if (explosions.size() == 0 && rockets.size() == 0) {
+				commons.simulation.pause();
+				concludeBattle(winner);
+			}
+		}
+		askRepaint();
+	}
+
+	/**
+	 * Execute path plannings asynchronously.
+	 */
+	void doPathPlannings() {
+		if (pathsToPlan.size() > 0) {
+			
+			// map all units to locations
+			long t0 = System.nanoTime();
+			
+			List<Future<PathPlanning>> inProgress = new LinkedList<>();
+			Iterator<PathPlanning> it = pathsToPlan.iterator();
+			int i = PATHS_PER_TICK;
+			while (i-- > 0 && it.hasNext()) {
+				PathPlanning ppi = it.next();
+				it.remove();
+				inProgress.add(commons.pool.submit(ppi));
+			}
+			for (Future<PathPlanning> f : inProgress) {
+				try {
+					f.get().apply();
+				} catch (ExecutionException ex) {
+					Exceptions.add(ex);
+				} catch (InterruptedException ex) {
+					Exceptions.add(ex);
+				}
+			}
+//			for (PathPlanning pp : pathsToPlan) {
+//				pp.apply();
+//			}
+//			pathsToPlan.clear();
+
+			t0 = System.nanoTime() - t0;
+			System.out.printf("Planning %.6f%n", t0 / 1000000000d);
+		}
+	}
+
+	/**
+	 * Update the graphical state of an explosion.
+	 * @param exp the explosion
+	 */
+	void updateExplosion(GroundwarExplosion exp) {
+		if (exp.next()) {
+			if (exp.half()) {
+				if (exp.target != null) {
+					units.remove(exp.target);
+					removeUnitLocation(exp.target);
+					if (battle != null) {
+						battle.groundLosses.add(exp.target);
+					}
+				}
+			}
+		} else {
+			explosions.remove(exp);
+		}
+	}
+	/**
+	 * Conclude the battle.
+	 * @param winner the winner
+	 */
+	void concludeBattle(Player winner) {
+		final BattleInfo bi = battle;
+		
+		bi.groundwarWinner = winner;
+		
+		for (GroundwarUnit u : bi.groundLosses) {
+			u.item.count--;
+			if (u.owner == planet().owner) {
+				bi.defenderGroundLosses++;
+				if (u.item.count <= 0) {
+					planet().inventory.remove(u.item);
+				}
+			} else {
+				bi.attackerGroundLosses++;
+				if (u.item.count <= 0) {
+					bi.attacker.inventory.remove(u.item);
+				}
+			}
+		}
+		
+		Player np = nonPlayer();
+
+		if (bi.attacker.owner == winner) {
+			planet().takeover(winner);
+
+			BattleSimulator.applyPlanetConquered(planet(), BattleSimulator.PLANET_CONQUER_LOSS);
+
+			// remove unfinished buildings
+			for (Building b : planet().surface.buildings.list()) {
+				if (!b.isComplete()) {
+					destroyBuilding(b);
+				}
+			}
+			planet().rebuildRoads();
+			
+		} else {
+			BattleSimulator.applyPlanetDefended(planet(), BattleSimulator.PLANET_DEFENSE_LOSS);
+		}
+		
+		planet().rebuildRoads();
+
+		player().ai.groundBattleDone(this);
+		np.ai.groundBattleDone(this);
+		
+		world().scripting.onGroundwarFinish(this);
+		
+		battle = null;
+		
+		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
+		bfs.displayBattleSummary(bi);
+	}
+	/** @return Check if one of the fighting parties has run out of units/structures. */
+	Player checkWinner() {
+		if (battle == null) {
+			return null;
+		}
+		int attackerCount = 0;
+		int defenderCount = 0;
+		for (GroundwarGun g : guns) {
+			if (g.building.enabled && g.building.assignedEnergy != 0) {
+				defenderCount++;
+			}
+		}
+		for (GroundwarUnit u : units) {
+			if (u.owner == planet().owner) {
+				if (!winIngoreUnits.contains(u.model.type)) {
+					defenderCount++;
+				}
+			} else {
+				if (!winIngoreUnits.contains(u.model.type)) {
+					attackerCount++;
+				}
+			}
+		}
+		// if attacker looses all of its units, the winner is always the defender
+		if (attackerCount == 0) {
+			return planet().owner;
+		} else
+		if (defenderCount == 0) {
+			return battle.attacker.owner;
+		}
+		return null;
+	}
+	/**
+	 * Is the given target within the min-max range of the unit.
+	 * @param u the unit
+	 * @param target the target unit
+	 * @return true if within the min-max range
+	 */
+	boolean unitWithinRange(GroundwarUnit u, GroundwarUnit target) {
+		return unitInRange(u, target, u.model.maxRange)
+				&& !unitInRange(u, target, u.model.minRange);
+	}
+	/**
+	 * Is the given target within the min-max range of the unit.
+	 * @param u the unit
+	 * @param target the target unit
+	 * @return true if within the min-max range
+	 */
+	boolean unitWithinRange(GroundwarUnit u, Building target) {
+		return unitInRange(u, target, u.model.maxRange)
+				&& !unitInRange(u, target, u.model.minRange);
+	}
+	/**
+	 * Apply groundwar damage to the given building.
+	 * @param b the target building
+	 * @param damage the damage amout
+	 */
+	void damageBuilding(Building b, double damage) {
+		int hpBefore = b.hitpoints;
+		int maxHp = world().getHitpoints(b.type, planet().owner, false);
+		b.hitpoints = (int)Math.max(0, b.hitpoints - 1L * damage * b.type.hitpoints / maxHp);
+		// if damage passes the half mark
+		if ("Defensive".equals(b.type.kind)) {
+			if (hpBefore * 2 >= b.type.hitpoints && b.hitpoints * 2 < b.type.hitpoints) {
+				int count = world().battle.getTurrets(b.type.id, planet().race).size() / 2;
+				int i = guns.size() - 1;
+				while (i >= 0 && count > 0) {
+					// remove half of the guns
+					if (guns.get(i).building == b) {
+						count--;
+						guns.remove(i);
+					}
+					i--;
+				}
+			}
+		}
+		// if building got destroyed
+		if (hpBefore > 0 && b.hitpoints <= 0) {
+			for (int i = guns.size() - 1; i >= 0; i--) {
+				if (guns.get(i).building == b) {
+					// remove guns
+					guns.get(i).selected = false;
+					guns.remove(i);
+				}
+			}
+			if (battle != null && "Defensive".equals(b.type.kind)) {
+				battle.defenderFortificationLosses++;
+			}
+			effectSound(SoundType.EXPLOSION_LONG);
+			destroyBuilding(b);
+		}
+		if (!"Defensive".equals(b.type.kind)) {
+			doAllocation();
+		}
+	}
+	/**
+	 * Destroy the given building and apply statistics.
+	 * @param b the target building
+	 */
+	void destroyBuilding(Building b) {
+		surface().removeBuilding(b);
+		b.hitpoints = 0;
+		
+		planet().owner.statistics.buildingsLost.value++;
+		planet().owner.statistics.buildingsLostCost.value += b.type.cost * (1 + b.upgradeLevel);
+		
+		if (battle != null) {
+			battle.attacker.owner.statistics.buildingsDestroyed.value++;
+			battle.attacker.owner.statistics.buildingsDestroyedCost.value += b.type.cost * (1 + b.upgradeLevel);
+		}
+		doAllocation();
+	}
+	/**
+	 * Update the properties of the target unit.
+	 * @param u the unit to update
+	 */
+	void updateUnit(GroundwarUnit u) {
+		if (u.paralizedTTL > 0) {
+			u.paralizedTTL--;
+			if (u.paralizedTTL == 0) {
+				u.paralized = null;
+			}
+		}
+		if (u.isDestroyed()) {
+			return;
+		}
+		if (u.model.selfRepairTime > 0) {
+			if (u.hp < u.model.hp) {
+				u.hp = Math.min(u.model.hp, u.hp + 1.0 * u.model.hp / u.model.selfRepairTime);
+			}
+		}
+		if (minelayers.contains(u) && u.path.size() == 0) {
+			Location loc = u.location();
+			if (!mines.containsKey(loc)) {
+				u.phase++;
+				if (u.phase >= u.maxPhase()) {
+					Mine m = new Mine();
+					m.damage = u.damage();
+					m.owner = u.owner;
+					mines.put(loc, m);
+					minelayers.remove(u);
+					u.phase = 0;
+				}
+			} else {
+				minelayers.remove(u);
+			}
+			return;
+		} else
+		if (u.phase > 0) {
+			u.phase++;
+			if (u.phase >= u.maxPhase()) {
+				if (u.attackUnit != null) {
+					attackUnitEndPhase(u);
+				} else
+				if (u.attackBuilding != null) {
+					attackBuildingEndPhase(u);
+				}
+				u.phase = 0;
+				
+				
+				if (u.hasValidTarget() 
+						&& config.aiGroundAttackGetCloser
+						&& !u.guard
+						&& u.attackMove == null 
+						&& getCloserUnits.contains(u.model.type)) {
+					moveOneCellCloser(u);
+				}
+			}
+		} else 
+		if (u.paralizedTTL == 0) {
+			Location am = u.attackMove;
+			if (u.attackUnit != null && !u.attackUnit.isDestroyed()) {
+				approachTargetUnit(u);
+			} else 
+			if (u.attackBuilding != null && !u.attackBuilding.isDestroyed()) {
+				approachTargetBuilding(u);
+			} else {
+				if (u.attackBuilding != null && u.attackBuilding.isDestroyed()) {
+					if (am != null) {
+						move(u, am.x, am.y);
+						u.attackMove = am;
+					} else {
+						stop(u);
+					}
+				} else
+				if (u.attackUnit != null && u.attackUnit.isDestroyed()) {
+					if (am != null) {
+						move(u, am.x, am.y);
+						u.attackMove = am;
+					} else {
+						stop(u);
+					}
+				}
+				if ((am != null || u.path.isEmpty()) && directAttackUnits.contains(u.model.type)) {
+					// find a new target in range
+  					List<GroundwarUnit> targets = unitsInRange(u);
+					if (targets.size() > 0) {
+						attack(u, ModelUtils.random(targets));
+						u.attackMove = am;
+					} else {
+						List<Building> targets2 = buildingsInRange(u);
+						if (targets2.size() > 0) {
+							attack(u, ModelUtils.random(targets2));
+							u.attackMove = am;
+						}
+					}
+					if (u.attackUnit == null && u.attackBuilding == null 
+							&& am != null && u.path.isEmpty()) {
+						if (!am.equals(u.location())) {
+							attackMove(u, am.x, am.y);
+						} else {
+							stop(u);
+						}
+					}
+				}
+			}
+			if (!u.path.isEmpty()) {
+				moveUnit(u);
+				if (u.nextMove == null) {
+					Location loc = u.location();
+					Mine m = mines.get(loc);
+					if (m != null && m.owner != u.owner) {
+						effectSound(SoundType.EXPLOSION_MEDIUM);
+						Point pt = centerOf(loc);
+						createExplosion(pt.x, pt.y, ExplosionType.GROUND_RED);
+						damageArea(u.x, u.y, m.damage, 1, m.owner);
+						mines.remove(loc);
+					}
+				}
+			} else {
+				if (u.advanceOnBuilding != null) {
+					u.attackBuilding = u.advanceOnBuilding;
+					u.advanceOnBuilding = null;
+				}
+				if (u.advanceOnUnit != null) {
+					u.attackUnit = u.advanceOnUnit;
+					u.advanceOnUnit = null;
+				}
+			}
+		}
+	}
+	/**
+	 * Try to move the unit one cell closer to its target.
+	 * @param u the unit
+	 */
+	void moveOneCellCloser(GroundwarUnit u) {
+		Location source = u.location();
+		double tx = 0d;
+		double ty = 0d;
+		if (u.attackBuilding != null) {
+			tx = u.attackBuilding.location.x + u.attackBuilding.width() / 2d;
+			ty = u.attackBuilding.location.y - u.attackBuilding.height() / 2d;
+		} else
+		if (u.attackUnit != null) {
+			Location target = u.attackUnit.location();
+			tx = target.x;
+			ty = target.y;
+		}
+		double currentDistance = Math.hypot(tx - source.x, ty - source.y);
+		if (currentDistance <= 1.42) {
+			return;
+		}
+		List<Location> neighbors = getPathfinding(null).neighbors.invoke(source);
+		if (!neighbors.isEmpty()) {
+			Location cell = null;
+			double cellDistance = currentDistance;
+			for (Location loc : neighbors) {
+				double newDistance = Math.hypot(tx - loc.x, ty - loc.y);
+				if (newDistance < cellDistance) {
+					cellDistance = newDistance;
+					cell = loc;
+				}
+			}
+			if (cell != null) {
+				if (u.attackUnit != null) {
+					u.advanceOnUnit = u.attackUnit;
+					u.attackUnit = null;
+				}
+				if (u.attackBuilding != null) {
+					u.advanceOnBuilding = u.attackBuilding;
+					u.attackBuilding = null;
+				}
+				u.inMotionPlanning = true;
+				pathsToPlan.add(new PathPlanning(source, cell, u, null));
+			}
+		}
+	}
+	/**
+	 * Approach the target building.
+	 * @param u the unit who is attacking
+	 */
+	void approachTargetBuilding(GroundwarUnit u) {
+		if (unitWithinRange(u, u.attackBuilding)) {
+			if (u.nextMove != null) {
+				u.path.clear();
+				u.path.add(u.nextMove);
+			} else
+			if (rotateStep(u, centerCellOf(u.attackBuilding))) {
+				if (u.cooldown <= 0) {
+					u.phase++;
+					if (u.model.fire != null) {
+						effectSound(u.model.fire);
+					}
+					
+					if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+						Location loc = centerCellOf(u.attackBuilding);
+						createRocket(u, loc.x, loc.y);
+					}
+					u.cooldown = u.model.delay;
+				} else {
+					u.cooldown -= SIMULATION_DELAY;
+				}
+			}
+		} else {
+			if (u.path.isEmpty()) {
+				Location ul = u.location();
+				if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
+					// plot path to the building
+					u.inMotionPlanning = true;
+					pathsToPlan.add(new PathPlanning(ul, 
+							buildingNearby(u.attackBuilding, ul), u, null));
+				} else {
+					// plot path outside the minimum range
+					Location c = buildingNearby(u.attackBuilding, ul);
+					double angle = ModelUtils.random() * 2 * Math.PI;
+					Location c1 = Location.of(
+							(int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
+							(int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
+					);
+					
+					u.inMotionPlanning = true;
+					pathsToPlan.add(new PathPlanning(u.location(), c1, u, null));
+				}
+			}
+		}
+	}
+	/**
+	 * Returns a reachable location of the building in relation to the source.
+	 * @param b the building
+	 * @param initial the source location
+	 * @return the nearby reachable location
+	 */
+	Location buildingNearby(Building b, final Location initial) {
+		final Location destination = centerCellOf(b);
+
+		final Pathfinding pathfinding = getPathfinding(null);
+		
+		Comparator<Location> nearestComparator = new Comparator<Location>() {
+			@Override
+			public int compare(Location o1, Location o2) {
+				int d1 = pathfinding.trueDistance.invoke(destination, o1);
+				int d2 = pathfinding.trueDistance.invoke(destination, o2);
+				int c = Integer.compare(d1, d2);
+				if (c == 0) {
+					d1 = pathfinding.trueDistance.invoke(initial, o1);
+					d2 = pathfinding.trueDistance.invoke(initial, o2);
+					c = Integer.compare(d1, d2);
+				}
+				return c;
+			}
+		};
+		Location result = null;
+		for (int x = b.location.x - 1; x < b.location.x + b.width(); x++) {
+			Location loc = Location.of(x, b.location.y + 1);
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+			loc = Location.of(x, b.location.y - b.height());
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+		}
+		for (int y = b.location.y; y > b.location.y - b.height(); y--) {
+			Location loc = Location.of(b.location.x - 1, y);
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+			loc = Location.of(b.location.x + b.width(), y);
+			if (result == null || nearestComparator.compare(result, loc) > 0) {
+				result = loc;
+			}
+		}
+		return result;
+	}
+	/**
+	 * Approach the target unit.
+	 * @param u the unit who is attacking
+	 */
+	void approachTargetUnit(GroundwarUnit u) {
+		// if within range
+		if (unitWithinRange(u, u.attackUnit)) {
+			if (u.nextMove != null) {
+				u.path.clear();
+				u.path.add(u.nextMove);
+			} else
+			if (rotateStep(u, u.attackUnit.location())) {
+				if (u.cooldown <= 0) {
+					u.phase++;
+					if (u.model.fire != null) {
+						effectSound(u.model.fire);
+					}
+					if (u.model.type == GroundwarUnitType.PARALIZER) {
+						if (u.attackUnit.paralized == null) {
+							u.attackUnit.paralized = u;
+							u.attackUnit.paralizedTTL = PARALIZED_TTL; // FIXME paralize time duration
+							// deparalize target of a paralizer
+							if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
+								for (GroundwarUnit u2 : units) {
+									if (u2.paralized == u.attackUnit) {
+										u2.paralized = null;
+										u2.paralizedTTL = 0;
+									}
+								}
+							}
+						} else {
+							// if target already paralized, look for another
+							u.attackUnit = null;
+						}
+					}
+					if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+						createRocket(u, u.attackUnit.x, u.attackUnit.y);
+					}
+				} else {
+					u.cooldown -= SIMULATION_DELAY;
+				}
+			}
+		} else {
+			if (u.path.isEmpty()) {
+				u.inMotionPlanning = true;
+				if (u.attackMove == null) {
+					// plot path
+					pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u, null));
+				} else {
+					pathsToPlan.add(new PathPlanning(u.location(), u.attackMove, u, enemy(u.owner)));
+				}
+			} else {
+				if (u.attackMove == null) {
+					Location ep = u.path.get(u.path.size() - 1);
+					// if the target unit moved since last
+					double dx = ep.x - u.attackUnit.x;
+					double dy = ep.y - u.attackUnit.y;
+					if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
+						u.path.clear();
+						u.inMotionPlanning = true;
+						pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u, null));
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Attack the target building.
+	 * @param u the unit who is attacking
+	 */
+	void attackBuildingEndPhase(GroundwarUnit u) {
+		u.cooldown = u.model.delay;
+		// for rocket sleds, damage is inflicted by the rocket impact
+		if (u.model.type == GroundwarUnitType.KAMIKAZE 
+		&& u.hp * 10 < u.model.hp) {
+			special(u);
+		} else
+		if (u.model.type != GroundwarUnitType.ROCKET_SLED) {
+			damageBuilding(u.attackBuilding, u.damage());
+		}
+		
+		if (u.attackBuilding.isDestroyed()) {
+			// TODO demolish animation?
+			u.attackBuilding = null;
+		}
+	}
+
+	/**
+	 * Attack the target unit.
+	 * @param u the unit who is attacking
+	 */
+	void attackUnitEndPhase(GroundwarUnit u) {
+		u.cooldown = u.model.delay;
+		if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
+			return;
+		}
+		if (u.model.type == GroundwarUnitType.ARTILLERY) {
+			damageArea(u.attackUnit.x, u.attackUnit.y, u.damage(), u.model.area, u.owner);
+		} else
+		if (u.model.type == GroundwarUnitType.KAMIKAZE 
+			&& u.hp * 10 < u.model.hp) {
+			special(u);
+		} else
+		if (unitWithinRange(u, u.attackUnit)) {
+			if (!u.attackUnit.isDestroyed()) {
+				u.attackUnit.damage(u.damage());
+				if (u.attackUnit.isDestroyed()) {
+					effectSound(u.attackUnit.model.destroy);
+					createExplosion(u.attackUnit, ExplosionType.GROUND_RED);
+					// if the unit destroyed was a paralizer, deparalize everyone
+					if (u.attackUnit.model.type == GroundwarUnitType.PARALIZER) {
+						for (GroundwarUnit u2 : units) {
+							if (u2.paralized == u.attackUnit) {
+								u2.paralized = null;
+								u2.paralizedTTL = 0;
+							}
+						}
+					}
+					
+					u.attackUnit.owner.statistics.vehiclesLost.value++;
+					u.attackUnit.owner.statistics.vehiclesLostCost.value += world().researches.get(u.attackUnit.model.id).productionCost;
+
+					u.owner.statistics.vehiclesDestroyed.value++;
+					u.owner.statistics.vehiclesDestroyedCost.value += world().researches.get(u.attackUnit.model.id).productionCost;
+
+					u.attackUnit = null;
+				}
+			} else {
+				u.attackUnit = null;
+			}
+		}
+	}
+	/**
+	 * Damage units and structures within the specified cell area.
+	 * @param cx the cell x
+	 * @param cy the cell y
+	 * @param damage the damage to apply
+	 * @param area the effect area
+	 * @param owner the units and structures *NOT* to damage
+	 */
+	void damageArea(double cx, double cy, double damage, int area, Player owner) {
+		for (GroundwarUnit u : units) {
+			if (u.owner != owner) {
+				if (cellInRange(cx, cy, u.x, u.y, area)) {
+					if (!u.isDestroyed()) {
+						u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
+						if (u.isDestroyed()) {
+							createExplosion(u, ExplosionType.GROUND_RED);
+							
+							u.owner.statistics.vehiclesLost.value++;
+							u.owner.statistics.vehiclesLostCost.value += world().researches.get(u.model.id).productionCost;
+
+							owner.statistics.vehiclesDestroyed.value++;
+							owner.statistics.vehiclesDestroyedCost.value += world().researches.get(u.model.id).productionCost;
+
+						}
+					}
+				}
+			}
+		}
+		if (planet().owner != owner) {
+			for (Building b : surface().buildings.list()) {
+				Location u = centerCellOf(b);
+				if (cellInRange(cx, cy, u.x, u.y, area)) {
+					damageBuilding(b, (int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Update the properties of the given gun.
+	 * @param g the target gun
+	 */
+	void updateGun(GroundwarGun g) {
+		if (!g.building.enabled) {
+			return;
+		}
+		// underpowered guns will not fire
+		double powerRate = 1d * g.building.assignedEnergy / g.building.getEnergy();
+		double indexRate = (g.index + 0.5) / g.count;
+		if (indexRate >= powerRate) {
+			g.phase = 0;
+			return;
+		}
+		
+		if (g.phase > 0) {
+			g.phase++;
+			if (g.phase >= g.maxPhase()) {
+				if (g.attack != null && !g.attack.isDestroyed() 
+						&& unitInRange(g, g.attack)) {
+					if (!g.attack.isDestroyed()) {
+						g.attack.damage(g.damage());
+						if (g.attack.isDestroyed()) {
+							effectSound(g.attack.model.destroy);
+							createExplosion(g.attack, ExplosionType.GROUND_RED);
+							
+							g.attack.owner.statistics.vehiclesLost.value++;
+							g.attack.owner.statistics.vehiclesLostCost.value += world().researches.get(g.attack.model.id).productionCost;
+
+							g.owner.statistics.vehiclesDestroyed.value++;
+							g.owner.statistics.vehiclesDestroyedCost.value += world().researches.get(g.attack.model.id).productionCost;
+							
+							g.attack = null;
+						}
+					} else {
+						g.attack = null;
+					}
+				}
+				g.cooldown = g.model.delay;
+				g.phase = 0;
+			}
+		} else {
+			if (g.attack != null && !g.attack.isDestroyed() 
+					&& unitInRange(g, g.attack)) {
+				if (rotateStep(g, centerOf(g.attack))) {
+					if (g.cooldown <= 0) {
+						g.phase++;
+						effectSound(g.model.fire);
+					} else {
+						g.cooldown -= SIMULATION_DELAY;
+					}
+				}
+			} else {
+				g.attack = null;
+				// find a new target
+				List<GroundwarUnit> targets = unitsInRange(g);
+				if (targets.size() > 0) {
+					g.attack = ModelUtils.random(targets);
+				}
+			}
+		}
+	}
+	/**
+	 * Returns the center cell op the given building.
+	 * @param b the building
+	 * @return the location of the center cell
+	 */
+	Location centerCellOf(Building b) {
+		return Location.of(b.location.x + b.tileset.normal.width / 2, 
+				b.location.y - b.tileset.normal.height / 2);
+	}
+	/**
+	 * Rotate the structure towards the given target angle by a step.
+	 * @param gun the gun in question
+	 * @param target the target point
+	 * @return rotation done?
+	 */
+	boolean rotateStep(GroundwarGun gun, Point target) {
+		Point pg = centerOf(gun);
+		double targetAngle = Math.atan2(target.y - pg.y, target.x - pg.x);
+		
+		double currentAngle = gun.normalizedAngle();
+
+		double diff = targetAngle - currentAngle;
+		if (diff < -Math.PI) {
+			diff = 2 * Math.PI - diff;
+		} else
+		if (diff > Math.PI) {
+			diff -= 2 * Math.PI; 
+		}
+		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.model.matrix[0].length / SIMULATION_DELAY;
+		if (Math.abs(diff) < anglePerStep) {
+			gun.angle = targetAngle;
+			return true;
+		}
+		gun.angle += Math.signum(diff) * anglePerStep;
+		return false;
+	}
+	/**
+	 * Create an explosion animation at the given center location.
+	 * @param target the target of the explosion
+	 * @param type the type of the explosion animation
+	 */
+	void createExplosion(GroundwarUnit target, ExplosionType type) {
+		GroundwarExplosion exp = new GroundwarExplosion();
+		Point center = centerOf(target);
+		exp.x = center.x;
+		exp.y = center.y;
+		exp.target = target;
+		exp.phases = world().battle.groundExplosions.get(type);
+		explosions.add(exp);
+	}
+	/**
+	 * Create an explosion animation at the given center location.
+	 * @param x the explosion center in screen coordinates
+	 * @param y the explosion center in screen coordinates
+	 * @param type the type of the explosion animation
+	 */
+	void createExplosion(int x, int y, ExplosionType type) {
+		GroundwarExplosion exp = new GroundwarExplosion();
+		exp.x = x;
+		exp.y = y;
+		exp.phases = world().battle.groundExplosions.get(type);
+		explosions.add(exp);
+	}
+	/**
+	 * Find the units within the range of the gun.
+	 * @param g the gun
+	 * @return the units in range
+	 */
+	List<GroundwarUnit> unitsInRange(GroundwarUnit g) {
+		List<GroundwarUnit> result = new ArrayList<>();
+		for (GroundwarUnit u : units) {
+			if (u.owner != g.owner && !u.isDestroyed() 
+					&& unitInRange(g, u, g.model.maxRange)
+					&& !unitInRange(g, u, g.model.minRange)) {
+				result.add(u);
+			}
+		}
+		return result;
+	}
+	/**
+	 * Find the units within the range of the gun.
+	 * @param g the gun
+	 * @return the units in range
+	 */
+	List<Building> buildingsInRange(GroundwarUnit g) {
+		List<Building> result = new ArrayList<>();
+		for (Building u : surface().buildings.iterable()) {
+			if (planet().owner != g.owner && !u.isDestroyed() 
+					&& unitInRange(g, u, g.model.maxRange)
+					&& !unitInRange(g, u, g.model.minRange) && u.type.kind.equals("Defensive")) {
+				result.add(u);
+			}
+		}
+		return result;
+	}
+	/**
+	 * Find the units within the range of the gun.
+	 * @param g the gun
+	 * @return the units in range
+	 */
+	List<GroundwarUnit> unitsInRange(GroundwarGun g) {
+		List<GroundwarUnit> result = new ArrayList<>();
+		for (GroundwarUnit u : units) {
+			if (u.owner != g.owner && !u.isDestroyed() 
+					&& unitInRange(g, u)) {
+				result.add(u);
+			}
+		}
+		return result;
+	}
+	/**
+	 * Gives the center point of the gun rectangle in the unscaled pixel space.
+	 * @param g the gun in question
+	 * @return the center point
+	 */
+	Point centerOf(GroundwarGun g) {
+		Rectangle gr = gunRectangle(g);
+		return new Point(gr.x + gr.width / 2, gr.y + gr.height / 2);
+	}
+	/**
+	 * Gives the center point of the unit rectangle in the unscaled pixel space.
+	 * @param g the unit in question
+	 * @return the center point
+	 */
+	Point centerOf(GroundwarUnit g) {
+		Rectangle ur = unitRectangle(g);
+		return new Point(ur.x + ur.width / 2, ur.y + ur.height / 2);
+	}
+	/**
+	 * Gives the center point of the location cell in the unscaled pixel space.
+	 * @param g the unit in question
+	 * @return the center point
+	 */
+	Point centerOf(Location g) {
+		return new Point(surface().baseXOffset + Tile.toScreenX(g.x, g.y) + 28, 
+				surface().baseYOffset + Tile.toScreenY(g.x, g.y) + 14);
+	}
+	/**
+	 * Gives the center point of the fractional location cell in the unscaled pixel space.
+	 * @param x the fractional cell location
+	 * @param y the fractional cell location
+	 * @return the center point
+	 */
+	Point centerOf(double x, double y) {
+		return new Point((int)(surface().baseXOffset + Tile.toScreenX(x, y) + 28), 
+				(int)(surface().baseYOffset + Tile.toScreenY(x, y) + 14));
+	}
+	/**
+	 * Gives the center point of the unit rectangle in the unscaled pixel space.
+	 * @param b the building object
+	 * @return the center point
+	 */
+	Point centerOf(Building b) {
+		Rectangle ur = buildingRectangle(b);
+		return new Point(ur.x + ur.width / 2, ur.y + ur.height / 2);
+	}
+	/**
+	 * Check if the given unit is within the range of the gun.
+	 * @param g the gun
+	 * @param u the unit
+	 * @return true if within range
+	 */
+	boolean unitInRange(GroundwarGun g, GroundwarUnit u /*, double range*/) {
+//		Point gp = centerOf(g.building);
+//		Point up = centerOf(u);
+//		
+//		double gpx = Tile.toTileX(gp.x, gp.y);
+//		double gpy = Tile.toTileY(gp.x, gp.y);
+//		double upx = Tile.toTileX(up.x, up.y);
+//		double upy = Tile.toTileY(up.x, up.y);
+//		
+//		double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
+//		
+//		return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range;
+		return g.inRange(u);
+	}
+	/**
+	 * Check if two cells are within the distance of range.
+	 * @param cx the first cell X
+	 * @param cy the first cell Y
+	 * @param px the second cell X
+	 * @param py the second cell Y
+	 * @param range the range in cells
+	 * @return true if within range
+	 */
+	boolean cellInRange(double cx, double cy, double px, double py, int range) {
+		
+		return (cx - px) * (cx - px) + (cy - py) * (cy - py) <= range * range; 
+	}
+	/**
+	 * Check if the given unit is within the range of the gun.
+	 * @param g the source unit
+	 * @param u the unit
+	 * @param range the maximum range
+	 * @return true if within range
+	 */
+	boolean unitInRange(GroundwarUnit g, GroundwarUnit u, double range) {
+		return Math.hypot(g.x - u.x, g.y - u.y) <= range; 
+	}
+	/**
+	 * Check if the given unit is within the range of the gun.
+	 * @param g the source unit
+	 * @param b the building
+	 * @param range the maximum range
+	 * @return true if within range
+	 */
+	boolean unitInRange(GroundwarUnit g, Building b, double range) {
+		int bx = b.location.x;
+		int bx2 = bx + b.tileset.normal.width - 1;
+		int by = b.location.y;
+		int by2 = by - b.tileset.normal.height + 1;
+		
+		if (Math.hypot(g.x - bx, g.y - by) <= range) {
+			return true;
+		} else
+		if (Math.hypot(g.x - bx2, g.y - by) <= range) {
+			return true;
+		} else
+		if (Math.hypot(g.x - bx, g.y - by2) <= range) {
+			return true;
+		} else
+		if (Math.hypot(g.x - bx2, g.y - by2) <= range) {
+			return true;
+		} else
+		if (g.x >= bx && g.x <= bx2 && (within(g.y - by, 0, range) || within(by2 - g.y, 0, range))) {
+			return true;
+		} else
+		if (g.y <= by && g.y >= by2 && (within(bx - g.x, 0, range) || within(g.x - bx2, 0, range))) {
+			return true;
+		}
+		return false; 
+	}
+	/**
+	 * Check if the value is within the specified range.
+	 * @param value the value
+	 * @param x0 the range
+	 * @param x1 the range
+	 * @return true if within
+	 */
+	boolean within(double value, double x0, double x1) {
+		if (x0 < x1) {
+			return value >= x0 && value <= x1;
+		}
+		return value >= x1 && value <= x0;
+	}
+	/** The composite record to return the rotation angles. */
+	static class RotationAngles {
+		/** The unit's current angle. */
+		double currentAngle;
+		/** The target angle. */
+		double targetAngle;
+		/** The difference to turn. */
+		double diff;
+	}
+	/**
+	 * Computes the rotation angles.
+	 * @param u the unit
+	 * @param target the target location
+	 * @return the angles
+	 */
+	RotationAngles computeRotation(GroundwarUnit u, Location target) {
+		RotationAngles result = new RotationAngles();
+
+		Point pg = centerOf(u.x, u.y);
+		Point tg = centerOf(target);
+		if (tg.y - pg.y == 0 && tg.x - pg.x == 0) {
+			result.targetAngle = u.normalizedAngle();
+			result.currentAngle = result.targetAngle;
+			result.diff = 0;
+		} else {
+			result.targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
+			
+			result.currentAngle = u.normalizedAngle();
+	
+			result.diff = result.targetAngle - result.currentAngle;
+			if (result.diff < -Math.PI) {
+				result.diff += 2 * Math.PI;
+			} else
+			if (result.diff > Math.PI) {
+				result.diff -= 2 * Math.PI; 
+			}
+		}
+
+		return result;
+	}
+	/**
+	 * Rotate the structure towards the given target angle by a step.
+	 * @param u the gun in question
+	 * @param target the target point
+	 * @return rotation done?
+	 */
+	boolean rotateStep(GroundwarUnit u, Location target) {
+		RotationAngles ra = computeRotation(u, target);
+		double anglePerStep = 2 * Math.PI * u.model.rotationTime / u.angleCount() / SIMULATION_DELAY;
+		if (Math.abs(ra.diff) < anglePerStep) {
+			u.angle = ra.targetAngle;
+			return true;
+		}
+		u.angle += Math.signum(ra.diff) * anglePerStep;
+		return false;
+	}
+	/**
+	 * Checks if the given target location requires the unit to rotate before move.
+	 * @param u the unit
+	 * @param target the target location
+	 * @return true if rotation is needed
+	 */
+	boolean needsRotation(GroundwarUnit u, Location target) {
+		RotationAngles ra = computeRotation(u, target);
+		double anglePerStep = 2 * Math.PI * u.model.rotationTime / u.angleCount() / SIMULATION_DELAY;
+		if (Math.abs(ra.diff) < anglePerStep) {
+			return false;
+		}
+		return true;
+	}
+	/**
+	 * Plan a new route to the current destination.
+	 * @param u the unit.
+	 */
+	void repath(final GroundwarUnit u) {
+		if (u.path.size() > 0) {
+			final Location current = u.location();
+			final Location goal = u.path.get(u.path.size() - 1);
+			u.path.clear();
+			u.nextMove = null;
+			u.nextRotate = null;
+			u.inMotionPlanning = true;
+			pathsToPlan.add(new PathPlanning(current, goal, u, u.attackMove != null ? enemy(u.owner) : null));
+		}
+	}
+	/**
+	 * Move an unit by a given amount into the next path location.
+	 * @param u The unit to move one step. 
+	 */
+	void moveUnit(GroundwarUnit u) {
+		if (u.isDestroyed()) {
+			return;
+		}
+		if (u.yieldTTL > 0) {
+			u.yieldTTL--;
+			if (u.yieldTTL == 0) {
+				// trigger replanning
+				repath(u);
+				return;
+			}
+		}
+		if (u.nextMove == null) {
+			u.nextMove = u.path.get(0);
+			u.nextRotate = u.nextMove;
+			
+			// is the next move location still passable?
+			if (!isPassable(u.nextMove.x, u.nextMove.y)) {
+				// trigger replanning
+				repath(u);
+				return;
+			}
+
+		}
+		
+		
+		if (u.nextRotate != null && rotateStep(u, u.nextRotate)) {
+			u.nextRotate = null;
+		}
+		if (u.nextRotate == null) {
+			moveUnitStep(u, SIMULATION_DELAY);
+		}
+	}
+
+	/**
+	 * Move the ground unit one step.
+	 * @param u the unit
+	 * @param time the available time
+	 */
+	void moveUnitStep(GroundwarUnit u, double time) {
+		double dv = 1.0 * time / u.model.movementSpeed / 28;
+		// detect collision
+		for (GroundwarUnit gu : units) {
+			if (gu != u) {
+				int minx = (int)Math.floor(gu.x);
+				int miny = (int)Math.floor(gu.y);
+				int maxx = (int)Math.ceil(gu.x);
+				int maxy = (int)Math.ceil(gu.y);
+				// check if our next position collided with the movement path of someone else
+				if (minx <= u.nextMove.x && u.nextMove.x <= maxx 
+						&& miny <= u.nextMove.y && u.nextMove.y <= maxy) {
+					// yield
+					dv = 0;
+					if (u.yieldTTL <= 0) {
+						u.yieldTTL = ModelUtils.randomInt(YIELD_TTL) + YIELD_TTL / 2;
+					}
+					break;
+				}
+			}
+		}
+		if (dv > 0) {
+			u.yieldTTL = 0;
+			double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
+					+ (u.nextMove.y - u.y) * (u.nextMove.y - u.y);
+			if (distanceToTarget < dv * dv) {
+				updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
+
+				u.nextMove = null;
+				u.path.remove(0);
+				
+				double remaining = Math.sqrt(dv * dv - distanceToTarget);
+				if (!u.path.isEmpty()) {
+					Location nextCell = u.path.get(0);
+					if (!needsRotation(u, nextCell)) {
+						double time2 = remaining * u.model.movementSpeed * 28;
+						u.nextMove = nextCell;
+						moveUnitStep(u, time2);
+					}
+				}
+				
+			} else {
+				double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
+				updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);
+			}
+		}
+	}
+	/**
 	 * Cancel movements and attacks of the selected units.
 	 */
 	void doStopSelectedUnits() {
-		if (planet().war.stopSelectedObjects(player())) {
+		boolean stopped = false;
+		for (GroundwarUnit u : units) {
+			if (u.selected /* && u.owner == player() */) { // FIXME player only
+				stopped = true;
+				stop(u);
+				u.guard = true;
+			}
+		}
+		for (GroundwarGun g : guns) {
+			if (g.selected /* && g.owner == player()*/) { // FIXME player only
+				stopped = true;
+				g.attack = null;
+			}
+		}
+		if (stopped) {
 			effectSound(SoundType.NOT_AVAILABLE);
 			selectCommand(stopUnit);
 		}
@@ -2374,38 +5494,117 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	void selectCommand(UIComponent component) {
 		stopUnit.selected = false; //component == stopUnit;
 		if (stopUnit.selected) {
-			render.attackSelect = false;
-			render.moveSelect = false;
+			attackSelect = false;
+			moveSelect = false;
 		}
 		moveUnit.selected = component == moveUnit;
 		if (moveUnit.selected) {
-			render.attackSelect = false;
-			render.moveSelect = true;
+			attackSelect = false;
+			moveSelect = true;
 		}
 		attackUnit.selected = component == attackUnit;
 		if (attackUnit.selected) {
-			render.attackSelect = true;
-			render.moveSelect = false;
+			attackSelect = true;
+			moveSelect = false;
 		}
 		if (component == null) {
-			render.attackSelect = false;
-			render.moveSelect = false;
+			attackSelect = false;
+			moveSelect = false;
 		}
 	}
-	@Override
-	public void unitsAttackMove(final int mx, final int my) {
+	/**
+	 * Retrieve the building at the given mouse location.
+	 * @param mx the x coodinate
+	 * @param my the y coordinate
+	 * @return the building or null
+	 */
+	Building buildingAt(int mx, int my) {
+		return getBuildingAt(render.getLocationAt(mx, my));
+	}
+	/**
+	 * Retrive the unit at the given location.
+	 * @param mx the mouse X
+	 * @param my the mouse Y
+	 * @return the unit or null if empty
+	 */
+	GroundwarUnit unitAt(int mx, int my) {
 		Location lm = render.getLocationAt(mx, my);
-		if (planet().war.attackMoveSelectedUnits(lm, player())) {
+		for (GroundwarUnit u1 : units) {
+			if ((int)u1.x == lm.x && (int)u1.y == lm.y) {
+				return u1;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Perform an attack move to the designated coordinates.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 */
+	void doAttackMoveSelectedUnits(final int mx, final int my) {
+		boolean attacked = false;
+		Location lm = render.getLocationAt(mx, my);
+		for (GroundwarUnit u : units) {
+			if (u.selected && directAttackUnits.contains(u.model.type)
+					) {
+				move(u, lm.x, lm.y);
+				u.attackMove = lm;
+				u.guard = true;
+				attacked = true;
+			}
+		}
+		if (attacked) {
 			effectSound(SoundType.ACKNOWLEDGE_1);
 		}
 		selectCommand(null);
 	}
-	@Override
-	public void unitsAttack(final int mx, final int my) {
+	/**
+	 * Attack the object at the given mouse location with the currently selected units.
+	 * @param mx the mouse X
+	 * @param my the mouse Y
+	 */
+	void doAttackWithSelectedUnits(final int mx, final int my) {
+		boolean attacked = false;
 		Location lm = render.getLocationAt(mx, my);
-		Building b = surface().getBuildingAt(lm);
-		GroundwarUnit gu = findNearest(mx, my, player());
-		if (planet().war.attackSelectedUnits(gu, b, player())) {
+		Building b = getBuildingAt(lm);
+		GroundwarUnit gu = null;
+		boolean guFound = false;
+		for (GroundwarUnit u : units) {
+			if (u.selected && directAttackUnits.contains(u.model.type)
+					/* && u.owner == player() */) { // FIXME player only
+				if (b != null && planet().owner != u.owner 
+						&& u.model.type != GroundwarUnitType.PARALIZER) {
+					attack(u, b);
+					u.guard = false;
+					attacked = true;
+				} else {
+					
+					if (!guFound) {
+						gu = findNearest(mx, my, u.owner);
+						guFound = true;
+					}
+					if (gu != null) {
+						attack(u, gu);
+						attacked = true;
+						u.guard = false;
+					}
+				}
+				
+			}
+		}
+		for (GroundwarGun g : guns) {
+			if (g.selected /* && g.owner == player() */) { // FIXME player only
+				if (!guFound) {
+					gu = findNearest(mx, my, g.owner);
+					guFound = true;
+				}
+				if (gu != null) {
+					attack(g, gu);
+					attacked = true;
+				}
+			}
+		}
+		if (attacked) {
 			effectSound(SoundType.ACKNOWLEDGE_1);
 		}
 		selectCommand(null);
@@ -2418,12 +5617,11 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	 * @return the nearest or null if no units nearby
 	 */
 	GroundwarUnit findNearest(final int mx, final int my, Player enemyOf) {
-		PlanetGround ground = planet().ground;
 		List<GroundwarUnit> us = new ArrayList<>();
-		for (GroundwarUnit u1 : ground.units) {
+		for (GroundwarUnit u1 : units) {
 			if (u1.owner != enemyOf) {
-				Rectangle r = render.unitRectangle(u1);
-				render.scaleToScreen(r);
+				Rectangle r = unitRectangle(u1);
+				scaleToScreen(r);
 				if (r.contains(mx, my)) {
 					us.add(u1);
 				}
@@ -2434,13 +5632,13 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 				@Override
 				public int compare(GroundwarUnit o1,
 						GroundwarUnit o2) {
-					Rectangle r1 = render.unitRectangle(o1);
-					render.scaleToScreen(r1);
+					Rectangle r1 = unitRectangle(o1);
+					scaleToScreen(r1);
 
 					double d1 = Math.hypot(mx - r1.x - r1.width / 2d, my - r1.y - r1.height / 2);
 
-					Rectangle r2 = render.unitRectangle(o1);
-					render.scaleToScreen(r2);
+					Rectangle r2 = unitRectangle(o1);
+					scaleToScreen(r2);
 
 					double d2 = Math.hypot(mx - r2.x - r2.width / 2d, my - r2.y - r2.height / 2);
 					
@@ -2451,70 +5649,445 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		return null;
 	}
 	/**
+	 * Create a rocket.
+	 * @param sender the sender object
+	 * @param x the target spot
+	 * @param y the target spot
+	 */
+	void createRocket(GroundwarUnit sender, double x, double y) {
+		GroundwarRocket rocket = new GroundwarRocket(world().battle.groundRocket);
+		rocket.x = sender.x;
+		rocket.y = sender.y;
+		rocket.owner = sender.owner;
+		rocket.targetX = x;
+		rocket.targetY = y;
+		rocket.movementSpeed = 25; // FIXME rocket movement speed
+		
+		rocket.damage = sender.damage();
+		rocket.area = sender.model.area;
+		
+		Point pg = centerOf(sender.x, sender.y);
+		Point tg = centerOf(x, y);
+		rocket.angle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
+		
+		rockets.add(rocket);
+	}
+	/**
+	 * Update rocket properties.
+	 * @param rocket the rocket
+	 */
+	void updateRocket(GroundwarRocket rocket) {
+		double dv = 1.0 * SIMULATION_DELAY / rocket.movementSpeed / 28;
+		double distanceToTarget = Math.hypot(rocket.targetX - rocket.x, rocket.targetY - rocket.y);
+		if (distanceToTarget < dv) {
+			// target reached, check for enemy rocket jammers
+			boolean jammed = isRocketJammed(rocket, 0.5);
+			if (!jammed) {
+				// if no jammers, affect area
+				damageArea(rocket.targetX, rocket.targetY, rocket.damage, rocket.area, rocket.owner);
+			}
+			Point p = centerOf(rocket.x, rocket.y);
+			createExplosion(p.x, p.y, ExplosionType.GROUND_ROCKET_2);
+			rockets.remove(rocket);
+		} else {
+			double angle = Math.atan2(rocket.targetY - rocket.y, rocket.targetX - rocket.x);
+			rocket.x += dv * Math.cos(angle);
+			rocket.y += dv * Math.sin(angle);
+			rocket.phase++;
+			
+			if (isRocketJammed(rocket, 0.5)) {
+				Point p = centerOf(rocket.x, rocket.y);
+				createExplosion(p.x, p.y, ExplosionType.GROUND_ROCKET_2);
+				rockets.remove(rocket);
+			}
+		}
+		
+	}
+	/** 
+	 * Check if any enemy uint is within jamming range?
+	 * @param rocket the rocket
+	 * @param penetrationRatio how far may the rocket travel into the range before it is reported as jammed?
+	 * @return is jammed
+	 */
+	boolean isRocketJammed(GroundwarRocket rocket, double penetrationRatio) {
+		for (GroundwarUnit u : units) {
+			if (u.owner != rocket.owner 
+					&& u.model.type == GroundwarUnitType.ROCKET_JAMMER && u.paralizedTTL == 0) {
+				double distance = Math.hypot(u.x - rocket.x, u.y - rocket.y);
+				if (distance < u.model.maxRange * penetrationRatio) {
+					if (u.phase == 0) {
+						u.phase++;
+					}
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	/**
+	 * Remove a destroyed unit from the location helper.
+	 * @param u the unit to remove
+	 */
+	void removeUnitLocation(GroundwarUnit u) {
+		Location loc = unitLocation(u);
+		Set<GroundwarUnit> set = unitsAtLocation.get(loc);
+		if (set != null) {
+			if (!set.remove(u)) {
+				Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", loc.x, loc.y)));
+			}
+		}
+		// remove from pathfinding helper
+		Location pfl = u.location();
+		set = unitsForPathfinding.get(pfl);
+		if (set != null) {
+			if (!set.remove(u)) {
+				Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", pfl.x, pfl.y)));
+			}
+		}
+	}
+	/**
+	 * Returns the given unit's rendering location in cell coordinates.
+	 * @param u the unit
+	 * @return the the rendering location
+	 */
+	Location unitLocation(GroundwarUnit u) {
+		return Location.of((int)Math.floor(u.x - 1), (int)Math.floor(u.y - 1));
+	}
+	/**
+	 * Update the location of the specified unit by the given amount.
+	 * @param u the unit to move
+	 * @param dx the delta X to move
+	 * @param dy the delta Y to move
+	 * @param relative is this a relative move
+	 */
+	void updateUnitLocation(GroundwarUnit u, double dx, double dy, boolean relative) {
+		Location current = unitLocation(u);
+		Location pfl = u.location();
+		
+		if (relative) {
+			u.x += dx;
+			u.y += dy;
+		} else {
+			u.x = dx;
+			u.y = dy;
+		}
+		Location next = unitLocation(u);
+		Location pfl2 = u.location();
+
+		if (!current.equals(next)) {
+			Set<GroundwarUnit> set = unitsAtLocation.get(current);
+			if (set != null) {
+				if (!set.remove(u)) {
+					Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", current.x, current.y)));
+				}
+				if (unitsAtLocation.isEmpty()) {
+					unitsAtLocation.remove(current);
+				}
+			}		
+		}
+		if (!pfl.equals(pfl2)) {
+			// remove from pathfinding helper
+			Set<GroundwarUnit> set = unitsForPathfinding.get(pfl);
+			if (set != null) {
+				if (!set.remove(u)) {
+					Exceptions.add(new AssertionError(String.format("Unit was not found at location %s, %s%n", pfl.x, pfl.y)));
+				}
+				if (set.isEmpty()) {
+					unitsForPathfinding.remove(pfl);
+				}
+			}
+		}
+
+		Set<GroundwarUnit> set = unitsAtLocation.get(next);
+		if (set == null) {
+			set = new HashSet<>();
+			unitsAtLocation.put(next, set);
+		}
+		set.add(u);
+
+		set = unitsForPathfinding.get(pfl2);
+		if (set == null) {
+			set = new HashSet<>();
+			unitsForPathfinding.put(pfl2, set);
+		}
+		set.add(u);
+}
+	/**
+	 * Add a unit with its current location to the mapping.
+	 * @param u the unit to move
+	 */
+	void addUnitLocation(GroundwarUnit u) {
+		Location current = unitLocation(u);
+		Set<GroundwarUnit> set = unitsAtLocation.get(current);
+		if (set == null) {
+			set = new HashSet<>();
+			unitsAtLocation.put(current, set);
+		}
+		set.add(u);
+		
+		Location pfl = u.location();
+		set = unitsForPathfinding.get(pfl);
+		if (set == null) {
+			set = new HashSet<>();
+			unitsForPathfinding.put(pfl, set);
+		}
+		set.add(u);
+	}
+	/**
 	 * Initiate a battle with the given settings.
 	 * @param battle the battle information
 	 */
 	public void initiateBattle(BattleInfo battle) {
-		// FIXME
-//		this.battle = battle;
-//		
-//		player().currentPlanet = battle.targetPlanet;
-//
-//		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
-//			battle.targetPlanet.takeover(battle.attacker.owner);
-//			BattleSimulator.applyPlanetConquered(battle.targetPlanet, BattleSimulator.PLANET_CONQUER_LOSS);
-//			battle.groundwarWinner = battle.attacker.owner;
-//			BattleInfo bi = battle;
-//			battle = null;
-//			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
-//			bfs.displayBattleSummary(bi);
-//			return;
-//		}
-//		
-//		setGroundWarTimeControls();
-//		
-//		player().ai.groundBattleInit(this);
-//		nonPlayer().ai.groundBattleInit(this);
-//		
-//		battlePlacements.clear();
-//		battlePlacements.addAll(getDeploymentLocations(planet().owner == player(), false));
-//
-//		unitsToPlace.clear();
-//		boolean atBuildings = planet().owner == player();
-//		InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
-//		createGroundUnits(atBuildings, iis.iterable(), unitsToPlace);
-//		
-//		startBattle.visible(true);
-//		
-//		battle.incrementGroundBattles();
+		this.battle = battle;
+		
+		player().currentPlanet = battle.targetPlanet;
+
+		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
+			battle.targetPlanet.takeover(battle.attacker.owner);
+			BattleSimulator.applyPlanetConquered(battle.targetPlanet, BattleSimulator.PLANET_CONQUER_LOSS);
+			battle.groundwarWinner = battle.attacker.owner;
+			BattleInfo bi = battle;
+			battle = null;
+			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
+			bfs.displayBattleSummary(bi);
+			return;
+		}
+		
+		setGroundWarTimeControls();
+		
+		player().ai.groundBattleInit(this);
+		nonPlayer().ai.groundBattleInit(this);
+		
+		battlePlacements.clear();
+		battlePlacements.addAll(getDeploymentLocations(planet().owner == player(), false));
+
+		unitsToPlace.clear();
+		boolean atBuildings = planet().owner == player();
+		InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
+		createGroundUnits(atBuildings, iis.iterable(), unitsToPlace);
+		
+		startBattle.visible(true);
+		
+		battle.incrementGroundBattles();
+	}
+	/** Deploy the non-player vehicles. */
+	void deployNonPlayerVehicles() {
+		boolean atBuildings = planet().owner != player();
+		
+		InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
+		
+		LinkedList<GroundwarUnit> gus = new LinkedList<>();
+		// create units
+		createGroundUnits(atBuildings, iis.iterable(), gus);
+		
+		placeGroundUnits(atBuildings, gus);
+	}
+	/**
+	 * Record to store the center and radius of the available location set.
+	 * @author akarnokd, 2011.10.01.
+	 */
+	static class CenterAndRadius {
+		/** The center X coordinate. */
+		int icx;
+		/** The center Y coordinate. */
+		int icy;
+		/** The maximum radius. */
+		int rmax;
+	}
+	/**
+	 * Compute the placement circle's center and radius.
+	 * @param locations the set of locations
+	 * @return the center and radius
+	 */
+	CenterAndRadius computePlacementCircle(Iterable<Location> locations) {
+		// locate geometric center
+		double cx = 0;
+		double cy = 0;
+		boolean first = true;
+		int minX = 0;
+		int maxX = 0;
+		int minY = 0;
+		int maxY = 0;
+		int count = 0;
+		for (Location loc : locations) {
+			cx += loc.x;
+			cy += loc.y;
+			if (first) {
+				minX = loc.x;
+				maxX = loc.x;
+				minY = loc.y;
+				maxY = loc.y;
+				first = false;
+			} else {
+				minX = Math.min(minX, loc.x);
+				minY = Math.min(minY, loc.y);
+				maxX = Math.max(maxX, loc.x);
+				maxY = Math.max(maxY, loc.y);
+			}
+			count++;
+		}
+		cx /= count;
+		cy /= count;
+		CenterAndRadius result = new CenterAndRadius();
+		result.icx = (int)cx;
+		result.icy = (int)cy;
+		// expand radially and place vehicles
+		result.rmax = Math.max(Math.max(Math.abs(result.icx - minX), Math.abs(result.icx - maxX)), 
+				Math.max(Math.abs(result.icy - minY), Math.abs(result.icy - maxY))) + 1;
+		return result;
+	}
+	/**
+	 * Place the non-player units near the geometric center of the deployment location.
+	 * @param atBuildings place at buildings
+	 * @param gus the list of units
+	 */
+	void placeGroundUnits(boolean atBuildings, LinkedList<GroundwarUnit> gus) {
+		Set<Location> locations = getDeploymentLocations(atBuildings, true);
+		CenterAndRadius car = computePlacementCircle(locations);
+		if (atBuildings) {
+			placeAroundInCircle(gus, locations, car.icx, car.icy, car.rmax);
+		} else {
+			Location furthest = ModelUtils.random(locations);
+//			// locate geometric center
+//			double cx = 0;
+//			double cy = 0;
+//			for (Building b : surface().buildings) {
+//				cx += b.location.x + b.tileset.normal.width / 2.0;
+//				cy += b.location.y - b.tileset.normal.height / 2.0;
+//			}
+//			cx /= surface().buildings.size();
+//			cy /= surface().buildings.size();
+			
+//			double dist = 0;
+//			for (Location loc : locations) {
+//				double dist2 = (loc.x - cx) * (loc.x - cx) + (loc.y - cy) * (loc.y * cy);
+//				if (dist2 > dist) {
+//					furthest = loc;
+//					dist = dist2;
+//				}
+//			}
+			placeAroundInCircle(gus, locations, furthest.x, furthest.y, car.rmax);
+		}
+	}
+
+	/**
+	 * Place units in circular pattern around the center location.
+	 * @param gus the list of units
+	 * @param locations the set of locations
+	 * @param icx the center point
+	 * @param icy the center point
+	 * @param rmax the maximum attempt radius
+	 */
+	void placeAroundInCircle(LinkedList<GroundwarUnit> gus,
+			Set<Location> locations, int icx, int icy, int rmax) {
+		if (!gus.isEmpty() && !locations.isEmpty()) {
+			outer:
+			for (int r = 0; r < rmax; r++) {
+				for (int x = icx - r; x <= icx + r; x++) {
+					if (tryPlaceNonPlayerUnit(x, icy + r, locations, gus)) {
+						break outer;
+					}
+					if (tryPlaceNonPlayerUnit(x, icy - r, locations, gus)) {
+						break outer;
+					}
+				}
+				for (int y = icy + r; y >= icy - r; y--) {
+					if (tryPlaceNonPlayerUnit(icx - r, y, locations, gus)) {
+						break outer;
+					}
+					if (tryPlaceNonPlayerUnit(icx + r, y, locations, gus)) {
+						break outer;
+					}
+				}
+			}
+		}
+	}
+	/**
+	 * Try placing an unit at the specified location and if successful,
+	 * remove the location and unit from the corresponding collection.
+	 * @param x the location X
+	 * @param y the location Y
+	 * @param locations the set of locations
+	 * @param units the list of units
+	 * @return if no more units or locations available
+	 */
+	boolean tryPlaceNonPlayerUnit(int x, int y, Set<Location> locations, LinkedList<GroundwarUnit> units) {
+		Location loc = Location.of(x, y);
+		if (locations.contains(loc)) {
+			locations.remove(loc);
+			GroundwarUnit u = units.removeFirst();
+			u.x = x;
+			u.y = y;
+			addUnitLocation(u);
+			this.units.add(u);
+		}
+		return units.isEmpty() || locations.isEmpty();
+	}
+	/**
+	 * Create the non-player units.
+	 * @param atBuildings place them at buildings
+	 * @param iis the inventory
+	 * @param gus the unit holder
+	 */
+	void createGroundUnits(boolean atBuildings, Iterable<InventoryItem> iis,
+			LinkedList<GroundwarUnit> gus) {
+		for (InventoryItem ii : iis) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+
+				BattleGroundVehicle bge = world().battle.groundEntities.get(ii.type.id);
+				
+				for (int i = 0; i < ii.count; i++) {
+					GroundwarUnit u = new GroundwarUnit(ii.owner == player() 
+							? bge.normal : bge.alternative);
+					
+					if (atBuildings) {
+						u.owner = planet().owner;
+						u.planet = planet();
+					} else {
+						u.owner = battle.attacker.owner;
+						u.fleet = battle.attacker;
+					}
+					u.item = ii;
+					u.model = bge;
+					u.hp = u.model.hp;
+					
+					gus.add(u);
+				}
+			}
+		}
 	}
 	/**
 	 * Start the battle. 
 	 */
 	void doStartBattle() {
-		planet().war.unitsToPlace.clear();
-		planet().war.battlePlacements.clear();
+		unitsToPlace.clear();
+		battlePlacements.clear();
 
-//		doAddGuns();
-//		deployNonPlayerVehicles();
+		doAddGuns();
+		deployNonPlayerVehicles();
 		
 		startBattle.visible(false);
 		
-		world().scripting.onGroundwarStart(planet().war);
+		world().scripting.onGroundwarStart(this);
 		
 		commons.simulation.resume();
 	}
-	@Override
-	public void toggleUnitPlacement(int mx, int my) {
+	/**
+	 * Place or remove an unit at the given location if the UI is in deploy mode.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 */
+	void toggleUnitPlacementAt(int mx, int my) {
 		if (startBattle.visible()) {
-			render.deploySpray = false;
-			render.undeploySpray = false;
+			deploySpray = false;
+			undeploySpray = false;
 			if (canPlaceUnitAt(mx, my)) {
 				placeUnitAt(mx, my);
-				render.deploySpray = true;
+				deploySpray = true;
 			} else {
 				removeUnitAt(mx, my);
-				render.undeploySpray = true;
+				undeploySpray = true;
 			}
 		}
 	}
@@ -2526,32 +6099,313 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 	 */
 	boolean canPlaceUnitAt(int mx, int my) {
 		Location lm = render.getLocationAt(mx, my);
-		return planet().war.battlePlacements.contains(lm);
+		return battlePlacements.contains(lm);
 	}
-	@Override
-	public void placeUnitAt(int mx, int my) {
+	/**
+	 * Place an unit at the designated cell.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 */
+	void placeUnitAt(int mx, int my) {
 		Location lm = render.getLocationAt(mx, my);
-		if (planet().war.battlePlacements.contains(lm)) {
-			if (!planet().war.unitsToPlace.isEmpty()) {
-				GroundwarUnit u = planet().war.unitsToPlace.removeFirst();
+		if (battlePlacements.contains(lm)) {
+			if (!unitsToPlace.isEmpty()) {
+				GroundwarUnit u = unitsToPlace.removeFirst();
+				units.add(u);
 				u.x = lm.x;
 				u.y = lm.y;
-				planet().ground.add(u);
-				planet().war.battlePlacements.remove(lm);
+				addUnitLocation(u);
+				battlePlacements.remove(lm);
 			}
 		}
 	}
-	@Override
-	public void removeUnitAt(int mx, int my) {
+	/**
+	 * Remove an unit from the designated cell.
+	 * @param mx the mouse X coordinate
+	 * @param my the mouse Y coordinate
+	 */
+	void removeUnitAt(int mx, int my) {
 		Location lm = render.getLocationAt(mx, my);
-		for (GroundwarUnit u : new ArrayList<>(planet().ground.units)) {
-			if (u.owner == player()) {
-				if ((int)Math.floor(u.x) == lm.x && (int)Math.floor(u.y) == lm.y) {
-					planet().war.battlePlacements.add(lm);
-					planet().war.unitsToPlace.addFirst(u);
-					planet().ground.remove(u);
+		for (GroundwarUnit u : new ArrayList<>(units)) {
+			if ((int)Math.floor(u.x) == lm.x && (int)Math.floor(u.y) == lm.y) {
+				battlePlacements.add(lm);
+				units.remove(u);
+				unitsToPlace.addFirst(u);
+				removeUnitLocation(u);
+			}
+		}
+	}
+	/**
+	 * Returns the non-human player of the current battle.
+	 * @return the player
+	 */
+	Player nonPlayer() {
+		if (battle == null) {
+			if (planet().owner != world().player) {
+				return planet().owner;
+			}
+			for (GroundwarUnit u : units) {
+				if (u.owner != world().player) {
+					return u.owner;
 				}
 			}
+		} else
+		if (battle.attacker.owner != player()) {
+			return battle.attacker.owner;
+		} else
+		if (battle.targetFleet != null && battle.targetFleet.owner != player()) {
+			return battle.targetFleet.owner;
+		} else
+		if (battle.targetPlanet != null && battle.targetPlanet.owner != player()) {
+			return battle.targetPlanet.owner;
+		}
+		return null;
+	}
+	/**
+	 * Returns the owner of the currently selected units.
+	 * @return the owner
+	 */
+	Player selectionOwner() {
+		for (GroundwarUnit u : units) {
+			if (u.selected) {
+				return u.owner;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Assign the selected units to a group.
+	 * @param groupNo the group number
+	 */
+	void assignGroup(int groupNo) {
+		List<Owned> selected = new ArrayList<>();
+		boolean own = false;
+		boolean enemy = false;
+		for (GroundwarUnit u : units) {
+			if (u.selected) {
+				own |= u.owner() == player();
+				enemy |= u.owner() != player();
+				selected.add(u);
+			}
+		}
+		for (GroundwarGun g : guns) {
+			if (g.selected) {
+				own |= g.owner() == player();
+				enemy |= g.owner() != player();
+				selected.add(g);
+			}
+		}
+
+		removeGroup(groupNo);
+		
+		if (own && !enemy) {
+			for (Object o : selected) {
+				groups.put(o, groupNo);
+			}
+		}
+	}
+	/**
+	 * Reselect the units of the saved group.
+	 * @param groupNo the group number
+	 */
+	void recallGroup(int groupNo) {
+		for (GroundwarUnit u : units) {
+			Integer gr = groups.get(u);
+			u.selected = gr != null && gr.intValue() == groupNo;
+		}
+		for (GroundwarGun g : guns) {
+			Integer gr = groups.get(g);
+			g.selected = gr != null && gr.intValue() == groupNo;
+		}
+	}
+	@Override
+	public BattleInfo battle() {
+		return battle;
+	}
+	@Override
+	public Set<Location> placementOptions(Player player) {
+		return getDeploymentLocations(player == planet().owner, true);
+	}
+	@Override
+	public void attack(GroundwarGun g, GroundwarUnit target) {
+		if (g.owner != target.owner) {
+			g.attack = target;
+		}
+	}
+	@Override
+	public void attack(GroundwarUnit u, GroundwarUnit target) {
+		if (directAttackUnits.contains(u.model.type) 
+				&& u.owner != target.owner
+				&& u.attackUnit != target) {
+			stop(u);
+			u.attackBuilding = null;
+			u.attackUnit = target;
+		}
+	}
+	@Override
+	public void special(GroundwarUnit u) {
+		if (u.model.type == GroundwarUnitType.MINELAYER) {
+			minelayers.add(u);
+		} else
+		if (u.model.type == GroundwarUnitType.KAMIKAZE) {
+			double x = u.x;
+			double y = u.y;
+			double m = world().battle.getDoubleProperty(u.model.id, u.owner.id, "self-destruct-multiplier");
+			damageArea(x, y, (u.damage() * m), u.model.area, u.owner);
+			u.hp = 0; // destroy self
+			createExplosion(u, ExplosionType.GROUND_YELLOW);
+		}
+	}
+	@Override
+	public void attack(GroundwarUnit u, Building target) {
+		if (directAttackUnits.contains(u.model.type) 
+				&& u.owner != planet().owner && u.attackBuilding != target) {
+			stop(u);
+			u.attackBuilding = target;
+			u.attackUnit = null;
+		}
+	}
+	@Override
+	public List<GroundwarGun> guns() {
+		return guns;
+	}
+	@Override
+	public void move(GroundwarUnit u, int x, int y) {
+		stop(u);
+		u.guard = true;
+		Location lu = u.location();
+		Location lm = Location.of(x, y);
+		u.inMotionPlanning = true;
+		pathsToPlan.add(new PathPlanning(lu, lm, u, null));
+	}
+	/**
+	 * Perform an attack move towards the specified location
+	 * and ignore enemy ground units in the path.
+	 * @param u the unit to use for attack move
+	 * @param x the target X coordinate
+	 * @param y the target Y coordinate
+	 */
+	public void attackMove(GroundwarUnit u, int x, int y) {
+		stop(u);
+		u.guard = true;
+		Location lu = u.location();
+		Location lm = Location.of(x, y);
+		u.attackMove = lm;
+		u.inMotionPlanning = true;
+		pathsToPlan.add(new PathPlanning(lu, lm, u, enemy(u.owner)));
+	}
+	/**
+	 * Returns the enemy player to the given player.
+	 * @param p the player
+	 * @return the enemy player
+	 */
+	protected Player enemy(Player p) {
+		// FIXME development patch
+		if (battle == null) {
+			if (planet().owner != p) {
+				return planet().owner;
+			}
+			for (GroundwarUnit u : units) {
+				if (u.owner != p) {
+					return u.owner;
+				}
+			}
+		}
+		return battle.enemy(p);
+	}
+	@Override
+	public void stop(GroundwarGun g) {
+		g.attack = null;
+	}
+	@Override
+	public void stop(GroundwarUnit u) {
+		u.path.clear();
+		if (u.nextMove != null) {
+			u.path.add(u.nextMove);
+		}
+		u.attackBuilding = null;
+		u.attackUnit = null;
+		u.attackMove = null;
+		u.advanceOnBuilding = null;
+		u.advanceOnUnit = null;
+		minelayers.remove(u);
+	}
+	@Override
+	public List<GroundwarUnit> units() {
+		return units;
+	}
+	@Override
+	public boolean hasMine(int x, int y) {
+		return mines.containsKey(Location.of(x, y));
+	}
+	@Override
+	public boolean isPassable(int x, int y) {
+		if (surface().placement.canPlaceBuilding(x, y)) {
+			Set<GroundwarUnit> gunits = unitsForPathfinding.get(Location.of(x, y));
+			if (gunits != null) {
+				boolean ip = true;
+				for (GroundwarUnit u : gunits) {
+					ip &= (!u.path.isEmpty() 
+								&& u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
+				}
+				return ip;
+			}
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Check if the given cell is passable and ignore the units
+	 * of the given player.
+	 * @param x the X coordinate
+	 * @param y the Y coordinate
+	 * @param ignore the player units to ignore
+	 * @return true if the place is passable
+	 */
+	public boolean isPassable(int x, int y, Player ignore) {
+		if (surface().placement.canPlaceBuilding(x, y)) {
+			Set<GroundwarUnit> gunits = unitsForPathfinding.get(Location.of(x, y));
+			if (gunits != null) {
+				boolean ip = true;
+				for (GroundwarUnit u : gunits) {
+					ip &= u.owner == ignore
+							|| (!u.path.isEmpty() && u.yieldTTL * 2 < YIELD_TTL) 
+							|| u.inMotionPlanning;
+				}
+				return ip;
+			}
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * Compute the alpha level for the current time of day.
+	 */
+	protected void computeAlpha() {
+		int time = world().time.get(GregorianCalendar.HOUR_OF_DAY) * 6
+		+ world().time.get(GregorianCalendar.MINUTE) / 10;
+		
+		if (time < 6 * 4 || time >= 6 * 22) {
+			alpha = Tile.MIN_ALPHA;
+		} else
+		if (time >= 6 * 4 && time < 6 * 10) {
+			alpha = (Tile.MIN_ALPHA + (1f - Tile.MIN_ALPHA) * (time - 6 * 4) / 36);
+		} else
+		if (time >= 6 * 10 && time < 6 * 16) {
+			alpha = (1.0f);
+		} else 
+		if (time >= 6 * 16 && time < 6 * 22) {
+			alpha = (1f - (1f - Tile.MIN_ALPHA) * (time - 6 * 16) / 36);
+		}
+		int tcs = config.tileCacheSize > 0 ? config.tileCacheSize : 16;
+		if (tcs > 0 && (alpha > Tile.MIN_ALPHA && alpha < 1f)) {
+			float step = (1f - Tile.MIN_ALPHA) / tcs;
+			float a2 = (alpha - Tile.MIN_ALPHA);
+			int n = (int)(a2 / step);
+			alpha = step * n + Tile.MIN_ALPHA;
+		}
+		if (planet().weatherTTL > 0) {
+			alpha = Math.max(Tile.MIN_ALPHA, alpha - 0.3f);
 		}
 	}
 	/**
@@ -2586,9 +6440,9 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 					public boolean mouse(UIMouse e) {
 						if (e.has(Button.RIGHT) && e.has(Type.DOWN)) {
 							if (j >= 0) {
-								planet().ground.removeGroup(j);
+								removeGroup(j);
 							} else {
-								planet().ground.deselectAll();
+								deselectAll();
 							}
 							return true;
 						}
@@ -2599,9 +6453,9 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 					@Override
 					public void invoke() {
 						if (j >= 0) {
-							planet().ground.recallGroup(j);
+							recallGroup(j);
 						} else {
-							planet().ground.selectAll(player());
+							doSelectAll();
 						}
 					}
 				};
@@ -2630,15 +6484,17 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			GroundwarUnit u = null;
 			int count = 0;
 			double sumHp = 0;
-			for (GroundwarUnit u2 : planet().ground.selectedUnits) {
-				if (u == null) {
-					u = u2;
-					count++;
-					sumHp = u2.hp;
-				} else 
-				if (u.model.id.equals(u2.model.id)) {
-					count++;
-					sumHp += u2.hp;
+			for (GroundwarUnit u2 : units) {
+				if (u2.selected) {
+					if (u == null) {
+						u = u2;
+						count++;
+						sumHp = u2.hp;
+					} else 
+					if (u.model.id.equals(u2.model.id)) {
+						count++;
+						sumHp += u2.hp;
+					}
 				}
 			}
 			String n = "";
@@ -2669,7 +6525,7 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			commons.text().paintTo(g2, (width - w) / 2 + 1, 10, tsize, TextRenderer.RED, n);
 			commons.text().paintTo(g2, (width - w) / 2, 10, tsize, TextRenderer.YELLOW, n);
 			
-			Set<Integer> selgr = new HashSet<>(planet().ground.groups.values());
+			Set<Integer> selgr = new HashSet<>(groups.values());
 			selgr.add(-1);
 			int ibx = 5;
 			int ibi = 0;
@@ -2687,34 +6543,70 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			super.draw(g2);
 		}
 	}
+	/** Deselect all units. */
+	void deselectAll() {
+		for (GroundwarUnit u : units) {
+			u.selected = false;
+		}
+		for (GroundwarGun g : guns) {
+			g.selected = false;
+		}
+	}
+	/** Select all of the player's units. */
+	void doSelectAll() {
+		for (GroundwarUnit u : units) {
+			u.selected = u.owner == player();
+		}
+		for (GroundwarGun g : guns) {
+			g.selected = g.owner == player();
+		}
+	}
+	/**
+	 * Remove units from group.
+	 * @param i the group index
+	 */
+	void removeGroup(int i) {
+		Iterator<Map.Entry<Object, Integer>> it = groups.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<Object, Integer> e = it.next();
+			if (e.getValue().intValue() == i) {
+				it.remove();
+			}
+		}
+	}
 
-	@Override
+	/**
+	 * Update the varios components according to the current game state.
+	 * @param surface the planet surface
+	 * @return the planet statistics
+	 */
 	public PlanetStatistics update(PlanetSurface surface) {
 		if (lastSurface != surface) {
-			render.buildingBox = null;
+			buildingBox = null;
 			currentBuilding = null;
 			lastSurface = surface;
-			render.placementMode = false;
+			placementMode = false;
 			buildingsPanel.build.down = false;
 			upgradePanel.hideUpgradeSelection();
+			if (battle == null) {
+				clearGroundBattle();
+			}
 		}
 		// check if the AI has removed any building while we were looking at its planet
 		if (currentBuilding != null) {
 			if (!planet().surface.buildings.contains(currentBuilding)) {
-				render.buildingBox = null;
+				buildingBox = null;
 				currentBuilding = null;
 				// FIXME more actions?
 			}
 		}
 		
 		buildingsPanel.visible(planet().owner == player() 
-				&& showBuildingList);
+				&& showBuildingList && battle == null);
 		buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
-		infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo);
+		infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
 		
-		PlanetGround ground = planet().ground;
-		
-		boolean showTankPanel = (!ground.units.isEmpty() || !ground.guns.isEmpty()) && !startBattle.visible();
+		boolean showTankPanel = (!units.isEmpty() || !guns.isEmpty()) && !startBattle.visible();
 		tankPanel.visible(showTankPanel);
 		moveUnit.visible(showTankPanel);
 		attackUnit.visible(showTankPanel);
@@ -2731,16 +6623,13 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 			stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
 		}
 		
-		// FIXME battle
-		starmap.visible(showSidebarButtons /* && battle == null */);
-		colonyInfo.visible(showSidebarButtons /* && battle == null */);
-		bridge.visible(showSidebarButtons /* && battle == null */);
-		planets.visible(showSidebarButtons /* && battle == null */);
+		starmap.visible(showSidebarButtons && battle == null);
+		colonyInfo.visible(showSidebarButtons && battle == null);
+		bridge.visible(showSidebarButtons && battle == null);
+		planets.visible(showSidebarButtons && battle == null);
 		
-		/*
 		next.visible(battle == null);
 		prev.visible(battle == null);
-		*/
 		
 		setBuildingList(0);
 		buildingInfoPanel.update();
@@ -2786,21 +6675,6 @@ public class PlanetScreen extends ScreenBase implements SurfaceEvents {
 		setTooltip(buildingInfoPanel.repairing, "colony.repairing.tooltip");
 		
 		return ps;
-	}
-	@Override
-	public void selectBuilding(Building b) {
-		doSelectBuilding(b);
-		if (currentBuilding != null) {
-			buttonSound(SoundType.CLICK_MEDIUM_2);
-		}
-	}
-	@Override
-	public void unitsMove(int mx, int my) {
-		Location lm = render.getLocationAt(mx, my);
-		if (planet().war.moveSelectedUnits(lm, player())) {
-			effectSound(SoundType.ACKNOWLEDGE_2);
-			selectCommand(null);
-		}
 	}
 }
 
