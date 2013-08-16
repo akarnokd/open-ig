@@ -4,6 +4,12 @@
 
 = Recent =
 
+==August, 2013==
+
+*August 16, 2013*
+
+Note that starting from version 0.95.131 the game won't run on Java 6 anymore.
+
 ==May, 2013==
 
 *May 9, 2013*
