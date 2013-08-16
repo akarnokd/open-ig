@@ -37,4 +37,26 @@ public class GroundwarExplosion {
 	public boolean half() {
 		return phase == phases.length / 2;
 	}
+	/**
+	 * Test if the explosion is within the given rectangle.
+	 * @param px the center point
+	 * @param py the center point
+	 * @param pw the width
+	 * @param ph the height
+	 * @return true if within
+	 */
+	public boolean within(int px, int py, int pw, int ph) {
+		int s = get().getWidth();
+		int ax0 = (int)(x - s / 2);
+		int ax1 = ax0 + s - 1;
+		int ay0 = (int)(y - s / 2);
+		int ay1 = ay0 + s - 1;
+		
+		int bx0 = px - pw / 2;
+		int bx1 = bx0 + s - 1;
+		int by0 = py - ph / 2;
+		int by1 = by0 + s - 1;
+		
+		return !(ax1 < bx0 || bx1 < ax0 || ay1 < by0 || by1 < ay0);
+	}
 }
