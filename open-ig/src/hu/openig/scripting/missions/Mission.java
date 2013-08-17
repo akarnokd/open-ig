@@ -1067,6 +1067,7 @@ public abstract class Mission implements GameScriptingEvents {
 			InventoryItem ii = new InventoryItem(world.newId(), f.owner, rt);
 			ii.init();
 			ii.count = count;
+			f.inventory().add(ii);
 			return Collections.singletonList(ii);
 		}
 		List<InventoryItem> r = new ArrayList<>();
@@ -1075,6 +1076,7 @@ public abstract class Mission implements GameScriptingEvents {
 			ii.init();
 			ii.count = 1;
 			r.add(ii);
+			f.inventory().add(ii);
 		}
 		return r;
 	}

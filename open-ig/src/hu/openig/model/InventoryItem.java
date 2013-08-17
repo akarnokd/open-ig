@@ -64,6 +64,9 @@ public class InventoryItem {
 	 */
 	public InventoryItem(int id, 
 			Player owner, ResearchType type) {
+		if (id < 0) {
+			throw new IllegalArgumentException("id must be >= 0");
+		}
 		this.id = id;
 		this.owner = owner;
 		this.type = type;

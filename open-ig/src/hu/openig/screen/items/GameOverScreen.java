@@ -18,7 +18,6 @@ import hu.openig.ui.UIComponent;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
-import hu.openig.ui.UIMouse.Type;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -146,11 +145,11 @@ public class GameOverScreen extends ScreenBase {
 		if (phase < maxPhase) {
 			return false;
 		}
-		if (e.has(Type.DOWN) && !win) {
-			commons.control().endGame();
-			displayPrimary(Screens.MAIN);
-			return true;
-		}
+//		if (e.has(Type.DOWN) && !win) {
+//			commons.control().endGame();
+//			displayPrimary(Screens.MAIN);
+//			return true;
+//		}
 		return super.mouse(e);
 	}
 	
