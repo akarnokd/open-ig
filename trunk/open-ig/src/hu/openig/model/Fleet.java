@@ -674,7 +674,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			Exceptions.add(new AssertionError("Can't attack friendly!"));
 			return;
 		} else
-		if (!owner.isStrongAlliance(otherFleet.owner)) {
+		if (owner.isStrongAlliance(otherFleet.owner)) {
 			Exceptions.add(new AssertionError("Strong alliance!"));
 			return;
 		}
