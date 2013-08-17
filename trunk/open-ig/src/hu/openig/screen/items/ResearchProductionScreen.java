@@ -1760,8 +1760,16 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		activeCompLabValue.text("" + ps.activeLabs.comp);
 		activeAILabValue.text("" + ps.activeLabs.ai);
 		activeMilLabValue.text("" + ps.activeLabs.mil);
-		
-		if (rt != null && mode == Screens.RESEARCH) {
+
+		Research rs = null;
+		if (rt != null) {
+			rs = player().getResearch(rt);
+			if (rs == null) {
+				player().runningResearch(null);
+			}
+		}
+
+		if (rt != null && mode == Screens.RESEARCH && rs != null) {
 
 			activeCivilLabValue.color(labColor(ps.labs.civil, ps.activeLabs.civil, rt.civilLab));
 			activeMechLabValue.color(labColor(ps.labs.mech, ps.activeLabs.mech, rt.mechLab));
@@ -1771,7 +1779,6 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 
 			activeTechNameValue.text(rt.name, true).visible(true);
 
-			Research rs = player().getResearch(rt);
 			
 			activeMoneyValue.text(rs.assignedMoney + "/" + rs.remainingMoney).visible(true);
 			activeMoneyPercentValue.text(((int)rs.getPercent(player().traits)) + "%").visible(true);
