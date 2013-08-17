@@ -1927,6 +1927,9 @@ public class World implements ModelLookup {
 					continue;
 				}
 				int itemid = xfii.getInt("id");
+				if (itemid < 0) {
+					itemid = newId();
+				}
 				InventoryItem fii = new InventoryItem(itemid, f.owner, research(xfii.get("type")));
 				
 				fii.nickname = xfii.get("nickname", fii.nickname);
