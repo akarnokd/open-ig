@@ -1243,6 +1243,7 @@ public class Planet implements Named, Owned, HasInventory {
 			for (int i = 0; i < toDeploy; i++) {
 				InventoryItem ii = new InventoryItem(owner.world.newId(), owner, rt);
 				ii.init();
+				ii.count = 1;
 				inventory.add(ii);
 				r.add(ii);
 

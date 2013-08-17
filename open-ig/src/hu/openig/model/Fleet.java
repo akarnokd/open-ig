@@ -408,8 +408,10 @@ public class Fleet implements Named, Owned, HasInventory {
 		
 		for (ResearchType rt : owner.available()) {
 			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-				int count = Math.min(30, owner.inventoryCount(rt));
-				deployItem(rt, owner, count);
+				int count = Math.min(owner.world.params().fighterLimit(), owner.inventoryCount(rt));
+				if (count > 0) {
+					deployItem(rt, owner, count);
+				}
 			}
 		}
 		upgradeVehicles(getStatistics().vehicleMax);
@@ -430,8 +432,10 @@ public class Fleet implements Named, Owned, HasInventory {
 			int demand = e.getValue();
 			ResearchType rt = e.getKey();
 			int count = Math.min(demand, owner.inventoryCount(rt));
-			deployItem(rt, owner, count);
-			vehicleMax -= count;
+			if (count > 0) {
+				deployItem(rt, owner, count);
+				vehicleMax -= count;
+			}
 		}
 		if (vehicleMax > 0) {
 			List<ResearchType> remaining = new ArrayList<>();
@@ -450,8 +454,10 @@ public class Fleet implements Named, Owned, HasInventory {
 					break;
 				}
 				int add = Math.min(vehicleMax, owner.inventoryCount(rt));
-				deployItem(rt, owner, add);
-				vehicleMax -= add;
+				if (add > 0) {
+					deployItem(rt, owner, add);
+					vehicleMax -= add;
+				}
 			}
 		}
 	}
@@ -480,7 +486,7 @@ public class Fleet implements Named, Owned, HasInventory {
 				}
 			} else
 			if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-				if (ii.count < 30 && owner.inventoryCount(ii.type) > 0) {
+				if (ii.count < owner.world.params().fighterLimit() && owner.inventoryCount(ii.type) > 0) {
 					return true;
 				}
 			}
@@ -931,6 +937,7 @@ public class Fleet implements Named, Owned, HasInventory {
 				InventoryItem ii = new InventoryItem(owner.world.newId(), owner, rt);
 				ii.init();
 				inventory.add(ii);
+				ii.count = 1;
 				r.add(ii);
 			}
 			return r;

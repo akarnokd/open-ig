@@ -576,51 +576,54 @@ public final class Simulator {
 	static boolean progressResearch(World world, Player player, PlanetStatistics all) {
 		if (player.runningResearch() != null) {
 			Research rs = player.runningResearchProgress();
-			ResearchState last = rs.state;
-			int maxpc = rs.getResearchMaxPercent(all);
-			// test for money
-			// test for max percentage
-			if (rs.remainingMoney > 0) {
-				if (rs.getPercent(player.traits) < maxpc) {
-					float rel = 1.0f * rs.assignedMoney / rs.remainingMoney;
-					int dmoney = (int)(rel * world.params().researchSpeed());
-					if (dmoney < player.money()) {
-						rs.remainingMoney = Math.max(0, rs.remainingMoney - dmoney);
-						rs.assignedMoney = Math.min((int)(rs.remainingMoney * rel) + 1, rs.remainingMoney);
-						player.today.researchCost += dmoney;
-						player.addMoney(-dmoney);
-						
-						player.statistics.moneyResearch.value += dmoney;
-						player.statistics.moneySpent.value += dmoney;
-
-						world.statistics.moneyResearch.value += dmoney;
-						world.statistics.moneySpent.value += dmoney;
-
-						rs.state = ResearchState.RUNNING;
-						if (last != rs.state) {
-							player.ai.onResearchStateChange(rs.type, rs.state);
+			if (rs != null) {
+				ResearchState last = rs.state;
+				int maxpc = rs.getResearchMaxPercent(all);
+				// test for money
+				// test for max percentage
+				if (rs.remainingMoney > 0) {
+					if (rs.getPercent(player.traits) < maxpc) {
+						float rel = 1.0f * rs.assignedMoney / rs.remainingMoney;
+						int dmoney = (int)(rel * world.params().researchSpeed());
+						if (dmoney < player.money()) {
+							rs.remainingMoney = Math.max(0, rs.remainingMoney - dmoney);
+							rs.assignedMoney = Math.min((int)(rs.remainingMoney * rel) + 1, rs.remainingMoney);
+							player.today.researchCost += dmoney;
+							player.addMoney(-dmoney);
+							
+							player.statistics.moneyResearch.value += dmoney;
+							player.statistics.moneySpent.value += dmoney;
+	
+							world.statistics.moneyResearch.value += dmoney;
+							world.statistics.moneySpent.value += dmoney;
+	
+							rs.state = ResearchState.RUNNING;
+							if (last != rs.state) {
+								player.ai.onResearchStateChange(rs.type, rs.state);
+							}
+						} else {
+							rs.state = ResearchState.MONEY;
+							if (last != rs.state) {
+								player.ai.onResearchStateChange(rs.type, rs.state);
+							}
 						}
 					} else {
-						rs.state = ResearchState.MONEY;
+						rs.state = ResearchState.LAB;
 						if (last != rs.state) {
 							player.ai.onResearchStateChange(rs.type, rs.state);
 						}
 					}
-				} else {
-					rs.state = ResearchState.LAB;
-					if (last != rs.state) {
-						player.ai.onResearchStateChange(rs.type, rs.state);
-					}
 				}
+				// test for completedness
+				if (rs.remainingMoney == 0) {
+					player.completeResearch(rs.type);
+					
+					player.ai.onResearchStateChange(rs.type, rs.state);
+					world.scripting.onResearched(player, rs.type);
+				}
+				return true;
 			}
-			// test for completedness
-			if (rs.remainingMoney == 0) {
-				player.completeResearch(rs.type);
-				
-				player.ai.onResearchStateChange(rs.type, rs.state);
-				world.scripting.onResearched(player, rs.type);
-			}
-			return true;
+			player.runningResearch(null);
 		}
 		return false;
 	}
