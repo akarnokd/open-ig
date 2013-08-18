@@ -1043,34 +1043,69 @@ public class Fleet implements Named, Owned, HasInventory {
 		}
 
 		int count = 0;
-		switch (mode) {
-		case ONE:
-			count = 1;
-			break;
-		case HALF:
-			count = ii.count / 2 + 1;
-			break;
-		case ALL:
-			count = ii.count;
-			break;
-		default:
-			throw new IllegalArgumentException("Unsupported transfer type: " + mode);
-		}
-
 		
-		InventoryItem ii2 = other.getInventoryItem(ii.type);
-		if (ii2 == null) {
-			ii2 = new InventoryItem(owner.world.newId(), other.owner, ii.type);
-			ii2.init();
-			other.inventory.add(ii2);
-			ii2.count = count;
+		InventoryItem ii2 = null;
+		if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
+				|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+			List<InventoryItem> iis = new ArrayList<>(inventory.findByType(ii.type.id));
+			int idx = iis.indexOf(ii);
+			switch (mode) {
+			case ONE:
+				count = 1;
+				break;
+			case HALF:
+				count = iis.size() / 2 + 1;
+				break;
+			case ALL:
+				count = iis.size();
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported transfer type: " + mode);
+			}
+
+			int i = idx;
+			while (count > 0) {
+				InventoryItem ii3 = iis.get(i);
+				
+				ii2 = new InventoryItem(ii3.id, other.owner, ii3.type);
+				ii2.init();
+				ii2.count = 1;
+				other.inventory.add(ii2);
+				
+				inventory.remove(ii3);
+				
+				i = (i + 1) % iis.size();
+				count--;
+			}
 		} else {
-			int toAdd = Math.min(getAddLimit(ii.type), count);
-			ii2.count += toAdd;
-		}
-		ii.count -= ii2.count;
-		if (ii.count <= 0) {
-			inventory.remove(ii);
+			switch (mode) {
+			case ONE:
+				count = 1;
+				break;
+			case HALF:
+				count = ii.count / 2 + 1;
+				break;
+			case ALL:
+				count = ii.count;
+				break;
+			default:
+				throw new IllegalArgumentException("Unsupported transfer type: " + mode);
+			}
+
+			ii2 = other.getInventoryItem(ii.type);
+			if (ii2 == null) {
+				ii2 = new InventoryItem(owner.world.newId(), other.owner, ii.type);
+				ii2.init();
+				ii2.count = count;
+				other.inventory.add(ii2);
+			} else {
+				int toAdd = Math.min(getAddLimit(ii.type), count);
+				ii2.count += toAdd;
+			}
+			ii.count -= ii2.count;
+			if (ii.count <= 0) {
+				inventory.remove(ii);
+			}
 		}
 	}
 }
