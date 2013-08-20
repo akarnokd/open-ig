@@ -1067,11 +1067,7 @@ public class Fleet implements Named, Owned, HasInventory {
 			while (count > 0) {
 				InventoryItem ii3 = iis.get(i);
 				
-				ii2 = new InventoryItem(ii3.id, other.owner, ii3.type);
-				ii2.init();
-				ii2.count = 1;
-				other.inventory.add(ii2);
-				
+				other.inventory.add(ii3);
 				inventory.remove(ii3);
 				
 				i = (i + 1) % iis.size();
