@@ -477,8 +477,8 @@ public class OffensePlanner extends Planner {
 				@Override
 				public void invoke() {
 					if (fleet.fleet.task != FleetTask.SCRIPT) {
-						fleet.fleet.task = FleetTask.UPGRADE;
 						controls.actionMoveFleet(fleet.fleet, spaceport.planet);
+						fleet.fleet.task = FleetTask.UPGRADE;
 					}
 				}
 			});

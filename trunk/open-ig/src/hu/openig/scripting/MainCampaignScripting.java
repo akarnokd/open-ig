@@ -1229,7 +1229,8 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public boolean mayPlayerAttack(Player player) {
 		// allow garthogs to attack
-		return world.level == 3 && player.id.equals("Garthog");
+		return (world.level == 3 && player.id.equals("Garthog"))
+				|| world.level > 3;
 	}
 	@Override
 	public void onDeploySatellite(Planet target, Player player,
