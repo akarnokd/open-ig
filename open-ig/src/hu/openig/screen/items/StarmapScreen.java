@@ -867,7 +867,7 @@ public class StarmapScreen extends ScreenBase {
 		if (!fleetMode) {
 			fleetColonize.visible((player().selectionMode == SelectionMode.PLANET 
 					&& planet().owner == null && knowledge(planet(), PlanetKnowledge.OWNER) >= 0
-					&& player().isAvailable("ColonyShip")
+					&& (player().isAvailable("ColonyShip") || hasColonyShip())
 					&& !player().colonizationTargets.contains(planet().id)
 			));
 			fleetColonizeCancel.visible(player().colonizationTargets.contains(planet().id));
@@ -964,6 +964,18 @@ public class StarmapScreen extends ScreenBase {
 			return "-";
 		}
 		return Integer.toString(i);
+	}
+	/**
+	 * Check if the fleet contains any colony ships.
+	 * @return true if colony ships are in the fleet
+	 */
+	boolean hasColonyShip() {
+		for (Fleet f : player().ownFleets()) {
+			if (!f.inventory.findByType("ColonyShip").isEmpty()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/** Display the right panel's planet info on the current selected planet. */
 	void displayPlanetInfo() {
@@ -2907,10 +2919,7 @@ public class StarmapScreen extends ScreenBase {
 		fleetMove.down = false;
 		fleetAttack.down = false;
 		fleetStop.down = true;
-		fleet().waypoints.clear();
-		fleet().targetFleet = null;
-		fleet().targetPlanet(null);
-		fleet().mode = null;
+		fleet().stop();
 		fleetMode = null;
 	}
 	/** Colonize the fleet nearby planet. */

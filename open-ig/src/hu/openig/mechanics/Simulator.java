@@ -834,6 +834,9 @@ public final class Simulator {
 						if (clearPlanet) {
 							f.targetPlanet(null);
 						}
+						if (f.task == FleetTask.MOVE) {
+							f.task = FleetTask.IDLE;
+						}
 					}
 				} else {
 					double angle = Math.atan2(target.y - f.y, target.x - f.x);
