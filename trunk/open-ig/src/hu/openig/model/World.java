@@ -3226,8 +3226,10 @@ public class World implements ModelLookup {
 						f.deployItem(rt, f.owner, 3);
 					} else
 					if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
-						p.changeInventoryCount(rt, 1);
-						f.deployItem(rt, f.owner, 1);
+						if (!"ColonyShip".equals(rt.id)) {
+							p.changeInventoryCount(rt, 1);
+							f.deployItem(rt, f.owner, 1);
+						}
 					}
 				}
 			}

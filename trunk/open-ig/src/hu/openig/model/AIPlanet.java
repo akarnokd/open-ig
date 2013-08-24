@@ -212,4 +212,12 @@ public class AIPlanet {
 			inventory.add(ii);
 		}
 	}
+	/**
+	 * Returns the distance from the fleet.
+	 * @param fleet the fleet
+	 * @return the distance value
+	 */
+	public double distance(AIFleet fleet) {
+		return Math.hypot(fleet.x - planet.x, fleet.y - planet.y);
+	}
 }
