@@ -309,8 +309,8 @@ public class ColonizationPlanner extends Planner {
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					fleet.fleet.task = FleetTask.COLONIZE;
 					controls.actionMoveFleet(fleet.fleet, p0.planet);
+					fleet.fleet.task = FleetTask.COLONIZE;
 				}
 			});
 			result = true;
