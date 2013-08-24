@@ -110,8 +110,55 @@ public class ColonizationPlanner extends Planner {
 		}
 		return false;
 	}
+	/**
+	 * Assign existing fleets to colonization tasks.
+	 */
+	void colonizeWithExistingFleets() {
+		List<AIFleet> fleets = world.ownFleets;
+		List<AIFleet> candidates = new ArrayList<>();
+		List<String> cts = new ArrayList<>(world.colonizationTargets);
+		List<String> remaining = new ArrayList<>();
+		for (String p : cts) {
+			boolean targeted = false;
+			for (AIFleet f : fleets) {
+				if (f.targetPlanet != null && f.targetPlanet.id.equals(p) && f.task == FleetTask.COLONIZE) {
+					targeted = true;
+				} else
+				if (f.task == FleetTask.IDLE && f.hasInventory("ColonyShip")) {
+					candidates.add(f);
+				}
+			}
+			if (!targeted) {
+				remaining.add(p);
+			}
+		}
+		for (final String p : remaining) {
+			if (!candidates.isEmpty()) {
+				final AIPlanet aip = world.planetMap.get(p);
+				Collections.sort(candidates, new Comparator<AIFleet>() {
+					@Override
+					public int compare(AIFleet o1, AIFleet o2) {
+						return Double.compare(aip.distance(o1), aip.distance(o2));
+					}
+				});
+				final AIFleet f = candidates.remove(0);
+				final Fleet f0 = f.fleet;
+				final Planet p0 = aip.planet;
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						if (f0.task == FleetTask.IDLE) {
+							f0.moveTo(p0);
+							f0.task = FleetTask.COLONIZE;
+						}
+					}
+				});
+			}
+		}
+	}
 	/** Plan to colonize the colonizationTarget planets. */
 	void planExplicitConquest() {
+		colonizeWithExistingFleets();
 		cancelColonizersIfNecessary();
 		if (checkColonizersReachedPlanet()) {
 			return;
