@@ -196,12 +196,16 @@ public final class Simulator {
 		double multiply = 1.0f;
 		double moraleBoost = 0;
 		int radar = 0;
+		
 		long eqPlaytime = 20L * 60 * 60;
+		int eqDelta = 36 * 24 * 60;
 		if (world.difficulty == Difficulty.NORMAL) {
 			eqPlaytime /= 2;
+			eqDelta /= 2;
 		} else
 		if (world.difficulty == Difficulty.HARD) {
 			eqPlaytime /= 4;
+			eqDelta /= 4;
 		}
 		double populationGrowthModifier = ps.populationGrowthModifier;
 		double planetTypeModifier = world.galaxyModel.getGrowth(planet.type.type, planet.race);
@@ -218,19 +222,12 @@ public final class Simulator {
 
 		int speed = world.params().speed();
 
-		if (world.statistics.playTime.value >= eqPlaytime 
+		if (world.statistics.simulationTime.value >= eqPlaytime 
 				&& (planet.type.type.equals("earth") || planet.type.type.equals("rocky"))) {
 			if (planet.earthQuakeTTL <= 0) {
 				// cause earthquake once in every 12, 6 or 3 months
-				int eqDelta = 36 * 24 * 60;
-				if (world.difficulty == Difficulty.NORMAL) {
-					eqDelta /= 2;
-				} else
-				if (world.difficulty == Difficulty.HARD) {
-					eqDelta /= 4;
-				}
 				if (ModelUtils.randomInt(eqDelta) < speed) {
-					planet.earthQuakeTTL = 60; // 1 hour
+					planet.earthQuakeTTL = 60; // in minutes
 					
 					Message msg = world.newMessage("message.earthquake");
 					msg.priority = 25;
@@ -350,14 +347,14 @@ public final class Simulator {
 			}
 			if (planet.earthQuakeTTL > 0) {
 				if (b.type.kind.equals("Factory")) {
-					b.hitpoints -= b.type.hitpoints * 15 / 600;
+					b.hitpoints -= Math.max(b.type.hitpoints * 15L * speed / 6000, 1);
 				} else
 				if (b.getEnergy() <= 0) {
 					// reduce regular building health by 25% of its total hitpoints during the earthquake duration
-					b.hitpoints -= b.type.hitpoints * 10 / 600;
+					b.hitpoints -= Math.max(b.type.hitpoints * 10L * speed / 6000, 1);
 				} else {
 					// reduce energy building health by 55% of its total hitpoints during the earthquake duration
-					b.hitpoints -= b.type.hitpoints * 20 / 600;
+					b.hitpoints -= Math.max(b.type.hitpoints * 20L * speed / 6000, 1);
 				}
 				if (b.hitpoints <= 0) {
 					planet.surface.removeBuilding(b);

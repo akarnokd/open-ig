@@ -1256,6 +1256,7 @@ public class DiplomacyScreen extends ScreenBase {
 			approachList.visible(false);
 			negotiationTitle.visible(false);
 		} else {
+			@SuppressWarnings("unchecked")
 			Pair<Negotiate, ApproachType> a = (Pair<Negotiate, ApproachType>)approachList.items.get(index).userObject;
 			
 			approachList.visible(false);
@@ -1279,6 +1280,7 @@ public class DiplomacyScreen extends ScreenBase {
 			moneyList.visible(false);
 			negotiationTitle.visible(false);
 		} else {
+			@SuppressWarnings("unchecked")
 			Pair<Negotiate, Integer> a = (Pair<Negotiate, Integer>)moneyList.items.get(index).userObject;
 			moneyList.visible(false);
 			
@@ -1314,6 +1316,7 @@ public class DiplomacyScreen extends ScreenBase {
 			enemies.visible(false);
 			negotiationTitle.visible(false);
 		} else {
+			@SuppressWarnings("unchecked")
 			Pair<Negotiate, Player> a = (Pair<Negotiate, Player>)enemies.items.get(index).userObject;
 			enemies.visible(false);
 			

@@ -438,6 +438,7 @@ public class StaticDefensePlanner extends Planner {
 				// if no room, make it by demolishing a traders spaceport
 				for (final AIBuilding b : planet.buildings) {
 					if (b.type.id.equals("TradersSpaceport")) {
+						planet.buildings.remove(b);
 						add(new Action0() {
 							@Override
 							public void invoke() {
@@ -563,6 +564,7 @@ public class StaticDefensePlanner extends Planner {
 						Tile bs = b.tileset.normal;
 						
 						if (hasRoom || (bs.width >= bts.width && bs.height >= bts.height)) {
+							planet.buildings.remove(b);
 							add(new Action0() {
 								@Override
 								public void invoke() {
