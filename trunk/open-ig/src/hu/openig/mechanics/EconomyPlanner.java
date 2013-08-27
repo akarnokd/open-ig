@@ -181,6 +181,7 @@ public class EconomyPlanner extends Planner {
 			// demolish remaining ground radars
 			for (final AIBuilding b : planet.buildings) {
 				if (b.hasResource("radar")) {
+					planet.buildings.remove(b);
 					add(new Action0() {
 						@Override
 						public void invoke() {
@@ -222,6 +223,7 @@ public class EconomyPlanner extends Planner {
 				for (final AIBuilding b : planet.buildings) {
 					if (b.hasResource("radar")) {
 						if (b.getResource("radar") < bestRadar.getResource("radar")) {
+							planet.buildings.remove(b);
 							add(new Action0() {
 								@Override
 								public void invoke() {

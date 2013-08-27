@@ -220,4 +220,8 @@ public class AIPlanet {
 	public double distance(AIFleet fleet) {
 		return Math.hypot(fleet.x - planet.x, fleet.y - planet.y);
 	}
+	@Override
+	public String toString() {
+		return planet.id;
+	}
 }

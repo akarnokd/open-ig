@@ -52,6 +52,7 @@ public class Traits implements Iterable<Trait> {
 	 * @param id the id
 	 * @return the trait, or null if not found
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Trait> T trait(String id) {
 		return (T)traitsById.get(id);
 	}
@@ -61,6 +62,7 @@ public class Traits implements Iterable<Trait> {
 	 * @param kind the kind
 	 * @return the trait, or null if not found
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends Trait> T trait(TraitKind kind) {
 		return (T)traitsByKind.get(kind);
 	}

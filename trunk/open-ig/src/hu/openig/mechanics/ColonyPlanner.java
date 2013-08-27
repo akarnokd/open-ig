@@ -224,6 +224,7 @@ public class ColonyPlanner extends Planner {
 		// demolish severely damanged buildings, faster to create a new one
 		for (final AIBuilding b : planet.buildings) {
 			if (b.isDamaged() && !b.isConstructing() && b.health() < 0.5) {
+				planet.buildings.remove(b);
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -682,6 +683,7 @@ public class ColonyPlanner extends Planner {
 			// find a cheaper power plant and demolish it
 			for (final AIBuilding b : planet.buildings) {
 				if (energy.accept(planet, b) && b.type.cost < moneyFor.cost) {
+					planet.buildings.remove(b);
 					add(new Action0() {
 						@Override
 						public void invoke() {
@@ -698,6 +700,7 @@ public class ColonyPlanner extends Planner {
 				if (!b.type.kind.equals("MainBuilding") && !energy.accept(planet, b)) {
 					Tile b0 = b.tileset.normal;
 					if (b0.width >= b1.width && b0.height >= b1.height) {
+						planet.buildings.remove(b);
 						add(new Action0() {
 							@Override
 							public void invoke() {
@@ -752,7 +755,7 @@ public class ColonyPlanner extends Planner {
 		
 		if (!found) {
 			final BuildingType bt = findBuildingKind("MainBuilding");
-			if (world.money < bt.cost) {
+			if (world.money < bt.cost && world.money > 0) {
 				if (getMoreMoney(planet)) {
 					return true;
 				}
@@ -839,6 +842,7 @@ public class ColonyPlanner extends Planner {
 		}
 		if (cheapest != null) {
 			final AIBuilding fcheapest = cheapest;
+			current.buildings.remove(cheapest); // do not sell twice
 			add(new Action0() {
 				@Override
 				public void invoke() {

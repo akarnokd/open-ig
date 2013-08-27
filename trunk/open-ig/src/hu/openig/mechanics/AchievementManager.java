@@ -451,6 +451,7 @@ public final class AchievementManager {
 		for (Field f : AchievementManager.class.getDeclaredFields()) {
 			if (Pred2.class.isAssignableFrom(f.getType()) && f.isAnnotationPresent(ID.class)) {
 				try {
+					@SuppressWarnings("unchecked")
 					Pred2<World, Player> pred2 = (Pred2<World, Player>)f.get(null);
 					FUNCTIONS.put("achievement." + f.getName().toLowerCase(), pred2);
 				} catch (IllegalAccessException ex) {

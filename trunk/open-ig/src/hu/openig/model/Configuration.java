@@ -34,7 +34,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.140";
+	public static final String VERSION = "0.95.141";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -375,6 +375,7 @@ public class Configuration {
 						f.set(this, props.getProperty(n, (String)f.get(this)));
 					} else
 					if (List.class.isAssignableFrom(f.getType())) {
+						@SuppressWarnings("unchecked")
 						List<String> lst = (List<String>)f.get(this);
 						int cnt = Integer.parseInt(props.getProperty(n + "-count", "0"));
 						for (int i = 0; i < cnt; i++) {
@@ -399,6 +400,7 @@ public class Configuration {
 					Object o = f.get(this);
 					if (o != null) {
 						if (List.class.isAssignableFrom(f.getType())) {
+							@SuppressWarnings("unchecked")
 							List<String> lst = (List<String>)f.get(this);
 							props.setProperty(n + "-count", Integer.toString(lst.size()));
 							for (int i = 0; i < lst.size(); i++) {

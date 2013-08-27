@@ -699,6 +699,7 @@ public abstract class Planner {
 			for (final AIPlanet planet : planets) {
 				for (final AIBuilding b : planet.buildings) {
 					if (b.type.id.equals("TradersSpaceport")) {
+						planet.buildings.remove(b);
 						add(new Action0() {
 							@Override
 							public void invoke() {
