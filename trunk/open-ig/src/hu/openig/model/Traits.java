@@ -209,5 +209,8 @@ public class Traits implements Iterable<Trait> {
 		}
 		return true;
 	}
-	
+	@Override
+	public String toString() {
+		return traits.toString();
+	}
 }

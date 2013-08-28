@@ -38,6 +38,7 @@ public class Mission18 extends Mission {
 		player.setAvailable(research("Battleship1"));
 		player.setAvailable(research("Cruiser1"));
 		player.setAvailable(research("SpaceStation1"));
+		
 		createMainShip();
 
 		// achievement

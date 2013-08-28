@@ -152,5 +152,8 @@ public class Trait {
 		}
 		return true;
 	}
-	
+	@Override
+	public String toString() {
+		return String.valueOf(kind);
+	}
 }
