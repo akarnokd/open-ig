@@ -2436,8 +2436,11 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		if (secondary.inventory.size() == 0) {
 			world().removeFleet(secondary);
 		}
-		if (secondary.inventory.contains(configure.item)) {
+		if (configure.item != null && secondary.inventory.contains(configure.item)) {
 			configure.item = fleet().getInventoryItem(configure.item.type);
+		}
+		if (configure.type != null && !secondary.inventory.findByType(configure.type.id).isEmpty()) {
+			configure.item = fleet().getInventoryItem(configure.type);
 		}
 		
 		

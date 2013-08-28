@@ -1976,8 +1976,9 @@ public class World implements ModelLookup {
 				if (fis.slot.fixed && st != fis.type) {
 					fis.type = st;
 				}
-				fis.count = Math.min(xfis.getInt("count"), fis.slot.max);
-				
+				fis.count = Math.max(0, Math.min(xfis.getInt("count"), fis.slot.max));
+			} else {
+				fis.count = 0;
 			}
 			
 			int hp0 = fis.hpMax(fii.owner);
@@ -2810,7 +2811,7 @@ public class World implements ModelLookup {
 				// remove technology
 				for (ResearchType at : U.newArrayList(p.available())) {
 					for (ResearchType rt1 : U.newArrayList(p.availableResearch.get(at))) {
-						if (rt1.has(ResearchType.PARAMETER_SPEED) && rt1.level == 0) {
+						if (rt1.has(ResearchType.PARAMETER_SPEED) /* && rt1.level == 0*/) {
 							p.availableResearch.get(at).remove(rt1);
 						}
 					}

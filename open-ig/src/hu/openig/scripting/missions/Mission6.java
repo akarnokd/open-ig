@@ -21,6 +21,7 @@ import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.model.TraitKind;
 
 /**
  * Mission 6: Defend Achilles.
@@ -69,7 +70,9 @@ public class Mission6 extends Mission {
 					setSlot(ii, "laser", "Laser1", 6);
 					setSlot(ii, "shield", "Shield1", 1);
 					setSlot(ii, "cannon", "IonCannon", 1);
-					setSlot(ii, "hyperdrive", "HyperDrive1", 1);
+					if (!player.traits.has(TraitKind.PRE_WARP)) {
+						setSlot(ii, "hyperdrive", "HyperDrive1", 1);
+					}
 				}
 			}
 			// move further away
