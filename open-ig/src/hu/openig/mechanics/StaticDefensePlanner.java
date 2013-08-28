@@ -327,9 +327,14 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkTanks(final AIPlanet planet) {
+		int vehicleMax = planet.statistics.vehicleMax;
+		// don't bother if already maxed
+		if  (vehicleMax <= planet.statistics.vehicleCount) {
+			return false;
+		}
 		final VehiclePlan plan = new VehiclePlan();
 		plan.calculate(world.availableResearch, w.battle, 
-				planet.statistics.vehicleMax, 
+				vehicleMax, 
 				p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
 		
 		if (planet.owner.money() >= MONEY_LIMIT) {
@@ -375,12 +380,15 @@ public class StaticDefensePlanner extends Planner {
 			}
 		}
 		// deploy new equipment
+		
+		int maxDeploy = vehicleMax - planet.statistics.vehicleCount;
 		for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
 			final ResearchType rt = e.getKey();
 			final int count = e.getValue();
 			final int inventoryLocal = planet.inventoryCount(rt);
-			final int cnt = count - inventoryLocal;
-			if (inventoryLocal < count && world.inventoryCount(rt) >= cnt) {
+			final int cnt = Math.max(0, Math.min(count - inventoryLocal, maxDeploy));
+			
+			if (cnt > 0 && world.inventoryCount(rt) >= cnt) {
 				world.addInventoryCount(rt, -cnt);
 				add(new Action0() {
 					@Override
@@ -393,6 +401,8 @@ public class StaticDefensePlanner extends Planner {
 						
 					}
 				});
+				maxDeploy -= cnt;
+				planet.statistics.vehicleCount += cnt;
 				return true;
 			}
 		}
