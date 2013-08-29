@@ -99,6 +99,7 @@ public class ExplorationPlanner extends Planner {
 			if (ModelUtils.random() < 0.10) {
 				// exploration complete, set explorers to idle
 				for (final AIFleet f : findFleetsWithTask(FleetTask.EXPLORE, null)) {
+					f.task = FleetTask.IDLE;
 					add(new Action0() {
 						@Override
 						public void invoke() {
@@ -234,6 +235,7 @@ public class ExplorationPlanner extends Planner {
 		AIPlanet p = ModelUtils.random(world.ownPlanets);
 		final int x = p.planet.x;
 		final int y = p.planet.y;
+		bf.task = FleetTask.PATROL;
 		add(new Action0() {
 			@Override
 			public void invoke() {
