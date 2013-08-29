@@ -176,8 +176,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			moreBuild.location(383, 5);
 			completion.bounds(394, 2, 125, 18);
 			
-			moreBuild.tooltip(commons.get("production.one_less.tooltip"));
-			lessBuild.tooltip(commons.get("production.one_more.tooltip"));
+			moreBuild.tooltip(commons.get("production.one_more.tooltip"));
+			lessBuild.tooltip(commons.get("production.one_less.tooltip"));
 			morePriority.tooltip(commons.get("production.more_priority.tooltip"));
 			lessPriority.tooltip(commons.get("production.less_priority.tooltip"));
 			

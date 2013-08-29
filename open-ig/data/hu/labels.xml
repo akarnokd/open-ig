@@ -2069,7 +2069,7 @@
 	<entry key='mission-1.build_colonyhub'>Építs egy főépületet</entry>
 	<entry key='mission-1.build_colonyhub.desc'>Építs, amint lehetséges.</entry>
 	<entry key='mission-1.fix_buildings'>Javítsd meg vagy cseréld le a sérült épületeket</entry>
-	<entry key='mission-1.fix_buildings.desc'>Működjön az erőmű, lakóhely, templom, rendőrség, tűzoltóság, radar, labor és űrkikötő.</entry>
+	<entry key='mission-1.fix_buildings.desc'>Működjön az erőmű, lakóhely, templom, rendőrség, tűzoltóság, radar, kutatóközpont és űrkikötő.</entry>
 	<entry key='mission-1.manage_colonies'>Kezeld a többi kolónia igényeit</entry>
 	<entry key='mission-1.manage_colonies.desc'>Kezeld a Naxos és San Sterling igényeit. A bolygókat nem vesztheted el.</entry>
 	<entry key='hide_objectives'>Nyomd le a TAB billentyűt a feladatok mutatásához/elrejtéséhez.</entry>
