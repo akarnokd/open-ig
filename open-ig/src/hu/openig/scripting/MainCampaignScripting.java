@@ -1328,10 +1328,15 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 	@Override
 	public int fleetSpeedOverride(Fleet fleet, int speed) {
-		if ("Traders".equals(fleet.owner.id) 
+		if ("Traders".equals(fleet.owner.id)  
 				&& player.traits.has("PreWarp")
 				&& !player.isAvailable("HyperDrive1")) {
 			return speed / 2;
+		}
+		if ((world.level == 2 
+				&& "Garthog".equals(fleet.owner.id) 
+				&& hasTag(fleet, "Mission-14-Garthog"))) {
+			speed = 5;
 		}
 		return speed;
 	}
