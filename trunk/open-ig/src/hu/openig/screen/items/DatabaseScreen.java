@@ -459,7 +459,7 @@ public class DatabaseScreen extends ScreenBase {
 		info.action = new Action0() {
 			@Override
 			public void invoke() {
-				displaySecondary(Screens.INFORMATION_ALIENS);
+				displaySecondary(Screens.INFORMATION_PLANETS);
 			}
 		};
 		starmap.action = new Action0() {
