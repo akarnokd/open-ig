@@ -3379,7 +3379,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return true if collided with the target
 	 */
 	boolean moveStep(SpacewarStructure obj) {
-		double ds = SIMULATION_DELAY * 1.0 / obj.movementSpeed;
+		// Fluctuate the movement speed within the 98%-100% range
+		double ds = SIMULATION_DELAY * 1.0 / (obj.movementSpeed * (1 - ModelUtils.random() / 50));
 		double dx = ds * Math.cos(obj.angle);
 		double dy = ds * Math.sin(obj.angle);
 		
