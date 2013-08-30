@@ -1493,6 +1493,7 @@ public class InfoScreen extends ScreenBase {
 			taxAll.onClick = new Action0() {
 				@Override
 				public void invoke() {
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doSetTaxAll();
 				}
 			};
@@ -1502,6 +1503,7 @@ public class InfoScreen extends ScreenBase {
 			autoPrev.onClick = new Action0() {
 				@Override
 				public void invoke() {
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doAutoPrev();
 				}
 			};
@@ -1511,6 +1513,7 @@ public class InfoScreen extends ScreenBase {
 			autoNext.onClick = new Action0() {
 				@Override
 				public void invoke() {
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doAutoNext();
 				}
 			};
@@ -1520,6 +1523,7 @@ public class InfoScreen extends ScreenBase {
 			autoAll.onClick = new Action0() {
 				@Override
 				public void invoke() {
+					buttonSound(SoundType.CLICK_HIGH_2);
 					doSetAutoAll();
 				}
 			};
@@ -1713,6 +1717,7 @@ public class InfoScreen extends ScreenBase {
 					), true).visible(true);
 					if (p.autoBuild != AutoBuild.OFF) {
 						autobuild.color(TextRenderer.YELLOW);
+						autobuild.tooltip(get("autobuild.tooltip." + p.autoBuild));
 					} else {
 						autobuild.color(TextRenderer.GREEN);
 					}
