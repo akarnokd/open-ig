@@ -14,10 +14,10 @@ import hu.openig.core.Func1;
 import hu.openig.core.Func2;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
+import hu.openig.core.Pathfinding;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
-import hu.openig.core.Pathfinding;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleGroundTurret;
 import hu.openig.model.BattleGroundVehicle;
@@ -4620,7 +4620,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					// find a new target in range
   					List<GroundwarUnit> targets = unitsInRange(u);
 					if (targets.size() > 0) {
-						attack(u, ModelUtils.random(targets));
+						attack(u, Collections.min(targets, GroundwarUnit.MOST_DAMAGED));
 						u.attackMove = am;
 					} else {
 						List<Building> targets2 = buildingsInRange(u);
@@ -4641,8 +4641,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			if (!u.path.isEmpty()) {
 				moveUnit(u);
-				if (u.nextMove == null) {
-					Location loc = u.location();
+//				if (u.nextMove == null) {
+					Location loc = Location.of((int)Math.round(u.x), (int)Math.round(u.y));
 					Mine m = mines.get(loc);
 					if (m != null && m.owner != u.owner) {
 						effectSound(SoundType.EXPLOSION_MEDIUM);
@@ -4651,7 +4651,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						damageArea(u.x, u.y, m.damage, 1, m.owner);
 						mines.remove(loc);
 					}
-				}
+//				}
 			} else {
 				if (u.advanceOnBuilding != null) {
 					u.attackBuilding = u.advanceOnBuilding;
@@ -5036,7 +5036,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				// find a new target
 				List<GroundwarUnit> targets = unitsInRange(g);
 				if (targets.size() > 0) {
-					g.attack = ModelUtils.random(targets);
+					g.attack = Collections.min(targets, GroundwarUnit.MOST_DAMAGED);
 				}
 			}
 		}
@@ -6504,7 +6504,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				
 				double dmg = u.damage();
 				commons.text().paintTo(g2, 10, h0 - 25, 7, u.owner.color, 
-						format("spacewar.selection.firepower_dps", dmg * count, 
+						format("spacewar.selection.firepower_dps", (int)(dmg * count), 
 						String.format("%.1f", dmg * count * 1000d / u.model.delay)));
 				commons.text().paintTo(g2, 10, h0 - 15, 7, u.owner.color, get("spacewar.selection.defense_values") + ((int)sumHp));
 				

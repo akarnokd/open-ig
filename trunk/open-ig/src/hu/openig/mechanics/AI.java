@@ -788,19 +788,21 @@ public class AI implements AIManager {
 //		PlanetStatistics senderStas = computeVisibleStats(other);
 		
 		double rnd = ModelUtils.random();
+		double rel = r.value;
 
 		Trait t = other.traits.trait(TraitKind.DIPLOMACY);
 		if (t != null) {
-			rnd = rnd * (1 + t.value / 100);
-			rnd = Math.min(0.99, Math.max(0.01, rnd));
+			rel = rel * (1 + t.value / 100);
+			rel = Math.min(100, Math.max(0, rnd));
 		}
+		
 		
 		switch (about) {
 		case DIPLOMATIC_RELATIONS:
-			if (rnd < r.value / 100 && r.value < p.warThreshold + 10) {
+			if (rnd < rel / 100 && rel < p.warThreshold + 10) {
 				return ResponseMode.MAYBE;
 			} else
-			if (rnd < r.value / 100) {
+			if (rnd < rel / 100) {
 				return ResponseMode.YES;
 			}
 			break;
@@ -811,30 +813,30 @@ public class AI implements AIManager {
 			}
 			DiplomaticRelation r2 = w.getRelation(p, p3);
 			if (r2 != null) {
-				if (rnd < 0.5 && r.value >= p.warThreshold + 35
-						&& r2.value < r.value) {
+				if (rnd < 0.5 && rel >= p.warThreshold + 35
+						&& r2.value < rel) {
 					return ResponseMode.YES;
 				}
 			}
 			break;
 		case DARGSLAN:
-			if (rnd < 0.1 && r.value >= 75 
+			if (rnd < rel / 100 && rel >= 75 
 				&& !p.id.equals("Dargslan")) {
 				return ResponseMode.YES;
 			}
 			break;
 		case MONEY:
-			if (rnd < r.value / 100) {
+			if (rnd < rel / 100 || world.money < 100000) {
 				return ResponseMode.YES;
 			}
 			break;
 		case SURRENDER:
-			if (rnd < 0.1 && ownStats.planetCount < 2 && r.value < p.warThreshold) {
+			if (rnd < 0.1 && ownStats.planetCount < 2 && rel < p.warThreshold) {
 				return ResponseMode.YES;
 			}
 			break;
 		case TRADE:
-			if (rnd < r.value / 100 - 0.25) {
+			if (rnd < rel / 100) {
 				return ResponseMode.YES;
 			}
 			break;
