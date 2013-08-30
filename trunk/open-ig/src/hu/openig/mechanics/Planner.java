@@ -28,7 +28,6 @@ import hu.openig.model.ModelUtils;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
-import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.World;
@@ -533,6 +532,7 @@ public abstract class Planner {
 	 * @param count the minimum amount to produce
 	 */
 	void issueProductionOrder(final ResearchType rt, final int count) {
+		/*
 		int capacity = world.global.activeProduction.spaceship;
 		if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
 			capacity = world.global.activeProduction.equipment;
@@ -540,8 +540,10 @@ public abstract class Planner {
 		if (rt.category.main == ResearchMainCategory.WEAPONS) {
 			capacity = world.global.activeProduction.weapons;
 		}
-		final int count0 = Math.max(count, (int)(
-				capacity / rt.productionCost / world.player.world.params().productionUnit()));
+		*/
+		final int count0 = count; 
+		/* Math.max(count, (int)(
+				capacity / rt.productionCost / world.player.world.params().productionUnit())); */
 		add(new Action0() {
 			@Override
 			public void invoke() {
