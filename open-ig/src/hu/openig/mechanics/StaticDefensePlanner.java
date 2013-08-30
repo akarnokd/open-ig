@@ -46,6 +46,8 @@ public class StaticDefensePlanner extends Planner {
 	protected static final int MONEY_LIMIT = 150000;
 	/** Let the defense planner build an orbital factory? */
 	public boolean allowBuildOrbitalFactory = true;
+	/** Allow producing vehicles or stations? */
+	public boolean allowProduction = true;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
@@ -113,7 +115,7 @@ public class StaticDefensePlanner extends Planner {
 		
 		List<Pred0> actions = new ArrayList<>();
 		
-		// FIXME how many barracks to build per difficulty
+		// FIX ME how many barracks to build per difficulty
 		int defenseLimit = 1;
 		if (world.difficulty == Difficulty.NORMAL) {
 			defenseLimit = 3;
@@ -350,7 +352,9 @@ public class StaticDefensePlanner extends Planner {
 				if (localDemand > 0 && localDemand > inventoryGlobal) {
 					// if in production wait
 					if (world.productionCount(rt) == 0 && activeProductionLanes("weapon") < 5) {
-						placeProductionOrder(rt, localDemand - inventoryGlobal);
+						if (allowProduction) {
+							placeProductionOrder(rt, localDemand - inventoryGlobal);
+						}
 						productionPlaced = true;
 					}
 				}
@@ -496,7 +500,9 @@ public class StaticDefensePlanner extends Planner {
 			if (stationCount < world.stationLimit) {
 				// if not available in inventory, construct one
 				if (world.inventoryCount(station) == 0) {
-					placeProductionOrder(station, 1);
+					if (allowProduction) {
+						placeProductionOrder(station, 1);
+					}
 					return true;
 				}
 				//deploy satellite
@@ -654,13 +660,15 @@ public class StaticDefensePlanner extends Planner {
 				}
 			}
 		}
-		// place production order for the difference
-		for (Map.Entry<ResearchType, Integer> de : demand.entrySet()) {
-			int di = de.getValue();
-			int ic = world.inventoryCount(de.getKey());
-			if (di > ic) {
-				if (placeProductionOrder(de.getKey(), di - ic)) {
-					result = true;
+		if (allowProduction) {
+			// place production order for the difference
+			for (Map.Entry<ResearchType, Integer> de : demand.entrySet()) {
+				int di = de.getValue();
+				int ic = world.inventoryCount(de.getKey());
+				if (di > ic) {
+					if (placeProductionOrder(de.getKey(), di - ic)) {
+						result = true;
+					}
 				}
 			}
 		}
@@ -689,8 +697,10 @@ public class StaticDefensePlanner extends Planner {
 					});
 					result = true;
 				} else {
-					if (placeProductionOrder(rt, Math.max(10, needed - gic))) {
-						result = true;
+					if (allowProduction) {
+						if (placeProductionOrder(rt, Math.max(10, needed - gic))) {
+							result = true;
+						}
 					}
 				}
 			}

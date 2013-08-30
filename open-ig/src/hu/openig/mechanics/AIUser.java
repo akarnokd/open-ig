@@ -66,6 +66,8 @@ public class AIUser implements AIManager {
 	final List<Action0> applyActions = new ArrayList<>();
 	/** The detected attacks. */
 	final Set<Integer> detectedAttack = new HashSet<>();
+	/** Allow building vehicles? */
+	boolean aiAutoBuildProduction;
 	@Override
 	public void init(Player p) {
 		this.p = p;
@@ -78,6 +80,7 @@ public class AIUser implements AIManager {
 	public void prepare() {
 		world = new AIWorld();
 		world.assign(p);
+		aiAutoBuildProduction = p.world.config.aiAutoBuildProduction;
 	}
 
 	@Override
@@ -114,6 +117,7 @@ public class AIUser implements AIManager {
 		}
 		
 		StaticDefensePlanner staticDefensePlanner = new StaticDefensePlanner(world, controls);
+		staticDefensePlanner.allowProduction = aiAutoBuildProduction;
 		staticDefensePlanner.allowBuildOrbitalFactory = false;
 		acts = staticDefensePlanner.run();
 		if (!acts.isEmpty()) {

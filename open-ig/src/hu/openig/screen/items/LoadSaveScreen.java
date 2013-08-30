@@ -297,6 +297,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Starmap checkboxes label. */
 	@Settings(page = SettingsPage.VISUAL)
 	UILabel starmapChecks;
+	/** Auto build label. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox aiAutobuildProduction;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -924,6 +927,16 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		};
 		timestepLabel = new UILabel(get("settings.base_speed"), 14, commons.text());
 
+		aiAutobuildProduction = new UICheckBox(get("settings.ai_autobuild_production"), 14, commons.common().checkmark, commons.text());
+		aiAutobuildProduction.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.aiAutoBuildProduction = aiAutobuildProduction.selected();
+			}
+		};
+		
+		
 		// ------------------------------------------
 		
 		prepareUIScale();
@@ -1240,6 +1253,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		starmapInfo.selected(config.showStarmapInfo);
 		starmapMini.selected(config.showStarmapMinimap);
 		starmapScroll.selected(config.showStarmapScroll);
+		aiAutobuildProduction.selected(config.aiAutoBuildProduction);
 		
 		hideConfirm();
 
@@ -1400,6 +1414,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		autoBuildLabel.location(base.x + 30, base.y + dy + 8);
 		autoBuildLimit.width = 200;
 		autoBuildLimit.location(base.x + base.width - autoBuildLimit.width - 30, base.y + dy);
+		dy += 30;
+
+		aiAutobuildProduction.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 
 		researchMoneyLabel.location(base.x + 30, base.y + dy + 8);
