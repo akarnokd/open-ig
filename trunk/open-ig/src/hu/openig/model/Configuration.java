@@ -314,6 +314,10 @@ public class Configuration {
 	/** The last used passphrase. */
 	@LoadSave
 	public String joinPassphrase;
+	/** Allow the AI-managed autobuild to produce items. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean aiAutoBuildProduction = true;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
