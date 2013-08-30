@@ -83,6 +83,12 @@ public class OffensePlanner extends Planner {
 			return;
 		}
 		
+		if (world.global.militarySpaceportCount == 0) {
+			if (checkMilitarySpaceport()) {
+				return;
+			}
+		}
+		
 		if (upgradeFleets()) {
 			return;
 		}
