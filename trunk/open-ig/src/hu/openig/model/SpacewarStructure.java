@@ -85,7 +85,7 @@ public class SpacewarStructure extends SpacewarObject {
 	public SpacewarStructure attack;
 	/** Attack anything in range. */
 	public boolean guard;
-	/** Kamikaze mode mode if greater than zero, indicates impact damage. */
+	/** Kamikaze mode if greater than zero, indicates impact damage. */
 	public double kamikaze;
 	/** The available hitpoints. */
 	public double hp;
