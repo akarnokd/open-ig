@@ -200,10 +200,12 @@ public class ColonizationPlanner extends Planner {
 				}
 				rto = w.researches.get("OrbitalFactory");
 			}
-			costs += rto.productionCost;
+			if (world.global.orbitalFactory == 0) {
+				costs += rto.productionCost;
+			}
 		}
 		
-		long avail = world.money - world.autoBuildLimit - costs;
+		long avail = /* world.money - */ world.autoBuildLimit - costs;
 		
 		int pcount = (int)Math.max(1, avail / rt.productionCost);
 		
@@ -222,10 +224,10 @@ public class ColonizationPlanner extends Planner {
 		final Pair<Boolean, AIPlanet> spaceport = findMilitarySpaceport();
 		// if no planet has military spaceport, build one somewhere
 		if (!spaceport.first) {
-			if (maySpendMoney) {
-				buildMilitarySpaceport();
-			}
 			return;
+		}
+		if (maySpendMoney) {
+			buildMilitarySpaceport();
 		}
 		if (spaceport.second != null) {
 			if (deployInventoryColonyShip(spaceport.second)) {

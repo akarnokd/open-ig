@@ -88,6 +88,7 @@ public class AIUser implements AIManager {
 			return;
 		}
 		
+		List<AIPlanet> ownSave = new ArrayList<>(world.ownPlanets);
 		// manage only AI autobuild planets
 		Iterator<AIPlanet> it = world.ownPlanets.iterator();
 		while (it.hasNext()) {
@@ -122,6 +123,8 @@ public class AIUser implements AIManager {
 			}
 		}
 		
+		world.ownPlanets.clear();
+		world.ownPlanets.addAll(ownSave);
 		ColonizationPlanner colonizationPlanner = new ColonizationPlanner(world, controls);
 		colonizationPlanner.explicitMode = true;
 		acts = colonizationPlanner.run();
