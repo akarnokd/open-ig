@@ -10,21 +10,25 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Location;
+import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.BuildingType;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetTask;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.utils.U;
 
+import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +60,7 @@ public class ExplorationPlanner extends Planner {
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
 		if (!exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit).isEmpty()) {
+			chechRadarUsage();
 			// check our current exploration fleets are idle
 			List<AIFleet> fs = findFleetsWithTask(FleetTask.EXPLORE, null);
 			for (AIFleet f : fs) {
@@ -634,5 +639,74 @@ public class ExplorationPlanner extends Planner {
 			placeProductionOrder(bestShip, 1);
 		}
 		return true;
+	}
+	/**
+	 * See if the available fleets lack radar and we can't even produce radars due lack of factory.
+	 */
+	void chechRadarUsage() {
+		boolean hasRadar = false;
+		// check if fleet is equipped with radar
+		for (AIFleet f : world.ownFleets) {
+			for (AIInventoryItem ii : f.inventory) {
+				for (InventorySlot is : ii.slots) {
+					if (is.type != null && is.type.has(ResearchType.PARAMETER_RADAR)) {
+						hasRadar = true;
+						break;
+					}
+				}
+			}
+		}
+		// check if radar technology is available
+		if (!hasRadar) {
+			ResearchType radarType = null;
+			for (ResearchType rt : world.availableResearch) {
+				if (rt.has(ResearchType.PARAMETER_RADAR)) {
+					if (radarType == null || radarType.productionCost < rt.productionCost) {
+						radarType = rt;
+					}
+				}
+			}
+			if (radarType != null) {
+				boolean hasFactory = false;
+				List<AIPlanet> ps = new ArrayList<>(world.ownPlanets);
+				Collections.sort(ps, BEST_PLANET);
+				for (AIPlanet p : ps) {
+					for (AIBuilding b : p.buildings) {
+						if (b.hasResource(radarType.factory)) {
+							hasFactory = true;
+							break;
+						}
+					}
+				}
+				if (!hasFactory) {
+					BuildingType factory = null;
+					for (BuildingType bt : p.world.buildingModel.buildings.values()) {
+						if (bt.hasResource(radarType.factory)) {
+							if (factory == null || factory.cost > bt.cost) {
+								factory = bt;
+							}
+						}
+					}
+					if (factory != null && world.money >= factory.cost) {
+						for (final AIPlanet p : ps) {
+							if (p.canBuild(factory)) {
+								Point pt = p.findLocation(factory);
+								if (pt != null) {
+									world.money -= factory.cost;
+									final BuildingType ffactory = factory;
+									add(new Action0() {
+										@Override
+										public void invoke() {
+											controls.actionPlaceBuilding(p.planet, ffactory);
+										}
+									});
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }
