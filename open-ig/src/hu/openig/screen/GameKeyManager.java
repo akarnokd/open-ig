@@ -245,12 +245,12 @@ public class GameKeyManager extends KeyAdapter {
 		}
 		if (!commons.worldLoading && world() != null 
 				&& !control().movieVisible() && !commons.battleMode) {
-			if (e.getKeyChar() == '+') {
+			if (e.getKeyChar() == '+' || e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
 				world().player.moveNextPlanet();
 				repaintInner();
 				e.consume();
 			} else
-			if (e.getKeyChar() == '-') {
+			if (e.getKeyChar() == '-' || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
 				world().player.movePrevPlanet();
 				repaintInner();
 				e.consume();

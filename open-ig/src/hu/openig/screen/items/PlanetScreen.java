@@ -4141,17 +4141,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		final Player ignore;
 		/**
 		 * Constructor. Initializes the fields.
-		 * @param initial the initial location
 		 * @param goal the goal location
 		 * @param unit the unit
 		 * @param ignore the player units to ignore
 		 */
 		public PathPlanning(
-				Location initial, 
-				Location goal, 
 				GroundwarUnit unit,
+				Location goal, 
 				Player ignore) {
-			this.current = initial;
+			this.current = unit.pathFindingLocation();
 			this.goal = goal;
 			this.unit = unit;
 			this.ignore = ignore;
@@ -4166,7 +4164,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		 * Apply the computation result.
 		 */
 		public void apply() {
-			unit.path.addAll(path);
+			unit.mergePath(path);
 			unit.inMotionPlanning = false;
 			unit.yieldTTL = 0;
 		}
@@ -4708,7 +4706,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					u.attackBuilding = null;
 				}
 				u.inMotionPlanning = true;
-				pathsToPlan.add(new PathPlanning(source, cell, u, null));
+				pathsToPlan.add(new PathPlanning(u, cell, null));
 			}
 		}
 	}
@@ -4744,8 +4742,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
 					// plot path to the building
 					u.inMotionPlanning = true;
-					pathsToPlan.add(new PathPlanning(ul, 
-							buildingNearby(u.attackBuilding, ul), u, null));
+					pathsToPlan.add(new PathPlanning(u, 
+							buildingNearby(u.attackBuilding, ul), null));
 				} else {
 					// plot path outside the minimum range
 					Location c = buildingNearby(u.attackBuilding, ul);
@@ -4756,7 +4754,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					);
 					
 					u.inMotionPlanning = true;
-					pathsToPlan.add(new PathPlanning(u.location(), c1, u, null));
+					pathsToPlan.add(new PathPlanning(u, c1, null));
 				}
 			}
 		}
@@ -4856,9 +4854,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				u.inMotionPlanning = true;
 				if (u.attackMove == null) {
 					// plot path
-					pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u, null));
+					pathsToPlan.add(new PathPlanning(u, u.attackUnit.location(), null));
 				} else {
-					pathsToPlan.add(new PathPlanning(u.location(), u.attackMove, u, enemy(u.owner)));
+					pathsToPlan.add(new PathPlanning(u, u.attackMove, enemy(u.owner)));
 				}
 			} else {
 				if (u.attackMove == null) {
@@ -4869,7 +4867,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					if (Math.hypot(dx, dy) > 1 && !u.attackUnit.path.isEmpty()) {
 						u.path.clear();
 						u.inMotionPlanning = true;
-						pathsToPlan.add(new PathPlanning(u.location(), u.attackUnit.location(), u, null));
+						pathsToPlan.add(new PathPlanning(u, u.attackUnit.location(), null));
 					}
 				}
 			}
@@ -5364,13 +5362,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	void repath(final GroundwarUnit u) {
 		if (u.path.size() > 0) {
-			final Location current = u.location();
 			final Location goal = u.path.get(u.path.size() - 1);
 			u.path.clear();
 			u.nextMove = null;
 			u.nextRotate = null;
 			u.inMotionPlanning = true;
-			pathsToPlan.add(new PathPlanning(current, goal, u, u.attackMove != null ? enemy(u.owner) : null));
+			pathsToPlan.add(new PathPlanning(u, goal, u.attackMove != null ? enemy(u.owner) : null));
 		}
 	}
 	/**
@@ -6273,10 +6270,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	public void move(GroundwarUnit u, int x, int y) {
 		stop(u);
 		u.guard = true;
-		Location lu = u.location();
 		Location lm = Location.of(x, y);
 		u.inMotionPlanning = true;
-		pathsToPlan.add(new PathPlanning(lu, lm, u, null));
+		pathsToPlan.add(new PathPlanning(u, lm, null));
 	}
 	/**
 	 * Perform an attack move towards the specified location
@@ -6288,11 +6284,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	public void attackMove(GroundwarUnit u, int x, int y) {
 		stop(u);
 		u.guard = true;
-		Location lu = u.location();
 		Location lm = Location.of(x, y);
 		u.attackMove = lm;
 		u.inMotionPlanning = true;
-		pathsToPlan.add(new PathPlanning(lu, lm, u, enemy(u.owner)));
+		pathsToPlan.add(new PathPlanning(u, lm, enemy(u.owner)));
 	}
 	/**
 	 * Returns the enemy player to the given player.
