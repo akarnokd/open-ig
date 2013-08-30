@@ -91,6 +91,16 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	public Location location() {
 		return Location.of((int)x, (int)y);
 	}
+	/**
+	 * Determines the location which should be used for path calculation.
+	 * @return the location
+	 */
+	public Location pathFindingLocation() {
+		if ((Math.abs(x - (int)x) < 1E-9 && Math.abs(y - (int)y) < 1E-9) || path.isEmpty()) {
+			return Location.of((int)x, (int)y);
+		}
+		return path.get(0);
+	}
 	@Override
 	public Double exactLocation() {
 		return new Point2D.Double(x, y);
@@ -232,5 +242,41 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 		int px = (int)Tile.toScreenX(x, y);
 		int py = (int)Tile.toScreenY(x, y) + 27 - model.height;
 		return new Point(px + model.width / 2, py + model.height / 2);
+	}
+	/**
+	 * Merges the current path with the new skipping
+	 * overlapping parts to avoid unnecessary rotations. 
+	 * @param newPath the new path to follow
+	 */
+	public void mergePath(List<Location> newPath) {
+		// path.addAll(newPath);
+		if (!newPath.isEmpty()) {
+			
+			if (newPath.size() >= 2) {
+				Location p0 = newPath.get(0);
+			
+				double vx = p0.x - x;
+				double vy = p0.y - y;
+				double v = Math.hypot(vx, vy);
+
+				if (v >= 1E-9) {
+					Location p1 = newPath.get(1);
+	
+					double ax = p1.x - p0.x;
+					double ay = p1.y - p0.y;
+					double a = Math.hypot(ax, ay);
+					
+					double angle = Math.acos((vx * ax + vy * ay) / v / a);
+					if (angle >= Math.PI - 1E-6) {
+						path.clear();
+						path.addAll(newPath.subList(1, newPath.size()));
+						nextMove = p1;
+						nextRotate = p1;
+						return;
+					}
+				}		
+			}
+			path.addAll(newPath);
+		}
 	}
 }
