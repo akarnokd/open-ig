@@ -17,6 +17,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -68,6 +69,15 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	public boolean guard = true;
 	/** Is the unit selected? */
 	public boolean selected;
+	/**
+	 * Orders the units based on damage level.
+	 */
+	public static final Comparator<GroundwarUnit> MOST_DAMAGED = new Comparator<GroundwarUnit>() {
+		@Override
+		public int compare(GroundwarUnit o1, GroundwarUnit o2) {
+			return java.lang.Double.compare(o1.hp / o1.model.hp, o2.hp / o2.model.hp);
+		}
+	};
 	/** @return is this unit destroyed? */
 	public boolean isDestroyed() {
 		return hp <= 0;
