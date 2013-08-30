@@ -3040,7 +3040,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @return true if can be controlled
 	 */
 	boolean canControl(SpacewarStructure s) {
-		return battle.isAlly(s, player());
+		return battle.isAlly(s, player()) && s.kamikaze == 0d;
 	}
 	/**
 	 * Function to locate the most appropriate rocket type.
@@ -4731,7 +4731,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			commons.text().paintTo(g2, dx, dy + 9, 7, color, format("spacewar.selection.owner", owner));
 			commons.text().paintTo(g2, dx, dy + 18, 7, color, format("spacewar.selection.parent", parent));
-			commons.text().paintTo(g2, dx, dy + 27, 7, color, format("spacewar.selection.firepower_dps", firepower, dps));
+			commons.text().paintTo(g2, dx, dy + 27, 7, color, format("spacewar.selection.firepower_dps", (int)firepower, (int)dps));
 			int y2 = dy + 36;
 			if (rockets > 0 || bombs > 0) {
 				commons.text().paintTo(g2, dx, y2, 7, color, format("spacewar.selection.bombs_rockets", bombs, rockets));
