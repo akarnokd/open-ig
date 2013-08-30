@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Location;
+import hu.openig.core.Pred1;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
@@ -57,6 +58,9 @@ public class ExplorationPlanner extends Planner {
 	}
 	@Override
 	public void plan() {
+		if (deploySatellites()) {
+			return;
+		}
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
 		if (!exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit).isEmpty()) {
@@ -129,6 +133,12 @@ public class ExplorationPlanner extends Planner {
 			}
 		}
 		
+	}
+	/**
+	 * Produce/Deploy satellites.
+	 * @return action taken?
+	 */
+	public boolean deploySatellites() {
 		List<AIPlanet> survey = new ArrayList<>(world.unknownPlanets);
 		survey.addAll(world.enemyPlanets);
 		
@@ -179,7 +189,7 @@ public class ExplorationPlanner extends Planner {
 						controls.actionDeploySatellite(planet0, sat0);
 					}
 				});
-				return;
+				return true;
 			}
 			// find the best available detector
 			for (ResearchType rt : world.availableResearch) {
@@ -191,9 +201,10 @@ public class ExplorationPlanner extends Planner {
 			}
 			if (sat != null) {
 				placeProductionOrder(sat, 10);
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	/**
@@ -644,20 +655,77 @@ public class ExplorationPlanner extends Planner {
 	 * See if the available fleets lack radar and we can't even produce radars due lack of factory.
 	 */
 	void chechRadarUsage() {
-		boolean hasRadar = false;
+		List<AIFleet> radarlessFleets = new ArrayList<>();
 		// check if fleet is equipped with radar
 		for (AIFleet f : world.ownFleets) {
+			boolean hasRadar = false;
 			for (AIInventoryItem ii : f.inventory) {
 				for (InventorySlot is : ii.slots) {
 					if (is.type != null && is.type.has(ResearchType.PARAMETER_RADAR)) {
 						hasRadar = true;
-						break;
 					}
 				}
 			}
+			if (!hasRadar) {
+				radarlessFleets.add(f);
+			}
 		}
-		// check if radar technology is available
-		if (!hasRadar) {
+		if (!radarlessFleets.isEmpty()) {
+			// check if inventory contains radar
+			int inventoryRadarCount = 0;
+			for (Map.Entry<ResearchType, Integer> rt : world.inventory.entrySet()) {
+				if (rt.getKey().has(ResearchType.PARAMETER_RADAR) && rt.getValue().intValue() > 0) {
+					inventoryRadarCount = rt.getValue().intValue();
+					break;
+				}
+			}
+			
+			if (inventoryRadarCount >= radarlessFleets.size()) {
+				if (checkMilitarySpaceport()) {
+					return;
+				}
+				List<AIFleet> fs1 = findFleetsFor(FleetTask.UPGRADE, null);
+				for (final AIFleet fleet : radarlessFleets) {
+					if (fs1.contains(fleet)) {
+						final AIPlanet spaceport = findClosestMilitarySpaceport(fleet.x, fleet.y);
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								if (fleet.fleet.task != FleetTask.SCRIPT) {
+									controls.actionMoveFleet(fleet.fleet, spaceport.planet);
+									fleet.fleet.task = FleetTask.UPGRADE;
+								}
+							}
+						});
+					}
+				}
+
+				List<AIFleet> upgradeTasks = findFleetsWithTask(FleetTask.UPGRADE, new Pred1<AIFleet>() {
+					@Override
+					public Boolean invoke(AIFleet value) {
+						return !value.isMoving() && value.statistics.planet != null;
+					}
+				});
+				if (upgradeTasks.isEmpty()) {
+					return;
+				}
+
+				final Fleet fleet = upgradeTasks.get(0).fleet;
+				add(new Action0() {
+					@Override
+					public void invoke() {
+						if (fleet.task == FleetTask.SCRIPT) {
+							return;
+						}
+						fleet.upgradeAll();
+						log("UpgradeFleet, Fleet = %s (%d)", fleet.name, fleet.id);
+					}
+				});
+				return;
+			}
+			
+			
+			// check if radar technology is available
 			ResearchType radarType = null;
 			for (ResearchType rt : world.availableResearch) {
 				if (rt.has(ResearchType.PARAMETER_RADAR)) {

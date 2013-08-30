@@ -87,6 +87,11 @@ public class StaticDefensePlanner extends Planner {
 	 * @param planet the target planet
 	 */
 	public void managePlanet(Planet planet) {
+		if (world.global.militarySpaceportCount == 0) {
+			if (checkMilitarySpaceport()) {
+				return;
+			}
+		}
 		for (AIPlanet p : world.ownPlanets) {
 			if (p.planet == planet) {
 				managePlanet(p);
