@@ -1335,7 +1335,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 		}
 		if ((world.level == 2 
 				&& "Garthog".equals(fleet.owner.id) 
-				&& hasTag(fleet, "Mission-14-Garthog"))) {
+				&& (hasTag(fleet, "Mission-14-Garthog")) || hasTag(fleet, "Mission-17-Garthog"))) {
 			speed = 5;
 		}
 		return speed;
