@@ -181,6 +181,9 @@ public class StarmapGFX {
 	/** The statistics button. */
 	@Btn2(name = "starmap/button_statistics")
 	public BufferedImage[] statistics;
+	/** Military spaceport icon. */
+	@Img(name = "militarysp_icon")
+	public BufferedImage militarySpaceportIcon;
  	/**
 	 * Load the resources from the given locator and language.
 	 * @param rl the resource locator

@@ -22,7 +22,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.144'>
+  <module id='Game' version='0.95.145'>
     <general url='https://code.google.com/p/open-ig/'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -33,15 +33,15 @@
     </general>
     <execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
     <notes url='https://code.google.com/p/open-ig/wiki/Game_Notes'>
-      <desc lang='hu'>Béta + egyéni játék.</desc>
-      <desc lang='en'>Beta + Skirmish.</desc>
-      <desc lang='de'>Beta + Skirmish.</desc>
-      <desc lang='en'>Beta + Skirmish.</desc>
-      <desc lang='ru'>Бета + перестрелка.</desc>
+      <desc lang='hu'>Béta + egyéni játék + bugfix.</desc>
+      <desc lang='en'>Beta + Skirmish + bugfix.</desc>
+      <desc lang='de'>Beta + Skirmish + bugfix.</desc>
+      <desc lang='en'>Beta + Skirmish + bugfix.</desc>
+      <desc lang='ru'>Бета + перестрелка + bugfix.</desc>
     </notes>
-    <file url='https://open-ig.googlecode.com/files/open-ig-0.95.144.jar' sha1='9F473461B1F675FE3467E320DA92839AD66D5F55'/>
-    <file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20130830a2.zip' sha1='4CA4BC7856F2FB10C1C68CC150A014A53B6BA0DC'/>
-    <file url='https://open-ig.googlecode.com/files/open-ig-images-20130816a.zip' sha1='E87B361F6340C6E482E7D45942B0DCC3B4CE0C8D'/>
+    <file url='https://open-ig.googlecode.com/files/open-ig-0.95.145.jar' sha1='5D9E50C52CB8D17DCB603C74DBA44E57F32107C0'/>
+    <file url='https://open-ig.googlecode.com/files/open-ig-upgrade-20130831a2.zip' sha1='664A0D4E5A1AC014B434D6EB3757E7DB2DAD4D26'/>
+    <file url='https://open-ig.googlecode.com/files/open-ig-images-20130831a.zip' sha1='42ADEF69F4796AD6D1B82FE1C93ECFAFCD8B6F56'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -97,6 +97,7 @@
     <remove file='open-ig-images-20121203a'/>
     <remove file='open-ig-images-20121224a'/>
     <remove file='open-ig-images-20130110a.zip'/>
+    <remove file='open-ig-images-20130816a.zip'/>
   </module>
   <module id='MapEditor' version='0.60'>
     <general url='https://code.google.com/p/open-ig/wiki/MapEditor'>

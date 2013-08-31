@@ -350,6 +350,8 @@ public class StarmapScreen extends ScreenBase {
 	UIImage problemsPolice;
 	/** Problem indicator icon. */
 	UIImage problemsFireBrigade;
+	/** Military spaceport on the planet. */
+	UIImage indicatorMilitarySpaceport;
 	/** Deploy satellite button. */
 	UIImageButton surveySatellite;
 	/** Deploy spy satellite 1 button. */
@@ -609,6 +611,8 @@ public class StarmapScreen extends ScreenBase {
 		colonyOther.location(bottomPanel.x + 10, bottomPanel.y + 70);
 
 		int probcnt = 11;
+		indicatorMilitarySpaceport.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt + 1), bottomPanel.y + 70);
+
 		problemsHouse.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsEnergy.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsWorker.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
@@ -620,7 +624,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsColonyHub.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsPolice.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsFireBrigade.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
-
+		
 		surveySatellite.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 4);
 		spySatellite1.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 24);
 		spySatellite2.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 44);
@@ -740,8 +744,9 @@ public class StarmapScreen extends ScreenBase {
 		problemsColonyHub.visible(false);
 		problemsPolice.visible(false);
 		problemsFireBrigade.visible(false);
+		indicatorMilitarySpaceport.visible(false);
 		if (p.owner == player()) {
-			PlanetStatistics ps = p.getStatistics();
+			PlanetStatistics ps = getStatistics(p);
 			if (ps.hasProblem(PlanetProblems.HOUSING)) {
 				problemsHouse.image(commons.common().houseIcon).visible(true);
 				setTooltip(problemsHouse, "info.problems.house.tooltip");
@@ -834,6 +839,8 @@ public class StarmapScreen extends ScreenBase {
 				problemsFireBrigade.image(commons.common().fireBrigadeIcon).visible(true);
 				setTooltip(problemsFireBrigade, "info.problems.fire.tooltip");
 			}
+			indicatorMilitarySpaceport.visible(ps.hasMilitarySpaceport);
+			setTooltip(indicatorMilitarySpaceport, "info.military_spaceport.tooltip");
 		}
 	}
 	/** Display the current fleet info. */
@@ -1227,11 +1234,6 @@ public class StarmapScreen extends ScreenBase {
 			List<RadarCircle> radarCircles = new ArrayList<>();
 			for (Planet p : world().planets.values()) {
 				if (p.owner == player() || sharedRadar(p)) {
-					PlanetStatistics ps = cache.get(p);
-					if (ps == null) {
-						ps = p.getStatistics();
-						cache.put(p, ps);
-					}
 					if (p.radar > 0) {
 						if (config.radarUnion) {
 							radarCircles.add(new RadarCircle(p.x, p.y, p.radar));
@@ -1263,120 +1265,7 @@ public class StarmapScreen extends ScreenBase {
 		}
 
 		for (Planet p : commons.world().planets.values()) {
-			if (knowledge(p, PlanetKnowledge.VISIBLE) < 0 && !showAll) {
-				continue;
-			}
-			BufferedImage phase = p.type.body[p.rotationPhase];
-			double d = p.diameter * zoom / 4;
-			int di = (int)d;
-			int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
-			int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
-			g2.drawImage(phase, x0, y0, (int)d, (int)d, null);
-			
-			int tw = commons.text().getTextWidth(nameFontSize, p.name);
-			int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
-			int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
-			int labelColor = TextRenderer.GRAY;
-			if (p.owner != null && (showAll || knowledge(p, PlanetKnowledge.OWNER) >= 0)) {
-				labelColor = p.owner.color;
-			}
-			if (showPlanetNames && (showAll || knowledge(p, PlanetKnowledge.NAME) >= 0)) {
-				commons.text().paintTo(g2, xt, yt, nameFontSize, labelColor, p.name);
-			}
-			if (p == planet()) {
-				if (player().selectionMode == SelectionMode.PLANET) {
-					g2.setColor(Color.WHITE);
-				} else {
-					g2.setColor(Color.GRAY);
-				}
-				g2.drawLine(x0 - 1, y0 - 1, x0 + 2, y0 - 1);
-				g2.drawLine(x0 - 1, y0 + di + 1, x0 + 2, y0 + di + 1);
-				g2.drawLine(x0 + di - 2, y0 - 1, x0 + di + 1, y0 - 1);
-				g2.drawLine(x0 + di - 2, y0 + di + 1, x0 + di + 1, y0 + di + 1);
-				
-				g2.drawLine(x0 - 1, y0 - 1, x0 - 1, y0 + 2);
-				g2.drawLine(x0 + di + 1, y0 - 1, x0 + di + 1, y0 + 2);
-				g2.drawLine(x0 - 1, y0 + di - 2, x0 - 1, y0 + di + 1);
-				g2.drawLine(x0 + di + 1, y0 + di - 2, x0 + di + 1, y0 + di + 1);
-			}
-			if (p.quarantineTTL > 0 && minimapPlanetBlink) {
-				g2.setColor(Color.RED);
-				g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
-			}
-			if (p.owner == player()) {
-				PlanetStatistics ps = cache.get(p);
-				if (ps == null) {
-					ps = p.getStatistics();
-					cache.put(p, ps);
-				}
-				
-				Set<PlanetProblems> combined = new HashSet<>();
-				combined.addAll(ps.problems);
-				combined.addAll(ps.warnings);
-				
-				if (combined.size() > 0) {
-					int w = combined.size() * 11 - 1;
-					int i = 0;
-					for (PlanetProblems pp : combined) {
-						BufferedImage icon = null;
-						BufferedImage iconDark = null;
-						switch (pp) {
-						case HOUSING:
-							icon = commons.common().houseIcon;
-							iconDark = commons.common().houseIconDark;
-							break;
-						case FOOD:
-							icon = commons.common().foodIcon;
-							iconDark = commons.common().foodIconDark;
-							break;
-						case HOSPITAL:
-							icon = commons.common().hospitalIcon;
-							iconDark = commons.common().hospitalIconDark;
-							break;
-						case ENERGY:
-							icon = commons.common().energyIcon;
-							iconDark = commons.common().energyIconDark;
-							break;
-						case WORKFORCE:
-							icon = commons.common().workerIcon;
-							iconDark = commons.common().workerIconDark;
-							break;
-						case STADIUM:
-							icon = commons.common().stadiumIcon;
-							iconDark = commons.common().stadiumIconDark;
-							break;
-						case VIRUS:
-							icon = commons.common().virusIcon;
-							iconDark = commons.common().virusIconDark;
-							break;
-						case REPAIR:
-							icon = commons.common().repairIcon;
-							iconDark = commons.common().repairIconDark;
-							break;
-						case COLONY_HUB:
-							icon = commons.common().colonyHubIcon;
-							iconDark = commons.common().colonyHubIconDark;
-							break;
-						case POLICE:
-							icon = commons.common().policeIcon;
-							iconDark = commons.common().policeIconDark;
-							break;
-						case FIRE_BRIGADE:
-							icon = commons.common().fireBrigadeIcon;
-							iconDark = commons.common().fireBrigadeIcon;
-							break;
-						default:
-						}
-						if (ps.hasProblem(pp)) {
-							g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
-						} else
-						if (ps.hasWarning(pp)) {
-							g2.drawImage(iconDark, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);						
-						}
-						i++;
-					}
-				}
-			}
+			drawPlanet(g2, p, nameFontSize, zoom);
 		}
 		if (showFleetButton.selected) {
 			for (Fleet f : fleets) {
@@ -1553,6 +1442,134 @@ public class StarmapScreen extends ScreenBase {
 		bottomPanel.visible(config.showStarmapInfo);
 		
 		super.draw(g2);
+	}
+	/**
+	 * Renders a planet onto the starmap.
+	 * @param g2 the graphics context
+	 * @param p the planet
+	 * @param nameFontSize the size of the name tag
+	 * @param zoom the zoom level
+	 */
+	void drawPlanet(Graphics2D g2, Planet p, int nameFontSize, double zoom) {
+
+		if (knowledge(p, PlanetKnowledge.VISIBLE) < 0 && !showAll) {
+			return;
+		}
+		BufferedImage phase = p.type.body[p.rotationPhase];
+		double d = p.diameter * zoom / 4;
+		int di = (int)d;
+		int x0 = (int)(starmapRect.x + p.x * zoom - d / 2);
+		int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
+		g2.drawImage(phase, x0, y0, (int)d, (int)d, null);
+		
+		int tw = commons.text().getTextWidth(nameFontSize, p.name);
+		int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
+		int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
+		int labelColor = TextRenderer.GRAY;
+		if (p.owner != null && (showAll || knowledge(p, PlanetKnowledge.OWNER) >= 0)) {
+			labelColor = p.owner.color;
+		}
+		if (showPlanetNames && (showAll || knowledge(p, PlanetKnowledge.NAME) >= 0)) {
+			commons.text().paintTo(g2, xt, yt, nameFontSize, labelColor, p.name);
+		}
+		if (p == planet()) {
+			if (player().selectionMode == SelectionMode.PLANET) {
+				g2.setColor(Color.WHITE);
+			} else {
+				g2.setColor(Color.GRAY);
+			}
+			g2.drawLine(x0 - 1, y0 - 1, x0 + 2, y0 - 1);
+			g2.drawLine(x0 - 1, y0 + di + 1, x0 + 2, y0 + di + 1);
+			g2.drawLine(x0 + di - 2, y0 - 1, x0 + di + 1, y0 - 1);
+			g2.drawLine(x0 + di - 2, y0 + di + 1, x0 + di + 1, y0 + di + 1);
+			
+			g2.drawLine(x0 - 1, y0 - 1, x0 - 1, y0 + 2);
+			g2.drawLine(x0 + di + 1, y0 - 1, x0 + di + 1, y0 + 2);
+			g2.drawLine(x0 - 1, y0 + di - 2, x0 - 1, y0 + di + 1);
+			g2.drawLine(x0 + di + 1, y0 + di - 2, x0 + di + 1, y0 + di + 1);
+		}
+		if (p.quarantineTTL > 0 && minimapPlanetBlink) {
+			g2.setColor(Color.RED);
+			g2.drawRect(x0 - 1, y0 - 1, 2 + (int)d, 2 + (int)d);
+		}
+		if (p.owner == player()) {
+			PlanetStatistics ps = getStatistics(p);
+			
+			// paint military spaceport icon if any
+			if (ps.hasMilitarySpaceport) {
+				BufferedImage msi = commons.starmap().militarySpaceportIcon;
+				int msix = (int)(x0 + d / 2 - msi.getWidth() / 2); // xt - msi.getWidth() - 1;
+				int msiy = yt + nameFontSize + 2;
+				g2.drawImage(msi, msix , msiy, null);
+			}
+			
+			Set<PlanetProblems> combined = new HashSet<>();
+			combined.addAll(ps.problems);
+			combined.addAll(ps.warnings);
+			
+			if (combined.size() > 0) {
+				int w = combined.size() * 11 - 1;
+				int i = 0;
+				for (PlanetProblems pp : combined) {
+					BufferedImage icon = null;
+					BufferedImage iconDark = null;
+					switch (pp) {
+					case HOUSING:
+						icon = commons.common().houseIcon;
+						iconDark = commons.common().houseIconDark;
+						break;
+					case FOOD:
+						icon = commons.common().foodIcon;
+						iconDark = commons.common().foodIconDark;
+						break;
+					case HOSPITAL:
+						icon = commons.common().hospitalIcon;
+						iconDark = commons.common().hospitalIconDark;
+						break;
+					case ENERGY:
+						icon = commons.common().energyIcon;
+						iconDark = commons.common().energyIconDark;
+						break;
+					case WORKFORCE:
+						icon = commons.common().workerIcon;
+						iconDark = commons.common().workerIconDark;
+						break;
+					case STADIUM:
+						icon = commons.common().stadiumIcon;
+						iconDark = commons.common().stadiumIconDark;
+						break;
+					case VIRUS:
+						icon = commons.common().virusIcon;
+						iconDark = commons.common().virusIconDark;
+						break;
+					case REPAIR:
+						icon = commons.common().repairIcon;
+						iconDark = commons.common().repairIconDark;
+						break;
+					case COLONY_HUB:
+						icon = commons.common().colonyHubIcon;
+						iconDark = commons.common().colonyHubIconDark;
+						break;
+					case POLICE:
+						icon = commons.common().policeIcon;
+						iconDark = commons.common().policeIconDark;
+						break;
+					case FIRE_BRIGADE:
+						icon = commons.common().fireBrigadeIcon;
+						iconDark = commons.common().fireBrigadeIcon;
+						break;
+					default:
+					}
+					if (ps.hasProblem(pp)) {
+						g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
+					} else
+					if (ps.hasWarning(pp)) {
+						g2.drawImage(iconDark, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);						
+					}
+					i++;
+				}
+			}
+		}
 	}
 	/**
 	 * Checks if the radar line should be shared with the object?
@@ -2454,7 +2471,8 @@ public class StarmapScreen extends ScreenBase {
 		problemsColonyHub = new UIImage(commons.common().colonyHubIcon);
 		problemsPolice = new UIImage(commons.common().policeIcon);
 		problemsFireBrigade = new UIImage(commons.common().fireBrigadeIcon);
-
+		indicatorMilitarySpaceport = new UIImage(commons.starmap().militarySpaceportIcon);
+		
 		surveySatellite = new UIImageButton(commons.starmap().deploySatellite);
 		surveySatellite.onClick = new Action0() {
 			@Override
@@ -2646,7 +2664,7 @@ public class StarmapScreen extends ScreenBase {
 			showNamesNone, showNamesFleet, showNamesPlanet, showNamesBoth,
 			fleetName, fleetOwner, fleetStatus, fleetPlanet, fleetComposition, fleetSpeed,
 			fleetFirepower, fleetMove, fleetStop, fleetColonize, fleetColonizeCancel, fleetAttack,
-			fleetSeparator
+			fleetSeparator, indicatorMilitarySpaceport
 		);
 		
 		// right panel elements
@@ -3077,5 +3095,18 @@ public class StarmapScreen extends ScreenBase {
 		
 		showFleetNames = mode == ShowNamesMode.BOTH || mode == ShowNamesMode.FLEETS;
 		showPlanetNames = mode == ShowNamesMode.BOTH || mode == ShowNamesMode.PLANETS;
+	}
+	/**
+	 * Retrieves and caches the planet statistics.
+	 * @param p the planet
+	 * @return the statistics
+	 */
+	public PlanetStatistics getStatistics(Planet p) {
+		PlanetStatistics ps = cache.get(p);
+		if (ps == null) {
+			ps = p.getStatistics();
+			cache.put(p, ps);
+		}
+		return ps;
 	}
 }
