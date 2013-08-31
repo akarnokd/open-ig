@@ -58,9 +58,7 @@ public class ExplorationPlanner extends Planner {
 	}
 	@Override
 	public void plan() {
-		if (deploySatellites()) {
-			return;
-		}
+		deploySatellites();
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
 		if (!exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit).isEmpty()) {
@@ -200,7 +198,9 @@ public class ExplorationPlanner extends Planner {
 				}
 			}
 			if (sat != null) {
-				placeProductionOrder(sat, 10);
+				if (buildFactoryFor(sat)) {
+					placeProductionOrder(sat, 10);
+				}
 				return true;
 			}
 		}
@@ -735,46 +735,59 @@ public class ExplorationPlanner extends Planner {
 				}
 			}
 			if (radarType != null) {
-				boolean hasFactory = false;
-				List<AIPlanet> ps = new ArrayList<>(world.ownPlanets);
-				Collections.sort(ps, BEST_PLANET);
-				for (AIPlanet p : ps) {
-					for (AIBuilding b : p.buildings) {
-						if (b.hasResource(radarType.factory)) {
-							hasFactory = true;
-							break;
-						}
+				buildFactoryFor(radarType);
+			}
+		}
+	}
+	/**
+	 * Build a factory for the given technology if not already built.
+	 * @param tech the technology
+	 * @return true if the factory is available and operational
+	 */
+	boolean buildFactoryFor(ResearchType tech) {
+		boolean hasFactory = false;
+		boolean workingFactory = false;
+		List<AIPlanet> ps = new ArrayList<>(world.ownPlanets);
+		Collections.sort(ps, BEST_PLANET);
+		for (AIPlanet p : ps) {
+			for (AIBuilding b : p.buildings) {
+				if (b.hasResource(tech.factory)) {
+					hasFactory = true;
+					if (b.isOperational()) {
+						workingFactory = true;
+						break;
 					}
 				}
-				if (!hasFactory) {
-					BuildingType factory = null;
-					for (BuildingType bt : p.world.buildingModel.buildings.values()) {
-						if (bt.hasResource(radarType.factory)) {
-							if (factory == null || factory.cost > bt.cost) {
-								factory = bt;
-							}
-						}
+			}
+		}
+		if (!hasFactory) {
+			BuildingType factory = null;
+			for (BuildingType bt : p.world.buildingModel.buildings.values()) {
+				if (bt.hasResource(tech.factory)) {
+					if (factory == null || factory.cost > bt.cost) {
+						factory = bt;
 					}
-					if (factory != null && world.money >= factory.cost) {
-						for (final AIPlanet p : ps) {
-							if (p.canBuild(factory)) {
-								Point pt = p.findLocation(factory);
-								if (pt != null) {
-									world.money -= factory.cost;
-									final BuildingType ffactory = factory;
-									add(new Action0() {
-										@Override
-										public void invoke() {
-											controls.actionPlaceBuilding(p.planet, ffactory);
-										}
-									});
-									return;
+				}
+			}
+			if (factory != null && world.money >= factory.cost) {
+				for (final AIPlanet p : ps) {
+					if (p.canBuild(factory)) {
+						Point pt = p.findLocation(factory);
+						if (pt != null) {
+							world.money -= factory.cost;
+							final BuildingType ffactory = factory;
+							add(new Action0() {
+								@Override
+								public void invoke() {
+									controls.actionPlaceBuilding(p.planet, ffactory);
 								}
-							}
+							});
+							return false;
 						}
 					}
 				}
 			}
 		}
+		return workingFactory;
 	}
 }

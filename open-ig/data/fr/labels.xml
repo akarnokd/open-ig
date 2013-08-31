@@ -2397,19 +2397,21 @@
   <entry key='chat.vi.3.n8.o'>Très bien.</entry>
   <entry key='chat.vi.3.n8'>Très bien.</entry>
   <entry key='chat.vi.3.n9'>Merci, Commandant.</entry>
+  
   <entry key='chat.vi.4.n0.o'>Faites demi-tour!</entry>
   <entry key='chat.vi.4.n0'>Faites demi-tour! Cette planète est contaminée par un virus.</entry>
   <entry key='chat.vi.4.n1'>Vaisseau BH13. Je transporte un nouvel antidote pour cette planète. Je demande l&#39;autorisation d&#39;atterrir.</entry>
   <entry key='chat.vi.4.n2.o'>Faites demi-tour!</entry>
   <entry key='chat.vi.4.n2'>Vous n&#39;êtes pas un vaisseau médical. Je vous ordonne de faire demi-tour.</entry>
-  <entry key='chat.vi.4.n3.o'>All right.</entry>
-  <entry key='chat.vi.4.n3'>Je répète, j&#39;ai à bord un nouvel antidote pour cette planète. Laissez-moi atterrir, ou des milliers de personnes vont mourir à cause de vous.</entry>
-  <entry key='chat.vi.4.n4'>Je n&#39;ai pas d&#39;autorisation vous concernant. Vous devez faire demi-tour.</entry>
-  <entry key='chat.vi.4.n5.o'>Turn around!</entry>
-  <entry key='chat.vi.4.n5'>Très bien, mais je vous tiens responsable des conséquences.</entry>
-  <entry key='chat.vi.4.n6.o'>Très bien, poursuivez votre chemin.</entry>
-  <entry key='chat.vi.4.n6'>Très bien, poursuivez votre chemin.</entry>
-  <entry key='chat.vi.4.n8'>All right, but I hold you responsible for the consequences.</entry>
+  <entry key='chat.vi.4.n3.o'>Très bien, poursuivez votre chemin.</entry>
+  <entry key='chat.vi.4.n3'>Très bien, poursuivez votre chemin.</entry>
+  <entry key='chat.vi.4.n4'>Je répète, j&#39;ai à bord un nouvel antidote pour cette planète. Laissez-moi atterrir, ou des milliers de personnes vont mourir à cause de vous.</entry>
+  <entry key='chat.vi.4.n5.o'>Faites demi-tour!</entry>
+  <entry key='chat.vi.4.n5'>Je n&#39;ai pas d&#39;autorisation vous concernant. Vous devez faire demi-tour.</entry>
+  <entry key='chat.vi.4.n6.o'>Faites demi-tour!</entry>
+  <entry key='chat.vi.4.n6'>Je n&#39;ai pas d&#39;autorisation vous concernant. Vous devez faire demi-tour.</entry>
+  <entry key='chat.vi.4.n8'>Très bien, mais je vous tiens responsable des conséquences.</entry>
+  
   <entry key='chat.vi.5.n0.o'>Vaisseau inconnu, déclinez votre identité!</entry>
   <entry key='chat.vi.5.n0'>Vaisseau inconnu, déclinez votre identité!</entry>
   <entry key='chat.vi.5.n1'>Vaisseau Max4 sur route commerciale.</entry>

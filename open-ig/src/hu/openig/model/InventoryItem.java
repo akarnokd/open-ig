@@ -170,8 +170,8 @@ public class InventoryItem {
 		owner.world.statistics.moneyIncome.value += money;
 		owner.world.statistics.moneySellIncome.value += money;
 
-		count -= n;
-		if (count <= 0) {
+		this.count -= n;
+		if (this.count <= 0) {
 			slots.clear();
 		}
 	}
