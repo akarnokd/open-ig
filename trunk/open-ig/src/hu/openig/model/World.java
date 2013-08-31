@@ -2984,7 +2984,8 @@ public class World implements ModelLookup {
 					Fleet f = new Fleet(p);
 					f.name = labels.get("@Colonizer");
 					p.changeInventoryCount(rt, 1);
-					f.deployItem(rt, f.owner, 1);
+					List<InventoryItem> iis = f.deployItem(rt, f.owner, 1);
+					fleetAddRadar(p, iis);
 				}
 				
 				createStartingFleet(p);
@@ -3224,18 +3225,41 @@ public class World implements ModelLookup {
 					} else
 					if (rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 						p.changeInventoryCount(rt, 3);
-						f.deployItem(rt, f.owner, 3);
+						List<InventoryItem> iss = f.deployItem(rt, f.owner, 3);
+						fleetAddRadar(p, iss);
 					} else
 					if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 						if (!"ColonyShip".equals(rt.id)) {
 							p.changeInventoryCount(rt, 1);
-							f.deployItem(rt, f.owner, 1);
+							List<InventoryItem> iss = f.deployItem(rt, f.owner, 1);
+							fleetAddRadar(p, iss);
 						}
 					}
 				}
 			}
 		}
 		p.currentFleet = f;
+	}
+	/**
+	 * Adds 1 radar to one of the medium and large ships.
+	 * @param p the player
+	 * @param iss the list of inventory items
+	 */
+	void fleetAddRadar(Player p, List<InventoryItem> iss) {
+		r1:
+		for (InventoryItem ii : iss) {
+			for (InventorySlot is : ii.slots.values()) {
+				if (is.type == null) {
+					for (ResearchType rt0 : is.slot.items) {
+						if (rt0.has(ResearchType.PARAMETER_RADAR) && p.isAvailable(rt0)) {
+							is.type = rt0;
+							is.count = 1;
+							break r1;
+						}
+					}
+				}
+			}
+		}
 	}
 	/**
 	 * Creates a new identifier.

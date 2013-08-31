@@ -2554,6 +2554,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 //					} else {
 //						f.changeInventory(research(), -1);
 					}
+					ii.sell(1);
+					f.cleanup();
 					f.removeExcess();
 					updateInventory(null, f, leftList);
 				} else {
@@ -2564,11 +2566,11 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 //					} else {
 //						planet().changeInventory(research(), player(), -1);
 					}
+					ii.sell(1);
+					planet().cleanup();
 					planet().removeExcess();
 					updateInventory(planet(), null, leftList);
 				}
-
-				ii.sell(1);
 			}
 			break;
 		default:

@@ -1094,11 +1094,12 @@ public class Fleet implements Named, Owned, HasInventory {
 				ii2.init();
 				ii2.count = count;
 				other.inventory.add(ii2);
+				ii.count -= count;
 			} else {
 				int toAdd = Math.min(getAddLimit(ii.type), count);
 				ii2.count += toAdd;
+				ii.count -= toAdd;
 			}
-			ii.count -= ii2.count;
 			if (ii.count <= 0) {
 				inventory.remove(ii);
 			}
