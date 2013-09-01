@@ -318,6 +318,17 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean aiAutoBuildProduction = true;
+	/** 
+	 * Reduce the damage of weapons if too many units attack the same
+	 * target.
+	 */
+	@LoadSave
+	public boolean spacewarDiminishingAttach = true;
+	/** 
+	 * The 50% reduction mark on the attackers count.
+	 */
+	@LoadSave
+	public int spacewarDiminishingAttachCount = 10;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
