@@ -3975,9 +3975,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (sr.width < 4 && sr.height < 4) {
 			GroundwarUnit u2 = null;
 			Rectangle u2r = null;
-			deselectAll();
+			if (mode == SelectionBoxMode.NEW) {
+				deselectAll();
+			}
 			for (GroundwarUnit u : units) {
-				u.selected = false;
 				Rectangle r = unitRectangle(u);
 				scaleToScreen(r);
 				
@@ -3990,7 +3991,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}			
 			GroundwarGun g2 = null;
 			for (GroundwarGun g : guns) {
-				g.selected = false;
 				Rectangle r = gunRectangle(g);
 				scaleToScreen(r);
 
@@ -4002,11 +4002,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			if (u2 != null && g2 == null) {
 				allowCommands = u2.owner == player();
-				u2.selected = true;
+				u2.selected = mode != SelectionBoxMode.SUBTRACT;
 			} else
 			if (g2 != null && u2 == null) {
 				allowCommands = g2.owner == player();
-				g2.selected = true;
+				g2.selected = mode != SelectionBoxMode.SUBTRACT;
 			} else
 			if (g2 != null && u2 != null) {
 				Rectangle r = unitRectangle(u2);
