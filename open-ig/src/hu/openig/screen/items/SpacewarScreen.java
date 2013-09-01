@@ -5469,7 +5469,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 //				} else {
 //					mult = Math.pow(n, 0.65);
 //				}
-				mult = Math.pow(n, -3 / c);
+				mult = Math.pow(n, -3d / c);
 				return baseDamage * mult;
 			}
 		}

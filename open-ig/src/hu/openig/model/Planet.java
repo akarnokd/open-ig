@@ -578,7 +578,7 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public boolean hasInventory(ResearchType rt, Player owner) {
 		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
-			if (pii.type == rt) {
+			if (pii.type == rt && pii.count > 0) {
 				return true;
 			}
 		}

@@ -1672,6 +1672,7 @@ public class World implements ModelLookup {
 			p.inventory.clear();
 			p.surface.buildings.clear();
 			p.surface.buildingmap.clear();
+			p.timeToLive.clear();
 
 			// change surface type
 			String stype = xplanet.get("surface-type", p.type.type);
