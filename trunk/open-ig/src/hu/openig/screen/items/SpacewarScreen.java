@@ -4235,7 +4235,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
 		sp.matrix = sp.owner == player() ? p.projectile.alternative : p.projectile.matrix;
 		
-		sp.damage = p.damage(sp.owner) * p.count;
+		sp.damage = attackDamage(p.damage(sp.owner) * p.count, target);
 
 		BattleEfficiencyModel bem = source.getEfficiency(target);
 		if (bem != null) {
@@ -5436,5 +5436,43 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		
 		return true;
+	}
+	/**
+	 * Number of attackers on the same target.
+	 * @param target the target
+	 * @return the number of attackers
+	 */
+	public int attackerCount(SpacewarStructure target) {
+		int n = 0;
+		for (SpacewarStructure s : structures) {
+			if (s.attack == target) {
+				n++;
+			}
+		}
+		return n;
+	}
+	/**
+	 * Computes damage considering compensation factors.
+	 * @param baseDamage the base damage
+	 * @param target the target
+	 * @return the new damage
+	 */
+	public double attackDamage(double baseDamage, SpacewarStructure target) {
+		if (config.spacewarDiminishingAttach) {
+ 			int n = attackerCount(target);
+			
+			int c = config.spacewarDiminishingAttachCount;
+			if (n > 0 && c > 1) {
+				double mult = 0d;
+//				if (n <= c) {
+//					mult = 1 - 0.75 * (n - 1) / (c - 1);
+//				} else {
+//					mult = Math.pow(n, 0.65);
+//				}
+				mult = Math.pow(n, -3 / c);
+				return baseDamage * mult;
+			}
+		}
+		return baseDamage;
 	}
 }
