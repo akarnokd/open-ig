@@ -29,11 +29,11 @@ import java.util.Set;
  */
 public class InventoryItems {
 	/** The map by id. */
-	protected final Map<Integer, InventoryItem> byId = new LinkedHashMap<>();
+	private final Map<Integer, InventoryItem> byId = new LinkedHashMap<>();
 	/** The map by type. */
-	protected final Map<String, Set<InventoryItem>> byType = new HashMap<>();
+	private final Map<String, Set<InventoryItem>> byType = new HashMap<>();
 	/** The map by owner. */
-	protected final Map<String, Set<InventoryItem>> byOwner = new HashMap<>();
+	private final Map<String, Set<InventoryItem>> byOwner = new HashMap<>();
 	/**
 	 * Returns a list copy of the inventory items in this collection.
 	 * @return the inventory item list
@@ -93,6 +93,8 @@ public class InventoryItems {
 				byOwner.put(ii.owner.id, is);
 			}
 			is.add(ii);
+		} else {
+			System.err.println("Duplicate id: " + ii);
 		}
 	}
 	/**
@@ -102,8 +104,12 @@ public class InventoryItems {
 	 */
 	public boolean remove(InventoryItem ii) {
 		if (byId.remove(ii.id) != null) {
-			byType.get(ii.type.id).remove(ii);
-			byOwner.get(ii.owner.id).remove(ii);
+			if (!byType.get(ii.type.id).remove(ii)) {
+				System.err.println(ii);
+			}
+			if (!byOwner.get(ii.owner.id).remove(ii)) {
+				System.err.println(ii);
+			}
 			return true;
 		}
 		return false;
