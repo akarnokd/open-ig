@@ -333,6 +333,7 @@ public class ExplorationPlanner extends Planner {
 			}
 		}
 		final Location floc = loc;
+		bf.task = FleetTask.EXPLORE;
 		add(new Action0() {
 			@Override
 			public void invoke() {
@@ -688,6 +689,7 @@ public class ExplorationPlanner extends Planner {
 				for (final AIFleet fleet : radarlessFleets) {
 					if (fs1.contains(fleet)) {
 						final AIPlanet spaceport = findClosestMilitarySpaceport(fleet.x, fleet.y);
+						fleet.task = FleetTask.UPGRADE;
 						add(new Action0() {
 							@Override
 							public void invoke() {

@@ -144,6 +144,7 @@ public class ColonizationPlanner extends Planner {
 				final AIFleet f = candidates.remove(0);
 				final Fleet f0 = f.fleet;
 				final Planet p0 = aip.planet;
+				f.task = FleetTask.COLONIZE;
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -298,6 +299,7 @@ public class ColonizationPlanner extends Planner {
 					&& fleet.statistics.planet != null) {
 				final Fleet f0 = fleet.fleet;
 				final Planet p0 = fleet.statistics.planet;
+				fleet.task = FleetTask.IDLE;
 				add(new Action0() {
 					@Override
 					public void invoke() {
@@ -355,11 +357,14 @@ public class ColonizationPlanner extends Planner {
 					return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
 				}
 			});
+			fleet.task = FleetTask.COLONIZE;
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					controls.actionMoveFleet(fleet.fleet, p0.planet);
-					fleet.fleet.task = FleetTask.COLONIZE;
+					if (fleet.fleet.task != FleetTask.SCRIPT) {
+						controls.actionMoveFleet(fleet.fleet, p0.planet);
+						fleet.fleet.task = FleetTask.COLONIZE;
+					}
 				}
 			});
 			result = true;
