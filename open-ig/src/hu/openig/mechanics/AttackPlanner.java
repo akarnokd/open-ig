@@ -140,6 +140,7 @@ public class AttackPlanner extends Planner {
 				}
 				if (targetFleet != null) {
 					final AIFleet ftargetFleet = targetFleet;
+					ownFleet.task = FleetTask.ATTACK;
 					add(new Action0() {
 						@Override
 						public void invoke() {
@@ -149,6 +150,7 @@ public class AttackPlanner extends Planner {
 				} else 
 				if (targetPlanet != null) {
 					final AIPlanet ftargetPlanet = targetPlanet;
+					ownFleet.task = FleetTask.ATTACK;
 					add(new Action0() {
 						@Override
 						public void invoke() {
