@@ -470,7 +470,7 @@ public class MainScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
-				//displaySecondary(Screens.PROFILE);
+				displaySecondary(Screens.PROFILE);
 			}
 		};
 		

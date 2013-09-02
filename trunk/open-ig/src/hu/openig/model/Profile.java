@@ -104,4 +104,15 @@ public class Profile {
 			Exceptions.add(ex);
 		}
 	}
+	/**
+	 * Prepares a non-existent profile or loads an existing one.
+	 */
+	public void prepare() {
+		File f = new File("save/" + name + "/profile.xml");
+		if (f.canRead()) {
+			load();
+		} else {
+			save();
+		}
+	}
 }

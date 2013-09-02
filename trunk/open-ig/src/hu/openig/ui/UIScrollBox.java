@@ -139,4 +139,31 @@ public class UIScrollBox extends UIContainer {
 		this.borderColor = newColor;
 		return this;
 	}
+	/**
+	 * Scroll the box until the sub-component becomes visible.
+	 * @param c the component
+	 */
+	public void scrollToVisible(UIComponent c) {
+		int py = 0;
+		int ph = c.height;
+		while (c.parent != null) {
+			if (c.parent != this) {
+				py += c.y;
+				c = c.parent;
+			} else {
+				break;
+			}
+		}
+		if (c == null) {
+			throw new AssertionError("Not in the hierarchy of this box!");
+		}
+		int visibleTop = -content.y;
+		int visibleBottom = visibleTop + height;
+		if (py < visibleTop) {
+			scrollBy(visibleTop - py);
+		} else
+		if (py + ph >= visibleBottom) {
+			scrollBy(visibleBottom - py - ph);
+		}
+	}
 }

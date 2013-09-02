@@ -57,6 +57,7 @@ import hu.openig.screen.items.LoadingScreen;
 import hu.openig.screen.items.MainScreen;
 import hu.openig.screen.items.MovieScreen;
 import hu.openig.screen.items.PlanetScreen;
+import hu.openig.screen.items.ProfileScreen;
 import hu.openig.screen.items.ResearchProductionScreen;
 import hu.openig.screen.items.ShipwalkScreen;
 import hu.openig.screen.items.SingleplayerScreen;
@@ -300,6 +301,8 @@ public class GameWindow extends JFrame implements GameControls {
 		public SkirmishScreen skirmish;
 		/** The traits screen. */
 		public TraitScreen traits;
+		/** The profile screen. */
+		public ProfileScreen profile;
 	}
 	/** The record of screens. */
 	public final AllScreens allScreens = new AllScreens();
@@ -813,6 +816,9 @@ public class GameWindow extends JFrame implements GameControls {
 			break;
 		case TRAITS:
 			sb = allScreens.traits;
+			break;
+		case PROFILE:
+			sb = allScreens.profile;
 			break;
 		default:
 		}
@@ -1944,6 +1950,8 @@ public class GameWindow extends JFrame implements GameControls {
 			return (T)allScreens.traits;
 		case SKIRMISH:
 			return (T)allScreens.skirmish;
+		case PROFILE:
+			return (T)allScreens.profile;
 		default:
 			throw new AssertionError(String.valueOf(screen));
 		}

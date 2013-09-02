@@ -184,6 +184,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			addThis();
 		}
 		/** Clear the textual values of the line. */
+		@Override
 		public void clear() {
 			name.text("");
 			priority.text("");

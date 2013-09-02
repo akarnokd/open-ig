@@ -165,6 +165,9 @@ public class UIContainer extends UIComponent {
 	 */
 	public boolean remove(UIComponent c) {
 		c.parent = null;
+		if (focused == c) {
+			focused = null;
+		}
 		return components.remove(c);
 	}
 	/**
@@ -172,5 +175,12 @@ public class UIContainer extends UIComponent {
 	 */
 	public Iterable<UIComponent> components() {
 		return components;
+	}
+	/**
+	 * Remove all child components of this container.
+	 */
+	public void clear() {
+		components.clear();
+		focused = null;
 	}
 }

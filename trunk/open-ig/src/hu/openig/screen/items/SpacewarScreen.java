@@ -2395,6 +2395,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		/** Clear the display. */
+		@Override
 		public void clear() {
 			item = null;
 			selectedSlot = null;
@@ -4890,6 +4891,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			g2.setClip(save);
 		}
 		/** Clear any references. */
+		@Override
 		public void clear() {
 			lastSelection.clear();
 			cells.clear();
@@ -5389,6 +5391,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			return false;
 		}
 		/** Clear the contents. */
+		@Override
 		public void clear() {
 			hasChat = false;
 			currentIndex = 0;

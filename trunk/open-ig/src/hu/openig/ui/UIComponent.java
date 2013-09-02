@@ -254,4 +254,18 @@ public class UIComponent {
 		}
 		return null;
 	}
+	/**
+	 * Returns the bottom coordinate of the component.
+	 * @return the bottom coordinate of the component
+	 */
+	public int bottom() {
+		return y + height - 1;
+	}
+	/**
+	 * Returns the right coordinate of the component.
+	 * @return the right coordinate of the component
+	 */
+	public int right() {
+		return x + width - 1;
+	}
 }

@@ -358,6 +358,7 @@ public class VehicleList extends UIContainer {
 		super.draw(g2);
 	}
 	/** Clear the items. */
+	@Override
 	public void clear() {
 		map.clear();
 		items.clear();
