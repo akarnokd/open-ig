@@ -82,5 +82,7 @@ public enum Screens {
 	/** The trait screen. */
 	TRAITS,
 	/** The skirmish screen. */
-	SKIRMISH
+	SKIRMISH,
+	/** The profile screen. */
+	PROFILE
 }

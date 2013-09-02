@@ -301,10 +301,6 @@ public class TestScreen extends ScreenBase {
 			e.y -= top;
 			return resp;
 		}
-		/** Clear the components. */
-		public void clear() {
-			components.clear();
-		}
 	}
 	@Override
 	public boolean mouse(UIMouse e) {

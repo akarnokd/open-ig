@@ -477,6 +477,7 @@ public class QuickProductionPanel extends UIContainer {
 	/**
 	 * Clear memorized references and values.
 	 */
+	@Override
 	public void clear() {
 		lines.clear();
 		historyLines.clear();
