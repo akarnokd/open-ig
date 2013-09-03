@@ -1062,6 +1062,8 @@ public class Fleet implements Named, Owned, HasInventory {
 			default:
 				throw new IllegalArgumentException("Unsupported transfer type: " + mode);
 			}
+			int limit = other.getAddLimit(ii.type);
+			count = Math.min(limit, count);
 
 			int i = idx;
 			while (count > 0) {
@@ -1092,11 +1094,12 @@ public class Fleet implements Named, Owned, HasInventory {
 			if (ii2 == null) {
 				ii2 = new InventoryItem(owner.world.newId(), other.owner, ii.type);
 				ii2.init();
-				ii2.count = count;
+				int toAdd = Math.min(other.getAddLimit(ii.type), count);
+				ii2.count = toAdd;
 				other.inventory.add(ii2);
-				ii.count -= count;
+				ii.count -= toAdd;
 			} else {
-				int toAdd = Math.min(getAddLimit(ii.type), count);
+				int toAdd = Math.min(other.getAddLimit(ii.type), count);
 				ii2.count += toAdd;
 				ii.count -= toAdd;
 			}
