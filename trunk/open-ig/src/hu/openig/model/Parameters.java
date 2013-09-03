@@ -54,7 +54,7 @@ public class Parameters {
 	protected double nearbyDistance = 10;
 	/** The ratio between the fleet movement timer and speed() minute simulation time. */
 	@LoadField
-	protected int simulationRatio = 4;
+	protected int simulationRatio = 10;
 	/** The fleet speed in pixels per game minute per hyperdrive level. */
 	@LoadField
 	protected double fleetSpeed = 0.016;
