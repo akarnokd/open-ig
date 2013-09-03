@@ -1913,8 +1913,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			pl.count.text("" + pr.count);
 			pl.completion.text(String.format(" %3s%%  %s", (pr.progress * 100 / pr.type.productionCost), pr.count * pr.type.productionCost));
 			
-			setTooltip(pl, "production.line.tooltip", rt.longName, rt.description);
-			setTooltip(pl.name, "production.line.tooltip", rt.longName, rt.description);
+			setTooltip(pl, "production.line.tooltip", pr.type.longName, pr.type.description);
+			setTooltip(pl.name, "production.line.tooltip", pr.type.longName, pr.type.description);
 			
 			row++;
 		}

@@ -48,6 +48,8 @@ public class StaticDefensePlanner extends Planner {
 	public boolean allowBuildOrbitalFactory = true;
 	/** Allow producing vehicles or stations? */
 	public boolean allowProduction = true;
+	/** Indicator that production was issued for a planet. */
+	boolean productionInProgress;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
@@ -59,11 +61,15 @@ public class StaticDefensePlanner extends Planner {
 
 	@Override
 	protected void plan() {
+		productionInProgress = false;
 		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, BEST_PLANET);
 		for (AIPlanet planet : planets) {
 			if (managePlanet(planet)) {
 				if (world.mainPlayer == p && world.money < world.autoBuildLimit) {
+					return;
+				}
+				if (productionInProgress) {
 					return;
 				}
 			}
@@ -507,6 +513,7 @@ public class StaticDefensePlanner extends Planner {
 				if (world.inventoryCount(station) == 0) {
 					if (allowProduction) {
 						placeProductionOrder(station, 1);
+						productionInProgress = true;
 					}
 					return true;
 				}
@@ -674,6 +681,7 @@ public class StaticDefensePlanner extends Planner {
 					if (placeProductionOrder(de.getKey(), di - ic)) {
 						result = true;
 					}
+					productionInProgress = true;
 				}
 			}
 		}
@@ -703,8 +711,12 @@ public class StaticDefensePlanner extends Planner {
 					result = true;
 				} else {
 					if (allowProduction) {
-						if (placeProductionOrder(rt, Math.max(10, needed - gic))) {
-							result = true;
+						int toproduce = Math.max(10, needed - gic);
+						if (toproduce > 0) {
+							if (placeProductionOrder(rt, toproduce)) {
+								result = true;
+							}
+							productionInProgress = true;
 						}
 					}
 				}

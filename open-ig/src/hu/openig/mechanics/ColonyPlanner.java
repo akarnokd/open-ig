@@ -361,12 +361,30 @@ public class ColonyPlanner extends Planner {
 	 * @param tax the new tax level
 	 */
 	void setTaxLevelAction(final AIPlanet planet, final TaxLevel tax) {
-		add(new Action0() {
-			@Override
-			public void invoke() {
-				controls.actionSetTaxation(planet.planet, tax);
-			}
-		});
+		add(new SetTaxAction(planet, tax));
+	}
+	/**
+	 * Action to set the taxation level on a planet.
+	 * @author akarnokd, 2013.09.03.
+	 */
+	public class SetTaxAction implements Action0 {
+		/** The planet. */
+		protected final Planet planet;
+		/** The new tax level. */
+		protected final TaxLevel tax;
+		/**
+		 * Constructor.
+		 * @param planet the planet
+		 * @param tax the tax
+		 */
+		public SetTaxAction(AIPlanet planet, TaxLevel tax) {
+			this.planet = planet.planet;
+			this.tax = tax;
+		}
+		@Override
+		public void invoke() {
+			controls.actionSetTaxation(planet, tax);
+		}
 	}
 	/**
 	 * Check for low or high morale and adjust taxation to take advantage of it.
@@ -375,7 +393,8 @@ public class ColonyPlanner extends Planner {
 	 */
 	boolean checkTax(final AIPlanet planet) {
 		// try changing the tax
-		double moraleNow = planet.morale;
+		// but only once per day
+		double moraleNow = planet.lastMorale; // planet.morale
 		TaxLevel tax = planet.tax;
 		TaxLevel newLevel = null;
 		if (moraleNow < 25 || planet.population < 4500) {

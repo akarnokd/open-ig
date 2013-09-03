@@ -573,12 +573,27 @@ public class CommonResources implements GameEnvironment {
 	 */
 	public int simulationMilliseconds(SimulationSpeed value) {
 		switch (value) {
-		case NORMAL: return 1000 / world.params().simulationRatio();
-		case FAST: return 500 / world.params().simulationRatio();
-		case ULTRA_FAST: return 250 / world.params().simulationRatio();
+		case NORMAL: return roundMillis(1000 / world.params().simulationRatio());
+		case FAST: return roundMillis(500 / world.params().simulationRatio());
+		case ULTRA_FAST: return roundMillis(250 / world.params().simulationRatio());
 		default:
 			throw new AssertionError("" + value);
 		}
+	}
+	/**
+	 * Rounds a millisecond value upwards to the next 25-multiple value.
+	 * @param n the original value
+	 * @return the rounded value.
+	 */
+	int roundMillis(int n) {
+		if (n < TIMER_DELAY) {
+			return TIMER_DELAY;
+		} else
+		if (n % TIMER_DELAY == 0) {
+			return n;
+		}
+		return (int)(Math.round(n / (double)TIMER_DELAY) * TIMER_DELAY); 
+		
 	}
 	/**
 	 * Invoke the AI for the player if not already running.
