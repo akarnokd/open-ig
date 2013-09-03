@@ -16,6 +16,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchType;
+import hu.openig.model.TraitKind;
 
 /**
  * Mission 18: Conquer the Garthogs.
@@ -83,7 +84,9 @@ public class Mission18 extends Mission {
 		setSlot(ii, "radar", "Radar1", 1);
 		setSlot(ii, "cannon", "IonCannon", 6);
 		setSlot(ii, "shield", "Shield1", 1);
-		setSlot(ii, "hyperdrive", "HyperDrive1", 1);
+		if (!player.traits.has(TraitKind.PRE_WARP)) {
+			setSlot(ii, "hyperdrive", "HyperDrive1", 1);
+		}
 
 	}
 	@Override

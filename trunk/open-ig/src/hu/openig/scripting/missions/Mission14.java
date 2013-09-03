@@ -78,7 +78,9 @@ public class Mission14 extends Mission {
 	}
 	@Override
 	public SpacewarScriptResult onSpacewarStep(SpacewarWorld war) {
-		if (isMissionSpacewar(war.battle(), "Mission-14")) {
+		BattleInfo bi = war.battle();
+		if (isMissionSpacewar(bi, "Mission-14")
+				&& (bi.targetFleet != null && hasTag(bi.targetFleet, "Mission-14-Garthog"))) {
 			Player garthog = player("Garthog");
 			for (SpacewarStructure s : war.structures(garthog)) {
 				war.move(s, Math.cos(s.angle) * 1000, s.y);
