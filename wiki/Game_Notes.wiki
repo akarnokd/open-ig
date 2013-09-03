@@ -54,7 +54,7 @@ See the [http://open-ig-dev.blogspot.com Development Blog] for more frequent cha
   * Fixed chat when shooting at traders in the middle of a peaceful conversation not switching to flee text. (Issue #660, Issue #546, Issue #696). (Luckily, it was just a missing case in the chat def)
   * Changed tank speeds, light tanks go faster and each newer tank gets slower. (Issue #589)
   * Fixed vehicle movement getting interrupted at each cell if the movement is linear (i.e., if the current target can be reached under 0.5 step, the remaining 0.5 worth of movement is deferred till the next step).
-  * Changed the AI to build as many military spaceports as the player can afford with 50% money excess relative to the spaceport cost and autobuild limit. The equation is: spaceport_count = money / (spaceport_cost   * 1.5 + autobuild_limit) + 1  (Issue #509)
+  * Changed the AI to build as many military spaceports as the player can afford with 50% money excess relative to the spaceport cost and autobuild limit. The equation is: spaceport_count = money / (spaceport_cost `*` 1.5 + autobuild_limit) + 1  (Issue #509)
   * You can make alliance with the Dargslan if you are extremely lucky. The war threshold has been lovered to 90. (Issue #561)
   * Changed vehicle firepower and HP. (Issue #574)
   * Added nicknames to ships (Issue #572). These nicknames are listed in the players.xml file for each player. The nicknames/nickname entries reference a label.
