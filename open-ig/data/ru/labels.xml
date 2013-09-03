@@ -3287,4 +3287,5 @@
 	<entry key='profiles.select_button'>Select / Create</entry>
 	<entry key='profiles.back_button'>Back</entry>
 	<entry key='profiles.existing_profiles'>Existing profiles:</entry>
+	<entry key='settings.continuous_money'>Continuous money/morale calculation</entry>
 </labels>

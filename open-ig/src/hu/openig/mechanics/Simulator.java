@@ -480,7 +480,7 @@ public final class Simulator {
 			int population0 = planet.population;
 			int population1 = world.scripting.playerPopulationGrowthOverride(planet, (int)nextPopulation);
 
-			planet.population = (int)(population0 +  (population1 - population0) * dayPercent);
+			planet.population = Math.max(0, (int)Math.round(population0 +  (population1 - population0) * dayPercent));
 			
 			// tax calculation
 			

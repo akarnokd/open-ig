@@ -300,6 +300,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Auto build label. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox aiAutobuildProduction;
+	/** Continuous money calculation. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox continuousMoney;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -935,7 +938,16 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 				config.aiAutoBuildProduction = aiAutobuildProduction.selected();
 			}
 		};
-		
+
+		continuousMoney = new UICheckBox(get("settings.continuous_money"), 14, commons.common().checkmark, commons.text());
+		continuousMoney.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.continuousMoney = continuousMoney.selected();
+			}
+		};
+
 		
 		// ------------------------------------------
 		
@@ -1254,6 +1266,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		starmapMini.selected(config.showStarmapMinimap);
 		starmapScroll.selected(config.showStarmapScroll);
 		aiAutobuildProduction.selected(config.aiAutoBuildProduction);
+		continuousMoney.selected(config.continuousMoney);
+		continuousMoney.visible(commons.world() == null);
 		
 		hideConfirm();
 
@@ -1434,6 +1448,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		timestepValue.location(base.x + base.width - timestepValue.width - 30, base.y + dy);
 		dy += 30;
 		
+		continuousMoney.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
 		
 		////////
 		
