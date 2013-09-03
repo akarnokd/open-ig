@@ -6,7 +6,7 @@ See the [http://open-ig-dev.blogspot.com Development Blog] for more frequent cha
 
 = Version 0.95.148 - Mostly bugfixes =
   * Released: 2013-09-03 11:11 CET
-  * *This note contains all changes since the version 0.95.102* found in the blog.
+  * *This note contains all changes since the version 0.95.102*.
   * Bridge screen's send/receive status is now remembered across screens and saves. (Issue #664)
   * Fixed initial orbital factory not deployed to the initial planets.
   * Fixed planet inventory deployment starting off with zero HP in some cases.
