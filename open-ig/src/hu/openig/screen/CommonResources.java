@@ -561,16 +561,24 @@ public class CommonResources implements GameEnvironment {
 				new Func1<SimulationSpeed, Integer>() {
 					@Override
 					public Integer invoke(SimulationSpeed value) {
-						switch (value) {
-						case NORMAL: return 250;
-						case FAST: return 125;
-						case ULTRA_FAST: return 25;
-						default:
-							throw new AssertionError("" + value);
-						}
+						return simulationMilliseconds(value);
 					}
 				}
 		);
+	}
+	/**
+	 * Returns the milliseconds between simulation steps.
+	 * @param value the simulation speed indicator
+	 * @return the step size in milliseconds
+	 */
+	public int simulationMilliseconds(SimulationSpeed value) {
+		switch (value) {
+		case NORMAL: return 1000 / world.params().simulationRatio();
+		case FAST: return 500 / world.params().simulationRatio();
+		case ULTRA_FAST: return 250 / world.params().simulationRatio();
+		default:
+			throw new AssertionError("" + value);
+		}
 	}
 	/**
 	 * Invoke the AI for the player if not already running.
@@ -693,7 +701,8 @@ public class CommonResources implements GameEnvironment {
 			}
 			repaint = true;
 		}
-		repaint |= Simulator.moveFleets(world);
+		// let the screen's natural frequency update the on-screen location
+		/* repaint |= */Simulator.moveFleets(world);
 		
 		if (!world.pendingBattles.isEmpty()) {
 			world.env.startBattle();
