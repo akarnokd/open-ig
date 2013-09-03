@@ -21,7 +21,10 @@ Possible resolutions:
   * Update to the latest JDK version available
   * Switch to JDK 7 if not already done
   * Uninstall OpenJDK and Oracle JDK completely. Then reinstall just one
-  * Use Oracle JDK
+  * Use Oracle JDK.
+  * Try running the game from command line with the {{{padsp}}} prefix: {{{padsp java -Xmx768M -jar open-ig-NNNN.jar -memonce}}}.
+  * Alternatively, try running the game from command line with the {{{aoss}}} prefix: {{{aoss java -Xmx768M -jar open-ig-NNNN.jar -memonce}}}.
+  * Try the workarounds from [http://www.realitysend.com/kirbj/devlog/linuxsound this blog].
 
 = Mac =
 
