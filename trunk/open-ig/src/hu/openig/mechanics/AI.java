@@ -718,9 +718,9 @@ public class AI implements AIManager {
 			List<Action0> acts = p.run();
 			if (!acts.isEmpty()) {
 				applyActions.addAll(acts);
-				if (p.getClass() == ColonyPlanner.class) {
-					return;
-				}
+//				if (p.getClass() == ColonyPlanner.class) {
+//					return;
+//				}
 			}
 		}
 	}
