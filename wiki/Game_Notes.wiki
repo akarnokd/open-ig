@@ -28,7 +28,7 @@ See the [http://open-ig-dev.blogspot.com Development Blog] for more frequent cha
   * Fixed some missing labels across languages.
   * Added support for Russian version.
   * Russian language related changes. Many labels have been extracted from the original version in addition to Kirill Grigoriev's diligent work in translating the new labels. Note that due the automated nature of the extraction, labels might be off.
-  * Partial fixes for Issue #684. Playing in skirmish with non-human races now enables a few technologies even when their level is above the specified initial level. These technologies were forcibly enabled in the main campaign (e.g., PhoodFactory). Note, however, that alien ships have fixed weapons and equipment, which can't be changed by the player at the moment. Later developments will make them as customizable as the human ships now.
+  * Partial fixes for Issue #684. Playing in skirmish with non-human races now enables a few technologies even when their level is above the specified initial level. These technologies were forcibly enabled in the main campaign (e.g., !PhoodFactory). Note, however, that alien ships have fixed weapons and equipment, which can't be changed by the player at the moment. Later developments will make them as customizable as the human ships now.
   * Fixed russian labels causing crashes (The %s parameters were somehow stripped). (Issue #685)
   * Fixed rendering of a scaled Achievements/Statistics screen. (Issue #662, Issue #686)
   * More Russian labels translated and fixed. Thanks to Grigoriev Kirill!
@@ -129,7 +129,7 @@ See the [http://open-ig-dev.blogspot.com Development Blog] for more frequent cha
   * Fixed AI Managed planets overfill vehicles if the player changed the vehicle mix manually. (Issue #763)
   * Reduced speed of Garthog virus carriers in case the player has the Pre-Warp trait. (Issue #736)
   * Changed rocket movement to avoid the stable-orbit around a target. (Issue #766)
-  * Use PgUp and PgDown keys to jump between planets. (Issue #721)
+  * Use !PgUp and !PgDown keys to jump between planets. (Issue #721)
   * Fixed auto-colonization not working properly in some cases.
   * Modified vehicle pathfinding to reduce the number of turn-arounds when the command was issued in-between two cells.
   * Fixed AI patrol not moving anywhere and producing small zig-zag like movements.
