@@ -5428,9 +5428,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			for (SpacewarStructure s2 : structures) {
 				if (s2.owner == s.owner) {
 					if (category) {
-						ResearchType rt0 = world().researches.get(s.techId);
-						ResearchType rt2 = world().researches.get(s2.techId);
-						s2.selected |= rt0.category == rt2.category;
+						s2.selected |= s.category == s2.category;
 					} else {
 						s2.selected |= s2.techId.equals(s.techId);
 					}
