@@ -37,7 +37,7 @@
 		<slot id="laser2" x="169" y="84" width="22" height="10" max="9" items="Laser1, Laser2, Laser3"/>
 		<slot id="cannon" x="184" y="102" width="16" height="15" max="4" items="IonCannon, PlasmaCannon, ParticleCannon"/>
 	</item>
-	<item id="Cruiser1" name="tech.cruiser1.name" long-name="tech.cruiser1.longname" description="tech.cruiser1.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/cruiser_1" factory="spaceship" research-cost="24000" production-cost="15000" level="2" race="human" requires="Shield1" mech="2" comp="1" ai="1" mil="1" index="3" video="technology/spaceships/cruisers/cruiser_1">
+	<item id="Cruiser1" name="tech.cruiser1.name" long-name="tech.cruiser1.longname" description="tech.cruiser1.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/cruiser_1" factory="spaceship" research-cost="24000" production-cost="15000" level="2" race="human" requires="Shield1" mech="1" comp="1" ai="1" mil="1" index="3" video="technology/spaceships/cruisers/cruiser_1">
 		<slot id="shield" x="60" y="62" width="36" height="13" max="1" items="Shield1, Shield2, Shield3, Shield4"/>
 		<slot id="laser" x="128" y="67" width="23" height="14" max="8" items="Laser1, Laser2, Laser3, Laser4"/>
 		<slot id="cannon" x="150" y="42" width="33" height="17" max="2" items="IonCannon, PlasmaCannon, ParticleCannon"/>
