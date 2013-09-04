@@ -466,25 +466,25 @@ public final class Simulator {
 			if (!planet.race.equals(planet.owner.race)) {
 				nonOwnerRace = 3d;
 			}
-			if (nextMorale < 20) {
-				populationDelta = 1000 * (nextMorale - 50) / 100 * nonOwnerRace;
+			if (planet.morale < 20) {
+				populationDelta = 1000 * (planet.morale - 50) / 100 * nonOwnerRace;
 			} else
-			if (nextMorale < 30) {
-				populationDelta = 1000 * (nextMorale - 50) / 150 * nonOwnerRace;
+			if (planet.morale < 30) {
+				populationDelta = 1000 * (planet.morale - 50) / 150 * nonOwnerRace;
 			} else
-			if (nextMorale < 40) {
-				populationDelta = 1000 * (nextMorale - 50) / 200 * nonOwnerRace;
+			if (planet.morale < 40) {
+				populationDelta = 1000 * (planet.morale - 50) / 200 * nonOwnerRace;
 			} else
-			if (nextMorale < 50) {
-				populationDelta = 1000 * (nextMorale - 50) / 250 * nonOwnerRace;
+			if (planet.morale < 50) {
+				populationDelta = 1000 * (planet.morale - 50) / 250 * nonOwnerRace;
 			} else {
-				populationDelta = 1000 * (nextMorale - 50) / 500 * populationGrowthModifier * planetTypeModifier;
+				populationDelta = 1000 * (planet.morale - 50) / 500 * populationGrowthModifier * planetTypeModifier;
 			}
 			
 			double population0 = planet.population();
 			double population1 = world.scripting.playerPopulationGrowthOverride(planet, planet.population() + populationDelta);
 
-			planet.population(Math.max(0, Math.round(population0 +  (population1 - population0) * dayPercent)));
+			planet.population(Math.max(0, population0 +  (population1 - population0) * dayPercent));
 			
 			// tax calculation
 			

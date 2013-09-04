@@ -2825,7 +2825,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			
 				if (p.owner == player()) {
 					population.text(format("colonyinfo.population", 
-							(int)p.population(), get(p.getMoraleLabel()), withSign((int)(p.population() - p.lastPopulation()))
+							(int)p.population(), get(p.getMoraleLabel()), withSign((int)p.population() - (int)p.lastPopulation())
 					), true).visible(true);
 					
 					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, (int)p.population()).visible(true);
