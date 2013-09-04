@@ -1,4 +1,5 @@
 #summary Troubleshooting
+#labels Featured
 
 <wiki:toc max_depth="4" />
 
