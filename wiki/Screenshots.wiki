@@ -1,5 +1,4 @@
 #summary Contains screenshots from the game.
-#labels Featured
 
 <wiki:toc max_depth="1" />
 
