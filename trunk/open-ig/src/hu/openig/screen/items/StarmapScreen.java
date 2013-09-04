@@ -1077,15 +1077,15 @@ public class StarmapScreen extends ScreenBase {
 			
 			colonyPopulationTax.text(
 					format("colonyinfo.population.own", 
-							p.population, get(p.getRaceLabel()), get(p.getMoraleLabel())
-					) + " (" + withSign(p.population - p.lastPopulation) + ")  "
+							(int)p.population(), get(p.getRaceLabel()), get(p.getMoraleLabel())
+					) + " (" + withSign((int)(p.population() - p.lastPopulation())) + ")  "
 					+ format("colonyinfo.tax_short", get(p.getTaxLabel()))
 			, true).visible(true);
 		} else {
 			if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 				if (p.isPopulated()) {
 					colonyPopulationTax.text(format("colonyinfo.population.short.alien", 
-							p.population
+							(int)p.population()
 					), true).visible(true);
 				} else {
 					colonyPopulationTax.visible(false);

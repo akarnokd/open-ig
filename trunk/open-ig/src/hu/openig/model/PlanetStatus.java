@@ -35,9 +35,9 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 	/** The inhabitant race. */
 	public String race;
 	/** The current population. */
-	public int population;
+	public double population;
 	/** The population change since the last day. */
-	public int lastPopulation;
+	public double lastPopulation;
 	/** How long the quarantine should stay in 10s ingame minutes? */
 	public int quarantineTTL;
 	/** The taxation level. */
@@ -49,9 +49,9 @@ public class PlanetStatus implements MessageObjectIO, MessageArrayItemFactory<Pl
 	/** The auto build mode. */
 	public AutoBuild autoBuild = AutoBuild.OFF;
 	/** The last day's tax income. */
-	public int taxIncome;
+	public double taxIncome;
 	/** The last day's trade income. */
-	public int tradeIncome;
+	public double tradeIncome;
 	/** The countdown for an earthquake lasting 10s of ingame minutes. */
 	public int earthquakeTTL;
 	/** The remaining time for a weather event. */

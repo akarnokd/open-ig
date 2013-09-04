@@ -82,14 +82,14 @@ public interface GameScripting extends GameScriptingEvents {
 	 * The current value is still in the planet record
 	 * @return the modified population delta.
 	 */
-	int playerPopulationGrowthOverride(Planet planet, int simulatorValue);
+	double playerPopulationGrowthOverride(Planet planet, double simulatorValue);
 	/**
 	 * Modify the tax income for the given planet.
 	 * @param planet the target planet 
 	 * @param simulatorValue the tax income as computed by the simulator
 	 * @return the modified tax income
 	 */
-	int playerTaxIncomeOverride(Planet planet, int simulatorValue);
+	double playerTaxIncomeOverride(Planet planet, double simulatorValue);
 	/**
 	 * Modify the fleet's speed.
 	 * @param fleet the target fleet

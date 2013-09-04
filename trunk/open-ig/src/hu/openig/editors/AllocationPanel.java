@@ -262,7 +262,7 @@ public class AllocationPanel extends JPanel {
 
 		final Planet p = new Planet("", new World(null));
 		p.surface = new PlanetSurface();
-		p.population = Integer.parseInt(availableWorkers.getText());
+		p.population(Integer.parseInt(availableWorkers.getText()));
 		p.surface.buildings.addAll(buildings);
 		
 		Allocator.computeNow(p);

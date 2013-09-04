@@ -2825,18 +2825,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			
 				if (p.owner == player()) {
 					population.text(format("colonyinfo.population", 
-							p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+							(int)p.population(), get(p.getMoraleLabel()), withSign((int)(p.population() - p.lastPopulation()))
 					), true).visible(true);
 					
-					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
-					setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
-					setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
-					setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
+					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, (int)p.population()).visible(true);
+					setLabel(worker, "colonyinfo.worker", (int)p.population(), ps.workerDemand).visible(true);
+					setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, (int)p.population()).visible(true);
+					setLabel(food, "colonyinfo.food", ps.foodAvailable, (int)p.population()).visible(true);
 					setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
-					setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
+					setLabel(police, "colonyinfo.police", ps.policeAvailable, (int)p.population()).visible(true);
 					
 					taxTradeIncome.text(format("colonyinfo.tax-trade", 
-							p.taxIncome, p.tradeIncome
+							(int)p.taxIncome(), (int)p.tradeIncome()
 					), true).visible(true);
 					
 					taxInfo.text(format("colonyinfo.tax-info",
@@ -2854,7 +2854,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				} else {
 					if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 						population.text(format("colonyinfo.population.alien", 
-								p.population
+								(int)p.population()
 						), true).visible(true);
 					}
 				}

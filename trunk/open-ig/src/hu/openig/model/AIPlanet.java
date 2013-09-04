@@ -65,7 +65,7 @@ public class AIPlanet {
 		this.knowledge = world.knowledge(planet);
 		this.statistics = world.getStatistics(planet);
 		this.radar = planet.radar;
-		this.population = planet.population;
+		this.population = (int)planet.population();
 		this.morale = planet.morale;
 		this.lastMorale = planet.lastMorale;
 		this.tax = planet.tax;

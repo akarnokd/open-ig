@@ -77,7 +77,7 @@ public class Player {
 	/** The type of the last selected thing: planet or fleet. */
 	public SelectionMode selectionMode = SelectionMode.PLANET;
 	/** The current money amount. */
-	private long money;
+	private double money;
 	/** The player level statistics. */
 	public final PlayerStatistics statistics = new PlayerStatistics();
 	/** The global financial information yesterday. */
@@ -661,13 +661,13 @@ public class Player {
 	}
 	/** @return The current money. */
 	public long money() {
-		return money;
+		return (long)money;
 	}
 	/**
 	 * Set a new money amount.
 	 * @param newMoney the money amount
 	 */
-	public void money(long newMoney) {
+	public void money(double newMoney) {
 		this.money = newMoney;
 		if (this.money < 0) {
 			Exceptions.add(new AssertionError("Negative money"));
@@ -677,7 +677,7 @@ public class Player {
 	 * Change the money amount by the delta.
 	 * @param delta the delta amount
 	 */
-	public void addMoney(long delta) {
+	public void addMoney(double delta) {
 		this.money += delta;
 		if (this.money < 0) {
 			Exceptions.add(new AssertionError("Negative money"));

@@ -54,7 +54,7 @@ public final class Allocator {
 				}
 			}
 			final ResourceAllocationStrategy strategy = ras.allocation;
-			final int workers = -ras.population;
+			final int workers = -(int)ras.population();
 			Future<?> f = pool.submit(new Runnable() {
 				@Override
 				public void run() {
@@ -114,7 +114,7 @@ public final class Allocator {
 				b.assignedEnergy = 0;
 			}
 		}
-		final int workers = -planet.population;
+		final int workers = -(int)planet.population();
 		compute(baw, strategy, workers);
 		for (BuildingAllocationWorker b : baw) {
 			b.write();
