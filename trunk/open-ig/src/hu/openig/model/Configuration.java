@@ -331,7 +331,7 @@ public class Configuration {
 	public int spacewarDiminishingAttachCount = 10;
 	/** Continuously accumulate money and morale? */
 	@LoadSave
-	public boolean continuousMoney = true;
+	public boolean continuousMoney = false;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename
