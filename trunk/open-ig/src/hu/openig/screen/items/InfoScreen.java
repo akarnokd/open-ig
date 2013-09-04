@@ -13,6 +13,7 @@ import hu.openig.core.Action1;
 import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.model.AutoBuild;
+import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
@@ -23,6 +24,7 @@ import hu.openig.model.Named;
 import hu.openig.model.Owned;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.PlanetListMode;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
@@ -69,6 +71,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -465,9 +468,16 @@ public class InfoScreen extends ScreenBase {
 	@ModeUI(mode = { 
 			Screens.INFORMATION_PLANETS
 	})
-	PlanetListDetails planetListDetais;
+	PlanetListDetails planetListDetails;
 	/** The toggle for planet list details. */
 	boolean showPlanetListDetails = true;
+	/** The planet list mode. */
+	PlanetListMode planetListMode = PlanetListMode.PROBLEMS;
+	/** Toggle button for the planet list mode. */
+	@ModeUI(mode = { 
+			Screens.INFORMATION_PLANETS
+	})
+	UIGenericButton togglePlanetListMode;
 	/** Toggle the planet list details view. */
 	@ModeUI(mode = { 
 			Screens.INFORMATION_PLANETS
@@ -859,7 +869,7 @@ public class InfoScreen extends ScreenBase {
 		
 		militaryInfo = new MilitaryInfoPanel();
 		
-		planetListDetais = new PlanetListDetails();
+		planetListDetails = new PlanetListDetails();
 		togglePlanetListDetails = new UIGenericButton(get("info.hide_details"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
 
 		togglePlanetListDetails.onClick = new Action0() {
@@ -869,16 +879,36 @@ public class InfoScreen extends ScreenBase {
 				showPlanetListDetails = !showPlanetListDetails;
 				if (showPlanetListDetails) {
 					togglePlanetListDetails.text(get("info.hide_details"), true);
-					
 				} else {
 					togglePlanetListDetails.text(get("info.list_details"), true);
 				}
+				togglePlanetListMode.visible(showPlanetListDetails);
 				colonies.visible(!showPlanetListDetails);
-				planetListDetais.visible(showPlanetListDetails);
+				planetListDetails.visible(showPlanetListDetails);
 				adjustPlanetListView();
 			}
 		};
+		togglePlanetListMode = new UIGenericButton(get("info.planetlist_labs"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		togglePlanetListMode.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_HIGH_2);
+				int n = PlanetListMode.values().length;
+				planetListMode = PlanetListMode.values()[(planetListMode.ordinal() + 1) % n];
 
+				switch (planetListMode) {
+				case LABS:
+					togglePlanetListMode.text(get("info.planetlist_problems"), true);
+					break;
+				default:
+					togglePlanetListMode.text(get("info.planetlist_labs"), true);
+				}
+					
+				adjustPlanetListView();
+				onResize();
+			}
+		};
+		
 		statisticsButton = new UIGenericButton(get("info.statistics"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		statisticsButton.onClick = new Action0() {
 			@Override
@@ -1020,8 +1050,11 @@ public class InfoScreen extends ScreenBase {
 		
 		researchRequiredLabs.location(base.x + 420, base.y + 34 + 17 * 3);
 		
-		planetListDetais.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
+		planetListDetails.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
 		togglePlanetListDetails.location(base.x + 420, colonyOther.y + colonyOther.height + 5);
+		
+		togglePlanetListMode.location(base.x + 610 - togglePlanetListMode.width, colonyOther.y + colonyOther.height + 5);
+		
 		statisticsButton.location(togglePlanetListDetails.location());
 		
 		militaryInfo.bounds(base.x + 10, base.y + 10, 400, 27 * 13);
@@ -1214,7 +1247,7 @@ public class InfoScreen extends ScreenBase {
 		
 		minimap.displayFleets = mode == Screens.INFORMATION_FLEETS;
 		if (mode == Screens.INFORMATION_PLANETS) {
-			planetListDetais.visible(showPlanetListDetails);
+			planetListDetails.visible(showPlanetListDetails);
 			colonies.visible(!showPlanetListDetails);
 			adjustPlanetListView();
 		}
@@ -1255,37 +1288,47 @@ public class InfoScreen extends ScreenBase {
 				int w3 = commons.text().getTextWidth(10, s3);
 				String s4 = get("info.problem_details");
 				int w4 = commons.text().getTextWidth(10, s4);
+				String s5 = get("info.lab_details");
+				int w5 = commons.text().getTextWidth(10, s5);
 				
-				if (e.within(planetListDetais.x + 10, planetListDetais.y - 13, w1 + 12, 12)) {
-					if (planetListDetais.sortBy != 0 || !planetListDetais.ascending) {
-						planetListDetais.ascending = true;
-						planetListDetais.sortBy = 0;
+				if (e.within(planetListDetails.x + 10, planetListDetails.y - 13, w1 + 12, 12)) {
+					if (planetListDetails.sortBy != 0 || !planetListDetails.ascending) {
+						planetListDetails.ascending = true;
+						planetListDetails.sortBy = 0;
 					} else {
-						planetListDetais.ascending = false;
+						planetListDetails.ascending = false;
 					}
 				} else
-				if (e.within(planetListDetais.x + 105, planetListDetais.y - 13, w2 + 12, 12)) {
-					if (planetListDetais.sortBy != 1 || !planetListDetais.ascending) {
-						planetListDetais.ascending = true;
-						planetListDetais.sortBy = 1;
+				if (e.within(planetListDetails.x + 105, planetListDetails.y - 13, w2 + 12, 12)) {
+					if (planetListDetails.sortBy != 1 || !planetListDetails.ascending) {
+						planetListDetails.ascending = true;
+						planetListDetails.sortBy = 1;
 					} else {
-						planetListDetais.ascending = false;
+						planetListDetails.ascending = false;
 					}
 				} else
-				if (e.within(planetListDetais.x + 240, planetListDetais.y - 13, w3 + 12, 12)) {
-					if (planetListDetais.sortBy != 2 || !planetListDetais.ascending) {
-						planetListDetais.ascending = true;
-						planetListDetais.sortBy = 2;
+				if (e.within(planetListDetails.x + 240, planetListDetails.y - 13, w3 + 12, 12)) {
+					if (planetListDetails.sortBy != 2 || !planetListDetails.ascending) {
+						planetListDetails.ascending = true;
+						planetListDetails.sortBy = 2;
 					} else {
-						planetListDetais.ascending = false;
+						planetListDetails.ascending = false;
 					}
 				} else
-				if (e.within(planetListDetais.x + 310, planetListDetais.y - 13, w4 + 12, 12)) {
-					if (planetListDetais.sortBy != 3 || !planetListDetais.ascending) {
-						planetListDetais.ascending = true;
-						planetListDetais.sortBy = 3;
+				if (e.within(planetListDetails.x + 310, planetListDetails.y - 13, w4 + 12, 12) && planetListMode == PlanetListMode.PROBLEMS) {
+					if (planetListDetails.sortBy != 3 || !planetListDetails.ascending) {
+						planetListDetails.ascending = true;
+						planetListDetails.sortBy = 3;
 					} else {
-						planetListDetais.ascending = false;
+						planetListDetails.ascending = false;
+					}
+				} else
+				if (e.within(planetListDetails.x + 310, planetListDetails.y - 13, w5 + 12, 12) && planetListMode == PlanetListMode.LABS) {
+					if (planetListDetails.sortBy != 4 || !planetListDetails.ascending) {
+						planetListDetails.ascending = true;
+						planetListDetails.sortBy = 4;
+					} else {
+						planetListDetails.ascending = false;
 					}
 				} else {
 					if (!base.contains(e.x, e.y)) {
@@ -1677,7 +1720,7 @@ public class InfoScreen extends ScreenBase {
 				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 					if (p.owner == player()) {
 						population.text(format("colonyinfo.population", 
-								(int)p.population(), get(p.getMoraleLabel()), withSign((int)(p.population() - p.lastPopulation()))
+								(int)p.population(), get(p.getMoraleLabel()), withSign((int)p.population() - (int)p.lastPopulation())
 						), true).visible(true);
 					} else {
 						population.text(format("colonyinfo.population.alien", 
@@ -1702,7 +1745,7 @@ public class InfoScreen extends ScreenBase {
 					), true).visible(true);
 					
 					taxMorale.text(format("colonyinfo.tax-morale",
-							(int)p.morale, withSign((int)(p.morale - p.lastMorale))
+							(int)p.morale, withSign((int)p.morale - (int)p.lastMorale)
 					), true).visible(true);
 					taxLevel.text(format("colonyinfo.tax-level",
 							get(p.getTaxLabel())
@@ -2518,15 +2561,15 @@ public class InfoScreen extends ScreenBase {
 	}
 	/** Adjust the highlight on the planet list view. */
 	void adjustPlanetListView() {
-		List<Planet> list = planetListDetais.getPlanets();
+		List<Planet> list = planetListDetails.getPlanets();
 		Planet cp = colonies.getCurrent.invoke(null);
 		int idx = list.indexOf(cp); 
 		if (idx >= 0) {
-			if (idx < planetListDetais.top) {
-				planetListDetais.top = idx;
+			if (idx < planetListDetails.top) {
+				planetListDetails.top = idx;
 			} else
-			if (idx >= planetListDetais.top + 26) {
-				planetListDetais.top = idx - 26;
+			if (idx >= planetListDetails.top + 26) {
+				planetListDetails.top = idx - 26;
 			}
 		}
 	}
@@ -3264,7 +3307,7 @@ public class InfoScreen extends ScreenBase {
 				if (knowledge(p, PlanetKnowledge.STATIONS) >= 0) {
 					if (p.owner == player()) {
 						population.text(format("colonyinfo.population", 
-								(int)p.population(), get(p.getMoraleLabel()), withSign((int)(p.population() - p.lastPopulation()))
+								(int)p.population(), get(p.getMoraleLabel()), withSign((int)p.population() - (int)p.lastPopulation())
 						), true).visible(true);
 					} else {
 						population.text(format("colonyinfo.population.alien", 
@@ -3483,6 +3526,44 @@ public class InfoScreen extends ScreenBase {
 					});
 				}
 				break;
+			case 4:
+				final Comparator<Planet> labNameComparator = new Comparator<Planet>() {
+					@Override
+					public int compare(Planet o1, Planet o2) {
+						Collection<Building> b1 = o1.surface.buildings.findByKind("Science");
+						Collection<Building> b2 = o2.surface.buildings.findByKind("Science");
+						if (b1.isEmpty() && b2.isEmpty()) {
+							return 0;
+						} else
+						if (b1.isEmpty() && !b2.isEmpty()) {
+							return 1;
+						} else
+						if (!b1.isEmpty() && b2.isEmpty()) {
+							return -1;
+						}
+						Building a1 = b1.iterator().next();
+						Building a2 = b2.iterator().next();
+						return a1.type.name.compareTo(a2.type.name);
+					}
+				};
+				Comparator<Planet> comp = null;
+				if (ascending) {
+					comp = new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, labNameComparator);
+						}
+					};
+				} else {
+					comp = new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, U.reverse(labNameComparator));
+						}
+					};
+				}
+				Collections.sort(list, comp);
+				break;
 			default:
 			}
 			return list;
@@ -3504,6 +3585,8 @@ public class InfoScreen extends ScreenBase {
 			int w3 = commons.text().getTextWidth(10, s3);
 			String s4 = get("info.problem_details");
 			int w4 = commons.text().getTextWidth(10, s4);
+			String s5 = get("info.lab_details");
+			int w5 = commons.text().getTextWidth(10, s5);
 			
 			commons.text().paintTo(g2, 10, -13, 10, TextRenderer.YELLOW, s1);
 			if (sortBy == 0) {
@@ -3523,10 +3606,20 @@ public class InfoScreen extends ScreenBase {
 				drawTriangle(g2, 242 + w3, -13, 10, ascending);
 			}
 
-			commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, s4);
-			if (sortBy == 3) {
-				g2.setColor(Color.YELLOW);
-				drawTriangle(g2, probLeft + w4 + 2, -13, 10, ascending);
+			switch (planetListMode) {
+			case LABS:
+				commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, s5);
+				if (sortBy == 4) {
+					g2.setColor(Color.YELLOW);
+					drawTriangle(g2, probLeft + w5 + 2, -13, 10, ascending);
+				}
+				break;
+			default:
+				commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, s4);
+				if (sortBy == 3) {
+					g2.setColor(Color.YELLOW);
+					drawTriangle(g2, probLeft + w4 + 2, -13, 10, ascending);
+				}
 			}
 
 			
@@ -3553,7 +3646,7 @@ public class InfoScreen extends ScreenBase {
 					int popWidth = commons.text().getTextWidth(10, pop);
 					commons.text().paintTo(g2, 160 - popWidth, y + 1, 10, TextRenderer.GREEN, pop);
 					int pc = TextRenderer.GREEN;
-					double populationChange = p.population() - p.lastPopulation();
+					int populationChange = (int)p.population() - (int)p.lastPopulation();
 					if (populationChange < -150) {
 						pc = TextRenderer.RED;
 					} else
@@ -3567,7 +3660,7 @@ public class InfoScreen extends ScreenBase {
 						pc = TextRenderer.ORANGE;
 					}
 					
-					commons.text().paintTo(g2, 175, y + 1, 10, pc, withSign((int)populationChange));
+					commons.text().paintTo(g2, 175, y + 1, 10, pc, withSign(populationChange));
 					 
 					if (p.owner == player()) {
 
@@ -3611,102 +3704,119 @@ public class InfoScreen extends ScreenBase {
 						}
 						
 						PlanetStatistics ps = p.getStatistics();
-						
-						int j = 0;
-						
-						if (ps.hasProblem(PlanetProblems.HOUSING)) {
-							g2.drawImage(commons.common().houseIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.HOUSING)) {
-							g2.drawImage(commons.common().houseIconDark, probLeft + j * 11, y + 2, null);
-							j++;
+						switch (planetListMode) {
+						case LABS:
+							Collection<Building> bs = p.surface.buildings.findByKind("Science");
+							if (!bs.isEmpty()) {
+								Building b = bs.iterator().next();
+								String bn = b.type.name;
+								int idx = bn.indexOf(' ');
+								if (idx > 0) {
+									bn = bn.substring(0, idx);
+								}
+								commons.text().paintTo(g2, probLeft, y + 1, 10, b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080, bn);
+							}
+							break;
+						default: {
+							int j = 0;
+							
+							if (ps.hasProblem(PlanetProblems.HOUSING)) {
+								g2.drawImage(commons.common().houseIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.HOUSING)) {
+								g2.drawImage(commons.common().houseIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.ENERGY)) {
+								g2.drawImage(commons.common().energyIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.ENERGY)) {
+								g2.drawImage(commons.common().energyIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.WORKFORCE)) {
+								g2.drawImage(commons.common().workerIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.WORKFORCE)) {
+								g2.drawImage(commons.common().workerIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.FOOD)) {
+								g2.drawImage(commons.common().foodIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.FOOD)) {
+								g2.drawImage(commons.common().foodIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.HOSPITAL)) {
+								g2.drawImage(commons.common().hospitalIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.HOSPITAL)) {
+								g2.drawImage(commons.common().hospitalIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.VIRUS)) {
+								g2.drawImage(commons.common().virusIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.VIRUS)) {
+								g2.drawImage(commons.common().virusIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.STADIUM)) {
+								g2.drawImage(commons.common().stadiumIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.STADIUM)) {
+								g2.drawImage(commons.common().stadiumIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.REPAIR)) {
+								g2.drawImage(commons.common().repairIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.REPAIR)) {
+								g2.drawImage(commons.common().repairIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.COLONY_HUB)) {
+								g2.drawImage(commons.common().colonyHubIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.COLONY_HUB)) {
+								g2.drawImage(commons.common().colonyHubIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							
+							if (ps.hasProblem(PlanetProblems.POLICE)) {
+								g2.drawImage(commons.common().policeIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							} else
+							if (ps.hasWarning(PlanetProblems.POLICE)) {
+								g2.drawImage(commons.common().policeIconDark, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+							if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE)) {
+								g2.drawImage(commons.common().fireBrigadeIcon, probLeft + j * 11, y + 2, null);
+								j++;
+							}
+						}
 						}
 						
-						if (ps.hasProblem(PlanetProblems.ENERGY)) {
-							g2.drawImage(commons.common().energyIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.ENERGY)) {
-							g2.drawImage(commons.common().energyIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
 						
-						if (ps.hasProblem(PlanetProblems.WORKFORCE)) {
-							g2.drawImage(commons.common().workerIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.WORKFORCE)) {
-							g2.drawImage(commons.common().workerIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						
-						if (ps.hasProblem(PlanetProblems.FOOD)) {
-							g2.drawImage(commons.common().foodIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.FOOD)) {
-							g2.drawImage(commons.common().foodIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						
-						if (ps.hasProblem(PlanetProblems.HOSPITAL)) {
-							g2.drawImage(commons.common().hospitalIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.HOSPITAL)) {
-							g2.drawImage(commons.common().hospitalIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						
-						if (ps.hasProblem(PlanetProblems.VIRUS)) {
-							g2.drawImage(commons.common().virusIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.VIRUS)) {
-							g2.drawImage(commons.common().virusIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						
-						if (ps.hasProblem(PlanetProblems.STADIUM)) {
-							g2.drawImage(commons.common().stadiumIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.STADIUM)) {
-							g2.drawImage(commons.common().stadiumIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						
-						if (ps.hasProblem(PlanetProblems.REPAIR)) {
-							g2.drawImage(commons.common().repairIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.REPAIR)) {
-							g2.drawImage(commons.common().repairIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						
-						if (ps.hasProblem(PlanetProblems.COLONY_HUB)) {
-							g2.drawImage(commons.common().colonyHubIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.COLONY_HUB)) {
-							g2.drawImage(commons.common().colonyHubIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						
-						if (ps.hasProblem(PlanetProblems.POLICE)) {
-							g2.drawImage(commons.common().policeIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						} else
-						if (ps.hasWarning(PlanetProblems.POLICE)) {
-							g2.drawImage(commons.common().policeIconDark, probLeft + j * 11, y + 2, null);
-							j++;
-						}
-						if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE)) {
-							g2.drawImage(commons.common().fireBrigadeIcon, probLeft + j * 11, y + 2, null);
-							j++;
-						}
 					}
 				}
 				y += 13;

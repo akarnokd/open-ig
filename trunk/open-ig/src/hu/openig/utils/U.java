@@ -1003,4 +1003,18 @@ public final class U {
 			int px, int py) {
 		return (px < rx || rx + rw < px || py < ry || ry + rh < ry);
 	}
+	/**
+	 * Create a reverse comparator.
+	 * @param <T> the element type
+	 * @param comp the original comparator
+	 * @return the reverse comparator
+	 */
+	public static <T> Comparator<T> reverse(final Comparator<T> comp) {
+		return new Comparator<T>() {
+			@Override
+			public int compare(T o1, T o2) {
+				return comp.compare(o2, o1);
+			}
+		};
+	}
 }

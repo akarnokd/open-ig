@@ -18,14 +18,4 @@ public enum PlanetListMode {
 	PROBLEMS,
 	/** Labs. */
 	LABS,
-	/** Factories. */
-	FACTORIES,
-	/** Economic buildings. */
-	ECONOMIC,
-	/** Guns. */
-	GUNS,
-	/** Shields. */
-	SHIELDS,
-	/** Barracks. */
-	BARRACKS
 }
