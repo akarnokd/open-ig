@@ -3290,4 +3290,5 @@
 	<entry key='settings.continuous_money'>Continuous money/morale calculation</entry>
 	<entry key='info.planetlist_labs'>Lab info</entry>
 	<entry key='info.planetlist_problems'>Problems</entry>
+	<entry key='info.lab_details'>Lab</entry>
 </labels>
