@@ -1,5 +1,4 @@
 #summary Project plan for 2012.
-#labels Featured
 
 See [http://code.google.com/p/open-ig/issues/list Issue list] for enhancements.
 
