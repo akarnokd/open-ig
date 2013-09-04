@@ -25,7 +25,7 @@ public class EmpireStatus implements MessageObjectIO {
 	/** The empire id. */
 	public String id;
 	/** The current money. */
-	public long money;
+	public double money;
 	/** The negotiation offers from players. */
 	public final Map<String, DiplomaticOffer> offers = new LinkedHashMap<>();
 	/** The player level statistics. */

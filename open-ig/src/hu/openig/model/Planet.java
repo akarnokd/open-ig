@@ -47,9 +47,9 @@ public class Planet implements Named, Owned, HasInventory {
 	/** The inhabitant race. */
 	public String race;
 	/** The current population. */
-	public int population;
+	private double population;
 	/** The population change since the last day. */
-	public int lastPopulation;
+	private double lastPopulation;
 	/** The rendered rotation phase. */
 	public int rotationPhase;
 	/** The rotation direction. */
@@ -75,9 +75,9 @@ public class Planet implements Named, Owned, HasInventory {
 	/** The auto build mode. */
 	public AutoBuild autoBuild = AutoBuild.OFF;
 	/** The last day's tax income. */
-	public int taxIncome;
+	private double taxIncome;
 	/** The last day's trade income. */
-	public int tradeIncome;
+	private double tradeIncome;
 	/** The planet's inventory. */
 	public final InventoryItems inventory = new InventoryItems();
 	/** The time to live counter for objects which need to be removed after the given simulation step (which is 10 ingame minutes. */
@@ -92,7 +92,7 @@ public class Planet implements Named, Owned, HasInventory {
 	public final GroundwarManager war;
 	/** @return The total income. */
 	public int getTotalIncome() {
-		return taxIncome + tradeIncome;
+		return (int)(taxIncome + tradeIncome);
 	}
 	/** @return the morale label for the current morale level. */
 	public String getMoraleLabel() {
@@ -1487,5 +1487,89 @@ public class Planet implements Named, Owned, HasInventory {
 		}
 		
 		return false;
+	}
+	/**
+	 * Returns the tax income.
+	 * @return the tax income
+	 */
+	public double taxIncome() {
+		return taxIncome;
+	}
+	/**
+	 * Returns the trade income.
+	 * @return the trade income
+	 */
+	public double tradeIncome() {
+		return tradeIncome;
+	}
+	/**
+	 * Set a new tax income.
+	 * @param newTaxIncome the new tax income
+	 */
+	public void taxIncome(double newTaxIncome) {
+		this.taxIncome = newTaxIncome;
+	}
+	/**
+	 * Set a new trade income.
+	 * @param newTradeIncome the new trade income
+	 */
+	public void tradeIncome(double newTradeIncome) {
+		this.tradeIncome = newTradeIncome;
+	}
+	/**
+	 * Add value to the tax income.
+	 * @param value the value to add
+	 */
+	public void addTaxIncome(double value) {
+		this.taxIncome += value;
+	}
+	/**
+	 * Add value to the trade income.
+	 * @param value the value to add
+	 */
+	public void addTradeIncome(double value) {
+		this.tradeIncome += value;
+	}
+	/**
+	 * Returns the current population.
+	 * @return the population
+	 */
+	public double population() {
+		return population;
+	}
+	/**
+	 * Returns the last day's population.
+	 * @return the last population
+	 */
+	public double lastPopulation() {
+		return lastPopulation;
+	}
+	/**
+	 * Set a new population value.
+	 * @param newPopulation the new population value
+	 */
+	public void population(double newPopulation) {
+		this.population = newPopulation;
+	}
+	/**
+	 * Set a new last population value.
+	 * @param newLastPopulation the new last population value
+	 */
+	public void lastPopulation(double newLastPopulation) {
+		this.lastPopulation = newLastPopulation;
+	}
+	/**
+	 * Add to the population.
+	 * @param value the value to add
+	 */
+	public void addPopulation(double value) {
+		this.population += value;
+	}
+	/**
+	 * Add to the last population.
+	 * @param value the value to add
+	 */
+	public void addLastPopulation(double value) {
+		this.lastPopulation += value;
 	}
 }

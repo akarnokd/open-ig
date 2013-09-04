@@ -666,19 +666,19 @@ public class World implements ModelLookup {
 			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
 			p.rotationDirection = RotationDirection.valueOf(xplanet.get("rotate"));
 			p.morale = xplanet.getDouble("morale");
-			p.taxIncome = Integer.parseInt(xplanet.get("tax-income"));
-			p.tradeIncome = Integer.parseInt(xplanet.get("trade-income"));
+			p.taxIncome(xplanet.getDouble("tax-income"));
+			p.tradeIncome(xplanet.getDouble("trade-income"));
 
 			if (!definition.noPlanetOwner) {
 				p.owner = players.get(xplanet.get("owner", null));
 				p.race = xplanet.get("race", null);
-				p.population = Integer.parseInt(xplanet.get("population"));
+				p.population(xplanet.getDouble("population"));
 	
 				String populationDelta = xplanet.get("population-last", null);
 				if (populationDelta != null && !populationDelta.isEmpty()) {
-					p.lastPopulation = Integer.parseInt(populationDelta);
+					p.lastPopulation(Double.parseDouble(populationDelta));
 				} else {
-					p.lastPopulation = p.population;
+					p.lastPopulation(p.population());
 				}
 				p.lastMorale = xplanet.getDouble("morale-last", p.morale);
 			}
@@ -1252,11 +1252,11 @@ public class World implements ModelLookup {
 				xp.set("tax", p.tax);
 				xp.set("morale", p.morale);
 				xp.set("morale-last", p.lastMorale);
-				xp.set("population", p.population);
-				xp.set("population-last", p.lastPopulation);
+				xp.set("population", p.population());
+				xp.set("population-last", p.lastPopulation());
 				xp.set("autobuild", p.autoBuild);
-				xp.set("tax-income", p.taxIncome);
-				xp.set("trade-income", p.tradeIncome);
+				xp.set("tax-income", p.taxIncome());
+				xp.set("trade-income", p.tradeIncome());
 				xp.set("earthquake-ttl", p.earthQuakeTTL);
 				xp.set("weather-ttl", p.weatherTTL);
 				for (Building b : p.surface.buildings.iterable()) {
@@ -1717,11 +1717,11 @@ public class World implements ModelLookup {
 				p.tax = TaxLevel.valueOf(xplanet.get("tax"));
 				p.morale = xplanet.getDouble("morale", 50d);
 				p.lastMorale = xplanet.getDouble("morale-last", 50d);
-				p.population = xplanet.getInt("population");
-				p.lastPopulation = xplanet.getInt("population-last", p.population);
+				p.population(xplanet.getDouble("population"));
+				p.lastPopulation(xplanet.getDouble("population-last", p.population()));
 				p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
-				p.taxIncome = xplanet.getInt("tax-income");
-				p.tradeIncome = xplanet.getInt("trade-income");
+				p.taxIncome(xplanet.getDouble("tax-income"));
+				p.tradeIncome(xplanet.getDouble("trade-income"));
 				p.earthQuakeTTL = xplanet.getInt("earthquake-ttl", 0);
 				p.weatherTTL = xplanet.getInt("weather-ttl", 0);
 				
@@ -3153,8 +3153,8 @@ public class World implements ModelLookup {
 			p.selectionMode = SelectionMode.PLANET;
 			pl.owner = p;
 			pl.race = p.race;
-			pl.population = skirmishDefinition.initialPopulation;
-			pl.lastPopulation = pl.population;
+			pl.population(skirmishDefinition.initialPopulation);
+			pl.lastPopulation(pl.population());
 			
 			p.planets.put(pl, PlanetKnowledge.BUILDING);
 			zi++;
@@ -3183,8 +3183,8 @@ public class World implements ModelLookup {
 				if (p2.owner == null) {
 					p2.owner = p;
 					p2.race = p.race;
-					p2.population = skirmishDefinition.initialPopulation;
-					p2.lastPopulation = p2.population;
+					p2.population(skirmishDefinition.initialPopulation);
+					p2.lastPopulation(p2.population());
 					p.planets.put(p2, PlanetKnowledge.BUILDING);
 					n--;
 				}

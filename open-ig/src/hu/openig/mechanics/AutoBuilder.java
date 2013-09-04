@@ -51,7 +51,7 @@ public final class AutoBuilder {
 				return;
 			}			
 			// skip worker problematic planets
-			if (ps.workerDemand > planet.population) {
+			if (ps.workerDemand > planet.population()) {
 				return;
 			}
 			// if there is a worker shortage, it may be the root clause
@@ -82,7 +82,7 @@ public final class AutoBuilder {
 			int buildCount = 0;
 			buildCount++;
 			// if living space shortage
-			if (ps.houseAvailable < planet.population || (planet.population <= 5000 && ps.houseAvailable <= 5000)) {
+			if (ps.houseAvailable < planet.population() || (planet.population() <= 5000 && ps.houseAvailable <= 5000)) {
 				findOptions(world, planet, 
 				new Func1<Building, Boolean>() {
 					@Override
@@ -105,7 +105,7 @@ public final class AutoBuilder {
 			}
 			buildCount++;
 			// if food shortage
-			if (ps.foodAvailable < planet.population) {
+			if (ps.foodAvailable < planet.population()) {
 				findOptions(world, planet, 
 				new Func1<Building, Boolean>() {
 					@Override
@@ -128,7 +128,7 @@ public final class AutoBuilder {
 			}
 			buildCount++;
 			// if hospital shortage
-			if (ps.hospitalAvailable < planet.population) {
+			if (ps.hospitalAvailable < planet.population()) {
 				findOptions(world, planet, 
 				new Func1<Building, Boolean>() {
 					@Override
@@ -151,7 +151,7 @@ public final class AutoBuilder {
 			}
 			buildCount++;
 			// if living space shortage
-			if (ps.policeAvailable < planet.population) {
+			if (ps.policeAvailable < planet.population()) {
 				findOptions(world, planet, 
 				new Func1<Building, Boolean>() {
 					@Override

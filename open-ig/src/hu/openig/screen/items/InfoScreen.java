@@ -1677,32 +1677,32 @@ public class InfoScreen extends ScreenBase {
 				if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 					if (p.owner == player()) {
 						population.text(format("colonyinfo.population", 
-								p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+								(int)p.population(), get(p.getMoraleLabel()), withSign((int)(p.population() - p.lastPopulation()))
 						), true).visible(true);
 					} else {
 						population.text(format("colonyinfo.population.alien", 
-								p.population
+								(int)p.population()
 						), true).visible(true);
 					}
 				}
 				if (p.owner == player()) {
 					PlanetStatistics ps = localStatistics;
-					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, p.population).visible(true);
-					setLabel(worker, "colonyinfo.worker", p.population, ps.workerDemand).visible(true);
-					setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, p.population).visible(true);
-					setLabel(food, "colonyinfo.food", ps.foodAvailable, p.population).visible(true);
+					setLabel(housing, "colonyinfo.housing", ps.houseAvailable, (int)p.population()).visible(true);
+					setLabel(worker, "colonyinfo.worker", (int)p.population(), ps.workerDemand).visible(true);
+					setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, (int)p.population()).visible(true);
+					setLabel(food, "colonyinfo.food", ps.foodAvailable, (int)p.population()).visible(true);
 					setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
-					setLabel(police, "colonyinfo.police", ps.policeAvailable, p.population).visible(true);
+					setLabel(police, "colonyinfo.police", ps.policeAvailable, (int)p.population()).visible(true);
 					
 					taxIncome.text(format("colonyinfo.tax", 
-							p.taxIncome
+							(int)p.taxIncome()
 					), true).visible(true);
 					tradeIncome.text(format("colonyinfo.trade",
-							p.tradeIncome
+							(int)p.tradeIncome()
 					), true).visible(true);
 					
 					taxMorale.text(format("colonyinfo.tax-morale",
-							(int)p.morale, withSign((int)(p.morale) - (int)(p.lastMorale))
+							(int)p.morale, withSign((int)(p.morale - p.lastMorale))
 					), true).visible(true);
 					taxLevel.text(format("colonyinfo.tax-level",
 							get(p.getTaxLabel())
@@ -2672,8 +2672,8 @@ public class InfoScreen extends ScreenBase {
 			planetCurrent.text(p.name, true);
 			if (p.owner == player()) {
 				
-				planetTaxIncome.text(format("colonyinfo.tax", p.taxIncome), true);
-				planetTradeIncome.text(format("colonyinfo.trade", p.tradeIncome), true);
+				planetTaxIncome.text(format("colonyinfo.tax", (int)p.taxIncome()), true);
+				planetTradeIncome.text(format("colonyinfo.trade", (int)p.tradeIncome()), true);
 				planetTotalIncome.text(format("colonyinfo.total", p.getTotalIncome()), true);
 				planetTaxMorale.text(format("colonyinfo.tax-morale", (int)p.morale, get(p.getMoraleLabel())), true);
 				
@@ -2742,13 +2742,13 @@ public class InfoScreen extends ScreenBase {
 				buildingPlanetOwner.text(p.owner.name, true);
 				if (p.owner == player()) {
 					buildingPlanetRace.text(format("colonyinfo.population.own", 
-							p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
+							(int)p.population(), get(p.getRaceLabel()), get(p.getMoraleLabel()) 
 					), true);
 				} else {
 					if (knowledge(p, PlanetKnowledge.STATIONS) >= 0) {
 						if (p.isPopulated()) {
 							buildingPlanetRace.text(format("colonyinfo.population.short.alien", 
-									p.population
+									(int)p.population()
 							), true);
 						} else {
 							buildingPlanetRace.text("");
@@ -2917,14 +2917,14 @@ public class InfoScreen extends ScreenBase {
 		
 		if (p.owner == player()) {
 			colonyPopulation.text(format("colonyinfo.population.own", 
-					p.population, get(p.getRaceLabel()), get(p.getMoraleLabel()) 
+					(int)p.population(), get(p.getRaceLabel()), get(p.getMoraleLabel()) 
 			), true).visible(true);
 			colonyTax.text(format("colonyinfo.tax_short", get(p.getTaxLabel())), true).visible(true);
 		} else {
 			if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 				if (p.isPopulated()) {
 					colonyPopulation.text(format("colonyinfo.population.short.alien", 
-							p.population
+							(int)p.population()
 					), true).visible(true);
 				} else {
 					colonyPopulation.visible(false);
@@ -3264,11 +3264,11 @@ public class InfoScreen extends ScreenBase {
 				if (knowledge(p, PlanetKnowledge.STATIONS) >= 0) {
 					if (p.owner == player()) {
 						population.text(format("colonyinfo.population", 
-								p.population, get(p.getMoraleLabel()), withSign(p.population - p.lastPopulation)
+								(int)p.population(), get(p.getMoraleLabel()), withSign((int)(p.population() - p.lastPopulation()))
 						), true).visible(true);
 					} else {
 						population.text(format("colonyinfo.population.alien", 
-								p.population
+								(int)p.population()
 						), true).visible(true);
 					}
 				}
@@ -3371,7 +3371,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return o1.population - o2.population;
+									return Double.compare(o1.population(), o2.population());
 								}
 							});
 						}
@@ -3385,7 +3385,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return o2.population - o1.population;
+									return Double.compare(o2.population(), o1.population());
 								}
 							});
 						}
@@ -3549,24 +3549,25 @@ public class InfoScreen extends ScreenBase {
 				}
 				
 				if (p.owner == player() || knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
-					String pop = Integer.toString(p.population);
+					String pop = Integer.toString((int)p.population());
 					int popWidth = commons.text().getTextWidth(10, pop);
 					commons.text().paintTo(g2, 160 - popWidth, y + 1, 10, TextRenderer.GREEN, pop);
 					int pc = TextRenderer.GREEN;
-					if (p.population - p.lastPopulation < -150) {
+					double populationChange = p.population() - p.lastPopulation();
+					if (populationChange < -150) {
 						pc = TextRenderer.RED;
 					} else
-					if (p.population - p.lastPopulation < 0) {
+					if (populationChange < 0) {
 						pc = TextRenderer.YELLOW;
 					} else
-					if (p.population - p.lastPopulation > 300) {
+					if (populationChange > 300) {
 						pc = TextRenderer.LIGHT_BLUE;
 					} else
-					if (p.population - p.lastPopulation > 80) {
+					if (populationChange > 80) {
 						pc = TextRenderer.ORANGE;
 					}
 					
-					commons.text().paintTo(g2, 175, y + 1, 10, pc, withSign(p.population - p.lastPopulation));
+					commons.text().paintTo(g2, 175, y + 1, 10, pc, withSign((int)populationChange));
 					 
 					if (p.owner == player()) {
 

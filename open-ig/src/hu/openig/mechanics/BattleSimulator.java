@@ -950,8 +950,8 @@ public final class BattleSimulator {
 		if (hasBunker(planet)) {
 			populationLoss /= 2;
 		}
-		planet.population = Math.max(0, planet.population - populationLoss);
-		if (planet.population <= 0) {
+		planet.population(Math.max(0, planet.population() - populationLoss));
+		if (planet.population() <= 0) {
 			planet.die();
 		}
 	}
@@ -970,8 +970,8 @@ public final class BattleSimulator {
 		if (hasBunker(planet)) {
 			populationLoss /= 2;
 		}
-		planet.population = Math.max(0, planet.population - populationLoss);
-		if (planet.population <= 0) {
+		planet.population(Math.max(0, planet.population() - populationLoss));
+		if (planet.population() <= 0) {
 			planet.die();
 		}
 	}

@@ -1033,7 +1033,7 @@ public class GameWindow extends JFrame implements GameControls {
 				if (planet.id.equals("Achilles")) {
 					planet.owner = p;
 					planet.race = p.race;
-					planet.population = 5000;
+					planet.population(5000);
 					p.planets.put(planet, PlanetKnowledge.BUILDING);
 				} else {
 					p.planets.remove(planet);

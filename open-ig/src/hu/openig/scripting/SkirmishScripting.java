@@ -665,11 +665,11 @@ public class SkirmishScripting implements GameScripting {
 		return true;
 	}
 	@Override
-	public int playerPopulationGrowthOverride(Planet planet, int simulatorValue) {
+	public double playerPopulationGrowthOverride(Planet planet, double simulatorValue) {
 		return simulatorValue;
 	}
 	@Override
-	public int playerTaxIncomeOverride(Planet planet, int simulatorValue) {
+	public double playerTaxIncomeOverride(Planet planet, double simulatorValue) {
 		return simulatorValue;
 	}
 	@Override

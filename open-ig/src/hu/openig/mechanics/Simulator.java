@@ -400,12 +400,17 @@ public final class Simulator {
 				regenerateInventory(true, ii);
 			}
 		}
-		
-		if (world.config.continuousMoney) {
 
-			double dayPercent = world.params().speed() / 24d / 60d;
+		if (dayChange) {
+			planet.lastMorale = planet.morale;
+			planet.lastPopulation(planet.population());
+		}
+		double dayPercent = world.params().speed() / 24d / 60d;
+		if (!world.config.continuousMoney) {
+			dayPercent = 1d;
+		}
 
-			
+		if (world.config.continuousMoney || dayChange) {	
 			// FIXME morale computation
 			double newMorale = 50 + moraleBoost;
 			if (planet.tax == TaxLevel.NONE) {
@@ -416,27 +421,27 @@ public final class Simulator {
 			} else {
 				newMorale -= planet.tax.percent / 3f;
 			}
-			if (ps.houseAvailable < planet.population) {
-				newMorale += (ps.houseAvailable - planet.population) * 75f / planet.population;
+			if (ps.houseAvailable < planet.population()) {
+				newMorale += (ps.houseAvailable - planet.population()) * 75f / planet.population();
 			} else {
-				newMorale += (ps.houseAvailable - planet.population) * 2f / planet.population;
+				newMorale += (ps.houseAvailable - planet.population()) * 2f / planet.population();
 			}
-			if (ps.hospitalAvailable < planet.population) {
-				newMorale += (ps.hospitalAvailable - planet.population) * 50f / planet.population;
+			if (ps.hospitalAvailable < planet.population()) {
+				newMorale += (ps.hospitalAvailable - planet.population()) * 50f / planet.population();
 			}
-			if (ps.foodAvailable < planet.population) {
-				newMorale += (ps.foodAvailable - planet.population) * 75f / planet.population;
+			if (ps.foodAvailable < planet.population()) {
+				newMorale += (ps.foodAvailable - planet.population()) * 75f / planet.population();
 			}
 			if (planet.quarantineTTL > 0) {
 				newMorale = Math.max(0, newMorale - 5);
 			}
-			if (ps.policeAvailable < planet.population) {
-				newMorale += (ps.policeAvailable - planet.population) * 50f / planet.population;
+			if (ps.policeAvailable < planet.population()) {
+				newMorale += (ps.policeAvailable - planet.population()) * 50f / planet.population();
 			} else {
 				if (!planet.owner.race.equals(planet.race)) {
-					newMorale += (ps.policeAvailable - planet.population) * 25f / planet.population;
+					newMorale += (ps.policeAvailable - planet.population()) * 25f / planet.population();
 				} else {
-					newMorale += (ps.policeAvailable - planet.population) * planet.owner.policeRatio / planet.population;
+					newMorale += (ps.policeAvailable - planet.population()) * planet.owner.policeRatio / planet.population();
 				}
 			}
 			
@@ -456,33 +461,30 @@ public final class Simulator {
 			
 			// ----------
 
-			double nextPopulation = 0;
+			double populationDelta = 0;
 			double nonOwnerRace = 1d;
 			if (!planet.race.equals(planet.owner.race)) {
 				nonOwnerRace = 3d;
 			}
 			if (nextMorale < 20) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 100 * nonOwnerRace);
+				populationDelta = 1000 * (nextMorale - 50) / 100 * nonOwnerRace;
 			} else
 			if (nextMorale < 30) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 150 * nonOwnerRace);
+				populationDelta = 1000 * (nextMorale - 50) / 150 * nonOwnerRace;
 			} else
 			if (nextMorale < 40) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 200 * nonOwnerRace);
+				populationDelta = 1000 * (nextMorale - 50) / 200 * nonOwnerRace;
 			} else
 			if (nextMorale < 50) {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250 * nonOwnerRace);
+				populationDelta = 1000 * (nextMorale - 50) / 250 * nonOwnerRace;
 			} else {
-				nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
-				nextPopulation += ((nextPopulation - planet.population) * populationGrowthModifier * planetTypeModifier);
+				populationDelta = 1000 * (nextMorale - 50) / 500 * populationGrowthModifier * planetTypeModifier;
 			}
 			
-			int population0 = planet.population;
-			int population1 = world.scripting.playerPopulationGrowthOverride(planet, (int)nextPopulation);
+			double population0 = planet.population();
+			double population1 = world.scripting.playerPopulationGrowthOverride(planet, planet.population() + populationDelta);
 
-			planet.population = Math.max(0, (int)Math.round(population0 +  (population1 - population0) * dayPercent));
-			
-			// tax calculation
+			planet.population(Math.max(0, Math.round(population0 +  (population1 - population0) * dayPercent)));
 			
 			// tax calculation
 			
@@ -492,18 +494,18 @@ public final class Simulator {
 				moneyModifier = 1 + t.value / 100;
 			}
 			
-			int trade1 = (int)(tradeIncome * multiply * moneyModifier);
+			double trade1 = (int)(tradeIncome * multiply * moneyModifier);
 			
-			int taxIncomeSim = (int)(
-					 taxCompensation * moneyModifier * planet.population * planet.morale * planet.tax.percent / 10000);
+			double taxIncomeSim = (
+					 taxCompensation * moneyModifier * planet.population() * planet.morale * planet.tax.percent / 10000);
 			
-			int tax1 = world.scripting.playerTaxIncomeOverride(planet, taxIncomeSim); 
+			double tax1 = world.scripting.playerTaxIncomeOverride(planet, taxIncomeSim); 
 
-			int tradeDelta = (int)(trade1 * dayPercent);
-			int taxDelta = (int)(tax1 * dayPercent);
+			double tradeDelta = (trade1 * dayPercent);
+			double taxDelta = (tax1 * dayPercent);
 			
-			planet.tradeIncome += tradeDelta;
-			planet.taxIncome += taxDelta;
+			planet.addTradeIncome(tradeDelta);
+			planet.addTaxIncome(taxDelta);
 			
 			// update statistics
 			planet.owner.addMoney(tradeDelta + taxDelta);
@@ -518,119 +520,18 @@ public final class Simulator {
 		}
 		
 		if (dayChange) {
-
-			planet.lastMorale = planet.morale;
-			planet.lastPopulation = planet.population;
-			
-			if (!world.config.continuousMoney) {
-				// FIXME morale computation
-				double newMorale = 50 + moraleBoost;
-				if (planet.tax == TaxLevel.NONE) {
-					newMorale += 5;
-				} else
-				if (planet.tax.ordinal() <= TaxLevel.MODERATE.ordinal()) {
-					newMorale -= planet.tax.percent / 6f;
-				} else {
-					newMorale -= planet.tax.percent / 3f;
-				}
-				if (ps.houseAvailable < planet.population) {
-					newMorale += (ps.houseAvailable - planet.population) * 75f / planet.population;
-				} else {
-					newMorale += (ps.houseAvailable - planet.population) * 2f / planet.population;
-				}
-				if (ps.hospitalAvailable < planet.population) {
-					newMorale += (ps.hospitalAvailable - planet.population) * 50f / planet.population;
-				}
-				if (ps.foodAvailable < planet.population) {
-					newMorale += (ps.foodAvailable - planet.population) * 75f / planet.population;
-				}
-				if (planet.quarantineTTL > 0) {
-					newMorale = Math.max(0, newMorale - 5);
-				}
-				if (ps.policeAvailable < planet.population) {
-					newMorale += (ps.policeAvailable - planet.population) * 50f / planet.population;
-				} else {
-					if (!planet.owner.race.equals(planet.race)) {
-						newMorale += (ps.policeAvailable - planet.population) * 25f / planet.population;
-					} else {
-						newMorale += (ps.policeAvailable - planet.population) * planet.owner.policeRatio / planet.population;
-					}
-				}
-				
-				
-				newMorale = Math.max(0, Math.min(100, newMorale));
-				
-				
-				double nextMorale = (planet.morale * 0.8d + 0.2d * newMorale);
-				if (planet.morale >= 95 && newMorale > planet.morale) {
-					nextMorale = planet.morale + (newMorale - 95) / 10;
-				}
-				planet.morale = Math.max(0, Math.min(100, /* (int) */nextMorale));
-				
-				// -------
-				// calculate population change
-				
-				double nextPopulation = 0;
-				double nonOwnerRace = 1d;
-				if (!planet.race.equals(planet.owner.race)) {
-					nonOwnerRace = 3d;
-				}
-				if (nextMorale < 20) {
-					nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 100 * nonOwnerRace);
-				} else
-				if (nextMorale < 30) {
-					nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 150 * nonOwnerRace);
-				} else
-				if (nextMorale < 40) {
-					nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 200 * nonOwnerRace);
-				} else
-				if (nextMorale < 50) {
-					nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 250 * nonOwnerRace);
-				} else {
-					nextPopulation = Math.max(0, planet.population + 1000 * (nextMorale - 50) / 500);
-					nextPopulation += ((nextPopulation - planet.population) * populationGrowthModifier * planetTypeModifier);
-				}
-				
-				planet.population = world.scripting.playerPopulationGrowthOverride(planet, (int)nextPopulation);
-				
-				// tax calculation
-				
-				double moneyModifier = 1;
-				t = planet.owner.traits.trait(TraitKind.TAX);
-				if (t != null) {
-					moneyModifier = 1 + t.value / 100;
-				}
-				
-				planet.tradeIncome = (int)(tradeIncome * multiply * moneyModifier);
-				int taxIncomeSim = (int)(
-						 taxCompensation * moneyModifier * planet.population * planet.morale * planet.tax.percent / 10000);
-				planet.taxIncome = world.scripting.playerTaxIncomeOverride(planet, taxIncomeSim); 
-	
-				// update statistics
-				
-				planet.owner.addMoney(planet.tradeIncome + planet.taxIncome);
-				
-				planet.owner.statistics.moneyIncome.value += planet.tradeIncome + planet.taxIncome;
-				planet.owner.statistics.moneyTaxIncome.value += planet.taxIncome;
-				planet.owner.statistics.moneyTradeIncome.value += planet.tradeIncome;
-	
-				world.statistics.moneyIncome.value += planet.tradeIncome + planet.taxIncome;
-				world.statistics.moneyTaxIncome.value += planet.taxIncome;
-				world.statistics.moneyTradeIncome.value += planet.tradeIncome;
-				
-			}
 			// handle revolt/death
-			planet.owner.yesterday.taxIncome += planet.taxIncome;
-			planet.owner.yesterday.tradeIncome += planet.tradeIncome;
+			planet.owner.yesterday.taxIncome += planet.taxIncome();
+			planet.owner.yesterday.tradeIncome += planet.tradeIncome();
 			planet.owner.yesterday.taxMorale += planet.morale;
 			planet.owner.yesterday.taxMoraleCount++;
 
 			if (world.config.continuousMoney) {
-				planet.taxIncome = 0;
-				planet.tradeIncome = 0;
+				planet.taxIncome(0);
+				planet.tradeIncome(0);
 			}
 			
-			if (planet.population == 0) {
+			if (planet.population() < 1) {
 				planet.owner.ai.onPlanetDied(planet);
 				world.scripting.onLost(planet);
 				planet.owner.statistics.planetsDied.value++;
@@ -650,8 +551,8 @@ public final class Simulator {
 
 		
 		if (planet.owner != null) {
-			planet.owner.statistics.totalPopulation.value += planet.population;
-			world.statistics.totalPopulation.value += planet.population;
+			planet.owner.statistics.totalPopulation.value += planet.population();
+			world.statistics.totalPopulation.value += planet.population();
 			planet.owner.statistics.planetsOwned.value++;
 		}
 		
