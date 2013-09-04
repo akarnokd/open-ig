@@ -1,0 +1,47 @@
+#summary Troubleshooting
+
+<wiki:toc max_depth="4" />
+
+= Linux =
+
+== Missing resources ==
+
+Even if you installed the game via the Launcher, sometimes the game doesn't recognize its files. The reasons for that are unknown at the moment, but you might check the following things:
+
+  * The game has read access to all of its files
+  * The game can create files and directories under its directory
+  * You run the game from its directory (i.e., the working directory)
+
+== Audio and/or game hangs ==
+
+Several bugs exist in OpenJDK (6, 7) audio subsystem: !PulseAudio.
+
+Possible resolutions:
+
+  * Update to the latest JDK version available
+  * Switch to JDK 7 if not already done
+  * Uninstall OpenJDK and Oracle JDK completely. Then reinstall just one
+  * Use Oracle JDK.
+  * Try running the game from command line with the {{{padsp}}} prefix: {{{padsp java -Xmx768M -jar open-ig-NNNN.jar -memonce}}}.
+  * Alternatively, try running the game from command line with the {{{aoss}}} prefix: {{{aoss java -Xmx768M -jar open-ig-NNNN.jar -memonce}}}.
+  * Try the workarounds from [http://www.realitysend.com/kirbj/devlog/linuxsound this blog].
+
+= Mac =
+
+== Audio and/or game hangs ==
+
+Either the Java or the operating system has some issues with its audio subsystem and even the standard tutorial and example programs coming with the Java distribution might hang as well.
+
+Possible resolutions:
+
+  * Use Oracle Java 7 (only 64 bit is available)
+
+= Windows =
+
+== Crash due to unsupported format ==
+
+Sometimes, pretty standard WAV files won't play on Windows (XP). This can be attributed to either out-of-date drivers or corrupted install. You may want to:
+
+  * Reinstall or update your sound card drivers.
+  * Reinstall or repair your [http://www.microsoft.com/en-us/download/details.aspx?id=35 DirectX].
+  * Change the hardware acceleration level for your sound card.
