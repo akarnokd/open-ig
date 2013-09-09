@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * Represents the rendering for an equipment, production or research slot.
@@ -52,13 +53,15 @@ public class TechnologySlot extends UIComponent {
 	/** The action to invoke when the user clicks on the slot. */
 	public Action1<ResearchType> onPress;
 	/** The planet statistics retrieval function. */
-	public Func0<PlanetStatistics> statistics;
+	private final Func0<PlanetStatistics> statistics;
 	/**
 	 * Constructor.
 	 * @param commons the common resources
+     * @param statistics the statistics callback
 	 */
-	public TechnologySlot(CommonResources commons) {
-		this.commons = commons;
+	public TechnologySlot(CommonResources commons, Func0<PlanetStatistics> statistics) {
+		this.commons = Objects.requireNonNull(commons);
+        this.statistics = Objects.requireNonNull(statistics);
 	}
 	/**
 	 * Render the technology based on its state.

@@ -2344,7 +2344,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					this.selectedSlot = null;
 				}
 			} else {
-				item = null;
+				this.item = null;
 				selectedSlot = null;
 				image = null;
 			}
@@ -2496,7 +2496,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_stations", other.stations);
 				}
 				if (other.guns > 0) {
-					y = drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_guns", other.guns);
+					/*y = */drawLine(g2, y, TextRenderer.YELLOW, "spacewar.statistics_guns", other.guns);
 				}
 			}
 			
@@ -3531,14 +3531,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param destroy should the explosion destroy the target?
 	 */
 	void createExplosion(SpacewarStructure s, boolean destroy) {
-		SpacewarExplosion x = new SpacewarExplosion();
+		SpacewarExplosion x = new SpacewarExplosion(getExplosionFor(s.destruction));
 		x.owner = s.owner;
 		if (destroy) {
 			x.target = s;
 		}
 		x.x = s.x;
 		x.y = s.y;
-		x.phases = getExplosionFor(s.destruction);
 		explosions.add(x);
 	}
 	/**
@@ -3564,10 +3563,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param explosion the sound effect
 	 */
 	void createExplosion(double x, double y, SoundType explosion) {
-		SpacewarExplosion xp = new SpacewarExplosion();
+		SpacewarExplosion xp = new SpacewarExplosion(getExplosionFor(explosion));
 		xp.x = x;
 		xp.y = y;
-		xp.phases = getExplosionFor(explosion);
 		explosions.add(xp);
 	}
 	/** Perform the spacewar simulation. */
@@ -4224,7 +4222,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 */
 	void createBeam(SpacewarStructure source, SpacewarWeaponPort p, 
 			double ax, double ay, SpacewarStructure target) {
-		SpacewarProjectile sp = new SpacewarProjectile();
+		SpacewarProjectile sp = new SpacewarProjectile(source.owner == player() ? p.projectile.alternative : p.projectile.matrix);
 		sp.model = p.projectile;
 		sp.owner = source.owner; 
 		sp.source = source;
@@ -4234,7 +4232,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		sp.x = source.x;
 		sp.y = source.y;
 		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
-		sp.matrix = sp.owner == player() ? p.projectile.alternative : p.projectile.matrix;
 		
 		sp.damage = attackDamage(p.damage(sp.owner) * p.count, target);
 

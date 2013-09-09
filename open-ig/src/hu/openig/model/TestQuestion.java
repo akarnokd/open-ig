@@ -47,8 +47,7 @@ public class TestQuestion {
 			tq.id = xq.get("id");
 			tq.label = xq.get("label");
 			for (XElement xa : xq.childrenWithName("answer")) {
-				TestAnswer ta = new TestAnswer();
-				ta.id = xa.get("id");
+				TestAnswer ta = new TestAnswer(xa.get("id"));
 				ta.label = xa.get("label");
 				ta.selected = "true".equals(xa.get("selected", "false"));
 				ta.points = xa.getInt("points");

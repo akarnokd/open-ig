@@ -132,7 +132,7 @@ public class UIContainer extends UIComponent {
 					&& f.getDeclaringClass() == getClass()
 					&& !f.isSynthetic()) {
 				try {
-					f.setAccessible(true);
+					f.setAccessible(true); // FIXME why is this necessary?
 					UIComponent c = UIComponent.class.cast(f.get(this));
 					if (c != null && c.parent == null) {
 						add(c);

@@ -79,6 +79,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -735,32 +736,33 @@ public class InfoScreen extends ScreenBase {
 			}
 		};
 		
-		buildings = new BuildingListing();
-		buildings.onSelect = new Action1<BuildingType>() {
-			@Override
-			public void invoke(BuildingType value) {
-				buttonSound(SoundType.CLICK_MEDIUM_2);
-				player().currentBuilding = value;
-				if (value.research != null) {
-					research(value.research);
-				}
-				displayBuildingInfo();
-			}
-		};
-		buildings.onDoubleClick = new Action1<BuildingType>() {
-			@Override
-			public void invoke(BuildingType value) {
-				player().currentBuilding = value;
-				if (value.research != null) {
-					research(value.research);
-				}
-				displayBuildingInfo();
-				if (planet().canBuild(value)) {
-					PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
-					ps.buildingsPanel.build.onPress.invoke();
-				}
-			}
-		};
+		buildings = new BuildingListing(
+            new Action1<BuildingType>() {
+                @Override
+                public void invoke(BuildingType value) {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    player().currentBuilding = value;
+                    if (value.research != null) {
+                        research(value.research);
+                    }
+                    displayBuildingInfo();
+                }
+            },
+            new Action1<BuildingType>() {
+                @Override
+                public void invoke(BuildingType value) {
+                    player().currentBuilding = value;
+                    if (value.research != null) {
+                        research(value.research);
+                    }
+                    displayBuildingInfo();
+                    if (planet().canBuild(value)) {
+                        PlanetScreen ps = (PlanetScreen)displayPrimary(Screens.COLONY);
+                        ps.buildingsPanel.build.onPress.invoke();
+                    }
+                }
+            }
+        );
 		
 		descriptionText = new UILabel("", 7, commons.text());
 		descriptionText.wrap(true);
@@ -2250,9 +2252,18 @@ public class InfoScreen extends ScreenBase {
 			}
 		};
 		/** The action to invoke when the user selects an item. */
-		Action1<BuildingType> onSelect;
+		final Action1<BuildingType> onSelect;
 		/** The action to invoke when the user double-clicks on an item. */
-		Action1<BuildingType> onDoubleClick;
+		final Action1<BuildingType> onDoubleClick;
+        /**
+         * Constructor, initializes the selection callbacks.
+         * @param onSelect callback when an item is simply selected
+         * @param onDoubleClick callback when an item was double-clicked
+         */
+        public BuildingListing(Action1<BuildingType> onSelect, Action1<BuildingType> onDoubleClick) {
+            this.onSelect = Objects.requireNonNull(onSelect);
+            this.onDoubleClick = Objects.requireNonNull(onDoubleClick);
+        }
 		@Override
 		public void draw(Graphics2D g2) {
 			int rowCount = (height + rowHeight - 1) / rowHeight;
@@ -2308,14 +2319,14 @@ public class InfoScreen extends ScreenBase {
 			if (e.has(Type.DOWN)) {
 				BuildingType p = getItemAt(e.x, e.y);
 				if (p != null) {
-					onSelect.invoke(p);
+                    onSelect.invoke(p);
 					return true;
 				}
 			} else
 			if (e.has(Type.DOUBLE_CLICK)) {
 				BuildingType p = getItemAt(e.x, e.y);
 				if (p != null && planet().canBuild(p) && planet().owner == player()) {
-					onDoubleClick.invoke(p);
+                    onDoubleClick.invoke(p);
 					return true;
 				}
 			} else

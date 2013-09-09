@@ -451,7 +451,7 @@ public final class AutoBuilder {
 			if (!upgrade(world, planet, b, b.upgradeLevel + 1)) {
 				break;
 			}
-		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money() >= 30 * b.type.cost);
+		} while (b.upgradeLevel < b.type.upgrades.size() && planet.owner.money() >= 30L * b.type.cost);
 	}
 	/**
 	 * Update the building to the given new level.

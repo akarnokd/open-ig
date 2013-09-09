@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * @author akarnokd, 2011.09.07.
@@ -22,9 +23,16 @@ public class GroundwarExplosion {
 	/** The explosion phase. */
 	public int phase;
 	/** The available phases. */
-	public BufferedImage[] phases;
+	public final BufferedImage[] phases;
 	/** The target of the explosion. */
 	public GroundwarUnit target;
+    /**
+     * Constructor, initializes the phases array.
+     * @param phases the explosion phases
+     */
+    public GroundwarExplosion(BufferedImage[] phases) {
+        this.phases = Objects.requireNonNull(phases);
+    }
 	/** @return the image of the current phase. */
 	public BufferedImage get() {
 		return phases[phase];

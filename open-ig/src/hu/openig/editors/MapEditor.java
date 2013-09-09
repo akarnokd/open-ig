@@ -191,7 +191,7 @@ public class MapEditor extends JFrame {
 	/** The labels. */
 	Labels labels;
 	/** The User Interface elements to rename. */
-	class UIElements {
+	static class UIElements {
 		/** Show/hide buildings. */
 		@Rename(to = "mapeditor.show_hide_buildings")
 		JCheckBoxMenuItem viewShowBuildings;
@@ -435,11 +435,11 @@ public class MapEditor extends JFrame {
 			/** The colony graphics. */
 			private ColonyGFX colonyGraphics;
 			/** Surface list. */
-			private List<TileEntry> surfaces = new ArrayList<>();
+			private final List<TileEntry> surfaces = new ArrayList<>();
 			/** Buildings list. */
-			private List<TileEntry> buildings = new ArrayList<>();
+			private final List<TileEntry> buildings = new ArrayList<>();
 			/** Races. */
-			private Set<String> races = new HashSet<>();
+			private final Set<String> races = new HashSet<>();
 			/** The loaded text renderer. */
 			TextRenderer txt;
 			/** The loaded labels. */
@@ -509,13 +509,13 @@ public class MapEditor extends JFrame {
 				renderer.colonyGFX = colonyGraphics;
 				MapEditor.this.labels = lbl2;
 				
-				
-				renderer.selection = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFFFFFF00), null);
-				renderer.areaAccept = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFF00FFFF), null);
-				renderer.areaEmpty = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFF808080), null);
-				renderer.areaDeny = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileCrossed, 0xFFFF0000), null);
-				renderer.areaCurrent  = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileCrossed, 0xFFFFCC00), null);
-				
+				if (colonyGraphics != null) {
+                    renderer.selection = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFFFFFF00), null);
+                    renderer.areaAccept = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFF00FFFF), null);
+                    renderer.areaEmpty = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileEdge, 0xFF808080), null);
+                    renderer.areaDeny = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileCrossed, 0xFFFF0000), null);
+                    renderer.areaCurrent  = new Tile(1, 1, ImageUtils.recolor(colonyGraphics.tileCrossed, 0xFFFFCC00), null);
+                }
 				renderer.selection.alpha = 1.0f;
 				renderer.areaAccept.alpha = 1.0f;
 				renderer.areaDeny.alpha = 1.0f;
@@ -1219,7 +1219,7 @@ public class MapEditor extends JFrame {
 	 */
 	AbstractButton createFor(String graphicsResource, String tooltip, final JMenuItem inMenu, boolean toggle) {
 		AbstractButton result = toggle ? new JToggleButton() : new JButton();
-		URL res = getClass().getResource(graphicsResource);
+		URL res = MapEditor.class.getResource(graphicsResource);
 		if (res != null) {
 			result.setIcon(new ImageIcon(res));
 		}
@@ -1486,20 +1486,7 @@ public class MapEditor extends JFrame {
 	protected void doFilterBuilding() {
 		if (filterBuilding.getText().length() > 0) {
 			final String[] words = filterBuilding.getText().split("\\s+");
-			buildingSorter.setRowFilter(new RowFilter<TileList, Integer>() {
-				@Override
-				public boolean include(
-						javax.swing.RowFilter.Entry<? extends TileList, ? extends Integer> entry) {
-					TileEntry e = entry.getModel().rows.get(entry.getIdentifier());
-					String rowtext = (e.name + " " + e.surface + " " + e.tile.width + "x" + e.tile.height).toLowerCase(); 
-					for (String s : words) {
-						if (!rowtext.contains(s.toLowerCase())) {
-							return false;
-						}
-					}
-					return true;
-				}
-			});
+			buildingSorter.setRowFilter(new RowFilterByWords(words));
 		} else {
 			buildingSorter.setRowFilter(null);
 		}
@@ -1508,20 +1495,7 @@ public class MapEditor extends JFrame {
 	protected void doFilterSurface() {
 		if (filterSurface.getText().length() > 0) {
 			final String[] words = filterSurface.getText().split("\\s+");
-			surfaceSorter.setRowFilter(new RowFilter<TileList, Integer>() {
-				@Override
-				public boolean include(
-						javax.swing.RowFilter.Entry<? extends TileList, ? extends Integer> entry) {
-					TileEntry e = entry.getModel().rows.get(entry.getIdentifier());
-					String rowtext = (e.name + " " + e.surface + " " + e.tile.width + "x" + e.tile.height).toLowerCase(); 
-					for (String s : words) {
-						if (!rowtext.contains(s.toLowerCase())) {
-							return false;
-						}
-					}
-					return true;
-				}
-			});
+			surfaceSorter.setRowFilter(new RowFilterByWords(words));
 			
 		} else {
 			surfaceSorter.setRowFilter(null);
@@ -1784,8 +1758,8 @@ public class MapEditor extends JFrame {
 	 * Display the help in a browser window.
 	 */
 	void doHelp() {
-		Desktop desktop = Desktop.getDesktop();
-		if (desktop != null) {
+		if (Desktop.isDesktopSupported()) {
+    		Desktop desktop = Desktop.getDesktop();
 			try {
 				desktop.browse(new URI("http://code.google.com/p/open-ig/wiki/MapEditor"));
 			} catch (IOException ex) {
@@ -2000,13 +1974,7 @@ public class MapEditor extends JFrame {
 				surfaces.add(e);
 			}
 		}
-		Collections.sort(surfaces, new Comparator<TileEntry>() {
-			@Override
-			public int compare(TileEntry o1, TileEntry o2) {
-				int c = o1.surface.compareTo(o2.surface);
-				return c != 0 ? c : (o1.id - o2.id);
-			}
-		});
+		Collections.sort(surfaces, TileEntry.DEFAULT_ORDER);
 		
 		int idx = 0;
 		for (Map.Entry<String, BuildingType> bt : buildingModel.buildings.entrySet()) {
@@ -2036,13 +2004,7 @@ public class MapEditor extends JFrame {
 			}
 			idx++;
 		}
-		Collections.sort(buildings, new Comparator<TileEntry>() {
-			@Override
-			public int compare(TileEntry o1, TileEntry o2) {
-				int c = o1.surface.compareTo(o2.surface);
-				return c != 0 ? c : (o1.id - o2.id);
-			}
-		});
+		Collections.sort(buildings, TileEntry.DEFAULT_ORDER);
 	}
 	/**
 	 * Find a custom name in the given entry list.
@@ -2232,17 +2194,19 @@ public class MapEditor extends JFrame {
 			setUndoRedoMenu();
 		}		
 	}
+    /** A constant negative one. */
+    private static final Func0<Integer> CONST_MINUS_1 = new Func0<Integer>() {
+        @Override
+        public Integer invoke() {
+            return -1;
+        }
+    };
+
 	/**
 	 * Load a planet definition.
 	 * @param settings the settings
 	 */
 	void loadPlanet(MapSaveSettings settings) {
-		Func0<Integer> constMinus1 = new Func0<Integer>() {
-			@Override
-			public Integer invoke() {
-				return -1;
-			}
-		};
 		try {
 			if (renderer.surface == null) {
 				createPlanetSurface(33, 66);
@@ -2254,12 +2218,12 @@ public class MapEditor extends JFrame {
 			}
 			if (settings.surface) {
 				doClearSurfaces(false);
-				renderer.surface.parseMap(planet, galaxyModel, null, constMinus1);
+				renderer.surface.parseMap(planet, galaxyModel, null, CONST_MINUS_1);
 			}
 			if (settings.buildings) {
 				doClearBuildings(false);
 				String tech = renderer.surface.getTechnology();
-				renderer.surface.parseMap(planet, null, buildingModel, constMinus1);
+				renderer.surface.parseMap(planet, null, buildingModel, CONST_MINUS_1);
 				if (tech != null) {
 					renderer.surface.placeRoads(tech, buildingModel);
 				}
@@ -2931,4 +2895,29 @@ public class MapEditor extends JFrame {
 		}
 		return null;
 	}
+    /** The row filter based on keywords. */
+    private static class RowFilterByWords extends RowFilter<TileList, Integer> {
+        /** The words to filter. */
+        private final String[] words;
+        /**
+         * Constructor, initializes the world list.
+         * @param words the worlds
+         */
+        public RowFilterByWords(String[] words) {
+            this.words = words;
+        }
+
+        @Override
+        public boolean include(
+            javax.swing.RowFilter.Entry<? extends TileList, ? extends Integer> entry) {
+            TileEntry e = entry.getModel().rows.get(entry.getIdentifier());
+            String rowtext = (e.name + " " + e.surface + " " + e.tile.width + "x" + e.tile.height).toLowerCase();
+            for (String s : words) {
+                if (!rowtext.contains(s.toLowerCase())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }

@@ -54,9 +54,9 @@ public class ImportDialog extends JDialog {
 	/** Replace the concrete planet surface? */
 	public boolean withSurface;
 	/** The selected planet id. */
-	public OriginalPlanet planet;
+	public transient OriginalPlanet planet;
 	/** The resource locator. */
-	ResourceLocator rl;
+	transient ResourceLocator rl;
 	/** The orignal map's definition. */
 	public static class MapType {
 		/** The name only. */
@@ -78,9 +78,9 @@ public class ImportDialog extends JDialog {
 		}
 	}
 	/** The reference for the original map definitions. */
-	List<MapType> originalMaps = new ArrayList<>();
+	final List<MapType> originalMaps = new ArrayList<>();
 	/** The list of original planet ids. */
-	List<OriginalPlanet> originalPlanets = new ArrayList<>();
+	final List<OriginalPlanet> originalPlanets = new ArrayList<>();
 	/** The original map to select. */
 	JComboBox<String> cbOriginalMap;
 	/** The number of coordinates to shift the original map. */
@@ -163,16 +163,7 @@ public class ImportDialog extends JDialog {
 		}
 		// sort by surface and variant then add it to the list again
 		List<OriginalPlanet> ops2 = new ArrayList<>(originalPlanets);
-		Collections.sort(ops2, new Comparator<OriginalPlanet>() {
-			@Override
-			public int compare(OriginalPlanet o1, OriginalPlanet o2) {
-				int c = o1.surfaceType.compareTo(o2.surfaceType);
-				if (c == 0) {
-					c = o1.surfaceVariant < o2.surfaceVariant ? -1 : (o1.surfaceVariant > o2.surfaceVariant ? 1 : 0);
-				}
-				return c;
-			}
-		});
+		Collections.sort(ops2, OriginalPlanet.DEFAULT_ORDER);
 		for (OriginalPlanet op : ops2) {
 			cbOriginalPlanets.addItem(op.name + " [" + op.surfaceType + " (" + op.surfaceVariant + "): " + (op.race != null ? op.race : "-") + "]");
 		}

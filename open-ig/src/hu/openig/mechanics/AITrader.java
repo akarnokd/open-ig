@@ -175,7 +175,7 @@ public class AITrader implements AIManager {
 		for (Planet pl : world.planets.values()) {
 			if (pl.owner != null) {
 				if (pl.owner == world.player 
-						|| (pl.owner != null && pl.owner == player)
+						|| (pl.owner == player)
 						|| drs.contains(pl.owner.id)) {
 					planets.add(pl);
 				}

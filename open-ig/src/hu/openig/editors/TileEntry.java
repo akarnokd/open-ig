@@ -9,6 +9,7 @@ package hu.openig.editors;
 
 import hu.openig.model.BuildingType;
 import hu.openig.model.Tile;
+import java.util.Comparator;
 
 import javax.swing.ImageIcon;
 
@@ -31,4 +32,12 @@ public class TileEntry {
 	public Tile previewTile;
 	/** The referenced building type if any. */
 	public BuildingType buildingType;
+    /** The default tile ordering. */
+    public static final Comparator<TileEntry> DEFAULT_ORDER = new Comparator<TileEntry>() {
+        @Override
+        public int compare(TileEntry o1, TileEntry o2) {
+            int c = o1.surface.compareTo(o2.surface);
+            return c != 0 ? c : Integer.compare(o1.id, o2.id);
+        }
+    };
 }

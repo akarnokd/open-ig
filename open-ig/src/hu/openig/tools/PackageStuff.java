@@ -47,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * Utility program to package the executable JAR file and upgrade packs for image+data.
@@ -433,7 +434,7 @@ public final class PackageStuff {
 			if (!checksums.isEmpty()) {
 				update.save("update.xml");
 			}
-		} catch (Exception ex) {
+		} catch (IOException | XMLStreamException ex) {
 			ex.printStackTrace();
 		}
 	}

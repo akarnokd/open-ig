@@ -11,6 +11,7 @@ package hu.openig.tools;
 import hu.openig.utils.Base64;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
+import java.io.IOException;
 
 import java.io.OutputStream;
 import java.net.URL;
@@ -78,7 +79,7 @@ public final class UploadToWeb {
 			} finally {
 				c.disconnect();
 			}
-		} catch (Exception ex) {
+		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}
 	}

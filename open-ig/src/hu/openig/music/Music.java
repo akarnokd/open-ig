@@ -193,12 +193,13 @@ public class Music {
 					}
 				}
 			} finally {
-				if (onComplete != null) {
+                final Action1<String> onCompleteAction = onComplete;
+                onComplete = null;
+				if (onCompleteAction != null) {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							onComplete.invoke(name);
-							onComplete = null;
+							onCompleteAction.invoke(name);
 						}
 					});
 				}

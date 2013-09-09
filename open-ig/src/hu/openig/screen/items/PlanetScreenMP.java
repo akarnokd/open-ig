@@ -1365,7 +1365,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 			other.bounds(10, 25 + (textSize + 3) * i, w, 0);
 			other.size(w, other.getWrappedHeight());
 			h = Math.max(h, other.y + other.height);
-			i++;
+//			i++;
 			
 			if (needed.visible()) {
 				needed.bounds(10, other.y + other.height + 3, w, 0);
@@ -2647,7 +2647,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 				if (count > 1) {
 					n += " x " + count;
 				}
-				BufferedImage img = u.model.normal[0][0];
+				BufferedImage img = u.model.normalStaticImage();
 				int iw = (width - img.getWidth()) / 2;
 				g2.drawImage(img, iw, 25, null);
 				

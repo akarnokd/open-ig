@@ -120,8 +120,8 @@ public abstract class GroundwarObject {
 		angles[angles.length - 1] = angles[0];
 		return angles;
 	}
-	/** @return the unit matrix. */
-	public BufferedImage[][] matrix() {
-		return matrix;
+	/** @return a static image of this groundwar object. */
+	public BufferedImage staticImage() {
+		return matrix[0][0];
 	}
 }

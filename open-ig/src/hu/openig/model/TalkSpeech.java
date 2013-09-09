@@ -8,13 +8,15 @@
 
 package hu.openig.model;
 
+import java.util.Objects;
+
 /**
  * The individual media and state for a conversation.
  * @author akarnokd, 2009.10.10.
  */
 public class TalkSpeech {
 	/** The speech ID. */
-	public String id;
+	public final String id;
 	/** The speech was already taken. */
 	public boolean spoken;
 	/** The speech media. */
@@ -23,4 +25,11 @@ public class TalkSpeech {
 	public String to;
 	/** The speech option text. */
 	public String text;
+    /**
+     * Constructor, sets the speech identifier.
+     * @param id the fleet identifier
+     */
+    public TalkSpeech(String id) {
+        this.id = Objects.requireNonNull(id);
+    }
 }

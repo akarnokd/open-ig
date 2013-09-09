@@ -654,7 +654,7 @@ public class MultiplayerEditUserDialog extends JDialog {
 		userTypeStatic.setText((String)userTypeBox.getSelectedItem());
 		int i = 0;
 		for (SkirmishPlayer sp : templatePlayers) {
-			if (sp.originalId.equals(user.originalId)) {
+			if (Objects.equals(sp.originalId, user.originalId)) {
 				empireRace.setSelectedIndex(i);
 				empireRaceStatic.setText((String)empireRace.getSelectedItem());
 				break;

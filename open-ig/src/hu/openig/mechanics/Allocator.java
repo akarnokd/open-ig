@@ -102,11 +102,24 @@ public final class Allocator {
 	 * @param strategy the current strategy 
 	 */
 	public static void computeNow(Planet planet, final ResourceAllocationStrategy strategy) {
-		if (planet.surface.buildings.size() == 0) {
+		if (planet.surface.buildings.isEmpty()) {
 			return;
 		}
+        computeNow(planet.surface.buildings.iterable(), strategy, (int)planet.population());
+	}
+    /**
+     * Computes the worker and energy allocation for a sequence of buildings with
+     * the given target strategy and available population.
+     * @param buildings the building sequence
+     * @param strategy the allocation strategy
+     * @param population the (positive) population
+     */
+    public static void computeNow(
+        Iterable<Building> buildings, 
+        ResourceAllocationStrategy strategy, 
+        int population) {
 		final List<BuildingAllocationWorker> baw = new ArrayList<>();
-		for (Building b : planet.surface.buildings.iterable()) {
+		for (Building b : buildings) {
 			if (b.enabled) {
 				baw.add(b.getAllocationWorker());
 			} else {
@@ -114,12 +127,12 @@ public final class Allocator {
 				b.assignedEnergy = 0;
 			}
 		}
-		final int workers = -(int)planet.population();
+		final int workers = -population;
 		compute(baw, strategy, workers);
 		for (BuildingAllocationWorker b : baw) {
 			b.write();
 		}
-	}
+    }
 	/**
 	 * Write back the computation results to the underlying building object.
 	 * @param ras the resource allocation settings

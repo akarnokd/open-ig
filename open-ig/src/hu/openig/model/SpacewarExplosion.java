@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * An animation for a space explosion.
@@ -18,9 +19,16 @@ public class SpacewarExplosion extends SpacewarObject {
 	/** The phase counter for the animation if any. */
 	public int phase;
 	/** The phase image of the beam (e.g., the rotating meson bubble). */
-	public BufferedImage[] phases;
+	public final BufferedImage[] phases;
 	/** The structure to remove when the explosion is at the middle. */
 	public SpacewarStructure target;
+    /**
+     * Constructor, initializes the phase images.
+     * @param phases the phase images
+     */
+    public SpacewarExplosion(BufferedImage[] phases) {
+        this.phases = Objects.requireNonNull(phases);
+    }
 	@Override
 	public BufferedImage get() {
 		return phases[(phase) % phases.length];

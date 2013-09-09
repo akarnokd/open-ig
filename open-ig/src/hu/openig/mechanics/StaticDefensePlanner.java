@@ -416,7 +416,7 @@ public class StaticDefensePlanner extends Planner {
 						
 					}
 				});
-				maxDeploy -= cnt;
+//				maxDeploy -= cnt;
 				planet.statistics.vehicleCount += cnt;
 				return true;
 			}

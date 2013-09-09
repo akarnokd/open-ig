@@ -47,9 +47,7 @@ public class Walks {
 			} else {
 				ships.put(ws.level, ws);
 				for (XElement position : ship.childrenWithName("position")) {
-					WalkPosition wp = new WalkPosition();
-					wp.ship = ws;
-					wp.id = position.get("id");
+					WalkPosition wp = new WalkPosition(position.get("id"), ws);
 					ws.positions.put(wp.id, wp);
 					wp.pictureName = position.get("picture");
 					for (XElement transition : position.childrenWithName("transition")) {

@@ -771,8 +771,10 @@ public class VideoPlayer extends JFrame {
 		 * Stop the playback.
 		 */
 		public void stopPlayback() {
-			clip.stop();
-			clip.close();
+            if (clip != null) {
+                clip.stop();
+                clip.close();
+            }
 		}
 		@Override
 		protected void work() {

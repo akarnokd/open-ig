@@ -210,7 +210,7 @@ public final class OriginalConverter {
 		} catch (IOException ex) {
 			// ignored
 		}
-		if (len % 2 == 1) {
+		if (len % 2 != 0) {
 			byte[] pad = new byte[] { 0 };
 			data.add(pad);
 			len++;

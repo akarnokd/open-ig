@@ -23,7 +23,7 @@ public class ImagePaint extends JComponent {
 	/** */
 	private static final long serialVersionUID = 3168477795343188089L;
 	/** The image. */
-	Tile tile;
+	transient Tile tile;
 	/** The brighteness factor. */
 	float alpha = 1.0f;
 	@Override

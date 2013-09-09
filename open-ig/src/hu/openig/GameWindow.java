@@ -246,66 +246,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 	}
 	/** The record of screens. */
-	public final class AllScreens {
-		/** Private constructor. */
-		private AllScreens() {
-
-		}
-		/** Main menu. */
-		public MainScreen main;
-		/** Videos. */
-		public VideoScreen videos;
-		/** Bridge. */
-		public BridgeScreen bridge;
-		/** Starmap. */
-		public StarmapScreen starmap;
-		/** Colony. */
-		public PlanetScreen colony;
-		/** Equipment. */
-		public EquipmentScreen equipment;
-		/** Research and production. */
-		public ResearchProductionScreen researchProduction;
-		/** Information. */
-		public InfoScreen info;
-		/** Diplomacy. */
-		public DiplomacyScreen diplomacy;
-		/** Database. */
-		public DatabaseScreen database;
-		/** Bar. */
-		public BarScreen bar;
-		/** Statistics and achievements. */
-		public AchievementsScreen statisticsAchievements;
-		/** Spacewar. */
-		public SpacewarScreen spacewar;
-		/** Single player. */
-		public SingleplayerScreen singleplayer;
-		/** Load and save. */
-		public LoadSaveScreen loadSave;
-		/** Battle finish screen. */
-		public BattlefinishScreen battleFinish;
-		/** The movie screens. */
-		public MovieScreen movie;
-		/** The loading in progress screen. */
-		public LoadingScreen loading;
-		/** The ship walk screen. */
-		public ShipwalkScreen shipwalk;
-		/** The status bar screen. */
-		public StatusbarScreen statusbar;
-		/** The phsychologist test. */
-		public TestScreen test;
-		/** The credits. */
-		public CreditsScreen credits;
-		/** The game over screen. */
-		public GameOverScreen gameOver;
-		/** The skirmish screen. */
-		public SkirmishScreen skirmish;
-		/** The traits screen. */
-		public TraitScreen traits;
-		/** The profile screen. */
-		public ProfileScreen profile;
-	}
-	/** The record of screens. */
-	public final AllScreens allScreens = new AllScreens();
+	public final GameScreens allScreens = new GameScreens();
 	/** A pending repaint request. */
 	boolean repaintRequest;
 	/** A partial repaint request. */
@@ -372,7 +313,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public GameWindow(Configuration config, CommonResources commons) {
 		super("Open Imperium Galactica " + Configuration.VERSION + " [pid: " + ManagementFactory.getRuntimeMXBean().getName() + "][Java: " + System.getProperty("java.version") + "]");
 		setFocusTraversalKeysEnabled(false);
-		URL icon = this.getClass().getResource("/hu/openig/gfx/open-ig-logo.png");
+		URL icon = GameWindow.class.getResource("/hu/openig/gfx/open-ig-logo.png");
 		if (icon != null) {
 			try {
 				setIconImage(ImageIO.read(icon));
@@ -621,11 +562,8 @@ public class GameWindow extends JFrame implements GameControls {
 		
 		done();
 		dispose();
-		try {
-			config.crashLog = null;
-			config.watcherWindow.close();
-		} catch (IOException e) {
-		}
+                config.crashLog = null;
+                U.close(config.watcherWindow);
 	}
 	@Override
 	public void switchLanguage(String newLanguage) {
@@ -661,7 +599,7 @@ public class GameWindow extends JFrame implements GameControls {
 					displayPrimary(Screens.MAIN);
 				}
 			});
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			Exceptions.add(ex);
 			damagedInstall();
 		}
@@ -1353,6 +1291,14 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		return null;
 	}
+        /*/** Filter for XML files starting with info- or save-. */
+        protected static final FilenameFilter SAVE_FILES = new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                        return (name.startsWith("info-") || name.startsWith("save-")) 
+                                        && name.endsWith(".xml");
+                }
+        };
 	/**
 	 * Limit the number of various saves.
 	 * @param dir the saves directory
@@ -1364,13 +1310,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		// locate saves
 		Set<String> saves = new HashSet<>();
-		File[] files = dir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return (name.startsWith("info-") || name.startsWith("save-")) 
-						&& name.endsWith(".xml");
-			}
-		});
+		File[] files = dir.listFiles(SAVE_FILES);
 		if (files == null) {
 			return;
 		}
@@ -1394,7 +1334,9 @@ public class GameWindow extends JFrame implements GameControls {
 			if (info.canRead()) {
 				// if no associated save, delete the info
 				if (!save.canRead()) {
-					info.delete();
+					if (!info.delete()) {
+                                            info.deleteOnExit();
+                                        }
 					continue;
 				}
 				// load world info
@@ -1405,7 +1347,9 @@ public class GameWindow extends JFrame implements GameControls {
 					if (saveMode.equals(mode.toString())) {
 						remaining--;
 						if (remaining < 0) {
-							info.delete();
+							if (!info.delete()) {
+								System.err.println("Warning: Could not delete file " + info);
+                            }
 							if (!save.delete()) {
 								System.err.println("Warning: Could not delete file " + save);
 							}

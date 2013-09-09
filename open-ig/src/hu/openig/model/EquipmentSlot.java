@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Record for an on-ship equipment slot.
@@ -17,9 +18,9 @@ import java.util.List;
  */
 public class EquipmentSlot {
 	/** Is this slot fixed? */
-	public boolean fixed;
+	public final boolean fixed;
 	/** The slot's identifier. */
-	public String id;
+	public final String id;
 	/** The slot's display location. */
 	public int x;
 	/** The slot's display location. */
@@ -32,4 +33,13 @@ public class EquipmentSlot {
 	public int max;
 	/** The list of allowed research types. */
 	public final List<ResearchType> items = new ArrayList<>();
+    /**
+     * Constructor, initializes the slot identifier and fixed indicator.
+     * @param id the slot identifier.
+     * @param fixed the fixed-slot indicator
+     */
+    public EquipmentSlot(String id, boolean fixed) {
+        this.id = Objects.requireNonNull(id);
+        this.fixed = fixed;
+    }
 }

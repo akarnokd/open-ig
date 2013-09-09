@@ -735,13 +735,14 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		};
 	
 		for (int i = 0; i < 6; i++) {
-			final TechnologySlot ts = new TechnologySlot(commons);
-			ts.statistics = new Func0<PlanetStatistics>() {
-				@Override
-				public PlanetStatistics invoke() {
-					return statistics;
-				}
-			};
+			final TechnologySlot ts = new TechnologySlot(commons,
+                new Func0<PlanetStatistics>() {
+                    @Override
+                    public PlanetStatistics invoke() {
+                        return statistics;
+                    }
+                }
+            );
 			ts.visible(false);
 			ts.onPress = selectSlot; 
 			

@@ -191,8 +191,8 @@ public class MapRenderer extends JComponent {
 				current = loc;
 				placementRectangle.x = current.x - placementRectangle.width / 2;
 				placementRectangle.y = current.y + placementRectangle.height / 2;
-				selectedRectangle.x = Math.min(orig.x, loc.x);
-				selectedRectangle.y = Math.max(orig.y, loc.y);
+				selectedRectangle = new Rectangle(Math.min(orig.x, loc.x),
+                    Math.max(orig.y, loc.y));
 				selectedRectangle.width = Math.max(orig.x, loc.x) - selectedRectangle.x + 1;
 				selectedRectangle.height = - Math.min(orig.y, loc.y) + selectedRectangle.y + 1;
 				repaint();

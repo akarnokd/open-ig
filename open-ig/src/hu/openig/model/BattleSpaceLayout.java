@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -34,6 +35,13 @@ public class BattleSpaceLayout {
 	public static final int SHIP_COLOR = 0xFFFFBE00;
 	/** The map from location to figher (true) or ship (false). */
 	public final Map<Location, Boolean> map = new HashMap<>();
+    /**
+     * Constructor, initializes the image but not the map.
+     * @param image the layout image to use
+     */
+    public BattleSpaceLayout(BufferedImage image) {
+        this.image = Objects.requireNonNull(image);
+    }
 	/**
 	 * Scan the image and build the layout map.
 	 */

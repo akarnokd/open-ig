@@ -80,7 +80,7 @@ public class FleetListing extends UIContainer {
 		List<Fleet> fleets = null;
 		if (nearby && cf != null) {
 			fleets = cf.fleetsInRange(20);
-			cf = selected;
+//			cf = selected;
 		} else {
 			fleets = commons.world().player.ownFleets();
 		}
