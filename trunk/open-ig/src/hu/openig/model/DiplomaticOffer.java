@@ -91,6 +91,6 @@ public class DiplomaticOffer {
 			value((Player)o);
 			return this;
 		}
-		throw new IllegalArgumentException("Unsupported type: " + (o != null ? o.getClass().toString() : "null"));
+		throw new IllegalArgumentException("Unsupported type: " + o.getClass().toString());
 	}
 }

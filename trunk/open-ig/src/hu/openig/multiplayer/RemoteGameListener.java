@@ -125,7 +125,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 					if (o instanceof MessageObject) {
 						calls.add(processMessageObjectDeferred((MessageObject)o));
 					} else {
-						throw new ErrorResponse(ErrorType.UNKNOWN_MESSAGE, message != null ? message.getClass().toString() : "null");
+						throw new ErrorResponse(ErrorType.UNKNOWN_MESSAGE, message.getClass().toString());
 					}
 				}
 				return new DeferredTransform<Void>() {

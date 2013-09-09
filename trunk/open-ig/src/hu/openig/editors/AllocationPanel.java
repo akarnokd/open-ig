@@ -10,13 +10,11 @@ package hu.openig.editors;
 
 import hu.openig.mechanics.Allocator;
 import hu.openig.model.Building;
-import hu.openig.model.Planet;
-import hu.openig.model.PlanetSurface;
 import hu.openig.model.ResourceAllocationStrategy;
-import hu.openig.model.World;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,7 +37,7 @@ public class AllocationPanel extends JPanel {
 	/** */
 	private static final long serialVersionUID = -1202967327575505939L;
 	/** The list of all buildings. */
-	public List<Building> buildings;
+	public final List<Building> buildings = new ArrayList<>();
 	/** The available worker count. */
 	public JTextField availableWorkers;
 	/** Compute and apply the allocation values. */
@@ -260,12 +258,7 @@ public class AllocationPanel extends JPanel {
 		apply.setEnabled(false);
 		doRefresh();
 
-		final Planet p = new Planet("", new World(null));
-		p.surface = new PlanetSurface();
-		p.population(Integer.parseInt(availableWorkers.getText()));
-		p.surface.buildings.addAll(buildings);
-		
-		Allocator.computeNow(p);
+		Allocator.computeNow(buildings, ResourceAllocationStrategy.DAMAGE_AWARE, Integer.parseInt(availableWorkers.getText()));
 		doRefresh();
 		apply.setEnabled(true);
 	}

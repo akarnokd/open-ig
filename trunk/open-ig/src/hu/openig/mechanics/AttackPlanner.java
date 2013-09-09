@@ -419,7 +419,7 @@ public class AttackPlanner extends Planner {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(10000 * (ModelUtils.randomInt(10) + 1)));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(10000L * (ModelUtils.randomInt(10) + 1)));
 						}
 					});
 					break;

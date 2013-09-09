@@ -42,6 +42,19 @@ public class AStarSearch<T> {
 	 * false and list with a path that brings close to the target. 
 	 */
 	public Pair<Boolean, List<T>> search(final T initial, final T destination) {
+        if (trueDistance == null) {
+            throw new IllegalStateException("trueDistance is null");
+        }
+        if (neighbors == null) {
+            throw new IllegalStateException("neighbors is null");
+        }
+        if (estimation == null) {
+            throw new IllegalStateException("estimation is null");
+        }
+        if (distance == null) {
+            throw new IllegalStateException("distance is null");
+        }
+        
 		Set<T> closedSet = new HashSet<>();
 		Map<T, T> cameFrom = new HashMap<>();
 		final Map<T, Integer> gScore = new HashMap<>();

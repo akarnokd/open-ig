@@ -69,9 +69,9 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	/** The configuration file. */
 	public static final String CONFIG_FILE = "open-ig-ce-config.xml";
 	/** The console watcher. */
-	public static Closeable consoleWatcher;
+	static Closeable consoleWatcher;
 	/** The UI language. */
-	public static String language = "en";
+	static String language = "en";
 	/** The undo manager. */
 	UndoManager undoManager;
 	/** The main menu. */

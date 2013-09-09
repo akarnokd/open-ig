@@ -720,7 +720,7 @@ public final class AnimPlay {
 				public void finished() {
 					try {
 						// data size must be even!
-						if (byteCount % 2 == 1) {
+						if (byteCount % 2 != 0) {
 							rf.write(0x80);
 							byteCount++;
 						}

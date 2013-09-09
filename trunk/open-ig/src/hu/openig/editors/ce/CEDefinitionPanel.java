@@ -46,14 +46,14 @@ public class CEDefinitionPanel extends CEBasePanel implements CEPanelPreferences
 	/** */
 	private static final long serialVersionUID = 3418547993103195127L;
 	/** The element names. */
-	protected static final String[] ELEMENT_NAMES = {
+	static final String[] ELEMENT_NAMES = {
 		"intro", "image", "battle", "bridge", "buildings",
 		"diplomacy", "galaxy", "planets", "players",
 		"talks", "tech", "test", "walks", "scripting",
 		"chats", "spies"
 	};
 	/** The parameter names. */
-	protected static final String[] PARAM_NAMES = {
+	static final String[] PARAM_NAMES = {
 		"groundRadarUnitSize", "fleetRadarUnitSize", "researchSpeed", 
 		"productionUnit", "constructionSpeed", "constructionCost",
 		"repairSpeed", "repairCost", "costToHitpoints", 

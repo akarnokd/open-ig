@@ -697,7 +697,7 @@ public class SurfaceRenderer extends UIComponent {
 
 			GroundwarUnit u = unitsToPlace.getFirst();
 
-			BufferedImage ui = u.matrix()[0][0];
+			BufferedImage ui = u.staticImage();
 			int ux = x + (w - ui.getWidth()) / 2;
 			int uy = y + 24;
 

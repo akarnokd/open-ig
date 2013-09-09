@@ -140,7 +140,7 @@ public class World implements ModelLookup {
 	);
 	/**
 	 * Constructs a world under the given game environment.
-	 * @param env the environment
+	 * @param env the environment, not null
 	 */
 	public World(GameEnvironment env) {
 		this.createVersion = env.version();
@@ -788,8 +788,7 @@ public class World implements ModelLookup {
 		}
 		
 		for (XElement slot : item.childrenWithName("slot")) {
-			EquipmentSlot s = new EquipmentSlot();
-			s.id = slot.get("id");
+			EquipmentSlot s = new EquipmentSlot(slot.get("id"), false);
 			s.x = slot.getInt("x");
 			s.y = slot.getInt("y");
 			s.width = slot.getInt("width");
@@ -803,9 +802,7 @@ public class World implements ModelLookup {
 			tech.slots.put(s.id, s);
 		}
 		for (XElement slotFixed : item.childrenWithName("slot-fixed")) {
-			EquipmentSlot s = new EquipmentSlot();
-			s.fixed = true;
-			s.id = slotFixed.get("id");
+			EquipmentSlot s = new EquipmentSlot(slotFixed.get("id"), true);
 			s.max = slotFixed.getInt("count");
 			s.items.add(getResearch(slotFixed.get("item")));
 			tech.slots.put(s.id, s);
@@ -2182,9 +2179,6 @@ public class World implements ModelLookup {
 			
 			se.infoImageName = xspace.get("image");
 			se.destruction = SoundType.valueOf(xspace.get("sound"));
-			if (se.destruction == null) {
-				System.err.println("Missing sound " + xspace.get("sound") + " for " + id);
-			}
 			if (xspace.has("movement-speed")) {
 				se.movementSpeed = xspace.getInt("movement-speed");
 			}
@@ -2265,9 +2259,7 @@ public class World implements ModelLookup {
 			battle.groundShields.put(id, se);
 		}
 		for (XElement xlayout : xbattle.childElement("layouts").childrenWithName("layout")) {
-			BattleSpaceLayout ly = new BattleSpaceLayout();
-			
-			ly.image = rl.getImage(xlayout.get("map"));
+			BattleSpaceLayout ly = new BattleSpaceLayout(rl.getImage(xlayout.get("map")));
 			ly.parse();
 			
 			battle.layouts.add(ly);
@@ -3057,17 +3049,21 @@ public class World implements ModelLookup {
 						dr.value = 100;
 						dr.strongAlliance = true;
 					} else {
-						switch (skirmishDefinition.initialDiplomaticRelation) {
-						case PEACEFUL:
-							dr.value = 100;
-							break;
-						case WAR:
-							dr.value = 0;
-							break;
-						default:
-							dr.value = p2.initialStance;
-							break;
-						}
+                        if (skirmishDefinition != null) {
+                            switch (skirmishDefinition.initialDiplomaticRelation) {
+                            case PEACEFUL:
+                                dr.value = 100;
+                                break;
+                            case WAR:
+                                dr.value = 0;
+                                break;
+                            default:
+                                dr.value = p2.initialStance;
+                                break;
+                            }
+                        } else {
+                            dr.value = 50;
+                        }
 					}
 				}
 			}

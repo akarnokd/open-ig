@@ -31,7 +31,7 @@ import java.util.concurrent.Future;
  */
 public class MessageListener implements Closeable {
 	/** The server socket. */
-	protected ServerSocket server;
+	protected volatile ServerSocket server;
 	/** The bind address. */
 	protected final InetAddress local;
 	/** The bind port. */
@@ -93,12 +93,15 @@ public class MessageListener implements Closeable {
 	protected void acceptConnections() {
 		try {
 			while (!Thread.currentThread().isInterrupted()) {
-				Socket socket = server.accept();
-				MessageConnection conn = new MessageConnection(socket, clients);
-				if (onConnection == null || onConnection.invoke(conn)) {
-					clients.add(conn);
-					exec.execute(conn);
-				}
+                ServerSocket s = server;
+                if (s != null) {
+                    Socket socket = s.accept();
+                    MessageConnection conn = new MessageConnection(socket, clients);
+                    if (onConnection == null || onConnection.invoke(conn)) {
+                        clients.add(conn);
+                        exec.execute(conn);
+                    }
+                }
 			}
 		} catch (IOException ex) {
 			if (!closed) {

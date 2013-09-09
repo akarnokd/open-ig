@@ -1120,13 +1120,14 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		};
 		
 		for (int i = 0; i < 6; i++) {
-			TechnologySlot slot = new TechnologySlot(commons);
-			slot.statistics = new Func0<PlanetStatistics>() {
-				@Override
-				public PlanetStatistics invoke() {
-					return statistics;
-				}
-			};
+			TechnologySlot slot = new TechnologySlot(commons,
+                new Func0<PlanetStatistics>() {
+                    @Override
+                    public PlanetStatistics invoke() {
+                        return statistics;
+                    }
+                }
+            );
 			slot.visible(false);
 			slot.onPress = selectSlot;
 			slots.add(slot);

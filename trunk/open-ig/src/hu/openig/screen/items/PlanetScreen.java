@@ -1259,7 +1259,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				
 				GroundwarUnit u = unitsToPlace.getFirst();
 				
-				BufferedImage ui = u.matrix()[0][0];
+				BufferedImage ui = u.staticImage();
 				int ux = x + (w - ui.getWidth()) / 2;
 				int uy = y + 24;
 				
@@ -2745,7 +2745,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			other.bounds(10, 25 + (textSize + 3) * i, w, 0);
 			other.size(w, other.getWrappedHeight());
 			h = Math.max(h, other.y + other.height);
-			i++;
+//			i++;
 			
 			if (needed.visible()) {
 				needed.bounds(10, other.y + other.height + 3, w, 0);
@@ -4768,17 +4768,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	Location buildingNearby(Building b, final Location initial) {
 		final Location destination = centerCellOf(b);
 
-		final Pathfinding pathfinding = getPathfinding(null);
+        final Func2<Location, Location, Integer> trueDistance = defaultTrueDistance;
 		
 		Comparator<Location> nearestComparator = new Comparator<Location>() {
 			@Override
 			public int compare(Location o1, Location o2) {
-				int d1 = pathfinding.trueDistance.invoke(destination, o1);
-				int d2 = pathfinding.trueDistance.invoke(destination, o2);
+				int d1 = trueDistance.invoke(destination, o1);
+				int d2 = trueDistance.invoke(destination, o2);
 				int c = Integer.compare(d1, d2);
 				if (c == 0) {
-					d1 = pathfinding.trueDistance.invoke(initial, o1);
-					d2 = pathfinding.trueDistance.invoke(initial, o2);
+					d1 = trueDistance.invoke(initial, o1);
+					d2 = trueDistance.invoke(initial, o2);
 					c = Integer.compare(d1, d2);
 				}
 				return c;
@@ -5069,7 +5069,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		if (diff > Math.PI) {
 			diff -= 2 * Math.PI; 
 		}
-		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.model.matrix[0].length / SIMULATION_DELAY;
+		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.model.angles() / SIMULATION_DELAY;
 		if (Math.abs(diff) < anglePerStep) {
 			gun.angle = targetAngle;
 			return true;
@@ -5083,12 +5083,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param type the type of the explosion animation
 	 */
 	void createExplosion(GroundwarUnit target, ExplosionType type) {
-		GroundwarExplosion exp = new GroundwarExplosion();
+		GroundwarExplosion exp = new GroundwarExplosion(world().battle.groundExplosions.get(type));
 		Point center = centerOf(target);
 		exp.x = center.x;
 		exp.y = center.y;
 		exp.target = target;
-		exp.phases = world().battle.groundExplosions.get(type);
 		explosions.add(exp);
 	}
 	/**
@@ -5098,10 +5097,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * @param type the type of the explosion animation
 	 */
 	void createExplosion(int x, int y, ExplosionType type) {
-		GroundwarExplosion exp = new GroundwarExplosion();
+		GroundwarExplosion exp = new GroundwarExplosion(world().battle.groundExplosions.get(type));
 		exp.x = x;
 		exp.y = y;
-		exp.phases = world().battle.groundExplosions.get(type);
 		explosions.add(exp);
 	}
 	/**
@@ -5840,11 +5838,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		player().currentPlanet = battle.targetPlanet;
 
 		if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
+			this.battle = null;
 			battle.targetPlanet.takeover(battle.attacker.owner);
 			BattleSimulator.applyPlanetConquered(battle.targetPlanet, BattleSimulator.PLANET_CONQUER_LOSS);
 			battle.groundwarWinner = battle.attacker.owner;
 			BattleInfo bi = battle;
-			battle = null;
 			BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 			bfs.displayBattleSummary(bi);
 			return;
@@ -6498,7 +6496,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				if (count > 1) {
 					n += " x " + count;
 				}
-				BufferedImage img = u.model.normal[0][0];
+				BufferedImage img = u.model.normalStaticImage();
 				int iw = (width - img.getWidth()) / 2;
 				g2.drawImage(img, iw, 25, null);
 				

@@ -80,7 +80,7 @@ public class CEBasePanel extends JPanel {
 	 * @return the image icon
 	 */
 	public ImageIcon icon(String path) {
-		URL u = getClass().getResource(path);
+		URL u = CEBasePanel.class.getResource(path);
 		if (u == null) {
 			System.err.printf("Missing resource: %s%n", path);
 		}

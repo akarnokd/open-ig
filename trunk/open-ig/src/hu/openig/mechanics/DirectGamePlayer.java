@@ -912,10 +912,7 @@ public class DirectGamePlayer implements GameAPI {
 	public InventoryItemStatus getInventoryStatus(String planetId, int itemId)
 			throws IOException {
 		Planet p = checkPlanet(planetId);
-		if (p != null) {
-			return getInventoryStatus(p, itemId);
-		}
-		return null;
+		return getInventoryStatus(p, itemId);
 	}
 
 	@Override

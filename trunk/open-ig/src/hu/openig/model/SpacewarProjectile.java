@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * A projectile representing a laser, cannon, rocket or bomb.
@@ -23,7 +24,7 @@ public class SpacewarProjectile extends SpacewarObject {
 	/** The projectile's model. */
 	public BattleProjectile model;
 	/** The angle images of the projectile. */
-	public BufferedImage[][] matrix;
+	public final BufferedImage[][] matrix;
 	/** The animation phase with an angle. */
 	public int phase;
 	/** ECM distraction limit 0..2 .*/
@@ -38,6 +39,13 @@ public class SpacewarProjectile extends SpacewarObject {
 	public SpacewarStructure target;
 	/** The impact sound. */
 	public SoundType impactSound;
+    /**
+     * Constructor, initializes the matrix images.
+     * @param matrix the matrix images of a projectile
+     */
+    public SpacewarProjectile(final BufferedImage[][] matrix) {
+        this.matrix = Objects.requireNonNull(matrix);
+    }
 	@Override
 	public BufferedImage get() {
 		// -0.5 .. +0.5

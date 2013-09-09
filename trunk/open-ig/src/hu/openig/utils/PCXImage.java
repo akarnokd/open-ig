@@ -85,7 +85,7 @@ public class PCXImage {
 			// fix palette
 			palette = new byte[768];
 			System.arraycopy(data, src + 1, palette, 0, palette.length);
-			src += 1 + palette.length;
+//			src += 1 + palette.length;
 		}
 		// just strip the unwanted bytes from the scan line.
 		for (y = 0; y < height; y++) {

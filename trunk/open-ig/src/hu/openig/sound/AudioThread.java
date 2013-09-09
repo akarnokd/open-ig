@@ -338,9 +338,10 @@ public class AudioThread extends Thread {
 			} else {
 				muteFailed = volume == 0;
 			}
-		} catch (Exception ex) {
+		} catch (Throwable ex) {
 			// some linux implementation throws exception
 			muteFailed = volume == 0;
+            System.out.println(ex);
 		}
 		try {
 			// try master gain

@@ -48,4 +48,8 @@ public class BattleGroundTurret {
 		}
 		return dmg;
 	}
+    /** @return the number of rotation images. */
+    public int angles() {
+        return matrix[0].length;
+    }
 }

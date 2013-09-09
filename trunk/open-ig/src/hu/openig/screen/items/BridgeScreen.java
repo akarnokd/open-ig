@@ -49,6 +49,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -173,7 +174,14 @@ public class BridgeScreen extends ScreenBase {
 	 */
 	public class VideoMessageEntry {
 		/** The video message. */
-		public VideoMessage videoMessage;
+		public final VideoMessage videoMessage;
+        /**
+         * Constructor, sets up the video message instance.
+         * @param videoMessage the video message
+         */
+        public VideoMessageEntry(VideoMessage videoMessage) {
+            this.videoMessage = Objects.requireNonNull(videoMessage);
+        }
 		/**
 		 * Draw this entry.
 		 * @param g2 the graphics context
@@ -1099,8 +1107,7 @@ public class BridgeScreen extends ScreenBase {
 	void prepareList(List<VideoMessage> available) {
 		videos.clear();
 		for (VideoMessage msg : available) {
-			VideoMessageEntry e = new VideoMessageEntry();
-			e.videoMessage = msg;
+			VideoMessageEntry e = new VideoMessageEntry(msg);
 			videos.add(e);
 		}
 		scrollList(0);

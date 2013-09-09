@@ -9,6 +9,7 @@ package hu.openig.model;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -95,4 +96,15 @@ public class OriginalPlanet {
 		}
 		return "";
 	}
+    /** The default ordering of the original planets. */
+    public static final Comparator<OriginalPlanet> DEFAULT_ORDER = new Comparator<OriginalPlanet>() {
+        @Override
+        public int compare(OriginalPlanet o1, OriginalPlanet o2) {
+            int c = o1.surfaceType.compareTo(o2.surfaceType);
+            if (c == 0) {
+                c = o1.surfaceVariant < o2.surfaceVariant ? -1 : (o1.surfaceVariant > o2.surfaceVariant ? 1 : 0);
+            }
+            return c;
+        }
+    };
 }

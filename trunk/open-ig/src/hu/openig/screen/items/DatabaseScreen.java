@@ -104,13 +104,11 @@ public class DatabaseScreen extends ScreenBase {
 	/** The text rows. */
 	protected final List<String> rows = new ArrayList<>();
 	/** Move up. */
-	protected DatabaseButton moveUp;
+	private DatabaseButton moveUp;
 	/** Move down. */
-	protected DatabaseButton moveDown;
+	private DatabaseButton moveDown;
 	/** The title of the current starship map. */
 	protected String mapTitle;
-	/** The race description. */
-	protected String raceDesc;
 	/** The blink timer. */
 	protected Closeable blinkTimer;
 	/** The counter used to toggle blink phases. */

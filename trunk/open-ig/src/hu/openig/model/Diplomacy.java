@@ -13,6 +13,7 @@ import hu.openig.utils.XElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The diplomatic relation options of a particular non-user player.
@@ -22,11 +23,18 @@ public class Diplomacy {
 	/** A negotiation entry for the player. */
 	public static class Negotiate {
 		/** The negotiation's type. */
-		public NegotiateType type;
+		public final NegotiateType type;
 		/** The available approaches. */
 		public final List<Approach> approaches = new ArrayList<>();
 		/** The available responses. */
 		public final List<Response> responses = new ArrayList<>();
+        /**
+         * Constructor, initializes the negotiation type.
+         * @param type the negotiation type
+         */
+        public Negotiate(NegotiateType type) {
+            this.type = Objects.requireNonNull(type);
+        }
 		/**
 		 * Find the approaches for the specified type.
 		 * @param type the approach type
@@ -102,9 +110,8 @@ public class Diplomacy {
 			Diplomacy d = new Diplomacy();
 			result.put(xplayer.get("id"), d);
 			for (XElement xnegotiate : xplayer.childrenWithName("negotiate")) {
-				Negotiate n = new Negotiate();
+				Negotiate n = new Negotiate(NegotiateType.valueOf(xnegotiate.get("type")));
 				d.negotiations.add(n);
-				n.type = NegotiateType.valueOf(xnegotiate.get("type"));
 				for (XElement xapproach : xnegotiate.childrenWithName("approach")) {
 					Approach a = new Approach();
 					n.approaches.add(a);

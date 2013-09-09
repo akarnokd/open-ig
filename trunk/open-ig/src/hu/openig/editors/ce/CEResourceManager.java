@@ -37,7 +37,7 @@ public class CEResourceManager {
 	/** A resource name (slashed and with extension) to a language to a parent container. */
 	protected final Map<String, Map<String, File>> map = new HashMap<>();
 	/** The default directories. */
-	protected static String[] defaultDirectories = { "data", "audio", "images", "video" };
+	static final String[] DEFAULT_DIRECTORIES = { "data", "audio", "images", "video" };
 	/**
 	 * Check if the File object represents a zip file.
 	 */
@@ -93,7 +93,7 @@ public class CEResourceManager {
 			processZip(f);
 		}
 		// process the default directories
-		for (String df : defaultDirectories) {
+		for (String df : DEFAULT_DIRECTORIES) {
 			processDir(new File(workdir, df));
 		}
 		// process DLC directories

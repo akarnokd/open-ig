@@ -202,20 +202,18 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 				if (selectedSlot == null) {
 					return;
 				}
-				if (selectedSlot != null) {
-					if (selectedSlot.name.equals("slot")) {
-						selectedSlot.set("max", slotCount.component.getText());
-						if (!selectedSlot.hasPositiveInt("max")) {
-							slotCount.setInvalid(errorIcon, get("invalid_number"));
-						}
-					} else {
-						selectedSlot.set("count", slotCount.component.getText());
-						if (!selectedSlot.hasPositiveInt("count")) {
-							slotCount.setInvalid(errorIcon, get("invalid_number"));
-						}
-					}
-					slotsModel.update(selectedSlot);
-				}
+                if (selectedSlot.name.equals("slot")) {
+                    selectedSlot.set("max", slotCount.component.getText());
+                    if (!selectedSlot.hasPositiveInt("max")) {
+                        slotCount.setInvalid(errorIcon, get("invalid_number"));
+                    }
+                } else {
+                    selectedSlot.set("count", slotCount.component.getText());
+                    if (!selectedSlot.hasPositiveInt("count")) {
+                        slotCount.setInvalid(errorIcon, get("invalid_number"));
+                    }
+                }
+                slotsModel.update(selectedSlot);
 			}
 		});
 		slotType.component.addActionListener(new ActionListener() {

@@ -793,7 +793,7 @@ public class AI implements AIManager {
 		Trait t = other.traits.trait(TraitKind.DIPLOMACY);
 		if (t != null) {
 			rel = rel * (1 + t.value / 100);
-			rel = Math.min(100, Math.max(0, rnd));
+			rel = Math.min(100, Math.max(0, rel));
 		}
 		
 		

@@ -505,11 +505,10 @@ public class GroundwarManager implements GroundwarWorld {
 	 * @param type the type of the explosion animation
 	 */
 	void createExplosion(GroundwarUnit target, ExplosionType type) {
-		GroundwarExplosion exp = new GroundwarExplosion();
+		GroundwarExplosion exp = new GroundwarExplosion(world.battle.groundExplosions.get(type));
 		exp.x = target.x;
 		exp.y = target.y;
 		exp.target = target;
-		exp.phases = world.battle.groundExplosions.get(type);
 		ground.explosions.add(exp);
 	}
 	/**
@@ -519,10 +518,9 @@ public class GroundwarManager implements GroundwarWorld {
 	 * @param type the type of the explosion animation
 	 */
 	void createExplosion(double x, double y, ExplosionType type) {
-		GroundwarExplosion exp = new GroundwarExplosion();
+		GroundwarExplosion exp = new GroundwarExplosion(world.battle.groundExplosions.get(type));
 		exp.x = x;
 		exp.y = y;
-		exp.phases = world.battle.groundExplosions.get(type);
 		ground.explosions.add(exp);
 	}
 	/**
@@ -1052,17 +1050,17 @@ public class GroundwarManager implements GroundwarWorld {
 	Location buildingNearby(Building b, final Location initial) {
 		final Location destination = centerCellOf(b);
 
-		final Pathfinding pathfinding = getPathfinding(null);
-		
+        final Func2<Location, Location, Integer> trueDistance = defaultTrueDistance;
+        
 		Comparator<Location> nearestComparator = new Comparator<Location>() {
 			@Override
 			public int compare(Location o1, Location o2) {
-				int d1 = pathfinding.trueDistance.invoke(destination, o1);
-				int d2 = pathfinding.trueDistance.invoke(destination, o2);
+				int d1 = trueDistance.invoke(destination, o1);
+				int d2 = trueDistance.invoke(destination, o2);
 				int c = Integer.compare(d1, d2);
 				if (c == 0) {
-					d1 = pathfinding.trueDistance.invoke(initial, o1);
-					d2 = pathfinding.trueDistance.invoke(initial, o2);
+					d1 = trueDistance.invoke(initial, o1);
+					d2 = trueDistance.invoke(initial, o2);
 					c = Integer.compare(d1, d2);
 				}
 				return c;
@@ -1315,7 +1313,7 @@ public class GroundwarManager implements GroundwarWorld {
 		if (diff > Math.PI) {
 			diff -= 2 * Math.PI; 
 		}
-		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.model.matrix[0].length / SIMULATION_DELAY;
+		double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.model.angles() / SIMULATION_DELAY;
 		if (Math.abs(diff) < anglePerStep) {
 			gun.angle = targetAngle;
 			return true;

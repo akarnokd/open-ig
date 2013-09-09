@@ -30,6 +30,8 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 /**
  * @author akarnokd, 2013.05.18.
@@ -121,7 +123,7 @@ public class MultiplayerContext {
 			if (!activeGateway.addPortMapping(serverPort, serverPort, serverAddress.getHostAddress(), "TCP", "test")) {
 				throw new IOException("Port " + serverPort + " on " + serverAddress + " couldn't be mapped on the gateway");
 			}		
-		} catch (Exception ex) {
+		} catch (IOException | SAXException | ParserConfigurationException ex) {
 			externalIPAddress = null;
 			activeGateway = null;
 			Exceptions.add(ex);

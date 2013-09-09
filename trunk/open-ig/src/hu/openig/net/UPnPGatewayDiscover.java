@@ -137,7 +137,7 @@ public class UPnPGatewayDiscover {
                     }
                 }
 
-            } catch (Exception e) {
+            } catch (Throwable e) {
             	Exceptions.add(e);
             }
         }
@@ -260,7 +260,8 @@ public class UPnPGatewayDiscover {
                 if (device.isConnected()) {
                     return device;
                 }
-            } catch (Exception e) {
+            } catch (IOException | SAXException e) {
+                System.out.println(e);
             }
         }
 

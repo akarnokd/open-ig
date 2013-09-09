@@ -77,6 +77,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -166,9 +167,16 @@ public class CommonResources implements GameEnvironment {
 		/** The operation frequency. */
 		public int delay;
 		/** The action to invoke. */
-		public Action0 action;
+		public final Action0 action;
 		/** The flag to indicate the action was cancelled. */
 		public boolean cancelled;
+        /**
+         * Constructor, initializes the action.
+         * @param action the action to call after the delay
+         */
+        public TimerAction(Action0 action) {
+            this.action = Objects.requireNonNull(action);
+        }
 	}
 	/** The radar handler. */
 	protected Closeable radarHandler;
@@ -835,9 +843,8 @@ public class CommonResources implements GameEnvironment {
 		if (action == null) {
 			throw new IllegalArgumentException("action is null");
 		}
-		final TimerAction ta = new TimerAction();
+		final TimerAction ta = new TimerAction(action);
 		ta.delay = delay;
-		ta.action = action;
 		Closeable res = new Closeable() {
 			@Override
 			public void close() throws IOException {

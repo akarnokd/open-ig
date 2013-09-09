@@ -65,4 +65,8 @@ public class BattleGroundVehicle {
 		}
 		return dmg;
 	}
+    /** @return the normal static image of the vehicle. */
+    public BufferedImage normalStaticImage() {
+        return normal[0][0];
+    }
 }
