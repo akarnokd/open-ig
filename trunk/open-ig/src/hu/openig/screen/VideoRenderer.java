@@ -43,8 +43,6 @@ public class VideoRenderer extends Thread {
 	protected boolean repeat;
 	/** The frames per second override. */
 	protected Double fpsOverride;
-	/** Cache the images? Use in conjunction with the repeat property. */
-	protected boolean cacheImages;
 	/** The completion action. */
 	protected Action1<Void> onComplete;
 	/**
@@ -90,7 +88,9 @@ public class VideoRenderer extends Thread {
 	public static BufferedImage firstFrame(DataInputStream in) throws IOException {
 		int w = Integer.reverseBytes(in.readInt());
 		int h = Integer.reverseBytes(in.readInt());
-		in.skipBytes(8);
+		if (in.skipBytes(8) != 8) {
+            throw new IOException("File structure problem.");
+        }
 		int[] palette = new int[256];
 		byte[] bytebuffer = new byte[w * h];
 		int[] currentImage = new int[w * h];

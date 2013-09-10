@@ -89,8 +89,6 @@ public class Sounds {
 	private Func0<Integer> getVolume;
 	/** The open lines. */
 	final BlockingQueue<SourceDataLine> lines = new LinkedBlockingQueue<>();
-	/** Should the sound map cache lines? */
-	static final boolean CACHE_LINES = false;
 	/**
 	 * Initialize the sound pool.
 	 * @param rl the resource locator
@@ -190,16 +188,7 @@ public class Sounds {
 	 * @return the data line
 	 */
 	SourceDataLine getLine(AudioFormatType aft) {
-		SourceDataLine result = null; 
-		if (CACHE_LINES) {
-			result = soundPool.get(aft).poll();
-		}
-		if (result == null) {
-			result = addLine(aft);
-			if (CACHE_LINES) {
-				soundPool.get(aft).add(result);
-			}
-		}
+		SourceDataLine result = addLine(aft); 
 		return result;
 	}
 	/**
@@ -208,14 +197,7 @@ public class Sounds {
 	 * @param sdl the source data line
 	 */
 	void putBackLine(AudioFormatType aft, SourceDataLine sdl) {
-		if (CACHE_LINES) {
-			BlockingQueue<SourceDataLine> queue = soundPool.get(aft);
-			if (queue != null) {
-				queue.add(sdl);
-			}
-		} else {
-			sdl.close();
-		}
+        sdl.close();
 	}
 	/** Close all audio lines. */
 	public void close() {

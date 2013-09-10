@@ -14,6 +14,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -41,7 +42,9 @@ public final class MediaCut {
 				DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new FileInputStream(source), 1024 * 1024), 1024 * 1024))) {
 			int w = Integer.reverseBytes(in.readInt());
 			int h = Integer.reverseBytes(in.readInt());
-			in.skipBytes(4);
+			if (in.skipBytes(4) != 4) {
+                throw new IOException("File structure error!");
+            }
 //				final int frames = Integer.reverseBytes(in.readInt());
 			int fps1000 = Integer.reverseBytes(in.readInt());
 //				double fps = fps1000 / 1000.0;

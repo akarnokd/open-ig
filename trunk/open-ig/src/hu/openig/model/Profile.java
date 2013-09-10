@@ -53,7 +53,9 @@ public class Profile {
 		try {
 			File dir = new File("save/" + name);
 			if (!dir.exists()) {
-				dir.mkdirs();
+				if (!dir.mkdirs()) {
+                    Exceptions.add(new IOException("Unable to create directory " + dir));
+                }
 			}
 			save(xprofile);
 			xprofile.save(new File(dir, "profile.xml"));

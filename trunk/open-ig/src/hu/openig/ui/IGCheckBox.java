@@ -47,8 +47,8 @@ public class IGCheckBox extends JCheckBox {
 		setText(text);
 		setFont(font);
 		try {
-			check = ImageIO.read(getClass().getResource("/hu/openig/gfx/checkmark.png"));
-			checkGs = ImageIO.read(getClass().getResource("/hu/openig/gfx/checkmark_grayscale.png"));
+			check = ImageIO.read(IGCheckBox.class.getResource("/hu/openig/gfx/checkmark.png"));
+			checkGs = ImageIO.read(IGCheckBox.class.getResource("/hu/openig/gfx/checkmark_grayscale.png"));
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}

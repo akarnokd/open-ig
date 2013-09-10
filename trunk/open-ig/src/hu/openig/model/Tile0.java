@@ -33,7 +33,7 @@ public class Tile0 {
 	/** The current alpha level of the image. */
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
-	protected final float lightThreshold = 0.65f;
+	protected static final float lightThreshold = 0.65f;
 	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
 	private static ThreadLocal<int[][]> work = new ThreadLocal<int[][]>() {
 		@Override

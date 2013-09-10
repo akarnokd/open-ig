@@ -64,7 +64,6 @@ public class LUpdate {
 			if (exec.has("class")) {
 				mdl.clazz = exec.get("class");
 			}
-			mdl.executeFile = exec.get("file");
 			
 			for (XElement eFile : module.childrenWithName("file")) {
 				LFile f = new LFile();

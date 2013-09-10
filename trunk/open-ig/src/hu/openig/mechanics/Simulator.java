@@ -297,7 +297,7 @@ public final class Simulator {
 			} else
 			// repair an unit if autorepair or explicitly requested
 			if (b.repairing || (planet.owner == world.player && world.config.autoRepair && b.isDamaged())) {
-				if (b.hitpoints * 100 / b.type.hitpoints < ps.freeRepair) {
+				if (b.hitpoints * 100d / b.type.hitpoints < ps.freeRepair) {
 					b.hitpoints += repairAmount * ps.freeRepairEff;
 					b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 					result = true;
@@ -319,7 +319,7 @@ public final class Simulator {
 				}
 			} else
 			// free repair buildings 
-			if (b.isDamaged() && (b.hitpoints * 100 / b.type.hitpoints < ps.freeRepair)) {
+			if (b.isDamaged() && (b.hitpoints * 100d / b.type.hitpoints < ps.freeRepair)) {
 				b.hitpoints += repairAmount * ps.freeRepairEff;
 				b.hitpoints = Math.min(b.type.hitpoints, b.hitpoints);
 				result = true;

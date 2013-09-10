@@ -49,6 +49,7 @@ public class Message implements Comparable<Message> {
 		}
 		return -c;
 	}
+
 	/** 
 	 * Save the message.
 	 * @param xmessage the target element 

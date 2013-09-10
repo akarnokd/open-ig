@@ -37,7 +37,7 @@ public final class AchievementManager {
 	// -------------------------------------------------------------------------------
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> CONQUEROR = new Pred2<World, Player>() {
+	static final Pred2<World, Player> CONQUEROR = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.planetsConquered.value > 0;
@@ -45,7 +45,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> MILLIONAIRE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> MILLIONAIRE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.money() >= 1000000;
@@ -53,7 +53,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> PIRATE_BAY = new Pred2<World, Player>() {
+	static final Pred2<World, Player> PIRATE_BAY = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Pirates");
@@ -75,7 +75,7 @@ public final class AchievementManager {
 	*/
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> DARGSLAYER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> DARGSLAYER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Dargslan");
@@ -87,7 +87,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> ENERGIZER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> ENERGIZER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.totalAvailableEnergy.value >= 10000000;
@@ -95,7 +95,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> DEATH_STAR = new Pred2<World, Player>() {
+	static final Pred2<World, Player> DEATH_STAR = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.planetsDied.value > 0;
@@ -103,7 +103,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> RESEARCH_ASSISTANT = new Pred2<World, Player>() {
+	static final Pred2<World, Player> RESEARCH_ASSISTANT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.researchCount.value >= 5;
@@ -111,7 +111,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> SCIENTIST = new Pred2<World, Player>() {
+	static final Pred2<World, Player> SCIENTIST = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.researchCount.value >= 15;
@@ -119,7 +119,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> NOBEL_PRIZE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> NOBEL_PRIZE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			int total = 0;
@@ -137,7 +137,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> POPULAR = new Pred2<World, Player>() {
+	static final Pred2<World, Player> POPULAR = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			int popular = 0;
@@ -152,7 +152,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> APEH = new Pred2<World, Player>() {
+	static final Pred2<World, Player> APEH = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			int popular = 0;
@@ -167,7 +167,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> ULTIMATE_LEADER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> ULTIMATE_LEADER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			int popular = 0;
@@ -182,7 +182,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> REVOLUTIONER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> REVOLUTIONER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.planetsRevolted.value > 0;
@@ -190,7 +190,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> MASS_EFFECT = new Pred2<World, Player>() {
+	static final Pred2<World, Player> MASS_EFFECT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.totalPopulation.value >= 1000000;
@@ -198,7 +198,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> DEFENDER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> DEFENDER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -206,7 +206,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> EMBARGO = new Pred2<World, Player>() {
+	static final Pred2<World, Player> EMBARGO = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -214,7 +214,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> COLUMBUS = new Pred2<World, Player>() {
+	static final Pred2<World, Player> COLUMBUS = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.planetsColonized.value > 0;
@@ -223,7 +223,7 @@ public final class AchievementManager {
 
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> QUARTER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> QUARTER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.planetsOwned.value >= 25;
@@ -231,7 +231,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> MANUFACTURER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> MANUFACTURER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.productionCount.value >= 1000;
@@ -239,7 +239,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> SALVAGE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> SALVAGE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.shipsDestroyed.value >= 1000;
@@ -247,7 +247,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> LIVING_SPACE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> LIVING_SPACE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.planetsDiscovered.value > 0;
@@ -255,7 +255,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> FOOD = new Pred2<World, Player>() {
+	static final Pred2<World, Player> FOOD = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.totalAvailableFood.value > 1000000;
@@ -263,7 +263,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> DECADE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> DECADE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return t.time.getTimeInMillis() - t.initialDate.getTime() >= 10 * 365.2425 * 24 * 60 * 60 * 1000;
@@ -271,7 +271,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> OLDEST_MAN = new Pred2<World, Player>() {
+	static final Pred2<World, Player> OLDEST_MAN = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return t.time.getTimeInMillis() - t.initialDate.getTime() >= 100 * 365.2425 * 24 * 60 * 60 * 1000;
@@ -279,7 +279,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> ALL_YOUR_BASE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> ALL_YOUR_BASE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.planetsLostAlien.value > 0;
@@ -287,7 +287,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> ET = new Pred2<World, Player>() {
+	static final Pred2<World, Player> ET = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			for (DiplomaticRelation dr : t.relations) {
@@ -303,7 +303,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> COFFEE_BREAK = new Pred2<World, Player>() {
+	static final Pred2<World, Player> COFFEE_BREAK = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return t.statistics.playTime.value - t.statistics.simulationTime.value >= 30 * 60;
@@ -311,7 +311,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> DEFENSE_CONTRACT = new Pred2<World, Player>() {
+	static final Pred2<World, Player> DEFENSE_CONTRACT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			for (Planet p : u.planets.keySet()) {
@@ -336,7 +336,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> ALL_SEEING_EYE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> ALL_SEEING_EYE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			if (t.level >= 5) {
@@ -354,7 +354,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> NEWBIE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> NEWBIE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return true;
@@ -362,7 +362,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> COMMANDER = new Pred2<World, Player>() {
+	static final Pred2<World, Player> COMMANDER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false; /* t.level >= 3; */
@@ -370,7 +370,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> CAPTAIN = new Pred2<World, Player>() {
+	static final Pred2<World, Player> CAPTAIN = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false; /* t.level >= 2; */
@@ -378,7 +378,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> ADMIRAL = new Pred2<World, Player>() {
+	static final Pred2<World, Player> ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false; /* t.level >= 4; */
@@ -386,7 +386,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> GRAND_ADMIRAL = new Pred2<World, Player>() {
+	static final Pred2<World, Player> GRAND_ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -394,7 +394,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> INFLUENZA = new Pred2<World, Player>() {
+	static final Pred2<World, Player> INFLUENZA = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -402,7 +402,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> I_ROBOT = new Pred2<World, Player>() {
+	static final Pred2<World, Player> I_ROBOT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -410,7 +410,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> DO_YOU_CHAT = new Pred2<World, Player>() {
+	static final Pred2<World, Player> DO_YOU_CHAT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -418,7 +418,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> A_PIRATE_IN_NEED = new Pred2<World, Player>() {
+	static final Pred2<World, Player> A_PIRATE_IN_NEED = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -426,7 +426,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> BELA_THE_4TH = new Pred2<World, Player>() {
+	static final Pred2<World, Player> BELA_THE_4TH = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return false;
@@ -434,7 +434,7 @@ public final class AchievementManager {
 	};
 	/** Test for achievement. */
 	@ID
-	protected static final Pred2<World, Player> WELL_RESPECTED_FEATURE = new Pred2<World, Player>() {
+	static final Pred2<World, Player> WELL_RESPECTED_FEATURE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			return u.statistics.chats.value >= 100;
@@ -446,7 +446,8 @@ public final class AchievementManager {
 		// utility class
 	}
 	/** The functions map for achievements. */
-	protected static final Map<String, Pred2<World, Player>> FUNCTIONS = new HashMap<>();
+	static final Map<String, Pred2<World, Player>> FUNCTIONS = new HashMap<>();
+    /** Locate and add achievement-tester functions. */
 	static {
 		for (Field f : AchievementManager.class.getDeclaredFields()) {
 			if (Pred2.class.isAssignableFrom(f.getType()) && f.isAnnotationPresent(ID.class)) {

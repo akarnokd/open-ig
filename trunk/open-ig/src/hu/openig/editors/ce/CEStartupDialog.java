@@ -255,10 +255,10 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 		JButton cancel = new JButton(get("cancel"));
 		
 		open = new JButton(get("startup.open"));
-		open.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Open16.gif")));
+		open.setIcon(new ImageIcon(CEStartupDialog.class.getResource("/hu/openig/editors/res/Open16.gif")));
 		
 		JButton refresh = new JButton(get("startup.refresh"));
-		refresh.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Refresh16.gif")));
+		refresh.setIcon(new ImageIcon(CEStartupDialog.class.getResource("/hu/openig/editors/res/Refresh16.gif")));
 		
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(createNew);

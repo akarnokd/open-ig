@@ -32,8 +32,6 @@ public class UIImageTabButton extends UIComponent {
 	protected BufferedImage hovered;
 	/** The disabled pattern to use for the button. */
 	protected BufferedImage disabledPattern;
-	/** The action to invoke when the button is clicked. */
-	public Action0 onClick;
 	/** 
 	 * The action to invoke when the button is pressed down.
 	 * Can be used to use this button as a tab.
@@ -69,14 +67,6 @@ public class UIImageTabButton extends UIComponent {
 		this.width = normal.getWidth();
 		this.height = normal.getHeight();
 	}
-	/**
-	 * Call the click action if set.
-	 */
-	protected void doClick() {
-		if (onClick != null) {
-			onClick.invoke();
-		}
-	}
 	/** Call the press action if set. */
 	protected void doPress() {
 		if (onPress != null) {
@@ -104,14 +94,6 @@ public class UIImageTabButton extends UIComponent {
 		case DOWN:
 			down = true;
 			doPress();
-			return true;
-		case CLICK:
-			doClick();
-			return true;
-		case DOUBLE_CLICK:
-			for (int i = 0; i < e.z - 1; i++) {
-				doClick();
-			}
 			return true;
 		case UP:
 		case LEAVE:

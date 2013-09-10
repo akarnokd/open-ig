@@ -33,7 +33,7 @@ public class Tile {
 	/** The current alpha level of the image. */
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
-	protected final float lightThreshold = 0.65f;
+	protected static final float lightThreshold = 0.65f;
 	/** The cached alpha level. */
 	protected float cachedAlpha = -1;
 	/** The minimum alpha value ever. */

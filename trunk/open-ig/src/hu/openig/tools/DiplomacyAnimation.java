@@ -283,7 +283,7 @@ public final class DiplomacyAnimation {
 	static float[] argbToHsv(int argb) {
 		float[] result = new float[4];
 		
-		result[0] = ((argb & 0xFF000000) >> 24) / 255;
+		result[0] = ((argb & 0xFF000000) >> 24) / 255f;
 
 		int r = (argb >> 16) & 0xFF;
 		int g = (argb >> 8) & 0xFF;
@@ -391,7 +391,9 @@ public final class DiplomacyAnimation {
 				new BufferedInputStream(new GZIPInputStream(new FileInputStream(videoFile), 1024 * 1024), 1024 * 1024))) {
 			int w = Integer.reverseBytes(in.readInt());
 			int h = Integer.reverseBytes(in.readInt());
-			in.skipBytes(8);
+			if (in.skipBytes(8) != 8) {
+                throw new IOException("File structure error!");
+            }
 			
 			int[] palette = new int[256];
 			byte[] bytebuffer = new byte[w * h];

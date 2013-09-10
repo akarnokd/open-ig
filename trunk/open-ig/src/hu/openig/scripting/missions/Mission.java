@@ -807,7 +807,7 @@ public abstract class Mission implements GameScriptingEvents {
 			int dy = (d.height - maxH) / 2;
 			for (SpacewarStructure s : structures) {
 				if (s.item != null && allyTag.equals(s.item.tag)) {
-					s.x = d.width / 2;
+					s.x = d.width / 2d;
 					s.y = dy;
 					s.angle = 0.0;
 					s.owner = f1.owner;

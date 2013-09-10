@@ -74,10 +74,6 @@ public class BridgeScreen extends ScreenBase {
 	final Rectangle videoRect = new Rectangle();
 	/** The message rectangle. */
 	final Rectangle messageRect = new Rectangle();
-	/** The poligin to click on to close the projector. */
-	Polygon closeProjector;
-	/** The poligon to click on to close the message panel. */
-	Polygon closeMessage;
 	/** The message front buffer. */
 	BufferedImage messageFront;
 	/** The message back buffer. */
@@ -130,8 +126,6 @@ public class BridgeScreen extends ScreenBase {
 	Action0 onProjectorComplete;
 	/** The action to invoke when the projector reached its end of animation. */
 	Action0 onMessageComplete;
-	/** The action when the message panel appeared. */
-	Action0 onAppearComplete;
 	/** Is a video running? */
 	boolean videoRunning;
 	/** The list up button. */
@@ -149,7 +143,7 @@ public class BridgeScreen extends ScreenBase {
 	/** The currently selected video. */
 	VideoMessage selectedVideoId;
 	/** The message list row height. */
-	final int rowHeight = 25;
+	static final int rowHeight = 25;
 	/** If the video playback completed and the panel is retracted. */
 	Action0 onVideoComplete;
 	/** Action to invoke when a force-view was issued. */
@@ -199,10 +193,6 @@ public class BridgeScreen extends ScreenBase {
 			commons.text().paintTo(g2, x0 + 2, y0 + 16, 7, colorSub, get(this.videoMessage.description));
 		}
 	}
-	/** The incoming message list. */
-	public final List<VideoMessage> incoming = new ArrayList<>();
-	/** The outgoing message list. */
-	public final List<VideoMessage> outgoing = new ArrayList<>();
 	@Override
 	public void onInitialize() {
 		videoAppearAnim = new Timer(50, new ActionListener() {
@@ -685,7 +675,6 @@ public class BridgeScreen extends ScreenBase {
 		videoAppearAnim.stop();
 		videoAppear = null;
 		videoAppearPercent = 0;
-		onAppearComplete = null;
 		messageAppearLast = null;
 		projectorLast = null;
 		selectedVideoId = null;
@@ -893,35 +882,6 @@ public class BridgeScreen extends ScreenBase {
 			receive.location(messageRect.x + 220, messageRect.y + 29);
 		}
 		
-		closeProjector = new Polygon(
-			new int[] { 
-					base.x, projectorRect.x, 
-					projectorRect.x, projectorRect.x + projectorRect.width, 
-					projectorRect.x + projectorRect.width, base.x + base.width - 1, 
-					base.x + base.width - 1, messageRect.x, 
-					messageRect.x, base.x
-				},
-			new int[] { 
-					base.y, base.y, 
-					projectorRect.y + projectorRect.height, projectorRect.y + projectorRect.height, 
-					base.y, base.y, 
-					messageRect.y, messageRect.y, 
-					base.y + base.height - 1, base.y + base.height - 1
-					
-				},
-			10
-		);
-		closeMessage = new Polygon(
-			new int[] {
-				base.x, base.x + base.width - 1, base.x + base.width - 1, messageRect.x,
-				messageRect.x, base.x
-			},
-			new int[] {
-				base.y, base.y, messageRect.y, messageRect.y, base.y + base.height - 1, 
-				base.y + base.height - 1
-			},
-			6
-		);
 	}
 	/**
 	 * Paint a word-wrapped label.

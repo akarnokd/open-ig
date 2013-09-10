@@ -232,8 +232,7 @@ public class CETechnologyImagesPanel extends CESlavePanel {
 	 * Validate the image fields.
 	 */
 	void validateImages() {
-		ImageIcon i = null;
-		i = max(i, imageField.getInvalid());
+		ImageIcon i = imageField.getInvalid();
 		
 		i = max(i, imageNormal.getInvalid());
 		i = max(i, imageInfoAvail.getInvalid());

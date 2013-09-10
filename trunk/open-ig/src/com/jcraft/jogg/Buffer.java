@@ -365,12 +365,4 @@ public class Buffer {
 		}
 		return (ret);
 	}
-	/**
-	 * Log error and exit.
-	 * @param in the string to print
-	 */
-	public static void report(String in) {
-		System.err.println(in);
-		System.exit(1);
-	}
 }

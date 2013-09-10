@@ -456,7 +456,7 @@ public class InventoryItem {
 			throw new IllegalArgumentException("count > 0 required");
 		}
 		InventorySlot is = slots.get(slotId);
-		if (slotId != null) {
+		if (is != null) {
 			if (is.slot.fixed) {
 				throw new IllegalArgumentException("slot " + slotId + " is fixed ");
 			}
@@ -490,7 +490,7 @@ public class InventoryItem {
 			throw new IllegalArgumentException("count > 0 required");
 		}
 		InventorySlot is = slots.get(slotId);
-		if (slotId != null) {
+		if (is != null) {
 			if (is.slot.fixed) {
 				throw new IllegalArgumentException("slot " + slotId + " is fixed ");
 			}

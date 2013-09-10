@@ -418,12 +418,8 @@ public class StarmapScreen extends ScreenBase {
 	public boolean newGameStarted;
 	/** Debug: show all planets and fleets. */
 	boolean showAll;
-	/** The extra fleet icon 1. */
-	BufferedImage extraFleet1;
 	/** The extra fleet icon 2. */
 	BufferedImage extraFleet2;
-	/** The extra fleet icon 2. */
-	BufferedImage extraFleet3;
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
 		starmapWindow.x = 0;
@@ -1326,8 +1322,8 @@ public class StarmapScreen extends ScreenBase {
 					icon = extraFleet2;
 				}
 				
-				int x0 = (int)(starmapRect.x + f.x * zoom - icon.getWidth() / 2);
-				int y0 = (int)(starmapRect.y + f.y * zoom - icon.getHeight() / 2);
+				int x0 = (int)(starmapRect.x + f.x * zoom - icon.getWidth() / 2d);
+				int y0 = (int)(starmapRect.y + f.y * zoom - icon.getHeight() / 2d);
 				
 				g2.drawImage(icon, x0, y0, null);
 				
@@ -1336,8 +1332,8 @@ public class StarmapScreen extends ScreenBase {
 					fleetName = get("fleetinfo.alien_fleet");
 				}
 				int tw = commons.text().getTextWidth(nameFontSize, fleetName);
-				int xt = (int)(starmapRect.x + f.x * zoom - tw / 2);
-				int yt = (int)(starmapRect.y + f.y * zoom + f.owner.fleetIcon.getHeight() / 2) + 3;
+				int xt = (int)(starmapRect.x + f.x * zoom - tw / 2d);
+				int yt = (int)(starmapRect.y + f.y * zoom + f.owner.fleetIcon.getHeight() / 2d) + 3;
 				if (showFleetNames) {
 					commons.text().paintTo(g2, xt, yt, nameFontSize, f.owner.color, fleetName);
 				}
@@ -1356,7 +1352,7 @@ public class StarmapScreen extends ScreenBase {
 						g2.drawRect(x0 - 2, y0 - 2, f.owner.fleetIcon.getWidth() + 4, f.owner.fleetIcon.getHeight() + 4);
 					}
 					Boolean frame = world().scripting.fleetBlink(f);
-					if (frame == Boolean.TRUE) {
+					if (frame != null && frame) {
 						g2.setColor(Color.RED);
 						g2.drawRect(x0 - 3, y0 - 3, f.owner.fleetIcon.getWidth() + 6, f.owner.fleetIcon.getHeight() + 6);
 					}
@@ -1463,7 +1459,7 @@ public class StarmapScreen extends ScreenBase {
 		g2.drawImage(phase, x0, y0, (int)d, (int)d, null);
 		
 		int tw = commons.text().getTextWidth(nameFontSize, p.name);
-		int xt = (int)(starmapRect.x + p.x * zoom - tw / 2);
+		int xt = (int)(starmapRect.x + p.x * zoom - tw / 2d);
 		int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
 		int labelColor = TextRenderer.GRAY;
 		if (p.owner != null && (showAll || knowledge(p, PlanetKnowledge.OWNER) >= 0)) {
@@ -1498,7 +1494,7 @@ public class StarmapScreen extends ScreenBase {
 			// paint military spaceport icon if any
 			if (ps.hasMilitarySpaceport) {
 				BufferedImage msi = commons.starmap().militarySpaceportIcon;
-				int msix = (int)(x0 + d / 2 - msi.getWidth() / 2); // xt - msi.getWidth() - 1;
+				int msix = (int)(x0 + d / 2d - msi.getWidth() / 2d); // xt - msi.getWidth() - 1;
 				int msiy = yt + nameFontSize + 2;
 				g2.drawImage(msi, msix , msiy, null);
 			}
@@ -1561,10 +1557,10 @@ public class StarmapScreen extends ScreenBase {
 					default:
 					}
 					if (ps.hasProblem(pp)) {
-						g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);
+						g2.drawImage(icon, (int)(starmapRect.x + p.x * zoom - w / 2d + i * 11), y0 - 13, null);
 					} else
 					if (ps.hasWarning(pp)) {
-						g2.drawImage(iconDark, (int)(starmapRect.x + p.x * zoom - w / 2 + i * 11), y0 - 13, null);						
+						g2.drawImage(iconDark, (int)(starmapRect.x + p.x * zoom - w / 2d + i * 11), y0 - 13, null);						
 					}
 					i++;
 				}
@@ -1962,12 +1958,6 @@ public class StarmapScreen extends ScreenBase {
 			}
 			break;
 		case UP:
-			panning = false;
-			scrollX = false;
-			scrollY = false;
-			mouseDown = false;
-			pfSplitter = false;
-			break;
 		case LEAVE:
 			panning = false;
 			scrollX = false;
@@ -2646,9 +2636,7 @@ public class StarmapScreen extends ScreenBase {
 			}
 		};
 
-		extraFleet1 = rl.getImage("starmap/fleets/extra_1_fleet");
 		extraFleet2 = rl.getImage("starmap/fleets/extra_2_fleet");
-		extraFleet3 = rl.getImage("starmap/fleets/extra_3_fleet");
 		
 //		addThis();
 		// bottom panel elements

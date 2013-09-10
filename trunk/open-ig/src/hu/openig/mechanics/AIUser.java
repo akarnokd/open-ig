@@ -52,8 +52,6 @@ import java.util.Set;
  * @author akarnokd, 2011.12.15.
  */
 public class AIUser implements AIManager {
-	/** The game environment. */
-	GameEnvironment env;
 	/** The world. */
 	World w;
 	/** The player. */
@@ -72,7 +70,6 @@ public class AIUser implements AIManager {
 	public void init(Player p) {
 		this.p = p;
 		this.w = p.world;
-		this.env = w.env;
 		controls = new DefaultAIControls(p);
 	}
 

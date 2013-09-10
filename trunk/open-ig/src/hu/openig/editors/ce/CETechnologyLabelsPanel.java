@@ -131,9 +131,8 @@ public class CETechnologyLabelsPanel extends CESlavePanel {
 	 * Validate the labels.
 	 */
 	void validateLabels() {
-		ImageIcon i = null;
+		ImageIcon i = nameField.getInvalid();
 		
-		i = max(i, nameField.getInvalid());
 		i = max(i, longNameField.getInvalid());
 		i = max(i, descField.getInvalid());
 		

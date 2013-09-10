@@ -50,7 +50,7 @@ public class GenericLargeButton implements GenericButtonRenderer {
 	 * @param name the resource name
 	 */
 	public GenericLargeButton(String name) {
-		try (InputStream in = getClass().getResource(name).openStream()) {
+		try (InputStream in = GenericLargeButton.class.getResource(name).openStream()) {
 			BufferedImage img = ImageIO.read(in);
 
 			topLeft = ImageUtils.newSubimage(img, 0, 0, 40, 7);

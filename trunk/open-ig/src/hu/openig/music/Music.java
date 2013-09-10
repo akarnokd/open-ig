@@ -43,7 +43,7 @@ public class Music {
 	/** The resource manager. */
 	private final ResourceLocator rl;
 	/** Use soundClip for playback. */
-	private final boolean useClip = false;
+	private static boolean useClip = false;
 	/** OGG music player. */
 	private volatile OggMusic oggMusic;
 	/** The completion handler once a sound element completed. */

@@ -30,21 +30,18 @@ public class ExplorationMap {
 	public final int rows;
 	/** The number of columns of the exploration map. */
 	public final int columns;
-	/** The player. */
-	protected final Player p;
 	/**
 	 * Constructor. Initializes the exploration map with everything unexplored. 
 	 * @param p the player
 	 */
 	public ExplorationMap(Player p) {
-		this.p = p;
 		int maxCellSize = (int)Math.floor(Math.sqrt(2) * p.world.params().fleetRadarUnitSize()) - 4;
 		int w = p.world.galaxyModel.map.getWidth();
 		int h = p.world.galaxyModel.map.getHeight();
 		rows = (int)Math.ceil(h * 1.0 / maxCellSize);
 		columns = (int)Math.ceil(w * 1.0 / maxCellSize);
-		cellWidth = w / columns;
-		cellHeight = h / rows;
+		cellWidth = 1d * w / columns;
+		cellHeight = 1d * h / rows;
 		
 		initExplorationMap();
 	}
@@ -82,7 +79,7 @@ public class ExplorationMap {
 	/**
 	 * Set all cells to undiscovered.
 	 */
-	protected void initExplorationMap() {
+	private void initExplorationMap() {
 		map.clear();
 		for (int x = 0; x < columns; x++) {
 			for (int y = 0; y < rows; y++) {

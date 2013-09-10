@@ -186,9 +186,9 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** The old config file. */
 	final File configOld = new File("launcher-config.xml");
 	/** The new config file. */
-	final String config = "open-ig-launcher-config.xml";
+	static final String config = "open-ig-launcher-config.xml";
 	/** The local update file. */
-	final String localUpdate = "open-ig-update.xml";
+	static final String localUpdate = "open-ig-update.xml";
 	/** Current language. */
 	String language = "en";
 	/** The language flag. */
@@ -279,12 +279,12 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		c.setLayout(gl);
 		
 		try {
-			URL u = getClass().getResource("/hu/openig/gfx/launcher_background.png");
+			URL u = Launcher.class.getResource("/hu/openig/gfx/launcher_background.png");
 			if (u != null) {
 				background = ImageIO.read(u);
 			}
 			
-			u = getClass().getResource("/hu/openig/gfx/down.png");
+			u = Launcher.class.getResource("/hu/openig/gfx/down.png");
 			if (u != null) {
 				down = ImageIO.read(u);
 			}
@@ -1878,7 +1878,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				worker = null;
 				cancel.setVisible(false);
 				try {
-					if (get() == Boolean.FALSE) {
+					if (!get()) {
 						errorMessage(label("Some files were not correctly downloaded. Please try again a bit later."));
 					} else {
 						if (moveSelf) {
@@ -2232,7 +2232,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				worker = null;
 				cancel.setVisible(false);
 				try {
-					if (get() == Boolean.FALSE) {
+					if (!get()) {
 						errorMessage(label("The Launcher was not correctly downloaded. Please try again a bit later."));
 					} else {
 						if (moveSelf) {

@@ -81,7 +81,7 @@ public class AIMixed implements AIManager {
 			ApproachType approach, Object argument) {
 		ResponseMode mode1 = first.diplomacy(other, about, approach, argument);
 		ResponseMode mode2 = second.diplomacy(other, about, approach, argument);
-		int o = (mode1.ordinal() + mode2.ordinal()) / 2;
+		int o = (mode1.ordinal() + mode2.ordinal()) >>> 1;
 		return ResponseMode.values()[o];
 	}
 	

@@ -38,8 +38,6 @@ public class FleetListing extends UIContainer {
 	public Action1<Fleet> onSelect;
 	/** List only nearby fleets? */
 	public boolean nearby;
-	/** The current fleet selection in nearby mode. */
-	public Fleet selected;
 	/** The top index. */
 	int top;
 	/** The text height. */
@@ -170,10 +168,8 @@ public class FleetListing extends UIContainer {
 		Fleet cf = commons.world().player.currentFleet;
 		if (nearby && cf != null) {
 			fleet = cf.fleetsInRange(20);
-			selected = f;
 		} else {
 			fleet = commons.world().player.ownFleets();
-			selected = null;
 		}
 		
 		int idx = fleet.indexOf(f);

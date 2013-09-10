@@ -38,11 +38,6 @@ public class UIImageButton extends UIComponent {
 	/** The action to invoke when the button is clicked. */
 	public Action0 onClick;
 	/** 
-	 * The action to invoke when the button is pressed down.
-	 * Can be used to use this button as a tab.
-	 */
-	public Action0 onPress;
-	/** 
 	 * The optional delay to fire onClick events when
 	 * the mouse is pressed over the button.
 	 * Unit is in milliseconds.
@@ -149,9 +144,6 @@ public class UIImageButton extends UIComponent {
 			if (holdDelay >= 0) {
 				holdTimer.start();
 				doClick();
-			} else
-			if (onPress != null) {
-				onPress.invoke();
 			}
 			return true;
 		case UP:

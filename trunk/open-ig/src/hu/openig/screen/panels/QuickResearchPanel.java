@@ -323,7 +323,6 @@ public class QuickResearchPanel extends UIContainer {
 						commons.computerSound(SoundType.START_RESEARCH);
 					}
 				};
-				cl.description = Pair.of(ri.first.longName + "  (" + ri.first.researchCost(commons.player().traits) + " cr)", ri.first.description);
 				if (cl.over) {
 					currentText = ri.first;
 					anyOver |= cl.over;

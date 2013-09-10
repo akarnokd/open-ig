@@ -99,8 +99,6 @@ public class SkirmishScreen extends ScreenBase {
 	BufferedImage background;
 	/** The list of campaigns. */
 	final List<GameDefinition> campaigns = new ArrayList<>();
-	/** The skirmish definition. */
-	CustomGameDefinition definition;
 	/** The galaxy definition label. */
 	UILabel galaxyDefLabel;
 	/** The galaxy definition spin-box. */
@@ -754,8 +752,6 @@ public class SkirmishScreen extends ScreenBase {
 
 		scanCampaigns();
 
-		definition = new SkirmishDefinition();
-		
 		onResize();
 		
 		List<UIComponent> all = new ArrayList<>();
@@ -798,7 +794,6 @@ public class SkirmishScreen extends ScreenBase {
 	@Override
 	public void onLeave() {
 		background = null;
-		definition = null;
 	}
 
 	@Override

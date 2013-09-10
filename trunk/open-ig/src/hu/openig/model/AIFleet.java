@@ -27,12 +27,8 @@ public class AIFleet {
 	public FleetStatistics statistics;
 	/** The radar range. */
 	public int radar;
-	/** The target fleet. */
-	public Fleet targetFleet;
 	/** The target planet. */
 	public Planet targetPlanet;
-	/** The target planet. */
-	public Planet arrivedAt;
 	/** The target point. */
 	public Point2D.Double targetPoint;
 	/** The fleet mode. */
@@ -43,8 +39,6 @@ public class AIFleet {
 	public double y;
 	/** The current task. */
 	public FleetTask task;
-	/** Fleet can be upgraded? */
-	public boolean canUpgrade;
 	/** The inventory. */
 	public final List<AIInventoryItem> inventory = new ArrayList<>();
 	/** The inventory counts. */
@@ -59,9 +53,7 @@ public class AIFleet {
 		knowledge = world.knowledge(fleet);
 		this.statistics = world.getStatistics(fleet);
 		this.radar = fleet.radar;
-		targetFleet = fleet.targetFleet;
 		targetPlanet = fleet.targetPlanet();
-		arrivedAt = fleet.arrivedAt;
 		if (fleet.waypoints.size() > 0) {
 			targetPoint = fleet.waypoints.get(0);
 		}

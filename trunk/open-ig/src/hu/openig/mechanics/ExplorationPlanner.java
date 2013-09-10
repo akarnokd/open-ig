@@ -616,7 +616,6 @@ public class ExplorationPlanner extends Planner {
 				// find the cheapest
 				if (bestShip == null || bestShip.productionCost > rt.productionCost) {
 					bestShip = rt;
-					break;
 				}
 			}
 		}

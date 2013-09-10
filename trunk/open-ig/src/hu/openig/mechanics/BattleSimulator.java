@@ -51,9 +51,9 @@ public final class BattleSimulator {
 	/** The base amount for planet conquered. */
 	public static final int PLANET_CONQUER_LOSS = 200;
 	/** The world object. */
-	protected final World world;
+	private final World world;
 	/** The battle configuration. */
-	protected final BattleInfo battle;
+	private final BattleInfo battle;
 	/** The ship filter. */
 	final Func1<InventoryItem, Boolean> ships = new Pred1<InventoryItem>() {
 		@Override
@@ -61,15 +61,6 @@ public final class BattleSimulator {
 			return value.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
 					||  value.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
 					||  value.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
-					;
-		}
-	};
-	/** The vehicle filter. */
-	final Func1<InventoryItem, Boolean> vehicles = new Pred1<InventoryItem>() {
-		@Override
-		public Boolean invoke(InventoryItem value) {
-			return value.type.category == ResearchSubCategory.WEAPONS_TANKS
-					|| value.type.category == ResearchSubCategory.WEAPONS_VEHICLES
 					;
 		}
 	};

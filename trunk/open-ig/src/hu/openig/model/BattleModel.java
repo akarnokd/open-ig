@@ -61,11 +61,6 @@ public class BattleModel {
 			GroundwarUnitType.PARALIZER,
 			GroundwarUnitType.ROCKET_JAMMER
 	);
-	/** Units to ignore for winner checks. */
-	public final EnumSet<GroundwarUnitType> winIngoreUnits = EnumSet.of(
-			GroundwarUnitType.RADAR,
-			GroundwarUnitType.RADAR_JAMMER
-	);
 	/** The set of units that may attempt to get closer to their target. */
 	public final EnumSet<GroundwarUnitType> getCloserUnits = EnumSet.of(
 			GroundwarUnitType.TANK, 

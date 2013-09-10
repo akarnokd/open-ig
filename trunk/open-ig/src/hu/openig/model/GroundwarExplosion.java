@@ -55,9 +55,9 @@ public class GroundwarExplosion {
 	 */
 	public boolean within(int px, int py, int pw, int ph) {
 		int s = get().getWidth();
-		int ax0 = (int)(x - s / 2);
+		int ax0 = (int)(x - s / 2d);
 		int ax1 = ax0 + s - 1;
-		int ay0 = (int)(y - s / 2);
+		int ay0 = (int)(y - s / 2d);
 		int ay1 = ay0 + s - 1;
 		
 		int bx0 = px - pw / 2;

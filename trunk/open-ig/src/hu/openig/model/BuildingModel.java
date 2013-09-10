@@ -223,7 +223,6 @@ public class BuildingModel {
 					b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));
 				}
 				XElement op = building.childElement("operation");
-				b.percentable = "true".equals(op.get("percent", "false"));
 				for (XElement re : op.childrenWithName("resource")) {
 					Resource res = new Resource();
 					res.type = re.get("type");

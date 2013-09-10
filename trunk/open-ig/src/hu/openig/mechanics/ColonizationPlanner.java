@@ -281,7 +281,6 @@ public class ColonizationPlanner extends Planner {
 					});
 					// mark it as stopped here as well
 					fleet.targetPlanet = null;
-					fleet.arrivedAt = null;
 					fleet.task = FleetTask.IDLE;
 				}
 			}

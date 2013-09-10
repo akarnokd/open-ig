@@ -1494,8 +1494,7 @@ public class DiplomacyScreen extends ScreenBase {
 				} else {
 					doIncomingMessage(de.getValue());
 				}
-			} else
-			if (other == null) {
+			} else {
 				other = world().players.get(de.getKey());
 				if (projectorOpen) {
 					contactRaceAnim();

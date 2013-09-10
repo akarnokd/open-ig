@@ -54,7 +54,7 @@ public class Mission19 extends Mission {
 		DONE
 	}
 	/** The governor's ship type. */
-	protected final String governorShipType = "TradersFreight2";
+	protected static final String governorShipType = "TradersFreight2";
 	/** The mission stages. */
 	protected M19 stage = M19.NONE;
 	/** Initial hp of the governor fleet. */
@@ -255,7 +255,7 @@ public class Mission19 extends Mission {
 				failMission(f);
 			}
 		} else {
-			failMission(f);
+			failMission(null);
 		}
 		cleanupScriptedFleets();
 	}

@@ -172,9 +172,6 @@ public class StarmapGFX {
 	public BufferedImage[] viewTarget;
 	/** The dotted grid color. */
 	public final Color gridColor = new Color(0x783C5C);
-	/** The dotted grid stroke. */
-	public final BasicStroke gridStroke = new BasicStroke(1f, BasicStroke.CAP_BUTT, 
-            BasicStroke.JOIN_MITER, 10f, new float[] { 1f }, 0f);
 	/** The achievements button. */
 	@Btn2(name = "starmap/button_achievements")
 	public BufferedImage[] achievements;

@@ -1660,8 +1660,8 @@ public final class Base64 {
 
 			super(in);
 			this.options      = options; // Record for later
-			this.breakLines   = (options & DO_BREAK_LINES) > 0;
-			this.encode       = (options & ENCODE) > 0;
+			this.breakLines   = (options & DO_BREAK_LINES) != 0;
+			this.encode       = (options & ENCODE) != 0;
 			this.bufferLength = encode ? 4 : 3;
 			this.buffer       = new byte[ bufferLength ];
 			this.position     = -1;

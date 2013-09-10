@@ -35,10 +35,6 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 	public double hp;
 	/** The original inventory item. */
 	public InventoryItem item;
-	/** The owner planet if non-null. */
-	public Planet planet;
-	/** The owner fleet if non-null. */
-	public Fleet fleet;
 	/** Unit target if non null. */
 	public GroundwarUnit attackUnit;
 	/** Building target if non null. */

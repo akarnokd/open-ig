@@ -19,8 +19,6 @@ import hu.openig.ui.UIMouse.Type;
  * @author akarnokd, 2012.06.23.
  */
 public class QuickResearchLabel extends UILabel {
-	/** The description associated with this label. */
-	public Pair<String, String> description;
 	/** Mouse pressed. */
 	boolean dragOver;
 	/**
