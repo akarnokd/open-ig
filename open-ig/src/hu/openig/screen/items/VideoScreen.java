@@ -44,6 +44,12 @@ public class VideoScreen extends ScreenBase {
 		String path;
 		/** The full video path and name. */
 		String fullName;
+
+        @Override
+        public String toString() {
+            return path + "/" + name;
+        }
+        
 	}
 	/** The screen origin. */
 	Rectangle origin;

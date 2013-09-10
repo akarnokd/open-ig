@@ -45,7 +45,7 @@ public class Mission17 extends Mission {
 	/** The stage. */
 	protected M17 stage = M17.NONE;
 	/** The target planet. */
-	protected final String target = "Garthog 2";
+	protected static final String target = "Garthog 2";
 	@Override
 	public void onTime() {
 		if (stage == M17.NONE && objective("Mission-16").state != ObjectiveState.ACTIVE) {

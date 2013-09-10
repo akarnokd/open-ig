@@ -16,6 +16,7 @@ import hu.openig.model.TraitKind;
 import hu.openig.model.Traits;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
+import hu.openig.screen.CommonResources;
 import hu.openig.screen.ScreenBase;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
@@ -204,15 +205,16 @@ public class TraitScreen extends ScreenBase {
 	 * A trait checkbox.
 	 * @author akarnokd, 2012.08.18.
 	 */
-	public class TraitCheckBox extends UICheckBox {
+	public static class TraitCheckBox extends UICheckBox {
 		/** The trait. */
 		public final Trait trait;
 		/**
 		 * Creates the checkbox.
 		 * @param trait the trait object
+         * @param commons the common resources
 		 */
-		public TraitCheckBox(Trait trait) {
-			super(get(trait.label), 14, commons.common().checkmark, commons.text());
+		public TraitCheckBox(Trait trait, CommonResources commons) {
+			super(commons.get(trait.label), 14, commons.common().checkmark, commons.text());
 			this.trait = trait;
 			vertically(VerticalAlignment.MIDDLE);
 		}
@@ -245,7 +247,7 @@ public class TraitScreen extends ScreenBase {
 			int y = 0;
 			int i = 0;
 			for (final Trait tr : traits) {
-				final TraitCheckBox tcb = new TraitCheckBox(tr);
+				final TraitCheckBox tcb = new TraitCheckBox(tr, commons);
 				UILabel tcl = new UILabel(format(tr.description, tr.value), 10, commons.text());
 				UILabel tcc = new UILabel((tr.cost > 0 ? "+" : "") + tr.cost, 14, commons.text());
 				

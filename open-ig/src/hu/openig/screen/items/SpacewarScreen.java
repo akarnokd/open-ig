@@ -217,7 +217,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** The rendering scale. */
 	double scale = 1.0;
 	/** The maximum scale. */
-	final double maxScale = 2;
+	static final double maxScale = 2;
 	/** The operational space at 1:1 zoom. */
 	final Rectangle space = new Rectangle(0, 0, 462 * 504 / 238, 504);
 	/** Panning the view. */
@@ -1565,7 +1565,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
 				st.infoImageName = bge.infoImageName;
 				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
-				st.hp = (1L * b.hitpoints * st.hpMax / b.type.hitpoints);
+				st.hp = (1d * b.hitpoints * st.hpMax / b.type.hitpoints);
 				st.value = b.type.cost;
 				st.destruction = bge.destruction;
 				st.building = b;
@@ -1604,7 +1604,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
 				
 				st.value = b.type.cost;
-				st.hp = (1L * b.hitpoints * st.hpMax / b.type.hitpoints);
+				st.hp = (1d * b.hitpoints * st.hpMax / b.type.hitpoints);
 				st.destruction = bge.destruction;
 				st.building = b;
 				st.planet = nearbyPlanet;
@@ -1988,12 +1988,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		int vx2 = minimap.width - 1;
 		int vy2 = minimap.height - 1;
 		if (space.width * scale >= mainmap.width) {
-			vx = (int)(offsetX * minimap.width / space.width / scale + 0.5);
-			vx2 = (int)((offsetX + mainmap.width - 1) * minimap.width / space.width / scale + 0.5);
+			vx = (int)(1d * offsetX * minimap.width / space.width / scale + 0.5);
+			vx2 = (int)(1d * (offsetX + mainmap.width - 1) * minimap.width / space.width / scale + 0.5);
 		}
 		if (space.height * scale >= mainmap.height) {
-			vy = (int)(offsetY * minimap.height / space.height / scale + 0.5);
-			vy2 = (int)((offsetY + mainmap.height - 1) * minimap.height / space.height / scale + 0.5);
+			vy = (int)(1d * offsetY * minimap.height / space.height / scale + 0.5);
+			vy2 = (int)(1d * (offsetY + mainmap.height - 1) * minimap.height / space.height / scale + 0.5);
 		}
 		return new Rectangle(minimap.x + vx, minimap.y + vy, vx2 - vx + 1, vy2 - vy + 1);
 	}
@@ -2070,7 +2070,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			}
 			if (e.type == StructureType.SHIP && e.count > 1) {
-				commons.text().paintTo(g2, (int)(e.x - w2), (int)(e.y + h / 2 - 8), 7, 0xFFFFFFFF, Integer.toString(e.count));
+				commons.text().paintTo(g2, (int)(e.x - w2), (int)(e.y + h / 2d - 8), 7, 0xFFFFFFFF, Integer.toString(e.count));
 			}
 		}
 	}
@@ -2144,7 +2144,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param g2 the graphics context
 	 */
 	void drawCenter(BufferedImage img, double x, double y, Graphics2D g2) {
-		g2.drawImage(img, (int)(x - img.getWidth() / 2), (int)(y - img.getHeight() / 2), null);
+		g2.drawImage(img, (int)(x - img.getWidth() / 2d), (int)(y - img.getHeight() / 2d), null);
 	}
 	/**
 	 * Computes the maximum width of the structures.
@@ -2175,7 +2175,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			double y = dy / 2;
 			for (SpacewarStructure s : structures) {
 				s.x = x;
-				s.y = y + s.get().getHeight() / 2;
+				s.y = y + s.get().getHeight() / 2d;
 				
 				y += s.get().getHeight() + dy;
 			}
@@ -3273,32 +3273,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		return false;
 	}
 	/**
-	 * Rotate the projectile towards the given target angle by a step.
-	 * @param proj the structure
-	 * @param x the target point X
-	 * @param y the target point Y
-	 * @return rotation done?
-	 */
-	boolean rotateStep(SpacewarProjectile proj, double x, double y) {
-		double targetAngle = Math.atan2(y - proj.y, x - proj.x);
-		double currentAngle = proj.normalizedAngle();
-
-		double diff = targetAngle - currentAngle;
-		if (diff < -Math.PI) {
-			diff = 2 * Math.PI - diff;
-		} else
-		if (diff > Math.PI) {
-			diff -= 2 * Math.PI; 
-		}
-		double anglePerStep = 2 * Math.PI * proj.rotationTime / proj.matrix[0].length / SIMULATION_DELAY;
-		if (Math.abs(diff) < anglePerStep) {
-			proj.angle = targetAngle;
-			return true;
-		}
-		proj.angle += Math.signum(diff) * anglePerStep;
-		return false;
-	}
-	/**
 	 * Perform a move step towards the given target point and up to the minimum distance if initially
 	 * further away.
 	 * @param ship the ship to move
@@ -3940,7 +3914,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		} else {
 			for (SpacewarStructure s : U.newArrayList(structures)) {
 				if (!isAlly(s, world().players.get(owner))) {
-					double d = Math.hypot(s.x - target.x, s.y - target.y) - s.get().getWidth() / 2;
+					double d = Math.hypot(s.x - target.x, s.y - target.y) - s.get().getWidth() / 2d;
 					if (d <= area) {
 						d = Math.max(0, d);
 						damageTarget(source, s, 
@@ -3973,7 +3947,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			String owner) {
 		for (SpacewarStructure s : U.newArrayList(structures)) {
 			if (!isAlly(s, world().players.get(owner))) {
-				double d = Math.hypot(s.x - x, s.y - y) - s.get().getWidth() / 2;
+				double d = Math.hypot(s.x - x, s.y - y) - s.get().getWidth() / 2d;
 				if (d <= area) {
 					if (area > 0) {
 						d = Math.max(0, d);
@@ -4562,7 +4536,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Count. */
 		int count;
 		/** The maximum image size. */
-		final int maxImage = 50;
+		static final int maxImage = 50;
 		/** Hitpoints. */
 		int hp;
 		/** Shield points. */
@@ -4758,7 +4732,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The current scroll offset. */
 		int offset = 0;
 		/** The row height. */
-		final int rowHeight = 30;
+		static final int rowHeight = 30;
 		/** The last selection. */
 		List<SpacewarStructure> lastSelection = new ArrayList<>();
 		/** The group buttons. */
@@ -5226,7 +5200,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Highlight option. */
 		int highlight = -1;
 		/** Row height. */
-		final int rowHeight = 16;
+		static final int rowHeight = 16;
 		/** Initialize. */
 		public ChatPanel() {
 			width = 286;

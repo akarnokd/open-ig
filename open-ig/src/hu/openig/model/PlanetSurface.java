@@ -48,10 +48,6 @@ public class PlanetSurface {
 	 *  but in coordinate terms it is equal to the sequence 0,0 -1,-1, -2,-2 etc. */
 	public int height;
 	/**
-	 * The accessible rectangle of the surface defined in pixels. The accessible origin is encoded relative to the top-left corner of where the Location(0,0) is rendered.
-	 */
-	public final Rectangle accessibleRect = new Rectangle();
-	/**
 	 * The base map of the surface. Kept separate from the building maps for the case the user
 	 * demolishes a building.
 	 */

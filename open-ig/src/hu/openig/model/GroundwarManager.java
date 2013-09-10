@@ -179,7 +179,7 @@ public class GroundwarManager implements GroundwarWorld {
 	 */
 	Pathfinding getPathfinding(final Player ignore) {
 		Pathfinding pathfinding = new Pathfinding();
-		if (ignore != null) {
+		if (ignore == null) {
 			pathfinding.isPassable = defaultPassable;
 		} else {
 			pathfinding.isPassable = new Func1<Location, Boolean>() {

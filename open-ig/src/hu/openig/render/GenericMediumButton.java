@@ -50,7 +50,7 @@ public class GenericMediumButton implements GenericButtonRenderer {
 	 * @param name the resource name
 	 */
 	public GenericMediumButton(String name) {
-		try (InputStream in = getClass().getResource(name).openStream()) {
+		try (InputStream in = GenericMediumButton.class.getResource(name).openStream()) {
 			BufferedImage img = ImageIO.read(in);
 
 			topLeft = ImageUtils.newSubimage(img, 0, 0, 10, 6);

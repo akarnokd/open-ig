@@ -346,17 +346,17 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	 * @param args no arguments
 	 */
 	public static void main(final String[] args) {
-		Set<String> argSet = U.newSet(args);
+//		Set<String> argSet = U.newSet(args);
 
-		if (argSet.contains("-en")) {
-			language = "en";
-		} else
-		if (argSet.contains("-hu")) {
+//		if (argSet.contains("-en")) {
+//			language = "en";
+//		} else
+//		if (argSet.contains("-hu")) {
 // FIXME language = "hu";
-			language = "en";
-		} else {
-			language = "en";
-		}
+//			language = "en";
+//		} else {
+//			language = "en";
+//		}
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -380,8 +380,8 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	void initComponents() {
 		undoManager = new UndoManager();
 		
-		warning = new ImageIcon(getClass().getResource("/hu/openig/gfx/warning.png"));
-		error = new ImageIcon(getClass().getResource("/hu/openig/gfx/error.png"));
+		warning = new ImageIcon(CampaignEditor.class.getResource("/hu/openig/gfx/warning.png"));
+		error = new ImageIcon(CampaignEditor.class.getResource("/hu/openig/gfx/error.png"));
 		
 		labels = new HashMap<>();
 		flags = new HashMap<>();

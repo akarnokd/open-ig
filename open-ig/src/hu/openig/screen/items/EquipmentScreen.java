@@ -245,8 +245,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	public boolean transferMode;
 	/** The secondary fleet. */
 	Fleet secondary;
-	/** The random placement. */
-	public final Random rnd = new Random();
 	/** Sell the selected equipment. */
 	UIImageButton sell;
 	/** The last selection mode. */
@@ -2485,7 +2483,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	void doEndJoin() {
 		transferMode = false;
 		fleetListing.nearby = false;
-		fleetListing.selected = null;
 		
 		doEndSplit();
 	}

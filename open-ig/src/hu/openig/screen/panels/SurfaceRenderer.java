@@ -684,6 +684,7 @@ public class SurfaceRenderer extends UIComponent {
 		LinkedList<GroundwarUnit> unitsToPlace = war.unitsToPlace;
 		if (!unitsToPlace.isEmpty()) {
 			BufferedImage img = commons.colony().smallInfoPanel;
+            // FIXME buildingsPanelLocation is not set anywhere!
 			int x = buildingsPanelLocation.x;
 			int y = buildingsPanelLocation.y;
 			int w = img.getWidth();

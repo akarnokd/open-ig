@@ -45,9 +45,9 @@ public class TechnologySlot extends UIComponent {
 	/** The border color when a slot is selected. */
 	final Color selectedColor = Color.RED;
 	/** The normal text color. */
-	final int textColor = 0xFF6DB269;
+	static final int textColor = 0xFF6DB269;
 	/** The selected text color. */
-	final int selectedTextColor = 0xFFFF0000;
+	static final int selectedTextColor = 0xFFFF0000;
 	/** The current animation step for the rolling disk. */
 	public int animationStep;
 	/** The action to invoke when the user clicks on the slot. */

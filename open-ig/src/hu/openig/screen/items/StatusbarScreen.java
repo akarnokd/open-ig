@@ -122,7 +122,7 @@ public class StatusbarScreen extends ScreenBase {
 	/** The time to show the achievement. */
 	public int achievementTTL;
 	/** The size of the achievement panel. */
-	final int achievementSize = 55;
+	static final int achievementSize = 55;
 	/** The achievement animator. */
 	Timer achievementAnimator;
 	/** The objectives viewer. */
@@ -671,7 +671,7 @@ public class StatusbarScreen extends ScreenBase {
 				if (animationStep <= accelerationStep * 2 + stayStep) {
 					double time = 1.0 * (animationStep - accelerationStep - stayStep) / frequency;
 					double acc = 2.0 * totalWidth * frequency * frequency / accelerationStep / accelerationStep;
-					renderX = (int)(width / 2 - acc / 2 * time * time);
+					renderX = (int)(width / 2d - acc / 2 * time * time);
 				}
 				
 				String msgText = get(currentMessage.text);

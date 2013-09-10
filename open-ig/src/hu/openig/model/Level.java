@@ -38,8 +38,6 @@ public class Level {
 	public final BufferedImage[] send = new BufferedImage[2];
 	/** The receive button normal, pressed. */
 	public final BufferedImage[] receive = new BufferedImage[2];
-	/** The associated ship walk. */
-	public WalkPosition walk;
 	/** The ship for the walks. */
 	public WalkShip ship;
 }

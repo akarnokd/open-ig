@@ -94,8 +94,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	final Random rnd = new Random();
 	/** The displayed background. */
 	BufferedImage background;
-	/** The screen to restore when exiting. */
-	Screens restore;
 	/** Show the settings page? */
 	public SettingsPage settingsMode;
 	/** Allow saving? */
@@ -1221,7 +1219,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	}
 	@Override
 	public void onEnter(Screens mode) {
-		restore = mode;
 		setRandomBackground();
 		settingsMode = SettingsPage.LOAD_SAVE;
 		if (commons.simulation != null) {
@@ -1839,7 +1836,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			showConfirm(get("settings.confirm_overwrite"), new Action0() {
 				@Override
 				public void invoke() {
-					fi.file.delete();
+					if (!fi.file.delete()) {
+                        System.out.println("Unable to delete file " + fi.file);
+                    }
 					commons.control().save(saveText, SaveMode.MANUAL);
 					doBack();
 				}

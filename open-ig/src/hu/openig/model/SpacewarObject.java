@@ -39,9 +39,9 @@ public abstract class SpacewarObject {
 		int w = get().getWidth();
 		int h = get().getHeight();
 		
-		double x0 = this.x - (w / 2);
+		double x0 = this.x - (w / 2d);
 		double x1 = x0 + w - 1;
-		double y0 = this.y - (h / 2);
+		double y0 = this.y - (h / 2d);
 		double y1 = y0 + h - 1;
 		
 		return !(x1 < x || x + width < x0) && !(y1 < y || y + height < y0);
@@ -54,7 +54,7 @@ public abstract class SpacewarObject {
 	public boolean intersects(SpacewarObject other) {
 		int w = other.get().getWidth();
 		int h = other.get().getHeight();
-		return intersects(other.x - (w / 2), other.y - (h / 2), w , h);
+		return intersects(other.x - (w / 2d), other.y - (h / 2d), w , h);
 	}
 	/**
 	 * Test if the object is completely within the specified bounds.
@@ -67,8 +67,8 @@ public abstract class SpacewarObject {
 	public boolean within(double rx, double ry, double width, double height) {
 		int w = get().getWidth();
 		int h = get().getHeight();
-		return (rx <= x - w / 2 && x - w / 2 + w < rx + width)
-				&& (ry <= y - h / 2 && y - h / 2 + h < ry + height);
+		return (rx <= x - w / 2d && x - w / 2d + w < rx + width)
+				&& (ry <= y - h / 2d && y - h / 2d + h < ry + height);
 	}
 	/**
 	 * Test if the object is completely within the specified rectangle.
@@ -87,7 +87,7 @@ public abstract class SpacewarObject {
 	public boolean contains(double px, double py) {
 		int w = get().getWidth();
 		int h = get().getHeight();
-		return x - w / 2 <= px && x - w / 2 + w > px
-				&& y - h / 2 <= py && y - h / 2 + h > py;
+		return x - w / 2d <= px && x - w / 2d + w > px
+				&& y - h / 2d <= py && y - h / 2d + h > py;
 	}
 }

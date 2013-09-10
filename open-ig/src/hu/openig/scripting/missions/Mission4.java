@@ -216,8 +216,8 @@ public class Mission4 extends Mission {
 				SpacewarStructure a = null;
 				for (SpacewarStructure s : structures) {
 					if (s.item != null && "Mission-4-Pirates-1".equals(s.item.tag)) {
-						s.x = d.width / 2;
-						s.y = d.height / 2;
+						s.x = d.width / 2d;
+						s.y = d.height / 2d;
 						s.angle = 0.0;
 						s.owner = pirate2;
 						a = s;

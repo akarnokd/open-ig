@@ -41,8 +41,6 @@ public class BuildingType {
 	public final Set<String> except = new HashSet<>();
 	/** The required research to be available. */
 	public ResearchType research;
-	/** Is the operation level dependent on the supplied energy and worker amounts? */
-	public boolean percentable;
 	/** The primary resource to display in the info panel. */
 	public String primary;
 	/** The resources associated with this building type. */

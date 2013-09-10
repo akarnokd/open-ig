@@ -410,7 +410,6 @@ public class World implements ModelLookup {
 			lvl.id = Integer.parseInt(level.get("id"));
 			lvl.image = rl.getImage(level.get("image"));
 			lvl.ship = walks.ships.get(level.get("ship-id"));
-			lvl.walk = lvl.ship.positions.get("*bridge");
 			XElement mp = level.childElement("message-panel");
 			
 			XElement mpAppear = mp.childElement("appear");
@@ -2681,7 +2680,7 @@ public class World implements ModelLookup {
 		DiplomaticRelation dr = new DiplomaticRelation();
 		dr.first = first.id;
 		dr.second = second.id;
-		dr.value = (first.initialStance + second.initialStance) / 2;
+		dr.value = (first.initialStance + second.initialStance) / 2d;
 		relations.add(dr);
 		return dr;
 	}

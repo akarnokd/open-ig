@@ -55,14 +55,6 @@ public class StatusbarGFX {
 	/** Nongame bottom right. */
 	@Img(name = "statusbar_nongame_bottom_right")
 	public BufferedImage nongameBottomRight;
-	/** Pause animation phases. */
-	public BufferedImage[] pause;
-	/** Time x 1 animation phases. */
-	public BufferedImage[] timex1;
-	/** Time x 2 animation phases. */
-	public BufferedImage[] timex2;
-	/** Time x 4 animation phases. */
-	public BufferedImage[] timex4;
 	/** Research notification icon. */
 	@Img(name = "research_notify")
 	public BufferedImage researchNotify;
@@ -100,38 +92,6 @@ public class StatusbarGFX {
 	 */
 	public StatusbarGFX load(ResourceLocator rl) {
 		GFXLoader.loadResources(this, rl);
-		BufferedImage time = rl.getImage("time_animations");
-		pause = new BufferedImage[] {
-			ImageUtils.newSubimage(time, 42, 16, 14, 16),
-			ImageUtils.newSubimage(time, 42, 32, 14, 16)
-		};
-		timex1 = new BufferedImage[] {
-			ImageUtils.newSubimage(time, 0, 0 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 0, 1 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 0, 2 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 0, 3 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 0, 4 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 0, 5 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 0, 6 * 16, 14, 16)
-		};
-		timex2 = new BufferedImage[] {
-			ImageUtils.newSubimage(time, 14, 0 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 14, 1 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 14, 2 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 14, 3 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 14, 4 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 14, 5 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 14, 6 * 16, 14, 16)
-		};
-		timex4 = new BufferedImage[] {
-			ImageUtils.newSubimage(time, 28, 0 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 28, 1 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 28, 2 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 28, 3 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 28, 4 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 28, 5 * 16, 14, 16),
-			ImageUtils.newSubimage(time, 28, 6 * 16, 14, 16)
-		};
 		return this;
 	}
 }

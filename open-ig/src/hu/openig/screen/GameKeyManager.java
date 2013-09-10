@@ -320,9 +320,6 @@ public class GameKeyManager extends KeyAdapter {
 			case KeyEvent.VK_F7:
 				if (secondary != null) {
 					switch (secondary.screen()) {
-					case EQUIPMENT:
-						displaySecondary(Screens.INFORMATION_INVENTIONS);
-						break;
 					case DIPLOMACY:
 						displaySecondary(Screens.INFORMATION_ALIENS);
 						break;
@@ -338,6 +335,7 @@ public class GameKeyManager extends KeyAdapter {
 						break;
 					case RESEARCH:
 					case PRODUCTION:
+					case EQUIPMENT:
 						displaySecondary(Screens.INFORMATION_INVENTIONS);
 						break;
 					default:

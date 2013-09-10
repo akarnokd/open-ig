@@ -24,10 +24,6 @@ import java.util.concurrent.ExecutorService;
 public class GalaxyModel {
 	/** The default starmap. */
 	public BufferedImage map;
-	/** The minimum scaling level. */
-	public float minScale;
-	/** The maximum scaling level. */
-	public float maxScale;
 	/** The planet types. */
 	public final Map<String, PlanetType> planetTypes = new HashMap<>();
 	/** The configuration. */
@@ -55,8 +51,6 @@ public class GalaxyModel {
 			XElement galaxy = rl.getXML(data);
 			XElement background = galaxy.childElement("background");
 			map = rl.getImage(background.get("image"));
-			minScale = Float.parseFloat(background.get("min-scale"));
-			maxScale = Float.parseFloat(background.get("max-scale"));
 			
 			XElement planets = galaxy.childElement("planets");
 			for (final XElement planet : planets.childrenWithName("planet")) {

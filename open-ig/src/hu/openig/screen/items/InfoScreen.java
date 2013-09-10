@@ -2452,6 +2452,7 @@ public class InfoScreen extends ScreenBase {
 			if (showPlanetListDetails) {
 				adjustPlanetListView();
 			}
+            break;
 		case INFORMATION_INVENTIONS:
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:

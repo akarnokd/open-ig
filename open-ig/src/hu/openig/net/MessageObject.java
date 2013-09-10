@@ -640,7 +640,7 @@ public class MessageObject implements MessageSerializable {
 		if (attributes.containsKey(name)) {
 			Object v = attributes.get(name);
 			if (v instanceof Boolean) {
-				return v == Boolean.TRUE;
+				return (Boolean)v;
 			}
 		}
 		throw new MissingAttributeException(name + " missing or invalid type");
@@ -648,7 +648,7 @@ public class MessageObject implements MessageSerializable {
 	/**
 	 * Returns a boolean value with the given attribute name.
 	 * @param name the attribute name
-	 * @return the boolean value
+	 * @return the boolean value, which might be null
 	 */
 	public Boolean getBooleanObject(String name) {
 		if (attributes.containsKey(name)) {
@@ -854,7 +854,7 @@ public class MessageObject implements MessageSerializable {
 		if (attributes.containsKey(name)) {
 			Object o = attributes.get(name);
 			if (o instanceof Boolean) {
-				return o == Boolean.TRUE;
+				return (Boolean)o;
 			}
 		}
 		return defaultValue;

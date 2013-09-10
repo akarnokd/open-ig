@@ -84,6 +84,10 @@ public class MessageListener implements Closeable {
 			closed = true;
 			s.close();
 		}
+        if (accepter != null) {
+            accepter.cancel(true);
+            accepter = null;
+        }
 		U.close(clients);
 		clients.clear();
 	}

@@ -3650,7 +3650,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						
 						u.selected = true;
 						u.owner = planet().owner;
-						u.planet = planet();
 						
 						u.model = bgv;
 						u.hp = u.model.hp;
@@ -3688,7 +3687,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					
 					u.selected = true;
 					u.owner = enemy;
-					u.planet = planet();
 					
 					u.model = bgv;
 					u.hp = u.model.hp;
@@ -3889,7 +3887,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		for (GroundwarExplosion exp : explosions) {
 			if (exp.within(px, py, 54, 28)) {
 				BufferedImage img = exp.get();
-				g2.drawImage(img, (int)(exp.x - img.getWidth() / 2), (int)(exp.y - img.getHeight() / 2), null);
+				g2.drawImage(img, (int)(exp.x - img.getWidth() / 2d), (int)(exp.y - img.getHeight() / 2d), null);
 			}
 		}
 	}
@@ -4038,7 +4036,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					u.selected = in;
 				} else
 				if (mode == SelectionBoxMode.SUBTRACT) {
-					u.selected &= !in;
+					u.selected = u.selected && !in;
 				} else
 				if (mode == SelectionBoxMode.ADD) {
 					u.selected |= in;
@@ -4058,7 +4056,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					g.selected = in;
 				} else
 				if (mode == SelectionBoxMode.SUBTRACT) {
-					g.selected &= !in;
+					g.selected = g.selected && !in;
 				} else
 				if (mode == SelectionBoxMode.ADD) {
 					g.selected |= in;
@@ -4245,7 +4243,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	Pathfinding getPathfinding(final Player ignore) {
 		Pathfinding pathfinding = new Pathfinding();
-		if (ignore != null) {
+		if (ignore == null) {
 			pathfinding.isPassable = defaultPassable;
 		} else {
 			pathfinding.isPassable = new Func1<Location, Boolean>() {
@@ -6038,10 +6036,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					
 					if (atBuildings) {
 						u.owner = planet().owner;
-						u.planet = planet();
 					} else {
 						u.owner = battle.attacker.owner;
-						u.fleet = battle.attacker;
 					}
 					u.item = ii;
 					u.model = bge;

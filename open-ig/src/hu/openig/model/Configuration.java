@@ -92,10 +92,6 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean muteEffect;
-	/** The effect filter step. */
-	@LoadSave
-	@LoadSaveGame
-	public int effectFilter = 1;
 	/** Video volume 0-100. */
 	@LoadSave
 	@LoadSaveGame
@@ -104,10 +100,6 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean muteVideo;
-	/** The video filter step. */
-	@LoadSave
-	@LoadSaveGame
-	public int videoFilter = 1;
 	/** The debug watcher window. */
 	public Closeable watcherWindow;
 	/** Returns the current crash log or null if no such log is available. */

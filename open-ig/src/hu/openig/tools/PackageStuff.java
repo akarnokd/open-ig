@@ -303,112 +303,117 @@ public final class PackageStuff {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		JFrame f = new JFrame("Build");
-		
-		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		
-		JPanel p = new JPanel();
-		p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
-		f.getContentPane().add(p);
-		
-		final JCheckBox cb1 = new JCheckBox("Build game", true);
-		final JCheckBox cb2 = new JCheckBox("Build launcher", false);
-		final JCheckBox cb3 = new JCheckBox("Build data", true);
-		final JCheckBox cb4 = new JCheckBox("Build images", false);
-		final JCheckBox cb5 = new JCheckBox("Modify update.xml", false);
-		
-		final JTextArea text = new JTextArea(6, 50);
-		text.setFont(new Font(Font.MONOSPACED, Font.PLAIN, cb1.getFont().getSize()));
-		text.setColumns(80);
-		final JScrollPane sp = new JScrollPane(text);
-		
-		
-		final JButton run = new JButton("Run");
-		
-		run.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				text.setText("");
-				run.setEnabled(false);
-				final boolean v1 = cb1.isSelected();
-				final boolean v2 = cb2.isSelected();
-				final boolean v3 = cb3.isSelected();
-				final boolean v4 = cb4.isSelected();
-				final boolean v5 = cb5.isSelected();
-				SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
-					@Override
-					protected Void doInBackground() throws Exception {
-						final ConcurrentMap<String, String> checksums = new ConcurrentHashMap<>();
-						final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-						if (v1) {
-							exec.execute(new Runnable() {
-								@Override
-								public void run() {
-									String buildGame = buildGame(Configuration.VERSION);
-									appendLine(text, buildGame);
-									checksums.put("game", buildGame);
-								}
-							});
-						}
-						if (v2) {
-							exec.execute(new Runnable() {
-								@Override
-								public void run() {
-									String buildLauncher = buildLauncher();
-									appendLine(text, buildLauncher);
-									checksums.put("launcher", buildLauncher);
-								}
-							});
-						}
-						if (v3) {
-							exec.execute(new Runnable() {
-								@Override
-								public void run() {
-									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-									String buildData = buildData(sdf.format(new Date()) + "a");
-									appendLine(text, buildData);
-									checksums.put("data", buildData);
-								}
-							});
-						} 
-						if (v4) {
-							exec.execute(new Runnable() {
-								@Override
-								public void run() {
-									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-									String buildImages = buildImages(sdf.format(new Date()) + "a");
-									appendLine(text, buildImages);
-									checksums.put("images", buildImages);
-								}
-							});
-						}
-						exec.shutdown();
-						exec.awaitTermination(1, TimeUnit.DAYS);
-						if (v5) {
-							modifyUpdateXML(checksums);
-						}
-						return null;
-					}
-					@Override
-					protected void done() {
-						run.setEnabled(true);
-					}
-				};
-				sw.execute();
-			}
-		});
-		p.add(cb1);
-		p.add(cb2);
-		p.add(cb3);
-		p.add(cb4);
-		p.add(cb5);
-		p.add(sp);
-		p.add(run);
-		f.pack();
-		f.setResizable(false);
-		f.setLocationRelativeTo(null);
-		f.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JFrame f = new JFrame("Build");
+
+                f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+                JPanel p = new JPanel();
+                p.setLayout(new BoxLayout(p, BoxLayout.PAGE_AXIS));
+                f.getContentPane().add(p);
+
+                final JCheckBox cb1 = new JCheckBox("Build game", true);
+                final JCheckBox cb2 = new JCheckBox("Build launcher", false);
+                final JCheckBox cb3 = new JCheckBox("Build data", true);
+                final JCheckBox cb4 = new JCheckBox("Build images", false);
+                final JCheckBox cb5 = new JCheckBox("Modify update.xml", false);
+
+                final JTextArea text = new JTextArea(6, 50);
+                text.setFont(new Font(Font.MONOSPACED, Font.PLAIN, cb1.getFont().getSize()));
+                text.setColumns(80);
+                final JScrollPane sp = new JScrollPane(text);
+
+
+                final JButton run = new JButton("Run");
+
+                run.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        text.setText("");
+                        run.setEnabled(false);
+                        final boolean v1 = cb1.isSelected();
+                        final boolean v2 = cb2.isSelected();
+                        final boolean v3 = cb3.isSelected();
+                        final boolean v4 = cb4.isSelected();
+                        final boolean v5 = cb5.isSelected();
+                        SwingWorker<Void, Void> sw = new SwingWorker<Void, Void>() {
+                            @Override
+                            protected Void doInBackground() throws Exception {
+                                final ConcurrentMap<String, String> checksums = new ConcurrentHashMap<>();
+                                final ExecutorService exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+                                if (v1) {
+                                    exec.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            String buildGame = buildGame(Configuration.VERSION);
+                                            appendLine(text, buildGame);
+                                            checksums.put("game", buildGame);
+                                        }
+                                    });
+                                }
+                                if (v2) {
+                                    exec.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            String buildLauncher = buildLauncher();
+                                            appendLine(text, buildLauncher);
+                                            checksums.put("launcher", buildLauncher);
+                                        }
+                                    });
+                                }
+                                if (v3) {
+                                    exec.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                                            String buildData = buildData(sdf.format(new Date()) + "a");
+                                            appendLine(text, buildData);
+                                            checksums.put("data", buildData);
+                                        }
+                                    });
+                                } 
+                                if (v4) {
+                                    exec.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                                            String buildImages = buildImages(sdf.format(new Date()) + "a");
+                                            appendLine(text, buildImages);
+                                            checksums.put("images", buildImages);
+                                        }
+                                    });
+                                }
+                                exec.shutdown();
+                                exec.awaitTermination(1, TimeUnit.DAYS);
+                                if (v5) {
+                                    modifyUpdateXML(checksums);
+                                }
+                                return null;
+                            }
+                            @Override
+                            protected void done() {
+                                run.setEnabled(true);
+                            }
+                        };
+                        sw.execute();
+                    }
+                });
+                p.add(cb1);
+                p.add(cb2);
+                p.add(cb3);
+                p.add(cb4);
+                p.add(cb5);
+                p.add(sp);
+                p.add(run);
+                f.pack();
+                f.setResizable(false);
+                f.setLocationRelativeTo(null);
+                f.setVisible(true);
+            }
+        });
 	}
 	/**
 	 * Modify the update.xml according to the changed resources.

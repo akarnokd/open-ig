@@ -35,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -433,15 +434,21 @@ public class UPnPGatewayDevice {
                 nameValue.get("NewPortMappingDescription"));
 
         try {
-            portMappingEntry.setInternalPort(
-                    Integer.parseInt(nameValue.get("NewInternalPort")));
-        } catch (Exception e) {
+            String n = nameValue.get("NewInternalPort");
+            if (n != null) {
+                portMappingEntry.setInternalPort(Integer.parseInt(n));
+            }
+        } catch (NumberFormatException e) {
+            throw new IOException(e);
         }
 
         try {
-            portMappingEntry.setExternalPort(
-                    Integer.parseInt(nameValue.get("NewExternalPort")));
-        } catch (Exception e) {
+            String n = nameValue.get("NewExternalPort");
+            if (n != null) {
+                portMappingEntry.setExternalPort(Integer.parseInt(n));
+            }
+        } catch (NumberFormatException e) {
+            throw new IOException(e);
         }
 
         return true;

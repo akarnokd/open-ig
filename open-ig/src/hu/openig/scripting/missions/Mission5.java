@@ -354,15 +354,15 @@ public class Mission5 extends Mission {
 			int y = (d.height - helpers * 40) / 2; 
 			for (SpacewarStructure s : structures) {
 				if (s.item != null && "Mission-5".equals(s.item.tag)) {
-					s.x = d.width / 2;
-					s.y = d.height / 2;
+					s.x = d.width / 2d;
+					s.y = d.height / 2d;
 					s.angle = 0.0;
 					s.owner = f1.owner;
 					s.guard = true;
 					s.hpMax = (int)s.hp;
 				}
 				if (s.item != null && "Mission-5-Help".equals(s.item.tag)) {
-					s.x = d.width / 3;
+					s.x = d.width / 3d;
 					s.y = y;
 					s.angle = 0.0;
 					s.guard = true;

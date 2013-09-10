@@ -44,9 +44,9 @@ public class GameOverScreen extends ScreenBase {
 	/** The image alpha level. */
 	float imageAlpha;
 	/** The animation speed in milliseconds. */
-	final int animationSpeed = 50;
+	static final int animationSpeed = 50;
 	/** The maximum phase. */
-	final int maxPhase = 40;
+	static final int maxPhase = 40;
 	/** The player won! */
 	public boolean win;
 	/** Continue the gameplay. */

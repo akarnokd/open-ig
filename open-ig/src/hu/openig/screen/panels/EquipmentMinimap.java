@@ -153,8 +153,8 @@ public class EquipmentMinimap extends UIComponent {
 	public void moveTo(double x, double y) {
 		BufferedImage map = commons.world().galaxyModel.map;
 		mapRect.setSize((int)(map.getWidth() * zoom), (int)(map.getHeight() * zoom));
-		mapRect.x = (int)Math.max(0, Math.min(x * zoom - width / 2, mapRect.width - width));
-		mapRect.y = (int)Math.max(0, Math.min(y * zoom - height / 2, mapRect.height - height));
+		mapRect.x = (int)Math.max(0, Math.min(x * zoom - width / 2d, mapRect.width - width));
+		mapRect.y = (int)Math.max(0, Math.min(y * zoom - height / 2d, mapRect.height - height));
 	}
 	/** 
 	 * Select the entity at the given location.

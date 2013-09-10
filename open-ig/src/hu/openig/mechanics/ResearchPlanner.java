@@ -41,8 +41,6 @@ public class ResearchPlanner extends Planner {
 			new HashSet<>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
 	/** Indicator to allow actions that spendmoney. */
 	boolean maySpendMoney;
-	/** The exploration map. */
-	final ExplorationMap exploration;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
@@ -51,7 +49,6 @@ public class ResearchPlanner extends Planner {
 	 */
 	public ResearchPlanner(AIWorld world, AIControls controls, ExplorationMap exploration) {
 		super(world, controls);
-		this.exploration = exploration;
 	}
 	@Override
 	public void plan() {

@@ -248,7 +248,8 @@ public final class RenderTools {
 		Color last = null;
 		for (int i = 0; i < stars.size(); i++) {
 			Star s = stars.get(i);
-			double layer = 0.9 - (i / STAR_COUNT) * 0.10;
+            int layerIdx = i / STAR_COUNT;
+			double layer = 0.9 - layerIdx * 0.10;
 			double w = rect.width * layer;
 			double h = rect.height * layer;
 			double lx = rect.x;

@@ -244,7 +244,7 @@ public class MultiplayerScreen extends JFrame {
 		});
 
 		openButton = new IGButton();
-		openButton.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Open24.gif")));
+		openButton.setIcon(new ImageIcon(MultiplayerScreen.class.getResource("/hu/openig/editors/res/Open24.gif")));
 		openButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

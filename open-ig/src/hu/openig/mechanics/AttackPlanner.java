@@ -85,8 +85,6 @@ public class AttackPlanner extends Planner {
 	}
 	/** The war limit. */
 	protected static final int WAR_LIMIT = 75;
-	/** The exploration map. */
-	final ExplorationMap exploration;
 	/** Sets the new attack date. */
 	final Action1<Date> setNewAttack;
 	/**
@@ -99,7 +97,6 @@ public class AttackPlanner extends Planner {
 	public AttackPlanner(AIWorld world, AIControls controls, 
 			ExplorationMap exploration, Action1<Date> setNewAttack) {
 		super(world, controls);
-		this.exploration = exploration;
 		this.setNewAttack = setNewAttack;
 	}
 	@Override

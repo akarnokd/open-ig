@@ -30,8 +30,6 @@ public class LModule {
 	public final List<LRemoveFile> removeFiles = new ArrayList<>();
 	/** The startup memory in megabytes. */
 	public int memory;
-	/** The file to execute. */
-	public String executeFile;
 	/** The optional class name to execute. */
 	public String clazz;
 	/**

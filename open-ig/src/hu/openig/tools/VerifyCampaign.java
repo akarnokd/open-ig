@@ -31,8 +31,6 @@ import javax.xml.stream.XMLStreamException;
  * @author akarnokd, 2012.05.21.
  */
 public class VerifyCampaign {
-	/** The configuration. */
-	final Configuration cfg;
 	/** The resource locator. */
 	final ResourceLocator rl;
 	/** The game. */
@@ -49,7 +47,6 @@ public class VerifyCampaign {
 	 * @param game the game
 	 */
 	public VerifyCampaign(Configuration cfg, String game) {
-		this.cfg = cfg;
 		this.rl = cfg.newResourceLocator();
 		this.game = game;
 	}
@@ -144,10 +141,10 @@ public class VerifyCampaign {
 	 * @param where where is it needed?
 	 */
 	void checkLabel(String key, String where) {
-		String langs = "";
+		StringBuilder langs = new StringBuilder();
 		for (String l : languages) {
 			if (!labels.get(l).map().containsKey(key)) {
-				langs += " " + l;
+				langs.append(' ').append(l);
 			}
 		}
 		if (langs.length() > 0) {

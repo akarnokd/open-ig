@@ -343,7 +343,7 @@ public class MultiplayerSetupScreen extends JFrame {
 		cancel.setForeground(Color.WHITE);
 		
 		openButton = new IGButton();
-		openButton.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Open24.gif")));
+		openButton.setIcon(new ImageIcon(MultiplayerSetupScreen.class.getResource("/hu/openig/editors/res/Open24.gif")));
 		openButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -351,7 +351,7 @@ public class MultiplayerSetupScreen extends JFrame {
 			}
 		});
 		saveButton = new IGButton();
-		saveButton.setIcon(new ImageIcon(getClass().getResource("/hu/openig/editors/res/Save24.gif")));
+		saveButton.setIcon(new ImageIcon(MultiplayerSetupScreen.class.getResource("/hu/openig/editors/res/Save24.gif")));
 		saveButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -80,8 +80,6 @@ public class ResourceLocator {
 		ResourceType type;
 		/** Is the container a ZIP file? */
 		boolean zipContainer;
-		/** The resource size. */
-		long size;
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof ResourcePlace) {
@@ -219,7 +217,6 @@ public class ResourceLocator {
 				ResourcePlace rp = new ResourcePlace();
 				rp.container = zipFile;
 				rp.zipContainer = true;
-				rp.size = ze.getSize();
 				
 				setNameParts(name, rp);
 			}
@@ -314,7 +311,6 @@ public class ResourceLocator {
 				} else {
 					 ResourcePlace rp = new ResourcePlace();
 					 rp.container = directory;
-					 rp.size = f.length();
 					 setNameParts(rel.substring(directory.length()) + f.getName(), rp);
 				}
 			 }

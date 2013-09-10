@@ -511,7 +511,7 @@ public class QuickProductionPanel extends UIContainer {
 		/** The assigned research. */
 		Production rt;
 		/** Gap between components. */
-		final int gap = 10;
+		static final int gap = 10;
 		/** Is the shift. */
 		boolean countShift;
 		/**
@@ -646,7 +646,7 @@ public class QuickProductionPanel extends UIContainer {
 		/** The research name. */
 		UILabel inventory;
 		/** Gap between components. */
-		final int gap = 10;
+		static final int gap = 10;
 		/**
 		 * Constructor. Prepares the sub-components.
 		 */
