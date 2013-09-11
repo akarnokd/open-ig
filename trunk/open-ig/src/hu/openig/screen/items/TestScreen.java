@@ -176,7 +176,7 @@ public class TestScreen extends ScreenBase {
 		g2.setTransform(savea);
 	}
 	/** A test choice. */
-	class TestChoice extends UIComponent {
+	static class TestChoice extends UIComponent {
 		/** The associated question. */
 		TestQuestion question;
 		/** The associated answer. */

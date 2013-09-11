@@ -1355,10 +1355,6 @@ public final class Base64 {
 			}   // end else: no custom class loader
 
 			obj = ois.readObject();
-		} catch (java.io.IOException e) {
-			throw e;    // Catch and throw in order to execute finally{}
-		} catch (java.lang.ClassNotFoundException e) {
-			throw e;    // Catch and throw in order to execute finally{}
 		} finally {
 			U.close(bais);
 			U.close(ois);

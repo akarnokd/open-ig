@@ -100,9 +100,7 @@ public final class AnimPlay {
 		}
 		try {
 			SwingUtilities.invokeAndWait(r);
-		} catch (InterruptedException ex) {
-			
-		} catch (InvocationTargetException ex) {
+		} catch (InterruptedException | InvocationTargetException ex) {
 			
 		}
 	}
@@ -271,26 +269,14 @@ public final class AnimPlay {
 					Method m =  (o != null ? o.getClass() : AnimPlay.class).getDeclaredMethod(action, ActionEvent.class);
 					m.invoke(o, e);
 				} catch (NoSuchMethodException e1) {
-				} catch (SecurityException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (InvocationTargetException e1) {
+				} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					Method m = (o != null ? o.getClass() : AnimPlay.class).getDeclaredMethod(action);
 					m.invoke(o);
 				} catch (NoSuchMethodException e1) {
-				} catch (SecurityException e1) {
-					e1.printStackTrace();
-				} catch (IllegalAccessException e1) {
-					e1.printStackTrace();
-				} catch (IllegalArgumentException e1) {
-					e1.printStackTrace();
-				} catch (InvocationTargetException e1) {
+				} catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
 					e1.printStackTrace();
 				}
 			}

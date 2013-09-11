@@ -117,7 +117,7 @@ public class DatabaseScreen extends ScreenBase {
 	 * The database button.
 	 * @author akarnokd, 2009.10.25.
 	 */
-	class DatabaseButton {
+	static class DatabaseButton {
 		/** X. */
 		int x;
 		/** Y. */

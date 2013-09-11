@@ -640,9 +640,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					item.date = new Date(def.lastModified());
 					item.definition = gdef;
 					copyModel.add(item);
-				} catch (IllegalArgumentException ex) {
-					// ignored
-				} catch (XMLStreamException ex) {
+				} catch (IllegalArgumentException | XMLStreamException ex) {
 					// ignored
 				}
 			}
@@ -663,9 +661,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					item.date = new Date(packed.first.lastModified());
 					item.definition = gdef;
 					copyModel.add(item);
-				} catch (IllegalArgumentException ex) {
-					// ignored
-				} catch (XMLStreamException ex) {
+				} catch (IllegalArgumentException | XMLStreamException ex) {
 					// ignored
 				}
 			}

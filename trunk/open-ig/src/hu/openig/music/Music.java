@@ -261,11 +261,7 @@ public class Music {
 				sdl.close();
 				sdl = null;
 			}
-		} catch (UnsupportedAudioFileException e) {
-			Exceptions.add(e);
-		} catch (IOException e) {
-			Exceptions.add(e);
-		} catch (LineUnavailableException e) {
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			Exceptions.add(e);
 		}
 	}

@@ -149,9 +149,7 @@ public class PlayerStatistics {
 					LongField lf = new LongField();
 					fields.put(f.getName(), lf);
 					f.set(this, lf);
-				} catch (IllegalArgumentException e) {
-					Exceptions.add(e);
-				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					Exceptions.add(e);
 				}
 			}

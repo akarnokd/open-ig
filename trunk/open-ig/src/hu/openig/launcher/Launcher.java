@@ -61,6 +61,8 @@ import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -264,7 +266,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		}
 		
 		if (!lf.exists()) {
-			CodeSource cs = getClass().getProtectionDomain().getCodeSource();
+			CodeSource cs = Launcher.class.getProtectionDomain().getCodeSource();
 			try {
 				File jf = new File(cs.getLocation().toURI().getPath());
 				currentDir = jf.getParentFile();
@@ -333,13 +335,13 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 * Load the languages.
 	 */
 	void loadLanguages() {
-		try (InputStream in = getClass().getResourceAsStream("launcher_labels.xml")) {
+		try (InputStream in = Launcher.class.getResourceAsStream("launcher_labels.xml")) {
 			XElement xlabels = XElement.parseXML(in);
 			for (XElement xlabel : xlabels.childrenWithName("language")) {
 				String id = xlabel.get("id");
 				String flag = xlabel.get("flag");
 				
-				URL url = getClass().getResource(flag);
+				URL url = Launcher.class.getResource(flag);
 				
 				if (url == null) {
 					System.err.println("Can't locate flag: " + flag);
@@ -355,9 +357,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 					entries.put(xentry.get("key"), xentry.content);
 				}
 			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		} catch (XMLStreamException ex) {
+		} catch (IOException | XMLStreamException ex) {
 			Exceptions.add(ex);
 		}
 	}
@@ -1050,8 +1050,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			if (d != null) {
 				try {
 					d.browse(new URI(url));
-				} catch (IOException e) {
-				} catch (URISyntaxException e) {
+				} catch (IOException | URISyntaxException e) {
 				}
 			}
 		} catch (UnsupportedOperationException ex) {
@@ -1140,9 +1139,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			Process p = pb.start();
 			Parallels.consume(p.getInputStream());
 			Parallels.consume(p.getErrorStream());
-		} catch (InterruptedException ex) {
-			Exceptions.add(ex);
-		} catch (IOException ex) {
+		} catch (InterruptedException | IOException ex) {
 			Exceptions.add(ex);
 		}
 	}
@@ -1652,10 +1649,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				try {
 					doDownload(get());
 				} catch (CancellationException ex) {
-				} catch (ExecutionException ex) {
-					Exceptions.add(ex);
-					errorMessage(format("Error while checking files: %s", ex));
-				} catch (InterruptedException ex) {
+				} catch (ExecutionException | InterruptedException ex) {
 					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}
@@ -1713,10 +1707,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 					detectVersion();
 					doActOnUpdates();
 				} catch (CancellationException ex) {
-				} catch (ExecutionException ex) {
-					Exceptions.add(ex);
-					errorMessage(format("Error while checking files: %s", ex));
-				} catch (InterruptedException ex) {
+				} catch (ExecutionException | InterruptedException ex) {
 					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}
@@ -1825,10 +1816,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 							toDownload.add(lf);
 						}
 					}
-				} catch (IOException ex) {
-					Exceptions.add(ex);
-					toDownload.add(lf);
-				} catch (NoSuchAlgorithmException ex) {
+				} catch (IOException | NoSuchAlgorithmException ex) {
 					Exceptions.add(ex);
 					toDownload.add(lf);
 				}
@@ -1887,10 +1875,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 					}
 				} catch (CancellationException ex) {
 					// ignore
-				} catch (ExecutionException ex) {
-					Exceptions.add(ex);
-					errorMessage(format("Error while checking files: %s", ex));
-				} catch (InterruptedException ex) {
+				} catch (ExecutionException | InterruptedException ex) {
 					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}
@@ -2043,13 +2028,10 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 							}
 						}
 					}
-				} catch (IOException ex) {
+				} catch (IOException | NoSuchAlgorithmException ex) {
 					Exceptions.add(ex);
 					allOk = false;
-				} catch (NoSuchAlgorithmException ex) {
-					Exceptions.add(ex);
-					allOk = false;
-				}					
+                                }					
 			} finally {
 				conn.disconnect();
 			}
@@ -2243,10 +2225,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 					}
 				} catch (CancellationException ex) {
 					// ignore
-				} catch (ExecutionException ex) {
-					Exceptions.add(ex);
-					errorMessage(format("Error while checking files: %s", ex));
-				} catch (InterruptedException ex) {
+				} catch (ExecutionException | InterruptedException ex) {
 					Exceptions.add(ex);
 					errorMessage(format("Error while checking files: %s", ex));
 				}

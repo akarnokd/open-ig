@@ -43,7 +43,7 @@ public final class AudioMatcher {
 	 * @param srcMap the source map
 	 * @param dstMap the destination map
 	 */
-	protected static void scanMessages(Map<String, byte[]> srcMap,
+	static void scanMessages(Map<String, byte[]> srcMap,
 			Map<String, byte[]> dstMap) {
 		File srcDir = new File("c:/games/IGHU/ATVEZETO");
 		File dstDir = new File("audio/hu/interlude");
@@ -82,7 +82,7 @@ public final class AudioMatcher {
 	 * @param srcMap the source map
 	 * @param dstMap the destination map
 	 */
-	protected static void scanSound(Map<String, byte[]> srcMap,
+	static void scanSound(Map<String, byte[]> srcMap,
 			Map<String, byte[]> dstMap) {
 		File srcDir = new File("c:/games/IGHU/Sound");
 		File dstDir = new File("audio/hu/ui");
@@ -117,7 +117,7 @@ public final class AudioMatcher {
 	 * @param srcDir the source directory name
 	 * @param dstDir the destination directory name
 	 */
-	protected static void compare(Map<String, byte[]> srcMap,
+	static void compare(Map<String, byte[]> srcMap,
 			Map<String, byte[]> dstMap, String tagName, String srcDir, String dstDir) {
 		for (Map.Entry<String, byte[]> e1 : srcMap.entrySet()) {
 			boolean found = false;

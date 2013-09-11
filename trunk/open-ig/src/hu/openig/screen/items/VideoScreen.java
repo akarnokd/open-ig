@@ -37,7 +37,7 @@ import java.util.Map;
  */
 public class VideoScreen extends ScreenBase {
 	/** The video entry. */
-	class VideoEntry {
+	static class VideoEntry {
 		/** The video name. */
 		String name;
 		/** The video path. */

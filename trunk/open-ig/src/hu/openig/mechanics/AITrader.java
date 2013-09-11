@@ -87,7 +87,7 @@ public class AITrader implements AIManager {
 	 * A trader fleet status.
 	 * @author akarnokd, Dec 8, 2011
 	 */
-	class TraderFleet {
+	static class TraderFleet {
 		/** The fleet backreference. */
 		Fleet fleet;
 		/** The target planet. */
@@ -105,7 +105,7 @@ public class AITrader implements AIManager {
 	 * Landed fleet's properties.
 	 * @author akarnokd, Dec 8, 2011
 	 */
-	class LandedFleet {
+	static class LandedFleet {
 		/** The fleet. */
 		Fleet fleet;
 		/** The target planet. */

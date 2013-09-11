@@ -263,7 +263,7 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 			k++;
 		}
 
-		mainModel.setColumnNames(names.toArray(new String[0]));
+		mainModel.setColumnNames(names.toArray(new String[names.size()]));
 		mainModel.setColumnTypes(classes);
 		
 		for (String key : cd.labels.keys()) {

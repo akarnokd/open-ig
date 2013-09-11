@@ -150,7 +150,8 @@ public final class PackageStuff {
 	 * @throws IOException on error
 	 */
 	static String computeDigest(String fileName) throws IOException {
-		try (DigestInputStream din = new DigestInputStream(new FileInputStream(fileName), MessageDigest.getInstance("SHA1"))) {
+		try (FileInputStream fis = new FileInputStream(fileName);
+            DigestInputStream din = new DigestInputStream(fis, MessageDigest.getInstance("SHA1"))) {
 			byte[] buffer = new byte[8192];
 			while (true) {
 				if (din.read(buffer) < 0) {

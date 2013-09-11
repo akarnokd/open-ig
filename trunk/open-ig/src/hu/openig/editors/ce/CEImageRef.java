@@ -74,13 +74,7 @@ public class CEImageRef implements CEInvalid {
 						valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
 						valid.setToolTipText(context.get("missing_image"));
 					}
-				} catch (ExecutionException ex) {
-					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
-					valid.setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
-				} catch (InterruptedException ex) {
-					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
-					valid.setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
-				} catch (CancellationException ex) {
+				} catch (ExecutionException | InterruptedException | CancellationException ex) {
 					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
 					valid.setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
 				}

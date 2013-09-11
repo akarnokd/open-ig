@@ -1762,9 +1762,7 @@ public class MapEditor extends JFrame {
     		Desktop desktop = Desktop.getDesktop();
 			try {
 				desktop.browse(new URI("http://code.google.com/p/open-ig/wiki/MapEditor"));
-			} catch (IOException ex) {
-				JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
-			} catch (URISyntaxException ex) {
+			} catch (IOException | URISyntaxException ex) {
 				JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
 			}
 		} else {

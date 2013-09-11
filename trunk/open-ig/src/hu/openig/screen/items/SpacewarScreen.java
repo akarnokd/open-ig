@@ -126,7 +126,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		LAYOUT
 	}
 	/** Animated toggle button. */
-	class AnimatedRadioButton extends UIComponent {
+	static class AnimatedRadioButton extends UIComponent {
 		/** The phases. The 0th is the default when not selected. */
 		BufferedImage[] phases;
 		/** Is selected? */
@@ -2426,7 +2426,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 	}
 	/** The battle statistics record. */
-	class SpacebattleStatistics {
+	static class SpacebattleStatistics {
 		/** The unit count. */
 		public int units;
 		/** The losses. */

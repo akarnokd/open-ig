@@ -173,9 +173,7 @@ public class MediaPlayer {
 					} catch (LineUnavailableException ex) {
 						Exceptions.add(ex);
 					}
-				} catch (UnsupportedAudioFileException ex) {
-					Exceptions.add(ex);
-				} catch (IOException ex) {
+				} catch (UnsupportedAudioFileException | IOException ex) {
 					Exceptions.add(ex);
 				} finally {
 					doCompleteAudio();

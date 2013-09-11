@@ -245,9 +245,7 @@ public final class U {
 			result.addAll(first);
 			result.addAll(second);
 			return result;
-		} catch (IllegalAccessException ex) {
-			throw new IllegalArgumentException("clazz", ex);
-		} catch (InstantiationException ex) {
+		} catch (IllegalAccessException | InstantiationException ex) {
 			throw new IllegalArgumentException("clazz", ex);
 		}
 	}
@@ -594,7 +592,7 @@ public final class U {
 			result.add(value.substring(idx, idx2));
 			idx = idx2 + separator.length();
 		}
-		return result.toArray(new String[0]);
+		return result.toArray(new String[result.size()]);
 	}
 	/**
 	 * Returns the stacktrace string.
@@ -641,9 +639,7 @@ public final class U {
 			if (type.isAssignableFrom(f.getType())) {
 				try {
 					result.add(type.cast(f.get(o)));
-				} catch (IllegalArgumentException e) {
-					// ignored
-				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					// ignored
 				}
 			}

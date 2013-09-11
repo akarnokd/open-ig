@@ -611,9 +611,7 @@ public class GroundwarManager implements GroundwarWorld {
 			for (Future<PathPlanning> f : inProgress) {
 				try {
 					f.get().apply();
-				} catch (ExecutionException ex) {
-					Exceptions.add(ex);
-				} catch (InterruptedException ex) {
+				} catch (ExecutionException | InterruptedException ex) {
 					Exceptions.add(ex);
 				}
 			}

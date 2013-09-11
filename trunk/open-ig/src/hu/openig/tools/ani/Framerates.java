@@ -61,9 +61,7 @@ public class Framerates {
 	private void loadFromResource(String resource) {
 		try {
 			processDoc(XElement.parseXML(Framerates.class.getResource(resource)));
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (XMLStreamException ex) {
+		} catch (IOException | XMLStreamException ex) {
 			ex.printStackTrace();
 		}
 	}

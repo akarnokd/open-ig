@@ -129,11 +129,7 @@ public class CESlotEdit extends JComponent {
 				worker = null;
 				try {
 					image = get();
-				} catch (ExecutionException ex) {
-					setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
-				} catch (InterruptedException ex) {
-					setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
-				} catch (CancellationException ex) {
+				} catch (ExecutionException | InterruptedException | CancellationException ex) {
 					setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
 				}
 				invalidate();

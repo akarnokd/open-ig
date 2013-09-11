@@ -117,10 +117,8 @@ public class Sounds {
 					soundMap.put(st, snd);
 					soundFormat.put(st, new AudioFormatType(af));
 				}
-			} catch (UnsupportedAudioFileException e) {
+			} catch (UnsupportedAudioFileException | IOException e) {
 				Exceptions.add(e);
-			} catch (IOException ex) {
-				Exceptions.add(ex);
 			}			
 		}
 	}

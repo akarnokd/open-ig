@@ -1133,7 +1133,7 @@ public class StarmapScreen extends ScreenBase {
 	 * The parameters of a radar circle. 
 	 * @author akarnokd, 2011.11.03.
 	 */
-	final class RadarCircle {
+	static final class RadarCircle {
 		/** Center X. */
 		final int x;
 		/** Center Y. */
@@ -2727,7 +2727,7 @@ public class StarmapScreen extends ScreenBase {
 		}
 	}
 	/** Caches the radar settings. */
-	class RadarCache {
+	static class RadarCache {
 		/** The zoom value associated. */
 		double zoom;
 		/** The area to fill in. */

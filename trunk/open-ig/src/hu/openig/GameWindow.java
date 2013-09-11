@@ -527,9 +527,7 @@ public class GameWindow extends JFrame implements GameControls {
 				Field f2 = o2.getClass().getField(f.getName());
 				f.set(o1, f2.get(o2));
 			}
-		} catch (IllegalAccessException ex) {
-			Exceptions.add(ex);
-		} catch (NoSuchFieldException ex) {
+		} catch (IllegalAccessException | NoSuchFieldException ex) {
 			Exceptions.add(ex);
 		}
 	}

@@ -116,9 +116,9 @@ public class SyncState {
 		return (0);
 	}
 	/** Page seek object. */
-	private Page pageseek = new Page();
+	private final Page pageseek = new Page();
 	/** Checksum. */
-	private byte[] chksum = new byte[4];
+	private final byte[] chksum = new byte[4];
 	/**
 	 * Sync the stream. This is meant to be useful for finding page
 	 * boundaries.

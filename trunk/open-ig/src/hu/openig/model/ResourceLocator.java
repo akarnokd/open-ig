@@ -527,10 +527,7 @@ public class ResourceLocator {
 					BufferedInputStream bin = new BufferedInputStream(in, Math.max(8192, in.available()))) {
 				return XElement.parseXML(bin);
 			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-			throw new AssertionError("Resource error" + language + " " + resourceName);
-		} catch (XMLStreamException ex) {
+		} catch (IOException | XMLStreamException ex) {
 			Exceptions.add(ex);
 			throw new AssertionError("Resource error" + language + " " + resourceName);
 		}

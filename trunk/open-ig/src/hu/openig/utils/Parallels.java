@@ -68,9 +68,7 @@ public final class Parallels {
 			for (Future<?> f : futures) {
 				try {
 					f.get();
-				} catch (InterruptedException e1) {
-					Exceptions.add(e1);
-				} catch (ExecutionException e1) {
+				} catch (InterruptedException | ExecutionException e1) {
 					Exceptions.add(e1);
 				}
 			}
@@ -93,9 +91,7 @@ public final class Parallels {
 					for (Future<?> f : futures) {
 						f.get();
 					}
-				} catch (InterruptedException ex) {
-					Exceptions.add(ex);
-				} catch (ExecutionException ex) {
+				} catch (InterruptedException | ExecutionException ex) {
 					Exceptions.add(ex);
 				}
 				if (!Thread.currentThread().isInterrupted()) {
@@ -113,9 +109,7 @@ public final class Parallels {
 		for (Future<?> f : futures) {
 			try {
 				f.get();
-			} catch (InterruptedException e) {
-				Exceptions.add(e);
-			} catch (ExecutionException e) {
+			} catch (InterruptedException | ExecutionException e) {
 				Exceptions.add(e);
 			}
 		}

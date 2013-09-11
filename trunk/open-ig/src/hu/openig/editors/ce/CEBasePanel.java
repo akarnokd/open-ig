@@ -83,6 +83,7 @@ public class CEBasePanel extends JPanel {
 		URL u = CEBasePanel.class.getResource(path);
 		if (u == null) {
 			System.err.printf("Missing resource: %s%n", path);
+            return new ImageIcon();
 		}
 		return new ImageIcon(u);
 	}
@@ -187,7 +188,7 @@ public class CEBasePanel extends JPanel {
 	 * @param c the value box
 	 * @param action the action
 	 */
-	public void addValidator(
+	public static void addValidator(
 			final CEValueBox<? extends JTextComponent> c, 
 			final Action1<? super JTextComponent> action) {
 		c.validator = action;
@@ -211,7 +212,7 @@ public class CEBasePanel extends JPanel {
 	 * @param c the combo box
 	 * @param action the action
 	 */
-	public void addValidator2(
+	public static void addValidator2(
 			final CEValueBox<? extends JComboBox<String>> c, 
 			final Action1<? super JComboBox<String>> action) {
 		c.validator = action;

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -163,11 +164,11 @@ public class Planet implements Named, Owned, HasInventory {
 		}
 		if (b.hasResource("equipment")) {
 			double value = b.getResource("equipment") * eff;
-			out.equipment += trs.apply(TraitKind.EQUIPMENT_PRODUCTION, 0.01d, value);;
+			out.equipment += trs.apply(TraitKind.EQUIPMENT_PRODUCTION, 0.01d, value);
 		}
 		if (b.hasResource("weapon")) {
 			double value = b.getResource("weapon") * eff;
-			out.weapons += trs.apply(TraitKind.WEAPON_PRODUCTION, 0.01d, value);;
+			out.weapons += trs.apply(TraitKind.WEAPON_PRODUCTION, 0.01d, value);
 		}
 	}
 	/**
@@ -335,9 +336,11 @@ public class Planet implements Named, Owned, HasInventory {
 		if (Math.abs(result.workerDemand) > population) {
 			result.addWarning(PlanetProblems.WORKFORCE);
 		}
+        
 		if (result.nativeWorkerDemand > population) {
 			result.addWarning(PlanetProblems.WORKFORCE);
 		}
+        
 		if (Math.abs(result.energyDemand) > Math.abs(result.energyAvailable) * 2) {
 			result.addProblem(PlanetProblems.ENERGY);
 		} else
@@ -1099,7 +1102,15 @@ public class Planet implements Named, Owned, HasInventory {
 			}
 			
 			inventory.retainAllById(current);
-			timeToLive.keySet().retainAll(inventory.inventoryIds());
+            Set<Integer> iids = inventory.inventoryIds();
+            
+			Iterator<InventoryItem> iit = timeToLive.keySet().iterator();
+            while (iit.hasNext()) {
+                InventoryItem ii = iit.next();
+                if (!iids.contains(ii.id)) {
+                    iit.remove();
+                }
+            }
 			
 			// merge buildings
 			current.clear();
