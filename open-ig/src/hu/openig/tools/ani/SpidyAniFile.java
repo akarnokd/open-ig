@@ -94,8 +94,8 @@ public class SpidyAniFile {
 		/** Use RLE algorithm No 1 (e.g codes between 0..127 are considered literals). */
 		RLE_TYPE_1,
 		/** Use RLE algorithm No 2 (e.g. codes between 0..127 are considered copy following N literals). */
-		RLE_TYPE_2;
-	}
+		RLE_TYPE_2
+    }
 	/** Palette type block. */
 	public static final String PAL_BLOCK = "Pal ";
 	/** Data type block. */

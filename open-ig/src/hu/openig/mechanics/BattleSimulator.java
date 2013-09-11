@@ -921,9 +921,10 @@ public final class BattleSimulator {
 	 * @return true if has bunker
 	 */
 	public static boolean hasBunker(Planet planet) {
-		for (Building b : planet.surface.buildings.findByKind("Bunker")) {
-			return b.isOperational();
-		}
+        Collection<Building> bs = planet.surface.buildings.findByKind("Bunker");
+        if (!bs.isEmpty()) {
+            return bs.iterator().next().isOperational();
+        }
 		return false;
 	}
 	/**

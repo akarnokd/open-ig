@@ -1881,9 +1881,9 @@ public class StarmapScreen extends ScreenBase {
 					lastY = e.y;
 					scrollX = true;
 				}
-				int dx = scrollbarPainter.getHorizontalPanAmount(lastX - e.x);;
-				
-				pan(dx, 0);
+				int dx = scrollbarPainter.getHorizontalPanAmount(lastX - e.x);
+
+                pan(dx, 0);
 				lastX = e.x;
 				lastY = e.y;
 				rep = true;
@@ -1894,9 +1894,9 @@ public class StarmapScreen extends ScreenBase {
 					lastY = e.y;
 					scrollY = true;
 				}
-				int dy = scrollbarPainter.getVerticalPanAmount(lastY - e.y);;
-				
-				pan(0, dy);
+				int dy = scrollbarPainter.getVerticalPanAmount(lastY - e.y);
+
+                pan(0, dy);
 				lastX = e.x;
 				lastY = e.y;
 				rep = true;
@@ -2268,12 +2268,9 @@ public class StarmapScreen extends ScreenBase {
 			return true;
 		}
 		// follow non-infected traders
-		if (f.owner.id.equals("Traders") 
-				&& !world().infectedFleets.containsKey(f.id)) {
-			return true;
-		}
-		return false;
-	}
+        return f.owner.id.equals("Traders")
+                && !world().infectedFleets.containsKey(f.id);
+    }
 	/**
 	 * Select a planet or fleet at the specified location.
 	 * @param e the mouse coordinate
@@ -2416,8 +2413,8 @@ public class StarmapScreen extends ScreenBase {
 			public boolean mouse(UIMouse e) {
 				zoomDirection = (e.has(Button.LEFT));
 				return super.mouse(e);
-			};
-		};
+			}
+        };
 		zoom.setHoldDelay(100);
 		zoom.onClick = new Action0() {
 			@Override

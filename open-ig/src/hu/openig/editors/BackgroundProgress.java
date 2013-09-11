@@ -63,7 +63,7 @@ public class BackgroundProgress extends JDialog {
 	 * @param activity the background activity
 	 * @param onComplete the activity once the background finished
 	 */
-	public static final void run(String title, String label, 
+	public static void run(String title, String label,
 			final Action0 activity, final Action0 onComplete) {
 		final BackgroundProgress bgp = new BackgroundProgress();
 		bgp.setTitle(title);

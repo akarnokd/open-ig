@@ -1351,7 +1351,6 @@ public class GameWindow extends JFrame implements GameControls {
 							if (!save.delete()) {
 								System.err.println("Warning: Could not delete file " + save);
 							}
-							continue;
 						}
 					}
 				} catch (XMLStreamException ex) {
@@ -1368,7 +1367,6 @@ public class GameWindow extends JFrame implements GameControls {
 							if (!save.delete()) {
 								System.err.println("Warning: Could not delete file " + save);
 							}
-							continue;
 						}
 					}
 				} catch (XMLStreamException ex) {

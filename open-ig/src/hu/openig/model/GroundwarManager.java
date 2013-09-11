@@ -379,8 +379,8 @@ public class GroundwarManager implements GroundwarWorld {
 	 * @return the set of locations 
 	 */
 	Set<Location> getDeploymentLocations(boolean atBuildings, boolean skipEdge) {
-		Set<Location> result = new HashSet<>();;
-		if (atBuildings) {
+		Set<Location> result = new HashSet<>();
+        if (atBuildings) {
 			for (Building b : planet().surface.buildings.iterable()) {
 				result.addAll(placeAround(b));
 			}
@@ -850,7 +850,6 @@ public class GroundwarManager implements GroundwarWorld {
 			} else {
 				ground.minelayers.remove(u);
 			}
-			return;
 		} else
 		if (u.phase > 0) {
 			u.phase++;
@@ -1431,11 +1430,8 @@ public class GroundwarManager implements GroundwarWorld {
 	boolean needsRotation(GroundwarUnit u, Location target) {
 		RotationAngles ra = computeRotation(u, target);
 		double anglePerStep = 2 * Math.PI * u.model.rotationTime / u.angleCount() / SIMULATION_DELAY;
-		if (Math.abs(ra.diff) < anglePerStep) {
-			return false;
-		}
-		return true;
-	}
+        return Math.abs(ra.diff) >= anglePerStep;
+    }
 	/**
 	 * Plan a new route to the current destination.
 	 * @param u the unit.

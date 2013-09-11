@@ -217,10 +217,9 @@ public class AI implements AIManager {
 	static List<SpacewarStructure> defaultAttackOutOfRange(SpacewarWorld world,
 			List<SpacewarStructure> idles) {
 		List<SpacewarStructure> esl = new ArrayList<>();
-		for (SpacewarStructure ship : idles) {
-			esl.addAll(world.enemiesOf(ship));
-			break;
-		}
+        if (!idles.isEmpty()) {
+            esl.addAll(world.enemiesOf(idles.get(0)));
+        }
 		if (!esl.isEmpty()) {
 			List<SpacewarStructure> esl2 = U.newArrayList(esl);
 			for (SpacewarStructure ship : idles) {

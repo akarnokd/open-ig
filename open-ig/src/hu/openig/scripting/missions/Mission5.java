@@ -239,8 +239,9 @@ public class Mission5 extends Mission {
 		if (m5t2.isActive()) {
 			checkTullenReached();
 		}
-	};
-	/**
+	}
+
+    /**
 	 * Check if the Garthog fleet reached Tullen.
 	 */
 	void checkTullenReached() {

@@ -141,51 +141,36 @@ public class StaticDefensePlanner extends Planner {
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
-					if (checkBuildingKind(planet, "Gun", fdefenseLimit)) {
-						return true;
-					}
-					return false;
-				}
+                    return checkBuildingKind(planet, "Gun", fdefenseLimit);
+                }
 			});
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
 					// find the best available shield technology
-					if (checkBuildingKind(planet, "Shield", Integer.MAX_VALUE)) {
-						return true;
-					}
-					return false;
-				}
+                    return checkBuildingKind(planet, "Shield", Integer.MAX_VALUE);
+                }
 			});
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
 					// find bunker
-					if (checkBuildingKind(planet, "Bunker", Integer.MAX_VALUE)) {
-						return true;
-					}
-					return false;
-				}
+                    return checkBuildingKind(planet, "Bunker", Integer.MAX_VALUE);
+                }
 			});
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
 					// find barracks..strongholds
-					if (checkBuildingKind(planet, "Defensive", fdefenseLimit)) {
-						return true;
-					}
-					return false;
-				}
+                    return checkBuildingKind(planet, "Defensive", fdefenseLimit);
+                }
 			});
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
 					// check for military spaceport
-					if (checkMilitarySpaceport(planet)) {
-						return true;
-					}
-					return false;
-				}
+                    return checkMilitarySpaceport(planet);
+                }
 			});
 		}
 		if (world.money >= MONEY_LIMIT) {
@@ -194,21 +179,15 @@ public class StaticDefensePlanner extends Planner {
 					@Override
 					public Boolean invoke() {
 						// find the space stations
-						if (checkStations(planet)) {
-							return true;
-						}
-						return false;
-					}
+                        return checkStations(planet);
+                    }
 				});
 				actions.add(new Pred0() {
 					@Override
 					public Boolean invoke() {
 						// find the space stations
-						if (checkRockets(planet)) {
-							return true;
-						}
-						return false;
-					}
+                        return checkRockets(planet);
+                    }
 				});
 			}
 			if (world.level > 2) {
@@ -216,11 +195,8 @@ public class StaticDefensePlanner extends Planner {
 					@Override
 					public Boolean invoke() {
 						// find the space stations
-						if (checkFighters(planet)) {
-							return true;
-						}
-						return false;
-					}
+                        return checkFighters(planet);
+                    }
 				});
 			}
 	
@@ -229,11 +205,8 @@ public class StaticDefensePlanner extends Planner {
 					@Override
 					public Boolean invoke() {
 						// check for military spaceport
-						if (checkTanks(planet)) {
-							return true;
-						}
-						return false;
-					}
+                        return checkTanks(planet);
+                    }
 				});
 			}
 		}

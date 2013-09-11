@@ -190,11 +190,8 @@ public class CEResourceManager {
 	 */
 	public boolean exists(String resource, String language) {
 		Map<String, File> res = map.get(resource);
-		if (res == null) {
-			return false;
-		}
-		return res.containsKey(language);
-	}
+        return res != null && res.containsKey(language);
+    }
 	/**
 	 * @return The set of known resources. 
 	 */

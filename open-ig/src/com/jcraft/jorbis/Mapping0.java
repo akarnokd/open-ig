@@ -48,8 +48,9 @@ class Mapping0 extends FuncMapping {
 	 */
 	@Override
 	void freeInfo(Object imap) {
-	};
-	/**
+	}
+
+    /**
 	 * {@inheritDoc}
 	 */
 	@Override

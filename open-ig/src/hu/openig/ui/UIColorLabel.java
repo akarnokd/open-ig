@@ -86,7 +86,7 @@ public class UIColorLabel extends UIComponent {
 						b.setLength(0);
 					}
 					colorstack.push(currentColor);
-					currentColor = (int)(Long.parseLong(col, 16) & 0xFFFFFFFF);
+					currentColor = (int)(Long.parseLong(col, 16));
 					i += 11;
 				} else
 				if (text.charAt(i + 1) == '/' && text.charAt(i + 2) == 'c') {
@@ -98,16 +98,14 @@ public class UIColorLabel extends UIComponent {
 					i += 3;
 				}
 			} else
-			if (c == '\r') {
-				continue;
-			} else
 			if (c == '\n') {
 				if (b.length() > 0) {
 					addSegment(b.toString(), currentColor);
 					b.setLength(0);
 				}
 				addNewline();
-			} else {
+			} else
+            if (c != '\r') {
 				b.append(c);
 			}
 		}

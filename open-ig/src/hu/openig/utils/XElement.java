@@ -1169,9 +1169,6 @@ public class XElement {
 	 */
 	public boolean isNullOrEmpty(String attributeName) {
 		String attr = attributes.get(attributeName);
-		if (attr == null || attr.isEmpty()) {
-			return true;
-		}
-		return false;
-	}
+        return attr == null || attr.isEmpty();
+    }
 }

@@ -691,10 +691,6 @@ public final class Base64 {
 				oos = new java.io.ObjectOutputStream(b64os);
 			}
 			oos.writeObject(serializableObject);
-		} catch (java.io.IOException e) {
-			// Catch it and then throw it immediately so that
-			// the finally{} block is called for cleanup.
-			throw e;
 		} finally {
 			U.close(oos);
 			U.close(gzos);
@@ -1391,8 +1387,6 @@ public final class Base64 {
 			bos = new Base64.OutputStream(
 					new java.io.FileOutputStream(filename), Base64.ENCODE);
 			bos.write(dataToEncode);
-		} catch (java.io.IOException e) {
-			throw e; // Catch and throw to execute finally{} block
 		} finally {
 			U.close(bos);
 		}   // end finally
@@ -1421,8 +1415,6 @@ public final class Base64 {
 			bos = new Base64.OutputStream(
 					new java.io.FileOutputStream(filename), Base64.DECODE);
 			bos.write(dataToDecode.getBytes(PREFERRED_ENCODING));
-		} catch (java.io.IOException e) {
-			throw e; // Catch and throw to execute finally{} block
 		} finally {
 			U.close(bos);
 		}   // end finally
@@ -1478,8 +1470,6 @@ public final class Base64 {
 			decodedData = new byte[ length ];
 			System.arraycopy(buffer, 0, decodedData, 0, length);
 
-		} catch (java.io.IOException e) {
-			throw e; // Catch and release to execute finally{ }
 		} finally {
 			U.close(bis);
 		}   // end finally
@@ -1529,8 +1519,6 @@ public final class Base64 {
 			// Save in a variable to return
 			encodedData = new String(buffer, 0, length, Base64.PREFERRED_ENCODING);
 
-		} catch (java.io.IOException e) {
-			throw e; // Catch and release to execute finally{ }
 		} finally {
 			U.close(bis);
 		}   // end finally
@@ -1555,8 +1543,6 @@ public final class Base64 {
 			out = new java.io.BufferedOutputStream(
 					new java.io.FileOutputStream(outfile));
 			out.write(encoded.getBytes("US-ASCII")); // Strict, 7-bit output.
-		} catch (java.io.IOException e) {
-			throw e; // Catch and release to execute finally{ }
 		} finally {
 			U.close(out);
 		}   // end finally    
@@ -1580,8 +1566,6 @@ public final class Base64 {
 			out = new java.io.BufferedOutputStream(
 					new java.io.FileOutputStream(outfile));
 			out.write(decoded);
-		} catch (java.io.IOException e) {
-			throw e; // Catch and release to execute finally{ }
 		} finally {
 			U.close(out);
 		}   // end finally    

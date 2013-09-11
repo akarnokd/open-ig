@@ -95,9 +95,7 @@ public class ExplorationPlanner extends Planner {
 				}
 			}
 			if (checkExplorerLevel(world.ownFleets)) {
-				if (planDiscoveryFleet()) {
-					return;
-				}
+				planDiscoveryFleet();
 			}
 		} else {
 			// yield more when exploration is finished
@@ -125,7 +123,6 @@ public class ExplorationPlanner extends Planner {
 						setPatrolTarget(bf);
 					}
 				}
-				return;
 			}
 		}
 		
@@ -354,11 +351,8 @@ public class ExplorationPlanner extends Planner {
 		if (checkMilitarySpaceport()) {
 			return true;
 		}
-		if (checkDeploy()) {
-			return true;
-		}
-		return false;
-	}
+        return checkDeploy();
+    }
 	/**
 	 * Find the best available radar and ship in inventory, and deploy it.
 	 * @return true if action taken

@@ -127,13 +127,8 @@ public class AIWorld {
 		money = player.money();
 		statistics = player.statistics.copy();
 		this.colonizationLimit = player.colonizationLimit;
-		
-		if (player != player.world.player) {
-			mayConquer = player.world.player.statistics.planetsColonized.value > 0
-					|| player.world.scripting.mayPlayerAttack(player);
-		} else {
-			mayConquer = true;
-		}
+
+        mayConquer = player == player.world.player || player.world.player.statistics.planetsColonized.value > 0 || player.world.scripting.mayPlayerAttack(player);
 		mayImproveDefenses = player.world.scripting.mayPlayerImproveDefenses(player);
 		
 		inventory.putAll(player.inventory);
@@ -355,10 +350,7 @@ public class AIWorld {
 		if (explorationInnerLimit != null && explorationInnerLimit.contains(x, y)) {
 			return false;
 		}
-		if (explorationOuterLimit != null && !explorationOuterLimit.contains(x, y)) {
-			return false;
-		}
-		return true;
+		return explorationOuterLimit == null || explorationOuterLimit.contains(x, y);
 	}
 	/**
 	 * Computes the center location of all of our planets.

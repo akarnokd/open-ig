@@ -294,14 +294,11 @@ public class Mission9 extends Mission {
 	}
 	@Override
 	public boolean fleetBlink(Fleet f) {
-		if (objective("Mission-9").isActive()
-				&& f.owner == player("Traders") 
-				&& (hasTag(f, "Mission-9-Smuggler") 
-						|| f.targetPlanet() == planet("San Sterling"))) {
-			return true;
-		}
-		return false;
-	}
+        return objective("Mission-9").isActive()
+                && f.owner == player("Traders")
+                && (hasTag(f, "Mission-9-Smuggler")
+                || f.targetPlanet() == planet("San Sterling"));
+    }
 	@Override
 	public void save(XElement xmission) {
 		super.save(xmission);

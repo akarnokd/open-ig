@@ -114,7 +114,7 @@ public class PCXImage {
 		for (int i = 0; i < image.length; i++) {
 			int c = raw[i] & 0xFF;
 			int d = (withPalette[c * 3] & 0xFF) << 16 
-			| (withPalette[c * 3 + 1] & 0xFF) << 8 | (withPalette[c * 3 + 2] & 0xFF) << 0;
+			| (withPalette[c * 3 + 1] & 0xFF) << 8 | (withPalette[c * 3 + 2] & 0xFF);
 			if (transparency == -1 || (transparency >= 0 && d != transparency) 
 					|| (transparency < -1 && c != -transparency - 2)) {
 				image[i] = 0xFF000000 | d;
@@ -204,7 +204,7 @@ public class PCXImage {
 		 */
 		public int rgb(int index) {
 			return (palette[index * 3] & 0xFF) << 16 
-			| (palette[index * 3 + 1] & 0xFF) << 8 | (palette[index * 3 + 2] & 0xFF) << 0;
+			| (palette[index * 3 + 1] & 0xFF) << 8 | (palette[index * 3 + 2] & 0xFF);
 		}
 		//public byte reserved;
 		/** Number of color planes. */

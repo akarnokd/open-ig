@@ -264,10 +264,7 @@ public class SkirmishDefinition extends CustomGameDefinition {
 		if (victorySocialPlanets != other.victorySocialPlanets) {
 			return false;
 		}
-		if (victoryTechnology != other.victoryTechnology) {
-			return false;
-		}
-		return true;
-	}
+        return victoryTechnology == other.victoryTechnology;
+    }
 	
 }

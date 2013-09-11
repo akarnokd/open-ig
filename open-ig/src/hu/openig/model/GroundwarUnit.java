@@ -125,11 +125,8 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
 		if (attackBuilding != null && attackBuilding.isDestroyed()) {
 			return false;
 		}
-		if (attackUnit != null && attackUnit.isDestroyed()) {
-			return false;
-		}
-		return true;
-	}
+        return !(attackUnit != null && attackUnit.isDestroyed());
+    }
 	/**
 	 * Returns the distance from the other unit.
 	 * @param u2 the other unit

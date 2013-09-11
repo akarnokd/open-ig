@@ -877,11 +877,8 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public boolean isTimeout(String id) {
 		Integer i = countdowns.get(id);
-		if (i != null && i.intValue() <= 0) {
-			return true;
-		}
-		return false;
-	}
+        return i != null && i.intValue() <= 0;
+    }
 	@Override
 	public void setTimeout(String id, int time) {
 		countdowns.put(id, time);
@@ -1198,11 +1195,8 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				if (value.equals("Mission-" + j)) {
 					return true;
 				}
-				if (value.startsWith("Mission-" + j + "-")) {
-					return true;
-				}
-				return false;
-			}
+                return value.startsWith("Mission-" + j + "-");
+            }
 		};
 		clearMessages(func);
 		clearMissionTimes(func);
@@ -1282,8 +1276,9 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			}
 			m.onRecordMessage();
 		}
-	};
-	/**
+	}
+
+    /**
 	 * Extract the stacktrace text from the exception.
 	 * @param t the exception
 	 * @return the stacktrace string

@@ -70,8 +70,6 @@ public final class AnimPlay {
 	static JMenuItem saveAsGif;
 	/** Save the animation as WAV. */
 	static JMenuItem saveAsWav;
-	/** Save the animation as AVI. */
-	static JMenuItem saveAsAvi;
 	/**
 	 * Save frames as PNG images.
 	 */
@@ -184,10 +182,6 @@ public final class AnimPlay {
 					saveAsWav.setEnabled(false);
 					saveAsWav.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doSaveAsWav(); } });
 					
-					saveAsAvi = new JMenuItem("Save as AVI...");
-					saveAsAvi.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doSaveAsAvi(); } });
-					saveAsAvi.setEnabled(false);
-
 					file.add(menuOpen);
 					file.add(menuReplay);
 					file.add(menuStop);
@@ -195,7 +189,6 @@ public final class AnimPlay {
 					file.add(saveAsGif);
 					file.add(saveAsPng);
 					file.add(saveAsWav);
-//					file.add(saveAsAvi);
 					mb.add(file);
 					
 					JMenu view = new JMenu("View");
@@ -621,22 +614,6 @@ public final class AnimPlay {
 		return worker;
 	}
 	/**
-	 * Save animation as AVI.
-	 */
-	private static void doSaveAsAvi() {
-		if (current == null) {
-			return;
-		}
-		JFileChooser fc = new JFileChooser(lastSavePath);
-		fc.setAcceptAllFileFilterUsed(true);
-		fc.setFileFilter(new FileNameExtensionFilter("AVI files", "AVI"));
-		if (fc.showSaveDialog(frame) == JFileChooser.CANCEL_OPTION) {
-			return;
-		}
-//		final File sel = fc.getSelectedFile();
-//		final ProgressFrame pf = new ProgressFrame("Save as AVI: " + sel, frame);
-	}
-	/** 
 	 * Change between little endian and big endian coding.
 	 * @param val the value to rotate
 	 * @return the rotated value 

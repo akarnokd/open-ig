@@ -241,7 +241,6 @@ public class ColonizationPlanner extends Planner {
 				final ResearchType cs = world.isAvailable("ColonyShip");
 				if (cs != null) {
 					placeProductionOrder(cs, maxProduction);
-					return;
 				}
 			}
 		}

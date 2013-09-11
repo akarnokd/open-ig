@@ -150,17 +150,17 @@ public class DatabaseGFX {
 		int a1 = (start >> 24) & 0xFF; 
 		int r1 = (start >> 16) & 0xFF; 
 		int g1 = (start >> 8) & 0xFF; 
-		int b1 = (start >> 0) & 0xFF; 
+		int b1 = (start) & 0xFF;
 
 		int a2 = (end >> 24) & 0xFF; 
 		int r2 = (end >> 16) & 0xFF; 
 		int g2 = (end >> 8) & 0xFF; 
-		int b2 = (end >> 0) & 0xFF; 
+		int b2 = (end) & 0xFF;
 		
 		return minmax(0, 255, (int)(a1 + (a2 - a1) * amount)) << 24
 		| minmax(0, 255, (int)(r1 + (r2 - r1) * amount)) << 16
 		| minmax(0, 255, (int)(g1 + (g2 - g1) * amount)) << 8
-		| minmax(0, 255, (int)(b1 + (b2 - b1) * amount)) << 0;
+		| minmax(0, 255, (int) (b1 + (b2 - b1) * amount));
 		
 	}
 	/**

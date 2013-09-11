@@ -1907,8 +1907,8 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 				zoomDirection = (e.has(Button.LEFT));
 				zoomNormal = e.has(Button.MIDDLE);
 				return super.mouse(e);
-			};
-		};
+			}
+        };
 		zoom.setHoldDelay(100);
 		zoom.onClick = new Action0() {
 			@Override

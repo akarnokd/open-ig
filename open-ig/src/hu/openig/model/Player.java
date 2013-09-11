@@ -599,8 +599,8 @@ public class Player {
 			public int compare(Message o1, Message o2) {
 				int c = (o1.timestamp < o2.timestamp ? -1 : (o1.timestamp > o2.timestamp ? 1 : 0));
 				if (c == 0) {
-					c = o1.priority > o2.priority ? -1 : (o1.priority < o2.priority ? 1 : 0);;
-				}
+					c = o1.priority > o2.priority ? -1 : (o1.priority < o2.priority ? 1 : 0);
+                }
 				return c;
 			}
 		});
@@ -814,7 +814,7 @@ public class Player {
 	 */
 	public boolean isStrongAlliance(Player other) {
 		DiplomaticRelation dr = world.getRelation(this, other);
-		return dr != null ? dr.strongAlliance : false;
+		return dr != null && dr.strongAlliance;
 	}
 	/**
 	 * Adds a production line for the given research type.

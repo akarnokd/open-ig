@@ -279,8 +279,9 @@ public class BarScreen extends ScreenBase {
 			return true;
 		}
 		return false;
-	};
-	/** @return Retrieve the talk image. */
+	}
+
+    /** @return Retrieve the talk image. */
 	BufferedImage getTalk() {
 		if ("phsychologist".equals(world().currentTalk)) {
 			return images.phsychologist();

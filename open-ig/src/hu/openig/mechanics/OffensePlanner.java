@@ -101,9 +101,7 @@ public class OffensePlanner extends Planner {
 		
 		// construct fleets
 		if (nFleets > world.ownFleets.size()) {
-			if (createNewFleet()) {
-				return;
-			}
+			createNewFleet();
 		}
 	}
 	/** 
@@ -280,12 +278,9 @@ public class OffensePlanner extends Planner {
 		if (world.money < 70000) {
 			battleships.clear();
 		}
-		if (checkCounts(fighters, cruisers, battleships)) {
-			return true;
-		}
-		
-		return false;
-	}
+        return checkCounts(fighters, cruisers, battleships);
+
+    }
 	/**
 	 * Check if a fleet is in upgrade position over a planet.
 	 * @param cruisers the list of cruiser/destroyer technology ordered by expense
@@ -302,11 +297,8 @@ public class OffensePlanner extends Planner {
 			}
 		});
 		if (upgradeTasks.isEmpty()) {
-			if (!findFleetsWithTask(FleetTask.UPGRADE, null).isEmpty()) {
-				return true;
-			}
-			return false;
-		}
+            return !findFleetsWithTask(FleetTask.UPGRADE, null).isEmpty();
+        }
 		
 		final Fleet fleet = Collections.min(upgradeTasks, firepowerAsc).fleet;
 		

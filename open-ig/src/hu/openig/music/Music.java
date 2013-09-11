@@ -42,9 +42,7 @@ public class Music {
 	private volatile Thread playbackThread;
 	/** The resource manager. */
 	private final ResourceLocator rl;
-	/** Use soundClip for playback. */
-	private static boolean useClip = false;
-	/** OGG music player. */
+    /** OGG music player. */
 	private volatile OggMusic oggMusic;
 	/** The completion handler once a sound element completed. */
 	public Action1<String> onComplete;
@@ -174,7 +172,9 @@ public class Music {
 				if (!checkStop()) {
 					break;
 				}
-				if (useClip) {
+				/* Use soundClip for playback. */
+                boolean useClip = false;
+                if (useClip) {
 					playBackClip(rp);
 				} else {
 					try {
