@@ -371,11 +371,7 @@ public class World implements ModelLookup {
 				this.scripting = GameScripting.class.cast(c.newInstance());
 				scripting.init(this.player, xscript);
 			}
-		} catch (InstantiationException ex) {
-			Exceptions.add(ex);
-		} catch (IllegalAccessException ex) {
-			Exceptions.add(ex);
-		} catch (ClassNotFoundException ex) {
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
 			Exceptions.add(ex);
 		}
 	}
@@ -1593,7 +1589,7 @@ public class World implements ModelLookup {
 			// add free technologies
 			p.availableResearch.clear();
 			for (ResearchType rt : researches.values()) {
-				if (rt.level == 0 && rt.race.equals(p.race)) {
+				if (rt.level == 0 && rt.race.contains(p.race)) {
 					p.add(rt);
 				}
 			}
@@ -3037,10 +3033,12 @@ public class World implements ModelLookup {
 	 */
 	protected void establishDiplomacy(Map<Player, Integer> groups) {
 		// establish strong alliances and basic enemies
-		for (Player p1 : groups.keySet()) {
-			Integer g1 = groups.get(p1);
-			for (Player p2 : groups.keySet()) {
-				Integer g2 = groups.get(p2);
+		for (Map.Entry<Player, Integer> pg : groups.entrySet()) {
+            Player p1 = pg.getKey();
+			Integer g1 = pg.getValue();
+			for (Map.Entry<Player, Integer> pg2 : groups.entrySet()) {
+                Player p2 = pg2.getKey();
+                Integer g2 = pg2.getValue();
 				if (p1 != p2) {
 					DiplomaticRelation dr = establishRelation(p1, p2);
 					dr.full = true;
@@ -3069,10 +3067,12 @@ public class World implements ModelLookup {
 		}
 		// establish common alliances
 		// establish strong alliances and basic enemies
-		for (Player p1 : groups.keySet()) {
-			Integer g1 = groups.get(p1);
-			for (Player p2 : groups.keySet()) {
-				Integer g2 = groups.get(p2);
+		for (Map.Entry<Player, Integer> e : groups.entrySet()) {
+            Player p1 = e.getKey();
+			Integer g1 = e.getValue();
+			for (Map.Entry<Player, Integer> e2 : groups.entrySet()) {
+                Player p2 = e2.getKey();
+				Integer g2 = e2.getValue();
 				if (p1 != p2 && g1.equals(g2)) {
 					for (Player p3 : groups.keySet()) {
 						Integer g3 = groups.get(p3);

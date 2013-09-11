@@ -176,12 +176,9 @@ public class TextRenderer {
 				def.spaceY = xline.getInt("spacing-y");
 				CHARACTERS.add(def);
 			}
-		} catch (XMLStreamException ex) {
+		} catch (XMLStreamException | IOException ex) {
 			Exceptions.add(ex);
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		}
-		
+                }		
 	}
 	/** Characters in various lines. */
 	static final String[] LINE_CHARACTERS = {

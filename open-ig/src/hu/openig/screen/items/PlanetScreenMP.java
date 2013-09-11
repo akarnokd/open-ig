@@ -94,8 +94,6 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 	Closeable animationTimer;
 	/** The animation timer. */
 	Closeable earthQuakeTimer;
-	/** The originating location. */
-	Location orig;
 	/** The base rectangle. */
 	final Rectangle base = new Rectangle();
 	/** The planet view window. */
@@ -588,9 +586,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 					} else {
 						System.out.println(f.getName());
 					}
-				} catch (IllegalArgumentException e) {
-					Exceptions.add(e);
-				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					Exceptions.add(e);
 				}
 			}

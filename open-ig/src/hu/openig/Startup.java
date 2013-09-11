@@ -91,9 +91,7 @@ public final class Startup {
 									return wd.substring(fp.length());
 								}
 								return fp;
-							} catch (ExecutionException ex) {
-								// ignored
-							} catch (InterruptedException ex) {
+							} catch (ExecutionException | InterruptedException ex) {
 								// ignored
 							}
 						}
@@ -358,7 +356,7 @@ public final class Startup {
 	/**
 	 * Convert the plain saves into GZIP-ped saves.
 	 */
-	protected static void convertSaves() {
+	static void convertSaves() {
 		File saveDir = new File("save");
 		if (saveDir.exists() && saveDir.isDirectory()) {
 			for (File profileDir : U.listFiles(saveDir)) {

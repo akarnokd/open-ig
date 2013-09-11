@@ -196,8 +196,6 @@ public class CommonResources implements GameEnvironment {
 	public boolean force;
 	/** Counts the current simulation step and invokes the simulator on every 4th. */
 	protected long simulationStep;
-	/** Periodically reload the current labels. */
-	protected Thread labelReloader;
 	/** The global traits. */
 	public final Traits traits = new Traits();
 	/** The multiplayer context. */
@@ -389,10 +387,6 @@ public class CommonResources implements GameEnvironment {
 		config.language = newLanguage;
 		config.save();
 		sounds.close();
-		if (labelReloader != null) {
-			labelReloader.interrupt();
-			labelReloader = null;
-		}
 		init();
 	}
 	/**
@@ -448,9 +442,7 @@ public class CommonResources implements GameEnvironment {
 	public static <T> T get(Future<? extends T> future) {
 		try {
 			return future.get();
-		} catch (ExecutionException ex) {
-			throw new RuntimeException(ex);
-		} catch (InterruptedException ex) {
+		} catch (ExecutionException | InterruptedException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
@@ -878,7 +870,7 @@ public class CommonResources implements GameEnvironment {
 			}
 		});
 		
-		String[] musics = musicList.toArray(new String[0]);
+		String[] musics = musicList.toArray(new String[musicList.size()]);
 		music.playLooped(musics);
 	}
 	/** Convenience method to start playing the original battle music. */
@@ -1132,10 +1124,6 @@ public class CommonResources implements GameEnvironment {
 	 * Cleanup all resources.
 	 */
 	public void done() {
-		if (labelReloader != null) {
-			labelReloader.interrupt();
-			labelReloader = null;
-		}
 		multiplayer.stopServer();
 	}
 	@Override

@@ -102,7 +102,7 @@ public final class OriginalConverter {
 	 * @param sample the sample
 	 * @throws IOException on error
 	 */
-	protected static void writeWav(File dst, byte[] sample)
+	static void writeWav(File dst, byte[] sample)
 			throws IOException {
 		try (DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dst), 1024 * 1024))) {
 			writeWav(sample, dout);
@@ -901,8 +901,9 @@ public final class OriginalConverter {
 	 */
 	static void convertDiplomacy(Map<String, PACEntry> mapByName, 
 			Map<String, String> labels) throws IOException {
-		for (String s : mapByName.keySet()) {
-			String st = new String(mapByName.get(s).data, "CP437");
+		for (Map.Entry<String, PACEntry> e : mapByName.entrySet()) {
+            String s = e.getKey();
+			String st = new String(e.getValue().data, "CP437");
 			if (st.contains("This is a template text fot Jason")
 					|| st.contains("This is a template text for Jason")) {
 				parse(s, st, labels);
@@ -1450,7 +1451,7 @@ public final class OriginalConverter {
 					System.out.printf("COPY: %s -> %s%n", src + ".wav", dst);
 					copyFile(srcFile, dstFile);
 				} else {
-					System.err.printf("ANI-SOUND: %s missing%n", src, dst);
+					System.err.printf("ANI-SOUND: %s missing%n", src);
 					System.err.flush();
 				}
 			}
@@ -1463,7 +1464,7 @@ public final class OriginalConverter {
 				System.out.printf("ANI-VIDEO: %s -> %s%n", src, dst);
 				convertAni(srcFile, createDestination("video", dst));
 			} else {
-				System.err.printf("ANI-VIDEO: %s missing%n", src, dst);
+				System.err.printf("ANI-VIDEO: %s missing%n", src);
 				System.err.flush();
 			}
 		}

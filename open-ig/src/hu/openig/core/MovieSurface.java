@@ -37,7 +37,7 @@ public class MovieSurface extends JComponent implements SwappableRenderer {
 		WINDOW_SIZE
 	}
 	/** The lock that protects the swapping and drawing of the frontbuffer. */
-	private Lock swapLock = new ReentrantLock();
+	private final Lock swapLock = new ReentrantLock();
 	/** The backbuffer image. */
 	private BufferedImage backbuffer;
 	/** The frontbuffer image.*/

@@ -885,7 +885,7 @@ public final class Simulator {
 	 * @param world the world
 	 * @param f the fleet
 	 */
-	protected static void handleAttack(World world, Fleet f) {
+	static void handleAttack(World world, Fleet f) {
 		Planet tp = f.targetPlanet();
 		Fleet tf = f.targetFleet;
 		Player o = tp != null ? tp.owner : (tf != null ? tf.owner : null); 
@@ -928,7 +928,7 @@ public final class Simulator {
 	 * @param spaceport has spaceport
 	 * @param ii the inventory item
 	 */
-	protected static void regenerateInventory(boolean spaceport,
+	static void regenerateInventory(boolean spaceport,
 			InventoryItem ii) {
 		boolean engineers = ii.owner.traits.has(TraitKind.ENGINEERS);
 		double spd = ii.owner.world.params().speed();

@@ -377,7 +377,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	/**
 	 * Initialize the internal components.
 	 */
-	void initComponents() {
+	private void initComponents() {
 		undoManager = new UndoManager();
 		
 		warning = new ImageIcon(CampaignEditor.class.getResource("/hu/openig/gfx/warning.png"));
@@ -388,7 +388,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 		
 		// fetch labels
 		try {
-			XElement xlabels = XElement.parseXML(getClass().getResource("ce_labels.xml"));
+			XElement xlabels = XElement.parseXML(CampaignEditor.class.getResource("ce_labels.xml"));
 			for (XElement xlang : xlabels.childrenWithName("language")) {
 				String id = xlang.get("id");
 				if (id.equals(language)) {
@@ -399,11 +399,9 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 						}
 					}
 				}
-				flags.put(id, new ImageIcon(getClass().getResource(xlang.get("flag"))));
+				flags.put(id, new ImageIcon(CampaignEditor.class.getResource(xlang.get("flag"))));
 			}
-		} catch (XMLStreamException ex) {
-			Exceptions.add(ex);
-		} catch (IOException ex) {
+		} catch (XMLStreamException | IOException ex) {
 			Exceptions.add(ex);
 		}
 		
@@ -517,7 +515,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	 */
 	AbstractButton createFor(String graphicsResource, String tooltip, final JMenuItem inMenu, boolean toggle) {
 		AbstractButton result = toggle ? new JToggleButton() : new JButton();
-		URL res = getClass().getResource("/hu/openig/editors/" + graphicsResource);
+		URL res = CampaignEditor.class.getResource("/hu/openig/editors/" + graphicsResource);
 		if (res != null) {
 			ImageIcon icon = new ImageIcon(res);
 			result.setIcon(icon);
@@ -769,9 +767,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 			} else {
 				JOptionPane.showConfirmDialog(this, u);
 			}
-		} catch (IOException ex) {
-			Exceptions.add(ex);
-		} catch (URISyntaxException ex) {
+		} catch (IOException | URISyntaxException ex) {
 			Exceptions.add(ex);
 		}
 	}

@@ -80,7 +80,7 @@ public class UPnPGatewayDiscover {
      * The assumption is that a machine is connected to up to a Gateway Device
      * per InetAddress
      */
-    private Map<InetAddress, UPnPGatewayDevice> devices = new HashMap<>();
+    private final Map<InetAddress, UPnPGatewayDevice> devices = new HashMap<>();
 
     /**
      *  Thread class for sending a search datagram and process the response.
@@ -169,11 +169,11 @@ public class UPnPGatewayDiscover {
                 "urn:schemas-upnp-org:service:WANPPPConnection:1"
         };
 
-        for (int i = 0; i < searchTypes.length; i++) {
+        for (String st : searchTypes) {
 
             String searchMessage = "M-SEARCH * HTTP/1.1\r\n"
                     + "HOST: " + broadcastIP + ":" + ssdpPort + "\r\n"
-                    + "ST: " + searchTypes[i] + "\r\n"
+                    + "ST: " + st + "\r\n"
                     + "MAN: \"ssdp:discover\"\r\n"
                     + "MX: 2\r\n"    // seconds to delay response
                     + "\r\n";

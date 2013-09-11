@@ -104,12 +104,12 @@ public final class ImageUtils {
 			int d1 = (img.getWidth() + width - 1) / width;
 			BufferedImage[][] result = new BufferedImage[d0][d1];
 			int y = 0;
-			for (int j = 0; j < result.length; j++) {
+			for (BufferedImage[] ba : result) {
 				int x = 0;
 				int y2 = Math.min(y + height - 1, img.getHeight() - 1);
-				for (int i = 0; i < result[j].length; i++) {
+				for (int i = 0; i < ba.length; i++) {
 					int x2 = Math.min(x + width - 1, img.getWidth() - 1);
-					result[j][i] = newSubimage(img, x, y, x2 - x + 1, y2 - y + 1);
+					ba[i] = newSubimage(img, x, y, x2 - x + 1, y2 - y + 1);
 					x += width;
 				}
 				y += height;

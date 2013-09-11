@@ -838,9 +838,7 @@ public class XElement {
 					throw new ParseException("Unknown milliseconds or timezone", offset);
 				}
 			}
-		} catch (NumberFormatException ex) {
-			throw new ParseException(ex.toString(), offset);
-		} catch (IndexOutOfBoundsException ex) {
+		} catch (NumberFormatException | IndexOutOfBoundsException ex) {
 			throw new ParseException(ex.toString(), offset);
 		}
 		return cal.getTime();

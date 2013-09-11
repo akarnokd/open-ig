@@ -21,7 +21,7 @@ public final class Location {
 	private final int hc;
 	/** The location cache, where the first dimension is the X coordinate + 80, 
 	 * the second is Y coordinate + 159. */
-	private static Location[][] cache;
+	private static final Location[][] cache;
 	static {
 		cache = new Location[160][160];
 		for (int i = 0; i < cache.length; i++) {

@@ -108,8 +108,6 @@ public class Info {
 	int residues;
 	/** Books. */
 	int books;
-	/** P sys. */
-	int psys; // encode only
 	/** Info mode param. */
 	InfoMode[] modeParam;
 	/** Map type. */
@@ -130,16 +128,6 @@ public class Info {
 	Object[] residueParam;
 	/** Book params. */
 	StaticCodeBook[] bookParam;
-	/** Psy param. */
-	PsyInfo[] psyParam = new PsyInfo[64]; // encode only
-
-	// for block long/sort tuning; encode only
-	/** Envelope SA. */
-//	int envelopesa;
-	/** Pre echo treshold. */
-//	float preechoThresh;
-	/** Pre echo clamp. */
-//	float preechoClamp;
 
 	/** used by synthesis, which has a full, alloced vi. */
 	public void init() {
@@ -182,10 +170,6 @@ public class Info {
 		}
 		// if(vi->book_param)free(vi->book_param);
 		bookParam = null;
-
-		for (int i = 0; i < psys; i++) {
-			psyParam[i].free();
-		}
 
 	}
 	/**

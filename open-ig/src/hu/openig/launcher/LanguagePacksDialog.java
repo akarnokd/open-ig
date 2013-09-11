@@ -47,13 +47,13 @@ public class LanguagePacksDialog extends JDialog {
 	/** User pressed OK? */
 	public boolean approved;
 	/** Uninstall checkbox. */
-	private JCheckBox cbUninstall;
+	private final JCheckBox cbUninstall;
 	/** Install checkbox. */
-	private JCheckBox cbInstall;
+	private final JCheckBox cbInstall;
 	/** Language checkboxes. */
-	private List<JCheckBox> checkBoxes;
+	private final List<JCheckBox> checkBoxes;
 	/** Language text per checkbox. */
-	private List<String> languages;
+	private final List<String> languages;
 	/**
 	 * Constructs the dialog.
 	 * @param parent the parent frame
@@ -111,14 +111,14 @@ public class LanguagePacksDialog extends JDialog {
 		final List<Long> szs = new ArrayList<>();
 		languages = new ArrayList<>();
 		long sz0 = 0;
-		for (String lng : flags.keySet()) {
+		for (Map.Entry<String, BufferedImage> lng : flags.entrySet()) {
 			
 			ParallelGroup pg0 = gl.createParallelGroup(Alignment.CENTER);
 			vert.addGroup(pg0);
 			
-			JLabel  flag = new JLabel(new ImageIcon(flags.get(lng)));
+			JLabel  flag = new JLabel(new ImageIcon(lng.getValue()));
 			
-			JCheckBox cb = new JCheckBox(lbl.label("language-" + lng));
+			JCheckBox cb = new JCheckBox(lbl.label("language-" + lng.getKey()));
 			cb.setOpaque(false);
 			
 			JLabel sizes = new JLabel();
@@ -132,7 +132,7 @@ public class LanguagePacksDialog extends JDialog {
 			
 			long sz = 0;
 			for (LFile f : files) {
-				if (f.language.equals(lng)) {
+				if (f.language.equals(lng.getKey())) {
 					sz += f.size;
 					try {
 						File f2 = new File(installDir, f.name());
@@ -149,7 +149,7 @@ public class LanguagePacksDialog extends JDialog {
 			
 			checkBoxes.add(cb);
 			szs.add(sz);
-			languages.add(lng);
+			languages.add(lng.getKey());
 		}
 		
 		for (JCheckBox cb : checkBoxes) {

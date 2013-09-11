@@ -131,7 +131,7 @@ public class VideoPlayer extends JFrame {
 	 * Video entry.
 	 * @author akarnokd, 2009.09.26.
 	 */
-	class VideoEntry {
+	static class VideoEntry {
 		/** Name. */
 		String name;
 		/** Path. */
@@ -214,7 +214,7 @@ public class VideoPlayer extends JFrame {
 	 * Video table model.
 	 * @author akarnokd, 2009.09.26.
 	 */
-	class VideoModel extends AbstractTableModel {
+	static class VideoModel extends AbstractTableModel {
 		/** */
 		private static final long serialVersionUID = 3860832368918760138L;
 		/** The column names. */
@@ -803,10 +803,8 @@ public class VideoPlayer extends JFrame {
 					audioLen = buffer.length / 2;
 					try {
 						barrier.await();
-					} catch (InterruptedException ex) {
-						
-					} catch (BrokenBarrierException ex) {
-						
+					} catch (InterruptedException | BrokenBarrierException ex) {
+                                            // ignored
 					}
 					clip.start();
 					if (skip * 2 < buffer2.length) {
@@ -817,9 +815,7 @@ public class VideoPlayer extends JFrame {
 				} catch (LineUnavailableException ex) {
 					Exceptions.add(ex);
 				}
-			} catch (UnsupportedAudioFileException ex) {
-				Exceptions.add(ex);
-			} catch (IOException ex) {
+			} catch (UnsupportedAudioFileException | IOException ex) {
 				Exceptions.add(ex);
 			}
 		}
@@ -829,7 +825,7 @@ public class VideoPlayer extends JFrame {
 	 * @param audio the audio resource
 	 * @return the audio worker
 	 */
-	public AudioWorker createAudioWorker(ResourcePlace audio) {
+	AudioWorker createAudioWorker(ResourcePlace audio) {
 		int skip = 0;
 		if (currentFps > 0) {
 			skip = (int)(position.getValue() * 22050 / currentFps);
@@ -885,9 +881,7 @@ public class VideoPlayer extends JFrame {
 						if (frameCount == skipFrames) {
 							try {
 								barrier.await();
-							} catch (InterruptedException ex) {
-								
-							} catch (BrokenBarrierException ex) {
+							} catch (InterruptedException | BrokenBarrierException ex) {
 								
 							}
 							frames2 = (int)Math.ceil(audioLen * fps / 22050.0);
@@ -920,7 +914,7 @@ public class VideoPlayer extends JFrame {
 	/** The last known export dir. */
 	File lastDir;
 	/** The export record. */
-	class AVExport {
+	static class AVExport {
 		/** Video location. */
 		ResourcePlace video;
 		/** Audio location. */
@@ -1157,9 +1151,7 @@ public class VideoPlayer extends JFrame {
 					position.setMaximum(frames);
 				}
 			});
-		} catch (InvocationTargetException e) {
-			Exceptions.add(e);
-		} catch (InterruptedException e) {
+		} catch (InvocationTargetException | InterruptedException e) {
 			Exceptions.add(e);
 		}
 	}

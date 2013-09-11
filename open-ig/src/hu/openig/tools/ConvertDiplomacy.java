@@ -44,8 +44,9 @@ public final class ConvertDiplomacy {
 
 		XElement dipl = new XElement("diplomacy");
 		Map<String, PACEntry> mapByName = PACFile.mapByName(PACFile.parseFully(new File("c:/games/IGHU/data/TEXT.PAC ")));
-		for (String s : mapByName.keySet()) {
-			String st = fixChars(mapByName.get(s).data);
+		for (Map.Entry<String, PACEntry> e : mapByName.entrySet()) {
+            String s = e.getKey();
+			String st = fixChars(e.getValue().data);
 			if (st.contains("This is a template text fot Jason")
 					|| st.contains("This is a template text for Jason")) {
 				dipl.add(parse(s, st, map));

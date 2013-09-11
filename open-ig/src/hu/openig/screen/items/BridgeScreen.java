@@ -967,9 +967,7 @@ public class BridgeScreen extends ScreenBase {
 		videoAppearPercent = 0;
 		try {
 			videoAppear = sw.get();
-		} catch (InterruptedException ex) {
-			Exceptions.add(ex);
-		} catch (ExecutionException ex) {
+		} catch (InterruptedException | ExecutionException ex) {
 			Exceptions.add(ex);
 		}
 		buttonSound(SoundType.ACKNOWLEDGE_2);

@@ -85,10 +85,7 @@ public class CEVideoRef implements CEInvalid {
 				} catch (ExecutionException ex) {
 					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
 					valid.setToolTipText("<html><pre>" + U.stacktrace(ex.getCause()));
-				} catch (InterruptedException ex) {
-					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
-					valid.setToolTipText("<html><pre>" + U.stacktrace(ex));
-				} catch (CancellationException ex) {
+				} catch (InterruptedException | CancellationException ex) {
 					valid.setIcon(context.getIcon(CESeverityIndicator.ERROR));
 					valid.setToolTipText("<html><pre>" + U.stacktrace(ex));
 				}

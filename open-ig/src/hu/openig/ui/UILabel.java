@@ -179,15 +179,15 @@ public class UILabel extends UIComponent {
 				float space = 1.0f * (width - perword) / words.length;
 				float px = 0;
 				if (shadowColor != 0) {
-					for (int i = 0; i < words.length; i++) {
-						tr.paintTo(g2, (int)px + 1, py + 1, size, shadowColor, words[i]);
-						px += tr.getTextWidth(size, words[i]) + space;
+					for (String w : words) {
+						tr.paintTo(g2, (int)px + 1, py + 1, size, shadowColor, w);
+						px += tr.getTextWidth(size, w) + space;
 					}
 				}
 				px = 0;
-				for (int i = 0; i < words.length; i++) {
-					tr.paintTo(g2, (int)px, py, size, c, words[i]);
-					px += tr.getTextWidth(size, words[i]) + space;
+				for (String w : words) {
+					tr.paintTo(g2, (int)px, py, size, c, w);
+					px += tr.getTextWidth(size, w) + space;
 				}
 			}
 		}

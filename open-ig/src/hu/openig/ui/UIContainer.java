@@ -137,9 +137,7 @@ public class UIContainer extends UIComponent {
 					if (c != null && c.parent == null) {
 						add(c);
 					}
-				} catch (IllegalArgumentException e) {
-					Exceptions.add(e);
-				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					Exceptions.add(e);
 				}
 			}

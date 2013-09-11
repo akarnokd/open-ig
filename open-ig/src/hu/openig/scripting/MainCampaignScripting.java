@@ -267,11 +267,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 					} else {
 						Exceptions.add(new AssertionError(String.format("Mission class %s is incompatible", clazz)));
 					}
-				} catch (InstantiationException ex) {
-					Exceptions.add(ex);
-				} catch (IllegalAccessException ex) {
-					Exceptions.add(ex);
-				} catch (ClassNotFoundException ex) {
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
 					Exceptions.add(ex);
 				}
 			}
@@ -349,9 +345,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 							System.err.printf("Field %s of type %s received the value %s%n", f.getName(), f.getType(), value);
 						}
 					}
-				} catch (IllegalAccessException ex) {
-					Exceptions.add(ex);
-				} catch (NoSuchFieldException ex) {
+				} catch (IllegalAccessException | NoSuchFieldException ex) {
 					Exceptions.add(ex);
 				}
 			}

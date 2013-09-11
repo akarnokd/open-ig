@@ -152,8 +152,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	Closeable earthQuakeTimer;
 	/** Enable the drawing of black boxes behind building names and percentages. */
 	boolean textBackgrounds = true;
-	/** Render placement hints on the surface. */
-	boolean placementHints;
 	/** The unit selection rectangle start. */
 	Point selectionStart;
 	/** The unit selection rectangle end. */
@@ -177,8 +175,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	int lastY;
 	/** Is the map dragged. */
 	boolean drag;
-	/** The originating location. */
-	Location orig;
 	/** The base rectangle. */
 	final Rectangle base = new Rectangle();
 	/** The planet view window. */
@@ -1114,15 +1110,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
 			
 				drawTiles(g2, surface, x0, y0);
-				if (placementHints) {
-					for (Location loc : surface.basemap.keySet()) {
-						if (!surface().placement.canPlaceBuilding(loc.x, loc.y)) {
-							int x = x0 + Tile.toScreenX(loc.x, loc.y);
-							int y = y0 + Tile.toScreenY(loc.x, loc.y);
-							g2.drawImage(areaDeny.getStrip(0), x, y, null);
-						}
-					}
-				}
 				if (battlePlacements.size() > 0) {
 					for (Location loc : battlePlacements) {
 						int x = x0 + Tile.toScreenX(loc.x, loc.y);
@@ -1130,17 +1117,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 						g2.drawImage(areaDeploy.getStrip(0), x, y, null);
 					}
 				}
-//				if (!placementMode) {
-//					if (selectedRectangle != null) {
-//						for (int i = selectedRectangle.x; i < selectedRectangle.x + selectedRectangle.width; i++) {
-//							for (int j = selectedRectangle.y; j > selectedRectangle.y - selectedRectangle.height; j--) {
-//								int x = x0 + Tile.toScreenX(i, j);
-//								int y = y0 + Tile.toScreenY(i, j);
-//								g2.drawImage(selection.getStrip(0), x, y, null);
-//							}
-//						}
-//					}
-//				}
 				if (placementMode) {
 					if (placementRectangle.width > 0) {
 						for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
@@ -1979,9 +1955,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					} else {
 						System.out.println(f.getName());
 					}
-				} catch (IllegalArgumentException e) {
-					Exceptions.add(e);
-				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					Exceptions.add(e);
 				}
 			}
@@ -4331,16 +4305,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			for (Future<PathPlanning> f : inProgress) {
 				try {
 					f.get().apply();
-				} catch (ExecutionException ex) {
-					Exceptions.add(ex);
-				} catch (InterruptedException ex) {
+				} catch (ExecutionException | InterruptedException ex) {
 					Exceptions.add(ex);
 				}
 			}
-//			for (PathPlanning pp : pathsToPlan) {
-//				pp.apply();
-//			}
-//			pathsToPlan.clear();
 
 			t0 = System.nanoTime() - t0;
 			System.out.printf("Planning %.6f%n", t0 / 1000000000d);

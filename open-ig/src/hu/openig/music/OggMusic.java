@@ -270,9 +270,9 @@ public class OggMusic {
 
 			byte[][] ptr = vc.userComments;
 
-			for (int j = 0; j < ptr.length; j++) {
-				if (ptr[j] == null) {
-					break;
+			for (byte[] j : ptr) {
+				if (j == null) {
+                                    break;
 				}
 			}
 
