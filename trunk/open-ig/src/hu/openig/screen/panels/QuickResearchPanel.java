@@ -136,8 +136,8 @@ public class QuickResearchPanel extends UIContainer {
 				moneyMouseLast = e;
 				super.mouse(e);
 				return true;
-			};
-		};
+			}
+        };
 		moneyButton.onClick = new Action0() {
 			@Override
 			public void invoke() {

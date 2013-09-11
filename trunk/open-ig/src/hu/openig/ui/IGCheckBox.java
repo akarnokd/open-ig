@@ -59,8 +59,9 @@ public class IGCheckBox extends JCheckBox {
 		int h = Math.max(check.getHeight(), fm.getHeight());
 		int w = fm.getHeight() + 10 + fm.stringWidth(getText());
 		return new Dimension(w, h);
-	};
-	@Override
+	}
+
+    @Override
 	public void paint(Graphics g) {
 		
 		Graphics2D g2 = (Graphics2D)g;

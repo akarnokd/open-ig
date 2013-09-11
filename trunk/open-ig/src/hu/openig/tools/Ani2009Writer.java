@@ -113,8 +113,8 @@ public class Ani2009Writer implements Closeable {
 				uc = uc2;
 				b0 = b2;
 				System.out.printf(" done.%n");
-			};
-		}
+			}
+        }
 		
 		// end of data
 		bout.write('X');

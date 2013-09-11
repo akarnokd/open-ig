@@ -1020,8 +1020,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				moneyMouseLast = e;
 				super.mouse(e);
 				return true;
-			};
-		};
+			}
+        };
 		moneyButton.onClick = new Action0() {
 			@Override
 			public void invoke() {

@@ -1640,8 +1640,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 				
 				list.items.addAll(flist);
 				askRepaint();
-			};
-		};
+			}
+        };
 		listWorker.execute();
 	}
 	/** The file list. */

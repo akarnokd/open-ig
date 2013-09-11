@@ -259,12 +259,12 @@ public class TextRenderer {
 		int c0 = 0xFF000000 
 		| ((int)Math.min(((color & 0xFF0000) >> 16) * 1.3f, 0xFC) << 16) 
 		| ((int)Math.min(((color & 0xFF00) >> 8) * 1.3f, 0xFC) << 8) 
-		| ((int)Math.min(((color & 0xFF) >> 0) * 1.3f, 0xFC));
+		| ((int)Math.min(((color & 0xFF)) * 1.3f, 0xFC));
 		int c1 = 0xFF000000 | color;
 		int c2 = 0xFF000000 
 		| ((int)(((color & 0xFF0000) >> 16) * 0.6f) << 16) 
 		| ((int)(((color & 0xFF00) >> 8) * 0.6f) << 8) 
-		| ((int)(((color & 0xFF) >> 0) * 0.6f));
+		| ((int)(((color & 0xFF)) * 0.6f));
 		
 		for (int i = 0; i < src.getHeight(); i++) {
 			for (int j = 0; j < src.getWidth(); j++) {
@@ -364,7 +364,7 @@ public class TextRenderer {
 	public static int scaleColor(int color, float scale) {
 		return ((int)Math.min(((color & 0xFF0000) >> 16) * scale, 0xFC) << 16)
 		| ((int)Math.min(((color & 0xFF00) >> 8) * scale, 0xFC) << 8)
-		| ((int)Math.min(((color & 0xFF) >> 0) * scale, 0xFC) << 0)
+		| ((int) Math.min(((color & 0xFF)) * scale, 0xFC))
 		| (color & 0xFF000000);
 	}
 	/**

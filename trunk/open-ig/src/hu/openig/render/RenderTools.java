@@ -153,7 +153,7 @@ public final class RenderTools {
 			((a << 24) & 0xFF000000)
 			| ((r << 16) & 0x00FF0000)
 			| ((g << 8) & 0x0000FF00)
-			| ((b << 0) & 0x000000FF)
+			| ((b) & 0x000000FF)
 		;
 	}
 	/**
@@ -493,12 +493,9 @@ public final class RenderTools {
 			return true;
 		}
 		// Check against bottom rectangle line
-		if (isLineIntersectingLine(lx0, ly0, lx1, ly1,
-				x0, y1, x1, y1)) {
-			return true;
-		}
-		return false;
-	}
+        return isLineIntersectingLine(lx0, ly0, lx1, ly1,
+                x0, y1, x1, y1);
+    }
 	/**
 	 * Compute the scaling factor and the top-left point where the rendering should scale from
 	 * in order to keep the content fit the enclosing window. 

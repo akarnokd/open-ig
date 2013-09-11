@@ -91,8 +91,9 @@ public class PlanetSurface {
 		@Override
 		protected int width() {
 			return width;
-		};
-		@Override
+		}
+
+        @Override
 		protected Buildings buildings() {
 			return buildings;
 		}
@@ -140,11 +141,8 @@ public class PlanetSurface {
 		if (y > 0 || y < -(width + height - 2)) {
 			return false;
 		}
-		if (x > renderingOrigins.get(-y).x || x < renderingOrigins.get(-y).x - renderingLength.get(-y) + 1) {
-			return false;
-		}		
-		return true;
-	}
+        return !(x > renderingOrigins.get(-y).x || x < renderingOrigins.get(-y).x - renderingLength.get(-y) + 1);
+    }
 	/**
 	 * Place a building tile onto the current surface map.
 	 * Does not check for overlapping.
@@ -597,11 +595,8 @@ public class PlanetSurface {
 				return false;
 			}
 			se = basemap().get(Location.of(x, y));
-			if (se != null && (se.tile.width > 1 || se.tile.height > 1)) {
-				return false;
-			}
-			return true;
-		}
+            return !(se != null && (se.tile.width > 1 || se.tile.height > 1));
+        }
 		/**
 		 * Find a location for the given dimensions.
 		 * <p>Note: the dimensions should incorporate 1+1 road on both axis.</p>
@@ -736,11 +731,8 @@ public class PlanetSurface {
 			if (isEdge(x - 1, y + 1) && isRoad(x - 1, y) && isRoad(x, y + 1)) {
 				return true;
 			}
-			if (isEdge(x + 1, y + 1) && isRoad(x, y + 1) && isRoad(x + 1, y)) {
-				return true;
-			}
-			return false;
-		}
+            return isEdge(x + 1, y + 1) && isRoad(x, y + 1) && isRoad(x + 1, y);
+        }
 		/**
 		 * Check if the given location is a road.
 		 * @param x the X coordinate

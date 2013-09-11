@@ -258,8 +258,8 @@ public class SingleplayerScreen extends ScreenBase {
 						}
 					});
 				}
-			};
-		};
+			}
+        };
 		loadWaiter.setPriority(Thread.MIN_PRIORITY);
 		loadWaiter.start();
 	}
@@ -285,8 +285,8 @@ public class SingleplayerScreen extends ScreenBase {
 				} finally {
 					videoWaiter = null;
 				}
-			};
-		};
+			}
+        };
 		videoWaiter.setPriority(Thread.MIN_PRIORITY);
 		videoWaiter.start();
 	}
@@ -302,8 +302,9 @@ public class SingleplayerScreen extends ScreenBase {
 		
 		config.computerVoiceScreen = csw;
 		commons.control().displayStatusbar();
-	};
-	@Override
+	}
+
+    @Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			displayPrimary(Screens.MAIN);

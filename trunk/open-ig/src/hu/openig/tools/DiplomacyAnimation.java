@@ -138,10 +138,10 @@ public final class DiplomacyAnimation {
 						
 						// reduce color space to 0-254 colors
 						Map<Integer, Integer> colorCounts = new HashMap<>();
-						for (int k = 0; k < imgc.length; k++) {
-							Integer c = colorCounts.get(imgc[k] & 0xFFFFFF);
-							colorCounts.put(imgc[k] & 0xFFFFFF, c != null ? c + 1 : 1);
-						}
+                        for (int anImgc : imgc) {
+                            Integer c = colorCounts.get(anImgc & 0xFFFFFF);
+                            colorCounts.put(anImgc & 0xFFFFFF, c != null ? c + 1 : 1);
+                        }
 						if (colorCounts.size() > 254) {
 							List<Map.Entry<Integer, Integer>> lst = U.newArrayList(colorCounts.entrySet());
 							Collections.sort(lst, new Comparator<Map.Entry<Integer, Integer>>() {
@@ -273,7 +273,7 @@ public final class DiplomacyAnimation {
 		argb[0] = (color >> 24) & 0xFF;
 		argb[1] = (color >> 16) & 0xFF;
 		argb[2] = (color >> 8) & 0xFF;
-		argb[3] = (color >> 0) & 0xFF;
+		argb[3] = (color) & 0xFF;
 	}
 	/**
 	 * Convert an ARGB color to HSV.
@@ -287,7 +287,7 @@ public final class DiplomacyAnimation {
 
 		int r = (argb >> 16) & 0xFF;
 		int g = (argb >> 8) & 0xFF;
-		int b = (argb >> 0) & 0xFF;
+		int b = (argb) & 0xFF;
 		
 		int min = Math.min(r, Math.min(g, b));
 		int max = Math.max(r, Math.max(g, b));

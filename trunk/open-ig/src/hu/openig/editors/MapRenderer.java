@@ -159,8 +159,8 @@ public class MapRenderer extends JComponent {
 			if (!isFocusOwner()) { 
 				requestFocusInWindow(); 
 			}
-		};
-	};
+		}
+    };
 	/** Selection handler. */
 	final MouseAdapter sma = new MouseAdapter() {
 		boolean sel;
@@ -537,7 +537,6 @@ public class MapRenderer extends JComponent {
 				return;
 			}
 			cell.image = null;
-			return;
 		}
 			
 	}

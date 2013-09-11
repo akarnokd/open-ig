@@ -146,11 +146,8 @@ public class Mission21 extends Mission {
 	boolean checkNearCentronom() {
 		Planet cent = planet("Centronom");
 		Fleet f = findTaggedFleet("Mission-21-Prototype", player);
-		if (f != null && Math.hypot(cent.x - f.x, cent.y - f.y) < 20) {
-			return true;
-		}
-		return false;
-	}
+        return f != null && Math.hypot(cent.x - f.x, cent.y - f.y) < 20;
+    }
 	/**
 	 * Create the garthog attacker fleet.
 	 */

@@ -1480,8 +1480,8 @@ public class InfoScreen extends ScreenBase {
 						return true;
 					}
 					return super.mouse(e);
-				};
-			};
+				}
+            };
 			other = new UILabel("-", textSize, commons.text());
 			other.wrap(true);
 			other.vertically(VerticalAlignment.TOP);
@@ -1503,8 +1503,8 @@ public class InfoScreen extends ScreenBase {
 				public boolean mouse(UIMouse e) {
 					taxMoreAll = e.has(Modifier.SHIFT);
 					return super.mouse(e);
-				};
-			};
+				}
+            };
 			taxMore.onClick = new Action0() {
 				@Override
 				public void invoke() {
@@ -1520,8 +1520,8 @@ public class InfoScreen extends ScreenBase {
 				public boolean mouse(UIMouse e) {
 					taxLessAll = e.has(Modifier.SHIFT);
 					return super.mouse(e);
-				};
-			};
+				}
+            };
 			taxLess.onClick = new Action0() {
 				@Override
 				public void invoke() {
@@ -3084,8 +3084,8 @@ public class InfoScreen extends ScreenBase {
 				}
 			}
 			return super.mouse(e);
-		};
-	}
+		}
+    }
 	/**
 	 * Get the list of research items for the given column.
 	 * @param column the column index

@@ -133,12 +133,12 @@ public class UPnPGatewayDevice {
      * Retrieves the properties and description of the GatewayDevice.
      * <p/>
      * Connects to the device's {@link #location} and parses the response
-     * using a {@link GatewayDeviceHandler} to populate the fields of this
+     * using a {@link UPnPGatewayDeviceHandler} to populate the fields of this
      * class
      *
      * @throws SAXException if an error occurs while parsing the request
      * @throws IOException  on communication errors
-     * @see org.bitlet.weupnp.GatewayDeviceHandler
+     * @see hu.openig.net.UPnPGatewayDeviceHandler
      */
     public void loadDescription() throws SAXException, IOException {
 
@@ -275,12 +275,9 @@ public class UPnPGatewayDevice {
                 serviceType, "GetStatusInfo", null);
 
         String connectionStatus = nameValue.get("NewConnectionStatus");
-        if (connectionStatus != null
-                && connectionStatus.equalsIgnoreCase("Connected")) {
-            return true;
-        }
+        return connectionStatus != null
+                && connectionStatus.equalsIgnoreCase("Connected");
 
-        return false;
     }
 
     /**
@@ -316,7 +313,7 @@ public class UPnPGatewayDevice {
      * @throws SAXException on error
      * @see #simpleUPnPcommand(java.lang.String, java.lang.String,
      *      java.lang.String, java.util.Map)
-     * @see PortMappingEntry
+     * @see UPnPPortMappingEntry
      */
     public boolean addPortMapping(int externalPort, int internalPort,
                                   String internalClient, String protocol, String description)
@@ -355,7 +352,7 @@ public class UPnPGatewayDevice {
      * Java practices (return the port mapping)
      * @see #simpleUPnPcommand(java.lang.String, java.lang.String,
      *      java.lang.String, java.util.Map)
-     * @see PortMappingEntry
+     * @see UPnPPortMappingEntry
      */
     public boolean getSpecificPortMappingEntry(int externalPort,
                                                String protocol, final UPnPPortMappingEntry portMappingEntry)
@@ -411,7 +408,7 @@ public class UPnPGatewayDevice {
      * Java practices (return the port mapping)
      * @see #simpleUPnPcommand(java.lang.String, java.lang.String,
      *      java.lang.String, java.util.Map)
-     * @see PortMappingEntry
+     * @see UPnPPortMappingEntry
      */
     public boolean getGenericPortMappingEntry(int index,
                                               final UPnPPortMappingEntry portMappingEntry)

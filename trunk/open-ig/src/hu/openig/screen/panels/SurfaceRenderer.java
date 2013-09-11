@@ -1297,7 +1297,6 @@ public class SurfaceRenderer extends UIComponent {
 				return;
 			}
 			cell.image = null;
-			return;
 		}
 			
 	}

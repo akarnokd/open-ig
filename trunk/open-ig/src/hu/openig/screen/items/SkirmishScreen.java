@@ -2134,8 +2134,8 @@ public class SkirmishScreen extends ScreenBase {
 						}
 					});
 				}
-			};
-		};
+			}
+        };
 		loadWaiter.setPriority(Thread.MIN_PRIORITY);
 		loadWaiter.start();
 	}
@@ -2161,8 +2161,8 @@ public class SkirmishScreen extends ScreenBase {
 				} finally {
 					videoWaiter = null;
 				}
-			};
-		};
+			}
+        };
 		videoWaiter.setPriority(Thread.MIN_PRIORITY);
 		videoWaiter.start();
 	}
@@ -2178,5 +2178,5 @@ public class SkirmishScreen extends ScreenBase {
 		
 		config.computerVoiceScreen = csw;
 		commons.control().displayStatusbar();
-	};
+	}
 }

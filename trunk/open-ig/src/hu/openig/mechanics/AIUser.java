@@ -131,9 +131,6 @@ public class AIUser implements AIManager {
 		acts = colonizationPlanner.run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-			if (world.money < world.autoBuildLimit) {
-				return;
-			}
 		}
 
 	}

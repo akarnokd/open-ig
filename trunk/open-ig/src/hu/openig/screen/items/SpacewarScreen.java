@@ -2951,8 +2951,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				default:
 					throw new AssertionError("" + value);
 				}
-			};
-		}
+			}
+        }
 		);
 	}
 	/**

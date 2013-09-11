@@ -120,7 +120,6 @@ public class ResearchPlanner extends Planner {
 			}
 		}
 		world.researchRequiresColonization = candidatesGetMorePlanets.size() > 0;
-		return;
 	}
 	/**
 	 * Plan how the labs will be reconstructed to allow the next research.
@@ -165,8 +164,6 @@ public class ResearchPlanner extends Planner {
 		if (noroom && !enoughLabs) {
 			world.researchRequiresColonization = true;
 		}
-		
-		return;
 	}
 	/**
 	 * Demolish one of the excess labs on the planet to make room.
@@ -187,11 +184,8 @@ public class ResearchPlanner extends Planner {
 		if (demolishOneLabIf(rt.mechLab, world.global.labs.mech, planet.statistics.labs.mech, planet.planet, "mechanical")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.milLab, world.global.labs.mil, planet.statistics.labs.mil, planet.planet, "military")) {
-			return true;
-		}
-		return false;
-	}
+        return demolishOneLabIf(rt.milLab, world.global.labs.mil, planet.statistics.labs.mil, planet.planet, "military");
+    }
 	/**
 	 * Demolish one lab of the given resource.
 	 * @param lab the required lab count
@@ -322,7 +316,6 @@ public class ResearchPlanner extends Planner {
 	/**
 	 * Comparator which takes an value from the supplied map for comparison. 
 	 * @author akarnokd, 2011.12.26.
-	 * @param <T> the element type
 	 */
 	class CompareFromMap implements Comparator<ResearchType> {
 		/** The backing map. */

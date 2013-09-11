@@ -146,12 +146,9 @@ public class Trait {
 		} else if (!label.equals(other.label)) {
 			return false;
 		}
-		if (Double.doubleToLongBits(value) != Double
-				.doubleToLongBits(other.value)) {
-			return false;
-		}
-		return true;
-	}
+        return Double.doubleToLongBits(value) == Double
+                .doubleToLongBits(other.value);
+    }
 	@Override
 	public String toString() {
 		return String.valueOf(kind);

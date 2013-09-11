@@ -57,32 +57,16 @@ public final class AchievementManager {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Pirates");
-			if (p != null && p.statistics.planetsOwned.value > 0) {
-				return true;
-			}
-			return false;
+			return p != null && p.statistics.planetsOwned.value > 0;
 		}
 	};
-	/** Test for achievement. */
-	/*
-	@ID
-	protected static final Pred2<World, Player> STUDENT_OF_BOKROS = new Pred2<World, Player>() {
-		@Override
-		public Boolean invoke(World t, Player u) {
-			return false;
-		}
-	};
-	*/
 	/** Test for achievement. */
 	@ID
 	static final Pred2<World, Player> DARGSLAYER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Dargslan");
-			if (p != null && p.statistics.planetsOwned.value == 0) {
-				return true;
-			}
-			return false;
+			return p != null && p.statistics.planetsOwned.value == 0;
 		}
 	};
 	/** Test for achievement. */

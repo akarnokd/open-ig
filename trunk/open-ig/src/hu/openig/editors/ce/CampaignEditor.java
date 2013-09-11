@@ -841,8 +841,8 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 						@Override
 						public void invoke() {
 							load();
-						};
-					}
+						}
+                    }
 				);
 			} catch (XMLStreamException ex) {
 				Exceptions.add(ex);

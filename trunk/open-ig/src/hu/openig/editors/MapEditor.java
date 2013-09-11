@@ -1340,8 +1340,8 @@ public class MapEditor extends JFrame {
 	 * Increase the light amount on the tiles.
 	 */
 	protected void doMoreLight() {
-		renderer.alpha = Math.min(1f, renderer.alpha + 0.05f);;
-		repaint();
+		renderer.alpha = Math.min(1f, renderer.alpha + 0.05f);
+        repaint();
 	}
 	/** Set lighting to half. */
 	protected void doDark() {

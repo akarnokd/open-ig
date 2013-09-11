@@ -370,11 +370,8 @@ public class Mission2 extends Mission {
 	}
 	@Override
 	public boolean fleetBlink(Fleet f) {
-		if (f.task == FleetTask.SCRIPT && f.owner == player("Traders")) {
-			return true;
-		}
-		return false;
-	}
+        return f.task == FleetTask.SCRIPT && f.owner == player("Traders");
+    }
 	@Override
 	public void load(XElement xmission) {
 		super.load(xmission);

@@ -121,7 +121,7 @@ public abstract class Planner {
 		}
 		/** 
 		 * Computes the health status.
-		 * @param o1 the planet
+		 * @param p the planet
 		 * @return the status number
 		 */
 		int status(AIPlanet p) {
@@ -345,11 +345,8 @@ public abstract class Planner {
 				}
 			}
 		}
-		if (manageRepair(planet, selector, order)) {
-			return true;
-		}
-		return false;
-	}
+        return manageRepair(planet, selector, order);
+    }
 	/**
 	 * Try to choose an upgrade option.
 	 * @param planet the target planet
@@ -900,13 +897,10 @@ public abstract class Planner {
 					|| currentTank.first().productionCost < bestTank.productionCost)) {
 				return true;
 			}
-			if (bestSled != null 
-					&& (currentSled.size() > 1
-					|| currentSled.first().productionCost < bestSled.productionCost)) {
-				return true;
-			}
-			return false;
-		}
+            return bestSled != null
+                    && (currentSled.size() > 1
+                    || currentSled.first().productionCost < bestSled.productionCost);
+        }
 	}
 	/**
 	 * Find the best military spaceport.

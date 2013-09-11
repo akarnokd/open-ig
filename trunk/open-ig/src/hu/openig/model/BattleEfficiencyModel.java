@@ -34,9 +34,6 @@ public class BattleEfficiencyModel {
 		if (category != null && s.category != category) {
 			return false;
 		}
-		if (id != null && !id.equals(s.techId)) {
-			return false;
-		}
-		return true;
-	}
+        return !(id != null && !id.equals(s.techId));
+    }
 }

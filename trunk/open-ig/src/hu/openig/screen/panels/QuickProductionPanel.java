@@ -298,9 +298,8 @@ public class QuickProductionPanel extends UIContainer {
 			
 			hoverResearchCost.text(commons.format("quickproduction.cost_inventory", hoverType.productionCost, commons.player().inventoryCount(hoverType)), true);
 			hoverResearchCost.height = hoverResearchCost.textSize();
-;
-			
-			bottomPart += hoverResearchTitle.height;
+
+            bottomPart += hoverResearchTitle.height;
 			bottomPart += hoverResearchDescription.height;
 			bottomPart += hoverResearchCost.height;
 			bottomPart += 6;

@@ -579,7 +579,7 @@ public final class IOUtils {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch1 << 0) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
+        return ((ch1) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
 	}
 	/**
 	 * Read an integer as Little endian.
@@ -595,7 +595,7 @@ public final class IOUtils {
         if ((ch1 | ch2 | ch3 | ch4) < 0) {
             throw new EOFException();
         }
-        return ((ch1 << 0) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
+        return ((ch1) + (ch2 << 8) + (ch3 << 16) + (ch4 << 24));
 	}
 	/**
 	 * Copy the contents of the input stream into the output stream using the given batch

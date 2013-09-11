@@ -14,8 +14,6 @@ import java.awt.image.BufferedImage;
  * @author akarnokd
  */
 public final class ImageUtils {
-	/** Use subimage or separate image. */
-	private static final boolean SUBIMAGE = true; 
 	/** Private constructor. */
 	private ImageUtils() {
 		// private class
@@ -32,9 +30,6 @@ public final class ImageUtils {
 	 * @return the extracted sub-image
 	 */
 	public static BufferedImage subimage(BufferedImage src, int x, int y, int w, int h) {
-		if (!SUBIMAGE /* && w * h * 16 < src.getWidth() * src.getHeight() */) {
-			return newSubimage(src, x, y, w, h);
-		}
 		return src.getSubimage(x, y, w, h);
 	}
 	/**

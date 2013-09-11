@@ -746,8 +746,8 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					
 					ctx.load();
 					CEStartupDialog.this.dispose();
-				};
-			}
+				}
+            }
 		);
 	}
 	/**
@@ -775,8 +775,8 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 				public void invoke() {
 					ctx.load();
 					CEStartupDialog.this.dispose();
-				};
-			}
+				}
+            }
 		);
 
 	}

@@ -69,8 +69,7 @@ public class AIPirate implements AIManager {
 		acts = new ColonyPlanner(world, controls).run();
 		if (!acts.isEmpty()) {
 			applyActions.addAll(acts);
-			return;
-		}
+        }
 		
 	}
 	@Override

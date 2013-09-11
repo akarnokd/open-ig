@@ -54,8 +54,8 @@ public class ResourceLocator {
 		@Override
 		protected Map<String, ZipFile> initialValue() {
 			return new HashMap<>();
-		};
-	};
+		}
+        };
 	/** 
 	 * Package-private. Use Configuration.newResourceLocator() instead.
 	 * @param language the default language to use 

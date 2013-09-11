@@ -77,8 +77,8 @@ public class CECopySettingsDialog extends JDialog {
 		
 		int columns = 4;
 		SequentialGroup allCols = gl.createSequentialGroup();
-		List<ParallelGroup> cols = new ArrayList<>();;
-		for (int i = 0; i < columns; i++) {
+		List<ParallelGroup> cols = new ArrayList<>();
+        for (int i = 0; i < columns; i++) {
 			ParallelGroup col = gl.createParallelGroup();
 			allCols.addGroup(col);
 			cols.add(col);

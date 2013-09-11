@@ -207,11 +207,8 @@ public class BattleInfo {
 			return attackerAllies.contains(s);
 		}
 		// P is the defender
-		if (s == attacker.owner) {
-			return attackerAllies.contains(p);
-		}
-		return false;
-	}
+        return s == attacker.owner && attackerAllies.contains(p);
+    }
 	/**
 	 * Add one to the space battle counters.
 	 */
