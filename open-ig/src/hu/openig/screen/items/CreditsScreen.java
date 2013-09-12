@@ -103,54 +103,61 @@ public class CreditsScreen extends ScreenBase {
 		RenderTools.setAntiailas(g2, true);
 		int y = height - offset;
 		for (XElement e : credits.children()) {
-			if ("h1".equals(e.name)) {
-				y += 5;
-				g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
-				g2.setColor(Color.WHITE);
-				
-				int w = g2.getFontMetrics().stringWidth(nvl(e.content));
-				g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
-				
-				y += 15 + g2.getFontMetrics().getHeight();
-			} else
-			if ("h2".equals(e.name)) {
-				g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
-				g2.setColor(Color.YELLOW);
-				
-				int w = g2.getFontMetrics().stringWidth(nvl(e.content));
-				g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
-				
-				y += 10 + g2.getFontMetrics().getHeight();
-			} else
-			if ("h3".equals(e.name)) {
-				g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
-				g2.setColor(new Color(0xFFFFCC00));
-				
-				int w = g2.getFontMetrics().stringWidth(nvl(e.content));
-				g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
-				
-				y += 10 + g2.getFontMetrics().getHeight();
-			} else
-			if ("p".equals(e.name)) {
-				g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
-				g2.setColor(Color.LIGHT_GRAY);
-				
-				int w = g2.getFontMetrics().stringWidth(nvl(e.content));
-				g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
-				
-				y += 10 + g2.getFontMetrics().getHeight();
-			} else
-			if ("img".equals(e.name)) {
-				BufferedImage img = imageCache.get(e.content);
-				if (img == null) {
-					img = rl.getImage(e.content);
-					imageCache.put(e.content, img);
-				}
-				g2.drawImage(img, (width - img.getWidth()) / 2, y, null);
-				y += 10 + img.getHeight();
-			} else {
-				y += 20;
-			}
+            switch (e.name) {
+                case "h1": {
+                    y += 5;
+                    g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 32));
+                    g2.setColor(Color.WHITE);
+
+                    int w = g2.getFontMetrics().stringWidth(nvl(e.content));
+                    g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
+
+                    y += 15 + g2.getFontMetrics().getHeight();
+                    break;
+                }
+                case "h2": {
+                    g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 24));
+                    g2.setColor(Color.YELLOW);
+
+                    int w = g2.getFontMetrics().stringWidth(nvl(e.content));
+                    g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
+
+                    y += 10 + g2.getFontMetrics().getHeight();
+                    break;
+                }
+                case "h3": {
+                    g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 16));
+                    g2.setColor(new Color(0xFFFFCC00));
+
+                    int w = g2.getFontMetrics().stringWidth(nvl(e.content));
+                    g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
+
+                    y += 10 + g2.getFontMetrics().getHeight();
+                    break;
+                }
+                case "p": {
+                    g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 12));
+                    g2.setColor(Color.LIGHT_GRAY);
+
+                    int w = g2.getFontMetrics().stringWidth(nvl(e.content));
+                    g2.drawString(nvl(e.content), (width - w) / 2, y + g2.getFontMetrics().getAscent());
+
+                    y += 10 + g2.getFontMetrics().getHeight();
+                    break;
+                }
+                case "img":
+                    BufferedImage img = imageCache.get(e.content);
+                    if (img == null) {
+                        img = rl.getImage(e.content);
+                        imageCache.put(e.content, img);
+                    }
+                    g2.drawImage(img, (width - img.getWidth()) / 2, y, null);
+                    y += 10 + img.getHeight();
+                    break;
+                default:
+                    y += 20;
+                    break;
+            }
 			if (y > height + 20) {
 				break;
 			}

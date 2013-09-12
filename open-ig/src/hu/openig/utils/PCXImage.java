@@ -89,9 +89,7 @@ public class PCXImage {
 		}
 		// just strip the unwanted bytes from the scan line.
 		for (y = 0; y < height; y++) {
-			for (int x = 0; x < width; x++) {
-				raw[y * width + x] = scan[sll * y + x];
-			}
+            System.arraycopy(scan, sll * y + 0, raw, y * width + 0, width);
 		}
 	}
 	/**
@@ -386,12 +384,8 @@ public class PCXImage {
 		int newWidth = width + width1;
 		raw = new byte[newWidth * height];
 		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				raw[i * newWidth + j] = curr[i * width + j];
-			}
-			for (int j = width; j < newWidth; j++) {
-				raw[i * newWidth + j] = rawAdd[i * width1 + j - width];
-			}
+            System.arraycopy(curr, i * width + 0, raw, i * newWidth + 0, width);
+            System.arraycopy(rawAdd, i * width1, raw, i * newWidth + width, newWidth - width);
 		}
 		width = newWidth;
 	}
@@ -423,9 +417,7 @@ public class PCXImage {
 		sub.height = h;
 		byte[] data = new byte[w * h];
 		for (int i = y; i < y + h; i++) {
-			for (int j = x; j < x + w; j++) {
-				data[(i - y) * w + (j - x)] = raw[i * width + j];
-			}
+            System.arraycopy(raw, i * width + x, data, (i - y) * w, w);
 		}
 		sub.raw = data;
 		return sub;

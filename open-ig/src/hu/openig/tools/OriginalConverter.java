@@ -135,9 +135,9 @@ public final class OriginalConverter {
 		// DATA
 		dout.write("data".getBytes("ISO-8859-1"));
 		dout.writeInt(Integer.reverseBytes(dataLen));
-		for (int i = 0; i < sample.length; i++) {
-			dout.write(sample[i] + 128);
-		}
+        for (byte aSample : sample) {
+            dout.write(aSample + 128);
+        }
 		for (int i = sample.length; i < dataLen; i++) {
 			dout.write(0x80);
 		}
@@ -180,33 +180,30 @@ public final class OriginalConverter {
 		
 		final SpidyAniFile saf = new SpidyAniFile();
 		try {
-			InputStream in = new BufferedInputStream(new FileInputStream(src), 1024 * 1024);
-			try {
-				saf.open(in);
-				saf.load();
-				
-				Framerates fr = new Framerates();
-				Rates r = fr.getRates(src.getName().toUpperCase(), saf.getLanguageCode());
-				int delay = (int)(r.delay / r.fps * 22050);
-				
-				byte[] silence = new byte[delay];
-				for (int i = 0; i < silence.length; i++) {
-					silence[i] = 0;
-				}
-				data.add(silence);
-				len += delay;
-				
-				while (true) {
-					Block b = saf.next();
-					if (b instanceof Sound) {
-						data.add(b.data.clone());
-						len += b.data.length;
-					}
-				}
-				
-			} finally {
-				in.close();
-			}
+            try (InputStream in = new BufferedInputStream(new FileInputStream(src), 1024 * 1024)) {
+                saf.open(in);
+                saf.load();
+
+                Framerates fr = new Framerates();
+                Rates r = fr.getRates(src.getName().toUpperCase(), saf.getLanguageCode());
+                int delay = (int) (r.delay / r.fps * 22050);
+
+                byte[] silence = new byte[delay];
+                for (int i = 0; i < silence.length; i++) {
+                    silence[i] = 0;
+                }
+                data.add(silence);
+                len += delay;
+
+                while (true) {
+                    Block b = saf.next();
+                    if (b instanceof Sound) {
+                        data.add(b.data.clone());
+                        len += b.data.length;
+                    }
+                }
+
+            }
 		} catch (IOException ex) {
 			// ignored
 		}
@@ -441,18 +438,17 @@ public final class OriginalConverter {
 			System.out.println("LABELS: Invention description.");
 			List<String> eqTxt = getText(pacs, "EQTXT.TXT", codes);
 			int eqIdx = 0;
-			for (int i = 0; i < techs.size(); i++) {
-				String key = techs.get(i);
-				if (!key.isEmpty()) {
-					labels.put(key + ".longname", eqTxt.get(eqIdx * 3));
-					
-					List<String> desc = eqTxt.subList(eqIdx * 3 + 1, eqIdx * 3 + 3);
-					
-					labels.put(key + ".description", U.join(desc, " ").replaceAll("\\s{2,}", " "));
-					
-					eqIdx++;
-				}
-			}
+            for (String key : techs) {
+                if (!key.isEmpty()) {
+                    labels.put(key + ".longname", eqTxt.get(eqIdx * 3));
+
+                    List<String> desc = eqTxt.subList(eqIdx * 3 + 1, eqIdx * 3 + 3);
+
+                    labels.put(key + ".description", U.join(desc, " ").replaceAll("\\s{2,}", " "));
+
+                    eqIdx++;
+                }
+            }
 		}
 		
 		if (instructions.childElement("diplomacy") != null) {
@@ -619,7 +615,7 @@ public final class OriginalConverter {
 	static List<String> getLines(byte[] data, Charset cs) throws IOException {
 		List<String> result = new ArrayList<>();
 		
-		String line = null;
+		String line;
 		try (BufferedReader in = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(data), cs))) {
 			while ((line = in.readLine()) != null) {
 				result.add(line);
@@ -948,7 +944,7 @@ public final class OriginalConverter {
 		List<String> ts = split(content);
 		XElement neg = result.add("negotiate");
 		neg.set("type", "DIPLOMATIC_RELATIONS");
-		XElement appr = null;
+		XElement appr;
 		
 		for (int i = 1; i <= 3; i++) {
 			appr = neg.add("approach");
@@ -1385,7 +1381,7 @@ public final class OriginalConverter {
 			throws IOException {
 		List<String> result = new ArrayList<>();
 		try (BufferedReader bin = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(pacs.get(name).data), "CP437"))) {
-			String line = null;
+			String line;
 			while ((line = bin.readLine()) != null) {
 				result.add(transcode(line, codes));
 			}
@@ -1470,7 +1466,7 @@ public final class OriginalConverter {
 		}
 		for (XElement ximg : instructions.childrenWithName("image")) {
 			String src = ximg.get("src");
-			BufferedImage img = null;
+			BufferedImage img;
 			File f = new File(source + src);
 			if (f.canRead()) {
 				if (src.toLowerCase().endsWith(".pcx")) {
@@ -1513,7 +1509,7 @@ public final class OriginalConverter {
 		for (XElement ximg : instructions.childrenWithName("image-copy")) {
 			String src = ximg.get("src");
 			String dst = ximg.get("dst");
-			BufferedImage img = null;
+			BufferedImage img;
 			File f = new File(source + src);
 			if (f.canRead()) {
 				if (src.toLowerCase().endsWith(".pcx")) {

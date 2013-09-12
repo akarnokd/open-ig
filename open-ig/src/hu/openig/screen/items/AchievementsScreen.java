@@ -524,11 +524,11 @@ public class AchievementsScreen extends ScreenBase {
 				g2.drawImage(img, r.x, y, null);
 				commons.text().paintTo(g2, r.x + commons.common().achievement.getWidth() + 10, y, 14, color, get(ae.title));
 				int y1 = y + 20;
-				
-				for (int j = 0; j < lines.size(); j++) {
-					commons.text().paintTo(g2, r.x + commons.common().achievement.getWidth() + 10, y1, 10, color, lines.get(j));
-					y1 += 12;
-				}
+
+                for (String line : lines) {
+                    commons.text().paintTo(g2, r.x + commons.common().achievement.getWidth() + 10, y1, 10, color, line);
+                    y1 += 12;
+                }
 				y += 50;
 			}
 		} else

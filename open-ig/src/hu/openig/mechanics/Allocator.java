@@ -269,7 +269,7 @@ public final class Allocator {
 				int energyDemand = (int)(w.energyDemand * w.efficiencyBound);
 				
 				w.workerAllocated = workerDemand > availableWorkers ? workerDemand : availableWorkers;
-				w.energyAllocated = energyDemand > energyAvailable ? energyDemand : (int)energyAvailable;
+				w.energyAllocated = energyDemand > energyAvailable ? energyDemand : energyAvailable;
 				
 				availableWorkers -= w.workerAllocated;
 				energyAvailable -= w.energyAllocated;

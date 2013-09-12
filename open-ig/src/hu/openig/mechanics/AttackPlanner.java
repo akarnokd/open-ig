@@ -249,7 +249,6 @@ public class AttackPlanner extends Planner {
 	 */
 	AIPlanet selectTargetPlanet() {
 		List<AIPlanet> candidates = new ArrayList<>();
-		Set<Player> ps = new HashSet<>();
 		for (AIPlanet p : world.enemyPlanets) {
 			if (p.owner != null) {
 				if (world.explorationInnerLimit != null && world.explorationInnerLimit.contains(p.planet.x, p.planet.y)) {
@@ -264,7 +263,6 @@ public class AttackPlanner extends Planner {
 							&& !hasActiveAlliance(dr.alliancesAgainst)) {
 						if (planetValue(p) > 0) {
 							candidates.add(p);
-							ps.add(p.owner);
 						}
 					}
 				}

@@ -129,7 +129,7 @@ public class MediaPlayer {
 					in.read(buffer);
 					try {
 						AudioFormat af = in.getFormat();
-						byte[] buffer2 = null;
+						byte[] buffer2;
 						if (af.getSampleSizeInBits() == 8) {
 							if (af.getEncoding() == AudioFormat.Encoding.PCM_UNSIGNED) {
 								for (int i = 0; i < buffer.length; i++) {

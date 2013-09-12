@@ -1719,13 +1719,12 @@ public class SkirmishScreen extends ScreenBase {
 
 			int imgw = 0;
 			int imgh = 0;
-			for (int i = 0; i < images.size(); i++) {
-				UIImage img = images.get(i);
-				img.sizeToContent();
-				
-				imgw = Math.max(imgw, img.width);
-				imgh = Math.max(imgh, img.height);
-			}
+            for (UIImage img : images) {
+                img.sizeToContent();
+
+                imgw = Math.max(imgw, img.width);
+                imgh = Math.max(imgh, img.height);
+            }
 			int cols = 4;
 			int resize = 2;
 			imgw *= resize;

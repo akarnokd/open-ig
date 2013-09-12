@@ -76,10 +76,10 @@ public class BarScreen extends ScreenBase {
 		 */
 		public void paintTo(Graphics2D g2, int x0, int y0, int color) {
 			int y = y0 + rect.y;
-			for (int i = 0; i < rows.size(); i++) {
-				commons.text().paintTo(g2, x0 + rect.x, y + 3, 14, color, rows.get(i));
-				y += 20;
-			}
+            for (String row : rows) {
+                commons.text().paintTo(g2, x0 + rect.x, y + 3, 14, color, row);
+                y += 20;
+            }
 		}
 		/**
 		 * Test if the mouse position in the rectangle.

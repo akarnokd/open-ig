@@ -224,7 +224,7 @@ public class InventoryItems {
 	 * @return true if the collection was modified
 	 */
 	public boolean retainAllById(Iterable<Integer> ids) {
-		Set<Integer> idSet = null;
+		Set<Integer> idSet;
 		if (ids instanceof Set<?>) {
 			idSet = (Set<Integer>)ids;
 		} else {

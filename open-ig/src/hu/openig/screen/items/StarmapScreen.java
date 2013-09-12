@@ -619,7 +619,7 @@ public class StarmapScreen extends ScreenBase {
 		problemsRepair.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsColonyHub.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
 		problemsPolice.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
-		problemsFireBrigade.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt--), bottomPanel.y + 70);
+		problemsFireBrigade.location(bottomPanel.x + bottomPanel.width - 215 - 11 * (probcnt), bottomPanel.y + 70);
 		
 		surveySatellite.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 4);
 		spySatellite1.location(bottomPanel.x + bottomPanel.width - 199, bottomPanel.y + 24);
@@ -691,7 +691,7 @@ public class StarmapScreen extends ScreenBase {
 		int miniw = minimapInnerRect.width;
 		int minih = minimapInnerRect.height;
 		
-		int x2 = 0;
+		int x2;
 		if (xOffset < 0) {
 			minimapViewportRect.x = 0;
 			x2 = miniw;
@@ -699,7 +699,7 @@ public class StarmapScreen extends ScreenBase {
 			minimapViewportRect.x = miniw * xOffset / starmapRect.width;
 			x2 = miniw * (xOffset + starmapWindow.width) / starmapRect.width;
 		}
-		int y2 = 0;
+		int y2;
 		if (yOffset < 0) {
 			minimapViewportRect.y = 0;
 			y2 = minih;

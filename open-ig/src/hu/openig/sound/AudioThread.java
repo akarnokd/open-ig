@@ -130,7 +130,7 @@ public class AudioThread extends Thread {
 	 * is available.
 	 */
 	public static SourceDataLine createAudioOutput() {
-		SourceDataLine sdl = null;
+		SourceDataLine sdl;
 		AudioFormat af = createAudioFormat16();
 		DataLine.Info dli = createAudioInfo(af);
 		if (!AudioSystem.isLineSupported(dli)) {

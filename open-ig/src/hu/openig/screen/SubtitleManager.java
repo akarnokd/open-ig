@@ -63,7 +63,7 @@ public class SubtitleManager {
 	 */
 	private void loadSub(InputStream in) {
 		try (BufferedReader bin = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
-			String line = null;
+			String line;
 			while ((line = bin.readLine()) != null) {
 				if (line.length() > 19) {
 					SubEntry e = new SubEntry(); // 00:00.000-00:00.000

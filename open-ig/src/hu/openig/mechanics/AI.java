@@ -746,8 +746,8 @@ public class AI implements AIManager {
 	@Override
 	public void onAutoGroundwarStart(BattleInfo battle, AttackDefense attacker,
 			AttackDefense defender) {
-		double dps = 0;
-		double hp = 0;
+		double dps;
+		double hp;
 		if (battle.attacker.owner == p) {
 			dps = attacker.attack;
 			hp = attacker.defense;
@@ -760,8 +760,8 @@ public class AI implements AIManager {
 	
 	@Override
 	public void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str) {
-		double dps = 0;
-		double hp = 0;
+		double dps;
+		double hp;
 		if (battle.attacker.owner == p) {
 			dps = str.attacker.attack;
 			hp = str.attacker.defense;

@@ -58,7 +58,7 @@ public final class BuildingNames {
 		BufferedReader in = new BufferedReader(
 				new InputStreamReader(new ByteArrayInputStream(data), "ISO-8859-1"));
 		
-		String l = null;
+		String l;
 		
 		while ((l = in.readLine()) != null) {
 			result.add(l);

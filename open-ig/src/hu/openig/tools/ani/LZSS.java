@@ -25,10 +25,9 @@ public final class LZSS {
 	 * @param src the index to start the decompression
 	 * @param out the output array to store the bytes
 	 * @param dst the output index into this array
-	 * @return
 	 */
 	public static void decompress(byte[] data, int src, byte[] out, int dst) {
-		int marker = 0;
+		int marker;
 		int nextChar = 0xFEE;
 		final int windowSize = 4096;
 		byte[] slidingWindow = new byte[windowSize];

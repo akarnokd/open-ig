@@ -1163,9 +1163,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void playVideos(final Action0 onComplete, String... videos) {
-		for (String s : videos) {
-			movie.mediaQueue.add(s);
-		}
+        Collections.addAll(movie.mediaQueue, videos);
 		movie.playbackFinished = new MovieFinishAction(this, onComplete);
 		displayMovie();
 	}

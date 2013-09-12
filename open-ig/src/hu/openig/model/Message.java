@@ -95,6 +95,9 @@ public class Message implements Comparable<Message> {
 			Exceptions.add(ex);
 		}
 		String s = xmessage.get("sound", null);
+        if (s != null) {
+            sound = SoundType.valueOf(s);
+        }
 		
 		s = xmessage.get("planet", null);
 		if (s != null) {

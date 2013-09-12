@@ -104,7 +104,7 @@ public class AStarSearch<T> {
 				return Pair.of(true, reconstructPath(cameFrom, destination));
 			}
 			
-			openSet.remove(0);
+			openSet.remove(current);
 			openSet2.remove(current);
 			closedSet.add(current);
 			

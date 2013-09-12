@@ -223,13 +223,13 @@ public class PlanetGround {
 		selectedUnits.clear();
 		for (GroundwarUnit u : units) {
 			Integer gr = groups.get(u);
-			if (gr != null && gr.intValue() == groupNo) {
+			if (gr != null && gr == groupNo) {
 				selectedUnits.add(u);
 			}
 		}
 		for (GroundwarGun g : guns) {
 			Integer gr = groups.get(g);
-			if (gr != null && gr.intValue() == groupNo) {
+			if (gr != null && gr == groupNo) {
 				selectedGuns.add(g);
 			}
 		}
@@ -242,7 +242,7 @@ public class PlanetGround {
 		Iterator<Map.Entry<Object, Integer>> it = groups.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Object, Integer> e = it.next();
-			if (e.getValue().intValue() == i) {
+			if (e.getValue() == i) {
 				it.remove();
 			}
 		}

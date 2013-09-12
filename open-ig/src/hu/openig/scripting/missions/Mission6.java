@@ -54,7 +54,7 @@ public class Mission6 extends Mission {
 	void createMainShip() {
 		Planet ach = planet("Achilles");
 		Fleet own = findTaggedFleet("CampaignMainShip2", player);
-		Fleet f = null;
+		Fleet f;
 		if (own == null) {
 			own = findTaggedFleet("CampaignMainShip1", player);
 			if (own != null) {

@@ -82,7 +82,7 @@ public class AIUser implements AIManager {
 
 	@Override
 	public void manage() {
-		List<Action0> acts = null;
+		List<Action0> acts;
 
 		if (world.money < world.autoBuildLimit) {
 			return;

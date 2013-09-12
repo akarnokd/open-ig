@@ -1140,8 +1140,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 					drawDPS(g2, configure.item);
 				} else
 				if (configure.type != null) {
-					Player o = null;
-					int cnt = 0;
+					Player o;
+					int cnt;
 					if (player().selectionMode == SelectionMode.PLANET || fleet() == null) {
 						o = planet().owner;
 						cnt = planet().inventoryCount(configure.type, o);
@@ -1165,8 +1165,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	 * @param g2 the graphics context
 	 */
 	void drawTotalDPS(Graphics2D g2) {
-		HasInventory hi = null;
-		Player o = null;
+		HasInventory hi;
+		Player o;
 		if (player().selectionMode == SelectionMode.PLANET || fleet() == null) {
 			hi = planet();
 			o = planet().owner;
@@ -2521,7 +2521,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		case WEAPONS_TANKS:
 		case WEAPONS_VEHICLES:
 			
-			InventoryItem ii = null;
+			InventoryItem ii;
 			if (leftList.selectedItem != null) {
 				ii = leftList.selectedItem;
 			} else

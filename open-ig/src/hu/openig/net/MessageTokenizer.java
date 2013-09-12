@@ -304,9 +304,8 @@ public class MessageTokenizer implements Iterable<Token> {
 		}
 		*/
 		System.out.println("-----");
-		Iterator<Token> it = new MessageTokenizer(r).iterator();
-		while (it.hasNext()) {
-			System.out.println(it.next());
-		}
+        for (Object o : new MessageTokenizer(r)) {
+            System.out.println(o);
+        }
 	}
 }

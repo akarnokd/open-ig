@@ -75,7 +75,7 @@ public class FleetListing extends UIContainer {
 	 */
 	List<Fleet> nearbyFleets() {
 		Fleet cf = commons.world().player.currentFleet;
-		List<Fleet> fleets = null;
+		List<Fleet> fleets;
 		if (nearby && cf != null) {
 			fleets = cf.fleetsInRange(20);
 //			cf = selected;
@@ -149,7 +149,7 @@ public class FleetListing extends UIContainer {
 	void doScrollDown() {
 		int rows = height / rowHeight;
 		
-		List<Fleet> fleet = null;
+		List<Fleet> fleet;
 		Fleet cf = commons.world().player.currentFleet;
 		if (nearby && cf != null) {
 			fleet = cf.fleetsInRange(20);
@@ -164,7 +164,7 @@ public class FleetListing extends UIContainer {
 	 * @param f the fleet
 	 */
 	public void show(Fleet f) {
-		List<Fleet> fleet = null;
+		List<Fleet> fleet;
 		Fleet cf = commons.world().player.currentFleet;
 		if (nearby && cf != null) {
 			fleet = cf.fleetsInRange(20);

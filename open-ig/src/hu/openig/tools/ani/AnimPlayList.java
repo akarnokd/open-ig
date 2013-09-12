@@ -361,7 +361,7 @@ public class AnimPlayList extends JFrame {
             int                     vColIndex = i;
             DefaultTableColumnModel colModel  = (DefaultTableColumnModel) table.getColumnModel();
             TableColumn             col       = colModel.getColumn(vColIndex);
-            int                     width     = 0;
+            int                     width;
  
             // Get width of column header
             TableCellRenderer renderer = col.getHeaderRenderer();

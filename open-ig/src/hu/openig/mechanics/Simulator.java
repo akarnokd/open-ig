@@ -376,7 +376,7 @@ public final class Simulator {
 			for (Map.Entry<InventoryItem, Integer> ittl : new ArrayList<>(planet.timeToLive.entrySet())) {
 				if (ittl.getKey().owner != planet.owner) {
 					Integer cttl = ittl.getValue();
-					int cttl2 = cttl.intValue() - radar;
+					int cttl2 = cttl - radar;
 					if (cttl2 <= 0) {
 						planet.timeToLive.remove(ittl.getKey());
 						planet.inventory.remove(ittl.getKey());
@@ -461,7 +461,7 @@ public final class Simulator {
 			
 			// ----------
 
-			double populationDelta = 0;
+			double populationDelta;
 			double nonOwnerRace = 1d;
 			if (!planet.race.equals(planet.owner.race)) {
 				nonOwnerRace = 3d;
@@ -666,7 +666,7 @@ public final class Simulator {
 	static boolean progressProduction(World world, Player player, PlanetStatistics all) {
 		boolean result = false;
 		for (ResearchMainCategory mcat : World.PRODUCTION_CATEGORIES) {
-			int capacity = 0;
+			int capacity;
 			switch (mcat) {
 			case SPACESHIPS:
 				capacity = all.activeProduction.spaceship;
@@ -980,7 +980,7 @@ public final class Simulator {
 		if (n < 3) {
 			n = 3;
 		}
-		double k = 0;
+		double k;
 		if (p == p.world.player) {
 			k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
 		} else {

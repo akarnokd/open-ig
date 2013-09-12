@@ -447,7 +447,7 @@ public class ResourceLocator {
 		try (InputStream in = rp.open()) {
 			ByteArrayOutputStream bout = new ByteArrayOutputStream();
 			byte[] buffer = new byte[Math.max(8192, in.available())];
-			int read = 0;
+			int read;
 			do {
 				read = in.read(buffer);
 				if (read > 0) {

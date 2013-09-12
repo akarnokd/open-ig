@@ -1103,7 +1103,7 @@ public final class Base64 {
 	 */
 	public static byte[] decode(byte[] source)
 			throws java.io.IOException {
-		byte[] decoded = null;
+		byte[] decoded;
 		//        try {
 		decoded = decode(source, 0, source.length, Base64.NO_OPTIONS);
 		//        } catch (java.io.IOException ex) {
@@ -1159,8 +1159,8 @@ public final class Base64 {
 
 		byte[] b4        = new byte[4];     // Four byte buffer from source, eliminating white space
 		int    b4Posn    = 0;               // Keep track of four byte input buffer
-		int    i         = 0;               // Source array counter
-		byte   sbiDecode = 0;               // Special value from DECODABET
+		int    i;               // Source array counter
+		byte   sbiDecode;               // Special value from DECODABET
 
 		// Loop through source
 		for (i = off; i < off + len; i++) {
@@ -1252,7 +1252,7 @@ public final class Base64 {
 				java.util.zip.GZIPInputStream gzis = null;
 				java.io.ByteArrayOutputStream baos = null;
 				byte[] buffer = new byte[2048];
-				int    length = 0;
+				int    length;
 
 				try {
 					baos = new java.io.ByteArrayOutputStream();
@@ -1446,9 +1446,9 @@ public final class Base64 {
 		try {
 			// Set up some useful variables
 			java.io.File file = new java.io.File(filename);
-			byte[] buffer = null;
+			byte[] buffer;
 			int length   = 0;
-			int numBytes = 0;
+			int numBytes;
 
 			// Check for size of file
 			if (file.length() > Integer.MAX_VALUE) {
@@ -1504,7 +1504,7 @@ public final class Base64 {
 			// Need max() for math on small files (v2.2.1); Need +1 for a few corner cases (v2.3.5)
 			byte[] buffer = new byte[ Math.max((int)(file.length() * 1.4 + 1) , 40) ]; 
 			int length   = 0;
-			int numBytes = 0;
+			int numBytes;
 
 			// Open a stream
 			bis = new Base64.InputStream(
@@ -1688,10 +1688,10 @@ public final class Base64 {
 				} else {
 					// Else decoding
 					byte[] b4 = new byte[4];
-					int i = 0;
+					int i;
 					for (i = 0; i < 4; i++) {
 						// Read four "meaningful" bytes:
-							int b = 0;
+							int b;
 							do { 
 								b = in.read(); 
 							} while (b >= 0 && decodabet[ b & 0x7f ] <= WHITE_SPACE_ENC);

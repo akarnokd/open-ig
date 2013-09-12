@@ -1852,7 +1852,7 @@ public class World implements ModelLookup {
 			outer:
 			for (Player p : players.values()) {
 				for (Fleet f : p.ownFleets()) {
-					if (f.id == ft.getValue().intValue()) {
+					if (f.id == ft.getValue()) {
 						ft.getKey().targetFleet = f;
 						break outer;
 					}
@@ -2561,7 +2561,7 @@ public class World implements ModelLookup {
 		if (hp != null) {
 			return (int)(hp * hpMultiply);
 		}
-		hp = map.get(Pair.of(rt.id, null));
+		hp = map.get(Pair.of(rt.id, (Integer)null));
 		if (hp != null) {
 			return (int)(hp * hpMultiply);
 		}
@@ -3088,7 +3088,7 @@ public class World implements ModelLookup {
 	/** Assign players to random planets. */
 	void assignPlanetsToPlayers() {
 		// assign planets to players
-		int zones = 0;
+		int zones;
 		int pc = players.values().size();
 		for (int i = 1;; i++) {
 			if (pc <= i * i) {

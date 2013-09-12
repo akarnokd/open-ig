@@ -396,7 +396,7 @@ public class ColonyPlanner extends Planner {
 		// but only once per day
 		double moraleNow = planet.lastMorale; // planet.morale
 		TaxLevel tax = planet.tax;
-		TaxLevel newLevel = null;
+		TaxLevel newLevel;
 		if (moraleNow < 25 || planet.population < 4500) {
 			newLevel = TaxLevel.NONE;
 		} else

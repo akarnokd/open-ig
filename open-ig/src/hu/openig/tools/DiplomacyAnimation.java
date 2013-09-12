@@ -341,13 +341,13 @@ public final class DiplomacyAnimation {
 							int r1 = 0;
 							int g1 = 0;
 							int b1 = 0;
-							for (int j = 0; j < allFrames.size(); j++) {
-								int[] f2 = allFrames.get(j).get(fi);
-								a1 += (f2[k] & 0xFF000000) >> 24;
-								r1 += (f2[k] & 0xFF0000) >> 16;
-								g1 += (f2[k] & 0xFF00) >> 8;
-								b1 += (f2[k] & 0xFF);
-							}
+                            for (List<int[]> allFrame : allFrames) {
+                                int[] f2 = allFrame.get(fi);
+                                a1 += (f2[k] & 0xFF000000) >> 24;
+                                r1 += (f2[k] & 0xFF0000) >> 16;
+                                g1 += (f2[k] & 0xFF00) >> 8;
+                                b1 += (f2[k] & 0xFF);
+                            }
 							a1 /= allFrames.size();
 							r1 /= allFrames.size();
 							g1 /= allFrames.size();

@@ -542,11 +542,10 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		}
 		float space = (target.height - sum) * 1.0f / (items.size() + 1);
 		float top = space + target.y;
-		for (int i = 0; i < items.size(); i++) {
-			UIComponent c = items.get(i);
-			c.y = (int)top;
-			top += space + c.height;
-		}
+        for (UIComponent c : items) {
+            c.y = (int) top;
+            top += space + c.height;
+        }
 	}
 	/** Add a new production. */
 	void doAddProduction() {
@@ -1539,14 +1538,12 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 					try {
 						Iterable<?> it = Iterable.class.cast(f.get(this));
 						if (it != null) {
-							Iterator<?> iter = it.iterator();
-							while (iter.hasNext()) {
-								Object o = iter.next();
-								if (UIComponent.class.isAssignableFrom(o.getClass())) {
-									UIComponent c = UIComponent.class.cast(o);
-									c.visible(mi.mode() == mode);
-								}
-							}
+                            for (Object o : it) {
+                                if (UIComponent.class.isAssignableFrom(o.getClass())) {
+                                    UIComponent c = UIComponent.class.cast(o);
+                                    c.visible(mi.mode() == mode);
+                                }
+                            }
 						}
 					} catch (IllegalAccessException ex) {
 						Exceptions.add(ex);

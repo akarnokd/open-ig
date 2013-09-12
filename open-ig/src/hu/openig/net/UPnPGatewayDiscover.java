@@ -55,7 +55,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 /**
- * Handles the discovery of GatewayDevices, via the {@link discover()} method.
+ * Handles the discovery of GatewayDevices, via the {@link hu.openig.net.UPnPGatewayDiscover#discover()} method.
  */
 public class UPnPGatewayDiscover {
 

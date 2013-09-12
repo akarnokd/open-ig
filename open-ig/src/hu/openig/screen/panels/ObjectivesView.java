@@ -152,7 +152,7 @@ public class ObjectivesView extends UIComponent {
 			
 			if (pv != null) {
 				int rw = w - dx;
-				int rwf = (int)(rw * pv.doubleValue());
+				int rwf = (int)(rw * pv);
 				
 				g2.setColor(new Color(0xFFFFCC00));
 				g2.drawRect(x + dx, y + dy, rw, 7);

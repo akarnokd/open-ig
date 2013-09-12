@@ -456,7 +456,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		Iterator<Map.Entry<SpacewarStructure, Integer>> it = groups.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<SpacewarStructure, Integer> e = it.next();
-			if (e.getValue().intValue() == i) {
+			if (e.getValue() == i) {
 				it.remove();
 			}
 		}
@@ -4824,12 +4824,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			offset = Math.max(0, Math.min(offset, sel.size() - 1));
 			
 			cells.clear();
-			for (int i = 0; i < sel.size(); i++) {
-				SpacewarStructure s = sel.get(i);
-
-				SelectionCell c = new SelectionCell(s);
-				cells.add(c);
-			}
+            for (SpacewarStructure s : sel) {
+                SelectionCell c = new SelectionCell(s);
+                cells.add(c);
+            }
 			int x0 = 0;
 			int y0 = 22;
 			int h = 0;
@@ -5006,7 +5004,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		Iterator<Map.Entry<SpacewarStructure, Integer>> it = groups.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<SpacewarStructure, Integer> e = it.next();
-			if (e.getValue().intValue() == groupNo) {
+			if (e.getValue() == groupNo) {
 				it.remove();
 			}
 		}
@@ -5021,7 +5019,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void recallGroup(int groupNo) {
 		for (SpacewarStructure s : structures) {
 			Integer g = groups.get(s);
-			s.selected = g != null && g.intValue() == groupNo;
+			s.selected = g != null && g == groupNo;
 		}
 		enableSelectedFleetControls();
 	}
@@ -5435,7 +5433,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			
 			int c = config.spacewarDiminishingAttachCount;
 			if (n > 0 && c > 1) {
-				double mult = 0d;
+				double mult;
 //				if (n <= c) {
 //					mult = 1 - 0.75 * (n - 1) / (c - 1);
 //				} else {

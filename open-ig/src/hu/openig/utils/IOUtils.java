@@ -500,7 +500,7 @@ public final class IOUtils {
 		 * @return the bits read
 		 */
 		public int inputBits(int n) {
-			int result = -1;
+			int result;
 			// do we have byte wrap?
 			if (bitOffset + n <= 8) {
 				int b = (stream[byteOffset] & 0xFF) >> bitOffset;

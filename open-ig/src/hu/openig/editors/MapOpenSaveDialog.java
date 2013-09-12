@@ -147,7 +147,7 @@ public class MapOpenSaveDialog extends JDialog {
 			path = new File(".");
 		}
 		JFileChooser fc = new JFileChooser(path);
-		int result = -1;
+		int result;
 		if (save) {
 			result = fc.showSaveDialog(this);
 		} else {
