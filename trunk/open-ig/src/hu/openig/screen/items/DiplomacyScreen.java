@@ -535,8 +535,8 @@ public class DiplomacyScreen extends ScreenBase {
 			commons.text().paintTo(g2, base.x + 5, base.y + 5, 14, other.color, other.name);
 			double r = world().getRelation(player(), other).value;
 			double delta = r - initialRelation;
-			int c = TextRenderer.WHITE;
-			String fill = " ";
+			int c;
+			String fill;
 			if (delta < 0) {
 				c = TextRenderer.RED;
 				fill = "";
@@ -1293,7 +1293,7 @@ public class DiplomacyScreen extends ScreenBase {
 			
 
 			if (m == ResponseMode.YES && a.second >= player().money()) {
-				player().addMoney(-a.second.intValue());
+				player().addMoney(-a.second);
 				player().statistics.moneySpent.value += a.second;
 				
 				other.addMoney(a.second);

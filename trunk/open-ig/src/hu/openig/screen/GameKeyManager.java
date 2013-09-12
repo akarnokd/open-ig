@@ -426,7 +426,6 @@ public class GameKeyManager extends KeyAdapter {
 					if (primary != null) {
 						primary.onLeave();
 					}
-					primary = null;
 					displayPrimary(Screens.BRIDGE);
 					e.consume();
 				}
@@ -438,7 +437,6 @@ public class GameKeyManager extends KeyAdapter {
 					if (primary != null) {
 						primary.onLeave();
 					}
-					primary = null;
 					displayPrimary(Screens.BRIDGE);
 					e.consume();
 				}

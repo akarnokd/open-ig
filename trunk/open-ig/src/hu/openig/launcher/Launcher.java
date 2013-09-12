@@ -990,10 +990,10 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 * <p>Arguments</p>
 	 * <p><b>-selfupdate temporary_file_name</b> 
 	 * delete the {@code open-ig-launcher.jar} and 
-	 * save the {@codwe temporary_file_name} as
+	 * save the {@code temporary_file_name} as
 	 * the new {@code open-ig-launcher.jar}.</p> 
 	 * <p><b>-selfdelete temporary_file_name</b> 
-	 * delete the {@codwe temporary_file_name}.</p> 
+	 * delete the {@code temporary_file_name}.</p>
 	 * @param args see above
 	 */
 	public static void main(final String[] args) {
@@ -1221,7 +1221,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			@Override
 			protected void done() {
 				showHideProgress(false);
-				XElement xe = null;
+				XElement xe;
 //				File uf = updateFile;
 				try {
 					xe = get();

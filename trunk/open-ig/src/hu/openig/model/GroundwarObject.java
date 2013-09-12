@@ -25,9 +25,9 @@ public abstract class GroundwarObject {
 	protected double cachedAngle = Double.NaN;
 	/** The cached index. */
 	protected int cachedIndex;
-	/** @return The precalcualted angle table. */
+	/** The precalcualted angle table. */
 	protected final double[] angles;
-	/** @return the matrix [phase][angle] */
+	/** The matrix [phase][angle] */
 	protected final BufferedImage[][] matrix;
 	/**
 	 * Initializes the object with the given rotation matrix.

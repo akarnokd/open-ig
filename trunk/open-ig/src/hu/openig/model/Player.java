@@ -290,7 +290,7 @@ public class Player {
 	 */
 	public int inventoryCount(ResearchType type) {
 		Integer c = inventory.get(type);
-		return c != null ? c.intValue() : 0;
+		return c != null ? c : 0;
 	}
 	/**
 	 * Add or remove a given amount of inventory item.

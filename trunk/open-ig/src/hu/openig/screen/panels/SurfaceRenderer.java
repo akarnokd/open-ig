@@ -153,8 +153,8 @@ public class SurfaceRenderer extends UIComponent {
 		
 		Pair<Integer, Integer> key = Pair.of(width, height);
 		
-		int[] xs = null;
-		int[] ys = null;
+		int[] xs;
+		int[] ys;
 		
 		Pair<int[], int[]> value = ZIGZAGS.get(key);
 		if (value == null) {
@@ -1013,7 +1013,7 @@ public class SurfaceRenderer extends UIComponent {
 		if (dr < 100 && se.building.isComplete()) {
 			if (se.virtualColumn == 0 && se.virtualRow + 1 == se.building.height()) {
 				int len = se.building.width() * se.building.height();
-				int nsmoke = 0;
+				int nsmoke;
 				if (dr < 50) {
 					nsmoke = (50 - dr) / 5 + 1;
 				} else {
@@ -1028,7 +1028,7 @@ public class SurfaceRenderer extends UIComponent {
 						Point zz = deZigZag(si, se.building.width(), se.building.height());
 
 						int mix = Math.abs(loc1.x + zz.x) + Math.abs(loc1.y + zz.y) + animation;
-						BufferedImage[] animFrames = null;
+						BufferedImage[] animFrames;
 						if (dr < 50) {
 							if ((cnt % 3) == (mix / 320 % 3)) {
 								animFrames = commons.colony().buildingSmoke;
@@ -1205,7 +1205,7 @@ public class SurfaceRenderer extends UIComponent {
 			return;
 		}
 		if (symbolic) {
-			Tile tile = null;
+			Tile tile;
 			if (player.knowledge(planet, PlanetKnowledge.BUILDING) < 0) {
 				tile = se.building.type.minimapTiles.destroyed;
 			} else
@@ -1248,8 +1248,8 @@ public class SurfaceRenderer extends UIComponent {
 		}
 
 		if (se.building.isConstructing()) {
-			Tile tile = null;
-			List<Tile> scaffolding = null;
+			Tile tile;
+			List<Tile> scaffolding;
 			if (se.building.isSeverlyDamaged()) {
 				scaffolding = se.building.scaffolding.damaged;
 			} else {
@@ -1274,7 +1274,7 @@ public class SurfaceRenderer extends UIComponent {
 			cell.a = loc1.x;
 			cell.b = loc1.y;
 		} else {
-			Tile tile = null;
+			Tile tile;
 			if (se.building.isSeverlyDamaged()) {
 				tile = se.building.tileset.damaged;
 			} else 

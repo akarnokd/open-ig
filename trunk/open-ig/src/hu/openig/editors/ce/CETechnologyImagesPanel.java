@@ -256,7 +256,7 @@ public class CETechnologyImagesPanel extends CESlavePanel {
 		checkVehicleCategory.add(ResearchSubCategory.WEAPONS_TANKS.toString());
 		checkVehicleCategory.add(ResearchSubCategory.WEAPONS_VEHICLES.toString());
 
-		if (checkSpaceCategory.contains(cat)) {
+		if (checkVehicleCategory.contains(cat)) {
 			i = max(i, imageEquipDetails.getInvalid());
 			i = max(i, imageEquipFleet.getInvalid());
 		}

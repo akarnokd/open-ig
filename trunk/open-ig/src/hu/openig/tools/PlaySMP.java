@@ -67,9 +67,9 @@ public final class PlaySMP {
 				// DATA
 				dout.write("data".getBytes("ISO-8859-1"));
 				dout.writeInt(Integer.reverseBytes(dataLen));
-				for (int i = 0; i < sample.length; i++) {
-					dout.write(128 + sample[i]);
-				}
+                for (byte aSample : sample) {
+                    dout.write(128 + aSample);
+                }
 				for (int i = sample.length; i < dataLen; i++) {
 					dout.write(0);
 				}

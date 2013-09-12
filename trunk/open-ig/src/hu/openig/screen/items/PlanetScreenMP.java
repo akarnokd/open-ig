@@ -1042,7 +1042,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 								f = planet().owner.traits.apply(TraitKind.EQUIPMENT_PRODUCTION, 0.01d, f);
 							}
 							
-							String s = "";
+							String s;
 							if (f < 10) {
 								s = String.format("%.1f", f);
 							} else {
@@ -1982,7 +1982,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 		List<BuildingType> list = commons.world().listBuildings();
 		int idx = list.indexOf(building());
 		if (list.size() > 0) {
-			BuildingType bt = null; 
+			BuildingType bt;
 			if (idx < 0) {
 				idx = 0;
 				bt = list.get(idx);
@@ -2435,7 +2435,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 
 					double d1 = Math.hypot(mx - r1.x - r1.width / 2d, my - r1.y - r1.height / 2);
 
-					Rectangle r2 = render.unitRectangle(o1);
+					Rectangle r2 = render.unitRectangle(o2);
 					render.scaleToScreen(r2);
 
 					double d2 = Math.hypot(mx - r2.x - r2.width / 2d, my - r2.y - r2.height / 2);
@@ -2637,7 +2637,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 					sumHp += u2.hp;
 				}
 			}
-			String n = "";
+			String n;
 			if (u != null) {
 				n = world().researches.get(u.model.id).name;
 				if (count > 1) {

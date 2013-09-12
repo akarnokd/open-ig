@@ -604,14 +604,14 @@ public abstract class Mission implements GameScriptingEvents {
 		Func1<String, Boolean> filter = new Func1<String, Boolean>() {
 			@Override
 			public Boolean invoke(String value) {
-				for (int i = 0; i < idxs.length; i++) {
-					if (value.equals("Mission-" + idxs[i])) {
-						return true;
-					}
-					if (value.startsWith("Mission-" + idxs[i] + "-")) {
-						return true;
-					}
-				}
+                for (int idx : idxs) {
+                    if (value.equals("Mission-" + idx)) {
+                        return true;
+                    }
+                    if (value.startsWith("Mission-" + idx + "-")) {
+                        return true;
+                    }
+                }
 				return false;
 			}
 		};

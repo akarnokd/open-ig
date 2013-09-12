@@ -142,7 +142,7 @@ public class UILabel extends UIComponent {
 	 * @param line a text line
 	 */
 	void drawAligned(Graphics2D g2, int py, String line) {
-		int c = 0;
+		int c;
 		if (enabled || disabledColor == 0) {
 			if (over && hoverColor != 0) {
 				c = hoverColor;

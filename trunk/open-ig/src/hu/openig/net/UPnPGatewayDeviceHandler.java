@@ -94,56 +94,62 @@ public class UPnPGatewayDeviceHandler extends DefaultHandler {
         } else 
         if (state <= 1) {
             if (state == 0) {
-                if ("friendlyName".equals(currentElement)) {
-                    device.setFriendlyName(new String(ch, start, length));
-                } else 
-                if ("manufacturer".equals(currentElement)) {
-                    device.setManufacturer(new String(ch, start, length));
-                } else 
-                if ("modelDescription".equals(currentElement)) {
-                    device.setModelDescription(new String(ch, start, length));
-                } else 
-                if ("presentationURL".equals(currentElement)) {
-                    device.setPresentationURL(new String(ch, start, length));
-                } else 
-                if ("modelNumber".equals(currentElement)) {
-                    device.setModelNumber(new String(ch, start, length));
-                } else 
-                if ("modelName".equals(currentElement)) {
-                    device.setModelName(new String(ch, start, length));
+                switch (currentElement) {
+                    case "friendlyName":
+                        device.setFriendlyName(new String(ch, start, length));
+                        break;
+                    case "manufacturer":
+                        device.setManufacturer(new String(ch, start, length));
+                        break;
+                    case "modelDescription":
+                        device.setModelDescription(new String(ch, start, length));
+                        break;
+                    case "presentationURL":
+                        device.setPresentationURL(new String(ch, start, length));
+                        break;
+                    case "modelNumber":
+                        device.setModelNumber(new String(ch, start, length));
+                        break;
+                    case "modelName":
+                        device.setModelName(new String(ch, start, length));
+                        break;
                 }
             }
-            if ("serviceType".equals(currentElement)) {
-                device.setServiceTypeCIF(new String(ch, start, length));
-            } else 
-            if ("controlURL".equals(currentElement)) {
-                device.setControlURLCIF(new String(ch, start, length));
-            } else 
-            if ("eventSubURL".equals(currentElement)) {
-                device.setEventSubURLCIF(new String(ch, start, length));
-            } else 
-            if ("SCPDURL".equals(currentElement)) {
-                device.setSCPDURLCIF(new String(ch, start, length));
-            } else 
-            if ("deviceType".equals(currentElement)) {
-                device.setDeviceTypeCIF(new String(ch, start, length));
+            switch (currentElement) {
+                case "serviceType":
+                    device.setServiceTypeCIF(new String(ch, start, length));
+                    break;
+                case "controlURL":
+                    device.setControlURLCIF(new String(ch, start, length));
+                    break;
+                case "eventSubURL":
+                    device.setEventSubURLCIF(new String(ch, start, length));
+                    break;
+                case "SCPDURL":
+                    device.setSCPDURLCIF(new String(ch, start, length));
+                    break;
+                case "deviceType":
+                    device.setDeviceTypeCIF(new String(ch, start, length));
+                    break;
             }
         } else 
         if (state == 2) {
-            if ("serviceType".equals(currentElement)) {
-                device.setServiceType(new String(ch, start, length));
-            } else 
-            if ("controlURL".equals(currentElement)) {
-                device.setControlURL(new String(ch, start, length));
-            } else 
-            if ("eventSubURL".equals(currentElement)) {
-                device.setEventSubURL(new String(ch, start, length));
-            } else 
-            if ("SCPDURL".equals(currentElement)) {
-                device.setSCPDURL(new String(ch, start, length));
-            } else 
-            if ("deviceType".equals(currentElement)) {
-                device.setDeviceType(new String(ch, start, length));
+            switch (currentElement) {
+                case "serviceType":
+                    device.setServiceType(new String(ch, start, length));
+                    break;
+                case "controlURL":
+                    device.setControlURL(new String(ch, start, length));
+                    break;
+                case "eventSubURL":
+                    device.setEventSubURL(new String(ch, start, length));
+                    break;
+                case "SCPDURL":
+                    device.setSCPDURL(new String(ch, start, length));
+                    break;
+                case "deviceType":
+                    device.setDeviceType(new String(ch, start, length));
+                    break;
             }
         }
     }

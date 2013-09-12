@@ -1022,7 +1022,7 @@ public class InfoScreen extends ScreenBase {
 		problemsRepair.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
 		problemsColonyHub.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
 		problemsPolice.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
-		problemsFireBrigade.location(base.x + 420 + (11 * probcount++), buildingWorker.y + 62 + 17 * 4);
+		problemsFireBrigade.location(base.x + 420 + (11 * probcount), buildingWorker.y + 62 + 17 * 4);
 
 		planetTitle.bounds(buildingTitle.bounds());
 		
@@ -1375,14 +1375,12 @@ public class InfoScreen extends ScreenBase {
 					try {
 						Iterable<?> it = Iterable.class.cast(f.get(this));
 						if (it != null) {
-							Iterator<?> iter = it.iterator();
-							while (iter.hasNext()) {
-								Object o = iter.next();
-								if (UIComponent.class.isAssignableFrom(o.getClass())) {
-									UIComponent c = UIComponent.class.cast(o);
-									c.visible(U.contains(mode, mi.mode()));
-								}
-							}
+                            for (Object o : it) {
+                                if (UIComponent.class.isAssignableFrom(o.getClass())) {
+                                    UIComponent c = UIComponent.class.cast(o);
+                                    c.visible(U.contains(mode, mi.mode()));
+                                }
+                            }
 						}
 					} catch (IllegalAccessException ex) {
 						Exceptions.add(ex);
@@ -3366,7 +3364,7 @@ public class InfoScreen extends ScreenBase {
 							|| (planet().owner != player() && cnt > 0)) {
 						commons.text().paintTo(g2, 10, row * 15 + 20 + population.y, 10, TextRenderer.GREEN, rt.name);
 
-						String cntStr = "";
+						String cntStr;
 						
 						if (planet().owner != player()) {
 							if (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0) {
@@ -3558,7 +3556,7 @@ public class InfoScreen extends ScreenBase {
 						return a1.type.name.compareTo(a2.type.name);
 					}
 				};
-				Comparator<Planet> comp = null;
+				Comparator<Planet> comp;
 				if (ascending) {
 					comp = new Comparator<Planet>() {
 						@Override
@@ -3823,7 +3821,6 @@ public class InfoScreen extends ScreenBase {
 							}
 							if (ps.hasProblem(PlanetProblems.FIRE_BRIGADE)) {
 								g2.drawImage(commons.common().fireBrigadeIcon, probLeft + j * 11, y + 2, null);
-								j++;
 							}
 						}
 						}

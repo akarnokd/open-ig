@@ -292,7 +292,7 @@ public class DatabaseScreen extends ScreenBase {
 		if (startTimer) {
 			highlightTimer.start();
 		}
-		int lastHighlight = -1;
+		int lastHighlight;
 		if (helpVisible) {
 			lastHighlight = highlightHelp;
 			highlightHelp = -1;
@@ -933,7 +933,8 @@ public class DatabaseScreen extends ScreenBase {
 		
 		if (blinkCounter % 2 == 0 && world().allowRecordMessage && world().messageRecording) {
 			g2.setColor(Color.RED);
-			g2.fillOval(x0 + recordMessage.x + recordMessage.width + 15, y0 + recordMessage.y, recordMessage.height, recordMessage.height);
+            int d = recordMessage.height;
+			g2.fillOval(x0 + recordMessage.x + recordMessage.width + 15, y0 + recordMessage.y, d, d);
 		}
 		
 		recordMessage.paintTo(g2, x0, y0);

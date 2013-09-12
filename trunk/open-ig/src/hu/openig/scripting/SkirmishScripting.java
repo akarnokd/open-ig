@@ -88,10 +88,10 @@ public class SkirmishScripting implements GameScripting {
 			if (p.owner != null) {
 				if (p.morale >= def.victorySocialMorale) {
 					Integer v = groupPlanets.get(p.owner.group);
-					v = v != null ? v.intValue() + 1 : 1;
+					v = v != null ? v + 1 : 1;
 					groupPlanets.put(p.owner.group, v);
 					
-					if (v.intValue() >= def.victorySocialPlanets) {
+					if (v >= def.victorySocialPlanets) {
 						completeGame("social", p.owner.group == player.group);
 						return;
 					}
@@ -128,7 +128,7 @@ public class SkirmishScripting implements GameScripting {
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
 				Integer v = groupPlanets.get(p.owner.group);
-				groupPlanets.put(p.owner.group, v != null ? v.intValue() + 1 : 1);
+				groupPlanets.put(p.owner.group, v != null ? v + 1 : 1);
 			}
 		}
 		int bestGroup = 0;
@@ -163,11 +163,12 @@ public class SkirmishScripting implements GameScripting {
 		Map<Integer, Long> groups = new HashMap<>();
 		for (Player p : world.players.values()) {
 			Long v = groups.get(p.group);
-			v = (v != null ? v.longValue() + p.money() : p.money());
-			if (v.longValue() >= def.victoryEconomicMoney) {
+			v = (v != null ? v + p.money() : p.money());
+			if (v >= def.victoryEconomicMoney) {
 				completeGame("economic", p.group == player.group);
 				return;
 			}
+            groups.put(p.group, v);
 		}
 	}
 	/**
@@ -181,7 +182,7 @@ public class SkirmishScripting implements GameScripting {
 			}
 			if (p.owner != null) {
 				Integer v = groupPlanets.get(p.owner.group);
-				groupPlanets.put(p.owner.group, v != null ? v.intValue() + 1 : 1);
+				groupPlanets.put(p.owner.group, v != null ? v + 1 : 1);
 			}
 		}
 		if (groupPlanets.size() > 1) {

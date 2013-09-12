@@ -40,7 +40,7 @@ public final class RemoveBeginning {
 			byte[] buffer = new byte[len];
 			long rp = 0x2C + buffer.length;
 			long wp = 0x2C;
-			int c = 0;
+			int c;
 			do {
 				raf.seek(rp);
 				c = raf.read(buffer);

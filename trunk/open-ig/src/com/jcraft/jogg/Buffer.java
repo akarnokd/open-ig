@@ -71,12 +71,12 @@ public class Buffer {
 	 * @param s the data array to write
 	 */
 	public void write(byte[] s) {
-		for (int i = 0; i < s.length; i++) {
-			if (s[i] == 0) {
-				break;
-			}
-			write(s[i], 8);
-		}
+        for (byte value : s) {
+            if (value == 0) {
+                break;
+            }
+            write(value, 8);
+        }
 	}
 	/**
 	 * Reads into the supplied byte array the number of bytes.

@@ -469,7 +469,7 @@ public class MapRenderer extends JComponent {
 			return;
 		}
 		if (symbolic) {
-			Tile tile = null;
+			Tile tile;
 
 			if (se.building.isConstructing()) {
 				if (se.building.isSeverlyDamaged()) {
@@ -499,7 +499,7 @@ public class MapRenderer extends JComponent {
 			return;
 		}
 		if (se.building.isConstructing()) {
-			Tile tile = null;
+			Tile tile;
 			if (se.building.isSeverlyDamaged()) {
 				int constructIndex = se.building.buildProgress * se.building.scaffolding.damaged.size() / se.building.type.hitpoints;
 				tile =  se.building.scaffolding.damaged.get(constructIndex);
@@ -513,7 +513,7 @@ public class MapRenderer extends JComponent {
 			cell.a = loc1.x;
 			cell.b = loc1.y;
 		} else {
-			Tile tile = null;
+			Tile tile;
 			if (se.building.isSeverlyDamaged()) {
 				tile = se.building.tileset.damaged;
 			} else 

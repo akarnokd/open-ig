@@ -31,7 +31,7 @@ public class PlanetType {
 	/** The available tileset. */
 	public Map<Integer, Tile> tiles = new HashMap<>();
 	/** The surface map variations. */
-	public Map<Integer, PlanetSurface> surfaces = new HashMap<>();
+	public final Map<Integer, PlanetSurface> surfaces = new HashMap<>();
 	/** The pattern with a single %d element to resolve the surface definitions. */
 	public String pattern;
 	/** The start index of the preset surface models. */

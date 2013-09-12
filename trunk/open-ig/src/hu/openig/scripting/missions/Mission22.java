@@ -84,7 +84,7 @@ public class Mission22 extends Mission {
 		if (own == null) {
 			own = findTaggedFleet("CampaignMainShip1", player);
 		}
-		Fleet f = null;
+		Fleet f;
 		if (own != null 
 				&& own.getStatistics().battleshipCount < 3 
 				&& own.getStatistics().cruiserCount < 25

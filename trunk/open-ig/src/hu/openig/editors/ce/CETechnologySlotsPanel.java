@@ -455,9 +455,9 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 	void doRemoveSlot() {
 		if (master != null) {
 			int[] idxs = GUIUtils.convertSelectionToModel(slots);
-			for (int i = 0; i < idxs.length; i++) {
-				master.remove(slotsModel.get(idxs[i]));
-			}
+            for (int idx : idxs) {
+                master.remove(slotsModel.get(idx));
+            }
 			slotsModel.delete(idxs);
 			slotEdit.repaint();
 			doSelectSlot(null);
@@ -481,35 +481,38 @@ public class CETechnologySlotsPanel extends CESlavePanel {
 			setTextAndEnabled(slotId, slot, "id", true);
 			slotType.label.setEnabled(true);
 			slotType.component.setEnabled(true);
-			if ("slot".equals(slot.name)) {
-				
-				setTextAndEnabled(slotCount, slot, "max", true);
-				setTextAndEnabled(slotX, slot, "x", true);
-				setTextAndEnabled(slotY, slot, "y", true);
-				setTextAndEnabled(slotWidth, slot, "width", true);
-				setTextAndEnabled(slotHeight, slot, "height", true);
-				
-				slotType.component.setSelectedIndex(0);
-				
-				slotItems.setSelectedIndex(-1);
-				
-			} else
-			if ("slot-fixed".equals(slot.name)) {
-				setTextAndEnabled(slotCount, slot, "count", true);
-				setTextAndEnabled(slotX, null, "", false);
-				setTextAndEnabled(slotY, null, "", false);
-				setTextAndEnabled(slotWidth, null, "", false);
-				setTextAndEnabled(slotHeight, null, "", false);
-				slotType.component.setSelectedIndex(1);
-				slotItems.setSelectedItem(slot.get("item", ""));
-			} else {
-				setTextAndEnabled(slotCount, null, "", false);
-				setTextAndEnabled(slotX, null, "", false);
-				setTextAndEnabled(slotY, null, "", false);
-				setTextAndEnabled(slotWidth, null, "", false);
-				setTextAndEnabled(slotHeight, null, "", false);
-				slotType.component.setSelectedIndex(-1);
-			}
+            switch (slot.name) {
+                case "slot":
+
+                    setTextAndEnabled(slotCount, slot, "max", true);
+                    setTextAndEnabled(slotX, slot, "x", true);
+                    setTextAndEnabled(slotY, slot, "y", true);
+                    setTextAndEnabled(slotWidth, slot, "width", true);
+                    setTextAndEnabled(slotHeight, slot, "height", true);
+
+                    slotType.component.setSelectedIndex(0);
+
+                    slotItems.setSelectedIndex(-1);
+
+                    break;
+                case "slot-fixed":
+                    setTextAndEnabled(slotCount, slot, "count", true);
+                    setTextAndEnabled(slotX, null, "", false);
+                    setTextAndEnabled(slotY, null, "", false);
+                    setTextAndEnabled(slotWidth, null, "", false);
+                    setTextAndEnabled(slotHeight, null, "", false);
+                    slotType.component.setSelectedIndex(1);
+                    slotItems.setSelectedItem(slot.get("item", ""));
+                    break;
+                default:
+                    setTextAndEnabled(slotCount, null, "", false);
+                    setTextAndEnabled(slotX, null, "", false);
+                    setTextAndEnabled(slotY, null, "", false);
+                    setTextAndEnabled(slotWidth, null, "", false);
+                    setTextAndEnabled(slotHeight, null, "", false);
+                    slotType.component.setSelectedIndex(-1);
+                    break;
+            }
 			
 		} else {
 			setTextAndEnabled(slotId, null, "", false);

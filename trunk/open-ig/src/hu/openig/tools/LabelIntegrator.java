@@ -50,7 +50,7 @@ public final class LabelIntegrator {
 		
 		for (String f : files) {
 			String content = new String(IOUtils.load(prefix + f), "UTF-8");
-			XElement xentries = null;
+			XElement xentries;
 			try {
 				xentries = XElement.parseXML(new StringReader(content));
 			} catch (XMLStreamException ex) {

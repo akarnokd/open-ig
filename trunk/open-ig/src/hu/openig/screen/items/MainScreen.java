@@ -389,7 +389,7 @@ public class MainScreen extends ScreenBase {
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				commons.control().displayOptions();
-				LoadSaveScreen scr = (LoadSaveScreen)commons.control().getScreen(Screens.LOAD_SAVE);
+				LoadSaveScreen scr = commons.control().getScreen(Screens.LOAD_SAVE);
 				scr.displayPage(SettingsPage.LOAD_SAVE);
 				scr.maySave(false);
 			}

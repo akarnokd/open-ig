@@ -15,7 +15,6 @@ package hu.openig.core;
 public interface Action0 {
 	/**
 	 * Invoke the action.
-	 * @throws
 	 */
 	void invoke();
 }

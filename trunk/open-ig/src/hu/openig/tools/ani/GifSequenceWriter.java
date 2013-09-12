@@ -41,7 +41,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 /**
  * This class will generate an animated GIF from a sequence of individual images.
- * @author Elliot Kroo
+ * @author Elliot Kroo (elliot[at]kroo[dot]net)
  */
 public class GifSequenceWriter {
 	/** The actual image writer. */
@@ -63,7 +63,6 @@ public class GifSequenceWriter {
 	 * @param loopContinuously
 	 *            wether the gif should loop repeatedly
 	 * @throws IOException if the underlying stream throws it or if no gif ImageWriters are found
-	 * @author Elliot Kroo (elliot[at]kroo[dot]net)
 	 */
 	public GifSequenceWriter(ImageOutputStream outputStream, int imageType,
 			int timeBetweenFramesMS, boolean loopContinuously)

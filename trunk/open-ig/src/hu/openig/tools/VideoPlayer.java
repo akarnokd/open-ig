@@ -267,8 +267,8 @@ public class VideoPlayer extends JFrame {
 		for (Map.Entry<String, Map<String, ResourcePlace>> rpe : videos.entrySet()) {
 			for (String s : rpe.getValue().keySet()) {
 				int idx = s.lastIndexOf('/');
-				String name = null;
-				String path = null;
+				String name;
+				String path;
 				if (idx >= 0) {
 					name = s.substring(idx + 1);
 					path = s.substring(0, idx);
@@ -784,7 +784,7 @@ public class VideoPlayer extends JFrame {
 				in.read(buffer);
 				try {
 					AudioFormat af = in.getFormat();
-					byte[] buffer2 = null;
+					byte[] buffer2;
 					if (af.getSampleSizeInBits() == 8) {
 						if (af.getEncoding() == AudioFormat.Encoding.PCM_UNSIGNED) {
 							for (int i = 0; i < buffer.length; i++) {
@@ -930,17 +930,17 @@ public class VideoPlayer extends JFrame {
 			lastDir = jfc.getSelectedFile();
 			int[] sels = videoTable.getSelectedRows();
 			final List<AVExport> exportList = new ArrayList<>();
-			for (int i = 0; i < sels.length; i++) {
-				VideoEntry ve = videoModel.rows.get(videoTable.convertRowIndexToModel(sels[i]));
-				
-				AVExport ave = new AVExport();
-				ave.video = rl.get(ve.path + "/" + ve.name, ResourceType.VIDEO);
-				if (ve.audio != null && !ve.audio.isEmpty()) {
-					ave.audio = rl.getExactly(ve.audio, ve.path + "/" + ve.name, ResourceType.AUDIO);
-				}
-				ave.naming = lastDir.getAbsolutePath() + "/" + ve.name + "_%05d.png";
-				exportList.add(ave);
-			}
+            for (int sel : sels) {
+                VideoEntry ve = videoModel.rows.get(videoTable.convertRowIndexToModel(sel));
+
+                AVExport ave = new AVExport();
+                ave.video = rl.get(ve.path + "/" + ve.name, ResourceType.VIDEO);
+                if (ve.audio != null && !ve.audio.isEmpty()) {
+                    ave.audio = rl.getExactly(ve.audio, ve.path + "/" + ve.name, ResourceType.AUDIO);
+                }
+                ave.naming = lastDir.getAbsolutePath() + "/" + ve.name + "_%05d.png";
+                exportList.add(ave);
+            }
 			doExportGUI(exportList);
 		}
 	}

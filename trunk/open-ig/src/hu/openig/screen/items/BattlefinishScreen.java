@@ -169,7 +169,7 @@ public class BattlefinishScreen extends ScreenBase {
 				if (battle.spacewarWinner != null) {
 
 					if (battle.spacewarWinner == player()) {
-						Fleet enemy = null;
+						Fleet enemy;
 						if (battle.attacker.owner == player()) {
 							enemy = battle.getFleet();
 						} else {
@@ -268,7 +268,7 @@ public class BattlefinishScreen extends ScreenBase {
 			}
 			
 			if (battle.spacewarWinner == player()) {
-				Fleet enemy = null;
+				Fleet enemy;
 				if (battle.attacker.owner == player()) {
 					enemy = battle.getFleet();
 				} else {
@@ -421,7 +421,7 @@ public class BattlefinishScreen extends ScreenBase {
 	 * @param text the actual text
 	 */
 	void textCenter(Graphics2D g2, int x, int y, int width, int color, int size, String text) {
-		int tw = 0;
+		int tw;
 		size++;
 		do {
 			size--;

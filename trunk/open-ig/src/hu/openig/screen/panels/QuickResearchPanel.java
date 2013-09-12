@@ -291,7 +291,7 @@ public class QuickResearchPanel extends UIContainer {
 
 			for (int j = 0; j < lst.size(); j++) {
 				final Pair<ResearchType, Integer> ri = lst.get(j);
-				QuickResearchLabel cl = null;
+				QuickResearchLabel cl;
 				if (j == catlist.size()) {
 					cl = new QuickResearchLabel("", 10, commons.text());
 					catlist.add(cl);

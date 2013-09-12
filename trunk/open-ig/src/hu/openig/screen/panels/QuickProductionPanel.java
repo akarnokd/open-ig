@@ -364,7 +364,7 @@ public class QuickProductionPanel extends UIContainer {
 		List<ProductionSimpleLine> list = lines.get(column);
 		int i = 0;
 		for (Production prod : prods) {
-			ProductionSimpleLine psl = null;
+			ProductionSimpleLine psl;
 			if (list.size() > i) {
 				psl = list.get(i);
 			} else {
@@ -422,7 +422,7 @@ public class QuickProductionPanel extends UIContainer {
 				continue;
 			}
 			
-			ProductionHistoryLine psl = null;
+			ProductionHistoryLine psl;
 			if (list.size() > i) {
 				psl = list.get(i);
 			} else {

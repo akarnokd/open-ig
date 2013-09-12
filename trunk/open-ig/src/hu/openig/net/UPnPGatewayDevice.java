@@ -348,8 +348,6 @@ public class UPnPGatewayDevice {
      * @return true if a valid mapping is found
      * @throws IOException on error
      * @throws SAXException on error
-     * @todo consider refactoring this method to make it consistent with
-     * Java practices (return the port mapping)
      * @see #simpleUPnPcommand(java.lang.String, java.lang.String,
      *      java.lang.String, java.util.Map)
      * @see UPnPPortMappingEntry
@@ -404,8 +402,6 @@ public class UPnPGatewayDevice {
      * @return true if a valid mapping is found
      * @throws IOException on error
      * @throws SAXException on error
-     * @todo consider refactoring this method to make it consistent with
-     * Java practices (return the port mapping)
      * @see #simpleUPnPcommand(java.lang.String, java.lang.String,
      *      java.lang.String, java.util.Map)
      * @see UPnPPortMappingEntry

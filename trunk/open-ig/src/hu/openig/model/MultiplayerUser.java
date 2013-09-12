@@ -120,7 +120,7 @@ public class MultiplayerUser implements MessageObjectIO {
 		traits.clear();
 		for (Object o : mo.getArray("traits")) {
 			if (o instanceof CharSequence) {
-				traits.add(((CharSequence)o).toString());
+				traits.add(o.toString());
 			}
 		}
 	}

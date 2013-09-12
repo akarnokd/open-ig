@@ -340,7 +340,7 @@ public class ProfileScreen extends ScreenBase {
 		for (UIComponent c : profilesListPanel.components()) {
 			if (c instanceof ProfileLabel) {
 				ProfileLabel l1 = (ProfileLabel) c;
-				boolean highlight = false;
+				boolean highlight;
 				if (first) {
 					highlight = l1.name.startsWith(p) & once;
 					if (highlight) {

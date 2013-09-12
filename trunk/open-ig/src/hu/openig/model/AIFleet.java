@@ -80,7 +80,7 @@ public class AIFleet {
 	 */
 	public int inventoryCount(ResearchType rt) {
 		Integer v = inventoryCounts.get(rt);
-		return v != null ? v.intValue() : 0;
+		return v != null ? v : 0;
 	}
 	/**
 	 * Check if a specific technology is in the inventory.

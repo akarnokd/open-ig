@@ -1042,9 +1042,9 @@ public class Fleet implements Named, Owned, HasInventory {
 			throw new IllegalStateException("Inventory has count of " + ii.count);
 		}
 
-		int count = 0;
+		int count;
 		
-		InventoryItem ii2 = null;
+		InventoryItem ii2;
 		if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS 
 				|| ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
 			List<InventoryItem> iis = new ArrayList<>(inventory.findByType(ii.type.id));

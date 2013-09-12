@@ -38,7 +38,7 @@ public final class AddSilence {
 			int pc = len;
 			Arrays.fill(prev, (byte)0x80);
 			byte[] next = new byte[len];
-			int nc = 0;
+			int nc;
 			// replaceloop
 			do {
 				long p = raf.getFilePointer();

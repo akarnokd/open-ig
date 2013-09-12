@@ -100,9 +100,9 @@ public class MultiplayerSession implements RemoteGameAPI {
 		Random rnd = new Random();
 		rnd.nextBytes(key);
 		StringBuilder b = new StringBuilder();
-		for (int i = 0; i < key.length; i++) {
-			b.append(String.format("%02X", key[i] & 0xFF));
-		}
+        for (byte aKey : key) {
+            b.append(String.format("%02X", aKey & 0xFF));
+        }
 		return b.toString();
 	}
 	/**

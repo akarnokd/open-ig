@@ -63,7 +63,7 @@ public class Mission18 extends Mission {
 		if (own == null) {
 			own = findTaggedFleet("CampaignMainShip1", player);
 		}
-		Fleet f = null;
+		Fleet f;
 		if (own != null) {
 			f = own;
 		} else {
@@ -162,26 +162,29 @@ public class Mission18 extends Mission {
 	public void onConquered(Planet planet, Player previousOwner) {
 		if (planet.owner == player || previousOwner == player) {
 			boolean win = previousOwner.id.equals("Garthog");
-			if (planet.id.equals("Garthog 1")) {
-				setObjectiveState("Mission-18-Task-1", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
-			} else
-			if (planet.id.equals("Garthog 2")) {
-				setObjectiveState("Mission-18-Task-2", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
-			} else
-			if (planet.id.equals("Garthog 3")) {
-				setObjectiveState("Mission-18-Task-3", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
-			} else
-			if (planet.id.equals("Garthog 4")) {
-				setObjectiveState("Mission-18-Task-4", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
-			} else
-			if (planet.id.equals("Garthog 5")) {
-				setObjectiveState("Mission-18-Task-5", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
-			} else {
-				if (player.ownPlanets().isEmpty() && player.ownFleets().isEmpty()) {
-					setObjectiveState("Mission-18", ObjectiveState.FAILURE);
-					addTimeout("Mission-18-Failed", 13000);
-				}
-			}
+            switch (planet.id) {
+                case "Garthog 1":
+                    setObjectiveState("Mission-18-Task-1", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+                    break;
+                case "Garthog 2":
+                    setObjectiveState("Mission-18-Task-2", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+                    break;
+                case "Garthog 3":
+                    setObjectiveState("Mission-18-Task-3", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+                    break;
+                case "Garthog 4":
+                    setObjectiveState("Mission-18-Task-4", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+                    break;
+                case "Garthog 5":
+                    setObjectiveState("Mission-18-Task-5", win ? ObjectiveState.SUCCESS : ObjectiveState.ACTIVE);
+                    break;
+                default:
+                    if (player.ownPlanets().isEmpty() && player.ownFleets().isEmpty()) {
+                        setObjectiveState("Mission-18", ObjectiveState.FAILURE);
+                        addTimeout("Mission-18-Failed", 13000);
+                    }
+                    break;
+            }
 		}
 	}
 	@Override

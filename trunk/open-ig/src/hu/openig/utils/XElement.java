@@ -26,16 +26,7 @@ import java.io.Writer;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Deque;
-import java.util.GregorianCalendar;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 import javax.xml.stream.XMLInputFactory;
@@ -589,9 +580,7 @@ public class XElement {
 	 * @param elements the elements to add
 	 */
 	public void add(XElement... elements) {
-		for (XElement e : elements) {
-			children.add(e);
-		}
+        Collections.addAll(children, elements);
 	}
 	/**
 	 * Add the array of elements as children.
@@ -692,7 +681,7 @@ public class XElement {
 		GregorianCalendar cal = XSD_CALENDAR.get();
 		cal.setTime(date);
 		
-		int value = 0;
+		int value;
 		
 		// Year-Month-Day
 		value = cal.get(GregorianCalendar.YEAR);

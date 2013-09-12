@@ -88,7 +88,7 @@ public class ColonizationPlanner extends Planner {
 		Map<Player, Integer> counts = new HashMap<>();
 		for (AIPlanet p : world.enemyPlanets) {
 			Integer i = counts.get(p.owner);
-			counts.put(p.owner, i != null ? i.intValue() + 1 : 1);
+			counts.put(p.owner, i != null ? i + 1 : 1);
 		}
 		if (!counts.isEmpty()) {
 			int max = Collections.max(counts.values());

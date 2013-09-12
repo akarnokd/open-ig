@@ -73,7 +73,7 @@ public class RemoteGameListener implements Action2E<MessageConnection, Object, I
 	@Override
 	public void invoke(MessageConnection conn, Object message)
 			throws IOException {
-		DeferredRunnable responseCall = null;
+		DeferredRunnable responseCall;
 		try {
 			responseCall = processMessageDeferred(message);
 		} catch (MissingAttributeException ex) {

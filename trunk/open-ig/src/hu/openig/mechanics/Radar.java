@@ -56,16 +56,14 @@ public final class Radar {
 			}
 			// change back to visible only
 			Set<Fleet> visibleEnemySet = new HashSet<>();
-			Iterator<Map.Entry<Fleet, FleetKnowledge>> itf = player.fleets.entrySet().iterator();
-			while (itf.hasNext()) {
-				Map.Entry<Fleet, FleetKnowledge> f = itf.next();
-				if (f.getKey().owner != player) {
-					f.setValue(FleetKnowledge.VISIBLE);
-					visibleEnemySet.add(f.getKey());
-				} else {
-					f.setValue(FleetKnowledge.FULL);
-				}
-			}
+            for (Map.Entry<Fleet, FleetKnowledge> f : player.fleets.entrySet()) {
+                if (f.getKey().owner != player) {
+                    f.setValue(FleetKnowledge.VISIBLE);
+                    visibleEnemySet.add(f.getKey());
+                } else {
+                    f.setValue(FleetKnowledge.FULL);
+                }
+            }
 			// run fleet-radar detection
 			for (Fleet f : new ArrayList<>(player.fleets.keySet())) {
 				if (f.owner == player) {

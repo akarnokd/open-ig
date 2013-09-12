@@ -664,7 +664,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return;
 		}
 		if (symbolic) {
-			Tile tile = null;
+			Tile tile;
 			if (knowledge(planet(), PlanetKnowledge.BUILDING) < 0) {
 				tile = se.building.type.minimapTiles.destroyed;
 			} else
@@ -706,8 +706,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 
 		if (se.building.isConstructing()) {
-			Tile tile = null;
-			List<Tile> scaffolding = null;
+			Tile tile;
+			List<Tile> scaffolding;
 			if (se.building.isSeverlyDamaged()) {
 				scaffolding = se.building.scaffolding.damaged;
 			} else {
@@ -732,7 +732,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			cell.a = loc1.x;
 			cell.b = loc1.y;
 		} else {
-			Tile tile = null;
+			Tile tile;
 			if (se.building.isSeverlyDamaged()) {
 				tile = se.building.tileset.damaged;
 			} else 
@@ -1544,7 +1544,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (dr < 100 && se.building.isComplete()) {
 				if (se.virtualColumn == 0 && se.virtualRow + 1 == se.building.height()) {
 					int len = se.building.width() * se.building.height();
-					int nsmoke = 0;
+					int nsmoke;
 					if (dr < 50) {
 						nsmoke = (50 - dr) / 5 + 1;
 					} else {
@@ -1559,7 +1559,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 							Point zz = deZigZag(si, se.building.width(), se.building.height());
 
 							int mix = Math.abs(loc1.x + zz.x) + Math.abs(loc1.y + zz.y) + animation;
-							BufferedImage[] animFrames = null;
+							BufferedImage[] animFrames;
 							if (dr < 50) {
 								if ((cnt % 3) == (mix / 320 % 3)) {
 									animFrames = commons.colony().buildingSmoke;
@@ -1691,8 +1691,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		
 		Pair<Integer, Integer> key = Pair.of(width, height);
 		
-		int[] xs = null;
-		int[] ys = null;
+		int[] xs;
+		int[] ys;
 		
 		Pair<int[], int[]> value = ZIGZAGS.get(key);
 		if (value == null) {
@@ -2410,7 +2410,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 								f = planet().owner.traits.apply(TraitKind.EQUIPMENT_PRODUCTION, 0.01d, f);
 							}
 							
-							String s = "";
+							String s;
 							if (f < 10) {
 								s = String.format("%.1f", f);
 							} else {
@@ -3361,7 +3361,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		List<BuildingType> list = commons.world().listBuildings();
 		int idx = list.indexOf(building());
 		if (list.size() > 0) {
-			BuildingType bt = null; 
+			BuildingType bt;
 			if (idx < 0) {
 				idx = 0;
 				bt = list.get(idx);
@@ -5593,7 +5593,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 					double d1 = Math.hypot(mx - r1.x - r1.width / 2d, my - r1.y - r1.height / 2);
 
-					Rectangle r2 = unitRectangle(o1);
+					Rectangle r2 = unitRectangle(o2);
 					scaleToScreen(r2);
 
 					double d2 = Math.hypot(mx - r2.x - r2.width / 2d, my - r2.y - r2.height / 2);
@@ -6165,11 +6165,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	void recallGroup(int groupNo) {
 		for (GroundwarUnit u : units) {
 			Integer gr = groups.get(u);
-			u.selected = gr != null && gr.intValue() == groupNo;
+			u.selected = gr != null && gr == groupNo;
 		}
 		for (GroundwarGun g : guns) {
 			Integer gr = groups.get(g);
-			g.selected = gr != null && gr.intValue() == groupNo;
+			g.selected = gr != null && gr == groupNo;
 		}
 	}
 	@Override
@@ -6449,7 +6449,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 				}
 			}
-			String n = "";
+			String n;
 			if (u != null) {
 				n = world().researches.get(u.model.id).name;
 				if (count > 1) {
@@ -6521,7 +6521,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		Iterator<Map.Entry<Object, Integer>> it = groups.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<Object, Integer> e = it.next();
-			if (e.getValue().intValue() == i) {
+			if (e.getValue() == i) {
 				it.remove();
 			}
 		}

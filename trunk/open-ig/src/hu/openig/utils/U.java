@@ -77,7 +77,7 @@ public final class U {
 	public static int naturalCompare(String s1, String s2, boolean cases) {
 		String[] a1 = s1.split("\\s+");
 		String[] a2 = s2.split("\\s+");
-		int result = 0;
+		int result;
 		for (int i = 0; i < Math.min(a1.length, a2.length); i++) {
 			boolean num1 = isNumeric(a1[i]);
 			boolean num2 = isNumeric(a2[i]);
@@ -346,9 +346,7 @@ public final class U {
 	@SafeVarargs
 	public static <T> HashSet<T> newSet(T... src) {
 		HashSet<T> result = new HashSet<>();
-		for (T t : src) {
-			result.add(t);
-		}
+        Collections.addAll(result, src);
 		return result;
 	}
 	/**

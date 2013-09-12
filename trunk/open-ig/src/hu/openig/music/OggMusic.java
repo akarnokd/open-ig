@@ -173,7 +173,7 @@ public class OggMusic {
 	public void playOgg(InputStream bitStream) {
 		boolean chained = false;
 		initJOrbis();
-		int bytes = 0;
+		int bytes;
 		loop: while (true) {
 			int eos = 0;
 

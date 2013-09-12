@@ -877,7 +877,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public boolean isTimeout(String id) {
 		Integer i = countdowns.get(id);
-        return i != null && i.intValue() <= 0;
+        return i != null && i <= 0;
     }
 	@Override
 	public void setTimeout(String id, int time) {
@@ -994,7 +994,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	public boolean isMissionTime(String id) {
 		Integer i = missiontimer.get(id);
 		if (i != null) {
-			return i.intValue() <= now();
+			return i <= now();
 		}
 		return false;
 	}
