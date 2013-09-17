@@ -45,9 +45,9 @@ public class TechnologySlot extends UIComponent {
 	/** The border color when a slot is selected. */
 	final Color selectedColor = Color.RED;
 	/** The normal text color. */
-	static final int textColor = 0xFF6DB269;
+	static final int TEXT_COLOR = 0xFF6DB269;
 	/** The selected text color. */
-	static final int selectedTextColor = 0xFFFF0000;
+	static final int SELECTED_TEXT_COLOR = 0xFFFF0000;
 	/** The current animation step for the rolling disk. */
 	public int animationStep;
 	/** The action to invoke when the user clicks on the slot. */
@@ -77,11 +77,11 @@ public class TechnologySlot extends UIComponent {
 		if (commons.world().player.isAvailable(type)) {
 			if (type.category.main != ResearchMainCategory.BUILDINGS) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 56, 10, 
-						selectedTextColor, Integer.toString(commons.world().player.inventoryCount(type)));
+						SELECTED_TEXT_COLOR, Integer.toString(commons.world().player.inventoryCount(type)));
 			}
 			if (displayProductionCost && type.category.main != ResearchMainCategory.BUILDINGS) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
-						selectedTextColor, Integer.toString(type.productionCost));
+						SELECTED_TEXT_COLOR, Integer.toString(type.productionCost));
 			}
 		} else
 		if (commons.player().canResearch(type)) {
@@ -115,7 +115,7 @@ public class TechnologySlot extends UIComponent {
 			}
 			if (displayResearchCost) {
 				commons.text().paintTo(g2, target.x + 5, target.y + 5, 10, 
-						selectedTextColor, Integer.toString(type.researchCost(commons.player().traits)));
+						SELECTED_TEXT_COLOR, Integer.toString(type.researchCost(commons.player().traits)));
 			}
 		} else {
 			g2.setColor(Color.BLACK);
@@ -126,7 +126,7 @@ public class TechnologySlot extends UIComponent {
 		}
 		boolean selected = commons.world().player.currentResearch() == type;
 		commons.text().paintTo(g2, target.x + 5, target.y + 71, 7, 
-				selected ? selectedTextColor : textColor, type.name);
+				selected ? SELECTED_TEXT_COLOR : TEXT_COLOR, type.name);
 		if (selected) {
 			g2.setColor(selectedColor);
 		} else {

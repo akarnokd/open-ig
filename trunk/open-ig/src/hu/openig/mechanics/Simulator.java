@@ -503,7 +503,12 @@ public final class Simulator {
 
 			double tradeDelta = (trade1 * dayPercent);
 			double taxDelta = (tax1 * dayPercent);
-			
+
+			if (!world.config.continuousMoney) {
+				planet.taxIncome(0);
+				planet.tradeIncome(0);
+			}
+
 			planet.addTradeIncome(tradeDelta);
 			planet.addTaxIncome(taxDelta);
 			

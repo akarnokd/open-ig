@@ -122,7 +122,7 @@ public class StatusbarScreen extends ScreenBase {
 	/** The time to show the achievement. */
 	public int achievementTTL;
 	/** The size of the achievement panel. */
-	static final int achievementSize = 55;
+	static final int ACHIEVEMENT_SIZE = 55;
 	/** The achievement animator. */
 	Timer achievementAnimator;
 	/** The objectives viewer. */
@@ -344,7 +344,7 @@ public class StatusbarScreen extends ScreenBase {
 		top.size(width, 20);
 		bottom.size(width, 18);
 		
-		objectives.location(5, 30 + achievementSize);
+		objectives.location(5, 30 + ACHIEVEMENT_SIZE);
 		
 		incomingMessage.setBounds(width - 176, height - 16, 164, 18);
 	}
@@ -410,10 +410,10 @@ public class StatusbarScreen extends ScreenBase {
 			int w = Math.max(commons.text().getTextWidth(14, label), commons.text().getTextWidth(10, desc));
 			int aw = commons.common().achievement.getWidth();
 			w += 15 + aw;
-			g2.clipRect(0, 20, w, achievementSize - achievementDescent);
+			g2.clipRect(0, 20, w, ACHIEVEMENT_SIZE - achievementDescent);
 			
 			g2.setColor(new Color(0xC0000000, true));
-			int bottom = achievementSize - achievementDescent;
+			int bottom = ACHIEVEMENT_SIZE - achievementDescent;
 			g2.fillRect(0, 20, w, bottom);
 			g2.setColor(Color.GRAY);
 			g2.drawRect(0, 20, w - 1, bottom - 1);
@@ -504,7 +504,7 @@ public class StatusbarScreen extends ScreenBase {
 		if (achievementShowing == null) {
 			achievementShowing = commons.achievementNotifier.poll();
 			if (achievementShowing != null) {
-				achievementDescent = achievementSize;
+				achievementDescent = ACHIEVEMENT_SIZE;
 				achievementTTL = 10 * 10; // 10 seconds
 				achievementAnimator.start();
 				effectSound(SoundType.ACHIEVEMENT);

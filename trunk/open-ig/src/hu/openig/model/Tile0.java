@@ -33,7 +33,7 @@ public class Tile0 {
 	/** The current alpha level of the image. */
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
-	protected static final float lightThreshold = 0.65f;
+	protected static final float LIGHT_THRESHOLD = 0.65f;
 	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
 	private static ThreadLocal<int[][]> work = new ThreadLocal<int[][]>() {
 		@Override
@@ -170,7 +170,7 @@ public class Tile0 {
 		for (int i = 0; i < image.length; i++) {
 			w[i] = withAlpha(image[i]);
 		}
-		if (lightMap != null && alpha <= lightThreshold) {
+		if (lightMap != null && alpha <= LIGHT_THRESHOLD) {
 			for (int i = 0; i < lightMap.length; i += 2) {
 				w[lightMap[i]] = lightMap[i + 1];
 			}
@@ -209,11 +209,11 @@ public class Tile0 {
 		if ((c & 0xFF000000) == 0) {
 			return c;
 		}
-		if (alpha < lightThreshold) {
+		if (alpha < LIGHT_THRESHOLD) {
 			return 0xFF000000
 			| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
 			| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
-			| (((int)((c & 0xFF) * ((alpha + lightThreshold) / 2))) & 0xFF);
+			| (((int)((c & 0xFF) * ((alpha + LIGHT_THRESHOLD) / 2))) & 0xFF);
 		}
 		return 0xFF000000
 		| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)

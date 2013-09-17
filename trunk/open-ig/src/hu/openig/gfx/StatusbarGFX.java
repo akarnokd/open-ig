@@ -10,7 +10,6 @@ package hu.openig.gfx;
 
 import hu.openig.core.Img;
 import hu.openig.model.ResourceLocator;
-import hu.openig.utils.ImageUtils;
 
 import java.awt.image.BufferedImage;
 

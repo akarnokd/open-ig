@@ -217,7 +217,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** The rendering scale. */
 	double scale = 1.0;
 	/** The maximum scale. */
-	static final double maxScale = 2;
+	static final double MAX_SCALE = 2;
 	/** The operational space at 1:1 zoom. */
 	final Rectangle space = new Rectangle(0, 0, 462 * 504 / 238, 504);
 	/** Panning the view. */
@@ -943,7 +943,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		double xscale = mainmap.width * 1.0 / space.width;
 		double yscale = mainmap.height * 1.0 / space.height;
 		double s = Math.min(xscale, yscale);
-		scale = Math.min(maxScale, (int)(s * 20) / 20.0);
+		scale = Math.min(MAX_SCALE, (int)(s * 20) / 20.0);
 		pan(0, 0);
 	}
 
@@ -1134,7 +1134,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void doZoomIn(int x, int y) {
 		Point2D.Double p0 = mouseToSpace(x, y);
 		double newScale = ((int)(scale * 20) + 1) / 20d;
-		scale = Math.min(newScale, maxScale);
+		scale = Math.min(newScale, MAX_SCALE);
 		Point2D.Double p1 = mouseToSpace(x, y);
 		pan((int)(p0.x - p1.x), (int)(p0.y - p1.y));
 	}
@@ -4536,7 +4536,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Count. */
 		int count;
 		/** The maximum image size. */
-		static final int maxImage = 50;
+		static final int MAX_IMAGE = 50;
 		/** Hitpoints. */
 		int hp;
 		/** Shield points. */
@@ -4624,7 +4624,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 			w = Math.max(w, dv);
 			
-			return w + Math.min(maxImage, image.getWidth()) + 15;
+			return w + Math.min(MAX_IMAGE, image.getWidth()) + 15;
 		}
 		/**
 		 * The total text height.
@@ -4642,7 +4642,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		 * @return the rendering height
 		 */
 		int height() {
-			int h = maxImage + 10;
+			int h = MAX_IMAGE + 10;
 			h = Math.max(h, textHeight() + 2);
 			return h;
 		}
@@ -4664,7 +4664,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			int dy = (h - 10 - Math.min(50, image.getHeight())) / 2;
 			
 			g2.setColor(Color.GREEN);
-			int iw = Math.min(image.getWidth(), maxImage);
+			int iw = Math.min(image.getWidth(), MAX_IMAGE);
 			int iw2 = (int)(iw * hpRatio);
 			g2.drawRect(0, dy + 0, iw, 4);
 			g2.fillRect(0, dy + 0, iw2, 4);
@@ -4676,23 +4676,23 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				g2.fillRect(0, dy + 6, iw2, 4);
 			}
 			
-			if (image.getWidth() > maxImage || image.getHeight() > maxImage) {
-				double scalex = 1.0 * maxImage / image.getWidth();
-				double scaley = 1.0 * maxImage / image.getHeight();
+			if (image.getWidth() > MAX_IMAGE || image.getHeight() > MAX_IMAGE) {
+				double scalex = 1.0 * MAX_IMAGE / image.getWidth();
+				double scaley = 1.0 * MAX_IMAGE / image.getHeight();
 				double scale = Math.min(scalex, scaley);
 				
 				int imw = (int)(image.getWidth() * scale);
 				int imh = (int)(image.getHeight() * scale);
 				
-				int dx = (maxImage - imw) / 2;
-				dy = (maxImage - imh) / 2 + 10;
+				int dx = (MAX_IMAGE - imw) / 2;
+				dy = (MAX_IMAGE - imh) / 2 + 10;
 				
 				g2.drawImage(image, dx, dy, imw, imh, null);
 			} else {
 				g2.drawImage(image, 0, dy + 10, null);
 			}
 			
-			int dx = Math.min(maxImage, image.getWidth()) + 4;
+			int dx = Math.min(MAX_IMAGE, image.getWidth()) + 4;
 			
 			dy = (h - textHeight()) / 2;
 			
@@ -4732,7 +4732,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** The current scroll offset. */
 		int offset = 0;
 		/** The row height. */
-		static final int rowHeight = 30;
+		static final int ROW_HEIGHT = 30;
 		/** The last selection. */
 		List<SpacewarStructure> lastSelection = new ArrayList<>();
 		/** The group buttons. */
@@ -5198,7 +5198,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Highlight option. */
 		int highlight = -1;
 		/** Row height. */
-		static final int rowHeight = 16;
+		static final int ROW_HEIGHT = 16;
 		/** Initialize. */
 		public ChatPanel() {
 			width = 286;
@@ -5263,7 +5263,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					String so = get(nso.getOption());
 					List<String> lout = new ArrayList<>();
 					commons.text().wrapText(so, width - 4, 7, lout);
-					oh += lout.size() * rowHeight;
+					oh += lout.size() * ROW_HEIGHT;
 					ols.add(lout);
 				}
 				
@@ -5279,8 +5279,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				for (List<String> s : ols) {
 					int c0 = highlight == oi ? TextRenderer.YELLOW : TextRenderer.GREEN;
 					for (String s1 : s) {
-						commons.text().paintTo(g2, 2, oy + (rowHeight - 7) / 2, 7, c0, s1);
-						oy += rowHeight;
+						commons.text().paintTo(g2, 2, oy + (ROW_HEIGHT - 7) / 2, 7, c0, s1);
+						oy += ROW_HEIGHT;
 					}
 					oi++;
 				}
@@ -5332,7 +5332,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				List<String> lout = new ArrayList<>();
 				commons.text().wrapText(so, width - 4, 7, lout);
 				int oh0 = oh;
-				oh += lout.size() * rowHeight;
+				oh += lout.size() * ROW_HEIGHT;
 				if (y >= oh0 && y < oh) {
 					return i;
 				}

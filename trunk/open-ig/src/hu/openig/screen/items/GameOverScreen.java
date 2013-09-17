@@ -44,9 +44,9 @@ public class GameOverScreen extends ScreenBase {
 	/** The image alpha level. */
 	float imageAlpha;
 	/** The animation speed in milliseconds. */
-	static final int animationSpeed = 50;
+	static final int ANIMATION_SPEED = 50;
 	/** The maximum phase. */
-	static final int maxPhase = 40;
+	static final int MAX_PHASE = 40;
 	/** The player won! */
 	public boolean win;
 	/** Continue the gameplay. */
@@ -59,7 +59,7 @@ public class GameOverScreen extends ScreenBase {
 	UILabel winLabel;
 	@Override
 	public void onInitialize() {
-		anim = new Timer(animationSpeed, new ActionListener() {
+		anim = new Timer(ANIMATION_SPEED, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				doAnimation();
@@ -99,11 +99,11 @@ public class GameOverScreen extends ScreenBase {
 	void doAnimation() {
 		phase++;
 		StatusbarScreen sts = commons.control().getScreen(Screens.STATUSBAR);
-		float len = maxPhase / 2f;
-		if (phase * 2 < maxPhase) {
+		float len = MAX_PHASE / 2f;
+		if (phase * 2 < MAX_PHASE) {
 			sts.overlay = new Color(0f, 0f, 0f, phase / len);
 		} else
-		if (phase * 2 >= maxPhase) {
+		if (phase * 2 >= MAX_PHASE) {
 			sts.overlay = null;
 			commons.force = false;
 			commons.nongame = true;
@@ -111,7 +111,7 @@ public class GameOverScreen extends ScreenBase {
 			showImage = true;
 			imageAlpha = (phase - len) / len;
 		}
-		if (phase >= maxPhase) {
+		if (phase >= MAX_PHASE) {
 			imageAlpha = 1f;
 			anim.stop();
 		}
@@ -129,7 +129,7 @@ public class GameOverScreen extends ScreenBase {
 
 	@Override
 	public boolean keyboard(KeyEvent e) {
-		if (phase < maxPhase) {
+		if (phase < MAX_PHASE) {
 			e.consume();
 			return true;
 		}
@@ -142,7 +142,7 @@ public class GameOverScreen extends ScreenBase {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
-		if (phase < maxPhase) {
+		if (phase < MAX_PHASE) {
 			return false;
 		}
 //		if (e.has(Type.DOWN) && !win) {

@@ -21,12 +21,12 @@ public final class Location {
 	private final int hc;
 	/** The location cache, where the first dimension is the X coordinate + 80, 
 	 * the second is Y coordinate + 159. */
-	private static final Location[][] cache;
+	private static final Location[][] CACHE;
 	static {
-		cache = new Location[160][160];
-		for (int i = 0; i < cache.length; i++) {
-			for (int j = 0; j < cache[i].length; j++) {
-				cache[i][j] = new Location(i - 80, -j);
+		CACHE = new Location[160][160];
+		for (int i = 0; i < CACHE.length; i++) {
+			for (int j = 0; j < CACHE[i].length; j++) {
+				CACHE[i][j] = new Location(i - 80, -j);
 			}
 		}
 	}
@@ -51,7 +51,7 @@ public final class Location {
 		if (x < -80 || x >= 80 || y < -159 || y > 0) {
 			return new Location(x, y);
 		}
-		return cache[x + 80][-y];
+		return CACHE[x + 80][-y];
 	}
 	/**
 	 * {@inheritDoc}

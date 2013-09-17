@@ -13,7 +13,6 @@ import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
-import hu.openig.model.CustomGameDefinition;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;

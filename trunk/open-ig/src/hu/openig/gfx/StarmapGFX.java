@@ -14,7 +14,6 @@ import hu.openig.core.Cat;
 import hu.openig.core.Img;
 import hu.openig.model.ResourceLocator;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 

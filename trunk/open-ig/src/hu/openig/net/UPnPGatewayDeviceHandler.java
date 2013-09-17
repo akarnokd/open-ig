@@ -95,61 +95,64 @@ public class UPnPGatewayDeviceHandler extends DefaultHandler {
         if (state <= 1) {
             if (state == 0) {
                 switch (currentElement) {
-                    case "friendlyName":
-                        device.setFriendlyName(new String(ch, start, length));
-                        break;
-                    case "manufacturer":
-                        device.setManufacturer(new String(ch, start, length));
-                        break;
-                    case "modelDescription":
-                        device.setModelDescription(new String(ch, start, length));
-                        break;
-                    case "presentationURL":
-                        device.setPresentationURL(new String(ch, start, length));
-                        break;
-                    case "modelNumber":
-                        device.setModelNumber(new String(ch, start, length));
-                        break;
-                    case "modelName":
-                        device.setModelName(new String(ch, start, length));
-                        break;
+                case "friendlyName":
+                    device.setFriendlyName(new String(ch, start, length));
+                    break;
+                case "manufacturer":
+                    device.setManufacturer(new String(ch, start, length));
+                    break;
+                case "modelDescription":
+                    device.setModelDescription(new String(ch, start, length));
+                    break;
+                case "presentationURL":
+                    device.setPresentationURL(new String(ch, start, length));
+                    break;
+                case "modelNumber":
+                    device.setModelNumber(new String(ch, start, length));
+                    break;
+                case "modelName":
+                    device.setModelName(new String(ch, start, length));
+                    break;
+                default:
                 }
             }
             switch (currentElement) {
-                case "serviceType":
-                    device.setServiceTypeCIF(new String(ch, start, length));
-                    break;
-                case "controlURL":
-                    device.setControlURLCIF(new String(ch, start, length));
-                    break;
-                case "eventSubURL":
-                    device.setEventSubURLCIF(new String(ch, start, length));
-                    break;
-                case "SCPDURL":
-                    device.setSCPDURLCIF(new String(ch, start, length));
-                    break;
-                case "deviceType":
-                    device.setDeviceTypeCIF(new String(ch, start, length));
-                    break;
+            case "serviceType":
+                device.setServiceTypeCIF(new String(ch, start, length));
+                break;
+            case "controlURL":
+                device.setControlURLCIF(new String(ch, start, length));
+                break;
+            case "eventSubURL":
+                device.setEventSubURLCIF(new String(ch, start, length));
+                break;
+            case "SCPDURL":
+                device.setSCPDURLCIF(new String(ch, start, length));
+                break;
+            case "deviceType":
+                device.setDeviceTypeCIF(new String(ch, start, length));
+                break;
+            default:
             }
         } else 
         if (state == 2) {
             switch (currentElement) {
-                case "serviceType":
-                    device.setServiceType(new String(ch, start, length));
-                    break;
-                case "controlURL":
-                    device.setControlURL(new String(ch, start, length));
-                    break;
-                case "eventSubURL":
-                    device.setEventSubURL(new String(ch, start, length));
-                    break;
-                case "SCPDURL":
-                    device.setSCPDURL(new String(ch, start, length));
-                    break;
-                case "deviceType":
-                    device.setDeviceType(new String(ch, start, length));
-                    break;
+            case "serviceType":
+                device.setServiceType(new String(ch, start, length));
+                break;
+            case "controlURL":
+                device.setControlURL(new String(ch, start, length));
+                break;
+            case "eventSubURL":
+                device.setEventSubURL(new String(ch, start, length));
+                break;
+            case "SCPDURL":
+                device.setSCPDURL(new String(ch, start, length));
+                break;
+            case "deviceType":
+                device.setDeviceType(new String(ch, start, length));
+                break;
+            default:
             }
         }
     }

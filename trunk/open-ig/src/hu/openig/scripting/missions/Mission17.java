@@ -45,7 +45,7 @@ public class Mission17 extends Mission {
 	/** The stage. */
 	protected M17 stage = M17.NONE;
 	/** The target planet. */
-	protected static final String target = "Garthog 2";
+	protected static final String TARGET = "Garthog 2";
 	@Override
 	public void onTime() {
 		if (stage == M17.NONE && objective("Mission-16").state != ObjectiveState.ACTIVE) {
@@ -155,7 +155,7 @@ public class Mission17 extends Mission {
 		tagFleet(f, "Mission-17-Garthog");
 		ii.tag = "Mission-17-Prototype";
 		
-		Planet g2 = planet(target);
+		Planet g2 = planet(TARGET);
 		f.moveTo(g2);
 		f.task = FleetTask.SCRIPT;
 		addScripted(f);
@@ -163,7 +163,7 @@ public class Mission17 extends Mission {
 	
 	@Override
 	public void onFleetAt(Fleet fleet, Planet planet) {
-		if (planet.id.equals(target) && hasTag(fleet, "Mission-17-Prototype")) {
+		if (planet.id.equals(TARGET) && hasTag(fleet, "Mission-17-Prototype")) {
 			setObjectiveState("Mission-17", ObjectiveState.FAILURE);
 			addTimeout("Mission-17-Failed", 13000);
 			

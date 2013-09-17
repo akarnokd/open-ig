@@ -39,7 +39,6 @@ import java.awt.Color;
 import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.ActionEvent;
@@ -143,7 +142,7 @@ public class BridgeScreen extends ScreenBase {
 	/** The currently selected video. */
 	VideoMessage selectedVideoId;
 	/** The message list row height. */
-	static final int rowHeight = 25;
+	static final int ROW_HEIGHT = 25;
 	/** If the video playback completed and the panel is retracted. */
 	Action0 onVideoComplete;
 	/** Action to invoke when a force-view was issued. */
@@ -508,7 +507,7 @@ public class BridgeScreen extends ScreenBase {
 			}
 			if (!videoRunning && !videoAppearAnim.isRunning() && !openCloseAnimating) {
 				if (messageListRect.contains(e.x, e.y) && e.has(Type.DOWN)) {
-					int idx = (e.y - messageListRect.y) / rowHeight + listOffset;
+					int idx = (e.y - messageListRect.y) / ROW_HEIGHT + listOffset;
 					if (idx >= 0 && idx < videos.size()) {
 						VideoMessageEntry selectedVideo = videos.get(idx);
 						selectedVideoId = selectedVideo.videoMessage;
@@ -816,7 +815,7 @@ public class BridgeScreen extends ScreenBase {
 			if (receive.selected) {
 				prepareReceiveList();
 			}
-			int rows = messageListRect.height / rowHeight;
+			int rows = messageListRect.height / ROW_HEIGHT;
 			int y = messageListRect.y;
 			Shape save0 = g2.getClip();
 			g2.clipRect(messageListRect.x, messageListRect.y, messageListRect.width, messageListRect.height);
@@ -829,9 +828,9 @@ public class BridgeScreen extends ScreenBase {
 				e.draw(g2, messageListRect.x, y);
 				if (e.videoMessage == selectedVideoId) {
 					g2.setColor(Color.WHITE);
-					g2.drawRect(messageListRect.x, y, messageListRect.width - 1, rowHeight);
+					g2.drawRect(messageListRect.x, y, messageListRect.width - 1, ROW_HEIGHT);
 				}
-				y += rowHeight;
+				y += ROW_HEIGHT;
 			}
 			g2.setClip(save0);
 			
@@ -859,7 +858,7 @@ public class BridgeScreen extends ScreenBase {
 	 * @param delta the delta
 	 */
 	void scrollList(int delta) {
-		int rows = messageListRect.height / rowHeight;
+		int rows = messageListRect.height / ROW_HEIGHT;
 		int maxOffset = Math.max(0, videos.size() - rows);
 		listOffset = Math.max(0, Math.min(listOffset + delta, maxOffset));
 		listUp.enabled(listOffset > 0);

@@ -190,39 +190,40 @@ public class SpidyAniFile {
 		in.readFully(entry);
 		String entryStr = new String(entry, "ISO-8859-1");
         switch (entryStr) {
-            case PAL_BLOCK: {
-                Palette block = new Palette();
-                block.data = new byte[PAL_BLOCK_LENGTH];
-                in.readFully(block.data);
-                block.map();
-                return block;
+        case PAL_BLOCK: {
+            Palette block = new Palette();
+            block.data = new byte[PAL_BLOCK_LENGTH];
+            in.readFully(block.data);
+            block.map();
+            return block;
+        }
+        case SOUND_BLOCK: {
+            Sound block = new Sound();
+            block.data = new byte[SOUND_BLOCK_LENGTH];
+            in.readFully(block.data);
+            soundSize += SOUND_BLOCK_LENGTH;
+            return block;
+        }
+        case DATA_BLOCK: {
+            Data block = new Data();
+            if (lzssUsed) {
+                // if lzss is used, the data block contains a lzssLen, len, width, height values
+                block.bufferSize = readWord();
             }
-            case SOUND_BLOCK: {
-                Sound block = new Sound();
-                block.data = new byte[SOUND_BLOCK_LENGTH];
-                in.readFully(block.data);
-                soundSize += SOUND_BLOCK_LENGTH;
-                return block;
+            int len = readWord();
+            block.width = readWord();
+            block.height = readWord();
+            // handle special case of len
+            if (len == 0xFFFF) {
+                // the following data is not LZSS compressed
+                block.specialFrame = true;
+                len = block.bufferSize;
             }
-            case DATA_BLOCK: {
-                Data block = new Data();
-                if (lzssUsed) {
-                    // if lzss is used, the data block contains a lzssLen, len, width, height values
-                    block.bufferSize = readWord();
-                }
-                int len = readWord();
-                block.width = readWord();
-                block.height = readWord();
-                // handle special case of len
-                if (len == 0xFFFF) {
-                    // the following data is not LZSS compressed
-                    block.specialFrame = true;
-                    len = block.bufferSize;
-                }
-                block.data = new byte[len];
-                in.readFully(block.data);
-                return block;
-            }
+            block.data = new byte[len];
+            in.readFully(block.data);
+            return block;
+        }
+        default:
         }
 		throw new IOException(String.format("Unsupported block: %s", entryStr));
 	}
@@ -303,29 +304,30 @@ public class SpidyAniFile {
 				in.readFully(entry);
 				String entryStr = new String(entry, "ISO-8859-1");
                 switch (entryStr) {
-                    case PAL_BLOCK:
-                        IOUtils.skipFully(in, PAL_BLOCK_LENGTH);
-                        break;
-                    case SOUND_BLOCK:
-                        IOUtils.skipFully(in, SOUND_BLOCK_LENGTH);
-                        soundSize += SOUND_BLOCK_LENGTH;
-                        break;
-                    case DATA_BLOCK:
-                        int bufferSize = 0;
-                        if (lzssUsed) {
-                            // if lzss is used, the data block contains a lzssLen, len, width, height values
-                            bufferSize = readWord();
-                        }
-                        int len = readWord();
-                        //				readWord();
-                        //				readWord();
-                        // handle special case of len
-                        if (len == 0xFFFF) {
-                            // the following data is not LZSS compressed
-                            len = bufferSize;
-                        }
-                        IOUtils.skipFully(in, len + 4);
-                        break;
+                case PAL_BLOCK:
+                    IOUtils.skipFully(in, PAL_BLOCK_LENGTH);
+                    break;
+                case SOUND_BLOCK:
+                    IOUtils.skipFully(in, SOUND_BLOCK_LENGTH);
+                    soundSize += SOUND_BLOCK_LENGTH;
+                    break;
+                case DATA_BLOCK:
+                    int bufferSize = 0;
+                    if (lzssUsed) {
+                        // if lzss is used, the data block contains a lzssLen, len, width, height values
+                        bufferSize = readWord();
+                    }
+                    int len = readWord();
+                    //				readWord();
+                    //				readWord();
+                    // handle special case of len
+                    if (len == 0xFFFF) {
+                        // the following data is not LZSS compressed
+                        len = bufferSize;
+                    }
+                    IOUtils.skipFully(in, len + 4);
+                    break;
+                default:
                 }
 			}
 		} catch (EOFException ex) {

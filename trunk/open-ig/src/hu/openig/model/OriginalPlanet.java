@@ -31,22 +31,23 @@ public class OriginalPlanet {
 	public final List<OriginalBuilding> buildings = new ArrayList<>();
 	/** @return Create the map file name from the type and variants */
 	public String getMapName() {
-        switch (surfaceType) {
-            case "Desert":
-                return "map_a" + surfaceVariant;
-            case "Neptoplasm":
-                return "map_g" + surfaceVariant;
-            case "Earth":
-                return "map_f" + surfaceVariant;
-            case "Rocky":
-                return "map_d" + surfaceVariant;
-            case "Cratered":
-                return "map_c" + surfaceVariant;
-            case "Frozen":
-                return "map_b" + surfaceVariant;
-            case "Liquid":
-                return "map_e" + surfaceVariant;
-        }
+		switch (surfaceType) {
+		case "Desert":
+			return "map_a" + surfaceVariant;
+		case "Neptoplasm":
+			return "map_g" + surfaceVariant;
+		case "Earth":
+			return "map_f" + surfaceVariant;
+		case "Rocky":
+			return "map_d" + surfaceVariant;
+		case "Cratered":
+			return "map_c" + surfaceVariant;
+		case "Frozen":
+			return "map_b" + surfaceVariant;
+		case "Liquid":
+			return "map_e" + surfaceVariant;
+		default:
+		}
 		return "";
 	}
 	/** @return the new race name from the old. */
