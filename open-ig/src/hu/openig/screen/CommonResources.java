@@ -41,11 +41,11 @@ import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResourceLocator;
-import hu.openig.model.SkirmishAIMode;
-import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
+import hu.openig.model.SkirmishAIMode;
 import hu.openig.model.SkirmishDefinition;
+import hu.openig.model.SkirmishPlayer;
 import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.Traits;
@@ -400,38 +400,40 @@ public class CommonResources implements GameEnvironment {
 	 * @param to the screen name
 	 */
 	public void switchScreen(String to) {
-        switch (to) {
-            case "*bridge":
-                control.displayPrimary(Screens.BRIDGE);
-                break;
-            case "*starmap":
-                control.displayPrimary(Screens.STARMAP);
-                break;
-            case "*colony":
-                control.displayPrimary(Screens.COLONY);
-                break;
-            case "*equipment":
-                control.displaySecondary(Screens.EQUIPMENT);
-                break;
-            case "*research":
-                control.displaySecondary(Screens.RESEARCH);
-                break;
-            case "*production":
-                control.displaySecondary(Screens.PRODUCTION);
-                break;
-            case "*information":
-                control.displaySecondary(Screens.INFORMATION_PLANETS);
-                break;
-            case "*database":
-                control.displaySecondary(Screens.DATABASE);
-                break;
-            case "*bar":
-                control.displaySecondary(Screens.BAR);
-                break;
-            case "*diplomacy":
-                control.displaySecondary(Screens.DIPLOMACY);
-                break;
-        }
+		switch (to) {
+		case "*bridge":
+			control.displayPrimary(Screens.BRIDGE);
+			break;
+		case "*starmap":
+			control.displayPrimary(Screens.STARMAP);
+			break;
+		case "*colony":
+			control.displayPrimary(Screens.COLONY);
+			break;
+		case "*equipment":
+			control.displaySecondary(Screens.EQUIPMENT);
+			break;
+		case "*research":
+			control.displaySecondary(Screens.RESEARCH);
+			break;
+		case "*production":
+			control.displaySecondary(Screens.PRODUCTION);
+			break;
+		case "*information":
+			control.displaySecondary(Screens.INFORMATION_PLANETS);
+			break;
+		case "*database":
+			control.displaySecondary(Screens.DATABASE);
+			break;
+		case "*bar":
+			control.displaySecondary(Screens.BAR);
+			break;
+		case "*diplomacy":
+			control.displaySecondary(Screens.DIPLOMACY);
+			break;
+		default:
+			throw new IllegalArgumentException(to);
+		}
 
 	}
 	/**

@@ -510,7 +510,7 @@ public class QuickProductionPanel extends UIContainer {
 		/** The assigned research. */
 		Production rt;
 		/** Gap between components. */
-		static final int gap = 10;
+		static final int GAP = 10;
 		/** Is the shift. */
 		boolean countShift;
 		/**
@@ -604,7 +604,7 @@ public class QuickProductionPanel extends UIContainer {
 			return name.width + count.width + progress.width
 					+ oneLess.width
 					+ oneMore.width
-					+ remove.width + gap + 5;
+					+ remove.width + GAP + 5;
 		}
 		/**
 		 * Apply the layout based on the current component width.
@@ -645,7 +645,7 @@ public class QuickProductionPanel extends UIContainer {
 		/** The research name. */
 		UILabel inventory;
 		/** Gap between components. */
-		static final int gap = 10;
+		static final int GAP = 10;
 		/**
 		 * Constructor. Prepares the sub-components.
 		 */
@@ -683,7 +683,7 @@ public class QuickProductionPanel extends UIContainer {
 
 			height = name.height;
 			
-			int w = name.width + cost.width + inventory.width + 2 * gap;
+			int w = name.width + cost.width + inventory.width + 2 * GAP;
 			return w;
 		}
 		/**
@@ -692,7 +692,7 @@ public class QuickProductionPanel extends UIContainer {
 		public void layout() {
 			name.location(0, 0);
 			cost.location(width - cost.width, 0);
-			inventory.location(name.x + name.width + gap, 0);
+			inventory.location(name.x + name.width + GAP, 0);
 		}
 		@Override
 		public boolean mouse(UIMouse e) {

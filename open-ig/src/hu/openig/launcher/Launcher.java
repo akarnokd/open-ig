@@ -61,8 +61,6 @@ import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -188,9 +186,9 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** The old config file. */
 	final File configOld = new File("launcher-config.xml");
 	/** The new config file. */
-	static final String config = "open-ig-launcher-config.xml";
+	static final String CONFIG = "open-ig-launcher-config.xml";
 	/** The local update file. */
-	static final String localUpdate = "open-ig-update.xml";
+	static final String LOCAL_UPDATE = "open-ig-update.xml";
 	/** Current language. */
 	String language = "en";
 	/** The language flag. */
@@ -1225,7 +1223,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 //				File uf = updateFile;
 				try {
 					xe = get();
-					move(updateFile, new File(installDir, localUpdate));
+					move(updateFile, new File(installDir, LOCAL_UPDATE));
 					doProcessUpdate(xe, updateFile);
 				} catch (ExecutionException ex) {
 					if (!(ex.getCause() instanceof IOException)) {
@@ -1258,7 +1256,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 */
 	void processLocal() {
 		try {
-			doProcessUpdate(XElement.parseXML(new File(installDir, localUpdate)), null);
+			doProcessUpdate(XElement.parseXML(new File(installDir, LOCAL_UPDATE)), null);
 		} catch (XMLStreamException ex) {
 			
 		}
@@ -1281,7 +1279,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		}
 		try {
 			LUpdate u = new LUpdate();
-			u.process(XElement.parseXML(new File(installDir, localUpdate)));
+			u.process(XElement.parseXML(new File(installDir, LOCAL_UPDATE)));
 			LModule m = u.getModule(GAME);
 			
 			
@@ -1444,7 +1442,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	 * Load the configuration.
 	 */
 	void loadConfig() {
-		File cfg0 = new File(installDir, config);
+		File cfg0 = new File(installDir, CONFIG);
 		if (cfg0.canRead()) {
 			try {
 				XElement cfg = XElement.parseXML(cfg0.getAbsolutePath());
@@ -2270,7 +2268,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		}
 		
 		try {
-			cfg.save(new File(installDir, config));
+			cfg.save(new File(installDir, CONFIG));
 		} catch (IOException ex) {
 			Exceptions.add(ex);
 		}

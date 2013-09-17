@@ -9,6 +9,7 @@ package hu.openig.editors;
 
 import hu.openig.model.BuildingType;
 import hu.openig.model.Tile;
+
 import java.util.Comparator;
 
 import javax.swing.ImageIcon;

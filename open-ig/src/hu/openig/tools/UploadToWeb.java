@@ -11,8 +11,8 @@ package hu.openig.tools;
 import hu.openig.utils.Base64;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.IOUtils;
-import java.io.IOException;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
 

@@ -8,7 +8,6 @@
 
 package hu.openig.screen.panels;
 
-import hu.openig.core.Pair;
 import hu.openig.render.TextRenderer;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;

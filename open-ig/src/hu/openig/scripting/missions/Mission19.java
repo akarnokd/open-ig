@@ -54,7 +54,7 @@ public class Mission19 extends Mission {
 		DONE
 	}
 	/** The governor's ship type. */
-	protected static final String governorShipType = "TradersFreight2";
+	protected static final String GOVERNOR_SHIP_TYPE = "TradersFreight2";
 	/** The mission stages. */
 	protected M19 stage = M19.NONE;
 	/** Initial hp of the governor fleet. */
@@ -138,7 +138,7 @@ public class Mission19 extends Mission {
 		Fleet f = createFleet(label("mission-19.unknown"), ft, z.x, z.y);
 		// -----------------
 		
-		addInventory(f, governorShipType, 1);
+		addInventory(f, GOVERNOR_SHIP_TYPE, 1);
 		addInventory(f, "Fighter1", 2);
 		
 		// -----------------
@@ -232,7 +232,7 @@ public class Mission19 extends Mission {
 	void battleFinish(BattleInfo battle) {
 		Fleet f = findTaggedFleet(MISSION_19_GOVERNOR, freeTraders());
 		if (f != null) {
-			ResearchType gr = research(governorShipType);
+			ResearchType gr = research(GOVERNOR_SHIP_TYPE);
 			InventoryItem ii = f.getInventoryItem(gr);
 			if (ii != null && battle.enemyFlee) {
 				// governor survived

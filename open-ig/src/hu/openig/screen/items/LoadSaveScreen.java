@@ -1527,6 +1527,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		}
 		mainmenu.visible(world() != null);
 		otherSettings.visible(world() == null);
+		continuousMoney.visible(commons.world() == null);
 		
 		super.draw(g2);
 		

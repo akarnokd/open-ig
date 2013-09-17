@@ -33,7 +33,7 @@ public class Tile {
 	/** The current alpha level of the image. */
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
-	protected static final float lightThreshold = 0.65f;
+	protected static final float LIGHT_THRESHOLD = 0.65f;
 	/** The cached alpha level. */
 	protected float cachedAlpha = -1;
 	/** The minimum alpha value ever. */
@@ -172,7 +172,7 @@ public class Tile {
 	 */
 	private void applyLightMap() {
 		int[] w = WORK.get()[0];
-		if (alpha < lightThreshold) {
+		if (alpha < LIGHT_THRESHOLD) {
 			for (int i = 0; i < image.length; i++) {
 				w[i] = withAlphaNight(image[i]);
 			}
@@ -181,7 +181,7 @@ public class Tile {
 				w[i] = withAlphaDay(image[i]);
 			}
 		}
-		if (lightMap != null && alpha <= lightThreshold) {
+		if (lightMap != null && alpha <= LIGHT_THRESHOLD) {
 			for (int i = 0; i < lightMap.length; i += 2) {
 				w[lightMap[i]] = lightMap[i + 1];
 			}
@@ -252,7 +252,7 @@ public class Tile {
 		return 0xFF000000
 		| (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
 		| (((int)((c & 0xFF00) * alpha)) & 0xFF00)
-		| (((int)((c & 0xFF) * ((alpha + lightThreshold) / 2))) & 0xFF);
+		| (((int)((c & 0xFF) * ((alpha + LIGHT_THRESHOLD) / 2))) & 0xFF);
 	}
 	/**
 	 * Converts the tile coordinates to pixel coordinates, X component.
