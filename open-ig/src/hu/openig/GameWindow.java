@@ -737,6 +737,12 @@ public class GameWindow extends JFrame implements GameControls {
 		case PROFILE:
 			sb = allScreens.profile;
 			break;
+		case SPYING:
+			sb = allScreens.spying;
+			break;
+		case TRADE:
+			sb = allScreens.trade;
+			break;
 		default:
 		}
 		if (asPrimary) {
@@ -1871,6 +1877,10 @@ public class GameWindow extends JFrame implements GameControls {
 			return (T)allScreens.skirmish;
 		case PROFILE:
 			return (T)allScreens.profile;
+		case SPYING:
+			return (T)allScreens.spying;
+		case TRADE:
+			return (T)allScreens.trade;
 		default:
 			throw new AssertionError(String.valueOf(screen));
 		}

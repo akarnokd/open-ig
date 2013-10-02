@@ -128,6 +128,8 @@ public class Player {
 	public final List<String> nicknames = new ArrayList<>();
 	/** The set of colonization targets. */
 	public final Set<String> colonizationTargets = new LinkedHashSet<>();
+	/** The collection of various spies. */
+	public final List<Spy> spies = new ArrayList<>();
 	/** The API interface to execute commands in the name of this player. */
 	public GameAPI api;
 	/** The asynchronouse API interface to execute commands in the name of this player. */

@@ -43,6 +43,8 @@ public class ScreenMenu extends UIContainer {
 		"screens.database",
 		"screens.bar",
 		"screens.diplomacy",
+		"screens.spying",
+		"screens.trade",
 		"screens.statistics",
 		"screens.achievements",
 		"screens.loadsave",
@@ -91,7 +93,7 @@ public class ScreenMenu extends UIContainer {
 				|| (idx == 5 && commons.world().level < 3)
 				|| (idx == 8 && !positions.containsKey("*bar"))
 				|| (idx == 9 && !positions.containsKey("*diplomacy"))
-				|| (idx < 12 && commons.battleMode);
+				|| (idx < 14 && commons.battleMode);
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
@@ -157,18 +159,24 @@ public class ScreenMenu extends UIContainer {
 			}
 			break;
 		case 10:
-			commons.control().displaySecondary(Screens.STATISTICS);
+			commons.control().displaySecondary(Screens.SPYING);
 			break;
 		case 11:
-			commons.control().displaySecondary(Screens.ACHIEVEMENTS);
+			commons.control().displaySecondary(Screens.TRADE);
 			break;
 		case 12:
+			commons.control().displaySecondary(Screens.STATISTICS);
+			break;
+		case 13:
+			commons.control().displaySecondary(Screens.ACHIEVEMENTS);
+			break;
+		case 14:
 			commons.control().displayOptions();
 			LoadSaveScreenAPI scr = (LoadSaveScreenAPI)commons.control().getScreen(Screens.LOAD_SAVE);
 			scr.maySave(!commons.battleMode);
 			scr.displayPage(SettingsPage.LOAD_SAVE);
 			break;
-		case 13:
+		case 15:
 			commons.control().displayOptions();
 			scr = (LoadSaveScreenAPI)commons.control().getScreen(Screens.LOAD_SAVE);
 			scr.maySave(!commons.battleMode);

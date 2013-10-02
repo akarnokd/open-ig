@@ -1821,7 +1821,7 @@
   <entry key='researchinfo.progress.running'>Running: %s%%</entry>
   <entry key='researchinfo.required_labs'>Required / Available:</entry>
   <entry key='save'>Save</entry>
-  <entry key='screens.achievements'>F12 - Achievements</entry>
+  <entry key='screens.achievements'>*F12 - Achievements</entry>
   <entry key='screens.bar'>F9 - Bar</entry>
   <entry key='screens.bridge'>F1 - Bridge</entry>
   <entry key='screens.colony'>F3 - Colony</entry>
@@ -1834,7 +1834,9 @@
   <entry key='screens.production'>F5 - Production</entry>
   <entry key='screens.research'>F6 - Research</entry>
   <entry key='screens.starmap'>F2 - Starmap</entry>
-  <entry key='screens.statistics'>F11 - Statistics</entry>
+  <entry key='screens.statistics'>*F11 - Statistics</entry>
+  <entry key='screens.spying'>F11 - Spying</entry>
+  <entry key='screens.trade'>F12 - Black market</entry>
   <entry key='settings'>Settings</entry>
   <entry key='settings.animatetech'>Animate technology</entry>
   <entry key='settings.audio'>Audio</entry>

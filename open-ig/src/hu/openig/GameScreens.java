@@ -28,9 +28,11 @@ import hu.openig.screen.items.ShipwalkScreen;
 import hu.openig.screen.items.SingleplayerScreen;
 import hu.openig.screen.items.SkirmishScreen;
 import hu.openig.screen.items.SpacewarScreen;
+import hu.openig.screen.items.SpyScreen;
 import hu.openig.screen.items.StarmapScreen;
 import hu.openig.screen.items.StatusbarScreen;
 import hu.openig.screen.items.TestScreen;
+import hu.openig.screen.items.TradeScreen;
 import hu.openig.screen.items.TraitScreen;
 import hu.openig.screen.items.VideoScreen;
 
@@ -88,5 +90,8 @@ public final class GameScreens {
     public TraitScreen traits;
     /** The profile screen. */
     public ProfileScreen profile;
-    
+    /** The spy screen. */
+    public SpyScreen spying;
+    /** The trade screen. */
+    public TradeScreen trade;
 }

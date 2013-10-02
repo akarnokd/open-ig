@@ -1014,8 +1014,10 @@
 	<entry key='screens.database'>F8 - Adatbázis</entry>
 	<entry key='screens.bar'>F9 - Bár</entry>
 	<entry key='screens.diplomacy'>F10 - Diplomácia</entry>
-	<entry key='screens.statistics'>F11 - Statisztika</entry>
-	<entry key='screens.achievements'>F12 - Teljesítmények</entry>
+	<entry key='screens.statistics'>*F11 - Statisztika</entry>
+	<entry key='screens.achievements'>*F12 - Teljesítmények</entry>
+	<entry key='screens.spying'>F11 - Kémkedés</entry>
+	<entry key='screens.trade'>F12 - Feketepiac</entry>
 	<entry key='screens.loadsave'>ESC - Betölt, Ment</entry>
 	<entry key='screens.options'>O - Opciók</entry>
 	<entry key='test.q1'>Kapcsolataimban néha zavar kisebbségi érzésem - aminek nincs valóságos alapja.</entry>

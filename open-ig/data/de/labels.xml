@@ -511,7 +511,7 @@
   <entry key='researchinfo.progress.running'>Laufend: %s%%</entry>
   <entry key='researchinfo.required_labs'>Gebraucht / Verfügbar:</entry>
 
-  <entry key='screens.achievements'>F12 - Leistungen</entry>
+  <entry key='screens.achievements'>*F12 - Leistungen</entry>
   <entry key='screens.bar'>F9 - Bar</entry>
   <entry key='screens.bridge'>F1 - Brücke</entry>
   <entry key='screens.colony'>F3 - Kolonie</entry>
@@ -524,7 +524,9 @@
   <entry key='screens.production'>F5 - Produktion</entry>
   <entry key='screens.research'>F6 - Forschung</entry>
   <entry key='screens.starmap'>F2 - Karte</entry>
-  <entry key='screens.statistics'>F11 - Statistik</entry>
+  <entry key='screens.statistics'>*F11 - Statistik</entry>
+  <entry key='screens.spying'>F11 - Spionen</entry>
+  <entry key='screens.trade'>F12 - Schwarzmarkt</entry>
 
   <entry key='spacewar.projector_information'>Kanone Information</entry>
   <entry key='spacewar.selection.bombs_rockets'>B/R    : %s / %s</entry>

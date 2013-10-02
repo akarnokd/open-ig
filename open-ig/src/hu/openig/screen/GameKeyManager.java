@@ -291,12 +291,8 @@ public class GameKeyManager extends KeyAdapter {
 				break;
 			case KeyEvent.VK_F5:
 				if (world().level >= 2) {
-					if (secondary != null) {
-						if (secondary.screen() == Screens.PRODUCTION) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.PRODUCTION);
-						}
+					if (secondary != null && secondary.screen() == Screens.PRODUCTION) {
+						hideSecondary();
 					} else {
 						displaySecondary(Screens.PRODUCTION);
 					}
@@ -305,12 +301,8 @@ public class GameKeyManager extends KeyAdapter {
 				break;
 			case KeyEvent.VK_F6:
 				if (world().level >= 3) {
-					if (secondary != null) {
-						if (secondary.screen() == Screens.RESEARCH) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.RESEARCH);
-						}
+					if (secondary != null && secondary.screen() == Screens.RESEARCH) {
+						hideSecondary();
 					} else {
 						displaySecondary(Screens.RESEARCH);
 					}
@@ -356,12 +348,8 @@ public class GameKeyManager extends KeyAdapter {
 				e.consume();
 				break;
 			case KeyEvent.VK_F8:
-				if (secondary != null) {
-					if (secondary.screen() == Screens.DATABASE) {
-						hideSecondary();
-					} else {
-						displaySecondary(Screens.DATABASE);
-					}
+				if (secondary != null && secondary.screen() == Screens.DATABASE) {
+					hideSecondary();
 				} else {
 					displaySecondary(Screens.DATABASE);
 				}
@@ -369,12 +357,8 @@ public class GameKeyManager extends KeyAdapter {
 				break;
 			case KeyEvent.VK_F9:
 				if (world().getShip().positions.containsKey("*bar")) {
-					if (secondary != null) {
-						if (secondary.screen() == Screens.BAR) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.BAR);
-						}
+					if (secondary != null && secondary.screen() == Screens.BAR) {
+						hideSecondary();
 					} else {
 						displaySecondary(Screens.BAR);
 					}
@@ -383,12 +367,8 @@ public class GameKeyManager extends KeyAdapter {
 				break;
 			case KeyEvent.VK_F10:
 				if (world().getShip().positions.containsKey("*diplomacy")) {
-					if (secondary != null) {
-						if (secondary.screen() == Screens.DIPLOMACY) {
-							hideSecondary();
-						} else {
-							displaySecondary(Screens.DIPLOMACY);
-						}
+					if (secondary != null && secondary.screen() == Screens.DIPLOMACY) {
+						hideSecondary();
 					} else {
 						displaySecondary(Screens.DIPLOMACY);
 					}
@@ -396,26 +376,34 @@ public class GameKeyManager extends KeyAdapter {
 				e.consume();
 				break;
 			case KeyEvent.VK_F11:
-				if (secondary != null) {
-					if (secondary.screen() == Screens.STATISTICS) {
+				if (e.isControlDown()) {
+					if (secondary != null && secondary.screen() == Screens.STATISTICS) {
 						hideSecondary();
 					} else {
 						displaySecondary(Screens.STATISTICS);
 					}
 				} else {
-					displaySecondary(Screens.STATISTICS);
+					if (secondary != null && secondary.screen() == Screens.SPYING) {
+						hideSecondary();
+					} else {
+						displaySecondary(Screens.SPYING);
+					}
 				}
 				e.consume();
 				break;
 			case KeyEvent.VK_F12:
-				if (secondary != null) {
-					if (secondary.screen() == Screens.ACHIEVEMENTS) {
+				if (e.isControlDown()) {
+					if (secondary != null && secondary.screen() == Screens.ACHIEVEMENTS) {
 						hideSecondary();
 					} else {
 						displaySecondary(Screens.ACHIEVEMENTS);
 					}
 				} else {
-					displaySecondary(Screens.ACHIEVEMENTS);
+					if (secondary != null && secondary.screen() == Screens.TRADE) {
+						hideSecondary();
+					} else {
+						displaySecondary(Screens.TRADE);
+					}
 				}
 				e.consume();
 				break;
