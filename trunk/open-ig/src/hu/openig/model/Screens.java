@@ -84,5 +84,9 @@ public enum Screens {
 	/** The skirmish screen. */
 	SKIRMISH,
 	/** The profile screen. */
-	PROFILE
+	PROFILE,
+	/** The spy screen. */
+	SPYING,
+	/** The trade screen. */
+	TRADE
 }

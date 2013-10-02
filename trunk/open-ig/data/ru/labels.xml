@@ -2337,7 +2337,7 @@
   <entry key='researchinfo.required_labs'>Требуется / В наличии:</entry>
   <entry key='save'>Сохранить</entry>
   <entry key='save.level'>Уровень %s запускается</entry>
-  <entry key='screens.achievements'>F12 - Достижения</entry>
+  <entry key='screens.achievements'>*F12 - Достижения</entry>
   <entry key='screens.bar'>F9 - Бар</entry>
   <entry key='screens.bridge'>F1 - Рубка</entry>
   <entry key='screens.colony'>F3 - Колонии</entry>
@@ -2350,7 +2350,9 @@
   <entry key='screens.production'>F5 - Производство</entry>
   <entry key='screens.research'>F6 - Исследования</entry>
   <entry key='screens.starmap'>F2 - Карта</entry>
-  <entry key='screens.statistics'>F11 - Статистика</entry>
+  <entry key='screens.statistics'>*F11 - Статистика</entry>
+  <entry key='screens.spying'>F11 - Шпионаж</entry>
+  <entry key='screens.trade'>F12 - Черный рынок</entry>
   <entry key='settings'>Настройки</entry>
   <entry key='settings.animatetech'>Анимация</entry>
   <entry key='settings.audio'>Звук</entry>

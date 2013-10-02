@@ -128,7 +128,6 @@ public class ProfileScreen extends ScreenBase {
 			}
 		});
 
-		// TODO Auto-generated method stub
 		newProfileStr = commons.config.currentProfile;
 		updateNewProfile();
 		
@@ -138,14 +137,12 @@ public class ProfileScreen extends ScreenBase {
 
 	@Override
 	public void onLeave() {
-		// TODO Auto-generated method stub
 		U.close(blink);
 		blink = null;
 	}
 
 	@Override
 	public void onFinish() {
-		// TODO Auto-generated method stub
 
 	}
 	
