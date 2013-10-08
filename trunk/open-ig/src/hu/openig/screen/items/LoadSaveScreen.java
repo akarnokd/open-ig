@@ -1264,7 +1264,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		starmapScroll.selected(config.showStarmapScroll);
 		aiAutobuildProduction.selected(config.aiAutoBuildProduction);
 		continuousMoney.selected(config.continuousMoney);
-		continuousMoney.visible(commons.world() == null);
 		
 		hideConfirm();
 
@@ -1527,7 +1526,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		}
 		mainmenu.visible(world() != null);
 		otherSettings.visible(world() == null);
-		continuousMoney.visible(commons.world() == null);
+		continuousMoney.visible(commons.world() == null && settingsMode == SettingsPage.GAMEPLAY);
 		
 		super.draw(g2);
 		

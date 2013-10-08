@@ -198,7 +198,7 @@ public final class Simulator {
 		int radar = 0;
 		
 		long eqPlaytime = 20L * 60 * 60;
-		int eqDelta = 36 * 24 * 60;
+		int eqDelta = 365 * 24 * 60;
 		if (world.difficulty == Difficulty.NORMAL) {
 			eqPlaytime /= 2;
 			eqDelta /= 2;
