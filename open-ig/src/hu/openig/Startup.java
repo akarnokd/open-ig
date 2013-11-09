@@ -114,7 +114,8 @@ public final class Startup {
 		};
 		config.load();
 
-		Set<String> langCodes = U.newSet("hu", "en", "de", "fr", "ru");
+		Set<String> langCodes = U.newSet(
+				"hu", "en", "de", "fr", "ru", "es");
 
 		for (String lc : langCodes) {
 			if (argset.contains("-" + lc)) {

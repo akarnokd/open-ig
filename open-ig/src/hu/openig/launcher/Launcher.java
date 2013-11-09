@@ -94,7 +94,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.42";
+	public static final String VERSION = "0.43";
 	/**
 	 * The update XML to download.
 	 */
