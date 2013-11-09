@@ -590,6 +590,11 @@ public class MainScreen extends ScreenBase {
 				e.consume();
 				return true;
 			}
+			if (e.getKeyCode() == KeyEvent.VK_6) {
+				switchTo("es");
+				e.consume();
+				return true;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_O) {
 			doSettings();
