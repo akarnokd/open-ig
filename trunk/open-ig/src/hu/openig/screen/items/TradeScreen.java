@@ -72,6 +72,8 @@ public class TradeScreen extends ScreenBase {
 		AffineTransform savea = scaleDraw(g2, base, margin());
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 
+		commons.info().drawInfoPanel(g2, base.x, base.y);
+
 		super.draw(g2);
 		
 		g2.setTransform(savea);

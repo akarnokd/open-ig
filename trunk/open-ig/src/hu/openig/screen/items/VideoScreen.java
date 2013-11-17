@@ -107,7 +107,9 @@ public class VideoScreen extends ScreenBase {
 	 */
 	@Override
 	public void onInitialize() {
-		origin = new Rectangle(0, 0, commons.common().infoEmpty.getWidth(), commons.common().infoEmpty.getHeight());
+		origin = new Rectangle(0, 0, 
+				commons.common().infoEmptyTop.getWidth(), 
+				commons.common().infoEmptyLeft.getHeight());
 		 
 		scrollUpButton = new UIImageButton(commons.database().arrowUp);
 		scrollUpButton.setHoldDelay(100);
@@ -274,7 +276,8 @@ public class VideoScreen extends ScreenBase {
 	@Override
 	public void draw(Graphics2D g2) {
 		RenderTools.darkenAround(origin, getInnerWidth(), getInnerHeight(), g2, 0.5f, true);
-		g2.drawImage(commons.common().infoEmpty, origin.x, origin.y, null);
+		
+		commons.common().drawInfoEmpty(g2, origin.x, origin.y);
 		
 		String s = get("videos.all_videos");
 		int w = commons.text().getTextWidth(14, s) + 10;

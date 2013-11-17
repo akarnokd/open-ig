@@ -291,21 +291,22 @@ public class MessageTokenizer implements Iterable<Token> {
 	 * @throws Exception on error
 	 */
 	public static void main(String[] args) throws Exception {
-		StringReader r = new StringReader(
-				"OBJECT { value=1, v=1.1, i=true, a=-1, b=.1, c=-.1, d=-1.1, array=[ \"str\\\"\" ] }");
+		try (StringReader r = new StringReader(
+				"OBJECT { value=1, v=1.1, i=true, a=-1, b=.1, c=-.1, d=-1.1, array=[ \"str\\\"\" ] }")) {
 
-		/*
-		MessageTokenizer mt = new MessageTokenizer(r);
-		List<Token> list = new ArrayList<>();
-		mt.process(list);
-		
-		for (Token e : list) {
-			System.out.println(e);
+			/*
+			MessageTokenizer mt = new MessageTokenizer(r);
+			List<Token> list = new ArrayList<>();
+			mt.process(list);
+			
+			for (Token e : list) {
+				System.out.println(e);
+			}
+			*/
+			System.out.println("-----");
+	        for (Object o : new MessageTokenizer(r)) {
+	            System.out.println(o);
+	        }
 		}
-		*/
-		System.out.println("-----");
-        for (Object o : new MessageTokenizer(r)) {
-            System.out.println(o);
-        }
 	}
 }

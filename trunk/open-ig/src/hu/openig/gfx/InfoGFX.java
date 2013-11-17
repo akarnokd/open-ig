@@ -13,6 +13,8 @@ import hu.openig.core.Btn3;
 import hu.openig.core.Img;
 import hu.openig.model.ResourceLocator;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -21,8 +23,23 @@ import java.awt.image.BufferedImage;
  */
 public class InfoGFX {
 	/** The base image. */
-	@Img(name = "info/info_base")
-	public BufferedImage base;
+	@Img(name = "info/info_base_top")
+	public BufferedImage baseTop;
+	/** The base image. */
+	@Img(name = "info/info_base_left")
+	public BufferedImage baseLeft;
+	/** The base image. */
+	@Img(name = "info/info_base_middle")
+	public BufferedImage baseMiddle;
+	/** The base image. */
+	@Img(name = "info/info_base_right")
+	public BufferedImage baseRight;
+	/** The base image. */
+	@Img(name = "info/info_base_divider_1")
+	public BufferedImage baseDivider1;
+	/** The base image. */
+	@Img(name = "info/info_base_divider_2")
+	public BufferedImage baseDivider2;
 	/** The empty button. */
 	@Img(name = "info/button_empty")
 	public BufferedImage emptyButton;
@@ -82,5 +99,21 @@ public class InfoGFX {
 	public InfoGFX load(ResourceLocator rl) {
 		GFXLoader.loadResources(this, rl);
 		return this;
+	}
+	/**
+	 * Paint the info panel to the graphics surface.
+	 * @param g2 the graphics context
+	 * @param x the top-left coordinate
+	 * @param y the top-left coordinate
+	 */
+	public void drawInfoPanel(Graphics2D g2, int x, int y) {
+		g2.setColor(Color.BLACK);
+		g2.fillRect(x, y, 620, 420);
+		g2.drawImage(baseTop, x, y, null);
+		g2.drawImage(baseLeft, x, y, null);
+		g2.drawImage(baseMiddle, x + 413, y, null);
+		g2.drawImage(baseRight, x + 618, y, null);
+		g2.drawImage(baseDivider1, x + 413, y + 28, null);
+		g2.drawImage(baseDivider2, x + 413, y + 209, null);
 	}
 }

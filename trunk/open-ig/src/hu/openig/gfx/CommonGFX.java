@@ -34,8 +34,17 @@ public class CommonGFX {
 	/** The achievement icon grayed out. */
 	public BufferedImage achievementGrayed;
 	/** The empty background of the info panel. */
-	@Img(name = "info/info_empty")
-	public BufferedImage infoEmpty;
+	@Img(name = "info/info_empty_top")
+	public BufferedImage infoEmptyTop;
+	/** The empty background of the info panel. */
+	@Img(name = "info/info_empty_left")
+	public BufferedImage infoEmptyLeft;
+	/** The empty background of the info panel. */
+	@Img(name = "info/info_empty_right")
+	public BufferedImage infoEmptyRight;
+	/** The empty background of the info panel. */
+	@Img(name = "info/info_empty_bottom")
+	public BufferedImage infoEmptyBottom;
 	/** Delete button. */
 	@Btn2(name = "button_delete")
 	public BufferedImage[] delete;
@@ -192,5 +201,19 @@ public class CommonGFX {
 		mediumButtonPressed = new GenericMediumButton("/hu/openig/gfx/button_medium_pressed.png");
 		
 		return this;
+	}
+	/**
+	 * Paint the empty info panel to the graphics surface.
+	 * @param g2 the graphics context
+	 * @param x the top-left coordinate
+	 * @param y the top-left coordinate
+	 */
+	public void drawInfoEmpty(Graphics2D g2, int x, int y) {
+		g2.setColor(Color.BLACK);
+		g2.fillRect(x, y, 620, 420);
+		g2.drawImage(infoEmptyTop, x, y, null);
+		g2.drawImage(infoEmptyLeft, x, y, null);
+		g2.drawImage(infoEmptyRight, x + 618, y, null);
+		g2.drawImage(infoEmptyBottom, x, y + 418, null);
 	}
 }

@@ -569,8 +569,8 @@ public class InfoScreen extends ScreenBase {
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
-				commons.info().base.getWidth(), 
-				commons.info().base.getHeight());
+				commons.info().baseTop.getWidth(), 
+				commons.info().baseLeft.getHeight());
 		
 		planetsTab = changeMode(new UIImageTabButton2(commons.info().planets), Screens.INFORMATION_PLANETS);
 		colonyTab = changeMode(new UIImageTabButton2(commons.info().colonyInfo), Screens.INFORMATION_COLONY);
@@ -959,8 +959,8 @@ public class InfoScreen extends ScreenBase {
 	@Override
 	public void onResize() {
 		base.setBounds(0, 0, 
-				commons.info().base.getWidth(), 
-				commons.info().base.getHeight());
+				commons.info().baseTop.getWidth(), 
+				commons.info().baseLeft.getHeight());
 		scaleResize(base, margin());
 		
 		planetsTab.location(base.x, base.y + base.height - planetsTab.height - fleetsTab.height);
@@ -1083,7 +1083,7 @@ public class InfoScreen extends ScreenBase {
 		AffineTransform savea = scaleDraw(g2, base, margin());
 		
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
-		g2.drawImage(commons.info().base, base.x, base.y, null);
+		commons.info().drawInfoPanel(g2, base.x, base.y);
 
 		localStatistics = planet().getStatistics();
 		

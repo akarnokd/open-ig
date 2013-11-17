@@ -199,7 +199,9 @@ public class AchievementsScreen extends ScreenBase {
 	@Override
 	public void onInitialize() {
 		
-		base.setSize(commons.common().infoEmpty.getWidth(), commons.common().infoEmpty.getHeight());
+		base.setSize(
+				commons.common().infoEmptyTop.getWidth(), 
+				commons.common().infoEmptyLeft.getHeight());
 		achievementList.clear();
 		statistics.clear();
 		
@@ -481,7 +483,7 @@ public class AchievementsScreen extends ScreenBase {
 		AffineTransform savea = scaleDraw(g2, base, margin());
 		RenderTools.darkenAround(base, width, height, g2, 0.5f, true);
 		
-		g2.drawImage(commons.common().infoEmpty, base.x, base.y, null);
+		commons.common().drawInfoEmpty(g2, base.x, base.y);
 		
 		Shape save0 = g2.getClip();
 		adjustLabels();

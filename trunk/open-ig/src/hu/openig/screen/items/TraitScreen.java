@@ -66,7 +66,7 @@ public class TraitScreen extends ScreenBase {
 	UIGenericButton cancel;
 	@Override
 	public void onResize() {
-		base.width = commons.common().infoEmpty.getWidth();
+		base.width = commons.common().infoEmptyTop.getWidth();
 		base.y = 10;
 		base.height = height - 20;
 
