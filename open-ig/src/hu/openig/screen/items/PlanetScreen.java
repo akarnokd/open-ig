@@ -354,6 +354,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	boolean zoomDirection;
 	/** Zoom to normal. */
 	boolean zoomNormal;
+	/** Center the view after changing the planet. */
+	boolean centerView = true;
 	/** The weather overlay. */
 	WeatherOverlay weatherOverlay;
 	/** The weather sound is running? */
@@ -969,8 +971,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					}
 //				} else FIXME only if battle
 				if (e.has(Button.MIDDLE) && config.classicControls == e.has(Modifier.CTRL)) {
-					render.offsetX = -(surface().boundingRectangle.width - width) / 2;
-					render.offsetY = -(surface().boundingRectangle.height - height) / 2;
+					centerScreen();
 					scale = 1;
 					rep = true;
 				}
@@ -3226,6 +3227,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
 				player().movePrevPlanet();
+				centerView = true;
 			}
 		};
 		next = new UIImageButton(commons.starmap().forwards);
@@ -3235,6 +3237,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
 				player().moveNextPlanet();
+				centerView = true;
 			}
 		};
 		
@@ -6543,6 +6546,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (battle == null) {
 				clearGroundBattle();
 			}
+			if (centerView) {
+				centerView = false;
+				centerScreen();
+			}
 		}
 		// check if the AI has removed any building while we were looking at its planet
 		if (currentBuilding != null) {
@@ -6627,6 +6634,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		setTooltip(buildingInfoPanel.repairing, "colony.repairing.tooltip");
 		
 		return ps;
+	}
+	/** Center the view on the planet's middle. */
+	void centerScreen() {
+		render.offsetX = -(surface().boundingRectangle.width - width) / 2;
+		render.offsetY = -(surface().boundingRectangle.height - height) / 2;
 	}
 }
 
