@@ -18,8 +18,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 /**
@@ -1034,6 +1036,37 @@ public class Fleet implements Named, Owned, HasInventory {
 	 * @param mode the transfer mode
 	 */
 	public void transferTo(Fleet other, int itemId, FleetTransferMode mode) {
+		int vehicleCap = getStatistics().vehicleMax;
+
+		transfer(other, itemId, mode);
+		// move vehicles
+		int vehicleCap2 = getStatistics().vehicleMax;
+		int toMove = vehicleCap - vehicleCap2;
+		if (toMove > 0) {
+			Queue<InventoryItem> viis = new LinkedList<>();
+			for (InventoryItem vi : inventory.iterable()) {
+				if (vi.type.category == ResearchSubCategory.WEAPONS_TANKS
+						|| vi.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+					viis.add(vi);
+				}
+			}
+			while (toMove > 0 && !viis.isEmpty()) {
+				InventoryItem vi = viis.peek();
+				transfer(other, vi.id, FleetTransferMode.ONE);
+				toMove--;
+				if (vi.count <= 0) {
+					viis.remove();
+				}
+			}
+		}
+	}
+	/**
+	 * Transfers the inventory item(s) from this fleet to the other fleet.
+	 * @param other the other fleet
+	 * @param itemId the source inventory id
+	 * @param mode the tranfer mode
+	 */
+	private void transfer(Fleet other, int itemId, FleetTransferMode mode) {
 		InventoryItem ii = inventory.findById(itemId);
 		if (ii == null) {
 			throw new IllegalArgumentException("Unknown inventory item: " + itemId);

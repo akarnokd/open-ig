@@ -57,8 +57,10 @@ public final class ScreenUtils {
 			sws.onCompleted = new Action0() {
 				@Override
 				public void invoke() {
-					commons.switchScreen(to);
 					sws.onCompleted = null;
+					if (to.startsWith("*")) {
+						commons.switchScreen(to);
+					}
 				}
 			};
 			if (skipVideo) {

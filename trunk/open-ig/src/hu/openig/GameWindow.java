@@ -132,9 +132,9 @@ public class GameWindow extends JFrame implements GameControls {
 		/** The last scaling. */
 		int lastScale = -1;
 		/** When did the last paint happen. */
-//		long lastPaint;
+		//		long lastPaint;
 		/** The FPS value to draw to the overlay. */
-//		Double fps;
+		//		Double fps;
 		/**
 		 * Set opacity. 
 		 */
@@ -144,20 +144,20 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void paint(Graphics g) {
-//			lastPaint = System.nanoTime();
-//			SwingUtilities.invokeLater(new Runnable() {
-//				@Override
-//				public void run() {
-//					long t2 = System.nanoTime() - lastPaint;
-//					fps = 0.9 * fps + 0.1 * 1000000000d / t2;
-//				}
-//			});
+			//			lastPaint = System.nanoTime();
+			//			SwingUtilities.invokeLater(new Runnable() {
+			//				@Override
+			//				public void run() {
+			//					long t2 = System.nanoTime() - lastPaint;
+			//					fps = 0.9 * fps + 0.1 * 1000000000d / t2;
+			//				}
+			//			});
 			boolean r0 = repaintRequest;
 			boolean r1 = repaintRequestPartial;
 			repaintRequest = false;
 			repaintRequestPartial = false;
 			int uis = config.uiScale;
-			
+
 			if (getWidth() != lastW || getHeight() != lastH || uis != lastScale) {
 				r0 = true;
 				lastW = getWidth();
@@ -183,7 +183,7 @@ public class GameWindow extends JFrame implements GameControls {
 					Exceptions.add(t);
 				}
 			}
-			
+
 			Graphics2D g2 = (Graphics2D)g;
 			AffineTransform at0 = g2.getTransform();
 			try {
@@ -302,37 +302,37 @@ public class GameWindow extends JFrame implements GameControls {
 				Exceptions.add(e);
 			}
 		}
-		
+
 		this.commons = commons;
 		commons.control(this);
 		this.config = config;
 		this.surface = new ScreenRenderer();
-		
+
 		if (config.fullScreen) {
 			this.setUndecorated(true);
 		}
-		
+
 		RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
-		
+
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
-		
-		
+
+
 		gl.setHorizontalGroup(
-			gl.createSequentialGroup()
-			.addComponent(surface, 640, 640, Short.MAX_VALUE)
-		);
+				gl.createSequentialGroup()
+				.addComponent(surface, 640, 640, Short.MAX_VALUE)
+				);
 		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addComponent(surface, 480, 480, Short.MAX_VALUE)
-		);
+				gl.createSequentialGroup()
+				.addComponent(surface, 480, 480, Short.MAX_VALUE)
+				);
 		pack();
 		setMinimumSize(getSize());
 		setLocationRelativeTo(null);
-		
+
 		// Event handling
-		
+
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -346,16 +346,16 @@ public class GameWindow extends JFrame implements GameControls {
 				GameWindow.this.requestFocusInWindow();
 			}
 		});
-		
+
 		MouseActions ma = new MouseActions();
 		surface.addMouseListener(ma);
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
-		
+
 		gameKeyManager = new GameKeyManager(commons);
-		
+
 		addKeyListener(gameKeyManager);
-		
+
 		// load resources
 		initScreens();
 		if (config.left != null && config.top != null) {
@@ -380,6 +380,9 @@ public class GameWindow extends JFrame implements GameControls {
 					for (final GraphicsDevice gs : ge.getScreenDevices()) {
 						if (gs.getDefaultConfiguration().getBounds().intersects(getBounds())) {
 							gs.setFullScreenWindow(GameWindow.this);
+							// Mac workaround for not having the keyboard focus in fullscreen.
+							GameWindow.this.setVisible(false);
+							GameWindow.this.setVisible(true);
 							setSize(gs.getDefaultConfiguration().getBounds().getSize());
 							break;
 						}
@@ -414,7 +417,7 @@ public class GameWindow extends JFrame implements GameControls {
 		});
 
 		this.surface = new ScreenRenderer();
-		
+
 		this.commons = that.commons;
 		this.commons.control(this);
 		this.config = that.config;
@@ -430,39 +433,32 @@ public class GameWindow extends JFrame implements GameControls {
 		this.optionsVisible = that.optionsVisible;
 
 		assign(this.allScreens, that.allScreens);
-		
+
 		Container c = getContentPane();
 		GroupLayout gl = new GroupLayout(c);
 		c.setLayout(gl);
-		
-		
+
+
 		gl.setHorizontalGroup(
-			gl.createSequentialGroup()
-			.addComponent(surface, 640, 640, Short.MAX_VALUE)
-		);
+				gl.createSequentialGroup()
+				.addComponent(surface, 640, 640, Short.MAX_VALUE)
+				);
 		gl.setVerticalGroup(
-			gl.createSequentialGroup()
-			.addComponent(surface, 480, 480, Short.MAX_VALUE)
-		);
+				gl.createSequentialGroup()
+				.addComponent(surface, 480, 480, Short.MAX_VALUE)
+				);
 		pack();
 		setMinimumSize(getSize());
 		setLocationRelativeTo(null);
 
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				exit();
-			}
-		});
 		MouseActions ma = new MouseActions();
 		surface.addMouseListener(ma);
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
-		
+
 		addKeyListener(that.gameKeyManager);
 		that.removeKeyListener(that.gameKeyManager);
-		
+
 		// fix movie
 		if (movie.playbackFinished instanceof MovieFinishAction) {
 			((MovieFinishAction)movie.playbackFinished).gw = this;
@@ -521,7 +517,7 @@ public class GameWindow extends JFrame implements GameControls {
 			commons.world().scripting.done();
 		}
 		commons.done();
-		
+
 		config.fullScreen = isUndecorated();
 		if (!config.fullScreen) {
 			config.maximized = (getExtendedState() & MAXIMIZED_BOTH) != 0;
@@ -538,11 +534,11 @@ public class GameWindow extends JFrame implements GameControls {
 			config.height = saveHeight;
 		}
 		config.save();
-		
+
 		done();
 		dispose();
-                config.crashLog = null;
-                U.close(config.watcherWindow);
+		config.crashLog = null;
+		U.close(config.watcherWindow);
 	}
 	@Override
 	public void switchLanguage(String newLanguage) {
@@ -569,9 +565,9 @@ public class GameWindow extends JFrame implements GameControls {
 			movie = allScreens.movie;
 			statusbar = allScreens.statusbar;
 			options = allScreens.loadSave;
-			
+
 			commons.profile.load();
-			
+
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
@@ -746,7 +742,7 @@ public class GameWindow extends JFrame implements GameControls {
 		default:
 		}
 		if (asPrimary) {
-//			hideMovie();
+			//			hideMovie();
 			boolean playSec = false;
 			boolean changes = false;
 			if (secondary != null) {
@@ -769,11 +765,11 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				changes = true;
 			} else
-			if (playSec) {
-				if (sound != null) {
-					commons.playSound(SoundTarget.SCREEN, sound, null);
+				if (playSec) {
+					if (sound != null) {
+						commons.playSound(SoundTarget.SCREEN, sound, null);
+					}
 				}
-			}
 			if (changes) {
 				moveMouse();
 				repaintInner();
@@ -918,9 +914,9 @@ public class GameWindow extends JFrame implements GameControls {
 		ScreenBase sb = statusbar;
 		UIMouse m = UIMouse.createCurrent(surface);
 		scaleMouse(m);
-		
+
 		handleTooltip(m);
-		
+
 		if (statusbarVisible) {
 			result |= sb.mouse(m);
 		}
@@ -930,12 +926,12 @@ public class GameWindow extends JFrame implements GameControls {
 		if (optionsVisible && opt != null) {
 			result |= opt.mouse(m);
 		} else
-		if (sec != null) {
-			result |= sec.mouse(m);
-		} else
-		if (pri != null) {
-			result |= pri.mouse(m);
-		}
+			if (sec != null) {
+				result |= sec.mouse(m);
+			} else
+				if (pri != null) {
+					result |= pri.mouse(m);
+				}
 		if (result) {
 			repaintInner();
 		}
@@ -994,13 +990,16 @@ public class GameWindow extends JFrame implements GameControls {
 					gw.saveY = getY();
 					gw.saveWidth = getWidth();
 					gw.saveHeight = getHeight();
-		    		done();
-		    		dispose();
+					done();
+					dispose();
 					gs.setFullScreenWindow(gw);
+					// Mac workaround for not having the keyboard focus in fullscreen.
+					gw.setVisible(false);
+					gw.setVisible(true);
 					setSize(gs.getDefaultConfiguration().getBounds().getSize());
 				} else {
-		    		done();
-		    		dispose();
+					done();
+					dispose();
 					gs.setFullScreenWindow(null);
 					gw.setBounds(saveX, saveY, saveWidth, saveHeight);
 					gw.setVisible(true);
@@ -1031,12 +1030,12 @@ public class GameWindow extends JFrame implements GameControls {
 			ScreenBase sec = secondary;
 			boolean rep = false;
 			UIMouse me = UIMouse.from(e);
-			
+
 			invertIf(me);
 			scaleMouse(me);
 
 			handleTooltip(me);
-			
+
 			if (movieVisible()) {
 				rep = movie.mouse(me);
 				if (rep) {
@@ -1044,13 +1043,13 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 				return;
 			} else
-			if (optionsVisible) {
-				rep = options.mouse(me);
-				if (rep) {
-					repaintInner();
+				if (optionsVisible) {
+					rep = options.mouse(me);
+					if (rep) {
+						repaintInner();
+					}
+					return;
 				}
-				return;
-			}
 			if (statusbarVisible) {
 				if (statusbar.mouse(me)) {
 					repaintInner();
@@ -1063,9 +1062,9 @@ public class GameWindow extends JFrame implements GameControls {
 			if (sec != null) {
 				rep = sec.mouse(me);
 			} else
-			if (pri != null) {
-				rep = pri.mouse(me);
-			}
+				if (pri != null) {
+					rep = pri.mouse(me);
+				}
 			if (rep) {
 				repaintInner();
 			}
@@ -1150,7 +1149,7 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void playVideos(final Action0 onComplete, String... videos) {
-        Collections.addAll(movie.mediaQueue, videos);
+		Collections.addAll(movie.mediaQueue, videos);
 		movie.playbackFinished = new MovieFinishAction(this, onComplete);
 		displayMovie();
 	}
@@ -1247,19 +1246,19 @@ public class GameWindow extends JFrame implements GameControls {
 					if (name == null && mode == SaveMode.LEVEL) {
 						name = commons.labels().format("save.level", xworld.get("level"));
 					}
-					
+
 					xworld.set("save-name", name);
 					xworld.set("save-mode", mode);
-					
+
 					XElement info = World.deriveShortWorldState(xworld);
-					
+
 					try (GZIPOutputStream gout = new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(fout), 64 * 1024))) {
 						xworld.save(gout);
 					}
-					
-					
+
+
 					info.save(foutx);
-					
+
 					limitSaves(dir, mode);
 				} catch (IOException ex) {
 					Exceptions.add(ex);
@@ -1274,14 +1273,14 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		return null;
 	}
-        /*/** Filter for XML files starting with info- or save-. */
-        protected static final FilenameFilter SAVE_FILES = new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String name) {
-                        return (name.startsWith("info-") || name.startsWith("save-")) 
-                                        && name.endsWith(".xml");
-                }
-        };
+	/*/** Filter for XML files starting with info- or save-. */
+	protected static final FilenameFilter SAVE_FILES = new FilenameFilter() {
+		@Override
+		public boolean accept(File dir, String name) {
+			return (name.startsWith("info-") || name.startsWith("save-")) 
+					&& name.endsWith(".xml");
+		}
+	};
 	/**
 	 * Limit the number of various saves.
 	 * @param dir the saves directory
@@ -1303,14 +1302,14 @@ public class GameWindow extends JFrame implements GameControls {
 			n = n.substring(5, n.length() - 4);
 			saves.add(n);
 		}
-		
+
 		List<String> savesSorted = new ArrayList<>(saves);
 		Collections.sort(savesSorted);
 		// latest first
 		Collections.reverse(savesSorted);
-		
+
 		int remaining = 5; // the save limit
-		
+
 		for (String s : savesSorted) {
 			File info = new File(dir, "info-" + s + ".xml");
 			File save = new File(dir, "save-" + s + ".xml.gz");
@@ -1318,21 +1317,21 @@ public class GameWindow extends JFrame implements GameControls {
 				// if no associated save, delete the info
 				if (!save.canRead()) {
 					if (!info.delete()) {
-                                            info.deleteOnExit();
-                                        }
+						info.deleteOnExit();
+					}
 					continue;
 				}
 				// load world info
 				try {
 					XElement xml = XElement.parseXML(info.getAbsolutePath());
 					String saveMode = xml.get("save-mode", SaveMode.AUTO.toString());
-					
+
 					if (saveMode.equals(mode.toString())) {
 						remaining--;
 						if (remaining < 0) {
 							if (!info.delete()) {
 								System.err.println("Warning: Could not delete file " + info);
-                            }
+							}
 							if (!save.delete()) {
 								System.err.println("Warning: Could not delete file " + save);
 							}
@@ -1342,22 +1341,22 @@ public class GameWindow extends JFrame implements GameControls {
 					Exceptions.add(ex);
 				}
 			} else 
-			if (save.canRead()) {
-				try {
-					XElement xml = XElement.parseXMLGZ(save);
-					String saveMode = xml.get("save-mode", SaveMode.AUTO.toString());
-					if (saveMode.equals(mode.toString())) {
-						remaining--;
-						if (remaining < 0) {
-							if (!save.delete()) {
-								System.err.println("Warning: Could not delete file " + save);
+				if (save.canRead()) {
+					try {
+						XElement xml = XElement.parseXMLGZ(save);
+						String saveMode = xml.get("save-mode", SaveMode.AUTO.toString());
+						if (saveMode.equals(mode.toString())) {
+							remaining--;
+							if (remaining < 0) {
+								if (!save.delete()) {
+									System.err.println("Warning: Could not delete file " + save);
+								}
 							}
 						}
+					} catch (XMLStreamException ex) {
+						Exceptions.add(ex);
 					}
-				} catch (XMLStreamException ex) {
-					Exceptions.add(ex);
 				}
-			}
 		}
 	}
 	@Override
@@ -1387,7 +1386,7 @@ public class GameWindow extends JFrame implements GameControls {
 	public void loadWorld(final String name) {
 		// allow the popup of related exceptions on a newly loaded game.
 		Exceptions.clear();
-		
+
 		final Screens pri = primary != null ? primary.screen() : null;
 		final Screens sec = secondary != null ? secondary.screen() : null;
 		final boolean status = statusbarVisible;
@@ -1399,11 +1398,11 @@ public class GameWindow extends JFrame implements GameControls {
 		commons.battleMode = false;
 		displayPrimary(Screens.LOADING);
 		hideStatusbar();
-		
-		
+
+
 		final String currentGame = commons.world() != null ? commons.world().name : null; 
 		final CustomGameDefinition currentSkirmish = commons.world() != null ? commons.world().skirmishDefinition : null;
-		
+
 		commons.worldLoading = true;
 		boolean running = false;
 		if (commons.world() != null && commons.simulation != null) {
@@ -1411,7 +1410,7 @@ public class GameWindow extends JFrame implements GameControls {
 			commons.stop();
 		}
 		final boolean frunning = running;
-		
+
 		Thread t = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -1446,11 +1445,11 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 					}
 
-					
+
 					final XElement xworld = XElement.parseXMLGZ(lname);
-					
+
 					World world = loadWorldData(currentGame, currentSkirmish, xworld);
-					
+
 					final World fworld = world;
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
@@ -1484,7 +1483,7 @@ public class GameWindow extends JFrame implements GameControls {
 		commons.world(fworld);
 		commons.worldLoading = false;
 		commons.nongame = false;
-		
+
 		restoreSettings(xworld);
 		commons.start(true);
 		if (!frunning) {
@@ -1498,13 +1497,13 @@ public class GameWindow extends JFrame implements GameControls {
 			displayPrimary(Screens.BRIDGE);
 			displayStatusbar();
 		} else
-		if (pri == Screens.SPACEWAR) {
-			displayPrimary(Screens.STARMAP);
-			displayStatusbar();
-		} else
-		if (pri != null) {
-			displayPrimary(pri);
-		}
+			if (pri == Screens.SPACEWAR) {
+				displayPrimary(Screens.STARMAP);
+				displayStatusbar();
+			} else
+				if (pri != null) {
+					displayPrimary(pri);
+				}
 		if (sec != null) {
 			if ((sec != Screens.PRODUCTION || world().level >= 2)
 					&& (sec != Screens.RESEARCH || world().level >= 3)
@@ -1526,22 +1525,22 @@ public class GameWindow extends JFrame implements GameControls {
 		xworld.set("starmap-x", allScreens.starmap.getXOffset());
 		xworld.set("starmap-y", allScreens.starmap.getYOffset());
 		xworld.set("starmap-z", allScreens.starmap.getZoomIndex());
-		
+
 		xworld.set("spacewar-command", allScreens.spacewar.viewCommandSelected());
 		xworld.set("spacewar-damage", allScreens.spacewar.viewDamageSelected());
 		xworld.set("spacewar-range", allScreens.spacewar.viewRangeSelected());
 		xworld.set("spacewar-grid", allScreens.spacewar.viewGridSelected());
-		
+
 		xworld.set("starmap-divider", allScreens.starmap.planetFleetSplitter);
 		xworld.set("starmap-radars", allScreens.starmap.showRadarButton.selected);
 		xworld.set("starmap-stars", allScreens.starmap.showStarsButton.selected);
 		xworld.set("starmap-grid", allScreens.starmap.showGridButton.selected);
 		xworld.set("starmap-fleets", allScreens.starmap.showFleetButton.selected);
 		xworld.set("starmap-names", allScreens.starmap.showNames());
-		
+
 		xworld.set("bridge-send", allScreens.bridge.sendSelected);
 		xworld.set("bridge-receive", allScreens.bridge.receiveSelected);
-		
+
 		config.saveProperties(xworld);
 	}
 	/**
@@ -1570,7 +1569,7 @@ public class GameWindow extends JFrame implements GameControls {
 		allScreens.spacewar.viewDamageSelected(xworld.getBoolean("spacewar-damage", allScreens.spacewar.viewDamageSelected()));
 		allScreens.spacewar.viewRangeSelected(xworld.getBoolean("spacewar-range", allScreens.spacewar.viewRangeSelected()));
 		allScreens.spacewar.viewGridSelected(xworld.getBoolean("spacewar-grid", allScreens.spacewar.viewGridSelected()));
-		
+
 		sm.planetFleetSplitter = xworld.getDouble("starmap-divider", sm.planetFleetSplitter);
 		sm.showRadarButton.selected = xworld.getBoolean("starmap-radars", sm.showRadarButton.selected);
 		sm.showStarsButton.selected = xworld.getBoolean("starmap-stars", sm.showStarsButton.selected);
@@ -1578,12 +1577,12 @@ public class GameWindow extends JFrame implements GameControls {
 		sm.showFleetButton.selected = xworld.getBoolean("starmap-fleets", sm.showFleetButton.selected);
 		sm.showNames(xworld.getEnum("starmap-names", ShowNamesMode.class, sm.showNames()));
 
-		
+
 		config.loadProperties(xworld);
 
 		commons.music.setVolume(config.musicVolume);
 		commons.music.setMute(config.muteMusic);
-		
+
 		allScreens.bridge.sendSelected = xworld.getBoolean("bridge-send", false);
 		allScreens.bridge.receiveSelected = xworld.getBoolean("bridge-receive", true);
 	}
@@ -1606,13 +1605,13 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void endGame() {
 		hideStatusbar();
-		
+
 		tooltipComponent = null;
 		tooltipText = null;
 		tooltipShowTimer.stop();
 		tooltipHelper = null;
 		tooltipVisible = false;
-		
+
 		commons.stop();
 		commons.world(null);
 		for (ScreenBase sb : screens) {
@@ -1662,7 +1661,7 @@ public class GameWindow extends JFrame implements GameControls {
 				sws.initiateBattle(bi);
 			} else {
 				// check orbital defenses and nearby fleet
-				
+
 				boolean spaceBattle = false;
 				boolean groundBattle = false;
 				// check inventory for defensive items
@@ -1695,7 +1694,7 @@ public class GameWindow extends JFrame implements GameControls {
 						}
 					}
 				}
-				
+
 				if (spaceBattle) {
 					commons.battleMode = true;
 					commons.stopMusic();
@@ -1731,7 +1730,7 @@ public class GameWindow extends JFrame implements GameControls {
 								commons.playBattleMusic();
 							}
 						}, "groundwar/felall");
-						
+
 					} else {
 						// just take ownership
 						bi.targetPlanet.takeover(bi.attacker.owner);
@@ -1751,7 +1750,7 @@ public class GameWindow extends JFrame implements GameControls {
 		int ttl = text.length() * StatusbarScreen.DEFALT_ERROR_TTL / 10;
 		allScreens.statusbar.errorTTL = Math.max(ttl, StatusbarScreen.DEFALT_ERROR_TTL);
 	}
-	
+
 	/**
 	 * Adds a new inventory item with the specified type to the target fleet.
 	 * @param target the target fleet
@@ -1941,12 +1940,12 @@ public class GameWindow extends JFrame implements GameControls {
 		if (!isFullscreen() && getExtendedState() == JFrame.NORMAL) {
 			int dx = getWidth() - surface.getWidth();
 			int dy = getHeight() - surface.getHeight();
-			
+
 			int sw = Math.max(640, (int)(config.uiScale * 6.40 + 1));
 			int sh = Math.max(480, (int)(config.uiScale * 4.80 + 1));
-		
+
 			Rectangle mxs = getGraphicsConfiguration().getBounds();
-			
+
 			setSize(Math.min(mxs.width, Math.max(sw + dx, getWidth())), Math.min(mxs.height, Math.max(sh + dy, getHeight())));
 		}
 	}
@@ -1985,9 +1984,9 @@ public class GameWindow extends JFrame implements GameControls {
 			if (secondary != null) {
 				bases.add(secondary);
 			} else
-			if (primary != null) {
-				bases.add(primary);
-			}
+				if (primary != null) {
+					bases.add(primary);
+				}
 		}
 		for (ScreenBase b : bases) {
 			c = b.componentAt(m.x, m.y);
@@ -2005,37 +2004,37 @@ public class GameWindow extends JFrame implements GameControls {
 					top = secondary;
 				}
 			} else
-			if (c == null && primary != null) {
-				c = primary.componentAt(m.x, m.y);
-				if (c != null) {
-					top = primary;
+				if (c == null && primary != null) {
+					c = primary.componentAt(m.x, m.y);
+					if (c != null) {
+						top = primary;
+					}
 				}
-			}
 		}
-		
+
 		Rectangle r = tooltipHelper;
 		String t0 = tooltipText;
 		if (c != null && top != null) {
 			tooltipComponent = c;
 			Rectangle tth = top.componentRectangle(c);
-			
+
 			double s = tth.width * 1d / c.width; 
-			
+
 			int cx = m.x - tth.x;
 			int cy = m.y - tth.y;
-			
+
 			int rx = (int)(cx / s);
 			int ry = (int)(cy / s);
-			
+
 			tooltipText = c.tooltip(rx, ry);
 			if (tooltipText != null) {
 				Rectangle ttr = c.tooltipLocation(rx, ry);
-				
+
 				int rx2 = (int)(tth.x + ttr.x / s);
 				int ry2 = (int)(tth.y + ttr.y / s);
 				int rw2 = (int)((ttr.width * s));
 				int rh2 = (int)((ttr.height * s));
-				
+
 				tooltipHelper = new Rectangle(rx2, ry2, rw2, rh2);
 			} else {
 				tooltipHelper = tth;
@@ -2067,23 +2066,23 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 			if (tooltipText != null && tooltipVisible) {
 				g2.setColor(Color.WHITE);
-				
+
 				int th = 10;
-				
+
 				UIColorLabel lbl = new UIColorLabel(th * config.uiScale / 100, commons.text());
 				lbl.width = config.tooltipWidth;
 				lbl.text(tooltipText);
 				lbl.width = lbl.maxWidth();
-				
+
 				g2.setColor(new Color(40, 40, 40, 240));
 				int x0 = tooltipHelper.x + (tooltipHelper.width - lbl.width - 6) / 2;
 				int y0 = tooltipHelper.y + tooltipHelper.height;
 				if (x0 < 0) {
 					x0 = 0;
 				} else
-				if (x0 + lbl.width + 6 > getInnerWidth()) {
-					x0 = getInnerWidth() - lbl.width - 6;
-				}
+					if (x0 + lbl.width + 6 > getInnerWidth()) {
+						x0 = getInnerWidth() - lbl.width - 6;
+					}
 				if (y0 + 20 > getInnerHeight()) {
 					y0 = tooltipHelper.y - lbl.height - 6;
 				}
@@ -2196,7 +2195,7 @@ public class GameWindow extends JFrame implements GameControls {
 			commons.world(null);
 			// load world model
 			world = new World(commons);
-			
+
 			if (sk != null) {
 				world.skirmishDefinition = sk1;
 				world.definition = sk1.createDefinition(commons.rl);
@@ -2213,7 +2212,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 
 		world.loadState(xworld);
-		
+
 		return world;
 	}
 }
