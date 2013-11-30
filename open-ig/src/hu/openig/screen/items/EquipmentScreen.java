@@ -1237,7 +1237,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		Pair<Double, Double> dmgDps = ii.maxDamageDPS();
 		
 		String def = format("equipment.defense", (int)(ii.hp + ii.shield), hpm + spm);
-		String dps = format("equipment.dps", dmgDps.first, Math.round(dmgDps.second));
+		String dps = format("equipment.dps", Math.round(dmgDps.first), Math.round(dmgDps.second));
 		
 		String kills = format("equipment.kills2", ii.kills);
 		
@@ -1512,7 +1512,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			if (rt.category == ResearchSubCategory.WEAPONS_TANKS
 					|| rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 				bleft = fs.vehicleCount < fs.vehicleMax && secondary.inventoryCount(rt) > 0;
-				bright = fs2.vehicleCount < fs.vehicleMax && f.inventoryCount(rt) > 0;
+				bright = fs2.vehicleCount < fs2.vehicleMax && f.inventoryCount(rt) > 0;
 			} else
 			if (rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
 				bleft = fs.battleshipCount < world().params().battleshipLimit() && secondary.inventoryCount(rt) > 0;
