@@ -1002,6 +1002,7 @@ public class StarmapScreen extends ScreenBase {
 			problemsColonyHub.visible(false);
 			problemsPolice.visible(false);
 			problemsFireBrigade.visible(false);
+			indicatorMilitarySpaceport.visible(false);
 			
 			surveySatellite.visible(false);
 			spySatellite1.visible(false);
