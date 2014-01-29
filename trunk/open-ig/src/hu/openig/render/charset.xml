@@ -1,17 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <charset>
 	<line height='7'  width='5'  spacing-x='3' spacing-y='1'>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯфисвуапршолдьт</line>
-	<line height='7'  width='5'  spacing-x='3' spacing-y='1'>opqrstuvwxyz?!()'"+-:;.,1234567890%&amp; /ß щзйкыегмцчня</line>
+	<line height='7'  width='5'  spacing-x='3' spacing-y='1'>opqrstuvwxyz?!()'"+-:;.,1234567890%&amp; /ß щзйкыегмцчняâÂ</line>
 	<line height='7'  width='5'  spacing-x='3' spacing-y='2'>ÄÖÜäöüßêéèàÉÁÇçôûùòìáóñÑ¡¿úíÍÓóŐőŰűÚ=&lt;>*ХЪЖЭБЮхъжэбю</line>
 	<line height='10' width='7'  spacing-x='1' spacing-y='0'>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯфисвуапршолдьт</line>
-	<line height='10' width='7'  spacing-x='1' spacing-y='0'>opqrstuvwxyz?!()'"+-:;.,1234567890%&amp; /ß щзйкыегмцчня</line>
+	<line height='10' width='7'  spacing-x='1' spacing-y='0'>opqrstuvwxyz?!()'"+-:;.,1234567890%&amp; /ß щзйкыегмцчняâÂ</line>
 	<line height='10' width='7'  spacing-x='1' spacing-y='1'>ÄÖÜäöüßêéèàÉÁÇçôûùòìáóñÑ¡¿úíÍÓóŐőŰűÚ=&lt;>*ХЪЖЭБЮхъжэбю</line>
 	<line height='14' width='12' spacing-x='0' spacing-y='0'>ABCDEFGHIJKLMNOPQRSTUVWXYZФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ</line>
 	<line height='14' width='12' spacing-x='0' spacing-y='0'>abcdefghijklmnopqrstuvwxyzфисвуапршолдьтщзйкыегмцчня</line>
 	<line height='14' width='12' spacing-x='0' spacing-y='0'>?!()'"+-:;.,1234567890%&amp; /ХЪЖЭБЮхъжэбю</line>
 	<line height='14' width='12' spacing-x='0' spacing-y='0'>ß ÄÖÜäöüßêéèàÉÁÇçôûùòìáóñÑ</line>
-	<line height='14' width='12' spacing-x='0' spacing-y='1'>¡¿úíÍÓóŐőŰűÚ=&lt;>*</line>
+	<line height='14' width='12' spacing-x='0' spacing-y='1'>¡¿úíÍÓóŐőŰűÚ=&lt;>*âÂ</line>
 	<line height='5'  width='5'  spacing-x='1' spacing-y='1'>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯфисвуапршолдьтщзйкыегмцчня</line>
 	<line height='5'  width='5'  spacing-x='1' spacing-y='1'>?!()'"+-:;.,1234567890%&amp; /ß ÄÖÜäöüßêéèàÉÁÇçôûùòìáóñÑХЪЖЭБЮхъжэбю</line>
-	<line height='5'  width='5'  spacing-x='1' spacing-y='1'>¡¿úíÍÓóŐőŰűÚ=&lt;>*</line>
+	<line height='5'  width='5'  spacing-x='1' spacing-y='1'>¡¿úíÍÓóŐőŰűÚ=&lt;>*âÂ</line>
 </charset>
