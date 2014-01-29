@@ -9,6 +9,7 @@
 package hu.openig.screen.items;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
@@ -5444,5 +5445,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 		return baseDamage;
+	}
+	@Override
+	public Difficulty difficulty() {
+		return world().difficulty;
+	}
+	@Override
+	public boolean isFleeing(SpacewarStructure s) {
+		return s.moveTo != null && (s.moveTo.x < -100 || s.moveTo.x > 100 + space().width); 
 	}
 }

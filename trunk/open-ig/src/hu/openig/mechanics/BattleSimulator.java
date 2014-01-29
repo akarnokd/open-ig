@@ -8,6 +8,7 @@
 
 package hu.openig.mechanics;
 
+import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Pred1;
 import hu.openig.model.AttackDefense;
@@ -736,7 +737,7 @@ public final class BattleSimulator {
 			if (hitpoints <= 0) {
 				break;
 			}
-			if (b.isOperational()) {
+			if (b.isSpacewarOperational()) {
 				if (b.type.kind.equals("Shield") || b.type.kind.equals("Gun")) {
 					double hpMax = world.getHitpoints(b.type, p.owner, true);
 					double hp = 1.0 * b.hitpoints * hpMax / b.type.hitpoints;
@@ -762,7 +763,7 @@ public final class BattleSimulator {
 	void demolishDefenses(Planet p) {
 		// demolish buildings
 		for (Building b : p.surface.buildings.list()) {
-			if (b.isOperational()) {
+			if (b.isSpacewarOperational()) {
 				if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
 					destroyBuilding(p, b);
 				}
@@ -830,10 +831,9 @@ public final class BattleSimulator {
 		}
 		double shieldValue = shieldValue(p);
 		for (Building b : p.surface.buildings.iterable()) {
-			double eff = b.getEfficiency();
-			if (Building.isOperational(eff)) {
-				if (b.type.kind.equals("Shield")
-						|| b.type.kind.equals("Gun")) {
+			if (b.type.kind.equals("Shield")
+					|| b.type.kind.equals("Gun")) {
+				if (b.isSpacewarOperational()) {
 					int hpMax = p.owner.world.getHitpoints(b.type, p.owner, true);
 					int hp = (int)(1L * b.hitpoints * hpMax / b.type.hitpoints);
 					defense += hp;
@@ -928,16 +928,117 @@ public final class BattleSimulator {
 		return false;
 	}
 	/**
+	 * Calculate new morale.
+	 * @param planet the target planet
+	 * @param defenderSuccess defenders succeeded?
+	 */
+	static void calcMoraleChange(Planet planet, boolean defenderSuccess) {
+		Difficulty diff = planet.world.difficulty;
+		if (planet.owner == planet.world.player) {
+			if (defenderSuccess) {
+				switch (diff) {
+				case EASY:
+					if (planet.morale > 25) {
+						planet.morale *= 0.95;
+					} else {
+						planet.morale -= 2.5;
+					}
+					break;
+				case HARD:
+					if (planet.morale > 25) {
+						planet.morale *= 0.85;
+					} else {
+						planet.morale -= 5;
+					}
+					break;
+				default:
+					if (planet.morale > 25) {
+						planet.morale *= 0.9;
+					} else {
+						planet.morale -= 2.5;
+					}
+				}
+			} else {
+				switch (diff) {
+				case EASY:
+					if (planet.morale > 25) {
+						planet.morale *= 0.9;
+					} else {
+						planet.morale -= 2.5;
+					}
+					break;
+				case HARD:
+					if (planet.morale > 25) {
+						planet.morale *= 0.8;
+					} else {
+						planet.morale -= 5;
+					}
+					break;
+				default:
+					if (planet.morale > 25) {
+						planet.morale *= 0.85;
+					} else {
+						planet.morale -= 2.5;
+					}
+				}
+			}
+		} else {
+			if (defenderSuccess) {
+				switch (diff) {
+				case HARD:
+					if (planet.morale > 25) {
+						planet.morale *= 0.95;
+					} else {
+						planet.morale -= 2.5;
+					}
+					break;
+				case EASY:
+					if (planet.morale > 25) {
+						planet.morale *= 0.85;
+					} else {
+						planet.morale -= 5;
+					}
+					break;
+				default:
+					if (planet.morale > 25) {
+						planet.morale *= 0.9;
+					} else {
+						planet.morale -= 2.5;
+					}
+				}
+			} else {
+				switch (diff) {
+				case EASY:
+					if (planet.morale > 25) {
+						planet.morale *= 0.9;
+					} else {
+						planet.morale -= 2.5;
+					}
+					break;
+				case HARD:
+					if (planet.morale > 25) {
+						planet.morale *= 0.8;
+					} else {
+						planet.morale -= 5;
+					}
+					break;
+				default:
+					if (planet.morale > 25) {
+						planet.morale *= 0.85;
+					} else {
+						planet.morale -= 2.5;
+					}
+				}
+			}
+		}
+	}
+	/**
 	 * Apply losses and morale to the conquered planet.
 	 * @param planet the target planet
 	 * @param minLosses the minimum losses
 	 */
 	public static void applyPlanetConquered(Planet planet, int minLosses) {
-		if (planet.morale >= 50) {
-			planet.morale = 30;
-		} else {
-			planet.morale = Math.max(0, planet.morale - 10);
-		}
+		calcMoraleChange(planet, false);
 		int populationLoss = minLosses; // Math.max(minLosses, Math.min(minLosses * 2, planet.population * 2 / 5));
 		if (hasBunker(planet)) {
 			populationLoss /= 2;
@@ -953,11 +1054,7 @@ public final class BattleSimulator {
 	 * @param minLosses the minimum losses
 	 */
 	public static void applyPlanetDefended(Planet planet, int minLosses) {
-		if (planet.morale >= 50) { 
-			planet.morale = 40;
-		} else {
-			planet.morale = Math.max(planet.morale - 10, 0);
-		}
+		calcMoraleChange(planet, true);
 		int populationLoss = minLosses; // Math.max(minLosses, Math.min(minLosses * 2, planet.population * 3 / 10));
 		if (hasBunker(planet)) {
 			populationLoss /= 2;

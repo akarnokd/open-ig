@@ -97,16 +97,21 @@ public class Building implements HasLocation {
 			return 0.0;
 		}
 		// if the building is incomplete or is more than 50% damaged
-		if (buildProgress < type.hitpoints || hitpoints * 2 < type.hitpoints) {
+		if (hitpoints * 2 < type.hitpoints) {
 			return 0.0;
+		}
+		return getSpacewarEfficiency();
+	}
+	/**
+	 * Calculate the spacewar efficiency.
+	 * @return the efficiency value
+	 */
+	public double getSpacewarEfficiency() {
+		if (buildProgress < type.hitpoints) {
+			return 0d;
 		}
 		int workerDemand = getWorkers();
 		int energyDemand = (int)getResource("energy");
-
-//		Efficiency doesn't drop to 0 when less than half workers    		
-//		if (assignedWorker * 2 > workerDemand) {
-//			return 0.0f;
-//		}
 
 		// if the building doesn't need energy
 		if (energyDemand >= 0) {
@@ -124,6 +129,13 @@ public class Building implements HasLocation {
 	 */
 	public boolean isOperational() {
 		return isOperational(getEfficiency());
+	}
+	/**
+	 * Check if the building is spacewar-ready.
+	 * @return true if spacewar-ready
+	 */
+	public boolean isSpacewarOperational() {
+		return isOperational(getSpacewarEfficiency());
 	}
 	/**
 	 * @param efficiency the efficiency value 0..1 

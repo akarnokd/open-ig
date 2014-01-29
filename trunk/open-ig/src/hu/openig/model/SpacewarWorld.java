@@ -8,6 +8,8 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Difficulty;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.EnumSet;
@@ -104,4 +106,12 @@ public interface SpacewarWorld {
 			EnumSet<ResearchSubCategory> categories);
 	/** @return the landing lace location on the battlemap or null if no such place. */
 	Point landingPlace();
+	/** @return the current game difficulty. */
+	Difficulty difficulty();
+	/**
+	 * Check if the given object is fleeing.
+	 * @param s the structure
+	 * @return true if fleeing
+	 */
+	boolean isFleeing(SpacewarStructure s);
 }
