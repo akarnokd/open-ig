@@ -14,6 +14,9 @@ import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.AITest;
 import hu.openig.mechanics.AIUser;
 import hu.openig.model.AIMode;
+import hu.openig.model.ApproachType;
+import hu.openig.model.CallType;
+import hu.openig.model.DiplomaticOffer;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
@@ -456,6 +459,18 @@ public class GameKeyManager extends KeyAdapter {
 					e.consume();
 				}
 				break;
+			case KeyEvent.VK_B:
+				if (e.isControlDown()) {
+					Player p = world().player;
+					for (Player p0 : p.knownPlayers().keySet()) {
+						if (e.isShiftDown()) {
+							p.offers.put(p0.id, new DiplomaticOffer(CallType.RESIGN, ApproachType.HUMBLE));
+						} else {
+							p.offers.put(p0.id, new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE));
+						}
+					}
+				}
+				break;
 			// FIXME CHEAT
 			case KeyEvent.VK_O:
 				if (e.isControlDown()) {
@@ -512,11 +527,21 @@ public class GameKeyManager extends KeyAdapter {
 			case KeyEvent.VK_G:
 				// CHEAT: add more money
 				if (e.isControlDown()) {
-					world().player.addMoney(10000);
 					if (e.isShiftDown()) {
-						world().player.addMoney(90000);
+						Player p = world().player;
+						for (Player p0 : p.knownPlayers().keySet()) {
+							DiplomaticOffer dio = new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE);
+							dio.value(1000);
+							p.offers.put(p0.id, dio);
+						}
+					} else {
+						world().player.addMoney(10000);
+						if (e.isShiftDown()) {
+							world().player.addMoney(90000);
+						}
 					}
 					repaintInner();
+					
 					e.consume();
 				}
 				break;

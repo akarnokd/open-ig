@@ -129,6 +129,8 @@ public class SkirmishDefinition extends CustomGameDefinition {
 						: initialDiplomaticRelation.hashCode());
 		result = prime * result + startLevel;
 		result = prime * result + maxLevel;
+		result = prime * result + (noFactoryLimit ? 1 : 0);
+		result = prime * result + (noLabLimit ? 1 : 0);
 		result = prime * result + initialMoney;
 		result = prime * result + initialOrbitalFactories;
 		result = prime * result + initialPlanets;
@@ -199,6 +201,12 @@ public class SkirmishDefinition extends CustomGameDefinition {
 			return false;
 		}
 		if (maxLevel != other.maxLevel) {
+			return false;
+		}
+		if (noFactoryLimit != other.noFactoryLimit) {
+			return false;
+		}
+		if (noLabLimit != other.noLabLimit) {
 			return false;
 		}
 		if (initialMoney != other.initialMoney) {

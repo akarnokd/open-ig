@@ -3311,6 +3311,13 @@
 	<entry key='info.lab_details'>Kutatókp.</entry>
 	<entry key='info.planetlist_problems'>Problémák</entry>
 	<entry key="production.sell.tooltip">Kattints 1 egység készletből történő eladásához[n]Tartsd lenyomva a [c=FFFFFFFF]SHIFT[/c] billentyűt 10 egység eladásához.[n]Tartsd lenyomva a [c=FFFFFFFF]CTRL+SHIFT[/c] billentyűket 100 egység eladásához.</entry>
+	<entry key="settings.target_specific_rockets">Csak a célnak megfelelő rakéta/bomba kilövése</entry>
+	<entry key='diplomacy.accept_offer'>Elfogad</entry>
+	<entry key='diplomacy.decline_offer'>Visszautasít</entry>
+	<entry key="diplomacy.not_enough_money">Sajnos %s végül nem rendelkezett az ajánlott összeggel.</entry>
+	<entry key="skirmish.no_factory_limit">Korlátlan számú gyár bolygónként</entry>
+	<entry key="skirmish.no_lab_limit">Korlátlan számú kutatóközpont bolygónként</entry>
+	<entry key="quickresearch.build_more_labs">Több kutatólabort is építhetsz egy bolygón.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

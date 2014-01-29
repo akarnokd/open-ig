@@ -131,6 +131,8 @@ public class GameWindow extends JFrame implements GameControls {
 		int lastH = -1;
 		/** The last scaling. */
 		int lastScale = -1;
+		/** Save transform before draw. */
+		AffineTransform predraw;
 		/** When did the last paint happen. */
 		//		long lastPaint;
 		/** The FPS value to draw to the overlay. */
@@ -141,6 +143,29 @@ public class GameWindow extends JFrame implements GameControls {
 		public ScreenRenderer() {
 			setOpaque(true);
 			setFocusTraversalKeysEnabled(false);
+		}
+		/**
+		 * Push state.
+		 * @param g2 graphics context
+		 */
+		void push(Graphics2D g2) {
+			if (predraw == null) {
+				predraw = g2.getTransform();
+			} else {
+				throw new IllegalStateException("Predraw already set.");
+			}
+		}
+		/**
+		 * Pop state.
+		 * @param g2 graphics context
+		 */
+		void pop(Graphics2D g2) {
+			if (predraw != null) {
+				g2.setTransform(predraw);
+				predraw = null;
+			} else {
+				throw new IllegalStateException("Predraw already null.");
+			}
 		}
 		@Override
 		public void paint(Graphics g) {
@@ -195,26 +220,40 @@ public class GameWindow extends JFrame implements GameControls {
 				} else {
 					if (r1 && !r0 && !optionsVisible) {
 						if (secondary != null) {
+							push(g2);
 							secondary.draw(g2);
+							pop(g2);
 						}
 						if (statusbarVisible) {
+							push(g2);
 							statusbar.draw(g2);
+							pop(g2);
 						}
 					} else {
 						if (primary != null) {
+							push(g2);
 							primary.draw(g2);
+							pop(g2);
 						}
 						if (secondary != null) {
+							push(g2);
 							secondary.draw(g2);
+							pop(g2);
 						}
 						if (optionsVisible) {
+							push(g2);
 							options.draw(g2);
+							pop(g2);
 						}
 						if (statusbarVisible) {
+							push(g2);
 							statusbar.draw(g2);
+							pop(g2);
 						}
 						if (movieVisible()) {
+							push(g2);
 							movie.draw(g2);
+							pop(g2);
 						}				
 					}
 				}

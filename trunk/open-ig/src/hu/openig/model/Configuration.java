@@ -324,6 +324,9 @@ public class Configuration {
 	/** Continuously accumulate money and morale? */
 	@LoadSave
 	public boolean continuousMoney = false;
+	/** Fire rockets only to correct target types? */
+	@LoadSave
+	public boolean targetSpecificRockets;
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

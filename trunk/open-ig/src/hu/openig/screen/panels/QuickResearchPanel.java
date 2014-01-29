@@ -475,13 +475,17 @@ public class QuickResearchPanel extends UIContainer {
 			
 			int reqPlanet = currentText.labCount();
 			
-			if (reqPlanet > ps.planetCount) {
-				tip.text(commons.get("quickresearch.more_planets"));
-			} else 
-			if (currentText.hasEnoughLabsBuilt(ps)) {
-				tip.text(commons.get("quickresearch.check_labs"));
+			if (!commons.world().noLabLimit()) {
+				if (reqPlanet > ps.planetCount) {
+					tip.text(commons.get("quickresearch.more_planets"));
+				} else 
+				if (currentText.hasEnoughLabsBuilt(ps)) {
+					tip.text(commons.get("quickresearch.check_labs"));
+				} else {
+					tip.text(commons.get("quickresearch.reorg_labs"));
+				}
 			} else {
-				tip.text(commons.get("quickresearch.reorg_labs"));
+				tip.text(commons.get("quickresearch.build_more_labs"));
 			}
 			tip.width = mw - MARGIN;
 			tip.height = tip.getWrappedHeight();

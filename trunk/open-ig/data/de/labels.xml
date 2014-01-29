@@ -3312,11 +3312,13 @@
 	<entry key='info.planetlist_problems'>Problems</entry>
 	<entry key='info.lab_details'>Lab</entry>
 	<entry key="production.sell.tooltip">Click to sell 1 unit from the inventory[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to sell 10 units.[n]Hold [c=FFFFFFFF]CTRL+SHIFT[/c] while clicking to sell 100 units.</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="settings.target_specific_rockets">Fire target specific rockets/bombs only</entry>
+	<entry key='diplomacy.accept_offer'>Accept</entry>
+	<entry key='diplomacy.decline_offer'>Decline</entry>
+	<entry key="diplomacy.not_enough_money">Unfortunately, %s did not have enough money eventually.</entry>
+	<entry key="skirmish.no_factory_limit">Unlimited factories per planet</entry>
+	<entry key="skirmish.no_lab_limit">Unlimited science labs per planet</entry>
+	<entry key="quickresearch.build_more_labs">You may build multiple labs on your existing planets.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

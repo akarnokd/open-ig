@@ -42,6 +42,7 @@ import hu.openig.screen.ScreenBase;
 import hu.openig.screen.panels.OptionList;
 import hu.openig.screen.panels.OptionList.OptionItem;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
@@ -153,6 +154,10 @@ public class DiplomacyScreen extends ScreenBase {
 	boolean quitTalking;
 	/** The change to introduce after clicking the first message phase. */
 	double change;
+	/** Accept the current offer. */
+	UIGenericButton acceptOffer;
+	/** Decline the current offer. */
+	UIGenericButton declineOffer;
 	/** The last projector image. */
 	BufferedImage projectorLast;
 	@Override
@@ -238,6 +243,15 @@ public class DiplomacyScreen extends ScreenBase {
 		continueLabel = new UILabel(get("diplomacy.click_continue"), 7, commons.text());
 		continueLabel.color(TextRenderer.YELLOW).visible(false);
 		
+		acceptOffer = new UIGenericButton(get("diplomacy.accept_offer"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		declineOffer = new UIGenericButton(get("diplomacy.decline_offer"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		declineOffer.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				returnToOptions();
+			}
+		};
+		
 		addThis();
 	}
 
@@ -262,6 +276,9 @@ public class DiplomacyScreen extends ScreenBase {
 		responseText.visible(false);
 		continueLabel.visible(false);
 		negotiationTitle.visible(false);
+		acceptOffer.visible(false);
+		acceptOffer.onClick = null;
+		declineOffer.visible(false);
 		mentioned.clear();
 		
 		messagePhase = 0;
@@ -345,6 +362,8 @@ public class DiplomacyScreen extends ScreenBase {
 		enemies.location(base.x + 10, base.y + base.height - enemies.height - 10);
 
 		continueLabel.location(base.x + 10, base.y + base.height - 30);
+		acceptOffer.location(continueLabel.x, continueLabel.y);
+		declineOffer.location(acceptOffer.x + acceptOffer.width + 20, acceptOffer.y);
 		
 		offerText.location(base.x + 10, continueLabel.y - 20 - offerText.height);
 		responseText.location(base.x + 10, continueLabel.y - 20 - responseText.height);
@@ -432,7 +451,7 @@ public class DiplomacyScreen extends ScreenBase {
 				}
 			}
 		} else
-		if (e.has(Type.DOWN) && messagePhase > 0) {
+		if (e.has(Type.DOWN) && messagePhase > 0 && messagePhase < 4) {
 			handleMessagePhases();
 			return true;
 		}
@@ -451,7 +470,7 @@ public class DiplomacyScreen extends ScreenBase {
 		} else
 		if (messagePhase == 2) {
 			returnToOptions();
-		}		
+		}
 	}
 	/**
 	 * Return to options panel.
@@ -460,6 +479,8 @@ public class DiplomacyScreen extends ScreenBase {
 		responseText.visible(false);
 		continueLabel.visible(false);
 		negotiationTitle.visible(false);
+		acceptOffer.visible(false);
+		declineOffer.visible(false);
 
 		DiplomaticRelation dr = world().getRelation(player(), other);
 		if (dr.wontTalk() || quitTalking) {
@@ -1212,7 +1233,7 @@ public class DiplomacyScreen extends ScreenBase {
 	}
 	@Override
 	public boolean keyboard(KeyEvent e) {
-		if (e.getKeyChar() == ' ' && messagePhase > 0) {
+		if (e.getKeyChar() == ' ' && messagePhase > 0 && messagePhase < 4) {
 			handleMessagePhases();
 			e.consume();
 			return true;
@@ -1425,11 +1446,11 @@ public class DiplomacyScreen extends ScreenBase {
 	 * Display the incoming message.
 	 * @param na the negotiation and approach type.
 	 */
-	void doIncomingMessage(DiplomaticOffer na) {
+	void doIncomingMessage(final DiplomaticOffer na) {
 
 
 		String label = null;
-		Diplomacy diplomacy = world().diplomacy.get(other.id);
+		final Diplomacy diplomacy = world().diplomacy.get(other.id);
 		if (diplomacy != null) {
 			outer:
 			for (Call c : diplomacy.calls) {
@@ -1452,8 +1473,42 @@ public class DiplomacyScreen extends ScreenBase {
 			responseText.height = responseText.getWrappedHeight();
 			
 			responseText.visible(true);
-			continueLabel.visible(true);
-			messagePhase = 2;
+			continueLabel.visible(false);
+			if (na.callType == CallType.ALLIANCE || na.callType == CallType.RESIGN
+					|| na.callType == CallType.MONEY) {
+				messagePhase = 4;
+				acceptOffer.visible(true);
+				declineOffer.visible(true);
+				
+				acceptOffer.onClick = new Action0() {
+					@Override
+					public void invoke() {
+						acceptOffer.onClick = null;
+						if (na.callType == CallType.ALLIANCE) {
+							DiplomaticRelation dr = world().getRelation(world().player, other);
+							dr.value = 91;
+						} else
+						if (na.callType == CallType.MONEY) {
+							long mny = ((Number)na.value()).longValue();
+							if (other.money() >= mny) {
+								player().addMoney(mny);
+								player().statistics.moneyIncome.value += mny;
+								world().statistics.moneyIncome.value += mny;
+							} else {
+								commons.control().displayError(format("diplomacy.not_enough_money", other.name));
+							}
+						} else
+						if (na.callType == CallType.RESIGN) {
+							world().env.loseGame();
+							return;
+						}
+						returnToOptions();
+					}
+				};
+			} else {
+				messagePhase = 2;
+				continueLabel.visible(true);
+			}
 			change = 0;
 			
 			onResize();

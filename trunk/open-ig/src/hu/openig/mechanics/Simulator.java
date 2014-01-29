@@ -417,9 +417,17 @@ public final class Simulator {
 				newMorale += 5;
 			} else
 			if (planet.tax.ordinal() <= TaxLevel.MODERATE.ordinal()) {
-				newMorale -= planet.tax.percent / 6f;
+				if (!planet.owner.race.equals(planet.race)) {
+					newMorale -= planet.tax.percent / 4f;
+				} else {
+					newMorale -= planet.tax.percent / 6f;
+				}
 			} else {
-				newMorale -= planet.tax.percent / 3f;
+				if (!planet.owner.race.equals(planet.race)) {
+					newMorale -= planet.tax.percent / 2.5f;
+				} else {
+					newMorale -= planet.tax.percent / 3f;
+				}
 			}
 			if (ps.houseAvailable < planet.population()) {
 				newMorale += (ps.houseAvailable - planet.population()) * 75f / planet.population();

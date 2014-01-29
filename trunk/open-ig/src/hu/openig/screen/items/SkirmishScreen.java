@@ -126,6 +126,10 @@ public class SkirmishScreen extends ScreenBase {
 	NumberSpinBox technologyLevelStart;
 	/** Technology level maximum. */
 	NumberSpinBox technologyLevelMax;
+	/** Don't limit the number of labs per planet. */
+	UICheckBox noLabLimit;
+	/** Don't limit the number of labs per planet. */
+	UICheckBox noFactoryLimit;
 	/** Label. */
 	UILabel initialMoneyLabel;
 	/** Number. */
@@ -318,7 +322,12 @@ public class SkirmishScreen extends ScreenBase {
 		technologyLevelStart = new NumberSpinBox(0, 6, 1, 1);
 		technologyLevelStart.value = 0;
 
-		galaxyPanel.add(technologyDef, technologyDefLabel, technologyLevelLabel, technologyLevelStart, technologyLevelMaxLabel, technologyLevelMax);
+		noFactoryLimit = createCheckBox("skirmish.no_factory_limit");
+		noLabLimit = createCheckBox("skirmish.no_lab_limit");
+		
+		galaxyPanel.add(technologyDef, technologyDefLabel, technologyLevelLabel, 
+				technologyLevelStart, technologyLevelMaxLabel, technologyLevelMax,
+				noFactoryLimit, noLabLimit);
 		
 		
 		initialMoneyLabel = createLabel("skirmish.initial_money");
@@ -564,6 +573,12 @@ public class SkirmishScreen extends ScreenBase {
 		technologyLevelMaxLabel.location(technologyLevelStart.x + technologyLevelStart.width + 30, cy + 7);
 		technologyLevelMax.setMaxSize();
 		technologyLevelMax.location(technologyLevelMaxLabel.x + technologyLevelMaxLabel.width + 20, cy);
+
+		cy += 40;
+		noFactoryLimit.location(5, cy);
+
+		cy += 35;
+		noLabLimit.location(5, cy);
 
 		cy += 35;
 		initialRelationLabel.location(5, cy + 7);
@@ -2039,6 +2054,8 @@ public class SkirmishScreen extends ScreenBase {
 		result.tech = technologyDef.get().name;
 		result.startLevel = technologyLevelStart.value;
 		result.maxLevel = technologyLevelMax.value;
+		result.noFactoryLimit = noFactoryLimit.selected();
+		result.noLabLimit = noLabLimit.selected();
 
 		result.initialDiplomaticRelation = SkirmishDiplomaticRelation.values()[initialRelation.index];
 		result.initialDifficulty = Difficulty.values()[initialDifficulty.index];

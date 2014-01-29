@@ -3103,7 +3103,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	void doAttackWithRockets(SpacewarStructure target) {
 		RocketSelected r = new RocketSelected();
 		r.findRocket(target, true);
-		if (r.fired == null) {
+		if (r.fired == null && !config.targetSpecificRockets) {
 			r = new RocketSelected();
 			r.findRocket(target, false);
 		}

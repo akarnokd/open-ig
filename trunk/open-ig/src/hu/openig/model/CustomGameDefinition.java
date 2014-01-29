@@ -73,4 +73,8 @@ public class CustomGameDefinition {
 	public int victorySocialMorale;
 	/** Social victory planet limit. */
 	public int victorySocialPlanets;
+	/** Allow building more than 1 labs per planet. */
+	public boolean noLabLimit;
+	/** Allow building more than 1 factories per planet. */
+	public boolean noFactoryLimit;
 }

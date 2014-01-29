@@ -158,6 +158,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Re-equip bombs? */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox reequipBombs;
+	/** Fire bombs/rockets only when the correct target type is selected? */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox targetSpecificRockets;
 	/** Enable computer voice for screen switches. */
 	@Settings(page = SettingsPage.AUDIO)
 	UICheckBox computerVoiceScreen;
@@ -675,6 +678,15 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			public void invoke() {
 				buttonSound(SoundType.CLICK_MEDIUM_2);
 				config.reequipBombs = reequipBombs.selected();
+			}
+		};
+		
+		targetSpecificRockets = new UICheckBox(get("settings.target_specific_rockets"), 14, commons.common().checkmark, commons.text());
+		targetSpecificRockets.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.targetSpecificRockets = targetSpecificRockets.selected();
 			}
 		};
 		computerVoiceScreen = new UICheckBox(get("settings.computer_voice_screen"), 14, commons.common().checkmark, commons.text());
@@ -1236,6 +1248,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		
 		reequipTanks.selected(config.reequipTanks);
 		reequipBombs.selected(config.reequipBombs);
+		targetSpecificRockets.selected(config.targetSpecificRockets);
 		computerVoiceScreen.selected(config.computerVoiceScreen);
 		computerVoiceNotify.selected(config.computerVoiceNotify);
 		autoRepair.selected(config.autoRepair);
@@ -1411,6 +1424,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		reequipTanks.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		reequipBombs.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		targetSpecificRockets.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		
 		autoRepair.location(base.x + 30, base.y + dy + 8);

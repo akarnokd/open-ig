@@ -1672,7 +1672,15 @@ public class World implements ModelLookup {
 			
 			if (!stype.equals(p.type.type) || svar != p.surface.variant) {
 				p.type = galaxyModel.planetTypes.get(stype);
-				p.surface = p.type.surfaces.get(svar).copy(newIdFunc);
+				PlanetSurface psf = p.type.surfaces.get(svar);
+				if (psf == null && !p.type.surfaces.isEmpty()) {
+					psf = p.type.surfaces.values().iterator().next();
+				}
+				if (psf != null) {
+					p.surface = psf.copy(newIdFunc);
+				} else {
+					Exceptions.add(new IllegalArgumentException("Surface variant " + svar + " of surface type " + stype + " not found for planet " + p.id));
+				}
 			}
 			
 			for (XElement xpii : xplanet.childrenWithName("item")) {
@@ -2915,6 +2923,7 @@ public class World implements ModelLookup {
 			p.money(skirmishDefinition.initialMoney);
 			p.noDatabase = sp.nodatabase;
 			p.noDiplomacy = sp.nodiplomacy;
+			p.diplomacyHead = sp.diplomacyHead;
 			p.race = sp.race;
 			p.shortName = sp.name;
 			if (sp.picture != null) {
@@ -2934,6 +2943,10 @@ public class World implements ModelLookup {
 
 			// fix original pre-enabled tech
 			Player op = originalPlayers.get(sp.originalId);
+			Diplomacy odo = diplomacy.get(sp.originalId);
+			if (odo != null) {
+				diplomacy.put(p.id, odo);
+			}
 			
 			p.nicknames.addAll(op.nicknames);
 			
@@ -2989,6 +3002,14 @@ public class World implements ModelLookup {
 		
 		int labLimit = Math.max(skirmishDefinition.initialPlanets, skirmishDefinition.initialColonyShips);
 		
+		for (BuildingType bt : buildingModel.buildings.values()) {
+			if (bt.kind.equals("Science") && skirmishDefinition.noLabLimit) {
+				bt.limit = Integer.MAX_VALUE;
+			} else
+			if (bt.kind.equals("Factory") && skirmishDefinition.noFactoryLimit) {
+				bt.limit = Integer.MAX_VALUE;
+			}
+		}
 		// fix research requirements of colony ship and orbital factory
 		for (ResearchType rt : Arrays.asList(researches.get("ColonyShip"), researches.get("OrbitalFactory"))) {
 			rt.civilLab = labLimit > 0 ? 1 : 0;
@@ -3444,5 +3465,17 @@ public class World implements ModelLookup {
 	@Override
 	public BuildingType building(String buildingTypeId) {
 		return buildingModel.get(buildingTypeId);
+	}
+	/**
+	 * @return allow building multiple labs per planet?
+	 */
+	public boolean noLabLimit() {
+		return skirmishDefinition != null ? skirmishDefinition.noLabLimit : false;
+	}
+	/**
+	 * @return Allow building multiple factories per planet?
+	 */
+	public boolean noFactoryLimit() {
+		return skirmishDefinition != null ? skirmishDefinition.noFactoryLimit : false;
 	}
 }
