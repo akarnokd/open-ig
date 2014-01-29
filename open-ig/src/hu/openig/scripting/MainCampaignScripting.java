@@ -279,6 +279,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public void load(XElement in) {
 		super.load(in);
+		gameOver = in.getBoolean("gameover", false);
 		lastLevel = in.getInt("lastLevel", world.level);
 		for (XElement xmsgs : in.childrenWithName("sends")) {
 			for (XElement xmsg : xmsgs.childrenWithName("send")) {
@@ -769,7 +770,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	public void save(XElement out) {
 		super.save(out);
 		out.set("lastLevel", lastLevel);
-		
+		out.set("gameover", gameOver);
 		XElement xmsgs = out.add("sends");
 		for (VideoMessage vm : world.bridge.sendMessages.values()) {
 			XElement xmsg = xmsgs.add("send");

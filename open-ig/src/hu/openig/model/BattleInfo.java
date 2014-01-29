@@ -135,7 +135,7 @@ public class BattleInfo {
 				}
 			}
 			for (Building b : p.surface.buildings.iterable()) {
-				if (b.isOperational()) {
+				if (b.isSpacewarOperational()) {
 					if (b.type.kind.equals("Gun") || b.type.kind.equals("Shield")) {
 						return true;
 					}

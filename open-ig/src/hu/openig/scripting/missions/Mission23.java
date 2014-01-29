@@ -62,10 +62,12 @@ public class Mission23 extends Mission {
 			});
 		}
 		if (checkMission("Mission-23-Timeout")) {
-			stage = M23.DONE;
-			setObjectiveState("Mission-23", ObjectiveState.FAILURE);
-			addTimeout("Mission-23-Hide", 13000);
-			world.currentTalk = null;
+			if (stage == M23.TALK) {
+				stage = M23.DONE;
+				setObjectiveState("Mission-23", ObjectiveState.FAILURE);
+				addTimeout("Mission-23-Hide", 13000);
+				world.currentTalk = null;
+			}
 		}
 		if (checkTimeout("Mission-23-Hide")) {
 			objective("Mission-23").visible = false;
@@ -77,9 +79,11 @@ public class Mission23 extends Mission {
 			addMission("Mission-23-Android-Timeout", 2 * 24);
 		}
 		if (checkMission("Mission-23-Android-Timeout")) {
-			send("Android").visible = false;
-			setObjectiveState("Mission-23-Task-1", ObjectiveState.FAILURE);
-			addTimeout("Mission-23-Task-1-Hide", 13000);
+			if (stage == M23.ANDROID) {
+				send("Android").visible = false;
+				setObjectiveState("Mission-23-Task-1", ObjectiveState.FAILURE);
+				addTimeout("Mission-23-Task-1-Hide", 13000);
+			}
 		}
 		if (checkTimeout("Mission-23-Task-1-Hide")) {
 			objective("Mission-23-Task-1").visible = false;
@@ -93,6 +97,7 @@ public class Mission23 extends Mission {
 		if ("Android".equals(id) && stage == M23.ANDROID) {
 			stage = M23.DONE;
 			setObjectiveState("Mission-23-Task-1", ObjectiveState.SUCCESS);
+			clearMission("Mission-23-Android-Timeout");
 			addTimeout("Mission-23-Task-1-Hide", 13000);
 			addTimeout("Mission-23-Achievement", 5000);
 		}
