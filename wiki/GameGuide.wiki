@@ -345,6 +345,7 @@ If you run into difficult situations, want to skip parts or just want to poke ar
 || CTRL+J || Toggle complete AI assist for the current player on or off ||
 || CTRL+I || Make the currently selected technology researched (if not already) and add 1 unit to the inventory ||
 || CTRL+O || Take ownership of the selected planet ||
+|| CTRL+B || All known races will offer alliance (debug) ||
 
 
 == Mission tips ==
