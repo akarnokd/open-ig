@@ -661,7 +661,17 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	}
 	/** Sell one of the current research. */
 	void doSell() {
-		player().sellInventory(research(), 1);
+		if (sell.lastEvent != null) {
+			if (sell.lastEvent.has(Modifier.SHIFT)) {
+				if (sell.lastEvent.has(Modifier.CTRL)) {
+					player().sellInventory(research(), 100);
+				} else {
+					player().sellInventory(research(), 10);
+				}
+			} else {
+				player().sellInventory(research(), 1);
+			}
+		}
 	}
 	/** Start a new research. */
 	void doStartNew() {
@@ -1095,6 +1105,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				doSell();
 			}
 		};
+		sell.tooltip(get("production.sell.tooltip"));
 
 		productionLines.clear();
 		for (int i = 0; i < 5; i++) {

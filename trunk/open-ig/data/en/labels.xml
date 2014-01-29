@@ -3274,6 +3274,7 @@
 	<entry key='info.planetlist_labs'>Lab info</entry>
 	<entry key='info.planetlist_problems'>Problems</entry>
 	<entry key='info.lab_details'>Lab</entry>
+	<entry key="production.sell.tooltip">Click to sell 1 unit from the inventory[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to sell 10 units.[n]Hold [c=FFFFFFFF]CTRL+SHIFT[/c] while clicking to sell 100 units.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

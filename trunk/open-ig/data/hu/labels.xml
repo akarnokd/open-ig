@@ -453,7 +453,7 @@
 	<entry key='players.garthog'>Garthog Birodalom</entry>
 	<entry key='players.ychom'>Ychom Birodalom</entry>
 	<entry key='players.morgath'>Morgath Birodalom</entry>
-	<entry key='players.dribs'>Dribs Birodalom</entry>
+	<entry key='players.dribs'>Drib Protektorátus</entry>
 	<entry key='players.ecalep'>Ecalep Köztársaság</entry>
 	<entry key='players.sullep'>Sullep Klán</entry>
 	<entry key='players.dargslan'>Dargslan Királyság</entry>
@@ -1332,7 +1332,7 @@
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.4'>A javuló kapcsolatok a Birodalom és a Protektorátus között mindkét faj javát szolgálnák.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.5'>Felajánljuk barátságunkat és megbecsülésünket a Drib népnek.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.6'>A Birodalom mindenkivel a béke lehetőségét keresi. A Drip Protektorátus nyilvánvalóan érdemes lenne egy szövetségre.</entry>
-	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.HUMBLE.7'>Hallottunk a hatalmas Drib birodalomról. Felajánlanánk örök barátságunkat és lojalitásunkat.</entry>
+	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.HUMBLE.7'>Hallottunk a hatalmas Drib Protektorátusról. Felajánlanánk örök barátságunkat és lojalitásunkat.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.HUMBLE.8'>A Birodalom felajánlja barátságát a hősi Drib népnek.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.HUMBLE.9'>A Birodalom megtiszteltetésnerk venné, ha a Drib Protektorátus a barátai közé sorolná.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10'>A Drib Protektorátus sok értéket talált a szavaiban, Admirális.</entry>
@@ -3310,6 +3310,7 @@
 	<entry key='info.planetlist_labs'>Labor infó</entry>
 	<entry key='info.lab_details'>Kutatókp.</entry>
 	<entry key='info.planetlist_problems'>Problémák</entry>
+	<entry key="production.sell.tooltip">Kattints 1 egység készletből történő eladásához[n]Tartsd lenyomva a [c=FFFFFFFF]SHIFT[/c] billentyűt 10 egység eladásához.[n]Tartsd lenyomva a [c=FFFFFFFF]CTRL+SHIFT[/c] billentyűket 100 egység eladásához.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

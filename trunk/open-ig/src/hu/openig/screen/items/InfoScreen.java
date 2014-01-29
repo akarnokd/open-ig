@@ -3401,7 +3401,19 @@ public class InfoScreen extends ScreenBase {
 			List<Planet> list = colonies.getList.invoke(null);
 			switch (sortBy) {
 			case 0:
-				if (!ascending) {
+				if (ascending) {
+					Collections.sort(list, new Comparator<Planet>() {
+						@Override
+						public int compare(Planet o1, Planet o2) {
+							return compare2(o1, o2, new Comparator<Planet>() {
+								@Override
+								public int compare(Planet o1, Planet o2) {
+									return compareString(o1.name, o2.name);
+								}
+							});
+						}
+					});
+				} else {
 					Collections.sort(list, new Comparator<Planet>() {
 						@Override
 						public int compare(Planet o1, Planet o2) {

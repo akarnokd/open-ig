@@ -740,6 +740,7 @@ public class Planet implements Named, Owned, HasInventory {
 
 		autoBuild = AutoBuild.OFF;
 		allocation = ResourceAllocationStrategy.DEFAULT;
+		tax = TaxLevel.MODERATE;
 		
 		// notify about ownership change
 		lastOwner.ai.onPlanetLost(this);

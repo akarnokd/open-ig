@@ -47,6 +47,8 @@ public class UIImageButton extends UIComponent {
 	protected Timer holdTimer;
 	/** Is the mouse pressed down on this component. */
 	protected boolean down;
+	/** The last mouse event. */
+	public UIMouse lastEvent;
 	/**
 	 * Constructor with the default images.
 	 * @param normal the normal state image
@@ -138,6 +140,7 @@ public class UIImageButton extends UIComponent {
 	}
 	@Override
 	public boolean mouse(UIMouse e) {
+		this.lastEvent = e;
 		switch (e.type) {
 		case DOWN:
 			down = true;

@@ -466,7 +466,7 @@ public class StatusbarScreen extends ScreenBase {
 	/** @return Is this a diplomatic call. */
 	boolean isDiplomaticCall() {
 		for (String p2 : player().offers.keySet()) {
-			if (!world().players.get(p2).ownPlanets().isEmpty()) {
+			if (!world().players.get(p2).isDefeated()) {
 				return true;
 			}
 		}

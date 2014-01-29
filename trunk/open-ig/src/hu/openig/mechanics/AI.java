@@ -825,7 +825,7 @@ public class AI implements AIManager {
 			}
 			break;
 		case MONEY:
-			if (rnd < rel / 100 || world.money < 100000) {
+			if (rnd < rel / 100 || p.money() < 100000) {
 				return ResponseMode.YES;
 			}
 			break;
