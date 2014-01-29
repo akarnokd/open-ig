@@ -737,6 +737,9 @@ public class Planet implements Named, Owned, HasInventory {
 		lastOwner.planets.put(this, PlanetKnowledge.NAME);
 
 		removeOwnerSatellites();
+		if (lastOwner != null) {
+			sellLastOwnerInventory(lastOwner);
+		}
 
 		autoBuild = AutoBuild.OFF;
 		allocation = ResourceAllocationStrategy.DEFAULT;
@@ -746,6 +749,32 @@ public class Planet implements Named, Owned, HasInventory {
 		lastOwner.ai.onPlanetLost(this);
 		newOwner.ai.onPlanetConquered(this, lastOwner);
 		world.scripting.onConquered(this, lastOwner);
+	}
+	/**
+	 * Sell remaining units of the last owner at a 25% price.
+	 * @param lastOwner the last owner
+	 */
+	void sellLastOwnerInventory(Player lastOwner) {
+		List<InventoryItem> set = new ArrayList<>(inventory.findByOwner(lastOwner.id));
+		long money = 0;
+		int count = 0;
+		for (InventoryItem ii : set) {
+			/* if (ii.type.category != ResearchSubCategory.SPACESHIPS_STATIONS) { */
+				money += ii.sellValue() / 2;
+				count += ii.count;
+			/* } */
+		}
+		inventory.removeAll(set);
+		
+		if (owner != null) {
+			owner.addMoney(money);
+			owner.statistics.sellCount.value += count;
+			owner.statistics.moneySellIncome.value += money;
+			owner.statistics.moneyIncome.value += money;
+		}
+		world.statistics.moneyIncome.value += money;
+		world.statistics.moneySellIncome.value += money;
+		world.statistics.sellCount.value += count;
 	}
 	/**
 	 * Returns the dimensions for the given building type on this planet,

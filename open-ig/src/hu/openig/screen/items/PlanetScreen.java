@@ -3501,8 +3501,20 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				result.addAll(placeAround(b));
 			}
 		} else {
-			for (int i = skipEdge ? 1 : 0; i < 3; i++) {
-				result.addAll(placeEdge(i));
+			for (int i = 0; i < 3; i++) {
+				if (skipEdge) {
+					result.addAll(placeEdge(i + 1));
+				} else {
+					result.addAll(placeEdge(i));
+				}
+			}
+			for (Location loc : new ArrayList<>(result)) {
+				if (!surface().placement.canPlaceBuilding(loc.x - 1, loc.y)
+						|| !surface().placement.canPlaceBuilding(loc.x + 1, loc.y)
+						|| !surface().placement.canPlaceBuilding(loc.x, loc.y + 1)
+						|| !surface().placement.canPlaceBuilding(loc.x, loc.y - 1)) {
+					result.remove(loc);
+				}
 			}
 		}
 		return result;
@@ -5822,7 +5834,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		nonPlayer().ai.groundBattleInit(this);
 		
 		battlePlacements.clear();
-		battlePlacements.addAll(getDeploymentLocations(planet().owner == player(), false));
+		battlePlacements.addAll(getDeploymentLocations(planet().owner == player(), true)); // skip edge always
 
 		unitsToPlace.clear();
 		boolean atBuildings = planet().owner == player();

@@ -724,7 +724,7 @@
     </graphics>
     <build limit='*' kind='Social' cost='10000'/>
     <operation>
-      <resource type='morale'>15</resource>
+      <resource type='morale'>10</resource>
       <resource type='police'>50000</resource>
       <resource type='energy'>-1200</resource>
       <resource type='worker'>-400</resource>

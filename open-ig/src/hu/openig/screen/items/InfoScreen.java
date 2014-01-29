@@ -3928,6 +3928,9 @@ public class InfoScreen extends ScreenBase {
 					} else
 					if (!dr.alliancesAgainst.isEmpty()) {
 						ally.add(p);
+					} else
+					if (dr.value >= 90) {
+						ally.add(p);
 					}
 				}
 			}

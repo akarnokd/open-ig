@@ -408,11 +408,11 @@ public class AttackPlanner extends Planner {
 					});
 					break;
 				} else
-				if (rnd < 0.25 && world.money < 50000 && dr.value >= p.warThreshold + 5) {
+				if (rnd < 0.25 && world.money >= 75000 && dr.value >= p.warThreshold + 5) {
 					add(new Action0() {
 						@Override
 						public void invoke() {
-							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(10000L * (ModelUtils.randomInt(10) + 1)));
+							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(2500L * (ModelUtils.randomInt(20) + 1)));
 						}
 					});
 					break;

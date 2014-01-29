@@ -41,6 +41,13 @@ public class ResearchPlanner extends Planner {
 			new HashSet<>(Arrays.asList("ai", "civil", "computer", "mechanical", "military"));
 	/** Indicator to allow actions that spendmoney. */
 	boolean maySpendMoney;
+	/** Labs increasing in number of labs. */
+	static final Comparator<AIPlanet> LABS_INCREASING = new Comparator<AIPlanet>() {
+		@Override
+		public int compare(AIPlanet o1, AIPlanet o2) {
+			return Integer.compare(o1.statistics.labCount(), o2.statistics.labCount());
+		}
+	};
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
@@ -90,7 +97,7 @@ public class ResearchPlanner extends Planner {
 				candidatesImmediate.add(rt);
 				setResearchEnables(rt, enablesCount);
 			} else
-			if (rt.labCount() <= world.ownPlanets.size()) {
+			if ((rt.labCount() <= world.ownPlanets.size() || world.noLabLimit)) {
 				candidatesReconstruct.add(rt);
 				setResearchEnables(rt, enablesCount);
 				rebuildCount.put(rt, rebuildCost(rt, labCosts));
@@ -136,8 +143,12 @@ public class ResearchPlanner extends Planner {
 
 		boolean noroom = false;
 		// find an empty planet
-		for (AIPlanet planet : world.ownPlanets) {
-			if (planet.statistics.labCount() == 0) {
+		List<AIPlanet> ps = new ArrayList<>(world.ownPlanets);
+		if (world.noLabLimit) {
+			Collections.sort(ps, LABS_INCREASING);
+		}
+		for (AIPlanet planet : ps) {
+			if (planet.statistics.labCount() == 0 || world.noLabLimit) {
 				AIResult r = buildOneLabFor(rt, planet);
 				if (r == AIResult.SUCCESS || r == AIResult.NO_MONEY) {
 					return;
@@ -270,7 +281,7 @@ public class ResearchPlanner extends Planner {
 	 * @return true if successful
 	 */
 	AIResult buildOneLabIf(int required, int available, int local, final AIPlanet planet, final String resource) {
-		if (required > available && local == 0) {
+		if (required > available && (local == 0 || world.noLabLimit)) {
 			final Planet planet0 = planet.planet;
 			if (!planet.statistics.canBuildAnything()) {
 				return AIResult.NO_AVAIL;

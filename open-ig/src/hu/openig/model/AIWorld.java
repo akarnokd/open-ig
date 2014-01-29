@@ -110,6 +110,8 @@ public class AIWorld {
 	public boolean hasDiplomacyRoom;
 	/** Allow the deployment of more defenses? */
 	public boolean mayImproveDefenses;
+	/** No limit on planet building. */
+	public boolean noLabLimit;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -118,9 +120,9 @@ public class AIWorld {
 		this.player = player;
 		this.mainPlayer = player.world.player;
 		
-		
 		difficulty = player.difficulty;
 		level = player.world.level;
+		noLabLimit = player.world.noLabLimit();
 		
 		explorationInnerLimit = player.explorationInnerLimit;
 		explorationOuterLimit = player.explorationOuterLimit;
