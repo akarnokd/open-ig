@@ -49,16 +49,16 @@
 	<entry key='settings.autobuild_limit'>Geld für Autobau begrenzen</entry>
 	<entry key='settings.auto_repair'>Automatische Reparatur von Gebäuden</entry>
 	<entry key='settings.button_sounds'>Ton bei Knopfdruck</entry>
-	<entry key='settings.satellite_deplay'>Satelliten einsatz animieren</entry>
-	<entry key='settings.research_money_percent'>Forschung start Geld Prozent</entry>
+	<entry key='settings.satellite_deplay'>Satelliteneinsatz animieren</entry>
+	<entry key='settings.research_money_percent'>Forschung Geld Prozent</entry>
 	<entry key='settings.autobattle'>Automatischer Kampf</entry>
-	<entry key='settings.radarunion'>Radar-regionen vereinen</entry>
-	<entry key='settings.auto_repair_limit'>Auto reparatur Geld begrenzen</entry>
+	<entry key='settings.radarunion'>Radarregionen vereinen</entry>
+	<entry key='settings.auto_repair_limit'>Autoreparatur Geld begrenzen</entry>
 	<entry key='settings.save_name'>Name für Spielstand:</entry>
 	<entry key='settings.classic_controls'>Klassische steuerung</entry>
 	<entry key='settings.swap_mouse_buttons'>Mausknöpfe tauschen</entry>
 	<entry key='settings.slow_on_attack'>Spiel verlangsamen, wenn Angriff bevorsteht</entry>
-	<entry key='settings.base_speed'>Spiel Geschwindigkeit</entry>
+	<entry key='settings.base_speed'>Spielgeschwindigkeit</entry>
 	<entry key='settings.ui_scale'>Benutzeroberfläche Zoom (X - zurück)</entry>
 	<entry key='screens.bridge'>Brücke</entry>
 	<entry key='screens.starmap'>Karte</entry>
@@ -94,7 +94,7 @@
 	<entry key='singleplayer.campaigns'>Kampagnen</entry>
 	<entry key='singleplayer.description'>Beschreibung</entry>
 	<entry key='singleplayer.difficulty'>Schwierigkeit</entry>	
-	<entry key='autosave'>Autospeicher</entry>
+	<entry key='autosave'>Autospeichern</entry>
 	<entry key='quicksave'>Schnellsp.</entry>
 	<entry key='difficulty.normal'>Normal</entry>
 	<entry key='difficulty.easy'>Leicht</entry>
@@ -103,8 +103,8 @@
 	<entry key='loading'>Laden</entry>
 	<entry key='settings.base_speed_value'>%d Min./Schritt</entry>
 	<entry key='othersettings.title'>Weitere Einstellungen</entry>
-	<entry key='othersettings.ok'>Gut</entry>
-	<entry key='othersettings.cancel'>Lieber nicht</entry>
+	<entry key='othersettings.ok'>Okay</entry>
+	<entry key='othersettings.cancel'>Abbrechen</entry>
 	<entry key='othersettings.graphics_troubleshoot'>Grafik Fehlerbehebung:</entry>
 	<entry key='othersettings.disable_d3d'>D3D deaktivieren*</entry>
 	<entry key='othersettings.disable_ddraw'>DirectDraw deaktivieren*</entry>
@@ -152,11 +152,11 @@
   <entry key='buildings.civil_dev_center'>E-Zentrum Bauwesen</entry>
   <entry key='buildings.civil_dev_center.desc'>Das Entwicklungszentrum Bauwesen erhöht die Kenntnisse Ihrer Kolonie im Bereich Bautechnik, was wiederum die Entwicklungskapazität erhöht.</entry>
   <entry key='buildings.colony_hub'>Koloniezentrum</entry>
-  <entry key='buildings.colony_hub.desc'>Das Koloniezentrum wird - fertig gebaut - von einer Kolonie-Arche automatisch auf dem Planeten abgeladen.Das Koloniezentrum ist die Voraussetzung für andere Gebäude.</entry>
+  <entry key='buildings.colony_hub.desc'>Das Koloniezentrum wird - fertig gebaut - von einer Kolonie-Arche automatisch auf dem Planeten abgeladen. Das Koloniezentrum ist die Voraussetzung für andere Gebäude.</entry>
   <entry key='buildings.computer_dev_center'>E-Zentrum Computer</entry>
   <entry key='buildings.computer_dev_center.desc'>Das Computer-Entwicklungszentrum erhöht die Kenntnisse Ihrer Kolonie im Bereich Computerwissenschaft, was wiederum die Entwicklungskapazität verbessert.</entry>
   <entry key='buildings.equipment_factory'>Ausrüstungsfabrik</entry>
-  <entry key='buildings.equipment_factory.desc'>Mit die Ausrüstungsfabrik erhöht die Kolonie ihre Kapazität  bei der Produktion wichtiger Ausrüstungsgegenstände.</entry>
+  <entry key='buildings.equipment_factory.desc'>Mit der Ausrüstungsfabrik erhöht die Kolonie ihre Kapazität  bei der Produktion wichtiger Ausrüstungsgegenstände.</entry>
   <entry key='buildings.factory.upgrade_1'>Erhöht Kapazität auf 125%, Energie- und Arbeiterbedarf auf 150%.</entry>
   <entry key='buildings.factory.upgrade_2'>Erhöht Kapazität auf 150%, Energie- und Arbeiterbedarf auf 200%.</entry>
   <entry key='buildings.factory.upgrade_3'>Erhöht Kapazität auf 175%, Energie- und Arbeiterbedarf auf 250%.</entry>
@@ -166,15 +166,15 @@
   <entry key='buildings.fire_brigade'>Feuerwehr</entry>
   <entry key='buildings.fire_brigade.desc'>Die Feuerwehren reparieren beschädigte Koloniegebäude bis zu 50% gratis. Sie kommen automatisch zum Einsatz, wenn eine Kolonie bombardiert oder von Bodentruppen angegriffen wird.</entry>
   <entry key='buildings.fire_brigade.upgrade_1'>Erhöht Reparatur auf 55%, Energie- und Arbeiterbedarf auf 150%.</entry>
-  <entry key='buildings.fire_brigade.upgrade_2'>Erhöht Reparatur auf 61%, Energie- und Arbeiterbedarf auf 175% erhöhen.</entry>
-  <entry key='buildings.fire_brigade.upgrade_3'>Erhöht Reparatur auf 68%, Energie- und Arbeiterbedarf auf 200% erhöhen.</entry>
-  <entry key='buildings.fire_brigade.upgrade_4'>Erhöht Reparatur auf zu 77%, Energie- und Arbeiterbedarf auf 200% erhöhen.</entry>
+  <entry key='buildings.fire_brigade.upgrade_2'>Erhöht Reparatur auf 61%, Energie- und Arbeiterbedarf auf 175%.</entry>
+  <entry key='buildings.fire_brigade.upgrade_3'>Erhöht Reparatur auf 68%, Energie- und Arbeiterbedarf auf 200%.</entry>
+  <entry key='buildings.fire_brigade.upgrade_4'>Erhöht Reparatur auf zu 77%, Energie- und Arbeiterbedarf auf 200%.</entry>
   <entry key='buildings.food.upgrade_1'>Erhöht Produktion, Energie- und Arbeiterbedarf auf 125%.</entry>
   <entry key='buildings.food.upgrade_2'>Erhöht Produktion, Energie- und Arbeiterbedarf auf 150%.</entry>
   <entry key='buildings.food.upgrade_3'>Erhöht Produktion, Energie- und Arbeiterbedarf auf 200%.</entry>
   <entry key='buildings.food.upgrade_4'>Erhöht Produktion, Energie- und Arbeiterbedarf auf 200%.</entry>
   <entry key='buildings.fortress'>Festung</entry>
-  <entry key='buildings.fortress.desc'>Die Festung verbessert die Verteidigungseinrichtungen Ihrer Kolonie gegen Bodenangriffe erheblich. Sie nimmt gegnerische Panzer unter Beschuß und bietet Platz für acht eigene Panzer.</entry>
+  <entry key='buildings.fortress.desc'>Die Festung verbessert die Verteidigungseinrichtungen Ihrer Kolonie gegen Bodenangriffe erheblich. Sie nimmt gegnerische Panzer unter Beschuss und bietet Platz für acht eigene Panzer.</entry>
   <entry key='buildings.fusion_plant'>Fusionskraftwerk</entry>
   <entry key='buildings.fusion_plant.desc'>Das Fusionskraftwerk ist vor allem für Planeten geeignet, die über schmelzbare Ressourcen verfügen (Deuterium, Tritium, Helium-2).</entry>
   <entry key='buildings.hospital'>Krankenhaus</entry>
@@ -190,17 +190,17 @@
   <entry key='buildings.hydroponic_food_farm'>Hydrokulturfarm</entry>
   <entry key='buildings.hydroponic_food_farm.desc'>Die Hydrokulturfarm baut natürliche Nahrungsmittel in einer unnatürlichen Umgebung an und liefert überall so wichtige Nahrungsmittel wie Getreide, Pilze und Algen.</entry>
   <entry key='buildings.hypershield'>Hyperschild</entry>
-  <entry key='buildings.hypershield.desc'>Der Hyperschild nutzt die räumlichen Warp-Effekte von Millionenvon Mikro-Singularitäten, um Beschuß zu absorbieren und Ihre Kolonie so vor Bombardierung aus dem All zu schützen.</entry>
+  <entry key='buildings.hypershield.desc'>Der Hyperschild nutzt die räumlichen Warp-Effekte von Millionen von Mikro-Singularitäten, um Beschuss zu absorbieren und Ihre Kolonie so vor Bombardierung aus dem All zu schützen.</entry>
   <entry key='buildings.inversion_shield'>Inversionsschild</entry>
   <entry key='buildings.inversion_shield.desc'>Der Inversionsschild besteht aus sorgfältig balancierten Gravitonfeldern mit Umkehrimpuls, die eine starke Barriere um Ihre Kolonie bilden, die gegen Angriffe aus dem All schützt.</entry>
   <entry key='buildings.ion_projector'>Ionenprojektor</entry>
-  <entry key='buildings.ion_projector.desc'>Der Ionenprojektor schützt Ihre Kolonie vor Angriffen gegner-ischer Raumflotten. Er feuert konzentrierte Energiepartikel ab,die die meisten gegnerischen Schiffe schwer beschädigen.</entry>
+  <entry key='buildings.ion_projector.desc'>Der Ionenprojektor schützt Ihre Kolonie vor Angriffen gegnerischer Raumflotten. Er feuert konzentrierte Energiepartikel ab, die die meisten gegnerischen Schiffe schwer beschädigen.</entry>
   <entry key='buildings.mechanical_dev_center'>E-Zentrum Maschinen</entry>
   <entry key='buildings.mechanical_dev_center.desc'>Das Maschinenbau-Entwicklungszentrum erhöht die Kenntnisse Ihrer Kolonie im Bereich Maschinenbau, was wiederum die Entwicklungskapazität verbessert.</entry>
   <entry key='buildings.meson_projector'>Mesonenprojektor</entry>
   <entry key='buildings.meson_projector.desc'>Der Mesonenprojektor feuert einen Strom subatomarer Partikel ab, die zu hochexplosiver Materie zerfallen. Er kann ein ungeschütztes Raumschiff mit einem einzigen Schuß zerstören.</entry>
   <entry key='buildings.military_dev_center'>E-Zentrum Militär</entry>
-  <entry key='buildings.military_dev_center.desc'>Das Militärische Entwicklungszentrum erhöht die Kenntnisse derKolonie im Bereich Militärische Aufrüstung, was wiederum die Entwicklungskapazität verbessert.</entry>
+  <entry key='buildings.military_dev_center.desc'>Das Militärische Entwicklungszentrum erhöht die Kenntnisse der Kolonie im Bereich Militärische Aufrüstung, was wiederum die Entwicklungskapazität verbessert.</entry>
   <entry key='buildings.military_spaceport'>Militär-Raumhafen</entry>
   <entry key='buildings.military_spaceport.desc'>Die Militär-Raumhäfen ermöglichen Bau und Unterhaltung der militärischen Raumschiffe. Sie bieten außerdem lokale System-Verteidigungsschiffe, um die Kolonie vor Angriffen zu schützen.</entry>
   <entry key='buildings.nuclear_plant'>Atomkraftwerk</entry>
@@ -211,7 +211,7 @@
   <entry key='buildings.particle_projector'>Fusionsprojektor</entry>
   <entry key='buildings.particle_projector.desc'>Ein Treffer aus einem Fusionsprojektor ist wie eine Kollision mit einem kleinen Stern. Gegnerische Raumschiffe werden dabei verständlicherweise schwer beschädigt.</entry>
   <entry key='buildings.phased_telescope'>Phasen-Teleskop</entry>
-  <entry key='buildings.phased_telescope.desc'>Das Phasen-Teleskop ist das beste Langstrecken-Ortungsgerät. Eskann auch auf riesige Distanz die genaue Position einer gegnerischen Flotte feststellen.</entry>
+  <entry key='buildings.phased_telescope.desc'>Das Phasen-Teleskop ist das beste Langstrecken-Ortungsgerät. Es kann auch auf riesige Distanz die genaue Position einer gegnerischen Flotte feststellen.</entry>
   <entry key='buildings.phood_factory'>Phood(tm)-Fabrik</entry>
   <entry key='buildings.phood_factory.desc'>Die Phood(TM)-Fabrik nutzt die neuesten Produkte aus der Genmanipulation, z.B. Fleischtier(tm), Flinkkorn(tm) und Press-alge(tm), um die Nahrungsbedürfnisse der Kolonisten zu decken.</entry>
   <entry key='buildings.plasma_projector'>Plasmaprojektor</entry>
@@ -229,7 +229,7 @@
   <entry key='buildings.prefab_housing'>Fertigwohnhäuser</entry>
   <entry key='buildings.prefab_housing.desc'>Fertigwohnhäuser sind für Ihre Kolonisten die billigsten Unterkünfte mit niedriger Kapazität. Erhältlich in den vier aufregenden Designerfarben Rotbraun, Aquamarin, Chiffon und Karo.</entry>
   <entry key='buildings.radar_telescope'>Radarteleskop</entry>
-  <entry key='buildings.radar_telescope.desc'>Das Radarteleskop spürt gegnerische Flotten in der Umgebung aufund warnt die Kolonisten so vor einem bevorstehenden Angriff.</entry>
+  <entry key='buildings.radar_telescope.desc'>Das Radarteleskop spürt gegnerische Flotten in der Umgebung auf und warnt die Kolonisten so vor einem bevorstehenden Angriff.</entry>
   <entry key='buildings.recreation_center'>Erholungszentrum</entry>
   <entry key='buildings.recreation_center.desc'>Das Erholungszentrum bietet gesundheitsförderliche Aktivitäten wie Hyperpool, FlashPong und Billard. Durch diese Art der Unterhaltung wird die Moral in der Kolonie gefördert.</entry>
   <entry key='buildings.solar_plant'>Solarkraftwerk</entry>
@@ -284,11 +284,11 @@
 	
 	<entry key='@MainFleet'>Hauptflotte</entry>
 	<entry key='fleet'>%s Flotte</entry>
-	<entry key='colonizer_fleet'>%s Kolonizator</entry>
+	<entry key='colonizer_fleet'>%s Kolonisator</entry>
 	<entry key='explorer_fleet'>%s Erkunder</entry>
 
   <entry key='bar.brian.301'>Hallo, Brian. Erzählen Sie mal, wie wurden Sie Cheftechniker bei?</entry>
-  <entry key='bar.brian.311'>Ich hätte nicht gedacht, daß ich mal 'nen Militärtechniker treffen würde.</entry>
+  <entry key='bar.brian.311'>Ich hätte nicht gedacht, dass ich mal 'nen Militärtechniker treffen würde.</entry>
   <entry key='bar.brian.312'>Was wissen Sie über Robotik?</entry>
   <entry key='bar.brian.321'>Wie laufen die Arbeiten in der Forschung ab?</entry>
   <entry key='bar.brian.323'>Warum verließen Sie die Entwicklungsabteilung?</entry>
@@ -298,22 +298,22 @@
   <entry key='bar.doctor.402'>Kleines Päuschen?</entry>
   <entry key='bar.doctor.411'>Ich habe gehört, Sie verstehen was von Robotern?</entry>
   <entry key='bar.doctor.412'>Ich habe gehört, Sie haben auch Interesse an Mechanik und Robotik?</entry>
-  <entry key='bar.doctor.421'>Es gibt Gerüchte, daß in den letzten Jahren viele Roboter gebaut wurden.</entry>
+  <entry key='bar.doctor.421'>Es gibt Gerüchte, dass in den letzten Jahren viele Roboter gebaut wurden.</entry>
   <entry key='bar.doctor.431'>Klingt, als sollte ich wirklich mal mit ihm reden.</entry>
-  <entry key='bar.doctor.441'>Aber ich muß mit Reinhardt reden. Geben Sie mir den alten Code.</entry>
+  <entry key='bar.doctor.441'>Aber ich muss mit Reinhardt reden. Geben Sie mir den alten Code.</entry>
   <entry key='bar.doctor.451'>Danke, Doc.</entry>
   
   <entry key='bar.kelly.001'>Na, Kelly, was liegt an?</entry>
   <entry key='bar.kelly.011'>Sie haben keine große Lust zu kämpfen, was?</entry>
   <entry key='bar.kelly.021'>Was meinen Sie damit?</entry>
-  <entry key='bar.kelly.022'>Kelly, sind Sie sicher, daß hier keine Aliens an Bord sind?</entry>
+  <entry key='bar.kelly.022'>Kelly, sind Sie sicher, dass hier keine Aliens an Bord sind?</entry>
   <entry key='bar.kelly.032'>Ich sah jemand aus meinem Zimmer rennen. Irgendwer spioniert mir nach.</entry>
   <entry key='bar.kelly.041'>Danke für den Tip, Kelly.</entry>
   
   <entry key='bar.phsychologist.101'>Hallo, Doktor. Könnte ich Sie was fragen?</entry>
   <entry key='bar.phsychologist.111'>Hatten Sie Gelegenheit, den Test auszuwerten, den ich gemacht habe?</entry>
   <entry key='bar.phsychologist.112'>Ich habe manchmal seltsame Träume! Da taucht immer wieder ein Raum auf...</entry>
-  <entry key='bar.phsychologist.121'>Danke für Ihre Geduld. Ich muß jetzt los.</entry>
+  <entry key='bar.phsychologist.121'>Danke für Ihre Geduld. Ich muss jetzt los.</entry>
   
   <entry key='bar.start_talking'>Klicke um das Gespräch mit %s zu starten.</entry>
 
@@ -324,13 +324,13 @@
   <entry key='autobuild.AI'>K.I.-gesteuert</entry>
   <entry key='autobuild.CIVIL'>Zivilgebäude</entry>
   <entry key='autobuild.ECONOMIC'>Handelsgebäude</entry>
-  <entry key='autobuild.FACTORY'>Fabriksgebäude</entry>
+  <entry key='autobuild.FACTORY'>Fabrikgebäude</entry>
   <entry key='autobuild.OFF'>Aus</entry>
-  <entry key='autobuild.SOCIAL'>Socialen Gebäude</entry>
+  <entry key='autobuild.SOCIAL'>Soziale Gebäude</entry>
   <entry key='autobuild.UPGRADE'>Gebäude verbessern</entry>
-  <entry key='autobuild.no_more_building_space'>Nicht genug Gebäudeplatz auf dem Planet %s für Automatische Bau.</entry>
+  <entry key='autobuild.no_more_building_space'>Nicht genug Gebäudeplatz auf dem Planet %s für automatischen Bau.</entry>
 
-  <entry key='battlefinish.own_fleet_destroyed'>Deine %s Flotte war zerstört.</entry>
+  <entry key='battlefinish.own_fleet_destroyed'>Deine %s Flotte wurde zerstört.</entry>
   <entry key='battlefinish.own_losses_1'>Eigene</entry>
   <entry key='battlefinish.own_losses_2'>Verluste</entry>
   <entry key='battlefinish.planet_destroyed'>Der Kampf hat den Planeten %s zerstört.</entry>
@@ -345,7 +345,7 @@
   <entry key='battlefinish.stations'>Raumstationen</entry>
   <entry key='battlefinish.statistics'>Kampfstatistik</entry>
 
-  <entry key='chat.unavailable'>Der Gägner macht der Kommunikation absichtlicht nichm möglich.</entry>
+  <entry key='chat.unavailable'>Der Gegner macht die Kommunikation absichtlich unmöglich.</entry>
   <entry key='colonyinfo.allocation'>Verteilung   : %s</entry>
   <entry key='colonyinfo.autobuild' >Auto-Bau     : %s</entry>
   <entry key='colonyinfo.energy'    >Energie      : %d / %d kWh</entry>
@@ -363,7 +363,7 @@
   <entry key='colonyinfo.population.short.alien'>%d alien</entry>
   <entry key='colonyinfo.race'      >Rasse        : %s</entry>
   <entry key='colonyinfo.surface'   >Oberfläche   : %s</entry>
-  <entry key='colonyinfo.surface2'  >Oberfläche   : %s (%d%% völk.wachs)</entry>
+  <entry key='colonyinfo.surface2'  >Oberfläche   : %s (%d%% Bevölk. wachs)</entry>
   <entry key='colonyinfo.tax'       >Steuereinkommen : %d cr</entry>
   <entry key='colonyinfo.tax-info'  >Steuerniveau: %s    Steuermoral: %d%% (%s)</entry>
   <entry key='colonyinfo.tax-level' >Steuereinkommen : %s</entry>
@@ -389,8 +389,8 @@
   <entry key='database.map.3'>
 	
 	1. Brücke
-	2. Forschung-produktion Terminale
-	3. Ausrüstung Terminale
+	2. Forschungs- und Produktionsterminals
+	3. Ausrüstungsterminal
 	4. Kabine des Kapitäns 
 	5. Bar
 	6. Mannschaftsunterkünfte 
@@ -399,22 +399,22 @@
   <entry key='database.map.4'>
 	
 	1. Brücke
-	2. Forschung-produktion Terminale
-	3. Ausrüstung Terminale
+	2. Forschungs- und Produktionsterminals
+	3. Ausrüstungsterminal
 	4. Kabine des Kapitäns 
 	5. Bar
 	6. Mannschaftsunterkünfte 
-	7. Diplomatisches Beziehungsraum</entry>
+	7. Diplomatieraum</entry>
   <entry key='database.map.4.title'>Karte von dem Flaggschiff Thorin</entry>
   <entry key='database.map.5'>
 	
 	1. Brücke
-	2. Forschung-produktion Terminale
-	3. Ausrüstung Terminale
+	2. Forschungs- und Produktionsterminals
+	3. Ausrüstungsterminal
 	4. Kabine des Kapitäns 
 	5. Bar
 	6. Mannschaftsunterkünfte 
-	7. Diplomatisches Beziehungsraum</entry>
+	7. Diplomatieraum</entry>
   <entry key='database.map.5.title'>Karte von dem Flaggschiff Thorin</entry>
   <entry key='inventoryslot.bomb'>Bombe</entry>
   <entry key='inventoryslot.cannon'>Kanonen</entry>
@@ -430,8 +430,8 @@
   <entry key='inventoryslot.rocket1'>Raketen</entry>
   <entry key='inventoryslot.rocket2'>Raketen</entry>
   <entry key='inventoryslot.shield'>Schilde</entry>
-  <entry key='inventoryslot.storage'>Gespeicher</entry>
-  <entry key='message.cant_attack_that_planet'>Satellitenübesicht gebrauch über dem Planet %s zum angriff!</entry>
+  <entry key='inventoryslot.storage'>Speicher</entry>
+  <entry key='message.cant_attack_that_planet'>Satellitenübersicht gebrauch über dem Planet %s zum Angriff!</entry>
   <entry key='message.cant_build_there'>Du kannst hier nicht Bauen!</entry>
   <entry key='message.colony_hub_completed'>Koloniezentrum wurde auf dem Planeten %s fertiggestelt.</entry>
   <entry key='message.earthquake'>Erdbeben auf dem Planeten %s.</entry>
@@ -448,13 +448,13 @@
   <entry key='message.planet_revolt'>Rebellion auf dem Planeten %s.</entry>
   <entry key='message.production_completed'>Produktion von %s beendet.</entry>
   <entry key='message.research_completed'>Forschung von %s beendet.</entry>
-  <entry key='message.satellite_destroyed'>Der Satellit, der Planeten %s umkreiste, wurde zerstört.</entry>
+  <entry key='message.satellite_destroyed'>Der Satellit, der den Planeten %s umkreiste, wurde zerstört.</entry>
   <entry key='message.yesterday_tax_income'>Steuereinkommen von gestern war %s Credits.</entry>
   <entry key='message.yesterday_trade_income'>Handelseinkommen von gestern war %s Credits.</entry>
 	
   <entry key='pirates.fleet_name'>Piraten</entry>
-  <entry key='planet.colonizable'>Leel - Kolonisierbar</entry>
-  <entry key='planet.install_satellite_1'>Setze jeder Satellit ein</entry>
+  <entry key='planet.colonizable'>Leer - kolonisierbar</entry>
+  <entry key='planet.install_satellite_1'>Setze einen Satelliten ein,</entry>
   <entry key='planet.install_satellite_2'>um die Oberfläche zu sehen.</entry>
   <entry key='planet.type.cratered'>verkratert</entry>
   <entry key='planet.type.desert'>Wüstenplanet</entry>
@@ -525,7 +525,7 @@
   <entry key='screens.research'>F6 - Forschung</entry>
   <entry key='screens.starmap'>F2 - Karte</entry>
   <entry key='screens.statistics'>*F11 - Statistik</entry>
-  <entry key='screens.spying'>F11 - Spionen</entry>
+  <entry key='screens.spying'>F11 - Spionage</entry>
   <entry key='screens.trade'>F12 - Schwarzmarkt</entry>
 
   <entry key='spacewar.projector_information'>Kanone Information</entry>
@@ -542,28 +542,28 @@
   <entry key='spacewar.ship_information_damage'>Schaden</entry>
   <entry key='spacewar.ship_information_equipment'>Ausrüstungsliste :</entry>
   <entry key='spacewar.ship_information_firepower'>Feuerkraft</entry>
-  <entry key='spacewar.ship_information_name'>Einheit name</entry>
-  <entry key='spacewar.ship_information_type'>Einheit typ</entry>
+  <entry key='spacewar.ship_information_name'>Einheitenname</entry>
+  <entry key='spacewar.ship_information_type'>Einheitentyp</entry>
   <entry key='spacewar.ship_information_wins'>Siege</entry>
-  <entry key='spacewar.ship_name' >Einheit name: %s</entry>
+  <entry key='spacewar.ship_name' >Einheitenname: %s</entry>
   <entry key='spacewar.ship_owner'>Besitzer : %s</entry>
   <entry key='spacewar.ship_status'>Schiff Status</entry>
   <entry key='spacewar.ship_status_many'>Zu viele Dinge ausgewählt.</entry>
   <entry key='spacewar.ship_status_none'>Nichts ausgewählt.</entry>
   <entry key='spacewar.ship_type'>Typ      : %s</entry>
-  <entry key='spacewar.ship_weapon_count'>Mänge : %d</entry>
+  <entry key='spacewar.ship_weapon_count'>Menge : %d</entry>
   <entry key='spacewar.ship_weapon_damage'>Schaden: %d%%</entry>
   <entry key='spacewar.ship_weapon_empty'>Leer</entry>
   <entry key='spacewar.ship_weapon_type'>Typ   : %s</entry>
-  <entry key='spacewar.station_information'>Station Information</entry>
+  <entry key='spacewar.station_information'>Stationsinformation</entry>
   <entry key='spacewar.statistics'>Statistik</entry>
   <entry key='spacewar.statistics_enemy_units'>Feindliche Einhei.: %6d / %6d</entry>
   <entry key='spacewar.statistics_firepower'  >Feuerkraft        : %6d / %.1f</entry>
-  <entry key='spacewar.statistics_ground'     >Boden Einheiten   : %6d</entry>
-  <entry key='spacewar.statistics_guns'       >Boden Kanonen     : %6d</entry>
+  <entry key='spacewar.statistics_ground'     >Bodeneinheiten    : %6d</entry>
+  <entry key='spacewar.statistics_guns'       >Bodenkanonen      : %6d</entry>
   <entry key='spacewar.statistics_losses'     >Verluste          : %6d</entry>
   <entry key='spacewar.statistics_own_units'  >Eigene Einheiten  : %6d / %6d</entry>
-  <entry key='spacewar.statistics_rockets'    >Racketen/Bombe    : %6d / %2d</entry>
+  <entry key='spacewar.statistics_rockets'    >Racketen/Bomben   : %6d / %2d</entry>
   <entry key='spacewar.statistics_stations'   >Raumstationen     : %6d</entry>
 
   <entry key='taxlevel.ABOVE_MODERATE'>Über mäßig</entry>
@@ -577,11 +577,11 @@
   <entry key='taxlevel.VERY_HIGH'>Sehr hoch</entry>
   <entry key='taxlevel.VERY_LOW'>Sehr niedrig</entry>
 
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.1'>Wir haben beschlossen, daß Sie unsere Unterstützung und unseren Schutz brauchen. Verbünden Sie sich mit uns.</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.1'>Wir haben beschlossen, dass Sie unsere Unterstützung und unseren Schutz brauchen. Verbünden Sie sich mit uns.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.2'>Wir bieten der Morgath-Föderation unsere Freundschaft. Sie brauchen unsere Unterstützung gegen unsere gemeinsamen Gegner.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.3'>Gegner der Morgath-Föderation sind auch unsere Gegner. Sie werden doch sicher erkennen, wie gut eine Allianz wäre, und nicht so dumm sein, sich gegen uns zu stellen?</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.4'>Dem Imperium ist immer an einer Verbesserung des Verhältnisses zu unseren Nachbarn gelegen. Die Interessen der Morgath-Föderation sind auch die unseren.</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.5'>Wir bieten der Föderation unsere Freundschaft. Ein verbesserter Dialog und intensivere Handels- beziehungen sind für uns beide von Nutzen.</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.5'>Wir bieten der Föderation unsere Freundschaft. Ein verbesserter Dialog und intensivere Handelsbeziehungen sind für uns beide von Nutzen.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.6'>Das Imperium will keine Feindschaft. Wir suchen Freundschaft und Verständnis mit den anderen Völkern. Eine Ära der Kooperation soll beginnen!</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.7'>Wir haben von der mächtigen Morgath-Föderation gehört. Wir möchten Ihnen unsere Freundschaft anbieten.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.8'>Die Nachrichten über die großen Errungenschaften der Morgath-Föderation haben sich im ganzen Sektor verbreitet. Wir bitten Sie höflichst um Ihre Freundschaft.</entry>
@@ -595,7 +595,7 @@
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16'>Die sogenannte Freundschaft des Imperiums ist wohlbekannt. Die Gesellschaft Freier Nationen hat uns vor Ihnen und Ihren Tricks gewarnt.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17'>Wir entscheiden immer noch selbst, was gut für uns ist!</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18'>Die Föderation will mit Ihren Tricks nichts zu schaffen haben, Mensch!</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19'>Wir meinen, daß eine Verbesserung der Beziehungen zwischen unseren Nationen von Nutzen für uns sein könnte.</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19'>Wir meinen, dass eine Verbesserung der Beziehungen zwischen unseren Nationen von Nutzen für uns sein könnte.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20'>Die Föderation ist über die philosophische Haltung Ihres Volkes erfreut, Admiral. Wir werden sehen, wo sie uns hinführt.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21'>Die Föderation könnte von einer freundschaftlichen Beziehung zu Ihrer Regierung profitieren.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22'>Die Föderation wird Ihr Angebot überdenken.</entry>
@@ -610,24 +610,24 @@
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31'>Wir haben Sie für stärker gehalten. Ihre Schwäche stellt eine Gefahr für uns dar.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32'>Die Morgath-Föderation kann ihre Energien nicht mit der Unterstützung von Rassen verschwenden, die die Natur schwach erschaffen hat.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33'>Wenn wir Ihnen beistehen, schwächen wir nur uns selbst, Admiral.</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34'>Wir mischen uns nicht in die Angelegenheiten schwacher Völker.</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34'>Wir mischen uns nicht in die Angelegenheiten schwacher Völker ein.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35'>Ihr armseliges Gewimmer beleidigt die Föderation. Ihr Menschen seid nichts als kleine Wichte.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36'>So tief ist das Imperium schon gesunken? Man hat uns von Ihrer Stärke erzählt, doch ganz offensichtlich sind diese Nachrichten falsch.</entry>
 	<entry key='diplomacy.Morgath.MONEY.37'>Wir werden Ihnen %s Credits zur Unterstützung Ihrer Sache geben.</entry>
 	<entry key='diplomacy.Morgath.MONEY.YES.38'>Wir werden Ihre Großzügigkeit nicht vergessen, Mensch.</entry>
 	<entry key='diplomacy.Morgath.MONEY.YES.39'>Die Föderation dankt für Ihre Hilfe.</entry>
-	<entry key='diplomacy.Morgath.MONEY.YES.40'>Das Imperium hat sich großzügig gezeigt. Die Morgath-Föderation zahlt ihre Schulden immer zurück, und unser Dank ist Ihnen gewiß.</entry>
+	<entry key='diplomacy.Morgath.MONEY.YES.40'>Das Imperium hat sich großzügig gezeigt. Die Morgath-Föderation zahlt ihre Schulden immer zurück, und unser Dank ist Ihnen gewiss.</entry>
 	<entry key='diplomacy.Morgath.MONEY.NO.41'>Wir haben bisher immer aus eigener Kraft überlebt und werden dies auch in Zukunft tun. Wir brauchen Ihr Geld nicht.</entry>
 	<entry key='diplomacy.Morgath.MONEY.NO.42'>Sie beleidigen uns. Wir sind nicht so gierig wie die Ecaleps!</entry>
-	<entry key='diplomacy.Morgath.MONEY.NO.43'>Die Morgath-Föderation ist nicht so schwach, daß wir auf Ihre Almosen angewiesen sind!</entry>
-	<entry key='diplomacy.Morgath.TRADE.44'>Wir meinen, daß es nur in unserem gegenseitigen Interesse liegen kann, ein Handelsabkommen zu schließen.</entry>
+	<entry key='diplomacy.Morgath.MONEY.NO.43'>Die Morgath-Föderation ist nicht so schwach, dass wir auf Ihre Almosen angewiesen sind!</entry>
+	<entry key='diplomacy.Morgath.TRADE.44'>Wir meinen, dass es nur in unserem gegenseitigen Interesse liegen kann, ein Handelsabkommen zu schließen.</entry>
 	<entry key='diplomacy.Morgath.TRADE.YES.45'>In dieser Idee liegt viel Weisheit. Wir nehmen Ihren Vorschlag an.</entry>
 	<entry key='diplomacy.Morgath.TRADE.YES.46'>Handel und Kommerz können die Föderation nur stärken. Ihre Bitte wird erfüllt.</entry>
 	<entry key='diplomacy.Morgath.TRADE.YES.47'>Abgemacht. Wir nehmen Ihren Vorschlag an.</entry>
 	<entry key='diplomacy.Morgath.TRADE.NO.48'>Wir müssen Ihre Bitte überdenken. Das Gremium wird darüber in seiner nächsten Sitzung beraten.</entry>
 	<entry key='diplomacy.Morgath.TRADE.NO.49'>Die Föderation kann Ihren Händlern den Zugang zur Zeit nicht gestatten.</entry>
 	<entry key='diplomacy.Morgath.TRADE.NO.50'>Wir trauen Ihnen nicht. Es könnte sich um ein Täuschungsmanöver handeln, um Ihre Spione und Agenten einzuschleusen.</entry>
-	<entry key='diplomacy.Morgath.ALLY.51'>Unsere Strategen meinen, daß die Zeit für einen vernichtenden Schlag gegen das böse %s-Reich gekommen ist.</entry>
+	<entry key='diplomacy.Morgath.ALLY.51'>Unsere Strategen meinen, dass die Zeit für einen vernichtenden Schlag gegen das böse %s-Reich gekommen ist.</entry>
 	<entry key='diplomacy.Morgath.ALLY.YES.52'>Unsere Gedanken gehen in die gleiche Richtung, Admiral. Wir wollen gemeinsam gegen die %s vorgehen! Wir werden ihre Nester zerstören und sie in alle Winde zerstreuen.</entry>
 	<entry key='diplomacy.Morgath.ALLY.YES.53'>Die Zeit zum Handeln ist gekommen. Schon zu lange sind uns die %s ein Dorn im Auge!</entry>
 	<entry key='diplomacy.Morgath.ALLY.YES.54'>In dieser Sache denken wir genau wie das Imperium. Die %s sollen nicht länger ungehindert umherstreunen können. Wir werden Ihnen helfen!</entry>
@@ -644,7 +644,7 @@
 	<entry key='diplomacy.Morgath.SURRENDER.65'>Das Imperium zeigt Gnade. Ergeben Sie sich, und wir lassen Milde walten. Kämpfen Sie weiter, so sind wir gezwungen, Sie zu vernichten.</entry>
 	<entry key='diplomacy.Morgath.SURRENDER.YES.66'>Wo es kein Nest gibt, gibt es auch keine Jungen. Wir ergeben uns Ihrem Imperium.</entry>
 	<entry key='diplomacy.Morgath.SURRENDER.YES.67'>Wir haben keine andere Wahl, als uns zu ergeben.</entry>
-	<entry key='diplomacy.Morgath.SURRENDER.YES.68'>Das Gremium hat beschlossen, daß unsere einzige Hoffnung in der Kapitulation besteht. Wir ergeben uns Ihrem Imperium, Admiral.</entry>
+	<entry key='diplomacy.Morgath.SURRENDER.YES.68'>Das Gremium hat beschlossen, dass unsere einzige Hoffnung in der Kapitulation besteht. Wir ergeben uns Ihrem Imperium, Admiral.</entry>
 	<entry key='diplomacy.Morgath.SURRENDER.NO.69'>Wir werden nicht ruhen, bis Ihre Nation vernichtet ist! Kein Nest ist sicher, solange die Nesträuber leben!</entry>
 	<entry key='diplomacy.Morgath.SURRENDER.NO.70'>Wir sind stark, Mensch, stärker als Sie glauben. Diese Beleidigung wird Ihre letzte sein!</entry>
 	<entry key='diplomacy.Morgath.SURRENDER.NO.71'>Unser Nest ist nicht zerstört, unsere Kinder leben. Doch Sie werden in der Kälte umkommen, Mensch!</entry>
@@ -655,7 +655,7 @@
 	<entry key='diplomacy.Morgath.ALLIANCE.76'>Wir wollen an der Seite Ihres Imperiums stehen. Sollen wir gemeinsam gegen den Raubvogel kämpfen?</entry>
 	<entry key='diplomacy.Morgath.ALLIANCE.77'>Die Föderation öffnet ihr Nest dem Imperium der Menschen. Friede und Zusammenarbeit auf ewig.</entry>
 	<entry key='diplomacy.Morgath.ALLIANCE.78'>Ihr Imperium ist stark, Admiral. Die Morgath- Föderation würde enge Beziehungen zwischen uns begrüßen.</entry>
-	<entry key='diplomacy.Morgath.PEACE.79'>Dieser Krieg ist für uns beide schädlich. Wenn wir ihm nicht bald Einhalt gebieten, sind wir zu schwach, um uns gegen die wahren Raubvögel verteidigen zu können. Das Töten muß ein Ende haben.</entry>
+	<entry key='diplomacy.Morgath.PEACE.79'>Dieser Krieg ist für uns beide schädlich. Wenn wir ihm nicht bald Einhalt gebieten, sind wir zu schwach, um uns gegen die wahren Raubvögel verteidigen zu können. Das Töten muss ein Ende haben.</entry>
 	<entry key='diplomacy.Morgath.PEACE.80'>Die Föderation will Sie nicht vernichten. Wir möchten Frieden mit Ihrem Imperium, Admiral.</entry>
 	<entry key='diplomacy.Morgath.PEACE.81'>Die Morgath vergeuden ihre Zeit nicht im Kampf gegen junge Hunde. Wir wollen endlich die Feindseligkeiten einstellen, bevor Ihre Nation völlig vernichtet ist, Admiral.</entry>
 	<entry key='diplomacy.Morgath.MONEY.82'>Der Kampf kostet Geld. Wenn Sie uns mit %s Credits helfen, unser Nest zu bauen, tun wir das Gleiche für Sie.</entry>
@@ -665,7 +665,7 @@
 	<entry key='diplomacy.Morgath.WAR.86'>Zu lange haben Sie die Föderation bedroht. Wir werden unsere Grenzen sichern, indem wir eine Pufferzone errichten.</entry>
 	<entry key='diplomacy.Morgath.WAR.87'>Wir können so einen wilden Raubvogel nicht länger dulden. Wir werden Sie vernichten.</entry>
 	<entry key='diplomacy.Morgath.RESIGN.88'>Ergeben Sie sich, oder wir werden Ihr Nest zerstören und Sie vertreiben, Mensch.</entry>
-	<entry key='diplomacy.Morgath.RESIGN.89'>Einer Ihrer heiligen Männer, Bruder Schreiber, hat uns gezeigt, daß noch Hoffnung für Sie besteht. Das Gremium hat beschlossen, Ihnen die Chance zu geben, sich ehrenhaft zu ergeben.</entry>
+	<entry key='diplomacy.Morgath.RESIGN.89'>Einer Ihrer heiligen Männer, Bruder Schreiber, hat uns gezeigt, dass noch Hoffnung für Sie besteht. Das Gremium hat beschlossen, Ihnen die Chance zu geben, sich ehrenhaft zu ergeben.</entry>
 	<entry key='diplomacy.Morgath.RESIGN.90'>Sie haben sich im Kampf bewährt. Ergeben Sie sich nun, oder wir sind gezwungen, Ihr Imperium zu vernichten. 7</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.1'>Wenn die Angriffe der Piraten auf Ihre Handelsschiffe aufhören sollen, sollten Sie sich mit uns verbünden.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.2'>Das Imperium kann Ihren Kaufleuten nur dann Sicherheit bieten, wenn Wohlwollen zwischen unseren Nationen herrscht. Der Konzern profitiert, wenn die Beziehungen sich verbessern.</entry>
@@ -678,8 +678,8 @@
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.HUMBLE.9'>Wir flehen um Hilfe! Der Konzern profitiert, wenn Sie uns helfen, unsere Gegner zu überwinden.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10'>Zweifellos wären verbesserte Beziehungen zwischen uns von Nutzen. Ihre Worte sind weise.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11'>Dem Konzern ist immer an besseren Beziehungen zu finanzstarken Kunden, also reichen Nationen, gelegen.</entry>
-	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12'>Die Ychoms hören Ihre Worte. Der Konzern meint auch, daß bessere Beziehungen unserer Wirtschaft nützen werden.</entry>
-	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13'>Der Unterausschuß J der 3. Finanzabteilung der Ychomischen Gewerkschaft berät über Ihren Vorschlag.</entry>
+	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12'>Die Ychoms hören Ihre Worte. Der Konzern meint auch, dass bessere Beziehungen unserer Wirtschaft nützen werden.</entry>
+	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.13'>Der Unterausschuss J der 3. Finanzabteilung der Ychomischen Gewerkschaft berät über Ihren Vorschlag.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.14'>Der Vorstand des Ann-Hiva-Konsortiums berät derzeit noch über die finanziellen Vor- und Nachteile Ihres Vorschlags.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.15'>Wir führen derzeit gerade einige Verbraucherumfragen bei zufällig ausgewählten Ychoms durch, um die angemessene Antwort auf Ihren Vorschlag zu ermitteln.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16'>Vom Handel mit dem Imperium ist kein Profit zu erwarten. Der Konzern nimmtt von Ihren kostenintensiven Vorschlägen daher doch lieber Abstand.</entry>
@@ -689,26 +689,26 @@
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20'>Der Konzern begrüßt die Einladung zu engeren Geschäftsbeziehungen und einer Öffnung der Handelsgrenzen zwischen unseren Märkten.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21'>Das Imperium hat viel zu bieten, wir akzeptieren Ihren Vorschlag.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22'>Ich glaube, es ist der Abschnitt 7 des Unterabsatzes 3 im Geschäftshandbuch 307,1 des Konzerns, der Verhandlungen über diese strittigen Punkte zum jetzigen Zeitpunkt strikt untersagt.</entry>
-	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23'>Leider erreicht uns gerade eine Nachricht des Büros des Vizeleiters der firmeninternen Postabteilung, die besagt, daß Ihr Vorschlag zur Zeit bedauerlicherweise nicht bearbeitet werden kann.</entry>
+	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.23'>Leider erreicht uns gerade eine Nachricht des Büros des Vizeleiters der firmeninternen Postabteilung, die besagt, dass Ihr Vorschlag zur Zeit bedauerlicherweise nicht bearbeitet werden kann.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.24'>Auch das unsinnigste Geschäft kann noch einen Profit abwerfen. Wir werden Sie wissen lassen, wie wir in dieser Sache vorgehen werden.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.25'>Das Imperium ist derzeit als Handelseinheit der Klasse J-3 eingestuft. Bis Ihre wettbewerbs- verzerrenden Gesetze über Sicherheiten und Wertpapiere aufgehoben werden, treiben wir keinen Handel mit Ihnen.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.26'>Unser Handelsabkommen mit der Allianz der Freien Händler ist für uns von großem Wert. Wir werden es durch Sie nicht gefährden.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.NEUTRAL.NO.27'>Durch Verhandlungen mit Ihnen ist kein Profit zu erwarten. Wir haben schon Millionen von Credits hier vergeudet, und man soll kein gutes Geld hinter verlorenem Geld hinterherschleudern.</entry>
-	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28'>Mit den leicht Manipulierbaren läßt sich viel Geld verdienen. Wir würden uns über engere Beziehungen mit Ihrem Imperium freuen, Admiral.</entry>
+	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.28'>Mit den leicht Manipulierbaren lässt sich viel Geld verdienen. Wir würden uns über engere Beziehungen mit Ihrem Imperium freuen, Admiral.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.29'>Ich rieche Profit. Der Konzern steht hinter Ihnen.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.30'>Wir werden von diesem Vorschlag profitieren. Ihre Bitte wird erfüllt, Admiral!</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.31'>Wir machen uns Sorgen, Admiral. Wir werden unsere finanziellen Abkommen mit dem Imperium, dem Sie dienen, neu überdenken.</entry>
-	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32'>Instabilität ist eine Gefahr für Investitionen. Der Konzern muß seine finanziellen Bindungen an das Imperium überprüfen.</entry>
+	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.32'>Instabilität ist eine Gefahr für Investitionen. Der Konzern muss seine finanziellen Bindungen an das Imperium überprüfen.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.MAYBE.33'>Das Ann-Hiva-Konsortium ist dabei, seine Bauvorhaben in Ihrem Imperium zu revidieren. Wir werden Sie natürlich über etwaige Änderungen sofort informieren.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.34'>Es gibt Unstimmigkeiten zwischen der Yocham- Gewerkschaft und dem Ann-Hiva-Konsortium über die Beziehungen zu Ihrem Imperium. Wir werden es Sie wissen lassen, sobald diese Angelegenheit erledigt ist.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.35'>Das Imperium wurde als militärische Einheit der Klasse 4E neu eingestuft. Dies wird natürlich Auswirkungen auf Ihre Kreditwürdigkeit haben.</entry>
 	<entry key='diplomacy.Ychom.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.36'>Der Konzern kann seine wertvollen Ressourcen nicht an Briketts vergeuden, die vorgeben, Diamanten zu sein. Unsere Augen sind scharf genug, um Ihre Tricks zu durchschauen.</entry>
 	<entry key='diplomacy.Ychom.MONEY.37'>Wir haben beschlossen, sofort %s Credits in kurzfristige Anleihepapiere des Konzerns zu investieren.</entry>
-	<entry key='diplomacy.Ychom.MONEY.YES.38'>Der Konzern freut sich, daß Sie seinen wirtschaftlichen Wert erkennen.</entry>
+	<entry key='diplomacy.Ychom.MONEY.YES.38'>Der Konzern freut sich, dass Sie seinen wirtschaftlichen Wert erkennen.</entry>
 	<entry key='diplomacy.Ychom.MONEY.YES.39'>Die Handelsgruppe Ychom ist Ihrem Imperium zu Dank verpflichtet. Diese Mittel werden eine neue wirtschaftliche Expansion ermöglichen!</entry>
 	<entry key='diplomacy.Ychom.MONEY.YES.40'>Der Konzern freut sich, Sie als Freund begrüßen zu dürfen.</entry>
 	<entry key='diplomacy.Ychom.MONEY.NO.41'>Zur Zeit verhindern bestimmte Steuergesetze die Annahme Ihrer Investitionen.</entry>
-	<entry key='diplomacy.Ychom.MONEY.NO.42'>Die gültigen Vorschriften des Ann-Hiva- Konsortiums besagen, daß Ihr Imperium nur während einer genau festgelegten Periode von jeweils 3 Tagen pro Quartal investieren darf. Ihr Angebot ist daher illegal und hat dem Markt sogar geschadet.</entry>
+	<entry key='diplomacy.Ychom.MONEY.NO.42'>Die gültigen Vorschriften des Ann-Hiva- Konsortiums besagen, dass Ihr Imperium nur während einer genau festgelegten Periode von jeweils 3 Tagen pro Quartal investieren darf. Ihr Angebot ist daher illegal und hat dem Markt sogar geschadet.</entry>
 	<entry key='diplomacy.Ychom.MONEY.NO.43'>Der Ychom-Termingeschäftemarkt ist aufgrund Ihrer finanziellen Aktivitäten schlagartig zusammengebrochen. Der Konzern ist darüber sehr unfroh!</entry>
 	<entry key='diplomacy.Ychom.TRADE.44'>Das Imperium möchte die Handelsbeschränkungen zwischen unseren beiden Nationen weiter lockern.</entry>
 	<entry key='diplomacy.Ychom.TRADE.YES.45'>Es sollte keine Handelsbarrieren zwischen uns geben!</entry>
@@ -717,7 +717,7 @@
 	<entry key='diplomacy.Ychom.TRADE.NO.48'>Zu diesem Zeitpunkt müssen wir die Protektion unserer heimischen Industrie leider weiter aufrechterhalten.</entry>
 	<entry key='diplomacy.Ychom.TRADE.NO.49'>Die Stabilisierung unserer eigenen Wirtschaft ist derzeit die vorrangige Aufgabe des Konzerns. Handel können wir erst treiben, wenn er uns auch Profit bringt.</entry>
 	<entry key='diplomacy.Ychom.TRADE.NO.50'>Vor- und Nachteile einer Deregulierung wiegen einander zur Zeit auf.</entry>
-	<entry key='diplomacy.Ychom.ALLY.51'>Wir meinen, daß es vorteilhafter wäre, gemeinsam gegen die %s vorzugehen als einzeln.</entry>
+	<entry key='diplomacy.Ychom.ALLY.51'>Wir meinen, dass es vorteilhafter wäre, gemeinsam gegen die %s vorzugehen als einzeln.</entry>
 	<entry key='diplomacy.Ychom.ALLY.YES.52'>Ja, die Aufteilung der Kosten zwischen uns verringert die Belastung, die ein Kampf gegen die %s erfordert. Wir begrüßen Ihre mutige Initiative.</entry>
 	<entry key='diplomacy.Ychom.ALLY.YES.53'>Die %s treiben keinen fairen Handel mit uns. Sie unterstützen sogar Freibeuter, die unsere Schiffe kapern. Wir werden dem Imperium gegen sie beistehen.</entry>
 	<entry key='diplomacy.Ychom.ALLY.YES.54'>Die Handelsgruppe Ychom hat im letzten Quartal schwere finanzielle Verluste davongetragen, den Großteil davon als direkte Folge von Aktivitäten der %s. Wir müssen diese Bedrohung unserer Märkte ausschalten.</entry>
@@ -756,7 +756,7 @@
 	<entry key='diplomacy.Ychom.WAR.87'>Sie haben den Konzern zu viel gekostet und uns zu viele Geschäfte verdorben. Ihr Einfluß in diesem Sektor ist für uns finanziell unerträglich geworden.</entry>
 	<entry key='diplomacy.Ychom.RESIGN.88'>Ergeben Sie sich! Wir können nur wenig Gewinn aus Ihrer völligen Vernichtung schlagen, doch wenn Sie uns zwingen, weerden wir es tun!</entry>
 	<entry key='diplomacy.Ychom.RESIGN.89'>Der Konzern ist gnädig. Wir bieten Ihnen die kostenlose Chance, sich zu ergeben, bevor wir Sie völlig auslöschen.</entry>
-	<entry key='diplomacy.Ychom.RESIGN.90'>Selbst nach all den Verlusten, die der Konzern Ihretwegen abschreiben mußte, können wir uns immer noch großzügig zeigen. Ergeben Sie sich, und es wird Sie weniger teuer zu stehen kommen. Kämpfen Sie hingegen weiter, werden Sie völlig vernichtet.</entry>
+	<entry key='diplomacy.Ychom.RESIGN.90'>Selbst nach all den Verlusten, die der Konzern Ihretwegen abschreiben musste, können wir uns immer noch großzügig zeigen. Ergeben Sie sich, und es wird Sie weniger teuer zu stehen kommen. Kämpfen Sie hingegen weiter, werden Sie völlig vernichtet.</entry>
 	<entry key='diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.1'>Mitstreiter! Unsere Armeen sollten sich vereinigen, damit wir im Blut unserer Gegner baden können.</entry>
 	<entry key='diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.2'>Wir haben Ihre Taten auf dem Feld der Ehre gesehen. Wir bieten Ihnen den Schild der Freundschaft.</entry>
 	<entry key='diplomacy.Sullep.DIPLOMATIC_RELATIONS.AGGRESSIVE.3'>Die Gegner der Sulleps sind auch Gegner des Imperiums. Wir sollten unsere Kräfte vereinigen und alle, die uns entgegenstehen, vernichten.</entry>
@@ -811,7 +811,7 @@
 	<entry key='diplomacy.Sullep.ALLY.YES.52'>Admiral, der Sullep-Clan wird gegen die %s kämpfen!</entry>
 	<entry key='diplomacy.Sullep.ALLY.YES.53'>Der Kreis der Clans hat dies vorhergesehen. Zusammen werden wir die jämmerlichen %s vernichten!</entry>
 	<entry key='diplomacy.Sullep.ALLY.YES.54'>Der Kreis der Clans hat dies vorhergesehen. Zusammen werden wir die jämmerlichen %s vernichten!</entry>
-	<entry key='diplomacy.Sullep.ALLY.NO.55'>Der wahre Krieger weiß, wann er zuschlagen muß. Und die Zeit ist noch nicht gekommen.</entry>
+	<entry key='diplomacy.Sullep.ALLY.NO.55'>Der wahre Krieger weiß, wann er zuschlagen muss. Und die Zeit ist noch nicht gekommen.</entry>
 	<entry key='diplomacy.Sullep.ALLY.NO.56'>Ihr Eifer beweist Ihre Unerfahrenheit. Die Zeit zum Kampf ist noch längst nicht gekommen.</entry>
 	<entry key='diplomacy.Sullep.ALLY.NO.57'>Vorbereitung ist der Schlüssel zum Sieg. Der Kreis der Clans wird erst zuschlagen, wenn er dazu bereit ist.</entry>
 	<entry key='diplomacy.Sullep.DARGSLAN.58'>Das Dargslan-Reich ist eine große Bedrohung für unsere Nationen. Zusammen können wir sie vernichten. Wir müssen gemeinsam vorgehen!</entry>
@@ -1029,7 +1029,7 @@
 	<entry key='diplomacy.FreeTraders.RESIGN.90'>Der Exekutivausschuss ist bereit, dem Militär des Imperiums und den politischen Anführern Amnestie zu gewähren, wenn Sie sich augenblicklich Allianz der Freien Händler unterwerfen.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.1'>Die Drib-Präfektur ist in diesem Sektor stark. Das Imperium ist auch stark. Eine Allianz hilft uns beiden, Feindschaft schadet nur Euch.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.2'>Das Imperium ist stark, und eine Allianz mit uns ehrt das Volk der Drib. Eine Weigerung wäre nichts als unehrenhaft.</entry>
-	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.3'>Das Imperium möchte keine Gewalt anwenden. Stattdessen glauben wir, daß die Drib-Präfektur mit Leichtigkeit den Wert einer Allianz erkennt.</entry>
+	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.AGGRESSIVE.3'>Das Imperium möchte keine Gewalt anwenden. Stattdessen glauben wir, dass die Drib-Präfektur mit Leichtigkeit den Wert einer Allianz erkennt.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.4'>Bessere Beziehungen zwischen dem Imperium und der Drib-Präfektur nutzen uns beiden.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.5'>Wir bieten der Drib-Präfektur Freundschaft an.</entry>
 	<entry key='diplomacy.Dribs.DIPLOMATIC_RELATIONS.NEUTRAL.6'>Das Imperium sucht die Freundschaft aller Nationen. Und besonders die Drib-Präfektur ist eine Allianz wert.</entry>
@@ -1082,7 +1082,7 @@
 	<entry key='diplomacy.Dribs.ALLY.YES.53'>Die Drib-Präfektur ist durch die %s ebenso beleidigt worden wie Sie. Wir werden Sie unterstützen.</entry>
 	<entry key='diplomacy.Dribs.ALLY.YES.54'>Die %s sind die Plage des Universums. Sie sind eine Beleidigung für die Chal&#39;Ahri!</entry>
 	<entry key='diplomacy.Dribs.ALLY.NO.55'>Es scheint unklug, jetzt diesen Weg zu verfolgen.</entry>
-	<entry key='diplomacy.Dribs.ALLY.NO.56'>Die Chal&#39;Ahri meinen, daß die Zeit für den Kampf noch nicht gekommen ist.</entry>
+	<entry key='diplomacy.Dribs.ALLY.NO.56'>Die Chal&#39;Ahri meinen, dass die Zeit für den Kampf noch nicht gekommen ist.</entry>
 	<entry key='diplomacy.Dribs.ALLY.NO.57'>Ihre Furcht zeigt Ihre Schwächen, wir müssen uns Ihren Wünschen nicht fügen.</entry>
 	<entry key='diplomacy.Dribs.DARGSLAN.58'>Das Dargslan-Imperium ist eine große Bedrohung für alle zivilisierten Regierungen. Wir müssen all unsere Kräfte vereinigen, um es besiegen zu können!</entry>
 	<entry key='diplomacy.Dribs.DARGSLAN.YES.59'>Die Dargslan müssen besiegt werden, wir werden kämpfen.</entry>
@@ -1090,15 +1090,15 @@
 	<entry key='diplomacy.Dribs.DARGSLAN.YES.61'>Das Dargslan-Reich hat unsere Grenzen zu lange gefährdet, wir werden an Ihrer Seite kämpfen.</entry>
 	<entry key='diplomacy.Dribs.DARGSLAN.NO.62'>Ihr Imperium hat doch keine Chance gegen die Dargslans. Wir werden uns nicht mit Ihnen opfern.</entry>
 	<entry key='diplomacy.Dribs.DARGSLAN.NO.63'>Die Zeit ist noch nicht gekommen. Beweisen Sie Ihre Fähigkeiten, und die Chal&#39;Ahri werden Ihnen zuhören.</entry>
-	<entry key='diplomacy.Dribs.DARGSLAN.NO.64'>Ihr Imperium hat noch nicht bewiesen, daß es gegen die Dargslan überhaupt etwas ausrichten kann. Beweisen Sie Ihre Stärke, und wir werden Ihren Plan überdenken.</entry>
-	<entry key='diplomacy.Dribs.SURRENDER.65'>Die Drib-Präfektur muß sich dem Imperium unterwerfen. Wir könnten Sie zermalmen, doch wir bieten Ihnen großmütig die Möglichkeit zur Kapitulation.</entry>
+	<entry key='diplomacy.Dribs.DARGSLAN.NO.64'>Ihr Imperium hat noch nicht bewiesen, dass es gegen die Dargslan überhaupt etwas ausrichten kann. Beweisen Sie Ihre Stärke, und wir werden Ihren Plan überdenken.</entry>
+	<entry key='diplomacy.Dribs.SURRENDER.65'>Die Drib-Präfektur muss sich dem Imperium unterwerfen. Wir könnten Sie zermalmen, doch wir bieten Ihnen großmütig die Möglichkeit zur Kapitulation.</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.YES.66'>Die Chal&#39;Ahri werden die Nation der Drib nicht umsonst opfern. Wir geben nach.</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.YES.67'>Die Drib-Präfektur ergibt sich dem Imperium.</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.YES.68'>Die Chal&#39;Ahri stimmen Ihren Forderungen zu, und das Drib-Protektorat ergibt sich.</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.NO.69'>Die Chal&#39;Ahri lassen sich nicht so schnell beeindrucken!</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.NO.70'>Die Drib-Präfektur ist stärker, als Sie glauben!</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.NO.71'>Wir werden nicht eher ruhen, bis Sie vernichtet sind!</entry>
-	<entry key='diplomacy.Dribs.terminate.72'>Ich muß mich jetzt anderen Angelegenheiten widmen; wir müssen uns bald wieder treffen.</entry>
+	<entry key='diplomacy.Dribs.terminate.72'>Ich muss mich jetzt anderen Angelegenheiten widmen; wir müssen uns bald wieder treffen.</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.73'>Wir müssen uns Ihrem Imperium ergeben, da wir Sie nicht besiegen können.</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.74'>Die Chal&#39;Ahri können ihr Volk nicht sterben lassen. Wir wollen uns ergeben.</entry>
 	<entry key='diplomacy.Dribs.SURRENDER.75'>Ihr Imperium hat sich im Kampf bewährt, wir ergeben uns.</entry>
@@ -1135,7 +1135,7 @@
 	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.16'>Wie könnt Ihr jämmerlichen Erdlinge es wagen, so mit uns zu reden!? Wir werden Euch für diese Anmaßung ausrotten!</entry>
 	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.17'>Wir trauen Euch nicht über den Weg, daher werden wir Euch lieber vorsichtshalber ausrotten.</entry>
 	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.AGGRESSIVE.NO.18'>Die jämmerlichen Erdenwürmer glauben also wirklich, sie könnten uns besiegen? Wir werden ihnen zeigen, wie sehr sie sich irren.</entry>
-	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19'>Wir schätzen, daß Ihr dem Reich der Dargslan noch einmal ganz nützlich sein könntet.</entry>
+	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.19'>Wir schätzen, dass Ihr dem Reich der Dargslan noch einmal ganz nützlich sein könntet.</entry>
 	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.20'>Ihr habt recht, es ist weise, sich jetzt mit Euch anzufreunden.</entry>
 	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.YES.21'>Ihr sprecht die Wahrheit. Freundschaft zwischen unseren beiden Völkern ist im Moment in unser aller Interesse.</entry>
 	<entry key='diplomacy.Dargslan.DIPLOMATIC_RELATIONS.NEUTRAL.MAYBE.22'>Wir werden über Euren Vorschlag nachdenken, bevor wir zum ultimativen Vernichtungsschlag ausholen.</entry>
@@ -1168,7 +1168,7 @@
 	<entry key='diplomacy.Dargslan.TRADE.NO.49'>Wir haben es nicht nötig, mit einer derart jämmerlichen, zurückgebliebenen Rasse wie Euch Erdlingen Handel zu treiben.</entry>
 	<entry key='diplomacy.Dargslan.TRADE.NO.50'>Wir brauchen Eure wertlosen Güter nicht.</entry>
 	<entry key='diplomacy.Dargslan.ALLY.51'>Wir glauben, es wäre in unser beiderseitigem Interesse, die %s zu vernichten.</entry>
-	<entry key='diplomacy.Dargslan.ALLY.YES.52'>Wir finden ebenfalls, daß die jämmerlichen %s die Galaxis schon viel zu lange mit ihrer Anwesenheit verschmutzt haben. Sie werden sterben!</entry>
+	<entry key='diplomacy.Dargslan.ALLY.YES.52'>Wir finden ebenfalls, dass die jämmerlichen %s die Galaxis schon viel zu lange mit ihrer Anwesenheit verschmutzt haben. Sie werden sterben!</entry>
 	<entry key='diplomacy.Dargslan.ALLY.YES.53'>Die %s sollen sterben! Wir werden ihnen einen vernichtenden Schlag versetzen, von dem sie sich nie wieder erholen werden!</entry>
 	<entry key='diplomacy.Dargslan.ALLY.YES.54'>Ja, ja! Wir haben schon lange auf eine solche Gelegenheit gewartet. Wir finden, es ist endlich an der Zeit, diesen dreckigen %s eine Lehre zu erteilen!</entry>
 	<entry key='diplomacy.Dargslan.ALLY.NO.55'>Wir halten die %s derzeit nicht für eine Bedrohung für unser Reich.</entry>
@@ -1198,15 +1198,15 @@
 	<entry key='diplomacy.Dargslan.PEACE.79'>Wir finden, Ihr habt erst einmal genug Schläge einstecken müssen. Wir gestatten Euch, Friedensverhandlungen vorzuschlagen.</entry>
 	<entry key='diplomacy.Dargslan.PEACE.80'>Eure Rasse ist den ganzen Ärger nicht wert, den eine völlige Vernichtung machen würde. Wir gestatten Euch, um Frieden zu betteln.</entry>
 	<entry key='diplomacy.Dargslan.PEACE.81'>Wir finden, Ihr habt erst einmal genug Schläge einstecken müssen. Wir gestatten Euch, Friedensverhandlungen vorzuschlagen.</entry>
-	<entry key='diplomacy.Dargslan.MONEY.82'>Wir benötigen %s Credits, um unseren Krieg weiterhin finanzieren zu können. Beweist uns, daß Ihr es wert seid, am Leben gelassen zu werden, vielleicht sterbt Ihr dann als Letzte.</entry>
+	<entry key='diplomacy.Dargslan.MONEY.82'>Wir benötigen %s Credits, um unseren Krieg weiterhin finanzieren zu können. Beweist uns, dass Ihr es wert seid, am Leben gelassen zu werden, vielleicht sterbt Ihr dann als Letzte.</entry>
 	<entry key='diplomacy.Dargslan.MONEY.83'>Gebt uns sofort %s Credits, oder wir kommen vorbei und holen sie uns ab.</entry>
 	<entry key='diplomacy.Dargslan.MONEY.84'>Ihr werdet sofort %s Credits zu unserer Kriegskasse beitragen, und wir erlauben Euch dafür, einen weiteren Aufgang Eurer Sonne zu erleben.</entry>
 	<entry key='diplomacy.Dargslan.WAR.85'>Unsere Rassen befinden sich hiermit im Krieg! Wir werden Euch einen kurzen, schmerzvollen Tod bereiten.</entry>
 	<entry key='diplomacy.Dargslan.WAR.86'>Eure Zeit ist abgelaufen. Wir werden Euch nun vernichten.</entry>
-	<entry key='diplomacy.Dargslan.WAR.87'>Wir werden jeden Beweis vernichten, daß es Euch jemals gegeben hat in dieser Galaxis.</entry>
+	<entry key='diplomacy.Dargslan.WAR.87'>Wir werden jeden Beweis vernichten, dass es Euch jemals gegeben hat in dieser Galaxis.</entry>
 	<entry key='diplomacy.Dargslan.RESIGN.88'>Eure minderwertige Rasse hat gegen uns keine Chance! Ergebt Euch bedingungslos, oder Ihr werdet ausgerottet.</entry>
 	<entry key='diplomacy.Dargslan.RESIGN.89'>Ihr werdet Euch sofort ergeben, oder unsere überlegenen Truppen erhalten Befehl, Euch völlig zu vernichten.</entry>
-	<entry key='diplomacy.Dargslan.RESIGN.90'>Ergebt Euch, oder wir werden jeden Beweis vernichten, daß es Euch jemals gegeben hat in dieser Galaxis.</entry>
+	<entry key='diplomacy.Dargslan.RESIGN.90'>Ergebt Euch, oder wir werden jeden Beweis vernichten, dass es Euch jemals gegeben hat in dieser Galaxis.</entry>
 	<entry key='diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.1'>Wenn die Gesellschaft Freier Nationen frei bleiben will, braucht sie engere, bessere Beziehungen zum Imperium.</entry>
 	<entry key='diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.2'>Das Imperium bietet den Freien Nationen seine Freundschaft. Unsere Feindschaft wollen Sie doch sicher nicht erleben.</entry>
 	<entry key='diplomacy.FreeNations.DIPLOMATIC_RELATIONS.AGGRESSIVE.3'>Wer gegen das Imperium ist, wird vernichtet. Wir wünschen bessere diplomatischen Beziehungen mit der Gesellschaft Freier Nationen.</entry>
@@ -1260,7 +1260,7 @@
 	<entry key='diplomacy.FreeNations.ALLY.51'>Die %s sind eine Gefahr für Frieden und Freiheit aller Nationen in diesem Sektor. Unsere Strategen meinen, es ist an der Zeit, gegen sie vorzugehen.</entry>
 	<entry key='diplomacy.FreeNations.ALLY.YES.52'>Die %s sind gegen die Ideale der Freiheit, die die Grundlage der Freien Nationen bilden. Wir werden Sie unterstützen.</entry>
 	<entry key='diplomacy.FreeNations.ALLY.YES.53'>Präsident Szabo hat den Rat beauftragt, Pläne für eine Unterstützung des Imperiums im Kampf gegen die %s zu entwerfen.</entry>
-	<entry key='diplomacy.FreeNations.ALLY.YES.54'>Der Rat stimmt zu, daß die %s geschlagen werden müssen. Die Gesellschaft Freier Nationen wird mit dem Imperium vorgehen.</entry>
+	<entry key='diplomacy.FreeNations.ALLY.YES.54'>Der Rat stimmt zu, dass die %s geschlagen werden müssen. Die Gesellschaft Freier Nationen wird mit dem Imperium vorgehen.</entry>
 	<entry key='diplomacy.FreeNations.ALLY.NO.55'>Die Gesellschaft Freier Nationen will nicht dazu beitragen, die totalitäre Macht des Imperiums weiter zu verbreiten.</entry>
 	<entry key='diplomacy.FreeNations.ALLY.NO.56'>Präsident Szabo hat sich für eine Ablehnung Ihres Vorschlags zu diesem Zeitpunkt eingesetzt, und der Rat ist der gleichen Meinung. Kampf hat keinen Sinn für die Gesellschaft Freier Nationen.</entry>
 	<entry key='diplomacy.FreeNations.ALLY.NO.57'>Der Rat ist doch nicht der Sündenbock des Imperiums. Dies ist nur zu Eurem Nutzen, nicht zu unserem.</entry>
@@ -1268,9 +1268,9 @@
 	<entry key='diplomacy.FreeNations.DARGSLAN.YES.59'>Sie haben recht, Admiral. Die Gesellschaft Freier Nationen wird in diesem Kampf gegen die Tyrannei an Ihrer Seite stehen.</entry>
 	<entry key='diplomacy.FreeNations.DARGSLAN.YES.60'>Die Gesellschaft Freier Nationen verabscheut die Mißachtung der Souveränität der Nationen durch das Dargslan-Reich. Präsident Szabo wird noch in dieser Stunde den Krieg erklären.</entry>
 	<entry key='diplomacy.FreeNations.DARGSLAN.YES.61'>Das Dargslan-Reich hat sich als unser Gegner erwiesen. Die Gesellschaft Freier Nationen duldet keine Bedrohung seiner Freiheit.</entry>
-	<entry key='diplomacy.FreeNations.DARGSLAN.NO.62'>Das Imperium muß erst noch beweisen, daß es mit der Gefahr, die vom Dargslan-Reich ausgeht, umgehen kann. Der Rat vergeudet das Leben seiner Soldaten nicht sinnlos.</entry>
-	<entry key='diplomacy.FreeNations.DARGSLAN.NO.63'>Eine Diskussion zu diesem Zeitpunkt hat keinen Zweck. Wir brauchen erst Beweise, daß das Imperium überhaupt Hoffnung auf einen Sieg gegen die Dargslans hat.</entry>
-	<entry key='diplomacy.FreeNations.DARGSLAN.NO.64'>Ohne einen Beweis, daß das Imperium die Dargslans mit unserer Hilfe besiegen kann, werden wir keine Soldaten der Gesellschaft Freier Nationen opfern.</entry>
+	<entry key='diplomacy.FreeNations.DARGSLAN.NO.62'>Das Imperium muss erst noch beweisen, dass es mit der Gefahr, die vom Dargslan-Reich ausgeht, umgehen kann. Der Rat vergeudet das Leben seiner Soldaten nicht sinnlos.</entry>
+	<entry key='diplomacy.FreeNations.DARGSLAN.NO.63'>Eine Diskussion zu diesem Zeitpunkt hat keinen Zweck. Wir brauchen erst Beweise, dass das Imperium überhaupt Hoffnung auf einen Sieg gegen die Dargslans hat.</entry>
+	<entry key='diplomacy.FreeNations.DARGSLAN.NO.64'>Ohne einen Beweis, dass das Imperium die Dargslans mit unserer Hilfe besiegen kann, werden wir keine Soldaten der Gesellschaft Freier Nationen opfern.</entry>
 	<entry key='diplomacy.FreeNations.SURRENDER.65'>Ihre lächerliche Gesellschaft Freier Nationen ist gescheitert. Das Imperium hat über Ihre Flotten triumphiert. Ergeben Sie sich, bevor wir Sie völlig vernichten.</entry>
 	<entry key='diplomacy.FreeNations.SURRENDER.YES.66'>Es gibt keine Hoffnung für uns. Unsere Freiheit ist dahin, und Sie haben uns alles genommen, was uns teuer ist.</entry>
 	<entry key='diplomacy.FreeNations.SURRENDER.YES.67'>Das Imperium hat uns besiegt. Um unser Leben zu retten, opfern wir unsere Freiheit.</entry>
@@ -1281,13 +1281,13 @@
 	<entry key='diplomacy.FreeNations.terminate.72'>Das Imperium ruft. Andere Angelegenheiten erfordern meine Anwesenheit.</entry>
 	<entry key='diplomacy.FreeNations.SURRENDER.73'>Der Rat hat beschlossen, sich Ihnen zu ergeben, Admiral. Das Imperium wird uns vernichten, wenn wir jetzt nicht handeln, um das Blutvergießen zu beenden.</entry>
 	<entry key='diplomacy.FreeNations.SURRENDER.74'>Präsident Szabo hat den Rat gebeten, eine Kapitulation zu überdenken. Wir sehen keine Alternative für die Gesellschaft Freier Nationen. Wir ergeben uns.</entry>
-	<entry key='diplomacy.FreeNations.SURRENDER.75'>Die Gesellschaft Freier Nationen muß weiter bestehen, wenn auch nur in den Herzen ihrer Bürger. Wir ergeben uns dem Imperium.</entry>
+	<entry key='diplomacy.FreeNations.SURRENDER.75'>Die Gesellschaft Freier Nationen muss weiter bestehen, wenn auch nur in den Herzen ihrer Bürger. Wir ergeben uns dem Imperium.</entry>
 	<entry key='diplomacy.FreeNations.ALLIANCE.76'>Das Imperium hat sich erheblich aufgeklärter und politisch fortschrittlicher gezeigt, als wir früher dachten. Wir bieten Ihnen eine Allianz an, Admiral. Werden Sie im Namen des Imperiums annehmen?</entry>
 	<entry key='diplomacy.FreeNations.ALLIANCE.77'>Tod und Verlust sind der Gesellschaft Freier Nationen sicher, wenn wir weiter gegen das Imperium kämpfen. Um unseres Volkes willen ergeben wir uns.</entry>
 	<entry key='diplomacy.FreeNations.ALLIANCE.78'>Präsident Szabo selbst hat den Rat gebeten, dem Imperium unsere Kapitulation zu überbringen. Der Rat erfüllt seine Bitte.</entry>
 	<entry key='diplomacy.FreeNations.PEACE.79'>Der Konflikt zwischen der Gesellschaft Freier Nationen und dem Imperium ist sinnlos geworden. Er schwächt uns nur. Wir bieten einen Waffenstillstand an.</entry>
-	<entry key='diplomacy.FreeNations.PEACE.80'>Das fortgesetzte Blutvergießen hilft dem Frieden nicht. Der Rat hofft, daß das Imperium die Unterzeichnung eines Friedensvertrages mit der Gesellschaft Freier Nationen in Betracht zieht.</entry>
-	<entry key='diplomacy.FreeNations.PEACE.81'>Präsident Szabo meint, daß das Imperium seine Lektion aus dem letzten Kampf gelernt hat und es sinnvoll ist, Ihnen Frieden anzubieten. Sind Sie weise genug, um ihn anzunehmen, Admiral?</entry>
+	<entry key='diplomacy.FreeNations.PEACE.80'>Das fortgesetzte Blutvergießen hilft dem Frieden nicht. Der Rat hofft, dass das Imperium die Unterzeichnung eines Friedensvertrages mit der Gesellschaft Freier Nationen in Betracht zieht.</entry>
+	<entry key='diplomacy.FreeNations.PEACE.81'>Präsident Szabo meint, dass das Imperium seine Lektion aus dem letzten Kampf gelernt hat und es sinnvoll ist, Ihnen Frieden anzubieten. Sind Sie weise genug, um ihn anzunehmen, Admiral?</entry>
 	<entry key='diplomacy.FreeNations.MONEY.82'>Unsere militärischen Anstrengungen erfordern %s Credits, wenn wir unsere Aktivitäten im gleichen Umfang fortsetzen sollen. Falls das Imperium uns helfen könnte, würden wir Ihnen dies nicht vergessen.</entry>
 	<entry key='diplomacy.FreeNations.MONEY.83'>Wenn das Imperium die Gesellschaft Freier Nationen in ihren Kriegsanstrengungen mit %s Credits unterstützen könnte, wären wir Ihnen sehr verbunden, Admiral.</entry>
 	<entry key='diplomacy.FreeNations.MONEY.84'>Admiral, wenn Sie unsere Kriegsanstrengungen mit %s Credits unterstützen könnten, würde Ihnen das Militär der Gesellschaft Freier Nationen bei Bedarf zur Seite stehen.</entry>
@@ -1296,7 +1296,7 @@
 	<entry key='diplomacy.FreeNations.WAR.87'>Präsident Szabo ist tief betrübt über das unaufgeklärte und gefährliche Verhalten der herrschenden Klasse des Imperiums. Nur ein Krieg kann hier abhelfen.</entry>
 	<entry key='diplomacy.FreeNations.RESIGN.88'>Das Imperium ist gescheitert; die Freiheit siegt immer über die Tyrannei. Weil wir Mitleid haben, bieten wir dem Imperium die Möglichkeit zur Kapitulation, bevor unsere Streitkräfte es völlig vernichten.</entry>
 	<entry key='diplomacy.FreeNations.RESIGN.89'>Die Gesellschaft Freier Nationen bietet dem Imperium zwei Möglichkeiten: Kapitulation oder Vernichtung.</entry>
-	<entry key='diplomacy.FreeNations.RESIGN.90'>Der Rat ist der Meinung, daß das Angebot einer Kapitulation die Überlegenheit unserer aufgeklärten Kultur über den primitiven Tyrannenstaat demonstriert, dem Sie dienen.</entry>
+	<entry key='diplomacy.FreeNations.RESIGN.90'>Der Rat ist der Meinung, dass das Angebot einer Kapitulation die Überlegenheit unserer aufgeklärten Kultur über den primitiven Tyrannenstaat demonstriert, dem Sie dienen.</entry>
 
 	
   <entry key='tech.battleship1.description'>Starke Schilde, schwere Bewaffnung und die Fähigkeit, Bodensturmtruppen zu transportieren. Müssen im Weltraum in einer Orbitalfabrik hergestellt werden.</entry>
@@ -1344,9 +1344,9 @@
   <entry key='tech.dargslanfighter.description'>Relativ starke Jäger.</entry>
   <entry key='tech.dargslanfighter.longname'>Dargslan Jäger</entry>
   <entry key='tech.dargslanfighter.name'>Dagslan Jäger</entry>
-  <entry key='tech.dargslanselfrepairtank.description'>Specialeinheit der Dargslan. Es kann sich selbst reparieren.</entry>
-  <entry key='tech.dargslanselfrepairtank.longname'>Dargslan Selbst-reparatur Panzer</entry>
-  <entry key='tech.dargslanselfrepairtank.name'>Selbst-reparatur Panzer</entry>
+  <entry key='tech.dargslanselfrepairtank.description'>Spezialeinheit der Dargslan. Es kann sich selbst reparieren.</entry>
+  <entry key='tech.dargslanselfrepairtank.longname'>Dargslan Selbstreparatur-Panzer</entry>
+  <entry key='tech.dargslanselfrepairtank.name'>Selbstreparatur-Panzer</entry>
   
   <entry key='tech.destroyer1.description'>Der verbreitetste leichte Zerstörer. Ein Überbleibsel aus dem Alten Reich. Seine größten Vorteile: Er kostet wenig und ist in großen Stückzahlen verfügbar.</entry>
   <entry key='tech.destroyer1.longname'>Zerstörer der Wachtturm-Klasse</entry>
@@ -1367,7 +1367,7 @@
   <entry key='tech.dribsfighter.description'>Mittel starke Jäger</entry>
   <entry key='tech.dribsfighter.longname'>Dribs Jäger</entry>
   <entry key='tech.dribsfighter.name'>Dibs Jäger</entry>
-  <entry key='tech.dribsparalizer.description'>Specialeinheit der Dribs. Paralysiert andere Fahrzeuge die kann nicht feuern oder bevegen.</entry>
+  <entry key='tech.dribsparalizer.description'>Spezialeinheit der Dribs. Paralysiert andere Fahrzeuge, die sich dann nicht feuern oder bewegen können.</entry>
   <entry key='tech.dribsparalizer.longname'>Dribs Paralizer</entry>
   <entry key='tech.dribsparalizer.name'>Paralizer</entry>
 
@@ -1380,7 +1380,7 @@
   <entry key='tech.ecalepfighter.description'>Mittel starke Jäger</entry>
   <entry key='tech.ecalepfighter.longname'>Ecalep Jäger</entry>
   <entry key='tech.ecalepfighter.name'>Ecalep Jäger</entry>
-  <entry key='tech.ecaleprocketjammer.description'>Specialeinheit der Ecalep. Stört die Raketen in seinem nähe.</entry>
+  <entry key='tech.ecaleprocketjammer.description'>Spezialeinheit der Ecalep. Stört die Raketen in seiner Nähe.</entry>
   <entry key='tech.ecaleprocketjammer.longname'>Ecalep Raketenstörer</entry>
   <entry key='tech.ecaleprocketjammer.name'>Raketenstörer</entry>
  
@@ -1431,7 +1431,7 @@
   <entry key='tech.garthogfighter.description'>Mittel starke Jäger</entry>
   <entry key='tech.garthogfighter.longname'>Garthog Jäger</entry>
   <entry key='tech.garthogfighter.name'>Garthog Jäger</entry>
-  <entry key='tech.garthogradarjammer.description'>Specialeinheit der Garthog. Es stört andere Radarwagen oder Satellitbedeckung um die Zahlen zu verstecken.</entry>
+  <entry key='tech.garthogradarjammer.description'>Spezialeinheit der Garthog. Sie stört Radarwagen oder Spionagesatelliten, um die Zahlen und Orte auf der Minimap zu verstecken.</entry>
   <entry key='tech.garthogradarjammer.longname'>Garthog Radarstörer</entry>
   <entry key='tech.garthogradarjammer.name'>Radarstörer</entry>
   <entry key='tech.garthogvirusbomb.description'>Garthogs verwendete diese Bombe gegen das Galaktik Reich.</entry>
@@ -1442,10 +1442,10 @@
   <entry key='tech.heavytank.longname'>Schwerer Panzer "Rhino"</entry>
   <entry key='tech.heavytank.name'>Schwerer Panzer</entry>
 
-  <entry key='tech.hubble1.description'>Experimentelles Weltraumteleskop, erkannt eben die kleinste Flotten aber nur in mittel Entfernungen.</entry>
+  <entry key='tech.hubble1.description'>Experimentelles Weltraumteleskop, welches sogar die kleineren Flotten erkennen kann.</entry>
   <entry key='tech.hubble1.longname'>Weltraumteleskop</entry>
   <entry key='tech.hubble1.name'>Weltraumteleskop</entry>
-  <entry key='tech.hubble2.description'>Starker Radarteleskop-Satellit, benannt nach dem berühmten Forschungssatelliten der Alten Erde. Hubble 2 kann gegnerische Flotten in großer Entfernungen ausmachen.</entry>
+  <entry key='tech.hubble2.description'>Starker Radarteleskop-Satellit, benannt nach dem berühmten Forschungssatelliten der Alten Erde. Hubble 2 kann gegnerische Flotten in großen Entfernungen ausmachen.</entry>
   <entry key='tech.hubble2.longname'>Hubble 2</entry>
   <entry key='tech.hubble2.name'>Hubble 2</entry>
 
@@ -1481,22 +1481,22 @@
   <entry key='tech.laser1.name'>Laser</entry>
   <entry key='tech.laser2.description'>Der Impulslaser ist eine einfache Aufrüstmöglichkeit mit erhöhter Feuerrate und bringt somit mehr Energie gegen das anvisierte Schiff zum Einsatz.</entry>
   <entry key='tech.laser2.longname'>Impulselaser</entry>
-  <entry key='tech.laser2.name'>Impluselaser</entry>
+  <entry key='tech.laser2.name'>Impulselaser</entry>
   <entry key='tech.laser3.description'>Fortschritte beim Fokussieren von hohen Wellenlängen ermöglichen es dem UV-Laser, wesentlich mehr Energie auszusenden und darum weitaus höheren Schaden anzurichten.</entry>
   <entry key='tech.laser3.longname'>UV-Laser</entry>
   <entry key='tech.laser3.name'>UV-Laser</entry>
-  <entry key='tech.laser4.description'>Nach der Perfektion der einfachen Variante war es nur ein kleiner Schritt zum Impulslasers mit fokussiertem System. Dies ist der stärkste erhältliche Laser.</entry>
+  <entry key='tech.laser4.description'>Nach der Perfektion der einfachen Variante war es nur ein kleiner Schritt zum Impulslaser mit fokussiertem System. Dies ist der stärkste erhältliche Laser.</entry>
   <entry key='tech.laser4.longname'>UV-Impulselaser</entry>
   <entry key='tech.laser4.name'>UV-Impulselaser</entry>
 
-  <entry key='tech.lighttank.description'>Der Jaguar wird wegen seiner Geschwindigkeit und Panzerung häufig als Aufklärungs- fahrzeug eingesetzt. Feuerreichweite: 2.  Geschwindigkeit: 5.  Panzerung: 3.</entry>
+  <entry key='tech.lighttank.description'>Der Jaguar wird wegen seiner Geschwindigkeit und Panzerung häufig als Aufklärungsfahrzeug eingesetzt. Feuerreichweite: 2.  Geschwindigkeit: 5.  Panzerung: 3.</entry>
   <entry key='tech.lighttank.longname'>Leichter Panzer "Jaguar"</entry>
   <entry key='tech.lighttank.name'>Leichter Panzer</entry>
   <entry key='tech.mediumtank.description'>Beim Tiger wurde mehr Wert auf Panzerung und Reichweite als auf Tempo gelegt - ein Fels in der Brandung. Feuerreichweite: 4. Geschwindigkeit: 4. Panzerung: 4.</entry>
   <entry key='tech.mediumtank.longname'>Mittlerer Panzer "Tiger"</entry>
   <entry key='tech.mediumtank.name'>Mittlerer Panzer</entry>
 
-  <entry key='tech.mesoncannon.description'>Das Mesonengeschütz ist die ultimative Waffe. Es sprüht kurzlebige Mikro- Singularitäten und macht damit ganze Raumschiff-Flotten rasch manövrierunfähig.</entry>
+  <entry key='tech.mesoncannon.description'>Das Mesonengeschütz ist die ultimative Waffe. Es sprüht kurzlebige Mikrosingularitäten und macht damit ganze Raumschiffflotten rasch manövrierunfähig.</entry>
   <entry key='tech.mesoncannon.longname'>Mesonengeschütz</entry>
   <entry key='tech.mesoncannon.name'>Mesonengeschütz</entry>
   <entry key='tech.mesonprojector.description'>Mesonenprojektoren feuern einen Strom subatomarer Partikel ab, die in hochexplosive Materie zerfallen, und legen ungeschützte Raumschiffe problemlos lahm.</entry>
@@ -1512,7 +1512,7 @@
   <entry key='tech.morgathfighter.description'>Mittel starke Jäger</entry>
   <entry key='tech.morgathfighter.longname'>Morgath Jäger</entry>
   <entry key='tech.morgathfighter.name'>Morgath Jäger</entry>
-  <entry key='tech.morgathkamikazetank.description'>Specialeinheit der Morgath. Unter schwere beschädigung oder Kommander-befehl zerstört es sich selbs und verursacht schaden in der Nähe.</entry>
+  <entry key='tech.morgathkamikazetank.description'>Spezialeinheit der Morgath. Unter schwerer Beschädigung oder Kommanderbefehl zerstört es sich selbst und verursacht Schaden in der Nähe.</entry>
   <entry key='tech.morgathkamikazetank.longname'>Morgath Kamikaze Panzer</entry>
   <entry key='tech.morgathkamikazetank.name'>Kamikaze Panzer</entry>
 
@@ -1532,17 +1532,17 @@
   
   <entry key='tech.phasedtelescope.description'>Dieses Teleskop ist das ultimative Langstrecken-Ortungsgerät und kann gegnerische Flotten auf extreme Entfernungen präzise ausmachen.</entry>
   <entry key='tech.phasedtelescope.longname'>Phasengesteuertes Teleskop</entry>
-  <entry key='tech.phasedtelescope.name'>Phasen Teleskop</entry>
+  <entry key='tech.phasedtelescope.name'>Phasenteleskop</entry>
   <entry key='tech.phoodfactory.description'>Nach Durchbrüchen in der Nanotechnologie, Genmanipulation und der Vermarktung des ekelerregenden Breis ist die Phood(tm)-Fabrik eine effektive Nahrungsquelle.</entry>
   <entry key='tech.phoodfactory.longname'>Phood(tm)-Fabrik</entry>
   <entry key='tech.phoodfactory.name'>Phood(tm)-Fabrik</entry>
   
-  <entry key='tech.piratedestroyer.description'>Relatively weak Zerstörer</entry>
-  <entry key='tech.piratedestroyer.longname'>Pirate Zerstörer</entry>
-  <entry key='tech.piratedestroyer.name'>Pirate Zerstörer</entry>
-  <entry key='tech.piratefighter.description'>Relatively weak Jäger</entry>
-  <entry key='tech.piratefighter.longname'>Pirate Jäger</entry>
-  <entry key='tech.piratefighter.name'>Pirage Jäger</entry>
+  <entry key='tech.piratedestroyer.description'>Relativ schwacher Zerstörer</entry>
+  <entry key='tech.piratedestroyer.longname'>Piratenzerstörer</entry>
+  <entry key='tech.piratedestroyer.name'>Piratenzerstörer</entry>
+  <entry key='tech.piratefighter.description'>Relativ schwacher Jäger</entry>
+  <entry key='tech.piratefighter.longname'>Piratenjäger</entry>
+  <entry key='tech.piratefighter.name'>Piratenjäger</entry>
   
   <entry key='tech.plasmacannon.description'>Das Plasmageschütz feuert supraerhitzte Materie ab. Direkte Treffer durchschlagen den Rumpf und verursachen Kurzschlüsse, die das Ziel manövrierunfähig machen.</entry>
   <entry key='tech.plasmacannon.longname'>Plasmageschütz</entry>
@@ -1630,7 +1630,7 @@
   <entry key='tech.stronghold.longname'>Bollwerk</entry>
   <entry key='tech.stronghold.name'>Bollwerk</entry>
 
-  <entry key='tech.sullepartillery.description'>Specialeinheit der Sullep. Es hat mehr reichweite als andere Farhzeuge und macht Bereich Schaden.</entry>
+  <entry key='tech.sullepartillery.description'>Spezialeinheit der Sullep. Sie hat mehr Reichweite als andere Fahrzeuge und macht Bereichsschaden.</entry>
   <entry key='tech.sullepartillery.longname'>Sullep Artillerie</entry>
   <entry key='tech.sullepartillery.name'>Artillerie</entry>
   <entry key='tech.sullepbattleship.description'>Mittel starke Flaggschiff</entry>
@@ -1670,7 +1670,7 @@
   <entry key='tech.ychomfighter.description'>Mittel starke Jäger</entry>
   <entry key='tech.ychomfighter.longname'>Ychom Jäger</entry>
   <entry key='tech.ychomfighter.name'>Ychom Jäger</entry>
-  <entry key='tech.ychomminelayer.description'>Specialeinheit der Ychom. Waffenlose Fahrzeug das Minen legen kann. Die Minen können ein ganzes Farhzeug mit einen Explosion zerstören</entry>
+  <entry key='tech.ychomminelayer.description'>Spezialeinheit der Ychom. Waffenloses Fahrzeug das Minen legen kann. Die Minen können ein ganzes Fahrzeug mit einer Explosion zerstören.</entry>
   <entry key='tech.ychomminelayer.longname'>Ychom Mineleger</entry>
   <entry key='tech.ychomminelayer.name'>Mineleger</entry>
 	
@@ -1683,7 +1683,7 @@
   <entry key='test.q2.a1'>klarer Logik.</entry>
   <entry key='test.q2.a2'>einer schnellen Entscheidung wegen des Drucks.</entry>
   <entry key='test.q2.a3'>unlogischen Vermutungen.</entry>
-  <entry key='test.q3'>Wenn ich mit einem Problem zu kämpfen habe, bin ich dennoch immer noch optimistisch.</entry>
+  <entry key='test.q3'>Wenn ich mit einem Problem zu kämpfen habe, bin ich dennoch immer optimistisch.</entry>
   <entry key='test.q3.a1'>Ja.</entry>
   <entry key='test.q3.a2'>Manchmal.</entry>
   <entry key='test.q3.a3'>Nie.</entry>
@@ -1703,10 +1703,10 @@
   <entry key='test.q7.a1'>unbeteiligt.</entry>
   <entry key='test.q7.a2'>betroffen.</entry>
   <entry key='test.q7.a3'>verantwortlich.</entry>
-  <entry key='test.q8'>Da Vernunft nicht immer die gewünschte Wirkung hat, kann es sein, daß Sie mitunter zu extremen Maßnahmen greifen müssen!</entry>
+  <entry key='test.q8'>Da Vernunft nicht immer die gewünschte Wirkung hat, kann es sein, dass Sie mitunter zu extremen Maßnahmen greifen müssen!</entry>
   <entry key='test.q8.a1'>Kein Problem</entry>
   <entry key='test.q8.a2'>Nur im äußersten Notfall.</entry>
-  <entry key='test.q8.a3'>Ein Kompromiß hat immer Erfolg.</entry>
+  <entry key='test.q8.a3'>Ein Kompromiss hat immer Erfolg.</entry>
   <entry key='traders.fleetname'>Händler</entry>
 	
 	<entry key='ES'>ES</entry>
@@ -1732,29 +1732,29 @@
 	<entry key='achievement.dargslayer'>Dargslayer</entry>
 	<entry key='achievement.dargslayer.desc'>Sie haben alle Dargslan in der Galaxie eliminiert</entry>
 	<entry key='achievement.death_star'>Todesstern</entry>
-	<entry key='achievement.death_star.desc'>Sie haben Ihre Kolonie vernichtet werden</entry>
+	<entry key='achievement.death_star.desc'>Sie haben Ihre Kolonie zugrunde gehen lassen</entry>
 	<entry key='achievement.decade'>Ein Jahrzehnt im Dienst</entry>
-	<entry key='achievement.decade.desc'>Sie spielten 10 Jahre Spiel</entry>
+	<entry key='achievement.decade.desc'>Sie spielten 10 Spieljahre</entry>
 	<entry key='achievement.defender'>Verteidiger der Krone</entry>
-	<entry key='achievement.defender.desc'>Sie verteidigte erfolgreich Ihre Kolonie</entry>
-	<entry key='achievement.defense_contract'>Verteidigung Vertrag</entry>
-	<entry key='achievement.defense_contract.desc'>Alle Ihre Planeten sind mit mindestens 3 Projektoren und ein Schild ausgerüstet.</entry>
+	<entry key='achievement.defender.desc'>Sie verteidigten erfolgreich Ihre Kolonie</entry>
+	<entry key='achievement.defense_contract'>Verteidigungsvertrag</entry>
+	<entry key='achievement.defense_contract.desc'>Alle Ihre Planeten sind mit mindestens 3 Projektoren und einem Schild ausgerüstet.</entry>
 	<entry key='achievement.do_you_chat'>Erst Unterhaltung, dann Kampf</entry>
-	<entry key='achievement.do_you_chat.desc'>Überzeuge dein Feind beim Raum-Unterhaltung zurückzuziehen.</entry>
+	<entry key='achievement.do_you_chat.desc'>Überzeuge deinen Feind bei der Raumunterhaltung vom Rückzug.</entry>
 	<entry key='achievement.embargo'>Embargo</entry>
-	<entry key='achievement.embargo.desc'>Sie haben Ihr erster Handlerschiff zerstört</entry>
+	<entry key='achievement.embargo.desc'>Sie haben Ihr erstes Händlerschiff zerstört</entry>
 	<entry key='achievement.energizer'>Energizer</entry>
 	<entry key='achievement.energizer.desc'>Ihre gesamten Energieerzeugung hat 10.000.000 kW erreicht</entry>
 	<entry key='achievement.et'>E.T. existiert</entry>
-	<entry key='achievement.et.desc'>Sie entdeckten eine nicht-menschlichen Zivilisation</entry>
+	<entry key='achievement.et.desc'>Sie entdeckten eine nicht-menschliche Zivilisation</entry>
 	<entry key='achievement.food'>Essen und denken</entry>
 	<entry key='achievement.food.desc'>Ihre globale Nahrungsmittelproduktion ist über 1.000.000</entry>
 	<entry key='achievement.grand_admiral'>Großadmiral</entry>
-	<entry key='achievement.grand_admiral.desc'>Sie haben zum Großadmiral befördert worden</entry>
+	<entry key='achievement.grand_admiral.desc'>Sie sind zum Großadmiral befördert worden</entry>
 	<entry key='achievement.i_robot'>Ich Roboter</entry>
 	<entry key='achievement.i_robot.desc'>Finden Sie Ihre wahre Herkunft!</entry>
 	<entry key='achievement.influenza'>Influenza nicht mehr</entry>
-	<entry key='achievement.influenza.desc'>Sie haben die Quelle des Virus-Infektion erfolgreich eliminiert</entry>
+	<entry key='achievement.influenza.desc'>Sie haben die Quelle der Virus-Infektion erfolgreich eliminiert</entry>
 	<entry key='achievement.living_space'>Lebensraum</entry>
 	<entry key='achievement.living_space.desc'>Sie entdeckten den ersten leeren Planeten.</entry>
 	<entry key='achievement.manufacturer'>Hersteller</entry>
@@ -1766,52 +1766,52 @@
 	<entry key='achievement.newbie'>Neuling</entry>
 	<entry key='achievement.newbie.desc'>Sie haben ein neues Spiel angefangen</entry>
 	<entry key='achievement.nobel_prize'>Nobelpreis</entry>
-	<entry key='achievement.nobel_prize.desc'>Sie haben alle Technologien Technologien erforscht</entry>
+	<entry key='achievement.nobel_prize.desc'>Sie haben alle Technologien erforscht</entry>
 	<entry key='achievement.oldest_man'>Der älteste Mensch</entry>
 	<entry key='achievement.oldest_man.desc'>Sie haben 100 Jahre lang gespielt.</entry>
 	<entry key='achievement.pirate_bay'>Pirate Bay</entry>
 	<entry key='achievement.pirate_bay.desc'>Sie verloren einen Planeten an die Piraten</entry>
 	<entry key='achievement.popular'>Populär</entry>
-	<entry key='achievement.popular.desc'>Alle Ihre Kolonien sind glücklich mit Sie</entry>
+	<entry key='achievement.popular.desc'>Alle Ihre Kolonien sind glücklich mit Ihnen</entry>
 	<entry key='achievement.quarter'>Viertel des Kuchens</entry>
 	<entry key='achievement.quarter.desc'>Sie besitzen 25 Planeten</entry>
 	<entry key='achievement.research_assistant'>Wissenschaftlicher Mitarbeiter</entry>
 	<entry key='achievement.research_assistant.desc'>Sie haben fünf Technologien erforscht</entry>
 	<entry key='achievement.revolutioner'>Revolutioner</entry>
-	<entry key='achievement.revolutioner.desc'>Einer Ihrer Kolonie hat revoltiert</entry>
+	<entry key='achievement.revolutioner.desc'>Eine Ihrer Kolonien hat revoltiert</entry>
 	<entry key='achievement.salvage'>Schrott</entry>
 	<entry key='achievement.salvage.desc'>Sie haben 1,000 feindliche Schiffe zerstört</entry>
 	<entry key='achievement.scientist'>Wissenschaftler</entry>
 	<entry key='achievement.scientist.desc'>Sie haben 30 Technologien erforscht</entry>
 	<entry key='achievement.student_of_bokros'>Student of Bokros</entry>
-	<entry key='achievement.student_of_bokros.desc'>Alle Ihre Planeten haben den Erdrückend Steuer für eine Woche durchgelebt</entry>
+	<entry key='achievement.student_of_bokros.desc'>Alle Ihre Planeten haben den Erdrückenden Steuersatz für eine Woche durchgelebt</entry>
 	<entry key='achievement.ultimate_leader'>Ultimative Leiter</entry>
 	<entry key='achievement.ultimate_leader.desc'>Alle Ihre Kolonien unterstützen Sie</entry>
 	<entry key='videos.all_videos'>Alle Videos</entry>
 	<entry key='videos.name'>Name</entry>
 	<entry key='videos.path'>Kategorie</entry>
-	<entry key='welcome'>Wilkommen bei Open Imperium Galactica</entry>
+	<entry key='welcome'>Willkommen bei Open Imperium Galactica</entry>
 
 	<entry key='battlefinish.battleships'>Flaggschiffe</entry>
 	<entry key='battlefinish.click_to_exit'>Klicke zum Beenden</entry>
-	<entry key='battlefinish.cruisers'>Kreuzern</entry>
-	<entry key='battlefinish.destroyers'>Zerstörern</entry>
+	<entry key='battlefinish.cruisers'>Kreuzer</entry>
+	<entry key='battlefinish.destroyers'>Zerstörer</entry>
 	<entry key='battlefinish.enemy_fleet_destroyed'>Die feindliche Flotte %s wurde zerstört.</entry>
 	<entry key='battlefinish.enemy_losses_1'>Feind</entry>
 	<entry key='battlefinish.fighters'>Jäger</entry>
-	<entry key='battlefinish.fortifications'>Fortifikations</entry>
+	<entry key='battlefinish.fortifications'>Befestigungen</entry>
 	<entry key='battlefinish.ground_units'>Bodeneinheiten</entry>
-	<entry key='battlefinish.groundwar_lost'>Du hast dem Bodenkampf verloren!</entry>
-	<entry key='battlefinish.groundwar_won'>Du hast dem Bodenkampf gewonnen!</entry>
+	<entry key='battlefinish.groundwar_lost'>Du hast den Bodenkampf verloren!</entry>
+	<entry key='battlefinish.groundwar_won'>Du hast den Bodenkampf gewonnen!</entry>
 	<entry key='battlefinish.guns'>Projektoren</entry>
 
 	<entry key='brian'>Brian</entry>
 
 	<entry key='diplomacy.AGGRESSIVE'>Aggressive Annäherung</entry>
 	<entry key='diplomacy.HUMBLE'>Demütige Annäherung</entry>
-	<entry key='diplomacy.NEUTRAL'>Neutral Annäherung</entry>
-	<entry key='diplomacy.cancel'>Lieber nicht</entry>
-	<entry key='diplomacy.click_to_exit'>Klicke zum zurückkehr</entry>
+	<entry key='diplomacy.NEUTRAL'>Neutrale Annäherung</entry>
+	<entry key='diplomacy.cancel'>Abbrechen</entry>
+	<entry key='diplomacy.click_to_exit'>Klicke um zurückzugehen</entry>
 	<entry key='diplomacy.close_panel'>Panel schließen</entry>
 	<entry key='diplomacy.done'>Gespräch beenden</entry>
 	<entry key='diplomacy.relations'>Beziehung zeigen</entry>
@@ -1825,7 +1825,7 @@
 	<entry key='doctor'>Doktor</entry>
 	<entry key='financialinfo.build_cost'>Baupreis         : %d cr</entry>
 	<entry key='financialinfo.production_cost'>Produktionspreis : %d cr</entry>
-	<entry key='financialinfo.repair_cost'>Reparaturspreis  : %d cr</entry>
+	<entry key='financialinfo.repair_cost'>Reparaturpreis  : %d cr</entry>
 	<entry key='financialinfo.research_cost'>Forschungspreis : %d cr</entry>
 	<entry key='flagship.moveto.bar'>Bar</entry>
 	<entry key='flagship.moveto.bridge'>Brücke</entry>
@@ -1838,22 +1838,22 @@
 	<entry key='flagship.moveto.equipment2'>Ausrüstung</entry>
 	<entry key='flagship.moveto.lift'>Lift</entry>
 	<entry key='flagship.moveto.production'>Produktionsraum</entry>
-	<entry key='flagship.moveto.productionscreen'>Produktion Bildschirm</entry>
-	<entry key='flagship.moveto.research'>Forschung Bildschirm</entry>
-	<entry key='flagship.moveto.starmap'>Karte Bildschirm</entry>
+	<entry key='flagship.moveto.productionscreen'>Produktionsbildschirm</entry>
+	<entry key='flagship.moveto.research'>Forschungsbildschirm</entry>
+	<entry key='flagship.moveto.starmap'>Kartenbildschirm</entry>
 	<entry key='flagship.moveto.window'>Fenster</entry>
 	<entry key='fleetinfo.alien_fleet'>Alien Flotte</entry>
 	<entry key='fleetinformation.battleships'>Flaggschiffe: %s</entry>
-	<entry key='fleetinformation.cruisers'   >Kreuzern   : %s</entry>
+	<entry key='fleetinformation.cruisers'   >Kreuzer   : %s</entry>
 	<entry key='fleetinformation.fighters'   >Jäger      : %s</entry>
 	<entry key='fleetinformation.spaceships' >Raumschiffe: %s</entry>
 	<entry key='fleetinformation.vehicles'   >Fahrzeuge  : %s</entry>
 	<entry key='fleetstatus.attack'>Angriff von %s</entry>
-	<entry key='fleetstatus.composition'>Flaggschiffe:%s Kreuzern:%s Jäger: %s Panzern:%s</entry>
+	<entry key='fleetstatus.composition'>Flaggschiffe:%s Kreuzer:%s Jäger: %s Panzer:%s</entry>
 	<entry key='fleetstatus.composition.alien'>Raumschiffe: %s, Jäger: %s</entry>
 	<entry key='fleetstatus.firepower'>Feuerkraft: %.0f</entry>
 	<entry key='fleetstatus.moving'>Bewegt</entry>
-	<entry key='fleetstatus.moving.after'>Bevolgung von %s</entry>
+	<entry key='fleetstatus.moving.after'>Verfolgung von %s</entry>
 	<entry key='fleetstatus.moving.to'>Bewegt nach %s</entry>
 	<entry key='fleetstatus.speed'>Gescw.   : %d</entry>
 	<entry key='fleetstatus.stopped'>Gestoppt</entry>
@@ -1883,23 +1883,23 @@
 	<entry key='settings.audio_video'>Audio/Video</entry>
 	<entry key='statistics.actual_buildings'>Gebäude im Einsatz Zahl</entry>
 	<entry key='statistics.build_count'>Bau Zahl</entry>
-	<entry key='statistics.demolish_count'>Abriß Zahl</entry>
+	<entry key='statistics.demolish_count'>Abriss Zahl</entry>
 	<entry key='statistics.equipment_sold_money'>Verkaufsgeld</entry>
 	<entry key='statistics.galaxy_actual_buildings'>Galaxis Gebäude im Ensatz</entry>
 	<entry key='statistics.galaxy_build_count'>Galaxis Bau Zahl</entry>
-	<entry key='statistics.galaxy_demolish_count'>Galaxis Abriß Zahl</entry>
+	<entry key='statistics.galaxy_demolish_count'>Galaxis Abriss Zahl</entry>
 	<entry key='statistics.galaxy_money_acquired'>Galaxis geld verdient</entry>
 	<entry key='statistics.galaxy_money_aquired'>Galaxis Insgesamt Einkommen</entry>
-	<entry key='statistics.galaxy_money_demolish_income'>Galaxis Abriß Einkommen</entry>
+	<entry key='statistics.galaxy_money_demolish_income'>Galaxis Abriss Einkommen</entry>
 	<entry key='statistics.galaxy_money_sell_income'>Galaxis Verkaufseinkommen</entry>
 	<entry key='statistics.galaxy_money_spent'>Galaxis Geld Verbrauch</entry>
-	<entry key='statistics.galaxy_money_spent_building'>Galaxyis Baugeld</entry>
+	<entry key='statistics.galaxy_money_spent_building'>Galaxis Baugeld</entry>
 	<entry key='statistics.galaxy_money_spent_production'>Galaxis Produktionsgeld</entry>
-	<entry key='statistics.galaxy_money_spent_repair'>Galaxis Reparatursgeld</entry>
+	<entry key='statistics.galaxy_money_spent_repair'>Galaxis Reparaturgeld</entry>
 	<entry key='statistics.galaxy_money_spent_research'>Galaxis Forschungsgeld</entry>
 	<entry key='statistics.galaxy_money_spent_upgade'>Galaxis Verbesserungsgeld</entry>
 	<entry key='statistics.galaxy_money_tax_income'>Galaxis Steuereinkommen</entry>
-	<entry key='statistics.galaxy_money_trade_income'>Galaxis Handeleinkommen</entry>
+	<entry key='statistics.galaxy_money_trade_income'>Galaxis Handelseinkommen</entry>
 	<entry key='statistics.galaxy_production_count'>Galaxis Produktionszahl</entry>
 	<entry key='statistics.galaxy_research_count'>Galaxis Forschungszahl</entry>
 	<entry key='statistics.galaxy_sell_count'>Galaxis Verkaufszahl</entry>
@@ -1916,17 +1916,17 @@
 	<entry key='statistics.galaxy_upgrade_count'>Galaxis Verbesserungszahl</entry>
 	<entry key='statistics.money_aquired'>Einkommen</entry>
 	<entry key='statistics.money_aquired_trade'>Handelseinkommen</entry>
-	<entry key='statistics.money_demolish_income'>Abrißeinkommen</entry>
+	<entry key='statistics.money_demolish_income'>Abrisseinkommen</entry>
 	<entry key='statistics.money_sell_income'>Verkaufseinkommen</entry>
 	<entry key='statistics.money_spent'>Geld Verbraucht</entry>
-	<entry key='statistics.money_spent_building'>Bau Geld</entry>
-	<entry key='statistics.money_spent_production'>Produkzionsgeld</entry>
+	<entry key='statistics.money_spent_building'>Baugeld</entry>
+	<entry key='statistics.money_spent_production'>Produktionsgeld</entry>
 	<entry key='statistics.money_spent_repair'>Reparaturgeld</entry>
 	<entry key='statistics.money_spent_research'>Forschungsgeld</entry>
 	<entry key='statistics.money_spent_upgade'>Verbesserungsgeld</entry>
 	<entry key='statistics.money_tax_income'>Steuereinkommen</entry>
 	<entry key='statistics.money_trade_income'>Handelseinkommen</entry>
-	<entry key='statistics.planet_colonized'>Planeten colonisiert</entry>
+	<entry key='statistics.planet_colonized'>Planeten kolonisiert</entry>
 	<entry key='statistics.planet_conquered'>Planeten erobert</entry>
 	<entry key='statistics.planet_died'>Planeten gestorben</entry>
 	<entry key='statistics.planet_discovered'>Planeten gefunden</entry>
@@ -1936,11 +1936,11 @@
 	<entry key='statistics.produced_items'>Stücke produziert</entry>
 	<entry key='statistics.production_count'>Produktionszahl</entry>
 	<entry key='statistics.races_discovered'>Rassen endeckt</entry>
-	<entry key='statistics.research_acquired'>Forschung erworbt</entry>
+	<entry key='statistics.research_acquired'>Forschungen erworben</entry>
 	<entry key='statistics.research_count'>Forschungszahl</entry>
 	<entry key='statistics.sell_count'>Verkaufszahl</entry>
 	<entry key='statistics.ships_destroyed'>Schiffe zerstört</entry>
-	<entry key='statistics.ships_destroyed_value'>Preis der Schiffe zerstört</entry>
+	<entry key='statistics.ships_destroyed_value'>Preis der zerstörten Schiffe</entry>
 	<entry key='statistics.sold_items'>Stücke verkauft</entry>
 	<entry key='statistics.total_buildings'>Gebaudezahl</entry>
 	<entry key='statistics.total_enemy_firepower'>Feindliche Feuerkraft</entry>
@@ -1966,19 +1966,19 @@
 	<entry key='messages.San Sterling'>San Sterling</entry>
 	<entry key='messages.Zeuson'>Zeuson</entry>
 	<entry key='messages.admiral_benson'>Admiral Benson</entry>
-	<entry key='messages.admiral_benson_failed'>Versag: Admiral Benson</entry>
+	<entry key='messages.admiral_benson_failed'>Versagt: Admiral Benson</entry>
 	<entry key='messages.android'>Android</entry>
 	<entry key='messages.android_truth'>Die Wahrheit</entry>
 	<entry key='messages.attack'>Angriff</entry>
 	<entry key='messages.attack_2'>Angriff</entry>
 	<entry key='messages.attack_garthog'>Angriff von Garthog</entry>
 	<entry key='messages.carrier'>Träger</entry>
-	<entry key='messages.carrier_failed'>Versag: Träger</entry>
+	<entry key='messages.carrier_failed'>Versagt: Träger</entry>
 	<entry key='messages.centronom_governor'>Gouverneur von Centronom</entry>
 	<entry key='messages.check'>Status</entry>
 	<entry key='messages.douglas'>Kmdt. Douglas</entry>
-	<entry key='messages.escort'>Begleitung</entry>
-	<entry key='messages.escort_failed'>Begleitung gescheitert</entry>
+	<entry key='messages.escort'>Eskorte</entry>
+	<entry key='messages.escort_failed'>Eskorte gescheitert</entry>
 	<entry key='messages.fire'>Gefeuert</entry>
 	<entry key='messages.is_attack'>Angriff</entry>
 	<entry key='messages.merchant'>Händler</entry>
@@ -1987,7 +1987,7 @@
 	<entry key='messages.pirates'>Piraten</entry>
 	<entry key='messages.promotion'>Beförderung</entry>
 	<entry key='messages.prototype'>Prototyp</entry>
-	<entry key='messages.prototype_failed'>Versag: Prototyp</entry>
+	<entry key='messages.prototype_failed'>Versagt: Prototyp</entry>
 	<entry key='messages.prototype_success'>Prototyp gesichert</entry>
 	<entry key='messages.prototype_thanks'>Danke</entry>
 	<entry key='messages.quickly'>Schnell</entry>
@@ -1998,15 +1998,15 @@
 	<entry key='messages.smuggler_innocent'>Schmuggler unschuldig</entry>
 	<entry key='messages.smuggler_killed'>Schmuggler getötet</entry>
 	<entry key='messages.spy'>Spion</entry>
-	<entry key='messages.success'>Mission erfolg</entry>
+	<entry key='messages.success'>Missionserfolg</entry>
 	<entry key='messages.thorin'>Thorin</entry>
 	<entry key='messages.unknown'>Unbekannt</entry>
 	<entry key='messages.virus'>Virus</entry>
 	<entry key='messages.virus_again'>Virus nochmal</entry>
 	<entry key='messages.virus_again_deaths'>Virus und Tote</entry>
 	<entry key='messages.virus_breached'>Quarantäne-Verletzung</entry>
-	<entry key='messages.virus_carriers_destroyed'>Virusträgern zerstört</entry>
-	<entry key='messages.virus_resolved'>Virus entschlossen</entry>
+	<entry key='messages.virus_carriers_destroyed'>Virusträger zerstört</entry>
+	<entry key='messages.virus_resolved'>Virus eingedämmt</entry>
 	<entry key='messages.viruses'>Mehrere Virus infektionen</entry>
 	<entry key='messages.wife'>Deine Frau</entry>
 	<entry key='messages.wife_1'>Schultag von J</entry>
@@ -2143,9 +2143,9 @@
 	<entry key='database.moral_boosting'>Verbesserung der Moral auf den Kolonien</entry>
 	<entry key='database.moral_boosting.details'>Die Moral der Kolonisten ist für Bevölkerungs-zunahme, Wachstum und Steuereinkommen sehr wichtig. Menschen benötigen für eine positive Einstellung bestimmte Einrichtungen: Bar, Erholungszentrum, Park, Kirche und Stadion. Finden Sie die wirkungsvollste Mischung heraus. Die Moral der Steuerzahler kann durch Polizeipräsenz erhöht werden. Die Einstellung verändert sich nicht von heute auf morgen. Warten Sie ab, welche Wirkung Ihre Maßnahmen zeigen. Möglicherweise bringt auch eine vorübergehende Steuersenkung den gewünschten Erfolg.
 		Das klappt aber nur, wenn die Moral stabil ist. Auf Kolonien mit Aliens können keine Einrichtungen zur Steigerung der Moral gebaut werden, doch die Polizei steht Ihnen zur Seite. 
-		Übernehmen Sie die Kolonie eines anderen Volks, wird Ihnen besonders großer Haß entgegengebracht. Durch Steuersenkungen und den Bau von Polizeistationen zur Erhaltung der Ordnung können Sie diese Haltung ändern. Denken Sie daran, daß sich die Einstellung des beherrschten Volks nicht im Handumdrehen ändern läßt.</entry>
+		Übernehmen Sie die Kolonie eines anderen Volks, wird Ihnen besonders großer Haß entgegengebracht. Durch Steuersenkungen und den Bau von Polizeistationen zur Erhaltung der Ordnung können Sie diese Haltung ändern. Denken Sie daran, dass sich die Einstellung des beherrschten Volks nicht im Handumdrehen ändern läßt.</entry>
 	<entry key='database.race.dargslan'>Die Dargslans</entry>
-	<entry key='database.race.dargslan.details'>Man weiß nicht viel über die Dargslans, außer daß sie bei Gefechten am Boden und im All sehr erfolgreich sind.</entry>
+	<entry key='database.race.dargslan.details'>Man weiß nicht viel über die Dargslans, außer dass sie bei Gefechten am Boden und im All sehr erfolgreich sind.</entry>
 	<entry key='database.race.dribs'>Die Dribs</entry>
 	<entry key='database.race.dribs.details'>Die Dribs sind ein stolzes Volk. Aufgrund ihrer technischen Fähigkeiten sind sie Spezialisten für Mechanik und Bauwesen. Sie kennen schon seit langer Zeit die Rasse der Dargslans. Die Dargslans hatten einige ihrer Gebiete erobert und die Dribs in die Flucht geschlagen. Seit dieser Zeit hassen die Dribs die Dargslans.</entry>
 	<entry key='database.race.ecalep'>Die Ecaleps</entry>
@@ -2155,7 +2155,7 @@
 	<entry key='database.race.freetraders'>Allianz Freier Händler</entry>
 	<entry key='database.race.freetraders.details'>Früher gehörten sie zum Alten Reich, doch nun müssen sich die Händler ein eigenes Reich aufbauen. Sie sind ein friedliches Handelsvolk und pflegen gute Beziehungen zu den Ychoms.</entry>
 	<entry key='database.race.garthog'>Die Garthogs</entry>
-	<entry key='database.race.garthog.details'>Die Garthogs sind ein verstohlenes Volk. Ihre Technikleidenschaft ist unersättlich, und sie versuchen, jede neue Technologie zu stehlen. Die Liebe zu Maschinen ist so groß, daß sie ihre Kinder mit Extrasensoren versehen. Es heißt, daß sie das kleinere Volk der Nubs vernichteten, um deren Technologien in ihren Besitz zu bringen. Das Reich der Garthogs liegt direkt neben dem Imperium der Menschen, und seit zehn Jahren herrscht zwischen diesen beiden Rassen Krieg. Die Garthogs verfügen über eine besondere Bodenwaffe:ein Fahrzeug mit Radar-Störsender.</entry>
+	<entry key='database.race.garthog.details'>Die Garthogs sind ein verstohlenes Volk. Ihre Technikleidenschaft ist unersättlich, und sie versuchen, jede neue Technologie zu stehlen. Die Liebe zu Maschinen ist so groß, dass sie ihre Kinder mit Extrasensoren versehen. Es heißt, dass sie das kleinere Volk der Nubs vernichteten, um deren Technologien in ihren Besitz zu bringen. Das Reich der Garthogs liegt direkt neben dem Imperium der Menschen, und seit zehn Jahren herrscht zwischen diesen beiden Rassen Krieg. Die Garthogs verfügen über eine besondere Bodenwaffe:ein Fahrzeug mit Radar-Störsender.</entry>
 	<entry key='database.race.morgath'>Die Morgaths</entry>
 	<entry key='database.race.morgath.details'>Die Morgaths sind eine äußerst unfreundliche Rasse. Es gibt niemand, der ihr Vertrauen genießt. Angeblich verfügen sie über mächtige Raumschiffe und eine besondere Waffe für Bodengefechte, einen Kamikazepanzer. Diesem Schätzchen sollten Sie nicht zu nahe kommen.</entry>
 	<entry key='database.race.pirates'>Pirates</entry>
@@ -2181,16 +2181,16 @@
 	Bei einer hohen Besteuerung (anspruchsvoll und hoch) ist die Bevölkerung unzufrieden. Die Zahlungsmoral nimmt ab, und Unruhe breitet sich aus. Bei bestimmten Gelegenheiten kann eine hohe Besteuerung sinnvoll sein, ist jedoch als Langzeitstrategie ungeeignet. Die Zahlungsmoral kann auf verschiedene Weise gestärkt werden. Das Handelseinkommen hängt nicht von der Zahlungsmoral ab und kann auf Alien-Planeten daher als stabile Einkommensquelle genutzt werden. Niedrige Besteuerung erzeugt ein stabiles Klima in der Bevölkerung.</entry>
 	
 	<entry key='battlefinish.mission-10.15'>Nachricht vom Gouverneur: Danke für die Eskorte, Captain. Ihr Ruf entwickelt sich! Dieser Sektor ist jetzt viel sicherer als vorher.</entry>
-	<entry key='battlefinish.mission-13.16'>Nachricht von Admiral Benson: Das erinnert mich an meine Jugend. Luftkämpfe sind etwas Aufregendes, nicht wahr, Captain? Hier habe ich etwas, mit dem Sie diesen Garthogs in Zukunft die Hölle heiß machen können.</entry>
+	<entry key='battlefinish.mission-13.16'>Nachricht von Admiral Benson: Das erinnert mich an meine Jugend. Raumschlachten sind etwas Aufregendes, nicht wahr, Captain? Hier habe ich etwas, mit dem Sie diesen Garthogs in Zukunft die Hölle heiß machen können.</entry>
 	<entry key='battlefinish.mission-13.16_bonus'>Sie erhalten 16 Laserkanonen für Ihre Ausrüstung.</entry>
 	<entry key='battlefinish.mission-14.23'>Nachricht vom Gouverneur von New Caroline: Die Zerstörung der virusverseuchten Schiffe hat Abertausenden das Leben gerettet.</entry>
 	<entry key='battlefinish.mission-16.20'>Nachricht vom Geldtransportschiff: Gut gemacht, Captain. Ich werde Sie bei Ihren Vorgesetzten lobend erwähnen.</entry>
-	<entry key='battlefinish.mission-17.21'>Nachricht von einem Piloten: Es war äußerst wichtig, daß die Garthogs diese Erfindung nicht in die Finger bekommen haben.</entry>
+	<entry key='battlefinish.mission-17.21'>Nachricht von einem Piloten: Es war äußerst wichtig, dass die Garthogs diese Erfindung nicht in die Finger bekommen haben.</entry>
 	<entry key='battlefinish.mission-17.21_bonus'>BONUS: Beförderung zum Commander.</entry>
 	<entry key='battlefinish.mission-19.31'>Ihr Wachoffizier sagt: Manchmal sind selbst Gouverneure eine Plage.</entry>
 
-	<entry key='battlefinish.mission-2.merchant1'>Nachricht von Händler 1: Danke für Ihre Hilfe, Lieutenant. Wären Sie nur ein bißchen später gekommen, wäre ich jetzt tot.</entry>
-	<entry key='battlefinish.mission-2.merchant2'>Nachricht von Händler 2: Gut, daß es wieder Recht und Ordnung gibt. Danke für Ihre Hilfe.</entry>
+	<entry key='battlefinish.mission-2.merchant1'>Nachricht von Händler 1: Danke für Ihre Hilfe, Lieutenant. Wären Sie nur ein bisschen später gekommen, wäre ich jetzt tot.</entry>
+	<entry key='battlefinish.mission-2.merchant2'>Nachricht von Händler 2: Gut, dass es wieder Recht und Ordnung gibt. Danke für Ihre Hilfe.</entry>
 	<entry key='battlefinish.mission-2.merchant3'>Nachricht von Händler 3: Keine Gnade für diese Piraten. Danke für Ihr rasches Eingreifen. Als Dank überweise ich %s Credits.</entry>
 	<entry key='battlefinish.mission-2.merchant4'>Nachricht von Händler 4: Es war schon ein unvergleichlicher Anblick, die Piraten so schnell abhauen zu sehen. Danke für die Show. Nehmen Sie %s Credits als Zeichen meiner Dankbarkeit.</entry>
 	<entry key='battlefinish.mission-2.merchant5'>Nachricht von Händler 5: Was für eine Jagd, Mann! Danke für Ihre Hilfe.</entry>
@@ -2211,7 +2211,7 @@
 
 	<entry key='battlefinish.mission-7.merchant7'>Nachricht von Händler 7: Danke für Ihre Hilfe, Commander. Übrigens, können Sie mir verraten, wo ich ein paar Waffen kaufen kann?</entry>
 	<entry key='battlefinish.mission-7.merchant7_bonus'>BONUS: 5000 Credits</entry>
-	<entry key='battlefinish.mission-7_task2.merchant8'>Nachricht von Händler 8: Es war höchste Zeit, daß jemand den Garthogs eine Lektion erteilt. Danke, Captain. Ich werde darüber Ihrem vorgesetzten Offizier Bericht erstatten.</entry>
+	<entry key='battlefinish.mission-7_task2.merchant8'>Nachricht von Händler 8: Es war höchste Zeit, dass jemand den Garthogs eine Lektion erteilt. Danke, Captain. Ich werde darüber Ihrem vorgesetzten Offizier Bericht erstatten.</entry>
 	<entry key='battlefinish.mission-7_task2.merchant8_bonus'>BONUS: Sie haben von der Allianz Freier Händler eine TAPFERKEITSMEDAILLE erhalten. Ihr Ansehen bei den Kaufleuten ist gestiegen!</entry>
 
 	<entry key='battlefinish.mission-9.17'>Nachricht vom Gouverneur: Vielen Dank für Ihre erfolgreiche Intervention, Captain.</entry>
@@ -2220,25 +2220,25 @@
 	<entry key='mission-1.build_colonyhub.desc'>Baue so früh wie möglich ein Koloniezentrum.</entry>
 	<entry key='mission-1.fix_buildings'>Repariere oder Baue neue Gebäude</entry>
 	<entry key='mission-1.fix_buildings.desc'>Gebäude notwendig: Kraftwerk, Wohnung, Kirche, Radar, Polizei, Feuerwehr, E-Zentrum und Militär-Raumhafen.</entry>
-	<entry key='mission-1.manage_achilles'>Behandle Achilles</entry>
-	<entry key='mission-1.manage_achilles.desc'>Behandle Achilles. Der Planet kann nicht verloren gehen.</entry>
-	<entry key='mission-1.manage_colonies'>Behandle die andere Kolonien</entry>
-	<entry key='mission-1.manage_colonies.desc'>Behandle Naxos und San Sterling. Die Planeten können nicht verloren gehen.</entry>
+	<entry key='mission-1.manage_achilles'>Kümmere dich um Achilles</entry>
+	<entry key='mission-1.manage_achilles.desc'>Kümmere dich um Achilles. Der Planet darf nicht verloren gehen.</entry>
+	<entry key='mission-1.manage_colonies'>Kümmere dich um die anderen Kolonien</entry>
+	<entry key='mission-1.manage_colonies.desc'>Kümmere dich um Naxos und San Sterling. Die Planeten dürfen nicht verloren gehen.</entry>
 	<entry key='mission-1.rebuild_achilles'>Achilles wieder aufbauen</entry>
 	<entry key='mission-1.rebuild_achilles.desc'>Stelle die Kolonie wieder her. Der Planet sollte nicht verloren gehen.</entry>
 
-	<entry key='mission-10.governor_escort'>Begleite der Gouverneur von Centronom</entry>
-	<entry key='mission-10.governor_escort.desc'>Begleite die Flotte vom Gouverneur während es von San Sterling nach Naxos fliegt.</entry>
-	<entry key='mission-10.governor_name'>Gouverneur Flotte</entry>
+	<entry key='mission-10.governor_escort'>Eskortiere den Gouverneur von Centronom</entry>
+	<entry key='mission-10.governor_escort.desc'>Eskortiere die Flotte vom Gouverneur während er von San Sterling nach Naxos fliegt.</entry>
+	<entry key='mission-10.governor_name'>Gouverneursflotte</entry>
 	<entry key='mission-11.attack'>Garthog Angriff unterwegs!</entry>
 	<entry key='mission-11.attack.desc'>Verteidige die Kolonie gegen den Garthog Angriff!</entry>
-	<entry key='mission-12.handle_virus'>Virus bekämpfen: Stelle den Planet unter Quarantäne und baue Krankenhäuse nach Bedarf.</entry>
-	<entry key='mission-12.handle_virus_again'>Nochmal: sorge für die Quarantäne und Krankenhaus verfügbarkeit.</entry>
+	<entry key='mission-12.handle_virus'>Virus bekämpfen: Stelle den Planet unter Quarantäne und baue Krankenhäuser nach Bedarf.</entry>
+	<entry key='mission-12.handle_virus_again'>Nochmal: sorge für die Quarantäne und Krankenhausverfügbarkeit.</entry>
 	<entry key='mission-12.report_virus'>Melde die Virusinfektionen.</entry>
 	<entry key='mission-12.report_virus.desc'>Nimm Kontakt mit dem Oberst auf und melde die Virusinfektionen.</entry>
-	<entry key='mission-12.virus'>Virus infektion auf New Caroline</entry>
-	<entry key='mission-13.benson'>Begleite Admiral Benson</entry>
-	<entry key='mission-13.benson.desc'>Sorgen sie für die sichere Ankunft des Admirals auf New Caroline.</entry>
+	<entry key='mission-12.virus'>Virusinfektion auf New Caroline</entry>
+	<entry key='mission-13.benson'>Eskortiere Admiral Benson</entry>
+	<entry key='mission-13.benson.desc'>Sorge für die sichere Ankunft des Admirals auf New Caroline.</entry>
 	<entry key='mission-13.benson_fleet'>Benson Flotte</entry>
 	<entry key='mission-14.virus_carriers'>Halte die Virusträger auf</entry>
 	<entry key='mission-15.kelly'>Gehe zu der Bar und sprich mit Kelly über den Spion</entry>
@@ -2253,25 +2253,25 @@
 	<entry key='mission-17.prototype'>Gestohlener Prototyp</entry>
 	<entry key='mission-17.prototype.desc'>Garthogs haben einen Schiffsprototypen gestohlen. Stoppe sie um jeden Preis!</entry>
 	<entry key='mission-18.garthog'>Besiege das Garthog Reich</entry>
-	<entry key='mission-18.garthog.desc'>Was genug ist, ist genug. Erobere alle ihre Planeten (in jeder Reihenfolge)!</entry>
+	<entry key='mission-18.garthog.desc'>Was genug ist, ist genug. Erobere alle ihre Planeten (in beliebiger Reihenfolge)!</entry>
 	<entry key='mission-18.garthog1'>Erobere Garthog 1</entry>
 	<entry key='mission-18.garthog2'>Erobere Garthog 2</entry>
 	<entry key='mission-18.garthog3'>Erobere Garthog 3</entry>
 	<entry key='mission-18.garthog4'>Erobere Garthog 4</entry>
 	<entry key='mission-18.garthog5'>Erobere Garthog 5</entry>
-	<entry key='mission-18.retake'>Erobere jede Planeten zurück</entry>
+	<entry key='mission-18.retake'>Erobere alle verlorenen Planeten zurück</entry>
 	<entry key='mission-19.blockade'>Blockade von Zeuson</entry>
 	<entry key='mission-19.blockade.desc'>Verhindere, dass der Gouverneur unser Territorium verlässt.</entry>
 	<entry key='mission-19.unknown'>Unbekannt</entry>
-	<entry key='mission-2.protect_traders'>Schütze die Händlern</entry>
-	<entry key='mission-2.protect_traders.desc'>Schütze die Händlern vor möglichen Piratangriffen.</entry>
+	<entry key='mission-2.protect_traders'>Schütze die Händler</entry>
+	<entry key='mission-2.protect_traders.desc'>Schütze die Händler vor möglichen Piratenangriffen.</entry>
 	<entry key='mission-2.save_trader'>Rette den Händler</entry>
 	<entry key='mission-2.save_trader.desc'>Schiff des Händlers muss überleben.</entry>
 	<entry key='mission-2.save_trader.reward'>BONUS: %s Credits</entry>
-	<entry key='mission-20.brian'>Mehr Treume, sprich mit Brian</entry>
-	<entry key='mission-20.brian.desc'>Gehe auf die Bar und sprich mit Brian über Robotik.</entry>
-	<entry key='mission-21.prototype2'>Begleite den neuen Prototypen</entry>
-	<entry key='mission-21.prototype2.desc'> Treffen sie sich mit der Flotte und sorgen sie für die sichere Ankunft des Prototyps.</entry>
+	<entry key='mission-20.brian'>Mehr Träume, sprich mit Brian</entry>
+	<entry key='mission-20.brian.desc'>Gehe zur Bar und sprich mit Brian über Robotik.</entry>
+	<entry key='mission-21.prototype2'>Eskortiere den neuen Prototypen</entry>
+	<entry key='mission-21.prototype2.desc'> Treffe dich mit der Flotte und sorge für die sichere Ankunft des Prototyps.</entry>
 	<entry key='mission-21.prototype2.name'>Prototyp</entry>
 	<entry key='mission-22.expansion'>Alter der Expansion</entry>
 	<entry key='mission-22.expansion.desc'>Erobere oder Kolonisiere noch 7 planeten.</entry>
@@ -2282,14 +2282,14 @@
 	<entry key='mission-24.first_contact'>Erster Kontakt</entry>
 	<entry key='mission-24.first_contact.desc'>Wir hörten von der Dargslan. Finden Sie heraus, wer sie sind und wo sie sind!</entry>
 	<entry key='mission-25.dargslan'>Besiege die Dargslan</entry>
-	<entry key='mission-25.dargslan.desc'>Die Dargslan müssen besiegt werden, verwenden Sie allen notwendigen Mitteln den Sieg zu erringen!</entry>
-	<entry key='mission-3.escort_carrier'>Begleite den Träger</entry>
-	<entry key='mission-3.escort_carrier.desc'>Sorge für der Träger nicht zerstört werden.</entry>
+	<entry key='mission-25.dargslan.desc'>Die Dargslan müssen besiegt werden, verwenden Sie alle notwendigen Mittel, den Sieg zu erringen!</entry>
+	<entry key='mission-3.escort_carrier'>Eskortiere den Träger</entry>
+	<entry key='mission-3.escort_carrier.desc'>Sorge dafür. dass der Träger nicht zerstört wird.</entry>
 	<entry key='mission-3.escort_carrier.name'>Träger</entry>
 	<entry key='mission-3.reward'>BONUS: Schild v1.0 Ihrer Ausrüstung hinzugefügt</entry>
 	<entry key='mission-4.pirate_battle'>Stoppe den Piratenkampf in der Nähe von Naxos</entry>
 	<entry key='mission-4.pirate_battle.desc'>Verhandle mit ihnen oder töte sie einfach, es ist deine Entscheidung.</entry>
-	<entry key='mission-5.escort_thorin'>Begleite das Flaggschiff Thorin</entry>
+	<entry key='mission-5.escort_thorin'>Eskortiere das Flaggschiff Thorin</entry>
 	<entry key='mission-5.escort_thorin.desc'>Unterstütze Admiral Tullens strategischen Rückzug.</entry>
 	<entry key='mission-5.defend_thorin'>Schütze das Flaggschiff Thorin</entry>
 	<entry key='mission-5.defend_thorin.desc'>Bilden Sie Streitmächte mit Admiral Tullen. Das Flaggschiff Thorin muss überleben.</entry>
@@ -2298,10 +2298,10 @@
 	<entry key='mission-5.tullens_fleet'>Tullen-Flotte</entry>
 	<entry key='mission-6.defend_achilles'>Verteidige Achilles</entry>
 	<entry key='mission-6.defend_achilles.desc'>Bereite dich auf die Bodenoffensive vor. Achilles darf nicht fallen!</entry>
-	<entry key='mission-7.protect_traders'>Schütze die Händlern</entry>
+	<entry key='mission-7.protect_traders'>Schütze die Händler</entry>
 	<entry key='mission-7.protect_traders.desc'>Garthog Piraten lauern rund um die Händler. Sei vorbereitet.</entry>
 	<entry key='mission-7.save_trader'>Rette den Händler</entry>
-	<entry key='mission-7.save_trader.desc'>Die Händler muss überleben.</entry>
+	<entry key='mission-7.save_trader.desc'>Der Händler muss überleben.</entry>
 	<entry key='mission-7.save_trader.reward'>BONUS: %s Credits</entry>
 	<entry key='mission-8.go_to_bar'>Gehe zu der Bar und sprich mit Dr. Reinhart über Ihre Vision</entry>
 	<entry key='mission-8.test'>Fülle den Test aus</entry>
@@ -2498,13 +2498,13 @@
 	<entry key='chat.merchant8.nB'>Don't shoot! Don't shoot! I'll leave!</entry>
 	<entry key='settings.movie_scale'>Vollbild Zwischensequenzen</entry>
   <entry key='mission-5.reinforcements'>Kontaktiere den Oberst für Verstärkung</entry>
-  <entry key='mission-5.reinforcements.desc'>Fakultativ. Gehe auf die Brücke und frage nach Verstärkung.</entry>
-  <entry key='mission-6.handle_colonies'>Behandle den Bedürfnisse der Kolonien. Baue Befestigungen.</entry>
+  <entry key='mission-5.reinforcements.desc'>Optional. Gehe auf die Brücke und frage nach Verstärkung.</entry>
+  <entry key='mission-6.handle_colonies'>Befriedige die Bedürfnisse der Kolonien. Baue Befestigungen.</entry>
   <entry key='mission-6.build_fleets'>Produziere Jäger, Zerstörer und alle benötigte Ausrüstung.</entry>
-  <entry key='mission-6.handle_colonies.desc'>Versuche ein Befestigung zu bauen.</entry>
-  <entry key='mission-6.build_fleets.desc'>Baue Fabriken und versuche Schiffe und Ausrüstungen zu bauen.</entry>
-  <entry key='message.research_lab'>Vorschung von %s haltete wegen fählende Laboratorien.</entry>
-  <entry key='message.research_money'>Vorschung von %s haltete wegen nich genug Geld.</entry>
+  <entry key='mission-6.handle_colonies.desc'>Versuche mindestens eine Befestigung zu bauen.</entry>
+  <entry key='mission-6.build_fleets.desc'>Baue Fabriken und versuche Schiffe und Ausrüstung zu bauen.</entry>
+  <entry key='message.research_lab'>Vorschung von %s haltete wegen fehlenden Laboratorien.</entry>
+  <entry key='message.research_money'>Vorschung von %s haltete wegen nicht genug Geld.</entry>
 	<entry key='settings.movie_click_skip'>Zwischensequenz mit klicken überspringen</entry>
 	<entry key='settings.fullscreen'>Vollbild</entry>
 		
@@ -2524,7 +2524,7 @@
 	<entry key='chat.vi.3.n5'>Das ist für meine Mission unbedeutend!</entry>
 	<entry key='chat.vi.3.n7'>Das wird dem Gouverneur NICHT gefallen. Ich habe wichtige Nachrichten für ihn. Ich MUSS landen.</entry>
 	<entry key='chat.vi.3.n8.o'>Sie bekommen keine Landeerlaubnis.</entry>
-	<entry key='chat.vi.3.n8'>Der Gouverneur muß Ihre Landeerlaubnis erst bestätigen. Kehren Sie sofort um, oder ich eröffne das Feuer auf Sie.</entry>
+	<entry key='chat.vi.3.n8'>Der Gouverneur muss Ihre Landeerlaubnis erst bestätigen. Kehren Sie sofort um, oder ich eröffne das Feuer auf Sie.</entry>
 	<entry key='chat.vi.3.n9'>Nicht schießen! Wir kehren schon um!</entry>
 	
 	<entry key='chat.vi.4.n0.o'>Kehren Sie um!</entry>
@@ -2546,7 +2546,7 @@
 	<entry key='chat.vi.5.n1'>Hier Raumschiff Max4 auf Handelsmission.</entry>
 	<entry key='chat.vi.5.n2.o'>Kehren Sie um! Dieser Planet ist infiziert.</entry>
 	<entry key='chat.vi.5.n2'>Der Planet ist von einem Virus befallen. Es besteht Landeverbot. Kehren Sie um!</entry>
-	<entry key='chat.vi.5.n3'>Ich muß landen. Eine Angelegenheit größter Wichtigkeit führt mich hierher.</entry>
+	<entry key='chat.vi.5.n3'>Ich muss landen. Eine Angelegenheit größter Wichtigkeit führt mich hierher.</entry>
 	<entry key='chat.vi.5.n4.o'>Tut mir leid, Sie müssen umkehren!</entry>
 	<entry key='chat.vi.5.n4'>Sie müssen umkehren!</entry>
 	<entry key='chat.vi.5.n5.o'>Einverstanden, passieren Sie.</entry>
@@ -2583,7 +2583,7 @@
 	<entry key='chat.vo.3.n6'>Danke, Sir.</entry>
 	<entry key='chat.vo.3.n5.o'>Das ist unerheblich, Sie dürfen nicht weg!</entry>
 	<entry key='chat.vo.3.n5'>Das ist unerheblich, Sie dürfen nicht weg!</entry>
-	<entry key='chat.vo.3.n7'>Das wird den Gouverneur verärgern. Ich soll wichtige Nachrichten zu einem anderen Planeten befördern. Ich muß starten.</entry>
+	<entry key='chat.vo.3.n7'>Das wird den Gouverneur verärgern. Ich soll wichtige Nachrichten zu einem anderen Planeten befördern. Ich muss starten.</entry>
 	<entry key='chat.vo.3.n8.o'>Mir liegt keine Starterlaubnis vor.</entry>
 	<entry key='chat.vo.3.n8'>Ich habe keine Bestätigung vom Gouverneur. Kehren Sie sofort um, oder ich eröffne das Feuer auf Sie.</entry>
 	<entry key='chat.vo.3.n9'>Nicht schießen! Wir kehren um!</entry>
@@ -2608,7 +2608,7 @@
 	<entry key='chat.vo.5.n1'>Hier Raumschiff Max4 auf Handelsmission.</entry>
 	<entry key='chat.vo.5.n2.o'>Kehren Sie um! Ihr Schiff ist infiziert.</entry>
 	<entry key='chat.vo.5.n2'>Der Planet, von dem Sie kommen, ist mit einem Virus infiziert. Wahrscheinlich sind auch Sie infiziert. Abreise nicht möglich!</entry>
-	<entry key='chat.vo.5.n3'>Aber ich muß medizinische Hilfe holen.</entry>
+	<entry key='chat.vo.5.n3'>Aber ich muss medizinische Hilfe holen.</entry>
 	<entry key='chat.vo.5.n4.o'>Nein, kehren Sie um.</entry>
 	<entry key='chat.vo.5.n4'>Nein, kehren Sie um!</entry>
 	<entry key='chat.vo.5.n5.o'>Einverstanden, passieren Sie.</entry>
@@ -2620,14 +2620,14 @@
 	<entry key='chat.vo.6.n1'>Hier Raumschiff BRAD6 auf Handelsmission.</entry>
 	<entry key='chat.vo.7.n1'>Hier Raumschiff Lisa2 auf Handelsmission.</entry>
 	<entry key='chat.vo.8.n1'>Hier Raumschiff Leila auf Handelsmission.</entry>
-  <entry key='message.cant_build_more'>Du kannst nicht mehr von diesem Gebäude bauen.</entry>
+  <entry key='message.cant_build_more'>Du kannst keine weiteren Gebäude dieses Typs auf diesem Planeten bauen.</entry>
 	<entry key="save.level">Ebene %s start</entry>
 	<entry key="settings.building_name">Zeige Gebäudenamen und Status</entry>
 	<entry key="production.missing_weapons_factory">Warnung: du hast keine Waffenfabrik!</entry>
-	<entry key="production.missing_spaceship_factory">Warnung: du hast keine Raumschiff-Fabrik!</entry>
+	<entry key="production.missing_spaceship_factory">Warnung: du hast keine Raumschifffabrik!</entry>
 	<entry key="production.missing_equipment_factory">Warnung: du hast keine Ausrüstungsfabrik!</entry>
 	<entry key='infoscreen.all'>Alle</entry>
-	<entry key='settings.quick_rnp'>Zeige schnell-entwiklung/produktion</entry>
+	<entry key='settings.quick_rnp'>Zeige Schnellentwicklung/-produktion</entry>
   <entry key='settings.scale_all_screens'>Fixierte Schirme zum Fenster vergrößern</entry>
 	<entry key="profile">Profil:</entry>
 	
@@ -2647,7 +2647,7 @@
 	<entry key='chat.bi.2.n6'>Sie können nicht passieren. Landeverbot!</entry>
 	<entry key='chat.bi.2.n7'>Aber Sir, überprüfen Sie meine Fracht. Ich habe keine illegalen Güter an Bord.</entry>
 	<entry key='chat.bi.2.n8.o'>Wir überprüfen Ihre Fracht.</entry>
-	<entry key='chat.bi.2.n8'>Wenn wir sicher sind, daß Sie keine illegalen Güter an Bord haben, können Sie passieren.</entry>
+	<entry key='chat.bi.2.n8'>Wenn wir sicher sind, dass Sie keine illegalen Güter an Bord haben, können Sie passieren.</entry>
 	<entry key='chat.bi.2.n9'>Danke, Captain.</entry>
 	<entry key='chat.bi.2.n10.o'>Kehren Sie sofort um!</entry>
 	<entry key='chat.bi.2.n10'>Kehren Sie sofort um.</entry>
@@ -2669,7 +2669,7 @@
 	<entry key='chat.bi.4.n5'>Danke, Captain!</entry>
 	<entry key='chat.bi.5.n0.o'>Kehren Sie sofort um!</entry>
 	<entry key='chat.bi.5.n0'>Hier spricht die Interplanetare Polizei. Kehren Sie um! Kehren Sie sofort um! Für diesen Planeten besteht Landeverbot!</entry>
-	<entry key='chat.bi.5.n1'>Ich habe keinen Treibstoff mehr. Ich muß landen. Bitte lassen Sie mich passieren.</entry>
+	<entry key='chat.bi.5.n1'>Ich habe keinen Treibstoff mehr. Ich muss landen. Bitte lassen Sie mich passieren.</entry>
 	<entry key='chat.bi.5.n2.o'>Stoppen Sie sofort Ihr Schiff!</entry>
 	<entry key='chat.bi.5.n2'>Stoppen Sie sofort Ihr Schiff!</entry>
 	<entry key='chat.bi.5.n3'>Ich kann Ihre Befehle nicht befolgen.</entry>
@@ -2731,8 +2731,8 @@
 	<entry key='statistics.fleets_created'>Flotten erstellt</entry>
 	<entry key='statistics.fleets_lost'>Flotten verloren</entry>
 	<entry key='statistics.ships_destroyed_cost'>Kosten zerstörter Schiffe</entry>
-	<entry key='statistics.ships_lost'>Schiffen verloren</entry>
-	<entry key='statistics.ships_lost_cost'>Schiffen Verlusskosten</entry>
+	<entry key='statistics.ships_lost'>Schiffe verloren</entry>
+	<entry key='statistics.ships_lost_cost'>Schiffsverlustkosten</entry>
 	<entry key='statistics.buildings_destroyed'>Gebäude zerstört</entry>
 	<entry key='statistics.buildings_destroyed_cost'>Kosten zerstörter Gebäude</entry>
 	<entry key='statistics.buildings_lost'>Gebäude verloren</entry>
@@ -2745,7 +2745,7 @@
 	<entry key='achievement.bela_the_4th'>IV. Béla</entry>
 	<entry key='achievement.bela_the_4th.desc'>Du hast Achilles wieder aufgebaut</entry>
 	<entry key='achievement.a_pirate_in_need'>Pirat in Not</entry>
-	<entry key='achievement.a_pirate_in_need.desc'>Du hast dich entschieden den Piraten zu retten</entry>
+	<entry key='achievement.a_pirate_in_need.desc'>Du hast dich entschieden, den Piraten zu retten</entry>
 
 	<entry key='equipment.hp' >HP : %s / %s</entry>
 	<entry key='equipment.sp' >SP : %s / %s</entry>
@@ -2756,16 +2756,16 @@
 
 	<entry key="virus_infection">Virus!!!</entry>
 	<entry key='settings.new_save'>-- Neu --</entry>
-  	<entry key='settings.confirm_overwrite'>Spielstand überschrieben?</entry>
+  	<entry key='settings.confirm_overwrite'>Spielstand überschreiben?</entry>
 	<entry key="settings.confirm_quit">Wollen Sie wirklich aufhören?</entry>
-	<entry key="achievement.well_respected_feature">Sehr respektierte Feature</entry>
-	<entry key="achievement.well_respected_feature.desc">Unterhalte 100-mal im Weltraumschlacht</entry>
+	<entry key="achievement.well_respected_feature">Sehr respektiertes Feature</entry>
+	<entry key="achievement.well_respected_feature.desc">Unterhalte dich 100-mal in Weltraumschlachten</entry>
 	<entry key="diplomacy.generic.endtalk">Das Imperium ruft. Andere Angelegenheiten erfordern meine Anwesenheit.</entry>
 	<entry key="quickresearch.stop">Stop</entry>
-	<entry key="quickresearch.no_active">Kein aktive Forshung</entry>
+	<entry key="quickresearch.no_active">Keine aktive Forschung</entry>
 	<entry key="quickresearch.lab_required">Labs Gebraucht:</entry>
 	<entry key="quickresearch.lab_available">Labs Verfügbar:</entry>
-	<entry key="quickresearch.more_planets">Tip: koloniziere oder erobere mehr Planeten.</entry>
+	<entry key="quickresearch.more_planets">Tip: Kolonisiere oder erobere mehr Planeten.</entry>
 	<entry key="quickresearch.reorg_labs">Tip: labs benötigen Reorganisierung.</entry>
 	<entry key="quickresearch.check_labs">Tip: Einige labs funktionieren nicht oder sind nicht fertig.</entry>
 	<entry key="quickresearch.civ">Civ.</entry>
@@ -2947,21 +2947,21 @@
 	<entry key="achievements.counts">Status: %d von %d (%.1f%%)</entry>
 	<entry key="achievements.show_earned">Erreicht</entry>
 	<entry key="achievements.show_unearned">Nicht erreicht</entry>
-	<entry key='quickproduction.ship_title'>Schiffsproduction</entry>
-	<entry key='quickproduction.weapon_title'>Waffenproduction</entry>
-	<entry key='quickproduction.equipment_title'>Ausrüstungsproduction</entry>
+	<entry key='quickproduction.ship_title'>Schiffsproduktion</entry>
+	<entry key='quickproduction.weapon_title'>Waffenproduktion</entry>
+	<entry key='quickproduction.equipment_title'>Ausrüstungsproduktion</entry>
 	<entry key="research.pause">Pause Forschungsaktivitäten.</entry>
-	<entry key="research.resume">Forschungsaktivitäten vortfahren.</entry>
+	<entry key="research.resume">Forschungsaktivitäten fortfahren.</entry>
 	<entry key="production.pause">Pausiere alle Produktionsaktivitäten.</entry>
-	<entry key="production.resume">Produktionsaktivitäten vortfahren.</entry>
+	<entry key="production.resume">Produktionsaktivitäten fortfahren.</entry>
 	<entry key="quickproduction.no_active">Kein Technologie ausgewählt</entry>
 	<entry key="quickproduction.cost_inventory">Kosten: %,d cr    Inventar: %,d</entry>
 	
-	<entry key="production.one_less.tooltip">Produktionszahl mit eins reduzieren.[n]Halte [c=FFFFFFFF]SHIFT[/c] um es mit 10 zu reduzieren.</entry>
-	<entry key="production.one_more.tooltip">Produktionszahl mit eins erhöhen.[n]Halte [c=FFFFFFFF]SHIFT[/c] um es mit 10 zu reduzieren.</entry>
-	<entry key="quickproduction.remove.tooltip">Producktion beenden.</entry>
-	<entry key="production.more_priority.tooltip">Produktionspriorität mit 5 erhöhen.[n]Der minimale Priorität ist 0, dabei der Produktion ist pausiert. Der maximale Priorität ist 100.</entry>
-	<entry key="production.less_priority.tooltip">Produktionspriorität mit 5 reduzieren.[n]Der minimale Priorität ist 0, dabei der Produktion ist pausiert. Der maximale Priorität ist 100.</entry>
+	<entry key="production.one_less.tooltip">Produktionszahl um eins reduzieren.[n]Halte [c=FFFFFFFF]SHIFT[/c] um sie mit 10 zu reduzieren.</entry>
+	<entry key="production.one_more.tooltip">Produktionszahl um eins erhöhen.[n]Halte [c=FFFFFFFF]SHIFT[/c] um sie mit 10 zu reduzieren.</entry>
+	<entry key="quickproduction.remove.tooltip">Produktion beenden.</entry>
+	<entry key="production.more_priority.tooltip">Produktionspriorität um 5 erhöhen.[n]Die minimale Priorität ist 0, dabei ist die Produktion pausiert. Die maximale Priorität ist 100.</entry>
+	<entry key="production.less_priority.tooltip">Produktionspriorität um 5 reduzieren.[n]Die minimale Priorität ist 0, dabei ist die Produktion pausiert. Die maximale Priorität ist 100.</entry>
 	<entry key="production.line.tooltip">[c=FFFF0000]%s[/c][n]%s</entry>
 	
 	<entry key="equipment.upgrade_fleet.tooltip">Modernize fleet based on inventories:[n]- Equip all kinds of fighters[n]- Upgrade and fill-in equipment of larger ships[n]- Add 66%% best tank, 33%% best rocket sled[n]  one special unit per type</entry>
@@ -2972,14 +2972,14 @@
 
 	<entry key="equipment.starbases.tooltip">Raumstationen</entry>
 	<entry key="equipment.battleships.tooltip">Flagschiffe</entry>
-	<entry key="equipment.cruisers.tooltip">Kreuzern and Zerstörern</entry>
+	<entry key="equipment.cruisers.tooltip">Kreuzer und Zerstörer</entry>
 	<entry key="equipment.fighters.tooltip">Jäger</entry>
-	<entry key="equipment.tanks.tooltip">Tanks</entry>
+	<entry key="equipment.tanks.tooltip">Panzer</entry>
 	<entry key="equipment.vehicles.tooltip">Fahrzeuge</entry>
 
 	<entry key="settings.classic_controls.tooltip">Modern mode:[n]  Move: [c=FFFFFFFF]SHIFT+Right mouse click[/c][n]  Attack: [c=FFFFFFFF]CTRL+Right mouse click[/c][n]  Map pan: [c=FFFFFFFF]Right mouse button[/c][n]  Map default zoom: [c=FFFFFFFF]Middle mouse button[/c][n]Classic mode:[n]  Move: [c=FFFFFFFF]Right click into space[/c][n]  Attack: [c=FFFFFFFF]Right click on enemy[/c][n]  Pan map: [c=FFFFFFFF]Middle mouse button[/c][n]  Map default zoom: [c=FFFFFFFF]CTRL+Middle mouse button[/c]</entry>
 	<entry key="equipment.move_one.tooltip">Eins transferieren</entry>
-	<entry key="equipment.move_half.tooltip">Halbe transferieren</entry>
+	<entry key="equipment.move_half.tooltip">Hälfte transferieren</entry>
 	<entry key="equipment.move_all.tooltip">Alle transferieren</entry>
 	
 		<entry key='singleplayer.customize_race'>Customize traits...</entry>
@@ -3311,7 +3311,7 @@
 	<entry key='info.planetlist_labs'>Lab info</entry>
 	<entry key='info.planetlist_problems'>Problems</entry>
 	<entry key='info.lab_details'>Lab</entry>
-	<entry key=""></entry>
+	<entry key="production.sell.tooltip">Click to sell 1 unit from the inventory[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to sell 10 units.[n]Hold [c=FFFFFFFF]CTRL+SHIFT[/c] while clicking to sell 100 units.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

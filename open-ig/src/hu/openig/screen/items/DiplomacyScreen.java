@@ -739,7 +739,7 @@ public class DiplomacyScreen extends ScreenBase {
 			
 			if (!p2.noDiplomacy) {
 				OptionItem oi1 = new OptionItem();
-				boolean active = !p2.ownPlanets().isEmpty();
+				boolean active = !p2.isDefeated();
 				if (player().offers.containsKey(p2.id) && active) {
 					oi1.label = "!" + p2.shortName;
 				} else {
@@ -1173,10 +1173,12 @@ public class DiplomacyScreen extends ScreenBase {
 				others.retainAll(other.knownPlayers().keySet());
 
 				for (Player p : others) {
-					OptionItem item = new OptionItem();
-					item.label = " " + p.name + " (" + player().getStance(p) + ", " + other.getStance(p) + ")";
-					item.userObject = Pair.of(neg, p);
-					enemies.items.add(item);
+					if (!p.isDefeated()) {
+						OptionItem item = new OptionItem();
+						item.label = " " + p.name + " (" + player().getStance(p) + ", " + other.getStance(p) + ")";
+						item.userObject = Pair.of(neg, p);
+						enemies.items.add(item);
+					}
 					
 				}
 				enemies.items.add(cancel);

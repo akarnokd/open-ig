@@ -1041,4 +1041,11 @@ public class Player {
 	public Set<ResearchType> productionLineTypes(ResearchMainCategory mcat) {
 		return production.get(mcat).keySet();
 	}
+	/**
+	 * Determine if this player has been defeated.
+	 * @return true if the player has been defeated
+	 */
+	public boolean isDefeated() {
+		return ownPlanets().isEmpty();
+	}
 }

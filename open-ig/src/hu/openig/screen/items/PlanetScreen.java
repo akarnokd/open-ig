@@ -470,7 +470,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			break;
 		case KeyEvent.VK_A:
-			selectCommand(attackUnit);
+			if (e.isControlDown()) {
+				doSelectAll();
+			} else {
+				selectCommand(attackUnit);
+			}
 			e.consume();
 			rep = true;
 			break;
