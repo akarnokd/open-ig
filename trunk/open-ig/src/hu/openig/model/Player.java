@@ -947,7 +947,9 @@ public class Player {
 		ResearchType rrt = runningResearch();
 		if (rrt != null) {
 			Research r = researches.get(rrt);
-			r.state = ResearchState.STOPPED;
+			if (r != null && r.state != ResearchState.COMPLETE) {
+				r.state = ResearchState.STOPPED;
+			}
 		}
 		
 		double moneyFactor = world.config.researchMoneyPercent / 1000d;
