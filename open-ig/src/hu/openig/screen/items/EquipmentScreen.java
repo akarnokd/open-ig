@@ -19,6 +19,7 @@ import hu.openig.model.FleetMode;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTransferMode;
 import hu.openig.model.HasInventory;
+import hu.openig.model.HasPosition;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemGroup;
 import hu.openig.model.InventorySlot;
@@ -62,7 +63,9 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -2496,18 +2499,40 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		Fleet f = fleet();
 		if (f != null && f.owner == player() && f.inventory.size() == 0) {
 			List<Fleet> fs = player().ownFleets();
-			int idx = fs.indexOf(f);
 			world().removeFleet(f);
-			if (idx >= 0 && player().fleets.size() > 0) {
-				if (idx < fs.size()) {
-					player().currentFleet = fs.get(idx > 0 ? idx - 1 : 1);
-					minimap.moveTo(fleet().x, fleet().y);
-				}
+			fs.remove(f);
+			if (!fs.isEmpty()) {
+				player().currentFleet = nearestObject(fs, f);
+				player().selectionMode = SelectionMode.FLEET;
 			} else {
-				player().currentFleet = null;
+				List<Planet> op = player().ownPlanets();
+				if (!op.isEmpty()) {
+					player().currentPlanet = nearestObject(op, f);
+				} else {
+					player().currentPlanet = nearestObject(world().planets.values(), f);
+				}
 				player().selectionMode = SelectionMode.PLANET;
 			}
 		}
+	}
+	/**
+	 * Returns the nearest object to the reference position.
+	 * @param <T> the object type
+	 * @param objects the list of objects, shouldn't be empty
+	 * @param reference the reference position
+	 * @return the nearest object
+	 */
+	<T extends HasPosition> T nearestObject(Collection<T> objects, HasPosition reference) {
+		final double rx = reference.x();
+		final double ry = reference.y();
+		return Collections.min(objects, new Comparator<HasPosition>() {
+			@Override
+			public int compare(HasPosition o1, HasPosition o2) {
+				double d1 = Math.hypot(rx - o1.x(), ry - o1.y());
+				double d2 = Math.hypot(rx - o2.x(), ry - o2.y());
+				return Double.compare(d1, d2);
+			}
+		});
 	}
 	/** Sell one of the currently selected ship or vehicle. */
 	void doSell() {
