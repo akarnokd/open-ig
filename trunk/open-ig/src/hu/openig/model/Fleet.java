@@ -28,7 +28,7 @@ import java.util.Set;
  * A fleet.
  * @author akarnokd, 2010.01.07.
  */
-public class Fleet implements Named, Owned, HasInventory {
+public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	/** The unique fleet identifier. */
 	public final int id;
 	/** The owner of the fleet. */
@@ -1140,5 +1140,13 @@ public class Fleet implements Named, Owned, HasInventory {
 				inventory.remove(ii);
 			}
 		}
+	}
+	@Override
+	public double x() {
+		return x;
+	}
+	@Override
+	public double y() {
+		return y;
 	}
 }

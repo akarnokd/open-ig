@@ -152,7 +152,7 @@ public class GameWindow extends JFrame implements GameControls {
 			if (predraw == null) {
 				predraw = g2.getTransform();
 			} else {
-				throw new IllegalStateException("Predraw already set.");
+				Exceptions.add(new IllegalStateException("Predraw already set."));
 			}
 		}
 		/**
@@ -164,7 +164,7 @@ public class GameWindow extends JFrame implements GameControls {
 				g2.setTransform(predraw);
 				predraw = null;
 			} else {
-				throw new IllegalStateException("Predraw already null.");
+				Exceptions.add(new IllegalStateException("Predraw already null."));
 			}
 		}
 		@Override

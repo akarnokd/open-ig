@@ -30,7 +30,7 @@ import java.util.Set;
  * A planet.
  * @author akarnokd, 2010.01.07.
  */
-public class Planet implements Named, Owned, HasInventory {
+public class Planet implements Named, Owned, HasInventory, HasPosition {
 	/** The planet's identifier. */
 	public final String id;
 	/** The world object. */
@@ -580,6 +580,9 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return the owner
 	 */
 	public boolean hasInventory(ResearchType rt, Player owner) {
+		if (owner == null) {
+			return false;
+		}
 		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
 			if (pii.type == rt && pii.count > 0) {
 				return true;
@@ -595,9 +598,11 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public int inventoryCount(ResearchType rt, Player owner) {
 		int count = 0;
-		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
-			if (pii.type == rt) {
-				count += pii.count;
+		if (owner != null) {
+			for (InventoryItem pii : inventory.findByOwner(owner.id)) {
+				if (pii.type == rt) {
+					count += pii.count;
+				}
 			}
 		}
 		return count;
@@ -610,9 +615,11 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public int inventoryCount(ResearchSubCategory cat, Player owner) {
 		int count = 0;
-		for (InventoryItem pii : inventory.findByOwner(owner.id)) {
-			if (pii.type.category == cat) {
-				count += pii.count;
+		if (owner != null) {
+			for (InventoryItem pii : inventory.findByOwner(owner.id)) {
+				if (pii.type.category == cat) {
+					count += pii.count;
+				}
 			}
 		}
 		return count;
@@ -685,6 +692,10 @@ public class Planet implements Named, Owned, HasInventory {
 	 * @return the inventory item or null if not present
 	 */
 	public InventoryItem getInventoryItem(ResearchType rt, Player owner) {
+		if (owner == null) {
+			return null;
+		}
+
 		for (InventoryItem ii : inventory.findByOwner(owner.id)) {
 			if (ii.type == rt) {
 				return ii;
@@ -1612,5 +1623,13 @@ public class Planet implements Named, Owned, HasInventory {
 	 */
 	public void addLastPopulation(double value) {
 		this.lastPopulation += value;
+	}
+	@Override
+	public double x() {
+		return x;
+	}
+	@Override
+	public double y() {
+		return y;
 	}
 }
