@@ -1484,16 +1484,20 @@ public class DiplomacyScreen extends ScreenBase {
 					@Override
 					public void invoke() {
 						acceptOffer.onClick = null;
+						DiplomaticRelation dr = world().getRelation(world().player, other);
 						if (na.callType == CallType.ALLIANCE) {
-							DiplomaticRelation dr = world().getRelation(world().player, other);
 							dr.value = 91;
 						} else
 						if (na.callType == CallType.MONEY) {
 							long mny = ((Number)na.value()).longValue();
-							if (other.money() >= mny) {
-								player().addMoney(mny);
-								player().statistics.moneyIncome.value += mny;
-								world().statistics.moneyIncome.value += mny;
+							if (player().money() >= mny) {
+								player().addMoney(-mny);
+								other.addMoney(mny);
+								other.statistics.moneyIncome.value += mny;
+								player().statistics.moneySpent.value += mny;
+								if (dr.value < 90) {
+									dr.value += 10;
+								}
 							} else {
 								commons.control().displayError(format("diplomacy.not_enough_money", other.name));
 							}
