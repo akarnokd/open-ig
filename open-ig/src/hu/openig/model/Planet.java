@@ -351,7 +351,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		if (Math.abs(population) > Math.abs(result.foodAvailable) * 2) {
 			result.addProblem(PlanetProblems.FOOD);
 		} else
-		if (Math.abs(population) > Math.abs(result.foodAvailable)) {
+		if (Math.abs((int)population) > Math.abs(result.foodAvailable)) {
 			result.addWarning(PlanetProblems.FOOD);
 		}
 		
@@ -365,14 +365,14 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		if (Math.abs(population) > Math.abs(result.houseAvailable) * 2) {
 			result.addProblem(PlanetProblems.HOUSING);
 		} else
-		if (Math.abs(population) > Math.abs(result.houseAvailable)) {
+		if (Math.abs((int)population) > Math.abs(result.houseAvailable)) {
 			result.addWarning(PlanetProblems.HOUSING);
 		}
 		
 		if (Math.abs(population) > Math.abs(result.policeAvailable) * 2) {
 			result.addProblem(PlanetProblems.POLICE);
 		} else
-		if (Math.abs(population) > Math.abs(result.policeAvailable)) {
+		if (Math.abs((int)population) > Math.abs(result.policeAvailable)) {
 			result.addWarning(PlanetProblems.POLICE);
 		}
 		
