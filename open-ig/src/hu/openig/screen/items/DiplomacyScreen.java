@@ -1495,8 +1495,8 @@ public class DiplomacyScreen extends ScreenBase {
 								other.addMoney(mny);
 								other.statistics.moneyIncome.value += mny;
 								player().statistics.moneySpent.value += mny;
-								if (dr.value < 90) {
-									dr.value += 10;
+								if (dr.value < 95) {
+									dr.value += 5;
 								}
 							} else {
 								commons.control().displayError(format("diplomacy.not_enough_money", other.name));
