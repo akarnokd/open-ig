@@ -495,8 +495,10 @@ public class GameWindow extends JFrame implements GameControls {
 		surface.addMouseMotionListener(ma);
 		surface.addMouseWheelListener(ma);
 
-		addKeyListener(that.gameKeyManager);
 		that.removeKeyListener(that.gameKeyManager);
+		
+		gameKeyManager = new GameKeyManager(commons);
+		addKeyListener(gameKeyManager);
 
 		// fix movie
 		if (movie.playbackFinished instanceof MovieFinishAction) {
