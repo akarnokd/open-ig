@@ -257,7 +257,7 @@ public class DefaultAIControls implements AIControls {
 	@Override
 	public void actionAttackPlanet(Fleet fleet, Planet planet, AIAttackMode mode) {
 		fleet.attack(planet);
-		log(p, "AttackPlanet, Attacker = %s, Defender = %s", fleet.name, planet.name);
+		log(p, "AttackPlanet, Attacker = %s, Defender = %s", fleet.name, planet.name());
 	}
 	@Override
 	public void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense) {

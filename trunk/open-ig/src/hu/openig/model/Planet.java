@@ -36,7 +36,9 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	/** The world object. */
 	public final World world;
 	/** The planet's display name. */
-	public String name;
+	public String name0;
+	/** The name override from the player if not null. */
+	public String customName;
 	/** The X coordinate on the unscaled starmap. */
 	public int x;
 	/** The Y coordinate on the unscaled starmap. */
@@ -517,7 +519,10 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	}
 	@Override
 	public String name() {
-		return name;
+		if (customName == null) {
+			return name0;
+		}
+		return customName;
 	}
 	@Override
 	public Player owner() {
@@ -671,7 +676,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	public static final Comparator<Planet> NAME_ORDER = new Comparator<Planet>() {
 		@Override
 		public int compare(Planet o1, Planet o2) {
-			return o1.name.compareTo(o2.name);
+			return o1.name().compareTo(o2.name());
 		}
 	};
 	/**

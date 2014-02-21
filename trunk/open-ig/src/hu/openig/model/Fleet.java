@@ -509,9 +509,6 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 				ii.strip();
 			}
 		}
-		if (inventory.size() == 0) {
-			owner.world.removeFleet(this);
-		}
 	}
 	/**
 	 * Sell all inventory item.

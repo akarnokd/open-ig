@@ -244,25 +244,25 @@ public class BattlefinishScreen extends ScreenBase {
 			
 			if (battle.targetPlanet != null) {
 				if (battle.targetPlanet.owner == null) {
-					textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, format("battlefinish.planet_destroyed", battle.targetPlanet.name));
+					textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, format("battlefinish.planet_destroyed", battle.targetPlanet.name()));
 					y += 20;
 				} else
 				if (battle.groundwarWinner == player() 
 						&& battle.originalTargetPlanetOwner != player()
 						&& battle.targetPlanet.owner == player()) {
-					textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, format("battlefinish.planet_won", battle.targetPlanet.name));
+					textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, format("battlefinish.planet_won", battle.targetPlanet.name()));
 					y += 20;
 				} else
 				if (battle.groundwarWinner != player() 
 				&& battle.originalTargetPlanetOwner == player() 
 				&& battle.targetPlanet.owner != player()) {
-					textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.planet_lost", battle.targetPlanet.name));
+					textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.planet_lost", battle.targetPlanet.name()));
 					y += 20;
 				}
 			} else
 			if (battle.helperPlanet != null) {
 				if (battle.helperPlanet.owner == null) {
-					textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, format("battlefinish.planet_destroyed", battle.helperPlanet.name));
+					textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, format("battlefinish.planet_destroyed", battle.helperPlanet.name()));
 					y += 20;
 				}
 			}

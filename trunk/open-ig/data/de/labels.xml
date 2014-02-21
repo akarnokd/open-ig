@@ -3319,6 +3319,15 @@
 	<entry key="skirmish.no_factory_limit">Unlimited factories per planet</entry>
 	<entry key="skirmish.no_lab_limit">Unlimited science labs per planet</entry>
 	<entry key="quickresearch.build_more_labs">You may build multiple labs on your existing planets.</entry>
+	<entry key="languages.en">English / English</entry>
+	<entry key="languages.hu">Hungarian / Ungarish</entry>
+	<entry key="languages.de">German / Deutsch</entry>
+	<entry key="languages.fr">French / Franzözisch</entry>
+	<entry key="languages.ru">Russian / Russisch</entry>
+	<entry key="languages.es">Spanish / Spanisch</entry>
+	<entry key="languages.change.tooltip">Sprache wächseln[n][c=FFFFFFFF]ESC[/c] = abbrechen</entry>
+	<entry key='starmap.renameplanet.tooltip'>Double click to start renaming the planet.[n]Hit [c=FFFFFFFF]ESC[/c] or [c=FFFFFFFF]ENTER[/c] to complete.[n]Use [c=FFFFFFFF]BACKSPACE[/c] on an empty name to reset it to the default.</entry>
+	<entry key='starmap.renamefleet.tooltip'>Double click to start renaming the fleet.[n]Hit [c=FFFFFFFF]ESC[/c] or [c=FFFFFFFF]ENTER[/c] to complete.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

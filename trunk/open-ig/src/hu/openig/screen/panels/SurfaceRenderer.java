@@ -624,7 +624,7 @@ public class SurfaceRenderer extends UIComponent {
 			g2.setTransform(at);
 			g2.setColor(Color.BLACK);
 
-			String pn = planet.name;
+			String pn = planet.name();
 			int nameHeight = 14;
 			int nameWidth = commons.text().getTextWidth(nameHeight, pn);
 			int nameLeft = (width - nameWidth) / 2;

@@ -81,7 +81,7 @@ public final class BattleSimulator {
 		debug("Attacker: %s (%s)%n", battle.attacker.name, battle.attacker.owner.id);
 		Planet p0 = battle.getPlanet();
 		if (p0 != null) {
-			debug("Planet: %s (%s)%n", p0.name, p0.owner.id);
+			debug("Planet: %s (%s)%n", p0.name(), p0.owner.id);
 		}
 		Fleet f0 = battle.getFleet();
 		if (f0 != null) {

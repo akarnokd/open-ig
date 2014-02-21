@@ -646,11 +646,13 @@ public class World implements ModelLookup {
 	public void processPlanets(XElement xplanets) {
 		for (XElement xplanet : xplanets.childrenWithName("planet")) {
 			Planet p = new Planet(xplanet.get("id"), this);
-			p.name = xplanet.get("name");
+			p.name0 = xplanet.get("name");
 			String nameLabel = xplanet.get("label", null);
 			if (nameLabel != null) {
-				p.name = labels.get(nameLabel); 
+				p.name0 = labels.get(nameLabel); 
 			}
+			p.customName = xplanet.get("custom-name", null);
+			
 			p.x = Integer.parseInt(xplanet.get("x"));
 			p.y = Integer.parseInt(xplanet.get("y"));
 			
@@ -1215,6 +1217,7 @@ public class World implements ModelLookup {
 			xp.set("id", p.id);
 			xp.set("surface-type", p.type.type);
 			xp.set("surface-variant", p.surface.variant);
+			xp.set("custom-name", p.customName);
 			for (InventoryItem pii : p.inventory.iterable()) {
 				XElement xpii = xp.add("item");
 				xpii.set("id", pii.id);
@@ -1708,6 +1711,7 @@ public class World implements ModelLookup {
 				p.inventory.add(pii);
 			}
 			String sowner = xplanet.get("owner", null);
+			p.customName = xplanet.get("custom-name", null);
 
 			if (sowner != null) {
 				p.owner = players.get(sowner);

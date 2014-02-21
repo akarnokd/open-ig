@@ -1380,7 +1380,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 			Planet p = planet();
 			PlanetStatistics ps = p.getStatistics();
 			
-			planet.text(p.name, true);
+			planet.text(p.name(), true);
 			
 			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				String s = p.owner != null ? p.owner.name : "-";
@@ -2746,8 +2746,8 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 
 		Pair<Planet, Planet> pn = player().prevNextPlanet();
 		if (pn != null) {
-			setTooltip(prev, "colony.prev.tooltip", pn.first.owner.color, pn.first.name);
-			setTooltip(next, "colony.next.tooltip", pn.second.owner.color, pn.second.name);
+			setTooltip(prev, "colony.prev.tooltip", pn.first.owner.color, pn.first.name());
+			setTooltip(next, "colony.next.tooltip", pn.second.owner.color, pn.second.name());
 		} else {
 			setTooltip(prev, null);
 			setTooltip(next, null);

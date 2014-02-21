@@ -18,8 +18,10 @@ import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
 import hu.openig.screen.api.SettingsPage;
 import hu.openig.ui.UIComponent;
+import hu.openig.ui.UIImage;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.ui.UIPanel;
 import hu.openig.utils.Exceptions;
 
 import java.awt.AlphaComposite;
@@ -35,9 +37,12 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 /**
@@ -171,6 +176,10 @@ public class MainScreen extends ScreenBase {
 	ClickLabel profileLabel;
 	/** The current multiplayer frame. */
 	MultiplayerScreen multiplayerFrame;
+	/** The language selector panel. */
+	UIPanel languagePanel;
+	/** The language changer. */
+	UIImage changeLanguage;
 	/** Resume the last gameplay. */
 	void doContinue() {
 		continueLabel.enabled(isSaveAvailable());
@@ -232,7 +241,7 @@ public class MainScreen extends ScreenBase {
 		g2.drawImage(tli, tlw, 8, tliw, tlih, null);
 		RenderTools.setInterpolation(g2, false);
 		
-		int vx = 10;
+		int vx = 70;
 		int vy = 428;
 		int vs = 10;
 		String vstr = "v" + Configuration.VERSION + " - " + config.language;
@@ -474,6 +483,75 @@ public class MainScreen extends ScreenBase {
 			}
 		};
 		
+		languagePanel = new UIPanel();
+		languagePanel.visible(false);
+		languagePanel.size(500, 300);
+		languagePanel.backgroundColor(0xC0000000);
+		languagePanel.borderColor(0xFFE0E0E0);
+		languagePanel.z = 10;
+		
+		URL flagsURL = MainScreen.class.getResource("/hu/openig/gfx/flags.png");
+		if (flagsURL != null) {
+			try {
+				BufferedImage bimg = ImageIO.read(flagsURL);
+				changeLanguage = new UIImage(bimg);
+				changeLanguage.onClick = new Action0() {
+					@Override
+					public void invoke() {
+						languagePanel.visible(true);
+					}
+				};
+				changeLanguage.tooltip(get("languages.change.tooltip"));
+			} catch (IOException ex) {
+				Exceptions.add(ex);
+			}
+		}
+		
+		int fy = 10;
+		for (int i = 0; i < config.languageSupport.size(); i += 2) {
+			final String code = config.languageSupport.get(i);
+			String file = config.languageSupport.get(i + 1);
+			String resName = "/hu/openig/gfx/" + file + ".png";
+			URL imgURL = MainScreen.class.getResource(resName);
+			if (imgURL != null) {
+				try {
+					BufferedImage bimg = ImageIO.read(imgURL);
+					UIImage img = new UIImage(bimg);
+					
+					languagePanel.add(img);
+					
+					ClickLabel lbl = new ClickLabel(14, "languages." + code);
+					
+					img.x = 10;
+					img.y = fy;
+					
+					lbl.x = img.width + 20;
+					lbl.y = fy + 5;
+					
+					languagePanel.add(lbl);
+					
+					img.onClick = new Action0() {
+						@Override
+						public void invoke() {
+							languagePanel.visible(false);
+							switchTo(code);
+						}
+					};
+					
+					lbl.action = img.onClick;
+				} catch (IOException ex) {
+					Exceptions.add(ex);
+				}
+			} else {
+				Exceptions.add(new RuntimeException("Missing: " + resName));
+			}
+			fy += 40;
+		}
+		
+		languagePanel.pack();
+		languagePanel.width += 10;
+		languagePanel.height += 10;
+		
 		addThis();
 	}
 
@@ -521,6 +599,11 @@ public class MainScreen extends ScreenBase {
 		campaign.x = base.x + base.width / 4 - campaign.width / 2;
 		skirmish.x = base.x + base.width * 3 / 4 - skirmish.width / 2;
 
+		languagePanel.x = base.x + (base.width - languagePanel.width) / 2;
+		languagePanel.y = base.y + (base.height - languagePanel.height) / 2;
+		
+		changeLanguage.x = base.x + 10;
+		changeLanguage.y = base.y + 405;
 	}
 	@Override
 	public Screens screen() {
@@ -564,38 +647,18 @@ public class MainScreen extends ScreenBase {
 	}
 	@Override
 	public boolean keyboard(KeyEvent e) {
-		if (e.isControlDown()) {
-			if (e.getKeyCode() == KeyEvent.VK_1) {
-				switchTo("en");
-				e.consume();
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			if (languagePanel.visible()) {
+				languagePanel.visible(false);
 				return true;
 			}
-			if (e.getKeyCode() == KeyEvent.VK_2) {
-				switchTo("hu");
-				e.consume();
+		} else
+		if (e.getKeyChar() == 'l' || e.getKeyChar() == 'L') {
+			if (!languagePanel.visible()) {
+				languagePanel.visible(true);
 				return true;
 			}
-			if (e.getKeyCode() == KeyEvent.VK_3) {
-				switchTo("de");
-				e.consume();
-				return true;
-			}
-			if (e.getKeyCode() == KeyEvent.VK_4) {
-				switchTo("fr");
-				e.consume();
-				return true;
-			}
-			if (e.getKeyCode() == KeyEvent.VK_5) {
-				switchTo("ru");
-				e.consume();
-				return true;
-			}
-			if (e.getKeyCode() == KeyEvent.VK_6) {
-				switchTo("es");
-				e.consume();
-				return true;
-			}
-		}
+		} else
 		if (e.getKeyCode() == KeyEvent.VK_O) {
 			doSettings();
 		}

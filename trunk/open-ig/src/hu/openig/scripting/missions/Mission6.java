@@ -20,6 +20,7 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
+import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.TraitKind;
 
@@ -157,18 +158,33 @@ public class Mission6 extends Mission {
 	public void onSpacewarFinish(SpacewarWorld war) {
 		if (objective("Mission-6").isActive()) {
 			Fleet garthog = findTaggedFleet("Mission-6-Garthog", player("Garthog"));
-			if (garthog == null) {
+			if (garthog == null || !canGroundAttack(garthog)) {
 				setObjectiveState("Mission-6", ObjectiveState.SUCCESS);
 				war.battle().rewardText = label("battlefinish.mission-6.14_bonus");
 				war.battle().messageText = label("battlefinish.mission-6.14");
 				
 				world.achievement("achievement.defender");
 				addTimeout("Mission-6-Done", 13000);
-			} else {
+			}
+			if (garthog != null) {
 				removeScripted(garthog);
 				cleanupScriptedFleets();
 			}
 		}		
+	}
+	/**
+	 * Check if the fleet still has ground attack capability.
+	 * @param f the target fleet
+	 * @return true if can attack ground
+	 */
+	boolean canGroundAttack(Fleet f) {
+		for (InventoryItem ii : f.inventory.iterable()) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS 
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				return true;
+			}
+		}
+		return false;
 	}
 	@Override
 	public void onGroundwarFinish(GroundwarWorld war) {

@@ -78,8 +78,8 @@ public class EquipmentMinimap extends UIComponent {
 					}
 					g2.drawRect(cx - 3, cy - 3, 6, 6);
 				}
-				int nw = commons.text().getTextWidth(7, p.name);
-				commons.text().paintTo(g2, cx - nw / 2, cy + 8, 7, p.owner.color, p.name);
+				int nw = commons.text().getTextWidth(7, p.name());
+				commons.text().paintTo(g2, cx - nw / 2, cy + 8, 7, p.owner.color, p.name());
 			}
 		}
 		for (Fleet f : commons.world().player.fleets.keySet()) {

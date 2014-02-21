@@ -639,7 +639,7 @@ public class StatusbarScreen extends ScreenBase {
 			List<Planet> attacks = playerUnderAttack();
 			if (!attacks.isEmpty()) {
 				Planet p = attacks.get(attackListIndex);
-				String txt = format("message.enemy_fleet_detected_at", p.name);
+				String txt = format("message.enemy_fleet_detected_at", p.name());
 				int w = commons.text().getTextWidth(10, txt);
 				commons.text().paintTo(g2, (width - w) / 2, 1, 10, blink ? TextRenderer.RED : TextRenderer.ORANGE, txt);
 			} else
@@ -685,7 +685,7 @@ public class StatusbarScreen extends ScreenBase {
 					String post = msgText.substring(idx + 2);
 					String param = "";
 					if (currentMessage.targetPlanet != null) {
-						param = currentMessage.targetPlanet.name;
+						param = currentMessage.targetPlanet.name();
 					} else
 					if (currentMessage.targetFleet != null) {
 						param = currentMessage.targetFleet.name;
@@ -734,7 +734,7 @@ public class StatusbarScreen extends ScreenBase {
 			String post = msgText.substring(idx + 2);
 			String param = "";
 			if (currentMessage.targetPlanet != null) {
-				param = currentMessage.targetPlanet.name;
+				param = currentMessage.targetPlanet.name();
 			} else
 			if (currentMessage.targetFleet != null) {
 				param = currentMessage.targetFleet.name;
