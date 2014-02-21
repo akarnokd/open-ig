@@ -420,6 +420,8 @@ public class StarmapScreen extends ScreenBase {
 	boolean showAll;
 	/** The extra fleet icon 2. */
 	BufferedImage extraFleet2;
+	/** Indicate if the current planet/fleet's name is in edit mode. */
+	boolean editNameMode;
 	/** Given the current panel visibility settings, set the map rendering coordinates. */
 	void computeRectangles() {
 		starmapWindow.x = 0;
@@ -898,7 +900,14 @@ public class StarmapScreen extends ScreenBase {
 		
 		if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
 			fleetOwner.text(f.owner.name, true);
-			fleetName.text(f.name, true);
+			String fn = f.name;
+			if (editNameMode && minimapPlanetBlink) {
+				fn += "-";
+			}
+			if (fn.isEmpty()) {
+				fn = "        "; // allow changing a fleet name if it was completely erased
+			}
+			fleetName.text(fn, true);
 		} else {
 			fleetOwner.text("");
 			if (f.owner != player()) {
@@ -931,7 +940,7 @@ public class StarmapScreen extends ScreenBase {
 //		fleetComposition.text(format("fleetstatus.composition", fs.battleshipCount, fs.cruiserCount, fs.fighterCount, fs.vehicleCount), true);
 		fleetSpeed.text(format("fleetstatus.speed", fs.speed), true);
 		if (fs.planet != null) {
-			fleetPlanet.text(format("fleetstatus.nearby", fs.planet.name), true);
+			fleetPlanet.text(format("fleetstatus.nearby", fs.planet.name()), true);
 		} else {
 			fleetPlanet.text(format("fleetstatus.nearby", "----"), true);
 		}
@@ -946,13 +955,13 @@ public class StarmapScreen extends ScreenBase {
 				if (f.targetFleet != null) {
 					fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name), true);
 				} else {
-					fleetStatus.text(format("fleetstatus.attack", f.targetPlanet().name), true);
+					fleetStatus.text(format("fleetstatus.attack", f.targetPlanet().name()), true);
 				}
 			} else {
 				if (f.targetFleet != null) {
 					fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
 				} else {
-					fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet().name), true);
+					fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet().name()), true);
 				}
 			}
 		}
@@ -1041,7 +1050,14 @@ public class StarmapScreen extends ScreenBase {
 
 		
 		if (p.owner == player() || knowledge(p, PlanetKnowledge.NAME) >= 0) {
-			colonyName.text(p.name, true);
+			String pn = p.name();
+			if (editNameMode && minimapPlanetBlink) {
+				pn += "-";
+			}
+			if (pn.isEmpty()) {
+				pn = "        "; // allow changing a planet name if it was completely erased
+			}
+			colonyName.text(pn, true);
 			int c = TextRenderer.GRAY;
 			if (p.owner == player() || knowledge(p, PlanetKnowledge.OWNER) >= 0 && p.isPopulated()) {
 				c = p.owner.color;
@@ -1070,7 +1086,14 @@ public class StarmapScreen extends ScreenBase {
 		}
 		
 		if (p.owner == player()) {
-			colonyName.text(p.name, true);
+			String pn = p.name();
+			if (editNameMode && minimapPlanetBlink) {
+				pn += "-";
+			}
+			if (pn.isEmpty()) {
+				pn = "        "; // allow changing a planet name if it was completely erased
+			}
+			colonyName.text(pn, true);
 			
 			colonyPopulationTax.text(
 					format("colonyinfo.population.own", 
@@ -1384,7 +1407,7 @@ public class StarmapScreen extends ScreenBase {
 				if (p == planet()) {
 					color = TextRenderer.RED;
 				}
-				commons.text().paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name);
+				commons.text().paintTo(g2, planetsList.x + 3, planetsList.y + (i - planetsOffset) * 10 + 2, 7, color, p.name());
 			}
 			g2.setClip(save2);
 			g2.clipRect(fleetsList.x, fleetsList.y, fleetsList.width, fleetsList.height);
@@ -1459,7 +1482,7 @@ public class StarmapScreen extends ScreenBase {
 		int y0 = (int)(starmapRect.y + p.y * zoom - d / 2);
 		g2.drawImage(phase, x0, y0, (int)d, (int)d, null);
 		
-		int tw = commons.text().getTextWidth(nameFontSize, p.name);
+		int tw = commons.text().getTextWidth(nameFontSize, p.name());
 		int xt = (int)(starmapRect.x + p.x * zoom - tw / 2d);
 		int yt = (int)(starmapRect.y + p.y * zoom + d / 2) + 4;
 		int labelColor = TextRenderer.GRAY;
@@ -1467,7 +1490,7 @@ public class StarmapScreen extends ScreenBase {
 			labelColor = p.owner.color;
 		}
 		if (showPlanetNames && (showAll || knowledge(p, PlanetKnowledge.NAME) >= 0)) {
-			commons.text().paintTo(g2, xt, yt, nameFontSize, labelColor, p.name);
+			commons.text().paintTo(g2, xt, yt, nameFontSize, labelColor, p.name());
 		}
 		if (p == planet()) {
 			if (player().selectionMode == SelectionMode.PLANET) {
@@ -1746,6 +1769,63 @@ public class StarmapScreen extends ScreenBase {
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		boolean rep = false;
+		
+		if (editNameMode) {
+			if (e.getKeyCode() == KeyEvent.VK_PAGE_UP || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
+				editNameMode = false;
+				return false;
+			} else
+			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+				if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+					String fn0 = fleet().name;
+					if (fn0.length() > 0) {
+						fn0 = fn0.substring(0, fn0.length() - 1);
+						fleet().name = fn0;
+					}
+					e.consume();
+					return true;
+				} else
+				if (player().selectionMode == SelectionMode.PLANET && planet() != null) {
+					String pn0 = planet().customName;
+					if (pn0 == null) {
+						pn0 = planet().name0;
+					}
+					if (pn0.length() > 0) {
+						pn0 = pn0.substring(0, pn0.length() - 1);
+						planet().customName = pn0;
+					} else {
+						planet().customName = null;
+					}
+					e.consume();
+					return true;
+				}
+				e.consume();
+				return true;
+			} else
+			if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				editNameMode = false;
+				e.consume();
+				return true;
+			} else
+			if (commons.text().isSupported(e.getKeyChar())) {
+				if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
+					fleet().name += e.getKeyChar();
+					e.consume();
+					return true;
+				}
+				if (player().selectionMode == SelectionMode.PLANET && planet() != null) {
+					String pn0 = planet().customName;
+					if (pn0 == null) {
+						pn0 = planet().name0;
+					}
+					pn0 += e.getKeyChar();
+					planet().customName = pn0;
+					e.consume();
+					return true;
+				}
+			}
+		}
+		
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
 			pan(0, 30);
@@ -1932,12 +2012,14 @@ public class StarmapScreen extends ScreenBase {
 					player().currentFleet = f;
 					player().selectionMode = SelectionMode.FLEET;
 					displaySecondary(Screens.EQUIPMENT);
+					editNameMode = false;
 					rep = true;
 				} else
 				if (p != null) {
 					player().currentPlanet = p;
 					player().selectionMode = SelectionMode.PLANET;
 					displayPrimary(Screens.COLONY);
+					editNameMode = false;
 					rep = true;
 				}
 			} else 
@@ -1947,6 +2029,7 @@ public class StarmapScreen extends ScreenBase {
 				if (idx < planets.size()) {
 					player().currentPlanet = planets.get(idx);
 					displayPrimary(Screens.COLONY);
+					editNameMode = false;
 				}
 			} else
 			if (config.showStarmapLists && fleetsList.contains(e.x, e.y)) {
@@ -1955,6 +2038,7 @@ public class StarmapScreen extends ScreenBase {
 				if (idx < fleets.size()) {
 					player().currentFleet = fleets.get(idx);
 					displaySecondary(Screens.EQUIPMENT);
+					editNameMode = false;
 				}
 			}
 			break;
@@ -2102,6 +2186,7 @@ public class StarmapScreen extends ScreenBase {
 								fleet().attack(f);
 							}
 							fleetMode = null;
+							editNameMode = false;
 						} else
 						if (p != null) {
 							fleetMode = null;
@@ -2111,7 +2196,7 @@ public class StarmapScreen extends ScreenBase {
 								if (knowledge(p, PlanetKnowledge.OWNER) < 0) {
 									if (forceAttack) {
 										effectSound(SoundType.NOT_AVAILABLE);
-										commons.control().displayError(format("message.cant_attack_that_planet", p.name));
+										commons.control().displayError(format("message.cant_attack_that_planet", p.name()));
 									} else {
 										fleet().moveTo(p);
 									}
@@ -2119,6 +2204,7 @@ public class StarmapScreen extends ScreenBase {
 									fleet().attack(p);
 								}
 							}
+							editNameMode = false;
 						} else {
 							// try any fleet
 							f = getFleetAt(player(), e.x, e.y, false, fleet());
@@ -2133,6 +2219,7 @@ public class StarmapScreen extends ScreenBase {
 								fleet().moveTo(toMapCoordinates(e.x, e.y));
 							}
 							fleetMode = null;
+							editNameMode = false;
 						}
 						panning = false;
 					}
@@ -2150,6 +2237,7 @@ public class StarmapScreen extends ScreenBase {
 					if (f != null) {
 						fleetMode = null;
 						fleet().attack(f);
+						editNameMode = false;
 					} else
 					if (p != null) {
 						if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
@@ -2157,8 +2245,9 @@ public class StarmapScreen extends ScreenBase {
 							fleet().attack(p);
 						} else {
 							effectSound(SoundType.NOT_AVAILABLE);
-							commons.control().displayError(format("message.cant_attack_that_planet", p.name));
+							commons.control().displayError(format("message.cant_attack_that_planet", p.name()));
 						}
+						editNameMode = false;
 					}
 				} else
 				if (fleetMode == FleetMode.MOVE && world().scripting.mayControlFleet(fleet())) {
@@ -2184,6 +2273,7 @@ public class StarmapScreen extends ScreenBase {
 						fleet().waypoints.add(toMapCoordinates(e.x, e.y));
 					}
 					fleetMode = null;
+					editNameMode = false;
 				} else
 				if (!e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
 					selectPlanetOrFleetAt(e);
@@ -2202,6 +2292,7 @@ public class StarmapScreen extends ScreenBase {
 						buttonSound(SoundType.CLICK_MEDIUM_2);
 						player().currentPlanet = planets.get(idx);
 						player().selectionMode = SelectionMode.PLANET;
+						editNameMode = false;
 						rep = true;
 					}
 				}
@@ -2212,6 +2303,7 @@ public class StarmapScreen extends ScreenBase {
 						buttonSound(SoundType.CLICK_MEDIUM_2);
 						player().currentFleet = fleets.get(idx);
 						player().selectionMode = SelectionMode.FLEET;
+						editNameMode = false;
 						rep = true;
 					}
 				}
@@ -2226,6 +2318,7 @@ public class StarmapScreen extends ScreenBase {
 						buttonSound(SoundType.CLICK_MEDIUM_2);
 						player().currentPlanet = planets.get(idx);
 						player().selectionMode = SelectionMode.PLANET;
+						editNameMode = false;
 						
 						double zoom = getZoom();
 						int px = (int)(player().currentPlanet.x * zoom);
@@ -2243,6 +2336,7 @@ public class StarmapScreen extends ScreenBase {
 						buttonSound(SoundType.CLICK_MEDIUM_2);
 						player().currentFleet = fleets.get(idx);
 						player().selectionMode = SelectionMode.FLEET;
+						editNameMode = false;
 						
 						double zoom = getZoom();
 						int px = (int)(player().currentFleet.x * zoom);
@@ -2284,11 +2378,13 @@ public class StarmapScreen extends ScreenBase {
 			buttonSound(SoundType.CLICK_HIGH_2);
 			player().currentFleet = f;
 			player().selectionMode = SelectionMode.FLEET;
+			editNameMode = false;
 		} else
 		if (p != null) {
 			buttonSound(SoundType.CLICK_HIGH_2);
 			player().currentPlanet = p;
 			player().selectionMode = SelectionMode.PLANET;
+			editNameMode = false;
 		}
 	}
 	@Override
@@ -2311,6 +2407,7 @@ public class StarmapScreen extends ScreenBase {
 			newGameStarted = false;
 			zoomToFit();
 		}
+		editNameMode = false;
 	}
 	@Override
 	public void onFinish() {
@@ -2443,6 +2540,14 @@ public class StarmapScreen extends ScreenBase {
 		};
 		
 		colonyName = new UILabel("", 14, commons.text());
+		colonyName.onDoubleClick = new Action0() {
+			@Override
+			public void invoke() {
+				editNameMode = true;
+			}
+		};
+		colonyName.tooltip(get("starmap.renameplanet.tooltip"));
+		
 		colonyOwner = new UILabel("", 10, commons.text());
 		colonySurface = new UILabel("", 10, commons.text());
 		colonyPopulationTax = new UILabel("", 10, commons.text());
@@ -2582,6 +2687,13 @@ public class StarmapScreen extends ScreenBase {
 		};
 		
 		fleetName = new UILabel("", 14, commons.text());
+		fleetName.onDoubleClick = new Action0() {
+			@Override
+			public void invoke() {
+				editNameMode = true;
+			}
+		};
+		fleetName.tooltip(get("starmap.renamefleet.tooltip"));
 		fleetOwner = new UILabel("", 10, commons.text());
 		fleetStatus = new UILabel("", 10, commons.text());
 		fleetPlanet = new UILabel("", 10, commons.text());
@@ -2615,6 +2727,7 @@ public class StarmapScreen extends ScreenBase {
 		fleetMove.onPress = new Action0() {
 			@Override
 			public void invoke() {
+				editNameMode = false;
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetMove();
 			}
@@ -2622,6 +2735,7 @@ public class StarmapScreen extends ScreenBase {
 		fleetAttack.onPress = new Action0() {
 			@Override
 			public void invoke() {
+				editNameMode = false;
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doFleetAttack();
 			}
@@ -2629,6 +2743,7 @@ public class StarmapScreen extends ScreenBase {
 		fleetStop.onPress = new Action0() {
 			@Override
 			public void invoke() {
+				editNameMode = false;
 				buttonSound(SoundType.NOT_AVAILABLE);
 				doFleetStop();
 			}
@@ -2694,6 +2809,7 @@ public class StarmapScreen extends ScreenBase {
 	public void onLeave() {
 		close0(rotationTimer);
 		rotationTimer = null;
+		editNameMode = false;
 	}
 	@Override
 	public void onResize() {

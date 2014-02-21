@@ -23,6 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
@@ -327,6 +328,15 @@ public class Configuration {
 	/** Fire rockets only to correct target types? */
 	@LoadSave
 	public boolean targetSpecificRockets;
+	/** List of supported language codes. */
+	public final List<String> languageSupport = Arrays.asList(
+			"en", "english", 
+			"hu", "hungarian",
+			"de", "german",
+			"fr", "french",
+			"ru", "russian",
+			"es", "spanish"
+	);
 	/**
 	 * Initialize configuration.
 	 * @param fileName the filename

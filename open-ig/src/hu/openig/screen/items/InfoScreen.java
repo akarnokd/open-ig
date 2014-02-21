@@ -660,7 +660,7 @@ public class InfoScreen extends ScreenBase {
 		colonies.getText = new Func1<Planet, String>() {
 			@Override
 			public String invoke(Planet value) {
-				return value.name;
+				return value.name();
 			}
 		};
 		colonies.getCurrent = new Func1<Void, Planet>() {
@@ -1127,8 +1127,8 @@ public class InfoScreen extends ScreenBase {
 	void update() {
 		Pair<Planet, Planet> pn = player().prevNextPlanet();
 		if (pn != null) {
-			setTooltip(prevPlanet, "colony.prev.tooltip", pn.first.owner.color, pn.first.name);
-			setTooltip(nextPlanet, "colony.next.tooltip", pn.second.owner.color, pn.second.name);
+			setTooltip(prevPlanet, "colony.prev.tooltip", pn.first.owner.color, pn.first.name());
+			setTooltip(nextPlanet, "colony.next.tooltip", pn.second.owner.color, pn.second.name());
 		} else {
 			setTooltip(prevPlanet, null);
 			setTooltip(nextPlanet, null);
@@ -1647,7 +1647,7 @@ public class InfoScreen extends ScreenBase {
 				return;
 			}
 			
-			planet.text(p.name, true);
+			planet.text(p.name(), true);
 			
 			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				String s = p.owner != null ? p.owner.name : "-";
@@ -2721,7 +2721,7 @@ public class InfoScreen extends ScreenBase {
 			todayBuildCost.text(format("financialinfo.build_cost", player().today.buildCost), true);
 			todayTotalCost.text(format("colonyinfo.total", player().today.getTotalCost()), true);
 			
-			planetCurrent.text(p.name, true);
+			planetCurrent.text(p.name(), true);
 			if (p.owner == player()) {
 				
 				planetTaxIncome.text(format("colonyinfo.tax", (int)p.taxIncome()), true);
@@ -2785,7 +2785,7 @@ public class InfoScreen extends ScreenBase {
 		}
 		Planet p = planet();
 		if (knowledge(p, PlanetKnowledge.NAME) >= 0) {
-			buildingPlanet.text(p.name, true);
+			buildingPlanet.text(p.name(), true);
 		} else {
 			buildingPlanet.text("", true);
 		}
@@ -2940,7 +2940,7 @@ public class InfoScreen extends ScreenBase {
 		Planet p = planet();
 		
 		if (knowledge(p, PlanetKnowledge.NAME) >= 0) {
-			planetTitle.text(p.name);
+			planetTitle.text(p.name());
 			int c = TextRenderer.GRAY;
 			if (knowledge(p, PlanetKnowledge.OWNER) >= 0 && p.isPopulated()) {
 				c = p.owner.color;
@@ -3276,7 +3276,7 @@ public class InfoScreen extends ScreenBase {
 				return;
 			}
 			
-			planet.text(p.name, true);
+			planet.text(p.name(), true);
 			
 			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				String s = p.owner != null ? p.owner.name : "-";
@@ -3408,7 +3408,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return compareString(o1.name, o2.name);
+									return compareString(o1.name(), o2.name());
 								}
 							});
 						}
@@ -3420,7 +3420,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return compareString(o2.name, o1.name);
+									return compareString(o2.name(), o1.name());
 								}
 							});
 						}
@@ -4083,13 +4083,13 @@ public class InfoScreen extends ScreenBase {
 					if (f.targetFleet != null) {
 						fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name), true);
 					} else {
-						fleetStatus.text(format("fleetstatus.attack", f.targetPlanet().name), true);
+						fleetStatus.text(format("fleetstatus.attack", f.targetPlanet().name()), true);
 					}
 				} else {
 					if (f.targetFleet != null) {
 						fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
 					} else {
-						fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet().name), true);
+						fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet().name()), true);
 					}
 				}
 			}
@@ -4103,7 +4103,7 @@ public class InfoScreen extends ScreenBase {
 		FleetStatistics fs = f.getStatistics();
 		
 		if (fs.planet != null && knowledge(fs.planet, PlanetKnowledge.VISIBLE) >= 0) {
-			fleetPlanet.text(fs.planet.name, true).visible(true);
+			fleetPlanet.text(fs.planet.name(), true).visible(true);
 			if (knowledge(fs.planet, PlanetKnowledge.OWNER) >= 0 && fs.planet.owner != null) {
 				fleetPlanet.color(fs.planet.owner.color);
 			} else {

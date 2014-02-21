@@ -1161,7 +1161,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				g2.setTransform(at);
 				g2.setColor(Color.BLACK);
 				
-				String pn = planet().name;
+				String pn = planet().name();
 				int nameHeight = 14;
 				int nameWidth = commons.text().getTextWidth(nameHeight, pn);
 				int nameLeft = (width - nameWidth) / 2;
@@ -2742,7 +2742,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			Planet p = planet();
 			PlanetStatistics ps = p.getStatistics();
 			
-			planet.text(p.name, true);
+			planet.text(p.name(), true);
 			
 			if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				String s = p.owner != null ? p.owner.name : "-";
@@ -6614,8 +6614,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
 		Pair<Planet, Planet> pn = player().prevNextPlanet();
 		if (pn != null) {
-			setTooltip(prev, "colony.prev.tooltip", pn.first.owner.color, pn.first.name);
-			setTooltip(next, "colony.next.tooltip", pn.second.owner.color, pn.second.name);
+			setTooltip(prev, "colony.prev.tooltip", pn.first.owner.color, pn.first.name());
+			setTooltip(next, "colony.next.tooltip", pn.second.owner.color, pn.second.name());
 		} else {
 			setTooltip(prev, null);
 			setTooltip(next, null);

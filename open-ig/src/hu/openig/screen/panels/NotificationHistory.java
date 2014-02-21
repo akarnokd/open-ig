@@ -139,7 +139,7 @@ public class NotificationHistory extends UIContainer {
 				String post = msgText.substring(idx + 2);
 				String param = "";
 				if (msg.targetPlanet != null) {
-					param = msg.targetPlanet.name;
+					param = msg.targetPlanet.name();
 				} else
 				if (msg.targetFleet != null) {
 					param = msg.targetFleet.name;

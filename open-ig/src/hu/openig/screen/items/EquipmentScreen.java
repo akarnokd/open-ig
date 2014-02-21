@@ -1579,7 +1579,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				fleetStatusLabel.text(format("fleetstatus.moving"), true);
 			} else {
 				if (fs.planet != null) {
-					fleetStatusLabel.text(format("fleetstatus.stopped.at", fs.planet.name), true);
+					fleetStatusLabel.text(format("fleetstatus.stopped.at", fs.planet.name()), true);
 				} else {
 					fleetStatusLabel.text(format("fleetstatus.stopped"), true);
 				}
@@ -1589,13 +1589,13 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				if (f.targetFleet != null) {
 					fleetStatusLabel.text(format("fleetstatus.attack", f.targetFleet.name), true);
 				} else {
-					fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet().name), true);
+					fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet().name()), true);
 				}
 			} else {
 				if (f.targetFleet != null) {
 					fleetStatusLabel.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
 				} else {
-					fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet().name), true);
+					fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet().name()), true);
 				}
 			}
 		}
@@ -1732,7 +1732,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		int idx = planets.indexOf(planet());
 		prev.enabled(idx > 0);
 		next.enabled(idx < planets.size() - 1);
-		fleetName.text(planet().name);
+		fleetName.text(planet().name());
 		
 		spaceshipsLabel.visible(false);
 		spaceshipsMaxLabel.visible(false);

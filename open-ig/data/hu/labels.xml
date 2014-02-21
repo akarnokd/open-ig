@@ -452,7 +452,7 @@
 	<entry key='players.pirates'>Kalózok</entry>
 	<entry key='players.garthog'>Garthog Birodalom</entry>
 	<entry key='players.ychom'>Ychom Birodalom</entry>
-	<entry key='players.morgath'>Morgath Birodalom</entry>
+	<entry key='players.morgath'>Morgath Konföderáció</entry>
 	<entry key='players.dribs'>Drib Protektorátus</entry>
 	<entry key='players.ecalep'>Ecalep Köztársaság</entry>
 	<entry key='players.sullep'>Sullep Klán</entry>
@@ -1147,14 +1147,14 @@
 	<entry key='diplomacy.FreeNations.RESIGN.89'>A Szövetség két utat lát a Birodalom előtt: fegyverletétel vagy totális pusztulás. Mi az előbbit javasolnánk, Admirális...</entry>
 	<entry key='diplomacy.FreeNations.RESIGN.90'>Az Adminisztratív Tanács úgy érzi, hogy a megadás lehetőségének felvillantása a legyőzött ellenfél előtt jó példája a magasabbrendű kultúrális szintnek.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.1'>Úgy vesszük észre, szükségetek van erős barátokra. Szövetkezzetek velünk és megvédünk mindenkitől!</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.2'>Baráti jobbot nyújtunk a Morgath konföderációnak. Úgy hisszük, erre a segítségre szükség lehet, ha le akarjuk győzni közös ellenségeinket.</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.2'>Baráti jobbot nyújtunk a Morgath Konföderációnak. Úgy hisszük, erre a segítségre szükség lehet, ha le akarjuk győzni közös ellenségeinket.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.3'>Az emberiség ellenségei a Morgathok ellenségei is. A bölcs egyesíti erőit, a bolond visszalöki a segítő kezet. A választás a tiétek...</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.4'>A Birodalom mindig is a jószomszédi viszonyban volt érdekelt. A Morgath konföderáció gondjait is a magunkénak érezzük...</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.4'>A Birodalom mindig is a jószomszédi viszonyban volt érdekelt. A Morgath Konföderáció gondjait is a magunkénak érezzük...</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.5'>Baráti jobbot nyújtunk a Konföderációnak. A további párbeszéd és javuló kereskedelmi kapcsolatok mindkét faj érdekeit szolgálják.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.NEUTRAL.6'>A Birodalom nem ellenségeket keres, hanem barátokat és szövetségeseket. Kezdődjék most ezzel a beszélgetéssel az együttműködés új korszaka!</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.7'>Hallottuk hírét a hatalmas Morgath birodalomnak. Felajánlanánk baráti (és tisztára mosott) békejobbunkat...</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.8'>A Morgath konföderáció nemes tetteiről beszélnek az egész szektorban. Ily nemes faj csak nem utasítja vissza békejobbunkat?</entry>
-	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.9'>Szándékaink tiszták és nemesek: békét szeretnénk a Morgath konföderációval.</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.7'>Hallottuk hírét a hatalmas Morgath Konföderációnak. Felajánlanánk baráti (és tisztára mosott) békejobbunkat...</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.8'>A Morgath Konföderáció nemes tetteiről beszélnek az egész szektorban. Ily nemes faj csak nem utasítja vissza békejobbunkat?</entry>
+	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.HUMBLE.9'>Szándékaink tiszták és nemesek: békét szeretnénk a Morgath Konföderációval.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.10'>Az univerzum kegyetlen a gyengékhez. Ti emberek úgy tűnik fel tudtok mutatni valamit...</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.11'>&lt;közvetítési hiba miatt érthetetlen szavak&gt; elfogadjuk és majd meglátjuk mit hoz a jövő.</entry>
 	<entry key='diplomacy.Morgath.DIPLOMATIC_RELATIONS.AGGRESSIVE.YES.12'>Ellenségeinket ti is ellenségként fogadtátok. Ezért és CSAK ezért elfogadjuk az ajánlatot.</entry>
@@ -3318,13 +3318,15 @@
 	<entry key="skirmish.no_factory_limit">Korlátlan számú gyár bolygónként</entry>
 	<entry key="skirmish.no_lab_limit">Korlátlan számú kutatóközpont bolygónként</entry>
 	<entry key="quickresearch.build_more_labs">Több kutatólabort is építhetsz egy bolygón.</entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
-	<entry key=""></entry>
+	<entry key="languages.en">English / Angol</entry>
+	<entry key="languages.hu">Hungarian / Magyar</entry>
+	<entry key="languages.de">German / Német</entry>
+	<entry key="languages.fr">French / Francia</entry>
+	<entry key="languages.ru">Russian / Orosz</entry>
+	<entry key="languages.es">Spanish / Spanyol</entry>
+	<entry key="languages.change.tooltip">Nyelv megváltoztatása[n][c=FFFFFFFF]ESC[/c] = mégsem</entry>
+	<entry key='starmap.renameplanet.tooltip'>Kattints duplán a bolygó átnevezéséhez.[n]Nyomd le az [c=FFFFFFFF]ESC[/c] vagy [c=FFFFFFFF]ENTER[/c] billentyűt az átnevezés befejezéséhez.[n]Használd a [c=FFFFFFFF]BACKSPACE[/c] billentyűt egy üres névnél az alapértelmezett visszaállításához.</entry>
+	<entry key='starmap.renamefleet.tooltip'>Kattints duplán a flotta átnevezéséhez.[n]Nyomd le az [c=FFFFFFFF]ESC[/c] vagy [c=FFFFFFFF]ENTER[/c] billentyűt az átnevezés befejezéséhez.</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

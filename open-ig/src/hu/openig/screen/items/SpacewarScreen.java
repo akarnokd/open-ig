@@ -4566,7 +4566,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				parent = s.fleet.name;
 			} else
 			if (s.planet != null) {
-				parent = s.planet.name;
+				parent = s.planet.name();
 			}
 			
 			hp = (int)s.hp;

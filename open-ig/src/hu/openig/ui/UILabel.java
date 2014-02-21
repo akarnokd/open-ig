@@ -56,6 +56,8 @@ public class UILabel extends UIComponent {
 	private VerticalAlignment valign = VerticalAlignment.MIDDLE;
 	/** The event handler for the mouse press. */
 	public Action0 onPress;
+	/** Detect double clicks. */
+	public Action0 onDoubleClick;
 	/**
 	 * Construct a non wrapping label with the given text size.
 	 * The label's dimensions are adjusted to the text width and height.
@@ -309,6 +311,12 @@ public class UILabel extends UIComponent {
 		if (e.has(Type.DOWN)) {
 			if (onPress != null) {
 				onPress.invoke();
+				return true;
+			}
+		} else
+		if (e.has(Type.DOUBLE_CLICK)) {
+			if (onDoubleClick != null) {
+				onDoubleClick.invoke();
 				return true;
 			}
 		}
