@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.GroupLayout;
@@ -309,7 +310,7 @@ public class AnimPlayList extends JFrame {
 				if (f.isDirectory() && f.canRead()) {
 					processFiles(f, files);
 				} else
-				if (f.isFile() && f.canRead() && f.getName().toUpperCase().endsWith(".ANI")) {
+				if (f.isFile() && f.canRead() && f.getName().toUpperCase(Locale.ENGLISH).endsWith(".ANI")) {
 					files.add(f);
 				}
 			}

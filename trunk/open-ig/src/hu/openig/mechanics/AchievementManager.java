@@ -22,6 +22,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -438,7 +439,7 @@ public final class AchievementManager {
 				try {
 					@SuppressWarnings("unchecked")
 					Pred2<World, Player> pred2 = (Pred2<World, Player>)f.get(null);
-					FUNCTIONS.put("achievement." + f.getName().toLowerCase(), pred2);
+					FUNCTIONS.put("achievement." + f.getName().toLowerCase(Locale.ENGLISH), pred2);
 				} catch (IllegalAccessException ex) {
 					Exceptions.add(ex);
 				}

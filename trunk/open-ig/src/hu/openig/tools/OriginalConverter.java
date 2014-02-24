@@ -54,6 +54,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.CountDownLatch;
@@ -185,7 +186,7 @@ public final class OriginalConverter {
                 saf.load();
 
                 Framerates fr = new Framerates();
-                Rates r = fr.getRates(src.getName().toUpperCase(), saf.getLanguageCode());
+                Rates r = fr.getRates(src.getName().toUpperCase(Locale.ENGLISH), saf.getLanguageCode());
                 int delay = (int) (r.delay / r.fps * 22050);
 
                 byte[] silence = new byte[delay];

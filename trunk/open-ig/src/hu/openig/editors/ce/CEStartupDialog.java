@@ -34,6 +34,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.swing.ButtonGroup;
@@ -566,7 +567,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 			@Override
 			public Boolean invoke(File value) {
 				return value.isFile() && value.getName().startsWith("open-ig-upgrade-")
-						&& value.getName().toLowerCase().endsWith(".zip");
+						&& value.getName().toLowerCase(Locale.ENGLISH).endsWith(".zip");
 			} 
 		});
 		Collections.sort(baseZip, new Comparator<File>() {

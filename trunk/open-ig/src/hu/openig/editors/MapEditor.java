@@ -79,6 +79,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -1798,7 +1799,7 @@ public class MapEditor extends JFrame {
 					if (imp.replaceSurface) {
 						doClearSurfaces(false);
 					}
-					placeTilesFromOriginalMap("colony/" + imp.planet.getMapName(), imp.planet.surfaceType.toLowerCase(), imp.shiftXValue, imp.shiftYValue);
+					placeTilesFromOriginalMap("colony/" + imp.planet.getMapName(), imp.planet.surfaceType.toLowerCase(Locale.ENGLISH), imp.shiftXValue, imp.shiftYValue);
 				}
 
 				for (OriginalBuilding ob : imp.planet.buildings) {
@@ -2908,9 +2909,9 @@ public class MapEditor extends JFrame {
         public boolean include(
             javax.swing.RowFilter.Entry<? extends TileList, ? extends Integer> entry) {
             TileEntry e = entry.getModel().rows.get(entry.getIdentifier());
-            String rowtext = (e.name + " " + e.surface + " " + e.tile.width + "x" + e.tile.height).toLowerCase();
+            String rowtext = (e.name + " " + e.surface + " " + e.tile.width + "x" + e.tile.height).toLowerCase(Locale.ENGLISH);
             for (String s : words) {
-                if (!rowtext.contains(s.toLowerCase())) {
+                if (!rowtext.contains(s.toLowerCase(Locale.ENGLISH))) {
                     return false;
                 }
             }

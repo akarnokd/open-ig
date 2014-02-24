@@ -2765,7 +2765,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				planet.color(TextRenderer.GRAY);
 			}
 			
-			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
+			String surfaceText = format("colonyinfo.surface", U.firstUpper(get(p.type.label)));
 			if (p.owner == null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				double g = world().galaxyModel.getGrowth(p.type.type, player().race);
 				Trait t = player().traits.trait(TraitKind.FERTILE);
@@ -2773,7 +2773,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					g *= 1 + t.value / 100;
 				}
 				surfaceText = format("colonyinfo.surface2", 
-						firstUpper(get(p.type.label)), (int)(g * 100));
+						U.firstUpper(get(p.type.label)), (int)(g * 100));
 			} else
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race) * ps.populationGrowthModifier;
@@ -2784,7 +2784,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				}
 
 				surfaceText = format("colonyinfo.surface2", 
-						firstUpper(get(p.type.label)), (int)(g * 100));
+						U.firstUpper(get(p.type.label)), (int)(g * 100));
 			}
 			surface.text(surfaceText, true);
 			
@@ -2889,14 +2889,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			return "0";
 		}
-	}
-	/** 
-	 * First letter to uppercase.
-	 * @param s the string
-	 * @return the modified string
-	 */
-	String firstUpper(String s) {
-		return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
 	/**
 	 * The upgrade panel.

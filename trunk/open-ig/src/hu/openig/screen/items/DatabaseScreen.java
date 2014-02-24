@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.swing.Timer;
@@ -316,7 +317,7 @@ public class DatabaseScreen extends ScreenBase {
 			for (Player p : getKnownOtherPlayers()) {
 				int x = base.x + 20;
 				int y = base.y + 25 + 8 + i * 20;
-				int x1 = x + commons.text().getTextWidth(14, get("database.race." + p.id.toLowerCase()));
+				int x1 = x + commons.text().getTextWidth(14, get("database.race." + p.id.toLowerCase(Locale.ENGLISH)));
 				int y1 = y + 14;
 				if (e.x >= x && e.x <= x1 && e.y >= y && e.y <= y1) {
 					highlightAliens = i;

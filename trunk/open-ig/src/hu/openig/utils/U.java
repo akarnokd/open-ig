@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -930,7 +931,7 @@ public final class U {
 	 * @return the modified string
 	 */
 	public static String firstUpper(String s) {
-		return s.substring(0, 1).toUpperCase() + s.substring(1);
+		return s.substring(0, 1).toUpperCase(Locale.ENGLISH) + s.substring(1);
 	}
 	/**
 	 * Check if r1's center is closer to r0's center than r2's center is.

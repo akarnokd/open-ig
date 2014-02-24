@@ -29,6 +29,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -121,7 +122,7 @@ public final class PackageStuff {
 				
 				@Override
 				public boolean accept(File dir, String name) {
-					name = name.toLowerCase();
+					name = name.toLowerCase(Locale.ENGLISH);
 					String d = dir.toString().replace('\\', '/');
 					if (!d.endsWith("/")) {
 						d += "/";
