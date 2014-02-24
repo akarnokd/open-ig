@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -44,7 +45,7 @@ public class CEResourceManager {
 	public static final Func1<File, Boolean> IS_ZIP = new Func1<File, Boolean>() {
 		@Override
 		public Boolean invoke(File value) {
-			return value.isFile() && value.getName().toLowerCase().endsWith(".zip");
+			return value.isFile() && value.getName().toLowerCase(Locale.ENGLISH).endsWith(".zip");
 		}
 	};
 	/**

@@ -1134,14 +1134,6 @@ public class InfoScreen extends ScreenBase {
 			setTooltip(nextPlanet, null);
 		}
 	}
-	/** 
-	 * First letter to uppercase.
-	 * @param s the string
-	 * @return the modified string
-	 */
-	String firstUpper(String s) {
-		return s.substring(0, 1).toUpperCase() + s.substring(1);
-	}
 	/**
 	 * Add the +/- sign for the given integer value.
 	 * @param i the value
@@ -1669,7 +1661,7 @@ public class InfoScreen extends ScreenBase {
 				race.visible(false);
 				planet.color(TextRenderer.GRAY);
 			}
-			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
+			String surfaceText = format("colonyinfo.surface", U.firstUpper(get(p.type.label)));
 			if (p.owner == null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
 				double g = world().galaxyModel.getGrowth(p.type.type, player().race);
 				
@@ -1679,7 +1671,7 @@ public class InfoScreen extends ScreenBase {
 				}
 				
 				surfaceText = format("colonyinfo.surface2", 
-						firstUpper(get(p.type.label)), (int)(g * 100));
+						U.firstUpper(get(p.type.label)), (int)(g * 100));
 			} else
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race) * localStatistics.populationGrowthModifier;
@@ -1690,7 +1682,7 @@ public class InfoScreen extends ScreenBase {
 				}
 				
 				surfaceText = format("colonyinfo.surface2", 
-						firstUpper(get(p.type.label)), (int)(g * 100));
+						U.firstUpper(get(p.type.label)), (int)(g * 100));
 			}
 			surface.text(surfaceText, true);
 
@@ -2818,7 +2810,7 @@ public class InfoScreen extends ScreenBase {
 			buildingPlanetRace.text("", true);
 		}
 		
-		buildingPlanetSurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
+		buildingPlanetSurface.text(format("buildinginfo.planet.surface", U.firstUpper(get(p.type.label))), true);
 		
 		displayColonyProblems(p);
 	}
@@ -2965,7 +2957,7 @@ public class InfoScreen extends ScreenBase {
 			colonyOwner.visible(false);
 			colonyRace.visible(false);
 		}
-		colonySurface.text(format("buildinginfo.planet.surface", firstUpper(get(p.type.label))), true);
+		colonySurface.text(format("buildinginfo.planet.surface", U.firstUpper(get(p.type.label))), true);
 		
 		if (p.owner == player()) {
 			colonyPopulation.text(format("colonyinfo.population.own", 
@@ -3298,7 +3290,7 @@ public class InfoScreen extends ScreenBase {
 				race.visible(false);
 				planet.color(TextRenderer.GRAY);
 			}
-			String surfaceText = format("colonyinfo.surface", firstUpper(get(p.type.label)));
+			String surfaceText = format("colonyinfo.surface", U.firstUpper(get(p.type.label)));
 			if (p.owner == player()) {
 				double g = world().galaxyModel.getGrowth(p.type.type, p.race);
 				Trait t = player().traits.trait(TraitKind.FERTILE);
@@ -3306,7 +3298,7 @@ public class InfoScreen extends ScreenBase {
 					g *= 1 + t.value / 100;
 				}
 				surfaceText = format("colonyinfo.surface2", 
-						firstUpper(get(p.type.label)), (int)(g * 100));
+						U.firstUpper(get(p.type.label)), (int)(g * 100));
 			}
 			surface.text(surfaceText, true);
 

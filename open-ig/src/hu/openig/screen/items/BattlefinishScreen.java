@@ -33,6 +33,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.Timer;
 
@@ -340,7 +341,7 @@ public class BattlefinishScreen extends ScreenBase {
 			boolean ally = isAlly(s);
 			if (s.item != null && (own == (players || ally)) 
 					&& s.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
-					&& s.item.type.id.toLowerCase().contains("destroyer") == destroyer) {
+					&& s.item.type.id.toLowerCase(Locale.ENGLISH).contains("destroyer") == destroyer) {
 				result += s.loss;
 			}
 		}

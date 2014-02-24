@@ -12,6 +12,7 @@ import hu.openig.utils.XElement;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
@@ -101,7 +102,7 @@ public class Framerates {
 			filename = filename.substring(idx + 1);
 		}
 		Rates r = null;
-		Map<Integer, Rates> typeRates = rates.get(filename.toUpperCase());
+		Map<Integer, Rates> typeRates = rates.get(filename.toUpperCase(Locale.ENGLISH));
 		if (typeRates != null) {
 			r = typeRates.get(type);
 		}

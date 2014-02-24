@@ -28,6 +28,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -185,7 +186,7 @@ public class ResourceLocator {
 			// scan backwards and let the newer overrule the existing resource
 			for (int i = containers.size() - 1; i >= 0; i--) {
 				String c = containers.get(i);
-				if (c.toLowerCase().endsWith(".zip") && !new File(c).isDirectory()) {
+				if (c.toLowerCase(Locale.ENGLISH).endsWith(".zip") && !new File(c).isDirectory()) {
 					analyzeZip(c);
 				} else {
 					c = c.replaceAll("\\\\", "/");
@@ -266,7 +267,7 @@ public class ResourceLocator {
 	 * @return true if matches
 	 */
 	static boolean setNameType(String name, String ext, ResourceType type, ResourcePlace out) {
-		if (name.toLowerCase().endsWith(ext.toLowerCase())) {
+		if (name.toLowerCase(Locale.ENGLISH).endsWith(ext.toLowerCase(Locale.ENGLISH))) {
 			name = name.substring(0, name.length() - ext.length());
 			if (name.endsWith(".")) {
 				name = name.substring(0, name.length() - 1);

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 import java.util.TreeSet;
 
@@ -35,7 +36,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.163";
+	public static final String VERSION = "0.95.164";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -504,7 +505,7 @@ public class Configuration {
 		File[] files = new File(".").listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.toLowerCase().startsWith("open-ig-") && name.toLowerCase().endsWith(".zip");
+				return name.toLowerCase(Locale.ENGLISH).startsWith("open-ig-") && name.toLowerCase(Locale.ENGLISH).endsWith(".zip");
 			}
 		});
 		TreeSet<String> upgrades = new TreeSet<>(new Comparator<String>() {
@@ -516,7 +517,7 @@ public class Configuration {
 		if (files != null) {
 			for (File f : files) {
 				String name = f.getName();
-				if (name.toLowerCase().startsWith("open-ig-upgrade-") && name.toLowerCase().endsWith(".zip")) {
+				if (name.toLowerCase(Locale.ENGLISH).startsWith("open-ig-upgrade-") && name.toLowerCase(Locale.ENGLISH).endsWith(".zip")) {
 					upgrades.add(name);
 				} else {
 					result.add(f.getName());

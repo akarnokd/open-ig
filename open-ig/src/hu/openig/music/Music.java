@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+import java.util.Locale;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
@@ -178,10 +179,10 @@ public class Music {
 					playBackClip(rp);
 				} else {
 					try {
-						if (fileName.toUpperCase().endsWith(".WAV")) {
+						if (fileName.toUpperCase(Locale.ENGLISH).endsWith(".WAV")) {
 							playBackClip(rp);
 						} else 
-						if (fileName.toUpperCase().endsWith(".OGG")) {
+						if (fileName.toUpperCase(Locale.ENGLISH).endsWith(".OGG")) {
 							if (!playbackOgg(rp)) {
 								fails++;
 							}
