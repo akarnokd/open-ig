@@ -116,7 +116,7 @@ public class FleetListing extends UIContainer {
 			if (f == commons.world().player.currentFleet) {
 				c = TextRenderer.RED;
 			}
-			commons.text().paintTo(g2, 4, i * rowHeight + 2, textHeight, c, f.name);
+			commons.text().paintTo(g2, 4, i * rowHeight + 2, textHeight, c, f.name());
 		}
 		
 		super.draw(g2);

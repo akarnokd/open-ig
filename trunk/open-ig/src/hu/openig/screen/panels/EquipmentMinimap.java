@@ -88,7 +88,7 @@ public class EquipmentMinimap extends UIComponent {
 			
 			g2.drawImage(f.owner.fleetIcon, cx - f.owner.fleetIcon.getWidth() / 2, cy - f.owner.fleetIcon.getHeight() / 2, null);
 			
-			String fleetName = f.name;
+			String fleetName = f.name();
 			if (commons.world().player.knowledge(f, FleetKnowledge.VISIBLE) == 0) {
 				fleetName = commons.labels().get("fleetinfo.alien_fleet");
 			}

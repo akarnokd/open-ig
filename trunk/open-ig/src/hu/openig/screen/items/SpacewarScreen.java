@@ -4563,7 +4563,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			owner = s.owner.name;
 			color = s.owner.color;
 			if (s.fleet != null) {
-				parent = s.fleet.name;
+				parent = s.fleet.name();
 			} else
 			if (s.planet != null) {
 				parent = s.planet.name();

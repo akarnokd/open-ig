@@ -518,7 +518,7 @@ public class Mission5 extends Mission {
 		Fleet result = new Fleet(world.newId(), player("Pirates"));
 		result.x = parent.x;
 		result.y = parent.y;
-		result.name = "";
+		result.name("");
 		// -------------------------------------------------------
 		// Set help strength here
 		int helpingPirates = 2;

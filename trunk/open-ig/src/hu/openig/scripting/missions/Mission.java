@@ -91,7 +91,7 @@ public abstract class Mission implements GameScriptingEvents {
 	 */
 	protected Fleet createFleet(String name, Player owner, double x, double y) {
 		Fleet f = new Fleet(owner);
-		f.name = name;
+		f.name(name);
 		f.x = x;
 		f.y = y;
 //		owner.fleets.put(f, FleetKnowledge.FULL);

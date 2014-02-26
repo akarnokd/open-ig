@@ -900,7 +900,7 @@ public class StarmapScreen extends ScreenBase {
 		
 		if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
 			fleetOwner.text(f.owner.name, true);
-			String fn = f.name;
+			String fn = f.name();
 			if (editNameMode && minimapPlanetBlink) {
 				fn += "-";
 			}
@@ -953,13 +953,13 @@ public class StarmapScreen extends ScreenBase {
 		} else {
 			if (f.mode == FleetMode.ATTACK) {
 				if (f.targetFleet != null) {
-					fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name), true);
+					fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name()), true);
 				} else {
 					fleetStatus.text(format("fleetstatus.attack", f.targetPlanet().name()), true);
 				}
 			} else {
 				if (f.targetFleet != null) {
-					fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
+					fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name()), true);
 				} else {
 					fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet().name()), true);
 				}
@@ -1351,7 +1351,7 @@ public class StarmapScreen extends ScreenBase {
 				
 				g2.drawImage(icon, x0, y0, null);
 				
-				String fleetName = f.name;
+				String fleetName = f.name();
 				if (knowledge(f, FleetKnowledge.VISIBLE) == 0) {
 					fleetName = get("fleetinfo.alien_fleet");
 				}
@@ -1418,7 +1418,7 @@ public class StarmapScreen extends ScreenBase {
 				if (f == fleet()) {
 					color = TextRenderer.RED;
 				}
-				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, f.name);
+				commons.text().paintTo(g2, fleetsList.x + 3, fleetsList.y + (i - fleetsOffset) * 10 + 2, 7, color, f.name());
 			}
 			
 			g2.setClip(save2);
@@ -1777,10 +1777,10 @@ public class StarmapScreen extends ScreenBase {
 			} else
 			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 				if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
-					String fn0 = fleet().name;
+					String fn0 = fleet().name();
 					if (fn0.length() > 0) {
 						fn0 = fn0.substring(0, fn0.length() - 1);
-						fleet().name = fn0;
+						fleet().name(fn0);
 					}
 					e.consume();
 					return true;
@@ -1809,7 +1809,9 @@ public class StarmapScreen extends ScreenBase {
 			} else
 			if (commons.text().isSupported(e.getKeyChar())) {
 				if (player().selectionMode == SelectionMode.FLEET && fleet() != null) {
-					fleet().name += e.getKeyChar();
+					String fn = fleet().name();
+					fn += e.getKeyChar();
+					fleet().name(fn);
 					e.consume();
 					return true;
 				}

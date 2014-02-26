@@ -373,7 +373,7 @@ public class Player {
 		Collections.sort(result, new Comparator<Fleet>() {
 			@Override
 			public int compare(Fleet o1, Fleet o2) {
-				return o1.name.compareTo(o2.name);
+				return o1.name().compareTo(o2.name());
 			}
 		});
 		return result;

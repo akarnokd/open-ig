@@ -349,7 +349,7 @@ public class DirectGamePlayer implements GameAPI {
 	public void renameFleet(int id, String name) throws IOException {
 		Fleet f = fleetCheck(id);
 		if (f != null) {
-			f.name = name;
+			f.name(name);
 		}
 	}
 	/**
