@@ -1465,10 +1465,10 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		
 		planetVisible = false;
 		if (editPrimary && (animationStep % 10) < 5) {
-			fleetName.text(f.name + "-");
+			fleetName.text(f.name() + "-");
 		} else {
 			if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
-				fleetName.text(f.name);
+				fleetName.text(f.name());
 			} else {
 				fleetName.text(get("fleetinfo.alien_fleet"));
 			}
@@ -1498,9 +1498,9 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		if (secondary != null) {
 			secondaryLabel.visible(true);
 			if (editSecondary && (animationStep % 10) < 5) {
-				secondaryValue.text(secondary.name + "-").visible(true);
+				secondaryValue.text(secondary.name() + "-").visible(true);
 			} else {
-				secondaryValue.text(secondary.name).visible(true);
+				secondaryValue.text(secondary.name()).visible(true);
 			}
 			FleetStatistics fs2 = secondary.getStatistics();
 			secondaryFighters.text(format("equipment.fighters", fs2.fighterCount), true).visible(true);
@@ -1587,13 +1587,13 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		} else {
 			if (f.mode == FleetMode.ATTACK) {
 				if (f.targetFleet != null) {
-					fleetStatusLabel.text(format("fleetstatus.attack", f.targetFleet.name), true);
+					fleetStatusLabel.text(format("fleetstatus.attack", f.targetFleet.name()), true);
 				} else {
 					fleetStatusLabel.text(format("fleetstatus.attack", f.targetPlanet().name()), true);
 				}
 			} else {
 				if (f.targetFleet != null) {
-					fleetStatusLabel.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
+					fleetStatusLabel.text(format("fleetstatus.moving.after", f.targetFleet.name()), true);
 				} else {
 					fleetStatusLabel.text(format("fleetstatus.moving.to", f.targetPlanet().name()), true);
 				}
@@ -2385,23 +2385,31 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			}
 			if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 				if (editPrimary) {
-					if (fleet().name.length() > 0) {
-						fleet().name = fleet().name.substring(0, fleet().name.length() - 1);
+					String fn = fleet().name();
+					if (fn.length() > 0) {
+						fn = fn.substring(0, fn.length() - 1);
+						fleet().name(fn);
 					}
 				}
 				if (editSecondary) {
-					if (secondary.name.length() > 0) {
-						secondary.name = secondary.name.substring(0, secondary.name.length() - 1);
+					String fn = secondary.name();
+					if (fn.length() > 0) {
+						fn = fn.substring(0, fn.length() - 1);
+						secondary.name(fn);
 					}
 				}
 				e.consume();
 			} else
 			if (commons.text().isSupported(e.getKeyChar())) {
 				if (editPrimary) {
-					fleet().name += e.getKeyChar();
+					String fn = fleet().name();
+					fn += e.getKeyChar();
+					fleet().name(fn);
 				}
 				if (editSecondary) {
-					secondary.name += e.getKeyChar();
+					String fn = secondary.name();
+					fn += e.getKeyChar();
+					secondary.name(fn);
 				}
 				e.consume();
 			}

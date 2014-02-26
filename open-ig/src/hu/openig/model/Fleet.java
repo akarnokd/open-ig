@@ -40,7 +40,7 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	/** The radar radius. */
 	public int radar;
 	/** The fleet name. */
-	public String name;
+	private String name;
 	/** The fleet inventory: ships and tanks. */
 	public final InventoryItems inventory = new InventoryItems();
 	/** The current list of movement waypoints. */
@@ -100,6 +100,16 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	@Override
 	public String name() {
 		return name;
+	}
+	/**
+	 * Set a new fleet name.
+	 * @param newName the new name, non-null
+	 */
+	public void name(String newName) {
+		if (newName == null) {
+			throw new NullPointerException();
+		}
+		this.name = newName;
 	}
 	@Override
 	public Player owner() {
@@ -887,6 +897,9 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	public Fleet newFleet() {
 		Fleet f = new Fleet(owner);
 		f.name = owner.world.labels.get("newfleet.name");
+		if (f.name == null) {
+			f.name = "";
+		}
 		
 		double r = Math.max(0, ModelUtils.random() * owner.world.params().nearbyDistance() - 1);
 		double k = ModelUtils.random() * 2 * Math.PI;

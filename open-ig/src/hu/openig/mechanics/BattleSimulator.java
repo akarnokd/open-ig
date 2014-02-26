@@ -78,14 +78,14 @@ public final class BattleSimulator {
 	 * Run the given battle automatically.
 	 */
 	public void autoBattle() {
-		debug("Attacker: %s (%s)%n", battle.attacker.name, battle.attacker.owner.id);
+		debug("Attacker: %s (%s)%n", battle.attacker.name(), battle.attacker.owner.id);
 		Planet p0 = battle.getPlanet();
 		if (p0 != null) {
 			debug("Planet: %s (%s)%n", p0.name(), p0.owner.id);
 		}
 		Fleet f0 = battle.getFleet();
 		if (f0 != null) {
-			debug("Fleet: %s (%s)%n", f0.name, f0.owner.id);
+			debug("Fleet: %s (%s)%n", f0.name(), f0.owner.id);
 		}
 		battle.findHelpers();
 		

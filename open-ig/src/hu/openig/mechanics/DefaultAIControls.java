@@ -64,15 +64,15 @@ public class DefaultAIControls implements AIControls {
 	public Fleet actionCreateFleet(String name, Planet location) {
 		Fleet fleet = new Fleet(p);
 		if (name == null) {
-			fleet.name = w.env.labels().get(p.race + ".new_fleet_name");
+			fleet.name(w.env.labels().get(p.race + ".new_fleet_name"));
 		} else {
-			fleet.name = name;
+			fleet.name(name);
 		}
 		fleet.x = location.x;
 		fleet.y = location.y;
 
 		p.fleets.put(fleet, FleetKnowledge.FULL);
-		log(p, "CreateFleet, Fleet = %s, Planet = %s", fleet.name, location.id);
+		log(p, "CreateFleet, Fleet = %s, Planet = %s", fleet.name(), location.id);
 		return fleet;
 	}
 	@Override
@@ -257,12 +257,12 @@ public class DefaultAIControls implements AIControls {
 	@Override
 	public void actionAttackPlanet(Fleet fleet, Planet planet, AIAttackMode mode) {
 		fleet.attack(planet);
-		log(p, "AttackPlanet, Attacker = %s, Defender = %s", fleet.name, planet.name());
+		log(p, "AttackPlanet, Attacker = %s, Defender = %s", fleet.name(), planet.name());
 	}
 	@Override
 	public void actionAttackFleet(Fleet fleet, Fleet enemy, boolean defense) {
 		fleet.attack(enemy);
-		log(p, "AttackFleet, Attacker = %s, Defender = %s", fleet.name, enemy.name);
+		log(p, "AttackFleet, Attacker = %s, Defender = %s", fleet.name(), enemy.name());
 	}
 	@Override
 	public void actionMoveFleet(Fleet fleet, double x, double y) {
@@ -275,7 +275,7 @@ public class DefaultAIControls implements AIControls {
 	public void actionMoveFleet(Fleet fleet, Planet planet) {
 		if (fleet.task != FleetTask.SCRIPT) {
 			fleet.moveTo(planet);
-			log(p, "MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name, fleet.id, planet.id);
+			log(p, "MoveFleet, Fleet = %s (%d), Planet = %s", fleet.name(), fleet.id, planet.id);
 		}
 	}
 	
@@ -283,12 +283,12 @@ public class DefaultAIControls implements AIControls {
 	public void actionColonizePlanet(Fleet fleet, Planet planet) {
 		if (fleet.getStatistics().planet == planet) {
 			if (fleet.colonize(planet)) {
-				log(p, "ColonizePlanet, Fleet = %s, Planet = %s", fleet.name, planet.id);
+				log(p, "ColonizePlanet, Fleet = %s, Planet = %s", fleet.name(), planet.id);
 			} else {
-				log(p, "ColonizePlanet, Fleet = %s, Planet = %s, FAILED = no room", fleet.name, planet.id);
+				log(p, "ColonizePlanet, Fleet = %s, Planet = %s, FAILED = no room", fleet.name(), planet.id);
 			}
 		} else {
-			log(p, "ColonizePlanet, Fleet = %s, Planet = %s, FAILED = not close enough", fleet.name, planet.id);
+			log(p, "ColonizePlanet, Fleet = %s, Planet = %s, FAILED = not close enough", fleet.name(), planet.id);
 		}
 	}
 	@Override

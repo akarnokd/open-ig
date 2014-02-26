@@ -142,7 +142,7 @@ public class NotificationHistory extends UIContainer {
 					param = msg.targetPlanet.name();
 				} else
 				if (msg.targetFleet != null) {
-					param = msg.targetFleet.name;
+					param = msg.targetFleet.name();
 				} else
 				if (msg.targetProduct != null) {
 					param = msg.targetProduct.name;

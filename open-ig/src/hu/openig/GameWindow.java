@@ -221,39 +221,60 @@ public class GameWindow extends JFrame implements GameControls {
 					if (r1 && !r0 && !optionsVisible) {
 						if (secondary != null) {
 							push(g2);
-							secondary.draw(g2);
-							pop(g2);
+							try {
+								secondary.draw(g2);
+							} finally {
+								pop(g2);
+							}
 						}
 						if (statusbarVisible) {
 							push(g2);
-							statusbar.draw(g2);
-							pop(g2);
+							try {
+								statusbar.draw(g2);
+							} finally {
+								pop(g2);
+							}
 						}
 					} else {
 						if (primary != null) {
 							push(g2);
-							primary.draw(g2);
-							pop(g2);
+							try {
+								primary.draw(g2);
+							} finally {
+								pop(g2);
+							}
 						}
 						if (secondary != null) {
 							push(g2);
-							secondary.draw(g2);
-							pop(g2);
+							try {
+								secondary.draw(g2);
+							} finally {
+								pop(g2);
+							}
 						}
 						if (optionsVisible) {
 							push(g2);
-							options.draw(g2);
-							pop(g2);
+							try {
+								options.draw(g2);
+							} finally {
+								pop(g2);
+							}
 						}
 						if (statusbarVisible) {
 							push(g2);
-							statusbar.draw(g2);
-							pop(g2);
+							try {
+								statusbar.draw(g2);
+							} finally {
+								pop(g2);
+							}
 						}
 						if (movieVisible()) {
 							push(g2);
-							movie.draw(g2);
-							pop(g2);
+							try {
+								movie.draw(g2);
+							} finally {
+								pop(g2);
+							}
 						}				
 					}
 				}

@@ -248,7 +248,7 @@ public class AITrader implements AIManager {
 		// label fix
 		for (Fleet f : player.ownFleets()) {
 			if (f.task != FleetTask.SCRIPT) {
-				f.name = traderLabel + " " + (fleetIndex(f) + 1);
+				f.name(traderLabel + " " + (fleetIndex(f) + 1));
 			}
 		}
 	}
@@ -398,7 +398,7 @@ public class AITrader implements AIManager {
 	 */
 	public Fleet createFleet() {
 		Fleet nf = new Fleet(player);
-		nf.name = traderLabel;
+		nf.name(traderLabel);
 		List<ResearchType> rts = new ArrayList<>();
 		for (ResearchType rt : world.researches.values()) {
 			if (rt.race.contains(player.race) && rt.category.main == ResearchMainCategory.SPACESHIPS) {
@@ -432,7 +432,7 @@ public class AITrader implements AIManager {
 		}
 		if (type != null) {
 			Fleet nf = id < 0 ? new Fleet(player) : new Fleet(id, player);
-			nf.name = traderLabel;
+			nf.name(traderLabel);
 			InventoryItem ii = new InventoryItem(world.newId(), player, type);
 			ii.count = 1;
 			ii.init();

@@ -185,7 +185,7 @@ public class OffensePlanner extends Planner {
 				}
 				if (f.inventory.isEmpty()) {
 					w.removeFleet(f);
-					log("DeployFleet, Fleet = %s, Planet = %s, Failed = Not enough inventory", f.name, spaceport.id);
+					log("DeployFleet, Fleet = %s, Planet = %s, Failed = Not enough inventory", f.name(), spaceport.id);
 				}
 			}
 		});
@@ -319,7 +319,7 @@ public class OffensePlanner extends Planner {
 					fleet.replaceWithShip(battleships.get(0), bl);
 				}
 				fleet.task = FleetTask.IDLE;
-				log("UpgradeFleet, Fleet = %s (%d)", fleet.name, fleet.id);
+				log("UpgradeFleet, Fleet = %s (%d)", fleet.name(), fleet.id);
 			}
 		});
 		

@@ -708,7 +708,7 @@ public class InfoScreen extends ScreenBase {
 			@Override
 			public String invoke(Fleet value) {
 				if (knowledge(value, FleetKnowledge.VISIBLE) > 0) {
-					return value.name;
+					return value.name();
 				}
 				return get("fleetinfo.alien_fleet");
 			}
@@ -4054,7 +4054,7 @@ public class InfoScreen extends ScreenBase {
 			return;
 		}
 		if (knowledge(f, FleetKnowledge.VISIBLE) > 0) {
-			fleetName.text(f.name).visible(true);
+			fleetName.text(f.name()).visible(true);
 			fleetOwner.text(f.owner.name, true).visible(true);
 			fleetOwner.color(f.owner.color);
 		} else {
@@ -4073,13 +4073,13 @@ public class InfoScreen extends ScreenBase {
 			} else {
 				if (f.mode == FleetMode.ATTACK) {
 					if (f.targetFleet != null) {
-						fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name), true);
+						fleetStatus.text(format("fleetstatus.attack", f.targetFleet.name()), true);
 					} else {
 						fleetStatus.text(format("fleetstatus.attack", f.targetPlanet().name()), true);
 					}
 				} else {
 					if (f.targetFleet != null) {
-						fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name), true);
+						fleetStatus.text(format("fleetstatus.moving.after", f.targetFleet.name()), true);
 					} else {
 						fleetStatus.text(format("fleetstatus.moving.to", f.targetPlanet().name()), true);
 					}

@@ -1200,7 +1200,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		}
 		
 		Fleet f = new Fleet(owner);
-		f.name = world.labels.get("newfleet.name");
+		f.name(world.labels.get("newfleet.name"));
 		
 		double r = Math.max(0, ModelUtils.random() * world.params().nearbyDistance() - 1);
 		double k = ModelUtils.random() * 2 * Math.PI;

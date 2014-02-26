@@ -278,11 +278,11 @@ public class BattlefinishScreen extends ScreenBase {
 				if (enemy != null) {
 					EnemyStatus st = enemyStatus(enemy, battle);
 					if (st == EnemyStatus.RETREATED) {
-						textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, format("battlefinish.spacewar_enemy_fled", enemy.name));
+						textCenter(g2, x1, y, w1, TextRenderer.YELLOW, 14, format("battlefinish.spacewar_enemy_fled", enemy.name()));
 						y += 20;
 					} else
 					if (st == EnemyStatus.SLIPPED) {
-						textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.spacewar_enemy_slipped", enemy.name));
+						textCenter(g2, x1, y, w1, TextRenderer.RED, 14, format("battlefinish.spacewar_enemy_slipped", enemy.name()));
 						y += 20;
 					}
 				}
@@ -292,11 +292,11 @@ public class BattlefinishScreen extends ScreenBase {
 				if (flt != null && flt.inventory.size() == 0) {
 					if (flt.owner == player()) {
 						textCenter(g2, x1, y, w1, TextRenderer.RED, 14, 
-								format("battlefinish.own_fleet_destroyed", flt.name));
+								format("battlefinish.own_fleet_destroyed", flt.name()));
 						y += 20;
 					} else {
 						textCenter(g2, x1, y, w1, TextRenderer.GREEN, 14, 
-								format("battlefinish.enemy_fleet_destroyed", flt.name));
+								format("battlefinish.enemy_fleet_destroyed", flt.name()));
 						y += 20;
 					}
 				}

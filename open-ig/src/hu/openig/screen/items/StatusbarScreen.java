@@ -688,7 +688,7 @@ public class StatusbarScreen extends ScreenBase {
 						param = currentMessage.targetPlanet.name();
 					} else
 					if (currentMessage.targetFleet != null) {
-						param = currentMessage.targetFleet.name;
+						param = currentMessage.targetFleet.name();
 					} else
 					if (currentMessage.targetProduct != null) {
 						param = currentMessage.targetProduct.name;
@@ -737,7 +737,7 @@ public class StatusbarScreen extends ScreenBase {
 				param = currentMessage.targetPlanet.name();
 			} else
 			if (currentMessage.targetFleet != null) {
-				param = currentMessage.targetFleet.name;
+				param = currentMessage.targetFleet.name();
 			} else
 			if (currentMessage.targetProduct != null) {
 				param = currentMessage.targetProduct.name;

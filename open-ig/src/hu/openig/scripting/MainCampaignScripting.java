@@ -823,7 +823,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				XElement xsf = xsfs.add("fleet");
 				xsf.set("id", i);
 				xsf.set("owner", f.owner.id);
-				xsf.set("name", f.name);
+				xsf.set("name", f.name());
 			}
 		}
 		XElement xmss = out.add("mission-states");

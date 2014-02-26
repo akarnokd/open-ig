@@ -1306,7 +1306,7 @@ public class World implements ModelLookup {
 		xfleet.set("id", f.id);
 		xfleet.set("x", f.x);
 		xfleet.set("y", f.y);
-		xfleet.set("name", f.name);
+		xfleet.set("name", f.name());
 		xfleet.set("task", f.task);
 		xfleet.set("refill-once", f.refillOnce);
 		xfleet.set("formation", f.formation);
@@ -1819,7 +1819,7 @@ public class World implements ModelLookup {
 		for (Player p : players.values()) {
 			for (Fleet f : p.ownFleets()) {
 				if (!ids.add(f.id)) {
-					System.err.printf("Fleet conflict ID = %d, Name = %s, Owner = %s %n", f.id, f.name, f.owner.id);
+					System.err.printf("Fleet conflict ID = %d, Name = %s, Owner = %s %n", f.id, f.name(), f.owner.id);
 				}
 			}
 		}
@@ -1890,9 +1890,9 @@ public class World implements ModelLookup {
 
 			f.x = xfleet.getFloat("x");
 			f.y = xfleet.getFloat("y");
-			f.name = xfleet.get("name");
-			if (f.name.startsWith("@")) {
-				f.name = labels.get(f.name);
+			f.name(xfleet.get("name", ""));
+			if (f.name().startsWith("@")) {
+				f.name(labels.get(f.name()));
 			}
 			
 			String s0 = xfleet.get("target-fleet", null);
@@ -2987,7 +2987,7 @@ public class World implements ModelLookup {
 				if (skirmishDefinition.initialColonyShips > 0) {
 					ResearchType rt = researches.get("ColonyShip");
 					Fleet f = new Fleet(p);
-					f.name = labels.get("@Colonizer");
+					f.name(labels.get("@Colonizer"));
 					p.changeInventoryCount(rt, 1);
 					List<InventoryItem> iis = f.deployItem(rt, f.owner, 1);
 					fleetAddRadar(p, iis);
@@ -3236,7 +3236,7 @@ public class World implements ModelLookup {
 	 */
 	void createStartingFleet(Player p) {
 		Fleet f = new Fleet(p);
-		f.name = labels.get("@MainFleet");
+		f.name(labels.get("@MainFleet"));
 		for (ResearchType rt : researches.values()) {
 			if (rt.race.contains(p.race)) {
 				if (p.isAvailable(rt) || rt.level == 0) {
