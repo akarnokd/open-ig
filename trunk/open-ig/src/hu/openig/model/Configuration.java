@@ -36,7 +36,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.165";
+	public static final String VERSION = "0.95.166";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -163,7 +163,7 @@ public class Configuration {
 	/** Display the union of the radar circles instead of each circle separately? */
 	@LoadSave
 	@LoadSaveGame
-	public boolean radarUnion;
+	public boolean radarUnion = true;
 	/** The alpha cache max element count. Zero means disabling the cache. */
 	@LoadSave
 	public int tileCacheSize = 0;
@@ -329,6 +329,14 @@ public class Configuration {
 	/** Fire rockets only to correct target types? */
 	@LoadSave
 	public boolean targetSpecificRockets;
+	/** Disable weather effects. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean allowWeather = true;
+	/** Disable day-night cycle. */
+	@LoadSave
+	@LoadSaveGame
+	public boolean dayNightCycle = true;
 	/** List of supported language codes. */
 	public final List<String> languageSupport = Arrays.asList(
 			"en", "english", 

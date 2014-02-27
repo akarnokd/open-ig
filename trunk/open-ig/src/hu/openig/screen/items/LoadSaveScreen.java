@@ -298,6 +298,12 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Starmap checkboxes label. */
 	@Settings(page = SettingsPage.VISUAL)
 	UILabel starmapChecks;
+	/** Weather effects. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox weather;
+	/** Day-night cycle. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox dayNight;
 	/** Auto build label. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox aiAutobuildProduction;
@@ -1117,6 +1123,22 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 
 		starmapChecks = new UILabel(get("settings.starmap_panels"), 14, commons.text());
 		
+		weather = new UICheckBox(get("settings.weather_effects"), 14, commons.common().checkmark, commons.text());
+		weather.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.allowWeather = weather.selected();
+			}
+		};
+		
+		dayNight = new UICheckBox(get("settings.day_night_effects"), 14, commons.common().checkmark, commons.text());
+		dayNight.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.dayNightCycle = dayNight.selected();
+			}
+		};
+		
 		//-----------------------------------------------
 		
 		setTooltip(classicControls, "settings.classic_controls.tooltip");
@@ -1277,6 +1299,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		starmapScroll.selected(config.showStarmapScroll);
 		aiAutobuildProduction.selected(config.aiAutoBuildProduction);
 		continuousMoney.selected(config.continuousMoney);
+		dayNight.selected(config.dayNightCycle);
+		weather.selected(config.allowWeather);
 		
 		hideConfirm();
 
@@ -1378,35 +1402,40 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 
 		// ----------------------------------------------------------
 		// visual
-		int dy = 70;
+		int ddy = 28;
+		int dy = 50;
 		uiScaleLabel.location(base.x + 30, base.y + dy + 8);
 		uiScaleValue.location(base.x + 30 + uiScaleLabel.width + 30, base.y + dy);
 		uiScaleValue.width = 160;
-		dy += 30;
+		dy += ddy;
 		movieScale.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		satelliteDeploy.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		animateTech.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		fullScreen.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		buildingName.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		radarUnion.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		quickRNP.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		scaleAllScreens.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		showTooltips.location(base.x + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		starmapChecks.location(base.x + 30, base.y + dy + 8);
 		starmapLists.location(starmapChecks.x  + starmapChecks.width + 30, base.y + dy + 8);
 		starmapInfo.location(starmapLists.x  + starmapLists.width + 30, base.y + dy + 8);
-		dy += 30;
+		dy += ddy;
 		starmapMini.location(starmapChecks.x  + starmapChecks.width + 30, base.y + dy + 8);
 		starmapScroll.location(starmapMini.x  + starmapMini.width + 30, base.y + dy + 8);
+		
+		dy += ddy;
+		weather.location(base.x + 30, base.y + dy + 8);
+		dayNight.location(weather.x + weather.width + 30, weather.y);
 		// -----------------------------
 		// controls
 		dy = 70;

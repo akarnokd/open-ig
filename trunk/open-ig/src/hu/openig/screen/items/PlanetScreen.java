@@ -1478,11 +1478,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		 * @param surface the current surface
 		 */
 		void drawWeather(Graphics2D g2, PlanetSurface surface) {
-			if (planet().weatherTTL > 0 && planet().type.weatherDrop != null) {
-				weatherOverlay.updateBounds(surface.boundingRectangle.width, surface.boundingRectangle.height);
-				weatherOverlay.type = planet().type.weatherDrop;
-				weatherOverlay.alpha = alpha + 0.3;
-				weatherOverlay.draw(g2);
+			if (config.allowWeather) {
+				if (planet().weatherTTL > 0 && planet().type.weatherDrop != null) {
+					weatherOverlay.updateBounds(surface.boundingRectangle.width, surface.boundingRectangle.height);
+					weatherOverlay.type = planet().type.weatherDrop;
+					weatherOverlay.alpha = alpha + 0.3;
+					weatherOverlay.draw(g2);
+				}
 			}
 		}
 		/**
@@ -6345,6 +6347,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 * Compute the alpha level for the current time of day.
 	 */
 	protected void computeAlpha() {
+		if (!config.dayNightCycle) {
+			alpha = 1f;
+			return;
+		}
 		int time = world().time.get(GregorianCalendar.HOUR_OF_DAY) * 6
 		+ world().time.get(GregorianCalendar.MINUTE) / 10;
 		

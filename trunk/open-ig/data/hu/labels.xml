@@ -3327,6 +3327,8 @@
 	<entry key="languages.change.tooltip">Nyelv megváltoztatása[n][c=FFFFFFFF]ESC[/c] = mégsem</entry>
 	<entry key='starmap.renameplanet.tooltip'>Kattints duplán a bolygó átnevezéséhez.[n]Nyomd le az [c=FFFFFFFF]ESC[/c] vagy [c=FFFFFFFF]ENTER[/c] billentyűt az átnevezés befejezéséhez.[n]Használd a [c=FFFFFFFF]BACKSPACE[/c] billentyűt egy üres névnél az alapértelmezett visszaállításához.</entry>
 	<entry key='starmap.renamefleet.tooltip'>Kattints duplán a flotta átnevezéséhez.[n]Nyomd le az [c=FFFFFFFF]ESC[/c] vagy [c=FFFFFFFF]ENTER[/c] billentyűt az átnevezés befejezéséhez.</entry>
+	<entry key="settings.weather_effects">Időjárás effektusok</entry>
+	<entry key="settings.day_night_effects">Nappal-éjszaka ciklus</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
