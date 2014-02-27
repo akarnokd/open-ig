@@ -3291,6 +3291,8 @@
 	<entry key="languages.change.tooltip">Change language[n][c=FFFFFFFF]ESC[/c] = cancel</entry>
 	<entry key='starmap.renameplanet.tooltip'>Double click to start renaming the planet.[n]Hit [c=FFFFFFFF]ESC[/c] or [c=FFFFFFFF]ENTER[/c] to complete.[n]Use [c=FFFFFFFF]BACKSPACE[/c] on an empty name to reset it to the default.</entry>
 	<entry key='starmap.renamefleet.tooltip'>Double click to start renaming the fleet.[n]Hit [c=FFFFFFFF]ESC[/c] or [c=FFFFFFFF]ENTER[/c] to complete.</entry>
+	<entry key="settings.weather_effects">Weather effects</entry>
+	<entry key="settings.day_night_effects">Day-night cycle</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
