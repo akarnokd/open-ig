@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.ResourceType;
 import hu.openig.utils.XElement;
 
 import java.util.HashMap;
@@ -29,7 +30,10 @@ public class Labels {
 	public Labels load(ResourceLocator rl, Iterable<String> labelRefs) {
 		map.clear();
 		for (String ref : labelRefs) {
-			process(rl.getXML(ref));
+			if (rl.get(ref, ResourceType.DATA) != null) {
+				XElement xml = rl.getXML(ref);
+				process(xml);
+			}
 		}
 		return this;
 	}
