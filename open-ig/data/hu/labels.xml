@@ -3329,6 +3329,28 @@
 	<entry key='starmap.renamefleet.tooltip'>Kattints duplán a flotta átnevezéséhez.[n]Nyomd le az [c=FFFFFFFF]ESC[/c] vagy [c=FFFFFFFF]ENTER[/c] billentyűt az átnevezés befejezéséhez.</entry>
 	<entry key="settings.weather_effects">Időjárás effektusok</entry>
 	<entry key="settings.day_night_effects">Nappal-éjszaka ciklus</entry>
+	<entry key='info.details_PROBLEMS'>Problémák</entry>
+	<entry key='info.details_LABS'>Kutatókp.</entry>
+	<entry key='info.details_TRADERS_SPACEPORT'>Kereskedők</entry>
+	<entry key='info.details_BANK'>Bankok</entry>
+	<entry key='info.details_SPACESHIP_FACTORY'>Űrhajógyár</entry>
+	<entry key='info.details_EQUIPMENT_FACTORY'>Felsz.gyár</entry>
+	<entry key='info.details_WEAPONS_FACTORY'>Fegyv.gyár</entry>
+	<entry key='info.details_BARRACKS'>Laktanyák</entry>
+	<entry key='info.details_GUNS'>Ágyúk</entry>
+	<entry key='info.planetlist_TRADERS_SPACEPORT'>Kereskedők</entry>
+	<entry key='info.planetlist_BANK'>Bankok</entry>
+	<entry key='info.planetlist_SPACESHIP_FACTORY'>Űrhajógyár</entry>
+	<entry key='info.planetlist_EQUIPMENT_FACTORY'>Felsz.gyár</entry>
+	<entry key='info.building_present'>van</entry>
+	<entry key='info.planetlist_WEAPONS_FACTORY'>Fegyv.gyár</entry>
+	<entry key='info.planetlist_BARRACKS'>Laktanyák</entry>
+	<entry key='info.planetlist_GUNS'>Ágyúk</entry>
+	<entry key='info.planetlist_PROBLEMS'>Problémák</entry>
+	<entry key='info.planetlist_LABS'>Kutatókp.</entry>	
+	<entry key='info.details_TRADE_CENTER'>Ker.kp.</entry>
+	<entry key='info.planetlist_TRADE_CENTER'>Ker.kp.</entry>	
+	<entry key="info.planetlist.tooltip">Az utolsó oszlop által megjelenítendő részlet kiválasztása[n][c=FFFFFFFF]Bal kattintásk[/c]: következő részlet[n][c=FFFFFFFF]Jobb kattintás[/c]: előző részlet</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

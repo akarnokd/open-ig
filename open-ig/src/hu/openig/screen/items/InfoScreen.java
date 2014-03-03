@@ -51,6 +51,7 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageTabButton2;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UITextButton;
@@ -889,26 +890,38 @@ public class InfoScreen extends ScreenBase {
 				adjustPlanetListView();
 			}
 		};
-		togglePlanetListMode = new UIGenericButton(get("info.planetlist_labs"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		
+		final boolean[] wasToggleRight = new boolean[1]; 
+		togglePlanetListMode = new UIGenericButton(get("info.planetlist_LABS"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				wasToggleRight[0] = e.has(Button.RIGHT);
+				return super.mouse(e);
+			}
+		};
 		togglePlanetListMode.onClick = new Action0() {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.CLICK_HIGH_2);
-				int n = PlanetListMode.values().length;
-				planetListMode = PlanetListMode.values()[(planetListMode.ordinal() + 1) % n];
-
-				switch (planetListMode) {
-				case LABS:
-					togglePlanetListMode.text(get("info.planetlist_problems"), true);
-					break;
-				default:
-					togglePlanetListMode.text(get("info.planetlist_labs"), true);
+				PlanetListMode[] plma = PlanetListMode.values();
+				int n = plma.length;
+				if (wasToggleRight[0]) {
+					int k = planetListMode.ordinal() - 1;
+					if (k < 0) {
+						k = plma.length - 1;
+					}
+					planetListMode = plma[k];
+				} else {
+					planetListMode = plma[(planetListMode.ordinal() + 1) % n];
 				}
-					
+				PlanetListMode planetListMode2 = plma[(planetListMode.ordinal() + 1) % n];
+				togglePlanetListMode.text(get("info.planetlist_" + planetListMode2), true);
+				
 				adjustPlanetListView();
 				onResize();
 			}
 		};
+		togglePlanetListMode.tooltip(get("info.planetlist.tooltip"));
 		
 		statisticsButton = new UIGenericButton(get("info.statistics"), commons.control().fontMetrics(14), commons.common().mediumButton, commons.common().mediumButtonPressed);
 		statisticsButton.onClick = new Action0() {
@@ -1279,10 +1292,12 @@ public class InfoScreen extends ScreenBase {
 				int w2 = commons.text().getTextWidth(10, s2);
 				String s3 = get("info.morale_details");
 				int w3 = commons.text().getTextWidth(10, s3);
-				String s4 = get("info.problem_details");
-				int w4 = commons.text().getTextWidth(10, s4);
-				String s5 = get("info.lab_details");
-				int w5 = commons.text().getTextWidth(10, s5);
+				
+				int[] lastColumnWidths = new int[PlanetListMode.values().length];
+				for (int i = 0; i < lastColumnWidths.length; i++) {
+					String wi = get("info.details_" + PlanetListMode.values()[i]);
+					lastColumnWidths[i] = commons.text().getTextWidth(10, wi);
+				}
 				
 				if (e.within(planetListDetails.x + 10, planetListDetails.y - 13, w1 + 12, 12)) {
 					if (planetListDetails.sortBy != 0 || !planetListDetails.ascending) {
@@ -1307,23 +1322,20 @@ public class InfoScreen extends ScreenBase {
 					} else {
 						planetListDetails.ascending = false;
 					}
-				} else
-				if (e.within(planetListDetails.x + 310, planetListDetails.y - 13, w4 + 12, 12) && planetListMode == PlanetListMode.PROBLEMS) {
-					if (planetListDetails.sortBy != 3 || !planetListDetails.ascending) {
-						planetListDetails.ascending = true;
-						planetListDetails.sortBy = 3;
-					} else {
-						planetListDetails.ascending = false;
-					}
-				} else
-				if (e.within(planetListDetails.x + 310, planetListDetails.y - 13, w5 + 12, 12) && planetListMode == PlanetListMode.LABS) {
-					if (planetListDetails.sortBy != 4 || !planetListDetails.ascending) {
-						planetListDetails.ascending = true;
-						planetListDetails.sortBy = 4;
-					} else {
-						planetListDetails.ascending = false;
-					}
 				} else {
+					for (int i = 0; i < lastColumnWidths.length; i++) {
+						if (planetListMode.ordinal() == i) {
+							if (e.within(planetListDetails.x + 310, planetListDetails.y - 13, lastColumnWidths[i] + 12, 12)) {
+								if (planetListDetails.sortBy != 3 + i || !planetListDetails.ascending) {
+									planetListDetails.ascending = true;
+									planetListDetails.sortBy = 3 + i;
+								} else {
+									planetListDetails.ascending = false;
+								}
+								return true;
+							}
+						}
+					}
 					if (!base.contains(e.x, e.y)) {
 						hideSecondary();
 					} else {
@@ -3539,47 +3551,132 @@ public class InfoScreen extends ScreenBase {
 					});
 				}
 				break;
-			case 4:
-				final Comparator<Planet> labNameComparator = new Comparator<Planet>() {
-					@Override
-					public int compare(Planet o1, Planet o2) {
-						Collection<Building> b1 = o1.surface.buildings.findByKind("Science");
-						Collection<Building> b2 = o2.surface.buildings.findByKind("Science");
-						if (b1.isEmpty() && b2.isEmpty()) {
-							return 0;
-						} else
-						if (b1.isEmpty() && !b2.isEmpty()) {
-							return 1;
-						} else
-						if (!b1.isEmpty() && b2.isEmpty()) {
-							return -1;
-						}
-						Building a1 = b1.iterator().next();
-						Building a2 = b2.iterator().next();
-						return a1.type.name.compareTo(a2.type.name);
-					}
-				};
-				Comparator<Planet> comp;
-				if (ascending) {
-					comp = new Comparator<Planet>() {
-						@Override
-						public int compare(Planet o1, Planet o2) {
-							return compare2(o1, o2, labNameComparator);
-						}
-					};
-				} else {
-					comp = new Comparator<Planet>() {
-						@Override
-						public int compare(Planet o1, Planet o2) {
-							return compare2(o1, o2, U.reverse(labNameComparator));
-						}
-					};
-				}
-				Collections.sort(list, comp);
-				break;
 			default:
+				PlanetListMode plm = PlanetListMode.values()[sortBy - 3];
+				switch (plm) {
+				case LABS: { // LAB
+					Collections.sort(list, compareAnd(new KindCostCompare("Science")));
+					break;
+				}
+				case TRADERS_SPACEPORT: { // TRADERS SPACEPORT
+					Collections.sort(list, compareAnd(new BuildingLevelCompare("TradersSpaceport")));
+					break;
+				}
+				case BANK: { // BANK
+					Collections.sort(list, compareAnd(new BuildingLevelCompare("Bank")));
+					break;
+				}
+				case TRADE_CENTER: { // trade center
+					Collections.sort(list, compareAnd(new BuildingLevelCompare("TradeCenter")));
+					break;
+				}
+				case SPACESHIP_FACTORY: { // SPACESHIP
+					Collections.sort(list, compareAnd(new BuildingLevelCompare("SpaceshipFactory")));
+					break;
+				}
+				case EQUIPMENT_FACTORY: { // EQUIPMENT
+					Collections.sort(list, compareAnd(new BuildingLevelCompare("EquipmentFactory")));
+					break;
+				}
+				case WEAPONS_FACTORY: { // WEAPONS
+					Collections.sort(list, compareAnd(new BuildingLevelCompare("WeaponFactory")));
+					break;
+				}
+				case BARRACKS: { // Barracks
+					Collections.sort(list, compareAnd(new KindCostCompare("Defensive")));
+					break;
+				}
+				case GUNS: { // Guns
+					Collections.sort(list, compareAnd(new KindCostCompare("Gun")));
+					break;
+				}
+				default:
+				}
 			}
 			return list;
+		}
+		/**
+		 * Compare buildings of the same kind by the most expensive.
+		 * @author akarnokd, 2014.03.03.
+		 */
+		final class KindCostCompare implements Comparator<Planet> {
+			/** The building type. */
+			final String kind;
+			/**
+			 * Constructor with building kind.
+			 * @param kind the building kind
+			 */
+			public KindCostCompare(String kind) {
+				this.kind = kind;
+			}
+			@Override
+			public int compare(Planet o1, Planet o2) {
+				Collection<Building> b1 = o1.surface.buildings.findByType(kind);
+				Collection<Building> b2 = o2.surface.buildings.findByType(kind);
+				
+				if (b1.isEmpty() && b2.isEmpty()) {
+					return 0;
+				} else
+				if (b1.isEmpty() && !b2.isEmpty()) {
+					return 1;
+				} else
+				if (!b1.isEmpty() && b2.isEmpty()) {
+					return -1;
+				}
+				Building a1 = Collections.max(b1, Building.COMPARE_COST);
+				Building a2 = Collections.max(b2, Building.COMPARE_COST);
+				
+				return Integer.compare(a1.type.cost, a2.type.cost);
+			}
+		}
+		/** Compare buildings based on their level. */
+		final class BuildingLevelCompare implements Comparator<Planet> {
+			/** The building type. */
+			final String type;
+			/**
+			 * Constructor with building type.
+			 * @param type the building type
+			 */
+			public BuildingLevelCompare(String type) {
+				this.type = type;
+			}
+			@Override
+			public int compare(Planet o1, Planet o2) {
+				Collection<Building> b1 = o1.surface.buildings.findByType(type);
+				Collection<Building> b2 = o2.surface.buildings.findByType(type);
+				
+				if (b1.isEmpty() && b2.isEmpty()) {
+					return 0;
+				} else
+				if (b1.isEmpty() && !b2.isEmpty()) {
+					return 1;
+				} else
+				if (!b1.isEmpty() && b2.isEmpty()) {
+					return -1;
+				}
+				Building a1 = Collections.max(b1, Building.COMPARE_LEVEL);
+				Building a2 = Collections.max(b2, Building.COMPARE_LEVEL);
+				
+				return Integer.compare(a1.upgradeLevel, a2.upgradeLevel);
+			}
+		}		
+		/**
+		 * Compare two planets via the secondary comparator.
+		 * @param comp2 the secondary comparator
+		 * @return the actual comparator
+		 */
+		Comparator<Planet> compareAnd(Comparator<Planet> comp2) {
+			Comparator<Planet> comp3 = comp2;
+			if (!ascending) {
+				comp3 = U.reverse(comp2);
+			}
+			final Comparator<Planet> fcomp = comp3;
+			return new Comparator<Planet>() {
+				@Override
+				public int compare(Planet o1, Planet o2) {
+					return compare2(o1, o2, fcomp);
+				}
+			};
 		}
 		@Override
 		public void draw(Graphics2D g2) {
@@ -3596,10 +3693,14 @@ public class InfoScreen extends ScreenBase {
 			int w2 = commons.text().getTextWidth(10, s2);
 			String s3 = get("info.morale_details");
 			int w3 = commons.text().getTextWidth(10, s3);
-			String s4 = get("info.problem_details");
-			int w4 = commons.text().getTextWidth(10, s4);
-			String s5 = get("info.lab_details");
-			int w5 = commons.text().getTextWidth(10, s5);
+			
+			int lcn = PlanetListMode.values().length;
+			String[] lastColumns = new String[lcn];
+			int[] lastColumnWidths = new int[lcn];
+			for (int i = 0; i < lcn; i++) {
+				lastColumns[i] = get("info.details_" + PlanetListMode.values()[i]);
+				lastColumnWidths[i] = commons.text().getTextWidth(10, lastColumns[i]);
+			}
 			
 			commons.text().paintTo(g2, 10, -13, 10, TextRenderer.YELLOW, s1);
 			if (sortBy == 0) {
@@ -3619,23 +3720,11 @@ public class InfoScreen extends ScreenBase {
 				drawTriangle(g2, 242 + w3, -13, 10, ascending);
 			}
 
-			switch (planetListMode) {
-			case LABS:
-				commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, s5);
-				if (sortBy == 4) {
-					g2.setColor(Color.YELLOW);
-					drawTriangle(g2, probLeft + w5 + 2, -13, 10, ascending);
-				}
-				break;
-			default:
-				commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, s4);
-				if (sortBy == 3) {
-					g2.setColor(Color.YELLOW);
-					drawTriangle(g2, probLeft + w4 + 2, -13, 10, ascending);
-				}
+			commons.text().paintTo(g2, probLeft, -13, 10, TextRenderer.YELLOW, lastColumns[planetListMode.ordinal()]);
+			if (sortBy == 3 + planetListMode.ordinal()) {
+				g2.setColor(Color.YELLOW);
+				drawTriangle(g2, probLeft + lastColumnWidths[planetListMode.ordinal()] + 2, -13, 10, ascending);
 			}
-
-			
 			
 			if (top < 0) {
 				top = 0;
@@ -3718,7 +3807,7 @@ public class InfoScreen extends ScreenBase {
 						
 						PlanetStatistics ps = p.getStatistics();
 						switch (planetListMode) {
-						case LABS:
+						case LABS: {
 							Collection<Building> bs = p.surface.buildings.findByKind("Science");
 							if (!bs.isEmpty()) {
 								Building b = bs.iterator().next();
@@ -3730,6 +3819,40 @@ public class InfoScreen extends ScreenBase {
 								commons.text().paintTo(g2, probLeft, y + 1, 10, b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080, bn);
 							}
 							break;
+						}
+						case TRADERS_SPACEPORT: {
+							paintForType(g2, p, probLeft, y, "TradersSpaceport");
+							break;
+						}
+						case BANK: {
+							paintForType(g2, p, probLeft, y, "Bank");
+							break;
+						}
+						case SPACESHIP_FACTORY: {
+							paintForType(g2, p, probLeft, y, "SpaceshipFactory");
+							break;
+						}
+						case EQUIPMENT_FACTORY: {
+							paintForType(g2, p, probLeft, y, "EquipmentFactory");
+							break;
+						}
+						case WEAPONS_FACTORY: {
+							paintForType(g2, p, probLeft, y, "WeaponFactory");
+							break;
+						}
+						case BARRACKS: {
+							paintForKind(g2, p, probLeft, y, "Defensive");
+							break;
+						}
+						case GUNS: {
+							paintForKind(g2, p, probLeft, y, "Gun");
+							break;
+						}
+						case TRADE_CENTER: {
+							paintForType(g2, p, probLeft, y, "TradeCenter");
+							break;
+						}
+						
 						default: {
 							int j = 0;
 							
@@ -3832,6 +3955,71 @@ public class InfoScreen extends ScreenBase {
 					}
 				}
 				y += 13;
+			}
+		}
+		/**
+		 * Paint info for type.
+		 * @param g2 the graphics context
+		 * @param probLeft the last column start
+		 * @param y the top coordinate
+		 * @param p the planet
+		 * @param type the building type
+		 */
+		void paintForType(Graphics2D g2, Planet p, int probLeft, int y, String type) {
+			Collection<Building> bs = p.surface.buildings.findByType(type);
+			if (!bs.isEmpty()) {
+				Building b = Collections.max(bs, Building.COMPARE_LEVEL);
+				int w = 0;
+				if (b.upgradeLevel > 0) {
+					for (int j = 0; j < b.upgradeLevel; j++) {
+						g2.drawImage(commons.colony().upgrade, probLeft + j * commons.colony().upgrade.getWidth(), y - 3, null);
+					}
+					w = commons.colony().upgrade.getWidth() * b.upgradeLevel;
+				} else {
+					String s = get("info.building_present");
+					commons.text().paintTo(g2, probLeft, y + 1, 10, b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080, s);
+					w = commons.text().getTextWidth(10, s);
+				}
+				w += 5;
+				String s1 = "(" + bs.size() + ")";
+				int c = TextRenderer.GREEN;
+				for (Building b1 : bs) {
+					if (b1.upgradeLevel != b.upgradeLevel) {
+						c = TextRenderer.YELLOW;
+						break;
+					}
+				}
+				commons.text().paintTo(g2, probLeft + w, y + 1, 10, c, s1);
+			}
+		}
+		/**
+		 * Paint info for type.
+		 * @param g2 the graphics context
+		 * @param probLeft the last column start
+		 * @param y the top coordinate
+		 * @param p the planet
+		 * @param kind the building kind
+		 */
+		void paintForKind(Graphics2D g2, Planet p, int probLeft, int y, String kind) {
+			Collection<Building> bs = p.surface.buildings.findByKind(kind);
+			if (!bs.isEmpty()) {
+				Building b = Collections.max(bs, Building.COMPARE_LEVEL);
+				int w = 0;
+				String s = b.type.name;
+				if (s.length() > 11) {
+					s = s.substring(0, 11);
+				}
+				commons.text().paintTo(g2, probLeft, y + 2, 7, b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080, s);
+				w += commons.text().getTextWidth(7, s);
+				w += 5;
+				String s1 = "(" + bs.size() + ")";
+				int c = TextRenderer.GREEN;
+				for (Building b1 : bs) {
+					if (!b1.type.id.equals(b.type.id)) {
+						c = TextRenderer.YELLOW;
+					}
+				}
+				commons.text().paintTo(g2, probLeft + w, y + 2, 7, c, s1);
 			}
 		}
 		@Override

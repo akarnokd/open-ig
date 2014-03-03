@@ -14,6 +14,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
+import java.util.Comparator;
 
 /**
  * A building instance.
@@ -368,4 +369,22 @@ public class Building implements HasLocation {
 		return new Point((int)(Tile.toScreenX(cx, cy) + 28), 
 				(int)(Tile.toScreenY(cx, cy) + 14));
 	}
+	/**
+	 * Compare the levels of two buildings.
+	 */
+	public static final Comparator<Building> COMPARE_LEVEL = new Comparator<Building>() {
+		@Override
+		public int compare(Building o1, Building o2) {
+			return Integer.compare(o1.upgradeLevel, o2.upgradeLevel);
+		}
+	};
+	/**
+	 * Compare the build costs of two buildings.
+	 */
+	public static final Comparator<Building> COMPARE_COST = new Comparator<Building>() {
+		@Override
+		public int compare(Building o1, Building o2) {
+			return Integer.compare(o1.type.cost, o2.type.cost);
+		}
+	};
 }
