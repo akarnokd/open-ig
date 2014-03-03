@@ -3309,5 +3309,27 @@
 	<entry key='starmap.renamefleet.tooltip'>Double click to start renaming the fleet.[n]Hit [c=FFFFFFFF]ESC[/c] or [c=FFFFFFFF]ENTER[/c] to complete.</entry>
 	<entry key="settings.weather_effects">Weather effects</entry>
 	<entry key="settings.day_night_effects">Day-night cycle</entry>
+	<entry key='info.details_PROBLEMS'>Problems</entry>
+	<entry key='info.details_LABS'>Labs</entry>
+	<entry key='info.details_TRADERS_SPACEPORT'>Traders</entry>
+	<entry key='info.details_BANK'>Banks</entry>
+	<entry key='info.details_SPACESHIP_FACTORY'>Spaceship</entry>
+	<entry key='info.details_EQUIPMENT_FACTORY'>Equipment</entry>
+	<entry key='info.details_WEAPONS_FACTORY'>Weapon</entry>
+	<entry key='info.details_BARRACKS'>Barracks</entry>
+	<entry key='info.details_GUNS'>Guns</entry>
+	<entry key='info.planetlist_TRADERS_SPACEPORT'>Traders</entry>
+	<entry key='info.planetlist_BANK'>Banks</entry>
+	<entry key='info.planetlist_SPACESHIP_FACTORY'>Spaceship</entry>
+	<entry key='info.planetlist_EQUIPMENT_FACTORY'>Equipment</entry>
+	<entry key='info.building_present'>present</entry>
+	<entry key='info.planetlist_WEAPONS_FACTORY'>Weapon</entry>
+	<entry key='info.planetlist_BARRACKS'>Barracks</entry>
+	<entry key='info.planetlist_GUNS'>Guns</entry>
+	<entry key='info.planetlist_PROBLEMS'>Problems</entry>
+	<entry key='info.planetlist_LABS'>Labs</entry>	
+	<entry key='info.details_TRADE_CENTER'>Tradectr.</entry>
+	<entry key='info.planetlist_TRADE_CENTER'>Tradectr.</entry>	
+	<entry key="info.planetlist.tooltip">Selects the value to display in the last column[n][c=FFFFFFFF]Left click[/c]: next detail[n][c=FFFFFFFF]Right click[/c]: previous detail</entry>
 	
 </labels>

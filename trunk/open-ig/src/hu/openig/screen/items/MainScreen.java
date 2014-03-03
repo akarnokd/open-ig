@@ -295,6 +295,13 @@ public class MainScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		scaleMouse(e, base, margin());
+		if (e.has(Type.DOWN) && languagePanel.visible()
+				&& !languagePanel.within(e)) {
+			languagePanel.visible(false);
+			if (changeLanguage.within(e)) {
+				return true;
+			}
+		}
 		return super.mouse(e);
 	}
 	@Override

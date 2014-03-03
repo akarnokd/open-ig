@@ -18,4 +18,20 @@ public enum PlanetListMode {
 	PROBLEMS,
 	/** Labs. */
 	LABS,
+	/** Show trader's spaceport. */
+	TRADERS_SPACEPORT,
+	/** Bank. */
+	BANK,
+	/** Trade center. */
+	TRADE_CENTER,
+	/** Spaceship factory. */
+	SPACESHIP_FACTORY,
+	/** Equipment factory. */
+	EQUIPMENT_FACTORY,
+	/** Weapons factory. */
+	WEAPONS_FACTORY,
+	/** Barracks. */
+	BARRACKS,
+	/** Guns. */
+	GUNS,
 }
