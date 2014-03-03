@@ -175,7 +175,7 @@
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
   </module>
   <module name="RegexpHeader">
-    <property name="header" value="^/\*$\n^ \* Copyright 2008-2013, David Karnok.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
+    <property name="header" value="^/\*$\n^ \* Copyright 2008-2014, David Karnok.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
     <property name="fileExtensions" value="java"/>
     <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="GE header"/>
   </module>

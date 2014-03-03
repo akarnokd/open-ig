@@ -1,5 +1,5 @@
 /*
- * Copyright 2008-2013, David Karnok 
+ * Copyright 2008-2014, David Karnok 
  * The file is part of the Open Imperium Galactica project.
  * 
  * The code should be distributed under the LGPL license.
@@ -57,6 +57,7 @@ import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UITextButton;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.Exceptions;
+import hu.openig.utils.NaturalStrings;
 import hu.openig.utils.U;
 
 import java.awt.Color;
@@ -2194,21 +2195,7 @@ public class InfoScreen extends ScreenBase {
 	 * @return the comparison result
 	 */
 	static int compareString(String s1, String s2) {
-		char c1 = s1.charAt(s1.length() - 1);
-		char c2 = s2.charAt(s2.length() - 1);
-		if (Character.isDigit(c1) && Character.isDigit(c2)) {
-			int sp1 = s1.lastIndexOf(' ');
-			int sp2 = s2.lastIndexOf(' ');
-			
-			if (sp1 >= 0 && sp2 >= 0) {
-				int c = s1.substring(0, sp1).compareTo(s2.substring(0, sp2));
-				if (c == 0) {
-					c = Integer.parseInt(s1.substring(sp1 + 1)) - Integer.parseInt(s2.substring(sp2 + 1));
-				}
-				return c;
-			}
-		}
-		return s1.compareTo(s2);
+		return NaturalStrings.compareNatural(s1, s2);
 	}
 	/** @return an ordered list of planets to display. */
 	List<Planet> planetsList() {
