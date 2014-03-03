@@ -446,15 +446,13 @@ public final class Simulator {
 			if (ps.policeAvailable < planet.population()) {
 				newMorale += (ps.policeAvailable - planet.population()) * 50f / planet.population();
 			} else {
-				if (!planet.owner.race.equals(planet.race)) {
-					newMorale += (ps.policeAvailable - planet.population()) * 25f / planet.population();
-				} else {
-					newMorale += (ps.policeAvailable - planet.population()) * planet.owner.policeRatio / planet.population();
-				}
+				newMorale += Math.min(25, (ps.policeAvailable - planet.population()) * planet.owner.policeRatio / planet.population());
 			}
+
+			double moraleMax = planet.owner.race.equals(planet.race) ? 100 : 75;
 			
+			newMorale = Math.max(0, Math.min(moraleMax, newMorale));
 			
-			newMorale = Math.max(0, Math.min(100, newMorale));
 			
 			
 			double nextMorale = (planet.morale * 0.8d + 0.2d * newMorale);
