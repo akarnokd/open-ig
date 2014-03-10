@@ -399,10 +399,12 @@ public class DiplomacyScreen extends ScreenBase {
 					WalkTransition prev = pointerTransition;
 					pointerTransition = null;
 					WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
-					for (WalkTransition wt : position.transitions) {
-						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-							pointerTransition = wt;
-							break;
+					if (position != null) {
+						for (WalkTransition wt : position.transitions) {
+							if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+								pointerTransition = wt;
+								break;
+							}
 						}
 					}
 					boolean spl = showPanelLabel;

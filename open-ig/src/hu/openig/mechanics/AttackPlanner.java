@@ -29,6 +29,8 @@ import hu.openig.model.ModelUtils;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.SoundTarget;
+import hu.openig.model.SoundType;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
@@ -366,6 +368,19 @@ public class AttackPlanner extends Planner {
 		}
 		return v;
 	}
+	/** 
+	 * Audio signal for new message.
+	 * @param p the target player 
+	 */
+	void signalMessage(Player p) {
+		if (p == p.world.player) {
+			if (ModelUtils.randomBool()) {
+				p.world.env.playSound(SoundTarget.COMPUTER, SoundType.NEW_MESSAGE_1, null);
+			} else {
+				p.world.env.playSound(SoundTarget.COMPUTER, SoundType.NEW_MESSAGE_2, null);
+			}
+		}
+	}
 	/**
 	 * Make contact with other races and send offers.
 	 */
@@ -386,6 +401,7 @@ public class AttackPlanner extends Planner {
 						@Override
 						public void invoke() {
 							other.offers.put(p.id, new DiplomaticOffer(CallType.SURRENDER, at));
+							signalMessage(p);
 						}
 					});
 					break;
@@ -395,6 +411,7 @@ public class AttackPlanner extends Planner {
 						@Override
 						public void invoke() {
 							other.offers.put(p.id, new DiplomaticOffer(CallType.ALLIANCE, at));
+							signalMessage(p);
 						}
 					});
 					break;
@@ -404,6 +421,7 @@ public class AttackPlanner extends Planner {
 						@Override
 						public void invoke() {
 							other.offers.put(p.id, new DiplomaticOffer(CallType.RESIGN, at));
+							signalMessage(p);
 						}
 					});
 					break;
@@ -413,6 +431,7 @@ public class AttackPlanner extends Planner {
 						@Override
 						public void invoke() {
 							other.offers.put(p.id, new DiplomaticOffer(CallType.MONEY, at).value(2500L * (ModelUtils.randomInt(20) + 1)));
+							signalMessage(p);
 						}
 					});
 					break;
@@ -422,6 +441,7 @@ public class AttackPlanner extends Planner {
 						@Override
 						public void invoke() {
 							other.offers.put(p.id, new DiplomaticOffer(CallType.WAR, at));
+							signalMessage(p);
 						}
 					});
 					break;
@@ -431,6 +451,7 @@ public class AttackPlanner extends Planner {
 						@Override
 						public void invoke() {
 							other.offers.put(p.id, new DiplomaticOffer(CallType.PEACE, at));
+							signalMessage(p);
 						}
 					});
 					break;

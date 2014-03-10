@@ -17,6 +17,7 @@ import hu.openig.model.AIMode;
 import hu.openig.model.ApproachType;
 import hu.openig.model.CallType;
 import hu.openig.model.DiplomaticOffer;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
@@ -469,6 +470,7 @@ public class GameKeyManager extends KeyAdapter {
 							p.offers.put(p0.id, new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE));
 						}
 					}
+					signalMessage(p);
 				}
 				break;
 			// FIXME CHEAT
@@ -534,11 +536,9 @@ public class GameKeyManager extends KeyAdapter {
 							dio.value(1000);
 							p.offers.put(p0.id, dio);
 						}
+						signalMessage(p);
 					} else {
 						world().player.addMoney(10000);
-						if (e.isShiftDown()) {
-							world().player.addMoney(90000);
-						}
 					}
 					repaintInner();
 					
@@ -629,5 +629,17 @@ public class GameKeyManager extends KeyAdapter {
 			}
 		}
 	}
-
+	/** 
+	 * Audio signal for new message.
+	 * @param p the target player 
+	 */
+	void signalMessage(Player p) {
+		if (p == p.world.player) {
+			if (ModelUtils.randomBool()) {
+				p.world.env.playSound(SoundTarget.COMPUTER, SoundType.NEW_MESSAGE_1, null);
+			} else {
+				p.world.env.playSound(SoundTarget.COMPUTER, SoundType.NEW_MESSAGE_2, null);
+			}
+		}
+	}
 }
