@@ -1080,4 +1080,18 @@ public abstract class Mission implements GameScriptingEvents {
 		}
 		return r;
 	}
+	/**
+	 * Check if the fleet still has ground attack capability.
+	 * @param f the target fleet
+	 * @return true if can attack ground
+	 */
+	boolean canGroundAttack(Fleet f) {
+		for (InventoryItem ii : f.inventory.iterable()) {
+			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS 
+					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

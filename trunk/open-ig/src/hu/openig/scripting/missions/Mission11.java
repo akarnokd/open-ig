@@ -170,7 +170,7 @@ public class Mission11 extends Mission {
 	public void onSpacewarFinish(SpacewarWorld war) {
 		if (isM11Active()) {
 			Fleet garthog = findTaggedFleet("Mission-11-Garthog", player("Garthog"));
-			if (garthog == null) {
+			if (garthog == null || !canGroundAttack(garthog)) {
 				setObjectiveState("Mission-11", ObjectiveState.SUCCESS);
 				war.battle().messageText = label("battlefinish.mission-5.garthog");
 				addTimeout("Mission-11-Done", 13000);

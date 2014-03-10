@@ -20,7 +20,6 @@ import hu.openig.model.ObjectiveState;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
-import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SpacewarWorld;
 import hu.openig.model.TraitKind;
 
@@ -171,20 +170,6 @@ public class Mission6 extends Mission {
 				cleanupScriptedFleets();
 			}
 		}		
-	}
-	/**
-	 * Check if the fleet still has ground attack capability.
-	 * @param f the target fleet
-	 * @return true if can attack ground
-	 */
-	boolean canGroundAttack(Fleet f) {
-		for (InventoryItem ii : f.inventory.iterable()) {
-			if (ii.type.category == ResearchSubCategory.WEAPONS_TANKS 
-					|| ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-				return true;
-			}
-		}
-		return false;
 	}
 	@Override
 	public void onGroundwarFinish(GroundwarWorld war) {
