@@ -38,7 +38,7 @@ public final class LabelVerifier {
 	 */
 	public static void main(String[] args) throws Exception {
 		XElement xhu = XElement.parseXML("data/hu/labels.xml");
-		Set<String> langs = U.newSet("en", "fr", "ru", "de");
+		Set<String> langs = U.newSet("en", "fr", "ru", "de", "es");
 		for (String l : langs) {
 			XElement xen = XElement.parseXML("data/" + l + "/labels.xml");
 			

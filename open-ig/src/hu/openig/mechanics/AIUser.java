@@ -335,6 +335,13 @@ public class AIUser implements AIManager {
 		p.addMessage(msgConq);
 	}
 	@Override
+	public void onPlanetColonized(Planet planet) {
+		Message msgLost = w.newMessage("message.planet_colonized");
+		msgLost.priority = 50;
+		msgLost.targetPlanet = planet;
+		p.addMessage(msgLost);
+	}
+	@Override
 	public void onPlanetLost(Planet planet) {
 		Message msgLost = w.newMessage("message.planet_lost");
 		msgLost.priority = 100;

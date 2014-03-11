@@ -85,9 +85,9 @@ public class MediaPlayer {
 	private void init(final CommonResources commons, final VideoAudio media,
 			SwappableRenderer surface) {
 		final ResourcePlace audio = commons.audio(media.audio);
-		final ResourcePlace video = commons.video(media.video);
+		final ResourcePlace video = commons.video(media.video, true);
 		if (video == null) {
-			System.err.println("Missing video: " + media.video);
+			Exceptions.add(new AssertionError("Missing video: " + media.video));
 		}
 
 		final CyclicBarrier barrier = new CyclicBarrier(audio != null ? 2 : 1);

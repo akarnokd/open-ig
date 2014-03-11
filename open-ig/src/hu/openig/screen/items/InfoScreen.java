@@ -1239,7 +1239,7 @@ public class InfoScreen extends ScreenBase {
 		setUIVisibility();
 		production.visible(production.visible() && world().level >= 2);
 		research.visible(research.visible() && world().level >= 3);
-		diplomacy.visible(diplomacy.visible() && world().getShip().positions.containsKey("*diplomacy"));
+		diplomacy.visible(diplomacy.visible() && world().hasDiplomacy());
 //		inventionsTab.visible(world().level >= 2);
 		aliensTab.visible(world().level >= 4);
 		

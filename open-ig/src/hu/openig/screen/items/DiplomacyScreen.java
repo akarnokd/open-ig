@@ -433,10 +433,12 @@ public class DiplomacyScreen extends ScreenBase {
 			if (e.has(Type.DOWN)) {
 				if (!projectorOpen && !projectorClosing && !openCloseAnimating) {
 					WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
-					for (WalkTransition wt : position.transitions) {
-						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-							ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
-							return false;
+					if (position != null) {
+						for (WalkTransition wt : position.transitions) {
+							if (wt.area.contains(e.x - base.x, e.y - base.y)) {
+								ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
+								return false;
+							}
 						}
 					}
 					if (e.within(base.x, base.y, base.width, 350)) {

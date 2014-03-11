@@ -93,6 +93,33 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	public final PlanetGround ground;
 	/** The ground war manager for this planet. */
 	public final GroundwarManager war;
+	/**
+	 * Compares the total value of the planet.
+	 */
+	public static final Comparator<Planet> VALUE = new Comparator<Planet>() {
+		@Override
+		public int compare(Planet o1, Planet o2) {
+			return Double.compare(value(o1), value(o2));
+		}
+		/**
+		 * Compute the planet's value
+		 * @param p the planet
+		 * @return the value
+		 */
+		double value(Planet p) {
+			double v = 0;
+			for (Building b : p.surface.buildings.iterable()) {
+				v += b.type.cost + (1 * b.upgradeLevel);
+			}
+			for (InventoryItem ii : p.inventory.iterable()) {
+				if (ii.owner == p.owner) {
+					v += ii.sellValue() * 2;
+				}
+			}
+			v += p.surface.basemap.size() * 200; // how much a fully built planet would value
+			return v;
+		}
+	};
 	/** @return The total income. */
 	public int getTotalIncome() {
 		return (int)(taxIncome + tradeIncome);
@@ -991,7 +1018,11 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		// uninstall satellites
 		this.removeOwnerSatellites();
 
-		return buildColonyHub();
+		boolean r = buildColonyHub();
+		
+		this.owner.ai.onPlanetColonized(this);
+		
+		return r;
 	}
 	/**
 	 * Build a colony hub on this planet.

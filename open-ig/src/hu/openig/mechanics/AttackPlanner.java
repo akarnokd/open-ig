@@ -25,8 +25,11 @@ import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetTask;
+import hu.openig.model.InventoryItem;
 import hu.openig.model.ModelUtils;
+import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
+import hu.openig.model.PlanetStatistics;
 import hu.openig.model.Player;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.SoundTarget;
@@ -39,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +81,8 @@ public class AttackPlanner extends Planner {
 			double relation1 = getDiplomaticMultiplier(o1.owner);
 			double relation2 = getDiplomaticMultiplier(o2.owner);
 
-			double n1 = relation1 * distance1 / value1;
-			double n2 = relation2 * distance2 / value2;
+			double n1 = relation1 * distance1 * value1;
+			double n2 = relation2 * distance2 * value2;
 			
 			return java.lang.Double.compare(n1, n2);
 		}
@@ -117,43 +121,60 @@ public class AttackPlanner extends Planner {
 			List<AIFleet> fleets = findFleetsFor(FleetTask.ATTACK, null);
 			filterCandidates(fleets);
 			if (!fleets.isEmpty()) {
-				final AIFleet ownFleet = Collections.max(fleets, new Comparator<AIFleet>() {
+				Collections.sort(fleets, new Comparator<AIFleet>() {
 					@Override
 					public int compare(AIFleet o1, AIFleet o2) {
 						return java.lang.Double.compare(o1.statistics.firepower, o2.statistics.firepower);
 					}
 				});
-				AIFleet targetFleet = null;
-				AIPlanet targetPlanet = null;
-				if (world.mayConquer && ownFleet.statistics.groundFirepower > 0) {
-					if (ModelUtils.randomBool()) {
+				
+				int fcmax = fleets.size() / 2 + 1;
+				if (world.difficulty == Difficulty.EASY) {
+					fcmax = 1;
+				}
+				int fc = 0;
+				Iterator<AIFleet> fi = fleets.iterator();
+				while (fc < fcmax && fi.hasNext()) {
+					final AIFleet ownFleet = fi.next();
+					
+					AIFleet targetFleet = null;
+					AIPlanet targetPlanet = null;
+					if (world.mayConquer && ownFleet.statistics.groundFirepower > 0) {
+						if (ModelUtils.randomBool()) {
+							targetFleet = selectTargetFleet();
+						}
+						if (targetFleet == null) {
+							targetPlanet = selectTargetPlanet();
+						}
+					} else {
 						targetFleet = selectTargetFleet();
 					}
-					if (targetFleet == null) {
-						targetPlanet = selectTargetPlanet();
+					if (targetFleet != null) {
+						final AIFleet ftargetFleet = targetFleet;
+						ownFleet.task = FleetTask.ATTACK;
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								if (ownFleet.task != FleetTask.SCRIPT) {
+									controls.actionAttackFleet(ownFleet.fleet, ftargetFleet.fleet, false);
+								}
+							}
+						});
+						fc++;
+					} else 
+					if (targetPlanet != null) {
+						final AIPlanet ftargetPlanet = targetPlanet;
+						ownFleet.task = FleetTask.ATTACK;
+						add(new Action0() {
+							@Override
+							public void invoke() {
+								if (ownFleet.task != FleetTask.SCRIPT) {
+									controls.actionAttackPlanet(ownFleet.fleet, ftargetPlanet.planet, AIAttackMode.CAPTURE);
+								}
+							}
+						});
+						fc++;
 					}
-				} else {
-					targetFleet = selectTargetFleet();
-				}
-				if (targetFleet != null) {
-					final AIFleet ftargetFleet = targetFleet;
-					ownFleet.task = FleetTask.ATTACK;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionAttackFleet(ownFleet.fleet, ftargetFleet.fleet, false);
-						}
-					});
-				} else 
-				if (targetPlanet != null) {
-					final AIPlanet ftargetPlanet = targetPlanet;
-					ownFleet.task = FleetTask.ATTACK;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionAttackPlanet(ownFleet.fleet, ftargetPlanet.planet, AIAttackMode.CAPTURE);
-						}
-					});
 				}
 			}
 			if (world.hasDiplomacyRoom) {
@@ -274,14 +295,14 @@ public class AttackPlanner extends Planner {
 			Collections.sort(candidates, new PlanetTargetValueComparator(center));
 			
 			double prob = ModelUtils.random();
-			if (prob >= 0.35 || candidates.size() == 1) {
+			if (prob < 0.6 || candidates.size() == 1) {
 				return candidates.get(0);
 			} else
-			if (prob >= 0.15) {
+			if ((prob >= 0.6 && prob < 0.75) || candidates.size() == 2) {
 				return candidates.get(1);
-			} else
-			if (prob > 0.05) {
-				return ModelUtils.random(candidates);
+			} else {
+				int n = 2 + ModelUtils.randomInt(candidates.size() - 2);
+				return candidates.get(n);
 			}
 		}
 		return null;
@@ -473,5 +494,49 @@ public class AttackPlanner extends Planner {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Handle the loss of a planet due to conquest.
+	 * @param planet the target planet
+	 * @param p the the AI player
+	 */
+	public static void onPlanetLost(Planet planet, AI p) {
+		switch (p.w.difficulty) {
+		case NORMAL:
+			p.nextAttack = new Date(p.w.time.getTimeInMillis() + 2L * 60 * 60 * 1000);
+			break;
+		case HARD:
+			p.nextAttack = new Date(p.w.time.getTimeInMillis() + 30 * 60 * 1000);
+			break;
+		default:
+		}
+	}
+	/**
+	 * Handle the conquest of a planet.
+	 * @param planet the target planet
+	 * @param p the the AI player
+	 */
+	public static void onPlanetConquered(Planet planet, AI p) {
+		PlanetStatistics ps = planet.getStatistics();
+		int max = ps.vehicleMax - 1;
+		List<Planet> ownPlanets = p.p.ownPlanets();
+		ownPlanets.remove(planet);
+		if (!ownPlanets.isEmpty()) {
+			Collections.sort(ownPlanets, Planet.VALUE);
+			
+			for (Planet p0 : ownPlanets) {
+				if (max <= 0) {
+					break;
+				}
+				for (InventoryItem ii : p0.inventory.iterable()) {
+					if (ii.owner == p.p && ii.type.category == ResearchSubCategory.WEAPONS_TANKS) {
+						p0.undeployItem(ii.id, 1);
+						planet.deployItem(ii.type, p.p, 1);
+						max--;
+						break;
+					}
+				}
+			}
+		}
 	}
 }

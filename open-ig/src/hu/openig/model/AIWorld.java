@@ -239,7 +239,7 @@ public class AIWorld {
 			}
 		}
 		colonizationTargets.addAll(player.colonizationTargets);
-		hasDiplomacyRoom = player.world.getShip().positions.containsKey("*diplomacy");
+		hasDiplomacyRoom = player.world.hasDiplomacy();
 	}
 	/**
 	 * Returns or calculates the planet statistics.

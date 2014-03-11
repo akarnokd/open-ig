@@ -370,7 +370,7 @@ public class GameKeyManager extends KeyAdapter {
 				e.consume();
 				break;
 			case KeyEvent.VK_F10:
-				if (world().getShip().positions.containsKey("*diplomacy")) {
+				if (world().hasDiplomacy()) {
 					if (secondary != null && secondary.screen() == Screens.DIPLOMACY) {
 						hideSecondary();
 					} else {
@@ -462,15 +462,17 @@ public class GameKeyManager extends KeyAdapter {
 				break;
 			case KeyEvent.VK_B:
 				if (e.isControlDown()) {
-					Player p = world().player;
-					for (Player p0 : p.knownPlayers().keySet()) {
-						if (e.isShiftDown()) {
-							p.offers.put(p0.id, new DiplomaticOffer(CallType.RESIGN, ApproachType.HUMBLE));
-						} else {
-							p.offers.put(p0.id, new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE));
+					if (world().hasDiplomacy()) {
+						Player p = world().player;
+						for (Player p0 : p.knownPlayers().keySet()) {
+							if (e.isShiftDown()) {
+								p.offers.put(p0.id, new DiplomaticOffer(CallType.RESIGN, ApproachType.HUMBLE));
+							} else {
+								p.offers.put(p0.id, new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE));
+							}
 						}
+						signalMessage(p);
 					}
-					signalMessage(p);
 				}
 				break;
 			// FIXME CHEAT

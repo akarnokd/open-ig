@@ -669,11 +669,15 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void onPlanetConquered(Planet planet, Player lastOwner) {
-		
+		AttackPlanner.onPlanetConquered(planet, this);
+	}
+	@Override
+	public void onPlanetColonized(Planet planet) {
+		AttackPlanner.onPlanetConquered(planet, this);
 	}
 	@Override
 	public void onPlanetLost(Planet planet) {
-		
+		AttackPlanner.onPlanetLost(planet, this);
 	}
 	@Override
 	public void onRadar() {

@@ -175,6 +175,11 @@ public interface AIManager {
 	 */
 	void onPlanetConquered(Planet planet, Player lastOwner);
 	/**
+	 * Notification about a planet just colonized.
+	 * @param planet the target planet
+	 */
+	void onPlanetColonized(Planet planet);
+	/**
 	 * Notification about a planet lost.
 	 * @param planet the planet lost (showing the current owner)
 	 */
