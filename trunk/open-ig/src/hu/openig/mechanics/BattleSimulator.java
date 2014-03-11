@@ -29,6 +29,7 @@ import hu.openig.model.InventorySlot;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.ResearchSubCategory;
+import hu.openig.model.ResearchType;
 import hu.openig.model.SpaceStrengths;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.World;
@@ -469,6 +470,20 @@ public final class BattleSimulator {
 		debug("Defender.Attack = %s%n", defender.attack);
 		debug("Defender.Defense = %s%n", defender.defense);
 
+//		double structureRatio = 1.0 * attacker.structures / defender.structures;
+		
+		double attackerAvgEcm = attacker.ecmCount > 0 ? 1.0 * attacker.ecmSum / attacker.ecmCount : 0.0;
+		double attackerAvgAntiEcm = attacker.antiEcmCount > 0 ? 1.0 * attacker.antiEcmSum / attacker.antiEcmCount : 0.0;
+		
+		double defenderAvgEcm = defender.ecmCount > 0 ? 1.0 * defender.ecmSum / defender.ecmCount : 0.0;
+		double defenderAvgAntiEcm = defender.antiEcmCount > 0 ? 1.0 * defender.antiEcmSum / defender.antiEcmCount : 0.0;
+
+		double defenderHitProb = world.battle.getAntiECMProbabilityAvg(world.difficulty, defenderAvgAntiEcm, attackerAvgEcm);
+		double attackerHitProb = world.battle.getAntiECMProbabilityAvg(world.difficulty, attackerAvgAntiEcm, defenderAvgEcm);
+		
+		attacker.defense = Math.max(1, attacker.defense - defender.onetimeAttack * defenderHitProb);
+		defender.defense = Math.max(1, defender.defense - attacker.onetimeAttack * attackerHitProb);
+		
 		double attackerTime = defender.defense / attacker.attack;
 		double defenderTime = attacker.defense / defender.attack;
 		
@@ -805,24 +820,35 @@ public final class BattleSimulator {
 	 * @return the strength
 	 */
 	static AttackDefense planetStrength(Planet p) {
-		double offense = 0;
-		double defense = 0;
+		AttackDefense d = new AttackDefense();
+		
 		for (InventoryItem ii : p.inventory.iterable()) {
 			if (ii.owner == p.owner) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
 						|| ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
-					defense += ii.hp * ii.count;
-					defense += ii.shield * ii.count;
+					d.defense += ii.hp * ii.count;
+					d.defense += ii.shield * ii.count;
+					d.structures += ii.count;
 					for (InventorySlot is : ii.slots.values()) {
 						if (is.type != null) {
 							BattleProjectile bp = p.owner.world.battle.projectiles.get(is.type.id);
 							if (bp != null) {
 								double dmg = bp.damage(p.owner);
 								if (bp.mode == Mode.BEAM) {
-									offense += ii.count * is.count * dmg * 1.0 / bp.delay;
-								} else {
-									offense += ii.count * dmg * 1.0 / bp.delay;
+									d.attack += 1.0 * ii.count * is.count * dmg / bp.delay;
+								} else 
+								if (bp.mode == Mode.ROCKET || bp.mode == Mode.MULTI_ROCKET) {
+									d.onetimeAttack += 1.0 * ii.count * is.count * dmg /*  / bp.delay */;
+									
 								}
+							}
+							if (is.type.has("anti-ecm")) {
+								d.antiEcmCount++;
+								d.antiEcmSum += is.type.getInt("anti-ecm");
+							}
+							if (is.type.has(ResearchType.PARAMETER_ECM)) {
+								d.ecmCount++;
+								d.ecmSum += is.type.getInt(ResearchType.PARAMETER_ECM);
 							}
 						}
 					}
@@ -836,22 +862,19 @@ public final class BattleSimulator {
 				if (b.isSpacewarOperational()) {
 					int hpMax = p.owner.world.getHitpoints(b.type, p.owner, true);
 					int hp = (int)(1L * b.hitpoints * hpMax / b.type.hitpoints);
-					defense += hp;
-					defense += hp * shieldValue / 100;
+					d.defense += hp;
+					d.defense += hp * shieldValue / 100;
 					
 					BattleGroundProjector bge = p.owner.world.battle.groundProjectors.get(b.type.id);
 					if (bge != null && bge.projectile != null) {
 						BattleProjectile pr = p.owner.world.battle.projectiles.get(bge.projectile);
-						offense += bge.damage(p.owner) * 1.0 / pr.delay;
+						d.attack += bge.damage(p.owner) * 1.0 / pr.delay;
 					}
-					
+					d.structures++;
 				}
 			}
 		}
 		
-		AttackDefense d = new AttackDefense();
-		d.attack = offense;
-		d.defense = defense;
 		return d;
 	}
 	/**
@@ -860,27 +883,35 @@ public final class BattleSimulator {
 	 * @return the strength
 	 */
 	static AttackDefense fleetStrength(Fleet f) {
-		double offense = 0;
-		double defense = 0;
+		AttackDefense d = new AttackDefense();
 		for (InventoryItem ii : f.inventory.iterable()) {
-			defense += ii.hp * ii.count;
-			defense += ii.shield * ii.count;
-			
+			d.defense += ii.hp * ii.count;
+			d.defense += ii.shield * ii.count;
+			d.structures += ii.count;
 			for (InventorySlot is : ii.slots.values()) {
 				if (is.type != null) {
 					BattleProjectile bp = f.owner.world.battle.projectiles.get(is.type.id);
 					if (bp != null) {
+						double dmg = bp.damage(ii.owner);
 						if (bp.mode == Mode.BEAM) {
-							double dmg = bp.damage(ii.owner);
-							offense += ii.count * is.count * dmg * 1.0 / bp.delay;
+							d.attack += 1.0 * ii.count * is.count * dmg / bp.delay;
+						} else 
+						if (bp.mode == Mode.ROCKET || bp.mode == Mode.MULTI_ROCKET
+						|| bp.mode == Mode.BOMB || bp.mode == Mode.VIRUS) {
+							d.onetimeAttack += 1.0 * ii.count * is.count * dmg /* / bp.delay*/;
 						}
+					}
+					if (is.type.has("anti-ecm")) {
+						d.antiEcmCount++;
+						d.antiEcmSum += is.type.getInt("anti-ecm");
+					}
+					if (is.type.has(ResearchType.PARAMETER_ECM)) {
+						d.ecmCount++;
+						d.ecmSum += is.type.getInt(ResearchType.PARAMETER_ECM);
 					}
 				}
 			}
 		}
-		AttackDefense d = new AttackDefense();
-		d.attack = offense;
-		d.defense = defense;
 		return d;
 	}
 	/**

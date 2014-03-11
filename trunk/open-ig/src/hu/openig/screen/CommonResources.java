@@ -512,6 +512,19 @@ public class CommonResources implements GameEnvironment {
 		return rl.get(name, ResourceType.VIDEO);
 	}
 	/**
+	 * Convenience method to return a video for the current language.
+	 * @param name the video name.
+	 * @param fallback fall back to english if not found?
+	 * @return the resource place for the video
+	 */
+	public ResourcePlace video(String name, boolean fallback) {
+		ResourcePlace rp = rl.get(name, ResourceType.VIDEO);
+		if (rp == null) {
+			rp = rl.getExactly("en", name, ResourceType.VIDEO);
+		}
+		return rp;
+	}
+	/**
 	 * Convenience method to return an audio for the current language.
 	 * @param name the video name.
 	 * @return the resource place for the video

@@ -3482,4 +3482,11 @@ public class World implements ModelLookup {
 	public boolean noFactoryLimit() {
 		return skirmishDefinition != null ? skirmishDefinition.noFactoryLimit : false;
 	}
+	/**
+	 * Check if the diplomacy option is available.
+	 * @return true if available
+	 */
+	public boolean hasDiplomacy() {
+		return getShip().positions.containsKey("*diplomacy");
+	}
 }

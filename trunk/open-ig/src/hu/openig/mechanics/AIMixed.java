@@ -264,4 +264,9 @@ public class AIMixed implements AIManager {
 		first.onAutoSpacewarStart(battle, str);
 		second.onAutoSpacewarStart(battle, str);
 	}
+	@Override
+	public void onPlanetColonized(Planet planet) {
+		first.onPlanetColonized(planet);
+		second.onPlanetColonized(planet);
+	}
 }

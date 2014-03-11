@@ -258,4 +258,9 @@ public class AIPirate implements AIManager {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void onPlanetColonized(Planet planet) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -843,4 +843,8 @@ public class AITrader implements AIManager {
 	public void setLastVisited(Fleet f, Planet p) {
 		lastVisitedPlanet.put(f, p);
 	}
+	@Override
+	public void onPlanetColonized(Planet planet) {
+		
+	}
 }

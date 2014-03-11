@@ -947,7 +947,7 @@ public class DatabaseScreen extends ScreenBase {
 		bridge.paintTo(g2, x0, y0);
 		info.paintTo(g2, x0, y0);
 		starmap.paintTo(g2, x0, y0);
-		if (commons.world().getShip().positions.containsKey("*diplomacy")) {
+		if (commons.world().hasDiplomacy()) {
 			diplomacy.paintTo(g2, x0, y0);
 		}
 		

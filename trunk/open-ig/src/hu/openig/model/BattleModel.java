@@ -188,4 +188,21 @@ public class BattleModel {
 		// default
 		return antiEcmLevel > ecmLevel ? 1d : antiEcmLevel < ecmLevel ? 0 : 0.5;
 	}
+	/**
+	 * Returns the probability that the given Anti-ECM leveled rocket fighting against the
+	 * given ECM leveled enemy will hit the target, given by the average levels.
+	 * @param diff the difficulty
+	 * @param antiEcmLevel the anti-ecm level
+	 * @param ecmLevel the ecm level
+	 * @return the hit probability
+	 */
+	public double getAntiECMProbabilityAvg(Difficulty diff, double antiEcmLevel, double ecmLevel) {
+		double lowLow = getAntiECMProbability(diff, (int)antiEcmLevel, (int)ecmLevel);
+		double highHigh = getAntiECMProbability(diff, (int)Math.ceil(antiEcmLevel), (int)Math.ceil(ecmLevel));
+		
+		double antiFrac = Math.ceil(antiEcmLevel) - (int)antiEcmLevel;
+		double frac = Math.ceil(ecmLevel) - (int)ecmLevel;
+		
+		return lowLow + (highHigh - lowLow) * (antiFrac + frac) / 2; // FIXME for now 
+	}
 }
