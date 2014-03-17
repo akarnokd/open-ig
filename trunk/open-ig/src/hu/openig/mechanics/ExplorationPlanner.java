@@ -201,6 +201,7 @@ public class ExplorationPlanner extends Planner {
 						controls.actionDeploySatellite(planet0, sat0);
 					}
 				});
+				world.lastSatelliteDeploy = world.now;
 				setLastSatelliteDeploy.invoke(world.now);
 				return true;
 			}
@@ -214,7 +215,7 @@ public class ExplorationPlanner extends Planner {
 			}
 			if (sat != null) {
 				if (buildFactoryFor(sat)) {
-					placeProductionOrder(sat, 10);
+					placeProductionOrder(sat, 1);
 				}
 				return true;
 			}
