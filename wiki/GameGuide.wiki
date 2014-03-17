@@ -381,3 +381,11 @@ If you run into difficult situations, want to skip parts or just want to poke ar
   * Thorin has 4 rockets, use them
   * If you saved the pirate in Mission 4, he will bring in help.
   * Try not to lose your fighters (you should have 6), since it could take time to replenish them in Level 2.
+
+=== Mission 6: Defend Achilles ===
+
+  * Pause the game immediately after the cutscene.
+  * Select the other planets, go into equipment (F4).
+  * Undeploy a few tanks.
+  * Switch to achilles via +/- keys. Deploy tanks to maximum.
+  * Unpause the game and let the Garthog land its force
