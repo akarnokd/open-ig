@@ -367,7 +367,7 @@ public class AttackPlanner extends Planner {
 		if (p.knowledge == PlanetKnowledge.OWNER) {
 			return 1;
 		}
-		double v = 0;
+		double v = 1;
 		if (p.knowledge.ordinal() >= PlanetKnowledge.STATIONS.ordinal()) {
 			for (AIInventoryItem ii : p.inventory) {
 				if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
@@ -380,12 +380,10 @@ public class AttackPlanner extends Planner {
 				if (b.type.kind.equals("Defensive") 
 						|| b.type.kind.equals("Gun")
 						|| b.type.kind.equals("Shield")) {
-					v += b.type.cost * 10;
-				} else {
 					v += b.type.cost;
 				}
 			}
-			v += p.statistics.vehicleMax * 50;
+			v += p.statistics.vehicleMax * 500;
 		}
 		return v;
 	}
