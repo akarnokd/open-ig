@@ -208,12 +208,12 @@ The better radar a planet has the faster satellites will be detected. The follow
 || Satellite (EASY) || infinite || 48 hours || 24 hours || 16 hours || 12 hours ||
 || Satellite (NORMAL) || infinite || 24 hours || 12 hours || 8 hours || 6 hours ||
 || Satellite (HARD) || infinite || 12 hours || 6 hours || 4 hours || 3 hours ||
-|| Spy Satellite 1 (EASY) || infinite || 96 hours || 48 hours || 32 hours || 24 hours ||
-|| Spy Satellite 1 (NORMAL) || infinite || 48 hours || 24 hours || 16 hours || 12 hours ||
-|| Spy Satellite 1 (HARD) || infinite || 24 hours || 12 hours || 8 hours || 6 hours ||
-|| Spy Satellite 2 (EASY) || infinite || 384 hours || 192 hours || 128 hours || 96 hours ||
-|| Spy Satellite 2 (NORMAL) || infinite || 192 hours || 96 hours || 64 hours || 48 hours ||
-|| Spy Satellite 2 (HARD) || infinite || 96 hours || 48 hours || 32 hours || 24 hours ||
+|| Spy Satellite 1 (EASY) || infinite || 432 hours || 216 hours || 144 hours || 72 hours ||
+|| Spy Satellite 1 (NORMAL) || infinite || 216 hours || 108 hours || 72 hours || 36 hours ||
+|| Spy Satellite 1 (HARD) || infinite || 108 hours || 54 hours || 36 hours || 18 hours ||
+|| Spy Satellite 2 (EASY) || infinite || 960 hours || 480 hours || 320 hours || 240 hours ||
+|| Spy Satellite 2 (NORMAL) || infinite || 480 hours || 240 hours || 160 hours || 120 hours ||
+|| Spy Satellite 2 (HARD) || infinite || 240 hours || 120 hours || 80 hours || 60 hours ||
 
 *Hubble 2* orbital radars placed around neighboring planets won't detect the devices if the target planet has no radar by itself (_you could say, they are much smaller than a fleet to be detectable_). 
 
