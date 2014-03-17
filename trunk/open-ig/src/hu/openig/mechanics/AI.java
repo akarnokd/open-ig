@@ -88,7 +88,9 @@ public class AI implements AIManager {
 	/** The list of actions to apply. */
 	final List<Action0> applyActions = new ArrayList<>();
 	/** The next attack date. */
-	Date nextAttack;
+	volatile Date nextAttack;
+	/** Last time a satellite was deployed. */
+	volatile Date lastSatelliteDeploy;
 	/**
 	 * Knowledge about a player's typical fleet strength based on encounters.
 	 * @author akarnokd, 2011.12.20.
@@ -126,6 +128,7 @@ public class AI implements AIManager {
 		world.assign(p);
 		
 		world.nextAttack = nextAttack;
+		world.lastSatelliteDeploy = lastSatelliteDeploy;
 	}
 	
 	@Override
@@ -543,6 +546,15 @@ public class AI implements AIManager {
 					Exceptions.add(ex);
 				}
 			}
+			
+			String lsd = attack.get("last-satellite-deploy", null);
+			if (lsd != null) {
+				try {
+					lastSatelliteDeploy = XElement.parseDateTime(lsd);
+				} catch (ParseException ex) {
+					Exceptions.add(ex);
+				}
+			}
 		}
 		strengths.clear();
 		for (XElement xstrengths : in.childrenWithName("strengths")) {
@@ -584,6 +596,9 @@ public class AI implements AIManager {
 		XElement xa = out.add("attack");
 		if (nextAttack != null) {
 			xa.set("next-attack", XElement.formatDateTime(nextAttack));
+		}
+		if (lastSatelliteDeploy != null) {
+			xa.set("last-satellite-deploy", XElement.formatDateTime(lastSatelliteDeploy));
 		}
 		
 		XElement xstrs = out.add("strengths");
@@ -711,7 +726,12 @@ public class AI implements AIManager {
 
 		planners.add(new ResearchPlanner(world, controls, exploration));
 		planners.add(new ColonizationPlanner(world, controls));
-		planners.add(new ExplorationPlanner(world, controls, exploration));
+		planners.add(new ExplorationPlanner(world, controls, exploration, new Action1<Date>() {
+			@Override
+			public void invoke(Date value) {
+				lastSatelliteDeploy = value;
+			}
+		}));
 		
 		int mix1 = planners.size();
 		planners.add(new EconomyPlanner(world, controls));

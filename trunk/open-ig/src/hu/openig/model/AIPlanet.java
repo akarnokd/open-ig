@@ -53,6 +53,8 @@ public class AIPlanet {
 	public TaxLevel tax;
 	/** The auto build state. */
 	public AutoBuild autoBuild;
+	/** Has any satellite of the current evaluating AI? */
+	public boolean hasSatelliteOfAI;
 	/**
 	 * Assign the necessary properties from a planet.
 	 * @param planet the target fleet
@@ -82,6 +84,8 @@ public class AIPlanet {
 		for (Building b : planet.surface.buildings.iterable()) {
 			buildings.add(new AIBuilding(b));
 		}
+		
+		hasSatelliteOfAI = hasSatelliteOf(world.player);
 		
 		placement = new PlacementHelper() {
 			@Override
@@ -223,5 +227,18 @@ public class AIPlanet {
 	@Override
 	public String toString() {
 		return planet.id;
+	}
+	/**
+	 * Checks if the planet has satellites of the given player.
+	 * @param p the other player
+	 * @return true if satellite present
+	 */
+	public boolean hasSatelliteOf(Player p) {
+		for (AIInventoryItem ii : inventory) {
+			if (ii.owner == p && ii.type.has(ResearchType.PARAMETER_DETECTOR)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
