@@ -346,8 +346,8 @@ If you run into difficult situations, want to skip parts or just want to poke ar
 || CTRL+I || Make the currently selected technology researched (if not already) and add 1 unit to the inventory ||
 || CTRL+O || Take ownership of the selected planet ||
 || CTRL+B || All known races will offer alliance (debug) ||
-|| CTRL+SHIFT+B || All known races will ask for surrender (debug) ||
-|| CTRL+SHIFT+J || All known races will offer 1000 credits (debug) ||
+|| CTRL+SHIFT+B || All known races will ask for/demand surrender (debug) ||
+|| CTRL+SHIFT+J || All known races will demand 1000 credits (debug) ||
 
 
 == Mission tips ==
