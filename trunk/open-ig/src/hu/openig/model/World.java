@@ -1701,7 +1701,7 @@ public class World implements ModelLookup {
 				pii.kills = xpii.getInt("kills", 0);
 				pii.killsCost = xpii.getLong("kills-cost", 0L);
 
-				int ttl = xpii.getInt("ttl", getSatelliteTTL(pii.type));
+				int ttl = xpii.getInt("ttl", getSatelliteTTL(pii.owner, pii.type));
 				if (ttl > 0) {
 					p.timeToLive.put(pii, ttl);
 				}
@@ -1825,33 +1825,40 @@ public class World implements ModelLookup {
 		}
 	}
 	/**
-	 * Retrieve the satellite TTL value.
+	 * Calculate the satellite TTL value.
+	 * @param owner the owner of the satellite
 	 * @param satellite the satellite type
 	 * @return the TTL in simulation steps
 	 */
-	public int getSatelliteTTL(ResearchType satellite) {
-		int radar = satellite.getInt(ResearchType.PARAMETER_DETECTOR, 0);
-		int ttl = 0;
-		switch (radar) {
-		case 1:
-			ttl = 12 * 6 * 4;
-			break;
-		case 2:
-			ttl = 24 * 6 * 2;
-			break;
-		case 3:
-			ttl = 96 * 6 * 4;
-			break;
-		default:
+	public int getSatelliteTTL(Player owner, ResearchType satellite) {
+		// find cheapest satellite
+		ResearchType minSatellite = null;
+		for (ResearchType rt : researches.values()) {
+			if (rt.has(ResearchType.PARAMETER_DETECTOR)) {
+				if (minSatellite == null || minSatellite.productionCost > rt.productionCost) {
+					minSatellite = rt;
+				}
+			}
 		}
-		switch (difficulty) {
-		case EASY:
-			ttl *= 4;
-			break;
-		case NORMAL:
-			ttl *= 2;
-			break;
-		default:
+		if (minSatellite == null || !satellite.has(ResearchType.PARAMETER_DETECTOR)) {
+			return 0;
+		}
+		
+		int ttl = 12 * 6 * 4 * satellite.productionCost / minSatellite.productionCost;
+		if (owner == player) {
+			if (difficulty == Difficulty.EASY) {
+				ttl *= 4;
+			} else
+			if (difficulty == Difficulty.NORMAL) {
+				ttl *= 2;
+			}
+		} else {
+			if (difficulty == Difficulty.HARD) {
+				ttl *= 4;
+			} else
+			if (difficulty == Difficulty.NORMAL) {
+				ttl *= 2;
+			}
 		}
 		return ttl;
 	}

@@ -116,7 +116,7 @@ public class DefaultAIControls implements AIControls {
 			ii.init();
 			ii.count = 1;
 			planet.inventory.add(ii);
-			int ttl = player.world.getSatelliteTTL(satellite);
+			int ttl = player.world.getSatelliteTTL(player, satellite);
 			if (ttl > 0) {
 				planet.timeToLive.put(ii, ttl);
 			}
@@ -150,7 +150,7 @@ public class DefaultAIControls implements AIControls {
 				ii.count = count;
 				ii.init();
 				planet.inventory.add(ii);
-				int ttl = player.world.getSatelliteTTL(fighter);
+				int ttl = player.world.getSatelliteTTL(player, fighter);
 				if (ttl > 0) {
 					planet.timeToLive.put(ii, ttl);
 				}
