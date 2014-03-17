@@ -1322,7 +1322,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 				ii.count += toDeploy;
 				
 				if (owner != this.owner) {
-					timeToLive.put(ii, world.getSatelliteTTL(rt));
+					timeToLive.put(ii, world.getSatelliteTTL(owner, rt));
 				}
 				
 				return Collections.singletonList(ii);
@@ -1336,7 +1336,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 				r.add(ii);
 
 				if (owner != this.owner) {
-					timeToLive.put(ii, world.getSatelliteTTL(rt));
+					timeToLive.put(ii, world.getSatelliteTTL(owner, rt));
 				}
 			}
 			return r;
