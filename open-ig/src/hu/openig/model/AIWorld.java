@@ -80,6 +80,8 @@ public class AIWorld {
 	public Date nextAttack;
 	/** The current date. */
 	public Date now;
+	/** Last time a satellite was deployed. */
+	public Date lastSatelliteDeploy;
 	/** The current difficulty. */
 	public Difficulty difficulty;
 	/** The current level. */

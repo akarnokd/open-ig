@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
+import hu.openig.core.Action1;
 import hu.openig.core.Location;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
@@ -32,6 +33,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,15 +46,20 @@ import java.util.Set;
 public class ExplorationPlanner extends Planner {
 	/** The exploration map. */
 	final ExplorationMap exploration;
+	/** Set the last satellite deploy date. */
+	final Action1<Date> setLastSatelliteDeploy;
 	/**
 	 * Constructor. Initializes the fields.
 	 * @param world the world object
 	 * @param controls the controls to affect the world in actions
 	 * @param exploration the exploration map
+	 * @param setLastSatelliteDeploy set the last satellite deploy date
 	 */
-	public ExplorationPlanner(AIWorld world, AIControls controls, ExplorationMap exploration) {
+	public ExplorationPlanner(AIWorld world, AIControls controls, ExplorationMap exploration,
+			Action1<Date> setLastSatelliteDeploy) {
 		super(world, controls);
 		this.exploration = exploration;
+		this.setLastSatelliteDeploy = setLastSatelliteDeploy;
 	}
 	@Override
 	public void plan() {
@@ -132,6 +139,11 @@ public class ExplorationPlanner extends Planner {
 	 * @return action taken?
 	 */
 	public boolean deploySatellites() {
+		if (world.lastSatelliteDeploy != null) {
+			if (world.now.getTime() - world.lastSatelliteDeploy.getTime() < 24L * 60 * 60 * 1000) {
+				return true;
+			}
+		}
 		List<AIPlanet> survey = new ArrayList<>(world.unknownPlanets);
 		survey.addAll(world.enemyPlanets);
 		
@@ -140,11 +152,18 @@ public class ExplorationPlanner extends Planner {
 		Collections.sort(survey, new Comparator<AIPlanet>() {
 			@Override
 			public int compare(AIPlanet o1, AIPlanet o2) {
+				if (o1.hasSatelliteOfAI && !o2.hasSatelliteOfAI) {
+					return 1;
+				} else
+				if (!o1.hasSatelliteOfAI && o2.hasSatelliteOfAI) {
+					return -1;
+				}
 				double d1 = Math.hypot(o1.planet.x - center.x, o1.planet.y - center.y);
 				double d2 = Math.hypot(o2.planet.x - center.x, o2.planet.y - center.y);
 				return d1 < d2 ? -1 : (d1 > d2 ? 1 : 0);
 			}
 		});
+		
 		// traverse all known planet and deploy satellites
 		outer:
 		for (final AIPlanet planet : survey) {
@@ -182,6 +201,7 @@ public class ExplorationPlanner extends Planner {
 						controls.actionDeploySatellite(planet0, sat0);
 					}
 				});
+				setLastSatelliteDeploy.invoke(world.now);
 				return true;
 			}
 			// find the best available detector
