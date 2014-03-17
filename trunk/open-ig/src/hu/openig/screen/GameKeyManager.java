@@ -465,10 +465,12 @@ public class GameKeyManager extends KeyAdapter {
 					if (world().hasDiplomacy()) {
 						Player p = world().player;
 						for (Player p0 : p.knownPlayers().keySet()) {
-							if (e.isShiftDown()) {
-								p.offers.put(p0.id, new DiplomaticOffer(CallType.RESIGN, ApproachType.HUMBLE));
-							} else {
-								p.offers.put(p0.id, new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE));
+							if (!p0.noDiplomacy) {
+								if (e.isShiftDown()) {
+									p.offers.put(p0.id, new DiplomaticOffer(CallType.RESIGN, ApproachType.HUMBLE));
+								} else {
+									p.offers.put(p0.id, new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE));
+								}
 							}
 						}
 						signalMessage(p);
@@ -532,13 +534,7 @@ public class GameKeyManager extends KeyAdapter {
 				// CHEAT: add more money
 				if (e.isControlDown()) {
 					if (e.isShiftDown()) {
-						Player p = world().player;
-						for (Player p0 : p.knownPlayers().keySet()) {
-							DiplomaticOffer dio = new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE);
-							dio.value(1000);
-							p.offers.put(p0.id, dio);
-						}
-						signalMessage(p);
+						world().player.addMoney(100000);
 					} else {
 						world().player.addMoney(10000);
 					}
@@ -551,17 +547,29 @@ public class GameKeyManager extends KeyAdapter {
 			case KeyEvent.VK_J:
 				// TOGGLE test AI on player
 				if (e.isControlDown()) {
-					Player p = world().player; 
-					if (p.aiMode == AIMode.NONE) {
-						p.aiMode = AIMode.TEST;
-						p.ai = new AITest();
-						p.ai.init(p);
-						System.out.println("Switching to TEST AI.");
+					if (e.isShiftDown()) {
+						Player p = world().player;
+						for (Player p0 : p.knownPlayers().keySet()) {
+							if (!p0.noDiplomacy) {
+								DiplomaticOffer dio = new DiplomaticOffer(CallType.ALLIANCE, ApproachType.HUMBLE);
+								dio.value(1000);
+								p.offers.put(p0.id, dio);
+							}
+						}
+						signalMessage(p);
 					} else {
-						p.aiMode = AIMode.NONE;
-						p.ai = new AIUser();
-						p.ai.init(p);
-						System.out.println("Switching to no AI.");
+						Player p = world().player; 
+						if (p.aiMode == AIMode.NONE) {
+							p.aiMode = AIMode.TEST;
+							p.ai = new AITest();
+							p.ai.init(p);
+							System.out.println("Switching to TEST AI.");
+						} else {
+							p.aiMode = AIMode.NONE;
+							p.ai = new AIUser();
+							p.ai.init(p);
+							System.out.println("Switching to no AI.");
+						}
 					}
 					
 					e.consume();
