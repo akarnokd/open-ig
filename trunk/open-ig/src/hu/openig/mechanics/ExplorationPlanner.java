@@ -288,17 +288,24 @@ public class ExplorationPlanner extends Planner {
 		final Point2D.Double fa = new Point2D.Double(bf.x, bf.y);
 		Set<Location> allowed = exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit);
 		Comparator<Location> distance = new Comparator<Location>() {
-			/** Returns the location's value. */
-			double locationValue(Location o) {
-				double dc = center.distance(exploration.toMapCenter(o));
-				double df = center.distance(fa);
-				return -df / bf.statistics.speed / dc;
-			}
 			@Override
 			public int compare(Location o1, Location o2) {
-				double v1 = locationValue(o1);
-				double v2 = locationValue(o2);
-				return v1 < v2 ? -1 : (v1 > v2 ? 1 : 0);
+				Point2D.Double ol1 = exploration.toMapCenter(o1);
+				Point2D.Double ol2 = exploration.toMapCenter(o2);
+				
+				double distanceToCenter1 = center.distance(ol1);
+				double distanceToCenter2 = center.distance(ol2);
+				double distanceToFleet1 = fa.distance(ol1);
+				double distanceToFleet2 = fa.distance(ol2);
+				
+				/*
+				double diff = Math.abs(distanceToFleet1 - distanceToFleet2);
+				if (diff < 0.01) {
+					return Double.compare(distanceToCenter1, distanceToCenter2);
+				}
+				return Double.compare(distanceToCenter1, distanceToCenter2);
+				*/
+				return Double.compare(distanceToCenter1 + distanceToFleet1, distanceToCenter2 + distanceToFleet2);
 			}
 		};
 		Location loc = null;
@@ -342,8 +349,8 @@ public class ExplorationPlanner extends Planner {
 			}
 		} else {
 			List<Location> ls = U.sort(allowed, distance);
-			if (ls.size() > 20) {
-				loc = ModelUtils.random(ls.subList(0, 20));
+			if (ls.size() > 30) {
+				loc = ModelUtils.random(ls.subList(0, 30));
 			} else {
 				loc = ModelUtils.random(ls);
 			}

@@ -413,6 +413,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					planet().weatherTTL = 0;
 					rep = true;
 				}
+				e.consume();
 			}
 			break;
 		case KeyEvent.VK_D:
@@ -431,6 +432,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				doMineLayerDeploy();
 				rep = true;
 			}
+			e.consume();
 			break;
 		case KeyEvent.VK_C:
 			if (e.isControlDown()) {
@@ -453,7 +455,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					currentBuilding.hitpoints = Math.min(currentBuilding.hitpoints, currentBuilding.type.hitpoints);
 				}
 				rep = true;
-				
+				e.consume();
 			}
 			break;
 		case KeyEvent.VK_B:

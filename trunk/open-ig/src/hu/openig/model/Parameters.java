@@ -25,6 +25,9 @@ public class Parameters {
 	/** The multiplier for radar-range in pixels for ground radars. */
 	@LoadField
 	protected int groundRadarUnitSize = 35;
+	/** The base radar range if there is no radar on the fleet. */
+	@LoadField
+	protected double fleetRadarlessMultiplier = 0.5;
 	/** The multiplier for radar-range in pixels for fleet radars. */
 	@LoadField
 	protected int fleetRadarUnitSize = 25;
@@ -109,6 +112,10 @@ public class Parameters {
 	 */
 	public int groundRadarUnitSize() {
 		return groundRadarUnitSize;
+	}
+	/** @return the multiplier for radarless fleets */
+	public double fleetRadarlessMultiplier() {
+		return fleetRadarlessMultiplier;
 	}
 	/**
 	 * @return the multiplier for radar-range in pixels for fleet radars

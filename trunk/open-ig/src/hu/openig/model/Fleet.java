@@ -223,10 +223,12 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 		
 		result.planet = nearbyPlanet();
 		
+		int rus = owner.world.params().fleetRadarUnitSize();
 		if (!inventory.isEmpty() && radar == 0) {
-			radar = 12;
+			radar = (int)(rus 
+					* owner.world.params().fleetRadarlessMultiplier());
 		} else {
-			radar *= owner.world.params().fleetRadarUnitSize();
+			radar *= rus;
 		}
 		this.radar = radar;
 		

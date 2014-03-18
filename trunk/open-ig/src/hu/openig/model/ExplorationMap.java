@@ -35,7 +35,12 @@ public class ExplorationMap {
 	 * @param p the player
 	 */
 	public ExplorationMap(Player p) {
-		int maxCellSize = (int)Math.floor(Math.sqrt(2) * p.world.params().fleetRadarUnitSize()) - 4;
+		int maxCellSize = (int)Math.floor(Math.sqrt(2) 
+				* p.world.params().fleetRadarUnitSize()
+				/* * p.world.params().fleetRadarlessMultiplier() */) - 4;
+		if (maxCellSize < 1) {
+			maxCellSize = 1;
+		}
 		int w = p.world.galaxyModel.map.getWidth();
 		int h = p.world.galaxyModel.map.getHeight();
 		rows = (int)Math.ceil(h * 1.0 / maxCellSize);

@@ -938,23 +938,30 @@ public abstract class Planner {
 	 * @return true if all planets are prepared
 	 */
 	public boolean checkPlanetPreparedness() {
+		boolean checkMoraleBuilding = true;
+		BuildingType btc = w.building("Church");
+		if (btc == null || !btc.tileset.containsKey(p.race)) {
+			checkMoraleBuilding = false;
+		}
 		for (AIPlanet p : world.ownPlanets) {
 			if (p.statistics.energyAvailable < p.statistics.energyDemand
 					|| p.statistics.energyAvailable == 0) {
 				return false;
 			}
-			boolean moraleOrPolice = false;
-			for (AIBuilding b : p.buildings) {
-				if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
-					if (b.hasResource(BuildingType.RESOURCE_MORALE)
-							|| b.hasResource(BuildingType.RESOURCE_POLICE)) {
-						moraleOrPolice = true;
-						break;
+			if (checkMoraleBuilding) {
+				boolean moraleOrPolice = false;
+				for (AIBuilding b : p.buildings) {
+					if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
+						if (b.hasResource(BuildingType.RESOURCE_MORALE)
+								|| b.hasResource(BuildingType.RESOURCE_POLICE)) {
+							moraleOrPolice = true;
+							break;
+						}
 					}
 				}
-			}
-			if (!moraleOrPolice) {
-				return false;
+				if (!moraleOrPolice) {
+					return false;
+				}
 			}
 		}
 		return true;
