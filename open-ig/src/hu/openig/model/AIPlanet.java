@@ -55,6 +55,8 @@ public class AIPlanet {
 	public AutoBuild autoBuild;
 	/** Has any satellite of the current evaluating AI? */
 	public boolean hasSatelliteOfAI;
+	/** The current race on the planet. */
+	public String race;
 	/**
 	 * Assign the necessary properties from a planet.
 	 * @param planet the target fleet
@@ -72,6 +74,7 @@ public class AIPlanet {
 		this.lastMorale = planet.lastMorale;
 		this.tax = planet.tax;
 		this.autoBuild = planet.autoBuild;
+		this.race = planet.race;
 		
 		for (InventoryItem ii : planet.inventory.iterable()) {
 			inventory.add(new AIInventoryItem(ii));

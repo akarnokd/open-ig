@@ -112,7 +112,7 @@ public class EconomyPlanner extends Planner {
 				return checkEconomy(planet, allowUpgrades);
 			}
 		});
-		if (world.money >= 50000) {
+		if (world.money >= 25000 && checkPlanetPreparedness()) {
 			functions.add(new Pred1<AIPlanet>() {
 				@Override
 				public Boolean invoke(AIPlanet planet) {
@@ -271,7 +271,7 @@ public class EconomyPlanner extends Planner {
 				&& planet.statistics.foodAvailable > planet.population
 				&& planet.statistics.hospitalAvailable > planet.population
 				&& planet.statistics.policeAvailable > planet.population) {
-			return manageBuildings(planet, finances, costOrderReverse, false);
+			return manageBuildings(planet, finances, costOrder, false);
 		}
 		return false;
 	}
@@ -282,6 +282,10 @@ public class EconomyPlanner extends Planner {
 	 * @return if action taken
 	 */
 	boolean checkFactory(AIPlanet planet, final boolean allowUpgrades) {
+		final boolean hasSpaceship = world.global.production.spaceship > 0;
+		final boolean hasEquipment = world.global.production.equipment > 0;
+		final boolean hasWeapon = world.global.production.weapons > 0;
+		final boolean hasAll = hasSpaceship && hasEquipment && hasWeapon;
 		BuildingSelector factory = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
@@ -292,9 +296,16 @@ public class EconomyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return  hasTechnologyFor(value, "spaceship") 
-						|| hasTechnologyFor(value, "equipment") 
-						|| hasTechnologyFor(value, "weapon");
+				if (hasTechnologyFor(value, "spaceship")) {
+					return !hasSpaceship || hasAll;
+				} else
+				if (hasTechnologyFor(value, "equipment")) {
+					return !hasEquipment || hasAll;
+				}
+				if (hasTechnologyFor(value, "weapon")) {
+					return !hasWeapon || hasAll;
+				}
+				return false;
 			}
 		};
 		if (planet.population > planet.statistics.workerDemand * 1.1
@@ -303,7 +314,7 @@ public class EconomyPlanner extends Planner {
 				&& planet.statistics.foodAvailable > planet.population
 				&& planet.statistics.hospitalAvailable > planet.population
 				&& planet.statistics.policeAvailable > planet.population) {
-			return manageBuildings(planet, factory, costOrderReverse, false);
+			return manageBuildings(planet, factory, costOrder, false);
 		}
 		return false;
 	}
@@ -334,17 +345,24 @@ public class EconomyPlanner extends Planner {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
 				
-				return value.type.kind.equals("Social") && value.hasResource("morale");
+				return value.type.kind.equals(BuildingType.KIND_SOCIAL) && value.hasResource(BuildingType.RESOURCE_MORALE);
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return  value.kind.equals("Social") && value.hasResource("morale") 
-						&& count(planet, value) < 1;
+				if (value.kind.equals(BuildingType.KIND_SOCIAL) 
+						&& value.hasResource(BuildingType.RESOURCE_MORALE) 
+						&& count(planet, value) < 1) {
+					if (value.id.equals("Stadium") && planet.population < 40000) {
+						return false;
+					}
+					return true;
+				}
+				return false;
 			}
 		};
 		if (planet.population > planet.statistics.workerDemand * 1.1
-				&& planet.statistics.energyAvailable * 1.1 > planet.statistics.energyDemand) {
-			return manageBuildings(planet, social, costOrderReverse, false);
+				&& checkPlanetPreparedness()) {
+			return manageBuildings(planet, social, costOrder, false);
 		}
 		return false;
 	}

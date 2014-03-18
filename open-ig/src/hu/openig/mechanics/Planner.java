@@ -25,6 +25,7 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.FleetTask;
 import hu.openig.model.GroundwarUnitType;
 import hu.openig.model.ModelUtils;
+import hu.openig.model.Planet;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.Player;
 import hu.openig.model.Production;
@@ -86,37 +87,39 @@ public abstract class Planner {
 		 */
 		int compare(BuildingType b1, BuildingType b2);
 	}
+	/**
+	 * Create a comparator from the building order object for the building type.
+	 * @param o the order
+	 * @return the comparator
+	 */
+	Comparator<BuildingType> fromOrderType(final BuildingOrder o) {
+		return new Comparator<BuildingType>() {
+			@Override
+			public int compare(BuildingType o1, BuildingType o2) {
+				return o.compare(o1, o2);
+			}
+		};
+	}
 	/** Default incremental cost-order. */
 	final BuildingOrder costOrder = new BuildingOrder() {
 		@Override
 		public int compare(AIBuilding o1, AIBuilding o2) {
-			int c = o1.type.cost < o2.type.cost ? -1 : (o1.type.cost > o2.type.cost ? 1 : 0);
+			int c = BuildingType.COST.compare(o1.type, o2.type);
 			if (c == 0) {
-				c = o2.upgradeLevel - o1.upgradeLevel;
+				c = Integer.compare(o1.upgradeLevel, o2.upgradeLevel);
 			}
 			return c;
 		}
 		@Override
 		public int compare(BuildingType o1, BuildingType o2) {
-			return o1.cost < o2.cost ? -1 : (o1.cost > o2.cost ? 1 : 0);
-		}
-	};
-	/** Default incremental decremental cost order. */
-	final BuildingOrder costOrderReverse = new BuildingOrder() {
-		@Override
-		public int compare(AIBuilding o1, AIBuilding o2) {
-			return o1.type.cost < o2.type.cost ? -1 : (o1.type.cost > o2.type.cost ? 1 : 0);
-		}
-		@Override
-		public int compare(BuildingType o1, BuildingType o2) {
-			return o1.cost < o2.cost ? 1 : (o1.cost > o2.cost ? -1 : 0);
+			return Integer.compare(o1.cost, o2.cost);
 		}
 	};
 	/** Compares planets and chooses the worst overall condition. */
 	public static final Comparator<AIPlanet> WORST_PLANET = new Comparator<AIPlanet>() {
 		@Override
 		public int compare(AIPlanet o1, AIPlanet o2) {
-			return status(o2) - status(o1);
+			return Integer.compare(status(o1), status(o2));
 		}
 		/** 
 		 * Computes the health status.
@@ -374,7 +377,7 @@ public abstract class Planner {
 		for (final AIBuilding b : planet.buildings) {
 			if (selector.accept(planet, b) && b.canUpgrade() && !b.isDamaged() 
 					&& b.type.cost <= world.money) {
-				if (upgrade == null || order.compare(upgrade, b) < 0) {
+				if (upgrade == null || order.compare(b, upgrade) < 0) {
 					upgrade = b;
 				}
 			}
@@ -404,7 +407,7 @@ public abstract class Planner {
 			final BuildingSelector selector,
 			final BuildingOrder order) {
 		// try building a new one
-		BuildingType create = null;
+		List<BuildingType> createCandidates = new ArrayList<>();
 		int moneyFor = 0;
 		int locationFor = 0;
 		for (final BuildingType bt : w.buildingModel.buildings.values()) {
@@ -413,24 +416,55 @@ public abstract class Planner {
 					moneyFor++;
 					if (planet.findLocation(bt) != null) {
 						locationFor++;
-						if (create == null || order.compare(create, bt) < 0) {
-							create = bt;
-						}
+						createCandidates.add(bt);
 					}
 				}
 			}
 		}
-		if (create != null) {
-			final BuildingType fcreate = create;
-			world.money -= fcreate.cost;
+		Collections.sort(createCandidates, fromOrderType(order));
+		if (!createCandidates.isEmpty()) {
+			// build all types round-robin
+			int maxOfType = Collections.max(builtCounts(createCandidates, planet));
+			for (final BuildingType bt : createCandidates) {
+				if (count(planet, bt) < maxOfType) {
+					world.money -= bt.cost;
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionPlaceBuilding(planet.planet, bt);
+						}
+					});
+					
+					AIBuilding b = new AIBuilding(new Building(-1, bt, planet.race));
+					planet.buildings.add(b);
+
+					Planet.updateStatistics(planet.statistics, planet.owner, b.building);
+					Planet.updateStatistics(world.global, planet.owner, b.building);
+					
+					return AIResult.SUCCESS;
+				}
+			}
+			// if all building counts are equal, just build the first one
+			final BuildingType bt = createCandidates.get(0);
+			world.money -= bt.cost;
+			if (bt.id.equals("Stadium")) {
+				System.out.println();
+			}
 			add(new Action0() {
 				@Override
 				public void invoke() {
-					controls.actionPlaceBuilding(planet.planet, fcreate);
+					controls.actionPlaceBuilding(planet.planet, bt);
 				}
 			});
+
+			AIBuilding b = new AIBuilding(new Building(-1, bt, planet.race));
+			planet.buildings.add(b);
+			Planet.updateStatistics(planet.statistics, planet.owner, b.building);
+			Planet.updateStatistics(world.global, planet.owner, b.building);
+			
 			return AIResult.SUCCESS;
 		}
+		
 		if (locationFor == 0) {
 			return AIResult.NO_ROOM;
 		} else
@@ -438,6 +472,19 @@ public abstract class Planner {
 			return AIResult.NO_MONEY;
 		}
 		return AIResult.NO_AVAIL;
+	}
+	/**
+	 * Calculate the number of buildings built given by the types.
+	 * @param bts the building types to count
+	 * @param planet the target planet
+	 * @return the counts, in the same order as bts
+	 */
+	List<Integer> builtCounts(Iterable<BuildingType> bts, AIPlanet planet) {
+		List<Integer> result = new ArrayList<>();
+		for (BuildingType bt : bts) {
+			result.add(count(planet, bt));
+		}
+		return result;
 	}
 	/**
 	 * Try to choose a repair option.
@@ -922,5 +969,29 @@ public abstract class Planner {
 			}
 		}
 		return result;
+	}
+	/**
+	 * Check if all planets are ready for building factories and labs.
+	 * @return true if all planets are prepared
+	 */
+	public boolean checkPlanetPreparedness() {
+		for (AIPlanet p : world.ownPlanets) {
+			if (p.statistics.energyAvailable < p.statistics.energyDemand
+					|| p.statistics.energyAvailable == 0) {
+				return false;
+			}
+			boolean moraleOrPolice = false;
+			for (AIBuilding b : p.buildings) {
+				if (b.hasResource(BuildingType.RESOURCE_MORALE)
+						|| b.hasResource(BuildingType.RESOURCE_POLICE)) {
+					moraleOrPolice = true;
+					break;
+				}
+			}
+			if (!moraleOrPolice) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

@@ -409,7 +409,7 @@ public class ColonizationPlanner extends Planner {
 			public boolean accept(AIPlanet planet, BuildingType buildingType) {
 				return buildingType == bt && count(planet, bt) < 1;
 			}
-		}, costOrderReverse, false);
+		}, costOrder, false);
 	}
 	/**
 	 * Deploy a colony ship from inventory.

@@ -241,12 +241,12 @@ public class StaticDefensePlanner extends Planner {
 		
 		for (AIBuilding b : planet.buildings) {
 			if (b.isComplete()) {
-				hasMultiply |= b.hasResource("multiply");
-				hasCredit |= b.hasResource("credit");
-				hasRadar |= b.hasResource("radar");
-				hasSocial |= b.hasResource("morale");
-				hasPolice |= b.hasResource("police");
-				hasHospital |= b.hasResource("hospital");
+				hasMultiply |= b.hasResource(BuildingType.RESOURCE_MULTIPLY);
+				hasCredit |= b.hasResource(BuildingType.RESOURCE_CREDIT);
+				hasRadar |= b.hasResource(BuildingType.RESOURCE_RADAR);
+				hasSocial |= b.hasResource(BuildingType.RESOURCE_MORALE);
+				hasPolice |= b.hasResource(BuildingType.RESOURCE_POLICE);
+				hasHospital |= b.hasResource(BuildingType.RESOURCE_HOSPITAL);
 				hasTrade |= b.type.id.equals("TradeCenter");
 			}
 		}

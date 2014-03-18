@@ -144,6 +144,10 @@ public class ResearchPlanner extends Planner {
 		boolean noroom = false;
 		// find an empty planet
 		List<AIPlanet> ps = new ArrayList<>(world.ownPlanets);
+		// don't build if there is an energy shortage anywhere
+		if (!checkPlanetPreparedness()) {
+			return;
+		}
 		if (world.noLabLimit) {
 			Collections.sort(ps, LABS_INCREASING);
 		}
@@ -294,6 +298,7 @@ public class ResearchPlanner extends Planner {
 			if (bt.cost <= world.money) {
 				Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
 				if (pt != null) {
+					world.money -= bt.cost;
 					applyActions.add(new Action0() {
 						@Override
 						public void invoke() {
