@@ -53,11 +53,18 @@ public class ColonyPlanner extends Planner {
 	final BuildingSelector morale = new BuildingSelector() {
 		@Override
 		public boolean accept(AIPlanet planet, AIBuilding value) {
-			return value.hasResource("morale");
+			return value.hasResource(BuildingType.RESOURCE_MORALE);
 		}
 		@Override
 		public boolean accept(AIPlanet planet, BuildingType value) {
-			return value.hasResource("morale") && count(planet, value) < 1;
+			if (value.hasResource(BuildingType.RESOURCE_MORALE) && count(planet, value) < 1) {
+				// don't build stadium if the morale is moderate and population is low
+				if ("Stadium".equals(value.id)) {
+					return planet.morale < 25 || planet.population >= 40000;
+				}
+				return true;
+			}
+			return false;
 		}
 	};
 	/** The living space selector. */
@@ -327,7 +334,7 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("repair") && count(planet, value) < 1;
 			}
 		};
-		if (planet.population >= 30000 && planet.population > planet.statistics.workerDemand * 1.1) {
+		if (planet.population >= 28000 && planet.population > planet.statistics.workerDemand * 1.1) {
 			return manageBuildings(planet, fire, costOrder, true);
 		}
 		return false;
@@ -341,11 +348,12 @@ public class ColonyPlanner extends Planner {
 		BuildingSelector growth = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
-				return value.hasResource("population-growth");
+				return value.hasResource(BuildingType.RESOURCE_POPULATION_GROWTH);
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return value.hasResource("population-growth") && count(planet, value) < 1;
+				return value.hasResource(BuildingType.RESOURCE_POPULATION_GROWTH) 
+						&& count(planet, value) < 1;
 			}
 		};
 		if (planet.population >= 7500 
@@ -447,31 +455,53 @@ public class ColonyPlanner extends Planner {
 	 * @return action taken 
 	 */
 	boolean checkMorale(final AIPlanet planet) {
+		if (!world.isNewDay) {
+			return false;
+		}
 		double moraleNow = planet.morale;
 		double moraleLast = planet.lastMorale;
 		// only if there is energy available
 		if (planet.statistics.energyAvailable >= planet.statistics.energyDemand * 1.1) {
 			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
-				if (boostMoraleWithBuilding(planet, false)) {
+				if (manageBuildings(planet, morale, costOrder, true)) {
 					return true;
 				}
 			}
 			if (moraleNow < 50 && moraleLast < 50 && planet.population <= 5000) {
-				BuildingType booster = null;
+				
+				List<BuildingType> candidates = new ArrayList<>();
+				
 				for (BuildingType bt : w.buildingModel.buildings.values()) {
-					if (planet.canBuild(bt) && bt.cost < world.money && bt.hasResource("morale")) {
-						if (booster == null || booster.cost > bt.cost) {
-							booster = bt;
-						}
+					if (bt.cost < world.money
+							&& morale.accept(planet, bt)
+							&& planet.canBuild(bt)
+							&& planet.findLocation(bt) != null
+							) {
+						candidates.add(bt);
 					}
 				}
-				if (booster != null && count(planet, booster) < 1) {
-					if (planet.findLocation(booster) != null) {
-						final BuildingType fbooster = booster;
+				
+				Collections.sort(candidates, BuildingType.COST);
+				
+				if (!checkPlanetPreparedness() && !candidates.isEmpty()) {
+					final BuildingType bt = candidates.get(0);
+					world.money -= bt.cost;
+					add(new Action0() {
+						@Override
+						public void invoke() {
+							controls.actionPlaceBuilding(planet.planet, bt);
+						}
+					});
+					return true;
+				}
+				
+				for (final BuildingType bt : candidates) {
+					if (count(planet, bt) < 1) {
+						world.money -= bt.cost;
 						add(new Action0() {
 							@Override
 							public void invoke() {
-								controls.actionPlaceBuilding(planet.planet, fbooster);
+								controls.actionPlaceBuilding(planet.planet, bt);
 							}
 						});
 						return true;
@@ -480,15 +510,6 @@ public class ColonyPlanner extends Planner {
 			}
 		}
 		return false;
-	}
-	/**
-	 * Try building/upgrading a morale boosting building.
-	 * @param planet the target planet
-	 * @param cheap use reverse cost order?
-	 * @return if action taken
-	 */
-	boolean boostMoraleWithBuilding(final AIPlanet planet, boolean cheap) {
-		return manageBuildings(planet, morale, cheap ? costOrderReverse : costOrder, true);
 	}
 	/** 
 	 * Ensure that no living space shortage present.
@@ -572,7 +593,9 @@ public class ColonyPlanner extends Planner {
 	List<AIBuilding> disableCandidates(AIPlanet planet) {
 		List<AIBuilding> result = new ArrayList<>();
 		for (AIBuilding b : planet.buildings) {
-			if (b.enabled && b.isComplete() && !b.type.kind.equals("MainBuilding") && b.getEnergy() < 0) {
+			if (b.enabled && b.isComplete() 
+					&& !b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING) 
+					&& b.getEnergy() < 0) {
 				result.add(b);
 			}
 		}
@@ -633,11 +656,11 @@ public class ColonyPlanner extends Planner {
 				BuildingSelector moraleGrowth = new BuildingSelector() {
 					@Override
 					public boolean accept(AIPlanet planet, AIBuilding value) {
-						return value.hasResource("morale") || value.hasResource("population-growth");
+						return value.hasResource(BuildingType.RESOURCE_MORALE) || value.hasResource(BuildingType.RESOURCE_POPULATION_GROWTH);
 					}
 					@Override
 					public boolean accept(AIPlanet planet, BuildingType value) {
-						return (value.hasResource("morale") || value.hasResource("population-growth")) 
+						return (value.hasResource(BuildingType.RESOURCE_MORALE) || value.hasResource(BuildingType.RESOURCE_POPULATION_GROWTH)) 
 								&& count(planet, value) < 1;
 					}
 				};
@@ -782,6 +805,7 @@ public class ColonyPlanner extends Planner {
 				world.money = 0L; // do not let money-related tasks to continue
 				return true;
 			}
+			world.money -= bt.cost;
 			add(new Action0() {
 				@Override
 				public void invoke() {

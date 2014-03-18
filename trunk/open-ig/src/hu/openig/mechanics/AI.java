@@ -91,6 +91,8 @@ public class AI implements AIManager {
 	volatile Date nextAttack;
 	/** Last time a satellite was deployed. */
 	volatile Date lastSatelliteDeploy;
+	/** Indicates that a new day has passed. */
+	boolean isNewDay;
 	/**
 	 * Knowledge about a player's typical fleet strength based on encounters.
 	 * @author akarnokd, 2011.12.20.
@@ -129,6 +131,9 @@ public class AI implements AIManager {
 		
 		world.nextAttack = nextAttack;
 		world.lastSatelliteDeploy = lastSatelliteDeploy;
+		
+		world.isNewDay = isNewDay;
+		isNewDay = false;
 	}
 	
 	@Override
@@ -523,6 +528,7 @@ public class AI implements AIManager {
 			int fid = xf.getInt("fleet");
 			defensiveTask.add(fid);
 		}
+		isNewDay = in.getBoolean("is-new-day", true);
 		// restore exploration map
 		for (XElement xloc : in.childrenWithName("exploration-map")) {
 			exploration.map.clear();
@@ -582,6 +588,7 @@ public class AI implements AIManager {
 			XElement xf = out.add("task-defensive");
 			xf.set("fleet", f);
 		}
+		out.set("is-new-day", isNewDay);
 		XElement xloc = out.add("exploration-map");
 		StringBuilder coords = new StringBuilder();
 		for (Location loc : exploration.map) {
@@ -668,7 +675,7 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void onNewDay() {
-
+		isNewDay = true;
 	}
 	@Override
 	public void onSatelliteDestroyed(Planet planet, InventoryItem ii) {

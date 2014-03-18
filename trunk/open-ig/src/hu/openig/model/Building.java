@@ -384,7 +384,7 @@ public class Building implements HasLocation {
 	public static final Comparator<Building> COMPARE_COST = new Comparator<Building>() {
 		@Override
 		public int compare(Building o1, Building o2) {
-			return Integer.compare(o1.type.cost, o2.type.cost);
+			return BuildingType.COST.compare(o1.type, o2.type);
 		}
 	};
 }

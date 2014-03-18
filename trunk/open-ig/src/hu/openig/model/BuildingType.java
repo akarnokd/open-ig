@@ -10,6 +10,7 @@ package hu.openig.model;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +54,37 @@ public class BuildingType {
 	public BuildingMinimapTiles minimapTiles;
 	/** The vehicle resource type. */
 	public static final String RESOURCE_VEHICLES = "vehicles";
+	/** Morale resource type. */
+	public static final String RESOURCE_MORALE = "morale";
+	/** Population growth resource type. */
+	public static final String RESOURCE_POPULATION_GROWTH = "population-growth";
+	/** Radar resource. */
+	public static final String RESOURCE_RADAR = "radar";
+	/** Credit resource. */
+	public static final String RESOURCE_CREDIT = "credit";
+	/** Multiply resource. */
+	public static final String RESOURCE_MULTIPLY = "multiply";
+	/** Police resource. */
+	public static final String RESOURCE_POLICE = "police";
+	/** Hospital resource. */
+	public static final String RESOURCE_HOSPITAL = "hospital";
+	/** Kind constant. */
+	public static final String KIND_SOCIAL = "Social";
+	/** Kind constant. */
+	public static final String KIND_DEFENSIVE = "Defensive";
+	/** Kind constant. */
+	public static final String KIND_GUN = "Gun";
+	/** Kind constant. */
+	public static final String KIND_MAIN_BUILDING = "MainBuilding";
+	/** Kind constant. */
+	public static final String KIND_FACTORY = "Factory";
+	/** Comparator for ascending cost. */
+	public static final Comparator<BuildingType> COST = new Comparator<BuildingType>() {
+		@Override
+		public int compare(BuildingType o1, BuildingType o2) {
+			return Integer.compare(o1.cost, o2.cost);
+		}
+	};
 	/**
 	 * Check if a given resource is present.
 	 * @param resource the resource name

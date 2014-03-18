@@ -2998,6 +2998,12 @@ public class World implements ModelLookup {
 					p.changeInventoryCount(rt, 1);
 					List<InventoryItem> iis = f.deployItem(rt, f.owner, 1);
 					fleetAddRadar(p, iis);
+					
+					// add as many satellites as there were colony ships to help jumpstart first colonizations
+					rt = researches.get("Satellite");
+					if (rt != null) {
+						p.changeInventoryCount(rt, skirmishDefinition.initialColonyShips);
+					}
 				}
 				
 				createStartingFleet(p);

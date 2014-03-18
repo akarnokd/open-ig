@@ -82,6 +82,8 @@ public class AIWorld {
 	public Date now;
 	/** Last time a satellite was deployed. */
 	public Date lastSatelliteDeploy;
+	/** Set to true on the first call when a day has passed. */
+	public boolean isNewDay;
 	/** The current difficulty. */
 	public Difficulty difficulty;
 	/** The current level. */

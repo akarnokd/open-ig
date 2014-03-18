@@ -13,6 +13,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.model.AutoBuild;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
+import hu.openig.model.BuildingType;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetMode;
@@ -332,21 +333,21 @@ public final class Simulator {
 				result = true;
 			}
 			if (Building.isOperational(eff)) {
-				if (b.hasResource("credit")) {
-					tradeIncome += b.getResource("credit") * eff;
+				if (b.hasResource(BuildingType.RESOURCE_CREDIT)) {
+					tradeIncome += b.getResource(BuildingType.RESOURCE_CREDIT) * eff;
 				}
-				if (b.hasResource("multiply")) {
-					multiply = b.getResource("multiply") * eff;
+				if (b.hasResource(BuildingType.RESOURCE_MULTIPLY)) {
+					multiply = b.getResource(BuildingType.RESOURCE_MULTIPLY) * eff;
 				}
-				if (b.hasResource("morale")) {
-					moraleBoost += b.getResource("morale") * eff;
+				if (b.hasResource(BuildingType.RESOURCE_MORALE)) {
+					moraleBoost += b.getResource(BuildingType.RESOURCE_MORALE) * eff;
 				}
-				if (b.hasResource("radar")) {
-					radar = Math.max(radar, (int)b.getResource("radar"));
+				if (b.hasResource(BuildingType.RESOURCE_RADAR)) {
+					radar = Math.max(radar, (int)b.getResource(BuildingType.RESOURCE_RADAR));
 				}
 			}
 			if (planet.earthQuakeTTL > 0) {
-				if (b.type.kind.equals("Factory")) {
+				if (b.type.kind.equals(BuildingType.KIND_FACTORY)) {
 					b.hitpoints -= Math.max(b.type.hitpoints * 15L * speed / 6000, 1);
 				} else
 				if (b.getEnergy() <= 0) {

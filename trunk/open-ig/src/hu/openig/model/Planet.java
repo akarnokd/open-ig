@@ -185,7 +185,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param eff the efficiency
 	 * @param trs the traits
 	 */
-	protected void addProduction(ProductionStatistics out, Building b, 
+	protected static void addProduction(ProductionStatistics out, Building b, 
 			double eff, Traits trs) {
 		if (b.hasResource("spaceship")) {
 			double value = b.getResource("spaceship") * eff;
@@ -219,7 +219,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param out the the output lab statistics
 	 * @param b the buildings
 	 */
-	protected void addLabs(LabStatistics out, Building b) {
+	protected static void addLabs(LabStatistics out, Building b) {
 		if (b.hasResource("civil")) {
 			out.civil += b.getResource("civil");
 		}
@@ -268,77 +268,19 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		result.vehicleMax = 8; // default per planet
 		
 		for (Building b : surface.buildings.iterable()) {
-			double eff = b.getEfficiency();
-			if (b.isConstructing()) {
-				result.constructing = true;
-			}
-			if (Building.isOperational(eff)) {
-				if (b.hasResource("house")) {
-					result.houseAvailable += b.getResource("house") * eff;
-				}
-				if (b.hasResource("food")) {
-					result.foodAvailable += b.getResource("food") * eff;
-				}
-				if (b.hasResource("police")) {
-					result.policeAvailable += b.getResource("police") * eff;
-				}
-				if (b.hasResource("hospital")) {
-					result.hospitalAvailable += b.getResource("hospital") * eff;
-				}
-				
-				addProduction(result.activeProduction, b, eff, owner.traits);
-				
-				addLabs(result.activeLabs, b);
-				
-				if (b.hasResource("radar")) {
-					radar = Math.max(radar, (int)b.getResource("radar"));
-				}
-				if (b.type.id.equals("Stadium")) {
-					stadiumCount++;
-				}
-				if (b.type.id.equals("FireBrigade")) {
-					fireBrigadeCount++;
-				}
-				if (b.hasResource("repair")) {
-					result.freeRepair = Math.max(b.getResource("repair"), result.freeRepair);
-					result.freeRepairEff = Math.max(eff, result.freeRepairEff);
-				}
-				colonyHubOperable |= "MainBuilding".equals(b.type.kind);
-				if ("TradersSpaceport".equals(b.type.id)) {
-					result.hasTradersSpaceport = true;
-				}
-				if ("MilitarySpaceport".equals(b.type.id)) {
-					result.hasMilitarySpaceport = true;
-				}
-				if (b.hasResource(BuildingType.RESOURCE_VEHICLES)) {
-					result.vehicleMax += b.getResource(BuildingType.RESOURCE_VEHICLES);
-				}
-				if (b.hasResource("population-growth")) {
-					result.populationGrowthModifier = 1 + b.getResource("population-growth") / 100;
-				}
+			updateStatistics(result, owner, b);
 
+			if (b.hasResource("radar")) {
+				radar = Math.max(radar, (int)b.getResource("radar"));
 			}
-			if ("MilitarySpaceport".equals(b.type.id)) {
-				result.militarySpaceportCount = 1;
+			if (b.type.id.equals("Stadium")) {
+				stadiumCount++;
 			}
-			
-			addProduction(result.production, b, 1d, owner.traits);
-			
-			addLabs(result.labs, b);
-			
-			float health = b.hitpoints * 1.0f / b.type.hitpoints;
-			if (b.isReady()) {
-				// consider the damage level
-				result.workerDemand += Math.abs(b.getWorkers()) * health;
-				int e = b.getEnergy();
-				if (e < 0) {
-					result.energyDemand += -e * health;
-				} else {
-					result.energyAvailable += e;
-				}
+			if (b.type.id.equals("FireBrigade")) {
+				fireBrigadeCount++;
 			}
-			result.nativeWorkerDemand += Math.abs(b.getWorkers()) * health;
-			
+			colonyHubOperable |= "MainBuilding".equals(b.type.kind);
+
 			damage |= b.isDamaged();
 			buildup |= b.isConstructing();
 			colonyHub |= "MainBuilding".equals(b.type.kind) && !b.isConstructing();
@@ -1667,5 +1609,73 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	@Override
 	public double y() {
 		return y;
+	}
+	/**
+	 * Update the planet statistics from the properties of the building.
+	 * @param result the output statistics
+	 * @param owner the owner of the building
+	 * @param b the building
+	 */
+	public static void updateStatistics(PlanetStatistics result, Player owner, Building b) {
+		double eff = b.getEfficiency();
+		if (b.isConstructing()) {
+			result.constructing = true;
+		}
+		if (Building.isOperational(eff)) {
+			if (b.hasResource("house")) {
+				result.houseAvailable += b.getResource("house") * eff;
+			}
+			if (b.hasResource("food")) {
+				result.foodAvailable += b.getResource("food") * eff;
+			}
+			if (b.hasResource("police")) {
+				result.policeAvailable += b.getResource("police") * eff;
+			}
+			if (b.hasResource("hospital")) {
+				result.hospitalAvailable += b.getResource("hospital") * eff;
+			}
+			
+			addProduction(result.activeProduction, b, eff, owner.traits);
+			
+			addLabs(result.activeLabs, b);
+			
+			if (b.hasResource("repair")) {
+				result.freeRepair = Math.max(b.getResource("repair"), result.freeRepair);
+				result.freeRepairEff = Math.max(eff, result.freeRepairEff);
+			}
+			if ("TradersSpaceport".equals(b.type.id)) {
+				result.hasTradersSpaceport = true;
+			}
+			if ("MilitarySpaceport".equals(b.type.id)) {
+				result.hasMilitarySpaceport = true;
+			}
+			if (b.hasResource(BuildingType.RESOURCE_VEHICLES)) {
+				result.vehicleMax += b.getResource(BuildingType.RESOURCE_VEHICLES);
+			}
+			if (b.hasResource("population-growth")) {
+				result.populationGrowthModifier = 1 + b.getResource("population-growth") / 100;
+			}
+
+		}
+		if ("MilitarySpaceport".equals(b.type.id)) {
+			result.militarySpaceportCount = 1;
+		}
+		
+		addProduction(result.production, b, 1d, owner.traits);
+		
+		addLabs(result.labs, b);
+		
+		float health = b.hitpoints * 1.0f / b.type.hitpoints;
+		if (b.isReady()) {
+			// consider the damage level
+			result.workerDemand += Math.abs(b.getWorkers()) * health;
+			int e = b.getEnergy();
+			if (e < 0) {
+				result.energyDemand += -e * health;
+			} else {
+				result.energyAvailable += e;
+			}
+		}
+		result.nativeWorkerDemand += Math.abs(b.getWorkers()) * health;		
 	}
 }
