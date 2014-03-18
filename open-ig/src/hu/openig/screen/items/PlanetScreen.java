@@ -6373,7 +6373,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			int n = (int)(a2 / step);
 			alpha = step * n + Tile.MIN_ALPHA;
 		}
-		if (planet().weatherTTL > 0) {
+		if (config.allowWeather && planet().weatherTTL > 0) {
 			alpha = Math.max(Tile.MIN_ALPHA, alpha - 0.3f);
 		}
 	}
