@@ -148,7 +148,8 @@ public class ResearchPlanner extends Planner {
 		if (!checkPlanetPreparedness()) {
 			return;
 		}
-		if (!world.global.production.allBuilt()) {
+		if (world.global.production.spaceship == 0
+				|| world.global.production.weapons == 0) {
 			return;
 		}
 		if (world.noLabLimit) {

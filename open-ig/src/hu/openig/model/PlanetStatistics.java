@@ -86,10 +86,6 @@ public class PlanetStatistics {
 				return 0;
 			}
 		}
-		/** @return check if all building types were built. */
-		public boolean allBuilt() {
-			return spaceship > 0 && equipment > 0 && weapons > 0;
-		}
 	}
 	/** The available houses. */
 	public int houseAvailable;
