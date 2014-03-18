@@ -38,7 +38,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
@@ -465,6 +464,19 @@ public abstract class Planner {
 		return false;
 	}
 	/**
+	 * Limit the production of items based on the current production capacity.
+	 * @param rt the technology
+	 * @param produce the number of items expected to be produced
+	 * @return the adjusted production count
+	 */
+	public int limitProduction(ResearchType rt, int produce) {
+		int pc = world.global.production.forResearch(rt);
+		if (rt.productionCost * produce >= pc) {
+			produce = pc / rt.productionCost + 1;  // FIXME don't produce too much
+		}
+		return produce;
+	}
+	/**
 	 * Place a production order of the given count,
 	 * if not enough slots available, the cheapest and/or finished production will be replaced.
 	 * @param rt the research type
@@ -794,48 +806,6 @@ public abstract class Planner {
 			Production pr = world.productions.get(rt);
 			if (pr != null && pr.count > 0) {
 				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * Check if the inventory holds the demand amount of any item
-	 * and if not, issue a production order.
-	 * @param demand the technology and demand
-	 * @return true if action taken
-	 */
-	protected boolean checkProduction(Map<ResearchType, Integer> demand) {
-		List<ResearchType> rts = new ArrayList<>(demand.keySet());
-		if (!isAnyProduction(rts)) {
-			Collections.sort(rts, ResearchType.EXPENSIVE_FIRST);
-			for (ResearchType rt : rts) {
-				int count = demand.get(rt);
-				int ic = world.inventoryCount(rt); 
-				if (ic < count) {
-					placeProductionOrder(rt, count - ic);
-					return true;
-				}
-			}
-			return false;
-		}
-		return true;
-	}
-	/**
-	 * Check if the inventory holds at least 20% of the batch size,
-	 * and if not, issue a production order.
-	 * @param rts the technologies
-	 * @param required the required amount
-	 * @param batch the batch size
-	 * @return true if action taken
-	 */
-	protected boolean checkProduction(List<ResearchType> rts, int required, int batch) {
-		if (!isAnyProduction(rts)) {
-			Collections.sort(rts, ResearchType.EXPENSIVE_FIRST);
-			for (ResearchType rt : rts) {
-				if (world.inventoryCount(rt) < required) {
-					placeProductionOrder(rt, batch);
-					return true;
-				}
 			}
 		}
 		return false;

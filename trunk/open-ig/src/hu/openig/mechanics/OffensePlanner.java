@@ -502,7 +502,8 @@ public class OffensePlanner extends Planner {
 				}
 				int produce = required - inventory;
 				produce = Math.min(produce, limit);
-				placeProductionOrder(rt, produce);
+				
+				placeProductionOrder(rt, limitProduction(rt, produce));
 				return UpgradeResult.ACTION;
 			}
 			return UpgradeResult.DEPLOY; 
