@@ -206,7 +206,7 @@ public class EconomyPlanner extends Planner {
 		}
 		// if hubble available, produce some
 		if (hubble2 != null) {
-			placeProductionOrder(hubble2, 5);
+			placeProductionOrder(hubble2, 1);
 			return true;
 		}
 		

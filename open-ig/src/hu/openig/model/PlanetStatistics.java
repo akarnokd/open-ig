@@ -69,6 +69,23 @@ public class PlanetStatistics {
 			this.weapons += other.weapons;
 			this.spaceship += other.spaceship;
 		}
+		/**
+		 * Returns the capacity associated with the given technology.
+		 * @param rt the technology
+		 * @return the capacity
+		 */
+		public int forResearch(ResearchType rt) {
+			switch (rt.category.main) {
+			case SPACESHIPS:
+				return spaceship;
+			case EQUIPMENT:
+				return equipment;
+			case WEAPONS:
+				return weapons;
+			default:
+				return 0;
+			}
+		}
 	}
 	/** The available houses. */
 	public int houseAvailable;

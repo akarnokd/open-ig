@@ -337,7 +337,7 @@ public class StaticDefensePlanner extends Planner {
 					// if in production wait
 					if (world.productionCount(rt) == 0 && activeProductionLanes("weapon") < 5) {
 						if (allowProduction) {
-							placeProductionOrder(rt, localDemand - inventoryGlobal);
+							placeProductionOrder(rt, limitProduction(rt, localDemand - inventoryGlobal));
 						}
 						productionPlaced = true;
 					}
@@ -651,7 +651,7 @@ public class StaticDefensePlanner extends Planner {
 				int di = de.getValue();
 				int ic = world.inventoryCount(de.getKey());
 				if (di > ic) {
-					if (placeProductionOrder(de.getKey(), di - ic)) {
+					if (placeProductionOrder(de.getKey(), limitProduction(de.getKey(), di - ic))) {
 						result = true;
 					}
 					productionInProgress = true;
@@ -686,7 +686,7 @@ public class StaticDefensePlanner extends Planner {
 					if (allowProduction) {
 						int toproduce = Math.max(10, needed - gic);
 						if (toproduce > 0) {
-							if (placeProductionOrder(rt, toproduce)) {
+							if (placeProductionOrder(rt, limitProduction(rt, toproduce))) {
 								result = true;
 							}
 							productionInProgress = true;
