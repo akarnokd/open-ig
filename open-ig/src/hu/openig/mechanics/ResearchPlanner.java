@@ -148,6 +148,9 @@ public class ResearchPlanner extends Planner {
 		if (!checkPlanetPreparedness()) {
 			return;
 		}
+		if (!world.global.production.allBuilt()) {
+			return;
+		}
 		if (world.noLabLimit) {
 			Collections.sort(ps, LABS_INCREASING);
 		}
@@ -286,7 +289,6 @@ public class ResearchPlanner extends Planner {
 	 */
 	AIResult buildOneLabIf(int required, int available, int local, final AIPlanet planet, final String resource) {
 		if (required > available && (local == 0 || world.noLabLimit)) {
-			final Planet planet0 = planet.planet;
 			if (!planet.statistics.canBuildAnything()) {
 				return AIResult.NO_AVAIL;
 			}
@@ -298,16 +300,7 @@ public class ResearchPlanner extends Planner {
 			if (bt.cost <= world.money) {
 				Point pt = planet.placement.findLocation(planet.planet.getPlacementDimensions(bt));
 				if (pt != null) {
-					world.money -= bt.cost;
-					applyActions.add(new Action0() {
-						@Override
-						public void invoke() {
-							AIResult r = controls.actionPlaceBuilding(planet0, bt);
-							if (r == AIResult.NO_AVAIL) {
-								System.out.println("Can't place building on " + planet0.id + ", " + bt.id + " for player " + p.id + ".");
-							}
-						}
-					});
+					build(planet, bt);
 					return AIResult.SUCCESS;
 				}
 				return AIResult.NO_ROOM;

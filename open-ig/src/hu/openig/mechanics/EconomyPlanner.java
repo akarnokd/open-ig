@@ -112,7 +112,7 @@ public class EconomyPlanner extends Planner {
 				return checkEconomy(planet, allowUpgrades);
 			}
 		});
-		if (world.money >= 25000 && checkPlanetPreparedness()) {
+		if (world.money >= 30000 && checkPlanetPreparedness()) {
 			functions.add(new Pred1<AIPlanet>() {
 				@Override
 				public Boolean invoke(AIPlanet planet) {
@@ -235,14 +235,7 @@ public class EconomyPlanner extends Planner {
 					}
 				}
 				// construct the best radar
-				final BuildingType fbestRadar = bestRadar;
-				world.money -= fbestRadar.cost;
-				add(new Action0() {
-					@Override
-					public void invoke() {
-						controls.actionPlaceBuilding(planet.planet, fbestRadar);
-					}
-				});
+				build(planet, bestRadar);
 				return true;
 			}
 		}

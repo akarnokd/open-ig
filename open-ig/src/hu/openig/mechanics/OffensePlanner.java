@@ -84,7 +84,7 @@ public class OffensePlanner extends Planner {
 		}
 		
 		if (world.global.militarySpaceportCount == 0) {
-			if (checkMilitarySpaceport()) {
+			if (checkMilitarySpaceport(false)) {
 				return;
 			}
 		}
@@ -145,7 +145,7 @@ public class OffensePlanner extends Planner {
 			}
 		}
 
-		if (checkMilitarySpaceport()) {
+		if (checkMilitarySpaceport(false)) {
 			return true;
 		}
 		
@@ -469,7 +469,7 @@ public class OffensePlanner extends Planner {
 	 * @return true if bringin succeeded
 	 */
 	boolean bringinFleet(final AIFleet fleet) {
-		if (!checkMilitarySpaceport()) {
+		if (!checkMilitarySpaceport(false)) {
 			final AIPlanet spaceport = findClosestMilitarySpaceport(fleet.x, fleet.y);
 			add(new Action0() {
 				@Override

@@ -461,13 +461,13 @@ public class ColonyPlanner extends Planner {
 		double moraleNow = planet.morale;
 		double moraleLast = planet.lastMorale;
 		// only if there is energy available
-		if (planet.statistics.energyAvailable >= planet.statistics.energyDemand * 1.1) {
+		if (planet.statistics.energyAvailable >= planet.statistics.energyDemand) {
 			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
 				if (manageBuildings(planet, morale, costOrder, true)) {
 					return true;
 				}
 			}
-			if (moraleNow < 50 && moraleLast < 50 && planet.population <= 5000) {
+			if (moraleNow < 50 && moraleLast < 55 && planet.population <= 5100) {
 				
 				List<BuildingType> candidates = new ArrayList<>();
 				
@@ -483,28 +483,17 @@ public class ColonyPlanner extends Planner {
 				
 				Collections.sort(candidates, BuildingType.COST);
 				
-				if (!checkPlanetPreparedness() && !candidates.isEmpty()) {
+				boolean noMoraleYet = true;
+				
+				if (!candidates.isEmpty() && noMoraleYet) {
 					final BuildingType bt = candidates.get(0);
-					world.money -= bt.cost;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet.planet, bt);
-						}
-					});
+					build(planet, bt);
 					return true;
 				}
 				
 				for (final BuildingType bt : candidates) {
 					if (count(planet, bt) < 1) {
-						world.money -= bt.cost;
-						add(new Action0() {
-							@Override
-							public void invoke() {
-								controls.actionPlaceBuilding(planet.planet, bt);
-							}
-						});
-						return true;
+						build(planet, bt);
 					}
 				}
 			}
@@ -805,13 +794,7 @@ public class ColonyPlanner extends Planner {
 				world.money = 0L; // do not let money-related tasks to continue
 				return true;
 			}
-			world.money -= bt.cost;
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionPlaceBuilding(planet.planet, bt);
-				}
-			});
+			build(planet, bt);
 			return true;
 		}
 		// check planets with damaged colony hub

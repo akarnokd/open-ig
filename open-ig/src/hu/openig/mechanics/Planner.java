@@ -427,40 +427,14 @@ public abstract class Planner {
 			int maxOfType = Collections.max(builtCounts(createCandidates, planet));
 			for (final BuildingType bt : createCandidates) {
 				if (count(planet, bt) < maxOfType) {
-					world.money -= bt.cost;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet.planet, bt);
-						}
-					});
-					
-					AIBuilding b = new AIBuilding(new Building(-1, bt, planet.race));
-					planet.buildings.add(b);
-
-					Planet.updateStatistics(planet.statistics, planet.owner, b.building);
-					Planet.updateStatistics(world.global, planet.owner, b.building);
+					build(planet, bt);
 					
 					return AIResult.SUCCESS;
 				}
 			}
 			// if all building counts are equal, just build the first one
 			final BuildingType bt = createCandidates.get(0);
-			world.money -= bt.cost;
-			if (bt.id.equals("Stadium")) {
-				System.out.println();
-			}
-			add(new Action0() {
-				@Override
-				public void invoke() {
-					controls.actionPlaceBuilding(planet.planet, bt);
-				}
-			});
-
-			AIBuilding b = new AIBuilding(new Building(-1, bt, planet.race));
-			planet.buildings.add(b);
-			Planet.updateStatistics(planet.statistics, planet.owner, b.building);
-			Planet.updateStatistics(world.global, planet.owner, b.building);
+			build(planet, bt);
 			
 			return AIResult.SUCCESS;
 		}
@@ -588,18 +562,7 @@ public abstract class Planner {
 	 * @param count the minimum amount to produce
 	 */
 	void issueProductionOrder(final ResearchType rt, final int count) {
-		/*
-		int capacity = world.global.activeProduction.spaceship;
-		if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
-			capacity = world.global.activeProduction.equipment;
-		} else
-		if (rt.category.main == ResearchMainCategory.WEAPONS) {
-			capacity = world.global.activeProduction.weapons;
-		}
-		*/
 		final int count0 = count; 
-		/* Math.max(count, (int)(
-				capacity / rt.productionCost / world.player.world.params().productionUnit())); */
 		add(new Action0() {
 			@Override
 			public void invoke() {
@@ -706,15 +669,19 @@ public abstract class Planner {
 	}
 	/**
 	 * Create a military spaceport if necessary.
+	 * @param force force the check on the space port
 	 * @return true if action taken
 	 */
-	boolean checkMilitarySpaceport() {
+	boolean checkMilitarySpaceport(boolean force) {
 		// if there is at least one operational we are done
 		if (world.global.hasMilitarySpaceport) {
 			return false;
 		}
 		// do not build below this money
 		if (world.money < 85000) {
+			return true;
+		}
+		if (!force && !checkPlanetPreparedness()) {
 			return true;
 		}
 		// check if there is a spaceport which we could get operational
@@ -742,14 +709,10 @@ public abstract class Planner {
 			Collections.shuffle(planets);
 			// try building one somewhere randomly
 			for (final AIPlanet planet : planets) {
-				if (!planet.statistics.constructing && planet.findLocation(ms) != null) {
-					world.money -= ms.cost;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet.planet, ms);
-						}
-					});
+				if (/* !planet.statistics.constructing && */ 
+						planet.canBuild(ms)
+						&& planet.findLocation(ms) != null) {
+					build(planet, ms);
 					return true;
 				}
 			}
@@ -982,10 +945,12 @@ public abstract class Planner {
 			}
 			boolean moraleOrPolice = false;
 			for (AIBuilding b : p.buildings) {
-				if (b.hasResource(BuildingType.RESOURCE_MORALE)
-						|| b.hasResource(BuildingType.RESOURCE_POLICE)) {
-					moraleOrPolice = true;
-					break;
+				if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
+					if (b.hasResource(BuildingType.RESOURCE_MORALE)
+							|| b.hasResource(BuildingType.RESOURCE_POLICE)) {
+						moraleOrPolice = true;
+						break;
+					}
 				}
 			}
 			if (!moraleOrPolice) {
@@ -993,5 +958,26 @@ public abstract class Planner {
 			}
 		}
 		return true;
+	}
+	/**
+	 * Setup the construction action for the given planet and building.
+	 * @param planet the target planet
+	 * @param bt the building type to construct
+	 */
+	public void build(final AIPlanet planet, final BuildingType bt) {
+		world.money -= bt.cost;
+		
+		AIBuilding b = new AIBuilding(new Building(-1, bt, planet.race));
+		planet.buildings.add(b);
+
+		Planet.updateStatistics(planet.statistics, planet.owner, b.building);
+		Planet.updateStatistics(world.global, planet.owner, b.building);		
+
+		add(new Action0() {
+			@Override
+			public void invoke() {
+				controls.actionPlaceBuilding(planet.planet, bt);
+			}
+		});
 	}
 }

@@ -88,7 +88,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.SwingUtilities;
@@ -202,6 +203,17 @@ public class CommonResources implements GameEnvironment {
 	public final MultiplayerContext multiplayer = new MultiplayerContext(this);
 	/** The join callback for multiplayer. */
 	public Action1E<MultiplayerUser, IOException> joinCallback;
+	/** The pool thread factory. */
+	static final class BasicThreadFactory implements ThreadFactory {
+		/** Thread number counter. */
+		final AtomicInteger count = new AtomicInteger();
+		@Override
+		public Thread newThread(Runnable r) {
+			Thread t = new Thread(r, "CPU-Pool-" + count.incrementAndGet());
+			t.setDaemon(true);
+			return t;
+		}
+	}
 	/**
 	 * Constructor. Initializes and loads all resources.
 	 * @param config the configuration object.
@@ -213,21 +225,13 @@ public class CommonResources implements GameEnvironment {
 		this.profile = new Profile();
 		this.profile.name = config.currentProfile;
 		
-		ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors());
-		scheduler.setKeepAliveTime(1500, TimeUnit.MILLISECONDS);
-		scheduler.allowCoreThreadTimeOut(true);
+		int ncpu = Runtime.getRuntime().availableProcessors();
+		ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(ncpu, new BasicThreadFactory());
+//		scheduler.setKeepAliveTime(1500, TimeUnit.MILLISECONDS);
+//		scheduler.allowCoreThreadTimeOut(true);
 		scheduler.setRemoveOnCancelPolicy(true);
 		pool = scheduler;
 
-//		timer = new Timer(25, new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				tick++;
-//				doTimerTick();
-//			}
-//		});
-//		timer.start();
-		
 		init();
 	}
 	/**
