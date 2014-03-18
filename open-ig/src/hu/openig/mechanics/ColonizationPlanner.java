@@ -87,8 +87,10 @@ public class ColonizationPlanner extends Planner {
 	boolean checkEnemyExpansion() {
 		Map<Player, Integer> counts = new HashMap<>();
 		for (AIPlanet p : world.enemyPlanets) {
-			Integer i = counts.get(p.owner);
-			counts.put(p.owner, i != null ? i + 1 : 1);
+			if (p.owner != null) {
+				Integer i = counts.get(p.owner);
+				counts.put(p.owner, i != null ? i + 1 : 1);
+			}
 		}
 		if (!counts.isEmpty()) {
 			int max = Collections.max(counts.values());
