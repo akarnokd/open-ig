@@ -43,6 +43,7 @@ public final class Radar {
 		}
 		final int rrg = world.params().groundRadarUnitSize();
 		final int rrf = world.params().fleetRadarUnitSize();
+		final double radaless = world.params().fleetRadarlessMultiplier();
 		// clear knowledge
 		for (Player player : world.players.values()) {
 			// reset known planets to discovered state
@@ -67,7 +68,7 @@ public final class Radar {
 			for (Fleet f : new ArrayList<>(player.fleets.keySet())) {
 				if (f.owner == player) {
 					// find the max radar
-					float radar = 0.3f;
+					double radar = radaless;
 					for (InventoryItem fi : f.inventory.iterable()) {
 						for (InventorySlot fis : fi.slots.values()) {
 							if (fis.type != null) {

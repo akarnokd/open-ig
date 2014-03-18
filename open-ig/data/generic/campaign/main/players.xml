@@ -99,6 +99,7 @@
 			<type id='HyperDrive3' list=''/>
 			<type id='Laser2' list=''/>
 			<type id='IonCannon' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 		<!-- 
 		<fleet id='1' x='366' y='442' name='Garthog flotta'>
@@ -139,6 +140,7 @@
 			<type id="MediumTank" list=""/>
 			<type id="RocketLauncher1" list=""/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 	<player id='Ychom' race='ychom' name='players.ychom'
@@ -158,6 +160,7 @@
 			<type id='RocketLauncher1' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 	<player id='Dribs' race='dribs' name='players.dribs'
@@ -178,6 +181,7 @@
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 	<player id='Sullep' race='sullep' name='players.sullep'
@@ -197,6 +201,7 @@
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
@@ -223,6 +228,7 @@
 			<type id='HeavyTank' list=''/>
 			<type id='RocketLauncher2' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
@@ -244,6 +250,7 @@
 			<type id="HeavyTank" list=""/>
 			<type id="RocketLauncher1" list=""/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 	<player id='FreeTraders' race='human' name='players.free_traders'
@@ -321,6 +328,7 @@
 		<available>
 			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 	<player id='Traders' race='traders' name='players.free_traders'
@@ -337,6 +345,7 @@
 		<available>
 			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='TradeCenter' list=''/>
 		</available>
 	</player>
 </players>
