@@ -1658,7 +1658,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 
 		}
 		if ("MilitarySpaceport".equals(b.type.id)) {
-			result.militarySpaceportCount = 1;
+			result.militarySpaceportCount += 1;
 		}
 		
 		addProduction(result.production, b, 1d, owner.traits);

@@ -61,6 +61,11 @@ public class StaticDefensePlanner extends Planner {
 
 	@Override
 	protected void plan() {
+		if (world.global.militarySpaceportCount == 0) {
+			if (checkMilitarySpaceport(true)) {
+				return;
+			}
+		}
 		productionInProgress = false;
 		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
 		Collections.sort(planets, BEST_PLANET);
@@ -93,11 +98,6 @@ public class StaticDefensePlanner extends Planner {
 	 * @param planet the target planet
 	 */
 	public void managePlanet(Planet planet) {
-		if (world.global.militarySpaceportCount == 0) {
-			if (checkMilitarySpaceport()) {
-				return;
-			}
-		}
 		for (AIPlanet p : world.ownPlanets) {
 			if (p.planet == planet) {
 				managePlanet(p);
@@ -417,20 +417,16 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkMilitarySpaceport(final AIPlanet planet) {
-		if (world.money > 100000 && world.money >= world.autoBuildLimit) {
+		if (world.money > 100000 
+				&& world.money >= world.autoBuildLimit
+				&& checkPlanetPreparedness()) {
 			final BuildingType bt = findBuilding("MilitarySpaceport");
 			int spaceportLimit = Math.min(world.global.planetCount, (int)(world.money / (world.global.planetCount * 1.5 * bt.cost + world.autoBuildLimit) + 1));
 			if (planet.statistics.militarySpaceportCount == 0 
 					&& spaceportLimit > world.global.militarySpaceportCount) {
 				Point pt = planet.findLocation(bt);
 				if (pt != null) {
-					world.money -= bt.cost;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet.planet, bt);
-						}
-					});
+					build(planet, bt);
 					return true;
 				}
 				// if no room, make it by demolishing a traders spaceport
@@ -544,14 +540,7 @@ public class StaticDefensePlanner extends Planner {
 			boolean hasRoom = planet.findLocation(bt) != null;
 			if (gunCount < Math.abs(bt.limit) && gunCount < limit) {
 				if (hasRoom) {
-					final BuildingType fbt = bt;
-					world.money -= fbt.cost;
-					add(new Action0() {
-						@Override
-						public void invoke() {
-							controls.actionPlaceBuilding(planet.planet, fbt);
-						}
-					});
+					build(planet, bt);
 					return true;
 				}
 			} else {

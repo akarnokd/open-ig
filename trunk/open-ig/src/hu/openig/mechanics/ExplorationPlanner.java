@@ -369,7 +369,7 @@ public class ExplorationPlanner extends Planner {
 		if (checkEquipment()) {
 			return true;
 		}
-		if (checkMilitarySpaceport()) {
+		if (checkMilitarySpaceport(false)) {
 			return true;
 		}
         return checkDeploy();
@@ -688,13 +688,13 @@ public class ExplorationPlanner extends Planner {
 	 * @return true if the factory is available and operational
 	 */
 	boolean buildFactoryFor(ResearchType tech) {
+		if (!checkPlanetPreparedness()) {
+			return false;
+		}
 		boolean hasFactory = false;
 		boolean workingFactory = false;
 		List<AIPlanet> ps = new ArrayList<>(world.ownPlanets);
 		Collections.sort(ps, BEST_PLANET);
-		if (!checkPlanetPreparedness()) {
-			return false;
-		}
 		for (AIPlanet p : ps) {
 			for (AIBuilding b : p.buildings) {
 				if (b.hasResource(tech.factory)) {
@@ -720,14 +720,7 @@ public class ExplorationPlanner extends Planner {
 					if (p.canBuild(factory)) {
 						Point pt = p.findLocation(factory);
 						if (pt != null) {
-							world.money -= factory.cost;
-							final BuildingType ffactory = factory;
-							add(new Action0() {
-								@Override
-								public void invoke() {
-									controls.actionPlaceBuilding(p.planet, ffactory);
-								}
-							});
+							build(p, factory);
 							return false;
 						}
 					}
