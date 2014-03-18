@@ -100,27 +100,8 @@
 			<type id='Laser2' list=''/>
 			<type id='IonCannon' list=''/>
 			<type id='TradeCenter' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
-		<!-- 
-		<fleet id='1' x='366' y='442' name='Garthog flotta'>
-			<item id='GarthogBattleship' count='1'/>
-			<item id='GarthogBattleship' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogDestroyer' count='1'/>
-			<item id='GarthogFighter' count='30'/>
-		</fleet>
-		 -->
 	</player>
 	<player id='Morgath' race='morgath' name='players.morgath'
 		icon='starmap/fleets/morgath_fleet'
@@ -141,6 +122,7 @@
 			<type id="RocketLauncher1" list=""/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
 	</player>
 	<player id='Ychom' race='ychom' name='players.ychom'
@@ -161,6 +143,7 @@
 			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
 	</player>
 	<player id='Dribs' race='dribs' name='players.dribs'
@@ -182,6 +165,7 @@
 			<type id='RocketLauncher1' list=''/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
 	</player>
 	<player id='Sullep' race='sullep' name='players.sullep'
@@ -202,6 +186,7 @@
 			<type id='RocketLauncher1' list=''/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
@@ -229,6 +214,7 @@
 			<type id='RocketLauncher2' list=''/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
@@ -251,6 +237,7 @@
 			<type id="RocketLauncher1" list=""/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
 	</player>
 	<player id='FreeTraders' race='human' name='players.free_traders'
@@ -282,6 +269,7 @@
 			<type id='Laser2' list=''/>
 			<type id='Laser3' list=''/>
 			<type id='OrbitalFactory' list=''/>
+			<type id='Fortress' list=''/>
 		</available>
 	</player>
 	<player id='FreeNations' race='human' name='players.free_nations'
