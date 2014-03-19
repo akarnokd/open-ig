@@ -79,8 +79,8 @@ public class UIScrollBox extends UIContainer {
 	@Override
 	public void draw(Graphics2D g2) {
 		int hgap = (height - upButton.height - downButton.height) / 3;
-		upButton.x = width - upButton.width - gaps;
-		downButton.x = width - downButton.width - gaps;
+		upButton.x = width - upButton.width /*  - gaps */;
+		downButton.x = width - downButton.width /* - gaps */;
 		upButton.y = hgap;
 		downButton.y = hgap * 2 + upButton.height;
 		Shape save0 = g2.getClip();

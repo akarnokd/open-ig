@@ -87,6 +87,12 @@
 		<xs:attribute name="nodatabase" type="xs:boolean" use="optional">
 			<xs:annotation><xs:documentation>The player should not occur in the database screen.</xs:documentation></xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="tax-base" type="xs:double" use="optional">
+			<xs:annotation><xs:documentation>The base value for tax calculations, i.e., the guaranteed daily minimum income. Tax = Base Tax + Tax Scale * Computed Tax</xs:documentation></xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="tax-scale" type="xs:double" use="optional">
+			<xs:annotation><xs:documentation>The scale of the tax income, i.e., a value of 2 will double the daily tax income. Tax = Base Tax + Tax Scale * Computed Tax</xs:documentation></xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:simpleType name="hex8">
 		<xs:annotation><xs:documentation>8 character hexadecimal value.</xs:documentation></xs:annotation>

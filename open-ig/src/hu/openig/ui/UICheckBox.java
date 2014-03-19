@@ -57,6 +57,23 @@ public class UICheckBox extends UIComponent {
 		this.check = check;
 		this.tr = tr;
 	}
+	/** @return the current text size. */
+	public int textSize() {
+		return size;
+	}
+	/**
+	 * Set a new text size.
+	 * @param newSize the new text size
+	 */
+	public void textSize(int newSize) {
+		this.size = newSize;
+	}
+	/**
+	 * @return the current text
+	 */
+	public String text() {
+		return text;
+	}
 	/** @return the selected state. */
 	public boolean selected() {
 		return selected;

@@ -275,7 +275,7 @@ public class UILabel extends UIComponent {
 	 * @param h the font size
 	 * @return this
 	 */
-	public UILabel size(int h) {
+	public UILabel textSize(int h) {
 		this.size = h;
 //		if (!wrap) {
 //			width = tr.getTextWidth(size, text);

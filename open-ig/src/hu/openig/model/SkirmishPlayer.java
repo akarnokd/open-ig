@@ -9,6 +9,7 @@
 package hu.openig.model;
 
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * Skirmish player configuration.
@@ -43,6 +44,8 @@ public class SkirmishPlayer {
 	public final Traits traits = new Traits();
 	/** The picture reference. */
 	public String picture;
+	/** The preferred initial planet id. */
+	public String initialPlanet;
 	/**
 	 * @return a copy of this player
 	 */
@@ -62,6 +65,7 @@ public class SkirmishPlayer {
 		result.nodiplomacy = nodiplomacy;
 		result.diplomacyHead = diplomacyHead;
 		result.picture = picture;
+		result.initialPlanet = initialPlanet;
 		result.traits.replace(traits);
 		
 		return result;
@@ -86,6 +90,7 @@ public class SkirmishPlayer {
 		result = prime * result + ((picture == null) ? 0 : picture.hashCode());
 		result = prime * result + ((race == null) ? 0 : race.hashCode());
 		result = prime * result + ((traits == null) ? 0 : traits.hashCode());
+		result = prime * result + ((initialPlanet == null) ? 0 : initialPlanet.hashCode());
 		return result;
 	}
 	@Override
@@ -169,6 +174,9 @@ public class SkirmishPlayer {
 				return false;
 			}
 		} else if (!traits.equals(other.traits)) {
+			return false;
+		}
+		if (!Objects.equals(initialPlanet, other.initialPlanet)) {
 			return false;
 		}
 		return true;

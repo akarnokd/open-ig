@@ -3281,4 +3281,8 @@
   <entry key='win.load'>Chargement</entry>
   <entry key='win.main_menu'>Retour au menu principal</entry>
   <entry key='win.win'>Vous avez gagné !</entry>
+	<entry key='skirmish.tax_base'>Tax base income:</entry>
+	<entry key='skirmish.tax_scale'>Tax income scale:</entry>
+	<entry key='skirmish.initial_planet'>P.</entry>
+	<entry key='skirmish.initial_planet.random'>Random initial planet</entry>
 </labels>

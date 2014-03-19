@@ -1655,9 +1655,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 						int rtm = rs.getTime(player().traits);
 						selectedTimeValue.text("" + rtm);
 						if (rtm >= 10000) {
-							selectedTimeValue.size(10);
+							selectedTimeValue.textSize(10);
 						} else {
-							selectedTimeValue.size(14);
+							selectedTimeValue.textSize(14);
 						}
 						
 						switch (player().hasEnoughLabs(rs.type, statistics)) {
@@ -1678,9 +1678,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 						int rtime = rt.researchTime(player().traits);
 						selectedTimeValue.text("" + (rtime));
 						if (rtime >= 10000) {
-							selectedTimeValue.size(10);
+							selectedTimeValue.textSize(10);
 						} else {
-							selectedTimeValue.size(14);
+							selectedTimeValue.textSize(14);
 						}
 						
 						switch (player().hasEnoughLabs(rt, statistics)) {
@@ -1701,7 +1701,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 					selectedCompleteValue.text("----");
 					selectedTimeValue.text("----");
 					selectedTimeValue.color(TextRenderer.GREEN);
-					selectedTimeValue.size(14);
+					selectedTimeValue.textSize(14);
 				}
 			}
 			
@@ -1730,7 +1730,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			selectedTechStatusValue.text("----");
 			selectedTechNameValue.text("-");
 			selectedTimeValue.text("----");
-			selectedTimeValue.size(14);
+			selectedTimeValue.textSize(14);
 		}
 		if (rt == animationResearch && player().isAvailable(rt) !=  animationResearchReady) {
 			playAnim(rt);
@@ -1830,9 +1830,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				capacity = ps.activeProduction.spaceship;
 				availableCapacityValue.text("" + ps.activeProduction.spaceship);
 				if (ps.activeProduction.spaceship >= 100000) {
-					availableCapacityValue.size(10);
+					availableCapacityValue.textSize(10);
 				} else {
-					availableCapacityValue.size(14);
+					availableCapacityValue.textSize(14);
 				}
 				totalCapacityValue.text("" + ps.production.spaceship);
 				totalCapacityValue.color(ps.production.spaceship > ps.activeProduction.spaceship ? TextRenderer.YELLOW : TextRenderer.GREEN);
@@ -1841,9 +1841,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				capacity = ps.activeProduction.weapons;
 				availableCapacityValue.text("" + ps.activeProduction.weapons);
 				if (ps.activeProduction.weapons >= 100000) {
-					availableCapacityValue.size(10);
+					availableCapacityValue.textSize(10);
 				} else {
-					availableCapacityValue.size(14);
+					availableCapacityValue.textSize(14);
 				}
 				totalCapacityValue.text("" + ps.production.weapons);
 				totalCapacityValue.color(ps.production.weapons > ps.activeProduction.weapons ? TextRenderer.YELLOW : TextRenderer.GREEN);
@@ -1852,9 +1852,9 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 				capacity = ps.activeProduction.equipment;
 				availableCapacityValue.text("" + ps.activeProduction.equipment);
 				if (ps.activeProduction.equipment >= 100000) {
-					availableCapacityValue.size(10);
+					availableCapacityValue.textSize(10);
 				} else {
-					availableCapacityValue.size(14);
+					availableCapacityValue.textSize(14);
 				}
 				totalCapacityValue.text("" + ps.production.equipment);
 				totalCapacityValue.color(ps.production.equipment > ps.activeProduction.equipment ? TextRenderer.YELLOW : TextRenderer.GREEN);

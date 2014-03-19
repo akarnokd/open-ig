@@ -3352,6 +3352,10 @@
 	<entry key='info.planetlist_TRADE_CENTER'>Ker.kp.</entry>	
 	<entry key="info.planetlist.tooltip">Az utolsó oszlop által megjelenítendő részlet kiválasztása[n][c=FFFFFFFF]Bal kattintásk[/c]: következő részlet[n][c=FFFFFFFF]Jobb kattintás[/c]: előző részlet</entry>
 	<entry key="message.planet_colonized">A(z) %s bolygót kolonizáltuk.</entry>
+	<entry key='skirmish.tax_base'>Alap adóbevétel:</entry>
+	<entry key='skirmish.tax_scale'>Adóbevétel szorzó:</entry>
+	<entry key='skirmish.initial_planet'>B.</entry>
+	<entry key='skirmish.initial_planet.random'>Véletlenszerű kezdőbolygó</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

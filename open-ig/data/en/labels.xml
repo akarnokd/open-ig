@@ -3316,6 +3316,10 @@
 	<entry key='info.planetlist_TRADE_CENTER'>Tradectr.</entry>	
 	<entry key="info.planetlist.tooltip">Selects the value to display in the last column[n][c=FFFFFFFF]Left click[/c]: next detail[n][c=FFFFFFFF]Right click[/c]: previous detail</entry>
 	<entry key="message.planet_colonized">Planet %s has been colonized.</entry>
+	<entry key='skirmish.tax_base'>Tax base income:</entry>
+	<entry key='skirmish.tax_scale'>Tax income scale:</entry>
+	<entry key='skirmish.initial_planet'>P.</entry>
+	<entry key='skirmish.initial_planet.random'>Random initial planet</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

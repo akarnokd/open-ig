@@ -113,6 +113,7 @@ public final class Simulator {
 				for (Map.Entry<Planet, PlanetStatistics> pps : planetStats.entrySet()) {
 					Planet p = pps.getKey();
 					PlanetStatistics ps = pps.getValue();
+					ps.planetCount = all.planetCount;
 					progressPlanet(world, p, day0 != day1, ps, taxCompensation);
 				}
 			}
@@ -516,6 +517,9 @@ public final class Simulator {
 				planet.tradeIncome(0);
 			}
 
+			// apply base and scale taxing
+			taxDelta = planet.owner.taxBase * dayPercent / ps.planetCount + taxDelta * planet.owner.taxScale;
+			
 			planet.addTradeIncome(tradeDelta);
 			planet.addTaxIncome(taxDelta);
 			

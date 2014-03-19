@@ -220,12 +220,24 @@ public class SkirmishScreen extends ScreenBase {
 	UILabel colTrait;
 	/** Column. */
 	UILabel colGroup;
+	/** Column. */
+	UILabel colPlanet;
 	/** The group selection panel. */
 	GroupSelectPanel groupSelectPanel;
 	/** The icon selection panel. */
 	IconSelectPanel iconSelectPanel;
 	/** An item selection panel. */
 	ItemSelectPanel itemSelectPanel;
+	/** The starmap panel. */
+	StarmapPanel starmapPanel;
+	/** Tax base label. */
+	UILabel taxBaseLabel;
+	/** Base daily tax. */
+	NumberSpinBox taxBase;
+	/** Tax scale label. */
+	UILabel taxScaleLabel;
+	/** Tax scaling. */
+	NumberSpinBox taxScale;
 	/** The video playback completion waiter. */
 	volatile Thread videoWaiter;
 	/** The load waiter. */
@@ -257,10 +269,12 @@ public class SkirmishScreen extends ScreenBase {
 		load = createButton("skirmish.load");
 		load.disabledPattern(commons.common().disabledPattern);
 		load.enabled(false);
+		load.visible(false);
 		
 		save = createButton("skirmish.save");
 		save.disabledPattern(commons.common().disabledPattern);
 		save.enabled(false);
+		save.visible(false);
 		
 		play = createButton("skirmish.play");
 		play.disabledPattern(commons.common().disabledPattern);
@@ -331,7 +345,7 @@ public class SkirmishScreen extends ScreenBase {
 		
 		
 		initialMoneyLabel = createLabel("skirmish.initial_money");
-		initialMoney = new NumberSpinBox(0, 2000000000, 10000, 100000) {
+		initialMoney = new NumberSpinBox(0, 2_000_000_000, 10_000, 100_000) {
 			@Override
 			public String onValue() {
 				return String.format("%,d cr", value);
@@ -367,6 +381,24 @@ public class SkirmishScreen extends ScreenBase {
 		orbitalFactories = new NumberSpinBox(0, 1000, 1, 10);
 		
 		economyPanel.add(colonyShipLabel, colonyShips, orbitalFactoryLabel, orbitalFactories);
+		
+		taxBaseLabel = createLabel("skirmish.tax_base");
+		taxBase = new NumberSpinBox(0, 100_000_000, 1000, 10_000) {
+			@Override
+			public String onValue() {
+				return String.format("%,d cr", value);
+			}
+		};
+		taxScaleLabel = createLabel("skirmish.tax_scale");
+		taxScale = new NumberSpinBox(100, 1000, 5, 25) {
+			@Override
+			public String onValue() {
+				return String.format("%d %%", value);
+			}
+		};
+		
+		economyPanel.add(taxBaseLabel, taxBase, taxScaleLabel, taxScale);
+		
 		
 		initialRelationLabel = createLabel("skirmish.initial_relation");
 		initialRelation = new ListSpinBox<>(new Func1<SkirmishDiplomaticRelation, String>() { 
@@ -488,6 +520,7 @@ public class SkirmishScreen extends ScreenBase {
 		colAI.horizontally(HorizontalAlignment.CENTER);
 		colTrait = createLabel("skirmish.trait");
 		colGroup = createLabel("skirmish.group");
+		colPlanet = createLabel("skirmish.initial_planet");
 		
 		colName.color(TextRenderer.LIGHT_GREEN);
 		colIcon.color(TextRenderer.LIGHT_GREEN);
@@ -495,8 +528,9 @@ public class SkirmishScreen extends ScreenBase {
 		colAI.color(TextRenderer.LIGHT_GREEN);
 		colTrait.color(TextRenderer.LIGHT_GREEN);
 		colGroup.color(TextRenderer.LIGHT_GREEN);
+		colPlanet.color(TextRenderer.LIGHT_GREEN);
 		
-		playersPanel.add(colName, colRace, colIcon, colAI, colTrait, colGroup);
+		playersPanel.add(colName, colRace, colIcon, colAI, colTrait, colGroup, colPlanet);
 
 		groupSelectPanel = new GroupSelectPanel();
 		groupSelectPanel.visible(false);
@@ -506,6 +540,9 @@ public class SkirmishScreen extends ScreenBase {
 		
 		itemSelectPanel = new ItemSelectPanel();
 		itemSelectPanel.visible(false);
+		
+		starmapPanel = new StarmapPanel();
+		starmapPanel.visible(false);
 		
 		//FIXME implement random layout
 		
@@ -624,6 +661,16 @@ public class SkirmishScreen extends ScreenBase {
 		orbitalFactoryLabel.location(30, cy + 7);
 		orbitalFactories.setMaxSize();
 		orbitalFactories.location(15 + orbitalFactoryLabel.width + 20, cy);
+		
+		cy += 35;
+		taxBaseLabel.location(30, cy + 7);
+		taxBase.setMaxSize();
+		taxBase.location(15 + taxBaseLabel.width + 20, cy);
+
+		cy += 35;
+		taxScaleLabel.location(30, cy + 7);
+		taxScale.setMaxSize();
+		taxScale.location(15 + taxScaleLabel.width + 20, cy);
 
 		// ---------------------------------------------------
 		cy = 0;
@@ -667,7 +714,7 @@ public class SkirmishScreen extends ScreenBase {
 		winSocialPlanets.location(50 + winSocialPlanetsLabel.width, cy);
 
 		
-		playersListScroll.bounds(5, 25, playersPanel.width - 10, playersPanel.height - 105);
+		playersListScroll.bounds(5, 25, playersPanel.width - 5, playersPanel.height - 105);
 		playersListScroll.scrollBy(0);
 		playersListScroll.adjustButtons();
 
@@ -684,6 +731,9 @@ public class SkirmishScreen extends ScreenBase {
 		
 		itemSelectPanel.bounds(base);
 		itemSelectPanel.layout();
+		
+		starmapPanel.bounds(base);
+		starmapPanel.layout();
 		
 		layoutPlayers();
 	}
@@ -861,6 +911,12 @@ public class SkirmishScreen extends ScreenBase {
 			} else
 			if (itemSelectPanel.visible()) {
 				itemSelectPanel.visible(false);
+				commons.control().moveMouse();
+				e.consume();
+				return true;
+			} else
+			if (starmapPanel.visible()) {
+				starmapPanel.visible(false);
 				commons.control().moveMouse();
 				e.consume();
 				return true;
@@ -1173,9 +1229,12 @@ public class SkirmishScreen extends ScreenBase {
 		public UILabel traits;
 		/** Group. */
 		public UILabel group;
+		/** The preferred starting planet. */
+		public UIImage planet;
 		/** Cunstructs the UI elements. */
 		public PlayerLine() {
 			name = createCheckBox2("");
+//			name.textSize(10);
 			name.onChange = new Action0() {
 				@Override
 				public void invoke() {
@@ -1192,6 +1251,8 @@ public class SkirmishScreen extends ScreenBase {
 					doShowRace(PlayerLine.this);
 				}
 			};
+			race.textSize(10);
+			
 			icon = new UIImage() {
 				@Override
 				public void draw(Graphics2D g2) {
@@ -1217,6 +1278,8 @@ public class SkirmishScreen extends ScreenBase {
 					doShowAI(PlayerLine.this);
 				}
 			};
+			ai.textSize(10);
+			
 			traits = createLabel("skirmish.traits");
 			traits.horizontally(HorizontalAlignment.CENTER);
 			traits.onPress = new Action0() {
@@ -1236,6 +1299,22 @@ public class SkirmishScreen extends ScreenBase {
 				}
 			};
 			
+			planet = new UIImage(commons.common().randomPlanet) {
+				@Override
+				public void draw(Graphics2D g2) {
+					if (over) {
+						g2.setColor(Color.GRAY);
+						g2.fillRect(0, 0, width, height);
+					}
+					super.draw(g2);
+				}
+			};
+			planet.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					doShowPlanets(PlayerLine.this);
+				}
+			};
 			
 			this.addThis();
 		}
@@ -1249,6 +1328,7 @@ public class SkirmishScreen extends ScreenBase {
 			ai.sizeToContent();
 			traits.sizeToContent();
 			group.sizeToContent();
+			planet.sizeToContent();
 		}
 		@Override
 		public void draw(Graphics2D g2) {
@@ -1279,6 +1359,11 @@ public class SkirmishScreen extends ScreenBase {
 			
 			name.tooltip(player.description);
 			ai.tooltip(get("skirmish.ai." + player.ai + ".tooltip"));
+			if (player.initialPlanet != null) {
+				planet.tooltip(player.initialPlanet);
+			} else {
+				planet.tooltip(get("skirmish.initial_planet.random"));
+			}
 		}
 	}
 	/**
@@ -1299,6 +1384,7 @@ public class SkirmishScreen extends ScreenBase {
 		int maxAI = colAI.width;
 		int maxIcon = colIcon.width;
 		int maxRace = colRace.width;
+		int maxPlanet = colPlanet.width;
 		
 		for (PlayerLine pl : playerLines) {
 			
@@ -1309,13 +1395,17 @@ public class SkirmishScreen extends ScreenBase {
 			maxAI = Math.max(maxAI, pl.ai.width);
 			maxIcon = Math.max(maxIcon, pl.icon.width);
 			maxRace = Math.max(maxRace, pl.race.width);
-			
+			maxPlanet = Math.max(maxPlanet, pl.planet.width);
 		}
 		
-		colGroup.x = 5 + playersList.width - maxGroup;
-		colGroup.width = maxGroup;
+		colPlanet.x = 5 + playersList.width - maxPlanet;
+		colPlanet.width = maxPlanet;
 
 		int gap = 5;
+
+		colGroup.x = colPlanet.x - gap - maxGroup;
+		colGroup.width = maxGroup;
+
 		colTrait.x = colGroup.x - gap - maxTraits;
 		colTrait.width = maxTraits;
 		
@@ -1334,7 +1424,10 @@ public class SkirmishScreen extends ScreenBase {
 		int py = 0;
 
 		for (PlayerLine pl : playerLines) {
-			pl.group.x = playersList.width - maxGroup;
+			pl.planet.x = playersList.width - maxPlanet;
+			pl.planet.width = maxPlanet;
+			
+			pl.group.x = pl.planet.x - gap - maxGroup;
 			pl.group.width = maxGroup;
 			pl.group.y = 7;
 
@@ -2070,6 +2163,8 @@ public class SkirmishScreen extends ScreenBase {
 		result.initialColonyShips = colonyShips.value;
 		result.grantOrbitalFactory = grantOrbitalFactory.selected();
 		result.initialOrbitalFactories = orbitalFactories.value;
+		result.taxBase = taxBase.value;
+		result.taxScale = taxScale.value / 100d;
 		
 		// Players --------------------------
 		
@@ -2193,5 +2288,38 @@ public class SkirmishScreen extends ScreenBase {
 		
 		config.computerVoiceScreen = csw;
 		commons.control().displayStatusbar();
+	}
+	/**
+	 * Show planets for the given player line.
+	 * @param pl the player line
+	 */
+	void doShowPlanets(PlayerLine pl) {
+		// TODO
+	}
+	/**
+	 * Shows a list of planets and their position on a starmap.
+	 * @author akarnokd, 2014.03.19.
+	 */
+	public final class StarmapPanel extends UIPanel {
+		/** The inner panel. */
+		UIPanel innerPanel;
+		/** Prepares the panel. */
+		public StarmapPanel() {
+			backgroundColor(0x80000000);
+			
+			innerPanel = new UIPanel();
+			innerPanel.backgroundColor(0xE0000000);
+			innerPanel.borderColor(TextRenderer.GRAY);
+			
+			add(innerPanel);
+		}
+		/**
+		 * Layout the inner components.
+		 */
+		public void layout() {
+			innerPanel.size(620, 460);
+			// TODO
+			innerPanel.location((width - innerPanel.width) / 2, (height - innerPanel.height) / 2);
+		}
 	}
 }
