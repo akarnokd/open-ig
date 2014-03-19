@@ -37,6 +37,7 @@ import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UIPanel;
 import hu.openig.ui.UIRadioButton;
 import hu.openig.ui.UIScrollBox;
@@ -50,13 +51,17 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
@@ -242,6 +247,10 @@ public class SkirmishScreen extends ScreenBase {
 	volatile Thread videoWaiter;
 	/** The load waiter. */
 	volatile Thread loadWaiter;
+	/** The blink timer. */
+	Closeable blinkTimer;
+	/** The blink state. */
+	boolean blink;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -814,6 +823,14 @@ public class SkirmishScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		background = rl.getImage("starmap/background");
 
+		blinkTimer = commons.register(500, new Action0() {
+			@Override
+			public void invoke() {
+				blink = !blink;
+				askRepaint();
+			}
+		});
+		
 		scanCampaigns();
 
 		onResize();
@@ -858,6 +875,8 @@ public class SkirmishScreen extends ScreenBase {
 	@Override
 	public void onLeave() {
 		background = null;
+		U.close(blinkTimer);
+		blinkTimer = null;
 	}
 
 	@Override
@@ -910,13 +929,13 @@ public class SkirmishScreen extends ScreenBase {
 				return true;
 			} else
 			if (itemSelectPanel.visible()) {
-				itemSelectPanel.visible(false);
+				itemSelectPanel.hide();
 				commons.control().moveMouse();
 				e.consume();
 				return true;
 			} else
 			if (starmapPanel.visible()) {
-				starmapPanel.visible(false);
+				starmapPanel.hide();
 				commons.control().moveMouse();
 				e.consume();
 				return true;
@@ -2041,6 +2060,11 @@ public class SkirmishScreen extends ScreenBase {
 			layout();
 			visible(true);
 		}
+		/** Hide the panel. */
+		void hide() {
+			visible(false);
+			onComplete = null;
+		}
 		/**
 		 * React to option selection.
 		 * @param index the index
@@ -2295,6 +2319,22 @@ public class SkirmishScreen extends ScreenBase {
 	 */
 	void doShowPlanets(PlayerLine pl) {
 		// TODO
+		starmapPanel.load(galaxyDef.get());
+		starmapPanel.show(pl.player.initialPlanet, pl);
+	}
+	/**
+	 * Information about the planets.
+	 * @author akarnokd, 2014.03.19.
+	 */
+	static final class PlanetData {
+		/** Coordinate X. */
+		public int x;
+		/** Coordinate Y. */
+		public int y;
+		/** The identifier. */
+		public String id;
+		/** The surface type. */
+		public String type;
 	}
 	/**
 	 * Shows a list of planets and their position on a starmap.
@@ -2303,23 +2343,188 @@ public class SkirmishScreen extends ScreenBase {
 	public final class StarmapPanel extends UIPanel {
 		/** The inner panel. */
 		UIPanel innerPanel;
+		/** The galaxy's own background image. */
+		UIImage backgroundImage;
+		/** The planet icons. */
+		final Map<String, BufferedImage> planetIcons;
+		/** The map of planets. */
+		final Map<String, PlanetData> planets;
+		/** The player line. */
+		PlayerLine pl;
+		/** Cancel button. */
+		UIGenericButton cancel;
+		/** Cancel button. */
+		UIGenericButton ok;
+		/** The selected planet. */
+		String selected;
 		/** Prepares the panel. */
 		public StarmapPanel() {
+			planetIcons = new HashMap<>();
+			planets = new LinkedHashMap<>();
 			backgroundColor(0x80000000);
 			
 			innerPanel = new UIPanel();
 			innerPanel.backgroundColor(0xE0000000);
 			innerPanel.borderColor(TextRenderer.GRAY);
 			
-			add(innerPanel);
+			backgroundImage = new UIImage() {
+				@Override
+				public void draw(Graphics2D g2) {
+					super.draw(g2);
+					
+					int w0 = width;
+					int h0 = height;
+					if (image() != null) {
+						w0 = image().getWidth();
+						h0 = image().getHeight();
+					}
+					g2.setColor(Color.WHITE);
+					int sx = -1;
+					int sy = -1;
+					for (PlanetData pd : planets.values()) {
+						int px = pd.x * width / w0;
+						int py = pd.y * height / h0;
+						boolean sel = Objects.equals(selected, pd.id);
+						if (!sel || !blink) {
+							g2.fillRect(px - 1, py - 1, 3, 3);
+						}
+						if (sel) {
+							sx = px;
+							sy = py;
+						}
+					}
+					if (sx >= 0) {
+						g2.setColor(new Color(0x40800000));
+						g2.drawLine(1, sy, sx - 3, sy);
+						g2.drawLine(sx + 4, sy, width - 2, sy);
+						g2.drawLine(sx, 1, sx, sy - 3);
+						g2.drawLine(sx, sy + 4, sx, height - 2);
+					}
+				}
+				@Override
+				public boolean mouse(UIMouse e) {
+					if (e.has(Type.DOWN)) {
+						select(planetAt(e.x, e.y));
+						return true;
+					} else
+					if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
+						PlanetData pd = planetAt(e.x, e.y);
+						if (pd != null) {
+							tooltip(pd.id + " (" + pd.type + ")");
+						} else {
+							tooltip(null);
+						}
+						return true;
+					}
+					return super.mouse(e);
+				}
+				/**
+				 * Returns the planet at the specified mouse coordinates.
+				 * @param mx the mouse X
+				 * @param my the mouse Y
+				 * @return the planet or null if nothing
+				 */
+				public PlanetData planetAt(int mx, int my) {
+					int w0 = width;
+					int h0 = height;
+					if (image() != null) {
+						w0 = image().getWidth();
+						h0 = image().getHeight();
+					}
+					PlanetData selected = null;
+					double bestDistance = 0;
+					for (PlanetData pd : planets.values()) {
+						int px = pd.x * width / w0;
+						int py = pd.y * height / h0;
+						double d = Math.hypot(mx - px, my - py);
+						if (d <= 3) {
+							if (selected == null || bestDistance > d) {
+								selected = pd;
+								bestDistance = d;
+							}
+						}
+					}
+					return selected;
+				}
+			};
+			backgroundImage.stretch(true);
+			backgroundImage.borderColor(TextRenderer.GRAY);
+
+			ok = createButton("skirmish.ok");
+			cancel = createButton("skirmish.cancel");
+			
+			add(innerPanel, backgroundImage, ok, cancel);
 		}
+		/**
+		 * Select a planet.
+		 * @param pd the planet data or null to deselect
+		 */
+		void select(PlanetData pd) {
+			if (pd == null) {
+				selected = null;
+			} else {
+				selected = pd.id;
+			}
+			blink = false;
+		}
+		
 		/**
 		 * Layout the inner components.
 		 */
 		public void layout() {
-			innerPanel.size(620, 460);
-			// TODO
+			innerPanel.size(620, 450);
 			innerPanel.location((width - innerPanel.width) / 2, (height - innerPanel.height) / 2);
+			// TODO
+
+			backgroundImage.location(innerPanel.x + 5, innerPanel.y + 5);
+			backgroundImage.size(610, 400);
+			
+			ok.y = innerPanel.y + 412;
+			cancel.y = innerPanel.y + 412;
+			
+			int oc = ok.width + 10 + cancel.width;
+			int ooc = (innerPanel.width - oc);
+			
+			ok.x = ooc;
+			cancel.x = ooc + 10 + ok.width;
+		}
+		
+		public void load(GameDefinition def) {
+			XElement galaxyXML = rl.getXML(def.galaxy);
+			XElement background = galaxyXML.childElement("background");
+			
+			backgroundImage.image(rl.getImage(background.get("image")));
+
+			planetIcons.clear();
+			for (XElement xplanet : galaxyXML.childElement("planets").childrenWithName("planet")) {
+				XElement xbody = xplanet.childElement("body");
+				
+				planetIcons.put(xplanet.get("type"), rl.getImage(xbody.content));
+			}
+			
+			planets.clear();
+			XElement xplanets = rl.getXML(def.planets);
+			for (XElement xplanet : xplanets.childrenWithName("planet")) {
+				XElement xsurface = xplanet.childElement("surface");
+				
+				PlanetData pd = new PlanetData();
+				pd.x = xplanet.getInt("x");
+				pd.y = xplanet.getInt("y");
+				pd.id = xplanet.get("id");
+				pd.type = xsurface.get("type");
+				planets.put(pd.id, pd);
+			}
+		}
+		public void show(String planetId, PlayerLine pl) {
+			
+			visible(true);
+		}
+		public void hide() {
+			planetIcons.clear();
+			pl = null;
+			backgroundImage.image(null);
+			planets.clear();
+			visible(false);
 		}
 	}
 }
