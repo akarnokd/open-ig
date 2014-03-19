@@ -39,6 +39,16 @@ Possible resolutions:
 
 = Windows =
 
+== Flickering of desktop when run on fullscreen ==
+
+Some players reported that when switching to fullscreen, the game starts flickering and the desktop appears underneath it. This might or might not relate to laptops with hybrid graphics; the exact reasons are unknown at the moment.
+
+  * *Windows 7+* Press CTRL+ALT+DEL then click the Cancel button or press ESC.
+  * If the machine has a hybrid graphics card settings, make sure java.exe and javaw.exe are associated with the discrete, high performance card. If doesn't work, associate it with the integrated, low performance card.
+  * *Windows 7* Disable Aero.
+  * Make sure no always-on-screen window is obstructing the game view.
+  * Update graphics drivers if possible.
+
 == Crash due to unsupported format ==
 
 Sometimes, pretty standard WAV files won't play on Windows (XP). This can be attributed to either out-of-date drivers or corrupted install. You may want to:
