@@ -177,6 +177,9 @@ public class CommonGFX {
 	/** The shield icon. */
 	@Btn3H(name = "shield")
 	public BufferedImage[] shield;
+	/** Random planet indicator for skirmish. */
+	@Img(name = "planet_random_24x24")
+	public BufferedImage randomPlanet;
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator

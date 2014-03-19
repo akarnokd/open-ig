@@ -490,6 +490,8 @@ public class World implements ModelLookup {
 			p.money(xplayer.getLong("money"));
 			p.initialStance = xplayer.getInt("initial-stance");
 			
+			p.taxBase = xplayer.getDouble("tax-base", 0.0);
+			
 			p.group = g++;
 			
 			p.fleetIcon = rl.getImage(xplayer.get("icon"));
@@ -2942,6 +2944,8 @@ public class World implements ModelLookup {
 			}
 
 			p.group = sp.group;
+			p.taxBase = skirmishDefinition.taxBase;
+			p.taxScale = skirmishDefinition.taxScale;
 			
 			groups.put(p, sp.group);
 			

@@ -134,6 +134,10 @@ public class Player {
 	public GameAPI api;
 	/** The asynchronouse API interface to execute commands in the name of this player. */
 	public GameAsyncAPI asyncAPI;
+	/** The scaling of the incoming tax. */
+	public double taxScale = 1.0;
+	/** The daily base of the incoming tax. */
+	public double taxBase = 0.0;
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

@@ -1350,7 +1350,7 @@ public class PlanetScreenMP extends ScreenBase implements SurfaceEvents {
 				if (c.visible()) {
 					c.x = 10;
 					c.y = 25 + (textSize + 3) * i;
-					c.size(textSize);
+					c.textSize(textSize);
 					c.height = textSize;
 					w = Math.max(w, c.x + c.width);
 					h = Math.max(h, c.y + c.height);

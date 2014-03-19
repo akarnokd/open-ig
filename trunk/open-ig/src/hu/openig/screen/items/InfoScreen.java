@@ -783,7 +783,7 @@ public class InfoScreen extends ScreenBase {
 		
 		buildingTitle = new UILabel("", 10, commons.text());
 		buildingTitle.color(TextRenderer.RED);
-		buildingTitle.size(10);
+		buildingTitle.textSize(10);
 		buildingTitle.horizontally(HorizontalAlignment.CENTER);
 
 		planetTitle = new UILabel("", 14, commons.text());
@@ -1124,6 +1124,7 @@ public class InfoScreen extends ScreenBase {
 		} else
 		if (mode == Screens.INFORMATION_FINANCIAL) {
 			financialInfo.update();
+			displayPlanetInfo();
 		} else
 		if (mode == Screens.INFORMATION_ALIENS) {
 			displayPlanetInfo();
@@ -1618,7 +1619,7 @@ public class InfoScreen extends ScreenBase {
 				if (c.visible()) {
 					c.x = 10;
 					c.y = dy;
-					c.size(textSize);
+					c.textSize(textSize);
 					w = Math.max(w, c.x + c.width);
 					h = Math.max(h, c.y + c.height);
 					dy += c.height + 5;
