@@ -33,11 +33,11 @@
     </general>
     <execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
     <notes url='https://code.google.com/p/open-ig/wiki/Game_Notes'>
-      <desc lang='hu'>Hibajavítások.</desc>
-      <desc lang='en'>Bugfixes.</desc>
-      <desc lang='de'>Bugfixes.</desc>
-      <desc lang='fr'>Bugfixes.</desc>
-      <desc lang='ru'>Bugfixes.</desc>
+      <desc lang='hu'>Egyéni játék fejlesztések.</desc>
+      <desc lang='en'>Skirmish enhancements.</desc>
+      <desc lang='de'>Skirmish enhancements.</desc>
+      <desc lang='fr'>Skirmish enhancements.</desc>
+      <desc lang='ru'>Skirmish enhancements.</desc>
     </notes>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.171.jar' sha1='2E35F63C2E6CDFA83ECCC3C105AC84644A94A088'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140319a2.zip' sha1='6F29CF92C0EB6D5241BB70D9AD33A20B86FC51B2'/>
