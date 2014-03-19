@@ -2895,9 +2895,13 @@ public class World implements ModelLookup {
 		
 		player = null;
 		int id = 0;
+		Map<Player, SkirmishPlayer> createdPlayers = new HashMap<>();
+		
 		for (SkirmishPlayer sp : skirmishDefinition.players) {
 			Player p = new Player(this, sp.originalId + "-" + id);
 
+			createdPlayers.put(p, sp);
+			
 			if (sp.ai == SkirmishAIMode.USER) {
 				player = p;
 			}
@@ -3053,7 +3057,7 @@ public class World implements ModelLookup {
 			}
 		}
 
-		assignPlanetsToPlayers();
+		assignPlanetsToPlayers(createdPlayers);
 		
 		for (Player p : players.values()) {
 			p.ai = env.getAI(p);
@@ -3127,8 +3131,11 @@ public class World implements ModelLookup {
 			}
 		}
 	}
-	/** Assign players to random planets. */
-	void assignPlanetsToPlayers() {
+	/** 
+	 * Assign players to preferred or random planets. 
+	 * @param createdPlayers the player-skirmish player association map
+	 */
+	void assignPlanetsToPlayers(Map<Player, SkirmishPlayer> createdPlayers) {
 		// assign planets to players
 		int zones;
 		int pc = players.values().size();
@@ -3155,7 +3162,33 @@ public class World implements ModelLookup {
 		double gh = galaxyModel.map.getHeight();
 		Rectangle2D.Double rect = new Rectangle2D.Double();
 		int zi = 0;
+		
+		Set<String> preferredPlanets = new HashSet<>();
 		for (Player p : pls) {
+			SkirmishPlayer skp = createdPlayers.get(p);
+			if (skp.initialPlanet != null) {
+				if (preferredPlanets.add(skp.initialPlanet)) {
+					
+					Planet pl = planets.get(skp.initialPlanet);
+					
+					pl.owner = p;
+					pl.race = p.race;
+					pl.population(skirmishDefinition.initialPopulation);
+					pl.lastPopulation(pl.population());
+
+					p.currentPlanet = pl;
+					p.selectionMode = SelectionMode.PLANET;
+
+					p.planets.put(pl, PlanetKnowledge.BUILDING);
+				}
+			}
+		}
+		
+		for (Player p : pls) {
+			// planet already assigned
+			if (!p.planets.isEmpty()) {
+				continue;
+			}
 			int z = zoneIndex.get(zi);
 			
 			int gr = z / zones;
@@ -3184,6 +3217,8 @@ public class World implements ModelLookup {
 					}
 				}
 			}
+			candidates.removeAll(preferredPlanets);
+			
 			Planet pl = ModelUtils.random(candidates);
 			
 			p.currentPlanet = pl;
@@ -3205,6 +3240,7 @@ public class World implements ModelLookup {
 			final Planet pl = op.get(0);
 			List<Planet> rest = U.newArrayList(planets.values());
 			rest.remove(pl);
+			
 			Collections.sort(rest, new Comparator<Planet>() {
 				@Override
 				public int compare(Planet o1, Planet o2) {

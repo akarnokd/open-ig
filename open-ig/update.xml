@@ -22,7 +22,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.170'>
+  <module id='Game' version='0.95.171'>
     <general url='https://code.google.com/p/open-ig/'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -39,9 +39,9 @@
       <desc lang='fr'>Bugfixes.</desc>
       <desc lang='ru'>Bugfixes.</desc>
     </notes>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.170.jar' sha1='6FEB78C25DD16AD923E435C376EE48BC3FEB8811'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140318a2.zip' sha1='CBAA42FBCA9DDD9A25F60D7EC62A4D9FCBBFF197'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140129a.zip' sha1='46B4EC89805F6B448F0168960E19CE52DA0ADCD6'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.171.jar' sha1='2E35F63C2E6CDFA83ECCC3C105AC84644A94A088'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140319a2.zip' sha1='6F29CF92C0EB6D5241BB70D9AD33A20B86FC51B2'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140319a.zip' sha1='6DDB75440DB263F3801FBB1E6F619CA4575F899A'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -100,6 +100,7 @@
     <remove file='open-ig-images-20130816a.zip'/>
     <remove file='open-ig-images-20130831a.zip'/>
     <remove file='open-ig-images-20131130a.zip'/>
+    <remove file='open-ig-images-20140129a.zip'/>
   </module>
   <module id='MapEditor' version='0.60'>
     <general url='https://code.google.com/p/open-ig/wiki/MapEditor'>
