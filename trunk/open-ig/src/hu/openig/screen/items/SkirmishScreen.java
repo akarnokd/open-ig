@@ -36,6 +36,7 @@ import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UIPanel;
@@ -43,6 +44,7 @@ import hu.openig.ui.UIRadioButton;
 import hu.openig.ui.UIScrollBox;
 import hu.openig.ui.UISpinner;
 import hu.openig.ui.VerticalAlignment;
+import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
 
@@ -1328,6 +1330,8 @@ public class SkirmishScreen extends ScreenBase {
 					super.draw(g2);
 				}
 			};
+			planet.size(24, 24);
+			planet.scale(true);
 			planet.onClick = new Action0() {
 				@Override
 				public void invoke() {
@@ -1347,7 +1351,7 @@ public class SkirmishScreen extends ScreenBase {
 			ai.sizeToContent();
 			traits.sizeToContent();
 			group.sizeToContent();
-			planet.sizeToContent();
+//			planet.sizeToContent();
 		}
 		@Override
 		public void draw(Graphics2D g2) {
@@ -2357,6 +2361,10 @@ public class SkirmishScreen extends ScreenBase {
 		UIGenericButton ok;
 		/** The selected planet. */
 		String selected;
+		/** Selected image. */
+		UIImage selectedImage;
+		/** Selected name. */
+		UILabel selectedName;
 		/** Prepares the panel. */
 		public StarmapPanel() {
 			planetIcons = new HashMap<>();
@@ -2404,7 +2412,11 @@ public class SkirmishScreen extends ScreenBase {
 				@Override
 				public boolean mouse(UIMouse e) {
 					if (e.has(Type.DOWN)) {
-						select(planetAt(e.x, e.y));
+						if (e.has(Button.LEFT)) {
+							select(planetAt(e.x, e.y));
+						} else {
+							select(null);
+						}
 						return true;
 					} else
 					if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
@@ -2437,7 +2449,7 @@ public class SkirmishScreen extends ScreenBase {
 						int px = pd.x * width / w0;
 						int py = pd.y * height / h0;
 						double d = Math.hypot(mx - px, my - py);
-						if (d <= 3) {
+						if (d <= 4) {
 							if (selected == null || bestDistance > d) {
 								selected = pd;
 								bestDistance = d;
@@ -2450,20 +2462,42 @@ public class SkirmishScreen extends ScreenBase {
 			backgroundImage.stretch(true);
 			backgroundImage.borderColor(TextRenderer.GRAY);
 
-			ok = createButton("skirmish.ok");
-			cancel = createButton("skirmish.cancel");
+			selectedImage = new UIImage();
+			selectedName = new UILabel("", 14, commons.text());
 			
-			add(innerPanel, backgroundImage, ok, cancel);
+			ok = createButton("skirmish.ok");
+			ok.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					pl.player.initialPlanet = selected;
+					pl.planet.image(selectedImage.image());
+					pl.update();
+					hide();
+				}
+			};
+			cancel = createButton("skirmish.cancel");
+			cancel.onClick = new Action0() {
+				@Override
+				public void invoke() {
+					hide();
+				}
+			};
+			
+			add(innerPanel, backgroundImage, ok, cancel, selectedImage, selectedName);
 		}
 		/**
 		 * Select a planet.
 		 * @param pd the planet data or null to deselect
 		 */
 		void select(PlanetData pd) {
-			if (pd == null) {
-				selected = null;
-			} else {
+			if (pd != null) {
+				selectedImage.image(planetIcons.get(pd.type));
+				selectedName.text(pd.id + " (" + pd.type + ")", true);
 				selected = pd.id;
+			} else {
+				selectedImage.image(commons.common().randomPlanet);
+				selectedName.text(get("skirmish.initial_planet.random"), true);
+				selected = null;
 			}
 			blink = false;
 		}
@@ -2487,8 +2521,15 @@ public class SkirmishScreen extends ScreenBase {
 			
 			ok.x = ooc;
 			cancel.x = ooc + 10 + ok.width;
+			
+			selectedImage.location(15, innerPanel.y + 410);
+			selectedName.location(50, innerPanel.y + 417);
 		}
 		
+		/**
+		 * Loads the resources from the given game definition.
+		 * @param def the definition
+		 */
 		public void load(GameDefinition def) {
 			XElement galaxyXML = rl.getXML(def.galaxy);
 			XElement background = galaxyXML.childElement("background");
@@ -2499,7 +2540,9 @@ public class SkirmishScreen extends ScreenBase {
 			for (XElement xplanet : galaxyXML.childElement("planets").childrenWithName("planet")) {
 				XElement xbody = xplanet.childElement("body");
 				
-				planetIcons.put(xplanet.get("type"), rl.getImage(xbody.content));
+				BufferedImage img = rl.getImage(xbody.content);
+				img = ImageUtils.newSubimage(img, 0, 0, img.getHeight(), img.getHeight());
+				planetIcons.put(xplanet.get("type"), img);
 			}
 			
 			planets.clear();
@@ -2515,15 +2558,26 @@ public class SkirmishScreen extends ScreenBase {
 				planets.put(pd.id, pd);
 			}
 		}
+		/**
+		 * Display the panel and select the given planet.
+		 * @param planetId the selected planet id
+		 * @param pl the player line to update
+		 */
 		public void show(String planetId, PlayerLine pl) {
-			
+			PlanetData pd = planets.get(planetId);
+			select(pd);
+			this.pl = pl;
 			visible(true);
 		}
+		/**
+		 * Hide the panel.
+		 */
 		public void hide() {
 			planetIcons.clear();
 			pl = null;
 			backgroundImage.image(null);
 			planets.clear();
+			planetIcons.clear();
 			visible(false);
 		}
 	}
