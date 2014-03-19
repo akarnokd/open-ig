@@ -25,6 +25,8 @@ public class UIImage extends UIComponent {
 	private boolean scale;
 	/** Center the image? */
 	private boolean center;
+	/** Stretch the image? */
+	private boolean stretch;
 	/** The border color. */
 	protected int borderColor;
 	/** The background color. */
@@ -65,6 +67,9 @@ public class UIImage extends UIComponent {
 			g2.fillRect(0, 0, width, height);
 		}
 		if (image != null) {
+			if (stretch) {
+				g2.drawImage(image, 0, 0, width, height, null);
+			} else
 			if (center) {
 				int dx = (width - image.getWidth()) / 2;
 				int dy = (height - image.getHeight()) / 2;
@@ -170,5 +175,18 @@ public class UIImage extends UIComponent {
 	public UIImage backgroundColor(int newColor) {
 		this.backgroundColor = newColor;
 		return this;
+	}
+	/**
+	 * Stretch the image to the component size?
+	 * @param stretch enable stretch
+	 * @return this
+	 */
+	public UIImage stretch(boolean stretch) {
+		this.stretch = stretch;
+		return this;
+	}
+	/** @return the current stretch state. */
+	public boolean stretch() {
+		return this.stretch;
 	}
 }
