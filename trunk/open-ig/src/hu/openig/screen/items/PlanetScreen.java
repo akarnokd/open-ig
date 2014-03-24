@@ -2530,7 +2530,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	/** Perform the faster animation. */
 	void doAnimation2() {
-		if (planet().weatherTTL > 0 && planet().type.weatherDrop == WeatherType.RAIN) {
+		if (config.allowWeather && planet().weatherTTL > 0 && planet().type.weatherDrop == WeatherType.RAIN) {
 			if (weatherSoundRunning == null) {
 				weatherSoundRunning = commons.sounds.playSound(
 						SoundType.RAIN, new Action0() {
