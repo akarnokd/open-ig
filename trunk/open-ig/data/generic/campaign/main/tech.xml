@@ -141,7 +141,7 @@
 	</item>
 	<item id="OrbitalFactory" name="tech.orbitalfactory.name" long-name="tech.orbitalfactory.longname" description="tech.orbitalfactory.description" category="SPACESHIPS_STATIONS" image="inventions/spaceships/stations/orbital_factory" factory="spaceship" research-cost="40000" production-cost="80000" level="3" race="human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep" civil="1" mech="1" comp="1" ai="1" mil="1" index="3" video="technology/spaceships/stations/orbital_factory">
 	</item>
-	<item id="SpaceStation2" name="tech.spacestation2.name" long-name="tech.spacestation2.longname" description="tech.spacestation2.description" category="SPACESHIPS_STATIONS" image="inventions/spaceships/stations/space_station_2" factory="spaceship" research-cost="110000" production-cost="90000" level="4" race="human,morgath,ychom,dribs,sullep,dargslan,ecalep" requires="Laser2, IonCannon, SpaceStation1" civil="3" mech="3" comp="4" ai="3" mil="5" index="1" video="technology/spaceships/stations/space_station_2">
+	<item id="SpaceStation2" name="tech.spacestation2.name" long-name="tech.spacestation2.longname" description="tech.spacestation2.description" category="SPACESHIPS_STATIONS" image="inventions/spaceships/stations/space_station_2" factory="spaceship" research-cost="110000" production-cost="90000" level="4" race="human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep" requires="Laser2, IonCannon, SpaceStation1" civil="3" mech="3" comp="4" ai="3" mil="5" index="1" video="technology/spaceships/stations/space_station_2">
 		<slot-fixed id="Laser" item="Laser2" count="16"/>
 		<slot-fixed id="Cannon" item="IonCannon" count="17"/>
 		<slot-fixed id="Shield" item="Shield2" count="1"/>
@@ -149,6 +149,14 @@
 		<slot-fixed id="ECM" item="ECM1" count="1"/>
 	</item>
 	<item id="SpaceStation3" name="tech.spacestation3.name" long-name="tech.spacestation3.longname" description="tech.spacestation3.description" category="SPACESHIPS_STATIONS" image="inventions/spaceships/stations/space_station_3" factory="spaceship" research-cost="200000" production-cost="125000" level="5" race="human,ychom,dribs,sullep,dargslan,ecalep" requires="Laser4, IonCannon, Rocket2" civil="6" mech="4" comp="5" ai="3" mil="6" index="2" video="technology/spaceships/stations/space_station_3">
+		<slot-fixed id="Laser1" item="Laser3" count="7"/>
+		<slot-fixed id="Cannon1" item="ParticleCannon" count="7"/>
+		<slot-fixed id="Cannon2" item="PlasmaCannon" count="9"/>
+		<slot-fixed id="Shield" item="Shield3" count="1"/>
+		<slot id="rocket" x="145" y="50" width="30" height="20" max="6" items="Rocket1,Rocket2,MultiheadedRocket"/>
+		<slot-fixed id="ECM" item="ECM2" count="1"/>
+	</item>
+	<item id="SpaceStation3Alien" name="tech.spacestation3.name" long-name="tech.spacestation3.longname" description="tech.spacestation3.description" category="SPACESHIPS_STATIONS" image="inventions/spaceships/stations/space_station_3" factory="spaceship" research-cost="200000" production-cost="125000" level="5" race="garthog,ychom,dribs,sullep,dargslan,ecalep,morgath" requires="Laser4Alien, IonCannon, Rocket2" civil="6" mech="4" comp="5" ai="3" mil="6" index="2" video="technology/spaceships/stations/space_station_3">
 		<slot-fixed id="Laser1" item="Laser3" count="7"/>
 		<slot-fixed id="Cannon1" item="ParticleCannon" count="7"/>
 		<slot-fixed id="Cannon2" item="PlasmaCannon" count="9"/>
@@ -165,76 +173,82 @@
 	<item id="HyperDrive3" name="tech.hyperdrive3.name" long-name="tech.hyperdrive3.longname" description="tech.hyperdrive3.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_3" factory="equipment" research-cost="18000" production-cost="4300" level="4" race="human,garthog" requires="HyperDrive2" civil="1" mech="3" comp="2" mil="1" index="2" video="technology/equipments/hyperdrives/hyperdrive_3">
 		<property name="speed" value="32"/>
 	</item>
-	<item id="HyperDrive4" name="tech.hyperdrive4.name" long-name="tech.hyperdrive4.longname" description="tech.hyperdrive4.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_4" factory="equipment" research-cost="20000" production-cost="6000" level="4" race="human" requires="HyperDrive3" civil="3" mech="4" comp="2" mil="2" index="3" video="technology/equipments/hyperdrives/hyperdrive_4">
+	<item id="HyperDrive4" name="tech.hyperdrive4.name" long-name="tech.hyperdrive4.longname" description="tech.hyperdrive4.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_4" factory="equipment" research-cost="20000" production-cost="6000" level="4" race="human,garthog,morgath,ecalep,sullep,dribs,ychom" requires="HyperDrive3" civil="3" mech="4" comp="2" mil="2" index="3" video="technology/equipments/hyperdrives/hyperdrive_4">
 		<property name="speed" value="34"/>
 	</item>
-	<item id="HyperDrive5" name="tech.hyperdrive5.name" long-name="tech.hyperdrive5.longname" description="tech.hyperdrive5.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_5" factory="equipment" research-cost="24000" production-cost="9000" level="5" race="human" requires="HyperDrive4" civil="4" mech="6" comp="1" mil="4" index="4" video="technology/equipments/hyperdrives/hyperdrive_5">
+	<item id="HyperDrive5" name="tech.hyperdrive5.name" long-name="tech.hyperdrive5.longname" description="tech.hyperdrive5.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_5" factory="equipment" research-cost="24000" production-cost="9000" level="5" race="human,garthog,morgath,ecalep,sullep,dribs,ychom" requires="HyperDrive4" civil="4" mech="6" comp="1" mil="4" index="4" video="technology/equipments/hyperdrives/hyperdrive_5">
 		<property name="speed" value="36"/>
 	</item>
 	<item id="DargslanHyperDrive5" name="tech.hyperdrive5.name" long-name="tech.hyperdrive5.longname" description="tech.hyperdrive5.description" category="EQUIPMENT_HYPERDRIVES" image="inventions/equipments/hyperdrives/hyperdrive_5" factory="equipment" research-cost="24000" production-cost="9000" level="6" race="dargslan" civil="4" mech="6" comp="1" mil="4" index="4" video="technology/equipments/hyperdrives/hyperdrive_5">
 		<property name="speed" value="35"/>
 	</item>
-	<item id="ECM1" name="tech.ecm1.name" long-name="tech.ecm1.longname" description="tech.ecm1.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/ecm_1" factory="equipment" research-cost="11200" production-cost="7000" level="4" race="human" civil="1" mech="2" comp="3" ai="3" mil="2" index="0" video="technology/equipments/modules/ecm_1">
+	<item id="ECM1" name="tech.ecm1.name" long-name="tech.ecm1.longname" description="tech.ecm1.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/ecm_1" factory="equipment" research-cost="11200" production-cost="7000" level="4" race="human,garthog,morgath,ecalep,sullep,ychom,dribs,dargslan" civil="1" mech="2" comp="3" ai="3" mil="2" index="0" video="technology/equipments/modules/ecm_1">
 		<property name="ecm" value="1"/>
 	</item>
-	<item id="ECM2" name="tech.ecm2.name" long-name="tech.ecm2.longname" description="tech.ecm2.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/ecm_2" factory="equipment" research-cost="12600" production-cost="13500" level="4" race="human" requires="ECM1, Rocket2" civil="2" mech="3" comp="4" ai="5" mil="3" index="1" video="technology/equipments/modules/ecm_2">
+	<item id="ECM2" name="tech.ecm2.name" long-name="tech.ecm2.longname" description="tech.ecm2.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/ecm_2" factory="equipment" research-cost="12600" production-cost="13500" level="4" race="human,garthog,morgath,ecalep,sullep,ychom,dribs,dargslan" requires="ECM1, Rocket2" civil="2" mech="3" comp="4" ai="5" mil="3" index="1" video="technology/equipments/modules/ecm_2">
 		<property name="ecm" value="2"/>
 	</item>
-	<item id="Storage1" name="tech.storage1.name" long-name="tech.storage1.longname" description="tech.storage1.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/storage_1" factory="equipment" research-cost="10000" production-cost="7400" level="3" race="human" civil="1" index="3" video="technology/equipments/modules/storage_1">
+	<item id="Storage1" name="tech.storage1.name" long-name="tech.storage1.longname" description="tech.storage1.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/storage_1" factory="equipment" research-cost="10000" production-cost="7400" level="3" race="human,garthog,morgath,ecalep,dribs,ychom,dargslan,sullep" civil="1" index="3" video="technology/equipments/modules/storage_1">
 		<property name="vehicles" value="3"/>
 	</item>
-	<item id="Storage2" name="tech.storage2.name" long-name="tech.storage2.longname" description="tech.storage2.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/storage_2" factory="equipment" research-cost="14000" production-cost="10000" level="4" race="human" requires="Storage1" civil="3" mech="4" comp="2" mil="2" index="4" video="technology/equipments/modules/storage_2">
+	<item id="Storage2" name="tech.storage2.name" long-name="tech.storage2.longname" description="tech.storage2.description" category="EQUIPMENT_MODULES" image="inventions/equipments/modules/storage_2" factory="equipment" research-cost="14000" production-cost="10000" level="4" race="human,garthog,morgath,ecalep,dribs,ychom,dargslan,sullep" requires="Storage1" civil="3" mech="4" comp="2" mil="2" index="4" video="technology/equipments/modules/storage_2">
 		<property name="vehicles" value="5"/>
 	</item>
 	<item id="Radar1" name="tech.radar1.name" long-name="tech.radar1.longname" description="tech.radar1.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_1" factory="equipment" research-cost="8000" production-cost="5000" level="0" race="human,garthog" mil="1" index="0" video="technology/equipments/radars/radar_1">
 		<property name="radar" value="1"/>
 	</item>
-	<item id="Radar2" name="tech.radar2.name" long-name="tech.radar2.longname" description="tech.radar2.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_2" factory="equipment" research-cost="18000" production-cost="9000" level="3" race="human" requires="Radar1" mech="2" comp="2" ai="1" mil="2" index="1" video="technology/equipments/radars/radar_2">
+	<item id="Radar2" name="tech.radar2.name" long-name="tech.radar2.longname" description="tech.radar2.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_2" factory="equipment" research-cost="18000" production-cost="9000" level="3" race="human,garthog,morgath,ecalep,sullep,dribs,ychom" requires="Radar1" mech="2" comp="2" ai="1" mil="2" index="1" video="technology/equipments/radars/radar_2">
 		<property name="radar" value="2"/>
 	</item>
-	<item id="Radar3" name="tech.radar3.name" long-name="tech.radar3.longname" description="tech.radar3.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_3" factory="equipment" research-cost="22000" production-cost="16000" level="4" race="human" requires="Radar2" civil="1" mech="4" comp="4" ai="2" mil="4" index="2" video="technology/equipments/radars/radar_3">
+	<item id="Radar3" name="tech.radar3.name" long-name="tech.radar3.longname" description="tech.radar3.description" category="EQUIPMENT_RADARS" image="inventions/equipments/radars/radar_3" factory="equipment" research-cost="22000" production-cost="16000" level="4" race="human,garthog,morgath,ecalep,sullep,dribs,ychom" requires="Radar2" civil="1" mech="4" comp="4" ai="2" mil="4" index="2" video="technology/equipments/radars/radar_3">
 		<property name="radar" value="3"/>
 	</item>
-	<item id="Shield1" name="tech.shield1.name" long-name="tech.shield1.longname" description="tech.shield1.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_1" factory="equipment" research-cost="10000" production-cost="4000" level="0" race="human" civil="1" comp="1" mil="1" index="0" video="technology/equipments/shields/shield_1">
+	<item id="Shield1" name="tech.shield1.name" long-name="tech.shield1.longname" description="tech.shield1.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_1" factory="equipment" research-cost="10000" production-cost="4000" level="0" race="human,garthog,ecalep,morgath,ychom,sullep,dargslan,dribs" civil="1" comp="1" mil="1" index="0" video="technology/equipments/shields/shield_1">
 		<property name="shield" value="25"/>
 	</item>
-	<item id="Shield2" name="tech.shield2.name" long-name="tech.shield2.longname" description="tech.shield2.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_2" factory="equipment" research-cost="20000" production-cost="7500" level="4" race="human" requires="Shield1" comp="3" ai="1" mil="4" index="1" video="technology/equipments/shields/shield_2">
+	<item id="Shield2" name="tech.shield2.name" long-name="tech.shield2.longname" description="tech.shield2.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_2" factory="equipment" research-cost="20000" production-cost="7500" level="4" race="human,garthog,ecalep,morgath,ychom,sullep,dargslan,dribs" requires="Shield1" comp="3" ai="1" mil="4" index="1" video="technology/equipments/shields/shield_2">
 		<property name="shield" value="35"/>
 	</item>
-	<item id="Shield3" name="tech.shield3.name" long-name="tech.shield3.longname" description="tech.shield3.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_3" factory="equipment" research-cost="24000" production-cost="12000" level="4" race="human" requires="Shield2, ParticleCannon" mech="1" comp="4" ai="2" mil="6" index="2" video="technology/equipments/shields/shield_3">
+	<item id="Shield3" name="tech.shield3.name" long-name="tech.shield3.longname" description="tech.shield3.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_3" factory="equipment" research-cost="24000" production-cost="12000" level="4" race="human,garthog,ecalep,morgath,ychom,sullep,dargslan,dribs" requires="Shield2, ParticleCannon" mech="1" comp="4" ai="2" mil="6" index="2" video="technology/equipments/shields/shield_3">
 		<property name="shield" value="45"/>
 	</item>
-	<item id="Shield4" name="tech.shield4.name" long-name="tech.shield4.longname" description="tech.shield4.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_4" factory="equipment" research-cost="30000" production-cost="19000" level="5" race="human" civil="1" mech="3" comp="6" ai="4" mil="7" index="3" requires="Shield3" video="technology/equipments/shields/shield_4">
+	<item id="Shield4" name="tech.shield4.name" long-name="tech.shield4.longname" description="tech.shield4.description" category="EQUIPMENT_SHIELDS" image="inventions/equipments/shields/shield_4" factory="equipment" research-cost="30000" production-cost="19000" level="5" race="human,garthog,ecalep,morgath,ychom,sullep,dargslan,dribs" civil="1" mech="3" comp="6" ai="4" mil="7" index="3" requires="Shield3" video="technology/equipments/shields/shield_4">
 		<property name="shield" value="60"/>
 	</item>
-	<item id="Laser1" name="tech.laser1.name" long-name="tech.laser1.longname" description="tech.laser1.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_1" factory="weapon" research-cost="3000" production-cost="620" level="0" race="human" mech="1" comp="1" mil="1" index="0" video="technology/weapons/lasers/laser_1">
+	<item id="Laser1" name="tech.laser1.name" long-name="tech.laser1.longname" description="tech.laser1.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_1" factory="weapon" research-cost="3000" production-cost="620" level="0" race="human,garthog,ecalep,sullep,ychom,morgath,dargslan,dribs" mech="1" comp="1" mil="1" index="0" video="technology/weapons/lasers/laser_1">
 		<property name="projectile" value="Laser1"/>
 	</item>
-	<item id="Laser2" name="tech.laser2.name" long-name="tech.laser2.longname" description="tech.laser2.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_2" factory="weapon" research-cost="8000" production-cost="900" level="3" race="human,garthog" requires="Laser1" mech="2" comp="1" mil="2" index="1" video="technology/weapons/lasers/laser_2">
+	<item id="Laser2" name="tech.laser2.name" long-name="tech.laser2.longname" description="tech.laser2.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_2" factory="weapon" research-cost="8000" production-cost="900" level="3" race="human,garthog,ecalep,sullep,ychom,morgath,dargslan,dribs" requires="Laser1" mech="2" comp="1" mil="2" index="1" video="technology/weapons/lasers/laser_2">
 		<property name="projectile" value="Laser2"/>
 	</item>
 	<item id="Laser3" name="tech.laser3.name" long-name="tech.laser3.longname" description="tech.laser3.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_3" factory="weapon" research-cost="12000" production-cost="1400" level="4" race="human" requires="Laser2, SolarPlant" mech="2" comp="3" ai="1" mil="4" index="2" video="technology/weapons/lasers/laser_3">
 		<property name="projectile" value="Laser3"/>
 	</item>
+	<item id="Laser3Alien" name="tech.laser3.name" long-name="tech.laser3.longname" description="tech.laser3.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_3" factory="weapon" research-cost="12000" production-cost="1400" level="4" race="garthog,ecalep,sullep,ychom,morgath,dargslan,dribs" requires="Laser2" mech="2" comp="3" ai="1" mil="4" index="2" video="technology/weapons/lasers/laser_3">
+		<property name="projectile" value="Laser3"/>
+	</item>
 	<item id="Laser4" name="tech.laser4.name" long-name="tech.laser4.longname" description="tech.laser4.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_4" factory="weapon" research-cost="14000" production-cost="1750" level="4" race="human" requires="Laser3" mech="4" comp="4" ai="2" mil="5" index="3" video="technology/weapons/lasers/laser_4">
+		<property name="projectile" value="Laser4"/>
+	</item>
+	<item id="Laser4Alien" name="tech.laser4.name" long-name="tech.laser4.longname" description="tech.laser4.description" category="WEAPONS_LASERS" image="inventions/weapons/lasers/laser_4" factory="weapon" research-cost="14000" production-cost="1750" level="4" race="garthog,ecalep,sullep,ychom,morgath,dargslan,dribs" requires="Laser3" mech="4" comp="4" ai="2" mil="5" index="3" video="technology/weapons/lasers/laser_4">
 		<property name="projectile" value="Laser4"/>
 	</item>
 	<item id="IonCannon" name="tech.ioncannon.name" long-name="tech.ioncannon.longname" description="tech.ioncannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/ion_cannon" factory="weapon" research-cost="8000" production-cost="1200" level="3" race="human,garthog" mech="1" comp="1" ai="1" mil="1" index="0" video="technology/weapons/cannons/ion_cannon">
 		<property name="projectile" value="Ion"/>
 	</item>
-	<item id="PlasmaCannon" name="tech.plasmacannon.name" long-name="tech.plasmacannon.longname" description="tech.plasmacannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/plasma_cannon" factory="weapon" research-cost="12000" production-cost="2400" level="4" race="human" requires="IonCannon" mech="2" comp="4" ai="2" mil="4" index="1" video="technology/weapons/cannons/plasma_cannon">
+	<item id="PlasmaCannon" name="tech.plasmacannon.name" long-name="tech.plasmacannon.longname" description="tech.plasmacannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/plasma_cannon" factory="weapon" research-cost="12000" production-cost="2400" level="4" race="human,garthog,ecalep,sullep,ychom,morgath,dargslan,dribs" requires="IonCannon" mech="2" comp="4" ai="2" mil="4" index="1" video="technology/weapons/cannons/plasma_cannon">
 		<property name="projectile" value="Plasma"/>
 	</item>
-	<item id="ParticleCannon" name="tech.particlecannon.name" long-name="tech.particlecannon.longname" description="tech.particlecannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/particle_cannon" factory="weapon" research-cost="18000" production-cost="3200" level="4" race="human" requires="PlasmaCannon" mech="3" comp="5" ai="3" mil="6" index="2" video="technology/weapons/cannons/particle_cannon">
+	<item id="ParticleCannon" name="tech.particlecannon.name" long-name="tech.particlecannon.longname" description="tech.particlecannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/particle_cannon" factory="weapon" research-cost="18000" production-cost="3200" level="4" race="human,garthog,ecalep,sullep,ychom,morgath,dargslan,dribs" requires="PlasmaCannon" mech="3" comp="5" ai="3" mil="6" index="2" video="technology/weapons/cannons/particle_cannon">
 		<property name="projectile" value="Particle"/>
 	</item>
-	<item id="MesonCannon" name="tech.mesoncannon.name" long-name="tech.mesoncannon.longname" description="tech.mesoncannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/meson_cannon" factory="weapon" research-cost="28000" production-cost="4000" level="5" race="human" requires="ParticleCannon" mech="5" comp="6" ai="4" mil="8" index="3" video="technology/weapons/cannons/meson_cannon">
+	<item id="MesonCannon" name="tech.mesoncannon.name" long-name="tech.mesoncannon.longname" description="tech.mesoncannon.description" category="WEAPONS_CANNONS" image="inventions/weapons/cannons/meson_cannon" factory="weapon" research-cost="28000" production-cost="4000" level="5" race="human,garthog,ecalep,sullep,ychom,morgath,dargslan,dribs" requires="ParticleCannon" mech="5" comp="6" ai="4" mil="8" index="3" video="technology/weapons/cannons/meson_cannon">
 		<property name="projectile" value="Meson"/>
 	</item>
 	<item id="Bomb1" name="tech.bomb1.name" long-name="tech.bomb1.longname" description="tech.bomb1.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/bomb_1" factory="weapon" research-cost="5000" production-cost="1400" level="0" race="human,dribs,ecalep,garthog,morgath,sullep,ychom" mech="1" comp="1" mil="1" index="0" video="technology/weapons/projectiles/bomb_1">
 		<property name="projectile" value="Bomb1"/>
 	</item>
-	<item id="Bomb2" name="tech.bomb2.name" long-name="tech.bomb2.longname" description="tech.bomb2.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/bomb_2" factory="weapon" research-cost="10000" production-cost="1950" level="4" race="human,dargslan" requires="Bomb1" civil="1" mech="1" comp="4" ai="3" mil="2" index="1" video="technology/weapons/projectiles/bomb_2">
+	<item id="Bomb2" name="tech.bomb2.name" long-name="tech.bomb2.longname" description="tech.bomb2.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/bomb_2" factory="weapon" research-cost="10000" production-cost="1950" level="4" race="human,dargslan,ecalep,garthog,morgath,sullep,ychom,dribs" requires="Bomb1" civil="1" mech="1" comp="4" ai="3" mil="2" index="1" video="technology/weapons/projectiles/bomb_2">
 		<property name="projectile" value="Bomb2"/>
 		<property name="anti-ecm" value="1"/>
 	</item>
@@ -242,14 +256,14 @@
 		<property name="projectile" value="VirusBomb"/>
 		<property name="anti-ecm" value="2"/>
 	</item>
-	<item id="Rocket1" name="tech.rocket1.name" long-name="tech.rocket1.longname" description="tech.rocket1.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/rocket_1" factory="weapon" research-cost="6000" production-cost="900" level="0" race="human,dribs,ecalep,garthog,morgath,sullep,ychom" mech="1" comp="1" ai="1" mil="1" index="3" video="technology/weapons/projectiles/rocket_1">
+	<item id="Rocket1" name="tech.rocket1.name" long-name="tech.rocket1.longname" description="tech.rocket1.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/rocket_1" factory="weapon" research-cost="6000" production-cost="900" level="0" race="human,dribs,ecalep,garthog,morgath,sullep,ychom,dargslan" mech="1" comp="1" ai="1" mil="1" index="3" video="technology/weapons/projectiles/rocket_1">
 		<property name="projectile" value="Rocket1"/>
 	</item>
-	<item id="Rocket2" name="tech.rocket2.name" long-name="tech.rocket2.longname" description="tech.rocket2.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/rocket_2" factory="weapon" research-cost="12000" production-cost="1500" level="4" race="human" requires="Rocket1" mech="2" comp="4" ai="4" mil="3" index="4" video="technology/weapons/projectiles/rocket_2">
+	<item id="Rocket2" name="tech.rocket2.name" long-name="tech.rocket2.longname" description="tech.rocket2.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/rocket_2" factory="weapon" research-cost="12000" production-cost="1500" level="4" race="human,garthog,dribs,sullep,morgath,ychom,dargslan,ecalep" requires="Rocket1" mech="2" comp="4" ai="4" mil="3" index="4" video="technology/weapons/projectiles/rocket_2">
 		<property name="projectile" value="Rocket2"/>
 		<property name="anti-ecm" value="1"/>
 	</item>
-	<item id="MultiheadedRocket" name="tech.multiheadedrocket.name" long-name="tech.multiheadedrocket.longname" description="tech.multiheadedrocket.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/multi_headed_rocket" factory="weapon" research-cost="18000" production-cost="6200" level="4" race="human,dargslan,ecalep" requires="Rocket2, Bomb2" mech="3" comp="5" ai="3" mil="6" index="5" video="technology/weapons/projectiles/multi_headed_rocket">
+	<item id="MultiheadedRocket" name="tech.multiheadedrocket.name" long-name="tech.multiheadedrocket.longname" description="tech.multiheadedrocket.description" category="WEAPONS_PROJECTILES" image="inventions/weapons/projectiles/multi_headed_rocket" factory="weapon" research-cost="18000" production-cost="6200" level="4" race="human,dargslan,ecalep,garthog,ychom,dribs,sullep,morgath" requires="Rocket2, Bomb2" mech="3" comp="5" ai="3" mil="6" index="5" video="technology/weapons/projectiles/multi_headed_rocket">
 		<property name="projectile" value="MultiheadedRocket"/>
 		<property name="anti-ecm" value="2"/>
 	</item>
@@ -257,7 +271,7 @@
 	</item>
 	<item id="MediumTank" name="tech.mediumtank.name" long-name="tech.mediumtank.longname" description="tech.mediumtank.description" category="WEAPONS_TANKS" image="inventions/weapons/tanks/medium_tank" factory="weapon" research-cost="20000" production-cost="4800" level="3" race="human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep" requires="LightTank" civil="1" mech="1" comp="1" ai="1" mil="2" index="1" video="technology/weapons/tanks/medium_tank">
 	</item>
-	<item id="HeavyTank" name="tech.heavytank.name" long-name="tech.heavytank.longname" description="tech.heavytank.description" category="WEAPONS_TANKS" image="inventions/weapons/tanks/heavy_tank" factory="weapon" research-cost="24000" production-cost="7000" level="4" race="human,morgath,ychom,dribs,sullep,dargslan,ecalep" requires="MediumTank" civil="2" mech="3" comp="3" ai="2" mil="5" index="2" video="technology/weapons/tanks/heavy_tank">
+	<item id="HeavyTank" name="tech.heavytank.name" long-name="tech.heavytank.longname" description="tech.heavytank.description" category="WEAPONS_TANKS" image="inventions/weapons/tanks/heavy_tank" factory="weapon" research-cost="24000" production-cost="7000" level="4" race="human,garthog,morgath,ychom,dribs,sullep,dargslan,ecalep" requires="MediumTank" civil="2" mech="3" comp="3" ai="2" mil="5" index="2" video="technology/weapons/tanks/heavy_tank">
 	</item>
 	<item id="Behemoth" name="tech.behemoth.name" long-name="tech.behemoth.longname" description="tech.behemoth.description" category="WEAPONS_TANKS" image="inventions/weapons/tanks/behemoth" factory="weapon" research-cost="32000" production-cost="17500" level="5" race="human" requires="HeavyTank" civil="3" mech="4" comp="5" ai="3" mil="5" index="3" video="technology/weapons/tanks/behemoth">
 	</item>
@@ -308,6 +322,7 @@
 	<item id="YchomMineLayer" name="tech.ychomminelayer.name" long-name="tech.ychomminelayer.longname" description="tech.ychomminelayer.description" category="WEAPONS_VEHICLES" factory="weapon" level="0" research-cost="24000" production-cost="12000" race="ychom" image="inventions/weapons/vehicles/ychom_mine_layer" index="3">
 		<property name="minelayer" value="true"/>
 	</item>
+	<!--  Alien fighters -->
 	<item id="DargslanFighter" name="tech.dargslanfighter.name" long-name="tech.dargslanfighter.longname" description="tech.dargslanfighter.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="0" research-cost="24000" production-cost="12000" race="dargslan" image="inventions/spaceships/fighters/dargslan_fighter" index="0">
 		<slot-fixed id="Laser" count="1" item="Laser1"/>
 	</item>
@@ -318,9 +333,23 @@
 	<item id="EcalepFighter" name="tech.ecalepfighter.name" long-name="tech.ecalepfighter.longname" description="tech.ecalepfighter.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="0" research-cost="20000" production-cost="10000" race="ecalep" image="inventions/spaceships/fighters/ecalep_fighter" index="0">
 		<slot-fixed id="Laser" count="1" item="Laser1"/>
 	</item>
+	
 	<item id="GarthogFighter" name="tech.garthogfighter.name" long-name="tech.garthogfighter.longname" description="tech.garthogfighter.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="0" research-cost="15000" production-cost="8000" race="garthog" image="inventions/spaceships/fighters/garthog_fighter" index="0">
 		<slot-fixed id="Laser" count="1" item="Laser1"/>
 	</item>
+	<item id="GarthogFighter1" name="tech.garthogfighter1.name" long-name="tech.garthogfighter1.longname" description="tech.garthogfighter1.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="3" research-cost="15000" production-cost="8000" race="garthog" image="inventions/spaceships/fighters/garthog_fighter_1" index="2" requires="GarthogFighter" mech="1" comp="1" ai="1" mil="1">
+		<slot-fixed id="Laser" count="2" item="Laser2"/>
+	</item>
+	<item id="GarthogFighter2" name="tech.garthogfighter2.name" long-name="tech.garthogfighter2.longname" description="tech.garthogfighter2.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="4" research-cost="15000" production-cost="8000" race="garthog" image="inventions/spaceships/fighters/garthog_fighter_2" index="3" requires="GarthogFighter1" mech="2" comp="2" ai="2" mil="2">
+		<slot-fixed id="Laser" count="2" item="Laser2"/>
+	</item>
+	<item id="GarthogFighter3" name="tech.garthogfighter3.name" long-name="tech.garthogfighter3.longname" description="tech.garthogfighter3.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="4" research-cost="15000" production-cost="8000" race="garthog" image="inventions/spaceships/fighters/garthog_fighter_3" index="4" requires="GarthogFighter2" mech="3" comp="3" ai="3" mil="3">
+		<slot-fixed id="Laser" count="2" item="Laser3Alien"/>
+	</item>
+	<item id="GarthogFighter4" name="tech.garthogfighter4.name" long-name="tech.garthogfighter4.longname" description="tech.garthogfighter4.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="5" research-cost="15000" production-cost="8000" race="garthog" image="inventions/spaceships/fighters/garthog_fighter_4" index="5" requires="GarthogFighter3" mech="4" comp="4" ai="4" mil="4">
+		<slot-fixed id="Laser" count="2" item="Laser3Alien"/>
+	</item>
+	
 	<item id="MorgathFighter" name="tech.morgathfighter.name" long-name="tech.morgathfighter.longname" description="tech.morgathfighter.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="0" research-cost="20000" production-cost="10000" race="morgath" image="inventions/spaceships/fighters/morgath_fighter" index="0">
 		<slot-fixed id="Laser" count="1" item="Laser1"/>
 	</item>
@@ -339,6 +368,7 @@
 	<item id="YchomFighter" name="tech.ychomfighter.name" long-name="tech.ychomfighter.longname" description="tech.ychomfighter.description" category="SPACESHIPS_FIGHTERS" factory="spaceship" level="0" research-cost="20000" production-cost="10000" race="ychom" image="inventions/spaceships/fighters/ychom_fighter" index="0">
 		<slot-fixed id="Laser" count="1" item="Laser1"/>
 	</item>
+	<!-- Alien destroyers -->
 	<item id="DargslanDestroyer" name="tech.dargslandestroyer.name" long-name="tech.dargslandestroyer.longname" description="tech.dargslandestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/dargslan_destroyer" factory="spaceship" research-cost="44000" production-cost="22000" level="0" race="dargslan" index="0">
 		<slot-fixed id="Radar" count="1" item="Radar2"/>
 		<slot-fixed id="ECM" count="1" item="ECM1"/>
@@ -347,6 +377,7 @@
 		<slot-fixed id="Laser" count="11" item="Laser3"/>
 		<slot-fixed id="Cannon" count="8" item="ParticleCannon"/>
 	</item>
+	
 	<item id="DribsDestroyer" name="tech.dribsdestroyer.name" long-name="tech.dribsdestroyer.longname" description="tech.dribsdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/dribs_destroyer" factory="spaceship" research-cost="40000" production-cost="20000" level="0" race="dribs" index="0">
 		<slot-fixed id="Radar" count="1" item="Radar2"/>
 		<slot-fixed id="Hyperdrive" count="1" item="HyperDrive3"/>
@@ -371,8 +402,34 @@
 		<slot-fixed id="Cannon2" count="4" item="ParticleCannon"/>
 	</item>
 	<item id="GarthogDestroyer" name="tech.garthogdestroyer.name" long-name="tech.garthogdestroyer.longname" description="tech.garthogdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer" factory="spaceship" research-cost="32000" production-cost="17500" level="0" race="garthog" index="0">
-		<slot id="laser" max="3" items="Laser2" x='50' y='50' width="20" height="10"/>
-		<slot id="hyperdrive" max="1" items="HyperDrive3" x='50' y='100' width="20" height="10"/>
+		<slot id="laser" max="3" items="Laser2" x='180' y='65' width="20" height="10"/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3" x='100' y='50' width="20" height="10"/>
+	</item>
+	<item id="GarthogDestroyer1" name="tech.garthogdestroyer1.name" long-name="tech.garthogdestroyer1.longname" description="tech.garthogdestroyer1.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer_1" factory="spaceship" research-cost="32000" production-cost="17500" level="4" race="garthog" index="2" requires="GarthogDestroyer" mech="2" comp="1" ai="1" mil="2">
+		<slot id="laser" max="12" items="Laser2, Laser3Alien" x='180' y='65' width="20" height="10"/>
+		<slot id="shield" max="1" items="Shield1" x='140' y='50' width="20" height="10"/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3" x='100' y='50' width="20" height="10"/>
+	</item>
+	<item id="GarthogDestroyer2" name="tech.garthogdestroyer2.name" long-name="tech.garthogdestroyer2.longname" description="tech.garthogdestroyer2.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer_2" factory="spaceship" research-cost="40000" production-cost="22000" level="4" race="garthog" index="3" requires="GarthogDestroyer1" mech="2" comp="3" ai="3" mil="4">
+		<slot id="laser" max="16" items="Laser2, Laser3Alien" x='180' y='65' width="20" height="10"/>
+		<slot id='cannon' max='6' items="IonCannon,PlasmaCannon" x='150' y='62' width="20" height="10"/>
+		<slot id="shield" max="1" items="Shield1,Shield2" x='140' y='50' width="20" height="10"/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3,HyperDrive4" x='100' y='50' width="20" height="10"/>
+	</item>
+	<item id="GarthogDestroyer3" name="tech.garthogdestroyer3.name" long-name="tech.garthogdestroyer3.longname" description="tech.garthogdestroyer3.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer_3" factory="spaceship" research-cost="48000" production-cost="26000" level="5" race="garthog" index="4" requires="GarthogDestroyer2" mech="3" comp="4" ai="3" mil="4">
+		<slot id="laser" max="22" items="Laser2,Laser3Alien" x='180' y='65' width="20" height="10"/>
+		<slot id='cannon' max='4' items="IonCannon,PlasmaCannon,ParticleCannon" x='150' y='62' width="20" height="10"/>
+		<slot id="shield" max="1" items="Shield1,Shield2,Shield3" x='140' y='50' width="20" height="10"/>
+		<slot id="radar" max="1" items="Radar1,Radar2" x="125" y="61" width="20" height="10"/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3,HyperDrive4,HyperDrive5" x='100' y='50' width="20" height="10"/>
+	</item>
+	<item id="GarthogDestroyer4" name="tech.garthogdestroyer4.name" long-name="tech.garthogdestroyer4.longname" description="tech.garthogdestroyer4.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/garthog_destroyer_4" factory="spaceship" research-cost="56000" production-cost="32000" level="5" race="garthog" index="5" requires="GarthogDestroyer3" civil="1" mech="4" comp="5" ai="4" mil="6">
+		<slot id="laser" max="30" items="Laser2,Laser3Alien,Laser4Alien" x='180' y='65' width="20" height="10"/>
+		<slot id='cannon' max='12' items="PlasmaCannon,ParticleCannon,MesonCannon" x='150' y='62' width="20" height="10"/>
+		<slot id="shield" max="1" items="Shield1,Shield2,Shield3,Shield4" x='140' y='50' width="20" height="10"/>
+		<slot id="radar" max="1" items="Radar1,Radar2,Radar3" x="125" y="61" width="20" height="10"/>
+		<slot id="rocket" max="4" items="Rocket1,Rocket2" x='165' y='50' width="20" height="10"/> 
+		<slot id="hyperdrive" max="1" items="HyperDrive3,HyperDrive4,HyperDrive5" x='100' y='50' width="20" height="10"/>
 	</item>
 	<item id="MorgathDestroyer" name="tech.morgathdestroyer.name" long-name="tech.morgathdestroyer.longname" description="tech.morgathdestroyer.description" category="SPACESHIPS_CRUISERS" image="inventions/spaceships/cruisers/morgath_destroyer" factory="spaceship" research-cost="40000" production-cost="20000" level="0" race="morgath" index="0">
 		<slot-fixed id="Radar" count="1" item="Radar2"/>
@@ -393,6 +450,7 @@
 		<slot-fixed id="Laser" count="4" item="Laser2"/>
 		<slot-fixed id="Cannon" count="3" item="IonCannon"/>
 	</item>
+	<!-- Battleships -->
 	<item id="DargslanBattleship" name="tech.dargslanbattleship.name" long-name="tech.dargslanbattleship.longname" description="tech.dargslanbattleship.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/dargslan_battleship" factory="spaceship" research-cost="180000" production-cost="230000" level="0" race="dargslan" index="0">
 		<slot-fixed id="Bomb" count="6" item="Bomb2"/>
 		<slot-fixed id="Rocket" count="6" item="MultiHeadedRocket"/>
@@ -435,13 +493,51 @@
 		<property name="needsOrbitalFactory" value="true"/>
 	</item>
 	<item id="GarthogBattleship" name="tech.garthogbattleship.name" long-name="tech.garthogbattleship.longname" description="tech.garthogbattleship.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/garthog_battleship" factory="spaceship" research-cost="100000" production-cost="80000" level="0" race="garthog" index="0">
-		<slot id="bomb" max="1" items="Bomb1" x='20' y='20' width="20" height='10'/>
-		<slot id="rocket" max="1" items="Rocket1" x='50' y='20' width="20" height='10'/>
-		<slot id="radar" max="1" items="Radar1"  x='80' y='20' width="20" height='10'/>
-		<slot id="hyperdrive" max="1" items="HyperDrive3"  x='20' y='40' width="20" height='10'/>
-		<slot id="laser" max="7" items="Laser2"  x='50' y='40' width="20" height='10'/>
-		<slot id="cannon" max="3" items="IonCannon"  x='80' y='40' width="20" height='10'/>
+		<slot id="bomb" max="1" items="Bomb1" x='120' y='20' width="20" height='10'/>
+		<slot id="rocket" max="1" items="Rocket1" x='150' y='20' width="20" height='10'/>
+		<slot id="radar" max="1" items="Radar1"  x='120' y='40' width="20" height='10'/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3"  x='150' y='40' width="20" height='10'/>
+		<slot id="laser" max="7" items="Laser2"  x='120' y='60' width="20" height='10'/>
+		<slot id="cannon" max="3" items="IonCannon"  x='150' y='80' width="20" height='10'/>
 		<property name="vehicles" value="5"/>
+		<property name="needsOrbitalFactory" value="true"/>
+	</item>
+	<item id="GarthogBattleship1" name="tech.garthogbattleship1.name" long-name="tech.garthogbattleship1.longname" description="tech.garthogbattleship1.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/garthog_battleship_1" factory="spaceship" research-cost="100000" production-cost="80000" level="3" race="garthog" index="1" requires='GarthogBattleship' civil="1" mech="1" comp="1" ai="1" mil="1">
+		<slot id="bomb" max="8" items="Bomb1,Bomb2" x='120' y='20' width="20" height='10'/>
+		<slot id="rocket" max="8" items="Rocket1,Rocket2" x='150' y='20' width="20" height='10'/>
+		<slot id="radar" max="1" items="Radar1,Radar2,Radar3"  x='120' y='40' width="20" height='10'/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3,HyperDrive4,HyperDrive5"  x='150' y='40' width="20" height='10'/>
+		<slot id="laser" max="14" items="Laser2,Laser3Alien,Laser4Alien"  x='120' y='60' width="20" height='10'/>
+		<slot id="cannon" max="6" items="IonCannon,PlasmaCannon"  x='150' y='80' width="20" height='10'/>
+		<slot id='storage' max='1' items='Storage1,Storage2' x='120' y='80' width='20' height='10'/>
+		<slot id='shield' max='1' items='Shield1,Shield2,Shield3,Shield4' x='150' y='100' width='20' height='10'/>
+		<property name="vehicles" value="5"/>
+		<property name="needsOrbitalFactory" value="true"/>
+	</item>
+	<item id="GarthogBattleship2" name="tech.garthogbattleship2.name" long-name="tech.garthogbattleship2.longname" description="tech.garthogbattleship2.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/garthog_battleship_2" factory="spaceship" research-cost="100000" production-cost="80000" level="4" race="garthog" index="2" requires='GarthogBattleship1' civil="3" mech="3" comp="4" ai="2" mil="5">
+		<slot id="bomb" max="12" items="Bomb1,Bomb2" x='120' y='20' width="20" height='10'/>
+		<slot id="rocket" max="13" items="Rocket1,Rocket2" x='150' y='20' width="20" height='10'/>
+		<slot id="radar" max="1" items="Radar1,Radar2,Radar3"  x='120' y='40' width="20" height='10'/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3,HyperDrive4,HyperDrive5"  x='150' y='40' width="20" height='10'/>
+		<slot id="laser" max="16" items="Laser2,Laser3Alien,Laser4Alien"  x='120' y='60' width="20" height='10'/>
+		<slot id="cannon" max="9" items="IonCannon,PlasmaCannon,ParticleCannon,MesonCannon"  x='150' y='80' width="20" height='10'/>
+		<slot id='storage' max='1' items='Storage1,Storage2' x='120' y='80' width='20' height='10'/>
+		<slot id='shield' max='1' items='Shield2,Shield3,Shield4' x='150' y='100' width='20' height='10'/>
+		<slot id='ecm' max='1' items='ECM1,ECM2' x='120' y='100' width='20' height='10'/>
+		<property name="vehicles" value="8"/>
+		<property name="needsOrbitalFactory" value="true"/>
+	</item>
+	<item id="GarthogBattleship3" name="tech.garthogbattleship3.name" long-name="tech.garthogbattleship3.longname" description="tech.garthogbattleship3.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/garthog_battleship_3" factory="spaceship" research-cost="100000" production-cost="80000" level="5" race="garthog" index="4" requires='GarthogBattleship2' civil="4" mech="5" comp="5" ai="5" mil="7">
+		<slot id="bomb" max="20" items="Bomb1,Bomb2" x='120' y='20' width="20" height='10'/>
+		<slot id="rocket" max="14" items="Rocket1,Rocket2" x='150' y='20' width="20" height='10'/>
+		<slot id="radar" max="1" items="Radar1,Radar2,Radar3"  x='120' y='20' width="20" height='10'/>
+		<slot id="hyperdrive" max="1" items="HyperDrive3,HyperDrive4,HyperDrive5"  x='150' y='40' width="20" height='10'/>
+		<slot id="laser" max="16" items="Laser2,Laser3Alien,Laser4Alien"  x='120' y='60' width="20" height='10'/>
+		<slot id="cannon" max="22" items="IonCannon,PlasmaCannon,ParticleCannon,MesonCannon"  x='150' y='80' width="20" height='10'/>
+		<slot id='storage' max='1' items='Storage1,Storage2' x='120' y='80' width='20' height='10'/>
+		<slot id='shield' max='1' items='Shield2,Shield3,Shield4' x='150' y='100' width='20' height='10'/>
+		<slot id='ecm' max='1' items='ECM1,ECM2' x='120' y='100' width='20' height='10'/>
+		<property name="vehicles" value="11"/>
 		<property name="needsOrbitalFactory" value="true"/>
 	</item>
 	<item id="MorgathBattleship" name="tech.morgathbattleship.name" long-name="tech.morgathbattleship.longname" description="tech.morgathbattleship.description" category="SPACESHIPS_BATTLESHIPS" image="inventions/spaceships/battleships/morgath_battleship" factory="spaceship" research-cost="150000" production-cost="190000" level="0" race="morgath" index="0">

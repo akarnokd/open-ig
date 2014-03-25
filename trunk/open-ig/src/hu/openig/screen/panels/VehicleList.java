@@ -137,16 +137,12 @@ public class VehicleList extends UIContainer {
 	 * @return the item or null
 	 */
 	public InventoryItem getItemAt(final int y) {
-		int row = 0;
 		int y0 = -yOffset;
 		for (InventoryItem pii : items) {
 			if (y >= y0 && y < y0 + pii.type.equipmentImage.getHeight()) {
 				return pii;
 			}
-			if (row++ > 0) {
-				y0 += 5;
-			}
-			y0 += pii.type.equipmentImage.getHeight();
+			y0 += pii.type.equipmentImage.getHeight() + 5;
 		}
 		return null;
 	}
@@ -156,16 +152,13 @@ public class VehicleList extends UIContainer {
 	 * @return the item or null
 	 */
 	public InventoryItemGroup getGroupAt(final int y) {
-		int row = 0;
 		int y0 = -yOffset;
 		for (Map.Entry<ResearchType, InventoryItemGroup> e : map.entrySet()) {
-			if (y >= y0 && y < y0 + e.getKey().equipmentImage.getHeight()) {
+			int eh = e.getKey().equipmentImage.getHeight();
+			if (y >= y0 && y < y0 + eh) {
 				return e.getValue();
 			}
-			if (row++ > 0) {
-				y0 += 5;
-			}
-			y0 += e.getKey().equipmentImage.getHeight();
+			y0 += eh + 5;
 		}
 		return null;
 	}
