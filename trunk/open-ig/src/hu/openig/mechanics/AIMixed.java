@@ -9,6 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.model.AIManager;
+import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
 import hu.openig.model.BattleInfo;
@@ -86,23 +87,44 @@ public class AIMixed implements AIManager {
 	}
 	
 	@Override
-	public void spaceBattleInit(SpacewarWorld world) {
-		first.spaceBattleInit(world);
-		second.spaceBattleInit(world);
+	public AISpaceBattleManager spaceBattle(SpacewarWorld sworld) {
+		return new AIMixedSpaceBattle(first.spaceBattle(sworld), second.spaceBattle(sworld));
 	}
-
-	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world,
-			List<SpacewarStructure> idles) {
-		SpacewarAction action1 = first.spaceBattle(world, idles);
-		SpacewarAction action2 = second.spaceBattle(world, idles);
-		return Collections.max(Arrays.asList(action1, action2));
-	}
-
-	@Override
-	public void spaceBattleDone(SpacewarWorld world) {
-		first.spaceBattleDone(world);
-		second.spaceBattleDone(world);
+	/**
+	 * Mixing space battle manager. 
+	 * @author akarnokd, 2014.04.01.
+	 */
+	final class AIMixedSpaceBattle implements AISpaceBattleManager {
+		/** The first manager. */
+		final AISpaceBattleManager first;
+		/** The second manager. */
+		final AISpaceBattleManager second;
+		/**
+		 * Constructor.
+		 * @param first the first manager
+		 * @param second the second manager
+		 */
+		public AIMixedSpaceBattle(
+				AISpaceBattleManager first, AISpaceBattleManager second) {
+			this.first = first;
+			this.second = second;
+		}
+		@Override
+		public void spaceBattleInit() {
+			first.spaceBattleInit();
+			second.spaceBattleInit();
+		}
+		@Override
+		public SpacewarAction spaceBattle(List<SpacewarStructure> idles) {
+			SpacewarAction action1 = first.spaceBattle(idles);
+			SpacewarAction action2 = second.spaceBattle(idles);
+			return Collections.max(Arrays.asList(action1, action2));
+		}
+		@Override
+		public void spaceBattleDone() {
+			first.spaceBattleDone();
+			second.spaceBattleDone();
+		}
 	}
 
 	@Override

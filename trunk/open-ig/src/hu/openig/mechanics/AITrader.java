@@ -10,6 +10,7 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Pair;
 import hu.openig.model.AIManager;
+import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
 import hu.openig.model.BattleInfo;
@@ -81,8 +82,6 @@ public class AITrader implements AIManager {
 	String traderLabel;
 	/** How many new ships should emerge? */
 	int actionCount;
-	/** The initial battle HP. */
-	double battleHP;
 	/**
 	 * A trader fleet status.
 	 * @author akarnokd, Dec 8, 2011
@@ -453,20 +452,132 @@ public class AITrader implements AIManager {
 			ApproachType approach, Object argument) {
 		return ResponseMode.NO;
 	}
-
+	
 	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world, 
-			List<SpacewarStructure> idles) {
-		List<SpacewarStructure> sts = world.structures(player);
-		Pair<Double, Double> fh = AI.fleetHealth(sts);
-		BattleInfo battle = world.battle();
-		if (fh.first * 4 < battleHP * 3) {
-			if (!battle.enemyFlee) {
-				for (SpacewarStructure s : sts) {
-					world.flee(s);
+	public AISpaceBattleManager spaceBattle(SpacewarWorld sworld) {
+		return new AITraderSpaceBattle(player, this, sworld);
+	}
+	
+	/**
+	 * The Trader's space battle behavior. 
+	 * @author akarnokd, 2014.04.01.
+	 */
+	final class AITraderSpaceBattle extends AIDefaultSpaceBattle {
+		/**
+		 * Constructor.
+		 * @param p the player
+		 * @param ai the AI
+		 * @param world the spacewar world
+		 */
+		public AITraderSpaceBattle(Player p, AIManager ai, SpacewarWorld world) {
+			super(p, ai, world);
+		}
+		@Override
+		public void spaceBattleInit() {
+			super.spaceBattleInit();
+			
+			BattleInfo battle = world.battle();
+			Fleet our = battle.getFleet();
+			
+			if (our != null) {
+				int idx = fleetIndex(our);
+				if (idx < 0) {
+					idx = our.id;
 				}
-				battle.enemyFlee = true;
+				
+				String filter = "chat.merchant";
+				
+				if (player.world.infectedFleets.containsKey(our.id)) {
+					filter = "chat.virus.outgoing";
+					if (battle.helperPlanet != null) {
+						if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
+							battle.showLanding = true;
+						}					
+					}
+				} else {
+					Planet p = our.targetPlanet();
+					if (p == null) {
+						p = our.arrivedAt;
+					}
+					if (p != null && p.quarantineTTL > 0) {
+						filter = CHAT_VIRUS_INCOMING;
+						battle.showLanding = p == battle.helperPlanet;
+					} else
+					if (battle.helperPlanet != null) {
+						if (p == battle.helperPlanet) {
+							filter = "chat.blockade.incoming";
+							battle.showLanding = true;
+						} else
+						if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
+							filter = "chat.blockade.outgoing";
+							battle.showLanding = true;
+						}
+					}
+				}
+				
+				List<String> chats = filterChats(filter);
+				
+				int comm = idx % chats.size();
+				
+				battle.chat = chats.get(comm);
+				
+				if (battle.helperPlanet != null && battle.helperPlanet.owner == battle.attacker.owner) {
+					if (lastVisitedPlanet.get(our) == battle.helperPlanet) {
+						
+						// flip positions
+						
+						Dimension d = world.space();
+						for (SpacewarStructure s : world.structures()) {
+							if (s.type == StructureType.SHIP) {
+								s.x = d.width - s.x - 100;
+								if (battle.showLanding && s.owner == player) {
+									s.x -= 100;
+								}
+								s.angle -= Math.PI;
+							}
+						}
+						
+						battle.invert = true;
+					}
+				}
+				
 			}
+		}
+		
+		@Override
+		public SpacewarAction spaceBattle(List<SpacewarStructure> idles) {
+			List<SpacewarStructure> sts = world.structures(player);
+			Pair<Double, Double> fh = health(sts);
+			BattleInfo battle = world.battle();
+			if (fh.first * 4 < initialDefense * 3) {
+				if (!battle.enemyFlee) {
+					for (SpacewarStructure s : sts) {
+						world.flee(s);
+					}
+					battle.enemyFlee = true;
+				}
+				if (battle.showLanding) {
+					Point lp = world.landingPlace();
+					for (SpacewarStructure s : sts) {
+						double d1 = lp.distance(s.x, s.y);
+						if (d1 <= 5 || s.x >= lp.x) {
+							return SpacewarAction.SURRENDER;
+						}
+					}
+				}
+				return SpacewarAction.FLEE;
+			}
+			// move a bit forward
+			int facing = world.facing();
+			
+			if (battle.invert) {
+				facing = -facing;
+			}
+			
+			for (SpacewarStructure s : idles) {
+				s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
+			}			
+			
 			if (battle.showLanding) {
 				Point lp = world.landingPlace();
 				for (SpacewarStructure s : sts) {
@@ -476,38 +587,19 @@ public class AITrader implements AIManager {
 					}
 				}
 			}
-			return SpacewarAction.FLEE;
-		}
-		// move a bit forward
-		int facing = world.facing();
-		
-		if (battle.invert) {
-			facing = -facing;
+			
+			return SpacewarAction.CONTINUE;
 		}
 		
-		for (SpacewarStructure s : idles) {
-			s.moveTo = new Point2D.Double(s.x + facing * s.movementSpeed, s.y);
-		}			
-		
-		if (battle.showLanding) {
-			Point lp = world.landingPlace();
-			for (SpacewarStructure s : sts) {
-				double d1 = lp.distance(s.x, s.y);
-				if (d1 <= 5 || s.x >= lp.x) {
-					return SpacewarAction.SURRENDER;
-				}
+		@Override
+		public void spaceBattleDone() {
+			Fleet f = world.battle().targetFleet;
+			if (f != null && world.battle().enemyFlee) {
+				returnToPreviousPlanet(f);
 			}
 		}
-		
-		return SpacewarAction.CONTINUE;
 	}
-	@Override
-	public void spaceBattleDone(SpacewarWorld world) {
-		Fleet f = world.battle().targetFleet;
-		if (f != null && world.battle().enemyFlee) {
-			returnToPreviousPlanet(f);
-		}
-	}
+
 	/**
 	 * Force the fleet to return to its previous planet.
 	 * @param f the fleet
@@ -561,77 +653,6 @@ public class AITrader implements AIManager {
 	@Override
 	public void groundBattleInit(GroundwarWorld battle) {
 		
-	}
-	@Override
-	public void spaceBattleInit(SpacewarWorld world) {
-		battleHP = AI.fleetHealth(world.structures(player)).first;
-		
-		BattleInfo battle = world.battle();
-		Fleet our = battle.getFleet();
-		
-		if (our != null) {
-			int idx = fleetIndex(our);
-			if (idx < 0) {
-				idx = our.id;
-			}
-			
-			String filter = "chat.merchant";
-			
-			if (player.world.infectedFleets.containsKey(our.id)) {
-				filter = "chat.virus.outgoing";
-				if (battle.helperPlanet != null) {
-					if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
-						battle.showLanding = true;
-					}					
-				}
-			} else {
-				Planet p = our.targetPlanet();
-				if (p == null) {
-					p = our.arrivedAt;
-				}
-				if (p != null && p.quarantineTTL > 0) {
-					filter = CHAT_VIRUS_INCOMING;
-					battle.showLanding = p == battle.helperPlanet;
-				} else
-				if (battle.helperPlanet != null) {
-					if (p == battle.helperPlanet) {
-						filter = "chat.blockade.incoming";
-						battle.showLanding = true;
-					} else
-					if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
-						filter = "chat.blockade.outgoing";
-						battle.showLanding = true;
-					}
-				}
-			}
-			
-			List<String> chats = filterChats(filter);
-			
-			int comm = idx % chats.size();
-			
-			battle.chat = chats.get(comm);
-			
-			if (battle.helperPlanet != null && battle.helperPlanet.owner == battle.attacker.owner) {
-				if (lastVisitedPlanet.get(our) == battle.helperPlanet) {
-					
-					// flip positions
-					
-					Dimension d = world.space();
-					for (SpacewarStructure s : world.structures()) {
-						if (s.type == StructureType.SHIP) {
-							s.x = d.width - s.x - 100;
-							if (battle.showLanding && s.owner == player) {
-								s.x -= 100;
-							}
-							s.angle -= Math.PI;
-						}
-					}
-					
-					battle.invert = true;
-				}
-			}
-			
-		}
 	}
 	/**
 	 * Returns the index of the given fleet.

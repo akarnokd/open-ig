@@ -25,6 +25,8 @@ public class CustomGameDefinition {
 	public boolean galaxyCustomPlanets;
 	/** The number of custom planets. */
 	public int galaxyPlanetCount;
+	/** The random seed for the planet generator. */
+	public long galaxyRandomSeed;
 	/** The race definitions to use. */
 	public String race;
 	/** The technology definitions. */
@@ -104,6 +106,9 @@ public class CustomGameDefinition {
 			return false;
 		}
 		if (galaxyPlanetCount != other.galaxyPlanetCount) {
+			return false;
+		}
+		if (galaxyRandomSeed != other.galaxyRandomSeed) {
 			return false;
 		}
 		if (galaxyRandomLayout != other.galaxyRandomLayout) {
@@ -215,6 +220,7 @@ public class CustomGameDefinition {
 		result = prime * result + ((galaxy == null) ? 0 : galaxy.hashCode());
 		result = prime * result + (galaxyCustomPlanets ? 1231 : 1237);
 		result = prime * result + galaxyPlanetCount;
+		result = prime * result + (int)((galaxyRandomSeed >>> 32) ^ (galaxyRandomSeed));
 		result = prime * result + (galaxyRandomLayout ? 1231 : 1237);
 		result = prime * result + (galaxyRandomSurface ? 1231 : 1237);
 		result = prime * result + (grantColonyShip ? 1231 : 1237);

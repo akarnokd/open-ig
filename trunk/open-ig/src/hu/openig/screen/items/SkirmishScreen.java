@@ -13,8 +13,11 @@ import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
+import hu.openig.model.GalaxyGenerator.PlanetCandidate;
 import hu.openig.model.GameDefinition;
+import hu.openig.model.ModelUtils;
 import hu.openig.model.ResourceLocator.ResourcePlace;
+import hu.openig.model.GalaxyGenerator;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishAIMode;
 import hu.openig.model.SkirmishDefinition;
@@ -113,6 +116,12 @@ public class SkirmishScreen extends ScreenBase {
 	UICheckBox galaxyRandomSurface;
 	/** Randomize layout. */
 	UICheckBox galaxyRandomLayout;
+	/** Label describing the seed value. */
+	UILabel galaxyRandomSeedLabel;
+	/** The random seed for generating the galaxy layout. */
+	UILabel galaxyRandomSeed;
+	/** Reseed with new value. */
+	UIGenericButton galaxyReseed;
 	/** Custom planet count. */
 	UICheckBox galaxyCustomPlanets;
 	/** The planet count. */
@@ -253,6 +262,8 @@ public class SkirmishScreen extends ScreenBase {
 	Closeable blinkTimer;
 	/** The blink state. */
 	boolean blink;
+	/** The last galaxy seed value. */
+	Long galaxySeed;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -308,12 +319,30 @@ public class SkirmishScreen extends ScreenBase {
 		
 		galaxyRandomSurface = createCheckBox("skirmish.random_surface");
 		galaxyRandomLayout = createCheckBox("skirmish.random_layout");
+		galaxyRandomLayout.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				clearPlanetAssociations();
+			}
+		};
 		galaxyCustomPlanets = createCheckBox("skirmish.custom_planets");
+		galaxyCustomPlanets.onChange = galaxyRandomLayout.onChange;
+		
+		galaxyRandomSeedLabel = createLabel("skirmish.galaxy_seed");
+		galaxyRandomSeed = createLabel2(String.format("%20s", ""));
+		galaxyReseed = createButton("skirmish.reseed");
+		galaxyReseed.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				doReseed();
+			}
+		};
 		
 		galaxyPlanetCount = new NumberSpinBox(0, 500, 1, 10);
 		galaxyPlanetCount.value = 100;
 		
-		galaxyPanel.add(galaxyRandomSurface, galaxyRandomLayout, galaxyCustomPlanets, galaxyPlanetCount);
+		galaxyPanel.add(galaxyRandomSurface, galaxyRandomLayout, galaxyCustomPlanets, galaxyPlanetCount,
+				galaxyRandomSeedLabel, galaxyRandomSeed, galaxyReseed);
 		
 		galaxyRaces = new CampaignSpinBox() {
 			@Override
@@ -555,12 +584,6 @@ public class SkirmishScreen extends ScreenBase {
 		starmapPanel = new StarmapPanel();
 		starmapPanel.visible(false);
 		
-		//FIXME implement random layout
-		
-		galaxyRandomLayout.enabled(false);
-		galaxyPlanetCount.enabled(false);
-		galaxyCustomPlanets.enabled(false);
-		
 		addThis();
 	}
 	@Override
@@ -599,9 +622,14 @@ public class SkirmishScreen extends ScreenBase {
 		galaxyRandomLayout.location(5, cy + 7);
 
 		cy += 35;
-		galaxyCustomPlanets.location(5, cy + 7);
+		galaxyCustomPlanets.location(30, cy + 7);
 		galaxyPlanetCount.setMaxSize();
-		galaxyPlanetCount.location(5 + galaxyCustomPlanets.width + 20, cy);
+		galaxyPlanetCount.location(30 + galaxyCustomPlanets.width + 20, cy);
+		
+		cy += 35;
+		galaxyRandomSeedLabel.location(30, cy + 7);
+		galaxyRandomSeed.location(25 + galaxyRandomSeedLabel.x + galaxyRandomSeedLabel.width, cy + 7);
+		galaxyReseed.location(10 + galaxyRandomSeed.x + galaxyRandomSeed.width, cy);
 		
 		cy += 35;
 		galaxyRacesLabel.location(5, cy + 7);
@@ -851,6 +879,10 @@ public class SkirmishScreen extends ScreenBase {
 		doSelectPanel(galaxyPanel, false);
 		doManageRemove();
 		doManagePlay();
+		
+		if (galaxySeed == null) {
+			doReseed();
+		}
 	}
 	
 	/**
@@ -891,6 +923,7 @@ public class SkirmishScreen extends ScreenBase {
 			loadWaiter.interrupt();
 			loadWaiter = null;
 		}
+		galaxySeed = null;
 	}
 
 	@Override
@@ -1340,6 +1373,12 @@ public class SkirmishScreen extends ScreenBase {
 			};
 			
 			this.addThis();
+		}
+		/** Clears the associated planet. */
+		void clearPlanet() {
+			planet.image(commons.common().randomPlanet);
+			planet.tooltip(get("skirmish.initial_planet.random"));
+			player.initialPlanet = null;
 		}
 		/**
 		 * Change control size to its contents.
@@ -2170,6 +2209,7 @@ public class SkirmishScreen extends ScreenBase {
 		result.galaxyRandomLayout = galaxyRandomLayout.selected();
 		result.galaxyCustomPlanets = galaxyCustomPlanets.selected();
 		result.galaxyPlanetCount = galaxyPlanetCount.value;
+		result.galaxyRandomSeed = galaxySeed != null ? galaxySeed : 0;
 		
 		result.race = galaxyRaces.get().name;
 		result.tech = technologyDef.get().name;
@@ -2327,20 +2367,6 @@ public class SkirmishScreen extends ScreenBase {
 		starmapPanel.show(pl.player.initialPlanet, pl);
 	}
 	/**
-	 * Information about the planets.
-	 * @author akarnokd, 2014.03.19.
-	 */
-	static final class PlanetData {
-		/** Coordinate X. */
-		public int x;
-		/** Coordinate Y. */
-		public int y;
-		/** The identifier. */
-		public String id;
-		/** The surface type. */
-		public String type;
-	}
-	/**
 	 * Shows a list of planets and their position on a starmap.
 	 * @author akarnokd, 2014.03.19.
 	 */
@@ -2352,7 +2378,7 @@ public class SkirmishScreen extends ScreenBase {
 		/** The planet icons. */
 		final Map<String, BufferedImage> planetIcons;
 		/** The map of planets. */
-		final Map<String, PlanetData> planets;
+		final Map<String, PlanetCandidate> planets;
 		/** The player line. */
 		PlayerLine pl;
 		/** Cancel button. */
@@ -2389,7 +2415,7 @@ public class SkirmishScreen extends ScreenBase {
 					g2.setColor(Color.WHITE);
 					int sx = -1;
 					int sy = -1;
-					for (PlanetData pd : planets.values()) {
+					for (PlanetCandidate pd : planets.values()) {
 						int px = pd.x * width / w0;
 						int py = pd.y * height / h0;
 						boolean sel = Objects.equals(selected, pd.id);
@@ -2420,7 +2446,7 @@ public class SkirmishScreen extends ScreenBase {
 						return true;
 					} else
 					if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
-						PlanetData pd = planetAt(e.x, e.y);
+						PlanetCandidate pd = planetAt(e.x, e.y);
 						if (pd != null) {
 							tooltip(pd.id + " (" + pd.type + ")");
 						} else {
@@ -2436,16 +2462,16 @@ public class SkirmishScreen extends ScreenBase {
 				 * @param my the mouse Y
 				 * @return the planet or null if nothing
 				 */
-				public PlanetData planetAt(int mx, int my) {
+				public PlanetCandidate planetAt(int mx, int my) {
 					int w0 = width;
 					int h0 = height;
 					if (image() != null) {
 						w0 = image().getWidth();
 						h0 = image().getHeight();
 					}
-					PlanetData selected = null;
+					PlanetCandidate selected = null;
 					double bestDistance = 0;
-					for (PlanetData pd : planets.values()) {
+					for (PlanetCandidate pd : planets.values()) {
 						int px = pd.x * width / w0;
 						int py = pd.y * height / h0;
 						double d = Math.hypot(mx - px, my - py);
@@ -2489,7 +2515,7 @@ public class SkirmishScreen extends ScreenBase {
 		 * Select a planet.
 		 * @param pd the planet data or null to deselect
 		 */
-		void select(PlanetData pd) {
+		void select(PlanetCandidate pd) {
 			if (pd != null) {
 				selectedImage.image(planetIcons.get(pd.type));
 				selectedName.text(pd.id + " (" + pd.type + ")", true);
@@ -2546,16 +2572,55 @@ public class SkirmishScreen extends ScreenBase {
 			}
 			
 			planets.clear();
+			
 			XElement xplanets = rl.getXML(def.planets);
+			List<XElement> planetTemplate = new ArrayList<>();
 			for (XElement xplanet : xplanets.childrenWithName("planet")) {
-				XElement xsurface = xplanet.childElement("surface");
+				planetTemplate.add(xplanet);
+			}
+
+			if (galaxyRandomLayout.selected()) {
+				int minPlanets = playerLines.size() * initialPlanets.value;
+				int count = galaxyPlanetCount.value;
+				if (!galaxyCustomPlanets.selected()) {
+					count = planetTemplate.size();
+				}
+
+				count = Math.max(count, minPlanets);
 				
-				PlanetData pd = new PlanetData();
-				pd.x = xplanet.getInt("x");
-				pd.y = xplanet.getInt("y");
-				pd.id = xplanet.get("id");
-				pd.type = xsurface.get("type");
-				planets.put(pd.id, pd);
+				List<PlanetCandidate> planets = GalaxyGenerator.generate(
+						galaxySeed, count, backgroundImage.image().getWidth(), 
+						backgroundImage.image().getHeight(), World.MIN_PLANET_DENSITY);
+
+				int j = 0;
+				for (PlanetCandidate pc : planets) {
+
+					XElement xplanet = planetTemplate.get(j);
+					XElement xsurface = xplanet.childElement("surface");
+
+					pc.type = xsurface.get("type");
+					pc.variant = xsurface.getInt("id");
+					
+					j = (j + 1) % planetTemplate.size();
+					
+					this.planets.put(pc.id, pc);
+				}
+				
+			} else {
+				for (XElement xplanet : planetTemplate) {
+					XElement xsurface = xplanet.childElement("surface");
+					
+					PlanetCandidate pd = new PlanetCandidate();
+					pd.x = xplanet.getInt("x");
+					pd.y = xplanet.getInt("y");
+					
+					pd.id = xplanet.get("id");
+					pd.name = xplanet.get("name", pd.id);
+					pd.type = xsurface.get("type");
+					pd.variant = xsurface.getInt("id");
+					
+					this.planets.put(pd.id, pd);
+				}
 			}
 		}
 		/**
@@ -2564,7 +2629,7 @@ public class SkirmishScreen extends ScreenBase {
 		 * @param pl the player line to update
 		 */
 		public void show(String planetId, PlayerLine pl) {
-			PlanetData pd = planets.get(planetId);
+			PlanetCandidate pd = planets.get(planetId);
 			select(pd);
 			this.pl = pl;
 			visible(true);
@@ -2579,6 +2644,20 @@ public class SkirmishScreen extends ScreenBase {
 			planets.clear();
 			planetIcons.clear();
 			visible(false);
+		}
+	}
+	/** Reseed the galaxy layout. */
+	void doReseed() {
+		galaxySeed = ModelUtils.randomLong();
+		
+		galaxyRandomSeed.text(galaxySeed.toString(), false);
+		
+		clearPlanetAssociations();
+	}
+	/** Clear the planet associations of the players. */
+	private void clearPlanetAssociations() {
+		for (PlayerLine sp : playerLines) {
+			sp.clearPlanet();
 		}
 	}
 }

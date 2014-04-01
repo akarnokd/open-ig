@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
+import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
@@ -48,8 +49,6 @@ public class AIPirate implements AIManager {
 	AIControls controls;
 	/** The list of actions to apply. */
 	final List<Action0> applyActions = new ArrayList<>();
-	/** The spacewar hitpoints. */
-	double battleHP;
 	@Override
 	public void init(Player p) {
 		this.p = p;
@@ -90,19 +89,39 @@ public class AIPirate implements AIManager {
 	}
 
 	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world,
-			List<SpacewarStructure> idles) {
-		List<SpacewarStructure> sts = world.structures(p);
-		Pair<Double, Double> fh = AI.fleetHealth(sts);
-		if (fh.first * 4 >= battleHP) {
-			AI.defaultAttackBehavior(world, idles, p);
-		} else {
-			for (SpacewarStructure s : sts) {
-				world.flee(s);
-			}
-			world.battle().enemyFlee = true;
+	public AISpaceBattleManager spaceBattle(SpacewarWorld sworld) {
+		return new AIPirateSpaceBattle(p, this, sworld);
+	}
+	
+	/**
+	 * Pirate space battle manager.
+	 * @author akarnokd, 2014.04.01.
+	 */
+	final class AIPirateSpaceBattle extends AIDefaultSpaceBattle {
+		/**
+		 * Constructor.
+		 * @param p the player
+		 * @param ai the AI
+		 * @param world the spacewar world
+		 */
+		public AIPirateSpaceBattle(Player p, AIManager ai, SpacewarWorld world) {
+			super(p, ai, world);
 		}
-		return SpacewarAction.CONTINUE;
+		@Override
+		public SpacewarAction spaceBattle(List<SpacewarStructure> idles) {
+			List<SpacewarStructure> sts = world.structures(p);
+			Pair<Double, Double> fh = health(sts);
+			
+			if (fh.first * 4 >= initialDefense) {
+				AI.defaultAttackBehavior(world, idles, p);
+			} else {
+				for (SpacewarStructure s : sts) {
+					world.flee(s);
+				}
+				world.battle().enemyFlee = true;
+			}
+			return SpacewarAction.CONTINUE;
+		}
 	}
 
 	@Override
@@ -119,17 +138,6 @@ public class AIPirate implements AIManager {
 	public void groundBattleInit(GroundwarWorld battle) {
 		// TODO Auto-generated method stub
 		
-	}
-	@Override
-	public void spaceBattleDone(SpacewarWorld world) {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void spaceBattleInit(SpacewarWorld world) {
-		battleHP = 0;		
-		List<SpacewarStructure> sts = world.structures(p);
-		battleHP = AI.fleetHealth(sts).second;
 	}
 	
 	@Override

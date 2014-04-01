@@ -10,8 +10,6 @@ package hu.openig.model;
 
 import hu.openig.utils.XElement;
 
-import java.util.List;
-
 /**
  * Base interface to manage AI related operations.
  * @author akarnokd, 2011.12.08.
@@ -44,23 +42,11 @@ public interface AIManager {
 	 */
 	ResponseMode diplomacy(Player other, NegotiateType about, ApproachType approach, Object argument);
 	/**
-	 * Initialize the space battle.
-	 * <p>Called before the first battle simulation step.</p>
-	 * @param world the space war world.
+	 * Returns the space battle manager instance for the given space battle world.
+	 * @param sworld the spacewar world
+	 * @return the space battle manager
 	 */
-	void spaceBattleInit(SpacewarWorld world);
-	/**
-	 * Handle some aspects of a space battle.
-	 * @param world the world
-	 * @param idles the list of objects which have completed their current attack objectives and awaiting new commands
-	 * @return the global action
-	 */
-	SpacewarAction spaceBattle(SpacewarWorld world, List<SpacewarStructure> idles);
-	/**
-	 * Called after the space battle has been concluded and losses applied.
-	 * @param world the world object
-	 */
-	void spaceBattleDone(SpacewarWorld world);
+	AISpaceBattleManager spaceBattle(SpacewarWorld sworld);
 	/**
 	 * Initialize the ground battle.
 	 * <p>Called before the first battle simulation step.</p>

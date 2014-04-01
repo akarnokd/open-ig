@@ -789,7 +789,7 @@ public abstract class Mission implements GameScriptingEvents {
 				war.includeFleet(f2, f2.owner);
 				battle.targetFleet = f2;
 				battle.otherFleets.add(f1);
-				f2.owner.ai.spaceBattleInit(war);
+				f2.owner.ai.spaceBattle(war).spaceBattleInit();
 			} else {
 				war.addStructures(f1, EnumSet.of(
 						ResearchSubCategory.SPACESHIPS_BATTLESHIPS,
