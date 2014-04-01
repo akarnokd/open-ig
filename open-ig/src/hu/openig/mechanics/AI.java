@@ -17,6 +17,7 @@ import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIPlanet;
+import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
@@ -27,7 +28,6 @@ import hu.openig.model.Building;
 import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
-import hu.openig.model.GroundwarUnit;
 import hu.openig.model.GroundwarWorld;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.ModelUtils;
@@ -41,7 +41,6 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.SpaceStrengths;
-import hu.openig.model.SpacewarAction;
 import hu.openig.model.SpacewarStructure;
 import hu.openig.model.SpacewarStructure.StructureType;
 import hu.openig.model.SpacewarWeaponPort;
@@ -58,10 +57,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -81,8 +78,6 @@ public class AI implements AIManager {
 	ExplorationMap exploration;
 	/** Set of fleets which will behave as defenders in the space battle. */
 	final Set<Integer> defensiveTask = new HashSet<>();
-	/** The estimations about how strong the other player's fleets are. */
-	final Map<String, PlayerStrength> strengths = new HashMap<>();
 	/** Exponential smoothing of strength changes. */
 	static final double STRENGTH_DISCOUNT = 0.2;
 	/** The list of actions to apply. */
@@ -93,30 +88,6 @@ public class AI implements AIManager {
 	volatile Date lastSatelliteDeploy;
 	/** Indicates that a new day has passed. */
 	boolean isNewDay;
-	/**
-	 * Knowledge about a player's typical fleet strength based on encounters.
-	 * @author akarnokd, 2011.12.20.
-	 */
-	public static class PlayerStrength {
-		/** The player ID. */
-		public String playerID;
-		/** The attack value. -1 means no conflict yet. */
-		public double spaceAttack = -1;
-		/** The defense value. -1 means no conflict yet. */
-		public double spaceDefense = -1;
-		/** The ground attack potential. -1 means no conflict yet. */
-		public double groundAttack = -1;
-		/** The ground defense potential. -1 means no conflict yet. */
-		public double groundDefense = -1;
-		/** Times the spacewar won. */
-		public int spaceWon;
-		/** Times the spacewar lost. */
-		public int spaceLost;
-		/** Times the groundwar won. */
-		public int groundWon;
-		/** Times the groundwar lost. */
-		public int groundLost;
-	}
 	@Override
 	public void init(Player p) {
 		this.w = p.world;
@@ -157,47 +128,6 @@ public class AI implements AIManager {
 		}
 	}
 	
-	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world, List<SpacewarStructure> idles) {
-//		if (idles.size() == 0) {
-//			return SpacewarAction.CONTINUE;
-//		}
-		List<SpacewarStructure> own = world.structures(p);
-		Pair<Double, Double> fh = fleetHealth(own);
-		double health = fh.first / fh.second;
-		double switchToCostAttack = p.aiDefensiveRatio / (p.aiOffensiveRatio + p.aiDefensiveRatio);
-		double switchToFlee = p.aiSocialRatio() * switchToCostAttack;
-		
-		if (hasWeapons(own)) {
-			if (health >= switchToFlee) {
-				defaultAttackBehavior(world, idles, p);				
-				return SpacewarAction.CONTINUE;
-			}
-		}
-		BattleInfo battle = world.battle();
-		if (battle.attacker.owner == p) {
-			for (SpacewarStructure s : own) {
-				world.flee(s);
-			}
-		}
-		battle.enemyFlee = p != p.world.player;
-		return SpacewarAction.FLEE;
-	}
-	/**
-	 * Check if the structures have any weapons remaining.
-	 * @param structs the structures
-	 * @return true if there is at least one ship with weapons
-	 */
-	public boolean hasWeapons(List<SpacewarStructure> structs) {
-		for (SpacewarStructure s : structs) {
-			for (SpacewarWeaponPort wp : s.ports) {
-				if (wp.count > 0) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 	/**
 	 * The default group attack behavior which chooses the in-range enemy or
 	 * distributes attacks among all enemies.
@@ -331,20 +261,6 @@ public class AI implements AIManager {
 		return null;
 	}
 	/**
-	 * Calculate the percentage of the structure healths.
-	 * @param structures the structures
-	 * @return the health between 0..1
-	 */
-	public static Pair<Double, Double> fleetHealth(List<SpacewarStructure> structures) {
-		double hpTotal = 0.0;
-		double hpActual = 0.0;
-		for (SpacewarStructure s : structures) {
-			hpTotal += s.hpMax + s.shieldMax;
-			hpActual += s.hp + s.shield;
-		}
-		return Pair.of(hpActual, hpTotal);
-	}
-	/**
 	 * Select a target in range which the current ship can do most
 	 * damage.
 	 * @param world the world object.
@@ -424,102 +340,14 @@ public class AI implements AIManager {
 	}
 	@Override
 	public void groundBattleInit(GroundwarWorld war) {
-		double dps = 0;
-		double hp = 0;
-		for (GroundwarUnit u : war.units()) {
-			if (u.owner != p) {
-				hp += u.hp;
-				dps += u.damage() * 1.0 / u.model.delay;
-			}
-		}
-		
 		Player e = war.battle().enemy(p);
 
-		PlayerStrength ps = getStrength(e);
-		if (ps.groundAttack < 0) {
-			ps.groundAttack = dps;
-		} else {
-			ps.groundAttack = (1 - STRENGTH_DISCOUNT) * ps.groundAttack + STRENGTH_DISCOUNT * dps;
-		}
-		if (ps.groundDefense < 0) {
-			ps.groundDefense = hp;
-		} else {
-			ps.groundDefense = (1 - STRENGTH_DISCOUNT) * ps.groundDefense + STRENGTH_DISCOUNT * hp;
-		}
-		
-		enterWar(e);
+		w.establishWar(p, e);
 	}
+	
 	@Override
-	public void spaceBattleDone(SpacewarWorld world) {
-		onAutobattleFinish(world.battle());
-	}
-	@Override
-	public void spaceBattleInit(SpacewarWorld world) {
-		// buildup statistics
-		double dps = 0;
-		double hp = 0;
-		for (SpacewarStructure s : world.structures()) {
-			if (s.owner != p) {
-				hp += s.hp + s.shield;
-				for (SpacewarWeaponPort wp : s.ports) {
-					dps += wp.count * wp.damage(s.owner) * 1.0 / wp.projectile.delay;
-				}
-			}
-		}
-		
-		updateSpaceStrength(world.battle(), dps, hp);
-	}
-	/**
-	 * Update the space strength based on the given parameters.
-	 * @param battle the battle record
-	 * @param dps the damage per second
-	 * @param hp the shielded hitpoints
-	 */
-	protected void updateSpaceStrength(BattleInfo battle, double dps, double hp) {
-		Player e = battle.enemy(p);
-		
-		PlayerStrength ps = getStrength(e);
-		if (ps.spaceAttack < 0) {
-			ps.spaceAttack = dps;
-		} else {
-			ps.spaceAttack = (1 - STRENGTH_DISCOUNT) * ps.spaceAttack + STRENGTH_DISCOUNT * dps;
-		}
-		if (ps.spaceDefense < 0) {
-			ps.spaceDefense = hp;
-		} else {
-			ps.spaceDefense = (1 - STRENGTH_DISCOUNT) * ps.spaceDefense + STRENGTH_DISCOUNT * hp;
-		}
-		
-		enterWar(e);
-	}
-	/**
-	 * Enter a war in diplomacy with the enemy.
-	 * @param e the enemy
-	 */
-	void enterWar(Player e) {
-		// update diplomatic relations
-		DiplomaticRelation dr = w.establishRelation(e, p);
-		dr.full = true;
-		if (!dr.strongAlliance) {
-			dr.value = 5;
-			dr.tradeAgreement = false;
-			dr.wontTalk(true);
-			dr.lastContact = w.time.getTime();
-			dr.alliancesAgainst.clear();
-		}
-	}
-	/**
-	 * Returns or creates the strength estimate record for the given enemy.
-	 * @param p the enemy player
-	 * @return the strength
-	 */
-	PlayerStrength getStrength(Player p) {
-		PlayerStrength ps = strengths.get(p.id);
-		if (ps == null) {
-			ps = new PlayerStrength();
-			ps.playerID = p.id;
-		}
-		return ps;
+	public AISpaceBattleManager spaceBattle(SpacewarWorld sworld) {
+		return new AIDefaultSpaceBattle(p, this, sworld);
 	}
 	
 	@Override
@@ -562,25 +390,6 @@ public class AI implements AIManager {
 				}
 			}
 		}
-		strengths.clear();
-		for (XElement xstrengths : in.childrenWithName("strengths")) {
-			for (XElement xstr : xstrengths.childrenWithName("strength")) {
-				PlayerStrength ps = new PlayerStrength();
-				
-				ps.playerID = xstr.get("player");
-				ps.spaceAttack = xstr.getDouble("space-attack");
-				ps.spaceDefense = xstr.getDouble("space-defense");
-				ps.groundAttack = xstr.getDouble("ground-attack");
-				ps.groundDefense = xstr.getDouble("ground-defense");
-				
-				ps.spaceWon = xstr.getInt("space-wins");
-				ps.spaceLost = xstr.getInt("space-loses");
-				ps.groundWon = xstr.getInt("ground-wins");
-				ps.groundLost = xstr.getInt("ground-loses");
-				
-				strengths.put(ps.playerID, ps);
-			}
-		}
 	}
 	@Override
 	public void save(XElement out) {
@@ -606,22 +415,6 @@ public class AI implements AIManager {
 		}
 		if (lastSatelliteDeploy != null) {
 			xa.set("last-satellite-deploy", XElement.formatDateTime(lastSatelliteDeploy));
-		}
-		
-		XElement xstrs = out.add("strengths");
-		for (PlayerStrength ps : strengths.values()) {
-			XElement xstr = xstrs.add("strength");
-			
-			xstr.set("player", ps.playerID);
-			xstr.set("space-attack", ps.spaceAttack);
-			xstr.set("space-defense", ps.spaceDefense);
-			xstr.set("ground-attack", ps.groundAttack);
-			xstr.set("ground-defense", ps.groundDefense);
-			
-			xstr.set("space-wins", ps.spaceWon);
-			xstr.set("space-loses", ps.spaceLost);
-			xstr.set("ground-wins", ps.groundWon);
-			xstr.set("ground-loses", ps.groundLost);
 		}
 	}
 	@Override
@@ -768,50 +561,17 @@ public class AI implements AIManager {
 	
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		PlayerStrength ps = getStrength(battle.enemy(p));
-		if (battle.spacewarWinner == p) {
-			ps.spaceWon++;
-		} else {
-			if (battle.spacewarWinner != null) {
-				ps.spaceLost++;
-			}
-		}
-		if (battle.groundwarWinner == p) {
-			ps.groundWon++;
-		} else {
-			if (battle.groundwarWinner != null) {
-				ps.groundLost++;
-			}
-		}
 		
 	}
 	@Override
 	public void onAutoGroundwarStart(BattleInfo battle, AttackDefense attacker,
 			AttackDefense defender) {
-		double dps;
-		double hp;
-		if (battle.attacker.owner == p) {
-			dps = attacker.attack;
-			hp = attacker.defense;
-		} else {
-			dps = defender.attack;
-			hp = defender.defense;
-		}
-		updateSpaceStrength(battle, dps, hp);
+		w.establishWar(p, battle.enemy(p));
 	}
 	
 	@Override
 	public void onAutoSpacewarStart(BattleInfo battle, SpaceStrengths str) {
-		double dps;
-		double hp;
-		if (battle.attacker.owner == p) {
-			dps = str.attacker.attack;
-			hp = str.attacker.defense;
-		} else {
-			dps = str.defender.attack;
-			hp = str.defender.defense;
-		}
-		updateSpaceStrength(battle, dps, hp);
+		w.establishWar(p, battle.enemy(p));
 	}
 	
 	@Override

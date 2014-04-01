@@ -15,6 +15,7 @@ import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.mechanics.BattleSimulator;
+import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.BattleEfficiencyModel;
 import hu.openig.model.BattleGroundProjector;
 import hu.openig.model.BattleGroundShield;
@@ -339,8 +340,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	Chat chat;
 	/** The current chat node. */
 	Node node;
-	/** The set of all initial players. */
-	final Set<Player> allPlayerSet = new HashSet<>();
+	/** The set of all initial players and their war managers. */
+	final Map<Player, AISpaceBattleManager> allPlayerSet = new HashMap<>();
 	/** The registry for fired rockets and their parents. */
 	final Map<SpacewarStructure, SpacewarStructure> rocketParent = new HashMap<>();
 	@Override
@@ -1339,8 +1340,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		findAllPlayers();
 		
-		for (Player p : allPlayerSet) {
-			p.ai.spaceBattleInit(this);
+		for (AISpaceBattleManager sbm : allPlayerSet.values()) {
+			sbm.spaceBattleInit();
 		}
 		world().scripting.onSpacewarStart(this);
 
@@ -1411,9 +1412,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * Find all players.
 	 */
 	void findAllPlayers() {
-		allPlayerSet.clear();
+		Set<Player> playerSet = new HashSet<>();
 		for (SpacewarStructure s : structures) {
-			allPlayerSet.add(s.owner);
+			playerSet.add(s.owner);
+		}
+		allPlayerSet.clear();
+		
+		for (Player p : playerSet) {
+			allPlayerSet.put(p, p.ai.spaceBattle(this));
 		}
 	}
 	/**
@@ -2984,6 +2990,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					guardButton.enabled = false;
 					kamikazeButton.enabled = false;
 					rocketButton.enabled = false;
+					guardButton.selected = !selection.isEmpty();
 					for (SpacewarStructure sws : selection) {
 						if (sws.type == StructureType.SHIP) {
 							kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) && sws.kamikaze == 0 && sws.attack != null;
@@ -3636,9 +3643,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		
 		boolean isEnemyFleeing = battle.enemyFlee;
-		SpacewarAction act1 = player().ai.spaceBattle(this, playerIdles);
-		SpacewarAction act2 = nonPlayer().ai.spaceBattle(this, enemyIdles);
 		
+		SpacewarAction act1 = null;
+		SpacewarAction act2 = null;
+		
+		AISpaceBattleManager sbm1 = allPlayerSet.get(player());
+		if (sbm1 != null) {
+			act1 = sbm1.spaceBattle(playerIdles);
+		}
+
+		AISpaceBattleManager sbm2 = allPlayerSet.get(nonPlayer());
+		if (sbm2 != null) {
+			act2 = sbm2.spaceBattle(enemyIdles);
+		}
+
 		SpacewarScriptResult r = world().scripting.onSpacewarStep(this);
 		
 		for (SoundType st : soundsToPlay) {
@@ -4319,8 +4337,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		battle.incrementSpaceWin();
 
 
-		player().ai.spaceBattleDone(this);
-		nonPlayer().ai.spaceBattleDone(this);
+		for (AISpaceBattleManager sbm : allPlayerSet.values()) {
+			sbm.spaceBattleDone();
+		}
+		
+		
 		world().scripting.onSpacewarFinish(this);
 		
 		if (battle.infectPlanet != null) {

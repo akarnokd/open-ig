@@ -85,6 +85,13 @@ public final class ModelUtils {
 		return RANDOM.get().nextBoolean();
 	}
 	/**
+	 * Returns a random long.
+	 * @return the random long
+	 */
+	public static long randomLong() {
+		return RANDOM.get().nextLong();
+	}
+	/**
 	 * Shuffle the given list in-place.
 	 * @param <T> the list type
 	 * @param list the list to shuffle

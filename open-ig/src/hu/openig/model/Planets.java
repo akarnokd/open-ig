@@ -44,6 +44,12 @@ public class Planets {
 		return planets;
 	}
 	/**
+	 * Clears the planets.
+	 */
+	public void clear() {
+		planets.clear();
+	}
+	/**
 	 * @return The planets as collection.
 	 */
 	public Collection<Planet> values() {

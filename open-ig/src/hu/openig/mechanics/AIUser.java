@@ -12,6 +12,7 @@ import hu.openig.core.Action0;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIManager;
 import hu.openig.model.AIPlanet;
+import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.AIWorld;
 import hu.openig.model.ApproachType;
 import hu.openig.model.AttackDefense;
@@ -150,12 +151,6 @@ public class AIUser implements AIManager {
 	}
 	
 	@Override
-	public SpacewarAction spaceBattle(SpacewarWorld world, 
-			List<SpacewarStructure> idles) {
-		return SpacewarAction.CONTINUE;
-	}
-
-	@Override
 	public void groundBattle(GroundwarWorld battle) {
 
 	}
@@ -168,13 +163,38 @@ public class AIUser implements AIManager {
 	public void groundBattleInit(GroundwarWorld battle) {
 		
 	}
+	
 	@Override
-	public void spaceBattleDone(SpacewarWorld world) {
-		detectedAttack.remove(world.battle().attacker.id);
+	public AISpaceBattleManager spaceBattle(SpacewarWorld sworld) {
+		return new AIUserSpaceBattle(sworld);
 	}
-	@Override
-	public void spaceBattleInit(SpacewarWorld world) {
-		
+	
+	/**
+	 * User space battle manager.
+	 * @author akarnokd, 2014.04.01.
+	 */
+	final class AIUserSpaceBattle implements AISpaceBattleManager {
+		/** The spacewar world. */
+		private final SpacewarWorld world;
+		/**
+		 * Constructor, initializes the spacewar world object.
+		 * @param world the spacewar world
+		 */
+		public AIUserSpaceBattle(SpacewarWorld world) {
+			this.world = world;
+		}
+		@Override
+		public void spaceBattleInit() {
+			
+		}
+		@Override
+		public SpacewarAction spaceBattle(List<SpacewarStructure> idles) {
+			return SpacewarAction.CONTINUE;
+		}
+		@Override
+		public void spaceBattleDone() {
+			detectedAttack.remove(world.battle().attacker.id);
+		}
 	}
 	
 	@Override

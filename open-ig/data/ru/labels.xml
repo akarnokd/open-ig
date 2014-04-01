@@ -3372,4 +3372,6 @@
 	<entry key='tech.garthogbattleship3.name'>Garthog Bshp. 3</entry>
 	<entry key='tech.garthogbattleship3.longname'>Garthog Battleship Mk3</entry>
 	<entry key='tech.garthogbattleship3.description'>The strongest battleship in the Garthog fleet with excellent firepower, defenses and vehicle capacity.</entry>	
+	<entry key='skirmish.galaxy_seed'>Seed</entry>
+	<entry key='skirmish.reseed'>Reseed</entry>
 </labels>

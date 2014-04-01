@@ -3389,6 +3389,8 @@
 	<entry key='tech.garthogbattleship3.name'>Garthog Csh. 3</entry>
 	<entry key='tech.garthogbattleship3.longname'>Garthog Csatahajó Mk3</entry>
 	<entry key='tech.garthogbattleship3.description'>A Garthog flotta legerősebb csatahajója kiváló tűzerővel, védelmi- és csapatszállító képességekkel.</entry>	
+	<entry key='skirmish.galaxy_seed'>Véletlenszám:</entry>
+	<entry key='skirmish.reseed'>Új</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

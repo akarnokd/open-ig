@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func0;
 import hu.openig.core.Pair;
+import hu.openig.model.GalaxyGenerator.PlanetCandidate;
 import hu.openig.net.MissingAttributeException;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.Exceptions;
@@ -54,6 +55,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author akarnokd, 2009.10.25.
  */
 public class World implements ModelLookup {
+	/** Minimum planet density. */
+	public static final int MIN_PLANET_DENSITY = 45;
 	/** The version when the game was created. */
 	public String createVersion;
 	/** The name of the world. */
@@ -1217,6 +1220,9 @@ public class World implements ModelLookup {
 		for (Planet p : planets.values()) {
 			XElement xp = xworld.add("planet");
 			xp.set("id", p.id);
+			xp.set("x", p.x);
+			xp.set("y", p.y);
+			xp.set("size", p.diameter);
 			xp.set("surface-type", p.type.type);
 			xp.set("surface-variant", p.surface.variant);
 			xp.set("custom-name", p.customName);
@@ -1666,6 +1672,12 @@ public class World implements ModelLookup {
 				lo.planets.remove(p);
 			}
 
+			if (xplanet.has("x") && xplanet.has("y") && xplanet.has("size")) {
+				p.x = xplanet.getInt("x");
+				p.y = xplanet.getInt("y");
+				p.diameter = xplanet.getInt("size");
+			}
+			
 			p.inventory.clear();
 			p.surface.buildings.clear();
 			p.surface.buildingmap.clear();
@@ -2886,8 +2898,10 @@ public class World implements ModelLookup {
 		difficulty = skirmishDefinition.initialDifficulty;
 		
 		loadCampaign(rl);
-		// fix players
 		
+		prepareLayout();
+		
+		// fix players
 		Map<Player, Integer> groups = new HashMap<>();
 		
 		Map<String, Player> originalPlayers = new HashMap<>(players.players);
@@ -3072,6 +3086,70 @@ public class World implements ModelLookup {
 
 		this.scripting = scripting;
 		this.scripting.init(player, null);
+	}
+	/**
+	 * Prepare the galaxy layout.
+	 */
+	void prepareLayout() {
+		if (skirmishDefinition.galaxyRandomLayout) {
+			List<Planet> modelPlanets = new ArrayList<>(planets.values());
+			int count = modelPlanets.size();
+			if (skirmishDefinition.galaxyCustomPlanets) {
+				count = skirmishDefinition.galaxyPlanetCount;
+			}
+			
+			List<PlanetCandidate> pcs = GalaxyGenerator.generate(skirmishDefinition.galaxyRandomSeed,
+					count, this.galaxyModel.map.getWidth(), this.galaxyModel.map.getHeight(),
+					MIN_PLANET_DENSITY);
+			
+			int j = 0;
+			for (PlanetCandidate pc : pcs) {
+				
+				Planet p0 = modelPlanets.get(j);
+				pc.type = p0.type.type;
+				pc.variant = p0.surface.variant;
+				
+				j = (j + 1) % modelPlanets.size();
+			}
+			
+			planets.clear();
+			
+			for (PlanetCandidate pc : pcs) {
+				Planet p = new Planet(pc.id, this);
+				p.name0 = pc.name;
+				p.x = pc.x;
+				p.y = pc.y;
+				p.diameter = pc.r;
+				p.type = galaxyModel.planetTypes.get(pc.type);
+				p.surface = p.type.surfaces.get(pc.variant).copy(newIdFunc);
+				
+				planets.put(p.id, p);
+			}
+		}
+	}
+	/**
+	 * Establish a war state between the two players.
+	 * @param p1 the first player
+	 * @param p2 the second player
+	 */
+	public void establishWar(Player p1, Player p2) {
+		DiplomaticRelation dr = establishRelation(p1, p2);
+		dr.full = true;
+		if (!dr.strongAlliance) {
+			int minWar = Math.min(p1.warThreshold, p2.warThreshold);
+			int maxWar = Math.max(p1.warThreshold, p2.warThreshold);
+			// each attack degrades relations a bit
+			if (dr.value >= maxWar) {
+				dr.value = minWar - 1;
+			} else {
+				dr.value -= 1;
+			}
+			dr.value = Math.max(0, dr.value);
+			dr.tradeAgreement = false;
+			dr.wontTalk(true);
+			dr.lastContact = time.getTime();
+			dr.alliancesAgainst.clear();
+		}
 	}
 	/**
 	 * Establish diplomatic relation between groups.
