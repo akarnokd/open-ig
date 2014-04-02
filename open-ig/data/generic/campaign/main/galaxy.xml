@@ -162,4 +162,24 @@
 		<growth type="rocky" race="dribs" value="2"/>
 		<growth type="liquid" race="dribs" value="0.5"/>
 	</population-growths>
+	<planet-naming>
+		<single label='planets.earth'>Earth</single>
+		<single>Myridan</single>
+		<single>Achilles</single>
+		<single>Centronom</single>
+		<single>Zeuson</single>
+		<single>Naxos</single>
+		<single>San Sterling</single>
+		<single>Edgepolis</single>
+		<single>Giantropolis</single>
+		<single>New Caroline</single>
+		
+		<multiple>Center</multiple>
+		<multiple>Outer</multiple>
+		<multiple>Andromeda</multiple>
+		<multiple>Exterior</multiple>
+		<multiple>Garthog</multiple>
+		<multiple>Magellan</multiple>
+		<multiple>Persol</multiple>
+	</planet-naming>
 </galaxy>
