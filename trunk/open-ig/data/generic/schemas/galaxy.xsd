@@ -33,6 +33,9 @@
 				<xs:element name="population-growths" type="population-growths">
 					<xs:annotation><xs:documentation>The list of planet-type vs race growth rates. Any unmentioned combination is considered to be 1.0</xs:documentation></xs:annotation>
 				</xs:element>
+				<xs:element name="planet-naming" type="planet-naming" minOccurs="0">
+					<xs:annotation><xs:documentation>A list of names usable when generating random galaxies.</xs:documentation></xs:annotation>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -163,4 +166,25 @@
 			<xs:minExclusive value="0"/>
 		</xs:restriction>
 	</xs:simpleType>
+	<xs:complexType name="planet-naming">
+		<xs:annotation><xs:documentation>A list of names usable when generating random galaxies.</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="single" type="labeled-name" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>Indicates a name that may appear only once in the galaxy</xs:documentation></xs:annotation>
+			</xs:element>
+			<xs:element name="multiple" type="labeled-name" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation><xs:documentation>Indicates a name that may appear multiple times in the galaxy</xs:documentation></xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="labeled-name">
+		<xs:annotation><xs:documentation>A string content with an optional label attribute</xs:documentation></xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="label" type="xs:string" use="optional">
+					<xs:annotation><xs:documentation>If present, this indicates the name should be localized under this label.</xs:documentation></xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>					
 </xs:schema>
