@@ -466,7 +466,7 @@ public class MapEditor extends JFrame {
 							public void run() {
 								try {
 									galaxyMap = new GalaxyModel(config);
-									galaxyMap.processGalaxy(rl, "campaign/main/galaxy", exec, wip);
+									galaxyMap.processGalaxy(rl, "campaign/main/galaxy", exec, wip, labels);
 								} finally {
 									wip.dec();
 								}
