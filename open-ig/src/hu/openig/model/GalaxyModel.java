@@ -13,7 +13,9 @@ import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -30,6 +32,10 @@ public class GalaxyModel {
 	protected final Configuration config;
 	/** The population growth map. */
 	protected final Map<Pair<String, String>, Double> populationGrowth = new HashMap<>();
+	/** Single planet names, translated for the current language. */
+	protected final List<String> singleNames = new ArrayList<>();
+	/** Multiple planet names, translated for the current language. */
+	protected final List<String> multiNames = new ArrayList<>();
 	/**
 	 * Constructor. Set the configuration.
 	 * @param config the configuration
@@ -43,9 +49,11 @@ public class GalaxyModel {
 	 * @param data the galaxy data file
 	 * @param exec the executor for parallel processing
 	 * @param wip the wip counter
+	 * @param labels the labels
 	 */
 	public void processGalaxy(final ResourceLocator rl, 
-			final String data, ExecutorService exec, final WipPort wip) {
+			final String data, ExecutorService exec, 
+			final WipPort wip, Labels labels) {
 		wip.inc();
 		try {
 			XElement galaxy = rl.getXML(data);
@@ -125,8 +133,40 @@ public class GalaxyModel {
 				Pair<String, String> key = Pair.of(xg.get("type"), xg.get("race"));
 				populationGrowth.put(key, xg.getDouble("value"));
 			}
+			
+			parsePlanetNaming(galaxy, singleNames, multiNames, labels);
 		} finally {
 			wip.dec();
+		}
+	}
+	/**
+	 * Parse the planet naming subnode in the galaxy XML.
+	 * @param xgalaxy the galaxy XML root node
+	 * @param singleNames the output of single names, translated
+	 * @param multiNames the output of multiple names, translated
+	 * @param labels the label manager
+	 */
+	public static void parsePlanetNaming(XElement xgalaxy, 
+			List<String> singleNames, List<String> multiNames, 
+			Labels labels) {
+		XElement xnames = xgalaxy.childElement("planet-naming");
+		singleNames.clear();
+		multiNames.clear();
+		if (xnames != null) {
+			for (XElement xsingle : xnames.childrenWithName("single")) {
+				if (xsingle.has("label")) {
+					singleNames.add(labels.get(xsingle.get("label")));
+				} else {
+					singleNames.add(xsingle.content);
+				}
+			}
+			for (XElement xmulti : xnames.childrenWithName("multiple")) {
+				if (xmulti.has("label")) {
+					multiNames.add(labels.get(xmulti.get("label")));
+				} else {
+					multiNames.add(xmulti.content);
+				}
+			}
 		}
 	}
 	/**

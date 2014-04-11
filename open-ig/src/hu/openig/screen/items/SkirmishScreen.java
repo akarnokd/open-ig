@@ -14,6 +14,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
 import hu.openig.model.GalaxyGenerator.PlanetCandidate;
+import hu.openig.model.GalaxyModel;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.ResourceLocator.ResourcePlace;
@@ -2588,9 +2589,22 @@ public class SkirmishScreen extends ScreenBase {
 
 				count = Math.max(count, minPlanets);
 				
-				List<PlanetCandidate> planets = GalaxyGenerator.generate(
-						galaxySeed, count, backgroundImage.image().getWidth(), 
-						backgroundImage.image().getHeight(), World.MIN_PLANET_DENSITY);
+				GalaxyGenerator gg = new GalaxyGenerator();
+				
+				gg.setSeed(galaxySeed);
+				gg.setPlanetCount(count);
+				gg.setSize(backgroundImage.image().getWidth(), backgroundImage.image().getHeight());
+				gg.setMinDensity(World.MIN_PLANET_DENSITY);
+				
+				List<String> singleNames = new ArrayList<>();
+				List<String> multiNames = new ArrayList<>();
+				
+				GalaxyModel.parsePlanetNaming(galaxyXML, singleNames, multiNames, commons.labels());
+				
+				gg.setSingleNames(singleNames);
+				gg.setMultiNames(multiNames);
+				
+				List<PlanetCandidate> planets = gg.generate();
 
 				int j = 0;
 				for (PlanetCandidate pc : planets) {

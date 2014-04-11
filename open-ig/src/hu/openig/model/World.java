@@ -290,7 +290,7 @@ public class World implements ModelLookup {
 				@Override
 				public void run() {
 					try {
-						galaxyModel.processGalaxy(rl, definition.galaxy, exec, wip);
+						galaxyModel.processGalaxy(rl, definition.galaxy, exec, wip, labels);
 					} catch (Throwable t) {
 						Exceptions.add(t);
 					} finally {
@@ -3098,9 +3098,15 @@ public class World implements ModelLookup {
 				count = skirmishDefinition.galaxyPlanetCount;
 			}
 			
-			List<PlanetCandidate> pcs = GalaxyGenerator.generate(skirmishDefinition.galaxyRandomSeed,
-					count, this.galaxyModel.map.getWidth(), this.galaxyModel.map.getHeight(),
-					MIN_PLANET_DENSITY);
+			GalaxyGenerator gg = new GalaxyGenerator();
+			gg.setSeed(skirmishDefinition.galaxyRandomSeed);
+			gg.setPlanetCount(count);
+			gg.setSize(this.galaxyModel.map.getWidth(), this.galaxyModel.map.getHeight());
+			gg.setMinDensity(MIN_PLANET_DENSITY);
+			gg.setSingleNames(this.galaxyModel.singleNames);
+			gg.setMultiNames(this.galaxyModel.multiNames);
+			
+			List<PlanetCandidate> pcs = gg.generate();
 			
 			int j = 0;
 			for (PlanetCandidate pc : pcs) {
