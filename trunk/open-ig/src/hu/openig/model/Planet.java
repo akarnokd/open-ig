@@ -270,7 +270,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		for (Building b : surface.buildings.iterable()) {
 			updateStatistics(result, owner, b);
 
-			if (b.hasResource("radar")) {
+			if (b.hasResource("radar") && b.isOperational()) {
 				radar = Math.max(radar, (int)b.getResource("radar"));
 			}
 			if (b.type.id.equals("Stadium")) {
