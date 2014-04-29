@@ -26,16 +26,16 @@ public final class SortLabels {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		String fn = "data/ru/labels.xml";
+		String fn = "data/es/labels.xml";
 		
 		XElement e = XElement.parseXML(fn);
 		
 		Collections.sort(e.children(), new Comparator<XElement>() {
 			@Override
 			public int compare(XElement o1, XElement o2) {
-				String s1 = o1.get("key");
-				String s2 = o2.get("key");
-				return s1.compareTo(s2);
+				String s1 = o1.content != null ? o1.content : ""; // o1.get("key");
+				String s2 = o2.content != null ? o2.content : ""; // o2.get("key");
+				return Integer.compare(s1.length(), s2.length());
 			}
 		});
 		
