@@ -367,6 +367,8 @@ public class CommonResources implements GameEnvironment {
 
 			traits.load(rl.getXML("traits"));
 			
+			text.setFontScaling(config.uiScale / 100d);
+			
 			// FIXME during translation
 			
 			this.rl = rl;

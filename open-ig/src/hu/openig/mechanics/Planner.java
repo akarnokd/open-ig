@@ -328,6 +328,7 @@ public abstract class Planner {
 			final BuildingSelector selector,
 			final BuildingOrder order, 
 			boolean upgradeFirst) {
+		upgradeFirst &= this.world.allowBuildingUpgrades;
 		if (upgradeFirst) {
 			if (manageUpgrade(planet, selector, order)) {
 				return true;

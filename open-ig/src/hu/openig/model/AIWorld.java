@@ -116,6 +116,8 @@ public class AIWorld {
 	public boolean mayImproveDefenses;
 	/** No limit on planet building. */
 	public boolean noLabLimit;
+	/** Allow upgrading buildings. */
+	public boolean allowBuildingUpgrades;
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -127,6 +129,7 @@ public class AIWorld {
 		difficulty = player.difficulty;
 		level = player.world.level;
 		noLabLimit = player.world.noLabLimit();
+		allowBuildingUpgrades = player.world.config.aiAllowBuildingUpgrades;
 		
 		explorationInnerLimit = player.explorationInnerLimit;
 		explorationOuterLimit = player.explorationOuterLimit;
