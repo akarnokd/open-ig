@@ -291,7 +291,11 @@ public class PlanetSurface {
 			b.enabled = "true".equals(tile.get("enabled"));
 			b.repairing = "true".equals(tile.get("repairing"));
 			
-			placeBuilding(b.tileset.normal, x, y, b);
+			if (b.tileset != null) {
+				placeBuilding(b.tileset.normal, x, y, b);
+			} else {
+				System.out.println("Warning: No tileset found for building " + type + " of race " + race);
+			}
 		}
 		placeRoads(getTechnology(), bm);
 	}

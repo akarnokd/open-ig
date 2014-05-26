@@ -89,6 +89,8 @@ public class SkirmishScreen extends ScreenBase {
 	UIPanel playersPanel;
 	/** Panel. */
 	UIPanel victoryPanel;
+	/** Panel. */
+	UIPanel overridesPanel;
 	/** Button. */
 	UIGenericButton galaxyBtn;
 	/** Button. */
@@ -105,6 +107,8 @@ public class SkirmishScreen extends ScreenBase {
 	UIGenericButton play;
 	/** Button. */
 	UIGenericButton victoryBtn;
+	/** Button. */
+	UIGenericButton overridesBtn;
 	/** The galactic background. */
 	BufferedImage background;
 	/** The list of campaigns. */
@@ -147,6 +151,10 @@ public class SkirmishScreen extends ScreenBase {
 	UICheckBox noLabLimit;
 	/** Don't limit the number of labs per planet. */
 	UICheckBox noFactoryLimit;
+	/** Don't limit the number of economic buildings per planet. */
+	UICheckBox noEconomicLimit;
+	/** Allow all buildings to be built by non-human races. */
+	UICheckBox allowAllBuildings;
 	/** Label. */
 	UILabel initialMoneyLabel;
 	/** Number. */
@@ -276,11 +284,13 @@ public class SkirmishScreen extends ScreenBase {
 		economyPanel = new UIPanel();
 		playersPanel = new UIPanel();
 		victoryPanel = new UIPanel();
+		overridesPanel = new UIPanel();
 		
 		galaxyBtn = createButton("skirmish.galaxy");
 		economyBtn = createButton("skirmish.economy");
 		playersBtn = createButton("skirmish.players");
 		victoryBtn = createButton("skirmish.victory");
+		overridesBtn = createButton("skirmish.other");
 		
 		back = createButton("skirmish.back");
 		back.onClick = new Action0() {
@@ -312,6 +322,7 @@ public class SkirmishScreen extends ScreenBase {
 		economyBtn.onPress = panelSwitchAction(economyPanel);
 		playersBtn.onPress = panelSwitchAction(playersPanel);
 		victoryBtn.onPress = panelSwitchAction(victoryPanel);
+		overridesBtn.onPress = panelSwitchAction(overridesPanel);
 
 		galaxyDefLabel = createLabel("skirmish.galaxy_template");
 		galaxyDef = new CampaignSpinBox();
@@ -377,12 +388,8 @@ public class SkirmishScreen extends ScreenBase {
 		technologyLevelStart = new NumberSpinBox(0, 6, 1, 1);
 		technologyLevelStart.value = 0;
 
-		noFactoryLimit = createCheckBox("skirmish.no_factory_limit");
-		noLabLimit = createCheckBox("skirmish.no_lab_limit");
-		
 		galaxyPanel.add(technologyDef, technologyDefLabel, technologyLevelLabel, 
-				technologyLevelStart, technologyLevelMaxLabel, technologyLevelMax,
-				noFactoryLimit, noLabLimit);
+				technologyLevelStart, technologyLevelMaxLabel, technologyLevelMax);
 		
 		
 		initialMoneyLabel = createLabel("skirmish.initial_money");
@@ -519,6 +526,17 @@ public class SkirmishScreen extends ScreenBase {
 
 		victoryPanel.add(winOccupationPercentLabel, winOccupationTimeLabel, winEconomicMoneyLabel,
 				winSocialMoraleLabel, winSocialPlanetsLabel);
+
+		// ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+		
+		noFactoryLimit = createCheckBox("skirmish.no_factory_limit");
+		noLabLimit = createCheckBox("skirmish.no_lab_limit");
+		noEconomicLimit = createCheckBox("skirmish.no_economic_limit");
+		allowAllBuildings = createCheckBox("skirmish.allow_all_buildings");
+
+		overridesPanel.add(noFactoryLimit, noLabLimit, noEconomicLimit, allowAllBuildings);
+		
+		// -----------------------------------------------------------------------
 		
 		playersList = new UIPanel();
 		
@@ -598,11 +616,13 @@ public class SkirmishScreen extends ScreenBase {
 		economyPanel.bounds(galaxyPanel.bounds());
 		playersPanel.bounds(galaxyPanel.bounds());
 		victoryPanel.bounds(galaxyPanel.bounds());
+		overridesPanel.bounds(galaxyPanel.bounds());
 		
 		galaxyBtn.location(base.x + 5, base.y + 5);
 		economyBtn.location(galaxyBtn.x + galaxyBtn.width + 5, base.y + 5);
 		playersBtn.location(economyBtn.x + economyBtn.width + 5, base.y + 5);
 		victoryBtn.location(playersBtn.x + playersBtn.width + 5, base.y + 5);
+		overridesBtn.location(victoryBtn.x + victoryBtn.width + 5, base.y + 5);
 		
 		back.location(base.x + 10, base.y + base.height - 40);
 		
@@ -651,12 +671,6 @@ public class SkirmishScreen extends ScreenBase {
 		technologyLevelMax.setMaxSize();
 		technologyLevelMax.location(technologyLevelMaxLabel.x + technologyLevelMaxLabel.width + 20, cy);
 
-		cy += 40;
-		noFactoryLimit.location(5, cy);
-
-		cy += 35;
-		noLabLimit.location(5, cy);
-
 		cy += 35;
 		initialRelationLabel.location(5, cy + 7);
 		initialRelation.setMaxSize();
@@ -703,12 +717,12 @@ public class SkirmishScreen extends ScreenBase {
 		orbitalFactories.location(15 + orbitalFactoryLabel.width + 20, cy);
 		
 		cy += 35;
-		taxBaseLabel.location(30, cy + 7);
+		taxBaseLabel.location(5, cy + 7);
 		taxBase.setMaxSize();
 		taxBase.location(15 + taxBaseLabel.width + 20, cy);
 
 		cy += 35;
-		taxScaleLabel.location(30, cy + 7);
+		taxScaleLabel.location(5, cy + 7);
 		taxScale.setMaxSize();
 		taxScale.location(15 + taxScaleLabel.width + 20, cy);
 
@@ -753,6 +767,21 @@ public class SkirmishScreen extends ScreenBase {
 		winSocialPlanets.setMaxSize();
 		winSocialPlanets.location(50 + winSocialPlanetsLabel.width, cy);
 
+		//------------------------------------------
+		
+		cy = 0;
+		noFactoryLimit.location(5, cy);
+
+		cy += 35;
+		noLabLimit.location(5, cy);
+
+		cy += 35;
+		noEconomicLimit.location(5, cy);
+
+		cy += 35;
+		allowAllBuildings.location(5, cy);
+		
+		//------------------------------------------
 		
 		playersListScroll.bounds(5, 25, playersPanel.width - 5, playersPanel.height - 105);
 		playersListScroll.scrollBy(0);
@@ -832,11 +861,13 @@ public class SkirmishScreen extends ScreenBase {
 		economyPanel.visible(economyPanel == panel);
 		playersPanel.visible(playersPanel == panel);
 		victoryPanel.visible(victoryPanel == panel);
+		overridesPanel.visible(overridesPanel == panel);
 		
 		galaxyBtn.color(galaxyPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
 		economyBtn.color(economyPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
 		playersBtn.color(playersPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
 		victoryBtn.color(victoryPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
+		overridesBtn.color(overridesPanel.visible() ? TextRenderer.WHITE : 0xFF000000);
 		if (sound) {
 			buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 		}
@@ -2217,7 +2248,9 @@ public class SkirmishScreen extends ScreenBase {
 		result.startLevel = technologyLevelStart.value;
 		result.maxLevel = technologyLevelMax.value;
 		result.noFactoryLimit = noFactoryLimit.selected();
+		result.noEconomicLimit = noEconomicLimit.selected();
 		result.noLabLimit = noLabLimit.selected();
+		result.allowAllBuildings = allowAllBuildings.selected();
 
 		result.initialDiplomaticRelation = SkirmishDiplomaticRelation.values()[initialRelation.index];
 		result.initialDifficulty = Difficulty.values()[initialDifficulty.index];

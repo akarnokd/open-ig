@@ -3355,6 +3355,9 @@
 	<entry key='tech.garthogbattleship3.description'>The strongest battleship in the Garthog fleet with excellent firepower, defenses and vehicle capacity.</entry>	
 	<entry key='skirmish.galaxy_seed'>Seed</entry>
 	<entry key='skirmish.reseed'>Reseed</entry>
+	<entry key='skirmish.no_economic_limit'>Unlimited economic buildings per planet</entry>
+	<entry key='skirmish.other'>Other settings</entry>
+	<entry key='skirmish.allow_all_buildings'>Allow all building types to be built by anyone</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

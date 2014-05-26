@@ -79,6 +79,10 @@ public class CustomGameDefinition {
 	public boolean noLabLimit;
 	/** Allow building more than 1 factories per planet. */
 	public boolean noFactoryLimit;
+	/** Allow building more than 1 bank, trader spaceport and trade center. */ 
+	public boolean noEconomicLimit;
+	/** Allow building human-specific buildings by other races. */
+	public boolean allowAllBuildings;
 	/** The base tax income per day. */
 	public double taxBase = 0.0;
 	/** The tax income scaling. */
@@ -151,6 +155,12 @@ public class CustomGameDefinition {
 			return false;
 		}
 		if (noLabLimit != other.noLabLimit) {
+			return false;
+		}
+		if (noEconomicLimit != other.noEconomicLimit) {
+			return false;
+		}
+		if (allowAllBuildings != other.allowAllBuildings) {
 			return false;
 		}
 		if (placeColonyHubs != other.placeColonyHubs) {
@@ -241,6 +251,8 @@ public class CustomGameDefinition {
 		result = prime * result + maxLevel;
 		result = prime * result + (noFactoryLimit ? 1231 : 1237);
 		result = prime * result + (noLabLimit ? 1231 : 1237);
+		result = prime * result + (noEconomicLimit ? 1231 : 1237);
+		result = prime * result + (allowAllBuildings ? 1231 : 1237);
 		result = prime * result + (placeColonyHubs ? 1231 : 1237);
 		result = prime * result + ((race == null) ? 0 : race.hashCode());
 		result = prime * result + startLevel;
