@@ -2009,6 +2009,8 @@ public class GameWindow extends JFrame implements GameControls {
 			Rectangle mxs = getGraphicsConfiguration().getBounds();
 
 			setSize(Math.min(mxs.width, Math.max(sw + dx, getWidth())), Math.min(mxs.height, Math.max(sh + dy, getHeight())));
+			
+			commons.text().setFontScaling(config.uiScale / 100d);
 		}
 	}
 	@Override

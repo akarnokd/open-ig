@@ -226,19 +226,15 @@ public class Configuration {
 	public boolean scaleAllScreens = false;
 	/** AI should attack every building, not just the defensive ones. */
 	@LoadSave
-//	@LoadSaveGame
 	public boolean aiGroundAttackEverything = false;
 	/** AI should attack a mixed set of targets. */
 	@LoadSave
-//	@LoadSaveGame
 	public boolean aiGroundAttackMixed = true;
 	/** Force the AI autobuild to ignore static defenses until the economic buildings have been built. */
 	@LoadSave
-//	@LoadSaveGame
 	public boolean autoBuildEconomyFirst = true;
 	/** Use standard Java fonts instead of the original bitmap fonts. */
 	@LoadSave
-//	@LoadSaveGame
 	public boolean useStandardFonts = false;
 	/** Play the intro videos? */
 	@LoadSave
@@ -337,6 +333,9 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean dayNightCycle = true;
+	/** Enable/disable AI upgrading buildings. */
+	@LoadSave
+	public boolean aiAllowBuildingUpgrades = false;
 	/** List of supported language codes. */
 	public final List<String> languageSupport = Arrays.asList(
 			"en", "english", 

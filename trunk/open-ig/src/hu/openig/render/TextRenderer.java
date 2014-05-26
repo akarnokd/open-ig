@@ -129,7 +129,7 @@ public class TextRenderer {
 	/** Use standard Java fonts instead of the original bitmap fonts. */
 	private boolean useStandardFonts;
 	/** The default font rendering context. */
-	private final FontRenderContext frc;
+	private FontRenderContext frc;
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param rl the resource locator
@@ -144,6 +144,18 @@ public class TextRenderer {
 		split(GREEN);
 		split(GRAY);
 		split(RED);
+	}
+	/**
+	 * Set the font scaling on the font render context if using standard fonts.
+	 * @param scale the scaling to use, use 1 to reset the scaling
+	 */
+	public void setFontScaling(double scale) {
+		if (scale <= 1) {
+			frc = new FontRenderContext(null, false, false);
+		}
+		AffineTransform tx = new AffineTransform();
+		tx.scale(scale, scale);
+		frc = new FontRenderContext(tx, false, false);
 	}
 	/**
 	 * A line definition.
