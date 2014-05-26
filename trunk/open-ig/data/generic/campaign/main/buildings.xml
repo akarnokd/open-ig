@@ -25,6 +25,13 @@
   <building id='PrefabHousing' name='buildings.prefab_housing'>
     <graphics>
       <tech id='human' width='4' height='3' image='colony/buildings/human/prefab_housing'/>
+      <tech id='garthog' width='4' height='3' image='colony/buildings/human/prefab_housing' skirmish-only='true'/>
+      <tech id='morgath' width='4' height='3' image='colony/buildings/human/prefab_housing' skirmish-only='true'/>
+      <tech id='ecalep' width='4' height='3' image='colony/buildings/human/prefab_housing' skirmish-only='true'/>
+      <tech id='sullep' width='4' height='3' image='colony/buildings/human/prefab_housing' skirmish-only='true'/>
+      <tech id='ychom' width='4' height='3' image='colony/buildings/human/prefab_housing' skirmish-only='true'/>
+      <tech id='dribs' width='4' height='3' image='colony/buildings/human/prefab_housing' skirmish-only='true'/>
+      <tech id='dargslan' width='4' height='3' image='colony/buildings/human/prefab_housing' skirmish-only='true'/>
     </graphics>
     <build cost='5600' kind='House' limit='*'/>
     <operation>
@@ -58,6 +65,13 @@
   <building id='ApartmentBlock' name='buildings.apartment_block'>
     <graphics>
       <tech id='human' width='4' height='3' image='colony/buildings/human/apartment_block'/>
+      <tech id='garthog' width='4' height='3' image='colony/buildings/human/apartment_block' skirmish-only='true'/>
+      <tech id='morgath' width='4' height='3' image='colony/buildings/human/apartment_block' skirmish-only='true'/>
+      <tech id='ecalep' width='4' height='3' image='colony/buildings/human/apartment_block' skirmish-only='true'/>
+      <tech id='sullep' width='4' height='3' image='colony/buildings/human/apartment_block' skirmish-only='true'/>
+      <tech id='ychom' width='4' height='3' image='colony/buildings/human/apartment_block' skirmish-only='true'/>
+      <tech id='dribs' width='4' height='3' image='colony/buildings/human/apartment_block' skirmish-only='true'/>
+      <tech id='dargslan' width='4' height='3' image='colony/buildings/human/apartment_block' skirmish-only='true'/>
     </graphics>
     <build cost='12000' kind='House' limit='*'/>
     <operation>
@@ -166,6 +180,13 @@
   <building name='buildings.fusion_plant' id='FusionPlant'>
     <graphics>
       <tech height='5' width='5' id='human' image='colony/buildings/human/fusion_plant'/>
+      <tech height='5' width='5' id='garthog' image='colony/buildings/human/fusion_plant' skirmish-only="true"/>
+      <tech height='5' width='5' id='morgath' image='colony/buildings/human/fusion_plant' skirmish-only="true"/>
+      <tech height='5' width='5' id='ecalep' image='colony/buildings/human/fusion_plant' skirmish-only="true"/>
+      <tech height='5' width='5' id='sullep' image='colony/buildings/human/fusion_plant' skirmish-only="true"/>
+      <tech height='5' width='5' id='ychom' image='colony/buildings/human/fusion_plant' skirmish-only="true"/>
+      <tech height='5' width='5' id='dribs' image='colony/buildings/human/fusion_plant' skirmish-only="true"/>
+      <tech height='5' width='5' id='dargslan' image='colony/buildings/human/fusion_plant' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Power' cost='24000' except='desert,neptoplasm,rocky'/>
     <operation percent='true'>
@@ -194,6 +215,13 @@
   <building name='buildings.solar_plant' id='SolarPlant'>
     <graphics>
       <tech id='human' height='5' width='5' image='colony/buildings/human/solar_plant'/>
+      <tech id='garthog' height='5' width='5' image='colony/buildings/human/solar_plant' skirmish-only="true"/>
+      <tech id='morgath' height='5' width='5' image='colony/buildings/human/solar_plant' skirmish-only="true"/>
+      <tech id='ecalep' height='5' width='5' image='colony/buildings/human/solar_plant' skirmish-only="true"/>
+      <tech id='sullep' height='5' width='5' image='colony/buildings/human/solar_plant' skirmish-only="true"/>
+      <tech id='ychom' height='5' width='5' image='colony/buildings/human/solar_plant' skirmish-only="true"/>
+      <tech id='dribs' height='5' width='5' image='colony/buildings/human/solar_plant' skirmish-only="true"/>
+      <tech id='dargslan' height='5' width='5' image='colony/buildings/human/solar_plant' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Power' cost='16000' except='frozen,liquid' research='SolarPlant'/>
     <operation percent='true'>
@@ -222,6 +250,13 @@
   <building name='buildings.water_vaporator' id='WaterVaporator'>
     <graphics>
       <tech id='human' height='5' width='5' image='colony/buildings/human/water_vaporator'/>
+      <tech id='garthog' height='5' width='5' image='colony/buildings/human/water_vaporator' skirmish-only='true'/>
+      <tech id='morgath' height='5' width='5' image='colony/buildings/human/water_vaporator' skirmish-only='true'/>
+      <tech id='ecalep' height='5' width='5' image='colony/buildings/human/water_vaporator' skirmish-only='true'/>
+      <tech id='sullep' height='5' width='5' image='colony/buildings/human/water_vaporator' skirmish-only='true'/>
+      <tech id='ychom' height='5' width='5' image='colony/buildings/human/water_vaporator' skirmish-only='true'/>
+      <tech id='dribs' height='5' width='5' image='colony/buildings/human/water_vaporator' skirmish-only='true'/>
+      <tech id='dargslan' height='5' width='5' image='colony/buildings/human/water_vaporator' skirmish-only='true'/>
     </graphics>
     <build limit='1' kind='House' cost='45000' except='earth,frozen,liquid,rocky,cratered,neptoplasm'/>
     <operation>
@@ -260,6 +295,13 @@
   <building name='buildings.hydroponic_food_farm' id='HydroponicFoodFarm'>
     <graphics>
       <tech id='human' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm'/>
+      <tech id='garthog' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm' skirmish-only='true'/>
+      <tech id='morgath' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm' skirmish-only='true'/>
+      <tech id='ecalep' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm' skirmish-only='true'/>
+      <tech id='sullep' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm' skirmish-only='true'/>
+      <tech id='ychom' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm' skirmish-only='true'/>
+      <tech id='dribs' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm' skirmish-only='true'/>
+      <tech id='dargslan' height='5' width='3' image='colony/buildings/human/hydroponic_food_farm' skirmish-only='true'/>
     </graphics>
     <build limit='*' kind='Food' cost='4200'/>
     <operation>
@@ -548,6 +590,13 @@
   <building name='buildings.traders_spaceport' id='TradersSpaceport'>
     <graphics>
       <tech id='human' height='6' width='7' image='colony/buildings/human/traders_spaceport'/>
+      <tech id='garthog' height='6' width='7' image='colony/buildings/human/traders_spaceport' skirmish-only="true"/>
+      <tech id='morgath' height='6' width='7' image='colony/buildings/human/traders_spaceport' skirmish-only="true"/>
+      <tech id='ecalep' height='6' width='7' image='colony/buildings/human/traders_spaceport' skirmish-only="true"/>
+      <tech id='sullep' height='6' width='7' image='colony/buildings/human/traders_spaceport' skirmish-only="true"/>
+      <tech id='ychom' height='6' width='7' image='colony/buildings/human/traders_spaceport' skirmish-only="true"/>
+      <tech id='dribs' height='6' width='7' image='colony/buildings/human/traders_spaceport' skirmish-only="true"/>
+      <tech id='dargslan' height='6' width='7' image='colony/buildings/human/traders_spaceport' skirmish-only="true"/>
     </graphics>
     <build limit='1' kind='Economic' cost='10000'/>
     <operation>
@@ -589,6 +638,13 @@
   <building name='buildings.bank' id='Bank'>
     <graphics>
       <tech id='human' height='4' width='3' image='colony/buildings/human/bank'/>
+      <tech id='garthog' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
+      <tech id='morgath' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
+      <tech id='ecalep' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
+      <tech id='sullep' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
+      <tech id='ychom' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
+      <tech id='dribs' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
+      <tech id='dargslan' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
     </graphics>
     <build limit='1' kind='Economic' cost='16000'/>
     <operation>
@@ -981,6 +1037,13 @@
   <building name='buildings.barracks' id='Barracks'>
     <graphics>
       <tech id='human' height='3' width='3' image='colony/buildings/human/barracks'/>
+      <tech id='garthog' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
+      <tech id='morgath' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
+      <tech id='ecalep' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
+      <tech id='sullep' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
+      <tech id='ychom' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
+      <tech id='dribs' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
+      <tech id='dargslan' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Defensive' cost='15000'/>
     <operation>
@@ -1014,6 +1077,13 @@
   <building name='buildings.stronghold' id='Stronghold'>
     <graphics>
       <tech id='human' height='4' width='4' image='colony/buildings/human/stronghold'/>
+      <tech id='garthog' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
+      <tech id='morgath' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
+      <tech id='ecalep' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
+      <tech id='sullep' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
+      <tech id='ychom' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
+      <tech id='dribs' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
+      <tech id='dargslan' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Defensive' cost='50000' research='Stronghold'/>
     <operation>
@@ -1027,6 +1097,13 @@
   <building name='buildings.recreation_center' id='RecreationCenter'>
     <graphics>
       <tech id='human' height='4' width='3' image='colony/buildings/human/recreation_center'/>
+      <tech id='garthog' height='4' width='3' image='colony/buildings/human/recreation_center' skirmish-only="true"/>
+      <tech id='ecalep' height='4' width='3' image='colony/buildings/human/recreation_center' skirmish-only="true"/>
+      <tech id='sullep' height='4' width='3' image='colony/buildings/human/recreation_center' skirmish-only="true"/>
+      <tech id='ychom' height='4' width='3' image='colony/buildings/human/recreation_center' skirmish-only="true"/>
+      <tech id='dribs' height='4' width='3' image='colony/buildings/human/recreation_center' skirmish-only="true"/>
+      <tech id='morgath' height='4' width='3' image='colony/buildings/human/recreation_center' skirmish-only="true"/>
+      <tech id='dargslan' height='4' width='3' image='colony/buildings/human/recreation_center' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Social' cost='7500'/>
     <operation>
@@ -1039,6 +1116,13 @@
   <building name='buildings.park' id='Park'>
     <graphics>
       <tech id='human' height='6' width='6' image='colony/buildings/human/park'/>
+      <tech id='garthog' height='6' width='6' image='colony/buildings/human/park' skirmish-only="true"/>
+      <tech id='ecalep' height='6' width='6' image='colony/buildings/human/park' skirmish-only="true"/>
+      <tech id='sullep' height='6' width='6' image='colony/buildings/human/park' skirmish-only="true"/>
+      <tech id='ychom' height='6' width='6' image='colony/buildings/human/park' skirmish-only="true"/>
+      <tech id='dribs' height='6' width='6' image='colony/buildings/human/park' skirmish-only="true"/>
+      <tech id='morgath' height='6' width='6' image='colony/buildings/human/park' skirmish-only="true"/>
+      <tech id='dargslan' height='6' width='6' image='colony/buildings/human/park' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Social' cost='14000' except='desert,frozen,cratered,liquid,neptoplasm'/>
     <operation>
@@ -1051,6 +1135,13 @@
   <building name='buildings.church' id='Church'>
     <graphics>
       <tech id='human' height='3' width='3' image='colony/buildings/human/church'/>
+      <tech id='garthog' height='3' width='3' image='colony/buildings/human/church' skirmish-only="true"/>
+      <tech id='ecalep' height='3' width='3' image='colony/buildings/human/church' skirmish-only="true"/>
+      <tech id='sullep' height='3' width='3' image='colony/buildings/human/church' skirmish-only="true"/>
+      <tech id='ychom' height='3' width='3' image='colony/buildings/human/church' skirmish-only="true"/>
+      <tech id='morgath' height='3' width='3' image='colony/buildings/human/church' skirmish-only="true"/>
+      <tech id='dargslan' height='3' width='3' image='colony/buildings/human/church' skirmish-only="true"/>
+      <tech id='dribs' height='3' width='3' image='colony/buildings/human/church' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Social' cost='4000'/>
     <operation>
@@ -1063,6 +1154,13 @@
   <building name='buildings.bar' id='Bar'>
     <graphics>
       <tech id='human' height='4' width='4' image='colony/buildings/human/bar'/>
+      <tech id='garthog' height='4' width='4' image='colony/buildings/human/bar' skirmish-only="true"/>
+      <tech id='ecalep' height='4' width='4' image='colony/buildings/human/bar' skirmish-only="true"/>
+      <tech id='sullep' height='4' width='4' image='colony/buildings/human/bar' skirmish-only="true"/>
+      <tech id='ychom' height='4' width='4' image='colony/buildings/human/bar' skirmish-only="true"/>
+      <tech id='dribs' height='4' width='4' image='colony/buildings/human/bar' skirmish-only="true"/>
+      <tech id='morgath' height='4' width='4' image='colony/buildings/human/bar' skirmish-only="true"/>
+      <tech id='dargslan' height='4' width='4' image='colony/buildings/human/bar' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Social' cost='6300'/>
     <operation>
@@ -1075,6 +1173,13 @@
   <building name='buildings.stadium' id='Stadium'>
     <graphics>
       <tech id='human' height='6' width='5' image='colony/buildings/human/stadium'/>
+      <tech id='garthog' height='6' width='5' image='colony/buildings/human/stadium' skirmish-only="true"/>
+      <tech id='ecalep' height='6' width='5' image='colony/buildings/human/stadium' skirmish-only="true"/>
+      <tech id='sullep' height='6' width='5' image='colony/buildings/human/stadium' skirmish-only="true"/>
+      <tech id='ychom' height='6' width='5' image='colony/buildings/human/stadium' skirmish-only="true"/>
+      <tech id='dribs' height='6' width='5' image='colony/buildings/human/stadium' skirmish-only="true"/>
+      <tech id='morgath' height='6' width='5' image='colony/buildings/human/stadium' skirmish-only="true"/>
+      <tech id='dargslan' height='6' width='5' image='colony/buildings/human/stadium' skirmish-only="true"/>
     </graphics>
     <build limit='*' kind='Social' cost='50000'/>
     <operation>

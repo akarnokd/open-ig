@@ -200,7 +200,8 @@ public class World implements ModelLookup {
 			
 			talks = new Talks();
 			walks = new Walks();
-			buildingModel = new BuildingModel(env.config());
+			buildingModel = new BuildingModel(env.config(), 
+					skirmishDefinition != null && skirmishDefinition.allowAllBuildings);
 			galaxyModel = new GalaxyModel(env.config());
 			test = new LinkedHashMap<>();
 			diplomacy = new LinkedHashMap<>();
@@ -772,6 +773,14 @@ public class World implements ModelLookup {
 		
 		tech.factory = item.get("factory");
 		tech.race.addAll(Arrays.asList(item.get("race").split("\\s*,\\s*")));
+		
+		if (skirmishDefinition != null && skirmishDefinition.allowAllBuildings) {
+			String skirmishRace = item.get("skirmish-race", "");
+			if (!skirmishRace.isEmpty()) {
+				tech.race.addAll(Arrays.asList(skirmishRace.split("\\s*,\\s*")));
+			}
+		}
+		
 		tech.productionCost = Integer.parseInt(item.get("production-cost"));
 		tech.researchCost = Integer.parseInt(item.get("research-cost"));
 		tech.level = Integer.parseInt(item.get("level"));
@@ -1622,10 +1631,10 @@ public class World implements ModelLookup {
 			for (String pl : xplayer.get("discovered-named", "").split("\\s*,\\s*")) {
 				if (pl.length() > 0) {
 					Planet p0 = planets.get(pl);
-					if (p0 == null) {
-						throw new IllegalArgumentException("discovered-named planet not found: " + pl);
+					if (p0 != null) {
+						// FIXME: silently ignore planets with unknown name for now
+						p.planets.put(p0, PlanetKnowledge.NAME);
 					}
-					p.planets.put(p0, PlanetKnowledge.NAME);
 				}
 			}
 			p.inventory.clear();
@@ -3047,7 +3056,10 @@ public class World implements ModelLookup {
 			} else
 			if (bt.kind.equals("Factory") && skirmishDefinition.noFactoryLimit) {
 				bt.limit = Integer.MAX_VALUE;
-			}
+			} else
+		    if (bt.kind.equals("Economic") && skirmishDefinition.noEconomicLimit) {
+		    	bt.limit = Integer.MAX_VALUE;
+		    }
 		}
 		// fix research requirements of colony ship and orbital factory
 		for (ResearchType rt : Arrays.asList(researches.get("ColonyShip"), researches.get("OrbitalFactory"))) {
@@ -3618,6 +3630,10 @@ public class World implements ModelLookup {
 	 */
 	public boolean noFactoryLimit() {
 		return skirmishDefinition != null ? skirmishDefinition.noFactoryLimit : false;
+	}
+	/** @return Allow building multiple economic buildings per planet? */
+	public boolean noEconomicLimit() {
+		return skirmishDefinition != null ? skirmishDefinition.noEconomicLimit : false;
 	}
 	/**
 	 * Check if the diplomacy option is available.

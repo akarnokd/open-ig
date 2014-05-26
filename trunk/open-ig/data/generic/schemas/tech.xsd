@@ -87,6 +87,9 @@
 		<xs:attribute name="nobuild" type="xs:boolean" use="optional">
 			<xs:annotation><xs:documentation>Do not let the player build this technology. It can only be awarded by scripting.</xs:documentation></xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="skirmish-race" type="list-of-string" use="optional">
+			<xs:annotation><xs:documentation>The list of races who have this technology in skirmish.</xs:documentation></xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="slot">
 		<xs:annotation><xs:documentation>A variable content equipment slot.</xs:documentation></xs:annotation>

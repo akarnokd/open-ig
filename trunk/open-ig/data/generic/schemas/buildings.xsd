@@ -119,6 +119,11 @@
 				<xs:documentation>The image resource base name. Additional images are "_damaged", "_mini" and "_lights".</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="skirmish-only" type="xs:boolean" use="optional" default="false">
+			<xs:annotation>
+				<xs:documentation>The race-specific building should only be present in skirmish games.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="build">
 		<xs:annotation>

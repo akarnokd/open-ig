@@ -37,12 +37,16 @@ public class BuildingModel {
 	public final Map<String, Map<Tile, RoadType>> tileRoads = new HashMap<>();
 	/** The configuration. */
 	protected final Configuration config;
+	/** Are the buildings read in skirmish-mode? */
+	protected final boolean skirmishMode;
 	/**
 	 * Constructor. Set the configuration.
 	 * @param config the configuration
+	 * @param skirmishMode indicate skirmish mode
 	 */
-	public BuildingModel(Configuration config) {
+	public BuildingModel(Configuration config, boolean skirmishMode) {
 		this.config = config;
+		this.skirmishMode = skirmishMode;
 	}
 	/**
 	 * Process the contents of the buildings definition.
@@ -168,6 +172,12 @@ public class BuildingModel {
 				
 				XElement gfx = building.childElement("graphics");
 				for (XElement r : gfx.childrenWithName("tech")) {
+					boolean skirmishOnly = r.getBoolean("skirmish-only", false);
+					// load this tile only if skirmish mode is on and the building is marked as skirmish
+					if (!this.skirmishMode && skirmishOnly) {
+						continue;
+					}
+
 					final TileSet ts = new TileSet();
 					
 					final String rid = r.get("id");
