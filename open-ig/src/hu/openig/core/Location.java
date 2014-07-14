@@ -20,10 +20,10 @@ public final class Location {
 	/** The cached hash code. */
 	private final int hc;
 	/** The location cache, where the first dimension is the X coordinate + 80, 
-	 * the second is Y coordinate + 159. */
+	 * the second is Y coordinate + 320. */
 	private static final Location[][] CACHE;
 	static {
-		CACHE = new Location[160][160];
+		CACHE = new Location[320][320];
 		for (int i = 0; i < CACHE.length; i++) {
 			for (int j = 0; j < CACHE[i].length; j++) {
 				CACHE[i][j] = new Location(i - 80, -j);

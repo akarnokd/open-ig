@@ -10,6 +10,7 @@ package hu.openig.model;
 
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func0;
+import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.model.GalaxyGenerator.PlanetCandidate;
 import hu.openig.net.MissingAttributeException;
@@ -3142,6 +3143,95 @@ public class World implements ModelLookup {
 				p.surface = p.type.surfaces.get(pc.variant).copy(newIdFunc);
 				
 				planets.put(p.id, p);
+			}
+		}
+		int pscale = skirmishDefinition.planetScale;
+		if (pscale > 1) {
+			for (PlanetType pt : galaxyModel.planetTypes.values()) {
+				for (PlanetSurface ps : pt.surfaces.values()) {
+					int w0 = ps.width;
+					int h0 = ps.height;
+
+					List<SurfaceFeature> features = ps.features;
+					Map<Location, SurfaceEntity> map = ps.basemap;
+					ps.basemap = new HashMap<>(map.size() * pscale * pscale);
+					ps.features = new ArrayList<>(features.size() * pscale * pscale);
+					
+					for (int i = 0; i < pscale; i++) {
+						for (int j = 0; j < pscale; j++) {
+							for (Map.Entry<Location, SurfaceEntity> e : map.entrySet()) {
+								if (i == 0 && j == 0) {
+									ps.basemap.put(e.getKey(), e.getValue());
+								} else {
+									Location loc = e.getKey();
+									int x2 = loc.x + i * w0 - j * h0;
+									int y2 = loc.y - i * w0 - j * h0;
+									
+									Location loc2 = Location.of(x2, y2);
+									ps.basemap.put(loc2, e.getValue());
+								}
+							}
+							for (SurfaceFeature sf : features) {
+								if (i == 0 && j == 0) {
+									ps.features.add(sf);
+								} else {
+									SurfaceFeature sf2 = sf.copy();
+									
+									Location loc = sf2.location;
+									int x2 = loc.x + i * w0 - j * h0;
+									int y2 = loc.y - i * w0 - j * h0;
+									
+									sf2.location = Location.of(x2, y2);
+									
+									ps.features.add(sf2);
+								}
+							}
+							if (i > 0) {
+								int kmax = h0;
+								if (j + 1 == pscale) {
+									kmax--;
+								}
+								for (int k = 0; k < kmax; k++) {
+									int x3 = i * w0 - j * h0 - k - 1;
+									int y3 = - i * w0 - j * h0 - k;
+									
+									Location loc3 = Location.of(x3, y3);
+									if (!ps.basemap.containsKey(loc3)) {
+										Location loc4 = Location.of(x3 + 1, y3);
+										SurfaceEntity se = ps.basemap.get(loc4);
+										ps.basemap.put(loc3, se);
+									}
+								}
+							}
+							if (j > 0) {
+								int kmax = w0;
+								if (i + 1 == pscale) {
+									kmax--;
+								}
+								for (int k = 0; k < kmax; k++) {
+									int x3 = i * w0 - j * h0 + k + 1;
+									int y3 = - i * w0 - j * h0 - k;
+									
+									Location loc3 = Location.of(x3, y3);
+									if (!ps.basemap.containsKey(loc3)) {
+										Location loc4 = Location.of(x3 + 1, y3);
+										SurfaceEntity se = ps.basemap.get(loc4);
+										ps.basemap.put(loc3, se);
+									}
+								}
+
+							}
+						}
+					}
+					
+					ps.setSize(w0 * pscale, h0 * pscale);
+				}
+			}
+			for (Planet p : planets.values()) {
+				PlanetSurface ps0 = p.type.surfaces.get(p.surface.variant);
+				p.surface.basemap = ps0.basemap;
+				p.surface.features = ps0.features;
+				p.surface.setSize(ps0.width, ps0.height);
 			}
 		}
 	}

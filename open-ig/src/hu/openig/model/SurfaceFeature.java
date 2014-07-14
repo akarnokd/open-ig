@@ -23,6 +23,17 @@ public class SurfaceFeature {
 	/** The tile object. */
 	public Tile tile;
 	/**
+	 * @return Create a copy of this feature.
+	 */
+	public SurfaceFeature copy() {
+		SurfaceFeature r = new SurfaceFeature();
+		r.location = location;
+		r.type = type;
+		r.id = id;
+		r.tile = tile;
+		return r;
+	}
+	/**
 	 * Tests wether the given location is within the base footprint of this placed building.
 	 * @param a the X coordinate
 	 * @param b the Y coordinate

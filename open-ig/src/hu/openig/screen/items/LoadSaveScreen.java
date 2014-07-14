@@ -310,6 +310,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Continuous money calculation. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox continuousMoney;
+	/** Day-night cycle. */
+	@Settings(page = SettingsPage.VISUAL)
+	UICheckBox vectorFonts;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -1139,6 +1142,14 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			}
 		};
 		
+		vectorFonts = new UICheckBox(get("settings.vector_fonts"), 14, commons.common().checkmark, commons.text());
+		vectorFonts.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				config.useStandardFonts = vectorFonts.selected();
+			}
+		};
+		
 		//-----------------------------------------------
 		
 		setTooltip(classicControls, "settings.classic_controls.tooltip");
@@ -1301,6 +1312,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		continuousMoney.selected(config.continuousMoney);
 		dayNight.selected(config.dayNightCycle);
 		weather.selected(config.allowWeather);
+		vectorFonts.selected(config.useStandardFonts);
 		
 		hideConfirm();
 
@@ -1436,6 +1448,10 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		dy += ddy;
 		weather.location(base.x + 30, base.y + dy + 8);
 		dayNight.location(weather.x + weather.width + 30, weather.y);
+		
+		dy += ddy;
+		vectorFonts.location(base.x + 30, base.y + dy + 8);
+
 		// -----------------------------
 		// controls
 		dy = 70;

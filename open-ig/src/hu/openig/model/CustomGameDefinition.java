@@ -87,6 +87,8 @@ public class CustomGameDefinition {
 	public double taxBase = 0.0;
 	/** The tax income scaling. */
 	public double taxScale = 1.0;
+	/** Scales planet surfaces (by copying the base map left/down in a square manner). */
+	public int planetScale = 1;
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -221,6 +223,9 @@ public class CustomGameDefinition {
 		if (victoryTechnology != other.victoryTechnology) {
 			return false;
 		}
+		if (planetScale != other.planetScale) {
+			return false;
+		}
 		return true;
 	}
 	@Override
@@ -272,6 +277,7 @@ public class CustomGameDefinition {
 		result = prime * result + victorySocialMorale;
 		result = prime * result + victorySocialPlanets;
 		result = prime * result + (victoryTechnology ? 1231 : 1237);
+		result = prime * result + planetScale;
 		return result;
 	}
 	

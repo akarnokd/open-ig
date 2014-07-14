@@ -273,6 +273,10 @@ public class SkirmishScreen extends ScreenBase {
 	boolean blink;
 	/** The last galaxy seed value. */
 	Long galaxySeed;
+	/** Tax base label. */
+	UILabel planetScaleLabel;
+	/** Base daily tax. */
+	NumberSpinBox planetScale;
 	@Override
 	public Screens screen() {
 		return Screens.SKIRMISH;
@@ -533,8 +537,17 @@ public class SkirmishScreen extends ScreenBase {
 		noLabLimit = createCheckBox("skirmish.no_lab_limit");
 		noEconomicLimit = createCheckBox("skirmish.no_economic_limit");
 		allowAllBuildings = createCheckBox("skirmish.allow_all_buildings");
+		
+		planetScaleLabel = createLabel("skirmish.planet_scale");
+		planetScale = new NumberSpinBox(1, 4, 1, 1) {
+			@Override
+			public String onValue() {
+				return String.format("x %d", value);
+			}
+		};
 
-		overridesPanel.add(noFactoryLimit, noLabLimit, noEconomicLimit, allowAllBuildings);
+		overridesPanel.add(noFactoryLimit, noLabLimit, noEconomicLimit, allowAllBuildings,
+				planetScaleLabel, planetScale);
 		
 		// -----------------------------------------------------------------------
 		
@@ -780,6 +793,11 @@ public class SkirmishScreen extends ScreenBase {
 
 		cy += 35;
 		allowAllBuildings.location(5, cy);
+		
+		cy += 35;
+		planetScaleLabel.location(5, cy + 7);
+		planetScale.setMaxSize();
+		planetScale.location(25 + planetScaleLabel.width, cy);
 		
 		//------------------------------------------
 		
@@ -2251,6 +2269,7 @@ public class SkirmishScreen extends ScreenBase {
 		result.noEconomicLimit = noEconomicLimit.selected();
 		result.noLabLimit = noLabLimit.selected();
 		result.allowAllBuildings = allowAllBuildings.selected();
+		result.planetScale = planetScale.value;
 
 		result.initialDiplomaticRelation = SkirmishDiplomaticRelation.values()[initialRelation.index];
 		result.initialDifficulty = Difficulty.values()[initialDifficulty.index];
