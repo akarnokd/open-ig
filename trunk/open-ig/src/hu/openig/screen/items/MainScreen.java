@@ -80,6 +80,10 @@ public class MainScreen extends ScreenBase {
 		public int preferredWidth() {
 			return commons.text().getTextWidth(size, get(label)) + 20;
 		}
+		/** Sizes the label to the preferred text width. */
+		public void sizeToContent() {
+			this.width = preferredWidth();
+		}
 		/** Invoke the associated action. */
 		public void invoke() {
 			if (action != null) {

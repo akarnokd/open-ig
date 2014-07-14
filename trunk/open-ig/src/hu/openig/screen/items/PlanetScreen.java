@@ -73,7 +73,6 @@ import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
-import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 
 import java.awt.AlphaComposite;
@@ -1748,25 +1747,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		return new Point(xs[linear], ys[linear]);
 	}
 	
-	/**
-	 * Prepare the surface tiles in parallel.
-	 * @param surface the target planet surface
-	 */
-	void prepareTilesAsync(PlanetSurface surface) {
-		long time = System.nanoTime();
-		List<Future<?>> futures = new LinkedList<>();
-		for (final SurfaceFeature sf : surface.features) {
-			futures.add(commons.pool.submit(new Runnable() {
-				@Override
-				public void run() {
-					sf.tile.getStrip(0);
-				}
-			}));
-		}
-		Parallels.waitForAll(futures);
-		System.out.println("PrepareTilesAsync: " + (1E9 / (System.nanoTime() - time)));
-	}
-
 	/**
 	 * The radar renderer component.
 	 * @author akarnokd, Mar 27, 2011

@@ -40,12 +40,12 @@ public class PlanetSurface {
 	/** 
 	 * The map's width in cells. 
 	 * The width is defined as a slightly descending horizontal dimension of the map, 
-	 * but in coordinate terms it is equal to the sequence 0,0 1,-1, 2,-2 etc.
+	 * but in coordinate terms it is equal to the sequence (0, 0) (1,-1) (2,-2) etc.
 	 * Note that the rendering coordinate system is different from the original IG's map definition. 
 	 */
 	public int width;
 	/** The height with in cells. The width is defined as a vertical dimension of the map,
-	 *  but in coordinate terms it is equal to the sequence 0,0 -1,-1, -2,-2 etc. */
+	 *  but in coordinate terms it is equal to the sequence (0, 0) (-1,-1) (-2,-2) etc. */
 	public int height;
 	/**
 	 * The base map of the surface. Kept separate from the building maps for the case the user
@@ -68,7 +68,7 @@ public class PlanetSurface {
 	public Rectangle boundingRectangle;
 	/** The list of building instances. */
 	public final Buildings buildings = new Buildings();
-	/** The list of surface features. */
+	/** The list of base surface features which have multi-tile geometry. */
 	public List<SurfaceFeature> features = new ArrayList<>();
 	/** The placement helper. */
 	public PlacementHelper placement = new PlacementHelper() {
@@ -185,12 +185,14 @@ public class PlanetSurface {
 				basemap.put(Location.of(a, b), se);
 			}
 		}
-		SurfaceFeature sf = new SurfaceFeature();
-		sf.id = id;
-		sf.type = surface;
-		sf.tile = tile;
-		sf.location = Location.of(x, y);
-		features.add(sf);
+		if (tile.width > 1 || tile.height > 1) {
+			SurfaceFeature sf = new SurfaceFeature();
+			sf.id = id;
+			sf.type = surface;
+			sf.tile = tile;
+			sf.location = Location.of(x, y);
+			features.add(sf);
+		}
 	}
 	/**
 	 * Set the size of the surface map.

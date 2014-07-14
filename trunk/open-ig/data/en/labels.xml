@@ -3358,6 +3358,8 @@
 	<entry key='skirmish.no_economic_limit'>Unlimited economic buildings per planet</entry>
 	<entry key='skirmish.other'>Other settings</entry>
 	<entry key='skirmish.allow_all_buildings'>Allow all building types to be built by anyone</entry>
+	<entry key='settings.vector_fonts'>Vector font (restart required)</entry>
+	<entry key="skirmish.planet_scale">Planet scaling</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
