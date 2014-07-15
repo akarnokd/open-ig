@@ -214,6 +214,34 @@
 				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
 				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
 			</race>
+			<race id="garthog">
+				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
+			</race>
+			<race id="morgath">
+				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
+			</race>
+			<race id="ecalep">
+				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
+			</race>
+			<race id="sullep">
+				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
+			</race>
+			<race id="dribs">
+				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
+			</race>
+			<race id="ychom">
+				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
+			</race>
+			<race id="dargslan">
+				<port rx="0" ry="-1" px="-18" py="-50" fire="GROUND_FIRE_4" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="2" ry="-2" px="-6" py="-44" fire="GROUND_FIRE_2" max-range="7" damage="10" rotation-time="200" delay="1000" matrix="fortress"/>
+			</race>
 		</building-turret>
 		<building-turret id="Fortress">
 			<race id="human">
@@ -254,6 +282,48 @@
 		</building-turret>
 		<building-turret id="Stronghold">
 			<race id="human">
+				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="10" py="-110" fire="GROUND_FIRE_6" max-range="12" damage="25" rotation-time="400" delay="2000" matrix="stronghold"/>
+			</race>
+			<race id="garthog">
+				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="10" py="-110" fire="GROUND_FIRE_6" max-range="12" damage="25" rotation-time="400" delay="2000" matrix="stronghold"/>
+			</race>
+			<race id="morgath">
+				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="10" py="-110" fire="GROUND_FIRE_6" max-range="12" damage="25" rotation-time="400" delay="2000" matrix="stronghold"/>
+			</race>
+			<race id="ecalep">
+				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="10" py="-110" fire="GROUND_FIRE_6" max-range="12" damage="25" rotation-time="400" delay="2000" matrix="stronghold"/>
+			</race>
+			<race id="sullep">
+				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="10" py="-110" fire="GROUND_FIRE_6" max-range="12" damage="25" rotation-time="400" delay="2000" matrix="stronghold"/>
+			</race>
+			<race id="dribs">
+				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="10" py="-110" fire="GROUND_FIRE_6" max-range="12" damage="25" rotation-time="400" delay="2000" matrix="stronghold"/>
+			</race>
+			<race id="ychom">
+				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
+				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
+				<port rx="0" ry="-3" px="10" py="-110" fire="GROUND_FIRE_6" max-range="12" damage="25" rotation-time="400" delay="2000" matrix="stronghold"/>
+			</race>
+			<race id="dargslan">
 				<port rx="0" ry="-2" px="-18" py="-74" fire="GROUND_FIRE_4" max-range="8" damage="10" rotation-time="200" delay="1000" matrix="barracks"/>
 				<port rx="3" ry="-3" px="-6" py="-36" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>
 				<port rx="0" ry="-3" px="26" py="-56" fire="GROUND_FIRE_2" max-range="10" damage="15" rotation-time="300" delay="1500" matrix="fortress"/>

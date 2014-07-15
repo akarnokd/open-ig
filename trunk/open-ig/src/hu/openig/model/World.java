@@ -1674,8 +1674,12 @@ public class World implements ModelLookup {
 		}
 		Set<String> allPlanets = new HashSet<>(planets.keySet());
 		for (XElement xplanet : xworld.childrenWithName("planet")) {
-			Planet p = planets.get(xplanet.get("id"));
-
+			String pid = xplanet.get("id");
+			Planet p = planets.get(pid);
+			if (p == null) {
+				System.out.println("Unknown planet: " + pid);
+				continue;
+			}
 			Player lo = p.owner;
 			p.die();
 			if (lo != null) {
