@@ -10,7 +10,6 @@ package hu.openig.screen;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
-import hu.openig.core.Action1E;
 import hu.openig.core.Func0;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
@@ -36,7 +35,6 @@ import hu.openig.model.GameDefinition;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.Labels;
 import hu.openig.model.MultiplayerDefinition;
-import hu.openig.model.MultiplayerUser;
 import hu.openig.model.Player;
 import hu.openig.model.Profile;
 import hu.openig.model.ResearchType;
@@ -199,10 +197,6 @@ public class CommonResources implements GameEnvironment {
 	protected long simulationStep;
 	/** The global traits. */
 	public final Traits traits = new Traits();
-	/** The multiplayer context. */
-	public final MultiplayerContext multiplayer = new MultiplayerContext(this);
-	/** The join callback for multiplayer. */
-	public Action1E<MultiplayerUser, IOException> joinCallback;
 	/** The pool thread factory. */
 	static final class BasicThreadFactory implements ThreadFactory {
 		/** Thread number counter. */
@@ -1147,7 +1141,6 @@ public class CommonResources implements GameEnvironment {
 	 * Cleanup all resources.
 	 */
 	public void done() {
-		multiplayer.stopServer();
 	}
 	@Override
 	public void save(SaveMode mode) {
@@ -1227,10 +1220,6 @@ public class CommonResources implements GameEnvironment {
 	@Override
 	public boolean isLoading() {
 		return worldLoading;
-	}
-	@Override
-	public Action1E<MultiplayerUser, IOException> joinCallback() {
-		return joinCallback;
 	}
 	/**
 	 * Start a new campaign game.

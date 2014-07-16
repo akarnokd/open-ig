@@ -357,48 +357,6 @@ public class InventoryItem {
 		}
 	}
 	/**
-	 * Returns the inventory item status for this item.
-	 * @return the inventory item status record
-	 */
-	public InventoryItemStatus toInventoryItemStatus() {
-		InventoryItemStatus result = new InventoryItemStatus();
-		
-		result.id = id;
-		result.type = type.id;
-		result.count = count;
-		result.owner = owner.id;
-		result.hp = hp;
-		result.shield = shield;
-		result.tag = tag;
-		result.nickname = nickname;
-		result.nicknameIndex = nicknameIndex;
-		result.kills = kills;
-		result.killsCost = killsCost;
-		for (InventorySlot is : slots.values()) {
-			result.slots.add(is.toInventorySlotStatus());
-		}
-		
-		return result;
-	}
-	/**
-	 * Loads the inventory item from the inventory item status.
-	 * @param iis the inventory item status
-	 * @param lookup the model lookup
-	 */
-	public void fromInventoryItemStatus(InventoryItemStatus iis, ModelLookup lookup) {
-		count = iis.count;
-		hp = iis.hp;
-		shield = iis.shield;
-		tag = iis.tag;
-		nickname = iis.nickname;
-		nicknameIndex = iis.nicknameIndex;
-		kills = iis.kills;
-		killsCost = iis.killsCost;
-		for (InventorySlotStatus iss : iis.slots) {
-			getSlot(iss.id).fromInventorySlotStatus(iss, lookup);
-		}
-	}
-	/**
 	 * Assigns the status and slot info from another inventory item.
 	 * @param ii the inventory item
 	 */

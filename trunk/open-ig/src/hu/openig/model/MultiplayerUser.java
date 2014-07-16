@@ -7,9 +7,6 @@
  */
 package hu.openig.model;
 
-import hu.openig.net.MessageArray;
-import hu.openig.net.MessageObject;
-
 import java.awt.image.BufferedImage;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,7 +15,7 @@ import java.util.Set;
  * The record type of the user.
  * @author akarnokd, 2013.04.24.
  */
-public class MultiplayerUser implements MessageObjectIO {
+public class MultiplayerUser {
 	/** The player's identifier. */
 	public String id;
 	/**  The AI mode, if null, this is a remote user. */
@@ -90,74 +87,6 @@ public class MultiplayerUser implements MessageObjectIO {
 	 */
 	public synchronized void sessionId(String value) {
 		this.sessionId = value;
-	}
-	@Override
-	public void fromMessage(MessageObject mo) {
-		id = mo.getStringObject("id");
-		ai = mo.getEnumObject("ai", SkirmishAIMode.values());
-		if (ai == null) {
-			userName = mo.getString("userName");
-			passphrase = mo.getString("passphrase");
-		} else {
-			userName = null;
-			passphrase = null;
-		}
-		color = mo.getInt("color");
-		iconRef = mo.getString("iconRef");
-		group = mo.getInt("group");
-		changeIcon = mo.getBoolean("changeIcon");
-		changeRace = mo.getBoolean("changeRace");
-		changeTraits = mo.getBoolean("changeTraits");
-		changeGroup = mo.getBoolean("changeGroup");
-		originalId = mo.getString("originalId");
-		diplomacyHead = mo.getString("diplomacyHead");
-		nodiplomacy = mo.getBoolean("nodiplomacy");
-		nodatabase = mo.getBoolean("nodatabase");
-		picture = mo.getString("picture");
-		race = mo.getString("race");
-		description = mo.getString("description");
-
-		traits.clear();
-		for (Object o : mo.getArray("traits")) {
-			if (o instanceof CharSequence) {
-				traits.add(o.toString());
-			}
-		}
-	}
-	@Override
-	public MessageObject toMessage() {
-		MessageObject r = new MessageObject(objectName());
-		
-		r.set("id", id);
-		r.set("ai", ai);
-		r.set("userName", userName);
-		r.set("passphrase", passphrase);
-		r.set("color", color);
-		r.set("iconRef", iconRef);
-		r.set("group", group);
-		r.set("changeIcon", changeIcon);
-		r.set("changeRace", changeRace);
-		r.set("changeTraits", changeTraits);
-		r.set("changeGroup", changeGroup);
-		r.set("originalId", originalId);
-		r.set("diplomacyHead", diplomacyHead);
-		r.set("nodiplomacy", nodiplomacy);
-		r.set("nodatabase", nodatabase);
-		r.set("picture", picture);
-		r.set("race", race);
-		r.set("description", description);
-
-		MessageArray ta = new MessageArray(null);
-		for (String t : traits) {
-			ta.add(t);
-		}
-		r.set("traits", ta);
-		
-		return r;
-	}
-	@Override
-	public String objectName() {
-		return "MULTIPLAYER_USER";
 	}
 	/**
 	 * Create a copy of this object.

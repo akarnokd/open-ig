@@ -17,12 +17,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 
 /**
  * A fleet.
@@ -770,100 +768,6 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	 */
 	public boolean exists() {
 		return owner.fleets.containsKey(this);
-	}
-	/**
-	 * Returns a fleet status object.
-	 * @return the status object
-	 */
-	public FleetStatus toFleetStatus() {
-		FleetStatus result = new FleetStatus();
-		
-		result.id = id;
-		result.knowledge = owner.fleets.get(this);
-		result.owner = owner.id;
-		result.x = x;
-		result.y = y;
-		result.name = name;
-
-		if (targetFleet != null) {
-			result.targetFleet = targetFleet.id;
-		}
-		if (targetPlanet != null) {
-			result.targetPlanet = targetPlanet.id;
-		}
-		if (arrivedAt != null) {
-			result.arrivedAt = arrivedAt.id;
-		}
-		result.mode = mode;
-		result.task = task;
-		result.refillOnce = refillOnce;
-		result.formation = formation;
-		result.infectedBy = owner.world.infectedFleets.get(id);
-		
-		for (Point2D.Double wp : waypoints) {
-			result.waypoints.add(new Point2D.Double(wp.x, wp.y));
-		}
-		
-		for (InventoryItem ii : inventory.iterable()) {
-			result.inventory.add(ii.toInventoryItemStatus());
-		}
-		
-		return result;
-	}
-	/**
-	 * Load values from the fleet status object.
-	 * @param fs the fleet status object
-	 */
-	public void fromFleetStatus(FleetStatus fs) {
-		// we don't allow owner changes this way?
-		owner.fleets.put(this, fs.knowledge);
-		x = fs.x;
-		y = fs.y;
-		name = fs.name;
-
-		for (Point2D.Double wp : fs.waypoints) {
-			waypoints.add(new Point2D.Double(wp.x, wp.y));
-		}
-		
-		if (fs.targetFleet == null) {
-			targetFleet = null;
-		} else {
-			targetFleet = owner.fleet(fs.targetFleet);
-		}
-		
-		if (fs.targetPlanet == null) {
-			targetPlanet = null;
-		} else {
-			targetPlanet = owner.world.planet(fs.targetPlanet);
-		}
-		
-		if (fs.arrivedAt == null) {
-			arrivedAt = null;
-		} else {
-			arrivedAt = owner.world.planet(fs.targetPlanet);
-		}
-		
-		mode = fs.mode;
-		task = fs.task;
-		refillOnce = fs.refillOnce;
-		if (fs.infectedBy != null) {
-			owner.world.infectedFleets.put(id, fs.infectedBy);
-		} else {
-			owner.world.infectedFleets.remove(id);
-		}
-		
-		Set<Integer> current = new HashSet<>();
-		for (InventoryItemStatus iis : fs.inventory) {
-			InventoryItem ii = inventory.findById(iis.id);
-			if (ii == null) {
-				ii = new InventoryItem(iis.id, owner.world.player(iis.owner), owner.world.research(iis.type));
-				ii.init();
-				inventory.add(ii);
-			}
-			ii.fromInventoryItemStatus(iis, owner.world);
-			current.add(ii.id);
-		}
-		inventory.removeById(current);
 	}
 	/**
 	 * Colonize the nearby planet if possible.

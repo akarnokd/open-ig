@@ -40,27 +40,4 @@ public class Production {
 		progress = other.progress;
 		priority = other.priority;
 	}
-	/**
-	 * Creates a production status object.
-	 * @return the production status object
-	 */
-	public ProductionStatus toProductionStatus() {
-		ProductionStatus result = new ProductionStatus();
-		result.type = type.id;
-		result.count = count;
-		result.progress = progress;
-		result.priority = priority;
-		return result;
-	}
-	/**
-	 * Loads the values from the given production status object.
-	 * @param ps the productions status object
-	 * @param lookup the model element lookup
-	 */
-	public void fromProductionStatus(ProductionStatus ps, ModelLookup lookup) {
-		type = lookup.research(ps.type);
-		count = ps.count;
-		progress = ps.progress;
-		priority = ps.priority;
-	}
 }

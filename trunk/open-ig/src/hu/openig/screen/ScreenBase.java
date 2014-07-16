@@ -13,8 +13,6 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.Configuration;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
-import hu.openig.model.GameAPI;
-import hu.openig.model.GameAsyncAPI;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
@@ -112,20 +110,6 @@ public abstract class ScreenBase extends UIContainer {
 			return true;
 		}
 		return false;
-	}
-	/**
-	 * Returns the control API for the current player.
-	 * @return the game API
-	 */
-	public GameAPI api() {
-		return player().api;
-	}
-	/**
-	 * Returns the asynchronous game API for the current player.
-	 * @return the asynchronou game API
-	 */
-	public GameAsyncAPI asyncAPI() {
-		return player().asyncAPI;
 	}
 	/** @return The current player. */
 	public Player player() {

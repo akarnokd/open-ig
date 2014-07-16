@@ -178,8 +178,6 @@ public class MainScreen extends ScreenBase {
 	ClickLabel creditsLabel;
 	/** Label button. */
 	ClickLabel profileLabel;
-	/** The current multiplayer frame. */
-	MultiplayerScreen multiplayerFrame;
 	/** The language selector panel. */
 	UIPanel languagePanel;
 	/** The language changer. */
@@ -367,10 +365,6 @@ public class MainScreen extends ScreenBase {
 	}
 	@Override
 	public void onFinish() {
-		if (multiplayerFrame != null) {
-			multiplayerFrame.dispose();
-			multiplayerFrame = null;
-		}
 	}
 
 	@Override
@@ -420,11 +414,7 @@ public class MainScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
-				if (multiplayerFrame == null) {
-					multiplayerFrame = new MultiplayerScreen(commons);
-					multiplayerFrame.setLocationRelativeTo(commons.control().renderingComponent());
-				}
-				multiplayerFrame.setVisible(true);
+				// TODO
 			}
 		};
 		multiplayer.enabled(false);
