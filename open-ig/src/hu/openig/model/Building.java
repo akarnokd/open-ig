@@ -308,43 +308,6 @@ public class Building implements HasLocation {
 		return location;
 	}
 	/**
-	 * Returns the building status record.
-	 * @return the building status record
-	 */
-	public BuildingStatus toBuildingStatus() {
-		BuildingStatus result = new BuildingStatus();
-		
-		result.id = id;
-		result.type = type.id;
-		result.race = race;
-		result.x = location.x;
-		result.y = location.y;
-		result.assignedEnergy = assignedEnergy;
-		result.assignedWorker = assignedWorker;
-		result.buildProgress = buildProgress;
-		result.hitpoints = hitpoints;
-		result.upgradeLevel = upgradeLevel;
-		result.enabled = enabled;
-		result.repairing = repairing;
-		
-		return result;
-	}
-	/**
-	 * Assigns values from the building status record.
-	 * Note that this method can't create a new building.
-	 * @param st the status record
-	 */
-	public void fromBuildingStatus(BuildingStatus st) {
-		location = Location.of(st.x, st.y);
-		assignedEnergy = st.assignedEnergy;
-		assignedWorker = st.assignedWorker;
-		buildProgress = st.buildProgress;
-		hitpoints = st.hitpoints;
-		upgradeLevel = st.upgradeLevel;
-		enabled = st.enabled;
-		repairing = st.repairing;
-	}
-	/**
 	 * Returns the bounding rectangle of this building (without offset).
 	 * @return the bounding rectangle 
 	 */

@@ -13,7 +13,6 @@ import hu.openig.core.Func0;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.model.GalaxyGenerator.PlanetCandidate;
-import hu.openig.net.MissingAttributeException;
 import hu.openig.render.TextRenderer;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.ImageUtils;
@@ -3605,84 +3604,6 @@ public class World implements ModelLookup {
 				}
 			}
 			xworld.set("id-sequence", idSequence.get());
-		}
-	}
-	/**
-	 * Creates the empire statuses record from this world object.
-	 * @param playerId from the player's perspective, or null for all players
-	 * @return the empire statuses
-	 */
-	public EmpireStatuses toEmpireStatuses(String playerId) {
-		EmpireStatuses result = new EmpireStatuses();
-		
-		result.currentTime = time.getTime();
-		result.statistics.assign(this.statistics);
-		
-		if (playerId == null) {
-			for (Player p : players.values()) {
-				result.empires.put(p.id, p.toEmpireStatus());
-			}
-			for (DiplomaticRelation dr : relations) {
-				result.relations.add(dr.copy());
-			}
-		} else {
-			result.empires.put(playerId, players.get(playerId).toEmpireStatus());
-			for (DiplomaticRelation dr : relations) {
-				if (dr.knows(playerId)) {
-					result.relations.add(dr.copy());
-				}
-			}
-		}
-		
-		return result;
-	}
-	/**
-	 * Load values from the empire statuses record.
-	 * @param ess the empire statuses record
-	 * @param playerId the target player id if not null
-	 */
-	public void fromEmpireStatuses(EmpireStatuses ess, String playerId) {
-		time.setTime(ess.currentTime);
-		statistics.assign(ess.statistics);
-		
-		if (playerId == null) {
-			for (EmpireStatus es : ess.empires.values()) {
-				Player p = players.get(es.id);
-				if (p == null) {
-					throw new MissingAttributeException("player id " + es.id);
-				}
-				p.fromEmpireStatus(es);
-			}
-			relations.clear();
-			for (DiplomaticRelation dr : ess.relations) {
-				relations.add(dr.copy());
-			}
-		} else {
-			EmpireStatus es = ess.empires.get(playerId);
-			if (es == null) {
-				throw new MissingAttributeException("player id " + playerId);
-			}
-			Player p = players.get(playerId);
-			if (p == null) {
-				throw new MissingAttributeException("player id " + playerId);
-			}
-			p.fromEmpireStatus(es);
-			
-			// replace the player's relations only
-			List<DiplomaticRelation> rels = new ArrayList<>();
-			for (DiplomaticRelation dr : relations) {
-				if (!playerId.equals(dr.first) && !playerId.equals(dr.second)) {
-					rels.add(dr);
-				}
-			}
-			for (DiplomaticRelation dr : ess.relations) {
-				if (playerId.equals(dr.first) || playerId.equals(dr.second)) {
-					rels.add(dr.copy());
-				}
-			}
-			
-			relations.clear();
-			relations.addAll(rels);
 		}
 	}
 	/**

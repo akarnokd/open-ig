@@ -76,31 +76,6 @@ public class Research {
 		return result;
 	}
 	/**
-	 * Returns the research status copy of this object.
-	 * @return the research status object
-	 */
-	public ResearchStatus toResearchStatus() {
-		ResearchStatus result = new ResearchStatus();
-		
-		result.state = state;
-		result.type = type.id;
-		result.remainingMoney = remainingMoney;
-		result.assignedMoney = assignedMoney;
-		
-		return result;
-	}
-	/**
-	 * Assigns the values from the given research status object.
-	 * @param rs the research status object
-	 * @param lookup the model lookup
-	 */
-	public void fromResearchStatus(ResearchStatus rs, ModelLookup lookup) {
-		state = rs.state;
-		type = lookup.research(rs.type);
-		remainingMoney = rs.remainingMoney;
-		assignedMoney = rs.assignedMoney;
-	}
-	/**
 	 * Set the assigned money by the given factor of the remaining money.
 	 * @param moneyFactor the money factor
 	 */
