@@ -312,6 +312,7 @@
 		nodiplomacy='true'
 		colonization-limit='0'
 		police-ratio='15'
+		noskirmish='true'
 	>
 		<available>
 			<type id='ColonyShip' list=''/>
@@ -329,6 +330,7 @@
 		nodiplomacy='true'
 		nodatabase='true'
 		colonization-limit='0'
+		noskirmish="true"
 	>
 		<available>
 			<type id='ColonyShip' list=''/>

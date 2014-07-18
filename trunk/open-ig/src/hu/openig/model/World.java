@@ -769,7 +769,7 @@ public class World implements ModelLookup {
 		
 		tech.image = rl.getImage(image);
 		tech.infoImage = placeholder(rl.getImage(image + "_large", true), tech.image);
-		tech.infoImageWired = placeholder(rl.getImage(image + "_wired_large", true), tech.image);
+		tech.infoImageWired = placeholder(rl.getImage(image + "_wired_large", true), tech.infoImage);
 		
 		tech.factory = item.get("factory");
 		tech.race.addAll(Arrays.asList(item.get("race").split("\\s*,\\s*")));
