@@ -846,6 +846,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 		viewActiveEmpty.z = -1;
 		
 		video = new UIImage();
+		video.crop(true);
 		
 		spaceshipsLabel = new UIImageTabButton(commons.research().spaceships);
 		spaceshipsLabel.onPress = new Action0() {
@@ -1385,7 +1386,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 			animationResearch = rt;
 			animationResearchReady = false;
 			if (player().isAvailable(rt)) {
-				video.image(rt.infoImage);
+				video.image(rt.equipmentCustomizeImage);
 				animationResearchReady = true;
 			} else
 			if (player().canResearch(rt)) {

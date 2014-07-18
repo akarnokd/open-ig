@@ -12,6 +12,7 @@ import hu.openig.ui.UIMouse.Type;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.awt.image.BufferedImage;
 
 /**
@@ -27,6 +28,8 @@ public class UIImage extends UIComponent {
 	private boolean center;
 	/** Stretch the image? */
 	private boolean stretch;
+	/** Crop the image? */
+	private boolean crop;
 	/** The border color. */
 	protected int borderColor;
 	/** The background color. */
@@ -62,6 +65,11 @@ public class UIImage extends UIComponent {
 	}
 	@Override
 	public void draw(Graphics2D g2) {
+		Shape clip0 = null;
+		if (crop) {
+			clip0 = g2.getClip();
+			g2.clipRect(0, 0, width, height);
+		}
 		if (backgroundColor != 0) {
 			g2.setColor(new Color(backgroundColor, true));
 			g2.fillRect(0, 0, width, height);
@@ -85,6 +93,9 @@ public class UIImage extends UIComponent {
 			} else {
 				g2.drawImage(image, 0, 0, null);
 			}
+		}
+		if (crop) {
+			g2.setClip(clip0);
 		}
 		if (borderColor != 0) {
 			g2.setColor(new Color(borderColor, true));
@@ -188,5 +199,20 @@ public class UIImage extends UIComponent {
 	/** @return the current stretch state. */
 	public boolean stretch() {
 		return this.stretch;
+	}
+	/**
+	 * Crop the image?
+	 * @param crop enable/disable cropping
+	 * @return this
+	 */
+	public UIImage crop(boolean crop) {
+		this.crop = crop;
+		return this;
+	}
+	/**
+	 * @return is the image cropped?
+	 */
+	public boolean crop() {
+		return crop;
 	}
 }

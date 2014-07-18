@@ -2035,7 +2035,7 @@
   <entry key='tech.cruiser3.name'>Cruiser v3</entry>
   <entry key='tech.dargslanbattleship.description'>Relatively strong battleship</entry>
   <entry key='tech.dargslanbattleship.longname'>Dargslan Battleship</entry>
-  <entry key='tech.dargslanbattleship.name'>Dargslan Battleship</entry>
+  <entry key='tech.dargslanbattleship.name'>Dargslan Bshp.</entry>
   <entry key='tech.dargslandestroyer.description'>Relatively strong destroyer</entry>
   <entry key='tech.dargslandestroyer.longname'>Dargslan Destroyer</entry>
   <entry key='tech.dargslandestroyer.name'>Dargslan Destroyer</entry>
@@ -2056,7 +2056,7 @@
   <entry key='tech.destroyer3.name'>Destroyer v3</entry>
   <entry key='tech.dribsbattleship.description'>Medium-strong battleship</entry>
   <entry key='tech.dribsbattleship.longname'>Dribs Battleship</entry>
-  <entry key='tech.dribsbattleship.name'>Dribs Battleship</entry>
+  <entry key='tech.dribsbattleship.name'>Dribs Bshp.</entry>
   <entry key='tech.dribsdestroyer.description'>Medium-strong destroyer</entry>
   <entry key='tech.dribsdestroyer.longname'>Dribs Destroyer</entry>
   <entry key='tech.dribsdestroyer.name'>Dribs Destroyer</entry>
@@ -2068,7 +2068,7 @@
   <entry key='tech.dribsparalizer.name'>Paralizer</entry>
   <entry key='tech.ecalepbattleship.description'>Medium-strong battleship</entry>
   <entry key='tech.ecalepbattleship.longname'>Ecalep Battleship</entry>
-  <entry key='tech.ecalepbattleship.name'>Ecalep Battleship</entry>
+  <entry key='tech.ecalepbattleship.name'>Ecalep Bshp.</entry>
   <entry key='tech.ecalepdestroyer.description'>Medium-strong destroyer</entry>
   <entry key='tech.ecalepdestroyer.longname'>Ecalep Destroyer</entry>
   <entry key='tech.ecalepdestroyer.name'>Ecalep Destroyer</entry>
@@ -2113,7 +2113,7 @@
   <entry key='tech.fortress.name'>Fortress</entry>
   <entry key='tech.garthogbattleship.description'>Medium-strong battleship</entry>
   <entry key='tech.garthogbattleship.longname'>Garthog Battleship</entry>
-  <entry key='tech.garthogbattleship.name'>Garthog Battleship</entry>
+  <entry key='tech.garthogbattleship.name'>Garthog Bshp.</entry>
   <entry key='tech.garthogdestroyer.description'>Medium-strong destroyer</entry>
   <entry key='tech.garthogdestroyer.longname'>Garthog Destroyer</entry>
   <entry key='tech.garthogdestroyer.name'>Garthog Destroyer</entry>
@@ -2185,7 +2185,7 @@
   <entry key='tech.mesonprojector.name'>Meson Projector</entry>
   <entry key='tech.morgathbattleship.description'>Medium-strong battleship</entry>
   <entry key='tech.morgathbattleship.longname'>Morgath Battleship</entry>
-  <entry key='tech.morgathbattleship.name'>Morgath Battleship</entry>
+  <entry key='tech.morgathbattleship.name'>Morgath Bshp.</entry>
   <entry key='tech.morgathdestroyer.description'>Medium-strong destroyer</entry>
   <entry key='tech.morgathdestroyer.longname'>Morgat Destroyer</entry>
   <entry key='tech.morgathdestroyer.name'>Morgath Destroyer</entry>
@@ -2299,7 +2299,7 @@
   <entry key='tech.sullepartillery.name'>Artillery</entry>
   <entry key='tech.sullepbattleship.description'>Medium-strong battleship</entry>
   <entry key='tech.sullepbattleship.longname'>Sullep Battleship</entry>
-  <entry key='tech.sullepbattleship.name'>Sullep Battleship</entry>
+  <entry key='tech.sullepbattleship.name'>Sullep Bshp.</entry>
   <entry key='tech.sullepdestroyer.description'>Medium-strong destroyer</entry>
   <entry key='tech.sullepdestroyer.longname'>Sullep Destroyer</entry>
   <entry key='tech.sullepdestroyer.name'>Sullep Destroyer</entry>
@@ -2323,7 +2323,7 @@
   <entry key='tech.virusbomb.name'>Virus bomb</entry>
   <entry key='tech.ychombattleship.description'>Medium-strong battleship</entry>
   <entry key='tech.ychombattleship.longname'>Ychom Battleship</entry>
-  <entry key='tech.ychombattleship.name'>Ychom Battleship</entry>
+  <entry key='tech.ychombattleship.name'>Ychom Bshp.</entry>
   <entry key='tech.ychomdestroyer.description'>Medium-strong destroyer</entry>
   <entry key='tech.ychomdestroyer.longname'>Ychom Destroyer</entry>
   <entry key='tech.ychomdestroyer.name'>Ychom Destroyer</entry>

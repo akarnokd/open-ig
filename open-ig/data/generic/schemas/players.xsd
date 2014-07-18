@@ -93,6 +93,9 @@
 		<xs:attribute name="tax-scale" type="xs:double" use="optional">
 			<xs:annotation><xs:documentation>The scale of the tax income, i.e., a value of 2 will double the daily tax income. Tax = Base Tax + Tax Scale * Computed Tax</xs:documentation></xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="noskirmish" type="xs:boolean" use="optional">
+			<xs:annotation><xs:documentation>Don't allow this player to be selected for skirmish games.</xs:documentation></xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:simpleType name="hex8">
 		<xs:annotation><xs:documentation>8 character hexadecimal value.</xs:documentation></xs:annotation>

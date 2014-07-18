@@ -1260,7 +1260,7 @@ public class CommonResources implements GameEnvironment {
 		return pool.submit(run);
 	}
 	/**
-	 * Extract the players from the given definition.
+	 * Extract skirmishable players from the given definition.
 	 * @param def the definition
 	 * @return the set of players
 	 */
@@ -1274,6 +1274,9 @@ public class CommonResources implements GameEnvironment {
 		lbl.load(rl, U.startWith(def.labels, "labels"));
 		
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
+			if (xplayer.getBoolean("noskirmish", false)) {
+				continue;
+			}
 			SkirmishPlayer sp = new SkirmishPlayer();
 			
 			sp.originalId = xplayer.get("id");
