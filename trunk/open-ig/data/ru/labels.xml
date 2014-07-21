@@ -814,9 +814,9 @@
   <entry key='database.moral_boosting.details'>On all of the colonies, morale affects your population, growth and tax income. On human colonies, there are special buildings that increase morale, such as the Bar, Recreation Center, Park, Church and Stadium. It is up to you to discover the most effective way to increase morale. Taxation morale can also be raised by building Police Stations.
 	Morale does not change rapidly and you may have to wait some time for your actions to take effect. Morale can also be increased by lowering tax for a while, and then increasing it slightly when the morale level is stable.
 	On alien colonies, you cannot build parks or other &quot;morale-increasing&quot; buildings, but the police will help you. When you take over another race&#39;s colony, the alien population will hate you. Lowering their tax and building police stations to maintain order will change their attitude. Bear in mind, that morale does not change quickly.</entry>
-  <entry key='database.race.dargslan'>Dargslans</entry>
-  <entry key='database.race.dargslan.details'>Very little is known about the Dargslans. Intelligence reports show that they have extremely powerful ground attack forces, as well as a competent space fleet.</entry>
-  <entry key='database.race.dribs'>Dribs</entry>
+  <entry key='database.race.dargslan'>Даргсланы</entry>
+  <entry key='database.race.dargslan.details'>Мало что известно о Даргсланах. Наши отчеты показывают только то, что у них чрезвычайные мощные наземные силы и компетентный космический флот.</entry>
+  <entry key='database.race.dribs'>Дрибы</entry>
   <entry key='database.race.dribs.details'>The Dribs are a proud race with advanced technology, especially in the fields of mechanics and architecture. They have known of the Dargslan race for a long time, since the Dargslans occupied some Drib territory. Since then, they have hated the Dargslan race.</entry>
   <entry key='database.race.ecalep'>Ecaleps</entry>
   <entry key='database.race.ecalep.details'>With the rapid expansion of their empire, tax revenue has increased to a very high level. This partially explains their obsession with money. They have developed a new ground weapon called the anti-missile tank, which is immune to rocket launchers.</entry>
@@ -824,27 +824,27 @@
   <entry key='database.race.freenations.details'>Once part of the Old Empire, they declared themselves independent a long time ago. The Free Nations Society has developed rapidly, occupying territories with ease. The Society is well known for their arrogant attitude and contempt for the Empire.</entry>
   <entry key='database.race.freetraders'>Free Traders Alliance</entry>
   <entry key='database.race.freetraders.details'>Once part of the Old Empire, the traders left to create a new empire for themselves. They are a peaceful race of traders and enjoy good relations with the Ychoms</entry>
-  <entry key='database.race.garthog'>Garthogs</entry>
+  <entry key='database.race.garthog'>Гартхогы</entry>
   <entry key='database.race.garthog.details'>The Garthogs are a contemptible and un-trustworthy race, who implant their young with bio-mechanical devices. They have a special interest in mechanics and are renowned for stealing the technology of other races. It is rumored that they destroyed and entire race, known as the Nubs, to obtain their secrets. The Garthog Empire is close to the Human Empire and there has been conflict for 10 years. The Garthogs possess a special ground weapon: the radar jammer vehicle.</entry>
   <entry key='database.race.morgath'>Morgaths</entry>
   <entry key='database.race.morgath.details'>The Morgaths are an insular and hostile race. It is rumored that they have powerful spaceships and a special ground weapon: a kamikaze tank. This weapon should be avoided at all costs!</entry>
-  <entry key='database.race.pirates'>Pirates</entry>
+  <entry key='database.race.pirates'>Пираты</entry>
   <entry key='database.race.pirates.details'>The Pirates are a bunch of outlaws coming from multiple races. They prefer attacking defenseless trade ships and colonies lost all their morale may likely to join them. They have, so far, never attacked a military fleet deliberately.</entry>
   <entry key='database.race.sullep'>Sulleps</entry>
   <entry key='database.race.sullep.details'>The Sulleps&#39; are a walike race with a very strict social structure. From a very young age, Sulleps&#39; are subjected to military training. Such is their code of combat, it is more honourable for them to die in battle than surrender.</entry>
   <entry key='database.race.ychom'>Ychoms</entry>
   <entry key='database.race.ychom.details'>A Peaceful, trader race. That enjoys good relations with the Free Traders Alliance. Ychoms have a unique way of defending their colonies: each has a mine-deploying saucer.</entry>
-  <entry key='database.repair_colony_buildings'>Repairing colony buildings</entry>
+  <entry key='database.repair_colony_buildings'>Ремонт строениях</entry>
   <entry key='database.repair_colony_buildings.details'>On colonies, damaged buildings become less effective, e.g. If a Food farm is damaged, people will get less food, morale will drop and eventually your tax level will decrease. You may repair buildings by clicking on them, a panel will open at the top-right corner. If you click on the damage % icon, it will change to repair %. If a building is being repaired, you will see the damage number on it flashing as the repair is being done and the damage percentage decreasing.</entry>
-  <entry key='database.research_labs'>Role of development centers</entry>
+  <entry key='database.research_labs'>Роль НИИ</entry>
   <entry key='database.research_labs.details'>Most research options are linked to technology levels. The technology levels are split into 5 areas: Civil Engineering, Mechanics, Computer Technology, Artificial Intelligence and Military Technology. Your capabilities in these five areas are determined by the type and number of Development Centers you have. Each planet you control may only have one development center so you will need to plan carefully in which area to increase. N.B. Your technology levels are only increased if the development centers you have are fully functioning.
 	If a center has over 50% damage, or has no electricity/power the additional benefits will be lost. If you demolish a development center, your technology in that field will also decrease. This is how you can develop new inventions using your planets&#39; resources. If you have 1-Civil Engineering and 2-Military Dev.Centers, and need 2-Civil Engineering and 1-Military Dev.Center to create an invention, you can simply demolish one of your Military Dev.Centers and build a Civil Engineering center on that planet.</entry>
-  <entry key='database.spaceship_equipping'>Equipping spaceships</entry>
+  <entry key='database.spaceship_equipping'>Оборудование кораблях</entry>
   <entry key='database.spaceship_equipping.details'>Each Cruiser, Destroyer and Flagship can be equipped with several items. Fighters cannot be equipped with weapons or other equipment. The larger a ship is, the more equipment can be fitted. If you click on a ship from your fleet, it can be equipped in the right window, where the key equipment areas or bays are marked with a green square. Click on the green square, and you will be able to choose from the items you can add, e.g. if you have 10 laser 1.0 equipped and the maximum you can have is 14, click on the +1 button to add laser 1.0 from your stock to the equip bay. This way, you may add 4 more until the maximum amount is reached.
 	You can use the equipment bays for the same type of weapons as well, e.g. if an equipped part of the ship has laser 1.0, and you have laser 2.0 in stock, you will first have to remove laser 1.0 from the equip bay in order to replace it with laser 2.0. This may require a bit of a work but it&#39;s well worth it. If your equipment pod has laser 1.0, that means you can use that space to add laser type weapons only. You cannot add radars or any other weapon type to the equipment pod that supports lasers.
 	In order to equip items to your ship, you need to be near one of your planets which has a military spaceport built on it. This spaceport provides short range transfer ships which will transport the items from your stock pile to the spaceship and equip them. Some spaceships come with standard equipment, like hyperdrives. These come as standard with the ship. They cannot be removed and you cannot equip any other items to this bay.
 	When your spaceship gets damaged, the equipment parts also sustain damage. In this instance the green squares representing the equipment pods will turn yellow for (medium damage) or red (heavy damage). When bays are damaged, the equipment in the bay is also damaged, e.g. you may lose equipped laser cannons due to sustained hits. That is why it is important to check your spaceship&#39;s equipment after battle. The damaged parts will repair after some time but if you lose weapons, you will need to re-equip them.</entry>
-  <entry key='database.tax_income'>Tax income</entry>
+  <entry key='database.tax_income'>Прибыль налоги</entry>
   <entry key='database.tax_income.details'>Your finances depend solely on tax and trade income. Trade income is a long term investment, while tax income will be your main source of earning. Trade income gives you 600 credits/day, if you own a Traders space port. Trade Center creates an income of 1200 credits/day. If you have a bank on the colony, the bank will double all the trade income. Tax income depends on several factors:
 	- the number of people living on the planet,
 	- the taxation level (controlled by you),
@@ -1399,7 +1399,7 @@
   <entry key='diplomacy.Garthog.WAR.HUMBLE.87'>With aching heart we have to erradicate the infection your people represent in the galaxy.</entry>
   <entry key='diplomacy.Garthog.WAR.NEUTRAL.86'>We have no other choice but to burn every planet the humans stepped upon.</entry>
   <entry key='diplomacy.Garthog.terminate.72'>Other important matters of the Empire require my attention now.</entry>
-  <entry key='diplomacy.HUMBLE'>Humble approach</entry>
+  <entry key='diplomacy.HUMBLE'>Скромный подход</entry>
   <entry key='diplomacy.Morgath.ALLIANCE.76'>Империя показала нам свое величие и могущество. Мы предлагаем вам союз, Адмирал. Вы согласны?</entry>
   <entry key='diplomacy.Morgath.ALLIANCE.77'>Свободному обществу надоели жертвы и громадные потери. Во имя спасения нации, мы сдаемся</entry>
   <entry key='diplomacy.Morgath.ALLIANCE.78'>Президент Сзабо желает предложить Империи капитуляцию с соблюдением всеХ формальностей</entry>
