@@ -13,6 +13,7 @@ import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.core.SaveMode;
+import hu.openig.model.Cursors;
 import hu.openig.model.FileItem;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -310,9 +311,12 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Continuous money calculation. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox continuousMoney;
-	/** Day-night cycle. */
+	/** Vector fonts cycle. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox vectorFonts;
+	/** Custom cursors. */
+	@Settings(page = SettingsPage.CONTROL)
+	UICheckBox customCursors;
 	@Override
 	public void onInitialize() {
 		blink = new Timer(500, new ActionListener() {
@@ -1150,6 +1154,20 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			}
 		};
 		
+		customCursors = new UICheckBox(get("settings.custom_cursors"), 14, commons.common().checkmark, commons.text());
+		customCursors.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.customCursors = customCursors.selected();
+				if (config.customCursors) {
+					commons.setCursor(Cursors.POINTER);
+				} else {
+					commons.control().renderingComponent().setCursor(java.awt.Cursor.getDefaultCursor());
+				}
+			}
+		};
+		
 		//-----------------------------------------------
 		
 		setTooltip(classicControls, "settings.classic_controls.tooltip");
@@ -1313,6 +1331,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		dayNight.selected(config.dayNightCycle);
 		weather.selected(config.allowWeather);
 		vectorFonts.selected(config.useStandardFonts);
+		customCursors.selected(config.customCursors);
 		
 		hideConfirm();
 
@@ -1460,6 +1479,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		swapLeftRight.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		movieSkipClick.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+		customCursors.location(base.x + 30, base.y + dy + 8);
 
 		// --------------------------------------------------------------------------------------
 		// gameplay

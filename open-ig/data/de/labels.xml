@@ -3329,6 +3329,7 @@
 	<entry key='starmap.renameplanet.tooltip'>Double click to start renaming the planet.[n]Hit [c=FFFFFFFF]ESC[/c] or [c=FFFFFFFF]ENTER[/c] to complete.[n]Use [c=FFFFFFFF]BACKSPACE[/c] on an empty name to reset it to the default.</entry>
 	<entry key='starmap.renamefleet.tooltip'>Double click to start renaming the fleet.[n]Hit [c=FFFFFFFF]ESC[/c] or [c=FFFFFFFF]ENTER[/c] to complete.</entry>
 	<entry key="settings.weather_effects">Weather effects</entry>
+	<entry key="settings.custom_cursors">Maßgeschneidert Cursors</entry>
 	<entry key="settings.day_night_effects">Day-night cycle</entry>
 	<entry key='info.details_PROBLEMS'>Problems</entry>
 	<entry key='info.details_LABS'>Labs</entry>

@@ -3317,4 +3317,5 @@
 	<entry key='skirmish.allow_all_buildings'>Allow all building types to be built by anyone</entry>
 	<entry key='settings.vector_fonts'>Vector font (restart required)</entry>
 	<entry key="skirmish.planet_scale">Planet scaling</entry>
+	<entry key='settings.custom_cursors'>?Custom cursors?</entry>
 </labels>

@@ -180,6 +180,27 @@ public class CommonGFX {
 	/** Random planet indicator for skirmish. */
 	@Img(name = "planet_random_24x24")
 	public BufferedImage randomPlanet;
+	//TODO Import remaining 8-way arrow cursors
+	/** Cursor: blank for hiding while playing videos. */
+	public BufferedImage blankCursor = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+	/** Cursor: hand. */
+	@Img(name = "cursors/hand")
+	public BufferedImage handCursor;
+	/** Cursor: move. */
+	@Img(name = "cursors/move")
+	public BufferedImage moveCursor;
+	/** Cursor: pointer. */
+	@Img(name = "cursors/pointer")
+	public BufferedImage pointerCursor;
+	/** Cursor: redo. */
+	@Img(name = "cursors/redo")
+	public BufferedImage redoCursor;
+	/** Cursor: select. */
+	@Img(name = "cursors/select")
+	public BufferedImage selectCursor;
+	/** Cursor: target. */
+	@Img(name = "cursors/target")
+	public BufferedImage targetCursor;
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator
