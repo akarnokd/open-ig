@@ -1852,6 +1852,7 @@
   <entry key='settings.classic_controls'>Classic right mouse action controls</entry>
   <entry key='settings.computer_voice_notify'>Computer voice for notification</entry>
   <entry key='settings.computer_voice_screen'>Computer voice for screen switch</entry>
+  <entry key='settings.custom_cursors'>Custom cursors</entry>
   <entry key='settings.gameplay'>Gameplay</entry>
   <entry key='settings.load_save'>Load / Save</entry>
   <entry key='settings.music_volume'>Music volume</entry>
@@ -3360,7 +3361,6 @@
 	<entry key='skirmish.allow_all_buildings'>Allow all building types to be built by anyone</entry>
 	<entry key='settings.vector_fonts'>Vector font (restart required)</entry>
 	<entry key="skirmish.planet_scale">Planet scaling</entry>
-	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>

@@ -21,6 +21,7 @@ import hu.openig.model.AIManager;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.Configuration;
+import hu.openig.model.Cursors;
 import hu.openig.model.CustomGameDefinition;
 import hu.openig.model.Fleet;
 import hu.openig.model.GameDefinition;
@@ -371,6 +372,7 @@ public class GameWindow extends JFrame implements GameControls {
 		if (config.fullScreen) {
 			this.setUndecorated(true);
 		}
+		commons.setCursor(Cursors.POINTER);
 
 		RepaintManager.currentManager(this).setDoubleBufferingEnabled(true);
 

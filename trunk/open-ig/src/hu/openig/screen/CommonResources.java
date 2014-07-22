@@ -31,6 +31,7 @@ import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
 import hu.openig.model.AIManager;
 import hu.openig.model.Configuration;
+import hu.openig.model.Cursors;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.Labels;
@@ -61,6 +62,8 @@ import hu.openig.utils.U;
 import hu.openig.utils.WipPort;
 import hu.openig.utils.XElement;
 
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Closeable;
@@ -161,6 +164,8 @@ public class CommonResources implements GameEnvironment {
 	long tick;
 	/** The registration map. */
 	final Map<Closeable, TimerAction> timerHandlers = new ConcurrentHashMap<>();
+	/** Caches the created cursors. */
+	final Map<hu.openig.model.Cursors, java.awt.Cursor> cursorCache = new HashMap<>();
 	/** The timer action. */
 	static class TimerAction {
 		/** The operation frequency. */
@@ -374,10 +379,40 @@ public class CommonResources implements GameEnvironment {
 //			};
 //			labelReloader.setDaemon(true);
 //			labelReloader.start();
+			
+			setupCursors();
 		} finally {
 			exec.shutdown();
 		}
 		startTimer();
+	}
+	/** Setup the custom cursors. */
+	void setupCursors() {
+		// blank cursor for hiding while playing videos
+		cursorCache.put(Cursors.BLANK, Toolkit.getDefaultToolkit().createCustomCursor(common.blankCursor,
+						new Point(common.redoCursor.getWidth() / 2, common.redoCursor.getHeight() / 2), Cursors.BLANK.name()));
+		// hotspot: default, new Point(0,0)
+		cursorCache.put(Cursors.HAND,
+				Toolkit.getDefaultToolkit().createCustomCursor(common.handCursor, new Point(), Cursors.HAND.name()));
+		// hotspot: center, new Point(width/2, height/2)
+		cursorCache.put(Cursors.MOVE,
+				Toolkit.getDefaultToolkit().createCustomCursor(common.moveCursor,
+						new Point(common.moveCursor.getWidth() / 2, common.moveCursor.getHeight() / 2), Cursors.MOVE.name()));
+		//hotspot: default
+		cursorCache.put(Cursors.POINTER,
+				Toolkit.getDefaultToolkit().createCustomCursor(common.pointerCursor, new Point(), Cursors.POINTER.name()));
+		//hotspot: center, used when exiting rooms in ship
+		cursorCache.put(Cursors.REDO,
+				Toolkit.getDefaultToolkit().createCustomCursor(common.redoCursor,
+						new Point(common.redoCursor.getWidth() / 2, common.redoCursor.getHeight() / 2), Cursors.REDO.name()));
+		//hotspot: center, used in combat situations
+		cursorCache.put(Cursors.SELECT,
+				Toolkit.getDefaultToolkit().createCustomCursor(common.selectCursor,
+						new Point(common.selectCursor.getWidth() / 2, common.selectCursor.getHeight() / 2), Cursors.SELECT.name()));
+		//hotspot: center, used in combat situations
+		cursorCache.put(Cursors.TARGET,
+				Toolkit.getDefaultToolkit().createCustomCursor(common.targetCursor,
+						new Point(common.targetCursor.getWidth() / 2, common.targetCursor.getHeight() / 2), Cursors.TARGET.name()));
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.
@@ -435,6 +470,15 @@ public class CommonResources implements GameEnvironment {
 			throw new IllegalArgumentException(to);
 		}
 
+	}
+	/**
+	 * Set custom mouse cursor.
+	 * @param cursor the cursor name
+	 */
+	public void setCursor(hu.openig.model.Cursors cursor) {
+		if (config.customCursors) {
+			control.renderingComponent().setCursor(cursorCache.get(cursor));
+		}
 	}
 	/**
 	 * Retrieve the result of the future and convert any exception
