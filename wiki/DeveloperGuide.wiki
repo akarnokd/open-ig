@@ -61,7 +61,7 @@ This is a simple list of where things can be found in the source code. I'll omit
 || Game settings. || Configuration ||
 || Main entry point. || Startup ||
 || The game's main window. || !GameWindow ||
-|| Main rendering surface. || !GameWindow.ScreenRenderer ||
+|| Main rendering surface. || !GameWindow.!ScreenRenderer ||
 || General UI images and sound. || !CommonResources, `*`GFX ||
 || Game main object || World ||
 || Interesting game world objects || Player, Planet, Fleet, !InventoryItem, !ResearchType ||
