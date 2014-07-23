@@ -35,7 +35,7 @@ To add the game videos, create a new directory named {{{video}}} in the project 
 
 For the development, the style checking plugin needs to be setup and activated. To do so, right click on the project name in the project view, and chose *Properties*. 
 
-Locate the *Checkstyle* entry and on the right, chose *Local Checkstyle Configurations* tab. Here, click on *New...*, chose *Project relative configuration* from *Type:* dropdown, give it a name and click on *Browse...* and locate the {{{checkstyle.xml}}} inside the project root folder. Click *OK*s until you get back to the project properties dialog. 
+Locate the *Checkstyle* entry and on the right, chose *Local Checkstyle Configurations* tab. Here, click on *New...*, chose *Project relative configuration* from *Type:* dropdown, give it a name and click on *Browse...* and locate the {{{checkstyle.xml}}} inside the project root folder. Click *OK* buttons until you get back to the project properties dialog. 
 
 Now chose the main *Main* tab of the Checkstyle settings, and from the *Simple - ...* dropdown box, chose the name you specified before.
 
