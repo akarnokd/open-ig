@@ -72,6 +72,6 @@ This is a simple list of where things can be found in the source code. I'll omit
 || Drawing text || !TextRenderer ||
 || User interface || UIComponent, UIContainer, UIMouse, !ScreenBase ||
 || General keyboard management || !GameKeyManager ||
-|| Game mechanics || !Simulator, !Radar ||
-|| AI || AI, !AITrader, !AIPirate, !AIUser, `*`Planner ||
+|| Game mechanics || Simulator, !Radar ||
+|| AI || AI, AITrader, AIPirate, AIUser, `*`Planner ||
 || Main campaign scripts || Mission`*` ||
