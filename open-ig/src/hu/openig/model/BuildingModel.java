@@ -223,6 +223,8 @@ public class BuildingModel {
 				} else {
 					b.limit = Integer.parseInt(limit);
 				}
+				b.skirmishHardLimit = bld.getBoolean("skirmish-hard-limit", false);
+				
 				String research = bld.get("research", null);
 				b.research = researches.get(research);
 				if (research != null && b.research == null && researches.size() > 0) {

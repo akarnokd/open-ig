@@ -646,7 +646,7 @@
       <tech id='dribs' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
       <tech id='dargslan' height='4' width='3' image='colony/buildings/human/bank' skirmish-only='true'/>
     </graphics>
-    <build limit='1' kind='Economic' cost='16000'/>
+    <build limit='1' kind='Economic' cost='16000' skirmish-hard-limit='true'/>
     <operation>
       <resource type='multiply' display='true'>2</resource>
       <resource type='energy'>-500</resource>

@@ -38,6 +38,8 @@ public class BuildingType {
 	public String kind;
 	/** The build limit: negative value represents a per-kind build limit. */
 	public int limit;
+	/** In skirmish, use the default limit if the unlimited option is chosen. */
+	public boolean skirmishHardLimit;
 	/** The planet type (surface) exception set. */
 	public final Set<String> except = new HashSet<>();
 	/** The required research to be available. */
