@@ -160,6 +160,10 @@
 					References a technology in tech.xml .</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="skirmish-hard-limit" type="xs:string" use="optional">
+			<xs:annotation><xs:documentation>If true, the unlimited building option in skirmish settings
+			 will ignore this building and retain the limit value.</xs:documentation></xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:simpleType name="string-list">
 		<xs:annotation>

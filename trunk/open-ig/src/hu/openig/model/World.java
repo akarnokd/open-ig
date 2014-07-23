@@ -3055,15 +3055,17 @@ public class World implements ModelLookup {
 		int labLimit = Math.max(skirmishDefinition.initialPlanets, skirmishDefinition.initialColonyShips);
 		
 		for (BuildingType bt : buildingModel.buildings.values()) {
-			if (bt.kind.equals("Science") && skirmishDefinition.noLabLimit) {
-				bt.limit = Integer.MAX_VALUE;
-			} else
-			if (bt.kind.equals("Factory") && skirmishDefinition.noFactoryLimit) {
-				bt.limit = Integer.MAX_VALUE;
-			} else
-		    if (bt.kind.equals("Economic") && skirmishDefinition.noEconomicLimit) {
-		    	bt.limit = Integer.MAX_VALUE;
-		    }
+			if (!bt.skirmishHardLimit) {
+				if (bt.kind.equals("Science") && skirmishDefinition.noLabLimit) {
+					bt.limit = Integer.MAX_VALUE;
+				} else
+				if (bt.kind.equals("Factory") && skirmishDefinition.noFactoryLimit) {
+					bt.limit = Integer.MAX_VALUE;
+				} else
+			    if (bt.kind.equals("Economic") && skirmishDefinition.noEconomicLimit) {
+			    	bt.limit = Integer.MAX_VALUE;
+			    }
+			}
 		}
 		// fix research requirements of colony ship and orbital factory
 		for (ResearchType rt : Arrays.asList(researches.get("ColonyShip"), researches.get("OrbitalFactory"))) {
