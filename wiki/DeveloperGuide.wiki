@@ -52,3 +52,26 @@ On the right, switch to *Arguments* and enter {{{-memonce}}} into the *Program a
 Now if you set a breakpoint in {{{Startup.main}}}, you should get the application stop there.
 
 Note that the current requirements for the game is to run with *768MB* Java memory. When doing code changes while debugging the game, that amount is usually inadequate, thus the 1GB. Generally, if you do developments that increase the memory consumption of the game, you should always test the game with the *-Xmx768M* settings.
+
+= Points of interest =
+
+This is a simple list of where things can be found in the source code. I'll omit the package names here. The {{{CTRL+SHIFT+T}}} in Eclipse lets you find the classes easily.
+
+|| *Purpose* || *Classes* ||
+|| Game configuration, mostly seen on the Settings screen. Some gameplay settings. || Configuration ||
+|| Main entry point. || Startup ||
+|| The game's main window. || GameWindow ||
+|| Main rendering surface. || GameWindow.ScreenRenderer ||
+|| General UI images and sound. || CommonResources, `*`GFX ||
+|| Game main object || World ||
+|| Interesting game world objects || Player, Planet, Fleet, InventoryItem, ResearchType ||
+|| Game model objects || BuildingModel, PlanetSurface, BattleModel ||
+|| Battle objects || SpacewarStructure, GroundwarUnit, GroundwarGun ||
+|| Statusbar || StatusbarScreen ||
+|| Various screens || `*`Screen ||
+|| Drawing text || TextRenderer ||
+|| User interface || UIComponent, UIContainer, UIMouse, ScreenBase ||
+|| General keyboard management || GameKeyManager ||
+|| Game mechanics || Simulator, Radar ||
+|| AI || AI, AITrader, AIPirate, AIUser, `*`Planner ||
+|| Main campaign scripts || Mission`*` ||
