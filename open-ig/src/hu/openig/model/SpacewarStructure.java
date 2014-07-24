@@ -87,6 +87,8 @@ public class SpacewarStructure extends SpacewarObject {
 	public boolean guard;
 	/** Kamikaze mode if greater than zero, indicates impact damage. */
 	public double kamikaze;
+	/** Kamikaze mode time to live. */
+	public int ttl;
 	/** The available hitpoints. */
 	public double hp;
 	/** The maximum hitpoints. */

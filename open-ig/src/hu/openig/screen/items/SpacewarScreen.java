@@ -200,6 +200,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	final List<SpacewarProjectile> projectiles = new ArrayList<>();
 	/** The space explosions for animation. */
 	final List<SpacewarExplosion> explosions = new ArrayList<>();
+	/** SpacewarStructure kamikaze mode ttl constant. */
+	public static final int KAMIKAZE_TTL = 900;
 	/** The location of the minimap. */
 	final Rectangle minimap = new Rectangle();
 	/** The location of the main window area. */
@@ -3146,6 +3148,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		proj.destruction = SoundType.EXPLOSION_MEDIUM;
 		proj.ecmLevel = r.type.getInt("anti-ecm", 0);
 		proj.kamikaze = r.port.damage(proj.owner);
+		proj.ttl = KAMIKAZE_TTL;
 		proj.hp = world().battle.getIntProperty(proj.techId, proj.owner.id, "hp");
 		proj.hpMax = (int)proj.hp;
 		
@@ -3201,6 +3204,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
 				setPortStatistics(sbs, ship.ports, ship.count, ship.owner);
 				ship.kamikaze = ship.count * kamikazeDamage(ship.techId, ship.owner.id);
+				ship.ttl = KAMIKAZE_TTL;
 				ship.selected = false;
 			}
 		}
@@ -3788,6 +3792,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param ship the ship
 	 */
 	void handleKamikaze(SpacewarStructure ship) {
+		if (ship.ttl-- < 0) {
+			createLoss(ship);
+			createExplosion(ship, false);
+			structures.remove(ship);
+			return;
+		}
 		if (ship.attack != null && !ship.attack.isDestroyed()) {
 			rotateStep(ship, ship.attack.x, ship.attack.y);
 
@@ -5057,6 +5067,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				SpacebattleStatistics sbs = new SpacebattleStatistics();
 				setPortStatistics(sbs, s.ports, s.count, s.owner);
 				s.kamikaze = s.count * kamikazeDamage(s.techId, s.owner.id);
+				s.ttl = KAMIKAZE_TTL;
 				s.selected = false;
 			} else {
 				s.attack = null;
