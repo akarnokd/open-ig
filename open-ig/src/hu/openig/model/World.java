@@ -3659,4 +3659,11 @@ public class World implements ModelLookup {
 	public boolean hasDiplomacy() {
 		return getShip().positions.containsKey("*diplomacy");
 	}
+	/**
+	 * Check if the current gameplay is a skirmish play.
+	 * @return true if this is a skirmish play.
+	 */
+	public boolean isSkirmish() {
+		return skirmishDefinition != null;
+	}
 }
