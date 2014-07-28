@@ -49,7 +49,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> MILLIONAIRE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.money() >= 1000000;
+			return !t.isSkirmish() && u.money() >= 1000000;
 		}
 	};
 	/** Test for achievement. */
@@ -58,7 +58,7 @@ public final class AchievementManager {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Pirates");
-			return p != null && p.statistics.planetsOwned.value > 0;
+			return !t.isSkirmish() && p != null && p.statistics.planetsOwned.value > 0;
 		}
 	};
 	/** Test for achievement. */
@@ -67,7 +67,7 @@ public final class AchievementManager {
 		@Override
 		public Boolean invoke(World t, Player u) {
 			Player p = t.players.get("Dargslan");
-			return p != null && p.statistics.planetsOwned.value == 0;
+			return !t.isSkirmish() && p != null && p.statistics.planetsOwned.value == 0;
 		}
 	};
 	/** Test for achievement. */
@@ -186,7 +186,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> DEFENDER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -194,7 +194,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> EMBARGO = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -211,7 +211,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> QUARTER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsOwned.value >= 25;
+			return !t.isSkirmish() && u.statistics.planetsOwned.value >= 25;
 		}
 	};
 	/** Test for achievement. */
@@ -235,7 +235,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> LIVING_SPACE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.planetsDiscovered.value > 0;
+			return !t.isSkirmish() && u.statistics.planetsDiscovered.value > 0;
 		}
 	};
 	/** Test for achievement. */
@@ -275,6 +275,9 @@ public final class AchievementManager {
 	static final Pred2<World, Player> ET = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
+			if (t.isSkirmish()) {
+				return false;
+			}
 			for (DiplomaticRelation dr : t.relations) {
 				Player p = u.world.players.get(dr.second);
 				if (dr.first.equals(u.id) && !p.race.equals(u.race) 
@@ -324,7 +327,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> ALL_SEEING_EYE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			if (t.level >= 5) {
+			if (t.level >= 5 && !t.isSkirmish()) {
 				ExplorationMap xp = new ExplorationMap(u);
 				int area0 = xp.map.size();
 				for (Planet p : u.planets.keySet()) {
@@ -342,7 +345,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> NEWBIE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return true;
+			return !t.isSkirmish();
 		}
 	};
 	/** Test for achievement. */
@@ -350,7 +353,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> COMMANDER = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false; /* t.level >= 3; */
+			return false; /* t.level >= 3; */ // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -358,7 +361,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> CAPTAIN = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false; /* t.level >= 2; */
+			return false; /* t.level >= 2; */ // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -366,7 +369,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false; /* t.level >= 4; */
+			return false; /* t.level >= 4; */ // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -374,7 +377,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> GRAND_ADMIRAL = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -382,7 +385,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> INFLUENZA = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -390,7 +393,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> I_ROBOT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -398,7 +401,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> DO_YOU_CHAT = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -406,7 +409,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> A_PIRATE_IN_NEED = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -414,7 +417,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> BELA_THE_4TH = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return false;
+			return false; // Main campaign, awarded via script.
 		}
 	};
 	/** Test for achievement. */
@@ -422,7 +425,7 @@ public final class AchievementManager {
 	static final Pred2<World, Player> WELL_RESPECTED_FEATURE = new Pred2<World, Player>() {
 		@Override
 		public Boolean invoke(World t, Player u) {
-			return u.statistics.chats.value >= 100;
+			return u.statistics.chats.value >= 100; 
 		}
 	};
 	// -------------------------------------------------------------------------------	
