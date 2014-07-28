@@ -24,6 +24,7 @@ import hu.openig.model.BattleGroundVehicle;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
+import hu.openig.model.Cursors;
 import hu.openig.model.ExplosionType;
 import hu.openig.model.GroundwarExplosion;
 import hu.openig.model.GroundwarGun;
@@ -623,6 +624,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		battle = null;
 		close0(simulator);
 		simulator = null;
+		
+		commons.setCursor(Cursors.POINTER);
 	}
 
 	/**
@@ -641,6 +644,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		unitsForPathfinding.clear();
 		unitsToPlace.clear();
 		groups.clear();
+		commons.setCursor(Cursors.POINTER);
 	}
 
 	/**
@@ -847,11 +851,99 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 			return null;
 		}
+		/**
+		 * Retrive the gun at the given location.
+		 * @param mx the mouse X
+		 * @param my the mouse Y
+		 * @return the gun or null if empty
+		 */
+		GroundwarGun gunAt(int mx, int my) {
+			Rectangle sel = new Rectangle(0, 0, commons.colony().selectionBoxLight.getWidth(), commons.colony().selectionBoxLight.getHeight());
+			for (GroundwarGun g : guns) {
+				Rectangle r = gunRectangle(g);
+				Rectangle drawRect = new Rectangle((int)(r.x + (r.width - sel.getWidth()) / 2) + offsetX,
+						(int)(r.y + (r.height - sel.getHeight()) / 2) + offsetY,
+						sel.width, sel.height);
+				if (drawRect.intersects(new Rectangle(mx, my, 1, 1))) {
+					return g;
+				}
+			}
+			return null;
+		}
+		/**
+		 * Get if any unit is selected.
+		 * @return sum of "flags": -1 enemy unit, -2 enemy gun, 1 own unit, 2 own gun, 0 no selection
+		 */
+		int getSelection() {
+			int selection = 0;
+			for (GroundwarUnit gwu : units) {
+				if (gwu.selected) {
+					selection = (gwu.owner == player()) ? 1 : -1;
+					break;
+				}
+			}
+			for (GroundwarGun gwg : guns) {
+				if (gwg.selected) {
+					if (selection == 0) {
+						selection = (gwg.owner == player()) ? 2 : -2;
+						break;
+					} else
+					if (selection > 0 && gwg.owner == player()) {
+						selection += 2;
+						break;
+					} else
+					if (selection < 0 && gwg.owner != player()) {
+						selection += -2;
+						break;
+					}
+				}
+			}
+			return selection;
+		}
 		@Override
 		public boolean mouse(UIMouse e) {
 			boolean rep = false;
 			switch (e.type) {
 			case MOVE:
+				if (commons.config().customCursors /*&& battle != null FIXME only if battle*/) {
+					GroundwarUnit overUnit = unitAt(e.x, e.y);
+					GroundwarGun overGun = gunAt(e.x, e.y);
+					int sel = getSelection();
+					//Deployment
+					if (!unitsToPlace.isEmpty()) {
+						if (overUnit != null) {
+							commons.setCursor(Cursors.HAND);
+						} else
+						if (canPlaceUnitAt(e.x, e.y)) {
+							commons.setCursor(Cursors.MOVE);
+						} else {
+							commons.setCursor(Cursors.POINTER);
+						}
+					} else
+					if (sel > 0) {
+						if (overUnit != null && overUnit.owner != player()) {
+							commons.setCursor(Cursors.TARGET);
+						} else
+						if (overGun != null && overGun.owner != player()) {
+							commons.setCursor(Cursors.TARGET);
+						} else
+						if (overUnit == null && overGun == null && buildingAt(e.x, e.y) == null) {
+							commons.setCursor(Cursors.MOVE);
+						} else
+						if (overUnit != null && !overUnit.selected
+								|| overGun != null && !overGun.selected) {
+							commons.setCursor(Cursors.HAND);
+						} else {
+							commons.setCursor(Cursors.POINTER);
+						}
+					} else {
+						if (overGun != null || overUnit != null) {
+							commons.setCursor(Cursors.HAND);
+						} else {
+							commons.setCursor(Cursors.POINTER);
+						}
+					}
+				}
 			case DRAG:
 				if (drag || commons.isPanningEvent(e)) {
 					if (!drag) {
@@ -1007,6 +1099,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 //						} FIXME only if battle
 					}
 				}
+				commons.control().moveMouse();
 				break;
 			case UP:
 				if (e.has(Button.RIGHT) || e.has(Button.MIDDLE)) {
@@ -4379,6 +4472,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		world().scripting.onGroundwarFinish(this);
 		
 		battle = null;
+		
+		commons.setCursor(Cursors.POINTER);
 		
 		BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
 		bfs.displayBattleSummary(bi);
