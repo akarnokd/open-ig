@@ -2416,30 +2416,66 @@ public class InfoScreen extends ScreenBase {
 			}
 			break;
 		case INFORMATION_PLANETS:
-			switch (e.getKeyCode()) {
-			case KeyEvent.VK_UP:
-				colonies.select(-1);
-				return true;
-			case KeyEvent.VK_DOWN:
-				colonies.select(1);
-				return true;
-			case KeyEvent.VK_LEFT:
-				colonies.select(-27);
-				return true;
-			case KeyEvent.VK_RIGHT:
-				colonies.select(27);
-				return true;
-			case KeyEvent.VK_ENTER:
-				colonies.onDoubleClick.invoke(planet());
-				return true;
-			case KeyEvent.VK_PLUS:
-			case KeyEvent.VK_MINUS:
-				adjustPlanetListView();
-				break;
-			default:
-			}
 			if (showPlanetListDetails) {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:
+					planetListDetails.select(-1);
+					e.consume();
+					return true;
+				case KeyEvent.VK_DOWN:
+					planetListDetails.select(1);
+					e.consume();
+					return true;
+				case KeyEvent.VK_PAGE_UP:
+				case KeyEvent.VK_LEFT:
+					planetListDetails.select(-27);
+					e.consume();
+					return true;
+				case KeyEvent.VK_PAGE_DOWN:
+				case KeyEvent.VK_RIGHT:
+					planetListDetails.select(27);
+					e.consume();
+					return true;
+				case KeyEvent.VK_ENTER:
+					colonies.onDoubleClick.invoke(planet());
+					e.consume();
+					return true;
+				case KeyEvent.VK_PLUS:
+				case KeyEvent.VK_MINUS:
+					break;
+				default:
+				}				
 				adjustPlanetListView();
+			} else {
+				switch (e.getKeyCode()) {
+				case KeyEvent.VK_UP:
+					colonies.select(-1);
+					e.consume();
+					return true;
+				case KeyEvent.VK_DOWN:
+					colonies.select(1);
+					e.consume();
+					return true;
+				case KeyEvent.VK_PAGE_UP:
+				case KeyEvent.VK_LEFT:
+					colonies.select(-27);
+					e.consume();
+					return true;
+				case KeyEvent.VK_PAGE_DOWN:
+				case KeyEvent.VK_RIGHT:
+					colonies.select(27);
+					e.consume();
+					return true;
+				case KeyEvent.VK_ENTER:
+					colonies.onDoubleClick.invoke(planet());
+					e.consume();
+					return true;
+				case KeyEvent.VK_PLUS:
+				case KeyEvent.VK_MINUS:
+					adjustPlanetListView();
+					break;
+				default:
+				}
 			}
             break;
 		case INFORMATION_INVENTIONS:
@@ -3943,6 +3979,37 @@ public class InfoScreen extends ScreenBase {
 					}
 				}
 				y += 13;
+			}
+		}
+		/**
+		 * Select a planet relative to the current planet in the list.
+		 * @param delta the relative offset
+		 */
+		void select(int delta) {
+			List<Planet> list = getPlanets();
+			if (!list.isEmpty()) {
+				int current = list.indexOf(planet());
+				int next = current + delta;
+				if (next < 0) {
+					next = 0;
+				} else
+				if (next >= list.size()) {
+					next = list.size() - 1;
+				}
+				if (top < 0) {
+					top = 0;
+				}
+				int bottom = top + 27;
+				player().currentPlanet = list.get(next);
+				if (top > next) {
+					top = next;
+				} else
+				if (bottom <= next) {
+					top = next - 26;
+				}
+				if (top < 0) {
+					top = 0;
+				}
 			}
 		}
 		/**
