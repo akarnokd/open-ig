@@ -2,7 +2,7 @@
 
 SPOILERS!
 
-Some achievements can be earned in skirmish/freeplay mode as well.
+Some achievements can be earned in skirmish/freeplay mode as well. Campaign only achievements are marked with <font color='red'>(Campaign)</font>.
 
 Achievements are stored in the {{{profile.xml}}} under the save directory. If you want to earn them agian, just delete this file.
 
@@ -10,43 +10,43 @@ Achievements are stored in the {{{profile.xml}}} under the save directory. If yo
 
 = Progress/Mission related =
 
-== Dargslayer ==
+== Dargslayer <font color='red'>(Campaign)</font>==
 
 *You eliminated all Dargslan from the galaxy*
 
 Automatically awarded when you conquer all of their planets or they surrender.
 
-== Commander ==
+== Commander <font color='red'>(Campaign)</font>==
 
 *You have been promoted to commander*
 
 Completing mission about the stolen prototype (M17) in level 2 will grant you this, once you get to your new ship after the cutscene.
 
-== Grand Admiral ==
+== Grand Admiral <font color='red'>(Campaign)</font>==
 
 *You have been promoted to grand admiral*
 
 The first battle with the Dargslans will trigger this achievement after the promotion cutscene.
 
-== Captain on the deck ==
+== Captain on the deck <font color='red'>(Campaign)</font>==
 
 *You have been promoted to captain*
 
 Earned after the defenth Thorin mission (M5) in level 1 after the promotion cutscene.
 
-== Influenza no more ==
+== Influenza no more <font color='red'>(Campaign)</font>==
 
 *You souccessfully eliminated the source of the virus infection*
 
 Earned in level 2 after destroying the virus carriers (M14).
 
-== Admiral ==
+== Admiral <font color='red'>(Campaign)</font>==
 
 *You have been promoted to admiral*
 
 After defeating the Garthogs, you'll get promoted to admiral and you receive this achievement after the cutscene.
 
-== Newbie ==
+== Newbie <font color='red'>(Campaign)</font>==
 
 *Started a new game*
 
@@ -66,13 +66,13 @@ In super fast mode (e.g., 60 min/step, 10 step / second) this might take about 2
 
 You can mix gun and shield versions. You need to have at least 3 planets.
 
-== Quarter of the pie ==
+== Quarter of the pie <font color='red'>(Campaign)</font>==
 
 *You own 25 planets*
 
 By either conquest or colonization, you need to own 25 planets, which is quite possible in levels 4 and 5.
 
-== All seeing eye ==
+== All seeing eye <font color='red'>(Campaign)</font>==
 
 *At least 80% of the galaxy is covered by radar*
 
@@ -95,8 +95,6 @@ You'll need dozens of planets with high population.
 *You destroyed 1.000 enemy ships*
 
 Aliens usually have fleets with 58 ships in it. Destroy approximately 17 fleets.
-
-_This achievement is not yet tracked_
 
 == Manufacturer ==
 
@@ -130,7 +128,7 @@ You need at least 3 colonies. Build morale boosting buildings and reduce the tax
 
 _This achievement name will be localized to reflect the default tax collecting authority for other nations._
 
-== Millionaire ==
+== Millionaire <font color='red'>(Campaign)</font>==
 
 *You collected 1.000.000 credits*
 
@@ -162,7 +160,7 @@ Conquer and colonize as many planets as you can.
 
 = Other =
 
-== Embargo ==
+== Embargo <font color='red'>(Campaign)</font>==
 
 *You destroyed your first Trader ship*
 
@@ -187,14 +185,14 @@ Easily attainable in Level 1 if you let Achilles unattended.
 Once colony ship becomes available in level 4, you may colonize Center 16, one of the nearest and possibly already revealed planet.
 
 
-== Pirate Bay ==
+== Pirate Bay <font color='red'>(Campaign)</font>==
 
 *You lost a planet to the pirates*
 
 Easily attainable in level 1 if Achilles is left alone.
 
 
-== Living space ==
+== Living space <font color='red'>(Campaign)</font>==
 
 *You discovered your first empty planet*
 
@@ -206,13 +204,13 @@ Earned during the virus carrier mission (M14) in level 2 once the Hubble 1's are
 
 This can be complicated since the population must decrease without morale decrease so they don't revolt and join another empire. Repeated attacks might erradicate a planet.
 
-== I Robot ==
+== I Robot <font color='red'>(Campaign)</font>==
 
 *Find out your true origin*
 
 Although very funny, you only need to talk to the Doctor in the bar on level 5 after the final robot cutscene, then call Earth.
 
-== Defender of the crown ==
+== Defender of the crown <font color='red'>(Campaign)</font>==
 
 *You sucessfully defended your colony*
 
@@ -224,7 +222,7 @@ After promotion to captain, you'll get attacked by Garthogs on planet Achilles. 
 
 You can attack any trader to turn them back, or some random pirate attackers might turn back as well.
 
-== E.T. exists ==
+== E.T. exists <font color='red'>(Campaign)</font>==
 
 *You discovered a non-human civilization*
 
