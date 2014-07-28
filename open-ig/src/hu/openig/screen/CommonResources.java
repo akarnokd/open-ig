@@ -389,30 +389,23 @@ public class CommonResources implements GameEnvironment {
 	/** Setup the custom cursors. */
 	void setupCursors() {
 		// blank cursor for hiding while playing videos
-		cursorCache.put(Cursors.BLANK, Toolkit.getDefaultToolkit().createCustomCursor(common.blankCursor,
-						new Point(common.redoCursor.getWidth() / 2, common.redoCursor.getHeight() / 2), Cursors.BLANK.name()));
-		// hotspot: default, new Point(0,0)
+		cursorCache.put(Cursors.BLANK,
+				Toolkit.getDefaultToolkit().createCustomCursor(common.blankCursor, new Point(8, 8), Cursors.BLANK.name()));
 		cursorCache.put(Cursors.HAND,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.handCursor, new Point(), Cursors.HAND.name()));
-		// hotspot: center, new Point(width/2, height/2)
+				Toolkit.getDefaultToolkit().createCustomCursor(common.handCursor, new Point(0, 0), Cursors.HAND.name()));
 		cursorCache.put(Cursors.MOVE,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.moveCursor,
-						new Point(common.moveCursor.getWidth() / 2, common.moveCursor.getHeight() / 2), Cursors.MOVE.name()));
-		//hotspot: default
+				Toolkit.getDefaultToolkit().createCustomCursor(common.moveCursor, new Point(10, 11), Cursors.MOVE.name()));
 		cursorCache.put(Cursors.POINTER,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.pointerCursor, new Point(), Cursors.POINTER.name()));
-		//hotspot: center, used when exiting rooms in ship
+				Toolkit.getDefaultToolkit().createCustomCursor(common.pointerCursor, new Point(0, 0), Cursors.POINTER.name()));
+		//used when exiting rooms in ship
 		cursorCache.put(Cursors.REDO,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.redoCursor,
-						new Point(common.redoCursor.getWidth() / 2, common.redoCursor.getHeight() / 2), Cursors.REDO.name()));
-		//hotspot: center, used in combat situations
+				Toolkit.getDefaultToolkit().createCustomCursor(common.redoCursor, new Point(10, 11), Cursors.REDO.name()));
+		//used in combat situations
 		cursorCache.put(Cursors.SELECT,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.selectCursor,
-						new Point(common.selectCursor.getWidth() / 2, common.selectCursor.getHeight() / 2), Cursors.SELECT.name()));
-		//hotspot: center, used in combat situations
+				Toolkit.getDefaultToolkit().createCustomCursor(common.selectCursor, new Point(10, 11), Cursors.SELECT.name()));
+		//center, used in combat situations
 		cursorCache.put(Cursors.TARGET,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.targetCursor,
-						new Point(common.targetCursor.getWidth() / 2, common.targetCursor.getHeight() / 2), Cursors.TARGET.name()));
+				Toolkit.getDefaultToolkit().createCustomCursor(common.targetCursor, new Point(10, 11), Cursors.TARGET.name()));
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.

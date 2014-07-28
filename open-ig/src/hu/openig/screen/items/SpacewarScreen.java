@@ -27,6 +27,7 @@ import hu.openig.model.BattleSpaceLayout;
 import hu.openig.model.Building;
 import hu.openig.model.Chats.Chat;
 import hu.openig.model.Chats.Node;
+import hu.openig.model.Cursors;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetStatistics;
 import hu.openig.model.FleetTask;
@@ -551,6 +552,36 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	public boolean mouse(UIMouse e) {
 		boolean needRepaint = false;
 		switch (e.type) {
+		case MOVE:
+			if (commons.config().customCursors) {
+				SpacewarStructure overState = mouseOver(structures);
+				List<SpacewarStructure> selection = getSelection();
+				if (!mainmap.contains(e.x, e.y)) {
+					commons.setCursor(Cursors.POINTER);
+				} else
+				if (overState == null) {
+					if (selection.isEmpty() || !canControl(selection.get(0))) {
+						commons.setCursor(Cursors.POINTER);
+					} else {
+						commons.setCursor(Cursors.MOVE);
+					}
+				} else {
+					if (!selection.isEmpty()) {
+						if (selection.contains(overState)) {
+							commons.setCursor(Cursors.POINTER);
+						} else
+						if (!canControl(overState)) {
+							commons.setCursor(Cursors.TARGET);
+						} else
+						if (canControl(overState) && isAlly(selection.get(0), player())) {
+							commons.setCursor(Cursors.SELECT);
+						} else {
+							commons.setCursor(Cursors.HAND);
+						}
+					}
+				}
+			}
+			break;
 		case DOUBLE_CLICK:
 			if (mainmap.contains(e.x, e.y)) {
 				if (e.has(Modifier.SHIFT)) {
@@ -562,6 +593,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					selectionMode = SelectionBoxMode.NEW;
 				}
 				needRepaint = doSelectType(e.x, e.y, e.z > 2);
+				//Emulating mouse movement for cursor change
+				commons.control().moveMouse();
 			}
 			break;
 		case DOWN:
@@ -706,6 +739,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					panning = true;
 				}
 			}
+			//Emulating mouse movement for cursor change
+			commons.control().moveMouse();
 			break;
 		case DRAG:
 			if (panning) {
@@ -718,6 +753,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				selectionEnd = new Point(e.x, e.y);
 				needRepaint = true;
 			}
+			commons.setCursor(Cursors.POINTER);
 			break;
 		case LEAVE:
 			panning = false;
@@ -726,6 +762,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				selectionBox = false;
 				needRepaint = true;
 			}
+			//Emulating mouse movement for cursor change
+			commons.control().moveMouse();
 			break;
 		case WHEEL:
 			if (selectionPanel.within(e)) {
@@ -754,6 +792,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 				needRepaint = true;
 			}
+			//Emulating mouse movement for cursor change
+			commons.control().moveMouse();
 			break;
 		case UP:
 			if (e.has(Button.RIGHT)) {
@@ -815,6 +855,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 				needRepaint = true;
 			}
+			//Emulating mouse movement for cursor change
+			commons.control().moveMouse();
 			break;
 		default:
 		}
@@ -1012,6 +1054,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		allPlayerSet.clear();
 		
 		rocketParent.clear();
+		
+		commons.setCursor(Cursors.POINTER);
 	}
 	@Override
 	public void onResize() {
@@ -2816,6 +2860,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		return !s.within(0, 0, space.width, space.height);
 	}
 	/**
+	 * Check if the mouse is over any {@code SpacewarStructure}.
+	 * @param ships the ship sequence
+	 * @return {@code SpacewarStructure} which has mouse over or null
+	 */
+	SpacewarStructure mouseOver(Iterable<? extends SpacewarStructure> ships) {
+		Point mousePos = UIMouse.current(commons.control().renderingComponent());
+		Point2D spacePos = mouseToSpace(mousePos.x, mousePos.y);
+		for (SpacewarStructure sws : ships) {
+			if (sws.intersects(spacePos.getX(), spacePos.getY(), 1, 1)) {
+				return sws;
+			}
+		}
+		return null;
+	}
+	/**
 	 * Tries to find a place to put the given {@code s} ship where it does not
 	 * overlap with the other ships.
 	 * @param ships the list of ships
@@ -4393,6 +4452,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				}
 			}
 		}
+		
+		//changing cursor to default (POINTER)
+		commons.setCursor(Cursors.POINTER);
 		
 		if (!(bi.targetFleet != null 
 				&& bi.targetFleet.owner.id.equals("Traders") 
