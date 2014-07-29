@@ -13,12 +13,12 @@ import hu.openig.core.Action1;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
+import hu.openig.model.GalaxyGenerator;
 import hu.openig.model.GalaxyGenerator.PlanetCandidate;
 import hu.openig.model.GalaxyModel;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.ResourceLocator.ResourcePlace;
-import hu.openig.model.GalaxyGenerator;
 import hu.openig.model.Screens;
 import hu.openig.model.SkirmishAIMode;
 import hu.openig.model.SkirmishDefinition;
@@ -30,23 +30,23 @@ import hu.openig.model.World;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.ScreenBase;
+import hu.openig.screen.panels.ListSpinBox;
+import hu.openig.screen.panels.NumberSpinBox;
+import hu.openig.screen.panels.SpinBox;
 import hu.openig.scripting.SkirmishScripting;
 import hu.openig.ui.HorizontalAlignment;
 import hu.openig.ui.UICheckBox;
 import hu.openig.ui.UIComponent;
-import hu.openig.ui.UIContainer;
 import hu.openig.ui.UIGenericButton;
 import hu.openig.ui.UIImage;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
-import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UIPanel;
 import hu.openig.ui.UIRadioButton;
 import hu.openig.ui.UIScrollBox;
-import hu.openig.ui.UISpinner;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.ImageUtils;
 import hu.openig.utils.U;
@@ -354,7 +354,7 @@ public class SkirmishScreen extends ScreenBase {
 			}
 		};
 		
-		galaxyPlanetCount = new NumberSpinBox(0, 500, 1, 10);
+		galaxyPlanetCount = new NumberSpinBox(commons, 0, 500, 1, 10);
 		galaxyPlanetCount.value = 100;
 		
 		galaxyPanel.add(galaxyRandomSurface, galaxyRandomLayout, galaxyCustomPlanets, galaxyPlanetCount,
@@ -386,10 +386,10 @@ public class SkirmishScreen extends ScreenBase {
 		technologyLevelLabel = createLabel("skirmish.tech_level");
 		technologyLevelMaxLabel = createLabel("skirmish.tech_level_max");
 		
-		technologyLevelMax = new NumberSpinBox(1, 5, 1, 1);
+		technologyLevelMax = new NumberSpinBox(commons, 1, 5, 1, 1);
 		technologyLevelMax.value = 5;
 
-		technologyLevelStart = new NumberSpinBox(0, 6, 1, 1);
+		technologyLevelStart = new NumberSpinBox(commons, 0, 6, 1, 1);
 		technologyLevelStart.value = 0;
 
 		galaxyPanel.add(technologyDef, technologyDefLabel, technologyLevelLabel, 
@@ -397,7 +397,7 @@ public class SkirmishScreen extends ScreenBase {
 		
 		
 		initialMoneyLabel = createLabel("skirmish.initial_money");
-		initialMoney = new NumberSpinBox(0, 2_000_000_000, 10_000, 100_000) {
+		initialMoney = new NumberSpinBox(commons, 0, 2_000_000_000, 10_000, 100_000) {
 			@Override
 			public String onValue() {
 				return String.format("%,d cr", value);
@@ -406,7 +406,7 @@ public class SkirmishScreen extends ScreenBase {
 		initialMoney.value = 200000;
 		
 		initialPlanetsLabel = createLabel("skirmish.initial_planets");
-		initialPlanets = new NumberSpinBox(1, 500, 1, 10);
+		initialPlanets = new NumberSpinBox(commons, 1, 500, 1, 10);
 		initialPlanets.value = 3;
 		
 		economyPanel.add(
@@ -414,7 +414,7 @@ public class SkirmishScreen extends ScreenBase {
 				initialPlanetsLabel, initialPlanets);
 		
 		initialPopulationLabel = createLabel("skirmish.initial_population");
-		initialPopulation = new NumberSpinBox(0, 1000000, 100, 1000);
+		initialPopulation = new NumberSpinBox(commons, 0, 1000000, 100, 1000);
 		initialPopulation.value = 5000;
 		
 		placeColonyHub = createCheckBox("skirmish.place_colony_hub");
@@ -426,23 +426,23 @@ public class SkirmishScreen extends ScreenBase {
 				grantColonyShip, grantOrbitalFactory);
 		
 		colonyShipLabel = createLabel("skirmish.colony_ships");
-		colonyShips = new NumberSpinBox(0, 1000, 1, 10);
+		colonyShips = new NumberSpinBox(commons, 0, 1000, 1, 10);
 		colonyShips.value = 1;
 		
 		orbitalFactoryLabel = createLabel("skirmish.orbital_factories");
-		orbitalFactories = new NumberSpinBox(0, 1000, 1, 10);
+		orbitalFactories = new NumberSpinBox(commons, 0, 1000, 1, 10);
 		
 		economyPanel.add(colonyShipLabel, colonyShips, orbitalFactoryLabel, orbitalFactories);
 		
 		taxBaseLabel = createLabel("skirmish.tax_base");
-		taxBase = new NumberSpinBox(0, 100_000_000, 1000, 10_000) {
+		taxBase = new NumberSpinBox(commons, 0, 100_000_000, 1000, 10_000) {
 			@Override
 			public String onValue() {
 				return String.format("%,d cr", value);
 			}
 		};
 		taxScaleLabel = createLabel("skirmish.tax_scale");
-		taxScale = new NumberSpinBox(100, 1000, 5, 25) {
+		taxScale = new NumberSpinBox(commons, 100, 1000, 5, 25) {
 			@Override
 			public String onValue() {
 				return String.format("%d %%", value);
@@ -453,7 +453,7 @@ public class SkirmishScreen extends ScreenBase {
 		
 		
 		initialRelationLabel = createLabel("skirmish.initial_relation");
-		initialRelation = new ListSpinBox<>(new Func1<SkirmishDiplomaticRelation, String>() { 
+		initialRelation = new ListSpinBox<>(commons, new Func1<SkirmishDiplomaticRelation, String>() { 
 			@Override
 			public String invoke(SkirmishDiplomaticRelation value) {
 				return get("skirmish.relation." + value);
@@ -462,7 +462,7 @@ public class SkirmishScreen extends ScreenBase {
 		initialRelation.index = SkirmishDiplomaticRelation.DEFAULT.ordinal();
 		
 		initialDifficultyLabel = createLabel("skirmish.initial_difficulty");
-		initialDifficulty = new ListSpinBox<>(new Func1<Difficulty, String>() { 
+		initialDifficulty = new ListSpinBox<>(commons, new Func1<Difficulty, String>() { 
 			@Override
 			public String invoke(Difficulty value) {
 				return get("difficulty." + value);
@@ -483,7 +483,7 @@ public class SkirmishScreen extends ScreenBase {
 		winSocial = createCheckBox("skirmish.social");
 		setTooltip(winSocial, "skirmish.social.tooltip");
 		
-		winOccupationPercent = new NumberSpinBox(0, 100, 1, 10) {
+		winOccupationPercent = new NumberSpinBox(commons, 0, 100, 1, 10) {
 			@Override
 			public String onValue() {
 				return String.format("%,d %%", value);
@@ -492,7 +492,7 @@ public class SkirmishScreen extends ScreenBase {
 		winOccupationPercent.value = 66;
 		
 		final String fdays = get("skirmish.days");
-		winOccupationTime = new NumberSpinBox(0, 1000, 1, 10) {
+		winOccupationTime = new NumberSpinBox(commons, 0, 1000, 1, 10) {
 			@Override
 			public String onValue() {
 				return String.format("%,d %s", value, fdays);
@@ -500,7 +500,7 @@ public class SkirmishScreen extends ScreenBase {
 		};
 		winOccupationTime.value = 30;
 		
-		winEconomicMoney = new NumberSpinBox(0, 2000000000, 1000000, 10000000) {
+		winEconomicMoney = new NumberSpinBox(commons, 0, 2000000000, 1000000, 10000000) {
 			@Override
 			public String onValue() {
 				return String.format("%,d cr", value);
@@ -508,7 +508,7 @@ public class SkirmishScreen extends ScreenBase {
 		};
 		winEconomicMoney.value = 10000000;
 		
-		winSocialMorale = new NumberSpinBox(0, 100, 1, 10) {
+		winSocialMorale = new NumberSpinBox(commons, 0, 100, 1, 10) {
 			@Override
 			public String onValue() {
 				return String.format("%,d %%", value);
@@ -516,7 +516,7 @@ public class SkirmishScreen extends ScreenBase {
 		};
 		winSocialMorale.value = 95;
 		
-		winSocialPlanets = new NumberSpinBox(0, 500, 1, 10);
+		winSocialPlanets = new NumberSpinBox(commons, 0, 500, 1, 10);
 		winSocialPlanets.value = 30;
 
 		victoryPanel.add(winConquest, winOccupation, winEconomic, winTechnology, winSocial);
@@ -539,7 +539,7 @@ public class SkirmishScreen extends ScreenBase {
 		allowAllBuildings = createCheckBox("skirmish.allow_all_buildings");
 		
 		planetScaleLabel = createLabel("skirmish.planet_scale");
-		planetScale = new NumberSpinBox(1, 4, 1, 1) {
+		planetScale = new NumberSpinBox(commons, 1, 4, 1, 1) {
 			@Override
 			public String onValue() {
 				return String.format("x %d", value);
@@ -1032,240 +1032,13 @@ public class SkirmishScreen extends ScreenBase {
 		return super.keyboard(e);
 	}
 	/**
-	 * A spin box with left, right and value display.
-	 * @author akarnokd, 2012.08.20.
-	 */
-	public abstract class SpinBox extends UIContainer {
-		/** The spin control. */
-		public final UISpinner spin;
-		/** Shift pressed while clicking on left. */
-		protected boolean shiftLeft;
-		/** Shift pressed while clicking on right. */
-		protected boolean shiftRight;
-		/**
-		 * Constructor. Initializes the fields.
-		 */
-		public SpinBox() {
-			final UIImageButton aprev = new UIImageButton(commons.common().moveLeft) {
-				@Override
-				public boolean mouse(UIMouse e) {
-					shiftLeft = e.has(Modifier.SHIFT);
-					return super.mouse(e);
-				}
-			};
-			aprev.setDisabledPattern(commons.common().disabledPattern);
-			aprev.setHoldDelay(150);
-			final UIImageButton anext = new UIImageButton(commons.common().moveRight) {
-				@Override
-				public boolean mouse(UIMouse e) {
-					shiftRight = e.has(Modifier.SHIFT);
-					return super.mouse(e);
-				}
-			};
-			anext.setDisabledPattern(commons.common().disabledPattern);
-			anext.setHoldDelay(150);
-			
-			aprev.onClick = new Action0() {
-				@Override
-				public void invoke() {
-					buttonSound(SoundType.CLICK_LOW_1);
-					onPrev(shiftLeft);
-					askRepaint();
-				}
-			};
-			anext.onClick = new Action0() {
-				@Override
-				public void invoke() {
-					buttonSound(SoundType.CLICK_LOW_1);
-					onNext(shiftRight);
-					askRepaint();
-				}
-			};
-			
-			spin = new UISpinner(14, aprev, anext, commons.text());
-			spin.getValue = new Func1<Void, String>() {
-				@Override
-				public String invoke(Void value) {
-					return onValue();
-				}
-			};
-			this.add(spin);
-		}
-		/**
-		 * The action to perform when clicked on previous.
-		 * @param shift the SHIFT key was pressed
-		 */
-		public abstract void onPrev(boolean shift);
-		/**
-		 * The action to perform when clicked on next.
-		 * @param shift the SHIFT key was pressed
-		 */
-		public abstract void onNext(boolean shift);
-		/**
-		 * @return the value to display
-		 */
-		public abstract String onValue();
-		/** Update state after changes. */
-		public void update() {
-			
-		}
-		@Override
-		public UIComponent enabled(boolean state) {
-			spin.enabled(state);
-			return super.enabled(state);
-		}
-	}
-	/**
-	 * A number spin box.
-	 * @author akarnokd, 2012.08.20.
-	 */
-	public class NumberSpinBox extends SpinBox {
-		/** The current value. */
-		public int value;
-		/** The minimum value. */
-		protected int min;
-		/** The maximum value. */
-		protected int max;
-		/** The small step. */
-		protected int step;
-		/** The large step. */
-		protected int largeStep;
-		/**
-		 * Constructor. Initializes the parameters.
-		 * @param min minimum value
-		 * @param max maximum value
-		 * @param step small step
-		 * @param largeStep large step
-		 */
-		public NumberSpinBox(int min, int max, int step, int largeStep) {
-			this.min = min;
-			this.max = max;
-			this.step = step;
-			this.largeStep = largeStep;
-			this.value = min;
-		}
-		@Override
-		public void onNext(boolean shift) {
-			value = Math.min(max, value + (shift ? largeStep : step));
-			update();
-		}
-		@Override
-		public void onPrev(boolean shift) {
-			value = Math.max(min, value - (shift ? largeStep : step));
-			update();
-		}
-		/** Update controls. */
-		@Override
-		public void update() {
-			spin.prev.enabled(enabled && value > min);
-			spin.next.enabled(enabled && value < max);
-		}
-		@Override
-		public String onValue() {
-			return String.format("%,d", value);
-		}
-		/**
-		 * Set the size to the maximum of the campaign name.
-		 */
-		public void setMaxSize() {
-			int val = value;
-			value = min;
-			int w = commons.text().getTextWidth(14, onValue());
-			value = max;
-			w = Math.max(w, commons.text().getTextWidth(14, onValue()));
-			width = w + spin.prev.width + spin.next.width + 20;
-			spin.width = width;
-			height = spin.prev.height;
-			value = val;
-		}
-		@Override
-		public UIComponent enabled(boolean state) {
-			spin.enabled(state);
-			if (state) {
-				update();
-			}
-			return super.enabled(state);
-		}
-	}
-	/**
-	 * List box spin box.
-	 * @author akarnokd, 2012.08.20.
-	 * @param <T> the element type
-	 */
-	public class ListSpinBox<T> extends SpinBox {
-		/** The current selection index. */ 
-		public int index;
-		/** The list. */
-		final List<T> list;
-		/** The value function. */
-		final Func1<T, String> valueFunc;
-		/**
-		 * Constructor. Initialize the fields.
-		 * @param list the backing list
-		 * @param valueFunc the value function
-		 */
-		public ListSpinBox(List<T> list, Func1<T, String> valueFunc) {
-			this.list = list;
-			this.valueFunc = valueFunc;
-			
-		}
-		/**
-		 * Constructor. Initialize the fields.
-		 * @param list the backing list
-		 * @param valueFunc the value function
-		 */
-		@SafeVarargs
-		public ListSpinBox(Func1<T, String> valueFunc, T... list) {
-			this.list = Arrays.asList(list);
-			this.valueFunc = valueFunc;
-			
-		}
-		@Override
-		public void onNext(boolean shift) {
-			int cnt = shift ? 10 : 1;
-			index = Math.min(list.size() - 1, index + cnt);
-			update();
-		}
-		@Override
-		public void onPrev(boolean shift) {
-			int cnt = shift ? 10 : 1;
-			index = Math.max(0, index - cnt);
-			update();
-		}
-		@Override
-		public String onValue() {
-			return valueFunc.invoke(list.get(index));
-		}
-		@Override
-		public void update() {
-			spin.prev.enabled(enabled && index > 0);
-			spin.next.enabled(enabled && index < list.size() - 1);
-		}
-		/**
-		 * Set the size to the maximum of the campaign name.
-		 */
-		public void setMaxSize() {
-			int w = 0;
-			for (T t : list) {
-				w = Math.max(w, commons.text().getTextWidth(14, valueFunc.invoke(t)));
-			}
-			width = w + spin.prev.width + spin.next.width + 20;
-			spin.width = width;
-			height = spin.prev.height;
-		}
-		/** @return the selected index. */
-		public T selected() {
-			return list.get(index);
-		}
-	}
-	/**
 	 * Spin box referencing the campaign.
 	 * @author akarnokd, 2012.08.20.
 	 */
 	public class CampaignSpinBox extends ListSpinBox<GameDefinition> {
 		/** Constructor. */
 		public CampaignSpinBox() {
-			super(campaigns, new Func1<GameDefinition, String>() {
+			super(SkirmishScreen.this.commons, campaigns, new Func1<GameDefinition, String>() {
 				@Override
 				public String invoke(GameDefinition value) {
 					return value.getTitle(rl.language);
@@ -1737,7 +1510,7 @@ public class SkirmishScreen extends ScreenBase {
 			backgroundColor(0x80000000);
 			
 			groupSelectLabel = createLabel("skirmish.edit_group");
-			groupSelectValue = new NumberSpinBox(1, 500, 1, 10);
+			groupSelectValue = new NumberSpinBox(commons, 1, 500, 1, 10);
 			
 			groupSelect = new UIPanel();
 			groupSelect.backgroundColor(0xE0000000);

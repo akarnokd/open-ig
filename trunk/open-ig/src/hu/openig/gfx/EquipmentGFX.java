@@ -45,6 +45,9 @@ public class EquipmentGFX {
 	@Btn2(name = "equipment/button_add_one")
 	public BufferedImage[] addOne;
 	/** Battleship category. */
+	@Cat(name = "equipment/button_category_all")
+	public BufferedImage[] categoryAll;
+	/** Battleship category. */
 	@Cat(name = "equipment/button_category_battleships")
 	public BufferedImage[] categoryBattleships;
 	/** Destroyers category. */
@@ -59,6 +62,12 @@ public class EquipmentGFX {
 	/** Vehicles category. */
 	@Cat(name = "equipment/button_category_vehicles")
 	public BufferedImage[] categoryVehicles;
+	/** Vehicles category. */
+	@Cat(name = "equipment/button_category_weapons")
+	public BufferedImage[] categoryWeapons;
+	/** Vehicles category. */
+	@Cat(name = "equipment/button_category_equipment")
+	public BufferedImage[] categoryEquipment;
 	/** Empty category. */
 	@Img(name = "equipment/button_category_empty")
 	public BufferedImage categoryEmpty;
