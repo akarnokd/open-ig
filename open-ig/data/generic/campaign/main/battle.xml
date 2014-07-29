@@ -165,6 +165,161 @@
 		<tech id="TradersFreight2" normal="inventions/spaceships/cruisers/traders_freight_2_rotate" image="inventions/spaceships/cruisers/traders_freight_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="950"/>
 		<tech id="TradersFreight3" normal="inventions/spaceships/cruisers/traders_freight_2_rotate" image="inventions/spaceships/cruisers/traders_freight_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="1100"/>
 		<tech id="GarthogVirusBomb" normal="inventions/spaceships/fighters/garthog_virus_bomb_rotate" image="inventions/spaceships/fighters/garthog_virus_bomb_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="25" hp="400"/>
+
+		<tech id="DargslanFighter1" normal="inventions/spaceships/fighters/dargslan_fighter_rotate" image="inventions/spaceships/fighters/dargslan_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="420"/>
+		<tech id="DargslanFighter2" normal="inventions/spaceships/fighters/dargslan_fighter_rotate" image="inventions/spaceships/fighters/dargslan_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="520"/>
+		<tech id="DargslanFighter3" normal="inventions/spaceships/fighters/dargslan_fighter_rotate" image="inventions/spaceships/fighters/dargslan_fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="620"/>
+		<tech id="DargslanFighter4" normal="inventions/spaceships/fighters/dargslan_fighter_rotate" image="inventions/spaceships/fighters/dargslan_fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="720"/>
+		<tech id="DargslanDestroyer1" normal="inventions/spaceships/cruisers/dargslan_destroyer_rotate" image="inventions/spaceships/cruisers/dargslan_destroyer_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="2500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DargslanDestroyer2" normal="inventions/spaceships/cruisers/dargslan_destroyer_rotate" image="inventions/spaceships/cruisers/dargslan_destroyer_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="4500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DargslanDestroyer3" normal="inventions/spaceships/cruisers/dargslan_destroyer_rotate" image="inventions/spaceships/cruisers/dargslan_destroyer_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DargslanDestroyer4" normal="inventions/spaceships/cruisers/dargslan_destroyer_rotate" image="inventions/spaceships/cruisers/dargslan_destroyer_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="8000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DargslanBattleship1" normal="inventions/spaceships/battleships/dargslan_battleship_rotate" image="inventions/spaceships/battleships/dargslan_battleship_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="4000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="DargslanBattleship2" normal="inventions/spaceships/battleships/dargslan_battleship_rotate" image="inventions/spaceships/battleships/dargslan_battleship_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="8500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="DargslanBattleship3" normal="inventions/spaceships/battleships/dargslan_battleship_rotate" image="inventions/spaceships/battleships/dargslan_battleship_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="13000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+
+		<tech id="MorgathFighter1" normal="inventions/spaceships/fighters/morgath_fighter_rotate" image="inventions/spaceships/fighters/morgath_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="420"/>
+		<tech id="MorgathFighter2" normal="inventions/spaceships/fighters/morgath_fighter_rotate" image="inventions/spaceships/fighters/morgath_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="520"/>
+		<tech id="MorgathFighter3" normal="inventions/spaceships/fighters/morgath_fighter_rotate" image="inventions/spaceships/fighters/morgath_fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="620"/>
+		<tech id="MorgathFighter4" normal="inventions/spaceships/fighters/morgath_fighter_rotate" image="inventions/spaceships/fighters/morgath_fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="720"/>
+		<tech id="MorgathDestroyer1" normal="inventions/spaceships/cruisers/morgath_destroyer_rotate" image="inventions/spaceships/cruisers/morgath_destroyer_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="2500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="MorgathDestroyer2" normal="inventions/spaceships/cruisers/morgath_destroyer_rotate" image="inventions/spaceships/cruisers/morgath_destroyer_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="4500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="MorgathDestroyer3" normal="inventions/spaceships/cruisers/morgath_destroyer_rotate" image="inventions/spaceships/cruisers/morgath_destroyer_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="MorgathDestroyer4" normal="inventions/spaceships/cruisers/morgath_destroyer_rotate" image="inventions/spaceships/cruisers/morgath_destroyer_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="8000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="MorgathBattleship1" normal="inventions/spaceships/battleships/morgath_battleship_rotate" image="inventions/spaceships/battleships/morgath_battleship_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="4000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="MorgathBattleship2" normal="inventions/spaceships/battleships/morgath_battleship_rotate" image="inventions/spaceships/battleships/morgath_battleship_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="8500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="MorgathBattleship3" normal="inventions/spaceships/battleships/morgath_battleship_rotate" image="inventions/spaceships/battleships/morgath_battleship_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="13000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="EcalepFighter1" normal="inventions/spaceships/fighters/ecalep_fighter_rotate" image="inventions/spaceships/fighters/ecalep_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="420"/>
+		<tech id="EcalepFighter2" normal="inventions/spaceships/fighters/ecalep_fighter_rotate" image="inventions/spaceships/fighters/ecalep_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="520"/>
+		<tech id="EcalepFighter3" normal="inventions/spaceships/fighters/ecalep_fighter_rotate" image="inventions/spaceships/fighters/ecalep_fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="620"/>
+		<tech id="EcalepFighter4" normal="inventions/spaceships/fighters/ecalep_fighter_rotate" image="inventions/spaceships/fighters/ecalep_fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="720"/>
+		<tech id="EcalepDestroyer1" normal="inventions/spaceships/cruisers/ecalep_destroyer_rotate" image="inventions/spaceships/cruisers/ecalep_destroyer_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="2500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="EcalepDestroyer2" normal="inventions/spaceships/cruisers/ecalep_destroyer_rotate" image="inventions/spaceships/cruisers/ecalep_destroyer_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="4500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="EcalepDestroyer3" normal="inventions/spaceships/cruisers/ecalep_destroyer_rotate" image="inventions/spaceships/cruisers/ecalep_destroyer_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="EcalepDestroyer4" normal="inventions/spaceships/cruisers/ecalep_destroyer_rotate" image="inventions/spaceships/cruisers/ecalep_destroyer_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="8000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="EcalepBattleship1" normal="inventions/spaceships/battleships/ecalep_battleship_rotate" image="inventions/spaceships/battleships/ecalep_battleship_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="4000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="EcalepBattleship2" normal="inventions/spaceships/battleships/ecalep_battleship_rotate" image="inventions/spaceships/battleships/ecalep_battleship_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="8500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="EcalepBattleship3" normal="inventions/spaceships/battleships/ecalep_battleship_rotate" image="inventions/spaceships/battleships/ecalep_battleship_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="13000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="SullepFighter1" normal="inventions/spaceships/fighters/sullep_fighter_rotate" image="inventions/spaceships/fighters/sullep_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="420"/>
+		<tech id="SullepFighter2" normal="inventions/spaceships/fighters/sullep_fighter_rotate" image="inventions/spaceships/fighters/sullep_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="520"/>
+		<tech id="SullepFighter3" normal="inventions/spaceships/fighters/sullep_fighter_rotate" image="inventions/spaceships/fighters/sullep_fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="620"/>
+		<tech id="SullepFighter4" normal="inventions/spaceships/fighters/sullep_fighter_rotate" image="inventions/spaceships/fighters/sullep_fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="720"/>
+		<tech id="SullepDestroyer1" normal="inventions/spaceships/cruisers/sullep_destroyer_rotate" image="inventions/spaceships/cruisers/sullep_destroyer_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="2500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="SullepDestroyer2" normal="inventions/spaceships/cruisers/sullep_destroyer_rotate" image="inventions/spaceships/cruisers/sullep_destroyer_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="4500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="SullepDestroyer3" normal="inventions/spaceships/cruisers/sullep_destroyer_rotate" image="inventions/spaceships/cruisers/sullep_destroyer_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="SullepDestroyer4" normal="inventions/spaceships/cruisers/sullep_destroyer_rotate" image="inventions/spaceships/cruisers/sullep_destroyer_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="8000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="SullepBattleship1" normal="inventions/spaceships/battleships/sullep_battleship_rotate" image="inventions/spaceships/battleships/sullep_battleship_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="4000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="SullepBattleship2" normal="inventions/spaceships/battleships/sullep_battleship_rotate" image="inventions/spaceships/battleships/sullep_battleship_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="8500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="SullepBattleship3" normal="inventions/spaceships/battleships/sullep_battleship_rotate" image="inventions/spaceships/battleships/sullep_battleship_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="13000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+
+		<tech id="YchomFighter1" normal="inventions/spaceships/fighters/ychom_fighter_rotate" image="inventions/spaceships/fighters/ychom_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="420"/>
+		<tech id="YchomFighter2" normal="inventions/spaceships/fighters/ychom_fighter_rotate" image="inventions/spaceships/fighters/ychom_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="520"/>
+		<tech id="YchomFighter3" normal="inventions/spaceships/fighters/ychom_fighter_rotate" image="inventions/spaceships/fighters/ychom_fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="620"/>
+		<tech id="YchomFighter4" normal="inventions/spaceships/fighters/ychom_fighter_rotate" image="inventions/spaceships/fighters/ychom_fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="720"/>
+		<tech id="YchomDestroyer1" normal="inventions/spaceships/cruisers/ychom_destroyer_rotate" image="inventions/spaceships/cruisers/ychom_destroyer_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="2500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="YchomDestroyer2" normal="inventions/spaceships/cruisers/ychom_destroyer_rotate" image="inventions/spaceships/cruisers/ychom_destroyer_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="4500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="YchomDestroyer3" normal="inventions/spaceships/cruisers/ychom_destroyer_rotate" image="inventions/spaceships/cruisers/ychom_destroyer_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="YchomDestroyer4" normal="inventions/spaceships/cruisers/ychom_destroyer_rotate" image="inventions/spaceships/cruisers/ychom_destroyer_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="8000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="YchomBattleship1" normal="inventions/spaceships/battleships/ychom_battleship_rotate" image="inventions/spaceships/battleships/ychom_battleship_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="4000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="YchomBattleship2" normal="inventions/spaceships/battleships/ychom_battleship_rotate" image="inventions/spaceships/battleships/ychom_battleship_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="8500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="YchomBattleship3" normal="inventions/spaceships/battleships/ychom_battleship_rotate" image="inventions/spaceships/battleships/ychom_battleship_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="13000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+
+		<tech id="DribsFighter1" normal="inventions/spaceships/fighters/dribs_fighter_rotate" image="inventions/spaceships/fighters/dribs_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="420"/>
+		<tech id="DribsFighter2" normal="inventions/spaceships/fighters/dribs_fighter_rotate" image="inventions/spaceships/fighters/dribs_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="520"/>
+		<tech id="DribsFighter3" normal="inventions/spaceships/fighters/dribs_fighter_rotate" image="inventions/spaceships/fighters/dribs_fighter_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="620"/>
+		<tech id="DribsFighter4" normal="inventions/spaceships/fighters/dribs_fighter_rotate" image="inventions/spaceships/fighters/dribs_fighter_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="720"/>
+		<tech id="DribsDestroyer1" normal="inventions/spaceships/cruisers/dribs_destroyer_rotate" image="inventions/spaceships/cruisers/dribs_destroyer_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="2500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DribsDestroyer2" normal="inventions/spaceships/cruisers/dribs_destroyer_rotate" image="inventions/spaceships/cruisers/dribs_destroyer_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="4500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DribsDestroyer3" normal="inventions/spaceships/cruisers/dribs_destroyer_rotate" image="inventions/spaceships/cruisers/dribs_destroyer_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DribsDestroyer4" normal="inventions/spaceships/cruisers/dribs_destroyer_rotate" image="inventions/spaceships/cruisers/dribs_destroyer_4_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="8000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.25'/>
+		</tech>
+		<tech id="DribsBattleship1" normal="inventions/spaceships/battleships/dribs_battleship_rotate" image="inventions/spaceships/battleships/dribs_battleship_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="4000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="DribsBattleship2" normal="inventions/spaceships/battleships/dribs_battleship_rotate" image="inventions/spaceships/battleships/dribs_battleship_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="8500">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+		<tech id="DribsBattleship3" normal="inventions/spaceships/battleships/dribs_battleship_rotate" image="inventions/spaceships/battleships/dribs_battleship_3_huge" width="64" sound="EXPLOSION_LONG" movement-speed="100" rotation-time="50" hp="13000">
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+		</tech>
+
 	</space-entities>
 	<ground-shields>
 		<tech id="InversionShield" normal="inventions/buildings/military/inversion_shield_rotate" alternative="inventions/buildings/military/alien_inversion_shield_rotate" image="inventions/buildings/military/inversion_shield_huge" sound="EXPLOSION_LONG" shield="50"/>
@@ -383,13 +538,45 @@
 		<property id="PirateFighter" kamikaze-damage='400'/>
 		<property id="PirateFighter2" kamikaze-damage='400'/> <!-- Mission 4 custom fighter. -->
 		<property id="GarthogFighter" kamikaze-damage='500'/>
+		<property id="GarthogFighter1" kamikaze-damage='600'/>
+		<property id="GarthogFighter2" kamikaze-damage='700'/>
+		<property id="GarthogFighter3" kamikaze-damage='800'/>
+		<property id="GarthogFighter4" kamikaze-damage='900'/>
 		<property id="DargslanFighter" kamikaze-damage='900'/>
 		<property id="DribsFighter" kamikaze-damage='700'/>
 		<property id="EcalepFighter" kamikaze-damage='700'/>
 		<property id="MorgathFighter" kamikaze-damage='600'/>
-		<property id="SullepFighter1" kamikaze-damage='600'/>
-		<property id="SullepFighter2" kamikaze-damage='800'/>
+		<property id="SullepFighter" kamikaze-damage='600'/>
+		<property id="SullepFighterB" kamikaze-damage='800'/>
 		<property id="YchomFighter" kamikaze-damage='800'/>
+
+		<property id="DargslanFighter1" kamikaze-damage='600'/>
+		<property id="DargslanFighter2" kamikaze-damage='700'/>
+		<property id="DargslanFighter3" kamikaze-damage='800'/>
+		<property id="DargslanFighter4" kamikaze-damage='900'/>
+		<property id="MorgathFighter1" kamikaze-damage='600'/>
+		<property id="MorgathFighter2" kamikaze-damage='700'/>
+		<property id="MorgathFighter3" kamikaze-damage='800'/>
+		<property id="MorgathFighter4" kamikaze-damage='900'/>
+		<property id="EcalepFighter1" kamikaze-damage='600'/>
+		<property id="EcalepFighter2" kamikaze-damage='700'/>
+		<property id="EcalepFighter3" kamikaze-damage='800'/>
+		<property id="EcalepFighter4" kamikaze-damage='900'/>
+
+		<property id="SullepFighter1" kamikaze-damage='600'/>
+		<property id="SullepFighter2" kamikaze-damage='700'/>
+		<property id="SullepFighter3" kamikaze-damage='800'/>
+		<property id="SullepFighter4" kamikaze-damage='900'/>
+
+		<property id="YchomFighter1" kamikaze-damage='600'/>
+		<property id="YchomFighter2" kamikaze-damage='700'/>
+		<property id="YchomFighter3" kamikaze-damage='800'/>
+		<property id="YchomFighter4" kamikaze-damage='900'/>
+
+		<property id="DribsFighter1" kamikaze-damage='600'/>
+		<property id="DribsFighter2" kamikaze-damage='700'/>
+		<property id="DribsFighter3" kamikaze-damage='800'/>
+		<property id="DribsFighter4" kamikaze-damage='900'/>
 	</properties>
 	<ecm-vs-matrix difficulty='EASY' backfire='0.25'>
 		<vs anti-ecm='0' ecm='0' value='1'/>
