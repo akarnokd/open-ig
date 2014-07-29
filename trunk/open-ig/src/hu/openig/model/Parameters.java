@@ -76,6 +76,9 @@ public class Parameters {
 	/** The radar share limit. */
 	@LoadField
 	protected int radarShareLimit = 80;
+	/** The black market restock time in minutes. */
+	@LoadField
+	protected int blackMarketRestockTime = 3 * 24 * 60;
 	/**
 	 * Constructor. Initializes the speed factor callback field.
 	 * @param speed the speed callback
@@ -198,5 +201,11 @@ public class Parameters {
 	/** @return the radar share limit between allies. */
 	public int radarShareLimit() {
 		return radarShareLimit;
+	}
+	/**
+	 * @return the black market restock time in minutes
+	 */
+	public int blackMarketRestockTime() {
+		return blackMarketRestockTime;
 	}
 }

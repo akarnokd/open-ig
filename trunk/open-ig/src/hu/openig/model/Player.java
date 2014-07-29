@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -134,6 +135,10 @@ public class Player {
 	public double taxScale = 1.0;
 	/** The daily base of the incoming tax. */
 	public double taxBase = 0.0;
+	/** The list of available black market items. */
+	public final List<InventoryItem> blackMarket = new ArrayList<>();
+	/** The in-game date when the black market should restock. */
+	public Date blackMarketRestock;
 	/**
 	 * Create a player for the world under the given id.
 	 * @param world the world

@@ -223,5 +223,10 @@
 				<xs:documentation> The diplomatic relation level required for shared radar view. </xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="blackMarketRestockTime" type="xs:int" use="required">
+			<xs:annotation>
+				<xs:documentation>The time (in minutes) between restocks of the black market.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
