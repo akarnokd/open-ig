@@ -3528,5 +3528,17 @@
 	<entry key='tech.dribsbattleship3.name'>Dribs Bshp. 3</entry>
 	<entry key='tech.dribsbattleship3.longname'>Dribs Battleship Mk3</entry>
 	<entry key='tech.dribsbattleship3.description'>The strongest battleship in the Dribs fleet with excellent firepower, defenses and vehicle capacity.</entry>	
+	<entry key='equipment.all.tooltip'>All items</entry>
+	<entry key='equipment.weapons.tooltip'>Weapons</entry>
+	<entry key='equipment.equipment.tooltip'>Equipment</entry>
+	<entry key='equipment.tanks_and_vehicles.tooltip'>Tanks and vehicles</entry>
+	<entry key="equipment.starbases_and_satellites.tooltip">Starbases and satellites</entry>
+	<entry key='trade.deliver_to'>Deliver to</entry>
+	<entry key='trade.buy'>Buy</entry>
+	<entry key='trade.name'>Name</entry>
+	<entry key='trade.race'>Race</entry>
+	<entry key='trade.type'>Type</entry>
+	<entry key='trade.count'>Count</entry>
+	<entry key='trade.cost'>Cost/1</entry>
 	
 </labels>

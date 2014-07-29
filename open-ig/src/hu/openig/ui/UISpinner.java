@@ -56,10 +56,12 @@ public class UISpinner extends UIContainer {
 		next.location(width - next.width, 0);
 		
 		String n = getValue.invoke(null);
-		int w = tr.getTextWidth(size, n);
-		int dx = prev.width + (width - prev.width - next.width - w) / 2;
-		int dy = (prev.height - size) / 2;
-		tr.paintTo(g2, dx, dy, size, enabled ? color : disabledColor, n);
+		if (n != null) {
+			int w = tr.getTextWidth(size, n);
+			int dx = prev.width + (width - prev.width - next.width - w) / 2;
+			int dy = (prev.height - size) / 2;
+			tr.paintTo(g2, dx, dy, size, enabled ? color : disabledColor, n);
+		}
 		
 		super.draw(g2);
 	}

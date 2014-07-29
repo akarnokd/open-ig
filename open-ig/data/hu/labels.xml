@@ -3599,5 +3599,17 @@
 	<entry key='tech.dribsbattleship3.name'>Dribs Csh. 3</entry>
 	<entry key='tech.dribsbattleship3.longname'>Dribs Csatahajó Mk3</entry>
 	<entry key='tech.dribsbattleship3.description'>A Dribs flotta legerősebb csatahajója kiváló tűzerővel, védelmi- és csapatszállító képességekkel.</entry>	
+	<entry key='equipment.all.tooltip'>Minden elem</entry>
+	<entry key='equipment.weapons.tooltip'>Fegyverek</entry>
+	<entry key='equipment.equipment.tooltip'>Felszerelés</entry>
+	<entry key='equipment.tanks_and_vehicles.tooltip'>Tankok és járművek</entry>
+	<entry key="equipment.starbases_and_satellites.tooltip">Űrállomások és műholdak</entry>
+	<entry key='trade.deliver_to'>Leszállítás</entry>
+	<entry key='trade.buy'>Vesz</entry>
+	<entry key='trade.name'>Név</entry>
+	<entry key='trade.race'>Faj</entry>
+	<entry key='trade.type'>Típus</entry>
+	<entry key='trade.count'>Db</entry>
+	<entry key='trade.cost'>Ár/1</entry>
 	
 </labels>
