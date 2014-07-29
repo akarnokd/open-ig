@@ -63,7 +63,7 @@ public class ListSpinBox<T> extends SpinBox {
 	}
 	@Override
 	public String onValue() {
-		if (index <= 0) {
+		if (index < 0) {
 			return null;
 		}
 		return valueFunc.invoke(list.get(index));
@@ -79,12 +79,15 @@ public class ListSpinBox<T> extends SpinBox {
 	 */
 	public void setList(List<T> items) {
 		T selection = null;
-		if (index >= 0) {
+		if (index >= 0 && index < list.size()) {
 			selection = list.get(index);
 		}
 		list.clear();
 		list.addAll(items);
 		index = list.indexOf(selection);
+		if (index < 0 && !list.isEmpty()) {
+			index = 0;
+		}
 	}
 	/**
 	 * Set the size to the maximum of the campaign name.
@@ -100,7 +103,7 @@ public class ListSpinBox<T> extends SpinBox {
 	}
 	/** @return the selected index. */
 	public T selected() {
-		return list.get(index);
+		return index >= 0 && index < list.size() ? list.get(index) : null;
 	}
 	/**
 	 * Sets the full width of the spin box.

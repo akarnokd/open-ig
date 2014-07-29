@@ -55,5 +55,6 @@
 		fighterLimit="30" 
 		mediumshipLimit="25"
 		radarShareLimit="80"
+		blackMarketRestockTime="4320"
 />
 </definition>

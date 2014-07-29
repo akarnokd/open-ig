@@ -42,10 +42,13 @@ import hu.openig.utils.U;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Collection of algorithms which update the world
@@ -116,6 +119,8 @@ public final class Simulator {
 					ps.planetCount = all.planetCount;
 					progressPlanet(world, p, day0 != day1, ps, taxCompensation);
 				}
+				
+				handleBlackMarket(player);
 			}
 		}
 		
@@ -1004,36 +1009,72 @@ public final class Simulator {
 		}
 		return k;
 	}
-//	/**
-//	 * Calculate a compensated tax based on the current number of planets.
-//	 * @param p the player
-//	 */
-//	static void taxCompensation(Player p) {
-//		long n = p.statistics.planetsOwned;
-//		if (n > 0) {
-//			if (n < 3) {
-//				n = 3;
-//			}
-//			long diff = 0;
-//			double k = 0;
-//			if (p == p.world.player) {
-//				k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
-//			} else {
-//				k = 3 / Math.sqrt(n - p.world.difficulty.ordinal());
-//			}
-//			for (Planet pl : p.planets.keySet()) {
-//				if (pl.owner == p) {
-//					int ti = pl.taxIncome;
-//					pl.taxIncome = (int)(pl.taxIncome * k);
-//					diff += pl.taxIncome - ti;
-//				}
-//			}
-//			p.addMoney(diff);
-//			p.yesterday.taxIncome += diff;
-//			p.statistics.moneyIncome += diff;
-//			p.statistics.moneyTaxIncome += diff;
-//			p.world.statistics.moneyIncome += diff;
-//			p.world.statistics.moneyTaxIncome += diff;
-//		}
-//	}
+	/**
+	 * Handle the restock of the black market.
+	 * @param player the player object
+	 */
+	static void handleBlackMarket(Player player) {
+		int restockTime = player.world.params().blackMarketRestockTime();
+		long nowMinutes = player.world.time.getTimeInMillis() / 60000;
+		if (player.blackMarketRestock == null || nowMinutes - player.blackMarketRestock.getTime() / 60000 >= restockTime) {
+			player.blackMarketRestock = new Date(player.world.time.getTimeInMillis() + restockTime * 60000);
+			player.blackMarket.clear();
+			
+			// TODO generate items
+			List<ResearchType> list = new ArrayList<>(player.availableSet());
+			if (list.isEmpty()) {
+				return;
+			}
+			Random rnd = ModelUtils.RANDOM.get();
+			Collections.shuffle(list, rnd);
+			int max = Math.min(list.size(), list.size() * 3 / 4 + 1);
+			list = list.subList(0, max);
+			
+			for (ResearchType rt : list) {
+				int count = 0;
+				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+					count = rnd.nextInt(5) + 1;
+				} else
+				if (rt.category.main == ResearchMainCategory.EQUIPMENT) {
+					count = rnd.nextInt(6) + 1;
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_TANKS
+						) {
+					count = rnd.nextInt(3) + 1;
+				} else
+				if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
+						) {
+					count = rnd.nextInt(2) + 1;
+				} else
+				if (rt.category.main == ResearchMainCategory.WEAPONS) {
+					count = rnd.nextInt(7) + 1;
+				} else {
+					count = rnd.nextInt(2) + 1;
+				}
+				
+				InventoryItem ii = new InventoryItem(player.world.newId(), player, rt);
+				ii.count = count;
+				ii.init();
+				for (InventorySlot is : ii.slots.values()) {
+					if (!is.slot.fixed) {
+						is.count = 0;
+						is.type = null;
+						if (rnd.nextDouble() * 3 >= 1) {
+							List<ResearchType> options =  new ArrayList<>();
+							for (ResearchType rt0 : is.slot.items) {
+								if (player.isAvailable(rt0)) {
+									options.add(rt0);
+								}
+							}
+							if (!options.isEmpty()) {
+								is.type = ModelUtils.random(options);
+								is.count = rnd.nextInt(is.slot.max) + 1;
+							}
+						}
+					}
+				}
+				player.blackMarket.add(ii);
+			}
+		}
+	}
 }

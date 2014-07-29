@@ -543,6 +543,12 @@ public class GameKeyManager extends KeyAdapter {
 					e.consume();
 				}
 				break;
+			// FIXME CHEAT:
+			case KeyEvent.VK_K:
+				if (e.isControlDown()) {
+					world().player.blackMarketRestock = null; // trigger instant restock
+				}
+				break;
 			// FIXME CHEAT
 			case KeyEvent.VK_J:
 				// TOGGLE test AI on player

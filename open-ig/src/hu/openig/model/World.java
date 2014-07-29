@@ -1224,6 +1224,15 @@ public class World implements ModelLookup {
 			}
 			
 			saveTraits(p, xp);
+			
+			XElement xbm = xp.add("blackmarket");
+			if (p.blackMarketRestock != null) {
+				xbm.set("restock", XElement.formatDateTime(p.blackMarketRestock));
+			}
+			for (InventoryItem ii : p.blackMarket) {
+				XElement xitem = xbm.add("item");
+				saveInventoryItem(ii, xitem);
+			}
 		}
 		
 		for (Planet p : planets.values()) {
@@ -1350,18 +1359,26 @@ public class World implements ModelLookup {
 		
 		for (InventoryItem fii : f.inventory.iterable()) {
 			XElement xfii = xfleet.add("item");
-			xfii.set("id", fii.id);
-			xfii.set("type", fii.type.id);
-			xfii.set("count", fii.count);
-			xfii.set("hp", fii.hp);
-			xfii.set("shield", fii.shield);
-			xfii.set("tag", fii.tag);
-			xfii.set("nickname", fii.nickname);
-			xfii.set("nickname-index", fii.nicknameIndex);
-			xfii.set("kills", fii.kills);
-			xfii.set("kills-cost", fii.killsCost);
-			saveInventorySlot(fii.slots.values(), xfii);
+			saveInventoryItem(fii, xfii);
 		}
+	}
+	/**
+	 * Save the inventory item into the XML element.
+	 * @param fii the inventory item to save
+	 * @param xfii the target XElement
+	 */
+	void saveInventoryItem(InventoryItem fii, XElement xfii) {
+		xfii.set("id", fii.id);
+		xfii.set("type", fii.type.id);
+		xfii.set("count", fii.count);
+		xfii.set("hp", fii.hp);
+		xfii.set("shield", fii.shield);
+		xfii.set("tag", fii.tag);
+		xfii.set("nickname", fii.nickname);
+		xfii.set("nickname-index", fii.nicknameIndex);
+		xfii.set("kills", fii.kills);
+		xfii.set("kills-cost", fii.killsCost);
+		saveInventorySlot(fii.slots.values(), xfii);
 	}
 	/**
 	 * Saves the contents of the inventory slots.
@@ -1670,6 +1687,24 @@ public class World implements ModelLookup {
 			}
 			
 			loadTraits(p, xplayer.childElement("traits"));
+			
+			for (XElement xbm : xplayer.childrenWithName("blackmarket")) {
+				p.blackMarket.clear();
+				p.blackMarketRestock = null;
+				if (xbm.has("restock")) {
+					try {
+						p.blackMarketRestock = XElement.parseDateTime(xbm.get("restock"));
+					} catch (ParseException ex) {
+						ex.printStackTrace();
+					}
+				}
+				for (XElement xitem : xbm.childrenWithName("item")) {
+					InventoryItem ii = parseInventory(xitem, p); // owner is required
+					if (ii != null) {
+						p.blackMarket.add(ii);
+					}
+				}
+			}
 		}
 		Set<String> allPlanets = new HashSet<>(planets.keySet());
 		for (XElement xplanet : xworld.childrenWithName("planet")) {
@@ -1961,38 +1996,51 @@ public class World implements ModelLookup {
 				}
 			}
 			for (XElement xfii : xfleet.childrenWithName("item")) {
-				int count = xfii.getInt("count");
-				if (count <= 0) {
-					continue;
+				InventoryItem fii = parseInventory(xfii, f.owner);
+				if (fii != null) {
+					if (f.inventory.isEmpty()) {
+						p.fleets.put(f, FleetKnowledge.FULL);
+					}
+					f.inventory.add(fii);
 				}
-				int itemid = xfii.getInt("id");
-				if (itemid < 0) {
-					itemid = newId();
-				}
-				InventoryItem fii = new InventoryItem(itemid, f.owner, research(xfii.get("type")));
-				
-				fii.nickname = xfii.get("nickname", fii.nickname);
-				fii.nicknameIndex = xfii.getInt("nickname-index", 0);
-
-				fii.init();
-				fii.count = count;
-				fii.tag = xfii.get("tag", null);
-				
-				
-				fii.kills = xfii.getInt("kills", 0);
-				fii.killsCost = xfii.getLong("kills-cost", 0L);
-
-				loadInventorySlots(fii, xfii);
-				
-				int shieldMax = Math.max(0, fii.shieldMax());
-				fii.shield = Math.min(shieldMax, xfii.getDouble("shield", shieldMax));
-				fii.hp = Math.min(xfii.getDouble("hp", getHitpoints(fii.type, fii.owner)), getHitpoints(fii.type, fii.owner));
-				if (f.inventory.isEmpty()) {
-					p.fleets.put(f, FleetKnowledge.FULL);
-				}
-				f.inventory.add(fii);
 			}
 		}
+	}
+	/**
+	 * Parse an inventory node.
+	 * @param xfii the inventory XML element
+	 * @param owner the owner of the inventory item
+	 * @return the inventory or null if there was an anomaly
+	 */
+	InventoryItem parseInventory(XElement xfii, Player owner) {
+		int count = xfii.getInt("count");
+		if (count <= 0) {
+			return null;
+		}
+		int itemid = xfii.getInt("id");
+		if (itemid < 0) {
+			itemid = newId();
+		}
+		InventoryItem fii = new InventoryItem(itemid, owner, research(xfii.get("type")));
+		
+		fii.nickname = xfii.get("nickname", fii.nickname);
+		fii.nicknameIndex = xfii.getInt("nickname-index", 0);
+
+		fii.init();
+		fii.count = count;
+		fii.tag = xfii.get("tag", null);
+		
+		
+		fii.kills = xfii.getInt("kills", 0);
+		fii.killsCost = xfii.getLong("kills-cost", 0L);
+
+		loadInventorySlots(fii, xfii);
+		
+		int shieldMax = Math.max(0, fii.shieldMax());
+		fii.shield = Math.min(shieldMax, xfii.getDouble("shield", shieldMax));
+		fii.hp = Math.min(xfii.getDouble("hp", getHitpoints(fii.type, fii.owner)), getHitpoints(fii.type, fii.owner));
+
+		return fii;
 	}
 	/**
 	 * Loads the inventory slot contents from the supplied XML parent.
