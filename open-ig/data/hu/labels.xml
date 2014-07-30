@@ -3611,5 +3611,11 @@
 	<entry key='trade.type'>Típus</entry>
 	<entry key='trade.count'>Db</entry>
 	<entry key='trade.cost'>Ár/1</entry>
-	
+	<entry key="trade.base_cost">Alapár: %,d</entry>
+	<entry key='trade.no_room'>Nincs hely</entry>
+	<entry key='trade.no_money'>Kevés a pénz</entry>
+	<entry key='trade.hp'     >Életerő     : %,6d</entry>
+	<entry key='trade.sp'     >Pajzs       : %,6d</entry>
+	<entry key='trade.defense'>Össz védelem: %,6d</entry>
+	<entry key='trade.dps'    >Sebzés   : %,6d (%,d /mp)</entry>
 </labels>
