@@ -3594,5 +3594,12 @@
 	<entry key='trade.type'>Type</entry>
 	<entry key='trade.count'>Count</entry>
 	<entry key='trade.cost'>Cost/1</entry>
+	<entry key="trade.base_cost">Base cost: %,d</entry>
+	<entry key='trade.no_room'>Not enough room</entry>
+	<entry key='trade.no_money'>Not enough money</entry>
+	<entry key='trade.hp'     >Hitpoints    : %,6d</entry>
+	<entry key='trade.sp'     >Shield points: %,6d</entry>
+	<entry key='trade.defense'>Total defense: %,6d</entry>
+	<entry key='trade.dps'    >Damage   : %,6d (%,d /sec)</entry>
 	
 </labels>

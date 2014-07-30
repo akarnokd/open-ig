@@ -932,4 +932,101 @@ public class Player {
 	public boolean isDefeated() {
 		return ownPlanets().isEmpty();
 	}
+	/**
+	 * Buy one unit of the given black market inventory item and optionally
+	 * deliver it to the given planet.
+	 * @param itemId the inventory identifier inside the black market list
+	 * @param deliverTo where to deploy the item, certain items are added to the player
+	 * inventory.
+	 */
+	public void buy(int itemId, Planet deliverTo) {
+		InventoryItem ii = null;
+		for (InventoryItem ii0 : blackMarket) {
+			if (ii0.id == itemId) {
+				ii = ii0;
+				break;
+			}
+		}
+		if (ii == null) {
+			throw new AssertionError("Item to buy not found: " + itemId);
+		}
+		boolean requiresPlanet = blackMarketRequiresPlanet(ii.type);
+		if (requiresPlanet && deliverTo == null) {
+			throw new AssertionError("Item requires a target planet: " + ii.type);
+		}
+		if (requiresPlanet && !deliverTo.hasMilitarySpaceport()) {
+			throw new AssertionError("Military spaceport required: " + deliverTo + " for " + ii.type);
+		}
+		if (requiresPlanet && deliverTo.owner != this) {
+			throw new AssertionError("Not the player's planet: " + deliverTo + " for " + ii.type);
+		}
+		long cost = blackMarketCost(ii);
+		if (cost > money()) {
+			throw new AssertionError("Not enough money. Required: " + cost + ", available: " + money);
+		}
+		
+		addMoney(-cost);
+		
+		statistics.moneySpent.value += cost;
+		world.statistics.moneySpent.value += cost;
+		
+		if (--ii.count == 0) {
+			blackMarket.remove(ii);
+		}
+		
+		if (!requiresPlanet) {
+			changeInventoryCount(ii.type, 1);
+		} else {
+			if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+				if (deliverTo.getAddLimit(ii.type, this) == 0) {
+					throw new AssertionError("Planet is full: " + deliverTo + " can't deploy " + ii.type);
+				}
+				InventoryItem pii = new InventoryItem(world.newId(), this, ii.type);
+				pii.assign(ii);
+				pii.count = 1;
+				deliverTo.inventory.add(pii);
+			} else {
+				// find a nearby fleet to deploy into
+				Fleet found = null;
+				for (Fleet f : fleets.keySet()) {
+					if (f.nearbyPlanet() == deliverTo) {
+						if (f.getAddLimit(ii.type) > 0) {
+							found = f;
+							break;
+						}
+					}
+				}
+				
+				if (found == null) {
+					// create a new fleet
+					found = deliverTo.newFleet();
+				}
+				InventoryItem pii = new InventoryItem(world.newId(), this, ii.type);
+				pii.assign(ii);
+				pii.count = 1;
+				found.inventory.add(pii);
+			}
+			
+		}
+	}
+	/** 
+	 * Returns the unit cost of the given black market item.
+	 * @param ii the inventory item
+	 * @return the cost
+	 */
+	public long blackMarketCost(InventoryItem ii) {
+		return ii.unitSellValue() * 4; 
+	}
+	/**
+	 * Returns true if a technology needs to be deployed to a planet.
+	 * @param rt the technology
+	 * @return true if planet is required
+	 */
+	public boolean blackMarketRequiresPlanet(ResearchType rt) {
+		return
+				rt.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+				|| rt.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+				|| rt.category == ResearchSubCategory.SPACESHIPS_STATIONS
+		;
+	}
 }

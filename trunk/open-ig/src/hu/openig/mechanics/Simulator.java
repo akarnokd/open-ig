@@ -1031,6 +1031,9 @@ public final class Simulator {
 			list = list.subList(0, max);
 			
 			for (ResearchType rt : list) {
+				if (rt.category.main == ResearchMainCategory.BUILDINGS) {
+					continue;
+				}
 				int count = 0;
 				if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
 					count = rnd.nextInt(5) + 1;
