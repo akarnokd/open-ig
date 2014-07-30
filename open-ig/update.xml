@@ -22,7 +22,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.178'>
+  <module id='Game' version='0.95.179'>
     <general url='https://code.google.com/p/open-ig/'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -39,9 +39,9 @@
       <desc lang='fr'>Skirmish enhancements.</desc>
       <desc lang='ru'>Skirmish enhancements.</desc>
     </notes>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.178.jar' sha1='6EA4FD5F79E6AC11A0C0E34E71AB53C1E13EE3EA'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140718a2.zip' sha1='6F7E109CEEAC9527A355C46870A638C789450DBA'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140718a.zip' sha1='E4908A27337BB30AD93F2F4178FC7D5CD52AD034'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.179.jar' sha1='AF352D5C41D4FD19E63F6B0F24ED40C260164935'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140730a2.zip' sha1='08C53EE150EC2CA436F5688189C4C10EFA843E77'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140730a.zip' sha1='0C7F5F87925B4082D0B85D8271F7EC7CC564D36D'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -104,6 +104,7 @@
     <remove file='open-ig-images-20140319a.zip'/>
     <remove file='open-ig-images-20140325a.zip'/>
     <remove file='open-ig-images-20140714a.zip'/>
+    <remove file='open-ig-images-20140718a.zip'/>
   </module>
   <module id='MapEditor' version='0.60'>
     <general url='https://code.google.com/p/open-ig/wiki/MapEditor'>
