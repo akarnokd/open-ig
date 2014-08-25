@@ -78,6 +78,8 @@ public class BattleInfo {
 	public boolean showLanding;
 	/** The set of other participating fleets. */
 	public final Set<Fleet> otherFleets = new HashSet<>();
+	/** Tag of the battle, used by mission termination. */
+	public String tag;
 	/** @return the helper planet if any. */
 	public Planet getPlanet() {
 		return targetPlanet != null ? targetPlanet : helperPlanet;

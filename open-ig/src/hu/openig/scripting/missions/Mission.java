@@ -720,6 +720,25 @@ public abstract class Mission implements GameScriptingEvents {
 		return false;
 	}
 	/**
+	 * Check if the participating fleets in the spacewar has a tagget ship or not.
+	 * @param bi the battle info
+	 * @param tag the tag to look for
+	 * @return true if any of the fleets has a a ship with the given tag
+	 */
+	protected boolean hasTag(BattleInfo bi, String tag) {
+		boolean r = false;
+		if (bi.helperFleet != null) {
+			r |= hasTag(bi.helperFleet, tag);
+		}
+		if (bi.attacker != null) {
+			r |= hasTag(bi.attacker, tag);
+		}
+		if (bi.targetFleet != null) {
+			r |= hasTag(bi.targetFleet, tag);
+		}
+		return r;
+	}
+	/**
 	 * Check if any of the fleets of {@code p} is following the given fleet.
 	 * @param target the target fleet
 	 * @param p the player
