@@ -1344,6 +1344,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		setTooltip(audioPage, "options.sound.tooltip");
 		setTooltip(controlPage, "options.mouse.tooltip");
 		setTooltip(visualPage, "options.visual.tooltip");
+		
+		commons.setCursor(Cursors.POINTER);
 	}
 	/**
 	 * Choose a random background for the options.

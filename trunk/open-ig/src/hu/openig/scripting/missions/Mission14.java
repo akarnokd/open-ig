@@ -128,8 +128,10 @@ public class Mission14 extends Mission {
 	}
 	@Override
 	public void onSpacewarStart(SpacewarWorld war) {
-		if (isMissionSpacewar(war.battle(), "Mission-14")) {
-			war.battle().chat = "chat.mission-14.destroy.viruscarrier";
+		BattleInfo battle = war.battle();
+		if (isMissionSpacewar(battle, "Mission-14") && hasTag(battle, "Mission-14-Garthog")) {
+			battle.tag = "Mission-14-Garthog";
+			battle.chat = "chat.mission-14.destroy.viruscarrier";
 		}
 	}
 	
@@ -139,7 +141,7 @@ public class Mission14 extends Mission {
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
-		if (isMissionSpacewar(battle, "Mission-14")) {
+		if ("Mission-14-Garthog".equals(battle.tag)) {
 			Player garthog = player("Garthog");
 			Fleet tf = findTaggedFleet("Mission-14-Garthog", garthog);
 			if (tf != null) {

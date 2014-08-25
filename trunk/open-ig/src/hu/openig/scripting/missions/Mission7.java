@@ -239,13 +239,15 @@ public class Mission7 extends Mission {
 	 * @param task the task index
 	 */
 	void spacewarStartTraderVsPirate(SpacewarWorld war, int task) {
-		if (isMissionSpacewar(war.battle(), "Mission-7-Task-" + task)) {
+		String missionTag = "Mission-7-Task-" + task;
+		if (isMissionSpacewar(war.battle(), missionTag)) {
 			BattleInfo battle = war.battle();
 			Player traders = player("Traders");
 			Player pirates = player("Garthog");
 			
 			if (startJointSpaceBattle(war, "Mission-7-Trader", traders, "Mission-7-Garthog", pirates)) {
 				battle.chat = "chat.mission-7.defend.merchant" + task;
+				battle.tag = missionTag;
 			}
 		}
 	}
@@ -255,7 +257,8 @@ public class Mission7 extends Mission {
 	 * @param task the task index
 	 */
 	void spacewarFinishTraderVsPirate(SpacewarWorld war, int task) {
-		if (isMissionSpacewar(war.battle(), "Mission-7-Task-" + task)) {
+		String missionTag = "Mission-7-Task-" + task;
+		if (missionTag.equals(war.battle().tag)) {
 			// find the status of the trader ship
 			Player traders = player("Traders");
 			List<SpacewarStructure> sts = war.structures(traders);
@@ -324,7 +327,7 @@ public class Mission7 extends Mission {
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
 		for (int task = 1; task <= 2; task++) {
-			if (isMissionSpacewar(battle, "Mission-7-Task-" + task)) {
+			if (("Mission-7-Task-" + task).equals(battle.tag)) {
 				Player trader = player("Traders");
 				boolean traderSurvived = false;
 				for (InventoryItem ii : battle.attacker.inventory.list()) {
@@ -340,7 +343,9 @@ public class Mission7 extends Mission {
 	@Override
 	public void onAutobattleStart(BattleInfo battle) {
 		for (int task = 1; task <= 2; task++) {
-			if (isMissionSpacewar(battle, "Mission-7-Task-" + task)) {
+			String missionTag = "Mission-7-Task-" + task;
+			if (isMissionSpacewar(battle, missionTag)) {
+				battle.tag = missionTag;
 				Player traders = player("Traders");
 				Player pirates = player("Garthog");
 				startJointAutoSpaceBattle(battle, "Mission-7-Trader", traders, "Mission-7-Garthog", pirates);
