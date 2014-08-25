@@ -158,6 +158,7 @@ public class TradeScreen extends ScreenBase {
 		buy.onClick = new Action0() {
 			@Override
 			public void invoke() {
+				buttonSound(SoundType.CLICK_HIGH_2);
 				doBuy();
 			}
 		};
@@ -261,8 +262,9 @@ public class TradeScreen extends ScreenBase {
 
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
-
+		selected = -1;
+		image.image(null);
+		planets.setList(Collections.<Planet>emptyList());
 	}
 	@Override
 	public void draw(Graphics2D g2) {
