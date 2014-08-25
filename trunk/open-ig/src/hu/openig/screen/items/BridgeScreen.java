@@ -109,6 +109,8 @@ public class BridgeScreen extends ScreenBase {
 	boolean projectorClosing;
 	/** The opening/closing animation is in progress. */
 	boolean openCloseAnimating;
+	/** Prevent starting a video playback from clicks to the statusbar indicator. */
+	boolean noStatusbarPlayback;
 	/** The transition the mouse is pointing at. */
 	WalkTransition pointerTransition;
 	/** The video appear animation (the first frame). */
@@ -677,6 +679,7 @@ public class BridgeScreen extends ScreenBase {
 		messageAppearLast = null;
 		projectorLast = null;
 		selectedVideoId = null;
+		noStatusbarPlayback = false;
 		if (messageAnim != null) {
 			onMessageComplete = null;
 			messageAnim.stop();
@@ -915,7 +918,6 @@ public class BridgeScreen extends ScreenBase {
 	}
 	@Override
 	public void onEndGame() {
-		// TODO Auto-generated method stub
 	}
 	/**
 	 * Play the specific video.
@@ -923,10 +925,12 @@ public class BridgeScreen extends ScreenBase {
 	 */
 	public void playVideo(final VideoMessage vm) {
 		final boolean paused = commons.simulation.paused();
+		noStatusbarPlayback = true;
 		commons.simulation.pause();
 		onVideoComplete = new Action0() {
 			@Override
 			public void invoke() {
+				noStatusbarPlayback = false;
 				vm.seen = true;
 				if (!paused || resumeAfterVideo) {
 					resumeAfterVideo = false;
@@ -1049,12 +1053,10 @@ public class BridgeScreen extends ScreenBase {
 	 * Prepare the send list.
 	 */
 	void prepareSendList() {
-		// TODO implement
 		prepareList(world().scripting.getSendMessages());
 	}
 	/** Prepare the receive list. */
 	void prepareReceiveList() {
-		// TODO implement
 		prepareList(world().receivedMessages);
 	}
 	/**
@@ -1148,9 +1150,9 @@ public class BridgeScreen extends ScreenBase {
 		});
 	}
 	/**
-	 * Display the message panel and switch to receive.
+	 * Display the animations to receive a video message.
 	 */
-	public void displayReceive() {
+	void displayReceivePhases() {
 		if (commons.control().primary() != Screens.BRIDGE) {
 			return;
 		}
@@ -1158,7 +1160,7 @@ public class BridgeScreen extends ScreenBase {
 			Parallels.runDelayedInEDT(1000, new Runnable() {
 				@Override
 				public void run() {
-					displayReceive();
+					displayReceivePhases();
 				}
 			});
 			return;
@@ -1170,7 +1172,7 @@ public class BridgeScreen extends ScreenBase {
 			Parallels.runDelayedInEDT(1000, new Runnable() {
 				@Override
 				public void run() {
-					displayReceive();
+					displayReceivePhases();
 				}
 			});
 			return;
@@ -1183,6 +1185,16 @@ public class BridgeScreen extends ScreenBase {
 				break;
 			}
 		}
+	}
+	/**
+	 * Display the message panel and switch to receive.
+	 */
+	public void displayReceive() {
+		if (noStatusbarPlayback) {
+			return;
+		}
+		noStatusbarPlayback = true;
+		displayReceivePhases();
 	}
 	@Override
 	protected Point scaleBase(int mx, int my) {
