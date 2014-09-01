@@ -1,4 +1,5 @@
 #summary Project plan for 2012.
+#labels Deprecated
 
 See [http://code.google.com/p/open-ig/issues/list Issue list] for enhancements.
 
