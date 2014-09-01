@@ -6,7 +6,7 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 *I strongly recommend using the Launcher application which will take care about all the file downloads and the proper startup parametrization of the game.*
 
-*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Installer</a>* (version 0.42)
+*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Installer</a>* (version 0.43)
 
 = Details =
 
