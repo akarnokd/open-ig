@@ -34,9 +34,12 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -72,6 +75,36 @@ public class SlotEditor extends JFrame {
 	private JSpinner txW;
 	/** Slot Height. */
 	private JSpinner txH;
+	/** Maximum items. */
+	private JSpinner txMax;
+	/** Default race. */
+	private JTextField txRace;
+	/** Skirmish race. */
+	private JTextField txSkirmishRace;
+	/** Tech level. */
+	private JSpinner txLevel;
+	/** Tech level. */
+	private JSpinner txIndex;
+	/** Items. */
+	private JTextField txItems;
+	/** Prerequisite. */
+	private JTextField txRequires;
+	/** Lab. */
+	private JSpinner txCivil;
+	/** Lab. */
+	private JSpinner txMech;
+	/** Lab. */
+	private JSpinner txComp;
+	/** Lab. */
+	private JSpinner txAI;
+	/** Lab. */
+	private JSpinner txMil;
+	/** Lab. */
+	private JSpinner txResearch;
+	/** Lab. */
+	private JSpinner txProduction;
+	/** Indicate that the main loading is in progress. */
+	boolean mainLoad;
 	/**
 	 * Constructor, initializes the GUI.
 	 */
@@ -89,17 +122,52 @@ public class SlotEditor extends JFrame {
 		cbTech = new JComboBox<>();
 		render = new EquipmentRender();
 		
+		
+		JLabel lblRace = new JLabel("Race");
+		JLabel lblSkirmishRace = new JLabel("SkirmishRace");
+		JLabel lblLevel = new JLabel("Level");
+		JLabel lblIndex = new JLabel("Index");
+		JLabel lblRequires = new JLabel("Requires");
+		
 		JLabel lblID = new JLabel("Slot ID");
 		JLabel lblX = new JLabel("Slot X");
 		JLabel lblY = new JLabel("Slot Y");
 		JLabel lblW = new JLabel("Slot Width");
 		JLabel lblH = new JLabel("Slot Height");
+		JLabel lblMax = new JLabel("Max");
+		JLabel lblItems = new JLabel("Items");
+		
+		txRace = new JTextField();
+		txSkirmishRace = new JTextField();
+		txLevel = new JSpinner();
+		txIndex = new JSpinner();
+		txRequires = new JTextField();
+
+		JLabel lblCivil = new JLabel("Civil");
+		JLabel lblMech = new JLabel("Mech");
+		JLabel lblComp = new JLabel("Comp");
+		JLabel lblAI = new JLabel("AI");
+		JLabel lblMil = new JLabel("Mil");
+		
+		txCivil = new JSpinner();
+		txMech = new JSpinner();
+		txComp = new JSpinner();
+		txAI = new JSpinner();
+		txMil = new JSpinner();
+		
+		JLabel lblResearch = new JLabel("Research cost");
+		JLabel lblProduction = new JLabel("Production cost");
+		
+		txResearch = new JSpinner();
+		txProduction = new JSpinner();
 		
 		txID = new JLabel();
 		txX = new JSpinner();
 		txY = new JSpinner();
 		txW = new JSpinner();
 		txH = new JSpinner();
+		txMax = new JSpinner();
+		txItems = new JTextField();
 		
 		JButton btnSave = new JButton("Save");
 		JButton btnLoad = new JButton("Load");
@@ -121,6 +189,48 @@ public class SlotEditor extends JFrame {
 			)
 			.addGroup(
 				gl.createSequentialGroup()
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(lblRace)
+					.addComponent(lblSkirmishRace)
+					.addComponent(lblRequires)
+				)
+				.addGroup(
+					gl.createParallelGroup()
+					.addComponent(txRace, 350, 350, 350)
+					.addComponent(txSkirmishRace, 350, 350, 350)
+					.addComponent(txRequires, 150, 150, 150)
+				)
+			)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(lblLevel)
+				.addComponent(txLevel, 50, 50, 50)
+				.addComponent(lblIndex)
+				.addComponent(txIndex, 50, 50, 50)
+			)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(lblCivil)
+				.addComponent(txCivil, 50, 50, 50)
+				.addComponent(lblMech)
+				.addComponent(txMech, 50, 50, 50)
+				.addComponent(lblComp)
+				.addComponent(txComp, 50, 50, 50)
+				.addComponent(lblAI)
+				.addComponent(txAI, 50, 50, 50)
+				.addComponent(lblMil)
+				.addComponent(txMil, 50, 50, 50)
+			)
+			.addGroup(
+				gl.createSequentialGroup()
+				.addComponent(lblResearch)
+				.addComponent(txResearch, 100, 100, 100)
+				.addComponent(lblProduction)
+				.addComponent(txProduction, 100, 100, 100)
+			)
+			.addGroup(
+				gl.createSequentialGroup()
 				.addComponent(render, 298, 298, 298)
 				.addGroup(
 					gl.createParallelGroup()
@@ -129,6 +239,8 @@ public class SlotEditor extends JFrame {
 					.addComponent(lblY)
 					.addComponent(lblW)
 					.addComponent(lblH)
+					.addComponent(lblMax)
+					.addComponent(lblItems)
 				)
 				.addGroup(
 					gl.createParallelGroup()
@@ -137,6 +249,8 @@ public class SlotEditor extends JFrame {
 					.addComponent(txY, 50, 50, 50)
 					.addComponent(txW, 50, 50, 50)
 					.addComponent(txH, 50, 50, 50)
+					.addComponent(txMax, 50, 50, 50)
+					.addComponent(txItems, 350, 350, 350)
 				)
 			)
 		);
@@ -149,6 +263,48 @@ public class SlotEditor extends JFrame {
 				.addComponent(btnSave)
 				.addComponent(btnCopy)
 				.addComponent(btnPaste)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblRace)
+				.addComponent(txRace)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblSkirmishRace)
+				.addComponent(txSkirmishRace)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblLevel)
+				.addComponent(txLevel)
+				.addComponent(lblIndex)
+				.addComponent(txIndex)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblRequires)
+				.addComponent(txRequires)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblCivil)
+				.addComponent(txCivil)
+				.addComponent(lblMech)
+				.addComponent(txMech)
+				.addComponent(lblComp)
+				.addComponent(txComp)
+				.addComponent(lblAI)
+				.addComponent(txAI)
+				.addComponent(lblMil)
+				.addComponent(txMil)
+			)
+			.addGroup(
+				gl.createParallelGroup(Alignment.BASELINE)
+				.addComponent(lblResearch)
+				.addComponent(txResearch)
+				.addComponent(lblProduction)
+				.addComponent(txProduction)
 			)
 			.addGroup(
 				gl.createParallelGroup()
@@ -180,6 +336,16 @@ public class SlotEditor extends JFrame {
 						.addComponent(lblH)
 						.addComponent(txH)
 					)
+					.addGroup(
+						gl.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblMax)
+						.addComponent(txMax)
+					)
+					.addGroup(
+						gl.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblItems)
+						.addComponent(txItems)
+					)
 				)
 			)
 		);
@@ -187,17 +353,32 @@ public class SlotEditor extends JFrame {
 		cbTech.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if (mainLoad) {
+					return;
+				}
 				int idx = cbTech.getSelectedIndex();
 				if (idx >= 0) {
 					currentSlot = null;
 					render.current = techItems.get(idx);
+					
+					txRace.setText(render.current.get("race"));
+					txSkirmishRace.setText(render.current.get("skirmish-race", ""));
+					txLevel.setValue(render.current.getInt("level"));
+					txIndex.setValue(render.current.getInt("index"));
+					txRequires.setText(render.current.get("requires", ""));
+					
+					txCivil.setValue(render.current.getInt("civil", 0));
+					txMech.setValue(render.current.getInt("mech", 0));
+					txComp.setValue(render.current.getInt("comp", 0));
+					txAI.setValue(render.current.getInt("ai", 0));
+					txMil.setValue(render.current.getInt("mil", 0));
+					
+					txResearch.setValue(render.current.getInt("research-cost", 0));
+					txProduction.setValue(render.current.getInt("production-cost", 0));
+					
 					render.repaint();
 				}
-				txID.setText("");
-				txX.setValue(0);
-				txY.setValue(0);
-				txW.setValue(0);
-				txH.setValue(0);
+				clearSlotText();
 			}
 		});
 		btnSave.addActionListener(new ActionListener() {
@@ -214,7 +395,27 @@ public class SlotEditor extends JFrame {
 			}
 		});
 		txX.addChangeListener(createChangeListener("x"));
+		txY.addChangeListener(createChangeListener("y"));
+		txW.addChangeListener(createChangeListener("width"));
+		txH.addChangeListener(createChangeListener("height"));
+		txMax.addChangeListener(createChangeListener("max"));
+		txItems.getDocument().addDocumentListener(createTextChangeListener("items", txItems));
 		
+		txRace.getDocument().addDocumentListener(createTextChangeListener2("race", txRace, false));
+		txSkirmishRace.getDocument().addDocumentListener(createTextChangeListener2("skirmish-race", txSkirmishRace, true));
+		txLevel.addChangeListener(createChangeListener2("level", false));
+		txIndex.addChangeListener(createChangeListener2("index", false));
+		txRequires.getDocument().addDocumentListener(createTextChangeListener2("requires", txRequires, true));
+		
+		txCivil.addChangeListener(createChangeListener2("civil", true));
+		txMech.addChangeListener(createChangeListener2("mech", true));
+		txComp.addChangeListener(createChangeListener2("comp", true));
+		txAI.addChangeListener(createChangeListener2("ai", true));
+		txMil.addChangeListener(createChangeListener2("mil", true));
+
+		txResearch.addChangeListener(createChangeListener2("research-cost", false));
+		txProduction.addChangeListener(createChangeListener2("production-cost", false));
+
 		MouseAdapter ma = new MouseAdapter() {
 			boolean dragMode;
 			int dragX;
@@ -239,8 +440,10 @@ public class SlotEditor extends JFrame {
 							txY.setValue(sy);
 							txW.setValue(sw);
 							txH.setValue(sh);
+							txMax.setValue(xslot.getInt("max"));
+							txItems.setText(xslot.get("items"));
 							
-							dragMode = e.getButton() == MouseEvent.BUTTON1;
+							dragMode = e.getButton() == MouseEvent.BUTTON3;
 							if (dragMode) {
 								dragX = e.getX() - sx;
 								dragY = e.getY() - sy;
@@ -251,16 +454,12 @@ public class SlotEditor extends JFrame {
 					}
 				}
 				currentSlot = null;
-				txID.setText("");
-				txX.setValue(0);
-				txY.setValue(0);
-				txW.setValue(0);
-				txH.setValue(0);
+				clearSlotText();
 				render.repaint();
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
+				if (e.getButton() == MouseEvent.BUTTON3) {
 					dragMode = false;
 				}
 			}
@@ -325,26 +524,51 @@ public class SlotEditor extends JFrame {
 			}
 		});
 	}
+	/** Clears the slot text fields. */
+	void clearSlotText() {
+		txID.setText("");
+		txX.setValue(0);
+		txY.setValue(0);
+		txW.setValue(0);
+		txH.setValue(0);
+		txMax.setValue(0);
+		txItems.setText("");
+	}
 	/** Loads the tech file. */
 	void doLoad() {
+		mainLoad = true;
 		try {
 			techXML = XElement.parseXML(TECH_XML_FILE);
 		} catch (XMLStreamException ex) {
 			ex.printStackTrace();
 		}
+
 		render.current = null;
 		currentSlot = null;
-
 		techItems.clear();
 		cbTech.removeAllItems();
 		for (XElement xe : techXML.childrenWithName("item")) {
-			if (xe.childElement("slot") != null) {
+			if (xe.get("category", "").startsWith("SPACESHIP")) {
 				techItems.add(xe);
 				cbTech.addItem(xe.get("id"));
 			}
 		}
 		cbTech.setSelectedIndex(-1);
-
+		render.current = null;
+		currentSlot = null;
+		txRace.setText("");
+		txSkirmishRace.setText("");
+		txLevel.setValue(0);
+		txRequires.setText("");
+		txIndex.setValue(0);
+		txResearch.setValue(0);
+		txProduction.setValue(0);
+		txCivil.setValue(0);
+		txMech.setValue(0);
+		txComp.setValue(0);
+		txAI.setValue(0);
+		txMil.setValue(0);
+		mainLoad = false;
 	}
 	/**
 	 * Creates a change listener which saves the value into the given field of the current tech slot.
@@ -363,6 +587,89 @@ public class SlotEditor extends JFrame {
 							break;
 						}
 					}					
+				}
+			}
+		};
+	}
+	/**
+	 * Creates a change listener which saves the value into the given field of the current tech slot.
+	 * @param field the field attribute name
+	 * @param tf the parent text field
+	 * @return the change listener
+	 */
+	private DocumentListener createTextChangeListener(final String field, final JTextField tf) {
+		return new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				stateChanged(e);
+			}
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				stateChanged(e);
+			}
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				stateChanged(e);
+			}
+			public void stateChanged(DocumentEvent e) {
+				if (render.current != null && currentSlot != null) {
+					for (XElement xslot : render.current.childrenWithName("slot")) {
+						if (currentSlot.equals(xslot.get("id"))) {
+							xslot.set(field, tf.getText());
+							render.repaint();
+							break;
+						}
+					}					
+				}
+			}
+		};
+	}
+	/**
+	 * Creates a change listener which saves the value into the given field of the current tech slot.
+	 * @param field the field attribute name
+	 * @param zeroIsNull store zero as a null value?
+	 * @return the change listener
+	 */
+	private ChangeListener createChangeListener2(final String field, final boolean zeroIsNull) {
+		return new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if (render.current != null) {
+					int value = (Integer)(((JSpinner)e.getSource()).getValue());
+					if (value > 0 || !zeroIsNull) {
+						render.current.set(field, value);
+					} else {
+						render.current.set(field, null);
+					}
+				}
+			}
+		};
+	}
+	/**
+	 * Creates a change listener which saves the value into the given field of the current tech slot.
+	 * @param field the field attribute name
+	 * @param tf the parent text field
+	 * @param emptyIsNull store a null if the text is empty?
+	 * @return the change listener
+	 */
+	private DocumentListener createTextChangeListener2(final String field, final JTextField tf, final boolean emptyIsNull) {
+		return new DocumentListener() {
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				stateChanged(e);
+			}
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				stateChanged(e);
+			}
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				stateChanged(e);
+			}
+			public void stateChanged(DocumentEvent e) {
+				if (render.current != null) {
+					String text = tf.getText();
+					render.current.set(field, text.isEmpty() && emptyIsNull ? null : text);
 				}
 			}
 		};

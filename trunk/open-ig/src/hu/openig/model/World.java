@@ -173,7 +173,7 @@ public class World implements ModelLookup {
 		this.rl = resLocator;
 		this.params.load(definition.parameters);
 		final ThreadPoolExecutor exec = 
-			new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 
+			new ThreadPoolExecutor(Math.min(4, Runtime.getRuntime().availableProcessors()), 
 					Integer.MAX_VALUE, 1, TimeUnit.SECONDS, 
 					new LinkedBlockingQueue<Runnable>(),
 					new ThreadFactory() {
@@ -197,11 +197,28 @@ public class World implements ModelLookup {
 			processBattle(rl.getXML(definition.battle));
 
 			processPlayers(rl.getXML(definition.players)); 
+
+			// remove unused technologies.
+			Set<String> races = new HashSet<>();
+			for (Player p : players.values()) {
+				races.add(p.race);
+			}
+			
+			outer:
+			for (ResearchType rt : new ArrayList<>(researches.values())) {
+				for (String r : races) {
+					if (rt.race.contains(r)) {
+						continue outer;
+					}
+				}
+				researches.map().remove(rt.id);
+			}
+
 			
 			talks = new Talks();
 			walks = new Walks();
 			buildingModel = new BuildingModel(env.config(), 
-					skirmishDefinition != null && skirmishDefinition.allowAllBuildings);
+					skirmishDefinition != null && skirmishDefinition.allowAllBuildings, races);
 			galaxyModel = new GalaxyModel(env.config());
 			test = new LinkedHashMap<>();
 			diplomacy = new LinkedHashMap<>();
@@ -481,11 +498,25 @@ public class World implements ModelLookup {
 	 * @param xplayers the players node
 	 */
 	public void processPlayers(XElement xplayers) {
+		
+		// in skirmish, don't load the player which was not referenced
+		Set<String> accept = null;
+		if (skirmishDefinition != null) {
+			accept = new HashSet<>();
+			for (SkirmishPlayer sp : skirmishDefinition.players) {
+				accept.add(sp.originalId);
+			}
+		}
+		
 		Map<Fleet, Integer> deferredFleets = new HashMap<>();
 		
 		int g = 1;
 		for (XElement xplayer : xplayers.childrenWithName("player")) {
-			Player p = new Player(this, xplayer.get("id"));
+			String id = xplayer.get("id");
+			if (accept != null && !accept.contains(id)) {
+				continue;
+			}
+			Player p = new Player(this, id);
 			p.color = (int)Long.parseLong(xplayer.get("color"), 16);
 			p.race = xplayer.get("race");
 			p.name = labels.get(xplayer.get("name"));
@@ -782,7 +813,8 @@ public class World implements ModelLookup {
 		}
 		
 		if (skirmishDefinition != null 
-				&& (tech.category.main != ResearchMainCategory.BUILDINGS || skirmishDefinition.allowAllBuildings)) {
+				&& (tech.category.main != ResearchMainCategory.BUILDINGS 
+				|| skirmishDefinition.allowAllBuildings)) {
 			String skirmishRace = item.get("skirmish-race", "");
 			if (!skirmishRace.isEmpty()) {
 				tech.race.addAll(Arrays.asList(skirmishRace.split("\\s*,\\s*")));

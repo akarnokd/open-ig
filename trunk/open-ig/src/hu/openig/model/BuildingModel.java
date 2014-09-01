@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -39,14 +40,18 @@ public class BuildingModel {
 	protected final Configuration config;
 	/** Are the buildings read in skirmish-mode? */
 	protected final boolean skirmishMode;
+	/** Set of races to load buildings for. */
+	protected Set<String> races;
 	/**
 	 * Constructor. Set the configuration.
 	 * @param config the configuration
 	 * @param skirmishMode indicate skirmish mode
+	 * @param races the races to include
 	 */
-	public BuildingModel(Configuration config, boolean skirmishMode) {
+	public BuildingModel(Configuration config, boolean skirmishMode, Set<String> races) {
 		this.config = config;
 		this.skirmishMode = skirmishMode;
+		this.races = races;
 	}
 	/**
 	 * Process the contents of the buildings definition.
@@ -164,56 +169,79 @@ public class BuildingModel {
 			
 			for (XElement building : buildings.childrenWithName("building")) {
 				final BuildingType b = new BuildingType();
+				XElement bld = building.childElement("build");
+				String research = bld.get("research", null);
+				b.research = researches.get(research);
+				if (research != null && b.research == null) {
+					//throw new AssertionError("Missing research: Building = " + b.id + ", Research = " + research);
+					// no research available with the current set of races.
+					continue;
+				}
 				b.scaffoldings = scaffoldings;
 				b.id = building.get("id");
 				b.name = labels.get(building.get("name"));
 				b.description = labels.get(building.get("name") + ".desc");
 				b.minimapTiles = bmt;
 				
-				XElement gfx = building.childElement("graphics");
-				for (XElement r : gfx.childrenWithName("tech")) {
-					boolean skirmishOnly = r.getBoolean("skirmish-only", false);
-					// load this tile only if skirmish mode is on and the building is marked as skirmish
-					if (!this.skirmishMode && skirmishOnly) {
-						continue;
-					}
-
-					final TileSet ts = new TileSet();
-					
-					final String rid = r.get("id");
-					final int width = Integer.parseInt(r.get("width"));
-					final int height = Integer.parseInt(r.get("height"));
-					
-					final String normalImg = r.get("image");
-					final String normalLight = normalImg + "_lights";
-					final String damagedImg = normalImg + "_damaged";
-					final String previewImg = normalImg + "_mini";
-					
-					wip.inc();
-					exec.execute(U.checked(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								BufferedImage lightMap = null;
-								ResourcePlace rp = rl.get(normalLight, ResourceType.IMAGE);
-								if (rp != null) {
-									lightMap = rl.getImage(normalLight);
+				final XElement gfx = building.childElement("graphics");
+				wip.inc();
+				exec.execute(U.checked(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Map<String, TileSet> tsCache = new HashMap<>();
+							for (XElement r : gfx.childrenWithName("tech")) {
+								final String rid = r.get("id");
+								if (races != null && !races.contains(rid)) {
+									continue;
 								}
-								BufferedImage image = rl.getImage(normalImg);
-								ts.normal = newTile(width, height, image, lightMap);
-								ts.nolight = newTile(width, height, image, null);
-								ts.damaged = newTile(width, height, rl.getImage(damagedImg), null); // no lightmap for damaged building
-								ts.preview = rl.getImage(previewImg);
+								boolean skirmishOnly = r.getBoolean("skirmish-only", false);
+								// load this tile only if skirmish mode is on and the building is marked as skirmish
+								if (!skirmishMode && skirmishOnly) {
+									continue;
+								}
+			
+								TileSet ts = null;
+								
+								final int width = Integer.parseInt(r.get("width"));
+								final int height = Integer.parseInt(r.get("height"));
+								
+								final String normalImg = r.get("image");
+								TileSet tsCached = tsCache.get(normalImg);
+								if (tsCached != null) {
+									ts = tsCached;
+								} else {
+									ts = new TileSet();
+									tsCache.put(normalImg, ts);
+									
+									final String normalLight = normalImg + "_lights";
+									final String damagedImg = normalImg + "_damaged";
+									final String previewImg = normalImg + "_mini";
+									BufferedImage lightMap = null;
+									ResourcePlace rp = rl.get(normalLight, ResourceType.IMAGE);
+									if (rp != null) {
+										lightMap = rl.getImage(normalLight);
+									}
+									BufferedImage image = rl.getImage(normalImg);
+			
+									ts.normal = newTile(width, height, image, lightMap);
+									ts.nolight = newTile(width, height, image, null);
+									
+									BufferedImage dmgImage = rl.getImage(damagedImg);
+									ts.damaged = newTile(width, height, dmgImage, null); // no lightmap for damaged building
+			
+									ts.preview = rl.getImage(previewImg);
+			
+								}
 								synchronized (b.tileset) {
 									b.tileset.put(rid, ts);
 								}
-							} finally {
-								wip.dec();
 							}
+						} finally {
+							wip.dec();
 						}
-					}));
-				}
-				XElement bld = building.childElement("build");
+					}
+				}));
 				b.cost = Integer.parseInt(bld.get("cost"));
 				b.hitpoints = b.cost; // TODO cost == hitpoints???
 				b.kind = bld.get("kind");
@@ -225,11 +253,6 @@ public class BuildingModel {
 				}
 				b.skirmishHardLimit = bld.getBoolean("skirmish-hard-limit", false);
 				
-				String research = bld.get("research", null);
-				b.research = researches.get(research);
-				if (research != null && b.research == null && researches.size() > 0) {
-					throw new AssertionError("Missing research: Building = " + b.id + ", Research = " + research);
-				}
 				String except = bld.get("except", null);
 				if (except != null && !except.isEmpty()) {
 					b.except.addAll(Arrays.asList(except.split("\\s*,\\s*")));

@@ -2194,33 +2194,32 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		if ((rightList.selectedItem != null && rightList.selectedItem.type != value)
 				||  (rightList.items.size() == 0)) {
 			rightList.selectedItem = null;
-		} else {
-			for (InventoryItem pii : rightList.items) {
-				if (pii.type == value) {
-					if (rightList.group) {
-						InventoryItemGroup ig = rightList.map.get(value);
-						rightList.selectedItem = ig.items.get(ig.index);
-					} else {
-						rightList.selectedItem = pii;
-					}
-					break;
+		}
+		for (InventoryItem pii : rightList.items) {
+			if (pii.type == value) {
+				if (rightList.group) {
+					InventoryItemGroup ig = rightList.map.get(value);
+					rightList.selectedItem = ig.items.get(ig.index);
+				} else {
+					rightList.selectedItem = pii;
 				}
+				break;
 			}
 		}
+
 		if ((leftList.selectedItem != null 
 				&& leftList.selectedItem.type != value) || (leftList.items.size() == 0)) {
 			leftList.selectedItem = null;
-		} else {
-			for (InventoryItem pii : leftList.items) {
-				if (pii.type == value) {
-					if (leftList.group) {
-						InventoryItemGroup ig = leftList.map.get(value);
-						leftList.selectedItem = ig.items.get(ig.index);
-					} else {
-						leftList.selectedItem = pii;
-					}
-					break;
+		}
+		for (InventoryItem pii : leftList.items) {
+			if (pii.type == value) {
+				if (leftList.group) {
+					InventoryItemGroup ig = leftList.map.get(value);
+					leftList.selectedItem = ig.items.get(ig.index);
+				} else {
+					leftList.selectedItem = pii;
 				}
+				break;
 			}
 		}
 	}

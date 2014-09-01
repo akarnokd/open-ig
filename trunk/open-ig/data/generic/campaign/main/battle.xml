@@ -82,8 +82,8 @@
 		<tech id="DribsFighter" normal="inventions/spaceships/fighters/dribs_fighter_rotate" image="inventions/spaceships/fighters/dribs_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
 		<tech id="EcalepFighter" normal="inventions/spaceships/fighters/ecalep_fighter_rotate" image="inventions/spaceships/fighters/ecalep_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="500"/>
 		<tech id="MorgathFighter" normal="inventions/spaceships/fighters/morgath_fighter_rotate" image="inventions/spaceships/fighters/morgath_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
-		<tech id="SullepFighter1" normal="inventions/spaceships/fighters/sullep_fighter_1_rotate" image="inventions/spaceships/fighters/sullep_fighter_1_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="600"/>
-		<tech id="SullepFighter2" normal="inventions/spaceships/fighters/sullep_fighter_2_rotate" image="inventions/spaceships/fighters/sullep_fighter_2_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
+		<tech id="SullepFighter" normal="inventions/spaceships/fighters/sullep_fighter_rotate" image="inventions/spaceships/fighters/sullep_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="600"/>
+		<tech id="SullepFighterB" normal="inventions/spaceships/fighters/sullep_fighter_b_rotate" image="inventions/spaceships/fighters/sullep_fighter_b_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="550"/>
 		<tech id="YchomFighter" normal="inventions/spaceships/fighters/ychom_fighter_rotate" image="inventions/spaceships/fighters/ychom_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="600"/>
 
 		<tech id="DargslanDestroyer" normal="inventions/spaceships/cruisers/dargslan_destroyer_rotate" image="inventions/spaceships/cruisers/dargslan_destroyer_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="5000">

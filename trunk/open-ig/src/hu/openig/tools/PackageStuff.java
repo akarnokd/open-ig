@@ -205,6 +205,7 @@ public final class PackageStuff {
 							|| d.contains("hu/openig/gfx/english.png")
 							|| d.contains("hu/openig/gfx/german.png")
 							|| d.contains("hu/openig/gfx/french.png")
+							|| d.contains("hu/openig/gfx/spanish.png")
 							|| d.contains("hu/openig/gfx/russian.png")
 							|| d.contains("hu/openig/gfx/loading.gif")
 							|| d.contains("hu/openig/gfx/down.png")
