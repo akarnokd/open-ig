@@ -1854,7 +1854,7 @@
 	<entry key='tech.ychomdestroyer.name'>Ychom Romboló</entry>
 	<entry key='tech.ychomdestroyer.longname'>Ychom Romboló</entry>
 	<entry key='tech.ychomdestroyer.description'>Közepesen erős romboló</entry>
-	<entry key='tech.dargslanbattleship.name'>Dargslan Csatahajó</entry>
+	<entry key='tech.dargslanbattleship.name'>Dargslan Csh.</entry>
 	<entry key='tech.dargslanbattleship.longname'>Dargslan Csatahajó</entry>
 	<entry key='tech.dargslanbattleship.description'>Relatíve erős csatahajó</entry>
 	<entry key='tech.dribsbattleship.name'>Dribs Csatahajó</entry>
@@ -3401,16 +3401,16 @@
 	<entry key=""></entry>
 	<entry key=""></entry>
 	
-	<entry key='tech.dargslanfighter1.name'>Dargslan Vadász 1</entry>
+	<entry key='tech.dargslanfighter1.name'>Dargslan Vdsz. 1</entry>
 	<entry key='tech.dargslanfighter1.longname'>Dargslan Vadász Mk1</entry>
 	<entry key='tech.dargslanfighter1.description'>A Galaktikus Birodalommal húzódó háború szükségessé tette egy erősebb vadász kifejlesztését.</entry>
-	<entry key='tech.dargslanfighter2.name'>Dargslan Vadász 2</entry>
+	<entry key='tech.dargslanfighter2.name'>Dargslan Vdsz. 2</entry>
 	<entry key='tech.dargslanfighter2.longname'>Dargslan Vadász Mk2</entry>
 	<entry key='tech.dargslanfighter2.description'>Más fajok jobb vadászokkal rendelkeznek, mint gondoltuk. Ez a verzió sokat segíthet a védekezésben.</entry>
-	<entry key='tech.dargslanfighter3.name'>Dargslan Vadász 3</entry>
+	<entry key='tech.dargslanfighter3.name'>Dargslan Vdsz. 3</entry>
 	<entry key='tech.dargslanfighter3.longname'>Dargslan Vadász Mk3</entry>
 	<entry key='tech.dargslanfighter3.description'>A továbfejlesztett 3-as verziójú vadász segítségével könnyebben győzhetünk más fajok felett.</entry>
-	<entry key='tech.dargslanfighter4.name'>Dargslan Vadász 4</entry>
+	<entry key='tech.dargslanfighter4.name'>Dargslan Vdsz. 4</entry>
 	<entry key='tech.dargslanfighter4.longname'>Dargslan Vadász Mk4</entry>
 	<entry key='tech.dargslanfighter4.description'>A Dargslanok elleni támadásra és védekezésre kifejlesztett vadász.</entry>
 	<entry key='tech.dargslandestroyer1.name'>Dargslan Romb. 1</entry>

@@ -118,14 +118,17 @@ public class VehicleList extends UIContainer {
 				if (row++ > 0) {
 					maxHeight += 5;
 				}
-				maxHeight += rt.equipmentImage.getHeight();
+				int equipmentHeight = rt.equipmentImage.getHeight();
+				maxHeight += Math.max(equipmentHeight, 27);
 			}
 		} else {
 			for (InventoryItem pii : items) {
 				if (row++ > 0) {
 					maxHeight += 5;
 				}
-				maxHeight += pii.type.equipmentImage.getHeight();
+				int equipmentHeight = pii.type.equipmentImage.getHeight();
+
+				maxHeight += Math.max(equipmentHeight, 27);
 				maxWidth = Math.max(maxWidth, pii.type.equipmentImage.getWidth());
 			}
 		}
@@ -139,10 +142,12 @@ public class VehicleList extends UIContainer {
 	public InventoryItem getItemAt(final int y) {
 		int y0 = -yOffset;
 		for (InventoryItem pii : items) {
-			if (y >= y0 && y < y0 + pii.type.equipmentImage.getHeight()) {
+			int equipmentHeight = pii.type.equipmentImage.getHeight();
+			int rowHeight = Math.max(equipmentHeight, 27);
+			if (y >= y0 && y < y0 + rowHeight) {
 				return pii;
 			}
-			y0 += pii.type.equipmentImage.getHeight() + 5;
+			y0 += rowHeight + 5;
 		}
 		return null;
 	}
@@ -154,7 +159,7 @@ public class VehicleList extends UIContainer {
 	public InventoryItemGroup getGroupAt(final int y) {
 		int y0 = -yOffset;
 		for (Map.Entry<ResearchType, InventoryItemGroup> e : map.entrySet()) {
-			int eh = e.getKey().equipmentImage.getHeight();
+			int eh = Math.max(e.getKey().equipmentImage.getHeight(), 27);
 			if (y >= y0 && y < y0 + eh) {
 				return e.getValue();
 			}
@@ -301,7 +306,7 @@ public class VehicleList extends UIContainer {
 						String.format("%d / %d", e.getValue().index + 1, e.getValue().items.size())
 				);
 				
-				y += e.getKey().equipmentImage.getHeight();
+				y += Math.max(e.getKey().equipmentImage.getHeight(), 27);
 			}
 		} else {
 			for (InventoryItem pii : items) {
@@ -338,7 +343,7 @@ public class VehicleList extends UIContainer {
 						maxWidth + 5, y + 10, 
 						7, TextRenderer.GREEN, pii.type.name);
 
-				y += pii.type.equipmentImage.getHeight();
+				y += Math.max(pii.type.equipmentImage.getHeight(), 27);
 			}
 		}
 		

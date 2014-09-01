@@ -503,6 +503,13 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 				}
 			}
 		}
+		for (ResearchType rt : owner.available()) {
+			if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				if (owner.inventoryCount(rt) > 0 && inventoryCount(rt) == 0) {
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 	/**

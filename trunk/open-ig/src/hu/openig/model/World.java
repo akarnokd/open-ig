@@ -534,21 +534,25 @@ public class World implements ModelLookup {
 				}
 			}
 			
-			for (XElement xinventory : xplayer.childrenWithName("inventory")) {
-				String rid = xinventory.get("id");
-				ResearchType rt = researches.researches.get(rid);
-				if (rt == null) {
-					System.err.printf("Missing research %s for player %s%n", rid, player.id);
-				} else {
-					p.changeInventoryCount(rt, xinventory.getInt("count"));
+			// add starting technology and fleet only if not in skirmish mode
+			// skirmish initials are determined by the level=0 tech only.
+			if (skirmishDefinition == null) {
+				for (XElement xinventory : xplayer.childrenWithName("inventory")) {
+					String rid = xinventory.get("id");
+					ResearchType rt = researches.researches.get(rid);
+					if (rt == null) {
+						System.err.printf("Missing research %s for player %s%n", rid, player.id);
+					} else {
+						p.changeInventoryCount(rt, xinventory.getInt("count"));
+					}
 				}
-			}
-			for (ResearchType rt : p.inventory.keySet()) {
-				p.add(rt);
-			}
-			setTechAvailability(xplayer, p);
+				for (ResearchType rt : p.inventory.keySet()) {
+					p.add(rt);
+				}
+				setTechAvailability(xplayer, p);
 			
-			loadFleets(deferredFleets, xplayer, p);
+				loadFleets(deferredFleets, xplayer, p);
+			}
 			
 			this.players.put(p.id, p);
 			
@@ -772,9 +776,13 @@ public class World implements ModelLookup {
 		tech.infoImageWired = placeholder(rl.getImage(image + "_wired_large", true), tech.infoImage);
 		
 		tech.factory = item.get("factory");
-		tech.race.addAll(Arrays.asList(item.get("race").split("\\s*,\\s*")));
+		String raceStr = item.get("race");
+		if (!raceStr.isEmpty()) {
+			tech.race.addAll(Arrays.asList(raceStr.split("\\s*,\\s*")));
+		}
 		
-		if (skirmishDefinition != null && skirmishDefinition.allowAllBuildings) {
+		if (skirmishDefinition != null 
+				&& (tech.category.main != ResearchMainCategory.BUILDINGS || skirmishDefinition.allowAllBuildings)) {
 			String skirmishRace = item.get("skirmish-race", "");
 			if (!skirmishRace.isEmpty()) {
 				tech.race.addAll(Arrays.asList(skirmishRace.split("\\s*,\\s*")));
