@@ -102,6 +102,9 @@
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
 			<type id='GarthogRadarJammer' list=''/>
+			<type id='GarthogFighter' list=''/>
+			<type id='GarthogDestroyer' list=''/>
+			<type id='GarthogBattleship' list=''/>
 		</available>
 	</player>
 	<player id='Morgath' race='morgath' name='players.morgath'
@@ -124,6 +127,9 @@
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
+			<type id='MorgathFighter' list=''/>
+			<type id='MorgathDestroyer' list=''/>
+			<type id='MorgathBattleship' list=''/>
 		</available>
 	</player>
 	<player id='Ychom' race='ychom' name='players.ychom'
@@ -140,12 +146,15 @@
 		<available>
 			<type id='PhoodFactory' list=''/>
 			<type id='MediumTank' list=''/>
-			<type id='YchomMinelayer' list=''/>
+			<type id='YchomMineLayer' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
+			<type id='YchomFighter' list=''/>
+			<type id='YchomDestroyer' list=''/>
+			<type id='YchomBattleship' list=''/>
 		</available>
 	</player>
 	<player id='Dribs' race='dribs' name='players.dribs'
@@ -169,6 +178,9 @@
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
+			<type id='DribsFighter' list=''/>
+			<type id='DribsDestroyer' list=''/>
+			<type id='DribsBattleship' list=''/>
 		</available>
 	</player>
 	<player id='Sullep' race='sullep' name='players.sullep'
@@ -191,6 +203,9 @@
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
 			<type id='SullepArtillery' list=''/>
+			<type id='SullepFighter' list=''/>
+			<type id='SullepDestroyer' list=''/>
+			<type id='SullepBattleship' list=''/>
 		</available>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
@@ -220,6 +235,9 @@
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
+			<type id='DargslanFighter' list=''/>
+			<type id='DargslanDestroyer' list=''/>
+			<type id='DargslanBattleship' list=''/>
 		</available>
 	</player>
 	<player id='Ecalep' race='ecalep' name='players.ecalep'
@@ -244,6 +262,9 @@
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
+			<type id='EcalepFighter' list=''/>
+			<type id='EcalepDestroyer' list=''/>
+			<type id='EcalepBattleship' list=''/>
 		</available>
 	</player>
 	<player id='FreeTraders' race='human' name='players.free_traders'

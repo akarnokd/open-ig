@@ -476,7 +476,7 @@ public class MapEditor extends JFrame {
 							@Override
 							public void run() {
 								try {
-									buildingMap = new BuildingModel(config, true);
+									buildingMap = new BuildingModel(config, true, null);
 									buildingMap.processBuildings(rl, "campaign/main/buildings", 
 											new HashMap<String, ResearchType>(), lbl2, exec, wip);
 								} finally {

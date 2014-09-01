@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
-  <module id='Launcher' version='0.42'>
+  <module id='Launcher' version='0.43'>
     <general url='https://code.google.com/p/open-ig/wiki/Launcher'>
       <desc lang='hu'>
 				Az Open Imperium Galactica indító programja, amely automatikusan letölti
@@ -10,19 +10,20 @@
 				for install, upgrade or repair purposes.</desc>
     </general>
     <notes url='https://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-      <desc lang='hu'>Orosz nyelvi támogatás.</desc>
-      <desc lang='en'>Russian language support.</desc>
-      <desc lang='de'>Russische sprache.</desc>
-      <desc lang='fr'>Support de la langue Russe.</desc>
-      <desc lang='ru'>Поддержка русского языка.</desc>
+      <desc lang='hu'>Spanyol nyelvi támogatás.</desc>
+      <desc lang='en'>Spanish language support.</desc>
+      <desc lang='de'>Spanish language support.</desc>
+      <desc lang='fr'>Spanish language support.</desc>
+      <desc lang='ru'>Spanish language support.</desc>
+      <desc lang='es'>Spanish language support.</desc>
     </notes>
     <execute file='open-ig-launcher.jar' memory='64'/>
-    <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='C30CFE9E2039100A546A3E8B7324191B7AF458A7'>
+    <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='AD466C1FFA6CFF24ADAE344E662B3A3842B73AD6'>
       <desc lang='hu'>Az indító fő fájlja</desc>
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.180'>
+  <module id='Game' version='0.95.181'>
     <general url='https://code.google.com/p/open-ig/'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -31,17 +32,18 @@
 				The Open Imperium Galactica game.
 			</desc>
     </general>
-    <execute file='open-ig-%s.jar' memory='768' class='hu.openig.Startup'/>
+    <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='https://code.google.com/p/open-ig/wiki/Game_Notes'>
-      <desc lang='hu'>Kereskedelem, hibajavítások.</desc>
-      <desc lang='en'>Trade, bugfixes.</desc>
-      <desc lang='de'>Trade, bugfixes.</desc>
-      <desc lang='fr'>Trade, bugfixes.</desc>
-      <desc lang='ru'>Trade, bugfixes.</desc>
+      <desc lang='hu'>Skirmish hibajavítások, némi spanyol nyelvű kép.</desc>
+      <desc lang='en'>Skirmish bugfixes, some Spanish images.</desc>
+      <desc lang='de'>Skirmish bugfixes, some Spanish images.</desc>
+      <desc lang='fr'>Skirmish bugfixes, some Spanish images.</desc>
+      <desc lang='ru'>Skirmish bugfixes, some Spanish images.</desc>
+      <desc lang='es'>Skirmish bugfixes, some Spanish images.</desc>
     </notes>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.180.jar' sha1='5BE100C95214538C7F389E320C5000689E4CAAC4'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140730a2.zip' sha1='08C53EE150EC2CA436F5688189C4C10EFA843E77'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140730a.zip' sha1='0C7F5F87925B4082D0B85D8271F7EC7CC564D36D'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.181.jar' sha1='0BE05C9AF0CEFA2D8E03144ABA0742665C617742'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140901a2.zip' sha1='E22B79EE5895F741B1CB7A1B5B7B11FFFF2BD91C'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140901a.zip' sha1='DBBB31BBC7707AE09EF9F322417AF8383A723E9F'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -105,6 +107,7 @@
     <remove file='open-ig-images-20140325a.zip'/>
     <remove file='open-ig-images-20140714a.zip'/>
     <remove file='open-ig-images-20140718a.zip'/>
+    <remove file='open-ig-images-20140730a.zip'/>
   </module>
   <module id='MapEditor' version='0.60'>
     <general url='https://code.google.com/p/open-ig/wiki/MapEditor'>

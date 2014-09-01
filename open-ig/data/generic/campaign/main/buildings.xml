@@ -1200,7 +1200,7 @@
       <tech id='dargslan' height='3' width='3' image='colony/buildings/human/spy_center'/>
       <tech id='ecalep' height='3' width='3' image='colony/buildings/human/spy_center'/>
     </graphics>
-    <build limit='1' kind='Spy' cost='35000'/>
+    <build limit='1' kind='Spy' cost='35000' research="SpyCenter"/>
     <operation>
       <resource type='spy'>1</resource>
       <resource type='energy'>-2000</resource>
