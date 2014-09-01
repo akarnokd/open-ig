@@ -160,7 +160,7 @@ public class Player {
 	 */
 	public Planet moveNextPlanet() {
 		List<Planet> playerPlanets = ownPlanets();
-		if (playerPlanets.size() > 0) {
+		if (!playerPlanets.isEmpty()) {
 			Collections.sort(playerPlanets, Planet.PLANET_ORDER);
 			int idx = playerPlanets.indexOf(currentPlanet);
 			Planet p = playerPlanets.get((idx + 1) % playerPlanets.size());
@@ -190,10 +190,10 @@ public class Player {
 	 */
 	public Planet movePrevPlanet() {
 		List<Planet> playerPlanets = ownPlanets();
-		if (playerPlanets.size() > 0) {
+		if (!playerPlanets.isEmpty()) {
 			Collections.sort(playerPlanets, Planet.PLANET_ORDER);
 			int idx = playerPlanets.indexOf(currentPlanet);
-			if (idx == 0) {
+			if (idx <= 0) {
 				idx = playerPlanets.size(); 
 			}
 			Planet p = playerPlanets.get((idx - 1) % playerPlanets.size());
