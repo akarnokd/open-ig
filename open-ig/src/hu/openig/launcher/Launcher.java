@@ -1563,7 +1563,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 			continueLast.setVisible(true);
 			campaignEditor.setVisible(true);
 			tools.setVisible(true);
-			dlcManager.setVisible(true);
+			dlcManager.setVisible(false); // NO DLCs
 			other.setVisible(true);
 			
 			install.setVisible(false);
@@ -2169,7 +2169,8 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		boolean isInstalled = !NOT_INSTALLED.equals(detectedVersion);
 		campaignEditor.setVisible(isInstalled && !visible);
 		tools.setVisible(isInstalled && !visible);
-		dlcManager.setVisible(isInstalled && !visible);
+//		dlcManager.setVisible(isInstalled && !visible);
+		dlcManager.setVisible(false); // NO DLCs
 		other.setVisible(isInstalled && !visible);
 		
 		
