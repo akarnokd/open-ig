@@ -101,6 +101,7 @@
 			<type id='IonCannon' list=''/>
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
+			<type id='GarthogRadarJammer' list=''/>
 		</available>
 	</player>
 	<player id='Morgath' race='morgath' name='players.morgath'
@@ -139,6 +140,7 @@
 		<available>
 			<type id='PhoodFactory' list=''/>
 			<type id='MediumTank' list=''/>
+			<type id='YchomMinelayer' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='OrbitalFactory' list=''/>
@@ -162,6 +164,7 @@
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
+			<type id='DribsParalizer' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
@@ -187,6 +190,7 @@
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
 			<type id='Fortress' list=''/>
+			<type id='SullepArtillery' list=''/>
 		</available>
 	</player>
 	<player id='Dargslan' race='dargslan' name='players.dargslan'
@@ -211,6 +215,7 @@
 			<type id='MultiheadedRocket' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='HeavyTank' list=''/>
+			<type id='DargslanSelfRepairTank' list=''/>
 			<type id='RocketLauncher2' list=''/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
@@ -234,6 +239,7 @@
 			<type id='MultiheadedRocket' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id="HeavyTank" list=""/>
+			<type id="EcalepRocketJammer" list=""/>
 			<type id="RocketLauncher1" list=""/>
 			<type id='OrbitalFactory' list=''/>
 			<type id='TradeCenter' list=''/>
