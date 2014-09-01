@@ -27,6 +27,7 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -59,6 +60,8 @@ public class SlotEditor extends JFrame {
 	EquipmentRender render;
 	/** The currently selected slot. */
 	String currentSlot;
+	/** The current copy. */
+	XElement clipBoard;
 	/** Slot ID. */
 	private JLabel txID;
 	/** Slot X. */
@@ -99,26 +102,22 @@ public class SlotEditor extends JFrame {
 		txH = new JSpinner();
 		
 		JButton btnSave = new JButton("Save");
-		
-		try {
-			techXML = XElement.parseXML(TECH_XML_FILE);
-		} catch (XMLStreamException ex) {
-			ex.printStackTrace();
-		}
-		for (XElement xe : techXML.childrenWithName("item")) {
-			if (xe.childElement("slot") != null) {
-				techItems.add(xe);
-				cbTech.addItem(xe.get("id"));
-			}
-		}
-		cbTech.setSelectedIndex(-1);
+		JButton btnLoad = new JButton("Load");
+		JButton btnCopy = new JButton(new ImageIcon(SlotEditor.class.getResource("/hu/openig/editors/res/Copy16.gif")));
+		JButton btnPaste = new JButton(new ImageIcon(SlotEditor.class.getResource("/hu/openig/editors/res/Paste16.gif")));
+
+		doLoad();
 		
 		gl.setHorizontalGroup(
 			gl.createParallelGroup()
 			.addGroup(
 				gl.createSequentialGroup()
 				.addComponent(cbTech)
+				.addComponent(btnLoad)
 				.addComponent(btnSave)
+				.addGap(20)
+				.addComponent(btnCopy)
+				.addComponent(btnPaste)
 			)
 			.addGroup(
 				gl.createSequentialGroup()
@@ -146,7 +145,10 @@ public class SlotEditor extends JFrame {
 			.addGroup(
 				gl.createParallelGroup(Alignment.BASELINE)
 				.addComponent(cbTech)
+				.addComponent(btnLoad)
 				.addComponent(btnSave)
+				.addComponent(btnCopy)
+				.addComponent(btnPaste)
 			)
 			.addGroup(
 				gl.createParallelGroup()
@@ -191,12 +193,20 @@ public class SlotEditor extends JFrame {
 					render.current = techItems.get(idx);
 					render.repaint();
 				}
+				txID.setText("");
+				txX.setValue(0);
+				txY.setValue(0);
+				txW.setValue(0);
+				txH.setValue(0);
 			}
 		});
 		btnSave.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+					techXML.set("noNamespaceSchemaLocation", null);
+					techXML.set("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+					techXML.set("xsi:noNamespaceSchemaLocation", "../../schemas/tech.xsd");
 					techXML.save(TECH_XML_FILE);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -205,9 +215,12 @@ public class SlotEditor extends JFrame {
 		});
 		txX.addChangeListener(createChangeListener("x"));
 		
-		render.addMouseListener(new MouseAdapter() {
+		MouseAdapter ma = new MouseAdapter() {
+			boolean dragMode;
+			int dragX;
+			int dragY;
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				if (render.current != null) {
 					for (XElement xslot : render.current.childrenWithName("slot")) {
 						String sid = xslot.get("id");
@@ -227,6 +240,11 @@ public class SlotEditor extends JFrame {
 							txW.setValue(sw);
 							txH.setValue(sh);
 							
+							dragMode = e.getButton() == MouseEvent.BUTTON1;
+							if (dragMode) {
+								dragX = e.getX() - sx;
+								dragY = e.getY() - sy;
+							}
 							render.repaint();
 							return;
 						}
@@ -240,8 +258,93 @@ public class SlotEditor extends JFrame {
 				txH.setValue(0);
 				render.repaint();
 			}
-		});
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					dragMode = false;
+				}
+			}
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (dragMode) {
+					if (render.current != null && currentSlot != null) {
+						for (XElement xslot : render.current.childrenWithName("slot")) {
+							String sid = xslot.get("id");
+							if (Objects.equals(sid, currentSlot)) {
+								int sx = e.getX() - dragX;
+								int sy = e.getY() - dragY;
+								xslot.set("x", sx);
+								xslot.set("y", sy);
+								txX.setValue(sx);
+								txY.setValue(sy);
+								render.repaint();
+								break;
+							}
+						}
+					}
+				}
+			}
+		};
+		render.addMouseListener(ma);
+		render.addMouseMotionListener(ma);
 		setResizable(false);
+		
+		btnLoad.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				doLoad();
+				repaint();
+			}
+		});
+		btnCopy.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (render.current != null) {
+					clipBoard = render.current.copy();
+				}
+			}
+		});
+		btnPaste.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (render.current != null && clipBoard != null) {
+					for (XElement xslot0 : clipBoard.childrenWithName("slot")) {
+						String id0 = xslot0.get("id");
+						for (XElement xslot1 : render.current.childrenWithName("slot")) {
+							String id1 = xslot1.get("id");
+							if (Objects.equals(id0, id1)) {
+								xslot1.set("x", xslot0.get("x"));
+								xslot1.set("y", xslot0.get("y"));
+								xslot1.set("width", xslot0.get("width"));
+								xslot1.set("height", xslot0.get("height"));
+							}
+						}
+					}
+					render.repaint();
+				}			
+			}
+		});
+	}
+	/** Loads the tech file. */
+	void doLoad() {
+		try {
+			techXML = XElement.parseXML(TECH_XML_FILE);
+		} catch (XMLStreamException ex) {
+			ex.printStackTrace();
+		}
+		render.current = null;
+		currentSlot = null;
+
+		techItems.clear();
+		cbTech.removeAllItems();
+		for (XElement xe : techXML.childrenWithName("item")) {
+			if (xe.childElement("slot") != null) {
+				techItems.add(xe);
+				cbTech.addItem(xe.get("id"));
+			}
+		}
+		cbTech.setSelectedIndex(-1);
+
 	}
 	/**
 	 * Creates a change listener which saves the value into the given field of the current tech slot.
