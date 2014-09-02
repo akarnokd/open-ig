@@ -629,7 +629,6 @@ public final class Simulator {
 			if (rs != null) {
 				ResearchState last = rs.state;
 				int maxpc = rs.getResearchMaxPercent(all);
-				// test for money
 				// test for max percentage
 				if (rs.remainingMoney > 0) {
 					if (rs.getPercent(player.traits) < maxpc) {

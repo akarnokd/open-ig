@@ -548,14 +548,14 @@
     <slot id='shield' max='1' items='Shield1' x='140' y='50' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3' x='119' y='63' width='20' height='10'/>
   </item>
-  <item id='MorgathDestroyer' name='tech.morgathdestroyer.name' long-name='tech.morgathdestroyer.longname' description='tech.morgathdestroyer.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/morgath_destroyer' factory='spaceship' research-cost='40000' production-cost='20000' level='3' race='morgath' index='1' requires='MorgathDestroyer1'>
+  <item id='MorgathDestroyer' name='tech.morgathdestroyer.name' long-name='tech.morgathdestroyer.longname' description='tech.morgathdestroyer.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/morgath_destroyer' factory='spaceship' research-cost='40000' production-cost='20000' level='3' race='morgath' index='1' requires='MorgathDestroyer1' mech='2' comp='2' ai='2' mil='2'>
     <slot-fixed id='Radar' count='1' item='Radar2'/>
     <slot-fixed id='Hyperdrive' count='1' item='HyperDrive4'/>
     <slot-fixed id='Laser' count='5' item='Laser2'/>
     <slot-fixed id='Cannon1' count='5' item='PlasmaCannon'/>
     <slot-fixed id='Cannon2' count='2' item='ParticleCannon'/>
   </item>
-  <item id='MorgathDestroyer2' name='tech.morgathdestroyer2.name' long-name='tech.morgathdestroyer2.longname' description='tech.morgathdestroyer2.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/morgath_destroyer_2' factory='spaceship' research-cost='40000' production-cost='22000' level='4' race='' index='2' mech='2' comp='3' ai='3' mil='4' requires='MorgathDestroyer' skirmish-race='morgath'>
+  <item id='MorgathDestroyer2' name='tech.morgathdestroyer2.name' long-name='tech.morgathdestroyer2.longname' description='tech.morgathdestroyer2.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/morgath_destroyer_2' factory='spaceship' research-cost='40000' production-cost='22000' level='4' race='' index='2' mech='2' comp='3' ai='3' mil='4' skirmish-race='morgath' requires='MorgathDestroyer'>
     <slot id='laser' max='16' items='Laser2, Laser3Alien' x='158' y='70' width='20' height='10'/>
     <slot id='cannon' max='6' items='IonCannon,PlasmaCannon' x='139' y='26' width='20' height='10'/>
     <slot id='shield' max='1' items='Shield1,Shield2' x='140' y='50' width='20' height='10'/>
@@ -576,7 +576,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='172' y='86' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='119' y='63' width='20' height='10'/>
   </item>
-  <item id='MorgathBattleship' name='tech.morgathbattleship.name' long-name='tech.morgathbattleship.longname' description='tech.morgathbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship' factory='spaceship' research-cost='150000' production-cost='90000' level='4' race='morgath' index='0'>
+  <item id='MorgathBattleship' name='tech.morgathbattleship.name' long-name='tech.morgathbattleship.longname' description='tech.morgathbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship' factory='spaceship' research-cost='150000' production-cost='90000' level='4' race='morgath' index='0' mech='1' comp='1' ai='1' mil='1'>
     <slot id='bomb' max='3' items='Bomb1' x='127' y='18' width='20' height='10'/>
     <slot id='rocket' max='3' items='Rocket1' x='163' y='12' width='20' height='10'/>
     <slot-fixed id='Storage' count='1' item='Storage1'/>
@@ -588,7 +588,7 @@
     <property name='vehicles' value='10'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
-  <item id='MorgathBattleship1' name='tech.morgathbattleship1.name' long-name='tech.morgathbattleship1.longname' description='tech.morgathbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship_1' factory='spaceship' research-cost='100000' production-cost='100000' level='3' race='' index='1' requires='MorgathBattleship' civil='1' mech='1' comp='1' ai='1' mil='1' skirmish-race='morgath'>
+  <item id='MorgathBattleship1' name='tech.morgathbattleship1.name' long-name='tech.morgathbattleship1.longname' description='tech.morgathbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship_1' factory='spaceship' research-cost='100000' production-cost='100000' level='3' race='' index='1' civil='1' mech='1' comp='1' ai='1' mil='2' skirmish-race='morgath' requires='MorgathBattleship'>
     <slot id='bomb' max='8' items='Bomb1,Bomb2' x='127' y='18' width='20' height='10'/>
     <slot id='rocket' max='8' items='Rocket1,Rocket2' x='163' y='12' width='20' height='10'/>
     <slot id='radar' max='1' items='Radar1,Radar2,Radar3' x='155' y='33' width='20' height='10'/>
@@ -729,19 +729,19 @@
   <item id='SullepFighter' name='tech.sullepfighter.name' long-name='tech.sullepfighter.longname' description='tech.sullepfighter.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/sullep_fighter' factory='spaceship' research-cost='18000' production-cost='7500' level='0' race='sullep' index='0'>
     <slot-fixed id='Laser' count='1' item='Laser1'/>
   </item>
-  <item id='SullepFighterB' name='tech.sullepfighterb.name' long-name='tech.sullepfighterb.longname' description='tech.sullepfighterb.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/sullep_fighter_b' factory='spaceship' research-cost='22000' production-cost='10000' level='2' race='sullep' index='1'>
+  <item id='SullepFighterB' name='tech.sullepfighterb.name' long-name='tech.sullepfighterb.longname' description='tech.sullepfighterb.description' category='SPACESHIPS_FIGHTERS' image='inventions/spaceships/fighters/sullep_fighter_b' factory='spaceship' research-cost='22000' production-cost='10000' level='2' race='sullep' index='1' comp='1' ai='1' mil='1'>
     <slot-fixed id='Laser' count='1' item='Laser1'/>
   </item>
   <item id='SullepFighter1' name='tech.sullepfighter1.name' long-name='tech.sullepfighter1.longname' description='tech.sullepfighter1.description' category='SPACESHIPS_FIGHTERS' factory='spaceship' level='3' research-cost='15000' production-cost='6000' race='sullep' image='inventions/spaceships/fighters/sullep_fighter_1' index='2' mech='1' comp='1' ai='1' mil='1' requires='SullepFighter'>
     <slot-fixed id='Laser' count='2' item='Laser2'/>
   </item>
-  <item id='SullepFighter2' name='tech.sullepfighter2.name' long-name='tech.sullepfighter2.longname' description='tech.sullepfighter2.description' category='SPACESHIPS_FIGHTERS' factory='spaceship' level='4' research-cost='15000' production-cost='8000' race='sullep' image='inventions/spaceships/fighters/sullep_fighter_2' index='3' requires='SullepFighter1' mech='2' comp='2' ai='2' mil='2'>
+  <item id='SullepFighter2' name='tech.sullepfighter2.name' long-name='tech.sullepfighter2.longname' description='tech.sullepfighter2.description' category='SPACESHIPS_FIGHTERS' factory='spaceship' level='4' research-cost='15000' production-cost='8000' race='sullep' image='inventions/spaceships/fighters/sullep_fighter_2' index='3' mech='2' comp='2' ai='2' mil='2' requires='SullepFighter1'>
     <slot-fixed id='Laser' count='2' item='Laser2'/>
   </item>
-  <item id='SullepFighter3' name='tech.sullepfighter3.name' long-name='tech.sullepfighter3.longname' description='tech.sullepfighter3.description' category='SPACESHIPS_FIGHTERS' factory='spaceship' level='4' research-cost='15000' production-cost='10000' race='sullep' image='inventions/spaceships/fighters/sullep_fighter_3' index='4' requires='SullepFighter2' mech='3' comp='3' ai='3' mil='3'>
+  <item id='SullepFighter3' name='tech.sullepfighter3.name' long-name='tech.sullepfighter3.longname' description='tech.sullepfighter3.description' category='SPACESHIPS_FIGHTERS' factory='spaceship' level='4' research-cost='15000' production-cost='10000' race='sullep' image='inventions/spaceships/fighters/sullep_fighter_3' index='4' mech='3' comp='3' ai='3' mil='3' requires='SullepFighter2'>
     <slot-fixed id='Laser' count='2' item='Laser3Alien'/>
   </item>
-  <item id='SullepFighter4' name='tech.sullepfighter4.name' long-name='tech.sullepfighter4.longname' description='tech.sullepfighter4.description' category='SPACESHIPS_FIGHTERS' factory='spaceship' level='5' research-cost='15000' production-cost='12000' race='sullep' image='inventions/spaceships/fighters/sullep_fighter_4' index='5' requires='SullepFighter3' mech='4' comp='4' ai='4' mil='4'>
+  <item id='SullepFighter4' name='tech.sullepfighter4.name' long-name='tech.sullepfighter4.longname' description='tech.sullepfighter4.description' category='SPACESHIPS_FIGHTERS' factory='spaceship' level='5' research-cost='15000' production-cost='12000' race='sullep' image='inventions/spaceships/fighters/sullep_fighter_4' index='5' mech='4' comp='4' ai='4' mil='4' requires='SullepFighter3'>
     <slot-fixed id='Laser' count='2' item='Laser3Alien'/>
   </item>
   <item id='SullepDestroyer1' name='tech.sullepdestroyer1.name' long-name='tech.sullepdestroyer1.longname' description='tech.sullepdestroyer1.description' category='SPACESHIPS_CRUISERS' image='inventions/spaceships/cruisers/sullep_destroyer_1' factory='spaceship' research-cost='32000' production-cost='17500' level='0' race='sullep' index='0' mech='2' comp='1' ai='1' mil='2'>
