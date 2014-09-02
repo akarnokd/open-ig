@@ -60,7 +60,7 @@ public class Research {
 			) 
 			/ (totalLabs);
 		}
-		return 0;
+		return 100;
 	}
 	/**
 	 * Create a copy of this research.
