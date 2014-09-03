@@ -3601,5 +3601,5 @@
 	<entry key='trade.sp'     >Shield points: %,6d</entry>
 	<entry key='trade.defense'>Total defense: %,6d</entry>
 	<entry key='trade.dps'    >Damage   : %,6d (%,d /sec)</entry>
-	
+	<entry key='videos.unlocked_videos'>Unlocked videos</entry>	
 </labels>

@@ -27,6 +27,7 @@ import hu.openig.model.ModelUtils;
 import hu.openig.model.NegotiateType;
 import hu.openig.model.Planet;
 import hu.openig.model.Player;
+import hu.openig.model.Profile;
 import hu.openig.model.ResponseMode;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -859,6 +860,9 @@ public class DiplomacyScreen extends ScreenBase {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
+							Profile p = commons.profile;
+							p.unlockVideo(other.diplomacyHead);
+							p.save();
 							headAnimation = ha;
 							if (wip.decrementAndGet() == 0) {
 								doDarken();

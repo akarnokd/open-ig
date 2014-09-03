@@ -13,7 +13,10 @@ import hu.openig.utils.XElement;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.SwingUtilities;
@@ -28,6 +31,8 @@ public class Profile {
 	public String name;
 	/** The acquired achievements. */
 	private final Set<String> achievements = new HashSet<>();
+	/** Set of unlocked videos. */
+	private final Set<String> unlockedVideos = new LinkedHashSet<>();
 	/**
 	 * Test if the given achievement is taken.
 	 * @param name the achievement name
@@ -35,6 +40,30 @@ public class Profile {
 	 */
 	public boolean hasAchievement(String name) {
 		return achievements.contains(name);
+	}
+	/**
+	 * Unlock a specific video.
+	 * @param name the resource name of the video
+	 */
+	public void unlockVideo(String name) {
+		if (name != null) {
+			unlockedVideos.add(name);
+		}
+	}
+	/**
+	 * Check if a particular video is unlocked.
+	 * @param name the resource name of the video
+	 * @return true if the video is unlocked
+	 */
+	public boolean isVideoUnlocked(String name) {
+		return unlockedVideos.contains(name);
+	}
+	/**
+	 * Returns a list of all unlocked videos.
+	 * @return the list of unlocked videos
+	 */
+	public List<String> unlockedVideos() {
+		return new ArrayList<>(unlockedVideos);
 	}
 	/**
 	 * Save the current profile settings.
@@ -71,6 +100,9 @@ public class Profile {
 		for (String s : achievements) {
 			xprofile.add("achievement").set("id", s);
 		}
+		for (String s : unlockedVideos) {
+			xprofile.add("video").set("id", s);
+		}
 	}
 	/**
 	 * Load the profile.
@@ -80,6 +112,9 @@ public class Profile {
 		achievements.clear();
 		for (XElement xa : xprofile.childrenWithName("achievement")) {
 			achievements.add(xa.get("id"));
+		}
+		for (XElement xv : xprofile.childrenWithName("video")) {
+			unlockedVideos.add(xv.get("id"));
 		}
 	}
 	/**
