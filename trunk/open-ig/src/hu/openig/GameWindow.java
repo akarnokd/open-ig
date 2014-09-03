@@ -31,6 +31,7 @@ import hu.openig.model.Labels;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
 import hu.openig.model.Player;
+import hu.openig.model.Profile;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Screens;
@@ -1213,6 +1214,12 @@ public class GameWindow extends JFrame implements GameControls {
 	}
 	@Override
 	public void playVideos(final Action0 onComplete, String... videos) {
+		Profile p = commons.profile;
+		for (String s : videos) {
+			p.unlockVideo(s);
+		}
+		p.save();
+		
 		Collections.addAll(movie.mediaQueue, videos);
 		movie.playbackFinished = new MovieFinishAction(this, onComplete);
 		displayMovie();

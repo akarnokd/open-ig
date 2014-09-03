@@ -26,8 +26,7 @@ import java.awt.Shape;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -235,6 +234,7 @@ public class VideoScreen extends ScreenBase {
 	@Override
 	public void onEnter(Screens mode) {
 		videos.clear();
+		Map<String, VideoEntry> veMap = new HashMap<>();
 		for (String lang : Arrays.asList("generic", commons.config.language)) {
 			Map<String, Map<String, ResourcePlace>> map1 = rl.resourceMap.get(ResourceType.VIDEO);
 			if (map1 == null) {
@@ -254,15 +254,16 @@ public class VideoScreen extends ScreenBase {
 					ve.name = rp.getName().substring(idx + 1);
 					ve.path = rp.getName().substring(idx);
 				}
+				
+				veMap.put(ve.fullName, ve);
+			}
+		}
+		for (String s : commons.profile.unlockedVideos()) {
+			VideoEntry ve = veMap.get(s);
+			if (ve != null) {
 				videos.add(ve);
 			}
 		}
-		Collections.sort(videos, new Comparator<VideoEntry>() {
-			@Override
-			public int compare(VideoEntry o1, VideoEntry o2) {
-				return o1.fullName.compareTo(o2.fullName);
-			}
-		});
 		onResize();
 		adjustScrollButtons();
 	}
@@ -279,7 +280,7 @@ public class VideoScreen extends ScreenBase {
 		
 		commons.common().drawInfoEmpty(g2, origin.x, origin.y);
 		
-		String s = get("videos.all_videos");
+		String s = get("videos.unlocked_videos");
 		int w = commons.text().getTextWidth(14, s) + 10;
 		g2.setColor(Color.BLACK);
 		g2.fillRect(origin.x + (origin.width - w) / 2, origin.y - 9, w, 18);

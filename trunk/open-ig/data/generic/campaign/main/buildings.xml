@@ -1045,7 +1045,7 @@
       <tech id='dribs' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
       <tech id='dargslan' height='3' width='3' image='colony/buildings/human/barracks' skirmish-only="true"/>
     </graphics>
-    <build limit='*' kind='Defensive' cost='15000'/>
+    <build limit='-5' kind='Defensive' cost='15000'/>
     <operation>
       <resource type='vehicles'>4</resource>
       <resource type='laser'>2</resource>
@@ -1065,7 +1065,7 @@
       <tech id='dargslan' height='3' width='2' image='colony/buildings/dargslan/fortress'/>
       <tech id='ecalep' height='3' width='3' image='colony/buildings/ecalep/fortress'/>
     </graphics>
-    <build limit='*' kind='Defensive' cost='30000' research='Fortress'/>
+    <build limit='-5' kind='Defensive' cost='30000' research='Fortress'/>
     <operation>
       <resource type='vehicles'>8</resource>
       <resource type='laser'>4</resource>
@@ -1085,7 +1085,7 @@
       <tech id='dribs' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
       <tech id='dargslan' height='4' width='4' image='colony/buildings/human/stronghold' skirmish-only="true"/>
     </graphics>
-    <build limit='*' kind='Defensive' cost='50000' research='Stronghold'/>
+    <build limit='-5' kind='Defensive' cost='50000' research='Stronghold'/>
     <operation>
       <resource type='vehicles'>12</resource>
       <resource type='laser'>6</resource>

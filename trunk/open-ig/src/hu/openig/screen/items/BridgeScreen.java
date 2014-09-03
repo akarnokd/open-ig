@@ -16,6 +16,7 @@ import hu.openig.core.ResourceType;
 import hu.openig.core.SimulationSpeed;
 import hu.openig.core.SwappableRenderer;
 import hu.openig.model.Level;
+import hu.openig.model.Profile;
 import hu.openig.model.ResourceLocator.ResourcePlace;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
@@ -930,6 +931,10 @@ public class BridgeScreen extends ScreenBase {
 		onVideoComplete = new Action0() {
 			@Override
 			public void invoke() {
+				Profile p = commons.profile;
+				p.unlockVideo(vm.media);
+				p.save();
+				
 				noStatusbarPlayback = false;
 				vm.seen = true;
 				if (!paused || resumeAfterVideo) {

@@ -1635,18 +1635,22 @@ public class World implements ModelLookup {
 			for (XElement xprod : xplayer.childrenWithName("production")) {
 				for (XElement xline : xprod.childrenWithName("line")) {
 					ResearchType rt = researches.get(xline.get("id"));
-					Production pr = new Production();
-					pr.type = rt;
-					pr.count = xline.getInt("count");
-					pr.priority = xline.getInt("priority");
-					pr.progress = xline.getInt("progress");
-					
-					Map<ResearchType, Production> prod = p.production.get(rt.category.main);
-					if (prod == null) {
-						prod = new LinkedHashMap<>();
-						p.production.put(rt.category.main, prod);
+					if (rt != null) {
+						Production pr = new Production();
+						pr.type = rt;
+						pr.count = xline.getInt("count");
+						pr.priority = xline.getInt("priority");
+						pr.progress = xline.getInt("progress");
+						
+						Map<ResearchType, Production> prod = p.production.get(rt.category.main);
+						if (prod == null) {
+							prod = new LinkedHashMap<>();
+							p.production.put(rt.category.main, prod);
+						}
+						prod.put(rt, pr);
+					} else {
+						System.out.println("WARN | Unknown technology in production: " + xline);
 					}
-					prod.put(rt, pr);
 				}
 			}
 			p.researches.clear();
@@ -1791,26 +1795,31 @@ public class World implements ModelLookup {
 			for (XElement xpii : xplanet.childrenWithName("item")) {
 				int id = xpii.getInt("id");
 				
-				InventoryItem pii = new InventoryItem(id, player(xpii.get("owner")), research(xpii.get("type")));
-				pii.init();
-				pii.tag = xpii.get("tag", null);
-				pii.count = xpii.getInt("count");
-				pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
-				pii.shield = xpii.getDouble("shield", Math.max(0, pii.shieldMax()));
-
-				pii.nickname = xpii.get("nickname", null);
-				pii.nicknameIndex = xpii.getInt("nickname-index", 0);
-				pii.kills = xpii.getInt("kills", 0);
-				pii.killsCost = xpii.getLong("kills-cost", 0L);
-
-				int ttl = xpii.getInt("ttl", getSatelliteTTL(pii.owner, pii.type));
-				if (ttl > 0) {
-					p.timeToLive.put(pii, ttl);
+				ResearchType rt = research(xpii.get("type"));
+				if (rt != null) {
+					InventoryItem pii = new InventoryItem(id, player(xpii.get("owner")), rt);
+					pii.init();
+					pii.tag = xpii.get("tag", null);
+					pii.count = xpii.getInt("count");
+					pii.hp = Math.min(xpii.getDouble("hp", getHitpoints(pii.type, pii.owner)), getHitpoints(pii.type, pii.owner));
+					pii.shield = xpii.getDouble("shield", Math.max(0, pii.shieldMax()));
+	
+					pii.nickname = xpii.get("nickname", null);
+					pii.nicknameIndex = xpii.getInt("nickname-index", 0);
+					pii.kills = xpii.getInt("kills", 0);
+					pii.killsCost = xpii.getLong("kills-cost", 0L);
+	
+					int ttl = xpii.getInt("ttl", getSatelliteTTL(pii.owner, pii.type));
+					if (ttl > 0) {
+						p.timeToLive.put(pii, ttl);
+					}
+					
+					loadInventorySlots(pii, xpii);
+					
+					p.inventory.add(pii);
+				} else {
+					System.out.println("WARN | Unknow planet invenetory technology: " + xpii);
 				}
-				
-				loadInventorySlots(pii, xpii);
-				
-				p.inventory.add(pii);
 			}
 			String sowner = xplanet.get("owner", null);
 			p.customName = xplanet.get("custom-name", null);
@@ -2061,7 +2070,12 @@ public class World implements ModelLookup {
 		if (itemid < 0) {
 			itemid = newId();
 		}
-		InventoryItem fii = new InventoryItem(itemid, owner, research(xfii.get("type")));
+		ResearchType research = research(xfii.get("type"));
+		if (research == null) {
+			System.out.println("WARN | Inventory technology not found: " + xfii);
+			return null;
+		}
+		InventoryItem fii = new InventoryItem(itemid, owner, research);
 		
 		fii.nickname = xfii.get("nickname", fii.nickname);
 		fii.nicknameIndex = xfii.getInt("nickname-index", 0);
@@ -2132,17 +2146,18 @@ public class World implements ModelLookup {
 				String id = xavail.get("id");
 				ResearchType rt = researches.get(id);
 				if (rt == null) {
-					throw new IllegalArgumentException("available technology not found: " + xavail);
-				}
-				p.add(rt);
-				
-				for (String liste : xavail.get("list", "").split("\\s*,\\s*")) {
-					if (liste.length() > 0) {
-						ResearchType rt0 = researches.get(liste);
-						if (rt0 == null) {
-							throw new IllegalArgumentException("available technology not found: " + liste + " in " + xavail);
+					System.out.println("WARN | Available technology not found: " + xavail);
+				} else {
+					p.add(rt);
+					for (String liste : xavail.get("list", "").split("\\s*,\\s*")) {
+						if (liste.length() > 0) {
+							ResearchType rt0 = researches.get(liste);
+							if (rt0 == null) {
+								System.out.println("WARN | available technology not found: " + liste + " in " + xavail);
+							} else {
+								p.availableLevel(rt).add(rt0);
+							}
 						}
-						p.availableLevel(rt).add(rt0);
 					}
 				}
 			}

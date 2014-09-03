@@ -3618,4 +3618,5 @@
 	<entry key='trade.sp'     >Pajzs       : %,6d</entry>
 	<entry key='trade.defense'>Össz védelem: %,6d</entry>
 	<entry key='trade.dps'    >Sebzés   : %,6d (%,d /mp)</entry>
+	<entry key='videos.unlocked_videos'>Feloldott videók</entry>	
 </labels>
