@@ -1657,14 +1657,15 @@ public class World implements ModelLookup {
 			for (XElement xres : xplayer.childrenWithName("research")) {
 				ResearchType rt = researches.get(xres.get("id"));
 				if (rt == null) {
-					throw new IllegalArgumentException("research technology not found: " + xres.get("id"));
+					System.out.println("WARN | research technology not found: " + xres.get("id"));
+				} else {
+					Research rs = new Research();
+					rs.type = rt;
+					rs.state = rt == p.runningResearch() ? ResearchState.RUNNING : ResearchState.STOPPED; 
+					rs.assignedMoney = xres.getInt("assigned");
+					rs.remainingMoney = xres.getInt("remaining");
+					p.researches.put(rt, rs);
 				}
-				Research rs = new Research();
-				rs.type = rt;
-				rs.state = rt == p.runningResearch() ? ResearchState.RUNNING : ResearchState.STOPPED; 
-				rs.assignedMoney = xres.getInt("assigned");
-				rs.remainingMoney = xres.getInt("remaining");
-				p.researches.put(rt, rs);
 			}
 			
 			// add free technologies
