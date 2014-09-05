@@ -1703,7 +1703,12 @@ public class World implements ModelLookup {
 			}
 			p.inventory.clear();
 			for (XElement xinv : xplayer.childrenWithName("inventory")) {
-				p.inventory.put(researches.get(xinv.get("id")), xinv.getInt("count"));
+				ResearchType key = researches.get(xinv.get("id"));
+				if (key != null) {
+					p.inventory.put(key, xinv.getInt("count"));
+				} else {
+					System.out.println("WARN | Unknown inventory technology: " + xinv);
+				}
 			}
 			p.currentFleet = null;
 			int currentFleet = xplayer.getInt("fleet", -1);
