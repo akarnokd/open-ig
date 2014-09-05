@@ -10,6 +10,7 @@ package hu.openig.screen.items;
 
 import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.mechanics.AIUser;
 import hu.openig.model.BattleInfo;
 import hu.openig.model.Fleet;
 import hu.openig.model.ModelUtils;
@@ -52,6 +53,8 @@ public class BattlefinishScreen extends ScreenBase {
 	BattleInfo battle;
 	/** The text delay timer. */
 	Timer textDelay;
+	/** Automatically close the dialog if the current player is an AI. */
+	Timer autoClose;
 	/** Display text? */
 	boolean showText;
 	/** Enemy survival status after battle. */
@@ -71,6 +74,15 @@ public class BattlefinishScreen extends ScreenBase {
 				showText = true;
 				scaleRepaint(base, base, margin());
 				textDelay.stop();
+			}
+		});
+		autoClose = new Timer(30000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				autoClose.stop();
+				battle.battleFinished();
+				displayPrimary(Screens.STARMAP);
+				commons.speed1();
 			}
 		});
 	}
@@ -104,6 +116,9 @@ public class BattlefinishScreen extends ScreenBase {
 	public void onEnter(Screens mode) {
 		showText = false;
 		textDelay.start();
+		if (!(player().ai instanceof AIUser)) {
+			autoClose.start();
+		}
 	}
 
 	@Override
@@ -113,6 +128,7 @@ public class BattlefinishScreen extends ScreenBase {
 		commons.playRegularMusic();
 		commons.simulation.speed(battle.originalSpeed);
 		textDelay.stop();
+		autoClose.stop();
 		battle = null;
 	}
 
