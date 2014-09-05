@@ -639,7 +639,7 @@ public class StatusbarScreen extends ScreenBase {
 			Shape save0 = g2.getClip();
 			g2.clipRect(0, 0, width, height);
 			List<Planet> attacks = playerUnderAttack();
-			if (!attacks.isEmpty()) {
+			if (!attacks.isEmpty() && attackListIndex < attacks.size()) {
 				Planet p = attacks.get(attackListIndex);
 				String txt = format("message.enemy_fleet_detected_at", p.name());
 				int w = commons.text().getTextWidth(10, txt);
