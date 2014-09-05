@@ -107,6 +107,7 @@ public class AIDefaultSpaceBattle implements AISpaceBattleManager {
 			battle.enemyFlee = p != p.world.player;
 			return SpacewarAction.FLEE;
 		}
+		AI.defaultAttackBehavior(world, idles, p);				
 		return SpacewarAction.CONTINUE;
 	}
 	
