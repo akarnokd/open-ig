@@ -457,7 +457,7 @@
     <slot-fixed id='Radar' count='1' item='Radar2'/>
     <slot-fixed id='ECM' count='1' item='ECM1'/>
     <slot-fixed id='Shield' count='1' item='Shield3'/>
-    <slot-fixed id='Hyperdrive' count='1' item='HyperDrive1,HyperDrive2,HyperDrive4,HyperDrive5'/>
+    <slot-fixed id='Hyperdrive' count='1' item='DargslanHyperDrive5'/>
     <slot-fixed id='Laser' count='11' item='Laser3'/>
     <slot-fixed id='Cannon' count='8' item='ParticleCannon'/>
   </item>
