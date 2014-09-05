@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.185'>
+  <module id='Game' version='0.95.186'>
     <general url='https://code.google.com/p/open-ig/'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -41,8 +41,8 @@
       <desc lang='ru'>Skirmish bugfixes, some Spanish images.</desc>
       <desc lang='es'>Skirmish bugfixes, some Spanish images.</desc>
     </notes>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.185.jar' sha1='7FA6F4D2D0052077BE66E9965930FF115DDA7017'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140905a2.zip' sha1='A617AFE26DCBCEFC7FEC6698FBB30903738F337A'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.186.jar' sha1='A876A5B262E9C8878528715365AE8689EFE03F27'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140905a2.zip' sha1='6239BB66CDEA4390E54843DDE800E7B6AB48F250'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140901a.zip' sha1='DBBB31BBC7707AE09EF9F322417AF8383A723E9F'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
