@@ -292,4 +292,17 @@ public class BattleInfo {
 			helperPlanet.refillEquipment();
 		}
 	}
+	/**
+	 * Returns true if the particular player can flee from battle.
+	 * @param p the player to check
+	 * @return true if flee is allowed
+	 */
+	public boolean canFlee(Player p) {
+		if (attacker.owner == p || attackerAllies.contains(p)) {
+			if (helperPlanet == null || (helperPlanet.owner != p && !attackerAllies.contains(helperPlanet.owner))) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
