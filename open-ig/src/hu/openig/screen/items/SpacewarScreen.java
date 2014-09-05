@@ -14,6 +14,7 @@ import hu.openig.core.Func1;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AISpaceBattleManager;
 import hu.openig.model.BattleEfficiencyModel;
@@ -1413,7 +1414,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		}
 		
 		displayPanel(PanelMode.SHIP_STATUS, true);
-		if (battle.attacker.owner == player() 
+		if (battle.attacker.owner == player()
+				&& !(player().ai instanceof AIUser)
 				&& (nearbyPlanet == null 
 				|| nearbyPlanet.owner != player())) {
 			displayPanel(PanelMode.LAYOUT, false);

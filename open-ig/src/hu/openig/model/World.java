@@ -1427,12 +1427,14 @@ public class World implements ModelLookup {
 	 */
 	void saveInventorySlot(Iterable<InventorySlot> slots, XElement xparent) {
 		for (InventorySlot fis : slots) {
-			XElement xfs = xparent.add("slot");
-			xfs.set("id", fis.slot.id);
-			xfs.set("hp", fis.hp);
-			if (fis.type != null) {
-				xfs.set("type", fis.type.id);
-				xfs.set("count", fis.count);
+			if (!fis.slot.fixed) {
+				XElement xfs = xparent.add("slot");
+				xfs.set("id", fis.slot.id);
+				xfs.set("hp", fis.hp);
+				if (fis.type != null) {
+					xfs.set("type", fis.type.id);
+					xfs.set("count", fis.count);
+				}
 			}
 		}
 	}
@@ -2107,17 +2109,12 @@ public class World implements ModelLookup {
 			String sid = xfis.get("id");
 
 			InventorySlot fis = fii.getSlot(sid);
-			if (fis == null) {
+			if (fis == null || fis.slot.fixed) {
 				continue; // ignore nonexistent slots
 			}
 			
-			fis.slot = fii.type.slots.get(sid);
 			fis.type = researches.get(xfis.get("type", null));
 			if (fis.type != null) {
-				ResearchType st = fis.slot.items.get(0);
-				if (fis.slot.fixed && st != fis.type) {
-					fis.type = st;
-				}
 				fis.count = Math.max(0, Math.min(xfis.getInt("count"), fis.slot.max));
 			} else {
 				fis.count = 0;
