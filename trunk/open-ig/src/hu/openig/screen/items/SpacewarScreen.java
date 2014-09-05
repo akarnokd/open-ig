@@ -1415,7 +1415,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		displayPanel(PanelMode.SHIP_STATUS, true);
 		if (battle.attacker.owner == player()
-				&& !(player().ai instanceof AIUser)
+				&& (player().ai instanceof AIUser)
 				&& (nearbyPlanet == null 
 				|| nearbyPlanet.owner != player())) {
 			displayPanel(PanelMode.LAYOUT, false);
@@ -3693,6 +3693,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					// pick a target
 					if (canControl(ship)) {
 						selectNewTarget(ship);
+						if (ship.attack == null) {
+							playerIdles.add(ship);
+						}
 					} else {
 						enemyIdles.add(ship);
 					}

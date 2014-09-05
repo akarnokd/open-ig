@@ -598,7 +598,7 @@ public class GroundwarManager implements GroundwarWorld {
 		if (pathsToPlan.size() > 0) {
 			
 			// map all units to locations
-			long t0 = System.nanoTime();
+//			long t0 = System.nanoTime();
 			
 			List<Future<PathPlanning>> inProgress = new LinkedList<>();
 			Iterator<PathPlanning> it = pathsToPlan.iterator();
@@ -620,8 +620,8 @@ public class GroundwarManager implements GroundwarWorld {
 //			}
 //			pathsToPlan.clear();
 
-			t0 = System.nanoTime() - t0;
-			System.out.printf("Planning %.6f%n", t0 / 1000000000d);
+//			t0 = System.nanoTime() - t0;
+//			System.out.printf("Planning %.6f%n", t0 / 1000000000d);
 		}
 	}
 	/**

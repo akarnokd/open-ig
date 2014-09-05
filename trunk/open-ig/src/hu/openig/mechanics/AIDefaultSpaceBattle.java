@@ -92,7 +92,7 @@ public class AIDefaultSpaceBattle implements AISpaceBattleManager {
 		List<SpacewarStructure> own = world.structures(p);
 		
 		if (haveAnyWeapons(own)) {
-			if (!checkFlee(own)) {
+			if (!world.battle().canFlee(p) || !checkFlee(own)) {
 				AI.defaultAttackBehavior(world, idles, p);				
 				return SpacewarAction.CONTINUE;
 			}

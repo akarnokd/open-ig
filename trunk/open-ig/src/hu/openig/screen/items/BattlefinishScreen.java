@@ -76,7 +76,7 @@ public class BattlefinishScreen extends ScreenBase {
 				textDelay.stop();
 			}
 		});
-		autoClose = new Timer(30000, new ActionListener() {
+		autoClose = new Timer(15000, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				autoClose.stop();
