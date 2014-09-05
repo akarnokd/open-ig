@@ -190,10 +190,10 @@ public class AttackPlanner extends Planner {
 	void filterCandidates(List<AIFleet> fleets) {
 		for (int i = fleets.size() - 1; i >= 0; i--) {
 			AIFleet fl = fleets.get(i);
-			if (fl.statistics.fighterCount * 2 >= world.fighterLimit
-					&& fl.statistics.cruiserCount * 3 >= world.cruiserLimit
-					&& fl.statistics.battleshipCount * 3 >= world.battleshipLimit
-					&& fl.statistics.vehicleCount * 2 >= fl.statistics.vehicleMax) {
+			if (fl.statistics.fighterCount >= world.fighterLimit
+					&& fl.statistics.cruiserCount >= world.cruiserLimit
+					&& fl.statistics.battleshipCount >= world.battleshipLimit
+					&& fl.statistics.vehicleCount >= fl.statistics.vehicleMax) {
 				continue;
 			}
 			fleets.remove(i);
