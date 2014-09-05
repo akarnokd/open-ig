@@ -16,6 +16,7 @@ import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.core.Pathfinding;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.mechanics.AIUser;
 import hu.openig.mechanics.Allocator;
 import hu.openig.mechanics.BattleSimulator;
 import hu.openig.model.AutoBuild;
@@ -5915,6 +5916,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		startBattle.visible(true);
 		
 		battle.incrementGroundBattles();
+		
+		if (!(player().ai instanceof AIUser)) {
+			placeGroundUnits(atBuildings, unitsToPlace);
+			startBattle.onClick.invoke();
+		}
 	}
 	/** Deploy the non-player vehicles. */
 	void deployNonPlayerVehicles() {
