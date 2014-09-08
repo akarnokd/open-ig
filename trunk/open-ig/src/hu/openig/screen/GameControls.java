@@ -106,6 +106,10 @@ public interface GameControls {
 	 */
 	void load(String name);
 	/**
+	 * Restarts the current skirmish game.
+	 */
+	void restart();
+	/**
 	 * Register a periodic timer action with the given delay.
 	 * @param delay the delay in milliseconds.
 	 * @param action the action

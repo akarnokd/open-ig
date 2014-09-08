@@ -26,6 +26,12 @@ public class Researches {
 		return researches;
 	}
 	/**
+	 * Clears the researches.
+	 */
+	public void clear() {
+		researches.clear();
+	}
+	/**
 	 * Retrieve a research.
 	 * @param id the research id
 	 * @return the research

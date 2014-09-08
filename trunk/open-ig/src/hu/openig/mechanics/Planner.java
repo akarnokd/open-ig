@@ -944,13 +944,14 @@ public abstract class Planner {
 		if (btc == null || !btc.tileset.containsKey(p.race)) {
 			checkMoraleBuilding = false;
 		}
+		int isPrepared = 0;
 		for (AIPlanet p : world.ownPlanets) {
-			if (p.statistics.energyAvailable < p.statistics.energyDemand
+			if (p.statistics.energyAvailable * 4 < p.statistics.energyDemand * 3
 					|| p.statistics.energyAvailable == 0) {
-				return false;
+				continue;
 			}
+			boolean moraleOrPolice = false;
 			if (checkMoraleBuilding) {
-				boolean moraleOrPolice = false;
 				for (AIBuilding b : p.buildings) {
 					if (!b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)) {
 						if (b.hasResource(BuildingType.RESOURCE_MORALE)
@@ -960,12 +961,16 @@ public abstract class Planner {
 						}
 					}
 				}
-				if (!moraleOrPolice) {
-					return false;
-				}
+				moraleOrPolice |= p.morale > 45;
+			} else {
+				moraleOrPolice = p.morale > 35;
+			}
+			if (moraleOrPolice) {
+				isPrepared++;
 			}
 		}
-		return true;
+		int planetCount = world.ownPlanets.size();
+		return isPrepared * 2 >= planetCount;
 	}
 	/**
 	 * Setup the construction action for the given planet and building.

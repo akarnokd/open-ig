@@ -122,6 +122,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Delete. */
 	@Settings(page = SettingsPage.LOAD_SAVE)
 	UIGenericButton delete;
+	/** Delete. */
+	@Settings(page = SettingsPage.LOAD_SAVE)
+	UIGenericButton restart;
 	/** Return to main menu. */
 	UIGenericButton mainmenu;
 	/** The file listing worker. */
@@ -448,6 +451,16 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
 				doDelete();
+			}
+		};
+
+		restart = new UIGenericButton(get("restart"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+		restart.disabledPattern(commons.common().disabledPattern);
+		restart.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
+				doRestart();
 			}
 		};
 		
@@ -1401,6 +1414,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		load.location(base.x + 30, loadSavePage.y + loadSavePage.height + 10);
 		save.location(base.x + 40 + load.width, load.y);
 		delete.location(base.x + base.width - delete.width - 10, load.y);
+		restart.location(delete.x - restart.width - 10, delete.y);
 		
 		list.location(base.x + 10, load.y + load.height + 30);
 		list.size(base.width - 20, base.height - list.y + base.y - 6);
@@ -1591,6 +1605,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			save.enabled(maySave);
 			load.enabled(list.selected != null && list.selected.file != null);
 			delete.enabled(list.selected != null && list.selected.file != null);
+			World w = world();
+			restart.enabled(w != null && w.skirmishDefinition != null);
 		}
 		if (settingsMode == SettingsPage.LOAD_SAVE) {
 			loadSavePage.color(0xFFFFFFFF);
@@ -1908,6 +1924,14 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	void doLoad() {
 		doBack();
 		load(list.selected.file.getAbsolutePath());
+		
+	}
+	/**
+	 * Restart the current skirmish game.
+	 */
+	void doRestart() {
+		doBack();
+		commons.control().restart();
 	}
 	/** Create a save. */
 	void doSave() {

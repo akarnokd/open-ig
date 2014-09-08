@@ -100,6 +100,14 @@ public class WorldStatistics {
 		}
 		this.fields = Collections.unmodifiableMap(fields);
 	}
+	/**
+	 * Clears all the statistics.
+	 */
+	public void clear() {
+		for (LongField f : fields.values()) {
+			f.value = 0;
+		}
+	}
 	/** @return creates a copy of this object */
 	public WorldStatistics copy() {
 		WorldStatistics result = new WorldStatistics();

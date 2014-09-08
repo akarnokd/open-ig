@@ -28,6 +28,12 @@ public class Players {
 		return players.get(id);
 	}
 	/**
+	 * Clears the players.
+	 */
+	public void clear() {
+		players.clear();
+	}
+	/**
 	 * Set a new player object with the given ID and return the previous entry.
 	 * @param id the id
 	 * @param p the player
