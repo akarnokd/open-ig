@@ -1450,6 +1450,41 @@ public class GameWindow extends JFrame implements GameControls {
 			}
 		});
 	}
+	@Override
+	public void restart() {
+		// allow the popup of related exceptions on a newly loaded game.
+		Exceptions.clear();
+
+		for (ScreenBase sb : screens) {
+			sb.onEndGame();
+		}
+		commons.battleMode = false;
+
+		displayPrimary(Screens.LOADING);
+		hideStatusbar();
+		commons.worldLoading = true;
+		
+		commons.stop();
+		
+		commons.pool.execute(new Runnable() {
+			@Override
+			public void run() {
+				commons.world().loadSkirmish(commons.rl, new SkirmishScripting());
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						commons.worldLoading = false;
+						commons.nongame = false;
+						displayPrimary(Screens.BRIDGE);
+						displayStatusbar();
+						
+						commons.start(true);
+						world().scripting.onLoaded();
+					}
+				});
+			}
+		});
+	}
 	/** 
 	 * Load a the specified world save. 
 	 * @param name the full save name

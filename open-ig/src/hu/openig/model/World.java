@@ -122,7 +122,7 @@ public class World implements ModelLookup {
 	/** The battle object. */
 	public BattleModel battle;
 	/** The list of pending battles. */
-	public Deque<BattleInfo> pendingBattles = new LinkedList<>();
+	public final Deque<BattleInfo> pendingBattles = new LinkedList<>();
 	/** The game environment. */
 	public final GameEnvironment env;
 	/** The campaign scripting. */
@@ -3005,12 +3005,48 @@ public class World implements ModelLookup {
 		return result;
 	}
 	/**
+	 * Clears all game structures before restarting.
+	 */
+	protected void cleanup() {
+		player = null;
+		players.clear();
+		planets.clear();
+		fleets.clear();
+		researches.clear();
+		buildingModel = null;
+		galaxyModel = null;
+		battle = null;
+		bridge = null;
+		chats = null;
+		test = null;
+		testCompleted = false;
+		testNeeded = false;
+		diplomacy = null;
+		idSequence.set(0);
+		currentTalk = null;
+		infectedFleets.clear();
+		time.setTime(initialDate);
+		messageRecording = false;
+		allowRecordMessage = false;
+		pendingBattles.clear();
+		receivedMessages.clear();
+		relations.clear();
+		talks = null;
+		statistics.clear();
+		walks = null;
+		
+		
+		scripting = null;
+	}
+	/**
 	 * Initializes the world via the loadCampaign, then performs the alterations.
 	 * @param rl the resource locator
 	 * @param scripting the scripting to use
 	 */
 	public void loadSkirmish(final ResourceLocator rl,
 			GameScripting scripting) {
+		cleanup();
+		
 		definition = skirmishDefinition.createDefinition(rl);
 		labels = new Labels();
 		labels.load(rl, U.startWith(definition.labels, "labels"));
