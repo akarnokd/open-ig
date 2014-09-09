@@ -203,7 +203,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	/** The space explosions for animation. */
 	final List<SpacewarExplosion> explosions = new ArrayList<>();
 	/** SpacewarStructure kamikaze mode ttl constant. */
-	public static final int KAMIKAZE_TTL = 900;
+	public static final int KAMIKAZE_TTL = 200;
 	/** The location of the minimap. */
 	final Rectangle minimap = new Rectangle();
 	/** The location of the main window area. */
