@@ -667,7 +667,10 @@ public class ExplorationPlanner extends Planner {
 					return true;
 				}
 			}
-			placeProductionOrder(bestShip, 1);
+			// avoid over excessive use of colony ship as explorer
+			if (!"ColonyShip".equals(bestShip.id) && ModelUtils.random() < 0.01) {
+				placeProductionOrder(bestShip, 1);
+			}
 		}
 		return true;
 	}

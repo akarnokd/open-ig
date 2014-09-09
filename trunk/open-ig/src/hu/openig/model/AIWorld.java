@@ -118,6 +118,10 @@ public class AIWorld {
 	public boolean noLabLimit;
 	/** Allow upgrading buildings. */
 	public boolean allowBuildingUpgrades;
+	/** The generally available building types, but they may not be built on certain planet types. */
+	public final Set<BuildingType> availableBuildings = new HashSet<>();
+	/** Maps each resource to a set of buildings that can provide it. */
+	public final Map<String, Set<BuildingType>> availableResourceBuildings = new HashMap<>();
 	/**
 	 * Assign the values to this world from the real world.
 	 * @param player the player
@@ -247,6 +251,21 @@ public class AIWorld {
 		}
 		colonizationTargets.addAll(player.colonizationTargets);
 		hasDiplomacyRoom = player.world.hasDiplomacy();
+		
+		for (BuildingType bt : player.world.buildingModel.buildings.values()) {
+			if (bt.tileset.containsKey(player.race) 
+					&& (bt.research == null || availableResearch.contains(bt.research))) {
+				availableBuildings.add(bt);
+				for (String r : bt.resources.keySet()) {
+					Set<BuildingType> bts = availableResourceBuildings.get(r);
+					if (bts == null) {
+						bts = new HashSet<>();
+						availableResourceBuildings.put(r, bts);
+					}
+					bts.add(bt);
+				}
+			}
+		}
 	}
 	/**
 	 * Returns or calculates the planet statistics.

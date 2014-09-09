@@ -66,7 +66,8 @@ public class ColonizationPlanner extends Planner {
 			boolean rq = world.researchRequiresColonization;
 			boolean exp = checkEnemyExpansion();
 			boolean col = checkColonizersReady();
-			if (rq || exp || col) { 
+			boolean techOverfill = world.global.labs.count() >= world.global.planetCount * 3;
+			if (rq || exp || col || techOverfill) { 
 				conquerMorePlanets();
 			}
 		}

@@ -22,7 +22,10 @@ import hu.openig.model.ResearchType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Build factories and economic buildings.
@@ -76,6 +79,18 @@ public class EconomyPlanner extends Planner {
 		return applyActions;
 	}
 	/**
+	 * Check if the building has a specific resource and add 1 to the map of counters.
+	 * @param b the building
+	 * @param resource the resource
+	 * @param map the map
+	 */
+	void checkAndAdd(AIBuilding b, String resource, Map<String, Integer> map) {
+		if (b.hasResource(resource)) {
+			Integer c = map.get(resource);
+			map.put(resource, c != null ? c + 1 : 1);
+		}
+	}
+	/**
 	 * Manage the given planet.
 	 * @param planet the target planet
 	 * @return true if action taken
@@ -84,41 +99,93 @@ public class EconomyPlanner extends Planner {
 		if (planet.statistics.constructing) {
 			return false;
 		}
-		// compute existing cost of building types on the planet
-		long sumEconomy = 0;
-		long sumFactory = 0;
-		int nEconomy = 0;
-		int nFactory = 0;
-		for (AIBuilding value : planet.buildings) {
-			if (value.hasResource("multiply") || value.hasResource("credit")) {
-				nEconomy++;
-				sumEconomy += value.type.cost;
-			}
-			if (hasTechnologyFor(value.type, "spaceship") 
-						|| hasTechnologyFor(value.type, "equipment") 
-						|| hasTechnologyFor(value.type, "weapon")) {
-				nFactory++;
-				sumFactory += value.type.cost;
+		
+		final Set<BuildingType> mayBuild = new HashSet<>();
+		
+		final boolean allowUpgrades2 = world.money >= world.ownPlanets.size() * 40000;
+		
+		List<Pred1<AIPlanet>> functions = new ArrayList<>();
+		
+		boolean economyAllBuilt = true;
+		boolean factoryAllBuilt = true;
+		
+		if (world.availableResourceBuildings.containsKey("credit")) {
+			for (BuildingType bt : world.availableResourceBuildings.get("credit")) {
+				economyAllBuilt &= planet.buildingCounts.containsKey(bt);
 			}
 		}
+		if (world.availableResourceBuildings.containsKey("multiply")) {
+			for (BuildingType bt : world.availableResourceBuildings.get("multiply")) {
+				economyAllBuilt &= planet.buildingCounts.containsKey(bt);
+			}
+		}
+		if (world.availableResourceBuildings.containsKey("spaceship")) {
+			for (BuildingType bt : world.availableResourceBuildings.get("spaceship")) {
+				factoryAllBuilt &= planet.buildingCounts.containsKey(bt);
+			}
+		}
+		if (world.availableResourceBuildings.containsKey("weapon")) {
+			for (BuildingType bt : world.availableResourceBuildings.get("weapon")) {
+				factoryAllBuilt &= planet.buildingCounts.containsKey(bt);
+			}
+		}
+		if (world.availableResourceBuildings.containsKey("equipment")) {
+			for (BuildingType bt : world.availableResourceBuildings.get("equipment")) {
+				factoryAllBuilt &= planet.buildingCounts.containsKey(bt);
+			}
+		}
+		if (!economyAllBuilt) {
+			if (world.availableResourceBuildings.containsKey("credit")) {
+				for (BuildingType bt : world.availableResourceBuildings.get("credit")) {
+					if (!planet.buildingCounts.containsKey(bt)) {
+						mayBuild.add(bt);
+					}
+				}
+			}
+			if (world.availableResourceBuildings.containsKey("multiply")) {
+				for (BuildingType bt : world.availableResourceBuildings.get("multiply")) {
+					if (!planet.buildingCounts.containsKey(bt)) {
+						mayBuild.add(bt);
+					}
+				}
+			}
+		} else
+		if (factoryAllBuilt) {
+			Set<BuildingType> set = world.availableResourceBuildings.get("credit");
+			if (set != null) {
+				mayBuild.addAll(set);
+			}
+			set = world.availableResourceBuildings.get("multiply");
+			if (set != null) {
+				mayBuild.addAll(set);
+			}
+		}
+		final boolean allowUpgrades = world.money >= world.ownPlanets.size() * 20000;
 		
-		// don't upgrade unless we have a ton of money
-		final boolean allowUpgrades = world.money >= 10000 + world.ownPlanets.size() * sumEconomy / Math.max(1, nEconomy);
-		final boolean allowUpgrades2 = world.money >= 250000 + world.ownPlanets.size() * sumFactory / Math.max(1, nFactory);
-		List<Pred1<AIPlanet>> functions = new ArrayList<>();
-		functions.add(new Pred1<AIPlanet>() {
+		Pred1<AIPlanet> checkEconomyFn = new Pred1<AIPlanet>() {
 			@Override
 			public Boolean invoke(AIPlanet planet) {
-				return checkEconomy(planet, allowUpgrades);
+				return checkEconomy(planet, allowUpgrades, mayBuild);
 			}
-		});
+		};
+		
+		if (!economyAllBuilt) {
+			functions.add(checkEconomyFn);
+		}
+		Pred1<AIPlanet> checkFactoryFn = new Pred1<AIPlanet>() {
+			@Override
+			public Boolean invoke(AIPlanet planet) {
+				return checkFactory(planet, allowUpgrades2);
+			}
+		};
+		
+		boolean buildFactoryFlag = false;
+		
 		if (world.money >= 30000 && checkPlanetPreparedness()) {
-			functions.add(new Pred1<AIPlanet>() {
-				@Override
-				public Boolean invoke(AIPlanet planet) {
-					return checkFactory(planet, allowUpgrades2);
-				}
-			});
+			buildFactoryFlag = true;
+			if (!factoryAllBuilt) {
+				functions.add(checkFactoryFn);
+			}
 			functions.add(new Pred1<AIPlanet>() {
 				@Override
 				public Boolean invoke(AIPlanet planet) {
@@ -132,12 +199,24 @@ public class EconomyPlanner extends Planner {
 				}
 			});
 		}
-
-		if (world.money >= 200000 || world.global.planetCount >= 2) {
-			// random arbitration
-			ModelUtils.shuffle(functions);
+		if (ModelUtils.random() < 0.01) {
+			if (ModelUtils.randomBool()) {
+				if (factoryAllBuilt && buildFactoryFlag) {
+					functions.add(checkFactoryFn);
+				}
+				if (economyAllBuilt) {
+					functions.add(checkEconomyFn);
+				}
+			} else {
+				if (economyAllBuilt) {
+					functions.add(checkEconomyFn);
+				}
+				if (factoryAllBuilt && buildFactoryFlag) {
+					functions.add(checkFactoryFn);
+				}
+			}
 		}
-		
+
 		for (Pred1<AIPlanet> f : functions) {
 			if (f.invoke(planet)) {
 				return true;
@@ -245,9 +324,11 @@ public class EconomyPlanner extends Planner {
 	 * Check if there is shortage on police.
 	 * @param planet the planet to manage
 	 * @param allowUpgrades allow upgrading?
+	 * @param mayBuild the set of buildings that may be built.
 	 * @return if action taken
 	 */
-	boolean checkEconomy(AIPlanet planet, final boolean allowUpgrades) {
+	boolean checkEconomy(AIPlanet planet, final boolean allowUpgrades, 
+			final Set<BuildingType> mayBuild) {
 		BuildingSelector finances = new BuildingSelector() {
 			@Override
 			public boolean accept(AIPlanet planet, AIBuilding value) {
@@ -255,11 +336,11 @@ public class EconomyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
-				return value.hasResource("multiply") || value.hasResource("credit");
+				return mayBuild.contains(value) 
+						&& planet.population >= planet.statistics.workerDemand + value.getResource("worker");
 			}
 		};
-		if (planet.population > planet.statistics.workerDemand * 1.1
-				&& planet.statistics.energyAvailable > planet.statistics.energyDemand
+		if (planet.statistics.energyAvailable > planet.statistics.energyDemand
 				&& planet.statistics.houseAvailable > planet.population
 				&& planet.statistics.foodAvailable > planet.population
 				&& planet.statistics.hospitalAvailable > planet.population
@@ -289,20 +370,21 @@ public class EconomyPlanner extends Planner {
 			}
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
+				boolean r = false;
 				if (hasTechnologyFor(value, "spaceship")) {
-					return !hasSpaceship || hasAll;
+					r = !hasSpaceship || hasAll;
 				} else
 				if (hasTechnologyFor(value, "equipment")) {
-					return !hasEquipment || hasAll;
+					r = !hasEquipment || hasAll;
 				}
 				if (hasTechnologyFor(value, "weapon")) {
-					return !hasWeapon || hasAll;
+					r = !hasWeapon || hasAll;
 				}
-				return false;
+				
+				return r && planet.population >= planet.statistics.workerDemand + value.getResource("worker");
 			}
 		};
-		if (planet.population > planet.statistics.workerDemand * 1.1
-				&& planet.statistics.energyAvailable > planet.statistics.energyDemand
+		if (planet.statistics.energyAvailable > planet.statistics.energyDemand
 				&& planet.statistics.houseAvailable > planet.population
 				&& planet.statistics.foodAvailable > planet.population
 				&& planet.statistics.hospitalAvailable > planet.population
@@ -348,13 +430,12 @@ public class EconomyPlanner extends Planner {
 					if (value.id.equals("Stadium") && planet.population < 40000) {
 						return false;
 					}
-					return true;
+					return planet.population >= planet.statistics.workerDemand + value.getResource("worker");
 				}
 				return false;
 			}
 		};
-		if (planet.population > planet.statistics.workerDemand * 1.1
-				&& checkPlanetPreparedness()) {
+		if (checkPlanetPreparedness()) {
 			return manageBuildings(planet, social, costOrder, false);
 		}
 		return false;
