@@ -37,12 +37,16 @@ public class AIPlanet {
 	public int radar;
 	/** The population. */
 	public int population;
+	/** The last trade income. */
+	public int tradeIncome;
 	/** The inventory items of the planet. */
 	public final List<AIInventoryItem> inventory = new ArrayList<>();
 	/** Set of locations where no buildings may be placed. */
 	public final Map<Location, SurfaceEntity> nonbuildable = new HashMap<>();
 	/** Building list. */
 	public final List<AIBuilding> buildings = new ArrayList<>();
+	/** The building counts per type. */
+	public final Map<BuildingType, Integer> buildingCounts = new HashMap<>();
 	/** The placement helper. */
 	public PlacementHelper placement;
 	/** The current morale. */
@@ -70,6 +74,7 @@ public class AIPlanet {
 		this.statistics = world.getStatistics(planet);
 		this.radar = planet.radar;
 		this.population = (int)planet.population();
+		this.tradeIncome = (int)planet.tradeIncome();
 		this.morale = planet.morale;
 		this.lastMorale = planet.lastMorale;
 		this.tax = planet.tax;
@@ -86,6 +91,9 @@ public class AIPlanet {
 
 		for (Building b : planet.surface.buildings.iterable()) {
 			buildings.add(new AIBuilding(b));
+			
+			Integer c = buildingCounts.get(b.type);
+			buildingCounts.put(b.type, c != null ? c + 1 : 1);
 		}
 		
 		hasSatelliteOfAI = hasSatelliteOf(world.player);

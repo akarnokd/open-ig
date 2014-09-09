@@ -97,7 +97,7 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	}
 	@Override
 	public String name() {
-		return name;
+		return name != null ? name : "";
 	}
 	/**
 	 * Set a new fleet name.
