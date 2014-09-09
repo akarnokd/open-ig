@@ -337,7 +337,7 @@ public class EconomyPlanner extends Planner {
 			@Override
 			public boolean accept(AIPlanet planet, BuildingType value) {
 				return mayBuild.contains(value) 
-						&& planet.population >= planet.statistics.workerDemand + value.getResource("worker");
+						&& planet.population >= planet.statistics.nativeWorkerDemand + value.getResource("worker");
 			}
 		};
 		if (planet.statistics.energyAvailable > planet.statistics.energyDemand
@@ -381,7 +381,7 @@ public class EconomyPlanner extends Planner {
 					r = !hasWeapon || hasAll;
 				}
 				
-				return r && planet.population >= planet.statistics.workerDemand + value.getResource("worker");
+				return r && planet.population >= planet.statistics.nativeWorkerDemand + value.getResource("worker");
 			}
 		};
 		if (planet.statistics.energyAvailable > planet.statistics.energyDemand
@@ -430,7 +430,7 @@ public class EconomyPlanner extends Planner {
 					if (value.id.equals("Stadium") && planet.population < 40000) {
 						return false;
 					}
-					return planet.population >= planet.statistics.workerDemand + value.getResource("worker");
+					return planet.population >= planet.statistics.nativeWorkerDemand + value.getResource("worker");
 				}
 				return false;
 			}
