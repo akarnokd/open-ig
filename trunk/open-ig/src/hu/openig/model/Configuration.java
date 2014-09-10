@@ -342,7 +342,7 @@ public class Configuration {
 	public boolean aiAllowBuildingUpgrades = false;
 	/** The text rendering cache size, 0 means disabled. */
 	@LoadSave
-	public int textCacheSize = 1024;
+	public int textCacheSize = 0;
 	/** Show the frame statistics .*/
 	public boolean showFPS = true;
 	/** List of supported language codes. */
