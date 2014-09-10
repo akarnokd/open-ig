@@ -323,7 +323,7 @@ public class CommonResources implements GameEnvironment {
 			final Future<TextRenderer> textFuture = exec.submit(new Callable<TextRenderer>() {
 				@Override
 				public TextRenderer call() throws Exception {
-					return new TextRenderer(rl, config.useStandardFonts);
+					return new TextRenderer(rl, config.useStandardFonts, config.textCacheSize);
 				}
 			});
 			final Future<DiplomacyGFX> diplomacyFuture = exec.submit(new Callable<DiplomacyGFX>() {

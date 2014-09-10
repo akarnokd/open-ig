@@ -493,7 +493,7 @@ public class MapEditor extends JFrame {
 
 					colonyGraphics = new ColonyGFX().load(rl);
 					
-					txt = new TextRenderer(rl, config.useStandardFonts);
+					txt = new TextRenderer(rl, config.useStandardFonts, 0);
 					
 					prepareLists(galaxyMap, buildingMap, surfaces, buildings, races);
 				} catch (Throwable t) {

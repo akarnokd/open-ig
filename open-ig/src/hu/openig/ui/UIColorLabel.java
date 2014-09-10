@@ -254,7 +254,7 @@ public class UIColorLabel extends UIComponent {
 	public static void main(String[] args) {
 		Configuration config = new Configuration("open-ig-config.xml");
 		config.load();
-		TextRenderer tr = new TextRenderer(config.newResourceLocator(), false);
+		TextRenderer tr = new TextRenderer(config.newResourceLocator(), false, 0);
 		UIColorLabel l = new UIColorLabel(10, tr);
 		l.width = 50; 
 		l.text("Hello [c=FFFFCC00]World[/c]![b]");

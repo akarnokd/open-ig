@@ -136,7 +136,7 @@ public class GameWindow extends JFrame implements GameControls {
 		/** Save transform before draw. */
 		AffineTransform predraw;
 		/** When did the last paint happen. */
-		//		long lastPaint;
+		long lastPaint = System.nanoTime();
 		/** The FPS value to draw to the overlay. */
 		//		Double fps;
 		/**
@@ -171,14 +171,8 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 		@Override
 		public void paint(Graphics g) {
-			//			lastPaint = System.nanoTime();
-			//			SwingUtilities.invokeLater(new Runnable() {
-			//				@Override
-			//				public void run() {
-			//					long t2 = System.nanoTime() - lastPaint;
-			//					fps = 0.9 * fps + 0.1 * 1000000000d / t2;
-			//				}
-			//			});
+			long prevPaint = lastPaint;
+			lastPaint = System.nanoTime();
 			boolean r0 = repaintRequest;
 			boolean r1 = repaintRequestPartial;
 			repaintRequest = false;
@@ -285,6 +279,12 @@ public class GameWindow extends JFrame implements GameControls {
 				Exceptions.add(t);
 			} finally {
 				g2.setTransform(at0);
+			}
+			if (config.showFPS) {
+				long t2 = System.nanoTime();
+				String str = String.format("BF: %5.3f ms, IF: %5.3f ms%n", (lastPaint - prevPaint) / 1_000_000d, (t2 - lastPaint) / 1_000_000d);
+				g2.setColor(Color.WHITE);
+				g2.drawString(str, 12, getHeight() - 5);
 			}
 		}
 	}

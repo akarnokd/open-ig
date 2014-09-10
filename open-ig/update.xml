@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.189'>
+  <module id='Game' version='0.95.190'>
     <general url='https://code.google.com/p/open-ig/'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -41,9 +41,9 @@
       <desc lang='ru'>Skirmish bugfixes, some Spanish images.</desc>
       <desc lang='es'>Skirmish bugfixes, some Spanish images.</desc>
     </notes>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.189.jar' sha1='3C8978638D81534A53CEFF3DD8234DA2079CBC1C'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140909a2.zip' sha1='4F56C2B4D513AF191CCE48B1C8CDE7A280D31824'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140901a.zip' sha1='DBBB31BBC7707AE09EF9F322417AF8383A723E9F'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.190.jar' sha1='28590D7E1E1709EEE860C1135C7B1F736C7BE988'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20140910a2.zip' sha1='4F56C2B4D513AF191CCE48B1C8CDE7A280D31824'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -108,6 +108,7 @@
     <remove file='open-ig-images-20140714a.zip'/>
     <remove file='open-ig-images-20140718a.zip'/>
     <remove file='open-ig-images-20140730a.zip'/>
+    <remove file='open-ig-images-20140901a.zip'/>
   </module>
   <module id='MapEditor' version='0.60'>
     <general url='https://code.google.com/p/open-ig/wiki/MapEditor'>

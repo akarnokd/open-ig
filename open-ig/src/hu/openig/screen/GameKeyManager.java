@@ -163,6 +163,13 @@ public class GameKeyManager extends KeyAdapter {
 				control().repaintInner();
 				return;
 			}
+		} else
+		if (e.getKeyCode() == KeyEvent.VK_F) {
+			if (e.isControlDown()) {
+				commons.config.showFPS = !commons.config.showFPS;
+				e.consume();
+				return;
+			}
 		}
 		ScreenBase primary = primary();
 		ScreenBase secondary = secondary();

@@ -36,7 +36,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.189";
+	public static final String VERSION = "0.95.190";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -340,6 +340,11 @@ public class Configuration {
 	/** Enable/disable AI upgrading buildings. */
 	@LoadSave
 	public boolean aiAllowBuildingUpgrades = false;
+	/** The text rendering cache size, 0 means disabled. */
+	@LoadSave
+	public int textCacheSize = 1024;
+	/** Show the frame statistics .*/
+	public boolean showFPS = true;
 	/** List of supported language codes. */
 	public final List<String> languageSupport = Arrays.asList(
 			"en", "english", 
