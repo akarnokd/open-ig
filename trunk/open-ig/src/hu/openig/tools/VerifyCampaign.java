@@ -86,7 +86,7 @@ public class VerifyCampaign {
 	/** Cross-check labels. */
 	void verifyLabels() {
 		
-		TextRenderer tr = new TextRenderer(rl, false);
+		TextRenderer tr = new TextRenderer(rl, false, 0);
 		
 		for (String lang1 : languages) {
 			Labels l1 = new Labels();

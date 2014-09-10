@@ -130,12 +130,76 @@ public class TextRenderer {
 	private boolean useStandardFonts;
 	/** The default font rendering context. */
 	private FontRenderContext frc;
+	/** The maximum text size available. */
+	int maxSize = 14;
+	/** Caches images of text with color and size. */
+	private final Map<TextCacheEntry, BufferedImage> textCache;
+	/** Indicates to use the text rendering cache. */
+	private final boolean useTextCache;
+	/** The text cache entry key. */
+	static final class TextCacheEntry {
+		/** The cached text. */
+		final String text;
+		/** The color. */
+		final int color;
+		/** The size. */
+		final int size;
+		/**
+		 * Constructor, initializes the fields.
+		 * @param s the text
+		 * @param color the color
+		 * @param size the size
+		 */
+		TextCacheEntry(String s, int color, int size) {
+			this.text = s;
+			this.color = color;
+			this.size = size;
+		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + color;
+			result = prime * result + size;
+			result = prime * result + ((text == null) ? 0 : text.hashCode());
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			TextCacheEntry other = (TextCacheEntry) obj;
+			if (color != other.color) {
+				return false;
+			}
+			if (size != other.size) {
+				return false;
+			}
+			if (text == null) {
+				if (other.text != null) {
+					return false;
+				}
+			} else if (!text.equals(other.text)) {
+				return false;
+			}
+			return true;
+		}
+		
+	}
 	/**
 	 * Constructor. Initializes the internal tables by processing the given file.
 	 * @param rl the resource locator
 	 * @param useStandardFonts instead of the fixed size?
+	 * @param textCacheSize the text rendering cache size or 0 to disable it
 	 */
-	public TextRenderer(ResourceLocator rl, boolean useStandardFonts) {
+	public TextRenderer(ResourceLocator rl, boolean useStandardFonts, int textCacheSize) {
 		frc = new FontRenderContext(null, false, false);
 		this.useStandardFonts = useStandardFonts; 
 		charImage = rl.getImage("charset");
@@ -144,6 +208,12 @@ public class TextRenderer {
 		split(GREEN);
 		split(GRAY);
 		split(RED);
+		Map<TextCacheEntry, BufferedImage> tci = null;
+		useTextCache = textCacheSize > 0;
+		if (useTextCache) {
+			tci = LRUHashMap.create(textCacheSize);
+		}
+		textCache = tci;
 	}
 	/**
 	 * Set the font scaling on the font render context if using standard fonts.
@@ -192,38 +262,6 @@ public class TextRenderer {
 			Exceptions.add(ex);
                 }		
 	}
-	/** Characters in various lines. */
-	static final String[] LINE_CHARACTERS = {
-			/* Size: 7 */
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
-			"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
-			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=<>*",
-			/* Size: 10 */
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmn",
-			"opqrstuvwxyz?!()'\"+-:;.,1234567890%& /\u00DF",
-			"\u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=<>*",
-			/* Size: 14 */
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-			"abcdefghijklmnopqrstuvwxyz",
-			"?!()'\"+-:;.,1234567890%& /",
-			"\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
-			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=<>*",
-			/* Size: 5 */
-			"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-			"?!()'\"+-:;.,1234567890%& /\u00DF \u00C4\u00D6\u00DC\u00E4\u00F6\u00FC\u00DF\u00EA\u00E9\u00E8\u00E0\u00C9\u00C1\u00C7\u00E7\u00F4\u00FB\u00F9\u00F2\u00EC\u00E1\u00F3\u00F1\u00D1",
-			"\u00A1\u00BF\u00FA\u00ED\u00CD\u00D3\u00F3\u0150\u0151\u0170\u0171\u00DA=<>*"
-	};
-	/** 
-	 * Print original characters.
-	 * @param args no arguments
-	 */
-	public static void main(String[] args) {
-		for (String s : LINE_CHARACTERS) {
-			System.out.println(s);
-		}
-	}
-	/** The maximum text size available. */
-	int maxSize = 14;
 	/**
 	 * Split the entire images into character sizes and characters.
 	 * @param color the target color.
@@ -343,29 +381,80 @@ public class TextRenderer {
 			g.setFont(f);
 			return;
 		}
-		Map<Integer, SizedCharImages> charMap = coloredCharImages.get(color);
-		if (charMap == null) {
-			charMap = split(color);
-		}
-		AffineTransform tf = g.getTransform();
-		g.translate(x, y);
-		SizedCharImages charToImage = charMap.get(size);
-		
-		if (charToImage == null) {
-			g.scale(size * 1.0 / maxSize, size * 1.0 / maxSize);
-			charToImage = charMap.get(maxSize);
-			size = maxSize;
-		}
-		int spc = charsetSpaces.get(size);
-		int x1 = 0;
-		for (int i = 0; i < text.length(); i++) {
-			BufferedImage ci = charToImage.chars.get(text.charAt(i));
-			if (ci != null) {
-				g.drawImage(ci, x1, 0, null);
+		if (useTextCache) {
+			TextCacheEntry tce = new TextCacheEntry(text, color, size);
+
+			BufferedImage bimg = textCache.get(tce);
+			if (bimg != null) {
+				g.drawImage(bimg, x, y, null);
+				return;
 			}
-			x1 += charToImage.width + spc;
+			int tw = getTextWidth(size, text);
+			if (tw == 0) {
+				return;
+			}
+			bimg = new BufferedImage(tw, size, BufferedImage.TYPE_INT_ARGB);
+			textCache.put(tce, bimg);
+			
+			Graphics2D g2 = bimg.createGraphics();
+			
+			Map<Integer, SizedCharImages> charMap = coloredCharImages.get(color);
+			if (charMap == null) {
+				charMap = split(color);
+			}
+			
+			AffineTransform tf = g.getTransform();
+			g.translate(x, y);
+			
+			SizedCharImages charToImage = charMap.get(size);
+			
+			if (charToImage == null) {
+				g2.scale(size * 1.0 / maxSize, size * 1.0 / maxSize);
+				charToImage = charMap.get(maxSize);
+				size = maxSize;
+			}
+			int spc = charsetSpaces.get(size);
+			int x1 = 0;
+			for (int i = 0; i < text.length(); i++) {
+				BufferedImage ci = charToImage.chars.get(text.charAt(i));
+				if (ci != null) {
+					g2.drawImage(ci, x1, 0, null);
+				}
+				x1 += charToImage.width + spc;
+			}
+			g2.dispose();
+			
+			g.drawImage(bimg, 0, 0, null);
+			
+			g.setTransform(tf);
+		} else {
+			Map<Integer, SizedCharImages> charMap = coloredCharImages.get(color);
+			if (charMap == null) {
+				charMap = split(color);
+			}
+			
+			AffineTransform tf = g.getTransform();
+			g.translate(x, y);
+			
+			SizedCharImages charToImage = charMap.get(size);
+			
+			if (charToImage == null) {
+				g.scale(size * 1.0 / maxSize, size * 1.0 / maxSize);
+				charToImage = charMap.get(maxSize);
+				size = maxSize;
+			}
+			int spc = charsetSpaces.get(size);
+			int x1 = 0;
+			for (int i = 0; i < text.length(); i++) {
+				BufferedImage ci = charToImage.chars.get(text.charAt(i));
+				if (ci != null) {
+					g.drawImage(ci, x1, 0, null);
+				}
+				x1 += charToImage.width + spc;
+			}
+			
+			g.setTransform(tf);
 		}
-		g.setTransform(tf);
 	}
 	/**
 	 * Scale the color according to the given factor.
