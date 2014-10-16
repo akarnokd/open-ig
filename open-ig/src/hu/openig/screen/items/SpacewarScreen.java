@@ -5205,12 +5205,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		
 		Planet nearbyPlanet = battle.getPlanet();
 		
-		if (nearbyPlanet == null || nearbyPlanet.owner != f.owner) {
-			if (f.owner == battle.attacker.owner) {
-				placeFleet(0, false, common);
-			} else {
-				placeFleet(maxRightPlacement, true, common);
-			}
+		if (nearbyPlanet != null) {
+		    if (nearbyPlanet.owner == battle.attacker.owner) {
+		        if (f.owner == battle.attacker.owner) {
+	                placeFleet(maxRightPlacement, true, common);
+		        } else {
+	                placeFleet(0, false, common);
+		        }
+		    } else 
+		    if (nearbyPlanet.owner == f.owner) {
+                placeFleet(maxRightPlacement, true, common);
+		    }
 		} else {
 			if (f.owner == battle.attacker.owner) {
 				placeFleet(maxRightPlacement, true, common);
