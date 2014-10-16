@@ -1670,13 +1670,13 @@ public class World implements ModelLookup {
 				}
 			}
 			
-			// add free technologies
 			p.availableResearch.clear();
-			for (ResearchType rt : researches.values()) {
-				if (rt.level == 0 && rt.race.contains(p.race)) {
-					p.add(rt);
-				}
-			}
+            // add free technologies
+//			for (ResearchType rt : researches.values()) {
+//				if (rt.level == 0 && rt.race.contains(p.race)) {
+//					p.add(rt);
+//				}
+//			}
 			
 			setTechAvailability(xplayer, p);
 			

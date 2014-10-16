@@ -28,6 +28,7 @@ import hu.openig.model.SoundTarget;
 import hu.openig.model.SoundType;
 import hu.openig.model.SpacewarScriptResult;
 import hu.openig.model.SpacewarWorld;
+import hu.openig.model.TraitKind;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.ViewLimit;
 import hu.openig.model.World;
@@ -1319,7 +1320,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	@Override
 	public int fleetSpeedOverride(Fleet fleet, int speed) {
 		if ("Traders".equals(fleet.owner.id)  
-				&& player.traits.has("PreWarp")
+				&& player.traits.has(TraitKind.PRE_WARP)
 				&& !player.isAvailable("HyperDrive1")) {
 			return speed / 2;
 		}
