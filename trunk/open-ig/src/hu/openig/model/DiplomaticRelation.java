@@ -55,6 +55,8 @@ public class DiplomaticRelation {
 		value = other.value;
 		lastContact = other.lastContact;
 		wontTalk = other.wontTalk;
+		tradeAgreement = other.tradeAgreement;
+		strongAlliance = other.strongAlliance;
 		alliancesAgainst.addAll(other.alliancesAgainst);
 	}
 	/**
