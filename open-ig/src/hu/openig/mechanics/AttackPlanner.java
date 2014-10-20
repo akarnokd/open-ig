@@ -312,19 +312,7 @@ public class AttackPlanner extends Planner {
                 } 
             });
 
-            double prob = ModelUtils.random();
-            
-            // first select a player to attack
-            Player targetPlayer = null;
-            if (prob < 0.6 || enemiesList.size() == 1) {
-                targetPlayer = enemiesList.get(0);
-            } else
-            if (prob >= 0.6 && prob < 0.75 || candidates.size() == 2) {
-                targetPlayer = enemiesList.get(1);
-            } else {
-                int n = 2 + ModelUtils.randomInt(enemiesList.size() - 2);
-                targetPlayer = enemiesList.get(n);
-            }
+            Player targetPlayer = choseAtRandom(enemiesList);
             
             for (int i = candidates.size() - 1; i >= 0; i--) {
                 if (candidates.get(i).owner != targetPlayer) {
@@ -335,18 +323,37 @@ public class AttackPlanner extends Planner {
             // then select one of his planets
             Collections.sort(candidates, new PlanetTargetValueComparator(center));
 
-            prob = ModelUtils.random();
-            if (prob < 0.6 || candidates.size() == 1) {
-                return candidates.get(0);
-            } else
-            if ((prob >= 0.6 && prob < 0.75) || candidates.size() == 2) {
-                return candidates.get(1);
-            } else {
-                int n = 2 + ModelUtils.randomInt(candidates.size() - 2);
-                return candidates.get(n);
-            }
+            return choseAtRandom(candidates);
         }
         return null;
+    }
+    /**
+     * Chose an element from the list with the following probabilities:
+     * 60% chance to select the first, 15% to select the second or
+     * 25% chance to select one from the remaining elements at uniform distribution.
+     * @param <T> the element type
+     * @param list the list of elements, shouldn't be empty
+     * @return the selected item
+     */
+    <T> T choseAtRandom(List<T> list) {
+        double prob = ModelUtils.random();
+        int idx = 0;
+        if (prob < 0.6) {
+            idx = 0;
+        } else
+        if (prob >= 0.6 && prob < 0.75) {
+            idx = 1;
+        } else {
+            if (list.size() > 2) {
+                idx = 2 + ModelUtils.randomInt(list.size() - 2);
+            } else {
+                idx = ModelUtils.randomInt(2);
+            }
+        }
+        
+        idx = Math.min(idx, list.size() - 1);
+        
+        return list.get(idx);
     }
     /**
      * Returns the diplomatic value multiplier, e.g., 100 - relation,
