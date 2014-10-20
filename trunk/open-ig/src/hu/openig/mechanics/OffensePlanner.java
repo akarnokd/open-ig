@@ -54,6 +54,13 @@ public class OffensePlanner extends Planner {
 			return Double.compare(o1.statistics.firepower, o2.statistics.firepower);
 		}
 	};
+	/** Comparator for firepower, descending order. */
+    final Comparator<AIFleet> firepowerDesc = new Comparator<AIFleet>() {
+        @Override
+        public int compare(AIFleet o1, AIFleet o2) {
+            return Double.compare(o2.statistics.firepower, o1.statistics.firepower);
+        }
+    };
 	/**
 	 * Compare effective firepower of two cruiser/destroyer technologies.
 	 */
@@ -97,7 +104,13 @@ public class OffensePlanner extends Planner {
 			return;
 		}
 
-		int nFleets = (int)Math.round(Math.log(world.ownPlanets.size() + 2) / Math.log(2));
+		// create 1 fleet for every 10 planets
+		int nPlanets = world.ownPlanets.size();
+		int nFleets = nPlanets / 10 + 1;
+		// have 2 fleets  between 3 and 10
+		if (nPlanets > 3 && nPlanets < 10) {
+		    nFleets++;
+		}
 		
 		// construct fleets
 		if (nFleets > world.ownFleets.size()) {
@@ -339,35 +352,48 @@ public class OffensePlanner extends Planner {
 		if (upgradeCandidates.isEmpty()) {
 			return false;
 		}
-		final AIFleet fleet = Collections.min(upgradeCandidates, firepowerAsc);
 
-		Map<ResearchType, Integer> demands = new HashMap<>();
+        Collections.sort(upgradeCandidates, firepowerDesc);
 
-		for (ResearchType rt : fighters) {
-			demands.put(rt, world.fighterLimit);
-		}
-		if (!cruisers.isEmpty()) {
-			ResearchType rt = cruisers.get(0);
-			demands.put(rt, world.cruiserLimit);
-//			int available = fleet.inventoryCount(rt);
-//			equipmentDemands(rt, demands, 25 - available);
-		}
-		if (!battleships.isEmpty()) {
-			ResearchType rt = battleships.get(0);
-			demands.put(rt, world.battleshipLimit);
-//			int available = fleet.inventoryCount(rt);
-//			equipmentDemands(rt, demands, 3 - available);
-		}
+        Map<ResearchType, Integer> demands = new HashMap<>();
 		
-		setFleetEquipmentDemands(fleet, demands);
-		
-		// plan for vehicles
-		VehiclePlan plan = new VehiclePlan();
-		plan.calculate(world.availableResearch, w.battle, 
-				fleet.statistics.vehicleMax, 
-				p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
-		
-		demands.putAll(plan.demand);
+        AIFleet fleetSelected = null; 
+        
+        for (AIFleet fleet :  upgradeCandidates) {
+            demands.clear();
+            
+	        for (ResearchType rt : fighters) {
+	            demands.put(rt, world.fighterLimit);
+	        }
+	        if (!cruisers.isEmpty()) {
+	            ResearchType rt = cruisers.get(0);
+	            demands.put(rt, world.cruiserLimit);
+	        }
+	        if (!battleships.isEmpty()) {
+	            ResearchType rt = battleships.get(0);
+	            demands.put(rt, world.battleshipLimit);
+	        }
+	        
+	        setFleetEquipmentDemands(fleet, demands);
+	        
+	        // plan for vehicles
+	        VehiclePlan plan = new VehiclePlan();
+	        plan.calculate(world.availableResearch, w.battle, 
+	                fleet.statistics.vehicleMax, 
+	                p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
+	        
+	        demands.putAll(plan.demand);
+	        
+	        if (!demands.isEmpty()) {
+	            fleetSelected = fleet;
+//	            log("Fleet %s (%d) selected for upgrades (%d kinds).", fleetSelected, (int)fleetSelected.statistics.firepower, demands.size());
+	            break;
+	        }
+		}
+        
+        if (fleetSelected == null) {
+            return false;
+        }
 		
 		// create equipment and upgrade the fleet
 		Set<ResearchMainCategory> running = new HashSet<>();
@@ -404,7 +430,7 @@ public class OffensePlanner extends Planner {
 				}
 				
 				int inventory = world.inventoryCount(rt);
-				int available = fleet.inventoryCount(rt);
+				int available = fleetSelected.inventoryCount(rt);
 				int demand = e.getValue();
 				
 				UpgradeResult r = checkProduction(rt, demand, available, inventory, limit);
@@ -421,7 +447,7 @@ public class OffensePlanner extends Planner {
 			}
 		}
 		if (bringin) {
-			if (bringinFleet(fleet)) {
+			if (bringinFleet(fleetSelected)) {
 				log("Upgrade set: %s", upgradeSet);
 			}
 			return true;
