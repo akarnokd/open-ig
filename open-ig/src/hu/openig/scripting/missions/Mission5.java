@@ -304,7 +304,12 @@ public class Mission5 extends Mission {
 			if (f.owner == player && f != fi) {
 				double d = Math.hypot(f.x - fi.x, f.y - fi.y);
 				if (d < 5) {
-					return true;
+				    // check also if close to Naxos
+				    Planet p = planet("Naxos");
+				    d = Math.hypot(p.x + 10 - f.x, p.y - 20 - f.y);
+				    if (d < 5) {
+				        return true;
+				    }
 				}
 			}
 		}
