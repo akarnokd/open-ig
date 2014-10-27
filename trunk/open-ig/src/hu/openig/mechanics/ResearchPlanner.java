@@ -92,7 +92,7 @@ public class ResearchPlanner extends Planner {
 				}
 			}
 		}
-		for (ResearchType rt : world.remainingResearch) {
+		for (ResearchType rt : world.researchable) {
 			if (rt.hasEnoughLabs(world.global)) {
 				candidatesImmediate.add(rt);
 				setResearchEnables(rt, enablesCount);

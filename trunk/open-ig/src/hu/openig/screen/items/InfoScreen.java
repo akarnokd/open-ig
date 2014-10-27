@@ -1742,6 +1742,14 @@ public class InfoScreen extends ScreenBase {
 					setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
 					setLabel(police, "colonyinfo.police", ps.policeAvailable, (int)p.population()).visible(true);
 					
+					int req = (int)(ps.nativeWorkerDemand - p.population());
+                    if (req > 0 && ps.workerDemand < p.population()) {
+                        String wt = worker.text();
+                        wt += " (-" + (req) + ")";
+                        worker.text(wt, true);
+                        worker.color(TextRenderer.LIGHT_GREEN);
+                    }
+					
 					taxIncome.text(format("colonyinfo.tax", 
 							(int)p.taxIncome()
 					), true).visible(true);

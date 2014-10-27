@@ -359,6 +359,7 @@ public class OffensePlanner extends Planner {
 		
         AIFleet fleetSelected = null; 
         
+        outer:
         for (AIFleet fleet :  upgradeCandidates) {
             demands.clear();
             
@@ -384,10 +385,15 @@ public class OffensePlanner extends Planner {
 	        
 	        demands.putAll(plan.demand);
 	        
-	        if (!demands.isEmpty()) {
-	            fleetSelected = fleet;
-//	            log("Fleet %s (%d) selected for upgrades (%d kinds).", fleetSelected, (int)fleetSelected.statistics.firepower, demands.size());
-	            break;
+	        for (Map.Entry<ResearchType, Integer> d : demands.entrySet()) {
+                int available = fleet.inventoryCount(d.getKey());
+                int demand = d.getValue();
+                
+                if (demand > available) {
+                    fleetSelected = fleet;
+//                  log("Fleet %s (%d) selected for upgrades (%d kinds).", fleetSelected, (int)fleetSelected.statistics.firepower, demands.size());
+                    break outer;
+                }
 	        }
 		}
         

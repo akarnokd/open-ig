@@ -398,7 +398,7 @@ public abstract class Planner {
 		return false;
 	}
 	/**
-	 * Try to choose a construction option.
+	 * Try to choose a construction option but vary the number of buildings of the same type.
 	 * @param planet the target planet
 	 * @param selector the building selector
 	 * @param order the building order
@@ -433,8 +433,8 @@ public abstract class Planner {
 					return AIResult.SUCCESS;
 				}
 			}
-			// if all building counts are equal, just build the first one
-			final BuildingType bt = createCandidates.get(0);
+			// if all building counts are equal, just build the most expensive one
+			final BuildingType bt = Collections.max(createCandidates, fromOrderType(costOrder));
 			build(planet, bt);
 			
 			return AIResult.SUCCESS;
