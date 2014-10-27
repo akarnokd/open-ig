@@ -66,6 +66,9 @@
 		<tech id="SpaceStation3" normal="inventions/spaceships/stations/space_station_3_rotate" alternative="inventions/spaceships/stations/alien_space_station_3_rotate" image="inventions/spaceships/stations/space_station_3_huge" width="1" sound="EXPLOSION_LONG" hp="55000" rotation-time="1" movement-speed="1">
 			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
 		</tech>
+        <tech id="SpaceStation3Alien" normal="inventions/spaceships/stations/space_station_3_rotate" alternative="inventions/spaceships/stations/alien_space_station_3_rotate" image="inventions/spaceships/stations/space_station_3_huge" width="1" sound="EXPLOSION_LONG" hp="55000" rotation-time="1" movement-speed="1">
+            <efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
+        </tech>
 		<tech id="OrbitalFactory" normal="inventions/spaceships/stations/orbital_factory_rotate" alternative="inventions/spaceships/stations/alien_orbital_factory_rotate" image="inventions/spaceships/stations/orbital_factory_huge" width="1" sound="EXPLOSION_LONG" hp="30000" rotation-time="1" movement-speed="1"/>
 		<tech id="ColonyShip" normal="inventions/spaceships/battleships/colonyship_rotate" alternative="inventions/spaceships/battleships/alien_colonyship_rotate" image="inventions/spaceships/battleships/colonyship_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="3000"/>
 

@@ -537,6 +537,7 @@ public class SkirmishScreen extends ScreenBase {
 		noLabLimit = createCheckBox("skirmish.no_lab_limit");
 		noEconomicLimit = createCheckBox("skirmish.no_economic_limit");
 		allowAllBuildings = createCheckBox("skirmish.allow_all_buildings");
+		allowAllBuildings.selected(true);
 		
 		planetScaleLabel = createLabel("skirmish.planet_scale");
 		planetScale = new NumberSpinBox(commons, 1, 4, 1, 1) {

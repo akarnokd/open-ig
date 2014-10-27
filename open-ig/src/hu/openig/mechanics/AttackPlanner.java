@@ -213,14 +213,13 @@ public class AttackPlanner extends Planner {
     void computeNextAttack() {
         if (world.nextAttack == null) {
             if (world.mayConquer) {
-                int base = 1;
-                if (world.difficulty == Difficulty.NORMAL) {
-                    base = 3;
-                } else
-                    if (world.difficulty == Difficulty.EASY) {
-                        base = 5;
-                    }
-                long next = 1L * (ModelUtils.randomInt(3) + base) * (8 + 2 * ModelUtils.randomInt(6)) * 60 * 60 * 1000;
+                long next = 0;
+                if (world.difficulty == Difficulty.HARD) {
+                    next = 30_000;
+                } else {
+                    next = (3 + ModelUtils.randomInt(4)) * 60L * 60 * 24 * 1000
+                            + ModelUtils.randomInt(24) * 60L * 60 * 1000;
+                }
                 world.nextAttack = new Date(world.now.getTime() + next);
                 setNewAttack.invoke(world.nextAttack);
             }

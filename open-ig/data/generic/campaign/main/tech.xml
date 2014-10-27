@@ -147,8 +147,16 @@
     <slot id='rocket' x='145' y='50' width='30' height='20' max='3' items='Rocket1,Rocket2'/>
     <slot-fixed id='ECM' item='ECM1' count='1'/>
   </item>
-  <item id='SpaceStation3' name='tech.spacestation3.name' long-name='tech.spacestation3.longname' description='tech.spacestation3.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_3' factory='spaceship' research-cost='200000' production-cost='125000' level='5' race='human,ychom,dribs,sullep,dargslan,ecalep' requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3' mil='6' index='2' video='technology/spaceships/stations/space_station_3'>
+  <item id='SpaceStation3' name='tech.spacestation3.name' long-name='tech.spacestation3.longname' description='tech.spacestation3.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_3' factory='spaceship' research-cost='200000' production-cost='125000' level='5' race='human' requires='Laser4, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3' mil='6' index='2' video='technology/spaceships/stations/space_station_3'>
     <slot-fixed id='Laser1' item='Laser3' count='7'/>
+    <slot-fixed id='Cannon1' item='ParticleCannon' count='7'/>
+    <slot-fixed id='Cannon2' item='PlasmaCannon' count='9'/>
+    <slot-fixed id='Shield' item='Shield3' count='1'/>
+    <slot id='rocket' x='145' y='50' width='30' height='20' max='6' items='Rocket1,Rocket2,MultiheadedRocket'/>
+    <slot-fixed id='ECM' item='ECM2' count='1'/>
+  </item>
+  <item id='SpaceStation3Alien' name='tech.spacestation3.name' long-name='tech.spacestation3.longname' description='tech.spacestation3.description' category='SPACESHIPS_STATIONS' image='inventions/spaceships/stations/space_station_3' factory='spaceship' research-cost='200000' production-cost='125000' level='5' race='ychom,dribs,sullep,dargslan,ecalep' requires='Laser4Alien, IonCannon, Rocket2' civil='6' mech='4' comp='5' ai='3' mil='6' index='2' video='technology/spaceships/stations/space_station_3' skirmish-race="garthog,morgath">
+    <slot-fixed id='Laser1' item='Laser3Alien' count='7'/>
     <slot-fixed id='Cannon1' item='ParticleCannon' count='7'/>
     <slot-fixed id='Cannon2' item='PlasmaCannon' count='9'/>
     <slot-fixed id='Shield' item='Shield3' count='1'/>
@@ -221,7 +229,7 @@
   <item id='Laser4' name='tech.laser4.name' long-name='tech.laser4.longname' description='tech.laser4.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_4' factory='weapon' research-cost='14000' production-cost='1750' level='4' race='human' requires='Laser3' mech='4' comp='4' ai='2' mil='5' index='3' video='technology/weapons/lasers/laser_4'>
     <property name='projectile' value='Laser4'/>
   </item>
-  <item id='Laser4Alien' name='tech.laser4.name' long-name='tech.laser4.longname' description='tech.laser4.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_4' factory='weapon' research-cost='14000' production-cost='1750' level='4' race='garthog,ecalep,sullep,ychom,morgath,dargslan,dribs' requires='Laser3' mech='4' comp='4' ai='2' mil='5' index='3' video='technology/weapons/lasers/laser_4'>
+  <item id='Laser4Alien' name='tech.laser4.name' long-name='tech.laser4.longname' description='tech.laser4.description' category='WEAPONS_LASERS' image='inventions/weapons/lasers/laser_4' factory='weapon' research-cost='14000' production-cost='1750' level='4' race='garthog,ecalep,sullep,ychom,morgath,dargslan,dribs' requires='Laser3Alien' mech='4' comp='4' ai='2' mil='5' index='3' video='technology/weapons/lasers/laser_4'>
     <property name='projectile' value='Laser4'/>
   </item>
   <item id='IonCannon' name='tech.ioncannon.name' long-name='tech.ioncannon.longname' description='tech.ioncannon.description' category='WEAPONS_CANNONS' image='inventions/weapons/cannons/ion_cannon' factory='weapon' research-cost='8000' production-cost='1200' level='3' race='human,garthog,ecalep,sullep,ychom,morgath,dargslan,dribs' mech='1' comp='1' ai='1' mil='1' index='0' video='technology/weapons/cannons/ion_cannon'>

@@ -288,7 +288,6 @@ public class Building implements HasLocation {
 	}
 	@Override
 	public String toString() {
-		
 		return type.id + " (hp = " + hitpoints + ")";
 	}
 	/** @return the instance width */

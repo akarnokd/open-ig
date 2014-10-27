@@ -230,7 +230,7 @@ public class ColonizationPlanner extends Planner {
 		if (!spaceport.first) {
 			return;
 		}
-		if (maySpendMoney) {
+		if (maySpendMoney && spaceport.second == null) {
 			buildMilitarySpaceport();
 		}
 		if (spaceport.second != null) {

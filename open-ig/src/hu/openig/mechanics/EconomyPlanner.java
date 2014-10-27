@@ -14,9 +14,11 @@ import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
+import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
+import hu.openig.model.PlanetProblems;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 
@@ -47,29 +49,18 @@ public class EconomyPlanner extends Planner {
 
 	@Override
 	protected void plan() {
-		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
-		Collections.sort(planets, WORST_PLANET);
-		Collections.reverse(planets);
-		
-		for (AIPlanet p : planets) {
-			if (managePlanet(p)) {
-				if (world.mainPlayer == this.p && world.money < world.autoBuildLimit) {
-					return;
-				}
-			}
-		}
-	}
-	/**
-	 * Manage a planet. Used by the AutoBuilder.
-	 * @param planet the target planet
-	 */
-	public void managePlanet(Planet planet) {
-		for (AIPlanet p : world.ownPlanets) {
-			if (p.planet == planet) {
-				managePlanet(p);
-				return;
-			}
-		}
+//		List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
+//		Collections.sort(planets, WORST_PLANET);
+//		Collections.reverse(planets);
+//		
+//		for (AIPlanet p : planets) {
+//			if (managePlanet(p)) {
+//				if (world.mainPlayer == this.p && world.money < world.autoBuildLimit) {
+//					return;
+//				}
+//			}
+//		}
+	    planHorizontally();
 	}
 	/** 
 	 * Returns the actions to perform.
@@ -440,4 +431,180 @@ public class EconomyPlanner extends Planner {
 		}
 		return false;
 	}
+    /**
+     * Plans the construction of economy and factory buildings horizontally across
+     * all player planets, then does the radar & social checks.
+     * Methodology:
+     * <ul>
+     * <li>Build each type of economy building on each planet, one by one.</li>
+     * <li>Wait until at least one set of factories and military spaceports are built (probably by someone else).</li>
+     * <li>Upgrade each economy building on each planet, one by one.</li>
+     * <li>Construct each factory type on the best planet first, then on less valued planets.</li>
+     * <li>Check and build radar and social buildings, best planet first.</li>
+     * </ul>
+     */
+    void planHorizontally() {
+        List<AIPlanet> planets = new ArrayList<>(world.ownPlanets);
+        Collections.sort(planets, BEST_PLANET);
+
+        Set<BuildingType> economySet = new HashSet<>();
+        
+        economySet.addAll(world.availableResourceBuildings.get("credit"));
+        economySet.addAll(world.availableResourceBuildings.get("multiply"));
+        
+        List<BuildingType> economyList = new ArrayList<>(economySet);
+        Collections.sort(economyList, BuildingType.COST);
+        
+        boolean economyAll = true;
+        
+        for (BuildingType bt : economyList) {
+            for (AIPlanet p : planets) {
+                if (p.statistics.constructing) {
+                    continue;
+                }
+                if (!p.buildingCounts.containsKey(bt)) {
+                    if (world.money >= bt.cost) {
+                        if (p.findLocation(bt) != null) {
+                            build(p, bt);
+                            return;
+                        }
+                    } else {
+                        economyAll = false;
+                    }
+                }
+            }
+        }
+        
+        // make sure there is at least one military spaceport and one of 
+        if (world.global.hasMilitarySpaceport 
+                && world.global.production.equipment > 0
+                && world.global.production.spaceship > 0
+                && world.global.production.weapons > 0) {
+            boolean upgradeAvailable = false;
+            for (BuildingType bt : economyList) {
+                for (final AIPlanet p : planets) {
+                    if (p.statistics.constructing) {
+                        continue;
+                    }
+                    List<AIBuilding> toUpgrade = new ArrayList<>();
+                    for (final AIBuilding b : p.buildings) {
+                        if (b.type == bt && b.canUpgrade()) {
+                            upgradeAvailable = true;
+                        }
+                        if (b.type == bt && b.canUpgrade() && world.money >= bt.cost) {
+                            toUpgrade.add(b);
+                        }
+                    }
+                    
+                    if (!toUpgrade.isEmpty()) {
+                        AIBuilding b = Collections.min(toUpgrade, AIBuilding.COMPARE_LEVEL);
+                        world.money -= b.type.cost;
+                        final Planet p0 = p.planet;
+                        final Building b0 = b.building;
+                        add(new Action0() {
+                            @Override
+                            public void invoke() {
+                                controls.actionUpgradeBuilding(p0, b0, b0.upgradeLevel + 1);
+                            }
+                        });
+                        return;
+                    }
+                }
+            }
+            // if we weren't able to upgrade now due to lack of money
+            if (!economyList.isEmpty() && upgradeAvailable) {
+                economyAll = false;
+            }
+        }
+        
+        if (economyAll && !planets.isEmpty()) {
+            Set<BuildingType> factorySet = new HashSet<>();
+            
+            if (world.global.production.spaceship == 0) {
+                factorySet.addAll(world.availableResourceBuildings.get("spaceship"));
+            } else
+            if (world.global.production.weapons == 0) {
+                factorySet.addAll(world.availableResourceBuildings.get("weapon"));
+            } else
+            if (world.global.production.equipment == 0) {
+                factorySet.addAll(world.availableResourceBuildings.get("equipment"));
+            } else 
+            if (((world.global.problems.isEmpty() 
+                    && !world.global.warnings.contains(PlanetProblems.WORKFORCE)) || world.money >= 500_000)
+                    && (world.global.labCount() > 0 || world.remainingResearch.isEmpty())) {
+                factorySet.addAll(world.availableResourceBuildings.get("spaceship"));
+                factorySet.addAll(world.availableResourceBuildings.get("weapon"));
+                factorySet.addAll(world.availableResourceBuildings.get("equipment"));
+            }
+    
+            List<BuildingType> factoryList = new ArrayList<>(factorySet);
+            Collections.sort(factoryList, BuildingType.COST);
+            
+            for (AIPlanet p : planets) {
+                if (p.statistics.constructing) {
+                    continue;
+                }
+                for (BuildingType bt : factoryList) {
+                    if (!p.buildingCounts.containsKey(bt)) {
+                        if (world.money >= bt.cost) {
+                            if (p.population >= Math.abs(p.statistics.nativeWorkerDemand) + Math.abs(bt.getResource("worker"))) {
+                                if (p.findLocation(bt) != null) {
+                                    build(p, bt);
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            if (((world.global.warnings.isEmpty()
+                        && world.global.problems.isEmpty()) || world.money >= 500_000)
+                        && (world.global.labCount() > 0 || world.remainingResearch.isEmpty())) {
+                for (AIPlanet p : planets) {
+                    if (p.statistics.constructing) {
+                        continue;
+                    }
+                    List<AIBuilding> toUpgrade = new ArrayList<>();
+                    for (BuildingType bt : factoryList) {
+                        for (final AIBuilding b : p.buildings) {
+                            if (b.type == bt && b.canUpgrade() && world.money >= bt.cost
+                                    && p.population >= Math.abs(p.statistics.nativeWorkerDemand) + Math.abs(bt.getResource("worker"))) {
+                                toUpgrade.add(b);
+                            }
+                        }
+                    }
+                    
+                    if (!toUpgrade.isEmpty()) {
+                        AIBuilding b = Collections.min(toUpgrade, AIBuilding.COMPARE_LEVEL);
+                        world.money -= b.type.cost;
+                        final Planet p0 = p.planet;
+                        final Building b0 = b.building;
+                        add(new Action0() {
+                            @Override
+                            public void invoke() {
+                                controls.actionUpgradeBuilding(p0, b0, b0.upgradeLevel + 1);
+                            }
+                        });
+                        return;
+                    }
+                }
+            }            
+            // do the remaining checks
+            
+            if (world.global.hasMilitarySpaceport
+                    && world.global.production.equipment > 0
+                    && world.global.production.spaceship > 0
+                    && world.global.production.weapons > 0) {
+                for (AIPlanet p : planets) {
+                    if (checkRadar(p)) {
+                        return;
+                    }
+                    if (checkSocial(p)) {
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }

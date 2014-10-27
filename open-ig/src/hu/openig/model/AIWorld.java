@@ -48,10 +48,12 @@ public class AIWorld {
 	public final Map<ResearchType, Integer> inventory = new HashMap<>();
 	/** The set of available researches. */
 	public final Set<ResearchType> availableResearch = new HashSet<>();
-	/** The set of remaining research. */
-	public final Set<ResearchType> remainingResearch = new HashSet<>();
+	/** The set of remaining research that has all prerequisites met. */
+	public final Set<ResearchType> researchable = new HashSet<>();
 	/** The set of researches which can be developed in the current level. */
 	public final Set<ResearchType> furtherResearch = new HashSet<>();
+    /** The set of all researches that can be eventually researched by the player. */
+    public final Set<ResearchType> remainingResearch = new HashSet<>();
 	/** The list of known other players. */
 	public final List<Player> players = new LinkedList<>();
 	/** The list of own fleets. */
@@ -153,8 +155,9 @@ public class AIWorld {
 				}
 			} else
 			if (rt.race.contains(player.race)) {
+			    remainingResearch.add(rt);
 				if (player.canResearch(rt)) {
-					remainingResearch.add(rt);
+					researchable.add(rt);
 				} else
 				if (rt.level <= player.world.level) {
 					furtherResearch.add(rt);

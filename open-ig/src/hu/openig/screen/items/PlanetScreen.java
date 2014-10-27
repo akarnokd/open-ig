@@ -2891,6 +2891,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
 					setLabel(police, "colonyinfo.police", ps.policeAvailable, (int)p.population()).visible(true);
 					
+					int req = (int)(ps.nativeWorkerDemand - p.population());
+					if (req > 0 && ps.workerDemand < p.population()) {
+	                    String wt = worker.text();
+					    wt += " (-" + (req) + ")";
+					    worker.text(wt, true);
+					    worker.color(TextRenderer.LIGHT_GREEN);
+					}
+					
 					taxTradeIncome.text(format("colonyinfo.tax-trade", 
 							(int)p.taxIncome(), (int)p.tradeIncome()
 					), true).visible(true);

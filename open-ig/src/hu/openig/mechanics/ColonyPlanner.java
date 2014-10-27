@@ -78,7 +78,11 @@ public class ColonyPlanner extends Planner {
 			return value.hasResource("house");
 		}
 	};
-	
+	/** 
+	 * The minimum money requred to react to some shortages immediately, otherwise, there
+	 * will be a slight tolerance.
+	 */
+	static final int ISSUE_MONEY_TOLERANCE = 150_000;
 	/**
 	 * Constructor.
 	 * @param world the world
@@ -439,7 +443,7 @@ public class ColonyPlanner extends Planner {
 			newLevel = TaxLevel.values()[newLevel.ordinal() - 1];
 		}
 		// reduce tax further if even lower worker shortage
-		if (newLevel != TaxLevel.NONE && planet.population * 5 < planet.statistics.nativeWorkerDemand * 4) {
+		if (newLevel != TaxLevel.NONE && planet.population * 10 < planet.statistics.nativeWorkerDemand * 9) {
 			newLevel = TaxLevel.values()[newLevel.ordinal() - 1];
 		}
 		
@@ -516,7 +520,11 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("food");
 			}
 		};
-		if (planet.population > planet.statistics.foodAvailable) {
+		double tolerance = 1.05;
+		if (world.money >= ISSUE_MONEY_TOLERANCE) {
+		    tolerance = 1;
+		}
+		if (planet.population > planet.statistics.foodAvailable * tolerance) {
 			return manageBuildings(planet, food, costOrder, true);
 		}
 		return false;
@@ -558,7 +566,11 @@ public class ColonyPlanner extends Planner {
 				return value.hasResource("hospital");
 			}
 		};
-		if (planet.population > planet.statistics.hospitalAvailable) {
+        double tolerance = 1.05;
+        if (world.money >= ISSUE_MONEY_TOLERANCE) {
+            tolerance = 1;
+        }
+		if (planet.population > planet.statistics.hospitalAvailable * tolerance) {
 			return manageBuildings(planet, hospital, costOrder, true);
 		}
 		return false;
@@ -680,7 +692,12 @@ public class ColonyPlanner extends Planner {
 				}
 			}
 		}
-		if (planet.statistics.energyAvailable < planet.statistics.energyDemand
+	      double tolerance = 1.05;
+	        if (world.money >= ISSUE_MONEY_TOLERANCE) {
+	            tolerance = 1;
+	        }
+
+		if (planet.statistics.energyAvailable * tolerance < planet.statistics.energyDemand
 				&& planet.statistics.workerDemand < planet.population) {
 			if (manageBuildings(planet, energy, costOrder, true)) {
 				return true;
@@ -727,21 +744,28 @@ public class ColonyPlanner extends Planner {
 			Tile b1 = moneyFor.tileset.get(planet.planet.race).normal; 
 			// if no such building, demolish something with large enough footprint
 			// except colony hub
+			List<AIBuilding> candidates = new ArrayList<>();
 			for (final AIBuilding b : planet.buildings) {
 				if (!b.type.kind.equals("MainBuilding") && !energy.accept(planet, b)) {
 					Tile b0 = b.tileset.normal;
 					if (b0.width >= b1.width && b0.height >= b1.height) {
-						planet.buildings.remove(b);
-						add(new Action0() {
-							@Override
-							public void invoke() {
-								controls.actionDemolishBuilding(planet.planet, b.building);
-							}
-						});
-						return true;
+					    candidates.add(b);
 					}
 				}
-			}			
+			}
+			
+			if (!candidates.isEmpty()) {
+			    final AIBuilding b = Collections.max(candidates, disableOrder);
+                planet.buildings.remove(b);
+                add(new Action0() {
+                    @Override
+                    public void invoke() {
+                        controls.actionDemolishBuilding(planet.planet, b.building);
+                    }
+                });
+                return true;
+			}
+			
 		}
 		return false;
 	}

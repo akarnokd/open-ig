@@ -45,7 +45,7 @@ public class AIPlanet {
 	public final Map<Location, SurfaceEntity> nonbuildable = new HashMap<>();
 	/** Building list. */
 	public final List<AIBuilding> buildings = new ArrayList<>();
-	/** The building counts per type. */
+	/** The building counts per type, including under construction. */
 	public final Map<BuildingType, Integer> buildingCounts = new HashMap<>();
 	/** The placement helper. */
 	public PlacementHelper placement;

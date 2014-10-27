@@ -105,4 +105,8 @@ public class BuildingType {
 		Resource r = resources.get(resource);
 		return r.amount;
 	}
+	@Override
+	public String toString() {
+	    return id + " (kind = " + kind + ", cost = " + cost + ")";
+	}
 }

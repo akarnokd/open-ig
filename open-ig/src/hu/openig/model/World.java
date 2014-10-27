@@ -580,9 +580,13 @@ public class World implements ModelLookup {
 				for (ResearchType rt : p.inventory.keySet()) {
 					p.add(rt);
 				}
-				setTechAvailability(xplayer, p);
+				setTechAvailability(xplayer, p, EnumSet.allOf(ResearchMainCategory.class));
 			
 				loadFleets(deferredFleets, xplayer, p);
+			} else
+			if (!skirmishDefinition.allowAllBuildings) {
+			    // enable preset building types for skirmish without all buildings
+                setTechAvailability(xplayer, p, EnumSet.of(ResearchMainCategory.BUILDINGS));
 			}
 			
 			this.players.put(p.id, p);
@@ -1678,7 +1682,7 @@ public class World implements ModelLookup {
 //				}
 //			}
 			
-			setTechAvailability(xplayer, p);
+			setTechAvailability(xplayer, p, EnumSet.allOf(ResearchMainCategory.class));
 			
 			loadFleets(deferredTargets, xplayer, p);
 			
@@ -2141,8 +2145,9 @@ public class World implements ModelLookup {
 	 * Set the available technologies for the given player.
 	 * @param xplayer the player definition
 	 * @param p the player object to load
+	 * @param categoryFilter the set of main categories to pick up
 	 */
-	private void setTechAvailability(XElement xplayer, Player p) {
+	private void setTechAvailability(XElement xplayer, Player p, EnumSet<ResearchMainCategory> categoryFilter) {
 		XElement xavail0 = xplayer.childElement("available");
 		if (xavail0 != null) {
 			for (XElement xavail : xavail0.childrenWithName("type")) {
@@ -2150,7 +2155,8 @@ public class World implements ModelLookup {
 				ResearchType rt = researches.get(id);
 				if (rt == null) {
 					System.out.println("WARN | Available technology not found: " + xavail);
-				} else {
+				} else 
+				if (categoryFilter.contains(rt.category.main)) {
 					p.add(rt);
 					for (String liste : xavail.get("list", "").split("\\s*,\\s*")) {
 						if (liste.length() > 0) {
