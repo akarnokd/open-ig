@@ -1385,12 +1385,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		setSpacewarTimeControls();
 
-		findAllPlayers();
-		
-		for (AISpaceBattleManager sbm : allPlayerSet.values()) {
-			sbm.spaceBattleInit();
-		}
 		world().scripting.onSpacewarStart(this);
+
+		findAllPlayers();
+
+		for (AISpaceBattleManager sbm : allPlayerSet.values()) {
+		    sbm.spaceBattleInit();
+		}
 
 		// fix unit placements
 		if (battle.showLanding) {
