@@ -5217,7 +5217,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 placeFleet(maxRightPlacement, true, common);
 		    }
 		} else {
-			if (f.owner == battle.attacker.owner) {
+			if (f.owner != battle.attacker.owner) {
 				placeFleet(maxRightPlacement, true, common);
 			} else {
 				placeFleet(0, false, common);
