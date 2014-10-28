@@ -449,8 +449,14 @@ public class EconomyPlanner extends Planner {
 
         Set<BuildingType> economySet = new HashSet<>();
         
-        economySet.addAll(world.availableResourceBuildings.get("credit"));
-        economySet.addAll(world.availableResourceBuildings.get("multiply"));
+        Set<BuildingType> c = world.availableResourceBuildings.get("credit");
+        if (c != null) {
+            economySet.addAll(c);
+        }
+        Set<BuildingType> c2 = world.availableResourceBuildings.get("multiply");
+        if (c2 != null) {
+            economySet.addAll(c2);
+        }
         
         List<BuildingType> economyList = new ArrayList<>(economySet);
         Collections.sort(economyList, BuildingType.COST);
@@ -519,22 +525,38 @@ public class EconomyPlanner extends Planner {
         
         if (economyAll && !planets.isEmpty()) {
             Set<BuildingType> factorySet = new HashSet<>();
-            
+
+            Set<BuildingType> c3 = world.availableResourceBuildings.get("spaceship");
+            Set<BuildingType> c4 = world.availableResourceBuildings.get("weapon");
+            Set<BuildingType> c5 = world.availableResourceBuildings.get("equipment");
+
             if (world.global.production.spaceship == 0) {
-                factorySet.addAll(world.availableResourceBuildings.get("spaceship"));
+                if (c3 != null) {
+                    factorySet.addAll(c3);
+                }
             } else
             if (world.global.production.weapons == 0) {
-                factorySet.addAll(world.availableResourceBuildings.get("weapon"));
+                if (c4 != null) {
+                    factorySet.addAll(c4);
+                }
             } else
             if (world.global.production.equipment == 0) {
-                factorySet.addAll(world.availableResourceBuildings.get("equipment"));
+                if (c5 != null) {
+                    factorySet.addAll(c5);
+                }
             } else 
             if (((world.global.problems.isEmpty() 
                     && !world.global.warnings.contains(PlanetProblems.WORKFORCE)) || world.money >= 500_000)
                     && (world.global.labCount() > 0 || world.remainingResearch.isEmpty())) {
-                factorySet.addAll(world.availableResourceBuildings.get("spaceship"));
-                factorySet.addAll(world.availableResourceBuildings.get("weapon"));
-                factorySet.addAll(world.availableResourceBuildings.get("equipment"));
+                if (c3 != null) {
+                    factorySet.addAll(c3);
+                }
+                if (c4 != null) {
+                    factorySet.addAll(c4);
+                }
+                if (c5 != null) {
+                    factorySet.addAll(c5);
+                }
             }
     
             List<BuildingType> factoryList = new ArrayList<>(factorySet);

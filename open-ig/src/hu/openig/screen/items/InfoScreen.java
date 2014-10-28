@@ -3622,6 +3622,15 @@ public class InfoScreen extends ScreenBase {
 					Collections.sort(list, compareAnd(new KindCostCompare("Gun")));
 					break;
 				}
+				case TAX: { // Taxation
+				    Collections.sort(list, compareAnd(new Comparator<Planet>() {
+				        @Override
+				        public int compare(Planet o1, Planet o2) {
+				            return o1.tax.compareTo(o2.tax);
+				        }
+				    }));
+				    break;
+				}
 				default:
 				}
 			}
@@ -3883,6 +3892,14 @@ public class InfoScreen extends ScreenBase {
 						case TRADE_CENTER: {
 							paintForType(g2, p, probLeft, y, "TradeCenter");
 							break;
+						}
+						case TAX: {
+						    String s = get(p.getTaxLabel());
+						    if (s.length() > 10) {
+						        s = s.substring(0, 11);
+						    }
+                            commons.text().paintTo(g2, probLeft, y + 1, 10, TextRenderer.GREEN, s);
+						    break;
 						}
 						
 						default: {

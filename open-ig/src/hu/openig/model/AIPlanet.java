@@ -11,6 +11,7 @@ package hu.openig.model;
 import hu.openig.core.Location;
 import hu.openig.model.PlanetSurface.PlacementHelper;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,7 +137,11 @@ public class AIPlanet {
 	 * @return the point or null if none
 	 */
 	public Point findLocation(BuildingType bt) {
-		return placement.findLocation(planet.getPlacementDimensions(bt));
+		Dimension dim = planet.getPlacementDimensions(bt);
+		if (dim != null) {
+		    return placement.findLocation(dim);
+		}
+		return null;
 	}
 	/**
 	 * Check if the given technology is in the inventory.

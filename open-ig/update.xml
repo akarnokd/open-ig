@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.193'>
+  <module id='Game' version='0.95.194'>
     <general url='https://code.google.com/p/open-ig/'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -41,8 +41,8 @@
       <desc lang='ru'>AI improvements.</desc>
       <desc lang='es'>AI improvements.</desc>
     </notes>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.193.jar' sha1='5A3D19A9CC467C16291D927F4F66A52F5201FF28'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20141027a2.zip' sha1='FDD4E2C4930B1F5BBFB1E17FDFC5B54D5609C05E'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.194.jar' sha1='E125307491BAD29A9A8213C53DA4C5D8D3F35F41'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20141028a2.zip' sha1='04E2093D66A2EF5E44833D440C33F035BEE0DABA'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://open-ig.googlecode.com/files/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
@@ -115,8 +115,7 @@
       <desc lang='hu'>
 				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.</desc>
       <desc lang='en'>
-				The Map Editor for the Open Imperium Galactica, which can create a new or edit an existing map.
-			</desc>
+				The Map Editor for the Open Imperium Galactica, which can create a new or edit an existing map.</desc>
     </general>
     <execute file='open-ig-mapeditor-%s.jar' memory='512' class='hu.openig.editors.MapEditor'/>
     <notes url='https://code.google.com/p/open-ig/wiki/MapEditor_Notes'>
