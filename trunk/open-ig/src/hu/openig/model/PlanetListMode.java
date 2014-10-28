@@ -34,4 +34,6 @@ public enum PlanetListMode {
 	BARRACKS,
 	/** Guns. */
 	GUNS,
+	/** Taxation levels. */
+	TAX,
 }

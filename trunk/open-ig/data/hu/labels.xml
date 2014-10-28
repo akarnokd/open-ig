@@ -3620,5 +3620,6 @@
 	<entry key='trade.dps'    >Sebzés   : %,6d (%,d /mp)</entry>
 	<entry key='videos.unlocked_videos'>Feloldott videók</entry>
 	<entry key='restart'>Újrakezd</entry>
+    <entry key='info.details_TAX'>Adózás</entry>
 		
 </labels>
