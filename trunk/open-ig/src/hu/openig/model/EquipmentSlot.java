@@ -42,4 +42,8 @@ public class EquipmentSlot {
         this.id = Objects.requireNonNull(id);
         this.fixed = fixed;
     }
+    @Override
+    public String toString() {
+        return id + (fixed ? " ! " : "") + " (max = " + max + ", items = " + items + ")";
+    }
 }

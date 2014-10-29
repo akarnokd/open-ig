@@ -100,4 +100,11 @@ public class InventorySlot {
 			}
 		}
 	}
+	@Override
+	public String toString() {
+	    if (type != null) {
+	        return type.id + " (slot = " + slot.id + ", count = " + count + ", max = " + slot.max + ", hp = " + hp + ")";
+	    }
+	    return "Empty " + " (slot = " + slot.id + ", max = " + slot.max + ")";
+	}
 }
