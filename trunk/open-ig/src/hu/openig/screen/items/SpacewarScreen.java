@@ -4301,7 +4301,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		sp.y = source.y;
 		sp.angle = Math.atan2(ay - sp.y, ax - sp.x);
 		
-		sp.damage = attackDamage(p.damage(sp.owner) * p.count, target);
+		sp.damage = attackDamage(p.damage(sp.owner) * p.count * source.count, target);
 
 		BattleEfficiencyModel bem = source.getEfficiency(target);
 		if (bem != null) {
@@ -4683,8 +4683,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			for (SpacewarWeaponPort p : s.ports) {
 				if (p.projectile.mode == Mode.BEAM) {
 					double dmg = p.damage(s.owner);
-					firepower += p.count * dmg;
-					dps += p.count * dmg * 1000.0 / p.projectile.delay;
+					firepower += p.count * dmg * count;
+					dps += p.count * dmg * count * 1000.0 / p.projectile.delay;
 				} else
 				if (p.projectile.mode == Mode.ROCKET || p.projectile.mode == Mode.MULTI_ROCKET) {
 					rockets += p.count;
@@ -5522,7 +5522,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		int n = 0;
 		for (SpacewarStructure s : structures) {
 			if (s.attack == target) {
-				n++;
+				n += s.count;
 			}
 		}
 		return n;
