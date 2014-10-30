@@ -3622,5 +3622,6 @@
 	<entry key='restart'>Újrakezd</entry>
     <entry key='info.details_TAX'>Adózás</entry>
     <entry key='info.planetlist_TAX'>Adózás</entry>
+    <entry key='colonyinfo.military' >Járművek     : %s / %s</entry>
 		
 </labels>

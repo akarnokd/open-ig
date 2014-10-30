@@ -2731,6 +2731,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 //		UILabel allocation;
 		/** Label field. */
 		UILabel autobuild;
+        /** Label field. */
+        UILabel military;
 		/** Label field. */
 		UILabel other;
 		/** Label field. */
@@ -2756,6 +2758,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			taxInfo = new UILabel("-", textSize, commons.text());
 //			allocation = new UILabel("-", textSize, commons.text());
 			autobuild = new UILabel("-", textSize, commons.text());
+            military = new UILabel("-", textSize, commons.text());
 			other = new UILabel("-", 7, commons.text());
 			other.wrap(true);
 			needed = new UILabel("-", 7, commons.text());
@@ -2764,7 +2767,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			
 			lines = Arrays.asList(
 					owner, race, surface, population, housing, worker, hospital, food, energy, police,
-					taxTradeIncome, taxInfo, autobuild
+					taxTradeIncome, taxInfo, autobuild, military
 			);
 			
 			enabled(false);
@@ -2876,6 +2879,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			taxTradeIncome.visible(false);
 			taxInfo.visible(false);
 			autobuild.visible(false);
+			military.visible(false);
 			
 			if (p.isPopulated()) {
 			
@@ -2915,6 +2919,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					} else {
 						autobuild.color(TextRenderer.GREEN);
 					}
+					military.text(format("colonyinfo.military", ps.vehicleCount, ps.vehicleMax), true).visible(true);
 				} else {
 					if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
 						population.text(format("colonyinfo.population.alien", 
