@@ -234,6 +234,8 @@ public final class Allocator {
 				energy.add(w);
 			} else
 			if (w.building.type.kind.equals("Defensive")) {
+			    // make sure the buildings receive resources till the last moment
+			    w.efficiencyBound = 1.0;
 				defense.add(w);
 			} else 
 			if (op) {
