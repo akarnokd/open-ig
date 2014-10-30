@@ -3621,7 +3621,7 @@
 	<entry key='restart'>Restart</entry>
     <entry key='info.details_TAX'>Tax</entry>
     <entry key='info.planetlist_TAX'>Tax</entry>
-    <entry key='colonyinfo.military' >Tanks & Veh. : %s / %s</entry>
+    <entry key='colonyinfo.military' >Tanks &amp; Veh. : %s / %s</entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
