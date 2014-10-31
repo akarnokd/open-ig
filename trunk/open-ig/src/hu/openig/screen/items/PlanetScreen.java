@@ -6190,7 +6190,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		deployNonPlayerVehicles();
 		
 		startBattle.visible(false);
-		if (battle.attacker.owner != planet().owner) {
+		if (planet().owner != player()) {
 			retreat.visible(true);
 		}
 		
