@@ -3606,5 +3606,7 @@
     <entry key='info.details_TAX'>Tax</entry>
     <entry key='info.planetlist_TAX'>Tax</entry>
     <entry key='colonyinfo.military'>Tanks &amp; vehicles: %s / %s</entry>
+    <entry key='equipment.build_demand'>Upgrade build demand:</entry>
+    <entry key='equipment.build_demand.none'>None</entry>
 		
 </labels>

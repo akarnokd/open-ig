@@ -3623,5 +3623,7 @@
     <entry key='info.details_TAX'>Adózás</entry>
     <entry key='info.planetlist_TAX'>Adózás</entry>
     <entry key='colonyinfo.military' >Járművek     : %s / %s</entry>
+    <entry key='equipment.build_demand'>Fejlesztés gyártandó:</entry>
+    <entry key='equipment.build_demand.none'>Nincs</entry>
 		
 </labels>

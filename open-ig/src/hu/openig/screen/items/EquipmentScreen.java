@@ -22,6 +22,7 @@ import hu.openig.model.HasInventory;
 import hu.openig.model.HasPosition;
 import hu.openig.model.InventoryItem;
 import hu.openig.model.InventoryItemGroup;
+import hu.openig.model.InventoryItems;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetStatistics;
@@ -67,6 +68,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The equipment screen.
@@ -257,6 +259,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	UIImageButton upgradeAll;
 	/** The global planet statistics. */
 	private PlanetStatistics statistics;
+	/** Displays a demands for newer equipment. */
+	boolean upgradeVisible;
 	@Override
 	public void onInitialize() {
 		base.setBounds(0, 0, 
@@ -1160,7 +1164,81 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				}
 			}
 			drawTotalDPS(g2);
+			if (upgradeVisible && secondary == null && !fleetListing.visible()) {
+			    drawUpgrades(g2);
+			}
 		}
+	}
+	/**
+	 * Draws a table with the required amount of equipment to produce to fully upgrade the fleet.
+	 * @param g2 the graphics context
+	 */
+	void drawUpgrades(Graphics2D g2) {
+	    Fleet f = fleet();
+	    Planet p = planet();
+	    InventoryItems iis = null;
+	    Player player = player();
+        if (player().selectionMode == SelectionMode.FLEET && f != null && f.owner == player) {
+	        iis = f.inventory();
+	    } else
+	    if (player().selectionMode == SelectionMode.PLANET && p != null && p.owner == player()) {
+	        iis = p.inventory();
+	    }
+	    if (iis != null) {
+	        Map<ResearchType, Integer> buildDemand = iis.buildDemand(player);
+	        int font = 7;
+            int border = 4;
+            int space = 3;
+	        String title = get("equipment.build_demand");
+	        int titlew = commons.text().getTextWidth(font, title);
+            String none = get("equipment.build_demand.none");
+            int nonew = commons.text().getTextWidth(font, none);
+            int h = font + space;
+            if (buildDemand.isEmpty() || buildDemand.size() == 1) {
+                h += font;
+            } else {
+                h += (font + space) * buildDemand.size() - space;
+            }
+            h += border * 2; // border
+            int w = Math.max(nonew, titlew);
+            
+            for (Map.Entry<ResearchType, Integer> e : buildDemand.entrySet()) {
+                String r = e.getKey().name;
+                int rw = commons.text().getTextWidth(font, r);
+                
+                String n = e.getValue().toString();
+                int nw = commons.text().getTextWidth(font, n);
+                
+                w = Math.max(w, nw + rw + 10);
+            }
+            w += border * 2;
+            int y0 = base.y + base.height - 272 - h;
+            int x0 = base.x + 330;
+            g2.setColor(new Color(0, 0, 0, 224));
+            g2.fillRect(x0, y0, w, h);
+            g2.setColor(new Color(192, 192, 192));
+            g2.drawRect(x0, y0, w, h);
+            
+            y0 += border;
+            commons.text().paintTo(g2, x0 + border, y0, font, TextRenderer.YELLOW, title);
+            y0 += font + space;
+            if (buildDemand.isEmpty()) {
+                commons.text().paintTo(g2, x0 + border, y0, font, TextRenderer.GREEN, none);
+            } else {
+                List<ResearchType> rts = new ArrayList<>(buildDemand.keySet());
+                Collections.sort(rts, ResearchType.CHEAPEST_FIRST);
+                for (ResearchType rt : rts) {
+                    commons.text().paintTo(g2, x0 + border, y0, font, TextRenderer.GREEN, rt.name);
+                    
+                    String n = buildDemand.get(rt).toString();
+                    int nw = commons.text().getTextWidth(font, n);
+                    
+                    commons.text().paintTo(g2, x0 + w - nw - border, y0, font, TextRenderer.GREEN, n);
+
+                    y0 += font + space;
+                }
+            }
+	    }
 	}
 	/**
 	 * Draw the total dps for the current fleet.
@@ -2422,6 +2500,13 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		} else
 		if ((e.getKeyChar() == 's' || e.getKeyChar() == 'S') && secondary == null) {
             doStrip();
+            e.consume();
+            return true;
+		} else
+		if ((e.getKeyChar() == 'u' || e.getKeyChar() == 'U') && secondary == null) {
+		    upgradeVisible = !upgradeVisible;
+            e.consume();
+            return true;
 		}
 		return super.keyboard(e);
 	}
