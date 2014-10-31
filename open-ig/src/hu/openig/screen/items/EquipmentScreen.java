@@ -1164,7 +1164,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 				}
 			}
 			drawTotalDPS(g2);
-			if (upgradeVisible && secondary == null && !fleetListing.visible()) {
+			if (upgradeVisible && secondary == null && !fleetListing.visible()
+			        && configure.selectedSlot == null) {
 			    drawUpgrades(g2);
 			}
 		}
