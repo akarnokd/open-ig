@@ -299,4 +299,58 @@ public class InventoryItems {
 	public boolean contains(int id) {
 		return byId.containsKey(id);
 	}
+	/**
+	 * Computes the number of items to produce to fully upgrade the ships in the given
+	 * inventory. It considers the available owner inventory and any tech stripped
+	 * from the ships that can be moved to other ships.
+	 * @param owner the owner
+	 * @return the map of each technology and counts to build (positive only).
+	 */
+	public Map<ResearchType, Integer> buildDemand(Player owner) {
+        // the total number of new equipment
+        Map<ResearchType, Integer> counts = new HashMap<>();
+        // the equipment becoming available due replacement
+        Map<ResearchType, Integer> released = new HashMap<>();
+        for (InventoryItem ii : iterable()) {
+            if (ii.owner != owner) {
+                continue;
+            }
+            for (InventorySlot is : ii.slots.values()) {
+                if (!is.slot.fixed) {
+                    ResearchType best = null;
+                    for (ResearchType rt0 : is.slot.items) {
+                        if (owner.isAvailable(rt0)) {
+                            best = rt0;
+                        }
+                    }
+                    if (best != null) {
+                        Integer c = counts.get(best);
+                        if (best == is.type) {
+                            counts.put(best, c != null ? c + (is.slot.max - is.count) : (is.slot.max - is.count));
+                        } else {
+                            counts.put(best, c != null ? c + is.slot.max : is.slot.max);
+                            if (is.type != null && is.count > 0) {
+                                Integer c1 = released.get(is.type);
+                                released.put(is.type, c1 != null ? c1 + is.count : is.count);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (Map.Entry<ResearchType, Integer> e : new ArrayList<>(counts.entrySet())) {
+            ResearchType key = e.getKey();
+            int invc = owner.inventoryCount(key);
+            if (released.containsKey(key)) {
+                invc += released.get(key);
+            }
+            int d = e.getValue();
+            if (d <= invc) {
+                counts.remove(key);
+            } else {
+                counts.put(key, d - invc);
+            }
+        }
+        return counts;
+	}
 }
