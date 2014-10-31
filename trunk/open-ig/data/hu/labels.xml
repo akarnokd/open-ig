@@ -3625,5 +3625,7 @@
     <entry key='colonyinfo.military' >Járművek     : %s / %s</entry>
     <entry key='equipment.build_demand'>Fejlesztés gyártandó:</entry>
     <entry key='equipment.build_demand.none'>Nincs</entry>
+    <entry key="battlefinish.groundwar_retreat">Feladtad a földharcot!</entry>
+    <entry key="groundwar.retreat_confirm.tooltip">[c=FFFFFFFF]Bal gomb[/c] megerősíti a visszavonulást.[n][c=FFFFFFFF]Jobb gomb[/c]ra folytatja a harcot.</entry>
 		
 </labels>
