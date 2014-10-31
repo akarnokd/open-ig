@@ -48,6 +48,8 @@ public class BattleInfo {
 	public Player groundwarWinner;
 	/** The loser retreated. */
 	public boolean retreated;
+	/** The attacker retreated from ground battle. */
+	public boolean groundRetreated;
 	/** Indicate if the enemy (non main player) fled. */
 	public boolean enemyFlee;
 	/** Invert the layout. */

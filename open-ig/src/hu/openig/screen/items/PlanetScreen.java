@@ -250,6 +250,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Go to previous planet. */
 	@DragSensitive
 	UIImageButton next;
+    /** Retreat button. */
+    @DragSensitive
+    UIImageButton retreat;
+    /** Confirm retreat. */
+    @DragSensitive
+    UIImageButton confirmRetreat;
 	/** Show the building list panel? */
 	boolean showBuildingList = true;
 	/** Show the building info panel? */
@@ -365,6 +371,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	final Map<Location, Set<GroundwarUnit>> unitsForPathfinding = new HashMap<>();
 	/** Disable AI unit management. */
 	boolean noAI;
+	/** Cancel the retreat. */
+	boolean cancelRetreat;
 	@Override
 	public void onFinish() {
 		onEndGame();
@@ -625,6 +633,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		battle = null;
 		close0(simulator);
 		simulator = null;
+		
+		cancelRetreat = false;
+		retreat.visible(false);
+		confirmRetreat.visible(false);
 		
 		commons.setCursor(Cursors.POINTER);
 	}
@@ -1307,6 +1319,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			if (zoom.visible()) {
 				g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2, 
 						zoom.width + 4, zoom.height + 2);
+			}
+			if (retreat.visible() || confirmRetreat.visible()) {
+				g2.fillRect(retreat.x - this.x - 2, retreat.y - this.y - 2,
+						retreat.width + 5, retreat.height + 2);
 			}
 			if (battle != null && startBattle.visible()) {
 				drawNextVehicleToDeploy(g2);
@@ -3334,7 +3350,44 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				doStartBattle();
 			}
 		};
+
+		retreat = new UIImageButton(commons.spacewar().retreat);
+		retreat.visible(false);
+		retreat.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_HIGH_2);
+				retreat.visible(false);
+				confirmRetreat.visible(true);
+				cancelRetreat = false;
+			}
+		};
 		
+		confirmRetreat = new UIImageButton(commons.spacewar().sure) {
+			@Override
+			public boolean mouse(UIMouse e) {
+				cancelRetreat = e.has(Button.RIGHT);
+				return super.mouse(e);
+			}
+		};
+		confirmRetreat.visible(false);
+		confirmRetreat.onClick = new Action0() {
+			@Override
+			public void invoke() {
+				if (cancelRetreat) {
+					retreat.visible(true);
+					confirmRetreat.visible(false);
+					buttonSound(SoundType.NOT_AVAILABLE);
+				} else {
+					buttonSound(SoundType.CLICK_HIGH_2);
+					confirmRetreat.visible(false);
+					doRetreat();
+				}
+				cancelRetreat = false;
+			}
+		};
+		confirmRetreat.tooltip(get("groundwar.retreat_confirm.tooltip"));
+
 		
 		stopUnit = new UIImageTabButton2(commons.spacewar().stop);
 		stopUnit.disabledPattern(commons.common().disabledPattern);
@@ -3432,6 +3485,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		prev.location(sidebarRadar.x + sidebarRadar.width + 1, sidebarRadar.y - prev.height - 3);
 		next.location(prev.x + prev.width + 2, prev.y);
 		zoom.location(prev.x, prev.y - 4 - zoom.height);
+		
+		retreat.location(zoom.x + 1, zoom.y - retreat.height - 2);
+		confirmRetreat.location(retreat.location());
 	}
 	/**
 	 * @return the current planet surface or selects one from the player's list.
@@ -4521,6 +4577,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		} else
 		if (defenderCount == 0) {
 			return battle.attacker.owner;
+		} else
+		if (battle.groundRetreated) {
+			return planet().owner;
 		}
 		return null;
 	}
@@ -6131,6 +6190,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		deployNonPlayerVehicles();
 		
 		startBattle.visible(false);
+		if (battle.attacker.owner != planet().owner) {
+			retreat.visible(true);
+		}
 		
 		world().scripting.onGroundwarStart(this);
 		
@@ -6749,6 +6811,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	void centerScreen() {
 		render.offsetX = -(surface().boundingRectangle.width - width) / 2;
 		render.offsetY = -(surface().boundingRectangle.height - height) / 2;
+	}
+	/**
+	 * Retreat from the current attack.
+	 */
+	void doRetreat() {
+		if (battle != null) {
+			battle.groundRetreated = true;
+			commons.simulation.resume();
+		}
 	}
 }
 

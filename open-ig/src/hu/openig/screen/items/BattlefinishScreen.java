@@ -203,6 +203,9 @@ public class BattlefinishScreen extends ScreenBase {
 					}
 					
 				}
+				if (battle.groundRetreated) {
+					textCenter(g2, x1, base.y + 65, w1, TextRenderer.YELLOW, 14, get("battlefinish.groundwar_retreat"));
+				} else
 				if (battle.groundwarWinner != null) {
 					if (battle.groundwarWinner == player()) {
 						textCenter(g2, x1, base.y + 65, w1, TextRenderer.GREEN, 14, get("battlefinish.groundwar_won"));
