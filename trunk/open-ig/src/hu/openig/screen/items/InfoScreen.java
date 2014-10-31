@@ -4062,8 +4062,12 @@ public class InfoScreen extends ScreenBase {
 				}
 				w += 5;
 				String s1 = "(" + bs.size() + ")";
-				int c = TextRenderer.GREEN;
+				int c = b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080;
 				for (Building b1 : bs) {
+				    if (!b1.isOperational()) {
+				        c = 0xFFFF8080;
+				        break;
+				    } else
 					if (b1.upgradeLevel != b.upgradeLevel) {
 						c = TextRenderer.YELLOW;
 						break;
@@ -4093,8 +4097,12 @@ public class InfoScreen extends ScreenBase {
 				w += commons.text().getTextWidth(7, s);
 				w += 5;
 				String s1 = "(" + bs.size() + ")";
-				int c = TextRenderer.GREEN;
+				int c = b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080;
 				for (Building b1 : bs) {
+				    if (!b1.isOperational()) {
+				        c = 0xFFFF8080;
+				        break;
+				    } else
 					if (!b1.type.id.equals(b.type.id)) {
 						c = TextRenderer.YELLOW;
 					}
