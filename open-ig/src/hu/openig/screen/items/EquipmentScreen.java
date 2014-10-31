@@ -2419,6 +2419,9 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			} else {
 				leftList.nextGroupItem(); 
 			}
+		} else
+		if ((e.getKeyChar() == 's' || e.getKeyChar() == 'S') && secondary == null) {
+            doStrip();
 		}
 		return super.keyboard(e);
 	}
@@ -2605,6 +2608,42 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		default:
 		}
 	}
+    /** Strip the currently selected medium or large ship or station. */
+    void doStrip() {
+        Fleet f = fleet();
+        switch (research().category) {
+        case SPACESHIPS_BATTLESHIPS:
+        case SPACESHIPS_CRUISERS:
+        case SPACESHIPS_STATIONS:
+            
+            InventoryItem ii;
+            if (leftList.selectedItem != null) {
+                ii = leftList.selectedItem;
+            } else
+            if (player().selectionMode == SelectionMode.FLEET) {
+                ii = f.getInventoryItem(research());
+            } else {
+                ii = planet().getInventoryItem(research(), player());
+            }
+            if (ii != null) {
+                if (player().selectionMode == SelectionMode.FLEET) {
+                    ii.strip();
+                    ii.shield = 0;
+                    f.cleanup();
+                    f.removeExcess();
+                    updateInventory(null, f, leftList);
+                } else {
+                    ii.strip();
+                    ii.shield = 0;
+                    planet().cleanup();
+                    planet().removeExcess();
+                    updateInventory(planet(), null, leftList);
+                }
+            }
+            break;
+        default:
+        }
+    }
 	/** 
 	 * Upgrade all medium and large ships if possible.
 	 * @param f the target fleet 
