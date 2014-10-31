@@ -4050,6 +4050,7 @@ public class InfoScreen extends ScreenBase {
 			if (!bs.isEmpty()) {
 				Building b = Collections.max(bs, Building.COMPARE_LEVEL);
 				int w = 0;
+                int errorColor = 0xFFFF8080;
 				if (b.upgradeLevel > 0) {
 					for (int j = 0; j < b.upgradeLevel; j++) {
 						g2.drawImage(commons.colony().upgrade, probLeft + j * commons.colony().upgrade.getWidth(), y - 3, null);
@@ -4057,20 +4058,19 @@ public class InfoScreen extends ScreenBase {
 					w = commons.colony().upgrade.getWidth() * b.upgradeLevel;
 				} else {
 					String s = get("info.building_present");
-					commons.text().paintTo(g2, probLeft, y + 1, 10, b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080, s);
+					commons.text().paintTo(g2, probLeft, y + 1, 10, b.isOperational() ? TextRenderer.GREEN : errorColor, s);
 					w = commons.text().getTextWidth(10, s);
 				}
 				w += 5;
 				String s1 = "(" + bs.size() + ")";
-				int c = b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080;
+                int c = b.isOperational() ? TextRenderer.GREEN : errorColor;
 				for (Building b1 : bs) {
 				    if (!b1.isOperational()) {
-				        c = 0xFFFF8080;
+				        c = errorColor;
 				        break;
 				    } else
-					if (b1.upgradeLevel != b.upgradeLevel) {
+					if (b1.upgradeLevel != b.upgradeLevel && c != errorColor) {
 						c = TextRenderer.YELLOW;
-						break;
 					}
 				}
 				commons.text().paintTo(g2, probLeft + w, y + 1, 10, c, s1);
@@ -4089,21 +4089,22 @@ public class InfoScreen extends ScreenBase {
 			if (!bs.isEmpty()) {
 				Building b = Collections.max(bs, Building.COMPARE_LEVEL);
 				int w = 0;
+                int errorColor = 0xFFFF8080;
 				String s = b.type.name;
 				if (s.length() > 11) {
 					s = s.substring(0, 11);
 				}
-				commons.text().paintTo(g2, probLeft, y + 2, 7, b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080, s);
+				commons.text().paintTo(g2, probLeft, y + 2, 7, b.isOperational() ? TextRenderer.GREEN : errorColor, s);
 				w += commons.text().getTextWidth(7, s);
 				w += 5;
 				String s1 = "(" + bs.size() + ")";
-				int c = b.isOperational() ? TextRenderer.GREEN : 0xFFFF8080;
+				int c = b.isOperational() ? TextRenderer.GREEN : errorColor;
 				for (Building b1 : bs) {
 				    if (!b1.isOperational()) {
-				        c = 0xFFFF8080;
+				        c = errorColor;
 				        break;
 				    } else
-					if (!b1.type.id.equals(b.type.id)) {
+					if (!b1.type.id.equals(b.type.id) && c != errorColor) {
 						c = TextRenderer.YELLOW;
 					}
 				}
