@@ -238,6 +238,12 @@ public class StaticDefensePlanner extends Planner {
 		boolean hasSocial = false;
 		boolean hasPolice = planet.population < 5000;
 		boolean hasHospital = planet.population < 5000;
+		for (AIInventoryItem ii : planet.inventory) {
+			if (ii.type.has(ResearchType.PARAMETER_RADAR) && ii.owner == planet.owner) {
+				hasRadar = true;
+				break;
+			}
+		}
 		
 		for (AIBuilding b : planet.buildings) {
 			if (b.isComplete()) {
