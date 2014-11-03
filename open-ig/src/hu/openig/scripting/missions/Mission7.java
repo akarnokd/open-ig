@@ -286,10 +286,14 @@ public class Mission7 extends Mission {
 		Player pirates = player("Garthog");
 		if (!traderSurvived) {
 			addTimeout("Mission-7-Task-" + task + "-Failed", 3000);
-			clearMission("Mission-7-Task-" + task + "-Timeout");
+			if (hasMission("Mission-7-Task-" + task + "-Timeout")) {
+				clearMission("Mission-7-Task-" + task + "-Timeout");
+			}
 		} else {
 			addTimeout("Mission-7-Task-" + task + "-Success", 3000);
-			clearMission("Mission-7-Task-" + task + "-Timeout");
+			if (hasMission("Mission-7-Task-" + task + "-Timeout")) {
+				clearMission("Mission-7-Task-" + task + "-Timeout");
+			}
 		}
 		cleanupScriptedFleets();
 
