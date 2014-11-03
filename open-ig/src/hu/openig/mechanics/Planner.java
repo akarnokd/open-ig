@@ -425,14 +425,14 @@ public abstract class Planner {
 		Collections.sort(createCandidates, fromOrderType(order));
 		if (!createCandidates.isEmpty()) {
 			// build all types round-robin
-			int maxOfType = Collections.max(builtCounts(createCandidates, planet));
-			for (final BuildingType bt : createCandidates) {
-				if (count(planet, bt) < maxOfType) {
-					build(planet, bt);
-					
-					return AIResult.SUCCESS;
-				}
-			}
+//			int maxOfType = Collections.max(builtCounts(createCandidates, planet));
+//			for (final BuildingType bt : createCandidates) {
+//				if (count(planet, bt) < maxOfType) {
+//					build(planet, bt);
+//					
+//					return AIResult.SUCCESS;
+//				}
+//			}
 			// if all building counts are equal, just build the most expensive one
 			final BuildingType bt = Collections.max(createCandidates, fromOrderType(costOrder));
 			build(planet, bt);
