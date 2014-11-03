@@ -2508,6 +2508,20 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		    upgradeVisible = !upgradeVisible;
             e.consume();
             return true;
+		} else
+		if (e.getKeyChar() == ',' && configure.selectedSlot != null) {
+			if (removeOne.visible()) {
+				doRemoveOne();
+				e.consume();
+				return true;
+			}
+		} else
+		if (e.getKeyChar() == '.' && configure.selectedSlot != null) {
+			if (addOne.visible()) {
+				doAddOne();
+				e.consume();
+				return true;
+			}
 		}
 		return super.keyboard(e);
 	}
