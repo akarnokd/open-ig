@@ -692,14 +692,47 @@ public class ColonyPlanner extends Planner {
 				}
 			}
 		}
-	      double tolerance = 1.05;
-	        if (world.money >= ISSUE_MONEY_TOLERANCE) {
-	            tolerance = 1;
-	        }
+		double tolerance = 1.05;
+		if (world.money >= ISSUE_MONEY_TOLERANCE) {
+			tolerance = 1;
+		}
 
+		
 		if (planet.statistics.energyAvailable * tolerance < planet.statistics.energyDemand
 				&& planet.statistics.workerDemand < planet.population) {
-			if (manageBuildings(planet, energy, costOrder, true)) {
+			int minimumPower = planet.statistics.energyDemand - planet.statistics.energyAvailable;
+
+			BuildingType bestAbove = null;
+			BuildingType bestBelow = null;
+			double bestPowerAbove = Double.POSITIVE_INFINITY;
+			double bestPowerBelow = Double.POSITIVE_INFINITY;
+			for (BuildingType bt : world.availableBuildings) {
+				if (planet.canBuild(bt) && bt.hasResource("energy")) {
+					double energ = bt.getResource("energy");
+					if (energ > 0) {
+						if (energ >= minimumPower && bestPowerAbove > energ) {
+							bestAbove = bt;
+							bestPowerAbove = energ;
+						} else
+					    if (energ < minimumPower && bestPowerBelow < energ) {
+					    	bestBelow = bt;
+					    	bestPowerBelow = energ;
+					    }
+					}
+				}
+			}
+			final BuildingType fbest = bestAbove != null ? bestAbove : bestBelow;
+			BuildingSelector energy2 = new BuildingSelector() {
+				@Override
+				public boolean accept(AIPlanet planet, AIBuilding building) {
+					return building.getEnergy() > 0 && count(planet, building.type) > 1;
+				}
+				@Override
+				public boolean accept(AIPlanet planet, BuildingType buildingType) {
+					return buildingType == fbest;
+				}
+			};
+			if (manageBuildings(planet, energy2, costOrder, true)) {
 				return true;
 			}
 			return checkReplacePP(planet);
