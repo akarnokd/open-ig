@@ -355,7 +355,7 @@
 		<tech id="GarthogRadarJammer" normal="inventions/weapons/vehicles/garthog_radar_jammer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="180" damage="5" min-range="0" max-range="5.5" area="1" movement-speed="50" rotation-time="100" delay="500" type="RADAR_JAMMER"/>
 		<tech id="MorgathKamikazeTank" normal="inventions/weapons/vehicles/morgath_kamikaze_tank_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_6" hp="270" damage="8" min-range="0" max-range="1.5" area="3" movement-speed="30" rotation-time="100" delay="500" type="KAMIKAZE"/>
 		<tech id="SullepArtillery" normal="inventions/weapons/vehicles/sullep_artillery_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" fire="GROUND_FIRE_3" hp="360" damage="45" min-range="0" max-range="8.5" area="1" movement-speed="40" rotation-time="100" delay="2500" type="ARTILLERY"/>
-		<tech id="YchomMineLayer" normal="inventions/weapons/vehicles/ychom_mine_layer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="240" damage="100" min-range="0" max-range="5.5" area="4" movement-speed="50" rotation-time="100" delay="500" type="MINELAYER"/>
+		<tech id="YchomMineLayer" normal="inventions/weapons/vehicles/ychom_mine_layer_matrix" width="16" height="5" destroy="EXPLOSION_MEDIUM_2" hp="240" damage="100" min-range="0" max-range="5.5" area="4" movement-speed="75" rotation-time="100" delay="500" type="MINELAYER"/>
 	</ground-vehicles>
 	<!-- Contains explicit battle information for building turrets and weapon 
 		projectiles -->
