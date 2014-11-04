@@ -2121,7 +2121,7 @@ public class GameWindow extends JFrame implements GameControls {
 		}
 
 		Rectangle r = tooltipHelper;
-		String t0 = tooltipText;
+		UIComponent c0 = tooltipComponent;
 		if (c != null && top != null) {
 			tooltipComponent = c;
 			Rectangle tth = top.componentRectangle(c);
@@ -2155,7 +2155,7 @@ public class GameWindow extends JFrame implements GameControls {
 			tooltipVisible = false;
 			tooltipShowTimer.stop();
 		}
-		if (!Objects.equals(r, tooltipHelper) || !Objects.equals(tooltipText, t0)) {
+		if (!Objects.equals(r, tooltipHelper) || !Objects.equals(tooltipComponent, c0)) {
 			tooltipVisible = false;
 			tooltipShowTimer.stop();
 			tooltipShowTimer.start();
