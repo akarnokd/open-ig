@@ -464,20 +464,22 @@ public class EconomyPlanner extends Planner {
             }
         }
     }
-    /** Number of morale buildings per planet. */
-    static final int MORALE_BUILDINGS_PER_PLANET = 2;
     /**
      * Build social buildings.
      * @param planets the list of planets ordered by value
      * @return true if other activities may continue
      */
     boolean buildSocial(List<AIPlanet> planets) {
+    	int moraleBuildingsPerPlanet = 2;
     	List<BuildingType> bts = new ArrayList<>();
     	for (BuildingType bt : world.availableBuildings) {
     		if (bt.kind.equals(BuildingType.KIND_SOCIAL) 
     				&& bt.hasResource(BuildingType.RESOURCE_MORALE)) {
     			bts.add(bt);
     		}
+    	}
+    	if (bts.size() < 3) {
+    		moraleBuildingsPerPlanet *= 2;
     	}
     	Collections.sort(bts, BuildingType.COST);
 
@@ -488,26 +490,53 @@ public class EconomyPlanner extends Planner {
 	    			continue;
 	    		}
 	    		if (bt.id.equals("Stadium") && p.morale > 30 && p.population < 40000) {
-	    			counter += MORALE_BUILDINGS_PER_PLANET;
+	    			counter += moraleBuildingsPerPlanet;
 	    			continue;
 	    		}
 	    		if (p.canBuild(bt)) {
 	    			int c = count(p, bt);
-	    			if (c < MORALE_BUILDINGS_PER_PLANET && bt.cost <= world.money) {
+	    			if (c < moraleBuildingsPerPlanet && bt.cost <= world.money) {
 		    			if (p.findLocation(bt) != null) {
 		    				build(p, bt);
 		    			} else {
-		    				c = MORALE_BUILDINGS_PER_PLANET;
+		    				c = moraleBuildingsPerPlanet;
 		    			}
 	    			}
     				counter += c;
 	    		} else {
 	    			// not supported here, consider it as built
-	    			counter += MORALE_BUILDINGS_PER_PLANET;
+	    			counter += moraleBuildingsPerPlanet;
 	    		}
 	    	}
     	}
     	
-    	return counter >= MORALE_BUILDINGS_PER_PLANET * bts.size() * planets.size();
+    	// upgrade those buildings if possible
+    	if (counter >= moraleBuildingsPerPlanet * bts.size() * planets.size()) {
+    		for (BuildingType bt : bts) {
+    			for (int i = 1; i <= bt.upgrades.size(); i++) {
+	    	    	for (AIPlanet p : planets) {
+	    	    		if (p.statistics.constructing) {
+	    	    			continue;
+	    	    		}
+	    	    		for (AIBuilding b : p.buildings) {
+	    	    			if (b.type == bt && b.upgradeLevel == i && world.money >= bt.cost) {
+	    	    				world.money -= b.type.cost;
+	                            final Planet p0 = p.planet;
+	                            final Building b0 = b.building;
+	                            add(new Action0() {
+	                                @Override
+	                                public void invoke() {
+	                                    controls.actionUpgradeBuilding(p0, b0, b0.upgradeLevel + 1);
+	                                }
+	                            });
+	                            return false;
+	    	    			}
+	    	    		}
+	    	    	}
+    	    	}
+    		}
+    		return true;
+    	}
+    	return false;
     }
 }
