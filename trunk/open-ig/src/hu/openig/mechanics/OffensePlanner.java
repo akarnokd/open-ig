@@ -236,7 +236,7 @@ public class OffensePlanner extends Planner {
 				}
 			}
 			if (w != null) {
-				BattleProjectile proj = this.w.battle.projectiles.get(w.id);
+				BattleProjectile proj = this.w.battle.projectiles.get(w.get(ResearchType.PARAMETER_PROJECTILE));
 				if (proj != null) {
 					result += proj.damage(p) * es.max;
 				}
@@ -596,7 +596,7 @@ public class OffensePlanner extends Planner {
 			@Override
 			public Boolean invoke(ResearchType value) {
 				if (value.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
-					BattleProjectile e = w.battle.projectiles.get(value.id);
+					BattleProjectile e = w.battle.projectiles.get(value.get(ResearchType.PARAMETER_PROJECTILE));
 					if (e != null && (e.mode == Mode.ROCKET || e.mode == Mode.MULTI_ROCKET)) {
 						return true;
 					}
@@ -608,7 +608,7 @@ public class OffensePlanner extends Planner {
 			@Override
 			public Boolean invoke(ResearchType value) {
 				if (value.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
-					BattleProjectile e = w.battle.projectiles.get(value.id);
+					BattleProjectile e = w.battle.projectiles.get(value.get(ResearchType.PARAMETER_PROJECTILE));
 					if (e != null && (e.mode == Mode.BOMB || e.mode == Mode.VIRUS)) {
 						return true;
 					}
