@@ -774,23 +774,11 @@
       <resource type='worker'>-400</resource>
     </operation>
     <upgrades>
-      <upgrade desc='buildings.police_station.upgrade_1'>
-        <resource type='morale'>1.2</resource>
-        <resource type='police'>1.25</resource>
-        <resource type='energy'>1.5</resource>
-        <resource type='worker'>1.5</resource>
-      </upgrade>
       <upgrade desc='buildings.police_station.upgrade_2'>
         <resource type='morale'>1.4</resource>
         <resource type='police'>1.5</resource>
         <resource type='energy'>1.75</resource>
         <resource type='worker'>1.75</resource>
-      </upgrade>
-      <upgrade desc='buildings.police_station.upgrade_3'>
-        <resource type='morale'>1.6</resource>
-        <resource type='police'>1.75</resource>
-        <resource type='energy'>2</resource>
-        <resource type='worker'>2</resource>
       </upgrade>
       <upgrade desc='buildings.police_station.upgrade_4'>
         <resource type='morale'>1.8</resource>
