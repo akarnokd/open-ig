@@ -479,7 +479,7 @@ public class EconomyPlanner extends Planner {
     		}
     	}
     	if (bts.size() < 3) {
-    		moraleBuildingsPerPlanet *= 2;
+    		moraleBuildingsPerPlanet += 2;
     	}
     	Collections.sort(bts, BuildingType.COST);
 

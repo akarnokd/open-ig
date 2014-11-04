@@ -769,16 +769,16 @@
     <build limit='*' kind='Social' cost='10000'/>
     <operation>
       <resource type='morale'>10</resource>
-      <resource type='police'>20000</resource>
-      <resource type='energy'>-1200</resource>
-      <resource type='worker'>-400</resource>
+      <resource type='police'>15000</resource>
+      <resource type='energy'>-1000</resource>
+      <resource type='worker'>-300</resource>
     </operation>
     <upgrades>
       <upgrade desc='buildings.police_station.upgrade_2'>
         <resource type='morale'>1.4</resource>
         <resource type='police'>1.5</resource>
-        <resource type='energy'>1.75</resource>
-        <resource type='worker'>1.75</resource>
+        <resource type='energy'>1.5</resource>
+        <resource type='worker'>1.5</resource>
       </upgrade>
       <upgrade desc='buildings.police_station.upgrade_4'>
         <resource type='morale'>1.8</resource>
