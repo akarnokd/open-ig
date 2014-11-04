@@ -11,13 +11,11 @@ package hu.openig.mechanics;
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
 import hu.openig.core.Location;
-import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIFleet;
 import hu.openig.model.AIInventoryItem;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
-import hu.openig.model.BuildingType;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.ExplorationMap;
 import hu.openig.model.Fleet;
@@ -28,7 +26,6 @@ import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.utils.U;
 
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +64,6 @@ public class ExplorationPlanner extends Planner {
 		// find a fleet which has at least a decent radar range
 		// and is among the fastest available
 		if (!exploration.allowedMap(world.explorationInnerLimit, world.explorationOuterLimit).isEmpty()) {
-			chechRadarUsage();
 			// check our current exploration fleets are idle
 			List<AIFleet> fs = findFleetsWithTask(FleetTask.EXPLORE, null);
 			for (AIFleet f : fs) {
@@ -214,8 +210,8 @@ public class ExplorationPlanner extends Planner {
 				}
 			}
 			if (sat != null) {
-				if (buildFactoryFor(sat)) {
-					placeProductionOrder(sat, 1);
+				if (hasFactory(sat)) {
+					placeProductionOrder(sat, 1, false);
 				}
 				return true;
 			}
@@ -568,7 +564,7 @@ public class ExplorationPlanner extends Planner {
 					return true;
 				}
 			}
-			placeProductionOrder(best, 1);
+			placeProductionOrder(best, 1, false);
 			return true;
 		}
 		// list available radars
@@ -613,7 +609,7 @@ public class ExplorationPlanner extends Planner {
 			if (world.inventoryCount(bestRadar) > 0) {
 				return checkShip(bestRadar);
 			}
-			placeProductionOrder(bestRadar, 5);
+			placeProductionOrder(bestRadar, 5, false);
 			return true;
 		}
 		return false;
@@ -669,74 +665,28 @@ public class ExplorationPlanner extends Planner {
 			}
 			// avoid over excessive use of colony ship as explorer
 			if (!"ColonyShip".equals(bestShip.id) && ModelUtils.random() < 0.01) {
-				placeProductionOrder(bestShip, 1);
+				placeProductionOrder(bestShip, 1, false);
 			}
 		}
 		return true;
 	}
 	/**
-	 * See if the available fleets lack radar and we can't even produce radars due lack of factory.
+	 * Check if the given research has the necessary factory.
+	 * @param rt the research
+	 * @return true if has the necessary factory
 	 */
-	void chechRadarUsage() {
-			// check if radar technology is available
-			ResearchType radarType = null;
-			for (ResearchType rt : world.availableResearch) {
-				if (rt.has(ResearchType.PARAMETER_RADAR)) {
-					if (radarType == null || radarType.productionCost < rt.productionCost) {
-						radarType = rt;
-					}
-				}
-			}
-			if (radarType != null) {
-				buildFactoryFor(radarType);
-			}
-//		}
-	}
-	/**
-	 * Build a factory for the given technology if not already built.
-	 * @param tech the technology
-	 * @return true if the factory is available and operational
-	 */
-	boolean buildFactoryFor(ResearchType tech) {
-		if (!checkPlanetPreparedness()) {
+	boolean hasFactory(ResearchType rt) {
+		switch (rt.factory) {
+		case "spaceship":
+			return world.global.activeProduction.spaceship > 0;
+		case "equipment":
+			return world.global.activeProduction.equipment > 0;
+		case "weapon":
+			return world.global.activeProduction.weapons > 0;
+		case "building":
+			return !world.ownPlanets.isEmpty();
+		default:
 			return false;
 		}
-		boolean hasFactory = false;
-		boolean workingFactory = false;
-		List<AIPlanet> ps = new ArrayList<>(world.ownPlanets);
-		Collections.sort(ps, BEST_PLANET);
-		for (AIPlanet p : ps) {
-			for (AIBuilding b : p.buildings) {
-				if (b.hasResource(tech.factory)) {
-					hasFactory = true;
-					if (b.isOperational()) {
-						workingFactory = true;
-						break;
-					}
-				}
-			}
-		}
-		if (!hasFactory) {
-			BuildingType factory = null;
-			for (BuildingType bt : p.world.buildingModel.buildings.values()) {
-				if (bt.hasResource(tech.factory)) {
-					if (factory == null || factory.cost > bt.cost) {
-						factory = bt;
-					}
-				}
-			}
-			if (factory != null && world.money >= factory.cost) {
-				for (final AIPlanet p : ps) {
-					if (p.canBuild(factory)) {
-						Point pt = p.findLocation(factory);
-						if (pt != null) {
-							build(p, factory);
-							return false;
-						}
-					}
-				}
-			}
-		}
-		return workingFactory;
 	}
 }

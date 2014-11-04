@@ -115,6 +115,21 @@ public abstract class Planner {
 			return Integer.compare(o1.cost, o2.cost);
 		}
 	};
+	/** Default incremental cost-order. */
+	final BuildingOrder costOrderReverse = new BuildingOrder() {
+		@Override
+		public int compare(AIBuilding o2, AIBuilding o1) {
+			int c = BuildingType.COST.compare(o1.type, o2.type);
+			if (c == 0) {
+				c = Integer.compare(o1.upgradeLevel, o2.upgradeLevel);
+			}
+			return c;
+		}
+		@Override
+		public int compare(BuildingType o2, BuildingType o1) {
+			return Integer.compare(o1.cost, o2.cost);
+		}
+	};
 	/** Compares planets and chooses the worst overall condition. */
 	public static final Comparator<AIPlanet> WORST_PLANET = new Comparator<AIPlanet>() {
 		@Override
@@ -503,15 +518,16 @@ public abstract class Planner {
 	 * if not enough slots available, the cheapest and/or finished production will be replaced.
 	 * @param rt the research type
 	 * @param count the minimum production amount when starting a new production
+	 * @param highPriority indicates that the production has high priority
 	 * @return true if new production order was placed
 	 */
-	public boolean placeProductionOrder(final ResearchType rt, final int count) {
+	public boolean placeProductionOrder(final ResearchType rt, final int count, final boolean highPriority) {
 		Production prod = world.productions.get(rt);
 		if (prod != null && prod.count > 0) {
 			return false;
 		} else
 		if (prod != null) {
-			issueProductionOrder(rt, count);
+			issueProductionOrder(rt, count, highPriority);
 			return true;
 		}
 		int prodCnt = 0;
@@ -532,7 +548,7 @@ public abstract class Planner {
 			}
 		}
 		if (prodCnt < 5) {
-			issueProductionOrder(rt, count);
+			issueProductionOrder(rt, count, highPriority);
 			return true;
 		}
 		if (cheapestFinished != null) {
@@ -561,13 +577,14 @@ public abstract class Planner {
 	 * Issue a production action for the given technology.
 	 * @param rt the technology to produce
 	 * @param count the minimum amount to produce
+	 * @param highPriority indicates that the production has high priority
 	 */
-	void issueProductionOrder(final ResearchType rt, final int count) {
+	void issueProductionOrder(final ResearchType rt, final int count, final boolean highPriority) {
 		final int count0 = count; 
 		add(new Action0() {
 			@Override
 			public void invoke() {
-				controls.actionStartProduction(rt, count0, 50);
+				controls.actionStartProduction(rt, count0, highPriority ? 100 : 5);
 			}
 		});
 	}
@@ -680,6 +697,10 @@ public abstract class Planner {
 		}
 		// do not build below this money
 		if (world.money < 85000) {
+			return true;
+		}
+		if (world.isAvailable("ColonyShip") == null
+				|| world.isAvailable("OrbitalFactory") == null) {
 			return true;
 		}
 		if (!force && !checkPlanetPreparedness()) {
@@ -802,7 +823,7 @@ public abstract class Planner {
 	boolean produceOrbitalFactory() {
 		final ResearchType of = world.isAvailable("OrbitalFactory");
 		if (of != null) {
-			placeProductionOrder(of, 1);
+			placeProductionOrder(of, 1, true);
 			return true;
 		}
 		return false;
@@ -970,7 +991,7 @@ public abstract class Planner {
 			}
 		}
 		int planetCount = world.ownPlanets.size();
-		return isPrepared * 2 >= planetCount;
+		return isPrepared * 3 >= planetCount * 2;
 	}
 	/**
 	 * Setup the construction action for the given planet and building.

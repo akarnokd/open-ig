@@ -90,6 +90,18 @@ public class OffensePlanner extends Planner {
 			return;
 		}
 		
+		// it's not worth upgrading the fleet until one can transport tanks
+		boolean canTransportVehicles = false;
+		for (ResearchType rt : world.availableResearch) {
+			if (rt.has(ResearchType.PARAMETER_VEHICLES)) {
+				canTransportVehicles = true;
+				break;
+			}
+		}
+		if (!canTransportVehicles) {
+			return;
+		}
+		
 		if (world.global.militarySpaceportCount == 0) {
 			if (checkMilitarySpaceport(false)) {
 				return;
@@ -535,7 +547,7 @@ public class OffensePlanner extends Planner {
 				int produce = required - inventory;
 				produce = Math.min(produce, limit);
 				
-				placeProductionOrder(rt, limitProduction(rt, produce));
+				placeProductionOrder(rt, limitProduction(rt, produce), false);
 				return UpgradeResult.ACTION;
 			}
 			return UpgradeResult.DEPLOY; 

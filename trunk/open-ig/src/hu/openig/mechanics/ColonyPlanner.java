@@ -57,7 +57,7 @@ public class ColonyPlanner extends Planner {
 		}
 		@Override
 		public boolean accept(AIPlanet planet, BuildingType value) {
-			if (value.hasResource(BuildingType.RESOURCE_MORALE) && count(planet, value) < 1) {
+			if (value.hasResource(BuildingType.RESOURCE_MORALE) && count(planet, value) < 2) {
 				// don't build stadium if the morale is moderate and population is low
 				if ("Stadium".equals(value.id)) {
 					return planet.morale < 25 || planet.population >= 40000;
@@ -141,7 +141,7 @@ public class ColonyPlanner extends Planner {
 		if (checkBuildingHealth(planet)) {
 			return true;
 		}
-		if (!planet.statistics.constructing) {
+		if (!powerPlantConstructing(planet)) {
 			if (checkPower(planet)) {
 				return true;
 			}
@@ -360,9 +360,7 @@ public class ColonyPlanner extends Planner {
 						&& count(planet, value) < 1;
 			}
 		};
-		if (planet.population >= 7500 
-				&& planet.population > planet.statistics.workerDemand * 1.1
-				&& world.money >= 75000) {
+		if (world.money >= 100000) {
 			return manageBuildings(planet, growth, costOrder, true);
 		}
 		return false;
@@ -409,16 +407,16 @@ public class ColonyPlanner extends Planner {
 		double moraleNow = planet.lastMorale; // planet.morale
 		TaxLevel tax = planet.tax;
 		TaxLevel newLevel;
-		if (moraleNow < 25 || planet.population < 4500) {
+		if (moraleNow < 25 || planet.population < 4000) {
 			newLevel = TaxLevel.NONE;
 		} else
-		if (moraleNow < 38 || planet.population < 5000) {
+		if (moraleNow < 32 || planet.population < 4500) {
 			newLevel = TaxLevel.VERY_LOW;
 		} else
-		if (moraleNow < 55 || planet.population < 5500) {
+		if (moraleNow < 50) {
 			newLevel = TaxLevel.LOW;
 		} else
-		if (moraleNow < 60) {
+		if (moraleNow < 58) {
 			newLevel = TaxLevel.MODERATE;
 		} else
 		if (moraleNow < 65) {
@@ -700,40 +698,46 @@ public class ColonyPlanner extends Planner {
 		
 		if (planet.statistics.energyAvailable * tolerance < planet.statistics.energyDemand
 				&& planet.statistics.workerDemand < planet.population) {
-			int minimumPower = planet.statistics.energyDemand - planet.statistics.energyAvailable;
-
-			BuildingType bestAbove = null;
-			BuildingType bestBelow = null;
-			double bestPowerAbove = Double.POSITIVE_INFINITY;
-			double bestPowerBelow = Double.POSITIVE_INFINITY;
-			for (BuildingType bt : world.availableBuildings) {
-				if (planet.canBuild(bt) && bt.hasResource("energy")) {
-					double energ = bt.getResource("energy");
-					if (energ > 0) {
-						if (energ >= minimumPower && bestPowerAbove > energ) {
-							bestAbove = bt;
-							bestPowerAbove = energ;
-						} else
-					    if (energ < minimumPower && bestPowerBelow < energ) {
-					    	bestBelow = bt;
-					    	bestPowerBelow = energ;
-					    }
+			if (world.money < 250_000) {
+				int minimumPower = planet.statistics.energyDemand - planet.statistics.energyAvailable;
+	
+				BuildingType bestAbove = null;
+				BuildingType bestBelow = null;
+				double bestPowerAbove = Double.POSITIVE_INFINITY;
+				double bestPowerBelow = Double.POSITIVE_INFINITY;
+				for (BuildingType bt : world.availableBuildings) {
+					if (planet.canBuild(bt) && bt.hasResource("energy")) {
+						double energ = bt.getResource("energy");
+						if (energ > 0) {
+							if (energ >= minimumPower && bestPowerAbove > energ) {
+								bestAbove = bt;
+								bestPowerAbove = energ;
+							} else
+						    if (energ < minimumPower && bestPowerBelow < energ) {
+						    	bestBelow = bt;
+						    	bestPowerBelow = energ;
+						    }
+						}
 					}
 				}
-			}
-			final BuildingType fbest = bestAbove != null ? bestAbove : bestBelow;
-			BuildingSelector energy2 = new BuildingSelector() {
-				@Override
-				public boolean accept(AIPlanet planet, AIBuilding building) {
-					return building.getEnergy() > 0 && count(planet, building.type) > 1;
+				final BuildingType fbest = bestAbove != null ? bestAbove : bestBelow;
+				BuildingSelector energy2 = new BuildingSelector() {
+					@Override
+					public boolean accept(AIPlanet planet, AIBuilding building) {
+						return building.getEnergy() > 0 && count(planet, building.type) > 1;
+					}
+					@Override
+					public boolean accept(AIPlanet planet, BuildingType buildingType) {
+						return buildingType == fbest;
+					}
+				};
+				if (manageBuildings(planet, energy2, costOrder, true)) {
+					return true;
 				}
-				@Override
-				public boolean accept(AIPlanet planet, BuildingType buildingType) {
-					return buildingType == fbest;
+			} else {
+				if (manageBuildings(planet, energy, costOrderReverse, true)) {
+					return true;
 				}
-			};
-			if (manageBuildings(planet, energy2, costOrder, true)) {
-				return true;
 			}
 			return checkReplacePP(planet);
 		}
@@ -933,6 +937,19 @@ public class ColonyPlanner extends Planner {
 				}
 			});
 			return true;
+		}
+		return false;
+	}
+	/**
+	 * Checks if there is a power plant under construction.
+	 * @param p the target planet
+	 * @return true if a power plant is under construction
+	 */
+	boolean powerPlantConstructing(AIPlanet p) {
+		for (AIBuilding b : p.buildings) {
+			if (b.isConstructing() && b.type.hasResource("energy") && b.type.getResource("energy") > 0) {
+				return true;
+			}
 		}
 		return false;
 	}

@@ -62,6 +62,12 @@ public class StaticDefensePlanner extends Planner {
 	@Override
 	protected void plan() {
 		if (world.global.militarySpaceportCount == 0) {
+			// do not build if there is any planet without power plant.
+			for (AIPlanet p : world.ownPlanets) {
+				if (p.statistics.energyAvailable == 0) {
+					return;
+				}
+			}
 			if (checkMilitarySpaceport(true)) {
 				return;
 			}
@@ -343,7 +349,7 @@ public class StaticDefensePlanner extends Planner {
 					// if in production wait
 					if (world.productionCount(rt) == 0 && activeProductionLanes("weapon") < 5) {
 						if (allowProduction) {
-							placeProductionOrder(rt, limitProduction(rt, localDemand - inventoryGlobal));
+							placeProductionOrder(rt, limitProduction(rt, localDemand - inventoryGlobal), false);
 						}
 						productionPlaced = true;
 					}
@@ -487,7 +493,7 @@ public class StaticDefensePlanner extends Planner {
 				// if not available in inventory, construct one
 				if (world.inventoryCount(station) == 0) {
 					if (allowProduction) {
-						placeProductionOrder(station, 1);
+						placeProductionOrder(station, 1, false);
 						productionInProgress = true;
 					}
 					return true;
@@ -646,7 +652,7 @@ public class StaticDefensePlanner extends Planner {
 				int di = de.getValue();
 				int ic = world.inventoryCount(de.getKey());
 				if (di > ic) {
-					if (placeProductionOrder(de.getKey(), limitProduction(de.getKey(), di - ic))) {
+					if (placeProductionOrder(de.getKey(), limitProduction(de.getKey(), di - ic), false)) {
 						result = true;
 					}
 					productionInProgress = true;
@@ -681,7 +687,7 @@ public class StaticDefensePlanner extends Planner {
 					if (allowProduction) {
 						int toproduce = Math.max(10, needed - gic);
 						if (toproduce > 0) {
-							if (placeProductionOrder(rt, limitProduction(rt, toproduce))) {
+							if (placeProductionOrder(rt, limitProduction(rt, toproduce), false)) {
 								result = true;
 							}
 							productionInProgress = true;

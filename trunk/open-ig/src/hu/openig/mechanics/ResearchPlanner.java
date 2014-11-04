@@ -74,7 +74,8 @@ public class ResearchPlanner extends Planner {
 		}
 		
 		//if low on money and planets, plan for conquest
-		maySpendMoney = (world.money >= 100000 || world.global.planetCount > 2) && world.global.militarySpaceportCount > 0;
+		maySpendMoney = (world.money >= 100000 || world.global.planetCount > 2) 
+				/* && world.global.militarySpaceportCount > 0 */;
 		
 		final Map<ResearchType, Integer> enablesCount = new HashMap<>();
 		final Map<ResearchType, Integer> rebuildCount = new HashMap<>();
