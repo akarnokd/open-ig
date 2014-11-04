@@ -2825,7 +2825,7 @@
   <entry key='statistics.vehicles_lost'>Vehicles lost</entry>
   <entry key='statistics.vehicles_lost_cost'>Vehicles lost cost</entry>
   <entry key='statusbar.menu.tooltip'>Show menu[n]Hold down the mouse button and release it over the desired entry.</entry>
-  <entry key='statusbar.money.tooltip'>%,d cr</entry>
+  <entry key='statusbar.money.tooltip'>%,d cr (+ %,d)</entry>
   <entry key='statusbar.notification.clear.tooltip'>Clear notification history</entry>
   <entry key='statusbar.notification.tooltip'>Notifications[n][c=FFFFFFFF]Right mouse button[/c]: Show or hide notification history</entry>
   <entry key='statusbar.objectives.tooltip'>Show or hide tasks[n]Shortcut: [c=FFFFFFFF]TAB[/c]</entry>

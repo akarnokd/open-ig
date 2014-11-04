@@ -2625,7 +2625,7 @@
   <entry key='statistics.vehicles_lost'>Vehicles lost</entry>
   <entry key='statistics.vehicles_lost_cost'>Vehicles lost cost</entry>
   <entry key='statusbar.menu.tooltip'>Открыть меню[n]Нажмите кнопку мыши и отпустите ее на выбранном пункте.</entry>
-  <entry key='statusbar.money.tooltip'>%,d кр</entry>
+  <entry key='statusbar.money.tooltip'>%,d кр (+ %,d)</entry>
   <entry key='statusbar.notification.clear.tooltip'>Стереть историю извещений</entry>
   <entry key='statusbar.notification.tooltip'>Извещения[n][c=FFFFFFFF]Правая кнопка мыши[/c]: Показать/Скрыть историю извещений</entry>
   <entry key='statusbar.objectives.tooltip'>Показать/Скрыть задания[n]Клавиша: [c=FFFFFFFF]TAB[/c]</entry>

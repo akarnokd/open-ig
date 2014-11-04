@@ -2718,7 +2718,7 @@
 	<entry key="statusbar.speed1.tooltip">Normál sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]1[/c]</entry>
 	<entry key="statusbar.speed2.tooltip">Dupla sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]2[/c]</entry>
 	<entry key="statusbar.speed4.tooltip">Négyszeres sebesség[n]Gyorsbillentyű: [c=FFFFFFFF]3[/c]</entry>
-	<entry key="statusbar.money.tooltip">%,d cr</entry>
+	<entry key="statusbar.money.tooltip">%,d cr (+ %,d)</entry>
 	<entry key="statusbar.objectives.tooltip">Feladatok megjelenítése vagy elrejtése[n]Gyorsbillentyű: [c=FFFFFFFF]TAB[/c]</entry>
 	<entry key="statusbar.notification.tooltip">Értesítések[n][c=FFFFFFFF]Jobb egérgomb[/c]: értesítési történet megjelenítése vagy elrejtése</entry>
 	<entry key="statusbar.notification.clear.tooltip">Értesítés történet törlése</entry>

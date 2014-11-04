@@ -2788,7 +2788,7 @@
 	<entry key="statusbar.speed1.tooltip">Normal speed[n]Shortcut: [c=FFFFFFFF]1[/c]</entry>
 	<entry key="statusbar.speed2.tooltip">Double speed[n]Shortcut: [c=FFFFFFFF]2[/c]</entry>
 	<entry key="statusbar.speed4.tooltip">Quadruple speed[n]Shortcut: [c=FFFFFFFF]3[/c]</entry>
-	<entry key="statusbar.money.tooltip">%,d cr</entry>
+	<entry key="statusbar.money.tooltip">%,d cr (+ %,d)</entry>
 	<entry key="statusbar.objectives.tooltip">Show or hide tasks[n]Shortcut: [c=FFFFFFFF]TAB[/c]</entry>
 	<entry key="statusbar.notification.tooltip">Notifications[n][c=FFFFFFFF]Right mouse button[/c]: Show or hide notification history</entry>
 	<entry key="statusbar.notification.clear.tooltip">Clear notification history</entry>
