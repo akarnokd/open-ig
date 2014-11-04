@@ -613,7 +613,7 @@ public class StatusbarScreen extends ScreenBase {
 		setTooltip(speed1, "statusbar.speed1.tooltip");
 		setTooltip(speed2, "statusbar.speed2.tooltip");
 		setTooltip(speed4, "statusbar.speed4.tooltip");
-		setTooltip(money, "statusbar.money.tooltip", player().money());
+		setTooltip(money, "statusbar.money.tooltip", player().money(), player().yesterday.taxIncome + player().yesterday.tradeIncome);
 		setTooltip(objectivesButton, "statusbar.objectives.tooltip");
 		if (commons.battleMode) {
 			setTooltip(notification, null);

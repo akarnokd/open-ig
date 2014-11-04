@@ -237,7 +237,7 @@
   <entry key='test.q4.a3'>Never.</entry>
   <entry key='test.q6.a3'>Never.</entry>
   <entry key='traders.fleetname'>Trader</entry>
-  <entry key='statusbar.money.tooltip'>%,d cr</entry>
+  <entry key='statusbar.money.tooltip'>%,d cr (+ %,d)</entry>
   <entry key='achievements.show_earned'>Earned</entry>
   <entry key='traits.cancel'>Cancel</entry>
   <entry key='skirmish.galaxy'>Galaxy</entry>
