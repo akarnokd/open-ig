@@ -519,7 +519,7 @@ public class EconomyPlanner extends Planner {
 	    	    			continue;
 	    	    		}
 	    	    		for (AIBuilding b : p.buildings) {
-	    	    			if (b.type == bt && b.upgradeLevel == i && world.money >= bt.cost) {
+	    	    			if (b.type == bt && b.upgradeLevel == i - 1 && world.money >= bt.cost) {
 	    	    				world.money -= b.type.cost;
 	                            final Planet p0 = p.planet;
 	                            final Building b0 = b.building;
