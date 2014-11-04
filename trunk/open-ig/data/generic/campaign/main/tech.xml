@@ -384,7 +384,7 @@
     <slot id='cannon' max='6' items='IonCannon,PlasmaCannon' x='150' y='80' width='20' height='10'/>
     <slot id='storage' max='1' items='Storage1,Storage2' x='120' y='80' width='20' height='10'/>
     <slot id='shield' max='1' items='Shield1,Shield2,Shield3,Shield4' x='150' y='100' width='20' height='10'/>
-    <property name='vehicles' value='5'/>
+    <property name='vehicles' value='6'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
   <item id='GarthogBattleship2' name='tech.garthogbattleship2.name' long-name='tech.garthogbattleship2.longname' description='tech.garthogbattleship2.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/garthog_battleship_2' factory='spaceship' research-cost='100000' production-cost='140000' level='4' race='' index='2' civil='3' mech='3' comp='4' ai='2' mil='5' skirmish-race='garthog' requires='GarthogBattleship1'>
@@ -397,7 +397,7 @@
     <slot id='storage' max='1' items='Storage1,Storage2' x='120' y='80' width='20' height='10'/>
     <slot id='shield' max='1' items='Shield2,Shield3,Shield4' x='150' y='100' width='20' height='10'/>
     <slot id='ecm' max='1' items='ECM1,ECM2' x='120' y='100' width='20' height='10'/>
-    <property name='vehicles' value='8'/>
+    <property name='vehicles' value='10'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
   <item id='GarthogBattleship3' name='tech.garthogbattleship3.name' long-name='tech.garthogbattleship3.longname' description='tech.garthogbattleship3.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/garthog_battleship_3' factory='spaceship' research-cost='100000' production-cost='180000' level='5' race='' index='4' civil='4' mech='5' comp='5' ai='5' mil='7' skirmish-race='garthog' requires='GarthogBattleship2'>
@@ -410,7 +410,7 @@
     <slot id='storage' max='1' items='Storage1,Storage2' x='120' y='80' width='20' height='10'/>
     <slot id='shield' max='1' items='Shield2,Shield3,Shield4' x='150' y='100' width='20' height='10'/>
     <slot id='ecm' max='1' items='ECM1,ECM2' x='120' y='100' width='20' height='10'/>
-    <property name='vehicles' value='11'/>
+    <property name='vehicles' value='15'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
   <item id='HyperDriveTrader1' name='tech.hyperdrive1.name' long-name='tech.hyperdrive1.longname' description='tech.hyperdrive1.description' category='EQUIPMENT_HYPERDRIVES' image='inventions/equipments/hyperdrives/hyperdrive_1' factory='equipment' research-cost='5000' production-cost='2000' level='0' race='traders' mech='1' mil='1' index='0' video='technology/equipments/hyperdrives/hyperdrive_1'>
