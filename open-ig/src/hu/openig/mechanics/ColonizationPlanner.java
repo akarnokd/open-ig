@@ -231,7 +231,9 @@ public class ColonizationPlanner extends Planner {
 			return;
 		}
 		if (maySpendMoney && spaceport.second == null) {
-			buildMilitarySpaceport();
+			if (world.isAvailable("ColonyShip") != null && world.isAvailable("OrbitalFactory") != null) {
+				buildMilitarySpaceport();
+			}
 		}
 		if (spaceport.second != null) {
 			if (deployInventoryColonyShip(spaceport.second)) {
@@ -243,7 +245,7 @@ public class ColonizationPlanner extends Planner {
 				}
 				final ResearchType cs = world.isAvailable("ColonyShip");
 				if (cs != null) {
-					placeProductionOrder(cs, maxProduction);
+					placeProductionOrder(cs, maxProduction, true);
 				}
 			}
 		}

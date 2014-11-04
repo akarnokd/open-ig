@@ -9,14 +9,12 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
-import hu.openig.core.Pred1;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
 import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
-import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetProblems;
 import hu.openig.model.ResearchSubCategory;
@@ -82,140 +80,6 @@ public class EconomyPlanner extends Planner {
 		}
 	}
 	/**
-	 * Manage the given planet.
-	 * @param planet the target planet
-	 * @return true if action taken
-	 */
-	public boolean managePlanet(final AIPlanet planet) {
-		if (planet.statistics.constructing) {
-			return false;
-		}
-		
-		final Set<BuildingType> mayBuild = new HashSet<>();
-		
-		final boolean allowUpgrades2 = world.money >= world.ownPlanets.size() * 40000;
-		
-		List<Pred1<AIPlanet>> functions = new ArrayList<>();
-		
-		boolean economyAllBuilt = true;
-		boolean factoryAllBuilt = true;
-		
-		if (world.availableResourceBuildings.containsKey("credit")) {
-			for (BuildingType bt : world.availableResourceBuildings.get("credit")) {
-				economyAllBuilt &= planet.buildingCounts.containsKey(bt);
-			}
-		}
-		if (world.availableResourceBuildings.containsKey("multiply")) {
-			for (BuildingType bt : world.availableResourceBuildings.get("multiply")) {
-				economyAllBuilt &= planet.buildingCounts.containsKey(bt);
-			}
-		}
-		if (world.availableResourceBuildings.containsKey("spaceship")) {
-			for (BuildingType bt : world.availableResourceBuildings.get("spaceship")) {
-				factoryAllBuilt &= planet.buildingCounts.containsKey(bt);
-			}
-		}
-		if (world.availableResourceBuildings.containsKey("weapon")) {
-			for (BuildingType bt : world.availableResourceBuildings.get("weapon")) {
-				factoryAllBuilt &= planet.buildingCounts.containsKey(bt);
-			}
-		}
-		if (world.availableResourceBuildings.containsKey("equipment")) {
-			for (BuildingType bt : world.availableResourceBuildings.get("equipment")) {
-				factoryAllBuilt &= planet.buildingCounts.containsKey(bt);
-			}
-		}
-		if (!economyAllBuilt) {
-			if (world.availableResourceBuildings.containsKey("credit")) {
-				for (BuildingType bt : world.availableResourceBuildings.get("credit")) {
-					if (!planet.buildingCounts.containsKey(bt)) {
-						mayBuild.add(bt);
-					}
-				}
-			}
-			if (world.availableResourceBuildings.containsKey("multiply")) {
-				for (BuildingType bt : world.availableResourceBuildings.get("multiply")) {
-					if (!planet.buildingCounts.containsKey(bt)) {
-						mayBuild.add(bt);
-					}
-				}
-			}
-		} else
-		if (factoryAllBuilt) {
-			Set<BuildingType> set = world.availableResourceBuildings.get("credit");
-			if (set != null) {
-				mayBuild.addAll(set);
-			}
-			set = world.availableResourceBuildings.get("multiply");
-			if (set != null) {
-				mayBuild.addAll(set);
-			}
-		}
-		final boolean allowUpgrades = world.money >= world.ownPlanets.size() * 20000;
-		
-		Pred1<AIPlanet> checkEconomyFn = new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet planet) {
-				return checkEconomy(planet, allowUpgrades, mayBuild);
-			}
-		};
-		
-		if (!economyAllBuilt) {
-			functions.add(checkEconomyFn);
-		}
-		Pred1<AIPlanet> checkFactoryFn = new Pred1<AIPlanet>() {
-			@Override
-			public Boolean invoke(AIPlanet planet) {
-				return checkFactory(planet, allowUpgrades2);
-			}
-		};
-		
-		boolean buildFactoryFlag = false;
-		
-		if (world.money >= 30000 && checkPlanetPreparedness()) {
-			buildFactoryFlag = true;
-			if (!factoryAllBuilt) {
-				functions.add(checkFactoryFn);
-			}
-			functions.add(new Pred1<AIPlanet>() {
-				@Override
-				public Boolean invoke(AIPlanet planet) {
-					return checkSocial(planet);
-				}
-			});
-			functions.add(new Pred1<AIPlanet>() {
-				@Override
-				public Boolean invoke(AIPlanet planet) {
-					return checkRadar(planet);
-				}
-			});
-		}
-		if (ModelUtils.random() < 0.01) {
-			if (ModelUtils.randomBool()) {
-				if (factoryAllBuilt && buildFactoryFlag) {
-					functions.add(checkFactoryFn);
-				}
-				if (economyAllBuilt) {
-					functions.add(checkEconomyFn);
-				}
-			} else {
-				if (economyAllBuilt) {
-					functions.add(checkEconomyFn);
-				}
-				if (factoryAllBuilt && buildFactoryFlag) {
-					functions.add(checkFactoryFn);
-				}
-			}
-		}
-
-		for (Pred1<AIPlanet> f : functions) {
-			if (f.invoke(planet)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
 	 * If colony lacks radar, build one, if better available than the current
 	 * demolish existing (the next turn will build one).
 	 * If hubble2 is available place it, or produce it.
@@ -276,7 +140,7 @@ public class EconomyPlanner extends Planner {
 		}
 		// if hubble available, produce some
 		if (hubble2 != null) {
-			placeProductionOrder(hubble2, 1);
+			placeProductionOrder(hubble2, 1, false);
 			return true;
 		}
 		
@@ -401,36 +265,6 @@ public class EconomyPlanner extends Planner {
 		}
 		return false;
 	}
-	/**
-	 * Check if there is shortage on police.
-	 * @param planet the planet to manage
-	 * @return if action taken
-	 */
-	boolean checkSocial(AIPlanet planet) {
-		BuildingSelector social = new BuildingSelector() {
-			@Override
-			public boolean accept(AIPlanet planet, AIBuilding value) {
-				
-				return value.type.kind.equals(BuildingType.KIND_SOCIAL) && value.hasResource(BuildingType.RESOURCE_MORALE);
-			}
-			@Override
-			public boolean accept(AIPlanet planet, BuildingType value) {
-				if (value.kind.equals(BuildingType.KIND_SOCIAL) 
-						&& value.hasResource(BuildingType.RESOURCE_MORALE) 
-						&& count(planet, value) < 1) {
-					if (value.id.equals("Stadium") && planet.population < 40000) {
-						return false;
-					}
-					return planet.population >= planet.statistics.nativeWorkerDemand + value.getResource("worker");
-				}
-				return false;
-			}
-		};
-		if (checkPlanetPreparedness()) {
-			return manageBuildings(planet, social, costOrder, false);
-		}
-		return false;
-	}
     /**
      * Plans the construction of economy and factory buildings horizontally across
      * all player planets, then does the radar & social checks.
@@ -482,8 +316,8 @@ public class EconomyPlanner extends Planner {
         }
         
         // make sure there is at least one military spaceport and one of 
-        if (world.global.hasMilitarySpaceport 
-                && world.global.production.equipment > 0
+        if (/* world.global.hasMilitarySpaceport  
+                && */ world.global.production.equipment > 0
                 && world.global.production.spaceship > 0
                 && world.global.production.weapons > 0) {
             boolean upgradeAvailable = false;
@@ -523,7 +357,11 @@ public class EconomyPlanner extends Planner {
             }
         }
         
-        if (economyAll && !planets.isEmpty()) {
+        if ((economyAll && !planets.isEmpty()) || world.money >= 1_000_000) {
+        	if (!buildSocial(planets) && world.money < 1_000_000) {
+        		return;
+        	}
+
             Set<BuildingType> factorySet = new HashSet<>();
 
             Set<BuildingType> c3 = world.availableResourceBuildings.get("spaceship");
@@ -614,19 +452,62 @@ public class EconomyPlanner extends Planner {
             }            
             // do the remaining checks
             
-            if (world.global.hasMilitarySpaceport
+            if ((world.global.hasMilitarySpaceport
                     && world.global.production.equipment > 0
                     && world.global.production.spaceship > 0
-                    && world.global.production.weapons > 0) {
+                    && world.global.production.weapons > 0) || world.money >= 1_000_000) {
                 for (AIPlanet p : planets) {
                     if (checkRadar(p)) {
-                        return;
-                    }
-                    if (checkSocial(p)) {
                         return;
                     }
                 }
             }
         }
+    }
+    /** Number of morale buildings per planet. */
+    static final int MORALE_BUILDINGS_PER_PLANET = 2;
+    /**
+     * Build social buildings.
+     * @param planets the list of planets ordered by value
+     * @return true if other activities may continue
+     */
+    boolean buildSocial(List<AIPlanet> planets) {
+    	List<BuildingType> bts = new ArrayList<>();
+    	for (BuildingType bt : world.availableBuildings) {
+    		if (bt.kind.equals(BuildingType.KIND_SOCIAL) 
+    				&& bt.hasResource(BuildingType.RESOURCE_MORALE)) {
+    			bts.add(bt);
+    		}
+    	}
+    	Collections.sort(bts, BuildingType.COST);
+
+    	int counter = 0;
+    	for (BuildingType bt : bts) {
+	    	for (AIPlanet p : planets) {
+	    		if (p.statistics.constructing) {
+	    			continue;
+	    		}
+	    		if (bt.id.equals("Stadium") && p.morale > 30 && p.population < 40000) {
+	    			counter += MORALE_BUILDINGS_PER_PLANET;
+	    			continue;
+	    		}
+	    		if (p.canBuild(bt)) {
+	    			int c = count(p, bt);
+	    			if (c < MORALE_BUILDINGS_PER_PLANET && bt.cost <= world.money) {
+		    			if (p.findLocation(bt) != null) {
+		    				build(p, bt);
+		    			} else {
+		    				c = MORALE_BUILDINGS_PER_PLANET;
+		    			}
+	    			}
+    				counter += c;
+	    		} else {
+	    			// not supported here, consider it as built
+	    			counter += MORALE_BUILDINGS_PER_PLANET;
+	    		}
+	    	}
+    	}
+    	
+    	return counter >= MORALE_BUILDINGS_PER_PLANET * bts.size() * planets.size();
     }
 }
