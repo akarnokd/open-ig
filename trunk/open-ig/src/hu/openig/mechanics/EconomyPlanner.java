@@ -357,10 +357,18 @@ public class EconomyPlanner extends Planner {
             }
         }
         
-        if ((economyAll && !planets.isEmpty()) || world.money >= 1_000_000) {
-        	if (!buildSocial(planets) && world.money < 1_000_000) {
+        if ((economyAll && !planets.isEmpty()) || world.money >= 600_000) {
+        	if (!buildSocial(planets) && world.money < 600_000) {
         		return;
         	}
+            if ((world.global.hasMilitarySpaceport
+                    && world.global.production.equipment > 0
+                    && world.global.production.spaceship > 0
+                    && world.global.production.weapons > 0) || world.money >= 600_000) {
+                for (AIPlanet p : planets) {
+                	checkRadar(p);
+                }
+            }
 
             Set<BuildingType> factorySet = new HashSet<>();
 
@@ -451,17 +459,6 @@ public class EconomyPlanner extends Planner {
                 }
             }            
             // do the remaining checks
-            
-            if ((world.global.hasMilitarySpaceport
-                    && world.global.production.equipment > 0
-                    && world.global.production.spaceship > 0
-                    && world.global.production.weapons > 0) || world.money >= 1_000_000) {
-                for (AIPlanet p : planets) {
-                    if (checkRadar(p)) {
-                        return;
-                    }
-                }
-            }
         }
     }
     /**
@@ -471,6 +468,7 @@ public class EconomyPlanner extends Planner {
      */
     boolean buildSocial(List<AIPlanet> planets) {
     	int moraleBuildingsPerPlanet = 2;
+    	boolean allowUpgrading = false;
     	List<BuildingType> bts = new ArrayList<>();
     	for (BuildingType bt : world.availableBuildings) {
     		if (bt.kind.equals(BuildingType.KIND_SOCIAL) 
@@ -480,6 +478,7 @@ public class EconomyPlanner extends Planner {
     	}
     	if (bts.size() < 3) {
     		moraleBuildingsPerPlanet += 2;
+    		allowUpgrading = true;
     	}
     	Collections.sort(bts, BuildingType.COST);
 
@@ -512,28 +511,30 @@ public class EconomyPlanner extends Planner {
     	
     	// upgrade those buildings if possible
     	if (counter >= moraleBuildingsPerPlanet * bts.size() * planets.size()) {
-    		for (BuildingType bt : bts) {
-    			for (int i = 1; i <= bt.upgrades.size(); i++) {
-	    	    	for (AIPlanet p : planets) {
-	    	    		if (p.statistics.constructing) {
-	    	    			continue;
-	    	    		}
-	    	    		for (AIBuilding b : p.buildings) {
-	    	    			if (b.type == bt && b.upgradeLevel == i - 1 && world.money >= bt.cost) {
-	    	    				world.money -= b.type.cost;
-	                            final Planet p0 = p.planet;
-	                            final Building b0 = b.building;
-	                            add(new Action0() {
-	                                @Override
-	                                public void invoke() {
-	                                    controls.actionUpgradeBuilding(p0, b0, b0.upgradeLevel + 1);
-	                                }
-	                            });
-	                            return false;
-	    	    			}
-	    	    		}
+    		if (allowUpgrading) {
+	    		for (BuildingType bt : bts) {
+	    			for (int i = 1; i <= bt.upgrades.size(); i++) {
+		    	    	for (AIPlanet p : planets) {
+		    	    		if (p.statistics.constructing) {
+		    	    			continue;
+		    	    		}
+		    	    		for (AIBuilding b : p.buildings) {
+		    	    			if (b.type == bt && b.upgradeLevel == i - 1 && world.money >= bt.cost) {
+		    	    				world.money -= b.type.cost;
+		                            final Planet p0 = p.planet;
+		                            final Building b0 = b.building;
+		                            add(new Action0() {
+		                                @Override
+		                                public void invoke() {
+		                                    controls.actionUpgradeBuilding(p0, b0, b0.upgradeLevel + 1);
+		                                }
+		                            });
+		                            return false;
+		    	    			}
+		    	    		}
+		    	    	}
 	    	    	}
-    	    	}
+	    		}
     		}
     		return true;
     	}
