@@ -484,7 +484,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2,MultiHeadedRocket' x='119' y='66' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='89' y='60' width='20' height='10'/>
   </item>
-  <item id='DargslanBattleship1' name='tech.dargslanbattleship1.name' long-name='tech.dargslanbattleship1.longname' description='tech.dargslanbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dargslan_battleship_1' factory='spaceship' research-cost='100000' production-cost='80000' level='3' race='' index='0' civil='1' mech='1' comp='1' ai='1' mil='1' skirmish-race='dargslan'>
+  <item id='DargslanBattleship1' name='tech.dargslanbattleship1.name' long-name='tech.dargslanbattleship1.longname' description='tech.dargslanbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dargslan_battleship_1' factory='spaceship' research-cost='90000' production-cost='80000' level='3' race='' index='0' civil='1' mech='1' comp='1' ai='1' mil='1' skirmish-race='dargslan'>
     <slot id='bomb' max='8' items='Bomb1,Bomb2' x='124' y='85' width='20' height='10'/>
     <slot id='rocket' max='8' items='Rocket1,Rocket2,MultiHeadedRocket' x='124' y='72' width='20' height='10'/>
     <slot id='radar' max='1' items='Radar1,Radar2,Radar3' x='113' y='36' width='20' height='10'/>
@@ -584,7 +584,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='172' y='86' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='119' y='63' width='20' height='10'/>
   </item>
-  <item id='MorgathBattleship' name='tech.morgathbattleship.name' long-name='tech.morgathbattleship.longname' description='tech.morgathbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship' factory='spaceship' research-cost='150000' production-cost='90000' level='4' race='morgath' index='0' mech='1' comp='1' ai='1' mil='1'>
+  <item id='MorgathBattleship' name='tech.morgathbattleship.name' long-name='tech.morgathbattleship.longname' description='tech.morgathbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship' factory='spaceship' research-cost='90000' production-cost='90000' level='4' race='morgath' index='0' mech='1' comp='1' ai='1' mil='1'>
     <slot id='bomb' max='3' items='Bomb1' x='127' y='18' width='20' height='10'/>
     <slot id='rocket' max='3' items='Rocket1' x='163' y='12' width='20' height='10'/>
     <slot-fixed id='Storage' count='1' item='Storage1'/>
@@ -682,7 +682,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='135' y='68' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='84' y='61' width='20' height='10'/>
   </item>
-  <item id='EcalepBattleship1' name='tech.ecalepbattleship1.name' long-name='tech.ecalepbattleship1.longname' description='tech.ecalepbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ecalep_battleship_1' factory='spaceship' research-cost='100000' production-cost='80000' level='3' race='ecalep' index='0' civil='1' mech='1' comp='1' ai='1' mil='1'>
+  <item id='EcalepBattleship1' name='tech.ecalepbattleship1.name' long-name='tech.ecalepbattleship1.longname' description='tech.ecalepbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ecalep_battleship_1' factory='spaceship' research-cost='90000' production-cost='80000' level='3' race='ecalep' index='0' civil='1' mech='1' comp='1' ai='1' mil='1'>
     <slot id='bomb' max='8' items='Bomb1,Bomb2' x='100' y='71' width='20' height='10'/>
     <slot id='rocket' max='8' items='Rocket1,Rocket2' x='137' y='82' width='20' height='10'/>
     <slot id='radar' max='1' items='Radar1,Radar2,Radar3' x='103' y='36' width='20' height='10'/>
@@ -694,7 +694,7 @@
     <property name='vehicles' value='5'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
-  <item id='EcalepBattleship2' name='tech.ecalepbattleship2.name' long-name='tech.ecalepbattleship2.longname' description='tech.ecalepbattleship2.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ecalep_battleship_2' factory='spaceship' research-cost='140000' production-cost='130000' level='4' race='ecalep' index='1' civil='3' mech='3' comp='4' ai='2' mil='5' requires='EcalepBattleship1'>
+  <item id='EcalepBattleship2' name='tech.ecalepbattleship2.name' long-name='tech.ecalepbattleship2.longname' description='tech.ecalepbattleship2.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ecalep_battleship_2' factory='spaceship' research-cost='100000' production-cost='130000' level='4' race='ecalep' index='1' civil='3' mech='3' comp='4' ai='2' mil='5' requires='EcalepBattleship1'>
     <slot id='bomb' max='12' items='Bomb1,Bomb2' x='100' y='71' width='20' height='10'/>
     <slot id='rocket' max='13' items='Rocket1,Rocket2' x='137' y='82' width='20' height='10'/>
     <slot id='radar' max='1' items='Radar1,Radar2,Radar3' x='103' y='36' width='20' height='10'/>
@@ -787,7 +787,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='121' y='70' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='85' y='59' width='20' height='10'/>
   </item>
-  <item id='SullepBattleship1' name='tech.sullepbattleship1.name' long-name='tech.sullepbattleship1.longname' description='tech.sullepbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/sullep_battleship_1' factory='spaceship' research-cost='100000' production-cost='80000' level='3' race='' index='0' civil='1' mech='1' comp='1' ai='1' mil='1' skirmish-race='sullep'>
+  <item id='SullepBattleship1' name='tech.sullepbattleship1.name' long-name='tech.sullepbattleship1.longname' description='tech.sullepbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/sullep_battleship_1' factory='spaceship' research-cost='90000' production-cost='80000' level='3' race='' index='0' civil='1' mech='1' comp='1' ai='1' mil='1' skirmish-race='sullep'>
     <slot id='bomb' max='8' items='Bomb1,Bomb2' x='79' y='98' width='20' height='10'/>
     <slot id='rocket' max='8' items='Rocket1,Rocket2' x='125' y='70' width='20' height='10'/>
     <slot id='radar' max='1' items='Radar1,Radar2,Radar3' x='130' y='48' width='20' height='10'/>
@@ -799,7 +799,7 @@
     <property name='vehicles' value='5'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
-  <item id='SullepBattleship' name='tech.sullepbattleship.name' long-name='tech.sullepbattleship.longname' description='tech.sullepbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/sullep_battleship' factory='spaceship' research-cost='150000' production-cost='120000' level='4' race='sullep' index='1' requires='SullepBattleship1' mech='2' comp='2' ai='2' mil='2'>
+  <item id='SullepBattleship' name='tech.sullepbattleship.name' long-name='tech.sullepbattleship.longname' description='tech.sullepbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/sullep_battleship' factory='spaceship' research-cost='100000' production-cost='120000' level='4' race='sullep' index='1' requires='SullepBattleship1' mech='2' comp='2' ai='2' mil='2'>
     <slot id='bomb' max='4' items='Bomb1' x='79' y='98' width='20' height='10'/>
     <slot id='rocket' max='4' items='Rocket1' x='125' y='70' width='20' height='10'/>
     <slot-fixed id='Storage' count='1' item='Storage1'/>
@@ -886,7 +886,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='122' y='74' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='102' y='58' width='20' height='10'/>
   </item>
-  <item id='YchomBattleship' name='tech.ychombattleship.name' long-name='tech.ychombattleship.longname' description='tech.ychombattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ychom_battleship' factory='spaceship' research-cost='150000' production-cost='80000' level='3' race='ychom' index='0' mech='1' comp='1' ai='1' mil='1'>
+  <item id='YchomBattleship' name='tech.ychombattleship.name' long-name='tech.ychombattleship.longname' description='tech.ychombattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ychom_battleship' factory='spaceship' research-cost='90000' production-cost='80000' level='3' race='ychom' index='0' mech='1' comp='1' ai='1' mil='1'>
     <slot id='bomb' max='2' items='Bomb1' x='96' y='83' width='20' height='10'/>
     <slot id='rocket' max='2' items='Rocket1' x='129' y='75' width='20' height='10'/>
     <slot-fixed id='Storage' count='1' item='Storage1'/>
@@ -985,7 +985,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='127' y='75' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='103' y='60' width='20' height='10'/>
   </item>
-  <item id='DribsBattleship1' name='tech.dribsbattleship1.name' long-name='tech.dribsbattleship1.longname' description='tech.dribsbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dribs_battleship_1' factory='spaceship' research-cost='100000' production-cost='80000' level='3' race='' index='0' civil='1' mech='1' comp='1' ai='1' mil='1' skirmish-race='dribs'>
+  <item id='DribsBattleship1' name='tech.dribsbattleship1.name' long-name='tech.dribsbattleship1.longname' description='tech.dribsbattleship1.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dribs_battleship_1' factory='spaceship' research-cost='90000' production-cost='80000' level='3' race='' index='0' civil='1' mech='1' comp='1' ai='1' mil='1' skirmish-race='dribs'>
     <slot id='bomb' max='8' items='Bomb1,Bomb2' x='124' y='80' width='20' height='10'/>
     <slot id='rocket' max='8' items='Rocket1,Rocket2' x='168' y='74' width='20' height='10'/>
     <slot id='radar' max='1' items='Radar1,Radar2,Radar3' x='144' y='31' width='20' height='10'/>
@@ -997,7 +997,7 @@
     <property name='vehicles' value='5'/>
     <property name='needsOrbitalFactory' value='true'/>
   </item>
-  <item id='DribsBattleship' name='tech.dribsbattleship.name' long-name='tech.dribsbattleship.longname' description='tech.dribsbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dribs_battleship' factory='spaceship' research-cost='150000' production-cost='120000' level='4' race='dribs' index='1' civil='2' mech='2' comp='3' ai='2' mil='4' requires='DribsBattleship1'>
+  <item id='DribsBattleship' name='tech.dribsbattleship.name' long-name='tech.dribsbattleship.longname' description='tech.dribsbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/dribs_battleship' factory='spaceship' research-cost='100000' production-cost='120000' level='4' race='dribs' index='1' civil='2' mech='2' comp='3' ai='2' mil='4' requires='DribsBattleship1'>
     <slot id='bomb' max='4' items='Bomb1' x='124' y='80' width='20' height='10'/>
     <slot id='rocket' max='4' items='Rocket1' x='168' y='74' width='20' height='10'/>
     <slot-fixed id='Storage' count='1' item='Storage1'/>
