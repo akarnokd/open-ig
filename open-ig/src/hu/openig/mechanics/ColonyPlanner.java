@@ -677,7 +677,8 @@ public class ColonyPlanner extends Planner {
 	 */
 	boolean checkPower(final AIPlanet planet) {
 		// sell power plants if too much energy
-		if (planet.statistics.energyAvailable > planet.statistics.energyDemand * 2) {
+		if (planet.statistics.energyAvailable > planet.statistics.energyDemand * 2
+				&& !planet.statistics.constructing) {
 			for (final AIBuilding b : planet.buildings) {
 				if (b.getEnergy() > 0 && planet.statistics.energyAvailable - b.getEnergy() > planet.statistics.energyDemand) {
 					add(new Action0() {
