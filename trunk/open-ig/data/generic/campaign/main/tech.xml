@@ -584,7 +584,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='172' y='86' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='119' y='63' width='20' height='10'/>
   </item>
-  <item id='MorgathBattleship' name='tech.morgathbattleship.name' long-name='tech.morgathbattleship.longname' description='tech.morgathbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship' factory='spaceship' research-cost='90000' production-cost='90000' level='4' race='morgath' index='0' mech='1' comp='1' ai='1' mil='1'>
+  <item id='MorgathBattleship' name='tech.morgathbattleship.name' long-name='tech.morgathbattleship.longname' description='tech.morgathbattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/morgath_battleship' factory='spaceship' research-cost='90000' production-cost='90000' level='4' race='morgath' index='0' civil="1" mech='1' comp='1' ai='1' mil='1'>
     <slot id='bomb' max='3' items='Bomb1' x='127' y='18' width='20' height='10'/>
     <slot id='rocket' max='3' items='Rocket1' x='163' y='12' width='20' height='10'/>
     <slot-fixed id='Storage' count='1' item='Storage1'/>
@@ -886,7 +886,7 @@
     <slot id='rocket' max='4' items='Rocket1,Rocket2' x='122' y='74' width='20' height='10'/>
     <slot id='hyperdrive' max='1' items='HyperDrive1,HyperDrive2,HyperDrive3,HyperDrive4,HyperDrive5' x='102' y='58' width='20' height='10'/>
   </item>
-  <item id='YchomBattleship' name='tech.ychombattleship.name' long-name='tech.ychombattleship.longname' description='tech.ychombattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ychom_battleship' factory='spaceship' research-cost='90000' production-cost='80000' level='3' race='ychom' index='0' mech='1' comp='1' ai='1' mil='1'>
+  <item id='YchomBattleship' name='tech.ychombattleship.name' long-name='tech.ychombattleship.longname' description='tech.ychombattleship.description' category='SPACESHIPS_BATTLESHIPS' image='inventions/spaceships/battleships/ychom_battleship' factory='spaceship' research-cost='90000' production-cost='80000' level='3' race='ychom' index='0' civil='1' mech='1' comp='1' ai='1' mil='1'>
     <slot id='bomb' max='2' items='Bomb1' x='96' y='83' width='20' height='10'/>
     <slot id='rocket' max='2' items='Rocket1' x='129' y='75' width='20' height='10'/>
     <slot-fixed id='Storage' count='1' item='Storage1'/>
