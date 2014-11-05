@@ -522,6 +522,9 @@ public abstract class Planner {
 	 * @return true if new production order was placed
 	 */
 	public boolean placeProductionOrder(final ResearchType rt, final int count, final boolean highPriority) {
+		if (world.level <= 1) {
+			return false;
+		}
 		Production prod = world.productions.get(rt);
 		if (prod != null && prod.count > 0) {
 			return false;
