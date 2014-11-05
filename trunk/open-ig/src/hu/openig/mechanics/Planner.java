@@ -134,7 +134,7 @@ public abstract class Planner {
 	public static final Comparator<AIPlanet> WORST_PLANET = new Comparator<AIPlanet>() {
 		@Override
 		public int compare(AIPlanet o1, AIPlanet o2) {
-			return Integer.compare(status(o1), status(o2));
+			return Integer.compare(status(o2), status(o1));
 		}
 		/** 
 		 * Computes the health status.

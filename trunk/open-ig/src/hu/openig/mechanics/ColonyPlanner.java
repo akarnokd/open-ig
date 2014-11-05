@@ -706,7 +706,7 @@ public class ColonyPlanner extends Planner {
 				BuildingType bestAbove = null;
 				BuildingType bestBelow = null;
 				double bestPowerAbove = Double.POSITIVE_INFINITY;
-				double bestPowerBelow = Double.POSITIVE_INFINITY;
+				double bestPowerBelow = 0;
 				for (BuildingType bt : world.availableBuildings) {
 					if (planet.canBuild(bt) && bt.hasResource("energy")) {
 						double energ = bt.getResource("energy");
