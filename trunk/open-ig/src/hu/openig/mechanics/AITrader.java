@@ -479,7 +479,7 @@ public class AITrader implements AIManager {
 			BattleInfo battle = world.battle();
 			Fleet our = battle.getFleet();
 			
-			if (our != null) {
+			if (our != null && our.owner == p) {
 				int idx = fleetIndex(our);
 				if (idx < 0) {
 					idx = our.id;
@@ -594,7 +594,7 @@ public class AITrader implements AIManager {
 		@Override
 		public void spaceBattleDone() {
 			Fleet f = world.battle().targetFleet;
-			if (f != null && world.battle().enemyFlee) {
+			if (f != null && f.owner == p && world.battle().enemyFlee) {
 				returnToPreviousPlanet(f);
 			}
 		}

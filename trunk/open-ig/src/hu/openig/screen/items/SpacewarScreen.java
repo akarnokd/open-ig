@@ -3487,6 +3487,24 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				e.consume();
 				return true;
 			}
+			if (e.getKeyCode() == KeyEvent.VK_W && e.isShiftDown()) {
+				SpacewarStructure own = null;
+				for (SpacewarStructure s : structures) {
+					if (s.owner == player()) {
+						own = s;
+						break;
+					}
+				}
+				if (own != null) {
+					for (SpacewarStructure s : structures) {
+						if (s.owner != player() && !s.owner.id.equals("Traders")) {
+							damageTarget(own, s, 1_000_000, SoundType.FIRE_LASER1, "Laser1", player().id);
+						}
+					}
+				}
+				e.consume();
+				return true;
+			}
 		}
 		if (e.isShiftDown()) {
 			if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
