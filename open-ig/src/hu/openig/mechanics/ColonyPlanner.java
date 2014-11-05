@@ -309,7 +309,8 @@ public class ColonyPlanner extends Planner {
 					}
 				}
 			}
-			if (min != null && planet.statistics.workerDemand - min.getWorkers() < planet.population) {
+			if (min != null && planet.statistics.workerDemand - min.getWorkers() < planet.population
+					&& (planet.statistics.energyDemand - min.getEnergy()) * 2 <= planet.statistics.energyAvailable) {
 				final AIBuilding fmin = min;
 				add(new Action0() {
 					@Override

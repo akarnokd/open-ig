@@ -719,33 +719,36 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 	}
 	@Override
 	public void onTime() {
-		for (Planet p : player.planets.keySet()) {
-			if (p.owner != player) {
-				hideMessages(p.id);
-			} else {
-				if (isUnderAttack(p)) {
-					VideoMessage msg = send(p.id + "-Is-Under-Attack");
-					if (msg != null) {
-						msg.visible = true;
-					}
+		// Run timed scripts only if the current player is the initial player. Helps in debugging other races in the campaign.
+		if (player == world.player) {
+			for (Planet p : player.planets.keySet()) {
+				if (p.owner != player) {
+					hideMessages(p.id);
 				} else {
-					VideoMessage msg = send(p.id + "-Not-Under-Attack");
-					if (msg != null) {
-						msg.visible = false;
+					if (isUnderAttack(p)) {
+						VideoMessage msg = send(p.id + "-Is-Under-Attack");
+						if (msg != null) {
+							msg.visible = true;
+						}
+					} else {
+						VideoMessage msg = send(p.id + "-Not-Under-Attack");
+						if (msg != null) {
+							msg.visible = false;
+						}
 					}
 				}
 			}
-		}
-		// update view limits if level changes
-		updateCounters();
-		for (Mission m : missions) {
-			if (lastLevel != world.level) {
-				onLevelChanged();
+			// update view limits if level changes
+			updateCounters();
+			for (Mission m : missions) {
+				if (lastLevel != world.level) {
+					onLevelChanged();
+				}
+				if (!m.applicable()) {
+					continue;
+				}
+				m.onTime();
 			}
-			if (!m.applicable()) {
-				continue;
-			}
-			m.onTime();
 		}
 	}
 	/** Update timeout counters. */

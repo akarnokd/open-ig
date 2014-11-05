@@ -763,8 +763,8 @@
       <building type='Fortress' race='sullep' x='-25' y='-37' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='NuclearPlant' race='sullep' x='-12' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='4'/>
       <building type='PhoodFactory' race='sullep' x='-7' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building type='PhoodFactory' race='sullep' x='-2' y='-35' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
-      <building type='PhoodFactory' race='sullep' x='-7' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building type='PhoodFactory' race='sullep' x='-2' y='-35' enabled='false' repairing='false' energy='0' worker='0' level='0'/>
+      <building type='PhoodFactory' race='sullep' x='-7' y='-34' enabled='false' repairing='false' energy='0' worker='0' level='0'/>
       <building type='PlasmaProjector' race='sullep' x='-16' y='-31' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='PlasmaProjector' race='sullep' x='-15' y='-36' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='PlasmaProjector' race='sullep' x='-10' y='-39' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
