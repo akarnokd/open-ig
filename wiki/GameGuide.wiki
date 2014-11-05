@@ -348,6 +348,7 @@ If you run into difficult situations, want to skip parts or just want to poke ar
 || CTRL+B || All known races will offer alliance (debug) ||
 || CTRL+SHIFT+B || All known races will ask for/demand surrender (debug) ||
 || CTRL+SHIFT+J || All known races will demand 1000 credits (debug) ||
+|| CTRL+SHIFT+W || Destroy enemy ships during spacewar (except Traders) ||
 
 
 == Mission tips ==
