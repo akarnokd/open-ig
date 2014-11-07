@@ -224,9 +224,13 @@ public class UIMouse {
 	 * @return the current location relative to the component
 	 */
 	public static Point current(Component c) {
-		Point pm = MouseInfo.getPointerInfo().getLocation();
-		Point pc = c.getLocationOnScreen();
-		return new Point(pm.x - pc.x, pm.y - pc.y);
+		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+		if (pointerInfo != null) {
+			Point pm = pointerInfo.getLocation();
+			Point pc = c.getLocationOnScreen();
+			return new Point(pm.x - pc.x, pm.y - pc.y);
+		}
+		return new Point(-10000, -10000);
 	}
 	/**
 	 * Create a mouse movement event as if the mouse just

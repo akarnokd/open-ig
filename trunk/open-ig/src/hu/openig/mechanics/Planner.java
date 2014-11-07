@@ -1003,6 +1003,7 @@ public abstract class Planner {
 	 */
 	public void build(final AIPlanet planet, final BuildingType bt) {
 		world.money -= bt.cost;
+		planet.statistics.constructing = true;
 		
 		AIBuilding b = new AIBuilding(new Building(-1, bt, planet.race));
 		planet.buildings.add(b);

@@ -5475,8 +5475,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	 */
 	boolean needsRotation(GroundwarUnit u, Location target) {
 		RotationAngles ra = computeRotation(u, target);
-		double anglePerStep = 2 * Math.PI * u.model.rotationTime / u.angleCount() / SIMULATION_DELAY;
-        return Math.abs(ra.diff) >= anglePerStep;
+//		double anglePerStep = 2 * Math.PI * u.model.rotationTime / u.angleCount() / SIMULATION_DELAY;
+        return Math.abs(ra.diff) > 0;
     }
 	/**
 	 * Plan a new route to the current destination.
