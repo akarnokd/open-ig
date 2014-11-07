@@ -199,7 +199,6 @@ public class Mission4 extends Mission {
 				if (battle.targetFleet == f1) {
 					war.includeFleet(f2, f2.owner);
 					battle.targetFleet = f2;
-					f2.owner.ai.spaceBattle(war).spaceBattleInit();
 					battle.otherFleets.add(f1);
 				} else {
 					// pirate 2 attacked
@@ -247,6 +246,7 @@ public class Mission4 extends Mission {
 		newOwner.race = owner.race;
 		newOwner.aiMode = AIMode.PIRATES;
 		newOwner.ai = world.env.getAI(newOwner);
+		newOwner.ai.init(newOwner);
 		newOwner.noDatabase = owner.noDatabase;
 		newOwner.noDiplomacy = owner.noDiplomacy;
 
