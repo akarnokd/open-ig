@@ -60,16 +60,16 @@
 		<tech id="SpaceStation1" normal="inventions/spaceships/stations/space_station_1_rotate" alternative="inventions/spaceships/stations/alien_space_station_1_rotate" image="inventions/spaceships/stations/space_station_1_huge" width="1" sound="EXPLOSION_LONG" hp="9000" rotation-time="1" movement-speed="1">
 			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.05'/>
 		</tech>
-		<tech id="SpaceStation2" normal="inventions/spaceships/stations/space_station_2_rotate" alternative="inventions/spaceships/stations/alien_space_station_2_rotate" image="inventions/spaceships/stations/space_station_2_huge" width="1" sound="EXPLOSION_LONG" hp="35000" rotation-time="1" movement-speed="1">
+		<tech id="SpaceStation2" normal="inventions/spaceships/stations/space_station_2_rotate" alternative="inventions/spaceships/stations/alien_space_station_2_rotate" image="inventions/spaceships/stations/space_station_2_huge" width="1" sound="EXPLOSION_LONG" hp="17000" hp-skirmish='35000' rotation-time="1" movement-speed="1">
 			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.075'/>
 		</tech>
-		<tech id="SpaceStation3" normal="inventions/spaceships/stations/space_station_3_rotate" alternative="inventions/spaceships/stations/alien_space_station_3_rotate" image="inventions/spaceships/stations/space_station_3_huge" width="1" sound="EXPLOSION_LONG" hp="55000" rotation-time="1" movement-speed="1">
+		<tech id="SpaceStation3" normal="inventions/spaceships/stations/space_station_3_rotate" alternative="inventions/spaceships/stations/alien_space_station_3_rotate" image="inventions/spaceships/stations/space_station_3_huge" width="1" sound="EXPLOSION_LONG" hp="27000" hp-skirmish='55000' rotation-time="1" movement-speed="1">
 			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
 		</tech>
-        <tech id="SpaceStation3Alien" normal="inventions/spaceships/stations/space_station_3_rotate" alternative="inventions/spaceships/stations/alien_space_station_3_rotate" image="inventions/spaceships/stations/space_station_3_huge" width="1" sound="EXPLOSION_LONG" hp="55000" rotation-time="1" movement-speed="1">
+        <tech id="SpaceStation3Alien" normal="inventions/spaceships/stations/space_station_3_rotate" alternative="inventions/spaceships/stations/alien_space_station_3_rotate" image="inventions/spaceships/stations/space_station_3_huge" width="1" sound="EXPLOSION_LONG" hp="27000" hp-skirmish='55000' rotation-time="1" movement-speed="1">
             <efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
         </tech>
-		<tech id="OrbitalFactory" normal="inventions/spaceships/stations/orbital_factory_rotate" alternative="inventions/spaceships/stations/alien_orbital_factory_rotate" image="inventions/spaceships/stations/orbital_factory_huge" width="1" sound="EXPLOSION_LONG" hp="30000" rotation-time="1" movement-speed="1"/>
+		<tech id="OrbitalFactory" normal="inventions/spaceships/stations/orbital_factory_rotate" alternative="inventions/spaceships/stations/alien_orbital_factory_rotate" image="inventions/spaceships/stations/orbital_factory_huge" width="1" sound="EXPLOSION_LONG" hp="15000" hp-skirmish='30000' rotation-time="1" movement-speed="1"/>
 		<tech id="ColonyShip" normal="inventions/spaceships/battleships/colonyship_rotate" alternative="inventions/spaceships/battleships/alien_colonyship_rotate" image="inventions/spaceships/battleships/colonyship_huge" width="64" sound="EXPLOSION_LONG" movement-speed="50" rotation-time="150" hp="3000"/>
 
 		<tech id="PirateFighter" normal="inventions/spaceships/fighters/pirate_fighter_rotate" image="inventions/spaceships/fighters/pirate_fighter_huge" width="64" sound="EXPLOSION_LONG" movement-speed="25" rotation-time="200" hp="180"/>
@@ -486,11 +486,12 @@
 			</race>
 		</building-turret>
 		<hitpoints id="InversionShield" space="4100" ground="1000"/>
-		<hitpoints id="HyperShield" space="55000" ground="2000"/>
+		<hitpoints id="HyperShield" space="27000" space-skirmish='55000' ground="2000"/>
 		<hitpoints id="IonProjector" space="4000" ground="1000"/>
-		<hitpoints id="PlasmaProjector" space="17000" ground="2000"/>
-		<hitpoints id="ParticleProjector" space="34000" ground="3000"/>
-		<hitpoints id="MesonProjector" space="55000" ground="5000"/>
+		<hitpoints id="PlasmaProjector" space="9000" space-skirmish='17000' ground="2000"/>
+		<hitpoints id="ParticleProjector" space="17000" space-skirmish='34000' ground="3000"/>
+		<hitpoints id="MesonProjector" space="27000" space-skirmish='55000' ground="5000"/>
+		
 		<hitpoints id="Barracks" space="10000" ground="900"/>
 		<hitpoints id="Fortress" space="20000" ground="2000"/>
 		<hitpoints id="Stronghold" space="30000" ground="2500"/>

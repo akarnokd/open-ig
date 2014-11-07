@@ -196,9 +196,14 @@
 		</xs:attribute>
 		<xs:attribute name="hp" type="xs:decimal" use="required">
 			<xs:annotation>
-				<xs:documentation>The base hitpoints of the entity.</xs:documentation>
+				<xs:documentation>The base hitpoints of the entity in the campaign.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+        <xs:attribute name="hp-skirmish" type="xs:decimal" use="optional">
+            <xs:annotation>
+                <xs:documentation>The base hitpoints of the entity in skirmish.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ground-shields">
 		<xs:annotation>
@@ -570,9 +575,14 @@
 		</xs:attribute>
 		<xs:attribute name="space" type="xs:decimal" use="required">
 			<xs:annotation>
-				<xs:documentation>The hitpoints in space battle.</xs:documentation>
+				<xs:documentation>The hitpoints in campaign space battle.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+        <xs:attribute name="space-skirmish" type="xs:decimal" use="optional">
+            <xs:annotation>
+                <xs:documentation>The hitpoints in skirmish space battle.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
 		<xs:attribute name="ground" type="xs:decimal" use="required">
 			<xs:annotation>
 				<xs:documentation>The </xs:documentation>
