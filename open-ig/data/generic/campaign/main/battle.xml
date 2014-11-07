@@ -327,16 +327,16 @@
 	</ground-shields>
 	<ground-projectors>
 		<tech id="IonProjector" normal="inventions/buildings/guns/ion_projector_rotate" alternative="inventions/buildings/guns/alien_ion_projector_rotate" image="inventions/buildings/guns/ion_projector_huge" width="64" sound="EXPLOSION_LONG" projectile="Ion" damage="120" rotation-time="60">
-			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.05'/>
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.1'/>
 		</tech>
 		<tech id="PlasmaProjector" normal="inventions/buildings/guns/plasma_projector_rotate" alternative="inventions/buildings/guns/alien_plasma_projector_rotate" image="inventions/buildings/guns/plasma_projector_huge" width="64" sound="EXPLOSION_LONG" projectile="Plasma" damage="230" rotation-time="60">
-			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.065'/>
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.2'/>
 		</tech>
 		<tech id="ParticleProjector" normal="inventions/buildings/guns/ion_projector_rotate" alternative="inventions/buildings/guns/alien_ion_projector_rotate" image="inventions/buildings/guns/particle_projector_huge" width="64" sound="EXPLOSION_LONG" projectile="Particle" damage="370" rotation-time="60">
-			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.08'/>
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.3'/>
 		</tech>
 		<tech id="MesonProjector" normal="inventions/buildings/guns/meson_projector_rotate" alternative="inventions/buildings/guns/alien_meson_projector_rotate" image="inventions/buildings/guns/meson_projector_huge" width="64" sound="EXPLOSION_LONG" projectile="Meson" damage="600" rotation-time="60">
-			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.095'/>
+			<efficiency category='SPACESHIPS_FIGHTERS' damage-multiplier='0.4'/>
 		</tech>
 	</ground-projectors>
 	<!-- The rotation-fire phase matrixes for surface tanks and vehicles -->
