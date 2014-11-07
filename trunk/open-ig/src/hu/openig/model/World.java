@@ -2890,15 +2890,20 @@ public class World implements ModelLookup {
 				
 				Player pfirst = players.get(first);
 				if (pfirst == null) {
-					throw new AssertionError("DiplomaticRelation.first unknown: " + xrel);
+					System.out.println("WARNING: DiplomaticRelation.first unknown: " + xrel);
 				}
 				Player psecond = players.get(second);
 				if (psecond == null) {
-					throw new AssertionError("DiplomaticRelation.second unknown: " + xrel);
+					System.out.println("WARNING: DiplomaticRelation.second unknown: " + xrel);
 				}
 				
 				if (pfirst == psecond) {
-					throw new AssertionError("DiplomaticRelation.party equals: " + xrel);
+					System.out.println("WARNING: DiplomaticRelation.party equals: " + xrel);
+				}
+				
+				// skip bogous relation entries
+				if (pfirst == null || psecond == null || pfirst == psecond) {
+					continue;
 				}
 				
 				DiplomaticRelation dr = establishRelation(pfirst, psecond);
