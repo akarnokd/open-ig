@@ -2340,6 +2340,9 @@ public class World implements ModelLookup {
 			}
 			
 			se.hp = xspace.getInt("hp");
+			if (skirmishDefinition != null && xspace.has("hp-skirmish")) {
+				se.hp = xspace.getInt("hp-skirmish");
+			}
 			
 			ResearchType rt = researches.get(id);
 			if (rt != null) {
@@ -2507,7 +2510,11 @@ public class World implements ModelLookup {
 			String id = xhp.get("id");
 			String player = xhp.get("player", null);
 			battle.groundHitpoints.put(Pair.of(id, player), xhp.getInt("ground"));
-			battle.spaceHitpoints.put(Pair.of(id, player), xhp.getInt("space"));
+			int hp = xhp.getInt("space");
+			if (skirmishDefinition != null && xhp.has("space-skirmish")) {
+				hp = xhp.getInt("space-skirmish");
+			}
+			battle.spaceHitpoints.put(Pair.of(id, player), hp);
 		}
 		for (XElement xprops : xbattle.childrenWithName("properties")) {
 			for (XElement xprop : xprops.childrenWithName("property")) {
