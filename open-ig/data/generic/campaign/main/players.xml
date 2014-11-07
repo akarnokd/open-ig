@@ -282,6 +282,7 @@
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
 			<type id='MediumTank' list=''/>
+            <type id='Battleship1' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='ECM1' list=''/>
 			<type id='Cruiser1' list=''/>
@@ -312,6 +313,7 @@
 		<available>
 			<type id='PhoodFactory' list=''/>
 			<type id='ColonyShip' list=''/>
+            <type id='Battleship1' list=''/>
 			<type id='MediumTank' list=''/>
 			<type id='RocketLauncher1' list=''/>
 			<type id='ECM1' list=''/>

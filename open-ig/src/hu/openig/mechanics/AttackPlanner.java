@@ -26,6 +26,7 @@ import hu.openig.model.ExplorationMap;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetTask;
 import hu.openig.model.InventoryItem;
+import hu.openig.model.InventorySlot;
 import hu.openig.model.ModelUtils;
 import hu.openig.model.Planet;
 import hu.openig.model.PlanetKnowledge;
@@ -198,13 +199,26 @@ public class AttackPlanner extends Planner {
     void filterCandidates(List<AIFleet> fleets) {
         for (int i = fleets.size() - 1; i >= 0; i--) {
             AIFleet fl = fleets.get(i);
+            boolean notEquipped = false;
             if (fl.statistics.fighterCount >= world.fighterLimit
                     && fl.statistics.cruiserCount >= world.cruiserLimit
                     && fl.statistics.battleshipCount >= world.battleshipLimit
                     && fl.statistics.vehicleCount >= fl.statistics.vehicleMax) {
-                continue;
+                outer:
+                for (AIInventoryItem ii : fl.inventory) {
+                	for (InventorySlot is : ii.slots) {
+                		if (is.type == null) {
+                			notEquipped = true;
+                			break outer;
+                		}
+                	}
+                }
+            } else {
+            	notEquipped = true;
             }
-            fleets.remove(i);
+            if (notEquipped) {
+            	fleets.remove(i);
+            }
         }
     }
     /**

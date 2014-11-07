@@ -42,6 +42,16 @@ public class Mission25 extends Mission {
 			stage = M25.RUNNING;
 		}
 		if (stage == M25.RUNNING) {
+			// make sure dargslan keep hating the player the most
+			for (DiplomaticRelation dr : world.relations) {
+				if (dr.full && (dr.first.equals("Dargslan") || dr.second.equals("Dargslan"))) {
+					if (!dr.first.equals("Empire") && !dr.second.equals("Empire")) {
+						dr.value = 10;
+					} else {
+						dr.value = 1;
+					}
+				}
+			}
 			if (player("Dargslan").statistics.planetsOwned.value == 0) {
 				stage = M25.DONE;
 				setObjectiveState("Mission-25", ObjectiveState.SUCCESS);
