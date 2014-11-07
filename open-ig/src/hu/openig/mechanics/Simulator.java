@@ -1002,9 +1002,9 @@ public final class Simulator {
 		}
 		double k;
 		if (p == p.world.player) {
-			k = 3 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
+			k = 2.5 / Math.sqrt(n - 2 + p.world.difficulty.ordinal());
 		} else {
-			k = 3 / Math.sqrt(n - p.world.difficulty.ordinal());
+			k = 2.5 / Math.sqrt(n - p.world.difficulty.ordinal());
 		}
 		return k;
 	}

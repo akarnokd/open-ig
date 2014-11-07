@@ -80,9 +80,9 @@ public class StaticDefensePlanner extends Planner {
 				if (world.mainPlayer == p && world.money < world.autoBuildLimit) {
 					return;
 				}
-				if (productionInProgress) {
-					return;
-				}
+//				if (productionInProgress) {
+//					return;
+//				}
 			}
 		}
 		if (!planets.isEmpty() && allowBuildOrbitalFactory) {
@@ -117,9 +117,6 @@ public class StaticDefensePlanner extends Planner {
 	 * @return true if action taken
 	 */
 	public boolean managePlanet(final AIPlanet planet) {
-		if (planet.statistics.constructing) {
-			return false;
-		}
 		if (!world.mayImproveDefenses) {
 			return false;
 		}
@@ -147,6 +144,9 @@ public class StaticDefensePlanner extends Planner {
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
+					if (planet.statistics.constructing) {
+						return false;
+					}
                     return checkBuildingKind(planet, "Gun", fdefenseLimit);
                 }
 			});
@@ -168,6 +168,9 @@ public class StaticDefensePlanner extends Planner {
 				@Override
 				public Boolean invoke() {
 					// find barracks..strongholds
+					if (planet.statistics.constructing) {
+						return false;
+					}
                     return checkBuildingKind(planet, "Defensive", fdefenseLimit);
                 }
 			});
@@ -175,6 +178,9 @@ public class StaticDefensePlanner extends Planner {
 				@Override
 				public Boolean invoke() {
 					// check for military spaceport
+					if (planet.statistics.constructing) {
+						return false;
+					}
                     return checkMilitarySpaceport(planet);
                 }
 			});
@@ -348,8 +354,9 @@ public class StaticDefensePlanner extends Planner {
 				if (localDemand > 0 && localDemand > inventoryGlobal) {
 					// if in production wait
 					if (world.productionCount(rt) == 0 && activeProductionLanes("weapon") < 5) {
-						if (allowProduction) {
+						if (allowProduction && !productionInProgress) {
 							placeProductionOrder(rt, limitProduction(rt, localDemand - inventoryGlobal), false);
+							productionInProgress = true;
 						}
 						productionPlaced = true;
 					}
@@ -492,7 +499,7 @@ public class StaticDefensePlanner extends Planner {
 			if (stationCount < world.stationLimit) {
 				// if not available in inventory, construct one
 				if (world.inventoryCount(station) == 0) {
-					if (allowProduction) {
+					if (allowProduction && !productionInProgress) {
 						placeProductionOrder(station, 1, false);
 						productionInProgress = true;
 					}
@@ -545,6 +552,9 @@ public class StaticDefensePlanner extends Planner {
 			// count guns
 			for (AIBuilding b : planet.buildings) {
 				if (b.type.kind.equals(kind)) {
+					if (b.isConstructing()) {
+						return false;
+					}
 					gunCount++;
 				}
 			}
@@ -646,7 +656,7 @@ public class StaticDefensePlanner extends Planner {
 				}
 			}
 		}
-		if (allowProduction) {
+		if (allowProduction && !productionInProgress) {
 			// place production order for the difference
 			for (Map.Entry<ResearchType, Integer> de : demand.entrySet()) {
 				int di = de.getValue();
@@ -684,7 +694,7 @@ public class StaticDefensePlanner extends Planner {
 					});
 					result = true;
 				} else {
-					if (allowProduction) {
+					if (allowProduction && !productionInProgress) {
 						int toproduce = Math.max(10, needed - gic);
 						if (toproduce > 0) {
 							if (placeProductionOrder(rt, limitProduction(rt, toproduce), false)) {
