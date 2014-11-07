@@ -144,9 +144,6 @@ public class StaticDefensePlanner extends Planner {
 			actions.add(new Pred0() {
 				@Override
 				public Boolean invoke() {
-					if (planet.statistics.constructing) {
-						return false;
-					}
                     return checkBuildingKind(planet, "Gun", fdefenseLimit);
                 }
 			});
@@ -552,9 +549,6 @@ public class StaticDefensePlanner extends Planner {
 			// count guns
 			for (AIBuilding b : planet.buildings) {
 				if (b.type.kind.equals(kind)) {
-					if (b.isConstructing()) {
-						return false;
-					}
 					gunCount++;
 				}
 			}
