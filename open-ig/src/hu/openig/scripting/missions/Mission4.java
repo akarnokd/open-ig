@@ -13,6 +13,7 @@ import hu.openig.model.BattleInfo;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.model.Chats.Chat;
 import hu.openig.model.Chats.Node;
+import hu.openig.model.DiplomaticRelation;
 import hu.openig.model.Fleet;
 import hu.openig.model.FleetKnowledge;
 import hu.openig.model.FleetMode;
@@ -163,7 +164,13 @@ public class Mission4 extends Mission {
 			world.achievement("achievement.a_pirate_in_need");
 		}
 		removeFleets();
-
+		// make sure the temporary Pirates2 player has no relations left.
+		for (int i = world.relations.size() - 1; i >= 0; i--) {
+			DiplomaticRelation r = world.relations.get(i);
+			if (r.first.equals("Pirates2") || r.second.equals("Pirates2")) {
+				world.relations.remove(i);
+			}
+		}
 	}
 	@Override
 	public void onAutobattleFinish(BattleInfo battle) {
