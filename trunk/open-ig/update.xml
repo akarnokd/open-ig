@@ -42,7 +42,7 @@
       <desc lang='es'>AI improvements.</desc>
     </notes>
     <release-details>
-        <entry version='0.95.201'>
+        <entry version='0.95.201' date='2014-11-07'>
             <item issues='902'>Fixed crash due invalid diplomatic relation entries caused by Mission 4.</item>
             <item category='Crash'>Fixed NPE caused by losing mouse status information due desktop switch/UAC.</item>
 			<item category='AI'>AI will build ground cannons without unnecessary delays.</item>
