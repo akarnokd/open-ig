@@ -27,6 +27,8 @@ import java.awt.Dialog.ModalityType;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Insets;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -47,6 +49,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -71,6 +74,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -80,10 +84,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkEvent.EventType;
+import javax.swing.event.HyperlinkListener;
 import javax.xml.stream.XMLStreamException;
 
 /**
@@ -94,7 +102,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.43";
+	public static final String VERSION = "0.44";
 	/**
 	 * The update XML to download.
 	 */
@@ -239,6 +247,10 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	JMenuItem toolsVideoPlayer;
 	/** The tools menu. */
 	JPopupMenu toolsMenu;
+	/** The release details. */
+	JEditorPane releaseDetails;
+	/** The scrollbar for the release details. */
+	JScrollPane releaseDetailsScroll;
 	/** Creates the GUI. */
 	public Launcher() {
 		super();
@@ -437,6 +449,39 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 		newVersionLabel = new JLabel();
 		currentVersionLabel = new JLabel();
 		progressPanel = new JPanel();
+		releaseDetails = new JEditorPane() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -5773519898789168184L;
+
+			@Override
+	        protected void paintComponent(Graphics g) {
+				Graphics2D graphics2d = (Graphics2D) g;
+                graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+	            g.setColor(new Color(255, 255, 255, 0));
+	            Insets insets = getInsets();
+	            int x = insets.left;
+	            int y = insets.top;
+	            int width = getWidth() - (insets.left + insets.right);
+	            int height = getHeight() - (insets.top + insets.bottom);
+	            g.fillRect(x, y, width, height);
+	            super.paintComponent(g);
+	        }
+		};
+		releaseDetails.addHyperlinkListener(new HyperlinkListener() {
+			
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if (e.getEventType() == EventType.ACTIVATED) {
+					doNavigate(e.getURL().toString());
+				}
+			}
+		});
+		releaseDetailsScroll = new JScrollPane(releaseDetails);
+		releaseDetailsScroll.setOpaque(false);
+		releaseDetailsScroll.getViewport().setOpaque(false);
 
 		toolsMenu = new JPopupMenu();
 		toolsMapEditor = new JMenuItem();
@@ -563,6 +608,11 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				JOptionPane.showMessageDialog(Launcher.this, label("Soon..."));
 			}
 		});
+		
+		releaseDetails.setContentType("text/html");
+		releaseDetails.setEditable(false);
+		releaseDetails.setOpaque(false);
+		releaseDetails.setBackground(new Color(0x80FFFFFF, true));
 		
 		install.setFont(fontMedium);
 		update.setFont(fontMedium);
@@ -785,6 +835,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 					.addComponent(other)
 				)
 				.addComponent(progressPanel)
+				.addComponent(releaseDetailsScroll)
 			)
 			.addGap(30)
 		);
@@ -827,12 +878,17 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				.addGap(30)
 				.addComponent(other)
 			)
-			.addGap(50)
-			.addComponent(progressPanel)
-			.addGap(25)
+			.addGap(45)
+			.addGroup(
+				gl.createParallelGroup(Alignment.LEADING)
+				.addComponent(progressPanel)
+				.addComponent(releaseDetailsScroll)
+			)
+			.addGap(15)
 		);
 		
 		gl.setHonorsVisibility(progressPanel, false);
+		gl.setHonorsVisibility(releaseDetailsScroll, false);
 		
 		setLabels();
 	}
@@ -1599,6 +1655,52 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 				}
 			}
 		}
+		if (g != null) {
+			StringBuilder notes = new StringBuilder();
+			notes.append("<html><font color='#FFFFFF' face='Arial'>\n");
+			for (Map.Entry<LReleaseVersion, List<LReleaseItem>> e : g.releaseDetails.entrySet()) {
+				LReleaseVersion key = e.getKey();
+				notes.append("<font size='5' color='FFCC00'><b>").append(key.version).append("</b></font>");
+				if (key.date != null) {
+					notes.append("&nbsp;-&nbsp;<b>").append(SimpleDateFormat.getDateInstance().format(key.date));
+					notes.append("</b>");
+				}
+				notes.append("<br>\n");
+				notes.append("<ul>\n");
+				for (LReleaseItem item : e.getValue()) {
+					notes.append("<li style='color: #FFFFFF'>");
+					if (item.category != null) {
+						notes.append("<font color='#FFFF00'>[");
+						notes.append(item.category);
+						notes.append("]</font>&nbsp;");
+					}
+					notes.append(item.text);
+					if (!item.issues.isEmpty()) {
+						notes.append("(");
+						
+						int j = 0;
+						for (Integer i : item.issues) {
+							if (j > 0) {
+								notes.append(", ");
+							}
+							notes.append("<a href='https://code.google.com/p/open-ig/issues/detail?id=");
+							notes.append(i);
+							notes.append("'><font color='#80FFFF'>#").append(i);
+							notes.append("</font></a>");
+							j++;
+						}
+						notes.append(")");
+					}
+					notes.append("</li>\n");
+				}
+				notes.append("</ul>\n");
+			}
+			notes.append("</font>");
+			releaseDetails.setText(notes.toString());
+			releaseDetails.setCaretPosition(0);
+		} else {
+			releaseDetails.setText("???");
+		}
 	}
 	/**
 	 * Install the game.
@@ -2172,8 +2274,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 //		dlcManager.setVisible(isInstalled && !visible);
 		dlcManager.setVisible(false); // NO DLCs
 		other.setVisible(isInstalled && !visible);
-		
-		
+		releaseDetailsScroll.setVisible(!visible);
 	}
 	/**
 	 * Update the launcher itself.

@@ -9,7 +9,9 @@
 package hu.openig.launcher;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The launcher module definition.
@@ -28,6 +30,8 @@ public class LModule {
 	public final List<LFile> files = new ArrayList<>();
 	/** The files to remove. */
 	public final List<LRemoveFile> removeFiles = new ArrayList<>();
+	/** The detailed listing of release info, from version record to list of release items. */
+	public final Map<LReleaseVersion, List<LReleaseItem>> releaseDetails = new LinkedHashMap<>();
 	/** The startup memory in megabytes. */
 	public int memory;
 	/** The optional class name to execute. */

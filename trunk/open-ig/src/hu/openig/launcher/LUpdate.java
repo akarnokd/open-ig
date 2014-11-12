@@ -13,6 +13,8 @@ import hu.openig.utils.XElement;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +58,41 @@ public class LUpdate {
 			XElement not = module.childElement("notes");
 			mdl.releaseNotes.url = not.get("url");
 			mdl.releaseNotes.parse(not);
+			
+			for (XElement xrelnotes : module.childrenWithName("release-details")) {
+				for (XElement xver : xrelnotes.childrenWithName("entry")) {
+					String version = xver.get("version");
+					String date = xver.get("date");
+					List<LReleaseItem> list = new ArrayList<>();
+					for (XElement xitem : xver.childrenWithName("item")) {
+						LReleaseItem item = new LReleaseItem();
+						if (xitem.has("category")) {
+							String cat = xitem.get("category");
+							if (!cat.isEmpty()) {
+								item.category = cat;
+							}
+						}
+						if (xitem.has("issues")) {
+							String issues = xitem.get("issues");
+							if (!issues.isEmpty()) {
+								for (String s : issues.split(",")) {
+									item.issues.add(Integer.valueOf(s));
+								}
+							}
+						}
+						item.text = xitem.content;
+						list.add(item);
+					}
+					LReleaseVersion rv = new LReleaseVersion();
+					rv.version = version;
+					try {
+						rv.date = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+					} catch (ParseException ex) {
+						// should not happen
+					}
+					mdl.releaseDetails.put(rv, list);
+				}
+			}
 			
 			XElement exec = module.childElement("execute");
 			if (exec.has("memory")) {

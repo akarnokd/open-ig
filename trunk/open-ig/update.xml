@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <update version='1.0'>
-  <module id='Launcher' version='0.43'>
+  <module id='Launcher' version='0.44'>
     <general url='https://code.google.com/p/open-ig/wiki/Launcher'>
       <desc lang='hu'>
 				Az Open Imperium Galactica indító programja, amely automatikusan letölti
