@@ -18,7 +18,7 @@
       <desc lang='es'>Release notes listing.</desc>
     </notes>
     <execute file='open-ig-launcher.jar' memory='64'/>
-    <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='AD466C1FFA6CFF24ADAE344E662B3A3842B73AD6'>
+    <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='2c58d29847f979d0e1855051882723e1d4c367c6'>
       <desc lang='hu'>Az indító fő fájlja</desc>
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
