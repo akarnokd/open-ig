@@ -7,7 +7,7 @@ Az Open-IG megpróbálja visszaadni az eredeti játékélményt, miközben szám
 
 A projektben a futtatáshoz szükséges minden fájl megtalálható, nincs szükség az eredeti játék fájljaira. *Az eredeti játék jogtulajdonosa (Digital Reality) hozzájárult ezen fájlok elérhetővé tételéhez és ingyenes letölthetőségéhez.*
 
-*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Az Indító letöltése. Rajta keresztül települ és indul el a játék</a>* (verzió: 0.43)
+*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Az Indító letöltése. Rajta keresztül települ és indul el a játék</a>* (verzió: 0.44)
 
 Minden *Java 7*-et támogató platformon futnia kell: pl., Windows, Linux és Mac rendszereken. (Java 6-tal is működik, de nem javasolt.) Ha másképp nem jelezzük, az Indítót elegendő egyszer letölteni. Onnantól kezdve az felel majd a saját és a játék frissen tartásáért.
 
