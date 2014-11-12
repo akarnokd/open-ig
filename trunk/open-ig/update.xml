@@ -41,6 +41,16 @@
       <desc lang='ru'>AI improvements.</desc>
       <desc lang='es'>AI improvements.</desc>
     </notes>
+    <release-details>
+        <entry version='0.95.201'>
+            <item issues='902'>Fixed crash due invalid diplomatic relation entries caused by Mission 4.</item>
+            <item category='Crash'>Fixed NPE caused by losing mouse status information due desktop switch/UAC.</item>
+			<item category='AI'>AI will build ground cannons without unnecessary delays.</item>
+			<item category='AI'>AI will upgrade static defenses without unnecessary delays.</item>
+			<item category='Groundwar'>Fixed unit movement sometimes not correctly rotated into the movement direction.</item>
+			<item category='Balance'>Increased ground cannon damage against fighters.</item>
+        </entry>
+    </release-details>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.201.jar' sha1='B6326685F0BB2AB0105E215293F52FE58F700411'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20141108a2.zip' sha1='35F4E91072522B952FCD5025F61013E82D1C7E2F'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
