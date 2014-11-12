@@ -10,12 +10,12 @@
 				for install, upgrade or repair purposes.</desc>
     </general>
     <notes url='https://code.google.com/p/open-ig/wiki/Launcher_Notes'>
-      <desc lang='hu'>Spanyol nyelvi támogatás.</desc>
-      <desc lang='en'>Spanish language support.</desc>
-      <desc lang='de'>Spanish language support.</desc>
-      <desc lang='fr'>Spanish language support.</desc>
-      <desc lang='ru'>Spanish language support.</desc>
-      <desc lang='es'>Spanish language support.</desc>
+      <desc lang='hu'>Játék verzió megjegyzések listázása.</desc>
+      <desc lang='en'>Release notes listing.</desc>
+      <desc lang='de'>Release notes listing.</desc>
+      <desc lang='fr'>Release notes listing.</desc>
+      <desc lang='ru'>Release notes listing.</desc>
+      <desc lang='es'>Release notes listing.</desc>
     </notes>
     <execute file='open-ig-launcher.jar' memory='64'/>
     <file url='https://open-ig.googlecode.com/svn/trunk/open-ig/open-ig-launcher.jar' sha1='AD466C1FFA6CFF24ADAE344E662B3A3842B73AD6'>
@@ -33,7 +33,7 @@
 			</desc>
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
-    <notes url='https://code.google.com/p/open-ig/wiki/Game_Notes'>
+    <notes url='http://open-ig-dev.blogspot.hu'>
       <desc lang='hu'>AI fejlesztések.</desc>
       <desc lang='en'>AI improvements.</desc>
       <desc lang='de'>AI improvements.</desc>
@@ -49,6 +49,23 @@
 			<item category='AI'>AI will upgrade static defenses without unnecessary delays.</item>
 			<item category='Groundwar'>Fixed unit movement sometimes not correctly rotated into the movement direction.</item>
 			<item category='Balance'>Increased ground cannon damage against fighters.</item>
+        </entry>
+        <entry version='0.95.200' date='2014-11-07'>
+            <item>Fixed crash in Mission 4 (two pirates).</item>
+			<item>Added hp-skirmish attribute to battle.xml settings under space-entities/tech to allow specifying the hitpoints of the entry in skirmish games.</item>
+			<item>Added space-skirmish attribute to battle.xml settings under buildins/hitpoints to allow specifying the hitpoints of a building in skirmish games.</item>
+			<item>Halved the hitpoints of Space station 2, Space station 3, Plasma projector, Particle Projector and Meson projector in the campaign. For example, 3 Space station 3s with 5 Meson Projectors and a Hypershield will whitstand a full strength Dargslan attack by a margin of 25%, i.e., 2 structures will survive the encounter generally while the attacker is mostly destroyed.</item>
+			<item category='AI'>Fixed AI sending ill-equipped fleets to attack.</item>
+			<item category='Campaign'>Fixed some skirmish ships to be available to alien races during the campaign.</item>
+        </entry>
+        <entry version='0.95.199' date='2014-11-05'>
+			<item category='Spacewar'>Fixed Trader AI causing some problems with 3-way space battles (crash, wrong chat).</item>
+			<item category='AI'>Increased the initial money of aliens to 100,000 cr in the campaign to to better jump-start their economy.</item>
+			<item category='AI'>AI no longer produces items on level 1 in the campaign.</item>
+			<item category='Cheats'>Switching to other races in the campaign stops the main mission timers (helps greatly when debugging).</item>
+			<item category='Cheats'>CTRL+SHIFT+W destroys all enemy structures in spacewar (except Trader ships).</item>
+			<item category='AI'>Fixed ordering of planets with issues (somehow, it was reversed and the AI operated on the planet with the best conditions, not the worst one).</item>
+			<item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
         </entry>
     </release-details>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.201.jar' sha1='B6326685F0BB2AB0105E215293F52FE58F700411'/>
