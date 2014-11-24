@@ -148,9 +148,13 @@ public class ImportDialog extends JDialog {
 		cbReplaceBuildings = new JCheckBox("Replace current buildings", true);
 		
 		btnOk = new JButton("Import");
-		btnOk.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doOk(); } });
+		btnOk.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doOk(); 
+		} });
 		btnCancel = new JButton("Cancel");
-		btnCancel.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCancel(); } });
+		btnCancel.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doCancel(); 
+		} });
 		
 		cbOriginalPlanets = new JComboBox<>();
 		cbOriginalPlanets.addItem("-Don't import any-");

@@ -23,9 +23,9 @@ import java.util.Map;
 public class VehiclePlan {
 	/** Units of one per kind per composition. */
 	public final List<ResearchType> onePerKind = new ArrayList<>();
-	/** Tank technologies. */
+	/** Tank technologies, expensive first. */
 	public final List<ResearchType> tanks = new ArrayList<>();
-	/** Sled technologies. */
+	/** Sled technologies, expensive first. */
 	public final List<ResearchType> sleds = new ArrayList<>();
 	/** Demands per type. */
 	public final Map<ResearchType, Integer> demand = new HashMap<>();

@@ -700,7 +700,9 @@ public class DatabaseScreen extends ScreenBase {
 		map.selected = false;
 		help.selected = false;
 		aliens.selected = true;
-		doHide(new Action0() { @Override public void invoke() { doAliensShow(); } });
+		doHide(new Action0() { @Override public void invoke() { 
+			doAliensShow(); 
+		} });
 	}
 	/** Aliens show. */
 	protected void doAliensShow() {

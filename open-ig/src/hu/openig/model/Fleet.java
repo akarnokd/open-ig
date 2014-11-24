@@ -450,25 +450,28 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 			}
 		}
 		if (vehicleMax > 0) {
-			List<ResearchType> remaining = new ArrayList<>();
-			int max = Math.max(plan.tanks.size(), plan.sleds.size());
-			for (int i = 1; i < max; i++) {
-				if (i < plan.tanks.size()) {
-					remaining.add(plan.tanks.get(i));
-				}
-				if (i < plan.sleds.size()) {
-					remaining.add(plan.sleds.get(i));
+			if (!plan.tanks.isEmpty()) {
+				ResearchType rt = plan.tanks.get(0);
+				int c = Math.min(vehicleMax, owner.inventoryCount(rt));
+				if (c > 0) {
+					deployItem(rt, owner, c);
+					vehicleMax -= c;
 				}
 			}
-			// fill in remaining slots
-			for (ResearchType rt : remaining) {
-				if (vehicleMax <= 0) {
-					break;
+			if (!plan.sleds.isEmpty()) {
+				ResearchType rt = plan.sleds.get(0);
+				int c = Math.min(vehicleMax, owner.inventoryCount(rt));
+				if (c > 0) {
+					deployItem(rt, owner, c);
+					vehicleMax -= c;
 				}
-				int add = Math.min(vehicleMax, owner.inventoryCount(rt));
-				if (add > 0) {
-					deployItem(rt, owner, add);
-					vehicleMax -= add;
+			}
+			if (!plan.special.isEmpty()) {
+				ResearchType rt = plan.special.get(0);
+				int c = Math.min(vehicleMax, owner.inventoryCount(rt));
+				if (c > 0) {
+					deployItem(rt, owner, c);
+					vehicleMax -= c;
 				}
 			}
 		}

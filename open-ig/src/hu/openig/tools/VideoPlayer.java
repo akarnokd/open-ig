@@ -419,13 +419,19 @@ public class VideoPlayer extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu mnuFile = new JMenu("File");
 		JMenuItem mnuFileExit = new JMenuItem("Exit");
-		mnuFileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doExit(); } });
+		mnuFileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doExit(); 
+		} });
 		
 		JMenuItem mnuRescan = new JMenuItem("Rescan");
-		mnuRescan.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doRescan(); } });
+		mnuRescan.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doRescan(); 
+		} });
 
 		JMenuItem mnuExport = new JMenuItem("Export...");
-		mnuExport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doExport(); } });
+		mnuExport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doExport(); 
+		} });
 		
 		mnuFile.add(mnuRescan);
 		mnuFile.addSeparator();
@@ -437,9 +443,15 @@ public class VideoPlayer extends JFrame {
 		JMenu mnuView = new JMenu("View");
 		menuBar.add(mnuView);
 		
-		JMenuItem keepAspect = createRadioItem("Keep aspect", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { setScale(ScalingMode.KEEP_ASPECT); } });
-		JMenuItem scale = createRadioItem("Scale to window", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { setScale(ScalingMode.WINDOW_SIZE); } });
-		JMenuItem noScale = createRadioItem("Original size", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { setScale(ScalingMode.NONE); } });
+		JMenuItem keepAspect = createRadioItem("Keep aspect", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			setScale(ScalingMode.KEEP_ASPECT); 
+		} });
+		JMenuItem scale = createRadioItem("Scale to window", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			setScale(ScalingMode.WINDOW_SIZE); 
+		} });
+		JMenuItem noScale = createRadioItem("Original size", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			setScale(ScalingMode.NONE); 
+		} });
 		keepAspect.setSelected(true);
 
 		
@@ -453,10 +465,18 @@ public class VideoPlayer extends JFrame {
 		mnuView.add(noScale);
 		mnuView.addSeparator();
 		
-		JMenuItem interDefault = createRadioItem("Default Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { setInterpolation(ImageInterpolation.NONE); } });
-		JMenuItem interLinear = createRadioItem("Linear Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { setInterpolation(ImageInterpolation.NEIGHBOR); } });
-		JMenuItem interBilinear = createRadioItem("Bilinear Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { setInterpolation(ImageInterpolation.BILINEAR); } });
-		JMenuItem interBicubic = createRadioItem("Bicubic Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { setInterpolation(ImageInterpolation.BICUBIC); } });
+		JMenuItem interDefault = createRadioItem("Default Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+			setInterpolation(ImageInterpolation.NONE); 
+		} });
+		JMenuItem interLinear = createRadioItem("Linear Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			setInterpolation(ImageInterpolation.NEIGHBOR); 
+		} });
+		JMenuItem interBilinear = createRadioItem("Bilinear Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			setInterpolation(ImageInterpolation.BILINEAR); 
+		} });
+		JMenuItem interBicubic = createRadioItem("Bicubic Interpolation", new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			setInterpolation(ImageInterpolation.BICUBIC); 
+		} });
 		
 		interDefault.setSelected(true);
 		
@@ -475,11 +495,17 @@ public class VideoPlayer extends JFrame {
 		setJMenuBar(menuBar);
 		
 		btnPlay = new ConfigButton("Play");
-		btnPlay.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPlay(); } });
+		btnPlay.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doPlay(); 
+		} });
 		btnPause = new ConfigButton("Pause");
-		btnPause.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPause(); } });
+		btnPause.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doPause(); 
+		} });
 		btnStop = new ConfigButton("Stop");
-		btnStop.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doStop(); } });
+		btnStop.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doStop(); 
+		} });
 //		btnStop.setEnabled(false);
 		
 		position = new JSlider(0, 0);

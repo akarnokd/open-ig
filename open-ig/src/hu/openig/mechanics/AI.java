@@ -10,7 +10,6 @@ package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
 import hu.openig.core.Action1;
-import hu.openig.core.Difficulty;
 import hu.openig.core.Location;
 import hu.openig.core.Pair;
 import hu.openig.model.AIControls;
@@ -165,13 +164,6 @@ public class AI implements AIManager {
 				if (ship.attack == null 
 						&& ship.type == StructureType.SHIP
 						&& ship.canDirectFire()) {
-					if (world.difficulty() == Difficulty.HARD 
-							&& world.battle().helperPlanet != null
-							&& world.battle().helperPlanet.owner == ship.owner) {
-						// on hard, don't let defenders move away from stations
-						ship.guard = true;
-						continue;
-					}
 					SpacewarStructure t = selectNewTarget(world, ship, esl);
 					if (t != null) {
 						esl.remove(t);
