@@ -169,12 +169,16 @@ public class PCXImage {
 		 * Returns the width of the image.
 		 * @return the width of the image
 		 */
-		public int getWidth() { return xmax - xmin + 1; }
+		public int getWidth() { 
+			return xmax - xmin + 1; 
+		}
 		/**
 		 * Returns the height of the image.
 		 * @return the height of the image
 		 */
-		public int getHeight() { return ymax - ymin + 1; }
+		public int getHeight() { 
+			return ymax - ymin + 1; 
+		}
 		/** Vertical DPI. */
 		public int vertdpi;
 		/** A default 16 color palette data. */
@@ -219,17 +223,23 @@ public class PCXImage {
 		 * Returns the maximum number of colors.
 		 * @return the maximum number of colors
 		 */
-		public int getMaxNumberOfColors() { return 1 << (bitsperpixel * colorplanes); }
+		public int getMaxNumberOfColors() { 
+			return 1 << (bitsperpixel * colorplanes); 
+		}
 		/** 
 		 * Returns the scan line length in bytes.
 		 * @return the scan line length in bytes
 		 */
-		public int getScanLineLength() { return colorplanes * bytesperline; }
+		public int getScanLineLength() { 
+			return colorplanes * bytesperline; 
+		}
 		/**
 		 * Returns the line padding in bytes.
 		 * @return the line padding in bytes
 		 */
-		public int getLinePaddingSize() { return (getScanLineLength() * 8 / bitsperpixel - getWidth()); }
+		public int getLinePaddingSize() { 
+			return (getScanLineLength() * 8 / bitsperpixel - getWidth()); 
+		}
 		//public byte[] filler = new byte[56]
 		/**
 		 * Parses the header from the given array of PCX image bytes.

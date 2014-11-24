@@ -61,7 +61,11 @@ public class CreditsScreen extends ScreenBase {
 	@Override
 	public void onLeave() {
 		if (animation != null) {
-			try { animation.close(); } catch (IOException ex) { Exceptions.add(ex); }
+			try { 
+				animation.close(); 
+			} catch (IOException ex) { 
+				Exceptions.add(ex); 
+			}
 			animation = null;
 		}
 		imageCache.clear();

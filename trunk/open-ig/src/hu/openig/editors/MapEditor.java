@@ -926,8 +926,12 @@ public class MapEditor extends JFrame {
 		ui.fileOpen.setAccelerator(KeyStroke.getKeyStroke('O', InputEvent.CTRL_DOWN_MASK));
 		ui.fileSave.setAccelerator(KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
 		
-		ui.fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doImport(); } });
-		ui.fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doExit();  } });
+		ui.fileImport.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doImport(); 
+		} });
+		ui.fileExit.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doExit();  
+		} });
 		
 		ui.fileOpen.addActionListener(new ActionListener() {
 			@Override
@@ -959,9 +963,15 @@ public class MapEditor extends JFrame {
 		ui.editCopy = new JMenuItem("Copy");
 		ui.editPaste = new JMenuItem("Paste");
 		
-		ui.editCut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCut(true, true); } });
-		ui.editCopy.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCopy(true, true); } });
-		ui.editPaste.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPaste(true, true); } });
+		ui.editCut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doCut(true, true); 
+		} });
+		ui.editCopy.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doCopy(true, true); 
+		} });
+		ui.editPaste.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doPaste(true, true); 
+		} });
 		
 		ui.editPlaceMode = new JCheckBoxMenuItem("Placement mode");
 		
@@ -972,10 +982,18 @@ public class MapEditor extends JFrame {
 		ui.editClearBuildings = new JMenuItem("Clear buildings");
 		ui.editClearSurface = new JMenuItem("Clear surface");
 
-		ui.editUndo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doUndo(); } });
-		ui.editRedo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doRedo(); } });
-		ui.editClearBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearBuildings(true); } });
-		ui.editClearSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doClearSurfaces(true); } });
+		ui.editUndo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doUndo(); 
+		} });
+		ui.editRedo.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doRedo(); 
+		} });
+		ui.editClearBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doClearBuildings(true); 
+		} });
+		ui.editClearSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doClearSurfaces(true); 
+		} });
 		
 
 		ui.editUndo.setAccelerator(KeyStroke.getKeyStroke('Z', InputEvent.CTRL_DOWN_MASK));
@@ -989,10 +1007,18 @@ public class MapEditor extends JFrame {
 		ui.editDeleteSurface.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK));
 		ui.editDeleteBoth.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		
-		ui.editDeleteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBuilding(); } });
-		ui.editDeleteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteSurface(); } });
-		ui.editDeleteBoth.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDeleteBoth(); } });
-		ui.editPlaceMode.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPlaceMode(ui.editPlaceMode.isSelected()); } });
+		ui.editDeleteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doDeleteBuilding(); 
+		} });
+		ui.editDeleteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doDeleteSurface(); 
+		} });
+		ui.editDeleteBoth.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doDeleteBoth(); 
+		} });
+		ui.editPlaceMode.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doPlaceMode(ui.editPlaceMode.isSelected()); 
+		} });
 		
 		ui.editPlaceRoads = new JMenu("Place roads");
 		
@@ -1023,12 +1049,24 @@ public class MapEditor extends JFrame {
 		ui.editCopyBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		ui.editPasteBuilding.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK));
 		
-		ui.editCutBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCut(false, true); } });
-		ui.editCutSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCut(true, false); } });
-		ui.editCopyBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCopy(false, true); } });
-		ui.editCopySurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doCopy(true, false); } });
-		ui.editPasteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPaste(false, true); } });
-		ui.editPasteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doPaste(true, false); } });
+		ui.editCutBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doCut(false, true); 
+		} });
+		ui.editCutSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doCut(true, false); 
+		} });
+		ui.editCopyBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doCopy(false, true); 
+		} });
+		ui.editCopySurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doCopy(true, false); 
+		} });
+		ui.editPasteBuilding.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doPaste(false, true); 
+		} });
+		ui.editPasteSurface.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doPaste(true, false); 
+		} });
 		
 		ui.viewZoomIn = new JMenuItem("Zoom in");
 		ui.viewZoomOut = new JMenuItem("Zoom out");
@@ -1046,18 +1084,38 @@ public class MapEditor extends JFrame {
 		
 		ui.viewTextBackgrounds = new JCheckBoxMenuItem("Show/hide text background boxes", renderer.textBackgrounds);
 		ui.viewTextBackgrounds.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
-		ui.viewTextBackgrounds.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleTextBackgrounds(); } });
+		ui.viewTextBackgrounds.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doToggleTextBackgrounds(); 
+		} });
 		
-		ui.viewZoomIn.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomIn(); } });
-		ui.viewZoomOut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomOut(); } });
-		ui.viewZoomNormal.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doZoomNormal(); } });
-		ui.viewShowBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleBuildings(); } });
-		ui.viewSymbolicBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doToggleMinimap(); } });
+		ui.viewZoomIn.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doZoomIn(); 
+		} });
+		ui.viewZoomOut.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doZoomOut(); 
+		} });
+		ui.viewZoomNormal.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doZoomNormal(); 
+		} });
+		ui.viewShowBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doToggleBuildings(); 
+		} });
+		ui.viewSymbolicBuildings.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) {
+			doToggleMinimap(); 
+		} });
 		
-		ui.viewBrighter.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doBright(); } });
-		ui.viewDarker.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doDark(); } });
-		ui.viewMoreLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doMoreLight(); } });
-		ui.viewLessLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { doLessLight(); } });
+		ui.viewBrighter.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doBright(); 
+		} });
+		ui.viewDarker.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doDark(); 
+		} });
+		ui.viewMoreLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doMoreLight(); 
+		} });
+		ui.viewLessLight.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { 
+			doLessLight(); 
+		} });
 		
 		ui.viewZoomIn.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD9, InputEvent.CTRL_DOWN_MASK));
 		ui.viewZoomOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_NUMPAD3, InputEvent.CTRL_DOWN_MASK));
