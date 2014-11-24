@@ -42,6 +42,11 @@
       <desc lang='es'>AI improvements.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.202' date='2014-11-24'>
+        <item issues='910'>Fixed wrong subtitle text in the Hungarian win video.</item>
+        <item issues='905'>Fixed the +++ button not filling up the available vehicle count with vehicles.</item>
+        <item>AI ships no longer stay in one place if the player attacked a planet the enemy fleet is next to.</item>
+      </entry>
       <entry version='0.95.201' date='2014-11-07'>
         <item issues='902'>Fixed crash due invalid diplomatic relation entries caused by Mission 4.</item>
         <item category='Crash'>Fixed NPE caused by losing mouse status information due desktop switch/UAC.</item>
