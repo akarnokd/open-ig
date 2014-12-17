@@ -3627,5 +3627,5 @@
     <entry key='equipment.build_demand.none'>Nincs</entry>
     <entry key="battlefinish.groundwar_retreat">Feladtad a földharcot!</entry>
     <entry key="groundwar.retreat_confirm.tooltip">[c=FFFFFFFF]Bal gomb[/c] megerősíti a visszavonulást.[n][c=FFFFFFFF]Jobb gomb[/c]ra folytatja a harcot.</entry>
-		
+    <entry key='trade.no_spaceport'>Kat. űrkikötő kell</entry>
 </labels>
