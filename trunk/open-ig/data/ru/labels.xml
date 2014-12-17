@@ -3610,5 +3610,6 @@
     <entry key='equipment.build_demand.none'>None</entry>
     <entry key="battlefinish.groundwar_retreat">You retreated from ground battle!</entry>
     <entry key="groundwar.retreat_confirm.tooltip">[c=FFFFFFFF]Left click[/c] to confirm the retreat.[n][c=FFFFFFFF]Right click[/c] cancel retreat and continue the battle.</entry>
+    <entry key='trade.no_spaceport'>No mil. spaceport</entry>
 		
 </labels>

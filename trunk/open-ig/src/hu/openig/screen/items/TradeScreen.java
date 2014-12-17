@@ -236,6 +236,7 @@ public class TradeScreen extends ScreenBase {
 		buy.location(base.x + 411 - buy.width, deliverTo.y - 5);
 		
 		planets.width(buy.x - deliverTo.x - 5);
+		planets.height = planets.spin.prev.height;
 		
 		scrollUp.location(base.x + 382, base.y + 30);
 		scrollDown.location(scrollUp.x, base.y + 325);
@@ -401,7 +402,15 @@ public class TradeScreen extends ScreenBase {
 								commons.text().paintTo(g2, buy.x - 5 - noroomWidth, buy.y + 5, 10, TextRenderer.RED, noroom);
 							}
 						} else {
-							canBuy = true;
+							if (!p.hasMilitarySpaceport()) {
+								String noroom = get("trade.no_spaceport");
+								int noroomWidth = commons.text().getTextWidth(10, noroom);
+								commons.text().paintTo(g2, buy.x - 5 - noroomWidth, buy.y + 5, 10, TextRenderer.RED, noroom);
+								
+								canBuy = false;
+							} else {
+								canBuy = true;
+							}
 						}
 					}
 				} else {
@@ -438,12 +447,7 @@ public class TradeScreen extends ScreenBase {
 	/** Update the UI elements to reflect the current world state. */
 	void update() {
 		List<Planet> ps = player().ownPlanets();
-		for (int i = ps.size() - 1; i >= 0; i--) {
-			Planet p = ps.get(i);
-			if (!p.hasMilitarySpaceport()) {
-				ps.remove(i);
-			}
-		}
+		
 		planets.setList(ps);
 		planets.update();
 		
