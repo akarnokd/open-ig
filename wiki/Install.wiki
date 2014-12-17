@@ -6,15 +6,15 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 *I strongly recommend using the Launcher application which will take care about all the file downloads and the proper startup parametrization of the game.*
 
-*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Installer</a>* (version 0.43)
+*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Installer</a>* (version 0.44)
 
 = Details =
 
 1) Download the current upgrade pack and main game JAR file from the downloads page:
 
-[https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20141108a2.zip Upgrade 2014-11-08-a-2]
+[https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20141217a2.zip Upgrade 2014-12-17-a-2]
 
-[https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.201.jar open-ig-0.95.201.jar]
+[https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.203.jar open-ig-0.95.203.jar]
 
 2) Download the game resource files (1.3 GB!):
 
@@ -44,15 +44,15 @@ This page details the manual installation instructions for Open Imperium Galacti
 
 4) Run the game:
 
- * double click on {{{open-ig-0.95.201.jar}}}, or
+ * double click on {{{open-ig-0.95.203.jar}}}, or
  * run the following command line: 
 
 {{{
-java -Xmx832M -jar open-ig-0.95.201.jar -memonce
+java -Xmx832M -jar open-ig-0.95.203.jar -memonce
 }}}
 
  * create a shell script/batch file and put in: 
 
 {{{
-javaw -Xmx832M -jar open-ig-0.95.201.jar -memonce
+javaw -Xmx832M -jar open-ig-0.95.203.jar -memonce
 }}}
