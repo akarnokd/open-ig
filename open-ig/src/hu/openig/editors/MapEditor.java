@@ -1889,7 +1889,12 @@ public class MapEditor extends JFrame {
 	 * @param shiftY the shift in Y coordinates to place the map elements
 	 */
 	private void placeTilesFromOriginalMap(String path, String surfaceType, int shiftX, int shiftY) {
-		byte[] map = rl.getData(path);
+		byte[] map;
+		if (path.endsWith(".map")) {
+			map = rl.getData(path);
+		} else {
+			map = rl.getData(path + ".map");
+		}
 		PlanetType pt = galaxyModel.planetTypes.get(surfaceType);
 		int bias = 41; 
 		if ("neptoplasm".equals(surfaceType)) {
