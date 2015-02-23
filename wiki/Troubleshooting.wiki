@@ -37,6 +37,14 @@ Possible resolutions:
 
   * Use Oracle Java 7 (only 64 bit is available)
 
+== Slow cutscenes/videos ==
+
+This appears to be a known deficiency in Java 7 and 8 and most likely there won't be a fix for this Java bug. 
+
+Possible resolutions:
+
+  * Use Oracle Java 9 (beta/early access) as it doesn't seem to suffer from this problem anymore.
+
 = Windows =
 
 == Flickering of desktop when run on fullscreen ==
