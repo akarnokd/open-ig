@@ -1,11 +1,11 @@
 <h1><a href='https://code.google.com/p/open-ig/wiki/FrontPageHU'>
 <img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/hungarian.png' alt='Hungarian flag' width='32'/></a> Current game version: <a href='http://open-ig-dev.blogspot.hu/2014/12/game-version-095203-released.html'>BETA (0.95.203)</a></h1>
 
-http://static.viewbook.com/images/social_icons/facebook_32.png Follow us on [Facebook](https://www.facebook.com/OpenImperiumGalactica Facebook)!
+![Facebook](http://static.viewbook.com/images/social_icons/facebook_32.png) Follow us on [Facebook](https://www.facebook.com/OpenImperiumGalactica)!
 
-*<a href='https://open-ig.googlecode.com/files/open-ig-launcher.jar'><img src='http://www.gstatic.com/codesite/ph/images/dl_arrow.gif'/>  Installer</a>* (version 0.44)
+*<a href='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/>  Installer</a>* (version 0.44)
 
-# [Introduction]
+# Introduction
 *Open Imperium Galactica* (Open-IG) is an open source [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html Java)^TM^ reimplementation of the [Digital Reality](http://www.digitalreality.hu Digital Reality) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
 
 The project contains all necessary files (with the permission from the copyright owner Digital Reality) to run the game standalone, there is no need for the original Imperium Galactica files.
@@ -25,7 +25,7 @@ The project contains all necessary files (with the permission from the copyright
 
 # Videos
 
-https://www.youtube.com/watch?v=FnlIEwW2OkM
+[![Youtube](https://github.com/akarnokd/open-ig/raw/master/images/generic/open-ig-youtube.png)](https://www.youtube.com/watch?v=FnlIEwW2OkM)
 
 # Progress
 
@@ -37,39 +37,39 @@ https://www.youtube.com/watch?v=FnlIEwW2OkM
 <td colspan='3' align='center'>Level 4</td>
 <td>L5</td></tr>
 <tr>
-<td title='Mission 1'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 2'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 3'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 4'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 5'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 1'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 2'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 3'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 4'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 5'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
 
-<td title='Mission 6'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 7'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 8'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 9'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 10'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 11'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 12'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 13'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 14'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 15'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 16'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 17'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 6'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 7'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 8'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 9'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 10'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 11'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 12'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 13'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 14'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 15'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 16'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 17'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
 
-<td title='Mission 18'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 19'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 20'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 21'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 18'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 19'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 20'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 21'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
 
-<td title='Mission 22'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 23'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
-<td title='Mission 24'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 22'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 23'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
+<td title='Mission 24'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
 
-<td title='Mission 25'>http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png</td>
+<td title='Mission 25'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
 </tr>
 </table>
 
-| Languages: | http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png English | http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png Hungarian | http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png German | http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png French | http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/ok.png Russian | Spanish ? | Italian ? |
+| Languages: | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) English | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) Hungarian | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) German | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) French | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) Russian | Spanish ? | Italian ? |
 
 # Acknowledgements
 
