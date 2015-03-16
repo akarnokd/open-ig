@@ -1,9 +1,9 @@
-<h1><a href='https://code.google.com/p/open-ig/wiki/FrontPageHU'>
+<h1><a href='https://github.com/akarnokd/open-ig/wiki/Home-(HU)'>
 <img src='http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/hungarian.png' alt='Hungarian flag' width='32'/></a> Current game version: <a href='http://open-ig-dev.blogspot.hu/2014/12/game-version-095203-released.html'>BETA (0.95.203)</a></h1>
 
 ![Facebook](http://static.viewbook.com/images/social_icons/facebook_32.png) Follow us on [Facebook](https://www.facebook.com/OpenImperiumGalactica)!
 
-*<a href='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/>  Installer</a>* (version 0.44)
+*<a href='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/>  Installer</a>* (version 0.45)
 
 # Introduction
 *Open Imperium Galactica* (Open-IG) is an open source [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html Java)<sup>TM</sup> reimplementation of the [Digital Reality](http://www.digitalreality.hu Digital Reality) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
