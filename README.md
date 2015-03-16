@@ -1,4 +1,4 @@
-<h1>Current game version: <a href='http://open-ig-dev.blogspot.hu/2014/12/game-version-095203-released.html'>BETA (0.95.203)</a></h1>
+<h1>Current game version: <a href='http://open-ig-dev.blogspot.hu/2015/03/game-version-095204-released.html'>BETA (0.95.204)</a></h1>
 
 ![Facebook](http://static.viewbook.com/images/social_icons/facebook_32.png) Follow us on [Facebook](https://www.facebook.com/OpenImperiumGalactica)!
 
