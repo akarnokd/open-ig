@@ -42,6 +42,9 @@
       <desc lang='es'>AI improvements.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.204' date='2015-03-16'>
+        <item>Updated links to point to the project's new location: https://github.com/akarnokd/open-ig</item>
+      </entry>
       <entry version='0.95.203' date='2014-12-17'>
         <item issues='913' category='Trade'>Fixed planet selection box not working. The box lists all player planets and depending on the item type, it may display &quot;No room&quot; for spaceports and &quot;No mil. spaceport&quot; for ships and fighters.</item>
       </entry>
