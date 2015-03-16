@@ -6,7 +6,7 @@
 *<a href='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/>  Installer</a>* (version 0.44)
 
 # Introduction
-*Open Imperium Galactica* (Open-IG) is an open source [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html Java)^TM^ reimplementation of the [Digital Reality](http://www.digitalreality.hu Digital Reality) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
+*Open Imperium Galactica* (Open-IG) is an open source [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html Java)<sup>TM</sup> reimplementation of the [Digital Reality](http://www.digitalreality.hu Digital Reality) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica Imperium Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
 
 The project contains all necessary files (with the permission from the copyright owner Digital Reality) to run the game standalone, there is no need for the original Imperium Galactica files.
 
@@ -55,4 +55,4 @@ I'd like to thank *Harrach Gergely* for the Credits data, ship firepowers, subti
 
 I'd like to thank *Góz Tamás* from magyarszinkron.hu for identifying some of the voice actors.
 
-http://open-ig.googlecode.com/svn/trunk/open-ig/src/hu/openig/gfx/OpenIG_Splash_medium.png
+![Splash](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/OpenIG_Splash_medium.png)
