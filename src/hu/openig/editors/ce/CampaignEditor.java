@@ -759,7 +759,7 @@ public class CampaignEditor extends JFrame implements CEContext, CEPanelPreferen
 	 */
 	void doHelp() {
 		try {
-			URI u = new URI("https://code.google.com/p/open-ig/wiki/CampaignEditor");
+			URI u = new URI("https://github.com/akarnokd/open-ig/wiki/Campaign-editor");
 			
 			if (Desktop.isDesktopSupported()) {
 				Desktop d = Desktop.getDesktop();

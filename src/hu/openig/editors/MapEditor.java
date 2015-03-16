@@ -1819,12 +1819,12 @@ public class MapEditor extends JFrame {
 		if (Desktop.isDesktopSupported()) {
     		Desktop desktop = Desktop.getDesktop();
 			try {
-				desktop.browse(new URI("http://code.google.com/p/open-ig/wiki/MapEditor"));
+				desktop.browse(new URI("https://github.com/akarnokd/open-ig/wiki/Map-editor"));
 			} catch (IOException | URISyntaxException ex) {
 				JOptionPane.showMessageDialog(MapEditor.this, "Exception", stacktraceToString(ex), JOptionPane.ERROR_MESSAGE);
 			}
 		} else {
-			JOptionPane.showInputDialog(MapEditor.this, "Desktop not supported. Please navigate to http://code.google.com/p/open-ig/wiki/MapEditor manually.", "http://code.google.com/p/open-ig/wiki/MapEditor");
+			JOptionPane.showInputDialog(MapEditor.this, "Desktop not supported. Please navigate to https://github.com/akarnokd/open-ig/wiki/Map-editor manually.", "https://github.com/akarnokd/open-ig/wiki/Map-editor");
 		}
 	}
 	/**

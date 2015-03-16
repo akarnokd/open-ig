@@ -351,7 +351,7 @@ public final class Startup {
 				+ "unable to locate the Open-IG Launcher.<br>"
 				+ "Please make sure you run the game from the proper working directory<br>"
 				+ "or please download the Launcher from the project site<br><br>"
-				+ "http://open-ig.googlecode.com<br><br> and perform a proper install with it."
+				+ "https://github.com/akarnokd/open-ig<br><br> and perform a proper install with it."
 				+ "(The current directory is: " + new File(".").getAbsolutePath());
 	}
 	/**

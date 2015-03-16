@@ -74,7 +74,7 @@ public final class IssueStatistics {
 		XElement comments = new XElement("comments");
 		for (int i = 1; i < 548; i++) {
 			System.out.println("Issue #" + i);
-			URL u = new URL("https://code.google.com/feeds/issues/p/open-ig/issues/" + i + "/comments/full");
+			URL u = new URL("https://github.com/akarnokd/open-ig/issues/" + i + "/comments/full");
 
 			try (InputStream in = u.openStream()) {
 				XElement ce = XElement.parseXML(in);

@@ -102,11 +102,11 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/** */
 	private static final long serialVersionUID = -3873203661572006298L;
 	/** The launcher's version. */
-	public static final String VERSION = "0.44";
+	public static final String VERSION = "0.45";
 	/**
 	 * The update XML to download.
 	 */
-	public static final String UPDATE_XML = "https://open-ig.googlecode.com/svn/trunk/open-ig/update.xml";
+	public static final String UPDATE_XML = "https://raw.githubusercontent.com/akarnokd/open-ig/master/update.xml";
 	/** The Game module ID. */
 	static final String GAME = "Game";
 	/** The Launcher module ID. */
@@ -1683,7 +1683,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 							if (j > 0) {
 								notes.append(", ");
 							}
-							notes.append("<a href='https://code.google.com/p/open-ig/issues/detail?id=");
+							notes.append("<a href='https://github.com/akarnokd/open-ig/issues/");
 							notes.append(i);
 							notes.append("'><font color='#80FFFF'>#").append(i);
 							notes.append("</font></a>");

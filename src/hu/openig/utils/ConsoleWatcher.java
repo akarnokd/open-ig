@@ -45,7 +45,7 @@ public class ConsoleWatcher extends JFrame implements Closeable {
 	/** */
 	private static final long serialVersionUID = 8563889445922855434L;
 	/** The issue list URL. */
-	public static final String ISSUE_LIST = "https://code.google.com/p/open-ig/issues/list";
+	public static final String ISSUE_LIST = "https://github.com/akarnokd/open-ig/issues";
 	/** The text area for data. */
 	JTextArea area;
 	/** The copy to clipboard button. */
