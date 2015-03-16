@@ -10,12 +10,12 @@
 				for install, upgrade or repair purposes.</desc>
     </general>
     <notes url='https://github.com/akarnokd/open-ig/wiki/Launcher_Notes'>
-      <desc lang='hu'>Játék verzió megjegyzések listázása.</desc>
-      <desc lang='en'>Release notes listing.</desc>
-      <desc lang='de'>Release notes listing.</desc>
-      <desc lang='fr'>Release notes listing.</desc>
-      <desc lang='ru'>Release notes listing.</desc>
-      <desc lang='es'>Release notes listing.</desc>
+      <desc lang='hu'>Váltás GitHub-ra.</desc>
+      <desc lang='en'>Migration to GitHub.</desc>
+      <desc lang='de'>Migration to GitHub.</desc>
+      <desc lang='fr'>Migration to GitHub.</desc>
+      <desc lang='ru'>Migration to GitHub.</desc>
+      <desc lang='es'>Migration to GitHub.</desc>
     </notes>
     <execute file='open-ig-launcher.jar' memory='64'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar' sha1='BA3C42B0C79F7879B80444F6D60116DBC4F09398'>
