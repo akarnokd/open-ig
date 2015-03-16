@@ -1,2 +1,6 @@
 /bin/
 /video/
+open-ig-*.jar
+!open-ig-launcher.jar
+open-ig.log
+/save/
