@@ -23,53 +23,17 @@ The project contains all necessary files (with the permission from the copyright
 | 1.4 GB disk space  | 2 GB disk space |
 | 1.5 GHz Dual Core CPU | 2 GHz Quad Core CPU |
 
+Supported languages:
+  - English
+  - Hungarian
+  - German
+  - Russian
+  - French
+  - Spanish (graphics and text only)
+
 # Videos
 
 [![Youtube](https://github.com/akarnokd/open-ig/raw/master/images/generic/open-ig-youtube.png)](https://www.youtube.com/watch?v=FnlIEwW2OkM)
-
-# Progress
-
-<table border='1'>
-<tr>
-<td colspan='5' align='center'>Level 1</td>
-<td colspan='12' align='center'>Level 2</td>
-<td colspan='4' align='center'>Level 3</td>
-<td colspan='3' align='center'>Level 4</td>
-<td>L5</td></tr>
-<tr>
-<td title='Mission 1'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 2'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 3'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 4'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 5'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-
-<td title='Mission 6'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 7'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 8'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 9'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 10'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 11'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 12'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 13'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 14'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 15'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 16'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 17'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-
-<td title='Mission 18'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 19'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 20'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 21'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-
-<td title='Mission 22'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 23'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-<td title='Mission 24'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-
-<td title='Mission 25'>![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png)</td>
-</tr>
-</table>
-
-| Languages: | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) English | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) Hungarian | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) German | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) French | ![OK](https://github.com/akarnokd/open-ig/raw/master/src/hu/openig/gfx/ok.png) Russian | Spanish ? | Italian ? |
 
 # Acknowledgements
 
