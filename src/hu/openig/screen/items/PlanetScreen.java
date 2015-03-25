@@ -2924,7 +2924,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 					), true).visible(true);
 					
 					taxInfo.text(format("colonyinfo.tax-info",
-							get(p.getTaxLabel()), (int)p.morale, withSign((int)(p.morale) - (int)(p.lastMorale))
+							get(p.getTaxLabel()), (int)p.morale(), withSign((int)(p.morale()) - (int)(p.lastMorale()))
 					), true).visible(true);
 					
 					autobuild.text(format("colonyinfo.autobuild",

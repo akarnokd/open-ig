@@ -76,8 +76,8 @@ public class AIPlanet {
 		this.radar = planet.radar;
 		this.population = (int)planet.population();
 		this.tradeIncome = (int)planet.tradeIncome();
-		this.morale = planet.morale;
-		this.lastMorale = planet.lastMorale;
+		this.morale = planet.morale();
+		this.lastMorale = planet.lastMorale();
 		this.tax = planet.tax;
 		this.autoBuild = planet.autoBuild;
 		this.race = planet.race;

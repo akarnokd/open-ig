@@ -86,7 +86,7 @@ public class SkirmishScripting implements GameScripting {
 		Map<Integer, Integer> groupPlanets = new HashMap<>();
 		for (Planet p : world.planets.values()) {
 			if (p.owner != null) {
-				if (p.morale >= def.victorySocialMorale) {
+				if (p.morale() >= def.victorySocialMorale) {
 					Integer v = groupPlanets.get(p.owner.group);
 					v = v != null ? v + 1 : 1;
 					groupPlanets.put(p.owner.group, v);

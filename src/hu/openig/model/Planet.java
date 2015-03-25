@@ -69,9 +69,9 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	/** The taxation level. */
 	public TaxLevel tax = TaxLevel.MODERATE;
 	/** The morale percent in hundreds. */
-	public double morale = 50;
+	private double morale = 50;
 	/** The last day's morale percent in hundreds. */
-	public double lastMorale = 50;
+	private double lastMorale = 50;
 	/** The auto build mode. */
 	public AutoBuild autoBuild = AutoBuild.OFF;
 	/** The last day's tax income. */
@@ -1390,28 +1390,40 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param newTaxIncome the new tax income
 	 */
 	public void taxIncome(double newTaxIncome) {
-		this.taxIncome = newTaxIncome;
+        if (Double.isFinite(newTaxIncome)) {
+            this.taxIncome = Math.max(0, newTaxIncome);
+        } else {
+            this.taxIncome = 0d;
+        }
 	}
 	/**
 	 * Set a new trade income.
 	 * @param newTradeIncome the new trade income
 	 */
 	public void tradeIncome(double newTradeIncome) {
-		this.tradeIncome = newTradeIncome;
+        if (Double.isFinite(newTradeIncome)) {
+            this.tradeIncome = Math.max(0, newTradeIncome);
+        } else {
+            this.tradeIncome = 0d;
+        }
 	}
 	/**
 	 * Add value to the tax income.
 	 * @param value the value to add
 	 */
 	public void addTaxIncome(double value) {
-		this.taxIncome += value;
+        if (Double.isFinite(value)) {
+            this.taxIncome = Math.max(0, this.taxIncome + value);
+        }
 	}
 	/**
 	 * Add value to the trade income.
 	 * @param value the value to add
 	 */
 	public void addTradeIncome(double value) {
-		this.tradeIncome += value;
+	    if (Double.isFinite(value)) {
+	        this.tradeIncome = Math.max(0, this.tradeIncome + value);
+	    }
 	}
 	/**
 	 * Returns the current population.
@@ -1432,28 +1444,40 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param newPopulation the new population value
 	 */
 	public void population(double newPopulation) {
-		this.population = newPopulation;
+	    if (Double.isFinite(newPopulation)) {
+	        this.population = Math.max(0, newPopulation);
+	    } else {
+	        this.population = 0d;
+	    }
 	}
 	/**
 	 * Set a new last population value.
 	 * @param newLastPopulation the new last population value
 	 */
 	public void lastPopulation(double newLastPopulation) {
-		this.lastPopulation = newLastPopulation;
+	    if (Double.isFinite(newLastPopulation)) {
+	        this.lastPopulation = Math.max(0, newLastPopulation);
+	    } else {
+	        this.lastPopulation = 0d;
+	    }
 	}
 	/**
 	 * Add to the population.
 	 * @param value the value to add
 	 */
 	public void addPopulation(double value) {
-		this.population += value;
+	    if (Double.isFinite(value)) {
+	        this.population = Math.max(0, this.population + value);
+	    }
 	}
 	/**
 	 * Add to the last population.
 	 * @param value the value to add
 	 */
 	public void addLastPopulation(double value) {
-		this.lastPopulation += value;
+        if (Double.isFinite(value)) {
+            this.lastPopulation = Math.max(0, this.lastPopulation + value);
+        }
 	}
 	@Override
 	public double x() {
@@ -1531,4 +1555,34 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		}
 		result.nativeWorkerDemand += Math.abs(b.getWorkers()) * health;		
 	}
+	/** @returns the current morale. */
+	public double morale() {
+	    return morale;
+	}
+	/**
+	 * Sets a new morale.
+	 * @param newMorale
+	 */
+	public void morale(double newMorale) {
+	    if (!Double.isFinite(newMorale)) {
+	        morale = 0d;
+	    } else {
+	        morale = Math.max(0d, Math.min(100, newMorale));
+	    }
+	}
+    /** @returns the last morale. */
+    public double lastMorale() {
+        return lastMorale;
+    }
+    /**
+     * Sets a new morale.
+     * @param newMorale the new last morale
+     */
+    public void lastMorale(double newLastMorale) {
+        if (!Double.isFinite(newLastMorale)) {
+            lastMorale = 0d;
+        } else {
+            lastMorale = Math.max(0d, Math.min(100, newLastMorale));
+        }
+    }
 }

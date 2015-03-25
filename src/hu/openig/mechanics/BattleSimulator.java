@@ -969,47 +969,47 @@ public final class BattleSimulator {
 			if (defenderSuccess) {
 				switch (diff) {
 				case EASY:
-					if (planet.morale > 25) {
-						planet.morale *= 0.95;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.95);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 					break;
 				case HARD:
-					if (planet.morale > 25) {
-						planet.morale *= 0.85;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.85);
 					} else {
-						planet.morale -= 5;
+						planet.morale(planet.morale() - 5);
 					}
 					break;
 				default:
-					if (planet.morale > 25) {
-						planet.morale *= 0.9;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.9);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 				}
 			} else {
 				switch (diff) {
 				case EASY:
-					if (planet.morale > 25) {
-						planet.morale *= 0.9;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.9);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 					break;
 				case HARD:
-					if (planet.morale > 25) {
-						planet.morale *= 0.8;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.8);
 					} else {
-						planet.morale -= 5;
+						planet.morale(planet.morale() - 5);
 					}
 					break;
 				default:
-					if (planet.morale > 25) {
-						planet.morale *= 0.85;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.85);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 				}
 			}
@@ -1017,47 +1017,47 @@ public final class BattleSimulator {
 			if (defenderSuccess) {
 				switch (diff) {
 				case HARD:
-					if (planet.morale > 25) {
-						planet.morale *= 0.95;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.95);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 					break;
 				case EASY:
-					if (planet.morale > 25) {
-						planet.morale *= 0.85;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.85);
 					} else {
-						planet.morale -= 5;
+						planet.morale(planet.morale() - 5);
 					}
 					break;
 				default:
-					if (planet.morale > 25) {
-						planet.morale *= 0.9;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.9);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 				}
 			} else {
 				switch (diff) {
 				case EASY:
-					if (planet.morale > 25) {
-						planet.morale *= 0.9;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.9);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 					break;
 				case HARD:
-					if (planet.morale > 25) {
-						planet.morale *= 0.8;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.8);
 					} else {
-						planet.morale -= 5;
+						planet.morale(planet.morale() - 5);
 					}
 					break;
 				default:
-					if (planet.morale > 25) {
-						planet.morale *= 0.85;
+					if (planet.morale() > 25) {
+						planet.morale(planet.morale() * 0.85);
 					} else {
-						planet.morale -= 2.5;
+						planet.morale(planet.morale() - 2.5);
 					}
 				}
 			}

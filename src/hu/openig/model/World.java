@@ -707,7 +707,7 @@ public class World implements ModelLookup {
 			p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));
 			p.tax = TaxLevel.valueOf(xplanet.get("tax"));
 			p.rotationDirection = RotationDirection.valueOf(xplanet.get("rotate"));
-			p.morale = xplanet.getDouble("morale");
+			p.morale(xplanet.getDouble("morale"));
 			p.taxIncome(xplanet.getDouble("tax-income"));
 			p.tradeIncome(xplanet.getDouble("trade-income"));
 
@@ -722,7 +722,7 @@ public class World implements ModelLookup {
 				} else {
 					p.lastPopulation(p.population());
 				}
-				p.lastMorale = xplanet.getDouble("morale-last", p.morale);
+				p.lastMorale(xplanet.getDouble("morale-last", p.morale()));
 			}
 			
 			XElement surface = xplanet.childElement("surface");
@@ -1315,8 +1315,8 @@ public class World implements ModelLookup {
 				xp.set("quarantine-ttl", p.quarantineTTL);
 				xp.set("allocation", p.allocation);
 				xp.set("tax", p.tax);
-				xp.set("morale", p.morale);
-				xp.set("morale-last", p.lastMorale);
+				xp.set("morale", p.morale());
+				xp.set("morale-last", p.lastMorale());
 				xp.set("population", p.population());
 				xp.set("population-last", p.lastPopulation());
 				xp.set("autobuild", p.autoBuild);
@@ -1842,8 +1842,8 @@ public class World implements ModelLookup {
 				p.quarantineTTL = xplanet.getInt("quarantine-ttl", 0);
 				p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
 				p.tax = TaxLevel.valueOf(xplanet.get("tax"));
-				p.morale = xplanet.getDouble("morale", 50d);
-				p.lastMorale = xplanet.getDouble("morale-last", 50d);
+				p.morale(xplanet.getDouble("morale", 50d));
+				p.lastMorale(xplanet.getDouble("morale-last", 50d));
 				p.population(xplanet.getDouble("population"));
 				p.lastPopulation(xplanet.getDouble("population-last", p.population()));
 				p.autoBuild = AutoBuild.valueOf(xplanet.get("autobuild"));

@@ -1758,7 +1758,7 @@ public class InfoScreen extends ScreenBase {
 					), true).visible(true);
 					
 					taxMorale.text(format("colonyinfo.tax-morale",
-							(int)p.morale, withSign((int)p.morale - (int)p.lastMorale)
+							(int)p.morale(), withSign((int)p.morale() - (int)p.lastMorale())
 					), true).visible(true);
 					taxLevel.text(format("colonyinfo.tax-level",
 							get(p.getTaxLabel())
@@ -2763,7 +2763,7 @@ public class InfoScreen extends ScreenBase {
 				planetTaxIncome.text(format("colonyinfo.tax", (int)p.taxIncome()), true);
 				planetTradeIncome.text(format("colonyinfo.trade", (int)p.tradeIncome()), true);
 				planetTotalIncome.text(format("colonyinfo.total", p.getTotalIncome()), true);
-				planetTaxMorale.text(format("colonyinfo.tax-morale", (int)p.morale, get(p.getMoraleLabel())), true);
+				planetTaxMorale.text(format("colonyinfo.tax-morale", (int)p.morale(), get(p.getMoraleLabel())), true);
 				
 				planetCurrent.visible(true);
 				planetTaxIncome.visible(true);
@@ -3500,7 +3500,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return Double.compare(o1.morale, o2.morale);
+									return Double.compare(o1.morale(), o2.morale());
 								}
 							});
 						}
@@ -3512,7 +3512,7 @@ public class InfoScreen extends ScreenBase {
 							return compare2(o1, o2, new Comparator<Planet>() {
 								@Override
 								public int compare(Planet o1, Planet o2) {
-									return Double.compare(o2.morale, o1.morale);
+									return Double.compare(o2.morale(), o1.morale());
 								}
 							});
 						}
@@ -3809,41 +3809,41 @@ public class InfoScreen extends ScreenBase {
 
 						int mmc = TextRenderer.GREEN;
 						
-						if (p.morale < 10) {
+						if (p.morale() < 10) {
 							mmc = TextRenderer.RED;
 						} else
-						if (p.morale < 30) {
+						if (p.morale() < 30) {
 							mmc = 0xFFFF8080;
 						} else
-						if (p.morale < 45) {
+						if (p.morale() < 45) {
 							mmc = TextRenderer.YELLOW;
 						} else
-						if (p.morale >= 85) {
+						if (p.morale() >= 85) {
 							mmc = TextRenderer.LIGHT_BLUE;
 						} else
-						if (p.morale >= 65) {
+						if (p.morale() >= 65) {
 							mmc = TextRenderer.ORANGE;
 						}
 						
 						commons.text().paintTo(g2, 240, y + 1, 10, 
 								mmc, 
-										((int)p.morale) + "%");
+										((int)p.morale()) + "%");
 
-						if (p.morale - p.lastMorale != 0) {
+						if (p.morale() - p.lastMorale() != 0) {
 							int mc = TextRenderer.GREEN;
-							if (p.morale - p.lastMorale < -4) {
+							if (p.morale() - p.lastMorale() < -4) {
 								mc = TextRenderer.RED;
 							} else
-							if (p.morale - p.lastMorale < 0) {
+							if (p.morale() - p.lastMorale() < 0) {
 								mc = TextRenderer.YELLOW;
 							} else
-							if (p.morale - p.lastMorale > 3) {
+							if (p.morale() - p.lastMorale() > 3) {
 								mc = TextRenderer.ORANGE;
 							}
 									
 							commons.text().paintTo(g2, 270, y + 1, 10,
 									mc,  
-											 withSign((int)(p.morale) - (int)(p.lastMorale)));
+											 withSign((int)(p.morale()) - (int)(p.lastMorale())));
 						}
 						
 						PlanetStatistics ps = p.getStatistics();

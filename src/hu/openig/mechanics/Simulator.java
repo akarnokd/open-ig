@@ -409,7 +409,7 @@ public final class Simulator {
 		}
 
 		if (dayChange) {
-			planet.lastMorale = planet.morale;
+			planet.lastMorale(planet.morale());
 			planet.lastPopulation(planet.population());
 		}
 		double dayPercent = world.params().speed() / 24d / 60d;
@@ -462,15 +462,15 @@ public final class Simulator {
 			
 			
 			
-			double nextMorale = (planet.morale * 0.8d + 0.2d * newMorale);
-			if (planet.morale >= 95 && newMorale > planet.morale) {
-				nextMorale = planet.morale + (newMorale - 95) / 10;
+			double nextMorale = (planet.morale() * 0.8d + 0.2d * newMorale);
+			if (planet.morale() >= 95 && newMorale > planet.morale()) {
+				nextMorale = planet.morale() + (newMorale - 95) / 10;
 			}
 			
-			double morale0 = planet.morale;
+			double morale0 = planet.morale();
 			double morale1 = Math.max(0, Math.min(100, /* (int) */nextMorale));
 			
-			planet.morale = morale0 + (morale1 - morale0) * dayPercent; 
+			planet.morale(morale0 + (morale1 - morale0) * dayPercent); 
 			
 			// ----------
 
@@ -479,25 +479,25 @@ public final class Simulator {
 			if (!planet.race.equals(planet.owner.race)) {
 				nonOwnerRace = 3d;
 			}
-			if (planet.morale < 20) {
-				populationDelta = 1000 * (planet.morale - 50) / 100 * nonOwnerRace;
+			if (planet.morale() < 20) {
+				populationDelta = 1000 * (planet.morale() - 50) / 100 * nonOwnerRace;
 			} else
-			if (planet.morale < 30) {
-				populationDelta = 1000 * (planet.morale - 50) / 150 * nonOwnerRace;
+			if (planet.morale() < 30) {
+				populationDelta = 1000 * (planet.morale() - 50) / 150 * nonOwnerRace;
 			} else
-			if (planet.morale < 40) {
-				populationDelta = 1000 * (planet.morale - 50) / 200 * nonOwnerRace;
+			if (planet.morale() < 40) {
+				populationDelta = 1000 * (planet.morale() - 50) / 200 * nonOwnerRace;
 			} else
-			if (planet.morale < 50) {
-				populationDelta = 1000 * (planet.morale - 50) / 250 * nonOwnerRace;
+			if (planet.morale() < 50) {
+				populationDelta = 1000 * (planet.morale() - 50) / 250 * nonOwnerRace;
 			} else {
-				populationDelta = 1000 * (planet.morale - 50) / 500 * populationGrowthModifier * planetTypeModifier;
+				populationDelta = 1000 * (planet.morale() - 50) / 500 * populationGrowthModifier * planetTypeModifier;
 			}
 			
 			double population0 = planet.population();
 			double population1 = world.scripting.playerPopulationGrowthOverride(planet, planet.population() + populationDelta);
 
-			planet.population(Math.max(0, population0 +  (population1 - population0) * dayPercent));
+			planet.population(population0 +  (population1 - population0) * dayPercent);
 			
 			// tax calculation
 			
@@ -510,7 +510,7 @@ public final class Simulator {
 			double trade1 = (int)(tradeIncome * multiply * moneyModifier);
 			
 			double taxIncomeSim = (
-					 taxCompensation * moneyModifier * planet.population() * planet.morale * planet.tax.percent / 10000);
+					 taxCompensation * moneyModifier * planet.population() * planet.morale() * planet.tax.percent / 10000);
 			
 			double tax1 = world.scripting.playerTaxIncomeOverride(planet, taxIncomeSim); 
 
@@ -544,7 +544,7 @@ public final class Simulator {
 			// handle revolt/death
 			planet.owner.yesterday.taxIncome += planet.taxIncome();
 			planet.owner.yesterday.tradeIncome += planet.tradeIncome();
-			planet.owner.yesterday.taxMorale += planet.morale;
+			planet.owner.yesterday.taxMorale += planet.morale();
 			planet.owner.yesterday.taxMoraleCount++;
 
 			if (world.config.continuousMoney) {
@@ -558,12 +558,12 @@ public final class Simulator {
 				planet.owner.statistics.planetsDied.value++;
 				planet.die();
 			} else {
-				if (planet.morale <= 15) {
+				if (planet.morale() <= 15) {
 					planet.owner.ai.onPlanetRevolt(planet);
-					if (planet.lastMorale > 15) {
+					if (planet.lastMorale() > 15) {
 						planet.owner.statistics.planetsRevolted.value++;
 					}
-					if (planet.morale < 10 && planet.lastMorale < 10) {
+					if (planet.morale() < 10 && planet.lastMorale() < 10) {
 						revoltPlanet(world, planet);
 					}
 				}
@@ -608,7 +608,7 @@ public final class Simulator {
 		if (newOwner != null) {
 			planet.takeover(newOwner);
 			planet.autoBuild = AutoBuild.OFF;
-			planet.morale = 50;
+			planet.morale(50);
 		} else {
 			planet.owner.ai.onPlanetDied(planet);
 			world.scripting.onLost(planet);

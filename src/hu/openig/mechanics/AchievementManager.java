@@ -127,7 +127,7 @@ public final class AchievementManager {
 		public Boolean invoke(World t, Player u) {
 			int popular = 0;
 			for (Planet p : u.planets.keySet()) {
-				if (p.owner == u && p.morale >= 60) {
+				if (p.owner == u && p.morale() >= 60) {
 					popular++;
 				}
 			}
@@ -142,7 +142,7 @@ public final class AchievementManager {
 		public Boolean invoke(World t, Player u) {
 			int popular = 0;
 			for (Planet p : u.planets.keySet()) {
-				if (p.owner == u && p.morale >= 95) {
+				if (p.owner == u && p.morale() >= 95) {
 					popular++;
 				}
 			}
@@ -157,7 +157,7 @@ public final class AchievementManager {
 		public Boolean invoke(World t, Player u) {
 			int popular = 0;
 			for (Planet p : u.planets.keySet()) {
-				if (p.owner == u && p.morale >= 80) {
+				if (p.owner == u && p.morale() >= 80) {
 					popular++;
 				}
 			}
