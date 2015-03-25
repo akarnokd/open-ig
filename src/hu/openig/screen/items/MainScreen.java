@@ -351,7 +351,7 @@ public class MainScreen extends ScreenBase {
 	 * @return Check if save file is available.
 	 */
 	boolean isSaveAvailable() {
-		File dir = new File("save/default");
+		File dir = new File("save/" + commons.profile.name);
 		if (dir.exists()) {
 			File[] files = dir.listFiles(new FilenameFilter() {
 				@Override

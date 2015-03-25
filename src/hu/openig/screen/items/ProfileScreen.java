@@ -91,13 +91,19 @@ public class ProfileScreen extends ScreenBase {
 			@Override
 			public void invoke() {
 				buttonSound(SoundType.UI_ACKNOWLEDGE_2);
-				hideSecondary();
+				hide();
 			}
 		};
 		
 		addThis();
 	}
 
+	void hide() {
+	    MainScreen ms = (MainScreen)commons.control().getScreen(Screens.MAIN);
+	    ms.checkExistingSave();
+	    hideSecondary();
+	}
+	
 	@Override
 	public void onResize() {
 		scaleResize(base, margin());
@@ -181,7 +187,7 @@ public class ProfileScreen extends ScreenBase {
 	public boolean mouse(UIMouse e) {
 		scaleMouse(e, base, margin());
 		if (!base.contains(e.x, e.y) && e.has(Type.DOWN)) {
-			hideSecondary();
+			hide();
 			return true;
 		}
 		return super.mouse(e);
@@ -189,7 +195,7 @@ public class ProfileScreen extends ScreenBase {
 	@Override
 	public boolean keyboard(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			hideSecondary();
+			hide();
 			e.consume();
 		} else
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -247,7 +253,7 @@ public class ProfileScreen extends ScreenBase {
 		commons.profile = new Profile();
 		commons.profile.name = newProfileStr;
 		commons.profile.prepare();
-		hideSecondary();
+		hide();
 	}
 	/**
 	 * Returns a list of the existing profile names.

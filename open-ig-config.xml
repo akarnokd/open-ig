@@ -4,7 +4,7 @@
 <comment>Open Imperium Galactica Configuration</comment>
 <entry key="showStarmapScroll">true</entry>
 <entry key="fullScreen">false</entry>
-<entry key="currentProfile">default</entry>
+<entry key="currentProfile">1</entry>
 <entry key="tileCacheBaseLimit">-10</entry>
 <entry key="muteMusic">false</entry>
 <entry key="aiAutoBuildProduction">true</entry>

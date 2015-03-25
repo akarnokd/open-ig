@@ -239,7 +239,7 @@ public class ColonyPlanner extends Planner {
 				add(new Action0() {
 					@Override
 					public void invoke() {
-						controls.actionDemolishBuilding(planet.planet, b.building);
+				        controls.actionDemolishBuilding(planet.planet, b.building);
 					}
 				});
 				return true;

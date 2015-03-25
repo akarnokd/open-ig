@@ -1195,7 +1195,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 			world.statistics.moneyDemolishIncome.value += moneyBack;
 			world.statistics.moneyIncome.value += moneyBack;
 		} else {
-			throw new IllegalStateException("Failed to remove building " + b.id + " (" + b.type.id + " on " + id + ")");
+			System.out.println("Warning: Failed to remove building " + b.id + " (" + b.type.id + " on " + id + ")");
 		}
 	}
 	/**

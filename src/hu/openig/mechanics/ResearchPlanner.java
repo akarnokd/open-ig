@@ -9,15 +9,7 @@
 package hu.openig.mechanics;
 
 import hu.openig.core.Action0;
-import hu.openig.model.AIControls;
-import hu.openig.model.AIPlanet;
-import hu.openig.model.AIResult;
-import hu.openig.model.AIWorld;
-import hu.openig.model.Building;
-import hu.openig.model.BuildingType;
-import hu.openig.model.ExplorationMap;
-import hu.openig.model.Planet;
-import hu.openig.model.ResearchType;
+import hu.openig.model.*;
 import hu.openig.utils.Exceptions;
 
 import java.awt.Point;
@@ -192,19 +184,19 @@ public class ResearchPlanner extends Planner {
 	 * @return true if demolish added
 	 */
 	boolean demolishOneLabFor(ResearchType rt, AIPlanet planet) {
-		if (demolishOneLabIf(rt.aiLab, world.global.labs.ai, planet.statistics.labs.ai, planet.planet, "ai")) {
+		if (demolishOneLabIf(rt.aiLab, world.global.labs.ai, planet.statistics.labs.ai, planet, "ai")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.civilLab, world.global.labs.civil, planet.statistics.labs.civil, planet.planet, "civil")) {
+		if (demolishOneLabIf(rt.civilLab, world.global.labs.civil, planet.statistics.labs.civil, planet, "civil")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.compLab, world.global.labs.comp, planet.statistics.labs.comp, planet.planet, "computer")) {
+		if (demolishOneLabIf(rt.compLab, world.global.labs.comp, planet.statistics.labs.comp, planet, "computer")) {
 			return true;
 		}
-		if (demolishOneLabIf(rt.mechLab, world.global.labs.mech, planet.statistics.labs.mech, planet.planet, "mechanical")) {
+		if (demolishOneLabIf(rt.mechLab, world.global.labs.mech, planet.statistics.labs.mech, planet, "mechanical")) {
 			return true;
 		}
-        return demolishOneLabIf(rt.milLab, world.global.labs.mil, planet.statistics.labs.mil, planet.planet, "military");
+        return demolishOneLabIf(rt.milLab, world.global.labs.mil, planet.statistics.labs.mil, planet, "military");
     }
 	/**
 	 * Demolish one lab of the given resource.
@@ -215,14 +207,19 @@ public class ResearchPlanner extends Planner {
 	 * @param resource the lab resource name
 	 * @return true if action added
 	 */
-	boolean demolishOneLabIf(int lab, int global, int local, final Planet planet, final String resource) {
+	boolean demolishOneLabIf(int lab, int global, int local, final AIPlanet planet, final String resource) {
 		if (lab < global && local > 0) {
+		    for (AIBuilding b : planet.buildings) {
+		        if (b.type.resources.containsKey(resource)) {
+		            planet.buildings.remove(b);
+		        }
+		    }
 			applyActions.add(new Action0() {
 				@Override
 				public void invoke() {
-					for (Building b : planet.surface.buildings.iterable()) {
+					for (Building b : planet.planet.surface.buildings.iterable()) {
 						if (b.type.resources.containsKey(resource)) {
-							controls.actionDemolishBuilding(planet, b);
+							controls.actionDemolishBuilding(planet.planet, b);
 							return;
 						}
 					}

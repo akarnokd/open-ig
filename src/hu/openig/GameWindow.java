@@ -1540,7 +1540,7 @@ public class GameWindow extends JFrame implements GameControls {
 								});
 								lname = files[0].getAbsolutePath();
 							} else {
-								System.err.println("No saves!");
+								System.out.println("Warning! No saves!");
 								cancelLoad();
 								return;
 							}
