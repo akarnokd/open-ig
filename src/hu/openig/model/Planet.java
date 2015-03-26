@@ -1386,11 +1386,19 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		return tradeIncome;
 	}
 	/**
+	 * Checks if a number is finite (i.e., not NaN or infinite).
+	 * @param value the value to check
+	 * @return true if finite
+	 */
+	static boolean isFinite(double value) {
+	    return Math.abs(value) <= Double.MAX_VALUE;
+	}
+	/**
 	 * Set a new tax income.
 	 * @param newTaxIncome the new tax income
 	 */
 	public void taxIncome(double newTaxIncome) {
-        if (Double.isFinite(newTaxIncome)) {
+        if (isFinite(newTaxIncome)) {
             this.taxIncome = Math.max(0, newTaxIncome);
         } else {
             this.taxIncome = 0d;
@@ -1401,7 +1409,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param newTradeIncome the new trade income
 	 */
 	public void tradeIncome(double newTradeIncome) {
-        if (Double.isFinite(newTradeIncome)) {
+        if (isFinite(newTradeIncome)) {
             this.tradeIncome = Math.max(0, newTradeIncome);
         } else {
             this.tradeIncome = 0d;
@@ -1412,7 +1420,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param value the value to add
 	 */
 	public void addTaxIncome(double value) {
-        if (Double.isFinite(value)) {
+        if (isFinite(value)) {
             this.taxIncome = Math.max(0, this.taxIncome + value);
         }
 	}
@@ -1421,7 +1429,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param value the value to add
 	 */
 	public void addTradeIncome(double value) {
-	    if (Double.isFinite(value)) {
+	    if (isFinite(value)) {
 	        this.tradeIncome = Math.max(0, this.tradeIncome + value);
 	    }
 	}
@@ -1444,7 +1452,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param newPopulation the new population value
 	 */
 	public void population(double newPopulation) {
-	    if (Double.isFinite(newPopulation)) {
+	    if (isFinite(newPopulation)) {
 	        this.population = Math.max(0, newPopulation);
 	    } else {
 	        this.population = 0d;
@@ -1455,7 +1463,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param newLastPopulation the new last population value
 	 */
 	public void lastPopulation(double newLastPopulation) {
-	    if (Double.isFinite(newLastPopulation)) {
+	    if (isFinite(newLastPopulation)) {
 	        this.lastPopulation = Math.max(0, newLastPopulation);
 	    } else {
 	        this.lastPopulation = 0d;
@@ -1466,7 +1474,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param value the value to add
 	 */
 	public void addPopulation(double value) {
-	    if (Double.isFinite(value)) {
+	    if (isFinite(value)) {
 	        this.population = Math.max(0, this.population + value);
 	    }
 	}
@@ -1475,7 +1483,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param value the value to add
 	 */
 	public void addLastPopulation(double value) {
-        if (Double.isFinite(value)) {
+        if (isFinite(value)) {
             this.lastPopulation = Math.max(0, this.lastPopulation + value);
         }
 	}
@@ -1564,7 +1572,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	 * @param newMorale
 	 */
 	public void morale(double newMorale) {
-	    if (!Double.isFinite(newMorale)) {
+	    if (!isFinite(newMorale)) {
 	        morale = 0d;
 	    } else {
 	        morale = Math.max(0d, Math.min(100, newMorale));
@@ -1579,7 +1587,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
      * @param newMorale the new last morale
      */
     public void lastMorale(double newLastMorale) {
-        if (!Double.isFinite(newLastMorale)) {
+        if (!isFinite(newLastMorale)) {
             lastMorale = 0d;
         } else {
             lastMorale = Math.max(0d, Math.min(100, newLastMorale));
