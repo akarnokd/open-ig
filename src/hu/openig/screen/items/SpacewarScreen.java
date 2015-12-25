@@ -106,7 +106,7 @@ import java.util.Set;
  * @author akarnokd, 2010.01.06.
  */
 public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
-	/** Annotation to show a component on a specified panel mode and side. */
+	/** Annotation to show a component on a specified panel mode. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface Show {
 		/** The panel mode. */
@@ -206,9 +206,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	final Rectangle minimap = new Rectangle();
 	/** The location of the main window area. */
 	final Rectangle mainmap = new Rectangle();
-	/** The left inner panel. */
+	/** The left status panel. */
 	StatusPanel leftPanel;
-	/** The right inner panel. */
+	/** The right status panel. */
 	StatusPanel rightPanel;
 	/** The initial battle settings. */
 	BattleInfo battle;
@@ -5326,7 +5326,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	private class StatusPanel {
 		/** Equipment configuration. */
 		@Show(mode = PanelMode.SHIP_STATUS)
-		ShipStatusPanel statusPanel;
+		ShipStatusPanel shipStatusPanel;
 		/** Statistics panel. */
 		@Show(mode = PanelMode.STATISTICS)
 		StatisticsPanel statisticsPanel;
@@ -5363,8 +5363,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			communicator = createButton(commons.spacewar().computers, PanelMode.COMMUNICATOR);
 			movie = createButton(commons.spacewar().movies, PanelMode.MOVIE);
 
-			statusPanel = new ShipStatusPanel();
-			statusPanel.visible(false);
+			shipStatusPanel = new ShipStatusPanel();
+			shipStatusPanel.visible(false);
 
 			statisticsPanel = new StatisticsPanel();
 			statisticsPanel.visible(false);
@@ -5414,14 +5414,13 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		/** Cleanup */
 		void clear() {
-			statusPanel.clear();
+			shipStatusPanel.clear();
 			shipInfoPanel.clear();
 		}
 
 		/**
 		 * Creates an animation button with the panel mode settings.
 		 * @param phases the animation phases
-		 * @param left put it onto the left side?
 		 * @param mode the panel mode
 		 * @return the button
 		 */
@@ -5471,17 +5470,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			List<SpacewarStructure> currentSelection = getSelection();
 			if (currentSelection.size() == 1) {
 				SpacewarStructure sws = currentSelection.get(0);
-				statusPanel.update(sws);
+				shipStatusPanel.update(sws);
 				shipInfoPanel.item = sws;
 			} else {
-				statusPanel.update(null);
+				shipStatusPanel.update(null);
 				shipInfoPanel.item = null;
 
 				if (currentSelection.size() > 1) {
-					statusPanel.displayMany();
+					shipStatusPanel.displayMany();
 					shipInfoPanel.isMany = true;
 				} else {
-					statusPanel.displayNone();
+					shipStatusPanel.displayNone();
 					shipInfoPanel.isMany = false;
 				}
 			}
@@ -5545,7 +5544,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/**
 		 * Select the specified radio button.
 		 * @param btn the button to select
-		 * @param left on the left side?
 		 */
 		void selectButton(AnimatedRadioButton btn) {
 			for (AnimatedRadioButton b : animatedButtons) {
