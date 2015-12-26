@@ -248,9 +248,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	Point selectionEnd;
 	/** We are in layout selection mode? */
 	boolean layoutSelectionMode;
-	/** The initial layout panel. */
-	@Show(mode = PanelMode.LAYOUT)
-	LayoutPanel layoutPanel;
 	/** Fleet control button. */
 	ThreePhaseButton stopButton;
 	/** Fleet control button. */
@@ -365,13 +362,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		leftPanel = new StatusPanel(true);
 		rightPanel = new StatusPanel(false);
 
-		layoutPanel = new LayoutPanel();
-		layoutPanel.visible(false);
-
 		selectionPanel = new SelectionPanel();
 
 		addThis();
 	}
+
 	/**
 	 * Remove units from group.
 	 * @param i the group index
@@ -829,14 +824,12 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 				doChatStep();
 			}
 		});
-		leftPanel.selectButton(leftPanel.shipStatus);
-		rightPanel.selectButton(rightPanel.shipStatus);
+		leftPanel.onEnter();
+		rightPanel.onEnter();
 		selectionBox = false;
 		retreat.visible = true;
 		confirmRetreat.visible = false;
 		stopRetreat.visible = false;
-		layoutPanel.okHover = false;
-		layoutPanel.okDown = false;
 		displaySelectedShipInfo();
 	}
 
@@ -852,7 +845,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		chat = null;
 		
 		// cleanup
-		
 		battle = null;
 		structures.clear();
 		projectiles.clear();
@@ -863,8 +855,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		leftPanel.clear();
 		rightPanel.clear();
 
-		layoutPanel.selected = null;
-		
 		selectionPanel.clear();
 		groups.clear();
 		
@@ -881,14 +871,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		minimap.setBounds(62, 168 + 20, 110, 73);
 		mainmap.setBounds(175, 23, getInnerWidth() - 3 - commons.spacewar().commands.getWidth(),
 				getInnerHeight() - 38 - 3 - commons.spacewar().panelStatLeft.getHeight());
-		leftPanel.panel.setBounds(32, getInnerHeight() - 18 - 3 - 195, 286, 195);
-		rightPanel.panel.setBounds(getInnerWidth() - 33 - 286, getInnerHeight() - 18 - 3 - 195, 286, 195);
+		leftPanel.location(0, getInnerHeight() - leftPanel.height - 18);
+		rightPanel.location(getInnerWidth() - rightPanel.width, getInnerHeight() - rightPanel.height - 18);
 
-		leftPanel.onResize();
-		rightPanel.onResize();
-
-		selectionPanel.location(leftPanel.panel.x + leftPanel.panel.width + 3, leftPanel.panel.y);
-		selectionPanel.size(Math.max(0, rightPanel.panel.x - 2 - selectionPanel.x), leftPanel.panel.height);
+		selectionPanel.location(leftPanel.x + leftPanel.width + 3, leftPanel.y + StatusPanel.PANEL_Y);
+		selectionPanel.size(Math.max(0, rightPanel.x - 2 - selectionPanel.x), StatusPanel.PANEL_HEIGHT);
 
 		pan(0, 0);
 	}
@@ -948,9 +935,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		g2.fill(minimap);
 		
 		g2.fill(mainmap);
-
-		g2.drawImage(commons.spacewar().panelIg, leftPanel.panel.x, leftPanel.panel.y, null);
-		g2.drawImage(commons.spacewar().panelIg, rightPanel.panel.x, rightPanel.panel.y, null);
 
 		drawBattle(g2);
 		
@@ -5323,7 +5307,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		return s.moveTo != null && (s.moveTo.x < -100 || s.moveTo.x > 100 + space().width);
 	}
 
-	private class StatusPanel {
+	private class StatusPanel extends UIContainer {
 		/** Equipment configuration. */
 		@Show(mode = PanelMode.SHIP_STATUS)
 		ShipStatusPanel shipStatusPanel;
@@ -5336,6 +5320,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Communicator panel. */
 		@Show(mode = PanelMode.COMMUNICATOR)
 		ChatPanel chatPanel;
+		/** The initial layout panel. */
+		@Show(mode = PanelMode.LAYOUT)
+		LayoutPanel layoutPanel;
 		/** Is left panel **/
 		boolean left;
 		/** The list of animation buttons. */
@@ -5351,11 +5338,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		/** Movie. */
 		AnimatedRadioButton movie;
 
-
-		final Rectangle panel = new Rectangle();
+		private static final int LEFT_PANEL_X = 32;
+		private static final int RIGHT_PANEL_X = 1;
+		private static final int PANEL_Y = 3;
+		private static final int PANEL_WIDTH = 286;
+		private static final int PANEL_HEIGHT = 195;
 
 		StatusPanel(boolean left) {
 			this.left = left;
+
+			size(left ? 319 : 320, 201);
 
 			shipStatus = createButton(commons.spacewar().ships, PanelMode.SHIP_STATUS);
 			statistics = createButton(commons.spacewar().statistics, PanelMode.STATISTICS);
@@ -5374,37 +5366,44 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 			chatPanel = new ChatPanel();
 			chatPanel.visible(false);
-		}
 
-		/** Reposition elements on resize. */
-		void onResize() {
+			layoutPanel = new LayoutPanel();
+			layoutPanel.visible(false);
+
+			addThis();
+
 			applyButtonPosition();
 			applyPanelPositions();
 		}
 
-		/**
-		 * Calculates button position basing on `left` true/false flag.
-		 */
-		private void applyButtonPosition() {
-			int x;
-			if (left) {
-				x = panel.x - 28;
-			} else {
-				x = panel.x + panel.width + 5;
-			}
-			shipStatus.location(x, panel.y + 1);
-			statistics.location(x, panel.y + 41);
-			shipInformation.location(x, panel.y + 81);
-			communicator.location(x, panel.y + 121);
-			movie.location(x, panel.y + 161);
+		void onEnter() {
+			selectButton(leftPanel.shipStatus);
+			layoutPanel.okHover = false;
+			layoutPanel.okDown = false;
 		}
 
+		/** Calculates buttons positions basing on left/right flag. */
+		private void applyButtonPosition() {
+			int x = 4;
+			if (!left) {
+				x += RIGHT_PANEL_X + PANEL_WIDTH + 1;
+			}
+			int y = PANEL_Y;
+			shipStatus.location(x, y + 1);
+			statistics.location(x, y + 41);
+			shipInformation.location(x, y + 81);
+			communicator.location(x, y + 121);
+			movie.location(x, y + 161);
+		}
+
+		/** Calculates panels positions basing on left/right flag. */
 		private void applyPanelPositions() {
+			int x = panelX();
 			for (Field f : getClass().getDeclaredFields()) {
 				Show a = f.getAnnotation(Show.class);
 				if (a != null) {
 					try {
-						UIComponent.class.cast(f.get(this)).location(panel.x, panel.y);
+						UIComponent.class.cast(f.get(this)).location(x, PANEL_Y);
 					} catch (IllegalAccessException ex) {
 						Exceptions.add(ex);
 					}
@@ -5412,10 +5411,23 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 			}
 		}
 
+		@Override
+		public void draw(Graphics2D g2) {
+			g2.drawImage(commons.spacewar().panelIg, panelX(), PANEL_Y, null);
+			super.draw(g2);
+		}
+
+		/** Position of status panels depending on left/right flag */
+		private int panelX() {
+			return left ? LEFT_PANEL_X : RIGHT_PANEL_X;
+		}
+
 		/** Cleanup */
-		void clear() {
+		@Override
+		public void clear() {
 			shipStatusPanel.clear();
 			shipInfoPanel.clear();
+			layoutPanel.selected = null;
 		}
 
 		/**
@@ -5488,7 +5500,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
 		void setAllButtonsVisible(boolean visible) {
 			for (UIComponent c : animatedButtons) {
-				c.visible(true);
+				c.visible(visible);
 			}
 		}
 
