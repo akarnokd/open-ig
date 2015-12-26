@@ -2558,6 +2558,7 @@
   <entry key='settings.computer_voice_screen'>Voix pour notifications</entry>
   <entry key='settings.confirm_overwrite'>Overwrite save?</entry>
   <entry key='settings.confirm_quit'>Do you really want to quit?</entry>
+  <entry key='settings.auto_display_objectives'>Automatically display objective changes</entry>
   <entry key='settings.continuous_money'>Calcul du moral et de l&#39;argent en temps réel</entry>
   <entry key='settings.day_night_effects'>Cycle jour/nuit</entry>
   <entry key='settings.fullscreen'>Plein écran</entry>

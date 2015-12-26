@@ -61,7 +61,9 @@ public class SkirmishScripting implements GameScripting {
 	public void onTime() {
 		if (objectivesOnce) {
 			objectivesOnce = false;
-			world.env.showObjectives(true);
+			if (world.config.autoDisplayObjectives) {
+				world.env.showObjectives(true);
+			}
 		}
 		if (def.victoryConquest) {
 			checkConquestVictory();
@@ -283,12 +285,14 @@ public class SkirmishScripting implements GameScripting {
 	public boolean setObjectiveState(Objective o, ObjectiveState newState) {
 		if (o.state != newState) {
 			o.state = newState;
-			world.env.showObjectives(true);
-			if (newState == ObjectiveState.SUCCESS) {
-				world.env.playSound(SoundTarget.EFFECT, SoundType.SUCCESS, null);
-			} else 
-			if (newState == ObjectiveState.FAILURE) {
-				world.env.playSound(SoundTarget.EFFECT, SoundType.FAIL, null);
+			if (world.config.autoDisplayObjectives) {
+				world.env.showObjectives(true);
+				if (newState == ObjectiveState.SUCCESS) {
+					world.env.playSound(SoundTarget.EFFECT, SoundType.SUCCESS, null);
+				} else
+				if (newState == ObjectiveState.FAILURE) {
+					world.env.playSound(SoundTarget.EFFECT, SoundType.FAIL, null);
+				}
 			}
 			return true;
 		}
