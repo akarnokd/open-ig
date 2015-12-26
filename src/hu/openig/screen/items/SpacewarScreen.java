@@ -395,7 +395,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 		switch (e.type) {
 		case MOVE:
 			if (commons.config().customCursors) {
-				SpacewarStructure overState = mouseOver(structures);
+				SpacewarStructure overState = mouseOver(e.x, e.y, structures);
 				List<SpacewarStructure> selection = getSelection();
 				if (!mainmap.contains(e.x, e.y)) {
 					commons.setCursor(Cursors.POINTER);
@@ -2634,9 +2634,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 	 * @param ships the ship sequence
 	 * @return {@code SpacewarStructure} which has mouse over or null
 	 */
-	SpacewarStructure mouseOver(Iterable<? extends SpacewarStructure> ships) {
-		Point mousePos = UIMouse.current(commons.control().renderingComponent());
-		Point2D spacePos = mouseToSpace(mousePos.x, mousePos.y);
+	SpacewarStructure mouseOver(int x, int y, Iterable<? extends SpacewarStructure> ships) {
+		Point2D spacePos = mouseToSpace(x, y);
 		for (SpacewarStructure sws : ships) {
 			if (sws.intersects(spacePos.getX(), spacePos.getY(), 1, 1)) {
 				return sws;
