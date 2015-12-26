@@ -1856,6 +1856,7 @@
   <entry key='settings.classic_controls'>Classic right mouse action controls</entry>
   <entry key='mission-6.handle_colonies.desc'>Try to build at least one Barracks.</entry>
   <entry key='chat.vo.5.n2.o'>Turn around! Your ship is infected.</entry>
+  <entry key='settings.auto_display_objectives'>Automatically display objective changes</entry>
   <entry key='settings.continuous_money'>Continuous money/morale calculation</entry>
   <entry key='achievement.death_star.desc'>You left your colony to be destroyed</entry>
   <entry key='achievement.embargo.desc'>You destroyed your first Trader ship</entry>

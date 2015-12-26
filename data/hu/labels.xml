@@ -3306,6 +3306,7 @@
 	<entry key='profiles.select_button'>Kiválaszt / Létrehoz</entry>
 	<entry key='profiles.back_button'>Vissza</entry>
 	<entry key='profiles.existing_profiles'>Létező profilok:</entry>
+	<entry key='settings.auto_display_objectives'>Automatically display objective changes</entry>
 	<entry key='settings.continuous_money'>Folytonos pénz/morál számítás</entry>
 	<entry key='info.planetlist_labs'>Labor infó</entry>
 	<entry key='info.lab_details'>Kutatókp.</entry>

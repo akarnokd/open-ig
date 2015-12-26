@@ -199,6 +199,13 @@ public class Configuration {
 	@LoadSave
 	@LoadSaveGame
 	public boolean slowOnEnemyAttack = true;
+	/**
+	 * Automatically pop up objectives list on new objective or on completion
+	 * of a current one.
+	 */
+	@LoadSave
+	@LoadSaveGame
+	public boolean autoDisplayObjectives = true;
 	/** Display subtitles. */
 	@LoadSave
 	@LoadSaveGame

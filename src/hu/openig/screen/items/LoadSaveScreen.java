@@ -314,6 +314,9 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 	/** Continuous money calculation. */
 	@Settings(page = SettingsPage.GAMEPLAY)
 	UICheckBox continuousMoney;
+	/** Automatically display objectives on change. */
+	@Settings(page = SettingsPage.GAMEPLAY)
+	UICheckBox autoDisplayObjectives;
 	/** Vector fonts cycle. */
 	@Settings(page = SettingsPage.VISUAL)
 	UICheckBox vectorFonts;
@@ -975,6 +978,15 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 			}
 		};
 
+		autoDisplayObjectives = new UICheckBox(get("settings.auto_display_objectives"), 14, commons.common().checkmark, commons.text());
+		autoDisplayObjectives.onChange = new Action0() {
+			@Override
+			public void invoke() {
+				buttonSound(SoundType.CLICK_MEDIUM_2);
+				config.autoDisplayObjectives = autoDisplayObjectives.selected();
+			}
+		};
+
 		continuousMoney = new UICheckBox(get("settings.continuous_money"), 14, commons.common().checkmark, commons.text());
 		continuousMoney.onChange = new Action0() {
 			@Override
@@ -1341,6 +1353,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		starmapScroll.selected(config.showStarmapScroll);
 		aiAutobuildProduction.selected(config.aiAutoBuildProduction);
 		continuousMoney.selected(config.continuousMoney);
+		autoDisplayObjectives.selected(config.autoDisplayObjectives);
 		dayNight.selected(config.dayNightCycle);
 		weather.selected(config.allowWeather);
 		vectorFonts.selected(config.useStandardFonts);
@@ -1501,7 +1514,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		// --------------------------------------------------------------------------------------
 		// gameplay
 
-		dy = 60;
+		dy = 50;
 		
 		reequipTanks.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
@@ -1540,7 +1553,10 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 		timestepValue.width = 250;
 		timestepValue.location(base.x + base.width - timestepValue.width - 30, base.y + dy);
 		dy += 30;
-		
+
+		autoDisplayObjectives.location(base.x + 30, base.y + dy + 8);
+		dy += 30;
+
 		continuousMoney.location(base.x + 30, base.y + dy + 8);
 		dy += 30;
 		
