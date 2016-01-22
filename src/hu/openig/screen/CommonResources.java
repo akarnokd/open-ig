@@ -395,9 +395,9 @@ public class CommonResources implements GameEnvironment {
 			if (res != null) {
 				try {
 					cursorCache.put(res.key(),
-                            Toolkit.getDefaultToolkit().createCustomCursor(
-                                    (BufferedImage)f.get(common), new Point(res.x(), res.y()), res.key().name())
-                            );
+						Toolkit.getDefaultToolkit().createCustomCursor(
+							(BufferedImage)f.get(common), new Point(res.x(), res.y()), res.key().name())
+					);
 				} catch (IllegalAccessException e) {
 					Exceptions.add(e);
 				}
