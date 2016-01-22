@@ -12,6 +12,8 @@ import hu.openig.core.Btn2;
 import hu.openig.core.Btn3H;
 import hu.openig.core.Cat;
 import hu.openig.core.Img;
+import hu.openig.core.CursorResource;
+import hu.openig.model.Cursors;
 import hu.openig.model.ResourceLocator;
 import hu.openig.render.GenericMediumButton;
 
@@ -180,27 +182,73 @@ public class CommonGFX {
 	/** Random planet indicator for skirmish. */
 	@Img(name = "planet_random_24x24")
 	public BufferedImage randomPlanet;
-	//TODO Import remaining 8-way arrow cursors
+
 	/** Cursor: blank for hiding while playing videos. */
+	@CursorResource(key = Cursors.BLANK, x = 8, y = 8)
 	public BufferedImage blankCursor = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
 	/** Cursor: hand. */
 	@Img(name = "cursors/hand")
+	@CursorResource(key = Cursors.HAND, x = 8, y = 8)
 	public BufferedImage handCursor;
+
 	/** Cursor: move. */
 	@Img(name = "cursors/move")
+	@CursorResource(key = Cursors.MOVE, x = 10, y = 11)
 	public BufferedImage moveCursor;
+
 	/** Cursor: pointer. */
 	@Img(name = "cursors/pointer")
+	@CursorResource(key = Cursors.POINTER, x = 0, y = 0)
 	public BufferedImage pointerCursor;
-	/** Cursor: redo. */
+
+	/** Cursor: redo. Used when exiting rooms in ship */
 	@Img(name = "cursors/redo")
+	@CursorResource(key = Cursors.REDO, x = 10, y = 11)
 	public BufferedImage redoCursor;
-	/** Cursor: select. */
+
+	/** Cursor: select. Used in combat situations */
 	@Img(name = "cursors/select")
+	@CursorResource(key = Cursors.SELECT, x = 10, y = 11)
 	public BufferedImage selectCursor;
-	/** Cursor: target. */
+
+	/** Cursor: target. Center, used in combat situations */
 	@Img(name = "cursors/target")
+	@CursorResource(key = Cursors.TARGET, x = 10, y = 11)
 	public BufferedImage targetCursor;
+
+	@Img(name = "cursors/arrow_s")
+	@CursorResource(key = Cursors.ARROW_S, x = 10, y = 11)
+	public BufferedImage arrowSCursor;
+
+	@Img(name = "cursors/arrow_w")
+	@CursorResource(key = Cursors.ARROW_W, x = 10, y = 11)
+	public BufferedImage arrowWCursor;
+
+	@Img(name = "cursors/arrow_n")
+	@CursorResource(key = Cursors.ARROW_N, x = 10, y = 11)
+	public BufferedImage arrowNCursor;
+
+	@Img(name = "cursors/arrow_e")
+	@CursorResource(key = Cursors.ARROW_E, x = 10, y = 11)
+	public BufferedImage arrowECursor;
+
+	@Img(name = "cursors/arrow_ne")
+	@CursorResource(key = Cursors.ARROW_NE, x = 10, y = 11)
+	public BufferedImage arrowNECursor;
+
+	@Img(name = "cursors/arrow_nw")
+	@CursorResource(key = Cursors.ARROW_NW, x = 10, y = 11)
+	public BufferedImage arrowNWCursor;
+
+	@Img(name = "cursors/arrow_se")
+	@CursorResource(key = Cursors.ARROW_SE, x = 10, y = 11)
+	public BufferedImage arrowSECursor;
+
+	@Img(name = "cursors/arrow_sw")
+	@CursorResource(key = Cursors.ARROW_SW, x = 10, y = 11)
+	public BufferedImage arrowSWCursor;
+
 	/**
 	 * Initialize the common resources.
 	 * @param rl the resource locator

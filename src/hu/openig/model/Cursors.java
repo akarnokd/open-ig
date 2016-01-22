@@ -26,5 +26,13 @@ public enum Cursors {
 	/** Select cursor. */
 	SELECT,
 	/** Target cursor. */
-	TARGET
+	TARGET,
+	ARROW_S,
+	ARROW_W,
+	ARROW_N,
+	ARROW_E,
+	ARROW_NE,
+	ARROW_NW,
+	ARROW_SE,
+	ARROW_SW
 }
