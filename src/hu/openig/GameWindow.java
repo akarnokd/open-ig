@@ -859,6 +859,8 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			}
 		}
+
+		commons.setCursor(Cursors.POINTER);
 		return sb;
 	}
 	@Override

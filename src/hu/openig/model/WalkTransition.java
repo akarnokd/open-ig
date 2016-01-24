@@ -24,4 +24,9 @@ public class WalkTransition {
 	public String to;
 	/** The clickable polygon area. */
 	public Polygon area;
+	/**
+	 * The optional cursor to display when the mouse pointers enters the
+	 *  clickable polygon area.
+	 */
+	public Cursors cursor;
 }

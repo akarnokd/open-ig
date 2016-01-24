@@ -54,5 +54,8 @@
 		<xs:attribute name="to" type="xs:string" use="required">
 			<xs:annotation><xs:documentation>The transition target position or screen (if starts with *).</xs:documentation></xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="cursor" type="xs:string" use="optional">
+			<xs:annotation><xs:documentation>The custom cursor to display when the mouse pointer enters the transition area. The name refers to a member of Cursors.</xs:documentation></xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
