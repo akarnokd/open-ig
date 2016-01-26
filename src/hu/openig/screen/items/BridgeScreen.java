@@ -22,11 +22,10 @@ import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.VideoMessage;
 import hu.openig.model.WalkPosition;
-import hu.openig.model.WalkTransition;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
-import hu.openig.screen.ScreenBase;
 import hu.openig.screen.VideoRenderer;
+import hu.openig.screen.WalkableScreen;
 import hu.openig.ui.UIImageButton;
 import hu.openig.ui.UIImageToggleButton;
 import hu.openig.ui.UIMouse;
@@ -61,9 +60,7 @@ import javax.swing.Timer;
  * The bridge rendering screen.
  * @author akarnokd, 2010.01.11.
  */
-public class BridgeScreen extends ScreenBase {
-	/** The screen origins. */
-	final Rectangle base = new Rectangle(0, 0, 640, 442);
+public class BridgeScreen extends WalkableScreen {
 	/** The message panel open rectangle. */
 	final Rectangle messageOpenRect = new Rectangle();
 	/** The message list rectangle. */
@@ -112,8 +109,6 @@ public class BridgeScreen extends ScreenBase {
 	boolean openCloseAnimating;
 	/** Prevent starting a video playback from clicks to the statusbar indicator. */
 	boolean noStatusbarPlayback;
-	/** The transition the mouse is pointing at. */
-	WalkTransition pointerTransition;
 	/** The video appear animation (the first frame). */
 	BufferedImage videoAppear;
 	/** The video appearance timer. */
@@ -164,6 +159,11 @@ public class BridgeScreen extends ScreenBase {
 	public boolean receiveSelected = true;
 	/** Is the send mode on? */
 	public boolean sendSelected;
+
+	public BridgeScreen() {
+		super(new Rectangle(0, 0, 640, 442));
+	}
+
 	/**
 	 * A video message entry.
 	 * @author akarnokd, 2012.01.12.
@@ -270,6 +270,10 @@ public class BridgeScreen extends ScreenBase {
 	 * Play message panel opening.
 	 */
 	void playMessageOpen() {
+		// we don't want the cursor to change
+		// while the message panel is open
+		setTransitionsEnabled(false);
+
 		openCloseAnimating = true;
 		messageAnim = new MediaPlayer(commons, commons.world().getCurrentLevel().messageOpen, new SwappableRenderer() {
 			@Override
@@ -361,7 +365,9 @@ public class BridgeScreen extends ScreenBase {
 					onMessageComplete = null;
 				}
 				messageFront = messageAppearLast;
-				
+
+				setTransitionsEnabled(true);
+				commons.control().moveMouse();
 				askRepaint();
 			}
 		};
@@ -538,31 +544,14 @@ public class BridgeScreen extends ScreenBase {
 				if (!messageOpen) {
 					if (messageOpenRect.contains(e.x, e.y)) {
 						playMessageOpen();
-					} else {
-						WalkPosition position = ScreenUtils.getWalk("*bridge", world());
-						for (WalkTransition wt : position.transitions) {
-							if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-								ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
-								break;
-							}
-						}
+					} else if (overTransitionArea()) {
+						performTransition(e.has(Button.RIGHT));
 					}
 				}
 			}
-		} else
-		if (e.has(Type.MOVE) || e.has(Type.DRAG) || e.has(Type.ENTER)) {
-			WalkTransition prev = pointerTransition;
-			pointerTransition = null;
-			WalkPosition position = ScreenUtils.getWalk("*bridge", world());
-			for (WalkTransition wt : position.transitions) {
-				if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-					pointerTransition = wt;
-					break;
-				}
-			}
-			if (prev != pointerTransition) {
-				askRepaint();
-			}
+		} else if (e.has(Type.MOVE) || e.has(Type.DRAG) || e.has(Type.ENTER)) {
+			if (updateTransition(e.x, e.y))
+				return true;
 		}
 		return false;
 	}
@@ -642,6 +631,7 @@ public class BridgeScreen extends ScreenBase {
 		}
 		
 		lastLevel = world().level;
+		setTransitionsEnabled(true);
 	}
 	/**
 	 * Switch to test screen.
@@ -852,8 +842,8 @@ public class BridgeScreen extends ScreenBase {
 			drawComponent(g2, receive);
 
 		}
-		if (!projectorOpen && !messageOpen && pointerTransition != null && !openCloseAnimating) {
-			ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
+		if (!projectorOpen && !messageOpen && overTransitionArea() && !openCloseAnimating) {
+			drawTransitionLabel(g2);
 		}
 		g2.setTransform(save1);
 	}
@@ -1213,5 +1203,10 @@ public class BridgeScreen extends ScreenBase {
 	protected Pair<Point, Double> scale() {
 		Pair<Point, Double> s = scale(base, margin());
 		return Pair.of(new Point(base.x, base.y), s.second);
+	}
+
+	@Override
+	protected WalkPosition getPosition() {
+		return ScreenUtils.getWalk("*bridge", world());
 	}
 }

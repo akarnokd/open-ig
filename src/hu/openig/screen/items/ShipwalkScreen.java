@@ -17,7 +17,7 @@ import hu.openig.model.WalkPosition;
 import hu.openig.model.WalkTransition;
 import hu.openig.render.TextRenderer;
 import hu.openig.screen.MediaPlayer;
-import hu.openig.screen.ScreenBase;
+import hu.openig.screen.WalkableScreen;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 
@@ -39,7 +39,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * The ship walk-around screen.
  * @author akarnokd, 2010.01.11.
  */
-public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
+public class ShipwalkScreen extends WalkableScreen implements SwappableRenderer {
 	/** The current position. */
 	private WalkPosition position;
 	/** The next position after the transition. Might be null because of a special output. */
@@ -54,16 +54,17 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	BufferedImage backBuffer;
 	/** The buffer swap lock. */
 	final Lock swapLock = new ReentrantLock();
-	/** The transition the mouse is pointing at. */
-	WalkTransition pointerTransition;
 	/** The transition video player. */
 	MediaPlayer video;
-	/** The rendering origin. */
-	final Rectangle base = new Rectangle(0, 0, 640, 442);
 	/** The action to call when the transition ends. */
 	public Action0 onCompleted;
 	/** The position picture. */
 	BufferedImage picture;
+
+	public ShipwalkScreen() {
+		super(new Rectangle(0, 0, 640, 442));
+	}
+
 	@Override
 	public void onResize() {
 		scaleResize(base, margin());
@@ -80,8 +81,11 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public void onInitialize() {
-		// TODO Auto-generated method stub
+	}
 
+	@Override
+	protected WalkPosition getPosition() {
+		return position;
 	}
 
 	@Override
@@ -104,19 +108,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		case MOVE:
 		case DRAG:
 			if (!videoMode) {
-				WalkTransition prev = pointerTransition;
-				pointerTransition = null;
-				if (position != null) {
-					for (WalkTransition wt : position.transitions) {
-						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-							pointerTransition = wt;
-							break;
-						}
-					}
-				}
-				if (prev != pointerTransition) {
-					rep = true;
-				}
+				rep = updateTransition(e.x, e.y);
 			}
 			break;
 		case DOWN:
@@ -125,19 +117,15 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 				setNextPosition();
 				rep = true;
 			} else {
-				if (position != null) {
-					for (WalkTransition wt : position.transitions) {
-						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-							next = position.ship.positions.get(wt.to);
-							nextId = wt.to;
-							if (wt.media != null && !wt.media.isEmpty() && !e.has(Button.RIGHT)) {
-								startTransition(wt.media);
-							} else {
-								setNextPosition();
-								rep = true;
-							}
-							break;
-						}
+				if (position != null && overTransitionArea()) {
+					WalkTransition wt = getTransition();
+					next = position.ship.positions.get(wt.to);
+					nextId = wt.to;
+					if (wt.media != null && !wt.media.isEmpty() && !e.has(Button.RIGHT)) {
+						startTransition(wt.media);
+					} else {
+						setNextPosition();
+						rep = true;
 					}
 				}
 			}
@@ -149,6 +137,8 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 
 	@Override
 	public void onEnter(Screens mode) {
+		// when we enter we haven't left the screen we're on -> no transitions
+		setTransitionsEnabled(false);
 		resize();
 	}
 
@@ -184,9 +174,9 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 			if (position != null && picture != null) {
 				g2.drawImage(picture, 0, 0, null);
 				
-				if (pointerTransition != null) {
-					String gotoLocation = get(pointerTransition.label);
-					Rectangle r = pointerTransition.area.getBounds();
+				if (overTransitionArea()) {
+					String gotoLocation = get(getTransition().label);
+					Rectangle r = getTransition().area.getBounds();
 					
 					int tw = commons.text().getTextWidth(14, gotoLocation) + 10;
 					int th = 20;
@@ -259,6 +249,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	 * @param video the transition video
 	 */
 	protected void startTransition(final String video) {
+		setTransitionsEnabled(false);
 		videoMode = true;
 		this.video = new MediaPlayer(commons, video, this);
 		this.video.onComplete = new Action0() {
@@ -289,11 +280,11 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 	 * Set the current position to the next position.
 	 */
 	protected void setNextPosition() {
+		setTransitionsEnabled(true);
 		if (nextId.startsWith("*")) {
 			commons.switchScreen(nextId);
 		} else {
 			setPosition(next);
-			pointerTransition = null;
 			commons.control().moveMouse();
 			// simple sound hack for cabin
 			if (position != null && position.id.equals("cabin")) {
@@ -310,7 +301,7 @@ public class ShipwalkScreen extends ScreenBase implements SwappableRenderer {
 		next = null;
 		position = null;
 		picture = null;
-		pointerTransition = null;
+		clearTransition();
 	}
 	/**
 	 * Set the position to the given new state.

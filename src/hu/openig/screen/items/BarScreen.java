@@ -15,10 +15,9 @@ import hu.openig.model.TalkPerson;
 import hu.openig.model.TalkSpeech;
 import hu.openig.model.TalkState;
 import hu.openig.model.WalkPosition;
-import hu.openig.model.WalkTransition;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
-import hu.openig.screen.ScreenBase;
+import hu.openig.screen.WalkableScreen;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
@@ -38,9 +37,7 @@ import java.util.List;
  * The bar screen.
  * @author akarnokd, 2010.01.11.
  */
-public class BarScreen extends ScreenBase {
-	/** The panel base rectangle. */
-	final Rectangle base = new Rectangle();
+public class BarScreen extends WalkableScreen {
 	/** We are in talk mode. */
 	boolean talkMode;
 	/** The current talk person. */
@@ -51,8 +48,6 @@ public class BarScreen extends ScreenBase {
 	TalkState next;
 	/** The highlighted speech. */
 	TalkSpeech highlight;
-	/** The transition the mouse is pointing at. */
-	WalkTransition pointerTransition;
 	/** The list of choices. */
 	final List<Choice> choices = new ArrayList<>();
 	/** The state picture. */
@@ -260,8 +255,8 @@ public class BarScreen extends ScreenBase {
 			}
 		}
 		if (!talkMode) {
-			if (pointerTransition != null) {
-				ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
+			if (overTransitionArea()) {
+				drawTransitionLabel(g2);
 			}
 		}
 		
@@ -342,18 +337,9 @@ public class BarScreen extends ScreenBase {
 						simulationRunning = !commons.simulation.paused();
 						commons.simulation.pause();
 					}
-				} else
-				if (!base.contains(e.x, e.y)) {
-					hideSecondary();
+				} else if (overTransitionArea()) {
+					performTransition(e.has(Button.RIGHT));
 					return true;
-				} else {
-					WalkPosition position = ScreenUtils.getWalk("*bar", world());
-					for (WalkTransition wt : position.transitions) {
-						if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-							ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
-							return true;
-						}
-					}
 				}
 			}
 		} else
@@ -374,18 +360,8 @@ public class BarScreen extends ScreenBase {
 					askRepaint();
 				}
 			} else {
-				WalkTransition prev = pointerTransition;
-				pointerTransition = null;
-				WalkPosition position = ScreenUtils.getWalk("*bar", world());
-				for (WalkTransition wt : position.transitions) {
-					if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-						pointerTransition = wt;
-						break;
-					}
-				}
-				if (prev != pointerTransition) {
-					askRepaint();
-				}
+				if (updateTransition(e.x, e.y))
+					return true;
 			}
 		}
 		return super.mouse(e);
@@ -400,7 +376,7 @@ public class BarScreen extends ScreenBase {
 		state = null;
 		next = null;
 		highlight = null;
-		pointerTransition = null;
+		clearTransition();
 		choices.clear();
 		/** The state picture. */
 		picture = null;
@@ -417,5 +393,10 @@ public class BarScreen extends ScreenBase {
 	protected Pair<Point, Double> scale() {
 		Pair<Point, Double> s = scale(base, margin());
 		return Pair.of(new Point(base.x, base.y), s.second);
+	}
+
+	@Override
+	protected WalkPosition getPosition() {
+		return ScreenUtils.getWalk("*bar", world());
 	}
 }

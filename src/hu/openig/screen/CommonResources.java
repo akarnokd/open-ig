@@ -15,6 +15,7 @@ import hu.openig.core.Func1;
 import hu.openig.core.ResourceType;
 import hu.openig.core.SaveMode;
 import hu.openig.core.SimulationSpeed;
+import hu.openig.core.CursorResource;
 import hu.openig.gfx.BackgroundGFX;
 import hu.openig.gfx.ColonyGFX;
 import hu.openig.gfx.CommonGFX;
@@ -31,7 +32,6 @@ import hu.openig.mechanics.Radar;
 import hu.openig.mechanics.Simulator;
 import hu.openig.model.AIManager;
 import hu.openig.model.Configuration;
-import hu.openig.model.Cursors;
 import hu.openig.model.GameDefinition;
 import hu.openig.model.GameEnvironment;
 import hu.openig.model.Labels;
@@ -66,8 +66,10 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -388,24 +390,19 @@ public class CommonResources implements GameEnvironment {
 	}
 	/** Setup the custom cursors. */
 	void setupCursors() {
-		// blank cursor for hiding while playing videos
-		cursorCache.put(Cursors.BLANK,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.blankCursor, new Point(8, 8), Cursors.BLANK.name()));
-		cursorCache.put(Cursors.HAND,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.handCursor, new Point(0, 0), Cursors.HAND.name()));
-		cursorCache.put(Cursors.MOVE,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.moveCursor, new Point(10, 11), Cursors.MOVE.name()));
-		cursorCache.put(Cursors.POINTER,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.pointerCursor, new Point(0, 0), Cursors.POINTER.name()));
-		//used when exiting rooms in ship
-		cursorCache.put(Cursors.REDO,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.redoCursor, new Point(10, 11), Cursors.REDO.name()));
-		//used in combat situations
-		cursorCache.put(Cursors.SELECT,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.selectCursor, new Point(10, 11), Cursors.SELECT.name()));
-		//center, used in combat situations
-		cursorCache.put(Cursors.TARGET,
-				Toolkit.getDefaultToolkit().createCustomCursor(common.targetCursor, new Point(10, 11), Cursors.TARGET.name()));
+		for (Field f : common.getClass().getFields()) {
+			CursorResource res = f.getAnnotation(CursorResource.class);
+			if (res != null) {
+				try {
+					cursorCache.put(res.key(),
+						Toolkit.getDefaultToolkit().createCustomCursor(
+							(BufferedImage)f.get(common), new Point(res.x(), res.y()), res.key().name())
+					);
+				} catch (IllegalAccessException e) {
+					Exceptions.add(e);
+				}
+			}
+		}
 	}
 	/**
 	 * Reinitialize the resources by reloading them in the new language.

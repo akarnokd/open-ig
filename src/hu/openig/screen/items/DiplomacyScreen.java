@@ -33,13 +33,12 @@ import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.VideoAudio;
 import hu.openig.model.WalkPosition;
-import hu.openig.model.WalkTransition;
 import hu.openig.render.RenderTools;
 import hu.openig.render.TextRenderer;
 import hu.openig.render.TextRenderer.TextSegment;
 import hu.openig.screen.MediaPlayer;
 import hu.openig.screen.RawAnimation;
-import hu.openig.screen.ScreenBase;
+import hu.openig.screen.WalkableScreen;
 import hu.openig.screen.panels.OptionList;
 import hu.openig.screen.panels.OptionList.OptionItem;
 import hu.openig.ui.UIComponent;
@@ -78,11 +77,7 @@ import javax.swing.SwingUtilities;
  * The diplomacy screen.
  * @author akarnokd, 2010.01.11.
  */
-public class DiplomacyScreen extends ScreenBase {
-	/** The panel base rectangle. */
-	final Rectangle base = new Rectangle();
-	/** The transition the mouse is pointing at. */
-	WalkTransition pointerTransition;
+public class DiplomacyScreen extends WalkableScreen {
 	/** The projector rectangle. */
 	final Rectangle projectorRect = new Rectangle();
 	/** The projector front buffer. */
@@ -390,34 +385,21 @@ public class DiplomacyScreen extends ScreenBase {
 	@Override
 	public boolean mouse(UIMouse e) {
 		scaleMouse(e, base, margin());
-		if (!base.contains(e.x, e.y) && e.has(Type.UP)) {
-			hideSecondary();
-			return true;
-		} else 
 		if (!inCall) {
 			if (e.has(Type.MOVE) || e.has(Type.DRAG)) {
 				if (!projectorOpen && !projectorClosing && !openCloseAnimating) {
-					WalkTransition prev = pointerTransition;
-					pointerTransition = null;
-					WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
-					if (position != null) {
-						for (WalkTransition wt : position.transitions) {
-							if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-								pointerTransition = wt;
-								break;
-							}
-						}
-					}
+					boolean transitChanged = updateTransition(e.x, e.y);
+
 					boolean spl = showPanelLabel;
 					showPanelLabel = e.within(base.x, base.y, base.width, 350)
-							&& pointerTransition == null;
+							&& !overTransitionArea();
 
-					if (prev != pointerTransition || spl != showPanelLabel) {
+					if (transitChanged || spl != showPanelLabel) {
 						askRepaint();
 					}
 				} else {
 					showPanelLabel = false;
-					pointerTransition = null;
+					clearTransition();
 				}
 				// show close label
 				boolean b0 = showCloseLabel;
@@ -433,14 +415,9 @@ public class DiplomacyScreen extends ScreenBase {
 			} else
 			if (e.has(Type.DOWN)) {
 				if (!projectorOpen && !projectorClosing && !openCloseAnimating) {
-					WalkPosition position = ScreenUtils.getWalk("*diplomacy", world());
-					if (position != null) {
-						for (WalkTransition wt : position.transitions) {
-							if (wt.area.contains(e.x - base.x, e.y - base.y)) {
-								ScreenUtils.doTransition(position, wt, commons, e.has(Button.RIGHT));
-								return false;
-							}
-						}
+					if (overTransitionArea()) {
+						performTransition(e.has(Button.RIGHT));
+						return true;
 					}
 					if (e.within(base.x, base.y, base.width, 350)) {
 						showPanelLabel = false;
@@ -537,8 +514,8 @@ public class DiplomacyScreen extends ScreenBase {
 		}
 
 		if (!openCloseAnimating && !inCall) {
-			if (pointerTransition != null) {
-				ScreenUtils.drawTransitionLabel(g2, pointerTransition, base, commons);
+			if (overTransitionArea()) {
+				drawTransitionLabel(g2);
 			}
 			if (showPanelLabel) {
 				String s = get("diplomacy.show_panel");
@@ -1599,5 +1576,10 @@ public class DiplomacyScreen extends ScreenBase {
 	protected Pair<Point, Double> scale() {
 		Pair<Point, Double> s = scale(base, margin());
 		return Pair.of(new Point(base.x, base.y), s.second);
+	}
+
+	@Override
+	protected WalkPosition getPosition() {
+		return ScreenUtils.getWalk("*diplomacy", world());
 	}
 }

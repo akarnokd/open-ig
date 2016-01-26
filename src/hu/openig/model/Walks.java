@@ -56,6 +56,9 @@ public class Walks {
 						wt.media = transition.get("media", null);
 						wt.label = transition.get("label");
 						wt.to = transition.get("to");
+						if (transition.has("cursor")) {
+							wt.cursor = Cursors.valueOf(transition.get("cursor"));
+						}
 						String area = transition.get("area");
 						List<Integer> xs = new ArrayList<>();
 						List<Integer> ys = new ArrayList<>();

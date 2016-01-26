@@ -859,6 +859,8 @@ public class GameWindow extends JFrame implements GameControls {
 				}
 			}
 		}
+
+		commons.setCursor(Cursors.POINTER);
 		return sb;
 	}
 	@Override
@@ -874,6 +876,7 @@ public class GameWindow extends JFrame implements GameControls {
 	 */
 	public void displayMovie() {
 		if (!movieVisible()) {
+			commons.setCursor(Cursors.POINTER);
 			movieVisible(true);
 			movie.onEnter(null);
 			moveMouse();
