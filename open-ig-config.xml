@@ -54,6 +54,7 @@
 <entry key="aiGroundAttackGetCloser">true</entry>
 <entry key="swapMouseButtons">false</entry>
 <entry key="aiGroundAttackEverything">true</entry>
+<entry key="autoDisplayObjectives">true</entry>
 <entry key="textCacheSize">0</entry>
 <entry key="effectVolume">60</entry>
 <entry key="timestep">60</entry>
@@ -69,7 +70,7 @@
 <entry key="computerVoiceNotify">true</entry>
 <entry key="width">1121</entry>
 <entry key="animateInventory">true</entry>
-<entry key="customCursors">false</entry>
+<entry key="customCursors">true</entry>
 <entry key="tileCacheSize">0</entry>
 <entry key="radarUnion">true</entry>
 <entry key="subtitles">true</entry>

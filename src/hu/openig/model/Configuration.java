@@ -36,7 +36,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.205";
+	public static final String VERSION = "0.95.206";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }

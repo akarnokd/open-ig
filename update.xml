@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.205'>
+  <module id='Game' version='0.95.206'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,14 +34,18 @@
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='http://open-ig-dev.blogspot.hu'>
-      <desc lang='hu'>AI fejlesztések.</desc>
-      <desc lang='en'>AI improvements.</desc>
-      <desc lang='de'>AI improvements.</desc>
-      <desc lang='fr'>AI improvements.</desc>
-      <desc lang='ru'>AI improvements.</desc>
-      <desc lang='es'>AI improvements.</desc>
+      <desc lang='hu'>Képernyő javítások.</desc>
+      <desc lang='en'>Screen fixes.</desc>
+      <desc lang='de'>Screen fixes.</desc>
+      <desc lang='fr'>Screen fixes.</desc>
+      <desc lang='ru'>Screen fixes.</desc>
+      <desc lang='es'>Screen fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.206' date='2016-01-26'>
+        <item category='UI'>Walking around the ship now uses custom mouse cursors. Thanks @p-smith!</item>
+        <item category='UI'>Scaled spacewar screen now properly displays mouse cursor over objects. Thanks @Zalewa</item>
+      </entry>
       <entry version='0.95.205' date='2015-03-25'>
         <item issues='920'>Fixed error in case the user and the auto-build removed a building at the same time.</item>
         <item issues='921' category='Simulation'>Fixed tax and population calculation resulting in NaN to prevent proper planet death and causing other calculations to go haywire.</item>
@@ -84,8 +88,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.205.jar' sha1='173FBFBEB177BFA3C0CF7C3A05C737E502257C31'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20141217a2.zip' sha1='174084CF45A29467756ABCAD404FBE2FFBB62110'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.206.jar' sha1='5C7C292BD32B8F60282869E5E267A014BF1C24C7'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20160126a2.zip' sha1='28F771848274663C13147D60E16ED8E3A5990590'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
