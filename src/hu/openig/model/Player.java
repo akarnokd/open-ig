@@ -872,11 +872,8 @@ public class Player {
 			r.state = ResearchState.COMPLETE;
 			r.remainingMoney = 0;
 			r.assignedMoney = 0;
-			if (currentResearch == rt) {
-				currentResearch = null;
-			}
 			setAvailable(rt);
-			
+
 			statistics.researchCount.value++;
 			world.statistics.researchCount.value++;
 		}

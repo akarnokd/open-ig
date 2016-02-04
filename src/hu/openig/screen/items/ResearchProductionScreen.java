@@ -1711,9 +1711,6 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 					&& player().runningResearch() != rt 
 					&& player().canResearch(rt));
 		} else {
-			for (TechnologySlot slot : slots) {
-				slot.visible(false);
-			}
 			startNew.visible(false);
 			requires1.text("");
 			requires2.text("");
