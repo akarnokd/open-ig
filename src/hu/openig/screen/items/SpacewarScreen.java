@@ -499,15 +499,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					needRepaint = true;
 				}
 			}
-			if (e.has(Button.LEFT) && mainmap.contains(e.x, e.y)) {
+
+			Point2D.Double spaceMouse = mouseToSpace(e.x, e.y);
+			if (e.has(Button.LEFT) && space.contains(spaceMouse)) {
 				if (moveButton.selected) {
-					Point2D.Double p = mouseToSpace(e.x, e.y);
-					doMoveSelectedShips(p.x, p.y);
+					doMoveSelectedShips(spaceMouse.x, spaceMouse.y);
 					moveButton.selected = false;
 				} else
 				if (rocketButton.selected) {
-					Point2D.Double p = mouseToSpace(e.x, e.y);
-					SpacewarStructure s = enemyAt(p.x, p.y);
+					SpacewarStructure s = enemyAt(spaceMouse.x, spaceMouse.y);
 					if (s != null) {
 						doAttackWithRockets(s);
 					} else {
@@ -516,8 +516,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					}
 				} else
 				if (attackButton.selected) {
-					Point2D.Double p = mouseToSpace(e.x, e.y);
-					SpacewarStructure s = enemyAt(p.x, p.y);
+					SpacewarStructure s = enemyAt(spaceMouse.x, spaceMouse.y);
 					if (s != null) {
 						doAttackWithShips(s);
 						attackButton.selected = false;
@@ -536,12 +535,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					}
 				}
 			}
-			if (e.has(Button.RIGHT) && mainmap.contains(e.x, e.y)) {
+			if (e.has(Button.RIGHT) && space.contains(spaceMouse)) {
 				if (config.classicControls) {
-					Point2D.Double p = mouseToSpace(e.x, e.y);
-					SpacewarStructure s = enemyAt(p.x, p.y);
+					SpacewarStructure s = enemyAt(spaceMouse.x, spaceMouse.y);
 					if (s == null) {
-						doMoveSelectedShips(p.x, p.y);
+						doMoveSelectedShips(spaceMouse.x, spaceMouse.y);
 						moveButton.selected = false;
 					} else {
 						if (rocketButton.selected) {
@@ -554,12 +552,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 					
 				} else {
 					if (e.has(Modifier.SHIFT)) {
-						Point2D.Double p = mouseToSpace(e.x, e.y);
-						doMoveSelectedShips(p.x, p.y);
+						doMoveSelectedShips(spaceMouse.x, spaceMouse.y);
 					} else
 					if (e.has(Modifier.CTRL)) {
-						Point2D.Double p = mouseToSpace(e.x, e.y);
-						SpacewarStructure s = enemyAt(p.x, p.y);
+						SpacewarStructure s = enemyAt(spaceMouse.x, spaceMouse.y);
 						if (s != null) {
 							doAttackWithShips(s);
 						}
