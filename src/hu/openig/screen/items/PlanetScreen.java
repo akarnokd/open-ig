@@ -6217,7 +6217,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				removeUnitAt(mx, my);
 				undeploySpray = true;
 			}
-			startBattle.visible(!units.isEmpty());
+			startBattle.visible(unitsToPlace.isEmpty());
 		}
 	}
 	/**
