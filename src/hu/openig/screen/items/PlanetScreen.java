@@ -374,7 +374,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/** Cancel the retreat. */
 	boolean cancelRetreat;
 
-	private boolean preparingGroundBattle = false;
+	private boolean preparingGroundBattle;
 
 	@Override
 	public void onFinish() {
