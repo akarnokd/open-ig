@@ -464,7 +464,7 @@ public class ColonyPlanner extends Planner {
 		double moraleNow = planet.morale;
 		double moraleLast = planet.lastMorale;
 		// only if there is energy available
-		if (planet.statistics.energyAvailable >= planet.statistics.energyDemand) {
+		if (planet.statistics.energyAvailable * 11 >= planet.statistics.energyDemand * 10) {
 			if (moraleNow < 21 && moraleLast < 27 && !planet.statistics.constructing) {
 				if (manageBuildings(planet, morale, costOrder, true)) {
 					return true;
@@ -523,6 +523,9 @@ public class ColonyPlanner extends Planner {
 		if (world.money >= ISSUE_MONEY_TOLERANCE) {
 		    tolerance = 1;
 		}
+		if (planet.statistics.energyAvailable * 11 >= planet.statistics.energyDemand * 10) {
+            return false;
+        }
 		if (planet.population > planet.statistics.foodAvailable * tolerance) {
 			return manageBuildings(planet, food, costOrder, true);
 		}
@@ -580,10 +583,13 @@ public class ColonyPlanner extends Planner {
 	 * @return if action taken
 	 */
 	boolean checkLivingSpace(final AIPlanet planet) {
-		if (planet.population > planet.statistics.houseAvailable) {
-			return manageBuildings(planet, livingSpace, costOrder, true);
-		}
-		return false;
+	    if (planet.population * 10 <= planet.statistics.houseAvailable * 11) {
+	        return false;
+	    }
+	    if (planet.statistics.energyAvailable * 11 >= planet.statistics.energyDemand * 10) {
+	        return false;
+	    }
+        return manageBuildings(planet, livingSpace, costOrder, true);
 	}
 	/**
 	 * Returns a list of buildings candidate for disablement.

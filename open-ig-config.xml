@@ -4,14 +4,14 @@
 <comment>Open Imperium Galactica Configuration</comment>
 <entry key="showStarmapScroll">true</entry>
 <entry key="fullScreen">false</entry>
-<entry key="currentProfile">1</entry>
+<entry key="currentProfile">default</entry>
 <entry key="tileCacheBaseLimit">-10</entry>
-<entry key="muteMusic">false</entry>
+<entry key="muteMusic">true</entry>
 <entry key="aiAutoBuildProduction">true</entry>
 <entry key="computerVoiceScreen">false</entry>
 <entry key="useStandardFonts">false</entry>
-<entry key="muteVideo">false</entry>
-<entry key="reequipTanks">false</entry>
+<entry key="muteVideo">true</entry>
+<entry key="reequipTanks">true</entry>
 <entry key="showBuildingName">true</entry>
 <entry key="allowWeather">true</entry>
 <entry key="movieClickSkip">true</entry>
@@ -37,7 +37,7 @@
 <entry key="showStarmapInfo">true</entry>
 <entry key="uiScale">100</entry>
 <entry key="researchMoneyPercent">2000</entry>
-<entry key="reequipBombs">false</entry>
+<entry key="reequipBombs">true</entry>
 <entry key="spacewarDiminishingAttachCount">10</entry>
 <entry key="continuousMoney">true</entry>
 <entry key="showStarmapMinimap">true</entry>
@@ -45,7 +45,7 @@
 <entry key="disableDirectDraw">false</entry>
 <entry key="left">526</entry>
 <entry key="classicControls">true</entry>
-<entry key="autoRepair">false</entry>
+<entry key="autoRepair">true</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="movieScale">true</entry>
 <entry key="language">hu</entry>
@@ -74,7 +74,7 @@
 <entry key="tileCacheSize">0</entry>
 <entry key="radarUnion">true</entry>
 <entry key="subtitles">true</entry>
-<entry key="muteEffect">false</entry>
+<entry key="muteEffect">true</entry>
 <entry key="tileCacheBuildingLimit">10</entry>
 <entry key="disableOpenGL">false</entry>
 </properties>
