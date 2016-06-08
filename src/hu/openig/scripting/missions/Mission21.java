@@ -218,7 +218,7 @@ public class Mission21 extends Mission {
 		addInventory(f, "Fighter2", 4);
 		
 		InventoryItem ii = f.getInventoryItem(d);
-		
+
 		setSlot(ii, "laser1", "Laser1", 6);
 		setSlot(ii, "laser2", "Laser2", 4);
 		setSlot(ii, "shield", "Shield1", 1);
@@ -267,9 +267,11 @@ public class Mission21 extends Mission {
 	boolean concludeBattle(BattleInfo battle) {
 		boolean result = false;
 		clearMission("Mission-21-Timeout");
-		Fleet carrier = findTaggedFleet(ALLY, player);
 
-		if (carrier != null) {
+		Fleet prototypeFleet = findTaggedFleet(ALLY, player);
+		// If the prototype fleet still exists and contains a Destroyer2, the player
+		// has successfully defended the prototype.
+		if (prototypeFleet != null && !prototypeFleet.inventory.findByType("Destroyer2").isEmpty()) {
 			setObjectiveState("Mission-21", ObjectiveState.SUCCESS);
 			addTimeout("Mission-21-Hide", 13000);
 			addTimeout("Mission-21-Thanks", 5000);
