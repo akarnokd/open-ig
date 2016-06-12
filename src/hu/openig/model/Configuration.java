@@ -36,7 +36,7 @@ import java.util.TreeSet;
  */
 public class Configuration {
 	/** The version string. */
-	public static final String VERSION = "0.95.208";
+	public static final String VERSION = "0.95.209";
 	/** Annotation for indicating load/save a field. */
 	@Retention(RetentionPolicy.RUNTIME)
 	@interface LoadSave { }
@@ -351,7 +351,7 @@ public class Configuration {
 	@LoadSave
 	public int textCacheSize = 0;
 	/** Show the frame statistics .*/
-	public boolean showFPS = true;
+	public boolean showFPS;
 	/** List of supported language codes. */
 	public final List<String> languageSupport = Arrays.asList(
 			"en", "english", 

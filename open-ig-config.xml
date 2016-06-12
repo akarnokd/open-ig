@@ -58,7 +58,7 @@
 <entry key="textCacheSize">0</entry>
 <entry key="effectVolume">100</entry>
 <entry key="timestep">60</entry>
-<entry key="maximized">false</entry>
+<entry key="maximized">true</entry>
 <entry key="quickRNP">true</entry>
 <entry key="joinPorts-count">0</entry>
 <entry key="videoVolume">100</entry>
