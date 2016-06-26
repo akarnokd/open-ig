@@ -6217,7 +6217,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				removeUnitAt(mx, my);
 				undeploySpray = true;
 			}
-			startBattle.visible(unitsToPlace.isEmpty());
 		}
 	}
 	/**
@@ -6245,6 +6244,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				u.y = lm.y;
 				addUnitLocation(u);
 				battlePlacements.remove(lm);
+
+				startBattle.visible(unitsToPlace.isEmpty());
 			}
 		}
 	}
@@ -6261,6 +6262,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				units.remove(u);
 				unitsToPlace.addFirst(u);
 				removeUnitLocation(u);
+
+				startBattle.visible(unitsToPlace.isEmpty());
 			}
 		}
 	}
