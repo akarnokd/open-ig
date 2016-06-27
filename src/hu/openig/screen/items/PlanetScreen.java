@@ -2593,13 +2593,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			buildingInfoPanel.repairing.enabled(planet().owner == player());
 			buildingInfoPanel.damaged.enabled(planet().owner == player());
 			
-			upgradePanel.visible(
-					b != null && b.type.upgrades.size() > 0 
-					&& buildingInfoPanel.visible() 
-					&& b.isComplete()
-					&& !b.isSeverlyDamaged()
-					&& planet().owner == player()
-			);
+			boolean upgradeVisible = 
+                    b != null && b.type.upgrades.size() > 0 
+                    && buildingInfoPanel.visible() 
+                    && b.isComplete()
+                    && !b.isSeverlyDamaged()
+                    && planet().owner == player();
+                    
+			upgradePanel.visible(upgradeVisible);
+			if (!upgradeVisible) {
+			    upgradePanel.clearTooltips();
+			}
 			
 			if (demolish.enabled()) {
 				setTooltip(demolish, "buildings.demolish.tooltip", (currentBuilding.upgradeLevel + 1) * currentBuilding.type.cost / 2);
@@ -3102,6 +3106,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 				hideUpgradeSelection();
 			}
 			return super.visible(state);
+		}
+		
+		public void clearTooltips() {
+		    for (int i = 0; i < steps.size(); i++) {
+                UIImageButton up = steps.get(i);
+                up.tooltip(null);
+		    }
 		}
 	}
 	/** 

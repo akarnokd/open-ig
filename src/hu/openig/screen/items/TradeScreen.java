@@ -50,7 +50,7 @@ import java.util.List;
  */
 public class TradeScreen extends ScreenBase {
 	/** The screen origin. */
-	final Rectangle base = new Rectangle(0, 0, 620, 442);
+	final Rectangle base = new Rectangle(0, 0, 620, 420);
 	/** All categories. */
 	UIImageTabButton all;
 	/** Battleships category. */
