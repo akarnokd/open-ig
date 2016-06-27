@@ -1563,7 +1563,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		}
 		result.nativeWorkerDemand += Math.abs(b.getWorkers()) * health;		
 	}
-	/** @returns the current morale. */
+	/** @return the current morale. */
 	public double morale() {
 	    return morale;
 	}
@@ -1578,13 +1578,13 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	        morale = Math.max(0d, Math.min(100, newMorale));
 	    }
 	}
-    /** @returns the last morale. */
+    /** @return the last morale. */
     public double lastMorale() {
         return lastMorale;
     }
     /**
      * Sets a new morale.
-     * @param newMorale the new last morale
+     * @param newLastMorale the new last morale
      */
     public void lastMorale(double newLastMorale) {
         if (!isFinite(newLastMorale)) {
