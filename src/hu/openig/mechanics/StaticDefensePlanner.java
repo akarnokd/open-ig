@@ -330,7 +330,7 @@ public class StaticDefensePlanner extends Planner {
 	boolean checkTanks(final AIPlanet planet) {
 		int vehicleMax = planet.statistics.vehicleMax;
 		
-		if (world.difficulty == Difficulty.EASY) {
+		if (world.difficulty == Difficulty.EASY && p != world.mainPlayer) {
 		    vehicleMax = vehicleMax * 2 / 3;
 		}
 		
