@@ -51,6 +51,9 @@ public class ResearchPlanner extends Planner {
 	}
 	@Override
 	public void plan() {
+	    if (world.level < 3) {
+	        return;
+	    }
 		world.researchRequiresColonization = false;
 		if (world.runningResearch != null) {
 			// if not enough labs, stop research and let the other management tasks apply
