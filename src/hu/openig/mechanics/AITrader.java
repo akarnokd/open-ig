@@ -485,41 +485,43 @@ public class AITrader implements AIManager {
 					idx = our.id;
 				}
 				
-				String filter = "chat.merchant";
-				
-				if (player.world.infectedFleets.containsKey(our.id)) {
-					filter = "chat.virus.outgoing";
-					if (battle.helperPlanet != null) {
-						if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
-							battle.showLanding = true;
-						}					
-					}
-				} else {
-					Planet p = our.targetPlanet();
-					if (p == null) {
-						p = our.arrivedAt;
-					}
-					if (p != null && p.quarantineTTL > 0) {
-						filter = CHAT_VIRUS_INCOMING;
-						battle.showLanding = p == battle.helperPlanet;
-					} else
-					if (battle.helperPlanet != null) {
-						if (p == battle.helperPlanet) {
-							filter = "chat.blockade.incoming";
-							battle.showLanding = true;
-						} else
-						if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
-							filter = "chat.blockade.outgoing";
-							battle.showLanding = true;
-						}
-					}
+				if (battle.chat == null) {
+    				String filter = "chat.merchant";
+    				
+    				if (player.world.infectedFleets.containsKey(our.id)) {
+    					filter = "chat.virus.outgoing";
+    					if (battle.helperPlanet != null) {
+    						if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
+    							battle.showLanding = true;
+    						}					
+    					}
+    				} else {
+    					Planet p = our.targetPlanet();
+    					if (p == null) {
+    						p = our.arrivedAt;
+    					}
+    					if (p != null && p.quarantineTTL > 0) {
+    						filter = CHAT_VIRUS_INCOMING;
+    						battle.showLanding = p == battle.helperPlanet;
+    					} else
+    					if (battle.helperPlanet != null) {
+    						if (p == battle.helperPlanet) {
+    							filter = "chat.blockade.incoming";
+    							battle.showLanding = true;
+    						} else
+    						if (battle.helperPlanet == lastVisitedPlanet.get(our)) {
+    							filter = "chat.blockade.outgoing";
+    							battle.showLanding = true;
+    						}
+    					}
+    				}
+    				
+    				List<String> chats = filterChats(filter);
+    				
+    				int comm = idx % chats.size();
+    				
+    				battle.chat = chats.get(comm);
 				}
-				
-				List<String> chats = filterChats(filter);
-				
-				int comm = idx % chats.size();
-				
-				battle.chat = chats.get(comm);
 				
 				if (battle.helperPlanet != null && battle.helperPlanet.owner == battle.attacker.owner) {
 					if (lastVisitedPlanet.get(our) == battle.helperPlanet) {
