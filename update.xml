@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.209'>
+  <module id='Game' version='0.95.210'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,14 +34,24 @@
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='http://open-ig-dev.blogspot.hu'>
-      <desc lang='hu'>Küldetés 19 javítás</desc>
-      <desc lang='en'>Mission 19 Fixes.</desc>
-      <desc lang='de'>Mission 19 Fixes.</desc>
-      <desc lang='fr'>Mission 19 Fixes.</desc>
-      <desc lang='ru'>Mission 19 Fixes.</desc>
-      <desc lang='es'>Mission 19 Fixes.</desc>
+      <desc lang='hu'>Javítások</desc>
+      <desc lang='en'>Fixes.</desc>
+      <desc lang='de'>Fixes.</desc>
+      <desc lang='fr'>Fixes.</desc>
+      <desc lang='ru'>Fixes.</desc>
+      <desc lang='es'>Fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.210' date='2016-07-19'>
+        <item category='AI' issues='924'>Fixed Trader AI overriding the script-designated chat back to the default chat.</item>
+        <item category='Labels' issues='987'>Fixed some parametric russian labels.</item>
+        <item category='Labels'>Added missing Hungarian labels about the settings screen.</item>
+        <item category='UI' issues='986'>The button Start Battle is now only visible if all vehicles have been deployed.</item>
+        <item category='UI'>Fixed the trade screen's bounding box.</item>
+        <item category='UI'>Fixed the tooltip on the building upgrade panel remaining visible after clicking on the upgrade star.</item>
+        <item category='AI'>AI no longer does research before level 3.</item>
+        <item category='Balance'>AI on easy no longer deploys tanks to the planet's capacity but only 2/3.</item>
+      </entry>
       <entry version='0.95.209' date='2016-06-12'>
         <item category='Missions' issues='974'>Fix the Escort Prototype mission not failing if the prototype gets destroyed but its escort survives.</item>
         <item category='UI' issues='979'>Framerate statistics is not turned off by default. Use CTRL+F to toggle it.</item>
@@ -100,8 +110,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.209.jar' sha1='3B1EAD1DC2C5199BEB5C0791474F8306DA38E172'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20160126a2.zip' sha1='28F771848274663C13147D60E16ED8E3A5990590'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.210.jar' sha1='233AE441DA954889909732774EF8ECFB27B9368C'/>
+    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20160719a2.zip' sha1='57A63024BD8365E277F2635C6A506E9B199C6061'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
