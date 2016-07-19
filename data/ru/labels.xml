@@ -107,7 +107,7 @@
   <entry key='autobuild.OFF'>Отключена</entry>
   <entry key='autobuild.SOCIAL'>Социальные сооружения</entry>
   <entry key='autobuild.UPGRADE'>Улучшение сооружений</entry>
-  <entry key='autobuild.no_more_building_space'>Автозастройка на планете % остановлена из-за нехватки территории.</entry>
+  <entry key='autobuild.no_more_building_space'>Автозастройка на планете %s остановлена из-за нехватки территории.</entry>
   <entry key='autosave'>Автосохранение</entry>
   <entry key='bar.brian.301'>Привет, Брайан. Расскажи мне, как ты стал главным техником..</entry>
   <entry key='bar.brian.311'>Никогда раньше не думал, что стану главным военным техником..</entry>
@@ -2063,7 +2063,7 @@
   <entry key='mission-2.protect_traders.desc'>Защитите торговцев от пиратских атак.</entry>
   <entry key='mission-2.save_trader'>Спасите торговца</entry>
   <entry key='mission-2.save_trader.desc'>Корабль торговца должен выжить.</entry>
-  <entry key='mission-2.save_trader.reward'>Награда: % кредитов</entry>
+  <entry key='mission-2.save_trader.reward'>Награда: %s кредитов</entry>
   <entry key='mission-20.brian'>Снова сны, поговорите с Брайаном</entry>
   <entry key='mission-20.brian.desc'>Идите с бар и поговорите с Брайаном насчет роботов.</entry>
   <entry key='mission-21.prototype2'>Сопроводите новый прототип</entry>
@@ -2104,7 +2104,7 @@
   <entry key='mission-7.protect_traders.desc'>Пираты Гартогов ищут торговые корабли. Будьте наготове.</entry>
   <entry key='mission-7.save_trader'>Спасите торговый корабль</entry>
   <entry key='mission-7.save_trader.desc'>Торговый корабль должен выжить.</entry>
-  <entry key='mission-7.save_trader.reward'>Награда: % кредитов</entry>
+  <entry key='mission-7.save_trader.reward'>Награда: %s кредитов</entry>
   <entry key='mission-8.go_to_bar'>Идите в бар и поговорите с доктором Рейнхарт о вашем видении</entry>
   <entry key='mission-8.test'>Пройдите тест</entry>
   <entry key='mission-8.test.desc'>Идите на мостик и пройдите тест доктора Рейнхарт.</entry>
