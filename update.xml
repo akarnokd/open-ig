@@ -110,31 +110,31 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-0.95.210.jar' sha1='233AE441DA954889909732774EF8ECFB27B9368C'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-upgrade-20160719a2.zip' sha1='57A63024BD8365E277F2635C6A506E9B199C6061'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.210.jar' sha1='233AE441DA954889909732774EF8ECFB27B9368C'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20160719a2.zip' sha1='57A63024BD8365E277F2635C6A506E9B199C6061'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-03-0.8.zip' sha1='e7f033232d93673f2459411258e2238617efca2b'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-04-0.8.zip' sha1='339cb2ee77d5358502f2cb6a35e3386eddf89403'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-05-0.8.zip' sha1='001802695355cf583d1ffc8efdad1fb457500c6a'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-06-0.8.zip' sha1='6f70f5be4c87ea7a6d2156671ae60d9db3473c2b'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-07-0.8.zip' sha1='ec20d9ad5384a875227da256b5144297ba9a5345'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-08-0.8.zip' sha1='8e677013194ba8820fbc56f7d758e7bd87ffcd4f'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-09-0.8.zip' sha1='8dec04b14317439796d262a1eb4de66857f0cb6d'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-10-0.8.zip' sha1='c6966a5239b34b235764f0c94cb4d0caab88238f'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe' size='39428719' language='hu'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b' size='38058005'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907' size='3302023' language='de'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-fr-20121022.zip' sha1='574c3c4c52937c10553f519da9428338e55cb51a' size='3310322' language='fr'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-video-ru-20121022.zip' sha1='bde1bfd60776fb0d8270f3898ff15a5a262ca22a' size='3106835' language='ru'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-audio-en-20120623A.zip' sha1='b62309158878f832510b48ab7873790cbafa1ff7' size='46004980' language='en'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609' size='42768624' language='hu'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77' size='46534493' language='de'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-audio-fr-20121022.zip' sha1='0bf49594221f18163cc31840bb7cb427a673643d' size='44007662' language='fr'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-audio-ru-20121022.zip' sha1='9753b415d1feed5b6dcad754b2982561fa698d83' size='38030621' language='ru'/>
-    <file url='https://googledrive.com/host/0B4T7ZW3brESKeU1jWnpqMGVnZ0k/open-ig-audio-generic-20121121A.zip' sha1='a6d36fc0221582157f3ceccd48b8115ad3da6788'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-03-0.8.zip' sha1='e7f033232d93673f2459411258e2238617efca2b'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-04-0.8.zip' sha1='339cb2ee77d5358502f2cb6a35e3386eddf89403'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-05-0.8.zip' sha1='001802695355cf583d1ffc8efdad1fb457500c6a'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-06-0.8.zip' sha1='6f70f5be4c87ea7a6d2156671ae60d9db3473c2b'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-07-0.8.zip' sha1='ec20d9ad5384a875227da256b5144297ba9a5345'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-08-0.8.zip' sha1='8e677013194ba8820fbc56f7d758e7bd87ffcd4f'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-09-0.8.zip' sha1='8dec04b14317439796d262a1eb4de66857f0cb6d'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-10-0.8.zip' sha1='c6966a5239b34b235764f0c94cb4d0caab88238f'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-hu-0.8.zip' sha1='123225ba78e3a02d1d3e43227e4dfd67a9bbcdfe' size='39428719' language='hu'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-en-20120423A.zip' sha1='82bdfbc258e5aa15c6fb136dbd69fc677182e75b' size='38058005'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-de-20120420A.zip' sha1='d6d90c660b605e5d8aa4ff5034f641e0f81bd907' size='3302023' language='de'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-fr-20121022.zip' sha1='574c3c4c52937c10553f519da9428338e55cb51a' size='3310322' language='fr'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-ru-20121022.zip' sha1='bde1bfd60776fb0d8270f3898ff15a5a262ca22a' size='3106835' language='ru'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-en-20120623A.zip' sha1='b62309158878f832510b48ab7873790cbafa1ff7' size='46004980' language='en'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-hu-20120420A.zip' sha1='43dbcfa7a62c0cc5b70a13c5c56e01fc64453609' size='42768624' language='hu'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-de-20120420A.zip' sha1='367b289224a177f0a2f8c3d5f15e197f3d58db77' size='46534493' language='de'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-fr-20121022.zip' sha1='0bf49594221f18163cc31840bb7cb427a673643d' size='44007662' language='fr'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-ru-20121022.zip' sha1='9753b415d1feed5b6dcad754b2982561fa698d83' size='38030621' language='ru'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-audio-generic-20121121A.zip' sha1='a6d36fc0221582157f3ceccd48b8115ad3da6788'/>
     <remove file='open-ig-audio-generic-20120620A.zip'/>
     <remove file='open-ig-audio-generic-20120505A.zip'/>
     <remove file='open-ig-video-01-0.8.zip'/>

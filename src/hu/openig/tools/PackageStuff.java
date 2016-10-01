@@ -68,7 +68,7 @@ public final class PackageStuff {
 	 */
 	static String buildImages(String version) {
 		String result = "";
-		String fileName = "open-ig-images-" + version + ".zip";
+		String fileName = "install/open-ig-images-" + version + ".zip";
 		try (ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
 							new FileOutputStream(fileName), 1024 * 1024))) {
@@ -91,7 +91,7 @@ public final class PackageStuff {
 	 */
 	static String buildData(String version) {
 		String result = "";
-		String fileName = "open-ig-upgrade-" + version + "2.zip";
+		String fileName = "install/open-ig-upgrade-" + version + "2.zip";
 		try (ZipOutputStream zout = new ZipOutputStream(
 					new BufferedOutputStream(
 							new FileOutputStream(fileName), 1024 * 1024))) {
@@ -113,7 +113,7 @@ public final class PackageStuff {
 	 * @return the digest
 	 */
 	static String buildGame(String version) {
-		String fileName = "open-ig-" + version + ".jar";
+		String fileName = "install/open-ig-" + version + ".jar";
 		try (ZipOutputStream zout = new ZipOutputStream(
 				new BufferedOutputStream(
 						new FileOutputStream(fileName), 1024 * 1024))) {
