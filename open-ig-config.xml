@@ -11,7 +11,7 @@
 <entry key="computerVoiceScreen">true</entry>
 <entry key="useStandardFonts">false</entry>
 <entry key="muteVideo">true</entry>
-<entry key="reequipTanks">false</entry>
+<entry key="reequipTanks">true</entry>
 <entry key="showBuildingName">true</entry>
 <entry key="allowWeather">true</entry>
 <entry key="movieClickSkip">true</entry>
@@ -21,7 +21,7 @@
 <entry key="targetSpecificRockets">false</entry>
 <entry key="aiAllowBuildingUpgrades">false</entry>
 <entry key="hostPorts-count">0</entry>
-<entry key="autoBuildLimit">0</entry>
+<entry key="autoBuildLimit">20000</entry>
 <entry key="autoBuildEconomyFirst">true</entry>
 <entry key="hostUPnP">false</entry>
 <entry key="spacewarDiminishingAttach">true</entry>
@@ -36,8 +36,8 @@
 <entry key="intro">false</entry>
 <entry key="showStarmapInfo">true</entry>
 <entry key="uiScale">100</entry>
-<entry key="researchMoneyPercent">2000</entry>
-<entry key="reequipBombs">false</entry>
+<entry key="researchMoneyPercent">1000</entry>
+<entry key="reequipBombs">true</entry>
 <entry key="spacewarDiminishingAttachCount">10</entry>
 <entry key="continuousMoney">true</entry>
 <entry key="showStarmapMinimap">true</entry>
@@ -45,7 +45,7 @@
 <entry key="disableDirectDraw">false</entry>
 <entry key="left">526</entry>
 <entry key="classicControls">false</entry>
-<entry key="autoRepair">true</entry>
+<entry key="autoRepair">false</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="movieScale">true</entry>
 <entry key="language">hu</entry>
@@ -64,7 +64,7 @@
 <entry key="videoVolume">100</entry>
 <entry key="top">200</entry>
 <entry key="productionHistoryLimit">10</entry>
-<entry key="dayNightCycle">false</entry>
+<entry key="dayNightCycle">true</entry>
 <entry key="automaticBattle">false</entry>
 <entry key="joinPort">13951</entry>
 <entry key="computerVoiceNotify">true</entry>
