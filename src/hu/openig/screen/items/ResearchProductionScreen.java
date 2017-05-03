@@ -271,7 +271,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
 	/** The research settings for the selected technology base panel. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UIImage selectedResearchBase;
-	/** The currenly running research base panel. */
+	/** The currently running research base panel. */
 	@ModeUI(mode = Screens.RESEARCH)
 	UIImage activeResearchBase;
 	/** The description of the selected technology base panel. */

@@ -84,7 +84,7 @@ public class ScreenMenu extends UIContainer {
 	}
 	/**
 	 * Check if the given screen index is disabled in the current state.
-	 * @param idx the sceen index
+	 * @param idx the screen index
 	 * @return true if disabled
 	 */
 	boolean isScreenDisabled(int idx) {
@@ -116,7 +116,7 @@ public class ScreenMenu extends UIContainer {
 		return true;
 	}
 	/**
-	 * Switch to the higlighted screen or hide the menu.
+	 * Switch to the highlighted screen or hide the menu.
 	 */
 	void switchScreen() {
 		switch (highlight) {

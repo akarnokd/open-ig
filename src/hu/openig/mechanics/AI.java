@@ -578,7 +578,7 @@ public class AI implements AIManager {
 		
 		PlanetStatistics ownStats = p.getPlanetStatistics(null);
 
-//		PlanetStatistics senderStas = computeVisibleStats(other);
+//		PlanetStatistics senderStats = computeVisibleStats(other);
 		
 		double rnd = ModelUtils.random();
 		double rel = r.value;

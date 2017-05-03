@@ -80,7 +80,7 @@ public class CEValueBox<C extends JComponent> extends JPanel implements CEInvali
 	}
 	/**
 	 * Creates a new instance with the given text and component.
-	 * @param <E> the componentt type
+	 * @param <E> the component type
 	 * @param displayText the text
 	 * @param component the component
 	 * @return the value box

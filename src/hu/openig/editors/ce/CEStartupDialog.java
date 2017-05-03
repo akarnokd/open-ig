@@ -864,7 +864,7 @@ public class CEStartupDialog extends JDialog implements CEPanelPreferences {
 					recent.remove(r);
 				}
 			} catch (XMLStreamException ex) {
-				// ingored
+				// ignored
 				System.out.println(U.stacktrace(ex));
 			}
 		}

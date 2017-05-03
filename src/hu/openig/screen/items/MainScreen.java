@@ -152,7 +152,7 @@ public class MainScreen extends ScreenBase {
 	BufferedImage background;
 	/** The random used for background selection. */
 	Random rnd = new Random();
-	/** The continue labe. */
+	/** The continue label. */
 	ClickLabel continueLabel;
 	/** The achievements screen. */
 	ClickLabel achievements;

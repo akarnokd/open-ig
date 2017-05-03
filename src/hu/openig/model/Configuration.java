@@ -483,7 +483,7 @@ public class Configuration {
 	}
 	/**
 	 * Creates a new resource locator object based on the current configuration.
-	 * Scans the containsers.
+	 * Scans the containers.
 	 * @return the resource locator ready to be used
 	 */
 	public ResourceLocator newResourceLocator() {

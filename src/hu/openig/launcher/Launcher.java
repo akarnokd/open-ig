@@ -229,7 +229,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	ConsoleWatcher cw;
 	/** The foreground color. */
 	private Color foreground;
-	/** Verzió újraellenőrzése. */
+	/** Recheck the version. */
 	private JMenuItem recheck;
 	/** Run the verification automatically? */
 	boolean runVerify;
@@ -1301,7 +1301,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	/**
 	 * Overwrite the destination file with the source file.
 	 * @param src the source file
-	 * @param dst the destinationf file
+	 * @param dst the destination file
 	 * @throws IOException on error
 	 */
 	void move(File src, File dst) throws IOException {
@@ -1319,7 +1319,7 @@ public class Launcher extends JFrame implements LauncherLabels, LauncherStyles {
 	}
 	/**
 	 * Check the existence of required files.
-	 * @return true if the check succeded
+	 * @return true if the check succeeded
 	 */
 	boolean checkInstall() {
 		Set<String> testFiles = new HashSet<>(Arrays.asList(

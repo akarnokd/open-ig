@@ -38,7 +38,7 @@ public class Tile {
 	protected float cachedAlpha = -1;
 	/** The minimum alpha value ever. */
 	public static final float MIN_ALPHA = 0.35f;
-	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
+	/** The shared working buffer. Therefore, the alpha adjustments should be done in a single thread! */
 	private static final ThreadLocal<int[][]> WORK = new ThreadLocal<int[][]>() {
 		@Override
 		protected int[][] initialValue() {
@@ -76,7 +76,7 @@ public class Tile {
 		prepareStripCache();
 	}
 	/**
-	 * Create a run-length encoded light map from the sparse bufferedimage.
+	 * Create a run-length encoded light map from the sparse buffered image.
 	 * @param lightMap the original buffered image
 	 * @return the array containing [index,color] pairs subsequently
 	 */
@@ -300,7 +300,7 @@ public class Tile {
 		return (x + toTileY(x, y) * 28) / 30f;
 	}
 	/**
-	 * Converts the screen coordinates to tile coordinates, Y comonent.
+	 * Converts the screen coordinates to tile coordinates, Y component.
 	 * @param x the screen X coordinate
 	 * @param y the screen Y coordinate
 	 * @return the tile Y coordinate

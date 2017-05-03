@@ -875,7 +875,7 @@ public class CommonResources implements GameEnvironment {
 	}
 	/**
 	 * Register a repeating action with the given delay.
-	 * @param delay the reqested frequency in milliseconds
+	 * @param delay the requested frequency in milliseconds
 	 * @param action the action to invoke
 	 * @return the handler to close this instance
 	 */
@@ -943,7 +943,7 @@ public class CommonResources implements GameEnvironment {
 		return new SimulationTimer(action, delay);
 	}
 	/**
-	 * The class to manage simulation timer related commands (pause, resume, curren).
+	 * The class to manage simulation timer related commands (pause, resume, current).
 	 * @author akarnokd, 2011.09.01.
 	 */
 	public class SimulationTimer implements Closeable {
@@ -1200,7 +1200,7 @@ public class CommonResources implements GameEnvironment {
 	}
 	/**
 	 * Play sound effects (space and ground wars).
-	 * @param type the osund type
+	 * @param type the sound type
 	 */
 	public void effectSound(SoundType type) {
 		playSound(SoundTarget.EFFECT, type, null);

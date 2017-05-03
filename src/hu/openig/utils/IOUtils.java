@@ -357,7 +357,7 @@ public final class IOUtils {
 	}
 	/**
 	 * Wraps the supplied RandomAccessFile into a regular InputStream allowing it to be
-	 * processed sequentially. The returned inputstream supports the DataInput interface.
+	 * processed sequentially. The returned input stream supports the DataInput interface.
 	 * @param raf the RandomAccessFile instance
 	 * @return the created custom InputStream object.
 	 */
@@ -373,7 +373,7 @@ public final class IOUtils {
 		private final String buffer;
 		/**
 		 * Constructor. Sets the string to use.
-		 * @param buffer the nonnul string to use
+		 * @param buffer the nonnull string to use
 		 */
 		public TextIterator(String buffer) {
 			this.buffer = buffer;

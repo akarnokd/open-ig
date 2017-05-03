@@ -229,7 +229,7 @@ public final class BattleSimulator {
 	}
 	/**
 	 * Remove empty inventory items.
-	 * @param inv the inventory provied
+	 * @param inv the inventory provide
 	 */
 	static void cleanupInventory(InventoryItems inv) {
 		inv.removeIf(InventoryItem.CLEANUP);

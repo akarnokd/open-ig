@@ -51,9 +51,9 @@ public class UIGenericButton extends UIComponent {
 	protected String text;
 	/** The text color. */
 	protected int color = 0xFF000000;
-	/** The buttom renderer. */
+	/** The button renderer. */
 	protected final GenericButtonRenderer normal;
-	/** The buttom renderer. */
+	/** The button renderer. */
 	protected final GenericButtonRenderer pressed;
 	/** The font size. */
 	protected int size;

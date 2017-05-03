@@ -15,7 +15,7 @@ import java.io.InputStream;
  * The BitInputStream allows reading individual bits from a general Java
  * InputStream. Like the various Stream-classes from Java, the BitInputStream
  * has to be created based on another Input stream. It provides a function to
- * read the next bit from the sream, as well as to read multiple bits at once
+ * read the next bit from the stream, as well as to read multiple bits at once
  * and write the resulting data into an integer value.
  * It is not threadsafe!
  * @author Andreas Jakl

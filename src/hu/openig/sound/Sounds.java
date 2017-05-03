@@ -55,7 +55,7 @@ public class Sounds {
 		/** The audio format. */
 		public final AudioFormat format;
 		/**
-		 * Constructur.
+		 * Constructor.
 		 * @param format the format to store
 		 */
 		public AudioFormatType(AudioFormat format) {
@@ -169,7 +169,7 @@ public class Sounds {
 	 */
 	SourceDataLine addLine(AudioFormatType aft) {
 		try {
-			synchronized (this) { // FIX for Linux PulseAudio Mixer theading issue 
+			synchronized (this) { // FIX for Linux PulseAudio Mixer threading issue
 				SourceDataLine sdl = AudioSystem.getSourceDataLine(aft.format);
 				sdl.open(aft.format);
 				lines.add(sdl);

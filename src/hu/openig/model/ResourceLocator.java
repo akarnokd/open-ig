@@ -43,7 +43,7 @@ import javax.xml.stream.XMLStreamException;
  * @author akarnokd, 2009.09.23.
  */
 public class ResourceLocator {
-	/** The directories and ZIP files that contain resources, order is inportant. */
+	/** The directories and ZIP files that contain resources, order is important. */
 	private final List<String> containers = new ArrayList<>();
 	/** The resource map from type to language to path. */
 	public final Map<ResourceType, Map<String, Map<String, ResourcePlace>>> resourceMap = new HashMap<>();

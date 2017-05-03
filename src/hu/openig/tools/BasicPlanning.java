@@ -60,7 +60,7 @@ public final class BasicPlanning {
 	 * Chose the best action for.
 	 * @param actions the action list
 	 * @param goals the goals
-	 * @return the action choosen
+	 * @return the action chosen
 	 */
 	static Action chooseAction(List<Action> actions, List<Goal> goals) {
 		Action best = actions.get(0);

@@ -33,7 +33,7 @@ import java.util.List;
  * Builds social buildings to keep the morale.
  * Adjusts taxes according to morale.
  * Builds factories and trading buildings.
- * May demolish damanged buildings.
+ * May demolish damaged buildings.
  * May block other planners with empty action to gain money.
  * @author akarnokd, 2011.12.28.
  */
@@ -79,7 +79,7 @@ public class ColonyPlanner extends Planner {
 		}
 	};
 	/** 
-	 * The minimum money requred to react to some shortages immediately, otherwise, there
+	 * The minimum money required to react to some shortages immediately, otherwise, there
 	 * will be a slight tolerance.
 	 */
 	static final int ISSUE_MONEY_TOLERANCE = 150_000;
@@ -232,7 +232,7 @@ public class ColonyPlanner extends Planner {
 	 * @return true if action taken
 	 */
 	boolean checkBuildingHealth(final AIPlanet planet) {
-		// demolish severely damanged buildings, faster to create a new one
+		// demolish severely damaged buildings, faster to create a new one
 		for (final AIBuilding b : planet.buildings) {
 			if (b.isDamaged() && !b.isConstructing() && b.health() < 0.5) {
 				planet.buildings.remove(b);
@@ -715,15 +715,15 @@ public class ColonyPlanner extends Planner {
 				double bestPowerBelow = 0;
 				for (BuildingType bt : world.availableBuildings) {
 					if (planet.canBuild(bt) && bt.hasResource("energy")) {
-						double energ = bt.getResource("energy");
-						if (energ > 0) {
-							if (energ >= minimumPower && bestPowerAbove > energ) {
+						double energy = bt.getResource("energy");
+						if (energy > 0) {
+							if (energy >= minimumPower && bestPowerAbove > energy) {
 								bestAbove = bt;
-								bestPowerAbove = energ;
+								bestPowerAbove = energy;
 							} else
-						    if (energ < minimumPower && bestPowerBelow < energ) {
+						    if (energy < minimumPower && bestPowerBelow < energy) {
 						    	bestBelow = bt;
-						    	bestPowerBelow = energ;
+						    	bestPowerBelow = energy;
 						    }
 						}
 					}

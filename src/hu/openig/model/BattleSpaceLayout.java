@@ -33,7 +33,7 @@ public class BattleSpaceLayout {
 	public static final int FIGHTER_COLOR = 0xFF00F300;
 	/** The medium and large ship color on the image. */
 	public static final int SHIP_COLOR = 0xFFFFBE00;
-	/** The map from location to figher (true) or ship (false). */
+	/** The map from location to fighter (true) or ship (false). */
 	public final Map<Location, Boolean> map = new HashMap<>();
     /**
      * Constructor, initializes the image but not the map.

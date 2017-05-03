@@ -309,7 +309,7 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	/**
 	 * Compute how many of the supplied items can be added without violating the limit constraints. 
 	 * @param rt the item type
-	 * @return the currently alloved
+	 * @return the currently allowed
 	 */
 	public int getAddLimit(ResearchType rt) {
 		FleetStatistics fs = getStatistics();
@@ -807,7 +807,7 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 		return p.colonize(owner);
 	}
 	/**
-	 * Creates a new fleat near this fleet.
+	 * Creates a new fleet near this fleet.
 	 * @return the new fleet.
 	 */
 	public Fleet newFleet() {
@@ -990,7 +990,7 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
 	 * Transfers the inventory item(s) from this fleet to the other fleet.
 	 * @param other the other fleet
 	 * @param itemId the source inventory id
-	 * @param mode the tranfer mode
+	 * @param mode the transfer mode
 	 */
 	private void transfer(Fleet other, int itemId, FleetTransferMode mode) {
 		InventoryItem ii = inventory.findById(itemId);

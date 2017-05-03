@@ -98,7 +98,7 @@ public class DiplomacyScreen extends WalkableScreen {
 	boolean openCloseAnimating;
 	/** The list of races in the projector. */
 	OptionList races;
-	/** The list of stances in the porjector. */
+	/** The list of stances in the projector. */
 	OptionList stances;
 	/** The list of options once a race has been selected. */
 	OptionList options;
@@ -949,7 +949,7 @@ public class DiplomacyScreen extends WalkableScreen {
 				g2.drawLine(ox + i * cellSize, oy + textSize + 3, ox + i * cellSize, oy + dh + textSize + 3);
 			}
 			
-			// draw stance valus
+			// draw stance values
 			
 			int stanceHeight = 7;
 			for (int i = 0; i < players.size(); i++) {

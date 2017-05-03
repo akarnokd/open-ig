@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 
 /**
  * Interface to specify a class supports front and back buffer swapping
- * rendering strategy. This modell is designed to be driven from one thread, where
+ * rendering strategy. This model is designed to be driven from one thread, where
  * one thread issues the getBackbuffer() and swap() calls. The underlying
  * synchronization will take care of the drawing in the event thread. The
  * init() method should be called before any attempt to use the getBackbuffer() method.

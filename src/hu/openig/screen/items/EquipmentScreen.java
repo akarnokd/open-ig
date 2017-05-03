@@ -433,7 +433,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		
 		battleships = new UIImageTabButton(commons.equipment().categoryBattleships);
 		cruisers = new UIImageTabButton(commons.equipment().categoryCruisers);
-		fighters = new UIImageTabButton(commons.equipment().categoryFighers);
+		fighters = new UIImageTabButton(commons.equipment().categoryFighters);
 		stations = new UIImageTabButton(commons.equipment().categorySpaceStations);
 		stations.visible(false);
 		tanks = new UIImageTabButton(commons.equipment().categoryTanks);
@@ -2773,7 +2773,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	 */
 	void doUpgradeAll(Planet p) {
 		p.upgradeAll();
-		// remove non-existent items from the lsit
+		// remove non-existent items from the list
 		for (InventoryItem ii : new ArrayList<>(leftList.items)) {
 			if (!p.inventory.contains(ii)) {
 				leftList.items.remove(ii);

@@ -136,7 +136,7 @@ public final class NaturalStrings {
      * values.</p>
      * <p>This is probably the best default comparison to use.</p>
      * <p>If you know that the texts to be compared are in a certain language that differs from the default locale's
-     * langage, then get a collator for the desired locale ({@link java.text.Collator#getInstance(java.util.Locale)})
+     * language, then get a collator for the desired locale ({@link java.text.Collator#getInstance(java.util.Locale)})
      * and pass it to {@link #compareNatural(java.text.Collator, String, String)}</p>
      *
      * @param s first string

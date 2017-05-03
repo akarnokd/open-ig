@@ -111,7 +111,7 @@ public class AchievementsScreen extends ScreenBase {
 	/** Colony button. */
 	UIImageButton colony;
 	/** Equipment button. */
-	UIImageButton equimpent;
+	UIImageButton equipment;
 	/** Production button. */
 	UIImageButton production;
 	/** Research button. */
@@ -162,9 +162,9 @@ public class AchievementsScreen extends ScreenBase {
 		starmap.y = bridge.y;
 		colony.x = starmap.x + starmap.width;
 		colony.y = bridge.y;
-		equimpent.x = colony.x + colony.width;
-		equimpent.y = bridge.y;
-		production.x = equimpent.x + equimpent.width;
+		equipment.x = colony.x + colony.width;
+		equipment.y = bridge.y;
+		production.x = equipment.x + equipment.width;
 		production.y = bridge.y;
 		research.x = production.x + production.width;
 		research.y = bridge.y;
@@ -250,8 +250,8 @@ public class AchievementsScreen extends ScreenBase {
 			}
 		};
 		
-		equimpent = new UIImageButton(commons.research().equipmentButton);
-		equimpent.onClick = new Action0() {
+		equipment = new UIImageButton(commons.research().equipmentButton);
+		equipment.onClick = new Action0() {
 			@Override
 			public void invoke() {
 				displaySecondary(Screens.EQUIPMENT);
@@ -383,7 +383,7 @@ public class AchievementsScreen extends ScreenBase {
 		return result;
 	}
 
-	/** Scoll the list up. */
+	/** Scroll the list up. */
 	void doScrollUp() {
 		if (mode == Screens.STATISTICS) {
 			int oldIndex = statisticsIndex;
@@ -463,7 +463,7 @@ public class AchievementsScreen extends ScreenBase {
 		
 		starmap.visible(w != null);
 		colony.visible(w != null);
-		equimpent.visible(w != null);
+		equipment.visible(w != null);
 		info.visible(w != null);
 		statisticsLabel.visible(w != null);
 		backLabel.visible(w == null);

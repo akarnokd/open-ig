@@ -274,7 +274,7 @@ public class TestScreen extends ScreenBase {
 		void doScrollUp() {
 			top = Math.max(0, Math.min(top - 30, totalHeight - height));
 		}
-		/** Scrol down. */
+		/** Scroll down. */
 		void doScrollDown() {
 			top = Math.max(0, Math.min(top + 30, totalHeight - height));
 		}

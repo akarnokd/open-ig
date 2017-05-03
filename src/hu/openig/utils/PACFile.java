@@ -57,7 +57,7 @@ public final class PACFile {
 	}
 	/**
 	 * Parses the given file fully and loads all entries into the memory.
-	 * @param f the file to parse fuly
+	 * @param f the file to parse fully
 	 * @return the non-null list of pac entry records filled with data
 	 */
 	public static List<PACEntry> parseFully(File f) {

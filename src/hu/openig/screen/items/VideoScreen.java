@@ -202,7 +202,7 @@ public class VideoScreen extends ScreenBase {
 	}
 
 	/** 
-	 * Scoll the list up. 
+	 * Scroll the list up.
 	 * @param amount the scroll amount
 	 */
 	void doScrollUp(int amount) {

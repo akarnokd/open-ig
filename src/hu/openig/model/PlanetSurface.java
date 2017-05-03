@@ -30,7 +30,7 @@ import java.util.Set;
 /**
  * The container class for the planetary surface objects, 
  * including the base surface map,
- * builings and roads.
+ * Buildings and roads.
  * @author akarnokd
  */
 public class PlanetSurface {
@@ -615,7 +615,7 @@ public class PlanetSurface {
 		 * Find a location on the surface which can support a building (and surrounding roads)
 		 * with the given size. The location search starts of from the center of the map
 		 * @param width should be the building tile width + 2
-		 * @param height should be the builindg tile height + 2
+		 * @param height should be the building tile height + 2
 		 * @return the top-left point where this building could be built, null indicates that
 		 * no suitable location is present
 		 */

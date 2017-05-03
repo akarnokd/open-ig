@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 
-/** A window with indeterminate backgound progress indicator. */
+/** A window with indeterminate background progress indicator. */
 public class BackgroundProgress extends JDialog {
 	/** */
 	private static final long serialVersionUID = -5795494140780969300L;

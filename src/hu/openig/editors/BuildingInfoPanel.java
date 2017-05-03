@@ -157,7 +157,7 @@ public class BuildingInfoPanel extends JPanel {
 	/** Energy of. */
 	@Rename(to = "mapeditor.info_energy_of")
 	JLabel energyOfLbl;
-	/** Efficency. */
+	/** Efficiency. */
 	@Rename(to = "mapeditor.info_efficiency")
 	JLabel efficiencyLbl;
 	/** Technology. */

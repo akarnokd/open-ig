@@ -133,7 +133,7 @@ public final class DiplomacyAnimation {
 //							}
 							argb1[2] = Math.max(argb1[2], argb0[2]);
 						
-							imgc[k] = getcolor(argb1);
+							imgc[k] = getColor(argb1);
 						}
 						
 						// reduce color space to 0-254 colors
@@ -240,7 +240,7 @@ public final class DiplomacyAnimation {
 									argb1[2] = max + argb1[2] - argb0[2];
 									argb1[3] = 0;
 								}
-								f1[k] = getcolor(argb1);
+								f1[k] = getColor(argb1);
 							}
 						}
 					} finally {
@@ -261,7 +261,7 @@ public final class DiplomacyAnimation {
 	 * @param argb the input color components
 	 * @return the int color
 	 */
-	static int getcolor(int[] argb) {
+	static int getColor(int[] argb) {
 		return (argb[0] << 24) + (argb[1] << 16) + (argb[2] << 8) + (argb[3]);
 	}
 	/**

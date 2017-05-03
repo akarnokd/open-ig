@@ -10,7 +10,7 @@ package hu.openig.model;
 
 /** The lab level. */
 public enum LabLevel {
-	/** There are noth enough labs at all. */
+	/** There are not enough labs at all. */
 	NOT_ENOUGH_TOTAL,
 	/** There are not enough active labs. */
 	NOT_ENOUGH_ACTIVE,

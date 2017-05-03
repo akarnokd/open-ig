@@ -277,7 +277,7 @@ public final class Startup {
 	}
 	/**
 	 * Check if the most relevant data files are available.
-	 * @return true if the file check succeded.
+	 * @return true if the file check succeeded.
 	 */
 	static boolean checkInstall() {
 		File installDir = new File(".");

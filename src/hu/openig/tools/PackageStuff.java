@@ -229,7 +229,7 @@ public final class PackageStuff {
 		return "";
 	}
 	/**
-	 * Add the given fileName to the zip stream wiht the given entry name.
+	 * Add the given fileName to the zip stream with the given entry name.
 	 * @param entryName the entry name
 	 * @param fileName the file name and path
 	 * @param zout the output stream

@@ -297,7 +297,7 @@ public abstract class ScreenBase extends UIContainer {
 	}
 	/**
 	 * Play sound effects (space and ground wars).
-	 * @param type the osund type
+	 * @param type the sound type
 	 */
 	public void effectSound(SoundType type) {
 		commons.playSound(SoundTarget.EFFECT, type, null);

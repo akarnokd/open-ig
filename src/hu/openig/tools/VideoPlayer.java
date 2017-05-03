@@ -863,7 +863,7 @@ public class VideoPlayer extends JFrame {
 	/**
 	 * Decode the video.
 	 * @param video the video location
-	 * @param skipFrames the numer of frames to skip
+	 * @param skipFrames the number of frames to skip
 	 */
 	public void decodeVideo(ResourcePlace video, int skipFrames) {
 		try (DataInputStream in = new DataInputStream(new BufferedInputStream(new GZIPInputStream(video.open(), 1024 * 1024), 1024 * 1024))) {
@@ -879,7 +879,7 @@ public class VideoPlayer extends JFrame {
 			byte[] bytebuffer = new byte[w * h];
 			int[] currentImage = new int[w * h];
 			int frameCount = 0;
-			long starttime = 0;
+			long startTime = 0;
 			int frames2 = frames;
 			while (!stop) {
 				int c = in.read();
@@ -912,14 +912,14 @@ public class VideoPlayer extends JFrame {
 							}
 							frames2 = (int)Math.ceil(audioLen * fps / 22050.0);
 							setMaximumFrame(Math.max(frames, frames2));
-							starttime = System.nanoTime();
+							startTime = System.nanoTime();
 						}
 						surface.getBackbuffer().setRGB(0, 0, w, h, currentImage, 0, w);
 						surface.swap();
 						setPosition(fps, frameCount);
 						// wait the frame/sec
-						starttime += (1000000000.0 / fps);
-		       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
+						startTime += (1000000000.0 / fps);
+		       			LockSupport.parkNanos((Math.max(0, startTime - System.nanoTime())));
 					}
 	       			frameCount++;
 				}
@@ -929,8 +929,8 @@ public class VideoPlayer extends JFrame {
 				for (int i = frames; i < frames2 && !stop; i++) {
 					setPosition(fps, i);
 					// wait the frame/sec
-					starttime += (1000000000.0 / fps);
-	       			LockSupport.parkNanos((Math.max(0, starttime - System.nanoTime())));
+					startTime += (1000000000.0 / fps);
+	       			LockSupport.parkNanos((Math.max(0, startTime - System.nanoTime())));
 				}
 			}
 		} catch (IOException ex) {

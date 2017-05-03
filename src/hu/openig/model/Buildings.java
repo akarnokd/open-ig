@@ -219,7 +219,7 @@ public class Buildings {
 	/**
 	 * Checks if the given building id is in this collection.
 	 * @param id the building id to test
-	 * @return true if contianed within
+	 * @return true if contained within
 	 */
 	public boolean contains(int id) {
 		return byId.containsKey(id);

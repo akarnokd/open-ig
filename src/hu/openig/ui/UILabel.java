@@ -75,7 +75,7 @@ public class UILabel extends UIComponent {
 	/**
 	 * Construct a label width the given size boundaries. The
 	 * text is automatically wrapped to the width.
-	 * You need to set the <code>height</code> of this label explicitely
+	 * You need to set the <code>height</code> of this label explicitly
 	 * to a value or use the <code>getWrappedHeight()</code> value.
 	 * @param text the initial text of the label
 	 * @param size the font size

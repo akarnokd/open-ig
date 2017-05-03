@@ -25,7 +25,7 @@ public enum TaxLevel {
 	ABOVE_MODERATE,
 	/** High.*/
 	HIGH,
-	/** Very hight. */
+	/** Very high. */
 	VERY_HIGH,
 	/** Oppressive. */
 	OPPRESSIVE,

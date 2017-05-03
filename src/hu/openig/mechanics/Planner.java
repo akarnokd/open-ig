@@ -615,7 +615,7 @@ public abstract class Planner {
 		return w.env.labels().get(value);
 	}
 	/**
-	 * Returns the given formated label.
+	 * Returns the given formatted label.
 	 * @param value the label
 	 * @param params the parameters
 	 * @return the translation
