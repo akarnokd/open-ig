@@ -3109,10 +3109,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		
 		public void clearTooltips() {
-		    for (int i = 0; i < steps.size(); i++) {
-                UIImageButton up = steps.get(i);
-                up.tooltip(null);
-		    }
+			for (UIImageButton up : steps) {
+				up.tooltip(null);
+			}
 		}
 	}
 	/** 
