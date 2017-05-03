@@ -2730,7 +2730,7 @@ public class MapEditor extends JFrame {
 		undo.setAfter();
 		addUndo(undo);
 		repaint();
-		JOptionPane.showMessageDialog(this, String.format(labels.format("mapeditor.cleanup_result", buildingCount + tileCount, buildingCount, tileCount)));
+		JOptionPane.showMessageDialog(this, labels.format("mapeditor.cleanup_result", buildingCount + tileCount, buildingCount, tileCount));
 	}
 	/**
 	 * Remove tiles from the given rectangle.

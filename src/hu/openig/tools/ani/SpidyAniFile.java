@@ -165,7 +165,7 @@ public class SpidyAniFile {
 		lzssUsed = (flags & 0x20) != 0;
 		compressed = (flags & 0x01) != 0;
 		if (!compressed) {
-			throw new IOException(String.format("Unsupported format: uncompressed?"));
+			throw new IOException("Unsupported format: uncompressed?");
 		}
 		algorithm = (flags & 0x04) != 0 ? Algorithm.RLE_TYPE_2 : Algorithm.RLE_TYPE_1;
 		frameCount = buffer[11] & 0xFF | (buffer[12] & 0xFF) << 8;
