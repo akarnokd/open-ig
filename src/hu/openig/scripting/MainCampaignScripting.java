@@ -1245,9 +1245,8 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 			if (!m.applicable()) {
 				continue;
 			}
-			Boolean b = m.fleetBlink(f);
-			if (b) {
-				return b;
+			if (m.fleetBlink(f)) {
+				return true;
 			}
 		}
 		return false;
