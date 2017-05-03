@@ -469,15 +469,13 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				if (player().selectionMode == SelectionMode.PLANET) {
-					Fleet f = planet().newFleet();
-					player().currentFleet = f;
+					player().currentFleet = planet().newFleet();
 					player().selectionMode = SelectionMode.FLEET;
 				} else {
 					if (fleet() != null) {
 						FleetStatistics fs = fleet().getStatistics();
 						if (fs.planet != null && fs.planet.owner == player()) {
-							Fleet f = fs.planet.newFleet();
-							player().currentFleet = f;
+							player().currentFleet = fs.planet.newFleet();
 							player().selectionMode = SelectionMode.FLEET;
 						}
 					}

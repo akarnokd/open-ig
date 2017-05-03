@@ -1557,9 +1557,7 @@ public class GameWindow extends JFrame implements GameControls {
 
 					final XElement xworld = XElement.parseXMLGZ(lname);
 
-					World world = loadWorldData(currentGame, currentSkirmish, xworld);
-
-					final World fworld = world;
+					final World fworld = loadWorldData(currentGame, currentSkirmish, xworld);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {

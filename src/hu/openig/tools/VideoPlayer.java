@@ -703,8 +703,7 @@ public class VideoPlayer extends JFrame {
 		if (e.getClickCount() == 2) {
 			int idx = videoTable.getSelectedRow();
 			idx = videoTable.convertRowIndexToModel(idx);
-			VideoEntry ve = videoModel.rows.get(idx);
-			currentVideo = ve;
+			currentVideo = videoModel.rows.get(idx);
 			position.setValue(0);
 			doPlay();
 		}

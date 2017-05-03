@@ -138,8 +138,7 @@ public class Sounds {
 					final AtomicInteger tid = new AtomicInteger();
 					@Override
 					public Thread newThread(Runnable r) {
-						Thread t = new Thread(r, "UISounds-" + tid.incrementAndGet());
-						return t;
+						return new Thread(r, "UISounds-" + tid.incrementAndGet());
 					}
 				}
 				/*
@@ -186,8 +185,7 @@ public class Sounds {
 	 * @return the data line
 	 */
 	SourceDataLine getLine(AudioFormatType aft) {
-		SourceDataLine result = addLine(aft); 
-		return result;
+		return addLine(aft);
 	}
 	/**
 	 * Places back the data line into the pool.

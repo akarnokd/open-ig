@@ -35,9 +35,7 @@ public final class SimpleGOAP {
 		 * @return create a copy of the current world state
 		 */
 		WorldModel copy() {
-			WorldModel result = new WorldModel();
-			
-			return result;
+			return new WorldModel();
 		}
 		/**+
 		 * Apply the action to the world.
