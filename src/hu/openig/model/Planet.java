@@ -1569,7 +1569,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 	}
 	/**
 	 * Sets a new morale.
-	 * @param newMorale
+	 * @param newMorale the new morale
 	 */
 	public void morale(double newMorale) {
 	    if (!isFinite(newMorale)) {
