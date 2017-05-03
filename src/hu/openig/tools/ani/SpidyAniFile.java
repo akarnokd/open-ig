@@ -90,7 +90,7 @@ public class SpidyAniFile {
 	 * @author karnokd, 2009.01.11.
 	 * @version $Revision 1.0$
 	 */
-	public static enum Algorithm {
+	public enum Algorithm {
 		/** Use RLE algorithm No 1 (e.g codes between 0..127 are considered literals). */
 		RLE_TYPE_1,
 		/** Use RLE algorithm No 2 (e.g. codes between 0..127 are considered copy following N literals). */
