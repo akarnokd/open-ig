@@ -446,9 +446,7 @@ public class CELabelsPanel extends CEBasePanel implements CEPanelPreferences {
 	 */
 	boolean isUntranslated(LabelEntry e) {
 		Set<String> strs = new HashSet<>();
-		for (String xe : e.content.values()) {
-			strs.add(xe);
-		}
+		strs.addAll(e.content.values());
 		return strs.size() != context.dataManager().languages().size();
 	}
 	/** @return the bottom panel. */
