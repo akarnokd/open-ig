@@ -79,8 +79,7 @@ public final class ScreenUtils {
 	public static WalkPosition getWalk(String location, World world) {
 		WalkShip ws = world.walks.ships.get("" + world.level);
 		if (ws != null) {
-			WalkPosition p = ws.positions.get(location);
-			return p;
+			return ws.positions.get(location);
 		}
 		return null;
 	}

@@ -2071,7 +2071,7 @@ public class MapEditor extends JFrame {
 	 * Find a custom name in the given entry list.
 	 * @param list the entry list
 	 * @param id the tile identifier
-	 * @param type the tile type (e.g., suface or race)
+	 * @param type the tile type (e.g., surface or race)
 	 * @param defaultName the default name to use if not found
 	 * @return the custom name
 	 */
@@ -2730,7 +2730,7 @@ public class MapEditor extends JFrame {
 		undo.setAfter();
 		addUndo(undo);
 		repaint();
-		JOptionPane.showMessageDialog(this, String.format(labels.format("mapeditor.cleanup_result", buildingCount + tileCount, buildingCount, tileCount)));
+		JOptionPane.showMessageDialog(this, labels.format("mapeditor.cleanup_result", buildingCount + tileCount, buildingCount, tileCount));
 	}
 	/**
 	 * Remove tiles from the given rectangle.

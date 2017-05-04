@@ -221,7 +221,7 @@ public class SkirmishScreen extends ScreenBase {
 	UILabel winSocialPlanetsLabel;
 	/** Players list parent panel. */
 	UIPanel playersList;
-	/** Players list scoll box. */
+	/** Players list scroll box. */
 	UIScrollBox playersListScroll;
 	/** The template players. */
 	final List<SkirmishPlayer> templatePlayers = new ArrayList<>();
@@ -1109,7 +1109,7 @@ public class SkirmishScreen extends ScreenBase {
 		public UILabel group;
 		/** The preferred starting planet. */
 		public UIImage planet;
-		/** Cunstructs the UI elements. */
+		/** Constructs the UI elements. */
 		public PlayerLine() {
 			name = createCheckBox2("");
 //			name.textSize(10);
@@ -1387,7 +1387,7 @@ public class SkirmishScreen extends ScreenBase {
 				computerSound(SoundType.NOT_AVAILABLE);
 				return;
 			}
-			// remove existing combintations
+			// remove existing combinations
 			List<SkirmishPlayer> candidates2 = U.newArrayList(candidates);
 			for (int i = candidates.size() - 1; i >= 0; i--) {
 				for (PlayerLine pl0 : playerLines) {
@@ -1446,7 +1446,7 @@ public class SkirmishScreen extends ScreenBase {
 		removePlayers.enabled(cnt != 0);
 	}
 	/**
-	 * Remove selected playes.
+	 * Remove selected players.
 	 */
 	void doRemovePlayers() {
 		for (int i = playerLines.size() - 1; i >= 0; i--) {
@@ -1584,7 +1584,7 @@ public class SkirmishScreen extends ScreenBase {
 		}
 	}
 	/**
-	 * Shwo the group panel.
+	 * Show the group panel.
 	 * @param pl the line
 	 */
 	void showGroupPanel(PlayerLine pl) {

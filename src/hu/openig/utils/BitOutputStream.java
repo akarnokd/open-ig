@@ -28,8 +28,8 @@ public class BitOutputStream {
 	private OutputStream iOs;
 
 	/**
-	 * The temponary buffer containing the individual bits until a byte has been
-	 * completed and can be commited to the output stream.
+	 * The temporary buffer containing the individual bits until a byte has been
+	 * completed and can be committed to the output stream.
 	 */
 	private int iBuffer;
 
@@ -39,7 +39,7 @@ public class BitOutputStream {
 	private int iBitCount;
 
 	/**
-	 * Create a new bit output stream based on an existing Java OutputSTream.
+	 * Create a new bit output stream based on an existing Java OutputStream.
 	 * 
 	 * @param aOs
 	 *            the output stream this class should use.

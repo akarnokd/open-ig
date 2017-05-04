@@ -93,7 +93,7 @@ public class PCXImage {
 		}
 	}
 	/**
-	 * Convert the raw data into a BufferedImage using the suppliead transparency. The original palette
+	 * Convert the raw data into a BufferedImage using the supplied transparency. The original palette
 	 * will be used.
 	 * @param transparency transparency the transparency RGB color, -1 no transparency, &lt;= -2 of the color index to use for transparency
 	 * @return the created RGBA BufferedImage object

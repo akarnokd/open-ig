@@ -55,7 +55,7 @@ public class EquipmentGFX {
 	public BufferedImage[] categoryCruisers;
 	/** Fighters category. */
 	@Cat(name = "equipment/button_category_fighters")
-	public BufferedImage[] categoryFighers;
+	public BufferedImage[] categoryFighters;
 	/** Tanks category. */
 	@Cat(name = "equipment/button_category_tanks")
 	public BufferedImage[] categoryTanks;

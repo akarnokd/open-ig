@@ -282,7 +282,7 @@ public class StarmapScreen extends ScreenBase {
 	final Rectangle fleetsList = new Rectangle();
 	/** The planet scrolled index. */
 	int planetsOffset;
-	/** The fleets scroled index. */
+	/** The fleets scrolled index. */
 	int fleetsOffset;
 	/** Button. */
 	UIImageButton prevPlanet;
@@ -3086,7 +3086,7 @@ public class StarmapScreen extends ScreenBase {
 	}
 	/**
 	 * Set the X offset.
-	 * @param x the X offste
+	 * @param x the X offset
 	 */
 	public void setXOffset(int x) {
 		xOffset = x;

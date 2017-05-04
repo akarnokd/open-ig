@@ -43,7 +43,7 @@ public class ThreePhaseButton {
 	/**
 	 * Constructor.
 	 * @param x the x coordinate
-	 * @param y the y coordinat
+	 * @param y the y coordinate
 	 * @param phases the phases
 	 * @param disabledPattern the disabled pattern
 	 */

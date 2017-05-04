@@ -45,7 +45,7 @@ public class AudioThread extends Thread {
 			this.upscale = upscale;
 		}
 	}
-	/** The queue for asynchronus music play. */
+	/** The queue for asynchronous music play. */
 	private final BlockingQueue<Data> queue;
 	/** The output audio line. */
 	private final SourceDataLine sdl;
@@ -68,7 +68,7 @@ public class AudioThread extends Thread {
 		sdl = createAudioOutput();
 	}
 	/**
-	 * COnstructor. Use the given queue.
+	 * Constructor. Use the given queue.
 	 * @param idx the index
 	 * @param queue the queue to use
 	 */
@@ -146,7 +146,7 @@ public class AudioThread extends Thread {
 	}
 	/**
 	 * The audio line specification.
-	 * @param af the audio fromat
+	 * @param af the audio format
 	 * @return the appropriate DataLine.Info object
 	 */
 	public static DataLine.Info createAudioInfo(AudioFormat af) {

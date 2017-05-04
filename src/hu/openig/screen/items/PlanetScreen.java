@@ -868,7 +868,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			return null;
 		}
 		/**
-		 * Retrive the gun at the given location.
+		 * Retrieve the gun at the given location.
 		 * @param mx the mouse X
 		 * @param my the mouse Y
 		 * @return the gun or null if empty
@@ -1706,7 +1706,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		/**
 		 * Render any mine in the specified location.
 		 * @param g2 the graphics context
-		 * @param cx the cell coordinete
+		 * @param cx the cell coordinate
 		 * @param cy the cell coordinate
 		 */
 		void drawMine(Graphics2D g2, int cx, int cy) {
@@ -3109,10 +3109,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 		
 		public void clearTooltips() {
-		    for (int i = 0; i < steps.size(); i++) {
-                UIImageButton up = steps.get(i);
-                up.tooltip(null);
-		    }
+			for (UIImageButton up : steps) {
+				up.tooltip(null);
+			}
 		}
 	}
 	/** 
@@ -3570,7 +3569,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 	}
 	/**
-	 * Try placing a building to the current placementRectange.
+	 * Try placing a building to the current placementRectangle.
 	 * @param more cancel the building mode on successful place?
 	 */
 	void placeBuilding(boolean more) {
@@ -4241,7 +4240,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		return d1 < d2;
 	}
 	/**
-	 * Sacle and position the given rectangle according to the current offset and scale.
+	 * Scale and position the given rectangle according to the current offset and scale.
 	 * @param r the target rectangle
 	 */
 	void scaleToScreen(Rectangle r) {
@@ -4353,7 +4352,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		}
 	};
 	/**
-	 * The defalt estimator for distance away from the target.
+	 * The default estimator for distance away from the target.
 	 */
 	final Func2<Location, Location, Integer> defaultEstimator = new Func2<Location, Location, Integer>() {
 		@Override
@@ -4620,7 +4619,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	/**
 	 * Apply groundwar damage to the given building.
 	 * @param b the target building
-	 * @param damage the damage amout
+	 * @param damage the damage amount
 	 */
 	void damageBuilding(Building b, double damage) {
 		int hpBefore = b.hitpoints;
@@ -5655,7 +5654,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 		return getBuildingAt(render.getLocationAt(mx, my));
 	}
 	/**
-	 * Retrive the unit at the given location.
+	 * Retrieve the unit at the given location.
 	 * @param mx the mouse X
 	 * @param my the mouse Y
 	 * @return the unit or null if empty
@@ -6721,7 +6720,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 
 	/**
-	 * Update the varios components according to the current game state.
+	 * Update the various components according to the current game state.
 	 * @param surface the planet surface
 	 * @return the planet statistics
 	 */

@@ -10,7 +10,7 @@ package hu.openig.editors;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/** Annotation to indicate wich UI elements to rename. */
+/** Annotation to indicate which UI elements to rename. */
 @Retention(RetentionPolicy.RUNTIME)
 @interface Rename {
 	/** The target label id. */

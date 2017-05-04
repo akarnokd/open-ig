@@ -132,7 +132,7 @@ public class AIFleet {
 		return mode == FleetMode.ATTACK;
 	}
 	/**
-	 * Returs the current radar level (0..3).
+	 * Returns the current radar level (0..3).
 	 * @return the radar level
 	 */
 	public int radarLevel() {

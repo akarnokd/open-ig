@@ -34,7 +34,7 @@ public class Tile0 {
 	public float alpha = 1;
 	/** The alpha percent on which the light map should be applied. */
 	protected static final float LIGHT_THRESHOLD = 0.65f;
-	/** The shared working buffeer. Therefore, the alpha adjustments should be done in a single thread! */
+	/** The shared working buffer. Therefore, the alpha adjustments should be done in a single thread! */
 	private static ThreadLocal<int[][]> work = new ThreadLocal<int[][]>() {
 		@Override
 		protected int[][] initialValue() {
@@ -74,7 +74,7 @@ public class Tile0 {
 		prepareStripCache();
 	}
 	/**
-	 * Create a run-length encoded light map from the sparse bufferedimage.
+	 * Create a run-length encoded light map from the sparse buffered image.
 	 * @param lightMap the original buffered image
 	 * @return the array containing [index,color] pairs subsequently
 	 */
@@ -249,7 +249,7 @@ public class Tile0 {
 		return (x + toTileY(x, y) * 28) / 30f;
 	}
 	/**
-	 * Converts the screen coordinates to tile coordinates, Y comonent.
+	 * Converts the screen coordinates to tile coordinates, Y component.
 	 * @param x the screen X coordinate
 	 * @param y the screen Y coordinate
 	 * @return the tile Y coordinate

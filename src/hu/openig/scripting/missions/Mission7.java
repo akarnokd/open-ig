@@ -165,7 +165,7 @@ public class Mission7 extends Mission {
 			pf.task = FleetTask.SCRIPT;
 			
 			// ----------------------------------------------------------------
-			// adjust fleet strenth here
+			// adjust fleet strength here
 			if (task == 1) {
 				if (world.difficulty == Difficulty.HARD) {
 					addInventory(pf, "GarthogFighter", 8);

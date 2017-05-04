@@ -43,7 +43,7 @@ public class UIMouse {
 		LEFT,
 		/** The middle button, i.e., the scroll wheel button. */
 		MIDDLE,
-		/** The rigth button, i.e., the secondary button. */
+		/** The right button, i.e., the secondary button. */
 		RIGHT,
 	}
 	/** The key modifier enumeration. */

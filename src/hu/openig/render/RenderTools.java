@@ -233,7 +233,7 @@ public final class RenderTools {
 	/**
 	 * Paint the multiple layer of stars.
 	 * @param g2 the graphics object
-	 * @param rect the target rectanlge
+	 * @param rect the target rectangle
 	 * @param view the viewport rectangle
 	 * @param starmapClip the clipping region to avoid even calling a graphics operation outside there for performance reasons
 	 * @param zoomIndex the current zoom index

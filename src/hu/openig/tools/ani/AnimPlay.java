@@ -302,7 +302,7 @@ public final class AnimPlay {
 		ad.start();
 		SpidyAniCallback callback = new SpidyAniCallback() {
 			/** Time calculation for proper frame delay. */
-			double starttime;
+			double startTime;
 			/** The current frame number. */
 			int frameCount;
 			/** The audio frame delay. */
@@ -353,7 +353,7 @@ public final class AnimPlay {
 			@Override
 			public void imageData(int[] image) {
 				if (frameCount == 0) {
-					starttime = System.currentTimeMillis();
+					startTime = System.currentTimeMillis();
 				}
 				if (frameCount++ == frameDelay) {
 					ad.startPlaybackNow();
@@ -361,8 +361,8 @@ public final class AnimPlay {
 				imageLabel.getBackbuffer().setRGB(0, 0, width, height, image, 0, width);
 				imageLabel.swap();
 				// wait the frame/sec
-				starttime += (1000.0 / fps);
-       			LockSupport.parkNanos((long)(Math.max(0, starttime - System.currentTimeMillis()) * 1000000));
+				startTime += (1000.0 / fps);
+       			LockSupport.parkNanos((long)(Math.max(0, startTime - System.currentTimeMillis()) * 1000000));
 			}
 
 			@Override
@@ -650,7 +650,7 @@ public final class AnimPlay {
 			rf.write("WAVE".getBytes("Latin1"));
 			rf.write("fmt ".getBytes("Latin1"));
 			rf.writeInt(rotate(16));
-			rf.writeShort(rotateShort(1)); // audioformat
+			rf.writeShort(rotateShort(1)); // audio format
 			rf.writeShort(rotateShort(1)); // channels
 			rf.writeInt(rotate(22050)); // samplerate
 			rf.writeInt(rotate(22050)); // byterate

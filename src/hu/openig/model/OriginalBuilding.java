@@ -12,7 +12,7 @@ import hu.openig.core.Location;
 import java.util.HashMap;
 import java.util.Map;
 
-/** The origian building definition (from v0.72 and before). */
+/** The original building definition (from v0.72 and before). */
 public class OriginalBuilding {
 	/** The building name. */
 	public String name;

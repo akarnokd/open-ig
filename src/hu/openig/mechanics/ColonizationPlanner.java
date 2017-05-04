@@ -36,7 +36,7 @@ import java.util.Map;
  * @author akarnokd, 2012.08.20.
  */
 public class ColonizationPlanner extends Planner {
-	/** Indicator to allow actions that spendmoney. */
+	/** Indicator to allow actions those spend money. */
 	boolean maySpendMoney;
 	/** Colonize only planets from the colonizationTargets set? */
 	public boolean explicitMode;
@@ -100,7 +100,7 @@ public class ColonizationPlanner extends Planner {
 		return false;
 	}
 	/**
-	 * Ckeck if more planets can be conquered.
+	 * Check if more planets can be conquered.
 	 * @return true if action taken
 	 */
 	boolean conquerMorePlanets() {
@@ -291,7 +291,7 @@ public class ColonizationPlanner extends Planner {
 		}
 	}
 	/**
-	 * Checki if the colonizers have actually reached their planet.
+	 * Check if the colonizers have actually reached their planet.
 	 * @return true if action taken
 	 */
 	boolean checkColonizersReachedPlanet() {

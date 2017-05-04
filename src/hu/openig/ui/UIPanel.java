@@ -14,7 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.Stroke;
 
 /**
- * A simple panel with the ability to set backround and border colors.
+ * A simple panel with the ability to set background and border colors.
  * @author akarnokd, 2012.08.20.
  */
 public class UIPanel extends UIContainer {

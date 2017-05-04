@@ -267,7 +267,7 @@ public class AIGroundwar {
 	}
 	/**
 	 * Sort the targets by distance from the given unit.
-	 * @param u the unti
+	 * @param u the unit
 	 * @param targets the list of targets
 	 */
 	private static void orderByDistance(final GroundwarUnit u, List<HasLocation> targets) {

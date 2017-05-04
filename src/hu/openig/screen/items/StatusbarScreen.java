@@ -114,7 +114,7 @@ public class StatusbarScreen extends ScreenBase {
 	/** The time to live for the error text. */
 	public int errorTTL;
 	/** The default error text display time. */
-	public static final int DEFALT_ERROR_TTL = 15;
+	public static final int DEFAULT_ERROR_TTL = 15;
 	/** The current achievement showing. */
 	public String achievementShowing;
 	/** The number of pixels the achievement has moved. */

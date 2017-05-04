@@ -83,13 +83,13 @@ public class Player {
 	public final PlayerStatistics statistics = new PlayerStatistics();
 	/** The global financial information yesterday. */
 	public final PlayerFinances yesterday = new PlayerFinances();
-	/** The global finalcial information today. */
+	/** The global financial information today. */
 	public final PlayerFinances today = new PlayerFinances();
 	/** Initial stance for the newly discovered races. */
 	public int initialStance = 50;
 	/** The priority queue for the messages. */
 	protected final PriorityQueue<Message> messageQueue = new PriorityQueue<>();
-	/** The message history of the already displayes messages. */
+	/** The message history of the already displayed messages. */
 	public final List<Message> messageHistory = new ArrayList<>();
 	/** The AI behavior mode. */
 	public AIMode aiMode;

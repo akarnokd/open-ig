@@ -96,7 +96,7 @@ public class QuickProductionPanel extends UIContainer {
 	ResearchType hoverType;
 	/**
 	 * Constructor. Initializes the inner controls.
-	 * @param commons the commonr resources
+	 * @param commons the common resources
 	 */
 	public QuickProductionPanel(final CommonResources commons) {
 		this.commons = commons;

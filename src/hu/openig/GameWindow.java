@@ -1557,9 +1557,7 @@ public class GameWindow extends JFrame implements GameControls {
 
 					final XElement xworld = XElement.parseXMLGZ(lname);
 
-					World world = loadWorldData(currentGame, currentSkirmish, xworld);
-
-					final World fworld = world;
+					final World fworld = loadWorldData(currentGame, currentSkirmish, xworld);
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
@@ -1856,8 +1854,8 @@ public class GameWindow extends JFrame implements GameControls {
 	@Override
 	public void displayError(String text) {
 		allScreens.statusbar.errorText = text;
-		int ttl = text.length() * StatusbarScreen.DEFALT_ERROR_TTL / 10;
-		allScreens.statusbar.errorTTL = Math.max(ttl, StatusbarScreen.DEFALT_ERROR_TTL);
+		int ttl = text.length() * StatusbarScreen.DEFAULT_ERROR_TTL / 10;
+		allScreens.statusbar.errorTTL = Math.max(ttl, StatusbarScreen.DEFAULT_ERROR_TTL);
 	}
 
 	/**

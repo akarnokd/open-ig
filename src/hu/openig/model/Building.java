@@ -66,7 +66,7 @@ public class Building implements HasLocation {
 		this.allocationWorker = new BuildingAllocationWorker(this);
 	}
 	/**
-	 * Tests wether the given location is within the base footprint of this placed building.
+	 * Tests whether the given location is within the base footprint of this placed building.
 	 * @param a the X coordinate
 	 * @param b the Y coordinate
 	 * @return does the (a,b) fall into this building?

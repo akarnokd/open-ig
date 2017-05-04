@@ -126,7 +126,7 @@ public class Chats {
 		public boolean enemy;
 		/** The choice to present. */
 		public String option;
-		/** The messag et o print. */
+		/** The message et o print. */
 		public String message;
 		/** Should the enemy retreat? */
 		public boolean retreat;

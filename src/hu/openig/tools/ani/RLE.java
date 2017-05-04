@@ -13,7 +13,7 @@ import java.util.Arrays;
 /**
  * Decompression utility to decompress custom RLE (Run Length Encoding) formatted 
  * 8 bit per pixel images into RGBA format images.
- * datastreams. It provides two algorithms for this.
+ * Data streams. It provides two algorithms for this.
  * @author karnokd, 2009.01.11.
  * @version $Revision 1.0$
  */

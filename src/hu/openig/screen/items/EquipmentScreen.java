@@ -433,7 +433,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 		
 		battleships = new UIImageTabButton(commons.equipment().categoryBattleships);
 		cruisers = new UIImageTabButton(commons.equipment().categoryCruisers);
-		fighters = new UIImageTabButton(commons.equipment().categoryFighers);
+		fighters = new UIImageTabButton(commons.equipment().categoryFighters);
 		stations = new UIImageTabButton(commons.equipment().categorySpaceStations);
 		stations.visible(false);
 		tanks = new UIImageTabButton(commons.equipment().categoryTanks);
@@ -469,15 +469,13 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 			@Override
 			public void invoke() {
 				if (player().selectionMode == SelectionMode.PLANET) {
-					Fleet f = planet().newFleet();
-					player().currentFleet = f;
+					player().currentFleet = planet().newFleet();
 					player().selectionMode = SelectionMode.FLEET;
 				} else {
 					if (fleet() != null) {
 						FleetStatistics fs = fleet().getStatistics();
 						if (fs.planet != null && fs.planet.owner == player()) {
-							Fleet f = fs.planet.newFleet();
-							player().currentFleet = f;
+							player().currentFleet = fs.planet.newFleet();
 							player().selectionMode = SelectionMode.FLEET;
 						}
 					}
@@ -2773,7 +2771,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 	 */
 	void doUpgradeAll(Planet p) {
 		p.upgradeAll();
-		// remove non-existent items from the lsit
+		// remove non-existent items from the list
 		for (InventoryItem ii : new ArrayList<>(leftList.items)) {
 			if (!p.inventory.contains(ii)) {
 				leftList.items.remove(ii);

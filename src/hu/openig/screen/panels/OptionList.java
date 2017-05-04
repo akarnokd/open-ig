@@ -71,7 +71,7 @@ public class OptionList extends UIContainer {
 	public OptionList(TextRenderer text) {
 		this.text = text;
 	}
-	/** Fit the control's width to accomodate all labels. */
+	/** Fit the control's width to accommodate all labels. */
 	public void fit() {
 		int w = 0;
 		for (OptionItem oi : items) {

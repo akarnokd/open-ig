@@ -90,7 +90,7 @@ public class SpidyAniFile {
 	 * @author karnokd, 2009.01.11.
 	 * @version $Revision 1.0$
 	 */
-	public static enum Algorithm {
+	public enum Algorithm {
 		/** Use RLE algorithm No 1 (e.g codes between 0..127 are considered literals). */
 		RLE_TYPE_1,
 		/** Use RLE algorithm No 2 (e.g. codes between 0..127 are considered copy following N literals). */
@@ -165,7 +165,7 @@ public class SpidyAniFile {
 		lzssUsed = (flags & 0x20) != 0;
 		compressed = (flags & 0x01) != 0;
 		if (!compressed) {
-			throw new IOException(String.format("Unsupported format: uncompressed?"));
+			throw new IOException("Unsupported format: uncompressed?");
 		}
 		algorithm = (flags & 0x04) != 0 ? Algorithm.RLE_TYPE_2 : Algorithm.RLE_TYPE_1;
 		frameCount = buffer[11] & 0xFF | (buffer[12] & 0xFF) << 8;

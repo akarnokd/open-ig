@@ -55,7 +55,7 @@ public class Sounds {
 		/** The audio format. */
 		public final AudioFormat format;
 		/**
-		 * Constructur.
+		 * Constructor.
 		 * @param format the format to store
 		 */
 		public AudioFormatType(AudioFormat format) {
@@ -138,8 +138,7 @@ public class Sounds {
 					final AtomicInteger tid = new AtomicInteger();
 					@Override
 					public Thread newThread(Runnable r) {
-						Thread t = new Thread(r, "UISounds-" + tid.incrementAndGet());
-						return t;
+						return new Thread(r, "UISounds-" + tid.incrementAndGet());
 					}
 				}
 				/*
@@ -169,7 +168,7 @@ public class Sounds {
 	 */
 	SourceDataLine addLine(AudioFormatType aft) {
 		try {
-			synchronized (this) { // FIX for Linux PulseAudio Mixer theading issue 
+			synchronized (this) { // FIX for Linux PulseAudio Mixer threading issue
 				SourceDataLine sdl = AudioSystem.getSourceDataLine(aft.format);
 				sdl.open(aft.format);
 				lines.add(sdl);
@@ -186,8 +185,7 @@ public class Sounds {
 	 * @return the data line
 	 */
 	SourceDataLine getLine(AudioFormatType aft) {
-		SourceDataLine result = addLine(aft); 
-		return result;
+		return addLine(aft);
 	}
 	/**
 	 * Places back the data line into the pool.

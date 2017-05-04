@@ -100,7 +100,7 @@ public class TradeScreen extends ScreenBase {
 		stationsAndSatellites = new UIImageTabButton(commons.equipment().categorySpaceStations);
 		battleships = new UIImageTabButton(commons.equipment().categoryBattleships);
 		cruisers = new UIImageTabButton(commons.equipment().categoryCruisers);
-		fighters = new UIImageTabButton(commons.equipment().categoryFighers);
+		fighters = new UIImageTabButton(commons.equipment().categoryFighters);
 		tanksAndVehicles = new UIImageTabButton(commons.equipment().categoryTanks);
 		weapons = new UIImageTabButton(commons.equipment().categoryWeapons);
 		equipment = new UIImageTabButton(commons.equipment().categoryEquipment);

@@ -52,7 +52,7 @@ public class ExplorationMap {
 	}
 	/**
 	 * Computes the allowed exploration map, considering the player's exploration limits.
-	 * @param inner the innter rectangle
+	 * @param inner the inner rectangle
 	 * @param outer the outer rectangle
 	 * @return the updated map
 	 */

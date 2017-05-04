@@ -123,7 +123,7 @@ public class PlanetStatistics {
 	public boolean hasTradersSpaceport;
 	/** Number of orbital factories. */
 	public int orbitalFactory;
-	/** The figher count. */
+	/** The fighter count. */
 	public int fighterCount;
 	/** The vehicle count. */
 	public int vehicleCount;

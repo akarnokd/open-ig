@@ -31,7 +31,7 @@ import java.util.Set;
  * Build factories and economic buildings.
  * Builds social buildings to keep the morale.
  * Adjusts taxes according to morale.
- * May demolish damanged buildings.
+ * May demolish damaged buildings.
  * May block other planners with empty action to gain money.
  * @author akarnokd, 2011.12.28.
  */

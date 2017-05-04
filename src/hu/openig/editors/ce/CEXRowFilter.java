@@ -31,7 +31,7 @@ public abstract class CEXRowFilter<T> extends
 	/**
 	 * Returns true if the given element at the given index should be included.
 	 * @param item the item
-	 * @param displayValues the values diplayed by the table
+	 * @param displayValues the values displayed by the table
 	 * @param index the index
 	 * @return true if should be included
 	 */
