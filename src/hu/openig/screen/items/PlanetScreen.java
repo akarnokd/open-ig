@@ -596,8 +596,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			}
 		});
 		if (surface() != null) {
-			render.offsetX = -(int)((surface().boundingRectangle.width * render.scale - width) / 2);
-			render.offsetY = -(int)((surface().boundingRectangle.height * render.scale - height) / 2);
+			centerScreen();
 		}
 		focused = render;
 		
@@ -6826,8 +6825,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 	}
 	/** Center the view on the planet's middle. */
 	void centerScreen() {
-		render.offsetX = -(surface().boundingRectangle.width - width) / 2;
-		render.offsetY = -(surface().boundingRectangle.height - height) / 2;
+		render.offsetX = -(int)((surface().boundingRectangle.width * render.scale - width) / 2);
+		render.offsetY = -(int)((surface().boundingRectangle.height * render.scale - height) / 2);
 	}
 	/**
 	 * Retreat from the current attack.
