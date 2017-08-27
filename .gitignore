@@ -5,3 +5,6 @@
 open-ig.log
 /save/
 /videos/
+*.iml
+.idea
+target
