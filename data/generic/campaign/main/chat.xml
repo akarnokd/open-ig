@@ -66,7 +66,7 @@
 			<transition to="2"/>
 			<transition to="3"/>
 		</node>
-		<node id="2" owner="player" message="chat.merchant3.n2"> <!-- Thank's, ECHO. Continue on present course. -->
+		<node id="2" owner="player" message="chat.merchant3.n2"> <!-- Thanks, ECHO. Continue on present course. -->
 			<transition to="4"/>
 		</node>
 		<node id="3" owner="player" option="chat.merchant3.n3.o" message="chat.merchant3.n3"> 
