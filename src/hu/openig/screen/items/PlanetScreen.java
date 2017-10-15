@@ -6004,6 +6004,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 			placeGroundUnits(atBuildings, unitsToPlace);
 			doStartBattle();
 		}
+
+		if (unitsToPlace.isEmpty()) {
+			doStartBattle();
+		}
 	}
 	/** Deploy the non-player vehicles. */
 	void deployNonPlayerVehicles() {
