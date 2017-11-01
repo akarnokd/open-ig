@@ -223,7 +223,7 @@
     <graphics>
       <tech id='human' height='5' width='5' image='colony/buildings/human/water_vaporator'/>
     </graphics>
-    <build limit='1' kind='House' cost='45000' except='earth,frozen,liquid,rocky,cratered,neptoplasm'/>
+    <build limit='1' kind='House' cost='45000' except='earth,frozen,liquid,rocky,neptoplasm'/>
     <operation>
       <resource type='population-growth' display='true'>100</resource>
       <resource type='morale'>10</resource>
