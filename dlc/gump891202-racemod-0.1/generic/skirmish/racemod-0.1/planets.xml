@@ -225,11 +225,6 @@
     <inventory/>
     <buildings/>
   </planet>
-  <planet id='Exterior 19' name='Exterior 19' x='42' y='436' size='18' rotate='RL' population='0' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
-    <surface type='frozen' id='8'/>
-    <inventory/>
-    <buildings/>
-  </planet>
   <planet id='Exterior 19' name='Exterior 19' x='16' y='598' size='18' rotate='LR' population='0' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='cratered' id='3'/>
     <inventory/>
@@ -247,6 +242,11 @@
   </planet>
   <planet id='Exterior 22' name='Exterior 22' x='404' y='578' size='24' rotate='LR' owner='Sullep' race='sullep' population='5000' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
     <surface type='frozen' id='6'/>
+    <inventory/>
+    <buildings/>
+  </planet>
+  <planet id='Exterior 23' name='Exterior 23' x='42' y='436' size='18' rotate='RL' population='0' allocation='DEFAULT' autobuild='OFF' morale='50' tax='MODERATE' tax-income='0' trade-income='0'>
+    <surface type='frozen' id='8'/>
     <inventory/>
     <buildings/>
   </planet>

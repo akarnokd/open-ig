@@ -1,2 +1,2 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<open-ig-launcher-config version='0.33' language='en'/>
+<open-ig-launcher-config version='0.45' language='en' java-6-warning='true'/>
