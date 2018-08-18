@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.210'>
+  <module id='Game' version='0.95.211'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,15 +42,21 @@
       <desc lang='es'>Fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.211' date='2018-08-18'>
+        <item category='UI' issues='1001'>Colony screen behavior were not using the zoom factor.</item>
+        <item category='UI' issues='1008'>Skip deployment if there are no tanks to deploy.</item>
+        <item category='Labels' issues='1009'>Text corrections.</item>
+        <item category='Campaign'>Fix the duplicate planet Exterior 19</item>
+      </entry>
       <entry version='0.95.210' date='2016-07-19'>
         <item category='AI' issues='924'>Fixed Trader AI overriding the script-designated chat back to the default chat.</item>
         <item category='Labels' issues='987'>Fixed some parametric russian labels.</item>
         <item category='Labels'>Added missing Hungarian labels about the settings screen.</item>
         <item category='UI' issues='986'>The button Start Battle is now only visible if all vehicles have been deployed.</item>
-        <item category='UI'>Fixed the trade screen's bounding box.</item>
+        <item category='UI'>Fixed the trade screen&#39;s bounding box.</item>
         <item category='UI'>Fixed the tooltip on the building upgrade panel remaining visible after clicking on the upgrade star.</item>
         <item category='AI'>AI no longer does research before level 3.</item>
-        <item category='Balance'>AI on easy no longer deploys tanks to the planet's capacity but only 2/3.</item>
+        <item category='Balance'>AI on easy no longer deploys tanks to the planet&#39;s capacity but only 2/3.</item>
       </entry>
       <entry version='0.95.209' date='2016-06-12'>
         <item category='Missions' issues='974'>Fix the Escort Prototype mission not failing if the prototype gets destroyed but its escort survives.</item>
@@ -110,8 +116,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.210.jar' sha1='233AE441DA954889909732774EF8ECFB27B9368C'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20160719a2.zip' sha1='57A63024BD8365E277F2635C6A506E9B199C6061'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/install/open-ig-0.95.211.jar' sha1='BDE7BF252CD13F10D439315D23B51B28B1318EB4'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/install/open-ig-upgrade-20180818a2.zip' sha1='16ABA1397E4B4EEE0751683161B8F98D0CBE9B03'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
