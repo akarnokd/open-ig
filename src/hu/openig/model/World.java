@@ -3555,7 +3555,7 @@ public class World implements ModelLookup {
 			
 			List<Planet> candidates = new ArrayList<>();
 			for (Planet pl : planets.values()) {
-				if (rect.contains(pl.x, pl.y) && pl.owner == null) {
+				if (rect.contains(pl.x, pl.y) && pl.owner == null && !preferredPlanets.contains(pl.id)) {
 					candidates.add(pl);
 				}
 			}
@@ -3563,12 +3563,11 @@ public class World implements ModelLookup {
 			if (candidates.isEmpty()) {
 				// now try on all planets
 				for (Planet pl : planets.values()) {
-					if (pl.owner == null) {
+					if (pl.owner == null && !preferredPlanets.contains(pl.id)) {
 						candidates.add(pl);
 					}
 				}
 			}
-			candidates.removeAll(preferredPlanets);
 			
 			Planet pl = ModelUtils.random(candidates);
 			
