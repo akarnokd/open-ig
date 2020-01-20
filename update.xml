@@ -120,8 +120,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/install/open-ig-0.95.212.jar' sha1='421978DEA4B80D886B072230F3DD9E4E1632A461'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/install/open-ig-upgrade-20200113a2.zip' sha1='4067A0A0A37407ED714A9B13B3CBD544378734CB'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.212.jar' sha1='421978DEA4B80D886B072230F3DD9E4E1632A461'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200113a2.zip' sha1='4067A0A0A37407ED714A9B13B3CBD544378734CB'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
