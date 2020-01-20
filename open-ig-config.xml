@@ -39,7 +39,7 @@
 <entry key="researchMoneyPercent">1000</entry>
 <entry key="reequipBombs">true</entry>
 <entry key="spacewarDiminishingAttachCount">10</entry>
-<entry key="continuousMoney">true</entry>
+<entry key="continuousMoney">false</entry>
 <entry key="showStarmapMinimap">true</entry>
 <entry key="fileName">open-ig-config.xml</entry>
 <entry key="disableDirectDraw">false</entry>

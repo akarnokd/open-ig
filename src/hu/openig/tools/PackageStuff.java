@@ -459,6 +459,9 @@ public final class PackageStuff {
 			String checksum) {
 		String sha1 = checksum;
 		String name = sha1.substring(41).trim();
+		if (name.startsWith("install/")) {
+		    name = name.substring(8);
+		}
 		sha1 = sha1.substring(0, 40).trim();
 		
 		for (XElement xmodules : update.childrenWithName("module")) {
