@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.212'>
+  <module id='Game' version='0.95.213'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.213' date='2020-02-22'>
+        <item category='UI'>Adding fighters to a planet with maxed out vehicles via the Add button now works correctly.</item>
+      </entry>
       <entry version='0.95.212' date='2020-01-13'>
         <item category='Labels' issues='1021'>Added some missing German labels causing an error dialog to pop up.</item>
         <item category='Skirmish'>Fixed a potential issue with assigning initial planets to players.</item>
@@ -120,8 +123,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.212.jar' sha1='421978DEA4B80D886B072230F3DD9E4E1632A461'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200113a2.zip' sha1='4067A0A0A37407ED714A9B13B3CBD544378734CB'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.213.jar' sha1='78D8772F78A05AC0B199D4A430032ED59FAAE92F'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200222a2.zip' sha1='A1192F99F2D57107B41D7EEE69C2471E0D9D08CA'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

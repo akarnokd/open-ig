@@ -2168,9 +2168,18 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 						configure.item = pii;
 					}
 				} else {
-					PlanetStatistics ps = planet().getStatistics();
-					if (ps.vehicleCount + amount > ps.vehicleMax) {
-						amount = Math.max(0, ps.vehicleMax - ps.vehicleCount);
+                    PlanetStatistics ps = planet().getStatistics();
+				    int currentCount;
+				    int maxAllowed;
+				    if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+				        currentCount = ps.fighterCount;
+				        maxAllowed = world().params().fighterLimit();
+				    } else {
+				        currentCount = ps.vehicleCount;
+				        maxAllowed = ps.vehicleMax;
+				    }
+					if (currentCount + amount > maxAllowed) {
+						amount = Math.max(0, maxAllowed - currentCount);
 					}
 					if (amount > 0) {
 						planet().changeInventory(rt, player(), amount);
