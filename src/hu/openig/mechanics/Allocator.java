@@ -86,6 +86,10 @@ public final class Allocator {
 		case BATTLE:
 			doBattleStrategy(baw, workers);
 			break;
+        case DAMAGE_AWARE:
+//          doUniformStrategy(baw, workers);
+            doUniformStrategyWithDamage(baw, workers);
+            break;
 		default:
 		}
 	}

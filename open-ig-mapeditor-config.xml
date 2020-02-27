@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <mapeditor-config>
-  <window x='448' y='196' width='1024' height='768' state='0'/>
+  <window x='-8' y='-8' width='2576' height='1416' state='6'/>
   <language id='en'/>
-  <splitters main='450' preview='350' surfaces='150'/>
-  <editmode type='true'/>
-  <tabs selected='0'/>
+  <splitters main='450' preview='281' surfaces='150'/>
+  <editmode type='false'/>
+  <tabs selected='1'/>
   <lights preview='100' map='1.0'/>
-  <filter surface='' building=''/>
-  <allocation worker='5000' strategy='0'/>
-  <view buildings='true' minimap='false' textboxes='true' zoom='1.0' standard-fonts='false' placement-hints='false'/>
+  <filter surface='' building='civil'/>
+  <allocation worker='10000' strategy='1'/>
+  <view buildings='true' minimap='false' textboxes='true' zoom='1.3000000000000003' standard-fonts='false' placement-hints='false'/>
   <custom-surface-names>
     <tile id='21' type='cratered' name='21'/>
     <tile id='22' type='cratered' name='22'/>
@@ -543,8 +543,14 @@
   </custom-surface-names>
   <custom-building-names>
     <tile id='0' type='dargslan' name='ColonyHub'/>
+    <tile id='1' type='dargslan' name='PrefabHousing'/>
+    <tile id='2' type='dargslan' name='ApartmentBlock'/>
     <tile id='3' type='dargslan' name='Arcology'/>
     <tile id='4' type='dargslan' name='NuclearPlant'/>
+    <tile id='5' type='dargslan' name='FusionPlant'/>
+    <tile id='6' type='dargslan' name='WaterVaporator'/>
+    <tile id='7' type='dargslan' name='HydroponicFoodFarm'/>
+    <tile id='8' type='dargslan' name='SpaceshipFactory'/>
     <tile id='9' type='dargslan' name='PhoodFactory'/>
     <tile id='10' type='dargslan' name='SpaceshipFactory'/>
     <tile id='11' type='dargslan' name='EquipmentFactory'/>
@@ -554,24 +560,40 @@
     <tile id='15' type='dargslan' name='ComputerDevCenter'/>
     <tile id='16' type='dargslan' name='AIDevCenter'/>
     <tile id='17' type='dargslan' name='MilitaryDevCenter'/>
+    <tile id='18' type='dargslan' name='Bank'/>
     <tile id='19' type='dargslan' name='MilitarySpaceport'/>
+    <tile id='20' type='dargslan' name='Bank'/>
     <tile id='21' type='dargslan' name='TradeCenter'/>
     <tile id='22' type='dargslan' name='Hospital'/>
-    <tile id='23' type='dargslan' name='PoliceStation'/>
-    <tile id='25' type='dargslan' name='RadarTelescope'/>
+    <tile id='24' type='dargslan' name='Barracks'/>
     <tile id='26' type='dargslan' name='FieldTelescope'/>
     <tile id='27' type='dargslan' name='PhasedTelescope'/>
     <tile id='28' type='dargslan' name='Bunker'/>
     <tile id='29' type='dargslan' name='IonProjector'/>
-    <tile id='30' type='dargslan' name='PlasmaProjector'/>
-    <tile id='31' type='dargslan' name='ParticleProjector'/>
-    <tile id='32' type='dargslan' name='MesonProjector'/>
-    <tile id='33' type='dargslan' name='InversionShield'/>
-    <tile id='34' type='dargslan' name='HyperShield'/>
-    <tile id='36' type='dargslan' name='Fortress'/>
+    <tile id='30' type='dargslan' name='IonProjector'/>
+    <tile id='31' type='dargslan' name='PlasmaProjector'/>
+    <tile id='32' type='dargslan' name='ParticleProjector'/>
+    <tile id='33' type='dargslan' name='MesonProjector'/>
+    <tile id='34' type='dargslan' name='InversionShield'/>
+    <tile id='35' type='dargslan' name='HyperShield'/>
+    <tile id='36' type='dargslan' name='Barracks'/>
+    <tile id='37' type='dargslan' name='Fortress'/>
+    <tile id='38' type='dargslan' name='Stronghold'/>
+    <tile id='39' type='dargslan' name='RecreationCenter'/>
+    <tile id='40' type='dargslan' name='Park'/>
+    <tile id='41' type='dargslan' name='Church'/>
+    <tile id='42' type='dargslan' name='Bar'/>
+    <tile id='43' type='dargslan' name='Stadium'/>
+    <tile id='44' type='dargslan' name='SpyCenter'/>
     <tile id='0' type='dribs' name='ColonyHub'/>
+    <tile id='1' type='dribs' name='PrefabHousing'/>
+    <tile id='2' type='dribs' name='ApartmentBlock'/>
     <tile id='3' type='dribs' name='Arcology'/>
     <tile id='4' type='dribs' name='NuclearPlant'/>
+    <tile id='5' type='dribs' name='FusionPlant'/>
+    <tile id='6' type='dribs' name='WaterVaporator'/>
+    <tile id='7' type='dribs' name='HydroponicFoodFarm'/>
+    <tile id='8' type='dribs' name='SpaceshipFactory'/>
     <tile id='9' type='dribs' name='PhoodFactory'/>
     <tile id='10' type='dribs' name='SpaceshipFactory'/>
     <tile id='11' type='dribs' name='EquipmentFactory'/>
@@ -581,24 +603,40 @@
     <tile id='15' type='dribs' name='ComputerDevCenter'/>
     <tile id='16' type='dribs' name='AIDevCenter'/>
     <tile id='17' type='dribs' name='MilitaryDevCenter'/>
+    <tile id='18' type='dribs' name='Bank'/>
     <tile id='19' type='dribs' name='MilitarySpaceport'/>
+    <tile id='20' type='dribs' name='Bank'/>
     <tile id='21' type='dribs' name='TradeCenter'/>
     <tile id='22' type='dribs' name='Hospital'/>
-    <tile id='23' type='dribs' name='PoliceStation'/>
-    <tile id='25' type='dribs' name='RadarTelescope'/>
+    <tile id='24' type='dribs' name='Barracks'/>
     <tile id='26' type='dribs' name='FieldTelescope'/>
     <tile id='27' type='dribs' name='PhasedTelescope'/>
     <tile id='28' type='dribs' name='Bunker'/>
     <tile id='29' type='dribs' name='IonProjector'/>
-    <tile id='30' type='dribs' name='PlasmaProjector'/>
-    <tile id='31' type='dribs' name='ParticleProjector'/>
-    <tile id='32' type='dribs' name='MesonProjector'/>
-    <tile id='33' type='dribs' name='InversionShield'/>
-    <tile id='34' type='dribs' name='HyperShield'/>
-    <tile id='36' type='dribs' name='Fortress'/>
+    <tile id='30' type='dribs' name='IonProjector'/>
+    <tile id='31' type='dribs' name='PlasmaProjector'/>
+    <tile id='32' type='dribs' name='ParticleProjector'/>
+    <tile id='33' type='dribs' name='MesonProjector'/>
+    <tile id='34' type='dribs' name='InversionShield'/>
+    <tile id='35' type='dribs' name='HyperShield'/>
+    <tile id='36' type='dribs' name='Barracks'/>
+    <tile id='37' type='dribs' name='Fortress'/>
+    <tile id='38' type='dribs' name='Stronghold'/>
+    <tile id='39' type='dribs' name='RecreationCenter'/>
+    <tile id='40' type='dribs' name='Park'/>
+    <tile id='41' type='dribs' name='Church'/>
+    <tile id='42' type='dribs' name='Bar'/>
+    <tile id='43' type='dribs' name='Stadium'/>
+    <tile id='44' type='dribs' name='SpyCenter'/>
     <tile id='0' type='ecalep' name='ColonyHub'/>
+    <tile id='1' type='ecalep' name='PrefabHousing'/>
+    <tile id='2' type='ecalep' name='ApartmentBlock'/>
     <tile id='3' type='ecalep' name='Arcology'/>
     <tile id='4' type='ecalep' name='NuclearPlant'/>
+    <tile id='5' type='ecalep' name='FusionPlant'/>
+    <tile id='6' type='ecalep' name='WaterVaporator'/>
+    <tile id='7' type='ecalep' name='HydroponicFoodFarm'/>
+    <tile id='8' type='ecalep' name='SpaceshipFactory'/>
     <tile id='9' type='ecalep' name='PhoodFactory'/>
     <tile id='10' type='ecalep' name='SpaceshipFactory'/>
     <tile id='11' type='ecalep' name='EquipmentFactory'/>
@@ -608,24 +646,40 @@
     <tile id='15' type='ecalep' name='ComputerDevCenter'/>
     <tile id='16' type='ecalep' name='AIDevCenter'/>
     <tile id='17' type='ecalep' name='MilitaryDevCenter'/>
+    <tile id='18' type='ecalep' name='Bank'/>
     <tile id='19' type='ecalep' name='MilitarySpaceport'/>
+    <tile id='20' type='ecalep' name='Bank'/>
     <tile id='21' type='ecalep' name='TradeCenter'/>
     <tile id='22' type='ecalep' name='Hospital'/>
-    <tile id='23' type='ecalep' name='PoliceStation'/>
-    <tile id='25' type='ecalep' name='RadarTelescope'/>
+    <tile id='24' type='ecalep' name='Barracks'/>
     <tile id='26' type='ecalep' name='FieldTelescope'/>
     <tile id='27' type='ecalep' name='PhasedTelescope'/>
     <tile id='28' type='ecalep' name='Bunker'/>
     <tile id='29' type='ecalep' name='IonProjector'/>
-    <tile id='30' type='ecalep' name='PlasmaProjector'/>
-    <tile id='31' type='ecalep' name='ParticleProjector'/>
-    <tile id='32' type='ecalep' name='MesonProjector'/>
-    <tile id='33' type='ecalep' name='InversionShield'/>
-    <tile id='34' type='ecalep' name='HyperShield'/>
-    <tile id='36' type='ecalep' name='Fortress'/>
+    <tile id='30' type='ecalep' name='IonProjector'/>
+    <tile id='31' type='ecalep' name='PlasmaProjector'/>
+    <tile id='32' type='ecalep' name='ParticleProjector'/>
+    <tile id='33' type='ecalep' name='MesonProjector'/>
+    <tile id='34' type='ecalep' name='InversionShield'/>
+    <tile id='35' type='ecalep' name='HyperShield'/>
+    <tile id='36' type='ecalep' name='Barracks'/>
+    <tile id='37' type='ecalep' name='Fortress'/>
+    <tile id='38' type='ecalep' name='Stronghold'/>
+    <tile id='39' type='ecalep' name='RecreationCenter'/>
+    <tile id='40' type='ecalep' name='Park'/>
+    <tile id='41' type='ecalep' name='Church'/>
+    <tile id='42' type='ecalep' name='Bar'/>
+    <tile id='43' type='ecalep' name='Stadium'/>
+    <tile id='44' type='ecalep' name='SpyCenter'/>
     <tile id='0' type='garthog' name='ColonyHub'/>
+    <tile id='1' type='garthog' name='PrefabHousing'/>
+    <tile id='2' type='garthog' name='ApartmentBlock'/>
     <tile id='3' type='garthog' name='Arcology'/>
     <tile id='4' type='garthog' name='NuclearPlant'/>
+    <tile id='5' type='garthog' name='FusionPlant'/>
+    <tile id='6' type='garthog' name='WaterVaporator'/>
+    <tile id='7' type='garthog' name='HydroponicFoodFarm'/>
+    <tile id='8' type='garthog' name='SpaceshipFactory'/>
     <tile id='9' type='garthog' name='PhoodFactory'/>
     <tile id='10' type='garthog' name='SpaceshipFactory'/>
     <tile id='11' type='garthog' name='EquipmentFactory'/>
@@ -635,21 +689,31 @@
     <tile id='15' type='garthog' name='ComputerDevCenter'/>
     <tile id='16' type='garthog' name='AIDevCenter'/>
     <tile id='17' type='garthog' name='MilitaryDevCenter'/>
+    <tile id='18' type='garthog' name='Bank'/>
     <tile id='19' type='garthog' name='MilitarySpaceport'/>
+    <tile id='20' type='garthog' name='Bank'/>
     <tile id='21' type='garthog' name='TradeCenter'/>
     <tile id='22' type='garthog' name='Hospital'/>
-    <tile id='23' type='garthog' name='PoliceStation'/>
-    <tile id='25' type='garthog' name='RadarTelescope'/>
+    <tile id='24' type='garthog' name='Barracks'/>
     <tile id='26' type='garthog' name='FieldTelescope'/>
     <tile id='27' type='garthog' name='PhasedTelescope'/>
     <tile id='28' type='garthog' name='Bunker'/>
     <tile id='29' type='garthog' name='IonProjector'/>
-    <tile id='30' type='garthog' name='PlasmaProjector'/>
-    <tile id='31' type='garthog' name='ParticleProjector'/>
-    <tile id='32' type='garthog' name='MesonProjector'/>
-    <tile id='33' type='garthog' name='InversionShield'/>
-    <tile id='34' type='garthog' name='HyperShield'/>
-    <tile id='36' type='garthog' name='Fortress'/>
+    <tile id='30' type='garthog' name='IonProjector'/>
+    <tile id='31' type='garthog' name='PlasmaProjector'/>
+    <tile id='32' type='garthog' name='ParticleProjector'/>
+    <tile id='33' type='garthog' name='MesonProjector'/>
+    <tile id='34' type='garthog' name='InversionShield'/>
+    <tile id='35' type='garthog' name='HyperShield'/>
+    <tile id='36' type='garthog' name='Barracks'/>
+    <tile id='37' type='garthog' name='Fortress'/>
+    <tile id='38' type='garthog' name='Stronghold'/>
+    <tile id='39' type='garthog' name='RecreationCenter'/>
+    <tile id='40' type='garthog' name='Park'/>
+    <tile id='41' type='garthog' name='Church'/>
+    <tile id='42' type='garthog' name='Bar'/>
+    <tile id='43' type='garthog' name='Stadium'/>
+    <tile id='44' type='garthog' name='SpyCenter'/>
     <tile id='0' type='human' name='ColonyHub'/>
     <tile id='1' type='human' name='PrefabHousing'/>
     <tile id='2' type='human' name='ApartmentBlock'/>
@@ -674,28 +738,35 @@
     <tile id='21' type='human' name='TradeCenter'/>
     <tile id='22' type='human' name='Hospital'/>
     <tile id='23' type='human' name='PoliceStation'/>
-    <tile id='24' type='human' name='FireBrigade'/>
     <tile id='25' type='human' name='RadarTelescope'/>
     <tile id='26' type='human' name='FieldTelescope'/>
     <tile id='27' type='human' name='PhasedTelescope'/>
     <tile id='28' type='human' name='Bunker'/>
     <tile id='29' type='human' name='IonProjector'/>
-    <tile id='30' type='human' name='PlasmaProjector'/>
-    <tile id='31' type='human' name='ParticleProjector'/>
-    <tile id='32' type='human' name='MesonProjector'/>
-    <tile id='33' type='human' name='InversionShield'/>
-    <tile id='34' type='human' name='HyperShield'/>
-    <tile id='35' type='human' name='Barracks'/>
-    <tile id='36' type='human' name='Fortress'/>
-    <tile id='37' type='human' name='Stronghold'/>
-    <tile id='38' type='human' name='RecreationCenter'/>
-    <tile id='39' type='human' name='Park'/>
-    <tile id='40' type='human' name='Church'/>
-    <tile id='41' type='human' name='Bar'/>
-    <tile id='42' type='human' name='Stadium'/>
+    <tile id='30' type='human' name='IonProjector'/>
+    <tile id='31' type='human' name='PlasmaProjector'/>
+    <tile id='32' type='human' name='ParticleProjector'/>
+    <tile id='33' type='human' name='MesonProjector'/>
+    <tile id='34' type='human' name='InversionShield'/>
+    <tile id='35' type='human' name='HyperShield'/>
+    <tile id='36' type='human' name='Barracks'/>
+    <tile id='37' type='human' name='Fortress'/>
+    <tile id='38' type='human' name='Stronghold'/>
+    <tile id='39' type='human' name='RecreationCenter'/>
+    <tile id='40' type='human' name='Park'/>
+    <tile id='41' type='human' name='Church'/>
+    <tile id='42' type='human' name='Bar'/>
+    <tile id='43' type='human' name='Stadium'/>
+    <tile id='44' type='human' name='SpyCenter'/>
     <tile id='0' type='morgath' name='ColonyHub'/>
+    <tile id='1' type='morgath' name='PrefabHousing'/>
+    <tile id='2' type='morgath' name='ApartmentBlock'/>
     <tile id='3' type='morgath' name='Arcology'/>
     <tile id='4' type='morgath' name='NuclearPlant'/>
+    <tile id='5' type='morgath' name='FusionPlant'/>
+    <tile id='6' type='morgath' name='WaterVaporator'/>
+    <tile id='7' type='morgath' name='HydroponicFoodFarm'/>
+    <tile id='8' type='morgath' name='SpaceshipFactory'/>
     <tile id='9' type='morgath' name='PhoodFactory'/>
     <tile id='10' type='morgath' name='SpaceshipFactory'/>
     <tile id='11' type='morgath' name='EquipmentFactory'/>
@@ -705,24 +776,40 @@
     <tile id='15' type='morgath' name='ComputerDevCenter'/>
     <tile id='16' type='morgath' name='AIDevCenter'/>
     <tile id='17' type='morgath' name='MilitaryDevCenter'/>
+    <tile id='18' type='morgath' name='Bank'/>
     <tile id='19' type='morgath' name='MilitarySpaceport'/>
+    <tile id='20' type='morgath' name='Bank'/>
     <tile id='21' type='morgath' name='TradeCenter'/>
     <tile id='22' type='morgath' name='Hospital'/>
-    <tile id='23' type='morgath' name='PoliceStation'/>
-    <tile id='25' type='morgath' name='RadarTelescope'/>
+    <tile id='24' type='morgath' name='Barracks'/>
     <tile id='26' type='morgath' name='FieldTelescope'/>
     <tile id='27' type='morgath' name='PhasedTelescope'/>
     <tile id='28' type='morgath' name='Bunker'/>
     <tile id='29' type='morgath' name='IonProjector'/>
-    <tile id='30' type='morgath' name='PlasmaProjector'/>
-    <tile id='31' type='morgath' name='ParticleProjector'/>
-    <tile id='32' type='morgath' name='MesonProjector'/>
-    <tile id='33' type='morgath' name='InversionShield'/>
-    <tile id='34' type='morgath' name='HyperShield'/>
-    <tile id='36' type='morgath' name='Fortress'/>
+    <tile id='30' type='morgath' name='IonProjector'/>
+    <tile id='31' type='morgath' name='PlasmaProjector'/>
+    <tile id='32' type='morgath' name='ParticleProjector'/>
+    <tile id='33' type='morgath' name='MesonProjector'/>
+    <tile id='34' type='morgath' name='InversionShield'/>
+    <tile id='35' type='morgath' name='HyperShield'/>
+    <tile id='36' type='morgath' name='Barracks'/>
+    <tile id='37' type='morgath' name='Fortress'/>
+    <tile id='38' type='morgath' name='Stronghold'/>
+    <tile id='39' type='morgath' name='RecreationCenter'/>
+    <tile id='40' type='morgath' name='Park'/>
+    <tile id='41' type='morgath' name='Church'/>
+    <tile id='42' type='morgath' name='Bar'/>
+    <tile id='43' type='morgath' name='Stadium'/>
+    <tile id='44' type='morgath' name='SpyCenter'/>
     <tile id='0' type='sullep' name='ColonyHub'/>
+    <tile id='1' type='sullep' name='PrefabHousing'/>
+    <tile id='2' type='sullep' name='ApartmentBlock'/>
     <tile id='3' type='sullep' name='Arcology'/>
     <tile id='4' type='sullep' name='NuclearPlant'/>
+    <tile id='5' type='sullep' name='FusionPlant'/>
+    <tile id='6' type='sullep' name='WaterVaporator'/>
+    <tile id='7' type='sullep' name='HydroponicFoodFarm'/>
+    <tile id='8' type='sullep' name='SpaceshipFactory'/>
     <tile id='9' type='sullep' name='PhoodFactory'/>
     <tile id='10' type='sullep' name='SpaceshipFactory'/>
     <tile id='11' type='sullep' name='EquipmentFactory'/>
@@ -732,24 +819,40 @@
     <tile id='15' type='sullep' name='ComputerDevCenter'/>
     <tile id='16' type='sullep' name='AIDevCenter'/>
     <tile id='17' type='sullep' name='MilitaryDevCenter'/>
+    <tile id='18' type='sullep' name='Bank'/>
     <tile id='19' type='sullep' name='MilitarySpaceport'/>
+    <tile id='20' type='sullep' name='Bank'/>
     <tile id='21' type='sullep' name='TradeCenter'/>
     <tile id='22' type='sullep' name='Hospital'/>
-    <tile id='23' type='sullep' name='PoliceStation'/>
-    <tile id='25' type='sullep' name='RadarTelescope'/>
+    <tile id='24' type='sullep' name='Barracks'/>
     <tile id='26' type='sullep' name='FieldTelescope'/>
     <tile id='27' type='sullep' name='PhasedTelescope'/>
     <tile id='28' type='sullep' name='Bunker'/>
     <tile id='29' type='sullep' name='IonProjector'/>
-    <tile id='30' type='sullep' name='PlasmaProjector'/>
-    <tile id='31' type='sullep' name='ParticleProjector'/>
-    <tile id='32' type='sullep' name='MesonProjector'/>
-    <tile id='33' type='sullep' name='InversionShield'/>
-    <tile id='34' type='sullep' name='HyperShield'/>
-    <tile id='36' type='sullep' name='Fortress'/>
+    <tile id='30' type='sullep' name='IonProjector'/>
+    <tile id='31' type='sullep' name='PlasmaProjector'/>
+    <tile id='32' type='sullep' name='ParticleProjector'/>
+    <tile id='33' type='sullep' name='MesonProjector'/>
+    <tile id='34' type='sullep' name='InversionShield'/>
+    <tile id='35' type='sullep' name='HyperShield'/>
+    <tile id='36' type='sullep' name='Barracks'/>
+    <tile id='37' type='sullep' name='Fortress'/>
+    <tile id='38' type='sullep' name='Stronghold'/>
+    <tile id='39' type='sullep' name='RecreationCenter'/>
+    <tile id='40' type='sullep' name='Park'/>
+    <tile id='41' type='sullep' name='Church'/>
+    <tile id='42' type='sullep' name='Bar'/>
+    <tile id='43' type='sullep' name='Stadium'/>
+    <tile id='44' type='sullep' name='SpyCenter'/>
     <tile id='0' type='ychom' name='ColonyHub'/>
+    <tile id='1' type='ychom' name='PrefabHousing'/>
+    <tile id='2' type='ychom' name='ApartmentBlock'/>
     <tile id='3' type='ychom' name='Arcology'/>
     <tile id='4' type='ychom' name='NuclearPlant'/>
+    <tile id='5' type='ychom' name='FusionPlant'/>
+    <tile id='6' type='ychom' name='WaterVaporator'/>
+    <tile id='7' type='ychom' name='HydroponicFoodFarm'/>
+    <tile id='8' type='ychom' name='SpaceshipFactory'/>
     <tile id='9' type='ychom' name='PhoodFactory'/>
     <tile id='10' type='ychom' name='SpaceshipFactory'/>
     <tile id='11' type='ychom' name='EquipmentFactory'/>
@@ -759,21 +862,31 @@
     <tile id='15' type='ychom' name='ComputerDevCenter'/>
     <tile id='16' type='ychom' name='AIDevCenter'/>
     <tile id='17' type='ychom' name='MilitaryDevCenter'/>
+    <tile id='18' type='ychom' name='Bank'/>
     <tile id='19' type='ychom' name='MilitarySpaceport'/>
+    <tile id='20' type='ychom' name='Bank'/>
     <tile id='21' type='ychom' name='TradeCenter'/>
     <tile id='22' type='ychom' name='Hospital'/>
-    <tile id='23' type='ychom' name='PoliceStation'/>
-    <tile id='25' type='ychom' name='RadarTelescope'/>
+    <tile id='24' type='ychom' name='Barracks'/>
     <tile id='26' type='ychom' name='FieldTelescope'/>
     <tile id='27' type='ychom' name='PhasedTelescope'/>
     <tile id='28' type='ychom' name='Bunker'/>
     <tile id='29' type='ychom' name='IonProjector'/>
-    <tile id='30' type='ychom' name='PlasmaProjector'/>
-    <tile id='31' type='ychom' name='ParticleProjector'/>
-    <tile id='32' type='ychom' name='MesonProjector'/>
-    <tile id='33' type='ychom' name='InversionShield'/>
-    <tile id='34' type='ychom' name='HyperShield'/>
-    <tile id='36' type='ychom' name='Fortress'/>
+    <tile id='30' type='ychom' name='IonProjector'/>
+    <tile id='31' type='ychom' name='PlasmaProjector'/>
+    <tile id='32' type='ychom' name='ParticleProjector'/>
+    <tile id='33' type='ychom' name='MesonProjector'/>
+    <tile id='34' type='ychom' name='InversionShield'/>
+    <tile id='35' type='ychom' name='HyperShield'/>
+    <tile id='36' type='ychom' name='Barracks'/>
+    <tile id='37' type='ychom' name='Fortress'/>
+    <tile id='38' type='ychom' name='Stronghold'/>
+    <tile id='39' type='ychom' name='RecreationCenter'/>
+    <tile id='40' type='ychom' name='Park'/>
+    <tile id='41' type='ychom' name='Church'/>
+    <tile id='42' type='ychom' name='Bar'/>
+    <tile id='43' type='ychom' name='Stadium'/>
+    <tile id='44' type='ychom' name='SpyCenter'/>
   </custom-building-names>
   <recent>
     <entry file='C:\work\workspace\open-ig\data\generic\campaign\main\surfaces\frozen_1.xml'/>

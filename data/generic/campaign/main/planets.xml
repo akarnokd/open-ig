@@ -920,6 +920,7 @@
       <building type='Arcology' race='garthog' x='-9' y='-30' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='ColonyHub' race='garthog' x='-10' y='-33' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='ComputerDevCenter' race='garthog' x='-5' y='-29' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
+      <building type='CivilDevCenter' race='garthog' x='-6' y='-34' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='EquipmentFactory' race='garthog' x='0' y='-18' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='Fortress' race='garthog' x='-14' y='-52' enabled='true' repairing='false' energy='0' worker='0' level='0'/>
       <building type='Hospital' race='garthog' x='3' y='-28' enabled='true' repairing='false' energy='0' worker='0' level='0'/>

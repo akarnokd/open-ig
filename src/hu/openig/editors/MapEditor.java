@@ -8,122 +8,29 @@
 
 package hu.openig.editors;
 
-import hu.openig.core.Func0;
-import hu.openig.core.Location;
-import hu.openig.gfx.ColonyGFX;
-import hu.openig.model.Building;
-import hu.openig.model.BuildingModel;
-import hu.openig.model.BuildingType;
-import hu.openig.model.Configuration;
-import hu.openig.model.GalaxyModel;
-import hu.openig.model.Labels;
-import hu.openig.model.OriginalBuilding;
-import hu.openig.model.PlanetSurface;
-import hu.openig.model.PlanetType;
-import hu.openig.model.ResearchType;
-import hu.openig.model.Resource;
-import hu.openig.model.ResourceLocator;
-import hu.openig.model.SurfaceEntity;
-import hu.openig.model.SurfaceEntityType;
-import hu.openig.model.SurfaceFeature;
-import hu.openig.model.Tile;
-import hu.openig.model.TileSet;
-import hu.openig.render.TextRenderer;
-import hu.openig.utils.ConsoleWatcher;
-import hu.openig.utils.Exceptions;
-import hu.openig.utils.ImageUtils;
-import hu.openig.utils.WipPort;
-import hu.openig.utils.XElement;
-
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Desktop;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
+import java.net.*;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
-import javax.swing.AbstractButton;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JSlider;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableRowSorter;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEdit;
+import javax.swing.event.*;
+import javax.swing.table.*;
+import javax.swing.undo.*;
 import javax.xml.stream.XMLStreamException;
+
+import hu.openig.core.*;
+import hu.openig.gfx.ColonyGFX;
+import hu.openig.model.*;
+import hu.openig.render.TextRenderer;
+import hu.openig.utils.*;
 
 /**
  * Map editor.
@@ -135,7 +42,7 @@ public class MapEditor extends JFrame {
 	/** The minimum memory required to run Open-IG. */
 	private static final long MINIMUM_MEMORY = 512L;
 	/** The map editor's JAR file version. */
-	public static final String VERSION = "0.61";
+	public static final String VERSION = "0.62";
 	/** The title text. */
 	public static final String TITLE = "Open-IG MapEditor v" + VERSION;
 	/** The main resource locator. */
@@ -476,9 +383,17 @@ public class MapEditor extends JFrame {
 							@Override
 							public void run() {
 								try {
+								    final ResearchType rt0 = new ResearchType();
+								    Map<String, ResearchType> mockedResearchTypes = new HashMap<String, ResearchType>() {
+                                        private static final long serialVersionUID = 7697556155963726417L;
+                                        @Override
+								        public ResearchType get(Object key) {
+								            return rt0;
+								        }
+								    };
 									buildingMap = new BuildingModel(config, true, null);
 									buildingMap.processBuildings(rl, "campaign/main/buildings", 
-											new HashMap<String, ResearchType>(), lbl2, exec, wip);
+											mockedResearchTypes, lbl2, exec, wip);
 								} finally {
 									wip.dec();
 								}
@@ -1711,6 +1626,7 @@ public class MapEditor extends JFrame {
 		if (dlg.success) {
 			setTitle(TITLE);
 			createPlanetSurface(dlg.width, dlg.height);
+            updateAllocatorBuildings();
 			renderer.repaint();
 			saveSettings = null;
 			undoManager.discardAllEdits();
@@ -1726,8 +1642,14 @@ public class MapEditor extends JFrame {
 		ui.mapsize.setText(width + " x " + height);
 		renderer.surface = new PlanetSurface();
 		renderer.surface.setSize(width, height);
-		ui.allocationPanel.buildings.addAll(renderer.surface.buildings.list());
 	}
+
+	void updateAllocatorBuildings() {
+	    ui.allocationPanel.buildings.clear();
+	    ui.allocationPanel.buildings.addAll(renderer.surface.buildings.list());
+	    ui.allocationPanel.doCompute();
+	}
+	
 //	/**
 //	 * Place a tile onto the current surface map.
 //	 * @param tile the tile
@@ -1803,6 +1725,7 @@ public class MapEditor extends JFrame {
 						bld.makeFullyBuilt();
 						bld.location = Location.of(x + 1, y - 1);
 						renderer.surface.placeBuilding(te.tile, bld.location.x, bld.location.y, bld);
+			            updateAllocatorBuildings();
 					}
 				}
 				renderer.surface.placeRoads(te.surface, buildingModel);
@@ -1860,11 +1783,17 @@ public class MapEditor extends JFrame {
 					placeTilesFromOriginalMap("colony/" + imp.planet.getMapName(), imp.planet.surfaceType.toLowerCase(Locale.ENGLISH), imp.shiftXValue, imp.shiftYValue);
 				}
 
+				int n = 0;
 				for (OriginalBuilding ob : imp.planet.buildings) {
-					BuildingType bt = buildingModel.buildings.get(ob.getName()); 
-					String r = imp.planet.getRaceTechId();
+					String name = ob.getName();
+                    String r = imp.planet.getRaceTechId();
+                    // Non-humans have a separate building named PoliceStation2
+					if ("PoliceStation".equals(name) && !"human".equals(r)) {
+					    name = "PoliceStation2";
+					}
+                    BuildingType bt = buildingModel.buildings.get(name); 
 					TileSet t = bt.tileset.get(r);
-					Building bld = new Building(-1, bt, r);
+					Building bld = new Building(n++, bt, r);
 					bld.makeFullyBuilt();
 					bld.location = Location.of(ob.location.x + imp.shiftXValue, ob.location.y + imp.shiftYValue);
 					
@@ -1876,6 +1805,7 @@ public class MapEditor extends JFrame {
 			} else {
 				doClearBuildings(false);
 			}
+			updateAllocatorBuildings();
 			undo.setAfter();
 			addUndo(undo);
 			repaint();
@@ -1967,6 +1897,7 @@ public class MapEditor extends JFrame {
 			renderer.surface.placeBuilding(bld.tileset.normal, 
 					bld.location.x, bld.location.y, bld);
 			renderer.surface.placeRoads(currentBuildingRace, buildingModel);
+            updateAllocatorBuildings();
 			
 			undo.setAfter();
 			addUndo(undo);
@@ -2292,6 +2223,7 @@ public class MapEditor extends JFrame {
 			renderer.buildingBox = null;
 			currentBuilding = null;
 			ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
+            updateAllocatorBuildings();
 			renderer.repaint();
 		} catch (XMLStreamException ex) {
 			Exceptions.add(ex);
@@ -2921,7 +2853,7 @@ public class MapEditor extends JFrame {
 						deleteEntitiesOf(renderer.surface.buildingmap, new Rectangle(b.location.x, b.location.y, b.tileset.normal.width, b.tileset.normal.height), true);
 
 						renderer.surface.placeBuilding(b.tileset.normal, b.location.x, b.location.y, b);
-						
+			            updateAllocatorBuildings();
 					}
 				}
 				

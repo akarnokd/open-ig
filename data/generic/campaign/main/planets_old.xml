@@ -5321,6 +5321,14 @@
 				<y>-28</y>
 				<enabled>true</enabled>
 			</building>
+            <building>
+                <id>CivilEngDevCentre</id>
+                <health>100</health>
+                <progress>100</progress>
+                <x>-5</x>
+                <y>-33</y>
+                <enabled>true</enabled>
+            </building>
 			<building>
 				<id>WeaponFactory</id>
 				<health>100</health>
