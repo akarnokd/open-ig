@@ -1341,6 +1341,10 @@ public class MapEditor extends JFrame {
 			deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
 			undo.setAfter();
 			addUndo(undo);
+            currentBuilding = null;
+            renderer.buildingBox = null;
+            updateAllocatorBuildings();
+            displayBuildingInfo();
 			repaint();
 		}
 	}
@@ -1363,6 +1367,10 @@ public class MapEditor extends JFrame {
 			deleteEntitiesOf(renderer.surface.buildingmap, renderer.selectedRectangle, true);
 			undo.setAfter();
 			addUndo(undo);
+            currentBuilding = null;
+            renderer.buildingBox = null;
+			updateAllocatorBuildings();
+			displayBuildingInfo();
 			repaint();
 		}
 	}
@@ -1630,6 +1638,10 @@ public class MapEditor extends JFrame {
 			renderer.repaint();
 			saveSettings = null;
 			undoManager.discardAllEdits();
+	        currentBuilding = null;
+            renderer.buildingBox = null;
+	        
+	        displayBuildingInfo();
 			setUndoRedoMenu();
 		}
 	}
@@ -1805,7 +1817,10 @@ public class MapEditor extends JFrame {
 			} else {
 				doClearBuildings(false);
 			}
+			currentBuilding = null;
+            renderer.buildingBox = null;
 			updateAllocatorBuildings();
+			displayBuildingInfo();
 			undo.setAfter();
 			addUndo(undo);
 			repaint();
@@ -2062,48 +2077,71 @@ public class MapEditor extends JFrame {
 	 * Display the building info.
 	 */
 	private void displayBuildingInfo() {
-		if (currentBuilding == null) {
-			return;
-		}
-		ui.buildingInfoPanel.buildingName.setText(currentBuilding.type.name);
-		ui.buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
-		ui.buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
-		ui.buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
-		ui.buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.buildProgress);
-		ui.buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
-		ui.buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
-		ui.buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
-		ui.buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
-		ui.buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
-		ui.buildingInfoPanel.tech.setText(currentBuilding.race);
-		ui.buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
-		ui.buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
-		ui.buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
-		ui.buildingInfoPanel.apply.setEnabled(true);
-		ui.buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
-		ui.buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
-		
-		ui.buildingInfoPanel.completionPercent.setText(String.format("  %.3f%%", currentBuilding.buildProgress * 100.0 / currentBuilding.type.hitpoints));
-		ui.buildingInfoPanel.hitpointPercent.setText(String.format("  %.3f%%", currentBuilding.hitpoints * 100.0 / currentBuilding.buildProgress));
-		ui.buildingInfoPanel.workerPercent.setText(String.format("  %.3f%%", currentBuilding.assignedWorker * 100.0 / currentBuilding.getWorkers()));
-		ui.buildingInfoPanel.energyPercent.setText(String.format("  %.3f%%", currentBuilding.assignedEnergy * 100.0 / currentBuilding.getEnergy()));
-		
-		ui.buildingInfoPanel.upgradeList.removeAllItems();
-		ui.buildingInfoPanel.upgradeList.addItem("None");
-		for (int j = 0; j < currentBuilding.type.upgrades.size(); j++) {
-			ui.buildingInfoPanel.upgradeList.addItem(currentBuilding.type.upgrades.get(j).description);
-		}
-		ui.buildingInfoPanel.upgradeList.setSelectedIndex(currentBuilding.upgradeLevel);
-		
-		ui.buildingInfoPanel.resourceTableModel.rows.clear();
-		for (String r : currentBuilding.type.resources.keySet()) {
-			if ("worker".equals(r) || "energy".equals(r)) {
-				continue;
-			}
-			Resource res = new Resource();
-			res.type = r;
-			res.amount = currentBuilding.getResource(r);
-			ui.buildingInfoPanel.resourceTableModel.rows.add(res);
+        ui.buildingInfoPanel.upgradeList.removeAllItems();
+        ui.buildingInfoPanel.upgradeList.addItem("None");
+        ui.buildingInfoPanel.resourceTableModel.rows.clear();
+
+        if (currentBuilding != null) {
+            ui.buildingInfoPanel.buildingName.setText(currentBuilding.type.name);
+            ui.buildingInfoPanel.completed.setText("" + currentBuilding.buildProgress);
+            ui.buildingInfoPanel.completedTotal.setText("" + currentBuilding.type.hitpoints);
+            ui.buildingInfoPanel.hitpoints.setText("" + currentBuilding.hitpoints);
+            ui.buildingInfoPanel.hitpointsTotal.setText("" + currentBuilding.buildProgress);
+            ui.buildingInfoPanel.assignedWorkers.setText("" + currentBuilding.assignedWorker);
+            ui.buildingInfoPanel.workerTotal.setText("" + currentBuilding.getWorkers());
+            ui.buildingInfoPanel.assignedEnergy.setText("" + currentBuilding.assignedEnergy);
+            ui.buildingInfoPanel.energyTotal.setText("" + currentBuilding.getEnergy());
+            ui.buildingInfoPanel.efficiency.setText(String.format("%.3f%%", currentBuilding.getEfficiency() * 100));
+            ui.buildingInfoPanel.tech.setText(currentBuilding.race);
+            ui.buildingInfoPanel.cost.setText("" + currentBuilding.type.cost);
+            ui.buildingInfoPanel.locationX.setText("" + currentBuilding.location.x);
+            ui.buildingInfoPanel.locationY.setText("" + currentBuilding.location.y);
+            ui.buildingInfoPanel.apply.setEnabled(true);
+            ui.buildingInfoPanel.buildingEnabled.setSelected(currentBuilding.enabled);
+            ui.buildingInfoPanel.buildingRepairing.setSelected(currentBuilding.repairing);
+            
+            ui.buildingInfoPanel.completionPercent.setText(String.format("  %.3f%%", currentBuilding.buildProgress * 100.0 / currentBuilding.type.hitpoints));
+            ui.buildingInfoPanel.hitpointPercent.setText(String.format("  %.3f%%", currentBuilding.hitpoints * 100.0 / currentBuilding.buildProgress));
+            ui.buildingInfoPanel.workerPercent.setText(String.format("  %.3f%%", currentBuilding.assignedWorker * 100.0 / currentBuilding.getWorkers()));
+            ui.buildingInfoPanel.energyPercent.setText(String.format("  %.3f%%", currentBuilding.assignedEnergy * 100.0 / currentBuilding.getEnergy()));
+            
+            for (int j = 0; j < currentBuilding.type.upgrades.size(); j++) {
+                ui.buildingInfoPanel.upgradeList.addItem(currentBuilding.type.upgrades.get(j).description);
+            }
+            ui.buildingInfoPanel.upgradeList.setSelectedIndex(currentBuilding.upgradeLevel);
+            
+            for (String r : currentBuilding.type.resources.keySet()) {
+                if ("worker".equals(r) || "energy".equals(r)) {
+                    continue;
+                }
+                Resource res = new Resource();
+                res.type = r;
+                res.amount = currentBuilding.getResource(r);
+                ui.buildingInfoPanel.resourceTableModel.rows.add(res);
+            }
+		} else {
+            ui.buildingInfoPanel.buildingName.setText("");
+            ui.buildingInfoPanel.completed.setText("");
+            ui.buildingInfoPanel.completedTotal.setText("");
+            ui.buildingInfoPanel.hitpoints.setText("");
+            ui.buildingInfoPanel.hitpointsTotal.setText("");
+            ui.buildingInfoPanel.assignedWorkers.setText("");
+            ui.buildingInfoPanel.workerTotal.setText("");
+            ui.buildingInfoPanel.assignedEnergy.setText("");
+            ui.buildingInfoPanel.energyTotal.setText("");
+            ui.buildingInfoPanel.efficiency.setText("");
+            ui.buildingInfoPanel.tech.setText("");
+            ui.buildingInfoPanel.cost.setText("");
+            ui.buildingInfoPanel.locationX.setText("");
+            ui.buildingInfoPanel.locationY.setText("");
+            ui.buildingInfoPanel.apply.setEnabled(false);
+            ui.buildingInfoPanel.buildingEnabled.setSelected(false);
+            ui.buildingInfoPanel.buildingRepairing.setSelected(false);
+            
+            ui.buildingInfoPanel.completionPercent.setText("");
+            ui.buildingInfoPanel.hitpointPercent.setText("");
+            ui.buildingInfoPanel.workerPercent.setText("");
+            ui.buildingInfoPanel.energyPercent.setText("");
 		}
 		ui.buildingInfoPanel.resourceTableModel.fireTableDataChanged();
 	}
@@ -2131,6 +2169,8 @@ public class MapEditor extends JFrame {
 		currentBuilding.assignedEnergy = Math.min(0, Math.max(Integer.parseInt(ui.buildingInfoPanel.assignedEnergy.getText()), currentBuilding.getEnergy()));
 
 		displayBuildingInfo();
+        ui.allocationPanel.doCompute();
+
 		renderer.repaint();
 	}
 	/**
@@ -2221,8 +2261,10 @@ public class MapEditor extends JFrame {
 				}
 			}
 			renderer.buildingBox = null;
-			currentBuilding = null;
 			ui.mapsize.setText(renderer.surface.width + " x " + renderer.surface.height);
+            currentBuilding = null;
+            renderer.buildingBox = null;
+            displayBuildingInfo();
             updateAllocatorBuildings();
 			renderer.repaint();
 		} catch (XMLStreamException ex) {
@@ -2360,6 +2402,10 @@ public class MapEditor extends JFrame {
 			surface.features.addAll(surfaceBefore);
 			surface.buildings.clear();
 			surface.buildings.addAll(buildingsBefore);
+			currentBuilding = null;
+            renderer.buildingBox = null;
+			updateAllocatorBuildings();
+            displayBuildingInfo();
 		}
 		/**
 		 * Restore the state after.
@@ -2373,6 +2419,10 @@ public class MapEditor extends JFrame {
 			surface.features.addAll(surfaceAfter);
 			surface.buildings.clear();
 			surface.buildings.addAll(buildingsAfter);
+            currentBuilding = null;
+            renderer.buildingBox = null;
+            updateAllocatorBuildings();
+            displayBuildingInfo();
 		}
 		@Override
 		public boolean addEdit(UndoableEdit anEdit) {
@@ -2630,6 +2680,7 @@ public class MapEditor extends JFrame {
 						renderer.surface.buildings.remove(b);
 						if (currentBuilding == b) {
 							currentBuilding = null;
+				            renderer.buildingBox = null;
 						}
 						buildingCount++;
 						removeTiles(renderer.surface.buildingmap, b.location.x, b.location.y, b.tileset.normal.width, b.tileset.normal.height);
