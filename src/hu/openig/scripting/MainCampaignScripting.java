@@ -119,11 +119,7 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				setOwner(pi, traders);
 			}
 		}
-		for (Map.Entry<Planet, PlanetKnowledge> e : new HashMap<>(empire.planets).entrySet()) {
-			if (e.getKey().owner == empire || e.getKey().owner == traders) {
-				empire.planets.remove(e.getKey());
-			}
-		}
+		// make sure the player owns the planets they should upon start
 		for (int i = 1; i <= world.level; i++) {
 			String[] ps = planets[i - 1];
 			for (String pi : ps) {
