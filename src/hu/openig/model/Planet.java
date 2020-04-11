@@ -710,6 +710,10 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 			lastOwner.statistics.planetsLostAlien.value++;
 		}
 		lastOwner.statistics.planetsLost.value++;
+		
+		// unfinished buildings need to be removed from the surface
+		// before granting technology for captured buildings.
+		removeUnfinishedBuildings();
 		for (Building b : surface.buildings.iterable()) {
 			if (b.type.research != null) {
 				newOwner.setAvailable(b.type.research);
@@ -732,6 +736,20 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 		newOwner.ai.onPlanetConquered(this, lastOwner);
 		world.scripting.onConquered(this, lastOwner);
 	}
+	
+	/**
+	 * Remove unfinished buildings from the planet's
+	 * surface and then rebuild the roads.
+	 */
+	public void removeUnfinishedBuildings() {
+		for (Building b : this.surface.buildings.list()) {
+			if (!b.isComplete()) {
+				this.surface.removeBuilding(b);
+			}
+		}
+		rebuildRoads();
+	}
+	
 	/**
 	 * Sell remaining units of the last owner at a 25% price.
 	 * @param lastOwner the last owner
