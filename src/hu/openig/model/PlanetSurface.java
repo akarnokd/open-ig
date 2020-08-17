@@ -69,6 +69,8 @@ public class PlanetSurface {
 	public final Buildings buildings = new Buildings();
 	/** The list of base surface features which have multi-tile geometry. */
 	public List<SurfaceFeature> features = new ArrayList<>();
+	/** Set of locations that should be excluded from groundwar deployments. */
+	public Set<Location> deploymentExclusions = new HashSet<>();
 	/** The placement helper. */
 	public PlacementHelper placement = new PlacementHelper() {
 		@Override
@@ -218,6 +220,7 @@ public class PlanetSurface {
 			if (surface != null) {
 				this.features.clear();
 				this.basemap.clear();
+				this.deploymentExclusions.clear();
 				int width = Integer.parseInt(surface.get("width"));
 				int height = Integer.parseInt(surface.get("height"));
 				setSize(width, height);
@@ -237,6 +240,11 @@ public class PlanetSurface {
 							placeBase(t, x, y, id, type);
 						}
 					}
+				}
+				for (XElement exclude : surface.childrenWithName("exclude")) {
+                    int x = Integer.parseInt(exclude.get("x"));
+                    int y = Integer.parseInt(exclude.get("y"));
+                    deploymentExclusions.add(Location.of(x, y));
 				}
 			}
 		}
