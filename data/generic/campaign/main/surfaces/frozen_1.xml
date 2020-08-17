@@ -2416,6 +2416,13 @@
     <tile type='frozen' id='21' x='27' y='-27'/>
     <tile type='frozen' id='21' x='28' y='-28'/>
     <tile type='frozen' id='21' x='29' y='-29'/>
+    <exclude x='10' y='-46'/>
+    <exclude x='10' y='-47'/>
+    <exclude x='-18' y='-67'/>
+    <exclude x='-19' y='-64'/>
+    <exclude x='-19' y='-65'/>
+    <exclude x='-19' y='-66'/>
+    <exclude x='-20' y='-65'/>
   </surface>
   <buildings>
   </buildings>

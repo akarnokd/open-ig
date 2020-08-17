@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.214'>
+  <module id='Game' version='0.95.215'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,10 @@
       <desc lang='es'>Fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.215' date='2020-08-17'>
+        <item category='Groundwar' issues='1013'>Added default defensive deployment locations for planets without buildings.</item>
+        <item category='Groundwar' issues='730'>Fixed an issue with AI deploying to unreachable locations via deployment exclusions.</item>
+      </entry>
       <entry version='0.95.214' date='2020-04-02'>
         <item category='Campaign'>Fixed an issue with planets becoming non-operational upon level-up in the campaign.</item>
       </entry>
@@ -126,8 +130,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.214.jar' sha1='C95AA706FCCDF05B0CB147C13F2424108CED64A9'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200222a2.zip' sha1='A1192F99F2D57107B41D7EEE69C2471E0D9D08CA'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.215.jar' sha1='2D44FC02B5BB850C044129210CD1808C007B0C7B'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200817a2.zip' sha1='1BB276962ADF25D734C0CB08E70AEDE7380179E4'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

@@ -2431,6 +2431,13 @@
     <tile id='38' type='earth' y='-25' x='25'/>
     <tile id='38' type='earth' y='-26' x='26'/>
     <tile id='38' type='earth' y='-27' x='27'/>
+    <exclude x='24' y='-25'/>
+    <exclude x='23' y='-30'/>
+    <exclude x='22' y='-30'/>
+    <exclude x='22' y='-31'/>
+    <exclude x='18' y='-35'/>
+    <exclude x='20' y='-21'/>
+    <exclude x='19' y='-20'/>
   </surface>
   <buildings/>
 </map>

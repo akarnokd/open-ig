@@ -1112,6 +1112,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                                 buttonSound(SoundType.CLICK_MEDIUM_2);
                             }
                             rep = true;
+                            /*
+                            if (battlePlacements.contains(loc)) {
+                                battlePlacements.remove(loc);
+                                System.out.printf("    <exclude x='%d' y='%d'/>\r\n", loc.x, loc.y);
+                            }
+                            */
                         } else {
                             doSelectBuilding(null);
                         }
@@ -3678,6 +3684,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             } else {
                 for (Building b : planet().surface.buildings.iterable()) {
                     result.addAll(placeAround(b));
+                }
+            }
+            for (Location loc : new ArrayList<>(result)) {
+                if (surface().deploymentExclusions.contains(loc)) {
+                    result.remove(loc);
                 }
             }
         } else {

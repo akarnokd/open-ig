@@ -3596,6 +3596,65 @@
     <tile type='rocky' id='21' x='30' y='-30'/>
     <tile type='rocky' id='21' x='31' y='-31'/>
     <tile type='rocky' id='21' x='32' y='-32'/>
+    <exclude x='-10' y='-11'/>
+    <exclude x='-30' y='-85'/>
+    <exclude x='-30' y='-84'/>
+    <exclude x='-31' y='-84'/>
+    <exclude x='-32' y='-83'/>
+    <exclude x='-26' y='-89'/>
+    <exclude x='-24' y='-87'/>
+    <exclude x='-25' y='-88'/>
+    <exclude x='-16' y='-79'/>
+    <exclude x='20' y='-21'/>
+    <exclude x='21' y='-22'/>
+    <exclude x='21' y='-23'/>
+    <exclude x='22' y='-23'/>
+    <exclude x='21' y='-24'/>
+    <exclude x='22' y='-24'/>
+    <exclude x='23' y='-24'/>
+    <exclude x='22' y='-25'/>
+    <exclude x='23' y='-25'/>
+    <exclude x='23' y='-26'/>
+    <exclude x='24' y='-26'/>
+    <exclude x='24' y='-25'/>
+    <exclude x='24' y='-27'/>
+    <exclude x='25' y='-26'/>
+    <exclude x='25' y='-27'/>
+    <exclude x='25' y='-28'/>
+    <exclude x='26' y='-27'/>
+    <exclude x='27' y='-28'/>
+    <exclude x='26' y='-28'/>
+    <exclude x='26' y='-29'/>
+    <exclude x='27' y='-29'/>
+    <exclude x='28' y='-29'/>
+    <exclude x='29' y='-30'/>
+    <exclude x='28' y='-30'/>
+    <exclude x='27' y='-30'/>
+    <exclude x='30' y='-31'/>
+    <exclude x='29' y='-31'/>
+    <exclude x='28' y='-31'/>
+    <exclude x='30' y='-32'/>
+    <exclude x='31' y='-32'/>
+    <exclude x='29' y='-32'/>
+    <exclude x='28' y='-33'/>
+    <exclude x='30' y='-33'/>
+    <exclude x='29' y='-33'/>
+    <exclude x='29' y='-34'/>
+    <exclude x='28' y='-34'/>
+    <exclude x='28' y='-35'/>
+    <exclude x='27' y='-36'/>
+    <exclude x='26' y='-37'/>
+    <exclude x='25' y='-37'/>
+    <exclude x='24' y='-37'/>
+    <exclude x='23' y='-39'/>
+    <exclude x='23' y='-40'/>
+    <exclude x='24' y='-39'/>
+    <exclude x='25' y='-38'/>
+    <exclude x='24' y='-38'/>
+    <exclude x='22' y='-40'/>
+    <exclude x='22' y='-41'/>
+    <exclude x='21' y='-41'/>
+    <exclude x='21' y='-40'/>
   </surface>
   <buildings>
   </buildings>

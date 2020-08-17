@@ -380,7 +380,7 @@ public class PlanetSurface {
 				result.buildingmap.put(se.getKey(), se.getValue());
 			}
 		}
-		
+		result.deploymentExclusions = deploymentExclusions;
 		return result;
 	}
 	/**

@@ -2200,6 +2200,16 @@
     <tile type='cratered' id='22' x='24' y='-24'/>
     <tile type='cratered' id='22' x='25' y='-25'/>
     <tile type='cratered' id='22' x='26' y='-26'/>
+    <exclude x='-17' y='-68'/>
+    <exclude x='-18' y='-67'/>
+    <exclude x='-14' y='-64'/>
+    <exclude x='-14' y='-63'/>
+    <exclude x='-13' y='-64'/>
+    <exclude x='7' y='-44'/>
+    <exclude x='-37' y='-48'/>
+    <exclude x='-37' y='-47'/>
+    <exclude x='-13' y='-63'/>
+    <exclude x='-29' y='-56'/>
   </surface>
   <buildings>
   </buildings>

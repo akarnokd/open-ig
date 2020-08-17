@@ -1436,6 +1436,8 @@
     <tile type='rocky' id='21' x='19' y='-19'/>
     <tile type='rocky' id='21' x='20' y='-20'/>
     <tile type='rocky' id='21' x='21' y='-21'/>
+    <exclude x='-13' y='-54'/>
+    <exclude x='-7' y='-48'/>
   </surface>
   <buildings>
   </buildings>

@@ -2766,6 +2766,51 @@
     <tile type='rocky' id='21' x='29' y='-29'/>
     <tile type='rocky' id='21' x='30' y='-30'/>
     <tile type='rocky' id='21' x='31' y='-31'/>
+    <exclude x='5' y='-6'/>
+    <exclude x='4' y='-5'/>
+    <exclude x='3' y='-5'/>
+    <exclude x='2' y='-5'/>
+    <exclude x='3' y='-4'/>
+    <exclude x='2' y='-4'/>
+    <exclude x='1' y='-4'/>
+    <exclude x='2' y='-3'/>
+    <exclude x='1' y='-3'/>
+    <exclude x='1' y='-2'/>
+    <exclude x='0' y='-1'/>
+    <exclude x='0' y='-2'/>
+    <exclude x='0' y='-3'/>
+    <exclude x='-1' y='-3'/>
+    <exclude x='-1' y='-2'/>
+    <exclude x='-1' y='-4'/>
+    <exclude x='-2' y='-4'/>
+    <exclude x='-2' y='-3'/>
+    <exclude x='-2' y='-5'/>
+    <exclude x='-3' y='-4'/>
+    <exclude x='-6' y='-9'/>
+    <exclude x='-7' y='-9'/>
+    <exclude x='-7' y='-8'/>
+    <exclude x='-8' y='-9'/>
+    <exclude x='-8' y='-10'/>
+    <exclude x='-9' y='-10'/>
+    <exclude x='-9' y='-11'/>
+    <exclude x='-10' y='-11'/>
+    <exclude x='-34' y='-35'/>
+    <exclude x='-42' y='-49'/>
+    <exclude x='-42' y='-47'/>
+    <exclude x='-43' y='-48'/>
+    <exclude x='-42' y='-48'/>
+    <exclude x='-43' y='-47'/>
+    <exclude x='-44' y='-47'/>
+    <exclude x='-45' y='-46'/>
+    <exclude x='-44' y='-46'/>
+    <exclude x='-43' y='-46'/>
+    <exclude x='-42' y='-45'/>
+    <exclude x='-42' y='-43'/>
+    <exclude x='-42' y='-44'/>
+    <exclude x='-43' y='-44'/>
+    <exclude x='-43' y='-45'/>
+    <exclude x='-44' y='-45'/>
+    <exclude x='11' y='-50'/>
   </surface>
   <buildings>
   </buildings>

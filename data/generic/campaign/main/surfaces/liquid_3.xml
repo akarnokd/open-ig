@@ -3334,6 +3334,9 @@
     <tile type='liquid' id='21' x='26' y='-26'/>
     <tile type='liquid' id='21' x='27' y='-27'/>
     <tile type='liquid' id='21' x='28' y='-28'/>
+    <exclude x='-21' y='-76'/>
+    <exclude x='-26' y='-81'/>
+    <exclude x='-45' y='-46'/>
   </surface>
   <buildings>
   </buildings>

@@ -1962,6 +1962,10 @@
     <tile type='desert' id='24' x='1' y='-1'/>
     <tile type='desert' id='24' x='0' y='0'/>
     <tile type='desert' id='24' x='-4' y='-50'/>
+    <exclude x='21' y='-22'/>
+    <exclude x='22' y='-23'/>
+    <exclude x='-11' y='-12'/>
+    <exclude x='-10' y='-11'/>
   </surface>
   <buildings>
   </buildings>

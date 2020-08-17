@@ -2804,6 +2804,30 @@
     <tile type='rocky' id='21' x='29' y='-29'/>
     <tile type='rocky' id='21' x='30' y='-30'/>
     <tile type='rocky' id='21' x='31' y='-31'/>
+    <exclude x='22' y='-23'/>
+    <exclude x='21' y='-22'/>
+    <exclude x='11' y='-50'/>
+    <exclude x='-42' y='-49'/>
+    <exclude x='-42' y='-48'/>
+    <exclude x='-42' y='-47'/>
+    <exclude x='-42' y='-45'/>
+    <exclude x='-42' y='-44'/>
+    <exclude x='-42' y='-43'/>
+    <exclude x='-43' y='-44'/>
+    <exclude x='-43' y='-45'/>
+    <exclude x='-43' y='-46'/>
+    <exclude x='-43' y='-47'/>
+    <exclude x='-43' y='-48'/>
+    <exclude x='-44' y='-47'/>
+    <exclude x='-44' y='-46'/>
+    <exclude x='-44' y='-45'/>
+    <exclude x='-45' y='-46'/>
+    <exclude x='10' y='-11'/>
+    <exclude x='1' y='-3'/>
+    <exclude x='1' y='-2'/>
+    <exclude x='0' y='-2'/>
+    <exclude x='-1' y='-2'/>
+    <exclude x='0' y='-1'/>
   </surface>
   <buildings>
   </buildings>

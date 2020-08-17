@@ -2441,6 +2441,18 @@
     <tile type='frozen' id='24' x='30' y='-30'/>
     <tile type='frozen' id='24' x='31' y='-31'/>
     <tile type='frozen' id='24' x='32' y='-32'/>
+    <exclude x='6' y='-7'/>
+    <exclude x='10' y='-11'/>
+    <exclude x='17' y='-18'/>
+    <exclude x='20' y='-21'/>
+    <exclude x='25' y='-26'/>
+    <exclude x='30' y='-32'/>
+    <exclude x='31' y='-32'/>
+    <exclude x='30' y='-33'/>
+    <exclude x='30' y='-31'/>
+    <exclude x='-28' y='-29'/>
+    <exclude x='-8' y='-9'/>
+    <exclude x='-19' y='-20'/>
   </surface>
   <buildings>
   </buildings>

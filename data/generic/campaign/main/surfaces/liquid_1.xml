@@ -1757,6 +1757,8 @@
     <tile type='liquid' id='21' x='21' y='-21'/>
     <tile type='liquid' id='21' x='22' y='-22'/>
     <tile type='liquid' id='21' x='23' y='-23'/>
+    <exclude x='8' y='-37'/>
+    <exclude x='4' y='-41'/>
   </surface>
   <buildings>
   </buildings>

@@ -3722,6 +3722,17 @@
     <tile id='38' type='earth' y='-30' x='30'/>
     <tile id='38' type='earth' y='-31' x='31'/>
     <tile id='38' type='earth' y='-32' x='32'/>
+    <exclude x='-28' y='-91'/>
+    <exclude x='6' y='-57'/>
+    <exclude x='5' y='-57'/>
+    <exclude x='1' y='-62'/>
+    <exclude x='-33' y='-86'/>
+    <exclude x='-32' y='-86'/>
+    <exclude x='-31' y='-86'/>
+    <exclude x='-32' y='-87'/>
+    <exclude x='-59' y='-60'/>
+    <exclude x='-58' y='-59'/>
+    <exclude x='-16' y='-79'/>
   </surface>
   <buildings/>
 </map>

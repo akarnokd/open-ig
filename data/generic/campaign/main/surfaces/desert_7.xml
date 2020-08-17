@@ -3107,6 +3107,18 @@
     <tile type='desert' id='24' x='29' y='-29'/>
     <tile type='desert' id='24' x='30' y='-30'/>
     <tile type='desert' id='24' x='31' y='-31'/>
+    <exclude x='12' y='-13'/>
+    <exclude x='-49' y='-50'/>
+    <exclude x='-50' y='-51'/>
+    <exclude x='-51' y='-52'/>
+    <exclude x='-50' y='-52'/>
+    <exclude x='-50' y='-53'/>
+    <exclude x='-45' y='-56'/>
+    <exclude x='-45' y='-57'/>
+    <exclude x='-45' y='-58'/>
+    <exclude x='-46' y='-57'/>
+    <exclude x='-44' y='-59'/>
+    <exclude x='-16' y='-77'/>
   </surface>
   <buildings>
   </buildings>

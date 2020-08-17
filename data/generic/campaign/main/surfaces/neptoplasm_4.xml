@@ -1926,6 +1926,8 @@
     <tile id='21' type='neptoplasm' y='-2' x='0'/>
     <tile id='21' type='neptoplasm' y='-1' x='0'/>
     <tile id='21' type='neptoplasm' y='-1' x='1'/>
+    <exclude x='-10' y='-11'/>
+    <exclude x='-16' y='-61'/>
   </surface>
   <buildings/>
 </map>

@@ -2979,6 +2979,47 @@
     <tile id='38' type='earth' y='-28' x='28'/>
     <tile id='38' type='earth' y='-29' x='29'/>
     <tile id='38' type='earth' y='-30' x='30'/>
+    <exclude x='-44' y='-45'/>
+    <exclude x='-26' y='-81'/>
+    <exclude x='-25' y='-82'/>
+    <exclude x='-24' y='-82'/>
+    <exclude x='-23' y='-82'/>
+    <exclude x='-24' y='-83'/>
+    <exclude x='7' y='-51'/>
+    <exclude x='8' y='-51'/>
+    <exclude x='8' y='-52'/>
+    <exclude x='7' y='-52'/>
+    <exclude x='-3' y='-4'/>
+    <exclude x='-2' y='-3'/>
+    <exclude x='-1' y='-4'/>
+    <exclude x='-1' y='-3'/>
+    <exclude x='-2' y='-4'/>
+    <exclude x='0' y='-1'/>
+    <exclude x='-1' y='-2'/>
+    <exclude x='0' y='-2'/>
+    <exclude x='1' y='-2'/>
+    <exclude x='0' y='-3'/>
+    <exclude x='1' y='-3'/>
+    <exclude x='2' y='-3'/>
+    <exclude x='3' y='-4'/>
+    <exclude x='2' y='-4'/>
+    <exclude x='1' y='-4'/>
+    <exclude x='4' y='-5'/>
+    <exclude x='3' y='-5'/>
+    <exclude x='4' y='-6'/>
+    <exclude x='5' y='-6'/>
+    <exclude x='5' y='-7'/>
+    <exclude x='4' y='-7'/>
+    <exclude x='6' y='-7'/>
+    <exclude x='6' y='-8'/>
+    <exclude x='5' y='-8'/>
+    <exclude x='7' y='-8'/>
+    <exclude x='7' y='-9'/>
+    <exclude x='6' y='-9'/>
+    <exclude x='8' y='-9'/>
+    <exclude x='9' y='-10'/>
+    <exclude x='8' y='-10'/>
+    <exclude x='7' y='-10'/>
   </surface>
   <buildings/>
 </map>

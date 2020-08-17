@@ -13,10 +13,10 @@
 <entry key="hostPorts-count">0</entry>
 <entry key="textCacheSize">0</entry>
 <entry key="intro">false</entry>
-<entry key="height">810</entry>
+<entry key="height">682</entry>
 <entry key="muteMusic">true</entry>
 <entry key="reequipTanks">true</entry>
-<entry key="timestep">10</entry>
+<entry key="timestep">60</entry>
 <entry key="scaleAllScreens">true</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="showStarmapScroll">true</entry>
@@ -28,7 +28,7 @@
 <entry key="hostUPnP">false</entry>
 <entry key="useStandardFonts">false</entry>
 <entry key="spacewarDiminishingAttach">true</entry>
-<entry key="left">526</entry>
+<entry key="left">199</entry>
 <entry key="aiAllowBuildingUpgrades">false</entry>
 <entry key="tileCacheSize">0</entry>
 <entry key="autoBuildLimit">20000</entry>
@@ -49,7 +49,7 @@
 <entry key="joinPorts-count">0</entry>
 <entry key="slowOnEnemyAttack">true</entry>
 <entry key="showStarmapInfo">true</entry>
-<entry key="top">200</entry>
+<entry key="top">4</entry>
 <entry key="showStarmapLists">true</entry>
 <entry key="radarUnion">true</entry>
 <entry key="aiGroundAttackEverything">true</entry>
@@ -72,7 +72,7 @@
 <entry key="computerVoiceNotify">true</entry>
 <entry key="aiGroundAttackGetCloser">true</entry>
 <entry key="swapMouseButtons">false</entry>
-<entry key="width">1121</entry>
+<entry key="width">1331</entry>
 <entry key="ignore-count">0</entry>
 <entry key="disableOpenGL">false</entry>
 <entry key="customCursors">true</entry>

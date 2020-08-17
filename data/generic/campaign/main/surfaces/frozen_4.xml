@@ -2800,6 +2800,7 @@
     <tile type='frozen' id='21' x='2' y='-2'/>
     <tile type='frozen' id='21' x='1' y='-1'/>
     <tile type='frozen' id='21' x='0' y='0'/>
+    <exclude x='-18' y='-75'/>
   </surface>
   <buildings>
   </buildings>

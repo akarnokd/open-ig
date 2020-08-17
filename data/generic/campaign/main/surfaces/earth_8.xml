@@ -2128,6 +2128,30 @@
     <tile id='38' type='earth' y='-24' x='24'/>
     <tile id='38' type='earth' y='-25' x='25'/>
     <tile id='38' type='earth' y='-26' x='26'/>
+    <exclude x='18' y='-19'/>
+    <exclude x='18' y='-20'/>
+    <exclude x='19' y='-20'/>
+    <exclude x='19' y='-21'/>
+    <exclude x='20' y='-21'/>
+    <exclude x='21' y='-22'/>
+    <exclude x='20' y='-22'/>
+    <exclude x='19' y='-22'/>
+    <exclude x='18' y='-21'/>
+    <exclude x='25' y='-26'/>
+    <exclude x='24' y='-27'/>
+    <exclude x='23' y='-28'/>
+    <exclude x='22' y='-28'/>
+    <exclude x='22' y='-29'/>
+    <exclude x='18' y='-33'/>
+    <exclude x='-40' y='-41'/>
+    <exclude x='-41' y='-42'/>
+    <exclude x='-41' y='-43'/>
+    <exclude x='-41' y='-44'/>
+    <exclude x='-42' y='-43'/>
+    <exclude x='-35' y='-48'/>
+    <exclude x='-36' y='-48'/>
+    <exclude x='-36' y='-49'/>
+    <exclude x='-11' y='-62'/>
   </surface>
   <buildings/>
 </map>

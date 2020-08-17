@@ -1653,6 +1653,12 @@
     <tile id='38' type='earth' y='-21' x='21'/>
     <tile id='38' type='earth' y='-22' x='22'/>
     <tile id='38' type='earth' y='-23' x='23'/>
+    <exclude x='-14' y='-55'/>
+    <exclude x='-13' y='-56'/>
+    <exclude x='-12' y='-56'/>
+    <exclude x='-11' y='-56'/>
+    <exclude x='-12' y='-57'/>
+    <exclude x='-10' y='-55'/>
   </surface>
   <buildings/>
 </map>

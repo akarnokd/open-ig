@@ -4111,6 +4111,14 @@
     <tile type='desert' id='24' x='30' y='-30'/>
     <tile type='desert' id='24' x='31' y='-31'/>
     <tile type='desert' id='24' x='32' y='-32'/>
+    <exclude x='22' y='-23'/>
+    <exclude x='-4' y='-67'/>
+    <exclude x='-3' y='-66'/>
+    <exclude x='-2' y='-65'/>
+    <exclude x='-1' y='-64'/>
+    <exclude x='1' y='-62'/>
+    <exclude x='0' y='-63'/>
+    <exclude x='2' y='-61'/>
   </surface>
   <buildings>
   </buildings>
