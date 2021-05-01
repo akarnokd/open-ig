@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.216'>
+  <module id='Game' version='0.95.217'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.217' date='2021-05-01'>
+        <item category='Map Editor' issues='1031'>Fixed the map editor not properly saving 1x1 tiles.</item>
+      </entry>
       <entry version='0.95.216' date='2021-01-01'>
         <item category='Campaign' issues='1016'>Fixed Mission 6 (Defend Achilles) not succeeding if the Garthogs flee with their fleet still having ground attack capability.</item>
       </entry>
@@ -133,7 +136,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.216.jar' sha1='C23B500418B5BA4DF90821E1CF27C676A3545792'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.217.jar' sha1='47BB28FF5DA476DECE2F37D5CC5F9DA4CB64FD3D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200817a2.zip' sha1='1BB276962ADF25D734C0CB08E70AEDE7380179E4'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
@@ -202,7 +205,7 @@
     <remove file='open-ig-images-20140730a.zip'/>
     <remove file='open-ig-images-20140901a.zip'/>
   </module>
-  <module id='MapEditor' version='0.60'>
+  <module id='MapEditor' version='0.63'>
     <general url='https://github.com/akarnokd/open-ig/wiki/Map-editor'>
       <desc lang='hu'>
 				Az Open Imperium Galactica térképszerkesztő programja, amellyel meglévő és új térképek szerkeszthetők.</desc>

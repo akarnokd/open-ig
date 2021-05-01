@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <mapeditor-config>
-  <window x='-8' y='-8' width='2576' height='1416' state='6'/>
+  <window x='-8' y='-8' width='1936' height='1056' state='6'/>
   <language id='en'/>
-  <splitters main='450' preview='281' surfaces='150'/>
+  <splitters main='450' preview='281' surfaces='229'/>
   <editmode type='false'/>
-  <tabs selected='1'/>
+  <tabs selected='0'/>
   <lights preview='100' map='1.0'/>
   <filter surface='' building='civil'/>
   <allocation worker='10000' strategy='1'/>
@@ -891,5 +891,7 @@
   <recent>
     <entry file='C:\work\workspace\open-ig\data\generic\campaign\main\surfaces\frozen_1.xml'/>
     <entry file='C:\work\workspace\open-ig\data\generic\campaign\main\surfaces\frozen_2.xml'/>
+    <entry file='t.xml'/>
+    <entry file='C:\Users\akarnokd\git\open-ig\t.xml'/>
   </recent>
 </mapeditor-config>

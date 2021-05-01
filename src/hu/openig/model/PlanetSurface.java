@@ -186,14 +186,12 @@ public class PlanetSurface {
 				basemap.put(Location.of(a, b), se);
 			}
 		}
-		if (tile.width > 1 || tile.height > 1) {
-			SurfaceFeature sf = new SurfaceFeature();
-			sf.id = id;
-			sf.type = surface;
-			sf.tile = tile;
-			sf.location = Location.of(x, y);
-			features.add(sf);
-		}
+        SurfaceFeature sf = new SurfaceFeature();
+        sf.id = id;
+        sf.type = surface;
+        sf.tile = tile;
+        sf.location = Location.of(x, y);
+        features.add(sf);
 	}
 	/**
 	 * Set the size of the surface map.
