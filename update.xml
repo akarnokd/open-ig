@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.217'>
+  <module id='Game' version='0.95.218'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,11 @@
       <desc lang='es'>Fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.218' date='2021-05-03'>
+        <item category='Missions' issues='1032'>In Mission 12 - San Sterling Virus, Traders traveling towards San Sterling will now get the blinking red border too.</item>
+        <item category='Performance'>Fixed performance regression in rendering partially hidden vehicles.</item>
+        <item category='General'>Improved compatibility with newer Java versions.</item>
+      </entry>
       <entry version='0.95.217' date='2021-05-01'>
         <item category='Map Editor' issues='1031'>Fixed the map editor not properly saving 1x1 tiles.</item>
       </entry>
@@ -136,7 +141,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.217.jar' sha1='47BB28FF5DA476DECE2F37D5CC5F9DA4CB64FD3D'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.218.jar' sha1='AF124889217C3FB757A4B65AE9247A5B08586925'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200817a2.zip' sha1='1BB276962ADF25D734C0CB08E70AEDE7380179E4'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>

@@ -25,6 +25,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -389,10 +390,11 @@ public class World implements ModelLookup {
 		try {
 			Class<?> c = Class.forName(clazz);
 			if (GameScripting.class.isAssignableFrom(c)) {
-				this.scripting = GameScripting.class.cast(c.newInstance());
+				this.scripting = GameScripting.class.cast(c.getConstructor().newInstance());
 				scripting.init(this.player, xscript);
 			}
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException 
+		        | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
 			Exceptions.add(ex);
 		}
 	}

@@ -362,4 +362,12 @@ public class Mission12 extends Mission {
 		stage = M12Stages.NONE;
 		super.reset();
 	}
+	
+	@Override
+	public boolean fleetBlink(Fleet f) {
+	    Planet p = f.targetPlanet();
+	    return f.owner == player("Traders") 
+	            && (stage != M12Stages.NONE && stage != M12Stages.DONE && stage != M12Stages.SUBSEQUENT_DELAY) 
+	            && p != null && p.quarantineTTL > 0;
+	}
 }

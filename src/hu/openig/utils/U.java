@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -242,11 +242,12 @@ public final class U {
 	W extends Collection<? extends T>,
 	V extends Collection<? extends T>> C concat(W first, V second, Class<C> clazz) {
 		try {
-			C result = clazz.cast(clazz.newInstance());
+			C result = clazz.cast(clazz.getConstructor().newInstance());
 			result.addAll(first);
 			result.addAll(second);
 			return result;
-		} catch (IllegalAccessException | InstantiationException ex) {
+		} catch (IllegalAccessException | InstantiationException | IllegalArgumentException 
+		        | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
 			throw new IllegalArgumentException("clazz", ex);
 		}
 	}

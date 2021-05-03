@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <mapeditor-config>
-  <window x='-8' y='-8' width='1936' height='1056' state='6'/>
+  <window x='-8' y='-8' width='2576' height='1416' state='6'/>
   <language id='en'/>
   <splitters main='450' preview='281' surfaces='229'/>
-  <editmode type='false'/>
+  <editmode type='true'/>
   <tabs selected='0'/>
   <lights preview='100' map='1.0'/>
   <filter surface='' building='civil'/>

@@ -48,7 +48,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Field;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -258,13 +258,15 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
 				try {
 					Class<?> c = Class.forName(clazz);
 					if (Mission.class.isAssignableFrom(c)) {
-						Mission m = Mission.class.cast(c.newInstance());
+						Mission m = Mission.class.cast(c.getConstructor().newInstance());
 						m.init(player, this, xms);
 						missions.add(m);
 					} else {
 						Exceptions.add(new AssertionError(String.format("Mission class %s is incompatible", clazz)));
 					}
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+				} catch (InstantiationException | IllegalAccessException 
+				        | ClassNotFoundException | InvocationTargetException
+				        | NoSuchMethodException ex) {
 					Exceptions.add(ex);
 				}
 			}

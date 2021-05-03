@@ -564,6 +564,7 @@ public class MapEditor extends JFrame {
 		toolSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		featuresSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		renderer = new MapRenderer();
+		PlanetSurface.isEditorMode = true;
 		
 		addWindowListener(new WindowAdapter() {
 			@Override

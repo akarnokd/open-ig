@@ -619,7 +619,7 @@ public class GameWindow extends JFrame implements GameControls {
 		try {
 			for (Field f : allScreens.getClass().getFields()) {
 				if (ScreenBase.class.isAssignableFrom(f.getType())) {
-					ScreenBase sb = ScreenBase.class.cast(f.getType().newInstance());
+					ScreenBase sb = ScreenBase.class.cast(f.getType().getConstructor().newInstance());
 					f.set(allScreens, sb);
 					screens.add(sb);
 				}
