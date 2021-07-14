@@ -33,7 +33,6 @@ import hu.openig.model.ResearchMainCategory;
 import hu.openig.model.ResearchState;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
-import hu.openig.model.TaxLevel;
 import hu.openig.model.Trait;
 import hu.openig.model.TraitKind;
 import hu.openig.model.World;
@@ -420,22 +419,7 @@ public final class Simulator {
 		if (world.config.continuousMoney || dayChange) {	
 			// FIXME morale computation
 			double newMorale = 50 + moraleBoost;
-			if (planet.tax == TaxLevel.NONE) {
-				newMorale += 5;
-			} else
-			if (planet.tax.ordinal() <= TaxLevel.MODERATE.ordinal()) {
-				if (!planet.owner.race.equals(planet.race)) {
-					newMorale -= planet.tax.percent / 4f;
-				} else {
-					newMorale -= planet.tax.percent / 6f;
-				}
-			} else {
-				if (!planet.owner.race.equals(planet.race)) {
-					newMorale -= planet.tax.percent / 2.5f;
-				} else {
-					newMorale -= planet.tax.percent / 3f;
-				}
-			}
+			newMorale += planet.tax.getMoraleChange(planet.owner.race.equals(planet.race));
 			if (ps.houseAvailable < planet.population()) {
 				newMorale += (ps.houseAvailable - planet.population()) * 75f / planet.population();
 			} else {
