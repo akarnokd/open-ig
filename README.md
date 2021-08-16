@@ -26,12 +26,16 @@ The project contains all necessary files (with the permission from the copyright
 
 | *Minimum* | *Recommended* |
 |---|---|
-| Java 1.7u71 x86 or newer  | Java 1.7u71 x64 or newer |
+| Java 11 x86 or newer<sup>1</sup>  | Java 11 x64 or newer |
 | Any operating system with graphical user interface | 64 bit operating system with graphical user interface |
 | A mouse with scroll wheel | A mouse with scroll wheel |
 | 832 MB RAM  | 3 GB available RAM |
 | 1.4 GB disk space  | 2 GB disk space |
 | 1.5 GHz Dual Core CPU | 2 GHz Quad Core CPU |
+
+<sup>1</sup>Technically, Java 7 is enough but running the launcher with it may cause trouble connecting to GitHub due to outdated TLS support in Java 7.
+
+I recommend picking up the latest version from [AdoptOpenJDK.net](https://adoptopenjdk.net/).
 
 Supported languages:
   - English
