@@ -45,6 +45,10 @@ Supported languages:
   - French
   - Spanish (graphics and text only)
 
+# Troubleshooting
+
+Some systems and configurations may not run the game properly. Please refer to the [Troubleshooting](https://github.com/akarnokd/open-ig/wiki/Troubleshooting) guide for workarounds and resolutions.
+
 # Videos
 
 [![Youtube](https://github.com/akarnokd/open-ig/raw/master/images/generic/open-ig-youtube.png)](https://www.youtube.com/watch?v=FnlIEwW2OkM)
