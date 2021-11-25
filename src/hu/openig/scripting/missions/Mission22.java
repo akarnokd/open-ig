@@ -50,7 +50,7 @@ public class Mission22 extends Mission {
 		}
 		removeMissions(1, 25);
 		
-		createMainShip();
+		createMainShip(this);
 		// achievement
 		String a = "achievement.admiral";
 		world.achievement(a);
@@ -72,56 +72,56 @@ public class Mission22 extends Mission {
 	/**
 	 * Creates the main ship for level 4.
 	 */
-	void createMainShip() {
-		Fleet own = findTaggedFleet("CampaignMainShip4", player);
+	static void createMainShip(Mission mission) {
+		Fleet own = mission.findTaggedFleet("CampaignMainShip4", mission.player);
 		if (own != null) {
 			return;
 		}
-		own = findTaggedFleet("CampaignMainShip3", player);
+		own = mission.findTaggedFleet("CampaignMainShip3", mission.player);
 		if (own == null) {
-			own = findTaggedFleet("CampaignMainShip2", player);
+			own = mission.findTaggedFleet("CampaignMainShip2", mission.player);
 		}
 		if (own == null) {
-			own = findTaggedFleet("CampaignMainShip1", player);
+			own = mission.findTaggedFleet("CampaignMainShip1", mission.player);
 		}
 		Fleet f;
 		if (own != null 
 				&& own.getStatistics().battleshipCount < 3 
 				&& own.getStatistics().cruiserCount < 25
-				&& own.inventoryCount(research("Fighter2")) < 30 - 6) {
+				&& own.inventoryCount(mission.research("Fighter2")) < 30 - 6) {
 			f = own;
 		} else {
-			Planet ach = planet("Achilles");
-			f = createFleet(label("Empire.main_fleet"), player, ach.x + 5, ach.y + 5);
+			Planet ach = mission.planet("Achilles");
+			f = mission.createFleet(mission.label("Empire.main_fleet"), mission.player, ach.x + 5, ach.y + 5);
 		}			
-		ResearchType rt = research("Flagship");
-		addInventory(f, rt.id, 1);
-		addInventory(f, "LightTank", 6);
+		ResearchType rt = mission.research("Flagship");
+		mission.addInventory(f, rt.id, 1);
+		mission.addInventory(f, "LightTank", 6);
 		
-		addInventory(f, "Cruiser1", 1);
-		addInventory(f, "Fighter2", 6);
+		mission.addInventory(f, "Cruiser1", 1);
+		mission.addInventory(f, "Fighter2", 6);
 		
 		InventoryItem ii = f.getInventoryItem(rt);
 		ii.tag = "CampaignMainShip4";
 
 		// loadout
-		setSlot(ii, "laser", "Laser2", 24);
-		setSlot(ii, "bomb", "Bomb1", 8);
-		setSlot(ii, "rocket", "Rocket1", 16);
-		setSlot(ii, "radar", "Radar1", 1);
-		setSlot(ii, "cannon1", "IonCannon", 12);
-		setSlot(ii, "cannon2", "IonCannon", 12);
-		setSlot(ii, "shield", "Shield1", 14);
-		setSlot(ii, "hyperdrive", "HyperDrive1", 1);
+		mission.setSlot(ii, "laser", "Laser2", 24);
+		mission.setSlot(ii, "bomb", "Bomb1", 8);
+		mission.setSlot(ii, "rocket", "Rocket1", 16);
+		mission.setSlot(ii, "radar", "Radar1", 1);
+		mission.setSlot(ii, "cannon1", "IonCannon", 12);
+		mission.setSlot(ii, "cannon2", "IonCannon", 12);
+		mission.setSlot(ii, "shield", "Shield1", 14);
+		mission.setSlot(ii, "hyperdrive", "HyperDrive1", 1);
 		
-		for (Fleet fa : player.ownFleets()) {
+		for (Fleet fa : mission.player.ownFleets()) {
 			if (fa.task == FleetTask.SCRIPT) {
 				fa.task = FleetTask.IDLE;
-				removeScripted(fa);
+				mission.removeScripted(fa);
 			}
 		}
 		
-		player.setAvailable(research("Flagship"));
+		mission.player.setAvailable(mission.research("Flagship"));
 	}
 	@Override
 	public void onTime() {

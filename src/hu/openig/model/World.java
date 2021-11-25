@@ -2839,7 +2839,7 @@ public class World implements ModelLookup {
 	 * @param second the second party
 	 * @return the new relation
 	 */
-	DiplomaticRelation createDiplomaticRelation(Player first, Player second) {
+	public DiplomaticRelation createDiplomaticRelation(Player first, Player second) {
 		DiplomaticRelation dr = new DiplomaticRelation();
 		dr.first = first.id;
 		dr.second = second.id;

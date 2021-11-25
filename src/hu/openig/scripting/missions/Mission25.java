@@ -9,10 +9,7 @@
 package hu.openig.scripting.missions;
 
 import hu.openig.core.Action0;
-import hu.openig.model.DiplomaticRelation;
-import hu.openig.model.Fleet;
-import hu.openig.model.ObjectiveState;
-import hu.openig.model.Planet;
+import hu.openig.model.*;
 import hu.openig.utils.XElement;
 
 /**
@@ -77,9 +74,15 @@ public class Mission25 extends Mission {
 			String a = "achievement.grand_admiral";
 			world.achievement(a);
 			
+			Player darglsanPlayer = player("Dargslan");
 			// make sure the dargslan hate the player the most.
-			DiplomaticRelation dr = world.getRelation(player, player("Dargslan"));
+			DiplomaticRelation dr = world.getRelation(player, darglsanPlayer);
+			if (dr == null) {
+			    dr = world.createDiplomaticRelation(player, darglsanPlayer);
+			}
 			dr.value = 1;
+			
+			Mission22.createMainShip(this);
 		}
 	}
 	/** Check if the main ship is still operational. */

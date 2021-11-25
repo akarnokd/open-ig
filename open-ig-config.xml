@@ -5,7 +5,7 @@
 <entry key="fileName">open-ig-config.xml</entry>
 <entry key="tileCacheBuildingLimit">10</entry>
 <entry key="researchMoneyPercent">1000</entry>
-<entry key="language">hu</entry>
+<entry key="language">en</entry>
 <entry key="videoVolume">85</entry>
 <entry key="showBuildingName">true</entry>
 <entry key="continuousMoney">false</entry>
