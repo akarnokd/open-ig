@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import javax.swing.Timer;
@@ -317,7 +316,7 @@ public class DatabaseScreen extends ScreenBase {
 			for (Player p : getKnownOtherPlayers()) {
 				int x = base.x + 20;
 				int y = base.y + 25 + 8 + i * 20;
-				int x1 = x + commons.text().getTextWidth(14, get("database.race." + p.id.toLowerCase(Locale.ENGLISH)));
+				int x1 = x + commons.text().getTextWidth(14, get("database.race." + toDatabaseRace(p.id)));
 				int y1 = y + 14;
 				if (e.x >= x && e.x <= x1 && e.y >= y && e.y <= y1) {
 					highlightAliens = i;
@@ -375,11 +374,11 @@ public class DatabaseScreen extends ScreenBase {
 			for (Player p : getKnownOtherPlayers()) {
 				int x = base.x + 20;
 				int y = base.y + 25 + 8 + i * 20;
-				int x1 = x + commons.text().getTextWidth(14, get("database.race." + p.id.toLowerCase()));
+				int x1 = x + commons.text().getTextWidth(14, get("database.race." + toDatabaseRace(p.id)));
 				int y1 = y + 14;
 				if (e.x >= x && e.x <= x1 && e.y >= y && e.y <= y1) {
 					selectedAliens = i;
-					splitRows(get("database.race." + p.id.toLowerCase() + ".details"));
+					splitRows(get("database.race." + toDatabaseRace(p.id) + ".details"));
 					alienDetails = true;
 					doShowAlienText();
 				}
@@ -927,6 +926,15 @@ public class DatabaseScreen extends ScreenBase {
 		}
 		return super.mouse(e);
 	}
+	
+	String toDatabaseRace(String id) {
+	    int idx = id.lastIndexOf("-");
+	    if (idx > 0) {
+	        return id.substring(0, idx).toLowerCase();
+	    }
+	    return id.toLowerCase();
+	}
+	
 	@Override
 	public void draw(Graphics2D g2) {
 		AffineTransform savea = scaleDraw(g2, base, margin());
@@ -1033,7 +1041,7 @@ public class DatabaseScreen extends ScreenBase {
 						if (selectedAliens >= 0) {
 							int x = x0 + 20;
 							int y = y0 + 2 + 8 + 202;
-							commons.text().paintTo(g2, x, y, 14, selectedAlien.color, get("database.race." + selectedAlien.id.toLowerCase()));
+							commons.text().paintTo(g2, x, y, 14, selectedAlien.color, get("database.race." + toDatabaseRace(selectedAlien.id)));
 							commons.text().paintTo(g2, x, y + 20, 14, selectedAlien.color, selectedAlien.name);
 						}
 					}
@@ -1044,7 +1052,7 @@ public class DatabaseScreen extends ScreenBase {
 					for (Player p  : getKnownOtherPlayers()) {
 						int c = selectedAliens == i ? (highlightAliens == i ? 0xFFF9090 : 0xFFFF0000) 
 								: (highlightAliens == i ? 0xFFFFFFFF : 0xFFFFFF00);  
-						commons.text().paintTo(g2, x, y + i * 20, 14, c, get("database.race." + p.id.toLowerCase()));
+						commons.text().paintTo(g2, x, y + i * 20, 14, c, get("database.race." + toDatabaseRace(p.id)));
 						i++;
 					}
 				}
