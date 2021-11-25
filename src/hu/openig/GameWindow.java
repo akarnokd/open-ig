@@ -1615,7 +1615,8 @@ public class GameWindow extends JFrame implements GameControls {
 			if ((sec != Screens.PRODUCTION || world().level >= 2)
 					&& (sec != Screens.RESEARCH || world().level >= 3)
 					&& (sec != Screens.DIPLOMACY || world().level >= 4)
-					&& (sec != Screens.BAR || world().level >= 2)) {
+					&& (sec != Screens.BAR || world().level >= 2)
+					&& (sec != Screens.TEST || world().testNeeded)) {
 				displaySecondary(sec);
 			}
 		}

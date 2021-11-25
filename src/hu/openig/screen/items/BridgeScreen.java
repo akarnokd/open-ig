@@ -206,6 +206,7 @@ public class BridgeScreen extends WalkableScreen {
 	}
 	@Override
 	public void onFinish() {
+	    goingToTest = false;
 		if (messageAnim != null) {
 			messageAnim.terminate();
 		}
@@ -1185,11 +1186,13 @@ public class BridgeScreen extends WalkableScreen {
 	 * Display the message panel and switch to receive.
 	 */
 	public void displayReceive() {
-		if (noStatusbarPlayback) {
-			return;
-		}
-		noStatusbarPlayback = true;
-		displayReceivePhases();
+	    if (!goingToTest && commons.control().secondary() != Screens.TEST) {
+    		if (noStatusbarPlayback) {
+    			return;
+    		}
+    		noStatusbarPlayback = true;
+    		displayReceivePhases();
+	    }
 	}
 	@Override
 	protected Point scaleBase(int mx, int my) {
