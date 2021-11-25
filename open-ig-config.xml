@@ -6,7 +6,7 @@
 <entry key="tileCacheBuildingLimit">10</entry>
 <entry key="researchMoneyPercent">1000</entry>
 <entry key="language">en</entry>
-<entry key="videoVolume">85</entry>
+<entry key="videoVolume">75</entry>
 <entry key="showBuildingName">true</entry>
 <entry key="continuousMoney">false</entry>
 <entry key="tileCacheBaseLimit">-10</entry>
@@ -35,7 +35,7 @@
 <entry key="movieScale">true</entry>
 <entry key="currentProfile">default</entry>
 <entry key="joinPort">13951</entry>
-<entry key="autoRepair">true</entry>
+<entry key="autoRepair">false</entry>
 <entry key="musicVolume">70</entry>
 <entry key="satelliteDeploy">true</entry>
 <entry key="animateInventory">true</entry>
@@ -56,7 +56,7 @@
 <entry key="targetSpecificRockets">false</entry>
 <entry key="hostPort">13951</entry>
 <entry key="subtitles">true</entry>
-<entry key="effectVolume">100</entry>
+<entry key="effectVolume">70</entry>
 <entry key="reequipBombs">true</entry>
 <entry key="autoBuildEconomyFirst">true</entry>
 <entry key="quickRNP">true</entry>

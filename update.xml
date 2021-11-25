@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.218'>
+  <module id='Game' version='0.95.219'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,13 @@
       <desc lang='es'>Fixes.</desc>
     </notes>
     <release-details>
+      <entry version='0.95.219' date='2021-11-25'>
+        <item category='Missions' issues='1007'>Fixed Mission 17 - Destroy Prototype, where the Garthog ships would exit the wrong side of the screen when the battle happened over a friendly planet.</item>
+        <item category='UI' issues='1035'>Fixed the database screen with stuck ship title overlapping the alien descriptions upon screen switching back and forth.</item>
+        <item category='UI'>Fixed the database screen label errors when playing a Skirmish game and looking at the alien races.</item>
+        <item category='UI'>Fixed the test video/screen overlapping with message playback triggered from the statusbar&#39;s Message indicator.</item>
+        <item category='UI'>Fixed the test screen remaining open when loading an earlier save.</item>
+      </entry>
       <entry version='0.95.218' date='2021-05-03'>
         <item category='Missions' issues='1032'>In Mission 12 - San Sterling Virus, Traders traveling towards San Sterling will now get the blinking red border too.</item>
         <item category='Performance'>Fixed performance regression in rendering partially hidden vehicles.</item>
@@ -141,7 +148,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.218.jar' sha1='AF124889217C3FB757A4B65AE9247A5B08586925'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.219.jar' sha1='11708C2923C10CA7F66448B34C34DBB96BA91FFC'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200817a2.zip' sha1='1BB276962ADF25D734C0CB08E70AEDE7380179E4'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
