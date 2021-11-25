@@ -861,6 +861,8 @@ public class DatabaseScreen extends ScreenBase {
 		selectedAliens = -1;
 		highlightHelp = -1;
 		highlightAliens = -1;
+        mapTitle = null;
+        rows.clear();
 		
 		pictureEdgeVisible = false;
 		pictureFrameVisible = false;
