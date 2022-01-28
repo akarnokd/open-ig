@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -15,9 +15,9 @@ import hu.openig.utils.XElement;
  * @author akarnokd, 2012.10.31.
  */
 public interface CEUndoRedoSupport {
-	/**
-	 * Restore the state (undo or redo).
-	 * @param state the state to restore
-	 */
-	void restoreState(XElement state);
+    /**
+     * Restore the state (undo or redo).
+     * @param state the state to restore
+     */
+    void restoreState(XElement state);
 }

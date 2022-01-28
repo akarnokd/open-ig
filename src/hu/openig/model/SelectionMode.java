@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -13,8 +13,8 @@ package hu.openig.model;
  * @author akarnokd, 2011.04.05.
  */
 public enum SelectionMode {
-	/** A planet was selected. */
-	PLANET,
-	/** A fleet was selected. */
-	FLEET
+    /** A planet was selected. */
+    PLANET,
+    /** A fleet was selected. */
+    FLEET
 }

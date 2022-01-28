@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -21,22 +21,22 @@ import java.awt.image.BufferedImage;
  * @author akarnokd, 2009.01.19.
  */
 public interface SwappableRenderer {
-	/**
-	 * Returns the now off screen back buffer.
-	 * The image is in TYPE_INT_RGBA format.
-	 * @return the back buffer image.
-	 */
-	BufferedImage getBackbuffer();
-	/**
-	 * Swap the back and the front buffer. The next call to getBackbuffer()
-	 * will return the previously front buffer.
-	 */
-	void swap();
-	/**
-	 * Initializes the back and front buffer images to be of the
-	 * given size. The images will be created using the TYPE_INT_RGBA color model.
-	 * @param width the width of the image
-	 * @param height the height of the image
-	 */
-	void init(int width, int height);
+    /**
+     * Returns the now off screen back buffer.
+     * The image is in TYPE_INT_RGBA format.
+     * @return the back buffer image.
+     */
+    BufferedImage getBackbuffer();
+    /**
+     * Swap the back and the front buffer. The next call to getBackbuffer()
+     * will return the previously front buffer.
+     */
+    void swap();
+    /**
+     * Initializes the back and front buffer images to be of the
+     * given size. The images will be created using the TYPE_INT_RGBA color model.
+     * @param width the width of the image
+     * @param height the height of the image
+     */
+    void init(int width, int height);
 }

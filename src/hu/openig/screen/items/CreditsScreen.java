@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -30,83 +30,87 @@ import java.util.Map;
  * @author akarnokd, 2011.04.20.
  */
 public class CreditsScreen extends ScreenBase {
-	/** The animation timer. */
-	Closeable animation;
-	/** The rendering offset relative to the bottom of the screen. */
-	int offset;
-	/** The credits XML. */
-	XElement credits;
-	/** The image cache. */
-	final Map<String, BufferedImage> imageCache = new HashMap<>();
-	/** Indicator that it reached the end. */
-	boolean reachedEnd;
-	@Override
-	public void onInitialize() {
-	}
+    /** The animation timer. */
+    Closeable animation;
+    /** The rendering offset relative to the bottom of the screen. */
+    int offset;
+    /** The credits XML. */
+    XElement credits;
+    /** The image cache. */
+    final Map<String, BufferedImage> imageCache = new HashMap<>();
+    /** Indicator that it reached the end. */
+    boolean reachedEnd;
+    @Override
+    public void onInitialize() {
+    }
 
-	@Override
-	public void onEnter(Screens mode) {
-		reachedEnd = false;
-		imageCache.clear();
-		offset = 0;
-		animation = commons.register(25, new Action0() {
-			@Override
-			public void invoke() {
-				doAnimation();
-			}
-		});
-		credits = rl.getXML("credits");
-	}
+    @Override
+    public void onEnter(Screens mode) {
+        reachedEnd = false;
+        imageCache.clear();
+        offset = 0;
+        animation = commons.register(25, new Action0() {
+            @Override
+            public void invoke() {
+                doAnimation();
+            }
+        });
+        credits = rl.getXML("credits");
+    }
 
-	@Override
-	public void onLeave() {
-		if (animation != null) {
-			try { 
-				animation.close(); 
-			} catch (IOException ex) { 
-				Exceptions.add(ex); 
-			}
-			animation = null;
-		}
-		imageCache.clear();
-	}
+    @Override
+    public void onLeave() {
+        if (animation != null) {
+            try {
 
-	@Override
-	public void onFinish() {
-		// TODO Auto-generated method stub
+                animation.close();
 
-	}
+            } catch (IOException ex) {
 
-	@Override
-	public void onResize() {
-	}
+                Exceptions.add(ex);
 
-	@Override
-	public Screens screen() {
-		return Screens.CREDITS;
-	}
+            }
+            animation = null;
+        }
+        imageCache.clear();
+    }
 
-	@Override
-	public void onEndGame() {
-		// TODO Auto-generated method stub
+    @Override
+    public void onFinish() {
+        // TODO Auto-generated method stub
 
-	}
-	/** Perform the animation. */
-	void doAnimation() {
-		offset += 1;
-		askRepaint();
-		if (reachedEnd) {
-			displayPrimary(Screens.MAIN);
-		}
-	}
-	@Override
-	public void draw(Graphics2D g2) {
-		g2.setColor(Color.BLACK);
-		g2.fillRect(0, 0, width, height);
-		RenderTools.setInterpolation(g2, true);
-		RenderTools.setAntiailas(g2, true);
-		int y = height - offset;
-		for (XElement e : credits.children()) {
+    }
+
+    @Override
+    public void onResize() {
+    }
+
+    @Override
+    public Screens screen() {
+        return Screens.CREDITS;
+    }
+
+    @Override
+    public void onEndGame() {
+        // TODO Auto-generated method stub
+
+    }
+    /** Perform the animation. */
+    void doAnimation() {
+        offset += 1;
+        askRepaint();
+        if (reachedEnd) {
+            displayPrimary(Screens.MAIN);
+        }
+    }
+    @Override
+    public void draw(Graphics2D g2) {
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, width, height);
+        RenderTools.setInterpolation(g2, true);
+        RenderTools.setAntiailas(g2, true);
+        int y = height - offset;
+        for (XElement e : credits.children()) {
             switch (e.name) {
                 case "h1": {
                     y += 5;
@@ -162,31 +166,31 @@ public class CreditsScreen extends ScreenBase {
                     y += 20;
                     break;
             }
-			if (y > height + 20) {
-				break;
-			}
-		}
-		if (y < 0) {
-			reachedEnd = true;
-		}
-		RenderTools.setAntiailas(g2, false);
-		RenderTools.setInterpolation(g2, false);
-	}
-	/**
-	 * If the parameter is null, an empty string is returned.
-	 * @param s the string
-	 * @return the s or empty string
-	 */
-	String nvl(String s) {
-		return s != null ? s : "";
-	}
-	@Override
-	public boolean keyboard(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			displayPrimary(Screens.MAIN);
-			e.consume();
-			return true;
-		}
-		return false;
-	}
+            if (y > height + 20) {
+                break;
+            }
+        }
+        if (y < 0) {
+            reachedEnd = true;
+        }
+        RenderTools.setAntiailas(g2, false);
+        RenderTools.setInterpolation(g2, false);
+    }
+    /**
+     * If the parameter is null, an empty string is returned.
+     * @param s the string
+     * @return the s or empty string
+     */
+    String nvl(String s) {
+        return s != null ? s : "";
+    }
+    @Override
+    public boolean keyboard(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            displayPrimary(Screens.MAIN);
+            e.consume();
+            return true;
+        }
+        return false;
+    }
 }

@@ -12,10 +12,6 @@
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
-    <module name="JavadocMethod">
-      <property name="allowUndeclaredRTE" value="true"/>
-      <property name="suppressLoadErrors" value="true"/>
-    </module>
     <module name="JavadocType"/>
     <module name="JavadocVariable"/>
     <module name="JavadocStyle"/>
@@ -28,7 +24,7 @@
     <module name="ParameterName"/>
     <module name="StaticVariableName"/>
     <module name="TypeName"/>
-    <module name="AvoidStarImport"/>
+<!--     <module name="AvoidStarImport"/> -->
     <module name="IllegalImport"/>
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
@@ -172,8 +168,14 @@
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
   </module>
   <module name="RegexpHeader">
-    <property name="header" value="^/\*$\n^ \* Copyright 2008-2014, David Karnok.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
+    <property name="header" value="^/\*$\n^ \* Copyright 2008-present, David Karnok &amp; Contributors.*$\n^ \* The file is part of the Open Imperium Galactica.*$"/>
     <property name="fileExtensions" value="java"/>
     <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="GE header"/>
   </module>
+   <module name="RegexpSingleline">
+       <property name="format" value="[^$]\s+$"/>
+       <property name="minimum" value="0"/>
+       <property name="maximum" value="0"/>
+       <property name="message" value="Line has trailing spaces."/>
+   </module>
 </module>

@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -17,33 +17,32 @@ import javax.swing.GroupLayout;
  * @author akarnokd, 2012.11.03.
  */
 public class CETechnologyPropertiesPanel extends CEBasePanel {
-	/** */
-	private static final long serialVersionUID = -6719463759393555509L;
-	/** The current tech item under editing. */
-	XElement selected;
-	/**
-	 * Constructor. Sets the context.
-	 * @param context the context
-	 */
-	public CETechnologyPropertiesPanel(CEContext context) {
-		super(context);
-		initGUI();
-	}
-	/** Initialize the GUI. */
-	private void initGUI() {
-		GroupLayout gl = new GroupLayout(this);
-		this.setLayout(gl);
-		gl.setAutoCreateContainerGaps(true);
-		gl.setAutoCreateGaps(true);
+    /** */
+    private static final long serialVersionUID = -6719463759393555509L;
+    /** The current tech item under editing. */
+    XElement selected;
+    /**
+     * Constructor. Sets the context.
+     * @param context the context
+     */
+    public CETechnologyPropertiesPanel(CEContext context) {
+        super(context);
+        initGUI();
+    }
+    /** Initialize the GUI. */
+    private void initGUI() {
+        GroupLayout gl = new GroupLayout(this);
+        this.setLayout(gl);
+        gl.setAutoCreateContainerGaps(true);
+        gl.setAutoCreateGaps(true);
 
-		
-	}
-	/**
-	 * Set the current tech item.
-	 * @param item the item or null to clear the panel.
-	 */
-	public void setTechItem(XElement item) {
-		this.selected = item;
-		
-	}
+    }
+    /**
+     * Set the current tech item.
+     * @param item the item or null to clear the panel.
+     */
+    public void setTechItem(XElement item) {
+        this.selected = item;
+
+    }
 }

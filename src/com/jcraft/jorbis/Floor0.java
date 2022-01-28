@@ -1,21 +1,26 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /* JOrbis
  * Copyright (C) 2000 ymnk, JCraft,Inc.
- *  
+ *
+
  * Written by: 2000 ymnk<ymnk@jcraft.com>
- *   
- * Many thanks to 
- *   Monty <monty@xiph.org> and 
+ *
+
+ * Many thanks to
+
+ *   Monty <monty@xiph.org> and
+
  *   The XIPHOPHORUS Company http://www.xiph.org/ .
  * JOrbis has been based on their awesome works, Vorbis codec.
- *   
+ *
+
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public License
  * as published by the Free Software Foundation; either version 2 of
@@ -25,7 +30,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Library General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Library General Public
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
@@ -41,406 +46,407 @@ import com.jcraft.jogg.Buffer;
  *
  */
 class Floor0 extends FuncFloor {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void pack(Object i, Buffer opb) {
-		InfoFloor0 info = (InfoFloor0) i;
-		opb.write(info.order, 8);
-		opb.write(info.rate, 16);
-		opb.write(info.barkmap, 16);
-		opb.write(info.ampbits, 6);
-		opb.write(info.ampdB, 8);
-		opb.write(info.numbooks - 1, 4);
-		for (int j = 0; j < info.numbooks; j++) {
-			opb.write(info.books[j], 8);
-		}
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	Object unpack(Info vi, Buffer opb) {
-		InfoFloor0 info = new InfoFloor0();
-		info.order = opb.read(8);
-		info.rate = opb.read(16);
-		info.barkmap = opb.read(16);
-		info.ampbits = opb.read(6);
-		info.ampdB = opb.read(8);
-		info.numbooks = opb.read(4) + 1;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void pack(Object i, Buffer opb) {
+        InfoFloor0 info = (InfoFloor0) i;
+        opb.write(info.order, 8);
+        opb.write(info.rate, 16);
+        opb.write(info.barkmap, 16);
+        opb.write(info.ampbits, 6);
+        opb.write(info.ampdB, 8);
+        opb.write(info.numbooks - 1, 4);
+        for (int j = 0; j < info.numbooks; j++) {
+            opb.write(info.books[j], 8);
+        }
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Object unpack(Info vi, Buffer opb) {
+        InfoFloor0 info = new InfoFloor0();
+        info.order = opb.read(8);
+        info.rate = opb.read(16);
+        info.barkmap = opb.read(16);
+        info.ampbits = opb.read(6);
+        info.ampdB = opb.read(8);
+        info.numbooks = opb.read(4) + 1;
 
-		if ((info.order < 1) || (info.rate < 1) || (info.barkmap < 1)
-				|| (info.numbooks < 1)) {
-			return (null);
-		}
+        if ((info.order < 1) || (info.rate < 1) || (info.barkmap < 1)
+                || (info.numbooks < 1)) {
+            return (null);
+        }
 
-		for (int j = 0; j < info.numbooks; j++) {
-			info.books[j] = opb.read(8);
-			if (info.books[j] < 0 || info.books[j] >= vi.books) {
-				return (null);
-			}
-		}
-		return (info);
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	Object look(DspState vd, InfoMode mi, Object i) {
-		float scale;
-		Info vi = vd.vi;
-		InfoFloor0 info = (InfoFloor0) i;
-		LookFloor0 look = new LookFloor0();
-		look.m = info.order;
-		look.n = vi.blocksizes[mi.blockflag] / 2;
-		look.ln = info.barkmap;
-		look.vi = info;
-		look.lpclook.init(look.ln, look.m);
+        for (int j = 0; j < info.numbooks; j++) {
+            info.books[j] = opb.read(8);
+            if (info.books[j] < 0 || info.books[j] >= vi.books) {
+                return (null);
+            }
+        }
+        return (info);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Object look(DspState vd, InfoMode mi, Object i) {
+        float scale;
+        Info vi = vd.vi;
+        InfoFloor0 info = (InfoFloor0) i;
+        LookFloor0 look = new LookFloor0();
+        look.m = info.order;
+        look.n = vi.blocksizes[mi.blockflag] / 2;
+        look.ln = info.barkmap;
+        look.vi = info;
+        look.lpclook.init(look.ln, look.m);
 
-		// we choose a scaling constant so that:
-		scale = look.ln / toBARK((float) (info.rate / 2.));
+        // we choose a scaling constant so that:
+        scale = look.ln / toBARK((float) (info.rate / 2.));
 
-		// the mapping from a linear scale to a smaller bark scale is
-		// straightforward. We do *not* make sure that the linear mapping
-		// does not skip bark-scale bins; the decoder simply skips them and
-		// the encoder may do what it wishes in filling them. They're
-		// necessary in some mapping combinations to keep the scale spacing
-		// accurate
-		look.linearmap = new int[look.n];
-		for (int j = 0; j < look.n; j++) {
-			int val = (int) Math.floor(toBARK((float) ((info.rate / 2.)
-					/ look.n * j))
-					* scale); // bark numbers represent band edges
-			if (val >= look.ln) {
-				val = look.ln; // guard against the approximation
-			}
-			look.linearmap[j] = val;
-		}
-		return look;
-	}
-	/**
-	 * Convert value to BARK.
-	 * @param f the value
-	 * @return value
-	 */
-	static float toBARK(float f) {
-		return (float) (13.1 * Math.atan(.00074 * (f)) + 2.24
-				* Math.atan((f) * (f) * 1.85e-8) + 1e-4 * (f));
-	}
-	/**
-	 * Get state of object.
-	 * @param i the obect
-	 * @return the state
-	 */
-	Object state(Object i) {
-		EchstateFloor0 state = new EchstateFloor0();
-//		InfoFloor0 info = (InfoFloor0) i;
+        // the mapping from a linear scale to a smaller bark scale is
+        // straightforward. We do *not* make sure that the linear mapping
+        // does not skip bark-scale bins; the decoder simply skips them and
+        // the encoder may do what it wishes in filling them. They're
+        // necessary in some mapping combinations to keep the scale spacing
+        // accurate
+        look.linearmap = new int[look.n];
+        for (int j = 0; j < look.n; j++) {
+            int val = (int) Math.floor(toBARK((float) ((info.rate / 2.)
+                    / look.n * j))
+                    * scale); // bark numbers represent band edges
+            if (val >= look.ln) {
+                val = look.ln; // guard against the approximation
+            }
+            look.linearmap[j] = val;
+        }
+        return look;
+    }
+    /**
+     * Convert value to BARK.
+     * @param f the value
+     * @return value
+     */
+    static float toBARK(float f) {
+        return (float) (13.1 * Math.atan(.00074 * (f)) + 2.24
+                * Math.atan((f) * (f) * 1.85e-8) + 1e-4 * (f));
+    }
+    /**
+     * Get state of object.
+     * @param i the obect
+     * @return the state
+     */
+    Object state(Object i) {
+        EchstateFloor0 state = new EchstateFloor0();
+//        InfoFloor0 info = (InfoFloor0) i;
 
-		// a safe size if usually too big (dim==1)
-//		state.codewords = new int[info.order];
-//		state.curve = new float[info.barkmap];
-//		state.frameno = -1;
-		return (state);
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void freeInfo(Object i) {
-	}
+        // a safe size if usually too big (dim==1)
+//        state.codewords = new int[info.order];
+//        state.curve = new float[info.barkmap];
+//        state.frameno = -1;
+        return (state);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void freeInfo(Object i) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void freeLook(Object i) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void freeLook(Object i) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void freeState(Object vs) {
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	int forward(Block vb, Object i, float[] in, float[] out, Object vs) {
-		return 0;
-	}
-	/** LSP. */
-	float[] lsp;
-	/**
-	 * Inverse.
-	 * @param vb block
-	 * @param i object
-	 * @param out out
-	 * @return success
-	 */
-	int inverse(Block vb, Object i, float[] out) {
-		// System.err.println("Floor0.inverse "+i.getClass()+"]");
-		LookFloor0 look = (LookFloor0) i;
-		InfoFloor0 info = look.vi;
-		int ampraw = vb.opb.read(info.ampbits);
-		if (ampraw > 0) { // also handles the -1 out of data case
-			int maxval = (1 << info.ampbits) - 1;
-			float amp = (float) ampraw / maxval * info.ampdB;
-			int booknum = vb.opb.read(Util.ilog(info.numbooks));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void freeState(Object vs) {
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    int forward(Block vb, Object i, float[] in, float[] out, Object vs) {
+        return 0;
+    }
+    /** LSP. */
+    float[] lsp;
+    /**
+     * Inverse.
+     * @param vb block
+     * @param i object
+     * @param out out
+     * @return success
+     */
+    int inverse(Block vb, Object i, float[] out) {
+        // System.err.println("Floor0.inverse "+i.getClass()+"]");
+        LookFloor0 look = (LookFloor0) i;
+        InfoFloor0 info = look.vi;
+        int ampraw = vb.opb.read(info.ampbits);
+        if (ampraw > 0) { // also handles the -1 out of data case
+            int maxval = (1 << info.ampbits) - 1;
+            float amp = (float) ampraw / maxval * info.ampdB;
+            int booknum = vb.opb.read(Util.ilog(info.numbooks));
 
-			if (booknum != -1 && booknum < info.numbooks) {
+            if (booknum != -1 && booknum < info.numbooks) {
 
-				synchronized (this) {
-					if (lsp == null || lsp.length < look.m) {
-						lsp = new float[look.m];
-					} else {
-						for (int j = 0; j < look.m; j++) {
-							lsp[j] = 0.f;
-						}
-					}
+                synchronized (this) {
+                    if (lsp == null || lsp.length < look.m) {
+                        lsp = new float[look.m];
+                    } else {
+                        for (int j = 0; j < look.m; j++) {
+                            lsp[j] = 0.f;
+                        }
+                    }
 
-					CodeBook b = vb.vd.fullbooks[info.books[booknum]];
-					float last = 0.f;
+                    CodeBook b = vb.vd.fullbooks[info.books[booknum]];
+                    float last = 0.f;
 
-					for (int j = 0; j < look.m; j++) {
-						out[j] = 0.0f;
-					}
+                    for (int j = 0; j < look.m; j++) {
+                        out[j] = 0.0f;
+                    }
 
-					for (int j = 0; j < look.m; j += b.dim) {
-						if (b.decodevs(lsp, j, vb.opb, 1, -1) == -1) {
-							for (int k = 0; k < look.n; k++) {
-								out[k] = 0.0f;
-							}
-							return (0);
-						}
-					}
-					for (int j = 0; j < look.m;) {
-						for (int k = 0; k < b.dim; k++, j++) {
-							lsp[j] += last;
-						}
-						last = lsp[j - 1];
-					}
-					// take the coefficients back to a spectral envelope curve
-					Lsp.lspToCurve(out, look.linearmap, look.n, look.ln, lsp,
-							look.m, amp, info.ampdB);
+                    for (int j = 0; j < look.m; j += b.dim) {
+                        if (b.decodevs(lsp, j, vb.opb, 1, -1) == -1) {
+                            for (int k = 0; k < look.n; k++) {
+                                out[k] = 0.0f;
+                            }
+                            return (0);
+                        }
+                    }
+                    for (int j = 0; j < look.m;) {
+                        for (int k = 0; k < b.dim; k++, j++) {
+                            lsp[j] += last;
+                        }
+                        last = lsp[j - 1];
+                    }
+                    // take the coefficients back to a spectral envelope curve
+                    Lsp.lspToCurve(out, look.linearmap, look.n, look.ln, lsp,
+                            look.m, amp, info.ampdB);
 
-					return (1);
-				}
-			}
-		}
-		return (0);
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	Object inverse1(Block vb, Object i, Object memo) {
-		LookFloor0 look = (LookFloor0) i;
-		InfoFloor0 info = look.vi;
-		float[] lsp = null;
-		if (memo instanceof float[]) {
-			lsp = (float[]) memo;
-		}
+                    return (1);
+                }
+            }
+        }
+        return (0);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Object inverse1(Block vb, Object i, Object memo) {
+        LookFloor0 look = (LookFloor0) i;
+        InfoFloor0 info = look.vi;
+        float[] lsp = null;
+        if (memo instanceof float[]) {
+            lsp = (float[]) memo;
+        }
 
-		int ampraw = vb.opb.read(info.ampbits);
-		if (ampraw > 0) { // also handles the -1 out of data case
-			int maxval = (1 << info.ampbits) - 1;
-			float amp = (float) ampraw / maxval * info.ampdB;
-			int booknum = vb.opb.read(Util.ilog(info.numbooks));
+        int ampraw = vb.opb.read(info.ampbits);
+        if (ampraw > 0) { // also handles the -1 out of data case
+            int maxval = (1 << info.ampbits) - 1;
+            float amp = (float) ampraw / maxval * info.ampdB;
+            int booknum = vb.opb.read(Util.ilog(info.numbooks));
 
-			if (booknum != -1 && booknum < info.numbooks) {
-				CodeBook b = vb.vd.fullbooks[info.books[booknum]];
-				float last = 0.f;
+            if (booknum != -1 && booknum < info.numbooks) {
+                CodeBook b = vb.vd.fullbooks[info.books[booknum]];
+                float last = 0.f;
 
-				if (lsp == null || lsp.length < look.m + 1) {
-					lsp = new float[look.m + 1];
-				} else {
-					for (int j = 0; j < lsp.length; j++) {
-						lsp[j] = 0.f;
-					}
-				}
+                if (lsp == null || lsp.length < look.m + 1) {
+                    lsp = new float[look.m + 1];
+                } else {
+                    for (int j = 0; j < lsp.length; j++) {
+                        lsp[j] = 0.f;
+                    }
+                }
 
-				for (int j = 0; j < look.m; j += b.dim) {
-					if (b.decodevSet(lsp, j, vb.opb, b.dim) == -1) {
-						return (null);
-					}
-				}
+                for (int j = 0; j < look.m; j += b.dim) {
+                    if (b.decodevSet(lsp, j, vb.opb, b.dim) == -1) {
+                        return (null);
+                    }
+                }
 
-				for (int j = 0; j < look.m;) {
-					for (int k = 0; k < b.dim; k++, j++) {
-						lsp[j] += last;
-					}
-					last = lsp[j - 1];
-				}
-				lsp[look.m] = amp;
-				return (lsp);
-			}
-		}
-		return (null);
-	}
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	int inverse2(Block vb, Object i, Object memo, float[] out) {
-		LookFloor0 look = (LookFloor0) i;
-		InfoFloor0 info = look.vi;
+                for (int j = 0; j < look.m;) {
+                    for (int k = 0; k < b.dim; k++, j++) {
+                        lsp[j] += last;
+                    }
+                    last = lsp[j - 1];
+                }
+                lsp[look.m] = amp;
+                return (lsp);
+            }
+        }
+        return (null);
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    int inverse2(Block vb, Object i, Object memo, float[] out) {
+        LookFloor0 look = (LookFloor0) i;
+        InfoFloor0 info = look.vi;
 
-		if (memo != null) {
-			float[] lsp = (float[]) memo;
-			float amp = lsp[look.m];
+        if (memo != null) {
+            float[] lsp = (float[]) memo;
+            float amp = lsp[look.m];
 
-			Lsp.lspToCurve(out, look.linearmap, look.n, look.ln, lsp, look.m,
-					amp, info.ampdB);
-			return (1);
-		}
-		for (int j = 0; j < look.n; j++) {
-			out[j] = 0.f;
-		}
-		return (0);
-	}
-	/**
-	 * From DB.
-	 * @param x value
-	 * @return value
-	 */
-	static float fromdB(float x) {
-		return (float) (Math.exp((x) * .11512925));
-	}
-	/**
-	 * LSP to LPC.
-	 * @param lsp the lsp
-	 * @param lpc the lpc
-	 * @param m value
-	 */
-	static void lspToLpc(float[] lsp, float[] lpc, int m) {
-		int i, j, m2 = m / 2;
-		float[] o = new float[m2];
-		float[] e = new float[m2];
-		float a;
-		float[] ae = new float[m2 + 1];
-		float[] ao = new float[m2 + 1];
-		float b;
-		float[] be = new float[m2];
-		float[] bo = new float[m2];
-		float temp;
+            Lsp.lspToCurve(out, look.linearmap, look.n, look.ln, lsp, look.m,
+                    amp, info.ampdB);
+            return (1);
+        }
+        for (int j = 0; j < look.n; j++) {
+            out[j] = 0.f;
+        }
+        return (0);
+    }
+    /**
+     * From DB.
+     * @param x value
+     * @return value
+     */
+    static float fromdB(float x) {
+        return (float) (Math.exp((x) * .11512925));
+    }
+    /**
+     * LSP to LPC.
+     * @param lsp the lsp
+     * @param lpc the lpc
+     * @param m value
+     */
+    static void lspToLpc(float[] lsp, float[] lpc, int m) {
+        int i, j, m2 = m / 2;
+        float[] o = new float[m2];
+        float[] e = new float[m2];
+        float a;
+        float[] ae = new float[m2 + 1];
+        float[] ao = new float[m2 + 1];
+        float b;
+        float[] be = new float[m2];
+        float[] bo = new float[m2];
+        float temp;
 
-		// even/odd roots setup
-		for (i = 0; i < m2; i++) {
-			o[i] = (float) (-2. * Math.cos(lsp[i * 2]));
-			e[i] = (float) (-2. * Math.cos(lsp[i * 2 + 1]));
-		}
+        // even/odd roots setup
+        for (i = 0; i < m2; i++) {
+            o[i] = (float) (-2. * Math.cos(lsp[i * 2]));
+            e[i] = (float) (-2. * Math.cos(lsp[i * 2 + 1]));
+        }
 
-		// set up impulse response
-		for (j = 0; j < m2; j++) {
-			ae[j] = 0.f;
-			ao[j] = 1.f;
-			be[j] = 0.f;
-			bo[j] = 1.f;
-		}
-		ao[j] = 1.f;
-		ae[j] = 1.f;
+        // set up impulse response
+        for (j = 0; j < m2; j++) {
+            ae[j] = 0.f;
+            ao[j] = 1.f;
+            be[j] = 0.f;
+            bo[j] = 1.f;
+        }
+        ao[j] = 1.f;
+        ae[j] = 1.f;
 
-		// run impulse response
-		for (i = 1; i < m + 1; i++) {
-			b = 0.f;
-			a = b;
-			for (j = 0; j < m2; j++) {
-				temp = o[j] * ao[j] + ae[j];
-				ae[j] = ao[j];
-				ao[j] = a;
-				a += temp;
+        // run impulse response
+        for (i = 1; i < m + 1; i++) {
+            b = 0.f;
+            a = b;
+            for (j = 0; j < m2; j++) {
+                temp = o[j] * ao[j] + ae[j];
+                ae[j] = ao[j];
+                ao[j] = a;
+                a += temp;
 
-				temp = e[j] * bo[j] + be[j];
-				be[j] = bo[j];
-				bo[j] = b;
-				b += temp;
-			}
-			lpc[i - 1] = (a + ao[j] + b - ae[j]) / 2;
-			ao[j] = a;
-			ae[j] = b;
-		}
-	}
-	/**
-	 * LPC to curve.
-	 * @param curve curve
-	 * @param lpc lpc
-	 * @param amp amplitude
-	 * @param l look floor 0
-	 * @param name name 
-	 * @param frameno prame number
-	 */
-	static void lpcToCurve(float[] curve, float[] lpc, float amp,
-			LookFloor0 l, String name, int frameno) {
-		// l->m+1 must be less than l->ln, but guard in case we get a bad stream
-		float[] lcurve = new float[Math.max(l.ln * 2, l.m * 2 + 2)];
+                temp = e[j] * bo[j] + be[j];
+                be[j] = bo[j];
+                bo[j] = b;
+                b += temp;
+            }
+            lpc[i - 1] = (a + ao[j] + b - ae[j]) / 2;
+            ao[j] = a;
+            ae[j] = b;
+        }
+    }
+    /**
+     * LPC to curve.
+     * @param curve curve
+     * @param lpc lpc
+     * @param amp amplitude
+     * @param l look floor 0
+     * @param name name
 
-		if (amp == 0) {
-			for (int j = 0; j < l.n; j++) {
-				curve[j] = 0.0f;
-			}
-			return;
-		}
-		l.lpclook.lpcToCurve(lcurve, lpc, amp);
+     * @param frameno prame number
+     */
+    static void lpcToCurve(float[] curve, float[] lpc, float amp,
+            LookFloor0 l, String name, int frameno) {
+        // l->m+1 must be less than l->ln, but guard in case we get a bad stream
+        float[] lcurve = new float[Math.max(l.ln * 2, l.m * 2 + 2)];
 
-		for (int i = 0; i < l.n; i++) {
-			curve[i] = lcurve[l.linearmap[i]];
-		}
-	}
-	/**
-	 * Info floor.
-	 * Comments and style correction by karnokd.
-	 * @author ymnk
-	 */
-	static class InfoFloor0 {
-		/** Order. */
-		int order;
-		/** Rate. */
-		int rate;
-		/** Barkmap. */
-		int barkmap;
-		/** AMP bits. */
-		int ampbits;
-		/** Amplitude decibel. */
-		int ampdB;
-		/** Number of books. */
-		int numbooks; // <= 16
-		/** Books. */
-		int[] books = new int[16];
-	}
-	/**
-	 * Look floor 0.
-	 * Comments and style correction by karnokd.
-	 * @author ymnk
-	 */
-	static class LookFloor0 {
-		/** N. */
-		int n;
-		/** LN. */
-		int ln;
-		/**  M. */
-		int m;
-		/** Linear map. */
-		int[] linearmap;
-		/** Info floor 0. */
-		InfoFloor0 vi;
-		/** LPC look. */
-		Lpc lpclook = new Lpc();
-	}
-	/**
-	 * Echstate flor 0.
-	 * Comments and style correction by karnokd.
-	 * @author ymnk
-	 */
-	static class EchstateFloor0 {
-		/** Code words. */
-//		int[] codewords;
-		/** Curve. */
-//		float[] curve;
-		/** Frame number. */
-//		long frameno;
-		/** Codes. */
-//		long codes;
-	}
+        if (amp == 0) {
+            for (int j = 0; j < l.n; j++) {
+                curve[j] = 0.0f;
+            }
+            return;
+        }
+        l.lpclook.lpcToCurve(lcurve, lpc, amp);
+
+        for (int i = 0; i < l.n; i++) {
+            curve[i] = lcurve[l.linearmap[i]];
+        }
+    }
+    /**
+     * Info floor.
+     * Comments and style correction by karnokd.
+     * @author ymnk
+     */
+    static class InfoFloor0 {
+        /** Order. */
+        int order;
+        /** Rate. */
+        int rate;
+        /** Barkmap. */
+        int barkmap;
+        /** AMP bits. */
+        int ampbits;
+        /** Amplitude decibel. */
+        int ampdB;
+        /** Number of books. */
+        int numbooks; // <= 16
+        /** Books. */
+        int[] books = new int[16];
+    }
+    /**
+     * Look floor 0.
+     * Comments and style correction by karnokd.
+     * @author ymnk
+     */
+    static class LookFloor0 {
+        /** N. */
+        int n;
+        /** LN. */
+        int ln;
+        /**  M. */
+        int m;
+        /** Linear map. */
+        int[] linearmap;
+        /** Info floor 0. */
+        InfoFloor0 vi;
+        /** LPC look. */
+        Lpc lpclook = new Lpc();
+    }
+    /**
+     * Echstate flor 0.
+     * Comments and style correction by karnokd.
+     * @author ymnk
+     */
+    static class EchstateFloor0 {
+        /** Code words. */
+//        int[] codewords;
+        /** Curve. */
+//        float[] curve;
+        /** Frame number. */
+//        long frameno;
+        /** Codes. */
+//        long codes;
+    }
 }

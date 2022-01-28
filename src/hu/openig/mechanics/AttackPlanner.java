@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -107,7 +107,8 @@ public class AttackPlanner extends Planner {
      * @param exploration the exploration map
      * @param setNewAttack set the new attack date
      */
-    public AttackPlanner(AIWorld world, AIControls controls, 
+    public AttackPlanner(AIWorld world, AIControls controls,
+
             ExplorationMap exploration, Action1<Date> setNewAttack) {
         super(world, controls);
         this.setNewAttack = setNewAttack;
@@ -118,11 +119,11 @@ public class AttackPlanner extends Planner {
             return;
         }
         // don't bother when exploring
-        //		for (AIFleet f : world.ownFleets) {
-        //			if (f.task.ordinal() <= FleetTask.EXPLORE.ordinal()) {
-        //				return;
-        //			}
-        //		}
+        //        for (AIFleet f : world.ownFleets) {
+        //            if (f.task.ordinal() <= FleetTask.EXPLORE.ordinal()) {
+        //                return;
+        //            }
+        //        }
 
         if (world.nextAttack != null && world.nextAttack.compareTo(world.now) < 0) {
             world.nextAttack = null;
@@ -170,7 +171,8 @@ public class AttackPlanner extends Planner {
                             }
                         });
                         fc++;
-                    } else 
+                    } else
+
                         if (targetPlanet != null) {
                             final AIPlanet ftargetPlanet = targetPlanet;
                             ownFleet.task = FleetTask.ATTACK;
@@ -206,18 +208,18 @@ public class AttackPlanner extends Planner {
                     && fl.statistics.vehicleCount >= fl.statistics.vehicleMax) {
                 outer:
                 for (AIInventoryItem ii : fl.inventory) {
-                	for (InventorySlot is : ii.slots) {
-                		if (is.type == null) {
-                			notEquipped = true;
-                			break outer;
-                		}
-                	}
+                    for (InventorySlot is : ii.slots) {
+                        if (is.type == null) {
+                            notEquipped = true;
+                            break outer;
+                        }
+                    }
                 }
             } else {
-            	notEquipped = true;
+                notEquipped = true;
             }
             if (notEquipped) {
-            	fleets.remove(i);
+                fleets.remove(i);
             }
         }
     }
@@ -302,7 +304,8 @@ public class AttackPlanner extends Planner {
                 }
                 DiplomaticRelation dr = world.relations.get(p.owner);
                 if (dr != null && dr.full && !dr.strongAlliance) {
-                    if (dr.value < this.p.warThreshold 
+                    if (dr.value < this.p.warThreshold
+
                             && !hasActiveAlliance(dr.alliancesAgainst)) {
                         if (planetValue(p) > 0) {
                             candidates.add(p);
@@ -322,17 +325,18 @@ public class AttackPlanner extends Planner {
                     double r1 = getDiplomaticMultiplier(o1);
                     double r2 = getDiplomaticMultiplier(o2);
                     return java.lang.Double.compare(r1, r2);
-                } 
+                }
+
             });
 
             Player targetPlayer = choseAtRandom(enemiesList);
-            
+
             for (int i = candidates.size() - 1; i >= 0; i--) {
                 if (candidates.get(i).owner != targetPlayer) {
                     candidates.remove(i);
                 }
             }
-            
+
             // then select one of his planets
             Collections.sort(candidates, new PlanetTargetValueComparator(center));
 
@@ -363,9 +367,9 @@ public class AttackPlanner extends Planner {
                 idx = ModelUtils.randomInt(2);
             }
         }
-        
+
         idx = Math.min(idx, list.size() - 1);
-        
+
         return list.get(idx);
     }
     /**
@@ -438,7 +442,8 @@ public class AttackPlanner extends Planner {
         }
         if (p.knowledge.ordinal() >= PlanetKnowledge.BUILDING.ordinal()) {
             for (AIBuilding b : p.buildings) {
-                if (b.type.kind.equals("Defensive") 
+                if (b.type.kind.equals("Defensive")
+
                         || b.type.kind.equals("Gun")
                         || b.type.kind.equals("Shield")) {
                     v += b.type.cost;
@@ -448,9 +453,11 @@ public class AttackPlanner extends Planner {
         }
         return v;
     }
-    /** 
+    /**
+
      * Audio signal for new message.
-     * @param p the target player 
+     * @param p the target player
+
      */
     void signalMessage(Player p) {
         if (p == p.world.player) {
@@ -469,7 +476,8 @@ public class AttackPlanner extends Planner {
             final Player other = dr0.getKey();
             double rnd = ModelUtils.random();
             DiplomaticRelation dr = dr0.getValue();
-            boolean mayContact = dr.lastContact == null 
+            boolean mayContact = dr.lastContact == null
+
                     || (world.now.getTime() - dr.lastContact.getTime() >= (dr.wontTalk() ? 7L : 1L) * 24 * 60 * 60 * 1000);
 
             if (dr.full && !world.activeOffer.contains(other) && mayContact) {

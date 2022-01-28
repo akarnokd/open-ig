@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -15,10 +15,10 @@ import hu.openig.model.ResearchType;
  * @author akarnokd, 2012.08.03.
  */
 public interface ResearchProductionAnimation {
-	/**
-	 * Play animation for the given research.
-	 * @param rt the target research
-	 * @param switchTo change the current selected categories?
-	 */
-	void playAnim(ResearchType rt, boolean switchTo);
+    /**
+     * Play animation for the given research.
+     * @param rt the target research
+     * @param switchTo change the current selected categories?
+     */
+    void playAnim(ResearchType rt, boolean switchTo);
 }

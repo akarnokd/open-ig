@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -22,29 +22,29 @@ import java.awt.image.ColorModel;
  */
 public abstract class AbstractImageFilter implements BufferedImageOp {
 
-	@Override
-	public Rectangle2D getBounds2D(BufferedImage src) {
-		return new Rectangle(0, 0, src.getWidth(), src.getHeight());
-	}
+    @Override
+    public Rectangle2D getBounds2D(BufferedImage src) {
+        return new Rectangle(0, 0, src.getWidth(), src.getHeight());
+    }
 
-	@Override
-	public BufferedImage createCompatibleDestImage(BufferedImage src,
-			ColorModel destCM) {
-		if (destCM == null) {
-			destCM = src.getColorModel();
-		}
-		return new BufferedImage(destCM, destCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),
-				destCM.isAlphaPremultiplied(), null);
-	}
+    @Override
+    public BufferedImage createCompatibleDestImage(BufferedImage src,
+            ColorModel destCM) {
+        if (destCM == null) {
+            destCM = src.getColorModel();
+        }
+        return new BufferedImage(destCM, destCM.createCompatibleWritableRaster(src.getWidth(), src.getHeight()),
+                destCM.isAlphaPremultiplied(), null);
+    }
 
-	@Override
-	public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
-		return (Point2D)srcPt.clone();
-	}
+    @Override
+    public Point2D getPoint2D(Point2D srcPt, Point2D dstPt) {
+        return (Point2D)srcPt.clone();
+    }
 
-	@Override
-	public RenderingHints getRenderingHints() {
-		return null;
-	}
+    @Override
+    public RenderingHints getRenderingHints() {
+        return null;
+    }
 
 }

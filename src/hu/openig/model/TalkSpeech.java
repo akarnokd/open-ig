@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -15,16 +15,16 @@ import java.util.Objects;
  * @author akarnokd, 2009.10.10.
  */
 public class TalkSpeech {
-	/** The speech ID. */
-	public final String id;
-	/** The speech was already taken. */
-	public boolean spoken;
-	/** The speech media. */
-	public String media;
-	/** The target state. */
-	public String to;
-	/** The speech option text. */
-	public String text;
+    /** The speech ID. */
+    public final String id;
+    /** The speech was already taken. */
+    public boolean spoken;
+    /** The speech media. */
+    public String media;
+    /** The target state. */
+    public String to;
+    /** The speech option text. */
+    public String text;
     /**
      * Constructor, sets the speech identifier.
      * @param id the fleet identifier

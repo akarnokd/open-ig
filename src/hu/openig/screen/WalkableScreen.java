@@ -1,3 +1,11 @@
+/*
+ * Copyright 2008-present, David Karnok & Contributors
+ * The file is part of the Open Imperium Galactica project.
+ *
+ * The code should be distributed under the LGPL license.
+ * See http://www.gnu.org/licenses/lgpl.html for details.
+ */
+
 package hu.openig.screen;
 
 import hu.openig.model.Cursors;
@@ -69,8 +77,9 @@ public abstract class WalkableScreen extends ScreenBase {
      * false otherwise or if the transitions are disabled
      */
     protected boolean updateTransition(int mouseX, int mouseY) {
-        if (!transitionsEnabled)
+        if (!transitionsEnabled) {
             return false;
+        }
 
         WalkTransition prev = pointerTransition;
         WalkTransition current = null;
@@ -82,8 +91,9 @@ public abstract class WalkableScreen extends ScreenBase {
             }
         }
 
-        if (current == prev)
+        if (current == prev) {
             return false;
+        }
 
         setActiveTransition(current);
         return true;
@@ -107,8 +117,9 @@ public abstract class WalkableScreen extends ScreenBase {
      * @throws IllegalStateException if no transition is active
      */
     protected WalkTransition getTransition() {
-        if (pointerTransition == null)
+        if (pointerTransition == null) {
             throw new IllegalStateException("No active transition.");
+        }
 
         return pointerTransition;
     }
@@ -136,15 +147,17 @@ public abstract class WalkableScreen extends ScreenBase {
      */
     protected void setTransitionsEnabled(boolean enable) {
         transitionsEnabled = enable;
-        if (!enable)
+        if (!enable) {
             setActiveTransition(null);
+        }
     }
 
     private void setActiveTransition(WalkTransition transition) {
         pointerTransition = transition;
-        if (pointerTransition == null)
+        if (pointerTransition == null) {
             commons.setCursor(Cursors.POINTER);
-        else if (pointerTransition.cursor != null)
+        } else if (pointerTransition.cursor != null) {
             commons.setCursor((pointerTransition.cursor));
+        }
     }
 }

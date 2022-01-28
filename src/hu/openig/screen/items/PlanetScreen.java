@@ -1,13 +1,12 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
 
 package hu.openig.screen.items;
-
 
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
@@ -120,7 +119,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** Indicate if a component is drag sensitive. */
     @Retention(RetentionPolicy.RUNTIME)
     @interface DragSensitive { }
-    /** 
+    /**
+
      * The selected rectangular region. The X coordinate is the smallest, the Y coordinate is the largest
      * the width points to +X and height points to -Y direction
      */
@@ -297,7 +297,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     );
     /** The set of units that may attempt to get closer to their target. */
     final EnumSet<GroundwarUnitType> getCloserUnits = EnumSet.of(
-            GroundwarUnitType.TANK, 
+            GroundwarUnitType.TANK,
+
             GroundwarUnitType.KAMIKAZE,
             GroundwarUnitType.SELF_REPAIR_TANK,
             GroundwarUnitType.PARALIZER,
@@ -373,14 +374,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     boolean noAI;
     /** Cancel the retreat. */
     boolean cancelRetreat;
-
+    /** Indicates the screen is in preparation mode. */
     private boolean preparingGroundBattle;
 
     @Override
     public void onFinish() {
         onEndGame();
     }
-    
+
     @Override
     public boolean keyboard(KeyEvent e) {
         boolean rep = false;
@@ -437,7 +438,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     doAddGuns();
                     doAddUnits();
                     planet().allocation = ResourceAllocationStrategy.BATTLE;
-                    
+
                     rep = true;
                 }
             } else {
@@ -473,7 +474,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     if (currentBuilding.hitpoints == 0) {
                         doDemolish();
                     }
-                } else 
+                } else
+
                 if (e.isShiftDown()) {
                     currentBuilding.hitpoints += currentBuilding.type.hitpoints / 10;
                     currentBuilding.hitpoints = Math.min(currentBuilding.hitpoints, currentBuilding.type.hitpoints);
@@ -568,15 +570,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     protected void doZoom(double scaleDelta) {
         double pre = render.scale;
-        
+
         int ex = render.width / 2;
         int ey = render.height / 2;
-        
+
         double mx = (ex - render.offsetX) * pre;
         double my = (ey - render.offsetY) * pre;
-        
+
         render.scale = Math.max(0.1, Math.min(2, render.scale + scaleDelta));
-        
+
         double mx0 = (ex - render.offsetX) * render.scale;
         double my0 = (ey - render.offsetY) * render.scale;
         double dx = (mx - mx0) / pre;
@@ -611,7 +613,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             centerScreen();
         }
         focused = render;
-        
+
         if (battle == null) {
             startBattle.visible(false);
             simulator = commons.register(SIMULATION_DELAY, new Action0() {
@@ -630,28 +632,28 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
     @Override
     public void onLeave() {
-        
+
         cancelWeatherSound();
-        
+
         placementMode = false;
         buildingsPanel.build.down = false;
 
         close0(animationTimer);
         animationTimer = null;
-        
+
         close0(earthQuakeTimer);
         earthQuakeTimer = null;
 
         clearGroundBattle();
-        
+
         battle = null;
         close0(simulator);
         simulator = null;
-        
+
         cancelRetreat = false;
         retreat.visible(false);
         confirmRetreat.visible(false);
-        
+
         commons.setCursor(Cursors.POINTER);
     }
 
@@ -725,12 +727,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     tile = se.building.type.minimapTiles.inoperable;
                 }
             }
-            
+
             cell.yCompensation = 27 - tile.imageHeight;
             cell.image = tile.getStrip(0);
             cell.a = loc1.x;
             cell.b = loc1.y;
-            
+
             return;
         } else
         if (knowledge(planet(), PlanetKnowledge.BUILDING) < 0 && (battle == null || preparingGroundBattle)) {
@@ -751,19 +753,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             } else {
                 scaffolding = se.building.scaffolding.normal;
             }
-            
+
             int index0 = (int)(se.building.hitpoints * 1L * scaffolding.size() / se.building.type.hitpoints);
             int area = se.building.width() * se.building.height();
-            
+
             int index1 = (se.building.width() * se.virtualRow + se.virtualColumn) * scaffolding.size() / area;
-            
+
             if (se.building.hitpoints * 100 < se.building.type.hitpoints) {
                 index0 = 0;
                 index1 = 0;
             }
-            
+
             tile = scaffolding.get((index0 + index1) % scaffolding.size());
-            
+
             cell.yCompensation = 27 - tile.imageHeight;
             tile.alpha = alpha;
             cell.image = tile.getStrip(0);
@@ -773,7 +775,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             Tile tile;
             if (se.building.isSeverlyDamaged()) {
                 tile = se.building.tileset.damaged;
-            } else 
+            } else
+
             if (se.building.isOperational()) {
                 tile = se.building.tileset.normal;
             } else {
@@ -794,7 +797,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             cell.image = null;
         }
-            
+
     }
     /**
      * Compute the bounding rectangle of the rendered building object.
@@ -806,10 +809,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (se != null && se.type == SurfaceEntityType.BUILDING) {
             int a0 = loc.x - se.virtualColumn;
             int b0 = loc.y + se.virtualRow;
-            
+
             int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
             int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
-            
+
             return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
         }
         return null;
@@ -824,7 +827,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int b0 = b.location.y;
         int x = surface().baseXOffset + Tile.toScreenX(a0, b0);
         int y = surface().baseYOffset + Tile.toScreenY(a0, b0 - b.tileset.normal.height + 1) + 27;
-        
+
         return new Rectangle(x, y - b.tileset.normal.imageHeight, b.tileset.normal.imageWidth, b.tileset.normal.imageHeight);
     }
     /**
@@ -981,7 +984,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                     offsetX += e.x - lastX;
                     offsetY += e.y - lastY;
-                    
+
                     lastX = e.x;
                     lastY = e.y;
                     rep = true;
@@ -1077,11 +1080,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             if (e.has(Modifier.SHIFT) && !e.has(Modifier.CTRL)) {
                                 doMoveSelectedUnits(e.x, e.y);
                                 rep = true;
-                            } else 
+                            } else
+
                             if (e.has(Modifier.CTRL) && !e.has(Modifier.SHIFT)) {
                                 doAttackWithSelectedUnits(e.x, e.y);
                                 rep = true;
-                            } else 
+                            } else
+
                             if (e.has(Modifier.CTRL) && e.has(Modifier.SHIFT)) {
                                 doAttackMoveSelectedUnits(e.x, e.y);
                                 rep = true;
@@ -1101,9 +1106,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
                 if (e.has(Button.LEFT)) {
                     if (placementMode) {
-                        placeBuilding(e.has(Modifier.SHIFT));    
+                        placeBuilding(e.has(Modifier.SHIFT));
+
                     } else {
-                        if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 
+                        if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0
+
                                 || planet().owner == player()) {
                             Location loc = getLocationAt(e.x, e.y);
                             buildingBox = getBoundingRect(loc);
@@ -1219,27 +1226,26 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
 
             PlanetStatistics ps = update(surface);
-            
+
             computeAlpha();
-            
+
             RenderTools.setInterpolation(g2, true);
-            
+
             Shape save0 = g2.getClip();
             g2.clipRect(0, 0, width, height);
-            
+
             g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
             g2.fillRect(0, 0, width, height);
-            
-            
+
             AffineTransform at = g2.getTransform();
             g2.translate(offsetX, offsetY);
             g2.scale(scale, scale);
-            
+
             int x0 = surface.baseXOffset;
             int y0 = surface.baseYOffset;
 
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
-            
+
                 drawTiles(g2, surface, x0, y0);
                 if (battlePlacements.size() > 0) {
                     for (Location loc : battlePlacements) {
@@ -1252,13 +1258,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     if (placementRectangle.width > 0) {
                         for (int i = placementRectangle.x; i < placementRectangle.x + placementRectangle.width; i++) {
                             for (int j = placementRectangle.y; j > placementRectangle.y - placementRectangle.height; j--) {
-                                
+
                                 BufferedImage img = areaAccept.getStrip(0);
                                 // check for existing building
                                 if (!surface().placement.canPlaceBuilding(i, j)) {
                                     img = areaDeny.getStrip(0);
                                 }
-                                
+
                                 int x = x0 + Tile.toScreenX(i, j);
                                 int y = y0 + Tile.toScreenY(i, j);
                                 g2.drawImage(img, x, y, null);
@@ -1267,8 +1273,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
                 drawBattleHelpers(g2, x0, y0);
-                if (config.showBuildingName 
-                        && (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0 
+                if (config.showBuildingName
+
+                        && (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0
+
                         || (battle != null && !preparingGroundBattle && !battle.isGroundwarComplete()))) {
                     drawBuildingHelpers(g2, surface);
                 }
@@ -1279,42 +1287,42 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
 
                 drawWeather(g2, surface);
-                
+
                 if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && buildingBox != null) {
                     g2.setColor(Color.RED);
                     g2.drawRect(buildingBox.x, buildingBox.y, buildingBox.width, buildingBox.height);
                 }
-                
+
                 g2.setTransform(at);
                 g2.setColor(Color.BLACK);
-                
+
                 String pn = planet().name();
                 int nameHeight = 14;
                 int nameWidth = commons.text().getTextWidth(nameHeight, pn);
                 int nameLeft = (width - nameWidth) / 2;
                 g2.fillRect(nameLeft - 5, 0, nameWidth + 10, nameHeight + 4);
-                
+
                 int pc = TextRenderer.GRAY;
                 if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0 && planet().owner != null) {
                     pc = planet().owner.color;
                 }
                 commons.text().paintTo(g2, nameLeft, 2, nameHeight, pc, pn);
-    
+
                 if (ps != null && planet().owner == player()) {
                     renderProblems(g2, ps);
                 }
             } else {
                 g2.setTransform(at);
-                
+
                 g2.setColor(new Color(0, 0, 0, 128));
-                
+
                 String installSatellite = get("planet.install_satellite_1");
                 int tw = commons.text().getTextWidth(14, installSatellite);
                 int tx = (width - tw) / 2;
                 int ty = (height - 14) / 2 - 12;
                 g2.fillRect(tx - 5, ty - 5, tw + 10, 24);
                 commons.text().paintTo(g2, tx, ty, 14, TextRenderer.WHITE, installSatellite);
-                
+
                 installSatellite = get("planet.install_satellite_2");
                 tw = commons.text().getTextWidth(14, installSatellite);
                 tx = (width - tw) / 2;
@@ -1330,14 +1338,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
             g2.setClip(save0);
             RenderTools.setInterpolation(g2, false);
-            
+
             if (prev.visible() && next.visible()) {
                 g2.setColor(Color.BLACK);
-                g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2, 
+                g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2,
+
                         prev.width + next.width + 6, prev.height + zoom.height + 8);
-            } else 
+            } else
+
             if (zoom.visible()) {
-                g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2, 
+                g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2,
+
                         zoom.width + 4, zoom.height + 2);
             }
             if (retreat.visible() || confirmRetreat.visible()) {
@@ -1347,8 +1358,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (battle != null && preparingGroundBattle) {
                 drawNextVehicleToDeploy(g2);
             }
-            
-            
+
         }
         /**
          * Draw the next vehicle's image to deploy.
@@ -1367,15 +1377,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 int sx = x + (w - commons.text().getTextWidth(7, s)) / 2;
                 commons.text().paintTo(g2, sx, y + 10, 7, TextRenderer.YELLOW, s);
 
-                
                 GroundwarUnit u = unitsToPlace.getFirst();
-                
+
                 BufferedImage ui = u.staticImage();
                 int ux = x + (w - ui.getWidth()) / 2;
                 int uy = y + 24;
-                
+
                 g2.drawImage(ui, ux, uy, null);
-                
+
                 s = u.item.type.name;
                 sx = x + (w - commons.text().getTextWidth(7, s)) / 2;
                 commons.text().paintTo(g2, sx, y + h - 14, 7, TextRenderer.YELLOW, s);
@@ -1389,7 +1398,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             for (GroundwarUnit u : units) {
                 Rectangle ur = unitRectangle(u);
 
-                
                 // compensate rectangle to have only the trimmed image
                 BufferedImage bi = u.get();
                 int tx = (u.model.width - bi.getWidth()) / 2;
@@ -1399,7 +1407,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 ur.y += ty;
                 ur.width = bi.getWidth();
                 ur.height = bi.getHeight();
-                
+
                 for (Building b : surface().buildings.iterable()) {
                     if (u.y <= b.location.y - b.tileset.normal.height
                             || u.x < b.location.x
@@ -1447,10 +1455,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 int h = (r.height - nameSize) / 2;
                 int nx = r.x + (r.width - nameLen) / 2;
                 int ny = r.y + h;
-                
+
                 Composite compositeSave = null;
                 Composite a1 = null;
-                
+
                 if (textBackgrounds) {
                     compositeSave = g2.getComposite();
                     a1 = AlphaComposite.SrcOver.derive(0.8f);
@@ -1459,14 +1467,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     g2.fillRect(nx - 2, ny - 2, nameLen + 4, nameSize + 5);
                     g2.setComposite(compositeSave);
                 }
-                
+
                 commons.text().paintTo(g2, nx + 1, ny + 1, nameSize, 0xFF8080FF, b.type.name);
                 commons.text().paintTo(g2, nx, ny, nameSize, 0xD4FC84, b.type.name);
 
                 // paint upgrade level indicator
                 int uw = b.upgradeLevel * commons.colony().upgrade.getWidth();
                 int ux = r.x + (r.width - uw) / 2;
-                int uy = r.y + h - commons.colony().upgrade.getHeight() - 4; 
+                int uy = r.y + h - commons.colony().upgrade.getHeight() - 4;
 
                 String percent = null;
                 int color = 0xFF8080FF;
@@ -1490,7 +1498,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         g2.fillRect(px - 2, py - 2, pw + 4, 15);
                         g2.setComposite(compositeSave);
                     }
-                    
+
                     commons.text().paintTo(g2, px + 1, py + 1, 10, color, percent);
                     commons.text().paintTo(g2, px, py, 10, 0xD4FC84, percent);
                 }
@@ -1499,7 +1507,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         g2.drawImage(commons.colony().upgrade, ux, uy, null);
                         ux += commons.colony().upgrade.getWidth();
                     }
-                    
+
                     if (b.enabled) {
                         int ey = r.y + h + 11;
                         int w = 0;
@@ -1513,7 +1521,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             w += commons.colony().repair[0].getWidth();
                         }
                         int ex = r.x + (r.width - w) / 2;
-                        
+
                         // paint power shortage
                         if (b.isEnergyShortage()) {
                             g2.drawImage(commons.colony().unpowered[blink ? 0 : 1], ex, ey, null);
@@ -1542,14 +1550,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             g2.fillRect(ex - 2, ey - 2, w + 4, 15);
                             g2.setComposite(compositeSave);
                         }
-                        
+
                         commons.text().paintTo(g2, ex + 1, ey + 1, 10, color, offline);
                         commons.text().paintTo(g2, ex, ey, 10, 0xD4FC84, offline);
-                        
+
                         if (b.repairing) {
                             g2.drawImage(commons.colony().repair[(animation % 3)], ex + w + 3, ey, null);
                         }
-                        
+
                     }
                 }
             }
@@ -1569,12 +1577,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     for (int i = 0; i < u.path.size() - 1; i++) {
                         Location l0 = u.path.get(i);
                         Location l1 = u.path.get(i + 1);
-                        
+
                         int xa = x0 + Tile.toScreenX(l0.x, l0.y) + 27;
                         int ya = y0 + Tile.toScreenY(l0.x, l0.y) + 14;
                         int xb = x0 + Tile.toScreenX(l1.x, l1.y) + 27;
                         int yb = y0 + Tile.toScreenY(l1.x, l1.y) + 14;
-                        
+
                         g2.drawLine(xa, ya, xb, yb);
                     }
                     if (u.attackBuilding != null) {
@@ -1582,7 +1590,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         Point up = centerOf(u);
                         g2.setColor(Color.RED);
                         g2.drawLine(gp.x, gp.y, up.x, up.y);
-                        
+
                     } else
                     if (u.attackUnit != null) {
                         Point gp = centerOf(u.attackUnit);
@@ -1629,7 +1637,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             Rectangle br = surface.boundingRectangle;
             g2.setColor(Color.YELLOW);
             g2.drawRect(br.x, br.y, br.width, br.height);
-            
+
             Rectangle renderingWindow = new Rectangle(0, 0, width, height);
             for (int i = 0; i < surface.renderingOrigins.size(); i++) {
                 Location loc = surface.renderingOrigins.get(i);
@@ -1653,7 +1661,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             drawBuildingSmokeFire(g2, x0, y0, loc1, se);
                         }
                         // place guns on buildings or roads
-                        if ((se.building != null 
+                        if ((se.building != null
+
                                 && "Defensive".equals(se.building.type.kind))
                                 || se.type == SurfaceEntityType.ROAD) {
                             drawGuns(g2, loc.x - j, loc.y);
@@ -1688,7 +1697,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     } else {
                         nsmoke = (100 - dr) / 10 + 1;
                     }
-                    
+
                     double sep = 1.0 * len  / (nsmoke + 1);
                     int cnt = 0;
                     for (double sj = sep; sj < len; sj += sep) {
@@ -1707,9 +1716,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             } else {
                                 animFrames = commons.colony().buildingSmoke;
                             }
-                            
+
                             BufferedImage smokeFire = animFrames[mix % animFrames.length];
-                            
+
                             int smx = x0 + Tile.toScreenX(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
                             int smy = y0 + Tile.toScreenY(loc1.x + se.virtualColumn + zz.x, loc1.y + se.virtualRow - zz.y);
                             int dx = 27 - smokeFire.getWidth() / 2;
@@ -1746,7 +1755,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             Set<PlanetProblems> combined = new HashSet<>();
             combined.addAll(ps.problems);
             combined.addAll(ps.warnings);
-            
+
             if (combined.size() > 0) {
                 int w = combined.size() * 11 - 1;
                 g2.setColor(Color.BLACK);
@@ -1813,7 +1822,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
 
         }
-        
+
     }
     /** The cached zigzag map. */
     static final Map<Pair<Integer, Integer>, Pair<int[], int[]>> ZIGZAGS = new HashMap<>();
@@ -1826,19 +1835,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return the point
      */
     static Point deZigZag(int linear, int width, int height) {
-        
+
         Pair<Integer, Integer> key = Pair.of(width, height);
-        
+
         int[] xs;
         int[] ys;
-        
+
         Pair<int[], int[]> value = ZIGZAGS.get(key);
         if (value == null) {
             int wh = width * height;
-            
+
             xs = new int[wh];
             ys = new int[wh];
-            
+
             int base = width <= height ? width : height;
             int s = 0;
             for (int i = 0; i < base; i++) {
@@ -1846,7 +1855,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 for (int j = s; j < s2; j++) {
                     xs[j] = i - j + s;
                     ys[j] = j - s;
-                    
+
                     xs[wh - 1 - j] = (width - 1) - xs[j];
                     ys[wh - 1 - j] = (height - 1) - ys[j];
                 }
@@ -1876,7 +1885,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         return new Point(xs[linear], ys[linear]);
     }
-    
+
     /**
      * The radar renderer component.
      * @author akarnokd, Mar 27, 2011
@@ -1904,31 +1913,31 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         @Override
         public void draw(Graphics2D g2) {
             RenderTools.setInterpolation(g2, true);
-            
+
             Shape save0 = g2.getClip();
             g2.clipRect(0, 0, width, height);
-            
+
             PlanetSurface surface = surface();
-            
+
             if (surface == null) {
                 return;
             }
             Rectangle br = surface.boundingRectangle;
 
             AffineTransform at = g2.getTransform();
-            
+
             float scalex = width * 1.0f / br.width;
             float scaley = height * 1.0f / br.height;
             float scale = Math.min(scalex, scaley);
             g2.translate(-(br.width * scale - width) / 2, -(br.height * scale - height) / 2);
             g2.scale(scale, scale);
-            
+
             int x0 = surface.baseXOffset;
             int y0 = surface.baseYOffset;
 
             g2.setColor(new Color(96 * alpha / 255, 96 * alpha / 255, 96 * alpha / 255));
             g2.fillRect(br.x, br.y, br.width, br.height);
-            
+
             if (knowledge(planet(), PlanetKnowledge.NAME) >= 0) {
                 BufferedImage empty = areaEmpty.getStrip(0);
                 Rectangle renderingWindow = new Rectangle(0, 0, width, height);
@@ -1965,38 +1974,42 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
                 g2.setColor(Color.WHITE);
                 g2.drawRect(
-                        (int)(-render.offsetX / render.scale), 
-                        (int)(-render.offsetY / render.scale), 
-                        (int)(render.width / render.scale - 1), 
+                        (int)(-render.offsetX / render.scale),
+
+                        (int)(-render.offsetY / render.scale),
+
+                        (int)(render.width / render.scale - 1),
+
                         (int)(render.height / render.scale - 1));
             }
             boolean jammed = false;
             for (GroundwarUnit u : units) {
-                if (u.model.type == GroundwarUnitType.RADAR_JAMMER 
+                if (u.model.type == GroundwarUnitType.RADAR_JAMMER
+
                         && u.owner != player() && u.paralizedTTL == 0) {
                     jammed = true;
                     break;
                 }
-            }            
+            }
+
             if (!jammed) {
                 for (GroundwarUnit u : units) {
                     if (blink) {
                         int px = (int)(x0 + Tile.toScreenX(u.x + 0.5, u.y - 0.5)) - 11;
                         int py = (int)(y0 + Tile.toScreenY(u.x + 0.5, u.y - 0.5));
-                        
+
                         g2.setColor(u.owner == player() ? Color.GREEN : Color.RED);
                         g2.fillRect(px, py, 40, 40);
                     }
                 }
             }
-            
-            
+
             g2.setTransform(at);
-            
+
             if (jammed) {
                 g2.drawImage(noises[animation % noises.length], 0, 0, null);
             }
-            
+
             g2.setClip(save0);
             RenderTools.setInterpolation(g2, false);
         }
@@ -2011,7 +2024,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         } else {
                             doZoomOut();
                         }
-                    
+
                         return true;
                     }
                 }
@@ -2034,16 +2047,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             double scalex = width * 1.0 / br.width;
             double scaley = height * 1.0 / br.height;
             double scale = Math.min(scalex, scaley);
-            
+
             double dx = -(br.width * scale - width) / 2;
             double dy = -(br.height * scale - height) / 2;
             double dw = br.width * scale;
             double dh = br.height * scale;
-            
+
             if (e.within((int)dx, (int)dy, (int)dw, (int)dh)) {
                 double rw = render.width * scale / render.scale / 2;
                 double rh = render.height * scale / render.scale / 2;
-                
+
                 render.offsetX = -(int)((e.x - dx - rw) * render.scale / scale);
                 render.offsetY = -(int)((e.y - dy - rh) * render.scale / scale);
                 return true;
@@ -2059,8 +2072,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         return super.mouse(e);
     }
-    /** 
-     * Set drag mode UI settings. 
+    /**
+
+     * Set drag mode UI settings.
+
      * @param dragging the dragging indicator.
      */
     void doDragMode(boolean dragging) {
@@ -2123,12 +2138,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
                 String cs = cost + " cr";
                 int w = commons.text().getTextWidth(10, cs);
-                
+
                 int color = TextRenderer.YELLOW;
 //                if (player().money < cost) {
 //                    color = 0xFFFF8080;
 //                }
-                
+
                 commons.text().paintTo(g2, width - w - 2, height - 12, 10, color, cs);
                 commons.text().paintTo(g2, 2, height - 12, 10, TextRenderer.GREEN, Integer.toString(count));
             }
@@ -2159,7 +2174,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         /** Construct and place the UI. */
         public BuildingsPanel() {
             preview = new BuildingPreview();
-            
+
             buildingUp = new UIImageButton(commons.colony().upwards) {
                 @Override
                 public boolean mouse(UIMouse e) {
@@ -2174,8 +2189,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     return super.mouse(e);
                 }
             };
-            
-            
+
             buildingUpEmpty = new UIImage(commons.colony().empty);
             buildingUpEmpty.visible(false);
             buildingDownEmpty = new UIImage(commons.colony().empty);
@@ -2187,9 +2201,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             buildingName = new UILabel("", 10, commons.text());
             buildingName.color(TextRenderer.YELLOW);
             buildingName.horizontally(HorizontalAlignment.CENTER);
-            
+
             preview.bounds(7, 7, 140, 103);
-            
+
             buildingUp.location(153, 7);
             buildingUpEmpty.location(buildingUp.location());
             buildingDown.location(153, 62);
@@ -2197,10 +2211,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             buildingName.bounds(8, 117, 166, 18);
             buildingList.location(7, 142);
             build.location(94, 142);
-            
+
             width = commons.colony().buildingsPanel.getWidth();
             height = commons.colony().buildingsPanel.getHeight();
-            
+
             buildingDown.onClick = new Action0() {
                 @Override
                 public void invoke() {
@@ -2208,7 +2222,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     setBuildingList(buildingDown10 ? 10 : 1);
                 }
             };
-            
+
             buildingDown.setHoldDelay(150);
             buildingUp.onClick = new Action0() {
                 @Override
@@ -2218,7 +2232,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             };
             buildingUp.setHoldDelay(150);
-            
+
             buildingList.onClick = new Action0() {
                 @Override
                 public void invoke() {
@@ -2244,7 +2258,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
             };
-            
+
             addThis();
         }
         @Override
@@ -2317,28 +2331,28 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         public BuildingInfoPanel() {
             buildingInfoName = new UILabel("-", 10, commons.text());
             buildingInfoName.bounds(8, 6, 182, 16);
-            
+
             energyPercent = new UILabel("-", 10, commons.text());
             energyPercent.bounds(70, 29, 28, 12);
-            
+
             energy = new UILabel("-", 10, commons.text());
             energy.bounds(119, 29, 42, 12);
-            
+
             workerPercent = new UILabel("-", 10, commons.text());
             workerPercent.bounds(70, 45, 28, 12);
-            
+
             worker = new UILabel("-", 10, commons.text());
             worker.bounds(119, 45, 28, 12);
-            
+
             operationPercent = new UILabel("-", 10, commons.text());
             operationPercent.bounds(70, 61, 28, 12);
-            
+
             production = new UILabel("-", 10, commons.text());
             production.bounds(70, 77, 77, 12);
-            
+
             energyLabel = new UIImage(commons.colony().energy);
             leftTo(energyPercent, energyLabel);
-            
+
             workerLabel = new UIImage(commons.colony().workers);
             leftTo(workerPercent, workerLabel);
 
@@ -2347,7 +2361,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
             productionLabel = new UIImage(commons.colony().production);
             leftTo(production, productionLabel);
-            
+
             stateDamaged = new UIImageButton(commons.colony().statusDamaged);
             stateInactive = new UIImageButton(commons.colony().statusInactive);
             stateNoEnergy = new UIImageButton(commons.colony().statusNoEnergy);
@@ -2369,15 +2383,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             stateDamaged.location(8, 122);
             constructing.location(8, 122);
 
-            
             progressUpper = new UILabel("-", 10, commons.text());
             progressUpper.bounds(8 + 96, 98 + 3, 28, 10);
             progressUpper.visible(false);
-            
+
             progressLower = new UILabel("-", 10, commons.text());
             progressLower.bounds(8 + 96, 122 + 3, 28, 10);
             progressLower.visible(false);
-            
+
             demolish = new UIImageButton(commons.colony().demolish);
             demolish.location(161, 50);
             demolish.setDisabledPattern(commons.common().disabledPattern);
@@ -2387,15 +2400,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             stateDamaged.setDisabledPattern(commons.common().disabledPattern);
             stateOffline.setDisabledPattern(commons.common().disabledPattern);
 
-            centerYellow(buildingInfoName, energyPercent, energy, 
-                    workerPercent, worker, operationPercent, 
+            centerYellow(buildingInfoName, energyPercent, energy,
+
+                    workerPercent, worker, operationPercent,
+
                     progressUpper, progressLower);
 
             production.color(TextRenderer.YELLOW);
-            
+
             width = commons.colony().buildingInfoPanel.getWidth();
             height = commons.colony().buildingInfoPanel.getHeight();
-            
+
             addThis();
         }
         /**
@@ -2429,8 +2444,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             stateInactive.visible(false);
             stateNoEnergy.visible(false);
             stateOffline.visible(false);
-            
-            
+
             constructing.visible(false);
             damaged.visible(false);
             repairing.visible(false);
@@ -2445,21 +2459,31 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             Building b = currentBuilding;
             if (b != null) {
                 buildingInfoName.text(b.type.name);
-                
+
                 Set<UIComponent> tohide = U.newSet(
                         undamaged,
-                        damaged,        
-                        repairing,        
-                        constructing,        
-                        stateActive,        
-                        stateDamaged,        
-                        stateInactive,        
-                        stateOffline,        
-                        stateNoEnergy,        
-                        progressLower,        
-                        progressUpper        
+                        damaged,
+
+                        repairing,
+
+                        constructing,
+
+                        stateActive,
+
+                        stateDamaged,
+
+                        stateInactive,
+
+                        stateOffline,
+
+                        stateNoEnergy,
+
+                        progressLower,
+
+                        progressUpper
+
                 );
-                
+
                 if (b.isConstructing()) {
                     energy.text("-");
                     energyPercent.text("-");
@@ -2467,21 +2491,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     workerPercent.text("-");
                     operationPercent.text("-");
                     production.text("-");
-                    
+
                     constructing.visible(true);
                     progressLower.visible(true);
                     progressLower.text(Integer.toString(b.buildProgress * 100 / b.type.hitpoints));
-                    
+
                     tohide.remove(constructing);
                     tohide.remove(progressLower);
-                    
+
                     if (b.isDamaged()) {
                         buildingInfoPanel.damaged.visible(true);
                         buildingInfoPanel.progressUpper.visible(true);
-                        
+
                         tohide.remove(buildingInfoPanel.damaged);
                         tohide.remove(buildingInfoPanel.progressUpper);
-                        
+
                         if (b.hitpoints > 0) {
                             buildingInfoPanel.progressUpper.text(Integer.toString((b.hitpoints - b.buildProgress) * 100 / b.hitpoints));
                         } else {
@@ -2490,7 +2514,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     } else {
                         buildingInfoPanel.undamaged.visible(true);
                         tohide.remove(buildingInfoPanel.undamaged);
-                        
+
                     }
                 } else {
                     if (!b.enabled || b.isSeverlyDamaged()) {
@@ -2528,22 +2552,22 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             if (b.hasResource("equipment")) {
                                 f = planet().owner.traits.apply(TraitKind.EQUIPMENT_PRODUCTION, 0.01d, f);
                             }
-                            
+
                             String s;
                             if (f < 10) {
                                 s = String.format("%.1f", f);
                             } else {
                                 s = String.format("%.0f", f);
                             }
-                            
+
                             buildingInfoPanel.production.text(s + getUnit(b.type.primary));
                         } else {
                             buildingInfoPanel.production.text("");
                         }
                     }
-                    
+
                     // set the upper status indicators
-                    
+
                     if (b.isDamaged()) {
                         if (b.repairing) {
                             buildingInfoPanel.repairing.visible(true);
@@ -2559,9 +2583,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         buildingInfoPanel.undamaged.visible(true);
                         tohide.remove(buildingInfoPanel.undamaged);
                     }
-                    
+
                     // set the lower status indicator
-                    
+
                     if (b.enabled) {
                         if (b.isDamaged()) {
                             buildingInfoPanel.stateDamaged.visible(true);
@@ -2587,7 +2611,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 for (UIComponent c : tohide) {
                     c.visible(false);
                 }
-                
+
             } else {
                 buildingInfoPanel.buildingInfoName.text("-");
                 buildingInfoPanel.energy.text("-");
@@ -2609,19 +2633,22 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             buildingInfoPanel.stateOffline.enabled(planet().owner == player() && currentBuilding != null);
             buildingInfoPanel.repairing.enabled(planet().owner == player());
             buildingInfoPanel.damaged.enabled(planet().owner == player());
-            
-            boolean upgradeVisible = 
-                    b != null && b.type.upgrades.size() > 0 
-                    && buildingInfoPanel.visible() 
+
+            boolean upgradeVisible =
+
+                    b != null && b.type.upgrades.size() > 0
+
+                    && buildingInfoPanel.visible()
+
                     && b.isComplete()
                     && !b.isSeverlyDamaged()
                     && planet().owner == player();
-                    
+
             upgradePanel.visible(upgradeVisible);
             if (!upgradeVisible) {
                 upgradePanel.clearTooltips();
             }
-            
+
             if (demolish.enabled()) {
                 setTooltip(demolish, "buildings.demolish.tooltip", (currentBuilding.upgradeLevel + 1) * currentBuilding.type.cost / 2);
             } else {
@@ -2639,7 +2666,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         blink = animation / 4 % 2 == 0;
 
         weatherOverlay.update();
-        
+
         askRepaint();
     }
     /** Perform the faster animation. */
@@ -2700,9 +2727,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             }
         }
-        
+
         planet().demolish(currentBuilding);
-        
 
         doAllocation();
         buildingBox = null;
@@ -2804,12 +2830,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             needed = new UILabel("-", 7, commons.text());
             needed.wrap(true);
             needed.color(TextRenderer.RED);
-            
+
             lines = Arrays.asList(
                     owner, race, surface, population, housing, worker, hospital, food, energy, police,
                     taxTradeIncome, taxInfo, autobuild, military
             );
-            
+
             enabled(false);
             addThis();
         }
@@ -2820,7 +2846,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             g2.setColor(Color.BLACK);
             g2.fillRoundRect(0, 0, width, height, 10, 10);
             g2.setComposite(c);
-            
+
             super.draw(g2);
         }
         /** Compute the panel size based on its visible component sizes. */
@@ -2845,13 +2871,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             other.size(w, other.getWrappedHeight());
             h = Math.max(h, other.y + other.height);
 //            i++;
-            
+
             if (needed.visible()) {
                 needed.bounds(10, other.y + other.height + 3, w, 0);
                 needed.size(w, needed.getWrappedHeight());
                 h = Math.max(h, needed.y + needed.height);
             }
-            
+
             width = w + 10;
             height = h + 5;
         }
@@ -2862,13 +2888,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         public PlanetStatistics update() {
             Planet p = planet();
             PlanetStatistics ps = p.getStatistics();
-            
+
             planet.text(p.name(), true);
-            
+
             if (knowledge(p, PlanetKnowledge.OWNER) >= 0) {
                 String s = p.owner != null ? p.owner.name : "-";
                 owner.text(format("colonyinfo.owner", s), true);
-                
+
                 if (p.owner != null) {
                     planet.color(p.owner.color);
                     owner.color(TextRenderer.GREEN);
@@ -2885,7 +2911,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 race.visible(false);
                 planet.color(TextRenderer.GRAY);
             }
-            
+
             String surfaceText = format("colonyinfo.surface", U.firstUpper(get(p.type.label)));
             if (p.owner == null && knowledge(p, PlanetKnowledge.OWNER) >= 0) {
                 double g = world().galaxyModel.getGrowth(p.type.type, player().race);
@@ -2893,7 +2919,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (t != null) {
                     g *= 1 + t.value / 100;
                 }
-                surfaceText = format("colonyinfo.surface2", 
+                surfaceText = format("colonyinfo.surface2",
+
                         U.firstUpper(get(p.type.label)), (int)(g * 100));
             } else
             if (p.owner == player()) {
@@ -2904,11 +2931,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     g *= 1 + t.value / 100;
                 }
 
-                surfaceText = format("colonyinfo.surface2", 
+                surfaceText = format("colonyinfo.surface2",
+
                         U.firstUpper(get(p.type.label)), (int)(g * 100));
             }
             surface.text(surfaceText, true);
-            
+
             population.visible(false);
             housing.visible(false);
             worker.visible(false);
@@ -2920,21 +2948,22 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             taxInfo.visible(false);
             autobuild.visible(false);
             military.visible(false);
-            
+
             if (p.isPopulated()) {
-            
+
                 if (p.owner == player()) {
-                    population.text(format("colonyinfo.population", 
+                    population.text(format("colonyinfo.population",
+
                             (int)p.population(), get(p.getMoraleLabel()), withSign((int)p.population() - (int)p.lastPopulation())
                     ), true).visible(true);
-                    
+
                     setLabel(housing, "colonyinfo.housing", ps.houseAvailable, (int)p.population()).visible(true);
                     setLabel(worker, "colonyinfo.worker", (int)p.population(), ps.workerDemand).visible(true);
                     setLabel(hospital, "colonyinfo.hospital", ps.hospitalAvailable, (int)p.population()).visible(true);
                     setLabel(food, "colonyinfo.food", ps.foodAvailable, (int)p.population()).visible(true);
                     setLabel(energy, "colonyinfo.energy", ps.energyAvailable, ps.energyDemand).visible(true);
                     setLabel(police, "colonyinfo.police", ps.policeAvailable, (int)p.population()).visible(true);
-                    
+
                     int req = (int)(ps.nativeWorkerDemand - p.population());
                     if (req > 0 && ps.workerDemand < p.population()) {
                         String wt = worker.text();
@@ -2942,15 +2971,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         worker.text(wt, true);
                         worker.color(TextRenderer.LIGHT_GREEN);
                     }
-                    
-                    taxTradeIncome.text(format("colonyinfo.tax-trade", 
+
+                    taxTradeIncome.text(format("colonyinfo.tax-trade",
+
                             (int)p.taxIncome(), (int)p.tradeIncome()
                     ), true).visible(true);
-                    
+
                     taxInfo.text(format("colonyinfo.tax-info",
                             get(p.getTaxLabel()), (int)p.morale(), withSign((int)(p.morale()) - (int)(p.lastMorale()))
                     ), true).visible(true);
-                    
+
                     autobuild.text(format("colonyinfo.autobuild",
                             get(p.getAutoBuildLabel())
                     ), true).visible(true);
@@ -2962,7 +2992,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     military.text(format("colonyinfo.military", ps.vehicleCount, ps.vehicleMax), true).visible(true);
                 } else {
                     if (knowledge(p, PlanetKnowledge.BUILDING) >= 0) {
-                        population.text(format("colonyinfo.population.alien", 
+                        population.text(format("colonyinfo.population.alien",
+
                                 (int)p.population()
                         ), true).visible(true);
                     }
@@ -2971,7 +3002,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             String oi = world().getOtherItems();
             other.visible(true);
             other.text(format("colonyinfo.other", oi.isEmpty() ? "-" : oi), true);
-            
+
             if (p.owner == player()) {
                 String nd = world().getNeeded(ps);
                 needed.visible(!nd.isEmpty());
@@ -2983,10 +3014,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
             computeSize();
             location(sidebarColonyInfo.x - width - 2, sidebarColonyInfo.y + sidebarColonyInfo.height - height - 2);
-            
+
             return ps;
         }
-        /** 
+        /**
+
          * Color the label according to the relation between the demand and available.
          * @param label the target label
          * @param format the format string to use
@@ -3037,7 +3069,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             size(commons.colony().upgradePanel.getWidth(), commons.colony().upgradePanel.getHeight());
             upgradeLabel = new UIImage(commons.colony().upgradeLabel);
             upgradeLabel.location(8, 5);
-            
+
             none = new UIImageButton(commons.colony().upgradeNone);
             none.onClick = new Action0() {
                 @Override
@@ -3075,8 +3107,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     if (up.visible()) {
                         int dl = i - currentBuilding.upgradeLevel + 1;
                         long m = currentBuilding.type.cost * dl;
-                        setTooltip(up, "buildings.upgrade.cost", 
-                                currentBuilding.type.upgrades.get(i).description, 
+                        setTooltip(up, "buildings.upgrade.cost",
+
+                                currentBuilding.type.upgrades.get(i).description,
+
                                 m <= player().money() ? "FFFFFFFF" : "FFFF0000",
                                 m);
                     }
@@ -3085,7 +3119,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     up.hovered(commons.colony().upgrade);
                     up.pressed(commons.colony().upgrade);
                     if (up.visible()) {
-                        setTooltip(up, "buildings.upgrade.bought", 
+                        setTooltip(up, "buildings.upgrade.bought",
+
                                 currentBuilding.type.upgrades.get(i).description);
                     }
                 }
@@ -3100,7 +3135,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             setTooltipText(upgradeLabel, this.tooltip);
             setTooltip(none, "buildings.upgrade.default.description");
-            
+
             super.draw(g2);
         }
         @Override
@@ -3124,15 +3159,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             return super.visible(state);
         }
-        
+
         public void clearTooltips() {
             for (UIImageButton up : steps) {
                 up.tooltip(null);
             }
         }
     }
-    /** 
-     * Upgrade the current building. 
+    /**
+
+     * Upgrade the current building.
+
      * @param j level
      */
     void doUpgrade(int j) {
@@ -3141,18 +3178,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (player().money() >= delta) {
                 player().addMoney(-delta);
                 player().today.buildCost += delta;
-                
+
                 currentBuilding.buildProgress = currentBuilding.type.hitpoints / 4;
                 currentBuilding.hitpoints = currentBuilding.buildProgress;
-                
+
                 doAllocation();
-                
+
                 upgradePanel.hideUpgradeSelection();
-                
+
                 player().statistics.upgradeCount.value += j - currentBuilding.upgradeLevel;
                 player().statistics.moneyUpgrade.value += delta;
                 player().statistics.moneySpent.value += delta;
-                
+
                 world().statistics.upgradeCount.value += j - currentBuilding.upgradeLevel;
                 world().statistics.moneyUpgrade.value += delta;
                 world().statistics.moneySpent.value += delta;
@@ -3173,12 +3210,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         areaDeploy = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
         areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFF0000), null);
         areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFFCC00), null);
-        
+
         selection.alpha = 1.0f;
         areaAccept.alpha = 1.0f;
         areaDeny.alpha = 1.0f;
         areaCurrent.alpha = 1.0f;
-        
+
         sidebarBuildings = new UIImageButton(commons.colony().sidebarBuildings);
         sidebarBuildingsEmpty = new UIImage(commons.colony().sidebarBuildingsEmpty);
         sidebarBuildingsEmpty.visible(false);
@@ -3190,31 +3227,31 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         sidebarNavigation = new UIImageButton(commons.colony().sidebarButtons);
         startBattle = new UIImageButton(commons.colony().startBattle);
         startBattle.visible(false);
-        
+
         colonyInfo = new UIImageButton(commons.colony().colonyInfo);
         bridge = new UIImageButton(commons.colony().bridge);
         planets = new UIImageButton(commons.colony().planets);
         starmap = new UIImageButton(commons.colony().starmap);
-        
+
         render = new SurfaceRenderer();
         render.z = -1;
-        
+
         leftFill = new UIImageFill(commons.colony().sidebarLeftTop, commons.colony().sidebarLeftFill, commons.colony().sidebarLeftBottom, false);
         rightFill = new UIImageFill(commons.colony().sidebarRightTop, commons.colony().sidebarRightFill, commons.colony().sidebarRightBottom, false);
-        
+
         radarPanel = new UIImage(commons.colony().radarPanel);
         radar = new RadarRender();
         radar.size(154, 134);
         radar.prepareNoise();
         radar.z = 1;
-        
+
         buildingsPanel = new BuildingsPanel();
         buildingsPanel.z = 1;
         buildingInfoPanel = new BuildingInfoPanel();
         buildingInfoPanel.z = 1;
-        
+
         infoPanel = new InfoPanel();
-        
+
         sidebarNavigation.onClick = new Action0() {
             @Override
             public void invoke() {
@@ -3236,8 +3273,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (planet().owner == player()) {
                     buttonSound(SoundType.GROUNDWAR_TOGGLE_PANEL);
                     showBuildingInfo = !showBuildingInfo;
-                    upgradePanel.visible(currentBuilding != null 
-                            && currentBuilding.type.upgrades.size() > 0 
+                    upgradePanel.visible(currentBuilding != null
+
+                            && currentBuilding.type.upgrades.size() > 0
+
                             && buildingInfoPanel.visible());
                 }
             }
@@ -3283,7 +3322,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 displayPrimary(Screens.BRIDGE);
             }
         };
-        
+
         buildingInfoPanel.demolish.onClick = new Action0() {
             @Override
             public void invoke() {
@@ -3341,7 +3380,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 doToggleRepair();
             }
         };
-        
+
         sidebarColonyInfo.onClick = new Action0() {
             @Override
             public void invoke() {
@@ -3352,7 +3391,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
         };
         upgradePanel = new UpgradePanel();
-        
+
         prev = new UIImageButton(commons.starmap().backwards);
         prev.setHoldDelay(250);
         prev.onClick = new Action0() {
@@ -3373,7 +3412,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 centerView = true;
             }
         };
-        
+
         startBattle.onClick = new Action0() {
             @Override
             public void invoke() {
@@ -3392,7 +3431,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 cancelRetreat = false;
             }
         };
-        
+
         confirmRetreat = new UIImageButton(commons.spacewar().sure) {
             @Override
             public boolean mouse(UIMouse e) {
@@ -3418,7 +3457,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         };
         confirmRetreat.tooltip(get("groundwar.retreat_confirm.tooltip"));
 
-        
         stopUnit = new UIImageTabButton2(commons.spacewar().stop);
         stopUnit.disabledPattern(commons.common().disabledPattern);
 //        stopUnit.visible(false);
@@ -3428,7 +3466,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 doStopSelectedUnits();
             }
         };
-        
+
         moveUnit = new UIImageTabButton2(commons.spacewar().move);
         moveUnit.disabledPattern(commons.common().disabledPattern);
         moveUnit.onClick = new Action0() {
@@ -3450,7 +3488,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         };
 
         tankPanel = new TankPanel();
-        
+
         zoom = new UIImageButton(commons.colony().zoom) {
             @Override
             public boolean mouse(UIMouse e) {
@@ -3475,23 +3513,23 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         };
 
         weatherOverlay = new WeatherOverlay(new Dimension(640, 480));
-        
+
         addThis();
     }
     @Override
     public void onResize() {
         base.setBounds(0, 20, getInnerWidth(), getInnerHeight() - 38);
         window.setBounds(base.x + 20, base.y, base.width - 40, base.height);
-        
+
         sidebarBuildings.location(base.x, base.y);
         sidebarBuildingsEmpty.location(base.x, base.y);
         sidebarRadar.location(base.x, base.y + base.height - sidebarRadar.height);
         sidebarRadarEmpty.location(sidebarRadar.location());
-        
+
         sidebarBuildingInfo.location(base.x + base.width - sidebarBuildingInfo.width, base.y);
         sidebarNavigation.location(base.x + base.width - sidebarNavigation.width, base.y + base.height - sidebarNavigation.height);
         sidebarColonyInfo.location(sidebarNavigation.x, sidebarNavigation.y - sidebarColonyInfo.height);
-        
+
         bridge.location(sidebarNavigation.x - bridge.width, base.y + base.height - bridge.height);
         starmap.location(bridge.x - starmap.width, base.y + base.height - starmap.height);
         planets.location(starmap.x - planets.width, base.y + base.height - planets.height);
@@ -3499,23 +3537,25 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         startBattle.location(sidebarNavigation.x - startBattle.width, sidebarNavigation.y + sidebarNavigation.height - startBattle.height);
 
         render.bounds(window.x, window.y, window.width, window.height);
-        
-        leftFill.bounds(sidebarBuildings.x, sidebarBuildings.y + sidebarBuildings.height, 
+
+        leftFill.bounds(sidebarBuildings.x, sidebarBuildings.y + sidebarBuildings.height,
+
                 sidebarBuildings.width, sidebarRadar.y - sidebarBuildings.y - sidebarBuildings.height);
-        rightFill.bounds(sidebarBuildingInfo.x, sidebarBuildingInfo.y + sidebarBuildingInfo.height, 
+        rightFill.bounds(sidebarBuildingInfo.x, sidebarBuildingInfo.y + sidebarBuildingInfo.height,
+
                 sidebarBuildingInfo.width, sidebarColonyInfo.y - sidebarBuildingInfo.y - sidebarBuildingInfo.height);
-        
+
         radarPanel.location(sidebarRadar.x + sidebarRadar.width - 1, sidebarRadar.y);
         radar.location(radarPanel.x + 13, radarPanel.y + 13);
         buildingsPanel.location(sidebarBuildings.x + sidebarBuildings.width - 1, sidebarBuildings.y);
         buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
-        
+
         upgradePanel.location(buildingInfoPanel.x, buildingInfoPanel.y + buildingInfoPanel.height);
-        
+
         prev.location(sidebarRadar.x + sidebarRadar.width + 1, sidebarRadar.y - prev.height - 3);
         next.location(prev.x + prev.width + 2, prev.y);
         zoom.location(prev.x, prev.y - 4 - zoom.height);
-        
+
         retreat.location(zoom.x + 1, zoom.y - retreat.height - 2);
         confirmRetreat.location(retreat.location());
     }
@@ -3529,8 +3569,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         Planet p = player().moveNextPlanet();
         return p != null ? p.surface : null;
     }
-    /** 
-     * Prepare the controls of the buildings panel. 
+    /**
+
+     * Prepare the controls of the buildings panel.
+
      * @param delta to go to the previous or next
      */
     void setBuildingList(int delta) {
@@ -3552,7 +3594,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             String race = race();
             Tile t = player().currentBuilding.tileset.get(race).normal;
             placementRectangle.setSize(t.width + 2, t.height + 2);
-            
+
             buildingsPanel.preview.building = bt.tileset.get(race).preview;
             buildingsPanel.preview.cost = bt.cost;
             buildingsPanel.preview.count = planet().countBuilding(bt);
@@ -3561,7 +3603,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             buildingsPanel.build.down = buildingsPanel.build.down && planet().canBuild(bt);
             buildingsPanel.buildingName.text(bt.name);
             buildingsPanel.build.enabled(buildingsPanel.preview.enabled());
-            
+
             if (bt.research != null && delta != 0) {
                 research(bt.research);
             }
@@ -3569,15 +3611,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             buildingsPanel.build.enabled(false);
             buildingsPanel.preview.building = null;
         }
-        
+
         boolean b0 = buildingsPanel.buildingDown.visible();
         buildingsPanel.buildingDown.visible(idx < list.size() - 1);
         boolean b1 = buildingsPanel.buildingUp.visible();
         buildingsPanel.buildingUp.visible(idx > 0);
-        
+
         buildingsPanel.buildingDownEmpty.visible(!buildingsPanel.buildingDown.visible());
         buildingsPanel.buildingUpEmpty.visible(!buildingsPanel.buildingUp.visible());
-        
+
         if (b0 != buildingsPanel.buildingDown.visible()) {
             commons.control().tooltipChanged(buildingsPanel.buildingDown);
         }
@@ -3594,15 +3636,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 && player().money() >= player().currentBuilding.cost
                 && planet().canBuild(player().currentBuilding)
         ) {
-                
+
             Building b = planet().build(building().id, race(), placementRectangle.x + 1, placementRectangle.y - 1);
-                
+
             placementMode = more && planet().canBuild(building());
             buildingsPanel.build.down = placementMode;
 
             buildingBox = getBoundingRect(b.location);
             doSelectBuilding(b);
-            
+
             buildingInfoPanel.update();
             setBuildingList(0);
 
@@ -3610,12 +3652,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         } else {
             if (player().money() < player().currentBuilding.cost) {
                 buttonSound(SoundType.NOT_AVAILABLE);
-                
+
                 commons.control().displayError(get("message.not_enough_money"));
             } else
             if (!surface().placement.canPlaceBuilding(placementRectangle)) {
                 buttonSound(SoundType.NOT_AVAILABLE);
-                
+
                 commons.control().displayError(get("message.cant_build_there"));
             } else
             if (!planet().canBuild(player().currentBuilding)) {
@@ -3634,7 +3676,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         buildingBox = null;
         lastSurface = null;
     }
-    
+
     /** Set the spacewar time controls. */
     void setGroundWarTimeControls() {
         commons.replaceSimulation(new Action0() {
@@ -3657,11 +3699,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         );
     }
-    /** 
+    /**
+
      * Generate the set of deployment locations.
      * @param atBuildings should the placement locations around buildings?
      * @param skipEdge skip the most outer location
-     * @return the set of locations 
+     * @return the set of locations
+
      */
     Set<Location> getDeploymentLocations(boolean atBuildings, boolean skipEdge) {
         Set<Location> result = new HashSet<>();
@@ -3742,7 +3786,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         while (n < w) {
             if (surface().placement.canPlaceBuilding(x, y)) {
                 result.add(Location.of(x, y));
-            }                        
+            }
+
             x++;
             y--;
             n++;
@@ -3753,7 +3798,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         while (n < h) {
             if (surface().placement.canPlaceBuilding(x, y)) {
                 result.add(Location.of(x, y));
-            }                        
+            }
+
             x--;
             y--;
             n++;
@@ -3764,7 +3810,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         while (n < w) {
             if (surface().placement.canPlaceBuilding(x, y)) {
                 result.add(Location.of(x, y));
-            }                        
+            }
+
             x++;
             y--;
             n++;
@@ -3775,7 +3822,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         while (n < h) {
             if (surface().placement.canPlaceBuilding(x, y)) {
                 result.add(Location.of(x, y));
-            }                        
+            }
+
             x--;
             y--;
             n++;
@@ -3812,7 +3860,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         for (Building b : surface().buildings.iterable()) {
             if (b.type.kind.equals("MainBuilding")) {
                 Set<Location> locations = new HashSet<>();
-                
+
                 for (int x = b.location.x - 1; x < b.location.x + b.tileset.normal.width + 1; x++) {
                     for (int y = b.location.y + 1; y > b.location.y - b.tileset.normal.height - 1; y--) {
                         Location loc = Location.of(x, y);
@@ -3827,21 +3875,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES
                             || rt.category == ResearchSubCategory.WEAPONS_TANKS) {
                         BattleGroundVehicle bgv = world().battle.groundEntities.get(rt.id);
-                        
+
                         GroundwarUnit u = new GroundwarUnit(planet().owner == player() ? bgv.normal : bgv.alternative);
                         Location loc = locs.removeFirst();
                         updateUnitLocation(u, loc.x, loc.y, false);
-                        
+
                         u.selected = true;
                         u.owner = planet().owner;
-                        
+
                         u.model = bgv;
                         u.hp = u.model.hp;
-                        
+
                         units.add(u);
                     }
                 }
-                
+
                 break;
             }
         }
@@ -3868,18 +3916,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     GroundwarUnit u = new GroundwarUnit(enemy == player() ? bgv.normal : bgv.alternative);
                     Location loc = locs.removeFirst();
                     updateUnitLocation(u, loc.x, loc.y, false);
-                    
+
                     u.selected = true;
                     u.owner = enemy;
-                    
+
                     u.model = bgv;
                     u.hp = u.model.hp;
-                    
+
                     units.add(u);
                 }
             }
         }
-        
+
     }
     /**
      * Draw units into the cell.
@@ -3898,7 +3946,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             @Override
             public int compare(GroundwarUnit o1, GroundwarUnit o2) {
                 if (o1.y > o2.y) {
-                    return -1; 
+                    return -1;
+
                 } else
                 if (o1.y < o2.y) {
                     return 1;
@@ -3912,17 +3961,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 return 0;
             }
         });
-        
+
         for (GroundwarUnit u : multiple) {
             Point p = unitPosition(u);
             BufferedImage img = u.get();
-            
+
             // compensate for trimmed image
             int tx = (u.model.width - img.getWidth()) / 2;
             int ty = (u.model.height - img.getHeight()) / 2;
-            
+
             g2.drawImage(img, p.x + tx, p.y + ty, null);
-            
+
             if (u.paralizedTTL > 0) {
                 // draw green paralization effect
                 BufferedImage[] expl = world().battle.groundExplosions.get(ExplosionType.GROUND_GREEN);
@@ -3942,7 +3991,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 g2.setColor(new Color(0xAE6951));
             }
             g2.fillRect(p.x + 5, p.y + 4, (int)(u.hp * (u.model.width - 9) / u.model.hp), 3);
-            
+
             BufferedImage smokeFire = null;
             if (u.hp * 3 <= u.model.hp) {
                 smokeFire = commons.colony().buildingFire[animation % commons.colony().buildingFire.length];
@@ -3975,7 +4024,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             @Override
             public int compare(GroundwarRocket o1, GroundwarRocket o2) {
                 if (o1.y > o2.y) {
-                    return -1; 
+                    return -1;
+
                 } else
                 if (o1.y < o2.y) {
                     return 1;
@@ -3989,7 +4039,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 return 0;
             }
         });
-        
+
         for (GroundwarRocket u : multiple) {
             Point p = unitPosition(u);
             BufferedImage img = u.get();
@@ -4003,7 +4053,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return the position
      */
     Point unitPosition(GroundwarUnit u) {
-        return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(u.x, u.y)), 
+        return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(u.x, u.y)),
+
                 (int)(planet().surface.baseYOffset + Tile.toScreenY(u.x, u.y)) + 27 - u.model.height);
     }
     /**
@@ -4013,7 +4064,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     Point unitPosition(GroundwarRocket u) {
         return new Point(
-                (int)(planet().surface.baseXOffset + Tile.toScreenX(u.x + 0.5, u.y)), 
+                (int)(planet().surface.baseXOffset + Tile.toScreenX(u.x + 0.5, u.y)),
+
                 (int)(planet().surface.baseYOffset + Tile.toScreenY(u.x + 0.5, u.y)));
     }
     /**
@@ -4026,11 +4078,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         Point p = unitPosition(u);
         return new Rectangle(p.x, p.y, u.model.width, u.model.height);
     }
-    /** 
+    /**
+
      * Draw guns at the specified location.
      * @param g2 the graphics context
      * @param cx the cell X coordinate
-     * @param cy the cell Y coordinate 
+     * @param cy the cell Y coordinate
+
      */
     void drawGuns(Graphics2D g2, int cx, int cy) {
         int x0 = planet().surface.baseXOffset;
@@ -4040,13 +4094,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 int px = (x0 + Tile.toScreenX(u.rx, u.ry));
                 int py = (y0 + Tile.toScreenY(u.rx, u.ry));
                 BufferedImage img = u.get();
-                
+
                 int ux = px + (54 - 90) / 2 + u.model.px;
                 int uy = py + (28 - 55) / 2 + u.model.py;
-                
-                
+
                 g2.drawImage(img, ux, uy, null);
-                
+
                 if (u.attack != null && showCommand) {
                     Point gp = centerOf(u.attack);
                     Point up = centerOf(u);
@@ -4088,7 +4141,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         BufferedImage bi = u.get();
         BufferedImage result = new BufferedImage(is.width, is.height, BufferedImage.TYPE_INT_ARGB);
         boolean wasCollision = false;
-        
+
         for (int y = is.y; y < is.y + is.height; y++) {
             for (int x = is.x; x < is.x + is.width; x++) {
                 int urgb = bi.getRGB(x - ur.x, y - ur.y);
@@ -4100,7 +4153,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
             }
-            
+
         }
         return wasCollision ? result : null;
     }
@@ -4112,7 +4165,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int y0 = Math.min(selectionStart.y, selectionEnd.y);
         int x1 = Math.max(selectionStart.x, selectionEnd.x);
         int y1 = Math.max(selectionStart.y, selectionEnd.y);
-        
+
         return new Rectangle(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
     }
     /**
@@ -4124,7 +4177,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     void doSelectUnitType(int mx, int my, SelectionBoxMode mode) {
         for (GroundwarUnit u : units) {
             Rectangle r = unitRectangle(u);
-            
+
             scaleToScreen(r);
 
             if (r.contains(mx, my)) {
@@ -4138,21 +4191,23 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         for (GroundwarGun g : guns) {
             Rectangle r = gunRectangle(g);
             scaleToScreen(r);
-            
+
             if (r.contains(mx, my)) {
                 for (GroundwarGun g2 : guns) {
                     g2.selected = g2.building == g.building;
                 }
                 return;
             }
-        }        
+        }
+
     }
     /**
      * Select units within the selection rectangle.
      * @param mode the selection mode
      */
     void selectUnits(SelectionBoxMode mode) {
-        boolean allowCommands = false; 
+        boolean allowCommands = false;
+
         Rectangle sr = selectionRectangle();
         if (sr.width < 4 && sr.height < 4) {
             GroundwarUnit u2 = null;
@@ -4163,14 +4218,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             for (GroundwarUnit u : units) {
                 Rectangle r = unitRectangle(u);
                 scaleToScreen(r);
-                
+
                 if (r.intersects(sr)) {
                     if (u2 == null || closerToCenter(sr, r, u2r)) {
                         u2 = u;
                         u2r = r;
                     }
                 }
-            }            
+            }
+
             GroundwarGun g2 = null;
             for (GroundwarGun g : guns) {
                 Rectangle r = gunRectangle(g);
@@ -4193,10 +4249,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (g2 != null && u2 != null) {
                 Rectangle r = unitRectangle(u2);
                 scaleToScreen(r);
-                
+
                 Rectangle r2 = gunRectangle(g2);
                 scaleToScreen(r2);
-                
+
                 if (closerToCenter(sr, r, r2)) {
                     allowCommands = u2.owner == player();
                     u2.selected = true;
@@ -4208,13 +4264,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         } else {
             boolean own = false;
             boolean enemy = false;
-            
+
             for (GroundwarUnit u : units) {
                 Rectangle r = unitRectangle(u);
-                
+
                 scaleToScreen(r);
-            
-                
+
                 boolean in = sr.contains(r.x + r.width / 2, r.y + r.height / 2);
                 if (mode == SelectionBoxMode.NEW) {
                     u.selected = in;
@@ -4225,7 +4280,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (mode == SelectionBoxMode.ADD) {
                     u.selected |= in;
                 }
-                
+
                 if (u.selected) {
                     own |= u.owner == player();
                     enemy |= u.owner != player();
@@ -4234,7 +4289,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             for (GroundwarGun g : guns) {
                 Rectangle r = gunRectangle(g);
                 scaleToScreen(r);
-                
+
                 boolean in = sr.contains(r.x + r.width / 2, r.y + r.height / 2);
                 if (mode == SelectionBoxMode.NEW) {
                     g.selected = in;
@@ -4245,21 +4300,23 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (mode == SelectionBoxMode.ADD) {
                     g.selected |= in;
                 }
-    
+
                 if (g.selected) {
                     own |= g.owner == player();
                     enemy |= g.owner != player();
                 }
             }
-            
+
             // if mixed selection, deselect aliens
             if (own && enemy) {
                 for (GroundwarUnit u : units) {
                     u.selected = u.selected && u.owner == player();
-                }            
+                }
+
                 for (GroundwarGun u : guns) {
                     u.selected = u.selected && u.owner == player();
-                }            
+                }
+
             }
             allowCommands = own || enemy;
         }
@@ -4300,14 +4357,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int px = (x0 + Tile.toScreenX(g.rx, g.ry));
         int py = (y0 + Tile.toScreenY(g.rx, g.ry));
         BufferedImage img = g.get();
-        
+
         int ux = px + (54 - img.getWidth()) / 2 + g.model.px;
         int uy = py + (28 - img.getHeight()) / 2 + g.model.py;
-        
+
         return new Rectangle(ux, uy, img.getWidth(), img.getHeight());
     }
     /**
-     * The task to plan a route to the given destination asynchronously. 
+     * The task to plan a route to the given destination asynchronously.
+
      * @author akarnokd, 2011.12.25.
      */
     class PathPlanning implements Callable<PathPlanning> {
@@ -4329,7 +4387,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
          */
         public PathPlanning(
                 GroundwarUnit unit,
-                Location goal, 
+                Location goal,
+
                 Player ignore) {
             this.current = unit.pathFindingLocation();
             this.goal = goal;
@@ -4362,7 +4421,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             return unit.hashCode();
         }
     }
-    /** 
+    /**
+
      * Compute a path for one of the selected unit.
      * @param mx the mouse x
      * @param my the mouse y
@@ -4381,7 +4441,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             selectCommand(null);
         }
     }
-    /** 
+    /**
+
      * The default cell-passable test which ignores moving units
      * and other units currently doing pathfinding calculation.
      */
@@ -4418,7 +4479,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         public Integer invoke(Location t, Location u) {
             return (int)(1000 * Math.hypot(t.x - u.x, t.y - u.y));
         }
-    }; 
+    };
+
     /**
      * Returns a preset pathfinding object with the optional
      * ignore player.
@@ -4447,7 +4509,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (preparingGroundBattle || commons.simulation.paused()) {
             return;
         }
-        
+
         if (!noAI) {
             Player np = nonPlayer();
             if (np != null) {
@@ -4455,10 +4517,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
         }
         player().ai.groundBattle(this);
-        
+
         // execute path plannings
         doPathPlannings();
-        
+
         // destruction animations
         for (GroundwarExplosion exp : new ArrayList<>(explosions)) {
             updateExplosion(exp);
@@ -4481,7 +4543,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             updateUnit(u);
         }
 
-        
         Player winner = checkWinner();
         if (winner != null) {
             for (GroundwarUnit u : units) {
@@ -4500,10 +4561,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     void doPathPlannings() {
         if (pathsToPlan.size() > 0) {
-            
+
             // map all units to locations
 //            long t0 = System.nanoTime();
-            
+
             List<Future<PathPlanning>> inProgress = new LinkedList<>();
             Iterator<PathPlanning> it = pathsToPlan.iterator();
             int i = PATHS_PER_TICK;
@@ -4550,9 +4611,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     void concludeBattle(Player winner) {
         final BattleInfo bi = battle;
-        
+
         bi.groundwarWinner = winner;
-        
+
         for (GroundwarUnit u : bi.groundLosses) {
             u.item.count--;
             if (u.owner == planet().owner) {
@@ -4567,7 +4628,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             }
         }
-        
+
         Player np = nonPlayer();
 
         if (bi.attacker.owner == winner) {
@@ -4582,22 +4643,22 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             }
             planet().rebuildRoads();
-            
+
         } else {
             BattleSimulator.applyPlanetDefended(planet(), BattleSimulator.PLANET_DEFENSE_LOSS);
         }
-        
+
         planet().rebuildRoads();
 
         player().ai.groundBattleDone(this);
         np.ai.groundBattleDone(this);
-        
+
         world().scripting.onGroundwarFinish(this);
-        
+
         battle = null;
-        
+
         commons.setCursor(Cursors.POINTER);
-        
+
         BattlefinishScreen bfs = (BattlefinishScreen)displaySecondary(Screens.BATTLE_FINISH);
         bfs.displayBattleSummary(bi);
     }
@@ -4706,10 +4767,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     void destroyBuilding(Building b) {
         surface().removeBuilding(b);
         b.hitpoints = 0;
-        
+
         planet().owner.statistics.buildingsLost.value++;
         planet().owner.statistics.buildingsLostCost.value += b.type.cost * (1 + b.upgradeLevel);
-        
+
         if (battle != null) {
             battle.attacker.owner.statistics.buildingsDestroyed.value++;
             battle.attacker.owner.statistics.buildingsDestroyedCost.value += b.type.cost * (1 + b.upgradeLevel);
@@ -4761,22 +4822,25 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     attackBuildingEndPhase(u);
                 }
                 u.phase = 0;
-                
-                
-                if (u.hasValidTarget() 
+
+                if (u.hasValidTarget()
+
                         && config.aiGroundAttackGetCloser
                         && !u.guard
-                        && u.attackMove == null 
+                        && u.attackMove == null
+
                         && getCloserUnits.contains(u.model.type)) {
                     moveOneCellCloser(u);
                 }
             }
-        } else 
+        } else
+
         if (u.paralizedTTL == 0) {
             Location am = u.attackMove;
             if (u.attackUnit != null && !u.attackUnit.isDestroyed()) {
                 approachTargetUnit(u);
-            } else 
+            } else
+
             if (u.attackBuilding != null && !u.attackBuilding.isDestroyed()) {
                 approachTargetBuilding(u);
             } else {
@@ -4809,7 +4873,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             u.attackMove = am;
                         }
                     }
-                    if (u.attackUnit == null && u.attackBuilding == null 
+                    if (u.attackUnit == null && u.attackBuilding == null
+
                             && am != null && u.path.isEmpty()) {
                         if (!am.equals(u.location())) {
                             attackMove(u, am.x, am.y);
@@ -4906,7 +4971,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     if (u.model.fire != null) {
                         effectSound(u.model.fire);
                     }
-                    
+
                     if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
                         Location loc = centerCellOf(u.attackBuilding);
                         createRocket(u, loc.x, loc.y);
@@ -4922,7 +4987,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (!unitInRange(u, u.attackBuilding, u.model.maxRange)) {
                     // plot path to the building
                     u.inMotionPlanning = true;
-                    pathsToPlan.add(new PathPlanning(u, 
+                    pathsToPlan.add(new PathPlanning(u,
+
                             buildingNearby(u.attackBuilding, ul), null));
                 } else {
                     // plot path outside the minimum range
@@ -4932,7 +4998,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             (int)(c.x + (u.model.minRange + 1.4142) * Math.cos(angle)),
                             (int)(c.y + (u.model.minRange + 1.4142) * Math.sin(angle))
                     );
-                    
+
                     u.inMotionPlanning = true;
                     pathsToPlan.add(new PathPlanning(u, c1, null));
                 }
@@ -4949,7 +5015,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         final Location destination = centerCellOf(b);
 
         final Func2<Location, Location, Integer> trueDistance = defaultTrueDistance;
-        
+
         Comparator<Location> nearestComparator = new Comparator<Location>() {
             @Override
             public int compare(Location o1, Location o2) {
@@ -5061,14 +5127,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     void attackBuildingEndPhase(GroundwarUnit u) {
         u.cooldown = u.model.delay;
         // for rocket sleds, damage is inflicted by the rocket impact
-        if (u.model.type == GroundwarUnitType.KAMIKAZE 
+        if (u.model.type == GroundwarUnitType.KAMIKAZE
+
         && u.hp * 10 < u.model.hp) {
             special(u);
         } else
         if (u.model.type != GroundwarUnitType.ROCKET_SLED) {
             damageBuilding(u.attackBuilding, u.damage());
         }
-        
+
         if (u.attackBuilding.isDestroyed()) {
             // TODO demolish animation?
             u.attackBuilding = null;
@@ -5087,7 +5154,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (u.model.type == GroundwarUnitType.ARTILLERY) {
             damageArea(u.attackUnit.x, u.attackUnit.y, u.damage(), u.model.area, u.owner);
         } else
-        if (u.model.type == GroundwarUnitType.KAMIKAZE 
+        if (u.model.type == GroundwarUnitType.KAMIKAZE
+
             && u.hp * 10 < u.model.hp) {
             special(u);
         } else
@@ -5106,7 +5174,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             }
                         }
                     }
-                    
+
                     u.attackUnit.owner.statistics.vehiclesLost.value++;
                     u.attackUnit.owner.statistics.vehiclesLostCost.value += world().researches.get(u.attackUnit.model.id).productionCost;
 
@@ -5136,7 +5204,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         u.damage((int)(damage * (area - Math.hypot(cx - u.x, cy - u.y)) / area));
                         if (u.isDestroyed()) {
                             createExplosion(u, ExplosionType.GROUND_RED);
-                            
+
                             u.owner.statistics.vehiclesLost.value++;
                             u.owner.statistics.vehiclesLostCost.value += world().researches.get(u.model.id).productionCost;
 
@@ -5157,7 +5225,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
         }
     }
-    
+
     /**
      * Update the properties of the given gun.
      * @param g the target gun
@@ -5173,24 +5241,25 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             g.phase = 0;
             return;
         }
-        
+
         if (g.phase > 0) {
             g.phase++;
             if (g.phase >= g.maxPhase()) {
-                if (g.attack != null && !g.attack.isDestroyed() 
+                if (g.attack != null && !g.attack.isDestroyed()
+
                         && unitInRange(g, g.attack)) {
                     if (!g.attack.isDestroyed()) {
                         g.attack.damage(g.damage());
                         if (g.attack.isDestroyed()) {
                             effectSound(g.attack.model.destroy);
                             createExplosion(g.attack, ExplosionType.GROUND_RED);
-                            
+
                             g.attack.owner.statistics.vehiclesLost.value++;
                             g.attack.owner.statistics.vehiclesLostCost.value += world().researches.get(g.attack.model.id).productionCost;
 
                             g.owner.statistics.vehiclesDestroyed.value++;
                             g.owner.statistics.vehiclesDestroyedCost.value += world().researches.get(g.attack.model.id).productionCost;
-                            
+
                             g.attack = null;
                         }
                     } else {
@@ -5201,7 +5270,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 g.phase = 0;
             }
         } else {
-            if (g.attack != null && !g.attack.isDestroyed() 
+            if (g.attack != null && !g.attack.isDestroyed()
+
                     && unitInRange(g, g.attack)) {
                 if (rotateStep(g, centerOf(g.attack))) {
                     if (g.cooldown <= 0) {
@@ -5227,7 +5297,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return the location of the center cell
      */
     Location centerCellOf(Building b) {
-        return Location.of(b.location.x + b.tileset.normal.width / 2, 
+        return Location.of(b.location.x + b.tileset.normal.width / 2,
+
                 b.location.y - b.tileset.normal.height / 2);
     }
     /**
@@ -5239,7 +5310,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     boolean rotateStep(GroundwarGun gun, Point target) {
         Point pg = centerOf(gun);
         double targetAngle = Math.atan2(target.y - pg.y, target.x - pg.x);
-        
+
         double currentAngle = gun.normalizedAngle();
 
         double diff = targetAngle - currentAngle;
@@ -5247,7 +5318,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             diff = 2 * Math.PI - diff;
         } else
         if (diff > Math.PI) {
-            diff -= 2 * Math.PI; 
+            diff -= 2 * Math.PI;
+
         }
         double anglePerStep = 2 * Math.PI * gun.model.rotationTime / gun.model.angles() / SIMULATION_DELAY;
         if (Math.abs(diff) < anglePerStep) {
@@ -5290,7 +5362,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     List<GroundwarUnit> unitsInRange(GroundwarUnit g) {
         List<GroundwarUnit> result = new ArrayList<>();
         for (GroundwarUnit u : units) {
-            if (u.owner != g.owner && !u.isDestroyed() 
+            if (u.owner != g.owner && !u.isDestroyed()
+
                     && unitInRange(g, u, g.model.maxRange)
                     && !unitInRange(g, u, g.model.minRange)) {
                 result.add(u);
@@ -5306,7 +5379,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     List<Building> buildingsInRange(GroundwarUnit g) {
         List<Building> result = new ArrayList<>();
         for (Building u : surface().buildings.iterable()) {
-            if (planet().owner != g.owner && !u.isDestroyed() 
+            if (planet().owner != g.owner && !u.isDestroyed()
+
                     && unitInRange(g, u, g.model.maxRange)
                     && !unitInRange(g, u, g.model.minRange) && u.type.kind.equals("Defensive")) {
                 result.add(u);
@@ -5322,7 +5396,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     List<GroundwarUnit> unitsInRange(GroundwarGun g) {
         List<GroundwarUnit> result = new ArrayList<>();
         for (GroundwarUnit u : units) {
-            if (u.owner != g.owner && !u.isDestroyed() 
+            if (u.owner != g.owner && !u.isDestroyed()
+
                     && unitInRange(g, u)) {
                 result.add(u);
             }
@@ -5353,7 +5428,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return the center point
      */
     Point centerOf(Location g) {
-        return new Point(surface().baseXOffset + Tile.toScreenX(g.x, g.y) + 28, 
+        return new Point(surface().baseXOffset + Tile.toScreenX(g.x, g.y) + 28,
+
                 surface().baseYOffset + Tile.toScreenY(g.x, g.y) + 14);
     }
     /**
@@ -5363,7 +5439,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return the center point
      */
     Point centerOf(double x, double y) {
-        return new Point((int)(surface().baseXOffset + Tile.toScreenX(x, y) + 28), 
+        return new Point((int)(surface().baseXOffset + Tile.toScreenX(x, y) + 28),
+
                 (int)(surface().baseYOffset + Tile.toScreenY(x, y) + 14));
     }
     /**
@@ -5384,14 +5461,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     boolean unitInRange(GroundwarGun g, GroundwarUnit u /*, double range*/) {
 //        Point gp = centerOf(g.building);
 //        Point up = centerOf(u);
-//        
+//
+
 //        double gpx = Tile.toTileX(gp.x, gp.y);
 //        double gpy = Tile.toTileY(gp.x, gp.y);
 //        double upx = Tile.toTileX(up.x, up.y);
 //        double upy = Tile.toTileY(up.x, up.y);
-//        
+//
+
 //        double ratio = (30 * 30 + 12 * 12) * 1.0 / (28 * 28 + 15 * 15);
-//        
+//
+
 //        return (gpx - upx) * (gpx - upx) + ratio * (gpy - upy) * (gpy - upy) <= range * range;
         return g.inRange(u);
     }
@@ -5405,8 +5485,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return true if within range
      */
     boolean cellInRange(double cx, double cy, double px, double py, int range) {
-        
-        return (cx - px) * (cx - px) + (cy - py) * (cy - py) <= range * range; 
+
+        return (cx - px) * (cx - px) + (cy - py) * (cy - py) <= range * range;
+
     }
     /**
      * Check if the given unit is within the range of the gun.
@@ -5416,7 +5497,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return true if within range
      */
     boolean unitInRange(GroundwarUnit g, GroundwarUnit u, double range) {
-        return Math.hypot(g.x - u.x, g.y - u.y) <= range; 
+        return Math.hypot(g.x - u.x, g.y - u.y) <= range;
+
     }
     /**
      * Check if the given unit is within the range of the gun.
@@ -5430,7 +5512,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         int bx2 = bx + b.tileset.normal.width - 1;
         int by = b.location.y;
         int by2 = by - b.tileset.normal.height + 1;
-        
+
         if (Math.hypot(g.x - bx, g.y - by) <= range) {
             return true;
         } else
@@ -5449,7 +5531,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (g.y <= by && g.y >= by2 && (within(bx - g.x, 0, range) || within(g.x - bx2, 0, range))) {
             return true;
         }
-        return false; 
+        return false;
+
     }
     /**
      * Check if the value is within the specified range.
@@ -5490,15 +5573,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             result.diff = 0;
         } else {
             result.targetAngle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
-            
+
             result.currentAngle = u.normalizedAngle();
-    
+
             result.diff = result.targetAngle - result.currentAngle;
             if (result.diff < -Math.PI) {
                 result.diff += 2 * Math.PI;
             } else
             if (result.diff > Math.PI) {
-                result.diff -= 2 * Math.PI; 
+                result.diff -= 2 * Math.PI;
+
             }
         }
 
@@ -5547,7 +5631,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     /**
      * Move an unit by a given amount into the next path location.
-     * @param u The unit to move one step. 
+     * @param u The unit to move one step.
+
      */
     void moveUnit(GroundwarUnit u) {
         if (u.isDestroyed()) {
@@ -5564,7 +5649,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (u.nextMove == null) {
             u.nextMove = u.path.get(0);
             u.nextRotate = u.nextMove;
-            
+
             // is the next move location still passable?
             if (!isPassable(u.nextMove.x, u.nextMove.y)) {
                 // trigger replanning
@@ -5573,8 +5658,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
 
         }
-        
-        
+
         if (u.nextRotate != null && rotateStep(u, u.nextRotate)) {
             u.nextRotate = null;
         }
@@ -5598,7 +5682,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 int maxx = (int)Math.ceil(gu.x);
                 int maxy = (int)Math.ceil(gu.y);
                 // check if our next position collided with the movement path of someone else
-                if (minx <= u.nextMove.x && u.nextMove.x <= maxx 
+                if (minx <= u.nextMove.x && u.nextMove.x <= maxx
+
                         && miny <= u.nextMove.y && u.nextMove.y <= maxy) {
                     // yield
                     dv = 0;
@@ -5618,7 +5703,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
                 u.nextMove = null;
                 u.path.remove(0);
-                
+
                 double remaining = Math.sqrt(dv * dv - distanceToTarget);
                 if (!u.path.isEmpty()) {
                     Location nextCell = u.path.get(0);
@@ -5628,7 +5713,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         moveUnitStep(u, time2);
                     }
                 }
-                
+
             } else {
                 double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
                 updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);
@@ -5657,7 +5742,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             effectSound(SoundType.NOT_AVAILABLE);
             selectCommand(stopUnit);
         }
-        
+
     }
     /**
      * Select a command button and prepare modes.
@@ -5744,13 +5829,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         for (GroundwarUnit u : units) {
             if (u.selected && directAttackUnits.contains(u.model.type)
                     /* && u.owner == player() */) { // FIXME player only
-                if (b != null && planet().owner != u.owner 
+                if (b != null && planet().owner != u.owner
+
                         && u.model.type != GroundwarUnitType.PARALIZER) {
                     attack(u, b);
                     u.guard = false;
                     attacked = true;
                 } else {
-                    
+
                     if (!guFound) {
                         gu = findNearest(mx, my, u.owner);
                         guFound = true;
@@ -5761,7 +5847,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         u.guard = false;
                     }
                 }
-                
+
             }
         }
         for (GroundwarGun g : guns) {
@@ -5813,7 +5899,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     scaleToScreen(r2);
 
                     double d2 = Math.hypot(mx - r2.x - r2.width / 2d, my - r2.y - r2.height / 2);
-                    
+
                     return Double.compare(d1, d2);
                 }
             });
@@ -5834,14 +5920,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         rocket.targetX = x;
         rocket.targetY = y;
         rocket.movementSpeed = 25; // FIXME rocket movement speed
-        
+
         rocket.damage = sender.damage();
         rocket.area = sender.model.area;
-        
+
         Point pg = centerOf(sender.x, sender.y);
         Point tg = centerOf(x, y);
         rocket.angle = Math.atan2(tg.y - pg.y, tg.x - pg.x);
-        
+
         rockets.add(rocket);
     }
     /**
@@ -5866,16 +5952,17 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             rocket.x += dv * Math.cos(angle);
             rocket.y += dv * Math.sin(angle);
             rocket.phase++;
-            
+
             if (isRocketJammed(rocket, 0.5)) {
                 Point p = centerOf(rocket.x, rocket.y);
                 createExplosion(p.x, p.y, ExplosionType.GROUND_ROCKET_2);
                 rockets.remove(rocket);
             }
         }
-        
+
     }
-    /** 
+    /**
+
      * Check if any enemy uint is within jamming range?
      * @param rocket the rocket
      * @param penetrationRatio how far may the rocket travel into the range before it is reported as jammed?
@@ -5883,7 +5970,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     boolean isRocketJammed(GroundwarRocket rocket, double penetrationRatio) {
         for (GroundwarUnit u : units) {
-            if (u.owner != rocket.owner 
+            if (u.owner != rocket.owner
+
                     && u.model.type == GroundwarUnitType.ROCKET_JAMMER && u.paralizedTTL == 0) {
                 double distance = Math.hypot(u.x - rocket.x, u.y - rocket.y);
                 if (distance < u.model.maxRange * penetrationRatio) {
@@ -5935,7 +6023,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     void updateUnitLocation(GroundwarUnit u, double dx, double dy, boolean relative) {
         Location current = unitLocation(u);
         Location pfl = u.location();
-        
+
         if (relative) {
             u.x += dx;
             u.y += dy;
@@ -5955,7 +6043,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (unitsAtLocation.isEmpty()) {
                     unitsAtLocation.remove(current);
                 }
-            }        
+            }
+
         }
         if (!pfl.equals(pfl2)) {
             // remove from pathfinding helper
@@ -5996,7 +6085,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             unitsAtLocation.put(current, set);
         }
         set.add(u);
-        
+
         Location pfl = u.location();
         set = unitsForPathfinding.get(pfl);
         if (set == null) {
@@ -6011,7 +6100,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     public void initiateBattle(BattleInfo battle) {
         this.battle = battle;
-        
+
         player().currentPlanet = battle.targetPlanet;
 
         if (!BattleSimulator.groundBattleNeeded(battle.targetPlanet)) {
@@ -6023,12 +6112,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             bfs.displayBattleSummary(battle);
             return;
         }
-        
+
         setGroundWarTimeControls();
-        
+
         player().ai.groundBattleInit(this);
         nonPlayer().ai.groundBattleInit(this);
-        
+
         battlePlacements.clear();
         battlePlacements.addAll(getDeploymentLocations(planet().owner == player(), true)); // skip edge always
 
@@ -6036,11 +6125,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         boolean atBuildings = planet().owner == player();
         InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
         createGroundUnits(atBuildings, iis.iterable(), unitsToPlace);
-        
+
         preparingGroundBattle = true;
-        
+
         battle.incrementGroundBattles();
-        
+
         if (!(player().ai instanceof AIUser)) {
             placeGroundUnits(atBuildings, unitsToPlace);
             doStartBattle();
@@ -6053,13 +6142,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** Deploy the non-player vehicles. */
     void deployNonPlayerVehicles() {
         boolean atBuildings = planet().owner != player();
-        
+
         InventoryItems iis = (atBuildings ? planet() : battle.attacker).inventory();
-        
+
         LinkedList<GroundwarUnit> gus = new LinkedList<>();
         // create units
         createGroundUnits(atBuildings, iis.iterable(), gus);
-        
+
         placeGroundUnits(atBuildings, gus);
     }
     /**
@@ -6112,7 +6201,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         result.icx = (int)cx;
         result.icy = (int)cy;
         // expand radially and place vehicles
-        result.rmax = Math.max(Math.max(Math.abs(result.icx - minX), Math.abs(result.icx - maxX)), 
+        result.rmax = Math.max(Math.max(Math.abs(result.icx - minX), Math.abs(result.icx - maxX)),
+
                 Math.max(Math.abs(result.icy - minY), Math.abs(result.icy - maxY))) + 1;
         return result;
     }
@@ -6137,7 +6227,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 //            }
 //            cx /= surface().buildings.size();
 //            cy /= surface().buildings.size();
-            
+
 //            double dist = 0;
 //            for (Location loc : locations) {
 //                double dist2 = (loc.x - cx) * (loc.x - cx) + (loc.y - cy) * (loc.y * cy);
@@ -6216,11 +6306,12 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     || ii.type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
 
                 BattleGroundVehicle bge = world().battle.groundEntities.get(ii.type.id);
-                
+
                 for (int i = 0; i < ii.count; i++) {
-                    GroundwarUnit u = new GroundwarUnit(ii.owner == player() 
+                    GroundwarUnit u = new GroundwarUnit(ii.owner == player()
+
                             ? bge.normal : bge.alternative);
-                    
+
                     if (atBuildings) {
                         u.owner = planet().owner;
                     } else {
@@ -6229,14 +6320,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     u.item = ii;
                     u.model = bge;
                     u.hp = u.model.hp;
-                    
+
                     gus.add(u);
                 }
             }
         }
     }
     /**
-     * Start the battle. 
+     * Start the battle.
+
      */
     void doStartBattle() {
         unitsToPlace.clear();
@@ -6250,9 +6342,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (planet().owner != player()) {
             retreat.visible(true);
         }
-        
+
         world().scripting.onGroundwarStart(this);
-        
+
         commons.simulation.resume();
     }
     /**
@@ -6383,7 +6475,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
 
         removeGroup(groupNo);
-        
+
         if (own && !enemy) {
             for (Object o : selected) {
                 groups.put(o, groupNo);
@@ -6420,7 +6512,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     @Override
     public void attack(GroundwarUnit u, GroundwarUnit target) {
-        if (directAttackUnits.contains(u.model.type) 
+        if (directAttackUnits.contains(u.model.type)
+
                 && u.owner != target.owner
                 && u.attackUnit != target) {
             stop(u);
@@ -6444,7 +6537,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     @Override
     public void attack(GroundwarUnit u, Building target) {
-        if (directAttackUnits.contains(u.model.type) 
+        if (directAttackUnits.contains(u.model.type)
+
                 && u.owner != planet().owner && u.attackBuilding != target) {
             stop(u);
             u.attackBuilding = target;
@@ -6529,7 +6623,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (gunits != null) {
                 boolean ip = true;
                 for (GroundwarUnit u : gunits) {
-                    ip &= (!u.path.isEmpty() 
+                    ip &= (!u.path.isEmpty()
+
                                 && u.yieldTTL * 2 < YIELD_TTL) || u.inMotionPlanning;
                 }
                 return ip;
@@ -6553,7 +6648,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 boolean ip = true;
                 for (GroundwarUnit u : gunits) {
                     ip &= u.owner == ignore
-                            || (!u.path.isEmpty() && u.yieldTTL * 2 < YIELD_TTL) 
+                            || (!u.path.isEmpty() && u.yieldTTL * 2 < YIELD_TTL)
+
                             || u.inMotionPlanning;
                 }
                 return ip;
@@ -6572,7 +6668,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         int time = world().time.get(GregorianCalendar.HOUR_OF_DAY) * 6
         + world().time.get(GregorianCalendar.MINUTE) / 10;
-        
+
         if (time < 6 * 4 || time >= 6 * 22) {
             alpha = Tile.MIN_ALPHA;
         } else
@@ -6581,7 +6677,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         } else
         if (time >= 6 * 10 && time < 6 * 16) {
             alpha = (1.0f);
-        } else 
+        } else
+
         if (time >= 6 * 16 && time < 6 * 22) {
             alpha = (1f - (1f - Tile.MIN_ALPHA) * (time - 6 * 16) / 36);
         }
@@ -6597,7 +6694,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
     }
     /**
-     * A panel showing the current selected unit(s). 
+     * A panel showing the current selected unit(s).
+
      * @author akarnokd, 2012.06.02.
      */
     class TankPanel extends UIContainer {
@@ -6610,10 +6708,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             background = commons.colony().tankPanel;
             width = background.getWidth();
             height = background.getHeight() + 22;
-            
+
             for (int i = -1; i < 10; i++) {
                 final int j = i;
-                
+
                 UIImageButton ib = new UIImageButton(commons.common().shield) {
                     @Override
                     public void draw(Graphics2D g2) {
@@ -6649,7 +6747,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 };
                 groupButtons.add(ib);
                 add(ib);
-                
+
                 if (i == -1) {
                     ib.tooltip(get("battle.selectall.tooltip"));
                 } else {
@@ -6667,7 +6765,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             g2.drawRect(-1, -1, width + 2, h0 + 2);
             g2.drawRect(-1, -1, width + moveUnit.width + 4, h0 + 2);
             g2.setStroke(saves);
-            
+
             g2.drawImage(background, 0, 0, null);
             GroundwarUnit u = null;
             int count = 0;
@@ -6678,7 +6776,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         u = u2;
                         count++;
                         sumHp = u2.hp;
-                    } else 
+                    } else
+
                     if (u.model.id.equals(u2.model.id)) {
                         count++;
                         sumHp += u2.hp;
@@ -6694,13 +6793,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 BufferedImage img = u.model.normalStaticImage();
                 int iw = (width - img.getWidth()) / 2;
                 g2.drawImage(img, iw, 25, null);
-                
+
                 double dmg = u.damage();
-                commons.text().paintTo(g2, 10, h0 - 25, 7, u.owner.color, 
-                        format("spacewar.selection.firepower_dps", (int)(dmg * count), 
+                commons.text().paintTo(g2, 10, h0 - 25, 7, u.owner.color,
+
+                        format("spacewar.selection.firepower_dps", (int)(dmg * count),
+
                         String.format("%.1f", dmg * count * 1000d / u.model.delay)));
                 commons.text().paintTo(g2, 10, h0 - 15, 7, u.owner.color, get("spacewar.selection.defense_values") + ((int)sumHp));
-                
+
             } else {
                 n = get("spacewar.ship_status_none");
             }
@@ -6712,7 +6813,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             commons.text().paintTo(g2, (width - w) / 2 + 1, 10, tsize, TextRenderer.RED, n);
             commons.text().paintTo(g2, (width - w) / 2, 10, tsize, TextRenderer.YELLOW, n);
-            
+
             Set<Integer> selgr = new HashSet<>(groups.values());
             selgr.add(-1);
             int ibx = 5;
@@ -6792,12 +6893,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 // FIXME more actions?
             }
         }
-        
-        buildingsPanel.visible(planet().owner == player() 
+
+        buildingsPanel.visible(planet().owner == player()
+
                 && showBuildingList && battle == null);
         buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
         infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
-        
+
         boolean showTankPanel = (!units.isEmpty() || !guns.isEmpty()) && !preparingGroundBattle;
         tankPanel.visible(showTankPanel);
         moveUnit.visible(showTankPanel);
@@ -6814,19 +6916,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             attackUnit.location(moveUnit.x, moveUnit.y + moveUnit.height);
             stopUnit.location(moveUnit.x, attackUnit.y + attackUnit.height);
         }
-        
+
         starmap.visible(showSidebarButtons && battle == null);
         colonyInfo.visible(showSidebarButtons && battle == null);
         bridge.visible(showSidebarButtons && battle == null);
         planets.visible(showSidebarButtons && battle == null);
-        
+
         next.visible(battle == null);
         prev.visible(battle == null);
-        
+
         setBuildingList(0);
         buildingInfoPanel.update();
         PlanetStatistics ps = infoPanel.update();
-        
+
         setTooltip(zoom, "colony.zoom.tooltip");
 
         Pair<Planet, Planet> pn = player().prevNextPlanet();
@@ -6837,7 +6939,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             setTooltip(prev, null);
             setTooltip(next, null);
         }
-        
+
         setTooltip(colonyInfo, "colony.info.tooltip");
         setTooltip(planets, "colony.planets.tooltip");
         setTooltip(starmap, "colony.starmap.tooltip");
@@ -6852,20 +6954,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             setTooltipText(buildingsPanel.buildingName, bt.description);
         } else {
             setTooltip(buildingsPanel.preview, null);
-            setTooltip(buildingsPanel.buildingName, null); 
+            setTooltip(buildingsPanel.buildingName, null);
+
         }
-        
+
         setTooltip(sidebarBuildings, "colony.buildings.tooltip");
         setTooltip(sidebarRadar, "colony.radars.tooltip");
         setTooltip(sidebarBuildingInfo, "colony.buildinginfos.tooltip");
         setTooltip(sidebarColonyInfo, "colony.infos.tooltip");
         setTooltip(sidebarNavigation, "colony.buttons.tooltip");
-        
+
         setTooltip(buildingInfoPanel.stateActive, "colony.active.tooltip");
         setTooltip(buildingInfoPanel.stateOffline, "colony.inactive.tooltip");
         setTooltip(buildingInfoPanel.damaged, "colony.damaged.tooltip");
         setTooltip(buildingInfoPanel.repairing, "colony.repairing.tooltip");
-        
+
         return ps;
     }
     /** Center the view on the planet's middle. */
@@ -6883,4 +6986,3 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
     }
 }
-

@@ -1,32 +1,34 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
-/* 
- *              weupnp - Trivial upnp java library 
+/*
+
+ *              weupnp - Trivial upnp java library
+
  *
  * Copyright (C) 2008 Alessandro Bahgat Shehata, Daniele Castagna
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * 
+ *
  * Alessandro Bahgat Shehata - ale dot bahgat at gmail dot com
  * Daniele Castagna - daniele dot castagna at gmail dot com
- * 
+ *
  */
 package hu.openig.net;
 
@@ -52,14 +54,15 @@ import org.xml.sax.helpers.XMLReaderFactory;
  *
  * @author casta
  */
+@SuppressWarnings("deprecation") // JDK 9 deprecated some XML parsing, at least not for removal.
 public class UPnPGatewayDevice {
 
-	/**
-	 * Receive timeout when requesting data from device.
-	 */
+    /**
+     * Receive timeout when requesting data from device.
+     */
     private static final int HTTP_RECEIVE_TIMEOUT = 7000;
     /** Device property. */
-	private String st;
+    private String st;
     /** Device property. */
     private String location;
     /** Device property. */
@@ -148,7 +151,6 @@ public class UPnPGatewayDevice {
         parser.setContentHandler(new UPnPGatewayDeviceHandler(this));
         parser.parse(new InputSource(urlConn.getInputStream()));
 
-
         /* fix urls */
         String ipConDescURL;
         if (urlBase != null && urlBase.trim().length() > 0) {
@@ -161,7 +163,6 @@ public class UPnPGatewayDevice {
         if (lastSlashIndex > 0) {
             ipConDescURL = ipConDescURL.substring(0, lastSlashIndex);
         }
-
 
         sCPDURL = copyOrCatUrl(ipConDescURL, sCPDURL);
         controlURL = copyOrCatUrl(ipConDescURL, controlURL);
@@ -208,20 +209,20 @@ public class UPnPGatewayDevice {
 
             for (Map.Entry<String, String> entry : entrySet) {
                 soapBody.append("<");
-				soapBody.append(entry.getKey());
-				soapBody.append(">");
-				soapBody.append(entry.getValue());
-				soapBody.append("</");
-				soapBody.append(entry.getKey());
-				soapBody.append(">");
+                soapBody.append(entry.getKey());
+                soapBody.append(">");
+                soapBody.append(entry.getValue());
+                soapBody.append("</");
+                soapBody.append(entry.getKey());
+                soapBody.append(">");
             }
 
         }
 
         soapBody.append("</m:");
-		soapBody.append(action);
-		soapBody.append(">");
-		soapBody.append("</SOAP-ENV:Body></SOAP-ENV:Envelope>");
+        soapBody.append(action);
+        soapBody.append(">");
+        soapBody.append("</SOAP-ENV:Body></SOAP-ENV:Envelope>");
 
         URL postUrl = new URL(url);
         HttpURLConnection conn = (HttpURLConnection) postUrl.openConnection();
@@ -370,8 +371,9 @@ public class UPnPGatewayDevice {
             return false;
         }
 
-        if (!nameValue.containsKey("NewInternalClient") 
-        		|| !nameValue.containsKey("NewInternalPort")) {
+        if (!nameValue.containsKey("NewInternalClient")
+
+                || !nameValue.containsKey("NewInternalPort")) {
             return false;
         }
 
@@ -387,7 +389,6 @@ public class UPnPGatewayDevice {
         } catch (NumberFormatException nfe) {
             // skip bad port
         }
-
 
         return true;
     }

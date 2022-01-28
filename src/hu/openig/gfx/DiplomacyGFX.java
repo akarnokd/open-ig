@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -18,22 +18,22 @@ import java.awt.image.BufferedImage;
  * @author akarnokd
  */
 public class DiplomacyGFX {
-	/** The diplomacy base screen. */
-	@Img(name = "flagship/diplomacy_normal")
-	public BufferedImage base;
-	/** The diplomacy showing a hologram. */
-	@Img(name = "flagship/diplomacy_active")
-	public BufferedImage active;
-	/** The diplomacy with deployed monitor. */
-	@Img(name = "flagship/diplomacy_panel_level_4")
-	public BufferedImage monitor;
-	/**
-	 * Initialize the common resources.
-	 * @param rl the resource locator
-	 * @return this
-	 */
-	public DiplomacyGFX load(ResourceLocator rl) {
-		GFXLoader.loadResources(this, rl);
-		return this;
-	}
+    /** The diplomacy base screen. */
+    @Img(name = "flagship/diplomacy_normal")
+    public BufferedImage base;
+    /** The diplomacy showing a hologram. */
+    @Img(name = "flagship/diplomacy_active")
+    public BufferedImage active;
+    /** The diplomacy with deployed monitor. */
+    @Img(name = "flagship/diplomacy_panel_level_4")
+    public BufferedImage monitor;
+    /**
+     * Initialize the common resources.
+     * @param rl the resource locator
+     * @return this
+     */
+    public DiplomacyGFX load(ResourceLocator rl) {
+        GFXLoader.loadResources(this, rl);
+        return this;
+    }
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -44,259 +44,263 @@ import javax.imageio.stream.ImageOutputStream;
  * @author Elliot Kroo (elliot[at]kroo[dot]net)
  */
 public class GifSequenceWriter {
-	/** The actual image writer. */
-	protected ImageWriter gifWriter;
-	/** The parameters. */
-	protected ImageWriteParam imageWriteParam;
-	/** The metadata. */
-	protected IIOMetadata imageMetaData;
+    /** The actual image writer. */
+    protected ImageWriter gifWriter;
+    /** The parameters. */
+    protected ImageWriteParam imageWriteParam;
+    /** The metadata. */
+    protected IIOMetadata imageMetaData;
 
-	/**
-	 * Creates a new GifSequenceWriter.
-	 * 
-	 * @param outputStream
-	 *            the ImageOutputStream to be written to
-	 * @param imageType
-	 *            one of the imageTypes specified in BufferedImage
-	 * @param timeBetweenFramesMS
-	 *            the time between frames in miliseconds
-	 * @param loopContinuously
-	 *            wether the gif should loop repeatedly
-	 * @throws IOException if the underlying stream throws it or if no gif ImageWriters are found
-	 */
-	public GifSequenceWriter(ImageOutputStream outputStream, int imageType,
-			int timeBetweenFramesMS, boolean loopContinuously)
-			throws IOException {
-		// my method to create a writer
-		gifWriter = getWriter();
-		imageWriteParam = gifWriter.getDefaultWriteParam();
-		ImageTypeSpecifier imageTypeSpecifier = ImageTypeSpecifier
-				.createFromBufferedImageType(imageType);
+    /**
+     * Creates a new GifSequenceWriter.
+     *
 
-		imageMetaData = gifWriter.getDefaultImageMetadata(imageTypeSpecifier,
-				imageWriteParam);
+     * @param outputStream
+     *            the ImageOutputStream to be written to
+     * @param imageType
+     *            one of the imageTypes specified in BufferedImage
+     * @param timeBetweenFramesMS
+     *            the time between frames in miliseconds
+     * @param loopContinuously
+     *            wether the gif should loop repeatedly
+     * @throws IOException if the underlying stream throws it or if no gif ImageWriters are found
+     */
+    public GifSequenceWriter(ImageOutputStream outputStream, int imageType,
+            int timeBetweenFramesMS, boolean loopContinuously)
+            throws IOException {
+        // my method to create a writer
+        gifWriter = getWriter();
+        imageWriteParam = gifWriter.getDefaultWriteParam();
+        ImageTypeSpecifier imageTypeSpecifier = ImageTypeSpecifier
+                .createFromBufferedImageType(imageType);
 
-		String metaFormatName = imageMetaData.getNativeMetadataFormatName();
+        imageMetaData = gifWriter.getDefaultImageMetadata(imageTypeSpecifier,
+                imageWriteParam);
 
-		IIOMetadataNode root = (IIOMetadataNode) imageMetaData
-				.getAsTree(metaFormatName);
+        String metaFormatName = imageMetaData.getNativeMetadataFormatName();
 
-		IIOMetadataNode graphicsControlExtensionNode = getNode(root,
-				"GraphicControlExtension");
+        IIOMetadataNode root = (IIOMetadataNode) imageMetaData
+                .getAsTree(metaFormatName);
 
-		graphicsControlExtensionNode.setAttribute("disposalMethod", "none");
-		graphicsControlExtensionNode.setAttribute("userInputFlag", "FALSE");
-		graphicsControlExtensionNode.setAttribute("transparentColorFlag",
-				"FALSE");
-		graphicsControlExtensionNode.setAttribute("delayTime", Integer
-				.toString(timeBetweenFramesMS / 10));
-		graphicsControlExtensionNode.setAttribute("transparentColorIndex", "0");
+        IIOMetadataNode graphicsControlExtensionNode = getNode(root,
+                "GraphicControlExtension");
 
-		IIOMetadataNode commentsNode = getNode(root, "CommentExtensions");
-		commentsNode.setAttribute("CommentExtension", "Created by MAH");
+        graphicsControlExtensionNode.setAttribute("disposalMethod", "none");
+        graphicsControlExtensionNode.setAttribute("userInputFlag", "FALSE");
+        graphicsControlExtensionNode.setAttribute("transparentColorFlag",
+                "FALSE");
+        graphicsControlExtensionNode.setAttribute("delayTime", Integer
+                .toString(timeBetweenFramesMS / 10));
+        graphicsControlExtensionNode.setAttribute("transparentColorIndex", "0");
 
-		IIOMetadataNode appEntensionsNode = getNode(root,
-				"ApplicationExtensions");
+        IIOMetadataNode commentsNode = getNode(root, "CommentExtensions");
+        commentsNode.setAttribute("CommentExtension", "Created by MAH");
 
-		IIOMetadataNode child = new IIOMetadataNode("ApplicationExtension");
+        IIOMetadataNode appEntensionsNode = getNode(root,
+                "ApplicationExtensions");
 
-		child.setAttribute("applicationID", "NETSCAPE");
-		child.setAttribute("authenticationCode", "2.0");
+        IIOMetadataNode child = new IIOMetadataNode("ApplicationExtension");
 
-		int loop = loopContinuously ? 0 : 1;
+        child.setAttribute("applicationID", "NETSCAPE");
+        child.setAttribute("authenticationCode", "2.0");
 
-		child.setUserObject(new byte[] { 0x1, (byte) (loop & 0xFF),
-				(byte) ((loop >> 8) & 0xFF) });
-		appEntensionsNode.appendChild(child);
+        int loop = loopContinuously ? 0 : 1;
 
-		imageMetaData.setFromTree(metaFormatName, root);
+        child.setUserObject(new byte[] { 0x1, (byte) (loop & 0xFF),
+                (byte) ((loop >> 8) & 0xFF) });
+        appEntensionsNode.appendChild(child);
 
-		gifWriter.setOutput(outputStream);
+        imageMetaData.setFromTree(metaFormatName, root);
 
-		gifWriter.prepareWriteSequence(null);
-	}
-	/**
-	 * Write the image sequence.
-	 * @param img the image to write
-	 * @throws IOException in an I/O error occurs
-	 */
-	public void writeToSequence(RenderedImage img) throws IOException {
-		gifWriter.writeToSequence(new IIOImage(img, null, imageMetaData),
-				imageWriteParam);
-	}
+        gifWriter.setOutput(outputStream);
 
-	/**
-	 * Close this GifSequenceWriter object. This does not close the underlying
-	 * stream, just finishes off the GIF.
-	 * @throws IOException if an I/O error occurs
-	 */
-	public void close() throws IOException {
-		gifWriter.endWriteSequence();
-	}
+        gifWriter.prepareWriteSequence(null);
+    }
+    /**
+     * Write the image sequence.
+     * @param img the image to write
+     * @throws IOException in an I/O error occurs
+     */
+    public void writeToSequence(RenderedImage img) throws IOException {
+        gifWriter.writeToSequence(new IIOImage(img, null, imageMetaData),
+                imageWriteParam);
+    }
 
-	/**
-	 * Returns the first available GIF ImageWriter using
-	 * ImageIO.getImageWritersBySuffix("gif").
-	 * 
-	 * @return a GIF ImageWriter object
-	 * @throws IIOException
-	 *             if no GIF image writers are returned
-	 */
-	private static ImageWriter getWriter() throws IIOException {
-		Iterator<ImageWriter> iter = ImageIO.getImageWritersBySuffix("gif");
-		if (!iter.hasNext()) {
-			throw new IIOException("No GIF Image Writers Exist");
-		}
-		return iter.next();
-	}
+    /**
+     * Close this GifSequenceWriter object. This does not close the underlying
+     * stream, just finishes off the GIF.
+     * @throws IOException if an I/O error occurs
+     */
+    public void close() throws IOException {
+        gifWriter.endWriteSequence();
+    }
 
-	/**
-	 * Returns an existing child node, or creates and returns a new child node
-	 * (if the requested node does not exist).
-	 * 
-	 * @param rootNode
-	 *            the <tt>IIOMetadataNode</tt> to search for the child node.
-	 * @param nodeName
-	 *            the name of the child node.
-	 * 
-	 * @return the child node, if found or a new node created with the given
-	 *         name.
-	 */
-	private static IIOMetadataNode getNode(IIOMetadataNode rootNode,
-			String nodeName) {
-		int nNodes = rootNode.getLength();
-		for (int i = 0; i < nNodes; i++) {
-			if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName) == 0) {
-				return ((IIOMetadataNode) rootNode.item(i));
-			}
-		}
-		IIOMetadataNode node = new IIOMetadataNode(nodeName);
-		rootNode.appendChild(node);
-		return (node);
-	}
-	/**
-	 * Sample program.
-	 * @param args arguments last argument the target filename
-	 * @throws Exception ex
-	 */
+    /**
+     * Returns the first available GIF ImageWriter using
+     * ImageIO.getImageWritersBySuffix("gif").
+     *
 
-	public static void main(String[] args) throws Exception {
-		if (args.length == 2) {
-			// create a new BufferedOutputStream with the last argument
-			final String filename = args[0];
-			final String outfile = args[1];
-			transcodeToGif(filename, outfile, null);
-		} else {
-			System.out
-					.println("Usage: java GifSequenceWriter anim-file-in gif-file-out");
-		}
-	}
-	/**
-	 * Transcodes the given input ANI file into the given output GIF file.
-	 * @param filename the input filename
-	 * @param outfile the output filename
-	 * @param progress the progress callback or null
-	 */
-	public static void transcodeToGif(final String filename, final String outfile, final ProgressCallback progress) {
-		SpidyAniCallback callback = new SpidyAniCallback() {
-			/** The output image. */
-			private FileImageOutputStream output;
-			/** The gif sequencer. */
-			private GifSequenceWriter writer;
-			/** The image width. */
-			private int width;
-			/** The image height. */
-			private int height;
-			/** The working frame buffer. */
-			private BufferedImage img;
-			/** The current frame index. */
-			private int frameCount;
-			/** The maximum frame count. */
-			private int maxFrameCount;
-			@Override
-			public void audioData(byte[] data) {
-				// ignored
-			}
+     * @return a GIF ImageWriter object
+     * @throws IIOException
+     *             if no GIF image writers are returned
+     */
+    private static ImageWriter getWriter() throws IIOException {
+        Iterator<ImageWriter> iter = ImageIO.getImageWritersBySuffix("gif");
+        if (!iter.hasNext()) {
+            throw new IIOException("No GIF Image Writers Exist");
+        }
+        return iter.next();
+    }
 
-			@Override
-			public void fatal(Throwable t) {
-				t.printStackTrace();
-				stopped();
-			}
+    /**
+     * Returns an existing child node, or creates and returns a new child node
+     * (if the requested node does not exist).
+     *
 
-			@Override
-			public void finished() {
-				try {
-					writer.close();
-					output.close();
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-			}
+     * @param rootNode
+     *            the <tt>IIOMetadataNode</tt> to search for the child node.
+     * @param nodeName
+     *            the name of the child node.
+     *
 
-			@Override
-			public String getFileName() {
-				return filename;
-			}
+     * @return the child node, if found or a new node created with the given
+     *         name.
+     */
+    private static IIOMetadataNode getNode(IIOMetadataNode rootNode,
+            String nodeName) {
+        int nNodes = rootNode.getLength();
+        for (int i = 0; i < nNodes; i++) {
+            if (rootNode.item(i).getNodeName().compareToIgnoreCase(nodeName) == 0) {
+                return ((IIOMetadataNode) rootNode.item(i));
+            }
+        }
+        IIOMetadataNode node = new IIOMetadataNode(nodeName);
+        rootNode.appendChild(node);
+        return (node);
+    }
+    /**
+     * Sample program.
+     * @param args arguments last argument the target filename
+     * @throws Exception ex
+     */
 
-			@Override
-			public InputStream getNewInputStream() {
-				try {
-					return new FileInputStream(filename);
-				} catch (FileNotFoundException ex) {
-					throw new RuntimeException(ex);
-				}
-			}
+    public static void main(String[] args) throws Exception {
+        if (args.length == 2) {
+            // create a new BufferedOutputStream with the last argument
+            final String filename = args[0];
+            final String outfile = args[1];
+            transcodeToGif(filename, outfile, null);
+        } else {
+            System.out
+                    .println("Usage: java GifSequenceWriter anim-file-in gif-file-out");
+        }
+    }
+    /**
+     * Transcodes the given input ANI file into the given output GIF file.
+     * @param filename the input filename
+     * @param outfile the output filename
+     * @param progress the progress callback or null
+     */
+    public static void transcodeToGif(final String filename, final String outfile, final ProgressCallback progress) {
+        SpidyAniCallback callback = new SpidyAniCallback() {
+            /** The output image. */
+            private FileImageOutputStream output;
+            /** The gif sequencer. */
+            private GifSequenceWriter writer;
+            /** The image width. */
+            private int width;
+            /** The image height. */
+            private int height;
+            /** The working frame buffer. */
+            private BufferedImage img;
+            /** The current frame index. */
+            private int frameCount;
+            /** The maximum frame count. */
+            private int maxFrameCount;
+            @Override
+            public void audioData(byte[] data) {
+                // ignored
+            }
 
-			@Override
-			public void imageData(int[] image) {
-				if (progress != null) {
-					progress.progress(frameCount, maxFrameCount);
-				}
-				img.setRGB(0, 0, width, height, image, 0, width);
-				frameCount++;
-				try {
-					writer.writeToSequence(img);
-				} catch (IOException ex) {
-					throw new RuntimeException(ex);
-				}
-			}
+            @Override
+            public void fatal(Throwable t) {
+                t.printStackTrace();
+                stopped();
+            }
 
-			@Override
-			public void initialize(int width, int height, int frames,
-					int languageCode, double fps, int audioDelay) {
-				this.width = width;
-				this.height = height;
-				this.maxFrameCount = frames;
-				img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-				try {
-					output = new FileImageOutputStream(new File(outfile));
-				} catch (IOException ex) {
-					throw new RuntimeException(ex);
-				}
-				try {
-					writer = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, (int)(1000 / fps), false);
-				} catch (IOException ex) {
-					throw new RuntimeException(ex);
-				}
-			}
+            @Override
+            public void finished() {
+                try {
+                    writer.close();
+                    output.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
 
-			@Override
-			public boolean isPaused() {
-				return false;
-			}
+            @Override
+            public String getFileName() {
+                return filename;
+            }
 
-			@Override
-			public boolean isStopped() {
-				return progress != null && progress.cancel();
-			}
+            @Override
+            public InputStream getNewInputStream() {
+                try {
+                    return new FileInputStream(filename);
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
 
-			@Override
-			public void stopped() {
-				finished();
-			}
-			
-		};
-		SpidyAniDecoder.decodeLoop(callback);
-	}
+            @Override
+            public void imageData(int[] image) {
+                if (progress != null) {
+                    progress.progress(frameCount, maxFrameCount);
+                }
+                img.setRGB(0, 0, width, height, image, 0, width);
+                frameCount++;
+                try {
+                    writer.writeToSequence(img);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
+            @Override
+            public void initialize(int width, int height, int frames,
+                    int languageCode, double fps, int audioDelay) {
+                this.width = width;
+                this.height = height;
+                this.maxFrameCount = frames;
+                img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                try {
+                    output = new FileImageOutputStream(new File(outfile));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                try {
+                    writer = new GifSequenceWriter(output, BufferedImage.TYPE_INT_ARGB, (int)(1000 / fps), false);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+
+            @Override
+            public boolean isPaused() {
+                return false;
+            }
+
+            @Override
+            public boolean isStopped() {
+                return progress != null && progress.cancel();
+            }
+
+            @Override
+            public void stopped() {
+                finished();
+            }
+
+        };
+        SpidyAniDecoder.decodeLoop(callback);
+    }
 }

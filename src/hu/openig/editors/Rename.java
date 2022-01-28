@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -13,8 +13,8 @@ import java.lang.annotation.RetentionPolicy;
 /** Annotation to indicate which UI elements to rename. */
 @Retention(RetentionPolicy.RUNTIME)
 @interface Rename {
-	/** The target label id. */
-	String to();
-	/** The optional tooltip. */
-	String tip() default "";
+    /** The target label id. */
+    String to();
+    /** The optional tooltip. */
+    String tip() default "";
 }

@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -42,7 +42,7 @@ public final class NaturalStrings {
      * <p><b>Do not use</b> if your app might ever run on any locale that uses more than 7-bit ascii characters.</p>
      */
     private static final Comparator<String> NATURAL_COMPARATOR_ASCII = new Comparator<String>() {
-    	@Override
+        @Override
         public int compare(String o1, String o2) {
             return compareNaturalAscii(o1, o2);
         }
@@ -53,7 +53,7 @@ public final class NaturalStrings {
      * <p><b>Do not use</b> if your app might ever run on any locale that uses more than 7-bit ascii characters.</p>
      */
     private static final Comparator<String> IGNORE_CASE_NATURAL_COMPARATOR_ASCII = new Comparator<String>() {
-    	@Override
+        @Override
        public int compare(String o1, String o2) {
             return compareNaturalIgnoreCaseAscii(o1, o2);
         }
@@ -96,7 +96,7 @@ public final class NaturalStrings {
             throw new NullPointerException("collator must not be null");
         }
         return new Comparator<String>() {
-        	@Override
+            @Override
             public int compare(String o1, String o2) {
                 return compareNatural(collator, o1, o2);
             }

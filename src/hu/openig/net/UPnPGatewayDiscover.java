@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -74,7 +74,6 @@ public class UPnPGatewayDiscover {
      */
     protected int broadcastTimeout = 3000;
 
-
     /**
      * A map of the GatewayDevices discovered so far.
      * The assumption is that a machine is connected to up to a Gateway Device
@@ -86,7 +85,7 @@ public class UPnPGatewayDiscover {
      *  Thread class for sending a search datagram and process the response.
      */
     private class SendDiscoveryThread extends Thread {
-    	/** The local IP address. */
+        /** The local IP address. */
         InetAddress ip;
         /** The message. */
         String searchMessage;
@@ -114,7 +113,6 @@ public class UPnPGatewayDiscover {
                 ssdp.send(ssdpDiscoverPacket);
                 ssdp.setSoTimeout(broadcastTimeout);
 
-
                 boolean waitingPacket = true;
                 while (waitingPacket) {
                     DatagramPacket receivePacket = new DatagramPacket(new byte[1536], 1536);
@@ -138,7 +136,7 @@ public class UPnPGatewayDiscover {
                 }
 
             } catch (Throwable e) {
-            	Exceptions.add(e);
+                Exceptions.add(e);
             }
         }
     }
@@ -212,7 +210,7 @@ public class UPnPGatewayDiscover {
      */
     private static UPnPGatewayDevice parseMSearchReplay(byte[] reply) {
 
-    	UPnPGatewayDevice device = new UPnPGatewayDevice();
+        UPnPGatewayDevice device = new UPnPGatewayDevice();
 
         String replyString = new String(reply);
         StringTokenizer st = new StringTokenizer(replyString, "\n");
@@ -306,8 +304,9 @@ public class UPnPGatewayDiscover {
 
             try {
                 // skip devices, not suitable to search gateways for
-                if (card.isLoopback() || card.isPointToPoint() 
-                		|| card.isVirtual() || !card.isUp()) {
+                if (card.isLoopback() || card.isPointToPoint()
+
+                        || card.isVirtual() || !card.isUp()) {
                     continue;
                 }
             } catch (SocketException e) {
@@ -347,41 +346,41 @@ public class UPnPGatewayDiscover {
      * @return the port number
      */
     public int getSSDPPort() {
-    	return ssdpPort;
+        return ssdpPort;
     }
     /**
      * Returns the current discovery broadcast IP.
      * @return the IP address
      */
     public String getBroadcastIP() {
-    	return broadcastIP;
+        return broadcastIP;
     }
     /**
      * Returns the current discovery timeout in milliseconds.
      * @return the discovery timeout
      */
     public int getBroadcastTimeout() {
-    	return broadcastTimeout;
+        return broadcastTimeout;
     }
     /**
      * Set a new service discovery port.
      * @param newSSDPPort the new port
      */
     public void setSSDPPort(int newSSDPPort) {
-    	this.ssdpPort = newSSDPPort;
+        this.ssdpPort = newSSDPPort;
     }
     /**
      * Set a new broadcast IP address.
      * @param newBroadcastIP the new IP address
      */
     public void setBroadcastIP(String newBroadcastIP) {
-    	this.broadcastIP = newBroadcastIP;
+        this.broadcastIP = newBroadcastIP;
     }
     /**
      * Set a new broadcast timeout.
      * @param newBroadcastTimeout the new timeout value
      */
     public void setBroadcastTimeout(int newBroadcastTimeout) {
-    	this.broadcastTimeout = newBroadcastTimeout;
+        this.broadcastTimeout = newBroadcastTimeout;
     }
 }

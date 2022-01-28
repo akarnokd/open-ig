@@ -1,7 +1,7 @@
 /*
- * Copyright 2008-2014, David Karnok 
+ * Copyright 2008-present, David Karnok & Contributors
  * The file is part of the Open Imperium Galactica project.
- * 
+ *
  * The code should be distributed under the LGPL license.
  * See http://www.gnu.org/licenses/lgpl.html for details.
  */
@@ -28,7 +28,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The container class for the planetary surface objects, 
+ * The container class for the planetary surface objects,
+
  * including the base surface map,
  * Buildings and roads.
  * @author akarnokd
@@ -36,11 +37,15 @@ import java.util.Set;
 public class PlanetSurface {
     /** The surface variant. */
     public int variant;
-    /** 
-     * The map's width in cells. 
-     * The width is defined as a slightly descending horizontal dimension of the map, 
+    /**
+
+     * The map's width in cells.
+
+     * The width is defined as a slightly descending horizontal dimension of the map,
+
      * but in coordinate terms it is equal to the sequence (0, 0) (1,-1) (2,-2) etc.
-     * Note that the rendering coordinate system is different from the original IG's map definition. 
+     * Note that the rendering coordinate system is different from the original IG's map definition.
+
      */
     public int width;
     /** The height with in cells. The width is defined as a vertical dimension of the map,
@@ -71,7 +76,8 @@ public class PlanetSurface {
     public List<SurfaceFeature> features = new ArrayList<>();
     /** Set of locations that should be excluded from groundwar deployments. */
     public Set<Location> deploymentExclusions = new HashSet<>();
-    /** 
+    /**
+
      * If true, the features list will contain all tiles,
      * if false, only the non 1x1 tiles will be added.
      */
@@ -133,9 +139,11 @@ public class PlanetSurface {
         int x0 = 0;
         int y0 = 0;
         int x1 = Tile.toScreenX(width - 1, -width + 1) + baseXOffset;
-        Location loc = renderingOrigins.get(renderingOrigins.size() - 1); 
+        Location loc = renderingOrigins.get(renderingOrigins.size() - 1);
+
         int y1 = Tile.toScreenY(loc.x, loc.y);
-        boundingRectangle = new Rectangle(x0, y0, x1 - x0 + 57, y1 - y0 + 28); 
+        boundingRectangle = new Rectangle(x0, y0, x1 - x0 + 57, y1 - y0 + 28);
+
     }
     /**
      * Check if the given cell coordinates fall into the bounds of the surface map's visible (and rendered) zone.
@@ -217,8 +225,10 @@ public class PlanetSurface {
      * @param bm the building model, null if no building needs to be loaded
      * @param newId the function that generates new ids
      */
-    public void parseMap(XElement map, 
-            GalaxyModel gm, 
+    public void parseMap(XElement map,
+
+            GalaxyModel gm,
+
             BuildingModel bm, Func0<Integer> newId) {
         if (gm != null) {
             XElement surface = map.childElement("surface");
@@ -269,7 +279,7 @@ public class PlanetSurface {
     void setBuildings(BuildingModel bm, XElement buildings, Func0<Integer> newId) {
         this.buildings.clear();
         this.buildingmap.clear();
-        
+
         for (XElement tile : buildings.childrenWithName("building")) {
             int id = tile.getInt("id", -1);
             if (id < 0) {
@@ -283,9 +293,9 @@ public class PlanetSurface {
             Building b = new Building(id, bt, race);
             int x = tile.getInt("x");
             int y = tile.getInt("y");
-        
+
             b.location = Location.of(x, y);
-            
+
             String bp = tile.get("build", null);
             if (bp == null || bp.isEmpty()) {
                 b.buildProgress = b.type.hitpoints;
@@ -304,7 +314,7 @@ public class PlanetSurface {
             b.assignedWorker = Integer.parseInt(tile.get("worker"));
             b.enabled = "true".equals(tile.get("enabled"));
             b.repairing = "true".equals(tile.get("repairing"));
-            
+
             if (b.tileset != null) {
                 placeBuilding(b.tileset.normal, x, y, b);
             } else {
@@ -368,10 +378,10 @@ public class PlanetSurface {
      */
     public PlanetSurface copy(Func0<Integer> newId) {
         PlanetSurface result = new PlanetSurface();
-        
+
         result.setSize(width, height);
         result.variant = variant;
-        
+
         for (Building b : buildings.iterable()) {
             Building bc = b.copy(newId.invoke());
             result.placeBuilding(bc.tileset.normal, bc.location.x, bc.location.y, bc);
@@ -379,7 +389,7 @@ public class PlanetSurface {
         // share basemap
         result.basemap = basemap;
         result.features = features;
-        
+
         for (Map.Entry<Location, SurfaceEntity> se : buildingmap.entrySet()) {
             if (se.getValue().type == SurfaceEntityType.ROAD) {
                 result.buildingmap.put(se.getKey(), se.getValue());
@@ -404,7 +414,7 @@ public class PlanetSurface {
                 it.remove();
             }
         }
-        
+
         Set<Location> corners = new HashSet<>();
         for (Building bld : buildings.iterable()) {
             Rectangle rect = new Rectangle(bld.location.x - 1, bld.location.y + 1, bld.tileset.normal.width + 2, bld.tileset.normal.height + 2);
@@ -418,7 +428,7 @@ public class PlanetSurface {
             }
             setNeighbors(l.x, l.y, buildingmap, neighbors);
             int pattern = 0;
-            
+
             RoadType rt1 = null;
             if (neighbors[1] != null && neighbors[1].type == SurfaceEntityType.ROAD) {
                 pattern |= Sides.TOP;
@@ -461,7 +471,7 @@ public class PlanetSurface {
                 rt7 = RoadType.get(rt7.pattern | Sides.TOP);
                 buildingmap.put(l.delta(0, -1), createRoadEntity(rts.get(rt7)));
             }
-            
+
         }
     }
     /**
@@ -486,11 +496,11 @@ public class PlanetSurface {
         fragments[0] = map.get(Location.of(x - 1, y + 1));
         fragments[1] = map.get(Location.of(x, y + 1));
         fragments[2] = map.get(Location.of(x + 1, y + 1));
-        
+
         fragments[3] = map.get(Location.of(x - 1, y));
         fragments[4] = map.get(Location.of(x, y));
         fragments[5] = map.get(Location.of(x + 1, y));
-        
+
         fragments[6] = map.get(Location.of(x - 1, y - 1));
         fragments[7] = map.get(Location.of(x, y - 1));
         fragments[8] = map.get(Location.of(x + 1, y - 1));
@@ -506,18 +516,18 @@ public class PlanetSurface {
         Location lb = Location.of(rect.x + rect.width - 1, rect.y);
         Location lc = Location.of(rect.x, rect.y - rect.height + 1);
         Location ld = Location.of(rect.x + rect.width - 1, rect.y - rect.height + 1);
-        
+
         corners.add(la);
         corners.add(lb);
         corners.add(lc);
         corners.add(ld);
-        
+
         buildingmap.put(la, createRoadEntity(rts.get(RoadType.RIGHT_TO_BOTTOM)));
         buildingmap.put(lb, createRoadEntity(rts.get(RoadType.LEFT_TO_BOTTOM)));
         buildingmap.put(lc, createRoadEntity(rts.get(RoadType.TOP_TO_RIGHT)));
         buildingmap.put(ld, createRoadEntity(rts.get(RoadType.TOP_TO_LEFT)));
         // add linear segments
-        
+
         Tile ht = rts.get(RoadType.HORIZONTAL);
         for (int i = rect.x + 1; i < rect.x + rect.width - 1; i++) {
             buildingmap.put(Location.of(i, rect.y), createRoadEntity(ht));
@@ -670,7 +680,7 @@ public class PlanetSurface {
                 PlaceCandidate pc = Collections.max(candidates);
                 return new Point(pc.x, pc.y);
             }
-            
+
             return null;
         }
         /**
@@ -842,10 +852,10 @@ public class PlanetSurface {
         if (se != null && se.type == SurfaceEntityType.BUILDING) {
             int a0 = loc.x - se.virtualColumn;
             int b0 = loc.y + se.virtualRow;
-            
+
             int x = baseXOffset + Tile.toScreenX(a0, b0);
             int y = baseYOffset + Tile.toScreenY(a0, b0 - se.tile.height + 1) + 27;
-            
+
             return new Rectangle(x, y - se.tile.imageHeight, se.tile.imageWidth, se.tile.imageHeight);
         }
         return null;
@@ -879,7 +889,8 @@ public class PlanetSurface {
      * @return the screen coordinates
      */
     public Point center(Location loc) {
-        return new Point(Tile.toScreenX(loc.x, loc.y) + 28, 
+        return new Point(Tile.toScreenX(loc.x, loc.y) + 28,
+
                 Tile.toScreenY(loc.x, loc.y) + 14);
     }
     /**
@@ -889,7 +900,8 @@ public class PlanetSurface {
      * @return the screen coordinates
      */
     public Point center(double x, double y) {
-        return new Point((int)(Tile.toScreenX(x, y) + 28), 
+        return new Point((int)(Tile.toScreenX(x, y) + 28),
+
                 (int)(Tile.toScreenY(x, y) + 14));
     }
     /**
@@ -898,9 +910,10 @@ public class PlanetSurface {
      * @return the screen coordinates
      */
     public Point centerOffset(Location loc) {
-        return new Point(baseXOffset + Tile.toScreenX(loc.x, loc.y) + 28, 
+        return new Point(baseXOffset + Tile.toScreenX(loc.x, loc.y) + 28,
+
                 baseYOffset + Tile.toScreenY(loc.x, loc.y) + 14);
-        
+
     }
     /**
      * Returns the screen coordinates of the center of the given location (with offset).
@@ -909,7 +922,8 @@ public class PlanetSurface {
      * @return the screen coordinates
      */
     public Point centerOffset(double x, double y) {
-        return new Point((int)(baseXOffset + Tile.toScreenX(x, y) + 28), 
+        return new Point((int)(baseXOffset + Tile.toScreenX(x, y) + 28),
+
                 (int)(baseYOffset + Tile.toScreenY(x, y) + 14));
     }
 }
