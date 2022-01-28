@@ -43,7 +43,7 @@
     </notes>
     <release-details>
       <entry version='0.95.220' date='2022-01-28'>
-        <item category='Balance'>New screen: Custom Balance Settings. Accessible via the Campaign screen or via CTRL+6 from ingame. It allows buffing aliens and modify how morale is calculated.</item>
+        <item category='Balance'>New screen: Custom Balance Settings. Accessible via the Campaign screen or via CTRL+6 from ingame. It allows buffing aliens and modifying how morale is calculated.</item>
       </entry>
       <entry version='0.95.219' date='2021-11-25'>
         <item category='Missions' issues='1007'>Fixed Mission 17 - Destroy Prototype, where the Garthog ships would exit the wrong side of the screen when the battle happened over a friendly planet.</item>
