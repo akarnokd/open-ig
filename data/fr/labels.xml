@@ -3559,4 +3559,25 @@
     <entry key="battlefinish.groundwar_retreat">You retreated from ground battle!</entry>
     <entry key="groundwar.retreat_confirm.tooltip">[c=FFFFFFFF]Left click[/c] to confirm the retreat.[n][c=FFFFFFFF]Right click[/c] cancel retreat and continue the battle.</entry>
     <entry key='trade.no_spaceport'>No mil. spaceport</entry>
+    <entry key='custombalance.title'>Custom Balance Settings</entry>
+    <entry key='custombalance.ok'>OK</entry>
+    <entry key='custombalance.reset'>Reset</entry>
+    <entry key='custombalance.cancel'>Cancel</entry>
+    <entry key='custombalance.bonusmoney'>Alien Bonus Money</entry>
+    <entry key='custombalance.bonusproduction'>Alien Bonus Production</entry>
+    <entry key='custombalance.deterioration'>Alien Relations Degradation</entry>
+    <entry key='custombalance.moralemode'>Building Morale Calc Mode</entry>
+    <entry key='custombalance.day'>day</entry>
+    <entry key='custombalance.pointsperday'>point / day</entry>
+    <entry key='custombalance.moralemode.LINEAR'>Linear</entry>
+    <entry key='custombalance.moralemode.BEST_PER_TYPE'>Best of Kind</entry>
+    <entry key='custombalance.moralemode.ONE_PER_TYPE'>Maximum One</entry>
+    <entry key='custombalance.moralemode.DEGRESSIVE'>Degressive</entry>
+    <entry key='custombalance.moralemode.ASYMPTOTIC'>Asymptotic</entry>
+    <entry key='custombalance.moralemode.DEGRESSIVE.desc'>Every additional morale building of a type contributes less and less but there is no upper limit..</entry>
+    <entry key='custombalance.moralemode.ASYMPTOTIC.desc'>Every additional morale building of a type contributes half than the previous with an effective limit of double.</entry>
+    <entry key='custombalance.moralemode.BEST_PER_TYPE.desc'>Only the morale building in the best condition of a type is considered, but any number can be built for redundancy.</entry>
+    <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>At most one morale building of a type can be built.</entry>
+    <entry key='custombalance.moralemode.LINEAR.desc'>Original Open-IG mode. Every additional morale building does full contribution with no upper limit.</entry>
+    <entry key='custombalance.screen'>Custom Balance Settings</entry>
 </labels>

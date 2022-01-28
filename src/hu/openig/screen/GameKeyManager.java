@@ -8,30 +8,14 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Difficulty;
-import hu.openig.core.SaveMode;
-import hu.openig.core.SimulationSpeed;
-import hu.openig.mechanics.AITest;
-import hu.openig.mechanics.AIUser;
-import hu.openig.model.AIMode;
-import hu.openig.model.ApproachType;
-import hu.openig.model.CallType;
-import hu.openig.model.DiplomaticOffer;
-import hu.openig.model.ModelUtils;
-import hu.openig.model.Planet;
-import hu.openig.model.PlanetKnowledge;
-import hu.openig.model.Player;
-import hu.openig.model.ResearchType;
-import hu.openig.model.Screens;
-import hu.openig.model.SelectionMode;
-import hu.openig.model.SoundTarget;
-import hu.openig.model.SoundType;
-import hu.openig.model.World;
-import hu.openig.screen.api.SettingsPage;
-import hu.openig.utils.Exceptions;
+import java.awt.event.*;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import hu.openig.core.*;
+import hu.openig.mechanics.*;
+import hu.openig.model.*;
+import hu.openig.screen.api.SettingsPage;
+import hu.openig.screen.items.CustomBalanceScreen;
+import hu.openig.utils.Exceptions;
 
 /**
  * The game keyboard manager.
@@ -441,6 +425,22 @@ public class GameKeyManager extends KeyAdapter {
                         primary.onLeave();
                     }
                     displayPrimary(Screens.BRIDGE);
+                    e.consume();
+                }
+                break;
+            case KeyEvent.VK_6:
+                if (e.isControlDown()) {
+                    CustomBalanceScreen cbs = (CustomBalanceScreen)control().displaySecondary(Screens.CUSTOM_BALANCE);
+                    cbs.setCustomBalance(world().customBalanceSettings);
+                    cbs.onComplete = new Action1<CustomBalanceSettings>() {
+                        @Override
+                        public void invoke(CustomBalanceSettings value) {
+                            if (value != null) {
+                                world().customBalanceSettings.copyFrom(value);
+                            }
+                        }
+                    };
+
                     e.consume();
                 }
                 break;

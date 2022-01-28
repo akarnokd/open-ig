@@ -368,9 +368,9 @@ public final class Simulator {
         }
         if (moraleBoostMap != null) {
             moraleBoost = 0d;
-            int boostIdx = 0;
             for (List<Double> boosts : moraleBoostMap.values()) {
                 Collections.sort(boosts, REVERSE_DOUBLE_COMPARATOR);
+                int boostIdx = 0;
                 switch (moraleCalcMode) {
                 case ONE_PER_TYPE:
                 case BEST_PER_TYPE:
@@ -379,18 +379,19 @@ public final class Simulator {
                 case DEGRESSIVE:
                     for (Double v : boosts) {
                         moraleBoost += v / (1 + boostIdx);
+                        boostIdx++;
                     }
                     break;
                 case ASYMPTOTIC:
                     for (Double v : boosts) {
                         moraleBoost += v / Math.pow(2, boostIdx);
+                        boostIdx++;
                     }
                     break;
                 default:
                     break;
                 }
 
-                boostIdx++;
             }
         }
         // search for radar capable inventory

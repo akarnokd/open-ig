@@ -7,34 +7,7 @@
  */
 package hu.openig;
 
-import hu.openig.screen.items.AchievementsScreen;
-import hu.openig.screen.items.BarScreen;
-import hu.openig.screen.items.BattlefinishScreen;
-import hu.openig.screen.items.BridgeScreen;
-import hu.openig.screen.items.CreditsScreen;
-import hu.openig.screen.items.DatabaseScreen;
-import hu.openig.screen.items.DiplomacyScreen;
-import hu.openig.screen.items.EquipmentScreen;
-import hu.openig.screen.items.GameOverScreen;
-import hu.openig.screen.items.InfoScreen;
-import hu.openig.screen.items.LoadSaveScreen;
-import hu.openig.screen.items.LoadingScreen;
-import hu.openig.screen.items.MainScreen;
-import hu.openig.screen.items.MovieScreen;
-import hu.openig.screen.items.PlanetScreen;
-import hu.openig.screen.items.ProfileScreen;
-import hu.openig.screen.items.ResearchProductionScreen;
-import hu.openig.screen.items.ShipwalkScreen;
-import hu.openig.screen.items.SingleplayerScreen;
-import hu.openig.screen.items.SkirmishScreen;
-import hu.openig.screen.items.SpacewarScreen;
-import hu.openig.screen.items.SpyScreen;
-import hu.openig.screen.items.StarmapScreen;
-import hu.openig.screen.items.StatusbarScreen;
-import hu.openig.screen.items.TestScreen;
-import hu.openig.screen.items.TradeScreen;
-import hu.openig.screen.items.TraitScreen;
-import hu.openig.screen.items.VideoScreen;
+import hu.openig.screen.items.*;
 
 /** The record of screens. */
 public final class GameScreens {
@@ -94,4 +67,6 @@ public final class GameScreens {
     public SpyScreen spying;
     /** The trade screen. */
     public TradeScreen trade;
+    /** The custom balance screen. */
+    public CustomBalanceScreen customBalance;
 }

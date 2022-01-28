@@ -1,5 +1,5 @@
 <h1>Current game version</h1>
-<h2>BETA (0.95.219)</h2>
+<h2>BETA (0.95.220)</h2>
 
 ![Facebook](http://static.viewbook.com/images/social_icons/facebook_32.png) Follow us on [Facebook](https://www.facebook.com/OpenImperiumGalactica)!
 
@@ -35,7 +35,7 @@ The project contains all necessary files (with the permission from the copyright
 
 <sup>1</sup>Technically, Java 7 is enough but running the launcher with it may cause trouble connecting to GitHub due to outdated TLS support in Java 7.
 
-I recommend picking up the latest version from [AdoptOpenJDK.net](https://adoptopenjdk.net/).
+I recommend picking up the latest version from [adoptium.net](https://adoptium.net/) site.
 
 Supported languages:
   - English

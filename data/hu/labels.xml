@@ -3629,4 +3629,25 @@
     <entry key="battlefinish.groundwar_retreat">Feladtad a földharcot!</entry>
     <entry key="groundwar.retreat_confirm.tooltip">[c=FFFFFFFF]Bal gomb[/c] megerősíti a visszavonulást.[n][c=FFFFFFFF]Jobb gomb[/c]ra folytatja a harcot.</entry>
     <entry key='trade.no_spaceport'>Kat. űrkikötő kell</entry>
+    <entry key='custombalance.title'>Egyedi nehézség-beállítások</entry>
+    <entry key='custombalance.ok'>Rendben</entry>
+    <entry key='custombalance.reset'>Alapértelmezett</entry>
+    <entry key='custombalance.cancel'>Mégsem</entry>
+    <entry key='custombalance.bonusmoney'>Idegenek bónusz pénze</entry>
+    <entry key='custombalance.bonusproduction'>Idegenek bónusz gyártása</entry>
+    <entry key='custombalance.deterioration'>Idegenek viszony romlása</entry>
+    <entry key='custombalance.moralemode'>Épületmorál számítási mód</entry>
+    <entry key='custombalance.day'>nap</entry>
+    <entry key='custombalance.pointsperday'>pont / nap</entry>
+    <entry key='custombalance.moralemode.LINEAR'>Lineáris</entry>
+    <entry key='custombalance.moralemode.LINEAR.desc'>Eredeti Open-IG mód. Minden morál épület azonos súllyal számít.</entry>
+    <entry key='custombalance.moralemode.BEST_PER_TYPE.desc'>Ha több morál javító épület van az egyes épülettípusból, csak a legjobb állapotú fog számítani.</entry>
+    <entry key='custombalance.moralemode.BEST_PER_TYPE'>Legjobb épület</entry>
+    <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>A különféle moráljavító épület típusokból csak egy építhető.</entry>
+    <entry key='custombalance.moralemode.ONE_PER_TYPE'>Maximum egy</entry>
+    <entry key='custombalance.moralemode.DEGRESSIVE'>Csökkenő hatékonyság</entry>
+    <entry key='custombalance.moralemode.DEGRESSIVE.desc'>Minden egyes új épület típusonként egyre csökkenő mértékben járul hozzá a morálhoz, de nincs felső korlát.</entry>
+    <entry key='custombalance.moralemode.ASYMPTOTIC.desc'>Minden egyes új épület fele annyira járul hozzá a morálhoz, mint a korábbi épület, így maximum dupla bónusz érhető el típusonként.</entry>
+    <entry key='custombalance.moralemode.ASYMPTOTIC'>Aszimptotikus</entry>
+    <entry key='custombalance.screen'>Egyedi nehézség-beállítások</entry>
 </labels>

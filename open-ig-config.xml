@@ -6,7 +6,7 @@
 <entry key="tileCacheBuildingLimit">10</entry>
 <entry key="researchMoneyPercent">1000</entry>
 <entry key="language">en</entry>
-<entry key="videoVolume">75</entry>
+<entry key="videoVolume">85</entry>
 <entry key="showBuildingName">true</entry>
 <entry key="continuousMoney">false</entry>
 <entry key="tileCacheBaseLimit">-10</entry>
@@ -14,9 +14,9 @@
 <entry key="textCacheSize">0</entry>
 <entry key="intro">false</entry>
 <entry key="height">682</entry>
-<entry key="muteMusic">false</entry>
+<entry key="muteMusic">true</entry>
 <entry key="reequipTanks">true</entry>
-<entry key="timestep">10</entry>
+<entry key="timestep">60</entry>
 <entry key="scaleAllScreens">true</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="showStarmapScroll">true</entry>
@@ -35,14 +35,14 @@
 <entry key="movieScale">true</entry>
 <entry key="currentProfile">default</entry>
 <entry key="joinPort">13951</entry>
-<entry key="autoRepair">false</entry>
+<entry key="autoRepair">true</entry>
 <entry key="musicVolume">70</entry>
 <entry key="satelliteDeploy">true</entry>
 <entry key="animateInventory">true</entry>
 <entry key="showStarmapMinimap">true</entry>
 <entry key="buttonSounds">true</entry>
 <entry key="autoDisplayObjectives">true</entry>
-<entry key="muteVideo">false</entry>
+<entry key="muteVideo">true</entry>
 <entry key="autoRepairLimit">0</entry>
 <entry key="showTooltips">true</entry>
 <entry key="disableD3D">false</entry>
@@ -56,7 +56,7 @@
 <entry key="targetSpecificRockets">false</entry>
 <entry key="hostPort">13951</entry>
 <entry key="subtitles">true</entry>
-<entry key="effectVolume">70</entry>
+<entry key="effectVolume">100</entry>
 <entry key="reequipBombs">true</entry>
 <entry key="autoBuildEconomyFirst">true</entry>
 <entry key="quickRNP">true</entry>
@@ -76,5 +76,5 @@
 <entry key="ignore-count">0</entry>
 <entry key="disableOpenGL">false</entry>
 <entry key="customCursors">true</entry>
-<entry key="muteEffect">false</entry>
+<entry key="muteEffect">true</entry>
 </properties>

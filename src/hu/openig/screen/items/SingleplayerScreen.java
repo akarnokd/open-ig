@@ -153,7 +153,8 @@ public class SingleplayerScreen extends ScreenBase {
                 commons.common().mediumButton,
                 commons.common().mediumButtonPressed
         );
-        customLabel.onClick = new Action0() {
+        setTooltipText(customBalance, get("custombalance.screen"));
+        customBalance.onClick = new Action0() {
             @Override
             public void invoke() {
                 buttonSound(SoundType.UI_ACKNOWLEDGE_2);
@@ -466,7 +467,16 @@ public class SingleplayerScreen extends ScreenBase {
         };
     }
     void doCustomBalance() {
-        // TODO implement
+        CustomBalanceScreen cbs = (CustomBalanceScreen)displaySecondary(Screens.CUSTOM_BALANCE);
+        cbs.setCustomBalance(customBalanceSettings);
+        cbs.onComplete = new Action1<CustomBalanceSettings>() {
+            @Override
+            public void invoke(CustomBalanceSettings value) {
+                if (value != null) {
+                    customBalanceSettings.copyFrom(value);
+                }
+            }
+        };
     };
 
     @Override

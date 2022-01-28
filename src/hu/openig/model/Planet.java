@@ -487,7 +487,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
             }
         }
         int typeLimit = Math.abs(bt.limit);
-        if (!planet.owner.isMainPlayer
+        if (planet.owner.isMainPlayer
                 && planet.owner.world.customBalanceSettings.buildingMoraleCalculationMode == BuildingMoraleCalculationMode.ONE_PER_TYPE
                 && bt.hasResource(BuildingType.RESOURCE_MORALE)) {
             typeLimit = 1;

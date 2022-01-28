@@ -515,6 +515,7 @@ public class World implements ModelLookup {
 
             if ("true".equals(xplayer.get("user", "false"))) {
                 this.player = p;
+                p.isMainPlayer = true;
             }
 
             if ("true".equals(xplayer.get("nodiplomacy", "false"))) {
@@ -1460,7 +1461,6 @@ public class World implements ModelLookup {
         }
 
         player = players.get(xworld.get("player"));
-        player.isMainPlayer = true;
 
         XElement stats = xworld.childElement("statistics");
         if (stats != null) {

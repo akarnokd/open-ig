@@ -8,15 +8,14 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Action0;
-import hu.openig.render.RenderTools;
-
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
+
+import hu.openig.core.*;
+import hu.openig.render.RenderTools;
 
 /**
  * A three state image button with normal, pressed and hovered state.
@@ -38,7 +37,6 @@ public class UIImageButton extends UIComponent {
     /** The action to invoke when the button is clicked. */
     public Action0 onClick;
     /**
-
      * The optional delay to fire onClick events when
      * the mouse is pressed over the button.
      * Unit is in milliseconds.

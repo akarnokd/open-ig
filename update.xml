@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.219'>
+  <module id='Game' version='0.95.220'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,14 +34,17 @@
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='http://open-ig-dev.blogspot.hu'>
-      <desc lang='hu'>Javítások</desc>
-      <desc lang='en'>Fixes.</desc>
-      <desc lang='de'>Fixes.</desc>
-      <desc lang='fr'>Fixes.</desc>
-      <desc lang='ru'>Fixes.</desc>
-      <desc lang='es'>Fixes.</desc>
+      <desc lang='hu'>Egyéni nehézség-beállítások</desc>
+      <desc lang='en'>Custom Balance Settings</desc>
+      <desc lang='de'>Custom Balance Settings</desc>
+      <desc lang='fr'>Custom Balance Settings</desc>
+      <desc lang='ru'>Custom Balance Settings</desc>
+      <desc lang='es'>Custom Balance Settings</desc>
     </notes>
     <release-details>
+      <entry version='0.95.220' date='2022-01-28'>
+        <item category='Balance'>New screen: Custom Balance Settings. Accessible via the Campaign screen or via CTRL+6 from ingame. It allows buffing aliens and modify how morale is calculated.</item>
+      </entry>
       <entry version='0.95.219' date='2021-11-25'>
         <item category='Missions' issues='1007'>Fixed Mission 17 - Destroy Prototype, where the Garthog ships would exit the wrong side of the screen when the battle happened over a friendly planet.</item>
         <item category='UI' issues='1035'>Fixed the database screen with stuck ship title overlapping the alien descriptions upon screen switching back and forth.</item>
@@ -148,8 +151,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.219.jar' sha1='11708C2923C10CA7F66448B34C34DBB96BA91FFC'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20200817a2.zip' sha1='1BB276962ADF25D734C0CB08E70AEDE7380179E4'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.220.jar' sha1='291CDDF723038786A4391B042A2AE0FE6507E2FF'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220128a2.zip' sha1='372998BA1D9565A8B1A1F0FC27E17DF368A2EB88'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

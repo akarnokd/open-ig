@@ -808,6 +808,9 @@ public class GameWindow extends JFrame implements GameControls {
         case TRADE:
             sb = allScreens.trade;
             break;
+        case CUSTOM_BALANCE:
+            sb = allScreens.customBalance;
+            break;
         default:
         }
         if (asPrimary) {
@@ -2007,6 +2010,8 @@ public class GameWindow extends JFrame implements GameControls {
             return (T)allScreens.spying;
         case TRADE:
             return (T)allScreens.trade;
+        case CUSTOM_BALANCE:
+            return (T)allScreens.customBalance;
         default:
             throw new AssertionError(String.valueOf(screen));
         }

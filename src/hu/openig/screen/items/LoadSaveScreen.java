@@ -798,8 +798,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         rmprev.setDisabledPattern(commons.common().disabledPattern);
         rmprev.setHoldDelay(250);
         final UIImageButton rmnext = new UIImageButton(commons.common().moveRight);
-        anext.setDisabledPattern(commons.common().disabledPattern);
-        anext.setHoldDelay(250);
+        rmnext.setDisabledPattern(commons.common().disabledPattern);
+        rmnext.setHoldDelay(250);
 
         rmprev.onClick = new Action0() {
             @Override
