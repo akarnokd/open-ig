@@ -137,12 +137,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     Tile areaDeny;
     /** The current cell tile. */
     Tile areaCurrent;
+    /** Paved area. */
+    BufferedImage areaPaved;
+    /** Paved area, may be paved. */
+    BufferedImage areaPavedGhost;
     /** Used to place buildings on the surface. */
     final Rectangle placementRectangle = new Rectangle();
     /** The building bounding box. */
     Rectangle buildingBox;
     /** Are we in placement mode? */
     boolean placementMode;
+    /** Are we in pavement mode? */
+    boolean pavementMode;
     /** The simple blinking state. */
     boolean blink;
     /** The animation index. */
@@ -403,8 +409,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             rep = true;
             break;
         case KeyEvent.VK_ESCAPE:
-            if (placementMode) {
+            if (placementMode || pavementMode) {
                 placementMode = false;
+                pavementMode = false;
                 buildingsPanel.build.down = false;
                 e.consume();
                 rep = true;
@@ -490,6 +497,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 rep = true;
             }
             break;
+        case KeyEvent.VK_P: {
+            if (planet().owner == player() && !commons.battleMode) {
+                placementMode = false;
+                pavementMode = !pavementMode;
+                rep = true;
+                e.consume();
+            }
+            break;
+        }
         case KeyEvent.VK_S:
             if (!e.isControlDown()) {
                 doStopSelectedUnits();
@@ -636,6 +652,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         cancelWeatherSound();
 
         placementMode = false;
+        pavementMode = false;
         buildingsPanel.build.down = false;
 
         close0(animationTimer);
@@ -1107,10 +1124,28 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 if (e.has(Button.LEFT)) {
                     if (placementMode) {
                         placeBuilding(e.has(Modifier.SHIFT));
-
                     } else {
-                        if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0
+                        if (pavementMode) {
+                            Location loc = getLocationAt(e.x, e.y);
+                            if (!surface().pavements.contains(loc)) {
+                                SurfaceFeature se = findSurfaceFeature(loc);
+                                if (se != null) {
+                                    int price = pavementPrice(se.tile);
+                                    if (price <= player().money()) {
+                                        player().addMoney(-price);
+                                        player().statistics.moneySpent.value += price;
+                                        world().statistics.moneySpent.value += price;
 
+                                        paveSurfaceFeature(se);
+                                        rep = true;
+                                        buttonSound(SoundType.DEPLOY_BUILDING);
+                                    } else {
+                                        buttonSound(SoundType.FAIL);
+                                    }
+                                }
+                            }
+                        }
+                        if (knowledge(planet(), PlanetKnowledge.OWNER) >= 0
                                 || planet().owner == player()) {
                             Location loc = getLocationAt(e.x, e.y);
                             buildingBox = getBoundingRect(loc);
@@ -1218,6 +1253,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             return rep;
         }
+
         @Override
         public void draw(Graphics2D g2) {
             PlanetSurface surface = surface();
@@ -1227,7 +1263,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
             PlanetStatistics ps = update(surface);
 
+            float alphaSave = alpha;
             computeAlpha();
+            if (alphaSave != alpha) {
+                if (alpha > 0.99) {
+                    areaPaved = commons.colony().tilePavement;
+                } else {
+                    areaPaved = ImageUtils.withNight(commons.colony().tilePavement, alpha, Tile.LIGHT_THRESHOLD);
+                }
+            }
 
             RenderTools.setInterpolation(g2, true);
 
@@ -1274,11 +1318,41 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
                 drawBattleHelpers(g2, x0, y0);
                 if (config.showBuildingName
-
                         && (knowledge(planet(), PlanetKnowledge.BUILDING) >= 0
-
                         || (battle != null && !preparingGroundBattle && !battle.isGroundwarComplete()))) {
                     drawBuildingHelpers(g2, surface);
+                }
+                if (pavementMode) {
+                    for (SurfaceFeature se : surface.features) {
+                        if (!surface.pavements.contains(se.location)) {
+
+                            int price = pavementPrice(se.tile);
+                            String priceStr = String.format("%,d cr", price);
+                            int priceWidth = commons.text().getTextWidth(10, priceStr);
+
+                            int px1 = x0 + Tile.toScreenX(se.location.x, se.location.y);
+                            int px2 = x0 + Tile.toScreenX(se.location.x + se.tile.width, se.location.y - se.tile.height);
+                            int py1 = y0 + Tile.toScreenY(se.location.x + se.tile.width, se.location.y);
+                            int py2 = y0 + Tile.toScreenY(se.location.x - 1, se.location.y - se.tile.height - 1);
+                            int pc = 0xFF80FF80;
+                            if (price > player().money()) {
+                                pc = 0xFFFF4040;
+                            }
+                            int px0 = px1 + (px2 - px1 - priceWidth) / 2;
+                            int py0 = py1 + (py2 - py1 - 10) / 2;
+
+                            if (textBackgrounds) {
+                                Composite compositeSave = g2.getComposite();
+                                AlphaComposite a1 = AlphaComposite.SrcOver.derive(0.5f);
+                                g2.setComposite(a1);
+                                g2.setColor(Color.BLACK);
+                                g2.fillRect(px0 - 2, py0 - 2, priceWidth + 4, 14);
+                                g2.setComposite(compositeSave);
+                            }
+
+                            commons.text().paintTo(g2, px0, py0, 10, pc, priceStr);
+                        }
+                    }
                 }
                 // paint red on overlapping images of buildings, land-features and vehicles
 
@@ -1342,13 +1416,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (prev.visible() && next.visible()) {
                 g2.setColor(Color.BLACK);
                 g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2,
-
                         prev.width + next.width + 6, prev.height + zoom.height + 8);
             } else
-
             if (zoom.visible()) {
                 g2.fillRect(prev.x - this.x - 2, zoom.y - this.y - 2,
-
                         zoom.width + 4, zoom.height + 2);
             }
             if (retreat.visible() || confirmRetreat.visible()) {
@@ -1358,7 +1429,27 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (battle != null && preparingGroundBattle) {
                 drawNextVehicleToDeploy(g2);
             }
-
+        }
+        /** Cost of paving a surface location. */
+        int pavementPrice(Tile tile) {
+            return 5000 * tile.width * tile.height;
+        }
+        SurfaceFeature findSurfaceFeature(Location loc) {
+            for (SurfaceFeature sf : surface().features) {
+                if (loc.x >= sf.location.x && loc.y <= sf.location.y
+                        && loc.x < sf.location.x + sf.tile.width
+                        && loc.y > sf.location.y - sf.tile.height) {
+                    return sf;
+                }
+            }
+            return null;
+        }
+        void paveSurfaceFeature(SurfaceFeature sf) {
+            for (int i = 0; i < sf.tile.width; i++) {
+                for (int j = 0; j < sf.tile.height; j++) {
+                    surface().pavements.add(Location.of(sf.location.x + i, sf.location.y - j));
+                }
+            }
         }
         /**
          * Draw the next vehicle's image to deploy.
@@ -1644,16 +1735,24 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 for (int j = 0; j < surface.renderingLength.get(i) + 2; j++) {
                     int x = x0 + Tile.toScreenX(loc.x - j, loc.y);
                     Location loc1 = Location.of(loc.x - j, loc.y);
+                    boolean isPaved = surface.pavements.contains(loc1);
+                    boolean isBuilding = true;
                     SurfaceEntity se = surface.buildingmap.get(loc1);
                     if (se == null || knowledge(planet(), PlanetKnowledge.OWNER) < 0) {
                         se = surface.basemap.get(loc1);
+                        isBuilding = false;
                     }
                     if (se != null) {
                         getImage(se, false, loc1, cell);
                         int yref = y0 + Tile.toScreenY(cell.a, cell.b) + cell.yCompensation;
                         if (renderingWindow.intersects(x * scale + offsetX, yref * scale + offsetY, 57 * scale, se.tile.imageHeight * scale)) {
-                            if (cell.image != null) {
-                                g2.drawImage(cell.image, x, yref, null);
+                            if (isPaved && !isBuilding) {
+                                int yp = y0 + Tile.toScreenY(loc1.x, loc1.y);
+                                g2.drawImage(areaPaved, x, yp, null);
+                            } else {
+                                if (cell.image != null) {
+                                    g2.drawImage(cell.image, x, yref, null);
+                                }
                             }
                         }
                         // add smoke
@@ -1662,7 +1761,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         }
                         // place guns on buildings or roads
                         if ((se.building != null
-
                                 && "Defensive".equals(se.building.type.kind))
                                 || se.type == SurfaceEntityType.ROAD) {
                             drawGuns(g2, loc.x - j, loc.y);
@@ -1674,6 +1772,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         drawExplosions(g2, loc.x - j, loc.y);
                         drawRockets(g2, loc.x - j, loc.y);
 //                    } FIXME during battle only
+                }
+            }
+            if (pavementMode) {
+                for (SurfaceFeature loc : surface.features) {
+                    if (!surface.pavements.contains(loc.location)) {
+                        for (int i = 0; i < loc.tile.width; i++) {
+                            for (int j = 0; j < loc.tile.height; j++) {
+                                int xp = x0 + Tile.toScreenX(loc.location.x + i, loc.location.y - j);
+                                int yp = y0 + Tile.toScreenY(loc.location.x + i, loc.location.y - j);
+                                g2.drawImage(areaPavedGhost, xp, yp, null);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -2172,7 +2283,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         /** Indicate a larger jum. */
         boolean buildingUp10;
         /** Construct and place the UI. */
-        public BuildingsPanel() {
+        BuildingsPanel() {
             preview = new BuildingPreview();
 
             buildingUp = new UIImageButton(commons.colony().upwards) {
@@ -2236,6 +2347,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             buildingList.onClick = new Action0() {
                 @Override
                 public void invoke() {
+                    pavementMode = false;
                     placementMode = false;
                     build.down = false;
                     upgradePanel.hideUpgradeSelection();
@@ -2245,6 +2357,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             build.onPress = new Action0() {
                 @Override
                 public void invoke() {
+                    pavementMode = false;
                     placementMode = !placementMode;
                     if (placementMode) {
                         buttonSound(SoundType.CLICK_HIGH_2);
@@ -2328,7 +2441,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         /** The build/damage/repair percent lower. */
         UILabel progressLower;
         /** Construct the sub-elements. */
-        public BuildingInfoPanel() {
+        BuildingInfoPanel() {
             buildingInfoName = new UILabel("-", 10, commons.text());
             buildingInfoName.bounds(8, 6, 182, 16);
 
@@ -2806,7 +2919,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         /** The labels. */
         List<UILabel> lines;
         /** Construct the label elements. */
-        public InfoPanel() {
+        InfoPanel() {
             int textSize = 10;
             planet = new UILabel("-", 14, commons.text());
             planet.location(10, 5);
@@ -3065,7 +3178,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         /** No upgrades. */
         private UIImageButton none;
         /** Construct the panel. */
-        public UpgradePanel() {
+        UpgradePanel() {
             size(commons.colony().upgradePanel.getWidth(), commons.colony().upgradePanel.getHeight());
             upgradeLabel = new UIImage(commons.colony().upgradeLabel);
             upgradeLabel.location(8, 5);
@@ -3210,6 +3323,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         areaDeploy = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileEdge, 0xFF00FFFF), null);
         areaDeny = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFF0000), null);
         areaCurrent  = new Tile(1, 1, ImageUtils.recolor(commons.colony().tileCrossed, 0xFFFFCC00), null);
+        areaPaved = commons.colony().tilePavement;
+        areaPavedGhost  = ImageUtils.realpha(commons.colony().tilePavement, 0x80);
 
         selection.alpha = 1.0f;
         areaAccept.alpha = 1.0f;
@@ -3293,6 +3408,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         colonyInfo.onClick = new Action0() {
             @Override
             public void invoke() {
+                pavementMode = false;
                 placementMode = false;
                 buildingsPanel.build.down = false;
                 upgradePanel.hideUpgradeSelection();
@@ -3302,6 +3418,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         planets.onClick = new Action0() {
             @Override
             public void invoke() {
+                pavementMode = false;
                 placementMode = false;
                 buildingsPanel.build.down = false;
                 upgradePanel.hideUpgradeSelection();
@@ -4385,10 +4502,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
          * @param unit the unit
          * @param ignore the player units to ignore
          */
-        public PathPlanning(
+        PathPlanning(
                 GroundwarUnit unit,
                 Location goal,
-
                 Player ignore) {
             this.current = unit.pathFindingLocation();
             this.goal = goal;
@@ -6704,7 +6820,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         /** The group buttons. */
         final List<UIImageButton> groupButtons = new ArrayList<>();
         /** Construct the tank panel. */
-        public TankPanel() {
+        TankPanel() {
             background = commons.colony().tankPanel;
             width = background.getWidth();
             height = background.getHeight() + 22;
@@ -6875,6 +6991,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             currentBuilding = null;
             lastSurface = surface;
             placementMode = false;
+            pavementMode = false;
             buildingsPanel.build.down = false;
             upgradePanel.hideUpgradeSelection();
             if (battle == null) {

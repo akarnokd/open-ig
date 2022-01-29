@@ -8,10 +8,11 @@
 
 package hu.openig.model;
 
-import java.awt.GraphicsEnvironment;
-import java.awt.Transparency;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+
+import hu.openig.utils.ImageUtils;
 
 /**
  * A tiled object.
@@ -33,7 +34,7 @@ public class Tile {
     /** The current alpha level of the image. */
     public float alpha = 1;
     /** The alpha percent on which the light map should be applied. */
-    protected static final float LIGHT_THRESHOLD = 0.65f;
+    public static final float LIGHT_THRESHOLD = 0.65f;
     /** The cached alpha level. */
     protected float cachedAlpha = -1;
     /** The minimum alpha value ever. */
@@ -174,7 +175,7 @@ public class Tile {
         int[] w = WORK.get()[0];
         if (alpha < LIGHT_THRESHOLD) {
             for (int i = 0; i < image.length; i++) {
-                w[i] = withAlphaNight(image[i]);
+                w[i] = ImageUtils.withAlphaNight(image[i], alpha, LIGHT_THRESHOLD);
             }
         } else {
             for (int i = 0; i < image.length; i++) {
@@ -240,21 +241,6 @@ public class Tile {
         | (((int)((c & 0xFF00) * alpha)) & 0xFF00)
         | (((int)((c & 0xFF) * alpha)) & 0xFF)
     ;
-    }
-    /**
-     * Apply the alpha value to the supplied color.
-
-     * @param c the input color
-     * @return the output color
-     */
-    protected int withAlphaNight(int c) {
-        if ((c & 0xFF000000) == 0) {
-            return c;
-        }
-        return 0xFF000000
-        | (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
-        | (((int)((c & 0xFF00) * alpha)) & 0xFF00)
-        | (((int)((c & 0xFF) * ((alpha + LIGHT_THRESHOLD) / 2))) & 0xFF);
     }
     /**
      * Converts the tile coordinates to pixel coordinates, X component.

@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.220'>
+  <module id='Game' version='0.95.221'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,14 +34,17 @@
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='http://open-ig-dev.blogspot.hu'>
-      <desc lang='hu'>Egyéni nehézség-beállítások</desc>
-      <desc lang='en'>Custom Balance Settings</desc>
-      <desc lang='de'>Custom Balance Settings</desc>
-      <desc lang='fr'>Custom Balance Settings</desc>
-      <desc lang='ru'>Custom Balance Settings</desc>
-      <desc lang='es'>Custom Balance Settings</desc>
+      <desc lang='hu'>Felszín átformálás betonlapokkal</desc>
+      <desc lang='en'>Surface pavement over landscape</desc>
+      <desc lang='de'>Surface pavement over landscape</desc>
+      <desc lang='fr'>Surface pavement over landscape</desc>
+      <desc lang='ru'>Surface pavement over landscape</desc>
+      <desc lang='es'>Surface pavement over landscape</desc>
     </notes>
     <release-details>
+      <entry version='0.95.221' date='2022-01-29'>
+        <item category='Balance'>New feature: pave over larger surface features so they become buildable/passable. Use the key P to enable this mode. UI to come later.</item>
+      </entry>
       <entry version='0.95.220' date='2022-01-28'>
         <item category='Balance'>New screen: Custom Balance Settings. Accessible via the Campaign screen or via CTRL+6 from ingame. It allows buffing aliens and modifying how morale is calculated.</item>
       </entry>
@@ -151,9 +154,9 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.220.jar' sha1='291CDDF723038786A4391B042A2AE0FE6507E2FF'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220128a2.zip' sha1='372998BA1D9565A8B1A1F0FC27E17DF368A2EB88'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20140910a.zip' sha1='3CFA63549A8196F953B0B7A8DB583C7C2CD7204D'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.221.jar' sha1='594B84525E5F00E7F680F4EC4016618C655651CA'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220129a2.zip' sha1='372998BA1D9565A8B1A1F0FC27E17DF368A2EB88'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220129a.zip' sha1='6B4525F19331FB8A008C38A2ED60A6479EEADE44'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -219,6 +222,7 @@
     <remove file='open-ig-images-20140718a.zip'/>
     <remove file='open-ig-images-20140730a.zip'/>
     <remove file='open-ig-images-20140901a.zip'/>
+    <remove file='open-ig-images-20140910a.zip'/>
   </module>
   <module id='MapEditor' version='0.63'>
     <general url='https://github.com/akarnokd/open-ig/wiki/Map-editor'>

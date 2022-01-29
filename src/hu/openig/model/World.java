@@ -1327,6 +1327,18 @@ public class World implements ModelLookup {
                     xb.set("worker", b.assignedWorker);
                 }
             }
+            if (!p.surface.pavements.isEmpty()) {
+                StringBuilder pavementsStr = new StringBuilder();
+                boolean separate = false;
+                for (Location ploc : p.surface.pavements) {
+                    if (separate) {
+                        pavementsStr.append(";");
+                    }
+                    pavementsStr.append(ploc.x).append(",").append(ploc.y);
+                    separate = true;
+                }
+                xp.set("pavements", pavementsStr);
+            }
         }
 
         XElement xscript = xworld.add("scripting");
@@ -1775,6 +1787,7 @@ public class World implements ModelLookup {
 
             p.inventory.clear();
             p.surface.buildings.clear();
+            p.surface.pavements.clear();
             p.surface.buildingmap.clear();
             p.timeToLive.clear();
 
@@ -1850,6 +1863,13 @@ public class World implements ModelLookup {
                     if (b.type.research != null) {
                         p.owner.setAvailable(b.type.research);
                     }
+                }
+            }
+
+            if (xplanet.has("pavements")) {
+                for (String pavementXY : xplanet.get("pavements").split(";")) {
+                    String[] pavement = pavementXY.split(",");
+                    p.surface.pavements.add(Location.of(Integer.parseInt(pavement[0]), Integer.parseInt(pavement[1])));
                 }
             }
 

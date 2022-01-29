@@ -8,16 +8,12 @@
 
 package hu.openig.model;
 
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
 import hu.openig.core.Location;
 import hu.openig.model.PlanetSurface.PlacementHelper;
-
-import java.awt.Dimension;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Class representing a planet for the AI player.
@@ -48,6 +44,8 @@ public class AIPlanet {
     public final List<AIBuilding> buildings = new ArrayList<>();
     /** The building counts per type, including under construction. */
     public final Map<BuildingType, Integer> buildingCounts = new HashMap<>();
+    /** Copy of the pavements set. */
+    public final Set<Location> pavements = new HashSet<>();
     /** The placement helper. */
     public PlacementHelper placement;
     /** The current morale. */
@@ -86,6 +84,7 @@ public class AIPlanet {
             inventory.add(new AIInventoryItem(ii));
         }
         nonbuildable.putAll(planet.surface.buildingmap);
+        this.pavements.addAll(planet.surface.pavements);
 
         final int width = planet.surface.width;
         final int height = planet.surface.height;
@@ -128,6 +127,10 @@ public class AIPlanet {
             protected Buildings buildings() {
                 // prevents gravity adjust, not really necessary for placement tests
                 return new Buildings();
+            }
+            @Override
+            protected boolean hasPavement(Location loc) {
+                return pavements.contains(loc);
             }
         };
     }

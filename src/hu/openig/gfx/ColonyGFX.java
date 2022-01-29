@@ -57,6 +57,9 @@ public class ColonyGFX {
     /** The tile crossed. */
     @Img(name = "colony/tile_1x1_selected_crossed")
     public BufferedImage tileCrossed;
+    /** The tile crossed. */
+    @Img(name = "colony/tile_1x1_pavement")
+    public BufferedImage tilePavement;
     /** Upgrade panel. */
     @Img(name = "colony/upgrade_panel")
     public BufferedImage upgradePanel;

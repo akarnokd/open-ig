@@ -68,6 +68,59 @@ public final class ImageUtils {
         return result;
     }
     /**
+     * Set the non-transparent pixel's alpha to the given amount.
+     * @param img the source image
+     * @param newAlpha the new alpha, 0..255
+     * @return the new image
+     */
+    public static BufferedImage realpha(BufferedImage img, int newAlpha) {
+        int[] pixels = new int[img.getWidth() * img.getHeight()];
+        img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+        newAlpha = newAlpha << 24;
+        for (int i = 0; i < pixels.length; i++) {
+            int c = pixels[i];
+            if ((c & 0xFF000000) == 0xFF000000) {
+                pixels[i] = (pixels[i] & 0x00FFFFFF) | newAlpha;
+            }
+        }
+        BufferedImage result = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        result.setRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+        return result;
+    }
+    /**
+     * Set the non-transparent pixel's alpha to the given amount.
+     * @param img the source image
+     * @param alpha the light level
+     * @param lightThreshold makes the image bluish
+     * @return the new image
+     */
+    public static BufferedImage withNight(BufferedImage img, float alpha, float lightThreshold) {
+        int[] pixels = new int[img.getWidth() * img.getHeight()];
+        img.getRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+        for (int i = 0; i < pixels.length; i++) {
+            pixels[i] = withAlphaNight(pixels[i], alpha, lightThreshold);
+        }
+        BufferedImage result = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        result.setRGB(0, 0, img.getWidth(), img.getHeight(), pixels, 0, img.getWidth());
+        return result;
+    }
+    /**
+     * Apply the alpha value to the supplied color with night effects.
+     * @param c the input color
+     * @param alpha the lighting level
+     * @param lightThreshold makes the image bluish
+     * @return the output color
+     */
+    public static int withAlphaNight(int c, float alpha, float lightThreshold) {
+        if ((c & 0xFF000000) == 0) {
+            return c;
+        }
+        return 0xFF000000
+        | (((int)((c & 0xFF0000) * alpha)) & 0xFF0000)
+        | (((int)((c & 0xFF00) * alpha)) & 0xFF00)
+        | (((int)((c & 0xFF) * ((alpha + lightThreshold) / 2))) & 0xFF);
+    }
+    /**
      * Split the image into equally sized sub-images.
      * @param img the image to split
      * @param width the split width in pixels

@@ -76,8 +76,9 @@ public class PlanetSurface {
     public List<SurfaceFeature> features = new ArrayList<>();
     /** Set of locations that should be excluded from groundwar deployments. */
     public Set<Location> deploymentExclusions = new HashSet<>();
+    /** Locations that have been paved and thus now buildable/passable. */
+    public Set<Location> pavements = new HashSet<>();
     /**
-
      * If true, the features list will contain all tiles,
      * if false, only the non 1x1 tiles will be added.
      */
@@ -95,6 +96,10 @@ public class PlanetSurface {
         @Override
         protected boolean cellInMap(int x, int y) {
             return PlanetSurface.this.cellInMap(x, y);
+        }
+        @Override
+        protected boolean hasPavement(Location loc) {
+            return pavements.contains(loc);
         }
         @Override
         protected int height() {
@@ -578,6 +583,8 @@ public class PlanetSurface {
         protected abstract Map<Location, SurfaceEntity> basemap();
         /** @return the existing buildings. */
         protected abstract Buildings buildings();
+        /** @return true if the location is paved. */
+        protected abstract boolean hasPavement(Location loc);
         /**
          * Test if the given rectangular region is eligible for building placement, e.g.:
          * all cells are within the map's boundary, no other buildings are present within the given bounds,
@@ -622,7 +629,11 @@ public class PlanetSurface {
             if (se != null && se.type == SurfaceEntityType.BUILDING) {
                 return false;
             }
-            se = basemap().get(Location.of(x, y));
+            Location loc = Location.of(x, y);
+            if (hasPavement(loc)) {
+                return true;
+            }
+            se = basemap().get(loc);
             return !(se != null && (se.tile.width > 1 || se.tile.height > 1));
         }
         /**

@@ -3805,7 +3805,7 @@ public class InfoScreen extends ScreenBase {
              * Constructor with building type.
              * @param type the building type
              */
-            public BuildingLevelCompare(String type) {
+            BuildingLevelCompare(String type) {
                 this.type = type;
             }
             @Override
