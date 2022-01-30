@@ -3647,6 +3647,7 @@
     <entry key='movecolonists.planet'>Move &amp; Close</entry>
     <entry key='movecolonists.planet'>Select planet</entry>
     <entry key='movecolonists.noplanet'>No suitable planet</entry>
+    <entry key='movecolonists.currentplanet'>Current Planet</entry>
     <entry key='movecolonists.percentage'>Percentage of colonists</entry>
     <entry key='movecolonists.population' >Population:        %,d</entry>
     <entry key='movecolonists.livingspace'>Livingspace:       %,d</entry>
@@ -3655,4 +3656,14 @@
     <entry key='movecolonists.cost'       >Cost:              %,d cr</entry>
     <entry key='movecolonists.move'>Move</entry>
     <entry key='movecolonists.moveandclose'>Move &amp; Close</entry>
+    <entry key='abandonplanet.move'>Move Colonists</entry>
+    <entry key='abandonplanet.move.own'>Consequences:[n]- Colonists are resettled in the empire[n]- Morale on all planets decrease by 5 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
+    <entry key='abandonplanet.move.alien'>Consequences:[n]- Colonists return to their native empire[n]- Diplomatic relations worsen with all aliens by 5 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
+    <entry key='abandonplanet.move.cost'>Cost:          %,d cr  (Profit: %,d cr)</entry>
+    <entry key='abandonplanet.kill'>Kill Colonists</entry>
+    <entry key='abandonplanet.kill.own'>Consequences:[n]- Colonists are killed[n]- Morale on all planets decrease by 50 points[n]- Diplomatic relations worsen with all aliens by 5 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
+    <entry key='abandonplanet.kill.alien'>Consequences:[n]- Colonists are killed[n]- Morale on all planets decrease by 20 points[n]- Diplomatic relations worsen with all aliens by 25 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
+    <entry key='abandonplanet.kill.cost'>Cost:          %,d cr  (Profit: %,d cr)</entry>
+    <entry key='abandonplanet.move.found'>Colonists can be resettled</entry>
+    <entry key='abandonplanet.move.not'>Colonists have nowhere to go</entry>
 </labels>

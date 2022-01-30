@@ -41,6 +41,8 @@ public class MoveColonistsScreen extends ScreenBase {
     /** Bonus money amount. */
     UISpinner percentageSpinner;
     /** Label. */
+    UILabel currentLabel;
+    /** Label. */
     UILabel planetLabel;
     /** Label. */
     UILabel percentageLabel;
@@ -81,21 +83,23 @@ public class MoveColonistsScreen extends ScreenBase {
 
         titleLabel.location(base.x + 10, base.y + 10);
 
-        planetLabel.location(base.x + 20, base.y + 50);
-        planetSpinner.location(base.x + 30, base.y + 70);
-        planetSpinner.width = base.width - 40;
-        planetPopulationLabel.location(base.x + 40, base.y + 110);
-        planetLivingspaceLabel.location(base.x + 40, base.y + 130);
-        planetWorkerneedsLabel.location(base.x + 40, base.y + 150);
+        currentLabel.location(base.x + 20, base.y + 50);
+        currentPopulationLabel.location(base.x + 40, base.y + 70);
+        currentLivingspaceLabel.location(base.x + 40, base.y + 90);
+        currentWorkerneedsLabel.location(base.x + 40, base.y + 110);
 
-        percentageLabel.location(base.x + 20, base.y + 180);
-        percentageSpinner.location(base.x + 30, base.y + 200);
-        percentageSpinner.width = base.width - 40;
-        currentPopulationLabel.location(base.x + 40, base.y + 240);
-        currentLivingspaceLabel.location(base.x + 40, base.y + 260);
-        currentWorkerneedsLabel.location(base.x + 40, base.y + 280);
-        toBeMovedLabel.location(base.x + 40, base.y + 300);
-        movementCostLabel.location(base.x + 20, base.y + 330);
+        planetLabel.location(base.x + 20, base.y + 140);
+        planetSpinner.location(base.x + 30, base.y + 160);
+        planetSpinner.width = base.width - 60;
+        planetPopulationLabel.location(base.x + 40, base.y + 190);
+        planetLivingspaceLabel.location(base.x + 40, base.y + 210);
+        planetWorkerneedsLabel.location(base.x + 40, base.y + 230);
+
+        percentageLabel.location(base.x + 20, base.y + 260);
+        percentageSpinner.location(base.x + 30, base.y + 280);
+        percentageSpinner.width = base.width - 60;
+        toBeMovedLabel.location(base.x + 40, base.y + 310);
+        movementCostLabel.location(base.x + 20, base.y + 340);
 
         int w = move.width + moveAndClose.width + cancel.width + 40;
         int center = base.x + (base.width - w) / 2;
@@ -139,6 +143,7 @@ public class MoveColonistsScreen extends ScreenBase {
             }
         };
 
+        currentLabel = new UILabel(get("movecolonists.currentplanet"), 14, commons.text());
         planetLabel = new UILabel(get("movecolonists.planet"), 14, commons.text());
         percentageLabel = new UILabel(get("movecolonists.percentage"), 14, commons.text());
         planetPopulationLabel = new UILabel("", 14, commons.text());

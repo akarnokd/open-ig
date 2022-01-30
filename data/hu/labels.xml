@@ -3660,6 +3660,7 @@
     <entry key='abandoncolony.title'>Kolónia elhagyása</entry>
     <entry key='abandoncolony.cancel'>Mégsem</entry>
     <entry key='movecolonists.noplanet'>Nincs megfelelő bolygó</entry>
+    <entry key='movecolonists.currentplanet'>Jelenlegi Bolygó</entry>
     <entry key='movecolonists.planet'>Bolygó kiválasztása</entry>
     <entry key='movecolonists.percentage'>Lakosság százalék</entry>
     <entry key='movecolonists.population' >Lakosság:             %,d</entry>
@@ -3669,4 +3670,14 @@
     <entry key='movecolonists.cost'       >Költség:              %,d cr</entry>
     <entry key='movecolonists.move'>Áttelepítés</entry>
     <entry key='movecolonists.moveandclose'>Áttelepítés &amp; Vissza</entry>
+    <entry key='abandonplanet.move'>Lakosság áttelepítése</entry>
+    <entry key='abandonplanet.move.own'>Következmények:[n]- A lakosság egyenletesen szétterítésre kerül[n]- Minden bolygó morálja csökken 5 ponttal[n]- Minden épület el lesz adva[n]- Minden űrbázis el lesz adva[n]- Minden vadász és jármű visszakerül a raktárba</entry>
+    <entry key='abandonplanet.move.alien'>Következmények:[n]- A lakosság visszatér a saját népéhez[n]- Viszony minden ismert idegennel romlik 5 pontot[n]- Minden épület el lesz adva[n]- Minden űrbázis el lesz adva[n]- Minden vadász és jármű visszakerül a raktárba</entry>
+    <entry key='abandonplanet.move.cost'>Költség:          %,d cr  (Bevétel: %,d cr)</entry>
+    <entry key='abandonplanet.kill'>Lakosság likvidálása</entry>
+    <entry key='abandonplanet.kill.own'>Következmények:[n]- A lakosság likvidálásra kerül[n]- Minden bolygó morálja csökken 50 ponttal[n]- Viszony minden ismert idegennel romlik 5 pontot[n]- Minden épület el lesz adva[n]- Minden űrbázis el lesz adva[n]- Minden vadász és jármű visszakerül a raktárba</entry>
+    <entry key='abandonplanet.kill.alien'>Következmények:[n]- A lakosság likvidálásra kerül[n]- Minden bolygó morálja csökken 20 ponttal[n]- Viszony minden ismert idegennel romlik 25 pontot[n]- Minden épület el lesz adva[n]- Minden űrbázis el lesz adva[n]- Minden vadász és jármű visszakerül a raktárba</entry>
+    <entry key='abandonplanet.kill.cost'>Költség:          %,d cr  (Bevétel: %,d cr)</entry>
+    <entry key='abandonplanet.move.found'>Az áttelepítés lehetséges</entry>
+    <entry key='abandonplanet.move.not'>Nincs hová áttelepíteni a lakosságot</entry>
 </labels>

@@ -1198,7 +1198,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         if (surface.removeBuilding(b)) {
             rebuildRoads();
 
-            int moneyBack = b.type.cost * (1 + b.upgradeLevel) / 2;
+            long moneyBack = b.sellPrice();
 
             owner.addMoney(moneyBack);
 

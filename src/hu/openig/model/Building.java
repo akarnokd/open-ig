@@ -358,4 +358,11 @@ public class Building implements HasLocation {
             return BuildingType.COST.compare(o1.type, o2.type);
         }
     };
+
+    /**
+     * @return the selling price of this building
+     */
+    public long sellPrice() {
+        return type.cost * (1 + upgradeLevel) / 2;
+    }
 }
