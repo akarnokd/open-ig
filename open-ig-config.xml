@@ -13,14 +13,14 @@
 <entry key="hostPorts-count">0</entry>
 <entry key="textCacheSize">0</entry>
 <entry key="intro">false</entry>
-<entry key="height">682</entry>
+<entry key="height">633</entry>
 <entry key="muteMusic">false</entry>
 <entry key="reequipTanks">true</entry>
 <entry key="timestep">60</entry>
 <entry key="scaleAllScreens">true</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="showStarmapScroll">true</entry>
-<entry key="maximized">true</entry>
+<entry key="maximized">false</entry>
 <entry key="classicControls">true</entry>
 <entry key="allowWeather">true</entry>
 <entry key="fullScreen">false</entry>

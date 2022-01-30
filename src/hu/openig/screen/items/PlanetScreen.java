@@ -8,108 +8,27 @@
 
 package hu.openig.screen.items;
 
-import hu.openig.core.Action0;
-import hu.openig.core.Func1;
-import hu.openig.core.Func2;
-import hu.openig.core.Location;
-import hu.openig.core.Pair;
-import hu.openig.core.Pathfinding;
-import hu.openig.core.SimulationSpeed;
-import hu.openig.mechanics.AIUser;
-import hu.openig.mechanics.Allocator;
-import hu.openig.mechanics.BattleSimulator;
-import hu.openig.model.AutoBuild;
-import hu.openig.model.BattleGroundTurret;
-import hu.openig.model.BattleGroundVehicle;
-import hu.openig.model.BattleInfo;
-import hu.openig.model.Building;
-import hu.openig.model.BuildingType;
-import hu.openig.model.Cursors;
-import hu.openig.model.ExplosionType;
-import hu.openig.model.GroundwarExplosion;
-import hu.openig.model.GroundwarGun;
-import hu.openig.model.GroundwarRocket;
-import hu.openig.model.GroundwarUnit;
-import hu.openig.model.GroundwarUnitType;
-import hu.openig.model.GroundwarWorld;
-import hu.openig.model.InventoryItem;
-import hu.openig.model.InventoryItems;
-import hu.openig.model.ModelUtils;
-import hu.openig.model.Owned;
-import hu.openig.model.Planet;
-import hu.openig.model.PlanetKnowledge;
-import hu.openig.model.PlanetProblems;
-import hu.openig.model.PlanetStatistics;
-import hu.openig.model.PlanetSurface;
-import hu.openig.model.Player;
-import hu.openig.model.ResearchSubCategory;
-import hu.openig.model.ResearchType;
-import hu.openig.model.ResourceAllocationStrategy;
-import hu.openig.model.Screens;
-import hu.openig.model.SelectionBoxMode;
-import hu.openig.model.SoundType;
-import hu.openig.model.SurfaceEntity;
-import hu.openig.model.SurfaceEntityType;
-import hu.openig.model.SurfaceFeature;
-import hu.openig.model.Tile;
-import hu.openig.model.Trait;
-import hu.openig.model.TraitKind;
-import hu.openig.model.WeatherType;
-import hu.openig.render.RenderTools;
-import hu.openig.render.TextRenderer;
-import hu.openig.screen.ScreenBase;
-import hu.openig.screen.panels.WeatherOverlay;
-import hu.openig.ui.HorizontalAlignment;
-import hu.openig.ui.UIComponent;
-import hu.openig.ui.UIContainer;
-import hu.openig.ui.UIImage;
-import hu.openig.ui.UIImageButton;
-import hu.openig.ui.UIImageFill;
-import hu.openig.ui.UIImageTabButton;
-import hu.openig.ui.UIImageTabButton2;
-import hu.openig.ui.UILabel;
-import hu.openig.ui.UIMouse;
-import hu.openig.ui.UIMouse.Button;
-import hu.openig.ui.UIMouse.Modifier;
-import hu.openig.ui.UIMouse.Type;
-import hu.openig.utils.Exceptions;
-import hu.openig.utils.ImageUtils;
-import hu.openig.utils.U;
-
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.Closeable;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.*;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumSet;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+
+import hu.openig.core.*;
+import hu.openig.mechanics.*;
+import hu.openig.model.*;
+import hu.openig.render.*;
+import hu.openig.screen.ScreenBase;
+import hu.openig.screen.panels.WeatherOverlay;
+import hu.openig.ui.*;
+import hu.openig.ui.UIMouse.*;
+import hu.openig.ui.UIMouse.Button;
+import hu.openig.utils.*;
 
 /**
  * The planet surface rendering screen.
@@ -250,6 +169,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** The upgrade panel. */
     @DragSensitive
     UpgradePanel upgradePanel;
+    /** The colony management side-panel. */
+    @DragSensitive
+    ColonyManagementPanel colonyManagementPanel;
     /** Go to next planet. */
     @DragSensitive
     UIImageButton prev;
@@ -498,9 +420,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             break;
         case KeyEvent.VK_P: {
-            if (planet().owner == player() && !commons.battleMode) {
-                placementMode = false;
-                pavementMode = !pavementMode;
+            if (togglePavementMode()) {
                 rep = true;
                 e.consume();
             }
@@ -3167,6 +3087,100 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
     }
     /**
+     * The panel hosting the pavement, colonists movement and abandon buttons.
+     * @author akarnokd, 2022. jan. 30.
+     */
+    class ColonyManagementPanel extends UIContainer {
+        /** Button to enable pavement mode. */
+        UIGenericButton pavementButton;
+        /** Button to open the move-in dialog. */
+        UIGenericButton moveInButton;
+        /** Button to open the move-out dialog. */
+        UIGenericButton moveOutButton;
+        /** Button to open the abandon colony dialog. */
+        UIGenericButton abandonButton;
+
+        ColonyManagementPanel() {
+            size(commons.colony().colonyManagementPanel.getWidth(), commons.colony().colonyManagementPanel.getHeight());
+
+            pavementButton = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+            pavementButton.disabledPattern(commons.common().disabledPattern);
+            pavementButton.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    if (togglePavementMode()) {
+                        askRepaint();
+                    }
+                }
+            };
+            pavementButton.icon(commons.colony().pavementButton);
+            pavementButton.fitIcon(true);
+            pavementButton.tooltip(get("colony.pavementmodebutton.tooltip"));
+
+            moveInButton = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+            moveInButton.disabledPattern(commons.common().disabledPattern);
+            moveInButton.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    displaySecondary(Screens.MOVE_COLONISTS_IN);
+                    buttonSound(SoundType.CLICK);
+                }
+            };
+            moveInButton.icon(commons.colony().moveInColonistsButton);
+            moveInButton.fitIcon(true);
+            moveInButton.tooltip(get("colony.moveinbutton.tooltip"));
+
+            moveOutButton = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+            moveOutButton.disabledPattern(commons.common().disabledPattern);
+            moveOutButton.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    displaySecondary(Screens.MOVE_COLONISTS_OUT);
+                    buttonSound(SoundType.CLICK);
+                }
+            };
+            moveOutButton.icon(commons.colony().moveOutColonistsButton);
+            moveOutButton.fitIcon(true);
+            moveOutButton.tooltip(get("colony.moveoutbutton.tooltip"));
+
+            abandonButton = new UIGenericButton("   ", fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
+            abandonButton.disabledPattern(commons.common().disabledPattern);
+            abandonButton.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    displaySecondary(Screens.ABANDON_COLONY);
+                    buttonSound(SoundType.CLICK);
+                }
+            };
+            abandonButton.icon(commons.colony().abandonColonyButton);
+            abandonButton.fitIcon(true);
+            abandonButton.tooltip(get("colony.abandonbutton.tooltip"));
+
+            addThis();
+        }
+
+        @Override
+        public void draw(Graphics2D g2) {
+            g2.drawImage(commons.colony().colonyManagementPanel, 0, 0, null);
+            int btop = 6;
+            int bleft = 5;
+            int bwidth = 40;
+            int bheight = 35;
+            int pad = 2;
+            pavementButton.location(bleft, btop);
+            pavementButton.size(bwidth, bheight);
+            moveInButton.location(bleft + bwidth + pad, btop);
+            moveInButton.size(bwidth, bheight);
+            moveOutButton.location(bleft + 2 * (bwidth + pad), btop);
+            moveOutButton.size(bwidth, bheight);
+            abandonButton.location(bleft + 3 * (bwidth + pad), btop);
+            abandonButton.size(bwidth, bheight);
+            moveOutButton.enabled(planet().population() > 0);
+
+            super.draw(g2);
+        }
+    }
+    /**
      * The upgrade panel.
      * @author akarnokd, 2011.03.31.
      */
@@ -3221,11 +3235,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         int dl = i - currentBuilding.upgradeLevel + 1;
                         long m = currentBuilding.type.cost * dl;
                         setTooltip(up, "buildings.upgrade.cost",
-
                                 currentBuilding.type.upgrades.get(i).description,
-
                                 m <= player().money() ? "FFFFFFFF" : "FFFF0000",
-                                m);
+                                m
+                        );
                     }
                 } else {
                     up.normal(commons.colony().upgrade);
@@ -3233,7 +3246,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     up.pressed(commons.colony().upgrade);
                     if (up.visible()) {
                         setTooltip(up, "buildings.upgrade.bought",
-
                                 currentBuilding.type.upgrades.get(i).description);
                     }
                 }
@@ -3280,9 +3292,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
     }
     /**
-
      * Upgrade the current building.
-
      * @param j level
      */
     void doUpgrade(int j) {
@@ -3389,9 +3399,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     buttonSound(SoundType.GROUNDWAR_TOGGLE_PANEL);
                     showBuildingInfo = !showBuildingInfo;
                     upgradePanel.visible(currentBuilding != null
-
                             && currentBuilding.type.upgrades.size() > 0
-
                             && buildingInfoPanel.visible());
                 }
             }
@@ -3508,6 +3516,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
         };
         upgradePanel = new UpgradePanel();
+        colonyManagementPanel = new ColonyManagementPanel();
 
         prev = new UIImageButton(commons.starmap().backwards);
         prev.setHoldDelay(250);
@@ -3668,6 +3677,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         buildingInfoPanel.location(sidebarBuildingInfo.x - buildingInfoPanel.width, sidebarBuildingInfo.y);
 
         upgradePanel.location(buildingInfoPanel.x, buildingInfoPanel.y + buildingInfoPanel.height);
+        colonyManagementPanel.location(buildingsPanel.x, buildingsPanel.y + buildingsPanel.height);
 
         prev.location(sidebarRadar.x + sidebarRadar.width + 1, sidebarRadar.y - prev.height - 3);
         next.location(prev.x + prev.width + 2, prev.y);
@@ -7012,8 +7022,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
 
         buildingsPanel.visible(planet().owner == player()
-
                 && showBuildingList && battle == null);
+        colonyManagementPanel.visible(buildingsPanel.visible());
         buildingInfoPanel.visible(planet().owner == player() && showBuildingInfo);
         infoPanel.visible(knowledge(planet(), PlanetKnowledge.NAME) >= 0 && showInfo && battle == null);
 
@@ -7101,5 +7111,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             battle.groundRetreated = true;
             commons.simulation.resume();
         }
+    }
+    boolean togglePavementMode() {
+        if (planet().owner == player() && !commons.battleMode) {
+            placementMode = false;
+            buildingsPanel.build.down = false;
+            pavementMode = !pavementMode;
+            buttonSound(SoundType.CLICK);
+            return true;
+        }
+        return false;
     }
 }

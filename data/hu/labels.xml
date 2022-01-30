@@ -3650,4 +3650,23 @@
     <entry key='custombalance.moralemode.ASYMPTOTIC.desc'>Minden egyes új épület fele annyira járul hozzá a morálhoz, mint a korábbi épület, így maximum dupla bónusz érhető el típusonként.</entry>
     <entry key='custombalance.moralemode.ASYMPTOTIC'>Aszimptotikus</entry>
     <entry key='custombalance.screen'>Egyedi nehézség-beállítások</entry>
+    <entry key='colony.pavementmodebutton.tooltip'>Felszíni formációk lefedése mód váltás[n]Gyorsbillentyű: [c=FFFFFFFF]P[/c][n]Egységár: 5000 cr cellánként</entry>
+    <entry key='colony.moveinbutton.tooltip'>Lakosság betelepítése egy másik bolygóról (dialógus nyílik)</entry>
+    <entry key='colony.moveoutbutton.tooltip'>Lakosság kitelepítése egy másik bolygóra (dialógus nyílik)</entry>
+    <entry key='colony.abandonbutton.tooltip'>Kolónia elhagyása (dialógus nyílik)</entry>
+    <entry key='movecolonists.in.title'>Lakosság betelepítése</entry>
+    <entry key='movecolonists.out.title'>Lakosság kitelepítése</entry>
+    <entry key='movecolonists.cancel'>Mégsem</entry>
+    <entry key='abandoncolony.title'>Kolónia elhagyása</entry>
+    <entry key='abandoncolony.cancel'>Mégsem</entry>
+    <entry key='movecolonists.noplanet'>Nincs megfelelő bolygó</entry>
+    <entry key='movecolonists.planet'>Bolygó kiválasztása</entry>
+    <entry key='movecolonists.percentage'>Lakosság százalék</entry>
+    <entry key='movecolonists.population' >Lakosság:             %,d</entry>
+    <entry key='movecolonists.livingspace'>Lakótér:              %,d</entry>
+    <entry key='movecolonists.workerneeds'>Munkásigény:          %,d</entry>
+    <entry key='movecolonists.tobemoved'  >Áttelepítendők száma: %,d</entry>
+    <entry key='movecolonists.cost'       >Költség:              %,d cr</entry>
+    <entry key='movecolonists.move'>Áttelepítés</entry>
+    <entry key='movecolonists.moveandclose'>Áttelepítés &amp; Vissza</entry>
 </labels>

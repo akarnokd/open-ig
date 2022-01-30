@@ -8,20 +8,14 @@
 
 package hu.openig.ui;
 
-import hu.openig.core.Action0;
-import hu.openig.render.GenericButtonRenderer;
-import hu.openig.render.RenderTools;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
 import javax.swing.Timer;
+
+import hu.openig.core.Action0;
+import hu.openig.render.*;
 
 /**
  * An Imperium Galactica styled button component.
@@ -61,6 +55,8 @@ public class UIGenericButton extends UIComponent {
     protected int size;
     /** The icon to display. */
     protected BufferedImage icon;
+    /** Fit the icon to the size of the button. */
+    protected boolean fitIcon;
     /** The font metrics. */
     final FontMetrics fm;
     /**
@@ -71,7 +67,6 @@ public class UIGenericButton extends UIComponent {
      * @param pressed the pressed state renderer
      */
     public UIGenericButton(String text, FontMetrics fm,
-
             GenericButtonRenderer normal, GenericButtonRenderer pressed) {
         this.text = text;
         this.fm = fm;
@@ -142,7 +137,22 @@ public class UIGenericButton extends UIComponent {
         if (icon != null) {
             int iw = icon.getWidth();
             int ih = icon.getHeight();
-            g2.drawImage(icon, (width - iw) / 2, (height - ih) / 2, null);
+            if (fitIcon) {
+                int margin = 3;
+                int wm = width - margin * 2;
+                int hm = height - margin * 2;
+                double aspect = Math.min((double)wm / iw, (double)hm / ih);
+                int centerX = margin + (int)((wm - iw * aspect) / 2);
+                int centerY = margin + (int)((hm - ih * aspect) / 2);
+                RenderingHints rh = g2.getRenderingHints();
+                g2.setRenderingHints(new RenderingHints(
+                        RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR));
+                g2.drawImage(icon, centerX, centerY, (int)(iw * aspect), (int)(ih * aspect), null);
+                g2.setRenderingHints(rh);
+            } else {
+                g2.drawImage(icon, (width - iw) / 2, (height - ih) / 2, null);
+            }
         }
         g2.setFont(f1);
     }
@@ -229,6 +239,15 @@ public class UIGenericButton extends UIComponent {
      */
     public UIGenericButton icon(BufferedImage icon) {
         this.icon = icon;
+        return this;
+    }
+    /**
+     * Make the icon fit the size of the button.
+     * @param state the fitting state
+     * @return this
+     */
+    public UIGenericButton fitIcon(boolean state) {
+        this.fitIcon = state;
         return this;
     }
     @Override

@@ -3840,4 +3840,15 @@ public class World implements ModelLookup {
     public boolean isSkirmish() {
         return skirmishDefinition != null;
     }
+    /**
+     * Moves population from one planet to another.
+     * @param from the source planet
+     * @param to the destination planet
+     * @param percentage the percentage of people to move (0..1)
+     */
+    public void resettleColonists(Planet from, Planet to, double percentage) {
+        double colonists = from.population() * percentage;
+        from.population(Math.max(0, from.population() - colonists));
+        to.population(to.population() + colonists);
+    }
 }

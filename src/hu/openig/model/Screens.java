@@ -90,5 +90,11 @@ public enum Screens {
     /** The trade screen. */
     TRADE,
     /** The custom balance screen. */
-    CUSTOM_BALANCE
+    CUSTOM_BALANCE,
+    /** Move colonists in dialog screen. */
+    MOVE_COLONISTS_IN,
+    /** Move colonists out dialog screen. */
+    MOVE_COLONISTS_OUT,
+    /** Abandon colony dialog screen. */
+    ABANDON_COLONY
 }

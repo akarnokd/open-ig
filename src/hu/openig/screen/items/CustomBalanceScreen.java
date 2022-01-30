@@ -20,7 +20,7 @@ import hu.openig.ui.*;
 
 /**
  * Screen for configuring the custom balance options of {@link CustomBalanceSettings}.
- * @author akarnokd, 2012.08.18.
+ * @author akarnokd, 2022.01.28.
  */
 public class CustomBalanceScreen extends ScreenBase {
     /** The panel base rectangle. */

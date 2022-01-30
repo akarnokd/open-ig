@@ -200,6 +200,21 @@ public class ColonyGFX {
     /** The zoom button (horizontal). */
     @Cat(name = "colony/button_zoom")
     public BufferedImage[] zoom;
+    /** Pavement button. */
+    @Img(name = "colony/button_pavement")
+    public BufferedImage pavementButton;
+    /** Move in colonists button. */
+    @Img(name = "colony/button_move_in_colonists")
+    public BufferedImage moveInColonistsButton;
+    /** Move out colonists button. */
+    @Img(name = "colony/button_move_out_colonists")
+    public BufferedImage moveOutColonistsButton;
+    /** Abandon colony button. */
+    @Img(name = "colony/button_abandon_colony")
+    public BufferedImage abandonColonyButton;
+    /** Panel for the pavement/colonists/abandon buttons. */
+    @Img(name = "colony/colony_management_panel")
+    public BufferedImage colonyManagementPanel;
     /**
      * Load the resources for the given language.
      * @param rl the resource locator

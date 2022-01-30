@@ -811,6 +811,14 @@ public class GameWindow extends JFrame implements GameControls {
         case CUSTOM_BALANCE:
             sb = allScreens.customBalance;
             break;
+        case MOVE_COLONISTS_IN:
+        case MOVE_COLONISTS_OUT:
+            sb = allScreens.moveColonists;
+            mode = screen;
+            break;
+        case ABANDON_COLONY:
+            sb = allScreens.abandonColony;
+            break;
         default:
         }
         if (asPrimary) {
@@ -1634,7 +1642,8 @@ public class GameWindow extends JFrame implements GameControls {
                     && (sec != Screens.RESEARCH || world().level >= 3)
                     && (sec != Screens.DIPLOMACY || world().level >= 4)
                     && (sec != Screens.BAR || world().level >= 2)
-                    && (sec != Screens.TEST || world().testNeeded)) {
+                    && (sec != Screens.TEST || world().testNeeded)
+                    && (sec != Screens.MOVE_COLONISTS_IN && sec != Screens.MOVE_COLONISTS_OUT && sec != Screens.ABANDON_COLONY)) {
                 displaySecondary(sec);
             }
         }
@@ -2012,6 +2021,11 @@ public class GameWindow extends JFrame implements GameControls {
             return (T)allScreens.trade;
         case CUSTOM_BALANCE:
             return (T)allScreens.customBalance;
+        case MOVE_COLONISTS_IN:
+        case MOVE_COLONISTS_OUT:
+            return (T)allScreens.moveColonists;
+        case ABANDON_COLONY:
+            return (T) allScreens.abandonColony;
         default:
             throw new AssertionError(String.valueOf(screen));
         }

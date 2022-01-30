@@ -122,6 +122,20 @@ public class GameKeyManager extends KeyAdapter {
     void repaintInner() {
         control().repaintInner();
     }
+    boolean enableForCurrentScreen() {
+        if (secondary() != null) {
+            if (secondary().screen() == Screens.ABANDON_COLONY) {
+                return false;
+            }
+            if (secondary().screen() == Screens.MOVE_COLONISTS_IN) {
+                return false;
+            }
+            if (secondary().screen() == Screens.MOVE_COLONISTS_OUT) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**
      * Handle the screen switch if the appropriate key is pressed.
      * @param e the key event
@@ -243,13 +257,17 @@ public class GameKeyManager extends KeyAdapter {
 
                 && !control().movieVisible() && !commons.battleMode) {
             if (e.getKeyChar() == '+' || e.getKeyCode() == KeyEvent.VK_PAGE_UP) {
-                world().player.moveNextPlanet();
-                repaintInner();
+                if (enableForCurrentScreen()) {
+                    world().player.moveNextPlanet();
+                    repaintInner();
+                }
                 e.consume();
             } else
             if (e.getKeyChar() == '-' || e.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
-                world().player.movePrevPlanet();
-                repaintInner();
+                if (enableForCurrentScreen()) {
+                    world().player.movePrevPlanet();
+                    repaintInner();
+                }
                 e.consume();
             }
             int keycode = e.getKeyCode();

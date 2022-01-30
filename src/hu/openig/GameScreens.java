@@ -51,7 +51,7 @@ public final class GameScreens {
     public ShipwalkScreen shipwalk;
     /** The status bar screen. */
     public StatusbarScreen statusbar;
-    /** The phsychologist test. */
+    /** The psychologist test. */
     public TestScreen test;
     /** The credits. */
     public CreditsScreen credits;
@@ -69,4 +69,8 @@ public final class GameScreens {
     public TradeScreen trade;
     /** The custom balance screen. */
     public CustomBalanceScreen customBalance;
+    /** Move colonists in or out. */
+    public MoveColonistsScreen moveColonists;
+    /** Abandon colony screen. */
+    public AbandonColonyScreen abandonColony;
 }

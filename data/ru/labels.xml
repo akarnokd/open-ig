@@ -3634,4 +3634,25 @@
     <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>At most one morale building of a type can be built.</entry>
     <entry key='custombalance.moralemode.LINEAR.desc'>Original Open-IG mode. Every additional morale building does full contribution with no upper limit.</entry>
     <entry key='custombalance.screen'>Custom Balance Settings</entry>
+    <entry key='colony.pavementmodebutton.tooltip'>Toggle Pavement Mode (pave over large surface features)[n]Shortcut: [c=FFFFFFFF]P[/c][n]Price: 5000 cr per cell</entry>
+    <entry key='colony.moveinbutton.tooltip'>Settle in colonists from another planet (opens dialog)</entry>
+    <entry key='colony.moveoutbutton.tooltip'>Move colonists to another planet (opens dialog)</entry>
+    <entry key='colony.abandonbutton.tooltip'>Abandon colony (opens dialog)</entry>
+    <entry key='movecolonists.in.title'>Settle in colonists</entry>
+    <entry key='movecolonists.out.title'>Move colonists out</entry>
+    <entry key='movecolonists.cancel'>Abbrechen</entry>
+    <entry key='abandoncolony.title'>Kolonie Ferlassen</entry>
+    <entry key='abandoncolony.cancel'>Abbrechen</entry>
+    <entry key='movecolonists.move'>Move</entry>
+    <entry key='movecolonists.planet'>Move &amp; Close</entry>
+    <entry key='movecolonists.planet'>Select planet</entry>
+    <entry key='movecolonists.noplanet'>No suitable planet</entry>
+    <entry key='movecolonists.percentage'>Percentage of colonists</entry>
+    <entry key='movecolonists.population' >Population:        %,d</entry>
+    <entry key='movecolonists.livingspace'>Livingspace:       %,d</entry>
+    <entry key='movecolonists.workerneeds'>Worker needs:      %,d</entry>
+    <entry key='movecolonists.tobemoved'  >Colonists to move: %,d</entry>
+    <entry key='movecolonists.cost'       >Cost:              %,d cr</entry>
+    <entry key='movecolonists.move'>Move</entry>
+    <entry key='movecolonists.moveandclose'>Move &amp; Close</entry>
 </labels>

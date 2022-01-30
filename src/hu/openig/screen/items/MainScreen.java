@@ -70,7 +70,7 @@ public class MainScreen extends ScreenBase {
          * @param size the text size
          * @param label the label
          */
-        public ClickLabel(int size, String label) {
+        ClickLabel(int size, String label) {
             this.height = size + 10;
             this.size = size;
             this.label = label;

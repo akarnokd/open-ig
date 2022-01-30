@@ -2455,7 +2455,7 @@ public class MapEditor extends JFrame {
          * Constructor.
          * @param surface sets the surface object
          */
-        public UndoableMapEdit(PlanetSurface surface) {
+        UndoableMapEdit(PlanetSurface surface) {
             this.surface = surface;
             basemapBefore = new HashMap<>(surface.basemap);
             surfaceBefore = new ArrayList<>(surface.features);
@@ -3038,7 +3038,7 @@ public class MapEditor extends JFrame {
          * Constructor, initializes the world list.
          * @param words the worlds
          */
-        public RowFilterByWords(String[] words) {
+        RowFilterByWords(String[] words) {
             this.words = words;
         }
 
