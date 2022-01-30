@@ -298,7 +298,7 @@ public class AbandonColonyScreen extends ScreenBase {
                         }
                         if (!ps.isEmpty()) {
                             double remaining = planet().population();
-                            double people = 1 + planet().population() / (ps.size() - 1);
+                            double people = 1 + planet().population() / (ps.size());
                             for (Planet p : ps) {
                                 if (p != planet()) {
                                     p.morale(p.morale() - 5);
