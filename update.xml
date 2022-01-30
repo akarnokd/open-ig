@@ -34,12 +34,12 @@
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='http://open-ig-dev.blogspot.hu'>
-      <desc lang='hu'>Felszín átformálás betonlapokkal</desc>
-      <desc lang='en'>Surface pavement over landscape</desc>
-      <desc lang='de'>Surface pavement over landscape</desc>
-      <desc lang='fr'>Surface pavement over landscape</desc>
-      <desc lang='ru'>Surface pavement over landscape</desc>
-      <desc lang='es'>Surface pavement over landscape</desc>
+      <desc lang='hu'>Új funkciók és UI: lakosság mozgatása, bolygó elhagyása</desc>
+      <desc lang='en'>New Features &amp; UI: move colonists, abandon planets</desc>
+      <desc lang='de'>New Features &amp; UI: move colonists, abandon planets</desc>
+      <desc lang='fr'>New Features &amp; UI: move colonists, abandon planets</desc>
+      <desc lang='ru'>New Features &amp; UI: move colonists, abandon planets</desc>
+      <desc lang='es'>New Features &amp; UI: move colonists, abandon planets</desc>
     </notes>
     <release-details>
       <entry version='0.95.222' date='2022-01-30'>
