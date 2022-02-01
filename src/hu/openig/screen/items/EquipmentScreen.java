@@ -483,6 +483,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
                     }
                 }
                 editNew = true;
+                onSelectInventorySlot(null);
                 screenSound(SoundType.NEW_FLEET);
             }
         };
@@ -1940,6 +1941,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             vc.type = null;
 //            vc.selected = false;
             vc.count = 0;
+            vc.enabled(false);
         }
     }
     /**
@@ -1952,7 +1954,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
      * @param tanks the tank cells
      */
     void prepareCells(Planet p, Fleet f,
-
             List<VehicleCell> fighters, List<VehicleCell> tanks) {
         clearCells(fighters);
         clearCells(tanks);
@@ -1993,6 +1994,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             if (vc != null && (count > 0 || avail)) {
                 vc.count = count;
                 vc.type = rt;
+                vc.enabled(true);
             }
         }
     }
@@ -2013,6 +2015,10 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
                 player().currentFleet = fleets.get(idx - 1);
             }
             updateInventory(null, fleet(), leftList);
+        }
+        if (configure.selectedSlot != null && configure.type != null) {
+            world().selectResearch(configure.type);
+            displayCategory(configure.type.category);
         }
         configure.type = null;
         configure.item = null;
@@ -2037,6 +2043,10 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             }
             updateInventory(null, fleet(), leftList);
             minimap.moveTo(fleet().x, fleet().y);
+        }
+        if (configure.selectedSlot != null && configure.type != null) {
+            world().selectResearch(configure.type);
+            displayCategory(configure.type.category);
         }
         configure.type = null;
         configure.item = null;
@@ -2356,8 +2366,12 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             doSelectCategoryButtons(research().category);
         } else {
             configure.selectedSlot = null;
-            world().selectResearch(configure.item.type);
-            displayCategory(research().category);
+            if (configure.item != null) {
+                world().selectResearch(configure.item.type);
+                displayCategory(research().category);
+            } else {
+                displayCategory(ResearchSubCategory.SPACESHIPS_FIGHTERS);
+            }
         }
     }
     /**
@@ -2561,6 +2575,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
      * Split the current fleet to another.
      */
     void doSplit() {
+        onSelectInventorySlot(null);
         secondary = fleet().newFleet();
         clearCells(rightFighterCells);
         clearCells(rightTankCells);

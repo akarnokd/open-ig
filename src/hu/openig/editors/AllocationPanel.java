@@ -8,17 +8,10 @@
 
 package hu.openig.editors;
 
-import hu.openig.mechanics.Allocator;
-import hu.openig.model.Building;
-import hu.openig.model.ResourceAllocationStrategy;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -28,6 +21,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+
+import hu.openig.mechanics.Allocator;
+import hu.openig.model.Building;
+import hu.openig.model.ResourceAllocationStrategy;
 
 /**
  * The panel to define the worker/energy allocation strategy and compute the results.
@@ -218,9 +215,6 @@ public class AllocationPanel extends JPanel {
 
         gl.linkSize(SwingConstants.HORIZONTAL, availableWorkersLbl, availableEnergyLbl, strategiesLbl);
         gl.linkSize(SwingConstants.HORIZONTAL, apply, refresh);
-
-        ThreadPoolExecutor exec = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-        exec.allowCoreThreadTimeOut(true);
     }
     /**
      *  Refresh the total values.

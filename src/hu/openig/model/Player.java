@@ -999,7 +999,7 @@ public class Player {
                 // find a nearby fleet to deploy into
                 Fleet found = null;
                 for (Fleet f : fleets.keySet()) {
-                    if (f.nearbyPlanet() == deliverTo) {
+                    if (f.owner == this && f.nearbyPlanet() == deliverTo) {
                         if (f.getAddLimit(ii.type) > 0) {
                             found = f;
                             break;
