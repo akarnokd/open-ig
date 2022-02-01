@@ -3679,5 +3679,5 @@
     <entry key='abandonplanet.kill.alien'>Következmények:[n]- A lakosság likvidálásra kerül[n]- Minden bolygó morálja csökken 20 ponttal[n]- Viszony minden ismert idegennel romlik 25 pontot[n]- Minden épület el lesz adva[n]- Minden űrbázis el lesz adva[n]- Minden vadász és jármű visszakerül a raktárba</entry>
     <entry key='abandonplanet.kill.cost'>Költség:          %,d cr  (Bevétel: %,d cr)</entry>
     <entry key='abandonplanet.move.found'>Az áttelepítés lehetséges</entry>
-    <entry key='abandonplanet.move.not'>Nincs hová áttelepíteni a lakosságot</entry>
+    <entry key='abandonplanet.move.notfound'>Nincs hová áttelepíteni a lakosságot</entry>
 </labels>

@@ -3680,7 +3680,7 @@
     <entry key='abandonplanet.kill.alien'>Consequences:[n]- Colonists are killed[n]- Morale on all planets decrease by 20 points[n]- Diplomatic relations worsen with all aliens by 25 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
     <entry key='abandonplanet.kill.cost'>Cost:          %,d cr  (Profit: %,d cr)</entry>
     <entry key='abandonplanet.move.found'>Colonists can be resettled</entry>
-    <entry key='abandonplanet.move.not'>Colonists have nowhere to go</entry>
+    <entry key='abandonplanet.move.notfound'>Colonists have nowhere to go</entry>
     <entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
