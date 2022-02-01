@@ -127,11 +127,15 @@ public class AbandonColonyScreen extends ScreenBase {
         // not an ingame screen
     }
     public boolean moveTargetAvailable() {
-        if (planet().race.equals(player().race)) {
-            return !player().ownPlanets().isEmpty();
+        for (Planet p : planet().owner.ownPlanets()) {
+            if (p != planet()) {
+                if (player().race.equals(planet().race)) {
+                    return true;
+                }
+            }
         }
         for (Player p : world().players.values()) {
-            if (p.race.equals(planet().race)) {
+            if (p != player() && p.race.equals(planet().race)) {
                 if (!p.ownPlanets().isEmpty()) {
                     return true;
                 }
@@ -172,9 +176,11 @@ public class AbandonColonyScreen extends ScreenBase {
         }
         if (moveTargetAvailable()) {
             moveCostTarget.text(get("abandonplanet.move.found"));
+            moveCostTarget.color(TextRenderer.GREEN);
         } else {
             moveCostTarget.text(get("abandonplanet.move.notfound"));
             moveColonists.enabled(false);
+            moveCostTarget.color(TextRenderer.RED);
         }
         killCostLabel.text(format("abandonplanet.kill.cost", priceKill, sp - costKill));
         if (priceKill > player().money()) {

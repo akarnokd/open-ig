@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.223'>
+  <module id='Game' version='0.95.224'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,8 +42,12 @@
       <desc lang='es'>New Features &amp; UI: move colonists, abandon planets</desc>
     </notes>
     <release-details>
+      <entry version='0.95.224' date='2022-02-01'>
+        <item category='UI'>Added missing label for when the colonists have nowhere to go when abandoning a colony.</item>
+        <item category='UI'>Fixed the logic that checks if alien colonists can be resettled to another planet within the current empire.</item>
+      </entry>
       <entry version='0.95.223' date='2022-02-01'>
-        <item category='UI'>Buying ships from the black market now adds them to the player's nearby fleet instead of anybody's fleet.</item>
+        <item category='UI'>Buying ships from the black market now adds them to the player&#39;s nearby fleet instead of anybody&#39;s fleet.</item>
         <item category='UI'>Selecting an equipment slot that is located at the bottom of a ship is now possible if the game window is small.</item>
         <item category='UI'>The selected equipment slot info no longer remains on screen when switching to split/transfer mode.</item>
         <item category='UI'>The selected equipment is no longer shown in large form when switching between fleets or ending join/transfer.</item>
@@ -166,8 +170,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.223.jar' sha1='C259F2FC3818A304C106C8E58D7410A267362169'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220130a2.zip' sha1='BFD8A6606206C61CA59B42A88439EDB1C993AE38'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.224.jar' sha1='DC9A72425F47B2A90764BCCBDEEFAE7BA6014C5C'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220201a2.zip' sha1='C3E1D0616C7D863605EC9B31AB1757EC0DDB3770'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

@@ -28,7 +28,7 @@
 <entry key="hostUPnP">false</entry>
 <entry key="useStandardFonts">false</entry>
 <entry key="spacewarDiminishingAttach">true</entry>
-<entry key="left">283</entry>
+<entry key="left">547</entry>
 <entry key="aiAllowBuildingUpgrades">false</entry>
 <entry key="tileCacheSize">0</entry>
 <entry key="autoBuildLimit">20000</entry>
@@ -49,7 +49,7 @@
 <entry key="joinPorts-count">0</entry>
 <entry key="slowOnEnemyAttack">true</entry>
 <entry key="showStarmapInfo">true</entry>
-<entry key="top">164</entry>
+<entry key="top">214</entry>
 <entry key="showStarmapLists">true</entry>
 <entry key="radarUnion">true</entry>
 <entry key="aiGroundAttackEverything">true</entry>
