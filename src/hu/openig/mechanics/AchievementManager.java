@@ -280,12 +280,14 @@ public final class AchievementManager {
                 return false;
             }
             for (DiplomaticRelation dr : t.relations) {
-                Player p = u.world.players.get(dr.second);
-                if ((dr.first.equals(u.id) || dr.second.equals(u.id))
-                        && !p.race.equals(u.race)
-                        && !p.race.equals("traders")
-                        && !p.race.equals("pirates")) {
-                    return true;
+                if (dr.first.equals(u.id) || dr.second.equals(u.id)) {
+                    Player otherPlayer = dr.first.equals(u.id) ? t.player(dr.second) : t.player(dr.first);
+                    if (dr.full
+                        && !otherPlayer.race.equals(u.race)
+                        && !otherPlayer.race.equals("traders")
+                        && !otherPlayer.race.equals("pirates")) {
+                        return true;
+                    }
                 }
             }
             return false;
