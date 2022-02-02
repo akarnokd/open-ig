@@ -1108,6 +1108,8 @@ public class World implements ModelLookup {
             xp.set("pause-research", p.pauseResearch);
             xp.set("pause-production", p.pauseProduction);
             xp.set("ai-difficulty", p.difficulty);
+            xp.set("colonization-limit", p.colonizationLimit);
+            xp.set("war-threshold", p.warThreshold);;
 
             if (!p.colonizationTargets.isEmpty()) {
                 xp.add("colonization-targets").content = U.join(p.colonizationTargets, ",");
@@ -1586,6 +1588,13 @@ public class World implements ModelLookup {
 
             p.pauseProduction = xplayer.getBoolean("pause-production", false);
             p.pauseResearch = xplayer.getBoolean("pause-research", false);
+
+            if (xplayer.has("colonization-limit")) {
+                p.colonizationLimit = xplayer.getInt("colonization-limit", -1);
+            }
+            if (xplayer.has("war-threshold")) {
+                p.warThreshold = xplayer.getInt("warThreshold", 45);
+            }
 
             XElement xcolonize = xplayer.childElement("colonization-targets");
             if (xcolonize != null && xcolonize.content != null) {
