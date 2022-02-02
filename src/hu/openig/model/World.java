@@ -1593,7 +1593,7 @@ public class World implements ModelLookup {
                 p.colonizationLimit = xplayer.getInt("colonization-limit", -1);
             }
             if (xplayer.has("war-threshold")) {
-                p.warThreshold = xplayer.getInt("warThreshold", 45);
+                p.warThreshold = xplayer.getInt("war-threshold", 45);
             }
 
             XElement xcolonize = xplayer.childElement("colonization-targets");
