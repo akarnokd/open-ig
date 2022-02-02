@@ -187,7 +187,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.226.jar' sha1='640850444527D9EC08CD12680B2E89C79BAC12D8'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.226.jar' sha1='711851629E0234E1506CDF57C12EBF5C11FA7F01'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220201a2.zip' sha1='C3E1D0616C7D863605EC9B31AB1757EC0DDB3770'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
