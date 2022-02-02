@@ -331,6 +331,8 @@ public class StaticDefensePlanner extends Planner {
      * @return true if action taken
      */
     boolean checkTanks(final AIPlanet planet) {
+        final Player expectedOwner = p;
+
         int vehicleMax = planet.statistics.vehicleMax;
 
         if (world.difficulty == Difficulty.EASY && p != world.mainPlayer) {
@@ -342,7 +344,28 @@ public class StaticDefensePlanner extends Planner {
                 vehicleMax,
                 p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
 
-        final Player expectedOwner = p;
+        if (vehicleMax < planet.statistics.vehicleCount) {
+            List<ResearchType> removeCandidates = new ArrayList<>();
+            removeCandidates.addAll(plan.tanks);
+            removeCandidates.addAll(plan.sleds);
+            Collections.shuffle(removeCandidates);
+            if (!removeCandidates.isEmpty()) {
+                final ResearchType rt = removeCandidates.get(0);
+                planet.addInventoryCount(rt, planet.owner, -1);
+                world.addInventoryCount(rt, 1);
+                add(new Action0() {
+                    @Override
+                    public void invoke() {
+                        if (planet.planet.owner == expectedOwner) {
+                            planet.planet.changeInventory(rt, planet.owner, -1);
+                            planet.planet.owner.changeInventoryCount(rt, 1);
+                            log("UndeployExcessCapacityTanks, Planet = %s, Type = %s, Count = %s", planet.planet.id, rt, 1);
+                        }
+                    }
+                });
+                return true;
+            }
+        }
 
         if (planet.owner.money() >= MONEY_LIMIT) {
             boolean productionPlaced = false;
@@ -441,10 +464,11 @@ public class StaticDefensePlanner extends Planner {
                                 if (currentVehicleCount == expectedVehicleCount
                                         && currentVehicleMax == expectedVehicleMax
                                         && currentInventoryLocal == inventoryLocal) {
-                                    if (p.inventoryCount(rt) >= remaining) {
-                                        planet.planet.changeInventory(rt, planet.owner, remaining);
+                                    int maxDeploy = Math.min(remaining, Math.max(0, currentVehicleMax - currentVehicleCount));
+                                    if (p.inventoryCount(rt) >= maxDeploy && maxDeploy > 0) {
+                                        planet.planet.changeInventory(rt, planet.owner, maxDeploy);
                                         p.changeInventoryCount(rt, -remaining);
-                                        log("DeployTanks, Planet = %s, Type = %s, Count = %s, Current = %d, Max = %d", planet.planet.id, rt, remaining, currentInventoryLocal, currentVehicleMax);
+                                        log("DeployTanks, Planet = %s, Type = %s, Count = %s, Current = %d, Max = %d", planet.planet.id, rt, maxDeploy, currentInventoryLocal, currentVehicleMax);
                                     }
                                 }
                             }

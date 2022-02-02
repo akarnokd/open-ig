@@ -20,7 +20,7 @@
 <entry key="scaleAllScreens">true</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="showStarmapScroll">true</entry>
-<entry key="maximized">false</entry>
+<entry key="maximized">true</entry>
 <entry key="classicControls">true</entry>
 <entry key="allowWeather">true</entry>
 <entry key="fullScreen">false</entry>
@@ -28,7 +28,7 @@
 <entry key="hostUPnP">false</entry>
 <entry key="useStandardFonts">false</entry>
 <entry key="spacewarDiminishingAttach">true</entry>
-<entry key="left">596</entry>
+<entry key="left">585</entry>
 <entry key="aiAllowBuildingUpgrades">false</entry>
 <entry key="tileCacheSize">0</entry>
 <entry key="autoBuildLimit">0</entry>
@@ -49,7 +49,7 @@
 <entry key="joinPorts-count">0</entry>
 <entry key="slowOnEnemyAttack">true</entry>
 <entry key="showStarmapInfo">true</entry>
-<entry key="top">147</entry>
+<entry key="top">48</entry>
 <entry key="showStarmapLists">true</entry>
 <entry key="radarUnion">true</entry>
 <entry key="aiGroundAttackEverything">true</entry>

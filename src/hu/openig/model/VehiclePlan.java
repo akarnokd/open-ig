@@ -62,18 +62,18 @@ public class VehiclePlan {
         Collections.sort(tanks, ResearchType.EXPENSIVE_FIRST);
         Collections.sort(sleds, ResearchType.EXPENSIVE_FIRST);
 
+        List<ResearchType> selectedSleds = new ArrayList<>();
         if (!sleds.isEmpty()) {
             ResearchType bestSled = sleds.get(0);
-            sleds.clear();
-            sleds.add(bestSled);
+            selectedSleds.add(bestSled);
         }
-        sleds.addAll(special);
+        selectedSleds.addAll(special);
 
         // expected composition
         int tankCount = special.isEmpty() ? max * 2 / 3 : max / 2;
         int vehicleCount = max - tankCount;
         int sledCount = vehicleCount - onePerKind.size();
-        if (sleds.size() == 0) {
+        if (selectedSleds.size() == 0) {
             tankCount += sledCount;
             sledCount = 0;
         }
@@ -95,14 +95,14 @@ public class VehiclePlan {
             }
             max -= tankCount;
         }
-        if (!sleds.isEmpty()) {
+        if (!selectedSleds.isEmpty()) {
             int si = 0;
             while (sledCount > 0 && max > 0) {
-                Integer dc = demand.get(sleds.get(si));
-                demand.put(sleds.get(si), dc != null ? dc + 1 : 1);
+                Integer dc = demand.get(selectedSleds.get(si));
+                demand.put(selectedSleds.get(si), dc != null ? dc + 1 : 1);
                 max--;
                 sledCount--;
-                si = (si + 1) % sleds.size();
+                si = (si + 1) % selectedSleds.size();
             }
         }
         for (ResearchType rt : onePerKind) {

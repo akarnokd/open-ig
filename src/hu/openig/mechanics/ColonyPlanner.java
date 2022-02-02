@@ -8,8 +8,16 @@
 
 package hu.openig.mechanics;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
+import hu.openig.core.Location;
 import hu.openig.model.AIBuilding;
 import hu.openig.model.AIControls;
 import hu.openig.model.AIPlanet;
@@ -17,15 +25,10 @@ import hu.openig.model.AIWorld;
 import hu.openig.model.Building;
 import hu.openig.model.BuildingType;
 import hu.openig.model.Planet;
+import hu.openig.model.Player;
+import hu.openig.model.SurfaceFeature;
 import hu.openig.model.TaxLevel;
 import hu.openig.model.Tile;
-
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 /**
  * Colony planner. Constructs civilian buildings,
@@ -199,6 +202,11 @@ public class ColonyPlanner extends Planner {
                 && world.money < 100000) {
             world.money = 0L; // do not let money-related tasks to continue
             return true;
+        }
+        if (!planet.statistics.constructing) {
+            if (checkPavement(planet)) {
+                return true;
+            }
         }
         return false;
     }
@@ -1023,6 +1031,65 @@ public class ColonyPlanner extends Planner {
                 return true;
             }
         }
+        return false;
+    }
+
+    boolean checkPavement(final AIPlanet planet) {
+        // consider only when the player is very rich
+        if (world.money < 1000 * 1000) {
+            return false;
+        }
+        List<SurfaceFeature> features = new ArrayList<>();
+        for (SurfaceFeature sf : planet.planet.surface.features) {
+            if (!planet.pavements.contains(sf.location)) {
+                features.add(sf);
+            }
+        }
+
+        if (!features.isEmpty()) {
+            final SurfaceFeature candidate = Collections.min(features, new Comparator<SurfaceFeature>() {
+                @Override
+                public int compare(SurfaceFeature o1, SurfaceFeature o2) {
+                    int area1 = o1.tile.width * o1.tile.height;
+                    int area2 = o2.tile.width * o2.tile.height;
+                    return area1 < area2 ? -1 : (area1 > area2 ? 1 : 0);
+                }
+            });
+
+            final int price = candidate.tile.width * candidate.tile.height * 5000;
+            if (world.money >= price) {
+                world.money -= price;
+
+                for (int i = 0; i < candidate.tile.width; i++) {
+                    for (int j = 0; j < candidate.tile.height; j++) {
+                        planet.pavements.add(Location.of(candidate.location.x + i, candidate.location.y - j));
+                    }
+                }
+
+                final Player expectedOwner = p;
+                add(new Action0() {
+                    @Override
+                    public void invoke() {
+                        if (planet.planet.owner == expectedOwner && expectedOwner.money() >= price) {
+                            if (!planet.planet.surface.pavements.contains(candidate.location)) {
+                                expectedOwner.addMoney(-price);
+                                expectedOwner.statistics.moneySpent.value += price;
+                                expectedOwner.world.statistics.moneySpent.value += price;
+
+                                for (int i = 0; i < candidate.tile.width; i++) {
+                                    for (int j = 0; j < candidate.tile.height; j++) {
+                                        planet.planet.surface.pavements.add(Location.of(candidate.location.x + i, candidate.location.y - j));
+                                    }
+                                }
+                                log("Adding Pavement, Planet = %s, Location = %s, Price = %s", planet.planet.id, candidate.location, price);
+                            }
+                        }
+                    }
+                });
+                return true;
+            }
+        }
+
         return false;
     }
 }
