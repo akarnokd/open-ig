@@ -86,9 +86,7 @@ public class Mission22 extends Mission {
         }
         Fleet f;
         if (own != null
-
                 && own.getStatistics().battleshipCount < 3
-
                 && own.getStatistics().cruiserCount < 25
                 && own.inventoryCount(mission.research("Fighter2")) < 30 - 6) {
             f = own;

@@ -286,7 +286,7 @@ public class ColonizationPlanner extends Planner {
         for (final AIFleet fleet : colonizers) {
             if (fleet.targetPlanet != null) {
                 AIPlanet pl = world.planetMap.get(fleet.targetPlanet);
-                if (pl.owner != null || pl.knowledge.compareTo(PlanetKnowledge.OWNER) < 0
+                if (pl == null || pl.owner != null || pl.knowledge.compareTo(PlanetKnowledge.OWNER) < 0
                         || (explicitMode && !world.colonizationTargets.contains(pl.planet.id))) {
                     // stop the fleet
                     add(new Action0() {

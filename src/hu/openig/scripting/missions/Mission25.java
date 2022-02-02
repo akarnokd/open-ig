@@ -28,6 +28,8 @@ public class Mission25 extends Mission {
     }
     /** The mission stage. */
     M25 stage = M25.NONE;
+    /** Unbound aliens at most once. */
+    boolean unboundOnce;
     @Override
     public boolean applicable() {
         return world.level == 5;
@@ -67,6 +69,14 @@ public class Mission25 extends Mission {
             });
         }
         checkMainShip();
+
+        if (!unboundOnce) {
+            unboundOnce = true;
+            // make sure the aliens can colonize as much as they want
+            for (Player p : world.players.values()) {
+                p.colonizationLimit = -1;
+            }
+        }
     }
     @Override
     public void onLevelChanged() {
