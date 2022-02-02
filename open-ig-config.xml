@@ -47,7 +47,7 @@
 <entry key="showTooltips">true</entry>
 <entry key="disableD3D">false</entry>
 <entry key="joinPorts-count">0</entry>
-<entry key="slowOnEnemyAttack">false</entry>
+<entry key="slowOnEnemyAttack">true</entry>
 <entry key="showStarmapInfo">true</entry>
 <entry key="top">147</entry>
 <entry key="showStarmapLists">true</entry>

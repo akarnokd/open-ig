@@ -45,7 +45,6 @@ public final class AutoBuilder {
         if (planet.autoBuild != AutoBuild.AI) {
             // do not interfere with hubless colonies
             if (ps.constructing
-
                     || ps.hasWarning(PlanetProblems.COLONY_HUB)
                     || ps.hasProblem(PlanetProblems.COLONY_HUB)
             ) {
@@ -60,20 +59,19 @@ public final class AutoBuilder {
             // if energy shortage
             if (ps.energyAvailable < ps.energyDemand) {
                 findOptions(world, planet,
-
-                new Func1<Building, Boolean>() {
-                    @Override
-                    public Boolean invoke(Building b) {
-                        return b.getEnergy() > 0 && planet.owner.money() >= b.type.cost;
+                    new Func1<Building, Boolean>() {
+                        @Override
+                        public Boolean invoke(Building b) {
+                            return b.getEnergy() > 0 && planet.owner.money() >= b.type.cost;
+                        }
+                    },
+                    new Func1<BuildingType, Boolean>() {
+                        @Override
+                        public Boolean invoke(BuildingType value) {
+                            Resource res = value.resources.get("energy");
+                            return res != null && res.amount > 0;
+                        }
                     }
-                },
-                new Func1<BuildingType, Boolean>() {
-                    @Override
-                    public Boolean invoke(BuildingType value) {
-                        Resource res = value.resources.get("energy");
-                        return res != null && res.amount > 0;
-                    }
-                }
                 );
                 sendIfAutoBuildOffMessage(world, planet);
                 return;
@@ -87,20 +85,19 @@ public final class AutoBuilder {
             // if living space shortage
             if (ps.houseAvailable < planet.population() || (planet.population() <= 5000 && ps.houseAvailable <= 5000)) {
                 findOptions(world, planet,
-
-                new Func1<Building, Boolean>() {
-                    @Override
-                    public Boolean invoke(Building b) {
-                        return b.hasResource("house");
+                    new Func1<Building, Boolean>() {
+                        @Override
+                        public Boolean invoke(Building b) {
+                            return b.hasResource("house");
+                        }
+                    },
+                    new Func1<BuildingType, Boolean>() {
+                        @Override
+                        public Boolean invoke(BuildingType value) {
+                            Resource res = value.resources.get("house");
+                            return res != null;
+                        }
                     }
-                },
-                new Func1<BuildingType, Boolean>() {
-                    @Override
-                    public Boolean invoke(BuildingType value) {
-                        Resource res = value.resources.get("house");
-                        return res != null;
-                    }
-                }
                 );
                 if (planet.autoBuild == AutoBuild.OFF) {
                     offRequest++;
@@ -111,20 +108,19 @@ public final class AutoBuilder {
             // if food shortage
             if (ps.foodAvailable < planet.population()) {
                 findOptions(world, planet,
-
-                new Func1<Building, Boolean>() {
-                    @Override
-                    public Boolean invoke(Building b) {
-                        return b.hasResource("food");
+                    new Func1<Building, Boolean>() {
+                        @Override
+                        public Boolean invoke(Building b) {
+                            return b.hasResource("food");
+                        }
+                    },
+                    new Func1<BuildingType, Boolean>() {
+                        @Override
+                        public Boolean invoke(BuildingType value) {
+                            Resource res = value.resources.get("food");
+                            return res != null;
+                        }
                     }
-                },
-                new Func1<BuildingType, Boolean>() {
-                    @Override
-                    public Boolean invoke(BuildingType value) {
-                        Resource res = value.resources.get("food");
-                        return res != null;
-                    }
-                }
                 );
                 if (planet.autoBuild == AutoBuild.OFF) {
                     offRequest++;
@@ -135,20 +131,19 @@ public final class AutoBuilder {
             // if hospital shortage
             if (ps.hospitalAvailable < planet.population()) {
                 findOptions(world, planet,
-
-                new Func1<Building, Boolean>() {
-                    @Override
-                    public Boolean invoke(Building b) {
-                        return b.hasResource("hospital");
+                    new Func1<Building, Boolean>() {
+                        @Override
+                        public Boolean invoke(Building b) {
+                            return b.hasResource("hospital");
+                        }
+                    },
+                    new Func1<BuildingType, Boolean>() {
+                        @Override
+                        public Boolean invoke(BuildingType value) {
+                            Resource res = value.resources.get("hospital");
+                            return res != null;
+                        }
                     }
-                },
-                new Func1<BuildingType, Boolean>() {
-                    @Override
-                    public Boolean invoke(BuildingType value) {
-                        Resource res = value.resources.get("hospital");
-                        return res != null;
-                    }
-                }
                 );
                 if (planet.autoBuild == AutoBuild.OFF) {
                     offRequest++;
@@ -159,20 +154,19 @@ public final class AutoBuilder {
             // if living space shortage
             if (ps.policeAvailable < planet.population()) {
                 findOptions(world, planet,
-
-                new Func1<Building, Boolean>() {
-                    @Override
-                    public Boolean invoke(Building b) {
-                        return b.hasResource("police");
+                    new Func1<Building, Boolean>() {
+                        @Override
+                        public Boolean invoke(Building b) {
+                            return b.hasResource("police");
+                        }
+                    },
+                    new Func1<BuildingType, Boolean>() {
+                        @Override
+                        public Boolean invoke(BuildingType value) {
+                            Resource res = value.resources.get("police");
+                            return res != null;
+                        }
                     }
-                },
-                new Func1<BuildingType, Boolean>() {
-                    @Override
-                    public Boolean invoke(BuildingType value) {
-                        Resource res = value.resources.get("police");
-                        return res != null;
-                    }
-                }
                 );
                 if (planet.autoBuild == AutoBuild.OFF) {
                     offRequest++;
@@ -232,7 +226,6 @@ public final class AutoBuilder {
         if (planet.autoBuild == AutoBuild.ECONOMIC) {
             AutoBuild ab = planet.autoBuild;
             if (!findOptions(world, planet,
-
                     new Func1<Building, Boolean>() {
                         @Override
                         public Boolean invoke(Building b) {
@@ -248,7 +241,6 @@ public final class AutoBuilder {
                 )) {
                     planet.autoBuild = ab;
                     findOptions(world, planet,
-
                         new Func1<Building, Boolean>() {
                             @Override
                             public Boolean invoke(Building b) {
@@ -270,7 +262,6 @@ public final class AutoBuilder {
             AutoBuild ab = planet.autoBuild;
             // construct first before upgrading
             if (!findOptions(world, planet,
-
                 new Func1<Building, Boolean>() {
                     @Override
                     public Boolean invoke(Building b) {
@@ -305,7 +296,6 @@ public final class AutoBuilder {
         } else
         if (planet.autoBuild == AutoBuild.UPGRADE) {
             findOptions(world, planet,
-
                     new Func1<Building, Boolean>() {
                         @Override
                         public Boolean invoke(Building b) {
@@ -323,7 +313,6 @@ public final class AutoBuilder {
         } else
         if (planet.autoBuild == AutoBuild.SOCIAL) {
             findOptions(world, planet,
-
                 new Func1<Building, Boolean>() {
                     @Override
                     public Boolean invoke(Building b) {
@@ -361,9 +350,7 @@ public final class AutoBuilder {
      * @return was there a construction/upgrade?
      */
     static boolean findOptions(World world, Planet planet,
-
             Func1<Building, Boolean> upgradeSelector,
-
             Func1<BuildingType, Boolean> buildSelector) {
         List<Building> upgr = findUpgradables(planet, upgradeSelector);
         if (upgr.size() > 0) {

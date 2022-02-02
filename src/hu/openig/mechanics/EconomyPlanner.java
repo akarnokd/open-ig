@@ -487,7 +487,6 @@ public class EconomyPlanner extends Planner {
         List<BuildingType> bts = new ArrayList<>();
         for (BuildingType bt : world.availableBuildings) {
             if (bt.kind.equals(BuildingType.KIND_SOCIAL)
-
                     && bt.hasResource(BuildingType.RESOURCE_MORALE)) {
                 bts.add(bt);
             }

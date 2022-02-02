@@ -101,6 +101,19 @@ public abstract class Planner {
             }
         };
     }
+    /**
+     * Create a comparator from the building order object for the buildings.
+     * @param o the order
+     * @return the comparator
+     */
+    Comparator<AIBuilding> fromOrder(final BuildingOrder o) {
+        return new Comparator<AIBuilding>() {
+            @Override
+            public int compare(AIBuilding o1, AIBuilding o2) {
+                return o.compare(o1, o2);
+            }
+        };
+    }
     /** Default incremental cost-order. */
     final BuildingOrder costOrder = new BuildingOrder() {
         @Override
@@ -352,10 +365,8 @@ public abstract class Planner {
 
      */
     public final boolean manageBuildings(final AIPlanet planet,
-
             final BuildingSelector selector,
             final BuildingOrder order,
-
             boolean upgradeFirst) {
         upgradeFirst &= this.world.allowBuildingUpgrades;
         if (upgradeFirst) {
@@ -436,7 +447,6 @@ public abstract class Planner {
      * @return the result of the operation
      */
     public final AIResult manageConstruction(final AIPlanet planet,
-
             final BuildingSelector selector,
             final BuildingOrder order) {
         // try building a new one

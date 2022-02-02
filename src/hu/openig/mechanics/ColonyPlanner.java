@@ -137,6 +137,11 @@ public class ColonyPlanner extends Planner {
         if (checkBootstrap(planet)) {
             return true;
         }
+        if (hasExcessHousing(planet)) {
+            if (removeExcessBuilding(planet, livingSpace, costOrder)) {
+                return false;
+            }
+        }
         if (checkTax(planet)) {
             return true;
         }
@@ -190,7 +195,6 @@ public class ColonyPlanner extends Planner {
         }
         // if very low morale, yield
         if (planet.morale >= 10 && planet.morale < 35
-
                 && planet.statistics.problems.size() + planet.statistics.warnings.size() > 0
                 && world.money < 100000) {
             world.money = 0L; // do not let money-related tasks to continue
@@ -366,7 +370,6 @@ public class ColonyPlanner extends Planner {
             @Override
             public boolean accept(AIPlanet planet, BuildingType value) {
                 return value.hasResource(BuildingType.RESOURCE_POPULATION_GROWTH)
-
                         && count(planet, value) < 1;
             }
         };
@@ -604,6 +607,47 @@ public class ColonyPlanner extends Planner {
         }
         return manageBuildings(planet, livingSpace, costOrder, true);
     }
+
+    boolean hasExcessHousing(AIPlanet planet) {
+        return planet.statistics.houseAvailable >= planet.population * 2 && planet.population >= 10000;
+    }
+
+    boolean removeExcessBuilding(final AIPlanet planet, BuildingSelector selector, BuildingOrder order) {
+        List<AIBuilding> candidates = new ArrayList<>();
+        for (AIBuilding b : planet.buildings) {
+            if (!b.type.kind.equals("MainBuilding")
+                    && selector.accept(planet, b)
+                    && b.isComplete()) {
+                candidates.add(b);
+            }
+        }
+        if (!candidates.isEmpty()) {
+            final AIBuilding toRemove = Collections.min(candidates, new Comparator<AIBuilding>() {
+                @Override
+                public int compare(AIBuilding o1, AIBuilding o2) {
+                    double h1 = o1.getResource("house");
+                    double h2 = o2.getResource("house");
+                    return h1 < h2 ? -1 : (h1 > h2 ? 1 : 0);
+                }
+            });
+            double houseProvided = toRemove.getResource("house");
+            if (planet.statistics.houseAvailable - houseProvided >= planet.population * 2 && planet.population >= 10000) {
+                planet.buildings.remove(toRemove);
+                planet.buildingCounts.put(toRemove.type, planet.buildingCounts.get(toRemove.type) - 1);
+                planet.statistics.houseAvailable -= (int)houseProvided;
+                add(new Action0() {
+                    @Override
+                    public void invoke() {
+                        log("ColonyRemoveExcessBuilding, Planet = %s (%s), Building = %s [%d], Population = %s, Housing = %s", planet.planet.name(), planet.planet.id, toRemove.type.name, toRemove.upgradeLevel, (int)planet.planet.population(), planet.planet.getStatistics().houseAvailable);
+                        controls.actionDemolishBuilding(planet.planet, toRemove.building);
+                    }
+                });
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns a list of buildings candidate for disablement.
      * @param planet the target planet
@@ -613,9 +657,7 @@ public class ColonyPlanner extends Planner {
         List<AIBuilding> result = new ArrayList<>();
         for (AIBuilding b : planet.buildings) {
             if (b.enabled && b.isComplete()
-
                     && !b.type.kind.equals(BuildingType.KIND_MAIN_BUILDING)
-
                     && b.getEnergy() < 0) {
                 result.add(b);
             }
