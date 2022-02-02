@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.224'>
+  <module id='Game' version='0.95.225'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,15 @@
       <desc lang='es'>New Features &amp; UI: move colonists, abandon planets</desc>
     </notes>
     <release-details>
+      <entry version='0.95.225' date='2022-02-02'>
+        <item category='Achievements' issues='1040'>Fix "E.T. Exists" not awarded if the aliens detected the player first.</item>
+        <item category='Achievements' issues='1040'>Fix "Nobel Prize" awarded too early because of counting the Thorin.</item>
+        <item category='AI' issues='1041'>The AI will now properly unequip obsolete rockets from space stations before equipping newer rocket types.</item>
+        <item category='AI' issues='1041'>The AI will no longer overfill the rockets on space stations beyond the intended capacity.</item>
+        <item category='AI' issues='1041'>The AI will no longer deploy tanks, fleets or stations if the target planet has changed owner.</item>
+        <item category='AI' issues='1041'>The AI will now properly upgrade the vehicle mixture on planets and will not overfill them.</item>
+        <item category='AI' issues='1041'>The AI will no longer remove obsolete vehicles before their replacements are available for deployment.</item>
+      </entry>
       <entry version='0.95.224' date='2022-02-01'>
         <item category='UI' issues='1038'>Added missing label for when the colonists have nowhere to go when abandoning a colony.</item>
         <item category='UI' issues='1038'>Fixed the logic that checks if alien colonists can be resettled to another planet within the current empire.</item>
@@ -170,7 +179,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.224.jar' sha1='DC9A72425F47B2A90764BCCBDEEFAE7BA6014C5C'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.225.jar' sha1='3A4EF510F249A738DBFE6BD5D0C65670D2D3A29A'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220201a2.zip' sha1='C3E1D0616C7D863605EC9B31AB1757EC0DDB3770'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
