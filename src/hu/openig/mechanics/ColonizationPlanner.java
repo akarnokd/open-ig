@@ -164,6 +164,7 @@ public class ColonizationPlanner extends Planner {
                         if (f0.task == FleetTask.IDLE) {
                             f0.moveTo(p0);
                             f0.task = FleetTask.COLONIZE;
+                            f0.owner.colonizationTargets.add(p0.id);
                             log("MoveToColonize, Fleet = %s (%d), Planet = %s (%s)", f0.name(), f0.id, p0.name(), p0.id);
                         }
                     }
@@ -383,6 +384,7 @@ public class ColonizationPlanner extends Planner {
                     if (fleet.fleet.task != FleetTask.SCRIPT) {
                         controls.actionMoveFleet(fleet.fleet, p0.planet);
                         fleet.fleet.task = FleetTask.COLONIZE;
+                        fleet.fleet.owner.colonizationTargets.add(p0.planet.id);
                         log("MoveToColonize2, Fleet = %s (%d), Planet = %s (%s)", fleet.fleet.name(), fleet.fleet.id, p0.planet.name(), p0.planet.id);
                     }
                 }
