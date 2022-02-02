@@ -113,7 +113,7 @@ public final class AchievementManager {
                 if (rt.race.contains(u.race) && rt.level < 6) {
                     total++;
                 }
-                if (u.isAvailable(rt)) {
+                if (rt.level < 6 && u.isAvailable(rt)) {
                     available++;
                 }
             }
@@ -281,10 +281,9 @@ public final class AchievementManager {
             }
             for (DiplomaticRelation dr : t.relations) {
                 Player p = u.world.players.get(dr.second);
-                if (dr.first.equals(u.id) && !p.race.equals(u.race)
-
+                if ((dr.first.equals(u.id) || dr.second.equals(u.id))
+                        && !p.race.equals(u.race)
                         && !p.race.equals("traders")
-
                         && !p.race.equals("pirates")) {
                     return true;
                 }

@@ -14,7 +14,7 @@
 <entry key="textCacheSize">0</entry>
 <entry key="intro">false</entry>
 <entry key="height">751</entry>
-<entry key="muteMusic">false</entry>
+<entry key="muteMusic">true</entry>
 <entry key="reequipTanks">true</entry>
 <entry key="timestep">60</entry>
 <entry key="scaleAllScreens">true</entry>
