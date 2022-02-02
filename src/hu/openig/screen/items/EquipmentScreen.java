@@ -2089,7 +2089,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
     void checkPlanetInventoryChanged(Planet p, VehicleList list) {
         if (p != null) {
             for (InventoryItem pii : p.inventory.iterable()) {
-                if (!list.items.contains(pii)) {
+                if ((pii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS)
+                        && !list.items.contains(pii)) {
                     updateInventory(p, null, list);
                     return;
                 }
