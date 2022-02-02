@@ -258,7 +258,6 @@ public class InventoryItem {
             }
         }
         if (type.category == ResearchSubCategory.WEAPONS_TANKS
-
                 || type.category == ResearchSubCategory.WEAPONS_VEHICLES) {
             BattleGroundVehicle bgw = owner.world.battle.groundEntities.get(type.id);
 

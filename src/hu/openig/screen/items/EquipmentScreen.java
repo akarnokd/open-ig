@@ -1263,10 +1263,10 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 
         for (InventoryItem ii : hi.inventory().iterable()) {
             if (ii.owner == o
-
                     && (ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
                     || ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
                     || ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+                    || ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS
                     )) {
                 Pair<Double, Double> dmgDps = ii.maxDamageDPS();
 
