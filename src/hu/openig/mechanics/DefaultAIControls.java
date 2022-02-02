@@ -79,11 +79,7 @@ public class DefaultAIControls implements AIControls {
     }
     @Override
     public void actionDeploySatellite(Planet planet, ResearchType satellite) {
-        if (!actionDeploySatellite(p, planet, satellite)) {
-            log(p, "DeploySatellite, Planet = %s, Type = %s, FAILED = not in inventory", planet.id, satellite.id);
-//        } else {
-//            log("DeploySatellite, Planet = %s, Type = %s", planet.id, satellite.id);
-        }
+        actionDeploySatellite(p, planet, satellite);
     }
     @Override
     public void actionRemoveProduction(ResearchType rt) {
@@ -107,13 +103,18 @@ public class DefaultAIControls implements AIControls {
      * @return true if successful
      */
     public static boolean actionDeploySatellite(Player player, Planet planet, ResearchType satellite) {
-        // decomission any previous satellites:
-        if (player.inventoryCount(satellite) > 0) {
-            int current = planet.inventoryCount(satellite.category, player);
-            if (satellite.category == ResearchSubCategory.SPACESHIPS_STATIONS
-                    && current >= player.world.params().stationLimit()) {
+        int current = planet.inventoryCount(satellite.category, player);
+        if (satellite.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+            if (planet.owner != player) {
+                log(player, "DeploySatellite, Planet = %s, Type = %s, FAILED = Owner changed", planet.id, satellite.id);
                 return false;
             }
+            if (current >= player.world.params().stationLimit()) {
+                log(player, "DeploySatellite, Planet = %s, Type = %s, FAILED = Max station limit", planet.id, satellite.id);
+                return false;
+            }
+        }
+        if (player.inventoryCount(satellite) > 0) {
             InventoryItem ii = new InventoryItem(planet.world.newId(), player, satellite);
             ii.init();
             ii.count = 1;
@@ -128,11 +129,11 @@ public class DefaultAIControls implements AIControls {
 
             return true;
         }
+        log(player, "DeploySatellite, Planet = %s, Type = %s, FAILED = Lack of inventory", planet.id, satellite.id);
         return false;
     }
     /**
-     * Deploy a satellite of the given player to the target planet.
-     * <p>Removes one item from inventory.</p>
+     * Deploy Fighters of the given player to the target planet.
      * @param player the player
      * @param planet the planet
      * @param fighter the satellite type
@@ -140,34 +141,32 @@ public class DefaultAIControls implements AIControls {
      * @return true if successful
      */
     public static boolean actionDeployFighters(Player player, Planet planet, ResearchType fighter, int count) {
-        // decomission any previous satellites:
-        if (player.inventoryCount(fighter) >= count) {
+        if (planet.owner == player) {
+            if (player.inventoryCount(fighter) >= count) {
 
-            InventoryItem ii = planet.getInventoryItem(fighter, player);
-            if (ii == null) {
-                if (count > player.world.params().fighterLimit()) {
-                    return false;
-                }
-                ii = new InventoryItem(planet.world.newId(), player, fighter);
-                ii.count = count;
-                ii.init();
-                planet.inventory.add(ii);
-                int ttl = player.world.getSatelliteTTL(player, fighter);
-                if (ttl > 0) {
-                    planet.timeToLive.put(ii, ttl);
-                }
-                player.changeInventoryCount(fighter, -count);
-
-                player.world.scripting.onDeploySatellite(planet, player, fighter);
-            } else {
-                if (ii.count + count <= player.world.params().fighterLimit()) {
-                    ii.count += count;
+                InventoryItem ii = planet.getInventoryItem(fighter, player);
+                int max = player.world.params().fighterLimit();
+                if (ii == null) {
+                    if (count > max) {
+                        log(player, "DeployFighters, Planet = %s, Type = %s, Count = %d, Max = %d, FAILED = Would exceed fighter limit", planet.id, fighter.id, count, max);
+                        return false;
+                    }
+                    ii = new InventoryItem(planet.world.newId(), player, fighter);
+                    ii.count = count;
+                    ii.init();
+                    planet.inventory.add(ii);
+                    player.changeInventoryCount(fighter, -count);
                 } else {
-                    return false;
+                    if (ii.count + count <= max) {
+                        ii.count += count;
+                    } else {
+                        log(player, "DeployFighters, Planet = %s, Type = %s, Current = %d, Count = %d, Max = %d, FAILED = Would exceed fighter limit", planet.id, fighter.id, ii.count, count, max);
+                        return false;
+                    }
                 }
-            }
 
-            return true;
+                return true;
+            }
         }
         return false;
     }

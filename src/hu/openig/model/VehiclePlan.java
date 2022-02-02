@@ -39,7 +39,6 @@ public class VehiclePlan {
      * @param diff the difficulty settings to determine the mixture
      */
     public void calculate(Iterable<ResearchType> available,
-
             BattleModel battle, int max, Difficulty diff) {
 
         // fill in fighters

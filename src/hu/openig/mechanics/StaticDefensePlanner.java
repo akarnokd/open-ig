@@ -8,6 +8,16 @@
 
 package hu.openig.mechanics;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import hu.openig.core.Action0;
 import hu.openig.core.Difficulty;
 import hu.openig.core.Pred0;
@@ -20,22 +30,13 @@ import hu.openig.model.BuildingType;
 import hu.openig.model.EquipmentSlot;
 import hu.openig.model.InventorySlot;
 import hu.openig.model.Planet;
+import hu.openig.model.Player;
 import hu.openig.model.Production;
 import hu.openig.model.ResearchSubCategory;
 import hu.openig.model.ResearchType;
 import hu.openig.model.Tile;
 import hu.openig.model.VehiclePlan;
 import hu.openig.utils.U;
-
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Planner for building ground defenses and space stations.
@@ -336,16 +337,12 @@ public class StaticDefensePlanner extends Planner {
             vehicleMax = vehicleMax * 2 / 3;
         }
 
-        // don't bother if already maxed
-        if  (vehicleMax <= planet.statistics.vehicleCount) {
-            return false;
-        }
         final VehiclePlan plan = new VehiclePlan();
         plan.calculate(world.availableResearch, w.battle,
-
                 vehicleMax,
-
                 p == world.mainPlayer ? Difficulty.HARD : world.difficulty);
+
+        final Player expectedOwner = p;
 
         if (planet.owner.money() >= MONEY_LIMIT) {
             boolean productionPlaced = false;
@@ -371,53 +368,92 @@ public class StaticDefensePlanner extends Planner {
             if (productionPlaced) {
                 return true;
             }
-
-            // undeploy old technology
-            for (final AIInventoryItem ii : planet.inventory) {
-                if (!plan.demand.containsKey(ii.type)
-
-                        && (plan.tanks.contains(ii.type) || plan.sleds.contains(ii.type))) {
-                    int cnt1 = planet.inventoryCount(ii.type, p);
-                    world.addInventoryCount(ii.type, cnt1);
-                    planet.addInventoryCount(ii.type, p, -cnt1);
-                    add(new Action0() {
-                        @Override
-                        public void invoke() {
-                            int cnt = planet.planet.inventoryCount(ii.type, ii.owner);
-                            planet.planet.changeInventory(ii.type, planet.owner, -cnt);
-                            planet.owner.changeInventoryCount(ii.type, cnt);
-                            log("Undeploy, Planet = %s, Type = %s, Count = %s", planet.planet.id, ii.type, cnt);
-                        }
-                    });
-                    return true;
-                }
-            }
         }
         // deploy new equipment
 
-        int maxDeploy = vehicleMax - planet.statistics.vehicleCount;
         for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
             final ResearchType rt = e.getKey();
-            final int count = e.getValue();
+            final int planCount = e.getValue();
             final int inventoryLocal = planet.inventoryCount(rt);
-            final int cnt = Math.max(0, Math.min(count - inventoryLocal, maxDeploy));
+            final int inventoryGlobal = world.inventoryCount(rt);
+            final int remaining = Math.max(0, planCount - inventoryLocal);
 
-            if (cnt > 0 && world.inventoryCount(rt) >= cnt) {
-                world.addInventoryCount(rt, -cnt);
+            // if the current mixture does not match the intended mixture, undeploy the excess
+            if (inventoryLocal > planCount) {
+                final int excess = inventoryLocal - planCount;
+                planet.addInventoryCount(rt, p, -excess);
+                world.addInventoryCount(rt, excess);
+                planet.statistics.vehicleCount -= excess;
                 add(new Action0() {
                     @Override
                     public void invoke() {
-                        if (p.inventoryCount(rt) >= cnt) {
-                            planet.planet.changeInventory(rt, planet.owner, cnt);
-                            p.changeInventoryCount(rt, -cnt);
-                            log("DeployTanks, Planet = %s, Type = %s, Count = %s", planet.planet.id, rt, cnt);
+                        if (planet.planet.owner == expectedOwner) {
+                            int currentInventoryLocal = planet.planet.inventoryCount(rt, p);
+                            if (currentInventoryLocal > planCount) {
+                                int currentExcess = currentInventoryLocal - planCount;
+                                planet.planet.changeInventory(rt, planet.owner, -currentExcess);
+                                planet.owner.changeInventoryCount(rt, currentExcess);
+                                log("UndeployExcessTanks, Planet = %s, Type = %s, Count = %s, Current = %d, Plan = %d", planet.planet.id, rt, currentExcess, currentInventoryLocal, planCount);
+                            }
                         }
-
                     }
                 });
-//                maxDeploy -= cnt;
-                planet.statistics.vehicleCount += cnt;
                 return true;
+            }
+            if (remaining > 0 && inventoryGlobal >= remaining) {
+                // undeploy old technology only when the new technology is fully ready
+                for (final AIInventoryItem ii : planet.inventory) {
+                    if (!plan.demand.containsKey(ii.type)) {
+                        if ((plan.tanks.contains(ii.type) && plan.tanks.contains(rt))
+                                || (plan.sleds.contains(ii.type) && plan.sleds.contains(rt))) {
+                            int cnt1 = planet.inventoryCount(ii.type, p);
+                            world.addInventoryCount(ii.type, cnt1);
+                            planet.addInventoryCount(ii.type, p, -cnt1);
+                            planet.statistics.vehicleCount -= cnt1;
+                            add(new Action0() {
+                                @Override
+                                public void invoke() {
+                                    if (planet.planet.owner == expectedOwner) {
+                                        int cnt = planet.planet.inventoryCount(ii.type, ii.owner);
+                                        planet.planet.changeInventory(ii.type, planet.owner, -cnt);
+                                        planet.owner.changeInventoryCount(ii.type, cnt);
+                                        log("UndeployTanks, Planet = %s, Type = %s, Count = %s", planet.planet.id, ii.type, cnt);
+                                    }
+                                }
+                            });
+                            return true;
+                        }
+                    }
+                }
+                final int expectedVehicleCount = planet.statistics.vehicleCount;
+                final int expectedVehicleMax = vehicleMax;
+                if (expectedVehicleCount <= expectedVehicleMax) {
+                    world.addInventoryCount(rt, -remaining);
+                    planet.addInventoryCount(rt, expectedOwner, remaining);
+                    add(new Action0() {
+                        @Override
+                        public void invoke() {
+                            if (planet.planet.owner == expectedOwner) {
+                                int currentVehicleCount = planet.planet.getStatistics().vehicleCount;
+                                int currentVehicleMax = planet.planet.getStatistics().vehicleMax;
+                                int currentInventoryLocal = planet.planet.inventoryCount(rt, expectedOwner);
+                                // make sure the vehicle amount wasn't changed by the player
+                                if (currentVehicleCount == expectedVehicleCount
+                                        && currentVehicleMax == expectedVehicleMax
+                                        && currentInventoryLocal == inventoryLocal) {
+                                    if (p.inventoryCount(rt) >= remaining) {
+                                        planet.planet.changeInventory(rt, planet.owner, remaining);
+                                        p.changeInventoryCount(rt, -remaining);
+                                        log("DeployTanks, Planet = %s, Type = %s, Count = %s, Current = %d, Max = %d", planet.planet.id, rt, remaining, currentInventoryLocal, currentVehicleMax);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    planet.statistics.vehicleCount += remaining;
+                    return true;
+                }
+                log("DeployTanks, Planet = %s, Type = %s, Count = %s, Current = %d, Max = %d, FAILED = At max vehicle capacity", planet.planet.id, rt, remaining, expectedVehicleCount, expectedVehicleMax);
             }
         }
 
@@ -514,6 +550,7 @@ public class StaticDefensePlanner extends Planner {
                     }
                     return true;
                 }
+                world.addInventoryCount(station, -1);
                 //deploy satellite
                 final ResearchType fstation = station;
                 add(new Action0() {
@@ -627,37 +664,50 @@ public class StaticDefensePlanner extends Planner {
                     if (rt1 != null && rt1.category == ResearchSubCategory.WEAPONS_PROJECTILES) {
                         int d = is.slot.max;
                         if (is.type == rt1) {
-                            d = is.slot.max - is.count;
+                            d = Math.max(is.slot.max - is.count, 0);
                         }
 
-                        // check if inventory is available
-                        if (d <= world.inventoryCount(rt1)) {
-                            world.addInventoryCount(rt1, -d);
-                            final int fd = d;
-                            final ResearchType frt1 = rt1;
-                            final EquipmentSlot fes = is.slot;
-                            // deploy into slot
-                            add(new Action0() {
-                                @Override
-                                public void invoke() {
-                                    if (p.inventoryCount(frt1) >= fd) {
-                                        p.changeInventoryCount(frt1, -fd);
+                        if (d > 0) {
+                            // check if inventory is available
+                            if (d <= world.inventoryCount(rt1)) {
+                                world.addInventoryCount(rt1, -d);
+                                final int fd = d;
+                                final ResearchType frt1 = rt1;
+                                final EquipmentSlot fes = is.slot;
+                                // deploy into slot
+                                add(new Action0() {
+                                    @Override
+                                    public void invoke() {
+                                        if (p.inventoryCount(frt1) >= fd) {
 
-                                        if (ii.parent != null) {
-                                            for (InventorySlot is : ii.parent.slots.values()) {
-                                                if (is.slot == fes) {
-                                                    is.count += fd;
-                                                    break;
+                                            if (ii.parent != null) {
+                                                for (InventorySlot is : ii.parent.slots.values()) {
+                                                    if (is.slot == fes) {
+                                                        // unequip previous tech
+                                                        if (is.type != null && is.type != frt1) {
+                                                            p.changeInventoryCount(is.type, is.count);
+                                                            is.count = 0;
+                                                            is.type = frt1;
+                                                        }
+                                                        // Make sure count doesn't exceed the limit upfront
+                                                        is.count = Math.min(Math.max(0, is.count), is.slot.max);
+                                                        int newCount = Math.min(is.slot.max, is.count + fd);
+                                                        // since the player could have deployed, we only deploy the remaining
+                                                        int actualDeploy = Math.max(0, newCount - is.count);
+                                                        is.count = newCount;
+                                                        p.changeInventoryCount(frt1, -actualDeploy);
+                                                        break;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
-                            });
-                            result = true;
-                        } else {
-                            Integer id = demand.get(rt1);
-                            demand.put(rt1, id != null ? id + d : d);
+                                });
+                                result = true;
+                            } else {
+                                Integer id = demand.get(rt1);
+                                demand.put(rt1, id != null ? id + d : d);
+                            }
                         }
                     }
                 }
@@ -690,7 +740,7 @@ public class StaticDefensePlanner extends Planner {
             int ic = planet.inventoryCount(rt, planet.owner);
             if (ic < world.fighterLimit) {
                 int gic = world.inventoryCount(rt);
-                final int needed = world.fighterLimit - ic;
+                final int needed = Math.max(0, world.fighterLimit - ic);
                 if (gic >= needed) {
                     world.addInventoryCount(rt, -needed);
                     add(new Action0() {
