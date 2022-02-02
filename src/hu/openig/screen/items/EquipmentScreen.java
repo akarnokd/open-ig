@@ -264,7 +264,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
     @Override
     public void onInitialize() {
         base.setBounds(0, 0,
-
                 commons.equipment().base.getWidth(), commons.equipment().base.getHeight());
 
         infoButton = new UIImageButton(commons.common().infoButton);
@@ -1867,7 +1866,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             sell.visible(planet().inventoryCount(rt, player()) > 0);
         } else
         if (own && ps.hasSpaceStation
-
                 && rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
             addButton.visible(
                     player().inventoryCount(rt) > 0
@@ -1929,6 +1927,8 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         right3.visible(false);
 
         noFlagship.visible(false);
+
+        checkPlanetInventoryChanged(planet(), leftList);
     }
     /**
 
@@ -2073,7 +2073,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         } else
 
         if (f != null && f.owner == player()) {
-
             list.group = true;
             for (InventoryItem pii : f.inventory.iterable()) {
                 if (pii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
@@ -2085,8 +2084,17 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         }
 
         list.compute();
-
     }
+
+    void checkPlanetInventoryChanged(Planet p, VehicleList list) {
+        for (InventoryItem pii : p.inventory.iterable()) {
+            if (!list.items.contains(pii)) {
+                updateInventory(p, null, list);
+                return;
+            }
+        }
+    }
+
     /**
      * Select the given vehicle.
      * @param rt the research type

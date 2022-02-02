@@ -1081,7 +1081,7 @@ public class ColonyPlanner extends Planner {
                                         planet.planet.surface.pavements.add(Location.of(candidate.location.x + i, candidate.location.y - j));
                                     }
                                 }
-                                log("Adding Pavement, Planet = %s, Location = %s, Price = %s", planet.planet.id, candidate.location, price);
+                                log("AddPavement, Planet = %s, Location = %s, Price = %s", planet.planet.id, candidate.location, price);
                             }
                         }
                     }
