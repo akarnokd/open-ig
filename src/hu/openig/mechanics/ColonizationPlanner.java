@@ -68,7 +68,6 @@ public class ColonizationPlanner extends Planner {
             boolean col = checkColonizersReady();
             boolean techOverfill = world.global.labs.count() >= world.global.planetCount * 3;
             if (rq || exp || col || techOverfill) {
-
                 conquerMorePlanets();
             }
         }
@@ -106,9 +105,7 @@ public class ColonizationPlanner extends Planner {
      */
     boolean conquerMorePlanets() {
         if (world.mayConquer
-
                 && (world.colonizationLimit < 0
-
                 || world.colonizationLimit > world.statistics.planetsColonized.value)) {
             // TODO this is more complicated
             planConquest();
@@ -124,18 +121,28 @@ public class ColonizationPlanner extends Planner {
         List<AIFleet> candidates = new ArrayList<>();
         List<String> cts = new ArrayList<>(world.colonizationTargets);
         List<String> remaining = new ArrayList<>();
-        for (String p : cts) {
-            boolean targeted = false;
-            for (AIFleet f : fleets) {
-                if (f.targetPlanet != null && f.targetPlanet.id.equals(p) && f.task == FleetTask.COLONIZE) {
-                    targeted = true;
-                } else
-                if (f.task == FleetTask.IDLE && f.hasInventory("ColonyShip")) {
-                    candidates.add(f);
+        for (final String p : cts) {
+            if (world.planetMap.get(p).owner == null) {
+                boolean targeted = false;
+                for (AIFleet f : fleets) {
+                    if (f.targetPlanet != null && f.targetPlanet.id.equals(p) && f.task == FleetTask.COLONIZE) {
+                        targeted = true;
+                    } else
+                    if (f.task == FleetTask.IDLE && f.hasInventory("ColonyShip")) {
+                        candidates.add(f);
+                    }
                 }
-            }
-            if (!targeted) {
-                remaining.add(p);
+                if (!targeted) {
+                    remaining.add(p);
+                }
+            } else {
+                // remove the now occupied planet from the targets
+                add(new Action0() {
+                    @Override
+                    public void invoke() {
+                        ColonizationPlanner.this.p.colonizationTargets.remove(p);
+                    }
+                });
             }
         }
         for (final String p : remaining) {
@@ -157,6 +164,7 @@ public class ColonizationPlanner extends Planner {
                         if (f0.task == FleetTask.IDLE) {
                             f0.moveTo(p0);
                             f0.task = FleetTask.COLONIZE;
+                            log("MoveToColonize, Fleet = %s (%d), Planet = %s (%s)", f0.name(), f0.id, p0.name(), p0.id);
                         }
                     }
                 });
@@ -283,6 +291,8 @@ public class ColonizationPlanner extends Planner {
                     add(new Action0() {
                         @Override
                         public void invoke() {
+                            String targetPlanet = fleet.fleet.targetPlanet() != null ? fleet.fleet.targetPlanet().name() : "?";
+                            log("CancelColonization, Fleet = %s (%d), Planet = %s", fleet.fleet.name(), fleet.fleet.id, targetPlanet);
                             fleet.fleet.stop();
                         }
                     });
@@ -312,6 +322,9 @@ public class ColonizationPlanner extends Planner {
                         p.colonizationTargets.remove(p0.id);
                         if (p0.owner == null) {
                             controls.actionColonizePlanet(f0, p0);
+                            log("ColonizePlanetFall, Fleet = %s (%d), Planet = %s (%s)", f0.name(), f0.id, p0.name(), p0.id);
+                        } else {
+                            log("ColonizePlanetFall, Fleet = %s (%d), Planet = %s (%s), FAILED = no longer empty", f0.name(), f0.id, p0.name(), p0.id);
                         }
                         f0.task = FleetTask.IDLE;
                     }
@@ -370,6 +383,7 @@ public class ColonizationPlanner extends Planner {
                     if (fleet.fleet.task != FleetTask.SCRIPT) {
                         controls.actionMoveFleet(fleet.fleet, p0.planet);
                         fleet.fleet.task = FleetTask.COLONIZE;
+                        log("MoveToColonize2, Fleet = %s (%d), Planet = %s (%s)", fleet.fleet.name(), fleet.fleet.id, p0.planet.name(), p0.planet.id);
                     }
                 }
             });

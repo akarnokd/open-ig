@@ -246,6 +246,12 @@ public abstract class Planner {
      * @param values the message parameters
      */
     final void log(String message, Object... values) {
+        /*
+        // FIXME filter out irrelevant information for now
+        if (!message.contains("Coloniz")) {
+            return;
+        }
+        */
         System.out.printf("AI:%s:", p.id);
         System.out.printf(message, values);
         System.out.println();
