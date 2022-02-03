@@ -926,7 +926,7 @@
 	<entry key='statistics.galaxy_money_spent_research'>Galaxis kutatási költség</entry>
 	<entry key='statistics.galaxy_money_spent_upgade'>Galaxis épület fejlesztés költség</entry>
 	<entry key='statistics.galaxy_build_count'>Galaxis építés darabszám</entry>
-	<entry key='statistics.galaxy_demolish_count'>Galaxis lerombolsá darabszám</entry>
+	<entry key='statistics.galaxy_demolish_count'>Galaxis lerombolás darabszám</entry>
 	<entry key='statistics.galaxy_sell_count'>Galaxis eladás darabszám</entry>
 	<entry key='statistics.galaxy_production_count'>Galaxis gyártás darabszám</entry>
 	<entry key='statistics.galaxy_research_count'>Galaxis kutatás darabszám</entry>
