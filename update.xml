@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.226'>
+  <module id='Game' version='0.95.227'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,11 @@
       <desc lang='es'>AI and UI bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.227' date='2022-02-03'>
+        <item category='UI'>The Equipment screen now counts the hitpoints and damage output of stations in the summation.</item>
+        <item category='AI,Campaign'>AI colonization limit changes due to entering Level 4 (Admiral) are now saved and loaded correctly. Note: the game can only fix older saves which are already in Level 5 (Grand Admiral).</item>
+        <item category='Labels'>Fix minor typo in galaxy statistics.</item>
+      </entry>
       <entry version='0.95.226' date='2022-02-02'>
         <item category='Achievements' issues='1040'>Fix &quot;E.T. Exists&quot; awarded too eagerly after the last fix.</item>
         <item category='AI,Balance'>The AI will now pave planets.</item>
@@ -187,8 +192,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.226.jar' sha1='711851629E0234E1506CDF57C12EBF5C11FA7F01'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220201a2.zip' sha1='C3E1D0616C7D863605EC9B31AB1757EC0DDB3770'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.227.jar' sha1='8076380C43E1419A57E52D9EF486699DFF4CA85E'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220203a2.zip' sha1='7B34A34485F65C719557C3829C2FB99507D00EF0'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
