@@ -2967,8 +2967,12 @@ public class World implements ModelLookup {
      */
     public void achievement(String a) {
         if (!env.profile().hasAchievement(a)) {
+            AchievementProgress ap = env.profile().getOrCreateProgress(a);
+            ap.displayProgress = false;
+            ap.max = 1;
+            ap.progress = 1;
+            env.profile().save();
             env.achievementQueue().add(a);
-            env.profile().grantAchievement(a);
         }
     }
     /**
@@ -3859,5 +3863,11 @@ public class World implements ModelLookup {
         double colonists = from.population() * percentage;
         from.population(Math.max(0, from.population() - colonists));
         to.population(to.population() + colonists);
+    }
+    /**
+     * @return The time elapsed ingame since the initial date.
+     */
+    public long elapsedGameTimeMillis() {
+        return time.getTimeInMillis() - initialDate.getTime();
     }
 }

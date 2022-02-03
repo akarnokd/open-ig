@@ -56,9 +56,7 @@ public class Mission26 extends Mission {
     public void onAutobattleFinish(BattleInfo battle) {
         if (battle.attacker.owner == player
                 && battle.targetFleet != null
-
                 && battle.targetFleet.owner == player("Traders")
-
                 && battle.targetFleet.inventory.isEmpty()) {
             world.achievement("achievement.embargo");
         }

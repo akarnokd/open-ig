@@ -1547,7 +1547,7 @@
   <entry key='multiplayer.settings.quicksave'>Allow host to quicksave</entry>
   <entry key='multiplayer.settings.simulation_speed'>Fixed simulation speed:</entry>
   <entry key='multiplayer.settings.change_groups'>Client may change group</entry>
-  <entry key='achievement.decade.desc'>You played 10 game years</entry>
+  <entry key='achievement.decade.desc'>You played 10 game years (over any number of playthroughs)</entry>
   <entry key='achievement.do_you_chat'>Chat first, fight later?</entry>
   <entry key='battlefinish.groundwar_lost'>You lost the ground war!</entry>
   <entry key='chat.global.identify_yourself'>Ship, identify yourself!</entry>
@@ -1604,7 +1604,7 @@
   <entry key='info.problems.worker.tooltip'>Serious lack of workers!</entry>
   <entry key='research.pause'>Pause research activity.</entry>
   <entry key='multiplayer.settings.client_traits'>Client may change traits</entry>
-  <entry key='achievement.oldest_man.desc'>You played 100 game years</entry>
+  <entry key='achievement.oldest_man.desc'>You played 100 game years (over any number of playthroughs)</entry>
   <entry key='battlefinish.spacewar_won'>You won the space battle!</entry>
   <entry key='colonyinfo.population'>Population   : %d %s (%s)</entry>
   <entry key='database.map.3.title'>The Thorin flagship&#39;s map</entry>

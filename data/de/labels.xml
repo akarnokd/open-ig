@@ -1734,7 +1734,7 @@
 	<entry key='achievement.death_star'>Todesstern</entry>
 	<entry key='achievement.death_star.desc'>Sie haben Ihre Kolonie zugrunde gehen lassen</entry>
 	<entry key='achievement.decade'>Ein Jahrzehnt im Dienst</entry>
-	<entry key='achievement.decade.desc'>Sie spielten 10 Spieljahre</entry>
+	<entry key='achievement.decade.desc'>Sie spielten 10 Spieljahre  (mährere durchspiel möglich)</entry>
 	<entry key='achievement.defender'>Verteidiger der Krone</entry>
 	<entry key='achievement.defender.desc'>Sie verteidigten erfolgreich Ihre Kolonie</entry>
 	<entry key='achievement.defense_contract'>Verteidigungsvertrag</entry>
@@ -1768,7 +1768,7 @@
 	<entry key='achievement.nobel_prize'>Nobelpreis</entry>
 	<entry key='achievement.nobel_prize.desc'>Sie haben alle Technologien erforscht</entry>
 	<entry key='achievement.oldest_man'>Der älteste Mensch</entry>
-	<entry key='achievement.oldest_man.desc'>Sie haben 100 Jahre lang gespielt.</entry>
+	<entry key='achievement.oldest_man.desc'>Sie haben 100 Jahre lang gespielt (mährere durchspiel möglich)</entry>
 	<entry key='achievement.pirate_bay'>Pirate Bay</entry>
 	<entry key='achievement.pirate_bay.desc'>Sie verloren einen Planeten an die Piraten</entry>
 	<entry key='achievement.popular'>Populär</entry>

@@ -37,7 +37,7 @@
   <entry key='achievement.death_star'>Звезда Смерти</entry>
   <entry key='achievement.death_star.desc'>Вы оставили колонию на уничтожение</entry>
   <entry key='achievement.decade'>Десятилетие на службе</entry>
-  <entry key='achievement.decade.desc'>Вы отыграли 10 лет</entry>
+  <entry key='achievement.decade.desc'>Вы отыграли 10 лет (any number of playthroughs)</entry>
   <entry key='achievement.defender'>Защитник короны</entry>
   <entry key='achievement.defender.desc'>Вы успешно защитили колонию</entry>
   <entry key='achievement.defense_contract'>Оборонный контракт</entry>
@@ -71,7 +71,7 @@
   <entry key='achievement.nobel_prize'>Нобелевская премия</entry>
   <entry key='achievement.nobel_prize.desc'>Вы исследовали все доступные технологии</entry>
   <entry key='achievement.oldest_man'>Старейшина</entry>
-  <entry key='achievement.oldest_man.desc'>Вы отыграли 100 лет</entry>
+  <entry key='achievement.oldest_man.desc'>Вы отыграли 100 лет (any number of playthroughs)</entry>
   <entry key='achievement.pirate_bay'>Пиратская бухта</entry>
   <entry key='achievement.pirate_bay.desc'>Пираты захватили планету</entry>
   <entry key='achievement.popular'>Настоящий лидер</entry>

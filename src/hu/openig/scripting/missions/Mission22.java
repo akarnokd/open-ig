@@ -52,8 +52,7 @@ public class Mission22 extends Mission {
 
         createMainShip(this);
         // achievement
-        String a = "achievement.admiral";
-        world.achievement(a);
+        world.achievement("achievement.admiral");
 
         Player dsl = player("Dargslan");
 

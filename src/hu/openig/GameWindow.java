@@ -1309,6 +1309,8 @@ public class GameWindow extends JFrame implements GameControls {
         final XElement xworld = commons.world().saveState();
         saveSettings(xworld);
         commons.saving.inc();
+        // save achievement progress
+        commons.profile().save();
         Callable<File> sw = new Callable<File>() {
             @Override
             public File call() throws Exception {

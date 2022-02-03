@@ -161,7 +161,7 @@ public class Mission4 extends Mission {
         if (pirateSurvived) {
             // indicate that we helped the pirate
             addMission("Mission-4-Helped", 1);
-            world.achievement("achievement.a_pirate_in_need");
+            world.achievement("a_pirate_in_need");
         }
         removeFleets();
         // make sure the temporary Pirates2 player has no relations left.

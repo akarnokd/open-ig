@@ -81,8 +81,7 @@ public class Mission25 extends Mission {
     @Override
     public void onLevelChanged() {
         if (world.level == 5) {
-            String a = "achievement.grand_admiral";
-            world.achievement(a);
+            world.achievement("achievement.grand_admiral");
 
             Player darglsanPlayer = player("Dargslan");
             // make sure the dargslan hate the player the most.

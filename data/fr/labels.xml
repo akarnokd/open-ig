@@ -81,7 +81,7 @@
   <entry key='achievement.death_star'>Etoile de la mort</entry>
   <entry key='achievement.death_star.desc'>Vous avez laissé une de vos colonie être détruite.</entry>
   <entry key='achievement.decade'>Une décennie de service</entry>
-  <entry key='achievement.decade.desc'>Dix années se sont écoulées depuis vos premières commandes.</entry>
+  <entry key='achievement.decade.desc'>Dix années se sont écoulées depuis vos premières commandes  (over any number of playthroughs)</entry>
   <entry key='achievement.defender'>Défenseur</entry>
   <entry key='achievement.defender.desc'>Vous avez défendu votre colonie et en êtes sorti victorieux.</entry>
   <entry key='achievement.defense_contract'>Contact défense</entry>
@@ -115,7 +115,7 @@
   <entry key='achievement.nobel_prize'>Prix Nobel</entry>
   <entry key='achievement.nobel_prize.desc'>Vous avez recherché toutes les technologies.</entry>
   <entry key='achievement.oldest_man'>Doyen de la galaxie</entry>
-  <entry key='achievement.oldest_man.desc'>Cent années se sont écoulées depuis vos premières commandes.</entry>
+  <entry key='achievement.oldest_man.desc'>Cent années se sont écoulées depuis vos premières commandes (over any number of playthroughs).</entry>
   <entry key='achievement.pirate_bay'>Pirate Bay</entry>
   <entry key='achievement.pirate_bay.desc'>Une de vos planètes est tombée aux mains des pirates.</entry>
   <entry key='achievement.popular'>Populaire</entry>

@@ -9,7 +9,7 @@
 package hu.openig.core;
 
 /**
- * A predicate with zero parameters.
+ * A predicate with two parameters.
  * @author akarnokd, 2011.12.28.
  * @param <T> the first parameter type
  * @param <U> the second parameter type

@@ -183,9 +183,9 @@
 	<entry key="achievement.food">Gondos étkezés</entry>
 	<entry key="achievement.food.desc">Az össz élelmiszer termelés meghaladja a 1.000.000 egységet</entry>
 	<entry key="achievement.decade">Tíz éve a szolgálatban</entry>
-	<entry key="achievement.decade.desc">Tíz évet játszottál a játékidő szerint</entry>
+	<entry key="achievement.decade.desc">Tíz évet játszottál a játékidő szerint (többszöri végigjátszással is elérhető)</entry>
 	<entry key="achievement.oldest_man">A legöregebb ember</entry>
-	<entry key="achievement.oldest_man.desc">Száz évet játszottál a játékidő szerint</entry>
+	<entry key="achievement.oldest_man.desc">Száz évet játszottál a játékidő szerint (többszöri végigjátszással is elérhető)</entry>
 	<entry key="achievement.all_your_base">All your base are belong to us</entry>
 	<entry key="achievement.all_your_base.desc">Az ellenséged elfoglalta a bolygódat</entry>
 	<entry key="achievement.et">E.T. létezik</entry>

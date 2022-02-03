@@ -791,11 +791,29 @@ public final class Simulator {
 
         for (String a : AchievementManager.achievements()) {
             if (!p.hasAchievement(a)) {
-                if (AchievementManager.get(a).invoke(world, world.player)) {
+                AchievementProgress ap = p.getOrCreateProgress(a);
+                AchievementManager.get(a).invoke(world, world.player, ap);
+                if (ap.isComplete()) {
                     world.env.achievementQueue().add(a);
-                    p.grantAchievement(a);
+                    p.save();
+                } else
+                if (dayChange) {
+                    p.save();
                 }
             }
+        }
+        if (dayChange) {
+            AchievementProgress ap = p.getOrCreateProgress("achievements.decade");
+            ap.displayProgress = true;
+            ap.max = 10;
+            ap.progress += 1 / 365.2425;
+
+            ap = p.getOrCreateProgress("achievements.oldest_man");
+            ap.displayProgress = true;
+            ap.max = 100;
+            ap.progress += 1 / 365.2425;
+
+            p.save();
         }
     }
     /**

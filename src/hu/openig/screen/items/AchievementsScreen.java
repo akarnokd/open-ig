@@ -8,10 +8,25 @@
 
 package hu.openig.screen.items;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.Pair;
 import hu.openig.mechanics.AchievementManager;
+import hu.openig.model.AchievementProgress;
 import hu.openig.model.Screens;
 import hu.openig.model.SoundType;
 import hu.openig.model.World;
@@ -27,20 +42,6 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 /**
  * The achievements and statistics listing screen.
  * @author akarnokd, 2010.01.11.
@@ -54,7 +55,6 @@ public class AchievementsScreen extends ScreenBase {
         public String description;
         /**
          * Constructor.
-
          * @param title the title label and the achievement ID
          * @param description the description label
          */
@@ -513,11 +513,12 @@ public class AchievementsScreen extends ScreenBase {
             earned.location(counts.x + counts.width + 25, counts.y);
             unearned.location(earned.x + earned.width + 25, earned.y);
 
+            int iconWidth = commons.common().achievement.getWidth();
             int y = r.y;
             for (int i = achievementIndex; i < achList.size() && i < achievementIndex + achievementCount; i++) {
                 AchievementEntry ae = achList.get(i);
                 String desc = get(ae.description);
-                int tw = r.width - commons.common().achievement.getWidth() - 10;
+                int tw = r.width - iconWidth - 10;
                 List<String> lines = new ArrayList<>();
                 commons.text().wrapText(desc, tw, 10, lines);
                 BufferedImage img = commons.common().achievement;
@@ -527,14 +528,30 @@ public class AchievementsScreen extends ScreenBase {
                     color = 0xFFC0C0C0;
                 }
                 g2.drawImage(img, r.x, y, null);
-                commons.text().paintTo(g2, r.x + commons.common().achievement.getWidth() + 10, y, 14, color, get(ae.title));
+                commons.text().paintTo(g2, r.x + iconWidth + 10, y, 14, color, get(ae.title));
                 int y1 = y + 20;
 
                 for (String line : lines) {
-                    commons.text().paintTo(g2, r.x + commons.common().achievement.getWidth() + 10, y1, 10, color, line);
+                    commons.text().paintTo(g2, r.x + iconWidth + 10, y1, 10, color, line);
                     y1 += 12;
                 }
-                y += 50;
+
+                AchievementProgress ap = commons.profile().getProgress(ae.title);
+                if (ap != null && ap.displayProgress && ap.max > 0) {
+                    y1++;
+                    int pw = tw - 20;
+                    g2.setColor(Color.GRAY);
+                    g2.fillRect(r.x + iconWidth + 20, y1, (int)(pw * Math.min(ap.max, ap.progress) / ap.max), 14);
+                    g2.setColor(Color.GRAY);
+                    g2.drawRect(r.x + iconWidth + 20, y1, pw, 14);
+
+                    String progressStr = String.format("%,.0f / %,.0f  (%.1f%%)", ap.progress, ap.max, ap.progress * 100 / ap.max);
+                    int progressWidth = commons.text().getTextWidth(10, progressStr);
+                    commons.text().paintTo(g2, r.x + iconWidth + 20 + (pw - progressWidth) / 2, y1 + 2, 10, 0xFFFFFFFF, progressStr);
+                    y1 += 16;
+                }
+
+                y += 66;
             }
         } else
         if (mode == Screens.STATISTICS) {
@@ -1142,7 +1159,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_money_trade_income",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1152,7 +1168,6 @@ public class AchievementsScreen extends ScreenBase {
         ));
 
         statistics.add(new StatisticsEntry("statistics.galaxy_money_demolish_income",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1161,7 +1176,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_money_sell_income",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1171,7 +1185,6 @@ public class AchievementsScreen extends ScreenBase {
         ));
 
         statistics.add(new StatisticsEntry("statistics.galaxy_money_spent",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1180,7 +1193,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_building",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1189,7 +1201,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_repair",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1198,7 +1209,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_production",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1207,7 +1217,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_research",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1216,7 +1225,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_money_spent_upgade",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1225,7 +1233,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_build_count",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1234,7 +1241,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_demolish_count",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1243,7 +1249,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_sell_count",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1252,7 +1257,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_production_count",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1261,7 +1265,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_research_count",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1270,7 +1273,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_upgrade_count",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1280,7 +1282,6 @@ public class AchievementsScreen extends ScreenBase {
         ));
 
         statistics.add(new StatisticsEntry("statistics.galaxy_total_buildings",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1289,7 +1290,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_actual_buildings",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1299,7 +1299,6 @@ public class AchievementsScreen extends ScreenBase {
         ));
 
         statistics.add(new StatisticsEntry("statistics.galaxy_total_population",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1308,7 +1307,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_total_houses",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1317,7 +1315,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_total_worker",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1326,7 +1323,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_total_energy",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1335,7 +1331,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_total_energy_demand",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1345,7 +1340,6 @@ public class AchievementsScreen extends ScreenBase {
         ));
 
         statistics.add(new StatisticsEntry("statistics.galaxy_total_food_production",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1354,7 +1348,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_total_hospital",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {
@@ -1363,7 +1356,6 @@ public class AchievementsScreen extends ScreenBase {
         }
         ));
         statistics.add(new StatisticsEntry("statistics.galaxy_total_police",
-
                 new Func1<Void, String>() {
             @Override
             public String invoke(Void value) {

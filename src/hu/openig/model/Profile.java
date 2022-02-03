@@ -8,19 +8,20 @@
 
 package hu.openig.model;
 
-import hu.openig.utils.Exceptions;
-import hu.openig.utils.XElement;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.SwingUtilities;
 import javax.xml.stream.XMLStreamException;
+
+import hu.openig.utils.Exceptions;
+import hu.openig.utils.XElement;
 
 /**
  * The current user's profile.
@@ -30,7 +31,7 @@ public class Profile {
     /** The profile's name. */
     public String name;
     /** The acquired achievements. */
-    private final Set<String> achievements = new HashSet<>();
+    private final Map<String, AchievementProgress> achievements = new HashMap<>();
     /** Set of unlocked videos. */
     private final Set<String> unlockedVideos = new LinkedHashSet<>();
     /**
@@ -39,7 +40,11 @@ public class Profile {
      * @return the status
      */
     public boolean hasAchievement(String name) {
-        return achievements.contains(name);
+        AchievementProgress ap = achievements.get(name);
+        if (ap != null && ap.isComplete()) {
+            return true;
+        }
+        return false;
     }
     /**
      * Unlock a specific video.
@@ -67,7 +72,7 @@ public class Profile {
     }
     /**
      * Save the current profile settings.
-     * <p>Will run on EDT.</p>
+     * <p>Will reschedule onto the EDT if necessary.</p>
      */
     public void save() {
         if (!SwingUtilities.isEventDispatchThread()) {
@@ -77,6 +82,7 @@ public class Profile {
                     save();
                 }
             });
+            return;
         }
         XElement xprofile = new XElement("profile");
         try {
@@ -97,8 +103,14 @@ public class Profile {
      * @param xprofile the profile XML
      */
     void save(XElement xprofile) {
-        for (String s : achievements) {
-            xprofile.add("achievement").set("id", s);
+        for (AchievementProgress s : achievements.values()) {
+            XElement xach = xprofile.add("achievement");
+            xach.set("id", s.name);
+            if (!s.legacy) {
+                xach.set("progress", s.progress);
+                xach.set("max", s.max);
+                xach.set("display-progress", s.displayProgress);
+            }
         }
         for (String s : unlockedVideos) {
             xprofile.add("video").set("id", s);
@@ -111,21 +123,41 @@ public class Profile {
     void load(XElement xprofile) {
         achievements.clear();
         for (XElement xa : xprofile.childrenWithName("achievement")) {
-            achievements.add(xa.get("id"));
+            AchievementProgress ap = new AchievementProgress(xa.get("id"));
+            if (xa.has("progress") && xa.has("max")) {
+                ap.progress = xa.getDouble("progress");
+                ap.max = xa.getDouble("max");
+                ap.displayProgress = xa.getBoolean("display-progress");
+            } else {
+                ap.legacy = true;
+            }
+            achievements.put(ap.name, ap);
         }
         for (XElement xv : xprofile.childrenWithName("video")) {
             unlockedVideos.add(xv.get("id"));
         }
     }
     /**
-     * Grant the achievement in the profile.
-     * <p>Immediately saves the profile on the EDT.</p>
+     * Update the progress on the given achievement and
+     * return true if the objective amount has been reached.
      * @param id the id of the achievement
+     * @return true if the achievement has reached or surpassed its progress limit
      */
-    public void grantAchievement(String id) {
-        if (achievements.add(id)) {
-            save();
+    public AchievementProgress getOrCreateProgress(String id) {
+        AchievementProgress ap = achievements.get(id);
+        if (ap == null) {
+            ap = new AchievementProgress(id);
+            achievements.put(ap.name, ap);
         }
+        return ap;
+    }
+    /**
+     * Returns the achivement progress if it exists, null otherwise.
+     * @param id the achievement id
+     * @return the progress or null
+     */
+    public AchievementProgress getProgress(String id) {
+        return achievements.get(id);
     }
     /**
      * Load the profile.

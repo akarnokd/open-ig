@@ -2060,7 +2060,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         /** The image to display. */
         BufferedImage image;
         /** Constructor with layout. */
-        public ShipStatusPanel() {
+        ShipStatusPanel() {
             width = 286;
             height = 195;
 
@@ -2291,7 +2291,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     /** The statistics panel. */
     class StatisticsPanel extends UIComponent {
         /** Initialize. */
-        public StatisticsPanel() {
+        StatisticsPanel() {
             width = 286;
             height = 195;
         }
@@ -2459,7 +2459,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         /** The selected item is null due too many selection. */
         public boolean isMany;
         /** Initialize. */
-        public ShipInformationPanel() {
+        ShipInformationPanel() {
             width = 286;
             height = 195;
         }
@@ -2703,7 +2703,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         /** Pressing down over the okay button? */
         boolean okDown;
         /** Initialize. */
-        public LayoutPanel() {
+        LayoutPanel() {
             width = 286;
             height = 195;
         }
@@ -4493,7 +4493,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
          * Construct a cell.
          * @param s the original structure
          */
-        public SelectionCell(SpacewarStructure s) {
+        SelectionCell(SpacewarStructure s) {
             this.structure = s;
 
             image = s.angles[0];
@@ -4686,7 +4686,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         /** The cells currently displayable. */
         final List<SelectionCell> cells = new ArrayList<>();
         /** Constructs the selection panel buttons. */
-        public SelectionPanel() {
+        SelectionPanel() {
             int x = 5;
             for (int i = -1; i < 10; i++) {
                 final int j = i;
@@ -5082,10 +5082,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param a the achievement id, e.g., "achievement.i_robot"
      */
     protected void achievement(String a) {
-        if (!world().env.profile().hasAchievement(a)) {
-            world().env.achievementQueue().add(a);
-            world().env.profile().grantAchievement(a);
-        }
+        world().achievement(a);
     }
     /**
 
@@ -5118,7 +5115,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         /** Row height. */
         static final int ROW_HEIGHT = 16;
         /** Initialize. */
-        public ChatPanel() {
+        ChatPanel() {
             width = 286;
             height = 195;
 

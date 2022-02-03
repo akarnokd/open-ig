@@ -8,60 +8,6 @@
 
 package hu.openig.screen;
 
-import hu.openig.core.Action0;
-import hu.openig.core.Action1;
-import hu.openig.core.Func0;
-import hu.openig.core.Func1;
-import hu.openig.core.ResourceType;
-import hu.openig.core.SaveMode;
-import hu.openig.core.SimulationSpeed;
-import hu.openig.core.CursorResource;
-import hu.openig.gfx.BackgroundGFX;
-import hu.openig.gfx.ColonyGFX;
-import hu.openig.gfx.CommonGFX;
-import hu.openig.gfx.DatabaseGFX;
-import hu.openig.gfx.DiplomacyGFX;
-import hu.openig.gfx.EquipmentGFX;
-import hu.openig.gfx.InfoGFX;
-import hu.openig.gfx.ResearchGFX;
-import hu.openig.gfx.SpacewarGFX;
-import hu.openig.gfx.StarmapGFX;
-import hu.openig.gfx.StatusbarGFX;
-import hu.openig.mechanics.Allocator;
-import hu.openig.mechanics.Radar;
-import hu.openig.mechanics.Simulator;
-import hu.openig.model.AIManager;
-import hu.openig.model.Configuration;
-import hu.openig.model.GameDefinition;
-import hu.openig.model.GameEnvironment;
-import hu.openig.model.Labels;
-import hu.openig.model.MultiplayerDefinition;
-import hu.openig.model.Player;
-import hu.openig.model.Profile;
-import hu.openig.model.ResearchType;
-import hu.openig.model.ResourceLocator;
-import hu.openig.model.ResourceLocator.ResourcePlace;
-import hu.openig.model.Screens;
-import hu.openig.model.SkirmishAIMode;
-import hu.openig.model.SkirmishDefinition;
-import hu.openig.model.SkirmishPlayer;
-import hu.openig.model.SoundTarget;
-import hu.openig.model.SoundType;
-import hu.openig.model.Traits;
-import hu.openig.model.World;
-import hu.openig.music.Music;
-import hu.openig.render.TextRenderer;
-import hu.openig.screen.api.EquipmentScreenAPI;
-import hu.openig.screen.api.ResearchProductionAnimation;
-import hu.openig.sound.Sounds;
-import hu.openig.ui.UIMouse;
-import hu.openig.ui.UIMouse.Button;
-import hu.openig.ui.UIMouse.Modifier;
-import hu.openig.utils.Exceptions;
-import hu.openig.utils.U;
-import hu.openig.utils.WipPort;
-import hu.openig.utils.XElement;
-
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -97,6 +43,62 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
+import hu.openig.core.Action0;
+import hu.openig.core.Action1;
+import hu.openig.core.CursorResource;
+import hu.openig.core.Func0;
+import hu.openig.core.Func1;
+import hu.openig.core.ResourceType;
+import hu.openig.core.SaveMode;
+import hu.openig.core.SimulationSpeed;
+import hu.openig.gfx.BackgroundGFX;
+import hu.openig.gfx.ColonyGFX;
+import hu.openig.gfx.CommonGFX;
+import hu.openig.gfx.DatabaseGFX;
+import hu.openig.gfx.DiplomacyGFX;
+import hu.openig.gfx.EquipmentGFX;
+import hu.openig.gfx.InfoGFX;
+import hu.openig.gfx.ResearchGFX;
+import hu.openig.gfx.SpacewarGFX;
+import hu.openig.gfx.StarmapGFX;
+import hu.openig.gfx.StatusbarGFX;
+import hu.openig.mechanics.AchievementManager;
+import hu.openig.mechanics.Allocator;
+import hu.openig.mechanics.Radar;
+import hu.openig.mechanics.Simulator;
+import hu.openig.model.AIManager;
+import hu.openig.model.AchievementProgress;
+import hu.openig.model.Configuration;
+import hu.openig.model.GameDefinition;
+import hu.openig.model.GameEnvironment;
+import hu.openig.model.Labels;
+import hu.openig.model.MultiplayerDefinition;
+import hu.openig.model.Player;
+import hu.openig.model.Profile;
+import hu.openig.model.ResearchType;
+import hu.openig.model.ResourceLocator;
+import hu.openig.model.ResourceLocator.ResourcePlace;
+import hu.openig.model.Screens;
+import hu.openig.model.SkirmishAIMode;
+import hu.openig.model.SkirmishDefinition;
+import hu.openig.model.SkirmishPlayer;
+import hu.openig.model.SoundTarget;
+import hu.openig.model.SoundType;
+import hu.openig.model.Traits;
+import hu.openig.model.World;
+import hu.openig.music.Music;
+import hu.openig.render.TextRenderer;
+import hu.openig.screen.api.EquipmentScreenAPI;
+import hu.openig.screen.api.ResearchProductionAnimation;
+import hu.openig.sound.Sounds;
+import hu.openig.ui.UIMouse;
+import hu.openig.ui.UIMouse.Button;
+import hu.openig.ui.UIMouse.Modifier;
+import hu.openig.utils.Exceptions;
+import hu.openig.utils.U;
+import hu.openig.utils.WipPort;
+import hu.openig.utils.XElement;
 
 /**
  * Contains all common ang game specific graphical and textual resources.
@@ -785,10 +787,8 @@ public class CommonResources implements GameEnvironment {
         simulation = newSimulationTimer(action, delay);
     }
     /**
-
      * Start the timed actions.
      * @param withMusic set if play music
-
      */
     public void start(boolean withMusic) {
         restoreMainSimulationSpeedFunction();
@@ -800,6 +800,7 @@ public class CommonResources implements GameEnvironment {
                 if (!simulation.paused()) {
                     world.statistics.simulationTime.value++;
                 }
+                handleTimeRelatedAchievements();
                 Radar.compute(world);
                 if (control.primary() == Screens.STARMAP) {
                     control.repaintInner();
@@ -825,6 +826,25 @@ public class CommonResources implements GameEnvironment {
         }
 
         battleMode = false;
+    }
+
+    void handleTimeRelatedAchievements() {
+        Profile p = world.env.profile();
+        AchievementProgress ap = p.getProgress("achievement.coffee_break");
+        if (ap != null && !ap.legacy && !ap.isComplete()) {
+            AchievementManager.get("achievement.coffee_break").invoke(world, world.player, ap);
+        }
+        ap = p.getOrCreateProgress("achievement.decade");
+        if (!ap.legacy) {
+            ap.displayProgress = true;
+            ap.max = 10;
+        }
+
+        ap = p.getOrCreateProgress("achievement.oldest_man");
+        if (!ap.legacy) {
+            ap.displayProgress = true;
+            ap.max = 100;
+        }
     }
     /** @return the world instance. */
     @Override

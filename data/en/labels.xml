@@ -31,7 +31,7 @@
   <entry key='achievement.death_star'>Death Star</entry>
   <entry key='achievement.death_star.desc'>You left your colony to be destroyed</entry>
   <entry key='achievement.decade'>A decade in the service</entry>
-  <entry key='achievement.decade.desc'>You played 10 game years</entry>
+  <entry key='achievement.decade.desc'>You played 10 game years (over any number of playthroughs)</entry>
   <entry key='achievement.defender'>Defender of the crown</entry>
   <entry key='achievement.defender.desc'>You successfully defended your colony</entry>
   <entry key='achievement.defense_contract'>Defense contract</entry>
@@ -65,7 +65,7 @@
   <entry key='achievement.nobel_prize'>Nobel prize</entry>
   <entry key='achievement.nobel_prize.desc'>You researched all technologies</entry>
   <entry key='achievement.oldest_man'>Oldest man</entry>
-  <entry key='achievement.oldest_man.desc'>You played 100 game years</entry>
+  <entry key='achievement.oldest_man.desc'>You played 100 game years (over any number of playthroughs)</entry>
   <entry key='achievement.pirate_bay'>Pirate Bay</entry>
   <entry key='achievement.pirate_bay.desc'>You lost a planet to the Pirates</entry>
   <entry key='achievement.popular'>Popular</entry>
