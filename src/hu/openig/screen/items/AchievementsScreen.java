@@ -145,8 +145,8 @@ public class AchievementsScreen extends ScreenBase {
     public void onResize() {
         scaleResize(base, margin());
 
-        listRectAch.setBounds(base.x + 10, base.y + 45, base.width - 50, 325);
-        achievementCount = listRectAch.height / 50;
+        listRectAch.setBounds(base.x + 10, base.y + 45, base.width - 50, 335);
+        achievementCount = listRectAch.height / 66;
 
         listRectStat.setBounds(base.x + 10, base.y + 20, base.width - 50, 350);
         statisticsCount = listRectStat.height / 20;

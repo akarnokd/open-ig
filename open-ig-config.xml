@@ -5,7 +5,7 @@
 <entry key="fileName">open-ig-config.xml</entry>
 <entry key="tileCacheBuildingLimit">10</entry>
 <entry key="researchMoneyPercent">2000</entry>
-<entry key="language">hu</entry>
+<entry key="language">en</entry>
 <entry key="videoVolume">100</entry>
 <entry key="showBuildingName">true</entry>
 <entry key="continuousMoney">false</entry>
@@ -13,14 +13,14 @@
 <entry key="hostPorts-count">0</entry>
 <entry key="textCacheSize">0</entry>
 <entry key="intro">false</entry>
-<entry key="height">751</entry>
+<entry key="height">746</entry>
 <entry key="muteMusic">true</entry>
 <entry key="reequipTanks">true</entry>
 <entry key="timestep">10</entry>
 <entry key="scaleAllScreens">true</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="showStarmapScroll">true</entry>
-<entry key="maximized">true</entry>
+<entry key="maximized">false</entry>
 <entry key="classicControls">true</entry>
 <entry key="allowWeather">true</entry>
 <entry key="fullScreen">false</entry>
