@@ -108,6 +108,8 @@ public class BridgeScreen extends WalkableScreen {
     boolean openCloseAnimating;
     /** Prevent starting a video playback from clicks to the statusbar indicator. */
     boolean noStatusbarPlayback;
+    /** Prevent starting a video playback by clicking on the messages panel. */
+    boolean noPanelPlayback;
     /** The video appear animation (the first frame). */
     BufferedImage videoAppear;
     /** The video appearance timer. */
@@ -515,7 +517,7 @@ public class BridgeScreen extends WalkableScreen {
                 scrollList(e.z);
                 return true;
             }
-            if (!videoRunning && !videoAppearAnim.isRunning() && !openCloseAnimating) {
+            if (!videoRunning && !videoAppearAnim.isRunning() && !openCloseAnimating && !noPanelPlayback) {
                 if (messageListRect.contains(e.x, e.y) && e.has(Type.DOWN)) {
                     int idx = (e.y - messageListRect.y) / ROW_HEIGHT + listOffset;
                     if (idx >= 0 && idx < videos.size()) {
@@ -530,12 +532,11 @@ public class BridgeScreen extends WalkableScreen {
             }
         }
         if (e.type == UIMouse.Type.DOWN) {
-            if (!openCloseAnimating) {
+            if (!videoAppearAnim.isRunning() && !openCloseAnimating) {
                 if (videoRunning) {
                     videoAnim.stop();
                 } else
                 if (!messageRect.contains(e.x, e.y) && !videoAppearAnim.isRunning()
-
                         && messageOpen
                         && !projectorClosing && !messageClosing) {
                     if (projectorOpen) {
@@ -675,6 +676,7 @@ public class BridgeScreen extends WalkableScreen {
         projectorLast = null;
         selectedVideoId = null;
         noStatusbarPlayback = false;
+        noPanelPlayback = false;
         if (messageAnim != null) {
             onMessageComplete = null;
             messageAnim.stop();
@@ -1178,6 +1180,7 @@ public class BridgeScreen extends WalkableScreen {
         for (VideoMessage vm : vms) {
             if (!vm.seen) {
                 selectedVideoId = vm;
+                noPanelPlayback = false;
                 playVideo(vm);
                 break;
             }
@@ -1192,6 +1195,7 @@ public class BridgeScreen extends WalkableScreen {
                 return;
             }
             noStatusbarPlayback = true;
+            noPanelPlayback = true;
             displayReceivePhases();
         }
     }
