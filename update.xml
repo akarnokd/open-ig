@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.228'>
+  <module id='Game' version='0.95.229'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,14 +34,22 @@
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='http://open-ig-dev.blogspot.hu'>
-      <desc lang='hu'></desc>
-      <desc lang='en'>Achievement system enhancements, UI fixes</desc>
-      <desc lang='de'>Achievement system enhancements, UI fixes</desc>
-      <desc lang='fr'>Achievement system enhancements, UI fixes</desc>
-      <desc lang='ru'>Achievement system enhancements, UI fixes</desc>
-      <desc lang='es'>Achievement system enhancements, UI fixes</desc>
+      <desc lang='hu'>Kisebb UI fejlesztések</desc>
+      <desc lang='en'>Small UI improvements</desc>
+      <desc lang='de'>Small UI improvements</desc>
+      <desc lang='fr'>Small UI improvements</desc>
+      <desc lang='ru'>Small UI improvements</desc>
+      <desc lang='es'>Small UI improvements</desc>
     </notes>
     <release-details>
+      <entry version='0.95.229' date='2022-02-04'>
+        <item category='UI'>Fix the achievement screen not showing the last item when scrolled to the bottom.</item>
+        <item category='UI' issues='1047'>When holding SHIFT while clicking -10 and +10 buttons on the Production Screen, the production amount is changed by -100 and +100 respectively.</item>
+        <item category='UI'>Holding CTRL and SHIFT while clicking on a production line&#39;s left/right amount change button on the Production Screen now adjusts the amount by 100.</item>
+        <item category='UI'>Added tooltips to the Custom Balance Settings screen&#39;s buttons indicating using SHIFT will speed up the amount changes.</item>
+        <item category='UI'>Tooltips that would show below a control and would clip outside the game window now properly shows above the control.</item>
+        <item category='UI'>Fixed a crash and lack of UI indicator when buying a station on the black market and the delivery target does not have the required military spaceport there.</item>
+      </entry>
       <entry version='0.95.228' date='2022-02-03'>
         <item category='Achievements,UI'>Update the achievement system to be able to track and display progress of many achievements.</item>
         <item category='UI' issues='1045'>Clicking on a message on the Bridge while a message is being played no longer plays multiple messages at the same time.</item>
@@ -196,8 +204,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.228.jar' sha1='B1BB113BD2FBB34403A18EBD32D25D127A12296A'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220203a2.zip' sha1='3D1603AD4F9A681739B9BEF6951BA0E3C8BA3958'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.229.jar' sha1='BDA763E7455298219B2240EF4638EA79FB8EF0FE'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220204a2.zip' sha1='47DF7B54D4348A3E395E346DA0982BE8D0DB7281'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

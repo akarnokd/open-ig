@@ -392,6 +392,11 @@ public class TradeScreen extends ScreenBase {
                 Planet p = planets.selected();
                 if (deliverToVisible) {
                     if (p != null) {
+                        if (!p.hasMilitarySpaceport()) {
+                            String noroom = get("trade.no_spaceport");
+                            int noroomWidth = commons.text().getTextWidth(10, noroom);
+                            commons.text().paintTo(g2, buy.x - 5 - noroomWidth, buy.y + 5, 10, TextRenderer.RED, noroom);
+                        } else
                         if (selectedItem.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
                             canBuy = p.getAddLimit(selectedItem.type, p.owner) > 0;
                             if (!canBuy) {
@@ -400,15 +405,7 @@ public class TradeScreen extends ScreenBase {
                                 commons.text().paintTo(g2, buy.x - 5 - noroomWidth, buy.y + 5, 10, TextRenderer.RED, noroom);
                             }
                         } else {
-                            if (!p.hasMilitarySpaceport()) {
-                                String noroom = get("trade.no_spaceport");
-                                int noroomWidth = commons.text().getTextWidth(10, noroom);
-                                commons.text().paintTo(g2, buy.x - 5 - noroomWidth, buy.y + 5, 10, TextRenderer.RED, noroom);
-
-                                canBuy = false;
-                            } else {
-                                canBuy = true;
-                            }
+                            canBuy = true;
                         }
                     }
                 } else {
@@ -676,9 +673,21 @@ public class TradeScreen extends ScreenBase {
         if (player().money() < player().blackMarketCost(ii)) {
             buttonSound(SoundType.NOT_AVAILABLE);
             return;
+        } else
+        if (!p.hasMilitarySpaceport()) {
+            buttonSound(SoundType.NOT_AVAILABLE);
+            return;
+        } else
+        if (ii.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+            if (p.getAddLimit(ii.type, player()) == 0) {
+                buttonSound(SoundType.NOT_AVAILABLE);
+                return;
+            }
         }
         player().buy(ii.id, p);
-        if (ii.type.category.main == ResearchMainCategory.SPACESHIPS) {
+        if (ii.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
+                || ii.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
+                || ii.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
             screenSound(SoundType.SHIP_DEPLOYED);
         } else {
             screenSound(SoundType.CLICK_HIGH_2);

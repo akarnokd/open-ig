@@ -1709,7 +1709,6 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         }
 
         if (own && ps != null && fs.planet.owner == f.owner
-
                 && ps.hasMilitarySpaceport && secondary == null) {
             if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
                 addButton.visible(player().inventoryCount(rt) > 0
