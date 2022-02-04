@@ -11,7 +11,7 @@
     + SHA256 `e2154b8d5bbcceb8d2f250ef6bc4bf309d77ddd069dc6d4d2a23a5aa921746b8 *Open-IG-0.95.X.zip`
 
 # Introduction
-*Open Imperium Galactica* (Open-IG) is an open source [Java](http://www.oracle.com/technetwork/java/javase/downloads/index.html)<sup>TM</sup> reimplementation of the [Digital Reality](http://www.digitalreality.hu) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
+*Open Imperium Galactica* (Open-IG) is an open source [Java](https://adoptium.net/)<sup>TM</sup> reimplementation of the [Digital Reality](http://www.digitalreality.hu) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
 
 The project contains all necessary files (with the permission from the copyright owner Digital Reality) to run the game standalone, there is no need for the original Imperium Galactica files.
 
@@ -39,6 +39,56 @@ Supported languages:
   - Russian
   - French
   - Spanish (graphics and text only)
+
+### Notable Enhancements over the original game
+
+#### Rendering
+- Resizable game window beyond 640x480
+- Scalable user interface
+- Alternative font rendering 
+- Rain and snow effects
+- Higher resolution ingame videos
+
+#### User interface
+- User profiles
+- Switch between languages
+- Achievements screen
+- Statistics screen
+- Black Market screen
+- Quick research panel
+- Quick production panel
+- Tooltips
+- Video subtitles
+- Mouse-based map dragging
+- Add/remove 10s/100s of items
+- Mission objectives display
+- Dropdown menu listing the screens
+- Planet problems icons
+- Planet overview panel
+- Planet listing with more status information
+- Zoom in/out on planets
+- Right and middle mouse usage
+- Watch unlocked ingame videos/cutscenes
+- Audio volume controls & mute settings
+- More mouse, visual and game settings
+
+#### Mechanics
+- All game speeds avaliable from the start
+- All music available from the start
+- Spacewar and groundwar speed controls
+- Additional game speed option
+- Moddable campaigns
+- Customizable skirmish games
+- Empire & AI Traits
+- Pave over surface features
+- Transfer colonists
+- Abandon colonies
+- Non-cheating AI
+- AI managed planets
+- Request colonization
+- Spacewar and groundwar unit grouping
+- Auto- and quicksaves
+- Buy ships and vehicles from a Black Market
 
 # Troubleshooting
 
