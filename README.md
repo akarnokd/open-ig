@@ -1,4 +1,4 @@
-<h1>Current game version: BETA <a href='releases'><img src='https://img.shields.io/github/v/release/akarnokd/open-ig' alt='Latest GitHub Release Version'/></a></h1>
+<h1>Current game version: BETA <a href='https://github.com/akarnokd/open-ig/releases'><img src='https://img.shields.io/github/v/release/akarnokd/open-ig' alt='Latest GitHub Release Version'/></a></h1>
 
 ![Facebook](http://static.viewbook.com/images/social_icons/facebook_32.png) Follow us on [Facebook](https://www.facebook.com/OpenImperiumGalactica)!
 
