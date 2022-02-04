@@ -48,7 +48,7 @@
         <item category='UI'>Holding CTRL and SHIFT while clicking on a production line&#39;s left/right amount change button on the Production Screen now adjusts the amount by 100.</item>
         <item category='UI'>Added tooltips to the Custom Balance Settings screen&#39;s buttons indicating using SHIFT will speed up the amount changes.</item>
         <item category='UI'>Tooltips that would show below a control and would clip outside the game window now properly shows above the control.</item>
-        <item category='UI'>Fixed a crash and lack of UI indicator when buying a station on the black market and the delivery target does not have the required military spaceport there.</item>
+        <item category='UI' issues='1048'>Fixed a crash and lack of UI indicator when buying a station on the black market and the delivery target does not have the required military spaceport there.</item>
       </entry>
       <entry version='0.95.228' date='2022-02-03'>
         <item category='Achievements,UI'>Update the achievement system to be able to track and display progress of many achievements.</item>
