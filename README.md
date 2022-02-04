@@ -8,7 +8,13 @@
 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 ```
 
-*<a href='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/>  Installer</a>* (version 0.45)
+## Download options
+
+- *<a href='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/>  Installer</a>* (version 0.45)
+
+- *<a href='https://github.com/akarnokd/open-ig/raw/master/Open-IG-0.95.X.torrent'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/> Torrent</a>* (v0.95.X)
+    + SHA1 `67b3e8f81d2b25b68fc351ecd5ad7b737335b218 *Open-IG-0.95.X.zip`
+    + SHA256 `e2154b8d5bbcceb8d2f250ef6bc4bf309d77ddd069dc6d4d2a23a5aa921746b8 *Open-IG-0.95.X.zip`
 
 ```
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
