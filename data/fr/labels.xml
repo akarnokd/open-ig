@@ -2466,11 +2466,13 @@
   <entry key='production.missing_weapons_factory'>Attention, vous n&#39;avez pas d&#39;usine d&#39;armes!</entry>
   <entry key='production.more_priority.tooltip'>Increase the production priority by 5 points.[n]The minimum priority is 0, which pauses the production. The maximum priority is 100.</entry>
   <entry key='production.needs_orbital_factory'>Usine orbitale</entry>
-  <entry key='production.one_less.tooltip'>Remove one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to remove 10 units.</entry>
-  <entry key='production.one_more.tooltip'>Add one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to add 10 units.</entry>
+	<entry key="production.one_less.tooltip">Remove one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to remove 10 units.[n]Hold the [c=FFFFFFFF]CTRL+SHIFT[/c] keys to remove 100 units.</entry>
+	<entry key="production.one_more.tooltip">Add one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to add 10 units.[n]Hold the [c=FFFFFFFF]CTRL+SHIFT[/c] keys to add 100 units.</entry>
   <entry key='production.pause'>Pause all production activities.</entry>
   <entry key='production.resume'>Resume all production activities.</entry>
   <entry key='production.sell.tooltip'>Maintenez [c=FFFFFFFF]MAJ[/c] pour vendre par 10 unités.[n]Maintenez [c=FFFFFFFF]CTRL+MAJ[/c] pour vendre par 100 unités.</entry>
+  <entry key="production.addTen.tooltip">Click to produce 10 more units[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking add 100 more units.</entry>
+  <entry key="production.removeTen.tooltip">Click to produce 10 less units[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to remove 100 units.</entry>
   <entry key='profile'>Profil:</entry>
   <entry key='profiles.back_button'>Retour</entry>
   <entry key='profiles.create_new'>Nouveau profil :</entry>
@@ -3580,6 +3582,12 @@
     <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>At most one morale building of a type can be built.</entry>
     <entry key='custombalance.moralemode.LINEAR.desc'>Original Open-IG mode. Every additional morale building does full contribution with no upper limit.</entry>
     <entry key='custombalance.screen'>Custom Balance Settings</entry>
+    <entry key='custombalance.bonusmoney.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 250.000 cr.</entry>
+    <entry key='custombalance.bonusmoney.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 250.000 cr.</entry>
+    <entry key='custombalance.bonusproduction.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 10%.</entry>
+    <entry key='custombalance.bonusproduction.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 10%.</entry>
+    <entry key='custombalance.deterioration.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 0.5 points/day.</entry>
+    <entry key='custombalance.deterioration.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 0.5 points/day.</entry>
     <entry key='colony.pavementmodebutton.tooltip'>Toggle Pavement Mode (pave over large surface features)[n]Shortcut: [c=FFFFFFFF]P[/c][n]Price: 5000 cr per cell</entry>
     <entry key='colony.moveinbutton.tooltip'>Settle in colonists from another planet (opens dialog)</entry>
     <entry key='colony.moveoutbutton.tooltip'>Move colonists to another planet (opens dialog)</entry>

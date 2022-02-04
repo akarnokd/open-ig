@@ -284,7 +284,7 @@ public class ProfileScreen extends ScreenBase {
          * Constructor, initializes the profile name.
          * @param name the profile name
          */
-        public ProfileLabel(String name) {
+        ProfileLabel(String name) {
             super(name, 14, commons.text());
             this.name = name;
         }

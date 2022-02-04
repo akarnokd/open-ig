@@ -25,9 +25,7 @@ import hu.openig.ui.*;
 public class CustomBalanceScreen extends ScreenBase {
     /** The panel base rectangle. */
     final Rectangle base = new Rectangle(0, 0, 640, 400);
-    /**
-     * The record for the values being edited.
-     */
+    /** The record for the values being edited. */
     final CustomBalanceSettings settings = new CustomBalanceSettings();
     /**
      * The action to invoke once the user has chosen the traits.
@@ -187,6 +185,9 @@ public class CustomBalanceScreen extends ScreenBase {
             }
         };
 
+        next.tooltip(get("custombalance.bonusmoney.plus.tooltip"));
+        prev.tooltip(get("custombalance.bonusmoney.minus.tooltip"));
+
         bonusMoneySpinner = new UISpinner(14, prev, next, commons.text());
         bonusMoneySpinner.getValue = new Func1<Void, String>() {
             @Override
@@ -231,6 +232,8 @@ public class CustomBalanceScreen extends ScreenBase {
                 doRepaint();
             }
         };
+        next.tooltip(get("custombalance.bonusproduction.plus.tooltip"));
+        prev.tooltip(get("custombalance.bonusproduction.minus.tooltip"));
 
         bonusProductionSpinner = new UISpinner(14, prev, next, commons.text());
         bonusProductionSpinner.getValue = new Func1<Void, String>() {
@@ -277,6 +280,8 @@ public class CustomBalanceScreen extends ScreenBase {
                 doRepaint();
             }
         };
+        next.tooltip(get("custombalance.deterioration.plus.tooltip"));
+        prev.tooltip(get("custombalance.deterioration.minus.tooltip"));
 
         deteriorationSpinner = new UISpinner(14, prev, next, commons.text());
         deteriorationSpinner.getValue = new Func1<Void, String>() {

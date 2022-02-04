@@ -1182,7 +1182,7 @@ public class StarmapScreen extends ScreenBase {
          * @param y the center Y
          * @param r the radius
          */
-        public RadarCircle(int x, int y, int r) {
+        RadarCircle(int x, int y, int r) {
             this.x = x;
             this.y = y;
             this.r = r;

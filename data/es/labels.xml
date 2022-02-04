@@ -2620,7 +2620,7 @@
   <entry key='test.q5'>An inspiring piece of poetry is of more importance than the most powerful weapon.</entry>
   <entry key='diplomacy.Garthog.DIPLOMATIC_RELATIONS.HUMBLE.8'>We would be honored to fight along the Garthogs against the other pathetic races.</entry>
   <entry key='diplomacy.Garthog.PEACE.HUMBLE.81'>Admiral, please consider the possibility of making peace between the two nations.</entry>
-  <entry key='production.one_more.tooltip'>Add one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to add 10 units.</entry>
+  <entry key='production.one_more.tooltip'>Add one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to add 10 units.[n]Hold the [c=FFFFFFFF]CTRL+SHIFT[/c] key to add 100 units.</entry>
   <entry key='traits.debug.desc'>Debug mode allows more traits to be selected than the regular points would allow.</entry>
   <entry key='diplomacy.FreeNations.SURRENDER.YES.68'>You have crushed our people. We will surrender to save what is left of our nation.</entry>
   <entry key='diplomacy.FreeNations.RESIGN.89'>The Free Nations Society offers the Empire two choices: surrender or annihilation.</entry>
@@ -2691,7 +2691,7 @@
   <entry key='diplomacy.Dargslan.ALLIANCE.78'>We offer you the chance to share in our glory and postpone your inevitable destruction.</entry>
   <entry key='diplomacy.Ecalep.DIPLOMATIC_RELATIONS.HUMBLE.9'>The Empire will heap rewards upon you if relations were to improve between our nations.</entry>
   <entry key='diplomacy.Garthog.DIPLOMATIC_RELATIONS.AGGRESSIVE.14'>Resistance is still high against Earthlings. I&#39;m not sure such agreement could be done.</entry>
-  <entry key='production.one_less.tooltip'>Remove one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to remove 10 units.</entry>
+  <entry key='production.one_less.tooltip'>Remove one unit of production.[n]Hold the [c=FFFFFFFF]SHIFT[/c] key to remove 10 units.[n]Hold the [c=FFFFFFFF]CTRL+SHIFT[/c] keys to remove 100 units.</entry>
   <entry key='tech.garthogdestroyer4.description'>The strongest destroyer of the Garthog with support for the best equipment and rockets.</entry>
   <entry key='diplomacy.FreeNations.ALLY.NO.55'>The Free Nations Society will not be party to spreading the Empire&#39;s totalitarian reign.</entry>
   <entry key='diplomacy.Ychom.MONEY.NO.41'>At this point certain unfortunate fiscal laws prevent us from accepting your investment.</entry>
@@ -3215,6 +3215,8 @@
   <entry key='tech.ecm2.description'>The Shocker ECM is an active countermeasures system. Using lasers, radio burst beams gravitic pulse fields and neutrino emitters it confuses and diverts missile attacks.</entry>
   <entry key='tech.fighter3.description'>Carrying a dual twin laser weapons load the Hammerhead is an incremental improvement on the Valkyrie. It also has a new shield design with high capacity field inductors.</entry>
   <entry key='production.sell.tooltip'>Click to sell 1 unit from the inventory[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to sell 10 units.[n]Hold [c=FFFFFFFF]CTRL+SHIFT[/c] while clicking to sell 100 units.</entry>
+  <entry key="production.addTen.tooltip">Click to produce 10 more units[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking add 100 more units.</entry>
+  <entry key="production.removeTen.tooltip">Click to produce 10 less units[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to remove 100 units.</entry>
   <entry key='diplomacy.Morgath.DARGSLAN.NO.64'>Only a fool wakes a sleeping Hunting Vrore! The Morgath Confederate will not be devoured along with your Empire. Nature has no sympathy for the weaker side of a conflict.</entry>
   <entry key='statusbar.quickproduction'>Quick production panel[n][c=FFFFFFFF]Left mouse button[/c]: show or hide panel[n][c=FFFFFFFF]Right mouse button[/c]: production screen[n]Panel shortcut: [c=FFFFFFFF]C[/c]</entry>
   <entry key='buildings.prefab_housing.desc'>Prefab housing is the cheapest low capacity housing available for your colonists. It comes in four exciting designer interior colors: puce, aquamarine, chiffon, and plaid.</entry>
@@ -3571,6 +3573,12 @@
     <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>At most one morale building of a type can be built.</entry>
     <entry key='custombalance.moralemode.LINEAR.desc'>Original Open-IG mode. Every additional morale building does full contribution with no upper limit.</entry>
     <entry key='custombalance.screen'>Custom Balance Settings</entry>
+    <entry key='custombalance.bonusmoney.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 250.000 cr.</entry>
+    <entry key='custombalance.bonusmoney.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 250.000 cr.</entry>
+    <entry key='custombalance.bonusproduction.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 10%.</entry>
+    <entry key='custombalance.bonusproduction.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 10%.</entry>
+    <entry key='custombalance.deterioration.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 0.5 points/day.</entry>
+    <entry key='custombalance.deterioration.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 0.5 points/day.</entry>
     <entry key='colony.pavementmodebutton.tooltip'>Toggle Pavement Mode (pave over large surface features)[n]Shortcut: [c=FFFFFFFF]P[/c][n]Price: 5000 cr per cell</entry>
     <entry key='colony.moveinbutton.tooltip'>Settle in colonists from another planet (opens dialog)</entry>
     <entry key='colony.moveoutbutton.tooltip'>Move colonists to another planet (opens dialog)</entry>

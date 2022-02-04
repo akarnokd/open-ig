@@ -62,7 +62,6 @@ import java.util.Map;
  */
 public class ResearchProductionScreen extends ScreenBase implements ResearchProductionAnimation {
     /**
-
      * The annotation to indicate which UI elements should by default
      * be visible on the screen. Mark only uncommon elements.
      * @author akarnokd, Mar 19, 2011
@@ -104,7 +103,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
         /** Was the shift pressed? */
         boolean shiftDown;
         /** Initialize the inner fields. */
-        public ProductionLine() {
+        ProductionLine() {
             base = new UIImage(commons.research().productionLine);
             base.z = -1;
             width = base.width;
@@ -126,8 +125,12 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
                 public void invoke() {
                     buttonSound(SoundType.CLICK_HIGH_2);
                     int cnt = -1;
-                    if (shiftDown) {
-                        cnt *= 10;
+                    if (lessBuild.lastEvent != null && lessBuild.lastEvent.has(Modifier.SHIFT)) {
+                        if (lessBuild.lastEvent.has(Modifier.CTRL)) {
+                            cnt *= 100;
+                        } else {
+                            cnt *= 10;
+                        }
                     }
                     doChangeCount(cnt);
                 }
@@ -148,8 +151,12 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
                 public void invoke() {
                     buttonSound(SoundType.CLICK_HIGH_2);
                     int cnt = 1;
-                    if (shiftDown) {
-                        cnt *= 10;
+                    if (moreBuild.lastEvent != null && moreBuild.lastEvent.has(Modifier.SHIFT)) {
+                        if (moreBuild.lastEvent.has(Modifier.CTRL)) {
+                            cnt *= 100;
+                        } else {
+                            cnt *= 10;
+                        }
                     }
                     doChangeCount(cnt);
                 }
@@ -702,9 +709,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
         g2.setTransform(savea);
     }
     /**
-
      * Paint the research arrow for the actualSubCategory.
-
      * @param g2 the graphics context
      */
     void drawResearchArrow(Graphics2D g2) {
@@ -735,7 +740,6 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
     }
     /**
      * Returns the coloring for the lab amounts.
-
      * @param total the total lab amount
      * @param active the active lab amount
      * @param required the required lab amount
@@ -1071,9 +1075,14 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
             @Override
             public void invoke() {
                 buttonSound(SoundType.CLICK_HIGH_2);
-                doChangeCount(-10);
+                if (removeTen.lastEvent != null && removeTen.lastEvent.has(Modifier.SHIFT)) {
+                    doChangeCount(-100);
+                } else {
+                    doChangeCount(-10);
+                }
             }
         };
+        removeTen.tooltip(get("production.removeTen.tooltip"));
         removeOne = new UIImageButton(commons.research().minusOne);
         removeOne.setDisabledPattern(commons.common().disabledPattern);
         removeOne.setHoldDelay(200);
@@ -1101,9 +1110,15 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
             @Override
             public void invoke() {
                 buttonSound(SoundType.CLICK_HIGH_2);
-                doChangeCount(10);
+                if (addTen.lastEvent != null && addTen.lastEvent.has(Modifier.SHIFT)) {
+                    doChangeCount(100);
+                } else {
+                    doChangeCount(10);
+                }
             }
         };
+        addTen.tooltip(get("production.addTen.tooltip"));
+
         sell = new UIImageButton(commons.research().sell);
         sell.setDisabledPattern(commons.common().disabledPattern);
         sell.setHoldDelay(200);
@@ -1573,10 +1588,8 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
         }
     }
     /**
-
      * Display values based on the current technology.
      * @param ps the all planet statistics.
-
      */
     public void update(PlanetStatistics ps) {
         final ResearchType rt = research();
@@ -1792,7 +1805,6 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
         }
 
         if (rt != null && mode == Screens.RESEARCH && rs != null) {
-
             activeCivilLabValue.color(labColor(ps.labs.civil, ps.activeLabs.civil, rt.civilLab));
             activeMechLabValue.color(labColor(ps.labs.mech, ps.activeLabs.mech, rt.mechLab));
             activeCompLabValue.color(labColor(ps.labs.comp, ps.activeLabs.comp, rt.compLab));
@@ -1831,7 +1843,6 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
     void updateProduction(PlanetStatistics ps) {
         ResearchType rt = research();
         needsOrbitalFactory.visible(mode == Screens.PRODUCTION && player().isAvailable(rt)
-
                 && rt.has(ResearchType.PARAMETER_NEEDS_ORBITAL_FACTORY) && ps.orbitalFactory == 0);
 
         ResearchMainCategory cat = getCurrentMainCategory();
@@ -1949,9 +1960,7 @@ public class ResearchProductionScreen extends ScreenBase implements ResearchProd
         addButton.visible(
                 mode == Screens.PRODUCTION
                 && player().isAvailable(rt)
-
                 && !inProduction
-
                 && rt.category.main == cat
                 && !rt.nobuild
                 && productions.size() < 5

@@ -2957,8 +2957,8 @@
 	<entry key="quickproduction.no_active">Kein Technologie ausgewählt</entry>
 	<entry key="quickproduction.cost_inventory">Kosten: %,d cr    Inventar: %,d</entry>
 	
-	<entry key="production.one_less.tooltip">Produktionszahl um eins reduzieren.[n]Halte [c=FFFFFFFF]SHIFT[/c] um sie mit 10 zu reduzieren.</entry>
-	<entry key="production.one_more.tooltip">Produktionszahl um eins erhöhen.[n]Halte [c=FFFFFFFF]SHIFT[/c] um sie mit 10 zu reduzieren.</entry>
+	<entry key="production.one_less.tooltip">Produktionszahl um eins reduzieren.[n]Halte [c=FFFFFFFF]SHIFT[/c] um sie mit 10 zu reduzieren.[n]Halte [c=FFFFFFFF]CTRL+SHIFT[/c] um sie mit 100 zu reduzieren.</entry>
+	<entry key="production.one_more.tooltip">Produktionszahl um eins erhöhen.[n]Halte [c=FFFFFFFF]SHIFT[/c] um sie mit 10 zu reduzieren.[n]Halte [c=FFFFFFFF]CTRL+SHIFT[/c] um sie mit 100 zu reduzieren.</entry>
 	<entry key="quickproduction.remove.tooltip">Produktion beenden.</entry>
 	<entry key="production.more_priority.tooltip">Produktionspriorität um 5 erhöhen.[n]Die minimale Priorität ist 0, dabei ist die Produktion pausiert. Die maximale Priorität ist 100.</entry>
 	<entry key="production.less_priority.tooltip">Produktionspriorität um 5 reduzieren.[n]Die minimale Priorität ist 0, dabei ist die Produktion pausiert. Die maximale Priorität ist 100.</entry>
@@ -3313,6 +3313,8 @@
 	<entry key='info.planetlist_problems'>Problems</entry>
 	<entry key='info.lab_details'>Lab</entry>
 	<entry key="production.sell.tooltip">Click to sell 1 unit from the inventory[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to sell 10 units.[n]Hold [c=FFFFFFFF]CTRL+SHIFT[/c] while clicking to sell 100 units.</entry>
+	<entry key="production.addTen.tooltip">Click to produce 10 more units[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking add 100 more units.</entry>
+	<entry key="production.removeTen.tooltip">Click to produce 10 less units[n]Hold [c=FFFFFFFF]SHIFT[/c] while clicking to remove 100 units.</entry>
 	<entry key="settings.target_specific_rockets">Fire target specific rockets/bombs only</entry>
 	<entry key='diplomacy.accept_offer'>Accept</entry>
 	<entry key='diplomacy.decline_offer'>Decline</entry>
@@ -3651,6 +3653,12 @@
     <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>At most one morale building of a type can be built.</entry>
     <entry key='custombalance.moralemode.LINEAR.desc'>Original Open-IG mode. Every additional morale building does full contribution with no upper limit.</entry>
     <entry key='custombalance.screen'>Custom Balance Settings</entry>
+    <entry key='custombalance.bonusmoney.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 250.000 cr.</entry>
+    <entry key='custombalance.bonusmoney.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 250.000 cr.</entry>
+    <entry key='custombalance.bonusproduction.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 10%.</entry>
+    <entry key='custombalance.bonusproduction.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 10%.</entry>
+    <entry key='custombalance.deterioration.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 0.5 points/day.</entry>
+    <entry key='custombalance.deterioration.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 0.5 points/day.</entry>
     <entry key='colony.pavementmodebutton.tooltip'>Toggle Pavement Mode (pave over large surface features)[n]Shortcut: [c=FFFFFFFF]P[/c][n]Price: 5000 cr per cell</entry>
     <entry key='colony.moveinbutton.tooltip'>Settle in colonists from another planet (opens dialog)</entry>
     <entry key='colony.moveoutbutton.tooltip'>Move colonists to another planet (opens dialog)</entry>

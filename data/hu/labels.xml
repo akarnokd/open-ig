@@ -2887,8 +2887,8 @@
 	<entry key="quickproduction.no_active">Nincs technológia kiválasztva.</entry>
 	<entry key="quickproduction.cost_inventory">Költség: %,d cr    Készlet: %,d</entry>
 
-	<entry key="production.one_less.tooltip">A gyártandó mennyiség csökkentése eggyel.[n]A [c=FFFFFFFF]SHIFT[/c] nyomva tartásával tízzel csökkent.</entry>
-	<entry key="production.one_more.tooltip">A gyártandó mennyiség növelése eggyel.[n]A [c=FFFFFFFF]SHIFT[/c] nyomva tartásával tízzel növel.</entry>
+	<entry key="production.one_less.tooltip">A gyártandó mennyiség csökkentése eggyel.[n]A [c=FFFFFFFF]SHIFT[/c] nyomva tartásával tízzel csökkent.[n]A [c=FFFFFFFF]CTRL+SHIFT[/c] nyomva tartásával százzal csökkent.</entry>
+	<entry key="production.one_more.tooltip">A gyártandó mennyiség növelése eggyel.[n]A [c=FFFFFFFF]SHIFT[/c] nyomva tartásával tízzel növel.[n]A [c=FFFFFFFF]CTRL+SHIFT[/c] nyomva tartásával százzal növel.</entry>
 	<entry key="quickproduction.remove.tooltip">A gyártás kivétele.</entry>
 	<entry key="production.more_priority.tooltip">A gyártás fontosságának növelése 5 ponttal.[n]A minimális prioritás 0, ami szünetelteti a gyártást. A maximális prioritás 100.</entry>
 	<entry key="production.less_priority.tooltip">A gyártás fontosságának csökkentése 5 ponttal.[n]A minimális prioritás 0, ami szünetelteti a gyártást. A maximális prioritás 100.</entry>
@@ -3312,6 +3312,8 @@
 	<entry key='info.lab_details'>Kutatókp.</entry>
 	<entry key='info.planetlist_problems'>Problémák</entry>
 	<entry key="production.sell.tooltip">Kattints 1 egység készletből történő eladásához[n]Tartsd lenyomva a [c=FFFFFFFF]SHIFT[/c] billentyűt 10 egység eladásához.[n]Tartsd lenyomva a [c=FFFFFFFF]CTRL+SHIFT[/c] billentyűket 100 egység eladásához.</entry>
+	<entry key="production.addTen.tooltip">Kattints 10 további egység gyártásához[n]Tartsd lenyomva a [c=FFFFFFFF]SHIFT[/c] billentyűt 100 további egység gyártásához.</entry>
+	<entry key="production.removeTen.tooltip">Kattints 10-zel kevesebb egység gyártásához[n]Tartsd lenyomva a [c=FFFFFFFF]SHIFT[/c] billentyűt 100-zal kevesebb egység gyártásához.</entry>
 	<entry key="settings.target_specific_rockets">Csak a célnak megfelelő rakéta/bomba kilövése</entry>
 	<entry key='diplomacy.accept_offer'>Elfogad</entry>
 	<entry key='diplomacy.decline_offer'>Visszautasít</entry>
@@ -3650,6 +3652,12 @@
     <entry key='custombalance.moralemode.ASYMPTOTIC.desc'>Minden egyes új épület fele annyira járul hozzá a morálhoz, mint a korábbi épület, így maximum dupla bónusz érhető el típusonként.</entry>
     <entry key='custombalance.moralemode.ASYMPTOTIC'>Aszimptotikus</entry>
     <entry key='custombalance.screen'>Egyedi nehézség-beállítások</entry>
+    <entry key='custombalance.bonusmoney.plus.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű nyomva tartása mellett 250.000 kredittel nő.</entry>
+    <entry key='custombalance.bonusmoney.minus.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű nyomva tartása mellett 250.000 kredittel csökken.</entry>
+    <entry key='custombalance.bonusproduction.plus.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű nyomva tartása mellett 10%-kal nő.</entry>
+    <entry key='custombalance.bonusproduction.minus.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű nyomva tartása mellett 10%-kal csökken.</entry>
+    <entry key='custombalance.deterioration.plus.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű nyomva tartása mellett 0.5 pont/nappal nő.</entry>
+    <entry key='custombalance.deterioration.minus.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű nyomva tartása mellett 0.5 pont/nappal csökken.</entry>
     <entry key='colony.pavementmodebutton.tooltip'>Felszíni formációk lefedése mód váltás[n]Gyorsbillentyű: [c=FFFFFFFF]P[/c][n]Egységár: 5000 cr cellánként</entry>
     <entry key='colony.moveinbutton.tooltip'>Lakosság betelepítése egy másik bolygóról (dialógus nyílik)</entry>
     <entry key='colony.moveoutbutton.tooltip'>Lakosság kitelepítése egy másik bolygóra (dialógus nyílik)</entry>

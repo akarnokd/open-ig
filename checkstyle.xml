@@ -173,6 +173,7 @@
     <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="GE header"/>
   </module>
    <module name="RegexpSingleline">
+       <property name="fileExtensions" value="java"/>
        <property name="format" value="[^$]\s+$"/>
        <property name="minimum" value="0"/>
        <property name="maximum" value="0"/>

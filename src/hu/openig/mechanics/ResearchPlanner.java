@@ -338,7 +338,7 @@ public class ResearchPlanner extends Planner {
          * Constructor.
          * @param map the backing map to use
          */
-        public CompareFromMap(Map<ResearchType, Integer> map) {
+        CompareFromMap(Map<ResearchType, Integer> map) {
             this.map = map;
         }
         @Override

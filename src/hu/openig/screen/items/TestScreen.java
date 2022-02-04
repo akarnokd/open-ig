@@ -186,7 +186,7 @@ public class TestScreen extends ScreenBase {
          * @param q the question
          * @param a the answer
          */
-        public TestChoice(TestQuestion q, TestAnswer a) {
+        TestChoice(TestQuestion q, TestAnswer a) {
             this.question = q;
             this.answer = a;
             height = 14;

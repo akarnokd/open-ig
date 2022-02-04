@@ -2234,7 +2234,7 @@ public class GameWindow extends JFrame implements GameControls {
                     if (x0 + lbl.width + 6 > getInnerWidth()) {
                         x0 = getInnerWidth() - lbl.width - 6;
                     }
-                if (y0 + 20 > getInnerHeight()) {
+                if (y0 + lbl.height + 6 > getInnerHeight()) {
                     y0 = tooltipHelper.y - lbl.height - 6;
                 }
                 g2.fillRect(x0, y0, lbl.width + 6, lbl.height + 6);
