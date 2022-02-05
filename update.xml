@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.229'>
+  <module id='Game' version='0.95.230'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,10 @@
       <desc lang='es'>Small UI improvements</desc>
     </notes>
     <release-details>
+      <entry version='0.95.230' date='2022-02-04'>
+        <item category='Achievement' issues='1049'>The game no longer crashes when it tries to award the "A pirate in need" achievement.</item>
+        <item category='Achievement,UI'>Awarding the "Newbie" achievement no longer overlaps with the first time showing of the Objectives panel.</item>
+      </entry>
       <entry version='0.95.229' date='2022-02-04'>
         <item category='UI'>Fix the achievement screen not showing the last item when scrolled to the bottom.</item>
         <item category='UI' issues='1047'>When holding SHIFT while clicking -10 and +10 buttons on the Production Screen, the production amount is changed by -100 and +100 respectively.</item>
@@ -204,7 +208,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.229.jar' sha1='BDA763E7455298219B2240EF4638EA79FB8EF0FE'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.230.jar' sha1='77EF84EB06F399756246A110FB13FF237A85AE53'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220204a2.zip' sha1='47DF7B54D4348A3E395E346DA0982BE8D0DB7281'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
