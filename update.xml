@@ -43,8 +43,8 @@
     </notes>
     <release-details>
       <entry version='0.95.230' date='2022-02-04'>
-        <item category='Achievement' issues='1049'>The game no longer crashes when it tries to award the "A pirate in need" achievement.</item>
-        <item category='Achievement,UI'>Awarding the "Newbie" achievement no longer overlaps with the first time showing of the Objectives panel.</item>
+        <item category='Achievements' issues='1049'>The game no longer crashes when it tries to award the "A pirate in need" achievement.</item>
+        <item category='Achievements,UI'>Awarding the "Newbie" achievement no longer overlaps with the first time showing of the Objectives panel.</item>
       </entry>
       <entry version='0.95.229' date='2022-02-04'>
         <item category='UI'>Fix the achievement screen not showing the last item when scrolled to the bottom.</item>
