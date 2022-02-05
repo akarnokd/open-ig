@@ -233,7 +233,7 @@ public class Mission1 extends Mission {
         // start over
         if (world.level == 1) {
             removeMissions(1, 25);
-            addTimeout("Mission-1-Init", 2000); // 8000
+            addTimeout("Mission-1-Init", world.env.profile().hasAchievement("achievement.newbie") ? 2000 : 8000);
             send("Douglas-Reinforcements-Denied").visible = true;
         }
     }
