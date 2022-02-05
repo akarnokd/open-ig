@@ -4,11 +4,31 @@
 
 ## Download options
 
+### Preferred
+
+Please download the game files via these methods to preserve the free GitHub bandwidth granted to free projects.
+
+- *<a href='https://archive.org/download/open-ig-0.95.-x/open-ig-0.95.-x_archive.torrent'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/> Archive.org Torrent</a>* (v0.95.X)
+
+- *<a href='https://github.com/akarnokd/open-ig/raw/master/Open-IG-0.95.X.torrent'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/> Public Torrent</a>* (v0.95.X)
+
+- *<a href='https://archive.org/download/open-ig-0.95.-x/Open-IG-0.95.X.zip'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/> Archive.org Zip</a>* (v0.95.X)
+
+
+Download size
+- **Open-IG-0.95.X.zip**: 1.21 GB (1.309.131.999 bytes)
+    
+Checksums
+- SHA1 `67b3e8f81d2b25b68fc351ecd5ad7b737335b218 *Open-IG-0.95.X.zip`
+- SHA256 `e2154b8d5bbcceb8d2f250ef6bc4bf309d77ddd069dc6d4d2a23a5aa921746b8 *Open-IG-0.95.X.zip`
+
+### Last resort
+
+If the [preferred](#preferred) methods don't work for some reason, you can download just the launcher which will download the
+rest of the files from this project page.
+
 - *<a href='https://github.com/akarnokd/open-ig/raw/master/open-ig-launcher.jar'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/>  Installer</a>* (version 0.45)
 
-- *<a href='https://github.com/akarnokd/open-ig/raw/master/Open-IG-0.95.X.torrent'><img src='https://github.com/akarnokd/open-ig/raw/master/images/generic/dl_arrow.gif'/> Torrent</a>* (v0.95.X)
-    + SHA1 `67b3e8f81d2b25b68fc351ecd5ad7b737335b218 *Open-IG-0.95.X.zip`
-    + SHA256 `e2154b8d5bbcceb8d2f250ef6bc4bf309d77ddd069dc6d4d2a23a5aa921746b8 *Open-IG-0.95.X.zip`
 
 # Introduction
 *Open Imperium Galactica* (Open-IG) is an open source [Java](https://adoptium.net/)<sup>TM</sup> reimplementation of the [Digital Reality](http://www.digitalreality.hu) game [Imperium Galactica](http://en.wikipedia.org/wiki/Imperium_Galactica), a popular, 4X (eXplore, eXpand, eXploit, and eXterminate) real-time space strategy game developed around 1996 in Hungary. 
