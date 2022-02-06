@@ -42,7 +42,7 @@
       <desc lang='es'>Small UI improvements</desc>
     </notes>
     <release-details>
-      <entry version='0.95.230' date='2022-02-04'>
+      <entry version='0.95.230' date='2022-02-05'>
         <item category='Achievements' issues='1049'>The game no longer crashes when it tries to award the "A pirate in need" achievement.</item>
         <item category='Achievements,UI'>Awarding the "Newbie" achievement no longer overlaps with the first time showing of the Objectives panel.</item>
       </entry>
