@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.230'>
+  <module id='Game' version='0.95.231'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,9 +42,13 @@
       <desc lang='es'>Small UI improvements</desc>
     </notes>
     <release-details>
+      <entry version='0.95.231' date='2022-02-07'>
+        <item category='Achievements'>Fixed a crash when playing a skirmish game without Dargslans.</item>
+        <item category='Skirmish' issues='1051'>Fixed the skirmish game "Human vs. AI" referencing non-existent technology in its battle definition.</item>
+      </entry>
       <entry version='0.95.230' date='2022-02-05'>
-        <item category='Achievements' issues='1049'>The game no longer crashes when it tries to award the "A pirate in need" achievement.</item>
-        <item category='Achievements,UI'>Awarding the "Newbie" achievement no longer overlaps with the first time showing of the Objectives panel.</item>
+        <item category='Achievements' issues='1049'>The game no longer crashes when it tries to award the &quot;A pirate in need&quot; achievement.</item>
+        <item category='Achievements,UI'>Awarding the &quot;Newbie&quot; achievement no longer overlaps with the first time showing of the Objectives panel.</item>
       </entry>
       <entry version='0.95.229' date='2022-02-04'>
         <item category='UI'>Fix the achievement screen not showing the last item when scrolled to the bottom.</item>
@@ -208,8 +212,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.230.jar' sha1='77EF84EB06F399756246A110FB13FF237A85AE53'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220204a2.zip' sha1='47DF7B54D4348A3E395E346DA0982BE8D0DB7281'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.231.jar' sha1='18356E42E2F09850562C7D7BB90BBFBD236A0212'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220207a2.zip' sha1='A4C922A3FC997D1EA7A5FE3FCD4660EE671A3E25'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

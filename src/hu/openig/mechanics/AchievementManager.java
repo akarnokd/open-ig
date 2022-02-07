@@ -86,10 +86,12 @@ public final class AchievementManager {
         public boolean invoke(World t, Player u, AchievementProgress ap) {
             if (!t.isSkirmish()) {
                 Player p = t.players.get("Dargslan");
-                ap.displayProgress = false;
-                ap.max = 1;
-                ap.progress = p.statistics.planetsOwned.value == 0 ? 1 : 0;
-                return ap.isComplete();
+                if (p != null) {
+                    ap.displayProgress = false;
+                    ap.max = 1;
+                    ap.progress = p.statistics.planetsOwned.value == 0 ? 1 : 0;
+                    return ap.isComplete();
+                }
             }
             return false;
         }

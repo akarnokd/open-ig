@@ -23,7 +23,7 @@
 	<image></image>
 	<intro></intro>
 	<level>5</level>
-	<battle>campaign/main/battle</battle>
+	<battle>skirmish/human/battle</battle>
 	<bridge>campaign/main/bridge</bridge>
 	<buildings>campaign/main/buildings</buildings>
 	<diplomacy>campaign/main/diplomacy</diplomacy>
