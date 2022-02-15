@@ -722,11 +722,16 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
             lastOwner.statistics.planetsLostAlien.value++;
         }
         lastOwner.statistics.planetsLost.value++;
-        for (Building b : surface.buildings.iterable()) {
+        for (Building b : surface.buildings.list()) {
+            if (!b.isComplete()) {
+                surface.removeBuilding(b);
+            } else
             if (b.type.research != null) {
                 newOwner.setAvailable(b.type.research);
             }
         }
+        rebuildRoads();
+
         newOwner.planets.put(this, PlanetKnowledge.BUILDING);
         lastOwner.planets.put(this, PlanetKnowledge.NAME);
 
