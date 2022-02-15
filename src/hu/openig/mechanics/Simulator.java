@@ -1063,6 +1063,9 @@ public final class Simulator {
                 if (rt.category.main == ResearchMainCategory.BUILDINGS) {
                     continue;
                 }
+                if (rt.level > player.world.level) {
+                    continue;
+                }
                 int count = 0;
                 if (rt.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
                     count = rnd.nextInt(5) + 1;
