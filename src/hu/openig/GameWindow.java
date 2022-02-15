@@ -8,6 +8,57 @@
 
 package hu.openig;
 
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.AffineTransform;
+import java.io.BufferedOutputStream;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.zip.GZIPOutputStream;
+
+import javax.imageio.ImageIO;
+import javax.swing.GroupLayout;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.xml.stream.XMLStreamException;
+
 import hu.openig.core.Action0;
 import hu.openig.core.Func1;
 import hu.openig.core.SaveMode;
@@ -61,57 +112,6 @@ import hu.openig.utils.Exceptions;
 import hu.openig.utils.Parallels;
 import hu.openig.utils.U;
 import hu.openig.utils.XElement;
-
-import java.awt.Color;
-import java.awt.Container;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.geom.AffineTransform;
-import java.io.BufferedOutputStream;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.reflect.Field;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.zip.GZIPOutputStream;
-
-import javax.imageio.ImageIO;
-import javax.swing.GroupLayout;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
-import javax.swing.Timer;
-import javax.xml.stream.XMLStreamException;
 
 /**
  * The base game window which handles paint and input events.
@@ -1370,11 +1370,11 @@ public class GameWindow extends JFrame implements GameControls {
         return null;
     }
     /*/** Filter for XML files starting with info- or save-. */
-    protected static final FilenameFilter SAVE_FILES = new FilenameFilter() {
+    protected static final FileFilter SAVE_FILES = new FileFilter() {
         @Override
-        public boolean accept(File dir, String name) {
-            return (name.startsWith("info-") || name.startsWith("save-"))
-
+        public boolean accept(File pathname) {
+            String name = pathname.getName();
+            return pathname.isFile() && (name.startsWith("info-") || name.startsWith("save-"))
                     && name.endsWith(".xml");
         }
     };
@@ -1555,10 +1555,11 @@ public class GameWindow extends JFrame implements GameControls {
                     if (lname == null) {
                         File dir = new File("save/" + commons.profile.name);
                         if (dir.exists()) {
-                            File[] files = dir.listFiles(new FilenameFilter() {
+                            File[] files = dir.listFiles(new FileFilter() {
                                 @Override
-                                public boolean accept(File dir, String name) {
-                                    return name.startsWith("save-") && name.endsWith(".xml.gz");
+                                public boolean accept(File pathname) {
+                                    String name = pathname.getName();
+                                    return pathname.isFile() && name.startsWith("save-") && name.endsWith(".xml.gz");
                                 }
                             });
                             if (files != null && files.length > 0) {

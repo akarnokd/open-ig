@@ -8,6 +8,27 @@
 
 package hu.openig.screen.items;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Composite;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.Paint;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
+
 import hu.openig.core.Action0;
 import hu.openig.core.Pair;
 import hu.openig.model.Configuration;
@@ -23,27 +44,6 @@ import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Type;
 import hu.openig.ui.UIPanel;
 import hu.openig.utils.Exceptions;
-
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
-import java.awt.Paint;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Random;
-
-import javax.imageio.ImageIO;
-import javax.swing.SwingUtilities;
 
 /**
  * The main menu rendering and actions.
@@ -351,10 +351,12 @@ public class MainScreen extends ScreenBase {
     boolean isSaveAvailable() {
         File dir = new File("save/" + commons.profile.name);
         if (dir.exists()) {
-            File[] files = dir.listFiles(new FilenameFilter() {
+            File[] files = dir.listFiles(new FileFilter() {
+
                 @Override
-                public boolean accept(File dir, String name) {
-                    return name.startsWith("save-") && name.endsWith(".xml.gz");
+                public boolean accept(File pathname) {
+                    String name = pathname.getName();
+                    return pathname.isFile() && name.startsWith("save-") && name.endsWith(".xml.gz");
                 }
             });
             return files != null && files.length > 0;

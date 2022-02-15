@@ -2025,9 +2025,10 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                 }
                 continue;
             }
-
+            if (f.isDirectory()) {
+                continue;
+            }
             saveSet.add(n.substring(5, n.length() - 7));
-
         }
 
         Deque<String> queue = new LinkedList<>(saveSet);

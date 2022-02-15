@@ -370,7 +370,7 @@ public final class Startup {
                         @Override
                         public Boolean invoke(File value) {
                             String n = value.getName();
-                            return n.startsWith("save-") && n.endsWith(".xml");
+                            return value.isFile() && n.startsWith("save-") && n.endsWith(".xml");
                         }
                     })) {
                         byte[] data = IOUtils.load(save);

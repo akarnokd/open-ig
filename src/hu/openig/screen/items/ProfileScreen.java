@@ -265,8 +265,11 @@ public class ProfileScreen extends ScreenBase {
 
         if (files != null) {
             for (File f : files) {
-                if (f.isDirectory() && new File(f, "profile.xml").canRead()) {
-                    r.add(f.getName());
+                if (f.isDirectory()) {
+                    File profileFile = new File(f, "profile.xml");
+                    if (profileFile.canRead() && profileFile.isFile()) {
+                        r.add(f.getName());
+                    }
                 }
             }
         }

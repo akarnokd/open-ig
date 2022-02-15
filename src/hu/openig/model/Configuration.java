@@ -521,13 +521,16 @@ public class Configuration {
                 result.addAll(upgrades);
             }
         }
-        if (new File("data").exists()) {
+        File dataDir = new File("data");
+        if (dataDir.exists() && dataDir.isDirectory()) {
             result.add("data");
         }
-        if (new File("images").exists()) {
+        File imagesDir = new File("images");
+        if (imagesDir.exists() && imagesDir.isDirectory()) {
             result.add("images");
         }
-        if (new File("video").exists()) {
+        File videoDir = new File("video");
+        if (videoDir.exists() && videoDir.isDirectory()) {
             result.add("video");
         }
 
@@ -545,11 +548,13 @@ public class Configuration {
         });
         if (files != null) {
             for (File f : files) {
-                String name = f.getName();
-                if (name.toLowerCase(Locale.ENGLISH).startsWith("open-ig-upgrade-") && name.toLowerCase(Locale.ENGLISH).endsWith(".zip")) {
-                    upgrades.add(name);
-                } else {
-                    result.add(f.getName());
+                if (f.isFile()) {
+                    String name = f.getName();
+                    if (name.toLowerCase(Locale.ENGLISH).startsWith("open-ig-upgrade-") && name.toLowerCase(Locale.ENGLISH).endsWith(".zip")) {
+                        upgrades.add(name);
+                    } else {
+                        result.add(f.getName());
+                    }
                 }
             }
         }
