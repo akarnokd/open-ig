@@ -1041,16 +1041,18 @@ public class DiplomacyScreen extends WalkableScreen {
             headAnimationClose = commons.register(delay, new Action0() {
                 @Override
                 public void invoke() {
-                    boolean wr = headAnimation.moveNext();
-                    if (headAnimation.index() == headAnimation.endLoop + 1) {
-                        effectSound(SoundType.HOLOGRAM_OFF);
+                    if (headAnimation != null) {
+                        boolean wr = headAnimation.moveNext();
+                        if (headAnimation.index() == headAnimation.endLoop + 1) {
+                            effectSound(SoundType.HOLOGRAM_OFF);
+                        }
+                        if (wr && !headAnimation.loop) {
+                            headAnimation.active = false;
+                            close0(headAnimationClose);
+                            doUndarken();
+                        }
+                        askRepaint();
                     }
-                    if (wr && !headAnimation.loop) {
-                        headAnimation.active = false;
-                        close0(headAnimationClose);
-                        doUndarken();
-                    }
-                    askRepaint();
                 }
             });
         }
@@ -1554,7 +1556,9 @@ public class DiplomacyScreen extends WalkableScreen {
                 negotiationTitle.visible(false);
 
                 if (!other.id.equals(de.getKey())) {
-                    headAnimation.loop = false;
+                    if (headAnimation != null) {
+                        headAnimation.loop = false;
+                    }
                     receiveAgain();
                 } else {
                     doIncomingMessage(de.getValue());
