@@ -96,12 +96,14 @@ public final class Simulator {
                 if (!p.isMainPlayer) {
                     p.addMoney(world.customBalanceSettings.nonPlayerBonusMoneyPerDay);
 
-                    for (DiplomaticRelation dr : world.relations) {
-                        if (dr != null && dr.full && !dr.strongAlliance && dr.alliancesAgainst.isEmpty()) {
-                            Player p1 = world.players.get(dr.first);
-                            Player p2 = world.players.get(dr.second);
-                            if  ((p1.isMainPlayer && !p2.isMainPlayer) || (!p1.isMainPlayer && p2.isMainPlayer)) {
-                                dr.value = Math.max(0, dr.value - world.customBalanceSettings.nonPlayerRelationshipDeterioration / 100d);
+                    if (world.level >= 4) {
+                        for (DiplomaticRelation dr : world.relations) {
+                            if (dr != null && dr.full && !dr.strongAlliance && dr.alliancesAgainst.isEmpty()) {
+                                Player p1 = world.players.get(dr.first);
+                                Player p2 = world.players.get(dr.second);
+                                if  ((p1.isMainPlayer && !p2.isMainPlayer) || (!p1.isMainPlayer && p2.isMainPlayer)) {
+                                    dr.value = Math.max(0, dr.value - world.customBalanceSettings.nonPlayerRelationshipDeterioration / 100d);
+                                }
                             }
                         }
                     }
