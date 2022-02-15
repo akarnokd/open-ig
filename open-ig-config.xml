@@ -4,7 +4,7 @@
 <comment>Open Imperium Galactica Configuration</comment>
 <entry key="fileName">open-ig-config.xml</entry>
 <entry key="tileCacheBuildingLimit">10</entry>
-<entry key="researchMoneyPercent">2000</entry>
+<entry key="researchMoneyPercent">1000</entry>
 <entry key="language">en</entry>
 <entry key="videoVolume">100</entry>
 <entry key="showBuildingName">true</entry>
@@ -14,15 +14,15 @@
 <entry key="textCacheSize">0</entry>
 <entry key="intro">false</entry>
 <entry key="height">822</entry>
-<entry key="muteMusic">false</entry>
+<entry key="muteMusic">true</entry>
 <entry key="reequipTanks">true</entry>
 <entry key="timestep">10</entry>
-<entry key="scaleAllScreens">true</entry>
+<entry key="scaleAllScreens">false</entry>
 <entry key="aiGroundAttackMixed">true</entry>
 <entry key="showStarmapScroll">true</entry>
 <entry key="maximized">false</entry>
-<entry key="classicControls">true</entry>
-<entry key="allowWeather">true</entry>
+<entry key="classicControls">false</entry>
+<entry key="allowWeather">false</entry>
 <entry key="fullScreen">false</entry>
 <entry key="uiScale">100</entry>
 <entry key="hostUPnP">false</entry>
@@ -31,13 +31,13 @@
 <entry key="left">585</entry>
 <entry key="aiAllowBuildingUpgrades">false</entry>
 <entry key="tileCacheSize">0</entry>
-<entry key="autoBuildLimit">0</entry>
+<entry key="autoBuildLimit">20000</entry>
 <entry key="movieScale">true</entry>
 <entry key="currentProfile">default</entry>
 <entry key="joinPort">13951</entry>
 <entry key="autoRepair">true</entry>
 <entry key="musicVolume">100</entry>
-<entry key="satelliteDeploy">true</entry>
+<entry key="satelliteDeploy">false</entry>
 <entry key="animateInventory">true</entry>
 <entry key="showStarmapMinimap">true</entry>
 <entry key="buttonSounds">true</entry>
@@ -64,7 +64,7 @@
 <entry key="disableDirectDraw">false</entry>
 <entry key="computerVoiceScreen">true</entry>
 <entry key="productionHistoryLimit">10</entry>
-<entry key="automaticBattle">true</entry>
+<entry key="automaticBattle">false</entry>
 <entry key="movieClickSkip">true</entry>
 <entry key="joinAddresses-count">0</entry>
 <entry key="dayNightCycle">true</entry>

@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.231'>
+  <module id='Game' version='0.95.232'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -34,17 +34,26 @@
     </general>
     <execute file='open-ig-%s.jar' memory='832' class='hu.openig.Startup'/>
     <notes url='http://open-ig-dev.blogspot.hu'>
-      <desc lang='hu'>Kisebb UI fejlesztések</desc>
-      <desc lang='en'>Small UI improvements</desc>
-      <desc lang='de'>Small UI improvements</desc>
-      <desc lang='fr'>Small UI improvements</desc>
-      <desc lang='ru'>Small UI improvements</desc>
-      <desc lang='es'>Small UI improvements</desc>
+      <desc lang='hu'>Hibajavítások</desc>
+      <desc lang='en'>Bugfixes</desc>
+      <desc lang='de'>Bugfixes</desc>
+      <desc lang='fr'>Bugfixes</desc>
+      <desc lang='ru'>Bugfixes</desc>
+      <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.232' date='2022-02-15'>
+        <item category='Balance' issues='1057'>Remove unfinished buildings when winning an Auto-Battle.</item>
+        <item category='Balance' issues='1057'>Unfinished buildings are no longer considered for technology capturing.</item>
+        <item category='Balance' issues='1057'>Buildings with research level above the current world level will no longer be awarded to the player when capturing an alien planet.</item>
+        <item category='Balance' issues='1058'>Do not allow the black market to sell items above the player level</item>
+        <item category='Balance' issues='1056'>Relationship deterioration specified via the custom balance settings will now only apply in rank Admiral (level 4) and above.</item>
+        <item category='Other' issues='1054'>File access will no longer crash if there is a directory with the expected filename among the saves/resources.</item>
+        <item category='UI' issues='1052'>The diplomacy screen should no longer crash when viewing certain messages in certain situations.</item>
+      </entry>
       <entry version='0.95.231' date='2022-02-07'>
         <item category='Achievements'>Fixed a crash when playing a skirmish game without Dargslans.</item>
-        <item category='Skirmish' issues='1051'>Fixed the skirmish game "Human vs. AI" referencing non-existent technology in its battle definition.</item>
+        <item category='Skirmish' issues='1051'>Fixed the skirmish game &quot;Human vs. AI&quot; referencing non-existent technology in its battle definition.</item>
       </entry>
       <entry version='0.95.230' date='2022-02-05'>
         <item category='Achievements' issues='1049'>The game no longer crashes when it tries to award the &quot;A pirate in need&quot; achievement.</item>
@@ -212,7 +221,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.231.jar' sha1='18356E42E2F09850562C7D7BB90BBFBD236A0212'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.232.jar' sha1='82AB99802D35EB225D6883F700458FCDBAF87E77'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220207a2.zip' sha1='A4C922A3FC997D1EA7A5FE3FCD4660EE671A3E25'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
