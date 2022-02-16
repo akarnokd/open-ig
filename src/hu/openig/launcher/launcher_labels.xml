@@ -196,7 +196,7 @@
 		<entry key='Could not delete file %s'>Datei %s kann nicht gelöscht werden</entry>
 		<entry key='Error while processing file %s: %s'>Problem beim Verarbeiten von Datei %s: %s</entry>
 		<entry key='New version available: %s'>Neue Version verfügbar: %s</entry>
-		<entry key='Error while checking files: %s'>Fehler beim Überprüfung der Dateien: %s</entry>
+		<entry key='Error while checking files: %s'>Fehler beim Überprüfen der Dateien: %s</entry>
 		<entry key='Could not access directory %s'>Verzeichnis %s nicht verfügbar.</entry>
 		<entry key='Some files are missing or damaged. Do you wish to repair the install?'>Einige Dateien sind nicht verfügbar oder fehlerhaft. Installation reparieren?</entry>
 		<entry key='Copy'>Kopieren</entry>
