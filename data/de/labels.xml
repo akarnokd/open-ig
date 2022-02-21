@@ -2078,7 +2078,7 @@
 	<entry key='messages.fire'>Gefeuert</entry>
 	<entry key='messages.is_attack'>Angriff</entry>
 	<entry key='messages.merchant'>Händler</entry>
-	<entry key='messages.money'>Geld</entry>
+	<entry key='messages.money'>Geleitschutz</entry>
 	<entry key='messages.no_attack'>Status</entry>
 	<entry key='messages.pirates'>Piraten</entry>
 	<entry key='messages.promotion'>Beförderung</entry>
@@ -2571,8 +2571,8 @@
 	<entry key='chat.merchant6.n2'>Setzen Sie die Reise zu Ihrem Ziel fort!</entry>
 	<entry key='chat.merchant6.n3'>Was fliegen Sie hier herum? Das macht mich wütend!</entry>
 	<entry key='chat.merchant6.n3.o'>Was fliegen Sie hier herum?</entry>
-	<entry key='chat.merchant6.n4'>Ich bin Händler, lassen Sie mich bitte passieren.</entry>
-	<entry key='chat.merchant6.n5'>Schon gut...</entry>
+	<entry key='chat.merchant6.n4'>Danke</entry>
+	<entry key='chat.merchant6.n5'>Ich bin Händler, lassen Sie mich bitte passieren.</entry>
 	<entry key='chat.merchant6.n6'>Sterbt!</entry>
 	<entry key='chat.merchant6.n7'>Setzen Sie Ihre Reise fort!</entry>
 	<entry key='chat.merchant6.n7.o'>In Ordnung, ich lasse Sie ziehen.</entry>
