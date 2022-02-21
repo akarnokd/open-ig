@@ -1912,7 +1912,7 @@
 	<entry key='diplomacy.relations'>Beziehung zeigen</entry>
 	<entry key='diplomacy.show_panel'>Kontaktieren Sie andere Rassen und Fraktionen.</entry>
 	<entry key='diplomacy.type.ALLY'>Allianz anbieten...</entry>
-	<entry key='diplomacy.type.DARGSLAN'>! Allianz gegen die Dargslan</entry>
+	<entry key='diplomacy.type.DARGSLAN'>Allianz gegen die Dargslan</entry>
 	<entry key='diplomacy.type.DIPLOMATIC_RELATIONS'>Diplomatische Beziehung verbessern</entry>
 	<entry key='diplomacy.type.MONEY'>Geld anbieten</entry>
 	<entry key='diplomacy.type.SURRENDER'>Kapitulation fordern</entry>
@@ -2078,7 +2078,7 @@
 	<entry key='messages.fire'>Gefeuert</entry>
 	<entry key='messages.is_attack'>Angriff</entry>
 	<entry key='messages.merchant'>Händler</entry>
-	<entry key='messages.money'>Geld</entry>
+	<entry key='messages.money'>Geleitschutz</entry>
 	<entry key='messages.no_attack'>Status</entry>
 	<entry key='messages.pirates'>Piraten</entry>
 	<entry key='messages.promotion'>Beförderung</entry>
@@ -2087,7 +2087,7 @@
 	<entry key='messages.prototype_success'>Prototyp gesichert</entry>
 	<entry key='messages.prototype_thanks'>Danke</entry>
 	<entry key='messages.quickly'>Schnell</entry>
-	<entry key='messages.rebel'>Rebel Gouverneur</entry>
+	<entry key='messages.rebel'>Rebellischer Gouverneur</entry>
 	<entry key='messages.reinforcements'>Verstärkungen</entry>
 	<entry key='messages.smuggler'>Schmuggler</entry>
 	<entry key='messages.smuggler_escaped'>Schmuggler flüchtete</entry>
@@ -2103,10 +2103,10 @@
 	<entry key='messages.virus_breached'>Quarantäne-Verletzung</entry>
 	<entry key='messages.virus_carriers_destroyed'>Virusträger zerstört</entry>
 	<entry key='messages.virus_resolved'>Virus eingedämmt</entry>
-	<entry key='messages.viruses'>Mehrere Virus infektionen</entry>
+	<entry key='messages.viruses'>Mehrere Virusinfektionen</entry>
 	<entry key='messages.wife'>Deine Frau</entry>
 	<entry key='messages.wife_1'>Schultag von J</entry>
-	<entry key='messages.wife_2'>Austellung</entry>
+	<entry key='messages.wife_2'>Ausstellung</entry>
 	<entry key='messages.wife_3'>Geburtstag</entry>
 	<entry key='messages.wife_4'>Glückwünsche</entry>
 
@@ -2571,8 +2571,8 @@
 	<entry key='chat.merchant6.n2'>Setzen Sie die Reise zu Ihrem Ziel fort!</entry>
 	<entry key='chat.merchant6.n3'>Was fliegen Sie hier herum? Das macht mich wütend!</entry>
 	<entry key='chat.merchant6.n3.o'>Was fliegen Sie hier herum?</entry>
-	<entry key='chat.merchant6.n4'>Ich bin Händler, lassen Sie mich bitte passieren.</entry>
-	<entry key='chat.merchant6.n5'>Schon gut...</entry>
+	<entry key='chat.merchant6.n4'>Danke</entry>
+	<entry key='chat.merchant6.n5'>Ich bin Händler, lassen Sie mich bitte passieren.</entry>
 	<entry key='chat.merchant6.n6'>Sterbt!</entry>
 	<entry key='chat.merchant6.n7'>Setzen Sie Ihre Reise fort!</entry>
 	<entry key='chat.merchant6.n7.o'>In Ordnung, ich lasse Sie ziehen.</entry>
@@ -2812,7 +2812,7 @@
 	<entry key="production.missing_spaceship_factory">Warnung: Sie haben keine Raumschifffabrik!</entry>
 	<entry key="production.missing_equipment_factory">Warnung: Sie haben keine Ausrüstungsfabrik!</entry>
 	<entry key='infoscreen.all'>Alle</entry>
-    <entry key="settings.ai_autobuild_production">AI managed planets may produce items</entry>
+    <entry key="settings.ai_autobuild_production">KI-gesteuerte Planeten dürfen Gegenstände produzieren</entry>
 	<entry key="settings.building_name">Zeige Gebäudenamen und Status</entry>
     <entry key="settings.classic_controls.tooltip">Modern:[n]  Bewegen: [c=FFFFFFFF]SHIFT+Rechtsklick[/c][n]  Angriff: [c=FFFFFFFF]STRG+Rechtsklick[/c][n]  Karte bewegen: [c=FFFFFFFF]Rechte Maustaste[/c][n]  Zoom: [c=FFFFFFFF]Middle mouse button[/c][n]Klassisch:[n]  Bewegen: [c=FFFFFFFF]Rechtsklick in Weltraum[/c][n]  Angriff: [c=FFFFFFFF]Rechtsklick auf Gegner[/c][n]  Karte bewegen: [c=FFFFFFFF]Mittlere Maustaste[/c][n]  Zoom: [c=FFFFFFFF]STRG+Mittlere Maustaste[/c]</entry>
   	<entry key='settings.confirm_overwrite'>Spielstand überschreiben?</entry>
@@ -2900,7 +2900,7 @@
 	<entry key="statusbar.objectives.tooltip">Aufgaben anzeigen oder ausblenden[n]Kurzwahl: [c=FFFFFFFF]TAB[/c]</entry>
 	<entry key="statusbar.notification.tooltip">Benachrichtigungen[n][c=FFFFFFFF]Rechte Maustaste[/c]: Nachrichtenhistorie anzeigen oder ausblenden</entry>
 	<entry key="statusbar.notification.clear.tooltip">Nachrichtenhistorie leeren</entry>
-	<entry key="statusbar.menu.tooltip">Show menu[n]Hold down the mouse button and release it over the desired entry.</entry>
+	<entry key="statusbar.menu.tooltip">Menü anzeigen[n]Halten Sie die Maustaste und lassen Sie sie über dem gewünschten Eintrag los.</entry>
 	<entry key="buildings.upgrade.none">Gebäude hat keine Verbesserungen.</entry>
 	<entry key="buildings.upgrade.has">Gebäude hat Verbesserungen.[n][c=FFFFFF00]%s[/c]</entry>
 	<entry key="buildings.upgrade.cost">Verbesserungen kaufen[n][c=FFFFFF00]%s[/c][n][c=%s]Aufrüstungskosten: %,d cr[/c]</entry>
@@ -2915,17 +2915,17 @@
 	<entry key="colony.bridge.tooltip">Brücke, Kommunikation[n]Kurzwahl: [c=FFFFFFFF]F1[/c]</entry>
 	<entry key="colony.building.prev.tooltip">Voriges Gebäude[n][c=FFFFFFFF]Rausrad auf[/c]</entry>
 	<entry key="colony.building.next.tooltip">Nächstes Gebäude[n][c=FFFFFFFF]Mausrad ab[/c]</entry>
-	<entry key="colony.building.list.tooltip">Building list[n]Kurzwahl: [c=FFFFFFFF]F7, S[/c]</entry>
+	<entry key="colony.building.list.tooltip">Gebäudeliste[n]Kurzwahl: [c=FFFFFFFF]F7, S[/c]</entry>
 	<entry key="colony.building.build.tooltip">Baumodus umschalten.[n][c=FFFFFFFF]SHIFT[/c] halten, um mehrere Gebäude zu platzieren.[n]Kurzwahl: [c=FFFFFFFF]B[/c]</entry>
 	<entry key="colony.buildings.tooltip">Gebäudepanel ein- oder ausblenden.</entry>
-	<entry key="colony.buildinginfos.tooltip">Show or hide the building status panel.</entry>
-	<entry key="colony.radars.tooltip">Show or hide the radar panel.</entry>
-	<entry key="colony.infos.tooltip">Show or hide colony information.</entry>
-	<entry key="colony.buttons.tooltip">Show or hide navigation buttons.</entry>
-	<entry key="colony.active.tooltip">Switch off building</entry>
-	<entry key="colony.damaged.tooltip">Start repairing the building</entry>
-	<entry key="colony.repairing.tooltip">Stop repairing the building</entry>
-	<entry key="colony.inactive.tooltip">Switch on building</entry>
+	<entry key="colony.buildinginfos.tooltip">Gebäudestatuspanel ein- oder ausblenden.</entry>
+	<entry key="colony.radars.tooltip">Radarpanel ein- oder ausblenden.</entry>
+	<entry key="colony.infos.tooltip">Kolonieinformation ein- oder ausblenden.</entry>
+	<entry key="colony.buttons.tooltip">Navigationstasten ein- oder ausblenden.</entry>
+	<entry key="colony.active.tooltip">Gebäude ausschalten</entry>
+	<entry key="colony.damaged.tooltip">Reparatur starten</entry>
+	<entry key="colony.repairing.tooltip">Reparatur anhalten</entry>
+	<entry key="colony.inactive.tooltip">Gebäude einschalten</entry>
 	
 	<entry key="info.warnings.house.tooltip">Nicht genug Wohnraum.</entry>
 	<entry key="info.problems.house.tooltip">Starker Wohnraummangel!</entry>
@@ -2956,7 +2956,7 @@
 	
 	<entry key="starmap.statistics.tooltip">Statistik anzeigen[n]Kurzwahl: [c=FFFFFFFF]F11[/c]</entry>
 	<entry key="starmap.achievements.tooltip">Erfolge anzeigen[n]Kurzwahl: [c=FFFFFFFF]F12[/c]</entry>
-	<entry key="starmap.zoom.tooltip">Zoom in or out of the map[n][c=FFFFFFFF]Left mouse button[/c]: zoom in[n][c=FFFFFFFF]Right mouse button[/c]: zoom out</entry>
+	<entry key="starmap.zoom.tooltip">Zoom: [n][c=FFFFFFFF]Linksklick[/c]: vergrößern[n][c=FFFFFFFF]Rechtsklick[/c]: verkleinern</entry>
 	
 	<entry key="battle.selectall.tooltip">[c=FFFFFFFF]Linksklick / STRG+A[/c]: Alle Einheiten wählen[n][c=FFFFFFFF]Rechtsklick[/c]: Auswahl aufheben</entry>
 	<entry key="battle.selectgroup.tooltip">[c=FFFFFFFF]Linksklick / SHIFT+%1$d[/c]: Gruppe %1$d wählen[n][c=FFFFFFFF]Rechtsklick[/c]: Gruppe %1$d auflösen</entry>
@@ -3026,7 +3026,7 @@
 	<entry key='skirmish.edit_option'>Rasse wählen:</entry>
 	<entry key='skirmish.icon'>Icon</entry>
 	<entry key='skirmish.grant_colonyship'>Kolonieschiffe erforscht</entry>
-	<entry key='skirmish.colony_ships'>Anfängliche Kolonieschiffe:</entry>
+	<entry key='skirmish.colony_ships'     >Anfängliche Kolonieschiffe :</entry>
 	<entry key='skirmish.grant_orbital_factory'>Orbitalfabrik erforscht</entry>
 	<entry key='skirmish.orbital_factories'>Anfängliche Orbitalfabriken:</entry>
 	<entry key='skirmish.relation.PEACEFUL'>Friedlich</entry>
@@ -3055,7 +3055,7 @@
 	<entry key='skirmish.relation.DEFAULT'>Standard</entry>
 	<entry key='skirmish.relation.WAR'>Krieg</entry>
 	<entry key='skirmish.social.tooltip'>Erreichen Sie das geforderte Level an Moral auf der vorgeschriebenen Anzahl an Planeten.</entry>
-	<entry key='skirmish.occupation.tooltip'>Halten Sie den vorgegebenen Prozentsatz der Galaxie für die vorgeschriebene Dauer.</entry>
+	<entry key='skirmish.occupation.tooltip'>Halten Sie den vorgegebenen Prozentsatz an Planeten der Galaxie für die vorgeschriebene Dauer.</entry>
 	<entry key='skirmish.technology.tooltip'>Gewinnen Sie, indem Sie alle Technologien erforschen.</entry>
 	<entry key='skirmish.economic.tooltip'>Erreichen Sie das gesetzte Geldlimit um zu gewinnen. Geldmittel des Teams wird aufsummiert.</entry>
 	<entry key='skirmish.conquest.tooltip'>Eliminieren Sie alle anderen Rassen, die nicht zu Ihrem Team gehören.</entry>
@@ -3074,7 +3074,7 @@
 	<entry key='skirmish.traits.tooltip'>Merkmale wählen</entry>
 	<entry key='skirmish.trait'>Merkmal</entry>
 	<entry key='skirmish.random_layout'>Zufälliges Layout</entry>
-	<entry key='skirmish.occupation'>Eroberung</entry>
+	<entry key='skirmish.occupation'>Besatzung</entry>
 	<entry key='skirmish.occupation_percent'>Zu haltender Prozentsatz:</entry>
 	<entry key='skirmish.occupation_time'   >Mindestdauer            :</entry>
 	<entry key='skirmish.traits'>M</entry>
@@ -3307,26 +3307,26 @@
 	<entry key='Green Dragon'>Green Dragon</entry>
 	<entry key='equipment.kills'>Kills: </entry>
 	<entry key='equipment.kills2'>Kills: %,d</entry>
-	<entry key='settings.starmap_lists'>Lists</entry>
+	<entry key='settings.starmap_lists'>Listen</entry>
 	<entry key='settings.starmap_info'>Info</entry>
-	<entry key='settings.starmap_minimap'>Minimap</entry>
-	<entry key='settings.starmap_scroll'>Scrollbars</entry>
-	<entry key='settings.starmap_panels'>Starmap panels:</entry>
-	<entry key='starmap.colonize_cancel.tip'>Kolonisierung abbrechen.[n]Construction or production related to the earlier colonization attempt won't be stopped,[n]although it won't progress to the next step.[n]Existing or en-route colony ships might be diverted to another colonization tasks.</entry>
+	<entry key='settings.starmap_minimap'>Minikarte</entry>
+	<entry key='settings.starmap_scroll'>Scrollbalken</entry>
+	<entry key='settings.starmap_panels'>Sternenkartenpanele:</entry>
+	<entry key='starmap.colonize_cancel.tip'>Kolonisierung abbrechen.[n]Im Zusammenhang zur Kolonisierung gestartete Konstruktion und Produktion wird nicht gestoppt,[n]allerdings wird der nächste Schritt nicht gestartet.[n]Bereits existierende oder im Anflug befindliche Kolonieschiffe werden zu einem anderen Kolonie-Auftrag umgeleitet.</entry>
 
-	<entry key="autobuild.tooltip.CIVIL">[c=FFFFCC00]Builds and upgrades civil buildings, such as houses, food factories and hospitals, on demand.[/c][n]If necessary, power plants are built or upgraded as well.[n]This setting might be used to keep planets well supplied.[n]It tries to upgrade buildings first before building new ones to save space.</entry>
-	<entry key="autobuild.tooltip.ECONOMIC">[c=FFFFCC00]Builds and upgrades economic buildings, such as traders spaceport, bank, etc.[/c][n]If necessary, power plants are built or upgraded as well.[n]Best used to ensure these kinds of buildings are available and upgraded on all planets.</entry>
-	<entry key="autobuild.tooltip.FACTORY">[c=FFFFCC00]Builds and upgrades factory buildings: spaceship-, equipment- and weapons factories.[/c][n]If necessary, power plants are built or upgraded as well.[n]Best used ensure these kinds of buildings are available and upgraded on all planets.</entry>
-	<entry key="autobuild.tooltip.SOCIAL">[c=FFFFCC00]Builds morale-boosting buildings, such as church, police, bar, stadium, etc.[/c][n]If necessary, power plants are built or upgraded as well.[n]Best used to ensure these kinds of buildings are available on all planets.</entry>
-	<entry key="autobuild.tooltip.UPGRADE">[c=FFFFCC00]Upgrades any upgradable buildings to their maximum (as money permits).[/c][n]If necessary, power plants are built or upgraded as well.[n]Best used to ensure buildings are upgraded on all planets.</entry>
-	<entry key="autobuild.tooltip.AI">[c=FFFFCC00]Performs all kinds of management tasks automatically:[/c][n]- builds or upgrades buildings based on population demands,[n]  including special demands such as Stadium or Fire Brigade,[n]- builds and/or upgrades power plants, replaces them with more efficient ones if they become available,[n]- builds factories and economic buildings, then upgrades them to maximum,[n]- Builds morale-boosting buildings such as Church and Bar,[n]- Builds a Military Spaceport,[n]- Builds Radar, Shields, Barracks and planetary guns and[n]  replaces them if a newer version becomes available.[n]- Produces and/or deploys tanks, fighters, starbases up to the maximum capacity, replaces them if newer versions become available[n]- Adjusts the tax level to keep the population happy enough but tries to maximize the tax income[n][n][c=FFFFCC00]Notes and warnings:[/c][n]- Tanks and rocket sleds are deployed in 2/3 + 1/3 mix, plus one per special units.[n]- Places production orders which might disrupt the main production the user intended.[n]- Builds an Orbital Factory if there aren't any in the empire.[n]- If multiple planets have this mode, they are handled in order of their problems or demands.</entry>
+	<entry key="autobuild.tooltip.CIVIL">[c=FFFFCC00]Automatischer Bau und Verbesserung von Zivilgebäuden wie Häuser, Nahrungsmittelfabriken und Krankenhäuser entsprechend dem tatsächlichen Bedarf.[/c][n]Falls notwendig werden auch Kraftwerke gebaut und verbessert.[n]Diese Einstellung kann genutzt werden, um Planeten in guter Versorgungslage zu halten.[n]Es wird immer erst versucht ein bestehendes Gebäude zu verbessern, bevor ein neues errichtet wird, um Platz zu sparen.</entry>
+	<entry key="autobuild.tooltip.ECONOMIC">[c=FFFFCC00]Automatischer Bau und Verbesserung von Wirtschaftsgebäuden wie Banken und Handelshäfen.[/c][n]Falls notwendig werden auch Kraftwerke gebaut und verbessert.[n]Nutzen Sie diese Einstellung um sicherzustellen, dass diese Gebäude auf all Ihren Planeten in der besten Ausbaustufe vorhanden sind.[n]Es wird immer erst versucht ein bestehendes Gebäude zu verbessern, bevor ein neues errichtet wird, um Platz zu sparen.</entry>
+	<entry key="autobuild.tooltip.FACTORY">[c=FFFFCC00]Automatischer Bau von Fabrikgebäuden: Raumschiff-, Ausrüstungs- und Waffenfabrik.[/c][n]Falls notwendig werden auch Kraftwerke gebaut und verbessert.[n]Nutzen Sie diese Einstellung um sicherzustellen, dass diese Gebäude auf all Ihren Planeten in der besten Ausbaustufe vorhanden sind.[n]Es wird immer erst versucht ein bestehendes Gebäude zu verbessern, bevor ein neues errichtet wird, um Platz zu sparen.</entry>
+	<entry key="autobuild.tooltip.SOCIAL">[c=FFFFCC00]Automatischer Bau und Verbesserung von Gebäuden mit Auswirkung auf die Moral der Bevölkerung, wie Kirche, Polizei, Bar und Stadion.[/c][n]Falls notwendig werden auch Kraftwerke gebaut und verbessert.[n]Nutzen Sie diese Einstellung um sicherzustellen, dass diese Gebäude auf all Ihren Planeten in der besten Ausbaustufe vorhanden sind.</entry>
+	<entry key="autobuild.tooltip.UPGRADE">[c=FFFFCC00]Verbesserung aller Gebäude auf den besten Stand (solange das Geld ausreicht).[/c][n]Falls notwendig werden auch Kraftwerke gebaut und verbessert.[n]Nutzen Sie diese Einstellung, um Ihre Gebäude auf die höchste Ausbaustufe zu heben.</entry>
+	<entry key="autobuild.tooltip.AI">[c=FFFFCC00]Führt verschiedene Verwaltungsaufgaben automatisch durch:[/c][n]- automatischer Bau und Verbesserung von Gebäuden entsprechen Bedarf der Bevölkerung,[n]  inklusive Sonderwünschen wie Stadion und Feuerwache,[n]- Bau und Verbesserung von Kraftwerken, Ersetzen alter Kraftwerke sobald neue Technologie verfügbar wird,[n]- Bau von Fabriken und Wirtschaftsgebäuden, dann Verbesserung bis zum Maximum,[n]- Bau moraleffektiver Gebäude wie Kirche und Bar,[n]- Bau eines Militärraumhafens,[n]- Bau von Radar, Schild, Barrackeen und planetaren Geschützen[n]  Ersetzen dieser, sobald neue Technologie verfügbar wird.[n]- Produktion und Aufstellung von Panzern, Jägern und Sternenbasen bis zur Kapazitätsgrenze, Ersetzen sobald neue Technologie verfügbar wird[n]- Anpassung des Steuerniveaus: Maximierung der Steuereinnahmen bei gleichzeitiger Zufriedenheit der Bevölkerng[n][n][c=FFFFCC00]Anmerkungen und Warnungen:[/c][n]- Panzer und Raketenschlitten werden stationiert in der Verteilung 2:1 plus jeweils eine der Spezialeinheiten.[n]- Erteilt Produktionsaufträge, die der vom Spieler gewünschten Reihenfolge zuwider laufen können[n]- Baut Orbitalfabriken, sofern im Reich des Spielers keine verfügbar ist.[n]- Befinden sich mehrere Planeten in diesem Modus werden sie in der Reihenfolge ihrer Probleme und Bedürfnisse behandelt.</entry>
 	
-	<entry key="info.military_spaceport.tooltip">The planet contains an operational Military Spaceport</entry>
+	<entry key="info.military_spaceport.tooltip">Der Planet verfügt über einen betriebsbereiten Militärraumhafen</entry>
 	<entry key='profiles.create_new'>Neues Profil erstellen:</entry>
 	<entry key='profiles.select_button'>Wählen / Anlegen</entry>
 	<entry key='profiles.back_button'>Zurück</entry>
 	<entry key='profiles.existing_profiles'>Bestehende Profile:</entry>
-	<entry key='settings.auto_display_objectives'>Automatically display objective changes</entry>
+	<entry key='settings.auto_display_objectives'>Automatisch einblenden bei Aufgabenfortschritt</entry>
 	<entry key='settings.continuous_money'>Kontinuierliche Geld/Moral-Berechnung</entry>
 	<entry key='info.planetlist_labs'>Laborinfo</entry>
 	<entry key='info.planetlist_problems'>Probleme</entry>
@@ -3346,8 +3346,8 @@
 	<entry key="languages.ru">Russian / Russisch</entry>
 	<entry key="languages.es">Spanish / Spanisch</entry>
 	<entry key="languages.change.tooltip">Sprache wechseln[n][c=FFFFFFFF]ESC[/c] = abbrechen</entry>
-	<entry key='starmap.renameplanet.tooltip'>Doppelklick zum Umbenennen.[n]Hit [c=FFFFFFFF]ESC[/c] oder [c=FFFFFFFF]ENTER[/c] zum Bestätigen.[n][c=FFFFFFFF]BACKSPACE[/c] bei leerem Namen setzt auf Standard zurück.</entry>
-	<entry key='starmap.renamefleet.tooltip'>Doppelklick zum Umbenennen.[n]Hit [c=FFFFFFFF]ESC[/c] oder [c=FFFFFFFF]ENTER[/c] zum Bestätigen.</entry>
+	<entry key='starmap.renameplanet.tooltip'>Doppelklick zum Umbenennen.[n] [c=FFFFFFFF]ESC[/c] oder [c=FFFFFFFF]ENTER[/c] zum Bestätigen.[n][c=FFFFFFFF]BACKSPACE[/c] bei leerem Namen setzt auf Standard zurück.</entry>
+	<entry key='starmap.renamefleet.tooltip'>Doppelklick zum Umbenennen.[n] [c=FFFFFFFF]ESC[/c] oder [c=FFFFFFFF]ENTER[/c] zum Bestätigen.</entry>
 	
 	<entry key='info.details_PROBLEMS'>Probleme</entry>
 	<entry key='info.details_LABS'>Labore</entry>
@@ -3373,7 +3373,7 @@
 	<entry key="info.planetlist.tooltip">Wählt den in der letzten Spalte anzuzeigenden Wert[n][c=FFFFFFFF]Linksklick[/c]: nächstes Detail[n][c=FFFFFFFF]Rechtsklick[/c]: vorheriges Detail</entry>
 	<entry key="message.planet_colonized">Planet %s wurde kolonisiert.</entry>
 	
-	<entry key='skirmish.tax_base'>Basiseinkommen:</entry>
+	<entry key='skirmish.tax_base' >Basiseinkommen           :</entry>
 	<entry key='skirmish.tax_scale'>Steuereinkommen skalieren:</entry>
 	<entry key='skirmish.initial_planet'>P.</entry>
 	<entry key='skirmish.initial_planet.random'>Zufälliger Startplanet</entry>
@@ -3383,7 +3383,7 @@
 	<entry key='skirmish.other'>Andere Einstellungen</entry>
 	<entry key='skirmish.allow_all_buildings'>Jeder darf alle Gebäudetypen bauen</entry>
 	<entry key='settings.vector_fonts'>Vector-Schriftart (Neustart benötigt)</entry>
-	<entry key="skirmish.planet_scale">Planet skalieren</entry>
+	<entry key="skirmish.planet_scale">Planetengröße skalieren</entry>
 	<entry key="skirmish.no_factory_limit">Fabriken pro Planet nicht begrenzen</entry>
 	<entry key="skirmish.no_lab_limit">Labore pro Planet nicht begrenzen</entry>
 	
@@ -3393,7 +3393,7 @@
 	<entry key='tech.garthogfighter1.description'>Der andauernde Konflikt mit dem Galaktischen Imperium erfordert bessere Jäger mit mehr Feuerkraft.</entry>
 	<entry key='tech.garthogfighter2.name'>Garthog-Jäger 2</entry>
 	<entry key='tech.garthogfighter2.longname'>Garthog Jäger Mk2</entry>
-	<entry key='tech.garthogfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Dies sollte uns einen defensiven Vorteil schaffen.</entry>
+	<entry key='tech.garthogfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Diese Version sollte uns einen gewissen Vorteil verschaffen.</entry>
 	<entry key='tech.garthogfighter3.name'>Garthog-Jäger 3</entry>
 	<entry key='tech.garthogfighter3.longname'>Garthog Jäger Mk3</entry>
 	<entry key='tech.garthogfighter3.description'>Der verbesserte Jäger Mk3 ermöglicht es uns, effektiver gegen andere Rassen vorzugehen.</entry>
@@ -3427,7 +3427,7 @@
 	<entry key='tech.dargslanfighter1.description'>Der andauernde Konflikt mit dem Galaktischen Imperium erfordert bessere Jäger mit mehr Feuerkraft.</entry>
 	<entry key='tech.dargslanfighter2.name'>Dargslan-Jäger 2</entry>
 	<entry key='tech.dargslanfighter2.longname'>Dargslan Jäger Mk2</entry>
-	<entry key='tech.dargslanfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Dies sollte uns einen defensiven Vorteil schaffen.</entry>
+	<entry key='tech.dargslanfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Diese Version sollte uns einen gewissen Vorteil verschaffen.</entry>
 	<entry key='tech.dargslanfighter3.name'>Dargslan-Jäger 3</entry>
 	<entry key='tech.dargslanfighter3.longname'>Dargslan Jäger Mk3</entry>
 	<entry key='tech.dargslanfighter3.description'>Der verbesserte Jäger Mk3 ermöglicht es uns, effektiver gegen andere Rassen vorzugehen.</entry>
@@ -3460,7 +3460,7 @@
 	<entry key='tech.morgathfighter1.description'>Der andauernde Konflikt mit dem Galaktischen Imperium erfordert bessere Jäger mit mehr Feuerkraft.</entry>
 	<entry key='tech.morgathfighter2.name'>Morgath-Jäger 2</entry>
 	<entry key='tech.morgathfighter2.longname'>Morgath Jäger Mk2</entry>
-	<entry key='tech.morgathfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Dies sollte uns einen defensiven Vorteil schaffen.</entry>
+	<entry key='tech.morgathfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Diese Version sollte uns einen gewissen Vorteil verschaffen.</entry>
 	<entry key='tech.morgathfighter3.name'>Morgath-Jäger 3</entry>
 	<entry key='tech.morgathfighter3.longname'>Morgath Jäger Mk3</entry>
 	<entry key='tech.morgathfighter3.description'>Der verbesserte Jäger Mk3 ermöglicht es uns, effektiver gegen andere Rassen vorzugehen.</entry>
@@ -3493,7 +3493,7 @@
 	<entry key='tech.ecalepfighter1.description'>Der andauernde Konflikt mit dem Galaktischen Imperium erfordert bessere Jäger mit mehr Feuerkraft.</entry>
 	<entry key='tech.ecalepfighter2.name'>Ecalep-Jäger 2</entry>
 	<entry key='tech.ecalepfighter2.longname'>Ecalep Jäger Mk2</entry>
-	<entry key='tech.ecalepfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Dies sollte uns einen defensiven Vorteil schaffen.</entry>
+	<entry key='tech.ecalepfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Diese Version sollte uns einen gewissen Vorteil verschaffen.</entry>
 	<entry key='tech.ecalepfighter3.name'>Ecalep-Jäger 3</entry>
 	<entry key='tech.ecalepfighter3.longname'>Ecalep Jäger Mk3</entry>
 	<entry key='tech.ecalepfighter3.description'>Der verbesserte Jäger Mk3 ermöglicht es uns, effektiver gegen andere Rassen vorzugehen.</entry>
@@ -3527,7 +3527,7 @@
 	<entry key='tech.sullepfighter1.description'>Der andauernde Konflikt mit dem Galaktischen Imperium erfordert bessere Jäger mit mehr Feuerkraft.</entry>
 	<entry key='tech.sullepfighter2.name'>Sullep-Jäger 2</entry>
 	<entry key='tech.sullepfighter2.longname'>Sullep Jäger Mk2</entry>
-	<entry key='tech.sullepfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Dies sollte uns einen defensiven Vorteil schaffen.</entry>
+	<entry key='tech.sullepfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Diese Version sollte uns einen gewissen Vorteil verschaffen.</entry>
 	<entry key='tech.sullepfighter3.name'>Sullep-Jäger 3</entry>
 	<entry key='tech.sullepfighter3.longname'>Sullep Jäger Mk3</entry>
 	<entry key='tech.sullepfighter3.description'>Der verbesserte Jäger Mk3 ermöglicht es uns, effektiver gegen andere Rassen vorzugehen.</entry>
@@ -3561,7 +3561,7 @@
 	<entry key='tech.ychomfighter1.description'>Der andauernde Konflikt mit dem Galaktischen Imperium erfordert bessere Jäger mit mehr Feuerkraft.</entry>
 	<entry key='tech.ychomfighter2.name'>Ychom-Jäger 2</entry>
 	<entry key='tech.ychomfighter2.longname'>Ychom Jäger Mk2</entry>
-	<entry key='tech.ychomfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Dies sollte uns einen defensiven Vorteil schaffen.</entry>
+	<entry key='tech.ychomfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Diese Version sollte uns einen gewissen Vorteil verschaffen.</entry>
 	<entry key='tech.ychomfighter3.name'>Ychom-Jäger 3</entry>
 	<entry key='tech.ychomfighter3.longname'>Ychom Jäger Mk3</entry>
 	<entry key='tech.ychomfighter3.description'>Der verbesserte Jäger Mk3 ermöglicht es uns, effektiver gegen andere Rassen vorzugehen.</entry>
@@ -3595,7 +3595,7 @@
 	<entry key='tech.dribsfighter1.description'>Der andauernde Konflikt mit dem Galaktischen Imperium erfordert bessere Jäger mit mehr Feuerkraft.</entry>
 	<entry key='tech.dribsfighter2.name'>Dribs-Jäger 2</entry>
 	<entry key='tech.dribsfighter2.longname'>Dribs Jäger Mk2</entry>
-	<entry key='tech.dribsfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Dies sollte uns einen defensiven Vorteil schaffen.</entry>
+	<entry key='tech.dribsfighter2.description'>Andere Rassen haben bessere Jäger als erwartet. Diese Version sollte uns einen gewissen Vorteil verschaffen.</entry>
 	<entry key='tech.dribsfighter3.name'>Dribs-Jäger 3</entry>
 	<entry key='tech.dribsfighter3.longname'>Dribs Jäger Mk3</entry>
 	<entry key='tech.dribsfighter3.description'>Der verbesserte Jäger Mk3 ermöglicht es uns, effektiver gegen andere Rassen vorzugehen.</entry>
@@ -3647,70 +3647,70 @@
     <entry key='info.details_TAX'>Steuer</entry>
     <entry key='info.planetlist_TAX'>Steuer</entry>
     <entry key='colonyinfo.military' >Panzer &amp; Fahrzg. : %s / %s</entry>
-    <entry key='equipment.build_demand'>Upgrade build demand:</entry>
-    <entry key='equipment.build_demand.none'>None</entry>
+    <entry key='equipment.build_demand'>Baubedarf für Aufrüstung:</entry>
+    <entry key='equipment.build_demand.none'>Nichts</entry>
 	<entry key="battlefinish.groundwar_retreat">Sie haben sich vom Bodenkampf zurückgezogen!</entry>
 	<entry key="groundwar.retreat_confirm.tooltip">[c=FFFFFFFF]Linksklick[/c] um Rückzug zu bestätigen.[n][c=FFFFFFFF]Rechtsklick[/c] Rückzug abbrechen und Kampf fortsetzen.</entry>
     <entry key='trade.no_spaceport'>Kein Militärraumhafen</entry>
 	<entry key='trade.deliver_to'>Liefern an</entry>
 	<entry key='trade.buy'>Kaufen</entry>
 	
-    <entry key='custombalance.title'>Custom Balance Settings</entry>
+    <entry key='custombalance.title'>Spielbalance einstellen</entry>
     <entry key='custombalance.ok'>Okay</entry>
-    <entry key='custombalance.reset'>Reset</entry>
+    <entry key='custombalance.reset'>Zurücksetzen</entry>
     <entry key='custombalance.cancel'>Abbrechen</entry>
-    <entry key='custombalance.bonusmoney'>Alien Bonus Money</entry>
-    <entry key='custombalance.bonusproduction'>Alien Bonus Production</entry>
-    <entry key='custombalance.deterioration'>Alien Relations Degradation</entry>
-    <entry key='custombalance.moralemode'>Building Morale Calc Mode</entry>
-    <entry key='custombalance.day'>day</entry>
-    <entry key='custombalance.pointsperday'>point / day</entry>
+    <entry key='custombalance.bonusmoney'>Alien Geldbonus</entry>
+    <entry key='custombalance.bonusproduction'>Alien Produktionsbonus</entry>
+    <entry key='custombalance.deterioration'>Verschlechterung von Alien-Beziehungen</entry>
+    <entry key='custombalance.moralemode'>Berechnungsmodus für Gebäude-Moral</entry>
+    <entry key='custombalance.day'>Tag</entry>
+    <entry key='custombalance.pointsperday'>Punkt / Tag</entry>
+    <entry key='custombalance.moralemode.BEST_PER_TYPE'>Beste pro Typ</entry>
+    <entry key='custombalance.moralemode.ONE_PER_TYPE'>1 pro Typ</entry>
     <entry key='custombalance.moralemode.LINEAR'>Linear</entry>
-    <entry key='custombalance.moralemode.BEST_PER_TYPE'>Best of Kind</entry>
-    <entry key='custombalance.moralemode.ONE_PER_TYPE'>Maximum One</entry>
-    <entry key='custombalance.moralemode.DEGRESSIVE'>Degressive</entry>
-    <entry key='custombalance.moralemode.ASYMPTOTIC'>Asymptotic</entry>
-    <entry key='custombalance.moralemode.DEGRESSIVE.desc'>Every additional morale building of a type contributes less and less but there is no upper limit..</entry>
-    <entry key='custombalance.moralemode.ASYMPTOTIC.desc'>Every additional morale building of a type contributes half than the previous with an effective limit of double.</entry>
-    <entry key='custombalance.moralemode.BEST_PER_TYPE.desc'>Only the morale building in the best condition of a type is considered, but any number can be built for redundancy.</entry>
-    <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>At most one morale building of a type can be built.</entry>
-    <entry key='custombalance.moralemode.LINEAR.desc'>Original Open-IG mode. Every additional morale building does full contribution with no upper limit.</entry>
-    <entry key='custombalance.screen'>Custom Balance Settings</entry>
-    <entry key='custombalance.bonusmoney.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 250.000 cr.</entry>
-    <entry key='custombalance.bonusmoney.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 250.000 cr.</entry>
-    <entry key='custombalance.bonusproduction.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 10%.</entry>
-    <entry key='custombalance.bonusproduction.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 10%.</entry>
-    <entry key='custombalance.deterioration.plus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to increase by 0.5 points/day.</entry>
-    <entry key='custombalance.deterioration.minus.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to decrease by 0.5 points/day.</entry>
+    <entry key='custombalance.moralemode.DEGRESSIVE'>Degressiv</entry>
+    <entry key='custombalance.moralemode.ASYMPTOTIC'>Asymptotisch</entry>
+    <entry key='custombalance.moralemode.DEGRESSIVE.desc'>Jedes zusätzliche Gebäude zählt weniger und weniger, jedoch ohne Obergrenze.</entry>
+    <entry key='custombalance.moralemode.ASYMPTOTIC.desc'>Jedes zusätzliche Gebäude zählt halb so viel, wie das jeweils vorherige, mit einem effektiven Gesamtlimit des doppelten Werts.</entry>
+    <entry key='custombalance.moralemode.BEST_PER_TYPE.desc'>Nur das jeweils beste, moraleffektive Gebäude zählt. Weitere können zum Erreichen von Redundanz gebaut werden.</entry>
+    <entry key='custombalance.moralemode.ONE_PER_TYPE.desc'>Von jedem moraleffektiven Gebäude kann maximal eines gebaut werden.</entry>
+    <entry key='custombalance.moralemode.LINEAR.desc'>Originaler Modus von Open-IG. Jedes zusätzliche Gebäude zählt voll, ohne Obergrenze.</entry>
+    <entry key='custombalance.screen'>Eigene Spielbalanceeinstellungen</entry>
+    <entry key='custombalance.bonusmoney.plus.tooltip'> Mit [c=FFFFFFFF]SHIFT+Klick[/c] um 250.000 cr zu erhöhen.</entry>
+    <entry key='custombalance.bonusmoney.minus.tooltip'> Mit [c=FFFFFFFF]SHIFT+Klick[/c] um 250.000 cr zu verringern.</entry>
+    <entry key='custombalance.bonusproduction.plus.tooltip'> Mit [c=FFFFFFFF]SHIFT+Klick[/c] um 10% zu erhöhen.</entry>
+    <entry key='custombalance.bonusproduction.minus.tooltip'> Mit [c=FFFFFFFF]SHIFT+Klick[/c] um 10% zu verringern.</entry>
+    <entry key='custombalance.deterioration.plus.tooltip'> Mit [c=FFFFFFFF]SHIFT+Klick[/c] um 0.5 Punkt/Tag zu erhöhen .</entry>
+    <entry key='custombalance.deterioration.minus.tooltip'> Mit [c=FFFFFFFF]SHIFT+Klick[/c] um 0.5 Punkte/Tag zu verringern.</entry>
 	
-    <entry key='colony.pavementmodebutton.tooltip'>Toggle Pavement Mode (pave over large surface features)[n]Shortcut: [c=FFFFFFFF]P[/c][n]Price: 5000 cr per cell</entry>
-    <entry key='colony.moveinbutton.tooltip'>Settle in colonists from another planet (opens dialog)</entry>
-    <entry key='colony.moveoutbutton.tooltip'>Move colonists to another planet (opens dialog)</entry>
+    <entry key='colony.pavementmodebutton.tooltip'>Einebnen umschalten (große Oberflächenstrukturen einebnen)[n]Kurzwahl: [c=FFFFFFFF]P[/c][n]Kosten: 5000 cr pro Zelle</entry>
+    <entry key='colony.moveinbutton.tooltip'>Kolonisten von anderem Planeten ansiedeln</entry>
+    <entry key='colony.moveoutbutton.tooltip'>Kolonisten auf anderen Planeten verschieben</entry>
     <entry key='colony.abandonbutton.tooltip'>Kolonie verlassen</entry>
-    <entry key='movecolonists.in.title'>Settle in colonists</entry>
-    <entry key='movecolonists.out.title'>Move colonists out</entry>
+    <entry key='movecolonists.in.title'>Kolonisten ansiedeln</entry>
+    <entry key='movecolonists.out.title'>Kolonisten umsiedeln</entry>
     <entry key='movecolonists.cancel'>Abbrechen</entry>
     <entry key='abandoncolony.title'>Kolonie verlassen</entry>
     <entry key='abandoncolony.cancel'>Abbrechen</entry>
     <entry key='movecolonists.planet'>Planet wählen</entry>
-    <entry key='movecolonists.currentplanet'>Current Planet</entry>
-    <entry key='movecolonists.noplanet'>No suitable planet</entry>
-    <entry key='movecolonists.percentage'>Percentage of colonists</entry>
-    <entry key='movecolonists.population' >Population:        %,d</entry>
-    <entry key='movecolonists.livingspace'>Livingspace:       %,d</entry>
+    <entry key='movecolonists.currentplanet'>Aktueller Planet</entry>
+    <entry key='movecolonists.noplanet'>Kein passender Planet</entry>
+    <entry key='movecolonists.percentage'>Prozentsatz der Kolonisten</entry>
+    <entry key='movecolonists.population' >Bevölkerung:        %,d</entry>
+    <entry key='movecolonists.livingspace'>Wohnraum:       %,d</entry>
     <entry key='movecolonists.workerneeds'>Worker needs:      %,d</entry>
-    <entry key='movecolonists.tobemoved'  >Colonists to move: %,d</entry>
-    <entry key='movecolonists.cost'       >Cost:              %,d cr</entry>
-    <entry key='movecolonists.move'>Move</entry>
-    <entry key='movecolonists.moveandclose'>Move &amp; Close</entry>
-    <entry key='abandonplanet.move'>Move Colonists</entry>
-    <entry key='abandonplanet.move.own'>Consequences:[n]- Colonists are resettled in the empire[n]- Morale on all planets decrease by 5 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
-    <entry key='abandonplanet.move.alien'>Consequences:[n]- Colonists return to their native empire[n]- Diplomatic relations worsen with all aliens by 5 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
-    <entry key='abandonplanet.move.cost'>Cost:          %,d cr  (Profit: %,d cr)</entry>
+    <entry key='movecolonists.tobemoved'  >Umzusiedelnde: %,d</entry>
+    <entry key='movecolonists.cost'       >Kosten:              %,d cr</entry>
+    <entry key='movecolonists.move'>Umsiedeln</entry>
+    <entry key='movecolonists.moveandclose'>Umsiedeln &amp; schließen</entry>
+    <entry key='abandonplanet.move'>Kolonisten umsiedeln</entry>
+    <entry key='abandonplanet.move.own'>Auswirkung:[n]- Kolonisten werden innerhalb des Imperiums umgesiedelt[n]- Moral auf allen Planeten sinkt um 5 Punkte[n]- Alle Gebäude werden verkauft[n]- Alle Raumstationen werden verkauft[n]- Alle Jäger und Fahrzeuge werden eingelagert</entry>
+    <entry key='abandonplanet.move.alien'>Auswirkungen:[n]- Kolonisten kehren in ihre ursprünglichen Reiche zurück[n]- Diplomatische Beziehungen zu allen Rassen verschlechtern sich um 5 Punkte[n]- Alle Gebäude werden verkauft[n]- Alle Raumstationen werden verkauft[n]- Alle Jäger und Fahrzeuge werden eingelagert</entry>
+    <entry key='abandonplanet.move.cost'>Kosten:          %,d cr  (Profit: %,d cr)</entry>
     <entry key='abandonplanet.kill'>Kolonisten töten</entry>
-    <entry key='abandonplanet.kill.own'>Consequences:[n]- Colonists are killed[n]- Morale on all planets decrease by 50 points[n]- Diplomatic relations worsen with all aliens by 5 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
-    <entry key='abandonplanet.kill.alien'>Consequences:[n]- Colonists are killed[n]- Morale on all planets decrease by 20 points[n]- Diplomatic relations worsen with all aliens by 25 points[n]- All buildings will be sold[n]- All space stations will be sold[n]- All fighters and vehicles will move to storage</entry>
-    <entry key='abandonplanet.kill.cost'>Cost:          %,d cr  (Profit: %,d cr)</entry>
+    <entry key='abandonplanet.kill.own'>Auswirkung:[n]- Kolonisten werden getötet[n]- Moral auf allen Planeten sinkt um 50 Punkte[n]- Diplomatische Beziehungen zu allen Rassen verschlechtern sich um 5 Punkte[n]- Alle Gebäude werden verkauft[n]- Alle Raumstationen werden verkauft[n]- Alle Jäger und Fahrzeuge werden eingelagert</entry>
+    <entry key='abandonplanet.kill.alien'>Auswirkung:[n]- Kolonisten werden getötet[n]- Moral auf allen Planeten sinkt um 20 Punkte[n]- Diplomatische Beziehungen zu allen Rassen verschlechtern sich um 25 Punkte[n]- Alle Gebäude werden verkauft[n]- Alle Raumstationen werden verkauft[n]- Alle Jäger und Fahrzeuge werden eingelagert</entry>
+    <entry key='abandonplanet.kill.cost'>Kosten:          %,d cr  (Profit: %,d cr)</entry>
     <entry key='abandonplanet.move.found'>Kolonisten können nicht umgesiedelt werden</entry>
     <entry key='abandonplanet.move.notfound'>Die Kolonisten können nirgendwo hingehen</entry>
     <entry key=""></entry>
