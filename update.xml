@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.234'>
+  <module id='Game' version='0.95.235'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,11 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.235' date='2023-02-01'>
+        <item category='Stability' issues='1073'>The game should no longer crash if a target planet "disappeared" when targeted by colonization.</item>
+        <item category='Game Logic' issues='1073'>The colonizers should no longer move choppily towards a colonization target.</item>
+        <item category='Saves' issues='1073'>The game should now properly reload each player's known visible/named planet set.</item>
+      </entry>
       <entry version='0.95.234' date='2023-02-01'>
         <item category='Groundwar,Grapics' issues='1070'>Vehicles no longer appear as if they are behind/obscured by a surface feature that was paved over.</item>
       </entry>
@@ -227,7 +232,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.234.jar' sha1='17BEC7E879B649D70E3F73ADAFD6CB55C9AA55FF'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.235.jar' sha1='A8C4E0860A884D473CD39B9B0D9519C9616850B2'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220207a2.zip' sha1='A4C922A3FC997D1EA7A5FE3FCD4660EE671A3E25'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>

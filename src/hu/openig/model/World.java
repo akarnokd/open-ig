@@ -1554,6 +1554,16 @@ public class World implements ModelLookup {
 
         }
 
+        Set<String> allPlanets = new HashSet<>(planets.keySet());
+        for (String rest : allPlanets) {
+            Planet p = planets.get(rest);
+            Player lo = p.owner;
+            p.die();
+            if (lo != null) {
+                lo.planets.remove(p);
+            }
+        }
+
         for (XElement xplayer : xworld.childrenWithName("player")) {
             Player p = players.get(xplayer.get("id"));
             // clear player variables
@@ -1774,18 +1784,13 @@ public class World implements ModelLookup {
                 }
             }
         }
-        Set<String> allPlanets = new HashSet<>(planets.keySet());
+
         for (XElement xplanet : xworld.childrenWithName("planet")) {
             String pid = xplanet.get("id");
             Planet p = planets.get(pid);
             if (p == null) {
                 System.out.println("Unknown planet: " + pid);
                 continue;
-            }
-            Player lo = p.owner;
-            p.die();
-            if (lo != null) {
-                lo.planets.remove(p);
             }
 
             if (xplanet.has("x") && xplanet.has("y") && xplanet.has("size")) {
@@ -1883,10 +1888,6 @@ public class World implements ModelLookup {
             }
 
             allPlanets.remove(p.id);
-        }
-        for (String rest : allPlanets) {
-            Planet p = planets.get(rest);
-            p.die();
         }
         for (Map.Entry<Player, XElement[]> e : deferredMessages.entrySet()) {
             if (e.getValue()[0] != null) {

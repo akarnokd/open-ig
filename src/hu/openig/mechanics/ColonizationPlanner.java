@@ -122,7 +122,8 @@ public class ColonizationPlanner extends Planner {
         List<String> cts = new ArrayList<>(world.colonizationTargets);
         List<String> remaining = new ArrayList<>();
         for (final String p : cts) {
-            if (world.planetMap.get(p).owner == null) {
+            AIPlanet aip = world.planetMap.get(p);
+            if (aip != null && aip.owner == null) {
                 boolean targeted = false;
                 for (AIFleet f : fleets) {
                     if (f.targetPlanet != null && f.targetPlanet.id.equals(p) && f.task == FleetTask.COLONIZE) {
@@ -140,6 +141,7 @@ public class ColonizationPlanner extends Planner {
                 add(new Action0() {
                     @Override
                     public void invoke() {
+                        log("ColonizationPlanner, Lost sight of planet " + p);
                         ColonizationPlanner.this.p.colonizationTargets.remove(p);
                     }
                 });
@@ -184,7 +186,7 @@ public class ColonizationPlanner extends Planner {
         for (String ct : world.colonizationTargets) {
             AIPlanet p = world.planetMap.get(ct);
             // check if not owned or lost track
-            if (p.owner != null || p.knowledge.compareTo(PlanetKnowledge.OWNER) < 0) {
+            if (p == null || p.owner != null || p.knowledge.compareTo(PlanetKnowledge.OWNER) < 0) {
                 continue;
             }
             // check if not target of one of our fleets
@@ -286,14 +288,30 @@ public class ColonizationPlanner extends Planner {
         for (final AIFleet fleet : colonizers) {
             if (fleet.targetPlanet != null) {
                 AIPlanet pl = world.planetMap.get(fleet.targetPlanet);
-                if (pl == null || pl.owner != null || pl.knowledge.compareTo(PlanetKnowledge.OWNER) < 0
-                        || (explicitMode && !world.colonizationTargets.contains(pl.planet.id))) {
+                boolean cancel = false;
+                String reasonStr = "";
+                if (pl == null) {
+                    cancel = true;
+                    reasonStr = "Planet not found";
+                } else if (pl.owner != null) {
+                    cancel = true;
+                    reasonStr = "Planet already colonized by " + pl.owner.name;
+                } else if (!explicitMode && pl.knowledge.compareTo(PlanetKnowledge.OWNER) < 0) {
+                    cancel = true;
+                    reasonStr = "Lost sight of owner (implicit mode)";
+                } else if (explicitMode && !world.colonizationTargets.contains(pl.planet.id)) {
+                    cancel = true;
+                    reasonStr = "Player cancelled";
+                }
+                if (cancel) {
+                    final String fReasonStr = reasonStr;
                     // stop the fleet
                     add(new Action0() {
                         @Override
                         public void invoke() {
                             String targetPlanet = fleet.fleet.targetPlanet() != null ? fleet.fleet.targetPlanet().name() : "?";
-                            log("CancelColonization, Fleet = %s (%d), Planet = %s", fleet.fleet.name(), fleet.fleet.id, targetPlanet);
+                            log("CancelColonization, Fleet = %s (%d), Planet = %s, Reason = %s",
+                                    fleet.fleet.name(), fleet.fleet.id, targetPlanet, fReasonStr);
                             fleet.fleet.stop();
                         }
                     });
