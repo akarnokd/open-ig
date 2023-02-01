@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.232'>
+  <module id='Game' version='0.95.233'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.233' date='2023-02-01'>
+        <item category='UI' issues='1068'>Fortification losses are now correctly accounted to you or the enemy, depending on whose planet it was.</item>
+      </entry>
       <entry version='0.95.232' date='2022-02-15'>
         <item category='Balance' issues='1057'>Remove unfinished buildings when winning an Auto-Battle.</item>
         <item category='Balance' issues='1057'>Unfinished buildings are no longer considered for technology capturing.</item>
@@ -221,7 +224,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.232.jar' sha1='82AB99802D35EB225D6883F700458FCDBAF87E77'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.233.jar' sha1='E9F8DECA0A8367C9DCAEF3C17E804F96EBD775F4'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20220207a2.zip' sha1='A4C922A3FC997D1EA7A5FE3FCD4660EE671A3E25'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>

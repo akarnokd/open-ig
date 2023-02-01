@@ -267,7 +267,14 @@ public class BattlefinishScreen extends ScreenBase {
                 y = printStatistics(g2, y, "battlefinish.shields", lossCount(true, "Shield"), lossCount(false, "Shield"));
             }
             if (battle.groundwarWinner != null) {
-                y = printStatistics(g2, y, "battlefinish.fortifications", 0, battle.defenderFortificationLosses);
+                int lossOwn = 0;
+                int lossEnemy = 0;
+                if (battle.originalTargetPlanetOwner == player()) {
+                    lossOwn = battle.defenderFortificationLosses;
+                } else {
+                    lossEnemy = battle.defenderFortificationLosses;
+                }
+                y = printStatistics(g2, y, "battlefinish.fortifications", lossOwn, lossEnemy);
             }
             y += 20;
 
