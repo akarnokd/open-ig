@@ -1435,6 +1435,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
                 for (SurfaceFeature sf : surface().features) {
+                    if (surface().pavements.contains(sf.location)) {
+                        continue;
+                    }
                     if (sf.tile.width > 1 || sf.tile.height > 1) {
                         if (u.y <= sf.location.y - sf.tile.height
                                 || u.x < sf.location.x
