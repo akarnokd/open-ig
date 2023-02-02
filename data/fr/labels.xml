@@ -3620,4 +3620,7 @@
     <entry key='abandonplanet.kill.cost'>Cost:          %,d cr  (Profit: %,d cr)</entry>
     <entry key='abandonplanet.move.found'>Colonists can be resettled</entry>
     <entry key='abandonplanet.move.notfound'>Colonists have nowhere to go</entry>
+    <entry key='equipment.add_button.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to add 10</entry>
+    <entry key='equipment.remove_button.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to remove 10</entry>
+    <entry key='equipment.sell_button.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to sell 10</entry>
 </labels>

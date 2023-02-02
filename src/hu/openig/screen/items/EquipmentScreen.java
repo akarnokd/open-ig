@@ -494,7 +494,10 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             public void invoke() {
                 if (addButton.visible()) {
                     buttonSound(SoundType.CLICK_HIGH_2);
-                    doAddItem();
+                    int n = addButton.lastEvent.has(Modifier.SHIFT) ? 10 : 1;
+                    while (n-- > 0) {
+                        doAddItem();
+                    }
                 }
             }
         };
@@ -507,7 +510,10 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             public void invoke() {
                 if (delButton.visible()) {
                     buttonSound(SoundType.CLICK_HIGH_2);
-                    doRemoveItem();
+                    int n = addButton.lastEvent.has(Modifier.SHIFT) ? 10 : 1;
+                    while (n-- > 0) {
+                        doRemoveItem();
+                    }
                 }
             }
         };
@@ -804,7 +810,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             @Override
             public void invoke() {
                 buttonSound(SoundType.CLICK_HIGH_2);
-                doSell();
+                doSell(sell.lastEvent.has(Modifier.SHIFT));
             }
         };
 
@@ -827,6 +833,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         add(slots);
 
         //----------------------------------
+
         setTooltip(addOne, "equipment.plus_one.tooltip");
         setTooltip(removeOne, "equipment.minus_one.tooltip");
 
@@ -843,6 +850,11 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         setTooltip(right1, "equipment.move_one.tooltip");
         setTooltip(right2, "equipment.move_half.tooltip");
         setTooltip(right3, "equipment.move_all.tooltip");
+
+        setTooltip(addButton, "equipment.add_button.tooltip");
+        setTooltip(delButton, "equipment.remove_button.tooltip");
+        setTooltip(sell, "equipment.sell_button.tooltip");
+
         //----------------------------------
 
         addThis();
@@ -2701,7 +2713,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
         });
     }
     /** Sell one of the currently selected ship or vehicle. */
-    void doSell() {
+    void doSell(boolean many) {
         Fleet f = fleet();
         switch (research().category) {
         case SPACESHIPS_BATTLESHIPS:
@@ -2743,7 +2755,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 //                    } else {
 //                        f.changeInventory(research(), -1);
                     }
-                    ii.sell(1);
+                    ii.sell(many ? 10 : 1);
                     f.cleanup();
                     f.removeExcess();
                     updateInventory(null, f, leftList);
@@ -2755,7 +2767,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
 //                    } else {
 //                        planet().changeInventory(research(), player(), -1);
                     }
-                    ii.sell(1);
+                    ii.sell(many ? 10 : 1);
                     planet().cleanup();
                     planet().removeExcess();
                     updateInventory(planet(), null, leftList);

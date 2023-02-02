@@ -3688,4 +3688,7 @@
     <entry key='abandonplanet.kill.cost'>Költség:          %,d cr  (Bevétel: %,d cr)</entry>
     <entry key='abandonplanet.move.found'>Az áttelepítés lehetséges</entry>
     <entry key='abandonplanet.move.notfound'>Nincs hová áttelepíteni a lakosságot</entry>
+    <entry key='equipment.add_button.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű tartása mellett 10 hozzáadása</entry>
+    <entry key='equipment.remove_button.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű tartása mellett 10 elvétele</entry>
+    <entry key='equipment.sell_button.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű tartása mellett 10 eladása</entry>
 </labels>
