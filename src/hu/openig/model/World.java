@@ -1856,7 +1856,7 @@ public class World implements ModelLookup {
 
             if (sowner != null) {
                 p.owner = players.get(sowner);
-                p.race = xplanet.get("race");
+                p.race = xplanet.get("race", p.owner.race);
                 p.quarantineTTL = xplanet.getInt("quarantine-ttl", 0);
                 p.allocation = ResourceAllocationStrategy.valueOf(xplanet.get("allocation"));
                 p.tax = TaxLevel.valueOf(xplanet.get("tax"));
