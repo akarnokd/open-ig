@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.236'>
+  <module id='Game' version='0.95.237'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.237' date='2023-04-08'>
+        <item category='UI' issues='1075'>Fix a crash in the equipment screen when pressing the Del button.</item>
+      </entry>
       <entry version='0.95.236' date='2023-02-02'>
         <item category='UI' issues='1053'>Holding Shift while clicking on the Add/Del/Sell buttons add/remove/sell 10 items at once.</item>
         <item category='Saves' issues='991'>Loading a save with a particular corruption (owned planet without race info) no longer causes crashes.</item>
@@ -236,7 +239,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.236.jar' sha1='DC57AF75CA3364735667CFDC6A79134F8CD3033A'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.237.jar' sha1='FAC2CFA0932D72A5E8719646887B556D95CE628F'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20230202a2.zip' sha1='32759BF2E5770B9477CFE0F494E223C4F46AC616'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>

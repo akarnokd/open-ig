@@ -510,7 +510,7 @@ public class EquipmentScreen extends ScreenBase implements EquipmentScreenAPI {
             public void invoke() {
                 if (delButton.visible()) {
                     buttonSound(SoundType.CLICK_HIGH_2);
-                    int n = addButton.lastEvent.has(Modifier.SHIFT) ? 10 : 1;
+                    int n = delButton.lastEvent.has(Modifier.SHIFT) ? 10 : 1;
                     while (n-- > 0) {
                         doRemoveItem();
                     }
