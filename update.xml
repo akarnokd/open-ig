@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.237'>
+  <module id='Game' version='0.95.238'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.238' date='2023-06-18'>
+        <item category='Balance' issues='1057,1078'>Capturing a planet will grant the building techs to the winner again. The previous restriction was logically inconsistent and could be bypassed reloading a save anyway.</item>
+      </entry>
       <entry version='0.95.237' date='2023-04-08'>
         <item category='UI' issues='1075'>Fix a crash in the equipment screen when pressing the Del button.</item>
       </entry>
@@ -239,7 +242,7 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.237.jar' sha1='FAC2CFA0932D72A5E8719646887B556D95CE628F'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.238.jar' sha1='941F5E16C45BE3D3D1827619F9B1038399BEEE53'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20230202a2.zip' sha1='32759BF2E5770B9477CFE0F494E223C4F46AC616'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>

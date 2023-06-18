@@ -726,7 +726,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
             if (!b.isComplete()) {
                 surface.removeBuilding(b);
             } else
-            if (b.type.research != null && b.type.research.level <= world.level) {
+            if (b.type.research != null) {
                 newOwner.setAvailable(b.type.research);
             }
         }
