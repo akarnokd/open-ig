@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.239' date='2023-07-24'>
+        <item category='UI'>Added missing German labels that caused a warning-crash.</item>
+      </entry>
       <entry version='0.95.238' date='2023-06-18'>
         <item category='Balance' issues='1057,1078'>Capturing a planet will grant the building techs to the winner again. The previous restriction was logically inconsistent and could be bypassed reloading a save anyway.</item>
       </entry>
