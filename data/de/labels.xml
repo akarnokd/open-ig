@@ -3713,6 +3713,9 @@
     <entry key='abandonplanet.kill.cost'>Kosten:          %,d cr  (Profit: %,d cr)</entry>
     <entry key='abandonplanet.move.found'>Kolonisten können nicht umgesiedelt werden</entry>
     <entry key='abandonplanet.move.notfound'>Die Kolonisten können nirgendwo hingehen</entry>
+    <entry key='equipment.add_button.tooltip'>Halten Sie die [c=FFFFFFFF]Umschalttaste[/c] gedrückt, um 10 hinzuzufügen</entry>
+    <entry key='equipment.remove_button.tooltip'>Halten Sie die [c=FFFFFFFF]Umschalttaste[/c] gedrückt, um 10 zu entfernen</entry>
+    <entry key='equipment.sell_button.tooltip'>Halten Sie die [c=FFFFFFFF]Umschalttaste[/c] gedrückt, um 10 zu verkaufen</entry>
     <entry key=""></entry>
 	<entry key=""></entry>
 	<entry key=""></entry>
