@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.239'>
+  <module id='Game' version='0.95.240'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,9 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.240' date='2023-07-31'>
+        <item category='Labels'>Fixed the upgrade description of the Water Vaporator; it increases population growth, not living space amount.</item>
+      </entry>
       <entry version='0.95.239' date='2023-07-24'>
         <item category='UI'>Added missing German labels that caused a warning-crash.</item>
       </entry>
@@ -245,8 +248,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.239.jar' sha1='A9013F212CFF51809079EE0722974C462E3FC5CB'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20230724a2.zip' sha1='5FB7CCCD6A24A8594D9B0B5219F82A87FBE839C7'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.240.jar' sha1='78F3D3045AD34697F767123FAC84A0B7EBB2934B'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20230731a2.zip' sha1='C42129D9F5D960ECCC71A8A113E749BAA4A43FC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>

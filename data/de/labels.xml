@@ -253,6 +253,8 @@
   <entry key='buildings.water_vaporator.desc'>Feuchtigkeitskondensatoren entziehen der Luft Feuchtigkeit und produzieren so Trinkwasser. Wasserarme Planeten benötigen diese Einrichtungen, um langsames Bevölkerungswachstum zu vehindern.</entry>
   <entry key='buildings.weapon_factory'>Waffenfabrik</entry>
   <entry key='buildings.weapon_factory.desc'>Die Waffenfabrik erhöht die Produktionskapazität der Kolonie für Waffen.</entry>
+    <entry key='buildings.water_vaporator.upgrade_1'>Increases the population growth to 140%, morale by 150%, worker demand and energy usage by 150%.</entry>
+    <entry key='buildings.water_vaporator.upgrade_2'>Increases the population growth to 180%, morale by 200%, energy usage by 200% and worker demand by 175%.</entry>
 
 
 	<entry key=''></entry>

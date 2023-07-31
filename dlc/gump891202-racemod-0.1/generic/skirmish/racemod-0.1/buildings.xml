@@ -231,25 +231,13 @@
       <resource type='worker'>-210</resource>
     </operation>
     <upgrades>
-      <upgrade desc='buildings.housing.upgrade_1'>
-        <resource type='population-growth'>1.2</resource>
-        <resource type='morale'>1.25</resource>
-        <resource type='energy'>1.25</resource>
-        <resource type='worker'>1.25</resource>
-      </upgrade>
-      <upgrade desc='buildings.housing.upgrade_2'>
+      <upgrade desc='buildings.water_vaporator.upgrade_1'>
         <resource type='population-growth'>1.4</resource>
         <resource type='morale'>1.5</resource>
         <resource type='energy'>1.5</resource>
         <resource type='worker'>1.5</resource>
       </upgrade>
-      <upgrade desc='buildings.housing.upgrade_3'>
-        <resource type='population-growth'>1.6</resource>
-        <resource type='morale'>2</resource>
-        <resource type='energy'>2</resource>
-        <resource type='worker'>1.75</resource>
-      </upgrade>
-      <upgrade desc='buildings.housing.upgrade_4'>
+      <upgrade desc='buildings.water_vaporator.upgrade_2'>
         <resource type='population-growth'>1.8</resource>
         <resource type='morale'>2.5</resource>
         <resource type='energy'>2</resource>

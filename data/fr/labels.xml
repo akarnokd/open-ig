@@ -3623,4 +3623,6 @@
     <entry key='equipment.add_button.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to add 10</entry>
     <entry key='equipment.remove_button.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to remove 10</entry>
     <entry key='equipment.sell_button.tooltip'>Hold [c=FFFFFFFF]SHIFT[/c] to sell 10</entry>
+    <entry key='buildings.water_vaporator.upgrade_1'>Increases the population growth to 140%, morale by 150%, worker demand and energy usage by 150%.</entry>
+    <entry key='buildings.water_vaporator.upgrade_2'>Increases the population growth to 180%, morale by 200%, energy usage by 200% and worker demand by 175%.</entry>
 </labels>

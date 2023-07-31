@@ -3691,4 +3691,6 @@
     <entry key='equipment.add_button.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű tartása mellett 10 hozzáadása</entry>
     <entry key='equipment.remove_button.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű tartása mellett 10 elvétele</entry>
     <entry key='equipment.sell_button.tooltip'>A [c=FFFFFFFF]SHIFT[/c] billentyű tartása mellett 10 eladása</entry>
+    <entry key='buildings.water_vaporator.upgrade_1'>Megnöveli a lakosság-növekedés mértékét 140%-ra, a morált 150%-kal, a munkás és energiaigényt 150%-kal.</entry>
+    <entry key='buildings.water_vaporator.upgrade_2'>Megnöveli a lakosság-növekedés mértékét 180%-ra, a morált 200%-kal, az energiaigényt 200%-kal és a munkásigényt 175%-kal.</entry>
 </labels>
