@@ -41,6 +41,7 @@ import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Paint;
@@ -1301,66 +1302,66 @@ public class StarmapScreen extends ScreenBase {
         if (showFleetButton.selected) {
             for (Fleet f : fleets) {
                 if (f.owner == player()) {
+                    g2.setStroke(new BasicStroke(1.5f));
                     if (f.mode == FleetMode.ATTACK) {
                         if (f.targetFleet != null) {
                             g2.setColor(new Color(255, 0, 0, 128));
-                            g2.drawLine(
+                            drawArrow(
+                                    g2,
                                     (int)(starmapRect.x + f.x * zoom),
-
                                     (int)(starmapRect.y + f.y * zoom),
-
                                     (int)(starmapRect.x + f.targetFleet.x * zoom),
-
                                     (int)(starmapRect.y + f.targetFleet.y * zoom));
                         } else
                         if (f.targetPlanet() != null) {
                             g2.setColor(new Color(255, 0, 0, 128));
-                            g2.drawLine(
+                            drawArrow(
+                                    g2,
                                     (int)(starmapRect.x + f.x * zoom),
-
                                     (int)(starmapRect.y + f.y * zoom),
-
                                     (int)(starmapRect.x + f.targetPlanet().x * zoom),
-
                                     (int)(starmapRect.y + f.targetPlanet().y * zoom));
                         }
                     } else {
                         double lastx = f.x;
                         double lasty = f.y;
                         if (f.targetFleet != null) {
-                            g2.setColor(new Color(255, 255, 255, 128));
-                            g2.drawLine(
+                            g2.setColor(new Color(124, 124, 180, 128));
+                            drawArrow(
+                                    g2,
                                     (int)(starmapRect.x + f.x * zoom),
-
                                     (int)(starmapRect.y + f.y * zoom),
-
                                     (int)(starmapRect.x + f.targetFleet.x * zoom),
-
                                     (int)(starmapRect.y + f.targetFleet.y * zoom));
                         } else
                         if (f.targetPlanet() != null) {
-                            g2.setColor(new Color(255, 255, 255, 128));
-                            g2.drawLine(
+                            g2.setColor(new Color(124, 124, 180, 128));
+                            drawArrow(
+                                    g2,
                                     (int)(starmapRect.x + f.x * zoom),
-
                                     (int)(starmapRect.y + f.y * zoom),
-
                                     (int)(starmapRect.x + f.targetPlanet().x * zoom),
-
                                     (int)(starmapRect.y + f.targetPlanet().y * zoom));
                         } else
 
                         if (f.waypoints.size() > 0) {
-                            g2.setColor(new Color(255, 255, 255, 128));
+                            g2.setColor(new Color(124, 124, 180, 128));
+                            int i = 0;
                             for (Point2D.Double pt : f.waypoints) {
-                                g2.drawLine(
-                                    (int)(starmapRect.x + lastx * zoom),
-
-                                    (int)(starmapRect.y + lasty * zoom),
-
-                                    (int)(starmapRect.x + pt.x * zoom),
-
-                                    (int)(starmapRect.y + pt.y * zoom));
+                                if(i++ == f.waypoints.size() - 1) {
+                                    drawArrow(
+                                            g2,
+                                            (int)(starmapRect.x + lastx * zoom),
+                                            (int)(starmapRect.y + lasty * zoom),
+                                            (int)(starmapRect.x + pt.x * zoom),
+                                            (int)(starmapRect.y + pt.y * zoom));
+                                } else {
+                                    g2.drawLine(
+                                            (int) (starmapRect.x + lastx * zoom),
+                                            (int) (starmapRect.y + lasty * zoom),
+                                            (int) (starmapRect.x + pt.x * zoom),
+                                            (int) (starmapRect.y + pt.y * zoom));
+                                }
                                 lastx = pt.x;
                                 lasty = pt.y;
                             }
@@ -3261,5 +3262,25 @@ public class StarmapScreen extends ScreenBase {
             cache.put(p, ps);
         }
         return ps;
+    }
+    /**
+     * Draw a simple arrow.
+     * @param g2 the graphics
+     * @param x0 the X coordinate of the start point
+     * @param y0 the Y coordinate of the start point
+     * @param x1 the X coordinate of the end point
+     * @param x1 the X coordinate of the end point
+     */
+    public void drawArrow(Graphics2D g2, int x0, int y0, int x1, int y1) {
+        int headAngle = 30;
+        int headLength = 10;
+        double offs = headAngle * Math.PI / 180.0;
+        double angle = Math.atan2(y0 - y1, x0 - x1);
+        int[] xs = { x1 + (int) (headLength * Math.cos(angle + offs)), x1,
+                x1 + (int) (headLength * Math.cos(angle - offs)) };
+        int[] ys = { y1 + (int) (headLength * Math.sin(angle + offs)), y1,
+                y1 + (int) (headLength * Math.sin(angle - offs)) };
+        g2.drawLine(x0, y0, x1, y1);
+        g2.drawPolyline(xs, ys, 3);
     }
 }
