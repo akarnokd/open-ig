@@ -119,7 +119,7 @@ public class Traits implements Iterable<Trait> {
      * Add all traits from the other sequence.
      * @param ts the traits
      */
-    public void add(Iterable<? extends Trait> ts) {
+    public void addAll(Iterable<? extends Trait> ts) {
         if (ts != null) {
             for (Trait t : ts) {
                 add(t);
@@ -132,7 +132,7 @@ public class Traits implements Iterable<Trait> {
      */
     public void replace(Traits ts) {
         clear();
-        add(ts);
+        addAll(ts);
         if (ts != null) {
             this.initialPoints = ts.initialPoints;
         }

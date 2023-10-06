@@ -53,7 +53,7 @@ public class SkirmishDefinition extends CustomGameDefinition {
                 xplayer.loadFields(sp);
                 for (XElement xtraits : xplayer.childrenWithName("traits")) {
                     for (XElement xtrait : xtraits.childrenWithName("trait")) {
-                        sp.traits.add((Trait) traits.trait(xtrait.get("id")));
+                        sp.traits.add(traits.trait(xtrait.get("id")));
                     }
                 }
                 players.add(sp);
