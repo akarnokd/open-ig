@@ -1367,7 +1367,9 @@ public class StarmapScreen extends ScreenBase {
                             }
                         }
                     }
+                    g2.setStroke(new BasicStroke());
                 }
+
                 BufferedImage icon = f.owner.fleetIcon;
 
                 if (f.owner == player() && !world().scripting.mayControlFleet(f)) {
