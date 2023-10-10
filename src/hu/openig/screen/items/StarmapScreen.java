@@ -41,6 +41,7 @@ import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Modifier;
 import hu.openig.ui.UIMouse.Type;
 
+import java.awt.Stroke;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -1302,6 +1303,7 @@ public class StarmapScreen extends ScreenBase {
         if (showFleetButton.selected) {
             for (Fleet f : fleets) {
                 if (f.owner == player()) {
+                    Stroke defaultStroke = g2.getStroke();
                     g2.setStroke(new BasicStroke(1.5f));
                     if (f.mode == FleetMode.ATTACK) {
                         if (f.targetFleet != null) {
@@ -1367,7 +1369,9 @@ public class StarmapScreen extends ScreenBase {
                             }
                         }
                     }
+                    g2.setStroke(defaultStroke);
                 }
+
                 BufferedImage icon = f.owner.fleetIcon;
 
                 if (f.owner == player() && !world().scripting.mayControlFleet(f)) {
