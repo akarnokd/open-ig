@@ -6333,6 +6333,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     void placeGroundUnits(boolean atBuildings, LinkedList<GroundwarUnit> gus) {
         Set<Location> locations = getDeploymentLocations(atBuildings, true);
+        locations.removeIf(loc -> unitsAtLocation.get(loc) != null);
         CenterAndRadius car = computePlacementCircle(locations);
         if (atBuildings) {
             placeAroundInCircle(gus, locations, car.icx, car.icy, car.rmax);
