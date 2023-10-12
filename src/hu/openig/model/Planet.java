@@ -1575,11 +1575,14 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
 
         addLabs(result.labs, b);
 
+        int e = b.getEnergy();
+        if (e < 0) {
+            result.baseEnergyDemand += -e;
+        }
         float health = b.hitpoints * 1.0f / b.type.hitpoints;
         if (b.isReady()) {
             // consider the damage level
             result.workerDemand += Math.abs(b.getWorkers()) * health;
-            int e = b.getEnergy();
             if (e < 0) {
                 result.energyDemand += -e * health;
             } else {

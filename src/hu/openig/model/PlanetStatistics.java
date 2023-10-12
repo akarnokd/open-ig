@@ -99,6 +99,8 @@ public class PlanetStatistics {
     public int policeAvailable;
     /** The energy demand. */
     public int energyDemand;
+    /** The base energy demand of all buildings, whether they are being built, enabled or not. */
+    public int baseEnergyDemand;
     /** The available energy. */
     public int energyAvailable;
     /** The active production values. */
@@ -153,6 +155,7 @@ public class PlanetStatistics {
         foodAvailable += other.foodAvailable;
         policeAvailable += other.policeAvailable;
         energyDemand += other.energyDemand;
+        baseEnergyDemand += other.baseEnergyDemand;
         energyAvailable += other.energyAvailable;
 
         activeLabs.add(other.activeLabs);

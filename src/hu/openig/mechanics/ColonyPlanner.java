@@ -749,14 +749,15 @@ public class ColonyPlanner extends Planner {
     }
 
     /**
-     * Check if there are enough power on the planet,
-     * if not, try adding morale and growth increasing buildings.
+     * Check if there power status of a planet.
+     * If not enough power build additional power plants.
+     * If there is too much unused capacity, remove power plants.
      * @param planet the target planet
      * @return true if action taken
      */
     boolean checkPower(final AIPlanet planet) {
         // sell power plants if too much energy
-        if (planet.statistics.energyAvailable > planet.statistics.energyDemand * 2
+        if (planet.statistics.energyAvailable > planet.statistics.baseEnergyDemand * 1.3
                 && !planet.statistics.constructing) {
             for (final AIBuilding b : planet.buildings) {
                 if (b.getEnergy() > 0 && planet.statistics.energyAvailable - b.getEnergy() > planet.statistics.energyDemand) {
