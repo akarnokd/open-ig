@@ -749,7 +749,7 @@ public class ColonyPlanner extends Planner {
     }
 
     /**
-     * Check if there power status of a planet.
+     * Check the power status of a planet.
      * If not enough power build additional power plants.
      * If there is too much unused capacity, remove power plants.
      * @param planet the target planet
