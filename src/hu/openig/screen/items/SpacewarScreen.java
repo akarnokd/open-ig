@@ -392,6 +392,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     @Override
     public boolean mouse(UIMouse e) {
         boolean needRepaint = false;
+        Point2D.Double spaceMouse = mouseToSpace(e.x, e.y);
         switch (e.type) {
         case MOVE:
             if (commons.config().customCursors) {
@@ -425,17 +426,19 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             break;
         case DOUBLE_CLICK:
             if (mainmap.contains(e.x, e.y)) {
-                if (e.has(Modifier.SHIFT)) {
-                    selectionMode = SelectionBoxMode.ADD;
-                } else
-                if (e.has(Modifier.CTRL)) {
-                    selectionMode = SelectionBoxMode.SUBTRACT;
-                } else {
-                    selectionMode = SelectionBoxMode.NEW;
+                if (enemyAt(spaceMouse.x, spaceMouse.y) == null && e.has(Button.LEFT)) {
+                    if (e.has(Modifier.SHIFT)) {
+                        selectionMode = SelectionBoxMode.ADD;
+                    } else
+                    if (e.has(Modifier.CTRL)) {
+                        selectionMode = SelectionBoxMode.SUBTRACT;
+                    } else {
+                        selectionMode = SelectionBoxMode.NEW;
+                    }
+                    needRepaint = doSelectType(e.x, e.y, e.z > 2);
+                    //Emulating mouse movement for cursor change
+                    commons.control().moveMouse();
                 }
-                needRepaint = doSelectType(e.x, e.y, e.z > 2);
-                //Emulating mouse movement for cursor change
-                commons.control().moveMouse();
             }
             break;
         case DOWN:
@@ -501,7 +504,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 }
             }
 
-            Point2D.Double spaceMouse = mouseToSpace(e.x, e.y);
             if (e.has(Button.LEFT) && space.contains(spaceMouse)) {
                 if (moveButton.selected) {
                     doMoveSelectedShips(spaceMouse.x, spaceMouse.y);

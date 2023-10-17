@@ -29,7 +29,7 @@ public class UIMouse {
     public int x;
     /** The mouse event location Y. */
     public int y;
-    /** The mouse event wheel rotation. */
+    /** The number of mouse events, consecutive clicks or wheel rotations depending on event type. */
     public int z;
     /** The event type. */
     public Type type;
