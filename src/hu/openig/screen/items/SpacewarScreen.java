@@ -4062,7 +4062,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         int nonplayerUnits = 0;
         Player other = null;
         for (SpacewarStructure s : structures) {
-            if (canControl(s)) {
+            if (canControl(s) || (battle.isAlly(s, player()) || s.isMissile())) {
                 playerUnits++;
             } else {
                 nonplayerUnits++;
