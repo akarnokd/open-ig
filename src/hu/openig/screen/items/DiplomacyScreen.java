@@ -1491,7 +1491,9 @@ public class DiplomacyScreen extends WalkableScreen {
                         acceptOffer.onClick = null;
                         DiplomaticRelation dr = world().getRelation(world().player, other);
                         if (na.callType == CallType.ALLIANCE) {
-                            dr.value = 91;
+                            if (dr.value < 91) {
+                                dr.value = 91;
+                            }
                         } else
                         if (na.callType == CallType.MONEY) {
                             long mny = ((Number)na.value()).longValue();
