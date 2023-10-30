@@ -24,6 +24,10 @@ public class BattleSpaceEntity {
     public BufferedImage[] normal;
     /** The alternative rotation image. */
     public BufferedImage[] alternative;
+    /** The symmetrically trimmed width of the object image at 0 rotation angle. */
+    public int trimmedWidth;
+    /** The symmetrically trimmed height of the object image at 0 rotation angle. */
+    public int trimmedHeight;
     /** The sound effect for explosion. */
     public SoundType destruction;
     /** The rotation speed: full rotation time in milliseconds. */

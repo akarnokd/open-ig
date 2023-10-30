@@ -1362,6 +1362,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 st.owner = nearbyPlanet.owner;
                 st.destruction = bse.destruction;
                 st.angles = new BufferedImage[] { alien ? bse.alternative[0] : bse.normal[0] };
+                st.trimmedHeight = bse.trimmedHeight;
+                st.trimmedWidth = bse.trimmedWidth;
                 st.infoImageName = bse.infoImageName;
                 st.shield = ii.shield;
                 st.shieldMax = Math.max(0, ii.shieldMax());
@@ -1403,6 +1405,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 st.owner = nearbyPlanet.owner;
                 st.type = StructureType.SHIELD;
                 st.angles = new BufferedImage[] { alien ? bge.alternative : bge.normal };
+                st.trimmedHeight = bge.trimmedHeight;
+                st.trimmedWidth = bge.trimmedWidth;
                 st.infoImageName = bge.infoImageName;
                 st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
                 st.hp = (1d * b.hitpoints * st.hpMax / b.type.hitpoints);
@@ -1439,6 +1443,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 st.owner = nearbyPlanet.owner;
                 st.type = StructureType.PROJECTOR;
                 st.angles = alien ? bge.alternative : bge.normal;
+                st.trimmedHeight = bge.trimmedHeight;
+                st.trimmedWidth = bge.trimmedWidth;
                 st.angle = Math.PI;
                 st.infoImageName = bge.infoImageName;
                 st.hpMax = world().getHitpoints(b.type, nearbyPlanet.owner, true);
@@ -1634,6 +1640,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 st.owner = ii.owner;
                 st.destruction = bse.destruction;
                 st.angles = ii.owner != player() ? bse.alternative : bse.normal;
+                st.trimmedHeight = bse.trimmedHeight;
+                st.trimmedWidth = bse.trimmedWidth;
                 st.infoImageName = bse.infoImageName;
                 st.shield = ii.shield;
                 st.shieldMax = Math.max(0, ii.shieldMax());
@@ -3196,12 +3204,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             double y0 = obj.target.y - h / 2;
             double y1 = y0 + h;
             if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx,
-
                     obj.y + dy, x0, y0, x1, y1)) {
-                // FIXME for now
-                return true;
-                /*
-                // walk along the angle up to ds units and see if there is a pixel of the target there?
+               // walk along the angle up to ds units and see if there is a pixel of the target there?
                 int tx0 = (int)(obj.target.x - w / 2);
                 int ty0 = (int)(obj.target.y - h / 2);
                 int tx1 = (int)(tx0 + w);
@@ -3218,7 +3222,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                         }
                     }
                 }
-                */
             }
         }
         obj.x += dx;
@@ -3245,7 +3248,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             double y0 = obj.attack.y - h / 2;
             double y1 = y0 + h;
             if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx,
-
                     obj.y + dy, x0, y0, x1, y1)) {
                 // walk along the angle up to ds units and see if there is a pixel of the target there?
                 int tx0 = (int)(obj.attack.x - w / 2);
@@ -4115,10 +4117,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     void fireAtTargetOf(SpacewarStructure ship) {
         for (SpacewarWeaponPort p : ship.inRange(ship.attack)) {
             if (p.cooldown <= 0) {
-                createBeam(ship, p, ship.attack.x,
-
-                        ship.attack.y, ship.attack);
-                p.cooldown = p.projectile.delay;
+                //appears as if the ship is aiming at random parts of the target
+                double inaccuracy = 0.40f;
+                double aimOffsetX = ship.attack.trimmedWidth * (-inaccuracy + (Math.random() * inaccuracy * 2));
+                double aimOffsetY = ship.attack.trimmedHeight * (-inaccuracy + (Math.random() * inaccuracy * 2));
+                aimOffsetX = (aimOffsetX)*Math.cos(ship.attack.angle) - (aimOffsetY)*Math.sin(ship.attack.angle);
+                aimOffsetY = (aimOffsetX)*Math.sin(ship.attack.angle) + (aimOffsetY)*Math.cos(ship.attack.angle);
+                createBeam(ship, p, ship.attack.x + aimOffsetX,ship.attack.y + aimOffsetY, ship.attack);
+                p.cooldown = (int) (p.projectile.delay * (0.5f + Math.random()));
             }
         }
     }

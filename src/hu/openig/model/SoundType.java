@@ -159,7 +159,7 @@ public enum SoundType {
     FIRE_ROCKET_1("spacewar/fire_rocket_1"),
     /** Fire rocket v2. */
     FIRE_ROCKET_2("spacewar/fire_rocket_2"),
-    /** Rocket hit? */
+    /** Beam hit */
     HIT("spacewar/hit"),
     /** Fire ground rocket. */
     FIRE_ROCKET("groundwar/fire_rocket"),
