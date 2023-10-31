@@ -69,6 +69,10 @@ public class SpacewarStructure extends SpacewarObject {
     public BufferedImage[] angles;
     /** The beam angle in an X-Y screen directed coordinate system. */
     public double angle;
+    /** The symmetrically trimmed width of the object image at 0 rotation angle. */
+    public int trimmedWidth;
+    /** The symmetrically trimmed height of the object image at 0 rotation angle. */
+    public int trimmedHeight;
     /** The rotation speed: millisecond time per angle element. */
     public double rotationTime;
     /** The movement speed: Milliseconds per one pixel. */
@@ -181,6 +185,8 @@ public class SpacewarStructure extends SpacewarObject {
         r.owner = owner;
         r.angle = angle;
         r.angles = angles;
+        r.trimmedWidth = trimmedWidth;
+        r.trimmedHeight = trimmedHeight;
         r.count = count;
         r.destruction = destruction;
         r.ecmLevel = ecmLevel;

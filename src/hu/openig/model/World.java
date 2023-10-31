@@ -2345,6 +2345,8 @@ public class World implements ModelLookup {
             BufferedImage ni = rl.getImage(xspace.get("normal"));
             se.normal = ImageUtils.splitByWidth(ni, ni.getWidth() / nx);
 
+            se.trimmedWidth = calculateTrimmedImageRectangleWidth(se.normal[0]);
+            se.trimmedHeight = calculateTrimmedImageRectangleHeight(se.normal[0]);
 //            trimTransparencyOnSides(se.normal);
             if (xspace.has("alternative")) {
                 BufferedImage ai = rl.getImage(xspace.get("alternative"));
@@ -2390,12 +2392,14 @@ public class World implements ModelLookup {
 
             BufferedImage ni = rl.getImage(xdefense.get("normal"));
             se.normal = ImageUtils.splitByWidth(ni, ni.getWidth() / nx);
-            trimTransparencyOnSides(se.normal);
+//            trimTransparencyOnSides(se.normal);
 
+            se.trimmedWidth = calculateTrimmedImageRectangleWidth(se.normal[0]);
+            se.trimmedHeight = calculateTrimmedImageRectangleHeight(se.normal[0]);
             if (xdefense.has("alternative")) {
                 BufferedImage ai = rl.getImage(xdefense.get("alternative"));
                 se.alternative = ImageUtils.splitByWidth(ai, ai.getWidth() / nx);
-                trimTransparencyOnSides(se.alternative);
+//                trimTransparencyOnSides(se.alternative);
             } else {
                 se.alternative = se.normal;
             }
@@ -2422,6 +2426,8 @@ public class World implements ModelLookup {
             BufferedImage ni = rl.getImage(xdefense.get("normal"));
             se.normal = ni;
 
+            se.trimmedWidth = calculateTrimmedImageRectangleWidth(se.normal);
+            se.trimmedHeight = calculateTrimmedImageRectangleHeight(se.normal);
             if (xdefense.has("alternative")) {
                 BufferedImage ai = rl.getImage(xdefense.get("alternative"));
                 se.alternative = ai;
@@ -2623,45 +2629,80 @@ public class World implements ModelLookup {
             int w = img.getWidth();
             int h = img.getHeight();
 
-            // horizontal
-            outer:
-            for (int x = 0; x < w / 2; x++) {
-                for (int y = 0; y < h; y++) {
-                    int c = img.getRGB(x, y);
-                    if ((c & 0xFF000000) != 0) {
-                        tx = x - 1;
-                        break outer;
-                    }
-                    c = img.getRGB(w - x - 1, y);
-                    if ((c & 0xFF000000) != 0) {
-                        tx = x - 1;
-                        break outer;
-                    }
-                }
-            }
-
-            // vertical
-            outer2:
-            for (int y = 0; y < h / 2; y++) {
-                for (int x = 0; x < w; x++) {
-                    int c = img.getRGB(x, y);
-                    if ((c & 0xFF000000) != 0) {
-                        ty = y - 1;
-                        break outer2;
-                    }
-                    c = img.getRGB(x, h - y - 1);
-                    if ((c & 0xFF000000) != 0) {
-                        ty = y - 1;
-                        break outer2;
-                    }
-                }
-            }
-            tx = Math.max(0, tx);
-            ty = Math.max(0, ty);
+            tx = findTrimmedX(img);
+            ty = findTrimmedY(img);
             if (tx > 0 || ty > 0) {
                 images[i] = ImageUtils.newSubimage(img, tx, ty, w - 2 * tx, h - 2 * ty);
             }
         }
+    }
+    /**
+     * Calculate symmetrically trimmed image's width
+     * @param image the images
+     * @return the trimmed width
+     */
+    int calculateTrimmedImageRectangleWidth(BufferedImage image) {
+            int w = image.getWidth();
+            int tx = findTrimmedX(image);
+            return w - 2 * tx;
+    }
+    /**
+     * Calculate symmetrically trimmed image's height
+     * @param image the images
+     * @return the trimmed width
+     */
+    int calculateTrimmedImageRectangleHeight(BufferedImage image) {
+        int h = image.getHeight();
+        int ty = findTrimmedY(image);
+        return h - 2 * ty;
+    }
+    private int findTrimmedX(BufferedImage image) {
+        int tx = 0;
+
+        int w = image.getWidth();
+        int h = image.getHeight();
+        outer:
+        for (int x = 0; x < w / 2; x++) {
+            for (int y = 0; y < h; y++) {
+                int c = image.getRGB(x, y);
+                if ((c & 0xFF000000) != 0) {
+                    tx = x - 1;
+                    break outer;
+                }
+                c = image.getRGB(w - x - 1, y);
+                if ((c & 0xFF000000) != 0) {
+                    tx = x - 1;
+                    break outer;
+                }
+            }
+        }
+        return Math.max(0, tx);
+    }
+
+    private int findTrimmedY(BufferedImage image) {
+        int ty = 0;
+
+        int w = image.getWidth();
+        int h = image.getHeight();
+
+        // vertical
+        outer:
+        for (int y = 0; y < h / 2; y++) {
+            for (int x = 0; x < w; x++) {
+                int c = image.getRGB(x, y);
+                if ((c & 0xFF000000) != 0) {
+                    ty = y - 1;
+                    break outer;
+                }
+                c = image.getRGB(x, h - y - 1);
+                if ((c & 0xFF000000) != 0) {
+                    ty = y - 1;
+                    break outer;
+                }
+            }
+        }
+        return Math.max(0, ty);
+
     }
     /**
      * Compute the distance square between two points.
