@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.240'>
+  <module id='Game' version='0.95.241'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,17 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.241' date='2023-11-03'>
+        <item category='UI' issues='1086,1087'>Improve fleet arrows on the Starmap screen. (By @hemoridos)</item>
+        <item category='UI' issues='1093'>Double clicking on enemy units no longer selects all enemy units of the same type. (By @hemoridos)</item>
+        <item category='Subtitle' issues='1090'>Fix the Hungarian subtitle for when checking the status of Centronom. (By @hemoridos)</item>
+        <item category='Subtitle' issues='1094'>Added missing Hungarian subtitles to some story cutscenes. (By @hemoridos)</item>
+        <item category='AI' issues='1092'>The AI should no longer repeatedly demolish and rebuild power plants when worker shortages are present. (By @hemoridos)</item>
+        <item category='Diplomacy' issues='1096'>Accepting an alliance no longer decreases the relation if it was already higher than 91%. (By @hemoridos)</item>
+        <item category='Groundwar,AI' issues='1088'>The AI will no longer deploy its units on top of player-placed units. (By @hemoridos)</item>
+        <item category='Spacewar,UI' issues='1095'>Winning spacewar with active player missiles no longer results in the game thinking the player lost the battle. (By @hemoridos)</item>
+        <item category='Spacewar,Balance' issues='1097'>Weapons now have some target and delay randomization applied to them as well as pixel-level collision detection. Fixes some monotony, sound and hit detection issues. (By @hemoridos)</item>
+      </entry>
       <entry version='0.95.240' date='2023-07-31'>
         <item category='Labels' issues='1079'>Fixed the upgrade description of the Water Vaporator; it increases population growth, not living space amount.</item>
       </entry>
@@ -248,8 +259,8 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.240.jar' sha1='78F3D3045AD34697F767123FAC84A0B7EBB2934B'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20230731a2.zip' sha1='C42129D9F5D960ECCC71A8A113E749BAA4A43FC9'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.241.jar' sha1='5864514BBE2DCCF92197DCBACE31BCD848FBC3A6'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20231103a2.zip' sha1='1F042040F706CD67E6EC537867E6CD605078E1A0'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
