@@ -331,9 +331,9 @@ public class SpacewarStructure extends SpacewarObject {
      * @return true if the space structure is a missile
      */
     public boolean isMissile() {
-        return type == StructureType.BOMB ||
-                type == StructureType.VIRUS_BOMB ||
-                type == StructureType.ROCKET ||
-                type == StructureType.MULTI_ROCKET;
+        return type == StructureType.BOMB
+                || type == StructureType.VIRUS_BOMB
+                || type == StructureType.ROCKET
+                || type == StructureType.MULTI_ROCKET;
     }
 }

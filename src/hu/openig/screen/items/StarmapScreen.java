@@ -1350,7 +1350,7 @@ public class StarmapScreen extends ScreenBase {
                             g2.setColor(new Color(124, 124, 180, 128));
                             int i = 0;
                             for (Point2D.Double pt : f.waypoints) {
-                                if(i++ == f.waypoints.size() - 1) {
+                                if (i++ == f.waypoints.size() - 1) {
                                     drawArrow(
                                             g2,
                                             (int)(starmapRect.x + lastx * zoom),
@@ -3273,7 +3273,7 @@ public class StarmapScreen extends ScreenBase {
      * @param x0 the X coordinate of the start point
      * @param y0 the Y coordinate of the start point
      * @param x1 the X coordinate of the end point
-     * @param x1 the X coordinate of the end point
+     * @param y1 the Y coordinate of the end point
      */
     public void drawArrow(Graphics2D g2, int x0, int y0, int x1, int y1) {
         int headAngle = 30;

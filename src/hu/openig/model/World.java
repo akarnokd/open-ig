@@ -2584,6 +2584,7 @@ public class World implements ModelLookup {
         battle.groundRocket = ImageUtils.split(rimg, rimg.getWidth() / 16, rimg.getHeight() / 3);
 
     }
+
     /**
      * Load a list of efficiency settings from the given parent XML node.
      * @param out the output list
@@ -2604,6 +2605,7 @@ public class World implements ModelLookup {
             out.add(bem);
         }
     }
+
     /**
      * Trim the image items symmetrically to free up some unnecessary memory
      * and rendering time.
@@ -2614,6 +2616,7 @@ public class World implements ModelLookup {
             trimTransparencyOnSides(img);
         }
     }
+
     /**
      * Trim the image items symmetrically to free up some unnecessary memory
      * and rendering time.
@@ -2636,18 +2639,20 @@ public class World implements ModelLookup {
             }
         }
     }
+
     /**
-     * Calculate symmetrically trimmed image's width
+     * Calculate symmetrically trimmed image's width.
      * @param image the images
      * @return the trimmed width
      */
-    int calculateTrimmedImageRectangleWidth(BufferedImage image) {
+    static int calculateTrimmedImageRectangleWidth(BufferedImage image) {
             int w = image.getWidth();
             int tx = findTrimmedX(image);
             return w - 2 * tx;
     }
+
     /**
-     * Calculate symmetrically trimmed image's height
+     * Calculate symmetrically trimmed image's height.
      * @param image the images
      * @return the trimmed width
      */
@@ -2656,7 +2661,8 @@ public class World implements ModelLookup {
         int ty = findTrimmedY(image);
         return h - 2 * ty;
     }
-    private int findTrimmedX(BufferedImage image) {
+
+    static int findTrimmedX(BufferedImage image) {
         int tx = 0;
 
         int w = image.getWidth();
@@ -2679,7 +2685,7 @@ public class World implements ModelLookup {
         return Math.max(0, tx);
     }
 
-    private int findTrimmedY(BufferedImage image) {
+    static int findTrimmedY(BufferedImage image) {
         int ty = 0;
 
         int w = image.getWidth();

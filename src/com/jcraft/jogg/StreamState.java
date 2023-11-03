@@ -589,10 +589,10 @@ public class StreamState {
      * @return int
      */
     public int pageout(Page og) {
-        if ((endOfStream != 0 && lacingFill != 0) || /* 'were done, now flush' case */
-        bodyFill - bodyReturned > 4096 || /* 'page nominal size' case */
-        lacingFill >= 255 || /* 'segment table full' case */
-        (lacingFill != 0 && beginOfStream == 0)) { /* 'initial header page' case */
+        if ((endOfStream != 0 && lacingFill != 0) /* 'were done, now flush' case */
+                || bodyFill - bodyReturned > 4096 /* 'page nominal size' case */
+                || lacingFill >= 255  /* 'segment table full' case */
+                || (lacingFill != 0 && beginOfStream == 0)) { /* 'initial header page' case */
             return flush(og);
         }
         return 0;

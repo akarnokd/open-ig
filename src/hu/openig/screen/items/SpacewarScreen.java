@@ -4121,9 +4121,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 double inaccuracy = 0.40f;
                 double aimOffsetX = ship.attack.trimmedWidth * (-inaccuracy + (Math.random() * inaccuracy * 2));
                 double aimOffsetY = ship.attack.trimmedHeight * (-inaccuracy + (Math.random() * inaccuracy * 2));
-                aimOffsetX = (aimOffsetX)*Math.cos(ship.attack.angle) - (aimOffsetY)*Math.sin(ship.attack.angle);
-                aimOffsetY = (aimOffsetX)*Math.sin(ship.attack.angle) + (aimOffsetY)*Math.cos(ship.attack.angle);
-                createBeam(ship, p, ship.attack.x + aimOffsetX,ship.attack.y + aimOffsetY, ship.attack);
+                aimOffsetX = (aimOffsetX) * Math.cos(ship.attack.angle) - (aimOffsetY) * Math.sin(ship.attack.angle);
+                aimOffsetY = (aimOffsetX) * Math.sin(ship.attack.angle) + (aimOffsetY) * Math.cos(ship.attack.angle);
+                createBeam(ship, p, ship.attack.x + aimOffsetX, ship.attack.y + aimOffsetY, ship.attack);
                 p.cooldown = (int) (p.projectile.delay * (0.5f + Math.random()));
             }
         }
