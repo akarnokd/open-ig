@@ -20,6 +20,8 @@ import java.util.Set;
 public class Pathfinding extends AStarSearch<Location> {
     /** Test for passability. */
     public Func1<Location, Boolean> isPassable;
+    /** Test for permanent obstacles */
+    public Func1<Location, Boolean> isBlocked;
     /** Setup the A*. */
     public Pathfinding() {
         neighbors = new Func1<Location, List<Location>>() {
@@ -35,8 +37,8 @@ public class Pathfinding extends AStarSearch<Location> {
      * @param destination the destination
      * @return the path, empty if the target is completely unreachable
      */
-    public List<Location> searchApproximate(final Location initial, final Location destination) {
-        return search(initial, destination).second;
+    public Pair<Boolean, List<Location>> searchApproximate(final Location initial, final Location destination) {
+        return  search(initial, destination);
     }
     /**
      * Computes the sum of the distance squares between (target and source1) and (target and source2).
@@ -97,42 +99,37 @@ public class Pathfinding extends AStarSearch<Location> {
         Location bottom = current.delta(0, 1);
         Location top = current.delta(0, -1);
 
-        boolean pleft = isPassable.invoke(left);
-        boolean pright = isPassable.invoke(right);
-        boolean pbottom = isPassable.invoke(bottom);
-        boolean ptop = isPassable.invoke(top);
-
-        if (pleft) {
+        if (isPassable.invoke(left)) {
             result.add(left);
         }
-        if (pright) {
+        if (isPassable.invoke(right)) {
             result.add(right);
         }
-        if (pbottom) {
+        if (isPassable.invoke(bottom)) {
             result.add(bottom);
         }
-        if (ptop) {
+        if (isPassable.invoke(top)) {
             result.add(top);
         }
-        if (pleft && ptop) {
+        if (!isBlocked.invoke(left) && !isBlocked.invoke(top)) {
             Location c = current.delta(-1, -1);
             if (isPassable.invoke(c)) {
                 result.add(c);
             }
         }
-        if (pleft && pbottom) {
+        if (!isBlocked.invoke(left) && !isBlocked.invoke(bottom)) {
             Location c = current.delta(-1, 1);
             if (isPassable.invoke(c)) {
                 result.add(c);
             }
         }
-        if (pright && ptop) {
+        if (!isBlocked.invoke(right) && !isBlocked.invoke(top)) {
             Location c = current.delta(1, -1);
             if (isPassable.invoke(c)) {
                 result.add(c);
             }
         }
-        if (pright && pbottom) {
+        if (!isBlocked.invoke(right) && !isBlocked.invoke(bottom)) {
             Location c = current.delta(1, 1);
             if (isPassable.invoke(c)) {
                 result.add(c);

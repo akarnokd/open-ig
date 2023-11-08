@@ -90,7 +90,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
     /** The persistent deployed ground units and turrets. */
     public final PlanetGround ground;
     /** The ground war manager for this planet. */
-    public final GroundwarManager war;
+    //public final GroundwarManager war;
     /**
      * Compares the total value of the planet.
      */
@@ -135,7 +135,7 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
         this.id = id;
         this.world = world;
         this.ground = new PlanetGround();
-        this.war = new GroundwarManager(this);
+        //this.war = new GroundwarManager(this);
     }
     /**
      * Return the morale label for the given level.
