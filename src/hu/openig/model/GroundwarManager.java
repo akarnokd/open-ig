@@ -153,7 +153,7 @@ public class GroundwarManager implements GroundwarWorld {
 
         @Override
         public PathPlanning call() {
-            path.addAll(getPathfinding(ignore).searchApproximate(current, goal));
+            //path.addAll(getPathfinding(ignore).searchApproximate(current, goal));
             return this;
         }
         /**

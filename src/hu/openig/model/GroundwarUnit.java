@@ -95,17 +95,7 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
     }
     @Override
     public Location location() {
-        return Location.of((int)x, (int)y);
-    }
-    /**
-     * Determines the location which should be used for path calculation.
-     * @return the location
-     */
-    public Location pathFindingLocation() {
-        if ((Math.abs(x - (int)x) < 1E-9 && Math.abs(y - (int)y) < 1E-9) || path.isEmpty()) {
-            return Location.of((int)x, (int)y);
-        }
-        return path.get(0);
+        return Location.of((int)Math.round(x), (int)Math.round(y));
     }
     @Override
     public Double exactLocation() {
@@ -147,6 +137,10 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
     /** @return true if the unit is moving. */
     public boolean isMoving() {
         return nextMove != null || !path.isEmpty();
+    }
+    /** @return true if the unit is in between cells. */
+    public boolean inMotion()  {
+        return (x % 1 != 0) || (y % 1 != 0);
     }
     /**
      * @return the target cell of movement or null if not moving
@@ -248,41 +242,11 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
         return new Point(px + model.width / 2, py + model.height / 2);
     }
     /**
-     * Merges the current path with the new skipping
-     * overlapping parts to avoid unnecessary rotations.
-
+     * Merges the new path.
      * @param newPath the new path to follow
      */
     public void mergePath(List<Location> newPath) {
-        // path.addAll(newPath);
-        if (!newPath.isEmpty()) {
-
-            if (newPath.size() >= 2) {
-                Location p0 = newPath.get(0);
-
-                double vx = p0.x - x;
-                double vy = p0.y - y;
-                double v = Math.hypot(vx, vy);
-
-                if (v >= 1E-9) {
-                    Location p1 = newPath.get(1);
-
-                    double ax = p1.x - p0.x;
-                    double ay = p1.y - p0.y;
-                    double a = Math.hypot(ax, ay);
-
-                    double angle = Math.acos((vx * ax + vy * ay) / v / a);
-                    if (angle >= Math.PI - 1E-6) {
-                        path.clear();
-                        path.addAll(newPath.subList(1, newPath.size()));
-                        nextMove = p1;
-                        nextRotate = p1;
-                        return;
-                    }
-                }
-
-            }
-            path.addAll(newPath);
-        }
+        path.clear();
+        path.addAll(newPath);
     }
 }

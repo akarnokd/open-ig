@@ -148,7 +148,7 @@ public class AStarSearch<T> {
 
         // if we get here, there was no direct path available
         // find a target location which minimizes initial-L-destination
-        if (closedSet.isEmpty()) {
+        if (closedSet.size() <= 1 || initial.equals(nearest)) {
             return Pair.of(false, Collections.<T>emptyList());
         }
         return Pair.of(true, reconstructPath(cameFrom, nearest));
