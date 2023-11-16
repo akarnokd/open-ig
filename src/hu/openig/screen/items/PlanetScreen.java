@@ -54,9 +54,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     Tile areaDeploy;
     /** The placement tile for denied area. */
     Tile areaDeny;
-    /** DEBUG tile showing an area taken up by a unit */
+    /** DEBUG tile showing an area taken up by a unit. */
     Tile areaTaken;
-    /** DEBUG tile showing an area reserved for moving into by a unit */
+    /** DEBUG tile showing an area reserved for moving into by a unit. */
     Tile areaReserved;
     /** The current cell tile. */
     Tile areaCurrent;
@@ -302,7 +302,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     Action0 weatherSoundRunning;
     /** The map for pathfinding passability check. */
     final Map<Location, Set<GroundwarUnit>> unitsForPathfinding = new HashMap<>();
-    /** Map for reserved locations */
+    /** Map for reserved locations. */
     final Map<Location, GroundwarUnit> reservedTiles = new HashMap<>();
 
     /** Disable AI unit management. */
@@ -311,13 +311,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     boolean cancelRetreat;
     /** Indicates the screen is in preparation mode. */
     private boolean preparingGroundBattle;
-    /** Timing action for constant frame redraw*/
+    /** Timing action for constant frame redraw. */
     Closeable frameTimer;
-    /** The time of the current ground war simulation tick */
+    /** The time of the current ground war simulation tick. */
     double currentSimulationTime = 0;
-    /** The time of the previous ground war simulation tick */
+    /** The time of the previous ground war simulation tick. */
     double previousSimulationTime = 0;
-    /** Ratio of the frame time since last simulation and simulation time since last simulation step  */
+    /** Ratio of the frame time since last simulation and simulation time since last simulation step. */
     double simFrameRatio = 0;
 
     @Override
@@ -1643,7 +1643,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     } else
                     if (u.path.size() > 0) {
                         g2.setColor(u.attackMove != null ? Color.RED : Color.GREEN);
-                        Location gl = u.path.get(u.path.size()-1);
+                        Location gl = u.path.get(u.path.size() - 1);
                         int gx = x0 + Tile.toScreenX(gl.x, gl.y) + 27;
                         int gy = y0 + Tile.toScreenY(gl.x, gl.y) + 14;
                         g2.drawLine(gx, gy, up.x, up.y);
@@ -1738,11 +1738,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         Font font = new Font("Serif", Font.PLAIN, 6);
                         gt.setFont(font);
                         gt.setColor(Color.GREEN);
-                        gt.drawString(loc1.x+","+loc1.y, x+20, y+15);
+                        gt.drawString(loc1.x + "," + loc1.y, x + 20, y + 15);
                         gt.dispose();
                         if (reservedTiles.get(Location.of(loc.x - j, loc.y)) != null) {
                             //add slight offset, so it can be seen if a tile is both reserved and taken
-                            g2.drawImage(areaReserved.getStrip(0), x, y+5, null);
+                            g2.drawImage(areaReserved.getStrip(0), x, y + 5, null);
                         }
                     }
                 }
@@ -4300,7 +4300,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
                 g2.drawImage(img, ux, uy, null);
 
-                if (u.attack != null && showCommand && (showDebug || u.owner == player()) ) {
+                if (u.attack != null && showCommand && (showDebug || u.owner == player())) {
                     Point gp = centerOf(u.attack);
                     Point up = centerOf(u);
                     g2.setColor(Color.RED);
@@ -4577,8 +4577,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         final GroundwarUnit unit;
         /** The computed path. */
         boolean pathFound = true;
-        /** Number of reattempts after a failed pathing attempt */
+        /** Number of reattempts after a failed pathing attempt. */
         int pathingAttempts = 20;
+        /** The path to merge with. */
         final List<Location> path = new ArrayList<>();
         /**
          * Constructor. Initializes the fields.
@@ -4634,7 +4635,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     void doMoveSelectedUnits(int mx, int my) {
         boolean moved = false;
-        final List<GroundwarUnit> selection = new ArrayList<GroundwarUnit>();
+        final List<GroundwarUnit> selection = new ArrayList<>();
         for (GroundwarUnit u : units) {
             if (u.selected /* && u.owner == player() */) {  // FIXME player only
                 selection.add(u);
@@ -4671,18 +4672,18 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             int baseX = lm.x;
             int baseY = lm.y;
             int locationsNeeded = selection.size();
-            final List<Location> targetLocations = new ArrayList<Location>();
+            final List<Location> targetLocations = new ArrayList<>();
             if (isPassable(baseX, baseY)) {
                 targetLocations.add(Location.of(baseX, baseY));
                 locationsNeeded--;
             }
             outer:
-            for (int n = 1; n < surface().width/2; n++) {
+            for (int n = 1; n < surface().width / 2; n++) {
                 for (int x = baseX - n; x < baseX + n; x++) {
                     if (isPassable(x, baseY + n)) {
                         targetLocations.add(Location.of(x, baseY + n));
                         locationsNeeded--;
-                        if(locationsNeeded == 0) {
+                        if (locationsNeeded == 0) {
                             break outer;
                         }
                     }
@@ -4794,7 +4795,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @param unit the unit doing the pathfinding
      * @return the pathfinding object
      */
-    Pathfinding getPathfinding(GroundwarUnit unit) {
+    Pathfinding getPathfinding(final GroundwarUnit unit) {
         Pathfinding pathfinding = new Pathfinding();
         pathfinding.isPassable = new Func1<Location, Boolean>() {
             @Override
@@ -5964,11 +5965,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (unitsForPathfinding.get(u.nextMove) != null) {
             for (GroundwarUnit gunit : unitsForPathfinding.get(u.nextMove)) {
                 if ((gunit != u) && !gunit.inMotion() && !needsRotation(gunit, gunit.nextMove)) {
-                    if (u.nextMove == u.path.get(u.path.size()-1)) {
+                    if (u.nextMove == u.path.get(u.path.size() - 1)) {
                         int baseX = u.nextMove.x;
                         int baseY = u.nextMove.y;
                         outer:
-                        for (int r = 0; r < surface().width/2; r++) {
+                        for (int r = 0; r < surface().width / 2; r++) {
                             for (int x = baseX - r; x <= baseX + r; x++) {
                                 if (isPassable(x, baseY + r, u)) {
                                     move(u, x, baseY + r);
@@ -6024,10 +6025,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     return;
                 }
             }
-        } else if (reservedTiles.get(u.nextMove).isDestroyed() ) {
+        } else if (reservedTiles.get(u.nextMove).isDestroyed()) {
             reservedTiles.remove(u.nextMove);
-        }
-        else if (reservedTiles.get(u.nextMove) != u) {
+        } else if (reservedTiles.get(u.nextMove) != u) {
             return;
         }
         reservedTiles.put(u.nextMove, u);
@@ -6250,8 +6250,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     void createRocket(GroundwarUnit sender, double x, double y) {
         GroundwarRocket rocket = new GroundwarRocket(world().battle.groundRocket);
-        rocket.x = rocket.lastX = sender.x;
-        rocket.y = rocket.lastY = sender.y;
+        rocket.x = sender.x;
+        rocket.lastX = sender.x;
+        rocket.y = sender.y;
+        rocket.lastY = sender.y;
         rocket.owner = sender.owner;
         rocket.targetX = x;
         rocket.targetY = y;
@@ -6734,8 +6736,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (!unitsToPlace.isEmpty()) {
                 GroundwarUnit u = unitsToPlace.removeFirst();
                 units.add(u);
-                u.x = u.lastX = lm.x;
-                u.y = u.lastY = lm.y;
+                u.x = lm.x;
+                u.lastX = lm.x;
+                u.y = lm.y;
+                u.lastY = lm.y;
                 addUnitLocation(u);
                 battlePlacements.remove(lm);
 
@@ -6998,7 +7002,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 boolean ip = false;
                 for (GroundwarUnit u : gunits) {
                     ip = ((u.owner != unit.owner) && (unit.attackMove != null))
-                            || ((u.owner == unit.owner) && (u.inMotion() || needsRotation(u, u.nextMove)) )
+                            || ((u.owner == unit.owner) && (u.inMotion() || needsRotation(u, u.nextMove)))
                             || u.equals(unit)
                             || u.isDestroyed();
                 }

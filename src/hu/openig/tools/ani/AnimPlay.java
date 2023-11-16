@@ -786,6 +786,7 @@ public final class AnimPlay {
     public static void transcodeToPng(final String infile, final String outFile, final ProgressCallback progress) {
         // use all available processors for PNG encoding, but not more for the queue
         final int n = Runtime.getRuntime().availableProcessors();
+        @SuppressWarnings("resource")
         final ExecutorService exec = new ThreadPoolExecutor(
                 n, /* Runtime.getRuntime().availableProcessors() ,*/
 

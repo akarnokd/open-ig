@@ -20,7 +20,7 @@ import java.util.Set;
 public class Pathfinding extends AStarSearch<Location> {
     /** Test for passability. */
     public Func1<Location, Boolean> isPassable;
-    /** Test for permanent obstacles */
+    /** Test for permanent obstacles. */
     public Func1<Location, Boolean> isBlocked;
     /** Setup the A*. */
     public Pathfinding() {
