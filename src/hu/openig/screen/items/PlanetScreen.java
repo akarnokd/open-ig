@@ -311,6 +311,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     boolean cancelRetreat;
     /** Indicates the screen is in preparation mode. */
     private boolean preparingGroundBattle;
+    /** Timing action for constant frame redraw*/
+    Closeable frameTimer;
+    /** The time of the current ground war simulation tick */
+    double currentSimulationTime = 0;
+    /** The time of the previous ground war simulation tick */
+    double previousSimulationTime = 0;
+    /** Ratio of the frame time since last simulation and simulation time since last simulation step  */
+    double simFrameRatio = 0;
 
     @Override
     public void onFinish() {
@@ -371,10 +379,20 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             } else
             if (e.isControlDown()) {
                 if (battle == null) {
+                    if (simulator != null) {
+                        close0(simulator);
+                        simulator = null;
+                    }
                     doAddGuns();
                     doAddUnits();
                     planet().allocation = ResourceAllocationStrategy.BATTLE;
-
+                    startBattle.visible(false);
+                    simulator = commons.register(SIMULATION_DELAY, new Action0() {
+                        @Override
+                        public void invoke() {
+                            doGroundWarSimulation();
+                        }
+                    });
                     rep = true;
                 }
             } else {
@@ -563,16 +581,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             centerScreen();
         }
         focused = render;
-
-        if (battle == null) {
-            startBattle.visible(false);
-            simulator = commons.register(SIMULATION_DELAY, new Action0() {
-                @Override
-                public void invoke() {
-                    doGroundWarSimulation();
-                }
-            });
-        }
         moveSelect = false;
         attackSelect = false;
         attackUnit.enabled(false);
@@ -600,6 +608,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         battle = null;
         close0(simulator);
         simulator = null;
+        close0(frameTimer);
+        frameTimer = null;
 
         cancelRetreat = false;
         retreat.visible(false);
@@ -1195,7 +1205,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (surface == null) {
                 return;
             }
-
+            if (!commons.simulation.paused() && battle != null) {
+                calculateObjectPositionInterpolation();
+            }
             PlanetStatistics ps = update(surface);
 
             float alphaSave = alpha;
@@ -1379,6 +1391,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             return null;
         }
+
         void paveSurfaceFeature(SurfaceFeature sf) {
             for (int i = 0; i < sf.tile.width; i++) {
                 for (int j = 0; j < sf.tile.height; j++) {
@@ -3846,7 +3859,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         lastSurface = null;
     }
 
-    /** Set the spacewar time controls. */
+    /** Set the groundwar time controls. */
     void setGroundWarTimeControls() {
         commons.replaceSimulation(new Action0() {
             @Override
@@ -4228,9 +4241,15 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return the position
      */
     Point unitPosition(GroundwarUnit u) {
-        return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(u.x, u.y)),
+        //Calculate interpolated location if needed
+        if (simFrameRatio > 1) {
+            simFrameRatio = commons.simulationSpeed() / SIMULATION_DELAY;
+        }
+        double projectedX = u.lastX + ((u.x - u.lastX) * (simFrameRatio));
+        double projectedY = u.lastY + ((u.y - u.lastY) * (simFrameRatio));
+        return new Point((int)(planet().surface.baseXOffset + Tile.toScreenX(projectedX, projectedY)),
 
-                (int)(planet().surface.baseYOffset + Tile.toScreenY(u.x, u.y)) + 27 - u.model.height);
+                (int)(planet().surface.baseYOffset + Tile.toScreenY(projectedX, projectedY)) + 27 - u.model.height);
     }
     /**
      * Computes the unit bounding rectangle's left-top position.
@@ -4238,10 +4257,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @return the position
      */
     Point unitPosition(GroundwarRocket u) {
+        //Calculate interpolated location if needed
+        if (simFrameRatio > 1) {
+            simFrameRatio = commons.simulationSpeed() / SIMULATION_DELAY;
+        }
+        double projectedX = u.lastX + ((u.x - u.lastX) * (simFrameRatio));
+        double projectedY = u.lastY + ((u.y - u.lastY) * (simFrameRatio));
         return new Point(
-                (int)(planet().surface.baseXOffset + Tile.toScreenX(u.x + 0.5, u.y)),
+                (int)(planet().surface.baseXOffset + Tile.toScreenX(projectedX + 0.5, projectedY)),
 
-                (int)(planet().surface.baseYOffset + Tile.toScreenY(u.x + 0.5, u.y)));
+                (int)(planet().surface.baseYOffset + Tile.toScreenY(projectedX + 0.5, projectedY)));
     }
     /**
      * The on-screen rectangle of the ground unit.
@@ -4790,6 +4815,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     /** The ground war simulation. */
     void doGroundWarSimulation() {
+        previousSimulationTime = currentSimulationTime;
+        currentSimulationTime = System.currentTimeMillis();
         if (preparingGroundBattle || commons.simulation.paused()) {
             return;
         }
@@ -4824,6 +4851,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
 
         for (GroundwarUnit u : units) {
+            u.lastX = u.x;
+            u.lastY = u.y;
             updateUnit(u);
         }
 
@@ -4837,7 +4866,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 concludeBattle(winner);
             }
         }
-        askRepaint();
     }
 
     /**
@@ -5993,40 +6021,39 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (reservedTiles.get(u.nextMove) == null) {
             for (GroundwarUnit gu : units) {
                 if ((gu != u) && (gu.location().equals(u.nextMove))) {
-                    dv = 0;
-                    break;
+                    return;
                 }
             }
         } else if (reservedTiles.get(u.nextMove).isDestroyed() ) {
             reservedTiles.remove(u.nextMove);
         }
         else if (reservedTiles.get(u.nextMove) != u) {
-            dv = 0;
+            return;
         }
-        if (dv > 0) {
-            reservedTiles.put(u.nextMove, u);
-            double distanceToTarget = (u.nextMove.x - u.x) * (u.nextMove.x - u.x)
-                    + (u.nextMove.y - u.y) * (u.nextMove.y - u.y);
-            if (distanceToTarget < dv * dv) {
-                reservedTiles.remove(u.location());
-                updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
+        reservedTiles.put(u.nextMove, u);
+        double distanceToTarget = Math.hypot(u.nextMove.x - u.x, u.nextMove.y - u.y);
+        if (distanceToTarget < dv) {
+            reservedTiles.remove(u.location());
+            updateUnitLocation(u, u.nextMove.x, u.nextMove.y, false);
 
-                u.nextMove = null;
-                u.path.remove(0);
-                double remaining = Math.sqrt(dv * dv - distanceToTarget);
-                if (!u.path.isEmpty()) {
-                    Location nextCell = u.path.get(0);
-                    if (!needsRotation(u, nextCell)) {
-                        double time2 = remaining * u.model.movementSpeed * 28;
-                        u.nextMove = nextCell;
-                        moveUnitStep(u, time2);
-                    }
+            u.nextMove = null;
+            u.path.remove(0);
+            double remaining = dv - distanceToTarget;
+            if (!u.path.isEmpty()) {
+                Location nextCell = u.path.get(0);
+                if (!needsRotation(u, nextCell)) {
+                    double tempX = u.lastX;
+                    double tempY = u.lastY;
+                    double time2 = remaining * u.model.movementSpeed * 28;
+                    u.nextMove = nextCell;
+                    moveUnitStep(u, time2);
+                    u.lastX = tempX;
+                    u.lastY = tempY;
                 }
-
-            } else {
-                double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
-                updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);
             }
+        } else {
+            double angle = Math.atan2(u.nextMove.y - u.y, u.nextMove.x - u.x);
+            updateUnitLocation(u, dv * Math.cos(angle), dv * Math.sin(angle), true);
         }
     }
     /**
@@ -6223,8 +6250,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     void createRocket(GroundwarUnit sender, double x, double y) {
         GroundwarRocket rocket = new GroundwarRocket(world().battle.groundRocket);
-        rocket.x = sender.x;
-        rocket.y = sender.y;
+        rocket.x = rocket.lastX = sender.x;
+        rocket.y = rocket.lastY = sender.y;
         rocket.owner = sender.owner;
         rocket.targetX = x;
         rocket.targetY = y;
@@ -6258,6 +6285,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             rockets.remove(rocket);
         } else {
             double angle = Math.atan2(rocket.targetY - rocket.y, rocket.targetX - rocket.x);
+            rocket.lastX = rocket.x;
+            rocket.lastY = rocket.y;
             rocket.x += dv * Math.cos(angle);
             rocket.y += dv * Math.sin(angle);
             rocket.phase++;
@@ -6332,6 +6361,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     void updateUnitLocation(GroundwarUnit u, double dx, double dy, boolean relative) {
         Location current = unitLocation(u);
         Location pfl = u.location();
+
+        u.lastX = u.x;
+        u.lastY = u.y;
 
         if (relative) {
             u.x += dx;
@@ -6643,6 +6675,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         unitsToPlace.clear();
         battlePlacements.clear();
 
+        frameTimer = commons.register(SIMULATION_DELAY / 4, new Action0() {
+            @Override
+            public void invoke() {
+                askRepaint();
+            }
+        });
+
         doAddGuns();
         deployNonPlayerVehicles();
 
@@ -6695,8 +6734,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (!unitsToPlace.isEmpty()) {
                 GroundwarUnit u = unitsToPlace.removeFirst();
                 units.add(u);
-                u.x = lm.x;
-                u.y = lm.y;
+                u.x = u.lastX = lm.x;
+                u.y = u.lastY = lm.y;
                 addUnitLocation(u);
                 battlePlacements.remove(lm);
 
@@ -7307,4 +7346,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         return false;
     }
+
+    void calculateObjectPositionInterpolation() {
+        double timeSinceLastSimulationStep = System.currentTimeMillis() - currentSimulationTime;
+        simFrameRatio = (timeSinceLastSimulationStep) / (currentSimulationTime - previousSimulationTime);
+
+    }
+
 }

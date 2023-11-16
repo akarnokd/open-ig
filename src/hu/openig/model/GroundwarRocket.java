@@ -19,6 +19,10 @@ public class GroundwarRocket extends GroundwarObject {
     public double x;
     /** The current cell coordinate. */
     public double y;
+    /** The previous cell coordinate. */
+    public double lastX;
+    /** The previous cell coordinate. */
+    public double lastY;
     /** The target cell point. */
     public double targetX;
     /** The target cell point. */

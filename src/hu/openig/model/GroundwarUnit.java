@@ -31,6 +31,10 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
     public double x;
     /** The position with fractional precision in surface coordinates. */
     public double y;
+    /** The previous position with fractional precision in surface coordinates. */
+    public double lastX;
+    /** The previous position with fractional precision in surface coordinates. */
+    public double lastY;
     /** The available hitpoints. */
     public double hp;
     /** The original inventory item. */
