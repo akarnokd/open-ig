@@ -3170,6 +3170,10 @@
 	<entry key='planets.Zeuson'>Zeuson</entry>
 	<entry key='buildings.spy_center'>Kémközpont</entry>
 	<entry key='buildings.spy_center.desc'>A kémközpont egy ügynököt képes támogatni, és elsődleges szerepe van az idegen birodalmak elleni kémtevékenységben.</entry>
+	<entry key='buildings.vocational_institute'>Szakképzési centrum</entry>
+	<entry key='buildings.vocational_institute.desc'>A jól képzett munkaerő révén másfélszeresére növeli a bolygón található gyárak teljesítményét, de a többi épület munkaerőigényét is csökkenti.</entry>
+	<entry key='buildings.university'>Egyetem</entry>
+	<entry key='buildings.university.desc'>Az egyetem révén a bolygón található kutatóközpont másfélszeres teljesítményre képes, de a többi épület munkaerőigényét is csökkenti.</entry>
 	<entry key='Berserker'>Berserker</entry>
 	<entry key='Executor'>Executor</entry>
 	<entry key='Chaotic'>Chaotic</entry>

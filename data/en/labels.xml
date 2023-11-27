@@ -3134,7 +3134,10 @@
 	<entry key='planets.Zeuson'>Zeuson</entry>
 	<entry key='buildings.spy_center'>Spy Center</entry>
 	<entry key='buildings.spy_center.desc'>Spy Centers support a single operative and play the major role in spying against enemy empires.</entry>
-
+	<entry key='buildings.vocational_institute'>Vocational Institute</entry>
+	<entry key='buildings.vocational_institute.desc'>With the help of well trained workforce, factories on the planet will increase their output by 1.5x and worker requirements of other buildings will be decreased too.</entry>
+	<entry key='buildings.university'>University</entry>
+	<entry key='buildings.university.desc'>With the help of well trained scientists, research centers on the planet will work 1.5x faster and worker requirements of other buildings will be decreased too.</entry>
 	<entry key='Berserker'>Berserker</entry>
 	<entry key='Executor'>Executor</entry>
 	<entry key='Chaotic'>Chaotic</entry>
