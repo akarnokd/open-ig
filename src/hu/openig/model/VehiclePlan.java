@@ -41,26 +41,8 @@ public class VehiclePlan {
     public void calculate(Iterable<ResearchType> available,
             BattleModel battle, int max, Difficulty diff) {
 
-        // fill in fighters
-        for (ResearchType rt : available) {
-            if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
-                tanks.add(rt);
-            } else
-            if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
-                if (rt.has(ResearchType.PARAMETER_ONE_PER_FLEET)) {
-                    onePerKind.add(rt);
-                } else {
-                    BattleGroundVehicle veh = battle.groundEntities.get(rt.id);
-                    if (veh != null && veh.type == GroundwarUnitType.ROCKET_SLED) {
-                        sleds.add(rt);
-                    } else {
-                        special.add(rt);
-                    }
-                }
-            }
-        }
-        Collections.sort(tanks, ResearchType.EXPENSIVE_FIRST);
-        Collections.sort(sleds, ResearchType.EXPENSIVE_FIRST);
+        // fill in vehicles
+        fillAvailableVehicleTech(available, battle);
 
         List<ResearchType> selectedSleds = new ArrayList<>();
         if (!sleds.isEmpty()) {
@@ -96,13 +78,13 @@ public class VehiclePlan {
             max -= tankCount;
         }
         if (!selectedSleds.isEmpty()) {
-            int si = 0;
+            int sledIndex = 0;
             while (sledCount > 0 && max > 0) {
-                Integer dc = demand.get(selectedSleds.get(si));
-                demand.put(selectedSleds.get(si), dc != null ? dc + 1 : 1);
+                Integer demandCount = demand.get(selectedSleds.get(sledIndex));
+                demand.put(selectedSleds.get(sledIndex), demandCount != null ? demandCount + 1 : 1);
                 max--;
                 sledCount--;
-                si = (si + 1) % selectedSleds.size();
+                sledIndex = (sledIndex + 1) % selectedSleds.size();
             }
         }
         for (ResearchType rt : onePerKind) {
@@ -112,5 +94,32 @@ public class VehiclePlan {
             demand.put(rt, 1);
             max--;
         }
+    }
+
+    /**
+     * Find and fill in the available vehicle selection for planning.
+     * @param available the available technology
+     * @param battle the battle model
+     */
+    public void fillAvailableVehicleTech(Iterable<ResearchType> available, BattleModel battle) {
+        for (ResearchType rt : available) {
+            if (rt.category == ResearchSubCategory.WEAPONS_TANKS) {
+                tanks.add(rt);
+            } else
+            if (rt.category == ResearchSubCategory.WEAPONS_VEHICLES) {
+                if (rt.has(ResearchType.PARAMETER_ONE_PER_FLEET)) {
+                    onePerKind.add(rt);
+                } else {
+                    BattleGroundVehicle veh = battle.groundEntities.get(rt.id);
+                    if (veh != null && veh.type == GroundwarUnitType.ROCKET_SLED) {
+                        sleds.add(rt);
+                    } else {
+                        special.add(rt);
+                    }
+                }
+            }
+        }
+        Collections.sort(tanks, ResearchType.EXPENSIVE_FIRST);
+        Collections.sort(sleds, ResearchType.EXPENSIVE_FIRST);
     }
 }

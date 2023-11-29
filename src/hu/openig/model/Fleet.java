@@ -8,7 +8,6 @@
 
 package hu.openig.model;
 
-import hu.openig.core.Difficulty;
 import hu.openig.model.BattleProjectile.Mode;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
@@ -19,7 +18,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 /**
@@ -447,49 +445,47 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
      */
     public void upgradeVehicles(int vehicleMax) {
         VehiclePlan plan = new VehiclePlan();
-        plan.calculate(owner.available(),
+        plan.fillAvailableVehicleTech(owner.available(), owner.world.battle);
+        // expected composition
+        int tankDemand = plan.special.isEmpty() ? vehicleMax * 2 / 3 : vehicleMax / 2;
+        int onePerKindDemand = plan.onePerKind.size();
+        int vehicleDemand = vehicleMax - tankDemand - onePerKindDemand;
+        int specialDemand = plan.special.isEmpty() ? 0 : vehicleDemand / 2;
+        int sledDemand = vehicleDemand - specialDemand;
 
-                owner.world.battle,
-
-                vehicleMax,
-
-                owner == owner.world.player ? Difficulty.HARD : owner.world.difficulty);
-        // fill in best
-        for (Map.Entry<ResearchType, Integer> e : plan.demand.entrySet()) {
-            int demand = e.getValue();
-            ResearchType rt = e.getKey();
-            int count = Math.min(demand, owner.inventoryCount(rt));
-            if (count > 0) {
-                deployItem(rt, owner, count);
-                vehicleMax -= count;
-            }
-        }
+        // try to fill all the demands
+        vehicleMax -= fillWithVehicleType(plan.onePerKind, onePerKindDemand);
+        vehicleMax -= fillWithVehicleType(plan.tanks, tankDemand);
+        vehicleMax -= fillWithVehicleType(plan.sleds, sledDemand);
+        vehicleMax -= fillWithVehicleType(plan.special, specialDemand);
+        // try to fill the remaining space with tanks and sleds
         if (vehicleMax > 0) {
-            if (!plan.tanks.isEmpty()) {
-                ResearchType rt = plan.tanks.get(0);
-                int c = Math.min(vehicleMax, owner.inventoryCount(rt));
-                if (c > 0) {
-                    deployItem(rt, owner, c);
-                    vehicleMax -= c;
-                }
-            }
-            if (!plan.sleds.isEmpty()) {
-                ResearchType rt = plan.sleds.get(0);
-                int c = Math.min(vehicleMax, owner.inventoryCount(rt));
-                if (c > 0) {
-                    deployItem(rt, owner, c);
-                    vehicleMax -= c;
-                }
-            }
-            if (!plan.special.isEmpty()) {
-                ResearchType rt = plan.special.get(0);
-                int c = Math.min(vehicleMax, owner.inventoryCount(rt));
-                if (c > 0) {
-                    deployItem(rt, owner, c);
-                    vehicleMax -= c;
+            List<ResearchType> availableTanksAndSleds  = new ArrayList<>();
+            availableTanksAndSleds.addAll(plan.tanks);
+            availableTanksAndSleds.addAll(plan.sleds);
+            fillWithVehicleType(availableTanksAndSleds, vehicleMax);
+        }
+    }
+    /**
+     * Helper function that fills up fleet inventory from a list of vehicle types by the give number of units
+     * @param vehicleTypes the vehicle types to use from inventory
+     * @param demand the number of units to fill from inventory
+     * @return the number of all the vehicles filled from the given inventory list
+     */
+    int fillWithVehicleType(List<ResearchType> vehicleTypes, int demand) {
+        int fulfilledDemand = 0;
+        for (ResearchType vehicleType : vehicleTypes) {
+            int count = Math.min(demand, owner.inventoryCount(vehicleType));
+            if (count > 0) {
+                deployItem(vehicleType, owner, count);
+                fulfilledDemand += count;
+                demand -= count;
+                if (demand == 0) {
+                    break;
                 }
             }
         }
+        return fulfilledDemand;
     }
     /**
      * Remove all tanks and vehicles and place them back into the owner's inventory.
