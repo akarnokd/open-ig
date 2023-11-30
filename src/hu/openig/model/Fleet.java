@@ -467,7 +467,7 @@ public class Fleet implements Named, Owned, HasInventory, HasPosition {
         }
     }
     /**
-     * Helper function that fills up fleet inventory from a list of vehicle types by the give number of units
+     * Helper function that fills up fleet inventory from a list of vehicle types by the give number of units.
      * @param vehicleTypes the vehicle types to use from inventory
      * @param demand the number of units to fill from inventory
      * @return the number of all the vehicles filled from the given inventory list

@@ -845,7 +845,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             return null;
         }
 
-        /** Increment the rendering screen's X offset by the give amount
+        /**
+         * Increment the rendering screen's X offset by the give amount.
          * @param offset the offset to increment by
          */
         public void incrementOffsetX(int offset) {
@@ -857,13 +858,14 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
          * @param newOffset the offset to increment by
          */
         public void setOffsetX(int newOffset) {
-            double testViewRatio = (newOffset - width/2)/render.scale  / surface().boundingRectangle.width;
+            double testViewRatio = (newOffset - width / 2) / render.scale / surface().boundingRectangle.width;
             if (testViewRatio <= 0 && testViewRatio >= -1) {
                 offsetX = newOffset;
-                xViewRatio = (offsetX - width/2)/scale  / surface().boundingRectangle.width;
+                xViewRatio = (offsetX - width / 2) / scale / surface().boundingRectangle.width;
             }
         }
-        /** Increment the rendering screen's Y offset by the give amount
+        /**
+         * Increment the rendering screen's Y offset by the give amount.
          * @param offset the offset to increment by
          */
         public void incrementOffsetY(int offset) {
@@ -875,7 +877,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
          * @param newOffset the offset to increment by
          */
         public void setOffsetY(int newOffset) {
-            double testViewRatio = (newOffset - height/2)/render.scale  / surface().boundingRectangle.height;
+            double testViewRatio = (newOffset - height / 2) / render.scale / surface().boundingRectangle.height;
             if (testViewRatio <= 0 && testViewRatio >= -1) {
                 offsetY = newOffset;
                 yViewRatio = (offsetY - height / 2) / render.scale / surface().boundingRectangle.height;
@@ -3755,19 +3757,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 
         render.bounds(window.x, window.y, window.width, window.height);
         // When resizing fix the location of the rendering screen so it does not end up far outside the planet surface area
-        double testViewRatioX = (render.offsetX - width/2)/render.scale  / surface().boundingRectangle.width;
-        double testViewRatioY = (render.offsetY - height/2)/render.scale  / surface().boundingRectangle.height;
+        double testViewRatioX = (render.offsetX - width / 2) / render.scale / surface().boundingRectangle.width;
+        double testViewRatioY = (render.offsetY - height / 2) / render.scale / surface().boundingRectangle.height;
         if (testViewRatioX > 0) {
-            render.offsetX = width/2;
+            render.offsetX = width / 2;
         }
         if (testViewRatioX < -1) {
-            render.offsetX = (int) -(surface().boundingRectangle.width * render.scale - width/2);
+            render.offsetX = (int) -(surface().boundingRectangle.width * render.scale - width / 2);
         }
         if (testViewRatioY > 0) {
-            render.offsetY = height/2;
+            render.offsetY = height / 2;
         }
         if (testViewRatioY < -1) {
-            render.offsetY = (int) -(surface().boundingRectangle.height * render.scale - height/2);
+            render.offsetY = (int) -(surface().boundingRectangle.height * render.scale - height / 2);
         }
 
         leftFill.bounds(sidebarBuildings.x, sidebarBuildings.y + sidebarBuildings.height,
@@ -7383,8 +7385,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** Set the render screen's location, if no previous screen location ratio is available then center the screen. */
     void setViewLocation() {
         if (xViewRatio != 0 && yViewRatio != 0) {
-            render.offsetX = (int) (xViewRatio * planet().surface.boundingRectangle.width * render.scale + width/2);
-            render.offsetY = (int) (yViewRatio * planet().surface.boundingRectangle.height * render.scale + height/2);
+            render.offsetX = (int) (xViewRatio * planet().surface.boundingRectangle.width * render.scale + width / 2);
+            render.offsetY = (int) (yViewRatio * planet().surface.boundingRectangle.height * render.scale + height / 2);
         } else {
             centerScreen();
         }
