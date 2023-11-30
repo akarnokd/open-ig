@@ -294,8 +294,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     boolean zoomDirection;
     /** Zoom to normal. */
     boolean zoomNormal;
-    /** Center the view after changing the planet. */
-    boolean centerView = true;
     /** The weather overlay. */
     WeatherOverlay weatherOverlay;
     /** The weather sound is running? */
@@ -319,6 +317,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     double previousSimulationTime = 0;
     /** Ratio of the frame time since last simulation and simulation time since last simulation step. */
     double simFrameRatio = 0;
+    /** The ratio of the X coordinates of the center of the rendering screen and the center of the planet surface. */
+    double xViewRatio = 0;
+    /** The ratio of the Y coordinates of the center of the rendering screen and the center of the planet surface. */
+    double yViewRatio = 0;
 
     @Override
     public void onFinish() {
@@ -330,19 +332,19 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         boolean rep = false;
         switch (e.getKeyCode()) {
         case KeyEvent.VK_UP:
-            render.offsetY += 28;
+            render.incrementOffsetY(28);
             rep = true;
             break;
         case KeyEvent.VK_DOWN:
-            render.offsetY -= 28;
+            render.incrementOffsetY(-28);
             rep = true;
             break;
         case KeyEvent.VK_LEFT:
-            render.offsetX += 54;
+            render.incrementOffsetX(54);
             rep = true;
             break;
         case KeyEvent.VK_RIGHT:
-            render.offsetX -= 54;
+            render.incrementOffsetX(-54);
             rep = true;
             break;
         case KeyEvent.VK_ESCAPE:
@@ -578,7 +580,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
         });
         if (surface() != null) {
-            centerScreen();
+            setViewLocation();
         }
         focused = render;
         moveSelect = false;
@@ -592,7 +594,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     public void onLeave() {
 
         cancelWeatherSound();
-
         placementMode = false;
         pavementMode = false;
         buildingsPanel.build.down = false;
@@ -843,6 +844,43 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             }
             return null;
         }
+
+        /** Increment the rendering screen's X offset by the give amount
+         * @param offset the offset to increment by
+         */
+        public void incrementOffsetX(int offset) {
+            setOffsetX(offsetX + offset);
+        }
+        /** Set the rendering screen's X offset to the given new offset. Only update the offset
+         * if with the new offset the current rendering screen's center is still within the planet surface's
+         * area.
+         * @param newOffset the offset to increment by
+         */
+        public void setOffsetX(int newOffset) {
+            double testViewRatio = (newOffset - width/2)/render.scale  / surface().boundingRectangle.width;
+            if (testViewRatio <= 0 && testViewRatio >= -1) {
+                offsetX = newOffset;
+                xViewRatio = (offsetX - width/2)/scale  / surface().boundingRectangle.width;
+            }
+        }
+        /** Increment the rendering screen's Y offset by the give amount
+         * @param offset the offset to increment by
+         */
+        public void incrementOffsetY(int offset) {
+            setOffsetY(offsetY + offset);
+        }
+        /** Set the rendering screen's Y offset to the given new offset. Only update the offset
+         * if with the new offset the current rendering screen's center is still within the planet surface's
+         * area.
+         * @param newOffset the offset to increment by
+         */
+        public void setOffsetY(int newOffset) {
+            double testViewRatio = (newOffset - height/2)/render.scale  / surface().boundingRectangle.height;
+            if (testViewRatio <= 0 && testViewRatio >= -1) {
+                offsetY = newOffset;
+                yViewRatio = (offsetY - height / 2) / render.scale / surface().boundingRectangle.height;
+            }
+        }
         /**
          * Retrieve the gun at the given location.
          * @param mx the mouse X
@@ -944,8 +982,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                         lastY = e.y;
                         doDragMode(true);
                     }
-                    offsetX += e.x - lastX;
-                    offsetY += e.y - lastY;
+                    incrementOffsetX(e.x - lastX);
+                    incrementOffsetY(e.y - lastY);
 
                     lastX = e.x;
                     lastY = e.y;
@@ -1174,22 +1212,22 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     } else {
                         doZoomOut();
                     }
-                    offsetX = (int)(e.x - scale * mx);
-                    offsetY = (int)(e.y - scale * my);
+                    setOffsetX((int)(e.x - scale * mx));
+                    setOffsetY((int)(e.y - scale * my));
                     rep = true;
                 } else
                 if (e.has(Modifier.SHIFT)) {
                     if (e.z < 0) {
-                        offsetX += 54;
+                        incrementOffsetX(54);
                     } else {
-                        offsetX -= 54;
+                        incrementOffsetX(-54);
                     }
                     rep = true;
                 } else {
                     if (e.z < 0) {
-                        offsetY += 28 * 3;
+                        incrementOffsetY(28 * 3);
                     } else {
-                        offsetY -= 28 * 3;
+                        incrementOffsetY(-28 * 3);
                     }
                     rep = true;
                 }
@@ -3580,7 +3618,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             public void invoke() {
                 buttonSound(SoundType.CLICK_HIGH_2);
                 player().movePrevPlanet();
-                centerView = true;
             }
         };
         next = new UIImageButton(commons.starmap().forwards);
@@ -3590,7 +3627,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             public void invoke() {
                 buttonSound(SoundType.CLICK_HIGH_2);
                 player().moveNextPlanet();
-                centerView = true;
             }
         };
 
@@ -3718,6 +3754,21 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         startBattle.location(sidebarNavigation.x - startBattle.width, sidebarNavigation.y + sidebarNavigation.height - startBattle.height);
 
         render.bounds(window.x, window.y, window.width, window.height);
+        // When resizing fix the location of the rendering screen so it does not end up far outside the planet surface area
+        double testViewRatioX = (render.offsetX - width/2)/render.scale  / surface().boundingRectangle.width;
+        double testViewRatioY = (render.offsetY - height/2)/render.scale  / surface().boundingRectangle.height;
+        if (testViewRatioX > 0) {
+            render.offsetX = width/2;
+        }
+        if (testViewRatioX < -1) {
+            render.offsetX = (int) -(surface().boundingRectangle.width * render.scale - width/2);
+        }
+        if (testViewRatioY > 0) {
+            render.offsetY = height/2;
+        }
+        if (testViewRatioY < -1) {
+            render.offsetY = (int) -(surface().boundingRectangle.height * render.scale - height/2);
+        }
 
         leftFill.bounds(sidebarBuildings.x, sidebarBuildings.y + sidebarBuildings.height,
 
@@ -7235,10 +7286,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (battle == null) {
                 clearGroundBattle();
             }
-            if (centerView) {
-                centerView = false;
-                centerScreen();
-            }
+            setViewLocation();
         }
         // check if the AI has removed any building while we were looking at its planet
         if (currentBuilding != null) {
@@ -7330,6 +7378,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     void centerScreen() {
         render.offsetX = -(int)((surface().boundingRectangle.width * render.scale - width) / 2);
         render.offsetY = -(int)((surface().boundingRectangle.height * render.scale - height) / 2);
+    }
+
+    /** Set the render screen's location, if no previous screen location ratio is available then center the screen. */
+    void setViewLocation() {
+        if (xViewRatio != 0 && yViewRatio != 0) {
+            render.offsetX = (int) (xViewRatio * planet().surface.boundingRectangle.width * render.scale + width/2);
+            render.offsetY = (int) (yViewRatio * planet().surface.boundingRectangle.height * render.scale + height/2);
+        } else {
+            centerScreen();
+        }
     }
     /**
      * Retreat from the current attack.
