@@ -1191,6 +1191,7 @@
     </operation>
     <upgrades/>
   </building>
+  <!-- 
   <building name='buildings.university' id='University'>
     <graphics>
       <tech id='human' height='5' width='4' image='colony/buildings/human/university' skirmish-only="true"/>
@@ -1229,6 +1230,7 @@
     </operation>
     <upgrades/>
   </building>
+   -->
   <roads>
     <graphics base='colony/roads/%s/%s'>
       <tech id='human'/>

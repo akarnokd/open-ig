@@ -115,7 +115,7 @@ public class Mission19 extends Mission {
         if (checkTimeout("Mission-19-Failure")) {
             stage = M19.DONE;
             gameover();
-            loseGameMessageAndMovie("Douglas-Fire-Battle", "lose/fired_level_3");
+            loseGameMessageAndMovie("Douglas-Fire-Governor", "lose/fired_level_3");
         }
     }
     /**

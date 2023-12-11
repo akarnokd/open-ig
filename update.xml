@@ -23,7 +23,7 @@
       <desc lang='en'>The launcher&#39;s main file</desc>
     </file>
   </module>
-  <module id='Game' version='0.95.241'>
+  <module id='Game' version='0.95.242'>
     <general url='https://github.com/akarnokd/open-ig'>
       <desc lang='hu'>
 				Az Open Imperium Galactica játék.
@@ -42,6 +42,14 @@
       <desc lang='es'>Bugfixes</desc>
     </notes>
     <release-details>
+      <entry version='0.95.242' date='2023-12-11'>
+        <item category='Groundwar' issues='1102'>Improved the pathfinding in groundwar when moving vehicles in groups. (By @hemoridos)</item>
+        <item category='Groundwar,UI' issues='1103'>Smoother vehicle and projectile movements in groundwar in 1x or 2x speeds. (By @hemoridos)</item>
+        <item category='Skirmish'>Skirmish alien buildings (that didn't exist in the original and reused human images) now have custom-made images. (By @Péter Kovács)</item>
+        <item category='UI' issues='1106'>Auto-upgrading fleet will now attempt to fill vehicle slots from all available inventory, not just the best. (By @hemoridos)</item>
+        <item category='UI' issues='1107'>Improved colony screen panning when switching between planets and added panning limits. (By @hemoridos)</item>
+        <item category='Groundwar,Spacewar' issues='1112'>Losing 4 or more battles (space, ground) during ranks 1 and 2 will now result in game over.</item>
+      </entry>
       <entry version='0.95.241' date='2023-11-03'>
         <item category='UI' issues='1086,1087'>Improve fleet arrows on the Starmap screen. (By @hemoridos)</item>
         <item category='UI' issues='1093'>Double clicking on enemy units no longer selects all enemy units of the same type. (By @hemoridos)</item>
@@ -259,9 +267,9 @@
         <item category='AI'>Fixed AI unable to build a power plant if the missing energy was above the capacity of available power plant types.</item>
       </entry>
     </release-details>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.241.jar' sha1='5864514BBE2DCCF92197DCBACE31BCD848FBC3A6'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20231103a2.zip' sha1='1F042040F706CD67E6EC537867E6CD605078E1A0'/>
-    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20220130a.zip' sha1='321893422AA0E9D00B745A6D9814C1391D2FFAC9'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-0.95.242.jar' sha1='B76F2EBA8C39B3B09D4A8EA61F26A1D20C159B35'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-upgrade-20231211a2.zip' sha1='E2B0C6695494B29FF7093F504BCD70439149AF93'/>
+    <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-images-20231211a.zip' sha1='AD390924B98DCEEA02D265176AC8CDBF8212FC03'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/open-ig-splash.png' sha1='52b83dbe118575c7dd3dd6c8c41d0446c32dee45'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-01.zip' sha1='33c59a0c843623dbc96b2f9a3901049b21731325'/>
     <file url='https://github.com/akarnokd/open-ig/raw/master/install/open-ig-video-02.zip' sha1='34c743d46c94207dd4cfa061fc32223f841cb79b'/>
@@ -329,6 +337,7 @@
     <remove file='open-ig-images-20140901a.zip'/>
     <remove file='open-ig-images-20140910a.zip'/>
     <remove file='open-ig-images-20220129a.zip'/>
+    <remove file='open-ig-images-20220130a.zip'/>
   </module>
   <module id='MapEditor' version='0.63'>
     <general url='https://github.com/akarnokd/open-ig/wiki/Map-editor'>

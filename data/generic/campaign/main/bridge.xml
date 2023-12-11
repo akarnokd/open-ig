@@ -152,7 +152,7 @@
 			<message id="Douglas-Fire-Lost-Planet-2" media="messages/douglas_fire_5_lost_planet_2" title="messages.douglas" description="messages.fire"/>
 			<message id="Douglas-Fire-Escort-Failed" media="messages/douglas_fire_6_escort_failed" title="messages.douglas" description="messages.fire"/>
 			<message id="Douglas-Fire-Prototype-Lost" media="messages/douglas_fire_7_prototype_lost" title="messages.douglas" description="messages.fire"/>
-			<message id="Douglas-Fire-Battle" media="messages/douglas_fire_8_rebel_governor" title="messages.douglas" description="messages.fire"/>
+			<message id="Douglas-Fire-Governor" media="messages/douglas_fire_8_rebel_governor" title="messages.douglas" description="messages.fire"/>
 			<message id="Douglas-Pirates" media="messages/douglas_pirates_destroyed_a_ship" title="messages.douglas" description="messages.pirates"/>
 			<message id="Douglas-Promotion-2" media="messages/douglas_promotion_2" title="messages.douglas" description="messages.promotion"/>
 			<message id="Douglas-Prototype" media="messages/douglas_prototype_stolen" title="messages.douglas" description="messages.prototype"/>
