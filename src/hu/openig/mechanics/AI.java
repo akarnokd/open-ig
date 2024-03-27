@@ -161,7 +161,7 @@ public class AI implements AIManager {
         if (!esl.isEmpty()) {
             List<SpacewarStructure> esl2 = U.newArrayList(esl);
             for (SpacewarStructure ship : idles) {
-                if (ship.attack == null
+                if (ship.attackUnit == null
 
                         && ship.type == StructureType.SHIP
                         && ship.canDirectFire()) {
@@ -233,9 +233,9 @@ public class AI implements AIManager {
                         && s.item != null
 
                         && s.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS
-                        && s.attack != null && !s.attack.isDestroyed()) {
+                        && s.attackUnit != null && !s.attackUnit.isDestroyed()) {
                     if (s.count == 1 && s.hp * 10 < s.hpMax) {
-                        world.attack(s, s.attack, Mode.KAMIKAZE);
+                        world.attack(s, s.attackUnit, Mode.KAMIKAZE);
                     }
                 }
             }

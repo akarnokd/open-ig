@@ -24,7 +24,7 @@ import java.util.List;
  * The ground war unit.
  * @author akarnokd, 2011.09.02.
  */
-public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned {
+public class GroundwarUnit extends GroundwarObject implements WarUnit {
     /** The model entity. */
     public BattleGroundVehicle model;
     /** The position with fractional precision in surface coordinates. */
@@ -104,6 +104,20 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
     @Override
     public Double exactLocation() {
         return new Point2D.Double(x, y);
+    }
+    @Override
+    public WarUnit getAttackTarget() {
+        return attackUnit;
+    }
+    @Override
+    public Location attackMoveLocation() {
+        return attackMove;
+    }
+    public Location nextMove() {
+        return nextMove;
+    }
+    public Location nextRotate() {
+        return nextRotate;
     }
     @Override
     public String toString() {
@@ -249,6 +263,7 @@ public class GroundwarUnit extends GroundwarObject implements HasLocation, Owned
      * Merges the new path.
      * @param newPath the new path to follow
      */
+    @Override
     public void mergePath(List<Location> newPath) {
         path.clear();
         path.addAll(newPath);

@@ -224,6 +224,8 @@ public class Mission4 extends Mission {
                     if (s.item != null && "Mission-4-Pirates-1".equals(s.item.tag)) {
                         s.x = d.width / 2d;
                         s.y = d.height / 2d;
+                        war.alignToNearestCell(s);
+                        war.addUnitLocation(s);
                         s.angle = 0.0;
                         s.owner = pirate2;
                         a = s;
@@ -231,7 +233,7 @@ public class Mission4 extends Mission {
                     }
                 }
                 for (SpacewarStructure s : war.structures(pirates)) {
-                    s.attack = a;
+                    s.attackUnit = a;
                 }
                 battle.allowRetreat = false;
                 battle.chat = "chat.mission-4.piratesfight.at.Naxos";

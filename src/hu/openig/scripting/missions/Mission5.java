@@ -364,6 +364,8 @@ public class Mission5 extends Mission {
                 if (s.item != null && "Mission-5".equals(s.item.tag)) {
                     s.x = d.width / 2d;
                     s.y = d.height / 2d;
+                    war.alignToNearestCell(s);
+                    war.addUnitLocation(s);
                     s.angle = 0.0;
                     s.owner = f1.owner;
                     s.guard = true;
@@ -372,9 +374,11 @@ public class Mission5 extends Mission {
                 if (s.item != null && "Mission-5-Help".equals(s.item.tag)) {
                     s.x = d.width / 3d;
                     s.y = y;
+                    war.alignToNearestCell(s);
+                    war.addUnitLocation(s);
                     s.angle = 0.0;
                     s.guard = true;
-                    y += 40;
+                    y += 50;
                 }
             }
             battle.allowRetreat = false;

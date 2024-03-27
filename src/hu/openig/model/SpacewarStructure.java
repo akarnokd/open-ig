@@ -8,6 +8,7 @@
 
 package hu.openig.model;
 
+import hu.openig.core.Location;
 import hu.openig.model.BattleProjectile.Mode;
 
 import java.awt.geom.Point2D;
@@ -19,7 +20,7 @@ import java.util.List;
  * A selectable spacewar structure with hitpoints.
  * @author akarnokd, 2011.08.16.
  */
-public class SpacewarStructure extends SpacewarObject {
+public class SpacewarStructure extends SpacewarObject implements WarUnit {
     /** The spacewar structure type. */
     public enum StructureType {
         /** A ship. */
@@ -86,7 +87,17 @@ public class SpacewarStructure extends SpacewarObject {
     /** The movement target. */
     public Point2D.Double moveTo;
     /** The attack target. */
-    public SpacewarStructure attack;
+    public SpacewarStructure attackUnit;
+    /** The location on the grid. */
+    public Location gridLocation;
+    /** The target of the attack-move if non-null. */
+    public Location attackMove;
+    /** The next move rotation. */
+    public Location nextRotate;
+    /** The next move location. */
+    public Location nextMove;
+    /** The current movement path to the target. */
+    public final List<Location> path = new ArrayList<>();
     /** Attack anything in range. */
     public boolean guard;
     /** Kamikaze mode if greater than zero, indicates impact damage. */
@@ -174,6 +185,41 @@ public class SpacewarStructure extends SpacewarObject {
 
         }
         return angles[((int)Math.round(angles.length * a)) % angles.length];
+    }
+    @Override
+    public Location location() {
+        return Location.of((int)Math.round(gridLocation.x), (int)Math.round(gridLocation.y));
+    }
+    @Override
+    public Point2D.Double exactLocation() {
+        return new Point2D.Double(x, y);
+    }
+    @Override
+    public WarUnit getAttackTarget() {
+        return attackUnit;
+    }
+    @Override
+    public Location attackMoveLocation() {
+        return attackMove;
+    }
+    public Location nextMove() {
+        return nextMove;
+    }
+    public Location nextRotate() {
+        return nextRotate;
+    }
+    @Override
+    public Player owner() {
+        return owner;
+    }
+    /**
+     * Merges the new path.
+     * @param newPath the new path to follow
+     */
+    @Override
+    public void mergePath(List<Location> newPath) {
+        path.clear();
+        path.addAll(newPath);
     }
     /**
      * @return Creates a new deep copy of this record.

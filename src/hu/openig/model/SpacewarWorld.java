@@ -110,7 +110,9 @@ public interface SpacewarWorld {
      */
     void addStructures(HasInventory inventory,
             EnumSet<ResearchSubCategory> categories);
-    /** @return the landing lace location on the battlemap or null if no such place. */
+    void alignToNearestCell(SpacewarStructure s);
+    void addUnitLocation(SpacewarStructure s);
+    /** @return the landing place location on the battlemap or null if no such place. */
     Point landingPlace();
     /** @return the current game difficulty. */
     Difficulty difficulty();
