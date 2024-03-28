@@ -211,7 +211,7 @@ public class Mission19 extends Mission {
                 war.battle().enemyFlee = true;
             } else {
                 for (SpacewarStructure s : war.structures(freeTraders())) {
-                    if (s.attack == null) {
+                    if (s.attackUnit == null) {
                         war.move(s, Math.cos(s.angle) * 1000, s.y);
                     }
                 }

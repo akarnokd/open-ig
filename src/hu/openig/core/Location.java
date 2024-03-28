@@ -8,6 +8,8 @@
 
 package hu.openig.core;
 
+import java.util.ArrayList;
+
 /**
  * Immutable class/record representing an X,Y integral coordinate.
  * @author akarnokd
@@ -90,5 +92,24 @@ public final class Location {
      */
     public Location delta(int dx, int dy) {
         return Location.of(x + dx, y + dy);
+    }
+
+    /**
+     * Returns a list of possible neighbors.
+     * @return list of possible neighbors
+     * */
+    public ArrayList<Location> getListOfNeighbors() {
+
+        ArrayList<Location> neighbors = new ArrayList<>();
+        neighbors.add(delta(-1, 0));
+        neighbors.add(delta(1, 0));
+        neighbors.add(delta(0, 1));
+        neighbors.add(delta(0, -1));
+        neighbors.add(delta(-1, -1));
+        neighbors.add(delta(-1, 1));
+        neighbors.add(delta(1, -1));
+        neighbors.add(delta(1, 1));
+
+        return neighbors;
     }
 }

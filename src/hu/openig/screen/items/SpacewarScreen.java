@@ -73,6 +73,7 @@ import hu.openig.ui.UIMouse.Type;
 import hu.openig.utils.Exceptions;
 import hu.openig.utils.U;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -80,6 +81,7 @@ import java.awt.Paint;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.TexturePaint;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
@@ -91,6 +93,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -225,7 +229,23 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     static final double MAX_SCALE = 2;
     /** The operational space at 1:1 zoom. */
     final Rectangle space = new Rectangle(0, 0, 462 * 504 / 238, 504);
-    /** Panning the view. */
+    /** Pixel size of a single cell on the grid map, 27px size results in original grid map of 18*36. */
+    static final int GRID_CELL_SIZE = 26;
+    /** Number of cells on the grid on the x-axis. */
+    int gridSizeX;
+    /** The X offset needed to align the grid map centered on the battle space. */
+    int gridOffsetX;
+    /** Number of cells on the grid on the y-axis. */
+    int gridSizeY;
+    /** The X offset needed to align the grid map centered on the battle space. */
+    int gridOffsetY;
+    /** The currently selected layout for the player fleet. */
+    BattleSpaceLayout selectedLayout;
+    /** The fighters units of the player in non-split configuration. Used for switching layout fighter between splitting/grouping. */
+    final List<SpacewarStructure> playerFighters = new ArrayList<>();
+    /** The map for pathfinding passability check. */
+    final Map<Location, Set<SpacewarStructure>> unitsForPathfinding = new HashMap<>();
+   /** Panning the view. */
     boolean panning;
     /** The last X coordinate. */
     int lastX;
@@ -239,6 +259,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     ThreePhaseButton viewRange;
     /** View grids. */
     ThreePhaseButton viewGrid;
+    /** Show additional debug information. */
+    boolean showDebug;
     /** We are drawing the selection box. */
     boolean selectionBox;
     /** The selection mode. */
@@ -288,6 +310,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     };
     /** The maximum right placement of units. */
     int maxRightPlacement;
+    /** Is the player fleet align to the right of the battle space. */
+    boolean isPlayerRightAligned;
+    /** The X offset of the player fleet layout. */
+    int playerFleetLayoutOffsetX;
     /** The current chat. */
     Chat chat;
     /** The current chat node. */
@@ -831,6 +857,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         confirmRetreat.visible = false;
         stopRetreat.visible = false;
         displaySelectedShipInfo();
+        calculateGridSize();
     }
 
     @Override
@@ -847,6 +874,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         // cleanup
         battle = null;
         structures.clear();
+        playerFighters.clear();
         projectiles.clear();
         explosions.clear();
         scrambled.clear();
@@ -948,6 +976,40 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
 
         super.draw(g2);
+    }
+
+    /** Calculate the grid size based on the specified cell size and a battle space pixel size. */
+    void calculateGridSize() {
+        gridSizeX = space.width / GRID_CELL_SIZE;
+        gridSizeY = space.height / GRID_CELL_SIZE;
+        gridOffsetX = (space.width % GRID_CELL_SIZE) / 2;
+        gridOffsetY = (space.height % GRID_CELL_SIZE) / 2;
+    }
+
+    /** Return grid cell location based on battle space pixel coordinates.
+     * @param mx x coordinate of the space pixel
+     * @param my y coordinate of the space pixel
+     * @return cell location on the grid map
+     * */
+    public Location getSpaceToGridLocationAt(double mx, double my) {
+        int mx0 = ((int)mx - gridOffsetX) / GRID_CELL_SIZE;
+        int my0 = ((int)my - gridOffsetY) / GRID_CELL_SIZE;
+        return Location.of(mx0, my0);
+    }
+
+    /** Convert gird cell location x coordinate to battle space x coordinate.
+     * @param loc grid cell location
+     * @return x coordinate of a grid cell location
+     * */
+    public int gridLocationToSpaceX(Location loc) {
+        return loc.x * GRID_CELL_SIZE + gridOffsetX + GRID_CELL_SIZE / 2;
+    }
+    /** Convert gird cell location y coordinate to battle space y coordinate.
+     * @param loc grid cell location
+     * @return y coordinate of a grid cell location
+     * */
+    public int gridLocationToSpaceY(Location loc) {
+        return loc.y * GRID_CELL_SIZE + gridOffsetY + GRID_CELL_SIZE / 2;
     }
     /**
 
@@ -1077,6 +1139,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      */
     public void initiateBattle(BattleInfo battle) {
         structures.clear();
+        playerFighters.clear();
 
         projectiles.clear();
         explosions.clear();
@@ -1085,7 +1148,10 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         this.battle = battle;
         battle.findHelpers();
 
-        maxRightPlacement = space.width;
+        unitsForPathfinding.clear();
+        maxRightPlacement = gridSizeX - 1;
+        isPlayerRightAligned = false;
+        playerFleetLayoutOffsetX = 0;
 
         Planet nearbyPlanet = battle.getPlanet();
         Fleet nearbyFleet = battle.getFleet();
@@ -1107,57 +1173,56 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             double shieldValue = placeShields(nearbyPlanet, alien);
             placeProjectors(nearbyPlanet, alien, shieldValue);
 
-            int planetWidth = nearbyPlanet.type.spacewar.getWidth();
+            int planetWidth = (int)Math.ceil(nearbyPlanet.type.spacewar.getWidth() * ((float)gridSizeX) / space.width);
 //            int planetHeight = 506;
 //            int defenseWidth = Math.max(maxWidth(shields()), maxWidth(projectors()));
-            centerStructures(space.width - planetWidth / 2,
-
-                    U.concat(shields(), projectors()));
-            maxRightPlacement -= 3 * planetWidth / 2;
+            centerStructures(space.width - (int)(nearbyPlanet.type.spacewar.getWidth() / 2.5), U.concat(shields(), projectors()), false);
+            maxRightPlacement -= planetWidth;
 
             // place and align stations
             placeStations(nearbyPlanet, alien);
-            int stationWidth = maxWidth(stations());
-            centerStructures(maxRightPlacement - stationWidth / 4, stations());
-            maxRightPlacement -= 3 * stationWidth / 2;
+            int stationWidth = (int)Math.ceil(maxWidth(stations()) * ((float)gridSizeX) / space.width);
+            centerStructures(Math.round(maxRightPlacement * (space.width / (float)gridSizeX)) - maxWidth(stations()) / 4, stations(), true);
+            maxRightPlacement -= stationWidth;
 
             // add fighters of the planet
-            List<SpacewarStructure> shipWall = new ArrayList<>();
-            createStructures(inventoryWithParent(nearbyPlanet),
-
-                    EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), shipWall);
-
-            for (SpacewarStructure s : shipWall) {
+            List<SpacewarStructure> defenseFighters = new ArrayList<>();
+            createStructures(inventoryWithParent(nearbyPlanet), EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), defenseFighters);
+            for (SpacewarStructure s : defenseFighters) {
                 s.angle = Math.PI;
             }
-            if (!shipWall.isEmpty()) {
-                int maxw = createSingleRowBatchWall(maxRightPlacement, true, shipWall, structures);
-                maxRightPlacement -= 3 * maxw / 2;
-            }
+            structures.addAll(defenseFighters);
+
         } else {
             planetVisible = false;
         }
 
         if (nearbyPlanet != null && nearbyPlanet.owner == battle.attacker.owner) {
             // place the attacker on the right side (planet side)
-
             attackerOnRight = true;
+            if (battle.attacker.owner == player() && (player().ai instanceof AIUser)) {
+                playerFleetLayoutOffsetX = gridSizeX - maxRightPlacement;
+                isPlayerRightAligned = true;
+            }
 
-            placeFleet(maxRightPlacement, true, inventoryWithParent(battle.attacker));
+            placeFleet(gridSizeX - maxRightPlacement, true, inventoryWithParent(battle.attacker), battle.attacker.owner);
             // place the defender on the left side
 
             if (nearbyFleet != null) {
-                placeFleet(0, false, inventoryWithParent(nearbyFleet));
+                placeFleet(0, false, inventoryWithParent(nearbyFleet), nearbyFleet.owner);
             }
         } else {
             // place attacker on the left side
-            placeFleet(0, false, inventoryWithParent(battle.attacker));
+            placeFleet(0, false, inventoryWithParent(battle.attacker), battle.attacker.owner);
 
             attackerOnRight = false;
 
             // place the defender on the planet side (right side)
             if (nearbyFleet != null) {
-                placeFleet(maxRightPlacement, true, inventoryWithParent(nearbyFleet));
+                placeFleet(gridSizeX - maxRightPlacement, true, inventoryWithParent(nearbyFleet), nearbyFleet.owner);
+            } else {
+                //layout defense fighters without nearby fleet
+                applyLayout(ships(), nearbyPlanet.owner, true, gridSizeX - maxRightPlacement, world().battle.layouts.get(10), true);
             }
         }
 
@@ -1165,7 +1230,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         commons.playBattleMusic();
 
         setSpacewarTimeControls();
-
         world().scripting.onSpacewarStart(this);
 
         findAllPlayers();
@@ -1195,11 +1259,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
 
         leftPanel.displayPanel(PanelMode.SHIP_STATUS);
-        if (battle.attacker.owner == player()
-                && (player().ai instanceof AIUser)
-                && (nearbyPlanet == null
-
-                || nearbyPlanet.owner != player())) {
+        if (battle.attacker.owner == player() && (player().ai instanceof AIUser)) {
             rightPanel.displayPanel(PanelMode.LAYOUT);
             setLayoutSelectionMode(true);
             enableFleetControls(false);
@@ -1311,35 +1371,19 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     /**
      * Place a fleet onto the map starting from the {@code x} position and {@code angle}.
      * @param x the starting position
-     * @param left expand to the left?
+     * @param right place fleet on the right side?
      * @param inventory the sequence of inventory items
+     * @param owner owner of the inventory items
      */
-    void placeFleet(int x, boolean left, Map<InventoryItem, HasInventory> inventory) {
-        List<SpacewarStructure> largeShipWall = new ArrayList<>();
-        // place attacker on the planet side (right side)
-        createStructures(inventory,
-
-                EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS, ResearchSubCategory.SPACESHIPS_CRUISERS), largeShipWall);
-
-        if (!largeShipWall.isEmpty()) {
-            int maxw = createMultiRowWall(x, left, largeShipWall, structures);
-            x = left ? (x - maxw) : (x + maxw);
+    void placeFleet(int x, boolean right, Map<InventoryItem, HasInventory> inventory, Player owner) {
+        List<SpacewarStructure> ships = new ArrayList<>();
+        createStructures(inventory, EnumSet.of(ResearchSubCategory.SPACESHIPS_BATTLESHIPS, ResearchSubCategory.SPACESHIPS_CRUISERS, ResearchSubCategory.SPACESHIPS_FIGHTERS), ships);
+        structures.addAll(ships);
+        orientStructures(right ? Math.PI : 0, ships);
+        if (owner == player()) {
+            selectedLayout = world().battle.layouts.get(0);
         }
-
-        List<SpacewarStructure> smallShipWall = new ArrayList<>();
-        List<SpacewarStructure> smallShipWallOut = new ArrayList<>();
-
-        createStructures(inventory,
-
-                EnumSet.of(ResearchSubCategory.SPACESHIPS_FIGHTERS), smallShipWall);
-        if (!smallShipWall.isEmpty()) {
-            createSingleRowBatchWall(x, left, smallShipWall, smallShipWallOut);
-            structures.addAll(smallShipWallOut);
-        }
-
-        orientStructures(left ? Math.PI : 0, largeShipWall);
-        orientStructures(left ? Math.PI : 0, smallShipWallOut);
-
+        applyLayout(ships(), owner, right, x, world().battle.layouts.get(0), true);
     }
 
     /**
@@ -1483,10 +1527,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param out the output for the new distributions
      * @return the width of the wall
      */
-    int createSingleRowBatchWall(int x, boolean left,
-            Collection<SpacewarStructure> items,
-
-            Collection<SpacewarStructure> out) {
+    int createSingleRowBatchWall(int x, boolean left, Collection<SpacewarStructure> items, Collection<SpacewarStructure> out) {
         int maxWidth = 0;
         int maxHeight = 0;
         // determine number of slots
@@ -1520,7 +1561,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
         group.addAll(ships);
 
-        centerStructures(left ? x - maxWidth / 2 : x + maxWidth / 2, group);
+        centerStructures(left ? x - maxWidth / 2 : x + maxWidth / 2, group, true);
 
         out.addAll(group);
 
@@ -1565,10 +1606,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param out where to place the ships
      * @return the total width of the row
      */
-    int createMultiRowWall(int x, boolean left,
-            Collection<? extends SpacewarStructure> ships,
-
-            Collection<? super SpacewarStructure> out) {
+    int createMultiRowWall(int x, boolean left, Collection<? extends SpacewarStructure> ships, Collection<? super SpacewarStructure> out) {
 
         List<List<SpacewarStructure>> rows = new ArrayList<>();
         int rowIndex = -1;
@@ -1591,7 +1629,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         // align all rows center
         for (List<SpacewarStructure> row : rows) {
             int w = maxWidth(row);
-            centerStructures(left ? x - w / 2 : x + w / 2, row);
+            centerStructures(left ? x - w / 2 : x + w / 2, row, false);
             x = left ? (x - w) : (x + w);
             maxWidth = maxWidth + w;
         }
@@ -1611,9 +1649,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param categories the categories to use
      * @param ships the output of ships
      */
-    void createStructures(Map<InventoryItem, HasInventory> inventory,
-            EnumSet<ResearchSubCategory> categories,
-            Collection<? super SpacewarStructure> ships) {
+    void createStructures(Map<InventoryItem, HasInventory> inventory, EnumSet<ResearchSubCategory> categories, Collection<? super SpacewarStructure> ships) {
         for (Map.Entry<InventoryItem, HasInventory> e : inventory.entrySet()) {
             InventoryItem ii = e.getKey();
             HasInventory parent = e.getValue();
@@ -1763,16 +1799,34 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         }
 
         if (viewGrid.selected) {
-            g2.setColor(new Color(0, 128, 0, 128));
-            int bw = commons.spacewar().background.getWidth() * 2;
-            int bh = commons.spacewar().background.getHeight() * 2;
-
-            int step = 20;
-            for (int i = 1; i < bw / step; i++) {
-                g2.drawLine(i * step, 0, i * step, bh);
+            Graphics2D gr = (Graphics2D) g2.create();
+            gr.setColor(new Color(0, 128, 0, 255));
+            Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+                    0, new float[]{3}, 0);
+            gr.setStroke(dashed);
+            for (int i = 0; i <= gridSizeX; i++) {
+                gr.drawLine(i * GRID_CELL_SIZE + gridOffsetX, 0, i * GRID_CELL_SIZE + gridOffsetX, space.height);
             }
-            for (int i = 1; i < bh / step; i++) {
-                g2.drawLine(0, i * step, bw, i * step);
+            for (int i = 0; i <= gridSizeY; i++) {
+                gr.drawLine(0, i * GRID_CELL_SIZE + gridOffsetY, space.width, i * GRID_CELL_SIZE + gridOffsetY);
+            }
+            gr.dispose();
+
+            if (selectedLayout != null && showDebug) {
+                for (Location loc : selectedLayout.map.keySet()) {
+                    gr = (Graphics2D) g2.create();
+                    Color c;
+                    if (selectedLayout.map.get(loc) == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+                        c = new Color(BattleSpaceLayout.FIGHTER_COLOR);
+                    } else if (selectedLayout.map.get(loc) == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+                        c = new Color(BattleSpaceLayout.CRUISER_COLOR);
+                    } else {
+                        c = new Color(BattleSpaceLayout.BATTLESHIP_COLOR);
+                    }
+                    gr.setColor(c);
+                    gr.drawRect(gridLocationToSpaceX(loc) - GRID_CELL_SIZE / 2, gridLocationToSpaceY(loc) - GRID_CELL_SIZE / 2, GRID_CELL_SIZE, GRID_CELL_SIZE);
+                    gr.dispose();
+                }
             }
         }
 
@@ -1855,9 +1909,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     void drawCommands(Graphics2D g2, Iterable<? extends SpacewarStructure> structures) {
         if (viewCommand.selected) {
             for (SpacewarStructure e : structures) {
-                if (e.attack != null) {
+                if (e.attackUnit != null) {
                     g2.setColor(Color.RED);
-                    g2.drawLine((int)e.x, (int)e.y, (int)e.attack.x, (int)e.attack.y);
+                    g2.drawLine((int)e.x, (int)e.y, (int)e.attackUnit.x, (int)e.attackUnit.y);
                 } else
                 if (e.moveTo != null) {
                     g2.setColor(Color.WHITE);
@@ -2014,8 +2068,9 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * Center structures vertically.
      * @param x the center line
      * @param structures the collection of structures
+     * @param snapToGrid align the structure to the center of the nearest grid cell location.
      */
-    void centerStructures(int x, Iterable<? extends SpacewarStructure> structures) {
+    void centerStructures(int x, Iterable<? extends SpacewarStructure> structures, boolean snapToGrid) {
         if (structures.iterator().hasNext()) {
             int sumHeight = 0;
             int count = 0;
@@ -2028,11 +2083,27 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             for (SpacewarStructure s : structures) {
                 s.x = x;
                 s.y = y + s.get().getHeight() / 2d;
-
+                if (snapToGrid) {
+                    alignToNearestCell(s);
+                    addUnitLocation(s);
+                }
                 y += s.get().getHeight() + dy;
             }
         }
     }
+
+    /**
+     * Align structure to nearest grid cell.
+     * @param s the structure to align
+     */
+    @Override
+    public void alignToNearestCell(SpacewarStructure s) {
+        Location loc = getSpaceToGridLocationAt(s.x, s.y);
+        s.x = gridLocationToSpaceX(loc);
+        s.y = gridLocationToSpaceY(loc);
+        s.gridLocation = loc;
+    }
+
     /**
      * Orient structures into the given angle.
      * @param angle the target angle in radians
@@ -2577,72 +2648,327 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             isMany = false;
         }
     }
+
+    /**
+     * Remove the given SpacewarStructure from the pathfinding helper map.
+     * The process if through as large structures can occupy multiple locations.
+     * @param swsListToRemove the structures to clear out
+     * */
+    private void removeFromPathfindingMap(List<SpacewarStructure> swsListToRemove) {
+        for (SpacewarStructure sws : swsListToRemove) {
+            for (Location loc : unitsForPathfinding.keySet()) {
+                if (unitsForPathfinding.get(loc) != null) {
+                    unitsForPathfinding.get(loc).remove(sws);
+                }
+            }
+        }
+    }
+
+    /** Clear the already placed fighters of the specified player.
+     * @param owner the player whose fighter will be removed
+     * */
+    private List<SpacewarStructure> clearPlacedFighters(Player owner) {
+        ArrayList<SpacewarStructure> removedFighters = new ArrayList<>();
+        Iterator<SpacewarStructure> swsIter = structures.iterator();
+        while (swsIter.hasNext()) {
+            SpacewarStructure sws = swsIter.next();
+            if (sws.owner == owner && sws.item != null && sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+                removedFighters.add(sws);
+                swsIter.remove();
+            }
+        }
+        return removedFighters;
+    }
+
+    /** Split into groups the fighters in the given list.
+     * @param baseFighterList the list of fighters to split into groups
+     * @param outFighterList the output list containing the new split fighter units
+     * @param maxGroups the maximum number of fighter groups to create with splitting
+     * @param splitFighters if set to false no splitting is done, the fighters units are copied as is to the output list
+     * */
+    private void applyFighterGrouping(List<SpacewarStructure> baseFighterList, LinkedList<SpacewarStructure> outFighterList, int maxGroups, boolean splitFighters) {
+        if (baseFighterList.isEmpty()) {
+            return;
+        }
+        for (SpacewarStructure baseSws : baseFighterList) {
+            outFighterList.add(baseSws.copy());
+        }
+        if (!splitFighters) {
+            return;
+        }
+        while (outFighterList.size() < maxGroups) {
+            Collections.sort(outFighterList, new Comparator<SpacewarStructure>() {
+                @Override
+                public int compare(SpacewarStructure sws1, SpacewarStructure sws2) {
+                    return Integer.compare(sws2.count, sws1.count);
+                }
+            });
+            SpacewarStructure sws = outFighterList.getFirst();
+            if (sws.count == 1) {
+                return;
+            }
+            int sum = sws.count;
+            SpacewarStructure sws2 = sws.copy();
+            sws.count = sum / 2;
+            sws2.count = sum - sum / 2;
+            outFighterList.add(sws2);
+        }
+    }
+
     /**
      * Place the elements of the fleet based on the supplied layout map, where
-     * the map values represent fighters (true) and non-fighters (false).
+     * the map values represent the inventory types of fighters, cruisers and battleships.
+     * Handle splitting and grouping of the fighter units if allowed by the layout map.
      * @param ships the sequence of ships
      * @param owner the owner filter
+     * @param rightAligned is layout aligned to the left
+     * @param offsetX the X offset of the layout
      * @param layout the layout definition
+     * @param splitFighters if true try to split fighters into smaller groups
      */
-    void applyLayout(final Iterable<? extends SpacewarStructure> ships,
-
-            final Player owner, final BattleSpaceLayout layout) {
+    void applyLayout(final List<SpacewarStructure> ships, final Player owner, boolean rightAligned, int offsetX, final BattleSpaceLayout layout, boolean splitFighters) {
         LinkedList<SpacewarStructure> fighters = new LinkedList<>();
-        LinkedList<SpacewarStructure> nonFighters = new LinkedList<>();
+        LinkedList<SpacewarStructure> baseFighters = new LinkedList<>();
+        LinkedList<SpacewarStructure> cruisers = new LinkedList<>();
+        LinkedList<SpacewarStructure> battleships = new LinkedList<>();
         for (SpacewarStructure sws : ships) {
-            if (sws.owner == owner && world().scripting.mayControlFleet(sws.fleet)) { // DO not layout ships from non-controllable fleets of the player
-                if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS
-                        || sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS
-                        ) {
-                    nonFighters.add(sws);
-                } else
-                if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
-                    fighters.add(sws);
+            // DO NOT layout ships from non-controllable fleets of the player but DO layout fighters from the nearby planet
+            if (sws.owner == owner && (sws.planet != null || (sws.owner != player()) || world().scripting.mayControlFleet(sws.fleet))) {
+                if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+                    battleships.add(sws);
+                } else if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+                    cruisers.add(sws);
+                } else if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+                    baseFighters.add(sws);
                 }
             }
         }
-        // fill in the regular places
-        List<Map.Entry<Location, Boolean>> olist = layout.order();
-        List<SpacewarStructure> placed = new ArrayList<>();
-        for (Map.Entry<Location, Boolean> e : olist) {
-            Location p = e.getKey();
-            if (e.getValue()) {
-                if (!fighters.isEmpty()) {
-                    SpacewarStructure sws = fighters.removeFirst();
-                    sws.x = (p.x + 0.5) * space.width / layout.getWidth();
-                    sws.y = (p.y + 0.5) * space.height / layout.getHeight();
-                    placeNearby(placed, sws);
-                }
-            } else {
-                if (!nonFighters.isEmpty()) {
-                    SpacewarStructure sws = nonFighters.removeFirst();
-                    sws.x = (p.x + 0.5) * space.width / layout.getWidth();
-                    sws.y = (p.y + 0.5) * space.height / layout.getHeight();
-                    placeNearby(placed, sws);
-                }
-            }
-        }
-        // take the remaining ships and place them near the slots
 
-        while (!fighters.isEmpty() || !nonFighters.isEmpty()) {
-            for (Map.Entry<Location, Boolean> e : olist) {
-                Location p = e.getKey();
-                if (e.getValue()) {
-                    if (!fighters.isEmpty()) {
-                        SpacewarStructure sws = fighters.removeFirst();
-                        sws.x = (p.x + 0.5) * space.width / layout.getWidth();
-                        sws.y = (p.y + 0.5) * space.height / layout.getHeight();
-                        placeNearby(placed, sws);
+        removeFromPathfindingMap(clearPlacedFighters(owner));
+        removeFromPathfindingMap(cruisers);
+        removeFromPathfindingMap(battleships);
+        if (owner == player()) {
+            //Save player owned fighters to allow toggling split or grouped fighter placementsmultiple times.
+            if (playerFighters.isEmpty()) {
+                playerFighters.addAll(baseFighters);
+            }
+            applyFighterGrouping(playerFighters, fighters, layout.fighterLocationsNum, splitFighters);
+        } else {
+            applyFighterGrouping(baseFighters, fighters, layout.fighterLocationsNum, splitFighters);
+        }
+        structures.addAll(fighters);
+
+        layout.reset();
+        layout.scalePositions(gridSizeY);
+        if (rightAligned) {
+            layout.mirrorPositions();
+        }
+        if (offsetX != 0) {
+            layout.addOffsetToPositions(offsetX);
+        }
+        List<Map.Entry<Location, ResearchSubCategory>> olist = layout.order();
+
+        //fill all the battleship slots
+        for (Map.Entry<Location, ResearchSubCategory> e : olist) {
+            Location p = e.getKey();
+            if (e.getValue() == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+                if (!battleships.isEmpty()) {
+                    SpacewarStructure sws = battleships.getFirst();
+                    if (structureFits(sws, p)) {
+                        sws.gridLocation = p;
+                        addUnitLocation(sws);
+                        battleships.removeFirst();
                     }
                 } else {
-                    if (!nonFighters.isEmpty()) {
-                        SpacewarStructure sws = nonFighters.removeFirst();
-                        sws.x = (p.x + 0.5) * space.width / layout.getWidth();
-                        sws.y = (p.y + 0.5) * space.height / layout.getHeight();
-                        placeNearby(placed, sws);
+                    break;
+                }
+            }
+        }
+        //fill all the cruiser slots
+        for (Map.Entry<Location, ResearchSubCategory> e : olist) {
+            Location p = e.getKey();
+            if (e.getValue() == ResearchSubCategory.SPACESHIPS_CRUISERS) { //fighter spot
+                if (!cruisers.isEmpty()) {
+                    SpacewarStructure sws = cruisers.getFirst();
+                    if (structureFits(sws, p)) {
+                        sws.gridLocation = p;
+                        addUnitLocation(sws);
+                        cruisers.removeFirst();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        //fill all the fighter slots
+        for (Map.Entry<Location, ResearchSubCategory> e : olist) {
+            Location p = e.getKey();
+            if (e.getValue() == ResearchSubCategory.SPACESHIPS_FIGHTERS) { //fighter spot
+                if (!fighters.isEmpty()) {
+                    SpacewarStructure sws = fighters.getFirst();
+                    if (structureFits(sws, p)) {
+                        sws.gridLocation = p;
+                        addUnitLocation(sws);
+                        fighters.removeFirst();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // take the remaining ships and place them near the slots
+        // battleships have guaranteed positions as such those are skipped in this phase
+        while (!fighters.isEmpty() || !cruisers.isEmpty()) {
+            for (Map.Entry<Location, ResearchSubCategory> e : olist) {
+                Location p = e.getKey();
+                if (e.getValue() == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+                    if (!fighters.isEmpty()) {
+                        SpacewarStructure sws = fighters.getFirst();
+                        if (fitNearby(sws, p.x, p.y)) {
+                            addUnitLocation(sws);
+                            fighters.removeFirst();
+                        }
+                    }
+                } else {
+                    if (!cruisers.isEmpty()) {
+                        SpacewarStructure sws = cruisers.getFirst();
+                        if (fitNearby(sws, p.x, p.y)) {
+                            addUnitLocation(sws);
+                            cruisers.removeFirst();
+                        }
                     }
 
                 }
+            }
+        }
+    }
+
+    /**
+     * Check if the given cell location fall into the bounds of the battle space.
+     * @param loc location of the cell
+     * @return true if the cell is within the map bounds
+     */
+    public boolean cellInMap(Location loc) {
+        if (loc.y < 0 || loc.x < 0 || loc.y > gridSizeY - 1 || loc.x > gridSizeX - 1) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the structure fits to the specified location
+     * Fighters take a 1x1 area, battleship take 3x3
+     * Cruisers take 3x3 area but 2 cruisers can have the edges of their take area overlap
+     * TODO. Maybe this will turn into an actual passability check
+     * @param sws the SpaceWarStructure to check
+     * @param loc the desired location of the SpaceWarStructure structure
+     * @return true if the structure can fit in the area around the given location
+     */
+    public boolean structureFits(SpacewarStructure sws, Location loc) {
+        if (!cellInMap(loc)) {
+            return false;
+        }
+        if (unitsForPathfinding.get(loc) != null && !unitsForPathfinding.get(loc).isEmpty()) {
+            return false;
+        }
+        if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
+            return true;
+        }
+        ArrayList<Location> neighbors = loc.getListOfNeighbors();
+        for (Location neighbor: neighbors) {
+            if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS) {
+                if (!cellInMap(neighbor)) {
+                    return false;
+                }
+                Set<SpacewarStructure> occupyingUnits = unitsForPathfinding.get(neighbor);
+                if (occupyingUnits != null) {
+                    for (SpacewarStructure occupyingSws : occupyingUnits) {
+                        if (occupyingSws != sws) {
+                            return false;
+                        }
+                    }
+                }
+            } else if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS) {
+                Set<SpacewarStructure> occupyingUnits = unitsForPathfinding.get(neighbor);
+                if (occupyingUnits != null) {
+                    for (SpacewarStructure occupyingSws : occupyingUnits) {
+                        //cruisers can overlap on their edges
+                        if (occupyingSws != sws && occupyingSws.item.type.category != ResearchSubCategory.SPACESHIPS_CRUISERS) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Try to find a suitable position for a structure around a given coordinate.
+     * The function checks all locations in a spiral expanding around the given location
+     * until a suitable location is found
+     * @param baseX starting X coordinate
+     * @param baseY starting X coordinate
+     * @param sws the structure to fit
+     * @return true if a suitable location is found
+     * */
+    public boolean fitNearby(SpacewarStructure sws, int baseX, int baseY) {
+
+        for (int n = 1; n < space().width; n++) {
+            for (int x = baseX - n; x < baseX + n; x++) {
+                if (structureFits(sws, Location.of(x, baseY + n))) {
+                    sws.gridLocation  = Location.of(x, baseY + n);
+                    return true;
+                }
+            }
+            for (int y = baseY + n; y > baseY - n; y--) {
+                if (structureFits(sws, Location.of(baseX + n, y))) {
+                    sws.gridLocation  = Location.of(baseX + n, y);
+                    return true;
+                }
+            }
+            for (int x = baseX + n; x > baseX - n; x--) {
+                if (structureFits(sws, Location.of(x, baseY - n))) {
+                    sws.gridLocation  = Location.of(x, baseY - n);
+                    return true;
+                }
+            }
+            for (int y = baseY - n; y < baseY + n; y++) {
+                if (structureFits(sws, Location.of(baseX - n, y))) {
+                    sws.gridLocation = Location.of(baseX - n, y);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Add a SpacewarStructure with its current location to the pathfinding helper mapping.
+     * @param sws the unit to move
+     */
+    @Override
+    public void addUnitLocation(SpacewarStructure sws) {
+
+        Location pfl = sws.gridLocation;
+        Set<SpacewarStructure> set = unitsForPathfinding.get(pfl);
+        if (set == null) {
+            set = new HashSet<>();
+            unitsForPathfinding.put(pfl, set);
+        }
+        sws.x = gridLocationToSpaceX(sws.gridLocation);
+        sws.y = gridLocationToSpaceY(sws.gridLocation);
+        set.add(sws);
+        if (sws.item.type.category == ResearchSubCategory.SPACESHIPS_CRUISERS || sws.item.type.category == ResearchSubCategory.SPACESHIPS_BATTLESHIPS || sws.item.type.category == ResearchSubCategory.SPACESHIPS_STATIONS) {
+            ArrayList<Location> neighbors = sws.gridLocation.getListOfNeighbors();
+            for (Location neighbor: neighbors) {
+                set = unitsForPathfinding.get(neighbor);
+                if (set == null) {
+                    set = new HashSet<>();
+                    unitsForPathfinding.put(neighbor, set);
+                }
+                set.add(sws);
             }
         }
     }
@@ -2708,10 +3034,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     class LayoutPanel extends UIComponent {
         /** The selected layout. */
         BattleSpaceLayout selected;
+        /** The width of a layout icon on the layout panel. */
+        final int layoutIconWidth = 78;
+        /** The height of a layout icon on the layout panel. */
+        final int layoutIconHeight = 39;
         /** Hovering over the okay button? */
         boolean okHover;
         /** Pressing down over the okay button? */
         boolean okDown;
+        /** Toggle grouping or splitting fighters. */
+        boolean toggleSplitFighters = true;
         /** Initialize. */
         LayoutPanel() {
             width = 286;
@@ -2722,18 +3054,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             int y = 2;
             int x = 5;
             int i = 0;
+            if (selected == null) {
+                selected = selectedLayout;
+            }
             for (BattleSpaceLayout ly : world().battle.layouts) {
 
                 g2.setColor(ly == selected ? Color.RED : Color.GREEN);
-                g2.drawRect(x, y, ly.getWidth() + 1, ly.getHeight() + 1);
+                g2.drawRect(x, y, layoutIconWidth + 1, layoutIconHeight + 1);
                 g2.setColor(new Color(0, 0, 0, 128));
-                g2.fillRect(x + 1, y + 1, ly.getWidth(), ly.getHeight());
-                g2.drawImage(ly.image, x + 1, y + 1, null);
+                g2.fillRect(x + 1, y + 1, layoutIconWidth, layoutIconHeight);
+                g2.drawImage(ly.image, x + 1, y + 1, layoutIconWidth, layoutIconHeight, null);
 
                 i++;
-                x += ly.getWidth() + 20;
+                x += layoutIconWidth + 20;
                 if (i % 3 == 0) {
-                    y += ly.getHeight() + 4;
+                    y += layoutIconHeight + 4;
                     x = 5;
                 }
             }
@@ -2745,7 +3080,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             } else {
                 g2.drawImage(commons.spacewar().layoutOk, 5, 175, null);
             }
-//            g2.drawImage(commons.spacewar().layoutToggle, 103, 175, null);
+            g2.drawImage(commons.spacewar().layoutToggle, 103, 175, null);
         }
         @Override
         public boolean mouse(UIMouse e) {
@@ -2755,11 +3090,17 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 int idx = row * 3 + col;
                 if (idx >= 0 && idx < world().battle.layouts.size()) {
                     selected = world().battle.layouts.get(idx);
-                    applyLayout(ships(), player(), selected);
+                    applyLayout(ships(), player(), isPlayerRightAligned, playerFleetLayoutOffsetX, selected, toggleSplitFighters);
+                    selectedLayout = selected;
                     return true;
                 }
                 if (withinOk(e)) {
                     okDown = true;
+                    return true;
+                }
+                if (withinLayoutToggle(e)) {
+                    toggleSplitFighters = !toggleSplitFighters;
+                    applyLayout(ships(), player(), isPlayerRightAligned, playerFleetLayoutOffsetX, selected, toggleSplitFighters);
                     return true;
                 }
             } else
@@ -2800,6 +3141,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
          */
         boolean withinOk(UIMouse e) {
             return e.within(5, 175, commons.spacewar().layoutOk.getWidth(), commons.spacewar().layoutOk.getHeight());
+        }
+        /**
+         * Test if mouse is within the layout toggle button.
+         * @param e the mouse event
+         * @return true if within
+         */
+        boolean withinLayoutToggle(UIMouse e) {
+            return e.within(103, 175, commons.spacewar().layoutToggle.getWidth(), commons.spacewar().layoutToggle.getHeight());
         }
     }
     /** Set the spacewar time controls. */
@@ -2856,7 +3205,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                     guardButton.selected = !selection.isEmpty();
                     for (SpacewarStructure sws : selection) {
                         if (sws.type == StructureType.SHIP) {
-                            kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) && sws.kamikaze == 0 && sws.attack != null;
+                            kamikazeButton.enabled |= (sws.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) && sws.kamikaze == 0 && sws.attackUnit != null;
                             moveButton.enabled = sws.kamikaze == 0;
                             stopButton.enabled |= sws.kamikaze == 0;
                             attackButton.enabled |= sws.kamikaze == 0 && sws.canDirectFire();
@@ -2900,7 +3249,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
                     && ship.selected && canControl(ship)) {
                 ship.moveTo = p;
-                ship.attack = null;
+                ship.attackUnit = null;
                 ship.guard = false;
                 moved = true;
             }
@@ -3006,7 +3355,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
         SpacewarStructure proj = new SpacewarStructure(world().researches.get(r.port.projectile.id));
         proj.owner = r.fired.owner;
-        proj.attack = target;
+        proj.attackUnit = target;
         proj.angles = proj.owner == player() ? r.port.projectile.matrix[0] : r.port.projectile.alternative[0];
         proj.movementSpeed = r.port.projectile.movementSpeed;
         proj.rotationTime = r.port.projectile.rotationTime;
@@ -3050,7 +3399,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         for (SpacewarStructure ship : structures) {
             if (ship.selected && canControl(ship) && ship.canDirectFire()) {
                 ship.moveTo = null;
-                ship.attack = target;
+                ship.attackUnit = target;
                 ship.guard = false;
                 attack = true;
             }
@@ -3066,7 +3415,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     void doKamikaze() {
         for (SpacewarStructure ship : structures) {
             if (ship.selected && canControl(ship)
-                    && ship.attack != null
+                    && ship.attackUnit != null
                     && ship.kamikaze == 0 && ship.type == StructureType.SHIP
 
                     && ship.item.type.category == ResearchSubCategory.SPACESHIPS_FIGHTERS) {
@@ -3101,7 +3450,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
                     && ship.kamikaze == 0) {
                 ship.moveTo = null;
-                ship.attack = null;
+                ship.attackUnit = null;
                 ship.guard = false;
                 guardButton.selected = false;
                 stop = true;
@@ -3239,19 +3588,19 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         double dx = ds * Math.cos(obj.angle);
         double dy = ds * Math.sin(obj.angle);
 
-        if (obj.attack != null && !obj.attack.isDestroyed()) {
-            BufferedImage img = obj.attack.get();
+        if (obj.attackUnit != null && !obj.attackUnit.isDestroyed()) {
+            BufferedImage img = obj.attackUnit.get();
             double w = img.getWidth();
             double h = img.getHeight();
-            double x0 = obj.attack.x - w / 2;
+            double x0 = obj.attackUnit.x - w / 2;
             double x1 = x0 + w;
-            double y0 = obj.attack.y - h / 2;
+            double y0 = obj.attackUnit.y - h / 2;
             double y1 = y0 + h;
             if (RenderTools.isLineIntersectingRectangle(obj.x, obj.y, obj.x + dx,
                     obj.y + dy, x0, y0, x1, y1)) {
                 // walk along the angle up to ds units and see if there is a pixel of the target there?
-                int tx0 = (int)(obj.attack.x - w / 2);
-                int ty0 = (int)(obj.attack.y - h / 2);
+                int tx0 = (int)(obj.attackUnit.x - w / 2);
+                int ty0 = (int)(obj.attackUnit.y - h / 2);
                 int tx1 = (int)(tx0 + w);
                 int ty1 = (int)(ty0 + h);
                 for (double dds = 0; dds <= ds; dds += 0.5) {
@@ -3311,6 +3660,11 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 e.consume();
                 return true;
             }
+        }
+        if (e.getKeyCode() == KeyEvent.VK_V && e.isControlDown() && e.isShiftDown()) {
+            showDebug = !showDebug;
+            e.consume();
+            return true;
         }
         if (e.isShiftDown()) {
             if (e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9) {
@@ -3392,7 +3746,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
                     && canControl(ship) && ship.kamikaze == 0) {
                 ship.moveTo = null;
-                ship.attack = null;
+                ship.attackUnit = null;
                 ship.guard = true;
             }
         }
@@ -3495,23 +3849,21 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                         }
                     }
                 } else
-                if (ship.attack != null) {
-                    if (ship.attack.isDestroyed()
-
-                            || (ship.guard && ship.inRange(ship.attack).isEmpty())
-                            || (!ship.attack.intersects(0, 0, space.width, space.height))) {
-                        ship.attack = null;
+                if (ship.attackUnit != null) {
+                    if (ship.attackUnit.isDestroyed()
+                            || (ship.guard && ship.inRange(ship.attackUnit).isEmpty())
+                            || (!ship.attackUnit.intersects(0, 0, space.width, space.height))) {
+                        ship.attackUnit = null;
                         ship.guard = true;
                         if (ship.selected && ship.owner == player()) {
                             enableSelectedFleetControls();
                         }
                     } else {
                         if (ship.type == StructureType.STATION
-
-                                || rotateStep(ship, ship.attack.x, ship.attack.y)) {
+                                || rotateStep(ship, ship.attackUnit.x, ship.attackUnit.y)) {
                             // move into minimum attack range if needed
                             if (!ship.guard && ship.type == StructureType.SHIP) {
-                                moveStep(ship, ship.attack.x, ship.attack.y, ship.minimumRange - 5);
+                                moveStep(ship, ship.attackUnit.x, ship.attackUnit.y, ship.minimumRange - 5);
                             }
                             fireAtTargetOf(ship);
                         }
@@ -3521,7 +3873,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                     // pick a target
                     if (canControl(ship)) {
                         selectNewTarget(ship);
-                        if (ship.attack == null) {
+                        if (ship.attackUnit == null) {
                             playerIdles.add(ship);
                         }
                     } else {
@@ -3618,14 +3970,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     boolean handleAutofire(SpacewarStructure ship) {
         if (ship.type == StructureType.STATION || ship.type == StructureType.PROJECTOR) {
             selectNewTarget(ship);
-            if (ship.attack != null) {
+            if (ship.attackUnit != null) {
                 return true;
             }
         } else
         if (ship.type == StructureType.SHIP && ship.kamikaze == 0) {
             for (SpacewarStructure es : enemiesInRange(ship)) {
                 if (es.kamikaze > 0) {
-                    ship.attack = es;
+                    ship.attackUnit = es;
                     return true;
                 }
             }
@@ -3651,7 +4003,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 bestEfficiency = eff;
             }
         }
-        ship.attack = best;
+        ship.attackUnit = best;
     }
     /**
      * Choose a new target for the ship.
@@ -3674,7 +4026,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             }
         }
         if (sts.size() > 0) {
-            ship.attack = ModelUtils.random(sts);
+            ship.attackUnit = ModelUtils.random(sts);
         }
     }
     /**
@@ -3688,16 +4040,16 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             structures.remove(ship);
             return;
         }
-        if (ship.attack != null && !ship.attack.isDestroyed()) {
-            rotateStep(ship, ship.attack.x, ship.attack.y);
+        if (ship.attackUnit != null && !ship.attackUnit.isDestroyed()) {
+            rotateStep(ship, ship.attackUnit.x, ship.attackUnit.y);
 
-            double d = Math.hypot(ship.x - ship.attack.x, ship.y - ship.attack.y);
-            if (d < 80 && ship.type != StructureType.SHIP && ship.attack.ecmLevel > 0) {
+            double d = Math.hypot(ship.x - ship.attackUnit.x, ship.y - ship.attackUnit.y);
+            if (d < 80 && ship.type != StructureType.SHIP && ship.attackUnit.ecmLevel > 0) {
                 if (scrambled.add(ship)) {
                     double p = ModelUtils.random();
 
                     int anti = ship.ecmLevel;
-                    int ecm = ship.attack.ecmLevel;
+                    int ecm = ship.attackUnit.ecmLevel;
 
                     boolean newTarget = world().battle.getAntiECMProbability(world().difficulty, anti, ecm) <= p;
 
@@ -3717,7 +4069,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             } else {
                 damageTarget(
                         parent,
-                        ship.attack,
+                        ship.attackUnit,
 
                         ship.kamikaze,
 
@@ -3729,14 +4081,14 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             createExplosion(ship, true);
             if (ship.type == StructureType.VIRUS_BOMB
 
-                    && (ship.attack.type == StructureType.PROJECTOR || ship.attack.type == StructureType.SHIELD)) {
-                battle.infectPlanet = ship.attack.planet;
+                    && (ship.attackUnit.type == StructureType.PROJECTOR || ship.attackUnit.type == StructureType.SHIELD)) {
+                battle.infectPlanet = ship.attackUnit.planet;
             }
         } else
-        if (ship.attack != null && ship.attack.isDestroyed()) {
-            ship.attack = null;
+        if (ship.attackUnit != null && ship.attackUnit.isDestroyed()) {
+            ship.attackUnit = null;
         }
-        if (ship.attack == null && !ship.intersects(0, 0, space.width, space.height)) {
+        if (ship.attackUnit == null && !ship.intersects(0, 0, space.width, space.height)) {
             createLoss(ship);
             structures.remove(ship);
         }
@@ -3754,7 +4106,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
         damageArea(
                 source,
-                ship.attack,
+                ship.attackUnit,
 
                 ship.kamikaze,
                 area,
@@ -3772,8 +4124,8 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
 
             double dalpha = Math.PI * 2 / sn;
             for (double a = 0; a < Math.PI * 2; a += dalpha) {
-                double x2 = ship.attack.x + sr * Math.cos(a);
-                double y2 = ship.attack.y + sr * Math.sin(a);
+                double x2 = ship.attackUnit.x + sr * Math.cos(a);
+                double y2 = ship.attackUnit.y + sr * Math.sin(a);
 
                 createExplosion(x2, y2, SoundType.EXPLOSION_MEDIUM);
                 damageArea(source, x2, y2, (ship.kamikaze * sm), sa, SoundType.EXPLOSION_MEDIUM, ship.techId, ship.owner.id);
@@ -4115,15 +4467,15 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param ship the attacker ship
      */
     void fireAtTargetOf(SpacewarStructure ship) {
-        for (SpacewarWeaponPort p : ship.inRange(ship.attack)) {
+        for (SpacewarWeaponPort p : ship.inRange(ship.attackUnit)) {
             if (p.cooldown <= 0) {
                 //appears as if the ship is aiming at random parts of the target
                 double inaccuracy = 0.40f;
-                double aimOffsetX = ship.attack.trimmedWidth * (-inaccuracy + (Math.random() * inaccuracy * 2));
-                double aimOffsetY = ship.attack.trimmedHeight * (-inaccuracy + (Math.random() * inaccuracy * 2));
-                aimOffsetX = (aimOffsetX) * Math.cos(ship.attack.angle) - (aimOffsetY) * Math.sin(ship.attack.angle);
-                aimOffsetY = (aimOffsetX) * Math.sin(ship.attack.angle) + (aimOffsetY) * Math.cos(ship.attack.angle);
-                createBeam(ship, p, ship.attack.x + aimOffsetX, ship.attack.y + aimOffsetY, ship.attack);
+                double aimOffsetX = ship.attackUnit.trimmedWidth * (-inaccuracy + (Math.random() * inaccuracy * 2));
+                double aimOffsetY = ship.attackUnit.trimmedHeight * (-inaccuracy + (Math.random() * inaccuracy * 2));
+                aimOffsetX = (aimOffsetX) * Math.cos(ship.attackUnit.angle) - (aimOffsetY) * Math.sin(ship.attackUnit.angle);
+                aimOffsetY = (aimOffsetX) * Math.sin(ship.attackUnit.angle) + (aimOffsetY) * Math.cos(ship.attackUnit.angle);
+                createBeam(ship, p, ship.attackUnit.x + aimOffsetX, ship.attackUnit.y + aimOffsetY, ship.attackUnit);
                 p.cooldown = (int) (p.projectile.delay * (0.5f + Math.random()));
             }
         }
@@ -4137,9 +4489,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
      * @param ay the aim Y
      * @param target the targeted structure
      */
-    void createBeam(SpacewarStructure source, SpacewarWeaponPort p,
-
-            double ax, double ay, SpacewarStructure target) {
+    void createBeam(SpacewarStructure source, SpacewarWeaponPort p, double ax, double ay, SpacewarStructure target) {
         SpacewarProjectile sp = new SpacewarProjectile(source.owner == player() ? p.projectile.alternative : p.projectile.matrix);
         sp.model = p.projectile;
         sp.owner = source.owner;
@@ -4394,7 +4744,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             s.moveTo = new Point2D.Double(space.width + 1000, s.y);
         }
 
-        s.attack = null;
+        s.attackUnit = null;
         s.guard = false;
         if (s.selected && s.owner == player()) {
             enableSelectedFleetControls();
@@ -4980,7 +5330,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
             s.guard = false;
             s.moveTo = null;
             if (mode == Mode.BEAM) {
-                s.attack = target;
+                s.attackUnit = target;
             } else
 
             if (mode == Mode.KAMIKAZE) {
@@ -4990,7 +5340,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 s.ttl = KAMIKAZE_TTL;
                 s.selected = false;
             } else {
-                s.attack = null;
+                s.attackUnit = null;
                 RocketSelected r = new RocketSelected();
                 r.findRocketPort(target, true, s);
                 if (r.fired == null) {
@@ -5007,7 +5357,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     }
     @Override
     public void move(SpacewarStructure s, double x, double y) {
-        s.attack = null;
+        s.attackUnit = null;
         s.guard = false;
         s.moveTo = new Point2D.Double(x, y);
         if (s.selected && s.owner == player()) {
@@ -5016,7 +5366,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     }
     @Override
     public void guard(SpacewarStructure s) {
-        s.attack = null;
+        s.attackUnit = null;
         s.guard = true;
         s.moveTo = null;
         if (s.selected && s.owner == player()) {
@@ -5026,7 +5376,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     @Override
     public void stop(SpacewarStructure s) {
         s.moveTo = null;
-        s.attack = null;
+        s.attackUnit = null;
         s.guard = false;
         if (s.selected && s.owner == player()) {
             enableSelectedFleetControls();
@@ -5045,7 +5395,6 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
                 structures.remove(i);
             }
         }
-
         Map<InventoryItem, HasInventory> common = inventoryWithParent(f);
 
         if (f.owner == battle.attacker.owner) {
@@ -5061,20 +5410,20 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
         if (nearbyPlanet != null) {
             if (nearbyPlanet.owner == battle.attacker.owner) {
                 if (f.owner == battle.attacker.owner) {
-                    placeFleet(maxRightPlacement, true, common);
+                    placeFleet(gridSizeX - maxRightPlacement, true, common, side);
                 } else {
-                    placeFleet(0, false, common);
+                    placeFleet(0, false, common, side);
                 }
             } else
 
             if (nearbyPlanet.owner == f.owner) {
-                placeFleet(maxRightPlacement, true, common);
+                placeFleet(gridSizeX - maxRightPlacement, true, common, side);
             }
         } else {
             if (f.owner != battle.attacker.owner) {
-                placeFleet(maxRightPlacement, true, common);
+                placeFleet(gridSizeX - maxRightPlacement, true, common, side);
             } else {
-                placeFleet(0, false, common);
+                placeFleet(0, false, common, side);
             }
         }
     }
@@ -5341,7 +5690,7 @@ public class SpacewarScreen extends ScreenBase implements SpacewarWorld {
     public int attackerCount(SpacewarStructure target) {
         int n = 0;
         for (SpacewarStructure s : structures) {
-            if (s.attack == target) {
+            if (s.attackUnit == target) {
                 n += s.count;
             }
         }

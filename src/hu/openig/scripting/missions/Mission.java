@@ -835,6 +835,8 @@ public abstract class Mission implements GameScriptingEvents {
                 if (s.item != null && allyTag.equals(s.item.tag)) {
                     s.x = d.width / 2d;
                     s.y = dy;
+                    war.alignToNearestCell(s);
+                    war.addUnitLocation(s);
                     s.angle = 0.0;
                     s.owner = f1.owner;
                     s.guard = true;

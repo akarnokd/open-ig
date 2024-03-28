@@ -15,12 +15,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A spacewar layout.
@@ -31,10 +29,22 @@ public class BattleSpaceLayout {
     public BufferedImage image;
     /** The fighter color on the image. */
     public static final int FIGHTER_COLOR = 0xFF00F300;
-    /** The medium and large ship color on the image. */
-    public static final int SHIP_COLOR = 0xFFFFBE00;
-    /** The map from location to fighter (true) or ship (false). */
-    public final Map<Location, Boolean> map = new HashMap<>();
+    /** The medium ship color on the image. */
+    public static final int CRUISER_COLOR = 0xFFFFBE00;
+    /** The large ship color on the image. */
+    public static final int BATTLESHIP_COLOR = 0xFFFF7F38;
+    /** The base map from location to ship type. */
+    public final Map<Location, ResearchSubCategory> baseMap = new HashMap<>();
+    /** The current working map from location to ship type. */
+    public  Map<Location, ResearchSubCategory>  map = new HashMap<>();
+    /** The number of locations for fighter placements, needed for calculating fighter groupings. */
+    public int fighterLocationsNum;
+    /** The current width of the working locaiont map. */
+    public int workingWidth;
+    /** The current height of the working locaiont map. */
+    public int workingHeight;
+    /** Is the working location map aligned to the right side. */
+    private boolean leftAligned = true;
     /**
      * Constructor, initializes the image but not the map.
      * @param image the layout image to use
@@ -43,38 +53,44 @@ public class BattleSpaceLayout {
         this.image = Objects.requireNonNull(image);
     }
     /**
-     * Scan the image and build the layout map.
+     * Scan the image and build the base layout map.
      */
     public void parse() {
-        map.clear();
-        Set<Location> ignore = new HashSet<>();
+        baseMap.clear();
+        fighterLocationsNum = 0;
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 Location loc = Location.of(x, y);
-                if (ignore.add(loc)) {
-                    int c = image.getRGB(x, y);
-                    if (c == FIGHTER_COLOR) {
-                        map.put(loc, true);
-                        ignore.add(Location.of(x + 1, y));
-                        ignore.add(Location.of(x + 1, y + 1));
-                        ignore.add(Location.of(x, y + 1));
-                    } else
-                    if (c == SHIP_COLOR) {
-                        map.put(Location.of(x, y), false);
-                        ignore.add(Location.of(x + 1, y));
-                        ignore.add(Location.of(x + 1, y + 1));
-                        ignore.add(Location.of(x, y + 1));
-                    }
+                int c = image.getRGB(x, y);
+                if (c == FIGHTER_COLOR) {
+                    baseMap.put(loc, ResearchSubCategory.SPACESHIPS_FIGHTERS);
+                    fighterLocationsNum++;
+                } else if (c == CRUISER_COLOR) {
+                    baseMap.put(Location.of(x, y), ResearchSubCategory.SPACESHIPS_CRUISERS);
+                } else if (c == BATTLESHIP_COLOR) {
+                    baseMap.put(Location.of(x, y), ResearchSubCategory.SPACESHIPS_BATTLESHIPS);
                 }
             }
         }
+        workingWidth = image.getWidth();
+        workingHeight = image.getHeight();
+        map = baseMap;
+    }
+    /**
+     * Reset the current working layout map to the base layout map.
+     */
+    public void reset() {
+        workingWidth = image.getWidth();
+        workingHeight = image.getHeight();
+        map = baseMap;
+        leftAligned = true;
     }
     /**
      * Return an ordered list by descending X and ascending Y locations.
      * @return the order
      */
-    public List<Map.Entry<Location, Boolean>> order() {
-        List<Map.Entry<Location, Boolean>> result = new ArrayList<>(map.entrySet());
+    public List<Map.Entry<Location, ResearchSubCategory>> order() {
+        List<Map.Entry<Location, ResearchSubCategory>> result = new ArrayList<>(map.entrySet());
 
         double gx = 0;
         double gy = 0;
@@ -91,10 +107,10 @@ public class BattleSpaceLayout {
             distances.put(loc, (int)(World.dist(gx, gy, loc.x + 0.5, loc.y + 0.5) * 100));
             angles.put(loc, (int)Math.abs((Math.atan2(loc.y - gy + 0.5, loc.x - gx + 0.5) * 180)));
         }
-        Collections.sort(result, new Comparator<Map.Entry<Location, Boolean>>() {
+        Collections.sort(result, new Comparator<Map.Entry<Location, ResearchSubCategory>>() {
             @Override
-            public int compare(Entry<Location, Boolean> o1,
-                    Entry<Location, Boolean> o2) {
+            public int compare(Entry<Location, ResearchSubCategory> o1,
+                    Entry<Location, ResearchSubCategory> o2) {
                 int dist1 = distances.get(o1.getKey());
                 int dist2 = distances.get(o2.getKey());
                 if (dist1 < dist2) {
@@ -118,6 +134,79 @@ public class BattleSpaceLayout {
 
         return result;
     }
+
+    /**
+     * Scale the working map locations.
+     * The locations are scaled based on the ration of base map height and referenceHeight.
+     * @param referenceHeight the height to scale the location to.
+     */
+    public void scalePositions(int referenceHeight) {
+        if (referenceHeight == image.getHeight()) {
+            return;
+        }
+        double ratio = referenceHeight / (float)image.getHeight();
+        workingHeight = referenceHeight;
+        workingWidth = (int)Math.floor(getWidth() * ratio);
+        Map<Location, ResearchSubCategory> newMap = new HashMap<>();
+        for (Location loc : map.keySet()) {
+            newMap.put(Location.of((int)Math.round(loc.x * ratio), (int)Math.round(loc.y * ratio)), map.get(loc));
+        }
+        map = newMap;
+    }
+
+    /**
+     * Return the X coordinate of the rightmost X locations. Used for aligning the layout map.
+     * @return rightmost layout location's X coordinate.
+     */
+    private int getRightmostX() {
+        Location rightmost = Collections.max(map.keySet(), new Comparator<Location>() {
+            @Override
+            public int compare(Location o1,
+                               Location o2) {
+                if (o1.x < o2.x) {
+                    return -1;
+                } else if (o1.x > o2.x) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        return rightmost.x;
+    }
+
+    /**
+     * Mirror the working map locations using point reflection off the center of the map.
+     */
+    public void mirrorPositions() {
+        int centerX = workingWidth / 2;
+        int centerY = workingHeight / 2;
+        Map<Location, ResearchSubCategory> newMap = new HashMap<>();
+        for (Location loc : map.keySet()) {
+            newMap.put(Location.of(2 * centerX - loc.x , 2 * centerY - loc.y), map.get(loc));
+        }
+        map = newMap;
+        int alignmentOffsetX = workingWidth - getRightmostX();
+        newMap = new HashMap<>();
+        for (Location loc : map.keySet()) {
+            newMap.put(Location.of(loc.x + alignmentOffsetX - 2 , loc.y), map.get(loc));
+        }
+        map = newMap;
+        leftAligned = false;
+    }
+
+    /**
+     * Add an offset to the X coordinate of all layout locations.
+     * @param offsetX the X offset to add to all locations
+     */
+    public void addOffsetToPositions(int offsetX) {
+        Map<Location, ResearchSubCategory> newMap = new HashMap<>();
+        for (Location loc : map.keySet()) {
+            newMap.put(Location.of(loc.x + (leftAligned ? offsetX : -offsetX) , loc.y), map.get(loc));
+        }
+        map = newMap;
+    }
+
     /** @return the layout total width. */
     public int getWidth() {
         return image.getWidth();

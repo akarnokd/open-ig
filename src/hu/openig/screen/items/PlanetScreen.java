@@ -248,7 +248,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     /** The time in sumulations steps during the paralize effect is in progress. */
     static final int PARALIZED_TTL = 15 * 1000 / SIMULATION_DELAY;
     /** List of requests about path planning for each unit. */
-    final LinkedHashMap<GroundwarUnit, PathPlanning> pathsToPlan = new LinkedHashMap<>();
+    final LinkedHashMap<WarUnit, PathPlanning> pathsToPlan = new LinkedHashMap<>();
     /** Plan only the given amount of paths per tick. */
     static final int PATHS_PER_TICK = 10;
     /** A mine. */
@@ -4627,7 +4627,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         /** The goal location. */
         final Location goal;
         /** The unit. */
-        final GroundwarUnit unit;
+        final WarUnit unit;
         /** The computed path. */
         boolean pathFound = true;
         /** Number of reattempts after a failed pathing attempt. */
@@ -4640,7 +4640,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
          * @param unit the unit
          */
         PathPlanning(
-                GroundwarUnit unit,
+                WarUnit unit,
                 Location goal) {
             this.current = unit.location();
             this.goal = goal;
@@ -4848,7 +4848,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @param unit the unit doing the pathfinding
      * @return the pathfinding object
      */
-    Pathfinding getPathfinding(final GroundwarUnit unit) {
+    Pathfinding getPathfinding(final WarUnit unit) {
         Pathfinding pathfinding = new Pathfinding();
         pathfinding.isPassable = new Func1<Location, Boolean>() {
             @Override
@@ -4932,10 +4932,10 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
 //            long t0 = System.nanoTime();
 
             List<Future<PathPlanning>> inProgress = new LinkedList<>();
-            Iterator<Map.Entry<GroundwarUnit, PathPlanning>> it = pathsToPlan.entrySet().iterator();
+            Iterator<Map.Entry<WarUnit, PathPlanning>> it = pathsToPlan.entrySet().iterator();
             int i = PATHS_PER_TICK;
             while (i-- > 0 && it.hasNext()) {
-                Map.Entry<GroundwarUnit, PathPlanning> ppi = it.next();
+                Map.Entry<WarUnit, PathPlanning> ppi = it.next();
                 it.remove();
                 inProgress.add(commons.pool.submit(ppi.getValue()));
             }
@@ -7045,7 +7045,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      * @param unit the unit checking the cell.
      * @return true if the place is passable
      */
-    public boolean isPassable(int x, int y, GroundwarUnit unit) {
+    public boolean isPassable(int x, int y, WarUnit unit) {
         if (surface().placement.canPlaceBuilding(x, y)) {
             Set<GroundwarUnit> gunits = unitsForPathfinding.get(Location.of(x, y));
             if (gunits != null) {
@@ -7054,8 +7054,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
                 boolean ip = false;
                 for (GroundwarUnit u : gunits) {
-                    ip = ((u.owner != unit.owner) && (unit.attackMove != null))
-                            || ((u.owner == unit.owner) && (u.inMotion() || needsRotation(u, u.nextMove)))
+                    ip = ((u.owner != unit.owner()) && (unit.attackMoveLocation() != null))
+                            || ((u.owner == unit.owner()) && (u.inMotion() || needsRotation(u, u.nextMove)))
                             || u.equals(unit)
                             || u.isDestroyed();
                 }
