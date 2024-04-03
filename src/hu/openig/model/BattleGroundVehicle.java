@@ -22,7 +22,7 @@ public class BattleGroundVehicle {
     /** The destruction sound. */
     public SoundType destroy;
     /** The fire sound if non null. */
-    public SoundType fire;
+    public SoundType fireSound;
     /** The explosion to play. */
     public ExplosionType explosion;
     /** The hitpoints. */

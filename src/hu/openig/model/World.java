@@ -2474,7 +2474,7 @@ public class World implements ModelLookup {
             }
             ge.destroy = SoundType.valueOf(xground.get("destroy"));
             if (xground.has("fire")) {
-                ge.fire = SoundType.valueOf(xground.get("fire"));
+                ge.fireSound = SoundType.valueOf(xground.get("fire"));
             }
 
             ge.hp = xground.getInt("hp");

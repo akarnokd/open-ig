@@ -26,6 +26,10 @@ public interface WarUnit extends HasLocation, Owned {
     Location nextMove();
     /** @return next rotation target location of the WarUnit. */
     Location nextRotate();
+    /** @return true if the unit is moving. */
+     boolean isMoving();
+    /** @return true if the unit is in between cells. */
+    boolean inMotion();
     /**
      * Merges the new path.
      * @param newPath the new path to follow
