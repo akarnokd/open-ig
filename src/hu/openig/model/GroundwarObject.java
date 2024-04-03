@@ -18,7 +18,7 @@ public abstract class GroundwarObject {
     /** The facing angle. */
     public double angle;
     /** The fire animation phase. */
-    public int phase;
+    public int fireAnimPhase;
     /** The owner. */
     public Player owner;
     /** The cached angle. */
@@ -39,7 +39,7 @@ public abstract class GroundwarObject {
     }
     /** @return Get the image for the current rotation and phase. */
     public BufferedImage get() {
-        BufferedImage[] rotation = matrix[phase % matrix.length];
+        BufferedImage[] rotation = matrix[fireAnimPhase % matrix.length];
 
         if (cachedAngle != angle) {
             double a = normalizedAngle() / 2 / Math.PI;

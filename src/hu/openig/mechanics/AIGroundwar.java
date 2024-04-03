@@ -80,7 +80,7 @@ public class AIGroundwar {
             um.remove(u.target());
         }
         for (final GroundwarUnit u : minelayers) {
-            if (!u.isMoving() && u.phase == 0) {
+            if (!u.isMoving() && u.fireAnimPhase == 0) {
                 Location l = u.location();
                 SurfaceEntity e = war.planet().surface.buildingmap.get(l);
                 if (e != null && e.type == SurfaceEntityType.ROAD

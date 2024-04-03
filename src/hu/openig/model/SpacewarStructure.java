@@ -208,6 +208,14 @@ public class SpacewarStructure extends SpacewarObject implements WarUnit {
     public Location nextRotate() {
         return nextRotate;
     }
+    /** @return true if the unit is moving. */
+    public boolean isMoving() {
+        return nextMove != null || !path.isEmpty();
+    }
+    /** @return true if the unit is in between cells. */
+    public boolean inMotion()  {
+        return (x % 1 != 0) || (y % 1 != 0);
+    }
     @Override
     public Player owner() {
         return owner;
