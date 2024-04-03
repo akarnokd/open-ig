@@ -860,7 +860,6 @@ public class MainCampaignScripting extends Mission implements GameScripting, Mis
                 if (newState == ObjectiveState.SUCCESS) {
                     world.env.playSound(SoundTarget.EFFECT, SoundType.SUCCESS, null);
                 } else
-
                 if (newState == ObjectiveState.FAILURE) {
                     world.env.playSound(SoundTarget.EFFECT, SoundType.FAIL, null);
                 }

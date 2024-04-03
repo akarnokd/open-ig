@@ -136,6 +136,14 @@ public class Mission14 extends Mission {
     }
 
     @Override
+    public void onAutobattleStart(BattleInfo battle) {
+        if (isMissionSpacewar(battle, "Mission-14") && hasTag(battle, "Mission-14-Garthog")) {
+            battle.tag = "Mission-14-Garthog";
+            battle.chat = "chat.mission-14.destroy.viruscarrier";
+        }
+    }
+
+    @Override
     public void onSpacewarFinish(SpacewarWorld war) {
         onAutobattleFinish(war.battle());
     }
