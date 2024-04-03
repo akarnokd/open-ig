@@ -862,29 +862,29 @@ public class GroundwarManager implements GroundwarWorld {
         if (ground.minelayers.contains(u) && u.path.size() == 0) {
             Location loc = u.location();
             if (!ground.mines.containsKey(loc)) {
-                u.phase++;
-                if (u.phase >= u.maxPhase()) {
+                u.fireAnimPhase++;
+                if (u.fireAnimPhase >= u.maxPhase()) {
                     Mine m = new Mine();
                     m.damage = u.damage();
                     m.owner = u.owner;
                     ground.mines.put(loc, m);
                     ground.minelayers.remove(u);
-                    u.phase = 0;
+                    u.fireAnimPhase = 0;
                 }
             } else {
                 ground.minelayers.remove(u);
             }
         } else
-        if (u.phase > 0) {
-            u.phase++;
-            if (u.phase >= u.maxPhase()) {
+        if (u.fireAnimPhase > 0) {
+            u.fireAnimPhase++;
+            if (u.fireAnimPhase >= u.maxPhase()) {
                 if (u.attackUnit != null) {
                     attackUnitEndPhase(u);
                 } else
                 if (u.attackBuilding != null) {
                     attackBuildingEndPhase(u);
                 }
-                u.phase = 0;
+                u.fireAnimPhase = 0;
 
                 if (u.hasValidTarget()
 
@@ -1029,9 +1029,9 @@ public class GroundwarManager implements GroundwarWorld {
             } else
             if (rotateStep(u, centerCellOf(u.attackBuilding))) {
                 if (u.cooldown <= 0) {
-                    u.phase++;
-                    if (u.model.fire != null) {
-                        playSounds.add(u.model.fire);
+                    u.fireAnimPhase++;
+                    if (u.model.fireSound != null) {
+                        playSounds.add(u.model.fireSound);
                     }
 
                     if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
@@ -1128,9 +1128,9 @@ public class GroundwarManager implements GroundwarWorld {
             } else
             if (rotateStep(u, u.attackUnit.location())) {
                 if (u.cooldown <= 0) {
-                    u.phase++;
-                    if (u.model.fire != null) {
-                        playSounds.add(u.model.fire);
+                    u.fireAnimPhase++;
+                    if (u.model.fireSound != null) {
+                        playSounds.add(u.model.fireSound);
                     }
                     if (u.model.type == GroundwarUnitType.PARALIZER) {
                         if (u.attackUnit.paralized == null) {
@@ -1262,13 +1262,13 @@ public class GroundwarManager implements GroundwarWorld {
         double powerRate = 1d * g.building.assignedEnergy / g.building.getEnergy();
         double indexRate = (g.index + 0.5) / g.count;
         if (indexRate >= powerRate) {
-            g.phase = 0;
+            g.fireAnimPhase = 0;
             return;
         }
 
-        if (g.phase > 0) {
-            g.phase++;
-            if (g.phase >= g.maxPhase()) {
+        if (g.fireAnimPhase > 0) {
+            g.fireAnimPhase++;
+            if (g.fireAnimPhase >= g.maxPhase()) {
                 if (g.attack != null && !g.attack.isDestroyed()
 
                         && g.inRange(g.attack)) {
@@ -1291,7 +1291,7 @@ public class GroundwarManager implements GroundwarWorld {
                     }
                 }
                 g.cooldown = g.model.delay;
-                g.phase = 0;
+                g.fireAnimPhase = 0;
             }
         } else {
             if (g.attack != null && !g.attack.isDestroyed()
@@ -1299,7 +1299,7 @@ public class GroundwarManager implements GroundwarWorld {
                     && g.inRange(g.attack)) {
                 if (rotateStep(g, g.attack.center())) {
                     if (g.cooldown <= 0) {
-                        g.phase++;
+                        g.fireAnimPhase++;
                         playSounds.add(g.model.fire);
                     } else {
                         g.cooldown -= SIMULATION_DELAY;
@@ -1678,7 +1678,7 @@ public class GroundwarManager implements GroundwarWorld {
             double angle = Math.atan2(rocket.targetY - rocket.y, rocket.targetX - rocket.x);
             rocket.x += dv * Math.cos(angle);
             rocket.y += dv * Math.sin(angle);
-            rocket.phase++;
+            rocket.fireAnimPhase++;
 
             if (isRocketJammed(rocket, 0.5)) {
                 createExplosion(rocket.x, rocket.y, ExplosionType.GROUND_ROCKET_2);
@@ -1701,8 +1701,8 @@ public class GroundwarManager implements GroundwarWorld {
                     && u.model.type == GroundwarUnitType.ROCKET_JAMMER && u.paralizedTTL == 0) {
                 double distance = Math.hypot(u.x - rocket.x, u.y - rocket.y);
                 if (distance < u.model.maxRange * penetrationRatio) {
-                    if (u.phase == 0) {
-                        u.phase++;
+                    if (u.fireAnimPhase == 0) {
+                        u.fireAnimPhase++;
                     }
                     return true;
                 }

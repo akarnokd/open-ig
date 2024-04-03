@@ -1683,7 +1683,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     } else
                     if (u.path.size() > 0) {
                         g2.setColor(u.attackMove != null ? Color.RED : Color.GREEN);
-                        Location gl = u.path.get(u.path.size() - 1);
+                        Location gl = u.path.peekLast();
                         int gx = x0 + Tile.toScreenX(gl.x, gl.y) + 27;
                         int gy = y0 + Tile.toScreenY(gl.x, gl.y) + 14;
                         g2.drawLine(gx, gy, up.x, up.y);
@@ -4642,7 +4642,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         PathPlanning(
                 WarUnit unit,
                 Location goal) {
-            this.current = unit.location();
+            if (unit.inMotion() && (unit.nextMove() != null) && (unit.location() != unit.nextMove())) {
+                this.current = unit.nextMove();
+            } else {
+                this.current = unit.location();
+            }
             this.goal = goal;
             this.unit = unit;
         }
@@ -4699,11 +4703,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (selection.size() == 1) {
             GroundwarUnit u = selection.get(0);
             moved = true;
-            u.attackUnit = null;
-            u.attackBuilding = null;
-            u.attackMove = null;
-            u.advanceOnUnit = null;
-            u.advanceOnBuilding = null;
+            stop(u);
             move(u, lm.x, lm.y);
         } else {
             // Group units up nicely so paths to the generated destinations will intersect each other less
@@ -4787,11 +4787,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             });
             Iterator<Location> iter = targetLocations.iterator();
             for (GroundwarUnit unit : selection) {
-                unit.attackUnit = null;
-                unit.attackBuilding = null;
-                unit.attackMove = null;
-                unit.advanceOnUnit = null;
-                unit.advanceOnBuilding = null;
+                stop(unit);
                 Location assignedLocation = iter.next();
                 move(unit, assignedLocation.x, assignedLocation.y);
             }
@@ -5163,29 +5159,29 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (minelayers.contains(u) && u.path.size() == 0) {
             Location loc = u.location();
             if (!mines.containsKey(loc)) {
-                u.phase++;
-                if (u.phase >= u.maxPhase()) {
+                u.fireAnimPhase++;
+                if (u.fireAnimPhase >= u.maxPhase()) {
                     Mine m = new Mine();
                     m.damage = u.damage();
                     m.owner = u.owner;
                     mines.put(loc, m);
                     minelayers.remove(u);
-                    u.phase = 0;
+                    u.fireAnimPhase = 0;
                 }
             } else {
                 minelayers.remove(u);
             }
         } else
-        if (u.phase > 0) {
-            u.phase++;
-            if (u.phase >= u.maxPhase()) {
+        if (u.fireAnimPhase > 0) {
+            u.fireAnimPhase++;
+            if (u.fireAnimPhase >= u.maxPhase()) {
                 if (u.attackUnit != null) {
                     attackUnitEndPhase(u);
                 } else
                 if (u.attackBuilding != null) {
                     attackBuildingEndPhase(u);
                 }
-                u.phase = 0;
+                u.fireAnimPhase = 0;
 
                 if (u.hasValidTarget()
 
@@ -5296,16 +5292,16 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         }
         List<Location> neighbors = getPathfinding(u).neighbors.invoke(source);
         if (!neighbors.isEmpty()) {
-            Location cell = null;
+            Location cellCloserToTarget = null;
             double cellDistance = currentDistance;
             for (Location loc : neighbors) {
                 double newDistance = Math.hypot(tx - loc.x, ty - loc.y);
                 if (newDistance < cellDistance) {
                     cellDistance = newDistance;
-                    cell = loc;
+                    cellCloserToTarget = loc;
                 }
             }
-            if (cell != null) {
+            if (cellCloserToTarget != null) {
                 if (u.attackUnit != null) {
                     u.advanceOnUnit = u.attackUnit;
                     u.attackUnit = null;
@@ -5314,7 +5310,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     u.advanceOnBuilding = u.attackBuilding;
                     u.attackBuilding = null;
                 }
-                pathsToPlan.put(u, new PathPlanning(u, cell));
+                pathsToPlan.put(u, new PathPlanning(u, cellCloserToTarget));
             }
         }
     }
@@ -5327,12 +5323,11 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             if (u.nextMove != null) {
                 u.path.clear();
                 u.path.add(u.nextMove);
-            } else
-            if (rotateStep(u, centerCellOf(u.attackBuilding))) {
+            } else if (rotateStep(u, centerCellOf(u.attackBuilding))) {
                 if (u.cooldown <= 0) {
-                    u.phase++;
-                    if (u.model.fire != null) {
-                        effectSound(u.model.fire);
+                    u.fireAnimPhase++;
+                    if (u.model.fireSound != null) {
+                        effectSound(u.model.fireSound);
                     }
 
                     if (u.model.type == GroundwarUnitType.ROCKET_SLED) {
@@ -5424,9 +5419,9 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             } else
             if (rotateStep(u, u.attackUnit.location())) {
                 if (u.cooldown <= 0) {
-                    u.phase++;
-                    if (u.model.fire != null) {
-                        effectSound(u.model.fire);
+                    u.fireAnimPhase++;
+                    if (u.model.fireSound != null) {
+                        effectSound(u.model.fireSound);
                     }
                     if (u.model.type == GroundwarUnitType.PARALIZER) {
                         if (u.attackUnit.paralized == null) {
@@ -5463,7 +5458,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 }
             } else {
                 if (u.attackMove == null) {
-                    Location ep = u.path.get(u.path.size() - 1);
+                    Location ep = u.path.peekLast();
                     // if the target unit moved since last
                     double dx = ep.x - u.attackUnit.x;
                     double dy = ep.y - u.attackUnit.y;
@@ -5594,13 +5589,13 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         double powerRate = 1d * g.building.assignedEnergy / g.building.getEnergy();
         double indexRate = (g.index + 0.5) / g.count;
         if (indexRate >= powerRate) {
-            g.phase = 0;
+            g.fireAnimPhase = 0;
             return;
         }
 
-        if (g.phase > 0) {
-            g.phase++;
-            if (g.phase >= g.maxPhase()) {
+        if (g.fireAnimPhase > 0) {
+            g.fireAnimPhase++;
+            if (g.fireAnimPhase >= g.maxPhase()) {
                 if (g.attack != null && !g.attack.isDestroyed()
 
                         && unitInRange(g, g.attack)) {
@@ -5623,7 +5618,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     }
                 }
                 g.cooldown = g.model.delay;
-                g.phase = 0;
+                g.fireAnimPhase = 0;
             }
         } else {
             if (g.attack != null && !g.attack.isDestroyed()
@@ -5631,7 +5626,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     && unitInRange(g, g.attack)) {
                 if (rotateStep(g, centerOf(g.attack))) {
                     if (g.cooldown <= 0) {
-                        g.phase++;
+                        g.fireAnimPhase++;
                         effectSound(g.model.fire);
                     } else {
                         g.cooldown -= SIMULATION_DELAY;
@@ -5980,7 +5975,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
      */
     void repath(final GroundwarUnit u) {
         if (u.path.size() > 1) {
-            final Location goal = u.path.get(u.path.size() - 1);
+            final Location goal = u.path.peekLast();
             u.path.clear();
             u.nextMove = null;
             u.nextRotate = null;
@@ -6018,7 +6013,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
         if (unitsForPathfinding.get(u.nextMove) != null) {
             for (GroundwarUnit gunit : unitsForPathfinding.get(u.nextMove)) {
                 if ((gunit != u) && !gunit.inMotion() && !needsRotation(gunit, gunit.nextMove)) {
-                    if (u.nextMove == u.path.get(u.path.size() - 1)) {
+                    if (u.nextMove == u.path.peekLast()) {
                         int baseX = u.nextMove.x;
                         int baseY = u.nextMove.y;
                         outer:
@@ -6344,7 +6339,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
             rocket.lastY = rocket.y;
             rocket.x += dv * Math.cos(angle);
             rocket.y += dv * Math.sin(angle);
-            rocket.phase++;
+            rocket.fireAnimPhase++;
 
             if (isRocketJammed(rocket, 0.5)) {
                 Point p = centerOf(rocket.x, rocket.y);
@@ -6368,8 +6363,8 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     && u.model.type == GroundwarUnitType.ROCKET_JAMMER && u.paralizedTTL == 0) {
                 double distance = Math.hypot(u.x - rocket.x, u.y - rocket.y);
                 if (distance < u.model.maxRange * penetrationRatio) {
-                    if (u.phase == 0) {
-                        u.phase++;
+                    if (u.fireAnimPhase == 0) {
+                        u.fireAnimPhase++;
                     }
                     return true;
                 }
@@ -6956,7 +6951,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     }
     @Override
     public void move(GroundwarUnit u, int x, int y) {
-        stop(u);
         u.guard = true;
         Location lm = Location.of(x, y);
         pathsToPlan.put(u, new PathPlanning(u, lm));
