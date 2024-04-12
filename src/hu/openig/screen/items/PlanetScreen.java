@@ -80,8 +80,6 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
     Closeable animationTimer;
     /** The animation timer. */
     Closeable earthQuakeTimer;
-    /** Enable the drawing of black boxes behind building names and percentages. */
-    boolean textBackgrounds = true;
     /** The unit selection rectangle start. */
     Point selectionStart;
     /** The unit selection rectangle end. */
@@ -1328,7 +1326,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             int px0 = px1 + (px2 - px1 - priceWidth) / 2;
                             int py0 = py1 + (py2 - py1 - 10) / 2;
 
-                            if (textBackgrounds) {
+                            if (config.buildingTextBackgrounds) {
                                 Composite compositeSave = g2.getComposite();
                                 AlphaComposite a1 = AlphaComposite.SrcOver.derive(0.5f);
                                 g2.setComposite(a1);
@@ -1541,7 +1539,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                 Composite compositeSave = null;
                 Composite a1 = null;
 
-                if (textBackgrounds) {
+                if (config.buildingTextBackgrounds) {
                     compositeSave = g2.getComposite();
                     a1 = AlphaComposite.SrcOver.derive(0.8f);
                     g2.setComposite(a1);
@@ -1574,7 +1572,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                     int px = r.x + (r.width - pw) / 2;
                     int py = uy - 14;
 
-                    if (textBackgrounds) {
+                    if (config.buildingTextBackgrounds) {
                         g2.setComposite(a1);
                         g2.setColor(Color.BLACK);
                         g2.fillRect(px - 2, py - 2, pw + 4, 15);
@@ -1626,7 +1624,7 @@ public class PlanetScreen extends ScreenBase implements GroundwarWorld {
                             color = 0xFFFF0000;
                         }
                         int ex = r.x + (r.width - w) / 2;
-                        if (textBackgrounds) {
+                        if (config.buildingTextBackgrounds) {
                             g2.setComposite(a1);
                             g2.setColor(Color.BLACK);
                             g2.fillRect(ex - 2, ey - 2, w + 4, 15);

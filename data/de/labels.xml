@@ -3314,6 +3314,7 @@
 	<entry key='settings.starmap_minimap'>Minikarte</entry>
 	<entry key='settings.starmap_scroll'>Scrollbalken</entry>
 	<entry key='settings.starmap_panels'>Sternenkartenpanele:</entry>
+    <entry key='settings.building_text_backgrounds'>Highlight building names and percentages</entry>
 	<entry key='starmap.colonize_cancel.tip'>Kolonisierung abbrechen.[n]Im Zusammenhang zur Kolonisierung gestartete Konstruktion und Produktion wird nicht gestoppt,[n]allerdings wird der nächste Schritt nicht gestartet.[n]Bereits existierende oder im Anflug befindliche Kolonieschiffe werden zu einem anderen Kolonie-Auftrag umgeleitet.</entry>
 
 	<entry key="autobuild.tooltip.CIVIL">[c=FFFFCC00]Automatischer Bau und Verbesserung von Zivilgebäuden wie Häuser, Nahrungsmittelfabriken und Krankenhäuser entsprechend dem tatsächlichen Bedarf.[/c][n]Falls notwendig werden auch Kraftwerke gebaut und verbessert.[n]Diese Einstellung kann genutzt werden, um Planeten in guter Versorgungslage zu halten.[n]Es wird immer erst versucht ein bestehendes Gebäude zu verbessern, bevor ein neues errichtet wird, um Platz zu sparen.</entry>

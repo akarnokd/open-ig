@@ -274,6 +274,10 @@ public class Configuration {
     @LoadSave
     @LoadSaveGame
     public boolean showStarmapScroll = true;
+    /** Enable the drawing of black boxes behind building names and percentages. */
+    @LoadSave
+    @LoadSaveGame
+    public boolean buildingTextBackgrounds = true;
     /** The current profile. */
     @LoadSave
     public String currentProfile = "default";

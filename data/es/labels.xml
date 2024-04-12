@@ -1056,6 +1056,7 @@
   <entry key='skirmish.social_morale'>Minimum morale:</entry>
   <entry key='Garthog.pirates'>Garthog pirates</entry>
   <entry key='settings.starmap_panels'>Starmap panels:</entry>
+  <entry key='settings.building_text_backgrounds'>Highlight building names and percentages</entry>
   <entry key='multiplayer.settings.remote_address'>Remote address:</entry>
   <entry key='profiles.select_button'>Select / Create</entry>
   <entry key='languages.de'>German / Alemán</entry>
