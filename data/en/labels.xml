@@ -3189,6 +3189,7 @@
 	<entry key='settings.starmap_minimap'>Minimap</entry>
 	<entry key='settings.starmap_scroll'>Scrollbars</entry>
 	<entry key='settings.starmap_panels'>Starmap panels:</entry>
+    <entry key='settings.building_text_backgrounds'>Highlight building names and percentages</entry>
 	<entry key='starmap.colonize_cancel.tip'>Cancel colonization.[n]Construction or production related to the earlier colonization attempt won't be stopped,[n]although it won't progress to the next step.[n]Existing or en-route colony ships might be diverted to another colonization tasks.</entry>
 
 	<entry key='multiplayer.settings.title'>Multiplayer settings</entry>

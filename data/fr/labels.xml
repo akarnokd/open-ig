@@ -2588,6 +2588,7 @@
   <entry key='settings.starmap_minimap'>Mini-carte</entry>
   <entry key='settings.starmap_panels'>Carte stellaire:</entry>
   <entry key='settings.starmap_scroll'>Barres de défil.</entry>
+  <entry key='settings.building_text_backgrounds'>Highlight building names and percentages</entry>
   <entry key='settings.subtitles'>Sous-titres</entry>
   <entry key='settings.swap_mouse_buttons'>Inverser les boutons G et D de la souris</entry>
   <entry key='settings.target_specific_rockets'>Restreindre missile/bombe aux cibles spécifiques</entry>

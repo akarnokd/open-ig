@@ -3225,6 +3225,7 @@
 	<entry key='settings.starmap_minimap'>Minitérkép</entry>
 	<entry key='settings.starmap_scroll'>Görgetősávok</entry>
 	<entry key='settings.starmap_panels'>Csillagtérkép:</entry>
+	<entry key='settings.building_text_backgrounds'>Épület nevek és százalékok kiemelése</entry>
 	<entry key='starmap.colonize_cancel.tip'>Kolonizálás visszavonása.[n]A kolonizálás miatti építés vagy gyártás nem kerül leállításra,[n]de nem kerülnek majd felhasználásra a következő lépésben.[n]Létező vagy úton lévő kolonizáló hajók megállnak, és akár másik kijelölt bolygóra is átállhatnak.</entry>
 
 	<entry key='multiplayer.settings.title'>Többjátékos mód beállítása</entry>

@@ -3277,6 +3277,7 @@
 	<entry key='settings.starmap_minimap'>Minimap</entry>
 	<entry key='settings.starmap_scroll'>Scrollbars</entry>
 	<entry key='settings.starmap_panels'>Starmap panels:</entry>
+    <entry key='settings.building_text_backgrounds'>Highlight building names and percentages</entry>
 	<entry key='starmap.colonize_cancel.tip'>Cancel colonization.[n]Construction or production related to the earlier colonization attempt won't be stopped,[n]although it won't progress to the next step.[n]Existing or en-route colony ships might be diverted to another colonization tasks.</entry>
 	<entry key="autobuild.tooltip.CIVIL">[c=FFFFCC00]Builds and upgrades civil buildings, such as houses, food factories and hospitals, on demand.[/c][n]If necessary, power plants are built or upgraded as well.[n]This setting might be used to keep planets well supplied.[n]It tries to upgrade buildings first before building new ones to save space.</entry>
 	<entry key="autobuild.tooltip.ECONOMIC">[c=FFFFCC00]Builds and upgrades economic buildings, such as traders spaceport, bank, etc.[/c][n]If necessary, power plants are built or upgraded as well.[n]Best used to ensure these kinds of buildings are available and upgraded on all planets.</entry>

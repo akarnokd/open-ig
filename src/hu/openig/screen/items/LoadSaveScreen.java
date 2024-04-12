@@ -33,6 +33,8 @@ import hu.openig.ui.UILabel;
 import hu.openig.ui.UIMouse;
 import hu.openig.ui.UIMouse.Button;
 import hu.openig.ui.UIMouse.Type;
+import hu.openig.ui.UIPanel;
+import hu.openig.ui.UIScrollBox;
 import hu.openig.ui.UISpinner;
 import hu.openig.ui.VerticalAlignment;
 import hu.openig.utils.Exceptions;
@@ -40,6 +42,7 @@ import hu.openig.utils.XElement;
 
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -130,91 +133,25 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
     SwingWorker<Void, Void> listWorker;
     /** The file list. */
     @Settings(page = SettingsPage.LOAD_SAVE)
-    FileList list;
-    /** The sound volume. */
+    FileList fileList;
+    /** The UI panel element for audio settings. */
     @Settings(page = SettingsPage.AUDIO)
-    UISpinner soundVolume;
-    /** The sound label. */
-    @Settings(page = SettingsPage.AUDIO)
-    UILabel soundLabel;
-    /** The music volume. */
-    @Settings(page = SettingsPage.AUDIO)
-    UISpinner musicVolume;
-    /** The music label. */
-    @Settings(page = SettingsPage.AUDIO)
-    UILabel musicLabel;
-    /** The video volume. */
-    @Settings(page = SettingsPage.AUDIO)
-    UISpinner videoVolume;
-    /** The video volume. */
-    @Settings(page = SettingsPage.AUDIO)
-    UILabel videoLabel;
-    /** Subtitles? */
-    @Settings(page = SettingsPage.AUDIO)
-    UICheckBox subtitles;
-    /** Animate technology? */
+    UIPanel audioSettings;
+    /** The UI panel element for control settings. */
+    @Settings(page = SettingsPage.CONTROL)
+    UIPanel controlSettings;
+    /** The UI panel element for gameplay settings. */
+    @Settings(page = SettingsPage.GAMEPLAY)
+    UIPanel gamePlaySettings;
+    /** The UI panel element for visual settings. */
     @Settings(page = SettingsPage.VISUAL)
-    UICheckBox animateTech;
-    /** Re-equip tanks? */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox reequipTanks;
-    /** Re-equip bombs? */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox reequipBombs;
-    /** Fire bombs/rockets only when the correct target type is selected? */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox targetSpecificRockets;
-    /** Enable computer voice for screen switches. */
-    @Settings(page = SettingsPage.AUDIO)
-    UICheckBox computerVoiceScreen;
-    /** Enable computer voice for notifications. */
-    @Settings(page = SettingsPage.AUDIO)
-    UICheckBox computerVoiceNotify;
-    /** Auto-build credit limit. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UISpinner autoBuildLimit;
-    /** Auto build label. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UILabel autoBuildLabel;
-    /** Enable automatic repair. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox autoRepair;
-    /** Allow button sounds. */
-    @Settings(page = SettingsPage.AUDIO)
-    UICheckBox buttonSounds;
-    /** Play satellite deploy animation? */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox satelliteDeploy;
-    /** Auto-build credit limit. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UISpinner researchMoneyPercent;
-    /** Auto build label. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UILabel researchMoneyLabel;
-    /** Play satellite deploy animation? */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox automaticBattle;
-    /** Auto build label. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UILabel autoRepairLabel;
-    /** Auto-build credit limit. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UISpinner autoRepairLimit;
-    /** Display the radar union? */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox radarUnion;
+    UIPanel visualSettings;
     /** The save name. */
     @Settings(page = SettingsPage.LOAD_SAVE)
     UILabel saveName;
     /** The save name. */
     @Settings(page = SettingsPage.LOAD_SAVE)
     UILabel saveNameText;
-    /** Classic RTS controls? */
-    @Settings(page = SettingsPage.CONTROL)
-    UICheckBox classicControls;
-    /** Swap left-right mouse? */
-    @Settings(page = SettingsPage.CONTROL)
-    UICheckBox swapLeftRight;
     /** The timer for the blinking cursor. */
     Timer blink;
     /** The currently editing save text. */
@@ -223,39 +160,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
     boolean blinking;
     /** The other settings popup. */
     UIGenericButton otherSettings;
-    /** Slow down time on detected attack. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox slowOnAttack;
-    /** The time step for the simulation. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UILabel timestepLabel;
-    /** The time step for the simulation. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UISpinner timestepValue;
-    /** The time step for the simulation. */
-    @Settings(page = SettingsPage.VISUAL)
-    UILabel uiScaleLabel;
-    /** The time step for the simulation. */
-    @Settings(page = SettingsPage.VISUAL)
-    UISpinner uiScaleValue;
-    /** Scale cutscenes. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox movieScale;
-    /** Allow skipping the movies via mouse click. */
-    @Settings(page = SettingsPage.CONTROL)
-    UICheckBox movieSkipClick;
-    /** Toggle fullscreen. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox fullScreen;
-    /** Show building names. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox buildingName;
-    /** Display quick production and research. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox quickRNP;
-    /** Scale all screens? */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox scaleAllScreens;
     /** Icon. */
     BufferedImage audioDarkIcon;
     /** Icon. */
@@ -274,54 +178,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
     UIGenericButton confirmCancel;
     /** The confirmation message. */
     UILabel confirmText;
-    /** Mute. */
-    @Settings(page = SettingsPage.AUDIO)
-    UICheckBox muteAudio;
-    /** Mute. */
-    @Settings(page = SettingsPage.AUDIO)
-    UICheckBox muteMusic;
-    /** Mute. */
-    @Settings(page = SettingsPage.AUDIO)
-    UICheckBox muteVideo;
-    /** Show tooltips. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox showTooltips;
-    /** Show the planet/fleet list panel? */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox starmapLists;
-    /** Show the planet/fleet info panel?. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox starmapInfo;
-    /** Show the minimap? */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox starmapMini;
-    /** Show the scrollbars? */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox starmapScroll;
-    /** Starmap checkboxes label. */
-    @Settings(page = SettingsPage.VISUAL)
-    UILabel starmapChecks;
-    /** Weather effects. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox weather;
-    /** Day-night cycle. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox dayNight;
-    /** Auto build label. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox aiAutobuildProduction;
-    /** Continuous money calculation. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox continuousMoney;
-    /** Automatically display objectives on change. */
-    @Settings(page = SettingsPage.GAMEPLAY)
-    UICheckBox autoDisplayObjectives;
-    /** Vector fonts cycle. */
-    @Settings(page = SettingsPage.VISUAL)
-    UICheckBox vectorFonts;
-    /** Custom cursors. */
-    @Settings(page = SettingsPage.CONTROL)
-    UICheckBox customCursors;
     @Override
     public void onInitialize() {
         blink = new Timer(500, new ActionListener() {
@@ -465,415 +321,64 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             }
         };
 
-        list = new FileList();
+        fileList = new FileList();
+
+
+        Dimension innerContentDimension = new Dimension(620, 372);
+        Dimension outerContentDimension = new Dimension(620, 374);
+        // -----------------------------------------------------------------------------------------------
+
+        audioSettings = new UIPanel();
+        AuidoSettingsPanel audioContents = new AuidoSettingsPanel();
+        audioContents.size(innerContentDimension);
+        audioContents.init();
+        audioSettings.backgroundColor(0x80000000);
+        audioSettings.borderColor(TextRenderer.GRAY);
+        audioSettings.size(outerContentDimension);
+        audioSettings.add(audioContents);
 
         // -----------------------------------------------------------------------------------------------
 
-        final UIImageButton sprev = new UIImageButton(commons.common().moveLeft);
-        sprev.setDisabledPattern(commons.common().disabledPattern);
-        sprev.setHoldDelay(250);
-        final UIImageButton snext = new UIImageButton(commons.common().moveRight);
-        snext.setDisabledPattern(commons.common().disabledPattern);
-        snext.setHoldDelay(250);
+        controlSettings = new UIPanel();
+        ControlSettingsPanel controlContents = new ControlSettingsPanel();
+        controlContents.size(innerContentDimension);
+        controlContents.init();
+        controlSettings.backgroundColor(0x80000000);
+        controlSettings.borderColor(TextRenderer.GRAY);
+        controlSettings.size(outerContentDimension);
+        controlSettings.add(controlContents);
 
-        sprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                config.effectVolume = Math.max(0, config.effectVolume - 1);
-                effectSound(SoundType.BAR);
-                commons.sounds.setVolume(config.effectVolume);
-                doRepaint();
-            }
-        };
-        snext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                config.effectVolume = Math.min(100, config.effectVolume + 1);
-                effectSound(SoundType.BAR);
-                commons.sounds.setVolume(config.effectVolume);
-                doRepaint();
-            }
-        };
+        // -----------------------------------------------------------------------------------------------
 
-        soundVolume = new UISpinner(14, sprev, snext, commons.text()) {
-            @Override
-            public boolean mouse(UIMouse e) {
-                if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
-                    int dw = next.x - prev.x - prev.width - 2;
-                    int x0 = e.x - prev.x - prev.width;
-                    config.effectVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
-                    commons.sounds.setVolume(config.effectVolume);
-                    return true;
-                } else
-                if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.effectVolume == 100))) {
-                    effectSound(SoundType.BAR);
-                    return true;
-                }
-                return super.mouse(e);
-            }
-            @Override
-            public void draw(Graphics2D g2) {
-                super.draw(g2);
-                int dw = width - next.width - prev.width - 2;
-                int ox = prev.x + prev.width + 1;
-                int dx = config.effectVolume * dw / 100;
-                g2.setColor(Color.WHITE);
-                g2.fillRect(ox + dx, 1, 2, height - 2);
-            }
-        };
-        soundVolume.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                return config.effectVolume + "%";
-            }
-        };
-        soundLabel = new UILabel(get("settings.sound_volume"), 14, commons.text());
+        gamePlaySettings = new UIPanel();
+        GamePlaySettingsPanel gpContents = new GamePlaySettingsPanel();
+        gpContents.size(innerContentDimension);
+        gpContents.init();
+        gamePlaySettings.backgroundColor(0x80000000);
+        gamePlaySettings.borderColor(TextRenderer.GRAY);
+        gamePlaySettings.size(outerContentDimension);
+        UIScrollBox scrollBox = new UIScrollBox(gpContents, 30,
+                new UIImageButton(commons.database().arrowUp),
+                new UIImageButton(commons.database().arrowDown));
+        scrollBox.size(innerContentDimension);
+        gamePlaySettings.add(scrollBox);
 
-        final UIImageButton mprev = new UIImageButton(commons.common().moveLeft);
-        mprev.setDisabledPattern(commons.common().disabledPattern);
-        mprev.setHoldDelay(250);
-        final UIImageButton mnext = new UIImageButton(commons.common().moveRight);
-        mnext.setDisabledPattern(commons.common().disabledPattern);
-        mnext.setHoldDelay(250);
+        // -----------------------------------------------------------------------------------------------
 
-        mprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                config.musicVolume = Math.max(0, config.musicVolume - 1);
-                commons.music.setVolume(config.musicVolume);
-                if (!commons.music.isRunning()) {
-                    int e = config.effectVolume;
-                    config.effectVolume = config.musicVolume;
-                    effectSound(SoundType.BAR);
-                    config.effectVolume = e;
-                }
-                doRepaint();
-            }
-        };
-        mnext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                config.musicVolume = Math.min(100, config.musicVolume + 1);
-                commons.music.setVolume(config.musicVolume);
-                if (!commons.music.isRunning()) {
-                    int e = config.effectVolume;
-                    config.effectVolume = config.musicVolume;
-                    effectSound(SoundType.BAR);
-                    config.effectVolume = e;
-                }
-                doRepaint();
-            }
-        };
-
-        musicVolume = new UISpinner(14, mprev, mnext, commons.text()) {
-            @Override
-            public boolean mouse(UIMouse e) {
-                if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
-                    int dw = next.x - prev.x - prev.width - 2;
-                    int x0 = e.x - prev.x - prev.width;
-                    config.musicVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
-                    return true;
-                } else
-                if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.musicVolume == 100))) {
-                    if (!commons.music.isRunning()) {
-                        int ev = config.effectVolume;
-                        config.effectVolume = config.musicVolume;
-                        effectSound(SoundType.BAR);
-                        config.effectVolume = ev;
-                    }
-                    commons.music.setVolume(config.musicVolume);
-                    return true;
-                }
-                return super.mouse(e);
-            }
-            @Override
-            public void draw(Graphics2D g2) {
-                super.draw(g2);
-                int dw = width - next.width - prev.width - 2;
-                int ox = prev.x + prev.width + 1;
-                int dx = config.musicVolume * dw / 100;
-                g2.setColor(Color.WHITE);
-                g2.fillRect(ox + dx, 1, 2, height - 2);
-            }
-        };
-        musicVolume.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                return config.musicVolume + "%";
-            }
-        };
-        musicLabel = new UILabel(get("settings.music_volume"), 14, commons.text());
-
-        final UIImageButton vprev = new UIImageButton(commons.common().moveLeft);
-        vprev.setDisabledPattern(commons.common().disabledPattern);
-        vprev.setHoldDelay(250);
-        vprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                config.videoVolume = Math.max(0, config.videoVolume - 1);
-
-                int e = config.effectVolume;
-                config.effectVolume = config.videoVolume;
-                effectSound(SoundType.BAR);
-                config.effectVolume = e;
-
-                doRepaint();
-            }
-        };
-        final UIImageButton vnext = new UIImageButton(commons.common().moveRight);
-        vnext.setDisabledPattern(commons.common().disabledPattern);
-        vnext.setHoldDelay(250);
-        vnext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                config.videoVolume = Math.min(100, config.videoVolume + 1);
-
-                int e = config.effectVolume;
-                config.effectVolume = config.videoVolume;
-                effectSound(SoundType.BAR);
-                config.effectVolume = e;
-
-                doRepaint();
-            }
-        };
-
-        videoVolume = new UISpinner(14, vprev, vnext, commons.text()) {
-            @Override
-            public boolean mouse(UIMouse e) {
-                if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
-                    int dw = next.x - prev.x - prev.width - 2;
-                    int x0 = e.x - prev.x - prev.width;
-                    config.videoVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
-                    return true;
-                } else
-                if (e.has(Type.UP) && ((e.x > prev.x + prev.width && e.x < next.x)
-
-                            || config.videoVolume == 100)) {
-                    int ev = config.effectVolume;
-                    config.effectVolume = config.videoVolume;
-                    effectSound(SoundType.BAR);
-                    config.effectVolume = ev;
-                    return true;
-                }
-                return super.mouse(e);
-            }
-            @Override
-            public void draw(Graphics2D g2) {
-                super.draw(g2);
-                int dw = width - next.width - prev.width - 2;
-                int ox = prev.x + prev.width + 1;
-                int dx = config.videoVolume * dw / 100;
-                g2.setColor(Color.WHITE);
-                g2.fillRect(ox + dx, 1, 2, height - 2);
-            }
-        };
-        videoVolume.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                return config.videoVolume + "%";
-            }
-        };
-        videoLabel = new UILabel(get("settings.video_volume"), 14, commons.text());
-
-        subtitles = new UICheckBox(get("settings.subtitles"), 14, commons.common().checkmark, commons.text());
-        subtitles.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.subtitles = subtitles.selected();
-            }
-        };
-        animateTech = new UICheckBox(get("settings.animatetech"), 14, commons.common().checkmark, commons.text());
-        animateTech.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.animateInventory = animateTech.selected();
-            }
-        };
-
-        reequipTanks = new UICheckBox(get("settings.reequip_tanks"), 14, commons.common().checkmark, commons.text());
-        reequipTanks.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.reequipTanks = reequipTanks.selected();
-            }
-        };
-        reequipBombs = new UICheckBox(get("settings.reequip_bombs"), 14, commons.common().checkmark, commons.text());
-        reequipBombs.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.reequipBombs = reequipBombs.selected();
-            }
-        };
-
-        targetSpecificRockets = new UICheckBox(get("settings.target_specific_rockets"), 14, commons.common().checkmark, commons.text());
-        targetSpecificRockets.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.targetSpecificRockets = targetSpecificRockets.selected();
-            }
-        };
-        computerVoiceScreen = new UICheckBox(get("settings.computer_voice_screen"), 14, commons.common().checkmark, commons.text());
-        computerVoiceScreen.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.computerVoiceScreen = computerVoiceScreen.selected();
-            }
-        };
-        computerVoiceNotify = new UICheckBox(get("settings.computer_voice_notify"), 14, commons.common().checkmark, commons.text());
-        computerVoiceNotify.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.computerVoiceNotify = computerVoiceNotify.selected();
-            }
-        };
-
-        final UIImageButton aprev = new UIImageButton(commons.common().moveLeft);
-        aprev.setDisabledPattern(commons.common().disabledPattern);
-        aprev.setHoldDelay(250);
-        final UIImageButton anext = new UIImageButton(commons.common().moveRight);
-        anext.setDisabledPattern(commons.common().disabledPattern);
-        anext.setHoldDelay(250);
-
-        aprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 5000);
-                doRepaint();
-            }
-        };
-        anext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 5000);
-                doRepaint();
-            }
-        };
-
-        autoBuildLimit = new UISpinner(14, aprev, anext, commons.text());
-        autoBuildLimit.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                return config.autoBuildLimit + " cr";
-            }
-        };
-        autoBuildLabel = new UILabel(get("settings.autobuild_limit"), 14, commons.text());
-
-        autoRepair = new UICheckBox(get("settings.auto_repair"), 14, commons.common().checkmark, commons.text());
-        autoRepair.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.autoRepair = autoRepair.selected();
-            }
-        };
-
-        buttonSounds = new UICheckBox(get("settings.button_sounds"), 14, commons.common().checkmark, commons.text());
-        buttonSounds.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.buttonSounds = buttonSounds.selected();
-            }
-        };
-
-        satelliteDeploy = new UICheckBox(get("settings.satellite_deplay"), 14, commons.common().checkmark, commons.text());
-        satelliteDeploy.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.satelliteDeploy = satelliteDeploy.selected();
-            }
-        };
-
-        final UIImageButton rmprev = new UIImageButton(commons.common().moveLeft);
-        rmprev.setDisabledPattern(commons.common().disabledPattern);
-        rmprev.setHoldDelay(250);
-        final UIImageButton rmnext = new UIImageButton(commons.common().moveRight);
-        rmnext.setDisabledPattern(commons.common().disabledPattern);
-        rmnext.setHoldDelay(250);
-
-        rmprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.researchMoneyPercent = Math.max(125, config.researchMoneyPercent - 125);
-                doRepaint();
-            }
-        };
-        rmnext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.researchMoneyPercent = Math.min(2000, config.researchMoneyPercent + 125);
-                doRepaint();
-            }
-        };
-
-        researchMoneyPercent = new UISpinner(14, rmprev, rmnext, commons.text());
-        researchMoneyPercent.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                StringBuilder b = new StringBuilder();
-                b.append(config.researchMoneyPercent / 10);
-                b.append(".").append(config.researchMoneyPercent % 10);
-                b.append(" %");
-                return b.toString();
-            }
-        };
-        researchMoneyLabel = new UILabel(get("settings.research_money_percent"), 14, commons.text());
-
-        automaticBattle = new UICheckBox(get("settings.autobattle"), 14, commons.common().checkmark, commons.text());
-        automaticBattle.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.automaticBattle = automaticBattle.selected();
-            }
-        };
+        visualSettings = new UIPanel();
+        VisualSettingsPanel visualContents = new VisualSettingsPanel();
+        visualContents.size(innerContentDimension);
+        visualContents.init();
+        visualSettings.backgroundColor(0x80000000);
+        visualSettings.borderColor(TextRenderer.GRAY);
+        visualSettings.size(outerContentDimension);
+        scrollBox = new UIScrollBox(visualContents, 30,
+                new UIImageButton(commons.database().arrowUp),
+                new UIImageButton(commons.database().arrowDown));
+        scrollBox.size(innerContentDimension);
+        visualSettings.add(scrollBox);
 
         // ------------------------------------------------------------------
-
-        final UIImageButton arprev = new UIImageButton(commons.common().moveLeft);
-        arprev.setDisabledPattern(commons.common().disabledPattern);
-        arprev.setHoldDelay(250);
-        final UIImageButton arnext = new UIImageButton(commons.common().moveRight);
-        arnext.setDisabledPattern(commons.common().disabledPattern);
-        arnext.setHoldDelay(250);
-
-        arprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.autoRepairLimit = Math.max(0, config.autoRepairLimit - 5000);
-                doRepaint();
-            }
-        };
-        arnext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.autoRepairLimit = Math.min(Integer.MAX_VALUE, config.autoRepairLimit + 5000);
-                doRepaint();
-            }
-        };
-
-        autoRepairLimit = new UISpinner(14, arprev, arnext, commons.text());
-        autoRepairLimit.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                return config.autoRepairLimit + " cr";
-            }
-        };
-        autoRepairLabel = new UILabel(get("settings.auto_repair_limit"), 14, commons.text());
 
         saveName = new UILabel(get("settings.save_name"), 14, commons.text());
 
@@ -881,190 +386,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         saveNameText.color(TextRenderer.YELLOW);
 //        saveNameText.backgroundColor(0xC0000000);
 
-        classicControls = new UICheckBox(get("settings.classic_controls"), 14, commons.common().checkmark, commons.text());
-        classicControls.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.classicControls = classicControls.selected();
-            }
-        };
-
-        swapLeftRight = new UICheckBox(get("settings.swap_mouse_buttons"), 14, commons.common().checkmark, commons.text());
-        swapLeftRight.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.swapMouseButtons = swapLeftRight.selected();
-            }
-        };
-
-        slowOnAttack = new UICheckBox(get("settings.slow_on_attack"), 14, commons.common().checkmark, commons.text());
-        slowOnAttack.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.slowOnEnemyAttack = slowOnAttack.selected();
-            }
-        };
-
-        // ------------------------------------------
-
-        final UIImageButton tsprev = new UIImageButton(commons.common().moveLeft);
-        tsprev.setDisabledPattern(commons.common().disabledPattern);
-        tsprev.setHoldDelay(250);
-        final UIImageButton tsnext = new UIImageButton(commons.common().moveRight);
-        tsnext.setDisabledPattern(commons.common().disabledPattern);
-        tsnext.setHoldDelay(250);
-
-        tsprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.timestep = Math.max(1, config.timestep - 1);
-                doRepaint();
-            }
-        };
-        tsnext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.timestep = Math.min(60, config.timestep + 1);
-                doRepaint();
-            }
-        };
-
-        timestepValue = new UISpinner(14, tsprev, tsnext, commons.text()) {
-            @Override
-            public boolean mouse(UIMouse e) {
-                if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
-                    int dw = next.x - prev.x - prev.width - 2;
-                    int x0 = e.x - prev.x - prev.width;
-                    config.timestep = Math.max(1, Math.min(100, 1 + x0 * 59 / dw));
-                    return true;
-                } else
-                if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.timestep == 60))) {
-                    return true;
-                }
-                return super.mouse(e);
-            }
-            @Override
-            public void draw(Graphics2D g2) {
-                super.draw(g2);
-                int dw = width - next.width - prev.width - 2;
-                int ox = prev.x + prev.width + 1;
-                int dx = (config.timestep - 1) * dw / 59;
-                g2.setColor(Color.WHITE);
-                g2.fillRect(ox + dx, 1, 2, height - 2);
-            }
-        };
-        timestepValue.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                return format("settings.base_speed_value", config.timestep);
-            }
-        };
-        timestepLabel = new UILabel(get("settings.base_speed"), 14, commons.text());
-
-        aiAutobuildProduction = new UICheckBox(get("settings.ai_autobuild_production"), 14, commons.common().checkmark, commons.text());
-        aiAutobuildProduction.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.aiAutoBuildProduction = aiAutobuildProduction.selected();
-            }
-        };
-
-        autoDisplayObjectives = new UICheckBox(get("settings.auto_display_objectives"), 14, commons.common().checkmark, commons.text());
-        autoDisplayObjectives.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.autoDisplayObjectives = autoDisplayObjectives.selected();
-            }
-        };
-
-        continuousMoney = new UICheckBox(get("settings.continuous_money"), 14, commons.common().checkmark, commons.text());
-        continuousMoney.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.continuousMoney = continuousMoney.selected();
-            }
-        };
-
-        // ------------------------------------------
-
-        prepareUIScale();
-
-        movieScale = new UICheckBox(get("settings.movie_scale"), 14, commons.common().checkmark, commons.text());
-        movieScale.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.movieScale = movieScale.selected();
-            }
-        };
-
-        // ------------------------------------------
-
-        movieSkipClick = new UICheckBox(get("settings.movie_click_skip"), 14, commons.common().checkmark, commons.text());
-        movieSkipClick.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.movieClickSkip = movieSkipClick.selected();
-            }
-        };
-
-        // ------------------------------------------
-        fullScreen = new UICheckBox(get("settings.fullscreen"), 14, commons.common().checkmark, commons.text());
-        fullScreen.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                commons.control().setFullscreen(fullScreen.selected());
-            }
-        };
-
-        // ------------------------------------------
-        buildingName = new UICheckBox(get("settings.building_name"), 14, commons.common().checkmark, commons.text());
-        buildingName.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.showBuildingName = buildingName.selected();
-            }
-        };
-        radarUnion = new UICheckBox(get("settings.radarunion"), 14, commons.common().checkmark, commons.text());
-        radarUnion.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.radarUnion = radarUnion.selected();
-            }
-        };
-        quickRNP = new UICheckBox(get("settings.quick_rnp"), 14, commons.common().checkmark, commons.text());
-        quickRNP.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.quickRNP = quickRNP.selected();
-            }
-        };
-
-        scaleAllScreens = new UICheckBox(get("settings.scale_all_screens"), 14, commons.common().checkmark, commons.text());
-        scaleAllScreens.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.scaleAllScreens = scaleAllScreens.selected();
-                commons.control().runResize();
-                askRepaint();
-            }
-        };
-
-        /////////////////
 
         confirmOk = new UIGenericButton(get("othersettings.ok"), fontMetrics(16), commons.common().mediumButton, commons.common().mediumButtonPressed);
         confirmOk.z = 6;
@@ -1086,114 +407,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         confirmText.z = 5;
 
         hideConfirm();
-
-        muteAudio = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
-        muteAudio.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.muteEffect = muteAudio.selected();
-            }
-        };
-        muteMusic = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
-        muteMusic.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.muteMusic = muteMusic.selected();
-                commons.music.setMute(config.muteMusic);
-            }
-        };
-        muteVideo = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
-        muteVideo.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.muteVideo = muteVideo.selected();
-            }
-        };
-        showTooltips = new UICheckBox(get("settings.show_tooltips"), 14, commons.common().checkmark, commons.text());
-        showTooltips.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.showTooltips = showTooltips.selected();
-            }
-        };
-
-        starmapLists = new UICheckBox(get("settings.starmap_lists"), 14, commons.common().checkmark, commons.text());
-        starmapLists.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.showStarmapLists = starmapLists.selected();
-            }
-        };
-
-        starmapInfo = new UICheckBox(get("settings.starmap_info"), 14, commons.common().checkmark, commons.text());
-        starmapInfo.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.showStarmapInfo = starmapInfo.selected();
-            }
-        };
-
-        starmapMini = new UICheckBox(get("settings.starmap_minimap"), 14, commons.common().checkmark, commons.text());
-        starmapMini.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.showStarmapMinimap = starmapMini.selected();
-            }
-        };
-
-        starmapScroll = new UICheckBox(get("settings.starmap_scroll"), 14, commons.common().checkmark, commons.text());
-        starmapScroll.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.showStarmapScroll = starmapScroll.selected();
-            }
-        };
-
-        starmapChecks = new UILabel(get("settings.starmap_panels"), 14, commons.text());
-
-        weather = new UICheckBox(get("settings.weather_effects"), 14, commons.common().checkmark, commons.text());
-        weather.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.allowWeather = weather.selected();
-            }
-        };
-
-        dayNight = new UICheckBox(get("settings.day_night_effects"), 14, commons.common().checkmark, commons.text());
-        dayNight.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.dayNightCycle = dayNight.selected();
-            }
-        };
-
-        vectorFonts = new UICheckBox(get("settings.vector_fonts"), 14, commons.common().checkmark, commons.text());
-        vectorFonts.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                config.useStandardFonts = vectorFonts.selected();
-            }
-        };
-
-        customCursors = new UICheckBox(get("settings.custom_cursors"), 14, commons.common().checkmark, commons.text());
-        customCursors.onChange = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_MEDIUM_2);
-                config.customCursors = customCursors.selected();
-                if (config.customCursors) {
-                    commons.setCursor(Cursors.POINTER);
-                } else {
-                    commons.control().renderingComponent().setCursor(java.awt.Cursor.getDefaultCursor());
-                }
-            }
-        };
-
-        //-----------------------------------------------
-
-        setTooltip(classicControls, "settings.classic_controls.tooltip");
-
-        //-----------------------------------------------
 
         addThis();
     }
@@ -1227,46 +440,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         confirmOk.visible(true);
         confirmCancel.visible(true);
     }
-    /**
-     * Prepare the UI scale controls.
-     */
-    void prepareUIScale() {
-        final UIImageButton scprev = new UIImageButton(commons.common().moveLeft);
-        scprev.setDisabledPattern(commons.common().disabledPattern);
-        scprev.setHoldDelay(250);
-        final UIImageButton scnext = new UIImageButton(commons.common().moveRight);
-        scnext.setDisabledPattern(commons.common().disabledPattern);
-        scnext.setHoldDelay(250);
 
-        scprev.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.uiScale = Math.max(100, config.uiScale - 25);
-                commons.control().windowToScale();
-                askRepaint();
-            }
-        };
-        scnext.onClick = new Action0() {
-            @Override
-            public void invoke() {
-                buttonSound(SoundType.CLICK_LOW_1);
-                config.uiScale = Math.min(400, config.uiScale + 25);
-                commons.control().windowToScale();
-                askRepaint();
-            }
-        };
-
-        uiScaleValue = new UISpinner(14, scprev, scnext, commons.text());
-        uiScaleValue.getValue = new Func1<Void, String>() {
-            @Override
-            public String invoke(Void value) {
-                return config.uiScale + "%";
-            }
-        };
-        uiScaleLabel = new UILabel(get("settings.ui_scale"), 14, commons.text());
-
-    }
     /** Perform a partial repaint. */
     void doRepaint() {
         scaleRepaint(base, base, margin());
@@ -1313,47 +487,10 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         }
         commons.nongame = true;
         commons.worldLoading = true;
-        list.items.clear();
-        list.selected = null;
+        fileList.items.clear();
+        fileList.selected = null;
 
         startWorker();
-
-        reequipTanks.selected(config.reequipTanks);
-        reequipBombs.selected(config.reequipBombs);
-        targetSpecificRockets.selected(config.targetSpecificRockets);
-        computerVoiceScreen.selected(config.computerVoiceScreen);
-        computerVoiceNotify.selected(config.computerVoiceNotify);
-        autoRepair.selected(config.autoRepair);
-        buttonSounds.selected(config.buttonSounds);
-        satelliteDeploy.selected(config.satelliteDeploy);
-        automaticBattle.selected(config.automaticBattle);
-        radarUnion.selected(config.radarUnion);
-        classicControls.selected(config.classicControls);
-        swapLeftRight.selected(config.swapMouseButtons);
-        subtitles.selected(config.subtitles);
-        animateTech.selected(config.animateInventory);
-        slowOnAttack.selected(config.slowOnEnemyAttack);
-        movieScale.selected(config.movieScale);
-        movieSkipClick.selected(config.movieClickSkip);
-        fullScreen.selected(commons.control().isFullscreen());
-        buildingName.selected(config.showBuildingName);
-        quickRNP.selected(config.quickRNP);
-        scaleAllScreens.selected(config.scaleAllScreens);
-        muteAudio.selected(config.muteEffect);
-        muteVideo.selected(config.muteVideo);
-        muteMusic.selected(config.muteMusic);
-        showTooltips.selected(config.showTooltips);
-        starmapLists.selected(config.showStarmapLists);
-        starmapInfo.selected(config.showStarmapInfo);
-        starmapMini.selected(config.showStarmapMinimap);
-        starmapScroll.selected(config.showStarmapScroll);
-        aiAutobuildProduction.selected(config.aiAutoBuildProduction);
-        continuousMoney.selected(config.continuousMoney);
-        autoDisplayObjectives.selected(config.autoDisplayObjectives);
-        dayNight.selected(config.dayNightCycle);
-        weather.selected(config.allowWeather);
-        vectorFonts.selected(config.useStandardFonts);
-        customCursors.selected(config.customCursors);
 
         hideConfirm();
 
@@ -1425,138 +562,32 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         delete.location(base.x + base.width - delete.width - 10, load.y);
         restart.location(delete.x - restart.width - 10, delete.y);
 
-        list.location(base.x + 10, load.y + load.height + 30);
-        list.size(base.width - 20, base.height - list.y + base.y - 6);
+        fileList.location(base.x + 10, load.y + load.height + 30);
+        fileList.size(base.width - 20, base.height - fileList.y + base.y - 6);
 
         saveName.location(base.x + 10, load.y + load.height + 8);
         saveNameText.location(saveName.x + saveName.width + 10, saveName.y);
         saveNameText.size(base.width - saveName.width - 30, 14);
+
+        // --------------------------------------------------------------------------------------
         // audio
 
-        soundLabel.location(base.x + 30, base.y + 70 + 8);
-        musicLabel.location(base.x + 30, base.y + 100 + 8);
-        videoLabel.location(base.x + 30, base.y + 130 + 8);
+        audioSettings.location(base.x + 10, base.y + 60);
 
-        int vol = Math.max(soundLabel.width, Math.max(musicLabel.width, videoLabel.width));
-
-        soundVolume.location(base.x + 50 + vol, base.y + 70);
-        soundVolume.width = 160;
-        musicVolume.location(base.x + 50 + vol, base.y + 100);
-        musicVolume.width = 160;
-        videoVolume.location(base.x + 50 + vol, base.y + 130);
-        videoVolume.width = 160;
-
-        muteAudio.location(soundVolume.x + soundVolume.width + 30, soundVolume.y + 8);
-        muteMusic.location(musicVolume.x + musicVolume.width + 30, musicVolume.y + 8);
-        muteVideo.location(videoVolume.x + videoVolume.width + 30, videoVolume.y + 8);
-
-        computerVoiceScreen.location(base.x + 30, base.y + 160 + 8);
-        computerVoiceNotify.location(base.x + 30, base.y + 190 + 8);
-
-        buttonSounds.location(base.x + 30, base.y + 220 + 8);
-        subtitles.location(base.x + 30, base.y + 250 + 8);
-
-        // ----------------------------------------------------------
-        // visual
-        int ddy = 28;
-        int dy = 50;
-        uiScaleLabel.location(base.x + 30, base.y + dy + 8);
-        uiScaleValue.location(base.x + 30 + uiScaleLabel.width + 30, base.y + dy);
-        uiScaleValue.width = 160;
-        dy += ddy;
-        movieScale.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        satelliteDeploy.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        animateTech.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        fullScreen.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        buildingName.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        radarUnion.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        quickRNP.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        scaleAllScreens.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        showTooltips.location(base.x + 30, base.y + dy + 8);
-        dy += ddy;
-        starmapChecks.location(base.x + 30, base.y + dy + 8);
-        starmapLists.location(starmapChecks.x  + starmapChecks.width + 30, base.y + dy + 8);
-        starmapInfo.location(starmapLists.x  + starmapLists.width + 30, base.y + dy + 8);
-        dy += ddy;
-        starmapMini.location(starmapChecks.x  + starmapChecks.width + 30, base.y + dy + 8);
-        starmapScroll.location(starmapMini.x  + starmapMini.width + 30, base.y + dy + 8);
-
-        dy += ddy;
-        weather.location(base.x + 30, base.y + dy + 8);
-        dayNight.location(weather.x + weather.width + 30, weather.y);
-
-        dy += ddy;
-        vectorFonts.location(base.x + 30, base.y + dy + 8);
-
-        // -----------------------------
+        // --------------------------------------------------------------------------------------
         // controls
-        dy = 70;
-        classicControls.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-        swapLeftRight.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-        movieSkipClick.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-        customCursors.location(base.x + 30, base.y + dy + 8);
+
+        controlSettings.location(base.x + 10, base.y + 60);
 
         // --------------------------------------------------------------------------------------
         // gameplay
 
-        dy = 50;
+        gamePlaySettings.location(base.x + 10, base.y + 60);
 
-        reequipTanks.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-        reequipBombs.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-        targetSpecificRockets.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
+        // --------------------------------------------------------------------------------------
+        // visual
 
-        autoRepair.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-
-        autoRepairLabel.location(base.x + 30, base.y + dy + 8);
-        autoRepairLimit.width = 200;
-        autoRepairLimit.location(base.x + base.width - autoRepairLimit.width - 30, base.y + dy);
-        dy += 30;
-
-        autoBuildLabel.location(base.x + 30, base.y + dy + 8);
-        autoBuildLimit.width = 200;
-        autoBuildLimit.location(base.x + base.width - autoBuildLimit.width - 30, base.y + dy);
-        dy += 30;
-
-        aiAutobuildProduction.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-
-        researchMoneyLabel.location(base.x + 30, base.y + dy + 8);
-        researchMoneyPercent.width = 200;
-        researchMoneyPercent.location(base.x + base.width - researchMoneyPercent.width - 30, base.y + dy);
-        dy += 30;
-
-        automaticBattle.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-        slowOnAttack.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-
-        timestepLabel.location(base.x + 30, base.y + dy + 8);
-        timestepValue.width = 250;
-        timestepValue.location(base.x + base.width - timestepValue.width - 30, base.y + dy);
-        dy += 30;
-
-        autoDisplayObjectives.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-
-        continuousMoney.location(base.x + 30, base.y + dy + 8);
-        dy += 30;
-
-        ////////
+        visualSettings.location(base.x + 10, base.y + 60);
 
         confirmText.bounds(0, 0, getInnerWidth(), getInnerHeight());
         int cby = getInnerHeight() / 2 + 25;
@@ -1586,27 +617,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
 
         if (settingsMode != SettingsPage.LOAD_SAVE) {
             g2.drawImage(commons.background().setup, base.x, base.y, null);
-
-            soundVolume.prev.enabled(config.effectVolume > 0);
-            soundVolume.next.enabled(config.effectVolume < 100);
-
-            musicVolume.prev.enabled(config.musicVolume > 0);
-            musicVolume.next.enabled(config.musicVolume < 100);
-
-            videoVolume.prev.enabled(config.videoVolume > 0);
-            videoVolume.next.enabled(config.videoVolume < 100);
-
-            autoBuildLimit.prev.enabled(config.autoBuildLimit > 0);
-            autoBuildLimit.next.enabled(config.autoBuildLimit < Integer.MAX_VALUE);
-
-            researchMoneyPercent.prev.enabled(config.researchMoneyPercent > 125);
-            researchMoneyPercent.next.enabled(config.researchMoneyPercent < 2000);
-
-            autoRepairLimit.prev.enabled(config.autoRepairLimit > 0);
-
-            timestepValue.prev.enabled(config.timestep > 1);
-            timestepValue.next.enabled(config.timestep < 60);
-
         } else {
             g2.drawImage(background, base.x, base.y, null);
 
@@ -1614,8 +624,8 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             g2.fillRect(base.x + 10, base.y + 115, base.width - 20, base.height - 115 - 10);
 
             save.enabled(maySave);
-            load.enabled(list.selected != null && list.selected.file != null);
-            delete.enabled(list.selected != null && list.selected.file != null);
+            load.enabled(fileList.selected != null && fileList.selected.file != null);
+            delete.enabled(fileList.selected != null && fileList.selected.file != null);
             World w = world();
             restart.enabled(w != null && w.skirmishDefinition != null);
         }
@@ -1636,7 +646,6 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
         }
         mainmenu.visible(world() != null);
         otherSettings.visible(world() == null);
-        continuousMoney.visible(commons.world() == null && settingsMode == SettingsPage.GAMEPLAY);
 
         super.draw(g2);
 
@@ -1746,15 +755,1126 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
                     newSave.saveName = LoadSaveScreen.this.get("settings.new_save"); // FIXME labels
 
                     flist.add(0, newSave);
-                    list.selected = newSave;
+                    fileList.selected = newSave;
                 }
 
-                list.items.addAll(flist);
+                fileList.items.addAll(flist);
                 askRepaint();
             }
         };
         listWorker.execute();
     }
+
+    class  SettingsPanel extends UIPanel {
+
+        @Override
+        public void drawComponent(Graphics2D g2, UIComponent c) {
+            if (c instanceof UILabel) {
+                g2.setColor(new Color(0, 0, 0, 192));
+                int px = c.x;
+                int py = c.y;
+                g2.translate(px, py);
+                g2.fillRect(-5, -5, c.width + 10, c.height + 10);
+                g2.translate(-px, -py);
+            }
+            super.drawComponent(g2, c);
+        }
+
+    }
+
+    class GamePlaySettingsPanel extends SettingsPanel {
+        /** Re-equip tanks? */
+        UICheckBox reequipTanks;
+        /** Re-equip bombs? */
+        UICheckBox reequipBombs;
+        /** Fire bombs/rockets only when the correct target type is selected? */
+        UICheckBox targetSpecificRockets;
+        /** Auto-build credit limit. */
+        UISpinner autoBuildLimit;
+        /** Auto build label. */
+        UILabel autoBuildLabel;
+        /** Enable automatic repair. */
+        UICheckBox autoRepair;
+        /** Auto-build credit limit. */
+        UISpinner researchMoneyPercent;
+        /** Auto build label. */
+        UILabel researchMoneyLabel;
+        /** Play satellite deploy animation? */
+        UICheckBox automaticBattle;
+        /** Auto build label. */
+        UILabel autoRepairLabel;
+        /** Auto-build credit limit. */
+        UISpinner autoRepairLimit;
+        /** Slow down simulation time when incoming attack is detected. */
+        UICheckBox slowOnAttack;
+        /** The time step for the simulation. */
+        UILabel timestepLabel;
+        /** The time step for the simulation. */
+        UISpinner timestepValue;
+        /** Auto build label. */
+        UICheckBox aiAutobuildProduction;
+        /** Continuous money calculation. */
+        UICheckBox continuousMoney;
+        /** Automatically display objectives on change. */
+        UICheckBox autoDisplayObjectives;
+
+        void init() {
+            reequipTanks = new UICheckBox(get("settings.reequip_tanks"), 14, commons.common().checkmark, commons.text());
+            reequipTanks.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.reequipTanks = reequipTanks.selected();
+                }
+            };
+            reequipBombs = new UICheckBox(get("settings.reequip_bombs"), 14, commons.common().checkmark, commons.text());
+            reequipBombs.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.reequipBombs = reequipBombs.selected();
+                }
+            };
+
+            targetSpecificRockets = new UICheckBox(get("settings.target_specific_rockets"), 14, commons.common().checkmark, commons.text());
+            targetSpecificRockets.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.targetSpecificRockets = targetSpecificRockets.selected();
+                }
+            };
+
+            final UIImageButton aprev = new UIImageButton(commons.common().moveLeft);
+            aprev.setDisabledPattern(commons.common().disabledPattern);
+            aprev.setHoldDelay(250);
+            final UIImageButton anext = new UIImageButton(commons.common().moveRight);
+            anext.setDisabledPattern(commons.common().disabledPattern);
+            anext.setHoldDelay(250);
+
+            aprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.autoBuildLimit = Math.max(0, config.autoBuildLimit - 5000);
+                    doRepaint();
+                }
+            };
+            anext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.autoBuildLimit = Math.min(Integer.MAX_VALUE, config.autoBuildLimit + 5000);
+                    doRepaint();
+                }
+            };
+
+            autoBuildLimit = new UISpinner(14, aprev, anext, commons.text());
+            autoBuildLimit.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return config.autoBuildLimit + " cr";
+                }
+            };
+            autoBuildLabel = new UILabel(get("settings.autobuild_limit"), 14, commons.text());
+            autoBuildLabel.backgroundColor(0xC0000000);
+
+            autoRepair = new UICheckBox(get("settings.auto_repair"), 14, commons.common().checkmark, commons.text());
+            autoRepair.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.autoRepair = autoRepair.selected();
+                }
+            };
+
+            final UIImageButton rmprev = new UIImageButton(commons.common().moveLeft);
+            rmprev.setDisabledPattern(commons.common().disabledPattern);
+            rmprev.setHoldDelay(250);
+            final UIImageButton rmnext = new UIImageButton(commons.common().moveRight);
+            rmnext.setDisabledPattern(commons.common().disabledPattern);
+            rmnext.setHoldDelay(250);
+
+            rmprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.researchMoneyPercent = Math.max(125, config.researchMoneyPercent - 125);
+                    doRepaint();
+                }
+            };
+            rmnext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.researchMoneyPercent = Math.min(2000, config.researchMoneyPercent + 125);
+                    doRepaint();
+                }
+            };
+
+            researchMoneyPercent = new UISpinner(14, rmprev, rmnext, commons.text());
+            researchMoneyPercent.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    StringBuilder b = new StringBuilder();
+                    b.append(config.researchMoneyPercent / 10);
+                    b.append(".").append(config.researchMoneyPercent % 10);
+                    b.append(" %");
+                    return b.toString();
+                }
+            };
+            researchMoneyLabel = new UILabel(get("settings.research_money_percent"), 14, commons.text());
+
+            automaticBattle = new UICheckBox(get("settings.autobattle"), 14, commons.common().checkmark, commons.text());
+            automaticBattle.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.automaticBattle = automaticBattle.selected();
+                }
+            };
+
+            final UIImageButton arprev = new UIImageButton(commons.common().moveLeft);
+            arprev.setDisabledPattern(commons.common().disabledPattern);
+            arprev.setHoldDelay(250);
+            final UIImageButton arnext = new UIImageButton(commons.common().moveRight);
+            arnext.setDisabledPattern(commons.common().disabledPattern);
+            arnext.setHoldDelay(250);
+
+            arprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.autoRepairLimit = Math.max(0, config.autoRepairLimit - 5000);
+                    doRepaint();
+                }
+            };
+            arnext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.autoRepairLimit = Math.min(Integer.MAX_VALUE, config.autoRepairLimit + 5000);
+                    doRepaint();
+                }
+            };
+
+            autoRepairLimit = new UISpinner(14, arprev, arnext, commons.text());
+            autoRepairLimit.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return config.autoRepairLimit + " cr";
+                }
+            };
+            autoRepairLabel = new UILabel(get("settings.auto_repair_limit"), 14, commons.text());
+
+            slowOnAttack = new UICheckBox(get("settings.slow_on_attack"), 14, commons.common().checkmark, commons.text());
+            slowOnAttack.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.slowOnEnemyAttack = slowOnAttack.selected();
+                }
+            };
+            timestepLabel = new UILabel(get("settings.base_speed"), 14, commons.text());
+
+            aiAutobuildProduction = new UICheckBox(get("settings.ai_autobuild_production"), 14, commons.common().checkmark, commons.text());
+            aiAutobuildProduction.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.aiAutoBuildProduction = aiAutobuildProduction.selected();
+                }
+            };
+
+            autoDisplayObjectives = new UICheckBox(get("settings.auto_display_objectives"), 14, commons.common().checkmark, commons.text());
+            autoDisplayObjectives.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.autoDisplayObjectives = autoDisplayObjectives.selected();
+                }
+            };
+
+            continuousMoney = new UICheckBox(get("settings.continuous_money"), 14, commons.common().checkmark, commons.text());
+            continuousMoney.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.continuousMoney = continuousMoney.selected();
+                }
+            };
+
+
+            final UIImageButton tsprev = new UIImageButton(commons.common().moveLeft);
+            tsprev.setDisabledPattern(commons.common().disabledPattern);
+            tsprev.setHoldDelay(250);
+            final UIImageButton tsnext = new UIImageButton(commons.common().moveRight);
+            tsnext.setDisabledPattern(commons.common().disabledPattern);
+            tsnext.setHoldDelay(250);
+
+            tsnext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.timestep = Math.min(60, config.timestep + 1);
+                    doRepaint();
+                }
+            };
+            tsprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.timestep = Math.max(1, config.timestep - 1);
+                    doRepaint();
+                }
+            };
+            timestepValue = new UISpinner(14, tsprev, tsnext, commons.text()) {
+                @Override
+                public boolean mouse(UIMouse e) {
+                    if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+                        int dw = next.x - prev.x - prev.width - 2;
+                        int x0 = e.x - prev.x - prev.width;
+                        config.timestep = Math.max(1, Math.min(100, 1 + x0 * 59 / dw));
+                        return true;
+                    } else
+                    if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.timestep == 60))) {
+                        return true;
+                    }
+                    return super.mouse(e);
+                }
+                @Override
+                public void draw(Graphics2D g2) {
+                    super.draw(g2);
+                    int dw = width - next.width - prev.width - 2;
+                    int ox = prev.x + prev.width + 1;
+                    int dx = (config.timestep - 1) * dw / 59;
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(ox + dx, 1, 2, height - 2);
+                }
+            };
+            timestepValue.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return format("settings.base_speed_value", config.timestep);
+                }
+            };
+            reequipTanks.selected(config.reequipTanks);
+            reequipBombs.selected(config.reequipBombs);
+            targetSpecificRockets.selected(config.targetSpecificRockets);
+            autoRepair.selected(config.autoRepair);
+            automaticBattle.selected(config.automaticBattle);
+            slowOnAttack.selected(config.slowOnEnemyAttack);
+            aiAutobuildProduction.selected(config.aiAutoBuildProduction);
+            continuousMoney.selected(config.continuousMoney);
+            autoDisplayObjectives.selected(config.autoDisplayObjectives);
+
+            height = Math.max(setComponentLocations(), height);
+
+            addThis();
+        }
+
+        @Override
+        public void draw(Graphics2D g2) {
+
+            autoBuildLimit.prev.enabled(config.autoBuildLimit > 0);
+            autoBuildLimit.next.enabled(config.autoBuildLimit < Integer.MAX_VALUE);
+
+            researchMoneyPercent.prev.enabled(config.researchMoneyPercent > 125);
+            researchMoneyPercent.next.enabled(config.researchMoneyPercent < 2000);
+
+            autoRepairLimit.prev.enabled(config.autoRepairLimit > 0);
+
+            timestepValue.prev.enabled(config.timestep > 1);
+            timestepValue.next.enabled(config.timestep < 60);
+
+            continuousMoney.visible(commons.world() == null && settingsMode == SettingsPage.GAMEPLAY);
+            super.draw(g2);
+        }
+
+        int setComponentLocations() {
+            int dy = 5;
+            int ddy = 30;
+
+            reequipTanks.location(10, dy + 8);
+            dy += ddy;
+            reequipBombs.location(10, dy + 8);
+            dy += ddy;
+            targetSpecificRockets.location(10, dy + 8);
+            dy += ddy;
+            autoRepair.location(10, dy + 8);
+            dy += ddy;
+            autoRepairLabel.location(10, dy + 8);
+            dy += ddy;
+            autoRepairLimit.width = 200;
+            autoRepairLimit.location(20, dy);
+            dy += (ddy + 10);
+            autoBuildLabel.location(10, dy + 8);
+            dy += ddy;
+            autoBuildLimit.width = 200;
+            autoBuildLimit.location(20, dy);
+            dy += (ddy + 10);
+            aiAutobuildProduction.location(10, dy + 8);
+            dy += ddy;
+            researchMoneyLabel.location(10, dy + 8);
+            dy += ddy;
+            researchMoneyPercent.width = 200;
+            researchMoneyPercent.location(20, dy);
+            dy += (ddy + 10);
+            automaticBattle.location(10, dy + 8);
+            dy += ddy;
+            slowOnAttack.location(10, dy + 8);
+            dy += ddy;
+            timestepLabel.location(10, dy + 8);
+            dy += ddy;
+            timestepValue.width = 250;
+            timestepValue.location(20, dy);
+            dy += (ddy + 10);
+            autoDisplayObjectives.location(10, dy + 8);
+            dy += ddy;
+            continuousMoney.location(10, dy + 8);;
+            dy += ddy;
+            return dy;
+        }
+    }
+
+    class VisualSettingsPanel extends SettingsPanel {
+        /** Animate technology? */
+        UICheckBox animateTech;
+        /** Play satellite deploy animation? */
+        UICheckBox satelliteDeploy;
+        /** Display the radar union? */
+        UICheckBox radarUnion;
+        /** Scale the UI elements spinner label. */
+        UILabel uiScaleLabel;
+        /** Scale the UI elements. */
+        UISpinner uiScaleValue;
+        /** Scale cutscenes. */
+        UICheckBox movieScale;
+        /** Toggle fullscreen. */
+        UICheckBox fullScreen;
+        /** Show building names. */
+        UICheckBox buildingName;
+        /** Display quick production and research. */
+        UICheckBox quickRNP;
+        /** Scale all screens? */
+        UICheckBox scaleAllScreens;
+        /** Show tooltips. */
+        UICheckBox showTooltips;
+        /** Show the planet/fleet list panel? */
+        UICheckBox starmapLists;
+        /** Show the planet/fleet info panel?. */
+        UICheckBox starmapInfo;
+        /** Show the minimap? */
+        UICheckBox starmapMini;
+        /** Show the scrollbars? */
+        UICheckBox starmapScroll;
+        /** Starmap checkboxes label. */
+        UILabel starmapChecks;
+        /** Weather effects. */
+        UICheckBox weather;
+        /** Day-night cycle. */
+        UICheckBox dayNight;
+        /** Vector fonts cycle. */
+        UICheckBox vectorFonts;
+        /** Enable the drawing of black boxes behind building names and percentages. */
+        UICheckBox buildingTextBackgrounds;
+
+        void init() {
+
+            animateTech = new UICheckBox(get("settings.animatetech"), 14, commons.common().checkmark, commons.text());
+            animateTech.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.animateInventory = animateTech.selected();
+                }
+            };
+
+            satelliteDeploy = new UICheckBox(get("settings.satellite_deplay"), 14, commons.common().checkmark, commons.text());
+            satelliteDeploy.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.satelliteDeploy = satelliteDeploy.selected();
+                }
+            };
+
+            movieScale = new UICheckBox(get("settings.movie_scale"), 14, commons.common().checkmark, commons.text());
+            movieScale.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.movieScale = movieScale.selected();
+                }
+            };
+
+            uiScaleLabel = new UILabel(get("settings.ui_scale"), 14, commons.text());
+
+            final UIImageButton scprev = new UIImageButton(commons.common().moveLeft);
+            scprev.setDisabledPattern(commons.common().disabledPattern);
+            scprev.setHoldDelay(250);
+            final UIImageButton scnext = new UIImageButton(commons.common().moveRight);
+            scnext.setDisabledPattern(commons.common().disabledPattern);
+            scnext.setHoldDelay(250);
+
+            scprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.uiScale = Math.max(100, config.uiScale - 25);
+                    commons.control().windowToScale();
+                    askRepaint();
+                }
+            };
+            scnext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_LOW_1);
+                    config.uiScale = Math.min(400, config.uiScale + 25);
+                    commons.control().windowToScale();
+                    askRepaint();
+                }
+            };
+
+            uiScaleValue = new UISpinner(14, scprev, scnext, commons.text());
+            uiScaleValue.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return config.uiScale + "%";
+                }
+            };
+
+            fullScreen = new UICheckBox(get("settings.fullscreen"), 14, commons.common().checkmark, commons.text());
+            fullScreen.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    commons.control().setFullscreen(fullScreen.selected());
+                }
+            };
+
+            buildingName = new UICheckBox(get("settings.building_name"), 14, commons.common().checkmark, commons.text());
+            buildingName.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.showBuildingName = buildingName.selected();
+                }
+            };
+            radarUnion = new UICheckBox(get("settings.radarunion"), 14, commons.common().checkmark, commons.text());
+            radarUnion.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.radarUnion = radarUnion.selected();
+                }
+            };
+            quickRNP = new UICheckBox(get("settings.quick_rnp"), 14, commons.common().checkmark, commons.text());
+            quickRNP.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.quickRNP = quickRNP.selected();
+                }
+            };
+
+            scaleAllScreens = new UICheckBox(get("settings.scale_all_screens"), 14, commons.common().checkmark, commons.text());
+            scaleAllScreens.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.scaleAllScreens = scaleAllScreens.selected();
+                    commons.control().runResize();
+                    askRepaint();
+                }
+            };
+
+            showTooltips = new UICheckBox(get("settings.show_tooltips"), 14, commons.common().checkmark, commons.text());
+            showTooltips.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.showTooltips = showTooltips.selected();
+                }
+            };
+
+            starmapLists = new UICheckBox(get("settings.starmap_lists"), 14, commons.common().checkmark, commons.text());
+            starmapLists.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.showStarmapLists = starmapLists.selected();
+                }
+            };
+
+            starmapInfo = new UICheckBox(get("settings.starmap_info"), 14, commons.common().checkmark, commons.text());
+            starmapInfo.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.showStarmapInfo = starmapInfo.selected();
+                }
+            };
+
+            starmapMini = new UICheckBox(get("settings.starmap_minimap"), 14, commons.common().checkmark, commons.text());
+            starmapMini.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.showStarmapMinimap = starmapMini.selected();
+                }
+            };
+
+            starmapScroll = new UICheckBox(get("settings.starmap_scroll"), 14, commons.common().checkmark, commons.text());
+            starmapScroll.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.showStarmapScroll = starmapScroll.selected();
+                }
+            };
+
+            starmapChecks = new UILabel(get("settings.starmap_panels"), 14, commons.text());
+
+            weather = new UICheckBox(get("settings.weather_effects"), 14, commons.common().checkmark, commons.text());
+            weather.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.allowWeather = weather.selected();
+                }
+            };
+
+            dayNight = new UICheckBox(get("settings.day_night_effects"), 14, commons.common().checkmark, commons.text());
+            dayNight.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.dayNightCycle = dayNight.selected();
+                }
+            };
+
+            vectorFonts = new UICheckBox(get("settings.vector_fonts"), 14, commons.common().checkmark, commons.text());
+            vectorFonts.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.useStandardFonts = vectorFonts.selected();
+                }
+            };
+            buildingTextBackgrounds = new UICheckBox(get("settings.building_text_backgrounds"), 14, commons.common().checkmark, commons.text());
+            buildingTextBackgrounds.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.buildingTextBackgrounds = buildingTextBackgrounds.selected();
+                }
+            };
+
+            satelliteDeploy.selected(config.satelliteDeploy);
+            radarUnion.selected(config.radarUnion);
+            animateTech.selected(config.animateInventory);
+            movieScale.selected(config.movieScale);
+            fullScreen.selected(commons.control().isFullscreen());
+            buildingName.selected(config.showBuildingName);
+            quickRNP.selected(config.quickRNP);
+            scaleAllScreens.selected(config.scaleAllScreens);
+            showTooltips.selected(config.showTooltips);
+            starmapLists.selected(config.showStarmapLists);
+            starmapInfo.selected(config.showStarmapInfo);
+            starmapMini.selected(config.showStarmapMinimap);
+            starmapScroll.selected(config.showStarmapScroll);
+            dayNight.selected(config.dayNightCycle);
+            weather.selected(config.allowWeather);
+            vectorFonts.selected(config.useStandardFonts);
+            buildingTextBackgrounds.selected(config.buildingTextBackgrounds);
+
+            height = Math.max(setComponentLocations(), height);
+
+            addThis();
+        }
+
+        int setComponentLocations() {
+            int dy = 5;
+            int ddy = 30;
+
+            uiScaleLabel.location(10, dy + 8);
+            dy += ddy;
+            uiScaleValue.location(20, + dy);
+            uiScaleValue.width = 160;
+            dy += ddy;
+            movieScale.location(10, dy + 8);
+            dy += ddy;
+            satelliteDeploy.location(10, dy + 8);
+            dy += ddy;
+            animateTech.location(10, dy + 8);
+            dy += ddy;
+            fullScreen.location(10, dy + 8);
+            dy += ddy;
+            buildingName.location(10, dy + 8);
+            dy += ddy;
+            radarUnion.location(10, dy + 8);
+            dy += ddy;
+            quickRNP.location(10, dy + 8);
+            dy += ddy;
+            scaleAllScreens.location(10, dy + 8);
+            dy += ddy;
+            showTooltips.location(10, dy + 8);
+            dy += ddy;
+            starmapChecks.location(10, dy + 8);
+            starmapLists.location(starmapChecks.x  + starmapChecks.width + 30, dy + 8);
+            starmapInfo.location(starmapLists.x  + starmapLists.width + 30, dy + 8);
+            dy += ddy;
+            starmapMini.location(starmapChecks.x  + starmapChecks.width + 30, dy + 8);
+            starmapScroll.location(starmapMini.x  + starmapMini.width + 30, dy + 8);
+
+            dy += ddy;
+            weather.location(10, dy + 8);
+            dayNight.location(weather.x + weather.width + 30, weather.y);
+
+            dy += ddy;
+            vectorFonts.location(10, dy + 8);
+            dy += ddy;
+            buildingTextBackgrounds.location(10, dy + 8);
+            dy += ddy;
+
+            return dy;
+        }
+    }
+
+    class ControlSettingsPanel extends SettingsPanel {
+
+        /** Classic RTS controls? */
+        UICheckBox classicControls;
+        /** Swap left-right mouse? */
+        UICheckBox swapLeftRight;
+        /** Allow skipping the movies via mouse click. */
+        UICheckBox movieSkipClick;
+        /** Custom cursors. */
+        UICheckBox customCursors;
+
+        void init() {
+
+            classicControls = new UICheckBox(get("settings.classic_controls"), 14, commons.common().checkmark, commons.text());
+            classicControls.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.classicControls = classicControls.selected();
+                }
+            };
+
+            setTooltip(classicControls, "settings.classic_controls.tooltip");
+
+            swapLeftRight = new UICheckBox(get("settings.swap_mouse_buttons"), 14, commons.common().checkmark, commons.text());
+            swapLeftRight.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.swapMouseButtons = swapLeftRight.selected();
+                }
+            };
+
+            movieSkipClick = new UICheckBox(get("settings.movie_click_skip"), 14, commons.common().checkmark, commons.text());
+            movieSkipClick.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.movieClickSkip = movieSkipClick.selected();
+                }
+            };
+
+            customCursors = new UICheckBox(get("settings.custom_cursors"), 14, commons.common().checkmark, commons.text());
+            customCursors.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.customCursors = customCursors.selected();
+                    if (config.customCursors) {
+                        commons.setCursor(Cursors.POINTER);
+                    } else {
+                        commons.control().renderingComponent().setCursor(java.awt.Cursor.getDefaultCursor());
+                    }
+                }
+            };
+
+            classicControls.selected(config.classicControls);
+            swapLeftRight.selected(config.swapMouseButtons);
+            movieSkipClick.selected(config.movieClickSkip);
+            customCursors.selected(config.customCursors);
+
+            height = Math.max(setComponentLocations(), height);
+
+            addThis();
+        }
+        int setComponentLocations() {
+            int dy = 5;
+            int ddy = 30;
+
+            classicControls.location(10, dy + 8);
+            dy += ddy;
+            swapLeftRight.location(10, dy + 8);
+            dy += ddy;
+            movieSkipClick.location(10, dy + 8);
+            dy += ddy;
+            customCursors.location(10, dy + 8);
+            dy += ddy;
+            return dy;
+        }
+    }
+
+
+    class AuidoSettingsPanel extends SettingsPanel {
+
+        /** The sound volume. */
+        UISpinner soundVolume;
+        /** The sound label. */
+        UILabel soundLabel;
+        /** The music volume. */
+        UISpinner musicVolume;
+        /** The music label. */
+        UILabel musicLabel;
+        /** The video volume. */
+        UISpinner videoVolume;
+        /** The video volume. */
+        UILabel videoLabel;
+        /** Subtitles? */
+        UICheckBox subtitles;
+        /** Enable computer voice for screen switches. */
+        UICheckBox computerVoiceScreen;
+        /** Enable computer voice for notifications. */
+        UICheckBox computerVoiceNotify;
+        /** Allow button sounds. */
+        UICheckBox buttonSounds;
+        /** Mute sound. */
+        UICheckBox muteAudio;
+        /** Mute music. */
+        UICheckBox muteMusic;
+        /** Mute videos. */
+        UICheckBox muteVideo;
+
+        void init() {
+
+            final UIImageButton sprev = new UIImageButton(commons.common().moveLeft);
+            sprev.setDisabledPattern(commons.common().disabledPattern);
+            sprev.setHoldDelay(250);
+            final UIImageButton snext = new UIImageButton(commons.common().moveRight);
+            snext.setDisabledPattern(commons.common().disabledPattern);
+            snext.setHoldDelay(250);
+
+            sprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    config.effectVolume = Math.max(0, config.effectVolume - 1);
+                    effectSound(SoundType.BAR);
+                    commons.sounds.setVolume(config.effectVolume);
+                    doRepaint();
+                }
+            };
+            snext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    config.effectVolume = Math.min(100, config.effectVolume + 1);
+                    effectSound(SoundType.BAR);
+                    commons.sounds.setVolume(config.effectVolume);
+                    doRepaint();
+                }
+            };
+
+            soundVolume = new UISpinner(14, sprev, snext, commons.text()) {
+                @Override
+                public boolean mouse(UIMouse e) {
+                    if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+                        int dw = next.x - prev.x - prev.width - 2;
+                        int x0 = e.x - prev.x - prev.width;
+                        config.effectVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
+                        commons.sounds.setVolume(config.effectVolume);
+                        return true;
+                    } else
+                    if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.effectVolume == 100))) {
+                        effectSound(SoundType.BAR);
+                        return true;
+                    }
+                    return super.mouse(e);
+                }
+                @Override
+                public void draw(Graphics2D g2) {
+                    super.draw(g2);
+                    int dw = width - next.width - prev.width - 2;
+                    int ox = prev.x + prev.width + 1;
+                    int dx = config.effectVolume * dw / 100;
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(ox + dx, 1, 2, height - 2);
+                }
+            };
+            soundVolume.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return config.effectVolume + "%";
+                }
+            };
+            soundLabel = new UILabel(get("settings.sound_volume"), 14, commons.text());
+
+            final UIImageButton mprev = new UIImageButton(commons.common().moveLeft);
+            mprev.setDisabledPattern(commons.common().disabledPattern);
+            mprev.setHoldDelay(250);
+            final UIImageButton mnext = new UIImageButton(commons.common().moveRight);
+            mnext.setDisabledPattern(commons.common().disabledPattern);
+            mnext.setHoldDelay(250);
+
+            mprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    config.musicVolume = Math.max(0, config.musicVolume - 1);
+                    commons.music.setVolume(config.musicVolume);
+                    if (!commons.music.isRunning()) {
+                        int e = config.effectVolume;
+                        config.effectVolume = config.musicVolume;
+                        effectSound(SoundType.BAR);
+                        config.effectVolume = e;
+                    }
+                    doRepaint();
+                }
+            };
+            mnext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    config.musicVolume = Math.min(100, config.musicVolume + 1);
+                    commons.music.setVolume(config.musicVolume);
+                    if (!commons.music.isRunning()) {
+                        int e = config.effectVolume;
+                        config.effectVolume = config.musicVolume;
+                        effectSound(SoundType.BAR);
+                        config.effectVolume = e;
+                    }
+                    doRepaint();
+                }
+            };
+
+            musicVolume = new UISpinner(14, mprev, mnext, commons.text()) {
+                @Override
+                public boolean mouse(UIMouse e) {
+                    if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+                        int dw = next.x - prev.x - prev.width - 2;
+                        int x0 = e.x - prev.x - prev.width;
+                        config.musicVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
+                        return true;
+                    } else
+                    if ((e.has(Type.UP) && (e.x > prev.x + prev.width && e.x < next.x || config.musicVolume == 100))) {
+                        if (!commons.music.isRunning()) {
+                            int ev = config.effectVolume;
+                            config.effectVolume = config.musicVolume;
+                            effectSound(SoundType.BAR);
+                            config.effectVolume = ev;
+                        }
+                        commons.music.setVolume(config.musicVolume);
+                        return true;
+                    }
+                    return super.mouse(e);
+                }
+                @Override
+                public void draw(Graphics2D g2) {
+                    super.draw(g2);
+                    int dw = width - next.width - prev.width - 2;
+                    int ox = prev.x + prev.width + 1;
+                    int dx = config.musicVolume * dw / 100;
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(ox + dx, 1, 2, height - 2);
+                }
+            };
+            musicVolume.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return config.musicVolume + "%";
+                }
+            };
+            musicLabel = new UILabel(get("settings.music_volume"), 14, commons.text());
+
+            final UIImageButton vprev = new UIImageButton(commons.common().moveLeft);
+            vprev.setDisabledPattern(commons.common().disabledPattern);
+            vprev.setHoldDelay(250);
+            vprev.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    config.videoVolume = Math.max(0, config.videoVolume - 1);
+
+                    int e = config.effectVolume;
+                    config.effectVolume = config.videoVolume;
+                    effectSound(SoundType.BAR);
+                    config.effectVolume = e;
+
+                    doRepaint();
+                }
+            };
+            final UIImageButton vnext = new UIImageButton(commons.common().moveRight);
+            vnext.setDisabledPattern(commons.common().disabledPattern);
+            vnext.setHoldDelay(250);
+            vnext.onClick = new Action0() {
+                @Override
+                public void invoke() {
+                    config.videoVolume = Math.min(100, config.videoVolume + 1);
+
+                    int e = config.effectVolume;
+                    config.effectVolume = config.videoVolume;
+                    effectSound(SoundType.BAR);
+                    config.effectVolume = e;
+
+                    doRepaint();
+                }
+            };
+
+            videoVolume = new UISpinner(14, vprev, vnext, commons.text()) {
+                @Override
+                public boolean mouse(UIMouse e) {
+                    if ((e.has(Type.DOWN) || e.has(Type.DRAG))  && e.x > prev.x + prev.width && e.x < next.x) {
+                        int dw = next.x - prev.x - prev.width - 2;
+                        int x0 = e.x - prev.x - prev.width;
+                        config.videoVolume = Math.max(0, Math.min(100, x0 * 100 / dw));
+                        return true;
+                    } else
+                    if (e.has(Type.UP) && ((e.x > prev.x + prev.width && e.x < next.x)
+
+                            || config.videoVolume == 100)) {
+                        int ev = config.effectVolume;
+                        config.effectVolume = config.videoVolume;
+                        effectSound(SoundType.BAR);
+                        config.effectVolume = ev;
+                        return true;
+                    }
+                    return super.mouse(e);
+                }
+                @Override
+                public void draw(Graphics2D g2) {
+                    super.draw(g2);
+                    int dw = width - next.width - prev.width - 2;
+                    int ox = prev.x + prev.width + 1;
+                    int dx = config.videoVolume * dw / 100;
+                    g2.setColor(Color.WHITE);
+                    g2.fillRect(ox + dx, 1, 2, height - 2);
+                }
+            };
+            videoVolume.getValue = new Func1<Void, String>() {
+                @Override
+                public String invoke(Void value) {
+                    return config.videoVolume + "%";
+                }
+            };
+            videoLabel = new UILabel(get("settings.video_volume"), 14, commons.text());
+
+            subtitles = new UICheckBox(get("settings.subtitles"), 14, commons.common().checkmark, commons.text());
+            subtitles.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.subtitles = subtitles.selected();
+                }
+            };
+
+            computerVoiceScreen = new UICheckBox(get("settings.computer_voice_screen"), 14, commons.common().checkmark, commons.text());
+            computerVoiceScreen.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.computerVoiceScreen = computerVoiceScreen.selected();
+                }
+            };
+            computerVoiceNotify = new UICheckBox(get("settings.computer_voice_notify"), 14, commons.common().checkmark, commons.text());
+            computerVoiceNotify.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.computerVoiceNotify = computerVoiceNotify.selected();
+                }
+            };
+
+            buttonSounds = new UICheckBox(get("settings.button_sounds"), 14, commons.common().checkmark, commons.text());
+            buttonSounds.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    buttonSound(SoundType.CLICK_MEDIUM_2);
+                    config.buttonSounds = buttonSounds.selected();
+                }
+            };
+
+            muteAudio = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
+            muteAudio.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.muteEffect = muteAudio.selected();
+                }
+            };
+            muteMusic = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
+            muteMusic.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.muteMusic = muteMusic.selected();
+                    commons.music.setMute(config.muteMusic);
+                }
+            };
+            muteVideo = new UICheckBox(get("settings.mute"), 14, commons.common().checkmark, commons.text());
+            muteVideo.onChange = new Action0() {
+                @Override
+                public void invoke() {
+                    config.muteVideo = muteVideo.selected();
+                }
+            };
+
+            computerVoiceScreen.selected(config.computerVoiceScreen);
+            computerVoiceNotify.selected(config.computerVoiceNotify);
+            buttonSounds.selected(config.buttonSounds);
+            subtitles.selected(config.subtitles);
+            muteAudio.selected(config.muteEffect);
+            muteVideo.selected(config.muteVideo);
+            muteMusic.selected(config.muteMusic);
+
+            height = Math.max(setComponentLocations(), height);
+
+            addThis();
+        }
+
+        @Override
+        public void draw(Graphics2D g2) {
+
+            soundVolume.prev.enabled(config.effectVolume > 0);
+            soundVolume.next.enabled(config.effectVolume < 100);
+
+            musicVolume.prev.enabled(config.musicVolume > 0);
+            musicVolume.next.enabled(config.musicVolume < 100);
+
+            videoVolume.prev.enabled(config.videoVolume > 0);
+            videoVolume.next.enabled(config.videoVolume < 100);
+
+            super.draw(g2);
+        }
+
+        int setComponentLocations() {
+            int dy = 5;
+            int ddy = 30;
+
+            int vol = Math.max(soundLabel.width, Math.max(musicLabel.width, videoLabel.width));
+
+            soundLabel.location(10, dy + 8);
+            soundVolume.location(30 + vol, dy);
+            soundVolume.width = 160;
+            muteAudio.location(soundVolume.x + soundVolume.width + 30, soundVolume.y + 8);
+            dy += ddy;
+
+            musicLabel.location(10, dy + 8);
+            musicVolume.location(30 + vol, dy);
+            musicVolume.width = 160;
+            muteMusic.location(musicVolume.x + musicVolume.width + 30, musicVolume.y + 8);
+            dy += ddy;
+
+            videoLabel.location(10, dy + 8);
+            videoVolume.location(30 + vol, dy);
+            videoVolume.width = 160;
+            muteVideo.location(videoVolume.x + videoVolume.width + 30, videoVolume.y + 8);
+            dy += ddy;
+
+
+            computerVoiceScreen.location(10, dy + 8);
+            dy += ddy;
+            computerVoiceNotify.location(10, dy + 8);
+            dy += ddy;
+            buttonSounds.location(10, dy + 8);
+            dy += ddy;
+            subtitles.location(10, dy + 8);
+            dy += ddy;
+            return dy;
+        }
+    }
+
     /** The file list. */
     class FileList extends UIContainer {
         /** The scroll top. */
@@ -1905,14 +2025,14 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
     }
     /** Delete the current selected item. */
     void doDelete() {
-        int idx = list.items.indexOf(list.selected);
+        int idx = fileList.items.indexOf(fileList.selected);
         if (idx >= 0) {
 
-            File f = list.selected.file;
+            File f = fileList.selected.file;
             if (f.exists() && !f.delete()) {
                 System.err.println("Could not delete " + f);
             }
-            String fsname = list.selected.file.getName().substring(5);
+            String fsname = fileList.selected.file.getName().substring(5);
             f = new File("save/" + commons.profile.name + "/savex-" + fsname);
             if (f.exists() && !f.delete()) {
                 System.err.println("Could not delete " + f);
@@ -1921,20 +2041,20 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
             if (f.exists() && !f.delete()) {
                 System.err.println("Could not delete " + f);
             }
-            list.items.remove(idx);
+            fileList.items.remove(idx);
 
-            idx = Math.min(idx, list.items.size() - 1);
+            idx = Math.min(idx, fileList.items.size() - 1);
             if (idx >= 0) {
-                list.selected = list.items.get(idx);
+                fileList.selected = fileList.items.get(idx);
             } else {
-                list.selected = null;
+                fileList.selected = null;
             }
         }
     }
     /** Load the selected item. */
     void doLoad() {
         doBack();
-        load(list.selected.file.getAbsolutePath());
+        load(fileList.selected.file.getAbsolutePath());
 
     }
     /**
@@ -1946,7 +2066,7 @@ public class LoadSaveScreen extends ScreenBase implements LoadSaveScreenAPI {
     }
     /** Create a save. */
     void doSave() {
-        final FileItem fi = list.selected;
+        final FileItem fi = fileList.selected;
         if (fi.file == null) {
             commons.control().save(saveText, SaveMode.MANUAL);
             doBack();
