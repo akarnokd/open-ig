@@ -29,6 +29,8 @@ public class BuildingType {
     public String description;
     /** The tile set for various race (more like techraces). */
     public final Map<String, TileSet> tileset = new HashMap<>();
+    /** The planet type (surface) exception set for individual races. Takes precedence over the common exceptions set. */
+    public final Map<String, Set<String>> raceExcept = new HashMap<>();
     /** The hit point amount. */
     public int hitpoints;
     /** The build cost. */
@@ -39,7 +41,7 @@ public class BuildingType {
     public int limit;
     /** In skirmish, use the default limit if the unlimited option is chosen. */
     public boolean skirmishHardLimit;
-    /** The planet type (surface) exception set. */
+    /** The planet type (surface) exception set common for all race variations of the building. */
     public final Set<String> except = new HashSet<>();
     /** The required research to be available. */
     public ResearchType research;

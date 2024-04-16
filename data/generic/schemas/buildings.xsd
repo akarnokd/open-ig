@@ -124,6 +124,12 @@
 				<xs:documentation>The race-specific building should only be present in skirmish games.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="except" type="string-list" use="optional">
+			<xs:annotation>
+				<xs:documentation>The list of planet surface types where the
+					building can't be built.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="build">
 		<xs:annotation>

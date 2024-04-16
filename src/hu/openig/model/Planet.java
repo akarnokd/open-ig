@@ -461,7 +461,11 @@ public class Planet implements Named, Owned, HasInventory, HasPosition {
             BuildingType bt,
             boolean checkLimit) {
         // check if this planet type is on the exception list
-        if (bt.except.contains(planet.type.type)) {
+        if (bt.raceExcept.containsKey(planet.race)) {
+            if (bt.raceExcept.get(planet.race).contains(planet.type.type)) {
+                return false;
+            }
+        } else if (bt.except.contains(planet.type.type)) {
             return false;
         }
         // check if the required research is available

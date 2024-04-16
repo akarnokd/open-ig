@@ -1098,14 +1098,14 @@
   </building>
   <building name='buildings.park' id='Park'>
     <graphics>
-      <tech id='human' height='6' width='6' image='colony/buildings/human/park'/>
-      <tech id='garthog' height='6' width='6' image='colony/buildings/garthog/park' skirmish-only="true"/>
-      <tech id='ecalep' height='6' width='6' image='colony/buildings/ecalep/park' skirmish-only="true"/>
-      <tech id='sullep' height='6' width='6' image='colony/buildings/sullep/park' skirmish-only="true"/>
-      <tech id='ychom' height='5' width='6' image='colony/buildings/ychom/park' skirmish-only="true"/>
-      <tech id='dribs' height='6' width='6' image='colony/buildings/dribs/park' skirmish-only="true"/>
-      <tech id='morgath' height='3' width='3' image='colony/buildings/morgath/park' skirmish-only="true"/>
-      <tech id='dargslan' height='6' width='7' image='colony/buildings/dargslan/park' skirmish-only="true"/>
+      <tech id='human' height='6' width='6' image='colony/buildings/human/park' except="desert,frozen,cratered,liquid,neptoplasm"/>
+      <tech id='garthog' height='6' width='6' image='colony/buildings/garthog/park' skirmish-only="true" except="rocky,desert,cratered,liquid,neptoplasm"/>
+      <tech id='ecalep' height='6' width='6' image='colony/buildings/ecalep/park' skirmish-only="true" except="earth,rocky,desert,frozen,cratered"/>
+      <tech id='sullep' height='6' width='6' image='colony/buildings/sullep/park' skirmish-only="true" except="earth,frozen,cratered,liquid,neptoplasm"/>
+      <tech id='ychom' height='5' width='6' image='colony/buildings/ychom/park' skirmish-only="true" except="earth,desert,frozen,liquid,neptoplasm"/>
+      <tech id='dribs' height='6' width='6' image='colony/buildings/dribs/park' skirmish-only="true" except="desert,frozen,cratered,liquid,neptoplasm"/>
+      <tech id='morgath' height='3' width='3' image='colony/buildings/morgath/park' skirmish-only="true" except="earth,rocky,cratered,liquid,neptoplasm"/>
+      <tech id='dargslan' height='6' width='7' image='colony/buildings/dargslan/park' skirmish-only="true" except="earth,rocky,desert,cratered,neptoplasm"/>
     </graphics>
     <build limit='*' kind='Social' cost='14000'/>
     <operation>
