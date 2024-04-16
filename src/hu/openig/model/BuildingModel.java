@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,6 +240,13 @@ public class BuildingModel {
                                 }
                                 synchronized (b.tileset) {
                                     b.tileset.put(rid, ts);
+                                }
+
+                                String except = r.get("except", null);
+                                if (except != null && !except.isEmpty()) {
+                                    synchronized (b.raceExcept) {
+                                        b.raceExcept.put(rid, new HashSet<String>(Arrays.asList(except.split("\\s*,\\s*"))));
+                                    }
                                 }
                             }
                         } finally {
